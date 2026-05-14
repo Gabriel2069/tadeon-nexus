@@ -14,16 +14,214 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      character_sheets: {
+        Row: {
+          abilities: Json
+          age: string | null
+          attributes: Json
+          brand: string | null
+          condition: string | null
+          conditions: Json
+          created_at: string
+          dying: number
+          equilibrium: number
+          exposure: number
+          fragments: number
+          going_insane: number
+          id: string
+          inventory: Json
+          inventory_capacity: number
+          motivation: string | null
+          name: string
+          notes: string | null
+          occupation: string | null
+          origin: string | null
+          owner_email: string
+          owner_id: string
+          plots: Json
+          pm_spent: number
+          purchased_skills: Json
+          skill_bonus: string | null
+          skills: Json
+          stat_upgrades: Json
+          stats: Json
+          updated_at: string
+          weapons: Json
+        }
+        Insert: {
+          abilities?: Json
+          age?: string | null
+          attributes?: Json
+          brand?: string | null
+          condition?: string | null
+          conditions?: Json
+          created_at?: string
+          dying?: number
+          equilibrium?: number
+          exposure?: number
+          fragments?: number
+          going_insane?: number
+          id?: string
+          inventory?: Json
+          inventory_capacity?: number
+          motivation?: string | null
+          name: string
+          notes?: string | null
+          occupation?: string | null
+          origin?: string | null
+          owner_email: string
+          owner_id: string
+          plots?: Json
+          pm_spent?: number
+          purchased_skills?: Json
+          skill_bonus?: string | null
+          skills?: Json
+          stat_upgrades?: Json
+          stats?: Json
+          updated_at?: string
+          weapons?: Json
+        }
+        Update: {
+          abilities?: Json
+          age?: string | null
+          attributes?: Json
+          brand?: string | null
+          condition?: string | null
+          conditions?: Json
+          created_at?: string
+          dying?: number
+          equilibrium?: number
+          exposure?: number
+          fragments?: number
+          going_insane?: number
+          id?: string
+          inventory?: Json
+          inventory_capacity?: number
+          motivation?: string | null
+          name?: string
+          notes?: string | null
+          occupation?: string | null
+          origin?: string | null
+          owner_email?: string
+          owner_id?: string
+          plots?: Json
+          pm_spent?: number
+          purchased_skills?: Json
+          skill_bonus?: string | null
+          skills?: Json
+          stat_upgrades?: Json
+          stats?: Json
+          updated_at?: string
+          weapons?: Json
+        }
+        Relationships: []
+      }
+      game_settings: {
+        Row: {
+          id: string
+          initiative_notes: string | null
+          key: string
+          quick_refs: string | null
+          rank_table: Json
+          reminders: string | null
+          scene_combat: string | null
+          scene_dialogue: string | null
+          scene_investigation: string | null
+          skill_branches: Json
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          initiative_notes?: string | null
+          key?: string
+          quick_refs?: string | null
+          rank_table?: Json
+          reminders?: string | null
+          scene_combat?: string | null
+          scene_dialogue?: string | null
+          scene_investigation?: string | null
+          skill_branches?: Json
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          initiative_notes?: string | null
+          key?: string
+          quick_refs?: string | null
+          rank_table?: Json
+          reminders?: string | null
+          scene_combat?: string | null
+          scene_dialogue?: string | null
+          scene_investigation?: string | null
+          skill_branches?: Json
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          created_at: string
+          email: string | null
+          full_name: string | null
+          id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          email?: string | null
+          full_name?: string | null
+          id: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          email?: string | null
+          full_name?: string | null
+          id?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      get_user_role: {
+        Args: { _user_id: string }
+        Returns: Database["public"]["Enums"]["app_role"]
+      }
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "mestre" | "jogador" | "espectador"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +348,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["mestre", "jogador", "espectador"],
+    },
   },
 } as const
