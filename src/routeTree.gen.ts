@@ -9,9 +9,22 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as MasterPanelRouteImport } from './routes/master-panel'
+import { Route as ManageUsersRouteImport } from './routes/manage-users'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as SheetIdRouteImport } from './routes/sheet.$id'
 
+const MasterPanelRoute = MasterPanelRouteImport.update({
+  id: '/master-panel',
+  path: '/master-panel',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ManageUsersRoute = ManageUsersRouteImport.update({
+  id: '/manage-users',
+  path: '/manage-users',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
@@ -22,35 +35,72 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SheetIdRoute = SheetIdRouteImport.update({
+  id: '/sheet/$id',
+  path: '/sheet/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
+  '/manage-users': typeof ManageUsersRoute
+  '/master-panel': typeof MasterPanelRoute
+  '/sheet/$id': typeof SheetIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
+  '/manage-users': typeof ManageUsersRoute
+  '/master-panel': typeof MasterPanelRoute
+  '/sheet/$id': typeof SheetIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
+  '/manage-users': typeof ManageUsersRoute
+  '/master-panel': typeof MasterPanelRoute
+  '/sheet/$id': typeof SheetIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/login'
+  fullPaths: '/' | '/login' | '/manage-users' | '/master-panel' | '/sheet/$id'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/login'
-  id: '__root__' | '/' | '/login'
+  to: '/' | '/login' | '/manage-users' | '/master-panel' | '/sheet/$id'
+  id:
+    | '__root__'
+    | '/'
+    | '/login'
+    | '/manage-users'
+    | '/master-panel'
+    | '/sheet/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   LoginRoute: typeof LoginRoute
+  ManageUsersRoute: typeof ManageUsersRoute
+  MasterPanelRoute: typeof MasterPanelRoute
+  SheetIdRoute: typeof SheetIdRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/master-panel': {
+      id: '/master-panel'
+      path: '/master-panel'
+      fullPath: '/master-panel'
+      preLoaderRoute: typeof MasterPanelRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/manage-users': {
+      id: '/manage-users'
+      path: '/manage-users'
+      fullPath: '/manage-users'
+      preLoaderRoute: typeof ManageUsersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/login': {
       id: '/login'
       path: '/login'
@@ -65,12 +115,22 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/sheet/$id': {
+      id: '/sheet/$id'
+      path: '/sheet/$id'
+      fullPath: '/sheet/$id'
+      preLoaderRoute: typeof SheetIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   LoginRoute: LoginRoute,
+  ManageUsersRoute: ManageUsersRoute,
+  MasterPanelRoute: MasterPanelRoute,
+  SheetIdRoute: SheetIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

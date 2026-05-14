@@ -480,7 +480,7 @@ function CounterDots({ label, max, value, color, disabled, onChange }:
   );
 }
 
-interface HasId { id: string; [k: string]: unknown }
+interface HasId { id: string }
 
 function ListCard<T extends HasId>(props: {
   title: string; items: T[]; canEdit: boolean; columns: string[];
