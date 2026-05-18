@@ -1,13 +1,23 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { ProtectedShell } from "@/components/protected-shell";
 import { supabase } from "@/integrations/supabase/client";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Loader2, Save } from "lucide-react";
+import {
+  Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger,
+} from "@/components/ui/dialog";
+import {
+  Loader2, Save, Plus, Trash, ChevronUp, ChevronDown, Maximize2, Eye, EyeOff,
+  Swords, Skull, Search as SearchIcon, Users, ScrollText, Pin, Cog, Sparkles,
+} from "lucide-react";
 import { toast } from "sonner";
+import type { RankRow, SkillBranch } from "@/lib/sheet-types";
+import { genId } from "@/lib/sheet-types";
 
 export const Route = createFileRoute("/master-panel")({
   head: () => ({ meta: [{ title: "Painel do Mestre — Tadeon Nexus" }] }),
@@ -18,101 +28,725 @@ export const Route = createFileRoute("/master-panel")({
   ),
 });
 
-interface Settings {
+interface NPC { id: string; name: string; role: string; description: string; secret: string; mood: string }
+interface Monster { id: string; name: string; pv: number; pe: number; def: number; attack: string; weakness: string; notes: string }
+interface Clue { id: string; title: string; content: string; discovered: boolean }
+interface InitEntry { id: string; name: string; init: number; pv: number; isPlayer: boolean }
+interface Scene {
+  id: string; title: string; type: string; status: "Planejada" | "Em curso" | "Concluída";
+  narrative: string; description: string;
+  npcIds: string[]; monsterIds: string[]; clueIds: string[];
+}
+
+interface SettingsRow {
   id: string;
   initiative_notes: string;
-  scene_combat: string;
-  scene_investigation: string;
-  scene_dialogue: string;
   reminders: string;
   quick_refs: string;
+  npcs: NPC[];
+  monsters: Monster[];
+  clues: Clue[];
+  scenes_detailed: Scene[];
+  initiative_order: InitEntry[];
+  pinned_sheet_ids: string[];
+  rank_table: RankRow[];
+  skill_branches: SkillBranch[];
+}
+
+interface SheetSummary {
+  id: string; name: string; owner_email: string;
+  exposure: number;
+  stats: { pv_current: number; ps_current: number; pe_current: number };
+  attributes: Record<string, number>;
+  equilibrium: number;
 }
 
 function MasterPanel() {
-  const [settings, setSettings] = useState<Settings | null>(null);
+  const [s, setS] = useState<SettingsRow | null>(null);
+  const [sheets, setSheets] = useState<SheetSummary[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
     void (async () => {
-      const { data } = await supabase
-        .from("game_settings")
-        .select("id,initiative_notes,scene_combat,scene_investigation,scene_dialogue,reminders,quick_refs")
-        .eq("key", "global")
-        .maybeSingle();
-      setSettings(data as Settings | null);
+      const [{ data: gs }, { data: ch }] = await Promise.all([
+        supabase.from("game_settings").select("*").eq("key", "global").maybeSingle(),
+        supabase.from("character_sheets").select("id,name,owner_email,exposure,stats,attributes,equilibrium"),
+      ]);
+      if (gs) {
+        setS({
+          ...(gs as unknown as SettingsRow),
+          npcs: (gs.npcs as NPC[]) ?? [],
+          monsters: (gs.monsters as Monster[]) ?? [],
+          clues: (gs.clues as Clue[]) ?? [],
+          scenes_detailed: (gs.scenes_detailed as Scene[]) ?? [],
+          initiative_order: (gs.initiative_order as InitEntry[]) ?? [],
+          pinned_sheet_ids: (gs.pinned_sheet_ids as string[]) ?? [],
+          rank_table: (gs.rank_table as RankRow[]) ?? [],
+          skill_branches: (gs.skill_branches as SkillBranch[]) ?? [],
+        });
+      }
+      setSheets((ch as unknown as SheetSummary[]) ?? []);
       setLoading(false);
     })();
   }, []);
 
   const save = async () => {
-    if (!settings) return;
+    if (!s) return;
     setSaving(true);
-    const { id, ...payload } = settings;
-    const { error } = await supabase.from("game_settings").update(payload).eq("id", id);
+    const { id, ...payload } = s;
+    const { error } = await supabase.from("game_settings").update(payload as never).eq("id", id);
     setSaving(false);
     if (error) toast.error(error.message);
-    else toast.success("Salvo!");
+    else toast.success("Painel salvo!");
   };
 
-  const update = <K extends keyof Settings>(key: K, value: Settings[K]) => {
-    setSettings((p) => (p ? { ...p, [key]: value } : p));
-  };
+  const upd = <K extends keyof SettingsRow>(k: K, v: SettingsRow[K]) =>
+    setS((p) => (p ? { ...p, [k]: v } : p));
 
-  if (loading || !settings) {
+  if (loading || !s) {
     return <div className="flex justify-center py-16"><Loader2 className="w-8 h-8 animate-spin text-primary" /></div>;
   }
 
-  const fields: { key: keyof Settings; label: string; placeholder: string }[] = [
-    { key: "initiative_notes", label: "Ordem de Iniciativa", placeholder: "Notas de iniciativa..." },
-    { key: "scene_combat", label: "Cena de Combate", placeholder: "Detalhes da cena de combate..." },
-    { key: "scene_investigation", label: "Cena de Investigação", placeholder: "Detalhes da cena de investigação..." },
-    { key: "scene_dialogue", label: "Cena de Diálogo", placeholder: "Detalhes da cena de diálogo..." },
-    { key: "reminders", label: "Lembretes do Mestre", placeholder: "Lembretes para a sessão..." },
-    { key: "quick_refs", label: "Referências Rápidas", placeholder: "Outras referências..." },
-  ];
-
   return (
-    <div className="max-w-5xl mx-auto p-4 md:p-8">
-      <div className="flex items-center justify-between mb-6">
-        <h1 className="font-cinzel text-2xl md:text-3xl font-bold">Painel do Mestre</h1>
-        <Button onClick={save} disabled={saving} className="gap-2">
-          {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
-          Salvar
-        </Button>
+    <div className="max-w-7xl mx-auto p-3 md:p-6 pb-24">
+      <div className="sticky top-0 z-10 -mx-3 md:-mx-6 px-3 md:px-6 py-3 mb-4 bg-background/85 backdrop-blur-md border-b border-border">
+        <div className="flex items-center justify-between gap-3">
+          <h1 className="font-cinzel text-xl md:text-2xl font-bold flex items-center gap-2">
+            <Sparkles className="w-5 h-5 text-primary" /> Painel do Mestre
+          </h1>
+          <Button onClick={save} disabled={saving} size="sm" className="gap-1.5">
+            {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
+            <span className="hidden sm:inline">Salvar</span>
+          </Button>
+        </div>
       </div>
 
-      <Tabs defaultValue="scenes">
-        <TabsList>
-          <TabsTrigger value="scenes">Cenas & Notas</TabsTrigger>
-          <TabsTrigger value="quick">Referências</TabsTrigger>
+      <Tabs defaultValue="scenes" className="space-y-4">
+        <TabsList className="flex flex-wrap h-auto justify-start gap-1 bg-card/60 p-1">
+          <Trig value="scenes" icon={<ScrollText className="w-3.5 h-3.5" />}>Cenas</Trig>
+          <Trig value="initiative" icon={<Swords className="w-3.5 h-3.5" />}>Iniciativa</Trig>
+          <Trig value="npcs" icon={<Users className="w-3.5 h-3.5" />}>NPCs</Trig>
+          <Trig value="monsters" icon={<Skull className="w-3.5 h-3.5" />}>Monstros</Trig>
+          <Trig value="clues" icon={<SearchIcon className="w-3.5 h-3.5" />}>Pistas</Trig>
+          <Trig value="pinned" icon={<Pin className="w-3.5 h-3.5" />}>Fichas</Trig>
+          <Trig value="notes" icon={<ScrollText className="w-3.5 h-3.5" />}>Notas</Trig>
+          <Trig value="data" icon={<Cog className="w-3.5 h-3.5" />}>Dados & Fórmulas</Trig>
         </TabsList>
 
-        <TabsContent value="scenes" className="space-y-4">
-          {fields.slice(0, 5).map((f) => (
-            <Card key={f.key} className="p-4">
-              <h3 className="font-cinzel font-bold mb-2">{f.label}</h3>
-              <Textarea
-                value={String(settings[f.key] ?? "")}
-                placeholder={f.placeholder}
-                onChange={(e) => update(f.key, e.target.value as never)}
-                rows={4}
-              />
-            </Card>
-          ))}
+        <TabsContent value="scenes" className="mt-0">
+          <ScenesPanel s={s} upd={upd} />
         </TabsContent>
-
-        <TabsContent value="quick">
-          <Card className="p-4">
-            <h3 className="font-cinzel font-bold mb-2">Referências Rápidas</h3>
-            <Textarea
-              value={settings.quick_refs}
-              onChange={(e) => update("quick_refs", e.target.value)}
-              rows={10}
-            />
-          </Card>
+        <TabsContent value="initiative" className="mt-0">
+          <InitiativePanel s={s} upd={upd} />
+        </TabsContent>
+        <TabsContent value="npcs" className="mt-0">
+          <NPCsPanel s={s} upd={upd} />
+        </TabsContent>
+        <TabsContent value="monsters" className="mt-0">
+          <MonstersPanel s={s} upd={upd} />
+        </TabsContent>
+        <TabsContent value="clues" className="mt-0">
+          <CluesPanel s={s} upd={upd} />
+        </TabsContent>
+        <TabsContent value="pinned" className="mt-0">
+          <PinnedPanel s={s} upd={upd} sheets={sheets} />
+        </TabsContent>
+        <TabsContent value="notes" className="mt-0">
+          <NotesPanel s={s} upd={upd} />
+        </TabsContent>
+        <TabsContent value="data" className="mt-0">
+          <DataPanel s={s} upd={upd} />
         </TabsContent>
       </Tabs>
+    </div>
+  );
+}
+
+function Trig({ value, icon, children }: { value: string; icon: React.ReactNode; children: React.ReactNode }) {
+  return (
+    <TabsTrigger value={value} className="gap-1.5 text-xs data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+      {icon} {children}
+    </TabsTrigger>
+  );
+}
+
+type UpdFn = <K extends keyof SettingsRow>(k: K, v: SettingsRow[K]) => void;
+interface PanelProps { s: SettingsRow; upd: UpdFn }
+
+/* ============ Scenes ============ */
+function ScenesPanel({ s, upd }: PanelProps) {
+  const [expandedId, setExpandedId] = useState<string | null>(null);
+  const expanded = s.scenes_detailed.find((sc) => sc.id === expandedId);
+
+  const add = () => {
+    const newScene: Scene = {
+      id: genId(), title: "Nova Cena", type: "Investigação", status: "Planejada",
+      narrative: "", description: "", npcIds: [], monsterIds: [], clueIds: [],
+    };
+    upd("scenes_detailed", [...s.scenes_detailed, newScene]);
+    setExpandedId(newScene.id);
+  };
+  const update = (id: string, patch: Partial<Scene>) =>
+    upd("scenes_detailed", s.scenes_detailed.map((sc) => (sc.id === id ? { ...sc, ...patch } : sc)));
+  const remove = (id: string) => {
+    upd("scenes_detailed", s.scenes_detailed.filter((sc) => sc.id !== id));
+    if (expandedId === id) setExpandedId(null);
+  };
+
+  return (
+    <div className="space-y-3">
+      <div className="flex items-center justify-between">
+        <p className="text-xs text-muted-foreground">Mapa mental de cenas: visão geral e detalhes expansíveis.</p>
+        <Button size="sm" onClick={add} className="gap-1.5"><Plus className="w-3.5 h-3.5" /> Nova Cena</Button>
+      </div>
+
+      {s.scenes_detailed.length === 0 ? (
+        <Card className="p-8 text-center text-sm text-muted-foreground italic">Nenhuma cena criada.</Card>
+      ) : (
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+          {s.scenes_detailed.map((sc) => {
+            const statusColor =
+              sc.status === "Em curso" ? "bg-amber-500/20 text-amber-400 border-amber-500/40" :
+              sc.status === "Concluída" ? "bg-emerald-500/20 text-emerald-400 border-emerald-500/40" :
+              "bg-blue-500/20 text-blue-400 border-blue-500/40";
+            return (
+              <Card key={sc.id} className="p-3 bg-card/70 hover:border-primary/50 transition-all cursor-pointer group"
+                onClick={() => setExpandedId(sc.id)}>
+                <div className="flex items-start justify-between gap-1">
+                  <h4 className="font-cinzel text-sm font-bold line-clamp-2">{sc.title}</h4>
+                  <Maximize2 className="w-3.5 h-3.5 text-muted-foreground group-hover:text-primary shrink-0 mt-0.5" />
+                </div>
+                <div className="text-[10px] text-muted-foreground mt-1">{sc.type}</div>
+                <span className={`inline-block mt-2 text-[10px] px-1.5 py-0.5 rounded-full border ${statusColor}`}>{sc.status}</span>
+                <div className="flex gap-2 mt-2 text-[10px] text-muted-foreground">
+                  {sc.npcIds.length > 0 && <span>👤 {sc.npcIds.length}</span>}
+                  {sc.monsterIds.length > 0 && <span>💀 {sc.monsterIds.length}</span>}
+                  {sc.clueIds.length > 0 && <span>🔍 {sc.clueIds.length}</span>}
+                </div>
+              </Card>
+            );
+          })}
+        </div>
+      )}
+
+      {expanded && (
+        <Dialog open={!!expandedId} onOpenChange={(o) => !o && setExpandedId(null)}>
+          <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle className="font-cinzel">{expanded.title}</DialogTitle>
+            </DialogHeader>
+            <div className="space-y-3">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                <div className="sm:col-span-2">
+                  <Label className="text-xs">Título</Label>
+                  <Input value={expanded.title} onChange={(e) => update(expanded.id, { title: e.target.value })} />
+                </div>
+                <div>
+                  <Label className="text-xs">Tipo</Label>
+                  <Input value={expanded.type} onChange={(e) => update(expanded.id, { type: e.target.value })} />
+                </div>
+                <div className="sm:col-span-3">
+                  <Label className="text-xs">Status</Label>
+                  <select value={expanded.status}
+                    onChange={(e) => update(expanded.id, { status: e.target.value as Scene["status"] })}
+                    className="w-full bg-input border border-border rounded-md px-2 py-2 text-sm">
+                    <option>Planejada</option>
+                    <option>Em curso</option>
+                    <option>Concluída</option>
+                  </select>
+                </div>
+              </div>
+              <div>
+                <Label className="text-xs">Texto Narrativo</Label>
+                <Textarea rows={4} value={expanded.narrative}
+                  onChange={(e) => update(expanded.id, { narrative: e.target.value })}
+                  placeholder="Texto que o mestre pode ler em voz alta..." />
+              </div>
+              <div>
+                <Label className="text-xs">Descrição / Notas</Label>
+                <Textarea rows={3} value={expanded.description}
+                  onChange={(e) => update(expanded.id, { description: e.target.value })} />
+              </div>
+
+              <LinkPicker label="NPCs" icon={<Users className="w-3.5 h-3.5" />}
+                items={s.npcs.map((n) => ({ id: n.id, label: n.name }))}
+                selected={expanded.npcIds}
+                onChange={(ids) => update(expanded.id, { npcIds: ids })} />
+              <LinkPicker label="Monstros" icon={<Skull className="w-3.5 h-3.5" />}
+                items={s.monsters.map((m) => ({ id: m.id, label: m.name }))}
+                selected={expanded.monsterIds}
+                onChange={(ids) => update(expanded.id, { monsterIds: ids })} />
+              <LinkPicker label="Pistas" icon={<SearchIcon className="w-3.5 h-3.5" />}
+                items={s.clues.map((c) => ({ id: c.id, label: c.title }))}
+                selected={expanded.clueIds}
+                onChange={(ids) => update(expanded.id, { clueIds: ids })} />
+
+              <div className="flex justify-between pt-3 border-t border-border">
+                <Button variant="destructive" size="sm" onClick={() => remove(expanded.id)} className="gap-1.5">
+                  <Trash className="w-3.5 h-3.5" /> Excluir
+                </Button>
+                <Button size="sm" onClick={() => setExpandedId(null)}>Fechar</Button>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
+      )}
+    </div>
+  );
+}
+
+function LinkPicker({ label, icon, items, selected, onChange }: {
+  label: string; icon: React.ReactNode;
+  items: { id: string; label: string }[]; selected: string[]; onChange: (ids: string[]) => void;
+}) {
+  const toggle = (id: string) =>
+    onChange(selected.includes(id) ? selected.filter((x) => x !== id) : [...selected, id]);
+  return (
+    <div>
+      <Label className="text-xs flex items-center gap-1.5">{icon} {label}</Label>
+      {items.length === 0 ? (
+        <p className="text-[11px] text-muted-foreground italic mt-1">Crie {label.toLowerCase()} primeiro.</p>
+      ) : (
+        <div className="flex flex-wrap gap-1.5 mt-1">
+          {items.map((it) => {
+            const on = selected.includes(it.id);
+            return (
+              <button key={it.id} type="button" onClick={() => toggle(it.id)}
+                className={`text-[11px] px-2 py-1 rounded-full border transition-all ${
+                  on ? "bg-primary text-primary-foreground border-primary" : "bg-secondary/40 border-border hover:border-primary/50"
+                }`}>
+                {it.label}
+              </button>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
+}
+
+/* ============ Initiative ============ */
+function InitiativePanel({ s, upd }: PanelProps) {
+  const [name, setName] = useState("");
+  const [init, setInit] = useState(0);
+  const sorted = [...s.initiative_order].sort((a, b) => b.init - a.init);
+
+  const add = (isPlayer = false) => {
+    if (!name.trim()) return;
+    upd("initiative_order", [...s.initiative_order, { id: genId(), name, init, pv: 0, isPlayer }]);
+    setName(""); setInit(0);
+  };
+  const update = (id: string, patch: Partial<InitEntry>) =>
+    upd("initiative_order", s.initiative_order.map((e) => (e.id === id ? { ...e, ...patch } : e)));
+  const remove = (id: string) => upd("initiative_order", s.initiative_order.filter((e) => e.id !== id));
+  const clear = () => upd("initiative_order", []);
+
+  return (
+    <Card className="p-4">
+      <div className="flex items-end gap-2 flex-wrap">
+        <div className="flex-1 min-w-[140px]">
+          <Label className="text-xs">Nome</Label>
+          <Input value={name} onChange={(e) => setName(e.target.value)} placeholder="NPC, jogador..." />
+        </div>
+        <div className="w-24">
+          <Label className="text-xs">Iniciativa</Label>
+          <Input type="number" value={init} onChange={(e) => setInit(Number(e.target.value))} />
+        </div>
+        <Button onClick={() => add(false)} className="gap-1.5"><Plus className="w-4 h-4" /> NPC</Button>
+        <Button onClick={() => add(true)} variant="secondary" className="gap-1.5"><Plus className="w-4 h-4" /> Jogador</Button>
+        {sorted.length > 0 && (
+          <Button onClick={clear} variant="ghost" className="text-destructive">Limpar</Button>
+        )}
+      </div>
+
+      <div className="mt-4 space-y-1.5">
+        {sorted.length === 0 ? (
+          <p className="text-xs text-muted-foreground italic text-center py-6">Nenhum combatente na ordem.</p>
+        ) : sorted.map((e, idx) => (
+          <div key={e.id} className={`flex items-center gap-2 p-2 rounded-lg ${
+            idx === 0 ? "bg-primary/15 border border-primary/40" : "bg-secondary/40"
+          }`}>
+            <span className="font-cinzel font-bold w-8 text-center text-primary">{idx + 1}º</span>
+            <Input value={e.name} onChange={(ev) => update(e.id, { name: ev.target.value })} className="h-8 flex-1" />
+            <Input type="number" value={e.init} onChange={(ev) => update(e.id, { init: Number(ev.target.value) })} className="h-8 w-16 text-center" />
+            <Input type="number" value={e.pv} onChange={(ev) => update(e.id, { pv: Number(ev.target.value) })} className="h-8 w-16 text-center" placeholder="PV" />
+            <span className={`text-[10px] px-1.5 py-0.5 rounded ${e.isPlayer ? "bg-emerald-500/20 text-emerald-400" : "bg-red-500/20 text-red-400"}`}>
+              {e.isPlayer ? "J" : "N"}
+            </span>
+            <Button size="sm" variant="ghost" className="h-7 w-7 p-0 text-destructive" onClick={() => remove(e.id)}>
+              <Trash className="w-3.5 h-3.5" />
+            </Button>
+          </div>
+        ))}
+      </div>
+    </Card>
+  );
+}
+
+/* ============ Generic CRUD list with dialog ============ */
+function CrudList<T extends { id: string }>({
+  items, fields, labels, initial, onChange, titleKey, addLabel,
+}: {
+  items: T[]; fields: { key: keyof T; label: string; type?: "text" | "number" | "textarea" | "bool" }[];
+  labels?: never; initial: T; onChange: (v: T[]) => void;
+  titleKey: keyof T; addLabel: string;
+}) {
+  const [openId, setOpenId] = useState<string | null>(null);
+  const add = () => {
+    const n = { ...initial, id: genId() };
+    onChange([...items, n]);
+    setOpenId(n.id);
+  };
+  const update = (id: string, patch: Partial<T>) =>
+    onChange(items.map((it) => (it.id === id ? { ...it, ...patch } : it)));
+  const remove = (id: string) => { onChange(items.filter((it) => it.id !== id)); if (openId === id) setOpenId(null); };
+  const editing = items.find((it) => it.id === openId);
+
+  return (
+    <Card className="p-4">
+      <div className="flex justify-between items-center mb-3">
+        <p className="text-xs text-muted-foreground">{items.length} {items.length === 1 ? "entrada" : "entradas"}</p>
+        <Button size="sm" onClick={add} className="gap-1.5"><Plus className="w-3.5 h-3.5" /> {addLabel}</Button>
+      </div>
+
+      {items.length === 0 ? (
+        <p className="text-xs text-muted-foreground italic text-center py-6">Vazio.</p>
+      ) : (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
+          {items.map((it) => (
+            <button key={it.id} onClick={() => setOpenId(it.id)}
+              className="text-left bg-secondary/40 hover:bg-secondary/70 rounded-lg p-2.5 transition-all hover:border-primary/40 border border-transparent">
+              <div className="font-cinzel text-sm font-bold truncate">{String(it[titleKey] || "(sem nome)")}</div>
+              <div className="text-[10px] text-muted-foreground">Clique para editar</div>
+            </button>
+          ))}
+        </div>
+      )}
+
+      {editing && (
+        <Dialog open={!!openId} onOpenChange={(o) => !o && setOpenId(null)}>
+          <DialogContent className="max-w-lg max-h-[85vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle className="font-cinzel">{String(editing[titleKey] || "Editar")}</DialogTitle>
+            </DialogHeader>
+            <div className="space-y-3">
+              {fields.map((f) => {
+                const val = editing[f.key];
+                if (f.type === "textarea") return (
+                  <div key={String(f.key)}>
+                    <Label className="text-xs">{f.label}</Label>
+                    <Textarea rows={3} value={String(val ?? "")}
+                      onChange={(e) => update(editing.id, { [f.key]: e.target.value } as Partial<T>)} />
+                  </div>
+                );
+                if (f.type === "bool") return (
+                  <label key={String(f.key)} className="flex items-center gap-2 text-sm cursor-pointer">
+                    <input type="checkbox" checked={Boolean(val)}
+                      onChange={(e) => update(editing.id, { [f.key]: e.target.checked } as Partial<T>)} />
+                    {f.label}
+                  </label>
+                );
+                return (
+                  <div key={String(f.key)}>
+                    <Label className="text-xs">{f.label}</Label>
+                    <Input type={f.type === "number" ? "number" : "text"}
+                      value={f.type === "number" ? Number(val ?? 0) : String(val ?? "")}
+                      onChange={(e) => update(editing.id, {
+                        [f.key]: f.type === "number" ? Number(e.target.value) : e.target.value,
+                      } as Partial<T>)} />
+                  </div>
+                );
+              })}
+              <div className="flex justify-between pt-2 border-t border-border">
+                <Button variant="destructive" size="sm" onClick={() => remove(editing.id)} className="gap-1.5">
+                  <Trash className="w-3.5 h-3.5" /> Excluir
+                </Button>
+                <Button size="sm" onClick={() => setOpenId(null)}>Fechar</Button>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
+      )}
+    </Card>
+  );
+}
+
+function NPCsPanel({ s, upd }: PanelProps) {
+  return (
+    <CrudList<NPC>
+      items={s.npcs}
+      initial={{ id: "", name: "", role: "", description: "", secret: "", mood: "" }}
+      fields={[
+        { key: "name", label: "Nome" },
+        { key: "role", label: "Papel" },
+        { key: "mood", label: "Humor" },
+        { key: "description", label: "Descrição", type: "textarea" },
+        { key: "secret", label: "Segredo (só o mestre vê)", type: "textarea" },
+      ]}
+      titleKey="name"
+      addLabel="Novo NPC"
+      onChange={(v) => upd("npcs", v)}
+    />
+  );
+}
+function MonstersPanel({ s, upd }: PanelProps) {
+  return (
+    <CrudList<Monster>
+      items={s.monsters}
+      initial={{ id: "", name: "", pv: 10, pe: 0, def: 10, attack: "", weakness: "", notes: "" }}
+      fields={[
+        { key: "name", label: "Nome" },
+        { key: "pv", label: "PV", type: "number" },
+        { key: "pe", label: "PE", type: "number" },
+        { key: "def", label: "Defesa", type: "number" },
+        { key: "attack", label: "Ataque" },
+        { key: "weakness", label: "Fraqueza" },
+        { key: "notes", label: "Notas", type: "textarea" },
+      ]}
+      titleKey="name"
+      addLabel="Novo Monstro"
+      onChange={(v) => upd("monsters", v)}
+    />
+  );
+}
+function CluesPanel({ s, upd }: PanelProps) {
+  return (
+    <CrudList<Clue>
+      items={s.clues}
+      initial={{ id: "", title: "", content: "", discovered: false }}
+      fields={[
+        { key: "title", label: "Título" },
+        { key: "content", label: "Conteúdo", type: "textarea" },
+        { key: "discovered", label: "Descoberta pelos jogadores", type: "bool" },
+      ]}
+      titleKey="title"
+      addLabel="Nova Pista"
+      onChange={(v) => upd("clues", v)}
+    />
+  );
+}
+
+/* ============ Pinned sheets ============ */
+function PinnedPanel({ s, upd, sheets }: PanelProps & { sheets: SheetSummary[] }) {
+  const pinned = useMemo(() => s.pinned_sheet_ids
+    .map((id) => sheets.find((sh) => sh.id === id))
+    .filter((x): x is SheetSummary => !!x), [s.pinned_sheet_ids, sheets]);
+  const toggle = (id: string) => {
+    const next = s.pinned_sheet_ids.includes(id)
+      ? s.pinned_sheet_ids.filter((x) => x !== id)
+      : [...s.pinned_sheet_ids, id];
+    upd("pinned_sheet_ids", next);
+  };
+
+  return (
+    <div className="space-y-4">
+      <Card className="p-4">
+        <h3 className="font-cinzel font-bold mb-2">Selecionar fichas</h3>
+        <p className="text-xs text-muted-foreground mb-3">Escolha quais fichas exibir lado a lado.</p>
+        <div className="flex flex-wrap gap-2">
+          {sheets.length === 0 ? (
+            <p className="text-xs text-muted-foreground italic">Nenhuma ficha criada.</p>
+          ) : sheets.map((sh) => {
+            const on = s.pinned_sheet_ids.includes(sh.id);
+            return (
+              <button key={sh.id} onClick={() => toggle(sh.id)}
+                className={`text-xs px-3 py-1.5 rounded-full border transition-all flex items-center gap-1.5 ${
+                  on ? "bg-primary text-primary-foreground border-primary" : "bg-secondary/40 border-border hover:border-primary/50"
+                }`}>
+                {on ? <Eye className="w-3 h-3" /> : <EyeOff className="w-3 h-3" />}
+                {sh.name || sh.owner_email}
+              </button>
+            );
+          })}
+        </div>
+      </Card>
+
+      {pinned.length === 0 ? (
+        <Card className="p-8 text-center text-sm text-muted-foreground italic">Selecione fichas acima para comparar.</Card>
+      ) : (
+        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3">
+          {pinned.map((sh) => (
+            <Card key={sh.id} className="p-3 bg-card/70">
+              <h4 className="font-cinzel font-bold truncate">{sh.name || "Sem nome"}</h4>
+              <p className="text-[10px] text-muted-foreground truncate">{sh.owner_email}</p>
+              <div className="grid grid-cols-3 gap-1.5 mt-2 text-center text-xs">
+                <Mini label="PV" v={sh.stats?.pv_current ?? 0} color="text-red-400" />
+                <Mini label="PS" v={sh.stats?.ps_current ?? 0} color="text-purple-400" />
+                <Mini label="PE" v={sh.stats?.pe_current ?? 0} color="text-emerald-400" />
+              </div>
+              <div className="mt-2">
+                <div className="text-[10px] text-muted-foreground flex justify-between"><span>Equilíbrio</span><span>{sh.equilibrium ?? 0}/100</span></div>
+                <div className="h-1.5 bg-secondary rounded-full overflow-hidden">
+                  <div className="h-full bg-gradient-to-r from-red-600 via-yellow-500 to-emerald-500"
+                    style={{ width: `${sh.equilibrium ?? 0}%` }} />
+                </div>
+              </div>
+              <div className="mt-2">
+                <div className="text-[10px] text-muted-foreground flex justify-between"><span>Exposição</span><span>{sh.exposure ?? 0}/100</span></div>
+                <div className="h-1.5 bg-secondary rounded-full overflow-hidden">
+                  <div className="h-full bg-gradient-to-r from-yellow-500 to-orange-500"
+                    style={{ width: `${sh.exposure ?? 0}%` }} />
+                </div>
+              </div>
+              <div className="grid grid-cols-5 gap-1 mt-2 text-center text-[10px]">
+                {["COR","MEN","INS","PRE","ERU"].map((a) => (
+                  <div key={a} className="bg-secondary/40 rounded p-1">
+                    <div className="text-muted-foreground">{a}</div>
+                    <div className="font-bold text-sm">{sh.attributes?.[a] ?? 0}</div>
+                  </div>
+                ))}
+              </div>
+            </Card>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+function Mini({ label, v, color }: { label: string; v: number; color: string }) {
+  return (
+    <div className="bg-secondary/40 rounded p-1">
+      <div className={`text-[10px] font-bold ${color}`}>{label}</div>
+      <div className="font-bold">{v}</div>
+    </div>
+  );
+}
+
+/* ============ Notes ============ */
+function NotesPanel({ s, upd }: PanelProps) {
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+      <Card className="p-4">
+        <h3 className="font-cinzel font-bold mb-2">Notas de Iniciativa</h3>
+        <Textarea rows={6} value={s.initiative_notes} onChange={(e) => upd("initiative_notes", e.target.value)} />
+      </Card>
+      <Card className="p-4">
+        <h3 className="font-cinzel font-bold mb-2">Lembretes</h3>
+        <Textarea rows={6} value={s.reminders} onChange={(e) => upd("reminders", e.target.value)} />
+      </Card>
+      <Card className="p-4 md:col-span-2">
+        <h3 className="font-cinzel font-bold mb-2">Referências Rápidas</h3>
+        <Textarea rows={6} value={s.quick_refs} onChange={(e) => upd("quick_refs", e.target.value)} />
+      </Card>
+    </div>
+  );
+}
+
+/* ============ Data & Formulas ============ */
+function DataPanel({ s, upd }: PanelProps) {
+  const moveRank = (idx: number, dir: -1 | 1) => {
+    const arr = [...s.rank_table];
+    const j = idx + dir;
+    if (j < 0 || j >= arr.length) return;
+    [arr[idx], arr[j]] = [arr[j], arr[idx]];
+    upd("rank_table", arr);
+  };
+  const addRank = () => upd("rank_table", [...s.rank_table, { rank: 0, pv: 10, ps: 10, pe: 5, pa: 0, def: 10, pm: 0 }]);
+  const updRank = (i: number, key: keyof RankRow, val: number) =>
+    upd("rank_table", s.rank_table.map((r, idx) => idx === i ? { ...r, [key]: val } : r));
+  const rmRank = (i: number) => upd("rank_table", s.rank_table.filter((_, idx) => idx !== i));
+
+  const addBranch = () => upd("skill_branches", [...s.skill_branches, { id: genId(), label: "Novo Ramo", color: "#fbbf24", nodes: [] }]);
+  const updBranch = (id: string, patch: Partial<SkillBranch>) =>
+    upd("skill_branches", s.skill_branches.map((b) => b.id === id ? { ...b, ...patch } : b));
+  const rmBranch = (id: string) => upd("skill_branches", s.skill_branches.filter((b) => b.id !== id));
+  const addNode = (bId: string) => updBranch(bId, {
+    nodes: [...(s.skill_branches.find((b) => b.id === bId)?.nodes ?? []),
+      { id: genId(), name: "Nova Habilidade", desc: "", cost: 5, minRank: 0, requires: [], attrReqs: [] }],
+  });
+  const updNode = (bId: string, nId: string, patch: Partial<SkillBranch["nodes"][0]>) => {
+    const b = s.skill_branches.find((x) => x.id === bId);
+    if (!b) return;
+    updBranch(bId, { nodes: b.nodes.map((n) => n.id === nId ? { ...n, ...patch } : n) });
+  };
+  const rmNode = (bId: string, nId: string) => {
+    const b = s.skill_branches.find((x) => x.id === bId);
+    if (!b) return;
+    updBranch(bId, { nodes: b.nodes.filter((n) => n.id !== nId) });
+  };
+
+  return (
+    <div className="space-y-4">
+      <Card className="p-4">
+        <div className="flex justify-between items-center mb-3">
+          <div>
+            <h3 className="font-cinzel font-bold">Tabela de Rank</h3>
+            <p className="text-xs text-muted-foreground">Valores base por nível de exposição.</p>
+          </div>
+          <Button size="sm" onClick={addRank} className="gap-1.5"><Plus className="w-3.5 h-3.5" /> Linha</Button>
+        </div>
+        {s.rank_table.length === 0 ? (
+          <p className="text-xs text-muted-foreground italic text-center py-4">Sem linhas.</p>
+        ) : (
+          <div className="space-y-1 overflow-x-auto">
+            <div className="grid gap-1.5 min-w-[640px] text-[10px] text-muted-foreground uppercase font-bold px-1"
+              style={{ gridTemplateColumns: "auto repeat(7, 1fr) auto" }}>
+              <div>#</div><div>Rank</div><div>PV</div><div>PS</div><div>PE</div><div>PA</div><div>Def</div><div>PM</div><div></div>
+            </div>
+            {s.rank_table.map((r, i) => (
+              <div key={i} className="grid gap-1.5 min-w-[640px] items-center"
+                style={{ gridTemplateColumns: "auto repeat(7, 1fr) auto" }}>
+                <div className="flex flex-col">
+                  <button onClick={() => moveRank(i, -1)}><ChevronUp className="w-3 h-3" /></button>
+                  <button onClick={() => moveRank(i, 1)}><ChevronDown className="w-3 h-3" /></button>
+                </div>
+                {(["rank", "pv", "ps", "pe", "pa", "def", "pm"] as const).map((k) => (
+                  <Input key={k} type="number" value={r[k]} onChange={(e) => updRank(i, k, Number(e.target.value))} className="h-8 text-xs" />
+                ))}
+                <Button size="sm" variant="ghost" className="h-7 w-7 p-0 text-destructive" onClick={() => rmRank(i)}>
+                  <Trash className="w-3.5 h-3.5" />
+                </Button>
+              </div>
+            ))}
+          </div>
+        )}
+      </Card>
+
+      <Card className="p-4">
+        <div className="flex justify-between items-center mb-3">
+          <div>
+            <h3 className="font-cinzel font-bold">Árvore de Habilidades</h3>
+            <p className="text-xs text-muted-foreground">Defina ramos e nós que os jogadores podem comprar com PM.</p>
+          </div>
+          <Button size="sm" onClick={addBranch} className="gap-1.5"><Plus className="w-3.5 h-3.5" /> Ramo</Button>
+        </div>
+        {s.skill_branches.length === 0 ? (
+          <p className="text-xs text-muted-foreground italic text-center py-4">Nenhum ramo.</p>
+        ) : (
+          <div className="space-y-3">
+            {s.skill_branches.map((b) => (
+              <div key={b.id} className="border border-border rounded-lg p-3 bg-secondary/30">
+                <div className="flex items-center gap-2 mb-2">
+                  <input type="color" value={b.color} onChange={(e) => updBranch(b.id, { color: e.target.value })} className="w-8 h-8 rounded cursor-pointer" />
+                  <Input value={b.label} onChange={(e) => updBranch(b.id, { label: e.target.value })} className="h-8 flex-1" />
+                  <Button size="sm" onClick={() => addNode(b.id)} className="gap-1"><Plus className="w-3 h-3" /> Nó</Button>
+                  <Button size="sm" variant="ghost" className="h-8 w-8 p-0 text-destructive" onClick={() => rmBranch(b.id)}>
+                    <Trash className="w-3.5 h-3.5" />
+                  </Button>
+                </div>
+                {b.nodes.length === 0 ? (
+                  <p className="text-[11px] text-muted-foreground italic">Sem nós.</p>
+                ) : (
+                  <div className="space-y-2">
+                    {b.nodes.map((n) => (
+                      <div key={n.id} className="bg-background/40 rounded p-2 grid gap-2 sm:grid-cols-[1fr_1fr_auto_auto_auto]">
+                        <Input value={n.name} placeholder="Nome" onChange={(e) => updNode(b.id, n.id, { name: e.target.value })} className="h-8 text-xs" />
+                        <Input value={n.desc} placeholder="Descrição" onChange={(e) => updNode(b.id, n.id, { desc: e.target.value })} className="h-8 text-xs" />
+                        <Input type="number" value={n.cost} placeholder="PM" onChange={(e) => updNode(b.id, n.id, { cost: Number(e.target.value) })} className="h-8 w-20 text-xs" />
+                        <Input type="number" value={n.minRank} placeholder="Rank" onChange={(e) => updNode(b.id, n.id, { minRank: Number(e.target.value) })} className="h-8 w-20 text-xs" />
+                        <Button size="sm" variant="ghost" className="h-8 w-8 p-0 text-destructive" onClick={() => rmNode(b.id, n.id)}>
+                          <Trash className="w-3.5 h-3.5" />
+                        </Button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
+      </Card>
     </div>
   );
 }
