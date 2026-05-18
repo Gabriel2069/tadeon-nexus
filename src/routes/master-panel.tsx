@@ -74,16 +74,17 @@ function MasterPanel() {
         supabase.from("character_sheets").select("id,name,owner_email,exposure,stats,attributes,equilibrium"),
       ]);
       if (gs) {
+        const g = gs as unknown as Record<string, unknown>;
         setS({
           ...(gs as unknown as SettingsRow),
-          npcs: (gs.npcs as NPC[]) ?? [],
-          monsters: (gs.monsters as Monster[]) ?? [],
-          clues: (gs.clues as Clue[]) ?? [],
-          scenes_detailed: (gs.scenes_detailed as Scene[]) ?? [],
-          initiative_order: (gs.initiative_order as InitEntry[]) ?? [],
-          pinned_sheet_ids: (gs.pinned_sheet_ids as string[]) ?? [],
-          rank_table: (gs.rank_table as RankRow[]) ?? [],
-          skill_branches: (gs.skill_branches as SkillBranch[]) ?? [],
+          npcs: (g.npcs as NPC[]) ?? [],
+          monsters: (g.monsters as Monster[]) ?? [],
+          clues: (g.clues as Clue[]) ?? [],
+          scenes_detailed: (g.scenes_detailed as Scene[]) ?? [],
+          initiative_order: (g.initiative_order as InitEntry[]) ?? [],
+          pinned_sheet_ids: (g.pinned_sheet_ids as string[]) ?? [],
+          rank_table: (g.rank_table as RankRow[]) ?? [],
+          skill_branches: (g.skill_branches as SkillBranch[]) ?? [],
         });
       }
       setSheets((ch as unknown as SheetSummary[]) ?? []);
