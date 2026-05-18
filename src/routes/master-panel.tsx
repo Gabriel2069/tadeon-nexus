@@ -805,14 +805,35 @@ function DataPanel({ s, upd }: PanelProps) {
                 ) : (
                   <div className="space-y-2">
                     {b.nodes.map((n) => (
-                      <div key={n.id} className="bg-background/40 rounded p-2 grid gap-2 sm:grid-cols-[1fr_1fr_auto_auto_auto]">
-                        <Input value={n.name} placeholder="Nome" onChange={(e) => updNode(b.id, n.id, { name: e.target.value })} className="h-8 text-xs" />
-                        <Input value={n.desc} placeholder="Descrição" onChange={(e) => updNode(b.id, n.id, { desc: e.target.value })} className="h-8 text-xs" />
-                        <Input type="number" value={n.cost} placeholder="PM" onChange={(e) => updNode(b.id, n.id, { cost: Number(e.target.value) })} className="h-8 w-20 text-xs" />
-                        <Input type="number" value={n.minRank} placeholder="Rank" onChange={(e) => updNode(b.id, n.id, { minRank: Number(e.target.value) })} className="h-8 w-20 text-xs" />
-                        <Button size="sm" variant="ghost" className="h-8 w-8 p-0 text-destructive" onClick={() => rmNode(b.id, n.id)}>
-                          <Trash className="w-3.5 h-3.5" />
-                        </Button>
+                      <div key={n.id} className="bg-background/40 rounded p-2 space-y-2">
+                        <div className="grid gap-2 sm:grid-cols-[1fr_1fr_auto_auto_auto] items-center">
+                          <Input value={n.name} placeholder="Nome" onChange={(e) => updNode(b.id, n.id, { name: e.target.value })} className="h-8 text-xs" />
+                          <Input value={n.desc} placeholder="Descrição" onChange={(e) => updNode(b.id, n.id, { desc: e.target.value })} className="h-8 text-xs" />
+                          <Input type="number" value={n.cost} placeholder="PM" onChange={(e) => updNode(b.id, n.id, { cost: Number(e.target.value) })} className="h-8 w-20 text-xs" title="Custo em PM" />
+                          <Input type="number" min={0} max={100} step={5} value={n.minRank} placeholder="Rank" onChange={(e) => updNode(b.id, n.id, { minRank: Number(e.target.value) })} className="h-8 w-20 text-xs" title="Rank mínimo" />
+                          <Button size="sm" variant="ghost" className="h-8 w-8 p-0 text-destructive" onClick={() => rmNode(b.id, n.id)}>
+                            <Trash className="w-3.5 h-3.5" />
+                          </Button>
+                        </div>
+                        <div className="flex items-start gap-2 flex-wrap pl-1">
+                          <span className="text-[10px] uppercase text-muted-foreground mt-1.5">Req. atributos:</span>
+                          {(["COR", "MEN", "INS", "PRE", "ERU"] as (keyof Attributes)[]).map((a) => {
+                            const cur = (n.attrReqs || []).find((x) => x.attr === a)?.value ?? 0;
+                            return (
+                              <label key={a} className="flex items-center gap-1 text-[10px] bg-secondary/40 px-1.5 py-1 rounded">
+                                <span className="font-cinzel font-bold">{a}</span>
+                                <Input type="number" min={0} max={5} value={cur}
+                                  onChange={(e) => {
+                                    const v = Number(e.target.value);
+                                    const others = (n.attrReqs || []).filter((x) => x.attr !== a);
+                                    const next = v > 0 ? [...others, { attr: a, value: v }] : others;
+                                    updNode(b.id, n.id, { attrReqs: next });
+                                  }}
+                                  className="h-6 w-11 text-xs px-1" />
+                              </label>
+                            );
+                          })}
+                        </div>
                       </div>
                     ))}
                   </div>
