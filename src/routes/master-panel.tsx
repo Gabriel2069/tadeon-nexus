@@ -648,6 +648,13 @@ function DataPanel({ s, upd }: PanelProps) {
     upd("rank_table", arr);
   };
   const addRank = () => upd("rank_table", [...s.rank_table, { rank: 0, pv: 10, ps: 10, pe: 5, pa: 0, def: 10, pm: 0 }]);
+  const seedRanks = () => {
+    const arr: RankRow[] = [];
+    for (let r = 0; r <= 100; r += 5) {
+      arr.push({ rank: r, pv: 10 + r, ps: 10 + r, pe: 5 + Math.floor(r / 2), pa: 0, def: 10 + Math.floor(r / 5), pm: r * 2 });
+    }
+    upd("rank_table", arr);
+  };
   const updRank = (i: number, key: keyof RankRow, val: number) =>
     upd("rank_table", s.rank_table.map((r, idx) => idx === i ? { ...r, [key]: val } : r));
   const rmRank = (i: number) => upd("rank_table", s.rank_table.filter((_, idx) => idx !== i));
