@@ -51,6 +51,8 @@ interface SettingsRow {
   pinned_sheet_ids: string[];
   rank_table: RankRow[];
   skill_branches: SkillBranch[];
+  upgrade_costs: UpgradeCosts;
+  condition_options: ConditionOptionsMap;
 }
 
 interface SheetSummary {
