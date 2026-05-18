@@ -16,8 +16,8 @@ import {
   Swords, Skull, Search as SearchIcon, Users, ScrollText, Pin, Cog, Sparkles,
 } from "lucide-react";
 import { toast } from "sonner";
-import type { RankRow, SkillBranch } from "@/lib/sheet-types";
-import { genId } from "@/lib/sheet-types";
+import type { RankRow, SkillBranch, UpgradeCosts, ConditionOptionsMap, ConditionKey, Attributes } from "@/lib/sheet-types";
+import { genId, DEFAULT_UPGRADE_COSTS, DEFAULT_CONDITION_OPTIONS, CONDITION_META } from "@/lib/sheet-types";
 
 export const Route = createFileRoute("/master-panel")({
   head: () => ({ meta: [{ title: "Painel do Mestre — Tadeon Nexus" }] }),
@@ -51,6 +51,8 @@ interface SettingsRow {
   pinned_sheet_ids: string[];
   rank_table: RankRow[];
   skill_branches: SkillBranch[];
+  upgrade_costs: UpgradeCosts;
+  condition_options: ConditionOptionsMap;
 }
 
 interface SheetSummary {
@@ -85,6 +87,8 @@ function MasterPanel() {
           pinned_sheet_ids: (g.pinned_sheet_ids as string[]) ?? [],
           rank_table: (g.rank_table as RankRow[]) ?? [],
           skill_branches: (g.skill_branches as SkillBranch[]) ?? [],
+          upgrade_costs: (g.upgrade_costs as UpgradeCosts) ?? DEFAULT_UPGRADE_COSTS,
+          condition_options: (g.condition_options as ConditionOptionsMap) ?? DEFAULT_CONDITION_OPTIONS,
         });
       }
       setSheets((ch as unknown as SheetSummary[]) ?? []);
@@ -644,6 +648,13 @@ function DataPanel({ s, upd }: PanelProps) {
     upd("rank_table", arr);
   };
   const addRank = () => upd("rank_table", [...s.rank_table, { rank: 0, pv: 10, ps: 10, pe: 5, pa: 0, def: 10, pm: 0 }]);
+  const seedRanks = () => {
+    const arr: RankRow[] = [];
+    for (let r = 0; r <= 100; r += 5) {
+      arr.push({ rank: r, pv: 10 + r, ps: 10 + r, pe: 5 + Math.floor(r / 2), pa: 0, def: 10 + Math.floor(r / 5), pm: r * 2 });
+    }
+    upd("rank_table", arr);
+  };
   const updRank = (i: number, key: keyof RankRow, val: number) =>
     upd("rank_table", s.rank_table.map((r, idx) => idx === i ? { ...r, [key]: val } : r));
   const rmRank = (i: number) => upd("rank_table", s.rank_table.filter((_, idx) => idx !== i));
@@ -670,15 +681,18 @@ function DataPanel({ s, upd }: PanelProps) {
   return (
     <div className="space-y-4">
       <Card className="p-4">
-        <div className="flex justify-between items-center mb-3">
+        <div className="flex justify-between items-center mb-3 flex-wrap gap-2">
           <div>
             <h3 className="font-cinzel font-bold">Tabela de Rank</h3>
-            <p className="text-xs text-muted-foreground">Valores base por nível de exposição.</p>
+            <p className="text-xs text-muted-foreground">Valores base por nível de exposição (0 → 100, de 5 em 5).</p>
           </div>
-          <Button size="sm" onClick={addRank} className="gap-1.5"><Plus className="w-3.5 h-3.5" /> Linha</Button>
+          <div className="flex gap-2">
+            <Button size="sm" variant="outline" onClick={seedRanks} className="gap-1.5">Gerar 0–100</Button>
+            <Button size="sm" onClick={addRank} className="gap-1.5"><Plus className="w-3.5 h-3.5" /> Linha</Button>
+          </div>
         </div>
         {s.rank_table.length === 0 ? (
-          <p className="text-xs text-muted-foreground italic text-center py-4">Sem linhas.</p>
+          <p className="text-xs text-muted-foreground italic text-center py-4">Sem linhas. Use "Gerar 0–100" para começar.</p>
         ) : (
           <div className="space-y-1 overflow-x-auto">
             <div className="grid gap-1.5 min-w-[640px] text-[10px] text-muted-foreground uppercase font-bold px-1"
@@ -693,7 +707,11 @@ function DataPanel({ s, upd }: PanelProps) {
                   <button onClick={() => moveRank(i, 1)}><ChevronDown className="w-3 h-3" /></button>
                 </div>
                 {(["rank", "pv", "ps", "pe", "pa", "def", "pm"] as const).map((k) => (
-                  <Input key={k} type="number" value={r[k]} onChange={(e) => updRank(i, k, Number(e.target.value))} className="h-8 text-xs" />
+                  <Input key={k} type="number"
+                    min={k === "rank" ? 0 : undefined}
+                    max={k === "rank" ? 100 : undefined}
+                    step={k === "rank" ? 5 : 1}
+                    value={r[k]} onChange={(e) => updRank(i, k, Number(e.target.value))} className="h-8 text-xs" />
                 ))}
                 <Button size="sm" variant="ghost" className="h-7 w-7 p-0 text-destructive" onClick={() => rmRank(i)}>
                   <Trash className="w-3.5 h-3.5" />
@@ -702,6 +720,62 @@ function DataPanel({ s, upd }: PanelProps) {
             ))}
           </div>
         )}
+      </Card>
+
+      {/* Upgrade Costs */}
+      <Card className="p-4">
+        <h3 className="font-cinzel font-bold mb-1">Custos de Aprimoramento (PM)</h3>
+        <p className="text-xs text-muted-foreground mb-3">
+          Fórmula: até <em>níveis grátis</em>, custa o valor base; depois soma o incremento por nível adicional.
+        </p>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+          {(["pv", "ps", "pe", "def"] as const).map((k) => {
+            const rule = s.upgrade_costs[k];
+            return (
+              <div key={k} className="bg-secondary/40 rounded-lg p-3 space-y-2">
+                <div className="font-cinzel font-bold uppercase text-sm">{k}</div>
+                <div>
+                  <Label className="text-[10px]">Custo Base</Label>
+                  <Input type="number" value={rule.base} className="h-8"
+                    onChange={(e) => upd("upgrade_costs", { ...s.upgrade_costs, [k]: { ...rule, base: Number(e.target.value) } })} />
+                </div>
+                <div>
+                  <Label className="text-[10px]">Níveis no custo base</Label>
+                  <Input type="number" value={rule.freeLevels} className="h-8"
+                    onChange={(e) => upd("upgrade_costs", { ...s.upgrade_costs, [k]: { ...rule, freeLevels: Number(e.target.value) } })} />
+                </div>
+                <div>
+                  <Label className="text-[10px]">Incremento por nível</Label>
+                  <Input type="number" value={rule.increment} className="h-8"
+                    onChange={(e) => upd("upgrade_costs", { ...s.upgrade_costs, [k]: { ...rule, increment: Number(e.target.value) } })} />
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </Card>
+
+      {/* Conditions editor */}
+      <Card className="p-4">
+        <h3 className="font-cinzel font-bold mb-1">Listas de Condições</h3>
+        <p className="text-xs text-muted-foreground mb-3">Uma opção por linha. A primeira opção deve ser "Normal".</p>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+          {(Object.keys(CONDITION_META) as ConditionKey[]).map((c) => (
+            <div key={c} className="bg-secondary/30 rounded-lg p-3">
+              <Label className="text-xs flex items-center gap-1.5 mb-1">
+                <span className="w-2 h-2 rounded-full" style={{ background: CONDITION_META[c].color }} />
+                {CONDITION_META[c].label}
+              </Label>
+              <Textarea rows={5} value={(s.condition_options[c] ?? []).join("\n")}
+                onChange={(e) =>
+                  upd("condition_options", {
+                    ...s.condition_options,
+                    [c]: e.target.value.split("\n").map((l) => l.trim()).filter(Boolean),
+                  })
+                } />
+            </div>
+          ))}
+        </div>
       </Card>
 
       <Card className="p-4">
@@ -731,14 +805,35 @@ function DataPanel({ s, upd }: PanelProps) {
                 ) : (
                   <div className="space-y-2">
                     {b.nodes.map((n) => (
-                      <div key={n.id} className="bg-background/40 rounded p-2 grid gap-2 sm:grid-cols-[1fr_1fr_auto_auto_auto]">
-                        <Input value={n.name} placeholder="Nome" onChange={(e) => updNode(b.id, n.id, { name: e.target.value })} className="h-8 text-xs" />
-                        <Input value={n.desc} placeholder="Descrição" onChange={(e) => updNode(b.id, n.id, { desc: e.target.value })} className="h-8 text-xs" />
-                        <Input type="number" value={n.cost} placeholder="PM" onChange={(e) => updNode(b.id, n.id, { cost: Number(e.target.value) })} className="h-8 w-20 text-xs" />
-                        <Input type="number" value={n.minRank} placeholder="Rank" onChange={(e) => updNode(b.id, n.id, { minRank: Number(e.target.value) })} className="h-8 w-20 text-xs" />
-                        <Button size="sm" variant="ghost" className="h-8 w-8 p-0 text-destructive" onClick={() => rmNode(b.id, n.id)}>
-                          <Trash className="w-3.5 h-3.5" />
-                        </Button>
+                      <div key={n.id} className="bg-background/40 rounded p-2 space-y-2">
+                        <div className="grid gap-2 sm:grid-cols-[1fr_1fr_auto_auto_auto] items-center">
+                          <Input value={n.name} placeholder="Nome" onChange={(e) => updNode(b.id, n.id, { name: e.target.value })} className="h-8 text-xs" />
+                          <Input value={n.desc} placeholder="Descrição" onChange={(e) => updNode(b.id, n.id, { desc: e.target.value })} className="h-8 text-xs" />
+                          <Input type="number" value={n.cost} placeholder="PM" onChange={(e) => updNode(b.id, n.id, { cost: Number(e.target.value) })} className="h-8 w-20 text-xs" title="Custo em PM" />
+                          <Input type="number" min={0} max={100} step={5} value={n.minRank} placeholder="Rank" onChange={(e) => updNode(b.id, n.id, { minRank: Number(e.target.value) })} className="h-8 w-20 text-xs" title="Rank mínimo" />
+                          <Button size="sm" variant="ghost" className="h-8 w-8 p-0 text-destructive" onClick={() => rmNode(b.id, n.id)}>
+                            <Trash className="w-3.5 h-3.5" />
+                          </Button>
+                        </div>
+                        <div className="flex items-start gap-2 flex-wrap pl-1">
+                          <span className="text-[10px] uppercase text-muted-foreground mt-1.5">Req. atributos:</span>
+                          {(["COR", "MEN", "INS", "PRE", "ERU"] as (keyof Attributes)[]).map((a) => {
+                            const cur = (n.attrReqs || []).find((x) => x.attr === a)?.value ?? 0;
+                            return (
+                              <label key={a} className="flex items-center gap-1 text-[10px] bg-secondary/40 px-1.5 py-1 rounded">
+                                <span className="font-cinzel font-bold">{a}</span>
+                                <Input type="number" min={0} max={5} value={cur}
+                                  onChange={(e) => {
+                                    const v = Number(e.target.value);
+                                    const others = (n.attrReqs || []).filter((x) => x.attr !== a);
+                                    const next = v > 0 ? [...others, { attr: a, value: v }] : others;
+                                    updNode(b.id, n.id, { attrReqs: next });
+                                  }}
+                                  className="h-6 w-11 text-xs px-1" />
+                              </label>
+                            );
+                          })}
+                        </div>
                       </div>
                     ))}
                   </div>

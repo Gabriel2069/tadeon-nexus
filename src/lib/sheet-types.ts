@@ -137,3 +137,41 @@ export function getRankBase(exposure: number, rankTable: RankRow[]) {
 export function genId() {
   return Math.random().toString(36).slice(2, 11);
 }
+
+export interface UpgradeCostRule { base: number; freeLevels: number; increment: number }
+export type UpgradeCosts = Record<"pv" | "ps" | "pe" | "def", UpgradeCostRule>;
+export const DEFAULT_UPGRADE_COSTS: UpgradeCosts = {
+  pv: { base: 10, freeLevels: 3, increment: 5 },
+  ps: { base: 10, freeLevels: 3, increment: 5 },
+  pe: { base: 10, freeLevels: 3, increment: 5 },
+  def: { base: 10, freeLevels: 3, increment: 5 },
+};
+export function upgradeCostAt(rule: UpgradeCostRule, currentLevel: number): number {
+  if (currentLevel < rule.freeLevels) return rule.base;
+  return rule.base + (currentLevel - (rule.freeLevels - 1)) * rule.increment;
+}
+
+export type ConditionKey = "fisica" | "mental" | "energetica" | "outras";
+export type ConditionOptionsMap = Record<ConditionKey, string[]>;
+export const DEFAULT_CONDITION_OPTIONS: ConditionOptionsMap = {
+  fisica: ["Normal", "Sangrando", "Atordoado", "Ferido", "Inconsciente"],
+  mental: ["Normal", "Em pânico", "Confuso", "Aterrorizado", "Drenado"],
+  energetica: ["Normal", "Drenado", "Sobrecarregado", "Em ressonância", "Apagado"],
+  outras: ["Normal", "Marcado", "Possuído", "Amaldiçoado"],
+};
+export const CONDITION_META: Record<ConditionKey, { label: string; color: string; rgb: string }> = {
+  fisica:     { label: "Física",     color: "#ef4444", rgb: "239, 68, 68" },
+  mental:     { label: "Mental",     color: "#facc15", rgb: "250, 204, 21" },
+  energetica: { label: "Energética", color: "#22c55e", rgb: "34, 197, 94" },
+  outras:     { label: "Outras",     color: "#a16207", rgb: "161, 98, 7" },
+};
+
+export interface Description {
+  historia: string;
+  personalidade: string;
+  objetivos: string;
+  observacoes: string;
+}
+
+export const SKILL_ABILITY_PREFIX = "skill:";
+

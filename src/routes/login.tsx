@@ -124,10 +124,7 @@ function LoginPage() {
           )}
         </div>
 
-        <p className="mt-6 text-center text-xs text-muted-foreground">
-          O primeiro usuário a se cadastrar será o Mestre.
-        </p>
-        <p className="mt-2 text-center text-[10px] text-muted-foreground">
+        <p className="mt-6 text-center text-[10px] text-muted-foreground">
           <Link to="/" className="hover:text-primary">Voltar</Link>
         </p>
       </Card>
