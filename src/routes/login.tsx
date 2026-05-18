@@ -46,14 +46,20 @@ function LoginPage() {
           },
         });
         if (error) throw error;
-        toast.success("Conta criada! Verifique seu e-mail se necessário.");
+        toast.success("Conta criada! Entrando...");
       } else {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
         toast.success("Bem-vindo de volta!");
       }
     } catch (err) {
-      const msg = err instanceof Error ? err.message : "Erro";
+      const raw = err instanceof Error ? err.message : "Erro desconhecido";
+      const msg =
+        /invalid login credentials/i.test(raw) ? "E-mail ou senha incorretos." :
+        /already registered|user already/i.test(raw) ? "E-mail já cadastrado." :
+        /password.*6/i.test(raw) ? "A senha precisa ter ao menos 6 caracteres." :
+        /email.*invalid/i.test(raw) ? "E-mail inválido." :
+        raw;
       toast.error(msg);
     } finally {
       setSubmitting(false);

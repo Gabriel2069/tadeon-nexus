@@ -1,0 +1,258 @@
+import { useMemo } from "react";
+import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Plus, Minus, Lock, Check } from "lucide-react";
+import { toast } from "sonner";
+import type { Attributes, SkillBranch, StatUpgrades, RankRow } from "@/lib/sheet-types";
+import { getRankBase } from "@/lib/sheet-types";
+
+interface Props {
+  exposure: number;
+  attributes: Attributes;
+  pmSpent: number;
+  statUpgrades: StatUpgrades;
+  purchasedSkills: string[];
+  branches: SkillBranch[];
+  rankTable: RankRow[];
+  canEdit: boolean;
+  onUpdate: (changes: {
+    pm_spent?: number;
+    stat_upgrades?: StatUpgrades;
+    purchased_skills?: string[];
+  }) => void;
+}
+
+const UPGRADE_KEYS: { key: keyof StatUpgrades; label: string; color: string }[] = [
+  { key: "pv", label: "PV", color: "text-red-400" },
+  { key: "ps", label: "PS", color: "text-purple-400" },
+  { key: "pe", label: "PE", color: "text-emerald-400" },
+  { key: "def", label: "Defesa", color: "text-blue-400" },
+];
+
+// Improved formula: total PM = base from rank * 1 + 2 per rank step
+function calcTotalPM(exposure: number, rankTable: RankRow[]): number {
+  const r = Math.floor((exposure || 0) / 5) * 5;
+  const base = getRankBase(exposure, rankTable);
+  return base.pm + Math.floor(r / 5) * 2; // bonus per rank step
+}
+
+function upgradeCost(currentLevel: number): number {
+  // 10 PM até o 3º; depois escala +5 por nível adicional
+  return currentLevel < 3 ? 10 : 10 + (currentLevel - 2) * 5;
+}
+
+export function SkillTreeTab({
+  exposure,
+  attributes,
+  pmSpent,
+  statUpgrades,
+  purchasedSkills,
+  branches,
+  rankTable,
+  canEdit,
+  onUpdate,
+}: Props) {
+  const totalPM = useMemo(() => calcTotalPM(exposure, rankTable), [exposure, rankTable]);
+  const remaining = totalPM - pmSpent;
+  const currentRank = Math.floor((exposure || 0) / 5) * 5;
+  const purchased = new Set(purchasedSkills);
+
+  const buyUpgrade = (key: keyof StatUpgrades) => {
+    const cost = upgradeCost(statUpgrades[key]);
+    if (remaining < cost) {
+      toast.error(`PM insuficientes (custa ${cost}).`);
+      return;
+    }
+    onUpdate({
+      pm_spent: pmSpent + cost,
+      stat_upgrades: { ...statUpgrades, [key]: statUpgrades[key] + 1 },
+    });
+    toast.success(`+1 ${key.toUpperCase()} ( -${cost} PM)`);
+  };
+
+  const sellUpgrade = (key: keyof StatUpgrades) => {
+    if (statUpgrades[key] <= 0) return;
+    const refund = upgradeCost(statUpgrades[key] - 1);
+    onUpdate({
+      pm_spent: Math.max(0, pmSpent - refund),
+      stat_upgrades: { ...statUpgrades, [key]: statUpgrades[key] - 1 },
+    });
+  };
+
+  const canBuyNode = (node: SkillBranch["nodes"][0]) => {
+    if (purchased.has(node.id)) return { ok: false, why: "Já adquirida" };
+    if (currentRank < node.minRank) return { ok: false, why: `Requer Rank ${node.minRank}` };
+    for (const req of node.requires || []) {
+      if (!purchased.has(req)) return { ok: false, why: "Requisito faltando" };
+    }
+    for (const ar of node.attrReqs || []) {
+      if ((attributes[ar.attr] ?? 0) < ar.value) return { ok: false, why: `Requer ${ar.attr} ${ar.value}` };
+    }
+    if (remaining < node.cost) return { ok: false, why: `Faltam ${node.cost - remaining} PM` };
+    return { ok: true, why: "" };
+  };
+
+  const buyNode = (node: SkillBranch["nodes"][0]) => {
+    const check = canBuyNode(node);
+    if (!check.ok) {
+      toast.error(check.why);
+      return;
+    }
+    onUpdate({
+      pm_spent: pmSpent + node.cost,
+      purchased_skills: [...purchasedSkills, node.id],
+    });
+    toast.success(`${node.name} adquirida!`);
+  };
+
+  const refundNode = (node: SkillBranch["nodes"][0]) => {
+    if (!purchased.has(node.id)) return;
+    // Check no other purchased node depends on this
+    const blockedBy = branches
+      .flatMap((b) => b.nodes)
+      .find((n) => purchased.has(n.id) && (n.requires || []).includes(node.id));
+    if (blockedBy) {
+      toast.error(`Reembolso bloqueado: ${blockedBy.name} depende disto.`);
+      return;
+    }
+    onUpdate({
+      pm_spent: Math.max(0, pmSpent - node.cost),
+      purchased_skills: purchasedSkills.filter((id) => id !== node.id),
+    });
+    toast.success(`${node.name} reembolsada.`);
+  };
+
+  return (
+    <div className="space-y-4">
+      {/* PM Summary */}
+      <Card className="p-4 bg-gradient-to-br from-primary/10 to-card border-primary/30">
+        <div className="grid grid-cols-3 gap-4 text-center">
+          <div>
+            <div className="text-xs text-muted-foreground uppercase">PM Totais</div>
+            <div className="font-cinzel text-3xl font-bold text-primary">{totalPM}</div>
+          </div>
+          <div>
+            <div className="text-xs text-muted-foreground uppercase">Gastos</div>
+            <div className="font-cinzel text-3xl font-bold text-muted-foreground">{pmSpent}</div>
+          </div>
+          <div>
+            <div className="text-xs text-muted-foreground uppercase">Disponíveis</div>
+            <div className={`font-cinzel text-3xl font-bold ${remaining > 0 ? "text-emerald-400" : "text-red-400"}`}>
+              {remaining}
+            </div>
+          </div>
+        </div>
+        <div className="mt-3 w-full h-2 bg-secondary rounded-full overflow-hidden">
+          <div
+            className="h-full bg-gradient-to-r from-primary to-accent transition-all"
+            style={{ width: `${Math.min(100, (pmSpent / Math.max(1, totalPM)) * 100)}%` }}
+          />
+        </div>
+      </Card>
+
+      {/* Stat upgrades */}
+      <Card className="p-4">
+        <h3 className="font-cinzel font-bold mb-3">Aprimorar Atributos Vitais</h3>
+        <p className="text-xs text-muted-foreground mb-3">
+          Cada upgrade aumenta seu máximo. Custo: 10 PM nos 3 primeiros, depois +5 a cada nível.
+        </p>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+          {UPGRADE_KEYS.map(({ key, label, color }) => {
+            const level = statUpgrades[key];
+            const cost = upgradeCost(level);
+            return (
+              <div key={key} className="bg-secondary/40 rounded-lg p-3 text-center">
+                <div className={`text-xs font-bold uppercase ${color}`}>{label}</div>
+                <div className="text-2xl font-bold my-1">+{level}</div>
+                <div className="text-[10px] text-muted-foreground mb-2">próximo: {cost} PM</div>
+                <div className="flex gap-1">
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    className="h-7 flex-1 px-0"
+                    disabled={!canEdit || level <= 0}
+                    onClick={() => sellUpgrade(key)}
+                  >
+                    <Minus className="w-3 h-3" />
+                  </Button>
+                  <Button
+                    size="sm"
+                    className="h-7 flex-1 px-0"
+                    disabled={!canEdit || remaining < cost}
+                    onClick={() => buyUpgrade(key)}
+                  >
+                    <Plus className="w-3 h-3" />
+                  </Button>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </Card>
+
+      {/* Branches */}
+      {branches.map((branch) => (
+        <Card key={branch.id} className="p-4">
+          <h3 className="font-cinzel font-bold mb-3 flex items-center gap-2">
+            <span className="w-3 h-3 rounded-full" style={{ background: branch.color }} />
+            {branch.label}
+          </h3>
+          {branch.nodes.length === 0 ? (
+            <p className="text-xs text-muted-foreground italic">Sem habilidades neste ramo.</p>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+              {branch.nodes.map((node) => {
+                const isPurchased = purchased.has(node.id);
+                const check = canBuyNode(node);
+                const locked = !isPurchased && !check.ok;
+                return (
+                  <div
+                    key={node.id}
+                    className={`rounded-lg p-3 border transition-all ${
+                      isPurchased
+                        ? "bg-primary/10 border-primary/50"
+                        : locked
+                          ? "bg-secondary/30 border-border opacity-70"
+                          : "bg-secondary/60 border-border hover:border-primary/50"
+                    }`}
+                  >
+                    <div className="flex items-start justify-between gap-2">
+                      <h4 className="font-cinzel font-bold text-sm">{node.name}</h4>
+                      {isPurchased ? (
+                        <Check className="w-4 h-4 text-primary shrink-0" />
+                      ) : locked ? (
+                        <Lock className="w-3.5 h-3.5 text-muted-foreground shrink-0" />
+                      ) : null}
+                    </div>
+                    <p className="text-xs text-muted-foreground mt-1">{node.desc}</p>
+                    <div className="mt-2 flex flex-wrap gap-1 text-[10px]">
+                      <span className="px-1.5 py-0.5 rounded bg-background/40">Custo: {node.cost} PM</span>
+                      {node.minRank > 0 && <span className="px-1.5 py-0.5 rounded bg-background/40">Rank {node.minRank}+</span>}
+                      {(node.attrReqs || []).map((a) => (
+                        <span key={a.attr} className="px-1.5 py-0.5 rounded bg-background/40">{a.attr} {a.value}+</span>
+                      ))}
+                    </div>
+                    {canEdit && (
+                      <div className="mt-3">
+                        {isPurchased ? (
+                          <Button size="sm" variant="ghost" className="w-full h-7 text-xs"
+                            onClick={() => refundNode(node)}>Reembolsar</Button>
+                        ) : (
+                          <Button size="sm" className="w-full h-7 text-xs"
+                            disabled={!check.ok}
+                            onClick={() => buyNode(node)}>
+                            {check.ok ? "Adquirir" : check.why}
+                          </Button>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </Card>
+      ))}
+    </div>
+  );
+}

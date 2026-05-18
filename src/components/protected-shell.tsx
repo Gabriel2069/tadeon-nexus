@@ -3,6 +3,7 @@ import { useNavigate } from "@tanstack/react-router";
 import { useAuth } from "@/lib/auth";
 import { AppLayout } from "@/components/app-layout";
 import { Loader2 } from "lucide-react";
+import { DiceRoller } from "@/components/dice-roller";
 
 interface Props {
   children: ReactNode;
@@ -40,5 +41,10 @@ export function ProtectedShell({ children, requireRole }: Props) {
     );
   }
 
-  return <AppLayout>{children}</AppLayout>;
+  return (
+    <AppLayout>
+      {children}
+      <DiceRoller />
+    </AppLayout>
+  );
 }
