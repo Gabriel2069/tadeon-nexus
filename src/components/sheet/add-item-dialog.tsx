@@ -21,7 +21,7 @@ export interface FieldDef {
   placeholder?: string;
 }
 
-export function AddItemDialog<T extends Record<string, unknown>>({
+export function AddItemDialog<T>({
   triggerLabel = "Adicionar",
   title,
   fields,
@@ -61,8 +61,9 @@ export function AddItemDialog<T extends Record<string, unknown>>({
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-3">
           {fields.map((f) => {
-            const v = data[f.key];
-            const set = (val: unknown) => setData({ ...data, [f.key]: val } as T);
+            const rec = data as unknown as Record<string, unknown>;
+            const v = rec[f.key];
+            const set = (val: unknown) => setData({ ...rec, [f.key]: val } as unknown as T);
             return (
               <div key={f.key}>
                 <Label>{f.label}</Label>
