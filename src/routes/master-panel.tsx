@@ -87,6 +87,8 @@ function MasterPanel() {
           pinned_sheet_ids: (g.pinned_sheet_ids as string[]) ?? [],
           rank_table: (g.rank_table as RankRow[]) ?? [],
           skill_branches: (g.skill_branches as SkillBranch[]) ?? [],
+          upgrade_costs: (g.upgrade_costs as UpgradeCosts) ?? DEFAULT_UPGRADE_COSTS,
+          condition_options: (g.condition_options as ConditionOptionsMap) ?? DEFAULT_CONDITION_OPTIONS,
         });
       }
       setSheets((ch as unknown as SheetSummary[]) ?? []);
