@@ -16,8 +16,8 @@ import {
   Swords, Skull, Search as SearchIcon, Users, ScrollText, Pin, Cog, Sparkles,
 } from "lucide-react";
 import { toast } from "sonner";
-import type { RankRow, SkillBranch } from "@/lib/sheet-types";
-import { genId } from "@/lib/sheet-types";
+import type { RankRow, SkillBranch, UpgradeCosts, ConditionOptionsMap, ConditionKey, Attributes } from "@/lib/sheet-types";
+import { genId, DEFAULT_UPGRADE_COSTS, DEFAULT_CONDITION_OPTIONS, CONDITION_META } from "@/lib/sheet-types";
 
 export const Route = createFileRoute("/master-panel")({
   head: () => ({ meta: [{ title: "Painel do Mestre — Tadeon Nexus" }] }),
