@@ -119,6 +119,7 @@ export type Database = {
       game_settings: {
         Row: {
           clues: Json
+          condition_options: Json
           id: string
           initiative_notes: string | null
           initiative_order: Json
@@ -135,9 +136,11 @@ export type Database = {
           scenes_detailed: Json
           skill_branches: Json
           updated_at: string
+          upgrade_costs: Json
         }
         Insert: {
           clues?: Json
+          condition_options?: Json
           id?: string
           initiative_notes?: string | null
           initiative_order?: Json
@@ -154,9 +157,11 @@ export type Database = {
           scenes_detailed?: Json
           skill_branches?: Json
           updated_at?: string
+          upgrade_costs?: Json
         }
         Update: {
           clues?: Json
+          condition_options?: Json
           id?: string
           initiative_notes?: string | null
           initiative_order?: Json
@@ -173,6 +178,7 @@ export type Database = {
           scenes_detailed?: Json
           skill_branches?: Json
           updated_at?: string
+          upgrade_costs?: Json
         }
         Relationships: []
       }
