@@ -118,41 +118,59 @@ export type Database = {
       }
       game_settings: {
         Row: {
+          clues: Json
           id: string
           initiative_notes: string | null
+          initiative_order: Json
           key: string
+          monsters: Json
+          npcs: Json
+          pinned_sheet_ids: Json
           quick_refs: string | null
           rank_table: Json
           reminders: string | null
           scene_combat: string | null
           scene_dialogue: string | null
           scene_investigation: string | null
+          scenes_detailed: Json
           skill_branches: Json
           updated_at: string
         }
         Insert: {
+          clues?: Json
           id?: string
           initiative_notes?: string | null
+          initiative_order?: Json
           key?: string
+          monsters?: Json
+          npcs?: Json
+          pinned_sheet_ids?: Json
           quick_refs?: string | null
           rank_table?: Json
           reminders?: string | null
           scene_combat?: string | null
           scene_dialogue?: string | null
           scene_investigation?: string | null
+          scenes_detailed?: Json
           skill_branches?: Json
           updated_at?: string
         }
         Update: {
+          clues?: Json
           id?: string
           initiative_notes?: string | null
+          initiative_order?: Json
           key?: string
+          monsters?: Json
+          npcs?: Json
+          pinned_sheet_ids?: Json
           quick_refs?: string | null
           rank_table?: Json
           reminders?: string | null
           scene_combat?: string | null
           scene_dialogue?: string | null
           scene_investigation?: string | null
+          scenes_detailed?: Json
           skill_branches?: Json
           updated_at?: string
         }
