@@ -676,7 +676,7 @@ function StatBlock({ label, full, color, barColor, current, mod, max, disabled, 
           onClick={() => onCurrent(current + 1)}><Plus className="w-3 h-3" /></Button>
       </div>
       <div className="mt-1.5">
-        <Label className="text-[10px]">Mod (pode ser negativo)</Label>
+        <Label className="text-[10px]">Mod</Label>
         <Input type="number" disabled={disabled} value={mod} onChange={(e) => onMod(Number(e.target.value))} className="h-6 text-xs" />
       </div>
     </Card>
