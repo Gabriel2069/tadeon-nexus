@@ -316,7 +316,7 @@ function SheetPage() {
               </div>
             </Section>
 
-            <Section title="Pontos Vitais">
+            <Section id="sec-pontos" title="Pontos Vitais">
               <div className="grid grid-cols-2 gap-2.5">
                 <StatBlock label="PV" full="Vitalidade" color="text-red-400" barColor="from-red-600 to-red-400"
                   current={sheet.stats.pv_current} mod={sheet.stats.pv_mod} max={pvMax} disabled={!canEdit}
