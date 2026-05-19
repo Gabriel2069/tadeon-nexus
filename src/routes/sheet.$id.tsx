@@ -83,6 +83,7 @@ function SheetPage() {
   const [branches, setBranches] = useState<SkillBranch[]>([]);
   const [upgradeCosts, setUpgradeCosts] = useState<UpgradeCosts>(DEFAULT_UPGRADE_COSTS);
   const [conditionOptions, setConditionOptions] = useState<ConditionOptionsMap>(DEFAULT_CONDITION_OPTIONS);
+  const [sheetSkillGroups, setSheetSkillGroups] = useState<typeof SKILL_GROUPS>([]);
   const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const skipNextSave = useRef(true);
 
@@ -93,7 +94,7 @@ function SheetPage() {
       const [{ data, error }, { data: settings }] = await Promise.all([
         supabase.from("character_sheets").select("*").eq("id", id).maybeSingle(),
         supabase.from("game_settings")
-          .select("rank_table,skill_branches,upgrade_costs,condition_options")
+          .select("rank_table,skill_branches,upgrade_costs,condition_options,skill_groups")
           .eq("key", "global").maybeSingle(),
       ]);
       if (error || !data) {
@@ -113,6 +114,7 @@ function SheetPage() {
         setBranches((g.skill_branches as SkillBranch[] | undefined) ?? []);
         setUpgradeCosts((g.upgrade_costs as UpgradeCosts | undefined) ?? DEFAULT_UPGRADE_COSTS);
         setConditionOptions((g.condition_options as ConditionOptionsMap | undefined) ?? DEFAULT_CONDITION_OPTIONS);
+        setSheetSkillGroups((g.skill_groups as typeof SKILL_GROUPS | undefined) ?? []);
       }
       setLoading(false);
     })();
@@ -154,12 +156,26 @@ function SheetPage() {
   }, [sheet]);
 
   const borderShadow = useMemo(() => {
-    if (activeConditions.length === 0) return undefined;
-    // Layered glow shadows for each active condition
-    return activeConditions
-      .map((k, i) => `0 0 ${10 + i * 4}px 0 rgba(${CONDITION_META[k].rgb}, 0.55)`)
-      .join(", ");
-  }, [activeConditions]);
+    const layers: string[] = [];
+    activeConditions.forEach((k, i) => {
+      layers.push(`0 0 ${10 + i * 4}px 0 rgba(${CONDITION_META[k].rgb}, 0.55)`);
+    });
+    const dying = sheet?.dying ?? 0;
+    if (dying > 0) {
+      const intensity = 0.4 + dying * 0.2;
+      const blur = 14 + dying * 10;
+      layers.push(`0 0 ${blur}px ${2 + dying}px rgba(120, 0, 0, ${intensity})`);
+      layers.push(`0 0 ${blur + 6}px ${1 + dying}px rgba(0, 0, 0, ${Math.min(0.9, intensity + 0.1)})`);
+    }
+    const insane = sheet?.going_insane ?? 0;
+    if (insane > 0) {
+      const intensity = 0.35 + insane * 0.2;
+      const blur = 14 + insane * 10;
+      layers.push(`0 0 ${blur}px ${2 + insane}px rgba(255, 245, 180, ${intensity})`);
+      layers.push(`0 0 ${blur + 8}px ${1 + insane}px rgba(255, 255, 255, ${Math.min(0.85, intensity)})`);
+    }
+    return layers.length ? layers.join(", ") : undefined;
+  }, [activeConditions, sheet?.dying, sheet?.going_insane]);
 
   if (loading || !sheet) {
     return <div className="flex justify-center py-16"><Loader2 className="w-8 h-8 animate-spin text-primary" /></div>;
@@ -171,11 +187,27 @@ function SheetPage() {
   const pvMax = base.pv + sheet.stats.pv_mod + 3 * attrs.COR + 3 * upg.pv;
   const psMax = base.ps + sheet.stats.ps_mod + 3 * attrs.MEN + 3 * upg.ps;
   const peMax = base.pe + sheet.stats.pe_mod + 3 * attrs.ERU + 2 * upg.pe;
-  const defTotal = sheet.stats.def_equip + sheet.stats.def_mod + upg.def;
+  const defTotal = base.def + sheet.stats.def_equip + sheet.stats.def_mod + upg.def;
   const invCapacity = 5 + 3 * attrs.COR;
   const invUsed =
     sheet.weapons.reduce((s, w) => s + (Number(w.peso) || 0), 0) +
     sheet.inventory.reduce((s, i) => s + (Number(i.espaco) || 0), 0);
+
+  const skillGroups = sheetSkillGroups.length ? sheetSkillGroups : SKILL_GROUPS;
+  const sectionAnchors: { id: string; label: string }[] = [
+    { id: "sec-info", label: "Informações" },
+    { id: "sec-attr", label: "Atributos" },
+    { id: "sec-pontos", label: "Pontos" },
+    { id: "sec-pericias", label: "Perícias" },
+    { id: "sec-inv", label: "Inventário" },
+    { id: "sec-armas", label: "Armas" },
+    { id: "sec-hab", label: "Habilidades" },
+    { id: "sec-notas", label: "Anotações" },
+  ];
+  const jumpTo = (id: string) => {
+    const el = document.getElementById(id);
+    if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
 
   const equilibrium = clamp(Math.round(sheet.equilibrium || 0), -10, 10);
   const equilibriumPct = ((equilibrium + 10) / 20) * 100;
@@ -229,8 +261,16 @@ function SheetPage() {
         </TabsList>
 
         <TabsContent value="ficha" className="space-y-4 mt-0">
-          {/* Identity */}
-          <Section title="Identidade">
+          {/* Quick jump shortcuts */}
+          <div className="flex flex-wrap gap-1.5 -mt-1">
+            {sectionAnchors.map((a) => (
+              <button key={a.id} type="button" onClick={() => jumpTo(a.id)}
+                className="text-[11px] px-2.5 py-1 rounded-full border border-border bg-secondary/40 hover:bg-primary/15 hover:border-primary/50 hover:text-primary transition-all font-medium">
+                {a.label}
+              </button>
+            ))}
+          </div>
+          <Section id="sec-info" title="Identidade">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <Field label="Nome" value={sheet.name} onChange={(v) => update("name", v)} disabled={!canEdit} />
               <Field label="Ocupação" value={sheet.occupation} onChange={(v) => update("occupation", v)} disabled={!canEdit} />
@@ -243,7 +283,7 @@ function SheetPage() {
 
           {/* Attributes (with radar) + Vital points */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-            <Section title="Atributos">
+            <Section id="sec-attr" title="Atributos">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 items-center">
                 <div className="space-y-1.5">
                   {(Object.keys(attrs) as (keyof Attributes)[]).map((k) => (
@@ -266,17 +306,17 @@ function SheetPage() {
                 <div className="h-48 sm:h-56">
                   <ResponsiveContainer width="100%" height="100%">
                     <RadarChart data={radarData} outerRadius="80%">
-                      <PolarGrid stroke="hsl(var(--border))" />
-                      <PolarAngleAxis dataKey="attr" tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 11, fontFamily: "Cinzel, serif" }} />
-                      <PolarRadiusAxis angle={90} domain={[0, 5]} tick={false} stroke="hsl(var(--border))" />
-                      <Radar dataKey="value" stroke="hsl(var(--primary))" fill="hsl(var(--primary))" fillOpacity={0.35} />
+                      <PolarGrid stroke="#a855f7" strokeOpacity={0.35} />
+                      <PolarAngleAxis dataKey="attr" tick={{ fill: "#c084fc", fontSize: 11, fontFamily: "Cinzel, serif" }} />
+                      <PolarRadiusAxis angle={90} domain={[0, 5]} tick={false} stroke="#a855f7" strokeOpacity={0.4} />
+                      <Radar dataKey="value" stroke="#a855f7" fill="#a855f7" fillOpacity={0.4} />
                     </RadarChart>
                   </ResponsiveContainer>
                 </div>
               </div>
             </Section>
 
-            <Section title="Pontos Vitais">
+            <Section id="sec-pontos" title="Pontos Vitais">
               <div className="grid grid-cols-2 gap-2.5">
                 <StatBlock label="PV" full="Vitalidade" color="text-red-400" barColor="from-red-600 to-red-400"
                   current={sheet.stats.pv_current} mod={sheet.stats.pv_mod} max={pvMax} disabled={!canEdit}
@@ -293,6 +333,9 @@ function SheetPage() {
                 <Card className="p-3 bg-card/60">
                   <div className="text-blue-400 font-cinzel font-bold text-sm">Defesa</div>
                   <div className="text-3xl font-bold text-center my-2">{defTotal}</div>
+                  <div className="text-[10px] text-muted-foreground text-center -mt-1 mb-2">
+                    base {base.def} + equip {sheet.stats.def_equip} + mod {sheet.stats.def_mod}{upg.def ? ` + apr ${upg.def}` : ""}
+                  </div>
                   <div className="grid grid-cols-2 gap-2 text-xs">
                     <div>
                       <Label className="text-[10px]">Equip</Label>
@@ -394,14 +437,14 @@ function SheetPage() {
           </Section>
 
           {/* Skills */}
-          <Section title="Perícias"
+          <Section id="sec-pericias" title="Perícias"
             extra={
               <Input placeholder="Bônus temporário" disabled={!canEdit} value={sheet.skill_bonus}
                 onChange={(e) => update("skill_bonus", e.target.value)}
                 className="h-7 w-44 text-xs" />
             }>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-2.5">
-              {SKILL_GROUPS.map((g) => (
+              {skillGroups.map((g) => (
                 <div key={g.attr} className="bg-secondary/40 rounded-lg p-2.5">
                   <h4 className="font-cinzel text-xs font-bold mb-1.5">{g.label} ({g.attr})</h4>
                   <div className="space-y-0.5">
@@ -427,7 +470,7 @@ function SheetPage() {
           </Section>
 
           {/* Weapons */}
-          <Section title="Armas" extra={
+          <Section id="sec-armas" title="Armas" extra={
             canEdit && (
               <AddItemDialog<Weapon>
                 title="Nova Arma" triggerLabel="Adicionar Arma"
@@ -458,7 +501,7 @@ function SheetPage() {
           </Section>
 
           {/* Inventory */}
-          <Section title="Inventário" extra={
+          <Section id="sec-inv" title="Inventário" extra={
             canEdit && (
               <AddItemDialog<InventoryItem>
                 title="Novo Item" triggerLabel="Adicionar Item"
@@ -466,7 +509,7 @@ function SheetPage() {
                 fields={[
                   { key: "nome", label: "Nome" },
                   { key: "descricao", label: "Descrição", type: "textarea" },
-                  { key: "espaco", label: "Espaço (pode ser negativo)", type: "number" },
+                  { key: "espaco", label: "Espaço", type: "number" },
                 ]}
                 onAdd={(it) => update("inventory", [...sheet.inventory, { ...it, id: genId() }])} />
             )
@@ -489,7 +532,7 @@ function SheetPage() {
           </Section>
 
           {/* Abilities */}
-          <Section title="Habilidades" extra={
+          <Section id="sec-hab" title="Habilidades" extra={
             canEdit && (
               <AddItemDialog<Ability>
                 title="Nova Habilidade" triggerLabel="Adicionar Habilidade"
@@ -549,7 +592,7 @@ function SheetPage() {
           </Section>
 
           {/* Notes */}
-          <Section title="Anotações Rápidas">
+          <Section id="sec-notas" title="Anotações Rápidas">
             <Textarea disabled={!canEdit} value={sheet.notes || ""}
               onChange={(e) => update("notes", e.target.value)} rows={4} />
           </Section>
@@ -595,9 +638,9 @@ function SheetPage() {
   );
 }
 
-function Section({ title, children, extra }: { title: string; children: React.ReactNode; extra?: React.ReactNode }) {
+function Section({ title, children, extra, id }: { title: string; children: React.ReactNode; extra?: React.ReactNode; id?: string }) {
   return (
-    <Card className="p-4 bg-card/60 backdrop-blur-sm border-border/60 transition-all hover:border-border">
+    <Card id={id} className="p-4 bg-card/60 backdrop-blur-sm border-border/60 transition-all hover:border-border scroll-mt-32">
       <div className="flex items-center justify-between flex-wrap gap-2 mb-3">
         <h3 className="font-cinzel font-bold text-primary">{title}</h3>
         {extra}
@@ -641,7 +684,7 @@ function StatBlock({ label, full, color, barColor, current, mod, max, disabled, 
           onClick={() => onCurrent(current + 1)}><Plus className="w-3 h-3" /></Button>
       </div>
       <div className="mt-1.5">
-        <Label className="text-[10px]">Mod (pode ser negativo)</Label>
+        <Label className="text-[10px]">Mod</Label>
         <Input type="number" disabled={disabled} value={mod} onChange={(e) => onMod(Number(e.target.value))} className="h-6 text-xs" />
       </div>
     </Card>

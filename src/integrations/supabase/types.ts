@@ -138,6 +138,7 @@ export type Database = {
           scene_investigation: string | null
           scenes_detailed: Json
           skill_branches: Json
+          skill_groups: Json
           updated_at: string
           upgrade_costs: Json
         }
@@ -159,6 +160,7 @@ export type Database = {
           scene_investigation?: string | null
           scenes_detailed?: Json
           skill_branches?: Json
+          skill_groups?: Json
           updated_at?: string
           upgrade_costs?: Json
         }
@@ -180,6 +182,7 @@ export type Database = {
           scene_investigation?: string | null
           scenes_detailed?: Json
           skill_branches?: Json
+          skill_groups?: Json
           updated_at?: string
           upgrade_costs?: Json
         }

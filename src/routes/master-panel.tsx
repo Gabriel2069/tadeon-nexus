@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { ProtectedShell } from "@/components/protected-shell";
 import { supabase } from "@/integrations/supabase/client";
@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/dialog";
 import {
   Loader2, Save, Plus, Trash, ChevronUp, ChevronDown, Maximize2, Eye, EyeOff,
-  Swords, Skull, Search as SearchIcon, Users, ScrollText, Pin, Cog, Sparkles,
+  Swords, Skull, Search as SearchIcon, Users, ScrollText, Pin, Cog, Sparkles, ExternalLink,
 } from "lucide-react";
 import { toast } from "sonner";
 import type { RankRow, SkillBranch, UpgradeCosts, ConditionOptionsMap, ConditionKey, Attributes } from "@/lib/sheet-types";
@@ -53,6 +53,7 @@ interface SettingsRow {
   skill_branches: SkillBranch[];
   upgrade_costs: UpgradeCosts;
   condition_options: ConditionOptionsMap;
+  skill_groups: { attr: string; label: string; skills: string[] }[];
 }
 
 interface SheetSummary {
@@ -89,6 +90,13 @@ function MasterPanel() {
           skill_branches: (g.skill_branches as SkillBranch[]) ?? [],
           upgrade_costs: (g.upgrade_costs as UpgradeCosts) ?? DEFAULT_UPGRADE_COSTS,
           condition_options: (g.condition_options as ConditionOptionsMap) ?? DEFAULT_CONDITION_OPTIONS,
+          skill_groups: (g.skill_groups as SettingsRow["skill_groups"]) ?? [
+            { attr: "COR", label: "Corpo", skills: ["Acrobacia","Atletismo","Combate","Furtividade"] },
+            { attr: "MEN", label: "Mente", skills: ["Investigação","Percepção","Sobrevivência","Vontade"] },
+            { attr: "INS", label: "Instinto", skills: ["Iniciativa","Pontaria","Reflexos","Intuição"] },
+            { attr: "PRE", label: "Presença", skills: ["Atuação","Diplomacia","Enganação","Intimidação"] },
+            { attr: "ERU", label: "Erudição", skills: ["Ciências","Medicina","Ocultismo","Tecnologia"] },
+          ],
         });
       }
       setSheets((ch as unknown as SheetSummary[]) ?? []);
@@ -534,6 +542,7 @@ function CluesPanel({ s, upd }: PanelProps) {
 
 /* ============ Pinned sheets ============ */
 function PinnedPanel({ s, upd, sheets }: PanelProps & { sheets: SheetSummary[] }) {
+  const navigate = useNavigate();
   const pinned = useMemo(() => s.pinned_sheet_ids
     .map((id) => sheets.find((sh) => sh.id === id))
     .filter((x): x is SheetSummary => !!x), [s.pinned_sheet_ids, sheets]);
@@ -571,21 +580,40 @@ function PinnedPanel({ s, upd, sheets }: PanelProps & { sheets: SheetSummary[] }
         <Card className="p-8 text-center text-sm text-muted-foreground italic">Selecione fichas acima para comparar.</Card>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3">
-          {pinned.map((sh) => (
+          {pinned.map((sh) => {
+            const eq = Math.max(-10, Math.min(10, Number(sh.equilibrium ?? 0)));
+            const eqPct = ((eq + 10) / 20) * 100;
+            return (
             <Card key={sh.id} className="p-3 bg-card/70">
-              <h4 className="font-cinzel font-bold truncate">{sh.name || "Sem nome"}</h4>
-              <p className="text-[10px] text-muted-foreground truncate">{sh.owner_email}</p>
+              <div className="flex items-start justify-between gap-2">
+                <div className="min-w-0">
+                  <h4 className="font-cinzel font-bold truncate">{sh.name || "Sem nome"}</h4>
+                  <p className="text-[10px] text-muted-foreground truncate">{sh.owner_email}</p>
+                </div>
+                <Button size="sm" variant="outline" className="h-7 gap-1 text-[11px] shrink-0"
+                  onClick={() => navigate({ to: "/sheet/$id", params: { id: sh.id } })}>
+                  <ExternalLink className="w-3 h-3" /> Abrir
+                </Button>
+              </div>
               <div className="grid grid-cols-3 gap-1.5 mt-2 text-center text-xs">
                 <Mini label="PV" v={sh.stats?.pv_current ?? 0} color="text-red-400" />
                 <Mini label="PS" v={sh.stats?.ps_current ?? 0} color="text-purple-400" />
                 <Mini label="PE" v={sh.stats?.pe_current ?? 0} color="text-emerald-400" />
               </div>
               <div className="mt-2">
-                <div className="text-[10px] text-muted-foreground flex justify-between"><span>Equilíbrio</span><span>{sh.equilibrium ?? 0}/100</span></div>
-                <div className="h-1.5 bg-secondary rounded-full overflow-hidden">
-                  <div className="h-full bg-gradient-to-r from-red-600 via-yellow-500 to-emerald-500"
-                    style={{ width: `${sh.equilibrium ?? 0}%` }} />
+                <div className="text-[10px] text-muted-foreground flex justify-between">
+                  <span>Equilíbrio</span>
+                  <span>{eq > 0 ? `+${eq}` : eq}</span>
                 </div>
+                <div className="relative h-1.5 bg-secondary rounded-full overflow-hidden">
+                  <div className="absolute inset-0" style={{
+                    background: "linear-gradient(90deg, hsl(0,75%,18%) 0%, hsl(0,75%,50%) 50%, hsl(50,95%,55%) 50%, hsl(50,70%,95%) 100%)",
+                    opacity: 0.35,
+                  }} />
+                  <div className="absolute top-0 bottom-0 w-0.5 bg-foreground/70"
+                    style={{ left: `calc(${eqPct}% - 1px)` }} />
+                </div>
+                <div className="flex justify-between text-[9px] text-muted-foreground mt-0.5"><span>-10</span><span>0</span><span>+10</span></div>
               </div>
               <div className="mt-2">
                 <div className="text-[10px] text-muted-foreground flex justify-between"><span>Exposição</span><span>{sh.exposure ?? 0}/100</span></div>
@@ -603,7 +631,7 @@ function PinnedPanel({ s, upd, sheets }: PanelProps & { sheets: SheetSummary[] }
                 ))}
               </div>
             </Card>
-          ))}
+          );})}
         </div>
       )}
     </div>
@@ -777,6 +805,38 @@ function DataPanel({ s, upd }: PanelProps) {
           ))}
         </div>
       </Card>
+
+      {/* Skill Groups editor */}
+      <Card className="p-4">
+        <h3 className="font-cinzel font-bold mb-1">Listas de Perícias</h3>
+        <p className="text-xs text-muted-foreground mb-3">Uma perícia por linha em cada grupo de atributo.</p>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+          {s.skill_groups.map((g, gi) => (
+            <div key={g.attr + gi} className="bg-secondary/30 rounded-lg p-3 space-y-2">
+              <div className="grid grid-cols-[80px_1fr] gap-2">
+                <Input value={g.attr} className="h-8 font-cinzel font-bold"
+                  onChange={(e) => upd("skill_groups", s.skill_groups.map((x, i) => i === gi ? { ...x, attr: e.target.value.toUpperCase() } : x))} />
+                <Input value={g.label} className="h-8"
+                  onChange={(e) => upd("skill_groups", s.skill_groups.map((x, i) => i === gi ? { ...x, label: e.target.value } : x))} />
+              </div>
+              <Textarea rows={5} value={g.skills.join("\n")}
+                onChange={(e) =>
+                  upd("skill_groups", s.skill_groups.map((x, i) => i === gi ? { ...x, skills: e.target.value.split("\n").map((l) => l.trim()).filter(Boolean) } : x))
+                } />
+              <Button size="sm" variant="ghost" className="text-destructive h-7 gap-1"
+                onClick={() => upd("skill_groups", s.skill_groups.filter((_, i) => i !== gi))}>
+                <Trash className="w-3 h-3" /> Remover grupo
+              </Button>
+            </div>
+          ))}
+        </div>
+        <Button size="sm" className="mt-3 gap-1.5"
+          onClick={() => upd("skill_groups", [...s.skill_groups, { attr: "NOV", label: "Novo Grupo", skills: [] }])}>
+          <Plus className="w-3.5 h-3.5" /> Novo grupo
+        </Button>
+      </Card>
+
+
 
       <Card className="p-4">
         <div className="flex justify-between items-center mb-3">
