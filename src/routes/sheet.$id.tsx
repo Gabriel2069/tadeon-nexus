@@ -437,7 +437,7 @@ function SheetPage() {
           </Section>
 
           {/* Skills */}
-          <Section title="Perícias"
+          <Section id="sec-pericias" title="Perícias"
             extra={
               <Input placeholder="Bônus temporário" disabled={!canEdit} value={sheet.skill_bonus}
                 onChange={(e) => update("skill_bonus", e.target.value)}
