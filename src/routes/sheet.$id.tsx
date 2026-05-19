@@ -592,7 +592,7 @@ function SheetPage() {
           </Section>
 
           {/* Notes */}
-          <Section title="Anotações Rápidas">
+          <Section id="sec-notas" title="Anotações Rápidas">
             <Textarea disabled={!canEdit} value={sheet.notes || ""}
               onChange={(e) => update("notes", e.target.value)} rows={4} />
           </Section>
