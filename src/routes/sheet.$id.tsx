@@ -325,6 +325,9 @@ function SheetPage() {
                 <Card className="p-3 bg-card/60">
                   <div className="text-blue-400 font-cinzel font-bold text-sm">Defesa</div>
                   <div className="text-3xl font-bold text-center my-2">{defTotal}</div>
+                  <div className="text-[10px] text-muted-foreground text-center -mt-1 mb-2">
+                    base {base.def} + equip {sheet.stats.def_equip} + mod {sheet.stats.def_mod}{upg.def ? ` + apr ${upg.def}` : ""}
+                  </div>
                   <div className="grid grid-cols-2 gap-2 text-xs">
                     <div>
                       <Label className="text-[10px]">Equip</Label>
