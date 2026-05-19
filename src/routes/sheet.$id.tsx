@@ -444,7 +444,7 @@ function SheetPage() {
                 className="h-7 w-44 text-xs" />
             }>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-2.5">
-              {SKILL_GROUPS.map((g) => (
+              {skillGroups.map((g) => (
                 <div key={g.attr} className="bg-secondary/40 rounded-lg p-2.5">
                   <h4 className="font-cinzel text-xs font-bold mb-1.5">{g.label} ({g.attr})</h4>
                   <div className="space-y-0.5">
