@@ -806,6 +806,38 @@ function DataPanel({ s, upd }: PanelProps) {
         </div>
       </Card>
 
+      {/* Skill Groups editor */}
+      <Card className="p-4">
+        <h3 className="font-cinzel font-bold mb-1">Listas de Perícias</h3>
+        <p className="text-xs text-muted-foreground mb-3">Uma perícia por linha em cada grupo de atributo.</p>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+          {s.skill_groups.map((g, gi) => (
+            <div key={g.attr + gi} className="bg-secondary/30 rounded-lg p-3 space-y-2">
+              <div className="grid grid-cols-[80px_1fr] gap-2">
+                <Input value={g.attr} className="h-8 font-cinzel font-bold"
+                  onChange={(e) => upd("skill_groups", s.skill_groups.map((x, i) => i === gi ? { ...x, attr: e.target.value.toUpperCase() } : x))} />
+                <Input value={g.label} className="h-8"
+                  onChange={(e) => upd("skill_groups", s.skill_groups.map((x, i) => i === gi ? { ...x, label: e.target.value } : x))} />
+              </div>
+              <Textarea rows={5} value={g.skills.join("\n")}
+                onChange={(e) =>
+                  upd("skill_groups", s.skill_groups.map((x, i) => i === gi ? { ...x, skills: e.target.value.split("\n").map((l) => l.trim()).filter(Boolean) } : x))
+                } />
+              <Button size="sm" variant="ghost" className="text-destructive h-7 gap-1"
+                onClick={() => upd("skill_groups", s.skill_groups.filter((_, i) => i !== gi))}>
+                <Trash className="w-3 h-3" /> Remover grupo
+              </Button>
+            </div>
+          ))}
+        </div>
+        <Button size="sm" className="mt-3 gap-1.5"
+          onClick={() => upd("skill_groups", [...s.skill_groups, { attr: "NOV", label: "Novo Grupo", skills: [] }])}>
+          <Plus className="w-3.5 h-3.5" /> Novo grupo
+        </Button>
+      </Card>
+
+
+
       <Card className="p-4">
         <div className="flex justify-between items-center mb-3">
           <div>
