@@ -630,9 +630,9 @@ function SheetPage() {
   );
 }
 
-function Section({ title, children, extra }: { title: string; children: React.ReactNode; extra?: React.ReactNode }) {
+function Section({ title, children, extra, id }: { title: string; children: React.ReactNode; extra?: React.ReactNode; id?: string }) {
   return (
-    <Card className="p-4 bg-card/60 backdrop-blur-sm border-border/60 transition-all hover:border-border">
+    <Card id={id} className="p-4 bg-card/60 backdrop-blur-sm border-border/60 transition-all hover:border-border scroll-mt-32">
       <div className="flex items-center justify-between flex-wrap gap-2 mb-3">
         <h3 className="font-cinzel font-bold text-primary">{title}</h3>
         {extra}
