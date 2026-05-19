@@ -298,10 +298,10 @@ function SheetPage() {
                 <div className="h-48 sm:h-56">
                   <ResponsiveContainer width="100%" height="100%">
                     <RadarChart data={radarData} outerRadius="80%">
-                      <PolarGrid stroke="hsl(var(--border))" />
-                      <PolarAngleAxis dataKey="attr" tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 11, fontFamily: "Cinzel, serif" }} />
-                      <PolarRadiusAxis angle={90} domain={[0, 5]} tick={false} stroke="hsl(var(--border))" />
-                      <Radar dataKey="value" stroke="hsl(var(--primary))" fill="hsl(var(--primary))" fillOpacity={0.35} />
+                      <PolarGrid stroke="#a855f7" strokeOpacity={0.35} />
+                      <PolarAngleAxis dataKey="attr" tick={{ fill: "#c084fc", fontSize: 11, fontFamily: "Cinzel, serif" }} />
+                      <PolarRadiusAxis angle={90} domain={[0, 5]} tick={false} stroke="#a855f7" strokeOpacity={0.4} />
+                      <Radar dataKey="value" stroke="#a855f7" fill="#a855f7" fillOpacity={0.4} />
                     </RadarChart>
                   </ResponsiveContainer>
                 </div>
