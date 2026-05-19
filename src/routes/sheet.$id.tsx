@@ -501,7 +501,7 @@ function SheetPage() {
                 fields={[
                   { key: "nome", label: "Nome" },
                   { key: "descricao", label: "Descrição", type: "textarea" },
-                  { key: "espaco", label: "Espaço (pode ser negativo)", type: "number" },
+                  { key: "espaco", label: "Espaço", type: "number" },
                 ]}
                 onAdd={(it) => update("inventory", [...sheet.inventory, { ...it, id: genId() }])} />
             )
