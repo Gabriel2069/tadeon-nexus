@@ -114,6 +114,7 @@ function SheetPage() {
         setBranches((g.skill_branches as SkillBranch[] | undefined) ?? []);
         setUpgradeCosts((g.upgrade_costs as UpgradeCosts | undefined) ?? DEFAULT_UPGRADE_COSTS);
         setConditionOptions((g.condition_options as ConditionOptionsMap | undefined) ?? DEFAULT_CONDITION_OPTIONS);
+        setSheetSkillGroups((g.skill_groups as typeof SKILL_GROUPS | undefined) ?? []);
       }
       setLoading(false);
     })();
