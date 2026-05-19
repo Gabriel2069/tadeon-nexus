@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/dialog";
 import {
   Loader2, Save, Plus, Trash, ChevronUp, ChevronDown, Maximize2, Eye, EyeOff,
-  Swords, Skull, Search as SearchIcon, Users, ScrollText, Pin, Cog, Sparkles,
+  Swords, Skull, Search as SearchIcon, Users, ScrollText, Pin, Cog, Sparkles, ExternalLink,
 } from "lucide-react";
 import { toast } from "sonner";
 import type { RankRow, SkillBranch, UpgradeCosts, ConditionOptionsMap, ConditionKey, Attributes } from "@/lib/sheet-types";
