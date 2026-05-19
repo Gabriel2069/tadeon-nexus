@@ -94,7 +94,7 @@ function SheetPage() {
       const [{ data, error }, { data: settings }] = await Promise.all([
         supabase.from("character_sheets").select("*").eq("id", id).maybeSingle(),
         supabase.from("game_settings")
-          .select("rank_table,skill_branches,upgrade_costs,condition_options")
+          .select("rank_table,skill_branches,upgrade_costs,condition_options,skill_groups")
           .eq("key", "global").maybeSingle(),
       ]);
       if (error || !data) {
