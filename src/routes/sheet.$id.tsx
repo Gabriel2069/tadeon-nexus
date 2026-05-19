@@ -261,8 +261,16 @@ function SheetPage() {
         </TabsList>
 
         <TabsContent value="ficha" className="space-y-4 mt-0">
-          {/* Identity */}
-          <Section title="Identidade">
+          {/* Quick jump shortcuts */}
+          <div className="flex flex-wrap gap-1.5 -mt-1">
+            {sectionAnchors.map((a) => (
+              <button key={a.id} type="button" onClick={() => jumpTo(a.id)}
+                className="text-[11px] px-2.5 py-1 rounded-full border border-border bg-secondary/40 hover:bg-primary/15 hover:border-primary/50 hover:text-primary transition-all font-medium">
+                {a.label}
+              </button>
+            ))}
+          </div>
+          <Section id="sec-info" title="Identidade">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <Field label="Nome" value={sheet.name} onChange={(v) => update("name", v)} disabled={!canEdit} />
               <Field label="Ocupação" value={sheet.occupation} onChange={(v) => update("occupation", v)} disabled={!canEdit} />
