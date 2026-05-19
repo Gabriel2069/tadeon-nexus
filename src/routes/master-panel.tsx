@@ -53,6 +53,7 @@ interface SettingsRow {
   skill_branches: SkillBranch[];
   upgrade_costs: UpgradeCosts;
   condition_options: ConditionOptionsMap;
+  skill_groups: { attr: string; label: string; skills: string[] }[];
 }
 
 interface SheetSummary {
