@@ -534,6 +534,7 @@ function CluesPanel({ s, upd }: PanelProps) {
 
 /* ============ Pinned sheets ============ */
 function PinnedPanel({ s, upd, sheets }: PanelProps & { sheets: SheetSummary[] }) {
+  const navigate = useNavigate();
   const pinned = useMemo(() => s.pinned_sheet_ids
     .map((id) => sheets.find((sh) => sh.id === id))
     .filter((x): x is SheetSummary => !!x), [s.pinned_sheet_ids, sheets]);
@@ -571,21 +572,40 @@ function PinnedPanel({ s, upd, sheets }: PanelProps & { sheets: SheetSummary[] }
         <Card className="p-8 text-center text-sm text-muted-foreground italic">Selecione fichas acima para comparar.</Card>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3">
-          {pinned.map((sh) => (
+          {pinned.map((sh) => {
+            const eq = Math.max(-10, Math.min(10, Number(sh.equilibrium ?? 0)));
+            const eqPct = ((eq + 10) / 20) * 100;
+            return (
             <Card key={sh.id} className="p-3 bg-card/70">
-              <h4 className="font-cinzel font-bold truncate">{sh.name || "Sem nome"}</h4>
-              <p className="text-[10px] text-muted-foreground truncate">{sh.owner_email}</p>
+              <div className="flex items-start justify-between gap-2">
+                <div className="min-w-0">
+                  <h4 className="font-cinzel font-bold truncate">{sh.name || "Sem nome"}</h4>
+                  <p className="text-[10px] text-muted-foreground truncate">{sh.owner_email}</p>
+                </div>
+                <Button size="sm" variant="outline" className="h-7 gap-1 text-[11px] shrink-0"
+                  onClick={() => navigate({ to: "/sheet/$id", params: { id: sh.id } })}>
+                  <ExternalLink className="w-3 h-3" /> Abrir
+                </Button>
+              </div>
               <div className="grid grid-cols-3 gap-1.5 mt-2 text-center text-xs">
                 <Mini label="PV" v={sh.stats?.pv_current ?? 0} color="text-red-400" />
                 <Mini label="PS" v={sh.stats?.ps_current ?? 0} color="text-purple-400" />
                 <Mini label="PE" v={sh.stats?.pe_current ?? 0} color="text-emerald-400" />
               </div>
               <div className="mt-2">
-                <div className="text-[10px] text-muted-foreground flex justify-between"><span>Equilíbrio</span><span>{sh.equilibrium ?? 0}/100</span></div>
-                <div className="h-1.5 bg-secondary rounded-full overflow-hidden">
-                  <div className="h-full bg-gradient-to-r from-red-600 via-yellow-500 to-emerald-500"
-                    style={{ width: `${sh.equilibrium ?? 0}%` }} />
+                <div className="text-[10px] text-muted-foreground flex justify-between">
+                  <span>Equilíbrio</span>
+                  <span>{eq > 0 ? `+${eq}` : eq}</span>
                 </div>
+                <div className="relative h-1.5 bg-secondary rounded-full overflow-hidden">
+                  <div className="absolute inset-0" style={{
+                    background: "linear-gradient(90deg, hsl(0,75%,18%) 0%, hsl(0,75%,50%) 50%, hsl(50,95%,55%) 50%, hsl(50,70%,95%) 100%)",
+                    opacity: 0.35,
+                  }} />
+                  <div className="absolute top-0 bottom-0 w-0.5 bg-foreground/70"
+                    style={{ left: `calc(${eqPct}% - 1px)` }} />
+                </div>
+                <div className="flex justify-between text-[9px] text-muted-foreground mt-0.5"><span>-10</span><span>0</span><span>+10</span></div>
               </div>
               <div className="mt-2">
                 <div className="text-[10px] text-muted-foreground flex justify-between"><span>Exposição</span><span>{sh.exposure ?? 0}/100</span></div>
@@ -603,7 +623,7 @@ function PinnedPanel({ s, upd, sheets }: PanelProps & { sheets: SheetSummary[] }
                 ))}
               </div>
             </Card>
-          ))}
+          );})}
         </div>
       )}
     </div>
