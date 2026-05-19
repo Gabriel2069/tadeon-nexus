@@ -283,7 +283,7 @@ function SheetPage() {
 
           {/* Attributes (with radar) + Vital points */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-            <Section title="Atributos">
+            <Section id="sec-attr" title="Atributos">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 items-center">
                 <div className="space-y-1.5">
                   {(Object.keys(attrs) as (keyof Attributes)[]).map((k) => (
