@@ -501,7 +501,7 @@ function SheetPage() {
           </Section>
 
           {/* Inventory */}
-          <Section title="Inventário" extra={
+          <Section id="sec-inv" title="Inventário" extra={
             canEdit && (
               <AddItemDialog<InventoryItem>
                 title="Novo Item" triggerLabel="Adicionar Item"
