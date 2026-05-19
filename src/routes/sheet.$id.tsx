@@ -532,7 +532,7 @@ function SheetPage() {
           </Section>
 
           {/* Abilities */}
-          <Section title="Habilidades" extra={
+          <Section id="sec-hab" title="Habilidades" extra={
             canEdit && (
               <AddItemDialog<Ability>
                 title="Nova Habilidade" triggerLabel="Adicionar Habilidade"
