@@ -470,7 +470,7 @@ function SheetPage() {
           </Section>
 
           {/* Weapons */}
-          <Section title="Armas" extra={
+          <Section id="sec-armas" title="Armas" extra={
             canEdit && (
               <AddItemDialog<Weapon>
                 title="Nova Arma" triggerLabel="Adicionar Arma"
