@@ -154,12 +154,26 @@ function SheetPage() {
   }, [sheet]);
 
   const borderShadow = useMemo(() => {
-    if (activeConditions.length === 0) return undefined;
-    // Layered glow shadows for each active condition
-    return activeConditions
-      .map((k, i) => `0 0 ${10 + i * 4}px 0 rgba(${CONDITION_META[k].rgb}, 0.55)`)
-      .join(", ");
-  }, [activeConditions]);
+    const layers: string[] = [];
+    activeConditions.forEach((k, i) => {
+      layers.push(`0 0 ${10 + i * 4}px 0 rgba(${CONDITION_META[k].rgb}, 0.55)`);
+    });
+    const dying = sheet?.dying ?? 0;
+    if (dying > 0) {
+      const intensity = 0.4 + dying * 0.2;
+      const blur = 14 + dying * 10;
+      layers.push(`0 0 ${blur}px ${2 + dying}px rgba(120, 0, 0, ${intensity})`);
+      layers.push(`0 0 ${blur + 6}px ${1 + dying}px rgba(0, 0, 0, ${Math.min(0.9, intensity + 0.1)})`);
+    }
+    const insane = sheet?.going_insane ?? 0;
+    if (insane > 0) {
+      const intensity = 0.35 + insane * 0.2;
+      const blur = 14 + insane * 10;
+      layers.push(`0 0 ${blur}px ${2 + insane}px rgba(255, 245, 180, ${intensity})`);
+      layers.push(`0 0 ${blur + 8}px ${1 + insane}px rgba(255, 255, 255, ${Math.min(0.85, intensity)})`);
+    }
+    return layers.length ? layers.join(", ") : undefined;
+  }, [activeConditions, sheet?.dying, sheet?.going_insane]);
 
   if (loading || !sheet) {
     return <div className="flex justify-center py-16"><Loader2 className="w-8 h-8 animate-spin text-primary" /></div>;
@@ -171,11 +185,27 @@ function SheetPage() {
   const pvMax = base.pv + sheet.stats.pv_mod + 3 * attrs.COR + 3 * upg.pv;
   const psMax = base.ps + sheet.stats.ps_mod + 3 * attrs.MEN + 3 * upg.ps;
   const peMax = base.pe + sheet.stats.pe_mod + 3 * attrs.ERU + 2 * upg.pe;
-  const defTotal = sheet.stats.def_equip + sheet.stats.def_mod + upg.def;
+  const defTotal = base.def + sheet.stats.def_equip + sheet.stats.def_mod + upg.def;
   const invCapacity = 5 + 3 * attrs.COR;
   const invUsed =
     sheet.weapons.reduce((s, w) => s + (Number(w.peso) || 0), 0) +
     sheet.inventory.reduce((s, i) => s + (Number(i.espaco) || 0), 0);
+
+  const skillGroups = sheetSkillGroups.length ? sheetSkillGroups : SKILL_GROUPS;
+  const sectionAnchors: { id: string; label: string }[] = [
+    { id: "sec-info", label: "Informações" },
+    { id: "sec-attr", label: "Atributos" },
+    { id: "sec-pontos", label: "Pontos" },
+    { id: "sec-pericias", label: "Perícias" },
+    { id: "sec-inv", label: "Inventário" },
+    { id: "sec-armas", label: "Armas" },
+    { id: "sec-hab", label: "Habilidades" },
+    { id: "sec-notas", label: "Anotações" },
+  ];
+  const jumpTo = (id: string) => {
+    const el = document.getElementById(id);
+    if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
 
   const equilibrium = clamp(Math.round(sheet.equilibrium || 0), -10, 10);
   const equilibriumPct = ((equilibrium + 10) / 20) * 100;
