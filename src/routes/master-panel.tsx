@@ -90,6 +90,13 @@ function MasterPanel() {
           skill_branches: (g.skill_branches as SkillBranch[]) ?? [],
           upgrade_costs: (g.upgrade_costs as UpgradeCosts) ?? DEFAULT_UPGRADE_COSTS,
           condition_options: (g.condition_options as ConditionOptionsMap) ?? DEFAULT_CONDITION_OPTIONS,
+          skill_groups: (g.skill_groups as SettingsRow["skill_groups"]) ?? [
+            { attr: "COR", label: "Corpo", skills: ["Acrobacia","Atletismo","Combate","Furtividade"] },
+            { attr: "MEN", label: "Mente", skills: ["Investigação","Percepção","Sobrevivência","Vontade"] },
+            { attr: "INS", label: "Instinto", skills: ["Iniciativa","Pontaria","Reflexos","Intuição"] },
+            { attr: "PRE", label: "Presença", skills: ["Atuação","Diplomacia","Enganação","Intimidação"] },
+            { attr: "ERU", label: "Erudição", skills: ["Ciências","Medicina","Ocultismo","Tecnologia"] },
+          ],
         });
       }
       setSheets((ch as unknown as SheetSummary[]) ?? []);
