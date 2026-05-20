@@ -255,11 +255,23 @@ function SheetPage() {
                   <Loader2 className="w-3 h-3 animate-spin" /> Salvando…
                 </span>
               )}
+              {sheet.power_form_enabled && (
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => setPowerFormOpen(true)}
+                  className="gap-1.5 border-primary/40 text-primary hover:bg-primary/10"
+                  title="Abrir Forma de Poder"
+                >
+                  <Sparkles className="w-4 h-4" /> <span className="hidden sm:inline">Forma de Poder</span>
+                </Button>
+              )}
               <Button size="sm" onClick={doSave} className="gap-1.5">
                 <Save className="w-4 h-4" /> <span className="hidden sm:inline">Salvar</span>
               </Button>
             </div>
           )}
+
         </div>
         {activeConditions.length > 0 && (
           <div className="flex flex-wrap gap-1.5 mt-2">
