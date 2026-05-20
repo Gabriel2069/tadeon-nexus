@@ -120,12 +120,15 @@ function SheetPage() {
         historia: "", personalidade: "", objetivos: "", observacoes: "",
       };
       const pfData = (raw.power_form_data as PowerFormData | null) ?? {};
+      const fragItems = (raw.fragments_items as InventoryItem[] | null) ?? [];
       setSheet({
         ...(data as unknown as SheetData),
         description: desc,
         power_form_enabled: Boolean(raw.power_form_enabled),
         power_form_data: pfData,
+        fragments_items: fragItems,
       });
+
       const g = (settingsJson as unknown as Record<string, unknown> | null) ?? {};
       setRankTable((g.rank_table as RankRow[] | undefined) ?? []);
       setBranches((g.skill_branches as SkillBranch[] | undefined) ?? []);
