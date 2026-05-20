@@ -28,6 +28,7 @@ export type Database = {
           equilibrium: number
           exposure: number
           fragments: number
+          fragments_items: Json
           going_insane: number
           id: string
           inventory: Json
@@ -64,6 +65,7 @@ export type Database = {
           equilibrium?: number
           exposure?: number
           fragments?: number
+          fragments_items?: Json
           going_insane?: number
           id?: string
           inventory?: Json
@@ -100,6 +102,7 @@ export type Database = {
           equilibrium?: number
           exposure?: number
           fragments?: number
+          fragments_items?: Json
           going_insane?: number
           id?: string
           inventory?: Json
