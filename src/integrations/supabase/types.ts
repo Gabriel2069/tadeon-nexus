@@ -41,6 +41,8 @@ export type Database = {
           owner_id: string
           plots: Json
           pm_spent: number
+          power_form_data: Json
+          power_form_enabled: boolean
           purchased_skills: Json
           skill_bonus: string | null
           skills: Json
@@ -75,6 +77,8 @@ export type Database = {
           owner_id: string
           plots?: Json
           pm_spent?: number
+          power_form_data?: Json
+          power_form_enabled?: boolean
           purchased_skills?: Json
           skill_bonus?: string | null
           skills?: Json
@@ -109,6 +113,8 @@ export type Database = {
           owner_id?: string
           plots?: Json
           pm_spent?: number
+          power_form_data?: Json
+          power_form_enabled?: boolean
           purchased_skills?: Json
           skill_bonus?: string | null
           skills?: Json
@@ -238,6 +244,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      get_public_game_settings: { Args: never; Returns: Json }
       get_user_role: {
         Args: { _user_id: string }
         Returns: Database["public"]["Enums"]["app_role"]
