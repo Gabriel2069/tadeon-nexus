@@ -34,6 +34,14 @@ export const Route = createFileRoute("/sheet/$id")({
   ),
 });
 
+interface PowerFormData {
+  attributes?: Partial<Attributes>;
+  abilities?: Ability[];
+  plots?: Plot[];
+  notes?: string;
+  stat_mods?: Partial<Stats>;
+}
+
 interface SheetData {
   id: string; owner_id: string; owner_email: string;
   name: string; occupation: string; age: string; brand: string; origin: string; motivation: string;
@@ -48,7 +56,10 @@ interface SheetData {
   stat_upgrades: StatUpgrades; purchased_skills: string[];
   notes: string;
   description: Description;
+  power_form_enabled: boolean;
+  power_form_data: PowerFormData;
 }
+
 
 const RANGE_OPTIONS = ["Curto", "Médio", "Longo", "Extremo"];
 
