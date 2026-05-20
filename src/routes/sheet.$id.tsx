@@ -726,9 +726,62 @@ function SheetPage() {
         </TabsContent>
       </Tabs>
       </div>
+
+      {/* Power Form dialog — available only when mestre toggles power_form_enabled on the sheet */}
+      <Dialog open={powerFormOpen} onOpenChange={setPowerFormOpen}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle className="font-cinzel text-primary flex items-center gap-2">
+              <Sparkles className="w-5 h-5" /> Forma de Poder
+            </DialogTitle>
+            <DialogDescription>
+              Cópia editável da sua ficha durante a transformação. As alterações ficam isoladas e não afetam a ficha base.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-3 max-h-[60vh] overflow-y-auto pr-1">
+            <div>
+              <Label className="text-xs">Anotações da Forma</Label>
+              <Textarea
+                disabled={!canEdit}
+                value={sheet.power_form_data.notes || ""}
+                onChange={(e) =>
+                  update("power_form_data", { ...sheet.power_form_data, notes: e.target.value })
+                }
+                rows={4}
+                placeholder="Descrição, aparência, custos de manutenção, duração..."
+              />
+            </div>
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+              {(["FOR", "COR", "MEN", "PRE", "ERU", "INF"] as const).map((k) => (
+                <div key={k}>
+                  <Label className="text-[10px] uppercase">{k} (override)</Label>
+                  <Input
+                    type="number"
+                    disabled={!canEdit}
+                    value={(sheet.power_form_data.attributes?.[k as keyof Attributes]) ?? ""}
+                    placeholder={String(sheet.attributes[k as keyof Attributes])}
+                    onChange={(e) => {
+                      const raw = e.target.value;
+                      const next = { ...(sheet.power_form_data.attributes ?? {}) } as Partial<Attributes>;
+                      if (raw === "") delete next[k as keyof Attributes];
+                      else next[k as keyof Attributes] = Number(raw);
+                      update("power_form_data", { ...sheet.power_form_data, attributes: next });
+                    }}
+                    className="h-8 text-sm"
+                  />
+                </div>
+              ))}
+            </div>
+            <p className="text-[10px] text-muted-foreground">
+              Deixe um campo vazio para manter o valor original da ficha.
+            </p>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
+
 
 function Section({ title, children, extra, id }: { title: string; children: React.ReactNode; extra?: React.ReactNode; id?: string }) {
   return (
