@@ -56,17 +56,17 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Tadeon Nexus -- Fichas de RPG online" },
+      { title: "Tadeon Nexus - Fichas de RPG online" },
       {
         name: "description",
         content:
           "Tadeon Nexus: gerencie fichas de personagem, atributos, perícias e a árvore de habilidades do seu RPG online com painel para mestres e jogadores.",
       },
-      { property: "og:title", content: "Tadeon Nexus -- Fichas de RPG online" },
-      { name: "twitter:title", content: "Tadeon Nexus -- Fichas de RPG online" },
-      { name: "description", content: "Sistema de Fichas por Gabriel Tadeu" },
-      { property: "og:description", content: "Sistema de Fichas por Gabriel Tadeu" },
-      { name: "twitter:description", content: "Sistema de Fichas por Gabriel Tadeu" },
+      { property: "og:title", content: "Tadeon Nexus - Fichas de RPG online" },
+      { name: "twitter:title", content: "Tadeon Nexus - Fichas de RPG online" },
+      { name: "description", content: "Sistema online de RPG por Gabriel Tadeu" },
+      { property: "og:description", content: "Sistema online de RPG por Gabriel Tadeu" },
+      { name: "twitter:description", content: "Sistema online de RPG por Gabriel Tadeu" },
       { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/06c8eab7-b313-400c-ba56-184a5a569875" },
       { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/06c8eab7-b313-400c-ba56-184a5a569875" },
       { name: "twitter:card", content: "summary_large_image" },
