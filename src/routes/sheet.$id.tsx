@@ -97,7 +97,10 @@ function SheetPage() {
   const [upgradeCosts, setUpgradeCosts] = useState<UpgradeCosts>(DEFAULT_UPGRADE_COSTS);
   const [conditionOptions, setConditionOptions] = useState<ConditionOptionsMap>(DEFAULT_CONDITION_OPTIONS);
   const [sheetSkillGroups, setSheetSkillGroups] = useState<typeof SKILL_GROUPS>([]);
+  const [powerFormOpen, setPowerFormOpen] = useState(false);
+  const [fragmentsView, setFragmentsView] = useState(false);
   const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
   const skipNextSave = useRef(true);
 
   const canEdit = role === "mestre" || (sheet?.owner_id === user?.id && role !== "espectador");
