@@ -58,7 +58,9 @@ interface SheetData {
   description: Description;
   power_form_enabled: boolean;
   power_form_data: PowerFormData;
+  fragments_items: InventoryItem[];
 }
+
 
 
 const RANGE_OPTIONS = ["Curto", "Médio", "Longo", "Extremo"];
