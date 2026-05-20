@@ -208,10 +208,12 @@ function SheetPage() {
   const psMax = base.ps + sheet.stats.ps_mod + 3 * attrs.MEN + 3 * upg.ps;
   const peMax = base.pe + sheet.stats.pe_mod + 3 * attrs.ERU + 2 * upg.pe;
   const defTotal = base.def + sheet.stats.def_equip + sheet.stats.def_mod + upg.def;
-  const invCapacity = 5 + 3 * attrs.COR;
+  const invCapacity = 5 + 2 * attrs.COR;
   const invUsed =
     sheet.weapons.reduce((s, w) => s + (Number(w.peso) || 0), 0) +
-    sheet.inventory.reduce((s, i) => s + (Number(i.espaco) || 0), 0);
+    sheet.inventory.reduce((s, i) => s + (Number(i.espaco) || 0), 0) +
+    sheet.fragments_items.reduce((s, i) => s + (Number(i.espaco) || 0), 0);
+
 
   const skillGroups = sheetSkillGroups.length ? sheetSkillGroups : SKILL_GROUPS;
   const sectionAnchors: { id: string; label: string }[] = [
