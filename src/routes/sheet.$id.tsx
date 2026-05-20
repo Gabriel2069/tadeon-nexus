@@ -9,7 +9,9 @@ import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ArrowLeft, Save, Loader2, Plus, Minus, Trash } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+
+import { ArrowLeft, Save, Loader2, Plus, Minus, Trash, Sparkles, Gem } from "lucide-react";
 import { toast } from "sonner";
 import {
   Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer,
@@ -34,6 +36,14 @@ export const Route = createFileRoute("/sheet/$id")({
   ),
 });
 
+interface PowerFormData {
+  attributes?: Partial<Attributes>;
+  abilities?: Ability[];
+  plots?: Plot[];
+  notes?: string;
+  stat_mods?: Partial<Stats>;
+}
+
 interface SheetData {
   id: string; owner_id: string; owner_email: string;
   name: string; occupation: string; age: string; brand: string; origin: string; motivation: string;
@@ -48,7 +58,12 @@ interface SheetData {
   stat_upgrades: StatUpgrades; purchased_skills: string[];
   notes: string;
   description: Description;
+  power_form_enabled: boolean;
+  power_form_data: PowerFormData;
+  fragments_items: InventoryItem[];
 }
+
+
 
 const RANGE_OPTIONS = ["Curto", "Médio", "Longo", "Extremo"];
 
@@ -56,21 +71,21 @@ function clamp(n: number, min: number, max: number) {
   return Math.max(min, Math.min(max, n));
 }
 
-// Equilibrium color from -10 (dark red) → 0 (mid) → +10 (near white yellow)
+// Equilibrium color from -10 (dark red) → 0 (deep green) → +10 (near white yellow)
 function equilibriumColor(value: number): string {
   const v = clamp(value, -10, 10);
+  if (v === 0) return "hsl(140, 70%, 22%)"; // deep green at perfect balance
   if (v < 0) {
-    // -10 → very dark red, 0 → bright red
     const t = (v + 10) / 10; // 0..1
-    const l = 18 + t * 32; // lightness 18..50
+    const l = 18 + t * 32;
     return `hsl(0, 75%, ${l}%)`;
   }
-  // 0 → orange-yellow, +10 → near white-yellow
-  const t = v / 10; // 0..1
-  const l = 55 + t * 40; // 55..95
-  const s = 95 - t * 25; // 95..70
+  const t = v / 10;
+  const l = 55 + t * 40;
+  const s = 95 - t * 25;
   return `hsl(50, ${s}%, ${l}%)`;
 }
+
 
 function SheetPage() {
   const { id } = Route.useParams();
@@ -84,18 +99,21 @@ function SheetPage() {
   const [upgradeCosts, setUpgradeCosts] = useState<UpgradeCosts>(DEFAULT_UPGRADE_COSTS);
   const [conditionOptions, setConditionOptions] = useState<ConditionOptionsMap>(DEFAULT_CONDITION_OPTIONS);
   const [sheetSkillGroups, setSheetSkillGroups] = useState<typeof SKILL_GROUPS>([]);
+  const [powerFormOpen, setPowerFormOpen] = useState(false);
+  const [fragmentsView, setFragmentsView] = useState(false);
   const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
   const skipNextSave = useRef(true);
 
   const canEdit = role === "mestre" || (sheet?.owner_id === user?.id && role !== "espectador");
 
   useEffect(() => {
     void (async () => {
-      const [{ data, error }, { data: settings }] = await Promise.all([
+      const [{ data, error }, { data: settingsJson }] = await Promise.all([
         supabase.from("character_sheets").select("*").eq("id", id).maybeSingle(),
-        supabase.from("game_settings")
-          .select("rank_table,skill_branches,upgrade_costs,condition_options,skill_groups")
-          .eq("key", "global").maybeSingle(),
+        // Use SECURITY DEFINER RPC: returns only player-safe fields, so jogadores/espectadores
+        // cannot read NPCs/clues/scenes from the master settings table.
+        supabase.rpc("get_public_game_settings"),
       ]);
       if (error || !data) {
         toast.error("Ficha não encontrada.");
@@ -103,22 +121,29 @@ function SheetPage() {
         return;
       }
       const raw = data as unknown as Record<string, unknown>;
-      // Ensure description exists
       const desc = (raw.description as Description | null) ?? {
         historia: "", personalidade: "", objetivos: "", observacoes: "",
       };
-      setSheet({ ...(data as unknown as SheetData), description: desc });
-      if (settings) {
-        const g = settings as unknown as Record<string, unknown>;
-        setRankTable((g.rank_table as RankRow[] | undefined) ?? []);
-        setBranches((g.skill_branches as SkillBranch[] | undefined) ?? []);
-        setUpgradeCosts((g.upgrade_costs as UpgradeCosts | undefined) ?? DEFAULT_UPGRADE_COSTS);
-        setConditionOptions((g.condition_options as ConditionOptionsMap | undefined) ?? DEFAULT_CONDITION_OPTIONS);
-        setSheetSkillGroups((g.skill_groups as typeof SKILL_GROUPS | undefined) ?? []);
-      }
+      const pfData = (raw.power_form_data as PowerFormData | null) ?? {};
+      const fragItems = (raw.fragments_items as InventoryItem[] | null) ?? [];
+      setSheet({
+        ...(data as unknown as SheetData),
+        description: desc,
+        power_form_enabled: Boolean(raw.power_form_enabled),
+        power_form_data: pfData,
+        fragments_items: fragItems,
+      });
+
+      const g = (settingsJson as unknown as Record<string, unknown> | null) ?? {};
+      setRankTable((g.rank_table as RankRow[] | undefined) ?? []);
+      setBranches((g.skill_branches as SkillBranch[] | undefined) ?? []);
+      setUpgradeCosts((g.upgrade_costs as UpgradeCosts | undefined) ?? DEFAULT_UPGRADE_COSTS);
+      setConditionOptions((g.condition_options as ConditionOptionsMap | undefined) ?? DEFAULT_CONDITION_OPTIONS);
+      setSheetSkillGroups((g.skill_groups as typeof SKILL_GROUPS | undefined) ?? []);
       setLoading(false);
     })();
   }, [id, navigate]);
+
 
   useEffect(() => {
     if (!sheet || !canEdit) return;
@@ -188,10 +213,12 @@ function SheetPage() {
   const psMax = base.ps + sheet.stats.ps_mod + 3 * attrs.MEN + 3 * upg.ps;
   const peMax = base.pe + sheet.stats.pe_mod + 3 * attrs.ERU + 2 * upg.pe;
   const defTotal = base.def + sheet.stats.def_equip + sheet.stats.def_mod + upg.def;
-  const invCapacity = 5 + 3 * attrs.COR;
+  const invCapacity = 5 + 2 * attrs.COR;
   const invUsed =
     sheet.weapons.reduce((s, w) => s + (Number(w.peso) || 0), 0) +
-    sheet.inventory.reduce((s, i) => s + (Number(i.espaco) || 0), 0);
+    sheet.inventory.reduce((s, i) => s + (Number(i.espaco) || 0), 0) +
+    sheet.fragments_items.reduce((s, i) => s + (Number(i.espaco) || 0), 0);
+
 
   const skillGroups = sheetSkillGroups.length ? sheetSkillGroups : SKILL_GROUPS;
   const sectionAnchors: { id: string; label: string }[] = [
@@ -233,11 +260,23 @@ function SheetPage() {
                   <Loader2 className="w-3 h-3 animate-spin" /> Salvando…
                 </span>
               )}
+              {sheet.power_form_enabled && (
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => setPowerFormOpen(true)}
+                  className="gap-1.5 border-primary/40 text-primary hover:bg-primary/10"
+                  title="Abrir Forma de Poder"
+                >
+                  <Sparkles className="w-4 h-4" /> <span className="hidden sm:inline">Forma de Poder</span>
+                </Button>
+              )}
               <Button size="sm" onClick={doSave} className="gap-1.5">
                 <Save className="w-4 h-4" /> <span className="hidden sm:inline">Salvar</span>
               </Button>
             </div>
           )}
+
         </div>
         {activeConditions.length > 0 && (
           <div className="flex flex-wrap gap-1.5 mt-2">
@@ -554,42 +593,95 @@ function SheetPage() {
               onChange={(v) => update("abilities", v as Ability[])} />
           </Section>
 
-          {/* Plots */}
-          <Section title="Tramas" extra={
-            <div className="flex items-center gap-2">
-              <div className="flex items-center gap-1.5 text-xs">
-                <Label className="text-xs">Fragmentos</Label>
-                <Input type="number" disabled={!canEdit} value={sheet.fragments}
-                  onChange={(e) => update("fragments", Number(e.target.value))} className="w-16 h-7" />
-              </div>
-              {canEdit && (
-                <AddItemDialog<Plot>
-                  title="Nova Trama" triggerLabel="Trama"
-                  initial={{ id: "", nome: "", uso: "", alcance: "", dano: "", efeito: "", dt_descricao: "" }}
-                  fields={[
-                    { key: "nome", label: "Nome" },
-                    { key: "uso", label: "Uso" },
-                    { key: "alcance", label: "Alcance" },
-                    { key: "dano", label: "Dano" },
-                    { key: "efeito", label: "Efeito", type: "textarea" },
-                    { key: "dt_descricao", label: "DT / Descrição", type: "textarea" },
-                  ]}
-                  onAdd={(p) => update("plots", [...sheet.plots, { ...p, id: genId() }])} />
+          {/* Plots / Fragments toggle */}
+          <Section title={fragmentsView ? "Fragmentos" : "Tramas"} extra={
+            <div className="flex items-center gap-2 flex-wrap">
+              <Button
+                type="button"
+                size="sm"
+                variant={fragmentsView ? "default" : "outline"}
+                onClick={() => setFragmentsView((v) => !v)}
+                className="h-7 gap-1.5"
+                title="Alternar entre Tramas e quadro de Fragmentos"
+              >
+                <Gem className="w-3.5 h-3.5" />
+                <span>{fragmentsView ? "Ver Tramas" : "Fragmentos"}</span>
+                <span className="ml-1 px-1.5 py-0.5 rounded bg-background/40 text-[10px] font-mono">
+                  {sheet.fragments}
+                </span>
+              </Button>
+              {fragmentsView ? (
+                <div className="flex items-center gap-1.5 text-xs">
+                  <Label className="text-xs">Total</Label>
+                  <Input type="number" disabled={!canEdit} value={sheet.fragments}
+                    onChange={(e) => update("fragments", Number(e.target.value))} className="w-16 h-7" />
+                  {canEdit && (
+                    <AddItemDialog<InventoryItem>
+                      title="Novo Fragmento" triggerLabel="Fragmento"
+                      initial={{ id: "", nome: "", descricao: "", espaco: 1 }}
+                      fields={[
+                        { key: "nome", label: "Nome" },
+                        { key: "descricao", label: "Descrição", type: "textarea" },
+                        { key: "espaco", label: "Espaço (peso conta no inventário)", type: "number" },
+                      ]}
+                      onAdd={(it) => update("fragments_items", [...sheet.fragments_items, { ...it, id: genId() }])} />
+                  )}
+                </div>
+              ) : (
+                canEdit && (
+                  <AddItemDialog<Plot>
+                    title="Nova Trama" triggerLabel="Trama"
+                    initial={{ id: "", nome: "", uso: "", alcance: "", dano: "", efeito: "", dt_descricao: "" }}
+                    fields={[
+                      { key: "nome", label: "Nome" },
+                      { key: "uso", label: "Uso" },
+                      { key: "alcance", label: "Alcance" },
+                      { key: "dano", label: "Dano" },
+                      { key: "efeito", label: "Efeito", type: "textarea" },
+                      { key: "dt_descricao", label: "DT / Descrição", type: "textarea" },
+                    ]}
+                    onAdd={(p) => update("plots", [...sheet.plots, { ...p, id: genId() }])} />
+                )
               )}
             </div>
           }>
-            <p className="text-xs text-muted-foreground mb-2">DT Canalização base: {3 * attrs.MEN}</p>
-            <RowTable rows={sheet.plots} canEdit={canEdit}
-              columns={[
-                { key: "nome", label: "Nome", flex: 1.2 },
-                { key: "uso", label: "Uso" },
-                { key: "alcance", label: "Alcance" },
-                { key: "dano", label: "Dano" },
-                { key: "efeito", label: "Efeito", flex: 2 },
-                { key: "dt_descricao", label: "DT/Descrição", flex: 1.5 },
-              ]}
-              onChange={(v) => update("plots", v as Plot[])} />
+            {fragmentsView ? (
+              <>
+                <div className="mb-3 p-2.5 rounded-lg bg-gradient-to-r from-primary/15 to-transparent border border-primary/30 flex flex-wrap items-center gap-3 text-xs">
+                  <Gem className="w-4 h-4 text-primary" />
+                  <span><b className="text-primary">Fragmentos acumulados:</b> {sheet.fragments}</span>
+                  <span className="text-muted-foreground">·</span>
+                  <span>Peso somado ao inventário: <b>{sheet.fragments_items.reduce((s, i) => s + (Number(i.espaco) || 0), 0)}</b></span>
+                </div>
+                <RowTable rows={sheet.fragments_items} canEdit={canEdit}
+                  columns={[
+                    { key: "nome", label: "Nome", flex: 1.2 },
+                    { key: "descricao", label: "Descrição", flex: 2.5 },
+                    { key: "espaco", label: "Espaço", type: "number", width: 80 },
+                  ]}
+                  onChange={(v) => update("fragments_items", v as InventoryItem[])} />
+              </>
+            ) : (
+              <>
+                <div className="mb-3 inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-gradient-to-r from-primary/20 via-primary/10 to-transparent border border-primary/40 shadow-[0_0_12px_-4px_hsl(var(--primary))]">
+                  <span className="font-cinzel text-xs uppercase tracking-wider text-primary">DT de Canalização</span>
+                  <span className="text-lg font-bold text-primary">{3 * attrs.MEN}</span>
+                  <span className="text-[10px] text-muted-foreground">(3 × MEN)</span>
+                </div>
+                <RowTable rows={sheet.plots} canEdit={canEdit}
+                  columns={[
+                    { key: "nome", label: "Nome", flex: 1.2 },
+                    { key: "uso", label: "Uso" },
+                    { key: "alcance", label: "Alcance" },
+                    { key: "dano", label: "Dano" },
+                    { key: "efeito", label: "Efeito", flex: 2 },
+                    { key: "dt_descricao", label: "DT/Descrição", flex: 1.5 },
+                  ]}
+                  onChange={(v) => update("plots", v as Plot[])} />
+              </>
+            )}
           </Section>
+
 
           {/* Notes */}
           <Section id="sec-notas" title="Anotações Rápidas">
@@ -634,9 +726,62 @@ function SheetPage() {
         </TabsContent>
       </Tabs>
       </div>
+
+      {/* Power Form dialog — available only when mestre toggles power_form_enabled on the sheet */}
+      <Dialog open={powerFormOpen} onOpenChange={setPowerFormOpen}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle className="font-cinzel text-primary flex items-center gap-2">
+              <Sparkles className="w-5 h-5" /> Forma de Poder
+            </DialogTitle>
+            <DialogDescription>
+              Cópia editável da sua ficha durante a transformação. As alterações ficam isoladas e não afetam a ficha base.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-3 max-h-[60vh] overflow-y-auto pr-1">
+            <div>
+              <Label className="text-xs">Anotações da Forma</Label>
+              <Textarea
+                disabled={!canEdit}
+                value={sheet.power_form_data.notes || ""}
+                onChange={(e) =>
+                  update("power_form_data", { ...sheet.power_form_data, notes: e.target.value })
+                }
+                rows={4}
+                placeholder="Descrição, aparência, custos de manutenção, duração..."
+              />
+            </div>
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+              {(["FOR", "COR", "MEN", "PRE", "ERU", "INF"] as const).map((k) => (
+                <div key={k}>
+                  <Label className="text-[10px] uppercase">{k} (override)</Label>
+                  <Input
+                    type="number"
+                    disabled={!canEdit}
+                    value={(sheet.power_form_data.attributes?.[k as keyof Attributes]) ?? ""}
+                    placeholder={String(sheet.attributes[k as keyof Attributes])}
+                    onChange={(e) => {
+                      const raw = e.target.value;
+                      const next = { ...(sheet.power_form_data.attributes ?? {}) } as Partial<Attributes>;
+                      if (raw === "") delete next[k as keyof Attributes];
+                      else next[k as keyof Attributes] = Number(raw);
+                      update("power_form_data", { ...sheet.power_form_data, attributes: next });
+                    }}
+                    className="h-8 text-sm"
+                  />
+                </div>
+              ))}
+            </div>
+            <p className="text-[10px] text-muted-foreground">
+              Deixe um campo vazio para manter o valor original da ficha.
+            </p>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
+
 
 function Section({ title, children, extra, id }: { title: string; children: React.ReactNode; extra?: React.ReactNode; id?: string }) {
   return (
