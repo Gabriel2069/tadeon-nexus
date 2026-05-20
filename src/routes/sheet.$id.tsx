@@ -56,21 +56,21 @@ function clamp(n: number, min: number, max: number) {
   return Math.max(min, Math.min(max, n));
 }
 
-// Equilibrium color from -10 (dark red) → 0 (mid) → +10 (near white yellow)
+// Equilibrium color from -10 (dark red) → 0 (deep green) → +10 (near white yellow)
 function equilibriumColor(value: number): string {
   const v = clamp(value, -10, 10);
+  if (v === 0) return "hsl(140, 70%, 22%)"; // deep green at perfect balance
   if (v < 0) {
-    // -10 → very dark red, 0 → bright red
     const t = (v + 10) / 10; // 0..1
-    const l = 18 + t * 32; // lightness 18..50
+    const l = 18 + t * 32;
     return `hsl(0, 75%, ${l}%)`;
   }
-  // 0 → orange-yellow, +10 → near white-yellow
-  const t = v / 10; // 0..1
-  const l = 55 + t * 40; // 55..95
-  const s = 95 - t * 25; // 95..70
+  const t = v / 10;
+  const l = 55 + t * 40;
+  const s = 95 - t * 25;
   return `hsl(50, ${s}%, ${l}%)`;
 }
+
 
 function SheetPage() {
   const { id } = Route.useParams();
