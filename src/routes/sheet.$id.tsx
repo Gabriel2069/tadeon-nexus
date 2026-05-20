@@ -102,11 +102,11 @@ function SheetPage() {
 
   useEffect(() => {
     void (async () => {
-      const [{ data, error }, { data: settings }] = await Promise.all([
+      const [{ data, error }, { data: settingsJson }] = await Promise.all([
         supabase.from("character_sheets").select("*").eq("id", id).maybeSingle(),
-        supabase.from("game_settings")
-          .select("rank_table,skill_branches,upgrade_costs,condition_options,skill_groups")
-          .eq("key", "global").maybeSingle(),
+        // Use SECURITY DEFINER RPC: returns only player-safe fields, so jogadores/espectadores
+        // cannot read NPCs/clues/scenes from the master settings table.
+        supabase.rpc("get_public_game_settings"),
       ]);
       if (error || !data) {
         toast.error("Ficha não encontrada.");
@@ -114,22 +114,26 @@ function SheetPage() {
         return;
       }
       const raw = data as unknown as Record<string, unknown>;
-      // Ensure description exists
       const desc = (raw.description as Description | null) ?? {
         historia: "", personalidade: "", objetivos: "", observacoes: "",
       };
-      setSheet({ ...(data as unknown as SheetData), description: desc });
-      if (settings) {
-        const g = settings as unknown as Record<string, unknown>;
-        setRankTable((g.rank_table as RankRow[] | undefined) ?? []);
-        setBranches((g.skill_branches as SkillBranch[] | undefined) ?? []);
-        setUpgradeCosts((g.upgrade_costs as UpgradeCosts | undefined) ?? DEFAULT_UPGRADE_COSTS);
-        setConditionOptions((g.condition_options as ConditionOptionsMap | undefined) ?? DEFAULT_CONDITION_OPTIONS);
-        setSheetSkillGroups((g.skill_groups as typeof SKILL_GROUPS | undefined) ?? []);
-      }
+      const pfData = (raw.power_form_data as PowerFormData | null) ?? {};
+      setSheet({
+        ...(data as unknown as SheetData),
+        description: desc,
+        power_form_enabled: Boolean(raw.power_form_enabled),
+        power_form_data: pfData,
+      });
+      const g = (settingsJson as unknown as Record<string, unknown> | null) ?? {};
+      setRankTable((g.rank_table as RankRow[] | undefined) ?? []);
+      setBranches((g.skill_branches as SkillBranch[] | undefined) ?? []);
+      setUpgradeCosts((g.upgrade_costs as UpgradeCosts | undefined) ?? DEFAULT_UPGRADE_COSTS);
+      setConditionOptions((g.condition_options as ConditionOptionsMap | undefined) ?? DEFAULT_CONDITION_OPTIONS);
+      setSheetSkillGroups((g.skill_groups as typeof SKILL_GROUPS | undefined) ?? []);
       setLoading(false);
     })();
   }, [id, navigate]);
+
 
   useEffect(() => {
     if (!sheet || !canEdit) return;
