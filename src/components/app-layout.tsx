@@ -199,7 +199,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
         onOpenChange={setAccountOpen}
         initialName={profile?.full_name || ""}
         email={user?.email || ""}
-        onSaved={() => refreshProfile?.()}
+        onSaved={() => refresh()}
       />
     </div>
   );
