@@ -62,7 +62,9 @@ interface SheetSummary {
   stats: { pv_current: number; ps_current: number; pe_current: number };
   attributes: Record<string, number>;
   equilibrium: number;
+  power_form_enabled?: boolean;
 }
+
 
 function MasterPanel() {
   const [s, setS] = useState<SettingsRow | null>(null);
@@ -74,7 +76,7 @@ function MasterPanel() {
     void (async () => {
       const [{ data: gs }, { data: ch }] = await Promise.all([
         supabase.from("game_settings").select("*").eq("key", "global").maybeSingle(),
-        supabase.from("character_sheets").select("id,name,owner_email,exposure,stats,attributes,equilibrium"),
+        supabase.from("character_sheets").select("id,name,owner_email,exposure,stats,attributes,equilibrium,power_form_enabled"),
       ]);
       if (gs) {
         const g = gs as unknown as Record<string, unknown>;
@@ -163,7 +165,7 @@ function MasterPanel() {
           <CluesPanel s={s} upd={upd} />
         </TabsContent>
         <TabsContent value="pinned" className="mt-0">
-          <PinnedPanel s={s} upd={upd} sheets={sheets} />
+          <PinnedPanel s={s} upd={upd} sheets={sheets} setSheets={setSheets} />
         </TabsContent>
         <TabsContent value="notes" className="mt-0">
           <NotesPanel s={s} upd={upd} />
@@ -541,7 +543,10 @@ function CluesPanel({ s, upd }: PanelProps) {
 }
 
 /* ============ Pinned sheets ============ */
-function PinnedPanel({ s, upd, sheets }: PanelProps & { sheets: SheetSummary[] }) {
+function PinnedPanel({ s, upd, sheets, setSheets }: PanelProps & {
+  sheets: SheetSummary[];
+  setSheets: React.Dispatch<React.SetStateAction<SheetSummary[]>>;
+}) {
   const navigate = useNavigate();
   const pinned = useMemo(() => s.pinned_sheet_ids
     .map((id) => sheets.find((sh) => sh.id === id))
@@ -552,6 +557,23 @@ function PinnedPanel({ s, upd, sheets }: PanelProps & { sheets: SheetSummary[] }
       : [...s.pinned_sheet_ids, id];
     upd("pinned_sheet_ids", next);
   };
+
+  const togglePowerForm = async (sh: SheetSummary) => {
+    const next = !sh.power_form_enabled;
+    setSheets((prev) => prev.map((x) => (x.id === sh.id ? { ...x, power_form_enabled: next } : x)));
+    const { error } = await supabase
+      .from("character_sheets")
+      .update({ power_form_enabled: next })
+      .eq("id", sh.id);
+    if (error) {
+      toast.error("Falha ao atualizar Forma de Poder.");
+      setSheets((prev) => prev.map((x) => (x.id === sh.id ? { ...x, power_form_enabled: !next } : x)));
+    } else {
+      toast.success(next ? "Forma de Poder liberada." : "Forma de Poder bloqueada.");
+    }
+  };
+
+
 
   return (
     <div className="space-y-4">
@@ -590,11 +612,27 @@ function PinnedPanel({ s, upd, sheets }: PanelProps & { sheets: SheetSummary[] }
                   <h4 className="font-cinzel font-bold truncate">{sh.name || "Sem nome"}</h4>
                   <p className="text-[10px] text-muted-foreground truncate">{sh.owner_email}</p>
                 </div>
-                <Button size="sm" variant="outline" className="h-7 gap-1 text-[11px] shrink-0"
-                  onClick={() => navigate({ to: "/sheet/$id", params: { id: sh.id } })}>
-                  <ExternalLink className="w-3 h-3" /> Abrir
-                </Button>
+                <div className="flex flex-col items-end gap-1 shrink-0">
+                  <Button size="sm" variant="outline" className="h-7 gap-1 text-[11px]"
+                    onClick={() => navigate({ to: "/sheet/$id", params: { id: sh.id } })}>
+                    <ExternalLink className="w-3 h-3" /> Abrir
+                  </Button>
+                  <button
+                    type="button"
+                    onClick={() => togglePowerForm(sh)}
+                    title={sh.power_form_enabled ? "Forma de Poder LIBERADA — clique para bloquear" : "Forma de Poder bloqueada — clique para liberar"}
+                    className={`text-[10px] px-2 py-0.5 rounded-full border flex items-center gap-1 transition-all ${
+                      sh.power_form_enabled
+                        ? "bg-primary/15 border-primary text-primary shadow-[0_0_8px_-2px_hsl(var(--primary))]"
+                        : "bg-secondary/30 border-border text-muted-foreground hover:border-primary/40"
+                    }`}
+                  >
+                    <Sparkles className="w-3 h-3" />
+                    {sh.power_form_enabled ? "Forma ON" : "Forma OFF"}
+                  </button>
+                </div>
               </div>
+
               <div className="grid grid-cols-3 gap-1.5 mt-2 text-center text-xs">
                 <Mini label="PV" v={sh.stats?.pv_current ?? 0} color="text-red-400" />
                 <Mini label="PS" v={sh.stats?.ps_current ?? 0} color="text-purple-400" />
@@ -646,6 +684,32 @@ function Mini({ label, v, color }: { label: string; v: number; color: string }) 
   );
 }
 
+/** Render text preserving newlines and converting URLs into clickable links (new tab). */
+function LinkifiedText({ text }: { text: string }) {
+  const parts = text.split(/(https?:\/\/[^\s]+)/g);
+  return (
+    <>
+      {parts.map((p, i) =>
+        /^https?:\/\//.test(p) ? (
+          <a
+            key={i}
+            href={p}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-primary underline underline-offset-2 hover:text-primary/80 break-all"
+          >
+            {p}
+          </a>
+        ) : (
+          <span key={i}>{p}</span>
+        ),
+      )}
+    </>
+  );
+}
+
+
+
 /* ============ Notes ============ */
 function NotesPanel({ s, upd }: PanelProps) {
   return (
@@ -660,8 +724,16 @@ function NotesPanel({ s, upd }: PanelProps) {
       </Card>
       <Card className="p-4 md:col-span-2">
         <h3 className="font-cinzel font-bold mb-2">Referências Rápidas</h3>
-        <Textarea rows={6} value={s.quick_refs} onChange={(e) => upd("quick_refs", e.target.value)} />
+        <Textarea rows={6} value={s.quick_refs} onChange={(e) => upd("quick_refs", e.target.value)}
+          placeholder="Cole regras, links (https://...), atalhos. Links aparecem clicáveis no preview abaixo." />
+        {s.quick_refs?.trim() && (
+          <div className="mt-3 p-3 rounded-lg bg-secondary/30 border border-border/60 text-sm leading-relaxed whitespace-pre-wrap break-words">
+            <p className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold mb-1.5">Preview</p>
+            <LinkifiedText text={s.quick_refs} />
+          </div>
+        )}
       </Card>
+
     </div>
   );
 }
