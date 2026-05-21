@@ -662,8 +662,16 @@ function NotesPanel({ s, upd }: PanelProps) {
       </Card>
       <Card className="p-4 md:col-span-2">
         <h3 className="font-cinzel font-bold mb-2">Referências Rápidas</h3>
-        <Textarea rows={6} value={s.quick_refs} onChange={(e) => upd("quick_refs", e.target.value)} />
+        <Textarea rows={6} value={s.quick_refs} onChange={(e) => upd("quick_refs", e.target.value)}
+          placeholder="Cole regras, links (https://...), atalhos. Links aparecem clicáveis no preview abaixo." />
+        {s.quick_refs?.trim() && (
+          <div className="mt-3 p-3 rounded-lg bg-secondary/30 border border-border/60 text-sm leading-relaxed whitespace-pre-wrap break-words">
+            <p className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold mb-1.5">Preview</p>
+            <LinkifiedText text={s.quick_refs} />
+          </div>
+        )}
       </Card>
+
     </div>
   );
 }
