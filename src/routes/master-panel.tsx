@@ -76,7 +76,7 @@ function MasterPanel() {
     void (async () => {
       const [{ data: gs }, { data: ch }] = await Promise.all([
         supabase.from("game_settings").select("*").eq("key", "global").maybeSingle(),
-        supabase.from("character_sheets").select("id,name,owner_email,exposure,stats,attributes,equilibrium"),
+        supabase.from("character_sheets").select("id,name,owner_email,exposure,stats,attributes,equilibrium,power_form_enabled"),
       ]);
       if (gs) {
         const g = gs as unknown as Record<string, unknown>;
