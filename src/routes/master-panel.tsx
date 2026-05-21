@@ -648,6 +648,32 @@ function Mini({ label, v, color }: { label: string; v: number; color: string }) 
   );
 }
 
+/** Render text preserving newlines and converting URLs into clickable links (new tab). */
+function LinkifiedText({ text }: { text: string }) {
+  const parts = text.split(/(https?:\/\/[^\s]+)/g);
+  return (
+    <>
+      {parts.map((p, i) =>
+        /^https?:\/\//.test(p) ? (
+          <a
+            key={i}
+            href={p}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-primary underline underline-offset-2 hover:text-primary/80 break-all"
+          >
+            {p}
+          </a>
+        ) : (
+          <span key={i}>{p}</span>
+        ),
+      )}
+    </>
+  );
+}
+
+
+
 /* ============ Notes ============ */
 function NotesPanel({ s, upd }: PanelProps) {
   return (
