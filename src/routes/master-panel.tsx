@@ -165,7 +165,7 @@ function MasterPanel() {
           <CluesPanel s={s} upd={upd} />
         </TabsContent>
         <TabsContent value="pinned" className="mt-0">
-          <PinnedPanel s={s} upd={upd} sheets={sheets} />
+          <PinnedPanel s={s} upd={upd} sheets={sheets} setSheets={setSheets} />
         </TabsContent>
         <TabsContent value="notes" className="mt-0">
           <NotesPanel s={s} upd={upd} />
