@@ -543,7 +543,10 @@ function CluesPanel({ s, upd }: PanelProps) {
 }
 
 /* ============ Pinned sheets ============ */
-function PinnedPanel({ s, upd, sheets }: PanelProps & { sheets: SheetSummary[] }) {
+function PinnedPanel({ s, upd, sheets, setSheets }: PanelProps & {
+  sheets: SheetSummary[];
+  setSheets: React.Dispatch<React.SetStateAction<SheetSummary[]>>;
+}) {
   const navigate = useNavigate();
   const pinned = useMemo(() => s.pinned_sheet_ids
     .map((id) => sheets.find((sh) => sh.id === id))
@@ -554,6 +557,23 @@ function PinnedPanel({ s, upd, sheets }: PanelProps & { sheets: SheetSummary[] }
       : [...s.pinned_sheet_ids, id];
     upd("pinned_sheet_ids", next);
   };
+
+  const togglePowerForm = async (sh: SheetSummary) => {
+    const next = !sh.power_form_enabled;
+    setSheets((prev) => prev.map((x) => (x.id === sh.id ? { ...x, power_form_enabled: next } : x)));
+    const { error } = await supabase
+      .from("character_sheets")
+      .update({ power_form_enabled: next })
+      .eq("id", sh.id);
+    if (error) {
+      toast.error("Falha ao atualizar Forma de Poder.");
+      setSheets((prev) => prev.map((x) => (x.id === sh.id ? { ...x, power_form_enabled: !next } : x)));
+    } else {
+      toast.success(next ? "Forma de Poder liberada." : "Forma de Poder bloqueada.");
+    }
+  };
+
+
 
   return (
     <div className="space-y-4">
