@@ -62,7 +62,9 @@ interface SheetSummary {
   stats: { pv_current: number; ps_current: number; pe_current: number };
   attributes: Record<string, number>;
   equilibrium: number;
+  power_form_enabled?: boolean;
 }
+
 
 function MasterPanel() {
   const [s, setS] = useState<SettingsRow | null>(null);
