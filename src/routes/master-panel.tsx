@@ -612,11 +612,27 @@ function PinnedPanel({ s, upd, sheets, setSheets }: PanelProps & {
                   <h4 className="font-cinzel font-bold truncate">{sh.name || "Sem nome"}</h4>
                   <p className="text-[10px] text-muted-foreground truncate">{sh.owner_email}</p>
                 </div>
-                <Button size="sm" variant="outline" className="h-7 gap-1 text-[11px] shrink-0"
-                  onClick={() => navigate({ to: "/sheet/$id", params: { id: sh.id } })}>
-                  <ExternalLink className="w-3 h-3" /> Abrir
-                </Button>
+                <div className="flex flex-col items-end gap-1 shrink-0">
+                  <Button size="sm" variant="outline" className="h-7 gap-1 text-[11px]"
+                    onClick={() => navigate({ to: "/sheet/$id", params: { id: sh.id } })}>
+                    <ExternalLink className="w-3 h-3" /> Abrir
+                  </Button>
+                  <button
+                    type="button"
+                    onClick={() => togglePowerForm(sh)}
+                    title={sh.power_form_enabled ? "Forma de Poder LIBERADA — clique para bloquear" : "Forma de Poder bloqueada — clique para liberar"}
+                    className={`text-[10px] px-2 py-0.5 rounded-full border flex items-center gap-1 transition-all ${
+                      sh.power_form_enabled
+                        ? "bg-primary/15 border-primary text-primary shadow-[0_0_8px_-2px_hsl(var(--primary))]"
+                        : "bg-secondary/30 border-border text-muted-foreground hover:border-primary/40"
+                    }`}
+                  >
+                    <Sparkles className="w-3 h-3" />
+                    {sh.power_form_enabled ? "Forma ON" : "Forma OFF"}
+                  </button>
+                </div>
               </div>
+
               <div className="grid grid-cols-3 gap-1.5 mt-2 text-center text-xs">
                 <Mini label="PV" v={sh.stats?.pv_current ?? 0} color="text-red-400" />
                 <Mini label="PS" v={sh.stats?.ps_current ?? 0} color="text-purple-400" />
