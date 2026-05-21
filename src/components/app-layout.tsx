@@ -37,7 +37,7 @@ const roleIcons: Record<string, typeof Crown> = {
 const COLLAPSE_KEY = "tadeon.sidebar.collapsed";
 
 export function AppLayout({ children }: { children: ReactNode }) {
-  const { profile, role, user, signOut, refreshProfile } = useAuth();
+  const { profile, role, user, signOut, refresh } = useAuth();
   const navigate = useNavigate();
   const path = useRouterState({ select: (s) => s.location.pathname });
   const [mobileOpen, setMobileOpen] = useState(false);
