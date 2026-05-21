@@ -31,6 +31,8 @@ export function DiceRoller() {
   const [open, setOpen] = useState(false);
   const [expr, setExpr] = useState("d20");
   const [history, setHistory] = useState<RollEntry[]>([]);
+  const [showInfo, setShowInfo] = useState(false);
+
 
   const doRoll = (e: string) => {
     const r = rollExpr(e);
