@@ -1,7 +1,8 @@
 import { useState } from "react";
-import { Dices, X } from "lucide-react";
+import { Dices, X, Info, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+
 
 interface RollEntry {
   id: number;
