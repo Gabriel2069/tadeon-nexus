@@ -852,7 +852,8 @@ function CounterDots({ label, max, value, color, disabled, onChange }:
 interface HasId { id: string }
 interface ColDef {
   key: string; label: string;
-  type?: "text" | "number";
+  type?: "text" | "number" | "select";
+  options?: string[];
   flex?: number;
   width?: number;
 }
@@ -881,7 +882,6 @@ function RowTable<T extends HasId>({
 
   return (
     <div className="space-y-1">
-      {/* Header (hidden on mobile) */}
       <div className="hidden sm:grid gap-1.5 px-2 text-[10px] uppercase text-muted-foreground font-semibold"
         style={{ gridTemplateColumns: gridCols }}>
         {columns.map((c) => <div key={c.key}>{c.label}</div>)}
@@ -889,19 +889,30 @@ function RowTable<T extends HasId>({
       </div>
       {rows.map((it, idx) => (
         <div key={it.id}
-          className="bg-secondary/30 rounded-lg p-2 hover:bg-secondary/50 transition-colors sm:grid gap-1.5 items-center flex flex-col"
+          className="bg-secondary/30 rounded-lg p-2 hover:bg-secondary/50 transition-all sm:grid gap-1.5 items-center flex flex-col animate-in fade-in-0 duration-200"
           style={{ gridTemplateColumns: gridCols }}>
-          {columns.map((c) => (
-            <Input key={c.key}
-              type={c.type === "number" ? "number" : "text"}
-              placeholder={c.label}
-              disabled={!canEdit}
-              value={c.type === "number"
-                ? Number((it as Record<string, unknown>)[c.key] ?? 0)
-                : String((it as Record<string, unknown>)[c.key] ?? "")}
-              onChange={(e) => update(idx, c.key, e.target.value)}
-              className="h-8 text-xs bg-background/40 border-border/40 w-full" />
-          ))}
+          {columns.map((c) => {
+            const value = (it as Record<string, unknown>)[c.key];
+            if (c.type === "select") {
+              return (
+                <select key={c.key} disabled={!canEdit}
+                  value={String(value ?? "")}
+                  onChange={(e) => update(idx, c.key, e.target.value)}
+                  className="h-8 text-xs bg-background/40 border border-border/40 rounded-md px-2 w-full">
+                  {c.options?.map((o) => <option key={o} value={o}>{o}</option>)}
+                </select>
+              );
+            }
+            return (
+              <Input key={c.key}
+                type={c.type === "number" ? "number" : "text"}
+                placeholder={c.label}
+                disabled={!canEdit}
+                value={c.type === "number" ? Number(value ?? 0) : String(value ?? "")}
+                onChange={(e) => update(idx, c.key, e.target.value)}
+                className="h-8 text-xs bg-background/40 border-border/40 w-full" />
+            );
+          })}
           {canEdit && (
             <Button size="sm" variant="ghost"
               className="h-7 w-7 p-0 text-destructive hover:bg-destructive/10 self-end sm:self-auto"
