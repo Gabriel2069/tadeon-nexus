@@ -11,18 +11,23 @@ interface RollEntry {
   modifier: number;
   total: number;
   ts: string;
+  keepHighest?: boolean;
 }
 
-function rollExpr(expr: string): { rolls: number[]; modifier: number; total: number } | null {
-  // Supports e.g. 2d6+3, d20, 4d4-1
-  const match = expr.replace(/\s/g, "").toLowerCase().match(/^(\d*)d(\d+)([+-]\d+)?$/);
+function rollExpr(expr: string): { rolls: number[]; modifier: number; total: number; keepHighest: boolean } | null {
+  // Supports e.g. 2d6+3, d20, 4d4-1, *2d20+10 (keep highest die + mod)
+  const cleaned = expr.replace(/\s/g, "").toLowerCase();
+  const keepHighest = cleaned.startsWith("*");
+  const body = keepHighest ? cleaned.slice(1) : cleaned;
+  const match = body.match(/^(\d*)d(\d+)([+-]\d+)?$/);
   if (!match) return null;
   const count = parseInt(match[1] || "1", 10);
   const sides = parseInt(match[2], 10);
   const mod = match[3] ? parseInt(match[3], 10) : 0;
   if (count < 1 || count > 50 || sides < 2 || sides > 1000) return null;
   const rolls = Array.from({ length: count }, () => 1 + Math.floor(Math.random() * sides));
-  return { rolls, modifier: mod, total: rolls.reduce((a, b) => a + b, 0) + mod };
+  const base = keepHighest ? Math.max(...rolls) : rolls.reduce((a, b) => a + b, 0);
+  return { rolls, modifier: mod, total: base + mod, keepHighest };
 }
 
 const QUICK = ["d4", "d6", "d8", "d10", "d12", "d20", "d100", "2d6"];
