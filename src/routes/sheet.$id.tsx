@@ -66,6 +66,7 @@ interface SheetData {
 
 
 const RANGE_OPTIONS = ["Curto", "Médio", "Longo", "Extremo"];
+const PLOT_RANGE_OPTIONS = ["Pessoal", "Curto", "Médio", "Longo", "Extremo"];
 
 function clamp(n: number, min: number, max: number) {
   return Math.max(min, Math.min(max, n));
