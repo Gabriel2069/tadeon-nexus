@@ -155,6 +155,15 @@ function SheetPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sheet]);
 
+  // Keep numeric `fragments` field in sync with the fragments list length
+  useEffect(() => {
+    if (!sheet) return;
+    const len = sheet.fragments_items.length;
+    if (sheet.fragments !== len) {
+      setSheet((p) => p ? { ...p, fragments: len } : p);
+    }
+  }, [sheet]);
+
   const doSave = async () => {
     if (!sheet) return;
     setSaving(true);
