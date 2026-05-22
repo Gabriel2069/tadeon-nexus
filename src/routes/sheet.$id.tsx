@@ -265,11 +265,11 @@ function SheetPage() {
                 <Button
                   size="sm"
                   variant="outline"
-                  onClick={() => setPowerFormOpen(true)}
-                  className="gap-1.5 border-primary/40 text-primary hover:bg-primary/10"
+                  onClick={() => navigate({ to: "/sheet/$id/power", params: { id: sheet.id } })}
+                  className="gap-1.5 border-primary/40 text-primary hover:bg-primary/10 animate-in fade-in-0 zoom-in-95"
                   title="Abrir Forma de Poder"
                 >
-                  <Sparkles className="w-4 h-4" /> <span className="hidden sm:inline">Forma de Poder</span>
+                  <Sparkles className="w-4 h-4 animate-pulse" /> <span className="hidden sm:inline">Forma de Poder</span>
                 </Button>
               )}
               <Button size="sm" onClick={doSave} className="gap-1.5">
