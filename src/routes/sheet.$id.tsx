@@ -300,7 +300,7 @@ function SheetPage() {
           <TabsTrigger value="descricao" className="flex-1 md:flex-initial">Descrição</TabsTrigger>
         </TabsList>
 
-        <TabsContent value="ficha" className="space-y-4 mt-0">
+        <TabsContent value="ficha" className="space-y-4 mt-0 animate-in fade-in-50 slide-in-from-bottom-1 duration-300">
           {/* Quick jump shortcuts */}
           <div className="flex flex-wrap gap-1.5 -mt-1">
             {sectionAnchors.map((a) => (
