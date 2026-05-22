@@ -695,7 +695,7 @@ function SheetPage() {
           </p>
         </TabsContent>
 
-        <TabsContent value="arvore" className="mt-0">
+        <TabsContent value="arvore" className="mt-0 animate-in fade-in-50 slide-in-from-bottom-1 duration-300">
           <SkillTreeTab
             exposure={sheet.exposure}
             attributes={sheet.attributes}
