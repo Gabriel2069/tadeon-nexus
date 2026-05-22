@@ -100,7 +100,7 @@ function SheetPage() {
   const [upgradeCosts, setUpgradeCosts] = useState<UpgradeCosts>(DEFAULT_UPGRADE_COSTS);
   const [conditionOptions, setConditionOptions] = useState<ConditionOptionsMap>(DEFAULT_CONDITION_OPTIONS);
   const [sheetSkillGroups, setSheetSkillGroups] = useState<typeof SKILL_GROUPS>([]);
-  const [powerFormOpen, setPowerFormOpen] = useState(false);
+  // (removed setPowerFormOpen — Power Form opens via dedicated route)
   const [fragmentsView, setFragmentsView] = useState(false);
   const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
