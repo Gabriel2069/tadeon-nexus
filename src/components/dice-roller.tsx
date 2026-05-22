@@ -91,9 +91,10 @@ export function DiceRoller() {
                 <li><code className="font-mono text-foreground">N</code> · quantidade de dados (1 a 50, opcional — padrão 1)</li>
                 <li><code className="font-mono text-foreground">F</code> · faces do dado (2 a 1000)</li>
                 <li><code className="font-mono text-foreground">±M</code> · modificador fixo opcional</li>
+                <li><code className="font-mono text-foreground">*</code> · prefixo: usa o <b>maior dado</b> rolado + modificador</li>
               </ul>
               <p className="mt-1.5 text-muted-foreground">
-                Exemplos: <code className="font-mono text-foreground">d20</code>, <code className="font-mono text-foreground">2d6+3</code>, <code className="font-mono text-foreground">4d4-1</code>.
+                Exemplos: <code className="font-mono text-foreground">d20</code>, <code className="font-mono text-foreground">2d6+3</code>, <code className="font-mono text-foreground">4d4-1</code>, <code className="font-mono text-foreground">*2d20+10</code>.
               </p>
             </div>
           )}
