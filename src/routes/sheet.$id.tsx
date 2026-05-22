@@ -602,41 +602,36 @@ function SheetPage() {
                 size="sm"
                 variant={fragmentsView ? "default" : "outline"}
                 onClick={() => setFragmentsView((v) => !v)}
-                className="h-7 gap-1.5"
+                className="h-7 gap-1.5 transition-all"
                 title="Alternar entre Tramas e quadro de Fragmentos"
               >
                 <Gem className="w-3.5 h-3.5" />
                 <span>{fragmentsView ? "Ver Tramas" : "Fragmentos"}</span>
                 <span className="ml-1 px-1.5 py-0.5 rounded bg-background/40 text-[10px] font-mono">
-                  {sheet.fragments}
+                  {sheet.fragments_items.length}
                 </span>
               </Button>
               {fragmentsView ? (
-                <div className="flex items-center gap-1.5 text-xs">
-                  <Label className="text-xs">Total</Label>
-                  <Input type="number" disabled={!canEdit} value={sheet.fragments}
-                    onChange={(e) => update("fragments", Number(e.target.value))} className="w-16 h-7" />
-                  {canEdit && (
-                    <AddItemDialog<InventoryItem>
-                      title="Novo Fragmento" triggerLabel="Fragmento"
-                      initial={{ id: "", nome: "", descricao: "", espaco: 1 }}
-                      fields={[
-                        { key: "nome", label: "Nome" },
-                        { key: "descricao", label: "Descrição", type: "textarea" },
-                        { key: "espaco", label: "Espaço (peso conta no inventário)", type: "number" },
-                      ]}
-                      onAdd={(it) => update("fragments_items", [...sheet.fragments_items, { ...it, id: genId() }])} />
-                  )}
-                </div>
+                canEdit && (
+                  <AddItemDialog<InventoryItem>
+                    title="Novo Fragmento" triggerLabel="Fragmento"
+                    initial={{ id: "", nome: "", descricao: "", espaco: 1 }}
+                    fields={[
+                      { key: "nome", label: "Nome" },
+                      { key: "descricao", label: "Descrição", type: "textarea" },
+                      { key: "espaco", label: "Espaço (peso conta no inventário)", type: "number" },
+                    ]}
+                    onAdd={(it) => update("fragments_items", [...sheet.fragments_items, { ...it, id: genId() }])} />
+                )
               ) : (
                 canEdit && (
                   <AddItemDialog<Plot>
                     title="Nova Trama" triggerLabel="Trama"
-                    initial={{ id: "", nome: "", uso: "", alcance: "", dano: "", efeito: "", dt_descricao: "" }}
+                    initial={{ id: "", nome: "", uso: "", alcance: "Pessoal", dano: "", efeito: "", dt_descricao: "" }}
                     fields={[
                       { key: "nome", label: "Nome" },
                       { key: "uso", label: "Uso" },
-                      { key: "alcance", label: "Alcance" },
+                      { key: "alcance", label: "Alcance", type: "select", options: PLOT_RANGE_OPTIONS },
                       { key: "dano", label: "Dano" },
                       { key: "efeito", label: "Efeito", type: "textarea" },
                       { key: "dt_descricao", label: "DT / Descrição", type: "textarea" },
@@ -648,9 +643,9 @@ function SheetPage() {
           }>
             {fragmentsView ? (
               <>
-                <div className="mb-3 p-2.5 rounded-lg bg-gradient-to-r from-primary/15 to-transparent border border-primary/30 flex flex-wrap items-center gap-3 text-xs">
+                <div className="mb-3 p-2.5 rounded-lg bg-gradient-to-r from-primary/15 to-transparent border border-primary/30 flex flex-wrap items-center gap-3 text-xs animate-in fade-in-0 slide-in-from-top-1 duration-200">
                   <Gem className="w-4 h-4 text-primary" />
-                  <span><b className="text-primary">Fragmentos acumulados:</b> {sheet.fragments}</span>
+                  <span><b className="text-primary">Fragmentos acumulados:</b> {sheet.fragments_items.length}</span>
                   <span className="text-muted-foreground">·</span>
                   <span>Peso somado ao inventário: <b>{sheet.fragments_items.reduce((s, i) => s + (Number(i.espaco) || 0), 0)}</b></span>
                 </div>
@@ -664,7 +659,7 @@ function SheetPage() {
               </>
             ) : (
               <>
-                <div className="mb-3 inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-gradient-to-r from-primary/20 via-primary/10 to-transparent border border-primary/40 shadow-[0_0_12px_-4px_hsl(var(--primary))]">
+                <div className="mb-3 inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-gradient-to-r from-primary/20 via-primary/10 to-transparent border border-primary/40 shadow-[0_0_12px_-4px_hsl(var(--primary))] animate-in fade-in-0 slide-in-from-top-1 duration-200">
                   <span className="font-cinzel text-xs uppercase tracking-wider text-primary">DT de Canalização</span>
                   <span className="text-lg font-bold text-primary">{3 * attrs.MEN}</span>
                   <span className="text-[10px] text-muted-foreground">(3 × MEN)</span>
@@ -673,7 +668,7 @@ function SheetPage() {
                   columns={[
                     { key: "nome", label: "Nome", flex: 1.2 },
                     { key: "uso", label: "Uso" },
-                    { key: "alcance", label: "Alcance" },
+                    { key: "alcance", label: "Alcance", type: "select", options: PLOT_RANGE_OPTIONS },
                     { key: "dano", label: "Dano" },
                     { key: "efeito", label: "Efeito", flex: 2 },
                     { key: "dt_descricao", label: "DT/Descrição", flex: 1.5 },
@@ -682,6 +677,7 @@ function SheetPage() {
               </>
             )}
           </Section>
+
 
 
           {/* Notes */}
