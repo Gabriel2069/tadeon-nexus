@@ -3,7 +3,7 @@ import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
 
 export const deleteUserFn = createServerFn({ method: "POST" })
-  .validator((d: unknown) => {
+  .inputValidator((d: unknown) => {
     const v = d as { userId?: string };
     if (!v?.userId || typeof v.userId !== "string") throw new Error("userId é obrigatório");
     return { userId: v.userId };
