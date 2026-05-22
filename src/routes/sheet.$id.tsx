@@ -9,7 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+// (Dialog imports removed — Power Form now lives in /sheet/$id/power route)
 
 import { ArrowLeft, Save, Loader2, Plus, Minus, Trash, Sparkles, Gem, ArrowUp } from "lucide-react";
 import { toast } from "sonner";
