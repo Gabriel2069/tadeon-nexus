@@ -711,7 +711,7 @@ function SheetPage() {
           />
         </TabsContent>
 
-        <TabsContent value="descricao" className="space-y-4 mt-0">
+        <TabsContent value="descricao" className="space-y-4 mt-0 animate-in fade-in-50 slide-in-from-bottom-1 duration-300">
           {([
             ["historia", "História"],
             ["personalidade", "Personalidade"],
