@@ -9,9 +9,9 @@ import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+// (Dialog imports removed — Power Form now lives in /sheet/$id/power route)
 
-import { ArrowLeft, Save, Loader2, Plus, Minus, Trash, Sparkles, Gem } from "lucide-react";
+import { ArrowLeft, Save, Loader2, Plus, Minus, Trash, Sparkles, Gem, ArrowUp } from "lucide-react";
 import { toast } from "sonner";
 import {
   Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer,
@@ -66,6 +66,7 @@ interface SheetData {
 
 
 const RANGE_OPTIONS = ["Curto", "Médio", "Longo", "Extremo"];
+const PLOT_RANGE_OPTIONS = ["Pessoal", "Curto", "Médio", "Longo", "Extremo"];
 
 function clamp(n: number, min: number, max: number) {
   return Math.max(min, Math.min(max, n));
@@ -99,7 +100,7 @@ function SheetPage() {
   const [upgradeCosts, setUpgradeCosts] = useState<UpgradeCosts>(DEFAULT_UPGRADE_COSTS);
   const [conditionOptions, setConditionOptions] = useState<ConditionOptionsMap>(DEFAULT_CONDITION_OPTIONS);
   const [sheetSkillGroups, setSheetSkillGroups] = useState<typeof SKILL_GROUPS>([]);
-  const [powerFormOpen, setPowerFormOpen] = useState(false);
+  // (removed setPowerFormOpen — Power Form opens via dedicated route)
   const [fragmentsView, setFragmentsView] = useState(false);
   const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -152,6 +153,15 @@ function SheetPage() {
     saveTimer.current = setTimeout(() => void doSave(), 1500);
     return () => { if (saveTimer.current) clearTimeout(saveTimer.current); };
     // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sheet]);
+
+  // Keep numeric `fragments` field in sync with the fragments list length
+  useEffect(() => {
+    if (!sheet) return;
+    const len = sheet.fragments_items.length;
+    if (sheet.fragments !== len) {
+      setSheet((p) => p ? { ...p, fragments: len } : p);
+    }
   }, [sheet]);
 
   const doSave = async () => {
@@ -264,11 +274,11 @@ function SheetPage() {
                 <Button
                   size="sm"
                   variant="outline"
-                  onClick={() => setPowerFormOpen(true)}
-                  className="gap-1.5 border-primary/40 text-primary hover:bg-primary/10"
+                  onClick={() => navigate({ to: "/sheet/$id/power", params: { id: sheet.id } })}
+                  className="gap-1.5 border-primary/40 text-primary hover:bg-primary/10 animate-in fade-in-0 zoom-in-95"
                   title="Abrir Forma de Poder"
                 >
-                  <Sparkles className="w-4 h-4" /> <span className="hidden sm:inline">Forma de Poder</span>
+                  <Sparkles className="w-4 h-4 animate-pulse" /> <span className="hidden sm:inline">Forma de Poder</span>
                 </Button>
               )}
               <Button size="sm" onClick={doSave} className="gap-1.5">
@@ -299,7 +309,7 @@ function SheetPage() {
           <TabsTrigger value="descricao" className="flex-1 md:flex-initial">Descrição</TabsTrigger>
         </TabsList>
 
-        <TabsContent value="ficha" className="space-y-4 mt-0">
+        <TabsContent value="ficha" className="space-y-4 mt-0 animate-in fade-in-50 slide-in-from-bottom-1 duration-300">
           {/* Quick jump shortcuts */}
           <div className="flex flex-wrap gap-1.5 -mt-1">
             {sectionAnchors.map((a) => (
@@ -601,41 +611,36 @@ function SheetPage() {
                 size="sm"
                 variant={fragmentsView ? "default" : "outline"}
                 onClick={() => setFragmentsView((v) => !v)}
-                className="h-7 gap-1.5"
+                className="h-7 gap-1.5 transition-all"
                 title="Alternar entre Tramas e quadro de Fragmentos"
               >
                 <Gem className="w-3.5 h-3.5" />
                 <span>{fragmentsView ? "Ver Tramas" : "Fragmentos"}</span>
                 <span className="ml-1 px-1.5 py-0.5 rounded bg-background/40 text-[10px] font-mono">
-                  {sheet.fragments}
+                  {sheet.fragments_items.length}
                 </span>
               </Button>
               {fragmentsView ? (
-                <div className="flex items-center gap-1.5 text-xs">
-                  <Label className="text-xs">Total</Label>
-                  <Input type="number" disabled={!canEdit} value={sheet.fragments}
-                    onChange={(e) => update("fragments", Number(e.target.value))} className="w-16 h-7" />
-                  {canEdit && (
-                    <AddItemDialog<InventoryItem>
-                      title="Novo Fragmento" triggerLabel="Fragmento"
-                      initial={{ id: "", nome: "", descricao: "", espaco: 1 }}
-                      fields={[
-                        { key: "nome", label: "Nome" },
-                        { key: "descricao", label: "Descrição", type: "textarea" },
-                        { key: "espaco", label: "Espaço (peso conta no inventário)", type: "number" },
-                      ]}
-                      onAdd={(it) => update("fragments_items", [...sheet.fragments_items, { ...it, id: genId() }])} />
-                  )}
-                </div>
+                canEdit && (
+                  <AddItemDialog<InventoryItem>
+                    title="Novo Fragmento" triggerLabel="Fragmento"
+                    initial={{ id: "", nome: "", descricao: "", espaco: 1 }}
+                    fields={[
+                      { key: "nome", label: "Nome" },
+                      { key: "descricao", label: "Descrição", type: "textarea" },
+                      { key: "espaco", label: "Espaço (peso conta no inventário)", type: "number" },
+                    ]}
+                    onAdd={(it) => update("fragments_items", [...sheet.fragments_items, { ...it, id: genId() }])} />
+                )
               ) : (
                 canEdit && (
                   <AddItemDialog<Plot>
                     title="Nova Trama" triggerLabel="Trama"
-                    initial={{ id: "", nome: "", uso: "", alcance: "", dano: "", efeito: "", dt_descricao: "" }}
+                    initial={{ id: "", nome: "", uso: "", alcance: "Pessoal", dano: "", efeito: "", dt_descricao: "" }}
                     fields={[
                       { key: "nome", label: "Nome" },
                       { key: "uso", label: "Uso" },
-                      { key: "alcance", label: "Alcance" },
+                      { key: "alcance", label: "Alcance", type: "select", options: PLOT_RANGE_OPTIONS },
                       { key: "dano", label: "Dano" },
                       { key: "efeito", label: "Efeito", type: "textarea" },
                       { key: "dt_descricao", label: "DT / Descrição", type: "textarea" },
@@ -647,9 +652,9 @@ function SheetPage() {
           }>
             {fragmentsView ? (
               <>
-                <div className="mb-3 p-2.5 rounded-lg bg-gradient-to-r from-primary/15 to-transparent border border-primary/30 flex flex-wrap items-center gap-3 text-xs">
+                <div className="mb-3 p-2.5 rounded-lg bg-gradient-to-r from-primary/15 to-transparent border border-primary/30 flex flex-wrap items-center gap-3 text-xs animate-in fade-in-0 slide-in-from-top-1 duration-200">
                   <Gem className="w-4 h-4 text-primary" />
-                  <span><b className="text-primary">Fragmentos acumulados:</b> {sheet.fragments}</span>
+                  <span><b className="text-primary">Fragmentos acumulados:</b> {sheet.fragments_items.length}</span>
                   <span className="text-muted-foreground">·</span>
                   <span>Peso somado ao inventário: <b>{sheet.fragments_items.reduce((s, i) => s + (Number(i.espaco) || 0), 0)}</b></span>
                 </div>
@@ -663,7 +668,7 @@ function SheetPage() {
               </>
             ) : (
               <>
-                <div className="mb-3 inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-gradient-to-r from-primary/20 via-primary/10 to-transparent border border-primary/40 shadow-[0_0_12px_-4px_hsl(var(--primary))]">
+                <div className="mb-3 inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-gradient-to-r from-primary/20 via-primary/10 to-transparent border border-primary/40 shadow-[0_0_12px_-4px_hsl(var(--primary))] animate-in fade-in-0 slide-in-from-top-1 duration-200">
                   <span className="font-cinzel text-xs uppercase tracking-wider text-primary">DT de Canalização</span>
                   <span className="text-lg font-bold text-primary">{3 * attrs.MEN}</span>
                   <span className="text-[10px] text-muted-foreground">(3 × MEN)</span>
@@ -672,7 +677,7 @@ function SheetPage() {
                   columns={[
                     { key: "nome", label: "Nome", flex: 1.2 },
                     { key: "uso", label: "Uso" },
-                    { key: "alcance", label: "Alcance" },
+                    { key: "alcance", label: "Alcance", type: "select", options: PLOT_RANGE_OPTIONS },
                     { key: "dano", label: "Dano" },
                     { key: "efeito", label: "Efeito", flex: 2 },
                     { key: "dt_descricao", label: "DT/Descrição", flex: 1.5 },
@@ -681,6 +686,7 @@ function SheetPage() {
               </>
             )}
           </Section>
+
 
 
           {/* Notes */}
@@ -694,7 +700,7 @@ function SheetPage() {
           </p>
         </TabsContent>
 
-        <TabsContent value="arvore" className="mt-0">
+        <TabsContent value="arvore" className="mt-0 animate-in fade-in-50 slide-in-from-bottom-1 duration-300">
           <SkillTreeTab
             exposure={sheet.exposure}
             attributes={sheet.attributes}
@@ -710,7 +716,7 @@ function SheetPage() {
           />
         </TabsContent>
 
-        <TabsContent value="descricao" className="space-y-4 mt-0">
+        <TabsContent value="descricao" className="space-y-4 mt-0 animate-in fade-in-50 slide-in-from-bottom-1 duration-300">
           {([
             ["historia", "História"],
             ["personalidade", "Personalidade"],
@@ -727,57 +733,16 @@ function SheetPage() {
       </Tabs>
       </div>
 
-      {/* Power Form dialog — available only when mestre toggles power_form_enabled on the sheet */}
-      <Dialog open={powerFormOpen} onOpenChange={setPowerFormOpen}>
-        <DialogContent className="max-w-2xl">
-          <DialogHeader>
-            <DialogTitle className="font-cinzel text-primary flex items-center gap-2">
-              <Sparkles className="w-5 h-5" /> Forma de Poder
-            </DialogTitle>
-            <DialogDescription>
-              Cópia editável da sua ficha durante a transformação. As alterações ficam isoladas e não afetam a ficha base.
-            </DialogDescription>
-          </DialogHeader>
-          <div className="space-y-3 max-h-[60vh] overflow-y-auto pr-1">
-            <div>
-              <Label className="text-xs">Anotações da Forma</Label>
-              <Textarea
-                disabled={!canEdit}
-                value={sheet.power_form_data.notes || ""}
-                onChange={(e) =>
-                  update("power_form_data", { ...sheet.power_form_data, notes: e.target.value })
-                }
-                rows={4}
-                placeholder="Descrição, aparência, custos de manutenção, duração..."
-              />
-            </div>
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-              {(["FOR", "COR", "MEN", "PRE", "ERU", "INF"] as const).map((k) => (
-                <div key={k}>
-                  <Label className="text-[10px] uppercase">{k} (override)</Label>
-                  <Input
-                    type="number"
-                    disabled={!canEdit}
-                    value={(sheet.power_form_data.attributes?.[k as keyof Attributes]) ?? ""}
-                    placeholder={String(sheet.attributes[k as keyof Attributes])}
-                    onChange={(e) => {
-                      const raw = e.target.value;
-                      const next = { ...(sheet.power_form_data.attributes ?? {}) } as Partial<Attributes>;
-                      if (raw === "") delete next[k as keyof Attributes];
-                      else next[k as keyof Attributes] = Number(raw);
-                      update("power_form_data", { ...sheet.power_form_data, attributes: next });
-                    }}
-                    className="h-8 text-sm"
-                  />
-                </div>
-              ))}
-            </div>
-            <p className="text-[10px] text-muted-foreground">
-              Deixe um campo vazio para manter o valor original da ficha.
-            </p>
-          </div>
-        </DialogContent>
-      </Dialog>
+      {/* Back to top — discreet, bottom-left (opposite to dice roller) */}
+      <button
+        type="button"
+        onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+        className="fixed bottom-5 left-5 z-30 h-10 w-10 rounded-full bg-secondary/70 backdrop-blur border border-border text-muted-foreground hover:text-primary hover:border-primary/60 hover:scale-105 transition-all flex items-center justify-center shadow-md"
+        aria-label="Voltar ao topo"
+        title="Voltar ao topo"
+      >
+        <ArrowUp className="w-4 h-4" />
+      </button>
     </div>
   );
 }
@@ -855,7 +820,8 @@ function CounterDots({ label, max, value, color, disabled, onChange }:
 interface HasId { id: string }
 interface ColDef {
   key: string; label: string;
-  type?: "text" | "number";
+  type?: "text" | "number" | "select";
+  options?: string[];
   flex?: number;
   width?: number;
 }
@@ -884,7 +850,6 @@ function RowTable<T extends HasId>({
 
   return (
     <div className="space-y-1">
-      {/* Header (hidden on mobile) */}
       <div className="hidden sm:grid gap-1.5 px-2 text-[10px] uppercase text-muted-foreground font-semibold"
         style={{ gridTemplateColumns: gridCols }}>
         {columns.map((c) => <div key={c.key}>{c.label}</div>)}
@@ -892,19 +857,30 @@ function RowTable<T extends HasId>({
       </div>
       {rows.map((it, idx) => (
         <div key={it.id}
-          className="bg-secondary/30 rounded-lg p-2 hover:bg-secondary/50 transition-colors sm:grid gap-1.5 items-center flex flex-col"
+          className="bg-secondary/30 rounded-lg p-2 hover:bg-secondary/50 transition-all sm:grid gap-1.5 items-center flex flex-col animate-in fade-in-0 duration-200"
           style={{ gridTemplateColumns: gridCols }}>
-          {columns.map((c) => (
-            <Input key={c.key}
-              type={c.type === "number" ? "number" : "text"}
-              placeholder={c.label}
-              disabled={!canEdit}
-              value={c.type === "number"
-                ? Number((it as Record<string, unknown>)[c.key] ?? 0)
-                : String((it as Record<string, unknown>)[c.key] ?? "")}
-              onChange={(e) => update(idx, c.key, e.target.value)}
-              className="h-8 text-xs bg-background/40 border-border/40 w-full" />
-          ))}
+          {columns.map((c) => {
+            const value = (it as Record<string, unknown>)[c.key];
+            if (c.type === "select") {
+              return (
+                <select key={c.key} disabled={!canEdit}
+                  value={String(value ?? "")}
+                  onChange={(e) => update(idx, c.key, e.target.value)}
+                  className="h-8 text-xs bg-background/40 border border-border/40 rounded-md px-2 w-full">
+                  {c.options?.map((o) => <option key={o} value={o}>{o}</option>)}
+                </select>
+              );
+            }
+            return (
+              <Input key={c.key}
+                type={c.type === "number" ? "number" : "text"}
+                placeholder={c.label}
+                disabled={!canEdit}
+                value={c.type === "number" ? Number(value ?? 0) : String(value ?? "")}
+                onChange={(e) => update(idx, c.key, e.target.value)}
+                className="h-8 text-xs bg-background/40 border-border/40 w-full" />
+            );
+          })}
           {canEdit && (
             <Button size="sm" variant="ghost"
               className="h-7 w-7 p-0 text-destructive hover:bg-destructive/10 self-end sm:self-auto"

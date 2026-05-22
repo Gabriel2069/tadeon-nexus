@@ -14,6 +14,7 @@ import { Route as ManageUsersRouteImport } from './routes/manage-users'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as SheetIdRouteImport } from './routes/sheet.$id'
+import { Route as SheetIdPowerRouteImport } from './routes/sheet.$id.power'
 
 const MasterPanelRoute = MasterPanelRouteImport.update({
   id: '/master-panel',
@@ -40,20 +41,27 @@ const SheetIdRoute = SheetIdRouteImport.update({
   path: '/sheet/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SheetIdPowerRoute = SheetIdPowerRouteImport.update({
+  id: '/power',
+  path: '/power',
+  getParentRoute: () => SheetIdRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
   '/manage-users': typeof ManageUsersRoute
   '/master-panel': typeof MasterPanelRoute
-  '/sheet/$id': typeof SheetIdRoute
+  '/sheet/$id': typeof SheetIdRouteWithChildren
+  '/sheet/$id/power': typeof SheetIdPowerRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
   '/manage-users': typeof ManageUsersRoute
   '/master-panel': typeof MasterPanelRoute
-  '/sheet/$id': typeof SheetIdRoute
+  '/sheet/$id': typeof SheetIdRouteWithChildren
+  '/sheet/$id/power': typeof SheetIdPowerRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -61,13 +69,26 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/manage-users': typeof ManageUsersRoute
   '/master-panel': typeof MasterPanelRoute
-  '/sheet/$id': typeof SheetIdRoute
+  '/sheet/$id': typeof SheetIdRouteWithChildren
+  '/sheet/$id/power': typeof SheetIdPowerRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/login' | '/manage-users' | '/master-panel' | '/sheet/$id'
+  fullPaths:
+    | '/'
+    | '/login'
+    | '/manage-users'
+    | '/master-panel'
+    | '/sheet/$id'
+    | '/sheet/$id/power'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/login' | '/manage-users' | '/master-panel' | '/sheet/$id'
+  to:
+    | '/'
+    | '/login'
+    | '/manage-users'
+    | '/master-panel'
+    | '/sheet/$id'
+    | '/sheet/$id/power'
   id:
     | '__root__'
     | '/'
@@ -75,6 +96,7 @@ export interface FileRouteTypes {
     | '/manage-users'
     | '/master-panel'
     | '/sheet/$id'
+    | '/sheet/$id/power'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -82,7 +104,7 @@ export interface RootRouteChildren {
   LoginRoute: typeof LoginRoute
   ManageUsersRoute: typeof ManageUsersRoute
   MasterPanelRoute: typeof MasterPanelRoute
-  SheetIdRoute: typeof SheetIdRoute
+  SheetIdRoute: typeof SheetIdRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
@@ -122,15 +144,33 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SheetIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/sheet/$id/power': {
+      id: '/sheet/$id/power'
+      path: '/power'
+      fullPath: '/sheet/$id/power'
+      preLoaderRoute: typeof SheetIdPowerRouteImport
+      parentRoute: typeof SheetIdRoute
+    }
   }
 }
+
+interface SheetIdRouteChildren {
+  SheetIdPowerRoute: typeof SheetIdPowerRoute
+}
+
+const SheetIdRouteChildren: SheetIdRouteChildren = {
+  SheetIdPowerRoute: SheetIdPowerRoute,
+}
+
+const SheetIdRouteWithChildren =
+  SheetIdRoute._addFileChildren(SheetIdRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   LoginRoute: LoginRoute,
   ManageUsersRoute: ManageUsersRoute,
   MasterPanelRoute: MasterPanelRoute,
-  SheetIdRoute: SheetIdRoute,
+  SheetIdRoute: SheetIdRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
