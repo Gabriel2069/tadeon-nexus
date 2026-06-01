@@ -525,7 +525,7 @@ function ItemRows<T extends { id: string }>({ rows, canEdit, fields, onChange }:
         <div key={r.id} className="grid gap-1.5 p-2 rounded-md border border-orange-500/20 bg-black/20"
           style={{ gridTemplateColumns: `repeat(${fields.length}, minmax(0, 1fr)) auto` }}>
           {fields.map((f) => (
-            <Input key={f} disabled={!canEdit} placeholder={f} value={String(r[f] ?? "")}
+            <Input key={f} disabled={!canEdit} placeholder={f} value={String((r as unknown as Record<string, unknown>)[f] ?? "")}
               onChange={(e) => {
                 const next = [...rows];
                 const nv = ["peso", "espaco"].includes(f) ? Number(e.target.value) : e.target.value;
