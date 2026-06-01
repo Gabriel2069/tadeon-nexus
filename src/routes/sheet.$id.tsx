@@ -274,11 +274,11 @@ function SheetPage() {
                 <Button
                   size="sm"
                   variant="outline"
-                  onClick={() => navigate({ to: "/sheet/$id/power", params: { id: sheet.id } })}
-                  className="gap-1.5 border-primary/40 text-primary hover:bg-primary/10 animate-in fade-in-0 zoom-in-95"
-                  title="Abrir Forma de Poder"
+                  onClick={async () => { await doSave(); navigate({ to: "/sheet/$id/power", params: { id: sheet.id } }); }}
+                  className="gap-1.5 border-orange-400/60 text-orange-300 hover:bg-orange-500/15 animate-in fade-in-0 zoom-in-95 font-bold tracking-widest shadow-[0_0_15px_-5px_rgba(255,140,60,0.7)]"
+                  title="Abrir Forma de Poder (VP)"
                 >
-                  <Sparkles className="w-4 h-4 animate-pulse" /> <span className="hidden sm:inline">Forma de Poder</span>
+                  <Sparkles className="w-4 h-4 animate-pulse" /> VP
                 </Button>
               )}
               <Button size="sm" onClick={doSave} className="gap-1.5">
