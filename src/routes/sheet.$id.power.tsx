@@ -513,7 +513,7 @@ function PointBlock({ label, max, current, disabled, color, onChange }: { label:
   );
 }
 
-function ItemRows<T extends { id: string } & Record<string, unknown>>({ rows, canEdit, fields, onChange }: {
+function ItemRows<T extends { id: string }>({ rows, canEdit, fields, onChange }: {
   rows: T[]; canEdit: boolean; fields: string[]; onChange: (v: T[]) => void;
 }) {
   if (rows.length === 0) {
