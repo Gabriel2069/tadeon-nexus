@@ -81,6 +81,19 @@ function clamp(n: number, min: number, max: number) {
   return Math.max(min, Math.min(max, n));
 }
 
+// Current points: limited to +50% / -50% above/below max.
+// e.g. max 45 → range [-23, 68]
+function clampCurrent(v: number, max: number): number {
+  const m = Math.max(1, max);
+  return clamp(Math.round(v), -Math.ceil(0.5 * m), Math.ceil(1.5 * m));
+}
+function clampMod(v: number): number {
+  return clamp(Math.round(v), -100, 150);
+}
+function clampArmor(v: number): number {
+  return clamp(Math.round(v), 0, 25);
+}
+
 // Equilibrium color from -10 (dark red) → 0 (deep green) → +10 (near white yellow)
 function equilibriumColor(value: number): string {
   const v = clamp(value, -10, 10);
