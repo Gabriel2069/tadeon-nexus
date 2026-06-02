@@ -91,6 +91,7 @@ function syncFromBase(base: BaseRow, prev: VPData): VPData {
     next.abilities = base.abilities.map((w) => ({ ...w }));
     next.plots = base.plots.map((w) => ({ ...w }));
     next.fragments_items = (base.fragments_items ?? []).map((w) => ({ ...w }));
+    next.defense_items = (base.defense_items ?? []).map((w) => ({ ...w }));
     next.stat_upgrades = { ...base.stat_upgrades };
     next.description = { ...base.description };
     next.notes = base.notes;
@@ -101,11 +102,12 @@ function syncFromBase(base: BaseRow, prev: VPData): VPData {
       abilities: base.abilities.map((x) => x.id),
       plots: base.plots.map((x) => x.id),
       fragments_items: (base.fragments_items ?? []).map((x) => x.id),
+      defense_items: (base.defense_items ?? []).map((x) => x.id),
     };
     return next;
   }
   // Incremental sync: append base items not yet seen
-  const synced = next.__synced_ids ?? { weapons: [], inventory: [], abilities: [], plots: [], fragments_items: [] };
+  const synced = next.__synced_ids ?? { weapons: [], inventory: [], abilities: [], plots: [], fragments_items: [], defense_items: [] };
   const mergeList = <T extends { id: string }>(key: keyof typeof synced, baseList: T[], vpList: T[] | undefined): T[] => {
     const seen = new Set(synced[key]);
     const additions = baseList.filter((b) => !seen.has(b.id)).map((b) => ({ ...b }));
@@ -117,6 +119,7 @@ function syncFromBase(base: BaseRow, prev: VPData): VPData {
   next.abilities = mergeList("abilities", base.abilities, next.abilities);
   next.plots = mergeList("plots", base.plots, next.plots);
   next.fragments_items = mergeList("fragments_items", base.fragments_items ?? [], next.fragments_items);
+  next.defense_items = mergeList("defense_items", base.defense_items ?? [], next.defense_items);
   next.__synced_ids = synced;
   // Exposure: copy delta
   const lastExp = next.__synced_exposure ?? base.exposure;
