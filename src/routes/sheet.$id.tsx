@@ -384,16 +384,16 @@ function SheetPage() {
               <div className="grid grid-cols-2 gap-2.5">
                 <StatBlock label="PV" full="Vitalidade" color="text-red-400" barColor="from-red-600 to-red-400"
                   current={sheet.stats.pv_current} mod={sheet.stats.pv_mod} max={pvMax} disabled={!canEdit}
-                  onCurrent={(v) => update("stats", { ...sheet.stats, pv_current: v })}
-                  onMod={(v) => update("stats", { ...sheet.stats, pv_mod: v })} />
+                  onCurrent={(v) => update("stats", { ...sheet.stats, pv_current: clampCurrent(v, pvMax) })}
+                  onMod={(v) => update("stats", { ...sheet.stats, pv_mod: clampMod(v) })} />
                 <StatBlock label="PE" full="Energia" color="text-emerald-400" barColor="from-emerald-600 to-emerald-400"
                   current={sheet.stats.pe_current} mod={sheet.stats.pe_mod} max={peMax} disabled={!canEdit}
-                  onCurrent={(v) => update("stats", { ...sheet.stats, pe_current: v })}
-                  onMod={(v) => update("stats", { ...sheet.stats, pe_mod: v })} />
+                  onCurrent={(v) => update("stats", { ...sheet.stats, pe_current: clampCurrent(v, peMax) })}
+                  onMod={(v) => update("stats", { ...sheet.stats, pe_mod: clampMod(v) })} />
                 <StatBlock label="PS" full="Sanidade" color="text-purple-400" barColor="from-purple-600 to-purple-400"
                   current={sheet.stats.ps_current} mod={sheet.stats.ps_mod} max={psMax} disabled={!canEdit}
-                  onCurrent={(v) => update("stats", { ...sheet.stats, ps_current: v })}
-                  onMod={(v) => update("stats", { ...sheet.stats, ps_mod: v })} />
+                  onCurrent={(v) => update("stats", { ...sheet.stats, ps_current: clampCurrent(v, psMax) })}
+                  onMod={(v) => update("stats", { ...sheet.stats, ps_mod: clampMod(v) })} />
                 <Card className="p-3 bg-card/60">
                   <div className="text-blue-400 font-cinzel font-bold text-sm">Defesa</div>
                   <div className="text-3xl font-bold text-center my-2">{defTotal}</div>
