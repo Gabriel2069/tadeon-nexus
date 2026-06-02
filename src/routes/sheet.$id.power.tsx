@@ -172,6 +172,7 @@ function PowerFormPage() {
         abilities: (raw.abilities as Ability[]) ?? [],
         plots: (raw.plots as Plot[]) ?? [],
         fragments_items: (raw.fragments_items as InventoryItem[]) ?? [],
+        defense_items: (raw.defense_items as DefenseItem[]) ?? [],
         stat_upgrades: raw.stat_upgrades as StatUpgrades,
         description: (raw.description as Description) ?? { historia: "", personalidade: "", objetivos: "", observacoes: "" },
         notes: String(raw.notes ?? ""),
