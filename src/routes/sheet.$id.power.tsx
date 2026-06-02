@@ -361,13 +361,36 @@ function PowerFormPage() {
             </VPCard>
 
             {/* Defenses */}
-            <VPCard title="Defesa">
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-2 text-xs">
+            <VPCard title="Defesa" extra={canEdit && (
+              <button
+                type="button"
+                onClick={() => patch({ defense_items: [...vpDefItems, { id: genId(), nome: "", bonus: 0, peso: 0 }] })}
+                className="text-[11px] flex items-center gap-1 px-2 py-1 rounded-md bg-orange-500/20 text-orange-100 hover:bg-orange-500/30 transition-colors"
+              >
+                <Plus className="w-3 h-3" /> Equipamento
+              </button>
+            )}>
+              <div className="grid grid-cols-2 md:grid-cols-5 gap-2 text-xs">
                 <Stat label="Base (rank)" value={rank.def} />
                 <Stat label="Equip" value={mods.def_equip ?? 0} />
+                <Stat label="Itens" value={vpDefItemsBonus} />
                 <Stat label="Modificador" value={mods.def_mod ?? 0} />
                 <Stat label="Total" value={defTotal} accent="text-sky-300 font-bold" />
               </div>
+              <div className="mt-2">
+                <ModField label="Equip (≤25)" value={mods.def_equip ?? 0} disabled={!canEdit}
+                  onChange={(v) => patch({ stat_mods: { ...mods, def_equip: clamp(v, 0, 25) } })} />
+              </div>
+              {vpDefItems.length > 0 && (
+                <div className="mt-2">
+                  <ItemRows
+                    rows={vpDefItems as unknown as InventoryItem[]}
+                    canEdit={canEdit}
+                    fields={["nome", "bonus", "peso"] as unknown as Array<"nome" | "descricao" | "espaco">}
+                    onChange={(v) => patch({ defense_items: v as unknown as DefenseItem[] })}
+                  />
+                </div>
+              )}
             </VPCard>
 
             {/* Inventory */}
