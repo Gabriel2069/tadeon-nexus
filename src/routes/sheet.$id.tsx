@@ -233,12 +233,16 @@ function SheetPage() {
   const pvMax = base.pv + sheet.stats.pv_mod + 3 * attrs.COR + 3 * upg.pv;
   const psMax = base.ps + sheet.stats.ps_mod + 3 * attrs.MEN + 3 * upg.ps;
   const peMax = base.pe + sheet.stats.pe_mod + 3 * attrs.ERU + 2 * upg.pe;
-  const defTotal = base.def + sheet.stats.def_equip + sheet.stats.def_mod + upg.def;
+  const defItemsBonus = sheet.defense_items.reduce((s, d) => s + (Number(d.bonus) || 0), 0);
+  const armorRaw = (Number(sheet.stats.def_equip) || 0) + defItemsBonus;
+  const armorTotal = Math.min(25, armorRaw); // limite de armadura
+  const defTotal = base.def + armorTotal + sheet.stats.def_mod + upg.def;
   const invCapacity = 5 + 2 * attrs.COR;
   const invUsed =
     sheet.weapons.reduce((s, w) => s + (Number(w.peso) || 0), 0) +
     sheet.inventory.reduce((s, i) => s + (Number(i.espaco) || 0), 0) +
-    sheet.fragments_items.reduce((s, i) => s + (Number(i.espaco) || 0), 0);
+    sheet.fragments_items.reduce((s, i) => s + (Number(i.espaco) || 0), 0) +
+    sheet.defense_items.reduce((s, d) => s + (Number(d.peso) || 0), 0);
 
 
   const skillGroups = sheetSkillGroups.length ? sheetSkillGroups : SKILL_GROUPS;
