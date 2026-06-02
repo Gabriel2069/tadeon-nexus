@@ -59,7 +59,7 @@ interface BaseRow {
   attributes: Attributes; stats: Stats;
   conditions: Conditions;
   weapons: Weapon[]; inventory: InventoryItem[]; abilities: Ability[]; plots: Plot[];
-  fragments_items: InventoryItem[]; stat_upgrades: StatUpgrades;
+  fragments_items: InventoryItem[]; defense_items: DefenseItem[]; stat_upgrades: StatUpgrades;
   description: Description; notes: string;
   power_form_enabled: boolean;
   power_form_data: VPData;
