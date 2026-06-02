@@ -46,6 +46,7 @@ interface VPData {
   abilities?: Ability[];
   plots?: Plot[];
   fragments_items?: InventoryItem[];
+  defense_items?: DefenseItem[];
   stat_upgrades?: StatUpgrades;
   description?: Description;
   notes?: string;
