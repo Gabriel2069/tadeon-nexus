@@ -232,12 +232,16 @@ function PowerFormPage() {
   const pvMax = rank.pv + (mods.pv_mod ?? 0) + 3 * attrs.COR + 3 * upg.pv;
   const psMax = rank.ps + (mods.ps_mod ?? 0) + 3 * attrs.MEN + 3 * upg.ps;
   const peMax = rank.pe + (mods.pe_mod ?? 0) + 3 * attrs.ERU + 2 * upg.pe;
-  const defTotal = clamp(rank.def + (mods.def_equip ?? 0) + (mods.def_mod ?? 0) + upg.def, 0, 25);
+  const vpDefItems = vp.defense_items ?? [];
+  const vpDefItemsBonus = vpDefItems.reduce((s, d) => s + (Number(d.bonus) || 0), 0);
+  const vpArmor = Math.min(25, (mods.def_equip ?? 0) + vpDefItemsBonus);
+  const defTotal = rank.def + vpArmor + (mods.def_mod ?? 0) + upg.def;
   const invCapacity = 5 + 2 * attrs.COR;
   const invUsed =
     (vp.weapons ?? []).reduce((s, w) => s + (Number(w.peso) || 0), 0) +
     (vp.inventory ?? []).reduce((s, i) => s + (Number(i.espaco) || 0), 0) +
-    (vp.fragments_items ?? []).reduce((s, i) => s + (Number(i.espaco) || 0), 0);
+    (vp.fragments_items ?? []).reduce((s, i) => s + (Number(i.espaco) || 0), 0) +
+    vpDefItems.reduce((s, d) => s + (Number(d.peso) || 0), 0);
 
   const pvCap = Math.floor(pvMax * 1.5);
   const pvMin = -Math.floor(pvMax * 0.5);
