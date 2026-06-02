@@ -42,6 +42,14 @@ interface PowerFormData {
   plots?: Plot[];
   notes?: string;
   stat_mods?: Partial<Stats>;
+  defense_items?: DefenseItem[];
+}
+
+export interface DefenseItem {
+  id: string;
+  nome: string;
+  bonus: number;
+  peso: number;
 }
 
 interface SheetData {
@@ -61,6 +69,7 @@ interface SheetData {
   power_form_enabled: boolean;
   power_form_data: PowerFormData;
   fragments_items: InventoryItem[];
+  defense_items: DefenseItem[];
 }
 
 
@@ -70,6 +79,19 @@ const PLOT_RANGE_OPTIONS = ["Pessoal", "Curto", "Médio", "Longo", "Extremo"];
 
 function clamp(n: number, min: number, max: number) {
   return Math.max(min, Math.min(max, n));
+}
+
+// Current points: limited to +50% / -50% above/below max.
+// e.g. max 45 → range [-23, 68]
+function clampCurrent(v: number, max: number): number {
+  const m = Math.max(1, max);
+  return clamp(Math.round(v), -Math.ceil(0.5 * m), Math.ceil(1.5 * m));
+}
+function clampMod(v: number): number {
+  return clamp(Math.round(v), -100, 150);
+}
+function clampArmor(v: number): number {
+  return clamp(Math.round(v), 0, 25);
 }
 
 // Equilibrium color from -10 (dark red) → 0 (deep green) → +10 (near white yellow)
@@ -127,12 +149,14 @@ function SheetPage() {
       };
       const pfData = (raw.power_form_data as PowerFormData | null) ?? {};
       const fragItems = (raw.fragments_items as InventoryItem[] | null) ?? [];
+      const defItems = (raw.defense_items as DefenseItem[] | null) ?? [];
       setSheet({
         ...(data as unknown as SheetData),
         description: desc,
         power_form_enabled: Boolean(raw.power_form_enabled),
         power_form_data: pfData,
         fragments_items: fragItems,
+        defense_items: defItems,
       });
 
       const g = (settingsJson as unknown as Record<string, unknown> | null) ?? {};
@@ -222,12 +246,16 @@ function SheetPage() {
   const pvMax = base.pv + sheet.stats.pv_mod + 3 * attrs.COR + 3 * upg.pv;
   const psMax = base.ps + sheet.stats.ps_mod + 3 * attrs.MEN + 3 * upg.ps;
   const peMax = base.pe + sheet.stats.pe_mod + 3 * attrs.ERU + 2 * upg.pe;
-  const defTotal = base.def + sheet.stats.def_equip + sheet.stats.def_mod + upg.def;
+  const defItemsBonus = sheet.defense_items.reduce((s, d) => s + (Number(d.bonus) || 0), 0);
+  const armorRaw = (Number(sheet.stats.def_equip) || 0) + defItemsBonus;
+  const armorTotal = Math.min(25, armorRaw); // limite de armadura
+  const defTotal = base.def + armorTotal + sheet.stats.def_mod + upg.def;
   const invCapacity = 5 + 2 * attrs.COR;
   const invUsed =
     sheet.weapons.reduce((s, w) => s + (Number(w.peso) || 0), 0) +
     sheet.inventory.reduce((s, i) => s + (Number(i.espaco) || 0), 0) +
-    sheet.fragments_items.reduce((s, i) => s + (Number(i.espaco) || 0), 0);
+    sheet.fragments_items.reduce((s, i) => s + (Number(i.espaco) || 0), 0) +
+    sheet.defense_items.reduce((s, d) => s + (Number(d.peso) || 0), 0);
 
 
   const skillGroups = sheetSkillGroups.length ? sheetSkillGroups : SKILL_GROUPS;
@@ -369,33 +397,60 @@ function SheetPage() {
               <div className="grid grid-cols-2 gap-2.5">
                 <StatBlock label="PV" full="Vitalidade" color="text-red-400" barColor="from-red-600 to-red-400"
                   current={sheet.stats.pv_current} mod={sheet.stats.pv_mod} max={pvMax} disabled={!canEdit}
-                  onCurrent={(v) => update("stats", { ...sheet.stats, pv_current: v })}
-                  onMod={(v) => update("stats", { ...sheet.stats, pv_mod: v })} />
+                  onCurrent={(v) => update("stats", { ...sheet.stats, pv_current: clampCurrent(v, pvMax) })}
+                  onMod={(v) => update("stats", { ...sheet.stats, pv_mod: clampMod(v) })} />
                 <StatBlock label="PE" full="Energia" color="text-emerald-400" barColor="from-emerald-600 to-emerald-400"
                   current={sheet.stats.pe_current} mod={sheet.stats.pe_mod} max={peMax} disabled={!canEdit}
-                  onCurrent={(v) => update("stats", { ...sheet.stats, pe_current: v })}
-                  onMod={(v) => update("stats", { ...sheet.stats, pe_mod: v })} />
+                  onCurrent={(v) => update("stats", { ...sheet.stats, pe_current: clampCurrent(v, peMax) })}
+                  onMod={(v) => update("stats", { ...sheet.stats, pe_mod: clampMod(v) })} />
                 <StatBlock label="PS" full="Sanidade" color="text-purple-400" barColor="from-purple-600 to-purple-400"
                   current={sheet.stats.ps_current} mod={sheet.stats.ps_mod} max={psMax} disabled={!canEdit}
-                  onCurrent={(v) => update("stats", { ...sheet.stats, ps_current: v })}
-                  onMod={(v) => update("stats", { ...sheet.stats, ps_mod: v })} />
+                  onCurrent={(v) => update("stats", { ...sheet.stats, ps_current: clampCurrent(v, psMax) })}
+                  onMod={(v) => update("stats", { ...sheet.stats, ps_mod: clampMod(v) })} />
                 <Card className="p-3 bg-card/60">
                   <div className="text-blue-400 font-cinzel font-bold text-sm">Defesa</div>
                   <div className="text-3xl font-bold text-center my-2">{defTotal}</div>
                   <div className="text-[10px] text-muted-foreground text-center -mt-1 mb-2">
-                    base {base.def} + equip {sheet.stats.def_equip} + mod {sheet.stats.def_mod}{upg.def ? ` + apr ${upg.def}` : ""}
+                    base {base.def} + equip {armorTotal}{armorRaw > 25 ? " (cap 25)" : ""} + mod {sheet.stats.def_mod}{upg.def ? ` + apr ${upg.def}` : ""}
                   </div>
                   <div className="grid grid-cols-2 gap-2 text-xs">
                     <div>
                       <Label className="text-[10px]">Equip</Label>
-                      <Input type="number" disabled={!canEdit} value={sheet.stats.def_equip} className="h-7"
-                        onChange={(e) => update("stats", { ...sheet.stats, def_equip: Number(e.target.value) })} />
+                      <Input type="number" min={0} max={25} disabled={!canEdit} value={sheet.stats.def_equip} className="h-7"
+                        onChange={(e) => update("stats", { ...sheet.stats, def_equip: clampArmor(Number(e.target.value)) })} />
                     </div>
                     <div>
                       <Label className="text-[10px]">Mod</Label>
                       <Input type="number" disabled={!canEdit} value={sheet.stats.def_mod} className="h-7"
-                        onChange={(e) => update("stats", { ...sheet.stats, def_mod: Number(e.target.value) })} />
+                        onChange={(e) => update("stats", { ...sheet.stats, def_mod: clampMod(Number(e.target.value)) })} />
                     </div>
+                  </div>
+
+                  {/* Equipamentos de defesa (com peso) */}
+                  <div className="mt-3 pt-2 border-t border-border/60">
+                    <div className="flex items-center justify-between mb-1.5">
+                      <Label className="text-[10px] uppercase tracking-wider text-muted-foreground">Equipamentos</Label>
+                      {canEdit && (
+                        <button
+                          type="button"
+                          onClick={() => update("defense_items", [...sheet.defense_items, { id: genId(), nome: "", bonus: 0, peso: 0 }])}
+                          className="text-[10px] flex items-center gap-1 px-1.5 py-0.5 rounded-md bg-primary/15 text-primary hover:bg-primary/25 transition-colors"
+                        >
+                          <Plus className="w-3 h-3" /> Adicionar
+                        </button>
+                      )}
+                    </div>
+                    {sheet.defense_items.length === 0 ? (
+                      <p className="text-[10px] italic text-muted-foreground text-center py-1">Sem equipamentos.</p>
+                    ) : (
+                      <RowTable rows={sheet.defense_items} canEdit={canEdit}
+                        columns={[
+                          { key: "nome", label: "Nome", flex: 1.5 },
+                          { key: "bonus", label: "Bônus", type: "number", width: 64 },
+                          { key: "peso", label: "Peso", type: "number", width: 64 },
+                        ]}
+                        onChange={(v) => update("defense_items", v as DefenseItem[])} />
+                    )}
                   </div>
                 </Card>
               </div>

@@ -17,6 +17,7 @@ import {
   getRankBase, genId, DEFAULT_UPGRADE_COSTS,
 } from "@/lib/sheet-types";
 import { AddItemDialog } from "@/components/sheet/add-item-dialog";
+import type { DefenseItem } from "./sheet.$id";
 
 export const Route = createFileRoute("/sheet/$id/power")({
   head: () => ({ meta: [{ title: "VP — Tadeon Nexus" }] }),
@@ -32,7 +33,7 @@ const WEAPON_RANGE_OPTIONS = ["Curto", "Médio", "Longo", "Extremo"];
 
 interface VPData {
   __initialized?: boolean;
-  __synced_ids?: { weapons: string[]; inventory: string[]; abilities: string[]; plots: string[]; fragments_items: string[] };
+  __synced_ids?: { weapons: string[]; inventory: string[]; abilities: string[]; plots: string[]; fragments_items: string[]; defense_items: string[] };
   __synced_exposure?: number;
   // Mirror fields
   name?: string; occupation?: string; age?: string; brand?: string; origin?: string; motivation?: string;
@@ -45,6 +46,7 @@ interface VPData {
   abilities?: Ability[];
   plots?: Plot[];
   fragments_items?: InventoryItem[];
+  defense_items?: DefenseItem[];
   stat_upgrades?: StatUpgrades;
   description?: Description;
   notes?: string;
@@ -57,7 +59,7 @@ interface BaseRow {
   attributes: Attributes; stats: Stats;
   conditions: Conditions;
   weapons: Weapon[]; inventory: InventoryItem[]; abilities: Ability[]; plots: Plot[];
-  fragments_items: InventoryItem[]; stat_upgrades: StatUpgrades;
+  fragments_items: InventoryItem[]; defense_items: DefenseItem[]; stat_upgrades: StatUpgrades;
   description: Description; notes: string;
   power_form_enabled: boolean;
   power_form_data: VPData;
@@ -89,6 +91,7 @@ function syncFromBase(base: BaseRow, prev: VPData): VPData {
     next.abilities = base.abilities.map((w) => ({ ...w }));
     next.plots = base.plots.map((w) => ({ ...w }));
     next.fragments_items = (base.fragments_items ?? []).map((w) => ({ ...w }));
+    next.defense_items = (base.defense_items ?? []).map((w) => ({ ...w }));
     next.stat_upgrades = { ...base.stat_upgrades };
     next.description = { ...base.description };
     next.notes = base.notes;
@@ -99,11 +102,12 @@ function syncFromBase(base: BaseRow, prev: VPData): VPData {
       abilities: base.abilities.map((x) => x.id),
       plots: base.plots.map((x) => x.id),
       fragments_items: (base.fragments_items ?? []).map((x) => x.id),
+      defense_items: (base.defense_items ?? []).map((x) => x.id),
     };
     return next;
   }
   // Incremental sync: append base items not yet seen
-  const synced = next.__synced_ids ?? { weapons: [], inventory: [], abilities: [], plots: [], fragments_items: [] };
+  const synced = next.__synced_ids ?? { weapons: [], inventory: [], abilities: [], plots: [], fragments_items: [], defense_items: [] };
   const mergeList = <T extends { id: string }>(key: keyof typeof synced, baseList: T[], vpList: T[] | undefined): T[] => {
     const seen = new Set(synced[key]);
     const additions = baseList.filter((b) => !seen.has(b.id)).map((b) => ({ ...b }));
@@ -115,6 +119,7 @@ function syncFromBase(base: BaseRow, prev: VPData): VPData {
   next.abilities = mergeList("abilities", base.abilities, next.abilities);
   next.plots = mergeList("plots", base.plots, next.plots);
   next.fragments_items = mergeList("fragments_items", base.fragments_items ?? [], next.fragments_items);
+  next.defense_items = mergeList("defense_items", base.defense_items ?? [], next.defense_items);
   next.__synced_ids = synced;
   // Exposure: copy delta
   const lastExp = next.__synced_exposure ?? base.exposure;
@@ -167,6 +172,7 @@ function PowerFormPage() {
         abilities: (raw.abilities as Ability[]) ?? [],
         plots: (raw.plots as Plot[]) ?? [],
         fragments_items: (raw.fragments_items as InventoryItem[]) ?? [],
+        defense_items: (raw.defense_items as DefenseItem[]) ?? [],
         stat_upgrades: raw.stat_upgrades as StatUpgrades,
         description: (raw.description as Description) ?? { historia: "", personalidade: "", objetivos: "", observacoes: "" },
         notes: String(raw.notes ?? ""),
@@ -226,12 +232,16 @@ function PowerFormPage() {
   const pvMax = rank.pv + (mods.pv_mod ?? 0) + 3 * attrs.COR + 3 * upg.pv;
   const psMax = rank.ps + (mods.ps_mod ?? 0) + 3 * attrs.MEN + 3 * upg.ps;
   const peMax = rank.pe + (mods.pe_mod ?? 0) + 3 * attrs.ERU + 2 * upg.pe;
-  const defTotal = clamp(rank.def + (mods.def_equip ?? 0) + (mods.def_mod ?? 0) + upg.def, 0, 25);
+  const vpDefItems = vp.defense_items ?? [];
+  const vpDefItemsBonus = vpDefItems.reduce((s, d) => s + (Number(d.bonus) || 0), 0);
+  const vpArmor = Math.min(25, (mods.def_equip ?? 0) + vpDefItemsBonus);
+  const defTotal = rank.def + vpArmor + (mods.def_mod ?? 0) + upg.def;
   const invCapacity = 5 + 2 * attrs.COR;
   const invUsed =
     (vp.weapons ?? []).reduce((s, w) => s + (Number(w.peso) || 0), 0) +
     (vp.inventory ?? []).reduce((s, i) => s + (Number(i.espaco) || 0), 0) +
-    (vp.fragments_items ?? []).reduce((s, i) => s + (Number(i.espaco) || 0), 0);
+    (vp.fragments_items ?? []).reduce((s, i) => s + (Number(i.espaco) || 0), 0) +
+    vpDefItems.reduce((s, d) => s + (Number(d.peso) || 0), 0);
 
   const pvCap = Math.floor(pvMax * 1.5);
   const pvMin = -Math.floor(pvMax * 0.5);
@@ -351,13 +361,36 @@ function PowerFormPage() {
             </VPCard>
 
             {/* Defenses */}
-            <VPCard title="Defesa">
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-2 text-xs">
+            <VPCard title="Defesa" extra={canEdit && (
+              <button
+                type="button"
+                onClick={() => patch({ defense_items: [...vpDefItems, { id: genId(), nome: "", bonus: 0, peso: 0 }] })}
+                className="text-[11px] flex items-center gap-1 px-2 py-1 rounded-md bg-orange-500/20 text-orange-100 hover:bg-orange-500/30 transition-colors"
+              >
+                <Plus className="w-3 h-3" /> Equipamento
+              </button>
+            )}>
+              <div className="grid grid-cols-2 md:grid-cols-5 gap-2 text-xs">
                 <Stat label="Base (rank)" value={rank.def} />
                 <Stat label="Equip" value={mods.def_equip ?? 0} />
+                <Stat label="Itens" value={vpDefItemsBonus} />
                 <Stat label="Modificador" value={mods.def_mod ?? 0} />
                 <Stat label="Total" value={defTotal} accent="text-sky-300 font-bold" />
               </div>
+              <div className="mt-2">
+                <ModField label="Equip (≤25)" value={mods.def_equip ?? 0} disabled={!canEdit}
+                  onChange={(v) => patch({ stat_mods: { ...mods, def_equip: clamp(v, 0, 25) } })} />
+              </div>
+              {vpDefItems.length > 0 && (
+                <div className="mt-2">
+                  <ItemRows
+                    rows={vpDefItems as unknown as InventoryItem[]}
+                    canEdit={canEdit}
+                    fields={["nome", "bonus", "peso"] as unknown as Array<"nome" | "descricao" | "espaco">}
+                    onChange={(v) => patch({ defense_items: v as unknown as DefenseItem[] })}
+                  />
+                </div>
+              )}
             </VPCard>
 
             {/* Inventory */}
@@ -528,7 +561,7 @@ function ItemRows<T extends { id: string }>({ rows, canEdit, fields, onChange }:
             <Input key={f} disabled={!canEdit} placeholder={f} value={String((r as unknown as Record<string, unknown>)[f] ?? "")}
               onChange={(e) => {
                 const next = [...rows];
-                const nv = ["peso", "espaco"].includes(f) ? Number(e.target.value) : e.target.value;
+                const nv = ["peso", "espaco", "bonus"].includes(f) ? Number(e.target.value) : e.target.value;
                 next[i] = { ...next[i], [f]: nv } as T;
                 onChange(next);
               }}

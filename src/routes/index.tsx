@@ -86,12 +86,22 @@ function HomePage() {
     if (!user) return;
     setCreating(true);
     const finalEmail = ownerEmail.trim() || user.email!;
+    // Defaults: rank 0 base (pv 10, ps 10, pe 5, def 10, pa 0, pm 0) + COR/MEN/ERU = 1
+    // pv_max = 10 + 3*1 = 13; ps_max = 13; pe_max = 5 + 3*1 = 8
     const { data, error } = await supabase
       .from("character_sheets")
       .insert({
         owner_id: user.id,
         owner_email: finalEmail,
         name: name.trim() || "Novo Personagem",
+        stats: {
+          pv_current: 13, pv_mod: 0,
+          ps_current: 13, ps_mod: 0,
+          pe_current: 8, pe_mod: 0,
+          pa_current: 0, pa_mod: 0,
+          pm_current: 0, pm_mod: 0,
+          def_equip: 0, def_mod: 0,
+        },
       })
       .select("id")
       .single();

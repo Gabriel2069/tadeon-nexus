@@ -4,6 +4,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
 
+type KeepMode = "sum" | "highest" | "lowest";
+
 interface RollEntry {
   id: number;
   expr: string;
@@ -11,14 +13,16 @@ interface RollEntry {
   modifier: number;
   total: number;
   ts: string;
-  keepHighest?: boolean;
+  keep: KeepMode;
 }
 
-function rollExpr(expr: string): { rolls: number[]; modifier: number; total: number; keepHighest: boolean } | null {
-  // Supports e.g. 2d6+3, d20, 4d4-1, *2d20+10 (keep highest die + mod)
+function rollExpr(expr: string): { rolls: number[]; modifier: number; total: number; keep: KeepMode } | null {
+  // Supports e.g. 2d6+3, d20, 4d4-1, :2d20+10 (highest), ;2d20+10 (lowest)
   const cleaned = expr.replace(/\s/g, "").toLowerCase();
-  const keepHighest = cleaned.startsWith("*");
-  const body = keepHighest ? cleaned.slice(1) : cleaned;
+  let keep: KeepMode = "sum";
+  let body = cleaned;
+  if (cleaned.startsWith(":")) { keep = "highest"; body = cleaned.slice(1); }
+  else if (cleaned.startsWith(";")) { keep = "lowest"; body = cleaned.slice(1); }
   const match = body.match(/^(\d*)d(\d+)([+-]\d+)?$/);
   if (!match) return null;
   const count = parseInt(match[1] || "1", 10);
@@ -26,8 +30,11 @@ function rollExpr(expr: string): { rolls: number[]; modifier: number; total: num
   const mod = match[3] ? parseInt(match[3], 10) : 0;
   if (count < 1 || count > 50 || sides < 2 || sides > 1000) return null;
   const rolls = Array.from({ length: count }, () => 1 + Math.floor(Math.random() * sides));
-  const base = keepHighest ? Math.max(...rolls) : rolls.reduce((a, b) => a + b, 0);
-  return { rolls, modifier: mod, total: base + mod, keepHighest };
+  const base =
+    keep === "highest" ? Math.max(...rolls)
+    : keep === "lowest" ? Math.min(...rolls)
+    : rolls.reduce((a, b) => a + b, 0);
+  return { rolls, modifier: mod, total: base + mod, keep };
 }
 
 const QUICK = ["d4", "d6", "d8", "d10", "d12", "d20", "d100", "2d6"];
@@ -90,11 +97,12 @@ export function DiceRoller() {
               <ul className="space-y-0.5 text-muted-foreground">
                 <li><code className="font-mono text-foreground">N</code> · quantidade de dados (1 a 50, opcional — padrão 1)</li>
                 <li><code className="font-mono text-foreground">F</code> · faces do dado (2 a 1000)</li>
-                <li><code className="font-mono text-foreground">±M</code> · modificador fixo opcional</li>
-                <li><code className="font-mono text-foreground">*</code> · prefixo: usa o <b>maior dado</b> rolado + modificador</li>
+                <li><code className="font-mono text-foreground">±M</code> · modificador fixo opcional (sempre somado à parte)</li>
+                <li><code className="font-mono text-foreground">:</code> · prefixo: usa o <b>maior dado</b> rolado + modificador</li>
+                <li><code className="font-mono text-foreground">;</code> · prefixo: usa o <b>menor dado</b> rolado + modificador</li>
               </ul>
               <p className="mt-1.5 text-muted-foreground">
-                Exemplos: <code className="font-mono text-foreground">d20</code>, <code className="font-mono text-foreground">2d6+3</code>, <code className="font-mono text-foreground">4d4-1</code>, <code className="font-mono text-foreground">*2d20+10</code>.
+                Exemplos: <code className="font-mono text-foreground">d20</code>, <code className="font-mono text-foreground">2d6+3</code>, <code className="font-mono text-foreground">4d4-1</code>, <code className="font-mono text-foreground">:2d20+10</code>, <code className="font-mono text-foreground">;3d20-2</code>.
               </p>
             </div>
           )}
@@ -152,7 +160,7 @@ export function DiceRoller() {
                     <span className="text-muted-foreground text-[10px]">{h.ts}</span>
                   </div>
                   <div className="text-muted-foreground text-[11px] mt-0.5">
-                    [{h.rolls.join(", ")}]{h.keepHighest ? ` → maior = ${Math.max(...h.rolls)}` : ""}{h.modifier ? (h.modifier > 0 ? ` +${h.modifier}` : ` ${h.modifier}`) : ""}
+                    [{h.rolls.join(", ")}]{h.keep === "highest" ? ` → maior = ${Math.max(...h.rolls)}` : h.keep === "lowest" ? ` → menor = ${Math.min(...h.rolls)}` : ""}{h.modifier ? (h.modifier > 0 ? ` +${h.modifier}` : ` ${h.modifier}`) : ""}
                   </div>
                   <div className="text-lg font-bold text-foreground mt-1">= {h.total}</div>
                 </div>

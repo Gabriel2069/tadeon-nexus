@@ -23,6 +23,7 @@ export type Database = {
           condition: string | null
           conditions: Json
           created_at: string
+          defense_items: Json
           description: Json
           dying: number
           equilibrium: number
@@ -60,6 +61,7 @@ export type Database = {
           condition?: string | null
           conditions?: Json
           created_at?: string
+          defense_items?: Json
           description?: Json
           dying?: number
           equilibrium?: number
@@ -97,6 +99,7 @@ export type Database = {
           condition?: string | null
           conditions?: Json
           created_at?: string
+          defense_items?: Json
           description?: Json
           dying?: number
           equilibrium?: number
