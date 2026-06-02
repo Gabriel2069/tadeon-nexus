@@ -160,7 +160,7 @@ export function DiceRoller() {
                     <span className="text-muted-foreground text-[10px]">{h.ts}</span>
                   </div>
                   <div className="text-muted-foreground text-[11px] mt-0.5">
-                    [{h.rolls.join(", ")}]{h.keepHighest ? ` → maior = ${Math.max(...h.rolls)}` : ""}{h.modifier ? (h.modifier > 0 ? ` +${h.modifier}` : ` ${h.modifier}`) : ""}
+                    [{h.rolls.join(", ")}]{h.keep === "highest" ? ` → maior = ${Math.max(...h.rolls)}` : h.keep === "lowest" ? ` → menor = ${Math.min(...h.rolls)}` : ""}{h.modifier ? (h.modifier > 0 ? ` +${h.modifier}` : ` ${h.modifier}`) : ""}
                   </div>
                   <div className="text-lg font-bold text-foreground mt-1">= {h.total}</div>
                 </div>
