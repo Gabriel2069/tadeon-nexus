@@ -136,12 +136,14 @@ function SheetPage() {
       };
       const pfData = (raw.power_form_data as PowerFormData | null) ?? {};
       const fragItems = (raw.fragments_items as InventoryItem[] | null) ?? [];
+      const defItems = (raw.defense_items as DefenseItem[] | null) ?? [];
       setSheet({
         ...(data as unknown as SheetData),
         description: desc,
         power_form_enabled: Boolean(raw.power_form_enabled),
         power_form_data: pfData,
         fragments_items: fragItems,
+        defense_items: defItems,
       });
 
       const g = (settingsJson as unknown as Record<string, unknown> | null) ?? {};
