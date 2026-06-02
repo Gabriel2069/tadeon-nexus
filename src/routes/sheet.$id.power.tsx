@@ -33,7 +33,7 @@ const WEAPON_RANGE_OPTIONS = ["Curto", "Médio", "Longo", "Extremo"];
 
 interface VPData {
   __initialized?: boolean;
-  __synced_ids?: { weapons: string[]; inventory: string[]; abilities: string[]; plots: string[]; fragments_items: string[] };
+  __synced_ids?: { weapons: string[]; inventory: string[]; abilities: string[]; plots: string[]; fragments_items: string[]; defense_items: string[] };
   __synced_exposure?: number;
   // Mirror fields
   name?: string; occupation?: string; age?: string; brand?: string; origin?: string; motivation?: string;
