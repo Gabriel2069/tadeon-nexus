@@ -4,6 +4,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
 
+type KeepMode = "sum" | "highest" | "lowest";
+
 interface RollEntry {
   id: number;
   expr: string;
@@ -11,14 +13,16 @@ interface RollEntry {
   modifier: number;
   total: number;
   ts: string;
-  keepHighest?: boolean;
+  keep: KeepMode;
 }
 
-function rollExpr(expr: string): { rolls: number[]; modifier: number; total: number; keepHighest: boolean } | null {
-  // Supports e.g. 2d6+3, d20, 4d4-1, *2d20+10 (keep highest die + mod)
+function rollExpr(expr: string): { rolls: number[]; modifier: number; total: number; keep: KeepMode } | null {
+  // Supports e.g. 2d6+3, d20, 4d4-1, :2d20+10 (highest), ;2d20+10 (lowest)
   const cleaned = expr.replace(/\s/g, "").toLowerCase();
-  const keepHighest = cleaned.startsWith("*");
-  const body = keepHighest ? cleaned.slice(1) : cleaned;
+  let keep: KeepMode = "sum";
+  let body = cleaned;
+  if (cleaned.startsWith(":")) { keep = "highest"; body = cleaned.slice(1); }
+  else if (cleaned.startsWith(";")) { keep = "lowest"; body = cleaned.slice(1); }
   const match = body.match(/^(\d*)d(\d+)([+-]\d+)?$/);
   if (!match) return null;
   const count = parseInt(match[1] || "1", 10);
@@ -26,8 +30,11 @@ function rollExpr(expr: string): { rolls: number[]; modifier: number; total: num
   const mod = match[3] ? parseInt(match[3], 10) : 0;
   if (count < 1 || count > 50 || sides < 2 || sides > 1000) return null;
   const rolls = Array.from({ length: count }, () => 1 + Math.floor(Math.random() * sides));
-  const base = keepHighest ? Math.max(...rolls) : rolls.reduce((a, b) => a + b, 0);
-  return { rolls, modifier: mod, total: base + mod, keepHighest };
+  const base =
+    keep === "highest" ? Math.max(...rolls)
+    : keep === "lowest" ? Math.min(...rolls)
+    : rolls.reduce((a, b) => a + b, 0);
+  return { rolls, modifier: mod, total: base + mod, keep };
 }
 
 const QUICK = ["d4", "d6", "d8", "d10", "d12", "d20", "d100", "2d6"];
