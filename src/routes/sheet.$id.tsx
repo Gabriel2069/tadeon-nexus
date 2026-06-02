@@ -411,19 +411,46 @@ function SheetPage() {
                   <div className="text-blue-400 font-cinzel font-bold text-sm">Defesa</div>
                   <div className="text-3xl font-bold text-center my-2">{defTotal}</div>
                   <div className="text-[10px] text-muted-foreground text-center -mt-1 mb-2">
-                    base {base.def} + equip {sheet.stats.def_equip} + mod {sheet.stats.def_mod}{upg.def ? ` + apr ${upg.def}` : ""}
+                    base {base.def} + equip {armorTotal}{armorRaw > 25 ? " (cap 25)" : ""} + mod {sheet.stats.def_mod}{upg.def ? ` + apr ${upg.def}` : ""}
                   </div>
                   <div className="grid grid-cols-2 gap-2 text-xs">
                     <div>
                       <Label className="text-[10px]">Equip</Label>
-                      <Input type="number" disabled={!canEdit} value={sheet.stats.def_equip} className="h-7"
-                        onChange={(e) => update("stats", { ...sheet.stats, def_equip: Number(e.target.value) })} />
+                      <Input type="number" min={0} max={25} disabled={!canEdit} value={sheet.stats.def_equip} className="h-7"
+                        onChange={(e) => update("stats", { ...sheet.stats, def_equip: clampArmor(Number(e.target.value)) })} />
                     </div>
                     <div>
                       <Label className="text-[10px]">Mod</Label>
                       <Input type="number" disabled={!canEdit} value={sheet.stats.def_mod} className="h-7"
-                        onChange={(e) => update("stats", { ...sheet.stats, def_mod: Number(e.target.value) })} />
+                        onChange={(e) => update("stats", { ...sheet.stats, def_mod: clampMod(Number(e.target.value)) })} />
                     </div>
+                  </div>
+
+                  {/* Equipamentos de defesa (com peso) */}
+                  <div className="mt-3 pt-2 border-t border-border/60">
+                    <div className="flex items-center justify-between mb-1.5">
+                      <Label className="text-[10px] uppercase tracking-wider text-muted-foreground">Equipamentos</Label>
+                      {canEdit && (
+                        <button
+                          type="button"
+                          onClick={() => update("defense_items", [...sheet.defense_items, { id: genId(), nome: "", bonus: 0, peso: 0 }])}
+                          className="text-[10px] flex items-center gap-1 px-1.5 py-0.5 rounded-md bg-primary/15 text-primary hover:bg-primary/25 transition-colors"
+                        >
+                          <Plus className="w-3 h-3" /> Adicionar
+                        </button>
+                      )}
+                    </div>
+                    {sheet.defense_items.length === 0 ? (
+                      <p className="text-[10px] italic text-muted-foreground text-center py-1">Sem equipamentos.</p>
+                    ) : (
+                      <RowTable rows={sheet.defense_items} canEdit={canEdit}
+                        columns={[
+                          { key: "nome", label: "Nome", flex: 1.5 },
+                          { key: "bonus", label: "Bônus", type: "number", width: 64 },
+                          { key: "peso", label: "Peso", type: "number", width: 64 },
+                        ]}
+                        onChange={(v) => update("defense_items", v as DefenseItem[])} />
+                    )}
                   </div>
                 </Card>
               </div>
