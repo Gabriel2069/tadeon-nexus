@@ -561,7 +561,7 @@ function ItemRows<T extends { id: string }>({ rows, canEdit, fields, onChange }:
             <Input key={f} disabled={!canEdit} placeholder={f} value={String((r as unknown as Record<string, unknown>)[f] ?? "")}
               onChange={(e) => {
                 const next = [...rows];
-                const nv = ["peso", "espaco"].includes(f) ? Number(e.target.value) : e.target.value;
+                const nv = ["peso", "espaco", "bonus"].includes(f) ? Number(e.target.value) : e.target.value;
                 next[i] = { ...next[i], [f]: nv } as T;
                 onChange(next);
               }}
