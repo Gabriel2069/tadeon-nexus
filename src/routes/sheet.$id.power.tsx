@@ -17,6 +17,7 @@ import {
   getRankBase, genId, DEFAULT_UPGRADE_COSTS,
 } from "@/lib/sheet-types";
 import { AddItemDialog } from "@/components/sheet/add-item-dialog";
+import type { DefenseItem } from "./sheet.$id";
 
 export const Route = createFileRoute("/sheet/$id/power")({
   head: () => ({ meta: [{ title: "VP — Tadeon Nexus" }] }),
