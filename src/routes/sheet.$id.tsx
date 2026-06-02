@@ -42,6 +42,14 @@ interface PowerFormData {
   plots?: Plot[];
   notes?: string;
   stat_mods?: Partial<Stats>;
+  defense_items?: DefenseItem[];
+}
+
+export interface DefenseItem {
+  id: string;
+  nome: string;
+  bonus: number;
+  peso: number;
 }
 
 interface SheetData {
@@ -61,6 +69,7 @@ interface SheetData {
   power_form_enabled: boolean;
   power_form_data: PowerFormData;
   fragments_items: InventoryItem[];
+  defense_items: DefenseItem[];
 }
 
 
