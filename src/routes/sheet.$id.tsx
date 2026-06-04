@@ -247,7 +247,7 @@ function SheetPage() {
   const psMax = base.ps + sheet.stats.ps_mod + 3 * attrs.MEN + 3 * upg.ps;
   const peMax = base.pe + sheet.stats.pe_mod + 3 * attrs.ERU + 2 * upg.pe;
   const defItemsBonus = sheet.defense_items.reduce((s, d) => s + (Number(d.bonus) || 0), 0);
-  const armorRaw = (Number(sheet.stats.def_equip) || 0) + defItemsBonus;
+  const armorRaw = defItemsBonus;
   const armorTotal = Math.min(25, armorRaw); // limite de armadura
   const defTotal = base.def + armorTotal + sheet.stats.def_mod + upg.def;
   const invCapacity = 5 + 2 * attrs.COR;
