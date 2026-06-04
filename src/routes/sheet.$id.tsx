@@ -39,7 +39,7 @@ export const Route = createFileRoute("/sheet/$id")({
       { rel: "canonical", href: "https://tadeon-nexus.lovable.app/" },
     ],
   }),
-  head: () => ({ meta: [{ title: "Ficha — Tadeon Nexus" }] }),
+  
   component: () => (
     <ProtectedShell>
       <SheetPage />
