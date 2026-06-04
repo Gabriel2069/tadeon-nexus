@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as MasterPanelRouteImport } from './routes/master-panel'
 import { Route as ManageUsersRouteImport } from './routes/manage-users'
 import { Route as LoginRouteImport } from './routes/login'
@@ -16,6 +17,11 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as SheetIdRouteImport } from './routes/sheet.$id'
 import { Route as SheetIdPowerRouteImport } from './routes/sheet.$id_.power'
 
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const MasterPanelRoute = MasterPanelRouteImport.update({
   id: '/master-panel',
   path: '/master-panel',
@@ -52,6 +58,7 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/manage-users': typeof ManageUsersRoute
   '/master-panel': typeof MasterPanelRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/sheet/$id': typeof SheetIdRoute
   '/sheet/$id/power': typeof SheetIdPowerRoute
 }
@@ -60,6 +67,7 @@ export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/manage-users': typeof ManageUsersRoute
   '/master-panel': typeof MasterPanelRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/sheet/$id': typeof SheetIdRoute
   '/sheet/$id/power': typeof SheetIdPowerRoute
 }
@@ -69,6 +77,7 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/manage-users': typeof ManageUsersRoute
   '/master-panel': typeof MasterPanelRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/sheet/$id': typeof SheetIdRoute
   '/sheet/$id_/power': typeof SheetIdPowerRoute
 }
@@ -79,6 +88,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/manage-users'
     | '/master-panel'
+    | '/sitemap.xml'
     | '/sheet/$id'
     | '/sheet/$id/power'
   fileRoutesByTo: FileRoutesByTo
@@ -87,6 +97,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/manage-users'
     | '/master-panel'
+    | '/sitemap.xml'
     | '/sheet/$id'
     | '/sheet/$id/power'
   id:
@@ -95,6 +106,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/manage-users'
     | '/master-panel'
+    | '/sitemap.xml'
     | '/sheet/$id'
     | '/sheet/$id_/power'
   fileRoutesById: FileRoutesById
@@ -104,12 +116,20 @@ export interface RootRouteChildren {
   LoginRoute: typeof LoginRoute
   ManageUsersRoute: typeof ManageUsersRoute
   MasterPanelRoute: typeof MasterPanelRoute
+  SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   SheetIdRoute: typeof SheetIdRoute
   SheetIdPowerRoute: typeof SheetIdPowerRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/master-panel': {
       id: '/master-panel'
       path: '/master-panel'
@@ -160,6 +180,7 @@ const rootRouteChildren: RootRouteChildren = {
   LoginRoute: LoginRoute,
   ManageUsersRoute: ManageUsersRoute,
   MasterPanelRoute: MasterPanelRoute,
+  SitemapDotxmlRoute: SitemapDotxmlRoute,
   SheetIdRoute: SheetIdRoute,
   SheetIdPowerRoute: SheetIdPowerRoute,
 }

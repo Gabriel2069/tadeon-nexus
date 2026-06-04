@@ -1,0 +1,8 @@
+# Tadeon Nexus
+
+> Sistema online de RPG por Gabriel Tadeu para gerenciar fichas de personagem, atributos, perícias, árvore de habilidades e mesas com painel do mestre.
+
+## Pages
+
+- [Início](/): Acesso ao painel e às fichas do jogador.
+- [Entrar](/login): Página de login e cadastro de conta.
