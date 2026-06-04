@@ -124,6 +124,7 @@ function SheetPage() {
   const [sheetSkillGroups, setSheetSkillGroups] = useState<typeof SKILL_GROUPS>([]);
   // (removed setPowerFormOpen — Power Form opens via dedicated route)
   const [fragmentsView, setFragmentsView] = useState(false);
+  const [defEquipOpen, setDefEquipOpen] = useState(false);
   const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const skipNextSave = useRef(true);
