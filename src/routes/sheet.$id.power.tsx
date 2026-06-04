@@ -234,7 +234,7 @@ function PowerFormPage() {
   const peMax = rank.pe + (mods.pe_mod ?? 0) + 3 * attrs.ERU + 2 * upg.pe;
   const vpDefItems = vp.defense_items ?? [];
   const vpDefItemsBonus = vpDefItems.reduce((s, d) => s + (Number(d.bonus) || 0), 0);
-  const vpArmor = Math.min(25, (mods.def_equip ?? 0) + vpDefItemsBonus);
+  const vpArmor = Math.min(25, vpDefItemsBonus);
   const defTotal = rank.def + vpArmor + (mods.def_mod ?? 0) + upg.def;
   const invCapacity = 5 + 2 * attrs.COR;
   const invUsed =
