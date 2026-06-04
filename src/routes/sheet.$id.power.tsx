@@ -141,6 +141,7 @@ function PowerFormPage() {
   const [_upgradeCosts, setUpgradeCosts] = useState<UpgradeCosts>(DEFAULT_UPGRADE_COSTS);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [defEquipOpen, setDefEquipOpen] = useState(false);
   const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const skipNextSave = useRef(true);
 
