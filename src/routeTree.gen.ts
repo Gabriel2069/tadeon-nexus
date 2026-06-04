@@ -14,7 +14,7 @@ import { Route as ManageUsersRouteImport } from './routes/manage-users'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as SheetIdRouteImport } from './routes/sheet.$id'
-import { Route as SheetIdPowerRouteImport } from './routes/sheet.$id.power'
+import { Route as SheetIdPowerRouteImport } from './routes/sheet.$id_.power'
 
 const MasterPanelRoute = MasterPanelRouteImport.update({
   id: '/master-panel',
@@ -42,9 +42,9 @@ const SheetIdRoute = SheetIdRouteImport.update({
   getParentRoute: () => rootRouteImport,
 } as any)
 const SheetIdPowerRoute = SheetIdPowerRouteImport.update({
-  id: '/power',
-  path: '/power',
-  getParentRoute: () => SheetIdRoute,
+  id: '/sheet/$id_/power',
+  path: '/sheet/$id/power',
+  getParentRoute: () => rootRouteImport,
 } as any)
 
 export interface FileRoutesByFullPath {
@@ -52,7 +52,7 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/manage-users': typeof ManageUsersRoute
   '/master-panel': typeof MasterPanelRoute
-  '/sheet/$id': typeof SheetIdRouteWithChildren
+  '/sheet/$id': typeof SheetIdRoute
   '/sheet/$id/power': typeof SheetIdPowerRoute
 }
 export interface FileRoutesByTo {
@@ -60,7 +60,7 @@ export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/manage-users': typeof ManageUsersRoute
   '/master-panel': typeof MasterPanelRoute
-  '/sheet/$id': typeof SheetIdRouteWithChildren
+  '/sheet/$id': typeof SheetIdRoute
   '/sheet/$id/power': typeof SheetIdPowerRoute
 }
 export interface FileRoutesById {
@@ -69,8 +69,8 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/manage-users': typeof ManageUsersRoute
   '/master-panel': typeof MasterPanelRoute
-  '/sheet/$id': typeof SheetIdRouteWithChildren
-  '/sheet/$id/power': typeof SheetIdPowerRoute
+  '/sheet/$id': typeof SheetIdRoute
+  '/sheet/$id_/power': typeof SheetIdPowerRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -96,7 +96,7 @@ export interface FileRouteTypes {
     | '/manage-users'
     | '/master-panel'
     | '/sheet/$id'
-    | '/sheet/$id/power'
+    | '/sheet/$id_/power'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -104,7 +104,8 @@ export interface RootRouteChildren {
   LoginRoute: typeof LoginRoute
   ManageUsersRoute: typeof ManageUsersRoute
   MasterPanelRoute: typeof MasterPanelRoute
-  SheetIdRoute: typeof SheetIdRouteWithChildren
+  SheetIdRoute: typeof SheetIdRoute
+  SheetIdPowerRoute: typeof SheetIdPowerRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -144,34 +145,34 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SheetIdRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/sheet/$id/power': {
-      id: '/sheet/$id/power'
-      path: '/power'
+    '/sheet/$id_/power': {
+      id: '/sheet/$id_/power'
+      path: '/sheet/$id/power'
       fullPath: '/sheet/$id/power'
       preLoaderRoute: typeof SheetIdPowerRouteImport
-      parentRoute: typeof SheetIdRoute
+      parentRoute: typeof rootRouteImport
     }
   }
 }
-
-interface SheetIdRouteChildren {
-  SheetIdPowerRoute: typeof SheetIdPowerRoute
-}
-
-const SheetIdRouteChildren: SheetIdRouteChildren = {
-  SheetIdPowerRoute: SheetIdPowerRoute,
-}
-
-const SheetIdRouteWithChildren =
-  SheetIdRoute._addFileChildren(SheetIdRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   LoginRoute: LoginRoute,
   ManageUsersRoute: ManageUsersRoute,
   MasterPanelRoute: MasterPanelRoute,
-  SheetIdRoute: SheetIdRouteWithChildren,
+  SheetIdRoute: SheetIdRoute,
+  SheetIdPowerRoute: SheetIdPowerRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
