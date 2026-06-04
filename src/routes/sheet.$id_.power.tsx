@@ -19,7 +19,7 @@ import {
 import { AddItemDialog } from "@/components/sheet/add-item-dialog";
 import type { DefenseItem } from "./sheet.$id";
 
-export const Route = createFileRoute("/sheet/$id/power")({
+export const Route = createFileRoute("/sheet/$id_/power")({
   head: () => ({ meta: [{ title: "VP — Tadeon Nexus" }] }),
   component: () => (
     <ProtectedShell>
