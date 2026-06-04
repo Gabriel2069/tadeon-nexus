@@ -32,7 +32,13 @@ export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
       { title: "Dashboard — Tadeon Nexus" },
-      { name: "description", content: "Suas fichas de personagem no Tadeon Nexus." },
+      { name: "description", content: "Painel principal do Tadeon Nexus: veja e gerencie suas fichas de personagem, atributos, perícias e progresso de RPG." },
+      { property: "og:title", content: "Dashboard — Tadeon Nexus" },
+      { property: "og:description", content: "Painel principal do Tadeon Nexus: veja e gerencie suas fichas de personagem, atributos, perícias e progresso de RPG." },
+      { property: "og:url", content: "https://tadeon-nexus.lovable.app/" },
+    ],
+    links: [
+      { rel: "canonical", href: "https://tadeon-nexus.lovable.app/" },
     ],
   }),
   component: () => (
@@ -235,6 +241,7 @@ function HomePage() {
                 size="sm"
                 onClick={() => setToDelete(s)}
                 className="absolute top-2 right-2 h-7 w-7 p-0"
+                aria-label={`Excluir ficha ${s.name}`}
               >
                 <Trash className="w-3.5 h-3.5" />
               </Button>

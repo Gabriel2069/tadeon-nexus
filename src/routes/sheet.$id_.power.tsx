@@ -20,7 +20,17 @@ import { AddItemDialog } from "@/components/sheet/add-item-dialog";
 import type { DefenseItem } from "./sheet.$id";
 
 export const Route = createFileRoute("/sheet/$id_/power")({
-  head: () => ({ meta: [{ title: "VP — Tadeon Nexus" }] }),
+  head: () => ({
+    meta: [
+      { title: "Forma de Poder (VP) — Tadeon Nexus" },
+      { name: "description", content: "Versão de poder (VP) da ficha no Tadeon Nexus: cópia vibrante com atributos, modificadores e habilidades independentes da ficha base." },
+      { property: "og:title", content: "Forma de Poder (VP) — Tadeon Nexus" },
+      { property: "og:description", content: "Versão de poder (VP) da ficha no Tadeon Nexus: cópia vibrante com atributos, modificadores e habilidades independentes da ficha base." },
+    ],
+    links: [
+      { rel: "canonical", href: "https://tadeon-nexus.lovable.app/" },
+    ],
+  }),
   component: () => (
     <ProtectedShell>
       <PowerFormPage />
@@ -267,7 +277,7 @@ function PowerFormPage() {
         {/* Header */}
         <div className="sticky top-0 z-20 -mx-3 md:-mx-6 px-3 md:px-6 py-3 mb-4 bg-background/40 backdrop-blur-xl border-b border-orange-500/50 shadow-[0_4px_30px_rgba(255,100,50,0.35)]">
           <div className="flex items-center gap-2">
-            <Button variant="ghost" size="icon" onClick={() => navigate({ to: "/sheet/$id", params: { id: base.id } })} title="Voltar à ficha base">
+            <Button variant="ghost" size="icon" onClick={() => navigate({ to: "/sheet/$id", params: { id: base.id } })} title="Voltar à ficha base" aria-label="Voltar à ficha base">
               <ArrowLeft className="w-5 h-5" />
             </Button>
             <Sparkles className="w-5 h-5 text-orange-300 animate-pulse" />
@@ -333,9 +343,11 @@ function PowerFormPage() {
                     <div className="font-cinzel text-xs text-orange-200">{k}</div>
                     <div className="flex items-center justify-center gap-1 mt-1">
                       <Button size="sm" variant="ghost" disabled={!canEdit} className="h-6 w-6 p-0"
+                        aria-label={`Diminuir ${k}`}
                         onClick={() => patch({ attributes: { ...attrs, [k]: Math.max(0, attrs[k] - 1) } })}><Minus className="w-3 h-3" /></Button>
                       <span className="w-6 text-center font-bold text-lg">{attrs[k]}</span>
                       <Button size="sm" variant="ghost" disabled={!canEdit} className="h-6 w-6 p-0"
+                        aria-label={`Aumentar ${k}`}
                         onClick={() => patch({ attributes: { ...attrs, [k]: Math.min(10, attrs[k] + 1) } })}><Plus className="w-3 h-3" /></Button>
                     </div>
                   </div>
@@ -511,7 +523,7 @@ function VPCard({ title, children, extra }: { title: string; children: React.Rea
   return (
     <Card className="p-4 bg-card/30 backdrop-blur-md border-orange-500/30 shadow-[0_0_25px_-10px_rgba(255,120,60,0.55)] hover:border-orange-400/60 transition-all">
       <div className="flex items-center justify-between mb-3">
-        <h3 className="font-cinzel text-sm font-bold text-orange-200 tracking-wide">{title}</h3>
+        <h2 className="font-cinzel text-sm font-bold text-orange-200 tracking-wide">{title}</h2>
         {extra}
       </div>
       {children}
@@ -551,10 +563,10 @@ function PointBlock({ label, max, current, disabled, color, onChange }: { label:
         <div className={`h-full bg-gradient-to-r ${color} transition-all`} style={{ width: `${pct}%` }} />
       </div>
       <div className="flex items-center justify-center gap-1">
-        <Button size="sm" variant="ghost" disabled={disabled} className="h-7 w-7 p-0" onClick={() => onChange(current - 1)}><Minus className="w-3 h-3" /></Button>
+        <Button size="sm" variant="ghost" disabled={disabled} className="h-7 w-7 p-0" aria-label={`Diminuir ${label}`} onClick={() => onChange(current - 1)}><Minus className="w-3 h-3" /></Button>
         <Input type="number" disabled={disabled} value={current} onChange={(e) => onChange(Number(e.target.value) || 0)}
           className="h-7 w-16 text-center bg-card/40 border-orange-500/30" />
-        <Button size="sm" variant="ghost" disabled={disabled} className="h-7 w-7 p-0" onClick={() => onChange(current + 1)}><Plus className="w-3 h-3" /></Button>
+        <Button size="sm" variant="ghost" disabled={disabled} className="h-7 w-7 p-0" aria-label={`Aumentar ${label}`} onClick={() => onChange(current + 1)}><Plus className="w-3 h-3" /></Button>
       </div>
     </div>
   );

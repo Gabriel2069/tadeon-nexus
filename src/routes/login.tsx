@@ -13,7 +13,13 @@ export const Route = createFileRoute("/login")({
   head: () => ({
     meta: [
       { title: "Entrar — Tadeon Nexus" },
-      { name: "description", content: "Acesse sua conta no Tadeon Nexus." },
+      { name: "description", content: "Acesse sua conta no Tadeon Nexus para gerenciar suas fichas de personagem, atributos e mesas de RPG online." },
+      { property: "og:title", content: "Entrar — Tadeon Nexus" },
+      { property: "og:description", content: "Acesse sua conta no Tadeon Nexus para gerenciar suas fichas de personagem, atributos e mesas de RPG online." },
+      { property: "og:url", content: "https://tadeon-nexus.lovable.app/login" },
+    ],
+    links: [
+      { rel: "canonical", href: "https://tadeon-nexus.lovable.app/login" },
     ],
   }),
   component: LoginPage,
@@ -70,7 +76,7 @@ function LoginPage() {
     <div className="min-h-screen flex items-center justify-center px-4">
       <Card className="w-full max-w-md p-8 bg-card/80 backdrop-blur border-border">
         <div className="text-center mb-6">
-          <h1 className="font-cinzel text-3xl font-bold text-primary">Tadeon Nexus</h1>
+          <h1 className="font-cinzel text-3xl font-bold text-primary">Tadeon Nexus — Entrar</h1>
           <p className="mt-2 text-sm text-muted-foreground">
             {mode === "signin" ? "Entre na sua conta" : "Crie sua conta"}
           </p>

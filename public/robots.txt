@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://tadeon-nexus.lovable.app/sitemap.xml

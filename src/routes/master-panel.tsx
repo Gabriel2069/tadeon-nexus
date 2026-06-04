@@ -20,7 +20,18 @@ import type { RankRow, SkillBranch, UpgradeCosts, ConditionOptionsMap, Condition
 import { genId, DEFAULT_UPGRADE_COSTS, DEFAULT_CONDITION_OPTIONS, CONDITION_META } from "@/lib/sheet-types";
 
 export const Route = createFileRoute("/master-panel")({
-  head: () => ({ meta: [{ title: "Painel do Mestre — Tadeon Nexus" }] }),
+  head: () => ({
+    meta: [
+      { title: "Painel do Mestre — Tadeon Nexus" },
+      { name: "description", content: "Painel do mestre do Tadeon Nexus: cenas, NPCs, monstros, pistas, iniciativa e configurações da mesa de RPG." },
+      { property: "og:title", content: "Painel do Mestre — Tadeon Nexus" },
+      { property: "og:description", content: "Painel do mestre do Tadeon Nexus: cenas, NPCs, monstros, pistas, iniciativa e configurações da mesa de RPG." },
+      { property: "og:url", content: "https://tadeon-nexus.lovable.app/master-panel" },
+    ],
+    links: [
+      { rel: "canonical", href: "https://tadeon-nexus.lovable.app/master-panel" },
+    ],
+  }),
   component: () => (
     <ProtectedShell requireRole="mestre">
       <MasterPanel />

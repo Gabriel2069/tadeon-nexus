@@ -28,7 +28,18 @@ import { AddItemDialog } from "@/components/sheet/add-item-dialog";
 import { SkillTreeTab } from "@/components/sheet/skill-tree";
 
 export const Route = createFileRoute("/sheet/$id")({
-  head: () => ({ meta: [{ title: "Ficha — Tadeon Nexus" }] }),
+  head: () => ({
+    meta: [
+      { title: "Ficha de Personagem — Tadeon Nexus" },
+      { name: "description", content: "Editor de ficha de personagem do Tadeon Nexus: atributos, perícias, habilidades, inventário, defesa e árvore de progressão." },
+      { property: "og:title", content: "Ficha de Personagem — Tadeon Nexus" },
+      { property: "og:description", content: "Editor de ficha de personagem do Tadeon Nexus: atributos, perícias, habilidades, inventário, defesa e árvore de progressão." },
+    ],
+    links: [
+      { rel: "canonical", href: "https://tadeon-nexus.lovable.app/" },
+    ],
+  }),
+  
   component: () => (
     <ProtectedShell>
       <SheetPage />
@@ -283,7 +294,7 @@ function SheetPage() {
       {/* Sticky Header */}
       <div className="sticky top-0 z-10 -mx-3 md:-mx-6 px-3 md:px-6 py-3 mb-4 bg-background/85 backdrop-blur-md border-b border-border">
         <div className="flex items-center gap-2">
-          <Button variant="ghost" size="icon" onClick={() => navigate({ to: "/" })}>
+          <Button variant="ghost" size="icon" onClick={() => navigate({ to: "/" })} aria-label="Voltar ao painel">
             <ArrowLeft className="w-5 h-5" />
           </Button>
           <h1 className="font-cinzel text-lg md:text-2xl font-bold flex-1 truncate">
@@ -369,11 +380,13 @@ function SheetPage() {
                       <span className="font-cinzel text-sm">{k}</span>
                       <div className="flex items-center gap-1">
                         <Button size="sm" variant="ghost" className="h-6 w-6 p-0" disabled={!canEdit || attrs[k] <= 0}
+                          aria-label={`Diminuir ${k}`}
                           onClick={() => update("attributes", { ...attrs, [k]: Math.max(0, attrs[k] - 1) })}>
                           <Minus className="w-3 h-3" />
                         </Button>
                         <span className="w-5 text-center font-bold">{attrs[k]}</span>
                         <Button size="sm" variant="ghost" className="h-6 w-6 p-0" disabled={!canEdit || attrs[k] >= 5}
+                          aria-label={`Aumentar ${k}`}
                           onClick={() => update("attributes", { ...attrs, [k]: Math.min(5, attrs[k] + 1) })}>
                           <Plus className="w-3 h-3" />
                         </Button>
@@ -819,7 +832,7 @@ function Section({ title, children, extra, id }: { title: string; children: Reac
   return (
     <Card id={id} className="p-4 bg-card/60 backdrop-blur-sm border-border/60 transition-all hover:border-border scroll-mt-32">
       <div className="flex items-center justify-between flex-wrap gap-2 mb-3">
-        <h3 className="font-cinzel font-bold text-primary">{title}</h3>
+        <h2 className="font-cinzel font-bold text-primary text-base">{title}</h2>
         {extra}
       </div>
       {children}
