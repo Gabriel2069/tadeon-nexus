@@ -9,7 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ArrowLeft, Save, Loader2, Plus, Minus, Trash, Sparkles, Flame } from "lucide-react";
+import { ArrowLeft, Save, Loader2, Plus, Minus, Trash, Sparkles, Flame, ChevronDown } from "lucide-react";
 import { toast } from "sonner";
 import {
   type Attributes, type Stats, type Weapon, type InventoryItem, type Ability, type Plot,
