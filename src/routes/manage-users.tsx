@@ -18,7 +18,18 @@ import type { AppRole } from "@/lib/auth";
 import { deleteUserFn } from "@/lib/admin-users.functions";
 
 export const Route = createFileRoute("/manage-users")({
-  head: () => ({ meta: [{ title: "Gerenciar Usuários — Tadeon Nexus" }] }),
+  head: () => ({
+    meta: [
+      { title: "Gerenciar Usuários — Tadeon Nexus" },
+      { name: "description", content: "Painel do mestre para gerenciar contas, papéis e permissões dos jogadores do Tadeon Nexus." },
+      { property: "og:title", content: "Gerenciar Usuários — Tadeon Nexus" },
+      { property: "og:description", content: "Painel do mestre para gerenciar contas, papéis e permissões dos jogadores do Tadeon Nexus." },
+      { property: "og:url", content: "https://tadeon-nexus.lovable.app/manage-users" },
+    ],
+    links: [
+      { rel: "canonical", href: "https://tadeon-nexus.lovable.app/manage-users" },
+    ],
+  }),
   component: () => (
     <ProtectedShell requireRole="mestre">
       <ManageUsersPage />

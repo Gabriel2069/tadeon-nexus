@@ -64,9 +64,17 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       },
       { property: "og:title", content: "Tadeon Nexus - RPG Online" },
       { name: "twitter:title", content: "Tadeon Nexus - RPG Online" },
-      { name: "description", content: "Sistema online de RPG por Gabriel Tadeu" },
-      { property: "og:description", content: "Sistema online de RPG por Gabriel Tadeu" },
-      { name: "twitter:description", content: "Sistema online de RPG por Gabriel Tadeu" },
+      {
+        property: "og:description",
+        content:
+          "Tadeon Nexus: gerencie fichas de personagem, atributos, perícias e a árvore de habilidades do seu RPG online com painel para mestres e jogadores.",
+      },
+      {
+        name: "twitter:description",
+        content:
+          "Tadeon Nexus: gerencie fichas de personagem, atributos, perícias e a árvore de habilidades do seu RPG online com painel para mestres e jogadores.",
+      },
+      { property: "og:site_name", content: "Tadeon Nexus" },
       { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/PVW5PtKIfsZfzEClat2iS5nSbg62/social-images/social-1779415456700-IMG_0562.webp" },
       { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/PVW5PtKIfsZfzEClat2iS5nSbg62/social-images/social-1779415456700-IMG_0562.webp" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -105,7 +113,9 @@ function RootComponent() {
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
-        <Outlet />
+        <main>
+          <Outlet />
+        </main>
         <Toaster richColors position="top-right" />
       </AuthProvider>
     </QueryClientProvider>
