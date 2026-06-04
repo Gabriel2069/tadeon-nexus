@@ -124,6 +124,7 @@ function SheetPage() {
   const [sheetSkillGroups, setSheetSkillGroups] = useState<typeof SKILL_GROUPS>([]);
   // (removed setPowerFormOpen — Power Form opens via dedicated route)
   const [fragmentsView, setFragmentsView] = useState(false);
+  const [defEquipOpen, setDefEquipOpen] = useState(false);
   const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const skipNextSave = useRef(true);
@@ -247,7 +248,7 @@ function SheetPage() {
   const psMax = base.ps + sheet.stats.ps_mod + 3 * attrs.MEN + 3 * upg.ps;
   const peMax = base.pe + sheet.stats.pe_mod + 3 * attrs.ERU + 2 * upg.pe;
   const defItemsBonus = sheet.defense_items.reduce((s, d) => s + (Number(d.bonus) || 0), 0);
-  const armorRaw = (Number(sheet.stats.def_equip) || 0) + defItemsBonus;
+  const armorRaw = defItemsBonus;
   const armorTotal = Math.min(25, armorRaw); // limite de armadura
   const defTotal = base.def + armorTotal + sheet.stats.def_mod + upg.def;
   const invCapacity = 5 + 2 * attrs.COR;
@@ -416,8 +417,8 @@ function SheetPage() {
                   <div className="grid grid-cols-2 gap-2 text-xs">
                     <div>
                       <Label className="text-[10px]">Equip</Label>
-                      <Input type="number" min={0} max={25} disabled={!canEdit} value={sheet.stats.def_equip} className="h-7"
-                        onChange={(e) => update("stats", { ...sheet.stats, def_equip: clampArmor(Number(e.target.value)) })} />
+                      <Input type="number" readOnly tabIndex={-1} value={armorTotal} className="h-7 bg-muted/40 cursor-not-allowed"
+                        title="Soma dos bônus dos equipamentos (máx. 25)" />
                     </div>
                     <div>
                       <Label className="text-[10px]">Mod</Label>
@@ -426,31 +427,42 @@ function SheetPage() {
                     </div>
                   </div>
 
-                  {/* Equipamentos de defesa (com peso) */}
+                  {/* Equipamentos de defesa (retrátil, máx 3) */}
                   <div className="mt-3 pt-2 border-t border-border/60">
-                    <div className="flex items-center justify-between mb-1.5">
-                      <Label className="text-[10px] uppercase tracking-wider text-muted-foreground">Equipamentos</Label>
-                      {canEdit && (
-                        <button
-                          type="button"
-                          onClick={() => update("defense_items", [...sheet.defense_items, { id: genId(), nome: "", bonus: 0, peso: 0 }])}
-                          className="text-[10px] flex items-center gap-1 px-1.5 py-0.5 rounded-md bg-primary/15 text-primary hover:bg-primary/25 transition-colors"
-                        >
-                          <Plus className="w-3 h-3" /> Adicionar
-                        </button>
+                    <button
+                      type="button"
+                      onClick={() => setDefEquipOpen((o) => !o)}
+                      className="w-full flex items-center justify-between gap-2 mb-1.5 group"
+                    >
+                      <Label className="text-[10px] uppercase tracking-wider text-muted-foreground cursor-pointer">
+                        Equipamentos ({sheet.defense_items.length}/3)
+                      </Label>
+                      <ArrowUp className={`w-3 h-3 text-muted-foreground transition-transform ${defEquipOpen ? "" : "rotate-180"}`} />
+                    </button>
+                    <div className={`overflow-hidden transition-all duration-300 ${defEquipOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0"}`}>
+                      <div className="flex justify-end mb-1.5">
+                        {canEdit && sheet.defense_items.length < 3 && (
+                          <button
+                            type="button"
+                            onClick={() => update("defense_items", [...sheet.defense_items, { id: genId(), nome: "", bonus: 0, peso: 0 }])}
+                            className="text-[10px] flex items-center gap-1 px-1.5 py-0.5 rounded-md bg-primary/15 text-primary hover:bg-primary/25 transition-colors"
+                          >
+                            <Plus className="w-3 h-3" /> Adicionar
+                          </button>
+                        )}
+                      </div>
+                      {sheet.defense_items.length === 0 ? (
+                        <p className="text-[10px] italic text-muted-foreground text-center py-1">Sem equipamentos.</p>
+                      ) : (
+                        <RowTable rows={sheet.defense_items} canEdit={canEdit}
+                          columns={[
+                            { key: "nome", label: "Nome", flex: 1.5 },
+                            { key: "bonus", label: "Bônus", type: "number", width: 64 },
+                            { key: "peso", label: "Peso", type: "number", width: 64 },
+                          ]}
+                          onChange={(v) => update("defense_items", v as DefenseItem[])} />
                       )}
                     </div>
-                    {sheet.defense_items.length === 0 ? (
-                      <p className="text-[10px] italic text-muted-foreground text-center py-1">Sem equipamentos.</p>
-                    ) : (
-                      <RowTable rows={sheet.defense_items} canEdit={canEdit}
-                        columns={[
-                          { key: "nome", label: "Nome", flex: 1.5 },
-                          { key: "bonus", label: "Bônus", type: "number", width: 64 },
-                          { key: "peso", label: "Peso", type: "number", width: 64 },
-                        ]}
-                        onChange={(v) => update("defense_items", v as DefenseItem[])} />
-                    )}
                   </div>
                 </Card>
               </div>

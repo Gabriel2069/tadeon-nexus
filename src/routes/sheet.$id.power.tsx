@@ -9,7 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ArrowLeft, Save, Loader2, Plus, Minus, Trash, Sparkles, Flame } from "lucide-react";
+import { ArrowLeft, Save, Loader2, Plus, Minus, Trash, Sparkles, Flame, ChevronDown } from "lucide-react";
 import { toast } from "sonner";
 import {
   type Attributes, type Stats, type Weapon, type InventoryItem, type Ability, type Plot,
@@ -141,6 +141,7 @@ function PowerFormPage() {
   const [_upgradeCosts, setUpgradeCosts] = useState<UpgradeCosts>(DEFAULT_UPGRADE_COSTS);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [defEquipOpen, setDefEquipOpen] = useState(false);
   const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const skipNextSave = useRef(true);
 
@@ -234,7 +235,7 @@ function PowerFormPage() {
   const peMax = rank.pe + (mods.pe_mod ?? 0) + 3 * attrs.ERU + 2 * upg.pe;
   const vpDefItems = vp.defense_items ?? [];
   const vpDefItemsBonus = vpDefItems.reduce((s, d) => s + (Number(d.bonus) || 0), 0);
-  const vpArmor = Math.min(25, (mods.def_equip ?? 0) + vpDefItemsBonus);
+  const vpArmor = Math.min(25, vpDefItemsBonus);
   const defTotal = rank.def + vpArmor + (mods.def_mod ?? 0) + upg.def;
   const invCapacity = 5 + 2 * attrs.COR;
   const invUsed =
@@ -361,36 +362,49 @@ function PowerFormPage() {
             </VPCard>
 
             {/* Defenses */}
-            <VPCard title="Defesa" extra={canEdit && (
-              <button
-                type="button"
-                onClick={() => patch({ defense_items: [...vpDefItems, { id: genId(), nome: "", bonus: 0, peso: 0 }] })}
-                className="text-[11px] flex items-center gap-1 px-2 py-1 rounded-md bg-orange-500/20 text-orange-100 hover:bg-orange-500/30 transition-colors"
-              >
-                <Plus className="w-3 h-3" /> Equipamento
-              </button>
-            )}>
-              <div className="grid grid-cols-2 md:grid-cols-5 gap-2 text-xs">
+            <VPCard title="Defesa">
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-2 text-xs">
                 <Stat label="Base (rank)" value={rank.def} />
-                <Stat label="Equip" value={mods.def_equip ?? 0} />
-                <Stat label="Itens" value={vpDefItemsBonus} />
+                <Stat label="Equip" value={vpArmor} />
                 <Stat label="Modificador" value={mods.def_mod ?? 0} />
                 <Stat label="Total" value={defTotal} accent="text-sky-300 font-bold" />
               </div>
-              <div className="mt-2">
-                <ModField label="Equip (≤25)" value={mods.def_equip ?? 0} disabled={!canEdit}
-                  onChange={(v) => patch({ stat_mods: { ...mods, def_equip: clamp(v, 0, 25) } })} />
-              </div>
-              {vpDefItems.length > 0 && (
-                <div className="mt-2">
-                  <ItemRows
-                    rows={vpDefItems as unknown as InventoryItem[]}
-                    canEdit={canEdit}
-                    fields={["nome", "bonus", "peso"] as unknown as Array<"nome" | "descricao" | "espaco">}
-                    onChange={(v) => patch({ defense_items: v as unknown as DefenseItem[] })}
-                  />
+
+              <div className="mt-3 pt-2 border-t border-orange-300/30">
+                <button
+                  type="button"
+                  onClick={() => setDefEquipOpen((o) => !o)}
+                  className="w-full flex items-center justify-between gap-2 mb-1.5"
+                >
+                  <span className="text-[11px] uppercase tracking-wider text-orange-100/80">
+                    Equipamentos ({vpDefItems.length}/3)
+                  </span>
+                  <ChevronDown className={`w-4 h-4 text-orange-100/80 transition-transform ${defEquipOpen ? "rotate-180" : ""}`} />
+                </button>
+                <div className={`overflow-hidden transition-all duration-300 ${defEquipOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0"}`}>
+                  {canEdit && vpDefItems.length < 3 && (
+                    <div className="flex justify-end mb-1.5">
+                      <button
+                        type="button"
+                        onClick={() => patch({ defense_items: [...vpDefItems, { id: genId(), nome: "", bonus: 0, peso: 0 }] })}
+                        className="text-[11px] flex items-center gap-1 px-2 py-1 rounded-md bg-orange-500/20 text-orange-100 hover:bg-orange-500/30 transition-colors"
+                      >
+                        <Plus className="w-3 h-3" /> Equipamento
+                      </button>
+                    </div>
+                  )}
+                  {vpDefItems.length === 0 ? (
+                    <p className="text-[11px] italic text-orange-100/60 text-center py-1">Sem equipamentos.</p>
+                  ) : (
+                    <ItemRows
+                      rows={vpDefItems as unknown as InventoryItem[]}
+                      canEdit={canEdit}
+                      fields={["nome", "bonus", "peso"] as unknown as Array<"nome" | "descricao" | "espaco">}
+                      onChange={(v) => patch({ defense_items: v as unknown as DefenseItem[] })}
+                    />
+                  )}
                 </div>
-              )}
+              </div>
             </VPCard>
 
             {/* Inventory */}
