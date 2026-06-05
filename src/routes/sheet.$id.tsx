@@ -560,7 +560,7 @@ function SheetPage() {
             <div className="grid grid-cols-2 gap-4 mt-4">
               <CounterDots label="Morrendo" max={3} value={sheet.dying} color="bg-red-500" disabled={!canEdit}
                 onChange={(v) => update("dying", v)} />
-              <CounterDots label="Enlouquecendo" max={3} value={sheet.going_insane} color="bg-purple-500" disabled={!canEdit}
+              <CounterDots label="Colapsando" max={3} value={sheet.going_insane} color="bg-purple-500" disabled={!canEdit}
                 onChange={(v) => update("going_insane", v)} />
             </div>
           </Section>
@@ -830,9 +830,12 @@ function SheetPage() {
 
 function Section({ title, children, extra, id }: { title: string; children: React.ReactNode; extra?: React.ReactNode; id?: string }) {
   return (
-    <Card id={id} className="p-4 bg-card/60 backdrop-blur-sm border-border/60 transition-all hover:border-border scroll-mt-32">
+    <Card
+      id={id}
+      className="p-4 bg-card/60 backdrop-blur-sm border border-purple-500/20 shadow-[0_0_22px_-14px_rgba(168,85,247,0.55)] transition-all hover:border-purple-400/40 hover:shadow-[0_0_28px_-12px_rgba(168,85,247,0.7)] scroll-mt-32"
+    >
       <div className="flex items-center justify-between flex-wrap gap-2 mb-3">
-        <h2 className="font-cinzel font-bold text-primary text-base">{title}</h2>
+        <h2 className="font-cinzel font-bold text-primary text-base drop-shadow-[0_0_6px_rgba(168,85,247,0.35)]">{title}</h2>
         {extra}
       </div>
       {children}
