@@ -560,7 +560,7 @@ function SheetPage() {
             <div className="grid grid-cols-2 gap-4 mt-4">
               <CounterDots label="Morrendo" max={3} value={sheet.dying} color="bg-red-500" disabled={!canEdit}
                 onChange={(v) => update("dying", v)} />
-              <CounterDots label="Enlouquecendo" max={3} value={sheet.going_insane} color="bg-purple-500" disabled={!canEdit}
+              <CounterDots label="Colapsando" max={3} value={sheet.going_insane} color="bg-purple-500" disabled={!canEdit}
                 onChange={(v) => update("going_insane", v)} />
             </div>
           </Section>
