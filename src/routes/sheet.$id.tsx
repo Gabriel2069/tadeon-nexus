@@ -421,9 +421,14 @@ function SheetPage() {
                   current={sheet.stats.ps_current} mod={sheet.stats.ps_mod} max={psMax} disabled={!canEdit}
                   onCurrent={(v) => update("stats", { ...sheet.stats, ps_current: clampCurrent(v, psMax) })}
                   onMod={(v) => update("stats", { ...sheet.stats, ps_mod: clampMod(v) })} />
-                <Card className="p-3 bg-card/60">
-                  <div className="text-blue-400 font-cinzel font-bold text-sm">Defesa</div>
-                  <div className="text-3xl font-bold text-center my-2">{defTotal}</div>
+                <Card className="p-3 bg-card/60 border-blue-500/30 shadow-[0_0_22px_-12px_rgba(59,130,246,0.65)]">
+                  <div className="text-blue-300 font-cinzel font-bold text-sm">Defesa</div>
+                  <div className="relative my-2 flex items-center justify-center">
+                    <Shield className="w-20 h-20 text-blue-400/30 drop-shadow-[0_0_8px_rgba(59,130,246,0.55)]" strokeWidth={1.5} />
+                    <span className="absolute inset-0 flex items-center justify-center text-3xl font-bold text-blue-200 drop-shadow-[0_0_6px_rgba(59,130,246,0.85)]">
+                      {defTotal}
+                    </span>
+                  </div>
                   <div className="text-[10px] text-muted-foreground text-center -mt-1 mb-2">
                     base {base.def} + equip {armorTotal}{armorRaw > 25 ? " (cap 25)" : ""} + mod {sheet.stats.def_mod}{upg.def ? ` + apr ${upg.def}` : ""}
                   </div>
