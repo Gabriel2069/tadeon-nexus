@@ -11,7 +11,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 // (Dialog imports removed — Power Form now lives in /sheet/$id/power route)
 
-import { ArrowLeft, Save, Loader2, Plus, Minus, Trash, Sparkles, Gem, ArrowUp } from "lucide-react";
+import { ArrowLeft, Save, Loader2, Plus, Minus, Trash, Sparkles, Gem, ArrowUp, Shield } from "lucide-react";
 import { toast } from "sonner";
 import {
   Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer,
