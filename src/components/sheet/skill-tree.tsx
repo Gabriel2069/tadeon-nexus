@@ -165,45 +165,60 @@ export function SkillTreeTab({
           {branch.nodes.length === 0 ? (
             <p className="text-xs text-muted-foreground italic">Sem habilidades neste ramo.</p>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-              {branch.nodes.map((node) => {
-                const isPurchased = purchased.has(node.id);
-                const check = canBuyNode(node);
-                const locked = !isPurchased && !check.ok;
-                return (
-                  <div key={node.id}
-                    className={`rounded-lg p-3 border transition-all ${
-                      isPurchased ? "bg-primary/10 border-primary/50"
-                        : locked ? "bg-secondary/30 border-border opacity-70"
-                          : "bg-secondary/60 border-border hover:border-primary/50"
-                    }`}>
-                    <div className="flex items-start justify-between gap-2">
-                      <h4 className="font-cinzel font-bold text-sm">{node.name}</h4>
-                      {isPurchased ? <Check className="w-4 h-4 text-primary shrink-0" />
-                        : locked ? <Lock className="w-3.5 h-3.5 text-muted-foreground shrink-0" /> : null}
+            <div className="overflow-x-auto -mx-1 pb-2 snap-x snap-mandatory [scrollbar-width:thin]">
+              <div className="flex gap-3 px-1" style={{ width: "max-content" }}>
+                {Array.from({ length: Math.ceil(branch.nodes.length / 2) }).map((_, colIdx) => {
+                  const colNodes = branch.nodes.slice(colIdx * 2, colIdx * 2 + 2);
+                  return (
+                    <div key={colIdx} className="flex flex-col gap-3 w-[260px] shrink-0 snap-start">
+                      {colNodes.map((node) => {
+                        const isPurchased = purchased.has(node.id);
+                        const check = canBuyNode(node);
+                        const locked = !isPurchased && !check.ok;
+                        const reqMissing = locked && check.why.startsWith("Requisito");
+                        const rankMissing = locked && check.why.startsWith("Requer Rank");
+                        const attrMissing = locked && /Requer [A-Z]{3}/.test(check.why);
+                        const hideDesc = reqMissing || rankMissing || attrMissing;
+                        return (
+                          <div key={node.id}
+                            className={`rounded-lg p-3 border transition-all ${
+                              isPurchased ? "bg-primary/10 border-primary/50"
+                                : locked ? "bg-secondary/30 border-border opacity-70"
+                                  : "bg-secondary/60 border-border hover:border-primary/50"
+                            }`}>
+                            <div className="flex items-start justify-between gap-2">
+                              <h4 className="font-cinzel font-bold text-sm">{hideDesc ? "???" : node.name}</h4>
+                              {isPurchased ? <Check className="w-4 h-4 text-primary shrink-0" />
+                                : locked ? <Lock className="w-3.5 h-3.5 text-muted-foreground shrink-0" /> : null}
+                            </div>
+                            {!hideDesc && (
+                              <p className="text-xs text-muted-foreground mt-1">{node.desc}</p>
+                            )}
+                            <div className="mt-2 flex flex-wrap gap-1 text-[10px]">
+                              <span className="px-1.5 py-0.5 rounded bg-background/40">Custo: {node.cost} PM</span>
+                              {node.minRank > 0 && <span className="px-1.5 py-0.5 rounded bg-background/40">Rank {node.minRank}+</span>}
+                              {(node.attrReqs || []).map((a, i) => (
+                                <span key={i} className="px-1.5 py-0.5 rounded bg-background/40">{a.attr} ≥ {a.value}</span>
+                              ))}
+                            </div>
+                            {canEdit && (
+                              <div className="mt-3">
+                                {isPurchased ? (
+                                  <Button size="sm" variant="ghost" className="w-full h-7 text-xs" onClick={() => refundNode(node)}>Reembolsar</Button>
+                                ) : (
+                                  <Button size="sm" className="w-full h-7 text-xs" disabled={!check.ok} onClick={() => buyNode(node)}>
+                                    {check.ok ? "Adquirir" : check.why}
+                                  </Button>
+                                )}
+                              </div>
+                            )}
+                          </div>
+                        );
+                      })}
                     </div>
-                    <p className="text-xs text-muted-foreground mt-1">{node.desc}</p>
-                    <div className="mt-2 flex flex-wrap gap-1 text-[10px]">
-                      <span className="px-1.5 py-0.5 rounded bg-background/40">Custo: {node.cost} PM</span>
-                      {node.minRank > 0 && <span className="px-1.5 py-0.5 rounded bg-background/40">Rank {node.minRank}+</span>}
-                      {(node.attrReqs || []).map((a, i) => (
-                        <span key={i} className="px-1.5 py-0.5 rounded bg-background/40">{a.attr} ≥ {a.value}</span>
-                      ))}
-                    </div>
-                    {canEdit && (
-                      <div className="mt-3">
-                        {isPurchased ? (
-                          <Button size="sm" variant="ghost" className="w-full h-7 text-xs" onClick={() => refundNode(node)}>Reembolsar</Button>
-                        ) : (
-                          <Button size="sm" className="w-full h-7 text-xs" disabled={!check.ok} onClick={() => buyNode(node)}>
-                            {check.ok ? "Adquirir" : check.why}
-                          </Button>
-                        )}
-                      </div>
-                    )}
-                  </div>
-                );
-              })}
+                  );
+                })}
+              </div>
             </div>
           )}
         </Card>
