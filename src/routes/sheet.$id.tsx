@@ -189,6 +189,7 @@ function SheetPage() {
         power_form_data: pfData,
         fragments_items: fragItems,
         defense_items: defItems,
+        weapon_proficiency: ((raw.weapon_proficiency as Proficiency | null) ?? "leigo"),
       });
 
       const g = (settingsJson as unknown as Record<string, unknown> | null) ?? {};
@@ -197,6 +198,8 @@ function SheetPage() {
       setUpgradeCosts((g.upgrade_costs as UpgradeCosts | undefined) ?? DEFAULT_UPGRADE_COSTS);
       setConditionOptions((g.condition_options as ConditionOptionsMap | undefined) ?? DEFAULT_CONDITION_OPTIONS);
       setSheetSkillGroups((g.skill_groups as typeof SKILL_GROUPS | undefined) ?? []);
+      const tc = g.skill_training_costs as number[] | undefined;
+      if (tc && tc.length >= 3) setTrainingCosts([tc[0], tc[1], tc[2]]);
       setLoading(false);
     })();
   }, [id, navigate]);
