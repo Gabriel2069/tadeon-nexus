@@ -111,6 +111,9 @@ function MasterPanel() {
             { attr: "PRE", label: "Presença", skills: ["Atuação","Diplomacia","Enganação","Intimidação"] },
             { attr: "ERU", label: "Erudição", skills: ["Ciências","Medicina","Ocultismo","Tecnologia"] },
           ],
+          skill_training_costs: ((g.skill_training_costs as number[] | undefined) && (g.skill_training_costs as number[]).length >= 3
+            ? [(g.skill_training_costs as number[])[0], (g.skill_training_costs as number[])[1], (g.skill_training_costs as number[])[2]]
+            : [2, 3, 4]) as [number, number, number],
         });
       }
       setSheets((ch as unknown as SheetSummary[]) ?? []);
