@@ -617,7 +617,7 @@ function SheetPage() {
                   <div className="space-y-0.5">
                     {g.skills.map((s) => {
                       const v = sheet.skills[s] ?? 0;
-                      const tier = tierFromBonus(v);
+                      const tier: number = tierFromBonus(v);
                       const color =
                         tier === 3 ? "text-yellow-400 font-bold" :
                         tier === 2 ? "text-blue-400 font-semibold" :
