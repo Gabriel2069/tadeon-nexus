@@ -151,9 +151,11 @@ function SheetPage() {
   const [upgradeCosts, setUpgradeCosts] = useState<UpgradeCosts>(DEFAULT_UPGRADE_COSTS);
   const [conditionOptions, setConditionOptions] = useState<ConditionOptionsMap>(DEFAULT_CONDITION_OPTIONS);
   const [sheetSkillGroups, setSheetSkillGroups] = useState<typeof SKILL_GROUPS>([]);
+  const [trainingCosts, setTrainingCosts] = useState<[number, number, number]>([2, 3, 4]);
   // (removed setPowerFormOpen — Power Form opens via dedicated route)
   const [fragmentsView, setFragmentsView] = useState(false);
   const [defEquipOpen, setDefEquipOpen] = useState(false);
+  const [openSkill, setOpenSkill] = useState<string | null>(null);
   const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const skipNextSave = useRef(true);
