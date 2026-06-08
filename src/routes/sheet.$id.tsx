@@ -292,6 +292,11 @@ function SheetPage() {
     sheet.fragments_items.reduce((s, i) => s + (Number(i.espaco) || 0), 0) +
     sheet.defense_items.reduce((s, d) => s + (Number(d.peso) || 0), 0);
 
+  const trainingLimit = 4 + Math.floor(base.rank / 2) + Math.floor(3 * attrs.ERU);
+  const trainingUsed = Object.values(sheet.skills || {}).reduce((s, v) => s + tierFromBonus(Number(v) || 0), 0);
+
+
+
 
   const skillGroups = sheetSkillGroups.length ? sheetSkillGroups : SKILL_GROUPS;
   const sectionAnchors: { id: string; label: string }[] = [
