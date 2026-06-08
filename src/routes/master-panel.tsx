@@ -65,6 +65,7 @@ interface SettingsRow {
   upgrade_costs: UpgradeCosts;
   condition_options: ConditionOptionsMap;
   skill_groups: { attr: string; label: string; skills: string[] }[];
+  skill_training_costs: [number, number, number];
 }
 
 interface SheetSummary {
