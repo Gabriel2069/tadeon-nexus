@@ -11,7 +11,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 // (Dialog imports removed — Power Form now lives in /sheet/$id/power route)
 
-import { ArrowLeft, Save, Loader2, Plus, Minus, Trash, Sparkles, Gem, ArrowUp, Shield } from "lucide-react";
+import { ArrowLeft, Save, Loader2, Plus, Minus, Trash, Sparkles, Gem, ArrowUp, Shield, ChevronLeft, ChevronRight } from "lucide-react";
 import { toast } from "sonner";
 import {
   Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer,
@@ -26,6 +26,23 @@ import {
 } from "@/lib/sheet-types";
 import { AddItemDialog } from "@/components/sheet/add-item-dialog";
 import { SkillTreeTab } from "@/components/sheet/skill-tree";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+
+const PROFICIENCY_OPTIONS = ["leigo", "operador", "artilheiro", "combatente", "armígero"] as const;
+type Proficiency = typeof PROFICIENCY_OPTIONS[number];
+
+const TRAINING_TIERS = [
+  { tier: 1, name: "Iniciado", bonus: 5 },
+  { tier: 2, name: "Apurado", bonus: 10 },
+  { tier: 3, name: "Versado", bonus: 15 },
+] as const;
+function tierFromBonus(b: number): 0 | 1 | 2 | 3 {
+  if (b >= 15) return 3;
+  if (b >= 10) return 2;
+  if (b >= 5) return 1;
+  return 0;
+}
 
 export const Route = createFileRoute("/sheet/$id")({
   head: () => ({
