@@ -870,6 +870,28 @@ function DataPanel({ s, upd }: PanelProps) {
         </div>
       </Card>
 
+      {/* Skill Training Costs */}
+      <Card className="p-4">
+        <h3 className="font-cinzel font-bold mb-1">Custos de Treinamento de Perícia (PM)</h3>
+        <p className="text-xs text-muted-foreground mb-3">
+          PM gasto para evoluir cada perícia de um nível de treino para o próximo.
+        </p>
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          {(["Iniciado (+5)", "Apurado (+10)", "Versado (+15)"] as const).map((label, i) => (
+            <div key={label} className="bg-secondary/40 rounded-lg p-3 space-y-2">
+              <div className="font-cinzel font-bold text-sm">{label}</div>
+              <Input type="number" min={0} value={s.skill_training_costs[i] ?? 0} className="h-8"
+                onChange={(e) => {
+                  const next = [...s.skill_training_costs] as [number, number, number];
+                  next[i] = Number(e.target.value);
+                  upd("skill_training_costs", next);
+                }} />
+            </div>
+          ))}
+        </div>
+      </Card>
+
+
       {/* Conditions editor */}
       <Card className="p-4">
         <h3 className="font-cinzel font-bold mb-1">Listas de Condições</h3>
