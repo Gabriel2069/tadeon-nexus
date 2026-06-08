@@ -623,8 +623,8 @@ function SheetPage() {
                         tier === 2 ? "text-blue-400 font-semibold" :
                         tier === 1 ? "text-green-400" : "text-muted-foreground";
                       const tierName = tier === 0 ? "Sem treino" : TRAINING_TIERS[tier - 1].name;
-                      const nextCost = tier < 3 ? trainingCosts[tier] : null;
-                      const refund = tier > 0 ? trainingCosts[tier - 1] : 0;
+                      const nextCost: number | null = tier < 3 ? (trainingCosts[tier] ?? 0) : null;
+                      const refund: number = tier > 0 ? (trainingCosts[tier - 1] ?? 0) : 0;
                       const wouldExceed = tier < 3 && (trainingUsed + 1) > trainingLimit;
                       const upgrade = () => {
                         if (tier >= 3 || nextCost == null) return;
