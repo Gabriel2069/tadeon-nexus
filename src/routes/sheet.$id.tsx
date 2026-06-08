@@ -629,7 +629,7 @@ function SheetPage() {
                       const upgrade = () => {
                         if (tier >= 3 || nextCost == null) return;
                         if (wouldExceed) { toast.error(`Limite de treinos atingido (${trainingLimit}).`); return; }
-                        const nextTier = TRAINING_TIERS[tier];
+                        const nextTier = TRAINING_TIERS[tier]!;
                         if (!window.confirm(`Avançar "${s}" para ${nextTier.name} (+${nextTier.bonus})?\nCusto: ${nextCost} PM.`)) return;
                         update("skills", { ...sheet.skills, [s]: nextTier.bonus });
                         update("pm_spent", (sheet.pm_spent || 0) + nextCost);
