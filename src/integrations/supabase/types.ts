@@ -51,6 +51,7 @@ export type Database = {
           stat_upgrades: Json
           stats: Json
           updated_at: string
+          weapon_proficiency: string
           weapons: Json
         }
         Insert: {
@@ -89,6 +90,7 @@ export type Database = {
           stat_upgrades?: Json
           stats?: Json
           updated_at?: string
+          weapon_proficiency?: string
           weapons?: Json
         }
         Update: {
@@ -127,6 +129,7 @@ export type Database = {
           stat_upgrades?: Json
           stats?: Json
           updated_at?: string
+          weapon_proficiency?: string
           weapons?: Json
         }
         Relationships: []
@@ -151,6 +154,7 @@ export type Database = {
           scenes_detailed: Json
           skill_branches: Json
           skill_groups: Json
+          skill_training_costs: Json
           updated_at: string
           upgrade_costs: Json
         }
@@ -173,6 +177,7 @@ export type Database = {
           scenes_detailed?: Json
           skill_branches?: Json
           skill_groups?: Json
+          skill_training_costs?: Json
           updated_at?: string
           upgrade_costs?: Json
         }
@@ -195,6 +200,7 @@ export type Database = {
           scenes_detailed?: Json
           skill_branches?: Json
           skill_groups?: Json
+          skill_training_costs?: Json
           updated_at?: string
           upgrade_costs?: Json
         }
