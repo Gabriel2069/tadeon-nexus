@@ -98,6 +98,7 @@ interface SheetData {
   power_form_data: PowerFormData;
   fragments_items: InventoryItem[];
   defense_items: DefenseItem[];
+  weapon_proficiency: Proficiency;
 }
 
 
