@@ -11,7 +11,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 // (Dialog imports removed — Power Form now lives in /sheet/$id/power route)
 
-import { ArrowLeft, Save, Loader2, Plus, Minus, Trash, Sparkles, Gem, ArrowUp, Shield } from "lucide-react";
+import { ArrowLeft, Save, Loader2, Plus, Minus, Trash, Sparkles, Gem, ArrowUp, Shield, ChevronLeft, ChevronRight } from "lucide-react";
 import { toast } from "sonner";
 import {
   Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer,
@@ -26,6 +26,23 @@ import {
 } from "@/lib/sheet-types";
 import { AddItemDialog } from "@/components/sheet/add-item-dialog";
 import { SkillTreeTab } from "@/components/sheet/skill-tree";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+
+const PROFICIENCY_OPTIONS = ["leigo", "operador", "artilheiro", "combatente", "armígero"] as const;
+type Proficiency = typeof PROFICIENCY_OPTIONS[number];
+
+const TRAINING_TIERS = [
+  { tier: 1, name: "Iniciado", bonus: 5 },
+  { tier: 2, name: "Apurado", bonus: 10 },
+  { tier: 3, name: "Versado", bonus: 15 },
+] as const;
+function tierFromBonus(b: number): 0 | 1 | 2 | 3 {
+  if (b >= 15) return 3;
+  if (b >= 10) return 2;
+  if (b >= 5) return 1;
+  return 0;
+}
 
 export const Route = createFileRoute("/sheet/$id")({
   head: () => ({
@@ -81,6 +98,7 @@ interface SheetData {
   power_form_data: PowerFormData;
   fragments_items: InventoryItem[];
   defense_items: DefenseItem[];
+  weapon_proficiency: Proficiency;
 }
 
 
@@ -133,9 +151,11 @@ function SheetPage() {
   const [upgradeCosts, setUpgradeCosts] = useState<UpgradeCosts>(DEFAULT_UPGRADE_COSTS);
   const [conditionOptions, setConditionOptions] = useState<ConditionOptionsMap>(DEFAULT_CONDITION_OPTIONS);
   const [sheetSkillGroups, setSheetSkillGroups] = useState<typeof SKILL_GROUPS>([]);
+  const [trainingCosts, setTrainingCosts] = useState<[number, number, number]>([2, 3, 4]);
   // (removed setPowerFormOpen — Power Form opens via dedicated route)
   const [fragmentsView, setFragmentsView] = useState(false);
   const [defEquipOpen, setDefEquipOpen] = useState(false);
+  const [openSkill, setOpenSkill] = useState<string | null>(null);
   const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const skipNextSave = useRef(true);
@@ -169,6 +189,7 @@ function SheetPage() {
         power_form_data: pfData,
         fragments_items: fragItems,
         defense_items: defItems,
+        weapon_proficiency: ((raw.weapon_proficiency as Proficiency | null) ?? "leigo"),
       });
 
       const g = (settingsJson as unknown as Record<string, unknown> | null) ?? {};
@@ -177,6 +198,8 @@ function SheetPage() {
       setUpgradeCosts((g.upgrade_costs as UpgradeCosts | undefined) ?? DEFAULT_UPGRADE_COSTS);
       setConditionOptions((g.condition_options as ConditionOptionsMap | undefined) ?? DEFAULT_CONDITION_OPTIONS);
       setSheetSkillGroups((g.skill_groups as typeof SKILL_GROUPS | undefined) ?? []);
+      const tc = g.skill_training_costs as number[] | undefined;
+      if (tc && tc.length >= 3) setTrainingCosts([tc[0], tc[1], tc[2]]);
       setLoading(false);
     })();
   }, [id, navigate]);
@@ -268,6 +291,11 @@ function SheetPage() {
     sheet.inventory.reduce((s, i) => s + (Number(i.espaco) || 0), 0) +
     sheet.fragments_items.reduce((s, i) => s + (Number(i.espaco) || 0), 0) +
     sheet.defense_items.reduce((s, d) => s + (Number(d.peso) || 0), 0);
+
+  const trainingLimit = 4 + Math.floor(base.rank / 2) + Math.floor(3 * attrs.ERU);
+  const trainingUsed = Object.values(sheet.skills || {}).reduce((s, v) => s + tierFromBonus(Number(v) || 0), 0);
+
+
 
 
   const skillGroups = sheetSkillGroups.length ? sheetSkillGroups : SKILL_GROUPS;
@@ -573,9 +601,14 @@ function SheetPage() {
           {/* Skills */}
           <Section id="sec-pericias" title="Perícias"
             extra={
-              <Input placeholder="Bônus temporário" disabled={!canEdit} value={sheet.skill_bonus}
-                onChange={(e) => update("skill_bonus", e.target.value)}
-                className="h-7 w-44 text-xs" />
+              <div className="flex items-center gap-2 flex-wrap">
+                <span className={`text-[11px] px-2 py-0.5 rounded-full border ${trainingUsed > trainingLimit ? "border-destructive text-destructive" : "border-border text-muted-foreground"}`}>
+                  Treinos: {trainingUsed}/{trainingLimit}
+                </span>
+                <Input placeholder="Bônus temporário" disabled={!canEdit} value={sheet.skill_bonus}
+                  onChange={(e) => update("skill_bonus", e.target.value)}
+                  className="h-7 w-44 text-xs" />
+              </div>
             }>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-2.5">
               {skillGroups.map((g) => (
@@ -584,17 +617,71 @@ function SheetPage() {
                   <div className="space-y-0.5">
                     {g.skills.map((s) => {
                       const v = sheet.skills[s] ?? 0;
+                      const tier: number = tierFromBonus(v);
                       const color =
-                        v >= 15 ? "text-yellow-400 font-bold" :
-                        v >= 10 ? "text-blue-400 font-semibold" :
-                        v >= 5 ? "text-green-400" : "text-muted-foreground";
+                        tier === 3 ? "text-yellow-400 font-bold" :
+                        tier === 2 ? "text-blue-400 font-semibold" :
+                        tier === 1 ? "text-green-400" : "text-muted-foreground";
+                      const tierName = tier === 0 ? "Sem treino" : TRAINING_TIERS[tier - 1].name;
+                      const nextCost: number | null = tier < 3 ? (trainingCosts[tier] ?? 0) : null;
+                      const refund: number = tier > 0 ? (trainingCosts[tier - 1] ?? 0) : 0;
+                      const wouldExceed = tier < 3 && (trainingUsed + 1) > trainingLimit;
+                      const upgrade = () => {
+                        if (tier >= 3 || nextCost == null) return;
+                        if (wouldExceed) { toast.error(`Limite de treinos atingido (${trainingLimit}).`); return; }
+                        const nextTier = TRAINING_TIERS[tier]!;
+                        if (!window.confirm(`Avançar "${s}" para ${nextTier.name} (+${nextTier.bonus})?\nCusto: ${nextCost} PM.`)) return;
+                        update("skills", { ...sheet.skills, [s]: nextTier.bonus });
+                        update("pm_spent", (sheet.pm_spent || 0) + nextCost);
+                        toast.success(`${s}: ${nextTier.name} (+${nextTier.bonus})`);
+                      };
+                      const downgrade = () => {
+                        if (tier <= 0) return;
+                        if (role !== "mestre") { toast.error("Apenas o mestre pode reverter."); return; }
+                        const prevBonus = tier === 1 ? 0 : TRAINING_TIERS[tier - 2].bonus;
+                        const prevName = tier === 1 ? "Sem treino" : TRAINING_TIERS[tier - 2].name;
+                        if (!window.confirm(`Reverter "${s}" para ${prevName}?\nDevolve ${refund} PM.`)) return;
+                        update("skills", { ...sheet.skills, [s]: prevBonus });
+                        update("pm_spent", Math.max(0, (sheet.pm_spent || 0) - refund));
+                        toast.success(`${s}: ${prevName}`);
+                      };
                       return (
-                        <button key={s} disabled={!canEdit}
-                          onClick={() => update("skills", { ...sheet.skills, [s]: v >= 15 ? 0 : v + 5 })}
-                          className="w-full flex items-center justify-between text-xs px-1.5 py-1 rounded hover:bg-background/40 disabled:cursor-not-allowed">
-                          <span>{s}</span>
-                          <span className={color}>+{v}</span>
-                        </button>
+                        <Popover key={s} open={openSkill === s} onOpenChange={(o) => setOpenSkill(o ? s : null)}>
+                          <PopoverTrigger asChild>
+                            <button disabled={!canEdit}
+                              className="w-full flex items-center justify-between text-xs px-1.5 py-1 rounded hover:bg-background/40 disabled:cursor-not-allowed">
+                              <span>{s}</span>
+                              <span className={color}>+{v}</span>
+                            </button>
+                          </PopoverTrigger>
+                          <PopoverContent className="w-64 p-3" align="end">
+                            <div className="font-cinzel font-bold text-sm mb-1">{s}</div>
+                            <div className="text-[11px] text-muted-foreground mb-3">
+                              Treino atual: <span className={color}>{tierName} {tier > 0 ? `(+${TRAINING_TIERS[tier - 1].bonus})` : ""}</span>
+                            </div>
+                            <div className="flex items-center justify-between gap-2">
+                              <Button size="sm" variant="ghost" className="h-8 w-8 p-0"
+                                disabled={tier === 0 || role !== "mestre"}
+                                title={role === "mestre" ? `Reverter (+${refund} PM)` : "Apenas mestre"}
+                                onClick={downgrade}>
+                                <ChevronLeft className="w-4 h-4" />
+                              </Button>
+                              <div className="flex-1 text-center text-xs">
+                                {tier < 3 && nextCost != null ? (
+                                  <span className="text-muted-foreground">Avançar: <b className="text-foreground">{nextCost} PM</b></span>
+                                ) : (
+                                  <span className="text-muted-foreground italic">Treino máximo</span>
+                                )}
+                              </div>
+                              <Button size="sm" variant="ghost" className="h-8 w-8 p-0"
+                                disabled={!canEdit || tier >= 3 || wouldExceed}
+                                title={wouldExceed ? "Limite de treinos atingido" : "Avançar treino"}
+                                onClick={upgrade}>
+                                <ChevronRight className="w-4 h-4" />
+                              </Button>
+                            </div>
+                          </PopoverContent>
+                        </Popover>
                       );
                     })}
                   </div>
@@ -605,21 +692,37 @@ function SheetPage() {
 
           {/* Weapons */}
           <Section id="sec-armas" title="Armas" extra={
-            canEdit && (
-              <AddItemDialog<Weapon>
-                title="Nova Arma" triggerLabel="Adicionar Arma"
-                initial={{ id: "", nome: "", tipo: "", alcance: "Curto", dano: "", critico: "", peso: 0, extra: "" }}
-                fields={[
-                  { key: "nome", label: "Nome" },
-                  { key: "tipo", label: "Tipo" },
-                  { key: "alcance", label: "Alcance", type: "select", options: RANGE_OPTIONS },
-                  { key: "dano", label: "Dano", placeholder: "ex: 1d6+1" },
-                  { key: "critico", label: "Crítico", placeholder: "ex: 19/x2" },
-                  { key: "peso", label: "Peso", type: "number" },
-                  { key: "extra", label: "Extra" },
-                ]}
-                onAdd={(w) => update("weapons", [...sheet.weapons, { ...w, id: genId() }])} />
-            )
+            <div className="flex items-center gap-2 flex-wrap">
+              <div className="flex items-center gap-1.5">
+                <Label className="text-[10px] uppercase tracking-wider text-muted-foreground">Proeficiência</Label>
+                <Select value={sheet.weapon_proficiency} disabled={!canEdit}
+                  onValueChange={(v) => update("weapon_proficiency", v as Proficiency)}>
+                  <SelectTrigger className="h-7 w-36 text-xs capitalize">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {PROFICIENCY_OPTIONS.map((p) => (
+                      <SelectItem key={p} value={p} className="capitalize">{p}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              {canEdit && (
+                <AddItemDialog<Weapon>
+                  title="Nova Arma" triggerLabel="Adicionar Arma"
+                  initial={{ id: "", nome: "", tipo: "", alcance: "Curto", dano: "", critico: "", peso: 0, extra: "" }}
+                  fields={[
+                    { key: "nome", label: "Nome" },
+                    { key: "tipo", label: "Tipo" },
+                    { key: "alcance", label: "Alcance", type: "select", options: RANGE_OPTIONS },
+                    { key: "dano", label: "Dano", placeholder: "ex: 1d6+1" },
+                    { key: "critico", label: "Crítico", placeholder: "ex: 19/x2" },
+                    { key: "peso", label: "Peso", type: "number" },
+                    { key: "extra", label: "Extra" },
+                  ]}
+                  onAdd={(w) => update("weapons", [...sheet.weapons, { ...w, id: genId() }])} />
+              )}
+            </div>
           }>
             <RowTable rows={sheet.weapons} canEdit={canEdit}
               columns={[
