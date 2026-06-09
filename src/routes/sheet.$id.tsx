@@ -47,9 +47,9 @@ function tierFromBonus(b: number): 0 | 1 | 2 | 3 {
 export const Route = createFileRoute("/sheet/$id")({
   head: () => ({
     meta: [
-      { title: "Ficha de Personagem — Tadeon Nexus" },
+      { title: "Ficha de Personagem · Tadeon Nexus" },
       { name: "description", content: "Editor de ficha de personagem do Tadeon Nexus: atributos, perícias, habilidades, inventário, defesa e árvore de progressão." },
-      { property: "og:title", content: "Ficha de Personagem — Tadeon Nexus" },
+      { property: "og:title", content: "Ficha de Personagem · Tadeon Nexus" },
       { property: "og:description", content: "Editor de ficha de personagem do Tadeon Nexus: atributos, perícias, habilidades, inventário, defesa e árvore de progressão." },
     ],
     links: [
@@ -156,6 +156,8 @@ function SheetPage() {
   const [fragmentsView, setFragmentsView] = useState(false);
   const [defEquipOpen, setDefEquipOpen] = useState(false);
   const [openSkill, setOpenSkill] = useState<string | null>(null);
+  const [drift, setDrift] = useState(0);
+
   const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const skipNextSave = useRef(true);
@@ -438,17 +440,21 @@ function SheetPage() {
             <Section id="sec-pontos" title="Pontos Vitais">
               <div className="grid grid-cols-2 gap-2.5">
                 <StatBlock label="PV" full="Vitalidade" color="text-red-400" barColor="from-red-600 to-red-400"
+                  glowRgb="239,68,68"
                   current={sheet.stats.pv_current} mod={sheet.stats.pv_mod} max={pvMax} disabled={!canEdit}
                   onCurrent={(v) => update("stats", { ...sheet.stats, pv_current: clampCurrent(v, pvMax) })}
                   onMod={(v) => update("stats", { ...sheet.stats, pv_mod: clampMod(v) })} />
                 <StatBlock label="PE" full="Energia" color="text-emerald-400" barColor="from-emerald-600 to-emerald-400"
+                  glowRgb="16,185,129"
                   current={sheet.stats.pe_current} mod={sheet.stats.pe_mod} max={peMax} disabled={!canEdit}
                   onCurrent={(v) => update("stats", { ...sheet.stats, pe_current: clampCurrent(v, peMax) })}
                   onMod={(v) => update("stats", { ...sheet.stats, pe_mod: clampMod(v) })} />
                 <StatBlock label="PS" full="Sanidade" color="text-purple-400" barColor="from-purple-600 to-purple-400"
+                  glowRgb="168,85,247"
                   current={sheet.stats.ps_current} mod={sheet.stats.ps_mod} max={psMax} disabled={!canEdit}
                   onCurrent={(v) => update("stats", { ...sheet.stats, ps_current: clampCurrent(v, psMax) })}
                   onMod={(v) => update("stats", { ...sheet.stats, ps_mod: clampMod(v) })} />
+
                 <Card className="p-3 bg-card/60 border-blue-500/30 shadow-[0_0_22px_-12px_rgba(59,130,246,0.65)]">
                   <div className="text-blue-300 font-cinzel font-bold text-sm">Defesa</div>
                   <div className="relative my-2 flex items-center justify-center">
@@ -516,7 +522,37 @@ function SheetPage() {
           </div>
 
           {/* Equilibrium card */}
-          <Section title="Equilíbrio">
+          <Section title="Equilíbrio" extra={
+            <div className="inline-flex items-center gap-1.5 px-2 py-1 rounded-lg bg-gradient-to-r from-amber-500/15 to-transparent border border-amber-500/40 shadow-[0_0_10px_-4px_rgba(245,158,11,0.7)]">
+              <span className="text-[10px] uppercase tracking-wider font-cinzel text-amber-300">Deriva</span>
+              <Button size="sm" variant="ghost" className="h-6 w-6 p-0 text-amber-300" disabled={!canEdit}
+                onClick={() => {
+                  const next = drift - 1;
+                  if (next <= -4) {
+                    update("equilibrium", clamp((sheet.equilibrium || 0) - 1, -10, 10));
+                    setDrift(0);
+                    toast.info("Deriva atingiu −4: −1 no Equilíbrio.");
+                  } else setDrift(next);
+                }}>
+                <Minus className="w-3 h-3" />
+              </Button>
+              <span className={`min-w-[2.25rem] text-center text-sm font-bold ${drift === 0 ? "text-amber-200" : drift > 0 ? "text-yellow-300" : "text-red-300"}`}>
+                {drift > 0 ? `+${drift}` : drift}
+              </span>
+              <Button size="sm" variant="ghost" className="h-6 w-6 p-0 text-amber-300" disabled={!canEdit}
+                onClick={() => {
+                  const next = drift + 1;
+                  if (next >= 4) {
+                    update("equilibrium", clamp((sheet.equilibrium || 0) + 1, -10, 10));
+                    setDrift(0);
+                    toast.info("Deriva atingiu +4: +1 no Equilíbrio.");
+                  } else setDrift(next);
+                }}>
+                <Plus className="w-3 h-3" />
+              </Button>
+              <span className="text-[9px] text-muted-foreground ml-1">−4…+4</span>
+            </div>
+          }>
             <div className="flex items-center justify-between text-xs text-muted-foreground mb-1">
               <span>-10</span><span className="font-bold text-foreground text-base">{equilibrium > 0 ? `+${equilibrium}` : equilibrium}</span><span>+10</span>
             </div>
@@ -542,6 +578,7 @@ function SheetPage() {
                 onChange={(e) => update("equilibrium", Number(e.target.value))} className="flex-1" />
             </div>
           </Section>
+
 
           {/* Exposure card */}
           <Section title="Exposição">
@@ -630,21 +667,28 @@ function SheetPage() {
                         if (tier >= 3 || nextCost == null) return;
                         if (wouldExceed) { toast.error(`Limite de treinos atingido (${trainingLimit}).`); return; }
                         const nextTier = TRAINING_TIERS[tier]!;
-                        if (!window.confirm(`Avançar "${s}" para ${nextTier.name} (+${nextTier.bonus})?\nCusto: ${nextCost} PM.`)) return;
-                        update("skills", { ...sheet.skills, [s]: nextTier.bonus });
-                        update("pm_spent", (sheet.pm_spent || 0) + nextCost);
-                        toast.success(`${s}: ${nextTier.name} (+${nextTier.bonus})`);
+                        setSheet((p) => p ? {
+                          ...p,
+                          skills: { ...p.skills, [s]: nextTier.bonus },
+                          pm_spent: (p.pm_spent || 0) + nextCost,
+                        } : p);
+                        setOpenSkill(null);
+                        toast.success(`${s}: ${nextTier.name} (+${nextTier.bonus}) — ${nextCost} PM`);
                       };
                       const downgrade = () => {
                         if (tier <= 0) return;
                         if (role !== "mestre") { toast.error("Apenas o mestre pode reverter."); return; }
                         const prevBonus = tier === 1 ? 0 : TRAINING_TIERS[tier - 2].bonus;
                         const prevName = tier === 1 ? "Sem treino" : TRAINING_TIERS[tier - 2].name;
-                        if (!window.confirm(`Reverter "${s}" para ${prevName}?\nDevolve ${refund} PM.`)) return;
-                        update("skills", { ...sheet.skills, [s]: prevBonus });
-                        update("pm_spent", Math.max(0, (sheet.pm_spent || 0) - refund));
-                        toast.success(`${s}: ${prevName}`);
+                        setSheet((p) => p ? {
+                          ...p,
+                          skills: { ...p.skills, [s]: prevBonus },
+                          pm_spent: Math.max(0, (p.pm_spent || 0) - refund),
+                        } : p);
+                        setOpenSkill(null);
+                        toast.success(`${s}: ${prevName} (+${refund} PM)`);
                       };
+
                       return (
                         <Popover key={s} open={openSkill === s} onOpenChange={(o) => setOpenSkill(o ? s : null)}>
                           <PopoverTrigger asChild>
@@ -693,11 +737,11 @@ function SheetPage() {
           {/* Weapons */}
           <Section id="sec-armas" title="Armas" extra={
             <div className="flex items-center gap-2 flex-wrap">
-              <div className="flex items-center gap-1.5">
-                <Label className="text-[10px] uppercase tracking-wider text-muted-foreground">Proeficiência</Label>
+              <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-lg bg-gradient-to-r from-primary/20 via-primary/10 to-transparent border border-primary/40 shadow-[0_0_12px_-4px_hsl(var(--primary))]">
+                <Label className="text-[10px] uppercase tracking-wider text-primary font-cinzel">Proeficiência</Label>
                 <Select value={sheet.weapon_proficiency} disabled={!canEdit}
                   onValueChange={(v) => update("weapon_proficiency", v as Proficiency)}>
-                  <SelectTrigger className="h-7 w-36 text-xs capitalize">
+                  <SelectTrigger className="h-7 w-36 text-xs capitalize bg-background/40 border-primary/30 text-primary font-semibold">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -707,6 +751,7 @@ function SheetPage() {
                   </SelectContent>
                 </Select>
               </div>
+
               {canEdit && (
                 <AddItemDialog<Weapon>
                   title="Nova Arma" triggerLabel="Adicionar Arma"
@@ -884,7 +929,7 @@ function SheetPage() {
           </Section>
 
           <p className="text-center text-[10px] text-muted-foreground py-6">
-            © {new Date().getFullYear()} Gabriel Tadeu — Tadeon Nexus.
+            © {new Date().getFullYear()} Gabriel Tadeu · Tadeon Nexus.
           </p>
         </TabsContent>
 
@@ -960,18 +1005,25 @@ function Field({ label, value, onChange, disabled }: { label: string; value: str
   );
 }
 
-function StatBlock({ label, full, color, barColor, current, mod, max, disabled, onCurrent, onMod }: {
-  label: string; full: string; color: string; barColor: string;
+function StatBlock({ label, full, color, barColor, glowRgb, current, mod, max, disabled, onCurrent, onMod }: {
+  label: string; full: string; color: string; barColor: string; glowRgb: string;
   current: number; mod: number; max: number; disabled?: boolean;
   onCurrent: (v: number) => void; onMod: (v: number) => void;
 }) {
+  const borderStyle = {
+    borderColor: `rgba(${glowRgb}, 0.35)`,
+    boxShadow: `0 0 22px -10px rgba(${glowRgb}, 0.7)`,
+  };
   return (
-    <Card className="p-3 bg-card/60">
+    <Card className="p-3 bg-card/60 border" style={borderStyle}>
       <div className="flex items-baseline justify-between">
         <div className={`font-cinzel font-bold text-sm ${color}`}>{label}</div>
         <span className="text-[10px] text-muted-foreground">{full}</span>
       </div>
-      <div className="text-2xl font-bold text-center my-1">{current} / {max}</div>
+      <div className={`text-2xl font-bold text-center my-1 ${color}`}
+        style={{ textShadow: `0 0 10px rgba(${glowRgb}, 0.75)` }}>
+        {current} / {max}
+      </div>
       <div className="w-full h-1.5 bg-secondary rounded-full mb-2 overflow-hidden">
         <div className={`h-full bg-gradient-to-r ${barColor} rounded-full transition-all duration-300`}
           style={{ width: `${clamp((current / Math.max(1, max)) * 100, 0, 100)}%` }} />
@@ -991,6 +1043,7 @@ function StatBlock({ label, full, color, barColor, current, mod, max, disabled, 
     </Card>
   );
 }
+
 
 function CounterDots({ label, max, value, color, disabled, onChange }:
   { label: string; max: number; value: number; color: string; disabled?: boolean; onChange: (v: number) => void }) {

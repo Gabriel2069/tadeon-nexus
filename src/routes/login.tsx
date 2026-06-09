@@ -12,9 +12,9 @@ import { Loader2 } from "lucide-react";
 export const Route = createFileRoute("/login")({
   head: () => ({
     meta: [
-      { title: "Entrar — Tadeon Nexus" },
+      { title: "Entrar · Tadeon Nexus" },
       { name: "description", content: "Acesse sua conta no Tadeon Nexus para gerenciar suas fichas de personagem, atributos e mesas de RPG online." },
-      { property: "og:title", content: "Entrar — Tadeon Nexus" },
+      { property: "og:title", content: "Entrar · Tadeon Nexus" },
       { property: "og:description", content: "Acesse sua conta no Tadeon Nexus para gerenciar suas fichas de personagem, atributos e mesas de RPG online." },
       { property: "og:url", content: "https://tadeon-nexus.lovable.app/login" },
     ],
@@ -33,10 +33,30 @@ function LoginPage() {
   const [password, setPassword] = useState("");
   const [fullName, setFullName] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const [resetting, setResetting] = useState(false);
 
   useEffect(() => {
     if (!loading && session) void navigate({ to: "/" });
   }, [loading, session, navigate]);
+
+  const handleForgot = async () => {
+    if (!email) { toast.error("Informe seu e-mail acima primeiro."); return; }
+    setResetting(true);
+    try {
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: `${window.location.origin}/reset-password`,
+      });
+      if (error) throw error;
+      toast.success("Enviamos um link para redefinir sua senha. Verifique seu e-mail.");
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : "Erro ao enviar e-mail.";
+      toast.error(msg);
+    } finally {
+      setResetting(false);
+    }
+  };
+
+
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -76,7 +96,7 @@ function LoginPage() {
     <div className="min-h-screen flex items-center justify-center px-4">
       <Card className="w-full max-w-md p-8 bg-card/80 backdrop-blur border-border">
         <div className="text-center mb-6">
-          <h1 className="font-cinzel text-3xl font-bold text-primary">Tadeon Nexus — Entrar</h1>
+          <h1 className="font-cinzel text-3xl font-bold text-primary">Tadeon Nexus · Entrar</h1>
           <p className="mt-2 text-sm text-muted-foreground">
             {mode === "signin" ? "Entre na sua conta" : "Crie sua conta"}
           </p>
@@ -110,6 +130,19 @@ function LoginPage() {
           </Button>
         </form>
 
+        {mode === "signin" && (
+          <div className="mt-3 text-center">
+            <button
+              type="button"
+              onClick={handleForgot}
+              disabled={resetting}
+              className="text-xs text-muted-foreground hover:text-primary hover:underline disabled:opacity-50"
+            >
+              {resetting ? "Enviando…" : "Esqueceu a senha?"}
+            </button>
+          </div>
+        )}
+
         <div className="mt-4 text-center text-sm">
           {mode === "signin" ? (
             <button
@@ -129,6 +162,7 @@ function LoginPage() {
             </button>
           )}
         </div>
+
 
         <p className="mt-6 text-center text-[10px] text-muted-foreground">
           <Link to="/" className="hover:text-primary">Voltar</Link>

@@ -25,9 +25,9 @@ import type { DefenseItem } from "./sheet.$id";
 export const Route = createFileRoute("/sheet/$id_/power")({
   head: () => ({
     meta: [
-      { title: "Forma de Poder (VP) — Tadeon Nexus" },
+      { title: "Forma de Poder (VP) · Tadeon Nexus" },
       { name: "description", content: "Versão de poder (VP) da ficha no Tadeon Nexus: cópia vibrante com atributos, modificadores e habilidades independentes da ficha base." },
-      { property: "og:title", content: "Forma de Poder (VP) — Tadeon Nexus" },
+      { property: "og:title", content: "Forma de Poder (VP) · Tadeon Nexus" },
       { property: "og:description", content: "Versão de poder (VP) da ficha no Tadeon Nexus: cópia vibrante com atributos, modificadores e habilidades independentes da ficha base." },
     ],
     links: [

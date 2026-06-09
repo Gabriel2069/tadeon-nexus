@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
+import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as MasterPanelRouteImport } from './routes/master-panel'
 import { Route as ManageUsersRouteImport } from './routes/manage-users'
 import { Route as LoginRouteImport } from './routes/login'
@@ -20,6 +21,11 @@ import { Route as SheetIdPowerRouteImport } from './routes/sheet.$id_.power'
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
   path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ResetPasswordRoute = ResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MasterPanelRoute = MasterPanelRouteImport.update({
@@ -58,6 +64,7 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/manage-users': typeof ManageUsersRoute
   '/master-panel': typeof MasterPanelRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/sheet/$id': typeof SheetIdRoute
   '/sheet/$id/power': typeof SheetIdPowerRoute
@@ -67,6 +74,7 @@ export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/manage-users': typeof ManageUsersRoute
   '/master-panel': typeof MasterPanelRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/sheet/$id': typeof SheetIdRoute
   '/sheet/$id/power': typeof SheetIdPowerRoute
@@ -77,6 +85,7 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/manage-users': typeof ManageUsersRoute
   '/master-panel': typeof MasterPanelRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/sheet/$id': typeof SheetIdRoute
   '/sheet/$id_/power': typeof SheetIdPowerRoute
@@ -88,6 +97,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/manage-users'
     | '/master-panel'
+    | '/reset-password'
     | '/sitemap.xml'
     | '/sheet/$id'
     | '/sheet/$id/power'
@@ -97,6 +107,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/manage-users'
     | '/master-panel'
+    | '/reset-password'
     | '/sitemap.xml'
     | '/sheet/$id'
     | '/sheet/$id/power'
@@ -106,6 +117,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/manage-users'
     | '/master-panel'
+    | '/reset-password'
     | '/sitemap.xml'
     | '/sheet/$id'
     | '/sheet/$id_/power'
@@ -116,6 +128,7 @@ export interface RootRouteChildren {
   LoginRoute: typeof LoginRoute
   ManageUsersRoute: typeof ManageUsersRoute
   MasterPanelRoute: typeof MasterPanelRoute
+  ResetPasswordRoute: typeof ResetPasswordRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   SheetIdRoute: typeof SheetIdRoute
   SheetIdPowerRoute: typeof SheetIdPowerRoute
@@ -128,6 +141,13 @@ declare module '@tanstack/react-router' {
       path: '/sitemap.xml'
       fullPath: '/sitemap.xml'
       preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reset-password': {
+      id: '/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/master-panel': {
@@ -180,6 +200,7 @@ const rootRouteChildren: RootRouteChildren = {
   LoginRoute: LoginRoute,
   ManageUsersRoute: ManageUsersRoute,
   MasterPanelRoute: MasterPanelRoute,
+  ResetPasswordRoute: ResetPasswordRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   SheetIdRoute: SheetIdRoute,
   SheetIdPowerRoute: SheetIdPowerRoute,
