@@ -438,17 +438,21 @@ function SheetPage() {
             <Section id="sec-pontos" title="Pontos Vitais">
               <div className="grid grid-cols-2 gap-2.5">
                 <StatBlock label="PV" full="Vitalidade" color="text-red-400" barColor="from-red-600 to-red-400"
+                  glowRgb="239,68,68"
                   current={sheet.stats.pv_current} mod={sheet.stats.pv_mod} max={pvMax} disabled={!canEdit}
                   onCurrent={(v) => update("stats", { ...sheet.stats, pv_current: clampCurrent(v, pvMax) })}
                   onMod={(v) => update("stats", { ...sheet.stats, pv_mod: clampMod(v) })} />
                 <StatBlock label="PE" full="Energia" color="text-emerald-400" barColor="from-emerald-600 to-emerald-400"
+                  glowRgb="16,185,129"
                   current={sheet.stats.pe_current} mod={sheet.stats.pe_mod} max={peMax} disabled={!canEdit}
                   onCurrent={(v) => update("stats", { ...sheet.stats, pe_current: clampCurrent(v, peMax) })}
                   onMod={(v) => update("stats", { ...sheet.stats, pe_mod: clampMod(v) })} />
                 <StatBlock label="PS" full="Sanidade" color="text-purple-400" barColor="from-purple-600 to-purple-400"
+                  glowRgb="168,85,247"
                   current={sheet.stats.ps_current} mod={sheet.stats.ps_mod} max={psMax} disabled={!canEdit}
                   onCurrent={(v) => update("stats", { ...sheet.stats, ps_current: clampCurrent(v, psMax) })}
                   onMod={(v) => update("stats", { ...sheet.stats, ps_mod: clampMod(v) })} />
+
                 <Card className="p-3 bg-card/60 border-blue-500/30 shadow-[0_0_22px_-12px_rgba(59,130,246,0.65)]">
                   <div className="text-blue-300 font-cinzel font-bold text-sm">Defesa</div>
                   <div className="relative my-2 flex items-center justify-center">
