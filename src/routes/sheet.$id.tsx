@@ -634,21 +634,28 @@ function SheetPage() {
                         if (tier >= 3 || nextCost == null) return;
                         if (wouldExceed) { toast.error(`Limite de treinos atingido (${trainingLimit}).`); return; }
                         const nextTier = TRAINING_TIERS[tier]!;
-                        if (!window.confirm(`Avançar "${s}" para ${nextTier.name} (+${nextTier.bonus})?\nCusto: ${nextCost} PM.`)) return;
-                        update("skills", { ...sheet.skills, [s]: nextTier.bonus });
-                        update("pm_spent", (sheet.pm_spent || 0) + nextCost);
-                        toast.success(`${s}: ${nextTier.name} (+${nextTier.bonus})`);
+                        setSheet((p) => p ? {
+                          ...p,
+                          skills: { ...p.skills, [s]: nextTier.bonus },
+                          pm_spent: (p.pm_spent || 0) + nextCost,
+                        } : p);
+                        setOpenSkill(null);
+                        toast.success(`${s}: ${nextTier.name} (+${nextTier.bonus}) — ${nextCost} PM`);
                       };
                       const downgrade = () => {
                         if (tier <= 0) return;
                         if (role !== "mestre") { toast.error("Apenas o mestre pode reverter."); return; }
                         const prevBonus = tier === 1 ? 0 : TRAINING_TIERS[tier - 2].bonus;
                         const prevName = tier === 1 ? "Sem treino" : TRAINING_TIERS[tier - 2].name;
-                        if (!window.confirm(`Reverter "${s}" para ${prevName}?\nDevolve ${refund} PM.`)) return;
-                        update("skills", { ...sheet.skills, [s]: prevBonus });
-                        update("pm_spent", Math.max(0, (sheet.pm_spent || 0) - refund));
-                        toast.success(`${s}: ${prevName}`);
+                        setSheet((p) => p ? {
+                          ...p,
+                          skills: { ...p.skills, [s]: prevBonus },
+                          pm_spent: Math.max(0, (p.pm_spent || 0) - refund),
+                        } : p);
+                        setOpenSkill(null);
+                        toast.success(`${s}: ${prevName} (+${refund} PM)`);
                       };
+
                       return (
                         <Popover key={s} open={openSkill === s} onOpenChange={(o) => setOpenSkill(o ? s : null)}>
                           <PopoverTrigger asChild>
