@@ -704,11 +704,11 @@ function SheetPage() {
           {/* Weapons */}
           <Section id="sec-armas" title="Armas" extra={
             <div className="flex items-center gap-2 flex-wrap">
-              <div className="flex items-center gap-1.5">
-                <Label className="text-[10px] uppercase tracking-wider text-muted-foreground">Proeficiência</Label>
+              <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-lg bg-gradient-to-r from-primary/20 via-primary/10 to-transparent border border-primary/40 shadow-[0_0_12px_-4px_hsl(var(--primary))]">
+                <Label className="text-[10px] uppercase tracking-wider text-primary font-cinzel">Proeficiência</Label>
                 <Select value={sheet.weapon_proficiency} disabled={!canEdit}
                   onValueChange={(v) => update("weapon_proficiency", v as Proficiency)}>
-                  <SelectTrigger className="h-7 w-36 text-xs capitalize">
+                  <SelectTrigger className="h-7 w-36 text-xs capitalize bg-background/40 border-primary/30 text-primary font-semibold">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -718,6 +718,7 @@ function SheetPage() {
                   </SelectContent>
                 </Select>
               </div>
+
               {canEdit && (
                 <AddItemDialog<Weapon>
                   title="Nova Arma" triggerLabel="Adicionar Arma"
