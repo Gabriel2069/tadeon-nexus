@@ -130,6 +130,19 @@ function LoginPage() {
           </Button>
         </form>
 
+        {mode === "signin" && (
+          <div className="mt-3 text-center">
+            <button
+              type="button"
+              onClick={handleForgot}
+              disabled={resetting}
+              className="text-xs text-muted-foreground hover:text-primary hover:underline disabled:opacity-50"
+            >
+              {resetting ? "Enviando…" : "Esqueceu a senha?"}
+            </button>
+          </div>
+        )}
+
         <div className="mt-4 text-center text-sm">
           {mode === "signin" ? (
             <button
@@ -149,6 +162,7 @@ function LoginPage() {
             </button>
           )}
         </div>
+
 
         <p className="mt-6 text-center text-[10px] text-muted-foreground">
           <Link to="/" className="hover:text-primary">Voltar</Link>
