@@ -31,9 +31,9 @@ import { toast } from "sonner";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Dashboard — Tadeon Nexus" },
+      { title: "Dashboard · Tadeon Nexus" },
       { name: "description", content: "Painel principal do Tadeon Nexus: veja e gerencie suas fichas de personagem, atributos, perícias e progresso de RPG." },
-      { property: "og:title", content: "Dashboard — Tadeon Nexus" },
+      { property: "og:title", content: "Dashboard · Tadeon Nexus" },
       { property: "og:description", content: "Painel principal do Tadeon Nexus: veja e gerencie suas fichas de personagem, atributos, perícias e progresso de RPG." },
       { property: "og:url", content: "https://tadeon-nexus.lovable.app/" },
     ],

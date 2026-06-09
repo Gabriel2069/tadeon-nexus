@@ -47,9 +47,9 @@ function tierFromBonus(b: number): 0 | 1 | 2 | 3 {
 export const Route = createFileRoute("/sheet/$id")({
   head: () => ({
     meta: [
-      { title: "Ficha de Personagem — Tadeon Nexus" },
+      { title: "Ficha de Personagem · Tadeon Nexus" },
       { name: "description", content: "Editor de ficha de personagem do Tadeon Nexus: atributos, perícias, habilidades, inventário, defesa e árvore de progressão." },
-      { property: "og:title", content: "Ficha de Personagem — Tadeon Nexus" },
+      { property: "og:title", content: "Ficha de Personagem · Tadeon Nexus" },
       { property: "og:description", content: "Editor de ficha de personagem do Tadeon Nexus: atributos, perícias, habilidades, inventário, defesa e árvore de progressão." },
     ],
     links: [
@@ -929,7 +929,7 @@ function SheetPage() {
           </Section>
 
           <p className="text-center text-[10px] text-muted-foreground py-6">
-            © {new Date().getFullYear()} Gabriel Tadeu — Tadeon Nexus.
+            © {new Date().getFullYear()} Gabriel Tadeu · Tadeon Nexus.
           </p>
         </TabsContent>
 
