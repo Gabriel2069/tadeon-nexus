@@ -964,18 +964,25 @@ function Field({ label, value, onChange, disabled }: { label: string; value: str
   );
 }
 
-function StatBlock({ label, full, color, barColor, current, mod, max, disabled, onCurrent, onMod }: {
-  label: string; full: string; color: string; barColor: string;
+function StatBlock({ label, full, color, barColor, glowRgb, current, mod, max, disabled, onCurrent, onMod }: {
+  label: string; full: string; color: string; barColor: string; glowRgb: string;
   current: number; mod: number; max: number; disabled?: boolean;
   onCurrent: (v: number) => void; onMod: (v: number) => void;
 }) {
+  const borderStyle = {
+    borderColor: `rgba(${glowRgb}, 0.35)`,
+    boxShadow: `0 0 22px -10px rgba(${glowRgb}, 0.7)`,
+  };
   return (
-    <Card className="p-3 bg-card/60">
+    <Card className="p-3 bg-card/60 border" style={borderStyle}>
       <div className="flex items-baseline justify-between">
         <div className={`font-cinzel font-bold text-sm ${color}`}>{label}</div>
         <span className="text-[10px] text-muted-foreground">{full}</span>
       </div>
-      <div className="text-2xl font-bold text-center my-1">{current} / {max}</div>
+      <div className={`text-2xl font-bold text-center my-1 ${color}`}
+        style={{ textShadow: `0 0 10px rgba(${glowRgb}, 0.75)` }}>
+        {current} / {max}
+      </div>
       <div className="w-full h-1.5 bg-secondary rounded-full mb-2 overflow-hidden">
         <div className={`h-full bg-gradient-to-r ${barColor} rounded-full transition-all duration-300`}
           style={{ width: `${clamp((current / Math.max(1, max)) * 100, 0, 100)}%` }} />
@@ -995,6 +1002,7 @@ function StatBlock({ label, full, color, barColor, current, mod, max, disabled, 
     </Card>
   );
 }
+
 
 function CounterDots({ label, max, value, color, disabled, onChange }:
   { label: string; max: number; value: number; color: string; disabled?: boolean; onChange: (v: number) => void }) {
