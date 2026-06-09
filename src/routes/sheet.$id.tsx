@@ -156,6 +156,8 @@ function SheetPage() {
   const [fragmentsView, setFragmentsView] = useState(false);
   const [defEquipOpen, setDefEquipOpen] = useState(false);
   const [openSkill, setOpenSkill] = useState<string | null>(null);
+  const [drift, setDrift] = useState(0);
+
   const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const skipNextSave = useRef(true);
