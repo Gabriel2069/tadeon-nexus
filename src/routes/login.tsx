@@ -33,10 +33,30 @@ function LoginPage() {
   const [password, setPassword] = useState("");
   const [fullName, setFullName] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const [resetting, setResetting] = useState(false);
 
   useEffect(() => {
     if (!loading && session) void navigate({ to: "/" });
   }, [loading, session, navigate]);
+
+  const handleForgot = async () => {
+    if (!email) { toast.error("Informe seu e-mail acima primeiro."); return; }
+    setResetting(true);
+    try {
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: `${window.location.origin}/reset-password`,
+      });
+      if (error) throw error;
+      toast.success("Enviamos um link para redefinir sua senha. Verifique seu e-mail.");
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : "Erro ao enviar e-mail.";
+      toast.error(msg);
+    } finally {
+      setResetting(false);
+    }
+  };
+
+
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
