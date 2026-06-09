@@ -522,7 +522,37 @@ function SheetPage() {
           </div>
 
           {/* Equilibrium card */}
-          <Section title="Equilíbrio">
+          <Section title="Equilíbrio" extra={
+            <div className="inline-flex items-center gap-1.5 px-2 py-1 rounded-lg bg-gradient-to-r from-amber-500/15 to-transparent border border-amber-500/40 shadow-[0_0_10px_-4px_rgba(245,158,11,0.7)]">
+              <span className="text-[10px] uppercase tracking-wider font-cinzel text-amber-300">Deriva</span>
+              <Button size="sm" variant="ghost" className="h-6 w-6 p-0 text-amber-300" disabled={!canEdit}
+                onClick={() => {
+                  const next = drift - 1;
+                  if (next <= -4) {
+                    update("equilibrium", clamp((sheet.equilibrium || 0) - 1, -10, 10));
+                    setDrift(0);
+                    toast.info("Deriva atingiu −4: −1 no Equilíbrio.");
+                  } else setDrift(next);
+                }}>
+                <Minus className="w-3 h-3" />
+              </Button>
+              <span className={`min-w-[2.25rem] text-center text-sm font-bold ${drift === 0 ? "text-amber-200" : drift > 0 ? "text-yellow-300" : "text-red-300"}`}>
+                {drift > 0 ? `+${drift}` : drift}
+              </span>
+              <Button size="sm" variant="ghost" className="h-6 w-6 p-0 text-amber-300" disabled={!canEdit}
+                onClick={() => {
+                  const next = drift + 1;
+                  if (next >= 4) {
+                    update("equilibrium", clamp((sheet.equilibrium || 0) + 1, -10, 10));
+                    setDrift(0);
+                    toast.info("Deriva atingiu +4: +1 no Equilíbrio.");
+                  } else setDrift(next);
+                }}>
+                <Plus className="w-3 h-3" />
+              </Button>
+              <span className="text-[9px] text-muted-foreground ml-1">−4…+4</span>
+            </div>
+          }>
             <div className="flex items-center justify-between text-xs text-muted-foreground mb-1">
               <span>-10</span><span className="font-bold text-foreground text-base">{equilibrium > 0 ? `+${equilibrium}` : equilibrium}</span><span>+10</span>
             </div>
@@ -548,6 +578,7 @@ function SheetPage() {
                 onChange={(e) => update("equilibrium", Number(e.target.value))} className="flex-1" />
             </div>
           </Section>
+
 
           {/* Exposure card */}
           <Section title="Exposição">
