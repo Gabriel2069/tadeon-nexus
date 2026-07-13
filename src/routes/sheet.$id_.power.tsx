@@ -34,6 +34,7 @@ import {
   type Conditions,
   type StatUpgrades,
   getRankBase,
+  calculateSheetMaximums,
   genId,
   DEFAULT_UPGRADE_COSTS,
   SKILL_GROUPS,
@@ -93,7 +94,9 @@ interface VPData {
   exposure?: number;
   equilibrium?: number;
   attributes?: Attributes;
-  stat_mods?: Partial<Pick<Stats, "pv_mod" | "ps_mod" | "pe_mod" | "def_mod" | "def_equip">>;
+  stat_mods?: Partial<
+    Pick<Stats, "pv_mod" | "ps_mod" | "pe_mod" | "pa_mod" | "def_mod" | "def_equip">
+  >;
   conditions?: Conditions;
   weapons?: Weapon[];
   inventory?: InventoryItem[];
@@ -172,6 +175,7 @@ function syncFromBase(base: BaseRow, prev: VPData): VPData {
       pv_mod: base.stats.pv_mod,
       ps_mod: base.stats.ps_mod,
       pe_mod: base.stats.pe_mod,
+      pa_mod: base.stats.pa_mod,
       def_mod: base.stats.def_mod,
       def_equip: base.stats.def_equip,
     };
@@ -249,10 +253,11 @@ function PowerFormPage() {
   const navigate = useNavigate();
   const [base, setBase] = useState<BaseRow | null>(null);
   const [vp, setVp] = useState<VPData>({});
-  const [currents, setCurrents] = useState<{ pv: number; ps: number; pe: number }>({
+  const [currents, setCurrents] = useState<{ pv: number; ps: number; pe: number; pa: number }>({
     pv: 0,
     ps: 0,
     pe: 0,
+    pa: 0,
   });
   const [rankTable, setRankTable] = useState<RankRow[]>([]);
   const [_upgradeCosts, setUpgradeCosts] = useState<UpgradeCosts>(DEFAULT_UPGRADE_COSTS);
@@ -320,6 +325,7 @@ function PowerFormPage() {
         pv: Number((baseRow.stats as Stats).pv_current ?? 0),
         ps: Number((baseRow.stats as Stats).ps_current ?? 0),
         pe: Number((baseRow.stats as Stats).pe_current ?? 0),
+        pa: Number((baseRow.stats as Stats).pa_current ?? 0),
       });
       const g = (settingsJson as Record<string, unknown> | null) ?? {};
       setRankTable((g.rank_table as RankRow[] | undefined) ?? []);
@@ -356,6 +362,7 @@ function PowerFormPage() {
         pv_current: draft.currents.pv,
         ps_current: draft.currents.ps,
         pe_current: draft.currents.pe,
+        pa_current: draft.currents.pa,
       };
       const { error } = await supabase
         .from("character_sheets")
@@ -392,13 +399,22 @@ function PowerFormPage() {
   const mods = vp.stat_mods ?? {};
   const exposure = vp.exposure ?? base.exposure;
   const rank = getRankBase(exposure, rankTable);
-  const pvMax = rank.pv + (mods.pv_mod ?? 0) + 3 * attrs.COR + 3 * upg.pv;
-  const psMax = rank.ps + (mods.ps_mod ?? 0) + 3 * attrs.MEN + 3 * upg.ps;
-  const peMax = rank.pe + (mods.pe_mod ?? 0) + 3 * attrs.ERU + 2 * upg.pe;
   const vpDefItems = vp.defense_items ?? [];
   const vpDefItemsBonus = vpDefItems.reduce((s, d) => s + (Number(d.bonus) || 0), 0);
   const vpArmor = Math.min(25, vpDefItemsBonus);
-  const defTotal = rank.def + vpArmor + (mods.def_mod ?? 0) + upg.def;
+  const derivedStats: Stats = {
+    ...base.stats,
+    ...mods,
+    pa_current: currents.pa,
+  };
+  const maximums = calculateSheetMaximums({
+    attributes: attrs,
+    stats: derivedStats,
+    upgrades: upg,
+    rank,
+    armor: vpArmor,
+  });
+  const { pv: pvMax, ps: psMax, pe: peMax, pa: paMax, def: defTotal } = maximums;
   const invCapacity = 5 + 2 * attrs.COR;
   const invUsed =
     (vp.weapons ?? []).reduce((s, w) => s + (Number(w.peso) || 0), 0) +
@@ -412,6 +428,8 @@ function PowerFormPage() {
   const psMin = -Math.floor(psMax * 0.5);
   const peCap = Math.floor(peMax * 1.5);
   const peMin = -Math.floor(peMax * 0.5);
+  const paCap = Math.floor(paMax * 1.5);
+  const paMin = -Math.floor(paMax * 0.5);
 
   const equilibrium = clamp(Math.round(vp.equilibrium ?? 0), -10, 10);
   const equilibriumPct = ((equilibrium + 10) / 20) * 100;
@@ -641,7 +659,7 @@ function PowerFormPage() {
 
             {/* Points */}
             <VPCard title="Pontos">
-              <div className="grid grid-cols-3 gap-3">
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
                 <PointBlock
                   label="PV"
                   max={pvMax}
@@ -666,6 +684,14 @@ function PowerFormPage() {
                   color="from-emerald-500 to-teal-400"
                   onChange={(v) => setCurrents((p) => ({ ...p, pe: clamp(v, peMin, peCap) }))}
                 />
+                <PointBlock
+                  label="PA"
+                  max={paMax}
+                  current={currents.pa}
+                  disabled={!canEdit}
+                  color="from-amber-500 to-yellow-300"
+                  onChange={(v) => setCurrents((p) => ({ ...p, pa: clamp(v, paMin, paCap) }))}
+                />
               </div>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-2 mt-3 text-xs">
                 <ModField
@@ -687,6 +713,12 @@ function PowerFormPage() {
                   onChange={(v) => patch({ stat_mods: { ...mods, pe_mod: clamp(v, -100, 150) } })}
                 />
                 <ModField
+                  label="Mod PA"
+                  value={mods.pa_mod ?? 0}
+                  disabled={!canEdit}
+                  onChange={(v) => patch({ stat_mods: { ...mods, pa_mod: clamp(v, -100, 150) } })}
+                />
+                <ModField
                   label="Mod Def"
                   value={mods.def_mod ?? 0}
                   disabled={!canEdit}
@@ -699,6 +731,7 @@ function PowerFormPage() {
             <VPCard title="Defesa">
               <div className="grid grid-cols-2 md:grid-cols-4 gap-2 text-xs">
                 <Stat label="Base (rank)" value={rank.def} />
+                <Stat label="Instinto" value={attrs.INS} />
                 <Stat label="Equip" value={vpArmor} />
                 <Stat label="Modificador" value={mods.def_mod ?? 0} />
                 <Stat label="Total" value={defTotal} accent="text-sky-300 font-bold" />
