@@ -44,11 +44,16 @@ import {
   SKILL_GROUPS,
   getRankBase,
   calcTotalPM,
+  calculatePMSpent,
+  calculateSheetMaximums,
   genId,
+  DEFAULT_TRAINING_COSTS,
   DEFAULT_UPGRADE_COSTS,
   DEFAULT_CONDITION_OPTIONS,
   CONDITION_META,
+  getEquilibriumEffect,
 } from "@/lib/sheet-types";
+import { CANONICAL_SKILL_BRANCHES } from "@/lib/master-data";
 import { AddItemDialog } from "@/components/sheet/add-item-dialog";
 import { SkillTreeTab } from "@/components/sheet/skill-tree";
 import {
@@ -132,6 +137,7 @@ interface SheetData {
   motivation: string;
   exposure: number;
   equilibrium: number;
+  drift: number;
   attributes: Attributes;
   stats: Stats;
   condition: string;
@@ -205,12 +211,12 @@ function SheetPage() {
   const [conditionOptions, setConditionOptions] =
     useState<ConditionOptionsMap>(DEFAULT_CONDITION_OPTIONS);
   const [sheetSkillGroups, setSheetSkillGroups] = useState<typeof SKILL_GROUPS>([]);
-  const [trainingCosts, setTrainingCosts] = useState<[number, number, number]>([2, 3, 4]);
+  const [trainingCosts, setTrainingCosts] =
+    useState<[number, number, number]>(DEFAULT_TRAINING_COSTS);
   // (removed setPowerFormOpen — Power Form opens via dedicated route)
   const [fragmentsView, setFragmentsView] = useState(false);
   const [defEquipOpen, setDefEquipOpen] = useState(false);
   const [openSkill, setOpenSkill] = useState<string | null>(null);
-  const [drift, setDrift] = useState(0);
 
   const canEdit = role === "mestre" || (sheet?.owner_id === user?.id && role !== "espectador");
 
@@ -239,6 +245,12 @@ function SheetPage() {
       const defItems = (raw.defense_items as DefenseItem[] | null) ?? [];
       setSheet({
         ...(data as unknown as SheetData),
+        drift: Number(raw.drift ?? 0),
+        stats: {
+          ...((raw.stats as Stats | null) ?? {}),
+          pa_current: Number((raw.stats as Stats | null)?.pa_current ?? 0),
+          pa_mod: Number((raw.stats as Stats | null)?.pa_mod ?? 0),
+        } as Stats,
         description: desc,
         power_form_enabled: Boolean(raw.power_form_enabled),
         power_form_data: pfData,
@@ -292,6 +304,24 @@ function SheetPage() {
       setSheet((p) => (p ? { ...p, fragments: len } : p));
     }
   }, [sheet]);
+
+  const activeBranches = branches.length ? branches : CANONICAL_SKILL_BRANCHES;
+  const calculatedPmSpent = useMemo(() => {
+    if (!sheet) return 0;
+    return calculatePMSpent({
+      statUpgrades: sheet.stat_upgrades,
+      skills: sheet.skills,
+      purchasedSkills: sheet.purchased_skills,
+      branches: activeBranches,
+      upgradeCosts,
+      trainingCosts,
+    });
+  }, [activeBranches, sheet, trainingCosts, upgradeCosts]);
+
+  useEffect(() => {
+    if (!sheet || sheet.pm_spent === calculatedPmSpent) return;
+    setSheet((previous) => (previous ? { ...previous, pm_spent: calculatedPmSpent } : previous));
+  }, [calculatedPmSpent, sheet]);
 
   const update = <K extends keyof SheetData>(key: K, value: SheetData[K]) => {
     setSheet((p) => (p ? { ...p, [key]: value } : p));
@@ -350,13 +380,17 @@ function SheetPage() {
   const attrs = sheet.attributes;
   const base = getRankBase(sheet.exposure, rankTable);
   const upg = sheet.stat_upgrades;
-  const pvMax = base.pv + sheet.stats.pv_mod + 3 * attrs.COR + 3 * upg.pv;
-  const psMax = base.ps + sheet.stats.ps_mod + 3 * attrs.MEN + 3 * upg.ps;
-  const peMax = base.pe + sheet.stats.pe_mod + 3 * attrs.ERU + 2 * upg.pe;
   const defItemsBonus = sheet.defense_items.reduce((s, d) => s + (Number(d.bonus) || 0), 0);
   const armorRaw = defItemsBonus;
   const armorTotal = Math.min(25, armorRaw); // limite de armadura
-  const defTotal = base.def + armorTotal + sheet.stats.def_mod + upg.def;
+  const maximums = calculateSheetMaximums({
+    attributes: attrs,
+    stats: sheet.stats,
+    upgrades: upg,
+    rank: base,
+    armor: armorTotal,
+  });
+  const { pv: pvMax, ps: psMax, pe: peMax, pa: paMax, def: defTotal } = maximums;
   const invCapacity = 5 + 2 * attrs.COR;
   const invUsed =
     sheet.weapons.reduce((s, w) => s + (Number(w.peso) || 0), 0) +
@@ -369,7 +403,7 @@ function SheetPage() {
     (s, v) => s + tierFromBonus(Number(v) || 0),
     0,
   );
-  const pmAvailable = calcTotalPM(sheet.exposure, rankTable) - sheet.pm_spent;
+  const pmAvailable = calcTotalPM(sheet.exposure, rankTable) - calculatedPmSpent;
 
   const skillGroups = sheetSkillGroups.length ? sheetSkillGroups : SKILL_GROUPS;
   const sectionAnchors: { id: string; label: string }[] = [
@@ -389,6 +423,7 @@ function SheetPage() {
 
   const equilibrium = clamp(Math.round(sheet.equilibrium || 0), -10, 10);
   const equilibriumPct = ((equilibrium + 10) / 20) * 100;
+  const equilibriumEffect = getEquilibriumEffect(equilibrium);
 
   return (
     <div className="max-w-6xl mx-auto p-3 md:p-6 pb-24">
@@ -643,6 +678,21 @@ function SheetPage() {
                     }
                     onMod={(v) => update("stats", { ...sheet.stats, ps_mod: clampMod(v) })}
                   />
+                  <StatBlock
+                    label="PA"
+                    full="Ancoragem"
+                    color="text-amber-300"
+                    barColor="from-amber-600 to-yellow-300"
+                    glowRgb="245,158,11"
+                    current={sheet.stats.pa_current}
+                    mod={sheet.stats.pa_mod}
+                    max={paMax}
+                    disabled={!canEdit}
+                    onCurrent={(v) =>
+                      update("stats", { ...sheet.stats, pa_current: clampCurrent(v, paMax) })
+                    }
+                    onMod={(v) => update("stats", { ...sheet.stats, pa_mod: clampMod(v) })}
+                  />
 
                   <Card className="p-3 bg-card/60 border-blue-500/30 shadow-[0_0_22px_-12px_rgba(59,130,246,0.65)]">
                     <div className="text-blue-300 font-cinzel font-bold text-sm">Defesa</div>
@@ -656,7 +706,7 @@ function SheetPage() {
                       </span>
                     </div>
                     <div className="text-[10px] text-muted-foreground text-center -mt-1 mb-2">
-                      base {base.def} + equip {armorTotal}
+                      base {base.def} + INS {attrs.INS} + equip {armorTotal}
                       {armorRaw > 25 ? " (cap 25)" : ""} + mod {sheet.stats.def_mod}
                       {upg.def ? ` + apr ${upg.def}` : ""}
                     </div>
@@ -759,20 +809,27 @@ function SheetPage() {
                     className="h-6 w-6 p-0 text-amber-300"
                     disabled={!canEdit}
                     onClick={() => {
-                      const next = drift - 1;
+                      const next = sheet.drift - 1;
                       if (next <= -4) {
-                        update("equilibrium", clamp((sheet.equilibrium || 0) - 1, -10, 10));
-                        setDrift(0);
+                        setSheet((previous) =>
+                          previous
+                            ? {
+                                ...previous,
+                                equilibrium: clamp((previous.equilibrium || 0) - 1, -10, 10),
+                                drift: 0,
+                              }
+                            : previous,
+                        );
                         toast.info("Deriva atingiu −4: −1 no Equilíbrio.");
-                      } else setDrift(next);
+                      } else update("drift", next);
                     }}
                   >
                     <Minus className="w-3 h-3" />
                   </Button>
                   <span
-                    className={`min-w-[2.25rem] text-center text-sm font-bold ${drift === 0 ? "text-amber-200" : drift > 0 ? "text-yellow-300" : "text-red-300"}`}
+                    className={`min-w-[2.25rem] text-center text-sm font-bold ${sheet.drift === 0 ? "text-amber-200" : sheet.drift > 0 ? "text-yellow-300" : "text-red-300"}`}
                   >
-                    {drift > 0 ? `+${drift}` : drift}
+                    {sheet.drift > 0 ? `+${sheet.drift}` : sheet.drift}
                   </span>
                   <Button
                     size="sm"
@@ -780,12 +837,19 @@ function SheetPage() {
                     className="h-6 w-6 p-0 text-amber-300"
                     disabled={!canEdit}
                     onClick={() => {
-                      const next = drift + 1;
+                      const next = sheet.drift + 1;
                       if (next >= 4) {
-                        update("equilibrium", clamp((sheet.equilibrium || 0) + 1, -10, 10));
-                        setDrift(0);
+                        setSheet((previous) =>
+                          previous
+                            ? {
+                                ...previous,
+                                equilibrium: clamp((previous.equilibrium || 0) + 1, -10, 10),
+                                drift: 0,
+                              }
+                            : previous,
+                        );
                         toast.info("Deriva atingiu +4: +1 no Equilíbrio.");
-                      } else setDrift(next);
+                      } else update("drift", next);
                     }}
                   >
                     <Plus className="w-3 h-3" />
@@ -842,6 +906,20 @@ function SheetPage() {
                   onChange={(e) => update("equilibrium", Number(e.target.value))}
                   className="flex-1"
                 />
+              </div>
+              <div className="grid gap-2 sm:grid-cols-3 mt-3 rounded-lg border border-border/70 bg-secondary/25 p-3 text-xs">
+                <div>
+                  <span className="text-muted-foreground">Estado</span>
+                  <p className="font-semibold text-foreground">{equilibriumEffect.state}</p>
+                </div>
+                <div>
+                  <span className="text-muted-foreground">Benefício</span>
+                  <p className="text-emerald-300">{equilibriumEffect.benefit}</p>
+                </div>
+                <div>
+                  <span className="text-muted-foreground">Penalidade</span>
+                  <p className="text-amber-300">{equilibriumEffect.penalty}</p>
+                </div>
               </div>
             </Section>
 
@@ -1011,7 +1089,6 @@ function SheetPage() {
                               ? {
                                   ...p,
                                   skills: { ...p.skills, [s]: nextTier.bonus },
-                                  pm_spent: (p.pm_spent || 0) + nextCost,
                                 }
                               : p,
                           );
@@ -1034,7 +1111,6 @@ function SheetPage() {
                               ? {
                                   ...p,
                                   skills: { ...p.skills, [s]: prevBonus },
-                                  pm_spent: Math.max(0, (p.pm_spent || 0) - refund),
                                 }
                               : p,
                           );
@@ -1431,11 +1507,11 @@ function SheetPage() {
             <SkillTreeTab
               exposure={sheet.exposure}
               attributes={sheet.attributes}
-              pmSpent={sheet.pm_spent}
+              pmSpent={calculatedPmSpent}
               statUpgrades={sheet.stat_upgrades}
               purchasedSkills={sheet.purchased_skills}
               abilities={sheet.abilities}
-              branches={branches}
+              branches={activeBranches}
               rankTable={rankTable}
               upgradeCosts={upgradeCosts}
               canEdit={canEdit}
