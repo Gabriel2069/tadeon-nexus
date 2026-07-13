@@ -22,12 +22,17 @@ export const Route = createFileRoute("/login")({
       { rel: "canonical", href: "https://tadeon-nexus.lovable.app/login" },
     ],
   }),
+  validateSearch: (s: Record<string, unknown>) => ({
+    next: typeof s.next === "string" && s.next.startsWith("/") && !s.next.startsWith("//") ? s.next : "",
+  }),
   component: LoginPage,
 });
 
 function LoginPage() {
   const { session, loading } = useAuth();
   const navigate = useNavigate();
+  const { next } = Route.useSearch();
+  const target = next || "/";
   const [mode, setMode] = useState<"signin" | "signup">("signin");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -36,8 +41,12 @@ function LoginPage() {
   const [resetting, setResetting] = useState(false);
 
   useEffect(() => {
-    if (!loading && session) void navigate({ to: "/" });
-  }, [loading, session, navigate]);
+    if (!loading && session) {
+      // Same-origin relative navigation. Use href for arbitrary paths (e.g. /.lovable/oauth/consent).
+      if (target === "/") void navigate({ to: "/" });
+      else window.location.replace(target);
+    }
+  }, [loading, session, navigate, target]);
 
   const handleForgot = async () => {
     if (!email) { toast.error("Informe seu e-mail acima primeiro."); return; }
@@ -67,7 +76,7 @@ function LoginPage() {
           email,
           password,
           options: {
-            emailRedirectTo: `${window.location.origin}/`,
+            emailRedirectTo: `${window.location.origin}${target}`,
             data: { full_name: fullName },
           },
         });
