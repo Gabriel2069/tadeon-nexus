@@ -8,6 +8,13 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
 import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
   Dialog,
   DialogContent,
   DialogFooter,
@@ -32,14 +39,20 @@ export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
       { title: "Dashboard · Tadeon Nexus" },
-      { name: "description", content: "Painel principal do Tadeon Nexus: veja e gerencie suas fichas de personagem, atributos, perícias e progresso de RPG." },
+      {
+        name: "description",
+        content:
+          "Painel principal do Tadeon Nexus: veja e gerencie suas fichas de personagem, atributos, perícias e progresso de RPG.",
+      },
       { property: "og:title", content: "Dashboard · Tadeon Nexus" },
-      { property: "og:description", content: "Painel principal do Tadeon Nexus: veja e gerencie suas fichas de personagem, atributos, perícias e progresso de RPG." },
+      {
+        property: "og:description",
+        content:
+          "Painel principal do Tadeon Nexus: veja e gerencie suas fichas de personagem, atributos, perícias e progresso de RPG.",
+      },
       { property: "og:url", content: "https://tadeon-nexus.lovable.app/" },
     ],
-    links: [
-      { rel: "canonical", href: "https://tadeon-nexus.lovable.app/" },
-    ],
+    links: [{ rel: "canonical", href: "https://tadeon-nexus.lovable.app/" }],
   }),
   component: () => (
     <ProtectedShell>
@@ -56,6 +69,12 @@ interface SheetRow {
   exposure: number;
 }
 
+interface OwnerOption {
+  id: string;
+  email: string;
+  full_name: string | null;
+}
+
 function HomePage() {
   const { user, profile, role } = useAuth();
   const navigate = useNavigate();
@@ -63,12 +82,15 @@ function HomePage() {
   const [loading, setLoading] = useState(true);
   const [createOpen, setCreateOpen] = useState(false);
   const [name, setName] = useState("");
-  const [ownerEmail, setOwnerEmail] = useState("");
+  const [owners, setOwners] = useState<OwnerOption[]>([]);
+  const [ownerId, setOwnerId] = useState("");
+  const [ownersLoading, setOwnersLoading] = useState(false);
   const [creating, setCreating] = useState(false);
   const [toDelete, setToDelete] = useState<SheetRow | null>(null);
 
   const isMestre = role === "mestre";
-  const canCreate = role !== "espectador";
+  const canCreate = role === "mestre" || role === "jogador";
+  const canDelete = role === "mestre" || role === "jogador";
 
   const load = async () => {
     setLoading(true);
@@ -87,26 +109,69 @@ function HomePage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user, role]);
 
+  useEffect(() => {
+    if (!user) return;
+    if (!isMestre) {
+      setOwners([]);
+      setOwnerId(user.id);
+      return;
+    }
+
+    setOwnersLoading(true);
+    void supabase
+      .from("profiles")
+      .select("id,email,full_name")
+      .order("full_name")
+      .then(({ data, error }) => {
+        setOwnersLoading(false);
+        if (error) {
+          toast.error("Não foi possível carregar os donos disponíveis.");
+          return;
+        }
+        const options = (data ?? []).filter(
+          (row): row is OwnerOption => typeof row.email === "string" && row.email.length > 0,
+        );
+        setOwners(options);
+        setOwnerId((current) =>
+          options.some((option) => option.id === current)
+            ? current
+            : (options.find((option) => option.id === user.id)?.id ?? options[0]?.id ?? ""),
+        );
+      });
+  }, [isMestre, user]);
+
   const handleCreate = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!user) return;
+    const selectedOwner = isMestre
+      ? owners.find((owner) => owner.id === ownerId)
+      : { id: user.id, email: user.email ?? "", full_name: profile?.full_name ?? null };
+    if (!selectedOwner?.email) {
+      toast.error("Selecione um dono válido para a ficha.");
+      return;
+    }
     setCreating(true);
-    const finalEmail = ownerEmail.trim() || user.email!;
     // Defaults: rank 0 base (pv 10, ps 10, pe 5, def 10, pa 0, pm 0) + COR/MEN/ERU = 1
     // pv_max = 10 + 3*1 = 13; ps_max = 13; pe_max = 5 + 3*1 = 8
     const { data, error } = await supabase
       .from("character_sheets")
       .insert({
-        owner_id: user.id,
-        owner_email: finalEmail,
+        owner_id: selectedOwner.id,
+        owner_email: selectedOwner.email,
         name: name.trim() || "Novo Personagem",
         stats: {
-          pv_current: 13, pv_mod: 0,
-          ps_current: 13, ps_mod: 0,
-          pe_current: 8, pe_mod: 0,
-          pa_current: 0, pa_mod: 0,
-          pm_current: 0, pm_mod: 0,
-          def_equip: 0, def_mod: 0,
+          pv_current: 13,
+          pv_mod: 0,
+          ps_current: 13,
+          ps_mod: 0,
+          pe_current: 8,
+          pe_mod: 0,
+          pa_current: 0,
+          pa_mod: 0,
+          pm_current: 0,
+          pm_mod: 0,
+          def_equip: 0,
+          def_mod: 0,
         },
       })
       .select("id")
@@ -118,7 +183,6 @@ function HomePage() {
     }
     setCreateOpen(false);
     setName("");
-    setOwnerEmail("");
     toast.success("Ficha criada!");
     void navigate({ to: "/sheet/$id", params: { id: data.id } });
   };
@@ -188,18 +252,27 @@ function HomePage() {
                 </div>
                 {isMestre && (
                   <div>
-                    <Label htmlFor="owner-email">E-mail do Dono (opcional)</Label>
-                    <Input
-                      id="owner-email"
-                      type="email"
-                      value={ownerEmail}
-                      onChange={(e) => setOwnerEmail(e.target.value)}
-                      placeholder={user?.email ?? ""}
-                    />
+                    <Label htmlFor="owner-id">Dono da ficha</Label>
+                    <Select value={ownerId} onValueChange={setOwnerId} disabled={ownersLoading}>
+                      <SelectTrigger id="owner-id">
+                        <SelectValue
+                          placeholder={
+                            ownersLoading ? "Carregando usuários…" : "Selecione um usuário"
+                          }
+                        />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {owners.map((owner) => (
+                          <SelectItem key={owner.id} value={owner.id}>
+                            {owner.full_name || owner.email} · {owner.email}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                   </div>
                 )}
                 <DialogFooter>
-                  <Button type="submit" disabled={creating}>
+                  <Button type="submit" disabled={creating || (isMestre && !ownerId)}>
                     {creating && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
                     Criar
                   </Button>
@@ -223,9 +296,7 @@ function HomePage() {
           {sheets.map((s) => (
             <Card key={s.id} className="relative p-4 hover:border-primary/50 transition-colors">
               <h3 className="font-cinzel font-bold text-lg pr-8">{s.name}</h3>
-              {s.occupation && (
-                <p className="text-sm text-muted-foreground">{s.occupation}</p>
-              )}
+              {s.occupation && <p className="text-sm text-muted-foreground">{s.occupation}</p>}
               <p className="text-xs text-muted-foreground mt-1 truncate">{s.owner_email}</p>
               <p className="text-xs text-muted-foreground mt-0.5">Rank {s.exposure || 0}</p>
               <Link
@@ -236,15 +307,17 @@ function HomePage() {
                 <ExternalLink className="w-3 h-3" />
                 Ver Ficha
               </Link>
-              <Button
-                variant="destructive"
-                size="sm"
-                onClick={() => setToDelete(s)}
-                className="absolute top-2 right-2 h-7 w-7 p-0"
-                aria-label={`Excluir ficha ${s.name}`}
-              >
-                <Trash className="w-3.5 h-3.5" />
-              </Button>
+              {canDelete && (
+                <Button
+                  variant="destructive"
+                  size="sm"
+                  onClick={() => setToDelete(s)}
+                  className="absolute top-2 right-2 h-7 w-7 p-0"
+                  aria-label={`Excluir ficha ${s.name}`}
+                >
+                  <Trash className="w-3.5 h-3.5" />
+                </Button>
+              )}
             </Card>
           ))}
         </div>

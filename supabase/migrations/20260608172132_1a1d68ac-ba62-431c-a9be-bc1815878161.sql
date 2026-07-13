@@ -23,3 +23,4 @@ AS $function$
   WHERE key = 'global'
   LIMIT 1;
 $function$;
+

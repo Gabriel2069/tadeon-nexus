@@ -35,3 +35,4 @@ GRANT EXECUTE ON FUNCTION public.get_public_game_settings() TO authenticated;
 ALTER TABLE public.character_sheets
   ADD COLUMN IF NOT EXISTS power_form_enabled boolean NOT NULL DEFAULT false,
   ADD COLUMN IF NOT EXISTS power_form_data jsonb NOT NULL DEFAULT '{}'::jsonb;
+

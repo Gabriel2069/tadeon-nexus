@@ -6,3 +6,4 @@
 
 - [Início](/): Acesso ao painel e às fichas do jogador.
 - [Entrar](/login): Página de login e cadastro de conta.
+

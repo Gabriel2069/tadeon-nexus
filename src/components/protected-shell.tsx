@@ -48,3 +48,4 @@ export function ProtectedShell({ children, requireRole }: Props) {
     </AppLayout>
   );
 }
+
