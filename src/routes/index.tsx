@@ -99,7 +99,7 @@ function HomePage() {
       .select("id,name,occupation,owner_email,exposure")
       .order("created_at", { ascending: false });
     const { data, error } = isMestre ? await query : await query.eq("owner_id", user!.id);
-    if (error) toast.error(error.message);
+    if (error) toast.error("Não foi possível carregar as fichas.");
     setSheets(data ?? []);
     setLoading(false);
   };
@@ -178,7 +178,7 @@ function HomePage() {
       .single();
     setCreating(false);
     if (error) {
-      toast.error(error.message);
+      toast.error("Não foi possível criar a ficha.");
       return;
     }
     setCreateOpen(false);
@@ -190,7 +190,7 @@ function HomePage() {
   const handleDelete = async () => {
     if (!toDelete) return;
     const { error } = await supabase.from("character_sheets").delete().eq("id", toDelete.id);
-    if (error) toast.error(error.message);
+    if (error) toast.error("Não foi possível excluir a ficha.");
     else {
       toast.success("Ficha excluída.");
       setSheets((prev) => prev.filter((s) => s.id !== toDelete.id));
