@@ -351,7 +351,7 @@ function MasterPanel() {
       .update(payload as never)
       .eq("id", id);
     setSaving(false);
-    if (error) toast.error(error.message);
+    if (error) toast.error("Não foi possível salvar o painel do mestre.");
     else toast.success("Painel salvo!");
   };
 
