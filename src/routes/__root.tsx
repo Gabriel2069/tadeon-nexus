@@ -17,9 +17,7 @@ function NotFoundComponent() {
       <div className="max-w-md text-center">
         <h1 className="font-cinzel text-7xl font-bold text-primary">404</h1>
         <h2 className="font-cinzel mt-4 text-xl font-semibold">Página não encontrada</h2>
-        <p className="mt-2 text-sm text-muted-foreground">
-          Parece que você se perdeu no nexus.
-        </p>
+        <p className="mt-2 text-sm text-muted-foreground">Parece que você se perdeu no nexus.</p>
         <div className="mt-6">
           <Link
             to="/"
@@ -39,7 +37,9 @@ function ErrorComponent({ error }: { error: Error; reset: () => void }) {
     <div className="flex min-h-screen items-center justify-center px-4">
       <div className="max-w-md text-center">
         <h1 className="font-cinzel text-xl font-semibold">Algo deu errado</h1>
-        <p className="mt-2 text-sm text-muted-foreground">{error.message}</p>
+        <p className="mt-2 text-sm text-muted-foreground">
+          Ocorreu um erro inesperado. Recarregue a página ou volte ao início.
+        </p>
         <a
           href="/"
           className="mt-6 inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90"
@@ -75,8 +75,16 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           "Tadeon Nexus: gerencie fichas de personagem, atributos, perícias e a árvore de habilidades do seu RPG online com painel para mestres e jogadores.",
       },
       { property: "og:site_name", content: "Tadeon Nexus" },
-      { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/PVW5PtKIfsZfzEClat2iS5nSbg62/social-images/social-1779415456700-IMG_0562.webp" },
-      { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/PVW5PtKIfsZfzEClat2iS5nSbg62/social-images/social-1779415456700-IMG_0562.webp" },
+      {
+        property: "og:image",
+        content:
+          "https://storage.googleapis.com/gpt-engineer-file-uploads/PVW5PtKIfsZfzEClat2iS5nSbg62/social-images/social-1779415456700-IMG_0562.webp",
+      },
+      {
+        name: "twitter:image",
+        content:
+          "https://storage.googleapis.com/gpt-engineer-file-uploads/PVW5PtKIfsZfzEClat2iS5nSbg62/social-images/social-1779415456700-IMG_0562.webp",
+      },
       { name: "twitter:card", content: "summary_large_image" },
       { property: "og:type", content: "website" },
     ],

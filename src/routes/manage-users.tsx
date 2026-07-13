@@ -6,29 +6,46 @@ import { useAuth } from "@/lib/auth";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import {
-  Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
 } from "@/components/ui/select";
 import {
-  AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
-  AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger,
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Loader2, Crown, Swords, Eye, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import type { AppRole } from "@/lib/auth";
-import { deleteUserFn } from "@/lib/admin-users.functions";
+import { changeUserRoleFn, deleteUserFn } from "@/lib/admin-users.functions";
 
 export const Route = createFileRoute("/manage-users")({
   head: () => ({
     meta: [
       { title: "Gerenciar Usuários · Tadeon Nexus" },
-      { name: "description", content: "Painel do mestre para gerenciar contas, papéis e permissões dos jogadores do Tadeon Nexus." },
+      {
+        name: "description",
+        content:
+          "Painel do mestre para gerenciar contas, papéis e permissões dos jogadores do Tadeon Nexus.",
+      },
       { property: "og:title", content: "Gerenciar Usuários · Tadeon Nexus" },
-      { property: "og:description", content: "Painel do mestre para gerenciar contas, papéis e permissões dos jogadores do Tadeon Nexus." },
+      {
+        property: "og:description",
+        content:
+          "Painel do mestre para gerenciar contas, papéis e permissões dos jogadores do Tadeon Nexus.",
+      },
       { property: "og:url", content: "https://tadeon-nexus.lovable.app/manage-users" },
     ],
-    links: [
-      { rel: "canonical", href: "https://tadeon-nexus.lovable.app/manage-users" },
-    ],
+    links: [{ rel: "canonical", href: "https://tadeon-nexus.lovable.app/manage-users" }],
   }),
   component: () => (
     <ProtectedShell requireRole="mestre">
@@ -49,13 +66,20 @@ function ManageUsersPage() {
   const [rows, setRows] = useState<UserRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [changingId, setChangingId] = useState<string | null>(null);
 
   const load = async () => {
     setLoading(true);
-    const [{ data: profiles }, { data: roles }] = await Promise.all([
-      supabase.from("profiles").select("id,email,full_name"),
-      supabase.from("user_roles").select("user_id,role,id"),
-    ]);
+    const [{ data: profiles, error: profilesError }, { data: roles, error: rolesError }] =
+      await Promise.all([
+        supabase.from("profiles").select("id,email,full_name"),
+        supabase.from("user_roles").select("user_id,role,id"),
+      ]);
+    if (profilesError || rolesError) {
+      toast.error("Não foi possível carregar os usuários.");
+      setLoading(false);
+      return;
+    }
     const merged: UserRow[] = (profiles ?? []).map((p) => ({
       id: p.id,
       email: p.email,
@@ -66,16 +90,20 @@ function ManageUsersPage() {
     setLoading(false);
   };
 
-  useEffect(() => { void load(); }, []);
+  useEffect(() => {
+    void load();
+  }, []);
 
   const changeRole = async (userId: string, role: AppRole) => {
-    const { error: delError } = await supabase.from("user_roles").delete().eq("user_id", userId);
-    if (delError) { toast.error(delError.message); return; }
-    const { error } = await supabase.from("user_roles").insert({ user_id: userId, role });
-    if (error) toast.error(error.message);
-    else {
+    setChangingId(userId);
+    try {
+      await changeUserRoleFn({ data: { userId, role } });
       toast.success("Cargo atualizado!");
-      setRows((p) => p.map((r) => r.id === userId ? { ...r, role } : r));
+      setRows((p) => p.map((r) => (r.id === userId ? { ...r, role } : r)));
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Não foi possível atualizar o cargo.");
+    } finally {
+      setChangingId(null);
     }
   };
 
@@ -106,22 +134,36 @@ function ManageUsersPage() {
       </p>
 
       {loading ? (
-        <div className="flex justify-center py-16"><Loader2 className="w-8 h-8 animate-spin text-primary" /></div>
+        <div className="flex justify-center py-16">
+          <Loader2 className="w-8 h-8 animate-spin text-primary" />
+        </div>
       ) : (
         <div className="space-y-2">
           {rows.map((u) => {
             const Icon = roleStyles[u.role].icon;
             const isSelf = u.id === user?.id;
             return (
-              <Card key={u.id} className="p-3 flex items-center justify-between gap-3 transition-all hover:border-primary/40 animate-in fade-in-0 slide-in-from-bottom-1 duration-200">
+              <Card
+                key={u.id}
+                className="p-3 flex items-center justify-between gap-3 transition-all hover:border-primary/40 animate-in fade-in-0 slide-in-from-bottom-1 duration-200"
+              >
                 <div className="min-w-0">
-                  <div className="font-medium truncate">{u.full_name || "Sem nome"}{isSelf && <span className="ml-2 text-[10px] text-primary">(você)</span>}</div>
+                  <div className="font-medium truncate">
+                    {u.full_name || "Sem nome"}
+                    {isSelf && <span className="ml-2 text-[10px] text-primary">(você)</span>}
+                  </div>
                   <div className="text-xs text-muted-foreground truncate">{u.email}</div>
                 </div>
                 <div className="flex items-center gap-2">
                   <Icon className={`w-4 h-4 ${roleStyles[u.role].color}`} />
-                  <Select value={u.role} onValueChange={(v) => changeRole(u.id, v as AppRole)}>
-                    <SelectTrigger className="w-32 md:w-36"><SelectValue /></SelectTrigger>
+                  <Select
+                    value={u.role}
+                    disabled={isSelf || changingId === u.id}
+                    onValueChange={(v) => void changeRole(u.id, v as AppRole)}
+                  >
+                    <SelectTrigger className="w-32 md:w-36">
+                      <SelectValue />
+                    </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="mestre">Mestre</SelectItem>
                       <SelectItem value="jogador">Jogador</SelectItem>
@@ -134,17 +176,26 @@ function ManageUsersPage() {
                         size="icon"
                         variant="ghost"
                         disabled={isSelf || deletingId === u.id}
-                        title={isSelf ? "Você não pode excluir sua própria conta aqui" : "Excluir usuário"}
+                        title={
+                          isSelf
+                            ? "Você não pode excluir sua própria conta aqui"
+                            : "Excluir usuário"
+                        }
                         className="h-8 w-8 text-destructive hover:bg-destructive/15 disabled:opacity-40"
                       >
-                        {deletingId === u.id ? <Loader2 className="w-4 h-4 animate-spin" /> : <Trash2 className="w-4 h-4" />}
+                        {deletingId === u.id ? (
+                          <Loader2 className="w-4 h-4 animate-spin" />
+                        ) : (
+                          <Trash2 className="w-4 h-4" />
+                        )}
                       </Button>
                     </AlertDialogTrigger>
                     <AlertDialogContent>
                       <AlertDialogHeader>
                         <AlertDialogTitle>Excluir usuário?</AlertDialogTitle>
                         <AlertDialogDescription>
-                          Esta ação remove permanentemente <b>{u.full_name || u.email}</b>, todas as fichas e o acesso à plataforma. Não pode ser desfeita.
+                          Esta ação remove permanentemente <b>{u.full_name || u.email}</b>, todas as
+                          fichas e o acesso à plataforma. Não pode ser desfeita.
                         </AlertDialogDescription>
                       </AlertDialogHeader>
                       <AlertDialogFooter>
