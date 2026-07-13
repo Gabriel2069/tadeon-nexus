@@ -25,7 +25,6 @@ export type Database = {
           created_at: string
           defense_items: Json
           description: Json
-          drift: number
           dying: number
           equilibrium: number
           exposure: number
@@ -65,7 +64,6 @@ export type Database = {
           created_at?: string
           defense_items?: Json
           description?: Json
-          drift?: number
           dying?: number
           equilibrium?: number
           exposure?: number
@@ -105,7 +103,6 @@ export type Database = {
           created_at?: string
           defense_items?: Json
           description?: Json
-          drift?: number
           dying?: number
           equilibrium?: number
           exposure?: number
@@ -139,25 +136,18 @@ export type Database = {
       }
       game_settings: {
         Row: {
-          campaign_phase: string
-          campaign_title: string
           clues: Json
           condition_options: Json
-          folds: Json
           id: string
-          interludes: Json
-          investigation_clues: Json
           initiative_notes: string | null
           initiative_order: Json
           key: string
-          master_npcs: Json
           monsters: Json
           npcs: Json
           pinned_sheet_ids: Json
           quick_refs: string | null
           rank_table: Json
           reminders: string | null
-          rules_version: number
           scene_combat: string | null
           scene_dialogue: string | null
           scene_investigation: string | null
@@ -165,30 +155,22 @@ export type Database = {
           skill_branches: Json
           skill_groups: Json
           skill_training_costs: Json
-          threats: Json
           updated_at: string
           upgrade_costs: Json
         }
         Insert: {
-          campaign_phase?: string
-          campaign_title?: string
           clues?: Json
           condition_options?: Json
-          folds?: Json
           id?: string
-          interludes?: Json
-          investigation_clues?: Json
           initiative_notes?: string | null
           initiative_order?: Json
           key?: string
-          master_npcs?: Json
           monsters?: Json
           npcs?: Json
           pinned_sheet_ids?: Json
           quick_refs?: string | null
           rank_table?: Json
           reminders?: string | null
-          rules_version?: number
           scene_combat?: string | null
           scene_dialogue?: string | null
           scene_investigation?: string | null
@@ -196,30 +178,22 @@ export type Database = {
           skill_branches?: Json
           skill_groups?: Json
           skill_training_costs?: Json
-          threats?: Json
           updated_at?: string
           upgrade_costs?: Json
         }
         Update: {
-          campaign_phase?: string
-          campaign_title?: string
           clues?: Json
           condition_options?: Json
-          folds?: Json
           id?: string
-          interludes?: Json
-          investigation_clues?: Json
           initiative_notes?: string | null
           initiative_order?: Json
           key?: string
-          master_npcs?: Json
           monsters?: Json
           npcs?: Json
           pinned_sheet_ids?: Json
           quick_refs?: string | null
           rank_table?: Json
           reminders?: string | null
-          rules_version?: number
           scene_combat?: string | null
           scene_dialogue?: string | null
           scene_investigation?: string | null
@@ -227,7 +201,6 @@ export type Database = {
           skill_branches?: Json
           skill_groups?: Json
           skill_training_costs?: Json
-          threats?: Json
           updated_at?: string
           upgrade_costs?: Json
         }
@@ -429,4 +402,3 @@ export const Constants = {
     },
   },
 } as const
-
