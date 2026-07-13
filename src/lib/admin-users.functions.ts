@@ -13,6 +13,38 @@ function validateUserId(d: unknown) {
   return { userId: value.userId };
 }
 
+export const listUsersFn = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    const { data: callerRoles, error: callerRoleError } = await context.supabase
+      .from("user_roles")
+      .select("role")
+      .eq("user_id", context.userId);
+    if (callerRoleError || !(callerRoles ?? []).some((row) => row.role === "mestre")) {
+      throw new Error("Apenas o Mestre pode gerenciar usuários.");
+    }
+
+    const [{ data: profiles, error: profilesError }, { data: roles, error: rolesError }] =
+      await Promise.all([
+        supabaseAdmin.from("profiles").select("id,email,full_name").order("full_name"),
+        supabaseAdmin.from("user_roles").select("user_id,role"),
+      ]);
+    if (profilesError || rolesError) {
+      throw new Error("Não foi possível carregar os usuários.");
+    }
+
+    const users = (profiles ?? []).map((profile) => ({
+      id: profile.id,
+      email: profile.email,
+      full_name: profile.full_name,
+      role:
+        ((roles ?? []).find((role) => role.user_id === profile.id)?.role as
+          ManagedRole | undefined) ?? "jogador",
+    }));
+
+    return { users };
+  });
+
 export const deleteUserFn = createServerFn({ method: "POST" })
   .validator(validateUserId)
   .middleware([requireSupabaseAuth])
