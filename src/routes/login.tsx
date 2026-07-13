@@ -22,6 +22,9 @@ export const Route = createFileRoute("/login")({
       { rel: "canonical", href: "https://tadeon-nexus.lovable.app/login" },
     ],
   }),
+  validateSearch: (s: Record<string, unknown>) => ({
+    next: typeof s.next === "string" && s.next.startsWith("/") && !s.next.startsWith("//") ? s.next : "",
+  }),
   component: LoginPage,
 });
 
