@@ -34,6 +34,10 @@ import {
   Cog,
   Sparkles,
   ExternalLink,
+  LayoutDashboard,
+  Waves,
+  BedDouble,
+  Scale,
 } from "lucide-react";
 import { toast } from "sonner";
 import type {
@@ -49,7 +53,33 @@ import {
   DEFAULT_UPGRADE_COSTS,
   DEFAULT_CONDITION_OPTIONS,
   CONDITION_META,
+  SKILL_GROUPS,
+  CANONICAL_RANK_TABLE,
+  DEFAULT_TRAINING_COSTS,
 } from "@/lib/sheet-types";
+import {
+  CANONICAL_SKILL_BRANCHES,
+  createEmptyClue,
+  createEmptyFold,
+  createEmptyInterlude,
+  createEmptyNpc,
+  createEmptyThreat,
+  type MasterClue,
+  type MasterFold,
+  type MasterInterlude,
+  type MasterNpc,
+  type MasterScene,
+  type MasterThreat,
+} from "@/lib/master-data";
+import {
+  DashboardHub,
+  EncounterHub,
+  FoldHub,
+  InterludeHub,
+  InvestigationHub,
+  NpcHub,
+  ThreatHub,
+} from "@/components/master/master-hub";
 
 export const Route = createFileRoute("/master-panel")({
   head: () => ({
@@ -108,16 +138,8 @@ interface InitEntry {
   pv: number;
   isPlayer: boolean;
 }
-interface Scene {
-  id: string;
-  title: string;
-  type: string;
-  status: "Planejada" | "Em curso" | "Concluída";
-  narrative: string;
-  description: string;
-  npcIds: string[];
+interface Scene extends MasterScene {
   monsterIds: string[];
-  clueIds: string[];
 }
 
 interface SettingsRow {
@@ -137,6 +159,14 @@ interface SettingsRow {
   condition_options: ConditionOptionsMap;
   skill_groups: { attr: string; label: string; skills: string[] }[];
   skill_training_costs: [number, number, number];
+  campaign_title: string;
+  campaign_phase: string;
+  master_npcs: MasterNpc[];
+  investigation_clues: MasterClue[];
+  threats: MasterThreat[];
+  interludes: MasterInterlude[];
+  folds: MasterFold[];
+  rules_version: number;
 }
 
 interface SheetSummary {
@@ -144,10 +174,70 @@ interface SheetSummary {
   name: string;
   owner_email: string;
   exposure: number;
-  stats: { pv_current: number; ps_current: number; pe_current: number };
+  stats: { pv_current: number; ps_current: number; pe_current: number; pa_current?: number };
   attributes: Record<string, number>;
   equilibrium: number;
   power_form_enabled?: boolean;
+}
+
+function normalizeNpc(value: Partial<MasterNpc> & Partial<NPC>): MasterNpc {
+  const base = createEmptyNpc();
+  return {
+    ...base,
+    ...value,
+    id: value.id || genId(),
+    name: value.name || "NPC sem nome",
+    socialTension: value.socialTension || value.mood || "",
+    attributes: { ...base.attributes, ...(value.attributes ?? {}) },
+    vectors: { ...base.vectors, ...(value.vectors ?? {}) },
+  };
+}
+
+function normalizeClue(value: Partial<MasterClue> & Partial<Clue>): MasterClue {
+  const base = createEmptyClue();
+  return {
+    ...base,
+    ...value,
+    id: value.id || genId(),
+    title: value.title || "Pista sem título",
+    linkedClueIds: value.linkedClueIds ?? [],
+  };
+}
+
+function normalizeThreat(value: Partial<MasterThreat> & Partial<Monster>): MasterThreat {
+  const base = createEmptyThreat();
+  return {
+    ...base,
+    ...value,
+    id: value.id || genId(),
+    name: value.name || "Ameaça sem nome",
+    currentPp: value.currentPp ?? value.pv ?? base.currentPp,
+    specialConditions: value.specialConditions || value.weakness || "",
+    attributes: { ...base.attributes, ...(value.attributes ?? {}) },
+    vectors: { ...base.vectors, ...(value.vectors ?? {}) },
+    movementModes: value.movementModes ?? [],
+    attacks: value.attacks ?? [],
+    abilities: value.abilities ?? [],
+  };
+}
+
+function normalizeScene(value: Partial<Scene>): Scene {
+  return {
+    id: value.id || genId(),
+    title: value.title || "Cena sem título",
+    type: value.type || "Investigação",
+    status: value.status || "Planejada",
+    narrative: value.narrative || "",
+    description: value.description || "",
+    superficialLayer: value.superficialLayer || "",
+    attentiveLayer: value.attentiveLayer || "",
+    deepLayer: value.deepLayer || "",
+    nextStep: value.nextStep || "",
+    npcIds: value.npcIds ?? [],
+    threatIds: value.threatIds ?? value.monsterIds ?? [],
+    monsterIds: value.monsterIds ?? value.threatIds ?? [],
+    clueIds: value.clueIds ?? [],
+  };
 }
 
 function MasterPanel() {
@@ -181,46 +271,45 @@ function MasterPanel() {
       }
 
       const g = gs as unknown as Record<string, unknown>;
+      const rulesVersion = Number(g.rules_version ?? 1);
+      const legacyNpcs = (g.npcs as NPC[] | undefined) ?? [];
+      const legacyClues = (g.clues as Clue[] | undefined) ?? [];
+      const legacyMonsters = (g.monsters as Monster[] | undefined) ?? [];
+      const masterNpcs = ((g.master_npcs as MasterNpc[] | undefined) ?? legacyNpcs).map(
+        normalizeNpc,
+      );
+      const investigationClues = (
+        (g.investigation_clues as MasterClue[] | undefined) ?? legacyClues
+      ).map(normalizeClue);
+      const threats = ((g.threats as MasterThreat[] | undefined) ?? legacyMonsters).map(
+        normalizeThreat,
+      );
       setS({
         ...(gs as unknown as SettingsRow),
         npcs: (g.npcs as NPC[]) ?? [],
         monsters: (g.monsters as Monster[]) ?? [],
         clues: (g.clues as Clue[]) ?? [],
-        scenes_detailed: (g.scenes_detailed as Scene[]) ?? [],
+        scenes_detailed: ((g.scenes_detailed as Scene[]) ?? []).map(normalizeScene),
         initiative_order: (g.initiative_order as InitEntry[]) ?? [],
         pinned_sheet_ids: (g.pinned_sheet_ids as string[]) ?? [],
-        rank_table: (g.rank_table as RankRow[]) ?? [],
-        skill_branches: (g.skill_branches as SkillBranch[]) ?? [],
-        upgrade_costs: (g.upgrade_costs as UpgradeCosts) ?? DEFAULT_UPGRADE_COSTS,
+        rank_table:
+          rulesVersion >= 2
+            ? ((g.rank_table as RankRow[]) ?? CANONICAL_RANK_TABLE)
+            : CANONICAL_RANK_TABLE,
+        skill_branches:
+          rulesVersion >= 2
+            ? ((g.skill_branches as SkillBranch[]) ?? CANONICAL_SKILL_BRANCHES)
+            : CANONICAL_SKILL_BRANCHES,
+        upgrade_costs:
+          rulesVersion >= 2
+            ? ((g.upgrade_costs as UpgradeCosts) ?? DEFAULT_UPGRADE_COSTS)
+            : DEFAULT_UPGRADE_COSTS,
         condition_options:
           (g.condition_options as ConditionOptionsMap) ?? DEFAULT_CONDITION_OPTIONS,
-        skill_groups: (g.skill_groups as SettingsRow["skill_groups"]) ?? [
-          {
-            attr: "COR",
-            label: "Corpo",
-            skills: ["Acrobacia", "Atletismo", "Combate", "Furtividade"],
-          },
-          {
-            attr: "MEN",
-            label: "Mente",
-            skills: ["Investigação", "Percepção", "Sobrevivência", "Vontade"],
-          },
-          {
-            attr: "INS",
-            label: "Instinto",
-            skills: ["Iniciativa", "Pontaria", "Reflexos", "Intuição"],
-          },
-          {
-            attr: "PRE",
-            label: "Presença",
-            skills: ["Atuação", "Diplomacia", "Enganação", "Intimidação"],
-          },
-          {
-            attr: "ERU",
-            label: "Erudição",
-            skills: ["Ciências", "Medicina", "Ocultismo", "Tecnologia"],
-          },
-        ],
+        skill_groups:
+          rulesVersion >= 2
+            ? ((g.skill_groups as SettingsRow["skill_groups"]) ?? SKILL_GROUPS)
+            : SKILL_GROUPS,
         skill_training_costs: ((g.skill_training_costs as number[] | undefined) &&
         (g.skill_training_costs as number[]).length >= 3
           ? [
@@ -228,7 +317,25 @@ function MasterPanel() {
               (g.skill_training_costs as number[])[1],
               (g.skill_training_costs as number[])[2],
             ]
-          : [2, 3, 4]) as [number, number, number],
+          : DEFAULT_TRAINING_COSTS) as [number, number, number],
+        campaign_title: String(g.campaign_title ?? "Tessitura do Vazio"),
+        campaign_phase: String(g.campaign_phase ?? ""),
+        master_npcs: masterNpcs,
+        investigation_clues: investigationClues,
+        threats,
+        interludes: ((g.interludes as MasterInterlude[] | undefined) ?? []).map((value) => ({
+          ...createEmptyInterlude(),
+          ...value,
+          id: value.id || genId(),
+          activities: value.activities ?? [],
+        })),
+        folds: ((g.folds as MasterFold[] | undefined) ?? []).map((value) => ({
+          ...createEmptyFold(),
+          ...value,
+          id: value.id || genId(),
+          stitchPoints: value.stitchPoints ?? [],
+        })),
+        rules_version: Math.max(2, rulesVersion),
       });
       setSheets((ch as unknown as SheetSummary[]) ?? []);
       setLoading(false);
@@ -289,22 +396,34 @@ function MasterPanel() {
         </div>
       </div>
 
-      <Tabs defaultValue="scenes" className="space-y-4">
+      <Tabs defaultValue="dashboard" className="space-y-4">
         <TabsList className="flex flex-wrap h-auto justify-start gap-1 bg-card/60 p-1">
+          <Trig value="dashboard" icon={<LayoutDashboard className="w-3.5 h-3.5" />}>
+            Visão Geral
+          </Trig>
           <Trig value="scenes" icon={<ScrollText className="w-3.5 h-3.5" />}>
             Cenas
           </Trig>
           <Trig value="initiative" icon={<Swords className="w-3.5 h-3.5" />}>
             Iniciativa
           </Trig>
-          <Trig value="npcs" icon={<Users className="w-3.5 h-3.5" />}>
+          <Trig value="npcs-v2" icon={<Users className="w-3.5 h-3.5" />}>
             NPCs
           </Trig>
-          <Trig value="monsters" icon={<Skull className="w-3.5 h-3.5" />}>
-            Monstros
+          <Trig value="threats" icon={<Skull className="w-3.5 h-3.5" />}>
+            Ameaças
           </Trig>
-          <Trig value="clues" icon={<SearchIcon className="w-3.5 h-3.5" />}>
-            Pistas
+          <Trig value="investigation" icon={<SearchIcon className="w-3.5 h-3.5" />}>
+            Investigação
+          </Trig>
+          <Trig value="interludes" icon={<BedDouble className="w-3.5 h-3.5" />}>
+            Interlúdios
+          </Trig>
+          <Trig value="folds" icon={<Waves className="w-3.5 h-3.5" />}>
+            Dobras
+          </Trig>
+          <Trig value="balance" icon={<Scale className="w-3.5 h-3.5" />}>
+            Balanço
           </Trig>
           <Trig value="pinned" icon={<Pin className="w-3.5 h-3.5" />}>
             Fichas
@@ -317,20 +436,48 @@ function MasterPanel() {
           </Trig>
         </TabsList>
 
+        <TabsContent value="dashboard" className="mt-0">
+          <DashboardHub
+            campaignTitle={s.campaign_title}
+            campaignPhase={s.campaign_phase}
+            scenes={s.scenes_detailed}
+            npcs={s.master_npcs}
+            clues={s.investigation_clues}
+            threats={s.threats}
+            interludes={s.interludes}
+            folds={s.folds}
+            sheets={sheets}
+            onCampaignTitle={(value) => upd("campaign_title", value)}
+            onCampaignPhase={(value) => upd("campaign_phase", value)}
+          />
+        </TabsContent>
         <TabsContent value="scenes" className="mt-0">
           <ScenesPanel s={s} upd={upd} />
         </TabsContent>
         <TabsContent value="initiative" className="mt-0">
           <InitiativePanel s={s} upd={upd} />
         </TabsContent>
-        <TabsContent value="npcs" className="mt-0">
-          <NPCsPanel s={s} upd={upd} />
+        <TabsContent value="npcs-v2" className="mt-0">
+          <NpcHub npcs={s.master_npcs} onChange={(value) => upd("master_npcs", value)} />
         </TabsContent>
-        <TabsContent value="monsters" className="mt-0">
-          <MonstersPanel s={s} upd={upd} />
+        <TabsContent value="threats" className="mt-0">
+          <ThreatHub threats={s.threats} onChange={(value) => upd("threats", value)} />
         </TabsContent>
-        <TabsContent value="clues" className="mt-0">
-          <CluesPanel s={s} upd={upd} />
+        <TabsContent value="investigation" className="mt-0">
+          <InvestigationHub
+            clues={s.investigation_clues}
+            scenes={s.scenes_detailed}
+            onChange={(value) => upd("investigation_clues", value)}
+          />
+        </TabsContent>
+        <TabsContent value="interludes" className="mt-0">
+          <InterludeHub interludes={s.interludes} onChange={(value) => upd("interludes", value)} />
+        </TabsContent>
+        <TabsContent value="folds" className="mt-0">
+          <FoldHub folds={s.folds} onChange={(value) => upd("folds", value)} />
+        </TabsContent>
+        <TabsContent value="balance" className="mt-0">
+          <EncounterHub sheets={sheets} threats={s.threats} />
         </TabsContent>
         <TabsContent value="pinned" className="mt-0">
           <PinnedPanel s={s} upd={upd} sheets={sheets} setSheets={setSheets} />
@@ -384,7 +531,12 @@ function ScenesPanel({ s, upd }: PanelProps) {
       status: "Planejada",
       narrative: "",
       description: "",
+      superficialLayer: "",
+      attentiveLayer: "",
+      deepLayer: "",
+      nextStep: "",
       npcIds: [],
+      threatIds: [],
       monsterIds: [],
       clueIds: [],
     };
@@ -446,7 +598,7 @@ function ScenesPanel({ s, upd }: PanelProps) {
                 </span>
                 <div className="flex gap-2 mt-2 text-[10px] text-muted-foreground">
                   {sc.npcIds.length > 0 && <span>👤 {sc.npcIds.length}</span>}
-                  {sc.monsterIds.length > 0 && <span>💀 {sc.monsterIds.length}</span>}
+                  {sc.threatIds.length > 0 && <span>💀 {sc.threatIds.length}</span>}
                   {sc.clueIds.length > 0 && <span>🔍 {sc.clueIds.length}</span>}
                 </div>
               </Card>
@@ -509,25 +661,58 @@ function ScenesPanel({ s, upd }: PanelProps) {
                   onChange={(e) => update(expanded.id, { description: e.target.value })}
                 />
               </div>
+              <div className="grid gap-2 sm:grid-cols-3">
+                <div>
+                  <Label className="text-xs">Camada superficial</Label>
+                  <Textarea
+                    rows={3}
+                    value={expanded.superficialLayer}
+                    onChange={(e) => update(expanded.id, { superficialLayer: e.target.value })}
+                  />
+                </div>
+                <div>
+                  <Label className="text-xs">Camada atenta</Label>
+                  <Textarea
+                    rows={3}
+                    value={expanded.attentiveLayer}
+                    onChange={(e) => update(expanded.id, { attentiveLayer: e.target.value })}
+                  />
+                </div>
+                <div>
+                  <Label className="text-xs">Camada profunda</Label>
+                  <Textarea
+                    rows={3}
+                    value={expanded.deepLayer}
+                    onChange={(e) => update(expanded.id, { deepLayer: e.target.value })}
+                  />
+                </div>
+              </div>
+              <div>
+                <Label className="text-xs">Próximo passo provável</Label>
+                <Input
+                  value={expanded.nextStep}
+                  onChange={(e) => update(expanded.id, { nextStep: e.target.value })}
+                />
+              </div>
 
               <LinkPicker
                 label="NPCs"
                 icon={<Users className="w-3.5 h-3.5" />}
-                items={s.npcs.map((n) => ({ id: n.id, label: n.name }))}
+                items={s.master_npcs.map((n) => ({ id: n.id, label: n.name }))}
                 selected={expanded.npcIds}
                 onChange={(ids) => update(expanded.id, { npcIds: ids })}
               />
               <LinkPicker
-                label="Monstros"
+                label="Ameaças"
                 icon={<Skull className="w-3.5 h-3.5" />}
-                items={s.monsters.map((m) => ({ id: m.id, label: m.name }))}
-                selected={expanded.monsterIds}
-                onChange={(ids) => update(expanded.id, { monsterIds: ids })}
+                items={s.threats.map((m) => ({ id: m.id, label: m.name }))}
+                selected={expanded.threatIds}
+                onChange={(ids) => update(expanded.id, { threatIds: ids, monsterIds: ids })}
               />
               <LinkPicker
                 label="Pistas"
                 icon={<SearchIcon className="w-3.5 h-3.5" />}
-                items={s.clues.map((c) => ({ id: c.id, label: c.title }))}
+                items={s.investigation_clues.map((c) => ({ id: c.id, label: c.title }))}
                 selected={expanded.clueIds}
                 onChange={(ids) => update(expanded.id, { clueIds: ids })}
               />
@@ -1158,20 +1343,31 @@ function DataPanel({ s, upd }: PanelProps) {
   };
   const addRank = () =>
     upd("rank_table", [...s.rank_table, { rank: 0, pv: 10, ps: 10, pe: 5, pa: 0, def: 10, pm: 0 }]);
-  const seedRanks = () => {
-    const arr: RankRow[] = [];
-    for (let r = 0; r <= 100; r += 5) {
-      arr.push({
-        rank: r,
-        pv: 10 + r,
-        ps: 10 + r,
-        pe: 5 + Math.floor(r / 2),
-        pa: 0,
-        def: 10 + Math.floor(r / 5),
-        pm: r * 2,
-      });
-    }
-    upd("rank_table", arr);
+  const restoreCanonicalRules = () => {
+    upd(
+      "rank_table",
+      CANONICAL_RANK_TABLE.map((row) => ({ ...row })),
+    );
+    upd(
+      "skill_groups",
+      SKILL_GROUPS.map((group) => ({ ...group, skills: [...group.skills] })),
+    );
+    upd(
+      "skill_branches",
+      CANONICAL_SKILL_BRANCHES.map((branch) => ({
+        ...branch,
+        nodes: branch.nodes.map((node) => ({
+          ...node,
+          requires: [...node.requires],
+          attrReqs: node.attrReqs.map((requirement) => ({ ...requirement })),
+        })),
+      })),
+    );
+    upd("upgrade_costs", DEFAULT_UPGRADE_COSTS);
+    upd("skill_training_costs", DEFAULT_TRAINING_COSTS);
+    upd("condition_options", DEFAULT_CONDITION_OPTIONS);
+    upd("rules_version", 2);
+    toast.success("Dados canônicos restaurados. Use Salvar para confirmar.");
   };
   const updRank = (i: number, key: keyof RankRow, val: number) =>
     upd(
@@ -1227,6 +1423,18 @@ function DataPanel({ s, upd }: PanelProps) {
 
   return (
     <div className="space-y-4">
+      <Card className="flex flex-col gap-3 border-primary/35 bg-primary/5 p-4 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <h3 className="font-cinzel font-bold">Fonte canônica do Livro de Regras</h3>
+          <p className="text-xs text-muted-foreground">
+            Restaura Rank, perícias, custos de treino, condições e ramos oficiais da versão
+            revisada.
+          </p>
+        </div>
+        <Button size="sm" variant="outline" onClick={restoreCanonicalRules}>
+          Restaurar regras do livro
+        </Button>
+      </Card>
       <Card className="p-4">
         <div className="flex justify-between items-center mb-3 flex-wrap gap-2">
           <div>
@@ -1236,8 +1444,18 @@ function DataPanel({ s, upd }: PanelProps) {
             </p>
           </div>
           <div className="flex gap-2">
-            <Button size="sm" variant="outline" onClick={seedRanks} className="gap-1.5">
-              Gerar 0–100
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={() =>
+                upd(
+                  "rank_table",
+                  CANONICAL_RANK_TABLE.map((row) => ({ ...row })),
+                )
+              }
+              className="gap-1.5"
+            >
+              Restaurar tabela
             </Button>
             <Button size="sm" onClick={addRank} className="gap-1.5">
               <Plus className="w-3.5 h-3.5" /> Linha
@@ -1246,7 +1464,7 @@ function DataPanel({ s, upd }: PanelProps) {
         </div>
         {s.rank_table.length === 0 ? (
           <p className="text-xs text-muted-foreground italic text-center py-4">
-            Sem linhas. Use "Gerar 0–100" para começar.
+            Sem linhas. Use "Restaurar tabela" para começar.
           </p>
         ) : (
           <div className="space-y-1 overflow-x-auto">
