@@ -4,9 +4,14 @@ import { Button } from "@/components/ui/button";
 import { Plus, Minus, Lock, Check } from "lucide-react";
 import { toast } from "sonner";
 import type {
-  Attributes, SkillBranch, StatUpgrades, RankRow, Ability, UpgradeCosts,
+  Attributes,
+  SkillBranch,
+  StatUpgrades,
+  RankRow,
+  Ability,
+  UpgradeCosts,
 } from "@/lib/sheet-types";
-import { getRankBase, upgradeCostAt, SKILL_ABILITY_PREFIX } from "@/lib/sheet-types";
+import { calcTotalPM, upgradeCostAt, SKILL_ABILITY_PREFIX } from "@/lib/sheet-types";
 
 interface Props {
   exposure: number;
@@ -34,15 +39,18 @@ const UPGRADE_KEYS: { key: keyof StatUpgrades; label: string; color: string }[] 
   { key: "def", label: "Defesa", color: "text-blue-400" },
 ];
 
-function calcTotalPM(exposure: number, rankTable: RankRow[]): number {
-  const r = Math.floor((exposure || 0) / 5) * 5;
-  const base = getRankBase(exposure, rankTable);
-  return base.pm + Math.floor(r / 5) * 2;
-}
-
 export function SkillTreeTab({
-  exposure, attributes, pmSpent, statUpgrades, purchasedSkills, abilities,
-  branches, rankTable, upgradeCosts, canEdit, onUpdate,
+  exposure,
+  attributes,
+  pmSpent,
+  statUpgrades,
+  purchasedSkills,
+  abilities,
+  branches,
+  rankTable,
+  upgradeCosts,
+  canEdit,
+  onUpdate,
 }: Props) {
   const totalPM = useMemo(() => calcTotalPM(exposure, rankTable), [exposure, rankTable]);
   const remaining = totalPM - pmSpent;
@@ -51,7 +59,10 @@ export function SkillTreeTab({
 
   const buyUpgrade = (key: keyof StatUpgrades) => {
     const cost = upgradeCostAt(upgradeCosts[key], statUpgrades[key]);
-    if (remaining < cost) { toast.error(`PM insuficientes (custa ${cost}).`); return; }
+    if (remaining < cost) {
+      toast.error(`PM insuficientes (custa ${cost}).`);
+      return;
+    }
     onUpdate({
       pm_spent: pmSpent + cost,
       stat_upgrades: { ...statUpgrades, [key]: statUpgrades[key] + 1 },
@@ -73,14 +84,18 @@ export function SkillTreeTab({
     for (const req of node.requires || [])
       if (!purchased.has(req)) return { ok: false, why: "Requisito faltando" };
     for (const ar of node.attrReqs || [])
-      if ((attributes[ar.attr] ?? 0) < ar.value) return { ok: false, why: `Requer ${ar.attr} ≥ ${ar.value}` };
+      if ((attributes[ar.attr] ?? 0) < ar.value)
+        return { ok: false, why: `Requer ${ar.attr} ≥ ${ar.value}` };
     if (remaining < node.cost) return { ok: false, why: `Faltam ${node.cost - remaining} PM` };
     return { ok: true, why: "" };
   };
 
   const buyNode = (node: SkillBranch["nodes"][0]) => {
     const check = canBuyNode(node);
-    if (!check.ok) { toast.error(check.why); return; }
+    if (!check.ok) {
+      toast.error(check.why);
+      return;
+    }
     const newAbility: Ability = {
       id: `${SKILL_ABILITY_PREFIX}${node.id}`,
       nome: node.name,
@@ -97,9 +112,13 @@ export function SkillTreeTab({
 
   const refundNode = (node: SkillBranch["nodes"][0]) => {
     if (!purchased.has(node.id)) return;
-    const blockedBy = branches.flatMap((b) => b.nodes)
+    const blockedBy = branches
+      .flatMap((b) => b.nodes)
       .find((n) => purchased.has(n.id) && (n.requires || []).includes(node.id));
-    if (blockedBy) { toast.error(`Reembolso bloqueado: ${blockedBy.name} depende disto.`); return; }
+    if (blockedBy) {
+      toast.error(`Reembolso bloqueado: ${blockedBy.name} depende disto.`);
+      return;
+    }
     onUpdate({
       pm_spent: Math.max(0, pmSpent - node.cost),
       purchased_skills: purchasedSkills.filter((id) => id !== node.id),
@@ -122,12 +141,18 @@ export function SkillTreeTab({
           </div>
           <div>
             <div className="text-xs text-muted-foreground uppercase">Disponíveis</div>
-            <div className={`font-cinzel text-3xl font-bold ${remaining > 0 ? "text-emerald-400" : "text-red-400"}`}>{remaining}</div>
+            <div
+              className={`font-cinzel text-3xl font-bold ${remaining > 0 ? "text-emerald-400" : "text-red-400"}`}
+            >
+              {remaining}
+            </div>
           </div>
         </div>
         <div className="mt-3 w-full h-2 bg-secondary rounded-full overflow-hidden">
-          <div className="h-full bg-gradient-to-r from-primary to-accent transition-all"
-            style={{ width: `${Math.min(100, (pmSpent / Math.max(1, totalPM)) * 100)}%` }} />
+          <div
+            className="h-full bg-gradient-to-r from-primary to-accent transition-all"
+            style={{ width: `${Math.min(100, (pmSpent / Math.max(1, totalPM)) * 100)}%` }}
+          />
         </div>
       </Card>
 
@@ -143,10 +168,21 @@ export function SkillTreeTab({
                 <div className="text-2xl font-bold my-1">+{level}</div>
                 <div className="text-[10px] text-muted-foreground mb-2">próximo: {cost} PM</div>
                 <div className="flex gap-1">
-                  <Button size="sm" variant="ghost" className="h-7 flex-1 px-0" disabled={!canEdit || level <= 0} onClick={() => sellUpgrade(key)}>
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    className="h-7 flex-1 px-0"
+                    disabled={!canEdit || level <= 0}
+                    onClick={() => sellUpgrade(key)}
+                  >
                     <Minus className="w-3 h-3" />
                   </Button>
-                  <Button size="sm" className="h-7 flex-1 px-0" disabled={!canEdit || remaining < cost} onClick={() => buyUpgrade(key)}>
+                  <Button
+                    size="sm"
+                    className="h-7 flex-1 px-0"
+                    disabled={!canEdit || remaining < cost}
+                    onClick={() => buyUpgrade(key)}
+                  >
                     <Plus className="w-3 h-3" />
                   </Button>
                 </div>
@@ -180,33 +216,62 @@ export function SkillTreeTab({
                         const attrMissing = locked && /Requer [A-Z]{3}/.test(check.why);
                         const hideDesc = reqMissing || rankMissing || attrMissing;
                         return (
-                          <div key={node.id}
+                          <div
+                            key={node.id}
                             className={`rounded-lg p-3 border transition-all ${
-                              isPurchased ? "bg-primary/10 border-primary/50"
-                                : locked ? "bg-secondary/30 border-border opacity-70"
+                              isPurchased
+                                ? "bg-primary/10 border-primary/50"
+                                : locked
+                                  ? "bg-secondary/30 border-border opacity-70"
                                   : "bg-secondary/60 border-border hover:border-primary/50"
-                            }`}>
+                            }`}
+                          >
                             <div className="flex items-start justify-between gap-2">
-                              <h4 className="font-cinzel font-bold text-sm">{hideDesc ? "???" : node.name}</h4>
-                              {isPurchased ? <Check className="w-4 h-4 text-primary shrink-0" />
-                                : locked ? <Lock className="w-3.5 h-3.5 text-muted-foreground shrink-0" /> : null}
+                              <h4 className="font-cinzel font-bold text-sm">
+                                {hideDesc ? "???" : node.name}
+                              </h4>
+                              {isPurchased ? (
+                                <Check className="w-4 h-4 text-primary shrink-0" />
+                              ) : locked ? (
+                                <Lock className="w-3.5 h-3.5 text-muted-foreground shrink-0" />
+                              ) : null}
                             </div>
                             {!hideDesc && (
                               <p className="text-xs text-muted-foreground mt-1">{node.desc}</p>
                             )}
                             <div className="mt-2 flex flex-wrap gap-1 text-[10px]">
-                              <span className="px-1.5 py-0.5 rounded bg-background/40">Custo: {node.cost} PM</span>
-                              {node.minRank > 0 && <span className="px-1.5 py-0.5 rounded bg-background/40">Rank {node.minRank}+</span>}
+                              <span className="px-1.5 py-0.5 rounded bg-background/40">
+                                Custo: {node.cost} PM
+                              </span>
+                              {node.minRank > 0 && (
+                                <span className="px-1.5 py-0.5 rounded bg-background/40">
+                                  Rank {node.minRank}+
+                                </span>
+                              )}
                               {(node.attrReqs || []).map((a, i) => (
-                                <span key={i} className="px-1.5 py-0.5 rounded bg-background/40">{a.attr} ≥ {a.value}</span>
+                                <span key={i} className="px-1.5 py-0.5 rounded bg-background/40">
+                                  {a.attr} ≥ {a.value}
+                                </span>
                               ))}
                             </div>
                             {canEdit && (
                               <div className="mt-3">
                                 {isPurchased ? (
-                                  <Button size="sm" variant="ghost" className="w-full h-7 text-xs" onClick={() => refundNode(node)}>Reembolsar</Button>
+                                  <Button
+                                    size="sm"
+                                    variant="ghost"
+                                    className="w-full h-7 text-xs"
+                                    onClick={() => refundNode(node)}
+                                  >
+                                    Reembolsar
+                                  </Button>
                                 ) : (
-                                  <Button size="sm" className="w-full h-7 text-xs" disabled={!check.ok} onClick={() => buyNode(node)}>
+                                  <Button
+                                    size="sm"
+                                    className="w-full h-7 text-xs"
+                                    disabled={!check.ok}
+                                    onClick={() => buyNode(node)}
+                                  >
                                     {check.ok ? "Adquirir" : check.why}
                                   </Button>
                                 )}

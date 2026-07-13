@@ -134,11 +134,21 @@ export function getRankBase(exposure: number, rankTable: RankRow[]) {
   return found ?? { rank: 0, pv: 10, ps: 10, pe: 5, pa: 0, def: 10, pm: 0 };
 }
 
+export function calcTotalPM(exposure: number, rankTable: RankRow[]): number {
+  const normalizedRank = Math.floor((exposure || 0) / 5) * 5;
+  const base = getRankBase(exposure, rankTable);
+  return base.pm + Math.floor(normalizedRank / 5) * 2;
+}
+
 export function genId() {
   return Math.random().toString(36).slice(2, 11);
 }
 
-export interface UpgradeCostRule { base: number; freeLevels: number; increment: number }
+export interface UpgradeCostRule {
+  base: number;
+  freeLevels: number;
+  increment: number;
+}
 export type UpgradeCosts = Record<"pv" | "ps" | "pe" | "def", UpgradeCostRule>;
 export const DEFAULT_UPGRADE_COSTS: UpgradeCosts = {
   pv: { base: 10, freeLevels: 3, increment: 5 },
@@ -160,10 +170,10 @@ export const DEFAULT_CONDITION_OPTIONS: ConditionOptionsMap = {
   outras: ["Normal", "Marcado", "Possuído", "Amaldiçoado"],
 };
 export const CONDITION_META: Record<ConditionKey, { label: string; color: string; rgb: string }> = {
-  fisica:     { label: "Física",     color: "#ef4444", rgb: "239, 68, 68" },
-  mental:     { label: "Mental",     color: "#facc15", rgb: "250, 204, 21" },
+  fisica: { label: "Física", color: "#ef4444", rgb: "239, 68, 68" },
+  mental: { label: "Mental", color: "#facc15", rgb: "250, 204, 21" },
   energetica: { label: "Energética", color: "#22c55e", rgb: "34, 197, 94" },
-  outras:     { label: "Outras",     color: "#a16207", rgb: "161, 98, 7" },
+  outras: { label: "Outras", color: "#a16207", rgb: "161, 98, 7" },
 };
 
 export interface Description {
@@ -174,4 +184,3 @@ export interface Description {
 }
 
 export const SKILL_ABILITY_PREFIX = "skill:";
-
