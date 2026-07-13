@@ -25,18 +25,22 @@ interface Props {
   upgradeCosts: UpgradeCosts;
   canEdit: boolean;
   onUpdate: (changes: {
-    pm_spent?: number;
     stat_upgrades?: StatUpgrades;
     purchased_skills?: string[];
     abilities?: Ability[];
   }) => void;
 }
 
-const UPGRADE_KEYS: { key: keyof StatUpgrades; label: string; color: string }[] = [
-  { key: "pv", label: "PV", color: "text-red-400" },
-  { key: "ps", label: "PS", color: "text-purple-400" },
-  { key: "pe", label: "PE", color: "text-emerald-400" },
-  { key: "def", label: "Defesa", color: "text-blue-400" },
+const UPGRADE_KEYS: {
+  key: keyof StatUpgrades;
+  label: string;
+  gain: number;
+  color: string;
+}[] = [
+  { key: "pv", label: "PV", gain: 3, color: "text-red-400" },
+  { key: "ps", label: "PS", gain: 2, color: "text-purple-400" },
+  { key: "pe", label: "PE", gain: 1, color: "text-emerald-400" },
+  { key: "def", label: "Defesa", gain: 1, color: "text-blue-400" },
 ];
 
 export function SkillTreeTab({
@@ -64,16 +68,14 @@ export function SkillTreeTab({
       return;
     }
     onUpdate({
-      pm_spent: pmSpent + cost,
       stat_upgrades: { ...statUpgrades, [key]: statUpgrades[key] + 1 },
     });
-    toast.success(`+1 ${key.toUpperCase()} ( -${cost} PM)`);
+    const upgrade = UPGRADE_KEYS.find((item) => item.key === key);
+    toast.success(`+${upgrade?.gain ?? 1} ${upgrade?.label ?? key.toUpperCase()} (-${cost} PM)`);
   };
   const sellUpgrade = (key: keyof StatUpgrades) => {
     if (statUpgrades[key] <= 0) return;
-    const refund = upgradeCostAt(upgradeCosts[key], statUpgrades[key] - 1);
     onUpdate({
-      pm_spent: Math.max(0, pmSpent - refund),
       stat_upgrades: { ...statUpgrades, [key]: statUpgrades[key] - 1 },
     });
   };
@@ -103,7 +105,6 @@ export function SkillTreeTab({
       modificador: `${node.cost} PM`,
     };
     onUpdate({
-      pm_spent: pmSpent + node.cost,
       purchased_skills: [...purchasedSkills, node.id],
       abilities: [...abilities.filter((a) => a.id !== newAbility.id), newAbility],
     });
@@ -120,7 +121,6 @@ export function SkillTreeTab({
       return;
     }
     onUpdate({
-      pm_spent: Math.max(0, pmSpent - node.cost),
       purchased_skills: purchasedSkills.filter((id) => id !== node.id),
       abilities: abilities.filter((a) => a.id !== `${SKILL_ABILITY_PREFIX}${node.id}`),
     });
@@ -159,13 +159,14 @@ export function SkillTreeTab({
       <Card className="p-4">
         <h3 className="font-cinzel font-bold mb-3">Aprimorar Atributos Vitais</h3>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-          {UPGRADE_KEYS.map(({ key, label, color }) => {
+          {UPGRADE_KEYS.map(({ key, label, gain, color }) => {
             const level = statUpgrades[key];
             const cost = upgradeCostAt(upgradeCosts[key], level);
             return (
               <div key={key} className="bg-secondary/40 rounded-lg p-3 text-center">
                 <div className={`text-xs font-bold uppercase ${color}`}>{label}</div>
-                <div className="text-2xl font-bold my-1">+{level}</div>
+                <div className="text-2xl font-bold my-1">+{level * gain}</div>
+                <div className="text-[10px] text-muted-foreground">{level} aprimoramento(s)</div>
                 <div className="text-[10px] text-muted-foreground mb-2">próximo: {cost} PM</div>
                 <div className="flex gap-1">
                   <Button
