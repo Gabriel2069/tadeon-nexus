@@ -172,6 +172,7 @@ interface SettingsRow {
 interface SheetSummary {
   id: string;
   name: string;
+  owner_id: string;
   owner_email: string;
   exposure: number;
   stats: { pv_current: number; ps_current: number; pe_current: number; pa_current?: number };
@@ -179,6 +180,7 @@ interface SheetSummary {
   equilibrium: number;
   power_form_enabled?: boolean;
 }
+
 
 function normalizeNpc(value: Partial<MasterNpc> & Partial<NPC>): MasterNpc {
   const base = createEmptyNpc();
