@@ -128,7 +128,7 @@ export interface DefenseItem {
 interface SheetData {
   id: string;
   owner_id: string;
-  owner_email: string;
+  owner_email?: string;
   name: string;
   occupation: string;
   age: string;

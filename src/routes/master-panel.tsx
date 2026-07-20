@@ -172,6 +172,7 @@ interface SettingsRow {
 interface SheetSummary {
   id: string;
   name: string;
+  owner_id: string;
   owner_email: string;
   exposure: number;
   stats: { pv_current: number; ps_current: number; pe_current: number; pa_current?: number };
@@ -179,6 +180,7 @@ interface SheetSummary {
   equilibrium: number;
   power_form_enabled?: boolean;
 }
+
 
 function normalizeNpc(value: Partial<MasterNpc> & Partial<NPC>): MasterNpc {
   const base = createEmptyNpc();
@@ -258,7 +260,7 @@ function MasterPanel() {
           supabase.from("game_settings").select("*").eq("key", "global").maybeSingle(),
           supabase
             .from("character_sheets")
-            .select("id,name,owner_email,exposure,stats,attributes,equilibrium,power_form_enabled"),
+            .select("id,name,owner_id,exposure,stats,attributes,equilibrium,power_form_enabled"),
         ]);
       if (settingsError || sheetsError || !gs) {
         setLoadError(
@@ -337,8 +339,23 @@ function MasterPanel() {
         })),
         rules_version: Math.max(2, rulesVersion),
       });
-      setSheets((ch as unknown as SheetSummary[]) ?? []);
+      const rawSheets = (ch as unknown as Omit<SheetSummary, "owner_email">[]) ?? [];
+      const ownerIds = Array.from(new Set(rawSheets.map((r) => r.owner_id).filter(Boolean)));
+      let emailMap = new Map<string, string>();
+      if (ownerIds.length > 0) {
+        const { data: profs } = await supabase
+          .from("profiles")
+          .select("id,email,full_name")
+          .in("id", ownerIds);
+        emailMap = new Map(
+          (profs ?? []).map((p) => [p.id, p.full_name || p.email || ""]),
+        );
+      }
+      setSheets(
+        rawSheets.map((r) => ({ ...r, owner_email: emailMap.get(r.owner_id) ?? "" })),
+      );
       setLoading(false);
+
     })();
   }, [reloadKey]);
 

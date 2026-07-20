@@ -24,7 +24,7 @@ export default defineTool({
       .select("*")
       .eq("id", sheet_id)
       .maybeSingle();
-    if (error) return { content: [{ type: "text", text: error.message }], isError: true };
+    if (error) return { content: [{ type: "text", text: "Failed to load sheet." }], isError: true };
     if (!data) return { content: [{ type: "text", text: "Sheet not found or access denied." }], isError: true };
     return { content: [{ type: "text", text: JSON.stringify(data) }], structuredContent: { sheet: data } };
   },

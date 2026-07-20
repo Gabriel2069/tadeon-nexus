@@ -39,7 +39,6 @@ export type Database = {
           notes: string | null
           occupation: string | null
           origin: string | null
-          owner_email: string
           owner_id: string
           plots: Json
           pm_spent: number
@@ -78,7 +77,6 @@ export type Database = {
           notes?: string | null
           occupation?: string | null
           origin?: string | null
-          owner_email: string
           owner_id: string
           plots?: Json
           pm_spent?: number
@@ -117,7 +115,6 @@ export type Database = {
           notes?: string | null
           occupation?: string | null
           origin?: string | null
-          owner_email?: string
           owner_id?: string
           plots?: Json
           pm_spent?: number

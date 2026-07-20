@@ -65,9 +65,11 @@ interface SheetRow {
   id: string;
   name: string;
   occupation: string | null;
-  owner_email: string;
+  owner_id: string;
+  owner_label?: string | null;
   exposure: number;
 }
+
 
 interface OwnerOption {
   id: string;
@@ -96,13 +98,25 @@ function HomePage() {
     setLoading(true);
     const query = supabase
       .from("character_sheets")
-      .select("id,name,occupation,owner_email,exposure")
+      .select("id,name,occupation,owner_id,exposure")
       .order("created_at", { ascending: false });
     const { data, error } = isMestre ? await query : await query.eq("owner_id", user!.id);
     if (error) toast.error("Não foi possível carregar as fichas.");
-    setSheets(data ?? []);
+    const rows = (data ?? []) as SheetRow[];
+    let labeled = rows;
+    if (isMestre && rows.length > 0) {
+      const ids = Array.from(new Set(rows.map((r) => r.owner_id)));
+      const { data: profs } = await supabase
+        .from("profiles")
+        .select("id,email,full_name")
+        .in("id", ids);
+      const map = new Map((profs ?? []).map((p) => [p.id, p.full_name || p.email || ""]));
+      labeled = rows.map((r) => ({ ...r, owner_label: map.get(r.owner_id) ?? null }));
+    }
+    setSheets(labeled);
     setLoading(false);
   };
+
 
   useEffect(() => {
     if (user) void load();
@@ -157,8 +171,8 @@ function HomePage() {
       .from("character_sheets")
       .insert({
         owner_id: selectedOwner.id,
-        owner_email: selectedOwner.email,
         name: name.trim() || "Novo Personagem",
+
         stats: {
           pv_current: 13,
           pv_mod: 0,
@@ -297,7 +311,10 @@ function HomePage() {
             <Card key={s.id} className="relative p-4 hover:border-primary/50 transition-colors">
               <h3 className="font-cinzel font-bold text-lg pr-8">{s.name}</h3>
               {s.occupation && <p className="text-sm text-muted-foreground">{s.occupation}</p>}
-              <p className="text-xs text-muted-foreground mt-1 truncate">{s.owner_email}</p>
+              {s.owner_label && (
+                <p className="text-xs text-muted-foreground mt-1 truncate">{s.owner_label}</p>
+              )}
+
               <p className="text-xs text-muted-foreground mt-0.5">Rank {s.exposure || 0}</p>
               <Link
                 to="/sheet/$id"
