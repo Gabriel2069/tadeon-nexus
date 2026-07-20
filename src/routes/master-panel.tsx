@@ -260,7 +260,7 @@ function MasterPanel() {
           supabase.from("game_settings").select("*").eq("key", "global").maybeSingle(),
           supabase
             .from("character_sheets")
-            .select("id,name,owner_email,exposure,stats,attributes,equilibrium,power_form_enabled"),
+            .select("id,name,owner_id,exposure,stats,attributes,equilibrium,power_form_enabled"),
         ]);
       if (settingsError || sheetsError || !gs) {
         setLoadError(
