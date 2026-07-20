@@ -311,7 +311,10 @@ function HomePage() {
             <Card key={s.id} className="relative p-4 hover:border-primary/50 transition-colors">
               <h3 className="font-cinzel font-bold text-lg pr-8">{s.name}</h3>
               {s.occupation && <p className="text-sm text-muted-foreground">{s.occupation}</p>}
-              <p className="text-xs text-muted-foreground mt-1 truncate">{s.owner_email}</p>
+              {s.owner_label && (
+                <p className="text-xs text-muted-foreground mt-1 truncate">{s.owner_label}</p>
+              )}
+
               <p className="text-xs text-muted-foreground mt-0.5">Rank {s.exposure || 0}</p>
               <Link
                 to="/sheet/$id"
