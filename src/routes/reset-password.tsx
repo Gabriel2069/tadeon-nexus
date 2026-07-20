@@ -120,12 +120,12 @@ function ResetPasswordPage() {
           </div>
         ) : (
           <Button asChild variant="outline" className="w-full">
-            <Link to="/login">Solicitar outro link</Link>
+            <Link to="/login" search={{ next: "" }}>Solicitar outro link</Link>
           </Button>
         )}
 
         <p className="mt-6 text-center text-[10px] text-muted-foreground">
-          <Link to="/login" className="hover:text-primary">
+          <Link to="/login" search={{ next: "" }} className="hover:text-primary">
             Voltar ao login
           </Link>
         </p>
