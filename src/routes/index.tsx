@@ -65,9 +65,11 @@ interface SheetRow {
   id: string;
   name: string;
   occupation: string | null;
-  owner_email: string;
+  owner_id: string;
+  owner_label?: string | null;
   exposure: number;
 }
+
 
 interface OwnerOption {
   id: string;
