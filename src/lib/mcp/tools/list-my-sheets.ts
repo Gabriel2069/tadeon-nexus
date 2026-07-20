@@ -18,9 +18,10 @@ export default defineTool({
     if (!ctx.isAuthenticated()) return { content: [{ type: "text", text: "Not authenticated" }], isError: true };
     const { data, error } = await supabaseForUser(ctx)
       .from("character_sheets")
-      .select("id,name,rank,owner_id,owner_email,updated_at")
+      .select("id,name,rank,owner_id,updated_at")
       .order("updated_at", { ascending: false });
-    if (error) return { content: [{ type: "text", text: error.message }], isError: true };
+    if (error) return { content: [{ type: "text", text: "Failed to load sheets." }], isError: true };
+
     return {
       content: [{ type: "text", text: JSON.stringify(data ?? []) }],
       structuredContent: { sheets: data ?? [] },
