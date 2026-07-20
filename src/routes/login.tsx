@@ -57,9 +57,8 @@ function LoginPage() {
       });
       if (error) throw error;
       toast.success("Enviamos um link para redefinir sua senha. Verifique seu e-mail.");
-    } catch (err) {
-      const msg = err instanceof Error ? err.message : "Erro ao enviar e-mail.";
-      toast.error(msg);
+    } catch {
+      toast.error("Não foi possível enviar o e-mail de redefinição.");
     } finally {
       setResetting(false);
     }
@@ -94,7 +93,7 @@ function LoginPage() {
         /already registered|user already/i.test(raw) ? "E-mail já cadastrado." :
         /password.*6/i.test(raw) ? "A senha precisa ter ao menos 6 caracteres." :
         /email.*invalid/i.test(raw) ? "E-mail inválido." :
-        raw;
+        "Não foi possível entrar. Tente novamente.";
       toast.error(msg);
     } finally {
       setSubmitting(false);
