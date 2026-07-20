@@ -56,12 +56,19 @@ export function AppLayout({ children }: { children: ReactNode }) {
 
   const handleSignOut = async () => {
     await signOut();
-    void navigate({ to: "/login" });
+    void navigate({ to: "/login", search: { next: "" } });
   };
 
   const renderNav = (mini: boolean) => (
     <nav className="space-y-1">
-      <NavItem to="/" icon={<Home className="w-4 h-4" />} label="Dashboard" active={path === "/"} mini={mini} onClick={() => setMobileOpen(false)} />
+      <NavItem
+        to="/"
+        icon={<Home className="w-4 h-4" />}
+        label="Dashboard"
+        active={path === "/"}
+        mini={mini}
+        onClick={() => setMobileOpen(false)}
+      />
       {isMestre && (
         <>
           <NavItem
@@ -93,7 +100,9 @@ export function AppLayout({ children }: { children: ReactNode }) {
         ) : (
           <>
             <h1 className="font-cinzel text-xl font-bold text-primary">Tadeon Nexus</h1>
-            <p className="mt-1 text-xs text-muted-foreground truncate">{profile?.full_name || user?.email}</p>
+            <p className="mt-1 text-xs text-muted-foreground truncate">
+              {profile?.full_name || user?.email}
+            </p>
             {role && (
               <div className="mt-1 flex items-center gap-1.5 text-xs text-primary">
                 <RoleIcon className="w-3 h-3" />
@@ -147,7 +156,11 @@ export function AppLayout({ children }: { children: ReactNode }) {
           title={collapsed ? "Expandir" : "Recolher"}
           className="absolute -right-3 top-6 z-10 w-6 h-6 rounded-full bg-card border border-border flex items-center justify-center text-muted-foreground hover:text-primary hover:border-primary shadow-md transition-all"
         >
-          {collapsed ? <ChevronsRight className="w-3.5 h-3.5" /> : <ChevronsLeft className="w-3.5 h-3.5" />}
+          {collapsed ? (
+            <ChevronsRight className="w-3.5 h-3.5" />
+          ) : (
+            <ChevronsLeft className="w-3.5 h-3.5" />
+          )}
         </button>
       </aside>
 
@@ -177,10 +190,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
       {/* Mobile drawer */}
       {mobileOpen && (
         <div className="md:hidden fixed inset-0 z-40 animate-in fade-in-0 duration-200">
-          <div
-            className="absolute inset-0 bg-black/60"
-            onClick={() => setMobileOpen(false)}
-          />
+          <div className="absolute inset-0 bg-black/60" onClick={() => setMobileOpen(false)} />
           <aside className="absolute left-0 top-0 h-full w-64 bg-sidebar text-sidebar-foreground border-r border-sidebar-border animate-in slide-in-from-left duration-300">
             <button
               onClick={() => setMobileOpen(false)}
@@ -325,9 +335,8 @@ function AccountDialog({
       toast.success("Conta atualizada!");
       onSaved?.();
       onOpenChange(false);
-    } catch (e) {
-      const msg = e instanceof Error ? e.message : "Erro ao salvar.";
-      toast.error(msg);
+    } catch {
+      toast.error("Não foi possível atualizar a conta.");
     } finally {
       setSaving(false);
     }

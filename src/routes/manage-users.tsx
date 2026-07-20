@@ -1,7 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { ProtectedShell } from "@/components/protected-shell";
-import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -26,7 +25,7 @@ import {
 import { Loader2, Crown, Swords, Eye, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import type { AppRole } from "@/lib/auth";
-import { changeUserRoleFn, deleteUserFn } from "@/lib/admin-users.functions";
+import { changeUserRoleFn, deleteUserFn, listUsersFn } from "@/lib/admin-users.functions";
 
 export const Route = createFileRoute("/manage-users")({
   head: () => ({
@@ -70,24 +69,14 @@ function ManageUsersPage() {
 
   const load = async () => {
     setLoading(true);
-    const [{ data: profiles, error: profilesError }, { data: roles, error: rolesError }] =
-      await Promise.all([
-        supabase.from("profiles").select("id,email,full_name"),
-        supabase.from("user_roles").select("user_id,role,id"),
-      ]);
-    if (profilesError || rolesError) {
+    try {
+      const { users } = await listUsersFn();
+      setRows(users as UserRow[]);
+    } catch {
       toast.error("Não foi possível carregar os usuários.");
+    } finally {
       setLoading(false);
-      return;
     }
-    const merged: UserRow[] = (profiles ?? []).map((p) => ({
-      id: p.id,
-      email: p.email,
-      full_name: p.full_name,
-      role: ((roles ?? []).find((r) => r.user_id === p.id)?.role as AppRole) ?? "jogador",
-    }));
-    setRows(merged);
-    setLoading(false);
   };
 
   useEffect(() => {
@@ -100,8 +89,8 @@ function ManageUsersPage() {
       await changeUserRoleFn({ data: { userId, role } });
       toast.success("Cargo atualizado!");
       setRows((p) => p.map((r) => (r.id === userId ? { ...r, role } : r)));
-    } catch (error) {
-      toast.error(error instanceof Error ? error.message : "Não foi possível atualizar o cargo.");
+    } catch {
+      toast.error("Não foi possível atualizar o cargo.");
     } finally {
       setChangingId(null);
     }
@@ -113,8 +102,8 @@ function ManageUsersPage() {
       await deleteUserFn({ data: { userId } });
       toast.success("Usuário e fichas removidos.");
       setRows((p) => p.filter((r) => r.id !== userId));
-    } catch (e) {
-      toast.error((e as Error).message);
+    } catch {
+      toast.error("Não foi possível excluir o usuário.");
     } finally {
       setDeletingId(null);
     }
