@@ -339,8 +339,23 @@ function MasterPanel() {
         })),
         rules_version: Math.max(2, rulesVersion),
       });
-      setSheets((ch as unknown as SheetSummary[]) ?? []);
+      const rawSheets = (ch as unknown as Omit<SheetSummary, "owner_email">[]) ?? [];
+      const ownerIds = Array.from(new Set(rawSheets.map((r) => r.owner_id).filter(Boolean)));
+      let emailMap = new Map<string, string>();
+      if (ownerIds.length > 0) {
+        const { data: profs } = await supabase
+          .from("profiles")
+          .select("id,email,full_name")
+          .in("id", ownerIds);
+        emailMap = new Map(
+          (profs ?? []).map((p) => [p.id, p.full_name || p.email || ""]),
+        );
+      }
+      setSheets(
+        rawSheets.map((r) => ({ ...r, owner_email: emailMap.get(r.owner_id) ?? "" })),
+      );
       setLoading(false);
+
     })();
   }, [reloadKey]);
 
