@@ -171,8 +171,8 @@ function HomePage() {
       .from("character_sheets")
       .insert({
         owner_id: selectedOwner.id,
-        owner_email: selectedOwner.email,
         name: name.trim() || "Novo Personagem",
+
         stats: {
           pv_current: 13,
           pv_mod: 0,
