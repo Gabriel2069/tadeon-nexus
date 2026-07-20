@@ -26,7 +26,7 @@ export const Route = createFileRoute("/.lovable/oauth/consent")({
     authorization_id: typeof s.authorization_id === "string" ? s.authorization_id : "",
   }),
   beforeLoad: async ({ search, location }) => {
-    if (!search.authorization_id) throw new Error("Missing authorization_id");
+    if (!search.authorization_id) throw new Error("Autorização inválida ou incompleta.");
     const { data } = await supabase.auth.getSession();
     if (!data.session) {
       const next = location.pathname + location.searchStr;
@@ -36,17 +36,17 @@ export const Route = createFileRoute("/.lovable/oauth/consent")({
   loader: async ({ location }) => {
     const authorizationId = new URLSearchParams(location.search).get("authorization_id")!;
     const { data, error } = await oauthApi().getAuthorizationDetails(authorizationId);
-    if (error) throw new Error(error.message);
+    if (error) throw new Error("Não foi possível carregar esta autorização.");
     const immediate = data?.redirect_url ?? data?.redirect_to;
     if (immediate && !data?.client) throw redirect({ href: immediate });
     return data;
   },
   component: Consent,
-  errorComponent: ({ error }) => (
+  errorComponent: () => (
     <main className="min-h-screen flex items-center justify-center p-6">
       <Card className="max-w-md p-6">
         <h1 className="font-cinzel text-xl text-primary mb-2">Erro na autorização</h1>
-        <p className="text-sm text-muted-foreground">{String((error as Error)?.message ?? error)}</p>
+        <p className="text-sm text-muted-foreground">Não foi possível concluir a autorização. Tente novamente.</p>
       </Card>
     </main>
   ),
@@ -65,7 +65,7 @@ function Consent() {
     const { data, error } = approve
       ? await api.approveAuthorization(authorization_id)
       : await api.denyAuthorization(authorization_id);
-    if (error) { setBusy(false); setError(error.message); return; }
+    if (error) { setBusy(false); setError("Não foi possível concluir a autorização."); return; }
     const target = data?.redirect_url ?? data?.redirect_to;
     if (!target) { setBusy(false); setError("Nenhum redirecionamento retornado."); return; }
     window.location.href = target;
