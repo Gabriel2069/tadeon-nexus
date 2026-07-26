@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Plus, Minus, Lock, Check } from "lucide-react";
+import { Plus, Minus, Lock, Check, Sparkles } from "lucide-react";
 import { toast } from "sonner";
 import type {
   Attributes,
@@ -11,7 +11,13 @@ import type {
   Ability,
   UpgradeCosts,
 } from "@/lib/sheet-types";
-import { calcTotalPM, upgradeCostAt, SKILL_ABILITY_PREFIX } from "@/lib/sheet-types";
+import {
+  calcTotalPM,
+  maxDefenseUpgradeLevels,
+  maxResourceUpgradeLevels,
+  upgradeCostAt,
+  SKILL_ABILITY_PREFIX,
+} from "@/lib/sheet-types";
 
 interface Props {
   exposure: number;
@@ -60,8 +66,27 @@ export function SkillTreeTab({
   const remaining = totalPM - pmSpent;
   const currentRank = Math.floor((exposure || 0) / 5) * 5;
   const purchased = new Set(purchasedSkills);
+  const nodesById = useMemo(
+    () => new Map(branches.flatMap((branch) => branch.nodes).map((node) => [node.id, node])),
+    [branches],
+  );
+  const freeTierOneRemaining = Math.max(
+    0,
+    2 -
+      purchasedSkills.filter((id) => {
+        const node = nodesById.get(id);
+        return node?.minRank === 0;
+      }).length,
+  );
+
+  const maxUpgradeLevel = (key: keyof StatUpgrades) =>
+    key === "def" ? maxDefenseUpgradeLevels(currentRank) : maxResourceUpgradeLevels(currentRank);
 
   const buyUpgrade = (key: keyof StatUpgrades) => {
+    if (statUpgrades[key] >= maxUpgradeLevel(key)) {
+      toast.error(`Limite deste Rank atingido para ${key.toUpperCase()}.`);
+      return;
+    }
     const cost = upgradeCostAt(upgradeCosts[key], statUpgrades[key]);
     if (remaining < cost) {
       toast.error(`PM insuficientes (custa ${cost}).`);
@@ -88,8 +113,10 @@ export function SkillTreeTab({
     for (const ar of node.attrReqs || [])
       if ((attributes[ar.attr] ?? 0) < ar.value)
         return { ok: false, why: `Requer ${ar.attr} ≥ ${ar.value}` };
-    if (remaining < node.cost) return { ok: false, why: `Faltam ${node.cost - remaining} PM` };
-    return { ok: true, why: "" };
+    const effectiveCost = node.minRank === 0 && freeTierOneRemaining > 0 ? 0 : node.cost;
+    if (remaining < effectiveCost)
+      return { ok: false, why: `Faltam ${effectiveCost - remaining} PM`, effectiveCost };
+    return { ok: true, why: "", effectiveCost };
   };
 
   const buyNode = (node: SkillBranch["nodes"][0]) => {
@@ -102,13 +129,17 @@ export function SkillTreeTab({
       id: `${SKILL_ABILITY_PREFIX}${node.id}`,
       nome: node.name,
       descricao: node.desc,
-      modificador: `${node.cost} PM`,
+      modificador: check.effectiveCost === 0 ? "Habilidade inicial" : `${node.cost} PM`,
     };
     onUpdate({
       purchased_skills: [...purchasedSkills, node.id],
       abilities: [...abilities.filter((a) => a.id !== newAbility.id), newAbility],
     });
-    toast.success(`${node.name} adquirida!`);
+    toast.success(
+      check.effectiveCost === 0
+        ? `${node.name} adquirida como Habilidade inicial.`
+        : `${node.name} adquirida!`,
+    );
   };
 
   const refundNode = (node: SkillBranch["nodes"][0]) => {
@@ -129,7 +160,7 @@ export function SkillTreeTab({
 
   return (
     <div className="space-y-4">
-      <Card className="p-4 bg-gradient-to-br from-primary/10 to-card border-primary/30">
+      <Card className="p-4 overflow-hidden bg-[linear-gradient(135deg,rgba(113,107,123,.18),transparent_58%)] border-primary/30">
         <div className="grid grid-cols-3 gap-4 text-center">
           <div>
             <div className="text-xs text-muted-foreground uppercase">PM Totais</div>
@@ -162,12 +193,16 @@ export function SkillTreeTab({
           {UPGRADE_KEYS.map(({ key, label, gain, color }) => {
             const level = statUpgrades[key];
             const cost = upgradeCostAt(upgradeCosts[key], level);
+            const maxLevel = maxUpgradeLevel(key);
+            const atLimit = level >= maxLevel;
             return (
               <div key={key} className="bg-secondary/40 rounded-lg p-3 text-center">
                 <div className={`text-xs font-bold uppercase ${color}`}>{label}</div>
                 <div className="text-2xl font-bold my-1">+{level * gain}</div>
                 <div className="text-[10px] text-muted-foreground">{level} aprimoramento(s)</div>
-                <div className="text-[10px] text-muted-foreground mb-2">próximo: {cost} PM</div>
+                <div className="text-[10px] text-muted-foreground mb-2">
+                  {atLimit ? `limite no Rank ${currentRank}` : `próximo: ${cost} PM`}
+                </div>
                 <div className="flex gap-1">
                   <Button
                     size="sm"
@@ -181,7 +216,7 @@ export function SkillTreeTab({
                   <Button
                     size="sm"
                     className="h-7 flex-1 px-0"
-                    disabled={!canEdit || remaining < cost}
+                    disabled={!canEdit || remaining < cost || atLimit}
                     onClick={() => buyUpgrade(key)}
                   >
                     <Plus className="w-3 h-3" />
@@ -193,70 +228,94 @@ export function SkillTreeTab({
         </div>
       </Card>
 
+      {freeTierOneRemaining > 0 && (
+        <div className="flex items-center gap-2 rounded-xl border border-primary/30 bg-primary/5 px-4 py-3 text-sm">
+          <Sparkles className="h-4 w-4 text-primary" />
+          <span>
+            Você ainda possui <strong>{freeTierOneRemaining}</strong>{" "}
+            {freeTierOneRemaining === 1 ? "Habilidade inicial gratuita" : "Habilidades iniciais gratuitas"}.
+          </span>
+        </div>
+      )}
+
       {branches.map((branch) => (
-        <Card key={branch.id} className="p-4">
-          <h3 className="font-cinzel font-bold mb-3 flex items-center gap-2">
-            <span className="w-3 h-3 rounded-full" style={{ background: branch.color }} />
-            {branch.label}
-          </h3>
+        <Card
+          key={branch.id}
+          className="overflow-hidden border-border/70"
+          style={{ boxShadow: `inset 3px 0 0 ${branch.color}` }}
+        >
+          <div className="border-b border-border/60 bg-secondary/20 px-5 py-4">
+            <h3 className="font-cinzel font-bold flex items-center gap-2">
+              <span className="w-2.5 h-2.5 rounded-full" style={{ background: branch.color }} />
+              Ramo {branch.label}
+            </h3>
+            <p className="mt-1 text-xs text-muted-foreground">
+              Seis escolhas por Tier. Requisitos narrativos e de Perícia permanecem visíveis na ficha.
+            </p>
+          </div>
           {branch.nodes.length === 0 ? (
-            <p className="text-xs text-muted-foreground italic">Sem habilidades neste ramo.</p>
+            <p className="p-5 text-xs text-muted-foreground italic">Sem habilidades neste ramo.</p>
           ) : (
-            <div className="overflow-x-auto -mx-1 pb-2 snap-x snap-mandatory [scrollbar-width:thin]">
-              <div className="flex gap-3 px-1" style={{ width: "max-content" }}>
-                {Array.from({ length: Math.ceil(branch.nodes.length / 2) }).map((_, colIdx) => {
-                  const colNodes = branch.nodes.slice(colIdx * 2, colIdx * 2 + 2);
-                  return (
-                    <div key={colIdx} className="flex flex-col gap-3 w-[260px] shrink-0 snap-start">
-                      {colNodes.map((node) => {
+            <div className="space-y-6 p-4 md:p-5">
+              {[0, 25, 50, 75].map((tierRank, tierIndex) => {
+                const tierNodes = branch.nodes.filter((node) => node.minRank === tierRank);
+                return (
+                  <section key={tierRank}>
+                    <div className="mb-3 flex items-center gap-3">
+                      <span className="font-mono text-[10px] uppercase tracking-[0.24em] text-primary">
+                        Tier {["I", "II", "III", "IV"][tierIndex]}
+                      </span>
+                      <span className="h-px flex-1 bg-border/70" />
+                      <span className="text-[10px] text-muted-foreground">
+                        {tierRank === 0 ? "Criação" : `Rank ${tierRank}+`} · {tierIndex + 1} PM
+                      </span>
+                    </div>
+                    <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+                      {tierNodes.map((node) => {
                         const isPurchased = purchased.has(node.id);
                         const check = canBuyNode(node);
                         const locked = !isPurchased && !check.ok;
-                        const reqMissing = locked && check.why.startsWith("Requisito");
-                        const rankMissing = locked && check.why.startsWith("Requer Rank");
-                        const attrMissing = locked && /Requer [A-Z]{3}/.test(check.why);
-                        const hideDesc = reqMissing || rankMissing || attrMissing;
                         return (
                           <div
                             key={node.id}
-                            className={`rounded-lg p-3 border transition-all ${
+                            className={`flex min-h-56 flex-col rounded-xl border p-4 transition-all ${
                               isPurchased
-                                ? "bg-primary/10 border-primary/50"
+                                ? "bg-primary/10 border-primary/50 shadow-[0_12px_40px_-28px_var(--primary)]"
                                 : locked
-                                  ? "bg-secondary/30 border-border opacity-70"
-                                  : "bg-secondary/60 border-border hover:border-primary/50"
+                                  ? "bg-secondary/20 border-border/70"
+                                  : "bg-secondary/35 border-border hover:-translate-y-0.5 hover:border-primary/50"
                             }`}
                           >
                             <div className="flex items-start justify-between gap-2">
-                              <h4 className="font-cinzel font-bold text-sm">
-                                {hideDesc ? "???" : node.name}
-                              </h4>
+                              <h4 className="font-cinzel font-bold text-sm">{node.name}</h4>
                               {isPurchased ? (
                                 <Check className="w-4 h-4 text-primary shrink-0" />
                               ) : locked ? (
                                 <Lock className="w-3.5 h-3.5 text-muted-foreground shrink-0" />
                               ) : null}
                             </div>
-                            {!hideDesc && (
-                              <p className="text-xs text-muted-foreground mt-1">{node.desc}</p>
-                            )}
+                            <p className="mt-2 text-xs leading-relaxed text-muted-foreground">
+                              {node.desc}
+                            </p>
                             <div className="mt-2 flex flex-wrap gap-1 text-[10px]">
                               <span className="px-1.5 py-0.5 rounded bg-background/40">
-                                Custo: {node.cost} PM
+                                {node.minRank === 0 && freeTierOneRemaining > 0
+                                  ? "Inicial: 0 PM"
+                                  : `Custo: ${node.cost} PM`}
                               </span>
                               {node.minRank > 0 && (
                                 <span className="px-1.5 py-0.5 rounded bg-background/40">
                                   Rank {node.minRank}+
                                 </span>
                               )}
-                              {(node.attrReqs || []).map((a, i) => (
-                                <span key={i} className="px-1.5 py-0.5 rounded bg-background/40">
-                                  {a.attr} ≥ {a.value}
+                              {node.requirementsText && (
+                                <span className="px-1.5 py-0.5 rounded bg-background/40">
+                                  {node.requirementsText}
                                 </span>
-                              ))}
+                              )}
                             </div>
                             {canEdit && (
-                              <div className="mt-3">
+                              <div className="mt-auto pt-4">
                                 {isPurchased ? (
                                   <Button
                                     size="sm"
@@ -282,9 +341,9 @@ export function SkillTreeTab({
                         );
                       })}
                     </div>
-                  );
-                })}
-              </div>
+                  </section>
+                );
+              })}
             </div>
           )}
         </Card>
