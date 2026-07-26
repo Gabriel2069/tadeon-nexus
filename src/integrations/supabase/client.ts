@@ -13,7 +13,7 @@ function createSupabaseClient() {
       ...(!SUPABASE_URL ? ['VITE_SUPABASE_URL'] : []),
       ...(!SUPABASE_PUBLISHABLE_KEY ? ['VITE_SUPABASE_PUBLISHABLE_KEY'] : []),
     ];
-    const message = `Missing public Supabase build variable(s): ${missing.join(', ')}. Rebuild after reconnecting or restoring the Lovable Cloud .env file.`;
+    const message = `Missing public Supabase build variable(s): ${missing.join(', ')}. Rebuild after reconnecting Supabase in Lovable Cloud or restoring its public build variables.`;
     console.error(`[Supabase] ${message}`);
     throw new Error(message);
   }
@@ -37,4 +37,3 @@ export const supabase = new Proxy({} as ReturnType<typeof createSupabaseClient>,
     return Reflect.get(_supabase, prop, receiver);
   },
 });
-
