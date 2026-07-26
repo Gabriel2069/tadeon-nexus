@@ -15,7 +15,7 @@ export function ProtectedShell({ children, requireRole }: Props) {
 
   useEffect(() => {
     if (!loading && !session) {
-      void navigate({ to: "/login" });
+      void navigate({ to: "/login", search: { next: "" } });
     }
   }, [loading, session, navigate]);
 
