@@ -1,4 +1,5 @@
 import type { Attributes, SkillBranch } from "@/lib/sheet-types";
+import { FINAL_SKILL_BRANCHES } from "@/lib/final-skill-branches";
 
 export type SceneStatus = "Planejada" | "Em curso" | "Concluída";
 export type NpcClassification = "Incidental" | "Secundário" | "Operacional" | "Principal";
@@ -25,7 +26,7 @@ export interface MasterNpc {
   morale: 1 | 2 | 3 | 4 | 5;
   state: NpcState;
   attributes: Attributes;
-  vectors: Record<"luta" | "pontaria" | "intelecto" | "percepcao" | "tecnica" | "social", number>;
+  vectors: Record<"fisico" | "tecnico" | "perceptivo" | "social" | "metafisico", number>;
   pv: number;
   ps: number;
   pe: number;
@@ -98,7 +99,7 @@ export type FoldStage =
 
 export interface StitchPoint {
   id: string;
-  factor: "Memória" | "Significância" | "Linguagem" | "Alma";
+  factor: string;
   description: string;
   resolved: boolean;
 }
@@ -120,7 +121,24 @@ export interface MasterFold {
 
 export type ThreatArchetype = "Predador" | "Colosso" | "Manifestação" | "Emboscador" | "Enxame";
 export type ThreatArea =
-  "Nenhuma" | "Cone curto" | "Linha" | "Explosão pequena" | "Explosão média" | "Explosão grande";
+  | "Nenhuma"
+  | "Engajado"
+  | "Próximo"
+  | "Distante"
+  | "Longo"
+  | "Extremo"
+  | "Cone curto"
+  | "Cone longo"
+  | "Linha curta"
+  | "Linha longa"
+  | "Raio pequeno"
+  | "Raio médio"
+  | "Raio grande"
+  | "Aura curta"
+  | "Aura ampla"
+  | "Corrente"
+  | "Cena"
+  | "Território";
 
 export interface ThreatAttack {
   id: string;
@@ -165,424 +183,58 @@ export interface MasterThreat {
   notes: string;
 }
 
-export const CANONICAL_SKILL_BRANCHES: SkillBranch[] = [
-  {
-    id: "corporeo",
-    label: "Corpóreo",
-    color: "#ef4444",
-    nodes: [
-      {
-        id: "corp-impacto-bruto",
-        name: "Impacto Bruto",
-        desc: "+1D20 em ataques corpo a corpo",
-        cost: 1,
-        minRank: 0,
-        requires: [],
-        attrReqs: [{ attr: "COR", value: 2 }],
-      },
-      {
-        id: "corp-resistencia-natural",
-        name: "Resistência Natural",
-        desc: "+5 PV permanentes",
-        cost: 1,
-        minRank: 0,
-        requires: [],
-        attrReqs: [{ attr: "COR", value: 2 }],
-      },
-      {
-        id: "corp-brutal",
-        name: "Modificação: Brutal",
-        desc: "Armas corpo a corpo ganham +1 dado de dano em críticos",
-        cost: 1,
-        minRank: 0,
-        requires: [],
-        attrReqs: [{ attr: "COR", value: 2 }],
-      },
-      {
-        id: "corp-postura",
-        name: "Postura de Combate",
-        desc: "Enquanto não se mover no turno, +1 DEF",
-        cost: 1,
-        minRank: 0,
-        requires: [],
-        attrReqs: [{ attr: "COR", value: 1 }],
-      },
-      {
-        id: "corp-sequencia",
-        name: "Sequência Fluida",
-        desc: "Sequências de combate não reduzem dados de ataque",
-        cost: 2,
-        minRank: 25,
-        requires: [],
-        attrReqs: [{ attr: "COR", value: 3 }],
-      },
-      {
-        id: "corp-arrastao",
-        name: "Modificação: Arrastão",
-        desc: "Armas pesadas corpo a corpo empurram o alvo 1,5m",
-        cost: 2,
-        minRank: 25,
-        requires: [],
-        attrReqs: [{ attr: "COR", value: 3 }],
-      },
-      {
-        id: "corp-fortalecer",
-        name: "Fortalecer",
-        desc: "Gasta 1 PE para +1D20 em um teste físico",
-        cost: 2,
-        minRank: 25,
-        requires: [],
-        attrReqs: [{ attr: "COR", value: 3 }],
-      },
-      {
-        id: "corp-dilacerante",
-        name: "Modificação: Dilacerante",
-        desc: "Armas corpo a corpo aplicam Sangrando em crítico",
-        cost: 3,
-        minRank: 50,
-        requires: [],
-        attrReqs: [{ attr: "COR", value: 4 }],
-      },
-      {
-        id: "corp-forjado",
-        name: "Corpo Forjado",
-        desc: "Imune a Machucado; progride diretamente para Ferido",
-        cost: 3,
-        minRank: 50,
-        requires: [],
-        attrReqs: [{ attr: "COR", value: 4 }],
-      },
-      {
-        id: "corp-encarnacao",
-        name: "Encarnação do Medo",
-        desc: "Em Equilíbrio -5 ou menor, +2D20 em ataques físicos",
-        cost: 4,
-        minRank: 75,
-        requires: [],
-        attrReqs: [{ attr: "COR", value: 5 }],
-      },
-    ],
-  },
-  {
-    id: "conscio",
-    label: "Cônscio",
-    color: "#10b981",
-    nodes: [
-      {
-        id: "cons-olho",
-        name: "Olho Aguçado",
-        desc: "+1D20 em Percepção e Investigação",
-        cost: 1,
-        minRank: 0,
-        requires: [],
-        attrReqs: [{ attr: "MEN", value: 2 }],
-      },
-      {
-        id: "cons-mira",
-        name: "Modificação: Mira Fria",
-        desc: "Ataque Mirado com armas de disparo custa Ação Livre",
-        cost: 1,
-        minRank: 0,
-        requires: [],
-        attrReqs: [{ attr: "MEN", value: 2 }],
-      },
-      {
-        id: "cons-analise",
-        name: "Análise Rápida",
-        desc: "Uma vez por cena, revela fraqueza e reduz a DEF da criatura em 2 por uma rodada",
-        cost: 1,
-        minRank: 0,
-        requires: [],
-        attrReqs: [{ attr: "MEN", value: 2 }],
-      },
-      {
-        id: "cons-logica",
-        name: "Lógica em Campo",
-        desc: "Pode usar Lógica no lugar de Tática em Testes Conjuntos",
-        cost: 1,
-        minRank: 0,
-        requires: [],
-        attrReqs: [{ attr: "MEN", value: 1 }],
-      },
-      {
-        id: "cons-precisao",
-        name: "Modificação: Precisão Cirúrgica",
-        desc: "Ataque Concentrado com disparo tem DT reduzida em 3",
-        cost: 2,
-        minRank: 25,
-        requires: [],
-        attrReqs: [{ attr: "MEN", value: 3 }],
-      },
-      {
-        id: "cons-memoria",
-        name: "Memória de Fragmento",
-        desc: "Identifica Fragmento já visto sem teste",
-        cost: 2,
-        minRank: 25,
-        requires: [],
-        attrReqs: [{ attr: "MEN", value: 3 }],
-      },
-      {
-        id: "cons-fantasma",
-        name: "Presença Fantasma",
-        desc: "Gasta 1 PE para não deixar rastros por uma cena",
-        cost: 2,
-        minRank: 25,
-        requires: [],
-        attrReqs: [{ attr: "MEN", value: 3 }],
-      },
-      {
-        id: "cons-ponto-cego",
-        name: "Modificação: Ponto Cego",
-        desc: "Armas de disparo ignoram Cobertura Parcial",
-        cost: 3,
-        minRank: 50,
-        requires: [],
-        attrReqs: [{ attr: "MEN", value: 4 }],
-      },
-      {
-        id: "cons-fortaleza",
-        name: "Mente Fortaleza",
-        desc: "+1D20 em resistências a Tramas de Conhecimento",
-        cost: 3,
-        minRank: 50,
-        requires: [],
-        attrReqs: [{ attr: "MEN", value: 4 }],
-      },
-      {
-        id: "cons-luminar",
-        name: "Olho do Luminar",
-        desc: "Uma vez por sessão, o Mestre responde com verdade a uma pergunta sobre a cena",
-        cost: 4,
-        minRank: 75,
-        requires: [],
-        attrReqs: [{ attr: "MEN", value: 5 }],
-      },
-    ],
-  },
-  {
-    id: "canalizado",
-    label: "Canalizado",
-    color: "#a855f7",
-    nodes: [
-      {
-        id: "can-fio-estavel",
-        name: "Fio Estável",
-        desc: "-1 na DT de puxar Fios Menores",
-        cost: 1,
-        minRank: 0,
-        requires: [],
-        attrReqs: [],
-      },
-      {
-        id: "can-reserva",
-        name: "Reserva de Véu",
-        desc: "+2 PE permanentes",
-        cost: 1,
-        minRank: 0,
-        requires: [],
-        attrReqs: [],
-      },
-      {
-        id: "can-leitura",
-        name: "Leitura Rápida",
-        desc: "Identifica natureza de Fragmento com DT 12",
-        cost: 1,
-        minRank: 0,
-        requires: [],
-        attrReqs: [],
-      },
-      {
-        id: "can-dupla",
-        name: "Trama Dupla",
-        desc: "Pode sustentar duas Tramas simultaneamente",
-        cost: 2,
-        minRank: 25,
-        requires: [],
-        attrReqs: [],
-      },
-      {
-        id: "can-ancoragem",
-        name: "Ancoragem Pessoal",
-        desc: "Ritual de 10 minutos recupera 2 PA e move Equilíbrio 1 em direção a zero",
-        cost: 2,
-        minRank: 25,
-        requires: [],
-        attrReqs: [],
-      },
-      {
-        id: "can-fio-medio",
-        name: "Fio Médio Natural",
-        desc: "-2 na DT de puxar Fios Médios",
-        cost: 2,
-        minRank: 25,
-        requires: [],
-        attrReqs: [],
-      },
-      {
-        id: "can-selador",
-        name: "Selador Nato",
-        desc: "Pode liderar Selagem sem Teste de Erudição",
-        cost: 3,
-        minRank: 50,
-        requires: [],
-        attrReqs: [],
-      },
-      {
-        id: "can-refluxo",
-        name: "Absorção de Refluxo",
-        desc: "Uma vez por sessão, converte Refluxo Severo em Normal",
-        cost: 3,
-        minRank: 50,
-        requires: [],
-        attrReqs: [],
-      },
-      {
-        id: "can-fluxo",
-        name: "Tocar o Fluxo",
-        desc: "Acesso a Fios de Tempo, sujeito ao requisito narrativo",
-        cost: 4,
-        minRank: 75,
-        requires: [],
-        attrReqs: [],
-      },
-    ],
-  },
-  {
-    id: "cinetico",
-    label: "Cinético",
-    color: "#3b82f6",
-    nodes: [
-      {
-        id: "cin-passo",
-        name: "Passo Silencioso",
-        desc: "+1D20 em Furtividade",
-        cost: 1,
-        minRank: 0,
-        requires: [],
-        attrReqs: [{ attr: "INS", value: 2 }],
-      },
-      {
-        id: "cin-furtivo",
-        name: "Modificação: Furtivo",
-        desc: "Armas ganham -10 de detecção sonora ao atacar",
-        cost: 1,
-        minRank: 0,
-        requires: [],
-        attrReqs: [{ attr: "INS", value: 2 }],
-      },
-      {
-        id: "cin-presenca",
-        name: "Presença Magnética",
-        desc: "+1D20 em Diplomacia e Persuasão",
-        cost: 1,
-        minRank: 0,
-        requires: [],
-        attrReqs: [{ attr: "PRE", value: 2 }],
-      },
-      {
-        id: "cin-reacao",
-        name: "Tempo de Reação",
-        desc: "+2 em Iniciativa",
-        cost: 1,
-        minRank: 0,
-        requires: [],
-        attrReqs: [{ attr: "INS", value: 1 }],
-      },
-      {
-        id: "cin-disfarce",
-        name: "Disfarce Profundo",
-        desc: "Pode substituir Encenação por INS em disfarces físicos",
-        cost: 2,
-        minRank: 25,
-        requires: [],
-        attrReqs: [{ attr: "INS", value: 3 }],
-      },
-      {
-        id: "cin-sala",
-        name: "Leitura de Sala",
-        desc: "Uma vez por cena, identifica a intenção dos presentes",
-        cost: 2,
-        minRank: 25,
-        requires: [],
-        attrReqs: [{ attr: "PRE", value: 3 }],
-      },
-      {
-        id: "cin-esquiva",
-        name: "Esquiva Instintiva",
-        desc: "Esquivar custa Ação Livre uma vez por rodada",
-        cost: 2,
-        minRank: 25,
-        requires: [],
-        attrReqs: [{ attr: "INS", value: 3 }],
-      },
-      {
-        id: "cin-sombra",
-        name: "Sombra Viva",
-        desc: "Pode usar Furtividade para sumir sem cobertura",
-        cost: 3,
-        minRank: 50,
-        requires: [],
-        attrReqs: [{ attr: "INS", value: 4 }],
-      },
-      {
-        id: "cin-amalgama",
-        name: "Voz do Amálgama",
-        desc: "PRE pode substituir qualquer atributo em interações sociais",
-        cost: 3,
-        minRank: 50,
-        requires: [],
-        attrReqs: [{ attr: "PRE", value: 4 }],
-      },
-      {
-        id: "cin-fios",
-        name: "Entre os Fios",
-        desc: "Uma vez por sessão, evita automaticamente um ataque ou efeito de Trama",
-        cost: 4,
-        minRank: 75,
-        requires: [],
-        attrReqs: [{ attr: "INS", value: 5 }],
-      },
-    ],
-  },
-];
+export const CANONICAL_SKILL_BRANCHES: SkillBranch[] = FINAL_SKILL_BRANCHES;
 
 export const THREAT_MAGNITUDES = [
-  { magnitude: 1, pp: 15, def: 6, reactions: 0, cp: 8 },
-  { magnitude: 2, pp: 20, def: 7, reactions: 0, cp: 10 },
-  { magnitude: 3, pp: 25, def: 8, reactions: 0, cp: 12 },
-  { magnitude: 4, pp: 31, def: 9, reactions: 1, cp: 15 },
-  { magnitude: 5, pp: 38, def: 10, reactions: 1, cp: 18 },
-  { magnitude: 6, pp: 46, def: 11, reactions: 1, cp: 22 },
-  { magnitude: 7, pp: 55, def: 12, reactions: 1, cp: 26 },
-  { magnitude: 8, pp: 65, def: 13, reactions: 1, cp: 31 },
-  { magnitude: 9, pp: 76, def: 14, reactions: 2, cp: 36 },
-  { magnitude: 10, pp: 88, def: 15, reactions: 2, cp: 42 },
-  { magnitude: 11, pp: 101, def: 16, reactions: 2, cp: 49 },
-  { magnitude: 12, pp: 115, def: 17, reactions: 2, cp: 57 },
-  { magnitude: 13, pp: 130, def: 18, reactions: 2, cp: 66 },
-  { magnitude: 14, pp: 146, def: 19, reactions: 3, cp: 76 },
-  { magnitude: 15, pp: 163, def: 20, reactions: 3, cp: 87 },
-  { magnitude: 16, pp: 181, def: 21, reactions: 3, cp: 99 },
-  { magnitude: 17, pp: 200, def: 22, reactions: 3, cp: 112 },
+  { magnitude: 1, pp: 15, def: 15, reactions: 0, cp: 8 },
+  { magnitude: 2, pp: 20, def: 15, reactions: 0, cp: 10 },
+  { magnitude: 3, pp: 25, def: 16, reactions: 0, cp: 12 },
+  { magnitude: 4, pp: 31, def: 16, reactions: 1, cp: 15 },
+  { magnitude: 5, pp: 38, def: 17, reactions: 1, cp: 18 },
+  { magnitude: 6, pp: 46, def: 17, reactions: 1, cp: 22 },
+  { magnitude: 7, pp: 55, def: 17, reactions: 1, cp: 26 },
+  { magnitude: 8, pp: 65, def: 19, reactions: 1, cp: 31 },
+  { magnitude: 9, pp: 76, def: 19, reactions: 2, cp: 36 },
+  { magnitude: 10, pp: 88, def: 20, reactions: 2, cp: 42 },
+  { magnitude: 11, pp: 101, def: 20, reactions: 2, cp: 49 },
+  { magnitude: 12, pp: 115, def: 20, reactions: 2, cp: 57 },
+  { magnitude: 13, pp: 130, def: 21, reactions: 2, cp: 66 },
+  { magnitude: 14, pp: 146, def: 21, reactions: 3, cp: 76 },
+  { magnitude: 15, pp: 163, def: 21, reactions: 3, cp: 87 },
+  { magnitude: 16, pp: 181, def: 22, reactions: 3, cp: 99 },
+  { magnitude: 17, pp: 200, def: 23, reactions: 3, cp: 112 },
   { magnitude: 18, pp: 220, def: 23, reactions: 4, cp: 126 },
-  { magnitude: 19, pp: 241, def: 24, reactions: 4, cp: 141 },
-  { magnitude: 20, pp: 263, def: 25, reactions: 4, cp: 158 },
+  { magnitude: 19, pp: 241, def: 23, reactions: 4, cp: 141 },
+  { magnitude: 20, pp: 263, def: 23, reactions: 4, cp: 158 },
 ] as const;
 
 const IMPACT_COST = [0, 2, 4, 6, 9, 12, 16];
 const AREA_COST: Record<ThreatArea, number> = {
   Nenhuma: 0,
+  Engajado: 0,
+  Próximo: 1,
+  Distante: 2,
+  Longo: 4,
+  Extremo: 6,
   "Cone curto": 2,
-  Linha: 2,
-  "Explosão pequena": 3,
-  "Explosão média": 5,
-  "Explosão grande": 8,
+  "Cone longo": 4,
+  "Linha curta": 2,
+  "Linha longa": 4,
+  "Raio pequeno": 3,
+  "Raio médio": 5,
+  "Raio grande": 8,
+  "Aura curta": 2,
+  "Aura ampla": 5,
+  Corrente: 4,
+  Cena: 10,
+  Território: 15,
 };
 const ABILITY_COST = [0, 2, 4, 7, 11, 16];
 const MOVEMENT_COST: Record<string, number> = {
   Escalada: 1,
+  Natação: 1,
   Voo: 5,
+  "Deslocamento por Costura": 4,
   "Teleporte curto": 6,
   "Teleporte médio": 10,
 };
@@ -592,11 +244,16 @@ export function getThreatBase(magnitude: number) {
   return THREAT_MAGNITUDES[normalized - 1];
 }
 
+function progressiveRdCost(purchases: number): number {
+  const count = Math.max(0, Math.floor(purchases || 0));
+  return Array.from({ length: count }, (_, index) => index + 2).reduce((sum, cost) => sum + cost, 0);
+}
+
 export function threatCpSpent(threat: MasterThreat): number {
   return (
     Math.max(0, threat.ppPurchases) +
     Math.max(0, threat.defPurchases) * 2 +
-    Math.max(0, threat.rdPurchases) * 2 +
+    progressiveRdCost(threat.rdPurchases) +
     Math.max(0, threat.reactionPurchases) * 8 +
     Math.max(0, threat.movementPurchases) +
     threat.movementModes.reduce((sum, mode) => sum + (MOVEMENT_COST[mode] ?? 0), 0) +
@@ -638,7 +295,7 @@ export function calculateEncounterBalance(
 ) {
   const normalizedParticipants = Math.max(2, Math.min(7, Math.round(participants || 2)));
   const potential = Math.max(0, rankAverage) * PARTY_FACTORS[normalizedParticipants];
-  const reference = Math.max(1, Math.min(20, Math.floor(potential / 5) + 1));
+  const reference = Math.max(1, Math.min(20, Math.max(normalizedParticipants, Math.floor(potential / 5) + 1)));
   const difference = magnitude - reference;
   const reading =
     difference <= -1
@@ -675,7 +332,7 @@ export function createEmptyNpc(): MasterNpc {
     morale: 3,
     state: "Pleno",
     attributes: { COR: 1, MEN: 1, INS: 1, PRE: 1, ERU: 1 },
-    vectors: { luta: 0, pontaria: 0, intelecto: 0, percepcao: 0, tecnica: 0, social: 0 },
+    vectors: { fisico: 0, tecnico: 0, perceptivo: 0, social: 0, metafisico: 0 },
     pv: 0,
     ps: 0,
     pe: 0,
@@ -758,3 +415,4 @@ export function createEmptyFold(): MasterFold {
     notes: "",
   };
 }
+
