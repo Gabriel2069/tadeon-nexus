@@ -25,7 +25,6 @@ export type Database = {
           created_at: string
           defense_items: Json
           description: Json
-          drift: number
           dying: number
           equilibrium: number
           exposure: number
@@ -33,7 +32,6 @@ export type Database = {
           fragments_items: Json
           going_insane: number
           id: string
-          identity_data: Json
           initial_skill_degrees: Json
           inventory: Json
           inventory_capacity: number
@@ -67,7 +65,6 @@ export type Database = {
           created_at?: string
           defense_items?: Json
           description?: Json
-          drift?: number
           dying?: number
           equilibrium?: number
           exposure?: number
@@ -75,7 +72,6 @@ export type Database = {
           fragments_items?: Json
           going_insane?: number
           id?: string
-          identity_data?: Json
           initial_skill_degrees?: Json
           inventory?: Json
           inventory_capacity?: number
@@ -109,7 +105,6 @@ export type Database = {
           created_at?: string
           defense_items?: Json
           description?: Json
-          drift?: number
           dying?: number
           equilibrium?: number
           exposure?: number
@@ -117,7 +112,6 @@ export type Database = {
           fragments_items?: Json
           going_insane?: number
           id?: string
-          identity_data?: Json
           initial_skill_degrees?: Json
           inventory?: Json
           inventory_capacity?: number
