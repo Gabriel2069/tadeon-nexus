@@ -82,6 +82,7 @@ import {
 } from "@/components/ui/select";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { useSerializedAutosave } from "@/lib/use-serialized-autosave";
+import { cacheSheet } from "@/lib/offline-cache";
 import { BrandMark } from "@/components/brand-mark";
 
 const LIFE_CYCLE_TRAITS: LifeCycleTrait[] = [
@@ -388,6 +389,12 @@ function SheetPage() {
   useEffect(() => {
     if (saveError) toast.error(saveError);
   }, [saveError]);
+
+  useEffect(() => {
+    if (!sheet) return;
+    const timer = window.setTimeout(() => cacheSheet(sheet), 600);
+    return () => window.clearTimeout(timer);
+  }, [sheet]);
 
   // Keep numeric `fragments` field in sync with the fragments list length
   useEffect(() => {

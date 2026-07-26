@@ -10,6 +10,7 @@ import {
 import appCss from "../styles.css?url";
 import { AuthProvider } from "@/lib/auth";
 import { Toaster } from "@/components/ui/sonner";
+import { PwaRegistration } from "@/components/pwa-registration";
 
 function NotFoundComponent() {
   return (
@@ -56,6 +57,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
+      { name: "theme-color", content: "#74242d" },
       { title: "Tadeon Nexus - RPG Online" },
       {
         name: "description",
@@ -90,6 +92,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     ],
     links: [
       { rel: "stylesheet", href: appCss },
+      { rel: "manifest", href: "/manifest.webmanifest" },
+      { rel: "icon", href: "/icon.svg", type: "image/svg+xml" },
       {
         rel: "stylesheet",
         href: "https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Inter:wght@400;500;600;700&family=PT+Mono&display=swap",
@@ -125,6 +129,7 @@ function RootComponent() {
           <Outlet />
         </main>
         <Toaster richColors position="top-right" />
+        <PwaRegistration />
       </AuthProvider>
     </QueryClientProvider>
   );

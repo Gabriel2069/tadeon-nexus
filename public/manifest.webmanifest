@@ -1,0 +1,18 @@
+{
+  "name": "Tadeon Nexus",
+  "short_name": "Nexus",
+  "description": "Arquivo de continuidade e painel de Tessitura do Vazio.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#100e10",
+  "theme_color": "#74242d",
+  "lang": "pt-BR",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
