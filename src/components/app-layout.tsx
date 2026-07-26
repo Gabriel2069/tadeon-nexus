@@ -13,6 +13,8 @@ import {
   Settings,
   ChevronsLeft,
   ChevronsRight,
+  CloudOff,
+  Wrench,
 } from "lucide-react";
 import { useAuth } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
@@ -28,6 +30,7 @@ import {
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { BrandMark, ThreadField } from "@/components/brand-mark";
+import { GlobalSearch } from "@/components/global-search";
 
 const roleIcons: Record<string, typeof Crown> = {
   mestre: Crown,
@@ -60,8 +63,9 @@ export function AppLayout({ children }: { children: ReactNode }) {
     void navigate({ to: "/login", search: { next: "" } });
   };
 
-  const renderNav = (mini: boolean) => (
+  const renderNav = (mini: boolean, enableSearchShortcut: boolean) => (
     <nav className="space-y-1">
+      <GlobalSearch compact={mini} enableShortcut={enableSearchShortcut} />
       <NavItem
         to="/"
         icon={<Home className="w-4 h-4" />}
@@ -88,12 +92,34 @@ export function AppLayout({ children }: { children: ReactNode }) {
             mini={mini}
             onClick={() => setMobileOpen(false)}
           />
+          <NavItem
+            to="/nexus-tools"
+            icon={<Wrench className="w-4 h-4" />}
+            label="Backup & Diagnóstico"
+            active={path.startsWith("/nexus-tools")}
+            mini={mini}
+            onClick={() => setMobileOpen(false)}
+          />
         </>
       )}
+      <NavItem
+        to="/offline"
+        icon={<CloudOff className="w-4 h-4" />}
+        label="Consulta Offline"
+        active={path.startsWith("/offline")}
+        mini={mini}
+        onClick={() => setMobileOpen(false)}
+      />
     </nav>
   );
 
-  const SidebarContent = ({ mini }: { mini: boolean }) => (
+  const SidebarContent = ({
+    mini,
+    enableSearchShortcut = false,
+  }: {
+    mini: boolean;
+    enableSearchShortcut?: boolean;
+  }) => (
     <div className="relative flex h-full flex-col overflow-hidden p-3">
       <ThreadField className="text-sidebar-primary opacity-40" />
       <div className={`relative z-10 mb-6 ${mini ? "text-center" : ""}`}>
@@ -125,7 +151,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
         )}
       </div>
 
-      <div className="relative z-10 flex-1">{renderNav(mini)}</div>
+      <div className="relative z-10 flex-1">{renderNav(mini, enableSearchShortcut)}</div>
 
       <div className="relative z-10 space-y-1 border-t border-sidebar-border pt-3">
         <SideAction
@@ -161,7 +187,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
           collapsed ? "w-16" : "w-64"
         }`}
       >
-        <SidebarContent mini={collapsed} />
+        <SidebarContent mini={collapsed} enableSearchShortcut />
         <button
           onClick={() => setCollapsed((p) => !p)}
           aria-label={collapsed ? "Expandir menu" : "Recolher menu"}
@@ -190,13 +216,16 @@ export function AppLayout({ children }: { children: ReactNode }) {
             <BrandMark className="h-7 w-7 text-primary" />
             <h1 className="font-cinzel text-lg font-semibold text-primary">Tadeon Nexus</h1>
           </div>
-          <button
-            onClick={() => setAccountOpen(true)}
-            className="p-1.5 rounded-md hover:bg-secondary transition-colors"
-            aria-label="Conta"
-          >
-            <Settings className="w-5 h-5" />
-          </button>
+          <div className="flex items-center gap-1">
+            <GlobalSearch mobile />
+            <button
+              onClick={() => setAccountOpen(true)}
+              className="p-1.5 rounded-md hover:bg-secondary transition-colors"
+              aria-label="Conta"
+            >
+              <Settings className="w-5 h-5" />
+            </button>
+          </div>
         </header>
 
         <main className="flex-1">{children}</main>
