@@ -181,6 +181,9 @@ function HomePage() {
       .insert({
         owner_id: selectedOwner.id,
         name: name.trim() || "Novo Personagem",
+        weapon_proficiency: "operador",
+        weapon_proficiency_family: "",
+        initial_skill_degrees: {},
         stats: {
           pv_current: 18,
           pv_mod: 0,
