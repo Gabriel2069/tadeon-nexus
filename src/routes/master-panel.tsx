@@ -181,9 +181,9 @@ interface SheetSummary {
   power_form_enabled?: boolean;
 }
 
-
 function normalizeNpc(value: Partial<MasterNpc> & Partial<NPC>): MasterNpc {
   const base = createEmptyNpc();
+  const legacyVectors = (value.vectors ?? {}) as Record<string, number>;
   return {
     ...base,
     ...value,
@@ -191,7 +191,15 @@ function normalizeNpc(value: Partial<MasterNpc> & Partial<NPC>): MasterNpc {
     name: value.name || "NPC sem nome",
     socialTension: value.socialTension || value.mood || "",
     attributes: { ...base.attributes, ...(value.attributes ?? {}) },
-    vectors: { ...base.vectors, ...(value.vectors ?? {}) },
+    vectors: {
+      fisico: Number(legacyVectors.fisico ?? Math.max(legacyVectors.luta ?? 0, legacyVectors.pontaria ?? 0)),
+      tecnico: Number(
+        legacyVectors.tecnico ?? Math.max(legacyVectors.tecnica ?? 0, legacyVectors.intelecto ?? 0),
+      ),
+      perceptivo: Number(legacyVectors.perceptivo ?? legacyVectors.percepcao ?? 0),
+      social: Number(legacyVectors.social ?? 0),
+      metafisico: Number(legacyVectors.metafisico ?? 0),
+    },
   };
 }
 
@@ -208,6 +216,13 @@ function normalizeClue(value: Partial<MasterClue> & Partial<Clue>): MasterClue {
 
 function normalizeThreat(value: Partial<MasterThreat> & Partial<Monster>): MasterThreat {
   const base = createEmptyThreat();
+  const areaMigration: Record<string, MasterThreat["attacks"][number]["area"]> = {
+    Nenhuma: "Engajado",
+    Linha: "Linha curta",
+    "Explosão pequena": "Raio pequeno",
+    "Explosão média": "Raio médio",
+    "Explosão grande": "Raio grande",
+  };
   return {
     ...base,
     ...value,
@@ -218,7 +233,10 @@ function normalizeThreat(value: Partial<MasterThreat> & Partial<Monster>): Maste
     attributes: { ...base.attributes, ...(value.attributes ?? {}) },
     vectors: { ...base.vectors, ...(value.vectors ?? {}) },
     movementModes: value.movementModes ?? [],
-    attacks: value.attacks ?? [],
+    attacks: (value.attacks ?? []).map((attack) => ({
+      ...attack,
+      area: areaMigration[attack.area] ?? attack.area,
+    })),
     abilities: value.abilities ?? [],
   };
 }
@@ -274,6 +292,12 @@ function MasterPanel() {
 
       const g = gs as unknown as Record<string, unknown>;
       const rulesVersion = Number(g.rules_version ?? 1);
+      const storedRankTable = (g.rank_table as RankRow[] | undefined) ?? [];
+      const storedSkillBranches = (g.skill_branches as SkillBranch[] | undefined) ?? [];
+      const usesFinalRules =
+        storedRankTable.some((row) => row.rank === 100 && row.pm === 170 && row.def === 14) &&
+        storedSkillBranches.length === 4 &&
+        storedSkillBranches.every((branch) => branch.nodes.length === 24);
       const legacyNpcs = (g.npcs as NPC[] | undefined) ?? [];
       const legacyClues = (g.clues as Clue[] | undefined) ?? [];
       const legacyMonsters = (g.monsters as Monster[] | undefined) ?? [];
@@ -294,26 +318,19 @@ function MasterPanel() {
         scenes_detailed: ((g.scenes_detailed as Scene[]) ?? []).map(normalizeScene),
         initiative_order: (g.initiative_order as InitEntry[]) ?? [],
         pinned_sheet_ids: (g.pinned_sheet_ids as string[]) ?? [],
-        rank_table:
-          rulesVersion >= 2
-            ? ((g.rank_table as RankRow[]) ?? CANONICAL_RANK_TABLE)
-            : CANONICAL_RANK_TABLE,
-        skill_branches:
-          rulesVersion >= 2
-            ? ((g.skill_branches as SkillBranch[]) ?? CANONICAL_SKILL_BRANCHES)
-            : CANONICAL_SKILL_BRANCHES,
-        upgrade_costs:
-          rulesVersion >= 2
-            ? ((g.upgrade_costs as UpgradeCosts) ?? DEFAULT_UPGRADE_COSTS)
-            : DEFAULT_UPGRADE_COSTS,
-        condition_options:
-          (g.condition_options as ConditionOptionsMap) ?? DEFAULT_CONDITION_OPTIONS,
-        skill_groups:
-          rulesVersion >= 2
-            ? ((g.skill_groups as SettingsRow["skill_groups"]) ?? SKILL_GROUPS)
-            : SKILL_GROUPS,
-        skill_training_costs: ((g.skill_training_costs as number[] | undefined) &&
-        (g.skill_training_costs as number[]).length >= 3
+        rank_table: usesFinalRules ? storedRankTable : CANONICAL_RANK_TABLE,
+        skill_branches: usesFinalRules ? storedSkillBranches : CANONICAL_SKILL_BRANCHES,
+        upgrade_costs: usesFinalRules
+          ? ((g.upgrade_costs as UpgradeCosts) ?? DEFAULT_UPGRADE_COSTS)
+          : DEFAULT_UPGRADE_COSTS,
+        condition_options: usesFinalRules
+          ? ((g.condition_options as ConditionOptionsMap) ?? DEFAULT_CONDITION_OPTIONS)
+          : DEFAULT_CONDITION_OPTIONS,
+        skill_groups: usesFinalRules
+          ? ((g.skill_groups as SettingsRow["skill_groups"]) ?? SKILL_GROUPS)
+          : SKILL_GROUPS,
+        skill_training_costs: (usesFinalRules &&
+        (g.skill_training_costs as number[] | undefined)?.length === 3
           ? [
               (g.skill_training_costs as number[])[0],
               (g.skill_training_costs as number[])[1],
@@ -337,25 +354,31 @@ function MasterPanel() {
           id: value.id || genId(),
           stitchPoints: value.stitchPoints ?? [],
         })),
-        rules_version: Math.max(2, rulesVersion),
+        rules_version: Math.max(3, rulesVersion),
       });
-      const rawSheets = (ch as unknown as Omit<SheetSummary, "owner_email">[]) ?? [];
-      const ownerIds = Array.from(new Set(rawSheets.map((r) => r.owner_id).filter(Boolean)));
-      let emailMap = new Map<string, string>();
-      if (ownerIds.length > 0) {
-        const { data: profs } = await supabase
+      const rawSheets =
+        (ch as unknown as Omit<SheetSummary, "owner_email">[] | null) ?? [];
+      const ownerIds = [...new Set(rawSheets.map((sheet) => sheet.owner_id).filter(Boolean))];
+      let ownerLabels = new Map<string, string>();
+      if (ownerIds.length) {
+        const { data: profiles } = await supabase
           .from("profiles")
           .select("id,email,full_name")
           .in("id", ownerIds);
-        emailMap = new Map(
-          (profs ?? []).map((p) => [p.id, p.full_name || p.email || ""]),
+        ownerLabels = new Map(
+          (profiles ?? []).map((profile) => [
+            profile.id,
+            profile.full_name?.trim() || profile.email || "Jogador",
+          ]),
         );
       }
       setSheets(
-        rawSheets.map((r) => ({ ...r, owner_email: emailMap.get(r.owner_id) ?? "" })),
+        rawSheets.map((sheet) => ({
+          ...sheet,
+          owner_email: ownerLabels.get(sheet.owner_id) ?? "Jogador",
+        })),
       );
       setLoading(false);
-
     })();
   }, [reloadKey]);
 
