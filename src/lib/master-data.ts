@@ -239,6 +239,41 @@ const MOVEMENT_COST: Record<string, number> = {
   "Teleporte médio": 10,
 };
 
+export function maxThreatPpPurchases(magnitude: number): number {
+  return Math.floor((getThreatBase(magnitude).pp * 0.5) / 6);
+}
+
+export function maxThreatRdPurchases(magnitude: number): number {
+  const normalized = getThreatBase(magnitude).magnitude;
+  if (normalized >= 17) return 6;
+  if (normalized >= 13) return 5;
+  if (normalized >= 9) return 4;
+  if (normalized >= 5) return 3;
+  return 2;
+}
+
+export function maxThreatVector(magnitude: number): number {
+  return 5 + Math.ceil(getThreatBase(magnitude).magnitude / 2);
+}
+
+export function maxThreatImpact(magnitude: number): 2 | 3 | 4 | 5 | 6 {
+  const normalized = getThreatBase(magnitude).magnitude;
+  if (normalized >= 16) return 6;
+  if (normalized >= 12) return 5;
+  if (normalized >= 8) return 4;
+  if (normalized >= 4) return 3;
+  return 2;
+}
+
+export function maxThreatAbilityComplexity(magnitude: number): 1 | 2 | 3 | 4 | 5 {
+  const normalized = getThreatBase(magnitude).magnitude;
+  if (normalized >= 16) return 5;
+  if (normalized >= 12) return 4;
+  if (normalized >= 8) return 3;
+  if (normalized >= 4) return 2;
+  return 1;
+}
+
 export function getThreatBase(magnitude: number) {
   const normalized = Math.max(1, Math.min(20, Math.round(magnitude || 1)));
   return THREAT_MAGNITUDES[normalized - 1];
@@ -246,18 +281,24 @@ export function getThreatBase(magnitude: number) {
 
 function progressiveRdCost(purchases: number): number {
   const count = Math.max(0, Math.floor(purchases || 0));
-  return Array.from({ length: count }, (_, index) => index + 2).reduce((sum, cost) => sum + cost, 0);
+  return Array.from({ length: count }, (_, index) => index + 2).reduce(
+    (sum, cost) => sum + cost,
+    0,
+  );
 }
 
 export function threatCpSpent(threat: MasterThreat): number {
   return (
-    Math.max(0, threat.ppPurchases) +
-    Math.max(0, threat.defPurchases) * 2 +
+    Math.max(0, Math.floor(threat.ppPurchases || 0)) +
+    Math.max(0, Math.floor(threat.defPurchases || 0)) * 2 +
     progressiveRdCost(threat.rdPurchases) +
-    Math.max(0, threat.reactionPurchases) * 8 +
-    Math.max(0, threat.movementPurchases) +
+    Math.max(0, Math.floor(threat.reactionPurchases || 0)) * 8 +
+    Math.max(0, Math.floor(threat.movementPurchases || 0)) +
     threat.movementModes.reduce((sum, mode) => sum + (MOVEMENT_COST[mode] ?? 0), 0) +
-    Object.values(threat.vectors).reduce((sum, value) => sum + Math.max(0, value || 0), 0) +
+    Object.values(threat.vectors).reduce(
+      (sum, value) => sum + Math.max(0, Math.floor(value || 0)),
+      0,
+    ) +
     threat.attacks.reduce(
       (sum, attack) => sum + IMPACT_COST[attack.impact] + AREA_COST[attack.area],
       0,
@@ -269,14 +310,39 @@ export function threatCpSpent(threat: MasterThreat): number {
 export function threatStats(threat: MasterThreat) {
   const base = getThreatBase(threat.magnitude);
   return {
-    pp: base.pp + Math.max(0, threat.ppPurchases) * 6,
-    def: base.def + Math.max(0, threat.defPurchases),
-    rd: Math.max(0, threat.rdPurchases),
-    reactions: base.reactions + Math.max(0, threat.reactionPurchases),
-    movement: 6 + Math.max(0, threat.movementPurchases) * 3,
+    pp: base.pp + Math.max(0, Math.floor(threat.ppPurchases || 0)) * 6,
+    def: base.def + Math.max(0, Math.floor(threat.defPurchases || 0)),
+    rd: Math.max(0, Math.floor(threat.rdPurchases || 0)),
+    reactions: base.reactions + Math.max(0, Math.floor(threat.reactionPurchases || 0)),
+    movement: 6 + Math.max(0, Math.floor(threat.movementPurchases || 0)) * 3,
     cp: base.cp,
     spent: threatCpSpent(threat),
   };
+}
+
+export function threatValidationIssues(threat: MasterThreat): string[] {
+  const stats = threatStats(threat);
+  const issues: string[] = [];
+  if (stats.spent > stats.cp) issues.push(`Orçamento excedido em ${stats.spent - stats.cp} CP`);
+  if (threat.ppPurchases > maxThreatPpPurchases(threat.magnitude))
+    issues.push("PP adicional supera 50% da base");
+  if (threat.defPurchases > 4) issues.push("DEF adicional supera +4");
+  if (threat.rdPurchases > maxThreatRdPurchases(threat.magnitude))
+    issues.push(`RD supera o limite da Magnitude (${maxThreatRdPurchases(threat.magnitude)})`);
+  if (threat.reactionPurchases > 1) issues.push("Só é permitida uma Reação além da base");
+  if (Object.values(threat.vectors).some((value) => value > maxThreatVector(threat.magnitude)))
+    issues.push(`VT supera ${maxThreatVector(threat.magnitude)}`);
+  if (threat.attacks.some((attack) => attack.impact > maxThreatImpact(threat.magnitude)))
+    issues.push(`Impacto supera ${maxThreatImpact(threat.magnitude)}`);
+  if (threat.attacks.some((attack) => attack.area === "Cena" || attack.area === "Território"))
+    issues.push("Cena e Território exigem Habilidade; não são Alcances de ataque comum");
+  if (
+    threat.abilities.some(
+      (ability) => ability.complexity > maxThreatAbilityComplexity(threat.magnitude),
+    )
+  )
+    issues.push(`Complexidade supera ${maxThreatAbilityComplexity(threat.magnitude)}`);
+  return issues;
 }
 
 const PARTY_FACTORS: Record<number, number> = {
@@ -295,7 +361,10 @@ export function calculateEncounterBalance(
 ) {
   const normalizedParticipants = Math.max(2, Math.min(7, Math.round(participants || 2)));
   const potential = Math.max(0, rankAverage) * PARTY_FACTORS[normalizedParticipants];
-  const reference = Math.max(1, Math.min(20, Math.max(normalizedParticipants, Math.floor(potential / 5) + 1)));
+  const reference = Math.max(
+    1,
+    Math.min(20, Math.max(normalizedParticipants, Math.floor(potential / 5) + 1)),
+  );
   const difference = magnitude - reference;
   const reading =
     difference <= -1
@@ -308,6 +377,44 @@ export function calculateEncounterBalance(
             ? "Extremo"
             : "Acima da capacidade direta";
   return { participants: normalizedParticipants, potential, reference, difference, reading };
+}
+
+export function combinedThreatMagnitude(magnitudes: number[]) {
+  const base = magnitudes.reduce(
+    (sum, magnitude) => sum + Math.max(1, Math.min(20, Math.round(magnitude || 1))),
+    0,
+  );
+  const count = magnitudes.length;
+  const adjustment = count >= 9 ? 3 : count >= 6 ? 2 : count >= 4 ? 1 : 0;
+  return { base, adjustment, total: base + adjustment };
+}
+
+export interface FoldStageReference {
+  dt: string;
+  charges: string;
+  basePermanence: number;
+  pulseModifier: number | null;
+}
+
+const FOLD_STAGE_REFERENCE: Record<FoldStage, FoldStageReference> = {
+  "Pré-Furo": { dt: "12", charges: "2", basePermanence: 3, pulseModifier: 0 },
+  "Furo I": { dt: "15", charges: "3", basePermanence: 3, pulseModifier: 1 },
+  "Furo II": { dt: "18", charges: "5", basePermanence: 5, pulseModifier: 2 },
+  "Furo III": { dt: "21", charges: "7", basePermanence: 5, pulseModifier: 3 },
+  "Âncora I": { dt: "22", charges: "8", basePermanence: 6, pulseModifier: 4 },
+  "Âncora II": { dt: "25", charges: "10", basePermanence: 8, pulseModifier: 5 },
+  "Âncora III": { dt: "28", charges: "12", basePermanence: 10, pulseModifier: 6 },
+  "Zona de Aspecto": {
+    dt: "Por objetivos",
+    charges: "Território",
+    basePermanence: 12,
+    pulseModifier: 7,
+  },
+  Revérbero: { dt: "—", charges: "—", basePermanence: 12, pulseModifier: null },
+};
+
+export function getFoldStageReference(stage: FoldStage): FoldStageReference {
+  return FOLD_STAGE_REFERENCE[stage];
 }
 
 export function createEmptyNpc(): MasterNpc {
@@ -415,4 +522,3 @@ export function createEmptyFold(): MasterFold {
     notes: "",
   };
 }
-
