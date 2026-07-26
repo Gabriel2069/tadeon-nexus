@@ -1,9 +1,16 @@
 import { describe, expect, it } from "vitest";
 import {
   calculateEncounterBalance,
+  combinedThreatMagnitude,
   createEmptyThreat,
+  getFoldStageReference,
   getThreatBase,
+  maxThreatAbilityComplexity,
+  maxThreatImpact,
+  maxThreatPpPurchases,
+  maxThreatRdPurchases,
   threatStats,
+  threatValidationIssues,
 } from "./master-data";
 
 describe("ferramentas do mestre", () => {
@@ -42,5 +49,56 @@ describe("ferramentas do mestre", () => {
   it("classifica um encontro sem executar rolagens", () => {
     expect(calculateEncounterBalance(25, 4, 6).reading).toBe("Equilibrado");
     expect(calculateEncounterBalance(25, 4, 8).reading).toBe("Extremo");
+  });
+
+  it("aplica o ajuste de economia de ações a múltiplas ameaças", () => {
+    expect(combinedThreatMagnitude([2, 2, 2])).toEqual({ base: 6, adjustment: 0, total: 6 });
+    expect(combinedThreatMagnitude([2, 2, 2, 2])).toEqual({
+      base: 8,
+      adjustment: 1,
+      total: 9,
+    });
+    expect(combinedThreatMagnitude(Array.from({ length: 9 }, () => 1))).toEqual({
+      base: 9,
+      adjustment: 3,
+      total: 12,
+    });
+  });
+
+  it("expõe os limites canônicos de compra por Magnitude", () => {
+    expect(maxThreatPpPurchases(1)).toBe(1);
+    expect(maxThreatRdPurchases(4)).toBe(2);
+    expect(maxThreatRdPurchases(17)).toBe(6);
+    expect(maxThreatImpact(7)).toBe(3);
+    expect(maxThreatAbilityComplexity(12)).toBe(4);
+  });
+
+  it("identifica uma ficha de ameaça fora dos limites", () => {
+    const invalid = {
+      ...createEmptyThreat(),
+      magnitude: 1,
+      ppPurchases: 2,
+      defPurchases: 5,
+      rdPurchases: 3,
+      reactionPurchases: 2,
+    };
+    expect(threatValidationIssues(invalid)).toEqual(
+      expect.arrayContaining([
+        "PP adicional supera 50% da base",
+        "DEF adicional supera +4",
+        "RD supera o limite da Magnitude (2)",
+        "Só é permitida uma Reação além da base",
+      ]),
+    );
+  });
+
+  it("deriva DT, cargas, Pulso e Permanência do estágio da Dobra", () => {
+    expect(getFoldStageReference("Âncora II")).toEqual({
+      dt: "25",
+      charges: "10",
+      basePermanence: 8,
+      pulseModifier: 5,
+    });
+    expect(getFoldStageReference("Revérbero").pulseModifier).toBeNull();
   });
 });

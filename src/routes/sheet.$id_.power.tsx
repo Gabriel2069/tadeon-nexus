@@ -36,6 +36,7 @@ import {
   getRankBase,
   calculateSheetMaximums,
   genId,
+  normalizeConditions,
   DEFAULT_UPGRADE_COSTS,
   SKILL_GROUPS,
 } from "@/lib/sheet-types";
@@ -297,7 +298,7 @@ function PowerFormPage() {
         equilibrium: Number(raw.equilibrium ?? 0),
         attributes: raw.attributes as Attributes,
         stats: raw.stats as Stats,
-        conditions: raw.conditions as Conditions,
+        conditions: normalizeConditions(raw.conditions),
         weapons: (raw.weapons as Weapon[]) ?? [],
         inventory: (raw.inventory as InventoryItem[]) ?? [],
         abilities: (raw.abilities as Ability[]) ?? [],

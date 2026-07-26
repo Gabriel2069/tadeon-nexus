@@ -45,12 +45,23 @@ import {
   type IdentityData,
   type LifeCycleTrait,
   type LinkState,
+  type InitialSkillDegrees,
+  type WeaponProficiency,
+  type WeaponProficiencyFamily,
   SKILL_GROUPS,
   getRankBase,
   calcTotalPM,
   calculatePMSpent,
   calculateSheetMaximums,
+  attributePointBudget,
+  attributePointsUsed,
+  attributeValueCap,
   genId,
+  inferInitialSkillDegrees,
+  normalizeConditions,
+  weaponProficiencyMinimumRank,
+  weaponProficiencySpend,
+  WEAPON_PROFICIENCIES,
   DEFAULT_TRAINING_COSTS,
   DEFAULT_UPGRADE_COSTS,
   DEFAULT_CONDITION_OPTIONS,
@@ -72,9 +83,6 @@ import {
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { useSerializedAutosave } from "@/lib/use-serialized-autosave";
 import { BrandMark } from "@/components/brand-mark";
-
-const PROFICIENCY_OPTIONS = ["leigo", "operador", "combatente", "armígero"] as const;
-type Proficiency = (typeof PROFICIENCY_OPTIONS)[number];
 
 const LIFE_CYCLE_TRAITS: LifeCycleTrait[] = [
   "Formação recente",
@@ -181,7 +189,9 @@ interface SheetData {
   power_form_data: PowerFormData;
   fragments_items: FragmentItem[];
   defense_items: DefenseItem[];
-  weapon_proficiency: Proficiency;
+  initial_skill_degrees: InitialSkillDegrees;
+  weapon_proficiency: WeaponProficiency;
+  weapon_proficiency_family: WeaponProficiencyFamily;
 }
 
 const RANGE_OPTIONS = ["Engajado", "Próximo", "Distante", "Longo", "Extremo"];
@@ -191,11 +201,8 @@ function clamp(n: number, min: number, max: number) {
   return Math.max(min, Math.min(max, n));
 }
 
-// Current points: limited to +50% / -50% above/below max.
-// e.g. max 45 → range [-23, 68]
 function clampCurrent(v: number, max: number): number {
-  const m = Math.max(1, max);
-  return clamp(Math.round(v), -Math.ceil(0.5 * m), Math.ceil(1.5 * m));
+  return clamp(Math.round(v), 0, Math.max(0, max));
 }
 function clampMod(v: number): number {
   return clamp(Math.round(v), -100, 150);
@@ -289,6 +296,21 @@ function SheetPage() {
           }),
         ),
       };
+      const loadedSkills = ((raw.skills as Record<string, number> | null) ?? {}) as Record<
+        string,
+        number
+      >;
+      const storedInitialDegrees = (raw.initial_skill_degrees as InitialSkillDegrees | null) ?? {};
+      const initialSkillDegrees = Object.keys(storedInitialDegrees).length
+        ? storedInitialDegrees
+        : inferInitialSkillDegrees(loadedSkills);
+      const storedProficiency = raw.weapon_proficiency as WeaponProficiency | null;
+      const weaponProficiency = WEAPON_PROFICIENCIES.includes(
+        storedProficiency as WeaponProficiency,
+      )
+        ? (storedProficiency as WeaponProficiency)
+        : "operador";
+      const storedFamily = raw.weapon_proficiency_family as WeaponProficiencyFamily | null;
       setSheet({
         ...(data as unknown as SheetData),
         drift: Number(raw.drift ?? 0),
@@ -297,13 +319,18 @@ function SheetPage() {
           pa_current: Number((raw.stats as Stats | null)?.pa_current ?? 0),
           pa_mod: Number((raw.stats as Stats | null)?.pa_mod ?? 0),
         } as Stats,
+        conditions: normalizeConditions(raw.conditions),
         description: desc,
         identity_data: identityData,
         power_form_enabled: Boolean(raw.power_form_enabled),
         power_form_data: pfData,
         fragments_items: fragItems,
         defense_items: defItems,
-        weapon_proficiency: (raw.weapon_proficiency as Proficiency | null) ?? "leigo",
+        skills: loadedSkills,
+        initial_skill_degrees: initialSkillDegrees,
+        weapon_proficiency: weaponProficiency,
+        weapon_proficiency_family:
+          storedFamily === "Contato" || storedFamily === "Projeção" ? storedFamily : "",
       });
 
       const settings = (settingsJson as unknown as Record<string, unknown> | null) ?? {};
@@ -381,6 +408,8 @@ function SheetPage() {
       branches: activeBranches,
       upgradeCosts,
       trainingCosts,
+      initialSkillDegrees: sheet.initial_skill_degrees,
+      weaponProficiency: sheet.weapon_proficiency,
     });
   }, [activeBranches, sheet, trainingCosts, upgradeCosts]);
 
@@ -391,6 +420,34 @@ function SheetPage() {
 
   const update = <K extends keyof SheetData>(key: K, value: SheetData[K]) => {
     setSheet((p) => (p ? { ...p, [key]: value } : p));
+  };
+
+  const addDirectionalTension = (direction: -1 | 1) => {
+    if (!sheet) return;
+    const next = sheet.drift + direction;
+    if (next > -4 && next < 4) {
+      update("drift", next);
+      return;
+    }
+    const shiftedEquilibrium = clamp((sheet.equilibrium || 0) + direction, -10, 10);
+    if (role !== "mestre" && Math.abs(shiftedEquilibrium) > 5) {
+      toast.error("Ultrapassar ±5 exige uma fonte excepcional confirmada pelo mestre.");
+      return;
+    }
+    setSheet((previous) =>
+      previous
+        ? {
+            ...previous,
+            equilibrium: shiftedEquilibrium,
+            drift: 0,
+          }
+        : previous,
+    );
+    toast.info(
+      direction < 0
+        ? "Tensão atingiu −4: o Equilíbrio moveu 1 ponto para o Medo."
+        : "Tensão atingiu +4: o Equilíbrio moveu 1 ponto para o Conhecimento.",
+    );
   };
 
   const radarData = useMemo(() => {
@@ -405,7 +462,7 @@ function SheetPage() {
   const activeConditions = useMemo(() => {
     if (!sheet) return [] as ConditionKey[];
     return (Object.keys(CONDITION_META) as ConditionKey[]).filter(
-      (k) => (sheet.conditions[k] || "Normal") !== "Normal",
+      (k) => sheet.conditions[k].length > 0,
     );
   }, [sheet]);
 
@@ -446,12 +503,11 @@ function SheetPage() {
   const attrs = sheet.attributes;
   const base = getRankBase(sheet.exposure, rankTable);
   const upg = sheet.stat_upgrades;
-  const defItemsBonus = sheet.defense_items.reduce((s, d) => s + (Number(d.bonus) || 0), 0);
-  const armorRaw = defItemsBonus;
+  const armorRaw = Math.max(0, ...sheet.defense_items.map((item) => Number(item.bonus) || 0));
   const armorTotal = Math.min(3, armorRaw);
   const armorRd = Math.min(
     2,
-    sheet.defense_items.reduce((sum, item) => sum + (Number(item.rd) || 0), 0),
+    Math.max(0, ...sheet.defense_items.map((item) => Number(item.rd) || 0)),
   );
   const maximums = calculateSheetMaximums({
     attributes: attrs,
@@ -469,11 +525,23 @@ function SheetPage() {
     sheet.defense_items.reduce((s, d) => s + (Number(d.peso) || 0), 0);
 
   const trainingUsed = Object.values(sheet.skills || {}).reduce(
-    (s, v) => s + tierFromBonus(Number(v) || 0),
+    (sum, value) => sum + tierFromBonus(Number(value) || 0),
     0,
   );
-  const initialTrainingRemaining = Math.max(0, 7 - trainingUsed);
+  const initialTrainingUsed = Object.values(sheet.initial_skill_degrees || {}).reduce(
+    (sum, value) => sum + Math.max(0, Math.min(2, Math.floor(value || 0))),
+    0,
+  );
+  const initialTrainingRemaining = Math.max(0, 7 - initialTrainingUsed);
   const pmAvailable = calcTotalPM(sheet.exposure, rankTable) - calculatedPmSpent;
+  const attributeBudget = attributePointBudget(base.rank);
+  const attributeUsed = attributePointsUsed(attrs);
+  const attributeRemaining = attributeBudget - attributeUsed;
+  const attributeCap = attributeValueCap(base.rank);
+  const zeroAttributes = Object.values(attrs).filter((value) => value === 0).length;
+  const attributesOverCap = (Object.keys(attrs) as (keyof Attributes)[]).filter(
+    (key) => attrs[key] > attributeCap,
+  );
 
   const skillGroups = sheetSkillGroups.length ? sheetSkillGroups : SKILL_GROUPS;
   const sectionAnchors: { id: string; label: string }[] = [
@@ -570,7 +638,7 @@ function SheetPage() {
                   background: `rgba(${CONDITION_META[k].rgb}, 0.08)`,
                 }}
               >
-                {CONDITION_META[k].label}: {sheet.conditions[k]}
+                {CONDITION_META[k].label}: {sheet.conditions[k].join(", ")}
               </span>
             ))}
           </div>
@@ -672,7 +740,9 @@ function SheetPage() {
               <div className="mt-4 grid gap-4 lg:grid-cols-[1fr_1.2fr]">
                 <div className="space-y-3 rounded-xl border border-border/60 bg-secondary/20 p-4">
                   <div>
-                    <Label className="text-[10px] uppercase tracking-wider">Traço do ciclo de vida</Label>
+                    <Label className="text-[10px] uppercase tracking-wider">
+                      Traço do ciclo de vida
+                    </Label>
                     <Select
                       value={sheet.identity_data.lifeCycleTrait || undefined}
                       disabled={!canEdit}
@@ -715,7 +785,9 @@ function SheetPage() {
                   <div className="mb-3 flex items-center justify-between">
                     <div>
                       <p className="tadeon-eyebrow">Vínculos</p>
-                      <p className="text-xs text-muted-foreground">Duas relações que podem mudar de estado.</p>
+                      <p className="text-xs text-muted-foreground">
+                        Duas relações que podem mudar de estado.
+                      </p>
                     </div>
                   </div>
                   <div className="space-y-3">
@@ -770,44 +842,94 @@ function SheetPage() {
 
             {/* Attributes (with radar) + Vital points */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-              <Section id="sec-attr" title="Atributos">
+              <Section
+                id="sec-attr"
+                title="Atributos"
+                extra={
+                  <span
+                    className={`rounded-full border px-2 py-0.5 text-[10px] ${
+                      attributeRemaining < 0 || attributesOverCap.length > 0
+                        ? "border-destructive/60 text-destructive"
+                        : "border-border text-muted-foreground"
+                    }`}
+                  >
+                    {attributeUsed}/{attributeBudget} pontos · máx. {attributeCap}
+                  </span>
+                }
+              >
+                {(attributeRemaining < 0 || attributesOverCap.length > 0) && (
+                  <p className="mb-3 rounded-lg border border-destructive/40 bg-destructive/5 px-3 py-2 text-xs text-destructive">
+                    {attributeRemaining < 0
+                      ? `A ficha excede o orçamento deste Rank em ${Math.abs(attributeRemaining)} ponto(s). `
+                      : ""}
+                    {attributesOverCap.length > 0
+                      ? `${attributesOverCap.join(", ")} excede(m) o máximo ${attributeCap}. `
+                      : ""}
+                    Reduza Atributos para voltar à faixa válida.
+                  </p>
+                )}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 items-center">
                   <div className="space-y-1.5">
-                    {(Object.keys(attrs) as (keyof Attributes)[]).map((k) => (
-                      <div
-                        key={k}
-                        className="flex items-center justify-between gap-2 bg-secondary/40 rounded px-2 py-1"
-                      >
-                        <span className="font-cinzel text-sm">{k}</span>
-                        <div className="flex items-center gap-1">
-                          <Button
-                            size="sm"
-                            variant="ghost"
-                            className="h-6 w-6 p-0"
-                            disabled={!canEdit || attrs[k] <= 0}
-                            aria-label={`Diminuir ${k}`}
-                            onClick={() =>
-                              update("attributes", { ...attrs, [k]: Math.max(0, attrs[k] - 1) })
-                            }
-                          >
-                            <Minus className="w-3 h-3" />
-                          </Button>
-                          <span className="w-5 text-center font-bold">{attrs[k]}</span>
-                          <Button
-                            size="sm"
-                            variant="ghost"
-                            className="h-6 w-6 p-0"
-                            disabled={!canEdit || attrs[k] >= 5}
-                            aria-label={`Aumentar ${k}`}
-                            onClick={() =>
-                              update("attributes", { ...attrs, [k]: Math.min(5, attrs[k] + 1) })
-                            }
-                          >
-                            <Plus className="w-3 h-3" />
-                          </Button>
+                    {(Object.keys(attrs) as (keyof Attributes)[]).map((k) => {
+                      const wouldCreateSecondZero = attrs[k] === 1 && zeroAttributes >= 1;
+                      return (
+                        <div
+                          key={k}
+                          className="flex items-center justify-between gap-2 rounded bg-secondary/40 px-2 py-1"
+                        >
+                          <span className="font-cinzel text-sm">{k}</span>
+                          <div className="flex items-center gap-1">
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              className="h-6 w-6 p-0"
+                              disabled={!canEdit || attrs[k] <= 0 || wouldCreateSecondZero}
+                              aria-label={`Diminuir ${k}`}
+                              title={
+                                wouldCreateSecondZero
+                                  ? "Apenas um Atributo pode ser reduzido a 0"
+                                  : undefined
+                              }
+                              onClick={() =>
+                                update("attributes", { ...attrs, [k]: Math.max(0, attrs[k] - 1) })
+                              }
+                            >
+                              <Minus className="w-3 h-3" />
+                            </Button>
+                            <span className="w-5 text-center font-bold">{attrs[k]}</span>
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              className="h-6 w-6 p-0"
+                              disabled={
+                                !canEdit || attrs[k] >= attributeCap || attributeRemaining <= 0
+                              }
+                              aria-label={`Aumentar ${k}`}
+                              title={
+                                attrs[k] >= attributeCap
+                                  ? `Máximo ${attributeCap} neste Rank`
+                                  : attributeRemaining <= 0
+                                    ? "Orçamento de Atributos esgotado"
+                                    : undefined
+                              }
+                              onClick={() =>
+                                update("attributes", {
+                                  ...attrs,
+                                  [k]: Math.min(attributeCap, attrs[k] + 1),
+                                })
+                              }
+                            >
+                              <Plus className="w-3 h-3" />
+                            </Button>
+                          </div>
                         </div>
-                      </div>
-                    ))}
+                      );
+                    })}
+                    <p className="pt-1 text-[10px] leading-relaxed text-muted-foreground">
+                      {attributeRemaining > 0
+                        ? `${attributeRemaining} ponto(s) ainda disponível(is).`
+                        : "Orçamento do Rank totalmente distribuído."}
+                    </p>
                   </div>
                   <div className="h-48 sm:h-56">
                     <Suspense
@@ -822,7 +944,7 @@ function SheetPage() {
               </Section>
 
               <Section id="sec-pontos" title="Pontos Vitais">
-                <div className="grid grid-cols-2 gap-2.5">
+                <div className="grid grid-cols-1 gap-2.5 min-[430px]:grid-cols-2">
                   <StatBlock
                     label="PV"
                     full="Vitalidade"
@@ -909,7 +1031,7 @@ function SheetPage() {
                           tabIndex={-1}
                           value={armorTotal}
                           className="h-7 bg-muted/40 cursor-not-allowed"
-                          title="Soma dos bônus de armadura (máx. 3)"
+                          title="Maior bônus entre as proteções registradas (máx. 3)"
                         />
                       </div>
                       <div>
@@ -982,8 +1104,8 @@ function SheetPage() {
                       </div>
                     </div>
                     <div className="mt-2 rounded-md border border-border/50 bg-background/30 px-2 py-1.5 text-center text-[10px] text-muted-foreground">
-                      RD equipada: <strong className="text-foreground">{armorRd}</strong> · armaduras
-                      finais variam de DEF +1 a +3 e RD 0 a 2.
+                      RD equipada: <strong className="text-foreground">{armorRd}</strong> ·
+                      armaduras não acumulam entre si; vale a proteção mais alta.
                     </div>
                   </Card>
                 </div>
@@ -1003,21 +1125,7 @@ function SheetPage() {
                     variant="ghost"
                     className="h-6 w-6 p-0 text-amber-300"
                     disabled={!canEdit}
-                    onClick={() => {
-                      const next = sheet.drift - 1;
-                      if (next <= -4) {
-                        setSheet((previous) =>
-                          previous
-                            ? {
-                                ...previous,
-                                equilibrium: clamp((previous.equilibrium || 0) - 1, -10, 10),
-                                drift: 0,
-                              }
-                            : previous,
-                        );
-                        toast.info("Tensão atingiu −4: o Equilíbrio moveu 1 ponto para o Medo.");
-                      } else update("drift", next);
-                    }}
+                    onClick={() => addDirectionalTension(-1)}
                   >
                     <Minus className="w-3 h-3" />
                   </Button>
@@ -1031,23 +1139,7 @@ function SheetPage() {
                     variant="ghost"
                     className="h-6 w-6 p-0 text-amber-300"
                     disabled={!canEdit}
-                    onClick={() => {
-                      const next = sheet.drift + 1;
-                      if (next >= 4) {
-                        setSheet((previous) =>
-                          previous
-                            ? {
-                                ...previous,
-                                equilibrium: clamp((previous.equilibrium || 0) + 1, -10, 10),
-                                drift: 0,
-                              }
-                            : previous,
-                        );
-                        toast.info(
-                          "Tensão atingiu +4: o Equilíbrio moveu 1 ponto para o Conhecimento.",
-                        );
-                      } else update("drift", next);
-                    }}
+                    onClick={() => addDirectionalTension(1)}
                   >
                     <Plus className="w-3 h-3" />
                   </Button>
@@ -1086,24 +1178,46 @@ function SheetPage() {
               <div className="flex items-center gap-3 mt-3">
                 <Input
                   type="number"
-                  min={-10}
-                  max={10}
+                  min={role === "mestre" ? -10 : -5}
+                  max={role === "mestre" ? 10 : 5}
                   disabled={!canEdit}
                   value={sheet.equilibrium}
-                  onChange={(e) => update("equilibrium", clamp(Number(e.target.value), -10, 10))}
+                  onChange={(e) =>
+                    update(
+                      "equilibrium",
+                      clamp(
+                        Number(e.target.value),
+                        role === "mestre" ? -10 : -5,
+                        role === "mestre" ? 10 : 5,
+                      ),
+                    )
+                  }
                   className="w-24 h-8"
                 />
                 <input
                   type="range"
-                  min={-10}
-                  max={10}
+                  min={role === "mestre" ? -10 : -5}
+                  max={role === "mestre" ? 10 : 5}
                   step={1}
                   disabled={!canEdit}
                   value={sheet.equilibrium}
-                  onChange={(e) => update("equilibrium", Number(e.target.value))}
+                  onChange={(e) =>
+                    update(
+                      "equilibrium",
+                      clamp(
+                        Number(e.target.value),
+                        role === "mestre" ? -10 : -5,
+                        role === "mestre" ? 10 : 5,
+                      ),
+                    )
+                  }
                   className="flex-1"
                 />
               </div>
+              <p className="mt-2 text-[10px] text-muted-foreground">
+                Faixa comum: −5 a +5. Valores além disso exigem fonte excepcional e ajuste do
+                mestre.
+              </p>
               <div className="grid gap-2 sm:grid-cols-3 mt-3 rounded-lg border border-border/70 bg-secondary/25 p-3 text-xs">
                 <div>
                   <span className="text-muted-foreground">Estado</span>
@@ -1172,35 +1286,68 @@ function SheetPage() {
 
             {/* Conditions */}
             <Section title="Condições">
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4">
                 {(Object.keys(CONDITION_META) as ConditionKey[]).map((c) => {
                   const meta = CONDITION_META[c];
-                  const opts = conditionOptions[c] ?? ["Normal"];
-                  const cur = sheet.conditions[c] || "Normal";
-                  const active = cur !== "Normal";
+                  const opts = (conditionOptions[c] ?? ["Normal"]).filter(
+                    (option) => option !== "Normal",
+                  );
+                  const current = sheet.conditions[c];
                   return (
-                    <div key={c}>
+                    <div
+                      key={c}
+                      className="rounded-lg border border-border/60 bg-secondary/15 p-3"
+                      style={
+                        current.length > 0
+                          ? {
+                              borderColor: meta.color,
+                              boxShadow: `0 0 0 1px ${meta.color}33`,
+                            }
+                          : undefined
+                      }
+                    >
                       <Label className="text-xs flex items-center gap-1.5">
                         <span className="w-2 h-2 rounded-full" style={{ background: meta.color }} />
                         {meta.label}
                       </Label>
-                      <select
-                        disabled={!canEdit}
-                        value={cur}
-                        onChange={(e) =>
-                          update("conditions", { ...sheet.conditions, [c]: e.target.value })
-                        }
-                        className="w-full bg-input border rounded-md px-2 py-1.5 text-sm transition-colors"
-                        style={
-                          active
-                            ? { borderColor: meta.color, boxShadow: `0 0 0 1px ${meta.color}55` }
-                            : undefined
-                        }
-                      >
-                        {opts.map((o) => (
-                          <option key={o}>{o}</option>
-                        ))}
-                      </select>
+                      <div className="mt-2 flex flex-wrap gap-1.5">
+                        {opts.map((option) => {
+                          const selected = current.includes(option);
+                          return (
+                            <button
+                              key={option}
+                              type="button"
+                              disabled={!canEdit}
+                              aria-pressed={selected}
+                              className="rounded-full border px-2 py-1 text-[11px] font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-60"
+                              style={
+                                selected
+                                  ? {
+                                      borderColor: meta.color,
+                                      background: `rgba(${meta.rgb}, 0.2)`,
+                                      color: meta.color,
+                                    }
+                                  : undefined
+                              }
+                              onClick={() =>
+                                update("conditions", {
+                                  ...sheet.conditions,
+                                  [c]: selected
+                                    ? current.filter((item) => item !== option)
+                                    : [...current, option],
+                                })
+                              }
+                            >
+                              {option}
+                            </button>
+                          );
+                        })}
+                        {current.length === 0 && (
+                          <span className="px-1 py-1 text-[11px] text-muted-foreground">
+                            Normal
+                          </span>
+                        )}
+                      </div>
                     </div>
                   );
                 })}
@@ -1232,7 +1379,10 @@ function SheetPage() {
               extra={
                 <div className="flex items-center gap-2 flex-wrap">
                   <span className="text-[11px] px-2 py-0.5 rounded-full border border-border text-muted-foreground">
-                    Graus iniciais: {Math.min(trainingUsed, 7)}/7
+                    Graus iniciais: {initialTrainingUsed}/7
+                  </span>
+                  <span className="text-[11px] px-2 py-0.5 rounded-full border border-border text-muted-foreground">
+                    Graus totais: {trainingUsed}
                   </span>
                   <Input
                     placeholder="Bônus temporário"
@@ -1265,10 +1415,16 @@ function SheetPage() {
                                 ? "text-green-400"
                                 : "text-muted-foreground";
                         const tierName = tier === 0 ? "Sem treino" : TRAINING_TIERS[tier - 1].name;
-                        const isInitialDegree = initialTrainingRemaining > 0 && tier < 2;
+                        const initialForSkill = Math.max(
+                          0,
+                          Math.min(2, sheet.initial_skill_degrees[s] || 0),
+                        );
+                        const isInitialDegree =
+                          initialTrainingRemaining > 0 && tier < 2 && initialForSkill === tier;
                         const nextCost: number | null =
                           tier < 3 ? (isInitialDegree ? 0 : (trainingCosts[tier] ?? 0)) : null;
-                        const refund: number = tier > 0 ? (trainingCosts[tier - 1] ?? 0) : 0;
+                        const refund: number =
+                          tier > initialForSkill ? (trainingCosts[tier - 1] ?? 0) : 0;
                         const minimumRank = [5, 25, 50][tier] ?? 100;
                         const lacksRank = !isInitialDegree && base.rank < minimumRank;
                         const lacksPM = nextCost != null && pmAvailable < nextCost;
@@ -1288,6 +1444,12 @@ function SheetPage() {
                               ? {
                                   ...p,
                                   skills: { ...p.skills, [s]: nextTier.bonus },
+                                  initial_skill_degrees: isInitialDegree
+                                    ? {
+                                        ...p.initial_skill_degrees,
+                                        [s]: Math.min(2, initialForSkill + 1),
+                                      }
+                                    : p.initial_skill_degrees,
                                 }
                               : p,
                           );
@@ -1307,16 +1469,25 @@ function SheetPage() {
                           const prevBonus = tier === 1 ? 0 : TRAINING_TIERS[tier - 2].bonus;
                           const prevName =
                             tier === 1 ? "Sem treino" : TRAINING_TIERS[tier - 2].name;
+                          const previousTier = tier - 1;
                           setSheet((p) =>
                             p
                               ? {
                                   ...p,
                                   skills: { ...p.skills, [s]: prevBonus },
+                                  initial_skill_degrees: {
+                                    ...p.initial_skill_degrees,
+                                    [s]: Math.min(initialForSkill, previousTier),
+                                  },
                                 }
                               : p,
                           );
                           setOpenSkill(null);
-                          toast.success(`${s}: ${prevName} (+${refund} PM)`);
+                          toast.success(
+                            refund > 0
+                              ? `${s}: ${prevName} (+${refund} PM)`
+                              : `${s}: ${prevName} (grau inicial removido)`,
+                          );
                         };
 
                         return (
@@ -1409,26 +1580,74 @@ function SheetPage() {
               title="Armas"
               extra={
                 <div className="flex items-center gap-2 flex-wrap">
-                  <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-lg bg-gradient-to-r from-primary/20 via-primary/10 to-transparent border border-primary/40 shadow-[0_0_12px_-4px_hsl(var(--primary))]">
+                  <div className="inline-flex max-w-full flex-wrap items-center gap-2 rounded-lg border border-primary/40 bg-gradient-to-r from-primary/20 via-primary/10 to-transparent px-2.5 py-1 shadow-[0_0_12px_-4px_hsl(var(--primary))]">
                     <Label className="text-[10px] uppercase tracking-wider text-primary font-cinzel">
-                      Proeficiência
+                      Proficiência
                     </Label>
                     <Select
                       value={sheet.weapon_proficiency}
                       disabled={!canEdit}
-                      onValueChange={(v) => update("weapon_proficiency", v as Proficiency)}
+                      onValueChange={(value) => {
+                        const next = value as WeaponProficiency;
+                        const minimumRank = weaponProficiencyMinimumRank(next);
+                        const additionalCost =
+                          weaponProficiencySpend(next) -
+                          weaponProficiencySpend(sheet.weapon_proficiency);
+                        if (base.rank < minimumRank) {
+                          toast.error(`Esta Proficiência exige Rank ${minimumRank}.`);
+                          return;
+                        }
+                        if (additionalCost > pmAvailable) {
+                          toast.error(`PM insuficientes (faltam ${additionalCost - pmAvailable}).`);
+                          return;
+                        }
+                        setSheet((previous) =>
+                          previous
+                            ? {
+                                ...previous,
+                                weapon_proficiency: next,
+                                weapon_proficiency_family:
+                                  next === "combatente" ? previous.weapon_proficiency_family : "",
+                              }
+                            : previous,
+                        );
+                      }}
                     >
-                      <SelectTrigger className="h-7 w-36 text-xs capitalize bg-background/40 border-primary/30 text-primary font-semibold">
+                      <SelectTrigger className="h-7 w-36 bg-background/40 text-xs font-semibold capitalize text-primary border-primary/30">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
-                        {PROFICIENCY_OPTIONS.map((p) => (
+                        {WEAPON_PROFICIENCIES.map((p) => (
                           <SelectItem key={p} value={p} className="capitalize">
                             {p}
+                            {p === "combatente"
+                              ? " · 2 PM"
+                              : p === "armígero"
+                                ? " · +3 PM"
+                                : p === "operador"
+                                  ? " · inicial"
+                                  : ""}
                           </SelectItem>
                         ))}
                       </SelectContent>
                     </Select>
+                    {sheet.weapon_proficiency === "combatente" && (
+                      <Select
+                        value={sheet.weapon_proficiency_family || undefined}
+                        disabled={!canEdit}
+                        onValueChange={(value) =>
+                          update("weapon_proficiency_family", value as WeaponProficiencyFamily)
+                        }
+                      >
+                        <SelectTrigger className="h-7 w-32 bg-background/40 text-xs border-primary/30">
+                          <SelectValue placeholder="Família" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="Contato">Contato</SelectItem>
+                          <SelectItem value="Projeção">Projeção</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    )}
                   </div>
 
                   {canEdit && (
@@ -1469,7 +1688,7 @@ function SheetPage() {
                           key: "proficiencia",
                           label: "Proficiência",
                           type: "select",
-                          options: [...PROFICIENCY_OPTIONS],
+                          options: [...WEAPON_PROFICIENCIES],
                         },
                         { key: "testeAtaque", label: "Teste de ataque" },
                         { key: "atributoDano", label: "Atributo de dano" },
@@ -1514,6 +1733,11 @@ function SheetPage() {
                 ]}
                 onChange={(v) => update("weapons", v as Weapon[])}
               />
+              {sheet.weapon_proficiency === "combatente" && !sheet.weapon_proficiency_family && (
+                <p className="mt-3 rounded-lg border border-amber-500/40 bg-amber-500/5 px-3 py-2 text-xs text-amber-200">
+                  Escolha Contato ou Projeção para concluir a Proficiência III.
+                </p>
+              )}
             </Section>
 
             {/* Inventory */}
@@ -1808,7 +2032,10 @@ function SheetPage() {
           >
             <SkillTreeTab
               exposure={sheet.exposure}
+              equilibrium={sheet.equilibrium}
               attributes={sheet.attributes}
+              skills={sheet.skills}
+              weaponProficiency={sheet.weapon_proficiency}
               pmSpent={calculatedPmSpent}
               statUpgrades={sheet.stat_upgrades}
               purchasedSkills={sheet.purchased_skills}
@@ -1880,9 +2107,7 @@ function Section({
       className="tadeon-surface rounded-2xl p-4 md:p-5 transition-all hover:border-primary/25 scroll-mt-32"
     >
       <div className="flex items-center justify-between flex-wrap gap-2 mb-3">
-        <h2 className="font-cinzel font-semibold text-primary text-lg">
-          {title}
-        </h2>
+        <h2 className="font-cinzel font-semibold text-primary text-lg">{title}</h2>
         {extra}
       </div>
       {children}
@@ -1966,13 +2191,15 @@ function StatBlock({
           size="sm"
           variant="ghost"
           className="h-7 w-7 p-0"
-          disabled={disabled}
+          disabled={disabled || current <= 0}
           onClick={() => onCurrent(current - 1)}
         >
           <Minus className="w-3 h-3" />
         </Button>
         <Input
           type="number"
+          min={0}
+          max={Math.max(0, max)}
           disabled={disabled}
           value={current}
           onChange={(e) => onCurrent(Number(e.target.value))}
@@ -1982,7 +2209,7 @@ function StatBlock({
           size="sm"
           variant="ghost"
           className="h-7 w-7 p-0"
-          disabled={disabled}
+          disabled={disabled || current >= max}
           onClick={() => onCurrent(current + 1)}
         >
           <Plus className="w-3 h-3" />

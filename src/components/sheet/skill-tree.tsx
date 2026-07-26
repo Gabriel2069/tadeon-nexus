@@ -10,18 +10,23 @@ import type {
   RankRow,
   Ability,
   UpgradeCosts,
+  WeaponProficiency,
 } from "@/lib/sheet-types";
 import {
   calcTotalPM,
   maxDefenseUpgradeLevels,
   maxResourceUpgradeLevels,
+  skillNodeRequirementFailure,
   upgradeCostAt,
   SKILL_ABILITY_PREFIX,
 } from "@/lib/sheet-types";
 
 interface Props {
   exposure: number;
+  equilibrium: number;
   attributes: Attributes;
+  skills: Record<string, number>;
+  weaponProficiency: WeaponProficiency;
   pmSpent: number;
   statUpgrades: StatUpgrades;
   purchasedSkills: string[];
@@ -51,7 +56,10 @@ const UPGRADE_KEYS: {
 
 export function SkillTreeTab({
   exposure,
+  equilibrium,
   attributes,
+  skills,
+  weaponProficiency,
   pmSpent,
   statUpgrades,
   purchasedSkills,
@@ -113,6 +121,15 @@ export function SkillTreeTab({
     for (const ar of node.attrReqs || [])
       if ((attributes[ar.attr] ?? 0) < ar.value)
         return { ok: false, why: `Requer ${ar.attr} ≥ ${ar.value}` };
+    const requirementFailure = skillNodeRequirementFailure(node, {
+      attributes,
+      skills,
+      equilibrium,
+      weaponProficiency,
+      purchasedSkills,
+      branches,
+    });
+    if (requirementFailure) return { ok: false, why: requirementFailure };
     const effectiveCost = node.minRank === 0 && freeTierOneRemaining > 0 ? 0 : node.cost;
     if (remaining < effectiveCost)
       return { ok: false, why: `Faltam ${effectiveCost - remaining} PM`, effectiveCost };
@@ -161,7 +178,7 @@ export function SkillTreeTab({
   return (
     <div className="space-y-4">
       <Card className="p-4 overflow-hidden bg-[linear-gradient(135deg,rgba(113,107,123,.18),transparent_58%)] border-primary/30">
-        <div className="grid grid-cols-3 gap-4 text-center">
+        <div className="grid grid-cols-1 gap-3 text-center sm:grid-cols-3 sm:gap-4">
           <div>
             <div className="text-xs text-muted-foreground uppercase">PM Totais</div>
             <div className="font-cinzel text-3xl font-bold text-primary">{totalPM}</div>
@@ -173,7 +190,7 @@ export function SkillTreeTab({
           <div>
             <div className="text-xs text-muted-foreground uppercase">Disponíveis</div>
             <div
-              className={`font-cinzel text-3xl font-bold ${remaining > 0 ? "text-emerald-400" : "text-red-400"}`}
+              className={`font-cinzel text-3xl font-bold ${remaining >= 0 ? "text-emerald-400" : "text-red-400"}`}
             >
               {remaining}
             </div>
@@ -233,7 +250,10 @@ export function SkillTreeTab({
           <Sparkles className="h-4 w-4 text-primary" />
           <span>
             Você ainda possui <strong>{freeTierOneRemaining}</strong>{" "}
-            {freeTierOneRemaining === 1 ? "Habilidade inicial gratuita" : "Habilidades iniciais gratuitas"}.
+            {freeTierOneRemaining === 1
+              ? "Habilidade inicial gratuita"
+              : "Habilidades iniciais gratuitas"}
+            .
           </span>
         </div>
       )}
@@ -250,7 +270,8 @@ export function SkillTreeTab({
               Ramo {branch.label}
             </h3>
             <p className="mt-1 text-xs text-muted-foreground">
-              Seis escolhas por Tier. Requisitos narrativos e de Perícia permanecem visíveis na ficha.
+              Seis escolhas por Tier. Requisitos mecânicos são validados; requisitos narrativos
+              permanecem registrados para a mesa.
             </p>
           </div>
           {branch.nodes.length === 0 ? (

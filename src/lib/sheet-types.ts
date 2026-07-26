@@ -23,10 +23,39 @@ export interface Stats {
 }
 
 export interface Conditions {
-  fisica: string;
-  mental: string;
-  energetica: string;
-  outras: string;
+  fisica: string[];
+  mental: string[];
+  energetica: string[];
+  outras: string[];
+}
+
+export const EMPTY_CONDITIONS: Conditions = {
+  fisica: [],
+  mental: [],
+  energetica: [],
+  outras: [],
+};
+
+export function normalizeConditions(value: unknown): Conditions {
+  const source = value && typeof value === "object" ? (value as Record<string, unknown>) : {};
+  const normalizeValue = (entry: unknown): string[] => {
+    const values = Array.isArray(entry) ? entry : [entry];
+    return Array.from(
+      new Set(
+        values
+          .filter((item): item is string => typeof item === "string")
+          .map((item) => item.trim())
+          .filter((item) => item.length > 0 && item !== "Normal"),
+      ),
+    );
+  };
+
+  return {
+    fisica: normalizeValue(source.fisica),
+    mental: normalizeValue(source.mental),
+    energetica: normalizeValue(source.energetica),
+    outras: normalizeValue(source.outras),
+  };
 }
 
 export interface StatUpgrades {
@@ -35,6 +64,11 @@ export interface StatUpgrades {
   pe: number;
   def: number;
 }
+
+export const WEAPON_PROFICIENCIES = ["leigo", "operador", "combatente", "armígero"] as const;
+export type WeaponProficiency = (typeof WEAPON_PROFICIENCIES)[number];
+export type WeaponProficiencyFamily = "" | "Contato" | "Projeção";
+export type InitialSkillDegrees = Record<string, number>;
 
 export type LinkState = "Presente" | "Tensionado" | "Ferido" | "Rompido" | "Costurado";
 
@@ -247,6 +281,33 @@ export function maxDefenseUpgradeLevels(rank: number): number {
   return 0;
 }
 
+export function attributePointBudget(rank: number): number {
+  return 9 + Math.max(0, Math.min(4, Math.floor(Math.max(0, rank) / 25)));
+}
+
+export function attributeValueCap(rank: number): number {
+  return Math.min(5, 3 + Math.max(0, Math.floor(Math.max(0, rank) / 25)));
+}
+
+export function attributePointsUsed(attributes: Attributes): number {
+  return (Object.values(attributes) as number[]).reduce(
+    (sum, value) => sum + Math.max(0, Math.min(5, Math.round(Number(value) || 0))),
+    0,
+  );
+}
+
+export function weaponProficiencyMinimumRank(proficiency: WeaponProficiency): number {
+  if (proficiency === "armígero") return 50;
+  if (proficiency === "combatente") return 25;
+  return 0;
+}
+
+export function weaponProficiencySpend(proficiency: WeaponProficiency): number {
+  if (proficiency === "armígero") return 5;
+  if (proficiency === "combatente") return 2;
+  return 0;
+}
+
 export type ConditionKey = "fisica" | "mental" | "energetica" | "outras";
 export type ConditionOptionsMap = Record<ConditionKey, string[]>;
 
@@ -254,7 +315,17 @@ export const DEFAULT_CONDITION_OPTIONS: ConditionOptionsMap = {
   fisica: ["Normal", "Machucado", "Ferido", "Incapacitado", "Sangrando", "Em Chamas"],
   mental: ["Normal", "Abalado", "Apavorado", "Confuso", "Compelido", "Silenciado", "Desorientado"],
   energetica: ["Normal", "Fadigado", "Esgotado", "Saturado", "Instável", "Descompassado"],
-  outras: ["Normal", "Caído", "Agarrado", "Atordoado", "Envenenado", "Inconsciente", "Cego", "Surdo", "Doente"],
+  outras: [
+    "Normal",
+    "Caído",
+    "Agarrado",
+    "Atordoado",
+    "Envenenado",
+    "Inconsciente",
+    "Cego",
+    "Surdo",
+    "Doente",
+  ],
 };
 
 export const CONDITION_META: Record<ConditionKey, { label: string; color: string; rgb: string }> = {
@@ -306,27 +377,105 @@ export interface EquilibriumEffect {
 }
 
 const EQUILIBRIUM_STATES: Record<number, Omit<EquilibriumEffect, "value">> = {
-  [-10]: { state: "Limite do Inverso", benefit: "+3d20 em ações e Tramas de Medo.", penalty: "-3d20 em Conhecimento; Tramas opostas acima de Repuxo impossíveis." },
-  [-9]: { state: "Dissolução Visceral", benefit: "+3d20 em Medo.", penalty: "-2d20 em Conhecimento; uma compulsão instintiva permanece até Costura narrativa." },
-  [-8]: { state: "Profundidade Visceral", benefit: "+2d20 em Medo.", penalty: "-2d20 em Conhecimento." },
+  [-10]: {
+    state: "Limite do Inverso",
+    benefit: "+3d20 em ações e Tramas de Medo.",
+    penalty: "-3d20 em Conhecimento; Tramas opostas acima de Repuxo impossíveis.",
+  },
+  [-9]: {
+    state: "Dissolução Visceral",
+    benefit: "+3d20 em Medo.",
+    penalty: "-2d20 em Conhecimento; uma compulsão instintiva permanece até Costura narrativa.",
+  },
+  [-8]: {
+    state: "Profundidade Visceral",
+    benefit: "+2d20 em Medo.",
+    penalty: "-2d20 em Conhecimento.",
+  },
   [-7]: { state: "Corpo Dominante", benefit: "+2d20 em Medo.", penalty: "-1d20 em Conhecimento." },
-  [-6]: { state: "Instinto Sobreposto", benefit: "+1d20 em Medo.", penalty: "-1d20 em Conhecimento; ameaças fortes exigem Convicção para não agir por impulso." },
-  [-5]: { state: "Ponto de Inflexão", benefit: "+1d20 em Medo.", penalty: "Estiramento de Conhecimento exige fonte excepcional." },
-  [-4]: { state: "Inclinação ao Medo", benefit: "+1d20 em ações claramente alinhadas ao Medo.", penalty: "—" },
-  [-3]: { state: "Afinidade Visceral", benefit: "Uma vez por cena, trate Perícia sem treino como Iniciada em ação alinhada ao Medo.", penalty: "—" },
-  [-2]: { state: "Sensação Ampliada", benefit: "Uma vez por cena, repita um d20 em percepção de risco ou presença ameaçadora.", penalty: "—" },
-  [-1]: { state: "Toque de Instinto", benefit: "Sinais sutis e reflexos respondem antes do habitual.", penalty: "—" },
-  0: { state: "Inteireza", benefit: "Nenhum bônus ou penalidade.", penalty: "A personagem permanece capaz de mudar sem que uma relação domine as demais." },
-  1: { state: "Toque de Clareza", benefit: "Padrões, palavras e lembranças aproximam-se da atenção.", penalty: "—" },
-  2: { state: "Sensibilidade Estrutural", benefit: "Uma vez por cena, repita um d20 em análise de padrão, linguagem ou memória.", penalty: "—" },
-  3: { state: "Afinidade Cognoscível", benefit: "Uma vez por cena, trate Perícia sem treino como Iniciada em ação alinhada ao Conhecimento.", penalty: "—" },
-  4: { state: "Inclinação ao Conhecimento", benefit: "+1d20 em ações claramente alinhadas ao Conhecimento.", penalty: "—" },
-  5: { state: "Ponto de Inflexão", benefit: "+1d20 em Conhecimento.", penalty: "Estiramento de Medo exige fonte excepcional." },
-  6: { state: "Razão Sobreposta", benefit: "+1d20 em Conhecimento.", penalty: "-1d20 em Medo; vínculos fortes exigem Convicção para não serem tratados como abstração." },
+  [-6]: {
+    state: "Instinto Sobreposto",
+    benefit: "+1d20 em Medo.",
+    penalty: "-1d20 em Conhecimento; ameaças fortes exigem Convicção para não agir por impulso.",
+  },
+  [-5]: {
+    state: "Ponto de Inflexão",
+    benefit: "+1d20 em Medo.",
+    penalty: "Estiramento de Conhecimento exige fonte excepcional.",
+  },
+  [-4]: {
+    state: "Inclinação ao Medo",
+    benefit: "+1d20 em ações claramente alinhadas ao Medo.",
+    penalty: "—",
+  },
+  [-3]: {
+    state: "Afinidade Visceral",
+    benefit: "Uma vez por cena, trate Perícia sem treino como Iniciada em ação alinhada ao Medo.",
+    penalty: "—",
+  },
+  [-2]: {
+    state: "Sensação Ampliada",
+    benefit: "Uma vez por cena, repita um d20 em percepção de risco ou presença ameaçadora.",
+    penalty: "—",
+  },
+  [-1]: {
+    state: "Toque de Instinto",
+    benefit: "Sinais sutis e reflexos respondem antes do habitual.",
+    penalty: "—",
+  },
+  0: {
+    state: "Inteireza",
+    benefit: "Nenhum bônus ou penalidade.",
+    penalty: "A personagem permanece capaz de mudar sem que uma relação domine as demais.",
+  },
+  1: {
+    state: "Toque de Clareza",
+    benefit: "Padrões, palavras e lembranças aproximam-se da atenção.",
+    penalty: "—",
+  },
+  2: {
+    state: "Sensibilidade Estrutural",
+    benefit: "Uma vez por cena, repita um d20 em análise de padrão, linguagem ou memória.",
+    penalty: "—",
+  },
+  3: {
+    state: "Afinidade Cognoscível",
+    benefit:
+      "Uma vez por cena, trate Perícia sem treino como Iniciada em ação alinhada ao Conhecimento.",
+    penalty: "—",
+  },
+  4: {
+    state: "Inclinação ao Conhecimento",
+    benefit: "+1d20 em ações claramente alinhadas ao Conhecimento.",
+    penalty: "—",
+  },
+  5: {
+    state: "Ponto de Inflexão",
+    benefit: "+1d20 em Conhecimento.",
+    penalty: "Estiramento de Medo exige fonte excepcional.",
+  },
+  6: {
+    state: "Razão Sobreposta",
+    benefit: "+1d20 em Conhecimento.",
+    penalty:
+      "-1d20 em Medo; vínculos fortes exigem Convicção para não serem tratados como abstração.",
+  },
   7: { state: "Mente Dominante", benefit: "+2d20 em Conhecimento.", penalty: "-1d20 em Medo." },
-  8: { state: "Profundidade Abstrata", benefit: "+2d20 em Conhecimento.", penalty: "-2d20 em Medo." },
-  9: { state: "Dissolução Racional", benefit: "+3d20 em Conhecimento.", penalty: "-2d20 em Medo; uma compulsão por ordem permanece até Costura narrativa." },
-  10: { state: "Limite da Chama Fria", benefit: "+3d20 em ações e Tramas de Conhecimento.", penalty: "-3d20 em Medo; Tramas opostas acima de Repuxo impossíveis." },
+  8: {
+    state: "Profundidade Abstrata",
+    benefit: "+2d20 em Conhecimento.",
+    penalty: "-2d20 em Medo.",
+  },
+  9: {
+    state: "Dissolução Racional",
+    benefit: "+3d20 em Conhecimento.",
+    penalty: "-2d20 em Medo; uma compulsão por ordem permanece até Costura narrativa.",
+  },
+  10: {
+    state: "Limite da Chama Fria",
+    benefit: "+3d20 em ações e Tramas de Conhecimento.",
+    penalty: "-3d20 em Medo; Tramas opostas acima de Repuxo impossíveis.",
+  },
 };
 
 export function getEquilibriumEffect(value: number): EquilibriumEffect {
@@ -346,20 +495,42 @@ export function totalUpgradeSpend(upgrades: StatUpgrades, costs: UpgradeCosts): 
 export function totalTrainingSpend(
   skills: Record<string, number>,
   trainingCosts: [number, number, number],
+  initialSkillDegrees?: InitialSkillDegrees,
 ): number {
-  let initialDegreesRemaining = 7;
-  return Object.values(skills || {}).reduce((sum, bonus) => {
+  const freeDegrees =
+    initialSkillDegrees && Object.keys(initialSkillDegrees).length
+      ? initialSkillDegrees
+      : inferInitialSkillDegrees(skills, trainingCosts);
+  return Object.entries(skills || {}).reduce((sum, [skill, bonus]) => {
     const tiers = bonus >= 9 ? 3 : bonus >= 6 ? 2 : bonus >= 3 ? 1 : 0;
+    const freeForSkill = Math.max(0, Math.min(2, Math.floor(freeDegrees[skill] || 0), tiers));
     let skillSpend = 0;
     for (let tier = 0; tier < tiers; tier += 1) {
-      if (initialDegreesRemaining > 0 && tier < 2) {
-        initialDegreesRemaining -= 1;
-      } else {
-        skillSpend += trainingCosts[tier] ?? 0;
-      }
+      if (tier >= freeForSkill) skillSpend += trainingCosts[tier] ?? 0;
     }
     return sum + skillSpend;
   }, 0);
+}
+
+export function inferInitialSkillDegrees(
+  skills: Record<string, number>,
+  trainingCosts: [number, number, number] = DEFAULT_TRAINING_COSTS,
+): InitialSkillDegrees {
+  const candidates = Object.entries(skills || {}).flatMap(([skill, bonus]) => {
+    const tiers = bonus >= 9 ? 3 : bonus >= 6 ? 2 : bonus >= 3 ? 1 : 0;
+    return Array.from({ length: Math.min(2, tiers) }, (_, degree) => ({
+      skill,
+      degree,
+      saved: trainingCosts[degree] ?? 0,
+    }));
+  });
+  candidates.sort(
+    (a, b) => b.saved - a.saved || a.skill.localeCompare(b.skill) || a.degree - b.degree,
+  );
+  return candidates.slice(0, 7).reduce<InitialSkillDegrees>((result, candidate) => {
+    result[candidate.skill] = (result[candidate.skill] || 0) + 1;
+    return result;
+  }, {});
 }
 
 export function totalBranchSpend(purchasedSkills: string[], branches: SkillBranch[]): number {
@@ -383,12 +554,121 @@ export function calculatePMSpent(params: {
   branches: SkillBranch[];
   upgradeCosts: UpgradeCosts;
   trainingCosts: [number, number, number];
+  initialSkillDegrees?: InitialSkillDegrees;
+  weaponProficiency?: WeaponProficiency;
 }): number {
   return (
     totalUpgradeSpend(params.statUpgrades, params.upgradeCosts) +
-    totalTrainingSpend(params.skills, params.trainingCosts) +
-    totalBranchSpend(params.purchasedSkills, params.branches)
+    totalTrainingSpend(params.skills, params.trainingCosts, params.initialSkillDegrees) +
+    totalBranchSpend(params.purchasedSkills, params.branches) +
+    weaponProficiencySpend(params.weaponProficiency ?? "operador")
   );
+}
+
+export interface SkillRequirementContext {
+  attributes: Attributes;
+  skills: Record<string, number>;
+  equilibrium: number;
+  weaponProficiency: WeaponProficiency;
+  purchasedSkills: string[];
+  branches: SkillBranch[];
+}
+
+const TRAINING_REQUIREMENTS = {
+  iniciada: 3,
+  iniciado: 3,
+  apurada: 6,
+  apurado: 6,
+  versada: 9,
+  versado: 9,
+} as const;
+
+function trainingRequirementIn(clause: string): number | null {
+  const normalized = clause.toLocaleLowerCase("pt-BR");
+  const match = Object.entries(TRAINING_REQUIREMENTS).find(([name]) =>
+    normalized.includes(name.slice(0, -1)),
+  );
+  return match?.[1] ?? null;
+}
+
+export function skillNodeRequirementFailure(
+  node: SkillNode,
+  context: SkillRequirementContext,
+): string | null {
+  for (const requirement of node.attrReqs || []) {
+    if ((context.attributes[requirement.attr] ?? 0) < requirement.value)
+      return `Requer ${requirement.attr} ${requirement.value}`;
+  }
+
+  const requirements = node.requirementsText || "";
+  const equilibriumRange = requirements.match(/Equilíbrio entre\s*([+-]?\d+)\s*e\s*([+-]?\d+)/i);
+  if (equilibriumRange) {
+    const minimum = Number(equilibriumRange[1]);
+    const maximum = Number(equilibriumRange[2]);
+    if (context.equilibrium < minimum || context.equilibrium > maximum)
+      return `Requer Equilíbrio entre ${minimum} e +${maximum}`;
+  }
+  const equilibriumMaximum = requirements.match(/Equilíbrio\s*([+-]?\d+)\s*ou menor/i);
+  if (equilibriumMaximum && context.equilibrium > Number(equilibriumMaximum[1]))
+    return `Requer Equilíbrio ${equilibriumMaximum[1]} ou menor`;
+  const equilibriumMinimum = requirements.match(/Equilíbrio\s*([+-]?\d+)\s*ou maior/i);
+  if (equilibriumMinimum && context.equilibrium < Number(equilibriumMinimum[1]))
+    return `Requer Equilíbrio ${equilibriumMinimum[1]} ou maior`;
+
+  if (
+    requirements.toLocaleLowerCase("pt-BR").includes("proficiência adequada") &&
+    context.weaponProficiency === "leigo"
+  )
+    return "Requer Proficiência adequada";
+
+  const nodesByName = new Map(
+    context.branches
+      .flatMap((branch) => branch.nodes)
+      .map((candidate) => [candidate.name, candidate]),
+  );
+  for (const [name, candidate] of nodesByName) {
+    if (
+      candidate.id !== node.id &&
+      requirements.includes(name) &&
+      !context.purchasedSkills.includes(candidate.id)
+    )
+      return `Requer ${name}`;
+  }
+
+  const clauses = requirements.split(",").map((clause) => clause.trim());
+  for (const clause of clauses) {
+    if (!clause || /^Rank\s+\d+/i.test(clause) || /Equilíbrio/i.test(clause)) continue;
+
+    const attributeRequirements = Array.from(
+      clause.matchAll(/\b(COR|MEN|INS|PRE|ERU)\s*([0-5])\b/g),
+      (match) => ({
+        attr: match[1] as keyof Attributes,
+        value: Number(match[2]),
+      }),
+    );
+    if (attributeRequirements.length) {
+      const valid = clause.includes(" ou ")
+        ? attributeRequirements.some(
+            (requirement) => context.attributes[requirement.attr] >= requirement.value,
+          )
+        : attributeRequirements.every(
+            (requirement) => context.attributes[requirement.attr] >= requirement.value,
+          );
+      if (!valid) return `Requer ${clause}`;
+      continue;
+    }
+
+    const mentionedSkills = ALL_SKILLS.filter((skill) => clause.includes(skill));
+    const requiredTraining = trainingRequirementIn(clause);
+    if (mentionedSkills.length && requiredTraining) {
+      const valid = clause.includes(" ou ")
+        ? mentionedSkills.some((skill) => (context.skills[skill] || 0) >= requiredTraining)
+        : mentionedSkills.every((skill) => (context.skills[skill] || 0) >= requiredTraining);
+      if (!valid) return `Requer ${clause}`;
+    }
+  }
+
+  return null;
 }
 
 export function calculateSheetMaximums(params: {
