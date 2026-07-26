@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsContent } from "@/components/ui/tabs";
 import {
   Dialog,
   DialogContent,
@@ -25,19 +25,12 @@ import {
   Maximize2,
   Eye,
   EyeOff,
-  Swords,
   Skull,
   Search as SearchIcon,
   Users,
-  ScrollText,
   Pin,
-  Cog,
   Sparkles,
   ExternalLink,
-  LayoutDashboard,
-  Waves,
-  BedDouble,
-  Scale,
 } from "lucide-react";
 import { toast } from "sonner";
 import type {
@@ -80,8 +73,20 @@ import {
   NpcHub,
   ThreatHub,
 } from "@/components/master/master-hub";
+import { SessionWorkspace } from "@/components/master/session-workspace";
+import { cacheMasterState } from "@/lib/offline-cache";
+import {
+  MASTER_TAB_VALUES,
+  MasterPanelNavigation,
+  type MasterTab,
+} from "@/components/master/master-panel-navigation";
 
 export const Route = createFileRoute("/master-panel")({
+  validateSearch: (search: Record<string, unknown>) => ({
+    tab: MASTER_TAB_VALUES.includes(search.tab as MasterTab)
+      ? (search.tab as MasterTab)
+      : undefined,
+  }),
   head: () => ({
     meta: [
       { title: "Painel do Mestre · Tadeon Nexus" },
@@ -192,7 +197,9 @@ function normalizeNpc(value: Partial<MasterNpc> & Partial<NPC>): MasterNpc {
     socialTension: value.socialTension || value.mood || "",
     attributes: { ...base.attributes, ...(value.attributes ?? {}) },
     vectors: {
-      fisico: Number(legacyVectors.fisico ?? Math.max(legacyVectors.luta ?? 0, legacyVectors.pontaria ?? 0)),
+      fisico: Number(
+        legacyVectors.fisico ?? Math.max(legacyVectors.luta ?? 0, legacyVectors.pontaria ?? 0),
+      ),
       tecnico: Number(
         legacyVectors.tecnico ?? Math.max(legacyVectors.tecnica ?? 0, legacyVectors.intelecto ?? 0),
       ),
@@ -261,6 +268,8 @@ function normalizeScene(value: Partial<Scene>): Scene {
 }
 
 function MasterPanel() {
+  const search = Route.useSearch();
+  const navigate = useNavigate();
   const [s, setS] = useState<SettingsRow | null>(null);
   const [sheets, setSheets] = useState<SheetSummary[]>([]);
   const [loading, setLoading] = useState(true);
@@ -356,8 +365,7 @@ function MasterPanel() {
         })),
         rules_version: Math.max(3, rulesVersion),
       });
-      const rawSheets =
-        (ch as unknown as Omit<SheetSummary, "owner_email">[] | null) ?? [];
+      const rawSheets = (ch as unknown as Omit<SheetSummary, "owner_email">[] | null) ?? [];
       const ownerIds = [...new Set(rawSheets.map((sheet) => sheet.owner_id).filter(Boolean))];
       let ownerLabels = new Map<string, string>();
       if (ownerIds.length) {
@@ -398,6 +406,14 @@ function MasterPanel() {
   const upd = <K extends keyof SettingsRow>(k: K, v: SettingsRow[K]) =>
     setS((p) => (p ? { ...p, [k]: v } : p));
 
+  useEffect(() => {
+    if (!s) return;
+    const timer = window.setTimeout(() => {
+      cacheMasterState(s, sheets);
+    }, 600);
+    return () => window.clearTimeout(timer);
+  }, [s, sheets]);
+
   if (loading) {
     return (
       <div className="flex justify-center py-16">
@@ -436,45 +452,18 @@ function MasterPanel() {
         </div>
       </div>
 
-      <Tabs defaultValue="dashboard" className="space-y-4">
-        <TabsList className="flex flex-wrap h-auto justify-start gap-1 bg-card/60 p-1">
-          <Trig value="dashboard" icon={<LayoutDashboard className="w-3.5 h-3.5" />}>
-            Visão Geral
-          </Trig>
-          <Trig value="scenes" icon={<ScrollText className="w-3.5 h-3.5" />}>
-            Cenas
-          </Trig>
-          <Trig value="initiative" icon={<Swords className="w-3.5 h-3.5" />}>
-            Iniciativa
-          </Trig>
-          <Trig value="npcs-v2" icon={<Users className="w-3.5 h-3.5" />}>
-            NPCs
-          </Trig>
-          <Trig value="threats" icon={<Skull className="w-3.5 h-3.5" />}>
-            Ameaças
-          </Trig>
-          <Trig value="investigation" icon={<SearchIcon className="w-3.5 h-3.5" />}>
-            Investigação
-          </Trig>
-          <Trig value="interludes" icon={<BedDouble className="w-3.5 h-3.5" />}>
-            Interlúdios
-          </Trig>
-          <Trig value="folds" icon={<Waves className="w-3.5 h-3.5" />}>
-            Dobras
-          </Trig>
-          <Trig value="balance" icon={<Scale className="w-3.5 h-3.5" />}>
-            Balanço
-          </Trig>
-          <Trig value="pinned" icon={<Pin className="w-3.5 h-3.5" />}>
-            Fichas
-          </Trig>
-          <Trig value="notes" icon={<ScrollText className="w-3.5 h-3.5" />}>
-            Notas
-          </Trig>
-          <Trig value="data" icon={<Cog className="w-3.5 h-3.5" />}>
-            Dados & Fórmulas
-          </Trig>
-        </TabsList>
+      <Tabs
+        value={search.tab ?? "dashboard"}
+        onValueChange={(value) =>
+          void navigate({
+            to: "/master-panel",
+            search: { tab: value === "dashboard" ? undefined : (value as MasterTab) },
+            replace: true,
+          })
+        }
+        className="space-y-4"
+      >
+        <MasterPanelNavigation />
 
         <TabsContent value="dashboard" className="mt-0">
           <DashboardHub
@@ -489,6 +478,25 @@ function MasterPanel() {
             sheets={sheets}
             onCampaignTitle={(value) => upd("campaign_title", value)}
             onCampaignPhase={(value) => upd("campaign_phase", value)}
+          />
+        </TabsContent>
+        <TabsContent value="session" className="mt-0">
+          <SessionWorkspace
+            campaignTitle={s.campaign_title}
+            campaignPhase={s.campaign_phase}
+            scenes={s.scenes_detailed}
+            clues={s.investigation_clues}
+            npcs={s.master_npcs}
+            threats={s.threats}
+            folds={s.folds}
+            sheets={sheets}
+            initiative={s.initiative_order}
+            reminders={s.reminders ?? ""}
+            onScenesChange={(value) => upd("scenes_detailed", value)}
+            onCluesChange={(value) => upd("investigation_clues", value)}
+            onNpcsChange={(value) => upd("master_npcs", value)}
+            onThreatsChange={(value) => upd("threats", value)}
+            onRemindersChange={(value) => upd("reminders", value)}
           />
         </TabsContent>
         <TabsContent value="scenes" className="mt-0">
@@ -530,25 +538,6 @@ function MasterPanel() {
         </TabsContent>
       </Tabs>
     </div>
-  );
-}
-
-function Trig({
-  value,
-  icon,
-  children,
-}: {
-  value: string;
-  icon: React.ReactNode;
-  children: React.ReactNode;
-}) {
-  return (
-    <TabsTrigger
-      value={value}
-      className="gap-1.5 text-xs data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
-    >
-      {icon} {children}
-    </TabsTrigger>
   );
 }
 
