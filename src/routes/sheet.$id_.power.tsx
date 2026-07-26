@@ -760,7 +760,7 @@ function PowerFormPage() {
                           patch({
                             defense_items: [
                               ...vpDefItems,
-                              { id: genId(), nome: "", bonus: 0, peso: 0 },
+                              { id: genId(), nome: "", bonus: 0, rd: 0, peso: 0 },
                             ],
                           })
                         }

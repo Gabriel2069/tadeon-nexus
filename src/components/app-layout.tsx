@@ -27,6 +27,7 @@ import {
 } from "@/components/ui/dialog";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { BrandMark, ThreadField } from "@/components/brand-mark";
 
 const roleIcons: Record<string, typeof Crown> = {
   mestre: Crown,
@@ -93,18 +94,29 @@ export function AppLayout({ children }: { children: ReactNode }) {
   );
 
   const SidebarContent = ({ mini }: { mini: boolean }) => (
-    <div className="flex h-full flex-col p-3">
-      <div className={`mb-5 ${mini ? "text-center" : ""}`}>
+    <div className="relative flex h-full flex-col overflow-hidden p-3">
+      <ThreadField className="text-sidebar-primary opacity-40" />
+      <div className={`relative z-10 mb-6 ${mini ? "text-center" : ""}`}>
         {mini ? (
-          <div className="font-cinzel text-lg font-bold text-primary tracking-tight">TN</div>
+          <BrandMark className="mx-auto h-9 w-9 text-primary" />
         ) : (
           <>
-            <h1 className="font-cinzel text-xl font-bold text-primary">Tadeon Nexus</h1>
-            <p className="mt-1 text-xs text-muted-foreground truncate">
-              {profile?.full_name || user?.email}
-            </p>
+            <div className="flex items-center gap-3 px-1 pt-1">
+              <BrandMark className="h-11 w-11 shrink-0 text-primary" />
+              <div className="min-w-0">
+                <div className="tadeon-eyebrow">Fio-Mestre</div>
+                <h1 className="font-cinzel text-xl font-semibold leading-none text-primary">
+                  Tadeon Nexus
+                </h1>
+              </div>
+            </div>
+            <div className="mt-4 border-l border-primary/25 pl-3">
+              <p className="truncate text-xs text-muted-foreground">
+                {profile?.full_name || user?.email}
+              </p>
+            </div>
             {role && (
-              <div className="mt-1 flex items-center gap-1.5 text-xs text-primary">
+              <div className="mt-1 flex items-center gap-1.5 pl-3 text-[11px] text-primary">
                 <RoleIcon className="w-3 h-3" />
                 <span className="capitalize">{role}</span>
               </div>
@@ -113,9 +125,9 @@ export function AppLayout({ children }: { children: ReactNode }) {
         )}
       </div>
 
-      <div className="flex-1">{renderNav(mini)}</div>
+      <div className="relative z-10 flex-1">{renderNav(mini)}</div>
 
-      <div className="pt-3 border-t border-sidebar-border space-y-1">
+      <div className="relative z-10 space-y-1 border-t border-sidebar-border pt-3">
         <SideAction
           mini={mini}
           icon={<Settings className="w-4 h-4" />}
@@ -133,8 +145,8 @@ export function AppLayout({ children }: { children: ReactNode }) {
           onClick={handleSignOut}
         />
         {!mini && (
-          <p className="mt-3 text-center text-[10px] text-muted-foreground">
-            © {new Date().getFullYear()} Gabriel Tadeu
+          <p className="tadeon-mono mt-3 text-center text-[9px] uppercase text-muted-foreground">
+            Arquivo · {new Date().getFullYear()}
           </p>
         )}
       </div>
@@ -145,7 +157,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
     <div className="min-h-screen flex">
       {/* Desktop sidebar */}
       <aside
-        className={`hidden md:flex relative shrink-0 bg-sidebar text-sidebar-foreground border-r border-sidebar-border transition-[width] duration-300 ease-out ${
+        className={`hidden md:flex relative shrink-0 bg-sidebar/95 text-sidebar-foreground border-r border-sidebar-border shadow-[24px_0_80px_-50px_rgba(0,0,0,.95)] transition-[width] duration-300 ease-out ${
           collapsed ? "w-16" : "w-64"
         }`}
       >
@@ -166,7 +178,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
 
       <div className="flex-1 flex flex-col min-w-0">
         {/* Mobile header */}
-        <header className="md:hidden sticky top-0 z-20 bg-background/90 backdrop-blur-sm border-b border-border px-4 py-3 flex items-center justify-between">
+        <header className="md:hidden sticky top-0 z-20 bg-background/85 backdrop-blur-xl border-b border-border/80 px-4 py-3 flex items-center justify-between">
           <button
             onClick={() => setMobileOpen(true)}
             className="p-1.5 rounded-md hover:bg-secondary transition-colors"
@@ -174,7 +186,10 @@ export function AppLayout({ children }: { children: ReactNode }) {
           >
             <Menu className="w-5 h-5" />
           </button>
-          <h1 className="font-cinzel text-lg font-bold text-primary">Tadeon Nexus</h1>
+          <div className="flex items-center gap-2">
+            <BrandMark className="h-7 w-7 text-primary" />
+            <h1 className="font-cinzel text-lg font-semibold text-primary">Tadeon Nexus</h1>
+          </div>
           <button
             onClick={() => setAccountOpen(true)}
             className="p-1.5 rounded-md hover:bg-secondary transition-colors"
@@ -191,7 +206,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
       {mobileOpen && (
         <div className="md:hidden fixed inset-0 z-40 animate-in fade-in-0 duration-200">
           <div className="absolute inset-0 bg-black/60" onClick={() => setMobileOpen(false)} />
-          <aside className="absolute left-0 top-0 h-full w-64 bg-sidebar text-sidebar-foreground border-r border-sidebar-border animate-in slide-in-from-left duration-300">
+          <aside className="absolute left-0 top-0 h-full w-72 bg-sidebar text-sidebar-foreground border-r border-sidebar-border animate-in slide-in-from-left duration-300">
             <button
               onClick={() => setMobileOpen(false)}
               className="absolute top-3 right-3 p-1.5 rounded-md hover:bg-secondary transition-colors"
@@ -235,12 +250,12 @@ function NavItem({
       to={to}
       onClick={onClick}
       title={mini ? label : undefined}
-      className={`flex items-center gap-2 px-3 py-2 rounded-md text-sm transition-all ${
+      className={`group flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-sm transition-all ${
         mini ? "justify-center px-2" : ""
       } ${
         active
-          ? "bg-sidebar-accent text-sidebar-accent-foreground font-medium shadow-sm"
-          : "text-sidebar-foreground/80 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+          ? "bg-sidebar-accent text-sidebar-accent-foreground font-medium shadow-[inset_2px_0_0_var(--sidebar-primary)]"
+          : "text-sidebar-foreground/70 hover:bg-sidebar-accent/70 hover:text-sidebar-accent-foreground"
       }`}
     >
       {icon}

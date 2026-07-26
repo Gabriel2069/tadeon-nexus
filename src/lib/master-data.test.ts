@@ -8,11 +8,11 @@ import {
 
 describe("ferramentas do mestre", () => {
   it("usa os valores canônicos de Magnitude", () => {
-    expect(getThreatBase(1)).toEqual({ magnitude: 1, pp: 15, def: 6, reactions: 0, cp: 8 });
+    expect(getThreatBase(1)).toEqual({ magnitude: 1, pp: 15, def: 15, reactions: 0, cp: 8 });
     expect(getThreatBase(20)).toEqual({
       magnitude: 20,
       pp: 263,
-      def: 25,
+      def: 23,
       reactions: 4,
       cp: 158,
     });
@@ -30,7 +30,7 @@ describe("ferramentas do mestre", () => {
     };
     expect(threatStats(threat)).toMatchObject({
       pp: 50,
-      def: 11,
+      def: 18,
       rd: 1,
       reactions: 2,
       movement: 9,

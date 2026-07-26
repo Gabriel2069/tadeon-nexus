@@ -41,6 +41,10 @@ import {
   type ConditionOptionsMap,
   type ConditionKey,
   type Description,
+  type FragmentItem,
+  type IdentityData,
+  type LifeCycleTrait,
+  type LinkState,
   SKILL_GROUPS,
   getRankBase,
   calcTotalPM,
@@ -52,6 +56,8 @@ import {
   DEFAULT_CONDITION_OPTIONS,
   CONDITION_META,
   getEquilibriumEffect,
+  DEFAULT_IDENTITY_DATA,
+  CANONICAL_RANK_TABLE,
 } from "@/lib/sheet-types";
 import { CANONICAL_SKILL_BRANCHES } from "@/lib/master-data";
 import { AddItemDialog } from "@/components/sheet/add-item-dialog";
@@ -65,21 +71,33 @@ import {
 } from "@/components/ui/select";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { useSerializedAutosave } from "@/lib/use-serialized-autosave";
+import { BrandMark } from "@/components/brand-mark";
 
-const PROFICIENCY_OPTIONS = ["leigo", "operador", "artilheiro", "combatente", "armígero"] as const;
+const PROFICIENCY_OPTIONS = ["leigo", "operador", "combatente", "armígero"] as const;
 type Proficiency = (typeof PROFICIENCY_OPTIONS)[number];
+
+const LIFE_CYCLE_TRAITS: LifeCycleTrait[] = [
+  "Formação recente",
+  "Corpo habituado",
+  "Nome reconhecido",
+  "Experiência acumulada",
+  "Responsabilidades",
+  "Cicatriz antiga",
+];
+
+const LINK_STATES: LinkState[] = ["Presente", "Tensionado", "Ferido", "Rompido", "Costurado"];
 
 const AttributeRadar = lazy(() => import("@/components/sheet/attribute-radar"));
 
 const TRAINING_TIERS = [
-  { tier: 1, name: "Iniciado", bonus: 5 },
-  { tier: 2, name: "Apurado", bonus: 10 },
-  { tier: 3, name: "Versado", bonus: 15 },
+  { tier: 1, name: "Iniciado", bonus: 3 },
+  { tier: 2, name: "Apurado", bonus: 6 },
+  { tier: 3, name: "Versado", bonus: 9 },
 ] as const;
 function tierFromBonus(b: number): 0 | 1 | 2 | 3 {
-  if (b >= 15) return 3;
-  if (b >= 10) return 2;
-  if (b >= 5) return 1;
+  if (b >= 9) return 3;
+  if (b >= 6) return 2;
+  if (b >= 3) return 1;
   return 0;
 }
 
@@ -122,6 +140,7 @@ export interface DefenseItem {
   id: string;
   nome: string;
   bonus: number;
+  rd: number;
   peso: number;
 }
 
@@ -157,14 +176,15 @@ interface SheetData {
   purchased_skills: string[];
   notes: string;
   description: Description;
+  identity_data: IdentityData;
   power_form_enabled: boolean;
   power_form_data: PowerFormData;
-  fragments_items: InventoryItem[];
+  fragments_items: FragmentItem[];
   defense_items: DefenseItem[];
   weapon_proficiency: Proficiency;
 }
 
-const RANGE_OPTIONS = ["Curto", "Médio", "Longo", "Extremo"];
+const RANGE_OPTIONS = ["Engajado", "Próximo", "Distante", "Longo", "Extremo"];
 const PLOT_RANGE_OPTIONS = ["Pessoal", "Curto", "Médio", "Longo", "Extremo"];
 
 function clamp(n: number, min: number, max: number) {
@@ -241,8 +261,34 @@ function SheetPage() {
         observacoes: "",
       };
       const pfData = (raw.power_form_data as PowerFormData | null) ?? {};
-      const fragItems = (raw.fragments_items as InventoryItem[] | null) ?? [];
-      const defItems = (raw.defense_items as DefenseItem[] | null) ?? [];
+      const fragItems = ((raw.fragments_items as FragmentItem[] | null) ?? []).map((item) => ({
+        ...item,
+        categoria: item.categoria ?? "I",
+        selo: item.selo ?? "Não selado",
+        integridade: Number(item.integridade ?? 0),
+        limiteSeguro: item.limiteSeguro ?? "Repuxo",
+      }));
+      const defItems = ((raw.defense_items as Partial<DefenseItem>[] | null) ?? []).map((item) => ({
+        id: item.id ?? genId(),
+        nome: item.nome ?? "",
+        bonus: Number(item.bonus ?? 0),
+        rd: Number(item.rd ?? 0),
+        peso: Number(item.peso ?? 0),
+      }));
+      const rawIdentity = (raw.identity_data as Partial<IdentityData> | null) ?? {};
+      const identityData: IdentityData = {
+        ...DEFAULT_IDENTITY_DATA,
+        ...rawIdentity,
+        conviction: rawIdentity.conviction ?? String(raw.motivation ?? ""),
+        links: (rawIdentity.links?.length ? rawIdentity.links : DEFAULT_IDENTITY_DATA.links).map(
+          (link, index) => ({
+            id: link.id || `link-${index + 1}`,
+            name: link.name ?? "",
+            relation: link.relation ?? "",
+            state: link.state ?? "Presente",
+          }),
+        ),
+      };
       setSheet({
         ...(data as unknown as SheetData),
         drift: Number(raw.drift ?? 0),
@@ -252,6 +298,7 @@ function SheetPage() {
           pa_mod: Number((raw.stats as Stats | null)?.pa_mod ?? 0),
         } as Stats,
         description: desc,
+        identity_data: identityData,
         power_form_enabled: Boolean(raw.power_form_enabled),
         power_form_data: pfData,
         fragments_items: fragItems,
@@ -259,16 +306,35 @@ function SheetPage() {
         weapon_proficiency: (raw.weapon_proficiency as Proficiency | null) ?? "leigo",
       });
 
-      const g = (settingsJson as unknown as Record<string, unknown> | null) ?? {};
-      setRankTable((g.rank_table as RankRow[] | undefined) ?? []);
-      setBranches((g.skill_branches as SkillBranch[] | undefined) ?? []);
-      setUpgradeCosts((g.upgrade_costs as UpgradeCosts | undefined) ?? DEFAULT_UPGRADE_COSTS);
-      setConditionOptions(
-        (g.condition_options as ConditionOptionsMap | undefined) ?? DEFAULT_CONDITION_OPTIONS,
+      const settings = (settingsJson as unknown as Record<string, unknown> | null) ?? {};
+      const configuredRanks = (settings.rank_table as RankRow[] | undefined) ?? [];
+      const configuredBranches = (settings.skill_branches as SkillBranch[] | undefined) ?? [];
+      const finalRulesConfigured =
+        configuredRanks[0]?.def === 10 &&
+        configuredRanks.at(-1)?.pm === 170 &&
+        configuredBranches.length === 4 &&
+        configuredBranches.every((branch) => branch.nodes.length === 24);
+      setRankTable(finalRulesConfigured ? configuredRanks : CANONICAL_RANK_TABLE);
+      setBranches(finalRulesConfigured ? configuredBranches : CANONICAL_SKILL_BRANCHES);
+      setUpgradeCosts(
+        finalRulesConfigured
+          ? ((settings.upgrade_costs as UpgradeCosts | undefined) ?? DEFAULT_UPGRADE_COSTS)
+          : DEFAULT_UPGRADE_COSTS,
       );
-      setSheetSkillGroups((g.skill_groups as typeof SKILL_GROUPS | undefined) ?? []);
-      const tc = g.skill_training_costs as number[] | undefined;
-      if (tc && tc.length >= 3) setTrainingCosts([tc[0], tc[1], tc[2]]);
+      setConditionOptions(
+        finalRulesConfigured
+          ? ((settings.condition_options as ConditionOptionsMap | undefined) ??
+              DEFAULT_CONDITION_OPTIONS)
+          : DEFAULT_CONDITION_OPTIONS,
+      );
+      setSheetSkillGroups(
+        finalRulesConfigured
+          ? ((settings.skill_groups as typeof SKILL_GROUPS | undefined) ?? SKILL_GROUPS)
+          : SKILL_GROUPS,
+      );
+      const training = settings.skill_training_costs as number[] | undefined;
+      if (finalRulesConfigured && training && training.length >= 3)
+        setTrainingCosts([training[0], training[1], training[2]]);
       setLoading(false);
     })();
   }, [id, navigate]);
@@ -382,7 +448,11 @@ function SheetPage() {
   const upg = sheet.stat_upgrades;
   const defItemsBonus = sheet.defense_items.reduce((s, d) => s + (Number(d.bonus) || 0), 0);
   const armorRaw = defItemsBonus;
-  const armorTotal = Math.min(25, armorRaw); // limite de armadura
+  const armorTotal = Math.min(3, armorRaw);
+  const armorRd = Math.min(
+    2,
+    sheet.defense_items.reduce((sum, item) => sum + (Number(item.rd) || 0), 0),
+  );
   const maximums = calculateSheetMaximums({
     attributes: attrs,
     stats: sheet.stats,
@@ -393,16 +463,16 @@ function SheetPage() {
   const { pv: pvMax, ps: psMax, pe: peMax, pa: paMax, def: defTotal } = maximums;
   const invCapacity = 5 + 2 * attrs.COR;
   const invUsed =
-    sheet.weapons.reduce((s, w) => s + (Number(w.peso) || 0), 0) +
+    sheet.weapons.reduce((s, w) => s + (Number(w.espaco ?? w.peso) || 0), 0) +
     sheet.inventory.reduce((s, i) => s + (Number(i.espaco) || 0), 0) +
     sheet.fragments_items.reduce((s, i) => s + (Number(i.espaco) || 0), 0) +
     sheet.defense_items.reduce((s, d) => s + (Number(d.peso) || 0), 0);
 
-  const trainingLimit = 4 + Math.floor(base.rank / 2) + Math.floor(3 * attrs.ERU);
   const trainingUsed = Object.values(sheet.skills || {}).reduce(
     (s, v) => s + tierFromBonus(Number(v) || 0),
     0,
   );
+  const initialTrainingRemaining = Math.max(0, 7 - trainingUsed);
   const pmAvailable = calcTotalPM(sheet.exposure, rankTable) - calculatedPmSpent;
 
   const skillGroups = sheetSkillGroups.length ? sheetSkillGroups : SKILL_GROUPS;
@@ -426,9 +496,9 @@ function SheetPage() {
   const equilibriumEffect = getEquilibriumEffect(equilibrium);
 
   return (
-    <div className="max-w-6xl mx-auto p-3 md:p-6 pb-24">
+    <div className="tadeon-page pb-24">
       {/* Sticky Header */}
-      <div className="sticky top-0 z-10 -mx-3 md:-mx-6 px-3 md:px-6 py-3 mb-4 bg-background/85 backdrop-blur-md border-b border-border">
+      <div className="sticky top-0 z-10 -mx-4 md:-mx-8 px-4 md:px-8 py-3 mb-5 bg-background/85 backdrop-blur-xl border-b border-border/80">
         <div className="flex items-center gap-2">
           <Button
             variant="ghost"
@@ -438,9 +508,13 @@ function SheetPage() {
           >
             <ArrowLeft className="w-5 h-5" />
           </Button>
-          <h1 className="font-cinzel text-lg md:text-2xl font-bold flex-1 truncate">
-            {sheet.name || "Ficha"}
-          </h1>
+          <BrandMark className="hidden h-8 w-8 text-primary sm:block" />
+          <div className="min-w-0 flex-1">
+            <p className="tadeon-eyebrow hidden sm:block">Ficha de continuidade</p>
+            <h1 className="font-cinzel text-lg md:text-2xl font-semibold truncate">
+              {sheet.name || "Ficha"}
+            </h1>
+          </div>
           {!canEdit && (
             <span className="text-[10px] px-2 py-0.5 rounded-full bg-muted text-muted-foreground">
               somente leitura
@@ -538,7 +612,14 @@ function SheetPage() {
               ))}
             </div>
             <Section id="sec-info" title="Identidade">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div className="mb-4">
+                <p className="tadeon-eyebrow">Sete campos essenciais</p>
+                <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
+                  Origem situa, Ocupação mostra prática, Convicção sustenta, Limite interrompe,
+                  Ferida pressiona e Marca registra o que já mudou.
+                </p>
+              </div>
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3">
                 <Field
                   label="Nome"
                   value={sheet.name}
@@ -552,9 +633,9 @@ function SheetPage() {
                   disabled={!canEdit}
                 />
                 <Field
-                  label="Idade"
-                  value={sheet.age}
-                  onChange={(v) => update("age", v)}
+                  label="Origem"
+                  value={sheet.origin}
+                  onChange={(v) => update("origin", v)}
                   disabled={!canEdit}
                 />
                 <Field
@@ -564,17 +645,126 @@ function SheetPage() {
                   disabled={!canEdit}
                 />
                 <Field
-                  label="Origem"
-                  value={sheet.origin}
-                  onChange={(v) => update("origin", v)}
+                  label="Convicção"
+                  value={sheet.identity_data.conviction}
+                  onChange={(value) =>
+                    update("identity_data", { ...sheet.identity_data, conviction: value })
+                  }
                   disabled={!canEdit}
                 />
                 <Field
-                  label="Motivação"
-                  value={sheet.motivation}
-                  onChange={(v) => update("motivation", v)}
+                  label="Limite"
+                  value={sheet.identity_data.limit}
+                  onChange={(value) =>
+                    update("identity_data", { ...sheet.identity_data, limit: value })
+                  }
                   disabled={!canEdit}
                 />
+                <Field
+                  label="Ferida"
+                  value={sheet.identity_data.wound}
+                  onChange={(value) =>
+                    update("identity_data", { ...sheet.identity_data, wound: value })
+                  }
+                  disabled={!canEdit}
+                />
+              </div>
+              <div className="mt-4 grid gap-4 lg:grid-cols-[1fr_1.2fr]">
+                <div className="space-y-3 rounded-xl border border-border/60 bg-secondary/20 p-4">
+                  <div>
+                    <Label className="text-[10px] uppercase tracking-wider">Traço do ciclo de vida</Label>
+                    <Select
+                      value={sheet.identity_data.lifeCycleTrait || undefined}
+                      disabled={!canEdit}
+                      onValueChange={(value) =>
+                        update("identity_data", {
+                          ...sheet.identity_data,
+                          lifeCycleTrait: value as LifeCycleTrait,
+                        })
+                      }
+                    >
+                      <SelectTrigger className="mt-1">
+                        <SelectValue placeholder="Escolha um traço" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {LIFE_CYCLE_TRAITS.map((trait) => (
+                          <SelectItem key={trait} value={trait}>
+                            {trait}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div>
+                    <Label className="text-[10px] uppercase tracking-wider">Pergunta</Label>
+                    <Textarea
+                      rows={3}
+                      disabled={!canEdit}
+                      value={sheet.identity_data.question}
+                      onChange={(event) =>
+                        update("identity_data", {
+                          ...sheet.identity_data,
+                          question: event.target.value,
+                        })
+                      }
+                      placeholder="Que pergunta ainda organiza esta personagem?"
+                    />
+                  </div>
+                </div>
+                <div className="rounded-xl border border-border/60 bg-secondary/20 p-4">
+                  <div className="mb-3 flex items-center justify-between">
+                    <div>
+                      <p className="tadeon-eyebrow">Vínculos</p>
+                      <p className="text-xs text-muted-foreground">Duas relações que podem mudar de estado.</p>
+                    </div>
+                  </div>
+                  <div className="space-y-3">
+                    {sheet.identity_data.links.slice(0, 2).map((link, index) => (
+                      <div key={link.id} className="grid gap-2 sm:grid-cols-[1fr_1fr_140px]">
+                        <Input
+                          disabled={!canEdit}
+                          value={link.name}
+                          placeholder={`Vínculo ${index + 1}`}
+                          onChange={(event) => {
+                            const links = [...sheet.identity_data.links];
+                            links[index] = { ...link, name: event.target.value };
+                            update("identity_data", { ...sheet.identity_data, links });
+                          }}
+                        />
+                        <Input
+                          disabled={!canEdit}
+                          value={link.relation}
+                          placeholder="Natureza da relação"
+                          onChange={(event) => {
+                            const links = [...sheet.identity_data.links];
+                            links[index] = { ...link, relation: event.target.value };
+                            update("identity_data", { ...sheet.identity_data, links });
+                          }}
+                        />
+                        <Select
+                          value={link.state}
+                          disabled={!canEdit}
+                          onValueChange={(value) => {
+                            const links = [...sheet.identity_data.links];
+                            links[index] = { ...link, state: value as LinkState };
+                            update("identity_data", { ...sheet.identity_data, links });
+                          }}
+                        >
+                          <SelectTrigger>
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {LINK_STATES.map((state) => (
+                              <SelectItem key={state} value={state}>
+                                {state}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    ))}
+                  </div>
+                </div>
               </div>
             </Section>
 
@@ -707,7 +897,7 @@ function SheetPage() {
                     </div>
                     <div className="text-[10px] text-muted-foreground text-center -mt-1 mb-2">
                       base {base.def} + INS {attrs.INS} + equip {armorTotal}
-                      {armorRaw > 25 ? " (cap 25)" : ""} + mod {sheet.stats.def_mod}
+                      {armorRaw > 3 ? " (máx. 3)" : ""} + mod {sheet.stats.def_mod}
                       {upg.def ? ` + apr ${upg.def}` : ""}
                     </div>
                     <div className="grid grid-cols-2 gap-2 text-xs">
@@ -719,7 +909,7 @@ function SheetPage() {
                           tabIndex={-1}
                           value={armorTotal}
                           className="h-7 bg-muted/40 cursor-not-allowed"
-                          title="Soma dos bônus dos equipamentos (máx. 25)"
+                          title="Soma dos bônus de armadura (máx. 3)"
                         />
                       </div>
                       <div>
@@ -763,7 +953,7 @@ function SheetPage() {
                               onClick={() =>
                                 update("defense_items", [
                                   ...sheet.defense_items,
-                                  { id: genId(), nome: "", bonus: 0, peso: 0 },
+                                  { id: genId(), nome: "", bonus: 0, rd: 0, peso: 0 },
                                 ])
                               }
                               className="text-[10px] flex items-center gap-1 px-1.5 py-0.5 rounded-md bg-primary/15 text-primary hover:bg-primary/25 transition-colors"
@@ -782,13 +972,18 @@ function SheetPage() {
                             canEdit={canEdit}
                             columns={[
                               { key: "nome", label: "Nome", flex: 1.5 },
-                              { key: "bonus", label: "Bônus", type: "number", width: 64 },
-                              { key: "peso", label: "Peso", type: "number", width: 64 },
+                              { key: "bonus", label: "DEF", type: "number", width: 58 },
+                              { key: "rd", label: "RD", type: "number", width: 58 },
+                              { key: "peso", label: "Espaço", type: "number", width: 68 },
                             ]}
                             onChange={(v) => update("defense_items", v as DefenseItem[])}
                           />
                         )}
                       </div>
+                    </div>
+                    <div className="mt-2 rounded-md border border-border/50 bg-background/30 px-2 py-1.5 text-center text-[10px] text-muted-foreground">
+                      RD equipada: <strong className="text-foreground">{armorRd}</strong> · armaduras
+                      finais variam de DEF +1 a +3 e RD 0 a 2.
                     </div>
                   </Card>
                 </div>
@@ -801,7 +996,7 @@ function SheetPage() {
               extra={
                 <div className="inline-flex items-center gap-1.5 px-2 py-1 rounded-lg bg-gradient-to-r from-amber-500/15 to-transparent border border-amber-500/40 shadow-[0_0_10px_-4px_rgba(245,158,11,0.7)]">
                   <span className="text-[10px] uppercase tracking-wider font-cinzel text-amber-300">
-                    Deriva
+                    Tensão
                   </span>
                   <Button
                     size="sm"
@@ -820,7 +1015,7 @@ function SheetPage() {
                               }
                             : previous,
                         );
-                        toast.info("Deriva atingiu −4: −1 no Equilíbrio.");
+                        toast.info("Tensão atingiu −4: o Equilíbrio moveu 1 ponto para o Medo.");
                       } else update("drift", next);
                     }}
                   >
@@ -848,7 +1043,9 @@ function SheetPage() {
                               }
                             : previous,
                         );
-                        toast.info("Deriva atingiu +4: +1 no Equilíbrio.");
+                        toast.info(
+                          "Tensão atingiu +4: o Equilíbrio moveu 1 ponto para o Conhecimento.",
+                        );
                       } else update("drift", next);
                     }}
                   >
@@ -1034,10 +1231,8 @@ function SheetPage() {
               title="Perícias"
               extra={
                 <div className="flex items-center gap-2 flex-wrap">
-                  <span
-                    className={`text-[11px] px-2 py-0.5 rounded-full border ${trainingUsed > trainingLimit ? "border-destructive text-destructive" : "border-border text-muted-foreground"}`}
-                  >
-                    Treinos: {trainingUsed}/{trainingLimit}
+                  <span className="text-[11px] px-2 py-0.5 rounded-full border border-border text-muted-foreground">
+                    Graus iniciais: {Math.min(trainingUsed, 7)}/7
                   </span>
                   <Input
                     placeholder="Bônus temporário"
@@ -1049,12 +1244,14 @@ function SheetPage() {
                 </div>
               }
             >
+              <p className="mb-3 text-xs leading-relaxed text-muted-foreground">
+                Os grupos organizam a leitura da ficha; o Atributo usado no teste continua sendo
+                definido pela abordagem descrita na cena.
+              </p>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-2.5">
                 {skillGroups.map((g) => (
                   <div key={g.attr} className="bg-secondary/40 rounded-lg p-2.5">
-                    <h4 className="font-cinzel text-xs font-bold mb-1.5">
-                      {g.label} ({g.attr})
-                    </h4>
+                    <h4 className="font-cinzel text-xs font-bold mb-1.5">{g.label}</h4>
                     <div className="space-y-0.5">
                       {g.skills.map((s) => {
                         const v = sheet.skills[s] ?? 0;
@@ -1068,15 +1265,17 @@ function SheetPage() {
                                 ? "text-green-400"
                                 : "text-muted-foreground";
                         const tierName = tier === 0 ? "Sem treino" : TRAINING_TIERS[tier - 1].name;
+                        const isInitialDegree = initialTrainingRemaining > 0 && tier < 2;
                         const nextCost: number | null =
-                          tier < 3 ? (trainingCosts[tier] ?? 0) : null;
+                          tier < 3 ? (isInitialDegree ? 0 : (trainingCosts[tier] ?? 0)) : null;
                         const refund: number = tier > 0 ? (trainingCosts[tier - 1] ?? 0) : 0;
-                        const wouldExceed = tier < 3 && trainingUsed + 1 > trainingLimit;
+                        const minimumRank = [5, 25, 50][tier] ?? 100;
+                        const lacksRank = !isInitialDegree && base.rank < minimumRank;
                         const lacksPM = nextCost != null && pmAvailable < nextCost;
                         const upgrade = () => {
                           if (tier >= 3 || nextCost == null) return;
-                          if (wouldExceed) {
-                            toast.error(`Limite de treinos atingido (${trainingLimit}).`);
+                          if (lacksRank) {
+                            toast.error(`Este grau exige Rank ${minimumRank}.`);
                             return;
                           }
                           if (lacksPM) {
@@ -1094,7 +1293,9 @@ function SheetPage() {
                           );
                           setOpenSkill(null);
                           toast.success(
-                            `${s}: ${nextTier.name} (+${nextTier.bonus}) — ${nextCost} PM`,
+                            `${s}: ${nextTier.name} (+${nextTier.bonus}) — ${
+                              isInitialDegree ? "grau inicial" : `${nextCost} PM`
+                            }`,
                           );
                         };
                         const downgrade = () => {
@@ -1158,7 +1359,16 @@ function SheetPage() {
                                 <div className="flex-1 text-center text-xs">
                                   {tier < 3 && nextCost != null ? (
                                     <span className="text-muted-foreground">
-                                      Avançar: <b className="text-foreground">{nextCost} PM</b>
+                                      {lacksRank ? (
+                                        <>Requer Rank {minimumRank}</>
+                                      ) : (
+                                        <>
+                                          Avançar:{" "}
+                                          <b className="text-foreground">
+                                            {isInitialDegree ? "grau inicial" : `${nextCost} PM`}
+                                          </b>
+                                        </>
+                                      )}
                                     </span>
                                   ) : (
                                     <span className="text-muted-foreground italic">
@@ -1170,10 +1380,10 @@ function SheetPage() {
                                   size="sm"
                                   variant="ghost"
                                   className="h-8 w-8 p-0"
-                                  disabled={!canEdit || tier >= 3 || wouldExceed || lacksPM}
+                                  disabled={!canEdit || tier >= 3 || lacksRank || lacksPM}
                                   title={
-                                    wouldExceed
-                                      ? "Limite de treinos atingido"
+                                    lacksRank
+                                      ? `Requer Rank ${minimumRank}`
                                       : lacksPM
                                         ? "PM insuficientes"
                                         : "Avançar treino"
@@ -1228,16 +1438,41 @@ function SheetPage() {
                       initial={{
                         id: "",
                         nome: "",
+                        descricao: "",
+                        familia: "",
+                        categoria: "",
+                        proficiencia: "leigo",
+                        testeAtaque: "",
+                        atributoDano: "",
                         tipo: "",
-                        alcance: "Curto",
+                        alcance: "Engajado",
                         dano: "",
                         critico: "",
+                        margemAmeaca: "20",
+                        maos: "Uma mão",
+                        propriedades: "",
+                        espaco: 1,
+                        fonte: "",
+                        pd: 6,
+                        rd: 1,
+                        modificacoes: "",
+                        condicoesUso: "",
                         peso: 0,
                         extra: "",
                       }}
                       fields={[
                         { key: "nome", label: "Nome" },
-                        { key: "tipo", label: "Tipo" },
+                        { key: "descricao", label: "Descrição / procedência", type: "textarea" },
+                        { key: "familia", label: "Família" },
+                        { key: "categoria", label: "Categoria" },
+                        {
+                          key: "proficiencia",
+                          label: "Proficiência",
+                          type: "select",
+                          options: [...PROFICIENCY_OPTIONS],
+                        },
+                        { key: "testeAtaque", label: "Teste de ataque" },
+                        { key: "atributoDano", label: "Atributo de dano" },
                         {
                           key: "alcance",
                           label: "Alcance",
@@ -1245,9 +1480,16 @@ function SheetPage() {
                           options: RANGE_OPTIONS,
                         },
                         { key: "dano", label: "Dano", placeholder: "ex: 1d6+1" },
-                        { key: "critico", label: "Crítico", placeholder: "ex: 19/x2" },
-                        { key: "peso", label: "Peso", type: "number" },
-                        { key: "extra", label: "Extra" },
+                        { key: "tipo", label: "Tipo de dano" },
+                        { key: "margemAmeaca", label: "Margem de ameaça", placeholder: "20" },
+                        { key: "maos", label: "Mãos" },
+                        { key: "propriedades", label: "Propriedades", type: "textarea" },
+                        { key: "espaco", label: "Espaço", type: "number" },
+                        { key: "fonte", label: "Munição / fonte" },
+                        { key: "pd", label: "PD", type: "number" },
+                        { key: "rd", label: "RD", type: "number" },
+                        { key: "modificacoes", label: "Modificações", type: "textarea" },
+                        { key: "condicoesUso", label: "Condições de uso", type: "textarea" },
                       ]}
                       onAdd={(w) => update("weapons", [...sheet.weapons, { ...w, id: genId() }])}
                     />
@@ -1260,12 +1502,15 @@ function SheetPage() {
                 canEdit={canEdit}
                 columns={[
                   { key: "nome", label: "Nome", flex: 1.5 },
-                  { key: "tipo", label: "Tipo" },
+                  { key: "familia", label: "Família" },
+                  { key: "categoria", label: "Categoria" },
+                  { key: "testeAtaque", label: "Ataque", flex: 1.2 },
                   { key: "alcance", label: "Alcance" },
                   { key: "dano", label: "Dano" },
-                  { key: "critico", label: "Crítico" },
-                  { key: "peso", label: "Peso", type: "number", width: 70 },
-                  { key: "extra", label: "Extra", flex: 1.2 },
+                  { key: "tipo", label: "Tipo" },
+                  { key: "margemAmeaca", label: "Ameaça", width: 72 },
+                  { key: "espaco", label: "Espaço", type: "number", width: 70 },
+                  { key: "propriedades", label: "Propriedades", flex: 1.5 },
                 ]}
                 onChange={(v) => update("weapons", v as Weapon[])}
               />
@@ -1374,18 +1619,54 @@ function SheetPage() {
                   </Button>
                   {fragmentsView
                     ? canEdit && (
-                        <AddItemDialog<InventoryItem>
+                        <AddItemDialog<FragmentItem>
                           title="Novo Fragmento"
                           triggerLabel="Fragmento"
-                          initial={{ id: "", nome: "", descricao: "", espaco: 1 }}
+                          initial={{
+                            id: "",
+                            nome: "",
+                            descricao: "",
+                            espaco: 1,
+                            selo: "Não selado",
+                            categoria: "I",
+                            integridade: 0,
+                            natureza: "",
+                            dominio: "",
+                            assinatura: "",
+                            limiteSeguro: "Repuxo",
+                            observacoes: "",
+                          }}
                           fields={[
                             { key: "nome", label: "Nome" },
                             { key: "descricao", label: "Descrição", type: "textarea" },
+                            {
+                              key: "selo",
+                              label: "Selo",
+                              type: "select",
+                              options: ["Selado", "Não selado"],
+                            },
+                            {
+                              key: "categoria",
+                              label: "Categoria",
+                              type: "select",
+                              options: ["I", "II", "III"],
+                            },
+                            { key: "integridade", label: "Integridade atual", type: "number" },
+                            { key: "natureza", label: "Natureza" },
+                            { key: "dominio", label: "Domínio" },
+                            { key: "assinatura", label: "Assinatura", type: "textarea" },
+                            {
+                              key: "limiteSeguro",
+                              label: "Limite seguro",
+                              type: "select",
+                              options: ["Repuxo", "Tração", "Estiramento"],
+                            },
                             {
                               key: "espaco",
                               label: "Espaço (peso conta no inventário)",
                               type: "number",
                             },
+                            { key: "observacoes", label: "Observações", type: "textarea" },
                           ]}
                           onAdd={(it) =>
                             update("fragments_items", [
@@ -1448,10 +1729,31 @@ function SheetPage() {
                     canEdit={canEdit}
                     columns={[
                       { key: "nome", label: "Nome", flex: 1.2 },
-                      { key: "descricao", label: "Descrição", flex: 2.5 },
+                      {
+                        key: "selo",
+                        label: "Selo",
+                        type: "select",
+                        options: ["Selado", "Não selado"],
+                      },
+                      {
+                        key: "categoria",
+                        label: "Cat.",
+                        type: "select",
+                        options: ["I", "II", "III"],
+                        width: 62,
+                      },
+                      { key: "integridade", label: "Int.", type: "number", width: 62 },
+                      { key: "natureza", label: "Natureza" },
+                      { key: "dominio", label: "Domínio" },
+                      {
+                        key: "limiteSeguro",
+                        label: "Limite",
+                        type: "select",
+                        options: ["Repuxo", "Tração", "Estiramento"],
+                      },
                       { key: "espaco", label: "Espaço", type: "number", width: 80 },
                     ]}
-                    onChange={(v) => update("fragments_items", v as InventoryItem[])}
+                    onChange={(v) => update("fragments_items", v as FragmentItem[])}
                   />
                 </>
               ) : (
@@ -1547,7 +1849,7 @@ function SheetPage() {
         </Tabs>
       </div>
 
-      {/* Back to top — discreet, bottom-left (opposite to dice roller) */}
+      {/* Back to top */}
       <button
         type="button"
         onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
@@ -1575,10 +1877,10 @@ function Section({
   return (
     <Card
       id={id}
-      className="p-4 bg-card/60 backdrop-blur-sm border border-purple-500/20 shadow-[0_0_22px_-14px_rgba(168,85,247,0.55)] transition-all hover:border-purple-400/40 hover:shadow-[0_0_28px_-12px_rgba(168,85,247,0.7)] scroll-mt-32"
+      className="tadeon-surface rounded-2xl p-4 md:p-5 transition-all hover:border-primary/25 scroll-mt-32"
     >
       <div className="flex items-center justify-between flex-wrap gap-2 mb-3">
-        <h2 className="font-cinzel font-bold text-primary text-base drop-shadow-[0_0_6px_rgba(168,85,247,0.35)]">
+        <h2 className="font-cinzel font-semibold text-primary text-lg">
           {title}
         </h2>
         {extra}

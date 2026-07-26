@@ -32,8 +32,18 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { Plus, Trash, ExternalLink, Loader2, Lightbulb } from "lucide-react";
+import {
+  Plus,
+  Trash,
+  ExternalLink,
+  Loader2,
+  Lightbulb,
+  BookOpenText,
+  Orbit,
+  ArrowUpRight,
+} from "lucide-react";
 import { toast } from "sonner";
+import { BrandMark, ThreadField } from "@/components/brand-mark";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -70,7 +80,6 @@ interface SheetRow {
   exposure: number;
 }
 
-
 interface OwnerOption {
   id: string;
   email: string;
@@ -105,18 +114,19 @@ function HomePage() {
     const rows = (data ?? []) as SheetRow[];
     let labeled = rows;
     if (isMestre && rows.length > 0) {
-      const ids = Array.from(new Set(rows.map((r) => r.owner_id)));
-      const { data: profs } = await supabase
+      const ids = Array.from(new Set(rows.map((row) => row.owner_id)));
+      const { data: profiles } = await supabase
         .from("profiles")
         .select("id,email,full_name")
         .in("id", ids);
-      const map = new Map((profs ?? []).map((p) => [p.id, p.full_name || p.email || ""]));
-      labeled = rows.map((r) => ({ ...r, owner_label: map.get(r.owner_id) ?? null }));
+      const names = new Map(
+        (profiles ?? []).map((item) => [item.id, item.full_name || item.email || ""]),
+      );
+      labeled = rows.map((row) => ({ ...row, owner_label: names.get(row.owner_id) ?? null }));
     }
     setSheets(labeled);
     setLoading(false);
   };
-
 
   useEffect(() => {
     if (user) void load();
@@ -165,22 +175,20 @@ function HomePage() {
       return;
     }
     setCreating(true);
-    // Defaults: rank 0 base (pv 10, ps 10, pe 5, def 10, pa 0, pm 0) + COR/MEN/ERU = 1
-    // pv_max = 10 + 3*1 = 13; ps_max = 13; pe_max = 5 + 3*1 = 8
+    // Rank 0 final: PV 15, PS 13, PE 5, PA 0, DEF 10; all attributes begin at 1.
     const { data, error } = await supabase
       .from("character_sheets")
       .insert({
         owner_id: selectedOwner.id,
         name: name.trim() || "Novo Personagem",
-
         stats: {
-          pv_current: 13,
+          pv_current: 18,
           pv_mod: 0,
-          ps_current: 13,
+          ps_current: 16,
           ps_mod: 0,
-          pe_current: 8,
+          pe_current: 7,
           pe_mod: 0,
-          pa_current: 0,
+          pa_current: 1,
           pa_mod: 0,
           pm_current: 0,
           pm_mod: 0,
@@ -213,132 +221,191 @@ function HomePage() {
   };
 
   return (
-    <div className="p-4 md:p-8 max-w-6xl mx-auto">
-      <div className="flex flex-wrap items-end justify-between gap-4 mb-8">
-        <div>
-          <h1 className="font-cinzel text-2xl md:text-3xl font-bold">
-            Bem-vindo, {profile?.full_name || user?.email}
-          </h1>
-          <p className="text-sm text-muted-foreground mt-1">
-            {isMestre
-              ? "Você é o Mestre. Gerencie todas as fichas e configurações."
-              : role === "espectador"
-                ? "Modo espectador: apenas visualização."
-                : "Suas fichas de personagem"}
-          </p>
-        </div>
-        {isMestre && (
-          <Button asChild size="lg" className="gap-2">
-            <Link to="/master-panel">
-              <Lightbulb className="w-5 h-5" />
-              Painel do Mestre
-            </Link>
-          </Button>
-        )}
-      </div>
-
-      <div className="flex items-center justify-between mb-4">
-        <h2 className="font-cinzel text-xl font-bold">
-          {isMestre ? "Todas as Fichas" : "Suas Fichas"}
-        </h2>
-        {canCreate && (
-          <Dialog open={createOpen} onOpenChange={setCreateOpen}>
-            <DialogTrigger asChild>
-              <Button className="gap-2">
-                <Plus className="w-4 h-4" />
-                Nova Ficha
-              </Button>
-            </DialogTrigger>
-            <DialogContent>
-              <DialogHeader>
-                <DialogTitle className="font-cinzel">Criar Ficha</DialogTitle>
-              </DialogHeader>
-              <form onSubmit={handleCreate} className="space-y-4">
-                <div>
-                  <Label htmlFor="sheet-name">Nome do Personagem</Label>
-                  <Input
-                    id="sheet-name"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    placeholder="Ex: Caelum, o Errante"
-                    required
-                  />
-                </div>
-                {isMestre && (
-                  <div>
-                    <Label htmlFor="owner-id">Dono da ficha</Label>
-                    <Select value={ownerId} onValueChange={setOwnerId} disabled={ownersLoading}>
-                      <SelectTrigger id="owner-id">
-                        <SelectValue
-                          placeholder={
-                            ownersLoading ? "Carregando usuários…" : "Selecione um usuário"
-                          }
-                        />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {owners.map((owner) => (
-                          <SelectItem key={owner.id} value={owner.id}>
-                            {owner.full_name || owner.email} · {owner.email}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                )}
-                <DialogFooter>
-                  <Button type="submit" disabled={creating || (isMestre && !ownerId)}>
-                    {creating && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
-                    Criar
-                  </Button>
-                </DialogFooter>
-              </form>
-            </DialogContent>
-          </Dialog>
-        )}
-      </div>
-
-      {loading ? (
-        <div className="flex justify-center py-16">
-          <Loader2 className="w-8 h-8 animate-spin text-primary" />
-        </div>
-      ) : sheets.length === 0 ? (
-        <p className="text-center text-muted-foreground py-16">
-          Nenhuma ficha encontrada. {canCreate && "Crie uma nova para começar!"}
-        </p>
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {sheets.map((s) => (
-            <Card key={s.id} className="relative p-4 hover:border-primary/50 transition-colors">
-              <h3 className="font-cinzel font-bold text-lg pr-8">{s.name}</h3>
-              {s.occupation && <p className="text-sm text-muted-foreground">{s.occupation}</p>}
-              {s.owner_label && (
-                <p className="text-xs text-muted-foreground mt-1 truncate">{s.owner_label}</p>
-              )}
-
-              <p className="text-xs text-muted-foreground mt-0.5">Rank {s.exposure || 0}</p>
-              <Link
-                to="/sheet/$id"
-                params={{ id: s.id }}
-                className="mt-3 inline-flex items-center gap-1.5 text-xs text-primary hover:underline font-medium"
-              >
-                <ExternalLink className="w-3 h-3" />
-                Ver Ficha
+    <div className="tadeon-page space-y-8">
+      <section className="tadeon-surface relative min-h-64 rounded-2xl px-6 py-7 md:px-9 md:py-9">
+        <ThreadField className="text-primary" />
+        <div className="relative z-10 flex flex-col justify-between gap-8 lg:flex-row lg:items-end">
+          <div className="max-w-2xl">
+            <div className="mb-5 flex items-center gap-3">
+              <BrandMark className="h-12 w-12 text-primary" />
+              <div>
+                <p className="tadeon-eyebrow">Arquivo de continuidade</p>
+                <p className="tadeon-mono text-[10px] uppercase text-muted-foreground">
+                  Sessão autenticada · {role ?? "carregando"}
+                </p>
+              </div>
+            </div>
+            <h1 className="font-cinzel text-3xl font-semibold leading-[1.04] md:text-5xl">
+              {profile?.full_name ? `Olá, ${profile.full_name}.` : "Tadeon Nexus"}
+            </h1>
+            <p className="mt-3 max-w-xl text-sm leading-relaxed text-muted-foreground md:text-base">
+              {isMestre
+                ? "Organize personagens, cenas e pressões da campanha a partir de um único arquivo."
+                : role === "espectador"
+                  ? "Consulte fichas e acompanhe a continuidade da campanha em modo de leitura."
+                  : "Acesse suas personagens, acompanhe a progressão e preserve o que mudou em cada fio."}
+            </p>
+          </div>
+          {isMestre && (
+            <Button asChild size="lg" className="group gap-2 self-start lg:self-auto">
+              <Link to="/master-panel">
+                <Lightbulb className="h-4 w-4" />
+                Abrir painel do mestre
+                <ArrowUpRight className="h-4 w-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
               </Link>
-              {canDelete && (
-                <Button
-                  variant="destructive"
-                  size="sm"
-                  onClick={() => setToDelete(s)}
-                  className="absolute top-2 right-2 h-7 w-7 p-0"
-                  aria-label={`Excluir ficha ${s.name}`}
-                >
-                  <Trash className="w-3.5 h-3.5" />
-                </Button>
-              )}
-            </Card>
-          ))}
+            </Button>
+          )}
         </div>
-      )}
+        <div className="relative z-10 mt-8 grid gap-3 border-t border-border/60 pt-5 sm:grid-cols-3">
+          <div className="flex items-center gap-3">
+            <BookOpenText className="h-4 w-4 text-primary" />
+            <div>
+              <p className="text-lg font-semibold">{sheets.length}</p>
+              <p className="text-[10px] uppercase tracking-wider text-muted-foreground">Fichas</p>
+            </div>
+          </div>
+          <div className="flex items-center gap-3">
+            <Orbit className="h-4 w-4 text-[var(--tadeon-flow)]" />
+            <div>
+              <p className="text-lg font-semibold">Final</p>
+              <p className="text-[10px] uppercase tracking-wider text-muted-foreground">
+                Regras ativas
+              </p>
+            </div>
+          </div>
+          <div className="flex items-center gap-3">
+            <BrandMark className="h-5 w-5 text-[var(--tadeon-veil)]" />
+            <div>
+              <p className="text-lg font-semibold">Fio-Mestre</p>
+              <p className="text-[10px] uppercase tracking-wider text-muted-foreground">
+                Identidade visual
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <div className="mb-5 flex flex-wrap items-end justify-between gap-4">
+          <div>
+            <p className="tadeon-eyebrow">Personagens</p>
+            <h2 className="tadeon-section-title">
+              {isMestre ? "Arquivo da campanha" : "Suas fichas"}
+            </h2>
+          </div>
+          {canCreate && (
+            <Dialog open={createOpen} onOpenChange={setCreateOpen}>
+              <DialogTrigger asChild>
+                <Button className="gap-2">
+                  <Plus className="w-4 h-4" />
+                  Nova ficha
+                </Button>
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle className="font-cinzel">Criar ficha</DialogTitle>
+                </DialogHeader>
+                <form onSubmit={handleCreate} className="space-y-4">
+                  <div>
+                    <Label htmlFor="sheet-name">Nome da personagem</Label>
+                    <Input
+                      id="sheet-name"
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                      placeholder="Ex.: Caelum, o Errante"
+                      required
+                    />
+                  </div>
+                  {isMestre && (
+                    <div>
+                      <Label htmlFor="owner-id">Dono da ficha</Label>
+                      <Select value={ownerId} onValueChange={setOwnerId} disabled={ownersLoading}>
+                        <SelectTrigger id="owner-id">
+                          <SelectValue
+                            placeholder={
+                              ownersLoading ? "Carregando usuários…" : "Selecione um usuário"
+                            }
+                          />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {owners.map((owner) => (
+                            <SelectItem key={owner.id} value={owner.id}>
+                              {owner.full_name || owner.email} · {owner.email}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  )}
+                  <DialogFooter>
+                    <Button type="submit" disabled={creating || (isMestre && !ownerId)}>
+                      {creating && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
+                      Criar
+                    </Button>
+                  </DialogFooter>
+                </form>
+              </DialogContent>
+            </Dialog>
+          )}
+        </div>
+
+        {loading ? (
+          <div className="tadeon-surface flex justify-center rounded-2xl py-20">
+            <Loader2 className="w-8 h-8 animate-spin text-primary" />
+          </div>
+        ) : sheets.length === 0 ? (
+          <div className="tadeon-surface rounded-2xl px-6 py-16 text-center">
+            <BrandMark className="mx-auto mb-4 h-12 w-12 text-muted-foreground" />
+            <p className="font-cinzel text-xl">O arquivo ainda está vazio.</p>
+            <p className="mt-1 text-sm text-muted-foreground">
+              {canCreate ? "Crie uma ficha para iniciar este fio." : "Nenhuma ficha disponível."}
+            </p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
+            {sheets.map((sheet, index) => (
+              <Card
+                key={sheet.id}
+                className="tadeon-surface group relative min-h-52 rounded-2xl p-5 hover:-translate-y-1 hover:border-primary/35"
+              >
+                <div className="mb-8 flex items-start justify-between gap-4">
+                  <span className="tadeon-mono text-[9px] uppercase text-muted-foreground">
+                    Fio {String(index + 1).padStart(2, "0")} · Rank {sheet.exposure || 0}
+                  </span>
+                  {canDelete && (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setToDelete(sheet)}
+                      className="-mr-2 -mt-2 h-8 w-8 p-0 text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
+                      aria-label={`Excluir ficha ${sheet.name}`}
+                    >
+                      <Trash className="w-3.5 h-3.5" />
+                    </Button>
+                  )}
+                </div>
+                <h3 className="font-cinzel text-2xl font-semibold leading-tight">{sheet.name}</h3>
+                <p className="mt-1 min-h-5 text-sm text-muted-foreground">
+                  {sheet.occupation || "Ocupação ainda não definida"}
+                </p>
+                {sheet.owner_label && (
+                  <p className="mt-3 truncate text-[10px] uppercase tracking-wider text-muted-foreground">
+                    {sheet.owner_label}
+                  </p>
+                )}
+                <Link
+                  to="/sheet/$id"
+                  params={{ id: sheet.id }}
+                  className="mt-6 inline-flex items-center gap-2 text-xs font-semibold text-primary"
+                >
+                  Abrir ficha
+                  <ExternalLink className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
+                </Link>
+              </Card>
+            ))}
+          </div>
+        )}
+      </section>
 
       <AlertDialog open={!!toDelete} onOpenChange={(o) => !o && setToDelete(null)}>
         <AlertDialogContent>
