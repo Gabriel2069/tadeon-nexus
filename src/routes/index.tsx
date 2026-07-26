@@ -44,6 +44,7 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { BrandMark, ThreadField } from "@/components/brand-mark";
+import { cacheSheetSummaries } from "@/lib/offline-cache";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -125,6 +126,7 @@ function HomePage() {
       labeled = rows.map((row) => ({ ...row, owner_label: names.get(row.owner_id) ?? null }));
     }
     setSheets(labeled);
+    cacheSheetSummaries(labeled);
     setLoading(false);
   };
 
@@ -251,7 +253,7 @@ function HomePage() {
           </div>
           {isMestre && (
             <Button asChild size="lg" className="group gap-2 self-start lg:self-auto">
-              <Link to="/master-panel">
+              <Link to="/master-panel" search={{ tab: undefined }}>
                 <Lightbulb className="h-4 w-4" />
                 Abrir painel do mestre
                 <ArrowUpRight className="h-4 w-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
