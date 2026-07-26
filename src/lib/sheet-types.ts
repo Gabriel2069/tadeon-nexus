@@ -1,4 +1,4 @@
-// Shared types for character sheet
+// Shared domain types and canonical rules for the final Tadeon Nexus ruleset.
 export interface Attributes {
   COR: number;
   MEN: number;
@@ -36,12 +36,66 @@ export interface StatUpgrades {
   def: number;
 }
 
+export type LinkState = "Presente" | "Tensionado" | "Ferido" | "Rompido" | "Costurado";
+
+export interface CharacterLink {
+  id: string;
+  name: string;
+  relation: string;
+  state: LinkState;
+}
+
+export type LifeCycleTrait =
+  | "Formação recente"
+  | "Corpo habituado"
+  | "Nome reconhecido"
+  | "Experiência acumulada"
+  | "Responsabilidades"
+  | "Cicatriz antiga";
+
+export interface IdentityData {
+  conviction: string;
+  limit: string;
+  wound: string;
+  question: string;
+  lifeCycleTrait: LifeCycleTrait | "";
+  links: CharacterLink[];
+}
+
+export const DEFAULT_IDENTITY_DATA: IdentityData = {
+  conviction: "",
+  limit: "",
+  wound: "",
+  question: "",
+  lifeCycleTrait: "",
+  links: [
+    { id: "link-1", name: "", relation: "", state: "Presente" },
+    { id: "link-2", name: "", relation: "", state: "Presente" },
+  ],
+};
+
 export interface Weapon {
   id: string;
   nome: string;
-  tipo: string;
-  alcance: string;
+  descricao?: string;
+  familia?: string;
+  categoria?: string;
+  proficiencia?: string;
+  testeAtaque?: string;
+  atributoDano?: string;
   dano: string;
+  tipo: string;
+  margemAmeaca?: string;
+  alcance: string;
+  maos?: string;
+  propriedades?: string;
+  espaco?: number;
+  fonte?: string;
+  pd?: number;
+  rd?: number;
+  modificacoes?: string;
+  condicoesUso?: string;
+  // Legacy fields kept so existing saved sheets remain readable.
   critico: string;
   peso: number;
   extra: string;
@@ -52,6 +106,21 @@ export interface InventoryItem {
   nome: string;
   descricao: string;
   espaco: number;
+}
+
+export type FragmentCategory = "I" | "II" | "III";
+export type FragmentSeal = "Selado" | "Não selado";
+export type FragmentSafeLimit = "Repuxo" | "Tração" | "Estiramento";
+
+export interface FragmentItem extends InventoryItem {
+  selo?: FragmentSeal;
+  categoria?: FragmentCategory;
+  integridade?: number;
+  natureza?: string;
+  dominio?: string;
+  assinatura?: string;
+  limiteSeguro?: FragmentSafeLimit;
+  observacoes?: string;
 }
 
 export interface Ability {
@@ -79,6 +148,7 @@ export interface SkillNode {
   minRank: number;
   requires: string[];
   attrReqs: { attr: keyof Attributes; value: number }[];
+  requirementsText?: string;
 }
 
 export interface SkillBranch {
@@ -101,37 +171,37 @@ export interface RankRow {
 export const SKILL_GROUPS: { attr: keyof Attributes; label: string; skills: string[] }[] = [
   {
     attr: "COR",
-    label: "Corpo",
-    skills: ["Acrobacia", "Atletismo", "Fortitude", "Furtividade", "Ímpeto", "Luta"],
+    label: "Corpo e movimento",
+    skills: ["Acrobacia", "Atletismo", "Fortitude", "Furtividade", "Luta", "Reflexo"],
   },
   {
     attr: "MEN",
-    label: "Mente",
-    skills: ["Canalização", "Concentração", "Investigação", "Lógica", "Tática", "Vontade"],
+    label: "Atenção e método",
+    skills: ["Ciências", "Concentração", "Engenharia", "Lógica", "Medicina", "Tática"],
   },
   {
     attr: "INS",
-    label: "Instinto",
-    skills: ["Adestramento", "Iniciativa", "Intuição", "Percepção", "Reflexo", "Sobrevivência"],
+    label: "Campo e percepção",
+    skills: ["Adestramento", "Condução", "Iniciativa", "Intuição", "Percepção", "Sobrevivência"],
   },
   {
     attr: "PRE",
-    label: "Presença",
-    skills: ["Atualidades", "Convicção", "Diplomacia", "Encenação", "Intimidação", "Persuasão"],
+    label: "Expressão e vínculo",
+    skills: ["Artes", "Convicção", "Diplomacia", "Encenação", "Intimidação", "Persuasão"],
   },
   {
     attr: "ERU",
-    label: "Erudição",
-    skills: ["Ciências", "Crime", "Medicina", "Pilotagem", "Pontaria", "Tecnologia"],
+    label: "Investigação e Tessitura",
+    skills: ["Canalização", "Intrusão", "Investigação", "Pontaria", "Sociedade", "Temperança"],
   },
 ];
 
-export const ALL_SKILLS = SKILL_GROUPS.flatMap((g) => g.skills);
+export const ALL_SKILLS = SKILL_GROUPS.flatMap((group) => group.skills);
 
 export function getRankBase(exposure: number, rankTable: RankRow[]) {
-  const r = Math.floor((exposure || 0) / 5) * 5;
+  const rank = Math.floor(Math.max(0, exposure || 0) / 5) * 5;
   const source = rankTable.length ? rankTable : CANONICAL_RANK_TABLE;
-  const found = [...source].sort((a, b) => b.rank - a.rank).find((row) => row.rank <= r);
+  const found = [...source].sort((a, b) => b.rank - a.rank).find((row) => row.rank <= rank);
   return found ?? CANONICAL_RANK_TABLE[0];
 }
 
@@ -148,50 +218,50 @@ export interface UpgradeCostRule {
   freeLevels: number;
   increment: number;
 }
+
 export type UpgradeCosts = Record<"pv" | "ps" | "pe" | "def", UpgradeCostRule>;
+
 export const DEFAULT_UPGRADE_COSTS: UpgradeCosts = {
-  pv: { base: 1, freeLevels: 1, increment: 1 },
-  ps: { base: 1, freeLevels: 1, increment: 1 },
-  pe: { base: 1, freeLevels: 1, increment: 1 },
-  def: { base: 2, freeLevels: 1, increment: 2 },
+  pv: { base: 2, freeLevels: 1, increment: 1 },
+  ps: { base: 2, freeLevels: 1, increment: 1 },
+  pe: { base: 3, freeLevels: 1, increment: 1 },
+  def: { base: 8, freeLevels: 1, increment: 4 },
 };
+
 export function upgradeCostAt(rule: UpgradeCostRule, currentLevel: number): number {
   if (currentLevel < rule.freeLevels) return rule.base;
   return rule.base + (currentLevel - (rule.freeLevels - 1)) * rule.increment;
 }
 
+export function maxResourceUpgradeLevels(rank: number): number {
+  if (rank >= 75) return 8;
+  if (rank >= 50) return 6;
+  if (rank >= 25) return 4;
+  return 2;
+}
+
+export function maxDefenseUpgradeLevels(rank: number): number {
+  if (rank >= 75) return 3;
+  if (rank >= 50) return 2;
+  if (rank >= 25) return 1;
+  return 0;
+}
+
 export type ConditionKey = "fisica" | "mental" | "energetica" | "outras";
 export type ConditionOptionsMap = Record<ConditionKey, string[]>;
+
 export const DEFAULT_CONDITION_OPTIONS: ConditionOptionsMap = {
-  fisica: [
-    "Normal",
-    "Machucado",
-    "Ferido",
-    "Incapacitado",
-    "Morrendo",
-    "Sangrando",
-    "Em Chamas",
-    "Inconsciente",
-  ],
-  mental: ["Normal", "Abalado", "Apavorado", "Colapso", "Perdição", "Frustrado", "Fascinado"],
-  energetica: ["Normal", "Fadigado", "Sobrecarregado", "Esgotado", "Refluxo"],
-  outras: [
-    "Normal",
-    "Caído",
-    "Imóvel",
-    "Cego",
-    "Surdo",
-    "Agarrado",
-    "Envenenado",
-    "Doente",
-    "Asfixiado",
-  ],
+  fisica: ["Normal", "Machucado", "Ferido", "Incapacitado", "Sangrando", "Em Chamas"],
+  mental: ["Normal", "Abalado", "Apavorado", "Confuso", "Compelido", "Silenciado", "Desorientado"],
+  energetica: ["Normal", "Fadigado", "Esgotado", "Saturado", "Instável", "Descompassado"],
+  outras: ["Normal", "Caído", "Agarrado", "Atordoado", "Envenenado", "Inconsciente", "Cego", "Surdo", "Doente"],
 };
+
 export const CONDITION_META: Record<ConditionKey, { label: string; color: string; rgb: string }> = {
-  fisica: { label: "Física", color: "#ef4444", rgb: "239, 68, 68" },
-  mental: { label: "Mental", color: "#facc15", rgb: "250, 204, 21" },
-  energetica: { label: "Energética", color: "#22c55e", rgb: "34, 197, 94" },
-  outras: { label: "Outras", color: "#a16207", rgb: "161, 98, 7" },
+  fisica: { label: "Física", color: "#74242D", rgb: "116, 36, 45" },
+  mental: { label: "Mental", color: "#D9D7A4", rgb: "217, 215, 164" },
+  energetica: { label: "Energética", color: "#4F6E5D", rgb: "79, 110, 93" },
+  outras: { label: "Situação", color: "#716B7B", rgb: "113, 107, 123" },
 };
 
 export interface Description {
@@ -202,31 +272,30 @@ export interface Description {
 }
 
 export const SKILL_ABILITY_PREFIX = "skill:";
-
 export const DEFAULT_TRAINING_COSTS: [number, number, number] = [1, 2, 3];
 
 export const CANONICAL_RANK_TABLE: RankRow[] = [
-  { rank: 0, pv: 15, ps: 13, pe: 5, pa: 0, def: 5, pm: 0 },
-  { rank: 5, pv: 18, ps: 14, pe: 6, pa: 0, def: 6, pm: 8 },
-  { rank: 10, pv: 21, ps: 15, pe: 7, pa: 1, def: 7, pm: 8 },
-  { rank: 15, pv: 24, ps: 16, pe: 8, pa: 1, def: 8, pm: 10 },
-  { rank: 20, pv: 27, ps: 18, pe: 9, pa: 2, def: 9, pm: 10 },
-  { rank: 25, pv: 30, ps: 20, pe: 10, pa: 2, def: 10, pm: 12 },
-  { rank: 30, pv: 33, ps: 22, pe: 11, pa: 2, def: 11, pm: 12 },
-  { rank: 35, pv: 36, ps: 24, pe: 12, pa: 3, def: 12, pm: 14 },
-  { rank: 40, pv: 39, ps: 26, pe: 13, pa: 3, def: 13, pm: 14 },
-  { rank: 45, pv: 42, ps: 28, pe: 14, pa: 3, def: 14, pm: 16 },
-  { rank: 50, pv: 45, ps: 30, pe: 15, pa: 3, def: 15, pm: 16 },
-  { rank: 55, pv: 48, ps: 32, pe: 16, pa: 4, def: 16, pm: 18 },
-  { rank: 60, pv: 51, ps: 34, pe: 17, pa: 4, def: 17, pm: 18 },
-  { rank: 65, pv: 54, ps: 36, pe: 18, pa: 4, def: 18, pm: 20 },
-  { rank: 70, pv: 57, ps: 38, pe: 19, pa: 4, def: 19, pm: 20 },
-  { rank: 75, pv: 60, ps: 40, pe: 20, pa: 4, def: 20, pm: 22 },
-  { rank: 80, pv: 63, ps: 42, pe: 21, pa: 5, def: 21, pm: 22 },
-  { rank: 85, pv: 66, ps: 44, pe: 22, pa: 5, def: 22, pm: 23 },
-  { rank: 90, pv: 69, ps: 46, pe: 23, pa: 5, def: 23, pm: 23 },
-  { rank: 95, pv: 72, ps: 48, pe: 24, pa: 5, def: 24, pm: 24 },
-  { rank: 100, pv: 75, ps: 50, pe: 25, pa: 5, def: 25, pm: 25 },
+  { rank: 0, pv: 15, ps: 13, pe: 5, pa: 0, def: 10, pm: 0 },
+  { rank: 5, pv: 16, ps: 14, pe: 5, pa: 0, def: 10, pm: 5 },
+  { rank: 10, pv: 18, ps: 15, pe: 6, pa: 0, def: 10, pm: 10 },
+  { rank: 15, pv: 19, ps: 16, pe: 6, pa: 0, def: 10, pm: 15 },
+  { rank: 20, pv: 21, ps: 17, pe: 7, pa: 1, def: 10, pm: 20 },
+  { rank: 25, pv: 22, ps: 18, pe: 7, pa: 1, def: 11, pm: 27 },
+  { rank: 30, pv: 24, ps: 19, pe: 8, pa: 1, def: 11, pm: 34 },
+  { rank: 35, pv: 25, ps: 20, pe: 8, pa: 1, def: 11, pm: 41 },
+  { rank: 40, pv: 27, ps: 21, pe: 9, pa: 2, def: 11, pm: 48 },
+  { rank: 45, pv: 28, ps: 22, pe: 9, pa: 2, def: 11, pm: 55 },
+  { rank: 50, pv: 30, ps: 23, pe: 10, pa: 2, def: 12, pm: 64 },
+  { rank: 55, pv: 31, ps: 24, pe: 10, pa: 2, def: 12, pm: 73 },
+  { rank: 60, pv: 33, ps: 25, pe: 11, pa: 3, def: 12, pm: 82 },
+  { rank: 65, pv: 34, ps: 26, pe: 11, pa: 3, def: 12, pm: 91 },
+  { rank: 70, pv: 36, ps: 27, pe: 12, pa: 3, def: 12, pm: 100 },
+  { rank: 75, pv: 37, ps: 28, pe: 12, pa: 3, def: 13, pm: 111 },
+  { rank: 80, pv: 39, ps: 29, pe: 13, pa: 4, def: 13, pm: 122 },
+  { rank: 85, pv: 40, ps: 30, pe: 13, pa: 4, def: 13, pm: 133 },
+  { rank: 90, pv: 42, ps: 31, pe: 14, pa: 4, def: 13, pm: 144 },
+  { rank: 95, pv: 43, ps: 32, pe: 14, pa: 4, def: 13, pm: 157 },
+  { rank: 100, pv: 45, ps: 33, pe: 15, pa: 5, def: 14, pm: 170 },
 ];
 
 export interface EquilibriumEffect {
@@ -237,51 +306,27 @@ export interface EquilibriumEffect {
 }
 
 const EQUILIBRIUM_STATES: Record<number, Omit<EquilibriumEffect, "value">> = {
-  10: {
-    state: "Chama Pura",
-    benefit: "+3D20 Conhecimento",
-    penalty: "-3D20 Medo; COR e INS em Desvantagem",
-  },
-  9: {
-    state: "Dissolução Racional",
-    benefit: "+3D20 Conhecimento",
-    penalty: "-2D20 Medo; -1D20 COR e INS",
-  },
-  8: { state: "Abstração Profunda", benefit: "+2D20 Conhecimento", penalty: "-2D20 Medo" },
-  7: { state: "Mente Dominante", benefit: "+2D20 Conhecimento", penalty: "-1D20 Medo" },
-  6: { state: "Razão Sobreposta", benefit: "+1D20 Conhecimento", penalty: "-1D20 Medo" },
-  5: {
-    state: "Ponto de Inflexão",
-    benefit: "+1D20 Conhecimento",
-    penalty: "Fio Maior de Medo bloqueado",
-  },
-  4: { state: "Inclinação Racional", benefit: "+1D20 Conhecimento", penalty: "—" },
-  3: { state: "Levemente Racional", benefit: "+1 treino mental", penalty: "—" },
-  2: { state: "Clareza Leve", benefit: "—", penalty: "—" },
-  1: { state: "Toque de Razão", benefit: "—", penalty: "—" },
-  0: { state: "Humano Pleno", benefit: "—", penalty: "—" },
-  [-1]: { state: "Toque de Instinto", benefit: "—", penalty: "—" },
-  [-2]: { state: "Sensação Leve", benefit: "—", penalty: "—" },
-  [-3]: { state: "Levemente Visceral", benefit: "+1 treino físico", penalty: "—" },
-  [-4]: { state: "Inclinação ao Medo", benefit: "+1D20 Medo", penalty: "—" },
-  [-5]: {
-    state: "Ponto de Inflexão",
-    benefit: "+1D20 Medo",
-    penalty: "Fio Maior de Conhecimento bloqueado",
-  },
-  [-6]: { state: "Instinto Sobreposto", benefit: "+1D20 Medo", penalty: "-1D20 Conhecimento" },
-  [-7]: { state: "Corpo Dominante", benefit: "+2D20 Medo", penalty: "-1D20 Conhecimento" },
-  [-8]: { state: "Visceral Profundo", benefit: "+2D20 Medo", penalty: "-2D20 Conhecimento" },
-  [-9]: {
-    state: "Dissolução Instintiva",
-    benefit: "+3D20 Medo",
-    penalty: "-2D20 Conhecimento; -1D20 MEN e ERU",
-  },
-  [-10]: {
-    state: "Inverso Puro",
-    benefit: "+3D20 Medo",
-    penalty: "-3D20 Conhecimento; MEN e ERU em Desvantagem",
-  },
+  [-10]: { state: "Limite do Inverso", benefit: "+3d20 em ações e Tramas de Medo.", penalty: "-3d20 em Conhecimento; Tramas opostas acima de Repuxo impossíveis." },
+  [-9]: { state: "Dissolução Visceral", benefit: "+3d20 em Medo.", penalty: "-2d20 em Conhecimento; uma compulsão instintiva permanece até Costura narrativa." },
+  [-8]: { state: "Profundidade Visceral", benefit: "+2d20 em Medo.", penalty: "-2d20 em Conhecimento." },
+  [-7]: { state: "Corpo Dominante", benefit: "+2d20 em Medo.", penalty: "-1d20 em Conhecimento." },
+  [-6]: { state: "Instinto Sobreposto", benefit: "+1d20 em Medo.", penalty: "-1d20 em Conhecimento; ameaças fortes exigem Convicção para não agir por impulso." },
+  [-5]: { state: "Ponto de Inflexão", benefit: "+1d20 em Medo.", penalty: "Estiramento de Conhecimento exige fonte excepcional." },
+  [-4]: { state: "Inclinação ao Medo", benefit: "+1d20 em ações claramente alinhadas ao Medo.", penalty: "—" },
+  [-3]: { state: "Afinidade Visceral", benefit: "Uma vez por cena, trate Perícia sem treino como Iniciada em ação alinhada ao Medo.", penalty: "—" },
+  [-2]: { state: "Sensação Ampliada", benefit: "Uma vez por cena, repita um d20 em percepção de risco ou presença ameaçadora.", penalty: "—" },
+  [-1]: { state: "Toque de Instinto", benefit: "Sinais sutis e reflexos respondem antes do habitual.", penalty: "—" },
+  0: { state: "Inteireza", benefit: "Nenhum bônus ou penalidade.", penalty: "A personagem permanece capaz de mudar sem que uma relação domine as demais." },
+  1: { state: "Toque de Clareza", benefit: "Padrões, palavras e lembranças aproximam-se da atenção.", penalty: "—" },
+  2: { state: "Sensibilidade Estrutural", benefit: "Uma vez por cena, repita um d20 em análise de padrão, linguagem ou memória.", penalty: "—" },
+  3: { state: "Afinidade Cognoscível", benefit: "Uma vez por cena, trate Perícia sem treino como Iniciada em ação alinhada ao Conhecimento.", penalty: "—" },
+  4: { state: "Inclinação ao Conhecimento", benefit: "+1d20 em ações claramente alinhadas ao Conhecimento.", penalty: "—" },
+  5: { state: "Ponto de Inflexão", benefit: "+1d20 em Conhecimento.", penalty: "Estiramento de Medo exige fonte excepcional." },
+  6: { state: "Razão Sobreposta", benefit: "+1d20 em Conhecimento.", penalty: "-1d20 em Medo; vínculos fortes exigem Convicção para não serem tratados como abstração." },
+  7: { state: "Mente Dominante", benefit: "+2d20 em Conhecimento.", penalty: "-1d20 em Medo." },
+  8: { state: "Profundidade Abstrata", benefit: "+2d20 em Conhecimento.", penalty: "-2d20 em Medo." },
+  9: { state: "Dissolução Racional", benefit: "+3d20 em Conhecimento.", penalty: "-2d20 em Medo; uma compulsão por ordem permanece até Costura narrativa." },
+  10: { state: "Limite da Chama Fria", benefit: "+3d20 em ações e Tramas de Conhecimento.", penalty: "-3d20 em Medo; Tramas opostas acima de Repuxo impossíveis." },
 };
 
 export function getEquilibriumEffect(value: number): EquilibriumEffect {
@@ -302,18 +347,33 @@ export function totalTrainingSpend(
   skills: Record<string, number>,
   trainingCosts: [number, number, number],
 ): number {
+  let initialDegreesRemaining = 7;
   return Object.values(skills || {}).reduce((sum, bonus) => {
-    const tiers = bonus >= 15 ? 3 : bonus >= 10 ? 2 : bonus >= 5 ? 1 : 0;
-    return sum + trainingCosts.slice(0, tiers).reduce((tierSum, cost) => tierSum + cost, 0);
+    const tiers = bonus >= 9 ? 3 : bonus >= 6 ? 2 : bonus >= 3 ? 1 : 0;
+    let skillSpend = 0;
+    for (let tier = 0; tier < tiers; tier += 1) {
+      if (initialDegreesRemaining > 0 && tier < 2) {
+        initialDegreesRemaining -= 1;
+      } else {
+        skillSpend += trainingCosts[tier] ?? 0;
+      }
+    }
+    return sum + skillSpend;
   }, 0);
 }
 
 export function totalBranchSpend(purchasedSkills: string[], branches: SkillBranch[]): number {
-  const purchased = new Set(purchasedSkills || []);
-  return branches
-    .flatMap((branch) => branch.nodes)
-    .filter((node) => purchased.has(node.id))
-    .reduce((sum, node) => sum + Math.max(0, Number(node.cost) || 0), 0);
+  const byId = new Map(branches.flatMap((branch) => branch.nodes).map((node) => [node.id, node]));
+  let freeTierOne = 2;
+  return (purchasedSkills || []).reduce((sum, id) => {
+    const node = byId.get(id);
+    if (!node) return sum;
+    if (node.minRank === 0 && freeTierOne > 0) {
+      freeTierOne -= 1;
+      return sum;
+    }
+    return sum + Math.max(0, Number(node.cost) || 0);
+  }, 0);
 }
 
 export function calculatePMSpent(params: {
