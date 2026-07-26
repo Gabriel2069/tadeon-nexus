@@ -11,6 +11,8 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
+import { Route as OfflineRouteImport } from './routes/offline'
+import { Route as NexusToolsRouteImport } from './routes/nexus-tools'
 import { Route as McpRouteImport } from './routes/mcp'
 import { Route as MasterPanelRouteImport } from './routes/master-panel'
 import { Route as ManageUsersRouteImport } from './routes/manage-users'
@@ -31,6 +33,16 @@ const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
 const ResetPasswordRoute = ResetPasswordRouteImport.update({
   id: '/reset-password',
   path: '/reset-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OfflineRoute = OfflineRouteImport.update({
+  id: '/offline',
+  path: '/offline',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NexusToolsRoute = NexusToolsRouteImport.update({
+  id: '/nexus-tools',
+  path: '/nexus-tools',
   getParentRoute: () => rootRouteImport,
 } as any)
 const McpRoute = McpRouteImport.update({
@@ -94,6 +106,8 @@ const DotlovableOauthConsentRoute = DotlovableOauthConsentRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/nexus-tools': typeof NexusToolsRoute
+  '/offline': typeof OfflineRoute
   '/login': typeof LoginRoute
   '/manage-users': typeof ManageUsersRoute
   '/master-panel': typeof MasterPanelRoute
@@ -109,6 +123,8 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/nexus-tools': typeof NexusToolsRoute
+  '/offline': typeof OfflineRoute
   '/login': typeof LoginRoute
   '/manage-users': typeof ManageUsersRoute
   '/master-panel': typeof MasterPanelRoute
@@ -125,6 +141,8 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/nexus-tools': typeof NexusToolsRoute
+  '/offline': typeof OfflineRoute
   '/login': typeof LoginRoute
   '/manage-users': typeof ManageUsersRoute
   '/master-panel': typeof MasterPanelRoute
@@ -142,6 +160,8 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/nexus-tools'
+    | '/offline'
     | '/login'
     | '/manage-users'
     | '/master-panel'
@@ -157,6 +177,8 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/nexus-tools'
+    | '/offline'
     | '/login'
     | '/manage-users'
     | '/master-panel'
@@ -172,6 +194,8 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/nexus-tools'
+    | '/offline'
     | '/login'
     | '/manage-users'
     | '/master-panel'
@@ -188,6 +212,8 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  NexusToolsRoute: typeof NexusToolsRoute
+  OfflineRoute: typeof OfflineRoute
   LoginRoute: typeof LoginRoute
   ManageUsersRoute: typeof ManageUsersRoute
   MasterPanelRoute: typeof MasterPanelRoute
@@ -204,6 +230,20 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/offline': {
+      id: '/offline'
+      path: '/offline'
+      fullPath: '/offline'
+      preLoaderRoute: typeof OfflineRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/nexus-tools': {
+      id: '/nexus-tools'
+      path: '/nexus-tools'
+      fullPath: '/nexus-tools'
+      preLoaderRoute: typeof NexusToolsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/sitemap.xml': {
       id: '/sitemap.xml'
       path: '/sitemap.xml'
@@ -300,6 +340,8 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  NexusToolsRoute: NexusToolsRoute,
+  OfflineRoute: OfflineRoute,
   LoginRoute: LoginRoute,
   ManageUsersRoute: ManageUsersRoute,
   MasterPanelRoute: MasterPanelRoute,
