@@ -3,6 +3,7 @@ import {
   calcTotalPM,
   calculatePMSpent,
   calculateSheetMaximums,
+  CANONICAL_RANK_TABLE,
   DEFAULT_TRAINING_COSTS,
   DEFAULT_UPGRADE_COSTS,
   getRankBase,
@@ -27,6 +28,18 @@ describe("progressão da ficha", () => {
     expect(calcTotalPM(0, rankTable)).toBe(0);
     expect(calcTotalPM(5, rankTable)).toBe(3);
     expect(calcTotalPM(10, rankTable)).toBe(6);
+  });
+
+  it("mantém o marco final de Rank 100 da versão definitiva", () => {
+    expect(CANONICAL_RANK_TABLE.at(-1)).toEqual({
+      rank: 100,
+      pv: 45,
+      ps: 33,
+      pe: 15,
+      pa: 5,
+      def: 14,
+      pm: 170,
+    });
   });
 
   it("aplica níveis gratuitos antes do incremento de custo", () => {
@@ -89,7 +102,7 @@ describe("progressão da ficha", () => {
         upgradeCosts: DEFAULT_UPGRADE_COSTS,
         trainingCosts: DEFAULT_TRAINING_COSTS,
       }),
-    ).toBe(10);
+    ).toBe(16);
   });
 
   it("mantém as 30 perícias canônicas sem duplicatas", () => {
