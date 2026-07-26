@@ -57,7 +57,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
 
   const handleSignOut = async () => {
     await signOut();
-    void navigate({ to: "/login" });
+    void navigate({ to: "/login", search: { next: "" } });
   };
 
   const renderNav = (mini: boolean) => (
