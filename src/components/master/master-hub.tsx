@@ -37,6 +37,35 @@ import {
   type MasterThreat,
 } from "@/lib/master-data";
 
+const THREAT_AREAS = [
+  "Engajado",
+  "Próximo",
+  "Distante",
+  "Longo",
+  "Extremo",
+  "Cone curto",
+  "Cone longo",
+  "Linha curta",
+  "Linha longa",
+  "Raio pequeno",
+  "Raio médio",
+  "Raio grande",
+  "Aura curta",
+  "Aura ampla",
+  "Corrente",
+  "Cena",
+  "Território",
+] as const;
+
+const THREAT_MOVEMENT_MODES = [
+  "Escalada",
+  "Natação",
+  "Voo",
+  "Deslocamento por Costura",
+  "Teleporte curto",
+  "Teleporte médio",
+] as const;
+
 export interface MasterSheetOverview {
   id: string;
   name: string;
@@ -497,6 +526,60 @@ export function NpcHub({
                 </label>
               ))}
             </div>
+            <div className="mt-4 grid gap-4 lg:grid-cols-2">
+              <div className="rounded-xl border border-border/60 bg-secondary/20 p-3">
+                <p className="mb-2 text-[10px] uppercase tracking-wider text-muted-foreground">
+                  Atributos
+                </p>
+                <div className="grid grid-cols-5 gap-2">
+                  {(Object.keys(active.attributes) as (keyof MasterNpc["attributes"])[]).map(
+                    (key) => (
+                      <label key={key} className="space-y-1 text-center">
+                        <span className="text-[10px] text-muted-foreground">{key}</span>
+                        <Input
+                          type="number"
+                          min={0}
+                          value={active.attributes[key]}
+                          onChange={(event) =>
+                            patch(active.id, {
+                              attributes: {
+                                ...active.attributes,
+                                [key]: Math.max(0, Number(event.target.value)),
+                              },
+                            })
+                          }
+                        />
+                      </label>
+                    ),
+                  )}
+                </div>
+              </div>
+              <div className="rounded-xl border border-border/60 bg-secondary/20 p-3">
+                <p className="mb-2 text-[10px] uppercase tracking-wider text-muted-foreground">
+                  Vetores funcionais
+                </p>
+                <div className="grid grid-cols-5 gap-2">
+                  {(Object.keys(active.vectors) as (keyof MasterNpc["vectors"])[]).map((key) => (
+                    <label key={key} className="space-y-1 text-center">
+                      <span className="text-[9px] capitalize text-muted-foreground">{key}</span>
+                      <Input
+                        type="number"
+                        min={0}
+                        value={active.vectors[key]}
+                        onChange={(event) =>
+                          patch(active.id, {
+                            vectors: {
+                              ...active.vectors,
+                              [key]: Math.max(0, Number(event.target.value)),
+                            },
+                          })
+                        }
+                      />
+                    </label>
+                  ))}
+                </div>
+              </div>
+            </div>
             <div className="mt-3 grid gap-3 sm:grid-cols-2">
               {[
                 "description",
@@ -680,6 +763,29 @@ export function ThreatHub({
                       patch(active.id, { archetype: value as MasterThreat["archetype"] })
                     }
                   />
+                  <SelectField
+                    label="Índice de Desafio"
+                    value={active.challengeIndex}
+                    options={[1, 2, 3, 4, 5]}
+                    onChange={(value) =>
+                      patch(active.id, {
+                        challengeIndex: Number(value) as MasterThreat["challengeIndex"],
+                      })
+                    }
+                  />
+                  <label className="space-y-1">
+                    <Label>PP atual</Label>
+                    <Input
+                      type="number"
+                      min={0}
+                      value={active.currentPp}
+                      onChange={(event) =>
+                        patch(active.id, {
+                          currentPp: Math.max(0, Number(event.target.value)),
+                        })
+                      }
+                    />
+                  </label>
                   {["taxonomy", "manifestation", "nature"].map((key) => (
                     <label key={key} className="space-y-1">
                       <Label>
@@ -705,7 +811,7 @@ export function ThreatHub({
                     [
                       ["ppPurchases", "PP (+6 / 1 CP)"],
                       ["defPurchases", "DEF (+1 / 2 CP)"],
-                      ["rdPurchases", "RD (+1 / 2 CP)"],
+                      ["rdPurchases", "RD (2, 3, 4… CP)"],
                       ["reactionPurchases", "Reação (+1 / 8 CP)"],
                       ["movementPurchases", "Mov. (+3m / 1 CP)"],
                     ] as const
@@ -773,7 +879,39 @@ export function ThreatHub({
                     />
                   </label>
                 </div>
-                <div className="mt-4 grid grid-cols-5 gap-2 text-center text-xs">
+                <div className="mt-4 grid gap-4 lg:grid-cols-2">
+                  <div className="rounded-xl border border-border/60 bg-secondary/20 p-3">
+                    <p className="mb-2 text-[10px] uppercase tracking-wider text-muted-foreground">
+                      Atributos
+                    </p>
+                    <div className="grid grid-cols-4 gap-2 text-center text-xs">
+                      {(Object.keys(active.attributes) as (keyof MasterThreat["attributes"])[]).map(
+                        (key) => (
+                          <label key={key} className="space-y-1">
+                            <span className="text-[10px] text-muted-foreground">{key}</span>
+                            <Input
+                              type="number"
+                              min={0}
+                              value={active.attributes[key]}
+                              onChange={(event) =>
+                                patch(active.id, {
+                                  attributes: {
+                                    ...active.attributes,
+                                    [key]: Math.max(0, Number(event.target.value)),
+                                  },
+                                })
+                              }
+                            />
+                          </label>
+                        ),
+                      )}
+                    </div>
+                  </div>
+                  <div className="rounded-xl border border-border/60 bg-secondary/20 p-3">
+                    <p className="mb-2 text-[10px] uppercase tracking-wider text-muted-foreground">
+                      Vetores de Tensão
+                    </p>
+                    <div className="grid grid-cols-5 gap-2 text-center text-xs">
                   {Object.entries(active.vectors).map(([key, value]) => (
                     <label key={key} className="space-y-1">
                       <span className="text-[10px] text-muted-foreground">{key}</span>
@@ -792,6 +930,276 @@ export function ThreatHub({
                       />
                     </label>
                   ))}
+                    </div>
+                  </div>
+                </div>
+
+                <div className="mt-4 rounded-xl border border-border/60 bg-secondary/20 p-3">
+                  <p className="mb-2 text-[10px] uppercase tracking-wider text-muted-foreground">
+                    Mobilidade comprada
+                  </p>
+                  <div className="flex flex-wrap gap-2">
+                    {THREAT_MOVEMENT_MODES.map((mode) => {
+                      const activeMode = active.movementModes.includes(mode);
+                      return (
+                        <Button
+                          key={mode}
+                          type="button"
+                          size="sm"
+                          variant={activeMode ? "default" : "outline"}
+                          onClick={() =>
+                            patch(active.id, {
+                              movementModes: activeMode
+                                ? active.movementModes.filter((item) => item !== mode)
+                                : [...active.movementModes, mode],
+                            })
+                          }
+                        >
+                          {mode}
+                        </Button>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                <div className="mt-4 rounded-xl border border-border/60 bg-secondary/20 p-3">
+                  <div className="mb-3 flex items-center justify-between">
+                    <div>
+                      <p className="text-[10px] uppercase tracking-wider text-muted-foreground">
+                        Ataques
+                      </p>
+                      <p className="text-xs text-muted-foreground">
+                        Impacto, Vetor e Alcance entram automaticamente no orçamento.
+                      </p>
+                    </div>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() =>
+                        patch(active.id, {
+                          attacks: [
+                            ...active.attacks,
+                            {
+                              id: genId(),
+                              name: "Novo ataque",
+                              vector: "Corpo",
+                              impact: 1,
+                              area: "Engajado",
+                              effect: "",
+                            },
+                          ],
+                        })
+                      }
+                    >
+                      <Plus className="mr-1 h-3.5 w-3.5" /> Ataque
+                    </Button>
+                  </div>
+                  <div className="space-y-2">
+                    {active.attacks.map((attack) => (
+                      <div
+                        key={attack.id}
+                        className="grid gap-2 rounded-lg border border-border/50 bg-background/25 p-2 lg:grid-cols-[1.2fr_150px_90px_150px_2fr_auto]"
+                      >
+                        <Input
+                          value={attack.name}
+                          placeholder="Nome"
+                          onChange={(event) =>
+                            patch(active.id, {
+                              attacks: active.attacks.map((item) =>
+                                item.id === attack.id ? { ...item, name: event.target.value } : item,
+                              ),
+                            })
+                          }
+                        />
+                        <select
+                          value={attack.vector}
+                          onChange={(event) =>
+                            patch(active.id, {
+                              attacks: active.attacks.map((item) =>
+                                item.id === attack.id
+                                  ? {
+                                      ...item,
+                                      vector: event.target.value as typeof item.vector,
+                                    }
+                                  : item,
+                              ),
+                            })
+                          }
+                          className="rounded-md border border-border bg-input px-2 text-xs"
+                        >
+                          {Object.keys(active.vectors).map((vector) => (
+                            <option key={vector}>{vector}</option>
+                          ))}
+                        </select>
+                        <select
+                          value={attack.impact}
+                          onChange={(event) =>
+                            patch(active.id, {
+                              attacks: active.attacks.map((item) =>
+                                item.id === attack.id
+                                  ? {
+                                      ...item,
+                                      impact: Number(event.target.value) as typeof item.impact,
+                                    }
+                                  : item,
+                              ),
+                            })
+                          }
+                          className="rounded-md border border-border bg-input px-2 text-xs"
+                        >
+                          {[1, 2, 3, 4, 5, 6].map((impact) => (
+                            <option key={impact} value={impact}>
+                              Impacto {impact}
+                            </option>
+                          ))}
+                        </select>
+                        <select
+                          value={attack.area === "Nenhuma" ? "Engajado" : attack.area}
+                          onChange={(event) =>
+                            patch(active.id, {
+                              attacks: active.attacks.map((item) =>
+                                item.id === attack.id
+                                  ? { ...item, area: event.target.value as typeof item.area }
+                                  : item,
+                              ),
+                            })
+                          }
+                          className="rounded-md border border-border bg-input px-2 text-xs"
+                        >
+                          {THREAT_AREAS.map((area) => (
+                            <option key={area}>{area}</option>
+                          ))}
+                        </select>
+                        <Input
+                          value={attack.effect}
+                          placeholder="Efeito / observação"
+                          onChange={(event) =>
+                            patch(active.id, {
+                              attacks: active.attacks.map((item) =>
+                                item.id === attack.id
+                                  ? { ...item, effect: event.target.value }
+                                  : item,
+                              ),
+                            })
+                          }
+                        />
+                        <Button
+                          size="icon"
+                          variant="ghost"
+                          onClick={() =>
+                            patch(active.id, {
+                              attacks: active.attacks.filter((item) => item.id !== attack.id),
+                            })
+                          }
+                        >
+                          <Trash className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="mt-4 rounded-xl border border-border/60 bg-secondary/20 p-3">
+                  <div className="mb-3 flex items-center justify-between">
+                    <div>
+                      <p className="text-[10px] uppercase tracking-wider text-muted-foreground">
+                        Habilidades da ameaça
+                      </p>
+                      <p className="text-xs text-muted-foreground">
+                        Complexidade I–V atualiza o custo de CP.
+                      </p>
+                    </div>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() =>
+                        patch(active.id, {
+                          abilities: [
+                            ...active.abilities,
+                            {
+                              id: genId(),
+                              name: "Nova habilidade",
+                              complexity: 1,
+                              description: "",
+                            },
+                          ],
+                        })
+                      }
+                    >
+                      <Plus className="mr-1 h-3.5 w-3.5" /> Habilidade
+                    </Button>
+                  </div>
+                  <div className="space-y-2">
+                    {active.abilities.map((ability) => (
+                      <div
+                        key={ability.id}
+                        className="grid gap-2 rounded-lg border border-border/50 bg-background/25 p-2 sm:grid-cols-[1fr_130px_2fr_auto]"
+                      >
+                        <Input
+                          value={ability.name}
+                          onChange={(event) =>
+                            patch(active.id, {
+                              abilities: active.abilities.map((item) =>
+                                item.id === ability.id
+                                  ? { ...item, name: event.target.value }
+                                  : item,
+                              ),
+                            })
+                          }
+                        />
+                        <select
+                          value={ability.complexity}
+                          onChange={(event) =>
+                            patch(active.id, {
+                              abilities: active.abilities.map((item) =>
+                                item.id === ability.id
+                                  ? {
+                                      ...item,
+                                      complexity: Number(
+                                        event.target.value,
+                                      ) as typeof item.complexity,
+                                    }
+                                  : item,
+                              ),
+                            })
+                          }
+                          className="rounded-md border border-border bg-input px-2 text-xs"
+                        >
+                          {[1, 2, 3, 4, 5].map((complexity) => (
+                            <option key={complexity} value={complexity}>
+                              Complexidade {complexity}
+                            </option>
+                          ))}
+                        </select>
+                        <Input
+                          value={ability.description}
+                          placeholder="Descrição"
+                          onChange={(event) =>
+                            patch(active.id, {
+                              abilities: active.abilities.map((item) =>
+                                item.id === ability.id
+                                  ? { ...item, description: event.target.value }
+                                  : item,
+                              ),
+                            })
+                          }
+                        />
+                        <Button
+                          size="icon"
+                          variant="ghost"
+                          onClick={() =>
+                            patch(active.id, {
+                              abilities: active.abilities.filter(
+                                (item) => item.id !== ability.id,
+                              ),
+                            })
+                          }
+                        >
+                          <Trash className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    ))}
+                  </div>
                 </div>
                 <Button
                   variant="destructive"
@@ -1130,25 +1538,20 @@ export function FoldHub({
               </div>
               <div className="mt-3 space-y-2 border-t border-border/60 pt-3">
                 {fold.stitchPoints.map((point) => (
-                  <div key={point.id} className="grid grid-cols-[120px_1fr_auto_auto] gap-2">
-                    <select
+                  <div key={point.id} className="grid grid-cols-[150px_1fr_auto_auto] gap-2">
+                    <Input
                       value={point.factor}
                       onChange={(event) =>
                         patch(fold.id, {
                           stitchPoints: fold.stitchPoints.map((entry) =>
                             entry.id === point.id
-                              ? { ...entry, factor: event.target.value as typeof entry.factor }
+                              ? { ...entry, factor: event.target.value }
                               : entry,
                           ),
                         })
                       }
-                      className="rounded-md border border-border bg-input px-2 text-xs"
-                    >
-                      <option>Memória</option>
-                      <option>Significância</option>
-                      <option>Linguagem</option>
-                      <option>Alma</option>
-                    </select>
+                      placeholder="Fator narrativo"
+                    />
                     <Input
                       value={point.description}
                       onChange={(event) =>
@@ -1195,7 +1598,12 @@ export function FoldHub({
                     patch(fold.id, {
                       stitchPoints: [
                         ...fold.stitchPoints,
-                        { id: genId(), factor: "Memória", description: "", resolved: false },
+                        {
+                          id: genId(),
+                          factor: "Fator narrativo",
+                          description: "",
+                          resolved: false,
+                        },
                       ],
                     })
                   }
