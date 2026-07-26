@@ -23,12 +23,20 @@ import { Textarea } from "@/components/ui/textarea";
 import { genId } from "@/lib/sheet-types";
 import {
   calculateEncounterBalance,
+  combinedThreatMagnitude,
   createEmptyClue,
   createEmptyFold,
   createEmptyInterlude,
   createEmptyNpc,
   createEmptyThreat,
+  getFoldStageReference,
+  maxThreatAbilityComplexity,
+  maxThreatImpact,
+  maxThreatPpPurchases,
+  maxThreatRdPurchases,
+  maxThreatVector,
   threatStats,
+  threatValidationIssues,
   type MasterClue,
   type MasterFold,
   type MasterInterlude,
@@ -53,8 +61,6 @@ const THREAT_AREAS = [
   "Aura curta",
   "Aura ampla",
   "Corrente",
-  "Cena",
-  "Território",
 ] as const;
 
 const THREAT_MOVEMENT_MODES = [
@@ -520,8 +526,13 @@ export function NpcHub({
                   <Label>{key.toUpperCase()}</Label>
                   <Input
                     type="number"
+                    min={0}
                     value={Number(active[key as keyof MasterNpc])}
-                    onChange={(event) => patch(active.id, { [key]: Number(event.target.value) })}
+                    onChange={(event) =>
+                      patch(active.id, {
+                        [key]: Math.max(0, Math.round(Number(event.target.value) || 0)),
+                      })
+                    }
                   />
                 </label>
               ))}
@@ -531,7 +542,7 @@ export function NpcHub({
                 <p className="mb-2 text-[10px] uppercase tracking-wider text-muted-foreground">
                   Atributos
                 </p>
-                <div className="grid grid-cols-5 gap-2">
+                <div className="grid grid-cols-2 gap-2 sm:grid-cols-5">
                   {(Object.keys(active.attributes) as (keyof MasterNpc["attributes"])[]).map(
                     (key) => (
                       <label key={key} className="space-y-1 text-center">
@@ -539,12 +550,16 @@ export function NpcHub({
                         <Input
                           type="number"
                           min={0}
+                          max={5}
                           value={active.attributes[key]}
                           onChange={(event) =>
                             patch(active.id, {
                               attributes: {
                                 ...active.attributes,
-                                [key]: Math.max(0, Number(event.target.value)),
+                                [key]: Math.max(
+                                  0,
+                                  Math.min(5, Math.round(Number(event.target.value) || 0)),
+                                ),
                               },
                             })
                           }
@@ -558,19 +573,24 @@ export function NpcHub({
                 <p className="mb-2 text-[10px] uppercase tracking-wider text-muted-foreground">
                   Vetores funcionais
                 </p>
-                <div className="grid grid-cols-5 gap-2">
+                <div className="grid grid-cols-2 gap-2 sm:grid-cols-5">
                   {(Object.keys(active.vectors) as (keyof MasterNpc["vectors"])[]).map((key) => (
                     <label key={key} className="space-y-1 text-center">
                       <span className="text-[9px] capitalize text-muted-foreground">{key}</span>
                       <Input
                         type="number"
                         min={0}
+                        max={10}
+                        step={2}
                         value={active.vectors[key]}
                         onChange={(event) =>
                           patch(active.id, {
                             vectors: {
                               ...active.vectors,
-                              [key]: Math.max(0, Number(event.target.value)),
+                              [key]: Math.max(
+                                0,
+                                Math.min(10, Math.round((Number(event.target.value) || 0) / 2) * 2),
+                              ),
                             },
                           })
                         }
@@ -670,11 +690,12 @@ export function ThreatHub({
         <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
           {threats.map((threat) => {
             const stats = threatStats(threat);
-            const over = stats.spent > stats.cp;
+            const issues = threatValidationIssues(threat);
+            const invalid = issues.length > 0;
             return (
               <Card
                 key={threat.id}
-                className={`cursor-pointer p-4 hover:border-primary/50 ${over ? "border-destructive/60" : ""}`}
+                className={`cursor-pointer p-4 hover:border-primary/50 ${invalid ? "border-destructive/60" : ""}`}
                 onClick={() => setOpenId(threat.id)}
               >
                 <div className="flex justify-between gap-2">
@@ -685,7 +706,7 @@ export function ThreatHub({
                     </p>
                   </div>
                   <span
-                    className={`rounded-full border px-2 py-1 text-[10px] ${over ? "text-destructive" : "text-emerald-300"}`}
+                    className={`rounded-full border px-2 py-1 text-[10px] ${invalid ? "text-destructive" : "text-emerald-300"}`}
                   >
                     {stats.spent}/{stats.cp} CP
                   </span>
@@ -712,6 +733,8 @@ export function ThreatHub({
       {active &&
         (() => {
           const stats = threatStats(active);
+          const issues = threatValidationIssues(active);
+          const valid = issues.length === 0;
           return (
             <Dialog open={Boolean(active)} onOpenChange={(open) => !open && setOpenId(null)}>
               <DialogContent className="max-h-[90vh] max-w-4xl overflow-y-auto">
@@ -719,7 +742,7 @@ export function ThreatHub({
                   <DialogTitle className="font-cinzel">{active.name}</DialogTitle>
                 </DialogHeader>
                 <div
-                  className={`rounded-lg border p-3 ${stats.spent > stats.cp ? "border-destructive bg-destructive/5" : "border-emerald-500/30 bg-emerald-500/5"}`}
+                  className={`rounded-lg border p-3 ${valid ? "border-emerald-500/30 bg-emerald-500/5" : "border-destructive bg-destructive/5"}`}
                 >
                   <div className="flex items-center justify-between">
                     <span className="text-xs text-muted-foreground">Orçamento de construção</span>
@@ -729,12 +752,19 @@ export function ThreatHub({
                   </div>
                   <div className="mt-2 h-2 overflow-hidden rounded-full bg-secondary">
                     <div
-                      className={`h-full ${stats.spent > stats.cp ? "bg-destructive" : "bg-emerald-500"}`}
+                      className={`h-full ${valid ? "bg-emerald-500" : "bg-destructive"}`}
                       style={{
                         width: `${Math.min(100, (stats.spent / Math.max(1, stats.cp)) * 100)}%`,
                       }}
                     />
                   </div>
+                  {issues.length > 0 && (
+                    <ul className="mt-2 space-y-1 text-[11px] text-destructive">
+                      {issues.map((issue) => (
+                        <li key={issue}>• {issue}</li>
+                      ))}
+                    </ul>
+                  )}
                 </div>
                 <div className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
                   <label className="space-y-1">
@@ -778,10 +808,14 @@ export function ThreatHub({
                     <Input
                       type="number"
                       min={0}
+                      max={stats.pp}
                       value={active.currentPp}
                       onChange={(event) =>
                         patch(active.id, {
-                          currentPp: Math.max(0, Number(event.target.value)),
+                          currentPp: Math.max(
+                            0,
+                            Math.min(stats.pp, Math.round(Number(event.target.value) || 0)),
+                          ),
                         })
                       }
                     />
@@ -815,19 +849,38 @@ export function ThreatHub({
                       ["reactionPurchases", "Reação (+1 / 8 CP)"],
                       ["movementPurchases", "Mov. (+3m / 1 CP)"],
                     ] as const
-                  ).map(([key, label]) => (
-                    <label key={key} className="space-y-1">
-                      <Label className="text-[10px]">{label}</Label>
-                      <Input
-                        type="number"
-                        min={0}
-                        value={active[key]}
-                        onChange={(event) =>
-                          patch(active.id, { [key]: Math.max(0, Number(event.target.value)) })
-                        }
-                      />
-                    </label>
-                  ))}
+                  ).map(([key, label]) => {
+                    const maximum =
+                      key === "ppPurchases"
+                        ? maxThreatPpPurchases(active.magnitude)
+                        : key === "defPurchases"
+                          ? 4
+                          : key === "rdPurchases"
+                            ? maxThreatRdPurchases(active.magnitude)
+                            : key === "reactionPurchases"
+                              ? 1
+                              : undefined;
+                    return (
+                      <label key={key} className="space-y-1">
+                        <Label className="text-[10px]">
+                          {label}
+                          {maximum != null ? ` · máx. ${maximum}` : ""}
+                        </Label>
+                        <Input
+                          type="number"
+                          min={0}
+                          max={maximum}
+                          value={active[key]}
+                          onChange={(event) => {
+                            const value = Math.max(0, Math.round(Number(event.target.value) || 0));
+                            patch(active.id, {
+                              [key]: maximum == null ? value : Math.min(maximum, value),
+                            });
+                          }}
+                        />
+                      </label>
+                    );
+                  })}
                 </div>
                 <div className="mt-4 grid gap-3 sm:grid-cols-2">
                   <label className="space-y-1">
@@ -884,7 +937,7 @@ export function ThreatHub({
                     <p className="mb-2 text-[10px] uppercase tracking-wider text-muted-foreground">
                       Atributos
                     </p>
-                    <div className="grid grid-cols-4 gap-2 text-center text-xs">
+                    <div className="grid grid-cols-2 gap-2 text-center text-xs sm:grid-cols-4">
                       {(Object.keys(active.attributes) as (keyof MasterThreat["attributes"])[]).map(
                         (key) => (
                           <label key={key} className="space-y-1">
@@ -892,12 +945,16 @@ export function ThreatHub({
                             <Input
                               type="number"
                               min={0}
+                              max={5}
                               value={active.attributes[key]}
                               onChange={(event) =>
                                 patch(active.id, {
                                   attributes: {
                                     ...active.attributes,
-                                    [key]: Math.max(0, Number(event.target.value)),
+                                    [key]: Math.max(
+                                      0,
+                                      Math.min(5, Math.round(Number(event.target.value) || 0)),
+                                    ),
                                   },
                                 })
                               }
@@ -911,25 +968,32 @@ export function ThreatHub({
                     <p className="mb-2 text-[10px] uppercase tracking-wider text-muted-foreground">
                       Vetores de Tensão
                     </p>
-                    <div className="grid grid-cols-5 gap-2 text-center text-xs">
-                  {Object.entries(active.vectors).map(([key, value]) => (
-                    <label key={key} className="space-y-1">
-                      <span className="text-[10px] text-muted-foreground">{key}</span>
-                      <Input
-                        type="number"
-                        min={0}
-                        value={value}
-                        onChange={(event) =>
-                          patch(active.id, {
-                            vectors: {
-                              ...active.vectors,
-                              [key]: Math.max(0, Number(event.target.value)),
-                            },
-                          })
-                        }
-                      />
-                    </label>
-                  ))}
+                    <div className="grid grid-cols-2 gap-2 text-center text-xs sm:grid-cols-5">
+                      {Object.entries(active.vectors).map(([key, value]) => (
+                        <label key={key} className="space-y-1">
+                          <span className="text-[10px] text-muted-foreground">{key}</span>
+                          <Input
+                            type="number"
+                            min={0}
+                            max={maxThreatVector(active.magnitude)}
+                            value={value}
+                            onChange={(event) =>
+                              patch(active.id, {
+                                vectors: {
+                                  ...active.vectors,
+                                  [key]: Math.max(
+                                    0,
+                                    Math.min(
+                                      maxThreatVector(active.magnitude),
+                                      Math.round(Number(event.target.value) || 0),
+                                    ),
+                                  ),
+                                },
+                              })
+                            }
+                          />
+                        </label>
+                      ))}
                     </div>
                   </div>
                 </div>
@@ -1006,7 +1070,9 @@ export function ThreatHub({
                           onChange={(event) =>
                             patch(active.id, {
                               attacks: active.attacks.map((item) =>
-                                item.id === attack.id ? { ...item, name: event.target.value } : item,
+                                item.id === attack.id
+                                  ? { ...item, name: event.target.value }
+                                  : item,
                               ),
                             })
                           }
@@ -1048,7 +1114,11 @@ export function ThreatHub({
                           className="rounded-md border border-border bg-input px-2 text-xs"
                         >
                           {[1, 2, 3, 4, 5, 6].map((impact) => (
-                            <option key={impact} value={impact}>
+                            <option
+                              key={impact}
+                              value={impact}
+                              disabled={impact > maxThreatImpact(active.magnitude)}
+                            >
                               Impacto {impact}
                             </option>
                           ))}
@@ -1066,6 +1136,11 @@ export function ThreatHub({
                           }
                           className="rounded-md border border-border bg-input px-2 text-xs"
                         >
+                          {(attack.area === "Cena" || attack.area === "Território") && (
+                            <option value={attack.area}>
+                              {attack.area} · inválido para ataque
+                            </option>
+                          )}
                           {THREAT_AREAS.map((area) => (
                             <option key={area}>{area}</option>
                           ))}
@@ -1166,7 +1241,11 @@ export function ThreatHub({
                           className="rounded-md border border-border bg-input px-2 text-xs"
                         >
                           {[1, 2, 3, 4, 5].map((complexity) => (
-                            <option key={complexity} value={complexity}>
+                            <option
+                              key={complexity}
+                              value={complexity}
+                              disabled={complexity > maxThreatAbilityComplexity(active.magnitude)}
+                            >
                               Complexidade {complexity}
                             </option>
                           ))}
@@ -1189,9 +1268,7 @@ export function ThreatHub({
                           variant="ghost"
                           onClick={() =>
                             patch(active.id, {
-                              abilities: active.abilities.filter(
-                                (item) => item.id !== ability.id,
-                              ),
+                              abilities: active.abilities.filter((item) => item.id !== ability.id),
                             })
                           }
                         >
@@ -1434,185 +1511,267 @@ export function FoldHub({
         <EmptyState>Nenhuma dobra ativa.</EmptyState>
       ) : (
         <div className="grid gap-3 xl:grid-cols-2">
-          {folds.map((fold) => (
-            <Card
-              key={fold.id}
-              className={`p-4 ${fold.sealed ? "border-emerald-500/40" : "border-violet-500/30"}`}
-            >
-              <div className="flex gap-2">
-                <Input
-                  value={fold.name}
-                  onChange={(event) => patch(fold.id, { name: event.target.value })}
-                  className="font-cinzel font-bold"
-                />
-                <Button
-                  size="sm"
-                  variant={fold.sealed ? "default" : "outline"}
-                  onClick={() => patch(fold.id, { sealed: !fold.sealed })}
-                >
-                  {fold.sealed ? "Selada" : "Aberta"}
-                </Button>
-                <Button
-                  size="icon"
-                  variant="ghost"
-                  className="text-destructive"
-                  onClick={() => onChange(folds.filter((entry) => entry.id !== fold.id))}
-                >
-                  <Trash className="h-4 w-4" />
-                </Button>
-              </div>
-              <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-4">
-                <SelectField
-                  label="Estágio"
-                  value={fold.stage}
-                  options={[
-                    "Pré-Furo",
-                    "Furo I",
-                    "Furo II",
-                    "Furo III",
-                    "Âncora I",
-                    "Âncora II",
-                    "Âncora III",
-                    "Zona de Aspecto",
-                    "Revérbero",
-                  ]}
-                  onChange={(value) => patch(fold.id, { stage: value as MasterFold["stage"] })}
-                />
-                <label className="space-y-1">
-                  <Label className="text-xs text-muted-foreground">Tensão</Label>
+          {folds.map((fold) => {
+            const stageReference = getFoldStageReference(fold.stage);
+            return (
+              <Card
+                key={fold.id}
+                className={`p-4 ${fold.sealed ? "border-emerald-500/40" : "border-violet-500/30"}`}
+              >
+                <div className="flex flex-col gap-2 sm:flex-row">
                   <Input
-                    type="number"
-                    min={0}
-                    value={fold.tension}
-                    onChange={(event) =>
-                      patch(fold.id, { tension: Math.max(0, Number(event.target.value)) })
-                    }
+                    value={fold.name}
+                    onChange={(event) => patch(fold.id, { name: event.target.value })}
+                    className="font-cinzel font-bold"
                   />
-                </label>
-                <label className="space-y-1">
-                  <Label className="text-xs text-muted-foreground">Permanência</Label>
-                  <Input
-                    type="number"
-                    min={0}
-                    value={fold.permanence}
-                    onChange={(event) =>
-                      patch(fold.id, { permanence: Math.max(0, Number(event.target.value)) })
-                    }
-                  />
-                </label>
-                <label className="space-y-1">
-                  <Label className="text-xs text-muted-foreground">Máximo</Label>
-                  <Input
-                    type="number"
-                    min={1}
-                    value={fold.maxPermanence}
-                    onChange={(event) =>
-                      patch(fold.id, { maxPermanence: Math.max(1, Number(event.target.value)) })
-                    }
-                  />
-                </label>
-              </div>
-              <div className="mt-3 grid gap-2 sm:grid-cols-2">
-                <Input
-                  value={fold.nature}
-                  onChange={(event) => patch(fold.id, { nature: event.target.value })}
-                  placeholder="Natureza da dobra"
-                />
-                <Input
-                  value={fold.environmentalEffect}
-                  onChange={(event) => patch(fold.id, { environmentalEffect: event.target.value })}
-                  placeholder="Efeito ambiental"
-                />
-                <Textarea
-                  rows={2}
-                  value={fold.pulseConsequence}
-                  onChange={(event) => patch(fold.id, { pulseConsequence: event.target.value })}
-                  placeholder="Consequência do pulso"
-                />
-                <Textarea
-                  rows={2}
-                  value={fold.notes}
-                  onChange={(event) => patch(fold.id, { notes: event.target.value })}
-                  placeholder="Notas"
-                />
-              </div>
-              <div className="mt-3 space-y-2 border-t border-border/60 pt-3">
-                {fold.stitchPoints.map((point) => (
-                  <div key={point.id} className="grid grid-cols-[150px_1fr_auto_auto] gap-2">
-                    <Input
-                      value={point.factor}
-                      onChange={(event) =>
-                        patch(fold.id, {
-                          stitchPoints: fold.stitchPoints.map((entry) =>
-                            entry.id === point.id
-                              ? { ...entry, factor: event.target.value }
-                              : entry,
-                          ),
-                        })
-                      }
-                      placeholder="Fator narrativo"
-                    />
-                    <Input
-                      value={point.description}
-                      onChange={(event) =>
-                        patch(fold.id, {
-                          stitchPoints: fold.stitchPoints.map((entry) =>
-                            entry.id === point.id
-                              ? { ...entry, description: event.target.value }
-                              : entry,
-                          ),
-                        })
-                      }
-                      placeholder="Ponto de costura"
-                    />
+                  <div className="flex gap-2">
                     <Button
                       size="sm"
-                      variant={point.resolved ? "default" : "outline"}
-                      onClick={() =>
-                        patch(fold.id, {
-                          stitchPoints: fold.stitchPoints.map((entry) =>
-                            entry.id === point.id ? { ...entry, resolved: !entry.resolved } : entry,
-                          ),
-                        })
-                      }
+                      variant={fold.sealed ? "default" : "outline"}
+                      className="flex-1 sm:flex-none"
+                      onClick={() => patch(fold.id, { sealed: !fold.sealed })}
                     >
-                      {point.resolved ? "Resolvido" : "Pendente"}
+                      {fold.sealed ? "Selada" : "Aberta"}
                     </Button>
                     <Button
                       size="icon"
                       variant="ghost"
-                      onClick={() =>
-                        patch(fold.id, {
-                          stitchPoints: fold.stitchPoints.filter((entry) => entry.id !== point.id),
-                        })
-                      }
+                      className="text-destructive"
+                      onClick={() => onChange(folds.filter((entry) => entry.id !== fold.id))}
                     >
                       <Trash className="h-4 w-4" />
                     </Button>
                   </div>
-                ))}
-                <Button
-                  size="sm"
-                  variant="outline"
-                  onClick={() =>
-                    patch(fold.id, {
-                      stitchPoints: [
-                        ...fold.stitchPoints,
-                        {
-                          id: genId(),
-                          factor: "Fator narrativo",
-                          description: "",
-                          resolved: false,
-                        },
-                      ],
-                    })
-                  }
-                >
-                  <Plus className="mr-1 h-3.5 w-3.5" /> Ponto de costura
-                </Button>
-              </div>
-            </Card>
-          ))}
+                </div>
+                <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-4">
+                  <SelectField
+                    label="Estágio"
+                    value={fold.stage}
+                    options={[
+                      "Pré-Furo",
+                      "Furo I",
+                      "Furo II",
+                      "Furo III",
+                      "Âncora I",
+                      "Âncora II",
+                      "Âncora III",
+                      "Zona de Aspecto",
+                      "Revérbero",
+                    ]}
+                    onChange={(value) => {
+                      const nextStage = value as MasterFold["stage"];
+                      const nextReference = getFoldStageReference(nextStage);
+                      const nextMaximum =
+                        fold.maxPermanence <= stageReference.basePermanence
+                          ? nextReference.basePermanence
+                          : Math.min(
+                              12,
+                              Math.max(nextReference.basePermanence, fold.maxPermanence),
+                            );
+                      patch(fold.id, {
+                        stage: nextStage,
+                        tension:
+                          nextStage === "Revérbero" ? 0 : Math.min(4, Math.max(0, fold.tension)),
+                        maxPermanence: nextMaximum,
+                        permanence: Math.min(fold.permanence, nextMaximum),
+                      });
+                    }}
+                  />
+                  <label className="space-y-1">
+                    <Label className="text-xs text-muted-foreground">Tensão</Label>
+                    <Input
+                      type="number"
+                      min={0}
+                      max={4}
+                      disabled={fold.stage === "Revérbero"}
+                      value={fold.tension}
+                      onChange={(event) =>
+                        patch(fold.id, {
+                          tension: Math.max(
+                            0,
+                            Math.min(4, Math.round(Number(event.target.value) || 0)),
+                          ),
+                        })
+                      }
+                    />
+                  </label>
+                  <label className="space-y-1">
+                    <Label className="text-xs text-muted-foreground">Permanência</Label>
+                    <Input
+                      type="number"
+                      min={0}
+                      max={fold.maxPermanence}
+                      value={fold.permanence}
+                      onChange={(event) =>
+                        patch(fold.id, {
+                          permanence: Math.max(
+                            0,
+                            Math.min(
+                              fold.maxPermanence,
+                              Math.round(Number(event.target.value) || 0),
+                            ),
+                          ),
+                        })
+                      }
+                    />
+                  </label>
+                  <label className="space-y-1">
+                    <Label className="text-xs text-muted-foreground">Máximo</Label>
+                    <Input
+                      type="number"
+                      min={stageReference.basePermanence}
+                      max={12}
+                      value={fold.maxPermanence}
+                      onChange={(event) =>
+                        patch(fold.id, {
+                          maxPermanence: Math.max(
+                            stageReference.basePermanence,
+                            Math.min(12, Math.round(Number(event.target.value) || 0)),
+                          ),
+                          permanence: Math.min(
+                            fold.permanence,
+                            Math.max(
+                              stageReference.basePermanence,
+                              Math.min(12, Math.round(Number(event.target.value) || 0)),
+                            ),
+                          ),
+                        })
+                      }
+                    />
+                  </label>
+                </div>
+                <div className="mt-3 grid grid-cols-2 gap-2 rounded-lg border border-border/60 bg-secondary/20 p-2 text-center text-[10px] sm:grid-cols-4">
+                  <div>
+                    <span className="text-muted-foreground">DT base</span>
+                    <strong className="block text-foreground">{stageReference.dt}</strong>
+                  </div>
+                  <div>
+                    <span className="text-muted-foreground">Cargas</span>
+                    <strong className="block text-foreground">{stageReference.charges}</strong>
+                  </div>
+                  <div>
+                    <span className="text-muted-foreground">Permanência-base</span>
+                    <strong className="block text-foreground">
+                      {stageReference.basePermanence}
+                    </strong>
+                  </div>
+                  <div>
+                    <span className="text-muted-foreground">Pulso</span>
+                    <strong className="block text-foreground">
+                      {stageReference.pulseModifier == null
+                        ? "estável"
+                        : `1d6 + ${stageReference.pulseModifier}`}
+                    </strong>
+                  </div>
+                </div>
+                <div className="mt-3 grid gap-2 sm:grid-cols-2">
+                  <Input
+                    value={fold.nature}
+                    onChange={(event) => patch(fold.id, { nature: event.target.value })}
+                    placeholder="Natureza da dobra"
+                  />
+                  <Input
+                    value={fold.environmentalEffect}
+                    onChange={(event) =>
+                      patch(fold.id, { environmentalEffect: event.target.value })
+                    }
+                    placeholder="Efeito ambiental"
+                  />
+                  <Textarea
+                    rows={2}
+                    value={fold.pulseConsequence}
+                    onChange={(event) => patch(fold.id, { pulseConsequence: event.target.value })}
+                    placeholder="Consequência do pulso"
+                  />
+                  <Textarea
+                    rows={2}
+                    value={fold.notes}
+                    onChange={(event) => patch(fold.id, { notes: event.target.value })}
+                    placeholder="Notas"
+                  />
+                </div>
+                <div className="mt-3 space-y-2 border-t border-border/60 pt-3">
+                  {fold.stitchPoints.map((point) => (
+                    <div key={point.id} className="grid gap-2 sm:grid-cols-[150px_1fr_auto_auto]">
+                      <Input
+                        value={point.factor}
+                        onChange={(event) =>
+                          patch(fold.id, {
+                            stitchPoints: fold.stitchPoints.map((entry) =>
+                              entry.id === point.id
+                                ? { ...entry, factor: event.target.value }
+                                : entry,
+                            ),
+                          })
+                        }
+                        placeholder="Fator narrativo"
+                      />
+                      <Input
+                        value={point.description}
+                        onChange={(event) =>
+                          patch(fold.id, {
+                            stitchPoints: fold.stitchPoints.map((entry) =>
+                              entry.id === point.id
+                                ? { ...entry, description: event.target.value }
+                                : entry,
+                            ),
+                          })
+                        }
+                        placeholder="Ponto de costura"
+                      />
+                      <Button
+                        size="sm"
+                        variant={point.resolved ? "default" : "outline"}
+                        onClick={() =>
+                          patch(fold.id, {
+                            stitchPoints: fold.stitchPoints.map((entry) =>
+                              entry.id === point.id
+                                ? { ...entry, resolved: !entry.resolved }
+                                : entry,
+                            ),
+                          })
+                        }
+                      >
+                        {point.resolved ? "Resolvido" : "Pendente"}
+                      </Button>
+                      <Button
+                        size="icon"
+                        variant="ghost"
+                        onClick={() =>
+                          patch(fold.id, {
+                            stitchPoints: fold.stitchPoints.filter(
+                              (entry) => entry.id !== point.id,
+                            ),
+                          })
+                        }
+                      >
+                        <Trash className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  ))}
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() =>
+                      patch(fold.id, {
+                        stitchPoints: [
+                          ...fold.stitchPoints,
+                          {
+                            id: genId(),
+                            factor: "Fator narrativo",
+                            description: "",
+                            resolved: false,
+                          },
+                        ],
+                      })
+                    }
+                  >
+                    <Plus className="mr-1 h-3.5 w-3.5" /> Ponto de costura
+                  </Button>
+                </div>
+              </Card>
+            );
+          })}
         </div>
       )}
     </div>
@@ -1632,8 +1791,12 @@ export function EncounterHub({
     ? sheets.reduce((sum, sheet) => sum + sheet.exposure, 0) / sheets.length
     : 0;
   const selected = threats.filter((threat) => selectedIds.includes(threat.id));
-  const totalMagnitude = selected.reduce((sum, threat) => sum + threat.magnitude, 0);
-  const balance = calculateEncounterBalance(rankAverage, participants, Math.max(1, totalMagnitude));
+  const combinedMagnitude = combinedThreatMagnitude(selected.map((threat) => threat.magnitude));
+  const balance = calculateEncounterBalance(
+    rankAverage,
+    participants,
+    Math.max(1, combinedMagnitude.total),
+  );
   return (
     <div className="space-y-4">
       <PanelHeading
@@ -1707,8 +1870,13 @@ export function EncounterHub({
           </div>
           <div className="mt-3 flex items-center justify-between border-t border-border pt-3 text-sm">
             <span>Magnitude combinada</span>
-            <strong>{totalMagnitude}</strong>
+            <strong>{combinedMagnitude.total}</strong>
           </div>
+          {combinedMagnitude.adjustment > 0 && (
+            <p className="mt-1 text-right text-[10px] text-muted-foreground">
+              soma {combinedMagnitude.base} + {combinedMagnitude.adjustment} pela economia de ações
+            </p>
+          )}
         </Card>
       </div>
       <Card className="flex items-start gap-3 p-4 text-xs text-muted-foreground">
