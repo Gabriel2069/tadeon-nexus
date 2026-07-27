@@ -84,6 +84,8 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { useSerializedAutosave } from "@/lib/use-serialized-autosave";
 import { cacheSheet } from "@/lib/offline-cache";
 import { BrandMark } from "@/components/brand-mark";
+import { SaveStatus } from "@/components/save-status";
+import { ResistanceDtCalculator } from "@/components/master/resistance-dt-calculator";
 
 const LIFE_CYCLE_TRAITS: LifeCycleTrait[] = [
   "Formação recente",
@@ -369,6 +371,7 @@ function SheetPage() {
 
   const {
     dirty,
+    lastSavedAt,
     saveError,
     saveNow: doSave,
     saving,
@@ -597,21 +600,22 @@ function SheetPage() {
           )}
           {canEdit && (
             <div className="flex items-center gap-2">
-              {saving && (
-                <span className="text-[10px] text-muted-foreground hidden sm:flex items-center gap-1">
-                  <Loader2 className="w-3 h-3 animate-spin" /> Salvando…
-                </span>
-              )}
-              {!saving && saveError && (
-                <button className="text-[10px] text-destructive" onClick={() => void doSave()}>
-                  Não salvo · tentar novamente
-                </button>
-              )}
-              {!saving && !saveError && dirty && (
-                <span className="text-[10px] text-muted-foreground hidden sm:inline">
-                  Alterações pendentes
-                </span>
-              )}
+              <SaveStatus
+                state={
+                  typeof navigator !== "undefined" && !navigator.onLine
+                    ? "offline"
+                    : saving
+                      ? "saving"
+                      : saveError
+                        ? "error"
+                        : dirty
+                          ? "pending"
+                          : "saved"
+                }
+                savedAt={lastSavedAt}
+                onRetry={() => void doSave()}
+                compact={typeof window !== "undefined" && window.innerWidth < 640}
+              />
               {sheet.power_form_enabled && (
                 <Button
                   size="sm"
@@ -793,13 +797,41 @@ function SheetPage() {
                     <div>
                       <p className="tadeon-eyebrow">Vínculos</p>
                       <p className="text-xs text-muted-foreground">
-                        Duas relações que podem mudar de estado.
+                        A personagem começa com dois; a história e Responsabilidades podem ampliar.
                       </p>
                     </div>
+                    {canEdit && (
+                      <Button
+                        type="button"
+                        size="sm"
+                        variant="outline"
+                        className="gap-1.5"
+                        onClick={() =>
+                          update("identity_data", {
+                            ...sheet.identity_data,
+                            links: [
+                              ...sheet.identity_data.links,
+                              {
+                                id: genId(),
+                                name: "",
+                                relation: "",
+                                state: "Presente",
+                              },
+                            ],
+                          })
+                        }
+                      >
+                        <Plus className="h-3.5 w-3.5" />
+                        Vínculo
+                      </Button>
+                    )}
                   </div>
                   <div className="space-y-3">
-                    {sheet.identity_data.links.slice(0, 2).map((link, index) => (
-                      <div key={link.id} className="grid gap-2 sm:grid-cols-[1fr_1fr_140px]">
+                    {sheet.identity_data.links.map((link, index) => (
+                      <div
+                        key={link.id}
+                        className="grid gap-2 sm:grid-cols-[1fr_1fr_140px_auto]"
+                      >
                         <Input
                           disabled={!canEdit}
                           value={link.name}
@@ -840,6 +872,25 @@ function SheetPage() {
                             ))}
                           </SelectContent>
                         </Select>
+                        {canEdit && sheet.identity_data.links.length > 2 && (
+                          <Button
+                            type="button"
+                            size="icon"
+                            variant="ghost"
+                            className="text-muted-foreground hover:text-destructive"
+                            aria-label={`Remover vínculo ${index + 1}`}
+                            onClick={() =>
+                              update("identity_data", {
+                                ...sheet.identity_data,
+                                links: sheet.identity_data.links.filter(
+                                  (item) => item.id !== link.id,
+                                ),
+                              })
+                            }
+                          >
+                            <Trash className="h-4 w-4" />
+                          </Button>
+                        )}
                       </div>
                     ))}
                   </div>
@@ -1989,12 +2040,8 @@ function SheetPage() {
                 </>
               ) : (
                 <>
-                  <div className="mb-3 inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-gradient-to-r from-primary/20 via-primary/10 to-transparent border border-primary/40 shadow-[0_0_12px_-4px_hsl(var(--primary))] animate-in fade-in-0 slide-in-from-top-1 duration-200">
-                    <span className="font-cinzel text-xs uppercase tracking-wider text-primary">
-                      DT de Canalização
-                    </span>
-                    <span className="text-lg font-bold text-primary">{3 * attrs.MEN}</span>
-                    <span className="text-[10px] text-muted-foreground">(3 × MEN)</span>
+                  <div className="mb-4">
+                    <ResistanceDtCalculator initialAttribute={attrs.MEN} />
                   </div>
                   <RowTable
                     rows={sheet.plots}
