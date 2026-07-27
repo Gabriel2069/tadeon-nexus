@@ -32,6 +32,7 @@ export type Database = {
           fragments_items: Json
           going_insane: number
           id: string
+          initial_skill_degrees: Json
           inventory: Json
           inventory_capacity: number
           motivation: string | null
@@ -51,6 +52,7 @@ export type Database = {
           stats: Json
           updated_at: string
           weapon_proficiency: string
+          weapon_proficiency_family: string
           weapons: Json
         }
         Insert: {
@@ -70,6 +72,7 @@ export type Database = {
           fragments_items?: Json
           going_insane?: number
           id?: string
+          initial_skill_degrees?: Json
           inventory?: Json
           inventory_capacity?: number
           motivation?: string | null
@@ -89,6 +92,7 @@ export type Database = {
           stats?: Json
           updated_at?: string
           weapon_proficiency?: string
+          weapon_proficiency_family?: string
           weapons?: Json
         }
         Update: {
@@ -108,6 +112,7 @@ export type Database = {
           fragments_items?: Json
           going_insane?: number
           id?: string
+          initial_skill_degrees?: Json
           inventory?: Json
           inventory_capacity?: number
           motivation?: string | null
@@ -127,6 +132,7 @@ export type Database = {
           stats?: Json
           updated_at?: string
           weapon_proficiency?: string
+          weapon_proficiency_family?: string
           weapons?: Json
         }
         Relationships: []
@@ -139,10 +145,10 @@ export type Database = {
           condition_options: Json
           folds: Json
           id: string
-          initiative_notes: string | null
-          initiative_order: Json
           interludes: Json
           investigation_clues: Json
+          initiative_notes: string | null
+          initiative_order: Json
           key: string
           master_npcs: Json
           monsters: Json
@@ -170,10 +176,10 @@ export type Database = {
           condition_options?: Json
           folds?: Json
           id?: string
-          initiative_notes?: string | null
-          initiative_order?: Json
           interludes?: Json
           investigation_clues?: Json
+          initiative_notes?: string | null
+          initiative_order?: Json
           key?: string
           master_npcs?: Json
           monsters?: Json
@@ -201,10 +207,10 @@ export type Database = {
           condition_options?: Json
           folds?: Json
           id?: string
-          initiative_notes?: string | null
-          initiative_order?: Json
           interludes?: Json
           investigation_clues?: Json
+          initiative_notes?: string | null
+          initiative_order?: Json
           key?: string
           master_npcs?: Json
           monsters?: Json
@@ -307,12 +313,12 @@ export type Tables<
   DefaultSchemaTableNameOrOptions extends
     | keyof (DefaultSchema["Tables"] & DefaultSchema["Views"])
     | { schema: keyof DatabaseWithoutInternals },
-  TableName extends DefaultSchemaTableNameOrOptions extends {
+  TableName extends (DefaultSchemaTableNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
     ? keyof (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
         DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])
-    : never = never,
+    : never) = never,
 > = DefaultSchemaTableNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
@@ -334,13 +340,12 @@ export type Tables<
 
 export type TablesInsert<
   DefaultSchemaTableNameOrOptions extends
-    | keyof DefaultSchema["Tables"]
-    | { schema: keyof DatabaseWithoutInternals },
-  TableName extends DefaultSchemaTableNameOrOptions extends {
+    keyof DefaultSchema["Tables"] | { schema: keyof DatabaseWithoutInternals },
+  TableName extends (DefaultSchemaTableNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
     ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
-    : never = never,
+    : never) = never,
 > = DefaultSchemaTableNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
@@ -359,13 +364,12 @@ export type TablesInsert<
 
 export type TablesUpdate<
   DefaultSchemaTableNameOrOptions extends
-    | keyof DefaultSchema["Tables"]
-    | { schema: keyof DatabaseWithoutInternals },
-  TableName extends DefaultSchemaTableNameOrOptions extends {
+    keyof DefaultSchema["Tables"] | { schema: keyof DatabaseWithoutInternals },
+  TableName extends (DefaultSchemaTableNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
     ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
-    : never = never,
+    : never) = never,
 > = DefaultSchemaTableNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
@@ -384,13 +388,12 @@ export type TablesUpdate<
 
 export type Enums<
   DefaultSchemaEnumNameOrOptions extends
-    | keyof DefaultSchema["Enums"]
-    | { schema: keyof DatabaseWithoutInternals },
-  EnumName extends DefaultSchemaEnumNameOrOptions extends {
+    keyof DefaultSchema["Enums"] | { schema: keyof DatabaseWithoutInternals },
+  EnumName extends (DefaultSchemaEnumNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
     ? keyof DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"]
-    : never = never,
+    : never) = never,
 > = DefaultSchemaEnumNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
@@ -403,11 +406,11 @@ export type CompositeTypes<
   PublicCompositeTypeNameOrOptions extends
     | keyof DefaultSchema["CompositeTypes"]
     | { schema: keyof DatabaseWithoutInternals },
-  CompositeTypeName extends PublicCompositeTypeNameOrOptions extends {
+  CompositeTypeName extends (PublicCompositeTypeNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
     ? keyof DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"]
-    : never = never,
+    : never) = never,
 > = PublicCompositeTypeNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
