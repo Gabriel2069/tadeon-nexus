@@ -711,7 +711,7 @@ export function ThreatHub({
                     {stats.spent}/{stats.cp} CP
                   </span>
                 </div>
-                <div className="mt-3 grid grid-cols-4 gap-1 text-center text-xs">
+                <div className="mt-3 grid grid-cols-2 gap-1 text-center text-xs sm:grid-cols-4">
                   <div className="rounded bg-secondary/40 p-1.5">
                     PP<strong className="block">{stats.pp}</strong>
                   </div>
