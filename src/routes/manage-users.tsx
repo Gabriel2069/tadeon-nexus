@@ -22,7 +22,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { Loader2, Crown, Swords, Eye, Trash2 } from "lucide-react";
+import { Loader2, Crown, Swords, Eye, Trash2, RefreshCw, Users } from "lucide-react";
 import { toast } from "sonner";
 import type { AppRole } from "@/lib/auth";
 import { changeUserRoleFn, deleteUserFn, listUsersFn } from "@/lib/admin-users.functions";
@@ -64,15 +64,18 @@ function ManageUsersPage() {
   const { user } = useAuth();
   const [rows, setRows] = useState<UserRow[]>([]);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState(false);
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [changingId, setChangingId] = useState<string | null>(null);
 
   const load = async () => {
     setLoading(true);
+    setLoadError(false);
     try {
       const { users } = await listUsersFn();
       setRows(users as UserRow[]);
     } catch {
+      setLoadError(true);
       toast.error("Não foi possível carregar os usuários.");
     } finally {
       setLoading(false);
@@ -126,6 +129,22 @@ function ManageUsersPage() {
         <div className="flex justify-center py-16">
           <Loader2 className="w-8 h-8 animate-spin text-primary" />
         </div>
+      ) : loadError ? (
+        <Card className="p-6 text-center border-destructive/30 bg-destructive/5">
+          <p className="text-sm font-medium">Não foi possível carregar os usuários.</p>
+          <p className="mt-1 text-xs text-muted-foreground">
+            Verifique sua conexão e tente novamente.
+          </p>
+          <Button variant="outline" className="mt-4" onClick={() => void load()}>
+            <RefreshCw className="mr-2 h-4 w-4" />
+            Tentar novamente
+          </Button>
+        </Card>
+      ) : rows.length === 0 ? (
+        <Card className="p-8 text-center">
+          <Users className="mx-auto h-8 w-8 text-muted-foreground" />
+          <p className="mt-3 text-sm font-medium">Nenhum usuário cadastrado.</p>
+        </Card>
       ) : (
         <div className="space-y-2">
           {rows.map((u) => {
