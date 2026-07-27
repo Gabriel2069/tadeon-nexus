@@ -180,10 +180,12 @@ export function AppLayout({ children }: { children: ReactNode }) {
   );
 
   return (
-    <div className="min-h-screen flex">
+    <div className="tadeon-shell relative isolate flex min-h-screen overflow-x-clip">
+      <div aria-hidden className="tadeon-ambient tadeon-ambient--veil" />
+      <div aria-hidden className="tadeon-ambient tadeon-ambient--flow" />
       {/* Desktop sidebar */}
       <aside
-        className={`hidden md:flex relative shrink-0 bg-sidebar/95 text-sidebar-foreground border-r border-sidebar-border shadow-[24px_0_80px_-50px_rgba(0,0,0,.95)] transition-[width] duration-300 ease-out ${
+        className={`tadeon-sidebar relative z-20 hidden shrink-0 border-r border-sidebar-border bg-sidebar/95 text-sidebar-foreground shadow-[24px_0_80px_-50px_rgba(0,0,0,.95)] transition-[width] duration-300 ease-out md:flex ${
           collapsed ? "w-16" : "w-64"
         }`}
       >
@@ -202,9 +204,9 @@ export function AppLayout({ children }: { children: ReactNode }) {
         </button>
       </aside>
 
-      <div className="flex-1 flex flex-col min-w-0">
+      <div className="relative z-10 flex min-w-0 flex-1 flex-col">
         {/* Mobile header */}
-        <header className="md:hidden sticky top-0 z-20 bg-background/85 backdrop-blur-xl border-b border-border/80 px-4 py-3 flex items-center justify-between">
+        <header className="tadeon-mobile-header sticky top-0 z-20 flex items-center justify-between border-b border-border/80 bg-background/85 px-4 py-3 backdrop-blur-xl md:hidden">
           <button
             onClick={() => setMobileOpen(true)}
             className="p-1.5 rounded-md hover:bg-secondary transition-colors"
@@ -228,14 +230,16 @@ export function AppLayout({ children }: { children: ReactNode }) {
           </div>
         </header>
 
-        <main className="flex-1">{children}</main>
+        <main key={path} className="tadeon-route-stage flex-1">
+          {children}
+        </main>
       </div>
 
       {/* Mobile drawer */}
       {mobileOpen && (
         <div className="md:hidden fixed inset-0 z-40 animate-in fade-in-0 duration-200">
           <div className="absolute inset-0 bg-black/60" onClick={() => setMobileOpen(false)} />
-          <aside className="absolute left-0 top-0 h-full w-72 bg-sidebar text-sidebar-foreground border-r border-sidebar-border animate-in slide-in-from-left duration-300">
+          <aside className="absolute left-0 top-0 h-full w-[min(18rem,86vw)] border-r border-sidebar-border bg-sidebar text-sidebar-foreground shadow-2xl animate-in slide-in-from-left duration-300">
             <button
               onClick={() => setMobileOpen(false)}
               className="absolute top-3 right-3 p-1.5 rounded-md hover:bg-secondary transition-colors"
@@ -279,7 +283,7 @@ function NavItem({
       to={to}
       onClick={onClick}
       title={mini ? label : undefined}
-      className={`group flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-sm transition-all ${
+      className={`tadeon-nav-item group flex items-center gap-2.5 rounded-lg px-3 py-2.5 text-sm transition-all ${
         mini ? "justify-center px-2" : ""
       } ${
         active
