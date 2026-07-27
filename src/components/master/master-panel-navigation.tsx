@@ -1,5 +1,6 @@
 import {
   BedDouble,
+  LibraryBig,
   Cog,
   LayoutDashboard,
   Pin,
@@ -25,6 +26,7 @@ export const MASTER_TAB_VALUES = [
   "interludes",
   "folds",
   "balance",
+  "catalog",
   "pinned",
   "notes",
   "data",
@@ -47,6 +49,7 @@ const tabs: Array<{
   { value: "interludes", label: "Interlúdios", icon: BedDouble },
   { value: "folds", label: "Dobras", icon: Waves },
   { value: "balance", label: "Balanço", icon: Scale },
+  { value: "catalog", label: "Acervo", icon: LibraryBig },
   { value: "pinned", label: "Fichas", icon: Pin },
   { value: "notes", label: "Notas", icon: ScrollText },
   { value: "data", label: "Dados & Fórmulas", icon: Cog },
