@@ -6,22 +6,35 @@
 // You can pass additional config via defineConfig({ vite: { ... } }) if needed.
 import { defineConfig } from "@lovable.dev/vite-tanstack-config";
 import { mcpPlugin } from "@lovable.dev/mcp-js/stacks/tanstack/vite";
+import {
+  DEFAULT_SUPABASE_PROJECT_ID,
+  DEFAULT_SUPABASE_PUBLISHABLE_KEY,
+  DEFAULT_SUPABASE_URL,
+} from "./src/integrations/supabase/public-config";
 
 // Lovable Cloud manages the unprefixed SUPABASE_* values. Vite only exposes
-// VITE_* values to the browser, so bridge the public values at build time when
-// a synced .env file is unavailable. Never expose the service role key here.
+// VITE_* values to the browser, so bridge the public values at build time and
+// keep the official publishable configuration as a deterministic fallback.
+// These values are public by design. Never expose the service role key here.
 const publicSupabaseEnv = [
   [
     "VITE_SUPABASE_PROJECT_ID",
-    process.env.VITE_SUPABASE_PROJECT_ID ?? process.env.SUPABASE_PROJECT_ID,
+    process.env.VITE_SUPABASE_PROJECT_ID ??
+      process.env.SUPABASE_PROJECT_ID ??
+      DEFAULT_SUPABASE_PROJECT_ID,
   ],
-  ["VITE_SUPABASE_URL", process.env.VITE_SUPABASE_URL ?? process.env.SUPABASE_URL],
+  [
+    "VITE_SUPABASE_URL",
+    process.env.VITE_SUPABASE_URL ?? process.env.SUPABASE_URL ?? DEFAULT_SUPABASE_URL,
+  ],
   [
     "VITE_SUPABASE_PUBLISHABLE_KEY",
-    process.env.VITE_SUPABASE_PUBLISHABLE_KEY ?? process.env.SUPABASE_PUBLISHABLE_KEY,
+    process.env.VITE_SUPABASE_PUBLISHABLE_KEY ??
+      process.env.SUPABASE_PUBLISHABLE_KEY ??
+      DEFAULT_SUPABASE_PUBLISHABLE_KEY,
   ],
 ].reduce<Record<string, string>>((definitions, [name, value]) => {
-  if (value) definitions[`import.meta.env.${name}`] = JSON.stringify(value);
+  definitions[`import.meta.env.${name}`] = JSON.stringify(value);
   return definitions;
 }, {});
 

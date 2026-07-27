@@ -466,7 +466,7 @@ export function SessionWorkspace({
                       <p className="truncate text-sm font-medium">{sheet.name}</p>
                       <Badge variant="outline">Rank {sheet.exposure}</Badge>
                     </div>
-                    <div className="mt-2 grid grid-cols-4 gap-1 text-center">
+                    <div className="mt-2 grid grid-cols-2 gap-1 text-center sm:grid-cols-4">
                       {[
                         ["PV", sheet.stats.pv_current],
                         ["PS", sheet.stats.ps_current],

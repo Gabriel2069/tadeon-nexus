@@ -167,7 +167,7 @@ function OfflineSheetCard({
       </p>
       {data ? (
         <>
-          <div className="mt-4 grid grid-cols-4 gap-2">
+          <div className="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-4">
             {[
               ["PV", stats.pv_current],
               ["PS", stats.ps_current],
