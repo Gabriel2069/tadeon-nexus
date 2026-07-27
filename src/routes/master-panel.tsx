@@ -1275,7 +1275,7 @@ function PinnedPanel({
                     />
                   </div>
                 </div>
-                <div className="grid grid-cols-5 gap-1 mt-2 text-center text-[10px]">
+                <div className="mt-2 grid grid-cols-2 gap-1 text-center text-[10px] sm:grid-cols-5">
                   {["COR", "MEN", "INS", "PRE", "ERU"].map((a) => (
                     <div key={a} className="bg-secondary/40 rounded p-1">
                       <div className="text-muted-foreground">{a}</div>
