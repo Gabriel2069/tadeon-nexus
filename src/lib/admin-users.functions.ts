@@ -1,9 +1,15 @@
 import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
-import { supabaseAdmin } from "@/integrations/supabase/client.server";
 
 const VALID_ROLES = ["mestre", "jogador", "espectador"] as const;
 type ManagedRole = (typeof VALID_ROLES)[number];
+
+interface ManagedUser {
+  id: string;
+  email: string | null;
+  full_name: string | null;
+  role: ManagedRole;
+}
 
 function validateUserId(d: unknown) {
   const value = d as { userId?: unknown };
@@ -24,25 +30,14 @@ export const listUsersFn = createServerFn({ method: "GET" })
       throw new Error("Apenas o Mestre pode gerenciar usuários.");
     }
 
-    const [{ data: profiles, error: profilesError }, { data: roles, error: rolesError }] =
-      await Promise.all([
-        supabaseAdmin.from("profiles").select("id,email,full_name").order("full_name"),
-        supabaseAdmin.from("user_roles").select("user_id,role"),
-      ]);
-    if (profilesError || rolesError) {
+    const { data, error } = await context.supabase.functions.invoke("admin-users", {
+      body: { action: "list" },
+    });
+    if (error || !Array.isArray(data?.users)) {
       throw new Error("Não foi possível carregar os usuários.");
     }
 
-    const users = (profiles ?? []).map((profile) => ({
-      id: profile.id,
-      email: profile.email,
-      full_name: profile.full_name,
-      role:
-        ((roles ?? []).find((role) => role.user_id === profile.id)?.role as
-          ManagedRole | undefined) ?? "jogador",
-    }));
-
-    return { users };
+    return { users: data.users as ManagedUser[] };
   });
 
 export const deleteUserFn = createServerFn({ method: "POST" })
@@ -62,11 +57,12 @@ export const deleteUserFn = createServerFn({ method: "POST" })
       throw new Error("Você não pode excluir sua própria conta por aqui.");
     }
 
-    // All dependent rows use ON DELETE CASCADE. Deleting the auth user first keeps
-    // the operation atomic from the application's point of view: if it fails,
-    // profile, role and character sheets remain untouched.
-    const { error: authErr } = await supabaseAdmin.auth.admin.deleteUser(data.userId);
-    if (authErr) throw new Error("Não foi possível excluir o usuário. Tente novamente.");
+    const { data: result, error } = await context.supabase.functions.invoke("admin-users", {
+      body: { action: "delete", userId: data.userId },
+    });
+    if (error || result?.ok !== true) {
+      throw new Error("Não foi possível excluir o usuário. Tente novamente.");
+    }
 
     return { ok: true };
   });
@@ -94,17 +90,12 @@ export const changeUserRoleFn = createServerFn({ method: "POST" })
       throw new Error("Você não pode alterar o próprio cargo.");
     }
 
-    const { data: target, error: targetError } = await supabaseAdmin
-      .from("profiles")
-      .select("id")
-      .eq("id", data.userId)
-      .maybeSingle();
-    if (targetError || !target) throw new Error("Usuário não encontrado.");
-
-    const { error } = await supabaseAdmin
-      .from("user_roles")
-      .upsert({ user_id: data.userId, role: data.role }, { onConflict: "user_id" });
-    if (error) throw new Error("Não foi possível atualizar o cargo.");
+    const { data: result, error } = await context.supabase.functions.invoke("admin-users", {
+      body: { action: "change-role", userId: data.userId, role: data.role },
+    });
+    if (error || result?.ok !== true) {
+      throw new Error("Não foi possível atualizar o cargo.");
+    }
 
     return { ok: true };
   });

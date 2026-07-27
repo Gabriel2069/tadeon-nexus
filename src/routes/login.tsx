@@ -8,22 +8,34 @@ import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
+import { getAuthRedirectOrigin } from "@/lib/auth-redirect";
 
 export const Route = createFileRoute("/login")({
   head: () => ({
     meta: [
       { title: "Entrar · Tadeon Nexus" },
-      { name: "description", content: "Acesse sua conta no Tadeon Nexus para gerenciar suas fichas de personagem, atributos e mesas de RPG online." },
+      {
+        name: "description",
+        content:
+          "Acesse sua conta no Tadeon Nexus para gerenciar suas fichas de personagem, atributos e mesas de RPG online.",
+      },
       { property: "og:title", content: "Entrar · Tadeon Nexus" },
-      { property: "og:description", content: "Acesse sua conta no Tadeon Nexus para gerenciar suas fichas de personagem, atributos e mesas de RPG online." },
+      {
+        property: "og:description",
+        content:
+          "Acesse sua conta no Tadeon Nexus para gerenciar suas fichas de personagem, atributos e mesas de RPG online.",
+      },
       { property: "og:url", content: "https://tadeon-nexus.lovable.app/login" },
     ],
-    links: [
-      { rel: "canonical", href: "https://tadeon-nexus.lovable.app/login" },
-    ],
+    links: [{ rel: "canonical", href: "https://tadeon-nexus.lovable.app/login" }],
   }),
-  validateSearch: (s: Record<string, unknown>) => ({
-    next: typeof s.next === "string" && s.next.startsWith("/") && !s.next.startsWith("//") ? s.next : "",
+  validateSearch: (search: Record<string, unknown>) => ({
+    next:
+      typeof search.next === "string" &&
+      search.next.startsWith("/") &&
+      !search.next.startsWith("//")
+        ? search.next
+        : "",
   }),
   component: LoginPage,
 });
@@ -42,18 +54,20 @@ function LoginPage() {
 
   useEffect(() => {
     if (!loading && session) {
-      // Same-origin relative navigation. Use href for arbitrary paths (e.g. /.lovable/oauth/consent).
       if (target === "/") void navigate({ to: "/" });
       else window.location.replace(target);
     }
   }, [loading, session, navigate, target]);
 
   const handleForgot = async () => {
-    if (!email) { toast.error("Informe seu e-mail acima primeiro."); return; }
+    if (!email) {
+      toast.error("Informe seu e-mail acima primeiro.");
+      return;
+    }
     setResetting(true);
     try {
       const { error } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: `${window.location.origin}/reset-password`,
+        redirectTo: `${getAuthRedirectOrigin()}/reset-password`,
       });
       if (error) throw error;
       toast.success("Enviamos um link para redefinir sua senha. Verifique seu e-mail.");
@@ -64,8 +78,6 @@ function LoginPage() {
     }
   };
 
-
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitting(true);
@@ -75,7 +87,7 @@ function LoginPage() {
           email,
           password,
           options: {
-            emailRedirectTo: `${window.location.origin}${target}`,
+            emailRedirectTo: `${getAuthRedirectOrigin()}${target}`,
             data: { full_name: fullName },
           },
         });
@@ -88,12 +100,15 @@ function LoginPage() {
       }
     } catch (err) {
       const raw = err instanceof Error ? err.message : "Erro desconhecido";
-      const msg =
-        /invalid login credentials/i.test(raw) ? "E-mail ou senha incorretos." :
-        /already registered|user already/i.test(raw) ? "E-mail já cadastrado." :
-        /password.*6/i.test(raw) ? "A senha precisa ter ao menos 6 caracteres." :
-        /email.*invalid/i.test(raw) ? "E-mail inválido." :
-        "Não foi possível entrar. Tente novamente.";
+      const msg = /invalid login credentials/i.test(raw)
+        ? "E-mail ou senha incorretos."
+        : /already registered|user already/i.test(raw)
+          ? "E-mail já cadastrado."
+          : /password.*(6|8)|weak password/i.test(raw)
+            ? "A senha precisa ter ao menos 8 caracteres."
+            : /email.*invalid/i.test(raw)
+              ? "E-mail inválido."
+              : "Não foi possível entrar. Tente novamente.";
       toast.error(msg);
     } finally {
       setSubmitting(false);
@@ -114,12 +129,23 @@ function LoginPage() {
           {mode === "signup" && (
             <div>
               <Label htmlFor="name">Nome completo</Label>
-              <Input id="name" value={fullName} onChange={(e) => setFullName(e.target.value)} required />
+              <Input
+                id="name"
+                value={fullName}
+                onChange={(e) => setFullName(e.target.value)}
+                required
+              />
             </div>
           )}
           <div>
             <Label htmlFor="email">E-mail</Label>
-            <Input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
+            <Input
+              id="email"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
           </div>
           <div>
             <Label htmlFor="password">Senha</Label>
@@ -129,7 +155,8 @@ function LoginPage() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
-              minLength={6}
+              minLength={8}
+              autoComplete={mode === "signin" ? "current-password" : "new-password"}
             />
           </div>
           <Button type="submit" disabled={submitting} className="w-full">
@@ -171,9 +198,10 @@ function LoginPage() {
           )}
         </div>
 
-
         <p className="mt-6 text-center text-[10px] text-muted-foreground">
-          <Link to="/" className="hover:text-primary">Voltar</Link>
+          <Link to="/" className="hover:text-primary">
+            Voltar
+          </Link>
         </p>
       </Card>
     </div>
