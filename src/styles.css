@@ -93,19 +93,27 @@
 
   html {
     color-scheme: dark;
+    scroll-behavior: smooth;
   }
 
   body {
     min-width: 320px;
+    min-height: 100dvh;
+    overflow-x: clip;
     background-color: var(--color-background);
     color: var(--color-foreground);
     font-family: var(--font-inter);
+    text-rendering: optimizeLegibility;
     background-image:
       radial-gradient(circle at 82% -10%, rgb(113 107 123 / 16%), transparent 34rem),
       radial-gradient(circle at 18% 108%, rgb(45 73 62 / 18%), transparent 38rem),
       linear-gradient(rgb(255 255 255 / 1.4%) 1px, transparent 1px),
       linear-gradient(90deg, rgb(255 255 255 / 1.1%) 1px, transparent 1px);
-    background-size: auto, auto, 72px 72px, 72px 72px;
+    background-size:
+      auto,
+      auto,
+      72px 72px,
+      72px 72px;
     background-attachment: fixed;
   }
 
@@ -126,6 +134,7 @@
   input,
   textarea,
   select {
+    -webkit-tap-highlight-color: transparent;
     transition:
       color 160ms ease,
       background-color 160ms ease,
@@ -150,6 +159,7 @@
     width: min(100%, 88rem);
     margin-inline: auto;
     padding: clamp(1rem, 2.2vw, 2rem);
+    padding-bottom: max(clamp(1.5rem, 3vw, 2.5rem), env(safe-area-inset-bottom));
   }
 
   .tadeon-eyebrow {
@@ -171,6 +181,27 @@
     box-shadow:
       0 24px 70px -44px rgb(0 0 0 / 90%),
       inset 0 1px 0 rgb(255 255 255 / 3%);
+    backdrop-filter: blur(14px);
+    transition:
+      border-color 240ms ease,
+      box-shadow 240ms ease,
+      background-color 240ms ease;
+  }
+
+  .tadeon-surface::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    background: linear-gradient(
+      112deg,
+      transparent 18%,
+      rgb(242 238 200 / 3.5%) 42%,
+      transparent 62%
+    );
+    pointer-events: none;
+    transform: translateX(-38%);
+    transition: transform 900ms cubic-bezier(0.22, 1, 0.36, 1);
   }
 
   .tadeon-surface::after {
@@ -203,6 +234,161 @@
     font-family: var(--font-mono);
     letter-spacing: 0.08em;
   }
+
+  .tadeon-shell {
+    isolation: isolate;
+    background:
+      radial-gradient(circle at 50% -12%, rgb(217 215 164 / 5%), transparent 34rem), transparent;
+  }
+
+  .tadeon-ambient {
+    position: fixed;
+    z-index: 0;
+    width: min(42rem, 72vw);
+    aspect-ratio: 1;
+    border-radius: 999px;
+    filter: blur(80px);
+    opacity: 0.12;
+    pointer-events: none;
+    will-change: transform;
+    animation: tadeon-ambient-drift 22s ease-in-out infinite alternate;
+  }
+
+  .tadeon-ambient--veil {
+    top: -25rem;
+    right: -18rem;
+    background: var(--tadeon-veil);
+  }
+
+  .tadeon-ambient--flow {
+    bottom: -30rem;
+    left: -22rem;
+    background: var(--tadeon-flow);
+    animation-delay: -9s;
+    animation-duration: 27s;
+  }
+
+  .tadeon-sidebar {
+    backdrop-filter: blur(22px);
+  }
+
+  .tadeon-sidebar::after {
+    content: "";
+    position: absolute;
+    inset: 0 0 auto;
+    height: 10rem;
+    background: linear-gradient(180deg, rgb(217 215 164 / 5%), transparent);
+    pointer-events: none;
+  }
+
+  .tadeon-mobile-header {
+    padding-top: max(0.75rem, env(safe-area-inset-top));
+    box-shadow: 0 18px 50px -42px rgb(0 0 0 / 95%);
+  }
+
+  .tadeon-route-stage {
+    min-width: 0;
+    animation: tadeon-route-enter 420ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  .tadeon-nav-item {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .tadeon-nav-item::after {
+    content: "";
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: 2px;
+    border-radius: 999px;
+    background: var(--sidebar-primary);
+    opacity: 0;
+    transform: scaleY(0.35);
+    transition:
+      opacity 180ms ease,
+      transform 220ms ease;
+  }
+
+  .tadeon-nav-item:hover::after {
+    opacity: 0.48;
+    transform: scaleY(0.7);
+  }
+
+  .tadeon-loading-mark {
+    display: grid;
+    width: 4.5rem;
+    aspect-ratio: 1;
+    place-items: center;
+    border: 1px solid color-mix(in srgb, var(--tadeon-knowledge) 32%, transparent);
+    border-radius: 1.25rem;
+    background: color-mix(in srgb, var(--card) 82%, transparent);
+    box-shadow:
+      0 24px 70px -38px rgb(0 0 0 / 95%),
+      0 0 40px -24px var(--tadeon-knowledge);
+    backdrop-filter: blur(18px);
+    animation: tadeon-loading-breathe 1.8s ease-in-out infinite;
+  }
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .tadeon-surface:hover {
+    border-color: color-mix(in srgb, var(--tadeon-knowledge) 28%, var(--border));
+    box-shadow:
+      0 28px 80px -48px rgb(0 0 0 / 96%),
+      inset 0 1px 0 rgb(255 255 255 / 4%);
+  }
+
+  .tadeon-surface:hover::before {
+    transform: translateX(38%);
+  }
+}
+
+@media (max-width: 639px) {
+  .tadeon-page {
+    padding-inline: 0.875rem;
+  }
+
+  .tadeon-surface {
+    border-radius: 0.875rem;
+  }
+}
+
+@keyframes tadeon-route-enter {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+    filter: blur(2px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+  }
+}
+
+@keyframes tadeon-ambient-drift {
+  from {
+    transform: translate3d(-2%, -1%, 0) scale(0.96);
+  }
+
+  to {
+    transform: translate3d(4%, 3%, 0) scale(1.06);
+  }
+}
+
+@keyframes tadeon-loading-breathe {
+  0%,
+  100% {
+    transform: scale(0.98);
+    border-color: color-mix(in srgb, var(--tadeon-knowledge) 24%, transparent);
+  }
+
+  50% {
+    transform: scale(1.02);
+    border-color: color-mix(in srgb, var(--tadeon-knowledge) 48%, transparent);
+  }
 }
 
 ::-webkit-scrollbar {
@@ -232,5 +418,11 @@
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+  }
+
+  .tadeon-ambient,
+  .tadeon-loading-mark,
+  .tadeon-route-stage {
+    animation: none !important;
   }
 }
