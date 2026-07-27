@@ -1,0 +1,58 @@
+name: Manter Supabase Ativo
+
+on:
+  schedule:
+    # 02:17 e 14:17 no horário de Brasília (UTC-3).
+    # Minutos fora do início da hora reduzem atrasos do agendador do GitHub.
+    - cron: "17 5,17 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: supabase-heartbeat
+  cancel-in-progress: true
+
+jobs:
+  heartbeat:
+    name: Consultar banco
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    env:
+      # A URL e a publishable key são configurações públicas do cliente,
+      # não credenciais administrativas.
+      SUPABASE_URL: https://nkxpstyfrzufsnowjrdi.supabase.co
+      SUPABASE_PUBLISHABLE_KEY: sb_publishable_TNGEtvRCuME_Kn00KwqkAw_BwdmxQRb
+
+    steps:
+      - name: Executar heartbeats no Postgres
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          for request_number in 1 2; do
+            response="$(
+              curl \
+                --silent \
+                --show-error \
+                --fail-with-body \
+                --retry 3 \
+                --retry-delay 5 \
+                --retry-all-errors \
+                --connect-timeout 15 \
+                --max-time 45 \
+                --request POST \
+                "${SUPABASE_URL}/rest/v1/rpc/project_heartbeat" \
+                --header "apikey: ${SUPABASE_PUBLISHABLE_KEY}" \
+                --header "Authorization: Bearer ${SUPABASE_PUBLISHABLE_KEY}" \
+                --header "Content-Type: application/json" \
+                --data '{}'
+            )"
+
+            echo "Heartbeat ${request_number} concluído: ${response}"
+
+            if [[ "${request_number}" -lt 2 ]]; then
+              sleep 5
+            fi
+          done
