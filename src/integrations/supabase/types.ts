@@ -32,7 +32,6 @@ export type Database = {
           fragments_items: Json
           going_insane: number
           id: string
-          initial_skill_degrees: Json
           inventory: Json
           inventory_capacity: number
           motivation: string | null
@@ -52,7 +51,6 @@ export type Database = {
           stats: Json
           updated_at: string
           weapon_proficiency: string
-          weapon_proficiency_family: string
           weapons: Json
         }
         Insert: {
@@ -72,7 +70,6 @@ export type Database = {
           fragments_items?: Json
           going_insane?: number
           id?: string
-          initial_skill_degrees?: Json
           inventory?: Json
           inventory_capacity?: number
           motivation?: string | null
@@ -92,7 +89,6 @@ export type Database = {
           stats?: Json
           updated_at?: string
           weapon_proficiency?: string
-          weapon_proficiency_family?: string
           weapons?: Json
         }
         Update: {
@@ -112,7 +108,6 @@ export type Database = {
           fragments_items?: Json
           going_insane?: number
           id?: string
-          initial_skill_degrees?: Json
           inventory?: Json
           inventory_capacity?: number
           motivation?: string | null
@@ -132,7 +127,6 @@ export type Database = {
           stats?: Json
           updated_at?: string
           weapon_proficiency?: string
-          weapon_proficiency_family?: string
           weapons?: Json
         }
         Relationships: []
