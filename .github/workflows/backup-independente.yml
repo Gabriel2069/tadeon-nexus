@@ -1,0 +1,54 @@
+name: Backup independente do Supabase
+
+on:
+  schedule:
+    - cron: "25 3 * * 0"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: supabase-backup
+  cancel-in-progress: false
+
+jobs:
+  backup:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Validar configuração
+        env:
+          SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+        run: |
+          if [ -z "$SUPABASE_DB_URL" ]; then
+            echo "::error::Cadastre o secret SUPABASE_DB_URL antes de executar o backup."
+            exit 1
+          fi
+
+      - name: Instalar cliente PostgreSQL
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes postgresql-client
+
+      - name: Exportar banco
+        env:
+          SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+        run: |
+          pg_dump "$SUPABASE_DB_URL" \
+            --format=custom \
+            --no-owner \
+            --no-acl \
+            --file=tadeon-nexus.dump
+          sha256sum tadeon-nexus.dump > tadeon-nexus.dump.sha256
+
+      - name: Guardar cópia privada
+        uses: actions/upload-artifact@v4
+        with:
+          name: tadeon-nexus-${{ github.run_id }}
+          path: |
+            tadeon-nexus.dump
+            tadeon-nexus.dump.sha256
+          if-no-files-found: error
+          retention-days: 30
+          compression-level: 0
