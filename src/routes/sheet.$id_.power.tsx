@@ -602,7 +602,7 @@ function PowerFormPage() {
             {/* Attributes + radar (orange) */}
             <VPCard title="Atributos">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3 items-center">
-                <div className="grid grid-cols-5 md:grid-cols-1 gap-2">
+                <div className="grid grid-cols-2 gap-2 sm:grid-cols-5 md:grid-cols-1">
                   {(Object.keys(attrs) as (keyof Attributes)[]).map((k) => (
                     <div
                       key={k}
