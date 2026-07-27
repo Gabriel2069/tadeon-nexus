@@ -7,8 +7,8 @@ Aplicação web para gerenciar fichas, progressão de personagens e a mesa do Ta
 Requisitos: Node.js 22 ou superior e npm.
 
 1. Copie `.env.example` para `.env` e preencha as chaves públicas do Supabase.
-   Mantenha `SUPABASE_SERVICE_ROLE_KEY` somente no ambiente do servidor; nunca a exponha no navegador
-   ou em commits.
+   O frontend utiliza somente a publishable key. Operações administrativas ficam na Edge Function
+   protegida `admin-users`; nenhuma service role key deve ser adicionada ao site.
 2. Instale as dependências com `npm ci`.
 3. Inicie o projeto com `npm run dev`.
 
@@ -19,8 +19,17 @@ testes e o build de produção.
 
 ## Banco de dados
 
-As alterações do Supabase ficam em `supabase/migrations`. A migration mais recente corrige as
-permissões de exclusão de fichas e garante que cada usuário tenha exatamente um cargo.
+As alterações do Supabase ficam em `supabase/migrations`. A Edge Function `admin-users` concentra
+as operações exclusivas do Mestre e valida a sessão antes de usar privilégios administrativos.
+
+## Manutenção do projeto gratuito
+
+O workflow `.github/workflows/manter-supabase-ativo.yml` chama a função
+`public.project_heartbeat()` duas vezes ao dia. A função é `SECURITY INVOKER`, não lê tabelas,
+não altera dados e pode ser executada manualmente pela aba **Actions** do GitHub.
+
+A URL e a publishable key usadas pelo workflow são públicas por definição. Nunca substitua essa
+chave por uma secret key ou pela service role key.
 
 ## Backup
 
