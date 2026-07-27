@@ -50,8 +50,8 @@ function ResetPasswordPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (password.length < 6) {
-      toast.error("A senha precisa ter ao menos 6 caracteres.");
+    if (password.length < 8) {
+      toast.error("A senha precisa ter ao menos 8 caracteres.");
       return;
     }
     if (password !== confirm) {
@@ -92,7 +92,8 @@ function ResetPasswordPage() {
               <Input
                 id="password"
                 type="password"
-                minLength={6}
+                minLength={8}
+                autoComplete="new-password"
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
@@ -103,7 +104,8 @@ function ResetPasswordPage() {
               <Input
                 id="confirm"
                 type="password"
-                minLength={6}
+                minLength={8}
+                autoComplete="new-password"
                 required
                 value={confirm}
                 onChange={(e) => setConfirm(e.target.value)}
@@ -120,7 +122,9 @@ function ResetPasswordPage() {
           </div>
         ) : (
           <Button asChild variant="outline" className="w-full">
-            <Link to="/login" search={{ next: "" }}>Solicitar outro link</Link>
+            <Link to="/login" search={{ next: "" }}>
+              Solicitar outro link
+            </Link>
           </Button>
         )}
 
