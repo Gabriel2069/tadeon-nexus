@@ -98,3 +98,14 @@ backfill é simplesmente adiado até existir um perfil, sem impedir a criação 
 As funções auxiliares de RLS ficam no schema não exposto `private`, recebem o usuário apenas de
 `auth.uid()` e não aceitam um ID arbitrário de usuário. A interface ajuda na experiência, mas o
 banco permanece a autoridade final.
+
+## Contratos de O Nexus
+
+A taxonomia completa, os estados de ciclo de vida, as visibilidades, as direções de relação e os
+níveis de ACL agora são definidos em `src/lib/nexus-contracts.ts` e espelhados pelos enums do
+Postgres. O vocabulário de tipos permanece extensível sem criar uma tabela por tipo de página.
+
+As permissões de interface `knowledge:view`, `knowledge:create`, `knowledge:edit`,
+`knowledge:manage` e `knowledge:publish` passam pela mesma camada central. A RLS faz a
+validação definitiva com o usuário de `auth.uid()` e bloqueia todas as tabelas enquanto a flag
+`nexus_knowledge_enabled` estiver desligada.
