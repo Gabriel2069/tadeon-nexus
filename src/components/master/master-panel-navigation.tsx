@@ -1,8 +1,9 @@
 import {
   BedDouble,
-  LibraryBig,
   Cog,
+  Images,
   LayoutDashboard,
+  LibraryBig,
   Pin,
   Radio,
   Scale,
@@ -27,6 +28,7 @@ export const MASTER_TAB_VALUES = [
   "folds",
   "balance",
   "catalog",
+  "assets",
   "pinned",
   "notes",
   "data",
@@ -38,6 +40,7 @@ const tabs: Array<{
   value: MasterTab;
   label: string;
   icon: typeof LayoutDashboard;
+  feature?: "assets";
 }> = [
   { value: "dashboard", label: "Visão Geral", icon: LayoutDashboard },
   { value: "session", label: "Sessão Ativa", icon: Radio },
@@ -50,25 +53,32 @@ const tabs: Array<{
   { value: "folds", label: "Dobras", icon: Waves },
   { value: "balance", label: "Balanço", icon: Scale },
   { value: "catalog", label: "Acervo", icon: LibraryBig },
+  { value: "assets", label: "Arquivos", icon: Images, feature: "assets" },
   { value: "pinned", label: "Fichas", icon: Pin },
   { value: "notes", label: "Notas", icon: ScrollText },
   { value: "data", label: "Dados & Fórmulas", icon: Cog },
 ];
 
-export function MasterPanelNavigation() {
+export function MasterPanelNavigation({
+  showAssets = false,
+}: {
+  showAssets?: boolean;
+}) {
   return (
     <div className="-mx-3 overflow-x-auto px-3 pb-1 md:-mx-6 md:px-6">
       <TabsList className="h-auto min-w-max justify-start gap-1 bg-card/60 p-1 lg:min-w-0 lg:flex-wrap">
-        {tabs.map(({ value, label, icon: Icon }) => (
-          <TabsTrigger
-            key={value}
-            value={value}
-            className="gap-1.5 text-xs data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
-          >
-            <Icon className="h-3.5 w-3.5" />
-            {label}
-          </TabsTrigger>
-        ))}
+        {tabs
+          .filter((tab) => tab.feature !== "assets" || showAssets)
+          .map(({ value, label, icon: Icon }) => (
+            <TabsTrigger
+              key={value}
+              value={value}
+              className="gap-1.5 text-xs data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+            >
+              <Icon className="h-3.5 w-3.5" />
+              {label}
+            </TabsTrigger>
+          ))}
       </TabsList>
     </div>
   );

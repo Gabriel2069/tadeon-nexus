@@ -83,6 +83,8 @@ import {
   type MasterTab,
 } from "@/components/master/master-panel-navigation";
 import { reportClientError } from "@/lib/client-error-monitor";
+import { loadFeatureFlags } from "@/lib/feature-flag-repository";
+import { AssetLibraryPanel } from "@/components/assets/asset-library-panel";
 
 export const Route = createFileRoute("/master-panel")({
   validateSearch: (search: Record<string, unknown>) => ({
@@ -152,6 +154,7 @@ interface Scene extends MasterScene {
 
 interface SettingsRow {
   id: string;
+  campaign_id: string | null;
   initiative_notes: string;
   reminders: string;
   quick_refs: string;
@@ -281,6 +284,17 @@ function MasterPanel() {
   const [lastSavedAt, setLastSavedAt] = useState<Date | null>(null);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [reloadKey, setReloadKey] = useState(0);
+  const [assetsEnabled, setAssetsEnabled] = useState(false);
+
+  useEffect(() => {
+    let active = true;
+    void loadFeatureFlags().then((flags) => {
+      if (active) setAssetsEnabled(flags.nexus_assets_v2_enabled);
+    });
+    return () => {
+      active = false;
+    };
+  }, []);
 
   useEffect(() => {
     void (async () => {
@@ -475,7 +489,7 @@ function MasterPanel() {
       </div>
 
       <Tabs
-        value={search.tab ?? "dashboard"}
+        value={search.tab === "assets" && !assetsEnabled ? "dashboard" : (search.tab ?? "dashboard")}
         onValueChange={(value) =>
           void navigate({
             to: "/master-panel",
@@ -485,7 +499,7 @@ function MasterPanel() {
         }
         className="space-y-4"
       >
-        <MasterPanelNavigation />
+        <MasterPanelNavigation showAssets={assetsEnabled} />
 
         <TabsContent value="dashboard" className="mt-0">
           <DashboardHub
@@ -556,6 +570,11 @@ function MasterPanel() {
             onNpcsChange={(value) => upd("master_npcs", value)}
           />
         </TabsContent>
+        {assetsEnabled && (
+          <TabsContent value="assets" className="mt-0">
+            <AssetLibraryPanel campaignId={s.campaign_id} />
+          </TabsContent>
+        )}
         <TabsContent value="pinned" className="mt-0">
           <PinnedPanel s={s} upd={upd} sheets={sheets} setSheets={setSheets} />
         </TabsContent>

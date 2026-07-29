@@ -79,7 +79,23 @@ simulação, checksum, validação e rollback.
 
 ## Próximos cortes
 
-1. seletor reutilizável, painel de uso e visualização de vínculos;
-2. miniaturas geradas no cliente;
-3. Worker R2 privado e URLs pré-assinadas;
-4. ferramenta administrativa de migração, sem movimentação automática.
+1. miniaturas geradas no cliente;
+2. Worker R2 privado e URLs pré-assinadas;
+3. ferramenta administrativa de migração, sem movimentação automática.
+
+## Interface protegida
+
+O segundo corte acrescenta `AssetLibraryPanel` e `AssetPickerDialog`. A biblioteca oferece:
+
+- upload múltiplo com progresso e cancelamento;
+- busca, paginação e filtros por formato e provedor;
+- pré-visualizações por URL temporária;
+- uso por provedor e quota do workspace;
+- download temporário, renomeação e soft delete;
+- listagem de vínculos e detecção administrativa de órfãos;
+- layout responsivo para desktop, tablet e celular.
+
+A aba “Arquivos” do Painel do Mestre só é renderizada quando
+`nexus_assets_v2_enabled` está ativa. Um parâmetro manual `?tab=assets` retorna ao dashboard
+enquanto a flag estiver desligada. `AssetPickerDialog` é independente do painel e deve ser usado
+por fichas, O Nexus e a Mesa Nexus quando cada integração estiver pronta.
