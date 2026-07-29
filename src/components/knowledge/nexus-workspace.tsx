@@ -61,13 +61,16 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { supabase } from "@/integrations/supabase/client";
+import type { Json } from "@/integrations/supabase/types";
 import {
   KNOWLEDGE_NODE_STATUSES,
   KNOWLEDGE_NODE_TYPES,
+  KNOWLEDGE_RELATION_DIRECTIONS,
   KNOWLEDGE_VISIBILITIES,
   RELATION_TYPES,
   type KnowledgeNodeStatus,
   type KnowledgeNodeType,
+  type KnowledgeRelationDirection,
   type KnowledgeVisibility,
   type RelationType,
 } from "@/lib/nexus-contracts";
@@ -168,10 +171,45 @@ const RELATION_LABELS: Record<RelationType, string> = {
   custom: "Relação personalizada",
 };
 
+const RELATION_DIRECTION_LABELS: Record<
+  KnowledgeRelationDirection,
+  string
+> = {
+  directed: "Direcionada",
+  bidirectional: "Bidirecional",
+};
+
+const DEFAULT_INVERSE_RELATION: Record<RelationType, RelationType> = {
+  related_to: "related_to",
+  part_of: "contains",
+  contains: "part_of",
+  located_in: "contains",
+  member_of: "contains",
+  owns: "related_to",
+  created_by: "related_to",
+  allied_with: "allied_with",
+  opposes: "opposes",
+  parent_of: "child_of",
+  child_of: "parent_of",
+  precedes: "follows",
+  follows: "precedes",
+  reveals: "related_to",
+  mentions: "related_to",
+  custom: "custom",
+};
+
 function errorMessage(error: unknown) {
   return error instanceof KnowledgeServiceError
     ? error.userMessage
     : "Não foi possível concluir a operação em O Nexus.";
+}
+
+function parseRelationProperties(value: string): Json {
+  const parsed: unknown = JSON.parse(value || "{}");
+  if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) {
+    throw new Error("RELATION_PROPERTIES_NOT_OBJECT");
+  }
+  return parsed as Json;
 }
 
 function draftKey(nodeId: string) {
@@ -259,9 +297,28 @@ export function NexusWorkspace({
   const [aliasValue, setAliasValue] = useState("");
   const [assetPickerOpen, setAssetPickerOpen] = useState(false);
   const [relationOpen, setRelationOpen] = useState(false);
+  const [relationEditing, setRelationEditing] = useState<KnowledgeEdge | null>(
+    null,
+  );
   const [relationTargetId, setRelationTargetId] = useState("");
   const [relationType, setRelationType] =
     useState<RelationType>("related_to");
+  const [relationLabel, setRelationLabel] = useState("");
+  const [relationDirection, setRelationDirection] =
+    useState<KnowledgeRelationDirection>("directed");
+  const [relationVisibility, setRelationVisibility] =
+    useState<KnowledgeVisibility>("workspace");
+  const [relationPropertiesText, setRelationPropertiesText] = useState("{}");
+  const [relationInverseEnabled, setRelationInverseEnabled] = useState(false);
+  const [relationInverseType, setRelationInverseType] =
+    useState<RelationType>("related_to");
+  const [relationInverseLabel, setRelationInverseLabel] = useState("");
+  const [relationFilterType, setRelationFilterType] =
+    useState<RelationType | "all">("all");
+  const [relationFilterDirection, setRelationFilterDirection] =
+    useState<KnowledgeRelationDirection | "all">("all");
+  const [relationFilterVisibility, setRelationFilterVisibility] =
+    useState<KnowledgeVisibility | "all">("all");
   const [relationSaving, setRelationSaving] = useState(false);
 
   const campaignScope =
@@ -686,22 +743,88 @@ export function NexusWorkspace({
     }
   };
 
-  const createRelation = async () => {
+  const openRelationCreator = () => {
+    setRelationEditing(null);
+    setRelationTargetId("");
+    setRelationType("related_to");
+    setRelationLabel("");
+    setRelationDirection("directed");
+    setRelationVisibility(selected?.visibility ?? "workspace");
+    setRelationPropertiesText("{}");
+    setRelationInverseEnabled(false);
+    setRelationInverseType("related_to");
+    setRelationInverseLabel("");
+    setRelationOpen(true);
+  };
+
+  const openRelationEditor = (edge: KnowledgeEdge) => {
+    if (!selected) return;
+    const otherId =
+      edge.source_node_id === selected.id
+        ? edge.target_node_id
+        : edge.source_node_id;
+    setRelationEditing(edge);
+    setRelationTargetId(otherId);
+    setRelationType(edge.relation_type);
+    setRelationLabel(edge.label);
+    setRelationDirection(edge.direction);
+    setRelationVisibility(edge.visibility);
+    setRelationPropertiesText(JSON.stringify(edge.properties ?? {}, null, 2));
+    setRelationInverseEnabled(false);
+    setRelationInverseType(DEFAULT_INVERSE_RELATION[edge.relation_type]);
+    setRelationInverseLabel("");
+    setRelationOpen(true);
+  };
+
+  const saveRelation = async () => {
     if (!selected || !relationTargetId || relationTargetId === selected.id) {
       return;
     }
+
+    let properties: Json;
+    try {
+      properties = parseRelationProperties(relationPropertiesText);
+    } catch {
+      toast.error("As propriedades devem formar um objeto JSON válido.");
+      return;
+    }
+
     setRelationSaving(true);
     try {
-      await knowledgeService.createEdge({
-        sourceNodeId: selected.id,
-        targetNodeId: relationTargetId,
-        relationType,
-        visibility: selected.visibility,
-      });
+      if (relationEditing) {
+        await knowledgeService.updateEdge(relationEditing, {
+          relationType,
+          label: relationLabel,
+          direction: relationDirection,
+          visibility: relationVisibility,
+          properties,
+        });
+      } else {
+        await knowledgeService.createEdge({
+          sourceNodeId: selected.id,
+          targetNodeId: relationTargetId,
+          relationType,
+          label: relationLabel,
+          direction: relationDirection,
+          visibility: relationVisibility,
+          properties,
+          inverse:
+            relationInverseEnabled && relationDirection === "directed"
+              ? {
+                  relationType: relationInverseType,
+                  label: relationInverseLabel,
+                  properties,
+                }
+              : undefined,
+        });
+      }
       setEdges(await knowledgeService.listEdges(selected.id));
       setRelationOpen(false);
+      setRelationEditing(null);
       setRelationTargetId("");
-      toast.success("Relação criada.");
+      toast.success(
+        relationEditing ? "Relação atualizada." : "Relação criada.",
+      );
     } catch (error) {
       toast.error(errorMessage(error));
     } finally {
@@ -719,6 +842,25 @@ export function NexusWorkspace({
       toast.error(errorMessage(error));
     }
   };
+
+  const filteredEdges = useMemo(
+    () =>
+      edges.filter(
+        (edge) =>
+          (relationFilterType === "all" ||
+            edge.relation_type === relationFilterType) &&
+          (relationFilterDirection === "all" ||
+            edge.direction === relationFilterDirection) &&
+          (relationFilterVisibility === "all" ||
+            edge.visibility === relationFilterVisibility),
+      ),
+    [
+      edges,
+      relationFilterDirection,
+      relationFilterType,
+      relationFilterVisibility,
+    ],
+  );
 
   const filteredCommandNodes = useMemo(() => {
     const term = commandSearch.trim().toLocaleLowerCase("pt-BR");
@@ -1379,61 +1521,158 @@ export function NexusWorkspace({
                   <Button
                     size="sm"
                     variant="outline"
-                    onClick={() => setRelationOpen(true)}
+                    onClick={openRelationCreator}
                     disabled={nodes.every((node) => node.id === selected.id)}
                   >
                     <Plus className="h-3.5 w-3.5" />
                     Relacionar
                   </Button>
                 </div>
+
+                <div className="mt-3 grid gap-2">
+                  <Select
+                    value={relationFilterType}
+                    onValueChange={(value) =>
+                      setRelationFilterType(value as RelationType | "all")
+                    }
+                  >
+                    <SelectTrigger className="h-8 text-xs">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">Todos os tipos</SelectItem>
+                      {RELATION_TYPES.map((type) => (
+                        <SelectItem key={type} value={type}>
+                          {RELATION_LABELS[type]}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <div className="grid grid-cols-2 gap-2">
+                    <Select
+                      value={relationFilterDirection}
+                      onValueChange={(value) =>
+                        setRelationFilterDirection(
+                          value as KnowledgeRelationDirection | "all",
+                        )
+                      }
+                    >
+                      <SelectTrigger className="h-8 text-xs">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">Toda direção</SelectItem>
+                        {KNOWLEDGE_RELATION_DIRECTIONS.map((direction) => (
+                          <SelectItem key={direction} value={direction}>
+                            {RELATION_DIRECTION_LABELS[direction]}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <Select
+                      value={relationFilterVisibility}
+                      onValueChange={(value) =>
+                        setRelationFilterVisibility(
+                          value as KnowledgeVisibility | "all",
+                        )
+                      }
+                    >
+                      <SelectTrigger className="h-8 text-xs">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">Toda visibilidade</SelectItem>
+                        {KNOWLEDGE_VISIBILITIES.map((visibility) => (
+                          <SelectItem key={visibility} value={visibility}>
+                            {VISIBILITY_LABELS[visibility]}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+
                 <div className="mt-3 space-y-2">
-                  {edges.length ? (
-                    edges.map((edge) => {
-                      const otherId =
-                        edge.source_node_id === selected.id
-                          ? edge.target_node_id
-                          : edge.source_node_id;
+                  {filteredEdges.length ? (
+                    filteredEdges.map((edge) => {
+                      const outgoing = edge.source_node_id === selected.id;
+                      const otherId = outgoing
+                        ? edge.target_node_id
+                        : edge.source_node_id;
                       const other = nodes.find((node) => node.id === otherId);
+                      const directionSymbol =
+                        edge.direction === "bidirectional"
+                          ? "↔"
+                          : outgoing
+                            ? "→"
+                            : "←";
                       return (
                         <div
                           key={edge.id}
-                          className="flex items-center gap-2 rounded-lg border p-3 hover:border-primary/40"
+                          className="rounded-lg border p-3 hover:border-primary/40"
                         >
-                          <button
-                            type="button"
-                            onClick={() => void openNode(otherId)}
-                            className="min-w-0 flex-1 text-left"
-                          >
-                            <p className="text-[10px] uppercase tracking-wide text-primary">
+                          <div className="flex items-start gap-2">
+                            <button
+                              type="button"
+                              onClick={() => void openNode(otherId)}
+                              className="min-w-0 flex-1 text-left"
+                            >
+                              <p className="text-[10px] uppercase tracking-wide text-primary">
+                                {directionSymbol}{" "}
+                                {edge.label ||
+                                  RELATION_LABELS[edge.relation_type]}
+                              </p>
+                              <p className="mt-1 truncate text-sm">
+                                {other?.title ?? "Página relacionada"}
+                              </p>
+                            </button>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => openRelationEditor(edge)}
+                              aria-label="Editar relação"
+                            >
+                              <Pencil className="h-3.5 w-3.5" />
+                            </Button>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={async () => {
+                                try {
+                                  await knowledgeService.removeEdge(edge.id);
+                                  setEdges((current) =>
+                                    current.filter(
+                                      (item) => item.id !== edge.id,
+                                    ),
+                                  );
+                                } catch (error) {
+                                  toast.error(errorMessage(error));
+                                }
+                              }}
+                              aria-label="Remover relação"
+                            >
+                              <Unlink className="h-3.5 w-3.5" />
+                            </Button>
+                          </div>
+                          <div className="mt-2 flex flex-wrap gap-1">
+                            <Badge variant="outline">
                               {RELATION_LABELS[edge.relation_type]}
-                            </p>
-                            <p className="mt-1 truncate text-sm">
-                              {other?.title ?? "Página relacionada"}
-                            </p>
-                          </button>
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={async () => {
-                              try {
-                                await knowledgeService.removeEdge(edge.id);
-                                setEdges((current) =>
-                                  current.filter((item) => item.id !== edge.id),
-                                );
-                              } catch (error) {
-                                toast.error(errorMessage(error));
-                              }
-                            }}
-                            aria-label="Remover relação"
-                          >
-                            <Unlink className="h-3.5 w-3.5" />
-                          </Button>
+                            </Badge>
+                            <Badge variant="outline">
+                              {RELATION_DIRECTION_LABELS[edge.direction]}
+                            </Badge>
+                            <Badge variant="outline">
+                              {VISIBILITY_LABELS[edge.visibility]}
+                            </Badge>
+                          </div>
                         </div>
                       );
                     })
                   ) : (
                     <p className="rounded-lg border border-dashed p-5 text-center text-xs text-muted-foreground">
-                      Nenhuma relação visível.
+                      {edges.length
+                        ? "Nenhuma relação corresponde aos filtros."
+                        : "Nenhuma relação visível."}
                     </p>
                   )}
                 </div>
@@ -1770,12 +2009,20 @@ export function NexusWorkspace({
         </DialogContent>
       </Dialog>
 
-      <Dialog open={relationOpen} onOpenChange={setRelationOpen}>
-        <DialogContent>
+      <Dialog
+        open={relationOpen}
+        onOpenChange={(open) => {
+          setRelationOpen(open);
+          if (!open) setRelationEditing(null);
+        }}
+      >
+        <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-2xl">
           <DialogHeader>
-            <DialogTitle className="font-cinzel">Criar relação</DialogTitle>
+            <DialogTitle className="font-cinzel">
+              {relationEditing ? "Editar relação" : "Criar relação"}
+            </DialogTitle>
             <DialogDescription>
-              Conecte esta página a outra página visível do mesmo workspace.
+              Defina direção, visibilidade, propriedades e uma inversa opcional.
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-4">
@@ -1784,6 +2031,7 @@ export function NexusWorkspace({
               <Select
                 value={relationTargetId}
                 onValueChange={setRelationTargetId}
+                disabled={Boolean(relationEditing)}
               >
                 <SelectTrigger className="mt-1">
                   <SelectValue placeholder="Selecione uma página" />
@@ -1799,26 +2047,169 @@ export function NexusWorkspace({
                 </SelectContent>
               </Select>
             </div>
-            <div>
-              <Label>Tipo de relação</Label>
-              <Select
-                value={relationType}
-                onValueChange={(value) =>
-                  setRelationType(value as RelationType)
-                }
-              >
-                <SelectTrigger className="mt-1">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {RELATION_TYPES.map((type) => (
-                    <SelectItem key={type} value={type}>
-                      {RELATION_LABELS[type]}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+
+            <div className="grid gap-4 sm:grid-cols-2">
+              <div>
+                <Label>Tipo de relação</Label>
+                <Select
+                  value={relationType}
+                  onValueChange={(value) => {
+                    const nextType = value as RelationType;
+                    setRelationType(nextType);
+                    if (!relationEditing) {
+                      setRelationInverseType(
+                        DEFAULT_INVERSE_RELATION[nextType],
+                      );
+                    }
+                  }}
+                >
+                  <SelectTrigger className="mt-1">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {RELATION_TYPES.map((type) => (
+                      <SelectItem key={type} value={type}>
+                        {RELATION_LABELS[type]}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
+                <Label>Rótulo</Label>
+                <Input
+                  value={relationLabel}
+                  onChange={(event) => setRelationLabel(event.target.value)}
+                  placeholder={RELATION_LABELS[relationType]}
+                  maxLength={160}
+                  className="mt-1"
+                />
+              </div>
+              <div>
+                <Label>Direção</Label>
+                <Select
+                  value={relationDirection}
+                  onValueChange={(value) => {
+                    const direction = value as KnowledgeRelationDirection;
+                    setRelationDirection(direction);
+                    if (direction === "bidirectional") {
+                      setRelationInverseEnabled(false);
+                    }
+                  }}
+                >
+                  <SelectTrigger className="mt-1">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {KNOWLEDGE_RELATION_DIRECTIONS.map((direction) => (
+                      <SelectItem key={direction} value={direction}>
+                        {RELATION_DIRECTION_LABELS[direction]}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
+                <Label>Visibilidade</Label>
+                <Select
+                  value={relationVisibility}
+                  onValueChange={(value) =>
+                    setRelationVisibility(value as KnowledgeVisibility)
+                  }
+                >
+                  <SelectTrigger className="mt-1">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {KNOWLEDGE_VISIBILITIES.filter(
+                      (visibility) =>
+                        visibility !== "campaign" ||
+                        Boolean(selected?.campaign_id),
+                    ).map((visibility) => (
+                      <SelectItem key={visibility} value={visibility}>
+                        {VISIBILITY_LABELS[visibility]}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
+
+            <div>
+              <Label>Propriedades (JSON)</Label>
+              <Textarea
+                value={relationPropertiesText}
+                onChange={(event) =>
+                  setRelationPropertiesText(event.target.value)
+                }
+                rows={5}
+                spellCheck={false}
+                className="mt-1 font-mono text-xs"
+                placeholder='{"período":"Era do Véu","peso":2}'
+              />
+            </div>
+
+            {!relationEditing && (
+              <label className="flex items-start gap-3 rounded-xl border p-3">
+                <input
+                  type="checkbox"
+                  checked={relationInverseEnabled}
+                  onChange={(event) =>
+                    setRelationInverseEnabled(event.target.checked)
+                  }
+                  disabled={relationDirection === "bidirectional"}
+                  className="mt-1 accent-[var(--tadeon-flow)]"
+                />
+                <span>
+                  <span className="block text-sm font-medium">
+                    Criar relação inversa
+                  </span>
+                  <span className="mt-1 block text-xs text-muted-foreground">
+                    A relação inversa é criada na mesma transação. Relações
+                    bidirecionais já funcionam nos dois sentidos.
+                  </span>
+                </span>
+              </label>
+            )}
+
+            {!relationEditing &&
+              relationInverseEnabled &&
+              relationDirection === "directed" && (
+                <div className="grid gap-4 rounded-xl border bg-muted/20 p-3 sm:grid-cols-2">
+                  <div>
+                    <Label>Tipo inverso</Label>
+                    <Select
+                      value={relationInverseType}
+                      onValueChange={(value) =>
+                        setRelationInverseType(value as RelationType)
+                      }
+                    >
+                      <SelectTrigger className="mt-1">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {RELATION_TYPES.map((type) => (
+                          <SelectItem key={type} value={type}>
+                            {RELATION_LABELS[type]}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div>
+                    <Label>Rótulo inverso</Label>
+                    <Input
+                      value={relationInverseLabel}
+                      onChange={(event) =>
+                        setRelationInverseLabel(event.target.value)
+                      }
+                      placeholder={RELATION_LABELS[relationInverseType]}
+                      maxLength={160}
+                      className="mt-1"
+                    />
+                  </div>
+                </div>
+              )}
           </div>
           <DialogFooter>
             <Button
@@ -1829,7 +2220,7 @@ export function NexusWorkspace({
               Cancelar
             </Button>
             <Button
-              onClick={() => void createRelation()}
+              onClick={() => void saveRelation()}
               disabled={
                 relationSaving ||
                 !relationTargetId ||
@@ -1839,7 +2230,7 @@ export function NexusWorkspace({
               {relationSaving && (
                 <Loader2 className="h-4 w-4 animate-spin" />
               )}
-              Criar relação
+              {relationEditing ? "Salvar relação" : "Criar relação"}
             </Button>
           </DialogFooter>
         </DialogContent>

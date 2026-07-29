@@ -36,6 +36,15 @@ describe("knowledge errors", () => {
     ).toBe("KNOWLEDGE_SLUG_CONFLICT");
   });
 
+  it("maps exact semantic relation duplicates safely", () => {
+    expect(
+      toKnowledgeServiceError({
+        code: "23505",
+        message: "duplicate key knowledge_edges_active_key",
+      }).code,
+    ).toBe("KNOWLEDGE_RELATION_CONFLICT");
+  });
+
   it("preserves already normalized errors", () => {
     const error = new KnowledgeServiceError("KNOWLEDGE_CONFLICT");
     expect(toKnowledgeServiceError(error)).toBe(error);

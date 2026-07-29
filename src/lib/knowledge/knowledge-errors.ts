@@ -7,6 +7,7 @@ export type KnowledgeErrorCode =
   | "KNOWLEDGE_INVALID_INPUT"
   | "KNOWLEDGE_LINK_LIMIT_EXCEEDED"
   | "KNOWLEDGE_ALIAS_CONFLICT"
+  | "KNOWLEDGE_RELATION_CONFLICT"
   | "KNOWLEDGE_SLUG_CONFLICT"
   | "KNOWLEDGE_UNKNOWN";
 
@@ -22,6 +23,8 @@ const USER_MESSAGES: Record<KnowledgeErrorCode, string> = {
     "Esta página ultrapassa o limite de 1.000 wikilinks ou títulos. Divida o conteúdo antes de salvar.",
   KNOWLEDGE_ALIAS_CONFLICT:
     "Este alias já identifica outra página no mesmo espaço.",
+  KNOWLEDGE_RELATION_CONFLICT:
+    "Esta relação já existe com o mesmo destino, tipo e rótulo.",
   KNOWLEDGE_SLUG_CONFLICT:
     "Já existe uma página com este endereço no mesmo espaço.",
   KNOWLEDGE_UNKNOWN: "Não foi possível concluir a operação. Tente novamente.",
@@ -87,6 +90,14 @@ export function toKnowledgeServiceError(
     text.includes("knowledge_aliases_campaign_scope_key")
   ) {
     return new KnowledgeServiceError("KNOWLEDGE_ALIAS_CONFLICT", {
+      cause: error,
+    });
+  }
+  if (
+    text.includes("knowledge_edges_active_key") ||
+    text.includes("knowledge_edges_exact_active_key")
+  ) {
+    return new KnowledgeServiceError("KNOWLEDGE_RELATION_CONFLICT", {
       cause: error,
     });
   }
