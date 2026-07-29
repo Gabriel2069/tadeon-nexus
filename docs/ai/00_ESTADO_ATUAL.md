@@ -55,6 +55,7 @@ bloqueada até concluir os rollouts e a portabilidade.
 - O audit de produção após a atualização encerrou sem alto ou crítico; permanecem somente os
   avisos baixo/moderados da cadeia Lovable descritos acima.
 - O workflow Quality agora bloqueia vulnerabilidades de produção altas ou críticas.
+- O projeto e o CI fixam `npm@11.9.0`, versão que reproduz o lockfile da árvore atual.
 
 A branch histórica `agent/security-auto-deploy` não deve ser mesclada: remove o SDK MCP, não
 atualiza o lockfile e mistura upgrades de lint sem validação.
