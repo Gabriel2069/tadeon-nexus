@@ -43,6 +43,7 @@ import {
 import { AddItemDialog } from "@/components/sheet/add-item-dialog";
 import type { DefenseItem } from "./sheet.$id";
 import { useSerializedAutosave } from "@/lib/use-serialized-autosave";
+import { can } from "@/lib/permissions";
 
 const AttributeRadar = lazy(() => import("@/components/sheet/attribute-radar"));
 
@@ -266,7 +267,11 @@ function PowerFormPage() {
   const [loading, setLoading] = useState(true);
   const [defEquipOpen, setDefEquipOpen] = useState(false);
   const [fragmentsView, setFragmentsView] = useState(false);
-  const canEdit = role === "mestre" || (base?.owner_id === user?.id && role !== "espectador");
+  const canEdit = can("character:edit", {
+    appRole: role,
+    currentUserId: user?.id,
+    resourceOwnerId: base?.owner_id,
+  });
 
   useEffect(() => {
     void (async () => {
@@ -333,7 +338,11 @@ function PowerFormPage() {
       setUpgradeCosts((g.upgrade_costs as UpgradeCosts | undefined) ?? DEFAULT_UPGRADE_COSTS);
       setSkillGroups((g.skill_groups as typeof SKILL_GROUPS | undefined) ?? []);
       setLoading(false);
-      const mayEdit = role === "mestre" || (baseRow.owner_id === user?.id && role !== "espectador");
+      const mayEdit = can("character:edit", {
+        appRole: role,
+        currentUserId: user?.id,
+        resourceOwnerId: baseRow.owner_id,
+      });
       if (syncChanged && mayEdit) {
         const { error: syncError } = await supabase
           .from("character_sheets")
