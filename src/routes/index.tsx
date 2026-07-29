@@ -45,6 +45,7 @@ import {
 import { toast } from "sonner";
 import { BrandMark, ThreadField } from "@/components/brand-mark";
 import { cacheSheetSummaries } from "@/lib/offline-cache";
+import { can, isApplicationAdministrator } from "@/lib/permissions";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -100,9 +101,10 @@ function HomePage() {
   const [creating, setCreating] = useState(false);
   const [toDelete, setToDelete] = useState<SheetRow | null>(null);
 
-  const isMestre = role === "mestre";
-  const canCreate = role === "mestre" || role === "jogador";
-  const canDelete = role === "mestre" || role === "jogador";
+  const permissionContext = { appRole: role };
+  const isMestre = isApplicationAdministrator(permissionContext);
+  const canCreate = can("character:create", permissionContext);
+  const canDelete = can("character:create", permissionContext);
 
   const load = async () => {
     setLoading(true);
