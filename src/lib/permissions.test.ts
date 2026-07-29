@@ -1,5 +1,9 @@
 import { describe, expect, it } from "vitest";
-import { can, getScenePermission, type PermissionContext } from "@/lib/permissions";
+import {
+  can,
+  getScenePermission,
+  type PermissionContext,
+} from "@/lib/permissions";
 
 describe("central authorization", () => {
   const anonymous: PermissionContext = {};
@@ -8,6 +12,8 @@ describe("central authorization", () => {
     expect(can("app:manage", anonymous)).toBe(false);
     expect(can("workspace:view", anonymous)).toBe(false);
     expect(can("campaign:view", anonymous)).toBe(false);
+    expect(can("asset:view", anonymous)).toBe(false);
+    expect(can("asset:upload", anonymous)).toBe(false);
     expect(can("character:create", anonymous)).toBe(false);
     expect(getScenePermission(anonymous)).toBeNull();
   });
@@ -19,6 +25,7 @@ describe("central authorization", () => {
     expect(can("feature-flags:manage", administrator)).toBe(true);
     expect(can("workspace:manage", administrator)).toBe(true);
     expect(can("campaign:manage", administrator)).toBe(true);
+    expect(can("asset:manage", administrator)).toBe(true);
     expect(getScenePermission(administrator)).toBe("manage");
   });
 
@@ -65,5 +72,35 @@ describe("central authorization", () => {
     expect(can("character:edit", owner)).toBe(true);
     expect(can("character:view", spectatorOwner)).toBe(true);
     expect(can("character:edit", spectatorOwner)).toBe(false);
+  });
+
+  it("keeps asset viewing broader than asset mutation", () => {
+    const member: PermissionContext = { workspaceRole: "member" };
+    const viewer: PermissionContext = { workspaceRole: "viewer" };
+    const observer: PermissionContext = { campaignRole: "observer" };
+
+    expect(can("asset:view", member)).toBe(true);
+    expect(can("asset:upload", member)).toBe(true);
+    expect(can("asset:manage", member)).toBe(false);
+    expect(can("asset:link", member)).toBe(false);
+    expect(can("asset:view", viewer)).toBe(true);
+    expect(can("asset:upload", viewer)).toBe(false);
+    expect(can("asset:view", observer)).toBe(true);
+    expect(can("asset:upload", observer)).toBe(false);
+  });
+
+  it("lets contributors upload and only curators link shared assets", () => {
+    const player: PermissionContext = { campaignRole: "player" };
+    const coMaster: PermissionContext = { campaignRole: "co_master" };
+    const owner: PermissionContext = {
+      currentUserId: "user-a",
+      resourceOwnerId: "user-a",
+    };
+
+    expect(can("asset:upload", player)).toBe(true);
+    expect(can("asset:link", player)).toBe(false);
+    expect(can("asset:manage", coMaster)).toBe(true);
+    expect(can("asset:link", coMaster)).toBe(true);
+    expect(can("asset:manage", owner)).toBe(true);
   });
 });
