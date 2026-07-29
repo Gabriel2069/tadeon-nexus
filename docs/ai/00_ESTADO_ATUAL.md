@@ -8,7 +8,7 @@ Atualizado em 29 de julho de 2026 pelo Work de continuidade independente.
 - O Livro de Regras de Tessitura do Vazio governa mecânicas e terminologia.
 - O Fio-Mestre governa identidade visual.
 - Checkpoint de entrada: `1c5b66cf83bdd9d4b070019510080eb2d63dc74b`.
-- Checkpoints integrados: PRs #25–#34 em `main`; o último lote funcional está em `44151d4`.
+- Checkpoints integrados: PRs #25–#40 em `main`; o último lote funcional está em `b0d73d5`.
 
 ## Estado confirmado
 
@@ -23,8 +23,9 @@ vínculos esperados; fichas e dados legados foram preservados.
 O catálogo provider-neutral, Supabase Storage privado, quotas, reservas de upload, autorização,
 serviço e interface estão implementados. Não há assets cadastrados. A flag global
 `nexus_assets_v2_enabled` permanece desligada; um override individual habilita o módulo somente
-para o proprietário mestre. O canário está integrado e ativado, mas o upload/download autenticado
-ponta a ponta ainda não foi validado e o rollout não está concluído.
+para o proprietário mestre. A reserva de upload Supabase passou em teste autenticado com rollback;
+o jogador sem override foi negado e R2 permaneceu bloqueado. O envio e download do objeto real ainda
+não foram validados e o rollout não está concluído.
 
 R2 permanece preparado, mas inativo. Bucket, credenciais, CORS e teste ponta a ponta não foram
 confirmados. `nexus_r2_enabled=false` e não deve ser alterada nessas condições.
@@ -47,6 +48,13 @@ substituídos atomicamente com limite explícito, enquanto relações semântica
 intactas. A criação de páginas e relações deixou de usar `INSERT ... RETURNING` sob policies
 auto-referenciais; as RPCs `SECURITY INVOKER` foram aplicadas como
 `20260729230437_knowledge_transactional_creation.sql`.
+
+Relações semânticas com direção, rótulo, tipo, propriedades, visibilidade, inversa opcional,
+edição, filtros e prevenção de duplicação exata foram aplicadas como
+`20260729231757_knowledge_semantic_relations.sql`. A pesquisa PostgreSQL conectada foi aplicada
+como `20260729233047_knowledge_postgres_search.sql`, com título, resumo, conteúdo, aliases, tags,
+propriedades, tipo e relações visíveis, além de filtros, ordenação, trechos destacados e paginação.
+O retorno composto foi corrigido em `20260729234101_fix_knowledge_search_composite.sql`.
 
 ### Mesa Nexus
 
@@ -77,9 +85,15 @@ A migration `20260729192815_cover_nexus_knowledge_foreign_keys.sql` adiciona os 
 solicitados pelo Database Advisor. A migration aditiva
 `20260729203953_feature_flag_user_overrides.sql` cria o mecanismo de canário individual com RLS,
 grants explícitos e rollback por remoção do override. As migrations
-`20260729211452_knowledge_link_integrity.sql` e
-`20260729230437_knowledge_transactional_creation.sql` cobrem a indexação transacional e a criação
-de páginas/relações compatível com RLS.
+`20260729211452_knowledge_link_integrity.sql`,
+`20260729230437_knowledge_transactional_creation.sql`,
+`20260729231757_knowledge_semantic_relations.sql` e
+`20260729233047_knowledge_postgres_search.sql` cobrem indexação transacional, criação compatível
+com RLS, relações e pesquisa. Os fixes
+`20260729233637_fix_contributor_policy_helper_acls.sql`,
+`20260729234101_fix_knowledge_search_composite.sql` e
+`20260729234705_fix_assets_canary_override.sql` corrigem, respectivamente, ACLs usadas por
+policies, o tipo composto da busca e a resolução do canário no trigger de upload.
 
 Validação posterior:
 
@@ -113,7 +127,7 @@ o workflow agora injeta o SHA aprovado no build e exige que o endpoint público 
 - DT de Resistência recolhível, sem alterar a fórmula;
 - Defesa centralizada em Pontos Vitais;
 - Atributos distribuídos em grade com radar preservado;
-- Condições visuais já existentes foram preservadas;
+- Condições visuais foram reforçadas no cabeçalho e no corpo da ficha;
 - somente Tiers liberados pelo Rank são exibidos;
 - cada Tier de Habilidades pode ser recolhido;
 - cálculo de encontro permite selecionar explicitamente as fichas e mostra conjunto, média e
@@ -147,22 +161,25 @@ validação funcional em sessão autenticada ainda está pendente; portanto os m
 classificados como concluídos nem foram liberados globalmente.
 
 O teste de RLS confirmou: mestre proprietário enxerga os dois overrides; jogador enxerga zero e
-não consegue inserir. O backend de O Nexus também passou por um cenário autenticado auto-revertido
-com criação de páginas e relação, heading, menção, backlink, link quebrado, conflito otimista,
-limite, rollback atômico, preservação de relação manual e ocultação para o jogador. O teste deixou
-zero páginas, menções e relações residuais. A validação visual do fluxo completo no frontend
-autenticado continua pendente. O rollback do canário é remover as duas linhas de override.
-Importação/exportação v2 permanece posterior aos canários. A fundação da Mesa Nexus permanece
-posterior à portabilidade.
+não consegue inserir. O backend de O Nexus passou por cenários autenticados auto-revertidos com
+CRUD, relação, heading, menção, backlink, link quebrado, conflito otimista, limite, relações
+semânticas, alias, tag, pesquisa de conteúdo/propriedades/relações, filtros, paginação e ocultação
+para o jogador. Os testes deixaram zero páginas, tags, menções e relações residuais.
+
+O canário de Nexus Assets também passou reserva Supabase para o owner, negação do jogador sem
+override e negação de R2, deixando zero sessões residuais. O upload/download do objeto real, quota
+com arquivo real e a validação visual dos dois módulos em frontend autenticado continuam
+pendentes. O rollback do canário é remover as duas linhas de override. Importação/exportação v2
+permanece posterior aos canários. A fundação da Mesa Nexus permanece posterior à portabilidade.
 
 ## Próximos critérios
 
 1. Confirmar pelo marcador público que o deploy Cloudflare corresponde ao SHA aprovado de `main`.
-2. Validar o canário autenticado de Nexus Assets: upload, download, negação, quota e rollback.
-3. Validar no frontend autenticado o CRUD já aprovado no backend de O Nexus.
-4. Expandir relações semânticas com direção, inversas configuráveis, propriedades, filtros e
-   prevenção de duplicação exata.
-5. Implementar pesquisa textual paginada por título, alias, conteúdo, resumo, tags, propriedades,
-   tipo e relações, sempre sob RLS.
-6. Projetar importação/exportação v2 com validação de escopo, dry-run e restauração.
-7. Iniciar a fundação da Mesa Nexus somente depois de concluir portabilidade e rollouts.
+2. Concluir o canário autenticado de Nexus Assets com upload/download do objeto real, quota e
+   rollback operacional.
+3. Validar visualmente no frontend autenticado os fluxos já aprovados no backend de O Nexus.
+4. Implementar o grafo local limitado e progressivo; manter o grafo global somente sob demanda.
+5. Criar bibliotecas e templates sobre O Nexus e projetar importação/exportação v2 com escopo,
+   preview, dry-run, conflitos, ZIP reimportável e restauração.
+6. Iniciar a fundação gráfica da Mesa Nexus somente depois de concluir portabilidade e rollouts;
+   iluminação e Realtime continuam fora desse primeiro marco.
