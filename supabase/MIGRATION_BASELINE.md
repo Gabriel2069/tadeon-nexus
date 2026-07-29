@@ -78,3 +78,13 @@ O timestamp acima corresponde ao histórico real em `supabase_migrations.schema_
 menções, anexos, versões limitadas, templates, favoritos e recentes. Ela reutiliza os membros de
 workspace e campanha, mantém RLS em todas as tabelas e bloqueia o acesso enquanto
 `nexus_knowledge_enabled` permanecer desligada.
+
+## O Nexus — índices de cobertura
+
+O Database Advisor foi reconciliado pela migration aditiva:
+
+1. `20260729192815_cover_nexus_knowledge_foreign_keys.sql`.
+
+Ela cobre as 17 chaves estrangeiras reportadas sem remover índices existentes e sem alterar dados,
+grants, policies ou RLS. A validação posterior retornou zero chaves estrangeiras descobertas.
+Avisos de índices ainda não usados foram preservados porque o rollout permanece desligado.
