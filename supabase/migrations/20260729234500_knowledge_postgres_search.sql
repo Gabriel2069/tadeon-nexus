@@ -161,6 +161,7 @@ BEGIN
           ELSE edge.source_node_id
         END
       WHERE edge.deleted_at IS NULL
+        AND related.deleted_at IS NULL
         AND (
           edge.source_node_id = node.id
           OR edge.target_node_id = node.id
