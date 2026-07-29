@@ -1,4 +1,9 @@
-import type { AppRole, CampaignRole, ScenePermission, WorkspaceRole } from "@/lib/nexus-contracts";
+import type {
+  AppRole,
+  CampaignRole,
+  ScenePermission,
+  WorkspaceRole,
+} from "@/lib/nexus-contracts";
 
 export type Permission =
   | "app:manage"
@@ -8,6 +13,10 @@ export type Permission =
   | "campaign:view"
   | "campaign:co-manage"
   | "campaign:manage"
+  | "asset:view"
+  | "asset:upload"
+  | "asset:manage"
+  | "asset:link"
   | "character:create"
   | "character:view"
   | "character:edit"
@@ -24,9 +33,29 @@ export interface PermissionContext {
   resourceOwnerId?: string | null;
 }
 
-const WORKSPACE_VIEWERS = new Set<WorkspaceRole>(["owner", "admin", "member", "viewer"]);
+const WORKSPACE_VIEWERS = new Set<WorkspaceRole>([
+  "owner",
+  "admin",
+  "member",
+  "viewer",
+]);
+const WORKSPACE_CONTRIBUTORS = new Set<WorkspaceRole>([
+  "owner",
+  "admin",
+  "member",
+]);
 const WORKSPACE_MANAGERS = new Set<WorkspaceRole>(["owner", "admin"]);
-const CAMPAIGN_VIEWERS = new Set<CampaignRole>(["master", "co_master", "player", "observer"]);
+const CAMPAIGN_VIEWERS = new Set<CampaignRole>([
+  "master",
+  "co_master",
+  "player",
+  "observer",
+]);
+const CAMPAIGN_CONTRIBUTORS = new Set<CampaignRole>([
+  "master",
+  "co_master",
+  "player",
+]);
 const CAMPAIGN_CO_MANAGERS = new Set<CampaignRole>(["master", "co_master"]);
 
 export function isApplicationAdministrator(context: PermissionContext) {
@@ -46,23 +75,47 @@ export function can(permission: Permission, context: PermissionContext) {
 
   const workspaceRole = context.workspaceRole ?? null;
   const campaignRole = context.campaignRole ?? null;
-  const workspaceManager = workspaceRole ? WORKSPACE_MANAGERS.has(workspaceRole) : false;
-  const campaignCoManager = campaignRole ? CAMPAIGN_CO_MANAGERS.has(campaignRole) : false;
+  const workspaceViewer = workspaceRole
+    ? WORKSPACE_VIEWERS.has(workspaceRole)
+    : false;
+  const workspaceContributor = workspaceRole
+    ? WORKSPACE_CONTRIBUTORS.has(workspaceRole)
+    : false;
+  const workspaceManager = workspaceRole
+    ? WORKSPACE_MANAGERS.has(workspaceRole)
+    : false;
+  const campaignViewer = campaignRole
+    ? CAMPAIGN_VIEWERS.has(campaignRole)
+    : false;
+  const campaignContributor = campaignRole
+    ? CAMPAIGN_CONTRIBUTORS.has(campaignRole)
+    : false;
+  const campaignCoManager = campaignRole
+    ? CAMPAIGN_CO_MANAGERS.has(campaignRole)
+    : false;
 
   switch (permission) {
     case "app:manage":
     case "feature-flags:manage":
       return false;
     case "workspace:view":
-      return workspaceRole ? WORKSPACE_VIEWERS.has(workspaceRole) : false;
+      return workspaceViewer;
     case "workspace:manage":
       return workspaceManager;
     case "campaign:view":
-      return workspaceManager || (campaignRole ? CAMPAIGN_VIEWERS.has(campaignRole) : false);
+      return workspaceManager || campaignViewer;
     case "campaign:co-manage":
       return workspaceManager || campaignCoManager;
     case "campaign:manage":
       return workspaceManager || campaignRole === "master";
+    case "asset:view":
+      return isResourceOwner(context) || workspaceViewer || campaignViewer;
+    case "asset:upload":
+      return workspaceContributor || campaignContributor;
+    case "asset:manage":
+      return isResourceOwner(context) || workspaceManager || campaignCoManager;
+    case "asset:link":
+      return workspaceManager || campaignCoManager;
     case "character:create":
       return (
         context.appRole === "jogador" ||
@@ -71,19 +124,16 @@ export function can(permission: Permission, context: PermissionContext) {
         campaignRole === "player"
       );
     case "character:view":
-      return (
-        isResourceOwner(context) ||
-        workspaceManager ||
-        (campaignRole ? CAMPAIGN_VIEWERS.has(campaignRole) : false)
-      );
+      return isResourceOwner(context) || workspaceManager || campaignViewer;
     case "character:edit":
       return (
         workspaceManager ||
         campaignCoManager ||
-        (isResourceOwner(context) && (context.appRole === "jogador" || campaignRole === "player"))
+        (isResourceOwner(context) &&
+          (context.appRole === "jogador" || campaignRole === "player"))
       );
     case "scene:view":
-      return workspaceManager || (campaignRole ? CAMPAIGN_VIEWERS.has(campaignRole) : false);
+      return workspaceManager || campaignViewer;
     case "scene:interact":
       return workspaceManager || campaignCoManager || campaignRole === "player";
     case "scene:edit":
@@ -92,7 +142,9 @@ export function can(permission: Permission, context: PermissionContext) {
   }
 }
 
-export function getScenePermission(context: PermissionContext): ScenePermission | null {
+export function getScenePermission(
+  context: PermissionContext,
+): ScenePermission | null {
   if (can("scene:manage", context)) return "manage";
   if (can("scene:edit", context)) return "edit";
   if (can("scene:interact", context)) return "interact";
