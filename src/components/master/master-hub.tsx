@@ -1785,11 +1785,13 @@ export function EncounterHub({
   sheets: MasterSheetOverview[];
   threats: MasterThreat[];
 }) {
-  const [participants, setParticipants] = useState(Math.max(2, Math.min(7, sheets.length || 4)));
+  const [excludedSheetIds, setExcludedSheetIds] = useState<string[]>([]);
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
-  const rankAverage = sheets.length
-    ? sheets.reduce((sum, sheet) => sum + sheet.exposure, 0) / sheets.length
-    : 0;
+  const selectedSheets = sheets.filter((sheet) => !excludedSheetIds.includes(sheet.id));
+  const participants = selectedSheets.length;
+  const partyValid = participants >= 2 && participants <= 7;
+  const rankTotal = selectedSheets.reduce((sum, sheet) => sum + sheet.exposure, 0);
+  const rankAverage = participants ? rankTotal / participants : 0;
   const selected = threats.filter((threat) => selectedIds.includes(threat.id));
   const combinedMagnitude = combinedThreatMagnitude(selected.map((threat) => threat.magnitude));
   const balance = calculateEncounterBalance(
@@ -1797,40 +1799,91 @@ export function EncounterHub({
     participants,
     Math.max(1, combinedMagnitude.total),
   );
+
+  const toggleSheet = (sheetId: string) => {
+    setExcludedSheetIds((current) =>
+      current.includes(sheetId)
+        ? current.filter((id) => id !== sheetId)
+        : [...current, sheetId],
+    );
+  };
+
   return (
     <div className="space-y-4">
       <PanelHeading
         title="Balanço de Encontro"
-        description="Compare o potencial do grupo com as Magnitudes selecionadas. É um apoio de preparação, não uma promessa de resultado."
+        description="Selecione explicitamente as fichas do grupo e compare seu potencial com as Magnitudes. É um apoio de preparação, não uma promessa de resultado."
       />
-      <div className="grid gap-3 lg:grid-cols-[300px_1fr]">
+      <div className="grid gap-3 lg:grid-cols-[340px_1fr]">
         <Card className="p-4">
-          <label className="space-y-1">
-            <Label>Participantes</Label>
-            <Input
-              type="number"
-              min={2}
-              max={7}
-              value={participants}
-              onChange={(event) =>
-                setParticipants(Math.max(2, Math.min(7, Number(event.target.value))))
-              }
-            />
-          </label>
+          <div>
+            <Label>Fichas consideradas</Label>
+            <p className="mt-1 text-[10px] text-muted-foreground">
+              Entre 2 e 7 participantes. A média usa apenas as fichas marcadas.
+            </p>
+          </div>
+          <div className="mt-3 max-h-52 space-y-2 overflow-y-auto pr-1">
+            {sheets.map((sheet) => {
+              const active = !excludedSheetIds.includes(sheet.id);
+              return (
+                <button
+                  key={sheet.id}
+                  type="button"
+                  aria-pressed={active}
+                  onClick={() => toggleSheet(sheet.id)}
+                  className={`flex w-full items-center justify-between rounded-lg border p-2.5 text-left ${
+                    active ? "border-primary bg-primary/10" : "border-border bg-secondary/20"
+                  }`}
+                >
+                  <span className="min-w-0">
+                    <strong className="block truncate text-xs">{sheet.name}</strong>
+                    <span className="text-[10px] text-muted-foreground">
+                      Rank {sheet.exposure}
+                    </span>
+                  </span>
+                  {active && <Check className="h-4 w-4 shrink-0 text-primary" />}
+                </button>
+              );
+            })}
+            {sheets.length === 0 && (
+              <p className="text-xs text-muted-foreground">Nenhuma ficha acessível.</p>
+            )}
+          </div>
+          {!partyValid && (
+            <p className="mt-3 rounded-lg border border-destructive/40 bg-destructive/5 p-2 text-xs text-destructive">
+              Selecione de 2 a 7 fichas para obter uma referência válida.
+            </p>
+          )}
           <div className="mt-3 grid grid-cols-2 gap-2 text-center">
+            <div className="rounded-lg bg-secondary/40 p-3">
+              <span className="text-[10px] text-muted-foreground">Participantes</span>
+              <strong className="block text-xl">{participants}</strong>
+            </div>
             <div className="rounded-lg bg-secondary/40 p-3">
               <span className="text-[10px] text-muted-foreground">Rank médio</span>
               <strong className="block text-xl">{rankAverage.toFixed(1)}</strong>
             </div>
-            <div className="rounded-lg bg-secondary/40 p-3">
-              <span className="text-[10px] text-muted-foreground">Referência</span>
-              <strong className="block text-xl">Mag. {balance.reference}</strong>
-            </div>
+          </div>
+          <div className="mt-3 rounded-lg border border-border/60 bg-background/35 p-2 text-[10px] leading-relaxed text-muted-foreground">
+            <p>
+              Média = {rankTotal} ÷ {participants || "N"} = {rankAverage.toFixed(1)}.
+            </p>
+            {partyValid && (
+              <p>
+                Potencial do grupo = média × fator de {participants} participantes ={" "}
+                {balance.potential.toFixed(1)}. Referência = máx. entre participantes e
+                piso(potencial ÷ 5) + 1.
+              </p>
+            )}
           </div>
           <div className="mt-3 rounded-lg border border-primary/30 bg-primary/5 p-3 text-center">
-            <span className="text-xs text-muted-foreground">Leitura</span>
+            <span className="text-xs text-muted-foreground">Referência</span>
             <strong className="block font-cinzel text-lg text-primary">
-              {selected.length ? balance.reading : "Selecione ameaças"}
+              {!partyValid
+                ? "Grupo inválido"
+                : selected.length
+                  ? `Mag. ${balance.reference} · ${balance.reading}`
+                  : `Mag. ${balance.reference} · selecione ameaças`}
             </strong>
           </div>
         </Card>
@@ -1843,6 +1896,7 @@ export function EncounterHub({
                 <button
                   key={threat.id}
                   type="button"
+                  aria-pressed={active}
                   onClick={() =>
                     setSelectedIds(
                       active

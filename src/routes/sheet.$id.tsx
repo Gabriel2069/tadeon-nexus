@@ -101,6 +101,34 @@ const LINK_STATES: LinkState[] = ["Presente", "Tensionado", "Ferido", "Rompido",
 
 const AttributeRadar = lazy(() => import("@/components/sheet/attribute-radar"));
 
+const SHEET_TUTORIAL_STEPS = [
+  {
+    title: "Comece pela identidade",
+    detail:
+      "Registre origem, motivação e vínculos. Esses campos preservam o fio narrativo sem impor uma escolha mecânica.",
+  },
+  {
+    title: "Distribua Atributos e leia os Pontos",
+    detail:
+      "O orçamento, os limites do Rank e a Defesa são calculados pela ficha. Os botões só permitem valores dentro das regras.",
+  },
+  {
+    title: "Escolha Perícias e equipamento",
+    detail:
+      "Treinamento, armas, inventário e proteções ficam na aba Ficha. Equipamentos de Defesa podem ser recolhidos.",
+  },
+  {
+    title: "Abra a Árvore de Habilidades",
+    detail:
+      "A aba Árvore mostra apenas os Tiers liberados pelo Rank. Cada Tier pode ser recolhido sem perder escolhas.",
+  },
+  {
+    title: "Acompanhe o salvamento",
+    detail:
+      "O indicador no topo mostra alterações pendentes, salvamento, modo offline ou erro. Você pode salvar manualmente a qualquer momento.",
+  },
+] as const;
+
 const TRAINING_TIERS = [
   { tier: 1, name: "Iniciado", bonus: 3 },
   { tier: 2, name: "Apurado", bonus: 6 },
@@ -248,6 +276,15 @@ function SheetPage() {
   const [fragmentsView, setFragmentsView] = useState(false);
   const [defEquipOpen, setDefEquipOpen] = useState(false);
   const [openSkill, setOpenSkill] = useState<string | null>(null);
+  const [tutorialStep, setTutorialStep] = useState<number | null>(null);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const key = `tadeon-sheet-tutorial:${id}`;
+    if (window.sessionStorage.getItem(key) !== "1") return;
+    window.sessionStorage.removeItem(key);
+    setTutorialStep(0);
+  }, [id]);
 
   const canEdit = can("character:edit", {
     appRole: role,
@@ -577,6 +614,7 @@ function SheetPage() {
   const equilibrium = clamp(Math.round(sheet.equilibrium || 0), -10, 10);
   const equilibriumPct = ((equilibrium + 10) / 20) * 100;
   const equilibriumEffect = getEquilibriumEffect(equilibrium);
+  const tutorial = tutorialStep === null ? null : SHEET_TUTORIAL_STEPS[tutorialStep];
 
   return (
     <div className="tadeon-page pb-24">
@@ -660,6 +698,49 @@ function SheetPage() {
           </div>
         )}
       </div>
+
+      {tutorial && (
+        <Card
+          className="mb-4 border-primary/40 bg-[linear-gradient(135deg,rgba(116,36,45,.16),rgba(217,215,164,.05))] p-4"
+          role="dialog"
+          aria-label="Guia opcional da ficha"
+        >
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
+            <div className="min-w-0 flex-1">
+              <p className="tadeon-eyebrow">
+                Guia da ficha · etapa {(tutorialStep ?? 0) + 1} de {SHEET_TUTORIAL_STEPS.length}
+              </p>
+              <h2 className="mt-1 font-cinzel text-lg font-semibold">{tutorial.title}</h2>
+              <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
+                {tutorial.detail}
+              </p>
+            </div>
+            <div className="flex shrink-0 flex-wrap gap-2">
+              <Button variant="ghost" size="sm" onClick={() => setTutorialStep(null)}>
+                Encerrar
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                disabled={tutorialStep === 0}
+                onClick={() => setTutorialStep((step) => Math.max(0, (step ?? 0) - 1))}
+              >
+                Anterior
+              </Button>
+              <Button
+                size="sm"
+                onClick={() =>
+                  setTutorialStep((step) =>
+                    (step ?? 0) >= SHEET_TUTORIAL_STEPS.length - 1 ? null : (step ?? 0) + 1,
+                  )
+                }
+              >
+                {(tutorialStep ?? 0) >= SHEET_TUTORIAL_STEPS.length - 1 ? "Concluir" : "Próxima"}
+              </Button>
+            </div>
+          </div>
+        </Card>
+      )}
 
       <div
         className="rounded-xl transition-shadow duration-500"
@@ -928,14 +1009,14 @@ function SheetPage() {
                     Reduza Atributos para voltar à faixa válida.
                   </p>
                 )}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 items-center">
-                  <div className="space-y-1.5">
+                <div className="space-y-4">
+                  <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
                     {(Object.keys(attrs) as (keyof Attributes)[]).map((k) => {
                       const wouldCreateSecondZero = attrs[k] === 1 && zeroAttributes >= 1;
                       return (
                         <div
                           key={k}
-                          className="flex items-center justify-between gap-2 rounded bg-secondary/40 px-2 py-1"
+                          className="flex min-h-14 items-center justify-between gap-2 rounded-lg border border-border/60 bg-secondary/30 px-3 py-2"
                         >
                           <span className="font-cinzel text-sm">{k}</span>
                           <div className="flex items-center gap-1">
@@ -985,13 +1066,13 @@ function SheetPage() {
                         </div>
                       );
                     })}
-                    <p className="pt-1 text-[10px] leading-relaxed text-muted-foreground">
+                  </div>
+                  <p className="text-center text-[10px] leading-relaxed text-muted-foreground">
                       {attributeRemaining > 0
                         ? `${attributeRemaining} ponto(s) ainda disponível(is).`
                         : "Orçamento do Rank totalmente distribuído."}
                     </p>
-                  </div>
-                  <div className="h-48 sm:h-56">
+                  <div className="h-52 sm:h-60">
                     <Suspense
                       fallback={
                         <Loader2 className="w-6 h-6 animate-spin text-primary mx-auto mt-20" />
@@ -1066,7 +1147,7 @@ function SheetPage() {
                     onMod={(v) => update("stats", { ...sheet.stats, pa_mod: clampMod(v) })}
                   />
 
-                  <Card className="p-3 bg-card/60 border-blue-500/30 shadow-[0_0_22px_-12px_rgba(59,130,246,0.65)]">
+                  <Card className="p-3 bg-card/60 border-blue-500/30 shadow-[0_0_22px_-12px_rgba(59,130,246,0.65)] min-[430px]:col-span-2 min-[430px]:mx-auto min-[430px]:w-full min-[430px]:max-w-md">
                     <div className="text-blue-300 font-cinzel font-bold text-sm">Defesa</div>
                     <div className="relative my-2 flex items-center justify-center">
                       <Shield

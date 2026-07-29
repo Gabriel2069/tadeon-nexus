@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   Select,
   SelectContent,
@@ -99,6 +100,7 @@ function HomePage() {
   const [ownerId, setOwnerId] = useState("");
   const [ownersLoading, setOwnersLoading] = useState(false);
   const [creating, setCreating] = useState(false);
+  const [startTutorial, setStartTutorial] = useState(true);
   const [toDelete, setToDelete] = useState<SheetRow | null>(null);
 
   const permissionContext = { appRole: role };
@@ -212,6 +214,9 @@ function HomePage() {
     }
     setCreateOpen(false);
     setName("");
+    if (startTutorial && typeof window !== "undefined") {
+      window.sessionStorage.setItem(`tadeon-sheet-tutorial:${data.id}`, "1");
+    }
     toast.success("Ficha criada!");
     void navigate({ to: "/sheet/$id", params: { id: data.id } });
   };
@@ -344,6 +349,22 @@ function HomePage() {
                       </Select>
                     </div>
                   )}
+                  <label
+                    htmlFor="start-sheet-tutorial"
+                    className="flex cursor-pointer items-start gap-3 rounded-lg border border-border/60 bg-secondary/25 p-3"
+                  >
+                    <Checkbox
+                      id="start-sheet-tutorial"
+                      checked={startTutorial}
+                      onCheckedChange={(checked) => setStartTutorial(checked === true)}
+                    />
+                    <span>
+                      <strong className="block text-sm">Abrir guia da primeira ficha</strong>
+                      <span className="text-xs text-muted-foreground">
+                        Um roteiro curto e dispensável apresenta as áreas da ficha após a criação.
+                      </span>
+                    </span>
+                  </label>
                   <DialogFooter>
                     <Button type="submit" disabled={creating || (isMestre && !ownerId)}>
                       {creating && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
