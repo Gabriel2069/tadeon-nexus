@@ -31,7 +31,7 @@ function InlineContent({
   onCreateMissing: (title: string) => void;
 }) {
   const pattern =
-    /(!?\[[^\]]*]\([^)]+\)|\[\[[^\]\n]+]]|`[^`\n]+`|\*\*[^*\n]+\*\*|\*[^*\n]+\*)/g;
+    /(!?\[[^\]]*]\([^)]+\)|!?\[\[[^\]\n]+]]|`[^`\n]+`|\*\*[^*\n]+\*\*|\*[^*\n]+\*)/g;
   const output: ReactNode[] = [];
   let cursor = 0;
 
