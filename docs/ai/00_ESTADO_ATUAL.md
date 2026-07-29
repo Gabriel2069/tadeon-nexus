@@ -8,7 +8,7 @@ Atualizado em 29 de julho de 2026 pelo Work de continuidade independente.
 - O Livro de Regras de Tessitura do Vazio governa mecânicas e terminologia.
 - O Fio-Mestre governa identidade visual.
 - Checkpoint de entrada: `1c5b66cf83bdd9d4b070019510080eb2d63dc74b`.
-- Checkpoint integrado: PR #25, squash `0d4cfde11dc9771f40fb900795e724f688e96943` em `main`.
+- Checkpoints integrados: PR #25 (`0d4cfde`), PR #27 (`c3bff93`), PR #28 (`3947f12`) e PR #29 (`7ebfa88`) em `main`.
 
 ## Estado confirmado
 
@@ -21,8 +21,10 @@ vínculos esperados; fichas e dados legados foram preservados.
 ### Nexus Assets
 
 O catálogo provider-neutral, Supabase Storage privado, quotas, reservas de upload, autorização,
-serviço e interface estão implementados. Não há assets cadastrados e
-`nexus_assets_v2_enabled=false`. O rollout ainda não foi executado.
+serviço e interface estão implementados. Não há assets cadastrados. A flag global
+`nexus_assets_v2_enabled` permanece desligada; um override individual habilita o módulo somente
+para o proprietário mestre. O canário está integrado e ativado, mas o upload/download autenticado
+ponta a ponta ainda não foi validado e o rollout não está concluído.
 
 R2 permanece preparado, mas inativo. Bucket, credenciais, CORS e teste ponta a ponta não foram
 confirmados. `nexus_r2_enabled=false` e não deve ser alterada nessas condições.
@@ -30,8 +32,10 @@ confirmados. `nexus_r2_enabled=false` e não deve ser alterada nessas condiçõe
 ### O Nexus
 
 Schema, RLS, serviço, Markdown seguro, wikilinks, aliases, relações, versões e interface estão
-implementados. Não há páginas cadastradas e `nexus_knowledge_enabled=false`. O rollout ainda não
-foi executado.
+implementados. Não há páginas cadastradas. A flag global `nexus_knowledge_enabled` permanece
+desligada; um override individual habilita o módulo somente para o proprietário mestre. O canário
+está integrado e ativado, mas o CRUD autenticado ponta a ponta ainda não foi validado e o rollout
+não está concluído.
 
 A migration aplicada em produção é
 `20260729130904_nexus_knowledge_foundation.sql`. O nome local anterior com timestamp
@@ -63,7 +67,9 @@ atualiza o lockfile e mistura upgrades de lint sem validação.
 ## Desempenho e migrations
 
 A migration `20260729192815_cover_nexus_knowledge_foreign_keys.sql` adiciona os 17 índices
-solicitados pelo Database Advisor. Ela é aditiva e não altera dados, grants, policies ou RLS.
+solicitados pelo Database Advisor. A migration aditiva
+`20260729203953_feature_flag_user_overrides.sql` cria o mecanismo de canário individual com RLS,
+grants explícitos e rollback por remoção do override.
 
 Validação posterior:
 
@@ -112,35 +118,34 @@ A expansão deve receber nova versão, validação de escopo, dry-run e rollback
 
 ## Flags confirmadas
 
-Todas permanecem desligadas. A tabela atual é global e não oferece override por workspace ou
-usuário; por isso ela não permite um canário isolado:
+Todas as flags globais permanecem desligadas. A tabela
+`feature_flag_user_overrides` aplica precedência somente ao usuário autenticado. Há exatamente
+dois overrides ativos para o proprietário mestre:
 
-- `nexus_assets_v2_enabled`;
-- `nexus_graph_enabled`;
-- `nexus_knowledge_enabled`;
-- `nexus_lighting_enabled`;
-- `nexus_r2_enabled`;
-- `nexus_realtime_enabled`;
-- `nexus_tabletop_enabled`.
+- `nexus_assets_v2_enabled=true`;
+- `nexus_knowledge_enabled=true`.
 
-## Bloqueios de rollout
+`nexus_graph_enabled`, `nexus_lighting_enabled`, `nexus_r2_enabled`,
+`nexus_realtime_enabled` e `nexus_tabletop_enabled` não possuem override e continuam
+desligadas. O jogador não vê overrides de terceiros e não pode criá-los.
 
-O rollout de Nexus Assets e O Nexus não foi iniciado. Ligar qualquer uma das flags atuais
-habilitaria o módulo para todos os usuários, e este Work não dispõe de duas sessões autenticadas
-(mestre e jogador) para validar autorização ponta a ponta. Isso não atende ao requisito de
-segurança e rollback de um rollout controlado.
+## Estado do rollout
 
-Importação/exportação v2 permanece posterior aos canários. A fundação da Mesa Nexus permanece
-posterior à portabilidade. Nenhuma dessas fases foi iniciada ou declarada concluída.
+O rollout controlado de Nexus Assets e O Nexus foi iniciado somente para o proprietário mestre.
+A integração, migration, policies, grants, teste transacional e ativação foram concluídos. A
+validação funcional em sessão autenticada ainda está pendente; portanto os módulos não são
+classificados como concluídos nem foram liberados globalmente.
+
+O teste de RLS confirmou: mestre proprietário enxerga os dois overrides; jogador enxerga zero e
+não consegue inserir. O rollback é remover essas duas linhas. Importação/exportação v2 permanece
+posterior aos canários. A fundação da Mesa Nexus permanece posterior à portabilidade.
 
 ## Próximos critérios
 
 1. Confirmar pelo marcador público que o deploy Cloudflare corresponde ao SHA aprovado de `main`.
-2. Criar mecanismo aditivo de override de flag por workspace ou usuário, mantendo o padrão global
-   desligado e rollback imediato.
-3. Executar canário autenticado de Nexus Assets com mestre e jogador: upload, download, negação,
-   quota e rollback.
-4. Executar canário autenticado de O Nexus com mestre e jogador: CRUD, escopos, conflito,
-   Markdown seguro e rollback.
-5. Projetar importação/exportação v2 com validação de escopo, dry-run e restauração.
-6. Iniciar a fundação da Mesa Nexus somente depois de concluir os itens anteriores.
+2. Validar o canário autenticado de Nexus Assets: upload, download, negação, quota e rollback.
+3. Validar o canário autenticado de O Nexus: CRUD, escopos, conflito, Markdown seguro e rollback.
+4. Corrigir integridade de wikilinks/backlinks de forma transacional antes do grafo.
+5. Expandir pesquisa e relações somente depois dos testes de RLS do passo anterior.
+6. Projetar importação/exportação v2 com validação de escopo, dry-run e restauração.
+7. Iniciar a fundação da Mesa Nexus somente depois de concluir portabilidade e rollouts.
