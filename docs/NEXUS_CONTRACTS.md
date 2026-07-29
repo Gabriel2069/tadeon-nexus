@@ -75,3 +75,26 @@ Os tipos centrais ficam em `src/lib/nexus-contracts.ts`:
 
 Esses tipos são contratos compartilhados. As fases futuras podem acrescentar valores de modo
 compatível, mas não devem redefinir versões locais dentro de componentes.
+
+## Fundação persistente
+
+A migration da Fase 1 acrescenta:
+
+- `workspaces` e `workspace_members`;
+- `campaigns` e `campaign_members`;
+- `feature_flags`;
+- `audit_events`;
+- `campaign_id` opcional nas fichas e na configuração legada.
+
+`user_roles` continua existindo e representa o papel global da aplicação. `workspace_members`
+representa somente o vínculo com um workspace; `campaign_members` representa somente o vínculo
+com uma campanha. Portanto, as tabelas de participação não duplicam o mesmo alcance.
+
+O backfill cria um workspace e uma campanha padrão, associa todos os registros existentes e
+mantém as policies legadas das fichas e do painel. As novas colunas permanecem opcionais durante
+a transição para permitir rollback de código sem perda de acesso. Em instalações vazias, o
+backfill é simplesmente adiado até existir um perfil, sem impedir a criação limpa do banco.
+
+As funções auxiliares de RLS ficam no schema não exposto `private`, recebem o usuário apenas de
+`auth.uid()` e não aceitam um ID arbitrário de usuário. A interface ajuda na experiência, mas o
+banco permanece a autoridade final.
