@@ -2,3 +2,19 @@ project_id = "nkxpstyfrzufsnowjrdi"
 
 [functions.admin-users]
 verify_jwt = true
+
+[auth.email.template.confirmation]
+subject = "Confirme sua entrada no Tadeon Nexus"
+content_path = "./templates/confirmation.html"
+
+[auth.email.template.recovery]
+subject = "Redefina sua senha · Tadeon Nexus"
+content_path = "./templates/recovery.html"
+
+[auth.email.template.email_change]
+subject = "Confirme seu novo e-mail · Tadeon Nexus"
+content_path = "./templates/email_change.html"
+
+[auth.email.template.invite]
+subject = "Convite para o Tadeon Nexus"
+content_path = "./templates/invite.html"
