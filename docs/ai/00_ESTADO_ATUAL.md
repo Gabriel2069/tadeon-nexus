@@ -8,7 +8,7 @@ Atualizado em 29 de julho de 2026 pelo Work de continuidade independente.
 - O Livro de Regras de Tessitura do Vazio governa mecânicas e terminologia.
 - O Fio-Mestre governa identidade visual.
 - Checkpoint de entrada: `1c5b66cf83bdd9d4b070019510080eb2d63dc74b`.
-- Branch de continuidade: `agent/continuity-security-publish`.
+- Checkpoint integrado: PR #25, squash `0d4cfde11dc9771f40fb900795e724f688e96943` em `main`.
 
 ## Estado confirmado
 
@@ -80,8 +80,16 @@ no mesmo repositório. O checkout usa exatamente o `head_sha` aprovado.
 A existência dos secrets e o estado atual da conta/deploy Cloudflare não são inspecionáveis neste
 Work e permanecem não confirmados. O fluxo manual continua disponível.
 
-Lovable está publicado no checkpoint de entrada. A atualização do projeto publicado só deve ser
-considerada concluída quando o PR for mesclado e o deploy correspondente for verificado.
+A Quality nº 97 do conteúdo integrado aprovou `npm ci`, audit, lint, typecheck, testes e build.
+O PR #25 foi mesclado por squash no SHA `0d4cfde11dc9771f40fb900795e724f688e96943`.
+
+Lovable sincronizou e publicou esse mesmo SHA. O smoke test público carregou a aplicação,
+redirecionou corretamente para `/login` e não apresentou erro de console da aplicação. O único
+erro observado veio da extensão do navegador de inspeção, fora do app.
+
+A execução pós-merge do Quality e o deploy Cloudflare não puderam ser listados pela conexão do
+GitHub nem pela interface web sem sessão do repositório privado. Portanto, o deploy Cloudflare
+permanece **não confirmado**, sem inferência a partir da configuração.
 
 ## Ajustes de ficha nesta continuidade
 
@@ -103,7 +111,8 @@ A expansão deve receber nova versão, validação de escopo, dry-run e rollback
 
 ## Flags confirmadas
 
-Todas permanecem desligadas:
+Todas permanecem desligadas. A tabela atual é global e não oferece override por workspace ou
+usuário; por isso ela não permite um canário isolado:
 
 - `nexus_assets_v2_enabled`;
 - `nexus_graph_enabled`;
@@ -113,13 +122,24 @@ Todas permanecem desligadas:
 - `nexus_realtime_enabled`;
 - `nexus_tabletop_enabled`.
 
+## Bloqueios de rollout
+
+O rollout de Nexus Assets e O Nexus não foi iniciado. Ligar qualquer uma das flags atuais
+habilitaria o módulo para todos os usuários, e este Work não dispõe de duas sessões autenticadas
+(mestre e jogador) para validar autorização ponta a ponta. Isso não atende ao requisito de
+segurança e rollback de um rollout controlado.
+
+Importação/exportação v2 permanece posterior aos canários. A fundação da Mesa Nexus permanece
+posterior à portabilidade. Nenhuma dessas fases foi iniciada ou declarada concluída.
+
 ## Próximos critérios
 
-1. Quality real aprovado: audit, lint, typecheck, testes e build.
-2. Revisão do diff e merge somente após checks aprovados.
-3. Verificação do deploy Cloudflare no SHA mesclado.
-4. Canário de Nexus Assets com Supabase Storage, mestre e jogador, upload/download/negação/quota
-   e rollback pela flag.
-5. Canário de O Nexus com mestre e jogador, CRUD, escopos, conflito, Markdown e rollback pela flag.
-6. Importação/exportação v2 somente depois dos canários.
-7. Mesa Nexus somente depois de concluir os itens anteriores.
+1. Confirmar o Quality pós-merge e o deploy Cloudflare no SHA de `main`.
+2. Criar mecanismo aditivo de override de flag por workspace ou usuário, mantendo o padrão global
+   desligado e rollback imediato.
+3. Executar canário autenticado de Nexus Assets com mestre e jogador: upload, download, negação,
+   quota e rollback.
+4. Executar canário autenticado de O Nexus com mestre e jogador: CRUD, escopos, conflito,
+   Markdown seguro e rollback.
+5. Projetar importação/exportação v2 com validação de escopo, dry-run e restauração.
+6. Iniciar a fundação da Mesa Nexus somente depois de concluir os itens anteriores.
