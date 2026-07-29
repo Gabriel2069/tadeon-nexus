@@ -40,3 +40,17 @@ A fundação foi aplicada em produção e registrada com os números gerados pel
 As migrations são aditivas, mantêm os campos legados e deixam todas as funcionalidades novas
 desligadas. A segunda migration adiciona o índice da chave estrangeira `feature_flags.updated_by`
 indicado pelo Database Advisor.
+
+## Fase 2 — fundação do Nexus Assets
+
+A camada unificada de metadados e o adaptador privado do Supabase Storage foram aplicados com:
+
+1. `20260729115320_nexus_assets_supabase_foundation.sql`;
+2. `20260729115415_nexus_assets_cover_composite_foreign_keys.sql`;
+3. `20260729120553_nexus_assets_upload_role_guard.sql`.
+
+A primeira migration cria catálogo, vínculos, variantes, sessões de upload, quotas, bucket
+privado, RLS e policies do Storage. A segunda adiciona os índices das chaves estrangeiras
+compostas apontados pelo Database Advisor. A terceira separa contribuidores de observadores e
+impede que papéis somente leitura reservem uploads. A flag `nexus_assets_v2_enabled` permanece
+desligada.
