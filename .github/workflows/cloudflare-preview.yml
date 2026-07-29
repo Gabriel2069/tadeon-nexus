@@ -17,7 +17,7 @@ jobs:
   deploy:
     name: Publicar Worker
     if: >-
-      github.event_name == 'workflow_dispatch' ||
+      (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main') ||
       (github.event.workflow_run.conclusion == 'success' &&
       github.event.workflow_run.event == 'push' &&
       github.event.workflow_run.head_branch == 'main' &&
@@ -27,6 +27,9 @@ jobs:
 
     env:
       CI: true
+      TADEON_DEPLOY_SHA: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.head_sha || github.sha }}
+      TADEON_PUBLIC_APP_URL: https://tadeon-nexus.gtadeusz.workers.dev
+      VITE_APP_COMMIT_SHA: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.head_sha || github.sha }}
 
       CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
       CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
@@ -78,6 +81,9 @@ jobs:
           node-version: 22
           cache: npm
 
+      - name: Fixar npm do projeto
+        run: npm install --global npm@11.9.0
+
       - name: Instalar dependências
         run: npm ci --include=dev
 
@@ -112,3 +118,23 @@ jobs:
         env:
           NODE_ENV: production
         run: npx nitro deploy --prebuilt
+
+      - name: Confirmar produção no SHA aprovado
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          for attempt in {1..12}; do
+            page="$(curl --fail --silent --show-error --location "${TADEON_PUBLIC_APP_URL}/login" || true)"
+            if printf '%s' "$page" | grep -Fq 'name="tadeon-build-sha"' && \
+              printf '%s' "$page" | grep -Fq "${TADEON_DEPLOY_SHA}"; then
+              echo "Produção confirmada no SHA ${TADEON_DEPLOY_SHA}."
+              exit 0
+            fi
+
+            echo "Tentativa ${attempt}/12: aguardando propagação do Worker."
+            sleep 5
+          done
+
+          echo "::error::O endpoint público não confirmou o SHA ${TADEON_DEPLOY_SHA}."
+          exit 1

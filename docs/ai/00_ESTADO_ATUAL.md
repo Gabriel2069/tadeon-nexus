@@ -4,7 +4,7 @@ Atualizado em 29 de julho de 2026 pelo Work de continuidade independente.
 
 ## Fonte de verdade
 
-- O estado real do GitHub, Supabase e Lovable prevalece sobre registros históricos.
+- O estado real do GitHub, Supabase e Cloudflare prevalece sobre registros históricos; o Lovable é apenas uma conexão de construção.
 - O Livro de Regras de Tessitura do Vazio governa mecânicas e terminologia.
 - O Fio-Mestre governa identidade visual.
 - Checkpoint de entrada: `1c5b66cf83bdd9d4b070019510080eb2d63dc74b`.
@@ -77,19 +77,20 @@ O workflow Quality continua rodando em PR e push para `main`. A publicação Clo
 configurada para ocorrer somente depois de um Quality bem-sucedido causado por push no `main`,
 no mesmo repositório. O checkout usa exatamente o `head_sha` aprovado.
 
-A existência dos secrets e o estado atual da conta/deploy Cloudflare não são inspecionáveis neste
-Work e permanecem não confirmados. O fluxo manual continua disponível.
+O endpoint canônico `https://tadeon-nexus.gtadeusz.workers.dev` está público e responde pela
+aplicação, redirecionando corretamente para `/login`. Os valores dos secrets continuam ocultos por
+design. O fluxo manual permanece restrito à branch `main`.
 
 A Quality nº 97 do conteúdo integrado aprovou `npm ci`, audit, lint, typecheck, testes e build.
 O PR #25 foi mesclado por squash no SHA `0d4cfde11dc9771f40fb900795e724f688e96943`.
 
-Lovable sincronizou e publicou esse mesmo SHA. O smoke test público carregou a aplicação,
+O runtime canônico é o Worker Cloudflare. O smoke test público do Worker carregou a aplicação,
 redirecionou corretamente para `/login` e não apresentou erro de console da aplicação. O único
 erro observado veio da extensão do navegador de inspeção, fora do app.
 
-A execução pós-merge do Quality e o deploy Cloudflare não puderam ser listados pela conexão do
-GitHub nem pela interface web sem sessão do repositório privado. Portanto, o deploy Cloudflare
-permanece **não confirmado**, sem inferência a partir da configuração.
+O Lovable permanece sincronizado como ambiente de construção e não participa do funcionamento
+direto da aplicação. O deploy anteriormente disponível não expunha um identificador verificável;
+o workflow agora injeta o SHA aprovado no build e exige que o endpoint público confirme esse SHA.
 
 ## Ajustes de ficha nesta continuidade
 
@@ -134,7 +135,7 @@ posterior à portabilidade. Nenhuma dessas fases foi iniciada ou declarada concl
 
 ## Próximos critérios
 
-1. Confirmar o Quality pós-merge e o deploy Cloudflare no SHA de `main`.
+1. Confirmar pelo marcador público que o deploy Cloudflare corresponde ao SHA aprovado de `main`.
 2. Criar mecanismo aditivo de override de flag por workspace ou usuário, mantendo o padrão global
    desligado e rollback imediato.
 3. Executar canário autenticado de Nexus Assets com mestre e jogador: upload, download, negação,

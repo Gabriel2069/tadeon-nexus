@@ -63,7 +63,7 @@ export const Route = createFileRoute("/sheet/$id_/power")({
           "Versão de poder (VP) da ficha no Tadeon Nexus: cópia vibrante com atributos, modificadores e habilidades independentes da ficha base.",
       },
     ],
-    links: [{ rel: "canonical", href: "https://tadeon-nexus.lovable.app/" }],
+    links: [{ rel: "canonical", href: "https://tadeon-nexus.gtadeusz.workers.dev/" }],
   }),
   component: () => (
     <ProtectedShell>

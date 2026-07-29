@@ -157,7 +157,7 @@ export const Route = createFileRoute("/sheet/$id")({
           "Editor de ficha de personagem do Tadeon Nexus: atributos, perícias, habilidades, inventário, defesa e árvore de progressão.",
       },
     ],
-    links: [{ rel: "canonical", href: "https://tadeon-nexus.lovable.app/" }],
+    links: [{ rel: "canonical", href: "https://tadeon-nexus.gtadeusz.workers.dev/" }],
   }),
 
   component: () => (

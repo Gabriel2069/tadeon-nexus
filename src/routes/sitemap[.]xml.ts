@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import type {} from "@tanstack/react-start";
 
-const BASE_URL = "https://tadeon-nexus.lovable.app";
+const BASE_URL = "https://tadeon-nexus.gtadeusz.workers.dev";
 
 interface SitemapEntry {
   path: string;

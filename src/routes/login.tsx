@@ -26,9 +26,9 @@ export const Route = createFileRoute("/login")({
         content:
           "Acesse sua conta no Tadeon Nexus para gerenciar suas fichas de personagem, atributos e mesas de RPG online.",
       },
-      { property: "og:url", content: "https://tadeon-nexus.lovable.app/login" },
+      { property: "og:url", content: "https://tadeon-nexus.gtadeusz.workers.dev/login" },
     ],
-    links: [{ rel: "canonical", href: "https://tadeon-nexus.lovable.app/login" }],
+    links: [{ rel: "canonical", href: "https://tadeon-nexus.gtadeusz.workers.dev/login" }],
   }),
   validateSearch: (search: Record<string, unknown>) => ({
     next:

@@ -63,9 +63,9 @@ export const Route = createFileRoute("/")({
         content:
           "Painel principal do Tadeon Nexus: veja e gerencie suas fichas de personagem, atributos, perícias e progresso de RPG.",
       },
-      { property: "og:url", content: "https://tadeon-nexus.lovable.app/" },
+      { property: "og:url", content: "https://tadeon-nexus.gtadeusz.workers.dev/" },
     ],
-    links: [{ rel: "canonical", href: "https://tadeon-nexus.lovable.app/" }],
+    links: [{ rel: "canonical", href: "https://tadeon-nexus.gtadeusz.workers.dev/" }],
   }),
   component: () => (
     <ProtectedShell>
