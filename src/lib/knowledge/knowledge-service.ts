@@ -176,6 +176,37 @@ export interface KnowledgeListResult {
   hasMore: boolean;
 }
 
+export type KnowledgeSearchOrder = "relevance" | "updated" | "title";
+
+export interface KnowledgeSearchOptions {
+  workspaceId: string;
+  query?: string;
+  campaignId?: string | null;
+  includeWorkspace?: boolean;
+  nodeTypes?: KnowledgeNodeType[];
+  statuses?: KnowledgeNodeStatus[];
+  visibilities?: KnowledgeVisibility[];
+  relationTypes?: RelationType[];
+  onlyCanonical?: boolean;
+  order?: KnowledgeSearchOrder;
+  page?: number;
+  pageSize?: number;
+}
+
+export interface KnowledgeSearchHit {
+  node: KnowledgeNode;
+  relevance: number;
+  snippet: string;
+}
+
+export interface KnowledgeSearchResult {
+  hits: KnowledgeSearchHit[];
+  count: number;
+  page: number;
+  pageSize: number;
+  hasMore: boolean;
+}
+
 export interface ResolvedWikilink {
   reference: WikilinkReference;
   node: KnowledgeNode | null;
@@ -338,6 +369,60 @@ export class KnowledgeService {
       page,
       pageSize,
       hasMore: start + nodes.length < (count ?? nodes.length),
+    };
+  }
+
+  async search(
+    options: KnowledgeSearchOptions,
+  ): Promise<KnowledgeSearchResult> {
+    const page = clampInteger(options.page, 0, 0, 100000);
+    const pageSize = clampInteger(
+      options.pageSize,
+      DEFAULT_PAGE_SIZE,
+      1,
+      100,
+    );
+    const { data, error } = await knowledgeDatabase.rpc(
+      "search_knowledge_nodes",
+      {
+        p_workspace_id: options.workspaceId,
+        p_query: options.query?.trim().slice(0, 160) ?? "",
+        p_campaign_id: options.campaignId ?? null,
+        p_include_workspace: options.includeWorkspace ?? true,
+        p_node_types: options.nodeTypes?.length ? options.nodeTypes : null,
+        p_statuses: options.statuses?.length ? options.statuses : null,
+        p_visibilities: options.visibilities?.length
+          ? options.visibilities
+          : null,
+        p_relation_types: options.relationTypes?.length
+          ? options.relationTypes
+          : null,
+        p_only_canonical: options.onlyCanonical ?? false,
+        p_order: options.order ?? "relevance",
+        p_limit: pageSize,
+        p_offset: page * pageSize,
+      },
+    );
+    if (error) throw toKnowledgeServiceError(error);
+
+    const rows = (Array.isArray(data) ? data : []) as Array<{
+      node_data: KnowledgeNode;
+      relevance: number | null;
+      snippet: string | null;
+      total_count: number | string | null;
+    }>;
+    const count = Number(rows[0]?.total_count ?? 0);
+    const hits = rows.map((row) => ({
+      node: row.node_data,
+      relevance: Number(row.relevance ?? 0),
+      snippet: row.snippet ?? "",
+    }));
+    return {
+      hits,
+      count: Number.isFinite(count) ? count : hits.length,
+      page,
+      pageSize,
+      hasMore: page * pageSize + hits.length < count,
     };
   }
 

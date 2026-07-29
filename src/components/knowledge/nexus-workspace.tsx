@@ -10,6 +10,7 @@ import {
   BookMarked,
   BookOpen,
   Check,
+  ChevronLeft,
   ChevronRight,
   Clock3,
   Command,
@@ -85,6 +86,7 @@ import {
   type KnowledgeBrokenLink,
   type KnowledgeEdge,
   type KnowledgeNode,
+  type KnowledgeSearchOrder,
   type KnowledgeVersion,
 } from "@/lib/knowledge/knowledge-service";
 
@@ -229,6 +231,31 @@ function formatTime(value: Date | null) {
     : "";
 }
 
+function renderSearchSnippet(value: string) {
+  let highlighted = false;
+  return value.split(/([⟦⟧])/).map((part, index) => {
+    if (part === "⟦") {
+      highlighted = true;
+      return null;
+    }
+    if (part === "⟧") {
+      highlighted = false;
+      return null;
+    }
+    if (!part) return null;
+    return highlighted ? (
+      <mark
+        key={`search-highlight-${index}`}
+        className="rounded bg-primary/20 px-0.5 text-foreground"
+      >
+        {part}
+      </mark>
+    ) : (
+      part
+    );
+  });
+}
+
 function insertAroundSelection(
   textarea: HTMLTextAreaElement,
   before: string,
@@ -274,9 +301,25 @@ export function NexusWorkspace({
   const [loading, setLoading] = useState(true);
   const [nodeLoading, setNodeLoading] = useState(false);
   const [search, setSearch] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState("");
+  const [searchPage, setSearchPage] = useState(0);
+  const [searchCount, setSearchCount] = useState(0);
+  const [searchHasMore, setSearchHasMore] = useState(false);
+  const [searchSnippets, setSearchSnippets] = useState<Record<string, string>>(
+    {},
+  );
   const [typeFilter, setTypeFilter] = useState<KnowledgeNodeType | "all">(
     "all",
   );
+  const [statusFilter, setStatusFilter] =
+    useState<KnowledgeNodeStatus | "all">("all");
+  const [visibilityFilter, setVisibilityFilter] =
+    useState<KnowledgeVisibility | "all">("all");
+  const [searchRelationFilter, setSearchRelationFilter] =
+    useState<RelationType | "all">("all");
+  const [searchOrder, setSearchOrder] =
+    useState<KnowledgeSearchOrder>("relevance");
+  const [onlyCanonical, setOnlyCanonical] = useState(false);
   const [editMode, setEditMode] = useState(false);
   const [focusMode, setFocusMode] = useState(false);
   const [rightPanel, setRightPanel] = useState<RightPanel>("properties");
@@ -360,35 +403,48 @@ export function NexusWorkspace({
     setLoading(false);
   }, []);
 
+  useEffect(() => {
+    const timer = window.setTimeout(() => {
+      setDebouncedSearch(search);
+      setSearchPage(0);
+    }, 250);
+    return () => window.clearTimeout(timer);
+  }, [search]);
+
   const loadNodes = useCallback(async () => {
     if (!workspaceId) return;
     setNodeLoading(true);
     try {
-      const options = {
-        workspaceId,
-        search,
-        nodeType: typeFilter === "all" ? undefined : typeFilter,
-        pageSize: 100,
-      };
-      const results = campaignScope
-        ? await Promise.all([
-            knowledgeService.list({ ...options, campaignId: campaignScope }),
-            knowledgeService.list({ ...options, campaignId: null }),
-          ])
-        : [await knowledgeService.list({ ...options, campaignId: null })];
-      const unique = new Map<string, KnowledgeNode>();
-      for (const result of results) {
-        for (const node of result.nodes) unique.set(node.id, node);
-      }
-      setNodes(
-        [...unique.values()].sort((left, right) =>
-          right.updated_at.localeCompare(left.updated_at),
-        ),
-      );
-      const [nextRecent, nextFavorites] = await Promise.all([
+      const [result, nextRecent, nextFavorites] = await Promise.all([
+        knowledgeService.search({
+          workspaceId,
+          query: debouncedSearch,
+          campaignId: campaignScope,
+          includeWorkspace: true,
+          nodeTypes: typeFilter === "all" ? undefined : [typeFilter],
+          statuses: statusFilter === "all" ? undefined : [statusFilter],
+          visibilities:
+            visibilityFilter === "all" ? undefined : [visibilityFilter],
+          relationTypes:
+            searchRelationFilter === "all"
+              ? undefined
+              : [searchRelationFilter],
+          onlyCanonical,
+          order: searchOrder,
+          page: searchPage,
+          pageSize: 30,
+        }),
         knowledgeService.listRecentNodes(40),
         knowledgeService.listFavoriteNodes(40),
       ]);
+      setNodes(result.hits.map((hit) => hit.node));
+      setSearchCount(result.count);
+      setSearchHasMore(result.hasMore);
+      setSearchSnippets(
+        Object.fromEntries(
+          result.hits.map((hit) => [hit.node.id, hit.snippet]),
+        ),
+      );
       const belongsToScope = (node: KnowledgeNode) =>
         node.workspace_id === workspaceId &&
         (campaignScope
@@ -399,10 +455,24 @@ export function NexusWorkspace({
     } catch (error) {
       toast.error(errorMessage(error));
       setNodes([]);
+      setSearchCount(0);
+      setSearchHasMore(false);
+      setSearchSnippets({});
     } finally {
       setNodeLoading(false);
     }
-  }, [campaignScope, search, typeFilter, workspaceId]);
+  }, [
+    campaignScope,
+    debouncedSearch,
+    onlyCanonical,
+    searchOrder,
+    searchPage,
+    searchRelationFilter,
+    statusFilter,
+    typeFilter,
+    visibilityFilter,
+    workspaceId,
+  ]);
 
   useEffect(() => {
     void loadScopes();
@@ -956,6 +1026,7 @@ export function NexusWorkspace({
             onValueChange={(value) => {
               setWorkspaceId(value);
               setCampaignId("workspace");
+              setSearchPage(0);
             }}
           >
             <SelectTrigger className="w-[190px]" aria-label="Workspace">
@@ -969,7 +1040,13 @@ export function NexusWorkspace({
               ))}
             </SelectContent>
           </Select>
-          <Select value={campaignId} onValueChange={setCampaignId}>
+          <Select
+            value={campaignId}
+            onValueChange={(value) => {
+              setCampaignId(value);
+              setSearchPage(0);
+            }}
+          >
             <SelectTrigger className="w-[190px]" aria-label="Campanha">
               <SelectValue />
             </SelectTrigger>
@@ -1024,28 +1101,119 @@ export function NexusWorkspace({
                 className="pl-9"
               />
             </div>
-            <Select
-              value={typeFilter}
-              onValueChange={(value) =>
-                setTypeFilter(value as KnowledgeNodeType | "all")
-              }
-            >
-              <SelectTrigger className="mt-2" aria-label="Filtrar tipo">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">Todos os tipos</SelectItem>
-                {KNOWLEDGE_NODE_TYPES.map((type) => (
-                  <SelectItem key={type} value={type}>
-                    {TYPE_LABELS[type]}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            <div className="mt-2 grid grid-cols-2 gap-2">
+              <Select
+                value={typeFilter}
+                onValueChange={(value) => {
+                  setTypeFilter(value as KnowledgeNodeType | "all");
+                  setSearchPage(0);
+                }}
+              >
+                <SelectTrigger aria-label="Filtrar tipo">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">Todos os tipos</SelectItem>
+                  {KNOWLEDGE_NODE_TYPES.map((type) => (
+                    <SelectItem key={type} value={type}>
+                      {TYPE_LABELS[type]}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <Select
+                value={statusFilter}
+                onValueChange={(value) => {
+                  setStatusFilter(value as KnowledgeNodeStatus | "all");
+                  setSearchPage(0);
+                }}
+              >
+                <SelectTrigger aria-label="Filtrar status">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">Todos os status</SelectItem>
+                  {KNOWLEDGE_NODE_STATUSES.map((status) => (
+                    <SelectItem key={status} value={status}>
+                      {STATUS_LABELS[status]}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <Select
+                value={visibilityFilter}
+                onValueChange={(value) => {
+                  setVisibilityFilter(value as KnowledgeVisibility | "all");
+                  setSearchPage(0);
+                }}
+              >
+                <SelectTrigger aria-label="Filtrar visibilidade">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">Toda visibilidade</SelectItem>
+                  {KNOWLEDGE_VISIBILITIES.map((visibility) => (
+                    <SelectItem key={visibility} value={visibility}>
+                      {VISIBILITY_LABELS[visibility]}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <Select
+                value={searchRelationFilter}
+                onValueChange={(value) => {
+                  setSearchRelationFilter(value as RelationType | "all");
+                  setSearchPage(0);
+                }}
+              >
+                <SelectTrigger aria-label="Filtrar relação">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">Toda relação</SelectItem>
+                  {RELATION_TYPES.map((type) => (
+                    <SelectItem key={type} value={type}>
+                      {RELATION_LABELS[type]}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <Select
+                value={searchOrder}
+                onValueChange={(value) => {
+                  setSearchOrder(value as KnowledgeSearchOrder);
+                  setSearchPage(0);
+                }}
+              >
+                <SelectTrigger
+                  className="col-span-2"
+                  aria-label="Ordenar pesquisa"
+                >
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="relevance">Mais relevantes</SelectItem>
+                  <SelectItem value="updated">Atualizados recentemente</SelectItem>
+                  <SelectItem value="title">Título</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <label className="mt-2 flex items-center gap-2 rounded-lg border px-3 py-2 text-xs">
+              <input
+                type="checkbox"
+                checked={onlyCanonical}
+                onChange={(event) => {
+                  setOnlyCanonical(event.target.checked);
+                  setSearchPage(0);
+                }}
+                className="accent-[var(--tadeon-flow)]"
+              />
+              Somente conteúdo canônico
+            </label>
 
             <div className="mt-4 flex items-center justify-between">
               <p className="tadeon-eyebrow">Páginas</p>
-              <Badge variant="outline">{nodes.length}</Badge>
+              <Badge variant="outline">{searchCount}</Badge>
             </div>
             <div className="mt-2 max-h-[44vh] space-y-1 overflow-y-auto pr-1">
               {nodeLoading ? (
@@ -1069,6 +1237,11 @@ export function NexusWorkspace({
                       {TYPE_LABELS[node.node_type]} ·{" "}
                       {STATUS_LABELS[node.status]}
                     </span>
+                    {searchSnippets[node.id] && (
+                      <span className="mt-1 line-clamp-2 block text-xs text-muted-foreground">
+                        {renderSearchSnippet(searchSnippets[node.id])}
+                      </span>
+                    )}
                   </button>
                 ))
               ) : (
@@ -1077,6 +1250,36 @@ export function NexusWorkspace({
                 </p>
               )}
             </div>
+            {searchCount > 0 && (
+              <div className="mt-2 flex items-center justify-between gap-2 border-t pt-2">
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="ghost"
+                  onClick={() =>
+                    setSearchPage((current) => Math.max(0, current - 1))
+                  }
+                  disabled={searchPage === 0 || nodeLoading}
+                  aria-label="Página anterior"
+                >
+                  <ChevronLeft className="h-4 w-4" />
+                </Button>
+                <span className="text-[10px] text-muted-foreground">
+                  {searchPage + 1} de{" "}
+                  {Math.max(1, Math.ceil(searchCount / 30))}
+                </span>
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="ghost"
+                  onClick={() => setSearchPage((current) => current + 1)}
+                  disabled={!searchHasMore || nodeLoading}
+                  aria-label="Próxima página"
+                >
+                  <ChevronRight className="h-4 w-4" />
+                </Button>
+              </div>
+            )}
 
             <div className="mt-4 border-t pt-3">
               <p className="flex items-center gap-2 text-xs font-semibold">
