@@ -15,6 +15,7 @@ import {
   Clock3,
   Command,
   FilePlus2,
+  GitBranch,
   Hash,
   History,
   ImagePlus,
@@ -36,6 +37,7 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { AssetPickerDialog } from "@/components/assets/asset-picker-dialog";
+import { KnowledgeGraph } from "@/components/knowledge/knowledge-graph";
 import {
   SafeMarkdown,
   type KnowledgeLinkPreview,
@@ -276,8 +278,10 @@ function insertAroundSelection(
 
 export function NexusWorkspace({
   assetsEnabled,
+  graphEnabled,
 }: {
   assetsEnabled: boolean;
+  graphEnabled: boolean;
 }) {
   const editorRef = useRef<HTMLTextAreaElement>(null);
   const [workspaces, setWorkspaces] = useState<WorkspaceOption[]>([]);
@@ -336,6 +340,7 @@ export function NexusWorkspace({
     useState<KnowledgeVisibility>("author");
   const [creating, setCreating] = useState(false);
   const [commandOpen, setCommandOpen] = useState(false);
+  const [graphOpen, setGraphOpen] = useState(false);
   const [commandSearch, setCommandSearch] = useState("");
   const [aliasValue, setAliasValue] = useState("");
   const [assetPickerOpen, setAssetPickerOpen] = useState(false);
@@ -1061,6 +1066,22 @@ export function NexusWorkspace({
                 ))}
             </SelectContent>
           </Select>
+          {graphEnabled && (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setGraphOpen(true)}
+              disabled={!selected}
+              title={
+                selected
+                  ? "Abrir grafo local desta página"
+                  : "Abra uma página para iniciar o grafo"
+              }
+            >
+              <GitBranch className="h-4 w-4" />
+              Grafo local
+            </Button>
+          )}
           <Button
             variant="outline"
             size="sm"
@@ -2062,6 +2083,30 @@ export function NexusWorkspace({
           </aside>
         )}
       </div>
+
+      <Dialog open={graphOpen} onOpenChange={setGraphOpen}>
+        <DialogContent className="h-[92vh] max-h-[92vh] overflow-hidden p-4 sm:max-w-[96vw]">
+          <DialogHeader className="shrink-0">
+            <DialogTitle className="font-cinzel">Teia local de O Nexus</DialogTitle>
+            <DialogDescription>
+              Vizinhança limitada, filtrável e carregada apenas com metadados visíveis.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="min-h-0 flex-1 overflow-hidden">
+            {selected && (
+              <KnowledgeGraph
+                workspaceId={workspaceId}
+                campaignId={campaignScope}
+                focusNodeId={selected.id}
+                onOpenNode={(nodeId) => {
+                  setGraphOpen(false);
+                  void openNode(nodeId);
+                }}
+              />
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
 
       <Dialog open={createOpen} onOpenChange={setCreateOpen}>
         <DialogContent>
