@@ -82,6 +82,7 @@ import {
 } from "@/components/ui/select";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { useSerializedAutosave } from "@/lib/use-serialized-autosave";
+import { can } from "@/lib/permissions";
 import { cacheSheet } from "@/lib/offline-cache";
 import { BrandMark } from "@/components/brand-mark";
 import { SaveStatus } from "@/components/save-status";
@@ -248,7 +249,11 @@ function SheetPage() {
   const [defEquipOpen, setDefEquipOpen] = useState(false);
   const [openSkill, setOpenSkill] = useState<string | null>(null);
 
-  const canEdit = role === "mestre" || (sheet?.owner_id === user?.id && role !== "espectador");
+  const canEdit = can("character:edit", {
+    appRole: role,
+    currentUserId: user?.id,
+    resourceOwnerId: sheet?.owner_id,
+  });
 
   useEffect(() => {
     void (async () => {
@@ -828,10 +833,7 @@ function SheetPage() {
                   </div>
                   <div className="space-y-3">
                     {sheet.identity_data.links.map((link, index) => (
-                      <div
-                        key={link.id}
-                        className="grid gap-2 sm:grid-cols-[1fr_1fr_140px_auto]"
-                      >
+                      <div key={link.id} className="grid gap-2 sm:grid-cols-[1fr_1fr_140px_auto]">
                         <Input
                           disabled={!canEdit}
                           value={link.name}
