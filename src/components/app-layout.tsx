@@ -35,6 +35,7 @@ import { toast } from "sonner";
 import { BrandMark, ThreadField } from "@/components/brand-mark";
 import { GlobalSearch } from "@/components/global-search";
 import { getAuthErrorMessage } from "@/lib/auth-errors";
+import { isApplicationAdministrator } from "@/lib/permissions";
 
 const roleIcons: Record<string, typeof Crown> = {
   mestre: Crown,
@@ -60,7 +61,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
   }, [collapsed]);
 
   const RoleIcon = role ? roleIcons[role] : Eye;
-  const isMestre = role === "mestre";
+  const isMestre = isApplicationAdministrator({ appRole: role });
 
   const handleSignOut = async () => {
     try {
