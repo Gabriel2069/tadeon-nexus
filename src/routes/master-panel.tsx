@@ -106,9 +106,9 @@ export const Route = createFileRoute("/master-panel")({
         content:
           "Painel do mestre do Tadeon Nexus: cenas, NPCs, monstros, pistas, iniciativa e configurações da mesa de RPG.",
       },
-      { property: "og:url", content: "https://tadeon-nexus.lovable.app/master-panel" },
+      { property: "og:url", content: "https://tadeon-nexus.gtadeusz.workers.dev/master-panel" },
     ],
-    links: [{ rel: "canonical", href: "https://tadeon-nexus.lovable.app/master-panel" }],
+    links: [{ rel: "canonical", href: "https://tadeon-nexus.gtadeusz.workers.dev/master-panel" }],
   }),
   component: () => (
     <ProtectedShell requireRole="mestre">
