@@ -34,6 +34,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { BrandMark, ThreadField } from "@/components/brand-mark";
 import { GlobalSearch } from "@/components/global-search";
+import { getAuthErrorMessage } from "@/lib/auth-errors";
 
 const roleIcons: Record<string, typeof Crown> = {
   mestre: Crown,
@@ -62,8 +63,12 @@ export function AppLayout({ children }: { children: ReactNode }) {
   const isMestre = role === "mestre";
 
   const handleSignOut = async () => {
-    await signOut();
-    void navigate({ to: "/login", search: { next: "" } });
+    try {
+      await signOut();
+      void navigate({ to: "/login", search: { next: "" } });
+    } catch (error) {
+      toast.error(getAuthErrorMessage(error, "session"));
+    }
   };
 
   const renderNav = (mini: boolean, enableSearchShortcut: boolean) => (
@@ -384,14 +389,12 @@ function AccountDialog({
         toast.info("Enviamos as confirmações necessárias para trocar o e-mail.");
       }
       if (password) {
-        if (password.length < 6) {
-          toast.error("A nova senha deve ter pelo menos 6 caracteres.");
-          setSaving(false);
+        if (password.length < 8) {
+          toast.error("A nova senha deve ter pelo menos 8 caracteres.");
           return;
         }
         if (password !== confirm) {
           toast.error("As senhas não coincidem.");
-          setSaving(false);
           return;
         }
         const { error } = await supabase.auth.updateUser({ password });
@@ -400,8 +403,8 @@ function AccountDialog({
       toast.success("Configurações pessoais atualizadas.");
       onSaved?.();
       onOpenChange(false);
-    } catch {
-      toast.error("Não foi possível atualizar a conta.");
+    } catch (error) {
+      toast.error(getAuthErrorMessage(error, "account-update"));
     } finally {
       setSaving(false);
     }
@@ -413,8 +416,8 @@ function AccountDialog({
       const { error } = await supabase.auth.signOut({ scope: "others" });
       if (error) throw error;
       toast.success("As outras sessões foram encerradas.");
-    } catch {
-      toast.error("Não foi possível encerrar as outras sessões.");
+    } catch (error) {
+      toast.error(getAuthErrorMessage(error, "session"));
     } finally {
       setSaving(false);
     }
@@ -466,6 +469,8 @@ function AccountDialog({
                 onChange={(e) => setPassword(e.target.value)}
                 className="mt-1"
                 placeholder="Mínimo 8 caracteres recomendado"
+                minLength={8}
+                autoComplete="new-password"
               />
             </div>
             <div>
@@ -475,6 +480,8 @@ function AccountDialog({
                 value={confirm}
                 onChange={(e) => setConfirm(e.target.value)}
                 className="mt-1"
+                minLength={8}
+                autoComplete="new-password"
               />
             </div>
             <Button
