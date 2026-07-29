@@ -4,6 +4,7 @@ import { useAuth } from "@/lib/auth";
 import { AppLayout } from "@/components/app-layout";
 import { Button } from "@/components/ui/button";
 import { AlertTriangle, Loader2, RefreshCw } from "lucide-react";
+import { can } from "@/lib/permissions";
 
 interface Props {
   children: ReactNode;
@@ -50,7 +51,7 @@ export function ProtectedShell({ children, requireRole }: Props) {
     );
   }
 
-  if (requireRole && role !== requireRole) {
+  if (requireRole && !can("app:manage", { appRole: role })) {
     return (
       <AppLayout>
         <div className="p-8">
