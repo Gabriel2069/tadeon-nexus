@@ -271,7 +271,7 @@ RETURNS public.knowledge_nodes
 LANGUAGE plpgsql
 SECURITY INVOKER
 SET search_path = ''
-AS $
+AS $$
 DECLARE
   saved_node public.knowledge_nodes;
 BEGIN
@@ -321,7 +321,7 @@ BEGIN
 
   RETURN saved_node;
 END;
-$;
+$$;
 
 REVOKE ALL ON FUNCTION public.save_knowledge_node_content(
   uuid,
