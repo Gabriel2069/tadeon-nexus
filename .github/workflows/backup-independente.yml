@@ -26,16 +26,17 @@ jobs:
             exit 1
           fi
 
-      - name: Instalar cliente PostgreSQL
+      - name: Instalar cliente PostgreSQL 17
         run: |
           sudo apt-get update
-          sudo apt-get install --yes postgresql-client
+          sudo apt-get install --yes postgresql-client-17
+          /usr/lib/postgresql/17/bin/pg_dump --version
 
       - name: Exportar banco
         env:
           SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
         run: |
-          pg_dump "$SUPABASE_DB_URL" \
+          /usr/lib/postgresql/17/bin/pg_dump "$SUPABASE_DB_URL" \
             --format=custom \
             --no-owner \
             --no-acl \
