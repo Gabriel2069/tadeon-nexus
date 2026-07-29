@@ -196,11 +196,18 @@ export function extractMarkdownHeadings(markdown: string): MarkdownHeading[] {
   maskedLines.forEach((maskedLine, index) => {
     if (!maskedLine) return;
     const body = maskedLine.replace(/\r?\n$/, "");
-    const prefix = body.match(/^\s{0,3}(#{1,6})[ \t]+/);
-    if (prefix) {
+    const activePrefix = body.match(/^\s{0,3}(#{1,6})[ \t]+/);
+    if (activePrefix) {
       const originalBody = (originalLines[index] ?? "").replace(/\r?\n$/, "");
+      const originalPrefix = originalBody.match(
+        /^\s{0,3}(#{1,6})[ \t]+/,
+      );
+      if (!originalPrefix) {
+        offset += (originalLines[index] ?? maskedLine).length;
+        return;
+      }
       const rawText = originalBody
-        .slice(prefix[0].length)
+        .slice(originalPrefix[0].length)
         .replace(/[ \t]+#+[ \t]*$/, "");
       const text = cleanHeadingText(rawText);
       if (text) {
@@ -210,7 +217,7 @@ export function extractMarkdownHeadings(markdown: string): MarkdownHeading[] {
         headings.push({
           text,
           anchorSlug: occurrence === 1 ? baseSlug : `${baseSlug}-${occurrence}`,
-          level: prefix[1].length,
+          level: originalPrefix[1].length,
           occurrence,
           start: offset,
         });
