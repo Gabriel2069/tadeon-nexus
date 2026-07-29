@@ -16,32 +16,50 @@ jobs:
   backup:
     runs-on: ubuntu-latest
     timeout-minutes: 15
+
     steps:
       - name: Validar configuração
+        shell: bash
         env:
           SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
         run: |
-          if [ -z "$SUPABASE_DB_URL" ]; then
+          set -euo pipefail
+
+          if [ -z "${SUPABASE_DB_URL:-}" ]; then
             echo "::error::Cadastre o secret SUPABASE_DB_URL antes de executar o backup."
             exit 1
           fi
 
-      - name: Instalar cliente PostgreSQL 17
+      - name: Verificar cliente PostgreSQL 17
+        shell: bash
         run: |
-          sudo apt-get update
-          sudo apt-get install --yes postgresql-client-17
-          /usr/lib/postgresql/17/bin/pg_dump --version
+          set -euo pipefail
+
+          docker pull postgres:17
+          docker run --rm postgres:17 pg_dump --version
 
       - name: Exportar banco
+        shell: bash
         env:
           SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
         run: |
-          /usr/lib/postgresql/17/bin/pg_dump "$SUPABASE_DB_URL" \
-            --format=custom \
-            --no-owner \
-            --no-acl \
-            --file=tadeon-nexus.dump
+          set -euo pipefail
+
+          docker run --rm \
+            --volume "$PWD:/backup" \
+            postgres:17 \
+            pg_dump "$SUPABASE_DB_URL" \
+              --format=custom \
+              --no-owner \
+              --no-acl \
+              --file=/backup/tadeon-nexus.dump
+
+          test -s tadeon-nexus.dump
+
           sha256sum tadeon-nexus.dump > tadeon-nexus.dump.sha256
+
+          echo "Backup criado com sucesso:"
+          ls -lh tadeon-nexus.dump tadeon-nexus.dump.sha256
 
       - name: Guardar cópia privada
         uses: actions/upload-artifact@v4
