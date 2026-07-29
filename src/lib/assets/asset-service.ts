@@ -17,6 +17,7 @@ import {
   normalizeAssetName,
   validateAssetFile,
 } from "@/lib/assets/file-validation";
+import { r2StorageAdapter } from "@/lib/assets/r2-storage-adapter";
 import { supabaseStorageAdapter } from "@/lib/assets/supabase-storage-adapter";
 
 const assetDatabase = supabase as unknown as SupabaseClient;
@@ -156,6 +157,7 @@ export class AssetService {
   constructor(
     private readonly adapters: AssetStorageAdapterRegistry = {
       supabase: supabaseStorageAdapter,
+      r2: r2StorageAdapter,
     },
   ) {}
 
@@ -218,18 +220,43 @@ export class AssetService {
       }
       uploadSessionId = String(uploadSession.id);
 
+      const displayName = safeDisplayName(
+        options.displayName,
+        validated.displayName,
+      );
+      const visibility =
+        options.visibility ?? (options.campaignId ? "campaign" : "workspace");
+      const metadata = {
+        ...normalizeMetadata(options.metadata),
+        source_last_modified: options.file.lastModified,
+      };
+
       await markUploadSession(uploadSessionId, "uploading");
-      await adapter.upload(
+      const uploadResult = await adapter.upload(
         {
+          uploadSessionId,
+          assetId,
+          workspaceId: options.workspaceId,
+          campaignId: options.campaignId ?? null,
           bucket,
           objectKey,
           file: options.file,
           accessToken: session.access_token,
+          originalName: validated.originalName,
+          displayName,
+          mimeType: validated.mimeType,
+          extension: validated.extension,
+          sizeBytes: validated.sizeBytes,
+          visibility,
+          metadata,
           onProgress: options.onProgress,
         },
         signal,
       );
       if (signal.aborted) throw new AssetServiceError("ASSET_ABORTED");
+      if (uploadResult?.registeredAsset) {
+        return uploadResult.registeredAsset as NexusAsset;
+      }
 
       const { data: asset, error: registrationError } = await assetDatabase
         .from("assets")
@@ -241,21 +268,13 @@ export class AssetService {
           bucket,
           object_key: objectKey,
           original_name: validated.originalName,
-          display_name: safeDisplayName(
-            options.displayName,
-            validated.displayName,
-          ),
+          display_name: displayName,
           mime_type: validated.mimeType,
           extension: validated.extension,
           size_bytes: validated.sizeBytes,
-          visibility:
-            options.visibility ??
-            (options.campaignId ? "campaign" : "workspace"),
+          visibility,
           created_by: session.user.id,
-          metadata: {
-            ...normalizeMetadata(options.metadata),
-            source_last_modified: options.file.lastModified,
-          },
+          metadata,
         })
         .select("*")
         .single();
@@ -327,6 +346,7 @@ export class AssetService {
     const adapter = this.adapters[asset.provider];
     if (!adapter) throw new AssetServiceError("ASSET_PROVIDER_UNAVAILABLE");
     return adapter.createTemporaryAccess({
+      assetId: asset.id,
       bucket: asset.bucket,
       objectKey: asset.object_key,
       expiresInSeconds: clampInteger(expiresInSeconds, 300, 30, 900),
@@ -368,7 +388,7 @@ export class AssetService {
     if (!adapter) throw new AssetServiceError("ASSET_PROVIDER_UNAVAILABLE");
 
     try {
-      await adapter.remove(asset.bucket, asset.object_key);
+      await adapter.remove(asset.bucket, asset.object_key, asset.id);
     } catch (error) {
       await this.restore(asset.id).catch(() => undefined);
       throw toAssetServiceError(error, "ASSET_UNKNOWN");
