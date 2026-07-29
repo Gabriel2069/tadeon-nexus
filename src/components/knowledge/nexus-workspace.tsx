@@ -1446,12 +1446,7 @@ export function NexusWorkspace({
                         <button
                           key={backlink.id}
                           type="button"
-                          onClick={() =>
-                            void openNode(
-                              backlink.source_node_id,
-                              backlink.target_heading_slug ?? undefined,
-                            )
-                          }
+                          onClick={() => void openNode(backlink.source_node_id)}
                           className="w-full rounded-lg border p-3 text-left hover:border-primary/40"
                         >
                           <p className="truncate text-sm font-medium">
