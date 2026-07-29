@@ -12,23 +12,54 @@ concurrency:
 
 jobs:
   deploy:
+    name: Publicar Worker
     runs-on: ubuntu-latest
     timeout-minutes: 20
+
     env:
+      CI: true
+      NODE_ENV: production
+
       CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
       CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+
       VITE_SUPABASE_URL: ${{ vars.VITE_SUPABASE_URL }}
       VITE_SUPABASE_PUBLISHABLE_KEY: ${{ vars.VITE_SUPABASE_PUBLISHABLE_KEY }}
+
     steps:
-      - name: Validar plano de transição
+      - name: Baixar código
+        uses: actions/checkout@v4
+
+      - name: Validar configurações obrigatórias
+        shell: bash
         run: |
-          if [ -z "$CLOUDFLARE_API_TOKEN" ] || [ -z "$CLOUDFLARE_ACCOUNT_ID" ]; then
-            echo "::error::Cadastre CLOUDFLARE_API_TOKEN e CLOUDFLARE_ACCOUNT_ID."
+          missing=0
+
+          if [ -z "$CLOUDFLARE_API_TOKEN" ]; then
+            echo "::error::O secret CLOUDFLARE_API_TOKEN não foi configurado."
+            missing=1
+          fi
+
+          if [ -z "$CLOUDFLARE_ACCOUNT_ID" ]; then
+            echo "::error::O secret CLOUDFLARE_ACCOUNT_ID não foi configurado."
+            missing=1
+          fi
+
+          if [ -z "$VITE_SUPABASE_URL" ]; then
+            echo "::error::A variável VITE_SUPABASE_URL não foi configurada."
+            missing=1
+          fi
+
+          if [ -z "$VITE_SUPABASE_PUBLISHABLE_KEY" ]; then
+            echo "::error::A variável VITE_SUPABASE_PUBLISHABLE_KEY não foi configurada."
+            missing=1
+          fi
+
+          if [ "$missing" -ne 0 ]; then
             exit 1
           fi
 
-      - name: Baixar código
-        uses: actions/checkout@v4
+          echo "Todas as configurações obrigatórias foram encontradas."
 
       - name: Preparar Node
         uses: actions/setup-node@v4
@@ -41,6 +72,23 @@ jobs:
 
       - name: Validar projeto
         run: npm run check
+
+      - name: Gerar versão de produção
+        run: npm run build
+
+      - name: Verificar arquivos gerados
+        shell: bash
+        run: |
+          if [ ! -d ".output" ]; then
+            echo "::error::A pasta .output não foi gerada pelo build."
+            exit 1
+          fi
+
+          echo "Conteúdo da pasta .output:"
+          find .output -maxdepth 2 -type f | head -50
+
+      - name: Verificar autenticação da Cloudflare
+        run: npx wrangler whoami
 
       - name: Publicar prévia
         run: npx nitro deploy --prebuilt
