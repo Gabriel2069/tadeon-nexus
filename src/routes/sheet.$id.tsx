@@ -708,7 +708,7 @@ function SheetPage() {
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
             <div className="min-w-0 flex-1">
               <p className="tadeon-eyebrow">
-                Guia da ficha · etapa {tutorialStep + 1} de {SHEET_TUTORIAL_STEPS.length}
+                Guia da ficha · etapa {(tutorialStep ?? 0) + 1} de {SHEET_TUTORIAL_STEPS.length}
               </p>
               <h2 className="mt-1 font-cinzel text-lg font-semibold">{tutorial.title}</h2>
               <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
@@ -735,7 +735,7 @@ function SheetPage() {
                   )
                 }
               >
-                {tutorialStep >= SHEET_TUTORIAL_STEPS.length - 1 ? "Concluir" : "Próxima"}
+                {(tutorialStep ?? 0) >= SHEET_TUTORIAL_STEPS.length - 1 ? "Concluir" : "Próxima"}
               </Button>
             </div>
           </div>
