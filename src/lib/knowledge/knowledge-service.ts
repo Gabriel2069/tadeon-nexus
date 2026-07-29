@@ -14,6 +14,7 @@ import {
   toKnowledgeServiceError,
 } from "@/lib/knowledge/knowledge-errors";
 import {
+  extractMarkdownHeadings,
   extractWikilinks,
   markdownToPlainText,
   normalizeKnowledgeLookup,
@@ -23,6 +24,7 @@ import {
 
 const knowledgeDatabase = supabase as unknown as SupabaseClient;
 const DEFAULT_PAGE_SIZE = 30;
+const MAX_LINK_INDEX_ENTRIES = 1000;
 
 export interface KnowledgeNode {
   id: string;
@@ -92,6 +94,37 @@ export interface KnowledgeAssetLink {
   created_at: string;
 }
 
+export type KnowledgeBrokenLinkReason = "missing_node" | "missing_heading";
+
+export interface KnowledgeBrokenLink {
+  id: string;
+  source_node_id: string;
+  raw_text: string;
+  target_text: string;
+  normalized_target: string;
+  target_heading: string | null;
+  target_heading_slug: string | null;
+  reason: KnowledgeBrokenLinkReason;
+  start_position: number;
+  end_position: number;
+  created_at: string;
+}
+
+export interface KnowledgeBacklink {
+  id: string;
+  source_node_id: string;
+  target_node_id: string;
+  raw_text: string;
+  target_heading: string | null;
+  target_heading_slug: string | null;
+  start_position: number;
+  end_position: number;
+  source: Pick<
+    KnowledgeNode,
+    "id" | "title" | "summary" | "node_type" | "updated_at"
+  > | null;
+}
+
 export interface CreateKnowledgeNodeInput {
   workspaceId: string;
   campaignId?: string | null;
@@ -147,6 +180,7 @@ export interface ResolvedWikilink {
   reference: WikilinkReference;
   node: KnowledgeNode | null;
   broken: boolean;
+  brokenReason: KnowledgeBrokenLinkReason | null;
 }
 
 function clampInteger(
@@ -244,10 +278,8 @@ export class KnowledgeService {
       throw toKnowledgeServiceError(error, "KNOWLEDGE_INVALID_INPUT");
     }
     const node = data as KnowledgeNode;
-    const mentionsSynchronized = await this.syncMentions(node).catch(
-      () => false,
-    );
-    return { node, mentionsSynchronized };
+    await this.syncMentions(node);
+    return { node, mentionsSynchronized: true };
   }
 
   async get(nodeId: string) {
@@ -326,7 +358,12 @@ export class KnowledgeService {
     }
 
     const patch: Record<string, unknown> = { updated_by: userId };
-    if (input.title !== undefined) patch.title = requireText(input.title, 200);
+    if (input.title !== undefined) {
+      patch.title = requireText(input.title, 200);
+      if (input.slug === undefined) {
+        patch.slug = slugifyKnowledgeTitle(input.title);
+      }
+    }
     if (input.slug !== undefined)
       patch.slug = slugifyKnowledgeTitle(input.slug);
     if (input.summary !== undefined)
@@ -357,11 +394,10 @@ export class KnowledgeService {
     if (!data) throw new KnowledgeServiceError("KNOWLEDGE_CONFLICT");
 
     const node = data as KnowledgeNode;
-    const mentionsSynchronized =
-      input.contentMarkdown === undefined
-        ? true
-        : await this.syncMentions(node).catch(() => false);
-    return { node, mentionsSynchronized };
+    if (input.contentMarkdown !== undefined) {
+      await this.syncMentions(node);
+    }
+    return { node, mentionsSynchronized: true };
   }
 
   async rename(
@@ -490,6 +526,21 @@ export class KnowledgeService {
   ): Promise<KnowledgeNode | null> {
     const normalized = normalizeKnowledgeLookup(target);
     if (!normalized) return null;
+
+    if (isUuid(target)) {
+      let idQuery = knowledgeDatabase
+        .from("knowledge_nodes")
+        .select("*")
+        .eq("id", target)
+        .eq("workspace_id", workspaceId)
+        .is("deleted_at", null)
+        .limit(1);
+      idQuery = this.scopeQuery(idQuery, campaignId);
+      const { data: idRows, error: idError } = await idQuery;
+      if (idError) throw toKnowledgeServiceError(idError);
+      return idRows?.[0] ? (idRows[0] as KnowledgeNode) : null;
+    }
+
     const slug = slugifyKnowledgeTitle(target);
 
     let slugQuery = knowledgeDatabase
@@ -540,7 +591,11 @@ export class KnowledgeService {
   }
 
   async resolveWikilinks(node: KnowledgeNode): Promise<ResolvedWikilink[]> {
-    const references = extractWikilinks(node.content_markdown).slice(0, 200);
+    const references = extractWikilinks(node.content_markdown);
+    if (references.length > MAX_LINK_INDEX_ENTRIES) {
+      throw new KnowledgeServiceError("KNOWLEDGE_LINK_LIMIT_EXCEEDED");
+    }
+
     return Promise.all(
       references.map(async (reference) => {
         const resolved = await this.resolveTarget(
@@ -548,17 +603,42 @@ export class KnowledgeService {
           node.campaign_id,
           reference.target,
         );
+        const targetAnchors =
+          resolved && reference.normalizedSection
+            ? new Set(
+                extractMarkdownHeadings(
+                  resolved.id === node.id
+                    ? node.content_markdown
+                    : resolved.content_markdown,
+                ).map(
+                  (heading) => heading.anchorSlug,
+                ),
+              )
+            : null;
+        const brokenReason: KnowledgeBrokenLinkReason | null = !resolved
+          ? "missing_node"
+          : reference.normalizedSection &&
+              !targetAnchors?.has(reference.normalizedSection)
+            ? "missing_heading"
+            : null;
+
         return {
           reference,
           node: resolved,
-          broken: !resolved,
+          broken: brokenReason !== null,
+          brokenReason,
         };
       }),
     );
   }
 
-  async syncMentions(node: KnowledgeNode) {
+  private async prepareLinkIndex(node: KnowledgeNode) {
     const resolved = await this.resolveWikilinks(node);
+    const headings = extractMarkdownHeadings(node.content_markdown);
+    if (headings.length > MAX_LINK_INDEX_ENTRIES) {
+      throw new KnowledgeServiceError("KNOWLEDGE_LINK_LIMIT_EXCEEDED");
+    }
+
     const mentions = resolved
       .filter(
         (
@@ -567,25 +647,133 @@ export class KnowledgeService {
           Boolean(entry.node && entry.node.id !== node.id),
       )
       .map((entry) => ({
-        source_node_id: node.id,
         target_node_id: entry.node.id,
         raw_text: entry.reference.raw,
         start_position: entry.reference.start,
         end_position: entry.reference.end,
+        target_heading: entry.reference.section,
+        target_heading_slug: entry.reference.normalizedSection,
       }));
 
-    const { error: deleteError } = await knowledgeDatabase
-      .from("knowledge_mentions")
-      .delete()
-      .eq("source_node_id", node.id);
-    if (deleteError) throw toKnowledgeServiceError(deleteError);
-    if (!mentions.length) return true;
+    const brokenLinks = resolved
+      .filter(
+        (
+          entry,
+        ): entry is ResolvedWikilink & {
+          brokenReason: KnowledgeBrokenLinkReason;
+        } => Boolean(entry.brokenReason),
+      )
+      .map((entry) => ({
+        raw_text: entry.reference.raw,
+        target_text: entry.reference.target,
+        normalized_target: entry.reference.normalizedTarget,
+        target_heading: entry.reference.section,
+        target_heading_slug: entry.reference.normalizedSection,
+        reason: entry.brokenReason,
+        start_position: entry.reference.start,
+        end_position: entry.reference.end,
+      }));
 
-    const { error } = await knowledgeDatabase
-      .from("knowledge_mentions")
-      .insert(mentions);
+    const headingRows = headings.map((heading) => ({
+      anchor_slug: heading.anchorSlug,
+      heading_text: heading.text,
+      level: heading.level,
+      occurrence: heading.occurrence,
+      start_position: heading.start,
+    }));
+
+    return { mentions, brokenLinks, headingRows };
+  }
+
+  async saveContent(
+    current: KnowledgeNode,
+    title: string,
+    contentMarkdown: string,
+  ) {
+    const normalizedTitle = requireText(title, 200);
+    const candidate: KnowledgeNode = {
+      ...current,
+      title: normalizedTitle,
+      slug: slugifyKnowledgeTitle(normalizedTitle),
+      content_markdown: contentMarkdown,
+      plain_text: markdownToPlainText(contentMarkdown),
+    };
+    const { mentions, brokenLinks, headingRows } =
+      await this.prepareLinkIndex(candidate);
+    const { data, error } = await knowledgeDatabase.rpc(
+      "save_knowledge_node_content",
+      {
+        p_node_id: current.id,
+        p_expected_updated_at: current.updated_at,
+        p_title: candidate.title,
+        p_slug: candidate.slug,
+        p_content_markdown: candidate.content_markdown,
+        p_plain_text: candidate.plain_text,
+        p_mentions: mentions,
+        p_broken_links: brokenLinks,
+        p_headings: headingRows,
+      },
+    );
+    if (error) throw toKnowledgeServiceError(error);
+    const row = Array.isArray(data) ? data[0] : data;
+    if (!row) throw new KnowledgeServiceError("KNOWLEDGE_CONFLICT");
+
+    if (
+      normalizeKnowledgeLookup(current.title) !==
+      normalizeKnowledgeLookup(candidate.title)
+    ) {
+      await this.addAlias(current.id, current.title).catch(() => undefined);
+    }
+
+    return {
+      node: row as KnowledgeNode,
+      mentionsSynchronized: true as const,
+    };
+  }
+
+  async syncMentions(node: KnowledgeNode) {
+    const { mentions, brokenLinks, headingRows } =
+      await this.prepareLinkIndex(node);
+
+    const { error } = await knowledgeDatabase.rpc(
+      "replace_knowledge_link_index",
+      {
+        p_source_node_id: node.id,
+        p_mentions: mentions,
+        p_broken_links: brokenLinks,
+        p_headings: headingRows,
+      },
+    );
     if (error) throw toKnowledgeServiceError(error);
     return true;
+  }
+
+  async listBacklinks(nodeId: string) {
+    if (!isUuid(nodeId)) {
+      throw new KnowledgeServiceError("KNOWLEDGE_INVALID_INPUT");
+    }
+    const { data, error } = await knowledgeDatabase
+      .from("knowledge_mentions")
+      .select(
+        "id,source_node_id,target_node_id,raw_text,target_heading,target_heading_slug,start_position,end_position,source:knowledge_nodes!knowledge_mentions_source_node_id_fkey(id,title,summary,node_type,updated_at)",
+      )
+      .eq("target_node_id", nodeId)
+      .order("created_at", { ascending: false });
+    if (error) throw toKnowledgeServiceError(error);
+    return (data ?? []) as unknown as KnowledgeBacklink[];
+  }
+
+  async listBrokenLinks(nodeId: string) {
+    if (!isUuid(nodeId)) {
+      throw new KnowledgeServiceError("KNOWLEDGE_INVALID_INPUT");
+    }
+    const { data, error } = await knowledgeDatabase
+      .from("knowledge_broken_links")
+      .select("*")
+      .eq("source_node_id", nodeId)
+      .order("start_position");
+    if (error) throw toKnowledgeServiceError(error);
+    return (data ?? []) as KnowledgeBrokenLink[];
   }
 
   async listVersions(nodeId: string, limit = 50) {

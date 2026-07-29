@@ -78,6 +78,8 @@ import {
 import {
   knowledgeService,
   type KnowledgeAssetLink,
+  type KnowledgeBacklink,
+  type KnowledgeBrokenLink,
   type KnowledgeEdge,
   type KnowledgeNode,
   type KnowledgeVersion,
@@ -224,6 +226,8 @@ export function NexusWorkspace({
   const [selected, setSelected] = useState<KnowledgeNode | null>(null);
   const [aliases, setAliases] = useState<Array<Record<string, unknown>>>([]);
   const [edges, setEdges] = useState<KnowledgeEdge[]>([]);
+  const [backlinks, setBacklinks] = useState<KnowledgeBacklink[]>([]);
+  const [brokenLinks, setBrokenLinks] = useState<KnowledgeBrokenLink[]>([]);
   const [versions, setVersions] = useState<KnowledgeVersion[]>([]);
   const [assetLinks, setAssetLinks] = useState<KnowledgeAssetLink[]>([]);
   const [previews, setPreviews] = useState<
@@ -356,6 +360,8 @@ export function NexusWorkspace({
     setOpenNodes([]);
     setAliases([]);
     setEdges([]);
+    setBacklinks([]);
+    setBrokenLinks([]);
     setVersions([]);
     setAssetLinks([]);
     setPreviews({});
@@ -372,21 +378,33 @@ export function NexusWorkspace({
   }, [campaignScope, currentCampaign, workspaceId]);
 
   const refreshNodeDetails = useCallback(async (node: KnowledgeNode) => {
-    const [nextAliases, nextEdges, nextVersions, nextAssets, resolved] =
-      await Promise.all([
-        knowledgeService.listAliases(node.id),
-        knowledgeService.listEdges(node.id),
-        knowledgeService.listVersions(node.id, 40),
-        knowledgeService.listNodeAssets(node.id),
-        knowledgeService.resolveWikilinks(node),
-      ]);
+    const [
+      nextAliases,
+      nextEdges,
+      nextBacklinks,
+      nextBrokenLinks,
+      nextVersions,
+      nextAssets,
+      resolved,
+    ] = await Promise.all([
+      knowledgeService.listAliases(node.id),
+      knowledgeService.listEdges(node.id),
+      knowledgeService.listBacklinks(node.id),
+      knowledgeService.listBrokenLinks(node.id),
+      knowledgeService.listVersions(node.id, 40),
+      knowledgeService.listNodeAssets(node.id),
+      knowledgeService.resolveWikilinks(node),
+    ]);
     setAliases(nextAliases as Array<Record<string, unknown>>);
     setEdges(nextEdges);
+    setBacklinks(nextBacklinks);
+    setBrokenLinks(nextBrokenLinks);
     setVersions(nextVersions);
     setAssetLinks(nextAssets);
     const nextPreviews: Record<string, KnowledgeLinkPreview | null> = {};
     for (const entry of resolved) {
-      nextPreviews[entry.reference.normalizedTarget] = entry.node
+      const previewKey = `${entry.reference.normalizedTarget}#${entry.reference.normalizedSection ?? ""}`;
+      nextPreviews[previewKey] = entry.node && !entry.broken
         ? {
             id: entry.node.id,
             title: entry.node.title,
@@ -399,7 +417,10 @@ export function NexusWorkspace({
   }, []);
 
   const openNode = useCallback(
-    async (nodeOrId: KnowledgeNode | string) => {
+    async (
+      nodeOrId: KnowledgeNode | string,
+      headingSlug?: string,
+    ) => {
       try {
         const node =
           typeof nodeOrId === "string"
@@ -440,6 +461,14 @@ export function NexusWorkspace({
           }
         }
         await refreshNodeDetails(node);
+        if (headingSlug) {
+          window.setTimeout(() => {
+            document.getElementById(headingSlug)?.scrollIntoView({
+              behavior: "smooth",
+              block: "start",
+            });
+          }, 0);
+        }
       } catch (error) {
         toast.error(errorMessage(error));
       }
@@ -480,13 +509,10 @@ export function NexusWorkspace({
     }
     setSaveState("saving");
     try {
-      const result = await knowledgeService.update(
-        selected.id,
-        {
-          title: draftTitle,
-          contentMarkdown: draftContent,
-        },
-        selected.updated_at,
+      const result = await knowledgeService.saveContent(
+        selected,
+        draftTitle,
+        draftContent,
       );
       setSelected(result.node);
       setOpenNodes((current) =>
@@ -499,11 +525,6 @@ export function NexusWorkspace({
       setLastSavedAt(new Date());
       window.localStorage.removeItem(draftKey(selected.id));
       await refreshNodeDetails(result.node);
-      if (!result.mentionsSynchronized) {
-        toast.warning(
-          "Conteúdo salvo; os backlinks serão recompostos na próxima edição.",
-        );
-      }
     } catch (error) {
       const code: KnowledgeErrorCode | undefined =
         error instanceof KnowledgeServiceError ? error.code : undefined;
@@ -1160,7 +1181,9 @@ export function NexusWorkspace({
                     <SafeMarkdown
                       markdown={draftContent}
                       previews={previews}
-                      onOpenNode={(nodeId) => void openNode(nodeId)}
+                      onOpenNode={(nodeId, headingSlug) =>
+                        void openNode(nodeId, headingSlug)
+                      }
                       onCreateMissing={(title) => void createNode(title)}
                     />
                   </div>
@@ -1413,6 +1436,61 @@ export function NexusWorkspace({
                       Nenhuma relação visível.
                     </p>
                   )}
+                </div>
+
+                <div className="mt-5">
+                  <p className="tadeon-eyebrow">Backlinks</p>
+                  <div className="mt-3 space-y-2">
+                    {backlinks.length ? (
+                      backlinks.map((backlink) => (
+                        <button
+                          key={backlink.id}
+                          type="button"
+                          onClick={() => void openNode(backlink.source_node_id)}
+                          className="w-full rounded-lg border p-3 text-left hover:border-primary/40"
+                        >
+                          <p className="truncate text-sm font-medium">
+                            {backlink.source?.title ?? "Página de origem"}
+                          </p>
+                          <p className="mt-1 line-clamp-2 text-[11px] text-muted-foreground">
+                            {backlink.raw_text}
+                          </p>
+                        </button>
+                      ))
+                    ) : (
+                      <p className="rounded-lg border border-dashed p-4 text-center text-xs text-muted-foreground">
+                        Nenhuma página aponta para esta página.
+                      </p>
+                    )}
+                  </div>
+                </div>
+
+                <div className="mt-5">
+                  <p className="tadeon-eyebrow">Links quebrados</p>
+                  <div className="mt-3 space-y-2">
+                    {brokenLinks.length ? (
+                      brokenLinks.map((link) => (
+                        <div
+                          key={link.id}
+                          className="rounded-lg border border-destructive/30 bg-destructive/[0.04] p-3"
+                        >
+                          <p className="truncate text-sm font-medium text-destructive">
+                            {link.target_text}
+                            {link.target_heading ? `#${link.target_heading}` : ""}
+                          </p>
+                          <p className="mt-1 text-[11px] text-muted-foreground">
+                            {link.reason === "missing_heading"
+                              ? "A página existe, mas a seção não foi encontrada."
+                              : "A página de destino não foi encontrada."}
+                          </p>
+                        </div>
+                      ))
+                    ) : (
+                      <p className="rounded-lg border border-dashed p-4 text-center text-xs text-muted-foreground">
+                        Nenhum link quebrado nesta página.
+                      </p>
+                    )}
+                  </div>
                 </div>
               </div>
             )}
