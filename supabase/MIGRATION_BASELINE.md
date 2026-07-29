@@ -32,6 +32,11 @@ referência histórica e não devem ser reaplicados por `db push`.
 
 ## Fase 1
 
-`20260729064000_phase1_workspace_campaign_foundation.sql` é a primeira migration criada depois
-da reconciliação. Ela é aditiva, mantém os campos legados e deixa todas as funcionalidades novas
-desligadas.
+A fundação foi aplicada em produção e registrada com os números gerados pelo Supabase:
+
+1. `20260729111107_phase1_workspace_campaign_foundation.sql`;
+2. `20260729111443_phase1_feature_flags_updated_by_index.sql`.
+
+As migrations são aditivas, mantêm os campos legados e deixam todas as funcionalidades novas
+desligadas. A segunda migration adiciona o índice da chave estrangeira `feature_flags.updated_by`
+indicado pelo Database Advisor.
