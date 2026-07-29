@@ -6,28 +6,17 @@ import {
   HoverCardTrigger,
 } from "@/components/ui/hover-card";
 import { sanitizeKnowledgeUrl } from "@/lib/knowledge/markdown-url";
-import { normalizeKnowledgeLookup } from "@/lib/knowledge/wikilinks";
+import {
+  extractMarkdownHeadings,
+  isEscapedAt,
+  parseWikilinkToken,
+} from "@/lib/knowledge/wikilinks";
 
 export interface KnowledgeLinkPreview {
   id: string;
   title: string;
   summary: string;
   nodeType: string;
-}
-
-function parseWikilink(value: string) {
-  const inner = value.slice(2, -2).trim();
-  const pipeIndex = inner.indexOf("|");
-  const targetWithSection =
-    pipeIndex >= 0 ? inner.slice(0, pipeIndex).trim() : inner;
-  const label =
-    pipeIndex >= 0 ? inner.slice(pipeIndex + 1).trim() : targetWithSection;
-  const sectionIndex = targetWithSection.indexOf("#");
-  const target =
-    sectionIndex >= 0
-      ? targetWithSection.slice(0, sectionIndex).trim()
-      : targetWithSection;
-  return { target, label: label || target };
 }
 
 function InlineContent({
@@ -38,7 +27,7 @@ function InlineContent({
 }: {
   text: string;
   previews: Record<string, KnowledgeLinkPreview | null>;
-  onOpenNode: (nodeId: string) => void;
+  onOpenNode: (nodeId: string, headingSlug?: string) => void;
   onCreateMissing: (title: string) => void;
 }) {
   const pattern =
@@ -51,9 +40,27 @@ function InlineContent({
     if (index > cursor) output.push(text.slice(cursor, index));
     const token = match[0];
 
-    if (token.startsWith("[[")) {
-      const { target, label } = parseWikilink(token);
-      const preview = previews[normalizeKnowledgeLookup(target)];
+    if (token.startsWith("[[") || token.startsWith("![[")) {
+      if (isEscapedAt(text, index)) {
+        const previous = output.at(-1);
+        if (typeof previous === "string" && previous.endsWith("\\")) {
+          output[output.length - 1] = previous.slice(0, -1);
+        }
+        output.push(token);
+        cursor = index + token.length;
+        continue;
+      }
+      const parsed = parseWikilinkToken(token);
+      if (!parsed) {
+        output.push(token);
+        cursor = index + token.length;
+        continue;
+      }
+      const previewKey = `${parsed.normalizedTarget}#${parsed.normalizedSection ?? ""}`;
+      const preview = previews[previewKey];
+      const label =
+        parsed.label ??
+        [parsed.target, parsed.section].filter(Boolean).join("#");
       output.push(
         <HoverCard key={`${index}-${token}`} openDelay={280} closeDelay={80}>
           <HoverCardTrigger asChild>
@@ -65,7 +72,9 @@ function InlineContent({
                   : "inline-flex items-baseline gap-1 rounded px-1 text-destructive underline decoration-dashed underline-offset-4 hover:bg-destructive/10"
               }
               onClick={() =>
-                preview ? onOpenNode(preview.id) : onCreateMissing(target)
+                preview
+                  ? onOpenNode(preview.id, parsed.normalizedSection ?? undefined)
+                  : onCreateMissing(parsed.target)
               }
             >
               {preview ? (
@@ -94,7 +103,7 @@ function InlineContent({
                   Link ainda não resolvido
                 </p>
                 <p className="mt-2 text-xs text-muted-foreground">
-                  Clique para criar “{target}” no mesmo escopo.
+                  Clique para criar “{parsed.target}” no mesmo escopo ou corrigir a seção indicada.
                 </p>
               </div>
             )}
@@ -171,7 +180,7 @@ function Cells({
   line: string;
   header?: boolean;
   previews: Record<string, KnowledgeLinkPreview | null>;
-  onOpenNode: (nodeId: string) => void;
+  onOpenNode: (nodeId: string, headingSlug?: string) => void;
   onCreateMissing: (title: string) => void;
 }) {
   const Cell = header ? "th" : "td";
@@ -201,12 +210,14 @@ export function SafeMarkdown({
 }: {
   markdown: string;
   previews: Record<string, KnowledgeLinkPreview | null>;
-  onOpenNode: (nodeId: string) => void;
+  onOpenNode: (nodeId: string, headingSlug?: string) => void;
   onCreateMissing: (title: string) => void;
 }) {
   const lines = markdown.replace(/\r\n?/g, "\n").split("\n");
+  const parsedHeadings = extractMarkdownHeadings(markdown);
   const blocks: ReactNode[] = [];
   let index = 0;
+  let headingIndex = 0;
   const inlineProps = { previews, onOpenNode, onCreateMissing };
 
   while (index < lines.length) {
@@ -245,10 +256,8 @@ export function SafeMarkdown({
     const heading = line.match(/^(#{1,6})\s+(.+)$/);
     if (heading) {
       const level = heading[1].length;
-      const id = heading[2]
-        .toLowerCase()
-        .replace(/[^\p{L}\p{N}]+/gu, "-")
-        .replace(/^-|-$/g, "");
+      const id = parsedHeadings[headingIndex]?.anchorSlug ?? `secao-${headingIndex + 1}`;
+      headingIndex++;
       const content = (
         <InlineContent text={heading[2]} {...inlineProps} />
       );
