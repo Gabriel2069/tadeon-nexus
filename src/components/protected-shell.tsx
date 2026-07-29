@@ -2,7 +2,8 @@ import { useEffect, type ReactNode } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import { useAuth } from "@/lib/auth";
 import { AppLayout } from "@/components/app-layout";
-import { Loader2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { AlertTriangle, Loader2, RefreshCw } from "lucide-react";
 
 interface Props {
   children: ReactNode;
@@ -10,12 +11,14 @@ interface Props {
 }
 
 export function ProtectedShell({ children, requireRole }: Props) {
-  const { loading, session, role } = useAuth();
+  const { loading, session, role, authIssue, refresh } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
     if (!loading && !session) {
-      void navigate({ to: "/login", search: { next: "" } });
+      const next =
+        typeof window === "undefined" ? "" : `${window.location.pathname}${window.location.search}`;
+      void navigate({ to: "/login", search: { next: next === "/" ? "" : next } });
     }
   }, [loading, session, navigate]);
 
@@ -26,6 +29,24 @@ export function ProtectedShell({ children, requireRole }: Props) {
           <Loader2 className="h-8 w-8 animate-spin text-primary" />
         </div>
       </div>
+    );
+  }
+
+  if (authIssue) {
+    return (
+      <AppLayout>
+        <div className="tadeon-page flex min-h-[65vh] items-center justify-center">
+          <div className="tadeon-surface max-w-lg rounded-2xl p-7 text-center">
+            <AlertTriangle className="mx-auto h-8 w-8 text-[var(--tadeon-flow)]" />
+            <h1 className="mt-4 font-cinzel text-2xl font-semibold">Perfil indisponível</h1>
+            <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{authIssue}</p>
+            <Button className="mt-6 gap-2" onClick={() => void refresh()}>
+              <RefreshCw className="h-4 w-4" />
+              Tentar novamente
+            </Button>
+          </div>
+        </div>
+      </AppLayout>
     );
   }
 

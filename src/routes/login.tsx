@@ -1,5 +1,5 @@
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useAuth } from "@/lib/auth";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -7,8 +7,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
 import { toast } from "sonner";
-import { Loader2 } from "lucide-react";
+import { AlertCircle, CheckCircle2, Loader2 } from "lucide-react";
 import { getAuthRedirectOrigin } from "@/lib/auth-redirect";
+import { getAuthErrorMessage, readAuthUrlError } from "@/lib/auth-errors";
 
 export const Route = createFileRoute("/login")({
   head: () => ({
@@ -51,6 +52,11 @@ function LoginPage() {
   const [fullName, setFullName] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [resetting, setResetting] = useState(false);
+  const [feedback, setFeedback] = useState<{
+    tone: "error" | "success";
+    message: string;
+  } | null>(null);
+  const urlErrorHandled = useRef(false);
 
   useEffect(() => {
     if (!loading && session) {
@@ -59,20 +65,53 @@ function LoginPage() {
     }
   }, [loading, session, navigate, target]);
 
+  useEffect(() => {
+    if (urlErrorHandled.current) return;
+    urlErrorHandled.current = true;
+
+    const urlError = readAuthUrlError(window.location.href);
+    if (!urlError) return;
+
+    const message = getAuthErrorMessage(urlError, "link");
+    setFeedback({ tone: "error", message });
+    toast.error(message);
+
+    const cleanUrl = new URL(window.location.href);
+    cleanUrl.hash = "";
+    cleanUrl.searchParams.delete("error");
+    cleanUrl.searchParams.delete("error_code");
+    cleanUrl.searchParams.delete("error_description");
+    window.history.replaceState(null, "", `${cleanUrl.pathname}${cleanUrl.search}`);
+  }, []);
+
+  const showError = (error: unknown, action: Parameters<typeof getAuthErrorMessage>[1]) => {
+    const message = getAuthErrorMessage(error, action);
+    setFeedback({ tone: "error", message });
+    toast.error(message);
+  };
+
   const handleForgot = async () => {
-    if (!email) {
-      toast.error("Informe seu e-mail acima primeiro.");
+    const normalizedEmail = email.trim().toLowerCase();
+    if (!normalizedEmail) {
+      const message = "Informe seu e-mail acima primeiro.";
+      setFeedback({ tone: "error", message });
+      toast.error(message);
       return;
     }
+
+    setFeedback(null);
     setResetting(true);
     try {
-      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      const { error } = await supabase.auth.resetPasswordForEmail(normalizedEmail, {
         redirectTo: `${getAuthRedirectOrigin()}/reset-password`,
       });
       if (error) throw error;
-      toast.success("Enviamos um link para redefinir sua senha. Verifique seu e-mail.");
-    } catch {
-      toast.error("Não foi possível enviar o e-mail de redefinição.");
+      const message =
+        "Se este e-mail estiver cadastrado, enviaremos um link de redefinição. Verifique também a pasta de spam.";
+      setFeedback({ tone: "success", message });
+      toast.success(message);
+    } catch (error) {
+      showError(error, "recovery-request");
     } finally {
       setResetting(false);
     }
@@ -80,36 +119,55 @@ function LoginPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (submitting) return;
+
+    const normalizedEmail = email.trim().toLowerCase();
+    const normalizedName = fullName.trim();
+    if (mode === "signup" && normalizedName.length < 2) {
+      const message = "Informe o nome que será exibido na sua conta.";
+      setFeedback({ tone: "error", message });
+      toast.error(message);
+      return;
+    }
+
+    setFeedback(null);
     setSubmitting(true);
     try {
       if (mode === "signup") {
-        const { error } = await supabase.auth.signUp({
-          email,
+        const { data, error } = await supabase.auth.signUp({
+          email: normalizedEmail,
           password,
           options: {
             emailRedirectTo: `${getAuthRedirectOrigin()}${target}`,
-            data: { full_name: fullName },
+            data: { full_name: normalizedName },
           },
         });
         if (error) throw error;
-        toast.success("Conta criada! Entrando...");
+
+        if (data.session) {
+          const message = "Conta criada. Preparando seu painel…";
+          setFeedback({ tone: "success", message });
+          toast.success(message);
+        } else {
+          const message =
+            "Cadastro recebido. Confirme o e-mail enviado antes de entrar; verifique também a pasta de spam.";
+          setMode("signin");
+          setPassword("");
+          setFeedback({ tone: "success", message });
+          toast.success(message);
+        }
       } else {
-        const { error } = await supabase.auth.signInWithPassword({ email, password });
+        const { error } = await supabase.auth.signInWithPassword({
+          email: normalizedEmail,
+          password,
+        });
         if (error) throw error;
-        toast.success("Bem-vindo de volta!");
+        const message = "Login confirmado. Preparando seu painel…";
+        setFeedback({ tone: "success", message });
+        toast.success(message);
       }
     } catch (err) {
-      const raw = err instanceof Error ? err.message : "Erro desconhecido";
-      const msg = /invalid login credentials/i.test(raw)
-        ? "E-mail ou senha incorretos."
-        : /already registered|user already/i.test(raw)
-          ? "E-mail já cadastrado."
-          : /password.*(6|8)|weak password/i.test(raw)
-            ? "A senha precisa ter ao menos 8 caracteres."
-            : /email.*invalid/i.test(raw)
-              ? "E-mail inválido."
-              : "Não foi possível entrar. Tente novamente.";
-      toast.error(msg);
+      showError(err, mode === "signup" ? "signup" : "signin");
     } finally {
       setSubmitting(false);
     }
@@ -133,6 +191,7 @@ function LoginPage() {
                 id="name"
                 value={fullName}
                 onChange={(e) => setFullName(e.target.value)}
+                autoComplete="name"
                 required
               />
             </div>
@@ -144,6 +203,8 @@ function LoginPage() {
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
+              autoComplete="email"
+              inputMode="email"
               required
             />
           </div>
@@ -155,14 +216,33 @@ function LoginPage() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
-              minLength={8}
+              minLength={mode === "signup" ? 8 : undefined}
               autoComplete={mode === "signin" ? "current-password" : "new-password"}
             />
           </div>
-          <Button type="submit" disabled={submitting} className="w-full">
+          <Button type="submit" disabled={submitting || resetting} className="w-full">
             {submitting && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
             {mode === "signin" ? "Entrar" : "Cadastrar"}
           </Button>
+
+          {feedback && (
+            <div
+              role={feedback.tone === "error" ? "alert" : "status"}
+              aria-live="polite"
+              className={`flex items-start gap-2 rounded-lg border px-3 py-2.5 text-xs leading-relaxed ${
+                feedback.tone === "error"
+                  ? "border-destructive/35 bg-destructive/10 text-destructive"
+                  : "border-primary/30 bg-primary/10 text-foreground"
+              }`}
+            >
+              {feedback.tone === "error" ? (
+                <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" />
+              ) : (
+                <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
+              )}
+              <span>{feedback.message}</span>
+            </div>
+          )}
         </form>
 
         {mode === "signin" && (
@@ -170,7 +250,7 @@ function LoginPage() {
             <button
               type="button"
               onClick={handleForgot}
-              disabled={resetting}
+              disabled={resetting || submitting}
               className="text-xs text-muted-foreground hover:text-primary hover:underline disabled:opacity-50"
             >
               {resetting ? "Enviando…" : "Esqueceu a senha?"}
@@ -182,7 +262,11 @@ function LoginPage() {
           {mode === "signin" ? (
             <button
               type="button"
-              onClick={() => setMode("signup")}
+              onClick={() => {
+                setMode("signup");
+                setPassword("");
+                setFeedback(null);
+              }}
               className="text-primary hover:underline"
             >
               Não tem conta? Cadastre-se
@@ -190,7 +274,11 @@ function LoginPage() {
           ) : (
             <button
               type="button"
-              onClick={() => setMode("signin")}
+              onClick={() => {
+                setMode("signin");
+                setPassword("");
+                setFeedback(null);
+              }}
               className="text-primary hover:underline"
             >
               Já tem conta? Entrar
