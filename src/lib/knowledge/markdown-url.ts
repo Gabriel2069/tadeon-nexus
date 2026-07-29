@@ -1,11 +1,17 @@
-const CONTROL_CHARACTERS = /[\u0000-\u001f\u007f]/;
+function hasControlCharacters(value: string) {
+  for (const character of value) {
+    const code = character.charCodeAt(0);
+    if (code <= 31 || code === 127) return true;
+  }
+  return false;
+}
 
 export function sanitizeKnowledgeUrl(value: string, image = false) {
   const trimmed = value.trim();
   if (
     !trimmed ||
     trimmed.length > 2048 ||
-    CONTROL_CHARACTERS.test(trimmed)
+    hasControlCharacters(trimmed)
   ) {
     return null;
   }
