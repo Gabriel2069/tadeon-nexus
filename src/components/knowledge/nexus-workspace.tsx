@@ -325,11 +325,16 @@ export function NexusWorkspace({
         ),
       );
       const [nextRecent, nextFavorites] = await Promise.all([
-        knowledgeService.listRecentNodes(12),
-        knowledgeService.listFavoriteNodes(12),
+        knowledgeService.listRecentNodes(40),
+        knowledgeService.listFavoriteNodes(40),
       ]);
-      setRecent(nextRecent);
-      setFavorites(nextFavorites);
+      const belongsToScope = (node: KnowledgeNode) =>
+        node.workspace_id === workspaceId &&
+        (campaignScope
+          ? node.campaign_id === campaignScope || node.campaign_id === null
+          : node.campaign_id === null);
+      setRecent(nextRecent.filter(belongsToScope).slice(0, 12));
+      setFavorites(nextFavorites.filter(belongsToScope).slice(0, 12));
     } catch (error) {
       toast.error(errorMessage(error));
       setNodes([]);
