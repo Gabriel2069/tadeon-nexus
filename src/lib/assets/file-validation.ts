@@ -63,11 +63,20 @@ export interface ValidatedAssetFile {
 
 const UUID_PATTERN =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
-const CONTROL_CHARACTERS = /[\u0000-\u001f\u007f]/g;
+
+function stripControlCharacters(value: string) {
+  return Array.from(value)
+    .filter((character) => {
+      const codePoint = character.codePointAt(0) ?? 0;
+      return codePoint > 0x1f && codePoint !== 0x7f;
+    })
+    .join("");
+}
 
 export function normalizeAssetName(name: string) {
-  const basename =
-    name.split(/[/\\]/).pop()?.replace(CONTROL_CHARACTERS, "").trim() ?? "";
+  const basename = stripControlCharacters(
+    name.split(/[/\\]/).pop() ?? "",
+  ).trim();
   return basename.slice(0, 255);
 }
 
