@@ -9,8 +9,9 @@ import {
 } from "react";
 import type { Session, User } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
+import type { AppRole } from "@/lib/nexus-contracts";
 
-export type AppRole = "mestre" | "jogador" | "espectador";
+export type { AppRole } from "@/lib/nexus-contracts";
 
 export interface Profile {
   id: string;
