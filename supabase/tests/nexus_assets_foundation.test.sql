@@ -1,12 +1,17 @@
 BEGIN;
 
-SELECT plan(25);
+SELECT plan(29);
 
 SELECT has_table('public', 'assets', 'assets exists');
 SELECT has_table('public', 'asset_links', 'asset_links exists');
 SELECT has_table('public', 'asset_variants', 'asset_variants exists');
 SELECT has_table('public', 'asset_upload_sessions', 'asset_upload_sessions exists');
 SELECT has_table('public', 'asset_workspace_quotas', 'asset_workspace_quotas exists');
+SELECT has_table(
+  'public',
+  'r2_asset_confirmations',
+  'R2 completion confirmations exist'
+);
 SELECT has_view('public', 'asset_workspace_usage', 'asset usage view exists');
 
 SELECT is(
@@ -265,6 +270,42 @@ SELECT is(
   ),
   1,
   'upload reservations use the contributor-only policy'
+);
+
+SELECT is(
+  (
+    SELECT relation.relrowsecurity
+    FROM pg_class relation
+    JOIN pg_namespace namespace ON namespace.oid = relation.relnamespace
+    WHERE namespace.nspname = 'public'
+      AND relation.relname = 'r2_asset_confirmations'
+  ),
+  true,
+  'R2 confirmations have RLS enabled'
+);
+
+SELECT is(
+  (
+    SELECT count(*)::integer
+    FROM information_schema.role_table_grants grant_entry
+    WHERE grant_entry.table_schema = 'public'
+      AND grant_entry.table_name = 'r2_asset_confirmations'
+      AND grant_entry.grantee IN ('anon', 'authenticated')
+  ),
+  0,
+  'client roles have no confirmation table privileges'
+);
+
+SELECT is(
+  (
+    SELECT count(*)::integer
+    FROM pg_policies policy
+    WHERE policy.schemaname = 'public'
+      AND policy.tablename = 'r2_asset_confirmations'
+      AND policy.policyname = 'R2 confirmations: deny client access'
+  ),
+  1,
+  'R2 confirmations explicitly deny all client access'
 );
 
 SELECT * FROM finish();
