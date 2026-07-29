@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { Calculator, ShieldCheck } from "lucide-react";
+import { Calculator, ChevronDown, ShieldCheck } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -24,6 +24,7 @@ export function ResistanceDtCalculator({
   const [intensity, setIntensity] = useState<ChannelingIntensity>("repuxo");
   const [modifier, setModifier] = useState(0);
   const [resistance, setResistance] = useState("Fortitude");
+  const [open, setOpen] = useState(!compact);
   const dt = useMemo(
     () => calculateResistanceDt({ attribute, grade, intensity, modifier }),
     [attribute, grade, intensity, modifier],
@@ -32,7 +33,13 @@ export function ResistanceDtCalculator({
 
   return (
     <Card className="tadeon-surface overflow-hidden rounded-2xl border-primary/35">
-      <div className="flex flex-col gap-4 bg-gradient-to-r from-primary/15 via-primary/5 to-transparent p-4 sm:flex-row sm:items-center">
+      <button
+        type="button"
+        className="flex w-full flex-col gap-4 bg-gradient-to-r from-primary/15 via-primary/5 to-transparent p-4 text-left sm:flex-row sm:items-center"
+        aria-expanded={open}
+        aria-controls="resistance-dt-fields"
+        onClick={() => setOpen((current) => !current)}
+      >
         <div className="flex min-w-0 flex-1 items-center gap-3">
           <div className="rounded-xl border border-primary/30 bg-primary/10 p-2.5 text-primary">
             <Calculator className="h-5 w-5" />
@@ -42,11 +49,19 @@ export function ResistanceDtCalculator({
             <h3 className="font-cinzel text-lg font-semibold">DT de Resistência</h3>
           </div>
         </div>
-        <div className="rounded-xl border border-primary/35 bg-background/65 px-5 py-2 text-center">
-          <p className="text-[9px] uppercase tracking-widest text-muted-foreground">Resultado</p>
-          <p className="font-cinzel text-3xl font-bold text-primary">{dt}</p>
+        <div className="flex items-center gap-2 self-stretch sm:self-auto">
+          <div className="flex-1 rounded-xl border border-primary/35 bg-background/65 px-5 py-2 text-center">
+            <p className="text-[9px] uppercase tracking-widest text-muted-foreground">Resultado</p>
+            <p className="font-cinzel text-3xl font-bold text-primary">{dt}</p>
+          </div>
+          <ChevronDown
+            className={`h-5 w-5 shrink-0 text-muted-foreground transition-transform ${open ? "rotate-180" : ""}`}
+            aria-hidden="true"
+          />
         </div>
-      </div>
+      </button>
+      {open && (
+        <div id="resistance-dt-fields">
       <div className={`grid gap-3 p-4 ${compact ? "sm:grid-cols-2" : "sm:grid-cols-4"}`}>
         <label className="space-y-1.5">
           <span className="text-xs text-muted-foreground">Atributo usado</span>
@@ -120,6 +135,8 @@ export function ResistanceDtCalculator({
           Fórmula: 10 + Atributo + Potência do Grau + Intensidade + modificador.
         </p>
       </div>
+        </div>
+      )}
     </Card>
   );
 }
