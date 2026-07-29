@@ -17,6 +17,8 @@ jobs:
         with:
           node-version: 22
           cache: npm
+      - name: Fixar npm do projeto
+        run: npm install --global npm@11.9.0
       - run: npm ci
       - name: Auditar dependências de produção
         run: npm audit --omit=dev --audit-level=high
