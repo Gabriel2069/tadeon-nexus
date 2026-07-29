@@ -74,12 +74,15 @@ import {
   ThreatHub,
 } from "@/components/master/master-hub";
 import { SessionWorkspace } from "@/components/master/session-workspace";
+import { MasterCatalog } from "@/components/master/master-catalog";
+import { SaveStatus } from "@/components/save-status";
 import { cacheMasterState } from "@/lib/offline-cache";
 import {
   MASTER_TAB_VALUES,
   MasterPanelNavigation,
   type MasterTab,
 } from "@/components/master/master-panel-navigation";
+import { reportClientError } from "@/lib/client-error-monitor";
 
 export const Route = createFileRoute("/master-panel")({
   validateSearch: (search: Record<string, unknown>) => ({
@@ -274,6 +277,8 @@ function MasterPanel() {
   const [sheets, setSheets] = useState<SheetSummary[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [dirty, setDirty] = useState(false);
+  const [lastSavedAt, setLastSavedAt] = useState<Date | null>(null);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [reloadKey, setReloadKey] = useState(0);
 
@@ -399,12 +404,22 @@ function MasterPanel() {
       .update(payload as never)
       .eq("id", id);
     setSaving(false);
-    if (error) toast.error("Não foi possível salvar o painel do mestre.");
-    else toast.success("Painel salvo!");
+    if (error) {
+      void reportClientError(error, "save");
+      toast.error("Não foi possível salvar o painel do mestre.");
+    }
+    else {
+      setDirty(false);
+      setLastSavedAt(new Date());
+      toast.success("Painel salvo!");
+    }
   };
 
   const upd = <K extends keyof SettingsRow>(k: K, v: SettingsRow[K]) =>
-    setS((p) => (p ? { ...p, [k]: v } : p));
+    setS((p) => {
+      setDirty(true);
+      return p ? { ...p, [k]: v } : p;
+    });
 
   useEffect(() => {
     if (!s) return;
@@ -445,10 +460,17 @@ function MasterPanel() {
           <h1 className="font-cinzel text-xl md:text-2xl font-bold flex items-center gap-2">
             <Sparkles className="w-5 h-5 text-primary" /> Painel do Mestre
           </h1>
-          <Button onClick={save} disabled={saving} size="sm" className="gap-1.5">
-            {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
-            <span className="hidden sm:inline">Salvar</span>
-          </Button>
+          <div className="flex items-center gap-2">
+            <SaveStatus
+              state={saving ? "saving" : dirty ? "pending" : "saved"}
+              savedAt={lastSavedAt}
+              compact
+            />
+            <Button onClick={save} disabled={saving || !dirty} size="sm" className="gap-1.5">
+              {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
+              <span className="hidden sm:inline">Salvar</span>
+            </Button>
+          </div>
         </div>
       </div>
 
@@ -526,6 +548,13 @@ function MasterPanel() {
         </TabsContent>
         <TabsContent value="balance" className="mt-0">
           <EncounterHub sheets={sheets} threats={s.threats} />
+        </TabsContent>
+        <TabsContent value="catalog" className="mt-0">
+          <MasterCatalog
+            sheets={sheets}
+            npcs={s.master_npcs}
+            onNpcsChange={(value) => upd("master_npcs", value)}
+          />
         </TabsContent>
         <TabsContent value="pinned" className="mt-0">
           <PinnedPanel s={s} upd={upd} sheets={sheets} setSheets={setSheets} />
@@ -1125,6 +1154,7 @@ function PinnedPanel({
   setSheets: React.Dispatch<React.SetStateAction<SheetSummary[]>>;
 }) {
   const navigate = useNavigate();
+  const [query, setQuery] = useState("");
   const pinned = useMemo(
     () =>
       s.pinned_sheet_ids
@@ -1132,6 +1162,14 @@ function PinnedPanel({
         .filter((x): x is SheetSummary => !!x),
     [s.pinned_sheet_ids, sheets],
   );
+  const visibleSheets = useMemo(() => {
+    const normalized = query.trim().toLocaleLowerCase("pt-BR");
+    return [...sheets]
+      .filter((sheet) =>
+        `${sheet.name} ${sheet.owner_email}`.toLocaleLowerCase("pt-BR").includes(normalized),
+      )
+      .sort((left, right) => left.name.localeCompare(right.name, "pt-BR"));
+  }, [query, sheets]);
   const toggle = (id: string) => {
     const next = s.pinned_sheet_ids.includes(id)
       ? s.pinned_sheet_ids.filter((x) => x !== id)
@@ -1158,16 +1196,30 @@ function PinnedPanel({
 
   return (
     <div className="space-y-4">
-      <Card className="p-4">
-        <h3 className="font-cinzel font-bold mb-2">Selecionar fichas</h3>
-        <p className="text-xs text-muted-foreground mb-3">
-          Escolha quais fichas exibir lado a lado.
-        </p>
-        <div className="flex flex-wrap gap-2">
+      <Card className="tadeon-surface rounded-2xl p-4 md:p-5">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <p className="tadeon-eyebrow">Arquivo de personagens</p>
+            <h3 className="font-cinzel text-xl font-bold">Fichas em foco</h3>
+            <p className="mt-1 text-xs text-muted-foreground">
+              {sheets.length} ficha(s) · {pinned.length} em comparação
+            </p>
+          </div>
+          <div className="relative w-full sm:max-w-xs">
+            <SearchIcon className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+            <Input
+              value={query}
+              onChange={(event) => setQuery(event.target.value)}
+              className="pl-9"
+              placeholder="Buscar personagem ou jogador"
+            />
+          </div>
+        </div>
+        <div className="mt-4 flex flex-wrap gap-2">
           {sheets.length === 0 ? (
             <p className="text-xs text-muted-foreground italic">Nenhuma ficha criada.</p>
           ) : (
-            sheets.map((sh) => {
+            visibleSheets.map((sh) => {
               const on = s.pinned_sheet_ids.includes(sh.id);
               return (
                 <button
@@ -1189,16 +1241,19 @@ function PinnedPanel({
       </Card>
 
       {pinned.length === 0 ? (
-        <Card className="p-8 text-center text-sm text-muted-foreground italic">
+        <Card className="tadeon-surface rounded-2xl border-dashed p-8 text-center text-sm text-muted-foreground italic">
           Selecione fichas acima para comparar.
         </Card>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3">
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3">
           {pinned.map((sh) => {
             const eq = Math.max(-10, Math.min(10, Number(sh.equilibrium ?? 0)));
             const eqPct = ((eq + 10) / 20) * 100;
             return (
-              <Card key={sh.id} className="p-3 bg-card/70">
+              <Card
+                key={sh.id}
+                className="tadeon-surface rounded-2xl border-primary/20 bg-card/70 p-4"
+              >
                 <div className="flex items-start justify-between gap-2">
                   <div className="min-w-0">
                     <h4 className="font-cinzel font-bold truncate">{sh.name || "Sem nome"}</h4>
