@@ -255,4 +255,108 @@ COMMENT ON TABLE public.knowledge_broken_links IS
 COMMENT ON FUNCTION public.replace_knowledge_link_index(uuid, jsonb, jsonb, jsonb) IS
   'Atomically replaces headings, resolved mentions and broken links for one editable node.';
 
+
+CREATE OR REPLACE FUNCTION public.save_knowledge_node_content(
+  p_node_id uuid,
+  p_expected_updated_at timestamptz,
+  p_title text,
+  p_slug text,
+  p_content_markdown text,
+  p_plain_text text,
+  p_mentions jsonb DEFAULT '[]'::jsonb,
+  p_broken_links jsonb DEFAULT '[]'::jsonb,
+  p_headings jsonb DEFAULT '[]'::jsonb
+)
+RETURNS public.knowledge_nodes
+LANGUAGE plpgsql
+SECURITY INVOKER
+SET search_path = ''
+AS $
+DECLARE
+  saved_node public.knowledge_nodes;
+BEGIN
+  IF (SELECT auth.uid()) IS NULL
+    OR NOT private.can_edit_knowledge_node(p_node_id)
+  THEN
+    RAISE EXCEPTION USING
+      ERRCODE = '42501',
+      MESSAGE = 'KNOWLEDGE_CONTENT_FORBIDDEN';
+  END IF;
+
+  IF p_title IS NULL
+    OR char_length(btrim(p_title)) = 0
+    OR char_length(p_title) > 200
+    OR p_slug IS NULL
+    OR char_length(btrim(p_slug)) = 0
+  THEN
+    RAISE EXCEPTION USING
+      ERRCODE = '22023',
+      MESSAGE = 'KNOWLEDGE_CONTENT_INVALID';
+  END IF;
+
+  UPDATE public.knowledge_nodes
+  SET
+    title = btrim(p_title),
+    slug = p_slug,
+    content_markdown = coalesce(p_content_markdown, ''),
+    plain_text = coalesce(p_plain_text, ''),
+    updated_by = (SELECT auth.uid())
+  WHERE id = p_node_id
+    AND updated_at = p_expected_updated_at
+    AND deleted_at IS NULL
+  RETURNING * INTO saved_node;
+
+  IF saved_node.id IS NULL THEN
+    RAISE EXCEPTION USING
+      ERRCODE = 'P0001',
+      MESSAGE = 'KNOWLEDGE_CONFLICT';
+  END IF;
+
+  PERFORM public.replace_knowledge_link_index(
+    p_node_id,
+    p_mentions,
+    p_broken_links,
+    p_headings
+  );
+
+  RETURN saved_node;
+END;
+$;
+
+REVOKE ALL ON FUNCTION public.save_knowledge_node_content(
+  uuid,
+  timestamptz,
+  text,
+  text,
+  text,
+  text,
+  jsonb,
+  jsonb,
+  jsonb
+) FROM PUBLIC, anon;
+GRANT EXECUTE ON FUNCTION public.save_knowledge_node_content(
+  uuid,
+  timestamptz,
+  text,
+  text,
+  text,
+  text,
+  jsonb,
+  jsonb,
+  jsonb
+) TO authenticated;
+
+COMMENT ON FUNCTION public.save_knowledge_node_content(
+  uuid,
+  timestamptz,
+  text,
+  text,
+  text,
+  text,
+  jsonb,
+  jsonb,
+  jsonb
+) IS
+  'Atomically saves title/content and replaces headings, mentions and broken links with optimistic locking.';
+
 NOTIFY pgrst, 'reload schema';
