@@ -54,3 +54,16 @@ privado, RLS e policies do Storage. A segunda adiciona os índices das chaves es
 compostas apontados pelo Database Advisor. A terceira separa contribuidores de observadores e
 impede que papéis somente leitura reservem uploads. A flag `nexus_assets_v2_enabled` permanece
 desligada.
+
+## Integração R2
+
+A confirmação segura do provedor R2 foi aplicada com:
+
+1. `20260729123955_nexus_assets_r2_confirmations.sql`;
+2. `20260729124825_nexus_assets_r2_explicit_deny_policy.sql`.
+
+Ela cria confirmações temporárias sem conteúdo secreto, graváveis apenas pela credencial de
+serviço mantida no Cloudflare Worker. O trigger de finalização só aceita um asset R2 depois que o
+Worker confirma tamanho, MIME, objeto e sessão. A segunda migration torna explícita para o
+Database Advisor a negação completa aos papéis de cliente. As flags `nexus_r2_enabled` e
+`nexus_assets_v2_enabled` permanecem desligadas.
