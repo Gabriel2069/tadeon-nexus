@@ -8,7 +8,7 @@ Atualizado em 29 de julho de 2026 pelo Work de continuidade independente.
 - O Livro de Regras de Tessitura do Vazio governa mecânicas e terminologia.
 - O Fio-Mestre governa identidade visual.
 - Checkpoint de entrada: `1c5b66cf83bdd9d4b070019510080eb2d63dc74b`.
-- Checkpoints integrados: PR #25 (`0d4cfde`), PR #27 (`c3bff93`), PR #28 (`3947f12`) e PR #29 (`7ebfa88`) em `main`.
+- Checkpoints integrados: PRs #25–#34 em `main`; o último lote funcional está em `44151d4`.
 
 ## Estado confirmado
 
@@ -41,6 +41,13 @@ A migration aplicada em produção é
 `20260729130904_nexus_knowledge_foundation.sql`. O nome local anterior com timestamp
 `20260729131000` foi reconciliado sem alterar o SQL aplicado.
 
+A integridade de links foi integrada nos PRs #32 e #33 e aplicada como
+`20260729211452_knowledge_link_integrity.sql`: headings, menções, backlinks e links quebrados são
+substituídos atomicamente com limite explícito, enquanto relações semânticas manuais permanecem
+intactas. A criação de páginas e relações deixou de usar `INSERT ... RETURNING` sob policies
+auto-referenciais; as RPCs `SECURITY INVOKER` foram aplicadas como
+`20260729230437_knowledge_transactional_creation.sql`.
+
 ### Mesa Nexus
 
 Somente contratos, permissões e flags existem. A fundação da Mesa não foi iniciada e continua
@@ -69,7 +76,10 @@ atualiza o lockfile e mistura upgrades de lint sem validação.
 A migration `20260729192815_cover_nexus_knowledge_foreign_keys.sql` adiciona os 17 índices
 solicitados pelo Database Advisor. A migration aditiva
 `20260729203953_feature_flag_user_overrides.sql` cria o mecanismo de canário individual com RLS,
-grants explícitos e rollback por remoção do override.
+grants explícitos e rollback por remoção do override. As migrations
+`20260729211452_knowledge_link_integrity.sql` e
+`20260729230437_knowledge_transactional_creation.sql` cobrem a indexação transacional e a criação
+de páginas/relações compatível com RLS.
 
 Validação posterior:
 
@@ -137,15 +147,22 @@ validação funcional em sessão autenticada ainda está pendente; portanto os m
 classificados como concluídos nem foram liberados globalmente.
 
 O teste de RLS confirmou: mestre proprietário enxerga os dois overrides; jogador enxerga zero e
-não consegue inserir. O rollback é remover essas duas linhas. Importação/exportação v2 permanece
-posterior aos canários. A fundação da Mesa Nexus permanece posterior à portabilidade.
+não consegue inserir. O backend de O Nexus também passou por um cenário autenticado auto-revertido
+com criação de páginas e relação, heading, menção, backlink, link quebrado, conflito otimista,
+limite, rollback atômico, preservação de relação manual e ocultação para o jogador. O teste deixou
+zero páginas, menções e relações residuais. A validação visual do fluxo completo no frontend
+autenticado continua pendente. O rollback do canário é remover as duas linhas de override.
+Importação/exportação v2 permanece posterior aos canários. A fundação da Mesa Nexus permanece
+posterior à portabilidade.
 
 ## Próximos critérios
 
 1. Confirmar pelo marcador público que o deploy Cloudflare corresponde ao SHA aprovado de `main`.
 2. Validar o canário autenticado de Nexus Assets: upload, download, negação, quota e rollback.
-3. Validar o canário autenticado de O Nexus: CRUD, escopos, conflito, Markdown seguro e rollback.
-4. Corrigir integridade de wikilinks/backlinks de forma transacional antes do grafo.
-5. Expandir pesquisa e relações somente depois dos testes de RLS do passo anterior.
+3. Validar no frontend autenticado o CRUD já aprovado no backend de O Nexus.
+4. Expandir relações semânticas com direção, inversas configuráveis, propriedades, filtros e
+   prevenção de duplicação exata.
+5. Implementar pesquisa textual paginada por título, alias, conteúdo, resumo, tags, propriedades,
+   tipo e relações, sempre sob RLS.
 6. Projetar importação/exportação v2 com validação de escopo, dry-run e restauração.
 7. Iniciar a fundação da Mesa Nexus somente depois de concluir portabilidade e rollouts.
