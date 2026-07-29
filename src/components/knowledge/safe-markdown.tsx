@@ -5,6 +5,7 @@ import {
   HoverCardContent,
   HoverCardTrigger,
 } from "@/components/ui/hover-card";
+import { sanitizeKnowledgeUrl } from "@/lib/knowledge/markdown-url";
 import { normalizeKnowledgeLookup } from "@/lib/knowledge/wikilinks";
 
 export interface KnowledgeLinkPreview {
@@ -12,20 +13,6 @@ export interface KnowledgeLinkPreview {
   title: string;
   summary: string;
   nodeType: string;
-}
-
-function safeUrl(value: string, image = false) {
-  const trimmed = value.trim();
-  if (trimmed.startsWith("/")) return trimmed;
-  try {
-    const url = new URL(trimmed);
-    if (url.protocol === "https:" || (!image && url.protocol === "http:")) {
-      return url.toString();
-    }
-  } catch {
-    return null;
-  }
-  return null;
 }
 
 function parseWikilink(value: string) {
@@ -116,7 +103,7 @@ function InlineContent({
       );
     } else if (token.startsWith("![")) {
       const image = token.match(/^!\[([^\]]*)]\(([^)]+)\)$/);
-      const url = image ? safeUrl(image[2], true) : null;
+      const url = image ? sanitizeKnowledgeUrl(image[2], true) : null;
       output.push(
         url ? (
           <img
@@ -137,7 +124,7 @@ function InlineContent({
       );
     } else if (token.startsWith("[")) {
       const link = token.match(/^\[([^\]]+)]\(([^)]+)\)$/);
-      const url = link ? safeUrl(link[2]) : null;
+      const url = link ? sanitizeKnowledgeUrl(link[2]) : null;
       output.push(
         url ? (
           <a
