@@ -36,4 +36,25 @@ describe("feature flags", () => {
     expect(isFeatureEnabled(flags, "nexus_realtime_enabled")).toBe(false);
     expect(isFeatureEnabled(flags, "nexus_lighting_enabled")).toBe(true);
   });
+
+  it("gives an authenticated user override the final precedence", () => {
+    const flags = resolveFeatureFlags({
+      environment: {
+        VITE_NEXUS_KNOWLEDGE_ENABLED: "true",
+        VITE_NEXUS_ASSETS_V2_ENABLED: "false",
+      },
+      administrative: {
+        nexus_knowledge_enabled: false,
+        nexus_assets_v2_enabled: false,
+      },
+      userOverrides: {
+        nexus_knowledge_enabled: true,
+        nexus_assets_v2_enabled: true,
+      },
+    });
+
+    expect(isFeatureEnabled(flags, "nexus_knowledge_enabled")).toBe(true);
+    expect(isFeatureEnabled(flags, "nexus_assets_v2_enabled")).toBe(true);
+    expect(isFeatureEnabled(flags, "nexus_graph_enabled")).toBe(false);
+  });
 });
