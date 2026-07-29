@@ -51,6 +51,9 @@ bloqueada até concluir os rollouts e a portabilidade.
 - A vulnerabilidade moderada vem do adaptador Hono para Windows; o runtime publicado é Cloudflare
   Worker. A cadeia continua monitorada e não foi removida.
 - O issuer OAuth do manifesto MCP foi alinhado ao projeto Supabase real.
+- `@cloudflare/vite-plugin` foi atualizado para `^1.48.0`, removendo a cadeia vulnerável de `sharp`.
+- O audit de produção após a atualização encerrou sem alto ou crítico; permanecem somente os
+  avisos baixo/moderados da cadeia Lovable descritos acima.
 - O workflow Quality agora bloqueia vulnerabilidades de produção altas ou críticas.
 
 A branch histórica `agent/security-auto-deploy` não deve ser mesclada: remove o SDK MCP, não
