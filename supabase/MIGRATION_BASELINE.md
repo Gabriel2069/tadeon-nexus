@@ -72,9 +72,9 @@ Database Advisor a negação completa aos papéis de cliente. As flags `nexus_r2
 
 O modelo persistente de páginas, relações e histórico foi aplicado com:
 
-1. `20260729131000_nexus_knowledge_foundation.sql`.
+1. `20260729130904_nexus_knowledge_foundation.sql`.
 
-A migration cria os contratos de banco, nós Markdown, ACL por usuário, relações, aliases, tags,
+O timestamp acima corresponde ao histórico real em `supabase_migrations.schema_migrations`; o\narquivo anterior `20260729131000` foi apenas uma divergência de versionamento no repositório e\nnunca representou uma segunda migration.\n\nA migration cria os contratos de banco, nós Markdown, ACL por usuário, relações, aliases, tags,
 menções, anexos, versões limitadas, templates, favoritos e recentes. Ela reutiliza os membros de
 workspace e campanha, mantém RLS em todas as tabelas e bloqueia o acesso enquanto
 `nexus_knowledge_enabled` permanecer desligada.
