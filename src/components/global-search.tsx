@@ -22,6 +22,7 @@ import {
   CommandSeparator,
   CommandShortcut,
 } from "@/components/ui/command";
+import { isApplicationAdministrator } from "@/lib/permissions";
 
 interface SearchItem {
   id: string;
@@ -58,6 +59,7 @@ export function GlobalSearch({
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [items, setItems] = useState<SearchItem[]>([]);
+  const isMestre = isApplicationAdministrator({ appRole: role });
 
   useEffect(() => {
     if (!enableShortcut) return;
@@ -93,7 +95,7 @@ export function GlobalSearch({
           route: "/offline",
         },
       ];
-      if (role === "mestre") {
+      if (isMestre) {
         nextItems.push(
           {
             id: "session",
@@ -130,7 +132,7 @@ export function GlobalSearch({
           });
         }
 
-        if (role === "mestre") {
+        if (isMestre) {
           const { data: settings } = await supabase
             .from("game_settings")
             .select("scenes_detailed,master_npcs,investigation_clues,threats,interludes,folds")
@@ -162,7 +164,7 @@ export function GlobalSearch({
         setLoading(false);
       }
     })();
-  }, [open, role]);
+  }, [isMestre, open]);
 
   const groups = useMemo(
     () =>
