@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
+import { getAuthErrorMessage, readAuthUrlError } from "@/lib/auth-errors";
 
 export const Route = createFileRoute("/reset-password")({
   head: () => ({
@@ -25,24 +26,56 @@ function ResetPasswordPage() {
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const [issue, setIssue] = useState("Este link é inválido ou expirou.");
 
   useEffect(() => {
-    // Supabase puts recovery token in the URL hash on email click.
-    // The client auto-exchanges it for a session. Just wait for the session.
-    const timeout = setTimeout(
-      () => setStatus((current) => (current === "checking" ? "invalid" : current)),
-      8000,
-    );
-    void supabase.auth.getSession().then(({ data, error }) => {
-      if (data.session) setStatus("ready");
-      else if (error) setStatus("invalid");
-    });
+    let active = true;
+
+    const markInvalid = (error: unknown) => {
+      if (!active) return;
+      setIssue(getAuthErrorMessage(error, "link"));
+      setStatus("invalid");
+    };
+
+    const timeout = setTimeout(() => {
+      setIssue("A validação demorou mais que o esperado. Solicite um novo link.");
+      setStatus((current) => (current === "checking" ? "invalid" : current));
+    }, 12000);
+
     const { data: sub } = supabase.auth.onAuthStateChange((event, session) => {
       if ((event === "PASSWORD_RECOVERY" || event === "SIGNED_IN") && session) {
         setStatus("ready");
       }
     });
+
+    void (async () => {
+      const urlError = readAuthUrlError(window.location.href);
+      if (urlError) {
+        markInvalid(urlError);
+        return;
+      }
+
+      const url = new URL(window.location.href);
+      const code = url.searchParams.get("code");
+
+      if (code) {
+        const { error } = await supabase.auth.exchangeCodeForSession(code);
+        url.searchParams.delete("code");
+        window.history.replaceState(null, "", `${url.pathname}${url.search}${url.hash}`);
+        if (error) {
+          markInvalid(error);
+          return;
+        }
+      }
+
+      const { data, error } = await supabase.auth.getSession();
+      if (!active) return;
+      if (error) markInvalid(error);
+      else if (data.session) setStatus("ready");
+    })().catch(markInvalid);
+
     return () => {
+      active = false;
       clearTimeout(timeout);
       sub.subscription.unsubscribe();
     };
@@ -64,8 +97,8 @@ function ResetPasswordPage() {
       if (error) throw error;
       toast.success("Senha redefinida! Você já está conectado.");
       void navigate({ to: "/" });
-    } catch {
-      toast.error("Não foi possível redefinir a senha. Solicite um novo link.");
+    } catch (error) {
+      toast.error(getAuthErrorMessage(error, "password-update"));
     } finally {
       setSubmitting(false);
     }
@@ -81,7 +114,7 @@ function ResetPasswordPage() {
           {status === "ready"
             ? "Defina uma nova senha para sua conta."
             : status === "invalid"
-              ? "Este link é inválido ou expirou."
+              ? issue
               : "Validando link de redefinição…"}
         </p>
 
