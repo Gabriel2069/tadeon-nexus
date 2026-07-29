@@ -249,35 +249,33 @@ export class KnowledgeService {
     if (visibility === "campaign" && !campaignId) {
       throw new KnowledgeServiceError("KNOWLEDGE_INVALID_INPUT");
     }
-    const { data, error } = await knowledgeDatabase
-      .from("knowledge_nodes")
-      .insert({
-        workspace_id: input.workspaceId,
-        campaign_id: campaignId,
-        node_type: input.nodeType ?? "free_note",
-        title,
-        slug: input.slug
+    const { data, error } = await knowledgeDatabase.rpc(
+      "create_knowledge_node",
+      {
+        p_workspace_id: input.workspaceId,
+        p_campaign_id: campaignId,
+        p_node_type: input.nodeType ?? "free_note",
+        p_title: title,
+        p_slug: input.slug
           ? slugifyKnowledgeTitle(input.slug)
           : slugifyKnowledgeTitle(title),
-        summary: input.summary?.trim().slice(0, 2000) ?? "",
-        content_markdown: contentMarkdown,
-        plain_text: markdownToPlainText(contentMarkdown),
-        properties: normalizeProperties(input.properties),
-        status: input.status ?? "draft",
-        visibility,
-        icon: input.icon ?? null,
-        cover_asset_id: input.coverAssetId ?? null,
-        parent_node_id: input.parentNodeId ?? null,
-        created_by: userId,
-        updated_by: userId,
-      })
-      .select("*")
-      .single();
+        p_summary: input.summary?.trim().slice(0, 2000) ?? "",
+        p_content_markdown: contentMarkdown,
+        p_plain_text: markdownToPlainText(contentMarkdown),
+        p_properties: normalizeProperties(input.properties),
+        p_status: input.status ?? "draft",
+        p_visibility: visibility,
+        p_icon: input.icon ?? null,
+        p_cover_asset_id: input.coverAssetId ?? null,
+        p_parent_node_id: input.parentNodeId ?? null,
+      },
+    );
 
-    if (error || !data) {
+    const row = Array.isArray(data) ? data[0] : data;
+    if (error || !row) {
       throw toKnowledgeServiceError(error, "KNOWLEDGE_INVALID_INPUT");
     }
-    const node = data as KnowledgeNode;
+    const node = row as KnowledgeNode;
     await this.syncMentions(node);
     return { node, mentionsSynchronized: true };
   }
@@ -811,7 +809,6 @@ export class KnowledgeService {
     visibility?: KnowledgeVisibility;
     properties?: Json;
   }) {
-    const userId = await this.currentUserId();
     const [sourceNode, targetNode] = await Promise.all([
       this.get(input.sourceNodeId),
       this.get(input.targetNodeId),
@@ -822,23 +819,22 @@ export class KnowledgeService {
     ) {
       throw new KnowledgeServiceError("KNOWLEDGE_INVALID_INPUT");
     }
-    const { data, error } = await knowledgeDatabase
-      .from("knowledge_edges")
-      .insert({
-        workspace_id: sourceNode.workspace_id,
-        source_node_id: input.sourceNodeId,
-        target_node_id: input.targetNodeId,
-        relation_type: input.relationType,
-        label: input.label?.trim().slice(0, 160) ?? "",
-        direction: input.direction ?? "directed",
-        visibility: input.visibility ?? sourceNode.visibility,
-        properties: normalizeProperties(input.properties),
-        created_by: userId,
-      })
-      .select("*")
-      .single();
-    if (error || !data) throw toKnowledgeServiceError(error);
-    return data as KnowledgeEdge;
+    const { data, error } = await knowledgeDatabase.rpc(
+      "create_knowledge_edge",
+      {
+        p_workspace_id: sourceNode.workspace_id,
+        p_source_node_id: input.sourceNodeId,
+        p_target_node_id: input.targetNodeId,
+        p_relation_type: input.relationType,
+        p_label: input.label?.trim().slice(0, 160) ?? "",
+        p_direction: input.direction ?? "directed",
+        p_visibility: input.visibility ?? sourceNode.visibility,
+        p_properties: normalizeProperties(input.properties),
+      },
+    );
+    const row = Array.isArray(data) ? data[0] : data;
+    if (error || !row) throw toKnowledgeServiceError(error);
+    return row as KnowledgeEdge;
   }
 
   async listEdges(nodeId: string) {
