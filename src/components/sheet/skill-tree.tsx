@@ -1,7 +1,7 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Plus, Minus, Lock, Check, Sparkles } from "lucide-react";
+import { Check, ChevronDown, Lock, Minus, Plus, Sparkles } from "lucide-react";
 import { toast } from "sonner";
 import type {
   Attributes,
@@ -73,6 +73,7 @@ export function SkillTreeTab({
   const totalPM = useMemo(() => calcTotalPM(exposure, rankTable), [exposure, rankTable]);
   const remaining = totalPM - pmSpent;
   const currentRank = Math.floor((exposure || 0) / 5) * 5;
+  const [collapsedTiers, setCollapsedTiers] = useState<Set<string>>(() => new Set());
   const purchased = new Set(purchasedSkills);
   const nodesById = useMemo(
     () => new Map(branches.flatMap((branch) => branch.nodes).map((node) => [node.id, node])),
@@ -86,6 +87,15 @@ export function SkillTreeTab({
         return node?.minRank === 0;
       }).length,
   );
+
+  const toggleTier = (tierKey: string) => {
+    setCollapsedTiers((current) => {
+      const next = new Set(current);
+      if (next.has(tierKey)) next.delete(tierKey);
+      else next.add(tierKey);
+      return next;
+    });
+  };
 
   const maxUpgradeLevel = (key: keyof StatUpgrades) =>
     key === "def" ? maxDefenseUpgradeLevels(currentRank) : maxResourceUpgradeLevels(currentRank);
@@ -278,20 +288,34 @@ export function SkillTreeTab({
             <p className="p-5 text-xs text-muted-foreground italic">Sem habilidades neste ramo.</p>
           ) : (
             <div className="space-y-6 p-4 md:p-5">
-              {[0, 25, 50, 75].map((tierRank, tierIndex) => {
-                const tierNodes = branch.nodes.filter((node) => node.minRank === tierRank);
-                return (
-                  <section key={tierRank}>
-                    <div className="mb-3 flex items-center gap-3">
-                      <span className="font-mono text-[10px] uppercase tracking-[0.24em] text-primary">
-                        Tier {["I", "II", "III", "IV"][tierIndex]}
-                      </span>
-                      <span className="h-px flex-1 bg-border/70" />
-                      <span className="text-[10px] text-muted-foreground">
-                        {tierRank === 0 ? "Criação" : `Rank ${tierRank}+`} · {tierIndex + 1} PM
-                      </span>
-                    </div>
-                    <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+              {[0, 25, 50, 75]
+                .filter((tierRank) => tierRank <= currentRank)
+                .map((tierRank, tierIndex) => {
+                  const tierNodes = branch.nodes.filter((node) => node.minRank === tierRank);
+                  const tierKey = `${branch.id}:${tierRank}`;
+                  const collapsed = collapsedTiers.has(tierKey);
+                  return (
+                    <section key={tierRank}>
+                      <button
+                        type="button"
+                        className="mb-3 flex w-full items-center gap-3 text-left"
+                        aria-expanded={!collapsed}
+                        onClick={() => toggleTier(tierKey)}
+                      >
+                        <span className="font-mono text-[10px] uppercase tracking-[0.24em] text-primary">
+                          Tier {["I", "II", "III", "IV"][tierIndex]}
+                        </span>
+                        <span className="h-px flex-1 bg-border/70" />
+                        <span className="text-[10px] text-muted-foreground">
+                          {tierRank === 0 ? "Criação" : `Rank ${tierRank}+`} · {tierIndex + 1} PM
+                        </span>
+                        <ChevronDown
+                          className={`h-4 w-4 text-muted-foreground transition-transform ${collapsed ? "" : "rotate-180"}`}
+                          aria-hidden="true"
+                        />
+                      </button>
+                      {!collapsed && (
+                        <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
                       {tierNodes.map((node) => {
                         const isPurchased = purchased.has(node.id);
                         const check = canBuyNode(node);
@@ -360,11 +384,12 @@ export function SkillTreeTab({
                             )}
                           </div>
                         );
-                      })}
-                    </div>
-                  </section>
-                );
-              })}
+                          })}
+                        </div>
+                      )}
+                    </section>
+                  );
+                })}
             </div>
           )}
         </Card>
