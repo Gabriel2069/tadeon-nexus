@@ -139,24 +139,38 @@ describe("KnowledgeService creation", () => {
       updated_at: "2026-07-29T00:00:00.000Z",
       deleted_at: null,
     };
-    mocks.rpc.mockResolvedValue({ data: edge, error: null });
+    const inverse = {
+      ...edge,
+      id: "6ba7b813-9dad-41d1-80b4-00c04fd430c8",
+      source_node_id: target.id,
+      target_node_id: source.id,
+      relation_type: "contains" as const,
+      label: "contém",
+    };
+    mocks.rpc.mockResolvedValue({ data: [edge, inverse], error: null });
 
     const result = await new KnowledgeService().createEdge({
       sourceNodeId: source.id,
       targetNodeId: target.id,
       relationType: "located_in",
       label: "localiza-se em",
+      inverse: {
+        relationType: "contains",
+        label: "contém",
+      },
     });
 
     expect(result).toEqual(edge);
     expect(mocks.rpc).toHaveBeenCalledWith(
-      "create_knowledge_edge",
+      "create_knowledge_relation",
       expect.objectContaining({
         p_workspace_id: WORKSPACE_ID,
         p_source_node_id: source.id,
         p_target_node_id: target.id,
         p_relation_type: "located_in",
         p_label: "localiza-se em",
+        p_inverse_relation_type: "contains",
+        p_inverse_label: "contém",
       }),
     );
   });
