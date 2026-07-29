@@ -51,6 +51,93 @@ function nodeFixture(overrides: Partial<KnowledgeNode> = {}): KnowledgeNode {
   };
 }
 
+describe("KnowledgeService search", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  it("maps the PostgreSQL search RPC with filters and pagination", async () => {
+    const node = nodeFixture({
+      title: "Myrova",
+      summary: "Cidade do Lobo Alvor",
+      node_type: "city",
+      status: "canonical",
+      visibility: "workspace",
+    });
+    mocks.rpc.mockResolvedValue({
+      data: [
+        {
+          node_data: node,
+          relevance: 0.875,
+          snippet: "Cidade de ⟦Myrova⟧",
+          total_count: 31,
+        },
+      ],
+      error: null,
+    });
+
+    const result = await new KnowledgeService().search({
+      workspaceId: WORKSPACE_ID,
+      query: "  Myrova  ",
+      campaignId: "bf9e85a7-0403-4de8-8d93-dd4d8706bab2",
+      includeWorkspace: true,
+      nodeTypes: ["city"],
+      statuses: ["canonical"],
+      visibilities: ["workspace"],
+      relationTypes: ["located_in"],
+      onlyCanonical: true,
+      order: "title",
+      page: 1,
+      pageSize: 30,
+    });
+
+    expect(mocks.rpc).toHaveBeenCalledWith("search_knowledge_nodes", {
+      p_workspace_id: WORKSPACE_ID,
+      p_query: "Myrova",
+      p_campaign_id: "bf9e85a7-0403-4de8-8d93-dd4d8706bab2",
+      p_include_workspace: true,
+      p_node_types: ["city"],
+      p_statuses: ["canonical"],
+      p_visibilities: ["workspace"],
+      p_relation_types: ["located_in"],
+      p_only_canonical: true,
+      p_order: "title",
+      p_limit: 30,
+      p_offset: 30,
+    });
+    expect(result).toEqual({
+      hits: [
+        {
+          node,
+          relevance: 0.875,
+          snippet: "Cidade de ⟦Myrova⟧",
+        },
+      ],
+      count: 31,
+      page: 1,
+      pageSize: 30,
+      hasMore: false,
+    });
+  });
+
+  it("returns an empty paginated result when the RPC has no rows", async () => {
+    mocks.rpc.mockResolvedValue({ data: [], error: null });
+
+    await expect(
+      new KnowledgeService().search({
+        workspaceId: WORKSPACE_ID,
+        query: "",
+      }),
+    ).resolves.toEqual({
+      hits: [],
+      count: 0,
+      page: 0,
+      pageSize: 30,
+      hasMore: false,
+    });
+  });
+});
+
 describe("KnowledgeService creation", () => {
   beforeEach(() => {
     vi.clearAllMocks();
