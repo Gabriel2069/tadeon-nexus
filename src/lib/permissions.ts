@@ -17,6 +17,11 @@ export type Permission =
   | "asset:upload"
   | "asset:manage"
   | "asset:link"
+  | "knowledge:view"
+  | "knowledge:create"
+  | "knowledge:edit"
+  | "knowledge:manage"
+  | "knowledge:publish"
   | "character:create"
   | "character:view"
   | "character:edit"
@@ -115,6 +120,15 @@ export function can(permission: Permission, context: PermissionContext) {
     case "asset:manage":
       return isResourceOwner(context) || workspaceManager || campaignCoManager;
     case "asset:link":
+      return workspaceManager || campaignCoManager;
+    case "knowledge:view":
+      return isResourceOwner(context) || workspaceViewer || campaignViewer;
+    case "knowledge:create":
+      return workspaceContributor || campaignContributor;
+    case "knowledge:edit":
+      return isResourceOwner(context) || workspaceManager || campaignCoManager;
+    case "knowledge:manage":
+    case "knowledge:publish":
       return workspaceManager || campaignCoManager;
     case "character:create":
       return (
