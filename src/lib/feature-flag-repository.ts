@@ -11,6 +11,11 @@ interface FeatureFlagRow {
   enabled: boolean;
 }
 
+interface UserFeatureFlagOverrideRow {
+  flag_key: string;
+  enabled: boolean;
+}
+
 function isFeatureFlagKey(value: string): value is FeatureFlagKey {
   return FEATURE_FLAG_KEYS.some((key) => key === value);
 }
@@ -20,6 +25,16 @@ export function toAdministrativeFeatureFlags(rows: FeatureFlagRow[]) {
 
   for (const row of rows) {
     if (isFeatureFlagKey(row.key)) flags[row.key] = row.enabled;
+  }
+
+  return flags;
+}
+
+export function toUserFeatureFlagOverrides(rows: UserFeatureFlagOverrideRow[]) {
+  const flags: Partial<FeatureFlags> = {};
+
+  for (const row of rows) {
+    if (isFeatureFlagKey(row.flag_key)) flags[row.flag_key] = row.enabled;
   }
 
   return flags;
@@ -39,13 +54,29 @@ export function getPublicFeatureFlagEnvironment(): PublicFeatureFlagEnvironment 
 
 export async function loadFeatureFlags(): Promise<FeatureFlags> {
   const environment = getPublicFeatureFlagEnvironment();
-  const { data, error } = await supabase.from("feature_flags").select("key,enabled");
+  const [globalResponse, userResponse] = await Promise.all([
+    supabase.from("feature_flags").select("key,enabled"),
+    supabase.auth.getUser(),
+  ]);
 
-  if (error) return resolveFeatureFlags({ environment });
+  if (globalResponse.error) return resolveFeatureFlags({ environment });
+
+  let userOverrides: Partial<FeatureFlags> = {};
+  const userId = userResponse.data.user?.id;
+
+  if (userId) {
+    const { data, error } = await supabase
+      .from("feature_flag_user_overrides")
+      .select("flag_key,enabled")
+      .eq("user_id", userId);
+
+    if (!error) userOverrides = toUserFeatureFlagOverrides(data ?? []);
+  }
 
   return resolveFeatureFlags({
     environment,
-    administrative: toAdministrativeFeatureFlags(data ?? []),
+    administrative: toAdministrativeFeatureFlags(globalResponse.data ?? []),
+    userOverrides,
   });
 }
 

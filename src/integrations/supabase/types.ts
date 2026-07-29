@@ -305,6 +305,52 @@ export type Database = {
           },
         ];
       };
+      feature_flag_user_overrides: {
+        Row: {
+          enabled: boolean;
+          flag_key: string;
+          updated_at: string;
+          updated_by: string | null;
+          user_id: string;
+        };
+        Insert: {
+          enabled?: boolean;
+          flag_key: string;
+          updated_at?: string;
+          updated_by?: string | null;
+          user_id: string;
+        };
+        Update: {
+          enabled?: boolean;
+          flag_key?: string;
+          updated_at?: string;
+          updated_by?: string | null;
+          user_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "feature_flag_user_overrides_flag_key_fkey";
+            columns: ["flag_key"];
+            isOneToOne: false;
+            referencedRelation: "feature_flags";
+            referencedColumns: ["key"];
+          },
+          {
+            foreignKeyName: "feature_flag_user_overrides_updated_by_fkey";
+            columns: ["updated_by"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "feature_flag_user_overrides_user_id_fkey";
+            columns: ["user_id"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       feature_flags: {
         Row: {
           description: string;

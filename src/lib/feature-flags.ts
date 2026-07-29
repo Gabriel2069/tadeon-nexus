@@ -38,9 +38,11 @@ function parseBoolean(value: string | undefined) {
 export function resolveFeatureFlags({
   environment = {},
   administrative = {},
+  userOverrides = {},
 }: {
   environment?: PublicFeatureFlagEnvironment;
   administrative?: Partial<FeatureFlags>;
+  userOverrides?: Partial<FeatureFlags>;
 } = {}): FeatureFlags {
   const resolved = { ...DEFAULT_FEATURE_FLAGS };
 
@@ -52,6 +54,11 @@ export function resolveFeatureFlags({
   for (const key of FEATURE_FLAG_KEYS) {
     const administrativeValue = administrative[key];
     if (typeof administrativeValue === "boolean") resolved[key] = administrativeValue;
+  }
+
+  for (const key of FEATURE_FLAG_KEYS) {
+    const overrideValue = userOverrides[key];
+    if (typeof overrideValue === "boolean") resolved[key] = overrideValue;
   }
 
   return resolved;
