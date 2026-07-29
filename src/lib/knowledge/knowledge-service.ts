@@ -209,11 +209,17 @@ export class KnowledgeService {
     const userId = await this.currentUserId();
     const title = requireText(input.title, 200);
     const contentMarkdown = input.contentMarkdown ?? "";
+    const campaignId = input.campaignId ?? null;
+    const visibility =
+      input.visibility ?? (campaignId ? "campaign" : "author");
+    if (visibility === "campaign" && !campaignId) {
+      throw new KnowledgeServiceError("KNOWLEDGE_INVALID_INPUT");
+    }
     const { data, error } = await knowledgeDatabase
       .from("knowledge_nodes")
       .insert({
         workspace_id: input.workspaceId,
-        campaign_id: input.campaignId ?? null,
+        campaign_id: campaignId,
         node_type: input.nodeType ?? "free_note",
         title,
         slug: input.slug
@@ -224,8 +230,7 @@ export class KnowledgeService {
         plain_text: markdownToPlainText(contentMarkdown),
         properties: normalizeProperties(input.properties),
         status: input.status ?? "draft",
-        visibility:
-          input.visibility ?? (input.campaignId ? "campaign" : "author"),
+        visibility,
         icon: input.icon ?? null,
         cover_asset_id: input.coverAssetId ?? null,
         parent_node_id: input.parentNodeId ?? null,
@@ -315,6 +320,9 @@ export class KnowledgeService {
     const current = await this.get(nodeId);
     if (current.updated_at !== expectedUpdatedAt) {
       throw new KnowledgeServiceError("KNOWLEDGE_CONFLICT");
+    }
+    if (input.visibility === "campaign" && !current.campaign_id) {
+      throw new KnowledgeServiceError("KNOWLEDGE_INVALID_INPUT");
     }
 
     const patch: Record<string, unknown> = { updated_by: userId };
@@ -421,6 +429,7 @@ export class KnowledgeService {
 
   async addAlias(nodeId: string, alias: string) {
     const userId = await this.currentUserId();
+    const node = await this.get(nodeId);
     const normalized = requireText(alias, 200);
     const { data, error } = await knowledgeDatabase
       .from("knowledge_aliases")
@@ -428,7 +437,8 @@ export class KnowledgeService {
         node_id: nodeId,
         alias: normalized,
         normalized_alias: normalizeKnowledgeLookup(normalized),
-        workspace_id: crypto.randomUUID(),
+        workspace_id: node.workspace_id,
+        campaign_id: node.campaign_id,
         created_by: userId,
       })
       .select("*")
