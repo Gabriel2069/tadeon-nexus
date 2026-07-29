@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://tadeon-nexus.lovable.app/sitemap.xml
+Sitemap: https://tadeon-nexus.gtadeusz.workers.dev/sitemap.xml
