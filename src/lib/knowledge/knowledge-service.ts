@@ -81,6 +81,17 @@ export interface KnowledgeEdge {
   deleted_at: string | null;
 }
 
+export interface KnowledgeAssetLink {
+  id: string;
+  node_id: string;
+  asset_id: string;
+  asset_role: string;
+  caption: string;
+  sort_order: number;
+  created_by: string;
+  created_at: string;
+}
+
 export interface CreateKnowledgeNodeInput {
   workspaceId: string;
   campaignId?: string | null;
@@ -603,16 +614,26 @@ export class KnowledgeService {
     properties?: Json;
   }) {
     const userId = await this.currentUserId();
+    const [sourceNode, targetNode] = await Promise.all([
+      this.get(input.sourceNodeId),
+      this.get(input.targetNodeId),
+    ]);
+    if (
+      sourceNode.id === targetNode.id ||
+      sourceNode.workspace_id !== targetNode.workspace_id
+    ) {
+      throw new KnowledgeServiceError("KNOWLEDGE_INVALID_INPUT");
+    }
     const { data, error } = await knowledgeDatabase
       .from("knowledge_edges")
       .insert({
-        workspace_id: crypto.randomUUID(),
+        workspace_id: sourceNode.workspace_id,
         source_node_id: input.sourceNodeId,
         target_node_id: input.targetNodeId,
         relation_type: input.relationType,
         label: input.label?.trim().slice(0, 160) ?? "",
         direction: input.direction ?? "directed",
-        visibility: input.visibility ?? "workspace",
+        visibility: input.visibility ?? sourceNode.visibility,
         properties: normalizeProperties(input.properties),
         created_by: userId,
       })
@@ -639,7 +660,7 @@ export class KnowledgeService {
   async removeEdge(edgeId: string) {
     const { error } = await knowledgeDatabase
       .from("knowledge_edges")
-      .delete()
+      .update({ deleted_at: new Date().toISOString() })
       .eq("id", edgeId);
     if (error) throw toKnowledgeServiceError(error);
   }
@@ -705,6 +726,16 @@ export class KnowledgeService {
     if (error) throw toKnowledgeServiceError(error);
   }
 
+  async listNodeAssets(nodeId: string) {
+    const { data, error } = await knowledgeDatabase
+      .from("knowledge_assets")
+      .select("*")
+      .eq("node_id", nodeId)
+      .order("sort_order");
+    if (error) throw toKnowledgeServiceError(error);
+    return (data ?? []) as KnowledgeAssetLink[];
+  }
+
   async setFavorite(nodeId: string, favorite: boolean) {
     const userId = await this.currentUserId();
     const query = knowledgeDatabase.from("knowledge_favorites");
@@ -728,6 +759,56 @@ export class KnowledgeService {
       { onConflict: "user_id,node_id" },
     );
     if (error) throw toKnowledgeServiceError(error);
+  }
+
+  async listFavoriteNodes(limit = 20) {
+    const userId = await this.currentUserId();
+    const { data, error } = await knowledgeDatabase
+      .from("knowledge_favorites")
+      .select("node_id,created_at")
+      .eq("user_id", userId)
+      .order("created_at", { ascending: false })
+      .limit(clampInteger(limit, 20, 1, 100));
+    if (error) throw toKnowledgeServiceError(error);
+    const ids = (data ?? []).map((row) => String(row.node_id));
+    if (!ids.length) return [];
+    const { data: nodes, error: nodeError } = await knowledgeDatabase
+      .from("knowledge_nodes")
+      .select("*")
+      .in("id", ids);
+    if (nodeError) throw toKnowledgeServiceError(nodeError);
+    const byId = new Map(
+      ((nodes ?? []) as KnowledgeNode[]).map((node) => [node.id, node]),
+    );
+    return ids.flatMap((id) => {
+      const node = byId.get(id);
+      return node ? [node] : [];
+    });
+  }
+
+  async listRecentNodes(limit = 20) {
+    const userId = await this.currentUserId();
+    const { data, error } = await knowledgeDatabase
+      .from("knowledge_recent")
+      .select("node_id,last_opened_at")
+      .eq("user_id", userId)
+      .order("last_opened_at", { ascending: false })
+      .limit(clampInteger(limit, 20, 1, 100));
+    if (error) throw toKnowledgeServiceError(error);
+    const ids = (data ?? []).map((row) => String(row.node_id));
+    if (!ids.length) return [];
+    const { data: nodes, error: nodeError } = await knowledgeDatabase
+      .from("knowledge_nodes")
+      .select("*")
+      .in("id", ids);
+    if (nodeError) throw toKnowledgeServiceError(nodeError);
+    const byId = new Map(
+      ((nodes ?? []) as KnowledgeNode[]).map((node) => [node.id, node]),
+    );
+    return ids.flatMap((id) => {
+      const node = byId.get(id);
+      return node ? [node] : [];
+    });
   }
 }
 

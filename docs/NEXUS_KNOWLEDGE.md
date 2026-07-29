@@ -3,8 +3,8 @@
 ## Estado
 
 O modelo foi preparado de forma aditiva e permanece bloqueado enquanto
-`nexus_knowledge_enabled` estiver desligada. Nenhuma rota ou tela existente depende destas
-tabelas.
+`nexus_knowledge_enabled` estiver desligada. A rota `/nexus` e sua entrada de navegação também respeitam a flag; quando ela está desligada,
+a experiência existente permanece inalterada.
 
 ## Escopos e papéis
 
@@ -80,3 +80,26 @@ comparar as versões.
 O parser aceita `[[Título]]`, `[[Título|Rótulo]]` e `[[Título#Seção]]`, ignora links escapados e
 blocos de código e preserva posições para backlinks. Links não resolvidos são retornados com
 `broken=true`; a criação da página ausente será uma decisão explícita da interface.
+
+
+## Interface principal
+
+A rota `/nexus` reúne a navegação de páginas, o editor e os metadados em um layout responsivo.
+A interface oferece:
+
+- escopo por workspace e campanha, busca, tipos, recentes e favoritos;
+- leitura e edição Markdown, autosave com estado visível e cópia local de recuperação;
+- comparação otimista por `updated_at`, sem sobrescrever silenciosamente uma edição concorrente;
+- abas internas, modo foco, atalhos e paleta de comandos;
+- aliases, relações, backlinks, versões e anexos;
+- wikilinks com preview e criação explícita de página ausente.
+
+O renderizador não usa `dangerouslySetInnerHTML`. HTML inserido no Markdown permanece texto e URLs
+passam por validação de protocolo. A RLS continua sendo a autoridade final para toda ação.
+
+## Ativação
+
+A implantação do código não ativa a funcionalidade. Antes de ligar
+`nexus_knowledge_enabled`, execute a suíte de qualidade, confirme os papéis de workspace e
+campanha e valide ao menos um fluxo de mestre e um de jogador. `nexus_assets_v2_enabled` pode
+continuar desligada; nesse caso, a aba de anexos fica somente informativa.

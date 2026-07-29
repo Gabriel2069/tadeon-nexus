@@ -18,6 +18,7 @@ import {
   Mail,
   ShieldCheck,
   Wrench,
+  LibraryBig,
 } from "lucide-react";
 import { useAuth } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
@@ -36,6 +37,7 @@ import { BrandMark, ThreadField } from "@/components/brand-mark";
 import { GlobalSearch } from "@/components/global-search";
 import { getAuthErrorMessage } from "@/lib/auth-errors";
 import { isApplicationAdministrator } from "@/lib/permissions";
+import { loadFeatureFlags } from "@/lib/feature-flag-repository";
 
 const roleIcons: Record<string, typeof Crown> = {
   mestre: Crown,
@@ -55,10 +57,21 @@ export function AppLayout({ children }: { children: ReactNode }) {
     return window.localStorage.getItem(COLLAPSE_KEY) === "1";
   });
   const [accountOpen, setAccountOpen] = useState(false);
+  const [knowledgeEnabled, setKnowledgeEnabled] = useState(false);
 
   useEffect(() => {
     window.localStorage.setItem(COLLAPSE_KEY, collapsed ? "1" : "0");
   }, [collapsed]);
+
+  useEffect(() => {
+    let active = true;
+    void loadFeatureFlags().then((flags) => {
+      if (active) setKnowledgeEnabled(flags.nexus_knowledge_enabled);
+    });
+    return () => {
+      active = false;
+    };
+  }, []);
 
   const RoleIcon = role ? roleIcons[role] : Eye;
   const isMestre = isApplicationAdministrator({ appRole: role });
@@ -83,6 +96,16 @@ export function AppLayout({ children }: { children: ReactNode }) {
         mini={mini}
         onClick={() => setMobileOpen(false)}
       />
+      {knowledgeEnabled && (
+        <NavItem
+          to="/nexus"
+          icon={<LibraryBig className="w-4 h-4" />}
+          label="O Nexus"
+          active={path.startsWith("/nexus")}
+          mini={mini}
+          onClick={() => setMobileOpen(false)}
+        />
+      )}
       {isMestre && (
         <>
           <NavItem
