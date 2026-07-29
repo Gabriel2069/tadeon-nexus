@@ -67,3 +67,14 @@ serviço mantida no Cloudflare Worker. O trigger de finalização só aceita um 
 Worker confirma tamanho, MIME, objeto e sessão. A segunda migration torna explícita para o
 Database Advisor a negação completa aos papéis de cliente. As flags `nexus_r2_enabled` e
 `nexus_assets_v2_enabled` permanecem desligadas.
+
+## O Nexus — fundação de conhecimento
+
+O modelo persistente de páginas, relações e histórico foi aplicado com:
+
+1. `20260729131000_nexus_knowledge_foundation.sql`.
+
+A migration cria os contratos de banco, nós Markdown, ACL por usuário, relações, aliases, tags,
+menções, anexos, versões limitadas, templates, favoritos e recentes. Ela reutiliza os membros de
+workspace e campanha, mantém RLS em todas as tabelas e bloqueia o acesso enquanto
+`nexus_knowledge_enabled` permanecer desligada.
