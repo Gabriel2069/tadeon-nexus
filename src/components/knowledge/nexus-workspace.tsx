@@ -248,7 +248,7 @@ export function NexusWorkspace({
   const [createType, setCreateType] =
     useState<KnowledgeNodeType>("free_note");
   const [createVisibility, setCreateVisibility] =
-    useState<KnowledgeVisibility>("campaign");
+    useState<KnowledgeVisibility>("author");
   const [creating, setCreating] = useState(false);
   const [commandOpen, setCommandOpen] = useState(false);
   const [commandSearch, setCommandSearch] = useState("");
@@ -550,6 +550,13 @@ export function NexusWorkspace({
   const createNode = async (missingTitle?: string) => {
     const title = (missingTitle ?? createTitle).trim();
     if (!workspaceId || !title) return;
+    const visibility = missingTitle
+      ? campaignScope
+        ? "campaign"
+        : "author"
+      : createVisibility === "campaign" && !campaignScope
+        ? "author"
+        : createVisibility;
     setCreating(true);
     try {
       const result = await knowledgeService.create({
@@ -557,11 +564,7 @@ export function NexusWorkspace({
         campaignId: campaignScope,
         title,
         nodeType: missingTitle ? "free_note" : createType,
-        visibility: missingTitle
-          ? campaignScope
-            ? "campaign"
-            : "author"
-          : createVisibility,
+        visibility,
         contentMarkdown: `# ${title}\n\n`,
       });
       setCreateOpen(false);
@@ -585,6 +588,12 @@ export function NexusWorkspace({
     }>,
   ) => {
     if (!selected) return;
+    if (patch.visibility === "campaign" && !selected.campaign_id) {
+      toast.error(
+        "Uma página do workspace não pode usar visibilidade de campanha.",
+      );
+      return;
+    }
     setSaveState("saving");
     try {
       const result = await knowledgeService.update(
@@ -1258,7 +1267,11 @@ export function NexusWorkspace({
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      {KNOWLEDGE_VISIBILITIES.map((visibility) => (
+                      {KNOWLEDGE_VISIBILITIES.filter(
+                        (visibility) =>
+                          visibility !== "campaign" ||
+                          Boolean(selected.campaign_id),
+                      ).map((visibility) => (
                         <SelectItem key={visibility} value={visibility}>
                           {VISIBILITY_LABELS[visibility]}
                         </SelectItem>
@@ -1582,7 +1595,10 @@ export function NexusWorkspace({
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    {KNOWLEDGE_VISIBILITIES.map((visibility) => (
+                    {KNOWLEDGE_VISIBILITIES.filter(
+                      (visibility) =>
+                        visibility !== "campaign" || Boolean(campaignScope),
+                    ).map((visibility) => (
                       <SelectItem key={visibility} value={visibility}>
                         {VISIBILITY_LABELS[visibility]}
                       </SelectItem>
@@ -1636,6 +1652,7 @@ export function NexusWorkspace({
               type="button"
               onClick={() => {
                 setCommandOpen(false);
+                setCreateVisibility(campaignScope ? "campaign" : "author");
                 setCreateOpen(true);
               }}
               className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left hover:bg-muted"
