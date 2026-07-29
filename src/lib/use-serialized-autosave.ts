@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
+import { reportClientError } from "@/lib/client-error-monitor";
 
 interface SerializedAutosaveOptions<T> {
   value: T | null;
@@ -16,6 +17,7 @@ export function useSerializedAutosave<T>({
   const [saving, setSaving] = useState(false);
   const [dirty, setDirty] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
+  const [lastSavedAt, setLastSavedAt] = useState<Date | null>(null);
 
   const valueRef = useRef(value);
   const enabledRef = useRef(enabled);
@@ -50,14 +52,16 @@ export function useSerializedAutosave<T>({
         try {
           await saveRef.current(snapshot);
           setSaveError(null);
+          setLastSavedAt(new Date());
           if (retryTimerRef.current) {
             clearTimeout(retryTimerRef.current);
             retryTimerRef.current = null;
           }
-        } catch {
+        } catch (error) {
           succeeded = false;
           setDirty(true);
           setSaveError("Não foi possível salvar. Verifique sua conexão e tente novamente.");
+          void reportClientError(error, "save");
           if (retryTimerRef.current) clearTimeout(retryTimerRef.current);
           retryTimerRef.current = setTimeout(() => void executeRef.current(), 3000);
           break;
@@ -115,5 +119,5 @@ export function useSerializedAutosave<T>({
     [],
   );
 
-  return { dirty, saveError, saveNow, saving };
+  return { dirty, lastSavedAt, saveError, saveNow, saving };
 }

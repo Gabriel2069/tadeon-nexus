@@ -40,6 +40,7 @@ import {
   type MasterThreat,
   type NpcState,
 } from "@/lib/master-data";
+import { ResistanceDtCalculator } from "@/components/master/resistance-dt-calculator";
 
 interface SessionScene extends MasterScene {
   monsterIds: string[];
@@ -422,6 +423,7 @@ export function SessionWorkspace({
         </div>
 
         <div className="space-y-4">
+          <ResistanceDtCalculator compact />
           <Card className="tadeon-surface rounded-2xl p-5">
             <PanelTitle icon={<ScrollText className="h-4 w-4" />} title="Lembretes da sessão" />
             <Textarea

@@ -11,6 +11,8 @@ import appCss from "../styles.css?url";
 import { AuthProvider } from "@/lib/auth";
 import { Toaster } from "@/components/ui/sonner";
 import { PwaRegistration } from "@/components/pwa-registration";
+import { useEffect } from "react";
+import { initializeClientErrorMonitor } from "@/lib/client-error-monitor";
 
 function NotFoundComponent() {
   return (
@@ -122,6 +124,7 @@ function RootShell({ children }: { children: React.ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  useEffect(() => initializeClientErrorMonitor(), []);
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>

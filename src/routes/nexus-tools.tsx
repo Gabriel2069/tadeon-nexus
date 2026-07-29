@@ -269,6 +269,52 @@ function NexusToolsPage() {
     }
 
     try {
+      const startedAt = performance.now();
+      const { data, error } = await supabase.rpc("project_heartbeat");
+      const latency = Math.round(performance.now() - startedAt);
+      results.push({
+        id: "heartbeat",
+        label: "Saúde do Supabase",
+        detail:
+          !error && data
+            ? `Banco respondeu em ${latency} ms · ${new Date(data).toLocaleString("pt-BR")}.`
+            : "O teste controlado do banco não respondeu.",
+        level: !error && data ? (latency < 1500 ? "healthy" : "warning") : "error",
+      });
+    } catch {
+      results.push({
+        id: "heartbeat",
+        label: "Saúde do Supabase",
+        detail: "Não foi possível medir a resposta do banco.",
+        level: "error",
+      });
+    }
+
+    try {
+      const { count, error } = await supabase
+        .from("app_error_logs")
+        .select("id", { count: "exact", head: true })
+        .is("resolved_at", null);
+      results.push({
+        id: "errors",
+        label: "Monitoramento de erros",
+        detail: error
+          ? "O coletor ainda não está disponível."
+          : count
+            ? `${count} ocorrência(s) não resolvida(s) aguardando revisão.`
+            : "Nenhuma ocorrência não resolvida nas últimas capturas.",
+        level: error ? "warning" : count ? "warning" : "healthy",
+      });
+    } catch {
+      results.push({
+        id: "errors",
+        label: "Monitoramento de erros",
+        detail: "Não foi possível consultar as ocorrências.",
+        level: "warning",
+      });
+    }
+
+    try {
       const { count, error } = await supabase
         .from("character_sheets")
         .select("id", { count: "exact", head: true });
@@ -367,7 +413,7 @@ function NexusToolsPage() {
           </TabsTrigger>
           <TabsTrigger value="diagnostics" className="gap-2">
             <Wrench className="h-4 w-4" />
-            Diagnóstico
+            Saúde & diagnóstico
           </TabsTrigger>
         </TabsList>
 
@@ -563,7 +609,10 @@ function DiagnosticCard({ result }: { result: DiagnosticResult }) {
   const icon =
     result.id === "network" ? (
       <Wifi className="h-5 w-5" />
-    ) : result.id === "settings" || result.id === "sheets" ? (
+    ) : result.id === "settings" ||
+      result.id === "sheets" ||
+      result.id === "heartbeat" ||
+      result.id === "errors" ? (
       <Database className="h-5 w-5" />
     ) : result.id === "offline" || result.id === "pwa" ? (
       <Cloud className="h-5 w-5" />
