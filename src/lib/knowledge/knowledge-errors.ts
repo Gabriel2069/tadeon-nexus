@@ -103,6 +103,11 @@ export function toKnowledgeServiceError(
       cause: error,
     });
   }
+  if (text.includes("knowledge_conflict")) {
+    return new KnowledgeServiceError("KNOWLEDGE_CONFLICT", {
+      cause: error,
+    });
+  }
   if (
     text.includes("23514") ||
     text.includes("22p02") ||
