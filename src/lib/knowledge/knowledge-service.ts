@@ -358,7 +358,12 @@ export class KnowledgeService {
     }
 
     const patch: Record<string, unknown> = { updated_by: userId };
-    if (input.title !== undefined) patch.title = requireText(input.title, 200);
+    if (input.title !== undefined) {
+      patch.title = requireText(input.title, 200);
+      if (input.slug === undefined) {
+        patch.slug = slugifyKnowledgeTitle(input.title);
+      }
+    }
     if (input.slug !== undefined)
       patch.slug = slugifyKnowledgeTitle(input.slug);
     if (input.summary !== undefined)
@@ -601,7 +606,11 @@ export class KnowledgeService {
         const targetAnchors =
           resolved && reference.normalizedSection
             ? new Set(
-                extractMarkdownHeadings(resolved.content_markdown).map(
+                extractMarkdownHeadings(
+                  resolved.id === node.id
+                    ? node.content_markdown
+                    : resolved.content_markdown,
+                ).map(
                   (heading) => heading.anchorSlug,
                 ),
               )
@@ -623,11 +632,9 @@ export class KnowledgeService {
     );
   }
 
-  async syncMentions(node: KnowledgeNode) {
-    const [resolved, headings] = await Promise.all([
-      this.resolveWikilinks(node),
-      Promise.resolve(extractMarkdownHeadings(node.content_markdown)),
-    ]);
+  private async prepareLinkIndex(node: KnowledgeNode) {
+    const resolved = await this.resolveWikilinks(node);
+    const headings = extractMarkdownHeadings(node.content_markdown);
     if (headings.length > MAX_LINK_INDEX_ENTRIES) {
       throw new KnowledgeServiceError("KNOWLEDGE_LINK_LIMIT_EXCEEDED");
     }
@@ -674,6 +681,59 @@ export class KnowledgeService {
       occurrence: heading.occurrence,
       start_position: heading.start,
     }));
+
+    return { mentions, brokenLinks, headingRows };
+  }
+
+  async saveContent(
+    current: KnowledgeNode,
+    title: string,
+    contentMarkdown: string,
+  ) {
+    const normalizedTitle = requireText(title, 200);
+    const candidate: KnowledgeNode = {
+      ...current,
+      title: normalizedTitle,
+      slug: slugifyKnowledgeTitle(normalizedTitle),
+      content_markdown: contentMarkdown,
+      plain_text: markdownToPlainText(contentMarkdown),
+    };
+    const { mentions, brokenLinks, headingRows } =
+      await this.prepareLinkIndex(candidate);
+    const { data, error } = await knowledgeDatabase.rpc(
+      "save_knowledge_node_content",
+      {
+        p_node_id: current.id,
+        p_expected_updated_at: current.updated_at,
+        p_title: candidate.title,
+        p_slug: candidate.slug,
+        p_content_markdown: candidate.content_markdown,
+        p_plain_text: candidate.plain_text,
+        p_mentions: mentions,
+        p_broken_links: brokenLinks,
+        p_headings: headingRows,
+      },
+    );
+    if (error) throw toKnowledgeServiceError(error);
+    const row = Array.isArray(data) ? data[0] : data;
+    if (!row) throw new KnowledgeServiceError("KNOWLEDGE_CONFLICT");
+
+    if (
+      normalizeKnowledgeLookup(current.title) !==
+      normalizeKnowledgeLookup(candidate.title)
+    ) {
+      await this.addAlias(current.id, current.title).catch(() => undefined);
+    }
+
+    return {
+      node: row as KnowledgeNode,
+      mentionsSynchronized: true as const,
+    };
+  }
+
+  async syncMentions(node: KnowledgeNode) {
+    const { mentions, brokenLinks, headingRows } =
+      await this.prepareLinkIndex(node);
 
     const { error } = await knowledgeDatabase.rpc(
       "replace_knowledge_link_index",
