@@ -65,3 +65,18 @@ Nós são arquivados ou removidos logicamente por `archived_at` e `deleted_at`. 
 permissão de `DELETE` físico na tabela de nós. Criação, atualização, arquivamento, restauração e
 remoção lógica geram eventos em `audit_events`.
 
+## Camada de serviço
+
+`src/lib/knowledge/knowledge-service.ts` é a única fachada de dados para a nova interface. Ela
+normaliza títulos e slugs, mantém texto de pesquisa, aplica atualização otimista por `updated_at`,
+resolve aliases e wikilinks, recompõe menções, acessa versões, relações, ACL, anexos, favoritos e
+recentes.
+
+Erros do Postgres nunca são apresentados diretamente. `knowledge-errors.ts` converte falhas de
+RLS, conflitos e validação em mensagens seguras. Uma divergência de `updated_at` retorna
+`KNOWLEDGE_CONFLICT`, permitindo que o editor preserve o rascunho local e peça ao usuário para
+comparar as versões.
+
+O parser aceita `[[Título]]`, `[[Título|Rótulo]]` e `[[Título#Seção]]`, ignora links escapados e
+blocos de código e preserva posições para backlinks. Links não resolvidos são retornados com
+`broken=true`; a criação da página ausente será uma decisão explícita da interface.
