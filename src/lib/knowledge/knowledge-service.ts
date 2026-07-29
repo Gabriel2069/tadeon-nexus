@@ -808,6 +808,11 @@ export class KnowledgeService {
     direction?: KnowledgeRelationDirection;
     visibility?: KnowledgeVisibility;
     properties?: Json;
+    inverse?: {
+      relationType: RelationType;
+      label?: string;
+      properties?: Json;
+    };
   }) {
     const [sourceNode, targetNode] = await Promise.all([
       this.get(input.sourceNodeId),
@@ -815,12 +820,13 @@ export class KnowledgeService {
     ]);
     if (
       sourceNode.id === targetNode.id ||
-      sourceNode.workspace_id !== targetNode.workspace_id
+      sourceNode.workspace_id !== targetNode.workspace_id ||
+      (input.direction === "bidirectional" && input.inverse)
     ) {
       throw new KnowledgeServiceError("KNOWLEDGE_INVALID_INPUT");
     }
     const { data, error } = await knowledgeDatabase.rpc(
-      "create_knowledge_edge",
+      "create_knowledge_relation",
       {
         p_workspace_id: sourceNode.workspace_id,
         p_source_node_id: input.sourceNodeId,
@@ -830,11 +836,45 @@ export class KnowledgeService {
         p_direction: input.direction ?? "directed",
         p_visibility: input.visibility ?? sourceNode.visibility,
         p_properties: normalizeProperties(input.properties),
+        p_inverse_relation_type: input.inverse?.relationType ?? null,
+        p_inverse_label: input.inverse?.label?.trim().slice(0, 160) ?? null,
+        p_inverse_properties: input.inverse
+          ? normalizeProperties(input.inverse.properties ?? input.properties)
+          : null,
       },
     );
-    const row = Array.isArray(data) ? data[0] : data;
-    if (error || !row) throw toKnowledgeServiceError(error);
-    return row as KnowledgeEdge;
+    const rows = Array.isArray(data) ? data : data ? [data] : [];
+    if (error || !rows.length) throw toKnowledgeServiceError(error);
+    return rows[0] as KnowledgeEdge;
+  }
+
+  async updateEdge(
+    edge: KnowledgeEdge,
+    input: {
+      relationType: RelationType;
+      label?: string;
+      direction: KnowledgeRelationDirection;
+      visibility: KnowledgeVisibility;
+      properties?: Json;
+    },
+  ) {
+    const { data, error } = await knowledgeDatabase
+      .from("knowledge_edges")
+      .update({
+        relation_type: input.relationType,
+        label: input.label?.trim().slice(0, 160) ?? "",
+        direction: input.direction,
+        visibility: input.visibility,
+        properties: normalizeProperties(input.properties),
+      })
+      .eq("id", edge.id)
+      .eq("updated_at", edge.updated_at)
+      .is("deleted_at", null)
+      .select("*")
+      .maybeSingle();
+    if (error) throw toKnowledgeServiceError(error);
+    if (!data) throw new KnowledgeServiceError("KNOWLEDGE_CONFLICT");
+    return data as KnowledgeEdge;
   }
 
   async listEdges(nodeId: string) {
