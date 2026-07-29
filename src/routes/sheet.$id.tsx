@@ -544,6 +544,17 @@ function SheetPage() {
     return layers.length ? layers.join(", ") : undefined;
   }, [activeConditions, sheet?.dying, sheet?.going_insane]);
 
+  const conditionAura = useMemo(
+    () =>
+      activeConditions
+        .map(
+          (key, index) =>
+            `radial-gradient(circle at ${18 + (index % 3) * 32}% 0%, rgba(${CONDITION_META[key].rgb}, 0.18), transparent 34%)`,
+        )
+        .join(", "),
+    [activeConditions],
+  );
+
   if (loading || !sheet) {
     return (
       <div className="flex justify-center py-16">
@@ -681,20 +692,35 @@ function SheetPage() {
           )}
         </div>
         {activeConditions.length > 0 && (
-          <div className="flex flex-wrap gap-1.5 mt-2">
-            {activeConditions.map((k) => (
-              <span
-                key={k}
-                className="text-[10px] px-2 py-0.5 rounded-full border font-medium"
-                style={{
-                  borderColor: CONDITION_META[k].color,
-                  color: CONDITION_META[k].color,
-                  background: `rgba(${CONDITION_META[k].rgb}, 0.08)`,
-                }}
-              >
-                {CONDITION_META[k].label}: {sheet.conditions[k].join(", ")}
-              </span>
-            ))}
+          <div
+            className="mt-3 flex flex-wrap gap-2 rounded-xl border border-border/70 bg-card/80 p-2 shadow-inner backdrop-blur"
+            aria-label="Condições ativas"
+          >
+            {activeConditions.map((key) => {
+              const meta = CONDITION_META[key];
+              return (
+                <span
+                  key={key}
+                  className="inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-[10px] font-semibold tracking-wide"
+                  style={{
+                    borderColor: meta.color,
+                    color: meta.color,
+                    background: `linear-gradient(135deg, rgba(${meta.rgb}, 0.28), rgba(${meta.rgb}, 0.08))`,
+                    boxShadow: `inset 0 0 12px rgba(${meta.rgb}, 0.16), 0 0 10px rgba(${meta.rgb}, 0.2)`,
+                  }}
+                >
+                  <span
+                    aria-hidden
+                    className="h-1.5 w-1.5 rounded-full"
+                    style={{
+                      background: meta.color,
+                      boxShadow: `0 0 7px rgba(${meta.rgb}, 0.9)`,
+                    }}
+                  />
+                  {meta.label}: {sheet.conditions[key].join(", ")}
+                </span>
+              );
+            })}
           </div>
         )}
       </div>
@@ -743,8 +769,12 @@ function SheetPage() {
       )}
 
       <div
-        className="rounded-xl transition-shadow duration-500"
-        style={{ boxShadow: borderShadow, padding: borderShadow ? "2px" : 0 }}
+        className="rounded-xl transition-[box-shadow,background-image,padding] duration-500"
+        style={{
+          backgroundImage: conditionAura || undefined,
+          boxShadow: borderShadow,
+          padding: borderShadow ? "3px" : 0,
+        }}
       >
         <Tabs defaultValue="ficha" className="space-y-4">
           <TabsList className="w-full md:w-auto">
@@ -1437,12 +1467,13 @@ function SheetPage() {
                   return (
                     <div
                       key={c}
-                      className="rounded-lg border border-border/60 bg-secondary/15 p-3"
+                      className="rounded-lg border border-border/60 bg-secondary/15 p-3 transition-[border-color,background,box-shadow] duration-300"
                       style={
                         current.length > 0
                           ? {
                               borderColor: meta.color,
-                              boxShadow: `0 0 0 1px ${meta.color}33`,
+                              background: `linear-gradient(145deg, rgba(${meta.rgb}, 0.2), rgba(${meta.rgb}, 0.04))`,
+                              boxShadow: `0 0 0 1px ${meta.color}44, inset 0 0 24px rgba(${meta.rgb}, 0.1)`,
                             }
                           : undefined
                       }
@@ -1465,8 +1496,9 @@ function SheetPage() {
                                 selected
                                   ? {
                                       borderColor: meta.color,
-                                      background: `rgba(${meta.rgb}, 0.2)`,
+                                      background: `rgba(${meta.rgb}, 0.28)`,
                                       color: meta.color,
+                                      boxShadow: `inset 0 0 10px rgba(${meta.rgb}, 0.2), 0 0 8px rgba(${meta.rgb}, 0.16)`,
                                     }
                                   : undefined
                               }
