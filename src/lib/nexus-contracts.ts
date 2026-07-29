@@ -4,36 +4,81 @@ export type AppRole = (typeof APP_ROLES)[number];
 export const WORKSPACE_ROLES = ["owner", "admin", "member", "viewer"] as const;
 export type WorkspaceRole = (typeof WORKSPACE_ROLES)[number];
 
-export const CAMPAIGN_ROLES = ["master", "co_master", "player", "observer"] as const;
+export const CAMPAIGN_ROLES = [
+  "master",
+  "co_master",
+  "player",
+  "observer",
+] as const;
 export type CampaignRole = (typeof CAMPAIGN_ROLES)[number];
 
 export const ASSET_PROVIDERS = ["supabase", "r2"] as const;
 export type AssetProvider = (typeof ASSET_PROVIDERS)[number];
 
-export const ASSET_VISIBILITIES = ["private", "workspace", "campaign"] as const;
+export const ASSET_VISIBILITIES = [
+  "private",
+  "workspace",
+  "campaign",
+] as const;
 export type AssetVisibility = (typeof ASSET_VISIBILITIES)[number];
 
 export const KNOWLEDGE_NODE_TYPES = [
-  "page",
-  "character",
-  "location",
-  "organization",
-  "event",
-  "item",
-  "creature",
+  "rule",
   "concept",
+  "character",
+  "npc",
+  "creature",
+  "organization",
+  "religion",
+  "culture",
+  "people",
+  "language",
+  "kingdom",
+  "region",
+  "city",
+  "location",
+  "river",
+  "sea",
+  "terrain",
+  "tectonic_plate",
+  "historical_event",
+  "plot",
+  "clue",
+  "session",
+  "fragment",
+  "transcendental_ability",
+  "weapon",
+  "object",
+  "document",
+  "map",
+  "campaign",
+  "free_note",
 ] as const;
 export type KnowledgeNodeType = (typeof KNOWLEDGE_NODE_TYPES)[number];
 
-export const KNOWLEDGE_NODE_STATUSES = ["draft", "active", "archived"] as const;
+export const KNOWLEDGE_NODE_STATUSES = [
+  "draft",
+  "review",
+  "canonical",
+  "deprecated",
+  "archived",
+] as const;
 export type KnowledgeNodeStatus = (typeof KNOWLEDGE_NODE_STATUSES)[number];
 
-export const KNOWLEDGE_VISIBILITIES = ["private", "masters", "campaign", "workspace"] as const;
+export const KNOWLEDGE_VISIBILITIES = [
+  "author",
+  "masters",
+  "campaign",
+  "users",
+  "workspace",
+  "internal_public",
+] as const;
 export type KnowledgeVisibility = (typeof KNOWLEDGE_VISIBILITIES)[number];
 
 export const RELATION_TYPES = [
   "related_to",
   "part_of",
+  "contains",
   "located_in",
   "member_of",
   "owns",
@@ -41,8 +86,25 @@ export const RELATION_TYPES = [
   "allied_with",
   "opposes",
   "parent_of",
+  "child_of",
+  "precedes",
+  "follows",
+  "reveals",
+  "mentions",
+  "custom",
 ] as const;
 export type RelationType = (typeof RELATION_TYPES)[number];
+
+export const KNOWLEDGE_RELATION_DIRECTIONS = [
+  "directed",
+  "bidirectional",
+] as const;
+export type KnowledgeRelationDirection =
+  (typeof KNOWLEDGE_RELATION_DIRECTIONS)[number];
+
+export const KNOWLEDGE_ACL_PERMISSIONS = ["view", "edit", "manage"] as const;
+export type KnowledgeAclPermission =
+  (typeof KNOWLEDGE_ACL_PERMISSIONS)[number];
 
 export const SCENE_ENTITY_TYPES = [
   "token",
@@ -54,10 +116,20 @@ export const SCENE_ENTITY_TYPES = [
 ] as const;
 export type SceneEntityType = (typeof SCENE_ENTITY_TYPES)[number];
 
-export const SCENE_PERMISSIONS = ["manage", "edit", "interact", "view"] as const;
+export const SCENE_PERMISSIONS = [
+  "manage",
+  "edit",
+  "interact",
+  "view",
+] as const;
 export type ScenePermission = (typeof SCENE_PERMISSIONS)[number];
 
-export const TABLETOP_ROLES = ["master", "co_master", "player", "observer"] as const;
+export const TABLETOP_ROLES = [
+  "master",
+  "co_master",
+  "player",
+  "observer",
+] as const;
 export type TabletopRole = (typeof TABLETOP_ROLES)[number];
 
 export const FEATURE_FLAG_KEYS = [
