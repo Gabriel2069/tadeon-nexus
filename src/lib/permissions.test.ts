@@ -14,6 +14,8 @@ describe("central authorization", () => {
     expect(can("campaign:view", anonymous)).toBe(false);
     expect(can("asset:view", anonymous)).toBe(false);
     expect(can("asset:upload", anonymous)).toBe(false);
+    expect(can("knowledge:view", anonymous)).toBe(false);
+    expect(can("knowledge:create", anonymous)).toBe(false);
     expect(can("character:create", anonymous)).toBe(false);
     expect(getScenePermission(anonymous)).toBeNull();
   });
@@ -26,6 +28,7 @@ describe("central authorization", () => {
     expect(can("workspace:manage", administrator)).toBe(true);
     expect(can("campaign:manage", administrator)).toBe(true);
     expect(can("asset:manage", administrator)).toBe(true);
+    expect(can("knowledge:publish", administrator)).toBe(true);
     expect(getScenePermission(administrator)).toBe("manage");
   });
 
@@ -102,5 +105,29 @@ describe("central authorization", () => {
     expect(can("asset:manage", coMaster)).toBe(true);
     expect(can("asset:link", coMaster)).toBe(true);
     expect(can("asset:manage", owner)).toBe(true);
+  });
+
+  it("keeps knowledge reading, authorship and publication as separate powers", () => {
+    const player: PermissionContext = {
+      campaignRole: "player",
+      currentUserId: "player-a",
+    };
+    const author: PermissionContext = {
+      campaignRole: "player",
+      currentUserId: "player-a",
+      resourceOwnerId: "player-a",
+    };
+    const observer: PermissionContext = { campaignRole: "observer" };
+    const coMaster: PermissionContext = { campaignRole: "co_master" };
+
+    expect(can("knowledge:view", player)).toBe(true);
+    expect(can("knowledge:create", player)).toBe(true);
+    expect(can("knowledge:edit", player)).toBe(false);
+    expect(can("knowledge:edit", author)).toBe(true);
+    expect(can("knowledge:publish", author)).toBe(false);
+    expect(can("knowledge:view", observer)).toBe(true);
+    expect(can("knowledge:create", observer)).toBe(false);
+    expect(can("knowledge:manage", coMaster)).toBe(true);
+    expect(can("knowledge:publish", coMaster)).toBe(true);
   });
 });
