@@ -114,7 +114,7 @@ export class SupabaseStorageAdapter implements AssetStorageAdapter {
     return data.signedUrl;
   }
 
-  async remove(bucket: string, objectKey: string) {
+  async remove(bucket: string, objectKey: string, _assetId: string) {
     const { error } = await supabase.storage.from(bucket).remove([objectKey]);
     if (error)
       throw new AssetServiceError("ASSET_UPLOAD_FAILED", { cause: error });
