@@ -14,6 +14,7 @@ import {
   NEXUS_ASSET_BUCKET,
   NEXUS_ASSET_PAGE_SIZE,
   buildAssetObjectKey,
+  normalizeAssetName,
   validateAssetFile,
 } from "@/lib/assets/file-validation";
 import { supabaseStorageAdapter } from "@/lib/assets/supabase-storage-adapter";
@@ -123,7 +124,7 @@ function clampInteger(
 }
 
 function safeDisplayName(value: string | undefined, fallback: string) {
-  const normalized = value?.replace(/[\u0000-\u001f\u007f]/g, "").trim();
+  const normalized = value ? normalizeAssetName(value) : "";
   return (normalized || fallback).slice(0, 255);
 }
 
