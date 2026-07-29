@@ -42,7 +42,7 @@ function InlineContent({
 
     if (token.startsWith("[[") || token.startsWith("![[")) {
       if (isEscapedAt(text, index)) {
-        const previous = output.at(-1);
+        const previous = output[output.length - 1];
         if (typeof previous === "string" && previous.endsWith("\\")) {
           output[output.length - 1] = previous.slice(0, -1);
         }
