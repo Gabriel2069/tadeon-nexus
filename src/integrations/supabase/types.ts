@@ -14,6 +14,48 @@ export type Database = {
   }
   public: {
     Tables: {
+      app_error_logs: {
+        Row: {
+          context: Json
+          created_at: string
+          fingerprint: string
+          id: string
+          message: string
+          resolved_at: string | null
+          resolved_by: string | null
+          route: string
+          severity: string
+          source: string
+          user_id: string
+        }
+        Insert: {
+          context?: Json
+          created_at?: string
+          fingerprint: string
+          id?: string
+          message: string
+          resolved_at?: string | null
+          resolved_by?: string | null
+          route?: string
+          severity?: string
+          source?: string
+          user_id: string
+        }
+        Update: {
+          context?: Json
+          created_at?: string
+          fingerprint?: string
+          id?: string
+          message?: string
+          resolved_at?: string | null
+          resolved_by?: string | null
+          route?: string
+          severity?: string
+          source?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       character_sheets: {
         Row: {
           abilities: Json
@@ -295,6 +337,7 @@ export type Database = {
         }
         Returns: boolean
       }
+      project_heartbeat: { Args: never; Returns: string }
     }
     Enums: {
       app_role: "mestre" | "jogador" | "espectador"
