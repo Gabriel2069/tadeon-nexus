@@ -928,14 +928,14 @@ function SheetPage() {
                     Reduza Atributos para voltar à faixa válida.
                   </p>
                 )}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 items-center">
-                  <div className="space-y-1.5">
+                <div className="space-y-4">
+                  <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
                     {(Object.keys(attrs) as (keyof Attributes)[]).map((k) => {
                       const wouldCreateSecondZero = attrs[k] === 1 && zeroAttributes >= 1;
                       return (
                         <div
                           key={k}
-                          className="flex items-center justify-between gap-2 rounded bg-secondary/40 px-2 py-1"
+                          className="flex min-h-14 items-center justify-between gap-2 rounded-lg border border-border/60 bg-secondary/30 px-3 py-2"
                         >
                           <span className="font-cinzel text-sm">{k}</span>
                           <div className="flex items-center gap-1">
@@ -985,13 +985,13 @@ function SheetPage() {
                         </div>
                       );
                     })}
-                    <p className="pt-1 text-[10px] leading-relaxed text-muted-foreground">
+                  </div>
+                  <p className="text-center text-[10px] leading-relaxed text-muted-foreground">
                       {attributeRemaining > 0
                         ? `${attributeRemaining} ponto(s) ainda disponível(is).`
                         : "Orçamento do Rank totalmente distribuído."}
                     </p>
-                  </div>
-                  <div className="h-48 sm:h-56">
+                  <div className="h-52 sm:h-60">
                     <Suspense
                       fallback={
                         <Loader2 className="w-6 h-6 animate-spin text-primary mx-auto mt-20" />
@@ -1066,7 +1066,7 @@ function SheetPage() {
                     onMod={(v) => update("stats", { ...sheet.stats, pa_mod: clampMod(v) })}
                   />
 
-                  <Card className="p-3 bg-card/60 border-blue-500/30 shadow-[0_0_22px_-12px_rgba(59,130,246,0.65)]">
+                  <Card className="p-3 bg-card/60 border-blue-500/30 shadow-[0_0_22px_-12px_rgba(59,130,246,0.65)] min-[430px]:col-span-2 min-[430px]:mx-auto min-[430px]:w-full min-[430px]:max-w-md">
                     <div className="text-blue-300 font-cinzel font-bold text-sm">Defesa</div>
                     <div className="relative my-2 flex items-center justify-center">
                       <Shield
