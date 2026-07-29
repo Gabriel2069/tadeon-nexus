@@ -14,6 +14,9 @@ import {
   ChevronsLeft,
   ChevronsRight,
   CloudOff,
+  Download,
+  Mail,
+  ShieldCheck,
   Wrench,
 } from "lucide-react";
 import { useAuth } from "@/lib/auth";
@@ -341,6 +344,7 @@ function AccountDialog({
   onSaved?: () => void;
 }) {
   const [name, setName] = useState(initialName);
+  const [newEmail, setNewEmail] = useState(email);
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
   const [saving, setSaving] = useState(false);
@@ -348,23 +352,36 @@ function AccountDialog({
   useEffect(() => {
     if (open) {
       setName(initialName);
+      setNewEmail(email);
       setPassword("");
       setConfirm("");
     }
-  }, [open, initialName]);
+  }, [email, open, initialName]);
 
   const save = async () => {
     setSaving(true);
     try {
-      if (name !== initialName) {
+      const trimmedName = name.trim();
+      const trimmedEmail = newEmail.trim().toLowerCase();
+      if (!trimmedName) {
+        toast.error("Informe um nome de exibição.");
+        return;
+      }
+      if (trimmedName !== initialName) {
         const { data: u } = await supabase.auth.getUser();
         if (u.user) {
-          const { error } = await supabase
-            .from("profiles")
-            .update({ full_name: name })
-            .eq("id", u.user.id);
+          const [{ error }, { error: metadataError }] = await Promise.all([
+            supabase.from("profiles").update({ full_name: trimmedName }).eq("id", u.user.id),
+            supabase.auth.updateUser({ data: { full_name: trimmedName } }),
+          ]);
           if (error) throw error;
+          if (metadataError) throw metadataError;
         }
+      }
+      if (trimmedEmail && trimmedEmail !== email.toLowerCase()) {
+        const { error } = await supabase.auth.updateUser({ email: trimmedEmail });
+        if (error) throw error;
+        toast.info("Enviamos as confirmações necessárias para trocar o e-mail.");
       }
       if (password) {
         if (password.length < 6) {
@@ -380,7 +397,7 @@ function AccountDialog({
         const { error } = await supabase.auth.updateUser({ password });
         if (error) throw error;
       }
-      toast.success("Conta atualizada!");
+      toast.success("Configurações pessoais atualizadas.");
       onSaved?.();
       onOpenChange(false);
     } catch {
@@ -390,22 +407,56 @@ function AccountDialog({
     }
   };
 
+  const signOutOtherSessions = async () => {
+    setSaving(true);
+    try {
+      const { error } = await supabase.auth.signOut({ scope: "others" });
+      if (error) throw error;
+      toast.success("As outras sessões foram encerradas.");
+    } catch {
+      toast.error("Não foi possível encerrar as outras sessões.");
+    } finally {
+      setSaving(false);
+    }
+  };
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-lg">
         <DialogHeader>
           <DialogTitle className="font-cinzel">Configurações da Conta</DialogTitle>
         </DialogHeader>
         <div className="space-y-4">
-          <div>
+          <div className="rounded-xl border border-border/70 bg-secondary/20 p-4">
+            <div className="mb-3 flex items-center gap-2">
+              <Mail className="h-4 w-4 text-primary" />
+              <p className="text-sm font-semibold">Identidade</p>
+            </div>
             <Label className="text-xs">E-mail</Label>
-            <Input value={email} disabled className="mt-1" />
+            <Input
+              type="email"
+              value={newEmail}
+              onChange={(event) => setNewEmail(event.target.value)}
+              className="mt-1"
+            />
+            <p className="mt-1.5 text-[10px] text-muted-foreground">
+              A troca só termina após as confirmações de segurança enviadas por e-mail.
+            </p>
+            <div className="mt-3">
+              <Label className="text-xs">Nome de exibição</Label>
+              <Input
+                value={name}
+                onChange={(event) => setName(event.target.value)}
+                className="mt-1"
+                maxLength={80}
+              />
+            </div>
           </div>
-          <div>
-            <Label className="text-xs">Nome de exibição</Label>
-            <Input value={name} onChange={(e) => setName(e.target.value)} className="mt-1" />
-          </div>
-          <div className="pt-2 border-t border-border space-y-3">
+          <div className="space-y-3 rounded-xl border border-border/70 bg-secondary/20 p-4">
+            <div className="flex items-center gap-2">
+              <ShieldCheck className="h-4 w-4 text-primary" />
+              <p className="text-sm font-semibold">Segurança</p>
+            </div>
             <p className="text-xs text-muted-foreground">Trocar senha (opcional)</p>
             <div>
               <Label className="text-xs">Nova senha</Label>
@@ -414,7 +465,7 @@ function AccountDialog({
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 className="mt-1"
-                placeholder="Mínimo 6 caracteres"
+                placeholder="Mínimo 8 caracteres recomendado"
               />
             </div>
             <div>
@@ -426,6 +477,29 @@ function AccountDialog({
                 className="mt-1"
               />
             </div>
+            <Button
+              type="button"
+              variant="outline"
+              className="w-full"
+              onClick={() => void signOutOtherSessions()}
+              disabled={saving}
+            >
+              Encerrar outras sessões
+            </Button>
+          </div>
+          <div className="rounded-xl border border-border/70 bg-secondary/20 p-4">
+            <div className="flex items-center gap-2">
+              <Download className="h-4 w-4 text-primary" />
+              <p className="text-sm font-semibold">Seus dados</p>
+            </div>
+            <p className="mt-2 text-xs text-muted-foreground">
+              Mestres podem gerar cópias independentes de fichas e configurações.
+            </p>
+            <Button asChild type="button" variant="outline" className="mt-3 w-full">
+              <Link to="/nexus-tools" onClick={() => onOpenChange(false)}>
+                Abrir Backup & Diagnóstico
+              </Link>
+            </Button>
           </div>
         </div>
         <DialogFooter>
