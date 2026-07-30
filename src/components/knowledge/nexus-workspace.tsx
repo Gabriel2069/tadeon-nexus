@@ -38,6 +38,7 @@ import {
 import { toast } from "sonner";
 import { AssetPickerDialog } from "@/components/assets/asset-picker-dialog";
 import { KnowledgeGraph } from "@/components/knowledge/knowledge-graph";
+import { KnowledgeLibrary } from "@/components/knowledge/knowledge-library";
 import {
   SafeMarkdown,
   type KnowledgeLinkPreview,
@@ -341,6 +342,7 @@ export function NexusWorkspace({
   const [creating, setCreating] = useState(false);
   const [commandOpen, setCommandOpen] = useState(false);
   const [graphOpen, setGraphOpen] = useState(false);
+  const [libraryOpen, setLibraryOpen] = useState(false);
   const [commandSearch, setCommandSearch] = useState("");
   const [aliasValue, setAliasValue] = useState("");
   const [assetPickerOpen, setAssetPickerOpen] = useState(false);
@@ -1066,6 +1068,14 @@ export function NexusWorkspace({
                 ))}
             </SelectContent>
           </Select>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setLibraryOpen(true)}
+          >
+            <BookMarked className="h-4 w-4" />
+            Bibliotecas
+          </Button>
           {graphEnabled && (
             <Button
               variant="outline"
@@ -2483,6 +2493,16 @@ export function NexusWorkspace({
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      <KnowledgeLibrary
+        open={libraryOpen}
+        onOpenChange={setLibraryOpen}
+        workspaceId={workspaceId}
+        campaignId={campaignScope}
+        campaigns={campaigns}
+        onOpenNode={(node) => void openNode(node)}
+        onChanged={() => void loadNodes()}
+      />
 
       {selected && assetsEnabled && (
         <AssetPickerDialog
