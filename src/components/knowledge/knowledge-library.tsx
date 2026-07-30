@@ -469,7 +469,7 @@ export function KnowledgeLibrary({
     }
   };
 
-  const useTemplate = async () => {
+  const createFromTemplate = async () => {
     if (!templateToUse || !templateNodeTitle.trim()) return;
     setActionBusy(true);
     try {
@@ -1110,7 +1110,7 @@ export function KnowledgeLibrary({
               value={templateNodeTitle}
               onChange={(event) => setTemplateNodeTitle(event.target.value)}
               onKeyDown={(event) => {
-                if (event.key === "Enter") void useTemplate();
+                if (event.key === "Enter") void createFromTemplate();
               }}
               autoFocus
               className="mt-1"
@@ -1121,7 +1121,7 @@ export function KnowledgeLibrary({
               Cancelar
             </Button>
             <Button
-              onClick={() => void useTemplate()}
+              onClick={() => void createFromTemplate()}
               disabled={actionBusy || !templateNodeTitle.trim()}
             >
               {actionBusy && <Loader2 className="h-4 w-4 animate-spin" />}
