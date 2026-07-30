@@ -8,7 +8,7 @@ Atualizado em 29 de julho de 2026 pelo Work de continuidade independente.
 - O Livro de Regras de Tessitura do Vazio governa mecânicas e terminologia.
 - O Fio-Mestre governa identidade visual.
 - Checkpoint de entrada: `1c5b66cf83bdd9d4b070019510080eb2d63dc74b`.
-- Checkpoints integrados: PRs #25–#40 em `main`; o último lote funcional está em `b0d73d5`.
+- Checkpoints integrados: PRs #25–#42 em `main`; o último lote funcional está em `e374d36`.
 
 ## Estado confirmado
 
@@ -55,6 +55,12 @@ edição, filtros e prevenção de duplicação exata foram aplicadas como
 como `20260729233047_knowledge_postgres_search.sql`, com título, resumo, conteúdo, aliases, tags,
 propriedades, tipo e relações visíveis, além de filtros, ordenação, trechos destacados e paginação.
 O retorno composto foi corrigido em `20260729234101_fix_knowledge_search_composite.sql`.
+
+O grafo local limitado foi aplicado como `20260730000020_knowledge_local_graph.sql`. Ele retorna
+somente metadados visíveis sob RLS, profundidade 1–2 e no máximo 250 nós, com canvas único,
+pan/zoom, fit, seleção, busca, foco, filtros e refoco progressivo. Não há simulação contínua nem
+conteúdo Markdown no payload. O override individual `nexus_graph_enabled=true` está ativo somente
+para o owner; a flag global permanece desligada.
 
 ### Mesa Nexus
 
@@ -144,18 +150,19 @@ A expansão deve receber nova versão, validação de escopo, dry-run e rollback
 
 Todas as flags globais permanecem desligadas. A tabela
 `feature_flag_user_overrides` aplica precedência somente ao usuário autenticado. Há exatamente
-dois overrides ativos para o proprietário mestre:
+três overrides ativos para o proprietário mestre:
 
 - `nexus_assets_v2_enabled=true`;
-- `nexus_knowledge_enabled=true`.
+- `nexus_knowledge_enabled=true`;
+- `nexus_graph_enabled=true`.
 
-`nexus_graph_enabled`, `nexus_lighting_enabled`, `nexus_r2_enabled`,
-`nexus_realtime_enabled` e `nexus_tabletop_enabled` não possuem override e continuam
-desligadas. O jogador não vê overrides de terceiros e não pode criá-los.
+`nexus_lighting_enabled`, `nexus_r2_enabled`, `nexus_realtime_enabled` e
+`nexus_tabletop_enabled` não possuem override e continuam desligadas. O jogador não vê overrides de terceiros e não pode criá-los.
 
 ## Estado do rollout
 
-O rollout controlado de Nexus Assets e O Nexus foi iniciado somente para o proprietário mestre.
+O rollout controlado de Nexus Assets, O Nexus e grafo local foi iniciado somente para o
+proprietário mestre.
 A integração, migration, policies, grants, teste transacional e ativação foram concluídos. A
 validação funcional em sessão autenticada ainda está pendente; portanto os módulos não são
 classificados como concluídos nem foram liberados globalmente.
@@ -169,7 +176,7 @@ para o jogador. Os testes deixaram zero páginas, tags, menções e relações r
 O canário de Nexus Assets também passou reserva Supabase para o owner, negação do jogador sem
 override e negação de R2, deixando zero sessões residuais. O upload/download do objeto real, quota
 com arquivo real e a validação visual dos dois módulos em frontend autenticado continuam
-pendentes. O rollback do canário é remover as duas linhas de override. Importação/exportação v2
+pendentes. O rollback do canário é remover as três linhas de override. Importação/exportação v2
 permanece posterior aos canários. A fundação da Mesa Nexus permanece posterior à portabilidade.
 
 ## Próximos critérios
@@ -178,7 +185,8 @@ permanece posterior aos canários. A fundação da Mesa Nexus permanece posterio
 2. Concluir o canário autenticado de Nexus Assets com upload/download do objeto real, quota e
    rollback operacional.
 3. Validar visualmente no frontend autenticado os fluxos já aprovados no backend de O Nexus.
-4. Implementar o grafo local limitado e progressivo; manter o grafo global somente sob demanda.
+4. Validar visualmente o grafo local no frontend autenticado e, depois, evoluir filtros temáticos;
+   manter o grafo global somente sob demanda.
 5. Criar bibliotecas e templates sobre O Nexus e projetar importação/exportação v2 com escopo,
    preview, dry-run, conflitos, ZIP reimportável e restauração.
 6. Iniciar a fundação gráfica da Mesa Nexus somente depois de concluir portabilidade e rollouts;
