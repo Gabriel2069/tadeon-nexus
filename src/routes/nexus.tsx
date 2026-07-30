@@ -59,6 +59,9 @@ function NexusRoute() {
   }
 
   return (
-    <NexusWorkspace assetsEnabled={flags.nexus_assets_v2_enabled} />
+    <NexusWorkspace
+      assetsEnabled={flags.nexus_assets_v2_enabled}
+      graphEnabled={flags.nexus_graph_enabled}
+    />
   );
 }
