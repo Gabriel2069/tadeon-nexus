@@ -27,6 +27,10 @@ export class InteractionController {
   private dragStartWorld: Point | null = null;
   private dragBefore: TabletopEntity[] = [];
   private panning = false;
+  private readonly touchPointers = new Map<number, Point>();
+  private pinching = false;
+  private pinchDistance: number | null = null;
+  private pinchCenter: Point | null = null;
 
   constructor(
     private readonly canvas: HTMLCanvasElement,
@@ -49,8 +53,28 @@ export class InteractionController {
 
   private onPointerDown = (event: PointerEvent) => {
     if (event.button !== 0 && event.button !== 1) return;
+    event.preventDefault();
     this.canvas.focus({ preventScroll: true });
     const screen = this.screenPoint(event);
+    if (event.pointerType === "touch") {
+      this.touchPointers.set(event.pointerId, screen);
+      this.canvas.setPointerCapture(event.pointerId);
+      if (this.touchPointers.size >= 2) {
+        if (this.dragBefore.length > 0)
+          this.bindings.previewEntities(this.dragBefore);
+        this.pointerId = null;
+        this.lastScreen = null;
+        this.dragStartWorld = null;
+        this.dragBefore = [];
+        this.panning = false;
+        this.pinching = true;
+        const pinch = this.getPinchMetrics();
+        this.pinchDistance = pinch?.distance ?? null;
+        this.pinchCenter = pinch?.center ?? null;
+        this.bindings.render();
+        return;
+      }
+    }
     const world = this.bindings.camera.screenToWorld(screen);
     const hit = this.bindings.hitTest(world);
     this.pointerId = event.pointerId;
@@ -73,6 +97,35 @@ export class InteractionController {
   };
 
   private onPointerMove = (event: PointerEvent) => {
+    if (
+      event.pointerType === "touch" &&
+      this.touchPointers.has(event.pointerId)
+    )
+      this.touchPointers.set(event.pointerId, this.screenPoint(event));
+
+    if (this.pinching) {
+      const pinch = this.getPinchMetrics();
+      if (
+        pinch &&
+        this.pinchDistance &&
+        this.pinchCenter &&
+        pinch.distance > 0
+      ) {
+        this.bindings.camera.panBy({
+          x: pinch.center.x - this.pinchCenter.x,
+          y: pinch.center.y - this.pinchCenter.y,
+        });
+        this.bindings.camera.zoomAt(
+          this.bindings.camera.zoom * (pinch.distance / this.pinchDistance),
+          pinch.center,
+        );
+        this.pinchDistance = pinch.distance;
+        this.pinchCenter = pinch.center;
+        this.bindings.render();
+      }
+      return;
+    }
+
     if (this.pointerId !== event.pointerId || !this.lastScreen) return;
     const screen = this.screenPoint(event);
     if (this.panning) {
@@ -101,6 +154,18 @@ export class InteractionController {
   };
 
   private onPointerUp = (event: PointerEvent) => {
+    if (event.pointerType === "touch")
+      this.touchPointers.delete(event.pointerId);
+    if (this.pinching) {
+      if (this.touchPointers.size < 2) {
+        this.pinching = false;
+        this.pinchDistance = null;
+        this.pinchCenter = null;
+      }
+      if (this.canvas.hasPointerCapture(event.pointerId))
+        this.canvas.releasePointerCapture(event.pointerId);
+      return;
+    }
     if (this.pointerId !== event.pointerId) return;
     if (!this.panning && this.dragBefore.length > 0) {
       const after = this.bindings
@@ -188,6 +253,18 @@ export class InteractionController {
     }
   };
 
+  private getPinchMetrics() {
+    const [first, second] = [...this.touchPointers.values()];
+    if (!first || !second) return null;
+    return {
+      center: {
+        x: (first.x + second.x) / 2,
+        y: (first.y + second.y) / 2,
+      },
+      distance: Math.hypot(second.x - first.x, second.y - first.y),
+    };
+  }
+
   destroy() {
     this.canvas.removeEventListener("pointerdown", this.onPointerDown);
     this.canvas.removeEventListener("pointermove", this.onPointerMove);
@@ -196,5 +273,6 @@ export class InteractionController {
     this.canvas.removeEventListener("wheel", this.onWheel);
     this.canvas.removeEventListener("contextmenu", this.onContextMenu);
     this.canvas.removeEventListener("keydown", this.onKeyDown);
+    this.touchPointers.clear();
   }
 }
