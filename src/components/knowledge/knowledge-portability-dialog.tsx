@@ -79,6 +79,15 @@ function portabilityError(error: unknown) {
   if (message.includes("MANAGER_REQUIRED")) {
     return "A importação em lote exige permissão de mestre ou administrador.";
   }
+  if (message.includes("EXPORT_PAGE_LIMIT_EXCEEDED")) {
+    return "O escopo possui mais de 500 páginas; divida a exportação por campanha.";
+  }
+  if (
+    message.includes("EXPORT_RELATION_LIMIT_EXCEEDED") ||
+    message.includes("EXPORT_ATTACHMENT_LIMIT_EXCEEDED")
+  ) {
+    return "O escopo ultrapassa o limite de 2.000 relações ou anexos por ZIP.";
+  }
   if (message.includes("FORBIDDEN")) {
     return "Você não tem permissão para importar nesse escopo.";
   }
