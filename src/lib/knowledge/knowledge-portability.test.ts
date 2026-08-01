@@ -24,7 +24,7 @@ properties:
 # História
 Myrova aponta para [[Lobo Alvor#Origem|o reino]].
 
-![[mapa.png]]
+![[../assets/mapa.png]]
 `),
       "lore/Lobo Alvor.md": strToU8(`---
 title: Lobo Alvor
@@ -34,7 +34,7 @@ type: culture
 # Origem
 Texto com ç, ã e emoji 🐺.
 `),
-      "lore/mapa.png": new Uint8Array([137, 80, 78, 71, 1]),
+      "assets/mapa.png": new Uint8Array([137, 80, 78, 71, 1]),
     });
 
     const preview = parseKnowledgeArchive(archive, {
@@ -53,7 +53,7 @@ Texto com ç, ã e emoji 🐺.
       target_heading_slug: "origem",
     });
     expect(preview.attachments[0]).toMatchObject({
-      archive_path: "lore/mapa.png",
+      archive_path: "assets/mapa.png",
       page_keys: ["lore/Myrova"],
       mime_type: "image/png",
     });
