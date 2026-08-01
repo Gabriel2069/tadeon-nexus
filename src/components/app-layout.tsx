@@ -167,9 +167,11 @@ export function AppLayout({ children }: { children: ReactNode }) {
     mini: boolean;
     enableSearchShortcut?: boolean;
   }) => (
-    <div className="relative flex h-full flex-col overflow-hidden p-3">
+    <div className="relative flex h-full min-h-0 flex-col overflow-hidden p-3 pb-[max(0.75rem,env(safe-area-inset-bottom))]">
       <ThreadField className="text-sidebar-primary opacity-40" />
-      <div className={`relative z-10 mb-6 ${mini ? "text-center" : ""}`}>
+      <div
+        className={`relative z-10 mb-4 shrink-0 ${mini ? "text-center" : ""}`}
+      >
         {mini ? (
           <BrandMark className="mx-auto h-9 w-9 text-primary" />
         ) : (
@@ -198,9 +200,11 @@ export function AppLayout({ children }: { children: ReactNode }) {
         )}
       </div>
 
-      <div className="relative z-10 flex-1">{renderNav(mini, enableSearchShortcut)}</div>
+      <div className="relative z-10 min-h-0 flex-1 overflow-y-auto overscroll-contain pr-1">
+        {renderNav(mini, enableSearchShortcut)}
+      </div>
 
-      <div className="relative z-10 space-y-1 border-t border-sidebar-border pt-3">
+      <div className="relative z-10 shrink-0 space-y-1 border-t border-sidebar-border pt-3">
         <SideAction
           mini={mini}
           icon={<Settings className="w-4 h-4" />}
@@ -256,20 +260,22 @@ export function AppLayout({ children }: { children: ReactNode }) {
         <header className="tadeon-mobile-header sticky top-0 z-20 flex items-center justify-between border-b border-border/80 bg-background/85 px-4 py-3 backdrop-blur-xl md:hidden">
           <button
             onClick={() => setMobileOpen(true)}
-            className="p-1.5 rounded-md hover:bg-secondary transition-colors"
+            className="flex h-11 w-11 items-center justify-center rounded-md transition-colors hover:bg-secondary"
             aria-label="Abrir menu"
           >
             <Menu className="w-5 h-5" />
           </button>
           <div className="flex items-center gap-2">
             <BrandMark className="h-7 w-7 text-primary" />
-            <h1 className="font-cinzel text-lg font-semibold text-primary">Tadeon Nexus</h1>
+            <h1 className="font-cinzel text-lg font-semibold text-primary">
+              Tadeon Nexus
+            </h1>
           </div>
           <div className="flex items-center gap-1">
             <GlobalSearch mobile />
             <button
               onClick={() => setAccountOpen(true)}
-              className="p-1.5 rounded-md hover:bg-secondary transition-colors"
+              className="flex h-11 w-11 items-center justify-center rounded-md transition-colors hover:bg-secondary"
               aria-label="Conta"
             >
               <Settings className="w-5 h-5" />
@@ -277,7 +283,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
           </div>
         </header>
 
-        <main key={path} className="tadeon-route-stage flex-1">
+        <main key={path} className="tadeon-route-stage min-w-0 flex-1">
           {children}
         </main>
       </div>
@@ -285,11 +291,14 @@ export function AppLayout({ children }: { children: ReactNode }) {
       {/* Mobile drawer */}
       {mobileOpen && (
         <div className="md:hidden fixed inset-0 z-40 animate-in fade-in-0 duration-200">
-          <div className="absolute inset-0 bg-black/60" onClick={() => setMobileOpen(false)} />
-          <aside className="absolute left-0 top-0 h-full w-[min(18rem,86vw)] border-r border-sidebar-border bg-sidebar text-sidebar-foreground shadow-2xl animate-in slide-in-from-left duration-300">
+          <div
+            className="absolute inset-0 bg-black/60"
+            onClick={() => setMobileOpen(false)}
+          />
+          <aside className="absolute left-0 top-0 h-[100dvh] w-[min(18rem,86vw)] border-r border-sidebar-border bg-sidebar text-sidebar-foreground shadow-2xl animate-in slide-in-from-left duration-300">
             <button
               onClick={() => setMobileOpen(false)}
-              className="absolute top-3 right-3 p-1.5 rounded-md hover:bg-secondary transition-colors"
+              className="absolute right-3 top-[max(0.75rem,env(safe-area-inset-top))] z-20 flex h-11 w-11 items-center justify-center rounded-md transition-colors hover:bg-secondary"
               aria-label="Fechar menu"
             >
               <X className="w-5 h-5" />
@@ -415,7 +424,10 @@ function AccountDialog({
         const { data: u } = await supabase.auth.getUser();
         if (u.user) {
           const [{ error }, { error: metadataError }] = await Promise.all([
-            supabase.from("profiles").update({ full_name: trimmedName }).eq("id", u.user.id),
+            supabase
+              .from("profiles")
+              .update({ full_name: trimmedName })
+              .eq("id", u.user.id),
             supabase.auth.updateUser({ data: { full_name: trimmedName } }),
           ]);
           if (error) throw error;
@@ -423,9 +435,13 @@ function AccountDialog({
         }
       }
       if (trimmedEmail && trimmedEmail !== email.toLowerCase()) {
-        const { error } = await supabase.auth.updateUser({ email: trimmedEmail });
+        const { error } = await supabase.auth.updateUser({
+          email: trimmedEmail,
+        });
         if (error) throw error;
-        toast.info("Enviamos as confirmações necessárias para trocar o e-mail.");
+        toast.info(
+          "Enviamos as confirmações necessárias para trocar o e-mail.",
+        );
       }
       if (password) {
         if (password.length < 8) {
@@ -466,7 +482,9 @@ function AccountDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-lg">
         <DialogHeader>
-          <DialogTitle className="font-cinzel">Configurações da Conta</DialogTitle>
+          <DialogTitle className="font-cinzel">
+            Configurações da Conta
+          </DialogTitle>
         </DialogHeader>
         <div className="space-y-4">
           <div className="rounded-xl border border-border/70 bg-secondary/20 p-4">
@@ -482,7 +500,8 @@ function AccountDialog({
               className="mt-1"
             />
             <p className="mt-1.5 text-[10px] text-muted-foreground">
-              A troca só termina após as confirmações de segurança enviadas por e-mail.
+              A troca só termina após as confirmações de segurança enviadas por
+              e-mail.
             </p>
             <div className="mt-3">
               <Label className="text-xs">Nome de exibição</Label>
@@ -499,7 +518,9 @@ function AccountDialog({
               <ShieldCheck className="h-4 w-4 text-primary" />
               <p className="text-sm font-semibold">Segurança</p>
             </div>
-            <p className="text-xs text-muted-foreground">Trocar senha (opcional)</p>
+            <p className="text-xs text-muted-foreground">
+              Trocar senha (opcional)
+            </p>
             <div>
               <Label className="text-xs">Nova senha</Label>
               <Input
@@ -539,9 +560,15 @@ function AccountDialog({
               <p className="text-sm font-semibold">Seus dados</p>
             </div>
             <p className="mt-2 text-xs text-muted-foreground">
-              Mestres podem gerar cópias independentes de fichas e configurações.
+              Mestres podem gerar cópias independentes de fichas e
+              configurações.
             </p>
-            <Button asChild type="button" variant="outline" className="mt-3 w-full">
+            <Button
+              asChild
+              type="button"
+              variant="outline"
+              className="mt-3 w-full"
+            >
               <Link to="/nexus-tools" onClick={() => onOpenChange(false)}>
                 Abrir Backup & Diagnóstico
               </Link>
@@ -549,7 +576,11 @@ function AccountDialog({
           </div>
         </div>
         <DialogFooter>
-          <Button variant="outline" onClick={() => onOpenChange(false)} disabled={saving}>
+          <Button
+            variant="outline"
+            onClick={() => onOpenChange(false)}
+            disabled={saving}
+          >
             Cancelar
           </Button>
           <Button onClick={save} disabled={saving}>
@@ -560,4 +591,3 @@ function AccountDialog({
     </Dialog>
   );
 }
-
