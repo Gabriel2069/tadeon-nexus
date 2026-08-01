@@ -315,6 +315,74 @@
     transform: scaleY(0.7);
   }
 
+  .tadeon-primary-nav {
+    display: grid;
+    gap: 0.25rem;
+  }
+
+  .tadeon-nav-item {
+    min-height: 2.75rem;
+    border: 1px solid transparent;
+  }
+
+  .tadeon-nav-item > svg {
+    flex: 0 0 auto;
+    transition:
+      color 180ms ease,
+      filter 180ms ease,
+      transform 180ms ease;
+  }
+
+  .tadeon-nav-item:hover {
+    border-color: color-mix(in srgb, var(--sidebar-primary) 11%, transparent);
+  }
+
+  .tadeon-nav-item:hover > svg {
+    color: var(--sidebar-primary);
+    filter: drop-shadow(0 0 8px rgb(217 215 164 / 28%));
+    transform: translateX(1px);
+  }
+
+  .tadeon-dashboard-hero {
+    overflow: clip;
+    background:
+      linear-gradient(135deg, rgb(18 21 26 / 96%), rgb(11 13 17 / 92%)),
+      radial-gradient(circle at 84% 14%, rgb(217 215 164 / 9%), transparent 32%);
+  }
+
+  .tadeon-sheet-card {
+    overflow: clip;
+    background:
+      linear-gradient(145deg, rgb(18 21 26 / 97%), rgb(11 14 18 / 94%)),
+      radial-gradient(circle at 88% 5%, rgb(113 107 123 / 11%), transparent 32%);
+  }
+
+  .tadeon-sheet-card::after {
+    position: absolute;
+    right: -22%;
+    bottom: -54%;
+    width: 13rem;
+    aspect-ratio: 1;
+    border: 1px solid rgb(217 215 164 / 8%);
+    border-radius: 50%;
+    box-shadow: 0 0 0 1.75rem rgb(217 215 164 / 1.8%);
+    pointer-events: none;
+    content: "";
+    transition:
+      transform 320ms ease,
+      border-color 320ms ease;
+  }
+
+  .tadeon-sheet-card:hover::after {
+    border-color: rgb(217 215 164 / 16%);
+    transform: scale(1.08);
+  }
+
+  .tadeon-sheet-card__open {
+    position: relative;
+    z-index: 1;
+  }
+
   .tadeon-loading-mark {
     display: grid;
     width: 4.5rem;
