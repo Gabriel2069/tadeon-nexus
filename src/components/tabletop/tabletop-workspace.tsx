@@ -43,6 +43,7 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
+import { TabletopLiveSession } from "@/components/tabletop/tabletop-live-session";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
@@ -156,7 +157,11 @@ function errorMessage(error: unknown) {
   }
 }
 
-export function TabletopWorkspace() {
+export function TabletopWorkspace({
+  realtimeEnabled = false,
+}: {
+  realtimeEnabled?: boolean;
+}) {
   const hostRef = useRef<HTMLDivElement>(null);
   const engineRef = useRef<TabletopEngine | null>(null);
   const engineReadyRef = useRef(false);
@@ -923,6 +928,15 @@ export function TabletopWorkspace() {
             </ToolbarButton>
           </div>
         </div>
+        <TabletopLiveSession
+          enabled={realtimeEnabled}
+          campaignId={campaignId || null}
+          campaignName={
+            campaigns.find((campaign) => campaign.id === campaignId)?.name ?? null
+          }
+          sceneId={persistedScene?.id ?? null}
+          sceneName={persistedScene?.name ?? null}
+        />
       </header>
 
       {conflict && (
