@@ -186,8 +186,8 @@ export function SkillTreeTab({
   };
 
   return (
-    <div className="space-y-4">
-      <Card className="p-4 overflow-hidden bg-[linear-gradient(135deg,rgba(113,107,123,.18),transparent_58%)] border-primary/30">
+    <div className="tadeon-sheet-skill-tree space-y-4">
+      <Card className="tadeon-skill-summary overflow-hidden border-primary/30 bg-[linear-gradient(135deg,rgba(113,107,123,.18),transparent_58%)] p-4">
         <div className="grid grid-cols-1 gap-3 text-center sm:grid-cols-3 sm:gap-4">
           <div>
             <div className="text-xs text-muted-foreground uppercase">PM Totais</div>
@@ -214,7 +214,7 @@ export function SkillTreeTab({
         </div>
       </Card>
 
-      <Card className="p-4">
+      <Card className="tadeon-skill-summary p-4">
         <h3 className="font-cinzel font-bold mb-3">Aprimorar Atributos Vitais</h3>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
           {UPGRADE_KEYS.map(({ key, label, gain, color }) => {
@@ -271,7 +271,7 @@ export function SkillTreeTab({
       {branches.map((branch) => (
         <Card
           key={branch.id}
-          className="overflow-hidden border-border/70"
+          className="tadeon-skill-branch overflow-hidden border-border/70"
           style={{ boxShadow: `inset 3px 0 0 ${branch.color}` }}
         >
           <div className="border-b border-border/60 bg-secondary/20 px-5 py-4">
@@ -315,75 +315,75 @@ export function SkillTreeTab({
                         />
                       </button>
                       {!collapsed && (
-                        <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
-                      {tierNodes.map((node) => {
-                        const isPurchased = purchased.has(node.id);
-                        const check = canBuyNode(node);
-                        const locked = !isPurchased && !check.ok;
-                        return (
-                          <div
-                            key={node.id}
-                            className={`flex min-h-56 flex-col rounded-xl border p-4 transition-all ${
-                              isPurchased
-                                ? "bg-primary/10 border-primary/50 shadow-[0_12px_40px_-28px_var(--primary)]"
-                                : locked
-                                  ? "bg-secondary/20 border-border/70"
-                                  : "bg-secondary/35 border-border hover:-translate-y-0.5 hover:border-primary/50"
-                            }`}
-                          >
-                            <div className="flex items-start justify-between gap-2">
-                              <h4 className="font-cinzel font-bold text-sm">{node.name}</h4>
-                              {isPurchased ? (
-                                <Check className="w-4 h-4 text-primary shrink-0" />
-                              ) : locked ? (
-                                <Lock className="w-3.5 h-3.5 text-muted-foreground shrink-0" />
-                              ) : null}
-                            </div>
-                            <p className="mt-2 text-xs leading-relaxed text-muted-foreground">
-                              {node.desc}
-                            </p>
-                            <div className="mt-2 flex flex-wrap gap-1 text-[10px]">
-                              <span className="px-1.5 py-0.5 rounded bg-background/40">
-                                {node.minRank === 0 && freeTierOneRemaining > 0
-                                  ? "Inicial: 0 PM"
-                                  : `Custo: ${node.cost} PM`}
-                              </span>
-                              {node.minRank > 0 && (
-                                <span className="px-1.5 py-0.5 rounded bg-background/40">
-                                  Rank {node.minRank}+
-                                </span>
-                              )}
-                              {node.requirementsText && (
-                                <span className="px-1.5 py-0.5 rounded bg-background/40">
-                                  {node.requirementsText}
-                                </span>
-                              )}
-                            </div>
-                            {canEdit && (
-                              <div className="mt-auto pt-4">
-                                {isPurchased ? (
-                                  <Button
-                                    size="sm"
-                                    variant="ghost"
-                                    className="w-full h-7 text-xs"
-                                    onClick={() => refundNode(node)}
-                                  >
-                                    Reembolsar
-                                  </Button>
-                                ) : (
-                                  <Button
-                                    size="sm"
-                                    className="w-full h-7 text-xs"
-                                    disabled={!check.ok}
-                                    onClick={() => buyNode(node)}
-                                  >
-                                    {check.ok ? "Adquirir" : check.why}
-                                  </Button>
+                        <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+                          {tierNodes.map((node) => {
+                            const isPurchased = purchased.has(node.id);
+                            const check = canBuyNode(node);
+                            const locked = !isPurchased && !check.ok;
+                            return (
+                              <div
+                                key={node.id}
+                                className={`tadeon-skill-node flex min-h-56 flex-col rounded-xl border p-4 transition-all ${
+                                  isPurchased
+                                    ? "bg-primary/10 border-primary/50 shadow-[0_12px_40px_-28px_var(--primary)]"
+                                    : locked
+                                      ? "bg-secondary/20 border-border/70"
+                                      : "bg-secondary/35 border-border hover:-translate-y-0.5 hover:border-primary/50"
+                                }`}
+                              >
+                                <div className="flex items-start justify-between gap-2">
+                                  <h4 className="font-cinzel font-bold text-sm">{node.name}</h4>
+                                  {isPurchased ? (
+                                    <Check className="w-4 h-4 text-primary shrink-0" />
+                                  ) : locked ? (
+                                    <Lock className="w-3.5 h-3.5 text-muted-foreground shrink-0" />
+                                  ) : null}
+                                </div>
+                                <p className="mt-2 text-xs leading-relaxed text-muted-foreground">
+                                  {node.desc}
+                                </p>
+                                <div className="mt-2 flex flex-wrap gap-1 text-[10px]">
+                                  <span className="px-1.5 py-0.5 rounded bg-background/40">
+                                    {node.minRank === 0 && freeTierOneRemaining > 0
+                                      ? "Inicial: 0 PM"
+                                      : `Custo: ${node.cost} PM`}
+                                  </span>
+                                  {node.minRank > 0 && (
+                                    <span className="px-1.5 py-0.5 rounded bg-background/40">
+                                      Rank {node.minRank}+
+                                    </span>
+                                  )}
+                                  {node.requirementsText && (
+                                    <span className="px-1.5 py-0.5 rounded bg-background/40">
+                                      {node.requirementsText}
+                                    </span>
+                                  )}
+                                </div>
+                                {canEdit && (
+                                  <div className="mt-auto pt-4">
+                                    {isPurchased ? (
+                                      <Button
+                                        size="sm"
+                                        variant="ghost"
+                                        className="min-h-10 w-full text-xs"
+                                        onClick={() => refundNode(node)}
+                                      >
+                                        Reembolsar
+                                      </Button>
+                                    ) : (
+                                      <Button
+                                        size="sm"
+                                        className="min-h-10 w-full text-xs"
+                                        disabled={!check.ok}
+                                        onClick={() => buyNode(node)}
+                                      >
+                                        {check.ok ? "Adquirir" : check.why}
+                                      </Button>
+                                    )}
+                                  </div>
                                 )}
                               </div>
-                            )}
-                          </div>
-                        );
+                            );
                           })}
                         </div>
                       )}
