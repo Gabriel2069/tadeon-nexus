@@ -40,6 +40,7 @@ export class TabletopEngine {
   private host: HTMLElement | null = null;
   private destroyed = false;
   private readOnly = false;
+  private clipboard: TabletopEntity[] = [];
 
   constructor(private readonly options: TabletopEngineOptions = {}) {
     this.entities = new EntityRenderer(
@@ -87,6 +88,8 @@ export class TabletopEngine {
       undo: () => this.undo(),
       redo: () => this.redo(),
       duplicate: () => this.duplicateSelected(),
+      copy: () => this.copySelected(),
+      paste: () => this.pasteClipboard(),
       remove: () => this.deleteSelected(),
       nudge: (delta) => this.nudge(delta),
       onContextMenu: (position, entityId) =>
@@ -183,6 +186,32 @@ export class TabletopEngine {
     );
   }
 
+  updateSelectedProperties(
+    patch: Record<string, unknown>,
+    label = "Editar propriedades",
+  ) {
+    if (this.readOnly) return;
+    const selected = new Set(this.selection.ids);
+    if (selected.size === 0) return;
+    this.executeMutation(label, (entities) =>
+      entities.map((entity) =>
+        selected.has(entity.id) && this.layers.canEdit(entity)
+          ? {
+              ...entity,
+              properties: {
+                ...(typeof entity.properties === "object" &&
+                entity.properties !== null &&
+                !Array.isArray(entity.properties)
+                  ? entity.properties
+                  : {}),
+                ...patch,
+              },
+            }
+          : entity,
+      ),
+    );
+  }
+
   duplicateSelected() {
     if (this.readOnly) return;
     const source = this.selectedEntities.filter((entity) =>
@@ -202,6 +231,34 @@ export class TabletopEngine {
       ...copies,
     ]);
     this.selection.replace(copies.map((entity) => entity.id));
+    this.render();
+  }
+
+  copySelected() {
+    this.clipboard = this.selectedEntities
+      .filter((entity) => this.layers.canEdit(entity))
+      .map((entity) => ({ ...entity }));
+  }
+
+  pasteClipboard() {
+    if (this.readOnly || this.clipboard.length === 0) return;
+    const copies = this.clipboard
+      .filter((entity) => this.layers.canEdit(entity))
+      .map((entity, index) => ({
+        ...entity,
+        id: crypto.randomUUID(),
+        label: `${entity.label} · cópia`,
+        x: entity.x + 24,
+        y: entity.y + 24,
+        zIndex: this.scenes.scene.entities.length + index + 1,
+      }));
+    if (copies.length === 0) return;
+    this.executeMutation("Colar entidades", (entities) => [
+      ...entities,
+      ...copies,
+    ]);
+    this.selection.replace(copies.map((entity) => entity.id));
+    this.clipboard = copies.map((entity) => ({ ...entity }));
     this.render();
   }
 
@@ -309,6 +366,7 @@ export class TabletopEngine {
       entities: this.scenes.scene.entities.length,
       selected: this.selection.ids.length,
       textures: this.textures.size,
+      clipboard: this.clipboard.length,
       viewport: `${this.app.renderer.width}×${this.app.renderer.height}`,
       zoom: this.camera.zoom,
     };

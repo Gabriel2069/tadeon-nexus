@@ -42,6 +42,12 @@ export interface TabletopEntity {
   locked: boolean;
   color: number;
   assetUrl?: string;
+  elevation?: number;
+  assetId?: string | null;
+  linkedSheetId?: string | null;
+  linkedKnowledgeNodeId?: string | null;
+  ownerUserId?: string | null;
+  properties?: unknown;
 }
 
 export interface TabletopScene {

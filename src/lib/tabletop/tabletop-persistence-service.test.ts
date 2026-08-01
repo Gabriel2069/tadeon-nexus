@@ -170,6 +170,78 @@ describe("tabletop persistence mapping", () => {
       status: "active",
     });
   });
+
+  it("keeps an explicit null when a persisted link is removed", () => {
+    const original = mapTabletopScene(
+      {
+        id: "scene",
+        campaign_id: "campaign",
+        name: "Porto",
+        background_asset_id: null,
+        width: 2400,
+        height: 1600,
+        grid_type: "square",
+        grid_size: 64,
+        grid_offset_x: 0,
+        grid_offset_y: 0,
+        grid_scale: 1,
+        snap_enabled: true,
+        global_illumination: 1,
+        status: "active",
+        order_index: 0,
+        version: 2,
+        created_at: "a",
+        updated_at: "b",
+      },
+      [
+        {
+          id: "tokens",
+          scene_id: "scene",
+          name: "Tokens",
+          layer_type: "tokens",
+          order_index: 2,
+          visible: true,
+          locked: false,
+          version: 1,
+        },
+      ],
+      [
+        {
+          id: "token",
+          scene_id: "scene",
+          layer_id: "tokens",
+          entity_type: "token",
+          name: "Myrova",
+          linked_sheet_id: "sheet",
+          linked_knowledge_node_id: "page",
+          asset_id: null,
+          x: 0,
+          y: 0,
+          width: 64,
+          height: 64,
+          rotation: 0,
+          elevation: 0,
+          z_index: 1,
+          hidden: false,
+          locked: false,
+          owner_user_id: null,
+          properties: {},
+          version: 4,
+        },
+      ],
+    );
+    const payload = buildTabletopSavePayload(original, {
+      ...original,
+      entities: [{ ...original.entities[0], linkedSheetId: null }],
+    });
+
+    expect(payload.entityDocuments[0]).toMatchObject({
+      id: "token",
+      linked_sheet_id: null,
+      linked_knowledge_node_id: "page",
+      version: 4,
+    });
+  });
 });
 
 describe("TabletopPersistenceService conflicts", () => {

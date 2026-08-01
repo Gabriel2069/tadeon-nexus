@@ -14,6 +14,8 @@ interface InteractionBindings {
   undo(): void;
   redo(): void;
   duplicate(): void;
+  copy(): void;
+  paste(): void;
   remove(): void;
   nudge(delta: Point): void;
   onContextMenu(position: Point, entityId?: string): void;
@@ -152,6 +154,16 @@ export class InteractionController {
     if (modifier && event.key.toLowerCase() === "d") {
       event.preventDefault();
       this.bindings.duplicate();
+      return;
+    }
+    if (modifier && event.key.toLowerCase() === "c") {
+      event.preventDefault();
+      this.bindings.copy();
+      return;
+    }
+    if (modifier && event.key.toLowerCase() === "v") {
+      event.preventDefault();
+      this.bindings.paste();
       return;
     }
     if (event.key === "Delete" || event.key === "Backspace") {
