@@ -166,6 +166,22 @@ function typeOfTag(value: KnowledgeTagLinkRow["tag"]): { name: string } | null {
   return Array.isArray(value) ? (value[0] ?? null) : value;
 }
 
+function chunksOf<T>(values: T[], size = 100) {
+  const chunks: T[][] = [];
+  for (let index = 0; index < values.length; index += size) {
+    chunks.push(values.slice(index, index + size));
+  }
+  return chunks;
+}
+
+function mergeQueryRows<T>(
+  results: Array<{ data: unknown[] | null; error: unknown }>,
+) {
+  const failed = results.find((result) => result.error);
+  if (failed?.error) throw new Error(rpcErrorMessage(failed.error));
+  return results.flatMap((result) => result.data ?? []) as T[];
+}
+
 async function allSettledOrThrow(
   tasks: Array<() => Promise<void>>,
   concurrency = 3,
@@ -373,16 +389,19 @@ export class KnowledgePortabilityService {
   private async listNodes(workspaceId: string, campaignId: string | null) {
     let query = this.database
       .from("knowledge_nodes")
-      .select("*")
+      .select("*", { count: "exact" })
       .eq("workspace_id", workspaceId)
       .is("deleted_at", null)
       .order("created_at")
-      .limit(500);
+      .range(0, 499);
     query = campaignId
       ? query.eq("campaign_id", campaignId)
       : query.is("campaign_id", null);
-    const { data, error } = await query;
+    const { data, error, count } = await query;
     if (error) throw new Error(rpcErrorMessage(error));
+    if ((count ?? 0) > 500) {
+      throw new Error("KNOWLEDGE_EXPORT_PAGE_LIMIT_EXCEEDED");
+    }
     return (data ?? []) as KnowledgeNodeRow[];
   }
 
@@ -401,47 +420,62 @@ export class KnowledgePortabilityService {
     });
     const nodes = await this.listNodes(options.workspaceId, options.campaignId);
     const nodeIds = nodes.map((node) => node.id);
-    const emptyResult = { data: [] as unknown[], error: null };
-    const aliasesResult = nodeIds.length
-      ? await this.database
-          .from("knowledge_aliases")
-          .select("node_id,alias")
-          .in("node_id", nodeIds)
-          .order("alias")
-      : emptyResult;
-    const tagsResult = nodeIds.length
-      ? await this.database
-          .from("knowledge_node_tags")
-          .select("node_id,tag:knowledge_tags(name)")
-          .in("node_id", nodeIds)
-      : emptyResult;
-    const edgesResult = nodeIds.length
-      ? await this.database
-          .from("knowledge_edges")
-          .select(
-            "source_node_id,target_node_id,relation_type,label,direction,visibility,properties",
+    const nodeIdChunks = chunksOf(nodeIds);
+    const aliasRows = mergeQueryRows<KnowledgeAliasRow>(
+      await Promise.all(
+        nodeIdChunks.map((ids) =>
+          this.database
+            .from("knowledge_aliases")
+            .select("node_id,alias")
+            .in("node_id", ids)
+            .order("alias"),
+        ),
+      ),
+    );
+    const tagRows = mergeQueryRows<KnowledgeTagLinkRow>(
+      await Promise.all(
+        nodeIdChunks.map((ids) =>
+          this.database
+            .from("knowledge_node_tags")
+            .select("node_id,tag:knowledge_tags(name)")
+            .in("node_id", ids),
+        ),
+      ),
+    );
+    const edgeRows = mergeQueryRows<KnowledgeEdgeRow>(
+      await Promise.all(
+        nodeIdChunks.map((ids) =>
+          this.database
+            .from("knowledge_edges")
+            .select(
+              "source_node_id,target_node_id,relation_type,label,direction,visibility,properties",
+            )
+            .in("source_node_id", ids)
+            .is("deleted_at", null),
+        ),
+      ),
+    );
+    if (edgeRows.length > 2_000) {
+      throw new Error("KNOWLEDGE_EXPORT_RELATION_LIMIT_EXCEEDED");
+    }
+    const links =
+      options.includeAttachments && options.assetsEnabled
+        ? mergeQueryRows<KnowledgeAssetRow>(
+            await Promise.all(
+              nodeIdChunks.map((ids) =>
+                this.database
+                  .from("knowledge_assets")
+                  .select("node_id,asset_id")
+                  .in("node_id", ids)
+                  .order("sort_order"),
+              ),
+            ),
           )
-          .in("source_node_id", nodeIds)
-          .in("target_node_id", nodeIds)
-          .is("deleted_at", null)
-      : emptyResult;
-    const linksResult =
-      nodeIds.length && options.includeAttachments && options.assetsEnabled
-        ? await this.database
-            .from("knowledge_assets")
-            .select("node_id,asset_id")
-            .in("node_id", nodeIds)
-            .order("sort_order")
-        : emptyResult;
+        : [];
+    if (links.length > 2_000) {
+      throw new Error("KNOWLEDGE_EXPORT_ATTACHMENT_LIMIT_EXCEEDED");
+    }
 
-    const firstError =
-      aliasesResult.error ??
-      tagsResult.error ??
-      edgesResult.error ??
-      linksResult.error;
-    if (firstError) throw new Error(rpcErrorMessage(firstError));
-
-    const pathsByNode = new Map<string, string>();
     const keysByNode = new Map<string, string>();
     const usedPaths = new Set<string>();
     const exportPages: KnowledgeExportPage[] = nodes.map((node) => {
@@ -451,7 +485,6 @@ export class KnowledgePortabilityService {
       while (usedPaths.has(path)) path = `${root}-${suffix++}.md`;
       usedPaths.add(path);
       const key = path.replace(/\.md$/i, "");
-      pathsByNode.set(node.id, path);
       keysByNode.set(node.id, key);
       return {
         key,
@@ -465,37 +498,34 @@ export class KnowledgePortabilityService {
         status: node.status as KnowledgeNodeStatus,
         visibility: node.visibility as KnowledgeVisibility,
         icon: node.icon,
-        aliases: (aliasesResult.data as KnowledgeAliasRow[])
+        aliases: aliasRows
           .filter((alias) => alias.node_id === node.id)
           .map((alias) => alias.alias),
-        tags: (tagsResult.data as unknown as KnowledgeTagLinkRow[])
+        tags: tagRows
           .filter((link) => link.node_id === node.id)
           .map((link) => typeOfTag(link.tag)?.name)
           .filter((name): name is string => Boolean(name)),
       };
     });
 
-    const relations = (edgesResult.data as KnowledgeEdgeRow[]).flatMap(
-      (edge) => {
-        const sourceKey = keysByNode.get(edge.source_node_id);
-        const targetKey = keysByNode.get(edge.target_node_id);
-        return sourceKey && targetKey
-          ? [
-              {
-                source_key: sourceKey,
-                target_key: targetKey,
-                relation_type: edge.relation_type,
-                label: edge.label,
-                direction: edge.direction,
-                visibility: edge.visibility,
-                properties: edge.properties,
-              },
-            ]
-          : [];
-      },
-    );
+    const relations = edgeRows.flatMap((edge) => {
+      const sourceKey = keysByNode.get(edge.source_node_id);
+      const targetKey = keysByNode.get(edge.target_node_id);
+      return sourceKey && targetKey
+        ? [
+            {
+              source_key: sourceKey,
+              target_key: targetKey,
+              relation_type: edge.relation_type,
+              label: edge.label,
+              direction: edge.direction,
+              visibility: edge.visibility,
+              properties: edge.properties,
+            },
+          ]
+        : [];
+    });
 
-    const links = linksResult.data as KnowledgeAssetRow[];
     const assetIds = [...new Set(links.map((link) => link.asset_id))];
     const assetsResult = assetIds.length
       ? await this.database
@@ -504,7 +534,7 @@ export class KnowledgePortabilityService {
           .in("id", assetIds)
           .eq("status", "ready")
           .is("deleted_at", null)
-      : emptyResult;
+      : { data: [] as unknown[], error: null };
     if (assetsResult.error)
       throw new Error(rpcErrorMessage(assetsResult.error));
 
