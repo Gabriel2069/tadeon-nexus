@@ -101,7 +101,14 @@ Conteúdo.
         },
       ],
       relations: [],
-      attachments: [],
+      attachments: [
+        {
+          path: "attachments/mapa.png",
+          original_asset_id: "33333333-3333-4333-8333-333333333333",
+          page_keys: ["cidade"],
+          bytes: new Uint8Array([137, 80, 78, 71]),
+        },
+      ],
     });
 
     const manifest = inspectArchiveText(bytes, "manifest.yml");
@@ -112,6 +119,8 @@ Conteúdo.
     expect(reimported.pages[0].title).toBe("Myrova — Cidade d'Água");
     expect(reimported.pages[0].summary).toBe("Símbolos: á, ç, Ω");
     expect(reimported.pages[0].content_markdown).toContain("[[Lobo Alvor]]");
+    expect(reimported.attachments[0].page_keys).toEqual(["locais/Myrova"]);
+    expect([...reimported.attachments[0].bytes]).toEqual([137, 80, 78, 71]);
   });
 
   it("rejects unsafe archive paths", () => {
