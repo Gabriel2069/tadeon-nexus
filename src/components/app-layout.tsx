@@ -19,6 +19,7 @@ import {
   ShieldCheck,
   Wrench,
   LibraryBig,
+  MapPinned,
 } from "lucide-react";
 import { useAuth } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
@@ -58,6 +59,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
   });
   const [accountOpen, setAccountOpen] = useState(false);
   const [knowledgeEnabled, setKnowledgeEnabled] = useState(false);
+  const [tabletopEnabled, setTabletopEnabled] = useState(false);
 
   useEffect(() => {
     window.localStorage.setItem(COLLAPSE_KEY, collapsed ? "1" : "0");
@@ -66,7 +68,10 @@ export function AppLayout({ children }: { children: ReactNode }) {
   useEffect(() => {
     let active = true;
     void loadFeatureFlags().then((flags) => {
-      if (active) setKnowledgeEnabled(flags.nexus_knowledge_enabled);
+      if (active) {
+        setKnowledgeEnabled(flags.nexus_knowledge_enabled);
+        setTabletopEnabled(flags.nexus_tabletop_enabled);
+      }
     });
     return () => {
       active = false;
@@ -108,6 +113,16 @@ export function AppLayout({ children }: { children: ReactNode }) {
       )}
       {isMestre && (
         <>
+          {tabletopEnabled && (
+            <NavItem
+              to="/tabletop"
+              icon={<MapPinned className="w-4 h-4" />}
+              label="Mesa Nexus"
+              active={path.startsWith("/tabletop")}
+              mini={mini}
+              onClick={() => setMobileOpen(false)}
+            />
+          )}
           <NavItem
             to="/master-panel"
             icon={<Lightbulb className="w-4 h-4" />}
@@ -545,3 +560,4 @@ function AccountDialog({
     </Dialog>
   );
 }
+

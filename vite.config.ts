@@ -53,6 +53,7 @@ export default defineConfig({
           manualChunks(id) {
             if (!id.includes("node_modules")) return undefined;
             if (id.includes("recharts") || id.includes("d3-")) return "vendor-charts";
+            if (id.includes("pixi.js")) return "vendor-pixi";
             if (id.includes("@tanstack")) return "vendor-tanstack";
             if (id.includes("@supabase")) return "vendor-supabase";
             if (id.includes("@radix-ui")) return "vendor-radix";
@@ -64,3 +65,4 @@ export default defineConfig({
     },
   },
 });
+
