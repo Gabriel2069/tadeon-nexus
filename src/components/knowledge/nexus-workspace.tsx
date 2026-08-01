@@ -1,4 +1,10 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import {
   Archive,
   BookMarked,
@@ -171,7 +177,10 @@ const RELATION_LABELS: Record<RelationType, string> = {
   custom: "Relação personalizada",
 };
 
-const RELATION_DIRECTION_LABELS: Record<KnowledgeRelationDirection, string> = {
+const RELATION_DIRECTION_LABELS: Record<
+  KnowledgeRelationDirection,
+  string
+> = {
   directed: "Direcionada",
   bidirectional: "Bidirecional",
 };
@@ -308,15 +317,12 @@ export function NexusWorkspace({
   const [typeFilter, setTypeFilter] = useState<KnowledgeNodeType | "all">(
     "all",
   );
-  const [statusFilter, setStatusFilter] = useState<KnowledgeNodeStatus | "all">(
-    "all",
-  );
-  const [visibilityFilter, setVisibilityFilter] = useState<
-    KnowledgeVisibility | "all"
-  >("all");
-  const [searchRelationFilter, setSearchRelationFilter] = useState<
-    RelationType | "all"
-  >("all");
+  const [statusFilter, setStatusFilter] =
+    useState<KnowledgeNodeStatus | "all">("all");
+  const [visibilityFilter, setVisibilityFilter] =
+    useState<KnowledgeVisibility | "all">("all");
+  const [searchRelationFilter, setSearchRelationFilter] =
+    useState<RelationType | "all">("all");
   const [searchOrder, setSearchOrder] =
     useState<KnowledgeSearchOrder>("relevance");
   const [onlyCanonical, setOnlyCanonical] = useState(false);
@@ -330,7 +336,8 @@ export function NexusWorkspace({
   const [lastSavedAt, setLastSavedAt] = useState<Date | null>(null);
   const [createOpen, setCreateOpen] = useState(false);
   const [createTitle, setCreateTitle] = useState("");
-  const [createType, setCreateType] = useState<KnowledgeNodeType>("free_note");
+  const [createType, setCreateType] =
+    useState<KnowledgeNodeType>("free_note");
   const [createVisibility, setCreateVisibility] =
     useState<KnowledgeVisibility>("author");
   const [creating, setCreating] = useState(false);
@@ -346,7 +353,8 @@ export function NexusWorkspace({
     null,
   );
   const [relationTargetId, setRelationTargetId] = useState("");
-  const [relationType, setRelationType] = useState<RelationType>("related_to");
+  const [relationType, setRelationType] =
+    useState<RelationType>("related_to");
   const [relationLabel, setRelationLabel] = useState("");
   const [relationDirection, setRelationDirection] =
     useState<KnowledgeRelationDirection>("directed");
@@ -357,18 +365,16 @@ export function NexusWorkspace({
   const [relationInverseType, setRelationInverseType] =
     useState<RelationType>("related_to");
   const [relationInverseLabel, setRelationInverseLabel] = useState("");
-  const [relationFilterType, setRelationFilterType] = useState<
-    RelationType | "all"
-  >("all");
-  const [relationFilterDirection, setRelationFilterDirection] = useState<
-    KnowledgeRelationDirection | "all"
-  >("all");
-  const [relationFilterVisibility, setRelationFilterVisibility] = useState<
-    KnowledgeVisibility | "all"
-  >("all");
+  const [relationFilterType, setRelationFilterType] =
+    useState<RelationType | "all">("all");
+  const [relationFilterDirection, setRelationFilterDirection] =
+    useState<KnowledgeRelationDirection | "all">("all");
+  const [relationFilterVisibility, setRelationFilterVisibility] =
+    useState<KnowledgeVisibility | "all">("all");
   const [relationSaving, setRelationSaving] = useState(false);
 
-  const campaignScope = campaignId === "workspace" ? null : campaignId || null;
+  const campaignScope =
+    campaignId === "workspace" ? null : campaignId || null;
   const currentCampaign = campaigns.find(
     (campaign) => campaign.id === campaignScope,
   );
@@ -395,12 +401,12 @@ export function NexusWorkspace({
     setWorkspaceId((current) =>
       nextWorkspaces.some((workspace) => workspace.id === current)
         ? current
-        : (nextCampaigns[0]?.workspace_id ?? nextWorkspaces[0]?.id ?? ""),
+        : nextCampaigns[0]?.workspace_id ?? nextWorkspaces[0]?.id ?? "",
     );
     setCampaignId((current) =>
       current !== "workspace" &&
       !nextCampaigns.some((campaign) => campaign.id === current)
-        ? (nextCampaigns[0]?.id ?? "workspace")
+        ? nextCampaigns[0]?.id ?? "workspace"
         : current,
     );
     setLoading(false);
@@ -429,7 +435,9 @@ export function NexusWorkspace({
           visibilities:
             visibilityFilter === "all" ? undefined : [visibilityFilter],
           relationTypes:
-            searchRelationFilter === "all" ? undefined : [searchRelationFilter],
+            searchRelationFilter === "all"
+              ? undefined
+              : [searchRelationFilter],
           onlyCanonical,
           order: searchOrder,
           page: searchPage,
@@ -532,21 +540,23 @@ export function NexusWorkspace({
     const nextPreviews: Record<string, KnowledgeLinkPreview | null> = {};
     for (const entry of resolved) {
       const previewKey = `${entry.reference.normalizedTarget}#${entry.reference.normalizedSection ?? ""}`;
-      nextPreviews[previewKey] =
-        entry.node && !entry.broken
-          ? {
-              id: entry.node.id,
-              title: entry.node.title,
-              summary: entry.node.summary,
-              nodeType: TYPE_LABELS[entry.node.node_type],
-            }
-          : null;
+      nextPreviews[previewKey] = entry.node && !entry.broken
+        ? {
+            id: entry.node.id,
+            title: entry.node.title,
+            summary: entry.node.summary,
+            nodeType: TYPE_LABELS[entry.node.node_type],
+          }
+        : null;
     }
     setPreviews(nextPreviews);
   }, []);
 
   const openNode = useCallback(
-    async (nodeOrId: KnowledgeNode | string, headingSlug?: string) => {
+    async (
+      nodeOrId: KnowledgeNode | string,
+      headingSlug?: string,
+    ) => {
       try {
         const node =
           typeof nodeOrId === "string"
@@ -642,14 +652,10 @@ export function NexusWorkspace({
       );
       setSelected(result.node);
       setOpenNodes((current) =>
-        current.map((node) =>
-          node.id === result.node.id ? result.node : node,
-        ),
+        current.map((node) => (node.id === result.node.id ? result.node : node)),
       );
       setNodes((current) =>
-        current.map((node) =>
-          node.id === result.node.id ? result.node : node,
-        ),
+        current.map((node) => (node.id === result.node.id ? result.node : node)),
       );
       setSaveState("saved");
       setLastSavedAt(new Date());
@@ -661,7 +667,13 @@ export function NexusWorkspace({
       setSaveState(code === "KNOWLEDGE_CONFLICT" ? "conflict" : "error");
       toast.error(errorMessage(error));
     }
-  }, [draftContent, draftTitle, refreshNodeDetails, saveState, selected]);
+  }, [
+    draftContent,
+    draftTitle,
+    refreshNodeDetails,
+    saveState,
+    selected,
+  ]);
 
   useEffect(() => {
     if (!editMode || saveState !== "dirty") return;
@@ -748,14 +760,10 @@ export function NexusWorkspace({
       );
       setSelected(result.node);
       setOpenNodes((current) =>
-        current.map((node) =>
-          node.id === result.node.id ? result.node : node,
-        ),
+        current.map((node) => (node.id === result.node.id ? result.node : node)),
       );
       setNodes((current) =>
-        current.map((node) =>
-          node.id === result.node.id ? result.node : node,
-        ),
+        current.map((node) => (node.id === result.node.id ? result.node : node)),
       );
       setSaveState("saved");
       setLastSavedAt(new Date());
@@ -791,9 +799,9 @@ export function NexusWorkspace({
       await knowledgeService.addAlias(selected.id, aliasValue);
       setAliasValue("");
       setAliases(
-        (await knowledgeService.listAliases(selected.id)) as Array<
-          Record<string, unknown>
-        >,
+        (await knowledgeService.listAliases(
+          selected.id,
+        )) as Array<Record<string, unknown>>,
       );
       toast.success("Alias adicionado.");
     } catch (error) {
@@ -1226,9 +1234,7 @@ export function NexusWorkspace({
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="relevance">Mais relevantes</SelectItem>
-                  <SelectItem value="updated">
-                    Atualizados recentemente
-                  </SelectItem>
+                  <SelectItem value="updated">Atualizados recentemente</SelectItem>
                   <SelectItem value="title">Título</SelectItem>
                 </SelectContent>
               </Select>
@@ -1300,7 +1306,8 @@ export function NexusWorkspace({
                   <ChevronLeft className="h-4 w-4" />
                 </Button>
                 <span className="text-[10px] text-muted-foreground">
-                  {searchPage + 1} de {Math.max(1, Math.ceil(searchCount / 30))}
+                  {searchPage + 1} de{" "}
+                  {Math.max(1, Math.ceil(searchCount / 30))}
                 </span>
                 <Button
                   type="button"
@@ -1692,9 +1699,7 @@ export function NexusWorkspace({
                         <p
                           key={`${heading.title}-${index}`}
                           className="truncate text-xs text-muted-foreground"
-                          style={{
-                            paddingLeft: `${(heading.level - 1) * 8}px`,
-                          }}
+                          style={{ paddingLeft: `${(heading.level - 1) * 8}px` }}
                         >
                           {heading.title}
                         </p>
@@ -1954,9 +1959,7 @@ export function NexusWorkspace({
                         >
                           <p className="truncate text-sm font-medium text-destructive">
                             {link.target_text}
-                            {link.target_heading
-                              ? `#${link.target_heading}`
-                              : ""}
+                            {link.target_heading ? `#${link.target_heading}` : ""}
                           </p>
                           <p className="mt-1 text-[11px] text-muted-foreground">
                             {link.reason === "missing_heading"
@@ -2104,12 +2107,9 @@ export function NexusWorkspace({
       <Dialog open={graphOpen} onOpenChange={setGraphOpen}>
         <DialogContent className="h-[92vh] max-h-[92vh] overflow-hidden p-4 sm:max-w-[96vw]">
           <DialogHeader className="shrink-0">
-            <DialogTitle className="font-cinzel">
-              Teia local de O Nexus
-            </DialogTitle>
+            <DialogTitle className="font-cinzel">Teia local de O Nexus</DialogTitle>
             <DialogDescription>
-              Vizinhança limitada, filtrável e carregada apenas com metadados
-              visíveis.
+              Vizinhança limitada, filtrável e carregada apenas com metadados visíveis.
             </DialogDescription>
           </DialogHeader>
           <div className="min-h-0 flex-1 overflow-hidden">
@@ -2219,9 +2219,7 @@ export function NexusWorkspace({
       <Dialog open={commandOpen} onOpenChange={setCommandOpen}>
         <DialogContent className="gap-0 overflow-hidden p-0 sm:max-w-2xl">
           <DialogHeader className="border-b p-4">
-            <DialogTitle className="font-cinzel">
-              Paleta de comandos
-            </DialogTitle>
+            <DialogTitle className="font-cinzel">Paleta de comandos</DialogTitle>
             <DialogDescription>Ctrl + Shift + P</DialogDescription>
           </DialogHeader>
           <div className="relative border-b">
@@ -2497,7 +2495,9 @@ export function NexusWorkspace({
                 relationTargetId === selected?.id
               }
             >
-              {relationSaving && <Loader2 className="h-4 w-4 animate-spin" />}
+              {relationSaving && (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              )}
               {relationEditing ? "Salvar relação" : "Criar relação"}
             </Button>
           </DialogFooter>
@@ -2533,7 +2533,9 @@ export function NexusWorkspace({
           onSelect={async (asset) => {
             try {
               await knowledgeService.attachAsset(selected.id, asset.id);
-              setAssetLinks(await knowledgeService.listNodeAssets(selected.id));
+              setAssetLinks(
+                await knowledgeService.listNodeAssets(selected.id),
+              );
               toast.success("Arquivo anexado.");
             } catch (error) {
               toast.error(errorMessage(error));
