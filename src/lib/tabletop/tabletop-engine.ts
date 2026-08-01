@@ -2,6 +2,7 @@ import { Application, Container, Graphics } from "pixi.js";
 import { CameraController } from "./camera-controller";
 import { CommandHistory } from "./command-history";
 import { EntityRenderer } from "./entity-renderer";
+import { clampEntityToScene, pointInRotatedRect } from "./geometry";
 import { GridRenderer } from "./grid-renderer";
 import { InteractionController } from "./interaction-controller";
 import { LayerManager } from "./layer-manager";
@@ -148,6 +149,16 @@ export class TabletopEngine {
     );
   }
 
+  addEntityToViewport(seed: TabletopEntitySeed) {
+    this.addEntityAt(
+      seed,
+      this.camera.screenToWorld({
+        x: this.app.renderer.width / 2,
+        y: this.app.renderer.height / 2,
+      }),
+    );
+  }
+
   addEntityAt(seed: TabletopEntitySeed, point: Point) {
     if (this.readOnly) return;
     const tokenTypes = new Set<TabletopEntity["type"]>([
@@ -174,7 +185,7 @@ export class TabletopEngine {
       x: point.x - width / 2,
       y: point.y - height / 2,
     });
-    const entity: TabletopEntity = {
+    const entity = this.clampEntity({
       id: crypto.randomUUID(),
       layerId: targetLayer.id,
       type: seed.type,
@@ -192,7 +203,7 @@ export class TabletopEngine {
       assetUrl: seed.assetUrl,
       linkedKnowledgeNodeId: seed.linkedKnowledgeNodeId ?? null,
       properties: seed.properties ?? {},
-    };
+    });
     this.executeMutation("Adicionar entidade", (entities) => [
       ...entities,
       entity,
@@ -216,7 +227,7 @@ export class TabletopEngine {
     this.executeMutation(label, (entities) =>
       entities.map((entity) =>
         selected.has(entity.id) && this.layers.canEdit(entity)
-          ? { ...entity, ...patch, id: entity.id }
+          ? this.clampEntity({ ...entity, ...patch, id: entity.id })
           : entity,
       ),
     );
@@ -254,14 +265,16 @@ export class TabletopEngine {
       this.layers.canEdit(entity),
     );
     if (source.length === 0) return;
-    const copies = source.map((entity, index) => ({
-      ...entity,
-      id: crypto.randomUUID(),
-      label: `${entity.label} · cópia`,
-      x: entity.x + 24,
-      y: entity.y + 24,
-      zIndex: entity.zIndex + index + 1,
-    }));
+    const copies = source.map((entity, index) =>
+      this.clampEntity({
+        ...entity,
+        id: crypto.randomUUID(),
+        label: `${entity.label} · cópia`,
+        x: entity.x + 24,
+        y: entity.y + 24,
+        zIndex: entity.zIndex + index + 1,
+      }),
+    );
     this.executeMutation("Duplicar seleção", (entities) => [
       ...entities,
       ...copies,
@@ -280,14 +293,16 @@ export class TabletopEngine {
     if (this.readOnly || this.clipboard.length === 0) return;
     const copies = this.clipboard
       .filter((entity) => this.layers.canEdit(entity))
-      .map((entity, index) => ({
-        ...entity,
-        id: crypto.randomUUID(),
-        label: `${entity.label} · cópia`,
-        x: entity.x + 24,
-        y: entity.y + 24,
-        zIndex: this.scenes.scene.entities.length + index + 1,
-      }));
+      .map((entity, index) =>
+        this.clampEntity({
+          ...entity,
+          id: crypto.randomUUID(),
+          label: `${entity.label} · cópia`,
+          x: entity.x + 24,
+          y: entity.y + 24,
+          zIndex: this.scenes.scene.entities.length + index + 1,
+        }),
+      );
     if (copies.length === 0) return;
     this.executeMutation("Colar entidades", (entities) => [
       ...entities,
@@ -430,12 +445,7 @@ export class TabletopEngine {
     return entities.find((entity) => {
       const layer = this.layers.get(entity.layerId);
       return (
-        !entity.hidden &&
-        layer?.visible &&
-        point.x >= entity.x &&
-        point.x <= entity.x + entity.width &&
-        point.y >= entity.y &&
-        point.y <= entity.y + entity.height
+        !entity.hidden && layer?.visible && pointInRotatedRect(point, entity)
       );
     })?.id;
   }
@@ -451,7 +461,9 @@ export class TabletopEngine {
   }
 
   private previewEntities(next: TabletopEntity[]) {
-    const replacements = new Map(next.map((entity) => [entity.id, entity]));
+    const replacements = new Map(
+      next.map((entity) => [entity.id, this.clampEntity(entity)]),
+    );
     this.scenes.setEntities(
       this.scenes.scene.entities.map(
         (entity) => replacements.get(entity.id) ?? entity,
@@ -484,7 +496,11 @@ export class TabletopEngine {
     this.executeMutation("Mover seleção", (entities) =>
       entities.map((entity) =>
         selected.has(entity.id)
-          ? { ...entity, x: entity.x + delta.x, y: entity.y + delta.y }
+          ? this.clampEntity({
+              ...entity,
+              x: entity.x + delta.x,
+              y: entity.y + delta.y,
+            })
           : entity,
       ),
     );
@@ -497,6 +513,14 @@ export class TabletopEngine {
     const before = this.scenes.scene.entities.map((entity) => ({ ...entity }));
     const after = mutation(before.map((entity) => ({ ...entity })));
     this.recordStates(label, before, after);
+  }
+
+  private clampEntity(entity: TabletopEntity) {
+    return clampEntityToScene(
+      entity,
+      this.scenes.scene.width,
+      this.scenes.scene.height,
+    );
   }
 
   private recordStates(

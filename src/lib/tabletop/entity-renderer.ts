@@ -5,6 +5,7 @@ import { TextureManager } from "./texture-manager";
 export class EntityRenderer {
   readonly view = new Container();
   private readonly displays = new Map<string, Container>();
+  private readonly assetUrls = new Map<string, string | undefined>();
 
   constructor(
     private readonly textures: TextureManager,
@@ -21,6 +22,7 @@ export class EntityRenderer {
     for (const [id, display] of this.displays) {
       if (!live.has(id)) {
         this.displays.delete(id);
+        this.assetUrls.delete(id);
         display.destroy({ children: true });
       }
     }
@@ -43,9 +45,14 @@ export class EntityRenderer {
       }
       const layer = layerMap.get(entity.layerId);
       display.visible = !entity.hidden && Boolean(layer?.visible);
-      display.position.set(entity.x, entity.y);
+      display.pivot.set(entity.width / 2, entity.height / 2);
+      display.position.set(
+        entity.x + entity.width / 2,
+        entity.y + entity.height / 2,
+      );
       display.rotation = (entity.rotation * Math.PI) / 180;
       display.zIndex = (layer?.order ?? 0) * 100_000 + entity.zIndex;
+      this.syncAsset(display, entity);
       this.paint(display, entity, selected.has(entity.id));
     }
     this.view.sortableChildren = true;
@@ -55,6 +62,7 @@ export class EntityRenderer {
   private createDisplay(entity: TabletopEntity) {
     const display = new Container({ label: entity.id });
     display.addChild(new Graphics({ label: "shape" }));
+    display.addChild(new Graphics({ label: "outline" }));
     const label = new Text({
       text: entity.label,
       style: {
@@ -67,7 +75,6 @@ export class EntityRenderer {
     label.label = "label";
     display.addChild(label);
 
-    if (entity.assetUrl) void this.attachAsset(display, entity.assetUrl);
     return display;
   }
 
@@ -78,7 +85,10 @@ export class EntityRenderer {
       color: entity.color,
       alpha: entity.locked ? 0.45 : 0.78,
     });
-    shape.stroke({
+
+    const outline = display.getChildByLabel("outline") as Graphics;
+    outline.clear();
+    outline.roundRect(0, 0, entity.width, entity.height, 8).stroke({
       color: selected ? 0xf3be63 : 0x292f3a,
       alpha: selected ? 1 : 0.9,
       width: selected ? 4 : 2,
@@ -86,18 +96,46 @@ export class EntityRenderer {
     const label = display.getChildByLabel("label") as Text;
     label.text = entity.label;
     label.position.set(8, Math.max(5, entity.height - 24));
+
+    const sprite = display.getChildByLabel("asset") as Sprite | null;
+    if (sprite) {
+      sprite.position.set(0, 0);
+      sprite.width = entity.width;
+      sprite.height = entity.height;
+    }
   }
 
-  private async attachAsset(display: Container, url: string) {
+  private syncAsset(display: Container, entity: TabletopEntity) {
+    if (
+      this.assetUrls.has(entity.id) &&
+      this.assetUrls.get(entity.id) === entity.assetUrl
+    )
+      return;
+
+    this.assetUrls.set(entity.id, entity.assetUrl);
+    const current = display.getChildByLabel("asset");
+    if (current) {
+      display.removeChild(current);
+      current.destroy();
+    }
+    if (entity.assetUrl)
+      void this.attachAsset(display, entity.id, entity.assetUrl);
+  }
+
+  private async attachAsset(display: Container, entityId: string, url: string) {
     try {
       const texture = await this.textures.load(url);
-      if (display.destroyed) return;
+      if (display.destroyed || this.assetUrls.get(entityId) !== url) return;
+      const previous = display.getChildByLabel("asset");
+      if (previous) {
+        display.removeChild(previous);
+        previous.destroy();
+      }
       const sprite = new Sprite({ texture, label: "asset" });
-      sprite.width = display.width;
-      sprite.height = display.height;
       display.addChildAt(sprite, 1);
       this.invalidate();
     } catch (error) {
+      if (this.assetUrls.get(entityId) !== url) return;
       this.onAssetError(
         error instanceof Error ? error.message : "Asset inválido.",
       );
@@ -106,6 +144,7 @@ export class EntityRenderer {
 
   destroy() {
     this.displays.clear();
+    this.assetUrls.clear();
     this.view.destroy({ children: true });
   }
 }

@@ -2,6 +2,7 @@ import { describe, expect, it, vi } from "vitest";
 import { Container } from "pixi.js";
 import { CameraController } from "./camera-controller";
 import { CommandHistory } from "./command-history";
+import { clampEntityToScene, pointInRotatedRect } from "./geometry";
 import { LayerManager } from "./layer-manager";
 import { SceneManager } from "./scene-manager";
 import { SelectionManager } from "./selection-manager";
@@ -84,5 +85,45 @@ describe("gestores de cena, camadas e seleção", () => {
       layers.canEdit({ ...entity, layerId: "objects", locked: true }),
     ).toBe(false);
     expect(layers.canEdit({ ...entity, layerId: "objects" })).toBe(true);
+  });
+});
+
+describe("geometria de entidades", () => {
+  const entity = {
+    id: "rotacionada",
+    layerId: "objects",
+    type: "object" as const,
+    label: "Objeto",
+    x: 10,
+    y: 20,
+    width: 100,
+    height: 20,
+    rotation: 90,
+    zIndex: 0,
+    hidden: false,
+    locked: false,
+    color: 0,
+  };
+
+  it("faz hit test respeitando a rotação ao redor do centro", () => {
+    expect(pointInRotatedRect({ x: 60, y: 70 }, entity)).toBe(true);
+    expect(pointInRotatedRect({ x: 100, y: 30 }, entity)).toBe(false);
+  });
+
+  it("mantém tamanho, posição e rotação dentro de limites válidos", () => {
+    expect(
+      clampEntityToScene(
+        {
+          ...entity,
+          x: Number.POSITIVE_INFINITY,
+          y: -20,
+          width: 500,
+          height: -1,
+          rotation: -90,
+        },
+        200,
+        100,
+      ),
+    ).toMatchObject({ x: 0, y: 0, width: 200, height: 8, rotation: 270 });
   });
 });
