@@ -8,7 +8,7 @@ Atualizado em 1º de agosto de 2026 pelo Work de continuidade independente.
 - O Livro de Regras de Tessitura do Vazio governa mecânicas e terminologia.
 - O Fio-Mestre governa identidade visual.
 - Checkpoint de entrada: `1c5b66cf83bdd9d4b070019510080eb2d63dc74b`.
-- Checkpoints integrados: PRs #25–#56 em `main`; o último lote integrado está em `669cdb84`.
+- Checkpoints integrados: PRs #25–#60 em `main`; o último lote integrado está em `9a715823977d7d656f1f14086c499910219e43c4`.
 
 ## Estado confirmado
 
@@ -121,6 +121,24 @@ O vínculo com Página do Nexus abre diretamente pelo PR #57. A rota aceita um i
 limitado e delega a resolução à consulta normal de O Nexus sob RLS; referências inexistentes ou
 proibidas usam o mesmo erro neutro e não expõem metadados laterais.
 
+A robustez geométrica e de assets foi integrada no PR #58: hit-test e renderização compartilham a
+mesma rotação, posição, tamanho e ângulo são limitados ao contrato da cena, sprites acompanham
+redimensionamento, URLs temporárias são renovadas sem persistência e erros não exibem URLs
+assinadas. O gesto móvel de pinça passou a combinar pan e zoom. Os testes unitários cobrem os
+limites e as transformações, e a atualização compatível da cadeia de lint removeu 14 alertas altos
+exclusivos das ferramentas de desenvolvimento.
+
+A adaptação responsiva da Mesa foi integrada no PR #59. Navegação, cabeçalho, seletores, ferramentas,
+canvas, paleta, camadas e inspector se reorganizam para celular e tablet; alvos de toque foram
+ampliados, menus permanecem dentro da viewport e itens da paleta podem ser inseridos por toque sem
+depender de drag and drop. O estado de salvamento diferencia conteúdo salvo, salvando e alterações
+locais pendentes.
+
+Os elementos visuais persistentes do Comando 10 foram concluídos no PR #60. O mapa de fundo usa o
+`background_asset_id` e URL privada temporária sem gravar credenciais; o vínculo com ficha preenche
+o proprietário do token; barras opcionais, ícones e condições são propriedades estritamente
+visuais, sem rolagens nem automação de regras. Rótulos longos são recortados apenas na renderização.
+
 O teste autenticado auto-revertido confirmou criação, cinco camadas, token, alteração, snapshot,
 restauração, conflito `40001`, negação de escrita e leitura bruta zero para jogador, além de zero
 resíduos. Não há Realtime, iluminação calculada, visão, névoa ou R2.
@@ -201,6 +219,11 @@ testes e build. As Qualities nº 175 e nº 176 do inspector e a nº 178 da palet
 seis gates. A Quality nº 181 aprovou o primeiro lote da reordenação, a nº 182 confirmou seu
 checkpoint final e a nº 184 aprovou a navegação direta Mesa → O Nexus.
 
+As Qualities nº 189, nº 191 e nº 193 aprovaram, respectivamente, a robustez do núcleo, a revisão
+responsiva e os elementos visuais persistentes. Cada uma passou pelos seis gates: instalação,
+auditoria de dependências, lint, typecheck, testes e build. O marcador público do Worker confirma o
+SHA `9a715823977d7d656f1f14086c499910219e43c4`.
+
 O Lovable permanece sincronizado como ambiente de construção e não participa do funcionamento
 direto da aplicação. O deploy anteriormente disponível não expunha um identificador verificável;
 o workflow agora injeta o SHA aprovado no build e exige que o endpoint público confirme esse SHA.
@@ -265,8 +288,8 @@ integrada e validada no backend; sua validação visual autenticada e o teste co
 permanecem no canário. A Mesa passou build, proteção pública de rota e testes reais de persistência;
 sua interação visual autenticada e o salvamento pelo frontend ainda precisam de aceite. O teste
 transacional do inspector confirmou vínculo e remoção explícita de ficha, preset 128, elevação,
-ocultação e propriedades JSON, com rollback e zero resíduos. A paleta de Assets e bibliotecas e a
-reordenação de cenas estão integradas. O teste da ordem confirmou três cenas, 15 camadas, versões
+ocultação e propriedades JSON, com rollback e zero resíduos. A paleta de Assets e bibliotecas, a reordenação de cenas, o mapa de fundo privado, a atribuição de
+proprietário e os indicadores visuais de tokens estão integrados. O teste da ordem confirmou três cenas, 15 camadas, versões
 incrementadas, conflito `40001`, documento incompleto `22023`, negação `42501` para jogador e zero
 resíduos. Iluminação, visão, névoa e Realtime permanecem bloqueados.
 
@@ -279,5 +302,6 @@ resíduos. Iluminação, visão, névoa e Realtime permanecem bloqueados.
 3. Validar visualmente a Fundação Gráfica da Mesa em sessão de mestre: canvas, pan/zoom, grade,
    seleção, transformações, undo/redo, cena vazia, erro de asset e liberação de memória.
 4. Validar no canário da Mesa criação, salvamento, conflito, camadas, arquivamento, duplicação,
-   snapshot, restauração, reordenação e drag and drop pelo frontend com conteúdo real.
+   snapshot, restauração, reordenação, inserção por toque/drag, mapa de fundo, barras, ícones e
+   condições pelo frontend com conteúdo real em desktop e celular.
 5. Não iniciar iluminação, visão, névoa, Realtime ou R2 até seus próprios critérios de aceite.
