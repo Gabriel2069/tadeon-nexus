@@ -39,6 +39,7 @@ export class TabletopEngine {
   private resizeObserver: ResizeObserver | null = null;
   private host: HTMLElement | null = null;
   private destroyed = false;
+  private readOnly = false;
 
   constructor(private readonly options: TabletopEngineOptions = {}) {
     this.entities = new EntityRenderer(
@@ -120,22 +121,46 @@ export class TabletopEngine {
     this.render();
   }
 
+  setReadOnly(readOnly: boolean) {
+    this.readOnly = readOnly;
+    if (readOnly) this.selection.clear();
+    this.render();
+  }
+
   addEntity(type: TabletopEntity["type"] = "token") {
+    if (this.readOnly) return;
+    const tokenTypes = new Set<TabletopEntity["type"]>([
+      "token",
+      "character",
+      "npc",
+      "creature",
+    ]);
+    const layerType = tokenTypes.has(type) ? "tokens" : "objects";
+    const targetLayer =
+      this.scenes.scene.layers.find((layer) => layer.layerType === layerType) ??
+      this.scenes.scene.layers.find((layer) => layer.id === layerType);
+    if (!targetLayer) {
+      this.options.onAssetError?.(
+        `A camada ${layerType === "tokens" ? "Tokens" : "Objetos"} não está disponível.`,
+      );
+      return;
+    }
     const count = this.scenes.scene.entities.length + 1;
+    const isToken = tokenTypes.has(type);
     const entity: TabletopEntity = {
       id: crypto.randomUUID(),
-      layerId: type === "token" ? "tokens" : "objects",
+      layerId: targetLayer.id,
       type,
-      label: type === "token" ? `Token ${count}` : `Objeto ${count}`,
+      label: isToken ? `Token ${count}` : `Objeto ${count}`,
       x: 320 + count * 18,
       y: 240 + count * 18,
-      width: type === "token" ? 64 : 128,
-      height: type === "token" ? 64 : 96,
+      width: isToken ? 64 : 128,
+      height: isToken ? 64 : 96,
       rotation: 0,
       zIndex: count,
       hidden: false,
       locked: false,
-      color: type === "token" ? 0x8d3152 : 0x345d6f,
+      color: isToken ? 0x8d3152 : 0x345d6f,
     };
     this.executeMutation("Adicionar entidade", (entities) => [
       ...entities,
@@ -146,6 +171,7 @@ export class TabletopEngine {
   }
 
   updateSelected(patch: Partial<TabletopEntity>, label = "Editar entidade") {
+    if (this.readOnly) return;
     const selected = new Set(this.selection.ids);
     if (selected.size === 0) return;
     this.executeMutation(label, (entities) =>
@@ -158,6 +184,7 @@ export class TabletopEngine {
   }
 
   duplicateSelected() {
+    if (this.readOnly) return;
     const source = this.selectedEntities.filter((entity) =>
       this.layers.canEdit(entity),
     );
@@ -179,6 +206,7 @@ export class TabletopEngine {
   }
 
   deleteSelected() {
+    if (this.readOnly) return;
     const removable = new Set(
       this.selectedEntities
         .filter((entity) => this.layers.canEdit(entity))
@@ -193,6 +221,7 @@ export class TabletopEngine {
   }
 
   toggleSelectedLock() {
+    if (this.readOnly) return;
     const selected = new Set(this.selection.ids);
     if (selected.size === 0) return;
     const lock = this.selectedEntities.some((entity) => !entity.locked);
@@ -206,6 +235,7 @@ export class TabletopEngine {
   }
 
   setGrid(mode: TabletopScene["gridMode"], size = this.scenes.scene.gridSize) {
+    if (this.readOnly) return;
     this.scenes.replace({
       ...this.scenes.scene,
       gridMode: mode,
@@ -215,11 +245,27 @@ export class TabletopEngine {
   }
 
   setSnap(enabled: boolean) {
+    if (this.readOnly) return;
     this.scenes.replace({ ...this.scenes.scene, snap: enabled });
     this.render();
   }
 
+  updateLayer(
+    layerId: string,
+    patch: Partial<Pick<TabletopScene["layers"][number], "visible" | "locked">>,
+  ) {
+    if (this.readOnly) return;
+    this.scenes.replace({
+      ...this.scenes.scene,
+      layers: this.scenes.scene.layers.map((layer) =>
+        layer.id === layerId ? { ...layer, ...patch, id: layer.id } : layer,
+      ),
+    });
+    this.render();
+  }
+
   undo() {
+    if (this.readOnly) return;
     if (this.history.undo()) {
       this.selection.prune(
         this.scenes.scene.entities.map((entity) => entity.id),
@@ -229,6 +275,7 @@ export class TabletopEngine {
   }
 
   redo() {
+    if (this.readOnly) return;
     if (this.history.redo()) {
       this.selection.prune(
         this.scenes.scene.entities.map((entity) => entity.id),
@@ -278,6 +325,7 @@ export class TabletopEngine {
   }
 
   private editableSelection() {
+    if (this.readOnly) return [];
     return this.selectedEntities.filter((entity) =>
       this.layers.canEdit(entity),
     );
@@ -319,6 +367,7 @@ export class TabletopEngine {
   }
 
   private commitTransform(before: TabletopEntity[], after: TabletopEntity[]) {
+    if (this.readOnly) return;
     const beforeMap = new Map(before.map((entity) => [entity.id, entity]));
     const afterMap = new Map(after.map((entity) => [entity.id, entity]));
     const current = this.scenes.scene.entities;
@@ -333,6 +382,7 @@ export class TabletopEngine {
   }
 
   private nudge(delta: Point) {
+    if (this.readOnly) return;
     const selected = new Set(
       this.editableSelection().map((entity) => entity.id),
     );

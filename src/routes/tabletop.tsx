@@ -12,7 +12,7 @@ export const Route = createFileRoute("/tabletop")({
       { title: "Mesa Nexus · Tadeon Nexus" },
       {
         name: "description",
-        content: "Fundação gráfica local e protegida da Mesa Nexus.",
+        content: "Editor persistente e protegido de cenas da Mesa Nexus.",
       },
     ],
   }),
