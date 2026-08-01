@@ -139,6 +139,18 @@ Os elementos visuais persistentes do Comando 10 foram concluídos no PR #60. O m
 o proprietário do token; barras opcionais, ícones e condições são propriedades estritamente
 visuais, sem rolagens nem automação de regras. Rótulos longos são recortados apenas na renderização.
 
+A fundação segura do Realtime começou no PR #62, ainda sem assinatura de canais. O protocolo
+versionado valida cena, idade, sequência, origem, limites e payloads; deduplicação e rate limit
+locais protegem Broadcast, e Presence aceita apenas estado lento. A flag global e os overrides
+`nexus_realtime_enabled` continuam desligados.
+
+As salas persistentes foram integradas no PR #63 e aplicadas como
+`20260801211122_tabletop_realtime_sessions.sql`. Elas reutilizam `campaign_members`, permitem no
+máximo uma sala aberta por campanha e registram somente participação específica da sessão. RLS e
+RPCs `SECURITY INVOKER` cobrem abrir, entrar, sair, trocar cena, bloquear entrada, remover e encerrar.
+A FK composta da cena foi coberta por `20260801211246_cover_tabletop_session_scene_foreign_key.sql`.
+Ambas as tabelas permanecem vazias e inacessíveis enquanto a flag estiver desligada.
+
 O teste autenticado auto-revertido confirmou criação, cinco camadas, token, alteração, snapshot,
 restauração, conflito `40001`, negação de escrita e leitura bruta zero para jogador, além de zero
 resíduos. Não há Realtime, iluminação calculada, visão, névoa ou R2.
@@ -264,7 +276,7 @@ quatro overrides ativos para o proprietário mestre:
 - `nexus_tabletop_enabled=true`.
 
 `nexus_lighting_enabled`, `nexus_r2_enabled` e `nexus_realtime_enabled` não possuem override e
-continuam desligadas. O jogador não vê overrides de terceiros e não pode criá-los.
+continuam desligadas. O contrato e as tabelas vazias do Realtime não assinam canais nem alteram a UX. O jogador não vê overrides de terceiros e não pode criá-los.
 
 ## Estado do rollout
 
@@ -304,4 +316,5 @@ resíduos. Iluminação, visão, névoa e Realtime permanecem bloqueados.
 4. Validar no canário da Mesa criação, salvamento, conflito, camadas, arquivamento, duplicação,
    snapshot, restauração, reordenação, inserção por toque/drag, mapa de fundo, barras, ícones e
    condições pelo frontend com conteúdo real em desktop e celular.
-5. Não iniciar iluminação, visão, névoa, Realtime ou R2 até seus próprios critérios de aceite.
+5. Manter transporte Realtime, iluminação, visão, névoa e R2 desligados até seus próprios canários;
+   a fundação de protocolo e sala persistente não equivale a rollout.
