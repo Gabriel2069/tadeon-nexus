@@ -3,11 +3,30 @@ import {
   buildTabletopSavePayload,
   fitTabletopAssetSize,
   mapTabletopScene,
+  moveTabletopScene,
   TabletopPersistenceService,
   TabletopServiceError,
 } from "@/lib/tabletop/tabletop-persistence-service";
 
 describe("tabletop persistence mapping", () => {
+  it("moves one scene and normalizes the complete order", () => {
+    const scenes = ["a", "b", "c"].map((id, orderIndex) => ({
+      id,
+      campaignId: "campaign",
+      name: id,
+      status: "active" as const,
+      orderIndex,
+      version: 1,
+      updatedAt: "now",
+    }));
+    expect(moveTabletopScene(scenes, "b", -1)).toMatchObject([
+      { id: "b", orderIndex: 0 },
+      { id: "a", orderIndex: 1 },
+      { id: "c", orderIndex: 2 },
+    ]);
+    expect(moveTabletopScene(scenes, "a", -1)).toBe(scenes);
+  });
+
   it("fits large assets without distorting their ratio", () => {
     expect(fitTabletopAssetSize(4000, 2000)).toEqual({
       width: 256,

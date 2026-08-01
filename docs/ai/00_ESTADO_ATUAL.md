@@ -8,7 +8,7 @@ Atualizado em 1º de agosto de 2026 pelo Work de continuidade independente.
 - O Livro de Regras de Tessitura do Vazio governa mecânicas e terminologia.
 - O Fio-Mestre governa identidade visual.
 - Checkpoint de entrada: `1c5b66cf83bdd9d4b070019510080eb2d63dc74b`.
-- Checkpoints integrados: PRs #25–#54 em `main`; o último lote integrado está em `7e6f64f3`.
+- Checkpoints integrados: PRs #25–#55 em `main`; o último lote integrado está em `750d0bbf`.
 
 ## Estado confirmado
 
@@ -111,6 +111,12 @@ limita a renderização inicial. A Mesa persiste somente `asset_id` e
 `linked_knowledge_node_id`; URLs assinadas nunca entram no banco ou no payload de drag e são
 renovadas quando a cena é reaberta. O drop respeita câmera, snap e bloqueio da camada de destino.
 
+A reordenação de cenas foi completada no PR #56 e aplicada como
+`20260801145811_reorder_tabletop_scenes.sql`. A RPC `SECURITY INVOKER` bloqueia o conjunto da
+campanha, exige todos os IDs, posições contíguas e versões atuais, normaliza a ordem numa única
+transação e registra `scene.reordered`. Documentos incompletos ou obsoletos abortam sem atualização
+parcial, e o jogador não possui autorização para executá-la.
+
 O teste autenticado auto-revertido confirmou criação, cinco camadas, token, alteração, snapshot,
 restauração, conflito `40001`, negação de escrita e leitura bruta zero para jogador, além de zero
 resíduos. Não há Realtime, iluminação calculada, visão, névoa ou R2.
@@ -158,8 +164,9 @@ portabilidade transacional sem alterar dados existentes.
 As migrations `20260801113400_tabletop_persistent_scenes.sql`,
 `20260801113727_cover_tabletop_composite_foreign_key.sql` e
 `20260801140620_save_tabletop_scene_state.sql` acrescentam a persistência manager-only da Mesa,
-cobrem todas as FKs e tornam o salvamento do editor atômico. O timestamp do último arquivo foi
-reconciliado ao histórico remoto sem mudar o SQL aplicado.
+cobrem todas as FKs e tornam o salvamento do editor atômico. A migration
+`20260801145811_reorder_tabletop_scenes.sql` acrescenta reordenação atômica otimista. Os timestamps
+locais foram reconciliados ao histórico remoto sem mudar o SQL aplicado.
 
 Validação posterior:
 
@@ -187,7 +194,7 @@ erro observado veio da extensão do navegador de inspeção, fora do app.
 
 As Qualities nº 171 e nº 173 do editor persistente aprovaram instalação, audit, lint, typecheck,
 testes e build. As Qualities nº 175 e nº 176 do inspector e a nº 178 da paleta aprovaram os mesmos
-seis gates.
+seis gates. A Quality nº 181 aprovou o primeiro lote da reordenação.
 
 O Lovable permanece sincronizado como ambiente de construção e não participa do funcionamento
 direto da aplicação. O deploy anteriormente disponível não expunha um identificador verificável;
@@ -253,9 +260,10 @@ integrada e validada no backend; sua validação visual autenticada e o teste co
 permanecem no canário. A Mesa passou build, proteção pública de rota e testes reais de persistência;
 sua interação visual autenticada e o salvamento pelo frontend ainda precisam de aceite. O teste
 transacional do inspector confirmou vínculo e remoção explícita de ficha, preset 128, elevação,
-ocultação e propriedades JSON, com rollback e zero resíduos. A paleta de Assets e bibliotecas está
-integrada; reordenação de cenas permanece pendente no Comando 10. Iluminação, visão, névoa e
-Realtime permanecem bloqueados.
+ocultação e propriedades JSON, com rollback e zero resíduos. A paleta de Assets e bibliotecas e a
+reordenação de cenas estão integradas. O teste da ordem confirmou três cenas, 15 camadas, versões
+incrementadas, conflito `40001`, documento incompleto `22023`, negação `42501` para jogador e zero
+resíduos. Iluminação, visão, névoa e Realtime permanecem bloqueados.
 
 ## Próximos critérios
 
@@ -266,6 +274,5 @@ Realtime permanecem bloqueados.
 3. Validar visualmente a Fundação Gráfica da Mesa em sessão de mestre: canvas, pan/zoom, grade,
    seleção, transformações, undo/redo, cena vazia, erro de asset e liberação de memória.
 4. Validar no canário da Mesa criação, salvamento, conflito, camadas, arquivamento, duplicação,
-   snapshot e restauração pelo frontend; depois completar a reordenação de cenas do Comando 10 e
-   validar o drag and drop com conteúdo real.
+   snapshot, restauração, reordenação e drag and drop pelo frontend com conteúdo real.
 5. Não iniciar iluminação, visão, névoa, Realtime ou R2 até seus próprios critérios de aceite.
