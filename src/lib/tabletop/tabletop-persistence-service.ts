@@ -127,6 +127,23 @@ export interface TabletopCampaignSummary {
   status: string;
 }
 
+export interface TabletopSheetTarget {
+  id: string;
+  name: string;
+  ownerId: string;
+}
+
+export interface TabletopKnowledgeTarget {
+  id: string;
+  title: string;
+  nodeType: string;
+}
+
+export interface TabletopEntityLinkTargets {
+  sheets: TabletopSheetTarget[];
+  knowledge: TabletopKnowledgeTarget[];
+}
+
 export interface TabletopSceneSnapshotSummary {
   id: string;
   sceneId: string;
@@ -217,29 +234,39 @@ export function buildTabletopSavePayload(
   const entityDocuments = current.entities.map((entity) => {
     const persisted = originalEntities.get(entity.id);
     const runtime = entity as TabletopEntity & Partial<PersistedTabletopEntity>;
+    const has = (key: keyof PersistedTabletopEntity) =>
+      Object.prototype.hasOwnProperty.call(runtime, key);
     return {
       id: entity.id,
       layer_id: entity.layerId,
       entity_type: entity.type,
       name: entity.label,
-      linked_sheet_id:
-        runtime.linkedSheetId ?? persisted?.linkedSheetId ?? null,
-      linked_knowledge_node_id:
-        runtime.linkedKnowledgeNodeId ??
-        persisted?.linkedKnowledgeNodeId ??
-        null,
-      asset_id: runtime.assetId ?? persisted?.assetId ?? null,
+      linked_sheet_id: has("linkedSheetId")
+        ? (runtime.linkedSheetId ?? null)
+        : (persisted?.linkedSheetId ?? null),
+      linked_knowledge_node_id: has("linkedKnowledgeNodeId")
+        ? (runtime.linkedKnowledgeNodeId ?? null)
+        : (persisted?.linkedKnowledgeNodeId ?? null),
+      asset_id: has("assetId")
+        ? (runtime.assetId ?? null)
+        : (persisted?.assetId ?? null),
       x: entity.x,
       y: entity.y,
       width: entity.width,
       height: entity.height,
       rotation: entity.rotation,
-      elevation: runtime.elevation ?? persisted?.elevation ?? 0,
+      elevation: has("elevation")
+        ? (runtime.elevation ?? 0)
+        : (persisted?.elevation ?? 0),
       z_index: entity.zIndex,
       hidden: entity.hidden,
       locked: entity.locked,
-      owner_user_id: runtime.ownerUserId ?? persisted?.ownerUserId ?? null,
-      properties: runtime.properties ?? persisted?.properties ?? {},
+      owner_user_id: has("ownerUserId")
+        ? (runtime.ownerUserId ?? null)
+        : (persisted?.ownerUserId ?? null),
+      properties: has("properties")
+        ? ((runtime.properties ?? {}) as Json)
+        : (persisted?.properties ?? {}),
       version: persisted?.version ?? 0,
     } as Json;
   });
@@ -353,6 +380,42 @@ export class TabletopPersistenceService {
       workspaceId: String(row.workspace_id),
       status: String(row.status),
     }));
+  }
+
+  async listEntityLinkTargets(
+    campaignId: string,
+    workspaceId: string,
+  ): Promise<TabletopEntityLinkTargets> {
+    const [sheetsResult, knowledgeResult] = await Promise.all([
+      this.database
+        .from("character_sheets")
+        .select("id,name,owner_id")
+        .eq("campaign_id", campaignId)
+        .order("name"),
+      this.database
+        .from("knowledge_nodes")
+        .select("id,title,node_type")
+        .eq("workspace_id", workspaceId)
+        .is("deleted_at", null)
+        .neq("status", "archived")
+        .or(`campaign_id.is.null,campaign_id.eq.${campaignId}`)
+        .order("title")
+        .limit(500),
+    ]);
+    if (sheetsResult.error || knowledgeResult.error)
+      throw serviceError(sheetsResult.error ?? knowledgeResult.error);
+    return {
+      sheets: (sheetsResult.data ?? []).map((row) => ({
+        id: String(row.id),
+        name: String(row.name),
+        ownerId: String(row.owner_id),
+      })),
+      knowledge: (knowledgeResult.data ?? []).map((row) => ({
+        id: String(row.id),
+        title: String(row.title),
+        nodeType: String(row.node_type),
+      })),
+    };
   }
 
   async listScenes(campaignId: string): Promise<TabletopSceneSummary[]> {

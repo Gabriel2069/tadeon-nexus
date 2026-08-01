@@ -4,6 +4,8 @@ import {
   Box,
   Bug,
   Camera,
+  Clipboard,
+  ClipboardPaste,
   Copy,
   Eye,
   EyeOff,
@@ -36,6 +38,7 @@ import {
   TabletopServiceError,
   type PersistedTabletopScene,
   type TabletopCampaignSummary,
+  type TabletopEntityLinkTargets,
   type TabletopSaveOverrides,
   type TabletopSceneSnapshotSummary,
   type TabletopSceneSummary,
@@ -57,6 +60,17 @@ const EMPTY_SNAPSHOT: TabletopSnapshot = {
   canUndo: false,
   canRedo: false,
 };
+
+const EMPTY_LINK_TARGETS: TabletopEntityLinkTargets = {
+  sheets: [],
+  knowledge: [],
+};
+
+function entityProperties(value: unknown): Record<string, unknown> {
+  return typeof value === "object" && value !== null && !Array.isArray(value)
+    ? (value as Record<string, unknown>)
+    : {};
+}
 
 function sceneFingerprint(scene: TabletopSnapshot["scene"]) {
   return JSON.stringify(scene);
@@ -94,6 +108,8 @@ export function TabletopWorkspace() {
     [],
   );
   const [snapshotId, setSnapshotId] = useState("");
+  const [linkTargets, setLinkTargets] =
+    useState<TabletopEntityLinkTargets>(EMPTY_LINK_TARGETS);
   const [contextMenu, setContextMenu] = useState<ContextMenuState | null>(null);
   const [diagnostics, setDiagnostics] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -111,6 +127,12 @@ export function TabletopWorkspace() {
     [snapshot],
   );
   const primary = selected[0];
+  const primaryProperties = entityProperties(primary?.properties);
+  const visualConditions = Array.isArray(primaryProperties.visual_conditions)
+    ? primaryProperties.visual_conditions.filter(
+        (value): value is string => typeof value === "string",
+      )
+    : [];
 
   const installScene = useCallback((scene: PersistedTabletopScene) => {
     persistedSceneRef.current = scene;
@@ -255,6 +277,26 @@ export function TabletopWorkspace() {
       active = false;
     };
   }, [campaignId, clearScene, loadScene, refreshScenes]);
+
+  useEffect(() => {
+    const campaign = campaigns.find((item) => item.id === campaignId);
+    if (!campaign) {
+      setLinkTargets(EMPTY_LINK_TARGETS);
+      return;
+    }
+    let active = true;
+    void tabletopPersistenceService
+      .listEntityLinkTargets(campaign.id, campaign.workspaceId)
+      .then((targets) => {
+        if (active) setLinkTargets(targets);
+      })
+      .catch((error) => {
+        if (active) toast.error(errorMessage(error));
+      });
+    return () => {
+      active = false;
+    };
+  }, [campaignId, campaigns]);
 
   const saveCurrent = async (overrides: TabletopSaveOverrides = {}) => {
     const stored = persistedSceneRef.current;
@@ -428,6 +470,16 @@ export function TabletopWorkspace() {
     engineRef.current?.updateSelected({ [key]: normalized }, `Alterar ${key}`);
   };
 
+  const applySizePreset = (size: number) => {
+    engineRef.current?.updateSelected(
+      { width: size, height: size },
+      "Aplicar preset de tamanho",
+    );
+  };
+
+  const updateProperties = (patch: Record<string, unknown>) =>
+    engineRef.current?.updateSelectedProperties(patch);
+
   const closeContext = () => setContextMenu(null);
 
   return (
@@ -523,6 +575,20 @@ export function TabletopWorkspace() {
           onClick={() => engineRef.current?.addEntity("object")}
         >
           <Box className="h-4 w-4" />
+        </ToolbarButton>
+        <ToolbarButton
+          label="Copiar seleção"
+          disabled={!editable || selected.length === 0}
+          onClick={() => engineRef.current?.copySelected()}
+        >
+          <Clipboard className="h-4 w-4" />
+        </ToolbarButton>
+        <ToolbarButton
+          label="Colar"
+          disabled={!editable}
+          onClick={() => engineRef.current?.pasteClipboard()}
+        >
+          <ClipboardPaste className="h-4 w-4" />
         </ToolbarButton>
         <ToolbarButton
           label="Desfazer"
@@ -791,6 +857,222 @@ export function TabletopWorkspace() {
                   {selected.length === 1 ? "" : "s"}
                 </p>
               </div>
+              <div className="space-y-3">
+                <div>
+                  <Label
+                    htmlFor="entity-label"
+                    className="text-[10px] uppercase"
+                  >
+                    Nome
+                  </Label>
+                  <Input
+                    id="entity-label"
+                    disabled={!editable || selected.length !== 1}
+                    value={primary.label}
+                    maxLength={240}
+                    onChange={(event) =>
+                      engineRef.current?.updateSelected(
+                        { label: event.target.value },
+                        "Renomear entidade",
+                      )
+                    }
+                  />
+                </div>
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <Label
+                      htmlFor="entity-size-preset"
+                      className="text-[10px] uppercase"
+                    >
+                      Preset
+                    </Label>
+                    <select
+                      id="entity-size-preset"
+                      defaultValue=""
+                      disabled={!editable}
+                      onChange={(event) => {
+                        const size = Number(event.target.value);
+                        if (size > 0) applySizePreset(size);
+                        event.target.value = "";
+                      }}
+                      className="h-10 w-full rounded-md border border-input bg-background px-2 text-xs"
+                    >
+                      <option value="">Tamanho…</option>
+                      <option value="32">Minúsculo · ½</option>
+                      <option value="64">Médio · 1</option>
+                      <option value="128">Grande · 2</option>
+                      <option value="192">Enorme · 3</option>
+                      <option value="256">Colossal · 4</option>
+                    </select>
+                  </div>
+                  <div>
+                    <Label
+                      htmlFor="entity-elevation"
+                      className="text-[10px] uppercase"
+                    >
+                      Elevação
+                    </Label>
+                    <Input
+                      id="entity-elevation"
+                      type="number"
+                      disabled={!editable}
+                      value={primary.elevation ?? 0}
+                      onChange={(event) =>
+                        engineRef.current?.updateSelected(
+                          { elevation: Number(event.target.value) || 0 },
+                          "Alterar elevação",
+                        )
+                      }
+                    />
+                  </div>
+                </div>
+                <div>
+                  <Label
+                    htmlFor="entity-sheet"
+                    className="text-[10px] uppercase"
+                  >
+                    Ficha vinculada
+                  </Label>
+                  <select
+                    id="entity-sheet"
+                    value={primary.linkedSheetId ?? ""}
+                    disabled={!editable}
+                    onChange={(event) =>
+                      engineRef.current?.updateSelected(
+                        { linkedSheetId: event.target.value || null },
+                        "Vincular ficha",
+                      )
+                    }
+                    className="h-10 w-full rounded-md border border-input bg-background px-2 text-xs"
+                  >
+                    <option value="">Nenhuma ficha</option>
+                    {linkTargets.sheets.map((sheet) => (
+                      <option key={sheet.id} value={sheet.id}>
+                        {sheet.name}
+                      </option>
+                    ))}
+                  </select>
+                  {primary.linkedSheetId && (
+                    <a
+                      href={`/sheet/${primary.linkedSheetId}`}
+                      className="mt-1 inline-block text-xs text-primary hover:underline"
+                    >
+                      Abrir ficha vinculada
+                    </a>
+                  )}
+                </div>
+                <div>
+                  <Label
+                    htmlFor="entity-knowledge"
+                    className="text-[10px] uppercase"
+                  >
+                    Página do Nexus
+                  </Label>
+                  <select
+                    id="entity-knowledge"
+                    value={primary.linkedKnowledgeNodeId ?? ""}
+                    disabled={!editable}
+                    onChange={(event) =>
+                      engineRef.current?.updateSelected(
+                        { linkedKnowledgeNodeId: event.target.value || null },
+                        "Vincular Página do Nexus",
+                      )
+                    }
+                    className="h-10 w-full rounded-md border border-input bg-background px-2 text-xs"
+                  >
+                    <option value="">Nenhuma página</option>
+                    {linkTargets.knowledge.map((node) => (
+                      <option key={node.id} value={node.id}>
+                        {node.title} · {node.nodeType}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div className="flex items-center justify-between rounded-md border border-border/50 px-3 py-2">
+                  <Label htmlFor="entity-hidden" className="text-xs">
+                    Oculto na cena
+                  </Label>
+                  <Switch
+                    id="entity-hidden"
+                    disabled={!editable}
+                    checked={primary.hidden}
+                    onCheckedChange={(hidden) =>
+                      engineRef.current?.updateSelected(
+                        { hidden },
+                        hidden ? "Ocultar entidade" : "Exibir entidade",
+                      )
+                    }
+                  />
+                </div>
+                <div>
+                  <Label
+                    htmlFor="entity-status"
+                    className="text-[10px] uppercase"
+                  >
+                    Estado visual
+                  </Label>
+                  <Input
+                    id="entity-status"
+                    disabled={!editable}
+                    value={
+                      typeof primaryProperties.status === "string"
+                        ? primaryProperties.status
+                        : ""
+                    }
+                    maxLength={80}
+                    placeholder="Ex.: alerta, caído, neutro"
+                    onChange={(event) =>
+                      updateProperties({ status: event.target.value })
+                    }
+                  />
+                </div>
+                <div>
+                  <Label
+                    htmlFor="entity-conditions"
+                    className="text-[10px] uppercase"
+                  >
+                    Condições visuais
+                  </Label>
+                  <Input
+                    id="entity-conditions"
+                    disabled={!editable}
+                    value={visualConditions.join(", ")}
+                    placeholder="Ex.: Sangrando, Marcado"
+                    onChange={(event) =>
+                      updateProperties({
+                        visual_conditions: event.target.value
+                          .split(",")
+                          .map((value) => value.trim())
+                          .filter(Boolean)
+                          .slice(0, 20),
+                      })
+                    }
+                  />
+                </div>
+                <div>
+                  <Label
+                    htmlFor="entity-notes"
+                    className="text-[10px] uppercase"
+                  >
+                    Anotações
+                  </Label>
+                  <textarea
+                    id="entity-notes"
+                    disabled={!editable}
+                    value={
+                      typeof primaryProperties.notes === "string"
+                        ? primaryProperties.notes
+                        : ""
+                    }
+                    maxLength={2000}
+                    rows={3}
+                    onChange={(event) =>
+                      updateProperties({ notes: event.target.value })
+                    }
+                    className="w-full resize-y rounded-md border border-input bg-background px-3 py-2 text-sm disabled:opacity-50"
+                  />
+                </div>
+              </div>
               <div className="grid grid-cols-2 gap-3">
                 {(["x", "y", "width", "height", "rotation"] as const).map(
                   (key) => (
@@ -841,6 +1123,24 @@ export function TabletopWorkspace() {
                   Duplicar
                 </Button>
                 <Button
+                  variant="outline"
+                  className="gap-2"
+                  disabled={!editable}
+                  onClick={() => engineRef.current?.copySelected()}
+                >
+                  <Clipboard className="h-4 w-4" />
+                  Copiar
+                </Button>
+                <Button
+                  variant="outline"
+                  className="gap-2"
+                  disabled={!editable}
+                  onClick={() => engineRef.current?.pasteClipboard()}
+                >
+                  <ClipboardPaste className="h-4 w-4" />
+                  Colar
+                </Button>
+                <Button
                   variant="destructive"
                   className="col-span-2 gap-2"
                   disabled={!editable || primary.locked}
@@ -855,7 +1155,7 @@ export function TabletopWorkspace() {
                   <RotateCw className="h-3.5 w-3.5" /> Atalhos
                 </p>
                 <p className="mt-1">
-                  Ctrl/Cmd+Z · Shift+Ctrl/Cmd+Z · Ctrl/Cmd+D · Del · setas
+                  Ctrl/Cmd+C · Ctrl/Cmd+V · Ctrl/Cmd+D · Del · setas
                 </p>
               </div>
             </div>
@@ -877,6 +1177,24 @@ export function TabletopWorkspace() {
             }}
           >
             Duplicar
+          </button>
+          <button
+            className="w-full rounded px-3 py-2 text-left text-sm hover:bg-secondary"
+            onClick={() => {
+              engineRef.current?.copySelected();
+              closeContext();
+            }}
+          >
+            Copiar
+          </button>
+          <button
+            className="w-full rounded px-3 py-2 text-left text-sm hover:bg-secondary"
+            onClick={() => {
+              engineRef.current?.pasteClipboard();
+              closeContext();
+            }}
+          >
+            Colar
           </button>
           <button
             className="w-full rounded px-3 py-2 text-left text-sm hover:bg-secondary"
