@@ -1,0 +1,159 @@
+.tadeon-tabletop-realtime {
+  --realtime-rgb: 113 107 123;
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.55rem 0.65rem;
+  border: 1px solid rgb(var(--realtime-rgb) / 28%);
+  border-radius: 0.9rem;
+  background:
+    linear-gradient(110deg, rgb(var(--realtime-rgb) / 10%), transparent 56%), rgb(11 14 18 / 86%);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 3%);
+}
+
+.tadeon-tabletop-realtime--progress {
+  --realtime-rgb: 96 165 250;
+}
+
+.tadeon-tabletop-realtime--success {
+  --realtime-rgb: 52 211 153;
+}
+
+.tadeon-tabletop-realtime--warning {
+  --realtime-rgb: 245 158 11;
+}
+
+.tadeon-tabletop-realtime--error {
+  --realtime-rgb: 248 113 113;
+}
+
+.tadeon-tabletop-realtime__status {
+  display: flex;
+  min-width: 0;
+  flex: 1;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.tadeon-tabletop-realtime__status strong,
+.tadeon-tabletop-realtime__status small {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tadeon-tabletop-realtime__status strong {
+  color: rgb(var(--realtime-rgb));
+  font-size: 0.68rem;
+  font-weight: 750;
+  letter-spacing: 0.025em;
+}
+
+.tadeon-tabletop-realtime__status small {
+  margin-top: 0.08rem;
+  color: var(--muted-foreground);
+  font-size: 0.55rem;
+}
+
+.tadeon-tabletop-realtime__signal {
+  position: relative;
+  display: grid;
+  flex: 0 0 auto;
+  width: 1.8rem;
+  height: 1.8rem;
+  place-items: center;
+  border: 1px solid rgb(var(--realtime-rgb) / 30%);
+  border-radius: 0.6rem;
+  background: rgb(var(--realtime-rgb) / 10%);
+  color: rgb(var(--realtime-rgb));
+}
+
+.tadeon-tabletop-realtime__signal svg {
+  width: 0.85rem;
+  height: 0.85rem;
+}
+
+.tadeon-tabletop-realtime__signal.is-active::after {
+  position: absolute;
+  inset: -0.25rem;
+  border: 1px solid rgb(var(--realtime-rgb) / 30%);
+  border-radius: 0.8rem;
+  animation: tadeon-realtime-pulse 1.8s ease-out infinite;
+  content: "";
+}
+
+.tadeon-tabletop-realtime__participants {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  padding-left: 0.3rem;
+}
+
+.tadeon-tabletop-realtime__avatar,
+.tadeon-tabletop-realtime__more {
+  display: grid;
+  width: 1.75rem;
+  height: 1.75rem;
+  place-items: center;
+  margin-left: -0.3rem;
+  border: 2px solid rgb(11 14 18);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--participant-color, var(--primary)) 18%, rgb(18 21 26));
+  color: var(--participant-color, var(--primary));
+  font-size: 0.55rem;
+  font-weight: 800;
+}
+
+.tadeon-tabletop-realtime__more {
+  background: rgb(30 33 39);
+  color: var(--muted-foreground);
+}
+
+.tadeon-tabletop-realtime__retry {
+  flex: 0 0 auto;
+  gap: 0.35rem;
+  min-height: 2rem;
+  color: rgb(var(--realtime-rgb));
+  font-size: 0.625rem;
+}
+
+.tadeon-tabletop-realtime__retry svg {
+  width: 0.8rem;
+  height: 0.8rem;
+}
+
+.tadeon-tabletop-realtime--compact {
+  width: fit-content;
+  max-width: 100%;
+  padding: 0.4rem 0.5rem;
+}
+
+@keyframes tadeon-realtime-pulse {
+  from {
+    opacity: 0.7;
+    transform: scale(0.86);
+  }
+
+  to {
+    opacity: 0;
+    transform: scale(1.18);
+  }
+}
+
+@media (max-width: 639px) {
+  .tadeon-tabletop-realtime {
+    gap: 0.45rem;
+  }
+
+  .tadeon-tabletop-realtime__participants > :nth-child(n + 4) {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tadeon-tabletop-realtime__signal.is-active::after {
+    animation: none;
+  }
+}
