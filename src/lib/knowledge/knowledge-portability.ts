@@ -170,6 +170,79 @@ export class KnowledgeArchiveError extends Error {
   }
 }
 
+function inspectZipDirectory(bytes: Uint8Array) {
+  const view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
+  const minimumEocd = 22;
+  const firstCandidate = Math.max(0, bytes.byteLength - 65_557);
+  let eocd = -1;
+  for (
+    let offset = bytes.byteLength - minimumEocd;
+    offset >= firstCandidate;
+    offset--
+  ) {
+    if (view.getUint32(offset, true) === 0x06054b50) {
+      eocd = offset;
+      break;
+    }
+  }
+  if (eocd < 0) {
+    throw new KnowledgeArchiveError(
+      "KNOWLEDGE_ARCHIVE_INVALID",
+      "O diretório central do ZIP não foi encontrado.",
+    );
+  }
+
+  const disk = view.getUint16(eocd + 4, true);
+  const directoryDisk = view.getUint16(eocd + 6, true);
+  const entries = view.getUint16(eocd + 10, true);
+  const directorySize = view.getUint32(eocd + 12, true);
+  const directoryOffset = view.getUint32(eocd + 16, true);
+  if (
+    disk !== 0 ||
+    directoryDisk !== 0 ||
+    entries === 0xffff ||
+    directorySize === 0xffffffff ||
+    directoryOffset === 0xffffffff ||
+    entries > MAX_ARCHIVE_ENTRIES ||
+    directoryOffset + directorySize > eocd
+  ) {
+    throw new KnowledgeArchiveError(
+      "KNOWLEDGE_ARCHIVE_LIMIT_EXCEEDED",
+      "ZIP multipart, ZIP64 ou com arquivos demais não é suportado.",
+    );
+  }
+
+  let cursor = directoryOffset;
+  let totalUncompressed = 0;
+  for (let index = 0; index < entries; index++) {
+    if (cursor + 46 > eocd || view.getUint32(cursor, true) !== 0x02014b50) {
+      throw new KnowledgeArchiveError(
+        "KNOWLEDGE_ARCHIVE_INVALID",
+        "O diretório central do ZIP está corrompido.",
+      );
+    }
+    const flags = view.getUint16(cursor + 8, true);
+    const uncompressedSize = view.getUint32(cursor + 24, true);
+    const nameLength = view.getUint16(cursor + 28, true);
+    const extraLength = view.getUint16(cursor + 30, true);
+    const commentLength = view.getUint16(cursor + 32, true);
+    if (flags & 0x1 || uncompressedSize === 0xffffffff) {
+      throw new KnowledgeArchiveError(
+        "KNOWLEDGE_ARCHIVE_UNSUPPORTED",
+        "ZIP criptografado ou ZIP64 não é suportado.",
+      );
+    }
+    totalUncompressed += uncompressedSize;
+    if (totalUncompressed > MAX_UNCOMPRESSED_BYTES) {
+      throw new KnowledgeArchiveError(
+        "KNOWLEDGE_ARCHIVE_LIMIT_EXCEEDED",
+        "O conteúdo declarado do ZIP ultrapassa 200 MiB.",
+      );
+    }
+    cursor += 46 + nameLength + extraLength + commentLength;
+  }
+}
+
 function isRecord(value: unknown): value is Record<string, unknown> {
   return Boolean(value) && typeof value === "object" && !Array.isArray(value);
 }
@@ -409,6 +482,7 @@ export function parseKnowledgeArchive(
       "O ZIP está vazio ou ultrapassa 50 MiB.",
     );
   }
+  inspectZipDirectory(bytes);
 
   let rawEntries: Record<string, Uint8Array>;
   try {
