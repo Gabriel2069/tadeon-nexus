@@ -1,0 +1,355 @@
+import type { SupabaseClient } from "@supabase/supabase-js";
+import { supabase } from "@/integrations/supabase/client";
+import type { Json } from "@/integrations/supabase/types";
+import type {
+  GridMode,
+  TabletopEntity,
+  TabletopLayer,
+  TabletopScene,
+} from "@/lib/tabletop/types";
+
+const tabletopDatabase = supabase as unknown as SupabaseClient;
+
+export type TabletopServiceErrorCode =
+  | "TABLETOP_AUTH_REQUIRED"
+  | "TABLETOP_CONFLICT"
+  | "TABLETOP_INVALID_INPUT"
+  | "TABLETOP_NOT_FOUND"
+  | "TABLETOP_DATABASE_ERROR";
+
+export class TabletopServiceError extends Error {
+  constructor(public readonly code: TabletopServiceErrorCode) {
+    super(code);
+    this.name = "TabletopServiceError";
+  }
+}
+
+interface SceneRow {
+  id: string;
+  campaign_id: string;
+  name: string;
+  background_asset_id: string | null;
+  width: number;
+  height: number;
+  grid_type: GridMode;
+  grid_size: number;
+  grid_offset_x: number | string;
+  grid_offset_y: number | string;
+  grid_scale: number | string;
+  snap_enabled: boolean;
+  global_illumination: number | string;
+  status: "draft" | "active" | "archived";
+  order_index: number;
+  version: number;
+  created_at: string;
+  updated_at: string;
+}
+
+interface LayerRow {
+  id: string;
+  scene_id: string;
+  name: string;
+  layer_type: "map" | "objects" | "tokens" | "drawings" | "master";
+  order_index: number;
+  visible: boolean;
+  locked: boolean;
+  version: number;
+}
+
+interface EntityRow {
+  id: string;
+  scene_id: string;
+  layer_id: string;
+  entity_type: TabletopEntity["type"];
+  name: string;
+  linked_sheet_id: string | null;
+  linked_knowledge_node_id: string | null;
+  asset_id: string | null;
+  x: number | string;
+  y: number | string;
+  width: number | string;
+  height: number | string;
+  rotation: number | string;
+  elevation: number | string;
+  z_index: number;
+  hidden: boolean;
+  locked: boolean;
+  owner_user_id: string | null;
+  properties: Json;
+  version: number;
+}
+
+export interface PersistedTabletopLayer extends TabletopLayer {
+  layerType: LayerRow["layer_type"];
+  version: number;
+}
+
+export interface PersistedTabletopEntity extends TabletopEntity {
+  sceneId: string;
+  version: number;
+  elevation: number;
+  assetId: string | null;
+  linkedSheetId: string | null;
+  linkedKnowledgeNodeId: string | null;
+  ownerUserId: string | null;
+  properties: Json;
+}
+
+export interface PersistedTabletopScene extends TabletopScene {
+  campaignId: string;
+  backgroundAssetId: string | null;
+  gridOffsetX: number;
+  gridOffsetY: number;
+  globalIllumination: number;
+  status: SceneRow["status"];
+  orderIndex: number;
+  version: number;
+  createdAt: string;
+  updatedAt: string;
+  layers: PersistedTabletopLayer[];
+  entities: PersistedTabletopEntity[];
+}
+
+export interface TabletopSceneSummary {
+  id: string;
+  campaignId: string;
+  name: string;
+  status: SceneRow["status"];
+  orderIndex: number;
+  version: number;
+  updatedAt: string;
+}
+
+const ENTITY_COLORS: Record<string, number> = {
+  token: 0x8d3152,
+  character: 0x8d3152,
+  npc: 0x7b4058,
+  creature: 0x70333b,
+  object: 0x345d6f,
+  tile: 0x345d6f,
+  drawing: 0x6a5d3e,
+  text: 0x5a5368,
+  marker: 0x765c2f,
+  note: 0x765c2f,
+  area: 0x4b5d47,
+  light: 0x8a7538,
+  handout_pin: 0x5d4770,
+};
+
+function numeric(value: number | string) {
+  const parsed = Number(value);
+  return Number.isFinite(parsed) ? parsed : 0;
+}
+
+function requireName(value: string, max = 160) {
+  const normalized = value.trim();
+  if (!normalized || normalized.length > max)
+    throw new TabletopServiceError("TABLETOP_INVALID_INPUT");
+  return normalized;
+}
+
+function serviceError(error: { code?: string; message?: string } | null) {
+  const message = error?.message ?? "";
+  if (error?.code === "40001" || message.includes("TABLETOP_VERSION_CONFLICT"))
+    return new TabletopServiceError("TABLETOP_CONFLICT");
+  return new TabletopServiceError("TABLETOP_DATABASE_ERROR");
+}
+
+export function mapTabletopScene(
+  scene: SceneRow,
+  layers: LayerRow[],
+  entities: EntityRow[],
+): PersistedTabletopScene {
+  return {
+    id: scene.id,
+    campaignId: scene.campaign_id,
+    name: scene.name,
+    backgroundAssetId: scene.background_asset_id,
+    width: scene.width,
+    height: scene.height,
+    gridMode: scene.grid_type,
+    gridSize: scene.grid_size,
+    gridScale: numeric(scene.grid_scale),
+    gridOffsetX: numeric(scene.grid_offset_x),
+    gridOffsetY: numeric(scene.grid_offset_y),
+    globalIllumination: numeric(scene.global_illumination),
+    snap: scene.snap_enabled,
+    status: scene.status,
+    orderIndex: scene.order_index,
+    version: scene.version,
+    createdAt: scene.created_at,
+    updatedAt: scene.updated_at,
+    layers: layers.map((layer) => ({
+      id: layer.id,
+      name: layer.name,
+      order: layer.order_index,
+      visible: layer.visible,
+      locked: layer.locked,
+      layerType: layer.layer_type,
+      version: layer.version,
+    })),
+    entities: entities.map((entity) => ({
+      id: entity.id,
+      sceneId: entity.scene_id,
+      layerId: entity.layer_id,
+      type: entity.entity_type,
+      label: entity.name,
+      x: numeric(entity.x),
+      y: numeric(entity.y),
+      width: numeric(entity.width),
+      height: numeric(entity.height),
+      rotation: numeric(entity.rotation),
+      elevation: numeric(entity.elevation),
+      zIndex: entity.z_index,
+      hidden: entity.hidden,
+      locked: entity.locked,
+      color: ENTITY_COLORS[entity.entity_type] ?? 0x4f5560,
+      version: entity.version,
+      assetId: entity.asset_id,
+      linkedSheetId: entity.linked_sheet_id,
+      linkedKnowledgeNodeId: entity.linked_knowledge_node_id,
+      ownerUserId: entity.owner_user_id,
+      properties: entity.properties,
+    })),
+  };
+}
+
+export class TabletopPersistenceService {
+  constructor(
+    private readonly database: SupabaseClient = tabletopDatabase,
+    private readonly auth = supabase.auth,
+  ) {}
+
+  private async userId() {
+    const { data } = await this.auth.getSession();
+    if (!data.session?.user.id)
+      throw new TabletopServiceError("TABLETOP_AUTH_REQUIRED");
+    return data.session.user.id;
+  }
+
+  async listScenes(campaignId: string): Promise<TabletopSceneSummary[]> {
+    const { data, error } = await this.database
+      .from("tabletop_scenes")
+      .select("id,campaign_id,name,status,order_index,version,updated_at")
+      .eq("campaign_id", campaignId)
+      .order("order_index")
+      .order("created_at");
+    if (error) throw serviceError(error);
+    return (data ?? []).map((row) => ({
+      id: String(row.id),
+      campaignId: String(row.campaign_id),
+      name: String(row.name),
+      status: row.status as SceneRow["status"],
+      orderIndex: Number(row.order_index),
+      version: Number(row.version),
+      updatedAt: String(row.updated_at),
+    }));
+  }
+
+  async loadScene(sceneId: string) {
+    const [{ data: scene, error }, layersResult, entitiesResult] =
+      await Promise.all([
+        this.database.from("tabletop_scenes").select("*").eq("id", sceneId).maybeSingle(),
+        this.database.from("tabletop_layers").select("*").eq("scene_id", sceneId).order("order_index"),
+        this.database.from("tabletop_entities").select("*").eq("scene_id", sceneId).order("z_index"),
+      ]);
+    if (error || layersResult.error || entitiesResult.error)
+      throw serviceError(error ?? layersResult.error ?? entitiesResult.error);
+    if (!scene) throw new TabletopServiceError("TABLETOP_NOT_FOUND");
+    return mapTabletopScene(
+      scene as SceneRow,
+      (layersResult.data ?? []) as LayerRow[],
+      (entitiesResult.data ?? []) as EntityRow[],
+    );
+  }
+
+  async createScene(campaignId: string, name: string) {
+    const userId = await this.userId();
+    const { data, error } = await this.database
+      .from("tabletop_scenes")
+      .insert({ campaign_id: campaignId, name: requireName(name), created_by: userId, updated_by: userId })
+      .select("id")
+      .single();
+    if (error || !data) throw serviceError(error);
+    return this.loadScene(String(data.id));
+  }
+
+  async saveScene(scene: PersistedTabletopScene) {
+    const userId = await this.userId();
+    const { data, error } = await this.database
+      .from("tabletop_scenes")
+      .update({
+        name: requireName(scene.name), width: scene.width, height: scene.height,
+        grid_type: scene.gridMode, grid_size: scene.gridSize,
+        grid_offset_x: scene.gridOffsetX, grid_offset_y: scene.gridOffsetY,
+        grid_scale: scene.gridScale, snap_enabled: scene.snap,
+        background_asset_id: scene.backgroundAssetId,
+        global_illumination: scene.globalIllumination,
+        status: scene.status, order_index: scene.orderIndex, updated_by: userId,
+      })
+      .eq("id", scene.id)
+      .eq("version", scene.version)
+      .select("*")
+      .maybeSingle();
+    if (error) throw serviceError(error);
+    if (!data) throw new TabletopServiceError("TABLETOP_CONFLICT");
+    return this.loadScene(scene.id);
+  }
+
+  async saveEntity(sceneId: string, entity: PersistedTabletopEntity) {
+    const userId = await this.userId();
+    const values = {
+      scene_id: sceneId, layer_id: entity.layerId, entity_type: entity.type,
+      name: requireName(entity.label, 240), linked_sheet_id: entity.linkedSheetId,
+      linked_knowledge_node_id: entity.linkedKnowledgeNodeId, asset_id: entity.assetId,
+      x: entity.x, y: entity.y, width: entity.width, height: entity.height,
+      rotation: entity.rotation, elevation: entity.elevation, z_index: entity.zIndex,
+      hidden: entity.hidden, locked: entity.locked, owner_user_id: entity.ownerUserId,
+      properties: entity.properties, updated_by: userId,
+    };
+    const query = entity.version > 0
+      ? this.database.from("tabletop_entities").update(values).eq("id", entity.id).eq("version", entity.version)
+      : this.database.from("tabletop_entities").insert({ ...values, id: entity.id, created_by: userId });
+    const { data, error } = await query.select("*").maybeSingle();
+    if (error) throw serviceError(error);
+    if (!data) throw new TabletopServiceError("TABLETOP_CONFLICT");
+    return mapTabletopScene(
+      { id: sceneId, campaign_id: "", name: "", background_asset_id: null, width: 64, height: 64, grid_type: "none", grid_size: 64, grid_offset_x: 0, grid_offset_y: 0, grid_scale: 1, snap_enabled: false, global_illumination: 1, status: "active", order_index: 0, version: 1, created_at: "", updated_at: "" },
+      [], [data as EntityRow],
+    ).entities[0];
+  }
+
+  async deleteEntity(entity: PersistedTabletopEntity) {
+    const { data, error } = await this.database
+      .from("tabletop_entities").delete().eq("id", entity.id)
+      .eq("version", entity.version).select("id").maybeSingle();
+    if (error) throw serviceError(error);
+    if (!data) throw new TabletopServiceError("TABLETOP_CONFLICT");
+  }
+
+  async createSnapshot(sceneId: string, name: string) {
+    const { data, error } = await this.database.rpc("create_tabletop_scene_snapshot", {
+      target_scene_id: sceneId, snapshot_name: requireName(name),
+    });
+    if (error) throw serviceError(error);
+    return String(data);
+  }
+
+  async restoreSnapshot(snapshotId: string, expectedVersion: number) {
+    const { data, error } = await this.database.rpc("restore_tabletop_scene_snapshot", {
+      target_snapshot_id: snapshotId, expected_scene_version: expectedVersion,
+    });
+    if (error) throw serviceError(error);
+    return Number(data);
+  }
+
+  async duplicateScene(sceneId: string, name?: string) {
+    const { data, error } = await this.database.rpc("duplicate_tabletop_scene", {
+      source_scene_id: sceneId, duplicate_name: name?.trim() || null,
+    });
+    if (error) throw serviceError(error);
+    return this.loadScene(String(data));
+  }
+}
+
+export const tabletopPersistenceService = new TabletopPersistenceService();
