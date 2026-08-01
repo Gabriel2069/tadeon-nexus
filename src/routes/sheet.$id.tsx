@@ -24,6 +24,9 @@ import {
   Shield,
   ChevronLeft,
   ChevronRight,
+  IdCard,
+  GitBranch,
+  ScrollText,
 } from "lucide-react";
 import { toast } from "sonner";
 import {
@@ -87,6 +90,7 @@ import { cacheSheet } from "@/lib/offline-cache";
 import { BrandMark } from "@/components/brand-mark";
 import { SaveStatus } from "@/components/save-status";
 import { ResistanceDtCalculator } from "@/components/master/resistance-dt-calculator";
+import "@/styles/sheet-premium.css";
 
 const LIFE_CYCLE_TRAITS: LifeCycleTrait[] = [
   "Formação recente",
@@ -98,6 +102,7 @@ const LIFE_CYCLE_TRAITS: LifeCycleTrait[] = [
 ];
 
 const LINK_STATES: LinkState[] = ["Presente", "Tensionado", "Ferido", "Rompido", "Costurado"];
+type SheetView = "ficha" | "arvore" | "descricao";
 
 const AttributeRadar = lazy(() => import("@/components/sheet/attribute-radar"));
 
@@ -277,6 +282,15 @@ function SheetPage() {
   const [defEquipOpen, setDefEquipOpen] = useState(false);
   const [openSkill, setOpenSkill] = useState<string | null>(null);
   const [tutorialStep, setTutorialStep] = useState<number | null>(null);
+  const [sheetView, setSheetView] = useState<SheetView>(() => {
+    if (typeof window === "undefined") return "ficha";
+    const saved = window.sessionStorage.getItem(`tadeon-sheet-view:${id}`);
+    return saved === "arvore" || saved === "descricao" ? saved : "ficha";
+  });
+
+  useEffect(() => {
+    window.sessionStorage.setItem(`tadeon-sheet-view:${id}`, sheetView);
+  }, [id, sheetView]);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -628,22 +642,23 @@ function SheetPage() {
   const tutorial = tutorialStep === null ? null : SHEET_TUTORIAL_STEPS[tutorialStep];
 
   return (
-    <div className="tadeon-page pb-24">
+    <div className="tadeon-page tadeon-sheet-page pb-28">
       {/* Sticky Header */}
-      <div className="sticky top-0 z-10 -mx-4 md:-mx-8 px-4 md:px-8 py-3 mb-5 bg-background/85 backdrop-blur-xl border-b border-border/80">
-        <div className="flex items-center gap-2">
+      <div className="tadeon-sheet-commandbar">
+        <div className="tadeon-sheet-commandbar__main">
           <Button
             variant="ghost"
             size="icon"
             onClick={() => navigate({ to: "/" })}
             aria-label="Voltar ao painel"
+            className="tadeon-sheet-commandbar__back"
           >
             <ArrowLeft className="w-5 h-5" />
           </Button>
-          <BrandMark className="hidden h-8 w-8 text-primary sm:block" />
-          <div className="min-w-0 flex-1">
+          <BrandMark className="hidden h-9 w-9 shrink-0 text-primary sm:block" />
+          <div className="tadeon-sheet-commandbar__identity">
             <p className="tadeon-eyebrow hidden sm:block">Ficha de continuidade</p>
-            <h1 className="font-cinzel text-lg md:text-2xl font-semibold truncate">
+            <h1 className="truncate font-cinzel text-lg font-semibold leading-tight md:text-2xl">
               {sheet.name || "Ficha"}
             </h1>
           </div>
@@ -653,7 +668,7 @@ function SheetPage() {
             </span>
           )}
           {canEdit && (
-            <div className="flex items-center gap-2">
+            <div className="tadeon-sheet-commandbar__actions">
               <SaveStatus
                 state={
                   typeof navigator !== "undefined" && !navigator.onLine
@@ -679,29 +694,26 @@ function SheetPage() {
                       void navigate({ to: "/sheet/$id/power", params: { id: sheet.id } });
                     }
                   }}
-                  className="gap-1.5 border-orange-400/60 text-orange-300 hover:bg-orange-500/15 animate-in fade-in-0 zoom-in-95 font-bold tracking-widest shadow-[0_0_15px_-5px_rgba(255,140,60,0.7)]"
+                  className="tadeon-sheet-power-button gap-1.5 border-orange-400/60 font-bold tracking-widest text-orange-300 shadow-[0_0_15px_-5px_rgba(255,140,60,0.7)] hover:bg-orange-500/15"
                   title="Abrir Forma de Poder (VP)"
                 >
                   <Sparkles className="w-4 h-4 animate-pulse" /> VP
                 </Button>
               )}
-              <Button size="sm" onClick={doSave} className="gap-1.5">
+              <Button size="sm" onClick={doSave} className="tadeon-sheet-save-button gap-1.5">
                 <Save className="w-4 h-4" /> <span className="hidden sm:inline">Salvar</span>
               </Button>
             </div>
           )}
         </div>
         {activeConditions.length > 0 && (
-          <div
-            className="mt-3 flex flex-wrap gap-2 rounded-xl border border-border/70 bg-card/80 p-2 shadow-inner backdrop-blur"
-            aria-label="Condições ativas"
-          >
+          <div className="tadeon-sheet-condition-rail" aria-label="Condições ativas">
             {activeConditions.map((key) => {
               const meta = CONDITION_META[key];
               return (
                 <span
                   key={key}
-                  className="inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-[10px] font-semibold tracking-wide"
+                  className="tadeon-sheet-condition-chip"
                   style={{
                     borderColor: meta.color,
                     color: meta.color,
@@ -727,7 +739,7 @@ function SheetPage() {
 
       {tutorial && (
         <Card
-          className="mb-4 border-primary/40 bg-[linear-gradient(135deg,rgba(116,36,45,.16),rgba(217,215,164,.05))] p-4"
+          className="tadeon-sheet-tutorial mb-4 border-primary/40 bg-[linear-gradient(135deg,rgba(116,36,45,.16),rgba(217,215,164,.05))] p-4"
           role="dialog"
           aria-label="Guia opcional da ficha"
         >
@@ -769,23 +781,30 @@ function SheetPage() {
       )}
 
       <div
-        className="rounded-xl transition-[box-shadow,background-image,padding] duration-500"
+        className="tadeon-sheet-frame rounded-2xl transition-[box-shadow,background-image,padding] duration-500"
         style={{
           backgroundImage: conditionAura || undefined,
           boxShadow: borderShadow,
           padding: borderShadow ? "3px" : 0,
         }}
       >
-        <Tabs defaultValue="ficha" className="space-y-4">
-          <TabsList className="w-full md:w-auto">
-            <TabsTrigger value="ficha" className="flex-1 md:flex-initial">
-              Ficha
+        <Tabs
+          value={sheetView}
+          onValueChange={(value) => setSheetView(value as SheetView)}
+          className="tadeon-sheet-tabs space-y-4"
+        >
+          <TabsList className="tadeon-sheet-tabs-list w-full md:w-auto">
+            <TabsTrigger value="ficha" className="flex-1 gap-2 md:flex-initial">
+              <IdCard className="h-4 w-4" aria-hidden="true" />
+              <span>Ficha</span>
             </TabsTrigger>
-            <TabsTrigger value="arvore" className="flex-1 md:flex-initial">
-              Árvore
+            <TabsTrigger value="arvore" className="flex-1 gap-2 md:flex-initial">
+              <GitBranch className="h-4 w-4" aria-hidden="true" />
+              <span>Árvore</span>
             </TabsTrigger>
-            <TabsTrigger value="descricao" className="flex-1 md:flex-initial">
-              Descrição
+            <TabsTrigger value="descricao" className="flex-1 gap-2 md:flex-initial">
+              <ScrollText className="h-4 w-4" aria-hidden="true" />
+              <span>Descrição</span>
             </TabsTrigger>
           </TabsList>
 
@@ -794,18 +813,18 @@ function SheetPage() {
             className="space-y-4 mt-0 animate-in fade-in-50 slide-in-from-bottom-1 duration-300"
           >
             {/* Quick jump shortcuts */}
-            <div className="flex flex-wrap gap-1.5 -mt-1">
+            <nav className="tadeon-sheet-jumpbar" aria-label="Ir para uma seção da ficha">
               {sectionAnchors.map((a) => (
                 <button
                   key={a.id}
                   type="button"
                   onClick={() => jumpTo(a.id)}
-                  className="text-[11px] px-2.5 py-1 rounded-full border border-border bg-secondary/40 hover:bg-primary/15 hover:border-primary/50 hover:text-primary transition-all font-medium"
+                  className="tadeon-sheet-jump"
                 >
                   {a.label}
                 </button>
               ))}
-            </div>
+            </nav>
             <Section id="sec-info" title="Identidade">
               <div className="mb-4">
                 <p className="tadeon-eyebrow">Sete campos essenciais</p>
@@ -1012,7 +1031,7 @@ function SheetPage() {
             </Section>
 
             {/* Attributes (with radar) + Vital points */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+            <div className="tadeon-sheet-core-grid grid grid-cols-1 gap-4 lg:grid-cols-2">
               <Section
                 id="sec-attr"
                 title="Atributos"
@@ -1040,20 +1059,20 @@ function SheetPage() {
                   </p>
                 )}
                 <div className="space-y-4">
-                  <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+                  <div className="tadeon-attribute-grid grid grid-cols-2 gap-2 sm:grid-cols-3">
                     {(Object.keys(attrs) as (keyof Attributes)[]).map((k) => {
                       const wouldCreateSecondZero = attrs[k] === 1 && zeroAttributes >= 1;
                       return (
                         <div
                           key={k}
-                          className="flex min-h-14 items-center justify-between gap-2 rounded-lg border border-border/60 bg-secondary/30 px-3 py-2"
+                          className="tadeon-attribute-tile flex min-h-14 items-center justify-between gap-2 rounded-xl border border-border/60 bg-secondary/30 px-3 py-2"
                         >
                           <span className="font-cinzel text-sm">{k}</span>
                           <div className="flex items-center gap-1">
                             <Button
                               size="sm"
                               variant="ghost"
-                              className="h-6 w-6 p-0"
+                              className="tadeon-stepper-button h-9 w-9 p-0"
                               disabled={!canEdit || attrs[k] <= 0 || wouldCreateSecondZero}
                               aria-label={`Diminuir ${k}`}
                               title={
@@ -1071,7 +1090,7 @@ function SheetPage() {
                             <Button
                               size="sm"
                               variant="ghost"
-                              className="h-6 w-6 p-0"
+                              className="tadeon-stepper-button h-9 w-9 p-0"
                               disabled={
                                 !canEdit || attrs[k] >= attributeCap || attributeRemaining <= 0
                               }
@@ -1098,11 +1117,11 @@ function SheetPage() {
                     })}
                   </div>
                   <p className="text-center text-[10px] leading-relaxed text-muted-foreground">
-                      {attributeRemaining > 0
-                        ? `${attributeRemaining} ponto(s) ainda disponível(is).`
-                        : "Orçamento do Rank totalmente distribuído."}
-                    </p>
-                  <div className="h-52 sm:h-60">
+                    {attributeRemaining > 0
+                      ? `${attributeRemaining} ponto(s) ainda disponível(is).`
+                      : "Orçamento do Rank totalmente distribuído."}
+                  </p>
+                  <div className="tadeon-attribute-radar h-44 sm:h-60">
                     <Suspense
                       fallback={
                         <Loader2 className="w-6 h-6 animate-spin text-primary mx-auto mt-20" />
@@ -1115,7 +1134,7 @@ function SheetPage() {
               </Section>
 
               <Section id="sec-pontos" title="Pontos Vitais">
-                <div className="grid grid-cols-1 gap-2.5 min-[430px]:grid-cols-2">
+                <div className="tadeon-vitals-grid grid grid-cols-1 gap-3 min-[430px]:grid-cols-2">
                   <StatBlock
                     label="PV"
                     full="Vitalidade"
@@ -1177,7 +1196,7 @@ function SheetPage() {
                     onMod={(v) => update("stats", { ...sheet.stats, pa_mod: clampMod(v) })}
                   />
 
-                  <Card className="p-3 bg-card/60 border-blue-500/30 shadow-[0_0_22px_-12px_rgba(59,130,246,0.65)] min-[430px]:col-span-2 min-[430px]:mx-auto min-[430px]:w-full min-[430px]:max-w-md">
+                  <Card className="tadeon-defense-card border-blue-500/30 bg-card/60 p-4 shadow-[0_0_22px_-12px_rgba(59,130,246,0.65)] min-[430px]:col-span-2 min-[430px]:mx-auto min-[430px]:w-full min-[430px]:max-w-md">
                     <div className="text-blue-300 font-cinzel font-bold text-sm">Defesa</div>
                     <div className="relative my-2 flex items-center justify-center">
                       <Shield
@@ -1457,7 +1476,7 @@ function SheetPage() {
 
             {/* Conditions */}
             <Section title="Condições">
-              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4">
+              <div className="tadeon-condition-grid grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4">
                 {(Object.keys(CONDITION_META) as ConditionKey[]).map((c) => {
                   const meta = CONDITION_META[c];
                   const opts = (conditionOptions[c] ?? ["Normal"]).filter(
@@ -1467,7 +1486,7 @@ function SheetPage() {
                   return (
                     <div
                       key={c}
-                      className="rounded-lg border border-border/60 bg-secondary/15 p-3 transition-[border-color,background,box-shadow] duration-300"
+                      className="tadeon-condition-card rounded-xl border border-border/60 bg-secondary/15 p-3 transition-[border-color,background,box-shadow,transform] duration-300"
                       style={
                         current.length > 0
                           ? {
@@ -2249,7 +2268,7 @@ function SheetPage() {
       <button
         type="button"
         onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-        className="fixed bottom-5 left-5 z-30 h-10 w-10 rounded-full bg-secondary/70 backdrop-blur border border-border text-muted-foreground hover:text-primary hover:border-primary/60 hover:scale-105 transition-all flex items-center justify-center shadow-md"
+        className="tadeon-sheet-top-button fixed z-30 flex h-11 w-11 items-center justify-center rounded-full border border-border bg-secondary/80 text-muted-foreground shadow-lg backdrop-blur transition-all hover:scale-105 hover:border-primary/60 hover:text-primary"
         aria-label="Voltar ao topo"
         title="Voltar ao topo"
       >
@@ -2273,10 +2292,10 @@ function Section({
   return (
     <Card
       id={id}
-      className="tadeon-surface rounded-2xl p-4 md:p-5 transition-all hover:border-primary/25 scroll-mt-32"
+      className="tadeon-surface tadeon-sheet-section scroll-mt-44 rounded-2xl p-4 transition-all hover:border-primary/25 md:p-5"
     >
-      <div className="flex items-center justify-between flex-wrap gap-2 mb-3">
-        <h2 className="font-cinzel font-semibold text-primary text-lg">{title}</h2>
+      <div className="tadeon-sheet-section__heading mb-4 flex flex-wrap items-center justify-between gap-2">
+        <h2 className="font-cinzel text-lg font-semibold text-primary">{title}</h2>
         {extra}
       </div>
       {children}
@@ -2338,7 +2357,7 @@ function StatBlock({
     boxShadow: `0 0 22px -10px rgba(${glowRgb}, 0.7)`,
   };
   return (
-    <Card className="p-3 bg-card/60 border" style={borderStyle}>
+    <Card className="tadeon-stat-block border bg-card/60 p-3" style={borderStyle}>
       <div className="flex items-baseline justify-between">
         <div className={`font-cinzel font-bold text-sm ${color}`}>{label}</div>
         <span className="text-[10px] text-muted-foreground">{full}</span>
@@ -2359,7 +2378,7 @@ function StatBlock({
         <Button
           size="sm"
           variant="ghost"
-          className="h-7 w-7 p-0"
+          className="tadeon-stepper-button h-9 w-9 p-0"
           disabled={disabled || current <= 0}
           onClick={() => onCurrent(current - 1)}
         >
@@ -2372,12 +2391,12 @@ function StatBlock({
           disabled={disabled}
           value={current}
           onChange={(e) => onCurrent(Number(e.target.value))}
-          className="h-7 text-center text-xs"
+          className="h-9 text-center text-sm font-semibold"
         />
         <Button
           size="sm"
           variant="ghost"
-          className="h-7 w-7 p-0"
+          className="tadeon-stepper-button h-9 w-9 p-0"
           disabled={disabled || current >= max}
           onClick={() => onCurrent(current + 1)}
         >
@@ -2391,7 +2410,7 @@ function StatBlock({
           disabled={disabled}
           value={mod}
           onChange={(e) => onMod(Number(e.target.value))}
-          className="h-6 text-xs"
+          className="h-9 text-xs"
         />
       </div>
     </Card>
@@ -2486,7 +2505,7 @@ function RowTable<T extends HasId>({
       {rows.map((it, idx) => (
         <div
           key={it.id}
-          className="bg-secondary/30 rounded-lg p-2 hover:bg-secondary/50 transition-all sm:grid gap-1.5 items-center flex flex-col animate-in fade-in-0 duration-200"
+          className="tadeon-sheet-row flex flex-col items-center gap-2 rounded-xl bg-secondary/30 p-2.5 transition-all hover:bg-secondary/50 sm:grid sm:gap-1.5"
           style={{ gridTemplateColumns: gridCols }}
         >
           {columns.map((c) => {

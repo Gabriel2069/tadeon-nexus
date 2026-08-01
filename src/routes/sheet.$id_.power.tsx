@@ -44,6 +44,9 @@ import { AddItemDialog } from "@/components/sheet/add-item-dialog";
 import type { DefenseItem } from "./sheet.$id";
 import { useSerializedAutosave } from "@/lib/use-serialized-autosave";
 import { can } from "@/lib/permissions";
+import { SaveStatus } from "@/components/save-status";
+import { ResistanceDtCalculator } from "@/components/master/resistance-dt-calculator";
+import "@/styles/sheet-premium.css";
 
 const AttributeRadar = lazy(() => import("@/components/sheet/attribute-radar"));
 
@@ -410,8 +413,7 @@ function PowerFormPage() {
   const exposure = vp.exposure ?? base.exposure;
   const rank = getRankBase(exposure, rankTable);
   const vpDefItems = vp.defense_items ?? [];
-  const vpDefItemsBonus = vpDefItems.reduce((s, d) => s + (Number(d.bonus) || 0), 0);
-  const vpArmor = Math.min(25, vpDefItemsBonus);
+  const vpArmor = Math.min(3, Math.max(0, ...vpDefItems.map((item) => Number(item.bonus) || 0)));
   const derivedStats: Stats = {
     ...base.stats,
     ...mods,
@@ -450,7 +452,7 @@ function PowerFormPage() {
 
   return (
     <div
-      className="min-h-screen relative pb-24 animate-in fade-in-0 duration-500"
+      className="tadeon-vp-page relative min-h-screen pb-24 animate-in fade-in-0 duration-500"
       style={{
         background:
           "radial-gradient(ellipse at top, rgba(251,113,133,0.30), transparent 55%), radial-gradient(ellipse at bottom, rgba(168,85,247,0.25), transparent 55%), linear-gradient(180deg, #200712 0%, #0a0210 100%)",
@@ -462,11 +464,9 @@ function PowerFormPage() {
           background: "radial-gradient(circle at 50% 20%, rgba(255,120,40,0.22), transparent 55%)",
         }}
       />
-      <style>{`@keyframes vpPulse{0%,100%{opacity:.55}50%{opacity:1}}.vp-pulse{animation:vpPulse 3s ease-in-out infinite}`}</style>
-
-      <div className="max-w-6xl mx-auto p-3 md:p-6 relative z-10">
+      <div className="tadeon-vp-container relative z-10 mx-auto max-w-7xl p-3 md:p-6">
         {/* Header */}
-        <div className="sticky top-0 z-20 -mx-3 md:-mx-6 px-3 md:px-6 py-3 mb-4 bg-background/40 backdrop-blur-xl border-b border-orange-500/50 shadow-[0_4px_30px_rgba(255,100,50,0.35)]">
+        <div className="tadeon-vp-commandbar sticky z-20 -mx-3 mb-4 border-b border-orange-500/50 bg-background/40 px-3 py-3 shadow-[0_4px_30px_rgba(255,100,50,0.35)] backdrop-blur-xl md:-mx-6 md:px-6">
           <div className="flex items-center gap-2">
             <Button
               variant="ghost"
@@ -483,21 +483,11 @@ function PowerFormPage() {
             </h1>
             {canEdit && (
               <>
-                {saving && (
-                  <span className="text-[10px] text-orange-200 hidden sm:flex items-center gap-1">
-                    <Loader2 className="w-3 h-3 animate-spin" /> Salvando…
-                  </span>
-                )}
-                {!saving && saveError && (
-                  <button className="text-[10px] text-red-300" onClick={() => void doSave()}>
-                    Não salvo · tentar novamente
-                  </button>
-                )}
-                {!saving && !saveError && dirty && (
-                  <span className="text-[10px] text-orange-200/70 hidden sm:inline">
-                    Alterações pendentes
-                  </span>
-                )}
+                <SaveStatus
+                  state={saving ? "saving" : saveError ? "error" : dirty ? "pending" : "saved"}
+                  onRetry={() => void doSave()}
+                  compact={typeof window !== "undefined" && window.innerWidth < 640}
+                />
                 <Button
                   size="sm"
                   onClick={doSave}
@@ -511,16 +501,16 @@ function PowerFormPage() {
         </div>
 
         <Tabs defaultValue="ficha" className="w-full">
-          <TabsList className="bg-card/40 border border-orange-500/30">
+          <TabsList className="tadeon-vp-tabs-list w-full border border-orange-500/30 bg-card/40 sm:w-auto">
             <TabsTrigger
               value="ficha"
-              className="data-[state=active]:bg-orange-500/20 data-[state=active]:text-orange-100"
+              className="flex-1 data-[state=active]:bg-orange-500/20 data-[state=active]:text-orange-100 sm:flex-initial"
             >
               Ficha
             </TabsTrigger>
             <TabsTrigger
               value="desc"
-              className="data-[state=active]:bg-orange-500/20 data-[state=active]:text-orange-100"
+              className="flex-1 data-[state=active]:bg-orange-500/20 data-[state=active]:text-orange-100 sm:flex-initial"
             >
               Descrição
             </TabsTrigger>
@@ -623,7 +613,7 @@ function PowerFormPage() {
                           size="sm"
                           variant="ghost"
                           disabled={!canEdit}
-                          className="h-6 w-6 p-0 hover:bg-orange-500/20"
+                          className="tadeon-stepper-button h-10 w-10 p-0 hover:bg-orange-500/20"
                           aria-label={`Diminuir ${k}`}
                           onClick={() =>
                             patch({ attributes: { ...attrs, [k]: Math.max(0, attrs[k] - 1) } })
@@ -638,7 +628,7 @@ function PowerFormPage() {
                           size="sm"
                           variant="ghost"
                           disabled={!canEdit}
-                          className="h-6 w-6 p-0 hover:bg-orange-500/20"
+                          className="tadeon-stepper-button h-10 w-10 p-0 hover:bg-orange-500/20"
                           aria-label={`Aumentar ${k}`}
                           onClick={() =>
                             patch({ attributes: { ...attrs, [k]: Math.min(10, attrs[k] + 1) } })
@@ -1051,12 +1041,8 @@ function PowerFormPage() {
                 </>
               ) : (
                 <>
-                  <div className="mb-3 inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-gradient-to-r from-orange-500/25 via-orange-400/10 to-transparent border border-orange-400/50 shadow-[0_0_14px_-4px_rgba(255,140,60,0.7)] animate-in fade-in-0 slide-in-from-top-1 duration-200">
-                    <span className="font-cinzel text-xs uppercase tracking-wider text-orange-200">
-                      DT de Canalização
-                    </span>
-                    <span className="text-lg font-bold text-orange-100">{3 * attrs.MEN}</span>
-                    <span className="text-[10px] text-orange-200/70">(3 × MEN)</span>
+                  <div className="mb-4">
+                    <ResistanceDtCalculator initialAttribute={attrs.MEN} compact />
                   </div>
                   <ItemRows
                     rows={vpPlots}
@@ -1138,7 +1124,7 @@ function VPCard({
   extra?: React.ReactNode;
 }) {
   return (
-    <Card className="p-4 bg-card/30 backdrop-blur-md border-orange-500/30 shadow-[0_0_25px_-10px_rgba(255,120,60,0.55)] hover:border-orange-400/60 transition-all">
+    <Card className="tadeon-vp-card border-orange-500/30 bg-card/30 p-4 shadow-[0_0_25px_-10px_rgba(255,120,60,0.55)] backdrop-blur-md transition-all hover:border-orange-400/60">
       <div className="flex items-center justify-between flex-wrap gap-2 mb-3">
         <h2 className="font-cinzel text-sm font-bold text-orange-200 tracking-wide">{title}</h2>
         {extra}
@@ -1231,7 +1217,7 @@ function PointBlock({
           size="sm"
           variant="ghost"
           disabled={disabled}
-          className="h-7 w-7 p-0"
+          className="tadeon-stepper-button h-10 w-10 p-0"
           aria-label={`Diminuir ${label}`}
           onClick={() => onChange(current - 1)}
         >
@@ -1242,13 +1228,13 @@ function PointBlock({
           disabled={disabled}
           value={current}
           onChange={(e) => onChange(Number(e.target.value) || 0)}
-          className="h-7 w-16 text-center bg-card/40 border-orange-500/30"
+          className="h-10 w-20 border-orange-500/30 bg-card/40 text-center"
         />
         <Button
           size="sm"
           variant="ghost"
           disabled={disabled}
-          className="h-7 w-7 p-0"
+          className="tadeon-stepper-button h-10 w-10 p-0"
           aria-label={`Aumentar ${label}`}
           onClick={() => onChange(current + 1)}
         >

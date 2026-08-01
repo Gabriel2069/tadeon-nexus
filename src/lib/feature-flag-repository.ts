@@ -52,17 +52,19 @@ export function getPublicFeatureFlagEnvironment(): PublicFeatureFlagEnvironment 
   };
 }
 
-export async function loadFeatureFlags(): Promise<FeatureFlags> {
+export async function loadFeatureFlags(authenticatedUserId?: string): Promise<FeatureFlags> {
   const environment = getPublicFeatureFlagEnvironment();
-  const [globalResponse, userResponse] = await Promise.all([
-    supabase.from("feature_flags").select("key,enabled"),
-    supabase.auth.getUser(),
-  ]);
+  const globalResponse = await supabase.from("feature_flags").select("key,enabled");
 
   if (globalResponse.error) return resolveFeatureFlags({ environment });
 
   let userOverrides: Partial<FeatureFlags> = {};
-  const userId = userResponse.data.user?.id;
+  let userId = authenticatedUserId;
+
+  if (!userId) {
+    const { data } = await supabase.auth.getUser();
+    userId = data.user?.id;
+  }
 
   if (userId) {
     const { data, error } = await supabase
