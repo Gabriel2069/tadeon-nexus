@@ -8,7 +8,7 @@ Atualizado em 1º de agosto de 2026 pelo Work de continuidade independente.
 - O Livro de Regras de Tessitura do Vazio governa mecânicas e terminologia.
 - O Fio-Mestre governa identidade visual.
 - Checkpoint de entrada: `1c5b66cf83bdd9d4b070019510080eb2d63dc74b`.
-- Checkpoints integrados: PRs #25–#49 em `main`; o último lote funcional está em `8bd465ac`.
+- Checkpoints integrados: PRs #25–#52 em `main`; o último lote integrado está em `2b0031be`.
 
 ## Estado confirmado
 
@@ -81,11 +81,27 @@ A Fundação Gráfica do Comando 9 foi integrada no PR #49 com PixiJS 8 em chunk
 `EntityRenderer`, `TextureManager`, `GridRenderer`, `InteractionController` e
 `CommandHistory`.
 
-O canvas local cobre pan, zoom, centralização, fit, coordenadas mundo/tela, resize, grade quadrada
+O canvas cobre pan, zoom, centralização, fit, coordenadas mundo/tela, resize, grade quadrada
 ou desligada, escala, snap, seleção múltipla, movimento, redimensionamento, rotação, bloqueio,
 duplicação, exclusão, atalhos, menu contextual e undo/redo local. Cena vazia, falha de asset e
-liberação de canvas, listeners e texturas são tratados. Não há persistência no Postgres, Realtime,
-iluminação, névoa ou R2; o Comando 10 permanece não iniciado.
+liberação de canvas, listeners e texturas são tratados.
+
+A fundação persistente do Comando 10 foi integrada nos PRs #51 e #52 e aplicada como
+`20260801113400_tabletop_persistent_scenes.sql` e
+`20260801113727_cover_tabletop_composite_foreign_key.sql`. Ela inclui cenas, cinco camadas
+padrão, entidades, snapshots, log mínimo, vínculos explícitos com asset/ficha/Página do Nexus,
+versões otimistas, duplicação e restauração. As tabelas brutas são visíveis e editáveis somente
+por master/co-master; jogadores continuam vendo zero linhas, inclusive propriedades de entidades.
+
+O editor persistente está no PR #53. Ele conecta campanha e lista de cenas ao motor, permite
+criar, carregar, duplicar e arquivar cenas, salva grade, camadas, tokens e objetos, cria snapshots
+e restaura com ponto de recuperação. Cenas arquivadas ficam bloqueadas no próprio motor. A RPC
+aditiva `20260801140620_save_tabletop_scene_state.sql` salva cena, camadas, inclusões, alterações e
+exclusões em uma única transação `SECURITY INVOKER`; qualquer versão obsoleta aborta o lote todo.
+
+O teste autenticado auto-revertido confirmou criação, cinco camadas, token, alteração, snapshot,
+restauração, conflito `40001`, negação de escrita e leitura bruta zero para jogador, além de zero
+resíduos. Não há Realtime, iluminação calculada, visão, névoa ou R2.
 
 ## Segurança
 
@@ -127,6 +143,12 @@ As migrations `20260730004019_knowledge_libraries_and_templates.sql`,
 `20260801044451_knowledge_vault_portability.sql` acrescentam bibliotecas, templates, índices e
 portabilidade transacional sem alterar dados existentes.
 
+As migrations `20260801113400_tabletop_persistent_scenes.sql`,
+`20260801113727_cover_tabletop_composite_foreign_key.sql` e
+`20260801140620_save_tabletop_scene_state.sql` acrescentam a persistência manager-only da Mesa,
+cobrem todas as FKs e tornam o salvamento do editor atômico. O timestamp do último arquivo foi
+reconciliado ao histórico remoto sem mudar o SQL aplicado.
+
 Validação posterior:
 
 - foreign keys sem índice: zero;
@@ -150,6 +172,8 @@ O PR #49 foi mesclado por squash no SHA
 O runtime canônico é o Worker Cloudflare. O smoke test público do Worker carregou a aplicação,
 redirecionou corretamente para `/login` e não apresentou erro de console da aplicação. O único
 erro observado veio da extensão do navegador de inspeção, fora do app.
+
+A Quality nº 171 do editor persistente aprovou instalação, audit, lint, typecheck, testes e build.
 
 O Lovable permanece sincronizado como ambiente de construção e não participa do funcionamento
 direto da aplicação. O deploy anteriormente disponível não expunha um identificador verificável;
@@ -195,7 +219,7 @@ continuam desligadas. O jogador não vê overrides de terceiros e não pode cri�
 
 ## Estado do rollout
 
-O rollout controlado de Nexus Assets, O Nexus, grafo local e Fundação Gráfica da Mesa foi iniciado
+O rollout controlado de Nexus Assets, O Nexus, grafo local e Mesa Nexus foi iniciado
 somente para o proprietário mestre.
 A integração, migration, policies, grants, teste transacional e ativação foram concluídos. A
 validação funcional em sessão autenticada ainda está pendente; portanto os módulos não são
@@ -212,9 +236,10 @@ override e negação de R2, deixando zero sessões residuais. O upload/download 
 com arquivo real e a validação visual dos dois módulos em frontend autenticado continuam
 pendentes. O rollback do canário é remover as quatro linhas de override. A portabilidade de O Nexus foi
 integrada e validada no backend; sua validação visual autenticada e o teste com anexo real
-permanecem no canário. A Mesa passou build e proteção pública de rota; sua interação visual em
-sessão autenticada ainda precisa de aceite. Comando 10, iluminação e Realtime permanecem
-bloqueados.
+permanecem no canário. A Mesa passou build, proteção pública de rota e testes reais de persistência;
+sua interação visual autenticada e o salvamento pelo frontend ainda precisam de aceite. Editor de
+vínculos, drag and drop, presets, ações em lote e reordenação de cenas permanecem pendentes no
+Comando 10. Iluminação, visão, névoa e Realtime permanecem bloqueados.
 
 ## Próximos critérios
 
@@ -224,5 +249,7 @@ bloqueados.
    incluindo um ZIP com conflito e um anexo real.
 3. Validar visualmente a Fundação Gráfica da Mesa em sessão de mestre: canvas, pan/zoom, grade,
    seleção, transformações, undo/redo, cena vazia, erro de asset e liberação de memória.
-4. Não iniciar o Comando 10, persistência de cenas, iluminação, fog, Realtime ou R2 até seus
-   próprios critérios de aceite.
+4. Validar no canário da Mesa criação, salvamento, conflito, camadas, arquivamento, duplicação,
+   snapshot e restauração pelo frontend; depois completar vínculos, drag and drop, presets,
+   reordenação e ações em lote do Comando 10.
+5. Não iniciar iluminação, visão, névoa, Realtime ou R2 até seus próprios critérios de aceite.
