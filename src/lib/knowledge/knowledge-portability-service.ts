@@ -130,11 +130,13 @@ function jsonObject(value: Json): Record<string, Json | undefined> {
 }
 
 function safeAttachmentName(value: string) {
-  const safe = value
-    .replace(/[/\\]/g, "-")
-    .replace(/[\u0000-\u001f\u007f]/g, "")
-    .trim()
-    .slice(0, 180);
+  const printable = Array.from(value)
+    .filter((character) => {
+      const codePoint = character.codePointAt(0) ?? 0;
+      return codePoint > 0x1f && codePoint !== 0x7f;
+    })
+    .join("");
+  const safe = printable.replace(/[/\\]/g, "-").trim().slice(0, 180);
   return safe || "anexo.bin";
 }
 
