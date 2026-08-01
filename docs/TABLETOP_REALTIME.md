@@ -11,6 +11,17 @@ Esta etapa prepara o transporte ao vivo sem ativá-lo. A flag global
 
 Nenhum pixel de movimento deve ser gravado no banco. Presence não recebe coordenadas de cursor.
 
+## Sala persistente
+
+`tabletop_sessions` guarda somente campanha, cena atual, nome, estado, bloqueio de entrada, versão e
+auditoria. Há no máximo uma sala aberta por campanha. `tabletop_session_participants` registra a
+participação naquela sessão e deriva o papel de `campaign_members`; ela não substitui nem duplica o
+cadastro permanente de membros.
+
+Abrir, entrar, sair, trocar cena, bloquear entrada, remover participante e encerrar usam RPCs
+`SECURITY INVOKER`. RLS exige a flag efetiva e o vínculo com a campanha. Alterações gerenciais usam
+controle otimista de versão; participantes removidos não são apagados do histórico.
+
 ## Canais
 
 - `tabletop:scene:{sceneId}`
