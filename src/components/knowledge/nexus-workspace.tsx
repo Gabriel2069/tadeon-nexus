@@ -39,6 +39,7 @@ import { toast } from "sonner";
 import { AssetPickerDialog } from "@/components/assets/asset-picker-dialog";
 import { KnowledgeGraph } from "@/components/knowledge/knowledge-graph";
 import { KnowledgeLibrary } from "@/components/knowledge/knowledge-library";
+import { KnowledgePortabilityDialog } from "@/components/knowledge/knowledge-portability-dialog";
 import {
   SafeMarkdown,
   type KnowledgeLinkPreview,
@@ -343,6 +344,7 @@ export function NexusWorkspace({
   const [commandOpen, setCommandOpen] = useState(false);
   const [graphOpen, setGraphOpen] = useState(false);
   const [libraryOpen, setLibraryOpen] = useState(false);
+  const [portabilityOpen, setPortabilityOpen] = useState(false);
   const [commandSearch, setCommandSearch] = useState("");
   const [aliasValue, setAliasValue] = useState("");
   const [assetPickerOpen, setAssetPickerOpen] = useState(false);
@@ -1075,6 +1077,14 @@ export function NexusWorkspace({
           >
             <BookMarked className="h-4 w-4" />
             Bibliotecas
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setPortabilityOpen(true)}
+          >
+            <Archive className="h-4 w-4" />
+            Importar / exportar
           </Button>
           {graphEnabled && (
             <Button
@@ -2502,6 +2512,15 @@ export function NexusWorkspace({
         campaigns={campaigns}
         onOpenNode={(node) => void openNode(node)}
         onChanged={() => void loadNodes()}
+      />
+
+      <KnowledgePortabilityDialog
+        open={portabilityOpen}
+        onOpenChange={setPortabilityOpen}
+        workspaceId={workspaceId}
+        campaignId={campaignScope}
+        assetsEnabled={assetsEnabled}
+        onImported={() => loadNodes()}
       />
 
       {selected && assetsEnabled && (
