@@ -58,10 +58,17 @@ O adaptador de cliente é injetável para que todos os fluxos sejam testados sem
 
 ## Autorização no Realtime
 
-Antes do canário, o projeto precisa de políticas RLS em `realtime.messages` para `authenticated`.
-Elas devem liberar Broadcast e Presence apenas quando o tópico privado corresponde a uma sessão ou
-cena que o usuário pode acessar pela campanha existente. Não se deve criar tabelas, funções ou
-colunas no schema interno `realtime`; somente as políticas suportadas nessa tabela serão aplicadas.
+A migration `tabletop_realtime_channel_authorization` instala políticas RLS em
+`realtime.messages` para `authenticated`, sem criar tabelas, funções ou colunas no schema interno
+gerenciado pelo Supabase.
+
+- somente participante ativo de uma sessão aberta pode receber Presence e Broadcast;
+- Presence só pode ser publicada no canal privado da própria sessão;
+- Broadcast só pode ser publicado por mestre ou co-mestre, no canal da sessão ou da cena atual;
+- usuário removido, ausente, fora da campanha ou com a flag desligada não satisfaz as políticas.
+
+Antes do canário, a opção **Allow public access** também deve estar desligada nas configurações de
+Realtime do projeto.
 
 ## Segurança ainda obrigatória na integração
 
@@ -76,7 +83,7 @@ colunas no schema interno `realtime`; somente as políticas suportadas nessa tab
 
 ## Próximo canário
 
-A integração real só deve ser habilitada para o proprietário mestre depois de aplicar e revisar as
-políticas de `realtime.messages` e testar dois navegadores, reconexão, posição final, entrada negada,
-token alheio, cena secreta e consumo do plano gratuito. Em falha, remover o override e manter o
-editor persistente atual.
+A integração real só deve ser habilitada para o proprietário mestre depois de confirmar a opção de
+acesso público desligada e testar dois navegadores, reconexão, posição final, entrada negada, token
+alheio, cena secreta e consumo do plano gratuito. Em falha, remover o override e manter o editor
+persistente atual.
