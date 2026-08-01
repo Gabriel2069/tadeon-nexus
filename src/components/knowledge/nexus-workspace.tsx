@@ -281,11 +281,14 @@ function insertAroundSelection(
 export function NexusWorkspace({
   assetsEnabled,
   graphEnabled,
+  initialNodeId,
 }: {
   assetsEnabled: boolean;
   graphEnabled: boolean;
+  initialNodeId?: string;
 }) {
   const editorRef = useRef<HTMLTextAreaElement>(null);
+  const initialNodeOpenedRef = useRef<string | null>(null);
   const [workspaces, setWorkspaces] = useState<WorkspaceOption[]>([]);
   const [campaigns, setCampaigns] = useState<CampaignOption[]>([]);
   const [workspaceId, setWorkspaceId] = useState("");
@@ -613,8 +616,19 @@ export function NexusWorkspace({
   );
 
   useEffect(() => {
-    if (!selected && nodes[0]) void openNode(nodes[0]);
-  }, [nodes, openNode, selected]);
+    if (
+      !initialNodeId ||
+      initialNodeOpenedRef.current === initialNodeId
+    ) {
+      return;
+    }
+    initialNodeOpenedRef.current = initialNodeId;
+    void openNode(initialNodeId);
+  }, [initialNodeId, openNode]);
+
+  useEffect(() => {
+    if (!initialNodeId && !selected && nodes[0]) void openNode(nodes[0]);
+  }, [initialNodeId, nodes, openNode, selected]);
 
   const markDirty = useCallback(
     (title: string, content: string) => {

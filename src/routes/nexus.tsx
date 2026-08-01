@@ -9,6 +9,12 @@ import {
 import type { FeatureFlags } from "@/lib/feature-flags";
 
 export const Route = createFileRoute("/nexus")({
+  validateSearch: (search: Record<string, unknown>) => ({
+    node:
+      typeof search.node === "string" && search.node.length <= 100
+        ? search.node
+        : undefined,
+  }),
   head: () => ({
     meta: [
       { title: "O Nexus · Tadeon Nexus" },
@@ -28,6 +34,7 @@ export const Route = createFileRoute("/nexus")({
 
 function NexusRoute() {
   const navigate = useNavigate();
+  const { node } = Route.useSearch();
   const [flags, setFlags] = useState<FeatureFlags | null>(null);
 
   useEffect(() => {
@@ -62,6 +69,7 @@ function NexusRoute() {
     <NexusWorkspace
       assetsEnabled={flags.nexus_assets_v2_enabled}
       graphEnabled={flags.nexus_graph_enabled}
+      initialNodeId={node}
     />
   );
 }

@@ -1289,6 +1289,14 @@ export function TabletopWorkspace() {
                       </option>
                     ))}
                   </select>
+                  {primary.linkedKnowledgeNodeId && (
+                    <a
+                      href={`/nexus?node=${encodeURIComponent(primary.linkedKnowledgeNodeId)}`}
+                      className="mt-1 inline-block text-xs text-primary hover:underline"
+                    >
+                      Abrir Página do Nexus vinculada
+                    </a>
+                  )}
                 </div>
                 <div className="flex items-center justify-between rounded-md border border-border/50 px-3 py-2">
                   <Label htmlFor="entity-hidden" className="text-xs">
