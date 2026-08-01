@@ -132,9 +132,11 @@ ALTER TABLE public.tabletop_entities ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.tabletop_scene_snapshots ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.tabletop_scene_events ENABLE ROW LEVEL SECURITY;
 
-CREATE POLICY "Tabletop scenes: campaign members read"
+-- Command 10 is a manager editor. Players must never query raw entity properties;
+-- the Realtime phase will expose a dedicated recipient-filtered projection.
+CREATE POLICY "Tabletop scenes: campaign managers read"
   ON public.tabletop_scenes FOR SELECT TO authenticated
-  USING ((SELECT private.can_access_campaign(campaign_id)));
+  USING ((SELECT private.can_co_manage_campaign(campaign_id)));
 CREATE POLICY "Tabletop scenes: campaign managers insert"
   ON public.tabletop_scenes FOR INSERT TO authenticated
   WITH CHECK (
@@ -153,16 +155,12 @@ CREATE POLICY "Tabletop scenes: campaign managers delete"
   ON public.tabletop_scenes FOR DELETE TO authenticated
   USING ((SELECT private.can_co_manage_campaign(campaign_id)));
 
-CREATE POLICY "Tabletop layers: authorized read"
+CREATE POLICY "Tabletop layers: campaign managers read"
   ON public.tabletop_layers FOR SELECT TO authenticated
   USING (EXISTS (
     SELECT 1 FROM public.tabletop_scenes scene
     WHERE scene.id = tabletop_layers.scene_id
-      AND (SELECT private.can_access_campaign(scene.campaign_id))
-      AND (
-        (SELECT private.can_co_manage_campaign(scene.campaign_id))
-        OR (tabletop_layers.visible AND tabletop_layers.layer_type <> 'master')
-      )
+      AND (SELECT private.can_co_manage_campaign(scene.campaign_id))
   ));
 CREATE POLICY "Tabletop layers: campaign managers insert"
   ON public.tabletop_layers FOR INSERT TO authenticated
@@ -198,24 +196,13 @@ CREATE POLICY "Tabletop layers: campaign managers delete"
       AND (SELECT private.can_co_manage_campaign(scene.campaign_id))
   ));
 
-CREATE POLICY "Tabletop entities: authorized read"
+CREATE POLICY "Tabletop entities: campaign managers read"
   ON public.tabletop_entities FOR SELECT TO authenticated
   USING (EXISTS (
     SELECT 1
     FROM public.tabletop_scenes scene
-    JOIN public.tabletop_layers layer
-      ON layer.scene_id = scene.id
-     AND layer.id = tabletop_entities.layer_id
     WHERE scene.id = tabletop_entities.scene_id
-      AND (SELECT private.can_access_campaign(scene.campaign_id))
-      AND (
-        (SELECT private.can_co_manage_campaign(scene.campaign_id))
-        OR (
-          NOT tabletop_entities.hidden
-          AND layer.visible
-          AND layer.layer_type <> 'master'
-        )
-      )
+      AND (SELECT private.can_co_manage_campaign(scene.campaign_id))
   ));
 CREATE POLICY "Tabletop entities: campaign managers insert"
   ON public.tabletop_entities FOR INSERT TO authenticated
