@@ -253,6 +253,10 @@ export function buildTabletopSavePayload(
     original.entities.map((entity) => [entity.id, entity]),
   );
   const currentEntityIds = new Set(current.entities.map((entity) => entity.id));
+  const hasBackgroundAsset = Object.prototype.hasOwnProperty.call(
+    current,
+    "backgroundAssetId",
+  );
 
   const layerDocuments = current.layers.map((layer) => {
     const persisted = originalLayers.get(layer.id);
@@ -311,7 +315,9 @@ export function buildTabletopSavePayload(
   return {
     sceneDocument: {
       name: overrides.name ?? current.name,
-      background_asset_id: original.backgroundAssetId,
+      background_asset_id: hasBackgroundAsset
+        ? (current.backgroundAssetId ?? null)
+        : original.backgroundAssetId,
       width: current.width,
       height: current.height,
       grid_type: current.gridMode,
@@ -351,6 +357,7 @@ export function mapTabletopScene(
     gridOffsetY: numeric(scene.grid_offset_y),
     globalIllumination: numeric(scene.global_illumination),
     snap: scene.snap_enabled,
+    backgroundAssetUrl: undefined,
     status: scene.status,
     orderIndex: scene.order_index,
     version: scene.version,
@@ -556,9 +563,10 @@ export class TabletopPersistenceService {
   private async withTemporaryAssetUrls(scene: PersistedTabletopScene) {
     const assetIds = [
       ...new Set(
-        scene.entities
-          .map((entity) => entity.assetId)
-          .filter((id): id is string => Boolean(id)),
+        [
+          scene.backgroundAssetId,
+          ...scene.entities.map((entity) => entity.assetId),
+        ].filter((id): id is string => Boolean(id)),
       ),
     ];
     if (assetIds.length === 0) return scene;
@@ -585,6 +593,9 @@ export class TabletopPersistenceService {
     );
     return {
       ...scene,
+      backgroundAssetUrl: scene.backgroundAssetId
+        ? urls.get(scene.backgroundAssetId)
+        : undefined,
       entities: scene.entities.map((entity) => ({
         ...entity,
         assetUrl: entity.assetId ? urls.get(entity.assetId) : undefined,

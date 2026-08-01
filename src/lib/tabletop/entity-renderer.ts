@@ -2,6 +2,17 @@ import { Container, Graphics, Sprite, Text } from "pixi.js";
 import type { TabletopEntity, TabletopLayer } from "./types";
 import { TextureManager } from "./texture-manager";
 
+function entityProperties(value: unknown): Record<string, unknown> {
+  return typeof value === "object" && value !== null && !Array.isArray(value)
+    ? (value as Record<string, unknown>)
+    : {};
+}
+
+function finiteNumber(value: unknown, fallback = 0) {
+  const parsed = Number(value);
+  return Number.isFinite(parsed) ? parsed : fallback;
+}
+
 export class EntityRenderer {
   readonly view = new Container();
   private readonly displays = new Map<string, Container>();
@@ -74,6 +85,28 @@ export class EntityRenderer {
     });
     label.label = "label";
     display.addChild(label);
+    const badge = new Text({
+      text: "",
+      style: {
+        fill: 0xffe0a3,
+        fontFamily: "sans-serif",
+        fontSize: 9,
+        fontWeight: "700",
+      },
+    });
+    badge.label = "badge";
+    display.addChild(badge);
+    const icons = new Text({
+      text: "",
+      style: {
+        fill: 0xf4ead7,
+        fontFamily: "sans-serif",
+        fontSize: 12,
+      },
+    });
+    icons.label = "icons";
+    display.addChild(icons);
+    display.addChild(new Graphics({ label: "bar" }));
 
     return display;
   }
@@ -93,9 +126,61 @@ export class EntityRenderer {
       alpha: selected ? 1 : 0.9,
       width: selected ? 4 : 2,
     });
+    const properties = entityProperties(entity.properties);
+    const status =
+      typeof properties.status === "string" ? properties.status.trim() : "";
+    const conditions = Array.isArray(properties.visual_conditions)
+      ? properties.visual_conditions.filter(
+          (value): value is string => typeof value === "string",
+        )
+      : [];
+    const icons = Array.isArray(properties.icons)
+      ? properties.icons
+          .filter((value): value is string => typeof value === "string")
+          .slice(0, 4)
+      : [];
+    const badgeParts = [status, ...conditions].filter(Boolean).slice(0, 2);
+    const badge = display.getChildByLabel("badge") as Text;
+    badge.text = badgeParts.join(" · ").slice(0, 30);
+    badge.visible = badge.text.length > 0 && entity.width >= 56;
+    badge.position.set(7, 5);
+
+    const iconText = display.getChildByLabel("icons") as Text;
+    iconText.text = icons.join(" ").slice(0, 20);
+    iconText.visible = iconText.text.length > 0 && entity.width >= 48;
+    iconText.position.set(
+      Math.max(6, entity.width - iconText.width - 7),
+      badge.visible ? 19 : 5,
+    );
+
+    const barMax = Math.max(0, finiteNumber(properties.bar_max));
+    const barCurrent = Math.max(
+      0,
+      Math.min(barMax, finiteNumber(properties.bar_current)),
+    );
+    const bar = display.getChildByLabel("bar") as Graphics;
+    bar.clear();
+    bar.visible = barMax > 0 && entity.width >= 32 && entity.height >= 32;
+    if (bar.visible) {
+      const width = Math.max(8, entity.width - 10);
+      const ratio = barMax > 0 ? barCurrent / barMax : 0;
+      bar.roundRect(5, entity.height - 9, width, 5, 3).fill({
+        color: 0x191d24,
+        alpha: 0.92,
+      });
+      if (ratio > 0)
+        bar
+          .roundRect(5, entity.height - 9, width * ratio, 5, 3)
+          .fill({ color: 0x57b77a, alpha: 1 });
+    }
+
     const label = display.getChildByLabel("label") as Text;
-    label.text = entity.label;
-    label.position.set(8, Math.max(5, entity.height - 24));
+    const maxLabelLength = Math.max(4, Math.floor((entity.width - 16) / 7));
+    label.text =
+      entity.label.length > maxLabelLength
+        ? `${entity.label.slice(0, Math.max(1, maxLabelLength - 1))}…`
+        : entity.label;
+    label.position.set(8, Math.max(5, entity.height - (bar.visible ? 30 : 24)));
 
     const sprite = display.getChildByLabel("asset") as Sprite | null;
     if (sprite) {

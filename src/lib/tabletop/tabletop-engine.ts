@@ -1,4 +1,4 @@
-import { Application, Container, Graphics } from "pixi.js";
+import { Application, Container, Graphics, Sprite } from "pixi.js";
 import { CameraController } from "./camera-controller";
 import { CommandHistory } from "./command-history";
 import { EntityRenderer } from "./entity-renderer";
@@ -28,7 +28,8 @@ export interface TabletopEngineOptions {
 export class TabletopEngine {
   private readonly app = new Application();
   private readonly viewport = new Container();
-  private readonly sceneBackground = new Graphics();
+  private readonly sceneBackground = new Container();
+  private readonly sceneBackgroundShape = new Graphics();
   private readonly scenes = new SceneManager();
   private readonly selection = new SelectionManager();
   private readonly history = new CommandHistory();
@@ -43,6 +44,8 @@ export class TabletopEngine {
   private destroyed = false;
   private readOnly = false;
   private clipboard: TabletopEntity[] = [];
+  private backgroundSprite: Sprite | null = null;
+  private backgroundAssetUrl: string | undefined;
 
   constructor(private readonly options: TabletopEngineOptions = {}) {
     this.entities = new EntityRenderer(
@@ -71,6 +74,7 @@ export class TabletopEngine {
     this.app.canvas.setAttribute("aria-label", "Canvas da Mesa Nexus");
     host.appendChild(this.app.canvas);
 
+    this.sceneBackground.addChild(this.sceneBackgroundShape);
     this.viewport.addChild(
       this.sceneBackground,
       this.grid.view,
@@ -358,6 +362,17 @@ export class TabletopEngine {
     this.render();
   }
 
+  setBackgroundAsset(assetId: string | null, assetUrl?: string) {
+    if (this.readOnly) return;
+    this.scenes.replace({
+      ...this.scenes.scene,
+      backgroundAssetId: assetId,
+      backgroundAssetUrl: assetUrl,
+    });
+    this.paintBackground();
+    this.render();
+  }
+
   updateLayer(
     layerId: string,
     patch: Partial<Pick<TabletopScene["layers"][number], "visible" | "locked">>,
@@ -538,11 +553,50 @@ export class TabletopEngine {
 
   private paintBackground() {
     const scene = this.scenes.scene;
-    this.sceneBackground.clear();
-    this.sceneBackground
+    this.sceneBackgroundShape.clear();
+    this.sceneBackgroundShape
       .rect(0, 0, scene.width, scene.height)
       .fill({ color: 0x11151d });
-    this.sceneBackground.stroke({ color: 0x5f4b36, alpha: 0.8, width: 2 });
+    this.sceneBackgroundShape.stroke({
+      color: 0x5f4b36,
+      alpha: 0.8,
+      width: 2,
+    });
+    this.syncBackgroundAsset(scene.backgroundAssetUrl);
+  }
+
+  private syncBackgroundAsset(url?: string) {
+    if (this.backgroundSprite) {
+      this.backgroundSprite.width = this.scenes.scene.width;
+      this.backgroundSprite.height = this.scenes.scene.height;
+    }
+    if (this.backgroundAssetUrl === url) return;
+
+    this.backgroundAssetUrl = url;
+    if (this.backgroundSprite) {
+      this.sceneBackground.removeChild(this.backgroundSprite);
+      this.backgroundSprite.destroy();
+      this.backgroundSprite = null;
+    }
+    if (!url) return;
+
+    void this.textures
+      .load(url)
+      .then((texture) => {
+        if (this.destroyed || this.backgroundAssetUrl !== url) return;
+        const sprite = new Sprite({ texture, label: "background-asset" });
+        sprite.width = this.scenes.scene.width;
+        sprite.height = this.scenes.scene.height;
+        this.backgroundSprite = sprite;
+        this.sceneBackground.addChild(sprite);
+        this.render(false);
+      })
+      .catch(() => {
+        if (this.backgroundAssetUrl === url)
+          this.options.onAssetError?.(
+            "Não foi possível carregar o mapa de fundo desta cena.",
+          );
+      });
   }
 
   private resize() {
@@ -573,6 +627,8 @@ export class TabletopEngine {
     this.interaction?.destroy();
     this.entities.destroy();
     this.grid.destroy();
+    this.backgroundSprite?.destroy();
+    this.backgroundSprite = null;
     await this.textures.clear();
     this.app.destroy({ removeView: true }, { children: true, context: true });
     this.host = null;

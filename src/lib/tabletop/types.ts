@@ -70,6 +70,8 @@ export interface TabletopScene {
   gridSize: number;
   gridScale: number;
   snap: boolean;
+  backgroundAssetId?: string | null;
+  backgroundAssetUrl?: string;
   layers: TabletopLayer[];
   entities: TabletopEntity[];
 }

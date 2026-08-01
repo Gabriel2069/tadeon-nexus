@@ -206,6 +206,13 @@ export function TabletopWorkspace() {
         (value): value is string => typeof value === "string",
       )
     : [];
+  const visualIcons = Array.isArray(primaryProperties.icons)
+    ? primaryProperties.icons.filter(
+        (value): value is string => typeof value === "string",
+      )
+    : [];
+  const barCurrent = Number(primaryProperties.bar_current) || 0;
+  const barMax = Number(primaryProperties.bar_max) || 0;
 
   const installScene = useCallback((scene: PersistedTabletopScene) => {
     persistedSceneRef.current = scene;
@@ -650,6 +657,11 @@ export function TabletopWorkspace() {
     engineRef.current?.addEntityToViewport(seed);
   };
 
+  const updateBackgroundAsset = (assetId: string) => {
+    const asset = paletteAssets.find((item) => item.id === assetId);
+    engineRef.current?.setBackgroundAsset(asset?.id ?? null, asset?.previewUrl);
+  };
+
   const dropPaletteItem = (event: DragEvent<HTMLElement>) => {
     const payload = parsePaletteDragPayload(
       event.dataTransfer.getData(TABLETOP_PALETTE_MIME),
@@ -1039,6 +1051,31 @@ export function TabletopWorkspace() {
               <option value="token">Token</option>
             </select>
           </div>
+          <div className="mt-3">
+            <Label
+              htmlFor="scene-background-asset"
+              className="text-[10px] uppercase"
+            >
+              Mapa de fundo
+            </Label>
+            <select
+              id="scene-background-asset"
+              value={snapshot.scene.backgroundAssetId ?? ""}
+              disabled={!editable}
+              onChange={(event) => updateBackgroundAsset(event.target.value)}
+              className="h-10 w-full rounded-md border border-input bg-background px-2 text-xs"
+            >
+              <option value="">Sem mapa de fundo</option>
+              {paletteAssets.map((asset) => (
+                <option key={asset.id} value={asset.id}>
+                  {asset.displayName}
+                </option>
+              ))}
+            </select>
+            <p className="mt-1 text-[10px] text-muted-foreground">
+              Usa um asset privado autorizado para preencher a camada Mapa.
+            </p>
+          </div>
           <div className="mt-3 grid max-h-48 grid-cols-2 gap-2 overflow-y-auto pr-1">
             {paletteLoading && (
               <div className="col-span-2 flex items-center justify-center py-5">
@@ -1324,12 +1361,19 @@ export function TabletopWorkspace() {
                     id="entity-sheet"
                     value={primary.linkedSheetId ?? ""}
                     disabled={!editable}
-                    onChange={(event) =>
+                    onChange={(event) => {
+                      const linkedSheetId = event.target.value || null;
+                      const sheet = linkTargets.sheets.find(
+                        (item) => item.id === linkedSheetId,
+                      );
                       engineRef.current?.updateSelected(
-                        { linkedSheetId: event.target.value || null },
-                        "Vincular ficha",
-                      )
-                    }
+                        {
+                          linkedSheetId,
+                          ownerUserId: sheet?.ownerId ?? null,
+                        },
+                        "Vincular ficha e proprietário",
+                      );
+                    }}
                     className="h-10 w-full rounded-md border border-input bg-background px-2 text-xs"
                   >
                     <option value="">Nenhuma ficha</option>
@@ -1346,6 +1390,11 @@ export function TabletopWorkspace() {
                     >
                       Abrir ficha vinculada
                     </a>
+                  )}
+                  {primary.ownerUserId && (
+                    <p className="mt-1 text-[10px] text-muted-foreground">
+                      Proprietário do token definido pela ficha vinculada.
+                    </p>
                   )}
                 </div>
                 <div>
@@ -1418,6 +1467,77 @@ export function TabletopWorkspace() {
                     placeholder="Ex.: alerta, caído, neutro"
                     onChange={(event) =>
                       updateProperties({ status: event.target.value })
+                    }
+                  />
+                </div>
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <Label
+                      htmlFor="entity-bar-current"
+                      className="text-[10px] uppercase"
+                    >
+                      Barra atual
+                    </Label>
+                    <Input
+                      id="entity-bar-current"
+                      type="number"
+                      min={0}
+                      disabled={!editable}
+                      value={barCurrent}
+                      onChange={(event) =>
+                        updateProperties({
+                          bar_current: Math.max(
+                            0,
+                            Number(event.target.value) || 0,
+                          ),
+                        })
+                      }
+                    />
+                  </div>
+                  <div>
+                    <Label
+                      htmlFor="entity-bar-max"
+                      className="text-[10px] uppercase"
+                    >
+                      Barra máxima
+                    </Label>
+                    <Input
+                      id="entity-bar-max"
+                      type="number"
+                      min={0}
+                      disabled={!editable}
+                      value={barMax}
+                      onChange={(event) =>
+                        updateProperties({
+                          bar_max: Math.max(0, Number(event.target.value) || 0),
+                        })
+                      }
+                    />
+                  </div>
+                  <p className="col-span-2 -mt-2 text-[10px] text-muted-foreground">
+                    Deixe a máxima em 0 para ocultar a barra. É apenas visual.
+                  </p>
+                </div>
+                <div>
+                  <Label
+                    htmlFor="entity-icons"
+                    className="text-[10px] uppercase"
+                  >
+                    Ícones ou marcadores
+                  </Label>
+                  <Input
+                    id="entity-icons"
+                    disabled={!editable}
+                    value={visualIcons.join(", ")}
+                    placeholder="Ex.: ⚑, ✦, Alvo"
+                    onChange={(event) =>
+                      updateProperties({
+                        icons: event.target.value
+                          .split(",")
+                          .map((value) => value.trim())
+                          .filter(Boolean)
+                          .slice(0, 4),
+                      })
                     }
                   />
                 </div>
