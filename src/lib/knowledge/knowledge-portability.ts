@@ -307,22 +307,44 @@ function attachmentTargets(markdown: string) {
   return [...targets];
 }
 
+function resolveRelativeArchivePath(sourcePath: string, target: string) {
+  if (target.startsWith("/") || /^[a-z]:\//i.test(target)) return null;
+  const stack = sourcePath.split("/").slice(0, -1);
+  for (const segment of target.replace(/\\/g, "/").split("/")) {
+    if (!segment || segment === ".") continue;
+    if (segment === "..") {
+      if (!stack.length) return null;
+      stack.pop();
+      continue;
+    }
+    stack.push(segment);
+  }
+  if (!stack.length) return null;
+  try {
+    return normalizeArchivePath(stack.join("/"));
+  } catch {
+    return null;
+  }
+}
+
 function resolveArchiveTarget(
   sourcePath: string,
   target: string,
   available: Set<string>,
 ) {
   const normalizedTarget = target.replace(/\\/g, "/").replace(/^\.\//, "");
-  const sourceFolder = sourcePath.includes("/")
-    ? sourcePath.slice(0, sourcePath.lastIndexOf("/") + 1)
-    : "";
+  const relativeTarget = resolveRelativeArchivePath(
+    sourcePath,
+    normalizedTarget,
+  );
   const candidates = [
     normalizedTarget,
     `${normalizedTarget}.md`,
-    `${sourceFolder}${normalizedTarget}`,
-    `${sourceFolder}${normalizedTarget}.md`,
+    relativeTarget,
+    relativeTarget ? `${relativeTarget}.md` : null,
   ];
   for (const candidate of candidates) {
+    if (!candidate) continue;
     try {
       const safe = normalizeArchivePath(candidate);
       if (available.has(safe)) return safe;
