@@ -93,8 +93,8 @@ iluminação, névoa ou R2; o Comando 10 permanece não iniciado.
 - A proteção é um recurso do plano Supabase Pro; ativá-la pode criar custo e não foi autorizada.
 - `@lovable.dev/mcp-js` é dependência funcional do servidor MCP, das rotas e do build.
 - A auditoria isolada encontrou três avisos moderados e um baixo, sem alto ou crítico.
-- A vulnerabilidade moderada vem do adaptador Hono para Windows; o runtime publicado é Cloudflare
-  Worker. A cadeia continua monitorada e não foi removida.
+- Os avisos moderados vêm do adaptador Hono e do servidor de desenvolvimento esbuild em Windows;
+  o runtime publicado é Cloudflare Worker. A cadeia continua monitorada e não foi removida.
 - O issuer OAuth do manifesto MCP foi alinhado ao projeto Supabase real.
 - `@cloudflare/vite-plugin` foi atualizado para `^1.48.0`, removendo a cadeia vulnerável de `sharp`.
 - `yaml` foi atualizado para `^2.9.0`, removendo o advisory corrigível de pilha profunda.
