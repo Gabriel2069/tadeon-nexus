@@ -54,5 +54,7 @@ function TabletopRoute() {
     );
   }
 
-  return <TabletopWorkspace />;
+  return (
+    <TabletopWorkspace realtimeEnabled={flags.nexus_realtime_enabled} />
+  );
 }
