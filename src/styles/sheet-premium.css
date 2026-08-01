@@ -1,0 +1,594 @@
+.tadeon-sheet-page {
+  --sheet-mobile-header-height: 4rem;
+  position: relative;
+  isolation: isolate;
+  max-width: 96rem;
+}
+
+.tadeon-sheet-page::before {
+  position: fixed;
+  z-index: -1;
+  inset: 4rem 0 auto 34%;
+  width: min(56rem, 66vw);
+  height: 24rem;
+  border-radius: 999px;
+  background:
+    radial-gradient(circle at 34% 45%, rgb(217 215 164 / 7%), transparent 38%),
+    radial-gradient(circle at 66% 36%, rgb(113 107 123 / 10%), transparent 42%);
+  filter: blur(52px);
+  pointer-events: none;
+  content: "";
+}
+
+.tadeon-sheet-commandbar {
+  position: sticky;
+  z-index: 25;
+  top: 0;
+  margin: 0 calc(clamp(1rem, 3vw, 2rem) * -1) 1.25rem;
+  padding: 0.75rem clamp(1rem, 3vw, 2rem);
+  border-bottom: 1px solid color-mix(in srgb, var(--border) 82%, transparent);
+  background:
+    linear-gradient(110deg, rgb(8 10 14 / 94%), rgb(18 21 26 / 88%)),
+    radial-gradient(circle at 76% 0%, rgb(217 215 164 / 8%), transparent 44%);
+  box-shadow:
+    0 22px 60px -44px rgb(0 0 0 / 96%),
+    inset 0 -1px 0 rgb(255 255 255 / 2.5%);
+  backdrop-filter: blur(22px) saturate(125%);
+}
+
+.tadeon-sheet-commandbar__main {
+  display: grid;
+  grid-template-columns: auto auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.625rem;
+  min-height: 2.75rem;
+}
+
+.tadeon-sheet-commandbar__identity {
+  min-width: 0;
+}
+
+.tadeon-sheet-commandbar__back {
+  width: 2.75rem;
+  height: 2.75rem;
+  border: 1px solid transparent;
+  border-radius: 0.875rem;
+  transition:
+    border-color 180ms ease,
+    background-color 180ms ease,
+    transform 180ms ease;
+}
+
+.tadeon-sheet-commandbar__back:hover {
+  border-color: color-mix(in srgb, var(--primary) 22%, var(--border));
+  background: color-mix(in srgb, var(--secondary) 76%, transparent);
+}
+
+.tadeon-sheet-commandbar__back:active,
+.tadeon-sheet-commandbar__actions button:active,
+.tadeon-sheet-jump:active,
+.tadeon-stepper-button:active {
+  transform: scale(0.96);
+}
+
+.tadeon-sheet-commandbar__actions {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}
+
+.tadeon-sheet-save-button,
+.tadeon-sheet-power-button {
+  min-height: 2.5rem;
+  border-radius: 0.75rem;
+}
+
+.tadeon-sheet-save-button {
+  box-shadow: 0 14px 32px -24px var(--primary);
+}
+
+.tadeon-sheet-condition-rail {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.625rem;
+  overflow-x: auto;
+  overscroll-behavior-inline: contain;
+  padding: 0.5rem;
+  border: 1px solid color-mix(in srgb, var(--border) 78%, transparent);
+  border-radius: 0.875rem;
+  background: rgb(18 21 26 / 72%);
+  box-shadow: inset 0 1px 12px rgb(0 0 0 / 24%);
+  scrollbar-width: none;
+  scroll-snap-type: inline proximity;
+}
+
+.tadeon-sheet-condition-rail::-webkit-scrollbar,
+.tadeon-sheet-jumpbar::-webkit-scrollbar {
+  display: none;
+}
+
+.tadeon-sheet-condition-chip {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 0.375rem;
+  min-height: 1.875rem;
+  padding: 0.25rem 0.625rem;
+  border: 1px solid;
+  border-radius: 999px;
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.035em;
+  scroll-snap-align: start;
+}
+
+.tadeon-sheet-tutorial {
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 24px 70px -50px var(--primary);
+}
+
+.tadeon-sheet-tutorial::after {
+  position: absolute;
+  inset: -60% auto auto 48%;
+  width: 22rem;
+  height: 12rem;
+  border-radius: 999px;
+  background: rgb(217 215 164 / 5%);
+  filter: blur(28px);
+  pointer-events: none;
+  content: "";
+}
+
+.tadeon-sheet-frame {
+  position: relative;
+  min-width: 0;
+}
+
+.tadeon-sheet-tabs-list {
+  min-height: 3rem;
+  padding: 0.25rem;
+  border-color: color-mix(in srgb, var(--primary) 13%, var(--border));
+  background: rgb(18 21 26 / 90%);
+  box-shadow:
+    0 20px 50px -38px rgb(0 0 0 / 95%),
+    inset 0 1px 0 rgb(255 255 255 / 4%);
+}
+
+.tadeon-sheet-tabs-list [role="tab"] {
+  min-height: 2.375rem;
+  padding-inline: 1rem;
+}
+
+.tadeon-sheet-jumpbar {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: -0.25rem;
+  overflow-x: auto;
+  overscroll-behavior-inline: contain;
+  padding: 0.125rem 0.125rem 0.375rem;
+  scrollbar-width: none;
+  scroll-snap-type: inline proximity;
+}
+
+.tadeon-sheet-jump {
+  flex: 0 0 auto;
+  min-height: 2.125rem;
+  padding: 0.375rem 0.75rem;
+  border: 1px solid color-mix(in srgb, var(--border) 90%, transparent);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--secondary) 64%, transparent);
+  color: var(--muted-foreground);
+  font-size: 0.6875rem;
+  font-weight: 650;
+  letter-spacing: 0.01em;
+  scroll-snap-align: start;
+  transition:
+    color 180ms ease,
+    background-color 180ms ease,
+    border-color 180ms ease,
+    box-shadow 180ms ease,
+    transform 180ms ease;
+}
+
+.tadeon-sheet-jump:hover,
+.tadeon-sheet-jump:focus-visible {
+  border-color: color-mix(in srgb, var(--primary) 48%, var(--border));
+  outline: none;
+  background: color-mix(in srgb, var(--primary) 13%, var(--secondary));
+  color: var(--primary);
+  box-shadow: 0 10px 24px -20px var(--primary);
+}
+
+.tadeon-sheet-section {
+  position: relative;
+  overflow: clip;
+  border-color: color-mix(in srgb, var(--primary) 7%, var(--border));
+  background:
+    linear-gradient(145deg, rgb(18 21 26 / 96%), rgb(12 15 19 / 91%)),
+    radial-gradient(circle at 92% -8%, rgb(217 215 164 / 5%), transparent 28%);
+  box-shadow:
+    0 28px 70px -54px rgb(0 0 0 / 98%),
+    inset 0 1px 0 rgb(255 255 255 / 3.5%);
+  animation: tadeon-sheet-section-enter 380ms both cubic-bezier(0.2, 0.75, 0.25, 1);
+}
+
+.tadeon-sheet-section::after {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 1px;
+  background: linear-gradient(transparent 8%, rgb(217 215 164 / 42%) 48%, transparent 92%);
+  opacity: 0.36;
+  content: "";
+}
+
+.tadeon-sheet-section__heading {
+  position: relative;
+  min-height: 2rem;
+  padding-bottom: 0.625rem;
+}
+
+.tadeon-sheet-section__heading::after {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 1px;
+  background: linear-gradient(90deg, rgb(217 215 164 / 28%), rgb(52 56 64 / 52%) 46%, transparent);
+  content: "";
+}
+
+.tadeon-sheet-section :is(input, textarea, select, button) {
+  touch-action: manipulation;
+}
+
+.tadeon-sheet-section :is(input, textarea, select):focus-visible {
+  border-color: color-mix(in srgb, var(--primary) 58%, var(--border));
+  box-shadow: 0 0 0 3px rgb(217 215 164 / 8%);
+}
+
+.tadeon-attribute-tile,
+.tadeon-stat-block,
+.tadeon-defense-card,
+.tadeon-condition-card,
+.tadeon-sheet-row {
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 2.5%);
+}
+
+.tadeon-attribute-tile {
+  transition:
+    border-color 180ms ease,
+    background-color 180ms ease,
+    transform 180ms ease,
+    box-shadow 180ms ease;
+}
+
+.tadeon-stepper-button {
+  min-width: 2.5rem;
+  min-height: 2.5rem;
+  border-radius: 0.75rem;
+  transition:
+    transform 150ms ease,
+    color 150ms ease,
+    background-color 150ms ease;
+}
+
+.tadeon-attribute-radar {
+  position: relative;
+  margin-inline: auto;
+  max-width: 32rem;
+}
+
+.tadeon-attribute-radar::before {
+  position: absolute;
+  z-index: -1;
+  inset: 14% 12%;
+  border-radius: 999px;
+  background: rgb(113 107 123 / 11%);
+  filter: blur(32px);
+  content: "";
+}
+
+.tadeon-stat-block {
+  min-width: 0;
+  border-radius: 1rem;
+  transition:
+    transform 200ms ease,
+    border-color 200ms ease,
+    box-shadow 200ms ease;
+}
+
+.tadeon-defense-card {
+  border-radius: 1rem;
+  background-image: radial-gradient(circle at 50% 28%, rgb(59 130 246 / 10%), transparent 48%);
+}
+
+.tadeon-condition-card {
+  min-height: 7.5rem;
+}
+
+.tadeon-condition-card button {
+  min-height: 2rem;
+}
+
+.tadeon-sheet-row > :is(input, select) {
+  min-height: 2.5rem;
+}
+
+.tadeon-sheet-top-button {
+  right: max(1rem, env(safe-area-inset-right));
+  bottom: max(1rem, env(safe-area-inset-bottom));
+}
+
+.tadeon-vp-page {
+  --sheet-mobile-header-height: 4rem;
+  isolation: isolate;
+  overflow-x: clip;
+}
+
+.tadeon-vp-container {
+  width: min(100%, 90rem);
+}
+
+.tadeon-vp-commandbar {
+  top: 0;
+  border-radius: 0 0 1rem 1rem;
+  background:
+    linear-gradient(110deg, rgb(32 7 18 / 88%), rgb(10 2 16 / 82%)),
+    radial-gradient(circle at 70% 0%, rgb(251 146 60 / 13%), transparent 45%);
+  backdrop-filter: blur(24px) saturate(135%);
+}
+
+.tadeon-vp-tabs-list {
+  min-height: 3rem;
+  box-shadow: 0 16px 42px -32px rgb(251 113 133 / 72%);
+}
+
+.tadeon-vp-card {
+  position: relative;
+  overflow: clip;
+  border-radius: 1rem;
+  box-shadow:
+    0 24px 58px -46px rgb(0 0 0 / 98%),
+    inset 0 1px 0 rgb(255 255 255 / 4%);
+}
+
+.tadeon-vp-card::after {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 1px;
+  background: linear-gradient(transparent, rgb(251 146 60 / 46%), transparent);
+  content: "";
+}
+
+.vp-pulse {
+  animation: tadeon-vp-pulse 3s ease-in-out infinite;
+}
+
+.tadeon-sheet-skill-tree .tadeon-skill-summary,
+.tadeon-sheet-skill-tree .tadeon-skill-branch,
+.tadeon-sheet-skill-tree .tadeon-skill-node {
+  border-radius: 1rem;
+}
+
+.tadeon-sheet-skill-tree .tadeon-skill-node {
+  min-height: 13.5rem;
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 3%);
+  transition:
+    transform 200ms ease,
+    border-color 200ms ease,
+    background-color 200ms ease,
+    box-shadow 200ms ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .tadeon-attribute-tile:hover,
+  .tadeon-stat-block:hover,
+  .tadeon-condition-card:hover,
+  .tadeon-sheet-skill-tree .tadeon-skill-node:hover {
+    transform: translateY(-2px);
+    border-color: color-mix(in srgb, var(--primary) 28%, var(--border));
+    box-shadow:
+      0 22px 46px -36px rgb(0 0 0 / 98%),
+      inset 0 1px 0 rgb(255 255 255 / 5%);
+  }
+}
+
+@media (min-width: 1280px) {
+  .tadeon-sheet-core-grid {
+    grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr);
+  }
+}
+
+@media (max-width: 767px) {
+  .tadeon-sheet-page {
+    padding-inline: 0.75rem;
+  }
+
+  .tadeon-sheet-page::before {
+    inset: 5rem -40% auto auto;
+    width: 36rem;
+    opacity: 0.72;
+  }
+
+  .tadeon-sheet-commandbar {
+    position: relative;
+    top: auto;
+    z-index: 1;
+    margin: 0 -0.75rem 1rem;
+    padding: 0.625rem 0.75rem 0.75rem;
+    border-radius: 0 0 1rem 1rem;
+  }
+
+  .tadeon-sheet-commandbar__main {
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    gap: 0.5rem;
+  }
+
+  .tadeon-sheet-commandbar__identity {
+    grid-column: 2;
+  }
+
+  .tadeon-sheet-commandbar__actions {
+    grid-column: 1 / -1;
+    justify-content: stretch;
+    padding-top: 0.125rem;
+  }
+
+  .tadeon-sheet-commandbar__actions > :first-child {
+    margin-right: auto;
+  }
+
+  .tadeon-sheet-tabs-list {
+    position: sticky;
+    z-index: 24;
+    top: calc(var(--sheet-mobile-header-height) + 0.5rem);
+    width: 100%;
+    border-radius: 0.875rem;
+    box-shadow:
+      0 18px 45px -28px rgb(0 0 0 / 98%),
+      0 0 0 6px rgb(8 10 14 / 82%);
+    backdrop-filter: blur(20px) saturate(125%);
+  }
+
+  .tadeon-sheet-tabs-list [role="tab"] {
+    min-width: 0;
+    padding-inline: 0.5rem;
+  }
+
+  .tadeon-sheet-jumpbar {
+    margin-inline: -0.125rem;
+    padding-inline: 0.125rem;
+    mask-image: linear-gradient(
+      90deg,
+      transparent,
+      #000 0.4rem,
+      #000 calc(100% - 0.8rem),
+      transparent
+    );
+  }
+
+  .tadeon-sheet-section {
+    border-radius: 1rem;
+    padding: 0.875rem;
+  }
+
+  .tadeon-sheet-section :is(input, textarea, select) {
+    min-height: 2.75rem;
+  }
+
+  .tadeon-sheet-row {
+    align-items: stretch;
+    padding: 0.75rem;
+  }
+
+  .tadeon-sheet-row button:last-child {
+    min-width: 2.75rem;
+    min-height: 2.75rem;
+  }
+
+  .tadeon-condition-card {
+    min-height: auto;
+  }
+
+  .tadeon-sheet-top-button {
+    bottom: max(0.875rem, env(safe-area-inset-bottom));
+  }
+
+  .tadeon-sheet-skill-tree .tadeon-skill-node {
+    min-height: 0;
+  }
+
+  .tadeon-vp-commandbar {
+    top: var(--sheet-mobile-header-height);
+    margin-bottom: 0.75rem;
+  }
+
+  .tadeon-vp-tabs-list {
+    position: sticky;
+    z-index: 19;
+    top: calc(var(--sheet-mobile-header-height) + 4.75rem);
+    box-shadow: 0 0 0 6px rgb(19 4 13 / 80%);
+    backdrop-filter: blur(20px);
+  }
+
+  .tadeon-vp-card {
+    padding: 0.875rem;
+  }
+
+  .tadeon-vp-card :is(input, textarea, select) {
+    min-height: 2.75rem;
+  }
+}
+
+@media (min-width: 390px) and (max-width: 639px) {
+  .tadeon-attribute-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .tadeon-attribute-tile {
+    flex-direction: column;
+    justify-content: center;
+    padding-inline: 0.375rem;
+  }
+}
+
+@media (max-width: 389px) {
+  .tadeon-sheet-commandbar__actions {
+    flex-wrap: wrap;
+  }
+
+  .tadeon-sheet-tabs-list [role="tab"] {
+    gap: 0.25rem;
+    font-size: 0.75rem;
+  }
+
+  .tadeon-sheet-tabs-list [role="tab"] svg {
+    width: 0.875rem;
+    height: 0.875rem;
+  }
+
+  .tadeon-vitals-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@keyframes tadeon-sheet-section-enter {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes tadeon-vp-pulse {
+  0%,
+  100% {
+    opacity: 0.55;
+  }
+
+  50% {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tadeon-sheet-section {
+    animation: none;
+  }
+
+  .vp-pulse {
+    animation: none;
+  }
+
+  .tadeon-sheet-page::before,
+  .tadeon-attribute-radar::before {
+    filter: none;
+  }
+}
