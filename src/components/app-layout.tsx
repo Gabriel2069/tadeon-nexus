@@ -19,6 +19,7 @@ import {
   ShieldCheck,
   Wrench,
   LibraryBig,
+  MapPinned,
 } from "lucide-react";
 import { useAuth } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
@@ -58,6 +59,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
   });
   const [accountOpen, setAccountOpen] = useState(false);
   const [knowledgeEnabled, setKnowledgeEnabled] = useState(false);
+  const [tabletopEnabled, setTabletopEnabled] = useState(false);
 
   useEffect(() => {
     window.localStorage.setItem(COLLAPSE_KEY, collapsed ? "1" : "0");
@@ -66,7 +68,10 @@ export function AppLayout({ children }: { children: ReactNode }) {
   useEffect(() => {
     let active = true;
     void loadFeatureFlags().then((flags) => {
-      if (active) setKnowledgeEnabled(flags.nexus_knowledge_enabled);
+      if (active) {
+        setKnowledgeEnabled(flags.nexus_knowledge_enabled);
+        setTabletopEnabled(flags.nexus_tabletop_enabled);
+      }
     });
     return () => {
       active = false;
@@ -108,6 +113,16 @@ export function AppLayout({ children }: { children: ReactNode }) {
       )}
       {isMestre && (
         <>
+          {tabletopEnabled && (
+            <NavItem
+              to="/tabletop"
+              icon={<MapPinned className="w-4 h-4" />}
+              label="Mesa Nexus"
+              active={path.startsWith("/tabletop")}
+              mini={mini}
+              onClick={() => setMobileOpen(false)}
+            />
+          )}
           <NavItem
             to="/master-panel"
             icon={<Lightbulb className="w-4 h-4" />}
@@ -183,7 +198,9 @@ export function AppLayout({ children }: { children: ReactNode }) {
         )}
       </div>
 
-      <div className="relative z-10 flex-1">{renderNav(mini, enableSearchShortcut)}</div>
+      <div className="relative z-10 flex-1">
+        {renderNav(mini, enableSearchShortcut)}
+      </div>
 
       <div className="relative z-10 space-y-1 border-t border-sidebar-border pt-3">
         <SideAction
@@ -248,7 +265,9 @@ export function AppLayout({ children }: { children: ReactNode }) {
           </button>
           <div className="flex items-center gap-2">
             <BrandMark className="h-7 w-7 text-primary" />
-            <h1 className="font-cinzel text-lg font-semibold text-primary">Tadeon Nexus</h1>
+            <h1 className="font-cinzel text-lg font-semibold text-primary">
+              Tadeon Nexus
+            </h1>
           </div>
           <div className="flex items-center gap-1">
             <GlobalSearch mobile />
@@ -270,7 +289,10 @@ export function AppLayout({ children }: { children: ReactNode }) {
       {/* Mobile drawer */}
       {mobileOpen && (
         <div className="md:hidden fixed inset-0 z-40 animate-in fade-in-0 duration-200">
-          <div className="absolute inset-0 bg-black/60" onClick={() => setMobileOpen(false)} />
+          <div
+            className="absolute inset-0 bg-black/60"
+            onClick={() => setMobileOpen(false)}
+          />
           <aside className="absolute left-0 top-0 h-full w-[min(18rem,86vw)] border-r border-sidebar-border bg-sidebar text-sidebar-foreground shadow-2xl animate-in slide-in-from-left duration-300">
             <button
               onClick={() => setMobileOpen(false)}
@@ -400,7 +422,10 @@ function AccountDialog({
         const { data: u } = await supabase.auth.getUser();
         if (u.user) {
           const [{ error }, { error: metadataError }] = await Promise.all([
-            supabase.from("profiles").update({ full_name: trimmedName }).eq("id", u.user.id),
+            supabase
+              .from("profiles")
+              .update({ full_name: trimmedName })
+              .eq("id", u.user.id),
             supabase.auth.updateUser({ data: { full_name: trimmedName } }),
           ]);
           if (error) throw error;
@@ -408,9 +433,13 @@ function AccountDialog({
         }
       }
       if (trimmedEmail && trimmedEmail !== email.toLowerCase()) {
-        const { error } = await supabase.auth.updateUser({ email: trimmedEmail });
+        const { error } = await supabase.auth.updateUser({
+          email: trimmedEmail,
+        });
         if (error) throw error;
-        toast.info("Enviamos as confirmações necessárias para trocar o e-mail.");
+        toast.info(
+          "Enviamos as confirmações necessárias para trocar o e-mail.",
+        );
       }
       if (password) {
         if (password.length < 8) {
@@ -451,7 +480,9 @@ function AccountDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-lg">
         <DialogHeader>
-          <DialogTitle className="font-cinzel">Configurações da Conta</DialogTitle>
+          <DialogTitle className="font-cinzel">
+            Configurações da Conta
+          </DialogTitle>
         </DialogHeader>
         <div className="space-y-4">
           <div className="rounded-xl border border-border/70 bg-secondary/20 p-4">
@@ -467,7 +498,8 @@ function AccountDialog({
               className="mt-1"
             />
             <p className="mt-1.5 text-[10px] text-muted-foreground">
-              A troca só termina após as confirmações de segurança enviadas por e-mail.
+              A troca só termina após as confirmações de segurança enviadas por
+              e-mail.
             </p>
             <div className="mt-3">
               <Label className="text-xs">Nome de exibição</Label>
@@ -484,7 +516,9 @@ function AccountDialog({
               <ShieldCheck className="h-4 w-4 text-primary" />
               <p className="text-sm font-semibold">Segurança</p>
             </div>
-            <p className="text-xs text-muted-foreground">Trocar senha (opcional)</p>
+            <p className="text-xs text-muted-foreground">
+              Trocar senha (opcional)
+            </p>
             <div>
               <Label className="text-xs">Nova senha</Label>
               <Input
@@ -524,9 +558,15 @@ function AccountDialog({
               <p className="text-sm font-semibold">Seus dados</p>
             </div>
             <p className="mt-2 text-xs text-muted-foreground">
-              Mestres podem gerar cópias independentes de fichas e configurações.
+              Mestres podem gerar cópias independentes de fichas e
+              configurações.
             </p>
-            <Button asChild type="button" variant="outline" className="mt-3 w-full">
+            <Button
+              asChild
+              type="button"
+              variant="outline"
+              className="mt-3 w-full"
+            >
               <Link to="/nexus-tools" onClick={() => onOpenChange(false)}>
                 Abrir Backup & Diagnóstico
               </Link>
@@ -534,7 +574,11 @@ function AccountDialog({
           </div>
         </div>
         <DialogFooter>
-          <Button variant="outline" onClick={() => onOpenChange(false)} disabled={saving}>
+          <Button
+            variant="outline"
+            onClick={() => onOpenChange(false)}
+            disabled={saving}
+          >
             Cancelar
           </Button>
           <Button onClick={save} disabled={saving}>

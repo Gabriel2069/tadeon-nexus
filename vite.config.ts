@@ -25,7 +25,9 @@ const publicSupabaseEnv = [
   ],
   [
     "VITE_SUPABASE_URL",
-    process.env.VITE_SUPABASE_URL ?? process.env.SUPABASE_URL ?? DEFAULT_SUPABASE_URL,
+    process.env.VITE_SUPABASE_URL ??
+      process.env.SUPABASE_URL ??
+      DEFAULT_SUPABASE_URL,
   ],
   [
     "VITE_SUPABASE_PUBLISHABLE_KEY",
@@ -52,11 +54,14 @@ export default defineConfig({
         output: {
           manualChunks(id) {
             if (!id.includes("node_modules")) return undefined;
-            if (id.includes("recharts") || id.includes("d3-")) return "vendor-charts";
+            if (id.includes("recharts") || id.includes("d3-"))
+              return "vendor-charts";
+            if (id.includes("pixi.js")) return "vendor-pixi";
             if (id.includes("@tanstack")) return "vendor-tanstack";
             if (id.includes("@supabase")) return "vendor-supabase";
             if (id.includes("@radix-ui")) return "vendor-radix";
-            if (id.includes("react") || id.includes("scheduler")) return "vendor-react";
+            if (id.includes("react") || id.includes("scheduler"))
+              return "vendor-react";
             return undefined;
           },
         },
