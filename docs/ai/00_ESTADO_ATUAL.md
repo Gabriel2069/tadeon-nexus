@@ -8,7 +8,7 @@ Atualizado em 1º de agosto de 2026 pelo Work de continuidade independente.
 - O Livro de Regras de Tessitura do Vazio governa mecânicas e terminologia.
 - O Fio-Mestre governa identidade visual.
 - Checkpoint de entrada: `1c5b66cf83bdd9d4b070019510080eb2d63dc74b`.
-- Checkpoints integrados: PRs #25–#55 em `main`; o último lote integrado está em `750d0bbf`.
+- Checkpoints integrados: PRs #25–#56 em `main`; o último lote integrado está em `669cdb84`.
 
 ## Estado confirmado
 
@@ -117,6 +117,10 @@ campanha, exige todos os IDs, posições contíguas e versões atuais, normaliza
 transação e registra `scene.reordered`. Documentos incompletos ou obsoletos abortam sem atualização
 parcial, e o jogador não possui autorização para executá-la.
 
+O vínculo com Página do Nexus abre diretamente pelo PR #57. A rota aceita um identificador textual
+limitado e delega a resolução à consulta normal de O Nexus sob RLS; referências inexistentes ou
+proibidas usam o mesmo erro neutro e não expõem metadados laterais.
+
 O teste autenticado auto-revertido confirmou criação, cinco camadas, token, alteração, snapshot,
 restauração, conflito `40001`, negação de escrita e leitura bruta zero para jogador, além de zero
 resíduos. Não há Realtime, iluminação calculada, visão, névoa ou R2.
@@ -194,7 +198,8 @@ erro observado veio da extensão do navegador de inspeção, fora do app.
 
 As Qualities nº 171 e nº 173 do editor persistente aprovaram instalação, audit, lint, typecheck,
 testes e build. As Qualities nº 175 e nº 176 do inspector e a nº 178 da paleta aprovaram os mesmos
-seis gates. A Quality nº 181 aprovou o primeiro lote da reordenação.
+seis gates. A Quality nº 181 aprovou o primeiro lote da reordenação, a nº 182 confirmou seu
+checkpoint final e a nº 184 aprovou a navegação direta Mesa → O Nexus.
 
 O Lovable permanece sincronizado como ambiente de construção e não participa do funcionamento
 direto da aplicação. O deploy anteriormente disponível não expunha um identificador verificável;
