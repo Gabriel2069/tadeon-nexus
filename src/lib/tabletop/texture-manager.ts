@@ -9,7 +9,7 @@ export class TextureManager {
 
     const request = Assets.load<Texture>(url).catch((error: unknown) => {
       this.cache.delete(url);
-      throw new Error(`Não foi possível carregar o asset: ${url}`, {
+      throw new Error("Não foi possível carregar a imagem deste asset.", {
         cause: error,
       });
     });
