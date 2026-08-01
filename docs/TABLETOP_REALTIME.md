@@ -24,12 +24,13 @@ controle otimista de versão; participantes removidos não são apagados do hist
 
 ## Canais
 
-- `tabletop:scene:{sceneId}`
-- `tabletop:session:{sessionId}`
+- `tabletop:scene:{sceneId}`: arraste, ping, seleção e desenho.
+- `tabletop:session:{sessionId}`: Presence e transição de cena.
 
-Os identificadores precisam ser UUIDs válidos. Na integração seguinte, os canais devem ser criados
-como privados e a autorização deve consultar campanha, sessão, papel e propriedade do token. O
-nome do canal nunca substitui RLS nem a validação do estado persistente.
+Os identificadores precisam ser UUIDs válidos. O transporte cria os dois canais com
+`private: true`, autentica o Realtime com o JWT atual antes da assinatura e solicita confirmação do
+servidor para cada Broadcast. O nome do canal nunca substitui RLS nem a validação do estado
+persistente.
 
 ## Envelope de evento
 
@@ -39,6 +40,28 @@ Payloads desconhecidos, antigos, futuros, duplicados, fora de ordem ou excessivo
 
 O contrato limita listas, pontos, textos e coordenadas. Ele não aceita HTML, comandos, URLs,
 credenciais ou objetos arbitrários.
+
+## Camada de transporte
+
+`TabletopRealtimeTransport` é a única ponte prevista entre o domínio da Mesa e o cliente Supabase.
+Ela não cria canal enquanto a flag efetiva estiver desligada e oferece:
+
+- autenticação anterior à assinatura;
+- separação de eventos por escopo de cena ou sessão;
+- validação de entrada e saída pelo mesmo contrato;
+- descarte da própria origem e proteção contra repetição e excesso;
+- Presence reduzida aos campos conhecidos, ignorando metadados internos do provedor;
+- mensagens de erro próprias, sem repassar detalhes brutos do banco à interface;
+- `untrack`, remoção dos dois canais e limpeza do estado local ao desconectar.
+
+O adaptador de cliente é injetável para que todos os fluxos sejam testados sem abrir conexões reais.
+
+## Autorização no Realtime
+
+Antes do canário, o projeto precisa de políticas RLS em `realtime.messages` para `authenticated`.
+Elas devem liberar Broadcast e Presence apenas quando o tópico privado corresponde a uma sessão ou
+cena que o usuário pode acessar pela campanha existente. Não se deve criar tabelas, funções ou
+colunas no schema interno `realtime`; somente as políticas suportadas nessa tabela serão aplicadas.
 
 ## Segurança ainda obrigatória na integração
 
@@ -53,6 +76,7 @@ credenciais ou objetos arbitrários.
 
 ## Próximo canário
 
-A integração real só deve ser habilitada para o proprietário mestre depois de testar dois
-navegadores, reconexão, posição final, entrada negada, token alheio, cena secreta e consumo do plano
-gratuito. Em falha, remover o override e manter o editor persistente atual.
+A integração real só deve ser habilitada para o proprietário mestre depois de aplicar e revisar as
+políticas de `realtime.messages` e testar dois navegadores, reconexão, posição final, entrada negada,
+token alheio, cena secreta e consumo do plano gratuito. Em falha, remover o override e manter o
+editor persistente atual.
