@@ -778,6 +778,7 @@ export function buildKnowledgeArchive(snapshot: KnowledgeExportSnapshot) {
   const entries: Record<string, Uint8Array> = {};
   const usedPaths = new Set<string>();
   const manifestPages: KnowledgeVaultManifest["pages"] = [];
+  const resolvedKeys = new Map<string, string>();
 
   for (const page of snapshot.pages) {
     let path = safeExportPath(page.path, page.title);
@@ -803,8 +804,10 @@ export function buildKnowledgeArchive(snapshot: KnowledgeExportSnapshot) {
       defaultKeyType: "PLAIN",
     }).trimEnd();
     entries[path] = strToU8(`---\n${yaml}\n---\n\n${page.content_markdown}`);
+    const resolvedKey = pathWithoutExtension(path);
+    resolvedKeys.set(page.key, resolvedKey);
     manifestPages.push({
-      key: page.key,
+      key: resolvedKey,
       path,
       original_id: page.original_id,
     });
@@ -822,7 +825,9 @@ export function buildKnowledgeArchive(snapshot: KnowledgeExportSnapshot) {
     return {
       path,
       original_asset_id: attachment.original_asset_id,
-      page_keys: attachment.page_keys,
+      page_keys: attachment.page_keys.map(
+        (key) => resolvedKeys.get(key) ?? key,
+      ),
     };
   });
 
@@ -833,7 +838,11 @@ export function buildKnowledgeArchive(snapshot: KnowledgeExportSnapshot) {
     workspace_id: snapshot.workspace_id,
     campaign_id: snapshot.campaign_id,
     pages: manifestPages,
-    relations: snapshot.relations,
+    relations: snapshot.relations.map((relation) => ({
+      ...relation,
+      source_key: resolvedKeys.get(relation.source_key) ?? relation.source_key,
+      target_key: resolvedKeys.get(relation.target_key) ?? relation.target_key,
+    })),
     attachments: manifestAttachments,
   };
   entries["manifest.yml"] = strToU8(
