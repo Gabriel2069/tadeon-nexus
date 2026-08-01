@@ -8,7 +8,7 @@ Atualizado em 1º de agosto de 2026 pelo Work de continuidade independente.
 - O Livro de Regras de Tessitura do Vazio governa mecânicas e terminologia.
 - O Fio-Mestre governa identidade visual.
 - Checkpoint de entrada: `1c5b66cf83bdd9d4b070019510080eb2d63dc74b`.
-- Checkpoints integrados: PRs #25–#52 em `main`; o último lote integrado está em `2b0031be`.
+- Checkpoints integrados: PRs #25–#53 em `main`; o último lote integrado está em `08870af9`.
 
 ## Estado confirmado
 
@@ -93,11 +93,17 @@ padrão, entidades, snapshots, log mínimo, vínculos explícitos com asset/fich
 versões otimistas, duplicação e restauração. As tabelas brutas são visíveis e editáveis somente
 por master/co-master; jogadores continuam vendo zero linhas, inclusive propriedades de entidades.
 
-O editor persistente está no PR #53. Ele conecta campanha e lista de cenas ao motor, permite
+O editor persistente foi integrado no PR #53. Ele conecta campanha e lista de cenas ao motor, permite
 criar, carregar, duplicar e arquivar cenas, salva grade, camadas, tokens e objetos, cria snapshots
 e restaura com ponto de recuperação. Cenas arquivadas ficam bloqueadas no próprio motor. A RPC
 aditiva `20260801140620_save_tabletop_scene_state.sql` salva cena, camadas, inclusões, alterações e
 exclusões em uma única transação `SECURITY INVOKER`; qualquer versão obsoleta aborta o lote todo.
+
+O inspector persistente foi completado no PR #54: nome, tamanho, elevação, posição, rotação,
+ocultação, condições visuais, estado e anotações podem ser editados sem sair do canvas. Presets de
+tamanho e alterações em seleção múltipla, copiar/colar e vínculos reversíveis com fichas e Páginas
+do Nexus usam o mesmo salvamento transacional. A consulta de alvos continua limitada pelas RLS
+existentes, e camadas bloqueadas impedem também as operações de copiar e colar.
 
 O teste autenticado auto-revertido confirmou criação, cinco camadas, token, alteração, snapshot,
 restauração, conflito `40001`, negação de escrita e leitura bruta zero para jogador, além de zero
@@ -173,7 +179,8 @@ O runtime canônico é o Worker Cloudflare. O smoke test público do Worker carr
 redirecionou corretamente para `/login` e não apresentou erro de console da aplicação. O único
 erro observado veio da extensão do navegador de inspeção, fora do app.
 
-A Quality nº 171 do editor persistente aprovou instalação, audit, lint, typecheck, testes e build.
+As Qualities nº 171 e nº 173 do editor persistente aprovaram instalação, audit, lint, typecheck,
+testes e build. A Quality nº 175 do inspector aprovou os mesmos seis gates.
 
 O Lovable permanece sincronizado como ambiente de construção e não participa do funcionamento
 direto da aplicação. O deploy anteriormente disponível não expunha um identificador verificável;
@@ -237,9 +244,11 @@ com arquivo real e a validação visual dos dois módulos em frontend autenticad
 pendentes. O rollback do canário é remover as quatro linhas de override. A portabilidade de O Nexus foi
 integrada e validada no backend; sua validação visual autenticada e o teste com anexo real
 permanecem no canário. A Mesa passou build, proteção pública de rota e testes reais de persistência;
-sua interação visual autenticada e o salvamento pelo frontend ainda precisam de aceite. Editor de
-vínculos, drag and drop, presets, ações em lote e reordenação de cenas permanecem pendentes no
-Comando 10. Iluminação, visão, névoa e Realtime permanecem bloqueados.
+sua interação visual autenticada e o salvamento pelo frontend ainda precisam de aceite. O teste
+transacional do inspector confirmou vínculo e remoção explícita de ficha, preset 128, elevação,
+ocultação e propriedades JSON, com rollback e zero resíduos. Drag and drop de Assets e bibliotecas
+e reordenação de cenas permanecem pendentes no Comando 10. Iluminação, visão, névoa e Realtime
+permanecem bloqueados.
 
 ## Próximos critérios
 
@@ -250,6 +259,6 @@ Comando 10. Iluminação, visão, névoa e Realtime permanecem bloqueados.
 3. Validar visualmente a Fundação Gráfica da Mesa em sessão de mestre: canvas, pan/zoom, grade,
    seleção, transformações, undo/redo, cena vazia, erro de asset e liberação de memória.
 4. Validar no canário da Mesa criação, salvamento, conflito, camadas, arquivamento, duplicação,
-   snapshot e restauração pelo frontend; depois completar vínculos, drag and drop, presets,
-   reordenação e ações em lote do Comando 10.
+   snapshot e restauração pelo frontend; depois completar drag and drop e reordenação de cenas do
+   Comando 10.
 5. Não iniciar iluminação, visão, névoa, Realtime ou R2 até seus próprios critérios de aceite.
