@@ -8,7 +8,7 @@ Atualizado em 1º de agosto de 2026 pelo Work de continuidade independente.
 - O Livro de Regras de Tessitura do Vazio governa mecânicas e terminologia.
 - O Fio-Mestre governa identidade visual.
 - Checkpoint de entrada: `1c5b66cf83bdd9d4b070019510080eb2d63dc74b`.
-- Checkpoints integrados: PRs #25–#47 em `main`; o último lote funcional está em `83c401cb`.
+- Checkpoints integrados: PRs #25–#49 em `main`; o último lote funcional está em `8bd465ac`.
 
 ## Estado confirmado
 
@@ -75,9 +75,17 @@ relações em manifesto e exportação reimportável. A escrita ocorre em uma RP
 
 ### Mesa Nexus
 
-Somente contratos, permissões e flags existem. A fundação gráfica da Mesa ainda não foi iniciada.
-A portabilidade técnica que a bloqueava está integrada; o próximo marco autorizado é o Comando 9,
-sem iluminação, Realtime ou persistência de cenas do Comando 10.
+A Fundação Gráfica do Comando 9 foi integrada no PR #49 com PixiJS 8 em chunk isolado. A rota
+`/tabletop` é protegida para mestre e condicionada a `nexus_tabletop_enabled`. O motor separa
+`TabletopEngine`, `SceneManager`, `CameraController`, `SelectionManager`, `LayerManager`,
+`EntityRenderer`, `TextureManager`, `GridRenderer`, `InteractionController` e
+`CommandHistory`.
+
+O canvas local cobre pan, zoom, centralização, fit, coordenadas mundo/tela, resize, grade quadrada
+ou desligada, escala, snap, seleção múltipla, movimento, redimensionamento, rotação, bloqueio,
+duplicação, exclusão, atalhos, menu contextual e undo/redo local. Cena vazia, falha de asset e
+liberação de canvas, listeners e texturas são tratados. Não há persistência no Postgres, Realtime,
+iluminação, névoa ou R2; o Comando 10 permanece não iniciado.
 
 ## Segurança
 
@@ -85,12 +93,13 @@ sem iluminação, Realtime ou persistência de cenas do Comando 10.
 - A proteção é um recurso do plano Supabase Pro; ativá-la pode criar custo e não foi autorizada.
 - `@lovable.dev/mcp-js` é dependência funcional do servidor MCP, das rotas e do build.
 - A auditoria isolada encontrou três avisos moderados e um baixo, sem alto ou crítico.
-- A vulnerabilidade moderada vem do adaptador Hono para Windows; o runtime publicado é Cloudflare
-  Worker. A cadeia continua monitorada e não foi removida.
+- Os avisos moderados vêm do adaptador Hono e do servidor de desenvolvimento esbuild em Windows;
+  o runtime publicado é Cloudflare Worker. A cadeia continua monitorada e não foi removida.
 - O issuer OAuth do manifesto MCP foi alinhado ao projeto Supabase real.
 - `@cloudflare/vite-plugin` foi atualizado para `^1.48.0`, removendo a cadeia vulnerável de `sharp`.
+- `yaml` foi atualizado para `^2.9.0`, removendo o advisory corrigível de pilha profunda.
 - O audit de produção após a atualização encerrou sem alto ou crítico; permanecem somente os
-  avisos baixo/moderados da cadeia Lovable descritos acima.
+  três avisos moderados e um baixo da cadeia Lovable descritos acima.
 - O workflow Quality agora bloqueia vulnerabilidades de produção altas ou críticas.
 - O projeto e o CI fixam `npm@11.9.0`, versão que reproduz o lockfile da árvore atual.
 
@@ -134,9 +143,9 @@ O endpoint canônico `https://tadeon-nexus.gtadeusz.workers.dev` está público 
 aplicação, redirecionando corretamente para `/login`. Os valores dos secrets continuam ocultos por
 design. O fluxo manual permanece restrito à branch `main`.
 
-A Quality nº 152 do lote de portabilidade aprovou `npm ci`, audit, lint, typecheck, testes e
-build. O PR #47 foi mesclado por squash no SHA
-`83c401cb52d7f5c0d88ef7d8b7475c5345cbceee`.
+A Quality nº 158 da Fundação Gráfica aprovou `npm ci`, audit, lint, typecheck, testes e build.
+O PR #49 foi mesclado por squash no SHA
+`8bd465aceff2216cf66a80a76bafb615bbbeb0b0`, confirmado pelo marcador público do Worker.
 
 O runtime canônico é o Worker Cloudflare. O smoke test público do Worker carregou a aplicação,
 redirecionou corretamente para `/login` e não apresentou erro de console da aplicação. O único
@@ -174,25 +183,26 @@ confirmaram criação, reimportação com `skip` e `copy`, isolamento do jogador
 
 Todas as flags globais permanecem desligadas. A tabela
 `feature_flag_user_overrides` aplica precedência somente ao usuário autenticado. Há exatamente
-três overrides ativos para o proprietário mestre:
+quatro overrides ativos para o proprietário mestre:
 
 - `nexus_assets_v2_enabled=true`;
 - `nexus_knowledge_enabled=true`;
-- `nexus_graph_enabled=true`.
+- `nexus_graph_enabled=true`;
+- `nexus_tabletop_enabled=true`.
 
-`nexus_lighting_enabled`, `nexus_r2_enabled`, `nexus_realtime_enabled` e
-`nexus_tabletop_enabled` não possuem override e continuam desligadas. O jogador não vê overrides de terceiros e não pode criá-los.
+`nexus_lighting_enabled`, `nexus_r2_enabled` e `nexus_realtime_enabled` não possuem override e
+continuam desligadas. O jogador não vê overrides de terceiros e não pode criá-los.
 
 ## Estado do rollout
 
-O rollout controlado de Nexus Assets, O Nexus e grafo local foi iniciado somente para o
-proprietário mestre.
+O rollout controlado de Nexus Assets, O Nexus, grafo local e Fundação Gráfica da Mesa foi iniciado
+somente para o proprietário mestre.
 A integração, migration, policies, grants, teste transacional e ativação foram concluídos. A
 validação funcional em sessão autenticada ainda está pendente; portanto os módulos não são
 classificados como concluídos nem foram liberados globalmente.
 
-O teste de RLS confirmou: mestre proprietário enxerga os dois overrides; jogador enxerga zero e
-não consegue inserir. O backend de O Nexus passou por cenários autenticados auto-revertidos com
+O teste de RLS confirmou: mestre proprietário enxerga os quatro overrides; jogador enxerga zero
+e não consegue inserir. O backend de O Nexus passou por cenários autenticados auto-revertidos com
 CRUD, relação, heading, menção, backlink, link quebrado, conflito otimista, limite, relações
 semânticas, alias, tag, pesquisa de conteúdo/propriedades/relações, filtros, paginação e ocultação
 para o jogador. Os testes deixaram zero páginas, tags, menções e relações residuais.
@@ -200,18 +210,19 @@ para o jogador. Os testes deixaram zero páginas, tags, menções e relações r
 O canário de Nexus Assets também passou reserva Supabase para o owner, negação do jogador sem
 override e negação de R2, deixando zero sessões residuais. O upload/download do objeto real, quota
 com arquivo real e a validação visual dos dois módulos em frontend autenticado continuam
-pendentes. O rollback do canário é remover as três linhas de override. A portabilidade de O Nexus foi integrada e validada no backend; sua validação visual autenticada
-e o teste com anexo real permanecem no canário. A fundação gráfica da Mesa Nexus pode iniciar no
-Comando 9, mantendo Comando 10, iluminação e Realtime bloqueados.
+pendentes. O rollback do canário é remover as quatro linhas de override. A portabilidade de O Nexus foi
+integrada e validada no backend; sua validação visual autenticada e o teste com anexo real
+permanecem no canário. A Mesa passou build e proteção pública de rota; sua interação visual em
+sessão autenticada ainda precisa de aceite. Comando 10, iluminação e Realtime permanecem
+bloqueados.
 
 ## Próximos critérios
 
-1. Confirmar pelo marcador público que o deploy Cloudflare corresponde ao SHA aprovado de `main`.
-2. Concluir o canário autenticado de Nexus Assets com upload/download do objeto real, quota e
+1. Concluir o canário autenticado de Nexus Assets com upload/download do objeto real, quota e
    rollback operacional.
-3. Validar visualmente no frontend autenticado bibliotecas, grafo e portabilidade de O Nexus,
+2. Validar visualmente no frontend autenticado bibliotecas, grafo e portabilidade de O Nexus,
    incluindo um ZIP com conflito e um anexo real.
-4. Iniciar a fundação gráfica da Mesa Nexus conforme o Comando 9: PixiJS, rota protegida, canvas,
-   câmera, grade, seleção, transformações, histórico local e arquitetura modular.
-5. Não iniciar o Comando 10, persistência de cenas, iluminação, fog, Realtime ou R2 até seus
+3. Validar visualmente a Fundação Gráfica da Mesa em sessão de mestre: canvas, pan/zoom, grade,
+   seleção, transformações, undo/redo, cena vazia, erro de asset e liberação de memória.
+4. Não iniciar o Comando 10, persistência de cenas, iluminação, fog, Realtime ou R2 até seus
    próprios critérios de aceite.
