@@ -12,6 +12,8 @@ import {
   Box,
   Bug,
   Camera,
+  ChevronDown,
+  ChevronUp,
   Clipboard,
   ClipboardPaste,
   Copy,
@@ -43,6 +45,7 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { TabletopEngine } from "@/lib/tabletop/tabletop-engine";
 import {
+  moveTabletopScene,
   tabletopPersistenceService,
   TabletopServiceError,
   type PersistedTabletopScene,
@@ -181,6 +184,9 @@ export function TabletopWorkspace() {
     [snapshot],
   );
   const primary = selected[0];
+  const currentSceneIndex = scenes.findIndex(
+    (scene) => scene.id === persistedScene?.id,
+  );
   const primaryProperties = entityProperties(primary?.properties);
   const visualConditions = Array.isArray(primaryProperties.visual_conditions)
     ? primaryProperties.visual_conditions.filter(
@@ -467,6 +473,35 @@ export function TabletopWorkspace() {
     else clearScene();
   };
 
+  const moveCurrentScene = async (direction: -1 | 1) => {
+    const stored = persistedSceneRef.current;
+    if (!stored || dirty) {
+      if (dirty) toast.error("Salve ou recarregue antes de reordenar cenas.");
+      return;
+    }
+    const reordered = moveTabletopScene(scenes, stored.id, direction);
+    if (reordered === scenes) return;
+    setSaving(true);
+    try {
+      const next = await tabletopPersistenceService.reorderScenes(
+        stored.campaignId,
+        reordered,
+      );
+      setScenes(next);
+      await loadScene(stored.id);
+      toast.success("Ordem das cenas atualizada.");
+    } catch (error) {
+      if (
+        error instanceof TabletopServiceError &&
+        error.code === "TABLETOP_CONFLICT"
+      )
+        setConflict(true);
+      toast.error(errorMessage(error));
+    } finally {
+      setSaving(false);
+    }
+  };
+
   const createSnapshot = async () => {
     let stored = persistedSceneRef.current;
     if (!stored) return;
@@ -643,6 +678,28 @@ export function TabletopWorkspace() {
             </option>
           ))}
         </select>
+        <ToolbarButton
+          label="Mover cena para cima"
+          disabled={
+            !persistedScene || saving || dirty || currentSceneIndex <= 0
+          }
+          onClick={() => void moveCurrentScene(-1)}
+        >
+          <ChevronUp className="h-4 w-4" />
+        </ToolbarButton>
+        <ToolbarButton
+          label="Mover cena para baixo"
+          disabled={
+            !persistedScene ||
+            saving ||
+            dirty ||
+            currentSceneIndex < 0 ||
+            currentSceneIndex >= scenes.length - 1
+          }
+          onClick={() => void moveCurrentScene(1)}
+        >
+          <ChevronDown className="h-4 w-4" />
+        </ToolbarButton>
         <ToolbarButton
           label="Nova cena"
           disabled={!campaignId || saving}

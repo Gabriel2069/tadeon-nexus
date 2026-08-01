@@ -175,6 +175,19 @@ export interface TabletopSavePayload {
   deletedEntityDocuments: Json[];
 }
 
+export function moveTabletopScene(
+  scenes: TabletopSceneSummary[],
+  sceneId: string,
+  direction: -1 | 1,
+) {
+  const index = scenes.findIndex((scene) => scene.id === sceneId);
+  const target = index + direction;
+  if (index < 0 || target < 0 || target >= scenes.length) return scenes;
+  const reordered = [...scenes];
+  [reordered[index], reordered[target]] = [reordered[target], reordered[index]];
+  return reordered.map((scene, orderIndex) => ({ ...scene, orderIndex }));
+}
+
 const ENTITY_COLORS: Record<string, number> = {
   token: 0x8d3152,
   character: 0x8d3152,
@@ -491,6 +504,23 @@ export class TabletopPersistenceService {
       version: Number(row.version),
       updatedAt: String(row.updated_at),
     }));
+  }
+
+  async reorderScenes(
+    campaignId: string,
+    orderedScenes: TabletopSceneSummary[],
+  ) {
+    await this.userId();
+    const { error } = await this.database.rpc("reorder_tabletop_scenes", {
+      target_campaign_id: campaignId,
+      scene_documents: orderedScenes.map((scene, orderIndex) => ({
+        id: scene.id,
+        version: scene.version,
+        order_index: orderIndex,
+      })),
+    });
+    if (error) throw serviceError(error);
+    return this.listScenes(campaignId);
   }
 
   async loadScene(sceneId: string) {
