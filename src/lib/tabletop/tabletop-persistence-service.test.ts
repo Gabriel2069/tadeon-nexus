@@ -167,6 +167,7 @@ describe("tabletop persistence mapping", () => {
     );
     const payload = buildTabletopSavePayload(original, {
       ...original,
+      backgroundAssetId: "map-asset",
       layers: [{ ...original.layers[0], visible: false }],
       entities: [
         {
@@ -199,6 +200,7 @@ describe("tabletop persistence mapping", () => {
     expect(payload.sceneDocument).toMatchObject({
       name: "Porto",
       status: "active",
+      background_asset_id: "map-asset",
     });
   });
 
