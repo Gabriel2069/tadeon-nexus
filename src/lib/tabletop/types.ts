@@ -11,12 +11,26 @@ export interface TabletopLayer {
   order: number;
   visible: boolean;
   locked: boolean;
+  layerType?: "map" | "objects" | "tokens" | "drawings" | "master";
 }
 
 export interface TabletopEntity {
   id: string;
   layerId: string;
-  type: "token" | "object" | "text" | "marker";
+  type:
+    | "token"
+    | "creature"
+    | "npc"
+    | "character"
+    | "object"
+    | "tile"
+    | "drawing"
+    | "text"
+    | "marker"
+    | "note"
+    | "area"
+    | "light"
+    | "handout_pin";
   label: string;
   x: number;
   y: number;
@@ -52,7 +66,7 @@ export interface TabletopSnapshot {
 
 export const EMPTY_TABLETOP_SCENE: TabletopScene = {
   id: "local-scene",
-  name: "Cena local sem persistência",
+  name: "Selecione ou crie uma cena",
   width: 2400,
   height: 1600,
   gridMode: "square",
@@ -60,9 +74,46 @@ export const EMPTY_TABLETOP_SCENE: TabletopScene = {
   gridScale: 1,
   snap: true,
   layers: [
-    { id: "map", name: "Mapa", order: 0, visible: true, locked: true },
-    { id: "objects", name: "Objetos", order: 1, visible: true, locked: false },
-    { id: "tokens", name: "Tokens", order: 2, visible: true, locked: false },
+    {
+      id: "map",
+      name: "Mapa",
+      order: 0,
+      visible: true,
+      locked: true,
+      layerType: "map",
+    },
+    {
+      id: "objects",
+      name: "Objetos",
+      order: 1,
+      visible: true,
+      locked: false,
+      layerType: "objects",
+    },
+    {
+      id: "tokens",
+      name: "Tokens",
+      order: 2,
+      visible: true,
+      locked: false,
+      layerType: "tokens",
+    },
+    {
+      id: "drawings",
+      name: "Desenhos",
+      order: 3,
+      visible: true,
+      locked: false,
+      layerType: "drawings",
+    },
+    {
+      id: "master",
+      name: "Mestre",
+      order: 4,
+      visible: true,
+      locked: false,
+      layerType: "master",
+    },
   ],
   entities: [],
 };
