@@ -27,6 +27,10 @@ import {
   IdCard,
   GitBranch,
   ScrollText,
+  Activity,
+  Compass,
+  Gauge,
+  Link2,
 } from "lucide-react";
 import { toast } from "sonner";
 import {
@@ -825,16 +829,59 @@ function SheetPage() {
                 </button>
               ))}
             </nav>
-            <Section id="sec-info" title="Identidade">
-              <div className="mb-4">
-                <p className="tadeon-eyebrow">Sete campos essenciais</p>
-                <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
-                  Origem situa, Ocupação mostra prática, Convicção sustenta, Limite interrompe,
-                  Ferida pressiona e Marca registra o que já mudou.
-                </p>
+            <div className="tadeon-sheet-overview" aria-label="Resumo da ficha">
+              <OverviewMetric
+                icon={<Compass aria-hidden="true" />}
+                label="Patamar"
+                value={String(base.rank)}
+                detail={`${attributeUsed}/${attributeBudget} atributos`}
+                tone="violet"
+              />
+              <OverviewMetric
+                icon={<Shield aria-hidden="true" />}
+                label="Defesa"
+                value={String(defTotal)}
+                detail={`RD ${armorRd} equipada`}
+                tone="blue"
+              />
+              <OverviewMetric
+                icon={<Activity aria-hidden="true" />}
+                label="Equilíbrio"
+                value={equilibrium > 0 ? `+${equilibrium}` : String(equilibrium)}
+                detail={equilibriumEffect.state}
+                tone="amber"
+              />
+              <OverviewMetric
+                icon={<Gauge aria-hidden="true" />}
+                label="Exposição"
+                value={`${sheet.exposure}%`}
+                detail={`${activeConditions.length} condições ativas`}
+                tone="red"
+              />
+            </div>
+
+            <Section id="sec-info" title="Identidade" className="tadeon-identity-section">
+              <div className="tadeon-identity-lead">
+                <div className="tadeon-identity-sigil" aria-hidden="true">
+                  <IdCard />
+                </div>
+                <div className="min-w-0 flex-1">
+                  <p className="tadeon-eyebrow">Dossiê de continuidade</p>
+                  <p className="mt-1 max-w-3xl text-xs leading-relaxed text-muted-foreground">
+                    Origem situa, Ocupação mostra prática, Convicção sustenta, Limite interrompe,
+                    Ferida pressiona e Marca registra o que já mudou.
+                  </p>
+                </div>
+                <div className="tadeon-identity-link-count">
+                  <Link2 aria-hidden="true" />
+                  <span>{sheet.identity_data.links.length}</span>
+                  <small>vínculos</small>
+                </div>
               </div>
-              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3">
+
+              <div className="tadeon-identity-foundation">
                 <Field
+                  className="tadeon-identity-field--name"
                   label="Nome"
                   value={sheet.name}
                   onChange={(v) => update("name", v)}
@@ -858,7 +905,11 @@ function SheetPage() {
                   onChange={(v) => update("brand", v)}
                   disabled={!canEdit}
                 />
+              </div>
+
+              <div className="tadeon-identity-axis" aria-label="Núcleo narrativo">
                 <Field
+                  className="tadeon-identity-axis__field"
                   label="Convicção"
                   value={sheet.identity_data.conviction}
                   onChange={(value) =>
@@ -867,6 +918,7 @@ function SheetPage() {
                   disabled={!canEdit}
                 />
                 <Field
+                  className="tadeon-identity-axis__field"
                   label="Limite"
                   value={sheet.identity_data.limit}
                   onChange={(value) =>
@@ -875,6 +927,7 @@ function SheetPage() {
                   disabled={!canEdit}
                 />
                 <Field
+                  className="tadeon-identity-axis__field"
                   label="Ferida"
                   value={sheet.identity_data.wound}
                   onChange={(value) =>
@@ -883,8 +936,9 @@ function SheetPage() {
                   disabled={!canEdit}
                 />
               </div>
-              <div className="mt-4 grid gap-4 lg:grid-cols-[1fr_1.2fr]">
-                <div className="space-y-3 rounded-xl border border-border/60 bg-secondary/20 p-4">
+
+              <div className="tadeon-identity-details">
+                <div className="tadeon-identity-question-panel">
                   <div>
                     <Label className="text-[10px] uppercase tracking-wider">
                       Traço do ciclo de vida
@@ -927,12 +981,12 @@ function SheetPage() {
                     />
                   </div>
                 </div>
-                <div className="rounded-xl border border-border/60 bg-secondary/20 p-4">
-                  <div className="mb-3 flex items-center justify-between">
+                <div className="tadeon-link-panel">
+                  <div className="tadeon-link-panel__heading">
                     <div>
                       <p className="tadeon-eyebrow">Vínculos</p>
                       <p className="text-xs text-muted-foreground">
-                        A personagem começa com dois; a história e Responsabilidades podem ampliar.
+                        Relações que sustentam, tensionam ou transformam a personagem.
                       </p>
                     </div>
                     {canEdit && (
@@ -940,7 +994,7 @@ function SheetPage() {
                         type="button"
                         size="sm"
                         variant="outline"
-                        className="gap-1.5"
+                        className="tadeon-link-add gap-1.5"
                         onClick={() =>
                           update("identity_data", {
                             ...sheet.identity_data,
@@ -957,17 +1011,22 @@ function SheetPage() {
                         }
                       >
                         <Plus className="h-3.5 w-3.5" />
-                        Vínculo
+                        Novo vínculo
                       </Button>
                     )}
                   </div>
-                  <div className="space-y-3">
+                  <div className="tadeon-link-list">
                     {sheet.identity_data.links.map((link, index) => (
-                      <div key={link.id} className="grid gap-2 sm:grid-cols-[1fr_1fr_140px_auto]">
+                      <div key={link.id} className="tadeon-link-row">
+                        <span className="tadeon-link-row__number" aria-hidden="true">
+                          {String(index + 1).padStart(2, "0")}
+                        </span>
                         <Input
+                          className="tadeon-link-row__name"
                           disabled={!canEdit}
                           value={link.name}
                           placeholder={`Vínculo ${index + 1}`}
+                          aria-label={`Nome do vínculo ${index + 1}`}
                           onChange={(event) => {
                             const links = [...sheet.identity_data.links];
                             links[index] = { ...link, name: event.target.value };
@@ -975,9 +1034,11 @@ function SheetPage() {
                           }}
                         />
                         <Input
+                          className="tadeon-link-row__relation"
                           disabled={!canEdit}
                           value={link.relation}
                           placeholder="Natureza da relação"
+                          aria-label={`Relação do vínculo ${index + 1}`}
                           onChange={(event) => {
                             const links = [...sheet.identity_data.links];
                             links[index] = { ...link, relation: event.target.value };
@@ -993,7 +1054,10 @@ function SheetPage() {
                             update("identity_data", { ...sheet.identity_data, links });
                           }}
                         >
-                          <SelectTrigger>
+                          <SelectTrigger
+                            className="tadeon-link-row__state"
+                            aria-label={`Estado do vínculo ${index + 1}`}
+                          >
                             <SelectValue />
                           </SelectTrigger>
                           <SelectContent>
@@ -1009,7 +1073,7 @@ function SheetPage() {
                             type="button"
                             size="icon"
                             variant="ghost"
-                            className="text-muted-foreground hover:text-destructive"
+                            className="tadeon-link-row__remove text-muted-foreground hover:text-destructive"
                             aria-label={`Remover vínculo ${index + 1}`}
                             onClick={() =>
                               update("identity_data", {
@@ -1035,6 +1099,7 @@ function SheetPage() {
               <Section
                 id="sec-attr"
                 title="Atributos"
+                className="tadeon-core-panel tadeon-attributes-panel"
                 extra={
                   <span
                     className={`rounded-full border px-2 py-0.5 text-[10px] ${
@@ -1121,7 +1186,7 @@ function SheetPage() {
                       ? `${attributeRemaining} ponto(s) ainda disponível(is).`
                       : "Orçamento do Rank totalmente distribuído."}
                   </p>
-                  <div className="tadeon-attribute-radar h-44 sm:h-60">
+                  <div className="tadeon-attribute-radar h-36 sm:h-52">
                     <Suspense
                       fallback={
                         <Loader2 className="w-6 h-6 animate-spin text-primary mx-auto mt-20" />
@@ -1133,8 +1198,12 @@ function SheetPage() {
                 </div>
               </Section>
 
-              <Section id="sec-pontos" title="Pontos Vitais">
-                <div className="tadeon-vitals-grid grid grid-cols-1 gap-3 min-[430px]:grid-cols-2">
+              <Section
+                id="sec-pontos"
+                title="Pontos Vitais"
+                className="tadeon-core-panel tadeon-vitals-panel"
+              >
+                <div className="tadeon-vitals-grid grid grid-cols-2 gap-2.5">
                   <StatBlock
                     label="PV"
                     full="Vitalidade"
@@ -1196,23 +1265,22 @@ function SheetPage() {
                     onMod={(v) => update("stats", { ...sheet.stats, pa_mod: clampMod(v) })}
                   />
 
-                  <Card className="tadeon-defense-card border-blue-500/30 bg-card/60 p-4 shadow-[0_0_22px_-12px_rgba(59,130,246,0.65)] min-[430px]:col-span-2 min-[430px]:mx-auto min-[430px]:w-full min-[430px]:max-w-md">
-                    <div className="text-blue-300 font-cinzel font-bold text-sm">Defesa</div>
-                    <div className="relative my-2 flex items-center justify-center">
-                      <Shield
-                        className="w-20 h-20 text-blue-400/30 drop-shadow-[0_0_8px_rgba(59,130,246,0.55)]"
-                        strokeWidth={1.5}
-                      />
-                      <span className="absolute inset-0 flex items-center justify-center text-3xl font-bold text-blue-200 drop-shadow-[0_0_6px_rgba(59,130,246,0.85)]">
-                        {defTotal}
-                      </span>
+                  <Card className="tadeon-defense-card col-span-2 border-blue-500/30 bg-card/60 p-3 shadow-[0_0_22px_-12px_rgba(59,130,246,0.65)]">
+                    <div className="tadeon-defense-card__summary">
+                      <div className="tadeon-defense-card__score">
+                        <Shield aria-hidden="true" strokeWidth={1.5} />
+                        <span>{defTotal}</span>
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <div className="font-cinzel text-sm font-bold text-blue-300">Defesa</div>
+                        <p className="mt-0.5 text-[10px] leading-relaxed text-muted-foreground">
+                          base {base.def} + INS {attrs.INS} + equip {armorTotal}
+                          {armorRaw > 3 ? " (máx. 3)" : ""} + mod {sheet.stats.def_mod}
+                          {upg.def ? ` + apr ${upg.def}` : ""}
+                        </p>
+                      </div>
                     </div>
-                    <div className="text-[10px] text-muted-foreground text-center -mt-1 mb-2">
-                      base {base.def} + INS {attrs.INS} + equip {armorTotal}
-                      {armorRaw > 3 ? " (máx. 3)" : ""} + mod {sheet.stats.def_mod}
-                      {upg.def ? ` + apr ${upg.def}` : ""}
-                    </div>
-                    <div className="grid grid-cols-2 gap-2 text-xs">
+                    <div className="tadeon-defense-card__inputs grid grid-cols-2 gap-2 text-xs">
                       <div>
                         <Label className="text-[10px]">Equip</Label>
                         <Input
@@ -1302,181 +1370,184 @@ function SheetPage() {
               </Section>
             </div>
 
-            {/* Equilibrium card */}
-            <Section
-              title="Equilíbrio"
-              extra={
-                <div className="inline-flex items-center gap-1.5 px-2 py-1 rounded-lg bg-gradient-to-r from-amber-500/15 to-transparent border border-amber-500/40 shadow-[0_0_10px_-4px_rgba(245,158,11,0.7)]">
-                  <span className="text-[10px] uppercase tracking-wider font-cinzel text-amber-300">
-                    Tensão
+            <div className="tadeon-sheet-state-grid">
+              {/* Equilibrium card */}
+              <Section
+                title="Equilíbrio"
+                className="tadeon-state-panel tadeon-equilibrium-panel"
+                extra={
+                  <div className="inline-flex items-center gap-1.5 px-2 py-1 rounded-lg bg-gradient-to-r from-amber-500/15 to-transparent border border-amber-500/40 shadow-[0_0_10px_-4px_rgba(245,158,11,0.7)]">
+                    <span className="text-[10px] uppercase tracking-wider font-cinzel text-amber-300">
+                      Tensão
+                    </span>
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      className="h-6 w-6 p-0 text-amber-300"
+                      disabled={!canEdit}
+                      onClick={() => addDirectionalTension(-1)}
+                    >
+                      <Minus className="w-3 h-3" />
+                    </Button>
+                    <span
+                      className={`min-w-[2.25rem] text-center text-sm font-bold ${sheet.drift === 0 ? "text-amber-200" : sheet.drift > 0 ? "text-yellow-300" : "text-red-300"}`}
+                    >
+                      {sheet.drift > 0 ? `+${sheet.drift}` : sheet.drift}
+                    </span>
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      className="h-6 w-6 p-0 text-amber-300"
+                      disabled={!canEdit}
+                      onClick={() => addDirectionalTension(1)}
+                    >
+                      <Plus className="w-3 h-3" />
+                    </Button>
+                    <span className="text-[9px] text-muted-foreground ml-1">−4…+4</span>
+                  </div>
+                }
+              >
+                <div className="flex items-center justify-between text-xs text-muted-foreground mb-1">
+                  <span>-10</span>
+                  <span className="font-bold text-foreground text-base">
+                    {equilibrium > 0 ? `+${equilibrium}` : equilibrium}
                   </span>
-                  <Button
-                    size="sm"
-                    variant="ghost"
-                    className="h-6 w-6 p-0 text-amber-300"
-                    disabled={!canEdit}
-                    onClick={() => addDirectionalTension(-1)}
-                  >
-                    <Minus className="w-3 h-3" />
-                  </Button>
-                  <span
-                    className={`min-w-[2.25rem] text-center text-sm font-bold ${sheet.drift === 0 ? "text-amber-200" : sheet.drift > 0 ? "text-yellow-300" : "text-red-300"}`}
-                  >
-                    {sheet.drift > 0 ? `+${sheet.drift}` : sheet.drift}
-                  </span>
-                  <Button
-                    size="sm"
-                    variant="ghost"
-                    className="h-6 w-6 p-0 text-amber-300"
-                    disabled={!canEdit}
-                    onClick={() => addDirectionalTension(1)}
-                  >
-                    <Plus className="w-3 h-3" />
-                  </Button>
-                  <span className="text-[9px] text-muted-foreground ml-1">−4…+4</span>
+                  <span>+10</span>
                 </div>
-              }
-            >
-              <div className="flex items-center justify-between text-xs text-muted-foreground mb-1">
-                <span>-10</span>
-                <span className="font-bold text-foreground text-base">
-                  {equilibrium > 0 ? `+${equilibrium}` : equilibrium}
-                </span>
-                <span>+10</span>
-              </div>
-              <div className="relative w-full h-7 bg-secondary rounded-full overflow-hidden border border-border">
-                {/* Static dual gradient background */}
-                <div
-                  className="absolute inset-0"
-                  style={{
-                    background:
-                      "linear-gradient(90deg, hsl(0,75%,18%) 0%, hsl(0,75%,50%) 50%, hsl(50,95%,55%) 50%, hsl(50,70%,95%) 100%)",
-                    opacity: 0.25,
-                  }}
-                />
-                {/* Center marker */}
-                <div className="absolute top-0 bottom-0 left-1/2 w-px bg-foreground/40" />
-                {/* Indicator pill */}
-                <div
-                  className="absolute top-1/2 -translate-y-1/2 h-5 w-5 rounded-full border-2 border-background shadow-md transition-all duration-500"
-                  style={{
-                    left: `calc(${equilibriumPct}% - 10px)`,
-                    background: equilibriumColor(equilibrium),
-                  }}
-                />
-              </div>
-              <div className="flex items-center gap-3 mt-3">
-                <Input
-                  type="number"
-                  min={role === "mestre" ? -10 : -5}
-                  max={role === "mestre" ? 10 : 5}
-                  disabled={!canEdit}
-                  value={sheet.equilibrium}
-                  onChange={(e) =>
-                    update(
-                      "equilibrium",
-                      clamp(
-                        Number(e.target.value),
-                        role === "mestre" ? -10 : -5,
-                        role === "mestre" ? 10 : 5,
-                      ),
-                    )
-                  }
-                  className="w-24 h-8"
-                />
-                <input
-                  type="range"
-                  min={role === "mestre" ? -10 : -5}
-                  max={role === "mestre" ? 10 : 5}
-                  step={1}
-                  disabled={!canEdit}
-                  value={sheet.equilibrium}
-                  onChange={(e) =>
-                    update(
-                      "equilibrium",
-                      clamp(
-                        Number(e.target.value),
-                        role === "mestre" ? -10 : -5,
-                        role === "mestre" ? 10 : 5,
-                      ),
-                    )
-                  }
-                  className="flex-1"
-                />
-              </div>
-              <p className="mt-2 text-[10px] text-muted-foreground">
-                Faixa comum: −5 a +5. Valores além disso exigem fonte excepcional e ajuste do
-                mestre.
-              </p>
-              <div className="grid gap-2 sm:grid-cols-3 mt-3 rounded-lg border border-border/70 bg-secondary/25 p-3 text-xs">
-                <div>
-                  <span className="text-muted-foreground">Estado</span>
-                  <p className="font-semibold text-foreground">{equilibriumEffect.state}</p>
-                </div>
-                <div>
-                  <span className="text-muted-foreground">Benefício</span>
-                  <p className="text-emerald-300">{equilibriumEffect.benefit}</p>
-                </div>
-                <div>
-                  <span className="text-muted-foreground">Penalidade</span>
-                  <p className="text-amber-300">{equilibriumEffect.penalty}</p>
-                </div>
-              </div>
-            </Section>
-
-            {/* Exposure card */}
-            <Section title="Exposição">
-              <div className="flex items-baseline justify-between mb-1">
-                <span className="text-xs text-muted-foreground">
-                  Rank base: <strong className="text-foreground">{base.rank}</strong>
-                </span>
-                <span className="font-cinzel text-lg font-bold text-primary">
-                  {sheet.exposure}/100
-                </span>
-              </div>
-              <div className="relative w-full h-4 bg-secondary rounded-full overflow-hidden border border-border">
-                <div
-                  className="absolute inset-y-0 left-0 bg-gradient-to-r from-yellow-500 via-orange-500 to-red-600 transition-all duration-500"
-                  style={{ width: `${clamp(sheet.exposure, 0, 100)}%` }}
-                />
-                {/* Rank tick marks every 5 */}
-                {Array.from({ length: 21 }).map((_, i) => (
+                <div className="relative w-full h-7 bg-secondary rounded-full overflow-hidden border border-border">
+                  {/* Static dual gradient background */}
                   <div
-                    key={i}
-                    className="absolute top-0 bottom-0 w-px bg-background/40"
-                    style={{ left: `${i * 5}%` }}
+                    className="absolute inset-0"
+                    style={{
+                      background:
+                        "linear-gradient(90deg, hsl(0,75%,18%) 0%, hsl(0,75%,50%) 50%, hsl(50,95%,55%) 50%, hsl(50,70%,95%) 100%)",
+                      opacity: 0.25,
+                    }}
                   />
-                ))}
-              </div>
-              <div className="flex items-center gap-3 mt-3">
-                <Input
-                  type="number"
-                  min={0}
-                  max={100}
-                  step={5}
-                  disabled={!canEdit}
-                  value={sheet.exposure}
-                  onChange={(e) =>
-                    update("exposure", clamp(Math.round(Number(e.target.value) / 5) * 5, 0, 100))
-                  }
-                  className="w-24 h-8"
-                />
-                <input
-                  type="range"
-                  min={0}
-                  max={100}
-                  step={5}
-                  disabled={!canEdit}
-                  value={sheet.exposure}
-                  onChange={(e) => update("exposure", Number(e.target.value))}
-                  className="flex-1"
-                />
-              </div>
-            </Section>
+                  {/* Center marker */}
+                  <div className="absolute top-0 bottom-0 left-1/2 w-px bg-foreground/40" />
+                  {/* Indicator pill */}
+                  <div
+                    className="absolute top-1/2 -translate-y-1/2 h-5 w-5 rounded-full border-2 border-background shadow-md transition-all duration-500"
+                    style={{
+                      left: `calc(${equilibriumPct}% - 10px)`,
+                      background: equilibriumColor(equilibrium),
+                    }}
+                  />
+                </div>
+                <div className="flex items-center gap-3 mt-3">
+                  <Input
+                    type="number"
+                    min={role === "mestre" ? -10 : -5}
+                    max={role === "mestre" ? 10 : 5}
+                    disabled={!canEdit}
+                    value={sheet.equilibrium}
+                    onChange={(e) =>
+                      update(
+                        "equilibrium",
+                        clamp(
+                          Number(e.target.value),
+                          role === "mestre" ? -10 : -5,
+                          role === "mestre" ? 10 : 5,
+                        ),
+                      )
+                    }
+                    className="w-24 h-8"
+                  />
+                  <input
+                    type="range"
+                    min={role === "mestre" ? -10 : -5}
+                    max={role === "mestre" ? 10 : 5}
+                    step={1}
+                    disabled={!canEdit}
+                    value={sheet.equilibrium}
+                    onChange={(e) =>
+                      update(
+                        "equilibrium",
+                        clamp(
+                          Number(e.target.value),
+                          role === "mestre" ? -10 : -5,
+                          role === "mestre" ? 10 : 5,
+                        ),
+                      )
+                    }
+                    className="flex-1"
+                  />
+                </div>
+                <p className="mt-2 text-[10px] text-muted-foreground">
+                  Faixa comum: −5 a +5. Valores além disso exigem fonte excepcional e ajuste do
+                  mestre.
+                </p>
+                <div className="grid gap-2 sm:grid-cols-3 mt-3 rounded-lg border border-border/70 bg-secondary/25 p-3 text-xs">
+                  <div>
+                    <span className="text-muted-foreground">Estado</span>
+                    <p className="font-semibold text-foreground">{equilibriumEffect.state}</p>
+                  </div>
+                  <div>
+                    <span className="text-muted-foreground">Benefício</span>
+                    <p className="text-emerald-300">{equilibriumEffect.benefit}</p>
+                  </div>
+                  <div>
+                    <span className="text-muted-foreground">Penalidade</span>
+                    <p className="text-amber-300">{equilibriumEffect.penalty}</p>
+                  </div>
+                </div>
+              </Section>
+
+              {/* Exposure card */}
+              <Section title="Exposição" className="tadeon-state-panel tadeon-exposure-panel">
+                <div className="flex items-baseline justify-between mb-1">
+                  <span className="text-xs text-muted-foreground">
+                    Rank base: <strong className="text-foreground">{base.rank}</strong>
+                  </span>
+                  <span className="font-cinzel text-lg font-bold text-primary">
+                    {sheet.exposure}/100
+                  </span>
+                </div>
+                <div className="relative w-full h-4 bg-secondary rounded-full overflow-hidden border border-border">
+                  <div
+                    className="absolute inset-y-0 left-0 bg-gradient-to-r from-yellow-500 via-orange-500 to-red-600 transition-all duration-500"
+                    style={{ width: `${clamp(sheet.exposure, 0, 100)}%` }}
+                  />
+                  {/* Rank tick marks every 5 */}
+                  {Array.from({ length: 21 }).map((_, i) => (
+                    <div
+                      key={i}
+                      className="absolute top-0 bottom-0 w-px bg-background/40"
+                      style={{ left: `${i * 5}%` }}
+                    />
+                  ))}
+                </div>
+                <div className="flex items-center gap-3 mt-3">
+                  <Input
+                    type="number"
+                    min={0}
+                    max={100}
+                    step={5}
+                    disabled={!canEdit}
+                    value={sheet.exposure}
+                    onChange={(e) =>
+                      update("exposure", clamp(Math.round(Number(e.target.value) / 5) * 5, 0, 100))
+                    }
+                    className="w-24 h-8"
+                  />
+                  <input
+                    type="range"
+                    min={0}
+                    max={100}
+                    step={5}
+                    disabled={!canEdit}
+                    value={sheet.exposure}
+                    onChange={(e) => update("exposure", Number(e.target.value))}
+                    className="flex-1"
+                  />
+                </div>
+              </Section>
+            </div>
 
             {/* Conditions */}
-            <Section title="Condições">
-              <div className="tadeon-condition-grid grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4">
+            <Section title="Condições" className="tadeon-conditions-panel">
+              <div className="tadeon-condition-grid grid grid-cols-2 gap-2 xl:grid-cols-4">
                 {(Object.keys(CONDITION_META) as ConditionKey[]).map((c) => {
                   const meta = CONDITION_META[c];
                   const opts = (conditionOptions[c] ?? ["Normal"]).filter(
@@ -2278,21 +2349,48 @@ function SheetPage() {
   );
 }
 
+function OverviewMetric({
+  icon,
+  label,
+  value,
+  detail,
+  tone,
+}: {
+  icon: React.ReactNode;
+  label: string;
+  value: string;
+  detail: string;
+  tone: "violet" | "blue" | "amber" | "red";
+}) {
+  return (
+    <div className={`tadeon-overview-metric tadeon-overview-metric--${tone}`}>
+      <div className="tadeon-overview-metric__icon">{icon}</div>
+      <div className="min-w-0">
+        <span>{label}</span>
+        <strong>{value}</strong>
+        <small>{detail}</small>
+      </div>
+    </div>
+  );
+}
+
 function Section({
   title,
   children,
   extra,
   id,
+  className = "",
 }: {
   title: string;
   children: React.ReactNode;
   extra?: React.ReactNode;
   id?: string;
+  className?: string;
 }) {
   return (
     <Card
       id={id}
-      className="tadeon-surface tadeon-sheet-section scroll-mt-44 rounded-2xl p-4 transition-all hover:border-primary/25 md:p-5"
+      className={`tadeon-surface tadeon-sheet-section scroll-mt-44 rounded-2xl p-4 transition-all hover:border-primary/25 md:p-5 ${className}`}
     >
       <div className="tadeon-sheet-section__heading mb-4 flex flex-wrap items-center justify-between gap-2">
         <h2 className="font-cinzel text-lg font-semibold text-primary">{title}</h2>
@@ -2308,14 +2406,16 @@ function Field({
   value,
   onChange,
   disabled,
+  className = "",
 }: {
   label: string;
   value: string;
   onChange: (v: string) => void;
   disabled?: boolean;
+  className?: string;
 }) {
   return (
-    <div>
+    <div className={`tadeon-sheet-field ${className}`}>
       <Label className="text-xs">{label}</Label>
       <Input
         value={value || ""}
@@ -2357,61 +2457,70 @@ function StatBlock({
     boxShadow: `0 0 22px -10px rgba(${glowRgb}, 0.7)`,
   };
   return (
-    <Card className="tadeon-stat-block border bg-card/60 p-3" style={borderStyle}>
-      <div className="flex items-baseline justify-between">
-        <div className={`font-cinzel font-bold text-sm ${color}`}>{label}</div>
-        <span className="text-[10px] text-muted-foreground">{full}</span>
+    <Card className="tadeon-stat-block border bg-card/60 p-2.5" style={borderStyle}>
+      <div className="tadeon-stat-block__head">
+        <div>
+          <div className={`font-cinzel text-sm font-bold ${color}`}>{label}</div>
+          <span className="text-[9px] text-muted-foreground">{full}</span>
+        </div>
+        <strong
+          className={`tadeon-stat-block__value ${color}`}
+          style={{ textShadow: `0 0 10px rgba(${glowRgb}, 0.75)` }}
+        >
+          {current}
+          <small>/ {max}</small>
+        </strong>
       </div>
-      <div
-        className={`text-2xl font-bold text-center my-1 ${color}`}
-        style={{ textShadow: `0 0 10px rgba(${glowRgb}, 0.75)` }}
-      >
-        {current} / {max}
-      </div>
-      <div className="w-full h-1.5 bg-secondary rounded-full mb-2 overflow-hidden">
+      <div className="tadeon-stat-block__bar mb-2 h-1.5 w-full overflow-hidden rounded-full bg-secondary">
         <div
           className={`h-full bg-gradient-to-r ${barColor} rounded-full transition-all duration-300`}
           style={{ width: `${clamp((current / Math.max(1, max)) * 100, 0, 100)}%` }}
         />
       </div>
-      <div className="flex items-center gap-1.5">
-        <Button
-          size="sm"
-          variant="ghost"
-          className="tadeon-stepper-button h-9 w-9 p-0"
-          disabled={disabled || current <= 0}
-          onClick={() => onCurrent(current - 1)}
-        >
-          <Minus className="w-3 h-3" />
-        </Button>
-        <Input
-          type="number"
-          min={0}
-          max={Math.max(0, max)}
-          disabled={disabled}
-          value={current}
-          onChange={(e) => onCurrent(Number(e.target.value))}
-          className="h-9 text-center text-sm font-semibold"
-        />
-        <Button
-          size="sm"
-          variant="ghost"
-          className="tadeon-stepper-button h-9 w-9 p-0"
-          disabled={disabled || current >= max}
-          onClick={() => onCurrent(current + 1)}
-        >
-          <Plus className="w-3 h-3" />
-        </Button>
-      </div>
-      <div className="mt-1.5">
-        <Label className="text-[10px]">Mod</Label>
-        <Input
-          type="number"
-          disabled={disabled}
-          value={mod}
-          onChange={(e) => onMod(Number(e.target.value))}
-          className="h-9 text-xs"
-        />
+      <div className="tadeon-stat-block__controls">
+        <div className="tadeon-stat-block__stepper">
+          <Button
+            size="sm"
+            variant="ghost"
+            className="tadeon-stepper-button h-9 w-9 p-0"
+            disabled={disabled || current <= 0}
+            aria-label={`Diminuir ${full}`}
+            onClick={() => onCurrent(current - 1)}
+          >
+            <Minus className="h-3 w-3" />
+          </Button>
+          <Input
+            type="number"
+            min={0}
+            max={Math.max(0, max)}
+            disabled={disabled}
+            value={current}
+            aria-label={`${full} atual`}
+            onChange={(e) => onCurrent(Number(e.target.value))}
+            className="h-9 min-w-0 text-center text-sm font-semibold"
+          />
+          <Button
+            size="sm"
+            variant="ghost"
+            className="tadeon-stepper-button h-9 w-9 p-0"
+            disabled={disabled || current >= max}
+            aria-label={`Aumentar ${full}`}
+            onClick={() => onCurrent(current + 1)}
+          >
+            <Plus className="h-3 w-3" />
+          </Button>
+        </div>
+        <label className="tadeon-stat-block__mod">
+          <span>Mod</span>
+          <Input
+            type="number"
+            disabled={disabled}
+            value={mod}
+            aria-label={`Modificador de ${full}`}
+            onChange={(e) => onMod(Number(e.target.value))}
+            className="h-8 text-center text-xs"
+          />
+        </label>
       </div>
     </Card>
   );
