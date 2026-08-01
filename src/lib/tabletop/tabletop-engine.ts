@@ -13,6 +13,7 @@ import {
   EMPTY_TABLETOP_SCENE,
   type Point,
   type TabletopEntity,
+  type TabletopEntitySeed,
   type TabletopScene,
   type TabletopSnapshot,
 } from "./types";
@@ -131,6 +132,23 @@ export class TabletopEngine {
   }
 
   addEntity(type: TabletopEntity["type"] = "token") {
+    const count = this.scenes.scene.entities.length + 1;
+    const tokenTypes = new Set<TabletopEntity["type"]>([
+      "token",
+      "character",
+      "npc",
+      "creature",
+    ]);
+    this.addEntityAt(
+      {
+        type,
+        label: tokenTypes.has(type) ? `Token ${count}` : `Objeto ${count}`,
+      },
+      { x: 320 + count * 18, y: 240 + count * 18 },
+    );
+  }
+
+  addEntityAt(seed: TabletopEntitySeed, point: Point) {
     if (this.readOnly) return;
     const tokenTypes = new Set<TabletopEntity["type"]>([
       "token",
@@ -138,32 +156,42 @@ export class TabletopEngine {
       "npc",
       "creature",
     ]);
-    const layerType = tokenTypes.has(type) ? "tokens" : "objects";
+    const layerType = tokenTypes.has(seed.type) ? "tokens" : "objects";
     const targetLayer =
       this.scenes.scene.layers.find((layer) => layer.layerType === layerType) ??
       this.scenes.scene.layers.find((layer) => layer.id === layerType);
-    if (!targetLayer) {
+    if (!targetLayer || targetLayer.locked || !targetLayer.visible) {
       this.options.onAssetError?.(
-        `A camada ${layerType === "tokens" ? "Tokens" : "Objetos"} não está disponível.`,
+        `A camada ${layerType === "tokens" ? "Tokens" : "Objetos"} precisa estar visível e desbloqueada.`,
       );
       return;
     }
     const count = this.scenes.scene.entities.length + 1;
-    const isToken = tokenTypes.has(type);
+    const isToken = tokenTypes.has(seed.type);
+    const width = Math.max(8, seed.width ?? (isToken ? 64 : 128));
+    const height = Math.max(8, seed.height ?? (isToken ? 64 : 96));
+    const origin = this.snap({
+      x: point.x - width / 2,
+      y: point.y - height / 2,
+    });
     const entity: TabletopEntity = {
       id: crypto.randomUUID(),
       layerId: targetLayer.id,
-      type,
-      label: isToken ? `Token ${count}` : `Objeto ${count}`,
-      x: 320 + count * 18,
-      y: 240 + count * 18,
-      width: isToken ? 64 : 128,
-      height: isToken ? 64 : 96,
+      type: seed.type,
+      label: seed.label.trim().slice(0, 240) || `Entidade ${count}`,
+      x: Math.max(0, Math.min(origin.x, this.scenes.scene.width - width)),
+      y: Math.max(0, Math.min(origin.y, this.scenes.scene.height - height)),
+      width,
+      height,
       rotation: 0,
       zIndex: count,
       hidden: false,
       locked: false,
       color: isToken ? 0x8d3152 : 0x345d6f,
+      assetId: seed.assetId ?? null,
+      assetUrl: seed.assetUrl,
+      linkedKnowledgeNodeId: seed.linkedKnowledgeNodeId ?? null,
+      properties: seed.properties ?? {},
     };
     this.executeMutation("Adicionar entidade", (entities) => [
       ...entities,
@@ -171,6 +199,14 @@ export class TabletopEngine {
     ]);
     this.selection.replace([entity.id]);
     this.render();
+  }
+
+  clientToWorld(point: Point): Point {
+    const bounds = this.app.canvas.getBoundingClientRect();
+    return this.camera.screenToWorld({
+      x: point.x - bounds.left,
+      y: point.y - bounds.top,
+    });
   }
 
   updateSelected(patch: Partial<TabletopEntity>, label = "Editar entidade") {

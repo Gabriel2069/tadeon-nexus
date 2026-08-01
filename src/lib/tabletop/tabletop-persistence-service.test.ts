@@ -1,12 +1,24 @@
 import { describe, expect, it, vi } from "vitest";
 import {
   buildTabletopSavePayload,
+  fitTabletopAssetSize,
   mapTabletopScene,
   TabletopPersistenceService,
   TabletopServiceError,
 } from "@/lib/tabletop/tabletop-persistence-service";
 
 describe("tabletop persistence mapping", () => {
+  it("fits large assets without distorting their ratio", () => {
+    expect(fitTabletopAssetSize(4000, 2000)).toEqual({
+      width: 256,
+      height: 128,
+    });
+    expect(fitTabletopAssetSize(null, null)).toEqual({
+      width: 128,
+      height: 96,
+    });
+  });
+
   it("maps numeric Postgres fields and keeps explicit links", () => {
     const scene = mapTabletopScene(
       {

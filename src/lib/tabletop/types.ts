@@ -50,6 +50,17 @@ export interface TabletopEntity {
   properties?: unknown;
 }
 
+export interface TabletopEntitySeed {
+  type: TabletopEntity["type"];
+  label: string;
+  width?: number;
+  height?: number;
+  assetId?: string | null;
+  assetUrl?: string;
+  linkedKnowledgeNodeId?: string | null;
+  properties?: unknown;
+}
+
 export interface TabletopScene {
   id: string;
   name: string;

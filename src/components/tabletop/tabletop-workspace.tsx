@@ -1,6 +1,14 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type DragEvent,
+} from "react";
 import {
   Archive,
+  BookOpen,
   Box,
   Bug,
   Camera,
@@ -12,6 +20,7 @@ import {
   Focus,
   Grid2X2,
   History,
+  Image,
   Layers3,
   Loader2,
   Lock,
@@ -37,6 +46,7 @@ import {
   tabletopPersistenceService,
   TabletopServiceError,
   type PersistedTabletopScene,
+  type TabletopAssetTarget,
   type TabletopCampaignSummary,
   type TabletopEntityLinkTargets,
   type TabletopSaveOverrides,
@@ -47,6 +57,7 @@ import {
   cloneScene,
   EMPTY_TABLETOP_SCENE,
   type Point,
+  type TabletopEntitySeed,
   type TabletopSnapshot,
 } from "@/lib/tabletop/types";
 
@@ -65,6 +76,44 @@ const EMPTY_LINK_TARGETS: TabletopEntityLinkTargets = {
   sheets: [],
   knowledge: [],
 };
+
+const TABLETOP_PALETTE_MIME = "application/x-tadeon-tabletop-palette";
+
+type PaletteDragPayload =
+  | { kind: "asset"; id: string; entityType: "token" | "object" }
+  | { kind: "knowledge"; id: string };
+
+function parsePaletteDragPayload(value: string): PaletteDragPayload | null {
+  try {
+    const parsed = JSON.parse(value) as Record<string, unknown>;
+    if (parsed.kind === "knowledge" && typeof parsed.id === "string") {
+      return { kind: "knowledge", id: parsed.id };
+    }
+    if (
+      parsed.kind === "asset" &&
+      typeof parsed.id === "string" &&
+      (parsed.entityType === "token" || parsed.entityType === "object")
+    ) {
+      return {
+        kind: "asset",
+        id: parsed.id,
+        entityType: parsed.entityType,
+      };
+    }
+  } catch {
+    return null;
+  }
+  return null;
+}
+
+function knowledgeEntityType(nodeType: string): TabletopEntitySeed["type"] {
+  if (nodeType === "character") return "character";
+  if (nodeType === "npc") return "npc";
+  if (nodeType === "creature") return "creature";
+  if (nodeType === "clue" || nodeType === "document") return "note";
+  if (nodeType === "location" || nodeType === "map") return "marker";
+  return "object";
+}
 
 function entityProperties(value: unknown): Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value)
@@ -110,6 +159,11 @@ export function TabletopWorkspace() {
   const [snapshotId, setSnapshotId] = useState("");
   const [linkTargets, setLinkTargets] =
     useState<TabletopEntityLinkTargets>(EMPTY_LINK_TARGETS);
+  const [paletteAssets, setPaletteAssets] = useState<TabletopAssetTarget[]>([]);
+  const [paletteLoading, setPaletteLoading] = useState(false);
+  const [assetDropType, setAssetDropType] = useState<"token" | "object">(
+    "object",
+  );
   const [contextMenu, setContextMenu] = useState<ContextMenuState | null>(null);
   const [diagnostics, setDiagnostics] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -298,6 +352,30 @@ export function TabletopWorkspace() {
     };
   }, [campaignId, campaigns]);
 
+  useEffect(() => {
+    const campaign = campaigns.find((item) => item.id === campaignId);
+    if (!campaign) {
+      setPaletteAssets([]);
+      return;
+    }
+    let active = true;
+    setPaletteLoading(true);
+    void tabletopPersistenceService
+      .listPaletteAssets(campaign.workspaceId, campaign.id)
+      .then((assets) => {
+        if (active) setPaletteAssets(assets);
+      })
+      .catch(() => {
+        if (active) setPaletteAssets([]);
+      })
+      .finally(() => {
+        if (active) setPaletteLoading(false);
+      });
+    return () => {
+      active = false;
+    };
+  }, [campaignId, campaigns]);
+
   const saveCurrent = async (overrides: TabletopSaveOverrides = {}) => {
     const stored = persistedSceneRef.current;
     if (!stored || !editable) return null;
@@ -479,6 +557,54 @@ export function TabletopWorkspace() {
 
   const updateProperties = (patch: Record<string, unknown>) =>
     engineRef.current?.updateSelectedProperties(patch);
+
+  const beginPaletteDrag = (
+    event: DragEvent<HTMLElement>,
+    payload: PaletteDragPayload,
+    label: string,
+  ) => {
+    event.dataTransfer.effectAllowed = "copy";
+    event.dataTransfer.setData(TABLETOP_PALETTE_MIME, JSON.stringify(payload));
+    event.dataTransfer.setData("text/plain", label);
+  };
+
+  const dropPaletteItem = (event: DragEvent<HTMLElement>) => {
+    const payload = parsePaletteDragPayload(
+      event.dataTransfer.getData(TABLETOP_PALETTE_MIME),
+    );
+    if (!payload || !editable) return;
+    event.preventDefault();
+
+    let seed: TabletopEntitySeed | null = null;
+    if (payload.kind === "asset") {
+      const asset = paletteAssets.find((item) => item.id === payload.id);
+      if (!asset) return;
+      seed = {
+        type: payload.entityType,
+        label: asset.displayName,
+        width: payload.entityType === "token" ? 64 : asset.width,
+        height: payload.entityType === "token" ? 64 : asset.height,
+        assetId: asset.id,
+        assetUrl: asset.previewUrl,
+        properties: { source: "nexus_assets", mime_type: asset.mimeType },
+      };
+    } else {
+      const node = linkTargets.knowledge.find((item) => item.id === payload.id);
+      if (!node) return;
+      seed = {
+        type: knowledgeEntityType(node.nodeType),
+        label: node.title,
+        linkedKnowledgeNodeId: node.id,
+        properties: { source: "nexus_library", node_type: node.nodeType },
+      };
+    }
+
+    const engine = engineRef.current;
+    engine?.addEntityAt(
+      seed,
+      engine.clientToWorld({ x: event.clientX, y: event.clientY }),
+    );
+  };
 
   const closeContext = () => setContextMenu(null);
 
@@ -688,6 +814,16 @@ export function TabletopWorkspace() {
         <section
           className="relative min-h-[65vh] overflow-hidden"
           onClick={closeContext}
+          onDragOver={(event) => {
+            if (
+              editable &&
+              event.dataTransfer.types.includes(TABLETOP_PALETTE_MIME)
+            ) {
+              event.preventDefault();
+              event.dataTransfer.dropEffect = "copy";
+            }
+          }}
+          onDrop={dropPaletteItem}
         >
           <div ref={hostRef} className="absolute inset-0" />
           {loading && (
@@ -746,6 +882,115 @@ export function TabletopWorkspace() {
 
         <aside className="overflow-y-auto border-l border-border/70 bg-card/95 p-4">
           <div className="flex items-center gap-2">
+            <Image className="h-4 w-4 text-primary" />
+            <p className="tadeon-eyebrow">Paleta</p>
+          </div>
+          <p className="mt-1 text-[11px] text-muted-foreground">
+            Arraste um asset ou item da biblioteca para o canvas.
+          </p>
+          <div className="mt-3">
+            <Label htmlFor="asset-drop-type" className="text-[10px] uppercase">
+              Asset entra como
+            </Label>
+            <select
+              id="asset-drop-type"
+              value={assetDropType}
+              disabled={!editable}
+              onChange={(event) =>
+                setAssetDropType(
+                  event.target.value === "token" ? "token" : "object",
+                )
+              }
+              className="h-9 w-full rounded-md border border-input bg-background px-2 text-xs"
+            >
+              <option value="object">Objeto</option>
+              <option value="token">Token</option>
+            </select>
+          </div>
+          <div className="mt-3 grid max-h-48 grid-cols-2 gap-2 overflow-y-auto pr-1">
+            {paletteLoading && (
+              <div className="col-span-2 flex items-center justify-center py-5">
+                <Loader2 className="h-5 w-5 animate-spin text-primary" />
+              </div>
+            )}
+            {!paletteLoading && paletteAssets.length === 0 && (
+              <p className="col-span-2 rounded-md border border-dashed border-border/60 p-3 text-center text-[11px] text-muted-foreground">
+                Nenhuma imagem pronta no Nexus Assets.
+              </p>
+            )}
+            {paletteAssets.slice(0, 12).map((asset) => (
+              <button
+                key={asset.id}
+                type="button"
+                draggable={editable}
+                disabled={!editable}
+                title={`Arrastar ${asset.displayName}`}
+                onDragStart={(event) =>
+                  beginPaletteDrag(
+                    event,
+                    { kind: "asset", id: asset.id, entityType: assetDropType },
+                    asset.displayName,
+                  )
+                }
+                className="overflow-hidden rounded-md border border-border/60 bg-secondary/15 text-left disabled:opacity-50"
+              >
+                <div className="flex aspect-video items-center justify-center bg-black/30">
+                  {asset.previewUrl ? (
+                    <img
+                      src={asset.previewUrl}
+                      alt=""
+                      className="h-full w-full object-cover"
+                    />
+                  ) : (
+                    <Image className="h-5 w-5 text-muted-foreground" />
+                  )}
+                </div>
+                <span className="block truncate px-2 py-1.5 text-[10px]">
+                  {asset.displayName}
+                </span>
+              </button>
+            ))}
+          </div>
+
+          <div className="mt-4 flex items-center gap-2">
+            <BookOpen className="h-4 w-4 text-primary" />
+            <p className="text-[10px] uppercase tracking-wider text-muted-foreground">
+              Biblioteca de O Nexus
+            </p>
+          </div>
+          <div className="mt-2 max-h-40 space-y-1 overflow-y-auto pr-1">
+            {linkTargets.knowledge.length === 0 && (
+              <p className="rounded-md border border-dashed border-border/60 p-3 text-center text-[11px] text-muted-foreground">
+                Nenhuma Página do Nexus disponível.
+              </p>
+            )}
+            {linkTargets.knowledge.slice(0, 12).map((node) => (
+              <button
+                key={node.id}
+                type="button"
+                draggable={editable}
+                disabled={!editable}
+                onDragStart={(event) =>
+                  beginPaletteDrag(
+                    event,
+                    { kind: "knowledge", id: node.id },
+                    node.title,
+                  )
+                }
+                className="flex w-full items-center gap-2 rounded-md border border-border/50 bg-secondary/15 px-2 py-2 text-left disabled:opacity-50"
+              >
+                <BookOpen className="h-3.5 w-3.5 shrink-0 text-primary" />
+                <span className="min-w-0 flex-1 truncate text-xs">
+                  {node.title}
+                </span>
+                <span className="text-[9px] uppercase text-muted-foreground">
+                  {node.nodeType}
+                </span>
+              </button>
+            ))}
+          </div>
+
+          <div className="mt-6 flex items-center gap-2">
             <Layers3 className="h-4 w-4 text-primary" />
             <p className="tadeon-eyebrow">Camadas</p>
           </div>
