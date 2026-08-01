@@ -610,7 +610,7 @@ export function TabletopWorkspace() {
     if (!payload || !editable) return;
     event.preventDefault();
 
-    let seed: TabletopEntitySeed | null = null;
+    let seed: TabletopEntitySeed;
     if (payload.kind === "asset") {
       const asset = paletteAssets.find((item) => item.id === payload.id);
       if (!asset) return;
