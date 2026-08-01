@@ -1,6 +1,7 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
 import type { Json } from "@/integrations/supabase/types";
+import { assetService, type NexusAsset } from "@/lib/assets/asset-service";
 import type {
   GridMode,
   TabletopEntity,
@@ -144,6 +145,15 @@ export interface TabletopEntityLinkTargets {
   knowledge: TabletopKnowledgeTarget[];
 }
 
+export interface TabletopAssetTarget {
+  id: string;
+  displayName: string;
+  mimeType: string;
+  width: number;
+  height: number;
+  previewUrl?: string;
+}
+
 export interface TabletopSceneSnapshotSummary {
   id: string;
   sceneId: string;
@@ -184,6 +194,20 @@ const ENTITY_COLORS: Record<string, number> = {
 function numeric(value: number | string) {
   const parsed = Number(value);
   return Number.isFinite(parsed) ? parsed : 0;
+}
+
+export function fitTabletopAssetSize(
+  width: number | null,
+  height: number | null,
+  maxSize = 256,
+) {
+  const sourceWidth = width && width > 0 ? width : 128;
+  const sourceHeight = height && height > 0 ? height : 96;
+  const scale = Math.min(1, maxSize / Math.max(sourceWidth, sourceHeight));
+  return {
+    width: Math.max(32, Math.round(sourceWidth * scale)),
+    height: Math.max(32, Math.round(sourceHeight * scale)),
+  };
 }
 
 function requireName(value: string, max = 160) {
@@ -418,6 +442,38 @@ export class TabletopPersistenceService {
     };
   }
 
+  async listPaletteAssets(
+    workspaceId: string,
+    campaignId: string,
+  ): Promise<TabletopAssetTarget[]> {
+    const { data, error } = await this.database
+      .from("assets")
+      .select("*")
+      .eq("workspace_id", workspaceId)
+      .eq("status", "ready")
+      .is("deleted_at", null)
+      .like("mime_type", "image/%")
+      .or(`campaign_id.is.null,campaign_id.eq.${campaignId}`)
+      .order("created_at", { ascending: false })
+      .limit(48);
+    if (error) throw serviceError(error);
+    return Promise.all(
+      ((data ?? []) as NexusAsset[]).map(async (asset) => {
+        const size = fitTabletopAssetSize(asset.width, asset.height);
+        const previewUrl = await assetService
+          .createTemporaryAccess(asset, 300)
+          .catch(() => undefined);
+        return {
+          id: asset.id,
+          displayName: asset.display_name,
+          mimeType: asset.mime_type,
+          ...size,
+          previewUrl,
+        };
+      }),
+    );
+  }
+
   async listScenes(campaignId: string): Promise<TabletopSceneSummary[]> {
     const { data, error } = await this.database
       .from("tabletop_scenes")
@@ -459,11 +515,51 @@ export class TabletopPersistenceService {
     if (error || layersResult.error || entitiesResult.error)
       throw serviceError(error ?? layersResult.error ?? entitiesResult.error);
     if (!scene) throw new TabletopServiceError("TABLETOP_NOT_FOUND");
-    return mapTabletopScene(
+    const mapped = mapTabletopScene(
       scene as SceneRow,
       (layersResult.data ?? []) as LayerRow[],
       (entitiesResult.data ?? []) as EntityRow[],
     );
+    return this.withTemporaryAssetUrls(mapped);
+  }
+
+  private async withTemporaryAssetUrls(scene: PersistedTabletopScene) {
+    const assetIds = [
+      ...new Set(
+        scene.entities
+          .map((entity) => entity.assetId)
+          .filter((id): id is string => Boolean(id)),
+      ),
+    ];
+    if (assetIds.length === 0) return scene;
+
+    const { data, error } = await this.database
+      .from("assets")
+      .select("*")
+      .in("id", assetIds)
+      .eq("status", "ready")
+      .is("deleted_at", null);
+    if (error) throw serviceError(error);
+
+    const urls = new Map(
+      (
+        await Promise.all(
+          ((data ?? []) as NexusAsset[]).map(async (asset) => {
+            const url = await assetService
+              .createTemporaryAccess(asset, 300)
+              .catch(() => undefined);
+            return url ? ([asset.id, url] as const) : null;
+          }),
+        )
+      ).filter((entry): entry is readonly [string, string] => entry !== null),
+    );
+    return {
+      ...scene,
+      entities: scene.entities.map((entity) => ({
+        ...entity,
+        assetUrl: entity.assetId ? urls.get(entity.assetId) : undefined,
+      })),
+    };
   }
 
   async createScene(campaignId: string, name: string) {
