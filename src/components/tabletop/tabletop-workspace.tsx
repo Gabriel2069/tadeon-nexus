@@ -12,6 +12,7 @@ import {
   Box,
   Bug,
   Camera,
+  CheckCircle2,
   ChevronDown,
   ChevronUp,
   Clipboard,
@@ -29,11 +30,13 @@ import {
   LockOpen,
   Maximize2,
   MousePointer2,
+  PanelRightOpen,
   Plus,
   Redo2,
   RefreshCw,
   RotateCw,
   Save,
+  SlidersHorizontal,
   Trash2,
   Undo2,
   UserRound,
@@ -128,6 +131,14 @@ function sceneFingerprint(scene: TabletopSnapshot["scene"]) {
   return JSON.stringify(scene);
 }
 
+function clampContextMenu(position: Point) {
+  if (typeof window === "undefined") return position;
+  return {
+    x: Math.max(8, Math.min(position.x, window.innerWidth - 184)),
+    y: Math.max(8, Math.min(position.y, window.innerHeight - 248)),
+  };
+}
+
 function errorMessage(error: unknown) {
   if (!(error instanceof TabletopServiceError))
     return "Não foi possível concluir a operação na Mesa Nexus.";
@@ -169,6 +180,8 @@ export function TabletopWorkspace() {
   );
   const [contextMenu, setContextMenu] = useState<ContextMenuState | null>(null);
   const [diagnostics, setDiagnostics] = useState(false);
+  const [mobileToolsOpen, setMobileToolsOpen] = useState(false);
+  const [mobilePanelOpen, setMobilePanelOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [dirty, setDirty] = useState(false);
@@ -262,14 +275,14 @@ export function TabletopWorkspace() {
         setDirty(
           Boolean(
             stored &&
-              stored.id === next.scene.id &&
-              sceneFingerprint(stored) !== sceneFingerprint(next.scene),
+            stored.id === next.scene.id &&
+            sceneFingerprint(stored) !== sceneFingerprint(next.scene),
           ),
         );
       },
       onAssetError: (message) => toast.error(message),
       onContextMenu: (position, entityId) =>
-        setContextMenu({ ...position, entityId }),
+        setContextMenu({ ...clampContextMenu(position), entityId }),
     });
     engineRef.current = engine;
     void engine
@@ -603,18 +616,13 @@ export function TabletopWorkspace() {
     event.dataTransfer.setData("text/plain", label);
   };
 
-  const dropPaletteItem = (event: DragEvent<HTMLElement>) => {
-    const payload = parsePaletteDragPayload(
-      event.dataTransfer.getData(TABLETOP_PALETTE_MIME),
-    );
-    if (!payload || !editable) return;
-    event.preventDefault();
-
-    let seed: TabletopEntitySeed;
+  const paletteSeed = (
+    payload: PaletteDragPayload,
+  ): TabletopEntitySeed | null => {
     if (payload.kind === "asset") {
       const asset = paletteAssets.find((item) => item.id === payload.id);
-      if (!asset) return;
-      seed = {
+      if (!asset) return null;
+      return {
         type: payload.entityType,
         label: asset.displayName,
         width: payload.entityType === "token" ? 64 : asset.width,
@@ -623,16 +631,34 @@ export function TabletopWorkspace() {
         assetUrl: asset.previewUrl,
         properties: { source: "nexus_assets", mime_type: asset.mimeType },
       };
-    } else {
-      const node = linkTargets.knowledge.find((item) => item.id === payload.id);
-      if (!node) return;
-      seed = {
-        type: knowledgeEntityType(node.nodeType),
-        label: node.title,
-        linkedKnowledgeNodeId: node.id,
-        properties: { source: "nexus_library", node_type: node.nodeType },
-      };
     }
+
+    const node = linkTargets.knowledge.find((item) => item.id === payload.id);
+    if (!node) return null;
+    return {
+      type: knowledgeEntityType(node.nodeType),
+      label: node.title,
+      linkedKnowledgeNodeId: node.id,
+      properties: { source: "nexus_library", node_type: node.nodeType },
+    };
+  };
+
+  const insertPaletteItem = (payload: PaletteDragPayload) => {
+    if (!editable) return;
+    const seed = paletteSeed(payload);
+    if (!seed) return;
+    engineRef.current?.addEntityToViewport(seed);
+  };
+
+  const dropPaletteItem = (event: DragEvent<HTMLElement>) => {
+    const payload = parsePaletteDragPayload(
+      event.dataTransfer.getData(TABLETOP_PALETTE_MIME),
+    );
+    if (!payload || !editable) return;
+    event.preventDefault();
+
+    const seed = paletteSeed(payload);
+    if (!seed) return;
 
     const engine = engineRef.current;
     engine?.addEntityAt(
@@ -644,210 +670,246 @@ export function TabletopWorkspace() {
   const closeContext = () => setContextMenu(null);
 
   return (
-    <div className="flex min-h-[calc(100vh-4rem)] flex-col bg-[#080a0f] text-foreground">
-      <header className="flex flex-wrap items-center gap-2 border-b border-border/70 bg-card/95 px-3 py-2 shadow-lg">
-        <div className="mr-2">
-          <p className="tadeon-eyebrow">Editor persistente</p>
-          <h1 className="font-cinzel text-lg font-semibold">Mesa Nexus</h1>
+    <div className="flex min-h-[calc(100dvh-4rem)] flex-col bg-[#080a0f] text-foreground">
+      <header className="relative z-10 border-b border-border/70 bg-card/95 px-3 py-3 shadow-lg backdrop-blur-xl">
+        <div className="flex flex-wrap items-center gap-2">
+          <div className="mr-1 min-w-32">
+            <p className="tadeon-eyebrow">Editor persistente</p>
+            <h1 className="font-cinzel text-lg font-semibold">Mesa Nexus</h1>
+          </div>
+          <div className="grid min-w-0 flex-1 grid-cols-1 gap-2 min-[480px]:grid-cols-2 sm:max-w-[28rem]">
+            <select
+              aria-label="Campanha da Mesa Nexus"
+              value={campaignId}
+              onChange={(event) => requestCampaignChange(event.target.value)}
+              className="h-10 min-w-0 rounded-md border border-input bg-background px-2 text-xs sm:h-9"
+            >
+              {campaigns.length === 0 && (
+                <option value="">Sem campanhas</option>
+              )}
+              {campaigns.map((campaign) => (
+                <option key={campaign.id} value={campaign.id}>
+                  {campaign.name}
+                </option>
+              ))}
+            </select>
+            <select
+              aria-label="Cena da Mesa Nexus"
+              value={persistedScene?.id ?? ""}
+              onChange={(event) => requestSceneChange(event.target.value)}
+              disabled={!campaignId || scenes.length === 0}
+              className="h-10 min-w-0 rounded-md border border-input bg-background px-2 text-xs sm:h-9"
+            >
+              {scenes.length === 0 && <option value="">Nenhuma cena</option>}
+              {scenes.map((scene) => (
+                <option key={scene.id} value={scene.id}>
+                  {scene.status === "archived" ? "Arquivada · " : ""}
+                  {scene.name}
+                </option>
+              ))}
+            </select>
+          </div>
+          <Button
+            size="sm"
+            variant={dirty ? "default" : "outline"}
+            className="min-w-24 gap-2"
+            disabled={!editable || !dirty || saving || conflict}
+            onClick={() => void saveCurrent()}
+          >
+            {saving ? (
+              <Loader2 className="h-4 w-4 animate-spin" />
+            ) : dirty ? (
+              <Save className="h-4 w-4" />
+            ) : (
+              <CheckCircle2 className="h-4 w-4 text-emerald-400" />
+            )}
+            {saving ? "Salvando" : dirty ? "Salvar" : "Salvo"}
+          </Button>
+          <Button
+            type="button"
+            size="sm"
+            variant="outline"
+            className="gap-2 sm:hidden"
+            aria-expanded={mobileToolsOpen}
+            onClick={() => setMobileToolsOpen((value) => !value)}
+          >
+            <SlidersHorizontal className="h-4 w-4" />
+            Ferramentas
+          </Button>
+          <Button
+            type="button"
+            size="icon"
+            variant="outline"
+            className="lg:hidden"
+            aria-label={mobilePanelOpen ? "Fechar painel" : "Abrir painel"}
+            aria-expanded={mobilePanelOpen}
+            onClick={() => setMobilePanelOpen((value) => !value)}
+          >
+            <PanelRightOpen className="h-4 w-4" />
+          </Button>
         </div>
-        <select
-          aria-label="Campanha da Mesa Nexus"
-          value={campaignId}
-          onChange={(event) => requestCampaignChange(event.target.value)}
-          className="h-9 max-w-48 rounded-md border border-input bg-background px-2 text-xs"
-        >
-          {campaigns.length === 0 && <option value="">Sem campanhas</option>}
-          {campaigns.map((campaign) => (
-            <option key={campaign.id} value={campaign.id}>
-              {campaign.name}
-            </option>
-          ))}
-        </select>
-        <select
-          aria-label="Cena da Mesa Nexus"
-          value={persistedScene?.id ?? ""}
-          onChange={(event) => requestSceneChange(event.target.value)}
-          disabled={!campaignId || scenes.length === 0}
-          className="h-9 max-w-56 rounded-md border border-input bg-background px-2 text-xs"
-        >
-          {scenes.length === 0 && <option value="">Nenhuma cena</option>}
-          {scenes.map((scene) => (
-            <option key={scene.id} value={scene.id}>
-              {scene.status === "archived" ? "Arquivada · " : ""}
-              {scene.name}
-            </option>
-          ))}
-        </select>
-        <ToolbarButton
-          label="Mover cena para cima"
-          disabled={
-            !persistedScene || saving || dirty || currentSceneIndex <= 0
-          }
-          onClick={() => void moveCurrentScene(-1)}
-        >
-          <ChevronUp className="h-4 w-4" />
-        </ToolbarButton>
-        <ToolbarButton
-          label="Mover cena para baixo"
-          disabled={
-            !persistedScene ||
-            saving ||
-            dirty ||
-            currentSceneIndex < 0 ||
-            currentSceneIndex >= scenes.length - 1
-          }
-          onClick={() => void moveCurrentScene(1)}
-        >
-          <ChevronDown className="h-4 w-4" />
-        </ToolbarButton>
-        <ToolbarButton
-          label="Nova cena"
-          disabled={!campaignId || saving}
-          onClick={() => void createScene()}
-        >
-          <Plus className="h-4 w-4" />
-        </ToolbarButton>
-        <ToolbarButton
-          label="Duplicar cena"
-          disabled={!persistedScene || saving || dirty}
-          onClick={() => void duplicateScene()}
-        >
-          <Copy className="h-4 w-4" />
-        </ToolbarButton>
-        <ToolbarButton
-          label="Arquivar cena"
-          disabled={!editable || saving}
-          onClick={() => void archiveScene()}
-        >
-          <Archive className="h-4 w-4" />
-        </ToolbarButton>
-        <ToolbarButton
-          label={conflict ? "Recarregar após conflito" : "Recarregar cena"}
-          disabled={!persistedScene || saving}
-          onClick={() => persistedScene && void loadScene(persistedScene.id)}
-        >
-          <RefreshCw
-            className={`h-4 w-4 ${conflict ? "text-destructive" : ""}`}
-          />
-        </ToolbarButton>
-        <Button
-          size="sm"
-          className="gap-2"
-          disabled={!editable || (!dirty && !conflict) || saving || conflict}
-          onClick={() => void saveCurrent()}
-        >
-          {saving ? (
-            <Loader2 className="h-4 w-4 animate-spin" />
-          ) : (
-            <Save className="h-4 w-4" />
-          )}
-          {dirty ? "Salvar" : "Salvo"}
-        </Button>
 
-        <span className="mx-1 h-7 w-px bg-border" />
-        <ToolbarButton
-          label="Adicionar token"
-          disabled={!editable || saving}
-          onClick={() => engineRef.current?.addEntity("token")}
+        <div
+          className={`${mobileToolsOpen ? "flex" : "hidden"} mt-3 flex-wrap items-center gap-2 border-t border-border/50 pt-3 sm:flex`}
         >
-          <UserRound className="h-4 w-4" />
-        </ToolbarButton>
-        <ToolbarButton
-          label="Adicionar objeto"
-          disabled={!editable || saving}
-          onClick={() => engineRef.current?.addEntity("object")}
-        >
-          <Box className="h-4 w-4" />
-        </ToolbarButton>
-        <ToolbarButton
-          label="Copiar seleção"
-          disabled={!editable || selected.length === 0}
-          onClick={() => engineRef.current?.copySelected()}
-        >
-          <Clipboard className="h-4 w-4" />
-        </ToolbarButton>
-        <ToolbarButton
-          label="Colar"
-          disabled={!editable}
-          onClick={() => engineRef.current?.pasteClipboard()}
-        >
-          <ClipboardPaste className="h-4 w-4" />
-        </ToolbarButton>
-        <ToolbarButton
-          label="Desfazer"
-          disabled={!editable || !snapshot.canUndo}
-          onClick={() => engineRef.current?.undo()}
-        >
-          <Undo2 className="h-4 w-4" />
-        </ToolbarButton>
-        <ToolbarButton
-          label="Refazer"
-          disabled={!editable || !snapshot.canRedo}
-          onClick={() => engineRef.current?.redo()}
-        >
-          <Redo2 className="h-4 w-4" />
-        </ToolbarButton>
-        <ToolbarButton
-          label="Centralizar"
-          onClick={() => engineRef.current?.center()}
-        >
-          <Focus className="h-4 w-4" />
-        </ToolbarButton>
-        <ToolbarButton
-          label="Ajustar à tela"
-          onClick={() => engineRef.current?.fitToScreen()}
-        >
-          <Maximize2 className="h-4 w-4" />
-        </ToolbarButton>
-
-        <div className="ml-auto flex flex-wrap items-center gap-2">
-          <Grid2X2 className="h-4 w-4 text-muted-foreground" />
-          <select
-            aria-label="Modo de grade"
-            value={snapshot.scene.gridMode}
-            disabled={!editable}
-            onChange={(event) =>
-              engineRef.current?.setGrid(
-                event.target.value === "none" ? "none" : "square",
-              )
-            }
-            className="h-9 rounded-md border border-input bg-background px-2 text-xs"
-          >
-            <option value="square">Grade quadrada</option>
-            <option value="none">Sem grade</option>
-          </select>
-          <Input
-            aria-label="Tamanho da grade"
-            type="number"
-            min={8}
-            disabled={!editable}
-            value={snapshot.scene.gridSize}
-            onChange={(event) =>
-              engineRef.current?.setGrid(
-                snapshot.scene.gridMode,
-                Number(event.target.value),
-              )
-            }
-            className="h-9 w-20"
-          />
-          <Label
-            htmlFor="tabletop-snap"
-            className="text-xs text-muted-foreground"
-          >
-            Snap
-          </Label>
-          <Switch
-            id="tabletop-snap"
-            disabled={!editable}
-            checked={snapshot.scene.snap}
-            onCheckedChange={(checked) => engineRef.current?.setSnap(checked)}
-          />
           <ToolbarButton
-            label="Diagnóstico"
-            onClick={() => setDiagnostics((value) => !value)}
+            label="Mover cena para cima"
+            disabled={
+              !persistedScene || saving || dirty || currentSceneIndex <= 0
+            }
+            onClick={() => void moveCurrentScene(-1)}
           >
-            <Bug className="h-4 w-4" />
+            <ChevronUp className="h-4 w-4" />
           </ToolbarButton>
+          <ToolbarButton
+            label="Mover cena para baixo"
+            disabled={
+              !persistedScene ||
+              saving ||
+              dirty ||
+              currentSceneIndex < 0 ||
+              currentSceneIndex >= scenes.length - 1
+            }
+            onClick={() => void moveCurrentScene(1)}
+          >
+            <ChevronDown className="h-4 w-4" />
+          </ToolbarButton>
+          <ToolbarButton
+            label="Nova cena"
+            disabled={!campaignId || saving}
+            onClick={() => void createScene()}
+          >
+            <Plus className="h-4 w-4" />
+          </ToolbarButton>
+          <ToolbarButton
+            label="Duplicar cena"
+            disabled={!persistedScene || saving || dirty}
+            onClick={() => void duplicateScene()}
+          >
+            <Copy className="h-4 w-4" />
+          </ToolbarButton>
+          <ToolbarButton
+            label="Arquivar cena"
+            disabled={!editable || saving}
+            onClick={() => void archiveScene()}
+          >
+            <Archive className="h-4 w-4" />
+          </ToolbarButton>
+          <ToolbarButton
+            label={conflict ? "Recarregar após conflito" : "Recarregar cena"}
+            disabled={!persistedScene || saving}
+            onClick={() => persistedScene && void loadScene(persistedScene.id)}
+          >
+            <RefreshCw
+              className={`h-4 w-4 ${conflict ? "text-destructive" : ""}`}
+            />
+          </ToolbarButton>
+
+          <span className="mx-1 hidden h-7 w-px bg-border sm:block" />
+          <ToolbarButton
+            label="Adicionar token"
+            disabled={!editable || saving}
+            onClick={() => engineRef.current?.addEntity("token")}
+          >
+            <UserRound className="h-4 w-4" />
+          </ToolbarButton>
+          <ToolbarButton
+            label="Adicionar objeto"
+            disabled={!editable || saving}
+            onClick={() => engineRef.current?.addEntity("object")}
+          >
+            <Box className="h-4 w-4" />
+          </ToolbarButton>
+          <ToolbarButton
+            label="Copiar seleção"
+            disabled={!editable || selected.length === 0}
+            onClick={() => engineRef.current?.copySelected()}
+          >
+            <Clipboard className="h-4 w-4" />
+          </ToolbarButton>
+          <ToolbarButton
+            label="Colar"
+            disabled={!editable}
+            onClick={() => engineRef.current?.pasteClipboard()}
+          >
+            <ClipboardPaste className="h-4 w-4" />
+          </ToolbarButton>
+          <ToolbarButton
+            label="Desfazer"
+            disabled={!editable || !snapshot.canUndo}
+            onClick={() => engineRef.current?.undo()}
+          >
+            <Undo2 className="h-4 w-4" />
+          </ToolbarButton>
+          <ToolbarButton
+            label="Refazer"
+            disabled={!editable || !snapshot.canRedo}
+            onClick={() => engineRef.current?.redo()}
+          >
+            <Redo2 className="h-4 w-4" />
+          </ToolbarButton>
+          <ToolbarButton
+            label="Centralizar"
+            onClick={() => engineRef.current?.center()}
+          >
+            <Focus className="h-4 w-4" />
+          </ToolbarButton>
+          <ToolbarButton
+            label="Ajustar à tela"
+            onClick={() => engineRef.current?.fitToScreen()}
+          >
+            <Maximize2 className="h-4 w-4" />
+          </ToolbarButton>
+
+          <div className="flex min-w-0 flex-1 flex-wrap items-center justify-end gap-2">
+            <Grid2X2 className="h-4 w-4 text-muted-foreground" />
+            <select
+              aria-label="Modo de grade"
+              value={snapshot.scene.gridMode}
+              disabled={!editable}
+              onChange={(event) =>
+                engineRef.current?.setGrid(
+                  event.target.value === "none" ? "none" : "square",
+                )
+              }
+              className="h-10 min-w-0 flex-1 rounded-md border border-input bg-background px-2 text-xs min-[480px]:max-w-36 sm:h-9 sm:flex-none"
+            >
+              <option value="square">Grade quadrada</option>
+              <option value="none">Sem grade</option>
+            </select>
+            <Input
+              aria-label="Tamanho da grade"
+              type="number"
+              min={8}
+              disabled={!editable}
+              value={snapshot.scene.gridSize}
+              onChange={(event) =>
+                engineRef.current?.setGrid(
+                  snapshot.scene.gridMode,
+                  Number(event.target.value),
+                )
+              }
+              className="h-10 w-20 sm:h-9"
+            />
+            <Label
+              htmlFor="tabletop-snap"
+              className="text-xs text-muted-foreground"
+            >
+              Snap
+            </Label>
+            <Switch
+              id="tabletop-snap"
+              disabled={!editable}
+              checked={snapshot.scene.snap}
+              onCheckedChange={(checked) => engineRef.current?.setSnap(checked)}
+            />
+            <ToolbarButton
+              label="Diagnóstico"
+              onClick={() => setDiagnostics((value) => !value)}
+            >
+              <Bug className="h-4 w-4" />
+            </ToolbarButton>
+          </div>
         </div>
       </header>
 
@@ -867,9 +929,9 @@ export function TabletopWorkspace() {
         </div>
       )}
 
-      <div className="grid min-h-0 flex-1 grid-cols-1 lg:grid-cols-[minmax(0,1fr)_19rem]">
+      <div className="grid min-h-0 flex-1 grid-cols-1 lg:grid-cols-[minmax(0,1fr)_20rem]">
         <section
-          className="relative min-h-[65vh] overflow-hidden"
+          className="relative min-h-[58svh] overflow-hidden sm:min-h-[65vh] lg:min-h-0"
           onClick={closeContext}
           onDragOver={(event) => {
             if (
@@ -931,19 +993,32 @@ export function TabletopWorkspace() {
               </div>
             )}
           {diagnostics && (
-            <pre className="pointer-events-none absolute bottom-3 left-3 rounded-lg border border-border bg-black/80 p-3 text-[10px] text-emerald-300">
+            <pre className="pointer-events-none absolute bottom-3 left-3 max-w-[calc(100%-1.5rem)] overflow-hidden rounded-lg border border-border bg-black/80 p-3 text-[10px] text-emerald-300">
               {JSON.stringify(engineRef.current?.diagnostics() ?? {}, null, 2)}
             </pre>
           )}
         </section>
 
-        <aside className="overflow-y-auto border-l border-border/70 bg-card/95 p-4">
-          <div className="flex items-center gap-2">
-            <Image className="h-4 w-4 text-primary" />
-            <p className="tadeon-eyebrow">Paleta</p>
+        <aside
+          className={`${mobilePanelOpen ? "block" : "hidden"} max-h-[72svh] overflow-y-auto border-t border-border/70 bg-card/95 p-4 lg:block lg:max-h-none lg:border-l lg:border-t-0`}
+        >
+          <div className="flex items-center justify-between gap-2">
+            <div className="flex items-center gap-2">
+              <Image className="h-4 w-4 text-primary" />
+              <p className="tadeon-eyebrow">Paleta e controles</p>
+            </div>
+            <Button
+              type="button"
+              size="sm"
+              variant="ghost"
+              className="lg:hidden"
+              onClick={() => setMobilePanelOpen(false)}
+            >
+              Fechar
+            </Button>
           </div>
           <p className="mt-1 text-[11px] text-muted-foreground">
-            Arraste um asset ou item da biblioteca para o canvas.
+            Arraste no computador ou toque para inserir no centro do mapa.
           </p>
           <div className="mt-3">
             <Label htmlFor="asset-drop-type" className="text-[10px] uppercase">
@@ -981,7 +1056,14 @@ export function TabletopWorkspace() {
                 type="button"
                 draggable={editable}
                 disabled={!editable}
-                title={`Arrastar ${asset.displayName}`}
+                title={`Adicionar ${asset.displayName}`}
+                onClick={() =>
+                  insertPaletteItem({
+                    kind: "asset",
+                    id: asset.id,
+                    entityType: assetDropType,
+                  })
+                }
                 onDragStart={(event) =>
                   beginPaletteDrag(
                     event,
@@ -1027,6 +1109,9 @@ export function TabletopWorkspace() {
                 type="button"
                 draggable={editable}
                 disabled={!editable}
+                onClick={() =>
+                  insertPaletteItem({ kind: "knowledge", id: node.id })
+                }
                 onDragStart={(event) =>
                   beginPaletteDrag(
                     event,
@@ -1476,11 +1561,11 @@ export function TabletopWorkspace() {
       {contextMenu && editable && (
         <div
           role="menu"
-          className="fixed z-50 w-44 rounded-lg border border-border bg-popover p-1 shadow-2xl"
+          className="fixed z-50 max-h-[calc(100dvh-1rem)] w-44 overflow-y-auto rounded-lg border border-border bg-popover p-1 shadow-2xl"
           style={{ left: contextMenu.x, top: contextMenu.y }}
         >
           <button
-            className="w-full rounded px-3 py-2 text-left text-sm hover:bg-secondary"
+            className="min-h-11 w-full rounded px-3 py-2 text-left text-sm hover:bg-secondary"
             onClick={() => {
               engineRef.current?.duplicateSelected();
               closeContext();
@@ -1489,7 +1574,7 @@ export function TabletopWorkspace() {
             Duplicar
           </button>
           <button
-            className="w-full rounded px-3 py-2 text-left text-sm hover:bg-secondary"
+            className="min-h-11 w-full rounded px-3 py-2 text-left text-sm hover:bg-secondary"
             onClick={() => {
               engineRef.current?.copySelected();
               closeContext();
@@ -1498,7 +1583,7 @@ export function TabletopWorkspace() {
             Copiar
           </button>
           <button
-            className="w-full rounded px-3 py-2 text-left text-sm hover:bg-secondary"
+            className="min-h-11 w-full rounded px-3 py-2 text-left text-sm hover:bg-secondary"
             onClick={() => {
               engineRef.current?.pasteClipboard();
               closeContext();
@@ -1507,7 +1592,7 @@ export function TabletopWorkspace() {
             Colar
           </button>
           <button
-            className="w-full rounded px-3 py-2 text-left text-sm hover:bg-secondary"
+            className="min-h-11 w-full rounded px-3 py-2 text-left text-sm hover:bg-secondary"
             onClick={() => {
               engineRef.current?.toggleSelectedLock();
               closeContext();
@@ -1516,7 +1601,7 @@ export function TabletopWorkspace() {
             Bloquear / desbloquear
           </button>
           <button
-            className="w-full rounded px-3 py-2 text-left text-sm text-destructive hover:bg-destructive/10"
+            className="min-h-11 w-full rounded px-3 py-2 text-left text-sm text-destructive hover:bg-destructive/10"
             onClick={() => {
               engineRef.current?.deleteSelected();
               closeContext();
@@ -1545,6 +1630,7 @@ function ToolbarButton({
     <Button
       variant="outline"
       size="icon"
+      className="h-10 w-10 sm:h-9 sm:w-9"
       title={label}
       aria-label={label}
       disabled={disabled}
