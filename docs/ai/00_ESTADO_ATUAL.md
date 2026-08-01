@@ -1,6 +1,6 @@
 # Estado atual do Tadeon Nexus
 
-Atualizado em 29 de julho de 2026 pelo Work de continuidade independente.
+Atualizado em 1º de agosto de 2026 pelo Work de continuidade independente.
 
 ## Fonte de verdade
 
@@ -8,7 +8,7 @@ Atualizado em 29 de julho de 2026 pelo Work de continuidade independente.
 - O Livro de Regras de Tessitura do Vazio governa mecânicas e terminologia.
 - O Fio-Mestre governa identidade visual.
 - Checkpoint de entrada: `1c5b66cf83bdd9d4b070019510080eb2d63dc74b`.
-- Checkpoints integrados: PRs #25–#42 em `main`; o último lote funcional está em `e374d36`.
+- Checkpoints integrados: PRs #25–#47 em `main`; o último lote funcional está em `83c401cb`.
 
 ## Estado confirmado
 
@@ -62,10 +62,22 @@ pan/zoom, fit, seleção, busca, foco, filtros e refoco progressivo. Não há si
 conteúdo Markdown no payload. O override individual `nexus_graph_enabled=true` está ativo somente
 para o owner; a flag global permanece desligada.
 
+As bibliotecas estruturadas e 14 templates iniciais foram integrados no PR #44 e aplicados como
+`20260730004019_knowledge_libraries_and_templates.sql`. Vínculos com campanha e ficha são
+reversíveis e não copiam nem reescrevem a página canônica. Os três índices de FK posteriores estão
+registrados como `20260801040642_cover_knowledge_library_foreign_keys.sql`.
+
+A portabilidade de O Nexus foi integrada no PR #47 e aplicada como
+`20260801044451_knowledge_vault_portability.sql`: ZIP versionado, Markdown, YAML, pastas, aliases,
+tags, wikilinks, headings, anexos, preview, mapeamento de tipos, dry-run, conflitos não destrutivos,
+relações em manifesto e exportação reimportável. A escrita ocorre em uma RPC transacional
+`SECURITY INVOKER`; uploads de anexos são purgados se o commit do banco falhar.
+
 ### Mesa Nexus
 
-Somente contratos, permissões e flags existem. A fundação da Mesa não foi iniciada e continua
-bloqueada até concluir os rollouts e a portabilidade.
+Somente contratos, permissões e flags existem. A fundação gráfica da Mesa ainda não foi iniciada.
+A portabilidade técnica que a bloqueava está integrada; o próximo marco autorizado é o Comando 9,
+sem iluminação, Realtime ou persistência de cenas do Comando 10.
 
 ## Segurança
 
@@ -101,6 +113,11 @@ com RLS, relações e pesquisa. Os fixes
 `20260729234705_fix_assets_canary_override.sql` corrigem, respectivamente, ACLs usadas por
 policies, o tipo composto da busca e a resolução do canário no trigger de upload.
 
+As migrations `20260730004019_knowledge_libraries_and_templates.sql`,
+`20260801040642_cover_knowledge_library_foreign_keys.sql` e
+`20260801044451_knowledge_vault_portability.sql` acrescentam bibliotecas, templates, índices e
+portabilidade transacional sem alterar dados existentes.
+
 Validação posterior:
 
 - foreign keys sem índice: zero;
@@ -117,8 +134,9 @@ O endpoint canônico `https://tadeon-nexus.gtadeusz.workers.dev` está público 
 aplicação, redirecionando corretamente para `/login`. Os valores dos secrets continuam ocultos por
 design. O fluxo manual permanece restrito à branch `main`.
 
-A Quality nº 97 do conteúdo integrado aprovou `npm ci`, audit, lint, typecheck, testes e build.
-O PR #25 foi mesclado por squash no SHA `0d4cfde11dc9771f40fb900795e724f688e96943`.
+A Quality nº 152 do lote de portabilidade aprovou `npm ci`, audit, lint, typecheck, testes e
+build. O PR #47 foi mesclado por squash no SHA
+`83c401cb52d7f5c0d88ef7d8b7475c5345cbceee`.
 
 O runtime canônico é o Worker Cloudflare. O smoke test público do Worker carregou a aplicação,
 redirecionou corretamente para `/login` e não apresentou erro de console da aplicação. O único
@@ -142,9 +160,15 @@ o workflow agora injeta o SHA aprovado no build e exige que o endpoint público 
 
 ## Importação e exportação
 
-O formato atual cobre somente `character_sheets` e `game_settings`, com merge por `id` e
-cópia local prévia. Workspaces, campanhas, Assets e O Nexus ainda não fazem parte do formato.
-A expansão deve receber nova versão, validação de escopo, dry-run e rollback antes de rollout.
+O formato legado continua cobrindo `character_sheets` e `game_settings`. O Nexus agora possui
+um formato próprio `tadeon-nexus-vault@1`, limitado a 500 páginas, 2.000 relações e 2.000 vínculos
+de anexos por ZIP. Ele preserva Markdown UTF-8, YAML, aliases, tags, caminhos, wikilinks, relações e
+anexos permitidos pelo Nexus Assets.
+
+O dry-run é obrigatório; conflitos preservam a página existente por padrão ou criam uma cópia com
+slug novo. Nenhuma opção sobrescreve ou apaga conteúdo anterior. Testes unitários cobrem roundtrip,
+caracteres especiais, links relativos seguros e rollback de uploads. Testes SQL em rollback
+confirmaram criação, reimportação com `skip` e `copy`, isolamento do jogador e zero resíduos.
 
 ## Flags confirmadas
 
@@ -176,18 +200,18 @@ para o jogador. Os testes deixaram zero páginas, tags, menções e relações r
 O canário de Nexus Assets também passou reserva Supabase para o owner, negação do jogador sem
 override e negação de R2, deixando zero sessões residuais. O upload/download do objeto real, quota
 com arquivo real e a validação visual dos dois módulos em frontend autenticado continuam
-pendentes. O rollback do canário é remover as três linhas de override. Importação/exportação v2
-permanece posterior aos canários. A fundação da Mesa Nexus permanece posterior à portabilidade.
+pendentes. O rollback do canário é remover as três linhas de override. A portabilidade de O Nexus foi integrada e validada no backend; sua validação visual autenticada
+e o teste com anexo real permanecem no canário. A fundação gráfica da Mesa Nexus pode iniciar no
+Comando 9, mantendo Comando 10, iluminação e Realtime bloqueados.
 
 ## Próximos critérios
 
 1. Confirmar pelo marcador público que o deploy Cloudflare corresponde ao SHA aprovado de `main`.
 2. Concluir o canário autenticado de Nexus Assets com upload/download do objeto real, quota e
    rollback operacional.
-3. Validar visualmente no frontend autenticado os fluxos já aprovados no backend de O Nexus.
-4. Validar visualmente o grafo local no frontend autenticado e, depois, evoluir filtros temáticos;
-   manter o grafo global somente sob demanda.
-5. Criar bibliotecas e templates sobre O Nexus e projetar importação/exportação v2 com escopo,
-   preview, dry-run, conflitos, ZIP reimportável e restauração.
-6. Iniciar a fundação gráfica da Mesa Nexus somente depois de concluir portabilidade e rollouts;
-   iluminação e Realtime continuam fora desse primeiro marco.
+3. Validar visualmente no frontend autenticado bibliotecas, grafo e portabilidade de O Nexus,
+   incluindo um ZIP com conflito e um anexo real.
+4. Iniciar a fundação gráfica da Mesa Nexus conforme o Comando 9: PixiJS, rota protegida, canvas,
+   câmera, grade, seleção, transformações, histórico local e arquitetura modular.
+5. Não iniciar o Comando 10, persistência de cenas, iluminação, fog, Realtime ou R2 até seus
+   próprios critérios de aceite.
