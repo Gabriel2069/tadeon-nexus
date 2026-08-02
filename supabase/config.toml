@@ -3,6 +3,9 @@ project_id = "nkxpstyfrzufsnowjrdi"
 [functions.admin-users]
 verify_jwt = true
 
+[functions.tabletop-view]
+verify_jwt = true
+
 [auth.email.template.confirmation]
 subject = "Confirme sua entrada no Tadeon Nexus"
 content_path = "./templates/confirmation.html"
