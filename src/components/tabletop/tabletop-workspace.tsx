@@ -44,10 +44,16 @@ import {
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { TabletopLiveSession } from "@/components/tabletop/tabletop-live-session";
+import { TabletopVisibilityPanel } from "@/components/tabletop/tabletop-visibility-panel";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { TabletopEngine } from "@/lib/tabletop/tabletop-engine";
+import {
+  createEmptyVisibilityState,
+  tabletopVisibilityService,
+  type TabletopVisibilityState,
+} from "@/lib/tabletop/tabletop-visibility-service";
 import {
   moveTabletopScene,
   tabletopPersistenceService,
@@ -159,14 +165,24 @@ function errorMessage(error: unknown) {
 
 export function TabletopWorkspace({
   realtimeEnabled = false,
+  lightingEnabled = false,
 }: {
   realtimeEnabled?: boolean;
+  lightingEnabled?: boolean;
 }) {
   const hostRef = useRef<HTMLDivElement>(null);
   const engineRef = useRef<TabletopEngine | null>(null);
   const engineReadyRef = useRef(false);
   const persistedSceneRef = useRef<PersistedTabletopScene | null>(null);
+  const visibilityRef = useRef<TabletopVisibilityState>(
+    createEmptyVisibilityState(),
+  );
   const [snapshot, setSnapshot] = useState(EMPTY_SNAPSHOT);
+  const [visibility, setVisibility] = useState<TabletopVisibilityState>(
+    createEmptyVisibilityState,
+  );
+  const [visibilityDirty, setVisibilityDirty] = useState(false);
+  const [visibilityAvailable, setVisibilityAvailable] = useState(true);
   const [campaigns, setCampaigns] = useState<TabletopCampaignSummary[]>([]);
   const [campaignId, setCampaignId] = useState("");
   const [scenes, setScenes] = useState<TabletopSceneSummary[]>([]);
@@ -231,6 +247,36 @@ export function TabletopWorkspace({
     }
   }, []);
 
+  const installVisibility = useCallback(
+    (next: TabletopVisibilityState, sceneVersion?: number) => {
+      visibilityRef.current = next;
+      setVisibility(next);
+      setVisibilityDirty(false);
+      setVisibilityAvailable(true);
+      engineRef.current?.setVisibility(next, lightingEnabled);
+      if (typeof sceneVersion === "number" && persistedSceneRef.current) {
+        const stored = {
+          ...persistedSceneRef.current,
+          globalIllumination: next.globalIllumination,
+          version: sceneVersion,
+        };
+        persistedSceneRef.current = stored;
+        setPersistedScene(stored);
+      }
+    },
+    [lightingEnabled],
+  );
+
+  const previewVisibility = useCallback(
+    (next: TabletopVisibilityState) => {
+      visibilityRef.current = next;
+      setVisibility(next);
+      setVisibilityDirty(true);
+      engineRef.current?.setVisibility(next, lightingEnabled);
+    },
+    [lightingEnabled],
+  );
+
   const clearScene = useCallback(() => {
     persistedSceneRef.current = null;
     setPersistedScene(null);
@@ -238,8 +284,14 @@ export function TabletopWorkspace({
     setSnapshotId("");
     setDirty(false);
     setConflict(false);
+    const emptyVisibility = createEmptyVisibilityState();
+    visibilityRef.current = emptyVisibility;
+    setVisibility(emptyVisibility);
+    setVisibilityDirty(false);
+    setVisibilityAvailable(true);
     if (engineReadyRef.current) {
       engineRef.current?.loadScene(EMPTY_TABLETOP_SCENE);
+      engineRef.current?.setVisibility(emptyVisibility, false);
       engineRef.current?.setReadOnly(true);
     }
   }, []);
@@ -258,6 +310,23 @@ export function TabletopWorkspace({
       try {
         const scene = await tabletopPersistenceService.loadScene(sceneId);
         installScene(scene);
+        if (lightingEnabled) {
+          try {
+            installVisibility(await tabletopVisibilityService.load(scene.id));
+          } catch {
+            const fallback = createEmptyVisibilityState();
+            visibilityRef.current = fallback;
+            setVisibility(fallback);
+            setVisibilityDirty(false);
+            setVisibilityAvailable(false);
+            engineRef.current?.setVisibility(fallback, false);
+            toast.error(
+              "A cena abriu, mas a iluminação não pôde ser carregada com segurança.",
+            );
+          }
+        } else {
+          installVisibility(createEmptyVisibilityState());
+        }
         await loadSnapshots(scene.id);
       } catch (error) {
         toast.error(errorMessage(error));
@@ -266,7 +335,13 @@ export function TabletopWorkspace({
         setLoading(false);
       }
     },
-    [clearScene, installScene, loadSnapshots],
+    [
+      clearScene,
+      installScene,
+      installVisibility,
+      lightingEnabled,
+      loadSnapshots,
+    ],
   );
 
   const refreshScenes = useCallback(async (nextCampaignId: string) => {
@@ -305,6 +380,7 @@ export function TabletopWorkspace({
         const stored = persistedSceneRef.current;
         if (stored) {
           engine.loadScene(stored);
+          engine.setVisibility(visibilityRef.current, lightingEnabled);
           engine.setReadOnly(stored.status === "archived");
           engine.fitToScreen();
         } else {
@@ -318,7 +394,7 @@ export function TabletopWorkspace({
       engineRef.current = null;
       void engine.destroy();
     };
-  }, []);
+  }, [lightingEnabled]);
 
   useEffect(() => {
     let active = true;
@@ -1182,6 +1258,18 @@ export function TabletopWorkspace({
               </button>
             ))}
           </div>
+
+          <TabletopVisibilityPanel
+            enabled={lightingEnabled}
+            editable={editable && visibilityAvailable}
+            sceneId={persistedScene?.id ?? null}
+            sceneWidth={snapshot.scene.width}
+            sceneHeight={snapshot.scene.height}
+            state={visibility}
+            dirty={visibilityDirty}
+            onPreview={previewVisibility}
+            onSaved={installVisibility}
+          />
 
           <div className="mt-6 flex items-center gap-2">
             <Layers3 className="h-4 w-4 text-primary" />
