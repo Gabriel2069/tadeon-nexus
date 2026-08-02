@@ -2,6 +2,7 @@ import { z } from "zod";
 import { supabase } from "@/integrations/supabase/client";
 import type { CampaignRole } from "@/lib/nexus-contracts";
 import type { TabletopScene } from "@/lib/tabletop/types";
+import type { TabletopVisibilityState } from "@/lib/tabletop/tabletop-visibility-service";
 
 const uuidSchema = z.uuid();
 const finiteNumber = z.number().finite();
@@ -53,6 +54,39 @@ const participantEntitySchema = z
   })
   .strict();
 
+const visibilityPointSchema = z
+  .object({ x: finiteNumber, y: finiteNumber })
+  .strict();
+
+const participantVisibilitySchema = z
+  .object({
+    version: z.number().int().positive(),
+    globalIllumination: finiteNumber.min(0).max(1),
+    fogEnabled: z.boolean(),
+    fogOpacity: finiteNumber.min(0).max(1),
+    walls: z.array(z.never()).max(0),
+    lights: z.array(z.object({
+      id: uuidSchema,
+      entityId: z.null(),
+      x: finiteNumber,
+      y: finiteNumber,
+      radius: finiteNumber.min(8).max(100_000),
+      intensity: finiteNumber.min(0).max(1),
+      color: z.string().regex(/^#[0-9a-f]{6}$/i),
+      enabled: z.boolean(),
+      castsShadows: z.boolean(),
+      visibilityPolygon: z.array(visibilityPointSchema).max(2048).optional(),
+    }).strict()).max(256),
+    fogStrokes: z.array(z.object({
+      id: uuidSchema,
+      operation: z.enum(["reveal", "hide"]),
+      points: z.array(visibilityPointSchema).min(1).max(64),
+      radius: finiteNumber.min(8).max(1024),
+      sequenceIndex: z.number().int().min(0).max(100_000),
+    }).strict()).max(512),
+  })
+  .strict();
+
 const participantSceneSchema = z
   .object({
     id: uuidSchema,
@@ -88,6 +122,7 @@ const participantViewSchema = z
       })
       .strict(),
     scene: participantSceneSchema.nullable(),
+    visibility: participantVisibilitySchema.nullable(),
   })
   .strict();
 
@@ -109,6 +144,7 @@ export interface TabletopParticipantView {
     canInteract: boolean;
   };
   scene: TabletopParticipantScene | null;
+  visibility: TabletopVisibilityState | null;
 }
 
 export type TabletopParticipantErrorCode =
