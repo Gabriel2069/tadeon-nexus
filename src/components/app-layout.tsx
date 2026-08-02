@@ -162,18 +162,18 @@ export function AppLayout({ children }: { children: ReactNode }) {
           onClick={() => setMobileOpen(false)}
         />
       )}
+      {tabletopEnabled && (
+        <NavItem
+          to="/tabletop"
+          icon={<MapPinned className="w-4 h-4" />}
+          label="Mesa Nexus"
+          active={path.startsWith("/tabletop")}
+          mini={mini}
+          onClick={() => setMobileOpen(false)}
+        />
+      )}
       {isMestre && (
         <>
-          {tabletopEnabled && (
-            <NavItem
-              to="/tabletop"
-              icon={<MapPinned className="w-4 h-4" />}
-              label="Mesa Nexus"
-              active={path.startsWith("/tabletop")}
-              mini={mini}
-              onClick={() => setMobileOpen(false)}
-            />
-          )}
           <NavItem
             to="/master-panel"
             icon={<Lightbulb className="w-4 h-4" />}
