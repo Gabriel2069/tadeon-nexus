@@ -9,6 +9,7 @@ import {
   TabletopParticipantError,
   tabletopParticipantService,
   type TabletopParticipantView,
+  type TabletopParticipantScene,
 } from "@/lib/tabletop/tabletop-participant-service";
 import {
   tabletopPersistenceService,
@@ -181,7 +182,7 @@ export function TabletopParticipantWorkspace({
               entity.id === event.payload.entityId
                 ? { ...entity, x: event.payload.x, y: event.payload.y }
                 : entity,
-            ),
+            ) as TabletopParticipantScene["entities"],
           },
         };
       });
