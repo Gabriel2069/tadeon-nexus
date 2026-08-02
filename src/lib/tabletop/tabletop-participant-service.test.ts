@@ -17,6 +17,21 @@ function validView() {
       joinLocked: false,
     },
     participant: { role: "player", canInteract: true },
+    visibility: {
+      version: 1,
+      globalIllumination: 0.2,
+      fogEnabled: true,
+      fogOpacity: 0.92,
+      walls: [],
+      lights: [],
+      fogStrokes: [{
+        id: id("6"),
+        operation: "reveal",
+        points: [{ x: 120, y: 160 }],
+        radius: 96,
+        sequenceIndex: 0,
+      }],
+    },
     scene: {
       id: id("3"),
       name: "Ruínas",
@@ -63,6 +78,18 @@ describe("projeção segura da Mesa para participantes", () => {
   it("aceita apenas o contrato público mínimo", () => {
     const parsed = parseTabletopParticipantView(validView());
     expect(parsed.scene?.entities[0].controllable).toBe(true);
+  });
+
+  it("rejeita geometria privada de paredes", () => {
+    const input = validView();
+    input.visibility.walls = [{
+      id: id("7"),
+      x1: 0,
+      y1: 0,
+      x2: 10,
+      y2: 10,
+    }] as never[];
+    expect(() => parseTabletopParticipantView(input)).toThrow(TabletopParticipantError);
   });
 
   it("rejeita camada do mestre", () => {
