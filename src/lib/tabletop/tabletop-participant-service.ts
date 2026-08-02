@@ -145,7 +145,7 @@ export interface TabletopParticipantHandout {
   coverUrl?: string;
 }
 
-export type TabletopParticipantScene = TabletopScene & {
+export type TabletopParticipantScene = Omit<TabletopScene, "entities"> & {
   entities: Array<
     TabletopScene["entities"][number] & {
       controllable: boolean;
