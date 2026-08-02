@@ -117,6 +117,104 @@
 .tadeon-participant-view__hud span { color: var(--muted-foreground); font-size: .7rem; }
 .tadeon-participant-view__hud .tadeon-tabletop-realtime { pointer-events: auto; }
 
+
+.tadeon-participant-view__handouts {
+  position: absolute;
+  z-index: 6;
+  right: .8rem;
+  bottom: .8rem;
+  width: min(23rem, calc(100% - 1.6rem));
+  border: 1px solid rgb(213 168 91 / .24);
+  border-radius: 1rem;
+  color: var(--foreground);
+  background: linear-gradient(145deg, rgb(15 20 29 / .94), rgb(7 10 16 / .96));
+  box-shadow: 0 20px 55px rgb(0 0 0 / .4);
+  backdrop-filter: blur(18px);
+}
+.tadeon-participant-view__handouts summary {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: .6rem;
+  padding: .7rem;
+  cursor: pointer;
+  list-style: none;
+}
+.tadeon-participant-view__handouts summary::-webkit-details-marker { display: none; }
+.tadeon-participant-view__handouts summary > span:first-child {
+  display: grid;
+  width: 2rem;
+  height: 2rem;
+  place-items: center;
+  border: 1px solid rgb(213 168 91 / .26);
+  border-radius: .65rem;
+  color: #d5a85b;
+  background: rgb(213 168 91 / .08);
+}
+.tadeon-participant-view__handouts summary svg { width: 1rem; height: 1rem; }
+.tadeon-participant-view__handouts summary > span:nth-child(2) { display: grid; }
+.tadeon-participant-view__handouts summary strong { font: 600 .72rem Cinzel, serif; }
+.tadeon-participant-view__handouts summary small { color: var(--muted-foreground); font-size: .6rem; }
+.tadeon-participant-view__handout-count {
+  display: grid;
+  min-width: 1.5rem;
+  height: 1.5rem;
+  place-items: center;
+  border-radius: 999px;
+  color: #e6c884;
+  background: rgb(213 168 91 / .13);
+  font-size: .64rem;
+  font-weight: 800;
+}
+.tadeon-participant-view__handout-list {
+  display: grid;
+  max-height: min(42svh, 25rem);
+  gap: .45rem;
+  overflow-y: auto;
+  padding: 0 .7rem .7rem;
+}
+.tadeon-participant-view__handout-list article {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: .6rem;
+  padding: .55rem;
+  border: 1px solid rgb(255 255 255 / .07);
+  border-radius: .72rem;
+  background: rgb(255 255 255 / .025);
+}
+.tadeon-participant-view__handout-list img {
+  width: 2.8rem;
+  height: 2.8rem;
+  border-radius: .55rem;
+  object-fit: cover;
+}
+.tadeon-participant-view__handout-list article > div { display: grid; min-width: 0; gap: .08rem; }
+.tadeon-participant-view__handout-list article small { color: #d5a85b; font-size: .52rem; letter-spacing: .08em; text-transform: uppercase; }
+.tadeon-participant-view__handout-list article strong { overflow: hidden; font-size: .72rem; text-overflow: ellipsis; white-space: nowrap; }
+.tadeon-participant-view__handout-list article p {
+  display: -webkit-box;
+  overflow: hidden;
+  color: var(--muted-foreground);
+  font-size: .58rem;
+  line-height: 1.35;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+.tadeon-participant-view__handout-list article > a {
+  display: inline-flex;
+  align-items: center;
+  gap: .25rem;
+  padding: .4rem .5rem;
+  border-radius: .5rem;
+  color: #e4c67d;
+  background: rgb(213 168 91 / .08);
+  font-size: .6rem;
+  font-weight: 800;
+}
+.tadeon-participant-view__handout-list article > a:hover { background: rgb(213 168 91 / .15); }
+.tadeon-participant-view__handout-list article > a svg { width: .7rem; height: .7rem; }
+
 @media (max-width: 720px) {
   .tadeon-participant-view { padding: .5rem; gap: .6rem; }
   .tadeon-participant-view__header { align-items: stretch; flex-direction: column; border-radius: 1rem; padding: .9rem; }
@@ -127,6 +225,14 @@
   .tadeon-participant-view__stage { min-height: 66svh; border-radius: 1rem; }
   .tadeon-participant-view__hud { top: .45rem; left: .45rem; right: .45rem; align-items: start; }
   .tadeon-participant-view__hud > div:first-child { max-width: calc(100% - 3.4rem); padding: .5rem .65rem; }
+  .tadeon-participant-view__handouts {
+    right: .45rem;
+    bottom: .45rem;
+    width: calc(100% - .9rem);
+    border-radius: .85rem;
+  }
+  .tadeon-participant-view__handout-list article { grid-template-columns: auto minmax(0, 1fr); }
+  .tadeon-participant-view__handout-list article > a { grid-column: 1 / -1; justify-content: center; }
 }
 
 @media (prefers-reduced-motion: reduce) {
