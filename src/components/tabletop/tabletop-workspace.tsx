@@ -123,7 +123,7 @@ function knowledgeEntityType(nodeType: string): TabletopEntitySeed["type"] {
   if (nodeType === "character") return "character";
   if (nodeType === "npc") return "npc";
   if (nodeType === "creature") return "creature";
-  if (nodeType === "clue" || nodeType === "document") return "note";
+  if (nodeType === "clue" || nodeType === "document") return "handout_pin";
   if (nodeType === "location" || nodeType === "map") return "marker";
   return "object";
 }
