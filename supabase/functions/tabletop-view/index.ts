@@ -229,6 +229,8 @@ Deno.serve(async (request) => {
 
   const supabaseUrl = Deno.env.get("SUPABASE_URL");
   const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
+  const publicApiKey =
+    request.headers.get("apikey") ?? Deno.env.get("SUPABASE_ANON_KEY");
   const authorization = request.headers.get("Authorization");
   if (!supabaseUrl || !serviceRoleKey) {
     console.error("[tabletop-view] Server environment is unavailable.");
@@ -256,9 +258,10 @@ Deno.serve(async (request) => {
   const { data: { user }, error: userError } = await admin.auth.getUser(token);
   if (userError || !user) return respond({ error: "Sessão inválida." }, 401);
 
-  const [tabletopEnabled, realtimeEnabled] = await Promise.all([
+  const [tabletopEnabled, realtimeEnabled, knowledgeEnabled] = await Promise.all([
     isFlagEnabled(admin, user.id, "nexus_tabletop_enabled"),
     isFlagEnabled(admin, user.id, "nexus_realtime_enabled"),
+    isFlagEnabled(admin, user.id, "nexus_knowledge_enabled"),
   ]);
   if (!tabletopEnabled || !realtimeEnabled) {
     return respond({ error: "Mesa ao vivo desativada para esta conta." }, 403);
@@ -338,7 +341,7 @@ Deno.serve(async (request) => {
         .eq("visible", true)
         .order("order_index"),
       admin.from("tabletop_entities")
-        .select("id,layer_id,entity_type,name,asset_id,x,y,width,height,rotation,elevation,z_index,hidden,locked,owner_user_id,properties")
+        .select("id,layer_id,entity_type,name,asset_id,linked_knowledge_node_id,x,y,width,height,rotation,elevation,z_index,hidden,locked,owner_user_id,properties")
         .eq("scene_id", session.current_scene_id)
         .eq("hidden", false)
         .order("z_index"),
@@ -425,14 +428,84 @@ Deno.serve(async (request) => {
     })).filter((stroke) => stroke.points.length > 0),
   };
 
-  const publicLayers = (layers ?? []).filter((layer) => PUBLIC_LAYER_TYPES.has(layer.layer_type));
+  const publicLayers = (layers ?? []).filter((layer) =>
+    PUBLIC_LAYER_TYPES.has(layer.layer_type)
+  );
   const publicLayerIds = new Set(publicLayers.map((layer) => layer.id));
-  const publicEntities = (entities ?? []).filter((entity) => publicLayerIds.has(entity.layer_id));
+  const publicEntityCandidates = (entities ?? []).filter((entity) =>
+    publicLayerIds.has(entity.layer_id)
+  );
+  const handoutNodeIds = [...new Set(publicEntityCandidates
+    .filter((entity) => entity.entity_type === "handout_pin")
+    .map((entity) => entity.linked_knowledge_node_id)
+    .filter((value): value is string =>
+      typeof value === "string" && UUID_PATTERN.test(value)
+    ))].slice(0, 64);
+  const handoutNodes = new Map<string, {
+    nodeId: string;
+    title: string;
+    summary: string;
+    nodeType: string;
+    coverAssetId: string | null;
+  }>();
+  if (knowledgeEnabled && handoutNodeIds.length > 0) {
+    if (!publicApiKey) {
+      console.error("[tabletop-view] Public server key unavailable.");
+      return respond({ error: "Integração com O Nexus indisponível." }, 503);
+    }
+    const authorized = createClient(supabaseUrl, publicApiKey, {
+      global: { headers: { Authorization: authorization } },
+      auth: { persistSession: false, autoRefreshToken: false },
+    });
+    const { data: nodes, error: nodeError } = await authorized
+      .from("knowledge_nodes")
+      .select("id,title,summary,node_type,cover_asset_id")
+      .in("id", handoutNodeIds)
+      .is("archived_at", null)
+      .is("deleted_at", null);
+    if (nodeError) {
+      console.error("[tabletop-view] Could not authorize Nexus handouts.");
+      return respond({ error: "Não foi possível validar os handouts." }, 500);
+    }
+    for (const node of nodes ?? []) {
+      handoutNodes.set(node.id, {
+        nodeId: node.id,
+        title: boundedText(node.title, 160),
+        summary: boundedText(node.summary, 600),
+        nodeType: boundedText(node.node_type, 80),
+        coverAssetId:
+          typeof node.cover_asset_id === "string" ? node.cover_asset_id : null,
+      });
+    }
+  }
+  // Um pin sem página autorizada desaparece por completo, inclusive seu título.
+  const publicEntities = publicEntityCandidates.filter((entity) =>
+    entity.entity_type !== "handout_pin" ||
+    (
+      typeof entity.linked_knowledge_node_id === "string" &&
+      handoutNodes.has(entity.linked_knowledge_node_id)
+    )
+  );
   const assetIds = [...new Set([
     scene.background_asset_id,
     ...publicEntities.map((entity) => entity.asset_id),
-  ].filter((value): value is string => typeof value === "string" && UUID_PATTERN.test(value)))];
+    ...[...handoutNodes.values()].map((node) => node.coverAssetId),
+  ].filter((value): value is string =>
+    typeof value === "string" && UUID_PATTERN.test(value)
+  ))];
   const assetUrls = await signAssets(admin, assetIds);
+  const handoutViews = new Map([...handoutNodes].map(([nodeId, node]) => [
+    nodeId,
+    {
+      nodeId: node.nodeId,
+      title: node.title,
+      summary: node.summary,
+      nodeType: node.nodeType,
+      ...(node.coverAssetId && assetUrls.has(node.coverAssetId)
+        ? { coverUrl: assetUrls.get(node.coverAssetId) }
+        : {}),
+    },
+  ]));
 
   return respond({
     session: sessionView,
@@ -478,6 +551,10 @@ Deno.serve(async (request) => {
         controllable:
           participant.role === "player" && entity.owner_user_id === user.id && !entity.locked,
         properties: publicProperties(entity.properties),
+        ...(typeof entity.linked_knowledge_node_id === "string" &&
+        handoutViews.has(entity.linked_knowledge_node_id)
+          ? { handout: handoutViews.get(entity.linked_knowledge_node_id) }
+          : {}),
       })),
     },
     visibility,
