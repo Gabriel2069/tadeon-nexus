@@ -18,6 +18,16 @@ const participantLayerSchema = z
   })
   .strict();
 
+const participantHandoutSchema = z
+  .object({
+    nodeId: uuidSchema,
+    title: z.string().trim().min(1).max(160),
+    summary: z.string().trim().max(600),
+    nodeType: z.string().trim().min(1).max(80),
+    coverUrl: z.url().optional(),
+  })
+  .strict();
+
 const participantEntitySchema = z
   .object({
     id: uuidSchema,
@@ -51,6 +61,7 @@ const participantEntitySchema = z
     elevation: finiteNumber.optional(),
     controllable: z.boolean(),
     properties: z.record(z.string(), z.unknown()),
+    handout: participantHandoutSchema.optional(),
   })
   .strict();
 
@@ -126,8 +137,21 @@ const participantViewSchema = z
   })
   .strict();
 
-export type TabletopParticipantScene = TabletopScene & {
-  entities: Array<TabletopScene["entities"][number] & { controllable: boolean }>;
+export interface TabletopParticipantHandout {
+  nodeId: string;
+  title: string;
+  summary: string;
+  nodeType: string;
+  coverUrl?: string;
+}
+
+export type TabletopParticipantScene = Omit<TabletopScene, "entities"> & {
+  entities: Array<
+    TabletopScene["entities"][number] & {
+      controllable: boolean;
+      handout?: TabletopParticipantHandout;
+    }
+  >;
 };
 
 export interface TabletopParticipantView {

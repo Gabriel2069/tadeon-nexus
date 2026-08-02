@@ -68,6 +68,12 @@ function validView() {
           color: 0x8d3152,
           controllable: true,
           properties: { status: "alerta" },
+          handout: {
+            nodeId: id("8"),
+            title: "Carta selada",
+            summary: "Documento compartilhado para esta sessão.",
+            nodeType: "document",
+          },
         },
       ],
     },
@@ -78,6 +84,15 @@ describe("projeção segura da Mesa para participantes", () => {
   it("aceita apenas o contrato público mínimo", () => {
     const parsed = parseTabletopParticipantView(validView());
     expect(parsed.scene?.entities[0].controllable).toBe(true);
+    expect(parsed.scene?.entities[0].handout?.title).toBe("Carta selada");
+  });
+
+  it("rejeita conteúdo integral indevido no handout", () => {
+    const input = validView();
+    Object.assign(input.scene.entities[0].handout, {
+      contentMarkdown: "conteúdo que não pertence ao contrato resumido",
+    });
+    expect(() => parseTabletopParticipantView(input)).toThrow(TabletopParticipantError);
   });
 
   it("rejeita geometria privada de paredes", () => {

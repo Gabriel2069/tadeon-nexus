@@ -1,4 +1,5 @@
-import { Eye, Loader2, LogIn, RefreshCw, ShieldCheck, UsersRound } from "lucide-react";
+import { BookOpenText, ExternalLink, Eye, Loader2, LogIn, RefreshCw, ShieldCheck, UsersRound } from "lucide-react";
+import { Link } from "@tanstack/react-router";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -195,6 +196,17 @@ export function TabletopParticipantWorkspace({
     [refreshRoom],
   );
 
+  const handouts = useMemo(() => {
+    const unique = new Map(
+      (view?.scene?.entities ?? []).flatMap((entity) =>
+        entity.handout
+          ? [[entity.handout.nodeId, entity.handout] as const]
+          : [],
+      ),
+    );
+    return [...unique.values()];
+  }, [view?.scene?.entities]);
+
   const presence = useMemo(
     () =>
       user && view?.scene
@@ -314,6 +326,39 @@ export function TabletopParticipantWorkspace({
               compact
             />
           </div>
+        )}
+        {joined && view?.scene && handouts.length > 0 && (
+          <details className="tadeon-participant-view__handouts">
+            <summary>
+              <span><BookOpenText aria-hidden="true" /></span>
+              <span>
+                <strong>Handouts do Nexus</strong>
+                <small>{handouts.length} compartilhado(s) pelo mestre</small>
+              </span>
+              <span className="tadeon-participant-view__handout-count">{handouts.length}</span>
+            </summary>
+            <div className="tadeon-participant-view__handout-list">
+              {handouts.map((handout) => (
+                <article key={handout.nodeId}>
+                  {handout.coverUrl && (
+                    <img src={handout.coverUrl} alt="" loading="lazy" />
+                  )}
+                  <div>
+                    <small>{handout.nodeType}</small>
+                    <strong>{handout.title}</strong>
+                    {handout.summary && <p>{handout.summary}</p>}
+                  </div>
+                  <Link
+                    to="/nexus"
+                    search={{ node: handout.nodeId }}
+                    aria-label={`Abrir ${handout.title} em O Nexus`}
+                  >
+                    Abrir <ExternalLink aria-hidden="true" />
+                  </Link>
+                </article>
+              ))}
+            </div>
+          </details>
         )}
       </section>
     </main>
