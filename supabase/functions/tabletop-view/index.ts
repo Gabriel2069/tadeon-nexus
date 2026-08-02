@@ -50,6 +50,106 @@ function boundedText(value: unknown, max: number) {
   return typeof value === "string" ? value.trim().slice(0, max) : "";
 }
 
+interface VisibilityPoint { x: number; y: number }
+interface VisibilityWall {
+  x1: number;
+  y1: number;
+  x2: number;
+  y2: number;
+  wallType: string;
+  blocksVision: boolean;
+}
+
+function raySegmentDistance(
+  origin: VisibilityPoint,
+  direction: VisibilityPoint,
+  wall: VisibilityWall,
+) {
+  const segment = { x: wall.x2 - wall.x1, y: wall.y2 - wall.y1 };
+  const denominator = direction.x * segment.y - direction.y * segment.x;
+  if (Math.abs(denominator) < 1e-9) return null;
+  const offset = { x: wall.x1 - origin.x, y: wall.y1 - origin.y };
+  const rayDistance =
+    (offset.x * segment.y - offset.y * segment.x) / denominator;
+  const segmentPosition =
+    (offset.x * direction.y - offset.y * direction.x) / denominator;
+  return rayDistance >= 0 && segmentPosition >= 0 && segmentPosition <= 1
+    ? rayDistance
+    : null;
+}
+
+function buildVisibilityPolygon(
+  light: { x: number; y: number; radius: number; castsShadows: boolean },
+  walls: VisibilityWall[],
+  width: number,
+  height: number,
+) {
+  const boundary: VisibilityWall[] = [
+    { x1: 0, y1: 0, x2: width, y2: 0, wallType: "wall", blocksVision: true },
+    { x1: width, y1: 0, x2: width, y2: height, wallType: "wall", blocksVision: true },
+    { x1: width, y1: height, x2: 0, y2: height, wallType: "wall", blocksVision: true },
+    { x1: 0, y1: height, x2: 0, y2: 0, wallType: "wall", blocksVision: true },
+  ];
+  const nearbyWalls = walls
+    .filter((wall) => wall.blocksVision && wall.wallType !== "door_open")
+    .map((wall) => ({
+      wall,
+      distance:
+        (wall.x1 + wall.x2) / 2 - light.x,
+      verticalDistance:
+        (wall.y1 + wall.y2) / 2 - light.y,
+    }))
+    .filter(({ distance, verticalDistance }) =>
+      Math.abs(distance) <= light.radius && Math.abs(verticalDistance) <= light.radius
+    )
+    .sort((left, right) =>
+      left.distance ** 2 + left.verticalDistance ** 2 -
+      (right.distance ** 2 + right.verticalDistance ** 2)
+    )
+    .slice(0, 64)
+    .map(({ wall }) => wall);
+  const blockers = light.castsShadows
+    ? [...nearbyWalls, ...boundary]
+    : boundary;
+  const angles: number[] = [];
+  for (let index = 0; index < 64; index += 1) {
+    angles.push((index / 64) * Math.PI * 2);
+  }
+  for (const wall of blockers) {
+    for (const point of [
+      { x: wall.x1, y: wall.y1 },
+      { x: wall.x2, y: wall.y2 },
+    ]) {
+      const angle = Math.atan2(point.y - light.y, point.x - light.x);
+      angles.push(angle - 0.0001, angle, angle + 0.0001);
+    }
+  }
+  return angles.sort((left, right) => left - right).map((angle) => {
+    const direction = { x: Math.cos(angle), y: Math.sin(angle) };
+    let distance = Math.max(8, light.radius);
+    for (const wall of blockers) {
+      const hit = raySegmentDistance(
+        { x: light.x, y: light.y },
+        direction,
+        wall,
+      );
+      if (hit !== null && hit < distance) distance = hit;
+    }
+    return {
+      x: light.x + direction.x * distance,
+      y: light.y + direction.y * distance,
+    };
+  });
+}
+
+function safeFogPoints(value: unknown) {
+  if (!Array.isArray(value)) return [];
+  return value.slice(0, 64).map((point) => {
+    const source = objectValue(point);
+    return { x: finiteNumber(source.x), y: finiteNumber(source.y) };
+  });
+}
+
 function publicProperties(value: unknown) {
   const properties = objectValue(value);
   const status = boundedText(properties.status, 80);
@@ -217,13 +317,18 @@ Deno.serve(async (request) => {
     canInteract: participant.role !== "observer",
   };
   if (!session.current_scene_id) {
-    return respond({ session: sessionView, participant: participantView, scene: null });
+    return respond({
+      session: sessionView,
+      participant: participantView,
+      scene: null,
+      visibility: null,
+    });
   }
 
   const [{ data: scene, error: sceneError }, { data: layers, error: layerError }, { data: entities, error: entityError }] =
     await Promise.all([
       admin.from("tabletop_scenes")
-        .select("id,campaign_id,name,background_asset_id,width,height,grid_type,grid_size,grid_scale,snap_enabled")
+        .select("id,campaign_id,name,background_asset_id,width,height,grid_type,grid_size,grid_scale,snap_enabled,global_illumination,fog_enabled,fog_opacity,visibility_version")
         .eq("id", session.current_scene_id)
         .eq("campaign_id", session.campaign_id)
         .maybeSingle(),
@@ -242,6 +347,83 @@ Deno.serve(async (request) => {
     console.error("[tabletop-view] Could not build participant projection.");
     return respond({ error: "Não foi possível carregar a cena." }, 500);
   }
+
+  const [
+    { data: walls, error: wallError },
+    { data: lights, error: lightError },
+    { data: fogStrokes, error: fogError },
+  ] = await Promise.all([
+    admin.from("tabletop_walls")
+      .select("x1,y1,x2,y2,wall_type,blocks_vision")
+      .eq("scene_id", scene.id)
+      .order("created_at"),
+    admin.from("tabletop_lights")
+      .select("id,x,y,radius,intensity,color,enabled,casts_shadows")
+      .eq("scene_id", scene.id)
+      .eq("enabled", true)
+      .order("created_at"),
+    admin.from("tabletop_fog_strokes")
+      .select("id,operation,points,radius,sequence_index")
+      .eq("scene_id", scene.id)
+      .order("sequence_index"),
+  ]);
+  if (wallError || lightError || fogError) {
+    console.error("[tabletop-view] Could not build visibility projection.");
+    return respond({ error: "Não foi possível proteger a visão da cena." }, 500);
+  }
+  const safeWalls: VisibilityWall[] = (walls ?? []).map((wall) => ({
+    x1: finiteNumber(wall.x1),
+    y1: finiteNumber(wall.y1),
+    x2: finiteNumber(wall.x2),
+    y2: finiteNumber(wall.y2),
+    wallType: boundedText(wall.wall_type, 24),
+    blocksVision: wall.blocks_vision === true,
+  }));
+  const visibility = {
+    version: Math.max(1, Math.trunc(finiteNumber(scene.visibility_version, 1))),
+    globalIllumination: Math.max(
+      0,
+      Math.min(1, finiteNumber(scene.global_illumination, 1)),
+    ),
+    fogEnabled: scene.fog_enabled === true,
+    fogOpacity: Math.max(0, Math.min(1, finiteNumber(scene.fog_opacity, 0.92))),
+    // Segmentos de paredes nunca saem do servidor: eles podem revelar salas secretas.
+    walls: [],
+    lights: (lights ?? []).slice(0, 64).map((light) => {
+      const intensity = Math.max(0, Math.min(1, finiteNumber(light.intensity, 1)));
+      const radius = Math.max(8, Math.min(100_000, finiteNumber(light.radius, 320)));
+      const safeLight = {
+        x: finiteNumber(light.x),
+        y: finiteNumber(light.y),
+        radius: radius * Math.max(0.12, intensity),
+        castsShadows: light.casts_shadows === true,
+      };
+      return {
+        id: light.id,
+        entityId: null,
+        x: safeLight.x,
+        y: safeLight.y,
+        radius,
+        intensity,
+        color: /^#[0-9a-f]{6}$/i.test(light.color) ? light.color : "#f2c66d",
+        enabled: true,
+        castsShadows: safeLight.castsShadows,
+        visibilityPolygon: buildVisibilityPolygon(
+          safeLight,
+          safeWalls,
+          scene.width,
+          scene.height,
+        ),
+      };
+    }),
+    fogStrokes: (fogStrokes ?? []).map((stroke, sequenceIndex) => ({
+      id: stroke.id,
+      operation: stroke.operation === "hide" ? "hide" : "reveal",
+      points: safeFogPoints(stroke.points),
+      radius: Math.max(8, Math.min(1024, finiteNumber(stroke.radius, 160))),
+      sequenceIndex,
+    })).filter((stroke) => stroke.points.length > 0),
+  };
 
   const publicLayers = (layers ?? []).filter((layer) => PUBLIC_LAYER_TYPES.has(layer.layer_type));
   const publicLayerIds = new Set(publicLayers.map((layer) => layer.id));
@@ -298,5 +480,6 @@ Deno.serve(async (request) => {
         properties: publicProperties(entity.properties),
       })),
     },
+    visibility,
   });
 });

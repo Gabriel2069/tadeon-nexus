@@ -58,7 +58,10 @@ function TabletopRoute() {
   }
 
   return role === "mestre" ? (
-    <TabletopWorkspace realtimeEnabled={flags.nexus_realtime_enabled} />
+    <TabletopWorkspace
+      realtimeEnabled={flags.nexus_realtime_enabled}
+      lightingEnabled={flags.nexus_lighting_enabled}
+    />
   ) : (
     <TabletopParticipantWorkspace realtimeEnabled={flags.nexus_realtime_enabled} />
   );

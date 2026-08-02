@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { TabletopRealtimeStatus } from "@/components/tabletop/realtime-status";
 import { useAuth } from "@/lib/auth";
 import { TabletopEngine } from "@/lib/tabletop/tabletop-engine";
+import { createEmptyVisibilityState } from "@/lib/tabletop/tabletop-visibility-service";
 import {
   TabletopParticipantError,
   tabletopParticipantService,
@@ -80,9 +81,13 @@ export function TabletopParticipantWorkspace({
   useEffect(() => {
     if (!view?.scene || !engineRef.current) return;
     engineRef.current.loadScene(view.scene);
+    engineRef.current.setVisibility(
+      view.visibility ?? createEmptyVisibilityState(),
+      false,
+    );
     engineRef.current.setReadOnly(true);
     engineRef.current.fitToScreen();
-  }, [view?.scene]);
+  }, [view?.scene, view?.visibility]);
 
   const loadView = useCallback(async (targetSession: TabletopSession) => {
     try {
