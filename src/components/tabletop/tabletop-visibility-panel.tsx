@@ -1,6 +1,7 @@
 import {
   ChevronDown,
   ChevronUp,
+  BrickWall,
   CloudFog,
   Eye,
   EyeOff,
@@ -9,7 +10,6 @@ import {
   Plus,
   Save,
   Trash2,
-  Wall,
 } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -220,7 +220,7 @@ export function TabletopVisibilityPanel({
 
           <div className="tadeon-visibility__actions">
             <Button type="button" size="sm" variant="outline" disabled={disabled} onClick={addWall}>
-              <Wall aria-hidden="true" /> Parede
+              <BrickWall aria-hidden="true" /> Parede
             </Button>
             <Button type="button" size="sm" variant="outline" disabled={disabled} onClick={addLight}>
               <LampDesk aria-hidden="true" /> Luz
@@ -235,7 +235,7 @@ export function TabletopVisibilityPanel({
 
           {state.walls.length > 0 && (
             <div className="tadeon-visibility__group">
-              <header><Wall aria-hidden="true" /><strong>Paredes e portas</strong><span>{state.walls.length}</span></header>
+              <header><BrickWall aria-hidden="true" /><strong>Paredes e portas</strong><span>{state.walls.length}</span></header>
               {state.walls.map((wall, index) => (
                 <article key={wall.id} className="tadeon-visibility__item">
                   <div className="tadeon-visibility__item-title">
