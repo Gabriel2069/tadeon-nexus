@@ -3,6 +3,8 @@ import { Loader2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { ProtectedShell } from "@/components/protected-shell";
 import { TabletopWorkspace } from "@/components/tabletop/tabletop-workspace";
+import { TabletopParticipantWorkspace } from "@/components/tabletop/tabletop-participant-workspace";
+import { useAuth } from "@/lib/auth";
 import { loadFeatureFlags } from "@/lib/feature-flag-repository";
 import type { FeatureFlags } from "@/lib/feature-flags";
 
@@ -12,12 +14,12 @@ export const Route = createFileRoute("/tabletop")({
       { title: "Mesa Nexus · Tadeon Nexus" },
       {
         name: "description",
-        content: "Editor persistente e protegido de cenas da Mesa Nexus.",
+        content: "Mesa virtual ao vivo com visão protegida por papel e campanha.",
       },
     ],
   }),
   component: () => (
-    <ProtectedShell requireRole="mestre">
+    <ProtectedShell>
       <TabletopRoute />
     </ProtectedShell>
   ),
@@ -25,6 +27,7 @@ export const Route = createFileRoute("/tabletop")({
 
 function TabletopRoute() {
   const navigate = useNavigate();
+  const { role } = useAuth();
   const [flags, setFlags] = useState<FeatureFlags | null>(null);
 
   useEffect(() => {
@@ -54,7 +57,9 @@ function TabletopRoute() {
     );
   }
 
-  return (
+  return role === "mestre" ? (
     <TabletopWorkspace realtimeEnabled={flags.nexus_realtime_enabled} />
+  ) : (
+    <TabletopParticipantWorkspace realtimeEnabled={flags.nexus_realtime_enabled} />
   );
 }
