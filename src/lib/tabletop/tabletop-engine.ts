@@ -10,6 +10,11 @@ import { SceneManager } from "./scene-manager";
 import { SelectionManager } from "./selection-manager";
 import { TextureManager } from "./texture-manager";
 import {
+  createEmptyVisibilityState,
+  type TabletopVisibilityState,
+} from "./tabletop-visibility-service";
+import { TabletopVisibilityRenderer } from "./visibility-renderer";
+import {
   cloneScene,
   EMPTY_TABLETOP_SCENE,
   type Point,
@@ -38,6 +43,9 @@ export class TabletopEngine {
   private readonly layers = new LayerManager(() => this.scenes.scene.layers);
   private readonly camera = new CameraController(this.viewport);
   private readonly entities: EntityRenderer;
+  private readonly visibility = new TabletopVisibilityRenderer();
+  private visibilityState = createEmptyVisibilityState();
+  private visibilityGuides = false;
   private interaction: InteractionController | null = null;
   private resizeObserver: ResizeObserver | null = null;
   private host: HTMLElement | null = null;
@@ -79,6 +87,7 @@ export class TabletopEngine {
       this.sceneBackground,
       this.grid.view,
       this.entities.view,
+      this.visibility.view,
     );
     this.app.stage.addChild(this.viewport);
     this.interaction = new InteractionController(this.app.canvas, {
@@ -134,6 +143,20 @@ export class TabletopEngine {
     this.readOnly = readOnly;
     if (readOnly) this.selection.clear();
     this.render();
+  }
+
+  setVisibility(state: TabletopVisibilityState, showGuides = false) {
+    this.visibilityState = {
+      ...state,
+      walls: state.walls.map((wall) => ({ ...wall })),
+      lights: state.lights.map((light) => ({ ...light })),
+      fogStrokes: state.fogStrokes.map((stroke) => ({
+        ...stroke,
+        points: stroke.points.map((point) => ({ ...point })),
+      })),
+    };
+    this.visibilityGuides = showGuides;
+    this.render(false);
   }
 
   addEntity(type: TabletopEntity["type"] = "token") {
@@ -616,6 +639,11 @@ export class TabletopEngine {
       this.layers.ordered(),
       this.selection.ids,
     );
+    this.visibility.render(
+      this.scenes.scene,
+      this.visibilityState,
+      this.visibilityGuides,
+    );
     this.app.render();
     if (notify) this.options.onChange?.(this.snapshot);
   }
@@ -627,6 +655,7 @@ export class TabletopEngine {
     this.interaction?.destroy();
     this.entities.destroy();
     this.grid.destroy();
+    this.visibility.destroy();
     this.backgroundSprite?.destroy();
     this.backgroundSprite = null;
     await this.textures.clear();
