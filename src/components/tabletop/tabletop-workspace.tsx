@@ -1787,6 +1787,7 @@ export function TabletopWorkspace({
           style={{ left: contextMenu.x, top: contextMenu.y }}
         >
           <button
+            type="button"
             className="min-h-11 w-full rounded px-3 py-2 text-left text-sm hover:bg-secondary"
             onClick={() => {
               engineRef.current?.duplicateSelected();
@@ -1796,6 +1797,7 @@ export function TabletopWorkspace({
             Duplicar
           </button>
           <button
+            type="button"
             className="min-h-11 w-full rounded px-3 py-2 text-left text-sm hover:bg-secondary"
             onClick={() => {
               engineRef.current?.copySelected();
@@ -1805,6 +1807,7 @@ export function TabletopWorkspace({
             Copiar
           </button>
           <button
+            type="button"
             className="min-h-11 w-full rounded px-3 py-2 text-left text-sm hover:bg-secondary"
             onClick={() => {
               engineRef.current?.pasteClipboard();
@@ -1814,6 +1817,7 @@ export function TabletopWorkspace({
             Colar
           </button>
           <button
+            type="button"
             className="min-h-11 w-full rounded px-3 py-2 text-left text-sm hover:bg-secondary"
             onClick={() => {
               engineRef.current?.toggleSelectedLock();
@@ -1823,6 +1827,7 @@ export function TabletopWorkspace({
             Bloquear / desbloquear
           </button>
           <button
+            type="button"
             className="min-h-11 w-full rounded px-3 py-2 text-left text-sm text-destructive hover:bg-destructive/10"
             onClick={() => {
               engineRef.current?.deleteSelected();
