@@ -826,6 +826,7 @@ function PowerFormPage() {
                         return (
                           <button
                             key={s}
+                            type="button"
                             disabled={!canEdit}
                             onClick={() =>
                               patch({ skills: { ...vpSkills, [s]: v >= 15 ? 0 : v + 5 } })
