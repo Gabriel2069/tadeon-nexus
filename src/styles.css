@@ -397,6 +397,153 @@
     backdrop-filter: blur(18px);
     animation: tadeon-loading-breathe 1.8s ease-in-out infinite;
   }
+
+  .tadeon-auth-page {
+    position: relative;
+    display: grid;
+    min-height: 100dvh;
+    overflow: hidden;
+    place-items: center;
+    padding: clamp(1rem, 4vw, 3rem);
+  }
+
+  .tadeon-auth-page__glow {
+    position: fixed;
+    inset: 10% auto auto 50%;
+    width: min(64rem, 90vw);
+    height: 34rem;
+    border-radius: 999px;
+    background:
+      radial-gradient(circle at 28% 45%, rgb(79 110 93 / 18%), transparent 36%),
+      radial-gradient(circle at 72% 36%, rgb(217 215 164 / 11%), transparent 38%);
+    filter: blur(64px);
+    pointer-events: none;
+    translate: -50% 0;
+  }
+
+  .tadeon-auth-shell {
+    position: relative;
+    display: grid;
+    width: min(100%, 66rem);
+    grid-template-columns: minmax(0, 1.08fr) minmax(22rem, 0.92fr);
+    overflow: hidden;
+    border: 1px solid color-mix(in srgb, var(--tadeon-metal) 34%, transparent);
+    border-radius: 1.5rem 0.55rem 1.5rem 0.55rem;
+    background: rgb(8 10 14 / 76%);
+    box-shadow:
+      0 48px 120px -55px rgb(0 0 0 / 100%),
+      inset 0 1px 0 rgb(255 255 255 / 4%);
+    backdrop-filter: blur(24px);
+  }
+
+  .tadeon-auth-manifesto {
+    position: relative;
+    display: flex;
+    min-height: 36rem;
+    align-items: flex-end;
+    overflow: hidden;
+    padding: clamp(2rem, 5vw, 4rem);
+    border-right: 1px solid color-mix(in srgb, var(--primary) 13%, var(--border));
+    background:
+      radial-gradient(circle at 18% 18%, rgb(217 215 164 / 10%), transparent 30%),
+      radial-gradient(circle at 82% 88%, rgb(45 73 62 / 24%), transparent 36%),
+      linear-gradient(145deg, rgb(18 21 26 / 95%), rgb(8 11 15 / 98%));
+  }
+
+  .tadeon-auth-manifesto::after {
+    position: absolute;
+    inset: 1.5rem;
+    border: 1px solid rgb(217 215 164 / 7%);
+    border-radius: 1rem 0.3rem 1rem 0.3rem;
+    pointer-events: none;
+    content: "";
+  }
+
+  .tadeon-auth-manifesto__brand {
+    position: absolute;
+    z-index: 1;
+    top: 2.25rem;
+    left: clamp(2rem, 5vw, 4rem);
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+  }
+
+  .tadeon-auth-manifesto__copy {
+    max-width: 30rem;
+  }
+
+  .tadeon-auth-manifesto__copy h2 {
+    max-width: 26rem;
+    margin-top: 0.75rem;
+    font-family: var(--font-cinzel);
+    font-size: clamp(2rem, 4vw, 3.3rem);
+    font-weight: 550;
+    letter-spacing: -0.025em;
+    line-height: 0.98;
+  }
+
+  .tadeon-auth-manifesto__copy > p:last-child {
+    max-width: 27rem;
+    margin-top: 1.1rem;
+    color: var(--muted-foreground);
+    font-size: 0.82rem;
+    line-height: 1.7;
+  }
+
+  .tadeon-auth-manifesto__signals {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+    margin-top: 1.5rem;
+  }
+
+  .tadeon-auth-manifesto__signals span {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    min-height: 1.9rem;
+    padding: 0.3rem 0.55rem;
+    border: 1px solid rgb(217 215 164 / 12%);
+    border-radius: 999px;
+    color: color-mix(in srgb, var(--foreground) 80%, var(--primary));
+    background: rgb(217 215 164 / 4%);
+    font-size: 0.58rem;
+    font-weight: 700;
+  }
+
+  .tadeon-auth-manifesto__signals svg {
+    width: 0.75rem;
+    height: 0.75rem;
+    color: var(--primary);
+  }
+
+  .tadeon-auth-card {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: clamp(1.5rem, 4vw, 3rem);
+    border: 0;
+    border-radius: 0;
+    background:
+      linear-gradient(155deg, rgb(255 255 255 / 2.5%), transparent 42%), rgb(13 16 21 / 92%);
+    box-shadow: none;
+  }
+
+  .tadeon-auth-card input {
+    min-height: 2.75rem;
+    border-color: color-mix(in srgb, var(--primary) 12%, var(--border));
+    background: rgb(6 9 13 / 55%);
+  }
+
+  .tadeon-auth-card input:focus-visible {
+    border-color: color-mix(in srgb, var(--primary) 52%, var(--border));
+    box-shadow: 0 0 0 3px rgb(217 215 164 / 7%);
+  }
+
+  .tadeon-auth-submit {
+    border-radius: 0.8rem 0.3rem 0.8rem 0.3rem;
+  }
 }
 
 @media (hover: hover) and (pointer: fine) {
@@ -419,6 +566,54 @@
 
   .tadeon-surface {
     border-radius: 0.875rem;
+  }
+
+  .tadeon-auth-page {
+    align-items: start;
+    padding: max(0.75rem, env(safe-area-inset-top)) 0.75rem
+      max(0.75rem, env(safe-area-inset-bottom));
+  }
+
+  .tadeon-auth-shell {
+    grid-template-columns: minmax(0, 1fr);
+    border-radius: 1.2rem 0.45rem 1.2rem 0.45rem;
+  }
+
+  .tadeon-auth-manifesto {
+    min-height: 11.5rem;
+    align-items: flex-end;
+    padding: 4.8rem 1.2rem 1.15rem;
+    border-right: 0;
+    border-bottom: 1px solid color-mix(in srgb, var(--primary) 13%, var(--border));
+  }
+
+  .tadeon-auth-manifesto::after {
+    inset: 0.7rem;
+  }
+
+  .tadeon-auth-manifesto__brand {
+    top: 1.1rem;
+    left: 1.2rem;
+  }
+
+  .tadeon-auth-manifesto__brand > svg {
+    width: 2.5rem;
+    height: 2.5rem;
+  }
+
+  .tadeon-auth-manifesto__copy h2 {
+    max-width: 19rem;
+    margin-top: 0.25rem;
+    font-size: 1.45rem;
+  }
+
+  .tadeon-auth-manifesto__copy > p:last-child,
+  .tadeon-auth-manifesto__signals {
+    display: none;
+  }
+
+  .tadeon-auth-card {
+    padding: 1.35rem 1.2rem 1.5rem;
   }
 }
 

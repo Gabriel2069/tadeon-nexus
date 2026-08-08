@@ -421,8 +421,7 @@ function MasterPanel() {
     if (error) {
       void reportClientError(error, "save");
       toast.error("Não foi possível salvar o painel do mestre.");
-    }
-    else {
+    } else {
       setDirty(false);
       setLastSavedAt(new Date());
       toast.success("Painel salvo!");
@@ -489,7 +488,9 @@ function MasterPanel() {
       </div>
 
       <Tabs
-        value={search.tab === "assets" && !assetsEnabled ? "dashboard" : (search.tab ?? "dashboard")}
+        value={
+          search.tab === "assets" && !assetsEnabled ? "dashboard" : (search.tab ?? "dashboard")
+        }
         onValueChange={(value) =>
           void navigate({
             to: "/master-panel",
@@ -1019,6 +1020,7 @@ function CrudList<T extends { id: string }>({
           {items.map((it) => (
             <button
               key={it.id}
+              type="button"
               onClick={() => setOpenId(it.id)}
               className="text-left bg-secondary/40 hover:bg-secondary/70 rounded-lg p-2.5 transition-all hover:border-primary/40 border border-transparent"
             >
@@ -1243,6 +1245,7 @@ function PinnedPanel({
               return (
                 <button
                   key={sh.id}
+                  type="button"
                   onClick={() => toggle(sh.id)}
                   className={`text-xs px-3 py-1.5 rounded-full border transition-all flex items-center gap-1.5 ${
                     on
@@ -1592,10 +1595,18 @@ function DataPanel({ s, upd }: PanelProps) {
                 style={{ gridTemplateColumns: "auto repeat(7, 1fr) auto" }}
               >
                 <div className="flex flex-col">
-                  <button onClick={() => moveRank(i, -1)}>
+                  <button
+                    type="button"
+                    onClick={() => moveRank(i, -1)}
+                    aria-label={`Mover Rank ${r.rank} para cima`}
+                  >
                     <ChevronUp className="w-3 h-3" />
                   </button>
-                  <button onClick={() => moveRank(i, 1)}>
+                  <button
+                    type="button"
+                    onClick={() => moveRank(i, 1)}
+                    aria-label={`Mover Rank ${r.rank} para baixo`}
+                  >
                     <ChevronDown className="w-3 h-3" />
                   </button>
                 </div>

@@ -43,5 +43,13 @@ export default tseslint.config(
       "react-refresh/only-export-components": "off",
     },
   },
+  {
+    // TanStack file routes intentionally colocate the Route export with their
+    // page components. The master navigation likewise exports its tab contract.
+    files: ["src/routes/**/*.tsx", "src/components/master/master-panel-navigation.tsx"],
+    rules: {
+      "react-refresh/only-export-components": "off",
+    },
+  },
   eslintConfigPrettier,
 );

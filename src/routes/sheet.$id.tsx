@@ -22,6 +22,7 @@ import {
   Gem,
   ArrowUp,
   Shield,
+  ChevronDown,
   ChevronLeft,
   ChevronRight,
   IdCard,
@@ -143,6 +144,21 @@ const TRAINING_TIERS = [
   { tier: 2, name: "Apurado", bonus: 6 },
   { tier: 3, name: "Versado", bonus: 9 },
 ] as const;
+
+const SECTION_PRESENTATION: Record<string, { index: string; kicker: string }> = {
+  "sec-info": { index: "01", kicker: "Identidade e continuidade" },
+  "sec-attr": { index: "02", kicker: "Matriz de potencial" },
+  "sec-pontos": { index: "03", kicker: "Recursos e proteção" },
+  equilibrio: { index: "04", kicker: "Estado de tensão" },
+  exposicao: { index: "05", kicker: "Progressão de contato" },
+  condicoes: { index: "06", kicker: "Pressões em curso" },
+  "sec-pericias": { index: "07", kicker: "Competências treinadas" },
+  "sec-armas": { index: "08", kicker: "Arsenal operacional" },
+  "sec-inv": { index: "09", kicker: "Carga e recursos" },
+  "sec-hab": { index: "10", kicker: "Repertório adquirido" },
+  "tramas-fragmentos": { index: "11", kicker: "Fenômenos e manifestações" },
+  "sec-notas": { index: "12", kicker: "Registro de campo" },
+};
 function tierFromBonus(b: number): 0 | 1 | 2 | 3 {
   if (b >= 9) return 3;
   if (b >= 6) return 2;
@@ -626,7 +642,7 @@ function SheetPage() {
 
   const skillGroups = sheetSkillGroups.length ? sheetSkillGroups : SKILL_GROUPS;
   const sectionAnchors: { id: string; label: string }[] = [
-    { id: "sec-info", label: "Informações" },
+    { id: "sec-info", label: "Identidade" },
     { id: "sec-attr", label: "Atributos" },
     { id: "sec-pontos", label: "Pontos" },
     { id: "sec-pericias", label: "Perícias" },
@@ -1373,6 +1389,7 @@ function SheetPage() {
             <div className="tadeon-sheet-state-grid">
               {/* Equilibrium card */}
               <Section
+                id="equilibrio"
                 title="Equilíbrio"
                 className="tadeon-state-panel tadeon-equilibrium-panel"
                 extra={
@@ -1385,6 +1402,8 @@ function SheetPage() {
                       variant="ghost"
                       className="h-6 w-6 p-0 text-amber-300"
                       disabled={!canEdit}
+                      aria-label="Diminuir tensão"
+                      title="Diminuir tensão"
                       onClick={() => addDirectionalTension(-1)}
                     >
                       <Minus className="w-3 h-3" />
@@ -1399,6 +1418,8 @@ function SheetPage() {
                       variant="ghost"
                       className="h-6 w-6 p-0 text-amber-300"
                       disabled={!canEdit}
+                      aria-label="Aumentar tensão"
+                      title="Aumentar tensão"
                       onClick={() => addDirectionalTension(1)}
                     >
                       <Plus className="w-3 h-3" />
@@ -1495,7 +1516,11 @@ function SheetPage() {
               </Section>
 
               {/* Exposure card */}
-              <Section title="Exposição" className="tadeon-state-panel tadeon-exposure-panel">
+              <Section
+                id="exposicao"
+                title="Exposição"
+                className="tadeon-state-panel tadeon-exposure-panel"
+              >
                 <div className="flex items-baseline justify-between mb-1">
                   <span className="text-xs text-muted-foreground">
                     Rank base: <strong className="text-foreground">{base.rank}</strong>
@@ -1546,7 +1571,7 @@ function SheetPage() {
             </div>
 
             {/* Conditions */}
-            <Section title="Condições" className="tadeon-conditions-panel">
+            <Section id="condicoes" title="Condições" className="tadeon-conditions-panel">
               <div className="tadeon-condition-grid grid grid-cols-2 gap-2 xl:grid-cols-4">
                 {(Object.keys(CONDITION_META) as ConditionKey[]).map((c) => {
                   const meta = CONDITION_META[c];
@@ -1761,6 +1786,7 @@ function SheetPage() {
                           >
                             <PopoverTrigger asChild>
                               <button
+                                type="button"
                                 disabled={!canEdit}
                                 className="w-full flex items-center justify-between text-xs px-1.5 py-1 rounded hover:bg-background/40 disabled:cursor-not-allowed"
                               >
@@ -2087,6 +2113,7 @@ function SheetPage() {
 
             {/* Plots / Fragments toggle */}
             <Section
+              id="tramas-fragmentos"
               title={fragmentsView ? "Fragmentos" : "Tramas"}
               extra={
                 <div className="flex items-center gap-2 flex-wrap">
@@ -2335,6 +2362,53 @@ function SheetPage() {
         </Tabs>
       </div>
 
+      <nav className="tadeon-sheet-mobile-dock md:hidden" aria-label="Ações rápidas da ficha">
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={() => navigate({ to: "/" })}
+          aria-label="Voltar ao painel"
+          title="Voltar ao painel"
+        >
+          <ArrowLeft className="h-4 w-4" />
+        </Button>
+        <div className="tadeon-sheet-mobile-dock__identity">
+          <span>Ficha ativa</span>
+          <strong>{sheet.name || "Sem nome"}</strong>
+        </div>
+        {canEdit ? (
+          <>
+            <SaveStatus
+              state={
+                typeof navigator !== "undefined" && !navigator.onLine
+                  ? "offline"
+                  : saving
+                    ? "saving"
+                    : saveError
+                      ? "error"
+                      : dirty
+                        ? "pending"
+                        : "saved"
+              }
+              savedAt={lastSavedAt}
+              onRetry={() => void doSave()}
+              compact
+            />
+            <Button
+              size="icon"
+              onClick={() => void doSave()}
+              className="tadeon-sheet-mobile-dock__save"
+              aria-label="Salvar ficha"
+              title="Salvar ficha"
+            >
+              <Save className="h-4 w-4" />
+            </Button>
+          </>
+        ) : (
+          <span className="tadeon-sheet-mobile-dock__readonly">Leitura</span>
+        )}
+      </nav>
+
       {/* Back to top */}
       <button
         type="button"
@@ -2387,16 +2461,61 @@ function Section({
   id?: string;
   className?: string;
 }) {
+  const presentationKey = id ?? title.toLocaleLowerCase("pt-BR").replace(/[^a-z0-9]+/g, "-");
+  const presentation = SECTION_PRESENTATION[presentationKey] ?? {
+    index: "•",
+    kicker: "Arquivo da personagem",
+  };
+  const storageKey = `tadeon.sheet.section:${presentationKey}`;
+  const bodyId = `sheet-section-body-${presentationKey}`;
+  const [collapsed, setCollapsed] = useState(() => {
+    if (typeof window === "undefined") return false;
+    return window.localStorage.getItem(storageKey) === "collapsed";
+  });
+
+  useEffect(() => {
+    try {
+      window.localStorage.setItem(storageKey, collapsed ? "collapsed" : "expanded");
+    } catch {
+      // A ficha continua utilizável quando o armazenamento local está indisponível.
+    }
+  }, [collapsed, storageKey]);
+
   return (
     <Card
       id={id}
+      data-section={presentationKey}
+      data-collapsed={collapsed ? "true" : "false"}
       className={`tadeon-surface tadeon-sheet-section scroll-mt-44 rounded-2xl p-4 transition-all hover:border-primary/25 md:p-5 ${className}`}
     >
       <div className="tadeon-sheet-section__heading mb-4 flex flex-wrap items-center justify-between gap-2">
-        <h2 className="font-cinzel text-lg font-semibold text-primary">{title}</h2>
-        {extra}
+        <div className="tadeon-sheet-section__title-group">
+          <span className="tadeon-sheet-section__index" aria-hidden="true">
+            {presentation.index}
+          </span>
+          <span className="min-w-0">
+            <small>{presentation.kicker}</small>
+            <h2 className="font-cinzel text-lg font-semibold text-primary">{title}</h2>
+          </span>
+        </div>
+        <div className="tadeon-sheet-section__actions">
+          {extra}
+          <button
+            type="button"
+            className="tadeon-sheet-section__toggle"
+            aria-expanded={!collapsed}
+            aria-controls={bodyId}
+            aria-label={`${collapsed ? "Expandir" : "Recolher"} seção ${title}`}
+            title={`${collapsed ? "Expandir" : "Recolher"} ${title}`}
+            onClick={() => setCollapsed((value) => !value)}
+          >
+            <ChevronDown aria-hidden="true" />
+          </button>
+        </div>
       </div>
-      {children}
+      <div id={bodyId} className="tadeon-sheet-section__body" hidden={collapsed}>
+        {children}
+      </div>
     </Card>
   );
 }
@@ -2548,8 +2667,11 @@ function CounterDots({
         {Array.from({ length: max }).map((_, i) => (
           <button
             key={i}
+            type="button"
             disabled={disabled}
             onClick={() => onChange(i + 1 === value ? 0 : i + 1)}
+            aria-label={`${label}: ${i + 1} de ${max}`}
+            aria-pressed={i < value}
             className={`w-7 h-7 rounded-full border-2 border-border transition-all hover:scale-110 ${i < value ? color : "bg-transparent"} disabled:cursor-not-allowed disabled:hover:scale-100`}
           />
         ))}
@@ -2621,31 +2743,35 @@ function RowTable<T extends HasId>({
             const value = (it as Record<string, unknown>)[c.key];
             if (c.type === "select") {
               return (
-                <select
-                  key={c.key}
-                  disabled={!canEdit}
-                  value={String(value ?? "")}
-                  onChange={(e) => update(idx, c.key, e.target.value)}
-                  className="h-8 text-xs bg-background/40 border border-border/40 rounded-md px-2 w-full"
-                >
-                  {c.options?.map((o) => (
-                    <option key={o} value={o}>
-                      {o}
-                    </option>
-                  ))}
-                </select>
+                <label key={c.key} className="tadeon-sheet-row__field">
+                  <span>{c.label}</span>
+                  <select
+                    disabled={!canEdit}
+                    value={String(value ?? "")}
+                    onChange={(e) => update(idx, c.key, e.target.value)}
+                    className="h-8 w-full rounded-md border border-border/40 bg-background/40 px-2 text-xs"
+                  >
+                    {c.options?.map((o) => (
+                      <option key={o} value={o}>
+                        {o}
+                      </option>
+                    ))}
+                  </select>
+                </label>
               );
             }
             return (
-              <Input
-                key={c.key}
-                type={c.type === "number" ? "number" : "text"}
-                placeholder={c.label}
-                disabled={!canEdit}
-                value={c.type === "number" ? Number(value ?? 0) : String(value ?? "")}
-                onChange={(e) => update(idx, c.key, e.target.value)}
-                className="h-8 text-xs bg-background/40 border-border/40 w-full"
-              />
+              <label key={c.key} className="tadeon-sheet-row__field">
+                <span>{c.label}</span>
+                <Input
+                  type={c.type === "number" ? "number" : "text"}
+                  placeholder={c.label}
+                  disabled={!canEdit}
+                  value={c.type === "number" ? Number(value ?? 0) : String(value ?? "")}
+                  onChange={(e) => update(idx, c.key, e.target.value)}
+                  className="h-8 w-full border-border/40 bg-background/40 text-xs"
+                />
+              </label>
             );
           })}
           {canEdit && (
@@ -2654,6 +2780,8 @@ function RowTable<T extends HasId>({
               variant="ghost"
               className="h-7 w-7 p-0 text-destructive hover:bg-destructive/10 self-end sm:self-auto"
               onClick={() => remove(idx)}
+              aria-label={`Remover item ${idx + 1}`}
+              title="Remover item"
             >
               <Trash className="w-3.5 h-3.5" />
             </Button>
