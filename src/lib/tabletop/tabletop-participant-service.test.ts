@@ -73,6 +73,26 @@ function validView() {
             title: "Carta selada",
             summary: "Documento compartilhado para esta sessão.",
             nodeType: "document",
+            attachments: [
+              {
+                assetId: id("11"),
+                name: "Carta selada.pdf",
+                mimeType: "application/pdf",
+                sizeBytes: 2048,
+                role: "attachment",
+                caption: "Documento encontrado nas ruínas.",
+                url: "https://example.supabase.co/carta.pdf?token=temporario",
+              },
+              {
+                assetId: id("12"),
+                name: "Selo.webp",
+                mimeType: "image/webp",
+                sizeBytes: 1024,
+                role: "illustration",
+                caption: "",
+                url: "https://example.supabase.co/selo.webp?token=temporario",
+              },
+            ],
           },
         },
       ],
@@ -85,6 +105,21 @@ describe("projeção segura da Mesa para participantes", () => {
     const parsed = parseTabletopParticipantView(validView());
     expect(parsed.scene?.entities[0].controllable).toBe(true);
     expect(parsed.scene?.entities[0].handout?.title).toBe("Carta selada");
+    expect(parsed.scene?.entities[0].handout?.attachments).toHaveLength(2);
+    expect(parsed.scene?.entities[0].handout?.attachments[0].mimeType).toBe("application/pdf");
+  });
+
+  it("rejeita anexos além do limite seguro", () => {
+    const input = validView();
+    const attachment = input.scene.entities[0].handout.attachments[0];
+    input.scene.entities[0].handout.attachments = Array.from(
+      { length: 17 },
+      (_, index) => ({
+        ...attachment,
+        assetId: id(String(100 + index)),
+      }),
+    );
+    expect(() => parseTabletopParticipantView(input)).toThrow(TabletopParticipantError);
   });
 
   it("rejeita conteúdo integral indevido no handout", () => {

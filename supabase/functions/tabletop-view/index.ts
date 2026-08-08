@@ -195,28 +195,48 @@ async function isFlagEnabled(admin: ReturnType<typeof createClient>, userId: str
   return !flagError && flag?.enabled === true;
 }
 
+interface SignedAsset {
+  url: string;
+  name: string;
+  mimeType: string;
+  sizeBytes: number;
+}
+
 async function signAssets(
   admin: ReturnType<typeof createClient>,
   assetIds: string[],
 ) {
-  const urls = new Map<string, string>();
-  if (assetIds.length === 0) return urls;
+  const signed = new Map<string, SignedAsset>();
+  if (assetIds.length === 0) return signed;
   const { data: assets, error } = await admin
     .from("assets")
-    .select("id,provider,bucket,object_key,status,deleted_at")
+    .select("id,provider,bucket,object_key,display_name,original_name,mime_type,size_bytes,status,deleted_at")
     .in("id", assetIds)
     .eq("status", "ready")
     .is("deleted_at", null);
-  if (error) return urls;
+  if (error) return signed;
 
   await Promise.all((assets ?? []).map(async (asset) => {
     if (asset.provider !== "supabase") return;
     const { data, error: signError } = await admin.storage
       .from(asset.bucket)
       .createSignedUrl(asset.object_key, 300);
-    if (!signError && data?.signedUrl) urls.set(asset.id, data.signedUrl);
+    if (!signError && data?.signedUrl) {
+      signed.set(asset.id, {
+        url: data.signedUrl,
+        name:
+          boundedText(asset.display_name, 240) ||
+          boundedText(asset.original_name, 240) ||
+          "Arquivo",
+        mimeType: boundedText(asset.mime_type, 160) || "application/octet-stream",
+        sizeBytes: Math.max(
+          0,
+          Math.min(100 * 1024 * 1024, Math.trunc(finiteNumber(asset.size_bytes))),
+        ),
+      });
+    }
   }));
-  return urls;
+  return signed;
 }
 
 Deno.serve(async (request) => {
@@ -448,6 +468,12 @@ Deno.serve(async (request) => {
     nodeType: string;
     coverAssetId: string | null;
   }>();
+  const handoutAssetLinks = new Map<string, Array<{
+    assetId: string;
+    role: string;
+    caption: string;
+    sortOrder: number;
+  }>>();
   if (knowledgeEnabled && handoutNodeIds.length > 0) {
     if (!publicApiKey) {
       console.error("[tabletop-view] Public server key unavailable.");
@@ -477,6 +503,35 @@ Deno.serve(async (request) => {
           typeof node.cover_asset_id === "string" ? node.cover_asset_id : null,
       });
     }
+
+    if (handoutNodes.size > 0) {
+      const { data: links, error: linksError } = await authorized
+        .from("knowledge_assets")
+        .select("node_id,asset_id,asset_role,caption,sort_order")
+        .in("node_id", [...handoutNodes.keys()])
+        .order("sort_order", { ascending: true })
+        .limit(1024);
+      if (linksError) {
+        console.error("[tabletop-view] Could not authorize Nexus attachments.");
+        return respond({ error: "Não foi possível validar os anexos dos handouts." }, 500);
+      }
+      for (const link of links ?? []) {
+        if (
+          typeof link.node_id !== "string" ||
+          typeof link.asset_id !== "string" ||
+          !UUID_PATTERN.test(link.asset_id)
+        ) continue;
+        const current = handoutAssetLinks.get(link.node_id) ?? [];
+        if (current.length >= 16) continue;
+        current.push({
+          assetId: link.asset_id,
+          role: boundedText(link.asset_role, 80),
+          caption: boundedText(link.caption, 500),
+          sortOrder: Math.max(0, Math.trunc(finiteNumber(link.sort_order))),
+        });
+        handoutAssetLinks.set(link.node_id, current);
+      }
+    }
   }
   // Um pin sem página autorizada desaparece por completo, inclusive seu título.
   const publicEntities = publicEntityCandidates.filter((entity) =>
@@ -490,10 +545,13 @@ Deno.serve(async (request) => {
     scene.background_asset_id,
     ...publicEntities.map((entity) => entity.asset_id),
     ...[...handoutNodes.values()].map((node) => node.coverAssetId),
+    ...[...handoutAssetLinks.values()].flatMap((links) =>
+      links.map((link) => link.assetId)
+    ),
   ].filter((value): value is string =>
     typeof value === "string" && UUID_PATTERN.test(value)
   ))];
-  const assetUrls = await signAssets(admin, assetIds);
+  const signedAssets = await signAssets(admin, assetIds);
   const handoutViews = new Map([...handoutNodes].map(([nodeId, node]) => [
     nodeId,
     {
@@ -501,9 +559,23 @@ Deno.serve(async (request) => {
       title: node.title,
       summary: node.summary,
       nodeType: node.nodeType,
-      ...(node.coverAssetId && assetUrls.has(node.coverAssetId)
-        ? { coverUrl: assetUrls.get(node.coverAssetId) }
+      ...(node.coverAssetId && signedAssets.has(node.coverAssetId)
+        ? { coverUrl: signedAssets.get(node.coverAssetId)?.url }
         : {}),
+      attachments: (handoutAssetLinks.get(nodeId) ?? []).flatMap((link) => {
+        const asset = signedAssets.get(link.assetId);
+        return asset
+          ? [{
+              assetId: link.assetId,
+              name: asset.name,
+              mimeType: asset.mimeType,
+              sizeBytes: asset.sizeBytes,
+              role: link.role,
+              caption: link.caption,
+              url: asset.url,
+            }]
+          : [];
+      }),
     },
   ]));
 
@@ -519,8 +591,8 @@ Deno.serve(async (request) => {
       gridSize: scene.grid_size,
       gridScale: finiteNumber(scene.grid_scale, 1),
       snap: scene.snap_enabled,
-      ...(scene.background_asset_id && assetUrls.has(scene.background_asset_id)
-        ? { backgroundAssetUrl: assetUrls.get(scene.background_asset_id) }
+      ...(scene.background_asset_id && signedAssets.has(scene.background_asset_id)
+        ? { backgroundAssetUrl: signedAssets.get(scene.background_asset_id)?.url }
         : {}),
       layers: publicLayers.map((layer) => ({
         id: layer.id,
@@ -545,8 +617,8 @@ Deno.serve(async (request) => {
         hidden: false,
         locked: entity.locked || participant.role === "observer",
         color: ENTITY_COLORS[entity.entity_type] ?? 0x4f5560,
-        ...(entity.asset_id && assetUrls.has(entity.asset_id)
-          ? { assetUrl: assetUrls.get(entity.asset_id) }
+        ...(entity.asset_id && signedAssets.has(entity.asset_id)
+          ? { assetUrl: signedAssets.get(entity.asset_id)?.url }
           : {}),
         controllable:
           participant.role === "player" && entity.owner_user_id === user.id && !entity.locked,
