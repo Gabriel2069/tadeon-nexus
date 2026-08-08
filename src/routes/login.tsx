@@ -7,9 +7,17 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
 import { toast } from "sonner";
-import { AlertCircle, CheckCircle2, Loader2 } from "lucide-react";
+import {
+  AlertCircle,
+  CheckCircle2,
+  LibraryBig,
+  Loader2,
+  ShieldCheck,
+  Sparkles,
+} from "lucide-react";
 import { getAuthRedirectOrigin } from "@/lib/auth-redirect";
 import { getAuthErrorMessage, readAuthUrlError } from "@/lib/auth-errors";
+import { BrandMark, ThreadField } from "@/components/brand-mark";
 
 export const Route = createFileRoute("/login")({
   head: () => ({
@@ -174,124 +182,170 @@ function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4">
-      <Card className="w-full max-w-md p-8 bg-card/80 backdrop-blur border-border">
-        <div className="text-center mb-6">
-          <h1 className="font-cinzel text-3xl font-bold text-primary">Tadeon Nexus · Entrar</h1>
-          <p className="mt-2 text-sm text-muted-foreground">
-            {mode === "signin" ? "Entre na sua conta" : "Crie sua conta"}
-          </p>
-        </div>
+    <main className="tadeon-auth-page">
+      <div aria-hidden="true" className="tadeon-auth-page__glow" />
+      <section className="tadeon-auth-shell" aria-label="Acesso ao Tadeon Nexus">
+        <aside className="tadeon-auth-manifesto">
+          <ThreadField className="text-primary" />
+          <div className="relative z-10">
+            <div className="tadeon-auth-manifesto__brand">
+              <BrandMark className="h-14 w-14 text-primary" />
+              <div>
+                <p className="tadeon-eyebrow">Fio-Mestre</p>
+                <p className="font-cinzel text-2xl font-semibold text-primary">Tadeon Nexus</p>
+              </div>
+            </div>
+            <div className="tadeon-auth-manifesto__copy">
+              <p className="tadeon-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
+                Arquivo de continuidade
+              </p>
+              <h2>Onde cada fio permanece legível.</h2>
+              <p>
+                Personagens, conhecimento e mesa reunidos em um espaço privado, persistente e feito
+                para a campanha continuar de onde parou.
+              </p>
+            </div>
+            <div className="tadeon-auth-manifesto__signals" aria-label="Recursos protegidos">
+              <span>
+                <ShieldCheck aria-hidden="true" /> Acesso protegido
+              </span>
+              <span>
+                <LibraryBig aria-hidden="true" /> Arquivo conectado
+              </span>
+              <span>
+                <Sparkles aria-hidden="true" /> Identidade Fio-Mestre
+              </span>
+            </div>
+          </div>
+        </aside>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          {mode === "signup" && (
+        <Card className="tadeon-auth-card">
+          <div className="mb-6">
+            <p className="tadeon-eyebrow">Portal do arquivo</p>
+            <h1 className="mt-1 font-cinzel text-3xl font-semibold text-primary">
+              {mode === "signin" ? "Entrar no Nexus" : "Criar acesso"}
+            </h1>
+            <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+              {mode === "signin"
+                ? "Retome suas fichas e os fios autorizados da campanha."
+                : "Crie sua identidade para receber acesso às campanhas."}
+            </p>
+          </div>
+
+          <form onSubmit={handleSubmit} className="space-y-4">
+            {mode === "signup" && (
+              <div>
+                <Label htmlFor="name">Nome completo</Label>
+                <Input
+                  id="name"
+                  value={fullName}
+                  onChange={(e) => setFullName(e.target.value)}
+                  autoComplete="name"
+                  required
+                />
+              </div>
+            )}
             <div>
-              <Label htmlFor="name">Nome completo</Label>
+              <Label htmlFor="email">E-mail</Label>
               <Input
-                id="name"
-                value={fullName}
-                onChange={(e) => setFullName(e.target.value)}
-                autoComplete="name"
+                id="email"
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                autoComplete="email"
+                inputMode="email"
                 required
               />
             </div>
-          )}
-          <div>
-            <Label htmlFor="email">E-mail</Label>
-            <Input
-              id="email"
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              autoComplete="email"
-              inputMode="email"
-              required
-            />
-          </div>
-          <div>
-            <Label htmlFor="password">Senha</Label>
-            <Input
-              id="password"
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              minLength={mode === "signup" ? 8 : undefined}
-              autoComplete={mode === "signin" ? "current-password" : "new-password"}
-            />
-          </div>
-          <Button type="submit" disabled={submitting || resetting} className="w-full">
-            {submitting && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
-            {mode === "signin" ? "Entrar" : "Cadastrar"}
-          </Button>
-
-          {feedback && (
-            <div
-              role={feedback.tone === "error" ? "alert" : "status"}
-              aria-live="polite"
-              className={`flex items-start gap-2 rounded-lg border px-3 py-2.5 text-xs leading-relaxed ${
-                feedback.tone === "error"
-                  ? "border-destructive/35 bg-destructive/10 text-destructive"
-                  : "border-primary/30 bg-primary/10 text-foreground"
-              }`}
+            <div>
+              <Label htmlFor="password">Senha</Label>
+              <Input
+                id="password"
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                minLength={mode === "signup" ? 8 : undefined}
+                autoComplete={mode === "signin" ? "current-password" : "new-password"}
+              />
+            </div>
+            <Button
+              type="submit"
+              disabled={submitting || resetting}
+              className="tadeon-auth-submit min-h-11 w-full"
             >
-              {feedback.tone === "error" ? (
-                <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" />
-              ) : (
-                <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
-              )}
-              <span>{feedback.message}</span>
+              {submitting && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
+              {mode === "signin" ? "Entrar" : "Cadastrar"}
+            </Button>
+
+            {feedback && (
+              <div
+                role={feedback.tone === "error" ? "alert" : "status"}
+                aria-live="polite"
+                className={`flex items-start gap-2 rounded-lg border px-3 py-2.5 text-xs leading-relaxed ${
+                  feedback.tone === "error"
+                    ? "border-destructive/35 bg-destructive/10 text-destructive"
+                    : "border-primary/30 bg-primary/10 text-foreground"
+                }`}
+              >
+                {feedback.tone === "error" ? (
+                  <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" />
+                ) : (
+                  <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
+                )}
+                <span>{feedback.message}</span>
+              </div>
+            )}
+          </form>
+
+          {mode === "signin" && (
+            <div className="mt-3 text-center">
+              <button
+                type="button"
+                onClick={handleForgot}
+                disabled={resetting || submitting}
+                className="text-xs text-muted-foreground hover:text-primary hover:underline disabled:opacity-50"
+              >
+                {resetting ? "Enviando…" : "Esqueceu a senha?"}
+              </button>
             </div>
           )}
-        </form>
 
-        {mode === "signin" && (
-          <div className="mt-3 text-center">
-            <button
-              type="button"
-              onClick={handleForgot}
-              disabled={resetting || submitting}
-              className="text-xs text-muted-foreground hover:text-primary hover:underline disabled:opacity-50"
-            >
-              {resetting ? "Enviando…" : "Esqueceu a senha?"}
-            </button>
+          <div className="mt-4 text-center text-sm">
+            {mode === "signin" ? (
+              <button
+                type="button"
+                onClick={() => {
+                  setMode("signup");
+                  setPassword("");
+                  setFeedback(null);
+                }}
+                className="text-primary hover:underline"
+              >
+                Não tem conta? Cadastre-se
+              </button>
+            ) : (
+              <button
+                type="button"
+                onClick={() => {
+                  setMode("signin");
+                  setPassword("");
+                  setFeedback(null);
+                }}
+                className="text-primary hover:underline"
+              >
+                Já tem conta? Entrar
+              </button>
+            )}
           </div>
-        )}
 
-        <div className="mt-4 text-center text-sm">
-          {mode === "signin" ? (
-            <button
-              type="button"
-              onClick={() => {
-                setMode("signup");
-                setPassword("");
-                setFeedback(null);
-              }}
-              className="text-primary hover:underline"
-            >
-              Não tem conta? Cadastre-se
-            </button>
-          ) : (
-            <button
-              type="button"
-              onClick={() => {
-                setMode("signin");
-                setPassword("");
-                setFeedback(null);
-              }}
-              className="text-primary hover:underline"
-            >
-              Já tem conta? Entrar
-            </button>
-          )}
-        </div>
-
-        <p className="mt-6 text-center text-[10px] text-muted-foreground">
-          <Link to="/" className="hover:text-primary">
-            Voltar
-          </Link>
-        </p>
-      </Card>
-    </div>
+          <p className="mt-6 text-center text-[10px] uppercase tracking-wider text-muted-foreground">
+            <Link to="/" className="hover:text-primary">
+              Voltar ao início
+            </Link>
+          </p>
+        </Card>
+      </section>
+    </main>
   );
 }
