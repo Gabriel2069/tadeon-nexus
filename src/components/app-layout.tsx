@@ -62,7 +62,7 @@ const DEFAULT_NAVIGATION_FLAGS: NavigationFlags = {
 function readNavigationFlags(userId?: string): NavigationFlags {
   if (typeof window === "undefined" || !userId) return DEFAULT_NAVIGATION_FLAGS;
   try {
-    const value = window.sessionStorage.getItem(`${NAV_FLAGS_KEY}:${userId}`);
+    const value = window.localStorage.getItem(`${NAV_FLAGS_KEY}:${userId}`);
     if (!value) return DEFAULT_NAVIGATION_FLAGS;
     const parsed = JSON.parse(value) as Partial<NavigationFlags>;
     return {
@@ -76,7 +76,10 @@ function readNavigationFlags(userId?: string): NavigationFlags {
 
 function storeNavigationFlags(userId: string, flags: NavigationFlags) {
   try {
-    window.sessionStorage.setItem(`${NAV_FLAGS_KEY}:${userId}`, JSON.stringify(flags));
+    // Feature visibility is not an authorization boundary. Persisting this harmless
+    // presentation cache prevents O Nexus and Mesa Nexus from briefly disappearing
+    // on every new tab while the secure flag repository is refreshed.
+    window.localStorage.setItem(`${NAV_FLAGS_KEY}:${userId}`, JSON.stringify(flags));
   } catch {
     // Navegação continua funcional mesmo quando o armazenamento está indisponível.
   }
@@ -291,6 +294,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
       >
         <SidebarContent mini={collapsed} enableSearchShortcut />
         <button
+          type="button"
           onClick={() => setCollapsed((p) => !p)}
           aria-label={collapsed ? "Expandir menu" : "Recolher menu"}
           title={collapsed ? "Expandir" : "Recolher"}
@@ -308,6 +312,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
         {/* Mobile header */}
         <header className="tadeon-mobile-header sticky top-0 z-30 flex min-h-16 items-center justify-between border-b border-border/80 bg-background/85 px-3 py-2 backdrop-blur-xl md:hidden">
           <button
+            type="button"
             onClick={() => setMobileOpen(true)}
             className="flex h-11 w-11 items-center justify-center rounded-xl border border-transparent transition-all hover:border-border hover:bg-secondary active:scale-95"
             aria-label="Abrir menu"
@@ -323,6 +328,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
           <div className="flex items-center gap-1">
             <GlobalSearch mobile />
             <button
+              type="button"
               onClick={() => setAccountOpen(true)}
               className="flex h-11 w-11 items-center justify-center rounded-xl border border-transparent transition-all hover:border-border hover:bg-secondary active:scale-95"
               aria-label="Conta"
@@ -343,6 +349,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
           <div className="absolute inset-0 bg-black/60" onClick={() => setMobileOpen(false)} />
           <aside className="absolute left-0 top-0 h-[100dvh] w-[min(18rem,86vw)] border-r border-sidebar-border bg-sidebar text-sidebar-foreground shadow-2xl animate-in slide-in-from-left duration-300">
             <button
+              type="button"
               onClick={() => setMobileOpen(false)}
               className="absolute right-3 top-[max(0.75rem,env(safe-area-inset-top))] z-20 flex h-11 w-11 items-center justify-center rounded-md transition-colors hover:bg-secondary"
               aria-label="Fechar menu"
@@ -384,6 +391,7 @@ function NavItem({
     <Link
       to={to}
       onClick={onClick}
+      aria-current={active ? "page" : undefined}
       title={mini ? label : undefined}
       className={`tadeon-nav-item group flex min-h-11 items-center gap-3 rounded-xl px-3 py-2.5 text-sm transition-all ${
         mini ? "justify-center px-2" : ""
