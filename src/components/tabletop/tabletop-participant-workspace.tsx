@@ -1,9 +1,9 @@
-import { BookOpenText, ExternalLink, Eye, Loader2, LogIn, RefreshCw, ShieldCheck, UsersRound } from "lucide-react";
-import { Link } from "@tanstack/react-router";
+import { BookOpenText, Eye, Images, Loader2, LogIn, RefreshCw, ShieldCheck, UsersRound } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { TabletopRealtimeStatus } from "@/components/tabletop/realtime-status";
+import { TabletopHandoutViewer } from "@/components/tabletop/tabletop-handout-viewer";
 import { useAuth } from "@/lib/auth";
 import { TabletopEngine } from "@/lib/tabletop/tabletop-engine";
 import { createEmptyVisibilityState } from "@/lib/tabletop/tabletop-visibility-service";
@@ -12,6 +12,7 @@ import {
   tabletopParticipantService,
   type TabletopParticipantView,
   type TabletopParticipantScene,
+  type TabletopParticipantHandout,
 } from "@/lib/tabletop/tabletop-participant-service";
 import {
   tabletopPersistenceService,
@@ -58,6 +59,8 @@ export function TabletopParticipantWorkspace({
   const [loading, setLoading] = useState(true);
   const [joining, setJoining] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [selectedHandout, setSelectedHandout] =
+    useState<TabletopParticipantHandout | null>(null);
 
   useEffect(() => {
     const host = hostRef.current;
@@ -348,19 +351,32 @@ export function TabletopParticipantWorkspace({
                     <strong>{handout.title}</strong>
                     {handout.summary && <p>{handout.summary}</p>}
                   </div>
-                  <Link
-                    to="/nexus"
-                    search={{ node: handout.nodeId }}
-                    aria-label={`Abrir ${handout.title} em O Nexus`}
+                  <button
+                    type="button"
+                    onClick={() => setSelectedHandout(handout)}
+                    aria-label={`Visualizar ${handout.title} na Mesa`}
                   >
-                    Abrir <ExternalLink aria-hidden="true" />
-                  </Link>
+                    Visualizar
+                    {handout.attachments.length > 0 && (
+                      <span>
+                        <Images aria-hidden="true" />
+                        {handout.attachments.length}
+                      </span>
+                    )}
+                  </button>
                 </article>
               ))}
             </div>
           </details>
         )}
       </section>
+      <TabletopHandoutViewer
+        handout={selectedHandout}
+        open={selectedHandout !== null}
+        onOpenChange={(open) => {
+          if (!open) setSelectedHandout(null);
+        }}
+      />
     </main>
   );
 }
