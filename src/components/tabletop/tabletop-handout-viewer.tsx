@@ -29,9 +29,13 @@ const SAFE_INLINE_IMAGES = new Set([
   "image/webp",
 ]);
 
+function normalizedMime(attachment: TabletopParticipantHandoutAttachment) {
+  return attachment.mimeType.trim().toLowerCase();
+}
+
 function canPreview(attachment: TabletopParticipantHandoutAttachment) {
-  return SAFE_INLINE_IMAGES.has(attachment.mimeType) ||
-    attachment.mimeType === "application/pdf";
+  const mimeType = normalizedMime(attachment);
+  return SAFE_INLINE_IMAGES.has(mimeType) || mimeType === "application/pdf";
 }
 
 function formatBytes(value: number) {
@@ -85,7 +89,7 @@ export function TabletopHandoutViewer({
 
         <div className="tadeon-handout-viewer__layout">
           <section className="tadeon-handout-viewer__preview" aria-live="polite">
-            {activeAttachment && SAFE_INLINE_IMAGES.has(activeAttachment.mimeType) ? (
+            {activeAttachment && SAFE_INLINE_IMAGES.has(normalizedMime(activeAttachment)) ? (
               <figure>
                 <img
                   src={activeAttachment.url}
@@ -98,7 +102,7 @@ export function TabletopHandoutViewer({
                   </figcaption>
                 )}
               </figure>
-            ) : activeAttachment?.mimeType === "application/pdf" ? (
+            ) : activeAttachment && normalizedMime(activeAttachment) === "application/pdf" ? (
               <iframe
                 src={activeAttachment.url}
                 title={`Visualização de ${activeAttachment.name}`}
@@ -131,7 +135,7 @@ export function TabletopHandoutViewer({
             ) : (
               <ul>
                 {handout.attachments.map((attachment) => {
-                  const image = SAFE_INLINE_IMAGES.has(attachment.mimeType);
+                  const image = SAFE_INLINE_IMAGES.has(normalizedMime(attachment));
                   const preview = canPreview(attachment);
                   return (
                     <li
