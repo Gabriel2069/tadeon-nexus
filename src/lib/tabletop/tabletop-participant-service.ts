@@ -18,6 +18,18 @@ const participantLayerSchema = z
   })
   .strict();
 
+const participantHandoutAttachmentSchema = z
+  .object({
+    assetId: uuidSchema,
+    name: z.string().trim().min(1).max(240),
+    mimeType: z.string().trim().min(1).max(160),
+    sizeBytes: z.number().int().nonnegative().max(100 * 1024 * 1024),
+    role: z.string().trim().max(80),
+    caption: z.string().trim().max(500),
+    url: z.url(),
+  })
+  .strict();
+
 const participantHandoutSchema = z
   .object({
     nodeId: uuidSchema,
@@ -25,6 +37,7 @@ const participantHandoutSchema = z
     summary: z.string().trim().max(600),
     nodeType: z.string().trim().min(1).max(80),
     coverUrl: z.url().optional(),
+    attachments: z.array(participantHandoutAttachmentSchema).max(16),
   })
   .strict();
 
@@ -137,12 +150,23 @@ const participantViewSchema = z
   })
   .strict();
 
+export interface TabletopParticipantHandoutAttachment {
+  assetId: string;
+  name: string;
+  mimeType: string;
+  sizeBytes: number;
+  role: string;
+  caption: string;
+  url: string;
+}
+
 export interface TabletopParticipantHandout {
   nodeId: string;
   title: string;
   summary: string;
   nodeType: string;
   coverUrl?: string;
+  attachments: TabletopParticipantHandoutAttachment[];
 }
 
 export type TabletopParticipantScene = Omit<TabletopScene, "entities"> & {
