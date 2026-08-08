@@ -14,9 +14,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Package repository
-        run: tar --exclude=.git --exclude=tadeon-nexus-source.tar.gz -czf tadeon-nexus-source.tar.gz .
+        run: tar --exclude=.git -czf /tmp/tadeon-nexus-source.tar.gz .
       - uses: actions/upload-artifact@v4
         with:
           name: tadeon-nexus-source
-          path: tadeon-nexus-source.tar.gz
+          path: /tmp/tadeon-nexus-source.tar.gz
           retention-days: 1
