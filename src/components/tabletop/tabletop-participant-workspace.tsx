@@ -150,7 +150,7 @@ export function TabletopParticipantWorkspace({
     );
     engineRef.current.setReadOnly(true);
     engineRef.current.fitToScreen();
-  }, [view?.scene, view?.visibility]);
+  }, [view?.participant.canInteract, view?.scene, view?.visibility]);
 
   const loadView = useCallback(async (targetSession: TabletopSession) => {
     try {
