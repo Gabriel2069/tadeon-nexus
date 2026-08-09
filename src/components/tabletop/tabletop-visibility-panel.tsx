@@ -43,6 +43,8 @@ interface TabletopVisibilityPanelProps {
   sceneHeight: number;
   state: TabletopVisibilityState;
   dirty: boolean;
+  selectedStructureId: string | null;
+  onSelectStructure: (id: string | null) => void;
   onPreview: (state: TabletopVisibilityState) => void;
   onSaved: (state: TabletopVisibilityState, sceneVersion: number) => void;
 }
@@ -99,6 +101,8 @@ export function TabletopVisibilityPanel({
   sceneHeight,
   state,
   dirty,
+  selectedStructureId,
+  onSelectStructure,
   onPreview,
   onSaved,
 }: TabletopVisibilityPanelProps) {
@@ -150,6 +154,7 @@ export function TabletopVisibilityPanel({
     update({
       walls: [...state.walls, structure],
     });
+    onSelectStructure(structure.id);
   };
 
   const addLight = () =>
@@ -360,6 +365,8 @@ export function TabletopVisibilityPanel({
                   key={wall.id}
                   className="tadeon-visibility__item"
                   data-family={structureFamily(wall.wallType)}
+                  data-selected={wall.id === selectedStructureId}
+                  onPointerDownCapture={() => onSelectStructure(wall.id)}
                 >
                   <div className="tadeon-visibility__item-title">
                     <strong>
@@ -393,13 +400,15 @@ export function TabletopVisibilityPanel({
                       type="button"
                       disabled={disabled}
                       aria-label="Excluir estrutura"
-                      onClick={() =>
+                      onClick={() => {
                         update({
                           walls: state.walls.filter(
                             (item) => item.id !== wall.id,
                           ),
-                        })
-                      }
+                        });
+                        if (wall.id === selectedStructureId)
+                          onSelectStructure(null);
+                      }}
                     >
                       <Trash2 aria-hidden="true" />
                     </button>

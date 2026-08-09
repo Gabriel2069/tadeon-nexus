@@ -81,6 +81,9 @@ import type { TabletopToolMode } from "@/lib/tabletop/interaction-controller";
 import type { TabletopProjectionMode } from "@/lib/tabletop/camera-controller";
 import {
   createTabletopStructure,
+  structureFamily,
+  structureStateLabel,
+  structureStateOptions,
   TABLETOP_STRUCTURE_PRESETS,
   type TabletopStructureType,
 } from "@/lib/tabletop/tabletop-spatial";
@@ -88,6 +91,7 @@ import {
   createEmptyVisibilityState,
   tabletopVisibilityService,
   type TabletopVisibilityState,
+  type TabletopWall,
 } from "@/lib/tabletop/tabletop-visibility-service";
 import {
   moveTabletopScene,
@@ -280,6 +284,9 @@ export function TabletopWorkspace({
     useState<TabletopProjectionMode>("plan");
   const [structureType, setStructureType] =
     useState<TabletopStructureType>("wall");
+  const [selectedStructureId, setSelectedStructureId] = useState<string | null>(
+    null,
+  );
   const [drawColor, setDrawColor] = useState("#d9d7a4");
   const [drawWidth, setDrawWidth] = useState(5);
   const [sceneDialogOpen, setSceneDialogOpen] = useState(false);
@@ -305,6 +312,11 @@ export function TabletopWorkspace({
     [snapshot],
   );
   const primary = selected[0];
+  const selectedStructure = useMemo(
+    () =>
+      visibility.walls.find((wall) => wall.id === selectedStructureId) ?? null,
+    [selectedStructureId, visibility.walls],
+  );
   const currentSceneIndex = scenes.findIndex(
     (scene) => scene.id === persistedScene?.id,
   );
@@ -395,6 +407,50 @@ export function TabletopWorkspace({
       engineRef.current?.setVisibility(next, lightingEnabled);
     },
     [lightingEnabled],
+  );
+
+  const replaceStructure = useCallback(
+    (nextStructure: TabletopWall) => {
+      previewVisibility({
+        ...visibilityRef.current,
+        walls: visibilityRef.current.walls.map((wall) =>
+          wall.id === nextStructure.id ? nextStructure : wall,
+        ),
+      });
+    },
+    [previewVisibility],
+  );
+
+  const deleteStructure = useCallback(
+    (id: string) => {
+      previewVisibility({
+        ...visibilityRef.current,
+        walls: visibilityRef.current.walls.filter((wall) => wall.id !== id),
+      });
+      setSelectedStructureId(null);
+    },
+    [previewVisibility],
+  );
+
+  const duplicateStructure = useCallback(
+    (id: string) => {
+      const source = visibilityRef.current.walls.find((wall) => wall.id === id);
+      if (!source) return;
+      const copy = {
+        ...source,
+        id: crypto.randomUUID(),
+        x1: source.x1 + 24,
+        y1: source.y1 + 24,
+        x2: source.x2 + 24,
+        y2: source.y2 + 24,
+      };
+      previewVisibility({
+        ...visibilityRef.current,
+        walls: [...visibilityRef.current.walls, copy],
+      });
+      engineRef.current?.setSelectedStructure(copy.id);
+    },
+    [previewVisibility],
   );
 
   const clearScene = useCallback(() => {
@@ -489,9 +545,17 @@ export function TabletopWorkspace({
       },
       onAssetError: (message) => toast.error(message),
       onToolModeChange: setToolMode,
+      onSelectStructure: (id) => {
+        setSelectedStructureId(id);
+        if (id) setPanelTab("space");
+      },
+      onUpdateStructure: (_before, after) => replaceStructure(after),
+      onDeleteStructure: deleteStructure,
+      onDuplicateStructure: duplicateStructure,
       onCreateStructure: ({ start, end }) => {
+        const id = crypto.randomUUID();
         const structure = createTabletopStructure({
-          id: crypto.randomUUID(),
+          id,
           type: structureTypeRef.current,
           start,
           end,
@@ -502,6 +566,7 @@ export function TabletopWorkspace({
           walls: [...visibilityRef.current.walls, structure],
         });
         setPanelTab("space");
+        engine.setSelectedStructure(id);
       },
       onContextMenu: (position, entityId) =>
         setContextMenu({ ...clampContextMenu(position), entityId }),
@@ -530,7 +595,13 @@ export function TabletopWorkspace({
       engineRef.current = null;
       void engine.destroy();
     };
-  }, [lightingEnabled, previewVisibility]);
+  }, [
+    deleteStructure,
+    duplicateStructure,
+    lightingEnabled,
+    previewVisibility,
+    replaceStructure,
+  ]);
 
   useEffect(() => {
     let active = true;
@@ -1410,6 +1481,77 @@ export function TabletopWorkspace({
               </div>
             </div>
           )}
+          {selectedStructure && toolMode === "select" && (
+            <div
+              className="tadeon-tabletop-selection-dock tadeon-tabletop-selection-dock--structure"
+              aria-label="Edição rápida da estrutura"
+            >
+              <div className="tadeon-tabletop-structure-selection__identity">
+                <BrickWall className="h-4 w-4" aria-hidden="true" />
+                <span>
+                  <strong>
+                    {structureStateLabel(selectedStructure.wallType)}
+                  </strong>
+                  <small>arraste o centro ou os vértices</small>
+                </span>
+              </div>
+              {structureFamily(selectedStructure.wallType) !== "wall" && (
+                <div
+                  className="tadeon-tabletop-structure-selection__states"
+                  aria-label="Estado rápido"
+                >
+                  {structureStateOptions(
+                    structureFamily(selectedStructure.wallType),
+                  ).map((stateType) => (
+                    <button
+                      key={stateType}
+                      type="button"
+                      aria-pressed={selectedStructure.wallType === stateType}
+                      onClick={() =>
+                        engineRef.current?.setSelectedStructureState(stateType)
+                      }
+                    >
+                      {structureStateLabel(stateType).replace(
+                        /^(Porta|Janela|Telhado) /,
+                        "",
+                      )}
+                    </button>
+                  ))}
+                </div>
+              )}
+              <span className="tadeon-tabletop-selection-dock__divider" />
+              <ToolbarButton
+                label="Enquadrar estrutura"
+                onClick={() => engineRef.current?.focusSelection()}
+              >
+                <Focus className="h-4 w-4" />
+              </ToolbarButton>
+              <ToolbarButton
+                label="Duplicar estrutura"
+                disabled={!editable}
+                onClick={() => engineRef.current?.duplicateSelected()}
+              >
+                <Copy className="h-4 w-4" />
+              </ToolbarButton>
+              <ToolbarButton
+                label="Abrir detalhes da estrutura"
+                onClick={() => {
+                  setPanelTab("space");
+                  setPanelCollapsed(false);
+                  setMobilePanelOpen(true);
+                }}
+              >
+                <SlidersHorizontal className="h-4 w-4" />
+              </ToolbarButton>
+              <ToolbarButton
+                label="Excluir estrutura"
+                disabled={!editable}
+                onClick={() => engineRef.current?.deleteSelected()}
+              >
+                <Trash2 className="h-4 w-4" />
+              </ToolbarButton>
+            </div>
+          )}
           {selected.length > 0 &&
             toolMode !== "draw" &&
             toolMode !== "structure" && (
@@ -1841,6 +1983,10 @@ export function TabletopWorkspace({
                 sceneHeight={snapshot.scene.height}
                 state={visibility}
                 dirty={visibilityDirty}
+                selectedStructureId={selectedStructureId}
+                onSelectStructure={(id) =>
+                  engineRef.current?.setSelectedStructure(id)
+                }
                 onPreview={previewVisibility}
                 onSaved={installVisibility}
               />

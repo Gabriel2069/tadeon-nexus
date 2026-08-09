@@ -5,6 +5,7 @@ import {
   structureFamily,
   type TabletopStructureType,
 } from "./tabletop-spatial";
+import type { TabletopWall } from "./tabletop-visibility-service";
 import type { Point } from "./types";
 
 export class TabletopToolOverlay {
@@ -12,6 +13,7 @@ export class TabletopToolOverlay {
   private readonly measure = new Graphics();
   private readonly drawing = new Graphics();
   private readonly structure = new Graphics();
+  private readonly selectedStructure = new Graphics();
   private readonly measureLabel = new Text({
     text: "",
     style: {
@@ -30,6 +32,7 @@ export class TabletopToolOverlay {
     this.view.addChild(
       this.measure,
       this.drawing,
+      this.selectedStructure,
       this.structure,
       this.measureLabel,
     );
@@ -138,6 +141,69 @@ export class TabletopToolOverlay {
 
   clearStructure() {
     this.structure.clear();
+  }
+
+  renderStructureSelection(wall: TabletopWall | null, zoom: number) {
+    this.selectedStructure.clear();
+    if (!wall) return;
+    const safeZoom = Math.max(0.01, zoom);
+    const family = structureFamily(wall.wallType);
+    const color =
+      family === "door"
+        ? 0xe6b663
+        : family === "window"
+          ? 0x79c8df
+          : family === "roof"
+            ? 0xb95360
+            : 0xd9d7a4;
+    const start = { x: wall.x1, y: wall.y1 };
+    const end = { x: wall.x2, y: wall.y2 };
+    const center = { x: (wall.x1 + wall.x2) / 2, y: (wall.y1 + wall.y2) / 2 };
+    if (isRoofStructure(wall.wallType)) {
+      this.selectedStructure
+        .rect(
+          Math.min(wall.x1, wall.x2),
+          Math.min(wall.y1, wall.y2),
+          Math.abs(wall.x2 - wall.x1),
+          Math.abs(wall.y2 - wall.y1),
+        )
+        .fill({ color, alpha: 0.08 })
+        .stroke({ color, alpha: 0.98, width: 2.4 / safeZoom });
+    } else {
+      this.selectedStructure
+        .moveTo(start.x, start.y)
+        .lineTo(end.x, end.y)
+        .stroke({
+          color: 0x080a0e,
+          alpha: 0.92,
+          width: (family === "wall" ? 8 : 10) / safeZoom,
+        })
+        .moveTo(start.x, start.y)
+        .lineTo(end.x, end.y)
+        .stroke({ color, alpha: 1, width: 3 / safeZoom });
+    }
+    const endpointRadius = 6 / safeZoom;
+    const centerRadius = 5 / safeZoom;
+    for (const point of [start, end]) {
+      this.selectedStructure.circle(point.x, point.y, endpointRadius).fill({
+        color: 0x080a0e,
+        alpha: 1,
+      });
+      this.selectedStructure.circle(point.x, point.y, endpointRadius).stroke({
+        color,
+        alpha: 1,
+        width: 2 / safeZoom,
+      });
+    }
+    this.selectedStructure.circle(center.x, center.y, centerRadius).fill({
+      color,
+      alpha: 1,
+    });
+    this.selectedStructure.circle(center.x, center.y, centerRadius).stroke({
+      color: 0x080a0e,
+      alpha: 0.9,
+      width: 1.5 / safeZoom,
+    });
   }
 
   destroy() {

@@ -331,6 +331,80 @@
   background: linear-gradient(transparent, rgb(217 215 164 / 24%), transparent);
 }
 
+.tadeon-tabletop-selection-dock--structure {
+  max-width: min(52rem, calc(100% - 9rem));
+  border-color: rgb(217 215 164 / 22%);
+  background:
+    linear-gradient(115deg, rgb(116 36 45 / 12%), transparent 36%),
+    linear-gradient(240deg, rgb(79 110 93 / 10%), transparent 42%),
+    rgb(10 13 17 / 90%);
+}
+
+.tadeon-tabletop-structure-selection__identity {
+  display: flex;
+  min-width: 9.5rem;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0 0.5rem;
+}
+
+.tadeon-tabletop-structure-selection__identity > svg {
+  flex: 0 0 auto;
+  color: var(--primary);
+}
+
+.tadeon-tabletop-structure-selection__identity span {
+  display: grid;
+  min-width: 0;
+}
+
+.tadeon-tabletop-structure-selection__identity strong {
+  overflow: hidden;
+  font-size: 0.68rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tadeon-tabletop-structure-selection__identity small {
+  color: var(--muted-foreground);
+  font-family: var(--font-mono);
+  font-size: 0.52rem;
+  white-space: nowrap;
+}
+
+.tadeon-tabletop-structure-selection__states {
+  display: flex;
+  align-items: center;
+  gap: 0.18rem;
+  padding: 0.18rem;
+  border: 1px solid rgb(217 215 164 / 10%);
+  border-radius: 0.7rem 0.25rem 0.7rem 0.25rem;
+  background: rgb(0 0 0 / 18%);
+}
+
+.tadeon-tabletop-structure-selection__states button {
+  min-height: 2rem;
+  border-radius: 0.52rem 0.2rem 0.52rem 0.2rem;
+  padding: 0.35rem 0.52rem;
+  color: var(--muted-foreground);
+  font-family: var(--font-mono);
+  font-size: 0.56rem;
+  font-weight: 760;
+  text-transform: capitalize;
+  white-space: nowrap;
+}
+
+.tadeon-tabletop-structure-selection__states button:hover {
+  color: var(--foreground);
+  background: rgb(255 255 255 / 5%);
+}
+
+.tadeon-tabletop-structure-selection__states button[aria-pressed="true"] {
+  color: #090b0f;
+  background: var(--primary);
+  box-shadow: 0 8px 20px rgb(217 215 164 / 12%);
+}
+
 .tadeon-tabletop-stage-status {
   position: absolute;
   z-index: 12;
@@ -642,6 +716,19 @@
     left: 0.55rem;
     max-width: none;
     transform: none;
+  }
+
+  .tadeon-tabletop-selection-dock--structure {
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .tadeon-tabletop-selection-dock--structure::-webkit-scrollbar {
+    display: none;
+  }
+
+  .tadeon-tabletop-structure-selection__states {
+    min-width: max-content;
   }
 
   .tadeon-tabletop-tool-options {

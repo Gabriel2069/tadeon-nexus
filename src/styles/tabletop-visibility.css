@@ -196,6 +196,21 @@
   border: 1px solid hsl(var(--border) / 0.65);
   border-radius: 0.65rem;
   background: hsl(var(--secondary) / 0.12);
+  transition:
+    border-color 0.18s ease,
+    background 0.18s ease,
+    box-shadow 0.18s ease;
+}
+.tadeon-visibility__item[data-selected="true"] {
+  border-color: hsl(var(--primary) / 0.48);
+  background: linear-gradient(
+    135deg,
+    hsl(var(--primary) / 0.09),
+    hsl(var(--secondary) / 0.13)
+  );
+  box-shadow:
+    inset 3px 0 0 hsl(var(--primary) / 0.7),
+    0 16px 34px rgba(0, 0, 0, 0.16);
 }
 .tadeon-visibility__item[data-family="door"] {
   border-left-color: rgba(230, 182, 99, 0.58);

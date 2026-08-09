@@ -30,7 +30,14 @@ import {
 } from "./tabletop-drawing";
 import { TabletopToolOverlay } from "./tabletop-tool-overlay";
 import { TabletopSpatialRenderer } from "./spatial-renderer";
-import type { TabletopStructureType } from "./tabletop-spatial";
+import {
+  structureCollision,
+  type TabletopStructureType,
+} from "./tabletop-spatial";
+import {
+  hitTestTabletopStructure,
+  nextTabletopStructureState,
+} from "./tabletop-structure-editor";
 import {
   alignTabletopEntities,
   distributeTabletopEntities,
@@ -42,6 +49,7 @@ import {
 import {
   createEmptyVisibilityState,
   type TabletopVisibilityState,
+  type TabletopWall,
 } from "./tabletop-visibility-service";
 import { TabletopVisibilityRenderer } from "./visibility-renderer";
 import {
@@ -60,6 +68,14 @@ export interface TabletopEngineOptions {
   onContextMenu?: (position: Point, entityId?: string) => void;
   onToolModeChange?: (mode: TabletopToolMode) => void;
   onCreateStructure?: (structure: TabletopStructurePreview) => void;
+  onSelectStructure?: (id: string | null) => void;
+  onUpdateStructure?: (
+    before: TabletopWall,
+    after: TabletopWall,
+    label: string,
+  ) => void;
+  onDeleteStructure?: (id: string) => void;
+  onDuplicateStructure?: (id: string) => void;
 }
 
 export class TabletopEngine {
@@ -86,6 +102,7 @@ export class TabletopEngine {
   private toolMode: TabletopToolMode = "select";
   private projectionMode: TabletopProjectionMode = "plan";
   private structureType: TabletopStructureType = "wall";
+  private selectedStructureId: string | null = null;
   private interaction: InteractionController | null = null;
   private resizeObserver: ResizeObserver | null = null;
   private host: HTMLElement | null = null;
@@ -143,8 +160,11 @@ export class TabletopEngine {
     this.interaction = new InteractionController(this.app.canvas, {
       camera: this.camera,
       hitTest: (point) => this.hitTest(point),
+      hitTestStructure: (point) => this.hitTestStructure(point),
       isSelected: (id) => this.selection.has(id),
+      selectedStructureId: () => this.selectedStructureId,
       select: (id, additive) => this.select(id, additive),
+      selectStructure: (id) => this.setSelectedStructure(id),
       selectAll: () => this.selectAll(),
       selectInBounds: (bounds, additive) =>
         this.selectInBounds(bounds, additive),
@@ -157,6 +177,12 @@ export class TabletopEngine {
       commitDrawing: (points) => this.commitDrawing(points),
       previewStructure: (structure) => this.previewStructure(structure),
       commitStructure: (structure) => this.commitStructure(structure),
+      editableStructure: (id) => this.editableStructure(id),
+      previewStructureTransform: (structure) =>
+        this.previewStructureTransform(structure),
+      commitStructureTransform: (before, after, label) =>
+        this.commitStructureTransform(before, after, label),
+      cycleStructureState: (id) => this.cycleStructureState(id),
       commitTransform: (before, after, label) =>
         this.commitTransform(before, after, label),
       snap: (point) => this.snap(point),
@@ -199,6 +225,8 @@ export class TabletopEngine {
   loadScene(scene: TabletopScene) {
     this.scenes.replace(scene);
     this.selection.clear();
+    this.selectedStructureId = null;
+    this.options.onSelectStructure?.(null);
     this.history.clear();
     this.paintBackground();
     this.render();
@@ -208,6 +236,7 @@ export class TabletopEngine {
     this.readOnly = readOnly;
     if (readOnly) {
       this.selection.clear();
+      this.setSelectedStructure(null);
       if (this.toolMode === "draw" || this.toolMode === "structure")
         this.setToolMode("select");
     }
@@ -267,7 +296,41 @@ export class TabletopEngine {
       })),
     };
     this.visibilityGuides = showGuides;
+    if (
+      this.selectedStructureId &&
+      !this.visibilityState.walls.some(
+        (wall) => wall.id === this.selectedStructureId,
+      )
+    ) {
+      this.selectedStructureId = null;
+      this.options.onSelectStructure?.(null);
+    }
     this.render(false);
+  }
+
+  setSelectedStructure(id: string | null) {
+    const next =
+      id && this.visibilityState.walls.some((wall) => wall.id === id)
+        ? id
+        : null;
+    const changed = next !== this.selectedStructureId;
+    this.selectedStructureId = next;
+    if (next) this.selection.clear();
+    if (changed) this.options.onSelectStructure?.(next);
+    this.render();
+  }
+
+  setSelectedStructureState(wallType: TabletopStructureType) {
+    if (this.readOnly || !this.selectedStructureId) return;
+    const before = this.visibilityState.walls.find(
+      (wall) => wall.id === this.selectedStructureId,
+    );
+    if (!before || before.wallType === wallType) return;
+    this.recordStructureMutation(
+      before,
+      { ...before, wallType, ...structureCollision(wallType) },
+      "Alterar estado da estrutura",
+    );
   }
 
   addEntity(type: TabletopEntity["type"] = "token") {
@@ -399,6 +462,10 @@ export class TabletopEngine {
 
   duplicateSelected() {
     if (this.readOnly) return;
+    if (this.selectedStructureId) {
+      this.options.onDuplicateStructure?.(this.selectedStructureId);
+      return;
+    }
     const source = this.selectedEntities.filter((entity) =>
       this.layers.canEdit(entity),
     );
@@ -453,6 +520,12 @@ export class TabletopEngine {
 
   deleteSelected() {
     if (this.readOnly) return;
+    if (this.selectedStructureId) {
+      const id = this.selectedStructureId;
+      this.setSelectedStructure(null);
+      this.options.onDeleteStructure?.(id);
+      return;
+    }
     const removable = new Set(
       this.selectedEntities
         .filter((entity) => this.layers.canEdit(entity))
@@ -482,6 +555,10 @@ export class TabletopEngine {
 
   selectAll() {
     if (this.readOnly) return;
+    if (this.selectedStructureId) {
+      this.selectedStructureId = null;
+      this.options.onSelectStructure?.(null);
+    }
     const selectable = this.scenes.scene.entities
       .filter(
         (entity) =>
@@ -495,6 +572,28 @@ export class TabletopEngine {
   }
 
   focusSelection() {
+    if (this.selectedStructureId) {
+      const structure = this.visibilityState.walls.find(
+        (wall) => wall.id === this.selectedStructureId,
+      );
+      if (!structure) return;
+      const minX = Math.min(structure.x1, structure.x2);
+      const minY = Math.min(structure.y1, structure.y2);
+      this.camera.fitBounds(
+        {
+          x: minX,
+          y: minY,
+          width: Math.max(1, Math.abs(structure.x2 - structure.x1)),
+          height: Math.max(1, Math.abs(structure.y2 - structure.y1)),
+        },
+        this.app.renderer.width,
+        this.app.renderer.height,
+        120,
+        2.25,
+      );
+      this.render(false);
+      return;
+    }
     const bounds = boundsFromEntities(this.selectedEntities);
     if (!bounds) return;
     this.camera.fitBounds(
@@ -678,16 +777,28 @@ export class TabletopEngine {
   }
 
   private select(id: string, additive: boolean) {
+    if (this.selectedStructureId) {
+      this.selectedStructureId = null;
+      this.options.onSelectStructure?.(null);
+    }
     this.selection.select(id, additive);
     this.render();
   }
 
   private clearSelection() {
     this.selection.clear();
+    if (this.selectedStructureId) {
+      this.selectedStructureId = null;
+      this.options.onSelectStructure?.(null);
+    }
     this.render();
   }
 
   private selectInBounds(bounds: TabletopBounds, additive: boolean) {
+    if (this.selectedStructureId) {
+      this.selectedStructureId = null;
+      this.options.onSelectStructure?.(null);
+    }
     const matches = this.scenes.scene.entities
       .filter((entity) => {
         const layer = this.layers.get(entity.layerId);
@@ -719,6 +830,22 @@ export class TabletopEngine {
         !entity.hidden && layer?.visible && pointInRotatedRect(point, entity)
       );
     })?.id;
+  }
+
+  private hitTestStructure(point: Point) {
+    if (!this.visibilityGuides) return null;
+    return hitTestTabletopStructure(
+      point,
+      this.visibilityState.walls,
+      12 / Math.max(this.camera.zoom, 0.01),
+      this.selectedStructureId,
+    );
+  }
+
+  private editableStructure(id: string) {
+    if (this.readOnly || !this.visibilityGuides) return null;
+    const structure = this.visibilityState.walls.find((wall) => wall.id === id);
+    return structure ? { ...structure } : null;
   }
 
   private snap(point: Point): Point {
@@ -796,6 +923,56 @@ export class TabletopEngine {
     this.options.onCreateStructure?.(structure);
   }
 
+  private previewStructureTransform(structure: TabletopWall) {
+    this.visibilityState = {
+      ...this.visibilityState,
+      walls: this.visibilityState.walls.map((wall) =>
+        wall.id === structure.id ? { ...structure } : wall,
+      ),
+    };
+    this.render(false);
+  }
+
+  private commitStructureTransform(
+    before: TabletopWall,
+    after: TabletopWall,
+    label: string,
+  ) {
+    if (this.readOnly) return;
+    this.recordStructureMutation(before, after, label);
+  }
+
+  private cycleStructureState(id: string) {
+    if (this.readOnly) return;
+    const before = this.visibilityState.walls.find((wall) => wall.id === id);
+    if (!before) return;
+    const wallType = nextTabletopStructureState(before);
+    if (wallType === before.wallType) return;
+    const after = { ...before, wallType, ...structureCollision(wallType) };
+    this.recordStructureMutation(before, after, "Alterar estado da estrutura");
+  }
+
+  private recordStructureMutation(
+    before: TabletopWall,
+    after: TabletopWall,
+    label: string,
+  ) {
+    this.previewStructureTransform(after);
+    this.options.onUpdateStructure?.(before, after, label);
+    this.history.record({
+      label,
+      execute: () => {
+        this.previewStructureTransform(after);
+        this.options.onUpdateStructure?.(before, after, label);
+      },
+      undo: () => {
+        this.previewStructureTransform(before);
+        this.options.onUpdateStructure?.(after, before, `Desfazer ${label}`);
+      },
+    });
+    this.render();
+  }
+
   private commitDrawing(points: Point[]) {
     if (this.readOnly || points.length < 2) return;
     const targetLayer =
@@ -857,6 +1034,21 @@ export class TabletopEngine {
 
   private nudge(delta: Point) {
     if (this.readOnly) return;
+    if (this.selectedStructureId) {
+      const before = this.visibilityState.walls.find(
+        (wall) => wall.id === this.selectedStructureId,
+      );
+      if (!before) return;
+      const after = {
+        ...before,
+        x1: before.x1 + delta.x,
+        y1: before.y1 + delta.y,
+        x2: before.x2 + delta.x,
+        y2: before.y2 + delta.y,
+      };
+      this.recordStructureMutation(before, after, "Mover estrutura");
+      return;
+    }
     const selected = new Set(
       this.editableSelection().map((entity) => entity.id),
     );
@@ -987,6 +1179,16 @@ export class TabletopEngine {
       this.scenes.scene,
       this.visibilityState,
       this.projectionMode,
+      this.selection.ids,
+      this.selectedStructureId,
+    );
+    this.toolOverlay.renderStructureSelection(
+      this.selectedStructureId
+        ? (this.visibilityState.walls.find(
+            (wall) => wall.id === this.selectedStructureId,
+          ) ?? null)
+        : null,
+      this.camera.zoom,
     );
     this.selectionOverlay.render(
       this.scenes.scene.entities,

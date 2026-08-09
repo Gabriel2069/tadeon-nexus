@@ -12,6 +12,10 @@ export class CommandHistory {
 
   execute(command: TabletopCommand) {
     command.execute();
+    this.record(command);
+  }
+
+  record(command: TabletopCommand) {
     this.undoStack.push(command);
     if (this.undoStack.length > this.limit) this.undoStack.shift();
     this.redoStack = [];
