@@ -71,6 +71,104 @@
   border-radius: 0.7rem;
   background: rgba(0, 0, 0, 0.13);
 }
+.tadeon-visibility__preset-grid,
+.tadeon-visibility__light-presets,
+.tadeon-visibility__fog-shortcuts {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.32rem;
+}
+.tadeon-visibility__preset-grid button,
+.tadeon-visibility__light-presets button,
+.tadeon-visibility__fog-shortcuts button {
+  display: flex;
+  min-width: 0;
+  min-height: 2rem;
+  align-items: center;
+  justify-content: center;
+  gap: 0.28rem;
+  border: 1px solid hsl(var(--border) / 0.62);
+  border-radius: 0.48rem;
+  padding: 0.3rem;
+  color: hsl(var(--muted-foreground));
+  background: hsl(var(--secondary) / 0.12);
+  font-size: 0.54rem;
+  font-weight: 700;
+  transition:
+    border-color 0.16s ease,
+    color 0.16s ease,
+    background 0.16s ease,
+    transform 0.16s ease;
+}
+.tadeon-visibility__preset-grid button:hover,
+.tadeon-visibility__light-presets button:hover,
+.tadeon-visibility__fog-shortcuts button:hover {
+  border-color: hsl(var(--primary) / 0.4);
+  color: hsl(var(--foreground));
+  background: hsl(var(--primary) / 0.08);
+  transform: translateY(-1px);
+}
+.tadeon-visibility__preset-grid button[aria-pressed="true"] {
+  border-color: hsl(var(--primary) / 0.52);
+  color: hsl(var(--foreground));
+  background: linear-gradient(
+    145deg,
+    hsl(var(--primary) / 0.16),
+    hsl(var(--secondary) / 0.16)
+  );
+  box-shadow: inset 0 0 0 1px hsl(var(--primary) / 0.08);
+}
+.tadeon-visibility__preset-grid svg,
+.tadeon-visibility__fog-shortcuts svg {
+  width: 0.72rem;
+  height: 0.72rem;
+}
+.tadeon-visibility__fog-shortcuts {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+.tadeon-visibility__toolbox {
+  display: grid;
+  gap: 0.5rem;
+  padding: 0.62rem;
+  border: 1px solid hsl(var(--primary) / 0.18);
+  border-radius: 0.7rem;
+  background:
+    radial-gradient(
+      circle at 92% 0%,
+      rgba(121, 200, 223, 0.08),
+      transparent 45%
+    ),
+    linear-gradient(135deg, rgba(242, 198, 109, 0.055), rgba(0, 0, 0, 0.12));
+}
+.tadeon-visibility__toolbox > header {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+.tadeon-visibility__toolbox > header > svg {
+  width: 0.82rem;
+  height: 0.82rem;
+  color: #f2c66d;
+}
+.tadeon-visibility__toolbox > header > span {
+  display: grid;
+}
+.tadeon-visibility__toolbox strong {
+  font-size: 0.64rem;
+}
+.tadeon-visibility__toolbox small {
+  color: hsl(var(--muted-foreground));
+  font-size: 0.54rem;
+}
+.tadeon-visibility__light-presets button > span {
+  width: 0.62rem;
+  height: 0.62rem;
+  flex: 0 0 auto;
+  border-radius: 999px;
+  box-shadow:
+    0 0 0 2px rgba(255, 255, 255, 0.06),
+    0 0 12px currentColor;
+}
 .tadeon-visibility__ambient label,
 .tadeon-visibility__intensity {
   display: grid;
@@ -110,6 +208,13 @@
 .tadeon-visibility__switch small {
   color: hsl(var(--muted-foreground));
   font-size: 0.58rem;
+}
+.tadeon-visibility__switch.is-compact {
+  padding-top: 0.42rem;
+  border-top: 1px solid hsl(var(--border) / 0.45);
+}
+.tadeon-visibility__switch.is-compact > span {
+  display: grid;
 }
 .tadeon-visibility__actions {
   display: grid;
@@ -399,6 +504,27 @@
   color: hsl(var(--muted-foreground));
   font-size: 0.58rem;
 }
+.tadeon-visibility__reset {
+  display: flex;
+  min-height: 2rem;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  border: 1px solid hsl(var(--border) / 0.62);
+  border-radius: 0.5rem;
+  color: hsl(var(--muted-foreground));
+  background: rgba(0, 0, 0, 0.12);
+  font-size: 0.56rem;
+  font-weight: 700;
+}
+.tadeon-visibility__reset:hover {
+  border-color: hsl(var(--primary) / 0.36);
+  color: hsl(var(--foreground));
+}
+.tadeon-visibility__reset svg {
+  width: 0.72rem;
+  height: 0.72rem;
+}
 @media (max-width: 430px) {
   .tadeon-visibility__coordinates {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -412,6 +538,10 @@
   .tadeon-visibility__fog-item header button {
     grid-column: 3;
     grid-row: 1/3;
+  }
+  .tadeon-visibility__preset-grid,
+  .tadeon-visibility__light-presets {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 @media (prefers-reduced-motion: reduce) {
