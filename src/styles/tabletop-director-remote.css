@@ -1,0 +1,125 @@
+.tadeon-director-remote {
+  display: grid;
+  gap: 0.75rem;
+  padding: 0.9rem;
+  border: 1px solid rgb(217 215 164 / 12%);
+  border-radius: 0.9rem;
+  background:
+    radial-gradient(circle at 0 0, rgb(141 49 82 / 16%), transparent 42%),
+    rgb(7 9 13 / 76%);
+  box-shadow: inset 0 1px rgb(255 255 255 / 4%);
+}
+
+.tadeon-director-remote__head {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.tadeon-director-remote__head > span {
+  display: grid;
+  width: 2rem;
+  height: 2rem;
+  place-items: center;
+  border: 1px solid rgb(141 49 82 / 36%);
+  border-radius: 0.6rem;
+  background: rgb(141 49 82 / 12%);
+  color: #d7a7b8;
+}
+
+.tadeon-director-remote__head svg {
+  width: 1rem;
+  height: 1rem;
+}
+
+.tadeon-director-remote__head > div {
+  min-width: 0;
+  flex: 1;
+}
+
+.tadeon-director-remote__head small,
+.tadeon-director-remote__head strong {
+  display: block;
+}
+
+.tadeon-director-remote__head small {
+  color: rgb(255 255 255 / 42%);
+  font-size: 0.58rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.tadeon-director-remote__head strong {
+  font-family: Cinzel, serif;
+  font-size: 0.82rem;
+}
+
+.tadeon-director-remote__modes,
+.tadeon-director-remote__camera {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.4rem;
+}
+
+.tadeon-director-remote__modes button,
+.tadeon-director-remote__camera > button:not([data-slot="button"]) {
+  display: flex;
+  min-height: 2.25rem;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  border: 1px solid rgb(255 255 255 / 8%);
+  border-radius: 0.55rem;
+  background: rgb(255 255 255 / 2.5%);
+  color: rgb(255 255 255 / 58%);
+  font-size: 0.68rem;
+  transition: 150ms ease;
+}
+
+.tadeon-director-remote__modes button:hover,
+.tadeon-director-remote__modes button.is-active,
+.tadeon-director-remote__camera > button:not([data-slot="button"]):hover {
+  border-color: rgb(141 49 82 / 45%);
+  background: rgb(141 49 82 / 13%);
+  color: white;
+}
+
+.tadeon-director-remote__modes svg,
+.tadeon-director-remote__camera svg,
+.tadeon-director-remote__toggles svg {
+  width: 0.85rem;
+  height: 0.85rem;
+}
+
+.tadeon-director-remote__copy {
+  display: grid;
+  gap: 0.4rem;
+}
+
+.tadeon-director-remote__copy input {
+  height: 2.25rem;
+  font-size: 0.7rem;
+}
+
+.tadeon-director-remote__toggles {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.4rem;
+}
+
+.tadeon-director-remote__toggles label {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 0.42rem;
+  padding: 0.5rem 0.6rem;
+  border: 1px solid rgb(255 255 255 / 7%);
+  border-radius: 0.55rem;
+  color: rgb(255 255 255 / 55%);
+  font-size: 0.65rem;
+}
+
+.tadeon-director-remote__toggles label span {
+  min-width: 0;
+  flex: 1;
+}
