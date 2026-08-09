@@ -23,7 +23,44 @@ describe("estado da Câmera do Diretor", () => {
           levelId: "00000000-0000-4000-8000-000000000001",
         },
       }).camera,
-    ).toMatchObject({ mode: "manual", zoom: 1.25 });
+    ).toMatchObject({
+      mode: "manual",
+      zoom: 1.25,
+      yaw: 45,
+      tilt: 0.5,
+      elevationScale: 1,
+    });
+  });
+
+  it("preserva a orientação orbital e normaliza estados legados", () => {
+    const legacy = parseTabletopDirectorState({
+      ...DEFAULT_TABLETOP_DIRECTOR_STATE,
+      camera: {
+        mode: "manual",
+        x: 10,
+        y: 20,
+        zoom: 1,
+        projection: "isometric",
+        levelId: null,
+      },
+    });
+    expect(legacy.camera).toMatchObject({
+      yaw: 45,
+      tilt: 0.5,
+      elevationScale: 1,
+    });
+
+    const rotated = tabletopDirectorStateSchema.parse({
+      ...DEFAULT_TABLETOP_DIRECTOR_STATE,
+      camera: {
+        ...DEFAULT_TABLETOP_DIRECTOR_STATE.camera,
+        projection: "isometric",
+        yaw: 225,
+        tilt: 0.72,
+        elevationScale: 1.4,
+      },
+    });
+    expect(rotated.camera.yaw).toBe(225);
   });
 
   it("recusa campos ocultos e volta ao padrão para estado inválido", () => {
