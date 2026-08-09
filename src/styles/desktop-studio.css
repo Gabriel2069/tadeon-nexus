@@ -399,7 +399,16 @@
   }
 
   .tadeon-nexus-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
     justify-content: flex-end;
+  }
+
+  .tadeon-nexus-scope,
+  .tadeon-nexus-tools {
+    margin-top: 0;
   }
 
   .tadeon-nexus-actions > [data-slot="select-trigger"] {

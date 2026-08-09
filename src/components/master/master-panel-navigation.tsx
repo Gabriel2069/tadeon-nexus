@@ -102,7 +102,7 @@ export function MasterPanelNavigation({
               key={group.label}
               role="presentation"
             >
-              <span className="tadeon-master-navigation__label hidden md:block">
+              <span className="tadeon-master-navigation__label">
                 {group.label}
               </span>
               <div className="flex gap-1" role="presentation">

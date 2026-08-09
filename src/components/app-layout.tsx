@@ -22,6 +22,7 @@ import {
   MonitorDown,
   Share2,
   CircleCheck,
+  MoreHorizontal,
 } from "lucide-react";
 import { useAuth } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
@@ -176,6 +177,8 @@ export function AppLayout({ children }: { children: ReactNode }) {
     "Consulta offline": "Leitura local protegida",
     Ficha: "Registro vivo da personagem",
   };
+  const showMobileDock =
+    !path.startsWith("/tabletop") && !path.startsWith("/sheet/");
 
   const handleSignOut = async () => {
     try {
@@ -347,6 +350,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
     <div
       className="tadeon-shell relative isolate flex min-h-screen overflow-x-clip"
       data-section={currentSection}
+      data-mobile-dock={showMobileDock ? "visible" : "hidden"}
     >
       <div aria-hidden className="tadeon-ambient tadeon-ambient--veil" />
       <div aria-hidden className="tadeon-ambient tadeon-ambient--flow" />
@@ -423,22 +427,23 @@ export function AppLayout({ children }: { children: ReactNode }) {
           </div>
         </header>
         {/* Mobile header */}
-        <header className="tadeon-mobile-header sticky top-0 z-30 grid min-h-16 grid-cols-[5.5rem_minmax(0,1fr)_5.5rem] items-center bg-background/85 px-3 py-2 backdrop-blur-xl md:hidden">
+        <header className="tadeon-mobile-header sticky top-0 z-30 grid min-h-16 grid-cols-[4.8rem_minmax(0,1fr)_4.8rem] items-center px-3 py-2 md:hidden">
+          <span aria-hidden className="tadeon-mobile-header__thread" />
           <button
             type="button"
             onClick={() => setMobileOpen(true)}
-            className="flex h-11 w-11 items-center justify-center rounded-xl border border-transparent transition-[color,background-color,border-color,transform] duration-150 ease-[var(--ease-out)] hover:border-border hover:bg-secondary active:scale-[.97]"
+            className="tadeon-mobile-header__control flex h-11 w-11 items-center justify-center rounded-xl border transition-[color,background-color,border-color,transform] duration-150 ease-[var(--ease-out)] active:scale-[.96]"
             aria-label="Abrir menu"
           >
             <Menu className="w-5 h-5" />
           </button>
-          <div className="flex min-w-0 items-center justify-center gap-2">
-            <BrandMark className="hidden h-7 w-7 shrink-0 text-primary min-[360px]:block" />
-            <div className="min-w-0 text-center min-[360px]:text-left">
-              <p className="tadeon-mono truncate text-[10px] uppercase tracking-[0.08em] text-muted-foreground">
-                Tadeon Nexus
+          <div className="tadeon-mobile-header__identity flex min-w-0 items-center justify-center gap-2.5">
+            <BrandMark className="h-8 w-8 shrink-0 text-primary" />
+            <div className="min-w-0 text-left">
+              <p className="tadeon-mono truncate text-[9px] uppercase tracking-[0.14em] text-muted-foreground">
+                Área em foco
               </p>
-              <p className="font-cinzel truncate text-sm font-semibold leading-tight text-primary">
+              <p className="truncate font-cinzel text-sm font-semibold leading-tight text-primary">
                 {currentSection}
               </p>
             </div>
@@ -448,7 +453,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
             <button
               type="button"
               onClick={() => setAccountOpen(true)}
-              className="flex h-11 w-11 items-center justify-center rounded-xl border border-transparent transition-[color,background-color,border-color,transform] duration-150 ease-[var(--ease-out)] hover:border-border hover:bg-secondary active:scale-[.97]"
+              className="tadeon-mobile-header__control flex h-11 w-11 items-center justify-center rounded-xl border transition-[color,background-color,border-color,transform] duration-150 ease-[var(--ease-out)] active:scale-[.96]"
               aria-label="Conta"
             >
               <Settings className="w-5 h-5" />
@@ -465,11 +470,78 @@ export function AppLayout({ children }: { children: ReactNode }) {
         </main>
       </div>
 
+      {showMobileDock && (
+        <nav
+          className="tadeon-mobile-dock md:hidden"
+          aria-label="Atalhos principais"
+        >
+          <Link
+            to="/"
+            aria-current={path === "/" ? "page" : undefined}
+            className="tadeon-mobile-dock__item"
+          >
+            <Home className="h-5 w-5" />
+            <span>Início</span>
+          </Link>
+          {knowledgeEnabled && (
+            <Link
+              to="/nexus"
+              search={{ node: undefined }}
+              aria-current={path.startsWith("/nexus") ? "page" : undefined}
+              className="tadeon-mobile-dock__item"
+            >
+              <LibraryBig className="h-5 w-5" />
+              <span>Nexus</span>
+            </Link>
+          )}
+          {tabletopEnabled && (
+            <Link
+              to="/tabletop"
+              aria-current={path.startsWith("/tabletop") ? "page" : undefined}
+              className="tadeon-mobile-dock__item"
+            >
+              <MapPinned className="h-5 w-5" />
+              <span>Mesa</span>
+            </Link>
+          )}
+          {isMestre ? (
+            <Link
+              to="/master-panel"
+              search={{ tab: undefined }}
+              aria-current={
+                path.startsWith("/master-panel") ? "page" : undefined
+              }
+              className="tadeon-mobile-dock__item"
+            >
+              <Lightbulb className="h-5 w-5" />
+              <span>Mestre</span>
+            </Link>
+          ) : (
+            <Link
+              to="/offline"
+              aria-current={path.startsWith("/offline") ? "page" : undefined}
+              className="tadeon-mobile-dock__item"
+            >
+              <CloudOff className="h-5 w-5" />
+              <span>Offline</span>
+            </Link>
+          )}
+          <button
+            type="button"
+            className="tadeon-mobile-dock__item"
+            onClick={() => setMobileOpen(true)}
+          >
+            <MoreHorizontal className="h-5 w-5" />
+            <span>Mais</span>
+          </button>
+        </nav>
+      )}
+
       {/* Mobile drawer: Radix preserves focus, Escape and symmetric exit motion. */}
       <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
         <SheetContent
           side="left"
-          className="h-[100dvh] w-[min(18rem,86vw)] border-sidebar-border bg-sidebar p-0 text-sidebar-foreground sm:max-w-none md:hidden"
+          className="tadeon-mobile-drawer h-[100dvh] w-[min(19rem,88vw)] border-sidebar-border bg-sidebar p-0 text-sidebar-foreground sm:max-w-none md:hidden"
         >
           <SheetTitle className="sr-only">Navegação principal</SheetTitle>
           <SheetDescription className="sr-only">
