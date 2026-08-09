@@ -1,15 +1,22 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import type { TabletopPresence, TabletopRealtimeEvent } from "./realtime-protocol";
+import type {
+  TabletopPresence,
+  TabletopRealtimeEvent,
+} from "./realtime-protocol";
 import {
   TabletopRealtimeTransport,
   TabletopRealtimeTransportError,
   type TabletopRealtimeConnectionState,
 } from "./realtime-transport";
 
-const FALLBACK_REALTIME_ERROR = "Não foi possível iniciar a sincronização da Mesa Nexus.";
+const FALLBACK_REALTIME_ERROR =
+  "Não foi possível iniciar a sincronização da Mesa Nexus.";
 
 function createSourceId() {
-  if (typeof crypto !== "undefined" && typeof crypto.randomUUID === "function") {
+  if (
+    typeof crypto !== "undefined" &&
+    typeof crypto.randomUUID === "function"
+  ) {
     return `browser_${crypto.randomUUID()}`;
   }
   return `browser_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 12)}`;
@@ -29,6 +36,11 @@ export interface UseTabletopRealtimeResult {
   errorMessage: string | null;
   reconnect: () => void;
   send: (event: TabletopRealtimeEvent) => Promise<void>;
+  broadcastStructureState: (payload: {
+    wallId: string;
+    wallType: "door_open" | "door_closed";
+    version: number;
+  }) => Promise<void>;
   updatePresence: (presence: TabletopPresence) => Promise<void>;
 }
 
@@ -39,13 +51,15 @@ export function useTabletopRealtime({
   presence,
   onEvent,
 }: UseTabletopRealtimeOptions): UseTabletopRealtimeResult {
-  const [connectionState, setConnectionState] = useState<TabletopRealtimeConnectionState>("idle");
+  const [connectionState, setConnectionState] =
+    useState<TabletopRealtimeConnectionState>("idle");
   const [participants, setParticipants] = useState<TabletopPresence[]>([]);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [attempt, setAttempt] = useState(0);
   const transportRef = useRef<TabletopRealtimeTransport | null>(null);
   const onEventRef = useRef(onEvent);
   const sourceIdRef = useRef<string>(createSourceId());
+  const sequenceRef = useRef(0);
   const presenceUserId = presence?.userId;
   const presenceDisplayName = presence?.displayName;
   const presenceRole = presence?.role;
@@ -121,7 +135,9 @@ export function useTabletopRealtime({
       if (!active) return;
       setConnectionState("disconnected");
       setErrorMessage(
-        error instanceof TabletopRealtimeTransportError ? error.message : FALLBACK_REALTIME_ERROR,
+        error instanceof TabletopRealtimeTransportError
+          ? error.message
+          : FALLBACK_REALTIME_ERROR,
       );
     });
 
@@ -140,15 +156,47 @@ export function useTabletopRealtime({
   const send = useCallback(async (event: TabletopRealtimeEvent) => {
     const transport = transportRef.current;
     if (!transport) {
-      throw new TabletopRealtimeTransportError("TABLETOP_REALTIME_NOT_CONNECTED");
+      throw new TabletopRealtimeTransportError(
+        "TABLETOP_REALTIME_NOT_CONNECTED",
+      );
     }
     await transport.send(event);
   }, []);
 
+  const broadcastStructureState = useCallback(
+    async (payload: {
+      wallId: string;
+      wallType: "door_open" | "door_closed";
+      version: number;
+    }) => {
+      const transport = transportRef.current;
+      if (!transport || !sceneId) {
+        throw new TabletopRealtimeTransportError(
+          "TABLETOP_REALTIME_NOT_CONNECTED",
+        );
+      }
+      sequenceRef.current += 1;
+      const sentAt = Date.now();
+      await transport.send({
+        protocol: 1,
+        eventId: `event_${sentAt.toString(36)}_${sequenceRef.current.toString(36)}`,
+        sourceId: sourceIdRef.current,
+        sceneId,
+        sequence: sequenceRef.current,
+        sentAt,
+        type: "structure.state",
+        payload,
+      });
+    },
+    [sceneId],
+  );
+
   const updatePresence = useCallback(async (nextPresence: TabletopPresence) => {
     const transport = transportRef.current;
     if (!transport) {
-      throw new TabletopRealtimeTransportError("TABLETOP_REALTIME_NOT_CONNECTED");
+      throw new TabletopRealtimeTransportError(
+        "TABLETOP_REALTIME_NOT_CONNECTED",
+      );
     }
     await transport.updatePresence(nextPresence);
   }, []);
@@ -159,6 +207,7 @@ export function useTabletopRealtime({
     errorMessage,
     reconnect,
     send,
+    broadcastStructureState,
     updatePresence,
   };
 }
