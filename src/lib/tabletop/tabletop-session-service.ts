@@ -1,6 +1,11 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
 import type { CampaignRole } from "@/lib/nexus-contracts";
+import {
+  parseTabletopDirectorState,
+  tabletopDirectorStateSchema,
+  type TabletopDirectorState,
+} from "@/lib/tabletop/tabletop-director-state";
 
 const tabletopSessionDatabase = supabase as unknown as SupabaseClient;
 
@@ -27,6 +32,7 @@ interface SessionRow {
   status: "open" | "closed";
   join_locked: boolean;
   version: number;
+  director_state: unknown;
   created_by: string;
   created_at: string;
   updated_at: string;
@@ -50,6 +56,7 @@ export interface TabletopSession {
   status: SessionRow["status"];
   joinLocked: boolean;
   version: number;
+  directorState: TabletopDirectorState;
   createdBy: string;
   createdAt: string;
   updatedAt: string;
@@ -82,6 +89,7 @@ export function mapTabletopSession(row: SessionRow): TabletopSession {
     status: row.status,
     joinLocked: row.join_locked,
     version: row.version,
+    directorState: parseTabletopDirectorState(row.director_state),
     createdBy: row.created_by,
     createdAt: row.created_at,
     updatedAt: row.updated_at,
@@ -102,10 +110,12 @@ export function mapTabletopSessionParticipant(
   };
 }
 
-export function toTabletopSessionServiceError(error: {
-  code?: string;
-  message?: string;
-} | null) {
+export function toTabletopSessionServiceError(
+  error: {
+    code?: string;
+    message?: string;
+  } | null,
+) {
   const message = error?.message ?? "";
   if (message.includes("TABLETOP_AUTH_REQUIRED")) {
     return new TabletopSessionServiceError("TABLETOP_SESSION_AUTH_REQUIRED");
@@ -128,23 +138,22 @@ export function toTabletopSessionServiceError(error: {
   ) {
     return new TabletopSessionServiceError("TABLETOP_SESSION_INVALID_INPUT");
   }
-  if (
-    error?.code === "42501" ||
-    message.includes("TABLETOP_SESSION_NOT_")
-  ) {
+  if (error?.code === "42501" || message.includes("TABLETOP_SESSION_NOT_")) {
     return new TabletopSessionServiceError("TABLETOP_SESSION_FORBIDDEN");
   }
   return new TabletopSessionServiceError("TABLETOP_SESSION_DATABASE_ERROR");
 }
 
 export class TabletopSessionService {
-  constructor(private readonly database: SupabaseClient = tabletopSessionDatabase) {}
+  constructor(
+    private readonly database: SupabaseClient = tabletopSessionDatabase,
+  ) {}
 
   async findOpenSession(campaignId: string): Promise<TabletopSession | null> {
     const { data, error } = await this.database
       .from("tabletop_sessions")
       .select(
-        "id,campaign_id,current_scene_id,name,status,join_locked,version,created_by,created_at,updated_at",
+        "id,campaign_id,current_scene_id,name,status,join_locked,version,director_state,created_by,created_at,updated_at",
       )
       .eq("campaign_id", campaignId)
       .eq("status", "open")
@@ -158,9 +167,7 @@ export class TabletopSessionService {
   ): Promise<TabletopSessionParticipant[]> {
     const { data, error } = await this.database
       .from("tabletop_session_participants")
-      .select(
-        "session_id,user_id,role,state,joined_at,last_seen_at,left_at",
-      )
+      .select("session_id,user_id,role,state,joined_at,last_seen_at,left_at")
       .eq("session_id", sessionId)
       .order("joined_at");
     if (error) throw toTabletopSessionServiceError(error);
@@ -235,6 +242,26 @@ export class TabletopSessionService {
       {
         target_session_id: sessionId,
         locked,
+        expected_session_version: expectedVersion,
+      },
+    );
+    if (error || typeof data !== "number") {
+      throw toTabletopSessionServiceError(error);
+    }
+    return data;
+  }
+
+  async setDirectorState(
+    sessionId: string,
+    state: TabletopDirectorState,
+    expectedVersion: number,
+  ) {
+    const nextState = tabletopDirectorStateSchema.parse(state);
+    const { data, error } = await this.database.rpc(
+      "set_tabletop_director_state",
+      {
+        target_session_id: sessionId,
+        next_state: nextState,
         expected_session_version: expectedVersion,
       },
     );
