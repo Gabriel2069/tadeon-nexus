@@ -8,8 +8,10 @@ import {
 } from "react";
 import {
   Archive,
+  Axis3d,
   BookOpen,
   Box,
+  BrickWall,
   Bug,
   Camera,
   CheckCircle2,
@@ -32,6 +34,7 @@ import {
   Maximize2,
   MousePointer2,
   PanelRightOpen,
+  PanelRightClose,
   PencilLine,
   Plus,
   Redo2,
@@ -75,6 +78,12 @@ import {
 } from "@/components/ui/alert-dialog";
 import { TabletopEngine } from "@/lib/tabletop/tabletop-engine";
 import type { TabletopToolMode } from "@/lib/tabletop/interaction-controller";
+import type { TabletopProjectionMode } from "@/lib/tabletop/camera-controller";
+import {
+  createTabletopStructure,
+  TABLETOP_STRUCTURE_PRESETS,
+  type TabletopStructureType,
+} from "@/lib/tabletop/tabletop-spatial";
 import {
   createEmptyVisibilityState,
   tabletopVisibilityService,
@@ -128,7 +137,7 @@ type PaletteDragPayload =
   | { kind: "asset"; id: string; entityType: "token" | "object" }
   | { kind: "knowledge"; id: string };
 
-type TabletopPanelTab = "library" | "scene" | "inspector";
+type TabletopPanelTab = "library" | "space" | "scene" | "inspector";
 type PendingNavigation =
   { kind: "scene"; id: string } | { kind: "campaign"; id: string };
 
@@ -137,6 +146,7 @@ const TOOL_LABELS: Record<TabletopToolMode, string> = {
   pan: "Mão",
   measure: "Régua",
   draw: "Desenho",
+  structure: "Arquitetura",
 };
 
 const TOOL_HINTS: Record<TabletopToolMode, string> = {
@@ -144,6 +154,8 @@ const TOOL_HINTS: Record<TabletopToolMode, string> = {
   pan: "Arraste para navegar · Ctrl/Cmd + roda amplia · duplo clique enquadra",
   measure: "Arraste para medir · Alt ignora a grade · R ativa a régua",
   draw: "Arraste para desenhar · Shift cria uma linha · D ativa o traço",
+  structure:
+    "Arraste para construir · Shift mantém o eixo · Alt ignora a grade · B ativa",
 };
 
 const DRAW_COLORS = ["#d9d7a4", "#74242d", "#4f6e5d", "#e9e3d5", "#1f3644"];
@@ -234,6 +246,7 @@ export function TabletopWorkspace({
   const visibilityRef = useRef<TabletopVisibilityState>(
     createEmptyVisibilityState(),
   );
+  const structureTypeRef = useRef<TabletopStructureType>("wall");
   const [snapshot, setSnapshot] = useState(EMPTY_SNAPSHOT);
   const [visibility, setVisibility] = useState<TabletopVisibilityState>(
     createEmptyVisibilityState,
@@ -260,8 +273,13 @@ export function TabletopWorkspace({
   const [diagnostics, setDiagnostics] = useState(false);
   const [mobileToolsOpen, setMobileToolsOpen] = useState(false);
   const [mobilePanelOpen, setMobilePanelOpen] = useState(false);
+  const [panelCollapsed, setPanelCollapsed] = useState(false);
   const [panelTab, setPanelTab] = useState<TabletopPanelTab>("library");
   const [toolMode, setToolMode] = useState<TabletopToolMode>("select");
+  const [projectionMode, setProjectionMode] =
+    useState<TabletopProjectionMode>("plan");
+  const [structureType, setStructureType] =
+    useState<TabletopStructureType>("wall");
   const [drawColor, setDrawColor] = useState("#d9d7a4");
   const [drawWidth, setDrawWidth] = useState(5);
   const [sceneDialogOpen, setSceneDialogOpen] = useState(false);
@@ -318,6 +336,15 @@ export function TabletopWorkspace({
       width: drawWidth,
     });
   }, [drawColor, drawWidth]);
+
+  useEffect(() => {
+    structureTypeRef.current = structureType;
+    engineRef.current?.setStructureType(structureType);
+  }, [structureType]);
+
+  useEffect(() => {
+    engineRef.current?.setProjectionMode(projectionMode);
+  }, [projectionMode]);
 
   useEffect(() => {
     if (!mobilePanelOpen) return;
@@ -462,6 +489,20 @@ export function TabletopWorkspace({
       },
       onAssetError: (message) => toast.error(message),
       onToolModeChange: setToolMode,
+      onCreateStructure: ({ start, end }) => {
+        const structure = createTabletopStructure({
+          id: crypto.randomUUID(),
+          type: structureTypeRef.current,
+          start,
+          end,
+        });
+        if (!structure) return;
+        previewVisibility({
+          ...visibilityRef.current,
+          walls: [...visibilityRef.current.walls, structure],
+        });
+        setPanelTab("space");
+      },
       onContextMenu: (position, entityId) =>
         setContextMenu({ ...clampContextMenu(position), entityId }),
     });
@@ -471,6 +512,7 @@ export function TabletopWorkspace({
       .then(() => {
         if (cancelled) return;
         engineReadyRef.current = true;
+        engine.setStructureType(structureTypeRef.current);
         const stored = persistedSceneRef.current;
         if (stored) {
           engine.loadScene(stored);
@@ -488,7 +530,7 @@ export function TabletopWorkspace({
       engineRef.current = null;
       void engine.destroy();
     };
-  }, [lightingEnabled]);
+  }, [lightingEnabled, previewVisibility]);
 
   useEffect(() => {
     let active = true;
@@ -1068,6 +1110,21 @@ export function TabletopWorkspace({
           </ToolbarGroup>
 
           <ToolbarGroup label="Visão">
+            <CanvasToolButton
+              label={
+                projectionMode === "isometric"
+                  ? "Voltar à planta 2D"
+                  : "Ativar projeção espacial 3D"
+              }
+              active={projectionMode === "isometric"}
+              onClick={() =>
+                setProjectionMode((mode) =>
+                  mode === "plan" ? "isometric" : "plan",
+                )
+              }
+            >
+              <Axis3d className="h-4 w-4" />
+            </CanvasToolButton>
             <ToolbarButton
               label="Centralizar"
               onClick={() => engineRef.current?.center()}
@@ -1172,9 +1229,16 @@ export function TabletopWorkspace({
         </div>
       )}
 
-      <div className="tadeon-tabletop-workbench grid min-h-0 flex-1 grid-cols-1 lg:grid-cols-[minmax(0,1fr)_23rem] 2xl:grid-cols-[minmax(0,1fr)_25rem]">
+      <div
+        className={`tadeon-tabletop-workbench grid min-h-0 flex-1 grid-cols-1 ${
+          panelCollapsed
+            ? "lg:grid-cols-[minmax(0,1fr)_3.75rem]"
+            : "lg:grid-cols-[minmax(0,1fr)_23rem] 2xl:grid-cols-[minmax(0,1fr)_25rem]"
+        }`}
+      >
         <section
           className="tadeon-tabletop-stage relative min-h-[64svh] overflow-hidden sm:min-h-[70vh] lg:min-h-0"
+          data-projection={projectionMode}
           onClick={closeContext}
           onDragOver={(event) => {
             if (
@@ -1220,6 +1284,14 @@ export function TabletopWorkspace({
               onClick={() => setToolMode("draw")}
             >
               <PencilLine className="h-4 w-4" />
+            </CanvasToolButton>
+            <CanvasToolButton
+              label="Construir paredes e aberturas (B)"
+              active={toolMode === "structure"}
+              disabled={!editable || !lightingEnabled || !visibilityAvailable}
+              onClick={() => setToolMode("structure")}
+            >
+              <BrickWall className="h-4 w-4" />
             </CanvasToolButton>
             <span className="tadeon-tabletop-canvas-rail__divider" />
             <ToolbarButton
@@ -1309,55 +1381,86 @@ export function TabletopWorkspace({
               </label>
             </div>
           )}
-          {selected.length > 0 && toolMode !== "draw" && (
+          {toolMode === "structure" && (
             <div
-              className="tadeon-tabletop-selection-dock"
-              aria-label="Ações rápidas da seleção"
+              className="tadeon-tabletop-tool-options tadeon-tabletop-tool-options--structure"
+              aria-label="Opções de arquitetura"
             >
-              <div className="min-w-0 px-2">
-                <strong className="block truncate text-xs text-foreground">
-                  {selected.length === 1
-                    ? primary?.label
-                    : `${selected.length} entidades`}
-                </strong>
-                <span className="block text-[10px] text-muted-foreground">
-                  Seleção ativa
-                </span>
+              <div className="tadeon-tabletop-tool-options__heading">
+                <BrickWall className="h-3.5 w-3.5" />
+                <span>Construir</span>
               </div>
-              <span className="tadeon-tabletop-selection-dock__divider" />
-              <ToolbarButton
-                label="Enquadrar seleção"
-                onClick={() => engineRef.current?.focusSelection()}
+              <div
+                className="tadeon-tabletop-structure-presets"
+                role="radiogroup"
+                aria-label="Tipo de estrutura"
               >
-                <Focus className="h-4 w-4" />
-              </ToolbarButton>
-              <ToolbarButton
-                label="Duplicar seleção"
-                disabled={!editable}
-                onClick={() => engineRef.current?.duplicateSelected()}
-              >
-                <Copy className="h-4 w-4" />
-              </ToolbarButton>
-              <ToolbarButton
-                label="Bloquear ou desbloquear seleção"
-                disabled={!editable}
-                onClick={() => engineRef.current?.toggleSelectedLock()}
-              >
-                {selected.some((entity) => entity.locked) ? (
-                  <LockOpen className="h-4 w-4" />
-                ) : (
-                  <Lock className="h-4 w-4" />
-                )}
-              </ToolbarButton>
-              <ToolbarButton
-                label="Excluir seleção"
-                disabled={!editable}
-                onClick={() => engineRef.current?.deleteSelected()}
-              >
-                <Trash2 className="h-4 w-4" />
-              </ToolbarButton>
+                {TABLETOP_STRUCTURE_PRESETS.map((preset) => (
+                  <button
+                    key={preset.family}
+                    type="button"
+                    role="radio"
+                    aria-checked={structureType === preset.type}
+                    className="tadeon-tabletop-structure-preset"
+                    onClick={() => setStructureType(preset.type)}
+                  >
+                    {preset.label}
+                  </button>
+                ))}
+              </div>
             </div>
           )}
+          {selected.length > 0 &&
+            toolMode !== "draw" &&
+            toolMode !== "structure" && (
+              <div
+                className="tadeon-tabletop-selection-dock"
+                aria-label="Ações rápidas da seleção"
+              >
+                <div className="min-w-0 px-2">
+                  <strong className="block truncate text-xs text-foreground">
+                    {selected.length === 1
+                      ? primary?.label
+                      : `${selected.length} entidades`}
+                  </strong>
+                  <span className="block text-[10px] text-muted-foreground">
+                    Seleção ativa
+                  </span>
+                </div>
+                <span className="tadeon-tabletop-selection-dock__divider" />
+                <ToolbarButton
+                  label="Enquadrar seleção"
+                  onClick={() => engineRef.current?.focusSelection()}
+                >
+                  <Focus className="h-4 w-4" />
+                </ToolbarButton>
+                <ToolbarButton
+                  label="Duplicar seleção"
+                  disabled={!editable}
+                  onClick={() => engineRef.current?.duplicateSelected()}
+                >
+                  <Copy className="h-4 w-4" />
+                </ToolbarButton>
+                <ToolbarButton
+                  label="Bloquear ou desbloquear seleção"
+                  disabled={!editable}
+                  onClick={() => engineRef.current?.toggleSelectedLock()}
+                >
+                  {selected.some((entity) => entity.locked) ? (
+                    <LockOpen className="h-4 w-4" />
+                  ) : (
+                    <Lock className="h-4 w-4" />
+                  )}
+                </ToolbarButton>
+                <ToolbarButton
+                  label="Excluir seleção"
+                  disabled={!editable}
+                  onClick={() => engineRef.current?.deleteSelected()}
+                >
+                  <Trash2 className="h-4 w-4" />
+                </ToolbarButton>
+              </div>
+            )}
           {loading && (
             <div className="pointer-events-none absolute inset-0 z-20 flex items-center justify-center bg-background/55 backdrop-blur-sm">
               <Loader2 className="h-8 w-8 animate-spin text-primary" />
@@ -1472,8 +1575,19 @@ export function TabletopWorkspace({
 
         <aside
           className={`${mobilePanelOpen ? "block" : "hidden"} tadeon-tabletop-panel max-h-[72svh] overflow-y-auto border-t border-border/70 p-4 lg:block lg:max-h-none lg:border-l lg:border-t-0`}
+          data-collapsed={panelCollapsed ? "true" : "false"}
           aria-label="Painel de edição da Mesa Nexus"
         >
+          <button
+            type="button"
+            className="tadeon-tabletop-panel__expand"
+            onClick={() => setPanelCollapsed(false)}
+            aria-label="Expandir painel contextual"
+            title="Expandir painel"
+          >
+            <PanelRightOpen className="h-4 w-4" />
+            <span>Editor</span>
+          </button>
           <div className="flex items-center justify-between gap-2">
             <div className="flex items-center gap-2">
               <SlidersHorizontal className="h-4 w-4 text-primary" />
@@ -1482,12 +1596,25 @@ export function TabletopWorkspace({
                 <p className="font-cinzel text-base font-semibold">
                   {panelTab === "library"
                     ? "Montagem"
-                    : panelTab === "scene"
-                      ? "Cena"
-                      : "Inspetor"}
+                    : panelTab === "space"
+                      ? "Espaço"
+                      : panelTab === "scene"
+                        ? "Cena"
+                        : "Inspetor"}
                 </p>
               </div>
             </div>
+            <Button
+              type="button"
+              size="icon"
+              variant="ghost"
+              className="hidden lg:inline-flex"
+              onClick={() => setPanelCollapsed(true)}
+              aria-label="Recolher painel contextual"
+              title="Recolher painel"
+            >
+              <PanelRightClose className="h-4 w-4" />
+            </Button>
             <Button
               type="button"
               size="sm"
@@ -1506,6 +1633,7 @@ export function TabletopWorkspace({
             {(
               [
                 ["library", "Montagem"],
+                ["space", `Espaço${visibilityDirty ? " · não salvo" : ""}`],
                 ["scene", "Cena"],
                 [
                   "inspector",
@@ -1679,8 +1807,32 @@ export function TabletopWorkspace({
             </div>
           )}
 
-          {panelTab === "scene" && (
+          {panelTab === "space" && (
             <div className="tadeon-tabletop-panel__section" role="tabpanel">
+              <div className="tadeon-tabletop-space-intro">
+                <div>
+                  <Axis3d className="h-5 w-5" />
+                  <span>
+                    <strong>Editor espacial</strong>
+                    <small>paredes, aberturas, coberturas, luz e névoa</small>
+                  </span>
+                </div>
+                <Button
+                  type="button"
+                  size="sm"
+                  variant={
+                    projectionMode === "isometric" ? "default" : "outline"
+                  }
+                  onClick={() =>
+                    setProjectionMode((mode) =>
+                      mode === "plan" ? "isometric" : "plan",
+                    )
+                  }
+                >
+                  <Axis3d className="h-4 w-4" />
+                  {projectionMode === "isometric" ? "3D ativo" : "Ver em 3D"}
+                </Button>
+              </div>
               <TabletopVisibilityPanel
                 enabled={lightingEnabled}
                 editable={editable && visibilityAvailable}
@@ -1692,7 +1844,11 @@ export function TabletopWorkspace({
                 onPreview={previewVisibility}
                 onSaved={installVisibility}
               />
+            </div>
+          )}
 
+          {panelTab === "scene" && (
+            <div className="tadeon-tabletop-panel__section" role="tabpanel">
               <div className="mt-6 flex items-center gap-2">
                 <Layers3 className="h-4 w-4 text-primary" />
                 <p className="tadeon-eyebrow">Camadas</p>

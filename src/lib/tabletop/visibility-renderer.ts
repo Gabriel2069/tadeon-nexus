@@ -5,6 +5,11 @@ import type {
   TabletopVisibilityState,
 } from "./tabletop-visibility-service";
 import { buildVisibilityPolygon } from "./visibility-geometry";
+import {
+  isRoofStructure,
+  structureFamily,
+  type TabletopStructureType,
+} from "./tabletop-spatial";
 
 const DARKNESS_COLOR = 0x05070c;
 const FOG_COLOR = 0x09111c;
@@ -60,10 +65,14 @@ export class TabletopVisibilityRenderer {
 
     const enabledLights = state.lights.filter((light) => light.enabled);
     for (const light of enabledLights) {
-      const radius = Math.max(8, light.radius * Math.max(0.12, light.intensity));
-      this.lightGlow
-        .circle(light.x, light.y, radius)
-        .fill({ color: colorFromHex(light.color), alpha: 0.08 + light.intensity * 0.16 });
+      const radius = Math.max(
+        8,
+        light.radius * Math.max(0.12, light.intensity),
+      );
+      this.lightGlow.circle(light.x, light.y, radius).fill({
+        color: colorFromHex(light.color),
+        alpha: 0.08 + light.intensity * 0.16,
+      });
     }
 
     const darknessAlpha = Math.max(0, 1 - state.globalIllumination) * 0.94;
@@ -72,15 +81,17 @@ export class TabletopVisibilityRenderer {
         .rect(0, 0, scene.width, scene.height)
         .fill({ color: DARKNESS_COLOR, alpha: darknessAlpha });
       for (const light of enabledLights) {
-        const polygon = light.visibilityPolygon ?? buildVisibilityPolygon(
-          {
-            ...light,
-            radius: light.radius * Math.max(0.12, light.intensity),
-          },
-          state.walls,
-          scene.width,
-          scene.height,
-        );
+        const polygon =
+          light.visibilityPolygon ??
+          buildVisibilityPolygon(
+            {
+              ...light,
+              radius: light.radius * Math.max(0.12, light.intensity),
+            },
+            state.walls,
+            scene.width,
+            scene.height,
+          );
         if (polygon.length >= 3)
           this.darkness.poly(pointsForGraphics(polygon)).cut();
       }
@@ -103,15 +114,44 @@ export class TabletopVisibilityRenderer {
 
     if (!showGuides) return;
     for (const wall of state.walls) {
-      const open = wall.wallType === "door_open";
-      const door = wall.wallType !== "wall";
+      const type = wall.wallType as TabletopStructureType;
+      const family = structureFamily(type);
+      const open = type === "door_open" || type === "window_open";
+      if (isRoofStructure(type)) {
+        if (type === "roof_hidden") continue;
+        this.guides
+          .rect(
+            Math.min(wall.x1, wall.x2),
+            Math.min(wall.y1, wall.y2),
+            Math.abs(wall.x2 - wall.x1),
+            Math.abs(wall.y2 - wall.y1),
+          )
+          .fill({
+            color: 0x74242d,
+            alpha: type === "roof_cutaway" ? 0.06 : 0.1,
+          })
+          .stroke({
+            color: 0xc88791,
+            alpha: type === "roof_cutaway" ? 0.44 : 0.78,
+            width: 3,
+          });
+        continue;
+      }
+      const color =
+        family === "window"
+          ? 0x79c8df
+          : open
+            ? 0x63d9a0
+            : family === "door"
+              ? 0xe6b663
+              : 0x9fd5ee;
       this.guides
         .moveTo(wall.x1, wall.y1)
         .lineTo(wall.x2, wall.y2)
         .stroke({
-          color: open ? 0x63d9a0 : door ? 0xe6b663 : 0x9fd5ee,
+          color,
           alpha: open ? 0.62 : 0.92,
-          width: door ? 5 : 3,
+          width: family === "wall" ? 3 : 5,
         });
     }
     for (const light of state.lights) {
@@ -123,7 +163,10 @@ export class TabletopVisibilityRenderer {
           width: 2,
         })
         .circle(light.x, light.y, 7)
-        .fill({ color: colorFromHex(light.color), alpha: light.enabled ? 0.95 : 0.35 });
+        .fill({
+          color: colorFromHex(light.color),
+          alpha: light.enabled ? 0.95 : 0.35,
+        });
     }
   }
 

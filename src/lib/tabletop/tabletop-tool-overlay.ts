@@ -1,11 +1,17 @@
 import { Container, Graphics, Text } from "pixi.js";
 import type { TabletopDrawingStyle } from "./tabletop-drawing";
+import {
+  isRoofStructure,
+  structureFamily,
+  type TabletopStructureType,
+} from "./tabletop-spatial";
 import type { Point } from "./types";
 
 export class TabletopToolOverlay {
   readonly view = new Container();
   private readonly measure = new Graphics();
   private readonly drawing = new Graphics();
+  private readonly structure = new Graphics();
   private readonly measureLabel = new Text({
     text: "",
     style: {
@@ -21,7 +27,12 @@ export class TabletopToolOverlay {
     this.measureLabel.anchor.set(0.5, 1);
     this.measureLabel.visible = false;
     this.view.eventMode = "none";
-    this.view.addChild(this.measure, this.drawing, this.measureLabel);
+    this.view.addChild(
+      this.measure,
+      this.drawing,
+      this.structure,
+      this.measureLabel,
+    );
   }
 
   renderMeasure(start: Point, end: Point, label: string, zoom: number) {
@@ -81,6 +92,52 @@ export class TabletopToolOverlay {
 
   clearDrawing() {
     this.drawing.clear();
+  }
+
+  renderStructure(
+    start: Point,
+    end: Point,
+    type: TabletopStructureType,
+    zoom: number,
+  ) {
+    this.structure.clear();
+    const safeZoom = Math.max(0.01, zoom);
+    const family = structureFamily(type);
+    const color =
+      family === "door"
+        ? 0xe6b663
+        : family === "window"
+          ? 0x79c8df
+          : family === "roof"
+            ? 0xb95360
+            : 0xd9d7a4;
+    if (isRoofStructure(type)) {
+      this.structure
+        .rect(
+          Math.min(start.x, end.x),
+          Math.min(start.y, end.y),
+          Math.abs(end.x - start.x),
+          Math.abs(end.y - start.y),
+        )
+        .fill({ color, alpha: 0.12 })
+        .stroke({ color, alpha: 0.92, width: 2.4 / safeZoom });
+    } else {
+      this.structure
+        .moveTo(start.x, start.y)
+        .lineTo(end.x, end.y)
+        .stroke({
+          color,
+          alpha: 0.96,
+          width: (family === "wall" ? 3 : 5) / safeZoom,
+        });
+    }
+    const radius = 4.5 / safeZoom;
+    this.structure.circle(start.x, start.y, radius).fill({ color, alpha: 1 });
+    this.structure.circle(end.x, end.y, radius).fill({ color, alpha: 1 });
+  }
+
+  clearStructure() {
+    this.structure.clear();
   }
 
   destroy() {
