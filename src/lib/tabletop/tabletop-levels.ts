@@ -11,6 +11,10 @@ import type {
   TabletopWall,
 } from "./tabletop-visibility-service";
 import { tabletopSceneLevels } from "./types";
+import {
+  elevateTabletopPoint,
+  type TabletopViewOrientation,
+} from "./tabletop-projection";
 
 export function activeTabletopLevel(
   scene: TabletopScene,
@@ -54,11 +58,12 @@ export function filterVisibilityForLevel(
   };
 }
 
-export function elevateIsometricPoint(point: Point, elevation: number): Point {
-  return {
-    x: point.x - elevation,
-    y: point.y - elevation,
-  };
+export function elevateIsometricPoint(
+  point: Point,
+  elevation: number,
+  orientation?: TabletopViewOrientation,
+): Point {
+  return elevateTabletopPoint(point, elevation, orientation);
 }
 
 export function tabletopEntityWorldElevation(
@@ -67,4 +72,43 @@ export function tabletopEntityWorldElevation(
 ) {
   const relative = Number(entity.elevation);
   return level.baseElevation + (Number.isFinite(relative) ? relative : 0);
+}
+
+export function updateTabletopLevelStack(
+  levels: TabletopLevel[],
+  levelId: string,
+  patch: Partial<TabletopLevel>,
+  restackAbove = false,
+) {
+  const updated = levels.map((level) =>
+    level.id === levelId ? { ...level, ...patch, id: level.id } : level,
+  );
+  if (
+    !restackAbove ||
+    (patch.baseElevation === undefined && patch.height === undefined)
+  ) {
+    return updated;
+  }
+
+  const ordered = [...updated].sort(
+    (left, right) =>
+      left.order - right.order || left.id.localeCompare(right.id),
+  );
+  const changedIndex = ordered.findIndex((level) => level.id === levelId);
+  if (changedIndex < 0) return updated;
+
+  const bases = new Map<string, number>();
+  let nextBase =
+    ordered[changedIndex].baseElevation +
+    Math.max(8, ordered[changedIndex].height);
+  for (const level of ordered.slice(changedIndex + 1)) {
+    bases.set(level.id, nextBase);
+    nextBase += Math.max(8, level.height);
+  }
+
+  return updated.map((level) =>
+    bases.has(level.id)
+      ? { ...level, baseElevation: bases.get(level.id) ?? level.baseElevation }
+      : level,
+  );
 }
