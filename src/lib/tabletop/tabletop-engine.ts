@@ -27,6 +27,7 @@ import {
   type TabletopMeasurementPreview,
   type TabletopStructurePreview,
   type TabletopToolMode,
+  type TabletopVisibilityToolPreview,
 } from "./interaction-controller";
 import { LayerManager } from "./layer-manager";
 import { SceneManager } from "./scene-manager";
@@ -98,6 +99,7 @@ export interface TabletopEngineOptions {
   onActivateStructure?: (wall: TabletopWall) => void;
   onActivateEntity?: (entity: TabletopEntity) => boolean | void;
   onViewChange?: (view: TabletopViewState) => void;
+  onCommitVisibilityTool?: (preview: TabletopVisibilityToolPreview) => void;
 }
 
 export class TabletopEngine {
@@ -142,6 +144,9 @@ export class TabletopEngine {
     opacity: 0.94,
   };
   private gridVisible = true;
+  private visibilityToolPreview: TabletopVisibilityToolPreview | null = null;
+  private lightToolRadius = 320;
+  private fogToolRadius = 160;
   private lastViewFingerprint = "";
   private suppressViewChange = false;
 
@@ -205,6 +210,10 @@ export class TabletopEngine {
       commitDrawing: (points) => this.commitDrawing(points),
       previewStructure: (structure) => this.previewStructure(structure),
       commitStructure: (structure) => this.commitStructure(structure),
+      previewVisibilityTool: (preview) => this.previewVisibilityTool(preview),
+      commitVisibilityTool: (preview) => this.commitVisibilityTool(preview),
+      visibilityToolRadius: (mode) =>
+        mode === "light" ? this.lightToolRadius : this.fogToolRadius,
       editableStructure: (id) => this.editableStructure(id),
       previewStructureTransform: (structure) =>
         this.previewStructureTransform(structure),
@@ -318,7 +327,13 @@ export class TabletopEngine {
     if (readOnly) {
       this.selection.clear();
       this.setSelectedStructure(null);
-      if (this.toolMode === "draw" || this.toolMode === "structure")
+      if (
+        this.toolMode === "draw" ||
+        this.toolMode === "structure" ||
+        this.toolMode === "light" ||
+        this.toolMode === "fog_reveal" ||
+        this.toolMode === "fog_hide"
+      )
         this.setToolMode("select");
     }
     this.render();
@@ -326,7 +341,12 @@ export class TabletopEngine {
 
   setToolMode(mode: TabletopToolMode) {
     const nextMode =
-      this.readOnly && (mode === "draw" || mode === "structure")
+      this.readOnly &&
+      (mode === "draw" ||
+        mode === "structure" ||
+        mode === "light" ||
+        mode === "fog_reveal" ||
+        mode === "fog_hide")
         ? "select"
         : mode;
     this.toolMode = nextMode;
@@ -351,6 +371,15 @@ export class TabletopEngine {
 
   setStructureType(type: TabletopStructureType) {
     this.structureType = type;
+  }
+
+  setVisibilityToolRadius(kind: "light" | "fog", radius: number) {
+    const normalized = Math.max(
+      8,
+      Math.min(kind === "light" ? 100_000 : 1_024, Number(radius) || 8),
+    );
+    if (kind === "light") this.lightToolRadius = normalized;
+    else this.fogToolRadius = normalized;
   }
 
   setProjectionMode(mode: TabletopProjectionMode) {
@@ -1155,6 +1184,19 @@ export class TabletopEngine {
     this.options.onCreateStructure?.(structure);
   }
 
+  private previewVisibilityTool(preview: TabletopVisibilityToolPreview | null) {
+    this.visibilityToolPreview = preview
+      ? { ...preview, points: preview.points.map((point) => ({ ...point })) }
+      : null;
+    this.render(false);
+  }
+
+  private commitVisibilityTool(preview: TabletopVisibilityToolPreview) {
+    this.visibilityToolPreview = null;
+    if (!this.readOnly) this.options.onCommitVisibilityTool?.(preview);
+    this.render(false);
+  }
+
   private previewStructureTransform(structure: TabletopWall) {
     this.visibilityState = {
       ...this.visibilityState,
@@ -1436,6 +1478,7 @@ export class TabletopEngine {
       this.projectionMode,
       activeLevel.id,
       this.viewOrientation,
+      this.visibilityToolPreview,
     );
     this.spatial.render(
       this.scenes.scene,
