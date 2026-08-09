@@ -8,6 +8,14 @@ export interface TabletopViewOrientation {
   elevationScale: number;
 }
 
+export interface TabletopViewState extends TabletopViewOrientation {
+  projection: TabletopProjectionMode;
+  x: number;
+  y: number;
+  zoom: number;
+  levelId: string | null;
+}
+
 export interface TabletopProjectionMatrix {
   a: number;
   b: number;
@@ -43,6 +51,31 @@ export function normalizeTabletopViewOrientation(
         ),
       ),
     ),
+  };
+}
+
+export function normalizeTabletopViewState(
+  value: Partial<TabletopViewState>,
+): TabletopViewState {
+  const orientation = normalizeTabletopViewOrientation(value);
+  const coordinate = (candidate: unknown) => {
+    const number = Number(candidate);
+    return Math.max(
+      -1_000_000,
+      Math.min(1_000_000, Number.isFinite(number) ? number : 0),
+    );
+  };
+  const zoom = Number(value.zoom);
+  return {
+    projection: value.projection === "isometric" ? "isometric" : "plan",
+    x: coordinate(value.x),
+    y: coordinate(value.y),
+    zoom: Math.max(0.15, Math.min(4, Number.isFinite(zoom) ? zoom : 1)),
+    levelId:
+      typeof value.levelId === "string" && value.levelId.length > 0
+        ? value.levelId
+        : null,
+    ...orientation,
   };
 }
 

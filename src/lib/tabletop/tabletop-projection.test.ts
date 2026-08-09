@@ -1,8 +1,9 @@
 import { describe, expect, it } from "vitest";
 import {
   DEFAULT_TABLETOP_VIEW_ORIENTATION,
-  normalizeTabletopViewOrientation,
   elevateTabletopPoint,
+  normalizeTabletopViewOrientation,
+  normalizeTabletopViewState,
   projectTabletopPoint,
   tabletopProjectionMatrix,
   unprojectTabletopPoint,
@@ -44,6 +45,30 @@ describe("tabletop projection", () => {
         elevationScale: 99,
       }),
     ).toEqual({ yaw: 315, tilt: 0.18, elevationScale: 2.5 });
+  });
+
+  it("normaliza uma preferência persistida sem aceitar viewport fora dos limites", () => {
+    expect(
+      normalizeTabletopViewState({
+        projection: "isometric",
+        x: 2_000_000,
+        y: -2_000_000,
+        zoom: 8,
+        levelId: "upper",
+        yaw: -45,
+        tilt: 0,
+        elevationScale: 9,
+      }),
+    ).toEqual({
+      projection: "isometric",
+      x: 1_000_000,
+      y: -1_000_000,
+      zoom: 4,
+      levelId: "upper",
+      yaw: 315,
+      tilt: 0.18,
+      elevationScale: 2.5,
+    });
   });
 
   it("mantém elevação vertical na tela em qualquer rotação", () => {

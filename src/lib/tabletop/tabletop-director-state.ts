@@ -1,5 +1,6 @@
 import { z } from "zod";
 import type { TabletopProjectionMode } from "./camera-controller";
+import { DEFAULT_TABLETOP_VIEW_ORIENTATION } from "./tabletop-projection";
 
 const coordinate = z.number().finite().min(-1_000_000).max(1_000_000);
 
@@ -11,6 +12,9 @@ export const tabletopDirectorCameraSchema = z
     zoom: z.number().finite().min(0.15).max(4),
     projection: z.enum(["plan", "isometric"]),
     levelId: z.uuid().nullable(),
+    yaw: z.number().finite().min(0).max(359.999).default(45),
+    tilt: z.number().finite().min(0.18).max(0.9).default(0.5),
+    elevationScale: z.number().finite().min(0.25).max(2.5).default(1),
   })
   .strict();
 
@@ -43,6 +47,7 @@ export const DEFAULT_TABLETOP_DIRECTOR_STATE: TabletopDirectorState = {
     zoom: 1,
     projection: "plan",
     levelId: null,
+    ...DEFAULT_TABLETOP_VIEW_ORIENTATION,
   },
 };
 
@@ -64,6 +69,9 @@ export function tabletopDirectorCameraFromView(input: {
   zoom: number;
   projection: TabletopProjectionMode;
   levelId: string | null;
+  yaw: number;
+  tilt: number;
+  elevationScale: number;
 }): TabletopDirectorCamera {
   return tabletopDirectorCameraSchema.parse({ ...input, mode: "manual" });
 }

@@ -90,7 +90,9 @@ import {
   DEFAULT_TABLETOP_VIEW_ORIENTATION,
   normalizeTabletopViewOrientation,
   type TabletopViewOrientation,
+  type TabletopViewState,
 } from "@/lib/tabletop/tabletop-projection";
+import { tabletopViewPreferenceService } from "@/lib/tabletop/tabletop-view-preference-service";
 import {
   createTabletopStructure,
   structureFamily,
@@ -268,6 +270,10 @@ export function TabletopWorkspace({
   );
   const structureTypeRef = useRef<TabletopStructureType>("wall");
   const activeLevelIdRef = useRef<string | null>(null);
+  const restoredViewRef = useRef<TabletopViewState | null>(null);
+  const viewPreferenceSceneRef = useRef<string | null>(null);
+  const pendingViewRef = useRef<TabletopViewState | null>(null);
+  const viewSaveTimerRef = useRef<number | null>(null);
   const dossierRequestRef = useRef(0);
   const [snapshot, setSnapshot] = useState(EMPTY_SNAPSHOT);
   const [visibility, setVisibility] = useState<TabletopVisibilityState>(
@@ -510,6 +516,13 @@ export function TabletopWorkspace({
   );
 
   const clearScene = useCallback(() => {
+    viewPreferenceSceneRef.current = null;
+    restoredViewRef.current = null;
+    pendingViewRef.current = null;
+    if (viewSaveTimerRef.current !== null) {
+      window.clearTimeout(viewSaveTimerRef.current);
+      viewSaveTimerRef.current = null;
+    }
     persistedSceneRef.current = null;
     setPersistedScene(null);
     setSnapshots([]);
@@ -539,9 +552,41 @@ export function TabletopWorkspace({
   const loadScene = useCallback(
     async (sceneId: string) => {
       setLoading(true);
+      viewPreferenceSceneRef.current = null;
       try {
-        const scene = await tabletopPersistenceService.loadScene(sceneId);
+        const [scene, restoredView] = await Promise.all([
+          tabletopPersistenceService.loadScene(sceneId),
+          tabletopViewPreferenceService.load(sceneId).catch(() => null),
+        ]);
+        const nextView = restoredView
+          ? {
+              ...restoredView,
+              levelId: scene.levels.some(
+                (level) => level.id === restoredView.levelId && level.visible,
+              )
+                ? restoredView.levelId
+                : (scene.levels.find((level) => level.visible)?.id ??
+                  scene.levels[0]?.id ??
+                  null),
+            }
+          : null;
+        restoredViewRef.current = nextView;
         installScene(scene);
+        if (nextView) {
+          setProjectionMode(nextView.projection);
+          setViewOrientation(nextView);
+          setActiveLevelId(nextView.levelId);
+          engineRef.current?.applyViewState(nextView);
+        } else {
+          setProjectionMode("plan");
+          setViewOrientation(DEFAULT_TABLETOP_VIEW_ORIENTATION);
+          engineRef.current?.setProjectionOrientation(
+            DEFAULT_TABLETOP_VIEW_ORIENTATION,
+          );
+          engineRef.current?.setProjectionMode("plan");
+          engineRef.current?.fitToScreen();
+        }
+        viewPreferenceSceneRef.current = scene.id;
         if (lightingEnabled) {
           try {
             installVisibility(await tabletopVisibilityService.load(scene.id));
@@ -604,6 +649,30 @@ export function TabletopWorkspace({
       });
   }, []);
 
+  const flushViewPreference = useCallback(() => {
+    if (viewSaveTimerRef.current !== null)
+      window.clearTimeout(viewSaveTimerRef.current);
+    viewSaveTimerRef.current = null;
+    const pending = pendingViewRef.current;
+    const targetSceneId = viewPreferenceSceneRef.current;
+    pendingViewRef.current = null;
+    if (!pending || !targetSceneId) return;
+    void tabletopViewPreferenceService
+      .save(targetSceneId, pending)
+      .catch(() => undefined);
+  }, []);
+
+  const queueViewPreference = useCallback(
+    (view: TabletopViewState) => {
+      if (!viewPreferenceSceneRef.current) return;
+      pendingViewRef.current = view;
+      if (viewSaveTimerRef.current !== null)
+        window.clearTimeout(viewSaveTimerRef.current);
+      viewSaveTimerRef.current = window.setTimeout(flushViewPreference, 500);
+    },
+    [flushViewPreference],
+  );
+
   useEffect(() => {
     const host = hostRef.current;
     if (!host) return;
@@ -662,6 +731,7 @@ export function TabletopWorkspace({
       },
       onContextMenu: (position, entityId) =>
         setContextMenu({ ...clampContextMenu(position), entityId }),
+      onViewChange: queueViewPreference,
     });
     engineRef.current = engine;
     void engine
@@ -673,10 +743,14 @@ export function TabletopWorkspace({
         const stored = persistedSceneRef.current;
         if (stored) {
           engine.loadScene(stored);
-          engine.setActiveLevel(activeLevelIdRef.current);
           engine.setVisibility(visibilityRef.current, lightingEnabled);
           engine.setReadOnly(stored.status === "archived");
-          engine.fitToScreen();
+          if (restoredViewRef.current)
+            engine.applyViewState(restoredViewRef.current);
+          else {
+            engine.setActiveLevel(activeLevelIdRef.current);
+            engine.fitToScreen();
+          }
         } else {
           engine.setReadOnly(true);
         }
@@ -694,8 +768,20 @@ export function TabletopWorkspace({
     lightingEnabled,
     openEntityDossier,
     previewVisibility,
+    queueViewPreference,
     replaceStructure,
   ]);
+
+  useEffect(() => {
+    const flushWhenHidden = () => {
+      if (document.visibilityState === "hidden") flushViewPreference();
+    };
+    document.addEventListener("visibilitychange", flushWhenHidden);
+    return () => {
+      document.removeEventListener("visibilitychange", flushWhenHidden);
+      flushViewPreference();
+    };
+  }, [flushViewPreference]);
 
   useEffect(() => {
     let active = true;
