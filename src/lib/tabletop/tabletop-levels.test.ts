@@ -7,6 +7,7 @@ import {
   updateTabletopLevelStack,
 } from "./tabletop-levels";
 import { projectTabletopPoint } from "./tabletop-projection";
+import type { TabletopVisibilityState } from "./tabletop-visibility-service";
 
 describe("tabletop spatial levels", () => {
   it("selects a visible level and falls back safely", () => {
@@ -41,7 +42,7 @@ describe("tabletop spatial levels", () => {
   });
 
   it("isolates walls, lights and fog from other floors", () => {
-    const state = {
+    const state: TabletopVisibilityState = {
       version: 1,
       globalIllumination: 1,
       fogEnabled: false,
