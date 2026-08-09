@@ -12,6 +12,7 @@ import {
 import { GridRenderer } from "./grid-renderer";
 import {
   InteractionController,
+  type TabletopMeasurementPreview,
   type TabletopToolMode,
 } from "./interaction-controller";
 import { LayerManager } from "./layer-manager";
@@ -19,6 +20,11 @@ import { SceneManager } from "./scene-manager";
 import { SelectionManager } from "./selection-manager";
 import { TabletopSelectionOverlay } from "./selection-overlay";
 import { TextureManager } from "./texture-manager";
+import {
+  createTabletopDrawingEntity,
+  type TabletopDrawingStyle,
+} from "./tabletop-drawing";
+import { TabletopToolOverlay } from "./tabletop-tool-overlay";
 import {
   alignTabletopEntities,
   distributeTabletopEntities,
@@ -46,6 +52,7 @@ export interface TabletopEngineOptions {
   onChange?: (snapshot: TabletopSnapshot) => void;
   onAssetError?: (message: string) => void;
   onContextMenu?: (position: Point, entityId?: string) => void;
+  onToolModeChange?: (mode: TabletopToolMode) => void;
 }
 
 export class TabletopEngine {
@@ -62,6 +69,7 @@ export class TabletopEngine {
   private readonly camera = new CameraController(this.viewport);
   private readonly entities: EntityRenderer;
   private readonly visibility = new TabletopVisibilityRenderer();
+  private readonly toolOverlay = new TabletopToolOverlay();
   private readonly selectionOverlay = new TabletopSelectionOverlay();
   private visibilityState = createEmptyVisibilityState();
   private visibilityGuides = false;
@@ -75,6 +83,11 @@ export class TabletopEngine {
   private clipboard: TabletopEntity[] = [];
   private backgroundSprite: Sprite | null = null;
   private backgroundAssetUrl: string | undefined;
+  private drawingStyle: TabletopDrawingStyle = {
+    color: 0xd9d7a4,
+    width: 5,
+    opacity: 0.94,
+  };
 
   constructor(private readonly options: TabletopEngineOptions = {}) {
     this.entities = new EntityRenderer(
@@ -109,6 +122,7 @@ export class TabletopEngine {
       this.grid.view,
       this.entities.view,
       this.visibility.view,
+      this.toolOverlay.view,
       this.selectionOverlay.view,
     );
     this.app.stage.addChild(this.viewport);
@@ -124,6 +138,9 @@ export class TabletopEngine {
       editableSelection: () => this.editableSelection(),
       previewEntities: (entities) => this.previewEntities(entities),
       previewMarquee: (bounds) => this.previewMarquee(bounds),
+      previewMeasure: (measure) => this.previewMeasure(measure),
+      previewDrawing: (points) => this.previewDrawing(points),
+      commitDrawing: (points) => this.commitDrawing(points),
       commitTransform: (before, after, label) =>
         this.commitTransform(before, after, label),
       snap: (point) => this.snap(point),
@@ -137,6 +154,7 @@ export class TabletopEngine {
       nudge: (delta) => this.nudge(delta),
       focusSelection: () => this.focusSelection(),
       fitToScreen: () => this.fitToScreen(),
+      activateTool: (mode) => this.setToolMode(mode),
       onContextMenu: (position, entityId) =>
         this.options.onContextMenu?.(position, entityId),
     });
@@ -172,14 +190,33 @@ export class TabletopEngine {
 
   setReadOnly(readOnly: boolean) {
     this.readOnly = readOnly;
-    if (readOnly) this.selection.clear();
+    if (readOnly) {
+      this.selection.clear();
+      if (this.toolMode === "draw") this.setToolMode("select");
+    }
     this.render();
   }
 
   setToolMode(mode: TabletopToolMode) {
-    this.toolMode = mode;
-    this.interaction?.setMode(mode);
+    const nextMode = this.readOnly && mode === "draw" ? "select" : mode;
+    this.toolMode = nextMode;
+    this.interaction?.setMode(nextMode);
+    this.options.onToolModeChange?.(nextMode);
     this.render(false);
+  }
+
+  setDrawingStyle(patch: Partial<TabletopDrawingStyle>) {
+    this.drawingStyle = {
+      color: Number.isFinite(patch.color)
+        ? Math.max(0, Math.min(0xffffff, Number(patch.color)))
+        : this.drawingStyle.color,
+      width: Number.isFinite(patch.width)
+        ? Math.max(1, Math.min(48, Number(patch.width)))
+        : this.drawingStyle.width,
+      opacity: Number.isFinite(patch.opacity)
+        ? Math.max(0.1, Math.min(1, Number(patch.opacity)))
+        : this.drawingStyle.opacity,
+    };
   }
 
   setVisibility(state: TabletopVisibilityState, showGuides = false) {
@@ -673,6 +710,77 @@ export class TabletopEngine {
     this.render(false);
   }
 
+  private previewMeasure(measure: TabletopMeasurementPreview | null) {
+    if (!measure) {
+      this.toolOverlay.clearMeasure();
+      this.render(false);
+      return;
+    }
+    const distance = Math.hypot(
+      measure.end.x - measure.start.x,
+      measure.end.y - measure.start.y,
+    );
+    const scene = this.scenes.scene;
+    const gridUnit = scene.gridSize * scene.gridScale;
+    const label =
+      scene.gridMode === "none"
+        ? `${Math.round(distance)} px`
+        : `${this.formatMeasure(distance / Math.max(1, gridUnit))} cél. · ${Math.round(distance)} px`;
+    this.toolOverlay.renderMeasure(
+      measure.start,
+      measure.end,
+      measure.kind === "movement" ? `Movimento · ${label}` : label,
+      this.camera.zoom,
+    );
+    this.render(false);
+  }
+
+  private previewDrawing(points: Point[]) {
+    if (points.length < 2) this.toolOverlay.clearDrawing();
+    else this.toolOverlay.renderDrawing(points, this.drawingStyle);
+    this.render(false);
+  }
+
+  private commitDrawing(points: Point[]) {
+    if (this.readOnly || points.length < 2) return;
+    const targetLayer =
+      this.scenes.scene.layers.find(
+        (layer) => layer.layerType === "drawings",
+      ) ?? this.scenes.scene.layers.find((layer) => layer.id === "drawings");
+    if (!targetLayer || targetLayer.locked || !targetLayer.visible) {
+      this.options.onAssetError?.(
+        "A camada Desenhos precisa estar visível e desbloqueada.",
+      );
+      return;
+    }
+    const count =
+      this.scenes.scene.entities.filter((entity) => entity.type === "drawing")
+        .length + 1;
+    const entity = createTabletopDrawingEntity({
+      id: crypto.randomUUID(),
+      label: `Traço ${count}`,
+      layerId: targetLayer.id,
+      zIndex: this.scenes.scene.entities.length + 1,
+      points,
+      style: this.drawingStyle,
+    });
+    if (!entity) return;
+    const clamped = this.clampEntity(entity);
+    this.executeMutation("Desenhar na cena", (entities) => [
+      ...entities,
+      clamped,
+    ]);
+    this.selection.replace([clamped.id]);
+    this.render();
+  }
+
+  private formatMeasure(value: number) {
+    if (!Number.isFinite(value)) return "0";
+    if (Math.abs(value - Math.round(value)) < 0.02)
+      return String(Math.round(value));
+    return value < 10 ? value.toFixed(1) : String(Math.round(value));
+  }
+
   private commitTransform(
     before: TabletopEntity[],
     after: TabletopEntity[],
@@ -839,6 +947,7 @@ export class TabletopEngine {
     this.entities.destroy();
     this.grid.destroy();
     this.visibility.destroy();
+    this.toolOverlay.destroy();
     this.selectionOverlay.destroy();
     this.backgroundSprite?.destroy();
     this.backgroundSprite = null;

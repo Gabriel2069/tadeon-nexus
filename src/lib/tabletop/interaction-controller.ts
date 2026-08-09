@@ -6,7 +6,13 @@ import {
 } from "./selection-overlay";
 import type { Point, TabletopEntity } from "./types";
 
-export type TabletopToolMode = "select" | "pan";
+export type TabletopToolMode = "select" | "pan" | "measure" | "draw";
+
+export interface TabletopMeasurementPreview {
+  start: Point;
+  end: Point;
+  kind: "ruler" | "movement";
+}
 
 interface InteractionBindings {
   camera: CameraController;
@@ -19,6 +25,9 @@ interface InteractionBindings {
   editableSelection(): TabletopEntity[];
   previewEntities(entities: TabletopEntity[]): void;
   previewMarquee(bounds: TabletopBounds | null): void;
+  previewMeasure(measure: TabletopMeasurementPreview | null): void;
+  previewDrawing(points: Point[]): void;
+  commitDrawing(points: Point[]): void;
   commitTransform(
     before: TabletopEntity[],
     after: TabletopEntity[],
@@ -35,10 +44,12 @@ interface InteractionBindings {
   nudge(delta: Point): void;
   focusSelection(): void;
   fitToScreen(): void;
+  activateTool(mode: TabletopToolMode): void;
   onContextMenu(position: Point, entityId?: string): void;
 }
 
-type PointerAction = "pan" | "move" | "marquee" | "resize" | "rotate";
+type PointerAction =
+  "pan" | "move" | "marquee" | "resize" | "rotate" | "measure" | "draw";
 
 const MIN_ENTITY_SIZE = 8;
 const HANDLE_HIT_RADIUS = 11;
@@ -50,6 +61,8 @@ export class InteractionController {
   private dragStartWorld: Point | null = null;
   private dragBefore: TabletopEntity[] = [];
   private marqueeStartWorld: Point | null = null;
+  private measureStartWorld: Point | null = null;
+  private drawPoints: Point[] = [];
   private activeHandle: TabletopTransformHandle | null = null;
   private mode: TabletopToolMode = "select";
   private spacePressed = false;
@@ -78,6 +91,8 @@ export class InteractionController {
 
   setMode(mode: TabletopToolMode) {
     this.mode = mode;
+    this.bindings.previewMeasure(null);
+    this.bindings.previewDrawing([]);
     this.updateCursor();
   }
 
@@ -122,7 +137,7 @@ export class InteractionController {
       event.button === 1 ||
       this.spacePressed ||
       this.mode === "pan" ||
-      (event.pointerType === "touch" && !hit);
+      (event.pointerType === "touch" && !hit && this.mode === "select");
 
     this.pointerId = event.pointerId;
     this.lastScreen = screen;
@@ -134,6 +149,15 @@ export class InteractionController {
       this.dragBefore = [{ ...handle.entity }];
     } else if (temporaryPan) {
       this.pointerAction = "pan";
+    } else if (this.mode === "measure") {
+      const start = event.altKey ? world : this.bindings.snap(world);
+      this.pointerAction = "measure";
+      this.measureStartWorld = start;
+      this.bindings.previewMeasure({ start, end: start, kind: "ruler" });
+    } else if (this.mode === "draw") {
+      this.pointerAction = "draw";
+      this.drawPoints = [world];
+      this.bindings.previewDrawing(this.drawPoints);
     } else if (hit) {
       const additive = event.shiftKey || event.metaKey || event.ctrlKey;
       if (additive || !this.bindings.isSelected(hit))
@@ -215,16 +239,29 @@ export class InteractionController {
             ? { x: delta.x, y: 0 }
             : { x: 0, y: delta.y };
       }
-      this.bindings.previewEntities(
-        this.dragBefore.map((entity) => {
-          const origin = {
-            x: entity.x + delta.x,
-            y: entity.y + delta.y,
-          };
-          const next = event.altKey ? origin : this.bindings.snap(origin);
-          return { ...entity, ...next };
-        }),
-      );
+      const preview = this.dragBefore.map((entity) => {
+        const origin = {
+          x: entity.x + delta.x,
+          y: entity.y + delta.y,
+        };
+        const next = event.altKey ? origin : this.bindings.snap(origin);
+        return { ...entity, ...next };
+      });
+      this.bindings.previewEntities(preview);
+      const before = this.dragBefore[0];
+      const after = preview[0];
+      if (before && after)
+        this.bindings.previewMeasure({
+          start: {
+            x: before.x + before.width / 2,
+            y: before.y + before.height / 2,
+          },
+          end: {
+            x: after.x + after.width / 2,
+            y: after.y + after.height / 2,
+          },
+          kind: "movement",
+        });
     } else if (this.pointerAction === "marquee" && this.marqueeStartWorld) {
       this.bindings.previewMarquee(
         normalizeBounds(this.marqueeStartWorld, world),
@@ -247,6 +284,23 @@ export class InteractionController {
       this.bindings.previewEntities([
         this.rotateEntity(this.dragBefore[0], world, event.shiftKey),
       ]);
+    } else if (this.pointerAction === "measure" && this.measureStartWorld) {
+      const end = event.altKey ? world : this.bindings.snap(world);
+      this.bindings.previewMeasure({
+        start: this.measureStartWorld,
+        end,
+        kind: "ruler",
+      });
+    } else if (this.pointerAction === "draw" && this.drawPoints[0]) {
+      if (event.shiftKey) {
+        this.drawPoints = [this.drawPoints[0], world];
+      } else {
+        const last = this.drawPoints[this.drawPoints.length - 1];
+        const minimumStep = 2 / Math.max(this.bindings.camera.zoom, 0.01);
+        if (Math.hypot(world.x - last.x, world.y - last.y) >= minimumStep)
+          this.drawPoints.push(world);
+      }
+      this.bindings.previewDrawing(this.drawPoints);
     }
 
     this.lastScreen = screen;
@@ -296,6 +350,14 @@ export class InteractionController {
               : "Mover seleção";
         this.bindings.commitTransform(this.dragBefore, after, label);
       }
+      this.bindings.previewMeasure(null);
+    } else if (this.pointerAction === "draw") {
+      const end = this.bindings.camera.screenToWorld(this.screenPoint(event));
+      if (event.shiftKey && this.drawPoints[0])
+        this.drawPoints = [this.drawPoints[0], end];
+      else if (this.drawPoints.length > 0) this.drawPoints.push(end);
+      this.bindings.commitDrawing(this.drawPoints);
+      this.bindings.previewDrawing([]);
     }
 
     this.releasePointer(event.pointerId);
@@ -307,6 +369,8 @@ export class InteractionController {
     if (this.dragBefore.length > 0)
       this.bindings.previewEntities(this.dragBefore);
     this.bindings.previewMarquee(null);
+    this.bindings.previewMeasure(null);
+    this.bindings.previewDrawing([]);
     this.releasePointer(event.pointerId);
   };
 
@@ -330,6 +394,7 @@ export class InteractionController {
 
   private onDoubleClick = (event: MouseEvent) => {
     if (event.button !== 0) return;
+    if (this.mode === "measure" || this.mode === "draw") return;
     event.preventDefault();
     const screen = this.screenPoint(event);
     const hit = this.bindings.hitTest(
@@ -360,6 +425,20 @@ export class InteractionController {
       this.spacePressed = true;
       this.updateCursor();
       return;
+    }
+    if (!modifier) {
+      const toolShortcuts: Partial<Record<string, TabletopToolMode>> = {
+        v: "select",
+        h: "pan",
+        r: "measure",
+        d: "draw",
+      };
+      const shortcut = toolShortcuts[event.key.toLowerCase()];
+      if (shortcut) {
+        event.preventDefault();
+        this.bindings.activateTool(shortcut);
+        return;
+      }
     }
     if (modifier && event.key.toLowerCase() === "a") {
       event.preventDefault();
@@ -401,8 +480,12 @@ export class InteractionController {
       if (this.dragBefore.length > 0)
         this.bindings.previewEntities(this.dragBefore);
       this.bindings.previewMarquee(null);
+      this.bindings.previewMeasure(null);
+      this.bindings.previewDrawing([]);
       this.clearPointerState();
       this.bindings.clearSelection();
+      if (this.mode === "measure" || this.mode === "draw")
+        this.bindings.activateTool("select");
       this.updateCursor();
       return;
     }
@@ -548,6 +631,14 @@ export class InteractionController {
       this.canvas.style.cursor = "grab";
       return;
     }
+    if (this.mode === "measure") {
+      this.canvas.style.cursor = "crosshair";
+      return;
+    }
+    if (this.mode === "draw") {
+      this.canvas.style.cursor = "cell";
+      return;
+    }
     if (screen) {
       const handle = this.hitTransformHandle(screen)?.handle;
       if (handle === "rotate") {
@@ -587,6 +678,8 @@ export class InteractionController {
     this.dragStartWorld = null;
     this.dragBefore = [];
     this.marqueeStartWorld = null;
+    this.measureStartWorld = null;
+    this.drawPoints = [];
     this.activeHandle = null;
   }
 

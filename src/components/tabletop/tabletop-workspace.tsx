@@ -32,10 +32,12 @@ import {
   Maximize2,
   MousePointer2,
   PanelRightOpen,
+  PencilLine,
   Plus,
   Redo2,
   RefreshCw,
   RotateCw,
+  Ruler,
   Save,
   Scan,
   SlidersHorizontal,
@@ -128,8 +130,28 @@ type PaletteDragPayload =
 
 type TabletopPanelTab = "library" | "scene" | "inspector";
 type PendingNavigation =
-  | { kind: "scene"; id: string }
-  | { kind: "campaign"; id: string };
+  { kind: "scene"; id: string } | { kind: "campaign"; id: string };
+
+const TOOL_LABELS: Record<TabletopToolMode, string> = {
+  select: "Seleção",
+  pan: "Mão",
+  measure: "Régua",
+  draw: "Desenho",
+};
+
+const TOOL_HINTS: Record<TabletopToolMode, string> = {
+  select: "Arraste uma área · alças transformam · Espaço move a cena",
+  pan: "Arraste para navegar · Ctrl/Cmd + roda amplia · duplo clique enquadra",
+  measure: "Arraste para medir · Alt ignora a grade · R ativa a régua",
+  draw: "Arraste para desenhar · Shift cria uma linha · D ativa o traço",
+};
+
+const DRAW_COLORS = ["#d9d7a4", "#74242d", "#4f6e5d", "#e9e3d5", "#1f3644"];
+
+function colorToNumber(value: string) {
+  const parsed = Number.parseInt(value.replace("#", ""), 16);
+  return Number.isFinite(parsed) ? parsed : 0xd9d7a4;
+}
 
 function parsePaletteDragPayload(value: string): PaletteDragPayload | null {
   try {
@@ -240,6 +262,8 @@ export function TabletopWorkspace({
   const [mobilePanelOpen, setMobilePanelOpen] = useState(false);
   const [panelTab, setPanelTab] = useState<TabletopPanelTab>("library");
   const [toolMode, setToolMode] = useState<TabletopToolMode>("select");
+  const [drawColor, setDrawColor] = useState("#d9d7a4");
+  const [drawWidth, setDrawWidth] = useState(5);
   const [sceneDialogOpen, setSceneDialogOpen] = useState(false);
   const [sceneName, setSceneName] = useState("Nova cena");
   const [snapshotDialogOpen, setSnapshotDialogOpen] = useState(false);
@@ -287,6 +311,13 @@ export function TabletopWorkspace({
   useEffect(() => {
     engineRef.current?.setToolMode(toolMode);
   }, [toolMode]);
+
+  useEffect(() => {
+    engineRef.current?.setDrawingStyle({
+      color: colorToNumber(drawColor),
+      width: drawWidth,
+    });
+  }, [drawColor, drawWidth]);
 
   useEffect(() => {
     if (!mobilePanelOpen) return;
@@ -430,6 +461,7 @@ export function TabletopWorkspace({
         );
       },
       onAssetError: (message) => toast.error(message),
+      onToolModeChange: setToolMode,
       onContextMenu: (position, entityId) =>
         setContextMenu({ ...clampContextMenu(position), entityId }),
     });
@@ -1174,6 +1206,21 @@ export function TabletopWorkspace({
             >
               <Hand className="h-4 w-4" />
             </CanvasToolButton>
+            <CanvasToolButton
+              label="Régua para medir distâncias (R)"
+              active={toolMode === "measure"}
+              onClick={() => setToolMode("measure")}
+            >
+              <Ruler className="h-4 w-4" />
+            </CanvasToolButton>
+            <CanvasToolButton
+              label="Desenho livre persistente (D)"
+              active={toolMode === "draw"}
+              disabled={!editable}
+              onClick={() => setToolMode("draw")}
+            >
+              <PencilLine className="h-4 w-4" />
+            </CanvasToolButton>
             <span className="tadeon-tabletop-canvas-rail__divider" />
             <ToolbarButton
               label="Selecionar todas as entidades editáveis"
@@ -1213,7 +1260,56 @@ export function TabletopWorkspace({
               <Maximize2 className="h-4 w-4" />
             </ToolbarButton>
           </div>
-          {selected.length > 0 && (
+          {toolMode === "draw" && (
+            <div
+              className="tadeon-tabletop-tool-options"
+              aria-label="Opções do desenho"
+            >
+              <div className="tadeon-tabletop-tool-options__heading">
+                <PencilLine className="h-3.5 w-3.5" />
+                <span>Traço</span>
+              </div>
+              <div
+                className="tadeon-tabletop-draw-swatches"
+                aria-label="Cores rápidas"
+              >
+                {DRAW_COLORS.map((color) => (
+                  <button
+                    key={color}
+                    type="button"
+                    aria-label={`Usar cor ${color}`}
+                    aria-pressed={drawColor === color}
+                    className="tadeon-tabletop-draw-swatch"
+                    style={{ backgroundColor: color }}
+                    onClick={() => setDrawColor(color)}
+                  />
+                ))}
+                <label
+                  className="tadeon-tabletop-draw-custom"
+                  title="Cor personalizada"
+                >
+                  <span className="sr-only">Cor personalizada</span>
+                  <input
+                    type="color"
+                    value={drawColor}
+                    onChange={(event) => setDrawColor(event.target.value)}
+                  />
+                </label>
+              </div>
+              <label className="tadeon-tabletop-draw-width">
+                <span>{drawWidth}px</span>
+                <input
+                  type="range"
+                  min={2}
+                  max={24}
+                  step={1}
+                  value={drawWidth}
+                  onChange={(event) => setDrawWidth(Number(event.target.value))}
+                />
+              </label>
+            </div>
+          )}
+          {selected.length > 0 && toolMode !== "draw" && (
             <div
               className="tadeon-tabletop-selection-dock"
               aria-label="Ações rápidas da seleção"
@@ -1331,13 +1427,11 @@ export function TabletopWorkspace({
                 <span>grade</span>
               </div>
               <div className="tadeon-tabletop-stage-status__metric">
-                <strong>{toolMode === "select" ? "Seleção" : "Mão"}</strong>
+                <strong>{TOOL_LABELS[toolMode]}</strong>
                 <span>ferramenta</span>
               </div>
               <span className="ml-auto hidden text-[11px] text-muted-foreground sm:block">
-                {toolMode === "select"
-                  ? "Arraste uma área · alças redimensionam · Espaço move a cena"
-                  : "Arraste para navegar · Ctrl/Cmd + roda amplia · duplo clique enquadra"}
+                {TOOL_HINTS[toolMode]}
               </span>
               <ToolbarButton
                 label="Enquadrar seleção"
@@ -2546,11 +2640,13 @@ function ToolbarButton({
 function CanvasToolButton({
   label,
   active,
+  disabled,
   children,
   onClick,
 }: {
   label: string;
   active: boolean;
+  disabled?: boolean;
   children: React.ReactNode;
   onClick: () => void;
 }) {
@@ -2563,6 +2659,7 @@ function CanvasToolButton({
       title={label}
       aria-label={label}
       aria-pressed={active}
+      disabled={disabled}
       onClick={onClick}
     >
       {children}

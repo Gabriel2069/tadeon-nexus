@@ -1,4 +1,5 @@
 import { Container, Graphics, Sprite, Text } from "pixi.js";
+import { readTabletopDrawingPoints } from "./tabletop-drawing";
 import type { TabletopEntity, TabletopLayer } from "./types";
 import { TextureManager } from "./texture-manager";
 
@@ -114,19 +115,62 @@ export class EntityRenderer {
   private paint(display: Container, entity: TabletopEntity, selected: boolean) {
     const shape = display.getChildByLabel("shape") as Graphics;
     shape.clear();
-    shape.roundRect(0, 0, entity.width, entity.height, 8).fill({
-      color: entity.color,
-      alpha: entity.locked ? 0.45 : 0.78,
-    });
-
     const outline = display.getChildByLabel("outline") as Graphics;
     outline.clear();
-    outline.roundRect(0, 0, entity.width, entity.height, 8).stroke({
-      color: selected ? 0xf3be63 : 0x292f3a,
-      alpha: selected ? 1 : 0.9,
-      width: selected ? 4 : 2,
-    });
     const properties = entityProperties(entity.properties);
+    const drawingPoints =
+      entity.type === "drawing"
+        ? readTabletopDrawingPoints(properties.drawing_points)
+        : [];
+    const isPathDrawing = entity.type === "drawing" && drawingPoints.length > 1;
+
+    if (isPathDrawing) {
+      const sourceWidth = Math.max(
+        1,
+        finiteNumber(properties.drawing_source_width, entity.width),
+      );
+      const sourceHeight = Math.max(
+        1,
+        finiteNumber(properties.drawing_source_height, entity.height),
+      );
+      const scaleX = entity.width / sourceWidth;
+      const scaleY = entity.height / sourceHeight;
+      const scaleStroke = Math.max(0.1, Math.sqrt(scaleX * scaleY));
+      const strokeWidth = Math.max(
+        1,
+        Math.min(48, finiteNumber(properties.stroke_width, 5)),
+      );
+      const strokeOpacity = Math.max(
+        0.1,
+        Math.min(1, finiteNumber(properties.stroke_opacity, 1)),
+      );
+      shape.moveTo(drawingPoints[0].x * scaleX, drawingPoints[0].y * scaleY);
+      for (const point of drawingPoints.slice(1))
+        shape.lineTo(point.x * scaleX, point.y * scaleY);
+      shape.stroke({
+        color: entity.color,
+        alpha: entity.locked ? strokeOpacity * 0.55 : strokeOpacity,
+        width: strokeWidth * scaleStroke,
+        cap: "round",
+        join: "round",
+      });
+      if (selected)
+        outline.roundRect(0, 0, entity.width, entity.height, 6).stroke({
+          color: 0xf3be63,
+          alpha: 0.88,
+          width: 2,
+        });
+    } else {
+      shape.roundRect(0, 0, entity.width, entity.height, 8).fill({
+        color: entity.color,
+        alpha: entity.locked ? 0.45 : 0.78,
+      });
+      outline.roundRect(0, 0, entity.width, entity.height, 8).stroke({
+        color: selected ? 0xf3be63 : 0x292f3a,
+        alpha: selected ? 1 : 0.9,
+        width: selected ? 4 : 2,
+      });
+    }
     const status =
       typeof properties.status === "string" ? properties.status.trim() : "";
     const conditions = Array.isArray(properties.visual_conditions)
@@ -142,12 +186,14 @@ export class EntityRenderer {
     const badgeParts = [status, ...conditions].filter(Boolean).slice(0, 2);
     const badge = display.getChildByLabel("badge") as Text;
     badge.text = badgeParts.join(" · ").slice(0, 30);
-    badge.visible = badge.text.length > 0 && entity.width >= 56;
+    badge.visible =
+      !isPathDrawing && badge.text.length > 0 && entity.width >= 56;
     badge.position.set(7, 5);
 
     const iconText = display.getChildByLabel("icons") as Text;
     iconText.text = icons.join(" ").slice(0, 20);
-    iconText.visible = iconText.text.length > 0 && entity.width >= 48;
+    iconText.visible =
+      !isPathDrawing && iconText.text.length > 0 && entity.width >= 48;
     iconText.position.set(
       Math.max(6, entity.width - iconText.width - 7),
       badge.visible ? 19 : 5,
@@ -160,7 +206,8 @@ export class EntityRenderer {
     );
     const bar = display.getChildByLabel("bar") as Graphics;
     bar.clear();
-    bar.visible = barMax > 0 && entity.width >= 32 && entity.height >= 32;
+    bar.visible =
+      !isPathDrawing && barMax > 0 && entity.width >= 32 && entity.height >= 32;
     if (bar.visible) {
       const width = Math.max(8, entity.width - 10);
       const ratio = barMax > 0 ? barCurrent / barMax : 0;
@@ -180,6 +227,7 @@ export class EntityRenderer {
       entity.label.length > maxLabelLength
         ? `${entity.label.slice(0, Math.max(1, maxLabelLength - 1))}…`
         : entity.label;
+    label.visible = !isPathDrawing;
     label.position.set(8, Math.max(5, entity.height - (bar.visible ? 30 : 24)));
 
     const sprite = display.getChildByLabel("asset") as Sprite | null;
