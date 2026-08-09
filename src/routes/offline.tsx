@@ -1,14 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import {
-  BookOpenText,
-  CloudOff,
-  Eye,
-  FileText,
-  RefreshCw,
-  ShieldCheck,
-  Wifi,
-} from "lucide-react";
+import { BookOpenText, CloudOff, Eye, FileText, RefreshCw, ShieldCheck, Wifi } from "lucide-react";
 import { ProtectedShell } from "@/components/protected-shell";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -22,8 +14,7 @@ export const Route = createFileRoute("/offline")({
       { title: "Consulta Offline · Tadeon Nexus" },
       {
         name: "description",
-        content:
-          "Consulta local e somente leitura das informações recentes do Tadeon Nexus.",
+        content: "Consulta local e somente leitura das informações recentes do Tadeon Nexus.",
       },
     ],
   }),
@@ -71,10 +62,7 @@ function OfflinePage() {
                 <Eye className="h-3.5 w-3.5" />
                 Somente leitura
               </Badge>
-              <Badge
-                variant="outline"
-                className={online ? "text-emerald-400" : "text-amber-400"}
-              >
+              <Badge variant="outline" className={online ? "text-emerald-400" : "text-amber-400"}>
                 {online ? (
                   <Wifi className="mr-1 h-3.5 w-3.5" />
                 ) : (
@@ -83,13 +71,10 @@ function OfflinePage() {
                 {online ? "Conectado" : "Offline"}
               </Badge>
             </div>
-            <h1 className="font-cinzel text-3xl font-semibold md:text-4xl">
-              Arquivo local
-            </h1>
+            <h1 className="font-cinzel text-3xl font-semibold md:text-4xl">Arquivo local</h1>
             <p className="mt-2 max-w-2xl text-sm text-muted-foreground">
-              Consulte as informações abertas recentemente mesmo sem conexão.
-              Alterações continuam bloqueadas para evitar conflitos com o banco
-              principal.
+              Consulte as informações abertas recentemente mesmo sem conexão. Alterações continuam
+              bloqueadas para evitar conflitos com o banco principal.
             </p>
           </div>
           <div className="flex flex-col items-start gap-2 md:items-end">
@@ -98,11 +83,7 @@ function OfflinePage() {
                 ? `Sincronizado em ${updated.toLocaleString("pt-BR")}`
                 : "Nenhuma cópia local disponível"}
             </p>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setCache(readOfflineCache())}
-            >
+            <Button variant="outline" size="sm" onClick={() => setCache(readOfflineCache())}>
               <RefreshCw className="mr-2 h-4 w-4" />
               Recarregar cópia
             </Button>
@@ -113,13 +94,10 @@ function OfflinePage() {
       {!hasCache ? (
         <Card className="tadeon-surface rounded-2xl px-6 py-16 text-center">
           <CloudOff className="mx-auto h-10 w-10 text-muted-foreground" />
-          <h2 className="mt-4 font-cinzel text-xl font-semibold">
-            Arquivo local ainda vazio
-          </h2>
+          <h2 className="mt-4 font-cinzel text-xl font-semibold">Arquivo local ainda vazio</h2>
           <p className="mx-auto mt-2 max-w-lg text-sm text-muted-foreground">
-            Quando estiver conectado, abra o dashboard, as fichas importantes e
-            o Painel do Mestre. O Nexus preparará automaticamente uma versão de
-            consulta neste dispositivo.
+            Quando estiver conectado, abra o dashboard, as fichas importantes e o Painel do Mestre.
+            O Nexus preparará automaticamente uma versão de consulta neste dispositivo.
           </p>
         </Card>
       ) : (
@@ -235,11 +213,7 @@ function OfflineSheetCard({
   );
 }
 
-function OfflineMaster({
-  cache,
-}: {
-  cache: NonNullable<OfflineCache["master"]>;
-}) {
+function OfflineMaster({ cache }: { cache: NonNullable<OfflineCache["master"]> }) {
   const activeScenes = (cache.scenes as Array<Record<string, unknown>>).filter(
     (scene) => scene.status === "Em curso",
   );
@@ -254,24 +228,18 @@ function OfflineMaster({
     <div className="grid gap-4 lg:grid-cols-[1.1fr_.9fr]">
       <Card className="tadeon-surface rounded-2xl p-5 md:p-6">
         <p className="tadeon-eyebrow">Campanha</p>
-        <h2 className="font-cinzel text-2xl font-semibold">
-          {cache.campaignTitle}
-        </h2>
+        <h2 className="font-cinzel text-2xl font-semibold">{cache.campaignTitle}</h2>
         <p className="mt-1 text-sm text-muted-foreground">
           {cache.campaignPhase || "Fase não registrada"}
         </p>
         <div className="mt-5 space-y-2">
           <ReadOnlyList
             title="Cenas em curso"
-            items={activeScenes.map((item) =>
-              String(item.title ?? "Cena sem título"),
-            )}
+            items={activeScenes.map((item) => String(item.title ?? "Cena sem título"))}
           />
           <ReadOnlyList
             title="Pistas pendentes"
-            items={pendingClues
-              .slice(0, 8)
-              .map((item) => String(item.title ?? "Pista sem título"))}
+            items={pendingClues.slice(0, 8).map((item) => String(item.title ?? "Pista sem título"))}
           />
         </div>
       </Card>

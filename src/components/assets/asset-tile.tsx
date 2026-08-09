@@ -83,10 +83,7 @@ export function AssetTile({
         )}
       </div>
       <div className="space-y-1 p-3">
-        <h3
-          className="truncate text-sm font-semibold"
-          title={asset.display_name}
-        >
+        <h3 className="truncate text-sm font-semibold" title={asset.display_name}>
           {asset.display_name}
         </h3>
         <div className="flex items-center justify-between gap-2 text-[10px] uppercase tracking-wide text-muted-foreground">

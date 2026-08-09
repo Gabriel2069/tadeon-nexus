@@ -88,11 +88,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { useSerializedAutosave } from "@/lib/use-serialized-autosave";
 import { can } from "@/lib/permissions";
 import { cacheSheet } from "@/lib/offline-cache";
@@ -110,13 +106,7 @@ const LIFE_CYCLE_TRAITS: LifeCycleTrait[] = [
   "Cicatriz antiga",
 ];
 
-const LINK_STATES: LinkState[] = [
-  "Presente",
-  "Tensionado",
-  "Ferido",
-  "Rompido",
-  "Costurado",
-];
+const LINK_STATES: LinkState[] = ["Presente", "Tensionado", "Ferido", "Rompido", "Costurado"];
 type SheetView = "ficha" | "arvore" | "descricao";
 
 const AttributeRadar = lazy(() => import("@/components/sheet/attribute-radar"));
@@ -155,21 +145,20 @@ const TRAINING_TIERS = [
   { tier: 3, name: "Versado", bonus: 9 },
 ] as const;
 
-const SECTION_PRESENTATION: Record<string, { index: string; kicker: string }> =
-  {
-    "sec-info": { index: "01", kicker: "Identidade e continuidade" },
-    "sec-attr": { index: "02", kicker: "Matriz de potencial" },
-    "sec-pontos": { index: "03", kicker: "Recursos e proteção" },
-    equilibrio: { index: "04", kicker: "Estado de tensão" },
-    exposicao: { index: "05", kicker: "Progressão de contato" },
-    condicoes: { index: "06", kicker: "Pressões em curso" },
-    "sec-pericias": { index: "07", kicker: "Competências treinadas" },
-    "sec-armas": { index: "08", kicker: "Arsenal operacional" },
-    "sec-inv": { index: "09", kicker: "Carga e recursos" },
-    "sec-hab": { index: "10", kicker: "Repertório adquirido" },
-    "tramas-fragmentos": { index: "11", kicker: "Fenômenos e manifestações" },
-    "sec-notas": { index: "12", kicker: "Registro de campo" },
-  };
+const SECTION_PRESENTATION: Record<string, { index: string; kicker: string }> = {
+  "sec-info": { index: "01", kicker: "Identidade e continuidade" },
+  "sec-attr": { index: "02", kicker: "Matriz de potencial" },
+  "sec-pontos": { index: "03", kicker: "Recursos e proteção" },
+  equilibrio: { index: "04", kicker: "Estado de tensão" },
+  exposicao: { index: "05", kicker: "Progressão de contato" },
+  condicoes: { index: "06", kicker: "Pressões em curso" },
+  "sec-pericias": { index: "07", kicker: "Competências treinadas" },
+  "sec-armas": { index: "08", kicker: "Arsenal operacional" },
+  "sec-inv": { index: "09", kicker: "Carga e recursos" },
+  "sec-hab": { index: "10", kicker: "Repertório adquirido" },
+  "tramas-fragmentos": { index: "11", kicker: "Fenômenos e manifestações" },
+  "sec-notas": { index: "12", kicker: "Registro de campo" },
+};
 function tierFromBonus(b: number): 0 | 1 | 2 | 3 {
   if (b >= 9) return 3;
   if (b >= 6) return 2;
@@ -193,9 +182,7 @@ export const Route = createFileRoute("/sheet/$id")({
           "Editor de ficha de personagem do Tadeon Nexus: atributos, perícias, habilidades, inventário, defesa e árvore de progressão.",
       },
     ],
-    links: [
-      { rel: "canonical", href: "https://tadeon-nexus.gtadeusz.workers.dev/" },
-    ],
+    links: [{ rel: "canonical", href: "https://tadeon-nexus.gtadeusz.workers.dev/" }],
   }),
 
   component: () => (
@@ -304,18 +291,12 @@ function SheetPage() {
   const [loading, setLoading] = useState(true);
   const [rankTable, setRankTable] = useState<RankRow[]>([]);
   const [branches, setBranches] = useState<SkillBranch[]>([]);
-  const [upgradeCosts, setUpgradeCosts] = useState<UpgradeCosts>(
-    DEFAULT_UPGRADE_COSTS,
-  );
-  const [conditionOptions, setConditionOptions] = useState<ConditionOptionsMap>(
-    DEFAULT_CONDITION_OPTIONS,
-  );
-  const [sheetSkillGroups, setSheetSkillGroups] = useState<typeof SKILL_GROUPS>(
-    [],
-  );
-  const [trainingCosts, setTrainingCosts] = useState<[number, number, number]>(
-    DEFAULT_TRAINING_COSTS,
-  );
+  const [upgradeCosts, setUpgradeCosts] = useState<UpgradeCosts>(DEFAULT_UPGRADE_COSTS);
+  const [conditionOptions, setConditionOptions] =
+    useState<ConditionOptionsMap>(DEFAULT_CONDITION_OPTIONS);
+  const [sheetSkillGroups, setSheetSkillGroups] = useState<typeof SKILL_GROUPS>([]);
+  const [trainingCosts, setTrainingCosts] =
+    useState<[number, number, number]>(DEFAULT_TRAINING_COSTS);
   // (removed setPowerFormOpen — Power Form opens via dedicated route)
   const [fragmentsView, setFragmentsView] = useState(false);
   const [defEquipOpen, setDefEquipOpen] = useState(false);
@@ -348,11 +329,7 @@ function SheetPage() {
   useEffect(() => {
     void (async () => {
       const [{ data, error }, { data: settingsJson }] = await Promise.all([
-        supabase
-          .from("character_sheets")
-          .select("*")
-          .eq("id", id)
-          .maybeSingle(),
+        supabase.from("character_sheets").select("*").eq("id", id).maybeSingle(),
         // Use SECURITY DEFINER RPC: returns only player-safe fields, so jogadores/espectadores
         // cannot read NPCs/clues/scenes from the master settings table.
         supabase.rpc("get_public_game_settings"),
@@ -370,56 +347,49 @@ function SheetPage() {
         observacoes: "",
       };
       const pfData = (raw.power_form_data as PowerFormData | null) ?? {};
-      const fragItems = (
-        (raw.fragments_items as FragmentItem[] | null) ?? []
-      ).map((item) => ({
+      const fragItems = ((raw.fragments_items as FragmentItem[] | null) ?? []).map((item) => ({
         ...item,
         categoria: item.categoria ?? "I",
         selo: item.selo ?? "Não selado",
         integridade: Number(item.integridade ?? 0),
         limiteSeguro: item.limiteSeguro ?? "Repuxo",
       }));
-      const defItems = (
-        (raw.defense_items as Partial<DefenseItem>[] | null) ?? []
-      ).map((item) => ({
+      const defItems = ((raw.defense_items as Partial<DefenseItem>[] | null) ?? []).map((item) => ({
         id: item.id ?? genId(),
         nome: item.nome ?? "",
         bonus: Number(item.bonus ?? 0),
         rd: Number(item.rd ?? 0),
         peso: Number(item.peso ?? 0),
       }));
-      const rawIdentity =
-        (raw.identity_data as Partial<IdentityData> | null) ?? {};
+      const rawIdentity = (raw.identity_data as Partial<IdentityData> | null) ?? {};
       const identityData: IdentityData = {
         ...DEFAULT_IDENTITY_DATA,
         ...rawIdentity,
         conviction: rawIdentity.conviction ?? String(raw.motivation ?? ""),
-        links: (rawIdentity.links?.length
-          ? rawIdentity.links
-          : DEFAULT_IDENTITY_DATA.links
-        ).map((link, index) => ({
-          id: link.id || `link-${index + 1}`,
-          name: link.name ?? "",
-          relation: link.relation ?? "",
-          state: link.state ?? "Presente",
-        })),
+        links: (rawIdentity.links?.length ? rawIdentity.links : DEFAULT_IDENTITY_DATA.links).map(
+          (link, index) => ({
+            id: link.id || `link-${index + 1}`,
+            name: link.name ?? "",
+            relation: link.relation ?? "",
+            state: link.state ?? "Presente",
+          }),
+        ),
       };
-      const loadedSkills = ((raw.skills as Record<string, number> | null) ??
-        {}) as Record<string, number>;
-      const storedInitialDegrees =
-        (raw.initial_skill_degrees as InitialSkillDegrees | null) ?? {};
+      const loadedSkills = ((raw.skills as Record<string, number> | null) ?? {}) as Record<
+        string,
+        number
+      >;
+      const storedInitialDegrees = (raw.initial_skill_degrees as InitialSkillDegrees | null) ?? {};
       const initialSkillDegrees = Object.keys(storedInitialDegrees).length
         ? storedInitialDegrees
         : inferInitialSkillDegrees(loadedSkills);
-      const storedProficiency =
-        raw.weapon_proficiency as WeaponProficiency | null;
+      const storedProficiency = raw.weapon_proficiency as WeaponProficiency | null;
       const weaponProficiency = WEAPON_PROFICIENCIES.includes(
         storedProficiency as WeaponProficiency,
       )
         ? (storedProficiency as WeaponProficiency)
         : "operador";
-      const storedFamily =
-        raw.weapon_proficiency_family as WeaponProficiencyFamily | null;
+      const storedFamily = raw.weapon_proficiency_family as WeaponProficiencyFamily | null;
       setSheet({
         ...(data as unknown as SheetData),
         drift: Number(raw.drift ?? 0),
@@ -439,32 +409,22 @@ function SheetPage() {
         initial_skill_degrees: initialSkillDegrees,
         weapon_proficiency: weaponProficiency,
         weapon_proficiency_family:
-          storedFamily === "Contato" || storedFamily === "Projeção"
-            ? storedFamily
-            : "",
+          storedFamily === "Contato" || storedFamily === "Projeção" ? storedFamily : "",
       });
 
-      const settings =
-        (settingsJson as unknown as Record<string, unknown> | null) ?? {};
-      const configuredRanks =
-        (settings.rank_table as RankRow[] | undefined) ?? [];
-      const configuredBranches =
-        (settings.skill_branches as SkillBranch[] | undefined) ?? [];
+      const settings = (settingsJson as unknown as Record<string, unknown> | null) ?? {};
+      const configuredRanks = (settings.rank_table as RankRow[] | undefined) ?? [];
+      const configuredBranches = (settings.skill_branches as SkillBranch[] | undefined) ?? [];
       const finalRulesConfigured =
         configuredRanks[0]?.def === 10 &&
         configuredRanks.at(-1)?.pm === 170 &&
         configuredBranches.length === 4 &&
         configuredBranches.every((branch) => branch.nodes.length === 24);
-      setRankTable(
-        finalRulesConfigured ? configuredRanks : CANONICAL_RANK_TABLE,
-      );
-      setBranches(
-        finalRulesConfigured ? configuredBranches : CANONICAL_SKILL_BRANCHES,
-      );
+      setRankTable(finalRulesConfigured ? configuredRanks : CANONICAL_RANK_TABLE);
+      setBranches(finalRulesConfigured ? configuredBranches : CANONICAL_SKILL_BRANCHES);
       setUpgradeCosts(
         finalRulesConfigured
-          ? ((settings.upgrade_costs as UpgradeCosts | undefined) ??
-              DEFAULT_UPGRADE_COSTS)
+          ? ((settings.upgrade_costs as UpgradeCosts | undefined) ?? DEFAULT_UPGRADE_COSTS)
           : DEFAULT_UPGRADE_COSTS,
       );
       setConditionOptions(
@@ -475,8 +435,7 @@ function SheetPage() {
       );
       setSheetSkillGroups(
         finalRulesConfigured
-          ? ((settings.skill_groups as typeof SKILL_GROUPS | undefined) ??
-              SKILL_GROUPS)
+          ? ((settings.skill_groups as typeof SKILL_GROUPS | undefined) ?? SKILL_GROUPS)
           : SKILL_GROUPS,
       );
       const training = settings.skill_training_costs as number[] | undefined;
@@ -542,9 +501,7 @@ function SheetPage() {
 
   useEffect(() => {
     if (!sheet || sheet.pm_spent === calculatedPmSpent) return;
-    setSheet((previous) =>
-      previous ? { ...previous, pm_spent: calculatedPmSpent } : previous,
-    );
+    setSheet((previous) => (previous ? { ...previous, pm_spent: calculatedPmSpent } : previous));
   }, [calculatedPmSpent, sheet]);
 
   const update = <K extends keyof SheetData>(key: K, value: SheetData[K]) => {
@@ -558,15 +515,9 @@ function SheetPage() {
       update("drift", next);
       return;
     }
-    const shiftedEquilibrium = clamp(
-      (sheet.equilibrium || 0) + direction,
-      -10,
-      10,
-    );
+    const shiftedEquilibrium = clamp((sheet.equilibrium || 0) + direction, -10, 10);
     if (role !== "mestre" && Math.abs(shiftedEquilibrium) > 5) {
-      toast.error(
-        "Ultrapassar ±5 exige uma fonte excepcional confirmada pelo mestre.",
-      );
+      toast.error("Ultrapassar ±5 exige uma fonte excepcional confirmada pelo mestre.");
       return;
     }
     setSheet((previous) =>
@@ -619,9 +570,7 @@ function SheetPage() {
     if (insane > 0) {
       const intensity = 0.35 + insane * 0.2;
       const blur = 14 + insane * 10;
-      layers.push(
-        `0 0 ${blur}px ${2 + insane}px rgba(255, 245, 180, ${intensity})`,
-      );
+      layers.push(`0 0 ${blur}px ${2 + insane}px rgba(255, 245, 180, ${intensity})`);
       layers.push(
         `0 0 ${blur + 8}px ${1 + insane}px rgba(255, 255, 255, ${Math.min(0.85, intensity)})`,
       );
@@ -651,10 +600,7 @@ function SheetPage() {
   const attrs = sheet.attributes;
   const base = getRankBase(sheet.exposure, rankTable);
   const upg = sheet.stat_upgrades;
-  const armorRaw = Math.max(
-    0,
-    ...sheet.defense_items.map((item) => Number(item.bonus) || 0),
-  );
+  const armorRaw = Math.max(0, ...sheet.defense_items.map((item) => Number(item.bonus) || 0));
   const armorTotal = Math.min(3, armorRaw);
   const armorRd = Math.min(
     2,
@@ -667,13 +613,7 @@ function SheetPage() {
     rank: base,
     armor: armorTotal,
   });
-  const {
-    pv: pvMax,
-    ps: psMax,
-    pe: peMax,
-    pa: paMax,
-    def: defTotal,
-  } = maximums;
+  const { pv: pvMax, ps: psMax, pe: peMax, pa: paMax, def: defTotal } = maximums;
   const invCapacity = 5 + 2 * attrs.COR;
   const invUsed =
     sheet.weapons.reduce((s, w) => s + (Number(w.espaco ?? w.peso) || 0), 0) +
@@ -685,22 +625,17 @@ function SheetPage() {
     (sum, value) => sum + tierFromBonus(Number(value) || 0),
     0,
   );
-  const initialTrainingUsed = Object.values(
-    sheet.initial_skill_degrees || {},
-  ).reduce(
+  const initialTrainingUsed = Object.values(sheet.initial_skill_degrees || {}).reduce(
     (sum, value) => sum + Math.max(0, Math.min(2, Math.floor(value || 0))),
     0,
   );
   const initialTrainingRemaining = Math.max(0, 7 - initialTrainingUsed);
-  const pmAvailable =
-    calcTotalPM(sheet.exposure, rankTable) - calculatedPmSpent;
+  const pmAvailable = calcTotalPM(sheet.exposure, rankTable) - calculatedPmSpent;
   const attributeBudget = attributePointBudget(base.rank);
   const attributeUsed = attributePointsUsed(attrs);
   const attributeRemaining = attributeBudget - attributeUsed;
   const attributeCap = attributeValueCap(base.rank);
-  const zeroAttributes = Object.values(attrs).filter(
-    (value) => value === 0,
-  ).length;
+  const zeroAttributes = Object.values(attrs).filter((value) => value === 0).length;
   const attributesOverCap = (Object.keys(attrs) as (keyof Attributes)[]).filter(
     (key) => attrs[key] > attributeCap,
   );
@@ -724,8 +659,7 @@ function SheetPage() {
   const equilibrium = clamp(Math.round(sheet.equilibrium || 0), -10, 10);
   const equilibriumPct = ((equilibrium + 10) / 20) * 100;
   const equilibriumEffect = getEquilibriumEffect(equilibrium);
-  const tutorial =
-    tutorialStep === null ? null : SHEET_TUTORIAL_STEPS[tutorialStep];
+  const tutorial = tutorialStep === null ? null : SHEET_TUTORIAL_STEPS[tutorialStep];
 
   return (
     <div className="tadeon-page tadeon-sheet-page pb-28">
@@ -743,9 +677,7 @@ function SheetPage() {
           </Button>
           <BrandMark className="hidden h-9 w-9 shrink-0 text-primary sm:block" />
           <div className="tadeon-sheet-commandbar__identity">
-            <p className="tadeon-eyebrow hidden sm:block">
-              Ficha de continuidade
-            </p>
+            <p className="tadeon-eyebrow hidden sm:block">Ficha de continuidade</p>
             <h1 className="truncate font-cinzel text-lg font-semibold leading-tight md:text-2xl">
               {sheet.name || "Ficha"}
             </h1>
@@ -771,9 +703,7 @@ function SheetPage() {
                 }
                 savedAt={lastSavedAt}
                 onRetry={() => void doSave()}
-                compact={
-                  typeof window !== "undefined" && window.innerWidth < 640
-                }
+                compact={typeof window !== "undefined" && window.innerWidth < 640}
               />
               {sheet.power_form_enabled && (
                 <Button
@@ -781,10 +711,7 @@ function SheetPage() {
                   variant="outline"
                   onClick={async () => {
                     if (await doSave()) {
-                      void navigate({
-                        to: "/sheet/$id/power",
-                        params: { id: sheet.id },
-                      });
+                      void navigate({ to: "/sheet/$id/power", params: { id: sheet.id } });
                     }
                   }}
                   className="tadeon-sheet-power-button gap-1.5 border-orange-400/60 font-bold tracking-widest text-orange-300 shadow-[0_0_15px_-5px_rgba(255,140,60,0.7)] hover:bg-orange-500/15"
@@ -793,22 +720,14 @@ function SheetPage() {
                   <Sparkles className="w-4 h-4" /> VP
                 </Button>
               )}
-              <Button
-                size="sm"
-                onClick={doSave}
-                className="tadeon-sheet-save-button gap-1.5"
-              >
-                <Save className="w-4 h-4" />{" "}
-                <span className="hidden sm:inline">Salvar</span>
+              <Button size="sm" onClick={doSave} className="tadeon-sheet-save-button gap-1.5">
+                <Save className="w-4 h-4" /> <span className="hidden sm:inline">Salvar</span>
               </Button>
             </div>
           )}
         </div>
         {activeConditions.length > 0 && (
-          <div
-            className="tadeon-sheet-condition-rail"
-            aria-label="Condições ativas"
-          >
+          <div className="tadeon-sheet-condition-rail" aria-label="Condições ativas">
             {activeConditions.map((key) => {
               const meta = CONDITION_META[key];
               return (
@@ -847,31 +766,22 @@ function SheetPage() {
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
             <div className="min-w-0 flex-1">
               <p className="tadeon-eyebrow">
-                Guia da ficha · etapa {(tutorialStep ?? 0) + 1} de{" "}
-                {SHEET_TUTORIAL_STEPS.length}
+                Guia da ficha · etapa {(tutorialStep ?? 0) + 1} de {SHEET_TUTORIAL_STEPS.length}
               </p>
-              <h2 className="mt-1 font-cinzel text-lg font-semibold">
-                {tutorial.title}
-              </h2>
+              <h2 className="mt-1 font-cinzel text-lg font-semibold">{tutorial.title}</h2>
               <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
                 {tutorial.detail}
               </p>
             </div>
             <div className="flex shrink-0 flex-wrap gap-2">
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setTutorialStep(null)}
-              >
+              <Button variant="ghost" size="sm" onClick={() => setTutorialStep(null)}>
                 Encerrar
               </Button>
               <Button
                 variant="outline"
                 size="sm"
                 disabled={tutorialStep === 0}
-                onClick={() =>
-                  setTutorialStep((step) => Math.max(0, (step ?? 0) - 1))
-                }
+                onClick={() => setTutorialStep((step) => Math.max(0, (step ?? 0) - 1))}
               >
                 Anterior
               </Button>
@@ -879,15 +789,11 @@ function SheetPage() {
                 size="sm"
                 onClick={() =>
                   setTutorialStep((step) =>
-                    (step ?? 0) >= SHEET_TUTORIAL_STEPS.length - 1
-                      ? null
-                      : (step ?? 0) + 1,
+                    (step ?? 0) >= SHEET_TUTORIAL_STEPS.length - 1 ? null : (step ?? 0) + 1,
                   )
                 }
               >
-                {(tutorialStep ?? 0) >= SHEET_TUTORIAL_STEPS.length - 1
-                  ? "Concluir"
-                  : "Próxima"}
+                {(tutorialStep ?? 0) >= SHEET_TUTORIAL_STEPS.length - 1 ? "Concluir" : "Próxima"}
               </Button>
             </div>
           </div>
@@ -912,17 +818,11 @@ function SheetPage() {
               <IdCard className="h-4 w-4" aria-hidden="true" />
               <span>Ficha</span>
             </TabsTrigger>
-            <TabsTrigger
-              value="arvore"
-              className="flex-1 gap-2 md:flex-initial"
-            >
+            <TabsTrigger value="arvore" className="flex-1 gap-2 md:flex-initial">
               <GitBranch className="h-4 w-4" aria-hidden="true" />
               <span>Árvore</span>
             </TabsTrigger>
-            <TabsTrigger
-              value="descricao"
-              className="flex-1 gap-2 md:flex-initial"
-            >
+            <TabsTrigger value="descricao" className="flex-1 gap-2 md:flex-initial">
               <ScrollText className="h-4 w-4" aria-hidden="true" />
               <span>Descrição</span>
             </TabsTrigger>
@@ -930,10 +830,7 @@ function SheetPage() {
 
           <TabsContent value="ficha" className="mt-0 space-y-4">
             {/* Quick jump shortcuts */}
-            <nav
-              className="tadeon-sheet-jumpbar"
-              aria-label="Ir para uma seção da ficha"
-            >
+            <nav className="tadeon-sheet-jumpbar" aria-label="Ir para uma seção da ficha">
               {sectionAnchors.map((a) => (
                 <button
                   key={a.id}
@@ -963,9 +860,7 @@ function SheetPage() {
               <OverviewMetric
                 icon={<Activity aria-hidden="true" />}
                 label="Equilíbrio"
-                value={
-                  equilibrium > 0 ? `+${equilibrium}` : String(equilibrium)
-                }
+                value={equilibrium > 0 ? `+${equilibrium}` : String(equilibrium)}
                 detail={equilibriumEffect.state}
                 tone="amber"
               />
@@ -978,11 +873,7 @@ function SheetPage() {
               />
             </div>
 
-            <Section
-              id="sec-info"
-              title="Identidade"
-              className="tadeon-identity-section"
-            >
+            <Section id="sec-info" title="Identidade" className="tadeon-identity-section">
               <div className="tadeon-identity-lead">
                 <div className="tadeon-identity-sigil" aria-hidden="true">
                   <IdCard />
@@ -990,9 +881,8 @@ function SheetPage() {
                 <div className="min-w-0 flex-1">
                   <p className="tadeon-eyebrow">Dossiê de continuidade</p>
                   <p className="mt-1 max-w-3xl text-xs leading-relaxed text-muted-foreground">
-                    Origem situa, Ocupação mostra prática, Convicção sustenta,
-                    Limite interrompe, Ferida pressiona e Marca registra o que
-                    já mudou.
+                    Origem situa, Ocupação mostra prática, Convicção sustenta, Limite interrompe,
+                    Ferida pressiona e Marca registra o que já mudou.
                   </p>
                 </div>
                 <div className="tadeon-identity-link-count">
@@ -1030,19 +920,13 @@ function SheetPage() {
                 />
               </div>
 
-              <div
-                className="tadeon-identity-axis"
-                aria-label="Núcleo narrativo"
-              >
+              <div className="tadeon-identity-axis" aria-label="Núcleo narrativo">
                 <Field
                   className="tadeon-identity-axis__field"
                   label="Convicção"
                   value={sheet.identity_data.conviction}
                   onChange={(value) =>
-                    update("identity_data", {
-                      ...sheet.identity_data,
-                      conviction: value,
-                    })
+                    update("identity_data", { ...sheet.identity_data, conviction: value })
                   }
                   disabled={!canEdit}
                 />
@@ -1051,10 +935,7 @@ function SheetPage() {
                   label="Limite"
                   value={sheet.identity_data.limit}
                   onChange={(value) =>
-                    update("identity_data", {
-                      ...sheet.identity_data,
-                      limit: value,
-                    })
+                    update("identity_data", { ...sheet.identity_data, limit: value })
                   }
                   disabled={!canEdit}
                 />
@@ -1063,10 +944,7 @@ function SheetPage() {
                   label="Ferida"
                   value={sheet.identity_data.wound}
                   onChange={(value) =>
-                    update("identity_data", {
-                      ...sheet.identity_data,
-                      wound: value,
-                    })
+                    update("identity_data", { ...sheet.identity_data, wound: value })
                   }
                   disabled={!canEdit}
                 />
@@ -1101,9 +979,7 @@ function SheetPage() {
                     </Select>
                   </div>
                   <div>
-                    <Label className="text-[10px] uppercase tracking-wider">
-                      Pergunta
-                    </Label>
+                    <Label className="text-[10px] uppercase tracking-wider">Pergunta</Label>
                     <Textarea
                       rows={3}
                       disabled={!canEdit}
@@ -1123,8 +999,7 @@ function SheetPage() {
                     <div>
                       <p className="tadeon-eyebrow">Vínculos</p>
                       <p className="text-xs text-muted-foreground">
-                        Relações que sustentam, tensionam ou transformam a
-                        personagem.
+                        Relações que sustentam, tensionam ou transformam a personagem.
                       </p>
                     </div>
                     {canEdit && (
@@ -1156,10 +1031,7 @@ function SheetPage() {
                   <div className="tadeon-link-list">
                     {sheet.identity_data.links.map((link, index) => (
                       <div key={link.id} className="tadeon-link-row">
-                        <span
-                          className="tadeon-link-row__number"
-                          aria-hidden="true"
-                        >
+                        <span className="tadeon-link-row__number" aria-hidden="true">
                           {String(index + 1).padStart(2, "0")}
                         </span>
                         <Input
@@ -1170,14 +1042,8 @@ function SheetPage() {
                           aria-label={`Nome do vínculo ${index + 1}`}
                           onChange={(event) => {
                             const links = [...sheet.identity_data.links];
-                            links[index] = {
-                              ...link,
-                              name: event.target.value,
-                            };
-                            update("identity_data", {
-                              ...sheet.identity_data,
-                              links,
-                            });
+                            links[index] = { ...link, name: event.target.value };
+                            update("identity_data", { ...sheet.identity_data, links });
                           }}
                         />
                         <Input
@@ -1188,14 +1054,8 @@ function SheetPage() {
                           aria-label={`Relação do vínculo ${index + 1}`}
                           onChange={(event) => {
                             const links = [...sheet.identity_data.links];
-                            links[index] = {
-                              ...link,
-                              relation: event.target.value,
-                            };
-                            update("identity_data", {
-                              ...sheet.identity_data,
-                              links,
-                            });
+                            links[index] = { ...link, relation: event.target.value };
+                            update("identity_data", { ...sheet.identity_data, links });
                           }}
                         />
                         <Select
@@ -1203,14 +1063,8 @@ function SheetPage() {
                           disabled={!canEdit}
                           onValueChange={(value) => {
                             const links = [...sheet.identity_data.links];
-                            links[index] = {
-                              ...link,
-                              state: value as LinkState,
-                            };
-                            update("identity_data", {
-                              ...sheet.identity_data,
-                              links,
-                            });
+                            links[index] = { ...link, state: value as LinkState };
+                            update("identity_data", { ...sheet.identity_data, links });
                           }}
                         >
                           <SelectTrigger
@@ -1267,8 +1121,7 @@ function SheetPage() {
                         : "border-border text-muted-foreground"
                     }`}
                   >
-                    {attributeUsed}/{attributeBudget} pontos · máx.{" "}
-                    {attributeCap}
+                    {attributeUsed}/{attributeBudget} pontos · máx. {attributeCap}
                   </span>
                 }
               >
@@ -1286,8 +1139,7 @@ function SheetPage() {
                 <div className="space-y-4">
                   <div className="tadeon-attribute-grid grid grid-cols-2 gap-2 sm:grid-cols-3">
                     {(Object.keys(attrs) as (keyof Attributes)[]).map((k) => {
-                      const wouldCreateSecondZero =
-                        attrs[k] === 1 && zeroAttributes >= 1;
+                      const wouldCreateSecondZero = attrs[k] === 1 && zeroAttributes >= 1;
                       return (
                         <div
                           key={k}
@@ -1299,11 +1151,7 @@ function SheetPage() {
                               size="sm"
                               variant="ghost"
                               className="tadeon-stepper-button h-9 w-9 p-0"
-                              disabled={
-                                !canEdit ||
-                                attrs[k] <= 0 ||
-                                wouldCreateSecondZero
-                              }
+                              disabled={!canEdit || attrs[k] <= 0 || wouldCreateSecondZero}
                               aria-label={`Diminuir ${k}`}
                               title={
                                 wouldCreateSecondZero
@@ -1311,25 +1159,18 @@ function SheetPage() {
                                   : undefined
                               }
                               onClick={() =>
-                                update("attributes", {
-                                  ...attrs,
-                                  [k]: Math.max(0, attrs[k] - 1),
-                                })
+                                update("attributes", { ...attrs, [k]: Math.max(0, attrs[k] - 1) })
                               }
                             >
                               <Minus className="w-3 h-3" />
                             </Button>
-                            <span className="w-5 text-center font-bold">
-                              {attrs[k]}
-                            </span>
+                            <span className="w-5 text-center font-bold">{attrs[k]}</span>
                             <Button
                               size="sm"
                               variant="ghost"
                               className="tadeon-stepper-button h-9 w-9 p-0"
                               disabled={
-                                !canEdit ||
-                                attrs[k] >= attributeCap ||
-                                attributeRemaining <= 0
+                                !canEdit || attrs[k] >= attributeCap || attributeRemaining <= 0
                               }
                               aria-label={`Aumentar ${k}`}
                               title={
@@ -1364,11 +1205,7 @@ function SheetPage() {
                         <Loader2 className="w-6 h-6 animate-spin text-primary mx-auto mt-20" />
                       }
                     >
-                      <AttributeRadar
-                        data={radarData}
-                        color="#a855f7"
-                        tickColor="#c084fc"
-                      />
+                      <AttributeRadar data={radarData} color="#a855f7" tickColor="#c084fc" />
                     </Suspense>
                   </div>
                 </div>
@@ -1391,14 +1228,9 @@ function SheetPage() {
                     max={pvMax}
                     disabled={!canEdit}
                     onCurrent={(v) =>
-                      update("stats", {
-                        ...sheet.stats,
-                        pv_current: clampCurrent(v, pvMax),
-                      })
+                      update("stats", { ...sheet.stats, pv_current: clampCurrent(v, pvMax) })
                     }
-                    onMod={(v) =>
-                      update("stats", { ...sheet.stats, pv_mod: clampMod(v) })
-                    }
+                    onMod={(v) => update("stats", { ...sheet.stats, pv_mod: clampMod(v) })}
                   />
                   <StatBlock
                     label="PE"
@@ -1411,14 +1243,9 @@ function SheetPage() {
                     max={peMax}
                     disabled={!canEdit}
                     onCurrent={(v) =>
-                      update("stats", {
-                        ...sheet.stats,
-                        pe_current: clampCurrent(v, peMax),
-                      })
+                      update("stats", { ...sheet.stats, pe_current: clampCurrent(v, peMax) })
                     }
-                    onMod={(v) =>
-                      update("stats", { ...sheet.stats, pe_mod: clampMod(v) })
-                    }
+                    onMod={(v) => update("stats", { ...sheet.stats, pe_mod: clampMod(v) })}
                   />
                   <StatBlock
                     label="PS"
@@ -1431,14 +1258,9 @@ function SheetPage() {
                     max={psMax}
                     disabled={!canEdit}
                     onCurrent={(v) =>
-                      update("stats", {
-                        ...sheet.stats,
-                        ps_current: clampCurrent(v, psMax),
-                      })
+                      update("stats", { ...sheet.stats, ps_current: clampCurrent(v, psMax) })
                     }
-                    onMod={(v) =>
-                      update("stats", { ...sheet.stats, ps_mod: clampMod(v) })
-                    }
+                    onMod={(v) => update("stats", { ...sheet.stats, ps_mod: clampMod(v) })}
                   />
                   <StatBlock
                     label="PA"
@@ -1451,14 +1273,9 @@ function SheetPage() {
                     max={paMax}
                     disabled={!canEdit}
                     onCurrent={(v) =>
-                      update("stats", {
-                        ...sheet.stats,
-                        pa_current: clampCurrent(v, paMax),
-                      })
+                      update("stats", { ...sheet.stats, pa_current: clampCurrent(v, paMax) })
                     }
-                    onMod={(v) =>
-                      update("stats", { ...sheet.stats, pa_mod: clampMod(v) })
-                    }
+                    onMod={(v) => update("stats", { ...sheet.stats, pa_mod: clampMod(v) })}
                   />
 
                   <Card className="tadeon-defense-card col-span-2 border-blue-500/30 bg-card/60 p-3 shadow-[0_0_22px_-12px_rgba(59,130,246,0.65)]">
@@ -1468,13 +1285,10 @@ function SheetPage() {
                         <span>{defTotal}</span>
                       </div>
                       <div className="min-w-0 flex-1">
-                        <div className="font-cinzel text-sm font-bold text-blue-300">
-                          Defesa
-                        </div>
+                        <div className="font-cinzel text-sm font-bold text-blue-300">Defesa</div>
                         <p className="mt-0.5 text-[10px] leading-relaxed text-muted-foreground">
                           base {base.def} + INS {attrs.INS} + equip {armorTotal}
-                          {armorRaw > 3 ? " (máx. 3)" : ""} + mod{" "}
-                          {sheet.stats.def_mod}
+                          {armorRaw > 3 ? " (máx. 3)" : ""} + mod {sheet.stats.def_mod}
                           {upg.def ? ` + apr ${upg.def}` : ""}
                         </p>
                       </div>
@@ -1533,13 +1347,7 @@ function SheetPage() {
                                 onClick={() =>
                                   update("defense_items", [
                                     ...sheet.defense_items,
-                                    {
-                                      id: genId(),
-                                      nome: "",
-                                      bonus: 0,
-                                      rd: 0,
-                                      peso: 0,
-                                    },
+                                    { id: genId(), nome: "", bonus: 0, rd: 0, peso: 0 },
                                   ])
                                 }
                                 className="text-[10px] flex items-center gap-1 px-1.5 py-0.5 rounded-md bg-primary/15 text-primary hover:bg-primary/25 transition-colors"
@@ -1558,38 +1366,19 @@ function SheetPage() {
                               canEdit={canEdit}
                               columns={[
                                 { key: "nome", label: "Nome", flex: 1.5 },
-                                {
-                                  key: "bonus",
-                                  label: "DEF",
-                                  type: "number",
-                                  width: 58,
-                                },
-                                {
-                                  key: "rd",
-                                  label: "RD",
-                                  type: "number",
-                                  width: 58,
-                                },
-                                {
-                                  key: "peso",
-                                  label: "Espaço",
-                                  type: "number",
-                                  width: 68,
-                                },
+                                { key: "bonus", label: "DEF", type: "number", width: 58 },
+                                { key: "rd", label: "RD", type: "number", width: 58 },
+                                { key: "peso", label: "Espaço", type: "number", width: 68 },
                               ]}
-                              onChange={(v) =>
-                                update("defense_items", v as DefenseItem[])
-                              }
+                              onChange={(v) => update("defense_items", v as DefenseItem[])}
                             />
                           )}
                         </div>
                       )}
                     </div>
                     <div className="mt-2 rounded-md border border-border/50 bg-background/30 px-2 py-1.5 text-center text-[10px] text-muted-foreground">
-                      RD equipada:{" "}
-                      <strong className="text-foreground">{armorRd}</strong> ·
-                      armaduras não acumulam entre si; vale a proteção mais
-                      alta.
+                      RD equipada: <strong className="text-foreground">{armorRd}</strong> ·
+                      armaduras não acumulam entre si; vale a proteção mais alta.
                     </div>
                   </Card>
                 </div>
@@ -1634,9 +1423,7 @@ function SheetPage() {
                     >
                       <Plus className="w-3 h-3" />
                     </Button>
-                    <span className="ml-1 text-[10px] text-muted-foreground">
-                      −4…+4
-                    </span>
+                    <span className="text-[10px] text-muted-foreground ml-1">−4…+4</span>
                   </div>
                 }
               >
@@ -1708,27 +1495,21 @@ function SheetPage() {
                   />
                 </div>
                 <p className="mt-2 text-[10px] text-muted-foreground">
-                  Faixa comum: −5 a +5. Valores além disso exigem fonte
-                  excepcional e ajuste do mestre.
+                  Faixa comum: −5 a +5. Valores além disso exigem fonte excepcional e ajuste do
+                  mestre.
                 </p>
                 <div className="grid gap-2 sm:grid-cols-3 mt-3 rounded-lg border border-border/70 bg-secondary/25 p-3 text-xs">
                   <div>
                     <span className="text-muted-foreground">Estado</span>
-                    <p className="font-semibold text-foreground">
-                      {equilibriumEffect.state}
-                    </p>
+                    <p className="font-semibold text-foreground">{equilibriumEffect.state}</p>
                   </div>
                   <div>
                     <span className="text-muted-foreground">Benefício</span>
-                    <p className="text-emerald-300">
-                      {equilibriumEffect.benefit}
-                    </p>
+                    <p className="text-emerald-300">{equilibriumEffect.benefit}</p>
                   </div>
                   <div>
                     <span className="text-muted-foreground">Penalidade</span>
-                    <p className="text-amber-300">
-                      {equilibriumEffect.penalty}
-                    </p>
+                    <p className="text-amber-300">{equilibriumEffect.penalty}</p>
                   </div>
                 </div>
               </Section>
@@ -1741,8 +1522,7 @@ function SheetPage() {
               >
                 <div className="flex items-baseline justify-between mb-1">
                   <span className="text-xs text-muted-foreground">
-                    Rank base:{" "}
-                    <strong className="text-foreground">{base.rank}</strong>
+                    Rank base: <strong className="text-foreground">{base.rank}</strong>
                   </span>
                   <span className="font-cinzel text-lg font-bold text-primary">
                     {sheet.exposure}/100
@@ -1771,14 +1551,7 @@ function SheetPage() {
                     disabled={!canEdit}
                     value={sheet.exposure}
                     onChange={(e) =>
-                      update(
-                        "exposure",
-                        clamp(
-                          Math.round(Number(e.target.value) / 5) * 5,
-                          0,
-                          100,
-                        ),
-                      )
+                      update("exposure", clamp(Math.round(Number(e.target.value) / 5) * 5, 0, 100))
                     }
                     className="w-24 h-8"
                   />
@@ -1797,11 +1570,7 @@ function SheetPage() {
             </div>
 
             {/* Conditions */}
-            <Section
-              id="condicoes"
-              title="Condições"
-              className="tadeon-conditions-panel"
-            >
+            <Section id="condicoes" title="Condições" className="tadeon-conditions-panel">
               <div className="tadeon-condition-grid grid grid-cols-2 gap-2 xl:grid-cols-4">
                 {(Object.keys(CONDITION_META) as ConditionKey[]).map((c) => {
                   const meta = CONDITION_META[c];
@@ -1824,10 +1593,7 @@ function SheetPage() {
                       }
                     >
                       <Label className="text-xs flex items-center gap-1.5">
-                        <span
-                          className="w-2 h-2 rounded-full"
-                          style={{ background: meta.color }}
-                        />
+                        <span className="w-2 h-2 rounded-full" style={{ background: meta.color }} />
                         {meta.label}
                       </Label>
                       <div className="mt-2 flex flex-wrap gap-1.5">
@@ -1916,18 +1682,13 @@ function SheetPage() {
               }
             >
               <p className="mb-3 text-xs leading-relaxed text-muted-foreground">
-                Os grupos organizam a leitura da ficha; o Atributo usado no
-                teste continua sendo definido pela abordagem descrita na cena.
+                Os grupos organizam a leitura da ficha; o Atributo usado no teste continua sendo
+                definido pela abordagem descrita na cena.
               </p>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-2.5">
                 {skillGroups.map((g) => (
-                  <div
-                    key={g.attr}
-                    className="bg-secondary/40 rounded-lg p-2.5"
-                  >
-                    <h4 className="font-cinzel text-xs font-bold mb-1.5">
-                      {g.label}
-                    </h4>
+                  <div key={g.attr} className="bg-secondary/40 rounded-lg p-2.5">
+                    <h4 className="font-cinzel text-xs font-bold mb-1.5">{g.label}</h4>
                     <div className="space-y-0.5">
                       {g.skills.map((s) => {
                         const v = sheet.skills[s] ?? 0;
@@ -1940,33 +1701,20 @@ function SheetPage() {
                               : tier === 1
                                 ? "text-green-400"
                                 : "text-muted-foreground";
-                        const tierName =
-                          tier === 0
-                            ? "Sem treino"
-                            : TRAINING_TIERS[tier - 1].name;
+                        const tierName = tier === 0 ? "Sem treino" : TRAINING_TIERS[tier - 1].name;
                         const initialForSkill = Math.max(
                           0,
                           Math.min(2, sheet.initial_skill_degrees[s] || 0),
                         );
                         const isInitialDegree =
-                          initialTrainingRemaining > 0 &&
-                          tier < 2 &&
-                          initialForSkill === tier;
+                          initialTrainingRemaining > 0 && tier < 2 && initialForSkill === tier;
                         const nextCost: number | null =
-                          tier < 3
-                            ? isInitialDegree
-                              ? 0
-                              : (trainingCosts[tier] ?? 0)
-                            : null;
+                          tier < 3 ? (isInitialDegree ? 0 : (trainingCosts[tier] ?? 0)) : null;
                         const refund: number =
-                          tier > initialForSkill
-                            ? (trainingCosts[tier - 1] ?? 0)
-                            : 0;
+                          tier > initialForSkill ? (trainingCosts[tier - 1] ?? 0) : 0;
                         const minimumRank = [5, 25, 50][tier] ?? 100;
-                        const lacksRank =
-                          !isInitialDegree && base.rank < minimumRank;
-                        const lacksPM =
-                          nextCost != null && pmAvailable < nextCost;
+                        const lacksRank = !isInitialDegree && base.rank < minimumRank;
+                        const lacksPM = nextCost != null && pmAvailable < nextCost;
                         const upgrade = () => {
                           if (tier >= 3 || nextCost == null) return;
                           if (lacksRank) {
@@ -1974,9 +1722,7 @@ function SheetPage() {
                             return;
                           }
                           if (lacksPM) {
-                            toast.error(
-                              `PM insuficientes (custa ${nextCost}).`,
-                            );
+                            toast.error(`PM insuficientes (custa ${nextCost}).`);
                             return;
                           }
                           const nextTier = TRAINING_TIERS[tier]!;
@@ -1997,9 +1743,7 @@ function SheetPage() {
                           setOpenSkill(null);
                           toast.success(
                             `${s}: ${nextTier.name} (+${nextTier.bonus}) — ${
-                              isInitialDegree
-                                ? "grau inicial"
-                                : `${nextCost} PM`
+                              isInitialDegree ? "grau inicial" : `${nextCost} PM`
                             }`,
                           );
                         };
@@ -2009,12 +1753,9 @@ function SheetPage() {
                             toast.error("Apenas o mestre pode reverter.");
                             return;
                           }
-                          const prevBonus =
-                            tier === 1 ? 0 : TRAINING_TIERS[tier - 2].bonus;
+                          const prevBonus = tier === 1 ? 0 : TRAINING_TIERS[tier - 2].bonus;
                           const prevName =
-                            tier === 1
-                              ? "Sem treino"
-                              : TRAINING_TIERS[tier - 2].name;
+                            tier === 1 ? "Sem treino" : TRAINING_TIERS[tier - 2].name;
                           const previousTier = tier - 1;
                           setSheet((p) =>
                             p
@@ -2023,10 +1764,7 @@ function SheetPage() {
                                   skills: { ...p.skills, [s]: prevBonus },
                                   initial_skill_degrees: {
                                     ...p.initial_skill_degrees,
-                                    [s]: Math.min(
-                                      initialForSkill,
-                                      previousTier,
-                                    ),
+                                    [s]: Math.min(initialForSkill, previousTier),
                                   },
                                 }
                               : p,
@@ -2056,16 +1794,12 @@ function SheetPage() {
                               </button>
                             </PopoverTrigger>
                             <PopoverContent className="w-64 p-3" align="end">
-                              <div className="font-cinzel font-bold text-sm mb-1">
-                                {s}
-                              </div>
+                              <div className="font-cinzel font-bold text-sm mb-1">{s}</div>
                               <div className="text-[11px] text-muted-foreground mb-3">
                                 Treino atual:{" "}
                                 <span className={color}>
                                   {tierName}{" "}
-                                  {tier > 0
-                                    ? `(+${TRAINING_TIERS[tier - 1].bonus})`
-                                    : ""}
+                                  {tier > 0 ? `(+${TRAINING_TIERS[tier - 1].bonus})` : ""}
                                 </span>
                               </div>
                               <div className="flex items-center justify-between gap-2">
@@ -2075,9 +1809,7 @@ function SheetPage() {
                                   className="h-8 w-8 p-0"
                                   disabled={tier === 0 || role !== "mestre"}
                                   title={
-                                    role === "mestre"
-                                      ? `Reverter (+${refund} PM)`
-                                      : "Apenas mestre"
+                                    role === "mestre" ? `Reverter (+${refund} PM)` : "Apenas mestre"
                                   }
                                   onClick={downgrade}
                                 >
@@ -2092,9 +1824,7 @@ function SheetPage() {
                                         <>
                                           Avançar:{" "}
                                           <b className="text-foreground">
-                                            {isInitialDegree
-                                              ? "grau inicial"
-                                              : `${nextCost} PM`}
+                                            {isInitialDegree ? "grau inicial" : `${nextCost} PM`}
                                           </b>
                                         </>
                                       )}
@@ -2109,12 +1839,7 @@ function SheetPage() {
                                   size="sm"
                                   variant="ghost"
                                   className="h-8 w-8 p-0"
-                                  disabled={
-                                    !canEdit ||
-                                    tier >= 3 ||
-                                    lacksRank ||
-                                    lacksPM
-                                  }
+                                  disabled={!canEdit || tier >= 3 || lacksRank || lacksPM}
                                   title={
                                     lacksRank
                                       ? `Requer Rank ${minimumRank}`
@@ -2157,15 +1882,11 @@ function SheetPage() {
                           weaponProficiencySpend(next) -
                           weaponProficiencySpend(sheet.weapon_proficiency);
                         if (base.rank < minimumRank) {
-                          toast.error(
-                            `Esta Proficiência exige Rank ${minimumRank}.`,
-                          );
+                          toast.error(`Esta Proficiência exige Rank ${minimumRank}.`);
                           return;
                         }
                         if (additionalCost > pmAvailable) {
-                          toast.error(
-                            `PM insuficientes (faltam ${additionalCost - pmAvailable}).`,
-                          );
+                          toast.error(`PM insuficientes (faltam ${additionalCost - pmAvailable}).`);
                           return;
                         }
                         setSheet((previous) =>
@@ -2174,9 +1895,7 @@ function SheetPage() {
                                 ...previous,
                                 weapon_proficiency: next,
                                 weapon_proficiency_family:
-                                  next === "combatente"
-                                    ? previous.weapon_proficiency_family
-                                    : "",
+                                  next === "combatente" ? previous.weapon_proficiency_family : "",
                               }
                             : previous,
                         );
@@ -2205,10 +1924,7 @@ function SheetPage() {
                         value={sheet.weapon_proficiency_family || undefined}
                         disabled={!canEdit}
                         onValueChange={(value) =>
-                          update(
-                            "weapon_proficiency_family",
-                            value as WeaponProficiencyFamily,
-                          )
+                          update("weapon_proficiency_family", value as WeaponProficiencyFamily)
                         }
                       >
                         <SelectTrigger className="h-7 w-32 bg-background/40 text-xs border-primary/30">
@@ -2253,11 +1969,7 @@ function SheetPage() {
                       }}
                       fields={[
                         { key: "nome", label: "Nome" },
-                        {
-                          key: "descricao",
-                          label: "Descrição / procedência",
-                          type: "textarea",
-                        },
+                        { key: "descricao", label: "Descrição / procedência", type: "textarea" },
                         { key: "familia", label: "Família" },
                         { key: "categoria", label: "Categoria" },
                         {
@@ -2274,44 +1986,19 @@ function SheetPage() {
                           type: "select",
                           options: RANGE_OPTIONS,
                         },
-                        {
-                          key: "dano",
-                          label: "Dano",
-                          placeholder: "ex: 1d6+1",
-                        },
+                        { key: "dano", label: "Dano", placeholder: "ex: 1d6+1" },
                         { key: "tipo", label: "Tipo de dano" },
-                        {
-                          key: "margemAmeaca",
-                          label: "Margem de ameaça",
-                          placeholder: "20",
-                        },
+                        { key: "margemAmeaca", label: "Margem de ameaça", placeholder: "20" },
                         { key: "maos", label: "Mãos" },
-                        {
-                          key: "propriedades",
-                          label: "Propriedades",
-                          type: "textarea",
-                        },
+                        { key: "propriedades", label: "Propriedades", type: "textarea" },
                         { key: "espaco", label: "Espaço", type: "number" },
                         { key: "fonte", label: "Munição / fonte" },
                         { key: "pd", label: "PD", type: "number" },
                         { key: "rd", label: "RD", type: "number" },
-                        {
-                          key: "modificacoes",
-                          label: "Modificações",
-                          type: "textarea",
-                        },
-                        {
-                          key: "condicoesUso",
-                          label: "Condições de uso",
-                          type: "textarea",
-                        },
+                        { key: "modificacoes", label: "Modificações", type: "textarea" },
+                        { key: "condicoesUso", label: "Condições de uso", type: "textarea" },
                       ]}
-                      onAdd={(w) =>
-                        update("weapons", [
-                          ...sheet.weapons,
-                          { ...w, id: genId() },
-                        ])
-                      }
+                      onAdd={(w) => update("weapons", [...sheet.weapons, { ...w, id: genId() }])}
                     />
                   )}
                 </div>
@@ -2334,13 +2021,11 @@ function SheetPage() {
                 ]}
                 onChange={(v) => update("weapons", v as Weapon[])}
               />
-              {sheet.weapon_proficiency === "combatente" &&
-                !sheet.weapon_proficiency_family && (
-                  <p className="mt-3 rounded-lg border border-amber-500/40 bg-amber-500/5 px-3 py-2 text-xs text-amber-200">
-                    Escolha Contato ou Projeção para concluir a Proficiência
-                    III.
-                  </p>
-                )}
+              {sheet.weapon_proficiency === "combatente" && !sheet.weapon_proficiency_family && (
+                <p className="mt-3 rounded-lg border border-amber-500/40 bg-amber-500/5 px-3 py-2 text-xs text-amber-200">
+                  Escolha Contato ou Projeção para concluir a Proficiência III.
+                </p>
+              )}
             </Section>
 
             {/* Inventory */}
@@ -2355,18 +2040,11 @@ function SheetPage() {
                     initial={{ id: "", nome: "", descricao: "", espaco: 1 }}
                     fields={[
                       { key: "nome", label: "Nome" },
-                      {
-                        key: "descricao",
-                        label: "Descrição",
-                        type: "textarea",
-                      },
+                      { key: "descricao", label: "Descrição", type: "textarea" },
                       { key: "espaco", label: "Espaço", type: "number" },
                     ]}
                     onAdd={(it) =>
-                      update("inventory", [
-                        ...sheet.inventory,
-                        { ...it, id: genId() },
-                      ])
+                      update("inventory", [...sheet.inventory, { ...it, id: genId() }])
                     }
                   />
                 )
@@ -2377,9 +2055,7 @@ function SheetPage() {
                   {invUsed} / {invCapacity} espaço
                 </span>
                 {invUsed > invCapacity && (
-                  <span className="text-destructive font-medium">
-                    Sobrecarregado!
-                  </span>
+                  <span className="text-destructive font-medium">Sobrecarregado!</span>
                 )}
               </div>
               <div className="w-full h-1.5 bg-secondary rounded mb-3 overflow-hidden">
@@ -2411,27 +2087,13 @@ function SheetPage() {
                   <AddItemDialog<Ability>
                     title="Nova Habilidade"
                     triggerLabel="Adicionar Habilidade"
-                    initial={{
-                      id: "",
-                      nome: "",
-                      descricao: "",
-                      modificador: "",
-                    }}
+                    initial={{ id: "", nome: "", descricao: "", modificador: "" }}
                     fields={[
                       { key: "nome", label: "Nome" },
-                      {
-                        key: "descricao",
-                        label: "Descrição",
-                        type: "textarea",
-                      },
+                      { key: "descricao", label: "Descrição", type: "textarea" },
                       { key: "modificador", label: "Modificador" },
                     ]}
-                    onAdd={(a) =>
-                      update("abilities", [
-                        ...sheet.abilities,
-                        { ...a, id: genId() },
-                      ])
-                    }
+                    onAdd={(a) => update("abilities", [...sheet.abilities, { ...a, id: genId() }])}
                   />
                 )
               }
@@ -2489,11 +2151,7 @@ function SheetPage() {
                           }}
                           fields={[
                             { key: "nome", label: "Nome" },
-                            {
-                              key: "descricao",
-                              label: "Descrição",
-                              type: "textarea",
-                            },
+                            { key: "descricao", label: "Descrição", type: "textarea" },
                             {
                               key: "selo",
                               label: "Selo",
@@ -2506,18 +2164,10 @@ function SheetPage() {
                               type: "select",
                               options: ["I", "II", "III"],
                             },
-                            {
-                              key: "integridade",
-                              label: "Integridade atual",
-                              type: "number",
-                            },
+                            { key: "integridade", label: "Integridade atual", type: "number" },
                             { key: "natureza", label: "Natureza" },
                             { key: "dominio", label: "Domínio" },
-                            {
-                              key: "assinatura",
-                              label: "Assinatura",
-                              type: "textarea",
-                            },
+                            { key: "assinatura", label: "Assinatura", type: "textarea" },
                             {
                               key: "limiteSeguro",
                               label: "Limite seguro",
@@ -2529,11 +2179,7 @@ function SheetPage() {
                               label: "Espaço (peso conta no inventário)",
                               type: "number",
                             },
-                            {
-                              key: "observacoes",
-                              label: "Observações",
-                              type: "textarea",
-                            },
+                            { key: "observacoes", label: "Observações", type: "textarea" },
                           ]}
                           onAdd={(it) =>
                             update("fragments_items", [
@@ -2566,23 +2212,10 @@ function SheetPage() {
                               options: PLOT_RANGE_OPTIONS,
                             },
                             { key: "dano", label: "Dano" },
-                            {
-                              key: "efeito",
-                              label: "Efeito",
-                              type: "textarea",
-                            },
-                            {
-                              key: "dt_descricao",
-                              label: "DT / Descrição",
-                              type: "textarea",
-                            },
+                            { key: "efeito", label: "Efeito", type: "textarea" },
+                            { key: "dt_descricao", label: "DT / Descrição", type: "textarea" },
                           ]}
-                          onAdd={(p) =>
-                            update("plots", [
-                              ...sheet.plots,
-                              { ...p, id: genId() },
-                            ])
-                          }
+                          onAdd={(p) => update("plots", [...sheet.plots, { ...p, id: genId() }])}
                         />
                       )}
                 </div>
@@ -2600,10 +2233,7 @@ function SheetPage() {
                     <span>
                       Peso somado ao inventário:{" "}
                       <b>
-                        {sheet.fragments_items.reduce(
-                          (s, i) => s + (Number(i.espaco) || 0),
-                          0,
-                        )}
+                        {sheet.fragments_items.reduce((s, i) => s + (Number(i.espaco) || 0), 0)}
                       </b>
                     </span>
                   </div>
@@ -2625,12 +2255,7 @@ function SheetPage() {
                         options: ["I", "II", "III"],
                         width: 62,
                       },
-                      {
-                        key: "integridade",
-                        label: "Int.",
-                        type: "number",
-                        width: 62,
-                      },
+                      { key: "integridade", label: "Int.", type: "number", width: 62 },
                       { key: "natureza", label: "Natureza" },
                       { key: "dominio", label: "Domínio" },
                       {
@@ -2639,16 +2264,9 @@ function SheetPage() {
                         type: "select",
                         options: ["Repuxo", "Tração", "Estiramento"],
                       },
-                      {
-                        key: "espaco",
-                        label: "Espaço",
-                        type: "number",
-                        width: 80,
-                      },
+                      { key: "espaco", label: "Espaço", type: "number", width: 80 },
                     ]}
-                    onChange={(v) =>
-                      update("fragments_items", v as FragmentItem[])
-                    }
+                    onChange={(v) => update("fragments_items", v as FragmentItem[])}
                   />
                 </>
               ) : (
@@ -2726,10 +2344,7 @@ function SheetPage() {
                   disabled={!canEdit}
                   value={sheet.description[key] || ""}
                   onChange={(e) =>
-                    update("description", {
-                      ...sheet.description,
-                      [key]: e.target.value,
-                    })
+                    update("description", { ...sheet.description, [key]: e.target.value })
                   }
                   rows={6}
                   placeholder={`Escreva aqui sobre ${label.toLowerCase()}...`}
@@ -2740,10 +2355,7 @@ function SheetPage() {
         </Tabs>
       </div>
 
-      <nav
-        className="tadeon-sheet-mobile-dock md:hidden"
-        aria-label="Ações rápidas da ficha"
-      >
+      <nav className="tadeon-sheet-mobile-dock md:hidden" aria-label="Ações rápidas da ficha">
         <Button
           variant="ghost"
           size="icon"
@@ -2842,8 +2454,7 @@ function Section({
   id?: string;
   className?: string;
 }) {
-  const presentationKey =
-    id ?? title.toLocaleLowerCase("pt-BR").replace(/[^a-z0-9]+/g, "-");
+  const presentationKey = id ?? title.toLocaleLowerCase("pt-BR").replace(/[^a-z0-9]+/g, "-");
   const presentation = SECTION_PRESENTATION[presentationKey] ?? {
     index: "•",
     kicker: "Arquivo da personagem",
@@ -2857,10 +2468,7 @@ function Section({
 
   useEffect(() => {
     try {
-      window.localStorage.setItem(
-        storageKey,
-        collapsed ? "collapsed" : "expanded",
-      );
+      window.localStorage.setItem(storageKey, collapsed ? "collapsed" : "expanded");
     } catch {
       // A ficha continua utilizável quando o armazenamento local está indisponível.
     }
@@ -2880,9 +2488,7 @@ function Section({
           </span>
           <span className="min-w-0">
             <small>{presentation.kicker}</small>
-            <h2 className="font-cinzel text-lg font-semibold text-primary">
-              {title}
-            </h2>
+            <h2 className="font-cinzel text-lg font-semibold text-primary">{title}</h2>
           </span>
         </div>
         <div className="tadeon-sheet-section__actions">
@@ -2900,11 +2506,7 @@ function Section({
           </button>
         </div>
       </div>
-      <div
-        id={bodyId}
-        className="tadeon-sheet-section__body"
-        hidden={collapsed}
-      >
+      <div id={bodyId} className="tadeon-sheet-section__body" hidden={collapsed}>
         {children}
       </div>
     </Card>
@@ -2967,15 +2569,10 @@ function StatBlock({
     boxShadow: `0 0 22px -10px rgba(${glowRgb}, 0.7)`,
   };
   return (
-    <Card
-      className="tadeon-stat-block border bg-card/60 p-2.5"
-      style={borderStyle}
-    >
+    <Card className="tadeon-stat-block border bg-card/60 p-2.5" style={borderStyle}>
       <div className="tadeon-stat-block__head">
         <div>
-          <div className={`font-cinzel text-sm font-bold ${color}`}>
-            {label}
-          </div>
+          <div className={`font-cinzel text-sm font-bold ${color}`}>{label}</div>
           <span className="text-[10px] text-muted-foreground">{full}</span>
         </div>
         <strong
@@ -2989,9 +2586,7 @@ function StatBlock({
       <div className="tadeon-stat-block__bar mb-2 h-1.5 w-full overflow-hidden rounded-full bg-secondary">
         <div
           className={`h-full rounded-full bg-gradient-to-r ${barColor}`}
-          style={{
-            width: `${clamp((current / Math.max(1, max)) * 100, 0, 100)}%`,
-          }}
+          style={{ width: `${clamp((current / Math.max(1, max)) * 100, 0, 100)}%` }}
         />
       </div>
       <div className="tadeon-stat-block__controls">
@@ -3111,9 +2706,7 @@ function RowTable<T extends HasId>({
 
   if (rows.length === 0) {
     return (
-      <p className="text-xs text-muted-foreground italic text-center py-3">
-        Nenhum item ainda.
-      </p>
+      <p className="text-xs text-muted-foreground italic text-center py-3">Nenhum item ainda.</p>
     );
   }
 
@@ -3167,11 +2760,7 @@ function RowTable<T extends HasId>({
                   type={c.type === "number" ? "number" : "text"}
                   placeholder={c.label}
                   disabled={!canEdit}
-                  value={
-                    c.type === "number"
-                      ? Number(value ?? 0)
-                      : String(value ?? "")
-                  }
+                  value={c.type === "number" ? Number(value ?? 0) : String(value ?? "")}
                   onChange={(e) => update(idx, c.key, e.target.value)}
                   className="h-8 w-full border-border/40 bg-background/40 text-xs"
                 />

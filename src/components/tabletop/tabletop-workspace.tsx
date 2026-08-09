@@ -1008,8 +1008,7 @@ export function TabletopWorkspace({
           enabled={realtimeEnabled}
           campaignId={campaignId || null}
           campaignName={
-            campaigns.find((campaign) => campaign.id === campaignId)?.name ??
-            null
+            campaigns.find((campaign) => campaign.id === campaignId)?.name ?? null
           }
           sceneId={persistedScene?.id ?? null}
           sceneName={persistedScene?.name ?? null}
