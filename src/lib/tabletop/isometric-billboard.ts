@@ -9,6 +9,13 @@ export interface TabletopMatrixCoefficients {
   d: number;
 }
 
+const DEFAULT_ISOMETRIC_MATRIX: TabletopMatrixCoefficients = {
+  a: 1,
+  b: 0.5,
+  c: -1,
+  d: 0.5,
+};
+
 const DEFAULT_BILLBOARD_TYPES = new Set<TabletopEntity["type"]>([
   "token",
   "creature",
@@ -37,16 +44,21 @@ export function tabletopEntityRenderMode(
 
 export function inverseIsometricEntityMatrix(
   rotationDegrees: number,
+  projection: TabletopMatrixCoefficients = DEFAULT_ISOMETRIC_MATRIX,
 ): TabletopMatrixCoefficients {
   const radians = (rotationDegrees * Math.PI) / 180;
   const cosine = Math.cos(radians);
   const sine = Math.sin(radians);
 
-  // Inverte Miso * Rotação. O determinante de Miso é 1, portanto o
-  // billboard continua acompanhando zoom e câmera sem herdar a deformação.
-  const a = cosine - sine;
-  const b = 0.5 * (cosine + sine);
-  const c = -(sine + cosine);
-  const d = 0.5 * (cosine - sine);
-  return { a: d, b: -b, c: -c, d: a };
+  const a = projection.a * cosine + projection.c * sine;
+  const b = projection.b * cosine + projection.d * sine;
+  const c = -projection.a * sine + projection.c * cosine;
+  const d = -projection.b * sine + projection.d * cosine;
+  const determinant = a * d - b * c;
+  return {
+    a: d / determinant,
+    b: -b / determinant,
+    c: -c / determinant,
+    d: a / determinant,
+  };
 }

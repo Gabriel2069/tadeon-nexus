@@ -2,7 +2,14 @@ import { Application, Container, Graphics, Matrix, Sprite } from "pixi.js";
 import {
   CameraController,
   type TabletopProjectionMode,
+  type TabletopViewOrientation,
 } from "./camera-controller";
+import {
+  DEFAULT_TABLETOP_VIEW_ORIENTATION,
+  normalizeTabletopViewOrientation,
+  tabletopElevationOffset,
+  tabletopProjectionMatrix,
+} from "./tabletop-projection";
 import { CommandHistory } from "./command-history";
 import { EntityRenderer } from "./entity-renderer";
 import {
@@ -52,7 +59,11 @@ import {
   type TabletopWall,
 } from "./tabletop-visibility-service";
 import { TabletopVisibilityRenderer } from "./visibility-renderer";
-import { activeTabletopLevel, tabletopItemLevelId } from "./tabletop-levels";
+import {
+  activeTabletopLevel,
+  tabletopItemLevelId,
+  updateTabletopLevelStack,
+} from "./tabletop-levels";
 import {
   tabletopDirectorCameraFromView,
   type TabletopDirectorCamera,
@@ -109,6 +120,7 @@ export class TabletopEngine {
   private marqueeBounds: TabletopBounds | null = null;
   private toolMode: TabletopToolMode = "select";
   private projectionMode: TabletopProjectionMode = "plan";
+  private viewOrientation = DEFAULT_TABLETOP_VIEW_ORIENTATION;
   private structureType: TabletopStructureType = "wall";
   private selectedStructureId: string | null = null;
   private activeLevelId: string | null = null;
@@ -275,12 +287,19 @@ export class TabletopEngine {
     this.render();
   }
 
-  updateLevel(id: string, patch: Partial<TabletopLevel>) {
+  updateLevel(
+    id: string,
+    patch: Partial<TabletopLevel>,
+    options: { restackAbove?: boolean } = {},
+  ) {
     if (this.readOnly) return;
     this.scenes.replace({
       ...this.scenes.scene,
-      levels: (this.scenes.scene.levels ?? []).map((level) =>
-        level.id === id ? { ...level, ...patch, id: level.id } : level,
+      levels: updateTabletopLevelStack(
+        this.scenes.scene.levels ?? [],
+        id,
+        patch,
+        options.restackAbove,
       ),
     });
     this.camera.setElevation(
@@ -336,13 +355,31 @@ export class TabletopEngine {
     this.camera.setElevation(
       activeTabletopLevel(this.scenes.scene, this.activeLevelId).baseElevation,
     );
-    this.world.setFromMatrix(
-      mode === "isometric" ? new Matrix(1, 0.5, -1, 0.5, 0, 0) : new Matrix(),
-    );
+    this.applyWorldProjection();
     this.toolOverlay.clearMeasure();
     this.toolOverlay.clearDrawing();
     this.toolOverlay.clearStructure();
     this.fitToScreen();
+  }
+
+  setProjectionOrientation(patch: Partial<TabletopViewOrientation>) {
+    const screenCenter = {
+      x: this.app.renderer.width / 2,
+      y: this.app.renderer.height / 2,
+    };
+    const worldCenter = this.camera.screenToWorld(screenCenter);
+    this.viewOrientation = normalizeTabletopViewOrientation({
+      ...this.viewOrientation,
+      ...patch,
+    });
+    this.camera.setOrientation(this.viewOrientation);
+    this.applyWorldProjection();
+    this.camera.placeWorldAtScreen(worldCenter, screenCenter);
+    this.render(false);
+  }
+
+  getProjectionOrientation() {
+    return { ...this.viewOrientation };
   }
 
   setGridVisible(visible: boolean) {
@@ -870,7 +907,18 @@ export class TabletopEngine {
       zoom: this.camera.zoom,
       tool: this.toolMode,
       projection: this.projectionMode,
+      orientation: this.viewOrientation,
     };
+  }
+
+  private applyWorldProjection() {
+    const matrix = tabletopProjectionMatrix(
+      this.projectionMode,
+      this.viewOrientation,
+    );
+    this.world.setFromMatrix(
+      new Matrix(matrix.a, matrix.b, matrix.c, matrix.d, 0, 0),
+    );
   }
 
   private select(id: string, additive: boolean) {
@@ -1310,16 +1358,22 @@ export class TabletopEngine {
     );
     this.grid.view.visible = this.gridVisible;
     const floorOffset =
-      this.projectionMode === "isometric" ? -activeLevel.baseElevation : 0;
+      this.projectionMode === "isometric"
+        ? tabletopElevationOffset(
+            activeLevel.baseElevation,
+            this.viewOrientation,
+          )
+        : { x: 0, y: 0 };
     this.grid.render(this.scenes.scene);
-    this.grid.view.position.set(floorOffset, floorOffset);
-    this.toolOverlay.view.position.set(floorOffset, floorOffset);
-    this.selectionOverlay.view.position.set(floorOffset, floorOffset);
+    this.grid.view.position.set(floorOffset.x, floorOffset.y);
+    this.toolOverlay.view.position.set(floorOffset.x, floorOffset.y);
+    this.selectionOverlay.view.position.set(floorOffset.x, floorOffset.y);
     this.entities.render(
       this.scenes.scene,
       this.selection.ids,
       this.projectionMode,
       activeLevel.id,
+      this.viewOrientation,
     );
     this.visibility.render(
       this.scenes.scene,
@@ -1327,6 +1381,7 @@ export class TabletopEngine {
       this.visibilityGuides,
       this.projectionMode,
       activeLevel.id,
+      this.viewOrientation,
     );
     this.spatial.render(
       this.scenes.scene,
@@ -1335,6 +1390,7 @@ export class TabletopEngine {
       this.selection.ids,
       this.selectedStructureId,
       activeLevel.id,
+      this.viewOrientation,
     );
     this.toolOverlay.renderStructureSelection(
       this.selectedStructureId

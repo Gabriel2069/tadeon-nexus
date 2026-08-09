@@ -1,29 +1,22 @@
 import { Container } from "pixi.js";
 import type { TabletopBounds } from "./geometry";
 import type { Point } from "./types";
+import {
+  DEFAULT_TABLETOP_VIEW_ORIENTATION,
+  normalizeTabletopViewOrientation,
+  projectTabletopPoint,
+  unprojectTabletopPoint,
+  type TabletopProjectionMode,
+  type TabletopViewOrientation,
+} from "./tabletop-projection";
 
-export type TabletopProjectionMode = "plan" | "isometric";
-
-function projectPoint(point: Point, mode: TabletopProjectionMode): Point {
-  if (mode === "plan") return point;
-  return {
-    x: point.x - point.y,
-    y: (point.x + point.y) * 0.5,
-  };
-}
-
-function unprojectPoint(point: Point, mode: TabletopProjectionMode): Point {
-  if (mode === "plan") return point;
-  return {
-    x: point.y + point.x * 0.5,
-    y: point.y - point.x * 0.5,
-  };
-}
+export type { TabletopProjectionMode, TabletopViewOrientation };
 
 export class CameraController {
   private minZoom = 0.15;
   private maxZoom = 4;
   private projectionMode: TabletopProjectionMode = "plan";
+  private viewOrientation = DEFAULT_TABLETOP_VIEW_ORIENTATION;
   private elevation = 0;
 
   constructor(private readonly viewport: Container) {}
@@ -36,8 +29,19 @@ export class CameraController {
     return this.projectionMode;
   }
 
+  get orientation() {
+    return { ...this.viewOrientation };
+  }
+
   setProjection(mode: TabletopProjectionMode) {
     this.projectionMode = mode;
+  }
+
+  setOrientation(patch: Partial<TabletopViewOrientation>) {
+    this.viewOrientation = normalizeTabletopViewOrientation({
+      ...this.viewOrientation,
+      ...patch,
+    });
   }
 
   setElevation(elevation: number) {
@@ -45,9 +49,16 @@ export class CameraController {
   }
 
   private projected(point: Point): Point {
-    const projected = projectPoint(point, this.projectionMode);
+    const projected = projectTabletopPoint(
+      point,
+      this.projectionMode,
+      this.viewOrientation,
+    );
     return this.projectionMode === "isometric"
-      ? { x: projected.x, y: projected.y - this.elevation }
+      ? {
+          x: projected.x,
+          y: projected.y - this.elevation * this.viewOrientation.elevationScale,
+        }
       : projected;
   }
 
@@ -71,16 +82,17 @@ export class CameraController {
   }
 
   screenToWorld(point: Point): Point {
-    const world = unprojectPoint(
-      {
-        x: (point.x - this.viewport.position.x) / this.zoom,
-        y: (point.y - this.viewport.position.y) / this.zoom,
-      },
+    const projected = {
+      x: (point.x - this.viewport.position.x) / this.zoom,
+      y: (point.y - this.viewport.position.y) / this.zoom,
+    };
+    if (this.projectionMode === "isometric")
+      projected.y += this.elevation * this.viewOrientation.elevationScale;
+    return unprojectTabletopPoint(
+      projected,
       this.projectionMode,
+      this.viewOrientation,
     );
-    return this.projectionMode === "isometric"
-      ? { x: world.x + this.elevation, y: world.y + this.elevation }
-      : world;
   }
 
   worldToScreen(point: Point): Point {

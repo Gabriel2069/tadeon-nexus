@@ -3,6 +3,7 @@ import {
   inverseIsometricEntityMatrix,
   tabletopEntityRenderMode,
 } from "./isometric-billboard";
+import { tabletopProjectionMatrix } from "./tabletop-projection";
 
 function multiply(
   left: { a: number; b: number; c: number; d: number },
@@ -56,6 +57,33 @@ describe("isometric billboards", () => {
         assetUrl: "signed-object.png",
       }),
     ).toBe("billboard");
+  });
+
+  it("keeps image billboards upright after orbiting the map", () => {
+    const projection = tabletopProjectionMatrix("isometric", {
+      yaw: 218,
+      tilt: 0.71,
+      elevationScale: 1.3,
+    });
+    const rotation = 37;
+    const radians = (rotation * Math.PI) / 180;
+    const cosine = Math.cos(radians);
+    const sine = Math.sin(radians);
+    const entityMatrix = multiply(projection, {
+      a: cosine,
+      b: sine,
+      c: -sine,
+      d: cosine,
+    });
+    const result = multiply(
+      entityMatrix,
+      inverseIsometricEntityMatrix(rotation, projection),
+    );
+
+    expect(result.a).toBeCloseTo(1, 8);
+    expect(result.b).toBeCloseTo(0, 8);
+    expect(result.c).toBeCloseTo(0, 8);
+    expect(result.d).toBeCloseTo(1, 8);
   });
 
   it("keeps maps flat and respects an explicit editor choice", () => {

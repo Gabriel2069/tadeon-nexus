@@ -41,6 +41,7 @@ import {
   Plus,
   Redo2,
   RefreshCw,
+  RotateCcw,
   RotateCw,
   Ruler,
   Save,
@@ -85,6 +86,11 @@ import type { TabletopSheetSummary } from "@/lib/tabletop/tabletop-entity-insigh
 import { assetService } from "@/lib/assets/asset-service";
 import type { TabletopToolMode } from "@/lib/tabletop/interaction-controller";
 import type { TabletopProjectionMode } from "@/lib/tabletop/camera-controller";
+import {
+  DEFAULT_TABLETOP_VIEW_ORIENTATION,
+  normalizeTabletopViewOrientation,
+  type TabletopViewOrientation,
+} from "@/lib/tabletop/tabletop-projection";
 import {
   createTabletopStructure,
   structureFamily,
@@ -298,6 +304,8 @@ export function TabletopWorkspace({
   const [toolMode, setToolMode] = useState<TabletopToolMode>("select");
   const [projectionMode, setProjectionMode] =
     useState<TabletopProjectionMode>("plan");
+  const [viewOrientation, setViewOrientation] =
+    useState<TabletopViewOrientation>(DEFAULT_TABLETOP_VIEW_ORIENTATION);
   const [structureType, setStructureType] =
     useState<TabletopStructureType>("wall");
   const [selectedStructureId, setSelectedStructureId] = useState<string | null>(
@@ -389,6 +397,10 @@ export function TabletopWorkspace({
   useEffect(() => {
     engineRef.current?.setProjectionMode(projectionMode);
   }, [projectionMode]);
+
+  useEffect(() => {
+    engineRef.current?.setProjectionOrientation(viewOrientation);
+  }, [viewOrientation]);
 
   useEffect(() => {
     activeLevelIdRef.current = activeLevelId;
@@ -604,8 +616,8 @@ export function TabletopWorkspace({
         setDirty(
           Boolean(
             stored &&
-            stored.id === next.scene.id &&
-            sceneFingerprint(stored) !== sceneFingerprint(next.scene),
+              stored.id === next.scene.id &&
+              sceneFingerprint(stored) !== sceneFingerprint(next.scene),
           ),
         );
       },
@@ -1020,7 +1032,9 @@ export function TabletopWorkspace({
 
   const updateActiveLevel = (patch: Partial<TabletopLevel>) => {
     if (!activeLevel || !editable) return;
-    engineRef.current?.updateLevel(activeLevel.id, patch);
+    engineRef.current?.updateLevel(activeLevel.id, patch, {
+      restackAbove: true,
+    });
   };
 
   const uploadTabletopImage = async (
@@ -2200,6 +2214,127 @@ export function TabletopWorkspace({
               <div className="mt-3 rounded-xl border border-border/60 bg-secondary/10 p-3">
                 <div className="flex items-center justify-between gap-2">
                   <div>
+                    <p className="tadeon-eyebrow">Câmera espacial</p>
+                    <p className="mt-1 text-[11px] text-muted-foreground">
+                      Rotação, angulação e altura preservam o centro e o encaixe
+                      da grade.
+                    </p>
+                  </div>
+                  <Button
+                    type="button"
+                    size="sm"
+                    variant="outline"
+                    disabled={projectionMode !== "isometric"}
+                    onClick={() =>
+                      setViewOrientation(DEFAULT_TABLETOP_VIEW_ORIENTATION)
+                    }
+                  >
+                    <Scan className="h-4 w-4" /> Reset
+                  </Button>
+                </div>
+                <fieldset
+                  disabled={projectionMode !== "isometric"}
+                  className="mt-3 space-y-3 disabled:opacity-45"
+                >
+                  <label className="grid grid-cols-[1fr_auto] gap-x-2 text-[10px] uppercase text-muted-foreground">
+                    <span>Rotação do mapa</span>
+                    <output>{Math.round(viewOrientation.yaw)}°</output>
+                    <input
+                      className="col-span-2 mt-1 w-full accent-primary"
+                      type="range"
+                      min="0"
+                      max="359"
+                      step="1"
+                      value={viewOrientation.yaw}
+                      onChange={(event) =>
+                        setViewOrientation((current) =>
+                          normalizeTabletopViewOrientation({
+                            ...current,
+                            yaw: Number(event.target.value),
+                          }),
+                        )
+                      }
+                    />
+                  </label>
+                  <div className="grid grid-cols-2 gap-2">
+                    <Button
+                      type="button"
+                      size="sm"
+                      variant="outline"
+                      onClick={() =>
+                        setViewOrientation((current) =>
+                          normalizeTabletopViewOrientation({
+                            ...current,
+                            yaw: current.yaw - 45,
+                          }),
+                        )
+                      }
+                    >
+                      <RotateCcw className="h-4 w-4" /> −45°
+                    </Button>
+                    <Button
+                      type="button"
+                      size="sm"
+                      variant="outline"
+                      onClick={() =>
+                        setViewOrientation((current) =>
+                          normalizeTabletopViewOrientation({
+                            ...current,
+                            yaw: current.yaw + 45,
+                          }),
+                        )
+                      }
+                    >
+                      <RotateCw className="h-4 w-4" /> +45°
+                    </Button>
+                  </div>
+                  <label className="grid grid-cols-[1fr_auto] gap-x-2 text-[10px] uppercase text-muted-foreground">
+                    <span>Inclinação</span>
+                    <output>{Math.round(viewOrientation.tilt * 100)}%</output>
+                    <input
+                      className="col-span-2 mt-1 w-full accent-primary"
+                      type="range"
+                      min="18"
+                      max="90"
+                      step="1"
+                      value={Math.round(viewOrientation.tilt * 100)}
+                      onChange={(event) =>
+                        setViewOrientation((current) =>
+                          normalizeTabletopViewOrientation({
+                            ...current,
+                            tilt: Number(event.target.value) / 100,
+                          }),
+                        )
+                      }
+                    />
+                  </label>
+                  <label className="grid grid-cols-[1fr_auto] gap-x-2 text-[10px] uppercase text-muted-foreground">
+                    <span>Escala de altura</span>
+                    <output>
+                      {viewOrientation.elevationScale.toFixed(2)}×
+                    </output>
+                    <input
+                      className="col-span-2 mt-1 w-full accent-primary"
+                      type="range"
+                      min="25"
+                      max="250"
+                      step="5"
+                      value={Math.round(viewOrientation.elevationScale * 100)}
+                      onChange={(event) =>
+                        setViewOrientation((current) =>
+                          normalizeTabletopViewOrientation({
+                            ...current,
+                            elevationScale: Number(event.target.value) / 100,
+                          }),
+                        )
+                      }
+                    />
+                  </label>
+                </fieldset>
+              </div>
+              <div className="mt-3 rounded-xl border border-border/60 bg-secondary/10 p-3">
+                <div className="flex items-center justify-between gap-2">
+                  <div>
                     <p className="tadeon-eyebrow">Andares e elevação</p>
                     <p className="mt-1 text-[11px] text-muted-foreground">
                       A grade, a oclusão, as luzes e as entidades seguem o andar
@@ -2663,8 +2798,11 @@ export function TabletopWorkspace({
                         disabled={!editable}
                         onChange={(event) =>
                           engineRef.current?.updateSelected(
-                            { levelId: event.target.value || null },
-                            "Mover entidade entre andares",
+                            {
+                              levelId: event.target.value || null,
+                              elevation: 0,
+                            },
+                            "Mover entidade e encaixar no piso do andar",
                           )
                         }
                         className="h-10 w-full rounded-md border border-input bg-background px-2 text-xs"

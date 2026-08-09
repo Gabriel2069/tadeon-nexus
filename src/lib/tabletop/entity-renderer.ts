@@ -1,6 +1,11 @@
 import { Container, Graphics, Matrix, Sprite, Text } from "pixi.js";
 import type { TabletopProjectionMode } from "./camera-controller";
 import {
+  DEFAULT_TABLETOP_VIEW_ORIENTATION,
+  tabletopProjectionMatrix,
+  type TabletopViewOrientation,
+} from "./tabletop-projection";
+import {
   inverseIsometricEntityMatrix,
   tabletopEntityRenderMode,
 } from "./isometric-billboard";
@@ -41,6 +46,7 @@ export class EntityRenderer {
     selectedIds: string[],
     projection: TabletopProjectionMode = "plan",
     activeLevelId?: string | null,
+    orientation: TabletopViewOrientation = DEFAULT_TABLETOP_VIEW_ORIENTATION,
   ) {
     const entities = scene.entities;
     const layers = scene.layers;
@@ -89,6 +95,7 @@ export class EntityRenderer {
           ? elevateIsometricPoint(
               center,
               tabletopEntityWorldElevation(entity, activeLevel),
+              orientation,
             )
           : center;
       display.position.set(position.x, position.y);
@@ -100,7 +107,13 @@ export class EntityRenderer {
           : 0) +
         entity.zIndex;
       this.syncAsset(display, entity);
-      this.paint(display, entity, selected.has(entity.id), projection);
+      this.paint(
+        display,
+        entity,
+        selected.has(entity.id),
+        projection,
+        orientation,
+      );
     }
     this.view.sortableChildren = true;
     this.view.sortChildren();
@@ -152,6 +165,7 @@ export class EntityRenderer {
     entity: TabletopEntity,
     selected: boolean,
     projection: TabletopProjectionMode,
+    orientation: TabletopViewOrientation,
   ) {
     const shape = display.getChildByLabel("shape") as Graphics;
     shape.clear();
@@ -279,7 +293,10 @@ export class EntityRenderer {
       sprite.width = entity.width;
       sprite.height = entity.height;
       if (billboard) {
-        const matrix = inverseIsometricEntityMatrix(entity.rotation);
+        const matrix = inverseIsometricEntityMatrix(
+          entity.rotation,
+          tabletopProjectionMatrix("isometric", orientation),
+        );
         sprite.anchor.set(0.5);
         sprite.position.set(0, 0);
         assetFrame.setFromMatrix(
