@@ -13,7 +13,11 @@ import type { TabletopWall } from "./tabletop-visibility-service";
 import type { Point, TabletopEntity } from "./types";
 
 export type TabletopToolMode =
-  "select" | "pan" | "measure" | "draw" | "structure";
+  | "select"
+  | "pan"
+  | "measure"
+  | "draw"
+  | "structure";
 
 export interface TabletopMeasurementPreview {
   start: Point;
@@ -67,6 +71,7 @@ interface InteractionBindings {
   paste(): void;
   remove(): void;
   nudge(delta: Point): void;
+  activateEntity(id: string): boolean;
   focusSelection(): void;
   fitToScreen(): void;
   activateTool(mode: TabletopToolMode): void;
@@ -585,7 +590,7 @@ export class InteractionController {
     const hit = entityHit;
     if (hit) {
       if (!this.bindings.isSelected(hit)) this.bindings.select(hit, false);
-      this.bindings.focusSelection();
+      if (!this.bindings.activateEntity(hit)) this.bindings.focusSelection();
     } else {
       this.bindings.fitToScreen();
     }
