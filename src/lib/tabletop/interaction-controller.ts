@@ -5,6 +5,7 @@ interface InteractionBindings {
   camera: CameraController;
   hitTest(world: Point): string | undefined;
   select(id: string, additive: boolean): void;
+  selectAll(): void;
   clearSelection(): void;
   editableSelection(): TabletopEntity[];
   previewEntities(entities: TabletopEntity[]): void;
@@ -205,6 +206,11 @@ export class InteractionController {
 
   private onKeyDown = (event: KeyboardEvent) => {
     const modifier = event.metaKey || event.ctrlKey;
+    if (modifier && event.key.toLowerCase() === "a") {
+      event.preventDefault();
+      this.bindings.selectAll();
+      return;
+    }
     if (modifier && event.key.toLowerCase() === "z") {
       event.preventDefault();
       if (event.shiftKey) this.bindings.redo();

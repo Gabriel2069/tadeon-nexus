@@ -10,6 +10,14 @@ import { SceneManager } from "./scene-manager";
 import { SelectionManager } from "./selection-manager";
 import { TextureManager } from "./texture-manager";
 import {
+  alignTabletopEntities,
+  distributeTabletopEntities,
+  moveTabletopEntitiesToEdge,
+  type TabletopAlignment,
+  type TabletopDistribution,
+  type TabletopStackEdge,
+} from "./tabletop-arrangement";
+import {
   createEmptyVisibilityState,
   type TabletopVisibilityState,
 } from "./tabletop-visibility-service";
@@ -94,6 +102,7 @@ export class TabletopEngine {
       camera: this.camera,
       hitTest: (point) => this.hitTest(point),
       select: (id, additive) => this.select(id, additive),
+      selectAll: () => this.selectAll(),
       clearSelection: () => this.clearSelection(),
       editableSelection: () => this.editableSelection(),
       previewEntities: (entities) => this.previewEntities(entities),
@@ -369,6 +378,87 @@ export class TabletopEngine {
     );
   }
 
+  selectAll() {
+    if (this.readOnly) return;
+    const selectable = this.scenes.scene.entities
+      .filter(
+        (entity) =>
+          !entity.hidden &&
+          this.layers.get(entity.layerId)?.visible &&
+          this.layers.canEdit(entity),
+      )
+      .map((entity) => entity.id);
+    this.selection.replace(selectable);
+    this.render();
+  }
+
+  moveSelectedToLayer(layerId: string) {
+    if (this.readOnly) return;
+    const target = this.layers.get(layerId);
+    if (
+      !target ||
+      target.locked ||
+      !target.visible ||
+      target.layerType === "map"
+    ) {
+      this.options.onAssetError?.(
+        "Escolha uma camada visível e desbloqueada para mover a seleção.",
+      );
+      return;
+    }
+    const selected = new Set(
+      this.editableSelection().map((entity) => entity.id),
+    );
+    if (selected.size === 0) return;
+    this.executeMutation("Mover seleção para camada", (entities) =>
+      entities.map((entity) =>
+        selected.has(entity.id) ? { ...entity, layerId } : entity,
+      ),
+    );
+  }
+
+  moveSelectedToEdge(edge: TabletopStackEdge) {
+    if (this.readOnly) return;
+    const selected = new Set(
+      this.editableSelection().map((entity) => entity.id),
+    );
+    if (selected.size === 0) return;
+    this.executeMutation(
+      edge === "front" ? "Trazer seleção à frente" : "Enviar seleção ao fundo",
+      (entities) => moveTabletopEntitiesToEdge(entities, selected, edge),
+    );
+  }
+
+  alignSelected(alignment: TabletopAlignment) {
+    if (this.readOnly) return;
+    const selected = new Set(
+      this.editableSelection().map((entity) => entity.id),
+    );
+    if (selected.size < 2) return;
+    this.executeMutation("Alinhar seleção", (entities) =>
+      alignTabletopEntities(entities, selected, alignment).map((entity) =>
+        selected.has(entity.id) ? this.clampEntity(entity) : entity,
+      ),
+    );
+  }
+
+  distributeSelected(axis: TabletopDistribution) {
+    if (this.readOnly) return;
+    const selected = new Set(
+      this.editableSelection().map((entity) => entity.id),
+    );
+    if (selected.size < 3) return;
+    this.executeMutation("Distribuir seleção", (entities) =>
+      distributeTabletopEntities(entities, selected, axis).map((entity) =>
+        selected.has(entity.id) ? this.clampEntity(entity) : entity,
+      ),
+    );
+  }
+
+  resetSelectedTransform() {
+    this.updateSelected({ rotation: 0 }, "Zerar rotação");
+  }
+
   setGrid(mode: TabletopScene["gridMode"], size = this.scenes.scene.gridSize) {
     if (this.readOnly) return;
     this.scenes.replace({
@@ -437,6 +527,15 @@ export class TabletopEngine {
       this.app.renderer.width,
       this.app.renderer.height,
     );
+    this.render(false);
+  }
+
+  zoomBy(factor: number) {
+    if (!Number.isFinite(factor) || factor <= 0) return;
+    this.camera.zoomAt(this.camera.zoom * factor, {
+      x: this.app.renderer.width / 2,
+      y: this.app.renderer.height / 2,
+    });
     this.render(false);
   }
 
