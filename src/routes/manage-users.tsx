@@ -153,7 +153,7 @@ function ManageUsersPage() {
             return (
               <Card
                 key={u.id}
-                className="p-3 flex items-center justify-between gap-3 transition-all hover:border-primary/40 animate-in fade-in-0 slide-in-from-bottom-1 duration-200"
+                className="flex items-center justify-between gap-3 p-3 transition-[background-color,border-color,box-shadow] duration-150 hover:border-primary/40 animate-in fade-in-0"
               >
                 <div className="min-w-0">
                   <div className="font-medium truncate">
