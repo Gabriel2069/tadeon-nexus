@@ -1,5 +1,28 @@
 import type { TabletopFogStroke } from "./tabletop-visibility-service";
 
+export function compactVisibilityToolPoints(
+  points: Array<{ x: number; y: number }>,
+  limit = 64,
+) {
+  const safeLimit = Math.max(2, Math.trunc(limit));
+  const normalized = points
+    .map((point) => ({ x: Number(point.x), y: Number(point.y) }))
+    .filter((point) => Number.isFinite(point.x) && Number.isFinite(point.y));
+  if (normalized.length <= safeLimit) return normalized;
+
+  const compacted: Array<{ x: number; y: number }> = [];
+  for (let index = 0; index < safeLimit; index += 1) {
+    const sourceIndex = Math.round(
+      (index * (normalized.length - 1)) / (safeLimit - 1),
+    );
+    const point = normalized[sourceIndex];
+    const previous = compacted[compacted.length - 1];
+    if (!previous || previous.x !== point.x || previous.y !== point.y)
+      compacted.push(point);
+  }
+  return compacted;
+}
+
 interface LevelRevealOptions {
   levelId: string;
   sceneWidth: number;
