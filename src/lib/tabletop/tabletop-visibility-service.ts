@@ -9,6 +9,7 @@ const visibilityDatabase = supabase as unknown as SupabaseClient;
 
 export interface TabletopWall {
   id: string;
+  levelId?: string;
   x1: number;
   y1: number;
   x2: number;
@@ -16,13 +17,20 @@ export interface TabletopWall {
   wallType: TabletopStructureType;
   blocksVision: boolean;
   blocksMovement: boolean;
+  baseElevation?: number;
+  height?: number;
+  thickness?: number;
+  playerOperable?: boolean;
+  version?: number;
 }
 
 export interface TabletopLight {
   id: string;
+  levelId?: string;
   entityId: string | null;
   x: number;
   y: number;
+  elevation?: number;
   radius: number;
   intensity: number;
   color: string;
@@ -33,6 +41,7 @@ export interface TabletopLight {
 
 export interface TabletopFogStroke {
   id: string;
+  levelId?: string;
   operation: "reveal" | "hide";
   points: Array<{ x: number; y: number }>;
   radius: number;
@@ -114,9 +123,17 @@ export function clampVisibilityState(
     walls: state.walls.slice(0, 512).map((wall) => ({
       ...wall,
       wallType: isTabletopStructureType(wall.wallType) ? wall.wallType : "wall",
+      baseElevation: Math.max(
+        -100_000,
+        Math.min(100_000, finite(wall.baseElevation)),
+      ),
+      height: Math.max(8, Math.min(100_000, finite(wall.height, 64))),
+      thickness: Math.max(1, Math.min(1024, finite(wall.thickness, 8))),
+      version: Math.max(1, Math.trunc(finite(wall.version, 1))),
     })),
     lights: state.lights.slice(0, 256).map((light) => ({
       ...light,
+      elevation: Math.max(-100_000, Math.min(100_000, finite(light.elevation))),
       radius: Math.max(8, Math.min(100_000, finite(light.radius, 320))),
       intensity: Math.max(0, Math.min(1, finite(light.intensity, 1))),
       visibilityPolygon: light.visibilityPolygon
@@ -147,19 +164,21 @@ export class TabletopVisibilityService {
           .single(),
         this.database
           .from("tabletop_walls")
-          .select("id,x1,y1,x2,y2,wall_type,blocks_vision,blocks_movement")
+          .select(
+            "id,level_id,x1,y1,x2,y2,wall_type,blocks_vision,blocks_movement,base_elevation,height,thickness,player_operable,version",
+          )
           .eq("scene_id", sceneId)
           .order("created_at"),
         this.database
           .from("tabletop_lights")
           .select(
-            "id,entity_id,x,y,radius,intensity,color,enabled,casts_shadows",
+            "id,level_id,entity_id,x,y,elevation,radius,intensity,color,enabled,casts_shadows",
           )
           .eq("scene_id", sceneId)
           .order("created_at"),
         this.database
           .from("tabletop_fog_strokes")
-          .select("id,operation,points,radius,sequence_index")
+          .select("id,level_id,operation,points,radius,sequence_index")
           .eq("scene_id", sceneId)
           .order("sequence_index"),
       ],
@@ -178,6 +197,7 @@ export class TabletopVisibilityService {
       fogOpacity: finite(scene.fog_opacity, 0.92),
       walls: (wallResult.data ?? []).map((wall) => ({
         id: wall.id,
+        levelId: wall.level_id,
         x1: finite(wall.x1),
         y1: finite(wall.y1),
         x2: finite(wall.x2),
@@ -187,12 +207,19 @@ export class TabletopVisibilityService {
           : "wall",
         blocksVision: wall.blocks_vision,
         blocksMovement: wall.blocks_movement,
+        baseElevation: finite(wall.base_elevation),
+        height: finite(wall.height, 64),
+        thickness: finite(wall.thickness, 8),
+        playerOperable: wall.player_operable,
+        version: Math.max(1, Math.trunc(finite(wall.version, 1))),
       })),
       lights: (lightResult.data ?? []).map((light) => ({
         id: light.id,
+        levelId: light.level_id,
         entityId: light.entity_id,
         x: finite(light.x),
         y: finite(light.y),
+        elevation: finite(light.elevation),
         radius: finite(light.radius, 320),
         intensity: finite(light.intensity, 1),
         color: light.color,
@@ -201,6 +228,7 @@ export class TabletopVisibilityService {
       })),
       fogStrokes: (fogResult.data ?? []).map((stroke) => ({
         id: stroke.id,
+        levelId: stroke.level_id,
         operation: stroke.operation,
         points: Array.isArray(stroke.points)
           ? stroke.points.map((point: { x?: unknown; y?: unknown }) => ({
@@ -226,6 +254,7 @@ export class TabletopVisibilityService {
         fog_opacity: normalized.fogOpacity,
         wall_documents: normalized.walls.map((wall) => ({
           id: wall.id,
+          level_id: wall.levelId,
           x1: wall.x1,
           y1: wall.y1,
           x2: wall.x2,
@@ -233,12 +262,18 @@ export class TabletopVisibilityService {
           wall_type: wall.wallType,
           blocks_vision: wall.blocksVision,
           blocks_movement: wall.blocksMovement,
+          base_elevation: wall.baseElevation,
+          height: wall.height,
+          thickness: wall.thickness,
+          player_operable: wall.playerOperable,
         })),
         light_documents: normalized.lights.map((light) => ({
           id: light.id,
+          level_id: light.levelId,
           entity_id: light.entityId,
           x: light.x,
           y: light.y,
+          elevation: light.elevation,
           radius: light.radius,
           intensity: light.intensity,
           color: light.color,
@@ -247,6 +282,7 @@ export class TabletopVisibilityService {
         })),
         fog_documents: normalized.fogStrokes.map((stroke) => ({
           id: stroke.id,
+          level_id: stroke.levelId,
           operation: stroke.operation,
           points: stroke.points,
           radius: stroke.radius,
