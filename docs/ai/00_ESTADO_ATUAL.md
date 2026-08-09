@@ -155,6 +155,31 @@ O teste autenticado auto-revertido confirmou criação, cinco camadas, token, al
 restauração, conflito `40001`, negação de escrita e leitura bruta zero para jogador, além de zero
 resíduos. Não há Realtime, iluminação calculada, visão, névoa ou R2.
 
+O estado atual da Mesa substitui as limitações históricas descritas acima. Os PRs #88 a #91
+corrigiram a deriva da grade no zoom isométrico, acrescentaram andares persistentes com elevação,
+oclusão estrita pelo andar ativo, arquitetura e visibilidade vinculadas ao nível, portas
+explicitamente acionáveis por jogador, iluminação recalculada pela arquitetura autorizada e
+imagens diretas do Nexus Assets para ambiente, tokens e objetos.
+
+A visão do jogador nunca recebe paredes completas: recebe somente a geometria mínima das portas
+marcadas como acionáveis. A troca usa versão otimista; eventos Realtime contêm apenas ID, tipo e
+versão, e cada cliente recarrega a visão filtrada pelo servidor. A Edge Function `tabletop-view`
+está ACTIVE na versão 5 com JWT obrigatório. O teste transacional confirmou porta aberta/fechada,
+rejeição de versão obsoleta, isolamento de andar e rollback sem resíduos.
+
+No modo isométrico, tokens, criaturas, personagens e objetos com imagem usam billboard legível por
+padrão; o inspetor permite alternar para imagem plana. Tiles e mapas continuam acompanhando o chão.
+Paredes, janelas e portas são renderizadas como prismas com espessura, faces, tampas e topo. A grade
+usa reprojeção correta depois de cada zoom e os testes cobrem deriva simples e acumulada.
+
+As migrations `20260809183045_tabletop_levels_and_player_doors.sql`,
+`20260809183328_harden_tabletop_spatial_rpc_privileges.sql`,
+`20260809183559_isolate_tabletop_privileged_rpcs.sql` e
+`20260809183735_cover_tabletop_level_actor_foreign_keys.sql` estão aplicadas. Implementações
+privilegiadas ficam no schema `private`; a API pública é composta por wrappers
+`SECURITY INVOKER`. O Advisor confirma zero FKs sem índice e nenhum alerta de função
+`SECURITY DEFINER` exposta.
+
 ## Segurança
 
 - O Advisor de segurança mantém um aviso: proteção contra senhas vazadas desabilitada.
@@ -236,6 +261,10 @@ responsiva e os elementos visuais persistentes. Cada uma passou pelos seis gates
 auditoria de dependências, lint, typecheck, testes e build. O marcador público do Worker confirma o
 SHA `9a715823977d7d656f1f14086c499910219e43c4`.
 
+As Qualities nº 275, nº 277 e nº 279 aprovaram, respectivamente, andares/elevação,
+portas do jogador e billboards/prismas nos mesmos seis gates. O deploy automático confirmou no
+Worker o SHA `9634590890b20ee44c88527cb6cd31103631316c`.
+
 O Lovable permanece sincronizado como ambiente de construção e não participa do funcionamento
 direto da aplicação. O deploy anteriormente disponível não expunha um identificador verificável;
 o workflow agora injeta o SHA aprovado no build e exige que o endpoint público confirme esse SHA.
@@ -266,55 +295,48 @@ confirmaram criação, reimportação com `skip` e `copy`, isolamento do jogador
 
 ## Flags confirmadas
 
-Todas as flags globais permanecem desligadas. A tabela
-`feature_flag_user_overrides` aplica precedência somente ao usuário autenticado. Há exatamente
-quatro overrides ativos para o proprietário mestre:
+Todas as flags globais permanecem desligadas. O mecanismo de overrides continua aplicando
+precedência somente ao usuário autenticado e não expõe linhas de terceiros.
+
+O proprietário mestre possui seis overrides ativos:
 
 - `nexus_assets_v2_enabled=true`;
 - `nexus_knowledge_enabled=true`;
 - `nexus_graph_enabled=true`;
-- `nexus_tabletop_enabled=true`.
+- `nexus_tabletop_enabled=true`;
+- `nexus_realtime_enabled=true`;
+- `nexus_lighting_enabled=true`.
 
-`nexus_lighting_enabled`, `nexus_r2_enabled` e `nexus_realtime_enabled` não possuem override e
-continuam desligadas. O contrato e as tabelas vazias do Realtime não assinam canais nem alteram a UX. O jogador não vê overrides de terceiros e não pode criá-los.
+O jogador membro da campanha `bf9e85a7-0403-4de8-8d93-dd4d8706bab2` possui somente três
+overrides ativos: `nexus_tabletop_enabled`, `nexus_realtime_enabled` e
+`nexus_lighting_enabled`. Sob RLS ele enxerga exatamente essas três linhas; `anon` não possui
+privilégio de leitura. `nexus_r2_enabled` continua desligada para todos.
 
 ## Estado do rollout
 
-O rollout controlado de Nexus Assets, O Nexus, grafo local e Mesa Nexus foi iniciado
-somente para o proprietário mestre.
-A integração, migration, policies, grants, teste transacional e ativação foram concluídos. A
-validação funcional em sessão autenticada ainda está pendente; portanto os módulos não são
-classificados como concluídos nem foram liberados globalmente.
+Nexus Assets, O Nexus, grafo e Mesa permanecem em canário individual; nenhuma flag global foi
+ligada. Assets e O Nexus continuam disponíveis apenas ao proprietário mestre. O rollout novo da
+Mesa alcança também o único jogador já membro da campanha, de forma reversível e sem ampliar acesso
+a tabelas brutas.
 
-O teste de RLS confirmou: mestre proprietário enxerga os quatro overrides; jogador enxerga zero
-e não consegue inserir. O backend de O Nexus passou por cenários autenticados auto-revertidos com
-CRUD, relação, heading, menção, backlink, link quebrado, conflito otimista, limite, relações
-semânticas, alias, tag, pesquisa de conteúdo/propriedades/relações, filtros, paginação e ocultação
-para o jogador. Os testes deixaram zero páginas, tags, menções e relações residuais.
+O banco preserva uma cena, um nível Térreo e zero entidades, paredes, luzes, névoa, sessões ou
+snapshots. Os testes de duplicação, snapshot v2, restauração, visibilidade, porta, conflito otimista
+e isolamento foram executados em transações revertidas e deixaram zero dados temporários.
 
-O canário de Nexus Assets também passou reserva Supabase para o owner, negação do jogador sem
-override e negação de R2, deixando zero sessões residuais. O upload/download do objeto real, quota
-com arquivo real e a validação visual dos dois módulos em frontend autenticado continuam
-pendentes. O rollback do canário é remover as quatro linhas de override. A portabilidade de O Nexus foi
-integrada e validada no backend; sua validação visual autenticada e o teste com anexo real
-permanecem no canário. A Mesa passou build, proteção pública de rota e testes reais de persistência;
-sua interação visual autenticada e o salvamento pelo frontend ainda precisam de aceite. O teste
-transacional do inspector confirmou vínculo e remoção explícita de ficha, preset 128, elevação,
-ocultação e propriedades JSON, com rollback e zero resíduos. A paleta de Assets e bibliotecas, a reordenação de cenas, o mapa de fundo privado, a atribuição de
-proprietário e os indicadores visuais de tokens estão integrados. O teste da ordem confirmou três cenas, 15 camadas, versões
-incrementadas, conflito `40001`, documento incompleto `22023`, negação `42501` para jogador e zero
-resíduos. Iluminação, visão, névoa e Realtime permanecem bloqueados.
+O Worker canônico confirmou o SHA funcional `9634590890b20ee44c88527cb6cd31103631316c`. A
+primeira interação visual autenticada do jogador ainda depende de ele abrir a Mesa e de o mestre
+iniciar uma sala com token controlável. O rollback específico do jogador é remover as três linhas
+de override; as flags globais não participam desse rollback.
 
 ## Próximos critérios
 
-1. Concluir o canário autenticado de Nexus Assets com upload/download do objeto real, quota e
-   rollback operacional.
-2. Validar visualmente no frontend autenticado bibliotecas, grafo e portabilidade de O Nexus,
-   incluindo um ZIP com conflito e um anexo real.
-3. Validar visualmente a Fundação Gráfica da Mesa em sessão de mestre: canvas, pan/zoom, grade,
-   seleção, transformações, undo/redo, cena vazia, erro de asset e liberação de memória.
-4. Validar no canário da Mesa criação, salvamento, conflito, camadas, arquivamento, duplicação,
-   snapshot, restauração, reordenação, inserção por toque/drag, mapa de fundo, barras, ícones e
-   condições pelo frontend com conteúdo real em desktop e celular.
-5. Manter transporte Realtime, iluminação, visão, névoa e R2 desligados até seus próprios canários;
-   a fundação de protocolo e sala persistente não equivale a rollout.
+1. Mestre iniciar uma sala canário, inserir um token com imagem e atribuí-lo ao jogador.
+2. Jogador entrar autenticado, alternar uma porta autorizada e confirmar o recálculo de luz e sombra
+   sem receber arquitetura secreta.
+3. Validar no frontend real imagens vertical/plana, elevação, troca de andar, oclusão, portas e
+   prismas em desktop e celular.
+4. Medir fluidez, memória e liberação de texturas em uma cena representativa antes de ampliar o
+   canário.
+5. Evoluir o editor com mapas específicos por andar, transições de portas, recortes de teto e
+   oclusão por altura, sempre atrás do canário existente.
+6. Manter R2 e todas as flags globais desligados até seus próprios critérios de aceite.
