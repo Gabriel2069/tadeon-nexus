@@ -86,6 +86,18 @@ function validView() {
           levelId: id("13"),
           controllable: true,
           properties: { status: "alerta" },
+          sheetSummary: {
+            sheetId: id("14"),
+            name: "Vigia de Myrova",
+            occupation: "Batedor",
+            brand: "Lobo Alvor",
+            origin: "Myrova",
+            exposure: 3,
+            equilibrium: 8,
+            condition: "Vigilante",
+            resources: { pv: 18, pe: 7, ps: 9, pa: 2 },
+            activeConditions: ["Marcado"],
+          },
           handout: {
             nodeId: id("8"),
             title: "Carta selada",
@@ -127,6 +139,10 @@ describe("projeção segura da Mesa para participantes", () => {
     expect(parsed.scene?.entities[0].handout?.attachments[0].mimeType).toBe(
       "application/pdf",
     );
+    expect(parsed.scene?.entities[0].sheetSummary).toMatchObject({
+      name: "Vigia de Myrova",
+      resources: { pv: 18, pe: 7, ps: 9, pa: 2 },
+    });
   });
 
   it("rejeita anexos além do limite seguro", () => {
@@ -148,6 +164,18 @@ describe("projeção segura da Mesa para participantes", () => {
     const input = validView();
     Object.assign(input.scene.entities[0].handout, {
       contentMarkdown: "conteúdo que não pertence ao contrato resumido",
+    });
+    expect(() => parseTabletopParticipantView(input)).toThrow(
+      TabletopParticipantError,
+    );
+  });
+
+  it("rejeita JSON bruto e identidade privada no resumo da ficha", () => {
+    const input = validView();
+    Object.assign(input.scene.entities[0].sheetSummary, {
+      stats: { pv_current: 18, segredo: 99 },
+      conditions: { segredo: true },
+      ownerId: id("15"),
     });
     expect(() => parseTabletopParticipantView(input)).toThrow(
       TabletopParticipantError,
