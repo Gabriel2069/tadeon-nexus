@@ -586,7 +586,7 @@ export function NpcHub({
                 <div className="grid grid-cols-2 gap-2 sm:grid-cols-5">
                   {(Object.keys(active.vectors) as (keyof MasterNpc["vectors"])[]).map((key) => (
                     <label key={key} className="space-y-1 text-center">
-                      <span className="text-[9px] capitalize text-muted-foreground">{key}</span>
+                      <span className="text-[10px] capitalize text-muted-foreground">{key}</span>
                       <Input
                         type="number"
                         min={0}

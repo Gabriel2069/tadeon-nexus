@@ -1423,7 +1423,7 @@ function SheetPage() {
                     >
                       <Plus className="w-3 h-3" />
                     </Button>
-                    <span className="text-[9px] text-muted-foreground ml-1">−4…+4</span>
+                    <span className="text-[10px] text-muted-foreground ml-1">−4…+4</span>
                   </div>
                 }
               >
@@ -2573,7 +2573,7 @@ function StatBlock({
       <div className="tadeon-stat-block__head">
         <div>
           <div className={`font-cinzel text-sm font-bold ${color}`}>{label}</div>
-          <span className="text-[9px] text-muted-foreground">{full}</span>
+          <span className="text-[10px] text-muted-foreground">{full}</span>
         </div>
         <strong
           className={`tadeon-stat-block__value ${color}`}

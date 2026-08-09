@@ -412,7 +412,7 @@
   background: rgb(var(--section-rgb) / 8%);
   box-shadow: inset 0 0 18px rgb(var(--section-rgb) / 6%);
   font-family: var(--font-mono), monospace;
-  font-size: 0.58rem;
+  font-size: 0.6875rem;
   font-weight: 700;
   letter-spacing: 0.08em;
 }
@@ -422,7 +422,7 @@
   margin-bottom: 0.08rem;
   color: color-mix(in srgb, rgb(var(--section-rgb)) 68%, var(--muted-foreground));
   font-family: var(--font-mono), monospace;
-  font-size: 0.5rem;
+  font-size: 0.625rem;
   font-weight: 700;
   letter-spacing: 0.12em;
   line-height: 1.15;
@@ -560,7 +560,7 @@
   grid-column: 1 / -1;
   margin-top: 0.05rem;
   color: var(--muted-foreground);
-  font-size: 0.55rem;
+  font-size: 0.6875rem;
   letter-spacing: 0.1em;
   text-transform: uppercase;
 }
@@ -579,7 +579,7 @@
   display: block;
   margin: 0 0 0.3rem 0.15rem;
   color: color-mix(in srgb, var(--muted-foreground) 86%, var(--primary));
-  font-size: 0.58rem;
+  font-size: 0.6875rem;
   font-weight: 700;
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -683,7 +683,7 @@
 .tadeon-link-row__number {
   color: color-mix(in srgb, var(--primary) 62%, var(--muted-foreground));
   font-family: var(--font-cinzel), serif;
-  font-size: 0.58rem;
+  font-size: 0.6875rem;
   text-align: center;
 }
 
@@ -857,7 +857,7 @@
 
 .tadeon-stat-block__mod > span {
   color: var(--muted-foreground);
-  font-size: 0.5rem;
+  font-size: 0.625rem;
   font-weight: 700;
   letter-spacing: 0.08em;
   text-align: center;
@@ -1154,7 +1154,7 @@
   }
 
   .tadeon-overview-metric small {
-    font-size: 0.52rem;
+    font-size: 0.625rem;
   }
 
   .tadeon-sheet-section {
@@ -1184,13 +1184,13 @@
     width: 1.7rem;
     height: 1.7rem;
     border-radius: 0.55rem 0.2rem 0.55rem 0.2rem;
-    font-size: 0.52rem;
+    font-size: 0.625rem;
   }
 
   .tadeon-sheet-section__title-group small {
     max-width: 14rem;
     overflow: hidden;
-    font-size: 0.45rem;
+    font-size: 0.625rem;
     text-overflow: ellipsis;
     white-space: nowrap;
   }
@@ -1418,7 +1418,7 @@
     overflow: hidden;
     color: var(--muted-foreground);
     font-family: var(--font-mono), monospace;
-    font-size: 0.48rem;
+    font-size: 0.625rem;
     font-weight: 700;
     letter-spacing: 0.08em;
     text-overflow: ellipsis;
@@ -1474,7 +1474,7 @@
   .tadeon-sheet-mobile-dock__readonly {
     color: var(--muted-foreground);
     font-family: var(--font-mono), monospace;
-    font-size: 0.48rem;
+    font-size: 0.625rem;
     font-weight: 700;
     letter-spacing: 0.09em;
     text-transform: uppercase;

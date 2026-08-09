@@ -1252,7 +1252,7 @@ export function TabletopWorkspace({
                 <span className="min-w-0 flex-1 truncate text-xs">
                   {node.title}
                 </span>
-                <span className="text-[9px] uppercase text-muted-foreground">
+                <span className="text-[11px] uppercase tracking-wide text-muted-foreground">
                   {node.nodeType}
                 </span>
               </button>

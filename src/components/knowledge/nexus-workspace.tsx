@@ -603,7 +603,9 @@ export function NexusWorkspace({
         if (headingSlug) {
           window.setTimeout(() => {
             document.getElementById(headingSlug)?.scrollIntoView({
-              behavior: "smooth",
+              behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches
+                ? "auto"
+                : "smooth",
               block: "start",
             });
           }, 0);
@@ -613,6 +615,21 @@ export function NexusWorkspace({
       }
     },
     [refreshNodeDetails],
+  );
+
+  const closeNode = useCallback(
+    (nodeId: string) => {
+      const closedIndex = openNodes.findIndex((node) => node.id === nodeId);
+      const remaining = openNodes.filter((node) => node.id !== nodeId);
+      setOpenNodes(remaining);
+
+      if (selected?.id !== nodeId) return;
+      const fallback =
+        remaining[Math.min(Math.max(closedIndex, 0), remaining.length - 1)];
+      setSelected(null);
+      if (fallback) void openNode(fallback);
+    },
+    [openNode, openNodes, selected?.id],
   );
 
   useEffect(() => {
@@ -1036,14 +1053,14 @@ export function NexusWorkspace({
           : "tadeon-page max-w-[112rem]"
       }
     >
-      <section className="mb-4 flex flex-col justify-between gap-4 rounded-2xl border bg-card/60 p-4 backdrop-blur md:flex-row md:items-center">
+      <section className="tadeon-nexus-header mb-4 flex flex-col justify-between gap-4 rounded-2xl border bg-card/60 p-4 backdrop-blur md:flex-row md:items-center">
         <div>
           <p className="tadeon-eyebrow">Arquivo vivo de continuidade</p>
           <h1 className="font-cinzel text-2xl font-semibold md:text-3xl">
             O Nexus
           </h1>
         </div>
-        <div className="flex flex-wrap items-center gap-2">
+        <div className="tadeon-nexus-actions grid w-full grid-cols-2 items-center gap-2 sm:flex sm:w-auto sm:flex-wrap">
           <Select
             value={workspaceId}
             onValueChange={(value) => {
@@ -1052,7 +1069,7 @@ export function NexusWorkspace({
               setSearchPage(0);
             }}
           >
-            <SelectTrigger className="w-[190px]" aria-label="Workspace">
+            <SelectTrigger className="col-span-2 w-full sm:col-span-1 sm:w-[190px]" aria-label="Workspace">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
@@ -1070,7 +1087,7 @@ export function NexusWorkspace({
               setSearchPage(0);
             }}
           >
-            <SelectTrigger className="w-[190px]" aria-label="Campanha">
+            <SelectTrigger className="col-span-2 w-full sm:col-span-1 sm:w-[190px]" aria-label="Campanha">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
@@ -1146,7 +1163,9 @@ export function NexusWorkspace({
         }
       >
         {!focusMode && (
-          <aside className="min-h-0 rounded-2xl border bg-card/55 p-3">
+          <aside
+            className={`${selected ? "order-2" : "order-1"} min-h-0 rounded-2xl border bg-card/55 p-3 lg:order-1`}
+          >
             <div className="relative">
               <Search className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
               <Input
@@ -1288,7 +1307,7 @@ export function NexusWorkspace({
                     <span className="block truncate text-sm font-medium">
                       {node.title}
                     </span>
-                    <span className="mt-0.5 block truncate text-[10px] uppercase tracking-wide text-muted-foreground">
+                    <span className="mt-0.5 block truncate text-[11px] uppercase tracking-wide text-muted-foreground">
                       {TYPE_LABELS[node.node_type]} ·{" "}
                       {STATUS_LABELS[node.status]}
                     </span>
@@ -1319,7 +1338,7 @@ export function NexusWorkspace({
                 >
                   <ChevronLeft className="h-4 w-4" />
                 </Button>
-                <span className="text-[10px] text-muted-foreground">
+                <span className="text-[11px] text-muted-foreground">
                   {searchPage + 1} de{" "}
                   {Math.max(1, Math.ceil(searchCount / 30))}
                 </span>
@@ -1347,7 +1366,7 @@ export function NexusWorkspace({
                     type="button"
                     key={node.id}
                     onClick={() => void openNode(node.id)}
-                    className="block w-full truncate rounded px-2 py-1 text-left text-xs text-muted-foreground hover:bg-muted hover:text-foreground"
+                    className="block min-h-11 w-full truncate rounded-lg px-2 py-2 text-left text-xs text-muted-foreground hover:bg-muted hover:text-foreground sm:min-h-0 sm:py-1"
                   >
                     {node.title}
                   </button>
@@ -1363,7 +1382,7 @@ export function NexusWorkspace({
                     type="button"
                     key={node.id}
                     onClick={() => void openNode(node.id)}
-                    className="block w-full truncate rounded px-2 py-1 text-left text-xs text-muted-foreground hover:bg-muted hover:text-foreground"
+                    className="block min-h-11 w-full truncate rounded-lg px-2 py-2 text-left text-xs text-muted-foreground hover:bg-muted hover:text-foreground sm:min-h-0 sm:py-1"
                   >
                     {node.title}
                   </button>
@@ -1373,39 +1392,37 @@ export function NexusWorkspace({
           </aside>
         )}
 
-        <main className="min-w-0 overflow-hidden rounded-2xl border bg-card/55">
+        <main
+          className={`${selected ? "order-1" : "order-2"} min-w-0 overflow-hidden rounded-2xl border bg-card/55 lg:order-2`}
+        >
           {openNodes.length > 0 && (
             <div className="flex min-w-0 gap-1 overflow-x-auto border-b bg-muted/20 px-2 pt-2">
               {openNodes.map((node) => (
-                <button
-                  type="button"
+                <div
                   key={node.id}
-                  onClick={() => void openNode(node)}
-                  className={`flex max-w-52 shrink-0 items-center gap-2 rounded-t-lg border border-b-0 px-3 py-2 text-xs ${
+                  className={`flex max-w-56 shrink-0 items-stretch rounded-t-lg border border-b-0 text-xs ${
                     selected?.id === node.id
                       ? "bg-card text-primary"
                       : "border-transparent text-muted-foreground hover:bg-card/50"
                   }`}
                 >
-                  <BookMarked className="h-3.5 w-3.5 shrink-0" />
-                  <span className="truncate">{node.title}</span>
-                  <X
-                    className="h-3 w-3"
-                    onClick={(event) => {
-                      event.stopPropagation();
-                      setOpenNodes((current) =>
-                        current.filter((item) => item.id !== node.id),
-                      );
-                      if (selected?.id === node.id) {
-                        const fallback = openNodes.find(
-                          (item) => item.id !== node.id,
-                        );
-                        setSelected(null);
-                        if (fallback) void openNode(fallback);
-                      }
-                    }}
-                  />
-                </button>
+                  <button
+                    type="button"
+                    onClick={() => void openNode(node)}
+                    className="flex min-w-0 flex-1 items-center gap-2 px-3 py-2 text-left"
+                  >
+                    <BookMarked className="h-3.5 w-3.5 shrink-0" />
+                    <span className="truncate">{node.title}</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => closeNode(node.id)}
+                    className="grid h-11 w-11 shrink-0 place-items-center rounded-md text-muted-foreground hover:bg-muted hover:text-foreground sm:h-9 sm:w-9"
+                    aria-label={`Fechar ${node.title}`}
+                  >
+                    <X className="h-3.5 w-3.5" />
+                  </button>
+                </div>
               ))}
             </div>
           )}
@@ -1414,7 +1431,7 @@ export function NexusWorkspace({
             <>
               <div className="flex flex-col gap-3 border-b px-4 py-3 md:flex-row md:items-center md:justify-between">
                 <div className="min-w-0">
-                  <p className="truncate text-[10px] uppercase tracking-wider text-muted-foreground">
+                  <p className="truncate text-[11px] uppercase tracking-wide text-muted-foreground">
                     {currentCampaign?.name ?? "Workspace"}{" "}
                     <ChevronRight className="inline h-3 w-3" />{" "}
                     {TYPE_LABELS[selected.node_type]}
@@ -1559,7 +1576,7 @@ export function NexusWorkspace({
                       spellCheck
                       aria-label="Conteúdo Markdown"
                     />
-                    <div className="mt-3 flex flex-wrap items-center justify-between gap-2 border-t pt-3 text-[10px] uppercase tracking-wide text-muted-foreground">
+                    <div className="mt-3 flex flex-wrap items-center justify-between gap-2 border-t pt-3 text-[11px] uppercase tracking-wide text-muted-foreground">
                       <span>
                         {wordCount(draftContent)} palavras ·{" "}
                         {draftContent.length} caracteres
@@ -1604,7 +1621,7 @@ export function NexusWorkspace({
         </main>
 
         {!focusMode && rightOpen && selected && (
-          <aside className="min-h-0 rounded-2xl border bg-card/55 p-3 lg:col-span-2 xl:col-span-1">
+          <aside className="order-3 min-h-0 rounded-2xl border bg-card/55 p-3 lg:col-span-2 xl:col-span-1">
             <div className="grid grid-cols-4 gap-1 rounded-lg bg-muted/30 p-1">
               {(
                 [
@@ -1761,7 +1778,7 @@ export function NexusWorkspace({
                     ))}
                   </div>
                 </div>
-                <div className="rounded-xl border p-3 text-[10px] text-muted-foreground">
+                <div className="rounded-xl border p-3 text-[11px] text-muted-foreground">
                   <p>ID: {selected.id}</p>
                   <p className="mt-1">Slug: {selected.slug}</p>
                   <p className="mt-1">

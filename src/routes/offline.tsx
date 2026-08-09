@@ -158,7 +158,7 @@ function OfflineSheetCard({
 
   return (
     <Card className="tadeon-surface rounded-2xl p-5">
-      <p className="tadeon-mono text-[9px] uppercase text-muted-foreground">
+      <p className="tadeon-mono text-[10px] uppercase text-muted-foreground">
         Rank {summary.exposure ?? 0}
       </p>
       <h2 className="mt-2 font-cinzel text-xl font-semibold">{summary.name}</h2>
@@ -179,7 +179,7 @@ function OfflineSheetCard({
                 className="rounded-lg border border-border/60 p-2 text-center"
               >
                 <p className="text-sm font-semibold">{Number(value ?? 0)}</p>
-                <p className="text-[9px] text-muted-foreground">{label}</p>
+                <p className="text-[10px] text-muted-foreground">{label}</p>
               </div>
             ))}
           </div>

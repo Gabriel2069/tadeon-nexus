@@ -51,7 +51,7 @@ export function ResistanceDtCalculator({
         </div>
         <div className="flex items-center gap-2 self-stretch sm:self-auto">
           <div className="flex-1 rounded-xl border border-primary/35 bg-background/65 px-5 py-2 text-center">
-            <p className="text-[9px] uppercase tracking-widest text-muted-foreground">Resultado</p>
+            <p className="text-[11px] uppercase tracking-wide text-muted-foreground">Resultado</p>
             <p className="font-cinzel text-3xl font-bold text-primary">{dt}</p>
           </div>
           <ChevronDown

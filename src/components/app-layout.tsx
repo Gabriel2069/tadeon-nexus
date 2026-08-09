@@ -6,7 +6,6 @@ import {
   Users,
   LogOut,
   Menu,
-  X,
   Crown,
   Swords,
   Eye,
@@ -39,6 +38,12 @@ import { GlobalSearch } from "@/components/global-search";
 import { getAuthErrorMessage } from "@/lib/auth-errors";
 import { isApplicationAdministrator } from "@/lib/permissions";
 import { loadFeatureFlags } from "@/lib/feature-flag-repository";
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetTitle,
+} from "@/components/ui/sheet";
 
 const roleIcons: Record<string, typeof Crown> = {
   mestre: Crown,
@@ -79,7 +84,10 @@ function storeNavigationFlags(userId: string, flags: NavigationFlags) {
     // Feature visibility is not an authorization boundary. Persisting this harmless
     // presentation cache prevents O Nexus and Mesa Nexus from briefly disappearing
     // on every new tab while the secure flag repository is refreshed.
-    window.localStorage.setItem(`${NAV_FLAGS_KEY}:${userId}`, JSON.stringify(flags));
+    window.localStorage.setItem(
+      `${NAV_FLAGS_KEY}:${userId}`,
+      JSON.stringify(flags),
+    );
   } catch {
     // Navegação continua funcional mesmo quando o armazenamento está indisponível.
   }
@@ -132,8 +140,10 @@ export function AppLayout({ children }: { children: ReactNode }) {
 
   const RoleIcon = role ? roleIcons[role] : Eye;
   const isMestre = isApplicationAdministrator({ appRole: role });
-  const knowledgeEnabled = navigationFlags.knowledge || path.startsWith("/nexus");
-  const tabletopEnabled = navigationFlags.tabletop || path.startsWith("/tabletop");
+  const knowledgeEnabled =
+    navigationFlags.knowledge || path.startsWith("/nexus");
+  const tabletopEnabled =
+    navigationFlags.tabletop || path.startsWith("/tabletop");
   const currentSection = path.startsWith("/sheet/")
     ? "Ficha"
     : path.startsWith("/nexus-tools")
@@ -160,7 +170,10 @@ export function AppLayout({ children }: { children: ReactNode }) {
   };
 
   const renderNav = (mini: boolean, enableSearchShortcut: boolean) => (
-    <nav className="tadeon-primary-nav space-y-1" aria-label="Navegação principal">
+    <nav
+      className="tadeon-primary-nav space-y-1"
+      aria-label="Navegação principal"
+    >
       <GlobalSearch compact={mini} enableShortcut={enableSearchShortcut} />
       <NavItem
         to="/"
@@ -238,7 +251,9 @@ export function AppLayout({ children }: { children: ReactNode }) {
   }) => (
     <div className="relative flex h-full min-h-0 flex-col overflow-hidden p-3 pb-[max(0.75rem,env(safe-area-inset-bottom))]">
       <ThreadField className="text-sidebar-primary opacity-40" />
-      <div className={`relative z-10 mb-4 shrink-0 ${mini ? "text-center" : ""}`}>
+      <div
+        className={`relative z-10 mb-4 shrink-0 ${mini ? "text-center" : ""}`}
+      >
         {mini ? (
           <BrandMark className="mx-auto h-9 w-9 text-primary" />
         ) : (
@@ -289,7 +304,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
           onClick={handleSignOut}
         />
         {!mini && (
-          <p className="tadeon-mono mt-3 text-center text-[9px] uppercase text-muted-foreground">
+          <p className="tadeon-mono mt-3 text-center text-[10px] uppercase text-muted-foreground">
             Arquivo · {new Date().getFullYear()}
           </p>
         )}
@@ -313,7 +328,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
           onClick={() => setCollapsed((p) => !p)}
           aria-label={collapsed ? "Expandir menu" : "Recolher menu"}
           title={collapsed ? "Expandir" : "Recolher"}
-          className="absolute -right-4 top-6 z-10 flex h-8 w-8 items-center justify-center rounded-full border border-border bg-card text-muted-foreground shadow-md transition-[color,background-color,border-color,box-shadow,transform] duration-150 ease-[var(--ease-out)] hover:border-primary/45 hover:text-primary active:scale-[.97]"
+          className="absolute -right-5 top-6 z-10 flex h-10 w-10 items-center justify-center rounded-full border border-border bg-card text-muted-foreground shadow-md transition-[color,background-color,border-color,box-shadow,transform] duration-150 ease-[var(--ease-out)] hover:border-primary/45 hover:text-primary active:scale-[.97]"
         >
           {collapsed ? (
             <ChevronsRight className="w-3.5 h-3.5" />
@@ -337,7 +352,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
           <div className="flex min-w-0 items-center justify-center gap-2">
             <BrandMark className="hidden h-7 w-7 shrink-0 text-primary min-[360px]:block" />
             <div className="min-w-0 text-center min-[360px]:text-left">
-              <p className="tadeon-mono truncate text-[7px] uppercase tracking-[0.12em] text-muted-foreground">
+              <p className="tadeon-mono truncate text-[10px] uppercase tracking-[0.08em] text-muted-foreground">
                 Tadeon Nexus
               </p>
               <p className="font-cinzel truncate text-sm font-semibold leading-tight text-primary">
@@ -363,28 +378,19 @@ export function AppLayout({ children }: { children: ReactNode }) {
         </main>
       </div>
 
-      {/* Mobile drawer */}
-      {mobileOpen && (
-        <div className="fixed inset-0 z-40 animate-in fade-in-0 duration-[180ms] md:hidden">
-          <button
-            type="button"
-            className="absolute inset-0 h-full w-full cursor-default bg-black/65"
-            onClick={() => setMobileOpen(false)}
-            aria-label="Fechar menu"
-          />
-          <aside className="absolute left-0 top-0 h-[100dvh] w-[min(18rem,86vw)] border-r border-sidebar-border bg-sidebar text-sidebar-foreground shadow-2xl animate-in slide-in-from-left duration-[240ms] ease-[var(--ease-drawer)]">
-            <button
-              type="button"
-              onClick={() => setMobileOpen(false)}
-              className="absolute right-3 top-[max(0.75rem,env(safe-area-inset-top))] z-20 flex h-11 w-11 items-center justify-center rounded-md transition-colors hover:bg-secondary"
-              aria-label="Fechar menu"
-            >
-              <X className="w-5 h-5" />
-            </button>
-            <SidebarContent mini={false} />
-          </aside>
-        </div>
-      )}
+      {/* Mobile drawer: Radix preserves focus, Escape and symmetric exit motion. */}
+      <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
+        <SheetContent
+          side="left"
+          className="h-[100dvh] w-[min(18rem,86vw)] border-sidebar-border bg-sidebar p-0 text-sidebar-foreground sm:max-w-none md:hidden"
+        >
+          <SheetTitle className="sr-only">Navegação principal</SheetTitle>
+          <SheetDescription className="sr-only">
+            Acesse as áreas do Tadeon Nexus e as opções da sua conta.
+          </SheetDescription>
+          <SidebarContent mini={false} />
+        </SheetContent>
+      </Sheet>
 
       <AccountDialog
         open={accountOpen}
@@ -503,7 +509,10 @@ function AccountDialog({
         const { data: u } = await supabase.auth.getUser();
         if (u.user) {
           const [{ error }, { error: metadataError }] = await Promise.all([
-            supabase.from("profiles").update({ full_name: trimmedName }).eq("id", u.user.id),
+            supabase
+              .from("profiles")
+              .update({ full_name: trimmedName })
+              .eq("id", u.user.id),
             supabase.auth.updateUser({ data: { full_name: trimmedName } }),
           ]);
           if (error) throw error;
@@ -515,7 +524,9 @@ function AccountDialog({
           email: trimmedEmail,
         });
         if (error) throw error;
-        toast.info("Enviamos as confirmações necessárias para trocar o e-mail.");
+        toast.info(
+          "Enviamos as confirmações necessárias para trocar o e-mail.",
+        );
       }
       if (password) {
         if (password.length < 8) {
@@ -556,7 +567,9 @@ function AccountDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-lg">
         <DialogHeader>
-          <DialogTitle className="font-cinzel">Configurações da Conta</DialogTitle>
+          <DialogTitle className="font-cinzel">
+            Configurações da Conta
+          </DialogTitle>
         </DialogHeader>
         <div className="space-y-4">
           <div className="rounded-xl border border-border/70 bg-secondary/20 p-4">
@@ -572,7 +585,8 @@ function AccountDialog({
               className="mt-1"
             />
             <p className="mt-1.5 text-[10px] text-muted-foreground">
-              A troca só termina após as confirmações de segurança enviadas por e-mail.
+              A troca só termina após as confirmações de segurança enviadas por
+              e-mail.
             </p>
             <div className="mt-3">
               <Label className="text-xs">Nome de exibição</Label>
@@ -589,7 +603,9 @@ function AccountDialog({
               <ShieldCheck className="h-4 w-4 text-primary" />
               <p className="text-sm font-semibold">Segurança</p>
             </div>
-            <p className="text-xs text-muted-foreground">Trocar senha (opcional)</p>
+            <p className="text-xs text-muted-foreground">
+              Trocar senha (opcional)
+            </p>
             <div>
               <Label className="text-xs">Nova senha</Label>
               <Input
@@ -629,9 +645,15 @@ function AccountDialog({
               <p className="text-sm font-semibold">Seus dados</p>
             </div>
             <p className="mt-2 text-xs text-muted-foreground">
-              Mestres podem gerar cópias independentes de fichas e configurações.
+              Mestres podem gerar cópias independentes de fichas e
+              configurações.
             </p>
-            <Button asChild type="button" variant="outline" className="mt-3 w-full">
+            <Button
+              asChild
+              type="button"
+              variant="outline"
+              className="mt-3 w-full"
+            >
               <Link to="/nexus-tools" onClick={() => onOpenChange(false)}>
                 Abrir Backup & Diagnóstico
               </Link>
@@ -639,7 +661,11 @@ function AccountDialog({
           </div>
         </div>
         <DialogFooter>
-          <Button variant="outline" onClick={() => onOpenChange(false)} disabled={saving}>
+          <Button
+            variant="outline"
+            onClick={() => onOpenChange(false)}
+            disabled={saving}
+          >
             Cancelar
           </Button>
           <Button onClick={save} disabled={saving}>

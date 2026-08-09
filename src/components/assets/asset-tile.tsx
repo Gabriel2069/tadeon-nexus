@@ -68,7 +68,7 @@ export function AssetTile({
         )}
         <Badge
           variant="secondary"
-          className="absolute left-2 top-2 bg-background/80 text-[9px] uppercase backdrop-blur"
+          className="absolute left-2 top-2 bg-background/80 text-[10px] uppercase backdrop-blur"
         >
           {asset.provider}
         </Badge>

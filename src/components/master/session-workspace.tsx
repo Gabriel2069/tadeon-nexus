@@ -477,7 +477,7 @@ export function SessionWorkspace({
                       ].map(([label, value]) => (
                         <div key={String(label)} className="rounded-md bg-secondary/55 px-1 py-1.5">
                           <p className="text-xs font-semibold">{value}</p>
-                          <p className="text-[8px] text-muted-foreground">{label}</p>
+                          <p className="text-[10px] text-muted-foreground">{label}</p>
                         </div>
                       ))}
                     </div>
@@ -517,7 +517,7 @@ function Metric({ value, label }: { value: number; label: string }) {
   return (
     <div className="min-w-20 rounded-xl border border-border/60 bg-background/35 px-3 py-2 text-center">
       <p className="font-cinzel text-xl font-semibold">{value}</p>
-      <p className="text-[9px] uppercase tracking-wider text-muted-foreground">{label}</p>
+      <p className="text-[11px] uppercase tracking-wide text-muted-foreground">{label}</p>
     </div>
   );
 }

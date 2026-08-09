@@ -1343,7 +1343,7 @@ function PinnedPanel({
                       style={{ left: `calc(${eqPct}% - 1px)` }}
                     />
                   </div>
-                  <div className="flex justify-between text-[9px] text-muted-foreground mt-0.5">
+                  <div className="flex justify-between text-[10px] text-muted-foreground mt-0.5">
                     <span>-10</span>
                     <span>0</span>
                     <span>+10</span>

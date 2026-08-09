@@ -165,7 +165,7 @@ export function MasterCatalog({
             </p>
             <div className="mt-3 flex flex-wrap gap-1">
               {entry.tags.slice(0, 3).map((tag) => (
-                <Badge key={tag} variant="secondary" className="text-[9px]">
+                <Badge key={tag} variant="secondary" className="text-[10px]">
                   {tag}
                 </Badge>
               ))}

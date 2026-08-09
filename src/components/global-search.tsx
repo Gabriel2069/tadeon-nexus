@@ -208,7 +208,7 @@ export function GlobalSearch({
           <>
             <span>Busca global</span>
             {enableShortcut && (
-              <kbd className="ml-auto hidden rounded border border-sidebar-border px-1.5 py-0.5 text-[9px] lg:inline">
+              <kbd className="ml-auto hidden rounded border border-sidebar-border px-1.5 py-0.5 text-[10px] lg:inline">
                 Ctrl K
               </kbd>
             )}
