@@ -7,8 +7,10 @@ import {
 import {
   DEFAULT_TABLETOP_VIEW_ORIENTATION,
   normalizeTabletopViewOrientation,
+  normalizeTabletopViewState,
   tabletopElevationOffset,
   tabletopProjectionMatrix,
+  type TabletopViewState,
 } from "./tabletop-projection";
 import { CommandHistory } from "./command-history";
 import { EntityRenderer } from "./entity-renderer";
@@ -95,6 +97,7 @@ export interface TabletopEngineOptions {
   onDuplicateStructure?: (id: string) => void;
   onActivateStructure?: (wall: TabletopWall) => void;
   onActivateEntity?: (entity: TabletopEntity) => boolean | void;
+  onViewChange?: (view: TabletopViewState) => void;
 }
 
 export class TabletopEngine {
@@ -139,6 +142,8 @@ export class TabletopEngine {
     opacity: 0.94,
   };
   private gridVisible = true;
+  private lastViewFingerprint = "";
+  private suppressViewChange = false;
 
   constructor(private readonly options: TabletopEngineOptions = {}) {
     this.entities = new EntityRenderer(
@@ -382,6 +387,40 @@ export class TabletopEngine {
     return { ...this.viewOrientation };
   }
 
+  viewState(levelId: string | null = this.activeLevelId): TabletopViewState {
+    const center = this.camera.screenToWorld({
+      x: this.app.renderer.width / 2,
+      y: this.app.renderer.height / 2,
+    });
+    return normalizeTabletopViewState({
+      ...center,
+      zoom: this.camera.zoom,
+      projection: this.projectionMode,
+      levelId,
+      ...this.viewOrientation,
+    });
+  }
+
+  applyViewState(state: TabletopViewState) {
+    const next = normalizeTabletopViewState(state);
+    this.suppressViewChange = true;
+    try {
+      if (next.levelId) this.setActiveLevel(next.levelId);
+      this.setProjectionOrientation(next);
+      this.setProjectionMode(next.projection);
+      this.camera.setView(
+        { x: next.x, y: next.y },
+        next.zoom,
+        this.app.renderer.width,
+        this.app.renderer.height,
+      );
+      this.render(false);
+    } finally {
+      this.suppressViewChange = false;
+      this.emitViewChange();
+    }
+  }
+
   setGridVisible(visible: boolean) {
     this.gridVisible = visible;
     this.grid.view.visible = visible;
@@ -398,11 +437,17 @@ export class TabletopEngine {
       zoom: this.camera.zoom,
       projection: this.projectionMode,
       levelId,
+      ...this.viewOrientation,
     });
   }
 
   applyDirectorCamera(camera: TabletopDirectorCamera) {
     if (camera.levelId) this.setActiveLevel(camera.levelId);
+    this.setProjectionOrientation({
+      yaw: camera.yaw,
+      tilt: camera.tilt,
+      elevationScale: camera.elevationScale,
+    });
     if (camera.projection !== this.projectionMode)
       this.setProjectionMode(camera.projection);
     if (camera.mode === "fit") this.fitToScreen();
@@ -911,6 +956,15 @@ export class TabletopEngine {
     };
   }
 
+  private emitViewChange() {
+    if (this.suppressViewChange || !this.options.onViewChange) return;
+    const view = this.viewState();
+    const fingerprint = JSON.stringify(view);
+    if (fingerprint === this.lastViewFingerprint) return;
+    this.lastViewFingerprint = fingerprint;
+    this.options.onViewChange(view);
+  }
+
   private applyWorldProjection() {
     const matrix = tabletopProjectionMatrix(
       this.projectionMode,
@@ -1408,6 +1462,7 @@ export class TabletopEngine {
       this.editableSelection().length === 1,
     );
     this.app.render();
+    this.emitViewChange();
     if (notify) this.options.onChange?.(this.snapshot);
   }
 
