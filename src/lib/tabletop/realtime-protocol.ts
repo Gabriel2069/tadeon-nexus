@@ -75,6 +75,16 @@ export const tabletopRealtimeEventSchema = z.discriminatedUnion("type", [
       })
       .strict(),
   }),
+  eventBaseSchema.extend({
+    type: z.literal("structure.state"),
+    payload: z
+      .object({
+        wallId: uuidSchema,
+        wallType: z.enum(["door_open", "door_closed"]),
+        version: z.number().int().positive(),
+      })
+      .strict(),
+  }),
 ]);
 
 export type TabletopRealtimeEvent = z.infer<typeof tabletopRealtimeEventSchema>;
