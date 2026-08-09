@@ -13,6 +13,7 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { TabletopRealtimeStatus } from "@/components/tabletop/realtime-status";
 import { TabletopHandoutViewer } from "@/components/tabletop/tabletop-handout-viewer";
+import { TabletopEntityDossier } from "@/components/tabletop/tabletop-entity-dossier";
 import { useAuth } from "@/lib/auth";
 import { TabletopEngine } from "@/lib/tabletop/tabletop-engine";
 import { createEmptyVisibilityState } from "@/lib/tabletop/tabletop-visibility-service";
@@ -70,6 +71,9 @@ export function TabletopParticipantWorkspace({
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [selectedHandout, setSelectedHandout] =
     useState<TabletopParticipantHandout | null>(null);
+  const [selectedEntity, setSelectedEntity] = useState<
+    TabletopParticipantScene["entities"][number] | null
+  >(null);
   const sessionRef = useRef<TabletopSession | null>(null);
   const loadViewRef = useRef<
     ((targetSession: TabletopSession) => Promise<void>) | null
@@ -88,6 +92,16 @@ export function TabletopParticipantWorkspace({
     if (!host) return;
     const engine = new TabletopEngine({
       onAssetError: (message) => toast.error(message),
+      onActivateEntity: (entity) => {
+        const participantEntity =
+          entity as TabletopParticipantScene["entities"][number];
+        if (participantEntity.handout) {
+          setSelectedHandout(participantEntity.handout);
+        } else {
+          setSelectedEntity(participantEntity);
+        }
+        return true;
+      },
       onActivateStructure: (wall) => {
         const activeSession = sessionRef.current;
         if (!activeSession || !wall.playerOperable) return;
@@ -436,6 +450,9 @@ export function TabletopParticipantWorkspace({
                     Duplo clique ou toque nas portas destacadas para acionar
                   </span>
                 )}
+              <span>
+                Duplo clique em tokens e objetos para abrir o cartão rápido
+              </span>
             </div>
             <TabletopRealtimeStatus
               enabled={realtimeEnabled}
@@ -496,6 +513,19 @@ export function TabletopParticipantWorkspace({
         open={selectedHandout !== null}
         onOpenChange={(open) => {
           if (!open) setSelectedHandout(null);
+        }}
+      />
+      <TabletopEntityDossier
+        entity={selectedEntity}
+        sheetSummary={selectedEntity?.sheetSummary}
+        handout={selectedEntity?.handout}
+        open={selectedEntity !== null}
+        onOpenChange={(open) => {
+          if (!open) setSelectedEntity(null);
+        }}
+        onOpenHandout={(handout) => {
+          setSelectedEntity(null);
+          setSelectedHandout(handout);
         }}
       />
     </main>

@@ -4,6 +4,10 @@ import { supabase } from "@/integrations/supabase/client";
 import type { CampaignRole } from "@/lib/nexus-contracts";
 import type { TabletopScene } from "@/lib/tabletop/types";
 import type { TabletopVisibilityState } from "@/lib/tabletop/tabletop-visibility-service";
+import {
+  tabletopSheetSummarySchema,
+  type TabletopSheetSummary,
+} from "@/lib/tabletop/tabletop-entity-insight";
 
 const uuidSchema = z.uuid();
 const finiteNumber = z.number().finite();
@@ -82,6 +86,7 @@ const participantEntitySchema = z
     controllable: z.boolean(),
     properties: z.record(z.string(), z.unknown()),
     handout: participantHandoutSchema.optional(),
+    sheetSummary: tabletopSheetSummarySchema.optional(),
   })
   .strict();
 
@@ -240,6 +245,7 @@ export type TabletopParticipantScene = Omit<TabletopScene, "entities"> & {
     TabletopScene["entities"][number] & {
       controllable: boolean;
       handout?: TabletopParticipantHandout;
+      sheetSummary?: TabletopSheetSummary;
     }
   >;
 };

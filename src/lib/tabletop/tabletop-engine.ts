@@ -79,6 +79,7 @@ export interface TabletopEngineOptions {
   onDeleteStructure?: (id: string) => void;
   onDuplicateStructure?: (id: string) => void;
   onActivateStructure?: (wall: TabletopWall) => void;
+  onActivateEntity?: (entity: TabletopEntity) => boolean | void;
 }
 
 export class TabletopEngine {
@@ -199,6 +200,7 @@ export class TabletopEngine {
       paste: () => this.pasteClipboard(),
       remove: () => this.deleteSelected(),
       nudge: (delta) => this.nudge(delta),
+      activateEntity: (id) => this.activateEntity(id),
       focusSelection: () => this.focusSelection(),
       fitToScreen: () => this.fitToScreen(),
       activateTool: (mode) => this.setToolMode(mode),
@@ -1042,6 +1044,12 @@ export class TabletopEngine {
     if (wallType === before.wallType) return;
     const after = { ...before, wallType, ...structureCollision(wallType) };
     this.recordStructureMutation(before, after, "Alterar estado da estrutura");
+  }
+
+  private activateEntity(id: string) {
+    const entity = this.scenes.scene.entities.find((item) => item.id === id);
+    if (!entity || !this.options.onActivateEntity) return false;
+    return this.options.onActivateEntity({ ...entity }) === true;
   }
 
   private recordStructureMutation(

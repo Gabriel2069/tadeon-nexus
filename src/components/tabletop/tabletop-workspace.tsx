@@ -22,6 +22,7 @@ import {
   Copy,
   Eye,
   EyeOff,
+  FileSearch,
   Focus,
   Grid2X2,
   Hand,
@@ -55,6 +56,7 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { BrandMark, ThreadField } from "@/components/brand-mark";
 import { TabletopLiveSession } from "@/components/tabletop/tabletop-live-session";
+import { TabletopEntityDossier } from "@/components/tabletop/tabletop-entity-dossier";
 import { TabletopVisibilityPanel } from "@/components/tabletop/tabletop-visibility-panel";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -78,6 +80,8 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { TabletopEngine } from "@/lib/tabletop/tabletop-engine";
+import { tabletopEntityInsightService } from "@/lib/tabletop/tabletop-entity-insight-service";
+import type { TabletopSheetSummary } from "@/lib/tabletop/tabletop-entity-insight";
 import { assetService } from "@/lib/assets/asset-service";
 import type { TabletopToolMode } from "@/lib/tabletop/interaction-controller";
 import type { TabletopProjectionMode } from "@/lib/tabletop/camera-controller";
@@ -112,6 +116,7 @@ import {
   cloneScene,
   EMPTY_TABLETOP_SCENE,
   type Point,
+  type TabletopEntity,
   type TabletopEntitySeed,
   type TabletopLevel,
   type TabletopSnapshot,
@@ -257,6 +262,7 @@ export function TabletopWorkspace({
   );
   const structureTypeRef = useRef<TabletopStructureType>("wall");
   const activeLevelIdRef = useRef<string | null>(null);
+  const dossierRequestRef = useRef(0);
   const [snapshot, setSnapshot] = useState(EMPTY_SNAPSHOT);
   const [visibility, setVisibility] = useState<TabletopVisibilityState>(
     createEmptyVisibilityState,
@@ -280,6 +286,10 @@ export function TabletopWorkspace({
     "object",
   );
   const [contextMenu, setContextMenu] = useState<ContextMenuState | null>(null);
+  const [dossierEntityId, setDossierEntityId] = useState<string | null>(null);
+  const [dossierSheetSummary, setDossierSheetSummary] =
+    useState<TabletopSheetSummary | null>(null);
+  const [dossierLoading, setDossierLoading] = useState(false);
   const [diagnostics, setDiagnostics] = useState(false);
   const [mobileToolsOpen, setMobileToolsOpen] = useState(false);
   const [mobilePanelOpen, setMobilePanelOpen] = useState(false);
@@ -320,6 +330,12 @@ export function TabletopWorkspace({
     [snapshot],
   );
   const primary = selected[0];
+  const dossierEntity = useMemo(
+    () =>
+      snapshot.scene.entities.find((entity) => entity.id === dossierEntityId) ??
+      null,
+    [dossierEntityId, snapshot.scene.entities],
+  );
   const selectedStructure = useMemo(
     () =>
       visibility.walls.find((wall) => wall.id === selectedStructureId) ?? null,
@@ -554,6 +570,28 @@ export function TabletopWorkspace({
     return next;
   }, []);
 
+  const openEntityDossier = useCallback((entity: TabletopEntity) => {
+    const request = dossierRequestRef.current + 1;
+    dossierRequestRef.current = request;
+    setDossierEntityId(entity.id);
+    setDossierSheetSummary(null);
+    setDossierLoading(Boolean(entity.linkedSheetId));
+    if (!entity.linkedSheetId) return;
+    void tabletopEntityInsightService
+      .loadSheetSummary(entity.linkedSheetId)
+      .then((summary) => {
+        if (dossierRequestRef.current === request)
+          setDossierSheetSummary(summary);
+      })
+      .catch(() => {
+        if (dossierRequestRef.current === request)
+          toast.error("A ficha vinculada não pôde ser resumida com segurança.");
+      })
+      .finally(() => {
+        if (dossierRequestRef.current === request) setDossierLoading(false);
+      });
+  }, []);
+
   useEffect(() => {
     const host = hostRef.current;
     if (!host) return;
@@ -566,12 +604,16 @@ export function TabletopWorkspace({
         setDirty(
           Boolean(
             stored &&
-              stored.id === next.scene.id &&
-              sceneFingerprint(stored) !== sceneFingerprint(next.scene),
+            stored.id === next.scene.id &&
+            sceneFingerprint(stored) !== sceneFingerprint(next.scene),
           ),
         );
       },
       onAssetError: (message) => toast.error(message),
+      onActivateEntity: (entity) => {
+        openEntityDossier(entity);
+        return true;
+      },
       onToolModeChange: setToolMode,
       onSelectStructure: (id) => {
         setSelectedStructureId(id);
@@ -638,6 +680,7 @@ export function TabletopWorkspace({
     deleteStructure,
     duplicateStructure,
     lightingEnabled,
+    openEntityDossier,
     previewVisibility,
     replaceStructure,
   ]);
@@ -1723,6 +1766,14 @@ export function TabletopWorkspace({
                 >
                   <Focus className="h-4 w-4" />
                 </ToolbarButton>
+                {selected.length === 1 && primary && (
+                  <ToolbarButton
+                    label="Abrir cartão, ficha ou arquivo"
+                    onClick={() => openEntityDossier(primary)}
+                  >
+                    <FileSearch className="h-4 w-4" />
+                  </ToolbarButton>
+                )}
                 <ToolbarButton
                   label="Duplicar seleção"
                   disabled={!editable}
@@ -3194,12 +3245,42 @@ export function TabletopWorkspace({
         </AlertDialogContent>
       </AlertDialog>
 
+      <TabletopEntityDossier
+        entity={dossierEntity}
+        sheetSummary={dossierSheetSummary}
+        loading={dossierLoading}
+        open={dossierEntity !== null}
+        onOpenChange={(open) => {
+          if (!open) {
+            dossierRequestRef.current += 1;
+            setDossierEntityId(null);
+            setDossierSheetSummary(null);
+            setDossierLoading(false);
+          }
+        }}
+      />
+
       {contextMenu && editable && (
         <div
           role="menu"
           className="fixed z-50 max-h-[calc(100dvh-1rem)] w-44 overflow-y-auto rounded-lg border border-border bg-popover p-1 shadow-2xl"
           style={{ left: contextMenu.x, top: contextMenu.y }}
         >
+          {contextMenu.entityId && (
+            <button
+              type="button"
+              className="min-h-11 w-full rounded px-3 py-2 text-left text-sm font-medium text-primary hover:bg-secondary"
+              onClick={() => {
+                const entity = snapshot.scene.entities.find(
+                  (item) => item.id === contextMenu.entityId,
+                );
+                if (entity) openEntityDossier(entity);
+                closeContext();
+              }}
+            >
+              Abrir cartão / arquivo
+            </button>
+          )}
           <button
             type="button"
             className="min-h-11 w-full rounded px-3 py-2 text-left text-sm hover:bg-secondary"
