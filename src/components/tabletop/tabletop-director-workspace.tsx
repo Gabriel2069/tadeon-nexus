@@ -43,6 +43,7 @@ export function TabletopDirectorWorkspace({
   const hostRef = useRef<HTMLDivElement>(null);
   const engineRef = useRef<TabletopEngine | null>(null);
   const [view, setView] = useState<TabletopParticipantView | null>(null);
+  const [engineReady, setEngineReady] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [presenceStartedAt] = useState(() => Date.now());
@@ -80,10 +81,16 @@ export function TabletopDirectorWorkspace({
     const engine = new TabletopEngine();
     engineRef.current = engine;
     let active = true;
-    void engine.init(host).then(() => {
-      if (!active) return;
-      engine.setReadOnly(true);
-    });
+    void engine
+      .init(host)
+      .then(() => {
+        if (!active) return;
+        engine.setReadOnly(true);
+        setEngineReady(true);
+      })
+      .catch(() => {
+        if (active) setError("O motor gráfico não pôde iniciar nesta saída.");
+      });
     return () => {
       active = false;
       engineRef.current = null;
@@ -105,7 +112,7 @@ export function TabletopDirectorWorkspace({
 
   useEffect(() => {
     const engine = engineRef.current;
-    if (!engine || !view?.scene) return;
+    if (!engine || !engineReady || !view?.scene) return;
     const state = view.session.directorState;
     engine.loadScene(view.scene);
     engine.setVisibility(
@@ -115,7 +122,7 @@ export function TabletopDirectorWorkspace({
     engine.setReadOnly(true);
     engine.setGridVisible(state.showGrid);
     engine.applyDirectorCamera(state.camera);
-  }, [view]);
+  }, [engineReady, view]);
 
   const onRealtimeEvent = useCallback(
     (event: TabletopRealtimeEvent) => {
