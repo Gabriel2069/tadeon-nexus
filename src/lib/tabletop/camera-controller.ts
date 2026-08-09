@@ -1,4 +1,5 @@
 import { Container } from "pixi.js";
+import type { TabletopBounds } from "./geometry";
 import type { Point } from "./types";
 
 export class CameraController {
@@ -20,6 +21,13 @@ export class CameraController {
 
   setPosition(point: Point) {
     this.viewport.position.set(point.x, point.y);
+  }
+
+  placeWorldAtScreen(worldPoint: Point, screenPoint: Point) {
+    this.viewport.position.set(
+      screenPoint.x - worldPoint.x * this.zoom,
+      screenPoint.y - worldPoint.y * this.zoom,
+    );
   }
 
   screenToWorld(point: Point): Point {
@@ -64,13 +72,39 @@ export class CameraController {
     screenWidth: number,
     screenHeight: number,
   ) {
-    const padding = 48;
-    const zoom = Math.min(
-      (screenWidth - padding * 2) / sceneWidth,
-      (screenHeight - padding * 2) / sceneHeight,
+    this.fitBounds(
+      { x: 0, y: 0, width: sceneWidth, height: sceneHeight },
+      screenWidth,
+      screenHeight,
+      56,
       1,
     );
-    this.viewport.scale.set(Math.max(this.minZoom, zoom));
-    this.center(sceneWidth, sceneHeight, screenWidth, screenHeight);
+  }
+
+  fitBounds(
+    bounds: TabletopBounds,
+    screenWidth: number,
+    screenHeight: number,
+    padding = 72,
+    maxZoom = 2,
+  ) {
+    const availableWidth = Math.max(1, screenWidth - padding * 2);
+    const availableHeight = Math.max(1, screenHeight - padding * 2);
+    const zoom = Math.min(
+      availableWidth / Math.max(bounds.width, 1),
+      availableHeight / Math.max(bounds.height, 1),
+      maxZoom,
+    );
+    this.viewport.scale.set(
+      Math.min(this.maxZoom, Math.max(this.minZoom, zoom)),
+    );
+    const center = {
+      x: bounds.x + bounds.width / 2,
+      y: bounds.y + bounds.height / 2,
+    };
+    this.placeWorldAtScreen(center, {
+      x: screenWidth / 2,
+      y: screenHeight / 2,
+    });
   }
 }

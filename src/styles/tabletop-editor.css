@@ -1,17 +1,53 @@
 .tadeon-tabletop-studio {
   --studio-panel: rgb(12 15 20 / 94%);
   --studio-line: rgb(217 215 164 / 12%);
+  position: relative;
+  isolation: isolate;
+  overflow: clip;
   min-height: calc(100dvh - 4rem);
   background:
-    radial-gradient(circle at 10% 0%, rgb(79 110 93 / 9%), transparent 32rem),
+    radial-gradient(circle at 8% 0%, rgb(79 110 93 / 13%), transparent 34rem),
+    radial-gradient(circle at 92% 100%, rgb(116 36 45 / 8%), transparent 30rem),
     #07090d;
 }
 
+.tadeon-tabletop-studio::before {
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  background-image:
+    linear-gradient(rgb(217 215 164 / 1.5%) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(217 215 164 / 1.2%) 1px, transparent 1px);
+  background-size: 4rem 4rem;
+  mask-image: linear-gradient(to bottom, black, transparent 52%);
+  pointer-events: none;
+  content: "";
+}
+
 .tadeon-tabletop-studio__header {
+  position: relative;
   background:
-    linear-gradient(110deg, rgb(217 215 164 / 4%), transparent 32%),
-    rgb(10 13 17 / 94%);
-  box-shadow: 0 20px 55px -45px rgb(0 0 0 / 98%);
+    linear-gradient(105deg, rgb(217 215 164 / 6%), transparent 30%),
+    linear-gradient(180deg, rgb(14 18 23 / 97%), rgb(9 12 16 / 95%));
+  box-shadow:
+    0 22px 64px -48px rgb(0 0 0 / 100%),
+    inset 0 -1px 0 rgb(217 215 164 / 5%);
+}
+
+.tadeon-tabletop-studio__header::after {
+  position: absolute;
+  right: 1rem;
+  bottom: -1px;
+  left: 1rem;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgb(217 215 164 / 24%),
+    transparent
+  );
+  pointer-events: none;
+  content: "";
 }
 
 .tadeon-tabletop-studio__brand {
@@ -28,6 +64,18 @@
   width: 1px;
   background: linear-gradient(transparent, var(--studio-line), transparent);
   content: "";
+}
+
+.tadeon-tabletop-studio__brand > svg {
+  padding: 0.42rem;
+  border: 1px solid rgb(217 215 164 / 18%);
+  border-radius: 1rem 0.35rem 1rem 0.35rem;
+  background:
+    radial-gradient(circle at 35% 25%, rgb(217 215 164 / 14%), transparent 58%),
+    rgb(255 255 255 / 2.5%);
+  box-shadow:
+    0 12px 34px -22px rgb(0 0 0 / 100%),
+    inset 0 1px 0 rgb(255 255 255 / 5%);
 }
 
 .tadeon-tabletop-studio__status {
@@ -55,8 +103,11 @@
   gap: 0.3rem;
   padding: 0.3rem;
   border: 1px solid rgb(255 255 255 / 5%);
-  border-radius: 0.8rem;
-  background: rgb(255 255 255 / 2.5%);
+  border-radius: 0.9rem 0.35rem 0.9rem 0.35rem;
+  background:
+    linear-gradient(135deg, rgb(217 215 164 / 3.5%), transparent 50%),
+    rgb(255 255 255 / 2%);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 3%);
 }
 
 .tadeon-tabletop-toolbar__label {
@@ -70,6 +121,9 @@
 
 .tadeon-tabletop-stage {
   isolation: isolate;
+  margin: 0.65rem;
+  border: 1px solid rgb(217 215 164 / 12%);
+  border-radius: 1.2rem 0.45rem 1.2rem 0.45rem;
   background:
     radial-gradient(
       circle at 50% 50%,
@@ -77,6 +131,10 @@
       transparent 38rem
     ),
     #06080c;
+  box-shadow:
+    0 28px 80px -54px rgb(0 0 0 / 100%),
+    inset 0 0 0 1px rgb(255 255 255 / 2.5%),
+    inset 0 0 72px rgb(0 0 0 / 22%);
 }
 
 .tadeon-tabletop-stage::after {
@@ -84,6 +142,7 @@
   inset: 0;
   z-index: 1;
   border: 1px solid rgb(255 255 255 / 3%);
+  border-radius: inherit;
   pointer-events: none;
   content: "";
 }
@@ -98,10 +157,57 @@
   gap: 0.35rem;
   padding: 0.35rem;
   border: 1px solid rgb(217 215 164 / 14%);
-  border-radius: 0.9rem;
-  background: rgb(10 13 17 / 78%);
-  box-shadow: 0 16px 44px -28px rgb(0 0 0 / 95%);
-  backdrop-filter: blur(18px) saturate(125%);
+  border-radius: 1rem 0.35rem 1rem 0.35rem;
+  background:
+    linear-gradient(150deg, rgb(217 215 164 / 7%), transparent 45%),
+    rgb(10 13 17 / 84%);
+  box-shadow:
+    0 18px 52px -30px rgb(0 0 0 / 100%),
+    inset 0 1px 0 rgb(255 255 255 / 4%);
+  backdrop-filter: blur(22px) saturate(128%);
+}
+
+.tadeon-tabletop-canvas-rail__divider,
+.tadeon-tabletop-selection-dock__divider {
+  width: 70%;
+  height: 1px;
+  margin: 0.12rem auto;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgb(217 215 164 / 24%),
+    transparent
+  );
+}
+
+.tadeon-tabletop-selection-dock {
+  position: absolute;
+  z-index: 13;
+  top: 0.75rem;
+  left: 50%;
+  display: flex;
+  max-width: min(34rem, calc(100% - 9rem));
+  min-height: 3rem;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.35rem;
+  border: 1px solid rgb(217 215 164 / 16%);
+  border-radius: 0.45rem 1rem 0.45rem 1rem;
+  background:
+    linear-gradient(120deg, rgb(79 110 93 / 11%), transparent 46%),
+    rgb(10 13 17 / 86%);
+  box-shadow:
+    0 20px 54px -32px rgb(0 0 0 / 100%),
+    inset 0 1px 0 rgb(255 255 255 / 4%);
+  backdrop-filter: blur(22px) saturate(128%);
+  transform: translateX(-50%);
+}
+
+.tadeon-tabletop-selection-dock__divider {
+  width: 1px;
+  height: 1.75rem;
+  margin: 0 0.2rem;
+  background: linear-gradient(transparent, rgb(217 215 164 / 24%), transparent);
 }
 
 .tadeon-tabletop-stage-status {
@@ -116,8 +222,10 @@
   gap: 0.7rem;
   padding: 0.4rem 0.55rem 0.4rem 0.8rem;
   border: 1px solid rgb(217 215 164 / 12%);
-  border-radius: 0.85rem;
-  background: rgb(8 11 15 / 78%);
+  border-radius: 0.4rem 0.95rem 0.4rem 0.95rem;
+  background:
+    linear-gradient(90deg, rgb(79 110 93 / 8%), transparent 32%),
+    rgb(8 11 15 / 82%);
   box-shadow: 0 18px 48px -34px rgb(0 0 0 / 98%);
   backdrop-filter: blur(18px) saturate(120%);
 }
@@ -128,6 +236,11 @@
   align-items: baseline;
   gap: 0.3rem;
   white-space: nowrap;
+}
+
+.tadeon-tabletop-stage-status__metric:not(:first-child) {
+  padding-left: 0.7rem;
+  border-left: 1px solid rgb(217 215 164 / 10%);
 }
 
 .tadeon-tabletop-stage-status__metric strong {
@@ -142,9 +255,12 @@
 
 .tadeon-tabletop-panel {
   background:
-    linear-gradient(180deg, rgb(217 215 164 / 3%), transparent 12rem),
+    radial-gradient(circle at 100% 0%, rgb(79 110 93 / 9%), transparent 18rem),
+    linear-gradient(180deg, rgb(217 215 164 / 4%), transparent 12rem),
     var(--studio-panel);
-  box-shadow: -24px 0 70px -52px rgb(0 0 0 / 98%);
+  box-shadow:
+    -28px 0 78px -56px rgb(0 0 0 / 100%),
+    inset 1px 0 0 rgb(255 255 255 / 2.5%);
 }
 
 .tadeon-tabletop-panel__tabs {
@@ -162,11 +278,12 @@
 }
 
 .tadeon-tabletop-panel__tab {
+  position: relative;
   display: grid;
   min-height: 2.75rem;
   place-items: center;
   border: 1px solid transparent;
-  border-radius: 0.7rem;
+  border-radius: 0.75rem 0.28rem 0.75rem 0.28rem;
   color: var(--muted-foreground);
   font-size: 0.6875rem;
   font-weight: 750;
@@ -179,6 +296,18 @@
   box-shadow: inset 0 1px 0 rgb(255 255 255 / 5%);
 }
 
+.tadeon-tabletop-panel__tab[aria-selected="true"]::after {
+  position: absolute;
+  bottom: 0.35rem;
+  left: 50%;
+  width: 1.2rem;
+  height: 1px;
+  background: var(--primary);
+  box-shadow: 0 0 10px rgb(217 215 164 / 48%);
+  content: "";
+  transform: translateX(-50%);
+}
+
 .tadeon-tabletop-panel__section {
   animation: tadeon-tabletop-panel-enter 180ms var(--ease-out) both;
 }
@@ -186,8 +315,28 @@
 .tadeon-tabletop-inspector-card {
   padding: 0.8rem;
   border: 1px solid rgb(255 255 255 / 6%);
-  border-radius: 0.9rem;
-  background: rgb(255 255 255 / 2.5%);
+  border-radius: 1rem 0.35rem 1rem 0.35rem;
+  background:
+    linear-gradient(145deg, rgb(217 215 164 / 3%), transparent 42%),
+    rgb(255 255 255 / 2%);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 2.5%);
+}
+
+.tadeon-tabletop-empty-state {
+  border: 1px solid rgb(217 215 164 / 18%);
+  border-radius: 1.4rem 0.45rem 1.4rem 0.45rem;
+  background:
+    radial-gradient(circle at 50% 0%, rgb(217 215 164 / 9%), transparent 12rem),
+    rgb(12 15 20 / 90%);
+  box-shadow:
+    0 32px 88px -44px rgb(0 0 0 / 100%),
+    inset 0 1px 0 rgb(255 255 255 / 5%);
+  backdrop-filter: blur(22px) saturate(118%);
+}
+
+.tadeon-tabletop-workbench {
+  background:
+    linear-gradient(90deg, transparent, rgb(217 215 164 / 2.5%)), #07090d;
 }
 
 .tadeon-tabletop-asset {
@@ -236,7 +385,7 @@
     padding: 1rem;
     border: 1px solid rgb(217 215 164 / 16%);
     border-bottom: 0;
-    border-radius: 1.25rem 1.25rem 0 0;
+    border-radius: 1.35rem 0.45rem 0 0;
     box-shadow: 0 -30px 90px -34px rgb(0 0 0 / 100%);
   }
 
@@ -262,6 +411,34 @@
     flex-direction: row;
   }
 
+  .tadeon-tabletop-canvas-rail__divider {
+    width: 1px;
+    height: 1.75rem;
+    margin: auto 0.12rem;
+    background: linear-gradient(
+      transparent,
+      rgb(217 215 164 / 24%),
+      transparent
+    );
+  }
+
+  .tadeon-tabletop-selection-dock {
+    top: 4.15rem;
+    right: 0.55rem;
+    left: 0.55rem;
+    max-width: none;
+    transform: none;
+  }
+
+  .tadeon-tabletop-selection-dock > div:first-child,
+  .tadeon-tabletop-selection-dock__divider {
+    display: none;
+  }
+
+  .tadeon-tabletop-stage {
+    margin: 0.4rem;
+  }
+
   .tadeon-tabletop-stage-status {
     right: 0.55rem;
     bottom: 0.55rem;
@@ -277,8 +454,10 @@
 
 @media (prefers-reduced-transparency: reduce) {
   .tadeon-tabletop-canvas-rail,
+  .tadeon-tabletop-selection-dock,
   .tadeon-tabletop-stage-status,
-  .tadeon-tabletop-panel__tabs {
+  .tadeon-tabletop-panel__tabs,
+  .tadeon-tabletop-empty-state {
     background: var(--background);
     backdrop-filter: none;
   }
