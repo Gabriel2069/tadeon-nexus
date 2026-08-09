@@ -1,10 +1,4 @@
-import {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   Archive,
   BookMarked,
@@ -177,10 +171,7 @@ const RELATION_LABELS: Record<RelationType, string> = {
   custom: "Relação personalizada",
 };
 
-const RELATION_DIRECTION_LABELS: Record<
-  KnowledgeRelationDirection,
-  string
-> = {
+const RELATION_DIRECTION_LABELS: Record<KnowledgeRelationDirection, string> = {
   directed: "Direcionada",
   bidirectional: "Bidirecional",
 };
@@ -320,12 +311,15 @@ export function NexusWorkspace({
   const [typeFilter, setTypeFilter] = useState<KnowledgeNodeType | "all">(
     "all",
   );
-  const [statusFilter, setStatusFilter] =
-    useState<KnowledgeNodeStatus | "all">("all");
-  const [visibilityFilter, setVisibilityFilter] =
-    useState<KnowledgeVisibility | "all">("all");
-  const [searchRelationFilter, setSearchRelationFilter] =
-    useState<RelationType | "all">("all");
+  const [statusFilter, setStatusFilter] = useState<KnowledgeNodeStatus | "all">(
+    "all",
+  );
+  const [visibilityFilter, setVisibilityFilter] = useState<
+    KnowledgeVisibility | "all"
+  >("all");
+  const [searchRelationFilter, setSearchRelationFilter] = useState<
+    RelationType | "all"
+  >("all");
   const [searchOrder, setSearchOrder] =
     useState<KnowledgeSearchOrder>("relevance");
   const [onlyCanonical, setOnlyCanonical] = useState(false);
@@ -339,8 +333,7 @@ export function NexusWorkspace({
   const [lastSavedAt, setLastSavedAt] = useState<Date | null>(null);
   const [createOpen, setCreateOpen] = useState(false);
   const [createTitle, setCreateTitle] = useState("");
-  const [createType, setCreateType] =
-    useState<KnowledgeNodeType>("free_note");
+  const [createType, setCreateType] = useState<KnowledgeNodeType>("free_note");
   const [createVisibility, setCreateVisibility] =
     useState<KnowledgeVisibility>("author");
   const [creating, setCreating] = useState(false);
@@ -356,8 +349,7 @@ export function NexusWorkspace({
     null,
   );
   const [relationTargetId, setRelationTargetId] = useState("");
-  const [relationType, setRelationType] =
-    useState<RelationType>("related_to");
+  const [relationType, setRelationType] = useState<RelationType>("related_to");
   const [relationLabel, setRelationLabel] = useState("");
   const [relationDirection, setRelationDirection] =
     useState<KnowledgeRelationDirection>("directed");
@@ -368,16 +360,18 @@ export function NexusWorkspace({
   const [relationInverseType, setRelationInverseType] =
     useState<RelationType>("related_to");
   const [relationInverseLabel, setRelationInverseLabel] = useState("");
-  const [relationFilterType, setRelationFilterType] =
-    useState<RelationType | "all">("all");
-  const [relationFilterDirection, setRelationFilterDirection] =
-    useState<KnowledgeRelationDirection | "all">("all");
-  const [relationFilterVisibility, setRelationFilterVisibility] =
-    useState<KnowledgeVisibility | "all">("all");
+  const [relationFilterType, setRelationFilterType] = useState<
+    RelationType | "all"
+  >("all");
+  const [relationFilterDirection, setRelationFilterDirection] = useState<
+    KnowledgeRelationDirection | "all"
+  >("all");
+  const [relationFilterVisibility, setRelationFilterVisibility] = useState<
+    KnowledgeVisibility | "all"
+  >("all");
   const [relationSaving, setRelationSaving] = useState(false);
 
-  const campaignScope =
-    campaignId === "workspace" ? null : campaignId || null;
+  const campaignScope = campaignId === "workspace" ? null : campaignId || null;
   const currentCampaign = campaigns.find(
     (campaign) => campaign.id === campaignScope,
   );
@@ -404,12 +398,12 @@ export function NexusWorkspace({
     setWorkspaceId((current) =>
       nextWorkspaces.some((workspace) => workspace.id === current)
         ? current
-        : nextCampaigns[0]?.workspace_id ?? nextWorkspaces[0]?.id ?? "",
+        : (nextCampaigns[0]?.workspace_id ?? nextWorkspaces[0]?.id ?? ""),
     );
     setCampaignId((current) =>
       current !== "workspace" &&
       !nextCampaigns.some((campaign) => campaign.id === current)
-        ? nextCampaigns[0]?.id ?? "workspace"
+        ? (nextCampaigns[0]?.id ?? "workspace")
         : current,
     );
     setLoading(false);
@@ -438,9 +432,7 @@ export function NexusWorkspace({
           visibilities:
             visibilityFilter === "all" ? undefined : [visibilityFilter],
           relationTypes:
-            searchRelationFilter === "all"
-              ? undefined
-              : [searchRelationFilter],
+            searchRelationFilter === "all" ? undefined : [searchRelationFilter],
           onlyCanonical,
           order: searchOrder,
           page: searchPage,
@@ -543,23 +535,21 @@ export function NexusWorkspace({
     const nextPreviews: Record<string, KnowledgeLinkPreview | null> = {};
     for (const entry of resolved) {
       const previewKey = `${entry.reference.normalizedTarget}#${entry.reference.normalizedSection ?? ""}`;
-      nextPreviews[previewKey] = entry.node && !entry.broken
-        ? {
-            id: entry.node.id,
-            title: entry.node.title,
-            summary: entry.node.summary,
-            nodeType: TYPE_LABELS[entry.node.node_type],
-          }
-        : null;
+      nextPreviews[previewKey] =
+        entry.node && !entry.broken
+          ? {
+              id: entry.node.id,
+              title: entry.node.title,
+              summary: entry.node.summary,
+              nodeType: TYPE_LABELS[entry.node.node_type],
+            }
+          : null;
     }
     setPreviews(nextPreviews);
   }, []);
 
   const openNode = useCallback(
-    async (
-      nodeOrId: KnowledgeNode | string,
-      headingSlug?: string,
-    ) => {
+    async (nodeOrId: KnowledgeNode | string, headingSlug?: string) => {
       try {
         const node =
           typeof nodeOrId === "string"
@@ -603,7 +593,10 @@ export function NexusWorkspace({
         if (headingSlug) {
           window.setTimeout(() => {
             document.getElementById(headingSlug)?.scrollIntoView({
-              behavior: "smooth",
+              behavior: window.matchMedia("(prefers-reduced-motion: reduce)")
+                .matches
+                ? "auto"
+                : "smooth",
               block: "start",
             });
           }, 0);
@@ -615,11 +608,23 @@ export function NexusWorkspace({
     [refreshNodeDetails],
   );
 
+  const closeNode = useCallback(
+    (nodeId: string) => {
+      const closedIndex = openNodes.findIndex((node) => node.id === nodeId);
+      const remaining = openNodes.filter((node) => node.id !== nodeId);
+      setOpenNodes(remaining);
+
+      if (selected?.id !== nodeId) return;
+      const fallback =
+        remaining[Math.min(Math.max(closedIndex, 0), remaining.length - 1)];
+      setSelected(null);
+      if (fallback) void openNode(fallback);
+    },
+    [openNode, openNodes, selected?.id],
+  );
+
   useEffect(() => {
-    if (
-      !initialNodeId ||
-      initialNodeOpenedRef.current === initialNodeId
-    ) {
+    if (!initialNodeId || initialNodeOpenedRef.current === initialNodeId) {
       return;
     }
     initialNodeOpenedRef.current = initialNodeId;
@@ -666,10 +671,14 @@ export function NexusWorkspace({
       );
       setSelected(result.node);
       setOpenNodes((current) =>
-        current.map((node) => (node.id === result.node.id ? result.node : node)),
+        current.map((node) =>
+          node.id === result.node.id ? result.node : node,
+        ),
       );
       setNodes((current) =>
-        current.map((node) => (node.id === result.node.id ? result.node : node)),
+        current.map((node) =>
+          node.id === result.node.id ? result.node : node,
+        ),
       );
       setSaveState("saved");
       setLastSavedAt(new Date());
@@ -681,13 +690,7 @@ export function NexusWorkspace({
       setSaveState(code === "KNOWLEDGE_CONFLICT" ? "conflict" : "error");
       toast.error(errorMessage(error));
     }
-  }, [
-    draftContent,
-    draftTitle,
-    refreshNodeDetails,
-    saveState,
-    selected,
-  ]);
+  }, [draftContent, draftTitle, refreshNodeDetails, saveState, selected]);
 
   useEffect(() => {
     if (!editMode || saveState !== "dirty") return;
@@ -774,10 +777,14 @@ export function NexusWorkspace({
       );
       setSelected(result.node);
       setOpenNodes((current) =>
-        current.map((node) => (node.id === result.node.id ? result.node : node)),
+        current.map((node) =>
+          node.id === result.node.id ? result.node : node,
+        ),
       );
       setNodes((current) =>
-        current.map((node) => (node.id === result.node.id ? result.node : node)),
+        current.map((node) =>
+          node.id === result.node.id ? result.node : node,
+        ),
       );
       setSaveState("saved");
       setLastSavedAt(new Date());
@@ -813,9 +820,9 @@ export function NexusWorkspace({
       await knowledgeService.addAlias(selected.id, aliasValue);
       setAliasValue("");
       setAliases(
-        (await knowledgeService.listAliases(
-          selected.id,
-        )) as Array<Record<string, unknown>>,
+        (await knowledgeService.listAliases(selected.id)) as Array<
+          Record<string, unknown>
+        >,
       );
       toast.success("Alias adicionado.");
     } catch (error) {
@@ -1036,14 +1043,14 @@ export function NexusWorkspace({
           : "tadeon-page max-w-[112rem]"
       }
     >
-      <section className="mb-4 flex flex-col justify-between gap-4 rounded-2xl border bg-card/60 p-4 backdrop-blur md:flex-row md:items-center">
+      <section className="tadeon-nexus-header mb-4 flex flex-col justify-between gap-4 rounded-2xl border bg-card/60 p-4 backdrop-blur md:flex-row md:items-center">
         <div>
           <p className="tadeon-eyebrow">Arquivo vivo de continuidade</p>
           <h1 className="font-cinzel text-2xl font-semibold md:text-3xl">
             O Nexus
           </h1>
         </div>
-        <div className="flex flex-wrap items-center gap-2">
+        <div className="tadeon-nexus-actions grid w-full grid-cols-2 items-center gap-2 sm:flex sm:w-auto sm:flex-wrap">
           <Select
             value={workspaceId}
             onValueChange={(value) => {
@@ -1052,7 +1059,10 @@ export function NexusWorkspace({
               setSearchPage(0);
             }}
           >
-            <SelectTrigger className="w-[190px]" aria-label="Workspace">
+            <SelectTrigger
+              className="col-span-2 w-full sm:col-span-1 sm:w-[190px]"
+              aria-label="Workspace"
+            >
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
@@ -1070,7 +1080,10 @@ export function NexusWorkspace({
               setSearchPage(0);
             }}
           >
-            <SelectTrigger className="w-[190px]" aria-label="Campanha">
+            <SelectTrigger
+              className="col-span-2 w-full sm:col-span-1 sm:w-[190px]"
+              aria-label="Campanha"
+            >
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
@@ -1146,7 +1159,9 @@ export function NexusWorkspace({
         }
       >
         {!focusMode && (
-          <aside className="min-h-0 rounded-2xl border bg-card/55 p-3">
+          <aside
+            className={`${selected ? "order-2" : "order-1"} min-h-0 rounded-2xl border bg-card/55 p-3 lg:order-1`}
+          >
             <div className="relative">
               <Search className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
               <Input
@@ -1248,7 +1263,9 @@ export function NexusWorkspace({
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="relevance">Mais relevantes</SelectItem>
-                  <SelectItem value="updated">Atualizados recentemente</SelectItem>
+                  <SelectItem value="updated">
+                    Atualizados recentemente
+                  </SelectItem>
                   <SelectItem value="title">Título</SelectItem>
                 </SelectContent>
               </Select>
@@ -1288,7 +1305,7 @@ export function NexusWorkspace({
                     <span className="block truncate text-sm font-medium">
                       {node.title}
                     </span>
-                    <span className="mt-0.5 block truncate text-[10px] uppercase tracking-wide text-muted-foreground">
+                    <span className="mt-0.5 block truncate text-[11px] uppercase tracking-wide text-muted-foreground">
                       {TYPE_LABELS[node.node_type]} ·{" "}
                       {STATUS_LABELS[node.status]}
                     </span>
@@ -1319,9 +1336,8 @@ export function NexusWorkspace({
                 >
                   <ChevronLeft className="h-4 w-4" />
                 </Button>
-                <span className="text-[10px] text-muted-foreground">
-                  {searchPage + 1} de{" "}
-                  {Math.max(1, Math.ceil(searchCount / 30))}
+                <span className="text-[11px] text-muted-foreground">
+                  {searchPage + 1} de {Math.max(1, Math.ceil(searchCount / 30))}
                 </span>
                 <Button
                   type="button"
@@ -1347,7 +1363,7 @@ export function NexusWorkspace({
                     type="button"
                     key={node.id}
                     onClick={() => void openNode(node.id)}
-                    className="block w-full truncate rounded px-2 py-1 text-left text-xs text-muted-foreground hover:bg-muted hover:text-foreground"
+                    className="block min-h-11 w-full truncate rounded-lg px-2 py-2 text-left text-xs text-muted-foreground hover:bg-muted hover:text-foreground sm:min-h-0 sm:py-1"
                   >
                     {node.title}
                   </button>
@@ -1363,7 +1379,7 @@ export function NexusWorkspace({
                     type="button"
                     key={node.id}
                     onClick={() => void openNode(node.id)}
-                    className="block w-full truncate rounded px-2 py-1 text-left text-xs text-muted-foreground hover:bg-muted hover:text-foreground"
+                    className="block min-h-11 w-full truncate rounded-lg px-2 py-2 text-left text-xs text-muted-foreground hover:bg-muted hover:text-foreground sm:min-h-0 sm:py-1"
                   >
                     {node.title}
                   </button>
@@ -1373,39 +1389,37 @@ export function NexusWorkspace({
           </aside>
         )}
 
-        <main className="min-w-0 overflow-hidden rounded-2xl border bg-card/55">
+        <main
+          className={`${selected ? "order-1" : "order-2"} min-w-0 overflow-hidden rounded-2xl border bg-card/55 lg:order-2`}
+        >
           {openNodes.length > 0 && (
             <div className="flex min-w-0 gap-1 overflow-x-auto border-b bg-muted/20 px-2 pt-2">
               {openNodes.map((node) => (
-                <button
-                  type="button"
+                <div
                   key={node.id}
-                  onClick={() => void openNode(node)}
-                  className={`flex max-w-52 shrink-0 items-center gap-2 rounded-t-lg border border-b-0 px-3 py-2 text-xs ${
+                  className={`flex max-w-56 shrink-0 items-stretch rounded-t-lg border border-b-0 text-xs ${
                     selected?.id === node.id
                       ? "bg-card text-primary"
                       : "border-transparent text-muted-foreground hover:bg-card/50"
                   }`}
                 >
-                  <BookMarked className="h-3.5 w-3.5 shrink-0" />
-                  <span className="truncate">{node.title}</span>
-                  <X
-                    className="h-3 w-3"
-                    onClick={(event) => {
-                      event.stopPropagation();
-                      setOpenNodes((current) =>
-                        current.filter((item) => item.id !== node.id),
-                      );
-                      if (selected?.id === node.id) {
-                        const fallback = openNodes.find(
-                          (item) => item.id !== node.id,
-                        );
-                        setSelected(null);
-                        if (fallback) void openNode(fallback);
-                      }
-                    }}
-                  />
-                </button>
+                  <button
+                    type="button"
+                    onClick={() => void openNode(node)}
+                    className="flex min-w-0 flex-1 items-center gap-2 px-3 py-2 text-left"
+                  >
+                    <BookMarked className="h-3.5 w-3.5 shrink-0" />
+                    <span className="truncate">{node.title}</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => closeNode(node.id)}
+                    className="grid h-11 w-11 shrink-0 place-items-center rounded-md text-muted-foreground hover:bg-muted hover:text-foreground sm:h-9 sm:w-9"
+                    aria-label={`Fechar ${node.title}`}
+                  >
+                    <X className="h-3.5 w-3.5" />
+                  </button>
+                </div>
               ))}
             </div>
           )}
@@ -1414,7 +1428,7 @@ export function NexusWorkspace({
             <>
               <div className="flex flex-col gap-3 border-b px-4 py-3 md:flex-row md:items-center md:justify-between">
                 <div className="min-w-0">
-                  <p className="truncate text-[10px] uppercase tracking-wider text-muted-foreground">
+                  <p className="truncate text-[11px] uppercase tracking-wide text-muted-foreground">
                     {currentCampaign?.name ?? "Workspace"}{" "}
                     <ChevronRight className="inline h-3 w-3" />{" "}
                     {TYPE_LABELS[selected.node_type]}
@@ -1559,7 +1573,7 @@ export function NexusWorkspace({
                       spellCheck
                       aria-label="Conteúdo Markdown"
                     />
-                    <div className="mt-3 flex flex-wrap items-center justify-between gap-2 border-t pt-3 text-[10px] uppercase tracking-wide text-muted-foreground">
+                    <div className="mt-3 flex flex-wrap items-center justify-between gap-2 border-t pt-3 text-[11px] uppercase tracking-wide text-muted-foreground">
                       <span>
                         {wordCount(draftContent)} palavras ·{" "}
                         {draftContent.length} caracteres
@@ -1604,7 +1618,7 @@ export function NexusWorkspace({
         </main>
 
         {!focusMode && rightOpen && selected && (
-          <aside className="min-h-0 rounded-2xl border bg-card/55 p-3 lg:col-span-2 xl:col-span-1">
+          <aside className="order-3 min-h-0 rounded-2xl border bg-card/55 p-3 lg:col-span-2 xl:col-span-1">
             <div className="grid grid-cols-4 gap-1 rounded-lg bg-muted/30 p-1">
               {(
                 [
@@ -1713,7 +1727,9 @@ export function NexusWorkspace({
                         <p
                           key={`${heading.title}-${index}`}
                           className="truncate text-xs text-muted-foreground"
-                          style={{ paddingLeft: `${(heading.level - 1) * 8}px` }}
+                          style={{
+                            paddingLeft: `${(heading.level - 1) * 8}px`,
+                          }}
                         >
                           {heading.title}
                         </p>
@@ -1761,7 +1777,7 @@ export function NexusWorkspace({
                     ))}
                   </div>
                 </div>
-                <div className="rounded-xl border p-3 text-[10px] text-muted-foreground">
+                <div className="rounded-xl border p-3 text-[11px] text-muted-foreground">
                   <p>ID: {selected.id}</p>
                   <p className="mt-1">Slug: {selected.slug}</p>
                   <p className="mt-1">
@@ -1973,7 +1989,9 @@ export function NexusWorkspace({
                         >
                           <p className="truncate text-sm font-medium text-destructive">
                             {link.target_text}
-                            {link.target_heading ? `#${link.target_heading}` : ""}
+                            {link.target_heading
+                              ? `#${link.target_heading}`
+                              : ""}
                           </p>
                           <p className="mt-1 text-[11px] text-muted-foreground">
                             {link.reason === "missing_heading"
@@ -2121,9 +2139,12 @@ export function NexusWorkspace({
       <Dialog open={graphOpen} onOpenChange={setGraphOpen}>
         <DialogContent className="h-[92vh] max-h-[92vh] overflow-hidden p-4 sm:max-w-[96vw]">
           <DialogHeader className="shrink-0">
-            <DialogTitle className="font-cinzel">Teia local de O Nexus</DialogTitle>
+            <DialogTitle className="font-cinzel">
+              Teia local de O Nexus
+            </DialogTitle>
             <DialogDescription>
-              Vizinhança limitada, filtrável e carregada apenas com metadados visíveis.
+              Vizinhança limitada, filtrável e carregada apenas com metadados
+              visíveis.
             </DialogDescription>
           </DialogHeader>
           <div className="min-h-0 flex-1 overflow-hidden">
@@ -2233,7 +2254,9 @@ export function NexusWorkspace({
       <Dialog open={commandOpen} onOpenChange={setCommandOpen}>
         <DialogContent className="gap-0 overflow-hidden p-0 sm:max-w-2xl">
           <DialogHeader className="border-b p-4">
-            <DialogTitle className="font-cinzel">Paleta de comandos</DialogTitle>
+            <DialogTitle className="font-cinzel">
+              Paleta de comandos
+            </DialogTitle>
             <DialogDescription>Ctrl + Shift + P</DialogDescription>
           </DialogHeader>
           <div className="relative border-b">
@@ -2509,9 +2532,7 @@ export function NexusWorkspace({
                 relationTargetId === selected?.id
               }
             >
-              {relationSaving && (
-                <Loader2 className="h-4 w-4 animate-spin" />
-              )}
+              {relationSaving && <Loader2 className="h-4 w-4 animate-spin" />}
               {relationEditing ? "Salvar relação" : "Criar relação"}
             </Button>
           </DialogFooter>
@@ -2547,9 +2568,7 @@ export function NexusWorkspace({
           onSelect={async (asset) => {
             try {
               await knowledgeService.attachAsset(selected.id, asset.id);
-              setAssetLinks(
-                await knowledgeService.listNodeAssets(selected.id),
-              );
+              setAssetLinks(await knowledgeService.listNodeAssets(selected.id));
               toast.success("Arquivo anexado.");
             } catch (error) {
               toast.error(errorMessage(error));

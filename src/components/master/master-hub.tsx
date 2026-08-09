@@ -16,7 +16,12 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -77,7 +82,12 @@ export interface MasterSheetOverview {
   name: string;
   exposure: number;
   equilibrium: number;
-  stats: { pv_current: number; ps_current: number; pe_current: number; pa_current?: number };
+  stats: {
+    pv_current: number;
+    ps_current: number;
+    pe_current: number;
+    pa_current?: number;
+  };
 }
 
 function PanelHeading({
@@ -93,7 +103,9 @@ function PanelHeading({
     <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
       <div>
         <h2 className="font-cinzel text-xl font-bold">{title}</h2>
-        <p className="mt-1 max-w-3xl text-xs text-muted-foreground">{description}</p>
+        <p className="mt-1 max-w-3xl text-xs text-muted-foreground">
+          {description}
+        </p>
       </div>
       {action}
     </div>
@@ -131,7 +143,9 @@ function SelectField({
 
 function EmptyState({ children }: { children: React.ReactNode }) {
   return (
-    <Card className="border-dashed p-8 text-center text-sm text-muted-foreground">{children}</Card>
+    <Card className="border-dashed p-8 text-center text-sm text-muted-foreground">
+      {children}
+    </Card>
   );
 }
 
@@ -162,9 +176,13 @@ export function DashboardHub({
 }) {
   const openFolds = folds.filter((fold) => !fold.sealed).length;
   const openClues = clues.filter((clue) => !clue.discovered).length;
-  const activeScenes = scenes.filter((scene) => scene.status === "Em curso").length;
+  const activeScenes = scenes.filter(
+    (scene) => scene.status === "Em curso",
+  ).length;
   const averageRank = sheets.length
-    ? Math.round(sheets.reduce((sum, sheet) => sum + sheet.exposure, 0) / sheets.length)
+    ? Math.round(
+        sheets.reduce((sum, sheet) => sum + sheet.exposure, 0) / sheets.length,
+      )
     : 0;
   const metrics = [
     ["Cenas ativas", activeScenes, Map],
@@ -192,7 +210,9 @@ export function DashboardHub({
             />
           </div>
           <div>
-            <Label className="text-xs text-muted-foreground">Fase / objetivo atual</Label>
+            <Label className="text-xs text-muted-foreground">
+              Fase / objetivo atual
+            </Label>
             <Input
               value={campaignPhase}
               onChange={(event) => onCampaignPhase(event.target.value)}
@@ -205,9 +225,14 @@ export function DashboardHub({
 
       <div className="grid grid-cols-2 gap-3 lg:grid-cols-6">
         {metrics.map(([label, value, Icon]) => (
-          <Card key={label} className="p-3 transition-colors hover:border-primary/40">
+          <Card
+            key={label}
+            className="p-3 transition-colors hover:border-primary/40"
+          >
             <div className="flex items-center justify-between text-muted-foreground">
-              <span className="text-[10px] uppercase tracking-wider">{label}</span>
+              <span className="text-[10px] uppercase tracking-wider">
+                {label}
+              </span>
               <Icon className="h-4 w-4 text-primary" />
             </div>
             <div className="mt-2 font-cinzel text-2xl font-bold">{value}</div>
@@ -229,7 +254,9 @@ export function DashboardHub({
                 >
                   <span className="h-2 w-2 rounded-full bg-primary" />
                   <span className="flex-1 font-medium">{scene.title}</span>
-                  <span className="text-[10px] text-muted-foreground">{scene.status}</span>
+                  <span className="text-[10px] text-muted-foreground">
+                    {scene.status}
+                  </span>
                 </div>
               ))}
             {!scenes.some((scene) => scene.status !== "Concluída") && (
@@ -243,16 +270,23 @@ export function DashboardHub({
           <h3 className="font-cinzel font-bold">Preparação</h3>
           <div className="mt-3 space-y-2 text-xs text-muted-foreground">
             <p>
-              {interludes.filter((item) => item.status !== "Concluída").length} interlúdio(s)
-              aberto(s)
+              {interludes.filter((item) => item.status !== "Concluída").length}{" "}
+              interlúdio(s) aberto(s)
             </p>
-            <p>{npcs.filter((npc) => npc.state === "Pleno").length} NPC(s) em condição plena</p>
             <p>
-              {clues.filter((clue) => clue.guaranteed && !clue.discovered).length} pista(s)
-              garantida(s) pendente(s)
+              {npcs.filter((npc) => npc.state === "Pleno").length} NPC(s) em
+              condição plena
+            </p>
+            <p>
+              {
+                clues.filter((clue) => clue.guaranteed && !clue.discovered)
+                  .length
+              }{" "}
+              pista(s) garantida(s) pendente(s)
             </p>
             <p className="rounded-md border border-primary/25 bg-primary/5 p-2 text-foreground">
-              O painel organiza dados e cálculos. Todas as rolagens continuam sendo feitas na mesa.
+              O painel organiza dados e cálculos. Todas as rolagens continuam
+              sendo feitas na mesa.
             </p>
           </div>
         </Card>
@@ -271,9 +305,14 @@ export function InvestigationHub({
   onChange: (value: MasterClue[]) => void;
 }) {
   const add = () =>
-    onChange([...clues, { ...createEmptyClue(), id: genId(), title: "Nova Pista" }]);
+    onChange([
+      ...clues,
+      { ...createEmptyClue(), id: genId(), title: "Nova Pista" },
+    ]);
   const patch = (id: string, changes: Partial<MasterClue>) =>
-    onChange(clues.map((clue) => (clue.id === id ? { ...clue, ...changes } : clue)));
+    onChange(
+      clues.map((clue) => (clue.id === id ? { ...clue, ...changes } : clue)),
+    );
 
   return (
     <div className="space-y-4">
@@ -291,11 +330,16 @@ export function InvestigationHub({
       ) : (
         <div className="grid gap-3 lg:grid-cols-2">
           {clues.map((clue, index) => (
-            <Card key={clue.id} className={`p-4 ${clue.discovered ? "border-emerald-500/35" : ""}`}>
+            <Card
+              key={clue.id}
+              className={`p-4 ${clue.discovered ? "border-emerald-500/35" : ""}`}
+            >
               <div className="flex items-start gap-2">
                 <Input
                   value={clue.title}
-                  onChange={(event) => patch(clue.id, { title: event.target.value })}
+                  onChange={(event) =>
+                    patch(clue.id, { title: event.target.value })
+                  }
                   className="font-cinzel font-bold"
                 />
                 <Button
@@ -303,14 +347,18 @@ export function InvestigationHub({
                   variant="ghost"
                   className="shrink-0 text-destructive"
                   aria-label={`Remover pista ${index + 1}`}
-                  onClick={() => onChange(clues.filter((item) => item.id !== clue.id))}
+                  onClick={() =>
+                    onChange(clues.filter((item) => item.id !== clue.id))
+                  }
                 >
                   <Trash className="h-4 w-4" />
                 </Button>
               </div>
               <Textarea
                 value={clue.content}
-                onChange={(event) => patch(clue.id, { content: event.target.value })}
+                onChange={(event) =>
+                  patch(clue.id, { content: event.target.value })
+                }
                 rows={3}
                 placeholder="O que os personagens podem descobrir?"
                 className="mt-2"
@@ -319,14 +367,23 @@ export function InvestigationHub({
                 <SelectField
                   label="Tipo"
                   value={clue.type}
-                  options={["Direta", "Fragmento Narrativo", "Contexto", "Ligação"]}
-                  onChange={(value) => patch(clue.id, { type: value as MasterClue["type"] })}
+                  options={[
+                    "Direta",
+                    "Fragmento Narrativo",
+                    "Contexto",
+                    "Ligação",
+                  ]}
+                  onChange={(value) =>
+                    patch(clue.id, { type: value as MasterClue["type"] })
+                  }
                 />
                 <SelectField
                   label="Camada"
                   value={clue.depth}
                   options={["Superficial", "Atenta", "Profunda"]}
-                  onChange={(value) => patch(clue.id, { depth: value as MasterClue["depth"] })}
+                  onChange={(value) =>
+                    patch(clue.id, { depth: value as MasterClue["depth"] })
+                  }
                 />
                 <SelectField
                   label="Cena"
@@ -339,14 +396,19 @@ export function InvestigationHub({
                 <Button
                   size="sm"
                   variant={clue.discovered ? "default" : "outline"}
-                  onClick={() => patch(clue.id, { discovered: !clue.discovered })}
+                  onClick={() =>
+                    patch(clue.id, { discovered: !clue.discovered })
+                  }
                 >
-                  <Check className="mr-1 h-3.5 w-3.5" /> {clue.discovered ? "Descoberta" : "Oculta"}
+                  <Check className="mr-1 h-3.5 w-3.5" />{" "}
+                  {clue.discovered ? "Descoberta" : "Oculta"}
                 </Button>
                 <Button
                   size="sm"
                   variant={clue.guaranteed ? "secondary" : "outline"}
-                  onClick={() => patch(clue.id, { guaranteed: !clue.guaranteed })}
+                  onClick={() =>
+                    patch(clue.id, { guaranteed: !clue.guaranteed })
+                  }
                 >
                   <BookOpenCheck className="mr-1 h-3.5 w-3.5" />{" "}
                   {clue.guaranteed ? "Garantida" : "Condicional"}
@@ -368,7 +430,9 @@ export function InvestigationHub({
                           onClick={() =>
                             patch(clue.id, {
                               linkedClueIds: active
-                                ? clue.linkedClueIds.filter((id) => id !== item.id)
+                                ? clue.linkedClueIds.filter(
+                                    (id) => id !== item.id,
+                                  )
                                 : [...clue.linkedClueIds, item.id],
                             })
                           }
@@ -467,7 +531,10 @@ export function NpcHub({
         </div>
       )}
       {active && (
-        <Dialog open={Boolean(active)} onOpenChange={(open) => !open && setOpenId(null)}>
+        <Dialog
+          open={Boolean(active)}
+          onOpenChange={(open) => !open && setOpenId(null)}
+        >
           <DialogContent className="max-h-[90vh] max-w-4xl overflow-y-auto">
             <DialogHeader>
               <DialogTitle className="font-cinzel">{active.name}</DialogTitle>
@@ -477,43 +544,64 @@ export function NpcHub({
                 <Label>Nome</Label>
                 <Input
                   value={active.name}
-                  onChange={(event) => patch(active.id, { name: event.target.value })}
+                  onChange={(event) =>
+                    patch(active.id, { name: event.target.value })
+                  }
                 />
               </label>
               <SelectField
                 label="Classificação"
                 value={active.classification}
-                options={["Incidental", "Secundário", "Operacional", "Principal"]}
+                options={[
+                  "Incidental",
+                  "Secundário",
+                  "Operacional",
+                  "Principal",
+                ]}
                 onChange={(value) =>
-                  patch(active.id, { classification: value as MasterNpc["classification"] })
+                  patch(active.id, {
+                    classification: value as MasterNpc["classification"],
+                  })
                 }
               />
               <SelectField
                 label="Estado"
                 value={active.state}
-                options={["Pleno", "Abalado", "Comprometido", "Incapacitado", "Morto"]}
-                onChange={(value) => patch(active.id, { state: value as MasterNpc["state"] })}
+                options={[
+                  "Pleno",
+                  "Abalado",
+                  "Comprometido",
+                  "Incapacitado",
+                  "Morto",
+                ]}
+                onChange={(value) =>
+                  patch(active.id, { state: value as MasterNpc["state"] })
+                }
               />
-              {["organization", "occupation", "role", "appearance"].map((key) => (
-                <label key={key} className="space-y-1">
-                  <Label>
-                    {
-                      (
-                        {
-                          organization: "Organização",
-                          occupation: "Ocupação",
-                          role: "Função",
-                          appearance: "Aparência",
-                        } as Record<string, string>
-                      )[key]
-                    }
-                  </Label>
-                  <Input
-                    value={String(active[key as keyof MasterNpc] ?? "")}
-                    onChange={(event) => patch(active.id, { [key]: event.target.value })}
-                  />
-                </label>
-              ))}
+              {["organization", "occupation", "role", "appearance"].map(
+                (key) => (
+                  <label key={key} className="space-y-1">
+                    <Label>
+                      {
+                        (
+                          {
+                            organization: "Organização",
+                            occupation: "Ocupação",
+                            role: "Função",
+                            appearance: "Aparência",
+                          } as Record<string, string>
+                        )[key]
+                      }
+                    </Label>
+                    <Input
+                      value={String(active[key as keyof MasterNpc] ?? "")}
+                      onChange={(event) =>
+                        patch(active.id, { [key]: event.target.value })
+                      }
+                    />
+                  </label>
+                ),
+              )}
               <label className="space-y-1">
                 <Label>Moral (1–5)</Label>
                 <Input
@@ -540,7 +628,10 @@ export function NpcHub({
                     value={Number(active[key as keyof MasterNpc])}
                     onChange={(event) =>
                       patch(active.id, {
-                        [key]: Math.max(0, Math.round(Number(event.target.value) || 0)),
+                        [key]: Math.max(
+                          0,
+                          Math.round(Number(event.target.value) || 0),
+                        ),
                       })
                     }
                   />
@@ -553,30 +644,37 @@ export function NpcHub({
                   Atributos
                 </p>
                 <div className="grid grid-cols-2 gap-2 sm:grid-cols-5">
-                  {(Object.keys(active.attributes) as (keyof MasterNpc["attributes"])[]).map(
-                    (key) => (
-                      <label key={key} className="space-y-1 text-center">
-                        <span className="text-[10px] text-muted-foreground">{key}</span>
-                        <Input
-                          type="number"
-                          min={0}
-                          max={5}
-                          value={active.attributes[key]}
-                          onChange={(event) =>
-                            patch(active.id, {
-                              attributes: {
-                                ...active.attributes,
-                                [key]: Math.max(
-                                  0,
-                                  Math.min(5, Math.round(Number(event.target.value) || 0)),
+                  {(
+                    Object.keys(
+                      active.attributes,
+                    ) as (keyof MasterNpc["attributes"])[]
+                  ).map((key) => (
+                    <label key={key} className="space-y-1 text-center">
+                      <span className="text-[10px] text-muted-foreground">
+                        {key}
+                      </span>
+                      <Input
+                        type="number"
+                        min={0}
+                        max={5}
+                        value={active.attributes[key]}
+                        onChange={(event) =>
+                          patch(active.id, {
+                            attributes: {
+                              ...active.attributes,
+                              [key]: Math.max(
+                                0,
+                                Math.min(
+                                  5,
+                                  Math.round(Number(event.target.value) || 0),
                                 ),
-                              },
-                            })
-                          }
-                        />
-                      </label>
-                    ),
-                  )}
+                              ),
+                            },
+                          })
+                        }
+                      />
+                    </label>
+                  ))}
                 </div>
               </div>
               <div className="rounded-xl border border-border/60 bg-secondary/20 p-3">
@@ -584,9 +682,15 @@ export function NpcHub({
                   Vetores funcionais
                 </p>
                 <div className="grid grid-cols-2 gap-2 sm:grid-cols-5">
-                  {(Object.keys(active.vectors) as (keyof MasterNpc["vectors"])[]).map((key) => (
+                  {(
+                    Object.keys(
+                      active.vectors,
+                    ) as (keyof MasterNpc["vectors"])[]
+                  ).map((key) => (
                     <label key={key} className="space-y-1 text-center">
-                      <span className="text-[9px] capitalize text-muted-foreground">{key}</span>
+                      <span className="text-[10px] capitalize text-muted-foreground">
+                        {key}
+                      </span>
                       <Input
                         type="number"
                         min={0}
@@ -599,7 +703,12 @@ export function NpcHub({
                               ...active.vectors,
                               [key]: Math.max(
                                 0,
-                                Math.min(10, Math.round((Number(event.target.value) || 0) / 2) * 2),
+                                Math.min(
+                                  10,
+                                  Math.round(
+                                    (Number(event.target.value) || 0) / 2,
+                                  ) * 2,
+                                ),
                               ),
                             },
                           })
@@ -645,7 +754,9 @@ export function NpcHub({
                   <Textarea
                     rows={2}
                     value={String(active[key as keyof MasterNpc] ?? "")}
-                    onChange={(event) => patch(active.id, { [key]: event.target.value })}
+                    onChange={(event) =>
+                      patch(active.id, { [key]: event.target.value })
+                    }
                   />
                 </label>
               ))}
@@ -682,7 +793,11 @@ export function ThreatHub({
     setOpenId(threat.id);
   };
   const patch = (id: string, changes: Partial<MasterThreat>) =>
-    onChange(threats.map((threat) => (threat.id === id ? { ...threat, ...changes } : threat)));
+    onChange(
+      threats.map((threat) =>
+        threat.id === id ? { ...threat, ...changes } : threat,
+      ),
+    );
   return (
     <div className="space-y-4">
       <PanelHeading
@@ -746,16 +861,23 @@ export function ThreatHub({
           const issues = threatValidationIssues(active);
           const valid = issues.length === 0;
           return (
-            <Dialog open={Boolean(active)} onOpenChange={(open) => !open && setOpenId(null)}>
+            <Dialog
+              open={Boolean(active)}
+              onOpenChange={(open) => !open && setOpenId(null)}
+            >
               <DialogContent className="max-h-[90vh] max-w-4xl overflow-y-auto">
                 <DialogHeader>
-                  <DialogTitle className="font-cinzel">{active.name}</DialogTitle>
+                  <DialogTitle className="font-cinzel">
+                    {active.name}
+                  </DialogTitle>
                 </DialogHeader>
                 <div
                   className={`rounded-lg border p-3 ${valid ? "border-emerald-500/30 bg-emerald-500/5" : "border-destructive bg-destructive/5"}`}
                 >
                   <div className="flex items-center justify-between">
-                    <span className="text-xs text-muted-foreground">Orçamento de construção</span>
+                    <span className="text-xs text-muted-foreground">
+                      Orçamento de construção
+                    </span>
                     <strong>
                       {stats.spent} / {stats.cp} CP
                     </strong>
@@ -781,26 +903,42 @@ export function ThreatHub({
                     <Label>Nome</Label>
                     <Input
                       value={active.name}
-                      onChange={(event) => patch(active.id, { name: event.target.value })}
+                      onChange={(event) =>
+                        patch(active.id, { name: event.target.value })
+                      }
                     />
                   </label>
                   <SelectField
                     label="Magnitude"
                     value={active.magnitude}
-                    options={Array.from({ length: 20 }, (_, index) => index + 1)}
+                    options={Array.from(
+                      { length: 20 },
+                      (_, index) => index + 1,
+                    )}
                     onChange={(value) =>
                       patch(active.id, {
                         magnitude: Number(value),
-                        currentPp: threatStats({ ...active, magnitude: Number(value) }).pp,
+                        currentPp: threatStats({
+                          ...active,
+                          magnitude: Number(value),
+                        }).pp,
                       })
                     }
                   />
                   <SelectField
                     label="Arquétipo"
                     value={active.archetype}
-                    options={["Predador", "Colosso", "Manifestação", "Emboscador", "Enxame"]}
+                    options={[
+                      "Predador",
+                      "Colosso",
+                      "Manifestação",
+                      "Emboscador",
+                      "Enxame",
+                    ]}
                     onChange={(value) =>
-                      patch(active.id, { archetype: value as MasterThreat["archetype"] })
+                      patch(active.id, {
+                        archetype: value as MasterThreat["archetype"],
+                      })
                     }
                   />
                   <SelectField
@@ -809,7 +947,9 @@ export function ThreatHub({
                     options={[1, 2, 3, 4, 5]}
                     onChange={(value) =>
                       patch(active.id, {
-                        challengeIndex: Number(value) as MasterThreat["challengeIndex"],
+                        challengeIndex: Number(
+                          value,
+                        ) as MasterThreat["challengeIndex"],
                       })
                     }
                   />
@@ -824,7 +964,10 @@ export function ThreatHub({
                         patch(active.id, {
                           currentPp: Math.max(
                             0,
-                            Math.min(stats.pp, Math.round(Number(event.target.value) || 0)),
+                            Math.min(
+                              stats.pp,
+                              Math.round(Number(event.target.value) || 0),
+                            ),
                           ),
                         })
                       }
@@ -845,7 +988,9 @@ export function ThreatHub({
                       </Label>
                       <Input
                         value={String(active[key as keyof MasterThreat] ?? "")}
-                        onChange={(event) => patch(active.id, { [key]: event.target.value })}
+                        onChange={(event) =>
+                          patch(active.id, { [key]: event.target.value })
+                        }
                       />
                     </label>
                   ))}
@@ -882,9 +1027,15 @@ export function ThreatHub({
                           max={maximum}
                           value={active[key]}
                           onChange={(event) => {
-                            const value = Math.max(0, Math.round(Number(event.target.value) || 0));
+                            const value = Math.max(
+                              0,
+                              Math.round(Number(event.target.value) || 0),
+                            );
                             patch(active.id, {
-                              [key]: maximum == null ? value : Math.min(maximum, value),
+                              [key]:
+                                maximum == null
+                                  ? value
+                                  : Math.min(maximum, value),
                             });
                           }}
                         />
@@ -899,7 +1050,9 @@ export function ThreatHub({
                       rows={3}
                       value={active.specialConditions}
                       onChange={(event) =>
-                        patch(active.id, { specialConditions: event.target.value })
+                        patch(active.id, {
+                          specialConditions: event.target.value,
+                        })
                       }
                     />
                   </label>
@@ -908,7 +1061,9 @@ export function ThreatHub({
                     <Textarea
                       rows={3}
                       value={active.notes}
-                      onChange={(event) => patch(active.id, { notes: event.target.value })}
+                      onChange={(event) =>
+                        patch(active.id, { notes: event.target.value })
+                      }
                     />
                   </label>
                   <label className="space-y-1">
@@ -917,7 +1072,9 @@ export function ThreatHub({
                       rows={2}
                       value={active.stitchManifestation}
                       onChange={(event) =>
-                        patch(active.id, { stitchManifestation: event.target.value })
+                        patch(active.id, {
+                          stitchManifestation: event.target.value,
+                        })
                       }
                     />
                   </label>
@@ -927,7 +1084,9 @@ export function ThreatHub({
                       rows={2}
                       value={active.stitchCondition}
                       onChange={(event) =>
-                        patch(active.id, { stitchCondition: event.target.value })
+                        patch(active.id, {
+                          stitchCondition: event.target.value,
+                        })
                       }
                     />
                   </label>
@@ -937,7 +1096,9 @@ export function ThreatHub({
                       rows={2}
                       value={active.stitchConsequence}
                       onChange={(event) =>
-                        patch(active.id, { stitchConsequence: event.target.value })
+                        patch(active.id, {
+                          stitchConsequence: event.target.value,
+                        })
                       }
                     />
                   </label>
@@ -948,30 +1109,39 @@ export function ThreatHub({
                       Atributos
                     </p>
                     <div className="grid grid-cols-2 gap-2 text-center text-xs sm:grid-cols-4">
-                      {(Object.keys(active.attributes) as (keyof MasterThreat["attributes"])[]).map(
-                        (key) => (
-                          <label key={key} className="space-y-1">
-                            <span className="text-[10px] text-muted-foreground">{key}</span>
-                            <Input
-                              type="number"
-                              min={0}
-                              max={5}
-                              value={active.attributes[key]}
-                              onChange={(event) =>
-                                patch(active.id, {
-                                  attributes: {
-                                    ...active.attributes,
-                                    [key]: Math.max(
-                                      0,
-                                      Math.min(5, Math.round(Number(event.target.value) || 0)),
+                      {(
+                        Object.keys(
+                          active.attributes,
+                        ) as (keyof MasterThreat["attributes"])[]
+                      ).map((key) => (
+                        <label key={key} className="space-y-1">
+                          <span className="text-[10px] text-muted-foreground">
+                            {key}
+                          </span>
+                          <Input
+                            type="number"
+                            min={0}
+                            max={5}
+                            value={active.attributes[key]}
+                            onChange={(event) =>
+                              patch(active.id, {
+                                attributes: {
+                                  ...active.attributes,
+                                  [key]: Math.max(
+                                    0,
+                                    Math.min(
+                                      5,
+                                      Math.round(
+                                        Number(event.target.value) || 0,
+                                      ),
                                     ),
-                                  },
-                                })
-                              }
-                            />
-                          </label>
-                        ),
-                      )}
+                                  ),
+                                },
+                              })
+                            }
+                          />
+                        </label>
+                      ))}
                     </div>
                   </div>
                   <div className="rounded-xl border border-border/60 bg-secondary/20 p-3">
@@ -981,7 +1151,9 @@ export function ThreatHub({
                     <div className="grid grid-cols-2 gap-2 text-center text-xs sm:grid-cols-5">
                       {Object.entries(active.vectors).map(([key, value]) => (
                         <label key={key} className="space-y-1">
-                          <span className="text-[10px] text-muted-foreground">{key}</span>
+                          <span className="text-[10px] text-muted-foreground">
+                            {key}
+                          </span>
                           <Input
                             type="number"
                             min={0}
@@ -995,7 +1167,9 @@ export function ThreatHub({
                                     0,
                                     Math.min(
                                       maxThreatVector(active.magnitude),
-                                      Math.round(Number(event.target.value) || 0),
+                                      Math.round(
+                                        Number(event.target.value) || 0,
+                                      ),
                                     ),
                                   ),
                                 },
@@ -1024,7 +1198,9 @@ export function ThreatHub({
                           onClick={() =>
                             patch(active.id, {
                               movementModes: activeMode
-                                ? active.movementModes.filter((item) => item !== mode)
+                                ? active.movementModes.filter(
+                                    (item) => item !== mode,
+                                  )
                                 : [...active.movementModes, mode],
                             })
                           }
@@ -1043,7 +1219,8 @@ export function ThreatHub({
                         Ataques
                       </p>
                       <p className="text-xs text-muted-foreground">
-                        Impacto, Vetor e Alcance entram automaticamente no orçamento.
+                        Impacto, Vetor e Alcance entram automaticamente no
+                        orçamento.
                       </p>
                     </div>
                     <Button
@@ -1095,7 +1272,8 @@ export function ThreatHub({
                                 item.id === attack.id
                                   ? {
                                       ...item,
-                                      vector: event.target.value as typeof item.vector,
+                                      vector: event.target
+                                        .value as typeof item.vector,
                                     }
                                   : item,
                               ),
@@ -1115,7 +1293,9 @@ export function ThreatHub({
                                 item.id === attack.id
                                   ? {
                                       ...item,
-                                      impact: Number(event.target.value) as typeof item.impact,
+                                      impact: Number(
+                                        event.target.value,
+                                      ) as typeof item.impact,
                                     }
                                   : item,
                               ),
@@ -1127,26 +1307,35 @@ export function ThreatHub({
                             <option
                               key={impact}
                               value={impact}
-                              disabled={impact > maxThreatImpact(active.magnitude)}
+                              disabled={
+                                impact > maxThreatImpact(active.magnitude)
+                              }
                             >
                               Impacto {impact}
                             </option>
                           ))}
                         </select>
                         <select
-                          value={attack.area === "Nenhuma" ? "Engajado" : attack.area}
+                          value={
+                            attack.area === "Nenhuma" ? "Engajado" : attack.area
+                          }
                           onChange={(event) =>
                             patch(active.id, {
                               attacks: active.attacks.map((item) =>
                                 item.id === attack.id
-                                  ? { ...item, area: event.target.value as typeof item.area }
+                                  ? {
+                                      ...item,
+                                      area: event.target
+                                        .value as typeof item.area,
+                                    }
                                   : item,
                               ),
                             })
                           }
                           className="rounded-md border border-border bg-input px-2 text-xs"
                         >
-                          {(attack.area === "Cena" || attack.area === "Território") && (
+                          {(attack.area === "Cena" ||
+                            attack.area === "Território") && (
                             <option value={attack.area}>
                               {attack.area} · inválido para ataque
                             </option>
@@ -1173,7 +1362,9 @@ export function ThreatHub({
                           variant="ghost"
                           onClick={() =>
                             patch(active.id, {
-                              attacks: active.attacks.filter((item) => item.id !== attack.id),
+                              attacks: active.attacks.filter(
+                                (item) => item.id !== attack.id,
+                              ),
                             })
                           }
                         >
@@ -1254,7 +1445,10 @@ export function ThreatHub({
                             <option
                               key={complexity}
                               value={complexity}
-                              disabled={complexity > maxThreatAbilityComplexity(active.magnitude)}
+                              disabled={
+                                complexity >
+                                maxThreatAbilityComplexity(active.magnitude)
+                              }
                             >
                               Complexidade {complexity}
                             </option>
@@ -1278,7 +1472,9 @@ export function ThreatHub({
                           variant="ghost"
                           onClick={() =>
                             patch(active.id, {
-                              abilities: active.abilities.filter((item) => item.id !== ability.id),
+                              abilities: active.abilities.filter(
+                                (item) => item.id !== ability.id,
+                              ),
                             })
                           }
                         >
@@ -1292,7 +1488,9 @@ export function ThreatHub({
                   variant="destructive"
                   className="mt-4"
                   onClick={() => {
-                    onChange(threats.filter((threat) => threat.id !== active.id));
+                    onChange(
+                      threats.filter((threat) => threat.id !== active.id),
+                    );
                     setOpenId(null);
                   }}
                 >
@@ -1313,9 +1511,14 @@ export function InterludeHub({
   interludes: MasterInterlude[];
   onChange: (value: MasterInterlude[]) => void;
 }) {
-  const add = () => onChange([...interludes, { ...createEmptyInterlude(), id: genId() }]);
+  const add = () =>
+    onChange([...interludes, { ...createEmptyInterlude(), id: genId() }]);
   const patch = (id: string, changes: Partial<MasterInterlude>) =>
-    onChange(interludes.map((item) => (item.id === id ? { ...item, ...changes } : item)));
+    onChange(
+      interludes.map((item) =>
+        item.id === id ? { ...item, ...changes } : item,
+      ),
+    );
   return (
     <div className="space-y-4">
       <PanelHeading
@@ -1336,7 +1539,9 @@ export function InterludeHub({
               <div className="flex gap-2">
                 <Input
                   value={item.title}
-                  onChange={(event) => patch(item.id, { title: event.target.value })}
+                  onChange={(event) =>
+                    patch(item.id, { title: event.target.value })
+                  }
                   className="font-cinzel font-bold"
                 />
                 <Button
@@ -1344,7 +1549,9 @@ export function InterludeHub({
                   size="icon"
                   className="text-destructive"
                   aria-label={`Remover interlúdio ${index + 1}`}
-                  onClick={() => onChange(interludes.filter((entry) => entry.id !== item.id))}
+                  onClick={() =>
+                    onChange(interludes.filter((entry) => entry.id !== item.id))
+                  }
                 >
                   <Trash className="h-4 w-4" />
                 </Button>
@@ -1355,36 +1562,58 @@ export function InterludeHub({
                   value={item.status}
                   options={["Planejada", "Em curso", "Concluída"]}
                   onChange={(value) =>
-                    patch(item.id, { status: value as MasterInterlude["status"] })
+                    patch(item.id, {
+                      status: value as MasterInterlude["status"],
+                    })
                   }
                 />
                 <SelectField
                   label="Tempo"
                   value={item.time}
                   options={["Acelerado", "Tranquilo", "Prolongado"]}
-                  onChange={(value) => patch(item.id, { time: value as MasterInterlude["time"] })}
+                  onChange={(value) =>
+                    patch(item.id, { time: value as MasterInterlude["time"] })
+                  }
                 />
                 <SelectField
                   label="Qualidade"
                   value={item.quality}
-                  options={["Hostil", "Precário", "Adequado", "Confortável", "Luxuoso", "Refúgio"]}
+                  options={[
+                    "Hostil",
+                    "Precário",
+                    "Adequado",
+                    "Confortável",
+                    "Luxuoso",
+                    "Refúgio",
+                  ]}
                   onChange={(value) =>
-                    patch(item.id, { quality: value as MasterInterlude["quality"] })
+                    patch(item.id, {
+                      quality: value as MasterInterlude["quality"],
+                    })
                   }
                 />
                 <SelectField
                   label="Narração"
                   value={item.narration}
-                  options={["Superficial", "Consciente", "Ancorado", "Enraizado"]}
+                  options={[
+                    "Superficial",
+                    "Consciente",
+                    "Ancorado",
+                    "Enraizado",
+                  ]}
                   onChange={(value) =>
-                    patch(item.id, { narration: value as MasterInterlude["narration"] })
+                    patch(item.id, {
+                      narration: value as MasterInterlude["narration"],
+                    })
                   }
                 />
                 <SelectField
                   label="Alimentação"
                   value={item.food}
                   options={["Sem comida", "Básica", "Boa", "Especial"]}
-                  onChange={(value) => patch(item.id, { food: value as MasterInterlude["food"] })}
+                  onChange={(value) =>
+                    patch(item.id, { food: value as MasterInterlude["food"] })
+                  }
                 />
               </div>
               <div className="mt-3 space-y-2">
@@ -1412,7 +1641,10 @@ export function InterludeHub({
                         patch(item.id, {
                           activities: item.activities.map((entry) =>
                             entry.id === activity.id
-                              ? { ...entry, kind: event.target.value as typeof entry.kind }
+                              ? {
+                                  ...entry,
+                                  kind: event.target.value as typeof entry.kind,
+                                }
                               : entry,
                           ),
                         })
@@ -1453,7 +1685,9 @@ export function InterludeHub({
                       size="icon"
                       onClick={() =>
                         patch(item.id, {
-                          activities: item.activities.filter((entry) => entry.id !== activity.id),
+                          activities: item.activities.filter(
+                            (entry) => entry.id !== activity.id,
+                          ),
                         })
                       }
                     >
@@ -1486,7 +1720,9 @@ export function InterludeHub({
                 className="mt-3"
                 rows={2}
                 value={item.notes}
-                onChange={(event) => patch(item.id, { notes: event.target.value })}
+                onChange={(event) =>
+                  patch(item.id, { notes: event.target.value })
+                }
                 placeholder="Notas do interlúdio"
               />
             </Card>
@@ -1506,7 +1742,9 @@ export function FoldHub({
 }) {
   const add = () => onChange([...folds, { ...createEmptyFold(), id: genId() }]);
   const patch = (id: string, changes: Partial<MasterFold>) =>
-    onChange(folds.map((fold) => (fold.id === id ? { ...fold, ...changes } : fold)));
+    onChange(
+      folds.map((fold) => (fold.id === id ? { ...fold, ...changes } : fold)),
+    );
   return (
     <div className="space-y-4">
       <PanelHeading
@@ -1532,7 +1770,9 @@ export function FoldHub({
                 <div className="flex flex-col gap-2 sm:flex-row">
                   <Input
                     value={fold.name}
-                    onChange={(event) => patch(fold.id, { name: event.target.value })}
+                    onChange={(event) =>
+                      patch(fold.id, { name: event.target.value })
+                    }
                     className="font-cinzel font-bold"
                   />
                   <div className="flex gap-2">
@@ -1549,7 +1789,9 @@ export function FoldHub({
                       variant="ghost"
                       className="text-destructive"
                       aria-label={`Remover dobra ${index + 1}`}
-                      onClick={() => onChange(folds.filter((entry) => entry.id !== fold.id))}
+                      onClick={() =>
+                        onChange(folds.filter((entry) => entry.id !== fold.id))
+                      }
                     >
                       <Trash className="h-4 w-4" />
                     </Button>
@@ -1578,19 +1820,26 @@ export function FoldHub({
                           ? nextReference.basePermanence
                           : Math.min(
                               12,
-                              Math.max(nextReference.basePermanence, fold.maxPermanence),
+                              Math.max(
+                                nextReference.basePermanence,
+                                fold.maxPermanence,
+                              ),
                             );
                       patch(fold.id, {
                         stage: nextStage,
                         tension:
-                          nextStage === "Revérbero" ? 0 : Math.min(4, Math.max(0, fold.tension)),
+                          nextStage === "Revérbero"
+                            ? 0
+                            : Math.min(4, Math.max(0, fold.tension)),
                         maxPermanence: nextMaximum,
                         permanence: Math.min(fold.permanence, nextMaximum),
                       });
                     }}
                   />
                   <label className="space-y-1">
-                    <Label className="text-xs text-muted-foreground">Tensão</Label>
+                    <Label className="text-xs text-muted-foreground">
+                      Tensão
+                    </Label>
                     <Input
                       type="number"
                       min={0}
@@ -1601,14 +1850,19 @@ export function FoldHub({
                         patch(fold.id, {
                           tension: Math.max(
                             0,
-                            Math.min(4, Math.round(Number(event.target.value) || 0)),
+                            Math.min(
+                              4,
+                              Math.round(Number(event.target.value) || 0),
+                            ),
                           ),
                         })
                       }
                     />
                   </label>
                   <label className="space-y-1">
-                    <Label className="text-xs text-muted-foreground">Permanência</Label>
+                    <Label className="text-xs text-muted-foreground">
+                      Permanência
+                    </Label>
                     <Input
                       type="number"
                       min={0}
@@ -1628,7 +1882,9 @@ export function FoldHub({
                     />
                   </label>
                   <label className="space-y-1">
-                    <Label className="text-xs text-muted-foreground">Máximo</Label>
+                    <Label className="text-xs text-muted-foreground">
+                      Máximo
+                    </Label>
                     <Input
                       type="number"
                       min={stageReference.basePermanence}
@@ -1638,13 +1894,19 @@ export function FoldHub({
                         patch(fold.id, {
                           maxPermanence: Math.max(
                             stageReference.basePermanence,
-                            Math.min(12, Math.round(Number(event.target.value) || 0)),
+                            Math.min(
+                              12,
+                              Math.round(Number(event.target.value) || 0),
+                            ),
                           ),
                           permanence: Math.min(
                             fold.permanence,
                             Math.max(
                               stageReference.basePermanence,
-                              Math.min(12, Math.round(Number(event.target.value) || 0)),
+                              Math.min(
+                                12,
+                                Math.round(Number(event.target.value) || 0),
+                              ),
                             ),
                           ),
                         })
@@ -1655,14 +1917,20 @@ export function FoldHub({
                 <div className="mt-3 grid grid-cols-2 gap-2 rounded-lg border border-border/60 bg-secondary/20 p-2 text-center text-[10px] sm:grid-cols-4">
                   <div>
                     <span className="text-muted-foreground">DT base</span>
-                    <strong className="block text-foreground">{stageReference.dt}</strong>
+                    <strong className="block text-foreground">
+                      {stageReference.dt}
+                    </strong>
                   </div>
                   <div>
                     <span className="text-muted-foreground">Cargas</span>
-                    <strong className="block text-foreground">{stageReference.charges}</strong>
+                    <strong className="block text-foreground">
+                      {stageReference.charges}
+                    </strong>
                   </div>
                   <div>
-                    <span className="text-muted-foreground">Permanência-base</span>
+                    <span className="text-muted-foreground">
+                      Permanência-base
+                    </span>
                     <strong className="block text-foreground">
                       {stageReference.basePermanence}
                     </strong>
@@ -1679,32 +1947,43 @@ export function FoldHub({
                 <div className="mt-3 grid gap-2 sm:grid-cols-2">
                   <Input
                     value={fold.nature}
-                    onChange={(event) => patch(fold.id, { nature: event.target.value })}
+                    onChange={(event) =>
+                      patch(fold.id, { nature: event.target.value })
+                    }
                     placeholder="Natureza da dobra"
                   />
                   <Input
                     value={fold.environmentalEffect}
                     onChange={(event) =>
-                      patch(fold.id, { environmentalEffect: event.target.value })
+                      patch(fold.id, {
+                        environmentalEffect: event.target.value,
+                      })
                     }
                     placeholder="Efeito ambiental"
                   />
                   <Textarea
                     rows={2}
                     value={fold.pulseConsequence}
-                    onChange={(event) => patch(fold.id, { pulseConsequence: event.target.value })}
+                    onChange={(event) =>
+                      patch(fold.id, { pulseConsequence: event.target.value })
+                    }
                     placeholder="Consequência do pulso"
                   />
                   <Textarea
                     rows={2}
                     value={fold.notes}
-                    onChange={(event) => patch(fold.id, { notes: event.target.value })}
+                    onChange={(event) =>
+                      patch(fold.id, { notes: event.target.value })
+                    }
                     placeholder="Notas"
                   />
                 </div>
                 <div className="mt-3 space-y-2 border-t border-border/60 pt-3">
                   {fold.stitchPoints.map((point) => (
-                    <div key={point.id} className="grid gap-2 sm:grid-cols-[150px_1fr_auto_auto]">
+                    <div
+                      key={point.id}
+                      className="grid gap-2 sm:grid-cols-[150px_1fr_auto_auto]"
+                    >
                       <Input
                         value={point.factor}
                         onChange={(event) =>
@@ -1799,13 +2078,20 @@ export function EncounterHub({
 }) {
   const [excludedSheetIds, setExcludedSheetIds] = useState<string[]>([]);
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
-  const selectedSheets = sheets.filter((sheet) => !excludedSheetIds.includes(sheet.id));
+  const selectedSheets = sheets.filter(
+    (sheet) => !excludedSheetIds.includes(sheet.id),
+  );
   const participants = selectedSheets.length;
   const partyValid = participants >= 2 && participants <= 7;
-  const rankTotal = selectedSheets.reduce((sum, sheet) => sum + sheet.exposure, 0);
+  const rankTotal = selectedSheets.reduce(
+    (sum, sheet) => sum + sheet.exposure,
+    0,
+  );
   const rankAverage = participants ? rankTotal / participants : 0;
   const selected = threats.filter((threat) => selectedIds.includes(threat.id));
-  const combinedMagnitude = combinedThreatMagnitude(selected.map((threat) => threat.magnitude));
+  const combinedMagnitude = combinedThreatMagnitude(
+    selected.map((threat) => threat.magnitude),
+  );
   const balance = calculateEncounterBalance(
     rankAverage,
     participants,
@@ -1814,7 +2100,9 @@ export function EncounterHub({
 
   const toggleSheet = (sheetId: string) => {
     setExcludedSheetIds((current) =>
-      current.includes(sheetId) ? current.filter((id) => id !== sheetId) : [...current, sheetId],
+      current.includes(sheetId)
+        ? current.filter((id) => id !== sheetId)
+        : [...current, sheetId],
     );
   };
 
@@ -1842,19 +2130,29 @@ export function EncounterHub({
                   aria-pressed={active}
                   onClick={() => toggleSheet(sheet.id)}
                   className={`flex w-full items-center justify-between rounded-lg border p-2.5 text-left ${
-                    active ? "border-primary bg-primary/10" : "border-border bg-secondary/20"
+                    active
+                      ? "border-primary bg-primary/10"
+                      : "border-border bg-secondary/20"
                   }`}
                 >
                   <span className="min-w-0">
-                    <strong className="block truncate text-xs">{sheet.name}</strong>
-                    <span className="text-[10px] text-muted-foreground">Rank {sheet.exposure}</span>
+                    <strong className="block truncate text-xs">
+                      {sheet.name}
+                    </strong>
+                    <span className="text-[10px] text-muted-foreground">
+                      Rank {sheet.exposure}
+                    </span>
                   </span>
-                  {active && <Check className="h-4 w-4 shrink-0 text-primary" />}
+                  {active && (
+                    <Check className="h-4 w-4 shrink-0 text-primary" />
+                  )}
                 </button>
               );
             })}
             {sheets.length === 0 && (
-              <p className="text-xs text-muted-foreground">Nenhuma ficha acessível.</p>
+              <p className="text-xs text-muted-foreground">
+                Nenhuma ficha acessível.
+              </p>
             )}
           </div>
           {!partyValid && (
@@ -1864,23 +2162,30 @@ export function EncounterHub({
           )}
           <div className="mt-3 grid grid-cols-2 gap-2 text-center">
             <div className="rounded-lg bg-secondary/40 p-3">
-              <span className="text-[10px] text-muted-foreground">Participantes</span>
+              <span className="text-[10px] text-muted-foreground">
+                Participantes
+              </span>
               <strong className="block text-xl">{participants}</strong>
             </div>
             <div className="rounded-lg bg-secondary/40 p-3">
-              <span className="text-[10px] text-muted-foreground">Rank médio</span>
-              <strong className="block text-xl">{rankAverage.toFixed(1)}</strong>
+              <span className="text-[10px] text-muted-foreground">
+                Rank médio
+              </span>
+              <strong className="block text-xl">
+                {rankAverage.toFixed(1)}
+              </strong>
             </div>
           </div>
           <div className="mt-3 rounded-lg border border-border/60 bg-background/35 p-2 text-[10px] leading-relaxed text-muted-foreground">
             <p>
-              Média = {rankTotal} ÷ {participants || "N"} = {rankAverage.toFixed(1)}.
+              Média = {rankTotal} ÷ {participants || "N"} ={" "}
+              {rankAverage.toFixed(1)}.
             </p>
             {partyValid && (
               <p>
-                Potencial do grupo = média × fator de {participants} participantes ={" "}
-                {balance.potential.toFixed(1)}. Referência = máx. entre participantes e
-                piso(potencial ÷ 5) + 1.
+                Potencial do grupo = média × fator de {participants}{" "}
+                participantes = {balance.potential.toFixed(1)}. Referência =
+                máx. entre participantes e piso(potencial ÷ 5) + 1.
               </p>
             )}
           </div>
@@ -1936,7 +2241,8 @@ export function EncounterHub({
           </div>
           {combinedMagnitude.adjustment > 0 && (
             <p className="mt-1 text-right text-[10px] text-muted-foreground">
-              soma {combinedMagnitude.base} + {combinedMagnitude.adjustment} pela economia de ações
+              soma {combinedMagnitude.base} + {combinedMagnitude.adjustment}{" "}
+              pela economia de ações
             </p>
           )}
         </Card>
@@ -1944,8 +2250,9 @@ export function EncounterHub({
       <Card className="flex items-start gap-3 p-4 text-xs text-muted-foreground">
         <Activity className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
         <p>
-          Fatores de terreno, informação, surpresa, recursos e objetivo da cena podem mudar muito a
-          dificuldade. Use a leitura como referência e ajuste narrativamente.
+          Fatores de terreno, informação, surpresa, recursos e objetivo da cena
+          podem mudar muito a dificuldade. Use a leitura como referência e
+          ajuste narrativamente.
         </p>
       </Card>
     </div>

@@ -1008,7 +1008,8 @@ export function TabletopWorkspace({
           enabled={realtimeEnabled}
           campaignId={campaignId || null}
           campaignName={
-            campaigns.find((campaign) => campaign.id === campaignId)?.name ?? null
+            campaigns.find((campaign) => campaign.id === campaignId)?.name ??
+            null
           }
           sceneId={persistedScene?.id ?? null}
           sceneName={persistedScene?.name ?? null}
@@ -1252,7 +1253,7 @@ export function TabletopWorkspace({
                 <span className="min-w-0 flex-1 truncate text-xs">
                   {node.title}
                 </span>
-                <span className="text-[9px] uppercase text-muted-foreground">
+                <span className="text-[11px] uppercase tracking-wide text-muted-foreground">
                   {node.nodeType}
                 </span>
               </button>

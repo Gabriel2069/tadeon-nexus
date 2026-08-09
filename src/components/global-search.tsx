@@ -32,7 +32,13 @@ interface SearchItem {
   icon: "sheet" | "master" | "tools" | "offline";
   sheetId?: string;
   masterTab?:
-    "session" | "scenes" | "npcs-v2" | "investigation" | "threats" | "interludes" | "folds";
+    | "session"
+    | "scenes"
+    | "npcs-v2"
+    | "investigation"
+    | "threats"
+    | "interludes"
+    | "folds";
   route?: "/" | "/nexus-tools" | "/offline";
 }
 
@@ -135,7 +141,9 @@ export function GlobalSearch({
         if (isMestre) {
           const { data: settings } = await supabase
             .from("game_settings")
-            .select("scenes_detailed,master_npcs,investigation_clues,threats,interludes,folds")
+            .select(
+              "scenes_detailed,master_npcs,investigation_clues,threats,interludes,folds",
+            )
             .eq("key", "global")
             .maybeSingle();
           const source = (settings ?? {}) as unknown as Record<string, unknown>;
@@ -144,8 +152,12 @@ export function GlobalSearch({
               ? (source[field] as Array<Record<string, unknown>>)
               : [];
             for (const record of records) {
-              const name = String(record.name ?? record.title ?? `${type} sem nome`);
-              const status = String(record.status ?? record.stage ?? record.classification ?? "");
+              const name = String(
+                record.name ?? record.title ?? `${type} sem nome`,
+              );
+              const status = String(
+                record.status ?? record.stage ?? record.classification ?? "",
+              );
               nextItems.push({
                 id: `${field}:${String(record.id ?? name)}`,
                 label: name,
@@ -208,7 +220,7 @@ export function GlobalSearch({
           <>
             <span>Busca global</span>
             {enableShortcut && (
-              <kbd className="ml-auto hidden rounded border border-sidebar-border px-1.5 py-0.5 text-[9px] lg:inline">
+              <kbd className="ml-auto hidden rounded border border-sidebar-border px-1.5 py-0.5 text-[10px] lg:inline">
                 Ctrl K
               </kbd>
             )}
@@ -245,7 +257,9 @@ export function GlobalSearch({
                               {item.detail}
                             </p>
                           </div>
-                          {item.masterTab && <CommandShortcut>Painel</CommandShortcut>}
+                          {item.masterTab && (
+                            <CommandShortcut>Painel</CommandShortcut>
+                          )}
                         </CommandItem>
                       ))}
                     </CommandGroup>
@@ -261,9 +275,12 @@ export function GlobalSearch({
 }
 
 function SearchIcon({ type }: { type: SearchItem["icon"] }) {
-  if (type === "master") return <ShieldCheck className="h-4 w-4 text-primary" />;
-  if (type === "tools") return <ArchiveRestore className="h-4 w-4 text-primary" />;
+  if (type === "master")
+    return <ShieldCheck className="h-4 w-4 text-primary" />;
+  if (type === "tools")
+    return <ArchiveRestore className="h-4 w-4 text-primary" />;
   if (type === "offline") return <CloudOff className="h-4 w-4 text-primary" />;
-  if (type === "sheet") return <BookOpenText className="h-4 w-4 text-primary" />;
+  if (type === "sheet")
+    return <BookOpenText className="h-4 w-4 text-primary" />;
   return <FileSearch className="h-4 w-4 text-primary" />;
 }

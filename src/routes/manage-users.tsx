@@ -22,10 +22,22 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { Loader2, Crown, Swords, Eye, Trash2, RefreshCw, Users } from "lucide-react";
+import {
+  Loader2,
+  Crown,
+  Swords,
+  Eye,
+  Trash2,
+  RefreshCw,
+  Users,
+} from "lucide-react";
 import { toast } from "sonner";
 import type { AppRole } from "@/lib/auth";
-import { changeUserRoleFn, deleteUserFn, listUsersFn } from "@/lib/admin-users.functions";
+import {
+  changeUserRoleFn,
+  deleteUserFn,
+  listUsersFn,
+} from "@/lib/admin-users.functions";
 
 export const Route = createFileRoute("/manage-users")({
   head: () => ({
@@ -42,9 +54,17 @@ export const Route = createFileRoute("/manage-users")({
         content:
           "Painel do mestre para gerenciar contas, papéis e permissões dos jogadores do Tadeon Nexus.",
       },
-      { property: "og:url", content: "https://tadeon-nexus.gtadeusz.workers.dev/manage-users" },
+      {
+        property: "og:url",
+        content: "https://tadeon-nexus.gtadeusz.workers.dev/manage-users",
+      },
     ],
-    links: [{ rel: "canonical", href: "https://tadeon-nexus.gtadeusz.workers.dev/manage-users" }],
+    links: [
+      {
+        rel: "canonical",
+        href: "https://tadeon-nexus.gtadeusz.workers.dev/manage-users",
+      },
+    ],
   }),
   component: () => (
     <ProtectedShell requireRole="mestre">
@@ -119,65 +139,103 @@ function ManageUsersPage() {
   };
 
   return (
-    <div className="max-w-4xl mx-auto p-4 md:p-8">
-      <h1 className="font-cinzel text-2xl md:text-3xl font-bold">Gerenciar Usuários</h1>
-      <p className="text-sm text-muted-foreground mt-1 mb-6">
-        Gerencie cargos e remova contas. A exclusão remove o usuário, suas fichas e seu acesso.
-      </p>
+    <div className="tadeon-page max-w-5xl">
+      <header className="mb-6 flex flex-col gap-4 border-b border-border/60 pb-5 sm:flex-row sm:items-end sm:justify-between">
+        <div className="max-w-2xl">
+          <p className="tadeon-eyebrow">Administração do arquivo</p>
+          <h1 className="mt-1 font-cinzel text-2xl font-semibold md:text-3xl">
+            Gerenciar usuários
+          </h1>
+          <p className="mt-2 text-sm leading-6 text-muted-foreground">
+            Ajuste papéis e remova contas. A exclusão também remove as fichas e
+            o acesso da pessoa ao Nexus.
+          </p>
+        </div>
+        {!loading && !loadError && (
+          <div className="flex min-h-11 items-center gap-2 self-start rounded-xl border border-border/70 bg-card/55 px-3 text-sm sm:self-auto">
+            <Users className="h-4 w-4 text-primary" />
+            <strong>{rows.length}</strong>
+            <span className="text-muted-foreground">
+              {rows.length === 1 ? "usuário" : "usuários"}
+            </span>
+          </div>
+        )}
+      </header>
 
       {loading ? (
-        <div className="flex justify-center py-16">
-          <Loader2 className="w-8 h-8 animate-spin text-primary" />
+        <div className="tadeon-surface flex min-h-56 items-center justify-center rounded-2xl">
+          <Loader2 className="h-8 w-8 animate-spin text-primary" />
+          <span className="sr-only">Carregando usuários</span>
         </div>
       ) : loadError ? (
-        <Card className="p-6 text-center border-destructive/30 bg-destructive/5">
-          <p className="text-sm font-medium">Não foi possível carregar os usuários.</p>
+        <Card className="border-destructive/30 bg-destructive/5 p-6 text-center">
+          <p className="text-sm font-medium">
+            Não foi possível carregar os usuários.
+          </p>
           <p className="mt-1 text-xs text-muted-foreground">
             Verifique sua conexão e tente novamente.
           </p>
-          <Button variant="outline" className="mt-4" onClick={() => void load()}>
+          <Button
+            variant="outline"
+            className="mt-4"
+            onClick={() => void load()}
+          >
             <RefreshCw className="mr-2 h-4 w-4" />
             Tentar novamente
           </Button>
         </Card>
       ) : rows.length === 0 ? (
-        <Card className="p-8 text-center">
+        <Card className="p-8 text-center sm:p-10">
           <Users className="mx-auto h-8 w-8 text-muted-foreground" />
           <p className="mt-3 text-sm font-medium">Nenhum usuário cadastrado.</p>
         </Card>
       ) : (
-        <div className="space-y-2">
+        <div className="tadeon-users-list space-y-3">
           {rows.map((u) => {
             const Icon = roleStyles[u.role].icon;
             const isSelf = u.id === user?.id;
             return (
               <Card
                 key={u.id}
-                className="flex items-center justify-between gap-3 p-3 transition-[background-color,border-color,box-shadow] duration-150 hover:border-primary/40 animate-in fade-in-0"
+                className="grid gap-4 border-border/70 bg-card/65 p-4 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center sm:p-5"
               >
                 <div className="min-w-0">
-                  <div className="font-medium truncate">
+                  <div className="truncate font-medium">
                     {u.full_name || "Sem nome"}
-                    {isSelf && <span className="ml-2 text-[10px] text-primary">(você)</span>}
+                    {isSelf && (
+                      <span className="ml-2 text-[11px] font-semibold text-primary">
+                        Você
+                      </span>
+                    )}
                   </div>
-                  <div className="text-xs text-muted-foreground truncate">{u.email}</div>
+                  <div className="mt-1 truncate text-xs text-muted-foreground">
+                    {u.email}
+                  </div>
                 </div>
-                <div className="flex items-center gap-2">
-                  <Icon className={`w-4 h-4 ${roleStyles[u.role].color}`} />
-                  <Select
-                    value={u.role}
-                    disabled={isSelf || changingId === u.id}
-                    onValueChange={(v) => void changeRole(u.id, v as AppRole)}
-                  >
-                    <SelectTrigger className="w-32 md:w-36">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="mestre">Mestre</SelectItem>
-                      <SelectItem value="jogador">Jogador</SelectItem>
-                      <SelectItem value="espectador">Espectador</SelectItem>
-                    </SelectContent>
-                  </Select>
+                <div className="grid grid-cols-[minmax(0,1fr)_2.75rem] items-center gap-2 sm:flex">
+                  <div className="flex min-w-0 items-center gap-2">
+                    <Icon
+                      className={`h-4 w-4 shrink-0 ${roleStyles[u.role].color}`}
+                      aria-hidden
+                    />
+                    <Select
+                      value={u.role}
+                      disabled={isSelf || changingId === u.id}
+                      onValueChange={(v) => void changeRole(u.id, v as AppRole)}
+                    >
+                      <SelectTrigger
+                        className="w-full sm:w-36"
+                        aria-label={`Papel de ${u.full_name || u.email || "usuário"}`}
+                      >
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="mestre">Mestre</SelectItem>
+                        <SelectItem value="jogador">Jogador</SelectItem>
+                        <SelectItem value="espectador">Espectador</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
                   <AlertDialog>
                     <AlertDialogTrigger asChild>
                       <Button
@@ -189,7 +247,7 @@ function ManageUsersPage() {
                             ? "Você não pode excluir sua própria conta aqui"
                             : "Excluir usuário"
                         }
-                        className="h-8 w-8 text-destructive hover:bg-destructive/15 disabled:opacity-40"
+                        className="h-11 w-11 text-destructive hover:bg-destructive/15 disabled:opacity-40"
                       >
                         {deletingId === u.id ? (
                           <Loader2 className="w-4 h-4 animate-spin" />
@@ -202,8 +260,9 @@ function ManageUsersPage() {
                       <AlertDialogHeader>
                         <AlertDialogTitle>Excluir usuário?</AlertDialogTitle>
                         <AlertDialogDescription>
-                          Esta ação remove permanentemente <b>{u.full_name || u.email}</b>, todas as
-                          fichas e o acesso à plataforma. Não pode ser desfeita.
+                          Esta ação remove permanentemente{" "}
+                          <b>{u.full_name || u.email}</b>, todas as fichas e o
+                          acesso à plataforma. Não pode ser desfeita.
                         </AlertDialogDescription>
                       </AlertDialogHeader>
                       <AlertDialogFooter>

@@ -50,7 +50,12 @@ interface SessionSheet {
   id: string;
   name: string;
   exposure: number;
-  stats: { pv_current: number; ps_current: number; pe_current: number; pa_current?: number };
+  stats: {
+    pv_current: number;
+    ps_current: number;
+    pe_current: number;
+    pa_current?: number;
+  };
 }
 
 interface SessionInitiative {
@@ -79,7 +84,13 @@ interface SessionWorkspaceProps {
   onRemindersChange: (value: string) => void;
 }
 
-const npcStates: NpcState[] = ["Pleno", "Abalado", "Comprometido", "Incapacitado", "Morto"];
+const npcStates: NpcState[] = [
+  "Pleno",
+  "Abalado",
+  "Comprometido",
+  "Incapacitado",
+  "Morto",
+];
 
 export function SessionWorkspace({
   campaignTitle,
@@ -100,7 +111,9 @@ export function SessionWorkspace({
 }: SessionWorkspaceProps) {
   const activeScene = scenes.find((scene) => scene.status === "Em curso");
   const [selectedSceneId, setSelectedSceneId] = useState(
-    activeScene?.id ?? scenes.find((scene) => scene.status !== "Concluída")?.id ?? "",
+    activeScene?.id ??
+      scenes.find((scene) => scene.status !== "Concluída")?.id ??
+      "",
   );
 
   useEffect(() => {
@@ -117,7 +130,9 @@ export function SessionWorkspace({
   const sceneClues = useMemo(
     () =>
       clues.filter(
-        (clue) => clue.sceneId === selectedSceneId || selectedScene?.clueIds.includes(clue.id),
+        (clue) =>
+          clue.sceneId === selectedSceneId ||
+          selectedScene?.clueIds.includes(clue.id),
       ),
     [clues, selectedScene, selectedSceneId],
   );
@@ -140,7 +155,9 @@ export function SessionWorkspace({
   const updateScene = (patch: Partial<SessionScene>) => {
     if (!selectedScene) return;
     onScenesChange(
-      scenes.map((scene) => (scene.id === selectedScene.id ? { ...scene, ...patch } : scene)),
+      scenes.map((scene) =>
+        scene.id === selectedScene.id ? { ...scene, ...patch } : scene,
+      ),
     );
   };
 
@@ -148,7 +165,9 @@ export function SessionWorkspace({
     if (!selectedScene) return;
     onScenesChange(
       scenes.map((scene) =>
-        scene.id === selectedScene.id ? { ...scene, status: "Em curso" } : scene,
+        scene.id === selectedScene.id
+          ? { ...scene, status: "Em curso" }
+          : scene,
       ),
     );
   };
@@ -181,8 +200,9 @@ export function SessionWorkspace({
               {campaignPhase || "Sessão sem fase registrada"}
             </h2>
             <p className="mt-2 max-w-2xl text-sm text-muted-foreground">
-              Controle o que está em cena sem alternar entre os arquivos completos. Todas as
-              alterações continuam dependentes do botão Salvar do painel.
+              Controle o que está em cena sem alternar entre os arquivos
+              completos. Todas as alterações continuam dependentes do botão
+              Salvar do painel.
             </p>
           </div>
           <div className="grid grid-cols-3 gap-2">
@@ -199,7 +219,10 @@ export function SessionWorkspace({
             <div className="flex flex-col gap-4 sm:flex-row sm:items-end">
               <div className="min-w-0 flex-1">
                 <Label htmlFor="session-scene">Cena em foco</Label>
-                <Select value={selectedSceneId} onValueChange={setSelectedSceneId}>
+                <Select
+                  value={selectedSceneId}
+                  onValueChange={setSelectedSceneId}
+                >
                   <SelectTrigger id="session-scene" className="mt-2">
                     <SelectValue placeholder="Selecione uma cena" />
                   </SelectTrigger>
@@ -214,9 +237,15 @@ export function SessionWorkspace({
               </div>
               <div className="flex gap-2">
                 <Button
-                  variant={selectedScene?.status === "Em curso" ? "secondary" : "default"}
+                  variant={
+                    selectedScene?.status === "Em curso"
+                      ? "secondary"
+                      : "default"
+                  }
                   onClick={startScene}
-                  disabled={!selectedScene || selectedScene.status === "Concluída"}
+                  disabled={
+                    !selectedScene || selectedScene.status === "Concluída"
+                  }
                   className="gap-2"
                 >
                   <Play className="h-4 w-4" />
@@ -225,7 +254,9 @@ export function SessionWorkspace({
                 <Button
                   variant="outline"
                   onClick={concludeScene}
-                  disabled={!selectedScene || selectedScene.status === "Concluída"}
+                  disabled={
+                    !selectedScene || selectedScene.status === "Concluída"
+                  }
                   className="gap-2"
                 >
                   <Flag className="h-4 w-4" />
@@ -242,7 +273,9 @@ export function SessionWorkspace({
                     id="scene-narrative"
                     className="mt-2 min-h-24"
                     value={selectedScene.narrative}
-                    onChange={(event) => updateScene({ narrative: event.target.value })}
+                    onChange={(event) =>
+                      updateScene({ narrative: event.target.value })
+                    }
                     placeholder="O que esta cena precisa estabelecer ou transformar?"
                   />
                 </div>
@@ -252,7 +285,9 @@ export function SessionWorkspace({
                     id="scene-next"
                     className="mt-2"
                     value={selectedScene.nextStep}
-                    onChange={(event) => updateScene({ nextStep: event.target.value })}
+                    onChange={(event) =>
+                      updateScene({ nextStep: event.target.value })
+                    }
                     placeholder="Condição ou gancho que conduz à próxima cena"
                   />
                 </div>
@@ -283,7 +318,10 @@ export function SessionWorkspace({
 
           <div className="grid gap-4 lg:grid-cols-2">
             <Card className="tadeon-surface rounded-2xl p-5">
-              <PanelTitle icon={<Link2 className="h-4 w-4" />} title="Pistas da cena" />
+              <PanelTitle
+                icon={<Link2 className="h-4 w-4" />}
+                title="Pistas da cena"
+              />
               {sceneClues.length ? (
                 <div className="mt-4 space-y-2">
                   {sceneClues.map((clue) => (
@@ -304,7 +342,9 @@ export function SessionWorkspace({
                         }
                       />
                       <span className="min-w-0">
-                        <span className="block text-sm font-medium">{clue.title}</span>
+                        <span className="block text-sm font-medium">
+                          {clue.title}
+                        </span>
                         <span className="block text-[11px] text-muted-foreground">
                           {clue.type} · {clue.depth}
                           {clue.guaranteed ? " · Garantida" : ""}
@@ -319,7 +359,10 @@ export function SessionWorkspace({
             </Card>
 
             <Card className="tadeon-surface rounded-2xl p-5">
-              <PanelTitle icon={<Users className="h-4 w-4" />} title="NPCs presentes" />
+              <PanelTitle
+                icon={<Users className="h-4 w-4" />}
+                title="NPCs presentes"
+              />
               {sceneNpcs.length ? (
                 <div className="mt-4 space-y-2">
                   {sceneNpcs.map((npc) => (
@@ -328,7 +371,9 @@ export function SessionWorkspace({
                       className="flex items-center gap-3 rounded-xl border border-border/60 p-3"
                     >
                       <div className="min-w-0 flex-1">
-                        <p className="truncate text-sm font-medium">{npc.name}</p>
+                        <p className="truncate text-sm font-medium">
+                          {npc.name}
+                        </p>
                         <p className="truncate text-[11px] text-muted-foreground">
                           {npc.classification} · Moral {npc.morale}
                         </p>
@@ -338,7 +383,9 @@ export function SessionWorkspace({
                         onValueChange={(value) =>
                           onNpcsChange(
                             npcs.map((item) =>
-                              item.id === npc.id ? { ...item, state: value as NpcState } : item,
+                              item.id === npc.id
+                                ? { ...item, state: value as NpcState }
+                                : item,
                             ),
                           )
                         }
@@ -364,14 +411,22 @@ export function SessionWorkspace({
           </div>
 
           <Card className="tadeon-surface rounded-2xl p-5">
-            <PanelTitle icon={<Shield className="h-4 w-4" />} title="Ameaças em cena" />
+            <PanelTitle
+              icon={<Shield className="h-4 w-4" />}
+              title="Ameaças em cena"
+            />
             {sceneThreats.length ? (
               <div className="mt-4 grid gap-3 md:grid-cols-2">
                 {sceneThreats.map((threat) => {
                   const maximum = threatStats(threat).pp;
-                  const percentage = maximum ? Math.max(0, (threat.currentPp / maximum) * 100) : 0;
+                  const percentage = maximum
+                    ? Math.max(0, (threat.currentPp / maximum) * 100)
+                    : 0;
                   return (
-                    <div key={threat.id} className="rounded-xl border border-border/60 p-4">
+                    <div
+                      key={threat.id}
+                      className="rounded-xl border border-border/60 p-4"
+                    >
                       <div className="flex items-start justify-between gap-3">
                         <div>
                           <p className="font-medium">{threat.name}</p>
@@ -385,7 +440,10 @@ export function SessionWorkspace({
                       </div>
                       <Progress value={percentage} className="mt-3 h-1.5" />
                       <div className="mt-3 flex items-center gap-2">
-                        <Label htmlFor={`threat-pp-${threat.id}`} className="text-[10px]">
+                        <Label
+                          htmlFor={`threat-pp-${threat.id}`}
+                          className="text-[10px]"
+                        >
                           PP atual
                         </Label>
                         <Input
@@ -402,7 +460,10 @@ export function SessionWorkspace({
                                       ...item,
                                       currentPp: Math.max(
                                         0,
-                                        Math.min(maximum, Number(event.target.value) || 0),
+                                        Math.min(
+                                          maximum,
+                                          Number(event.target.value) || 0,
+                                        ),
                                       ),
                                     }
                                   : item,
@@ -425,7 +486,10 @@ export function SessionWorkspace({
         <div className="space-y-4">
           <ResistanceDtCalculator compact />
           <Card className="tadeon-surface rounded-2xl p-5">
-            <PanelTitle icon={<ScrollText className="h-4 w-4" />} title="Lembretes da sessão" />
+            <PanelTitle
+              icon={<ScrollText className="h-4 w-4" />}
+              title="Lembretes da sessão"
+            />
             <Textarea
               className="mt-4 min-h-40"
               value={reminders}
@@ -435,7 +499,10 @@ export function SessionWorkspace({
           </Card>
 
           <Card className="tadeon-surface rounded-2xl p-5">
-            <PanelTitle icon={<Activity className="h-4 w-4" />} title="Iniciativa atual" />
+            <PanelTitle
+              icon={<Activity className="h-4 w-4" />}
+              title="Iniciativa atual"
+            />
             {initiative.length ? (
               <ol className="mt-4 space-y-2">
                 {[...initiative]
@@ -448,7 +515,9 @@ export function SessionWorkspace({
                       <span className="tadeon-mono text-xs text-primary">
                         {String(index + 1).padStart(2, "0")}
                       </span>
-                      <span className="min-w-0 flex-1 truncate text-sm">{entry.name}</span>
+                      <span className="min-w-0 flex-1 truncate text-sm">
+                        {entry.name}
+                      </span>
                       <Badge variant="secondary">INI {entry.init}</Badge>
                     </li>
                   ))}
@@ -459,13 +528,21 @@ export function SessionWorkspace({
           </Card>
 
           <Card className="tadeon-surface rounded-2xl p-5">
-            <PanelTitle icon={<Gauge className="h-4 w-4" />} title="Personagens" />
+            <PanelTitle
+              icon={<Gauge className="h-4 w-4" />}
+              title="Personagens"
+            />
             {sheets.length ? (
               <div className="mt-4 space-y-2">
                 {sheets.map((sheet) => (
-                  <div key={sheet.id} className="rounded-xl border border-border/60 p-3">
+                  <div
+                    key={sheet.id}
+                    className="rounded-xl border border-border/60 p-3"
+                  >
                     <div className="flex items-center justify-between gap-2">
-                      <p className="truncate text-sm font-medium">{sheet.name}</p>
+                      <p className="truncate text-sm font-medium">
+                        {sheet.name}
+                      </p>
                       <Badge variant="outline">Rank {sheet.exposure}</Badge>
                     </div>
                     <div className="mt-2 grid grid-cols-2 gap-1 text-center sm:grid-cols-4">
@@ -475,9 +552,14 @@ export function SessionWorkspace({
                         ["PE", sheet.stats.pe_current],
                         ["PA", sheet.stats.pa_current ?? 0],
                       ].map(([label, value]) => (
-                        <div key={String(label)} className="rounded-md bg-secondary/55 px-1 py-1.5">
+                        <div
+                          key={String(label)}
+                          className="rounded-md bg-secondary/55 px-1 py-1.5"
+                        >
                           <p className="text-xs font-semibold">{value}</p>
-                          <p className="text-[8px] text-muted-foreground">{label}</p>
+                          <p className="text-[10px] text-muted-foreground">
+                            {label}
+                          </p>
                         </div>
                       ))}
                     </div>
@@ -491,16 +573,25 @@ export function SessionWorkspace({
 
           {unresolvedFolds.length > 0 && (
             <Card className="tadeon-surface rounded-2xl p-5">
-              <PanelTitle icon={<Pause className="h-4 w-4" />} title="Dobras abertas" />
+              <PanelTitle
+                icon={<Pause className="h-4 w-4" />}
+                title="Dobras abertas"
+              />
               <div className="mt-4 space-y-2">
                 {unresolvedFolds.map((fold) => (
-                  <div key={fold.id} className="rounded-xl border border-border/60 p-3">
+                  <div
+                    key={fold.id}
+                    className="rounded-xl border border-border/60 p-3"
+                  >
                     <div className="flex items-center justify-between gap-2">
-                      <p className="truncate text-sm font-medium">{fold.name}</p>
+                      <p className="truncate text-sm font-medium">
+                        {fold.name}
+                      </p>
                       <Badge variant="outline">{fold.stage}</Badge>
                     </div>
                     <p className="mt-1 text-[11px] text-muted-foreground">
-                      Permanência {fold.permanence}/{fold.maxPermanence} · Tensão {fold.tension}
+                      Permanência {fold.permanence}/{fold.maxPermanence} ·
+                      Tensão {fold.tension}
                     </p>
                   </div>
                 ))}
@@ -517,7 +608,9 @@ function Metric({ value, label }: { value: number; label: string }) {
   return (
     <div className="min-w-20 rounded-xl border border-border/60 bg-background/35 px-3 py-2 text-center">
       <p className="font-cinzel text-xl font-semibold">{value}</p>
-      <p className="text-[9px] uppercase tracking-wider text-muted-foreground">{label}</p>
+      <p className="text-[11px] uppercase tracking-wide text-muted-foreground">
+        {label}
+      </p>
     </div>
   );
 }
@@ -531,7 +624,15 @@ function PanelTitle({ icon, title }: { icon: React.ReactNode; title: string }) {
   );
 }
 
-function LayerCard({ icon, title, text }: { icon: React.ReactNode; title: string; text: string }) {
+function LayerCard({
+  icon,
+  title,
+  text,
+}: {
+  icon: React.ReactNode;
+  title: string;
+  text: string;
+}) {
   return (
     <div className="rounded-xl border border-border/60 bg-background/30 p-3">
       <div className="mb-2 flex items-center gap-2 text-primary">

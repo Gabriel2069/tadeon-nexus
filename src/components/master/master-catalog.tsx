@@ -2,7 +2,11 @@ import { useMemo, useState } from "react";
 import { BookOpen, Check, Search, Sparkles } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
-import { RULEBOOK_CATALOG, type CatalogCategory, type CatalogEntry } from "@/lib/rulebook-catalog";
+import {
+  RULEBOOK_CATALOG,
+  type CatalogCategory,
+  type CatalogEntry,
+} from "@/lib/rulebook-catalog";
 import type { MasterNpc } from "@/lib/master-data";
 import type { Ability, FragmentItem, Plot, Weapon } from "@/lib/sheet-types";
 import { Button } from "@/components/ui/button";
@@ -99,12 +103,20 @@ export function MasterCatalog({
       npcs.map((npc) => {
         if (npc.id !== npcId) return npc;
         if (selected.category === "arma" || selected.category === "fragmento") {
-          return { ...npc, inventory: [npc.inventory, detail].filter(Boolean).join("\n") };
+          return {
+            ...npc,
+            inventory: [npc.inventory, detail].filter(Boolean).join("\n"),
+          };
         }
-        return { ...npc, abilities: [npc.abilities, detail].filter(Boolean).join("\n") };
+        return {
+          ...npc,
+          abilities: [npc.abilities, detail].filter(Boolean).join("\n"),
+        };
       }),
     );
-    toast.success(`${selected.name} adicionado ao NPC. Salve o painel para confirmar.`);
+    toast.success(
+      `${selected.name} adicionado ao NPC. Salve o painel para confirmar.`,
+    );
     setSelected(null);
   };
 
@@ -114,9 +126,12 @@ export function MasterCatalog({
         <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
           <div>
             <p className="tadeon-eyebrow">Livro de Regras · TdV</p>
-            <h2 className="font-cinzel text-2xl font-semibold">Acervo rápido do Mestre</h2>
+            <h2 className="font-cinzel text-2xl font-semibold">
+              Acervo rápido do Mestre
+            </h2>
             <p className="mt-2 max-w-2xl text-sm text-muted-foreground">
-              Encontre um modelo, confira seu resumo e envie-o diretamente para uma ficha ou NPC.
+              Encontre um modelo, confira seu resumo e envie-o diretamente para
+              uma ficha ou NPC.
             </p>
           </div>
           <div className="relative w-full lg:max-w-sm">
@@ -151,8 +166,12 @@ export function MasterCatalog({
           >
             <div className="flex items-start justify-between gap-3">
               <div>
-                <p className="font-cinzel text-lg font-semibold">{entry.name}</p>
-                <p className="mt-1 text-[11px] text-primary">{entry.subtitle}</p>
+                <p className="font-cinzel text-lg font-semibold">
+                  {entry.name}
+                </p>
+                <p className="mt-1 text-[11px] text-primary">
+                  {entry.subtitle}
+                </p>
               </div>
               {entry.category === "transcendente" ? (
                 <Sparkles className="h-5 w-5 shrink-0 text-primary" />
@@ -165,12 +184,16 @@ export function MasterCatalog({
             </p>
             <div className="mt-3 flex flex-wrap gap-1">
               {entry.tags.slice(0, 3).map((tag) => (
-                <Badge key={tag} variant="secondary" className="text-[9px]">
+                <Badge key={tag} variant="secondary" className="text-[10px]">
                   {tag}
                 </Badge>
               ))}
             </div>
-            <Button className="mt-4 gap-2" size="sm" onClick={() => setSelected(entry)}>
+            <Button
+              className="mt-4 gap-2"
+              size="sm"
+              onClick={() => setSelected(entry)}
+            >
               <Check className="h-3.5 w-3.5" />
               Adicionar
             </Button>
@@ -184,10 +207,15 @@ export function MasterCatalog({
         </Card>
       )}
 
-      <Dialog open={Boolean(selected)} onOpenChange={(open) => !open && setSelected(null)}>
+      <Dialog
+        open={Boolean(selected)}
+        onOpenChange={(open) => !open && setSelected(null)}
+      >
         <DialogContent className="max-h-[85vh] overflow-y-auto sm:max-w-2xl">
           <DialogHeader>
-            <DialogTitle className="font-cinzel">Adicionar {selected?.name}</DialogTitle>
+            <DialogTitle className="font-cinzel">
+              Adicionar {selected?.name}
+            </DialogTitle>
           </DialogHeader>
           <div className="grid gap-5 md:grid-cols-2">
             <TargetList

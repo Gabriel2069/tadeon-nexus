@@ -68,7 +68,7 @@ export function AssetTile({
         )}
         <Badge
           variant="secondary"
-          className="absolute left-2 top-2 bg-background/80 text-[9px] uppercase backdrop-blur"
+          className="absolute left-2 top-2 bg-background/80 text-[10px] uppercase backdrop-blur"
         >
           {asset.provider}
         </Badge>
@@ -83,7 +83,10 @@ export function AssetTile({
         )}
       </div>
       <div className="space-y-1 p-3">
-        <h3 className="truncate text-sm font-semibold" title={asset.display_name}>
+        <h3
+          className="truncate text-sm font-semibold"
+          title={asset.display_name}
+        >
           {asset.display_name}
         </h3>
         <div className="flex items-center justify-between gap-2 text-[10px] uppercase tracking-wide text-muted-foreground">
