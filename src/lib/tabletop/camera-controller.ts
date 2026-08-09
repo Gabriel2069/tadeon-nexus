@@ -98,6 +98,23 @@ export class CameraController {
     this.placeWorldAtScreen(worldPoint, screenPoint);
   }
 
+  setView(
+    worldCenter: Point,
+    zoom: number,
+    screenWidth: number,
+    screenHeight: number,
+  ) {
+    const boundedZoom = Math.min(
+      this.maxZoom,
+      Math.max(this.minZoom, Number.isFinite(zoom) ? zoom : 1),
+    );
+    this.viewport.scale.set(boundedZoom);
+    this.placeWorldAtScreen(worldCenter, {
+      x: screenWidth / 2,
+      y: screenHeight / 2,
+    });
+  }
+
   center(
     sceneWidth: number,
     sceneHeight: number,
