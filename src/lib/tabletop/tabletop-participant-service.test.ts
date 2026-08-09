@@ -16,6 +16,21 @@ function validView() {
       currentSceneId: id("3"),
       version: 4,
       joinLocked: false,
+      directorState: {
+        mode: "scene",
+        title: "",
+        subtitle: "",
+        showGrid: true,
+        showHud: false,
+        camera: {
+          mode: "fit",
+          x: 0,
+          y: 0,
+          zoom: 1,
+          projection: "plan",
+          levelId: null,
+        },
+      },
     },
     participant: { role: "player", canInteract: true },
     visibility: {
