@@ -54,6 +54,10 @@ import {
 import { TabletopVisibilityRenderer } from "./visibility-renderer";
 import { activeTabletopLevel, tabletopItemLevelId } from "./tabletop-levels";
 import {
+  tabletopDirectorCameraFromView,
+  type TabletopDirectorCamera,
+} from "./tabletop-director-state";
+import {
   cloneScene,
   EMPTY_TABLETOP_SCENE,
   type Point,
@@ -122,6 +126,7 @@ export class TabletopEngine {
     width: 5,
     opacity: 0.94,
   };
+  private gridVisible = true;
 
   constructor(private readonly options: TabletopEngineOptions = {}) {
     this.entities = new EntityRenderer(
@@ -338,6 +343,41 @@ export class TabletopEngine {
     this.toolOverlay.clearDrawing();
     this.toolOverlay.clearStructure();
     this.fitToScreen();
+  }
+
+  setGridVisible(visible: boolean) {
+    this.gridVisible = visible;
+    this.grid.view.visible = visible;
+    this.render(false);
+  }
+
+  directorCamera(levelId: string | null = this.activeLevelId) {
+    const center = this.camera.screenToWorld({
+      x: this.app.renderer.width / 2,
+      y: this.app.renderer.height / 2,
+    });
+    return tabletopDirectorCameraFromView({
+      ...center,
+      zoom: this.camera.zoom,
+      projection: this.projectionMode,
+      levelId,
+    });
+  }
+
+  applyDirectorCamera(camera: TabletopDirectorCamera) {
+    if (camera.levelId) this.setActiveLevel(camera.levelId);
+    if (camera.projection !== this.projectionMode)
+      this.setProjectionMode(camera.projection);
+    if (camera.mode === "fit") this.fitToScreen();
+    else {
+      this.camera.setView(
+        { x: camera.x, y: camera.y },
+        camera.zoom,
+        this.app.renderer.width,
+        this.app.renderer.height,
+      );
+      this.render(false);
+    }
   }
 
   setVisibility(state: TabletopVisibilityState, showGuides = false) {
@@ -1268,6 +1308,7 @@ export class TabletopEngine {
       this.scenes.scene,
       this.activeLevelId,
     );
+    this.grid.view.visible = this.gridVisible;
     const floorOffset =
       this.projectionMode === "isometric" ? -activeLevel.baseElevation : 0;
     this.grid.render(this.scenes.scene);
