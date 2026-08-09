@@ -81,6 +81,19 @@ O parser aceita `[[Título]]`, `[[Título|Rótulo]]` e `[[Título#Seção]]`, ig
 blocos de código e preserva posições para backlinks. Links não resolvidos são retornados com
 `broken=true`; a criação da página ausente será uma decisão explícita da interface.
 
+## Pacotes oficiais versionados
+
+O Lote 01 do universo Tadeon fica versionado em
+`public/nexus-packs/tadeon-nexus-lote-01.zip`. Ele reúne 186 páginas e 298 relações extraídas de
+Arden, Geografia de Veth, Ciências de Veth, Urdidura do Vazio e Livro de Regras.
+
+A interface verifica o tamanho e o SHA-256 do arquivo antes de abrir o preview. O pacote não é
+gravado automaticamente: o usuário ainda precisa selecionar o workspace ou campanha, executar o
+dry-run, revisar conflitos e confirmar a importação transacional. As permissões, a RLS e os limites
+do importador continuam sendo a autoridade final.
+
+O lote preserva duas camadas editoriais: transcrições de origem marcadas como canônicas e páginas
+de síntese entre fontes marcadas para revisão. A importação nunca promove uma síntese silenciosamente.
 
 ## Interface principal
 

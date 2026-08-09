@@ -4,6 +4,7 @@ import {
   Download,
   FileArchive,
   Loader2,
+  PackageOpen,
   ShieldCheck,
   Upload,
 } from "lucide-react";
@@ -35,6 +36,10 @@ import {
   parseKnowledgeVaultFile,
   type KnowledgeVaultPreview,
 } from "@/lib/knowledge/knowledge-portability";
+import {
+  loadOfficialKnowledgePack,
+  TADEON_NEXUS_LOTE_01,
+} from "@/lib/knowledge/official-knowledge-packs";
 import {
   downloadKnowledgeArchive,
   knowledgePortabilityService,
@@ -75,6 +80,12 @@ function portabilityError(error: unknown) {
   }
   if (message.includes("ROLLBACK_INCOMPLETE")) {
     return "A importação falhou e alguns anexos precisam de revisão no catálogo.";
+  }
+  if (message.includes("KNOWLEDGE_OFFICIAL_PACK_LOAD_FAILED")) {
+    return "Não foi possível carregar o Lote 01 versionado no repositório.";
+  }
+  if (message.includes("KNOWLEDGE_OFFICIAL_PACK_INTEGRITY_FAILED")) {
+    return "O Lote 01 falhou na verificação de integridade e não foi aberto.";
   }
   if (message.includes("MANAGER_REQUIRED")) {
     return "A importação em lote exige permissão de mestre ou administrador.";
@@ -146,9 +157,11 @@ export function KnowledgePortabilityDialog({
             ?.node_type ?? "free_note";
       }
       setTypeMappings(discoveredMappings);
+      return true;
     } catch (error) {
       setPreview(null);
       toast.error(portabilityError(error));
+      return false;
     } finally {
       setBusy(false);
     }
@@ -162,6 +175,27 @@ export function KnowledgePortabilityDialog({
       return;
     }
     await readFile(nextFile, {});
+  };
+
+  const chooseOfficialPack = async () => {
+    setBusy(true);
+    setReport(null);
+    try {
+      const nextFile = await loadOfficialKnowledgePack();
+      setFile(nextFile);
+      const parsed = await readFile(nextFile, {});
+      if (parsed) {
+        toast.success("Lote 01 carregado e verificado. Execute o dry-run.");
+      } else {
+        setFile(null);
+      }
+    } catch (error) {
+      setFile(null);
+      setPreview(null);
+      toast.error(portabilityError(error));
+    } finally {
+      setBusy(false);
+    }
   };
 
   const remapType = async (sourceType: string, nodeType: KnowledgeNodeType) => {
@@ -295,6 +329,33 @@ export function KnowledgePortabilityDialog({
 
         {mode === "import" ? (
           <div className="space-y-5">
+            <div className="flex flex-col gap-3 rounded-lg border border-primary/30 bg-primary/5 p-4 sm:flex-row sm:items-center">
+              <PackageOpen className="h-6 w-6 shrink-0 text-primary" />
+              <div className="min-w-0 flex-1">
+                <div className="flex flex-wrap items-center gap-2">
+                  <h3 className="font-medium">{TADEON_NEXUS_LOTE_01.title}</h3>
+                  <Badge variant="secondary">
+                    {TADEON_NEXUS_LOTE_01.pages} páginas ·{" "}
+                    {TADEON_NEXUS_LOTE_01.relations} relações
+                  </Badge>
+                </div>
+                <p className="mt-1 text-xs text-muted-foreground">
+                  {TADEON_NEXUS_LOTE_01.description}
+                </p>
+              </div>
+              <Button
+                type="button"
+                variant="secondary"
+                onClick={() => void chooseOfficialPack()}
+                disabled={busy}
+              >
+                {busy ? (
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                ) : null}
+                Carregar Lote 01
+              </Button>
+            </div>
+
             <div className="space-y-2">
               <Label htmlFor="knowledge-vault-file">Cofre ZIP</Label>
               <Input
