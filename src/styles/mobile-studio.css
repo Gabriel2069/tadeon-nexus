@@ -1,0 +1,888 @@
+/*
+ * Mobile product language for Tadeon Nexus.
+ * This is a full touch workspace, not a reduced desktop skin: hierarchy,
+ * navigation and density are recomposed around one-handed use.
+ */
+
+@keyframes tadeon-mobile-stage-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(0.45rem) scale(0.995);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@media (max-width: 767px) {
+  .tadeon-shell {
+    --section-accent: var(--tadeon-knowledge);
+    --section-secondary: var(--tadeon-veil);
+    --section-accent-rgb: 217 215 164;
+    --tadeon-mobile-header-height: calc(
+      4rem + max(0.25rem, env(safe-area-inset-top))
+    );
+    min-height: 100dvh;
+    background:
+      radial-gradient(
+        circle at 88% -4%,
+        rgb(var(--section-accent-rgb) / 11%),
+        transparent 19rem
+      ),
+      linear-gradient(180deg, rgb(255 255 255 / 1.4%), transparent 15rem),
+      var(--tadeon-void);
+  }
+
+  .tadeon-shell[data-section="O Nexus"] {
+    --section-accent: var(--tadeon-veil);
+    --section-secondary: var(--tadeon-knowledge);
+    --section-accent-rgb: 113 107 123;
+  }
+
+  .tadeon-shell[data-section="Mesa Nexus"] {
+    --section-accent: var(--tadeon-flow);
+    --section-secondary: var(--tadeon-knowledge);
+    --section-accent-rgb: 79 110 93;
+  }
+
+  .tadeon-shell[data-section="Painel do Mestre"] {
+    --section-accent: var(--tadeon-fear);
+    --section-secondary: var(--tadeon-knowledge);
+    --section-accent-rgb: 116 36 45;
+  }
+
+  .tadeon-shell[data-section="Usuários"] {
+    --section-accent: var(--tadeon-flow);
+    --section-secondary: var(--tadeon-metal);
+    --section-accent-rgb: 79 110 93;
+  }
+
+  .tadeon-shell[data-section="Saúde do arquivo"] {
+    --section-accent: var(--tadeon-metal);
+    --section-secondary: var(--tadeon-flow);
+    --section-accent-rgb: 122 129 135;
+  }
+
+  .tadeon-shell[data-section="Consulta offline"] {
+    --section-accent: var(--tadeon-flow);
+    --section-secondary: var(--tadeon-veil);
+    --section-accent-rgb: 79 110 93;
+  }
+
+  .tadeon-shell[data-section="Ficha"] {
+    --section-accent: var(--tadeon-knowledge);
+    --section-secondary: var(--tadeon-fear);
+    --section-accent-rgb: 217 215 164;
+  }
+
+  .tadeon-ambient {
+    width: 24rem;
+    filter: blur(70px);
+    opacity: 0.1;
+  }
+
+  .tadeon-ambient--veil {
+    top: -17rem;
+    right: -17rem;
+  }
+
+  .tadeon-ambient--flow {
+    bottom: -18rem;
+    left: -17rem;
+  }
+
+  .tadeon-mobile-header {
+    min-height: var(--tadeon-mobile-header-height);
+    padding-top: max(0.25rem, env(safe-area-inset-top));
+    border-bottom: 1px solid
+      color-mix(in srgb, var(--section-accent) 13%, var(--border));
+    background:
+      linear-gradient(
+        90deg,
+        rgb(var(--section-accent-rgb) / 7%),
+        transparent 48%
+      ),
+      rgb(8 10 14 / 88%);
+    box-shadow:
+      0 22px 62px -48px rgb(0 0 0 / 100%),
+      inset 0 -1px rgb(255 255 255 / 1.8%);
+    backdrop-filter: blur(24px) saturate(138%);
+  }
+
+  .tadeon-mobile-header::after {
+    display: none;
+  }
+
+  .tadeon-mobile-header__thread {
+    position: absolute;
+    right: 1rem;
+    bottom: -1px;
+    left: 1rem;
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      color-mix(in srgb, var(--section-accent) 62%, transparent) 32%,
+      color-mix(in srgb, var(--section-secondary) 20%, transparent) 68%,
+      transparent
+    );
+    pointer-events: none;
+  }
+
+  .tadeon-mobile-header__control {
+    border-color: color-mix(in srgb, var(--section-accent) 11%, var(--border));
+    color: color-mix(in srgb, var(--foreground) 78%, var(--section-accent));
+    background: rgb(255 255 255 / 2.6%);
+    box-shadow: inset 0 1px rgb(255 255 255 / 2.5%);
+  }
+
+  .tadeon-mobile-header__identity > svg {
+    color: var(--section-accent);
+    filter: drop-shadow(0 0 12px rgb(var(--section-accent-rgb) / 24%));
+  }
+
+  .tadeon-mobile-header__identity p:last-child {
+    color: color-mix(in srgb, var(--foreground) 82%, var(--section-accent));
+  }
+
+  .tadeon-mobile-drawer {
+    border-right-color: color-mix(
+      in srgb,
+      var(--section-accent) 17%,
+      var(--sidebar-border)
+    );
+    background:
+      linear-gradient(180deg, rgb(255 255 255 / 3%), transparent 12rem),
+      radial-gradient(
+        circle at 15% 3%,
+        rgb(var(--section-accent-rgb) / 10%),
+        transparent 18rem
+      ),
+      rgb(9 11 15 / 98%);
+    box-shadow: 32px 0 90px -50px rgb(0 0 0 / 100%);
+  }
+
+  .tadeon-mobile-drawer .tadeon-nav-group-label {
+    margin: 1.15rem 0.65rem 0.35rem;
+    color: color-mix(in srgb, var(--sidebar-foreground) 44%, transparent);
+    font-family: var(--font-mono);
+    font-size: 0.56rem;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    line-height: 1rem;
+    text-transform: uppercase;
+  }
+
+  .tadeon-mobile-drawer .tadeon-nav-item[aria-current="page"] {
+    border-color: color-mix(in srgb, var(--section-accent) 17%, transparent);
+    background:
+      linear-gradient(
+        90deg,
+        rgb(var(--section-accent-rgb) / 14%),
+        rgb(var(--section-accent-rgb) / 3%) 72%,
+        transparent
+      ),
+      var(--sidebar-accent);
+    box-shadow:
+      inset 2px 0 var(--section-accent),
+      inset 0 1px rgb(255 255 255 / 3%);
+  }
+
+  .tadeon-mobile-drawer .tadeon-nav-item[aria-current="page"] > svg {
+    color: var(--section-accent);
+    filter: drop-shadow(0 0 9px rgb(var(--section-accent-rgb) / 28%));
+  }
+
+  .tadeon-mobile-dock {
+    position: fixed;
+    z-index: 42;
+    right: max(0.55rem, env(safe-area-inset-right));
+    bottom: max(0.5rem, env(safe-area-inset-bottom));
+    left: max(0.55rem, env(safe-area-inset-left));
+    display: grid;
+    min-height: 4.55rem;
+    grid-auto-columns: minmax(0, 1fr);
+    grid-auto-flow: column;
+    align-items: stretch;
+    padding: 0.34rem;
+    border: 1px solid
+      color-mix(in srgb, var(--section-accent) 16%, var(--border));
+    border-radius: 1.25rem 0.48rem 1.25rem 0.48rem;
+    background:
+      linear-gradient(
+        145deg,
+        rgb(var(--section-accent-rgb) / 7%),
+        transparent 48%
+      ),
+      rgb(9 11 15 / 91%);
+    box-shadow:
+      0 28px 70px -30px rgb(0 0 0 / 100%),
+      inset 0 1px rgb(255 255 255 / 4%);
+    backdrop-filter: blur(26px) saturate(140%);
+  }
+
+  .tadeon-mobile-dock::before {
+    position: absolute;
+    top: -1px;
+    right: 1.25rem;
+    left: 1.25rem;
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      color-mix(in srgb, var(--section-accent) 55%, transparent),
+      transparent
+    );
+    content: "";
+  }
+
+  .tadeon-mobile-dock__item {
+    position: relative;
+    display: flex;
+    min-width: 0;
+    min-height: 3.7rem;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.24rem;
+    padding: 0.3rem 0.18rem;
+    border: 1px solid transparent;
+    border-radius: 0.9rem 0.32rem 0.9rem 0.32rem;
+    color: color-mix(in srgb, var(--muted-foreground) 88%, transparent);
+    font-family: var(--font-mono);
+    font-size: 0.56rem;
+    font-weight: 700;
+    letter-spacing: 0.035em;
+    line-height: 1;
+  }
+
+  .tadeon-mobile-dock__item > svg {
+    flex: 0 0 auto;
+    transition:
+      color var(--motion-fast) var(--ease-out),
+      filter var(--motion-fast) var(--ease-out),
+      transform var(--motion-fast) var(--ease-out);
+  }
+
+  .tadeon-mobile-dock__item[aria-current="page"] {
+    border-color: color-mix(in srgb, var(--section-accent) 17%, transparent);
+    color: color-mix(in srgb, var(--foreground) 84%, var(--section-accent));
+    background:
+      linear-gradient(
+        180deg,
+        rgb(var(--section-accent-rgb) / 13%),
+        rgb(var(--section-accent-rgb) / 4%)
+      ),
+      rgb(255 255 255 / 2%);
+    box-shadow: inset 0 1px rgb(255 255 255 / 3%);
+  }
+
+  .tadeon-mobile-dock__item[aria-current="page"]::after {
+    position: absolute;
+    bottom: 0.2rem;
+    width: 1rem;
+    height: 2px;
+    border-radius: 99px;
+    background: var(--section-accent);
+    box-shadow: 0 0 10px rgb(var(--section-accent-rgb) / 45%);
+    content: "";
+  }
+
+  .tadeon-mobile-dock__item[aria-current="page"] > svg {
+    color: var(--section-accent);
+    filter: drop-shadow(0 0 8px rgb(var(--section-accent-rgb) / 28%));
+    transform: translateY(-1px);
+  }
+
+  .tadeon-route-stage {
+    position: relative;
+    isolation: isolate;
+    min-height: calc(100dvh - var(--tadeon-mobile-header-height));
+    background:
+      linear-gradient(90deg, rgb(255 255 255 / 0.7%) 1px, transparent 1px),
+      linear-gradient(rgb(255 255 255 / 0.55%) 1px, transparent 1px),
+      radial-gradient(
+        circle at 88% 2%,
+        rgb(var(--section-accent-rgb) / 8%),
+        transparent 20rem
+      );
+    background-size:
+      64px 64px,
+      64px 64px,
+      auto;
+  }
+
+  .tadeon-route-stage::before {
+    position: absolute;
+    z-index: -1;
+    top: -8rem;
+    right: -8rem;
+    width: 19rem;
+    aspect-ratio: 1;
+    border: 1px solid rgb(var(--section-accent-rgb) / 6%);
+    border-radius: 50%;
+    box-shadow:
+      0 0 0 2.4rem rgb(var(--section-accent-rgb) / 2%),
+      0 0 0 5rem rgb(var(--section-accent-rgb) / 1%);
+    pointer-events: none;
+    content: "";
+  }
+
+  .tadeon-route-stage > * {
+    animation: tadeon-mobile-stage-reveal 330ms var(--ease-out) both;
+  }
+
+  .tadeon-shell[data-mobile-dock="visible"] .tadeon-route-stage {
+    padding-bottom: calc(5.35rem + env(safe-area-inset-bottom));
+  }
+
+  .tadeon-route-stage .tadeon-page {
+    padding-top: 1rem;
+    padding-right: 0.875rem;
+    padding-left: 0.875rem;
+  }
+
+  .tadeon-auth-page {
+    align-items: start;
+    padding: max(0.65rem, env(safe-area-inset-top)) 0.65rem
+      max(0.75rem, env(safe-area-inset-bottom));
+  }
+
+  .tadeon-auth-shell {
+    grid-template-columns: minmax(0, 1fr);
+    border-color: color-mix(
+      in srgb,
+      var(--tadeon-knowledge) 16%,
+      var(--border)
+    );
+    border-radius: 1.25rem 0.42rem 1.25rem 0.42rem;
+    background: rgb(8 10 14 / 86%);
+    box-shadow:
+      0 38px 90px -48px rgb(0 0 0 / 100%),
+      inset 0 1px rgb(255 255 255 / 4%);
+  }
+
+  .tadeon-auth-manifesto {
+    min-height: 20rem;
+    align-items: flex-end;
+    padding: 5.25rem 1.2rem 1.35rem;
+    border-right: 0;
+    border-bottom: 1px solid
+      color-mix(in srgb, var(--primary) 14%, var(--border));
+    background:
+      radial-gradient(
+        circle at 16% 12%,
+        rgb(217 215 164 / 11%),
+        transparent 32%
+      ),
+      radial-gradient(circle at 90% 94%, rgb(45 73 62 / 28%), transparent 40%),
+      linear-gradient(145deg, rgb(18 21 26 / 96%), rgb(8 11 15 / 98%));
+  }
+
+  .tadeon-auth-manifesto::after {
+    inset: 0.7rem;
+    border-radius: 0.9rem 0.3rem 0.9rem 0.3rem;
+  }
+
+  .tadeon-auth-manifesto__brand {
+    top: 1.1rem;
+    left: 1.2rem;
+  }
+
+  .tadeon-auth-manifesto__brand > svg {
+    width: 2.75rem;
+    height: 2.75rem;
+  }
+
+  .tadeon-auth-manifesto__copy h2 {
+    max-width: 20rem;
+    margin-top: 0.35rem;
+    font-size: clamp(1.75rem, 8vw, 2.3rem);
+    line-height: 1;
+  }
+
+  .tadeon-auth-manifesto__copy > p:last-child {
+    display: block;
+    margin-top: 0.8rem;
+    font-size: 0.73rem;
+    line-height: 1.55;
+  }
+
+  .tadeon-auth-manifesto__signals {
+    display: flex;
+    gap: 0.35rem;
+    margin-top: 0.9rem;
+  }
+
+  .tadeon-auth-manifesto__signals span {
+    min-height: 1.7rem;
+    padding: 0.22rem 0.45rem;
+    font-size: 0.6rem;
+  }
+
+  .tadeon-auth-card {
+    padding: 1.4rem 1.2rem 1.55rem;
+    background:
+      linear-gradient(155deg, rgb(255 255 255 / 3%), transparent 44%),
+      rgb(13 16 21 / 96%);
+  }
+
+  .tadeon-page-hero {
+    position: relative;
+    isolation: isolate;
+    overflow: clip;
+    border: 1px solid
+      color-mix(in srgb, var(--section-accent) 18%, var(--border));
+    border-radius: 1.25rem 0.42rem 1.25rem 0.42rem;
+    background:
+      linear-gradient(135deg, rgb(255 255 255 / 4%), transparent 46%),
+      radial-gradient(
+        circle at 88% 0%,
+        rgb(var(--section-accent-rgb) / 14%),
+        transparent 17rem
+      ),
+      color-mix(in srgb, var(--card) 94%, var(--background));
+    box-shadow:
+      0 26px 66px -52px rgb(0 0 0 / 100%),
+      inset 0 1px rgb(255 255 255 / 4%);
+  }
+
+  .tadeon-page-hero::after {
+    position: absolute;
+    right: 1rem;
+    bottom: 0;
+    left: 1rem;
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      color-mix(in srgb, var(--section-accent) 48%, transparent),
+      transparent
+    );
+    pointer-events: none;
+    content: "";
+  }
+
+  .tadeon-shell[data-mobile-dock="visible"]
+    .tadeon-route-stage
+    [data-slot="card"] {
+    border-color: color-mix(in srgb, var(--section-accent) 10%, var(--border));
+    border-radius: 1rem 0.38rem 1rem 0.38rem;
+    background:
+      linear-gradient(145deg, rgb(255 255 255 / 3%), transparent 46%),
+      color-mix(in srgb, var(--card) 96%, var(--background));
+    box-shadow:
+      0 22px 58px -48px rgb(0 0 0 / 98%),
+      inset 0 1px rgb(255 255 255 / 3%);
+  }
+
+  .tadeon-shell[data-mobile-dock="visible"]
+    .tadeon-route-stage
+    [data-slot="card-header"] {
+    border-bottom: 1px solid
+      color-mix(in srgb, var(--section-accent) 9%, var(--border));
+  }
+
+  .tadeon-shell[data-mobile-dock="visible"]
+    .tadeon-route-stage
+    [data-slot="card-title"] {
+    font-family: var(--font-cinzel);
+    font-weight: 650;
+    letter-spacing: -0.01em;
+  }
+
+  .tadeon-dashboard {
+    gap: 1.45rem;
+  }
+
+  .tadeon-dashboard-hero {
+    min-height: 25rem;
+    padding: 1.35rem 1.15rem 1.2rem;
+  }
+
+  .tadeon-dashboard-hero > div:first-of-type {
+    gap: 1.25rem;
+  }
+
+  .tadeon-dashboard-hero h1 {
+    max-width: 13ch;
+    font-size: clamp(2.45rem, 12vw, 3.4rem);
+    font-weight: 540;
+    letter-spacing: -0.045em;
+  }
+
+  .tadeon-dashboard-hero .tadeon-eyebrow {
+    color: color-mix(in srgb, var(--section-accent) 84%, var(--foreground));
+  }
+
+  .tadeon-dashboard-hero [data-slot="button"] {
+    width: 100%;
+    justify-content: space-between;
+    border-radius: 0.9rem 0.3rem 0.9rem 0.3rem;
+  }
+
+  .tadeon-dashboard-signals {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0;
+    margin-top: 1.4rem;
+    padding-top: 1rem;
+  }
+
+  .tadeon-dashboard-signal {
+    min-height: 4rem;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 0.28rem;
+    padding: 0.55rem 0.5rem;
+  }
+
+  .tadeon-dashboard-signal:not(:last-child)::after {
+    top: 0.55rem;
+    right: 0;
+    bottom: 0.55rem;
+  }
+
+  .tadeon-dashboard-signal > svg {
+    width: 0.9rem;
+    height: 0.9rem;
+    margin: 0;
+  }
+
+  .tadeon-dashboard-signal p:first-child {
+    max-width: 100%;
+    font-size: 0.9rem;
+    line-height: 1.1;
+  }
+
+  .tadeon-dashboard-signal p:last-child {
+    font-size: 0.52rem;
+    letter-spacing: 0.08em;
+    line-height: 1.25;
+  }
+
+  .tadeon-sheet-gallery {
+    display: grid;
+    margin-right: -0.875rem;
+    grid-auto-columns: minmax(16.5rem, 87vw);
+    grid-auto-flow: column;
+    grid-template-columns: none;
+    gap: 0.85rem;
+    overflow-x: auto;
+    padding: 0.1rem 0.875rem 0.65rem 0.05rem;
+    scroll-padding-left: 0.05rem;
+    scroll-snap-type: x proximity;
+    scrollbar-width: none;
+  }
+
+  .tadeon-sheet-gallery::-webkit-scrollbar {
+    display: none;
+  }
+
+  .tadeon-sheet-card {
+    min-height: 15.5rem;
+    padding: 1.15rem;
+    scroll-snap-align: start;
+  }
+
+  .tadeon-sheet-card__index {
+    position: absolute;
+    z-index: 0;
+    top: -0.5rem;
+    right: 0.5rem;
+    color: rgb(var(--section-accent-rgb) / 5%);
+    font-family: var(--font-cinzel);
+    font-size: 5.4rem;
+    font-weight: 600;
+    line-height: 1;
+    pointer-events: none;
+  }
+
+  .tadeon-sheet-card__open {
+    border-radius: 0.82rem 0.28rem 0.82rem 0.28rem;
+    background: rgb(var(--section-accent-rgb) / 6%);
+  }
+
+  .tadeon-nexus-commandbar {
+    gap: 1rem;
+    padding: 1.1rem;
+  }
+
+  .tadeon-nexus-commandbar h1 {
+    margin-top: 0.1rem;
+    font-size: 2rem;
+  }
+
+  .tadeon-nexus-actions {
+    display: block;
+  }
+
+  .tadeon-nexus-scope [data-slot="select-trigger"] {
+    min-width: 0;
+    background: rgb(6 8 12 / 62%);
+  }
+
+  .tadeon-nexus-tools {
+    margin-right: -1.1rem;
+    padding-right: 1.1rem;
+    scroll-padding-right: 1.1rem;
+    scrollbar-width: none;
+  }
+
+  .tadeon-nexus-tools::-webkit-scrollbar {
+    display: none;
+  }
+
+  .tadeon-nexus-tools [data-slot="button"] {
+    flex: 0 0 auto;
+    border-radius: 0.8rem 0.28rem 0.8rem 0.28rem;
+  }
+
+  .tadeon-route-nexus > div:not([role="dialog"]) > aside {
+    border-color: color-mix(in srgb, var(--section-accent) 15%, var(--border));
+    border-radius: 1.05rem 0.38rem 1.05rem 0.38rem;
+    background:
+      linear-gradient(
+        150deg,
+        rgb(var(--section-accent-rgb) / 8%),
+        transparent 46%
+      ),
+      rgb(13 16 21 / 88%);
+    box-shadow: inset 0 1px rgb(255 255 255 / 3%);
+  }
+
+  .tadeon-master-workspace {
+    width: 100%;
+    padding: 0.9rem 0.75rem calc(6.4rem + env(safe-area-inset-bottom));
+  }
+
+  .tadeon-master-commandbar {
+    margin-bottom: 0.85rem;
+    padding: 1.05rem;
+    border-color: color-mix(in srgb, var(--section-accent) 20%, var(--border));
+    border-radius: 1.15rem 0.4rem 1.15rem 0.4rem;
+    background:
+      linear-gradient(
+        120deg,
+        rgb(var(--section-accent-rgb) / 13%),
+        transparent 52%
+      ),
+      rgb(10 12 16 / 86%);
+    box-shadow:
+      inset 0 1px rgb(255 255 255 / 3.5%),
+      0 20px 56px -46px rgb(var(--section-accent-rgb) / 78%);
+  }
+
+  .tadeon-master-commandbar__glow {
+    position: absolute;
+    top: -3.75rem;
+    right: -3rem;
+    width: 11rem;
+    height: 11rem;
+    border: 1px solid rgb(var(--section-accent-rgb) / 13%);
+    border-radius: 50%;
+    box-shadow:
+      0 0 0 2.4rem rgb(var(--section-accent-rgb) / 3%),
+      0 0 0 4.8rem rgb(var(--section-accent-rgb) / 1.5%);
+    pointer-events: none;
+  }
+
+  .tadeon-master-navigation {
+    position: sticky;
+    z-index: 24;
+    top: var(--tadeon-mobile-header-height);
+    margin-right: -0.75rem;
+    margin-left: -0.75rem;
+    padding: 0.45rem 0.75rem 0.55rem;
+    background: linear-gradient(180deg, rgb(8 10 14 / 96%), rgb(8 10 14 / 82%));
+    backdrop-filter: blur(18px);
+    scrollbar-width: none;
+  }
+
+  .tadeon-master-navigation::-webkit-scrollbar {
+    display: none;
+  }
+
+  .tadeon-master-navigation > [role="tablist"] {
+    align-items: stretch;
+    gap: 0.28rem;
+    padding: 0.3rem;
+    border: 1px solid
+      color-mix(in srgb, var(--section-accent) 14%, var(--border));
+    border-radius: 1rem 0.35rem 1rem 0.35rem;
+    background: rgb(10 12 16 / 88%);
+    box-shadow:
+      0 18px 46px -38px rgb(0 0 0 / 100%),
+      inset 0 1px rgb(255 255 255 / 3%);
+  }
+
+  .tadeon-master-navigation__group {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 0.12rem;
+    padding: 0.15rem;
+  }
+
+  .tadeon-master-navigation__group:not(:last-child)::after {
+    position: absolute;
+    top: 0.35rem;
+    right: -0.15rem;
+    bottom: 0.35rem;
+    width: 1px;
+    background: color-mix(in srgb, var(--section-accent) 14%, var(--border));
+    content: "";
+  }
+
+  .tadeon-master-navigation__label {
+    display: block;
+    padding-left: 0.42rem;
+    color: color-mix(in srgb, var(--muted-foreground) 72%, transparent);
+    font-family: var(--font-mono);
+    font-size: 0.5rem;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    line-height: 0.9rem;
+    text-transform: uppercase;
+  }
+
+  .tadeon-master-navigation [data-slot="tabs-trigger"] {
+    min-height: 2.55rem;
+    border-radius: 0.72rem 0.25rem 0.72rem 0.25rem;
+  }
+
+  .tadeon-master-navigation [data-slot="tabs-trigger"][data-state="active"] {
+    box-shadow:
+      0 8px 22px -16px rgb(var(--section-accent-rgb) / 95%),
+      inset 0 1px rgb(255 255 255 / 14%);
+  }
+
+  .tadeon-route-users > .tadeon-page-hero {
+    min-height: 12rem;
+    padding: 1.25rem;
+  }
+
+  .tadeon-users-list {
+    display: grid;
+    gap: 0.75rem;
+  }
+
+  .tadeon-user-row {
+    min-height: 8.5rem;
+    padding: 1rem;
+  }
+
+  .tadeon-user-row__sigil {
+    display: grid;
+    width: 2.75rem;
+    aspect-ratio: 1;
+    flex: 0 0 auto;
+    place-items: center;
+    border: 1px solid
+      color-mix(in srgb, var(--section-accent) 25%, var(--border));
+    border-radius: 0.85rem 0.28rem 0.85rem 0.28rem;
+    color: color-mix(in srgb, var(--foreground) 75%, var(--section-accent));
+    background:
+      radial-gradient(
+        circle at 30% 20%,
+        rgb(255 255 255 / 9%),
+        transparent 45%
+      ),
+      rgb(var(--section-accent-rgb) / 11%);
+    font-family: var(--font-cinzel);
+    font-size: 1.05rem;
+    font-weight: 700;
+  }
+
+  .tadeon-route-tools > .tadeon-page-hero,
+  .tadeon-route-offline > .tadeon-page-hero {
+    min-height: 15rem;
+    padding: 1.4rem 1.2rem;
+  }
+
+  .tadeon-route-tools > .tadeon-page-hero h1,
+  .tadeon-route-offline > .tadeon-page-hero h1 {
+    max-width: 14ch;
+    font-size: 2.35rem;
+    line-height: 1;
+  }
+
+  [data-radix-dialog-content],
+  [data-slot="dialog-content"] {
+    max-height: calc(100dvh - 1rem);
+  }
+}
+
+@media (max-width: 389px) {
+  .tadeon-mobile-header {
+    grid-template-columns: 3.25rem minmax(0, 1fr) 4.8rem;
+    padding-right: 0.5rem;
+    padding-left: 0.5rem;
+  }
+
+  .tadeon-mobile-header__identity > svg {
+    display: none;
+  }
+
+  .tadeon-mobile-dock {
+    right: max(0.35rem, env(safe-area-inset-right));
+    bottom: max(0.35rem, env(safe-area-inset-bottom));
+    left: max(0.35rem, env(safe-area-inset-left));
+    padding: 0.25rem;
+  }
+
+  .tadeon-mobile-dock__item {
+    font-size: 0.5rem;
+  }
+
+  .tadeon-dashboard-hero h1 {
+    font-size: 2.25rem;
+  }
+
+  .tadeon-dashboard-signal {
+    padding-inline: 0.35rem;
+  }
+
+  .tadeon-dashboard-signal p:last-child {
+    letter-spacing: 0.045em;
+  }
+}
+
+@media (hover: none) and (pointer: coarse) and (max-width: 767px) {
+  .tadeon-mobile-header__control:active,
+  .tadeon-mobile-dock__item:active {
+    border-color: color-mix(in srgb, var(--section-accent) 28%, var(--border));
+    background: rgb(var(--section-accent-rgb) / 11%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tadeon-mobile-dock__item > svg,
+  .tadeon-route-stage > * {
+    animation: none;
+    transition: none;
+  }
+}
+
+@media (prefers-reduced-transparency: reduce) and (max-width: 767px) {
+  .tadeon-mobile-header,
+  .tadeon-mobile-dock,
+  .tadeon-page-hero,
+  .tadeon-master-navigation {
+    background-color: var(--background);
+    backdrop-filter: none;
+  }
+}
+
+@media (prefers-contrast: more) and (max-width: 767px) {
+  .tadeon-mobile-header,
+  .tadeon-mobile-dock,
+  .tadeon-page-hero,
+  .tadeon-shell[data-mobile-dock="visible"]
+    .tadeon-route-stage
+    [data-slot="card"] {
+    border-color: var(--border);
+  }
+}
