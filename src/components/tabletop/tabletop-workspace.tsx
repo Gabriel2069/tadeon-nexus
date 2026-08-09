@@ -27,6 +27,7 @@ import {
   Hand,
   History,
   Image,
+  ImagePlus,
   Layers3,
   Loader2,
   Lock,
@@ -77,6 +78,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { TabletopEngine } from "@/lib/tabletop/tabletop-engine";
+import { assetService } from "@/lib/assets/asset-service";
 import type { TabletopToolMode } from "@/lib/tabletop/interaction-controller";
 import type { TabletopProjectionMode } from "@/lib/tabletop/camera-controller";
 import {
@@ -94,6 +96,7 @@ import {
   type TabletopWall,
 } from "@/lib/tabletop/tabletop-visibility-service";
 import {
+  fitTabletopAssetSize,
   moveTabletopScene,
   tabletopPersistenceService,
   TabletopServiceError,
@@ -110,6 +113,7 @@ import {
   EMPTY_TABLETOP_SCENE,
   type Point,
   type TabletopEntitySeed,
+  type TabletopLevel,
   type TabletopSnapshot,
 } from "@/lib/tabletop/types";
 import type {
@@ -143,7 +147,8 @@ type PaletteDragPayload =
 
 type TabletopPanelTab = "library" | "space" | "scene" | "inspector";
 type PendingNavigation =
-  { kind: "scene"; id: string } | { kind: "campaign"; id: string };
+  | { kind: "scene"; id: string }
+  | { kind: "campaign"; id: string };
 
 const TOOL_LABELS: Record<TabletopToolMode, string> = {
   select: "Seleção",
@@ -251,6 +256,7 @@ export function TabletopWorkspace({
     createEmptyVisibilityState(),
   );
   const structureTypeRef = useRef<TabletopStructureType>("wall");
+  const activeLevelIdRef = useRef<string | null>(null);
   const [snapshot, setSnapshot] = useState(EMPTY_SNAPSHOT);
   const [visibility, setVisibility] = useState<TabletopVisibilityState>(
     createEmptyVisibilityState,
@@ -287,6 +293,8 @@ export function TabletopWorkspace({
   const [selectedStructureId, setSelectedStructureId] = useState<string | null>(
     null,
   );
+  const [activeLevelId, setActiveLevelId] = useState<string | null>(null);
+  const [assetUploading, setAssetUploading] = useState(false);
   const [drawColor, setDrawColor] = useState("#d9d7a4");
   const [drawWidth, setDrawWidth] = useState(5);
   const [sceneDialogOpen, setSceneDialogOpen] = useState(false);
@@ -316,6 +324,14 @@ export function TabletopWorkspace({
     () =>
       visibility.walls.find((wall) => wall.id === selectedStructureId) ?? null,
     [selectedStructureId, visibility.walls],
+  );
+  const activeLevel = useMemo(
+    () =>
+      snapshot.scene.levels?.find((level) => level.id === activeLevelId) ??
+      snapshot.scene.levels?.find((level) => level.visible) ??
+      snapshot.scene.levels?.[0] ??
+      null,
+    [activeLevelId, snapshot.scene.levels],
   );
   const currentSceneIndex = scenes.findIndex(
     (scene) => scene.id === persistedScene?.id,
@@ -359,6 +375,11 @@ export function TabletopWorkspace({
   }, [projectionMode]);
 
   useEffect(() => {
+    activeLevelIdRef.current = activeLevelId;
+    engineRef.current?.setActiveLevel(activeLevelId);
+  }, [activeLevelId]);
+
+  useEffect(() => {
     if (!mobilePanelOpen) return;
     const closeOnEscape = (event: KeyboardEvent) => {
       if (event.key === "Escape") setMobilePanelOpen(false);
@@ -372,6 +393,13 @@ export function TabletopWorkspace({
     setPersistedScene(scene);
     setDirty(false);
     setConflict(false);
+    setActiveLevelId((current) =>
+      scene.levels.some((level) => level.id === current && level.visible)
+        ? current
+        : (scene.levels.find((level) => level.visible)?.id ??
+          scene.levels[0]?.id ??
+          null),
+    );
     if (engineReadyRef.current) {
       engineRef.current?.loadScene(scene);
       engineRef.current?.setReadOnly(scene.status === "archived");
@@ -538,8 +566,8 @@ export function TabletopWorkspace({
         setDirty(
           Boolean(
             stored &&
-            stored.id === next.scene.id &&
-            sceneFingerprint(stored) !== sceneFingerprint(next.scene),
+              stored.id === next.scene.id &&
+              sceneFingerprint(stored) !== sceneFingerprint(next.scene),
           ),
         );
       },
@@ -561,9 +589,19 @@ export function TabletopWorkspace({
           end,
         });
         if (!structure) return;
+        const scene = persistedSceneRef.current;
+        const spatialStructure: TabletopWall = {
+          ...structure,
+          levelId: activeLevelIdRef.current ?? scene?.levels[0]?.id ?? "",
+          baseElevation: 0,
+          height: Math.max(42, (scene?.gridSize ?? 64) * 1.15),
+          thickness: 8,
+          playerOperable: false,
+          version: 1,
+        };
         previewVisibility({
           ...visibilityRef.current,
-          walls: [...visibilityRef.current.walls, structure],
+          walls: [...visibilityRef.current.walls, spatialStructure],
         });
         setPanelTab("space");
         engine.setSelectedStructure(id);
@@ -581,6 +619,7 @@ export function TabletopWorkspace({
         const stored = persistedSceneRef.current;
         if (stored) {
           engine.loadScene(stored);
+          engine.setActiveLevel(activeLevelIdRef.current);
           engine.setVisibility(visibilityRef.current, lightingEnabled);
           engine.setReadOnly(stored.status === "archived");
           engine.fitToScreen();
@@ -911,6 +950,100 @@ export function TabletopWorkspace({
 
   const updateProperties = (patch: Record<string, unknown>) =>
     engineRef.current?.updateSelectedProperties(patch);
+
+  const createLevel = () => {
+    if (!editable) return;
+    const levels = snapshot.scene.levels ?? [];
+    const highest = levels.reduce(
+      (value, level) =>
+        Math.max(value, level.baseElevation + Math.max(8, level.height)),
+      0,
+    );
+    const level: TabletopLevel = {
+      id: crypto.randomUUID(),
+      name: "Andar " + (levels.length + 1),
+      order:
+        levels.reduce((value, item) => Math.max(value, item.order), -1) + 1,
+      baseElevation: highest,
+      height: Math.max(64, snapshot.scene.gridSize * 3),
+      visible: true,
+      locked: false,
+      version: 0,
+    };
+    engineRef.current?.addLevel(level);
+    setActiveLevelId(level.id);
+    setPanelTab("space");
+  };
+
+  const updateActiveLevel = (patch: Partial<TabletopLevel>) => {
+    if (!activeLevel || !editable) return;
+    engineRef.current?.updateLevel(activeLevel.id, patch);
+  };
+
+  const uploadTabletopImage = async (
+    file: File,
+    target: "entity" | "background",
+  ) => {
+    const campaign = campaigns.find((item) => item.id === campaignId);
+    if (!campaign || !editable || !file.type.startsWith("image/")) {
+      toast.error("Escolha uma imagem válida para a campanha atual.");
+      return;
+    }
+    setAssetUploading(true);
+    try {
+      const asset = await assetService.createUploadTask({
+        workspaceId: campaign.workspaceId,
+        campaignId: campaign.id,
+        file,
+        displayName: file.name,
+        visibility: "campaign",
+        provider: "supabase",
+        metadata: {
+          source: "tabletop",
+          role: target === "background" ? "scene_background" : "entity_image",
+        },
+      }).promise;
+      const previewUrl = await assetService.createTemporaryAccess(asset, 300);
+      const size = fitTabletopAssetSize(asset.width, asset.height);
+      const targetAsset: TabletopAssetTarget = {
+        id: asset.id,
+        displayName: asset.display_name,
+        mimeType: asset.mime_type,
+        ...size,
+        previewUrl,
+      };
+      setPaletteAssets((current) => [
+        targetAsset,
+        ...current.filter((item) => item.id !== targetAsset.id),
+      ]);
+      if (target === "background") {
+        engineRef.current?.setBackgroundAsset(asset.id, previewUrl);
+      } else {
+        engineRef.current?.updateSelected(
+          {
+            assetId: asset.id,
+            assetUrl: previewUrl,
+            ...(primary?.type === "token" ||
+            primary?.type === "character" ||
+            primary?.type === "npc" ||
+            primary?.type === "creature"
+              ? {}
+              : size),
+          },
+          "Aplicar imagem à entidade",
+        );
+      }
+      toast.success(
+        target === "background"
+          ? "Imagem aplicada ao ambiente."
+          : "Imagem aplicada ao token ou objeto.",
+      );
+    } catch {
+      toast.error("Não foi possível enviar esta imagem ao Nexus Assets.");
+    } finally {
+      setAssetUploading(false);
+    }
+  };
 
   const beginPaletteDrag = (
     event: DragEvent<HTMLElement>,
@@ -1849,6 +1982,25 @@ export function TabletopWorkspace({
                 <p className="mt-1 text-[10px] text-muted-foreground">
                   Usa um asset privado autorizado para preencher a camada Mapa.
                 </p>
+                <label className="mt-2 flex min-h-10 cursor-pointer items-center justify-center gap-2 rounded-md border border-dashed border-primary/35 bg-primary/5 px-3 text-xs font-medium text-primary hover:bg-primary/10">
+                  {assetUploading ? (
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                  ) : (
+                    <ImagePlus className="h-4 w-4" />
+                  )}
+                  Enviar imagem do ambiente
+                  <input
+                    type="file"
+                    accept="image/*"
+                    className="sr-only"
+                    disabled={!editable || assetUploading}
+                    onChange={(event) => {
+                      const file = event.target.files?.[0];
+                      if (file) void uploadTabletopImage(file, "background");
+                      event.target.value = "";
+                    }}
+                  />
+                </label>
               </div>
               <div className="mt-3 grid max-h-48 grid-cols-2 gap-2 overflow-y-auto pr-1">
                 {paletteLoading && (
@@ -1975,12 +2127,128 @@ export function TabletopWorkspace({
                   {projectionMode === "isometric" ? "3D ativo" : "Ver em 3D"}
                 </Button>
               </div>
+              <div className="mt-3 rounded-xl border border-border/60 bg-secondary/10 p-3">
+                <div className="flex items-center justify-between gap-2">
+                  <div>
+                    <p className="tadeon-eyebrow">Andares e elevação</p>
+                    <p className="mt-1 text-[11px] text-muted-foreground">
+                      A grade, a oclusão, as luzes e as entidades seguem o andar
+                      ativo.
+                    </p>
+                  </div>
+                  <Button
+                    type="button"
+                    size="sm"
+                    variant="outline"
+                    disabled={!editable}
+                    onClick={createLevel}
+                  >
+                    <Plus className="h-4 w-4" />
+                    Andar
+                  </Button>
+                </div>
+                <div className="mt-3 space-y-3">
+                  <div>
+                    <Label
+                      htmlFor="tabletop-active-level"
+                      className="text-[10px] uppercase"
+                    >
+                      Andar ativo
+                    </Label>
+                    <select
+                      id="tabletop-active-level"
+                      value={activeLevel?.id ?? ""}
+                      onChange={(event) =>
+                        setActiveLevelId(event.target.value || null)
+                      }
+                      className="h-10 w-full rounded-md border border-input bg-background px-2 text-xs"
+                    >
+                      {(snapshot.scene.levels ?? []).map((level) => (
+                        <option
+                          key={level.id}
+                          value={level.id}
+                          disabled={!level.visible}
+                        >
+                          {level.name} · {level.baseElevation}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  {activeLevel && (
+                    <>
+                      <div>
+                        <Label
+                          htmlFor="tabletop-level-name"
+                          className="text-[10px] uppercase"
+                        >
+                          Nome do andar
+                        </Label>
+                        <Input
+                          id="tabletop-level-name"
+                          disabled={!editable}
+                          value={activeLevel.name}
+                          maxLength={120}
+                          onChange={(event) =>
+                            updateActiveLevel({ name: event.target.value })
+                          }
+                        />
+                      </div>
+                      <div className="grid grid-cols-2 gap-2">
+                        <div>
+                          <Label
+                            htmlFor="tabletop-level-base"
+                            className="text-[10px] uppercase"
+                          >
+                            Base
+                          </Label>
+                          <Input
+                            id="tabletop-level-base"
+                            type="number"
+                            disabled={!editable}
+                            value={activeLevel.baseElevation}
+                            onChange={(event) =>
+                              updateActiveLevel({
+                                baseElevation: Number(event.target.value) || 0,
+                              })
+                            }
+                          />
+                        </div>
+                        <div>
+                          <Label
+                            htmlFor="tabletop-level-height"
+                            className="text-[10px] uppercase"
+                          >
+                            Pé-direito
+                          </Label>
+                          <Input
+                            id="tabletop-level-height"
+                            type="number"
+                            min={8}
+                            disabled={!editable}
+                            value={activeLevel.height}
+                            onChange={(event) =>
+                              updateActiveLevel({
+                                height: Math.max(
+                                  8,
+                                  Number(event.target.value) || 8,
+                                ),
+                              })
+                            }
+                          />
+                        </div>
+                      </div>
+                    </>
+                  )}
+                </div>
+              </div>
               <TabletopVisibilityPanel
                 enabled={lightingEnabled}
                 editable={editable && visibilityAvailable}
                 sceneId={persistedScene?.id ?? null}
                 sceneWidth={snapshot.scene.width}
                 sceneHeight={snapshot.scene.height}
+                levels={snapshot.scene.levels ?? []}
+                activeLevelId={activeLevel?.id ?? null}
                 state={visibility}
                 dirty={visibilityDirty}
                 selectedStructureId={selectedStructureId}
@@ -2312,6 +2580,53 @@ export function TabletopWorkspace({
                         />
                       </div>
                     </div>
+                    <div>
+                      <Label
+                        htmlFor="entity-level"
+                        className="text-[10px] uppercase"
+                      >
+                        Andar
+                      </Label>
+                      <select
+                        id="entity-level"
+                        value={primary.levelId ?? activeLevel?.id ?? ""}
+                        disabled={!editable}
+                        onChange={(event) =>
+                          engineRef.current?.updateSelected(
+                            { levelId: event.target.value || null },
+                            "Mover entidade entre andares",
+                          )
+                        }
+                        className="h-10 w-full rounded-md border border-input bg-background px-2 text-xs"
+                      >
+                        {(snapshot.scene.levels ?? []).map((level) => (
+                          <option key={level.id} value={level.id}>
+                            {level.name} · base {level.baseElevation}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                    <label className="flex min-h-11 cursor-pointer items-center justify-center gap-2 rounded-md border border-dashed border-primary/35 bg-primary/5 px-3 text-xs font-medium text-primary hover:bg-primary/10">
+                      {assetUploading ? (
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                      ) : (
+                        <ImagePlus className="h-4 w-4" />
+                      )}
+                      {primary.assetId
+                        ? "Substituir imagem"
+                        : "Adicionar imagem ao token ou objeto"}
+                      <input
+                        type="file"
+                        accept="image/*"
+                        className="sr-only"
+                        disabled={!editable || assetUploading}
+                        onChange={(event) => {
+                          const file = event.target.files?.[0];
+                          if (file) void uploadTabletopImage(file, "entity");
+                          event.target.value = "";
+                        }}
+                      />
+                    </label>
                     <div>
                       <Label
                         htmlFor="entity-sheet"

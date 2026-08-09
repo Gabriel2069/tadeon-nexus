@@ -1,4 +1,9 @@
 import { Container, Graphics } from "pixi.js";
+import type { TabletopProjectionMode } from "./camera-controller";
+import {
+  activeTabletopLevel,
+  filterVisibilityForLevel,
+} from "./tabletop-levels";
 import type { TabletopScene } from "./types";
 import type {
   TabletopFogStroke,
@@ -57,13 +62,26 @@ export class TabletopVisibilityRenderer {
     scene: TabletopScene,
     state: TabletopVisibilityState,
     showGuides = false,
+    projection: TabletopProjectionMode = "plan",
+    activeLevelId?: string | null,
   ) {
     this.lightGlow.clear();
     this.darkness.clear();
     this.fog.clear();
     this.guides.clear();
 
-    const enabledLights = state.lights.filter((light) => light.enabled);
+    const activeLevel = activeTabletopLevel(scene, activeLevelId);
+    const fallbackLevelId = activeTabletopLevel(scene).id;
+    const levelState = filterVisibilityForLevel(
+      state,
+      activeLevel.id,
+      fallbackLevelId,
+    );
+    const levelElevation =
+      projection === "isometric" ? activeLevel.baseElevation : 0;
+    this.view.position.set(-levelElevation, -levelElevation);
+
+    const enabledLights = levelState.lights.filter((light) => light.enabled);
     for (const light of enabledLights) {
       const radius = Math.max(
         8,
@@ -88,7 +106,7 @@ export class TabletopVisibilityRenderer {
               ...light,
               radius: light.radius * Math.max(0.12, light.intensity),
             },
-            state.walls,
+            levelState.walls,
             scene.width,
             scene.height,
           );
@@ -101,7 +119,7 @@ export class TabletopVisibilityRenderer {
       this.fog
         .rect(0, 0, scene.width, scene.height)
         .fill({ color: FOG_COLOR, alpha: state.fogOpacity });
-      for (const stroke of [...state.fogStrokes].sort(
+      for (const stroke of [...levelState.fogStrokes].sort(
         (left, right) => left.sequenceIndex - right.sequenceIndex,
       )) {
         for (const point of sampledStrokePoints(stroke)) {
@@ -113,7 +131,7 @@ export class TabletopVisibilityRenderer {
     }
 
     if (!showGuides) return;
-    for (const wall of state.walls) {
+    for (const wall of levelState.walls) {
       const type = wall.wallType as TabletopStructureType;
       const family = structureFamily(type);
       const open = type === "door_open" || type === "window_open";
@@ -154,7 +172,7 @@ export class TabletopVisibilityRenderer {
           width: family === "wall" ? 3 : 5,
         });
     }
-    for (const light of state.lights) {
+    for (const light of levelState.lights) {
       this.guides
         .circle(light.x, light.y, Math.max(8, light.radius))
         .stroke({

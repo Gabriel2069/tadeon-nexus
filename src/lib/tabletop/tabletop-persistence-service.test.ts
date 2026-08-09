@@ -8,6 +8,18 @@ import {
   TabletopServiceError,
 } from "@/lib/tabletop/tabletop-persistence-service";
 
+const groundLevel = {
+  id: "ground",
+  scene_id: "scene",
+  name: "Térreo",
+  order_index: 0,
+  base_elevation: 0,
+  height: 192,
+  visible: true,
+  locked: false,
+  version: 1,
+};
+
 describe("tabletop persistence mapping", () => {
   it("moves one scene and normalizes the complete order", () => {
     const scenes = ["a", "b", "c"].map((id, orderIndex) => ({
@@ -77,6 +89,7 @@ describe("tabletop persistence mapping", () => {
           id: "token",
           scene_id: "scene",
           layer_id: "tokens",
+          level_id: "ground",
           entity_type: "token",
           name: "Myrova",
           linked_sheet_id: "sheet",
@@ -96,12 +109,14 @@ describe("tabletop persistence mapping", () => {
           version: 4,
         },
       ],
+      [groundLevel],
     );
     expect(scene.gridScale).toBe(1.5);
     expect(scene.entities[0]).toMatchObject({
       x: 64,
       linkedSheetId: "sheet",
       linkedKnowledgeNodeId: "page",
+      levelId: "ground",
       version: 4,
     });
   });
@@ -145,6 +160,7 @@ describe("tabletop persistence mapping", () => {
           id: "old",
           scene_id: "scene",
           layer_id: "tokens",
+          level_id: "ground",
           entity_type: "token",
           name: "Antigo",
           linked_sheet_id: null,
@@ -164,6 +180,7 @@ describe("tabletop persistence mapping", () => {
           version: 5,
         },
       ],
+      [groundLevel],
     );
     const payload = buildTabletopSavePayload(original, {
       ...original,
@@ -184,6 +201,7 @@ describe("tabletop persistence mapping", () => {
           hidden: false,
           locked: false,
           color: 0x8d3152,
+          levelId: "ground",
         },
       ],
     });
@@ -201,6 +219,7 @@ describe("tabletop persistence mapping", () => {
       name: "Porto",
       status: "active",
       background_asset_id: "map-asset",
+      levels: [expect.objectContaining({ id: "ground", version: 1 })],
     });
   });
 
@@ -243,6 +262,7 @@ describe("tabletop persistence mapping", () => {
           id: "token",
           scene_id: "scene",
           layer_id: "tokens",
+          level_id: "ground",
           entity_type: "token",
           name: "Myrova",
           linked_sheet_id: "sheet",
@@ -262,6 +282,7 @@ describe("tabletop persistence mapping", () => {
           version: 4,
         },
       ],
+      [groundLevel],
     );
     const payload = buildTabletopSavePayload(original, {
       ...original,
@@ -314,6 +335,7 @@ describe("TabletopPersistenceService conflicts", () => {
         version: 1,
         createdAt: "",
         updatedAt: "",
+        levels: [],
         layers: [],
         entities: [],
       }),

@@ -24,6 +24,7 @@ export class CameraController {
   private minZoom = 0.15;
   private maxZoom = 4;
   private projectionMode: TabletopProjectionMode = "plan";
+  private elevation = 0;
 
   constructor(private readonly viewport: Container) {}
 
@@ -39,6 +40,17 @@ export class CameraController {
     this.projectionMode = mode;
   }
 
+  setElevation(elevation: number) {
+    this.elevation = Number.isFinite(elevation) ? elevation : 0;
+  }
+
+  private projected(point: Point): Point {
+    const projected = projectPoint(point, this.projectionMode);
+    return this.projectionMode === "isometric"
+      ? { x: projected.x, y: projected.y - this.elevation }
+      : projected;
+  }
+
   panBy(delta: Point) {
     this.viewport.position.set(
       this.viewport.position.x + delta.x,
@@ -51,7 +63,7 @@ export class CameraController {
   }
 
   placeWorldAtScreen(worldPoint: Point, screenPoint: Point) {
-    const projected = projectPoint(worldPoint, this.projectionMode);
+    const projected = this.projected(worldPoint);
     this.viewport.position.set(
       screenPoint.x - projected.x * this.zoom,
       screenPoint.y - projected.y * this.zoom,
@@ -59,17 +71,20 @@ export class CameraController {
   }
 
   screenToWorld(point: Point): Point {
-    return unprojectPoint(
+    const world = unprojectPoint(
       {
         x: (point.x - this.viewport.position.x) / this.zoom,
         y: (point.y - this.viewport.position.y) / this.zoom,
       },
       this.projectionMode,
     );
+    return this.projectionMode === "isometric"
+      ? { x: world.x + this.elevation, y: world.y + this.elevation }
+      : world;
   }
 
   worldToScreen(point: Point): Point {
-    const projected = projectPoint(point, this.projectionMode);
+    const projected = this.projected(point);
     return {
       x: projected.x * this.zoom + this.viewport.position.x,
       y: projected.y * this.zoom + this.viewport.position.y,
@@ -122,7 +137,7 @@ export class CameraController {
       { x: bounds.x + bounds.width, y: bounds.y },
       { x: bounds.x + bounds.width, y: bounds.y + bounds.height },
       { x: bounds.x, y: bounds.y + bounds.height },
-    ].map((point) => projectPoint(point, this.projectionMode));
+    ].map((point) => this.projected(point));
     const projectedBounds = {
       x: Math.min(...corners.map((point) => point.x)),
       y: Math.min(...corners.map((point) => point.y)),

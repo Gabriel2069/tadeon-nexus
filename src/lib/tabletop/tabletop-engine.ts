@@ -52,12 +52,14 @@ import {
   type TabletopWall,
 } from "./tabletop-visibility-service";
 import { TabletopVisibilityRenderer } from "./visibility-renderer";
+import { activeTabletopLevel, tabletopItemLevelId } from "./tabletop-levels";
 import {
   cloneScene,
   EMPTY_TABLETOP_SCENE,
   type Point,
   type TabletopEntity,
   type TabletopEntitySeed,
+  type TabletopLevel,
   type TabletopScene,
   type TabletopSnapshot,
 } from "./types";
@@ -76,6 +78,7 @@ export interface TabletopEngineOptions {
   ) => void;
   onDeleteStructure?: (id: string) => void;
   onDuplicateStructure?: (id: string) => void;
+  onActivateStructure?: (wall: TabletopWall) => void;
 }
 
 export class TabletopEngine {
@@ -103,6 +106,8 @@ export class TabletopEngine {
   private projectionMode: TabletopProjectionMode = "plan";
   private structureType: TabletopStructureType = "wall";
   private selectedStructureId: string | null = null;
+  private activeLevelId: string | null = null;
+  private interactiveStructureIds = new Set<string>();
   private interaction: InteractionController | null = null;
   private resizeObserver: ResizeObserver | null = null;
   private host: HTMLElement | null = null;
@@ -224,11 +229,56 @@ export class TabletopEngine {
 
   loadScene(scene: TabletopScene) {
     this.scenes.replace(scene);
+    this.activeLevelId = activeTabletopLevel(scene, this.activeLevelId).id;
+    this.camera.setElevation(
+      activeTabletopLevel(scene, this.activeLevelId).baseElevation,
+    );
     this.selection.clear();
     this.selectedStructureId = null;
     this.options.onSelectStructure?.(null);
     this.history.clear();
     this.paintBackground();
+    this.render();
+  }
+
+  setActiveLevel(id: string | null) {
+    const next = activeTabletopLevel(this.scenes.scene, id).id;
+    if (next === this.activeLevelId) return;
+    this.activeLevelId = next;
+    this.camera.setElevation(
+      activeTabletopLevel(this.scenes.scene, next).baseElevation,
+    );
+    this.selection.clear();
+    this.setSelectedStructure(null);
+    this.render(false);
+  }
+
+  setInteractiveStructures(ids: string[]) {
+    this.interactiveStructureIds = new Set(ids);
+  }
+
+  addLevel(level: TabletopLevel) {
+    if (this.readOnly) return;
+    this.scenes.replace({
+      ...this.scenes.scene,
+      levels: [...(this.scenes.scene.levels ?? []), { ...level }],
+    });
+    this.activeLevelId = level.id;
+    this.camera.setElevation(level.baseElevation);
+    this.render();
+  }
+
+  updateLevel(id: string, patch: Partial<TabletopLevel>) {
+    if (this.readOnly) return;
+    this.scenes.replace({
+      ...this.scenes.scene,
+      levels: (this.scenes.scene.levels ?? []).map((level) =>
+        level.id === id ? { ...level, ...patch, id: level.id } : level,
+      ),
+    });
+    this.camera.setElevation(
+      activeTabletopLevel(this.scenes.scene, this.activeLevelId).baseElevation,
+    );
     this.render();
   }
 
@@ -276,6 +326,9 @@ export class TabletopEngine {
     if (mode === this.projectionMode) return;
     this.projectionMode = mode;
     this.camera.setProjection(mode);
+    this.camera.setElevation(
+      activeTabletopLevel(this.scenes.scene, this.activeLevelId).baseElevation,
+    );
     this.world.setFromMatrix(
       mode === "isometric" ? new Matrix(1, 0.5, -1, 0.5, 0, 0) : new Matrix(),
     );
@@ -404,6 +457,8 @@ export class TabletopEngine {
       assetUrl: seed.assetUrl,
       linkedKnowledgeNodeId: seed.linkedKnowledgeNodeId ?? null,
       properties: seed.properties ?? {},
+      levelId: seed.levelId ?? this.activeLevelId,
+      elevation: 0,
     });
     this.executeMutation("Adicionar entidade", (entities) => [
       ...entities,
@@ -799,12 +854,18 @@ export class TabletopEngine {
       this.selectedStructureId = null;
       this.options.onSelectStructure?.(null);
     }
+    const activeLevel = activeTabletopLevel(
+      this.scenes.scene,
+      this.activeLevelId,
+    );
+    const fallbackLevelId = activeTabletopLevel(this.scenes.scene).id;
     const matches = this.scenes.scene.entities
       .filter((entity) => {
         const layer = this.layers.get(entity.layerId);
         return (
           !entity.hidden &&
           Boolean(layer?.visible) &&
+          tabletopItemLevelId(entity, fallbackLevelId) === activeLevel.id &&
           entityIntersectsBounds(entity, bounds)
         );
       })
@@ -823,20 +884,39 @@ export class TabletopEngine {
   }
 
   private hitTest(point: Point) {
+    const fallbackLevelId = activeTabletopLevel(this.scenes.scene).id;
+    const activeLevelId = activeTabletopLevel(
+      this.scenes.scene,
+      this.activeLevelId,
+    ).id;
     const entities = [...this.scenes.scene.entities].reverse();
     return entities.find((entity) => {
       const layer = this.layers.get(entity.layerId);
       return (
-        !entity.hidden && layer?.visible && pointInRotatedRect(point, entity)
+        !entity.hidden &&
+        layer?.visible &&
+        tabletopItemLevelId(entity, fallbackLevelId) === activeLevelId &&
+        pointInRotatedRect(point, entity)
       );
     })?.id;
   }
 
   private hitTestStructure(point: Point) {
-    if (!this.visibilityGuides) return null;
+    if (!this.visibilityGuides && this.interactiveStructureIds.size === 0)
+      return null;
+    const activeLevel = activeTabletopLevel(
+      this.scenes.scene,
+      this.activeLevelId,
+    );
+    const fallbackLevelId = activeTabletopLevel(this.scenes.scene).id;
+    const walls = this.visibilityState.walls.filter(
+      (wall) =>
+        tabletopItemLevelId(wall, fallbackLevelId) === activeLevel.id &&
+        (this.visibilityGuides || this.interactiveStructureIds.has(wall.id)),
+    );
     return hitTestTabletopStructure(
       point,
-      this.visibilityState.walls,
+      walls,
       12 / Math.max(this.camera.zoom, 0.01),
       this.selectedStructureId,
     );
@@ -845,7 +925,15 @@ export class TabletopEngine {
   private editableStructure(id: string) {
     if (this.readOnly || !this.visibilityGuides) return null;
     const structure = this.visibilityState.walls.find((wall) => wall.id === id);
-    return structure ? { ...structure } : null;
+    const activeLevel = activeTabletopLevel(
+      this.scenes.scene,
+      this.activeLevelId,
+    );
+    const fallbackLevelId = activeTabletopLevel(this.scenes.scene).id;
+    return structure &&
+      tabletopItemLevelId(structure, fallbackLevelId) === activeLevel.id
+      ? { ...structure }
+      : null;
   }
 
   private snap(point: Point): Point {
@@ -943,9 +1031,13 @@ export class TabletopEngine {
   }
 
   private cycleStructureState(id: string) {
-    if (this.readOnly) return;
     const before = this.visibilityState.walls.find((wall) => wall.id === id);
     if (!before) return;
+    if (this.readOnly) {
+      if (this.interactiveStructureIds.has(id))
+        this.options.onActivateStructure?.({ ...before });
+      return;
+    }
     const wallType = nextTabletopStructureState(before);
     if (wallType === before.wallType) return;
     const after = { ...before, wallType, ...structureCollision(wallType) };
@@ -1164,16 +1256,28 @@ export class TabletopEngine {
 
   private render(notify = true) {
     if (this.destroyed || !this.host) return;
+    const activeLevel = activeTabletopLevel(
+      this.scenes.scene,
+      this.activeLevelId,
+    );
+    const floorOffset =
+      this.projectionMode === "isometric" ? -activeLevel.baseElevation : 0;
     this.grid.render(this.scenes.scene);
+    this.grid.view.position.set(floorOffset, floorOffset);
+    this.toolOverlay.view.position.set(floorOffset, floorOffset);
+    this.selectionOverlay.view.position.set(floorOffset, floorOffset);
     this.entities.render(
-      this.scenes.scene.entities,
-      this.layers.ordered(),
+      this.scenes.scene,
       this.selection.ids,
+      this.projectionMode,
+      activeLevel.id,
     );
     this.visibility.render(
       this.scenes.scene,
       this.visibilityState,
       this.visibilityGuides,
+      this.projectionMode,
+      activeLevel.id,
     );
     this.spatial.render(
       this.scenes.scene,
@@ -1181,6 +1285,7 @@ export class TabletopEngine {
       this.projectionMode,
       this.selection.ids,
       this.selectedStructureId,
+      activeLevel.id,
     );
     this.toolOverlay.renderStructureSelection(
       this.selectedStructureId

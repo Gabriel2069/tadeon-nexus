@@ -33,6 +33,7 @@ import {
   type TabletopVisibilityState,
   type TabletopWall,
 } from "@/lib/tabletop/tabletop-visibility-service";
+import type { TabletopLevel } from "@/lib/tabletop/types";
 import "@/styles/tabletop-visibility.css";
 
 interface TabletopVisibilityPanelProps {
@@ -41,6 +42,8 @@ interface TabletopVisibilityPanelProps {
   sceneId: string | null;
   sceneWidth: number;
   sceneHeight: number;
+  levels: TabletopLevel[];
+  activeLevelId: string | null;
   state: TabletopVisibilityState;
   dirty: boolean;
   selectedStructureId: string | null;
@@ -99,6 +102,8 @@ export function TabletopVisibilityPanel({
   sceneId,
   sceneWidth,
   sceneHeight,
+  levels,
+  activeLevelId,
   state,
   dirty,
   selectedStructureId,
@@ -112,6 +117,17 @@ export function TabletopVisibilityPanel({
   if (!enabled) return null;
 
   const disabled = !editable || !sceneId || saving;
+  const fallbackLevelId = levels[0]?.id ?? "";
+  const currentLevelId = activeLevelId ?? fallbackLevelId;
+  const levelWalls = state.walls.filter(
+    (wall) => (wall.levelId || fallbackLevelId) === currentLevelId,
+  );
+  const levelLights = state.lights.filter(
+    (light) => (light.levelId || fallbackLevelId) === currentLevelId,
+  );
+  const levelFogStrokes = state.fogStrokes.filter(
+    (stroke) => (stroke.levelId || fallbackLevelId) === currentLevelId,
+  );
   const update = (patch: Partial<TabletopVisibilityState>) =>
     onPreview({ ...state, ...patch });
   const updateWall = (id: string, patch: Partial<TabletopWall>) =>
@@ -151,10 +167,23 @@ export function TabletopVisibilityPanel({
         : { x: centerX + 160, y: centerY },
     });
     if (!structure) return;
+    const activeLevel = levels.find((level) => level.id === currentLevelId);
+    const spatialStructure: TabletopWall = {
+      ...structure,
+      levelId: currentLevelId,
+      baseElevation: 0,
+      height:
+        structureFamily(wallType) === "roof"
+          ? (activeLevel?.height ?? 192)
+          : Math.max(42, (activeLevel?.height ?? 192) * 0.62),
+      thickness: 8,
+      playerOperable: false,
+      version: 1,
+    };
     update({
-      walls: [...state.walls, structure],
+      walls: [...state.walls, spatialStructure],
     });
-    onSelectStructure(structure.id);
+    onSelectStructure(spatialStructure.id);
   };
 
   const addLight = () =>
@@ -163,9 +192,11 @@ export function TabletopVisibilityPanel({
         ...state.lights,
         {
           id: crypto.randomUUID(),
+          levelId: currentLevelId,
           entityId: null,
           x: sceneWidth / 2,
           y: sceneHeight / 2,
+          elevation: 0,
           radius: Math.max(160, Math.min(sceneWidth, sceneHeight) / 5),
           intensity: 1,
           color: "#f2c66d",
@@ -182,6 +213,7 @@ export function TabletopVisibilityPanel({
         ...state.fogStrokes,
         {
           id: crypto.randomUUID(),
+          levelId: currentLevelId,
           operation,
           points: [{ x: sceneWidth / 2, y: sceneHeight / 2 }],
           radius: Math.max(80, Math.min(sceneWidth, sceneHeight) / 10),
@@ -346,7 +378,7 @@ export function TabletopVisibilityPanel({
             </Button>
           </div>
 
-          {state.walls.length > 0 && (
+          {levelWalls.length > 0 && (
             <details
               className="tadeon-visibility__group"
               open={architectureOpen}
@@ -357,10 +389,10 @@ export function TabletopVisibilityPanel({
               <summary>
                 <BrickWall aria-hidden="true" />
                 <strong>Arquitetura</strong>
-                <span>{state.walls.length}</span>
+                <span>{levelWalls.length}</span>
                 <ChevronDown aria-hidden="true" />
               </summary>
-              {state.walls.map((wall, index) => (
+              {levelWalls.map((wall, index) => (
                 <article
                   key={wall.id}
                   className="tadeon-visibility__item"
@@ -465,6 +497,34 @@ export function TabletopVisibilityPanel({
                         disabled={disabled}
                         onChange={(y2) => updateWall(wall.id, { y2 })}
                       />
+                      <NumberField
+                        label="Base Z"
+                        value={wall.baseElevation ?? 0}
+                        disabled={disabled}
+                        onChange={(baseElevation) =>
+                          updateWall(wall.id, { baseElevation })
+                        }
+                      />
+                      <NumberField
+                        label="Altura"
+                        value={wall.height ?? 64}
+                        disabled={disabled}
+                        onChange={(height) =>
+                          updateWall(wall.id, {
+                            height: Math.max(8, height),
+                          })
+                        }
+                      />
+                      <NumberField
+                        label="Espessura"
+                        value={wall.thickness ?? 8}
+                        disabled={disabled}
+                        onChange={(thickness) =>
+                          updateWall(wall.id, {
+                            thickness: Math.max(1, thickness),
+                          })
+                        }
+                      />
                     </div>
                   </details>
                   {structureFamily(wall.wallType) !== "roof" && (
@@ -497,19 +557,36 @@ export function TabletopVisibilityPanel({
                       </label>
                     </div>
                   )}
+                  {structureFamily(wall.wallType) === "door" && (
+                    <div className="tadeon-visibility__switch">
+                      <span>
+                        <strong>Jogadores podem acionar</strong>
+                        <small>
+                          portas trancadas continuam exclusivas do mestre
+                        </small>
+                      </span>
+                      <Switch
+                        checked={wall.playerOperable ?? false}
+                        disabled={disabled || wall.wallType === "door_locked"}
+                        onCheckedChange={(playerOperable) =>
+                          updateWall(wall.id, { playerOperable })
+                        }
+                      />
+                    </div>
+                  )}
                 </article>
               ))}
             </details>
           )}
 
-          {state.lights.length > 0 && (
+          {levelLights.length > 0 && (
             <div className="tadeon-visibility__group">
               <header>
                 <LampDesk aria-hidden="true" />
                 <strong>Fontes de luz</strong>
-                <span>{state.lights.length}</span>
+                <span>{levelLights.length}</span>
               </header>
-              {state.lights.map((light, index) => (
+              {levelLights.map((light, index) => (
                 <article key={light.id} className="tadeon-visibility__item">
                   <div className="tadeon-visibility__item-title">
                     <strong>Luz {index + 1}</strong>
@@ -564,6 +641,14 @@ export function TabletopVisibilityPanel({
                       disabled={disabled}
                       onChange={(radius) => updateLight(light.id, { radius })}
                     />
+                    <NumberField
+                      label="Elevação"
+                      value={light.elevation ?? 0}
+                      disabled={disabled}
+                      onChange={(elevation) =>
+                        updateLight(light.id, { elevation })
+                      }
+                    />
                   </div>
                   <label className="tadeon-visibility__intensity">
                     <span>Intensidade</span>
@@ -586,15 +671,15 @@ export function TabletopVisibilityPanel({
             </div>
           )}
 
-          {state.fogStrokes.length > 0 && (
+          {levelFogStrokes.length > 0 && (
             <div className="tadeon-visibility__group">
               <header>
                 <CloudFog aria-hidden="true" />
                 <strong>Operações de névoa</strong>
-                <span>{state.fogStrokes.length}</span>
+                <span>{levelFogStrokes.length}</span>
               </header>
               <div className="tadeon-visibility__fog-list">
-                {state.fogStrokes.map((stroke, index) => (
+                {levelFogStrokes.map((stroke, index) => (
                   <div key={stroke.id} className="tadeon-visibility__fog-item">
                     <header>
                       {stroke.operation === "reveal" ? (

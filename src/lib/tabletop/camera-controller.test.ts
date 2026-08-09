@@ -51,6 +51,21 @@ describe("tabletop camera projection", () => {
     expect(camera.worldToScreen(anchoredWorldPoint).y).toBeCloseTo(cursor.y, 8);
   });
 
+  it("maps pointer coordinates onto an elevated isometric floor", () => {
+    const viewport = new Container();
+    const camera = new CameraController(viewport);
+    camera.setProjection("isometric");
+    camera.setElevation(192);
+    viewport.scale.set(1.25);
+    viewport.position.set(310, 170);
+
+    const floorPoint = { x: 480, y: 352 };
+    const restored = camera.screenToWorld(camera.worldToScreen(floorPoint));
+
+    expect(restored.x).toBeCloseTo(floorPoint.x, 8);
+    expect(restored.y).toBeCloseTo(floorPoint.y, 8);
+  });
+
   it("fits the complete diamond inside the available screen", () => {
     const viewport = new Container();
     const camera = new CameraController(viewport);

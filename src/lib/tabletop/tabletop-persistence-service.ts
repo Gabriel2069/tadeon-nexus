@@ -6,6 +6,7 @@ import type {
   GridMode,
   TabletopEntity,
   TabletopLayer,
+  TabletopLevel,
   TabletopScene,
 } from "@/lib/tabletop/types";
 
@@ -57,10 +58,23 @@ interface LayerRow {
   version: number;
 }
 
+interface LevelRow {
+  id: string;
+  scene_id: string;
+  name: string;
+  order_index: number;
+  base_elevation: number | string;
+  height: number | string;
+  visible: boolean;
+  locked: boolean;
+  version: number;
+}
+
 interface EntityRow {
   id: string;
   scene_id: string;
   layer_id: string;
+  level_id: string;
   entity_type: TabletopEntity["type"];
   name: string;
   linked_sheet_id: string | null;
@@ -85,10 +99,15 @@ export interface PersistedTabletopLayer extends TabletopLayer {
   version: number;
 }
 
+export interface PersistedTabletopLevel extends TabletopLevel {
+  sceneId: string;
+}
+
 export interface PersistedTabletopEntity extends TabletopEntity {
   sceneId: string;
   version: number;
   elevation: number;
+  levelId: string;
   assetId: string | null;
   linkedSheetId: string | null;
   linkedKnowledgeNodeId: string | null;
@@ -107,6 +126,7 @@ export interface PersistedTabletopScene extends TabletopScene {
   version: number;
   createdAt: string;
   updatedAt: string;
+  levels: PersistedTabletopLevel[];
   layers: PersistedTabletopLayer[];
   entities: PersistedTabletopEntity[];
 }
@@ -249,6 +269,9 @@ export function buildTabletopSavePayload(
   const originalLayers = new Map(
     original.layers.map((layer) => [layer.id, layer]),
   );
+  const originalLevels = new Map(
+    original.levels.map((level) => [level.id, level]),
+  );
   const originalEntities = new Map(
     original.entities.map((entity) => [entity.id, entity]),
   );
@@ -299,6 +322,9 @@ export function buildTabletopSavePayload(
       elevation: has("elevation")
         ? (runtime.elevation ?? 0)
         : (persisted?.elevation ?? 0),
+      level_id: has("levelId")
+        ? (runtime.levelId ?? original.levels[0]?.id)
+        : (persisted?.levelId ?? original.levels[0]?.id),
       z_index: entity.zIndex,
       hidden: entity.hidden,
       locked: entity.locked,
@@ -329,6 +355,16 @@ export function buildTabletopSavePayload(
       global_illumination: original.globalIllumination,
       status: overrides.status ?? original.status,
       order_index: overrides.orderIndex ?? original.orderIndex,
+      levels: (current.levels ?? original.levels).map((level) => ({
+        id: level.id,
+        name: level.name,
+        order_index: level.order,
+        base_elevation: level.baseElevation,
+        height: level.height,
+        visible: level.visible,
+        locked: level.locked,
+        version: originalLevels.get(level.id)?.version ?? level.version ?? 0,
+      })),
     },
     layerDocuments,
     entityDocuments,
@@ -342,6 +378,7 @@ export function mapTabletopScene(
   scene: SceneRow,
   layers: LayerRow[],
   entities: EntityRow[],
+  levels: LevelRow[] = [],
 ): PersistedTabletopScene {
   return {
     id: scene.id,
@@ -363,6 +400,17 @@ export function mapTabletopScene(
     version: scene.version,
     createdAt: scene.created_at,
     updatedAt: scene.updated_at,
+    levels: levels.map((level) => ({
+      id: level.id,
+      sceneId: level.scene_id,
+      name: level.name,
+      order: level.order_index,
+      baseElevation: numeric(level.base_elevation),
+      height: numeric(level.height),
+      visible: level.visible,
+      locked: level.locked,
+      version: level.version,
+    })),
     layers: layers.map((layer) => ({
       id: layer.id,
       name: layer.name,
@@ -384,6 +432,7 @@ export function mapTabletopScene(
       height: numeric(entity.height),
       rotation: numeric(entity.rotation),
       elevation: numeric(entity.elevation),
+      levelId: entity.level_id,
       zIndex: entity.z_index,
       hidden: entity.hidden,
       locked: entity.locked,
@@ -531,13 +580,18 @@ export class TabletopPersistenceService {
   }
 
   async loadScene(sceneId: string) {
-    const [{ data: scene, error }, layersResult, entitiesResult] =
+    const [{ data: scene, error }, levelsResult, layersResult, entitiesResult] =
       await Promise.all([
         this.database
           .from("tabletop_scenes")
           .select("*")
           .eq("id", sceneId)
           .maybeSingle(),
+        this.database
+          .from("tabletop_levels")
+          .select("*")
+          .eq("scene_id", sceneId)
+          .order("order_index"),
         this.database
           .from("tabletop_layers")
           .select("*")
@@ -549,13 +603,24 @@ export class TabletopPersistenceService {
           .eq("scene_id", sceneId)
           .order("z_index"),
       ]);
-    if (error || layersResult.error || entitiesResult.error)
-      throw serviceError(error ?? layersResult.error ?? entitiesResult.error);
+    if (
+      error ||
+      levelsResult.error ||
+      layersResult.error ||
+      entitiesResult.error
+    )
+      throw serviceError(
+        error ??
+          levelsResult.error ??
+          layersResult.error ??
+          entitiesResult.error,
+      );
     if (!scene) throw new TabletopServiceError("TABLETOP_NOT_FOUND");
     const mapped = mapTabletopScene(
       scene as SceneRow,
       (layersResult.data ?? []) as LayerRow[],
       (entitiesResult.data ?? []) as EntityRow[],
+      (levelsResult.data ?? []) as LevelRow[],
     );
     return this.withTemporaryAssetUrls(mapped);
   }
@@ -677,6 +742,7 @@ export class TabletopPersistenceService {
       linked_sheet_id: entity.linkedSheetId,
       linked_knowledge_node_id: entity.linkedKnowledgeNodeId,
       asset_id: entity.assetId,
+      level_id: entity.levelId,
       x: entity.x,
       y: entity.y,
       width: entity.width,
@@ -726,6 +792,7 @@ export class TabletopPersistenceService {
       },
       [],
       [data as EntityRow],
+      [],
     ).entities[0];
   }
 

@@ -14,6 +14,17 @@ export interface TabletopLayer {
   layerType?: "map" | "objects" | "tokens" | "drawings" | "master";
 }
 
+export interface TabletopLevel {
+  id: string;
+  name: string;
+  order: number;
+  baseElevation: number;
+  height: number;
+  visible: boolean;
+  locked: boolean;
+  version: number;
+}
+
 export interface TabletopEntity {
   id: string;
   layerId: string;
@@ -43,6 +54,7 @@ export interface TabletopEntity {
   color: number;
   assetUrl?: string;
   elevation?: number;
+  levelId?: string | null;
   assetId?: string | null;
   linkedSheetId?: string | null;
   linkedKnowledgeNodeId?: string | null;
@@ -55,6 +67,7 @@ export interface TabletopEntitySeed {
   label: string;
   width?: number;
   height?: number;
+  levelId?: string | null;
   assetId?: string | null;
   assetUrl?: string;
   linkedKnowledgeNodeId?: string | null;
@@ -72,6 +85,7 @@ export interface TabletopScene {
   snap: boolean;
   backgroundAssetId?: string | null;
   backgroundAssetUrl?: string;
+  levels?: TabletopLevel[];
   layers: TabletopLayer[];
   entities: TabletopEntity[];
 }
@@ -92,6 +106,18 @@ export const EMPTY_TABLETOP_SCENE: TabletopScene = {
   gridSize: 64,
   gridScale: 1,
   snap: true,
+  levels: [
+    {
+      id: "local-level",
+      name: "Térreo",
+      order: 0,
+      baseElevation: 0,
+      height: 192,
+      visible: true,
+      locked: false,
+      version: 1,
+    },
+  ],
   layers: [
     {
       id: "map",
@@ -140,7 +166,28 @@ export const EMPTY_TABLETOP_SCENE: TabletopScene = {
 export function cloneScene(scene: TabletopScene): TabletopScene {
   return {
     ...scene,
+    levels: scene.levels?.map((level) => ({ ...level })),
     layers: scene.layers.map((layer) => ({ ...layer })),
     entities: scene.entities.map((entity) => ({ ...entity })),
   };
+}
+
+export function tabletopSceneLevels(scene: TabletopScene): TabletopLevel[] {
+  return scene.levels && scene.levels.length > 0
+    ? [...scene.levels].sort(
+        (left, right) =>
+          left.order - right.order || left.id.localeCompare(right.id),
+      )
+    : [
+        {
+          id: "local-level",
+          name: "Térreo",
+          order: 0,
+          baseElevation: 0,
+          height: Math.max(64, scene.gridSize * 3),
+          visible: true,
+          locked: false,
+          version: 1,
+        },
+      ];
 }
