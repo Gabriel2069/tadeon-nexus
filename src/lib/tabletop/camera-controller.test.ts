@@ -66,6 +66,21 @@ describe("tabletop camera projection", () => {
     expect(restored.y).toBeCloseTo(floorPoint.y, 8);
   });
 
+  it("restaura um enquadramento persistido no centro da saída", () => {
+    const viewport = new Container();
+    const camera = new CameraController(viewport);
+    camera.setProjection("isometric");
+    camera.setElevation(192);
+
+    camera.setView({ x: 720, y: 480 }, 1.35, 1280, 720);
+
+    expect(camera.zoom).toBeCloseTo(1.35, 8);
+    expect(camera.screenToWorld({ x: 640, y: 360 })).toMatchObject({
+      x: 720,
+      y: 480,
+    });
+  });
+
   it("fits the complete diamond inside the available screen", () => {
     const viewport = new Container();
     const camera = new CameraController(viewport);
