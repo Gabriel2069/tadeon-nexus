@@ -16,7 +16,11 @@ CREATE TABLE public.tabletop_view_preferences (
   active_level_id uuid,
   created_at timestamptz NOT NULL DEFAULT clock_timestamp(),
   updated_at timestamptz NOT NULL DEFAULT clock_timestamp(),
-  PRIMARY KEY (scene_id, user_id)
+  PRIMARY KEY (scene_id, user_id),
+  CONSTRAINT tabletop_view_preferences_level_fk
+    FOREIGN KEY (scene_id, active_level_id)
+    REFERENCES public.tabletop_levels(scene_id, id)
+    ON DELETE SET NULL (active_level_id)
 );
 
 CREATE INDEX tabletop_view_preferences_user_idx
