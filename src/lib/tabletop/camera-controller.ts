@@ -2,14 +2,41 @@ import { Container } from "pixi.js";
 import type { TabletopBounds } from "./geometry";
 import type { Point } from "./types";
 
+export type TabletopProjectionMode = "plan" | "isometric";
+
+function projectPoint(point: Point, mode: TabletopProjectionMode): Point {
+  if (mode === "plan") return point;
+  return {
+    x: point.x - point.y,
+    y: (point.x + point.y) * 0.5,
+  };
+}
+
+function unprojectPoint(point: Point, mode: TabletopProjectionMode): Point {
+  if (mode === "plan") return point;
+  return {
+    x: point.y + point.x * 0.5,
+    y: point.y - point.x * 0.5,
+  };
+}
+
 export class CameraController {
   private minZoom = 0.15;
   private maxZoom = 4;
+  private projectionMode: TabletopProjectionMode = "plan";
 
   constructor(private readonly viewport: Container) {}
 
   get zoom() {
     return this.viewport.scale.x;
+  }
+
+  get projection() {
+    return this.projectionMode;
+  }
+
+  setProjection(mode: TabletopProjectionMode) {
+    this.projectionMode = mode;
   }
 
   panBy(delta: Point) {
@@ -24,23 +51,28 @@ export class CameraController {
   }
 
   placeWorldAtScreen(worldPoint: Point, screenPoint: Point) {
+    const projected = projectPoint(worldPoint, this.projectionMode);
     this.viewport.position.set(
-      screenPoint.x - worldPoint.x * this.zoom,
-      screenPoint.y - worldPoint.y * this.zoom,
+      screenPoint.x - projected.x * this.zoom,
+      screenPoint.y - projected.y * this.zoom,
     );
   }
 
   screenToWorld(point: Point): Point {
-    return {
-      x: (point.x - this.viewport.position.x) / this.zoom,
-      y: (point.y - this.viewport.position.y) / this.zoom,
-    };
+    return unprojectPoint(
+      {
+        x: (point.x - this.viewport.position.x) / this.zoom,
+        y: (point.y - this.viewport.position.y) / this.zoom,
+      },
+      this.projectionMode,
+    );
   }
 
   worldToScreen(point: Point): Point {
+    const projected = projectPoint(point, this.projectionMode);
     return {
-      x: point.x * this.zoom + this.viewport.position.x,
-      y: point.y * this.zoom + this.viewport.position.y,
+      x: projected.x * this.zoom + this.viewport.position.x,
+      y: projected.y * this.zoom + this.viewport.position.y,
     };
   }
 
@@ -60,9 +92,9 @@ export class CameraController {
     screenWidth: number,
     screenHeight: number,
   ) {
-    this.viewport.position.set(
-      (screenWidth - sceneWidth * this.zoom) / 2,
-      (screenHeight - sceneHeight * this.zoom) / 2,
+    this.placeWorldAtScreen(
+      { x: sceneWidth / 2, y: sceneHeight / 2 },
+      { x: screenWidth / 2, y: screenHeight / 2 },
     );
   }
 
@@ -88,23 +120,37 @@ export class CameraController {
     padding = 72,
     maxZoom = 2,
   ) {
+    const corners = [
+      { x: bounds.x, y: bounds.y },
+      { x: bounds.x + bounds.width, y: bounds.y },
+      { x: bounds.x + bounds.width, y: bounds.y + bounds.height },
+      { x: bounds.x, y: bounds.y + bounds.height },
+    ].map((point) => projectPoint(point, this.projectionMode));
+    const projectedBounds = {
+      x: Math.min(...corners.map((point) => point.x)),
+      y: Math.min(...corners.map((point) => point.y)),
+      width:
+        Math.max(...corners.map((point) => point.x)) -
+        Math.min(...corners.map((point) => point.x)),
+      height:
+        Math.max(...corners.map((point) => point.y)) -
+        Math.min(...corners.map((point) => point.y)),
+    };
     const availableWidth = Math.max(1, screenWidth - padding * 2);
     const availableHeight = Math.max(1, screenHeight - padding * 2);
     const zoom = Math.min(
-      availableWidth / Math.max(bounds.width, 1),
-      availableHeight / Math.max(bounds.height, 1),
+      availableWidth / Math.max(projectedBounds.width, 1),
+      availableHeight / Math.max(projectedBounds.height, 1),
       maxZoom,
     );
     this.viewport.scale.set(
       Math.min(this.maxZoom, Math.max(this.minZoom, zoom)),
     );
-    const center = {
-      x: bounds.x + bounds.width / 2,
-      y: bounds.y + bounds.height / 2,
-    };
-    this.placeWorldAtScreen(center, {
-      x: screenWidth / 2,
-      y: screenHeight / 2,
-    });
+    this.viewport.position.set(
+      screenWidth / 2 -
+        (projectedBounds.x + projectedBounds.width / 2) * this.zoom,
+      screenHeight / 2 -
+        (projectedBounds.y + projectedBounds.height / 2) * this.zoom,
+    );
   }
 }

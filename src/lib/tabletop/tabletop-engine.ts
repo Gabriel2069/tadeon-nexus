@@ -1,5 +1,8 @@
-import { Application, Container, Graphics, Sprite } from "pixi.js";
-import { CameraController } from "./camera-controller";
+import { Application, Container, Graphics, Matrix, Sprite } from "pixi.js";
+import {
+  CameraController,
+  type TabletopProjectionMode,
+} from "./camera-controller";
 import { CommandHistory } from "./command-history";
 import { EntityRenderer } from "./entity-renderer";
 import {
@@ -13,6 +16,7 @@ import { GridRenderer } from "./grid-renderer";
 import {
   InteractionController,
   type TabletopMeasurementPreview,
+  type TabletopStructurePreview,
   type TabletopToolMode,
 } from "./interaction-controller";
 import { LayerManager } from "./layer-manager";
@@ -25,6 +29,8 @@ import {
   type TabletopDrawingStyle,
 } from "./tabletop-drawing";
 import { TabletopToolOverlay } from "./tabletop-tool-overlay";
+import { TabletopSpatialRenderer } from "./spatial-renderer";
+import type { TabletopStructureType } from "./tabletop-spatial";
 import {
   alignTabletopEntities,
   distributeTabletopEntities,
@@ -53,11 +59,13 @@ export interface TabletopEngineOptions {
   onAssetError?: (message: string) => void;
   onContextMenu?: (position: Point, entityId?: string) => void;
   onToolModeChange?: (mode: TabletopToolMode) => void;
+  onCreateStructure?: (structure: TabletopStructurePreview) => void;
 }
 
 export class TabletopEngine {
   private readonly app = new Application();
   private readonly viewport = new Container();
+  private readonly world = new Container({ label: "tabletop-world" });
   private readonly sceneBackground = new Container();
   private readonly sceneBackgroundShape = new Graphics();
   private readonly scenes = new SceneManager();
@@ -69,12 +77,15 @@ export class TabletopEngine {
   private readonly camera = new CameraController(this.viewport);
   private readonly entities: EntityRenderer;
   private readonly visibility = new TabletopVisibilityRenderer();
+  private readonly spatial = new TabletopSpatialRenderer();
   private readonly toolOverlay = new TabletopToolOverlay();
   private readonly selectionOverlay = new TabletopSelectionOverlay();
   private visibilityState = createEmptyVisibilityState();
   private visibilityGuides = false;
   private marqueeBounds: TabletopBounds | null = null;
   private toolMode: TabletopToolMode = "select";
+  private projectionMode: TabletopProjectionMode = "plan";
+  private structureType: TabletopStructureType = "wall";
   private interaction: InteractionController | null = null;
   private resizeObserver: ResizeObserver | null = null;
   private host: HTMLElement | null = null;
@@ -117,14 +128,17 @@ export class TabletopEngine {
     host.appendChild(this.app.canvas);
 
     this.sceneBackground.addChild(this.sceneBackgroundShape);
-    this.viewport.addChild(
+    this.world.addChild(
       this.sceneBackground,
       this.grid.view,
+      this.spatial.below,
       this.entities.view,
+      this.spatial.above,
       this.visibility.view,
       this.toolOverlay.view,
       this.selectionOverlay.view,
     );
+    this.viewport.addChild(this.world);
     this.app.stage.addChild(this.viewport);
     this.interaction = new InteractionController(this.app.canvas, {
       camera: this.camera,
@@ -141,6 +155,8 @@ export class TabletopEngine {
       previewMeasure: (measure) => this.previewMeasure(measure),
       previewDrawing: (points) => this.previewDrawing(points),
       commitDrawing: (points) => this.commitDrawing(points),
+      previewStructure: (structure) => this.previewStructure(structure),
+      commitStructure: (structure) => this.commitStructure(structure),
       commitTransform: (before, after, label) =>
         this.commitTransform(before, after, label),
       snap: (point) => this.snap(point),
@@ -192,13 +208,17 @@ export class TabletopEngine {
     this.readOnly = readOnly;
     if (readOnly) {
       this.selection.clear();
-      if (this.toolMode === "draw") this.setToolMode("select");
+      if (this.toolMode === "draw" || this.toolMode === "structure")
+        this.setToolMode("select");
     }
     this.render();
   }
 
   setToolMode(mode: TabletopToolMode) {
-    const nextMode = this.readOnly && mode === "draw" ? "select" : mode;
+    const nextMode =
+      this.readOnly && (mode === "draw" || mode === "structure")
+        ? "select"
+        : mode;
     this.toolMode = nextMode;
     this.interaction?.setMode(nextMode);
     this.options.onToolModeChange?.(nextMode);
@@ -217,6 +237,23 @@ export class TabletopEngine {
         ? Math.max(0.1, Math.min(1, Number(patch.opacity)))
         : this.drawingStyle.opacity,
     };
+  }
+
+  setStructureType(type: TabletopStructureType) {
+    this.structureType = type;
+  }
+
+  setProjectionMode(mode: TabletopProjectionMode) {
+    if (mode === this.projectionMode) return;
+    this.projectionMode = mode;
+    this.camera.setProjection(mode);
+    this.world.setFromMatrix(
+      mode === "isometric" ? new Matrix(1, 0.5, -1, 0.5, 0, 0) : new Matrix(),
+    );
+    this.toolOverlay.clearMeasure();
+    this.toolOverlay.clearDrawing();
+    this.toolOverlay.clearStructure();
+    this.fitToScreen();
   }
 
   setVisibility(state: TabletopVisibilityState, showGuides = false) {
@@ -636,6 +673,7 @@ export class TabletopEngine {
       viewport: `${this.app.renderer.width}×${this.app.renderer.height}`,
       zoom: this.camera.zoom,
       tool: this.toolMode,
+      projection: this.projectionMode,
     };
   }
 
@@ -739,6 +777,23 @@ export class TabletopEngine {
     if (points.length < 2) this.toolOverlay.clearDrawing();
     else this.toolOverlay.renderDrawing(points, this.drawingStyle);
     this.render(false);
+  }
+
+  private previewStructure(structure: TabletopStructurePreview | null) {
+    if (!structure) this.toolOverlay.clearStructure();
+    else
+      this.toolOverlay.renderStructure(
+        structure.start,
+        structure.end,
+        this.structureType,
+        this.camera.zoom,
+      );
+    this.render(false);
+  }
+
+  private commitStructure(structure: TabletopStructurePreview) {
+    if (this.readOnly) return;
+    this.options.onCreateStructure?.(structure);
   }
 
   private commitDrawing(points: Point[]) {
@@ -928,6 +983,11 @@ export class TabletopEngine {
       this.visibilityState,
       this.visibilityGuides,
     );
+    this.spatial.render(
+      this.scenes.scene,
+      this.visibilityState,
+      this.projectionMode,
+    );
     this.selectionOverlay.render(
       this.scenes.scene.entities,
       this.selection.ids,
@@ -947,6 +1007,7 @@ export class TabletopEngine {
     this.entities.destroy();
     this.grid.destroy();
     this.visibility.destroy();
+    this.spatial.destroy();
     this.toolOverlay.destroy();
     this.selectionOverlay.destroy();
     this.backgroundSprite?.destroy();

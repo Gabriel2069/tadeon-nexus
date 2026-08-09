@@ -6,12 +6,18 @@ import {
 } from "./selection-overlay";
 import type { Point, TabletopEntity } from "./types";
 
-export type TabletopToolMode = "select" | "pan" | "measure" | "draw";
+export type TabletopToolMode =
+  "select" | "pan" | "measure" | "draw" | "structure";
 
 export interface TabletopMeasurementPreview {
   start: Point;
   end: Point;
   kind: "ruler" | "movement";
+}
+
+export interface TabletopStructurePreview {
+  start: Point;
+  end: Point;
 }
 
 interface InteractionBindings {
@@ -28,6 +34,8 @@ interface InteractionBindings {
   previewMeasure(measure: TabletopMeasurementPreview | null): void;
   previewDrawing(points: Point[]): void;
   commitDrawing(points: Point[]): void;
+  previewStructure(structure: TabletopStructurePreview | null): void;
+  commitStructure(structure: TabletopStructurePreview): void;
   commitTransform(
     before: TabletopEntity[],
     after: TabletopEntity[],
@@ -49,7 +57,14 @@ interface InteractionBindings {
 }
 
 type PointerAction =
-  "pan" | "move" | "marquee" | "resize" | "rotate" | "measure" | "draw";
+  | "pan"
+  | "move"
+  | "marquee"
+  | "resize"
+  | "rotate"
+  | "measure"
+  | "draw"
+  | "structure";
 
 const MIN_ENTITY_SIZE = 8;
 const HANDLE_HIT_RADIUS = 11;
@@ -63,6 +78,7 @@ export class InteractionController {
   private marqueeStartWorld: Point | null = null;
   private measureStartWorld: Point | null = null;
   private drawPoints: Point[] = [];
+  private structureStartWorld: Point | null = null;
   private activeHandle: TabletopTransformHandle | null = null;
   private mode: TabletopToolMode = "select";
   private spacePressed = false;
@@ -93,6 +109,7 @@ export class InteractionController {
     this.mode = mode;
     this.bindings.previewMeasure(null);
     this.bindings.previewDrawing([]);
+    this.bindings.previewStructure(null);
     this.updateCursor();
   }
 
@@ -114,6 +131,9 @@ export class InteractionController {
         if (this.dragBefore.length > 0)
           this.bindings.previewEntities(this.dragBefore);
         this.bindings.previewMarquee(null);
+        this.bindings.previewMeasure(null);
+        this.bindings.previewDrawing([]);
+        this.bindings.previewStructure(null);
         this.clearPointerState();
         this.pinching = true;
         const pinch = this.getPinchMetrics();
@@ -158,6 +178,11 @@ export class InteractionController {
       this.pointerAction = "draw";
       this.drawPoints = [world];
       this.bindings.previewDrawing(this.drawPoints);
+    } else if (this.mode === "structure") {
+      const start = event.altKey ? world : this.bindings.snap(world);
+      this.pointerAction = "structure";
+      this.structureStartWorld = start;
+      this.bindings.previewStructure({ start, end: start });
     } else if (hit) {
       const additive = event.shiftKey || event.metaKey || event.ctrlKey;
       if (additive || !this.bindings.isSelected(hit))
@@ -301,6 +326,22 @@ export class InteractionController {
           this.drawPoints.push(world);
       }
       this.bindings.previewDrawing(this.drawPoints);
+    } else if (this.pointerAction === "structure" && this.structureStartWorld) {
+      let end = event.altKey ? world : this.bindings.snap(world);
+      if (event.shiftKey) {
+        const delta = {
+          x: end.x - this.structureStartWorld.x,
+          y: end.y - this.structureStartWorld.y,
+        };
+        end =
+          Math.abs(delta.x) >= Math.abs(delta.y)
+            ? { x: end.x, y: this.structureStartWorld.y }
+            : { x: this.structureStartWorld.x, y: end.y };
+      }
+      this.bindings.previewStructure({
+        start: this.structureStartWorld,
+        end,
+      });
     }
 
     this.lastScreen = screen;
@@ -358,6 +399,24 @@ export class InteractionController {
       else if (this.drawPoints.length > 0) this.drawPoints.push(end);
       this.bindings.commitDrawing(this.drawPoints);
       this.bindings.previewDrawing([]);
+    } else if (this.pointerAction === "structure" && this.structureStartWorld) {
+      const world = this.bindings.camera.screenToWorld(this.screenPoint(event));
+      let end = event.altKey ? world : this.bindings.snap(world);
+      if (event.shiftKey) {
+        const delta = {
+          x: end.x - this.structureStartWorld.x,
+          y: end.y - this.structureStartWorld.y,
+        };
+        end =
+          Math.abs(delta.x) >= Math.abs(delta.y)
+            ? { x: end.x, y: this.structureStartWorld.y }
+            : { x: this.structureStartWorld.x, y: end.y };
+      }
+      this.bindings.commitStructure({
+        start: this.structureStartWorld,
+        end,
+      });
+      this.bindings.previewStructure(null);
     }
 
     this.releasePointer(event.pointerId);
@@ -371,6 +430,7 @@ export class InteractionController {
     this.bindings.previewMarquee(null);
     this.bindings.previewMeasure(null);
     this.bindings.previewDrawing([]);
+    this.bindings.previewStructure(null);
     this.releasePointer(event.pointerId);
   };
 
@@ -394,7 +454,12 @@ export class InteractionController {
 
   private onDoubleClick = (event: MouseEvent) => {
     if (event.button !== 0) return;
-    if (this.mode === "measure" || this.mode === "draw") return;
+    if (
+      this.mode === "measure" ||
+      this.mode === "draw" ||
+      this.mode === "structure"
+    )
+      return;
     event.preventDefault();
     const screen = this.screenPoint(event);
     const hit = this.bindings.hitTest(
@@ -432,6 +497,7 @@ export class InteractionController {
         h: "pan",
         r: "measure",
         d: "draw",
+        b: "structure",
       };
       const shortcut = toolShortcuts[event.key.toLowerCase()];
       if (shortcut) {
@@ -482,9 +548,14 @@ export class InteractionController {
       this.bindings.previewMarquee(null);
       this.bindings.previewMeasure(null);
       this.bindings.previewDrawing([]);
+      this.bindings.previewStructure(null);
       this.clearPointerState();
       this.bindings.clearSelection();
-      if (this.mode === "measure" || this.mode === "draw")
+      if (
+        this.mode === "measure" ||
+        this.mode === "draw" ||
+        this.mode === "structure"
+      )
         this.bindings.activateTool("select");
       this.updateCursor();
       return;
@@ -639,6 +710,10 @@ export class InteractionController {
       this.canvas.style.cursor = "cell";
       return;
     }
+    if (this.mode === "structure") {
+      this.canvas.style.cursor = "crosshair";
+      return;
+    }
     if (screen) {
       const handle = this.hitTransformHandle(screen)?.handle;
       if (handle === "rotate") {
@@ -680,6 +755,7 @@ export class InteractionController {
     this.marqueeStartWorld = null;
     this.measureStartWorld = null;
     this.drawPoints = [];
+    this.structureStartWorld = null;
     this.activeHandle = null;
   }
 
