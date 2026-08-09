@@ -91,10 +91,9 @@ describe("tabletop camera projection", () => {
     camera.setView({ x: 720, y: 480 }, 1.35, 1280, 720);
 
     expect(camera.zoom).toBeCloseTo(1.35, 8);
-    expect(camera.screenToWorld({ x: 640, y: 360 })).toMatchObject({
-      x: 720,
-      y: 480,
-    });
+    const restored = camera.screenToWorld({ x: 640, y: 360 });
+    expect(restored.x).toBeCloseTo(720, 8);
+    expect(restored.y).toBeCloseTo(480, 8);
   });
 
   it("fits the complete diamond inside the available screen", () => {
