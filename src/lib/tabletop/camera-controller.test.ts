@@ -17,6 +17,40 @@ describe("tabletop camera projection", () => {
     expect(restored.y).toBeCloseTo(world.y, 8);
   });
 
+  it("keeps the world point under the cursor fixed while zooming isometric", () => {
+    const viewport = new Container();
+    const camera = new CameraController(viewport);
+    camera.setProjection("isometric");
+    viewport.scale.set(0.8);
+    viewport.position.set(260, 140);
+
+    const cursor = { x: 617, y: 383 };
+    const anchoredWorldPoint = camera.screenToWorld(cursor);
+
+    camera.zoomAt(1.75, cursor);
+
+    expect(camera.worldToScreen(anchoredWorldPoint).x).toBeCloseTo(cursor.x, 8);
+    expect(camera.worldToScreen(anchoredWorldPoint).y).toBeCloseTo(cursor.y, 8);
+  });
+
+  it("does not accumulate grid drift across repeated isometric zooms", () => {
+    const viewport = new Container();
+    const camera = new CameraController(viewport);
+    camera.setProjection("isometric");
+    viewport.scale.set(1.1);
+    viewport.position.set(180, 220);
+
+    const cursor = { x: 480, y: 320 };
+    const anchoredWorldPoint = camera.screenToWorld(cursor);
+
+    for (const zoom of [1.6, 0.65, 2.2, 0.4, 1.1]) {
+      camera.zoomAt(zoom, cursor);
+    }
+
+    expect(camera.worldToScreen(anchoredWorldPoint).x).toBeCloseTo(cursor.x, 8);
+    expect(camera.worldToScreen(anchoredWorldPoint).y).toBeCloseTo(cursor.y, 8);
+  });
+
   it("fits the complete diamond inside the available screen", () => {
     const viewport = new Container();
     const camera = new CameraController(viewport);
