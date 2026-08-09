@@ -2,12 +2,22 @@ import { Application, Container, Graphics, Sprite } from "pixi.js";
 import { CameraController } from "./camera-controller";
 import { CommandHistory } from "./command-history";
 import { EntityRenderer } from "./entity-renderer";
-import { clampEntityToScene, pointInRotatedRect } from "./geometry";
+import {
+  boundsFromEntities,
+  entityIntersectsBounds,
+  clampEntityToScene,
+  pointInRotatedRect,
+  type TabletopBounds,
+} from "./geometry";
 import { GridRenderer } from "./grid-renderer";
-import { InteractionController } from "./interaction-controller";
+import {
+  InteractionController,
+  type TabletopToolMode,
+} from "./interaction-controller";
 import { LayerManager } from "./layer-manager";
 import { SceneManager } from "./scene-manager";
 import { SelectionManager } from "./selection-manager";
+import { TabletopSelectionOverlay } from "./selection-overlay";
 import { TextureManager } from "./texture-manager";
 import {
   alignTabletopEntities,
@@ -52,8 +62,11 @@ export class TabletopEngine {
   private readonly camera = new CameraController(this.viewport);
   private readonly entities: EntityRenderer;
   private readonly visibility = new TabletopVisibilityRenderer();
+  private readonly selectionOverlay = new TabletopSelectionOverlay();
   private visibilityState = createEmptyVisibilityState();
   private visibilityGuides = false;
+  private marqueeBounds: TabletopBounds | null = null;
+  private toolMode: TabletopToolMode = "select";
   private interaction: InteractionController | null = null;
   private resizeObserver: ResizeObserver | null = null;
   private host: HTMLElement | null = null;
@@ -96,19 +109,25 @@ export class TabletopEngine {
       this.grid.view,
       this.entities.view,
       this.visibility.view,
+      this.selectionOverlay.view,
     );
     this.app.stage.addChild(this.viewport);
     this.interaction = new InteractionController(this.app.canvas, {
       camera: this.camera,
       hitTest: (point) => this.hitTest(point),
+      isSelected: (id) => this.selection.has(id),
       select: (id, additive) => this.select(id, additive),
       selectAll: () => this.selectAll(),
+      selectInBounds: (bounds, additive) =>
+        this.selectInBounds(bounds, additive),
       clearSelection: () => this.clearSelection(),
       editableSelection: () => this.editableSelection(),
       previewEntities: (entities) => this.previewEntities(entities),
-      commitTransform: (before, after) => this.commitTransform(before, after),
+      previewMarquee: (bounds) => this.previewMarquee(bounds),
+      commitTransform: (before, after, label) =>
+        this.commitTransform(before, after, label),
       snap: (point) => this.snap(point),
-      render: () => this.render(),
+      renderView: () => this.render(false),
       undo: () => this.undo(),
       redo: () => this.redo(),
       duplicate: () => this.duplicateSelected(),
@@ -116,9 +135,12 @@ export class TabletopEngine {
       paste: () => this.pasteClipboard(),
       remove: () => this.deleteSelected(),
       nudge: (delta) => this.nudge(delta),
+      focusSelection: () => this.focusSelection(),
+      fitToScreen: () => this.fitToScreen(),
       onContextMenu: (position, entityId) =>
         this.options.onContextMenu?.(position, entityId),
     });
+    this.interaction.setMode(this.toolMode);
     this.resizeObserver = new ResizeObserver(() => this.resize());
     this.resizeObserver.observe(host);
     this.loadScene(EMPTY_TABLETOP_SCENE);
@@ -152,6 +174,12 @@ export class TabletopEngine {
     this.readOnly = readOnly;
     if (readOnly) this.selection.clear();
     this.render();
+  }
+
+  setToolMode(mode: TabletopToolMode) {
+    this.toolMode = mode;
+    this.interaction?.setMode(mode);
+    this.render(false);
   }
 
   setVisibility(state: TabletopVisibilityState, showGuides = false) {
@@ -392,6 +420,19 @@ export class TabletopEngine {
     this.render();
   }
 
+  focusSelection() {
+    const bounds = boundsFromEntities(this.selectedEntities);
+    if (!bounds) return;
+    this.camera.fitBounds(
+      bounds,
+      this.app.renderer.width,
+      this.app.renderer.height,
+      92,
+      2.25,
+    );
+    this.render(false);
+  }
+
   moveSelectedToLayer(layerId: string) {
     if (this.readOnly) return;
     const target = this.layers.get(layerId);
@@ -557,6 +598,7 @@ export class TabletopEngine {
       clipboard: this.clipboard.length,
       viewport: `${this.app.renderer.width}×${this.app.renderer.height}`,
       zoom: this.camera.zoom,
+      tool: this.toolMode,
     };
   }
 
@@ -567,6 +609,23 @@ export class TabletopEngine {
 
   private clearSelection() {
     this.selection.clear();
+    this.render();
+  }
+
+  private selectInBounds(bounds: TabletopBounds, additive: boolean) {
+    const matches = this.scenes.scene.entities
+      .filter((entity) => {
+        const layer = this.layers.get(entity.layerId);
+        return (
+          !entity.hidden &&
+          Boolean(layer?.visible) &&
+          entityIntersectsBounds(entity, bounds)
+        );
+      })
+      .map((entity) => entity.id);
+    this.selection.replace(
+      additive ? [...this.selection.ids, ...matches] : matches,
+    );
     this.render();
   }
 
@@ -606,10 +665,19 @@ export class TabletopEngine {
         (entity) => replacements.get(entity.id) ?? entity,
       ),
     );
-    this.render();
+    this.render(false);
   }
 
-  private commitTransform(before: TabletopEntity[], after: TabletopEntity[]) {
+  private previewMarquee(bounds: TabletopBounds | null) {
+    this.marqueeBounds = bounds;
+    this.render(false);
+  }
+
+  private commitTransform(
+    before: TabletopEntity[],
+    after: TabletopEntity[],
+    label: string,
+  ) {
     if (this.readOnly) return;
     const beforeMap = new Map(before.map((entity) => [entity.id, entity]));
     const afterMap = new Map(after.map((entity) => [entity.id, entity]));
@@ -621,7 +689,7 @@ export class TabletopEngine {
       (entity) => afterMap.get(entity.id) ?? entity,
     );
     this.scenes.setEntities(beforeState);
-    this.recordStates("Mover seleção", beforeState, afterState);
+    this.recordStates(label, beforeState, afterState);
   }
 
   private nudge(delta: Point) {
@@ -723,10 +791,19 @@ export class TabletopEngine {
 
   private resize() {
     if (!this.host || this.destroyed) return;
-    this.app.renderer.resize(
-      Math.max(320, this.host.clientWidth),
-      Math.max(320, this.host.clientHeight),
-    );
+    const previousWidth = this.app.renderer.width;
+    const previousHeight = this.app.renderer.height;
+    const worldCenter = this.camera.screenToWorld({
+      x: previousWidth / 2,
+      y: previousHeight / 2,
+    });
+    const width = Math.max(320, this.host.clientWidth);
+    const height = Math.max(320, this.host.clientHeight);
+    this.app.renderer.resize(width, height);
+    this.camera.placeWorldAtScreen(worldCenter, {
+      x: width / 2,
+      y: height / 2,
+    });
     this.render(false);
   }
 
@@ -743,6 +820,13 @@ export class TabletopEngine {
       this.visibilityState,
       this.visibilityGuides,
     );
+    this.selectionOverlay.render(
+      this.scenes.scene.entities,
+      this.selection.ids,
+      this.camera.zoom,
+      this.marqueeBounds,
+      this.editableSelection().length === 1,
+    );
     this.app.render();
     if (notify) this.options.onChange?.(this.snapshot);
   }
@@ -755,6 +839,7 @@ export class TabletopEngine {
     this.entities.destroy();
     this.grid.destroy();
     this.visibility.destroy();
+    this.selectionOverlay.destroy();
     this.backgroundSprite?.destroy();
     this.backgroundSprite = null;
     await this.textures.clear();

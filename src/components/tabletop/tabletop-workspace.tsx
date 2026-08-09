@@ -22,6 +22,7 @@ import {
   EyeOff,
   Focus,
   Grid2X2,
+  Hand,
   History,
   Image,
   Layers3,
@@ -36,6 +37,7 @@ import {
   RefreshCw,
   RotateCw,
   Save,
+  Scan,
   SlidersHorizontal,
   Trash2,
   Undo2,
@@ -70,6 +72,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { TabletopEngine } from "@/lib/tabletop/tabletop-engine";
+import type { TabletopToolMode } from "@/lib/tabletop/interaction-controller";
 import {
   createEmptyVisibilityState,
   tabletopVisibilityService,
@@ -124,6 +127,9 @@ type PaletteDragPayload =
   | { kind: "knowledge"; id: string };
 
 type TabletopPanelTab = "library" | "scene" | "inspector";
+type PendingNavigation =
+  | { kind: "scene"; id: string }
+  | { kind: "campaign"; id: string };
 
 function parsePaletteDragPayload(value: string): PaletteDragPayload | null {
   try {
@@ -233,11 +239,15 @@ export function TabletopWorkspace({
   const [mobileToolsOpen, setMobileToolsOpen] = useState(false);
   const [mobilePanelOpen, setMobilePanelOpen] = useState(false);
   const [panelTab, setPanelTab] = useState<TabletopPanelTab>("library");
+  const [toolMode, setToolMode] = useState<TabletopToolMode>("select");
   const [sceneDialogOpen, setSceneDialogOpen] = useState(false);
   const [sceneName, setSceneName] = useState("Nova cena");
   const [snapshotDialogOpen, setSnapshotDialogOpen] = useState(false);
   const [snapshotName, setSnapshotName] = useState("Marco da sessão");
   const [archiveDialogOpen, setArchiveDialogOpen] = useState(false);
+  const [restoreDialogOpen, setRestoreDialogOpen] = useState(false);
+  const [pendingNavigation, setPendingNavigation] =
+    useState<PendingNavigation | null>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [dirty, setDirty] = useState(false);
@@ -273,6 +283,10 @@ export function TabletopWorkspace({
   useEffect(() => {
     if (snapshot.selectedIds.length > 0) setPanelTab("inspector");
   }, [snapshot.selectedIds.length]);
+
+  useEffect(() => {
+    engineRef.current?.setToolMode(toolMode);
+  }, [toolMode]);
 
   useEffect(() => {
     if (!mobilePanelOpen) return;
@@ -685,12 +699,6 @@ export function TabletopWorkspace({
   const restoreSnapshot = async () => {
     const stored = persistedSceneRef.current;
     if (!stored || !snapshotId) return;
-    if (
-      !window.confirm(
-        "Restaurar este snapshot? Um snapshot de recuperação será criado antes.",
-      )
-    )
-      return;
     setSaving(true);
     try {
       await tabletopPersistenceService.restoreSnapshot(
@@ -699,6 +707,7 @@ export function TabletopWorkspace({
       );
       await loadScene(stored.id);
       await refreshScenes(stored.campaignId);
+      setRestoreDialogOpen(false);
       toast.success("Snapshot restaurado com ponto de recuperação.");
     } catch (error) {
       if (
@@ -714,21 +723,27 @@ export function TabletopWorkspace({
 
   const requestSceneChange = (sceneId: string) => {
     if (sceneId === persistedSceneRef.current?.id) return;
-    if (
-      dirty &&
-      !window.confirm("Descartar as alterações locais e abrir outra cena?")
-    )
+    if (dirty) {
+      setPendingNavigation({ kind: "scene", id: sceneId });
       return;
+    }
     void loadScene(sceneId);
   };
 
   const requestCampaignChange = (nextCampaignId: string) => {
-    if (
-      dirty &&
-      !window.confirm("Descartar as alterações locais e trocar de campanha?")
-    )
+    if (dirty) {
+      setPendingNavigation({ kind: "campaign", id: nextCampaignId });
       return;
+    }
     setCampaignId(nextCampaignId);
+  };
+
+  const confirmPendingNavigation = () => {
+    const pending = pendingNavigation;
+    setPendingNavigation(null);
+    if (!pending) return;
+    if (pending.kind === "scene") void loadScene(pending.id);
+    else setCampaignId(pending.id);
   };
 
   const updateNumber = (
@@ -1125,7 +1140,7 @@ export function TabletopWorkspace({
         </div>
       )}
 
-      <div className="grid min-h-0 flex-1 grid-cols-1 lg:grid-cols-[minmax(0,1fr)_22rem] xl:grid-cols-[minmax(0,1fr)_24rem]">
+      <div className="tadeon-tabletop-workbench grid min-h-0 flex-1 grid-cols-1 lg:grid-cols-[minmax(0,1fr)_23rem] 2xl:grid-cols-[minmax(0,1fr)_25rem]">
         <section
           className="tadeon-tabletop-stage relative min-h-[64svh] overflow-hidden sm:min-h-[70vh] lg:min-h-0"
           onClick={closeContext}
@@ -1145,12 +1160,27 @@ export function TabletopWorkspace({
             className="tadeon-tabletop-canvas-rail"
             aria-label="Ferramentas do canvas"
           >
+            <CanvasToolButton
+              label="Ferramenta de seleção"
+              active={toolMode === "select"}
+              onClick={() => setToolMode("select")}
+            >
+              <MousePointer2 className="h-4 w-4" />
+            </CanvasToolButton>
+            <CanvasToolButton
+              label="Ferramenta mão para mover a cena"
+              active={toolMode === "pan"}
+              onClick={() => setToolMode("pan")}
+            >
+              <Hand className="h-4 w-4" />
+            </CanvasToolButton>
+            <span className="tadeon-tabletop-canvas-rail__divider" />
             <ToolbarButton
               label="Selecionar todas as entidades editáveis"
               disabled={!editable || snapshot.scene.entities.length === 0}
               onClick={() => engineRef.current?.selectAll()}
             >
-              <MousePointer2 className="h-4 w-4" />
+              <Scan className="h-4 w-4" />
             </ToolbarButton>
             <ToolbarButton
               label="Adicionar token"
@@ -1183,6 +1213,55 @@ export function TabletopWorkspace({
               <Maximize2 className="h-4 w-4" />
             </ToolbarButton>
           </div>
+          {selected.length > 0 && (
+            <div
+              className="tadeon-tabletop-selection-dock"
+              aria-label="Ações rápidas da seleção"
+            >
+              <div className="min-w-0 px-2">
+                <strong className="block truncate text-xs text-foreground">
+                  {selected.length === 1
+                    ? primary?.label
+                    : `${selected.length} entidades`}
+                </strong>
+                <span className="block text-[10px] text-muted-foreground">
+                  Seleção ativa
+                </span>
+              </div>
+              <span className="tadeon-tabletop-selection-dock__divider" />
+              <ToolbarButton
+                label="Enquadrar seleção"
+                onClick={() => engineRef.current?.focusSelection()}
+              >
+                <Focus className="h-4 w-4" />
+              </ToolbarButton>
+              <ToolbarButton
+                label="Duplicar seleção"
+                disabled={!editable}
+                onClick={() => engineRef.current?.duplicateSelected()}
+              >
+                <Copy className="h-4 w-4" />
+              </ToolbarButton>
+              <ToolbarButton
+                label="Bloquear ou desbloquear seleção"
+                disabled={!editable}
+                onClick={() => engineRef.current?.toggleSelectedLock()}
+              >
+                {selected.some((entity) => entity.locked) ? (
+                  <LockOpen className="h-4 w-4" />
+                ) : (
+                  <Lock className="h-4 w-4" />
+                )}
+              </ToolbarButton>
+              <ToolbarButton
+                label="Excluir seleção"
+                disabled={!editable}
+                onClick={() => engineRef.current?.deleteSelected()}
+              >
+                <Trash2 className="h-4 w-4" />
+              </ToolbarButton>
+            </div>
+          )}
           {loading && (
             <div className="pointer-events-none absolute inset-0 z-20 flex items-center justify-center bg-background/55 backdrop-blur-sm">
               <Loader2 className="h-8 w-8 animate-spin text-primary" />
@@ -1190,7 +1269,7 @@ export function TabletopWorkspace({
           )}
           {!persistedScene && !loading && (
             <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
-              <div className="pointer-events-auto max-w-sm rounded-2xl border border-primary/20 bg-card/90 p-6 text-center shadow-2xl backdrop-blur">
+              <div className="tadeon-tabletop-empty-state pointer-events-auto max-w-sm p-6 text-center">
                 <MousePointer2 className="mx-auto h-8 w-8 text-primary" />
                 <h2 className="mt-3 font-cinzel text-xl">Nenhuma cena</h2>
                 <p className="mt-2 text-sm text-muted-foreground">
@@ -1212,7 +1291,7 @@ export function TabletopWorkspace({
             snapshot.scene.entities.length === 0 &&
             !loading && (
               <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
-                <div className="pointer-events-auto max-w-sm rounded-2xl border border-primary/20 bg-card/90 p-6 text-center shadow-2xl backdrop-blur">
+                <div className="tadeon-tabletop-empty-state pointer-events-auto max-w-sm p-6 text-center">
                   <MousePointer2 className="mx-auto h-8 w-8 text-primary" />
                   <h2 className="mt-3 font-cinzel text-xl">Cena vazia</h2>
                   <p className="mt-2 text-sm text-muted-foreground">
@@ -1252,15 +1331,21 @@ export function TabletopWorkspace({
                 <span>grade</span>
               </div>
               <div className="tadeon-tabletop-stage-status__metric">
-                <strong>
-                  {snapshot.scene.width}×{snapshot.scene.height}
-                </strong>
-                <span>cena</span>
+                <strong>{toolMode === "select" ? "Seleção" : "Mão"}</strong>
+                <span>ferramenta</span>
               </div>
               <span className="ml-auto hidden text-[11px] text-muted-foreground sm:block">
-                Arraste para mover · roda ou pinça para zoom · Shift seleciona
-                em grupo
+                {toolMode === "select"
+                  ? "Arraste uma área · alças redimensionam · Espaço move a cena"
+                  : "Arraste para navegar · Ctrl/Cmd + roda amplia · duplo clique enquadra"}
               </span>
+              <ToolbarButton
+                label="Enquadrar seleção"
+                disabled={selected.length === 0}
+                onClick={() => engineRef.current?.focusSelection()}
+              >
+                <Focus className="h-4 w-4" />
+              </ToolbarButton>
               <ToolbarButton
                 label="Reduzir zoom"
                 onClick={() => engineRef.current?.zoomBy(0.82)}
@@ -1604,7 +1689,7 @@ export function TabletopWorkspace({
                 <ToolbarButton
                   label="Restaurar snapshot"
                   disabled={!editable || !snapshotId || saving || dirty}
-                  onClick={() => void restoreSnapshot()}
+                  onClick={() => setRestoreDialogOpen(true)}
                 >
                   <History className="h-4 w-4" />
                 </ToolbarButton>
@@ -2302,6 +2387,54 @@ export function TabletopWorkspace({
         </AlertDialogContent>
       </AlertDialog>
 
+      <AlertDialog open={restoreDialogOpen} onOpenChange={setRestoreDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Restaurar este marco da cena?</AlertDialogTitle>
+            <AlertDialogDescription>
+              A montagem atual será substituída pela versão escolhida. Antes
+              disso, a Mesa criará automaticamente um ponto de recuperação.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Manter montagem atual</AlertDialogCancel>
+            <AlertDialogAction
+              disabled={saving || !snapshotId}
+              onClick={() => void restoreSnapshot()}
+            >
+              Restaurar snapshot
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      <AlertDialog
+        open={Boolean(pendingNavigation)}
+        onOpenChange={(open) => {
+          if (!open) setPendingNavigation(null);
+        }}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Descartar alterações locais?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Há mudanças ainda não salvas nesta cena. Ao continuar para outra
+              {pendingNavigation?.kind === "campaign" ? " campanha" : " cena"},
+              essa montagem local será perdida.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Continuar editando</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={confirmPendingNavigation}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              Descartar e continuar
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
       {contextMenu && editable && (
         <div
           role="menu"
@@ -2403,6 +2536,33 @@ function ToolbarButton({
       title={label}
       aria-label={label}
       disabled={disabled}
+      onClick={onClick}
+    >
+      {children}
+    </Button>
+  );
+}
+
+function CanvasToolButton({
+  label,
+  active,
+  children,
+  onClick,
+}: {
+  label: string;
+  active: boolean;
+  children: React.ReactNode;
+  onClick: () => void;
+}) {
+  return (
+    <Button
+      type="button"
+      variant={active ? "default" : "ghost"}
+      size="icon"
+      className="h-10 w-10 sm:h-9 sm:w-9"
+      title={label}
+      aria-label={label}
+      aria-pressed={active}
       onClick={onClick}
     >
       {children}
