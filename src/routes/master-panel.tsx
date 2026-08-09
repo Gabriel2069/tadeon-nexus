@@ -467,12 +467,15 @@ function MasterPanel() {
   }
 
   return (
-    <div className="max-w-7xl mx-auto p-3 md:p-6 pb-24">
-      <div className="sticky top-0 z-10 -mx-3 md:-mx-6 px-3 md:px-6 py-3 mb-4 bg-background/85 backdrop-blur-md border-b border-border">
+    <div className="tadeon-master-workspace tadeon-route-master mx-auto max-w-7xl p-3 pb-24 md:p-6">
+      <div className="tadeon-page-hero tadeon-master-commandbar sticky top-0 z-10 -mx-3 mb-4 border-b border-border bg-background/85 px-3 py-3 backdrop-blur-md md:-mx-6 md:px-6">
         <div className="flex items-center justify-between gap-3">
-          <h1 className="font-cinzel text-xl md:text-2xl font-bold flex items-center gap-2">
-            <Sparkles className="w-5 h-5 text-primary" /> Painel do Mestre
-          </h1>
+          <div>
+            <p className="tadeon-eyebrow hidden md:block">Condução da campanha</p>
+            <h1 className="flex items-center gap-2 font-cinzel text-xl font-bold md:text-2xl">
+              <Sparkles className="h-5 w-5 text-primary" /> Painel do Mestre
+            </h1>
+          </div>
           <div className="flex items-center gap-2">
             <SaveStatus
               state={saving ? "saving" : dirty ? "pending" : "saved"}

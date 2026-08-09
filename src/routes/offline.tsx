@@ -53,8 +53,8 @@ function OfflinePage() {
   const hasCache = Number.isFinite(updated.getTime()) && updated.getTime() > 0;
 
   return (
-    <div className="tadeon-page max-w-6xl space-y-6">
-      <section className="tadeon-surface rounded-2xl px-5 py-6 md:px-8 md:py-8">
+    <div className="tadeon-page tadeon-route-offline max-w-6xl space-y-6">
+      <section className="tadeon-page-hero tadeon-surface rounded-2xl px-5 py-6 md:px-8 md:py-8">
         <div className="flex flex-col justify-between gap-5 md:flex-row md:items-end">
           <div>
             <div className="mb-3 flex items-center gap-2">

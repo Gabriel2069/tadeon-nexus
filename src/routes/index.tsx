@@ -233,8 +233,8 @@ function HomePage() {
   };
 
   return (
-    <div className="tadeon-page tadeon-dashboard space-y-8">
-      <section className="tadeon-surface tadeon-dashboard-hero relative min-h-64 rounded-2xl px-5 py-6 sm:px-6 sm:py-7 md:px-9 md:py-9">
+    <div className="tadeon-page tadeon-dashboard tadeon-route-dashboard space-y-8">
+      <section className="tadeon-page-hero tadeon-surface tadeon-dashboard-hero relative min-h-64 rounded-2xl px-5 py-6 sm:px-6 sm:py-7 md:px-9 md:py-9">
         <ThreadField className="text-primary" />
         <div className="relative z-10 flex flex-col justify-between gap-8 lg:flex-row lg:items-end">
           <div className="max-w-2xl">
@@ -396,6 +396,9 @@ function HomePage() {
                 key={sheet.id}
                 className="tadeon-surface tadeon-sheet-card relative flex min-h-44 flex-col p-4 hover:border-primary/35 sm:min-h-52 sm:p-5"
               >
+                <span className="tadeon-sheet-card__index" aria-hidden>
+                  {String(index + 1).padStart(2, "0")}
+                </span>
                 <div className="mb-4 flex items-start justify-between gap-4 sm:mb-6">
                   <span className="tadeon-mono text-[10px] uppercase text-muted-foreground">
                     Fio {String(index + 1).padStart(2, "0")} · Rank {sheet.exposure || 0}

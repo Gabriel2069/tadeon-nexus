@@ -387,8 +387,8 @@ function NexusToolsPage() {
   const healthyCount = diagnostics.filter((item) => item.level === "healthy").length;
 
   return (
-    <div className="tadeon-page max-w-6xl space-y-6">
-      <section className="tadeon-surface rounded-2xl px-5 py-6 md:px-8 md:py-8">
+    <div className="tadeon-page tadeon-route-tools max-w-6xl space-y-6">
+      <section className="tadeon-page-hero tadeon-surface rounded-2xl px-5 py-6 md:px-8 md:py-8">
         <div className="flex flex-col justify-between gap-5 md:flex-row md:items-end">
           <div>
             <p className="tadeon-eyebrow">Integridade do arquivo</p>

@@ -1050,10 +1050,10 @@ export function NexusWorkspace({
       className={
         focusMode
           ? "min-h-[calc(100dvh-4rem)] bg-background"
-          : "tadeon-page max-w-[112rem]"
+          : "tadeon-page tadeon-route-nexus max-w-[112rem]"
       }
     >
-      <section className="tadeon-nexus-header mb-4 flex flex-col justify-between gap-4 rounded-2xl border bg-card/60 p-4 backdrop-blur md:flex-row md:items-center">
+      <section className="tadeon-page-hero tadeon-nexus-header tadeon-nexus-commandbar mb-4 flex flex-col justify-between gap-4 rounded-2xl border bg-card/60 p-4 backdrop-blur md:flex-row md:items-center">
         <div>
           <p className="tadeon-eyebrow">Arquivo vivo de continuidade</p>
           <h1 className="font-cinzel text-2xl font-semibold md:text-3xl">

@@ -139,8 +139,8 @@ function ManageUsersPage() {
   };
 
   return (
-    <div className="tadeon-page max-w-5xl">
-      <header className="mb-6 flex flex-col gap-4 border-b border-border/60 pb-5 sm:flex-row sm:items-end sm:justify-between">
+    <div className="tadeon-page tadeon-route-users max-w-5xl">
+      <header className="tadeon-page-hero mb-6 flex flex-col gap-4 border-b border-border/60 pb-5 sm:flex-row sm:items-end sm:justify-between">
         <div className="max-w-2xl">
           <p className="tadeon-eyebrow">Administração do arquivo</p>
           <h1 className="mt-1 font-cinzel text-2xl font-semibold md:text-3xl">
@@ -197,19 +197,27 @@ function ManageUsersPage() {
             return (
               <Card
                 key={u.id}
-                className="grid gap-4 border-border/70 bg-card/65 p-4 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center sm:p-5"
+                className="tadeon-user-row grid gap-4 border-border/70 bg-card/65 p-4 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center sm:p-5"
               >
-                <div className="min-w-0">
-                  <div className="truncate font-medium">
-                    {u.full_name || "Sem nome"}
-                    {isSelf && (
-                      <span className="ml-2 text-[11px] font-semibold text-primary">
-                        Você
-                      </span>
-                    )}
-                  </div>
-                  <div className="mt-1 truncate text-xs text-muted-foreground">
-                    {u.email}
+                <div className="flex min-w-0 items-center gap-3">
+                  <span className="tadeon-user-row__sigil" aria-hidden>
+                    {(u.full_name || u.email || "?")
+                      .trim()
+                      .charAt(0)
+                      .toUpperCase()}
+                  </span>
+                  <div className="min-w-0">
+                    <div className="truncate font-medium">
+                      {u.full_name || "Sem nome"}
+                      {isSelf && (
+                        <span className="ml-2 text-[11px] font-semibold text-primary">
+                          Você
+                        </span>
+                      )}
+                    </div>
+                    <div className="mt-1 truncate text-xs text-muted-foreground">
+                      {u.email}
+                    </div>
                   </div>
                 </div>
                 <div className="grid grid-cols-[minmax(0,1fr)_2.75rem] items-center gap-2 sm:flex">
