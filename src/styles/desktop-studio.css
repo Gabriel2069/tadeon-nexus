@@ -279,6 +279,10 @@
     animation: tadeon-stage-reveal 360ms var(--ease-out) both;
   }
 
+  .tadeon-tabletop-studio {
+    min-height: calc(100dvh - 4.65rem);
+  }
+
   .tadeon-route-stage .tadeon-page {
     padding-top: clamp(1.75rem, 3vw, 3rem);
     padding-right: clamp(1.5rem, 3vw, 3rem);
@@ -396,28 +400,6 @@
 
   .tadeon-nexus-actions {
     justify-content: flex-end;
-  }
-
-  .tadeon-nexus-actions__scope,
-  .tadeon-nexus-actions__tools,
-  .tadeon-nexus-actions__primary {
-    position: relative;
-  }
-
-  .tadeon-nexus-actions__tools,
-  .tadeon-nexus-actions__primary {
-    padding-left: 0.75rem;
-  }
-
-  .tadeon-nexus-actions__tools::before,
-  .tadeon-nexus-actions__primary::before {
-    position: absolute;
-    top: 0.3rem;
-    bottom: 0.3rem;
-    left: 0.25rem;
-    width: 1px;
-    background: color-mix(in srgb, var(--section-accent) 16%, var(--border));
-    content: "";
   }
 
   .tadeon-nexus-actions > [data-slot="select-trigger"] {
@@ -563,9 +545,6 @@
     display: none;
   }
 
-  .tadeon-tabletop-studio {
-    min-height: calc(100dvh - 4.65rem);
-  }
 }
 
 @media (min-width: 1180px) {
