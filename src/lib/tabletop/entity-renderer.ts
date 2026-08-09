@@ -1,4 +1,5 @@
 import { Container, Graphics, Matrix, Sprite, Text } from "pixi.js";
+import { GifSprite } from "pixi.js/gif";
 import type { TabletopProjectionMode } from "./camera-controller";
 import {
   DEFAULT_TABLETOP_VIEW_ORIENTATION,
@@ -18,6 +19,7 @@ import {
 } from "./tabletop-levels";
 import type { TabletopEntity, TabletopScene } from "./types";
 import { TextureManager } from "./texture-manager";
+import { normalizeTabletopPlayback, tabletopMediaKind } from "./tabletop-media";
 
 function entityProperties(value: unknown): Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value)
@@ -287,6 +289,26 @@ export class EntityRenderer {
     const assetFrame = display.getChildByLabel("asset") as Container | null;
     const sprite = assetFrame?.getChildByLabel("asset-sprite") as Sprite | null;
     if (assetFrame && sprite) {
+      const playback = normalizeTabletopPlayback(properties);
+      if (sprite instanceof GifSprite) {
+        sprite.animationSpeed = playback.speed;
+        sprite.loop = playback.loop;
+        if (playback.paused && sprite.playing) sprite.stop();
+        else if (!playback.paused && !sprite.playing) sprite.play();
+      } else {
+        const resource = sprite.texture.source.resource;
+        if (
+          typeof HTMLVideoElement !== "undefined" &&
+          resource instanceof HTMLVideoElement
+        ) {
+          resource.muted = playback.muted;
+          resource.loop = playback.loop;
+          resource.playbackRate = playback.speed;
+          if (playback.paused && !resource.paused) resource.pause();
+          else if (!playback.paused && resource.paused)
+            void resource.play().catch(() => undefined);
+        }
+      }
       const billboard =
         projection === "isometric" &&
         tabletopEntityRenderMode(entity) === "billboard";
@@ -331,24 +353,57 @@ export class EntityRenderer {
       current.destroy();
     }
     if (entity.assetUrl)
-      void this.attachAsset(display, entity.id, entity.assetUrl);
+      void this.attachAsset(display, entity, entity.assetUrl);
   }
 
-  private async attachAsset(display: Container, entityId: string, url: string) {
+  private async attachAsset(
+    display: Container,
+    entity: TabletopEntity,
+    url: string,
+  ) {
     try {
-      const texture = await this.textures.load(url);
-      if (display.destroyed || this.assetUrls.get(entityId) !== url) return;
+      const properties = entityProperties(entity.properties);
+      const playback = normalizeTabletopPlayback(properties);
+      const assetSprite =
+        tabletopMediaKind(properties.mime_type, url) === "gif"
+          ? new GifSprite({
+              source: await this.textures.loadGif(url),
+              label: "asset-sprite",
+              autoPlay: !playback.paused,
+              loop: playback.loop,
+              animationSpeed: playback.speed,
+            })
+          : new Sprite({
+              texture: await this.textures.load(url),
+              label: "asset-sprite",
+            });
+      if (display.destroyed || this.assetUrls.get(entity.id) !== url) {
+        assetSprite.destroy();
+        return;
+      }
       const previous = display.getChildByLabel("asset");
       if (previous) {
         display.removeChild(previous);
-        previous.destroy();
+        previous.destroy({ children: true });
+      }
+      const resource = assetSprite.texture.source.resource;
+      if (
+        typeof HTMLVideoElement !== "undefined" &&
+        resource instanceof HTMLVideoElement
+      ) {
+        resource.muted = playback.muted;
+        resource.loop = playback.loop;
+        resource.playsInline = true;
+        resource.playbackRate = playback.speed;
+        if (playback.paused) resource.pause();
+        else void resource.play().catch(() => undefined);
       }
       const assetFrame = new Container({ label: "asset" });
-      assetFrame.addChild(new Sprite({ texture, label: "asset-sprite" }));
+      assetFrame.addChild(assetSprite);
       display.addChildAt(assetFrame, 1);
       this.invalidate();
     } catch (error) {
-      if (this.assetUrls.get(entityId) !== url) return;
+      if (this.assetUrls.get(entity.id) !== url) return;
       this.onAssetError(
         error instanceof Error ? error.message : "Asset inválido.",
       );
