@@ -167,6 +167,96 @@
   backdrop-filter: blur(22px) saturate(128%);
 }
 
+.tadeon-tabletop-tool-options {
+  position: absolute;
+  z-index: 13;
+  top: 0.75rem;
+  right: 0.75rem;
+  display: flex;
+  min-height: 2.9rem;
+  align-items: center;
+  gap: 0.7rem;
+  padding: 0.4rem 0.55rem;
+  border: 1px solid rgb(217 215 164 / 16%);
+  border-radius: 0.45rem 1rem 0.45rem 1rem;
+  background:
+    linear-gradient(120deg, rgb(116 36 45 / 9%), transparent 48%),
+    rgb(10 13 17 / 88%);
+  box-shadow:
+    0 20px 56px -34px rgb(0 0 0 / 100%),
+    inset 0 1px 0 rgb(255 255 255 / 4%);
+  backdrop-filter: blur(22px) saturate(128%);
+}
+
+.tadeon-tabletop-tool-options__heading {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  color: var(--primary);
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+  font-weight: 750;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.tadeon-tabletop-draw-swatches {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.tadeon-tabletop-draw-swatch,
+.tadeon-tabletop-draw-custom {
+  position: relative;
+  width: 1.55rem;
+  height: 1.55rem;
+  flex: 0 0 auto;
+  border: 1px solid rgb(233 227 213 / 22%);
+  border-radius: 999px;
+  box-shadow:
+    0 4px 12px rgb(0 0 0 / 30%),
+    inset 0 0 0 2px rgb(8 10 14 / 72%);
+}
+
+.tadeon-tabletop-draw-swatch[aria-pressed="true"]::after {
+  position: absolute;
+  inset: -0.28rem;
+  border: 1px solid var(--primary);
+  border-radius: inherit;
+  box-shadow: 0 0 12px rgb(217 215 164 / 30%);
+  content: "";
+}
+
+.tadeon-tabletop-draw-custom {
+  overflow: hidden;
+  background: conic-gradient(#74242d, #d9d7a4, #4f6e5d, #1f3644, #74242d);
+}
+
+.tadeon-tabletop-draw-custom input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+  opacity: 0;
+}
+
+.tadeon-tabletop-draw-width {
+  display: flex;
+  min-width: 7.5rem;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--muted-foreground);
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+}
+
+.tadeon-tabletop-draw-width input {
+  width: 5.25rem;
+  accent-color: var(--primary);
+}
+
 .tadeon-tabletop-canvas-rail__divider,
 .tadeon-tabletop-selection-dock__divider {
   width: 70%;
@@ -407,8 +497,16 @@
 
   .tadeon-tabletop-canvas-rail {
     top: 0.55rem;
+    right: 0.55rem;
     left: 0.55rem;
     flex-direction: row;
+    max-width: calc(100% - 1.1rem);
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .tadeon-tabletop-canvas-rail::-webkit-scrollbar {
+    display: none;
   }
 
   .tadeon-tabletop-canvas-rail__divider {
@@ -428,6 +526,18 @@
     left: 0.55rem;
     max-width: none;
     transform: none;
+  }
+
+  .tadeon-tabletop-tool-options {
+    top: 4.15rem;
+    right: 0.55rem;
+    left: 0.55rem;
+    justify-content: space-between;
+    overflow-x: auto;
+  }
+
+  .tadeon-tabletop-tool-options__heading {
+    display: none;
   }
 
   .tadeon-tabletop-selection-dock > div:first-child,
@@ -454,6 +564,7 @@
 
 @media (prefers-reduced-transparency: reduce) {
   .tadeon-tabletop-canvas-rail,
+  .tadeon-tabletop-tool-options,
   .tadeon-tabletop-selection-dock,
   .tadeon-tabletop-stage-status,
   .tadeon-tabletop-panel__tabs,

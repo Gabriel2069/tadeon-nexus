@@ -12,6 +12,7 @@ import {
   CheckCircle2,
   LibraryBig,
   Loader2,
+  MailCheck,
   ShieldCheck,
   Sparkles,
 } from "lucide-react";
@@ -34,9 +35,17 @@ export const Route = createFileRoute("/login")({
         content:
           "Acesse sua conta no Tadeon Nexus para gerenciar suas fichas de personagem, atributos e mesas de RPG online.",
       },
-      { property: "og:url", content: "https://tadeon-nexus.gtadeusz.workers.dev/login" },
+      {
+        property: "og:url",
+        content: "https://tadeon-nexus.gtadeusz.workers.dev/login",
+      },
     ],
-    links: [{ rel: "canonical", href: "https://tadeon-nexus.gtadeusz.workers.dev/login" }],
+    links: [
+      {
+        rel: "canonical",
+        href: "https://tadeon-nexus.gtadeusz.workers.dev/login",
+      },
+    ],
   }),
   validateSearch: (search: Record<string, unknown>) => ({
     next:
@@ -60,6 +69,8 @@ function LoginPage() {
   const [fullName, setFullName] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [resetting, setResetting] = useState(false);
+  const [resending, setResending] = useState(false);
+  const [pendingConfirmationEmail, setPendingConfirmationEmail] = useState("");
   const [feedback, setFeedback] = useState<{
     tone: "error" | "success";
     message: string;
@@ -89,10 +100,17 @@ function LoginPage() {
     cleanUrl.searchParams.delete("error");
     cleanUrl.searchParams.delete("error_code");
     cleanUrl.searchParams.delete("error_description");
-    window.history.replaceState(null, "", `${cleanUrl.pathname}${cleanUrl.search}`);
+    window.history.replaceState(
+      null,
+      "",
+      `${cleanUrl.pathname}${cleanUrl.search}`,
+    );
   }, []);
 
-  const showError = (error: unknown, action: Parameters<typeof getAuthErrorMessage>[1]) => {
+  const showError = (
+    error: unknown,
+    action: Parameters<typeof getAuthErrorMessage>[1],
+  ) => {
     const message = getAuthErrorMessage(error, action);
     setFeedback({ tone: "error", message });
     toast.error(message);
@@ -110,9 +128,12 @@ function LoginPage() {
     setFeedback(null);
     setResetting(true);
     try {
-      const { error } = await supabase.auth.resetPasswordForEmail(normalizedEmail, {
-        redirectTo: `${getAuthRedirectOrigin()}/reset-password`,
-      });
+      const { error } = await supabase.auth.resetPasswordForEmail(
+        normalizedEmail,
+        {
+          redirectTo: `${getAuthRedirectOrigin()}/reset-password`,
+        },
+      );
       if (error) throw error;
       const message =
         "Se este e-mail estiver cadastrado, enviaremos um link de redefinição. Verifique também a pasta de spam.";
@@ -122,6 +143,39 @@ function LoginPage() {
       showError(error, "recovery-request");
     } finally {
       setResetting(false);
+    }
+  };
+
+  const handleResendConfirmation = async () => {
+    const normalizedEmail = (pendingConfirmationEmail || email)
+      .trim()
+      .toLowerCase();
+    if (!normalizedEmail) {
+      const message = "Informe o e-mail da conta antes de solicitar o reenvio.";
+      setFeedback({ tone: "error", message });
+      toast.error(message);
+      return;
+    }
+
+    setFeedback(null);
+    setResending(true);
+    try {
+      const { error } = await supabase.auth.resend({
+        type: "signup",
+        email: normalizedEmail,
+        options: {
+          emailRedirectTo: `${getAuthRedirectOrigin()}${target}`,
+        },
+      });
+      if (error) throw error;
+      const message =
+        "Se este endereço ainda estiver pendente, uma nova confirmação foi solicitada. Se a conta já foi validada, entre normalmente ou recupere a senha.";
+      setFeedback({ tone: "success", message });
+      toast.success(message);
+    } catch (error) {
+      showError(error, "signup");
+    } finally {
+      setResending(false);
     }
   };
 
@@ -157,8 +211,11 @@ function LoginPage() {
           setFeedback({ tone: "success", message });
           toast.success(message);
         } else {
-          const message =
-            "Cadastro recebido. Confirme o e-mail enviado antes de entrar; verifique também a pasta de spam.";
+          setPendingConfirmationEmail(normalizedEmail);
+          const isRepeatedSignup = data.user?.identities?.length === 0;
+          const message = isRepeatedSignup
+            ? "Este endereço já pode estar validado. Contas confirmadas não recebem um novo e-mail de cadastro: tente entrar ou use “Esqueceu a senha?”. Se ainda estiver pendente, use “Reenviar confirmação”."
+            : "Cadastro recebido. Confirme o e-mail antes de entrar; verifique spam e, se necessário, use “Reenviar confirmação”.";
           setMode("signin");
           setPassword("");
           setFeedback({ tone: "success", message });
@@ -184,14 +241,19 @@ function LoginPage() {
   return (
     <main className="tadeon-auth-page">
       <div aria-hidden="true" className="tadeon-auth-page__glow" />
-      <section className="tadeon-auth-shell" aria-label="Acesso ao Tadeon Nexus">
+      <section
+        className="tadeon-auth-shell"
+        aria-label="Acesso ao Tadeon Nexus"
+      >
         <aside className="tadeon-auth-manifesto">
           <ThreadField className="text-primary" />
           <div className="tadeon-auth-manifesto__brand">
             <BrandMark className="h-14 w-14 text-primary" />
             <div>
               <p className="tadeon-eyebrow">Fio-Mestre</p>
-              <p className="font-cinzel text-2xl font-semibold text-primary">Tadeon Nexus</p>
+              <p className="font-cinzel text-2xl font-semibold text-primary">
+                Tadeon Nexus
+              </p>
             </div>
           </div>
           <div className="relative z-10">
@@ -201,11 +263,14 @@ function LoginPage() {
               </p>
               <h2>Onde cada fio permanece legível.</h2>
               <p>
-                Personagens, conhecimento e mesa reunidos em um espaço privado, persistente e feito
-                para a campanha continuar de onde parou.
+                Personagens, conhecimento e mesa reunidos em um espaço privado,
+                persistente e feito para a campanha continuar de onde parou.
               </p>
             </div>
-            <div className="tadeon-auth-manifesto__signals" aria-label="Recursos protegidos">
+            <div
+              className="tadeon-auth-manifesto__signals"
+              aria-label="Recursos protegidos"
+            >
               <span>
                 <ShieldCheck aria-hidden="true" /> Acesso protegido
               </span>
@@ -266,12 +331,14 @@ function LoginPage() {
                 onChange={(e) => setPassword(e.target.value)}
                 required
                 minLength={mode === "signup" ? 8 : undefined}
-                autoComplete={mode === "signin" ? "current-password" : "new-password"}
+                autoComplete={
+                  mode === "signin" ? "current-password" : "new-password"
+                }
               />
             </div>
             <Button
               type="submit"
-              disabled={submitting || resetting}
+              disabled={submitting || resetting || resending}
               className="tadeon-auth-submit min-h-11 w-full"
             >
               {submitting && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
@@ -299,14 +366,27 @@ function LoginPage() {
           </form>
 
           {mode === "signin" && (
-            <div className="mt-3 text-center">
+            <div className="mt-3 flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-center">
               <button
                 type="button"
                 onClick={handleForgot}
-                disabled={resetting || submitting}
+                disabled={resetting || resending || submitting}
                 className="text-xs text-muted-foreground hover:text-primary hover:underline disabled:opacity-50"
               >
                 {resetting ? "Enviando…" : "Esqueceu a senha?"}
+              </button>
+              <button
+                type="button"
+                onClick={handleResendConfirmation}
+                disabled={resending || resetting || submitting}
+                className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-primary hover:underline disabled:opacity-50"
+              >
+                {resending ? (
+                  <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                ) : (
+                  <MailCheck className="h-3.5 w-3.5" />
+                )}
+                {resending ? "Solicitando…" : "Reenviar confirmação"}
               </button>
             </div>
           )}
