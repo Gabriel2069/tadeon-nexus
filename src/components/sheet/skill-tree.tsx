@@ -208,7 +208,7 @@ export function SkillTreeTab({
         </div>
         <div className="mt-3 w-full h-2 bg-secondary rounded-full overflow-hidden">
           <div
-            className="h-full bg-gradient-to-r from-primary to-accent transition-all"
+            className="h-full bg-gradient-to-r from-primary to-accent"
             style={{ width: `${Math.min(100, (pmSpent / Math.max(1, totalPM)) * 100)}%` }}
           />
         </div>
@@ -323,12 +323,12 @@ export function SkillTreeTab({
                             return (
                               <div
                                 key={node.id}
-                                className={`tadeon-skill-node flex min-h-56 flex-col rounded-xl border p-4 transition-all ${
+                                className={`tadeon-skill-node flex min-h-56 flex-col rounded-xl border p-4 transition-[background-color,border-color,box-shadow,transform] duration-150 ease-[var(--ease-out)] ${
                                   isPurchased
                                     ? "bg-primary/10 border-primary/50 shadow-[0_12px_40px_-28px_var(--primary)]"
                                     : locked
                                       ? "bg-secondary/20 border-border/70"
-                                      : "bg-secondary/35 border-border hover:-translate-y-0.5 hover:border-primary/50"
+                                      : "bg-secondary/35 border-border hover:border-primary/50"
                                 }`}
                               >
                                 <div className="flex items-start justify-between gap-2">
