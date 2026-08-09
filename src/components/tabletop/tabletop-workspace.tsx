@@ -23,6 +23,7 @@ import {
   Eye,
   EyeOff,
   FileSearch,
+  Film,
   Focus,
   Grid2X2,
   Hand,
@@ -87,6 +88,7 @@ import { TabletopEngine } from "@/lib/tabletop/tabletop-engine";
 import { tabletopEntityInsightService } from "@/lib/tabletop/tabletop-entity-insight-service";
 import type { TabletopSheetSummary } from "@/lib/tabletop/tabletop-entity-insight";
 import { assetService } from "@/lib/assets/asset-service";
+import { AssetServiceError } from "@/lib/assets/asset-errors";
 import type { TabletopToolMode } from "@/lib/tabletop/interaction-controller";
 import type { TabletopProjectionMode } from "@/lib/tabletop/camera-controller";
 import {
@@ -96,6 +98,11 @@ import {
   type TabletopViewState,
 } from "@/lib/tabletop/tabletop-projection";
 import { tabletopViewPreferenceService } from "@/lib/tabletop/tabletop-view-preference-service";
+import {
+  isTabletopBackgroundMime,
+  isTabletopEntityMediaMime,
+  tabletopMediaKind,
+} from "@/lib/tabletop/tabletop-media";
 import {
   createTabletopStructure,
   structureFamily,
@@ -332,6 +339,7 @@ export function TabletopWorkspace({
   const [selectedLightId, setSelectedLightId] = useState<string | null>(null);
   const [activeLevelId, setActiveLevelId] = useState<string | null>(null);
   const [assetUploading, setAssetUploading] = useState(false);
+  const [assetUploadProgress, setAssetUploadProgress] = useState(0);
   const [drawColor, setDrawColor] = useState("#d9d7a4");
   const [drawWidth, setDrawWidth] = useState(5);
   const [lightToolRadius, setLightToolRadius] = useState(320);
@@ -387,6 +395,16 @@ export function TabletopWorkspace({
     (scene) => scene.id === persistedScene?.id,
   );
   const primaryProperties = entityProperties(primary?.properties);
+  const primaryMimeType =
+    typeof primaryProperties.mime_type === "string"
+      ? primaryProperties.mime_type
+      : "";
+  const primaryMediaKind = tabletopMediaKind(
+    primaryMimeType,
+    primary?.assetUrl,
+  );
+  const primaryAnimated =
+    primaryMediaKind === "gif" || primaryMediaKind === "video";
   const visualConditions = Array.isArray(primaryProperties.visual_conditions)
     ? primaryProperties.visual_conditions.filter(
         (value): value is string => typeof value === "string",
@@ -1248,11 +1266,22 @@ export function TabletopWorkspace({
     target: "entity" | "background",
   ) => {
     const campaign = campaigns.find((item) => item.id === campaignId);
-    if (!campaign || !editable || !file.type.startsWith("image/")) {
-      toast.error("Escolha uma imagem válida para a campanha atual.");
+    if (
+      !campaign ||
+      !editable ||
+      (target === "background"
+        ? !isTabletopBackgroundMime(file.type)
+        : !isTabletopEntityMediaMime(file.type))
+    ) {
+      toast.error(
+        target === "background"
+          ? "Escolha PNG, JPEG, WebP ou AVIF para o ambiente."
+          : "Escolha uma imagem, GIF animado, WebM ou MP4 para a entidade.",
+      );
       return;
     }
     setAssetUploading(true);
+    setAssetUploadProgress(0);
     try {
       const asset = await assetService.createUploadTask({
         workspaceId: campaign.workspaceId,
@@ -1265,6 +1294,7 @@ export function TabletopWorkspace({
           source: "tabletop",
           role: target === "background" ? "scene_background" : "entity_image",
         },
+        onProgress: ({ percent }) => setAssetUploadProgress(percent),
       }).promise;
       const previewUrl = await assetService.createTemporaryAccess(asset, 300);
       const size = fitTabletopAssetSize(asset.width, asset.height);
@@ -1304,6 +1334,9 @@ export function TabletopWorkspace({
         )
           engineRef.current?.updateSelectedProperties({
             render_mode: "billboard",
+            mime_type: asset.mime_type,
+            playback_loop: true,
+            playback_muted: true,
           });
       }
       toast.success(
@@ -1311,10 +1344,15 @@ export function TabletopWorkspace({
           ? "Imagem aplicada ao ambiente."
           : "Imagem aplicada ao token ou objeto.",
       );
-    } catch {
-      toast.error("Não foi possível enviar esta imagem ao Nexus Assets.");
+    } catch (error) {
+      toast.error(
+        error instanceof AssetServiceError
+          ? error.message
+          : "Não foi possível enviar esta mídia ao Nexus Assets.",
+      );
     } finally {
       setAssetUploading(false);
+      setAssetUploadProgress(0);
     }
   };
 
@@ -1345,6 +1383,9 @@ export function TabletopWorkspace({
           source: "nexus_assets",
           mime_type: asset.mimeType,
           render_mode: "billboard",
+          playback_loop: true,
+          playback_muted: true,
+          playback_speed: 1,
         },
       };
     }
@@ -1368,6 +1409,7 @@ export function TabletopWorkspace({
 
   const updateBackgroundAsset = (assetId: string) => {
     const asset = paletteAssets.find((item) => item.id === assetId);
+    if (asset && !isTabletopBackgroundMime(asset.mimeType)) return;
     engineRef.current?.setBackgroundAsset(asset?.id ?? null, asset?.previewUrl);
   };
 
@@ -2356,11 +2398,13 @@ export function TabletopWorkspace({
                   className="h-10 w-full rounded-md border border-input bg-background px-2 text-xs"
                 >
                   <option value="">Sem mapa de fundo</option>
-                  {paletteAssets.map((asset) => (
-                    <option key={asset.id} value={asset.id}>
-                      {asset.displayName}
-                    </option>
-                  ))}
+                  {paletteAssets
+                    .filter((asset) => isTabletopBackgroundMime(asset.mimeType))
+                    .map((asset) => (
+                      <option key={asset.id} value={asset.id}>
+                        {asset.displayName}
+                      </option>
+                    ))}
                 </select>
                 <p className="mt-1 text-[10px] text-muted-foreground">
                   Usa um asset privado autorizado para preencher a camada Mapa.
@@ -2372,9 +2416,12 @@ export function TabletopWorkspace({
                     <ImagePlus className="h-4 w-4" />
                   )}
                   Enviar imagem do ambiente
+                  {assetUploading && assetUploadProgress > 0
+                    ? ` · ${Math.round(assetUploadProgress)}%`
+                    : ""}
                   <input
                     type="file"
-                    accept="image/*"
+                    accept="image/png,image/jpeg,image/webp,image/avif"
                     className="sr-only"
                     disabled={!editable || assetUploading}
                     onChange={(event) => {
@@ -2393,7 +2440,7 @@ export function TabletopWorkspace({
                 )}
                 {!paletteLoading && paletteAssets.length === 0 && (
                   <p className="col-span-2 rounded-md border border-dashed border-border/60 p-3 text-center text-[11px] text-muted-foreground">
-                    Nenhuma imagem pronta no Nexus Assets.
+                    Nenhuma mídia visual pronta no Nexus Assets.
                   </p>
                 )}
                 {paletteAssets.slice(0, 12).map((asset) => (
@@ -2424,14 +2471,26 @@ export function TabletopWorkspace({
                     className="tadeon-tabletop-asset overflow-hidden rounded-xl border border-border/60 bg-secondary/15 text-left disabled:opacity-50"
                   >
                     <div className="flex aspect-video items-center justify-center bg-black/30">
-                      {asset.previewUrl ? (
+                      {asset.previewUrl &&
+                      asset.mimeType.startsWith("video/") ? (
+                        <video
+                          src={asset.previewUrl}
+                          className="h-full w-full object-cover"
+                          muted
+                          loop
+                          autoPlay
+                          playsInline
+                          preload="metadata"
+                          aria-label={`Prévia animada de ${asset.displayName}`}
+                        />
+                      ) : asset.previewUrl ? (
                         <img
                           src={asset.previewUrl}
                           alt=""
                           className="h-full w-full object-cover"
                         />
                       ) : (
-                        <Image className="h-5 w-5 text-muted-foreground" />
+                        <Film className="h-5 w-5 text-muted-foreground" />
                       )}
                     </div>
                     <span className="block truncate px-2.5 py-2 text-[11px] font-medium">
@@ -3149,6 +3208,77 @@ export function TabletopWorkspace({
                         </p>
                       </div>
                     ) : null}
+                    {primaryAnimated && (
+                      <div className="space-y-2 rounded-lg border border-border/60 bg-secondary/15 p-2.5">
+                        <div className="flex items-center gap-2">
+                          <Film className="h-4 w-4 text-primary" />
+                          <span className="text-[10px] font-semibold uppercase tracking-wider">
+                            Movimento
+                          </span>
+                        </div>
+                        <div className="grid grid-cols-2 gap-2">
+                          <label className="flex min-h-10 items-center justify-between gap-2 rounded-md bg-background/60 px-2 text-[11px]">
+                            Pausado
+                            <Switch
+                              checked={
+                                primaryProperties.playback_paused === true
+                              }
+                              disabled={!editable}
+                              onCheckedChange={(playback_paused) =>
+                                updateProperties({ playback_paused })
+                              }
+                            />
+                          </label>
+                          <label className="flex min-h-10 items-center justify-between gap-2 rounded-md bg-background/60 px-2 text-[11px]">
+                            Repetir
+                            <Switch
+                              checked={
+                                primaryProperties.playback_loop !== false
+                              }
+                              disabled={!editable}
+                              onCheckedChange={(playback_loop) =>
+                                updateProperties({ playback_loop })
+                              }
+                            />
+                          </label>
+                        </div>
+                        <label className="block text-[10px] text-muted-foreground">
+                          Velocidade
+                          <select
+                            value={String(
+                              primaryProperties.playback_speed ?? 1,
+                            )}
+                            disabled={!editable}
+                            onChange={(event) =>
+                              updateProperties({
+                                playback_speed: Number(event.target.value),
+                              })
+                            }
+                            className="mt-1 h-9 w-full rounded-md border border-input bg-background px-2 text-xs text-foreground"
+                          >
+                            <option value="0.5">0,5×</option>
+                            <option value="0.75">0,75×</option>
+                            <option value="1">1×</option>
+                            <option value="1.5">1,5×</option>
+                            <option value="2">2×</option>
+                          </select>
+                        </label>
+                        {primaryMediaKind === "video" && (
+                          <label className="flex min-h-10 items-center justify-between gap-2 rounded-md bg-background/60 px-2 text-[11px]">
+                            Sem som
+                            <Switch
+                              checked={
+                                primaryProperties.playback_muted !== false
+                              }
+                              disabled={!editable}
+                              onCheckedChange={(playback_muted) =>
+                                updateProperties({ playback_muted })
+                              }
+                            />
+                          </label>
+                        )}
+                      </div>
+                    )}
                     <label className="flex min-h-11 cursor-pointer items-center justify-center gap-2 rounded-md border border-dashed border-primary/35 bg-primary/5 px-3 text-xs font-medium text-primary hover:bg-primary/10">
                       {assetUploading ? (
                         <Loader2 className="h-4 w-4 animate-spin" />
@@ -3156,11 +3286,14 @@ export function TabletopWorkspace({
                         <ImagePlus className="h-4 w-4" />
                       )}
                       {primary.assetId
-                        ? "Substituir imagem"
-                        : "Adicionar imagem ao token ou objeto"}
+                        ? "Substituir mídia"
+                        : "Adicionar imagem ou animação"}
+                      {assetUploading && assetUploadProgress > 0
+                        ? ` · ${Math.round(assetUploadProgress)}%`
+                        : ""}
                       <input
                         type="file"
-                        accept="image/*"
+                        accept="image/png,image/jpeg,image/webp,image/gif,image/avif,video/webm,video/mp4"
                         className="sr-only"
                         disabled={!editable || assetUploading}
                         onChange={(event) => {

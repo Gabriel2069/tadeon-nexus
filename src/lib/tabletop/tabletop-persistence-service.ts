@@ -521,7 +521,7 @@ export class TabletopPersistenceService {
       .eq("workspace_id", workspaceId)
       .eq("status", "ready")
       .is("deleted_at", null)
-      .like("mime_type", "image/%")
+      .or("mime_type.like.image/%,mime_type.like.video/%")
       .or(`campaign_id.is.null,campaign_id.eq.${campaignId}`)
       .order("created_at", { ascending: false })
       .limit(48);
