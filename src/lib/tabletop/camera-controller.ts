@@ -80,10 +80,7 @@ export class CameraController {
     const worldPoint = this.screenToWorld(screenPoint);
     const zoom = Math.min(this.maxZoom, Math.max(this.minZoom, nextZoom));
     this.viewport.scale.set(zoom);
-    this.viewport.position.set(
-      screenPoint.x - worldPoint.x * zoom,
-      screenPoint.y - worldPoint.y * zoom,
-    );
+    this.placeWorldAtScreen(worldPoint, screenPoint);
   }
 
   center(
