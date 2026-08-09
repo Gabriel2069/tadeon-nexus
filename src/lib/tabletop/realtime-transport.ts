@@ -39,7 +39,7 @@ export interface TabletopRealtimeChannelAdapter {
 }
 
 export interface TabletopRealtimeClientAdapter {
-  setAuth(): Promise<void>;
+  setAuth(expectedUserId: string): Promise<void>;
   createChannel(topic: string, options: RealtimeChannelOptions): TabletopRealtimeChannelAdapter;
   removeChannel(channel: TabletopRealtimeChannelAdapter): Promise<unknown>;
 }
@@ -94,8 +94,22 @@ export interface TabletopRealtimeTransportOptions {
 }
 
 const defaultClient: TabletopRealtimeClientAdapter = {
-  async setAuth() {
-    await supabase.realtime.setAuth();
+  async setAuth(expectedUserId) {
+    const { data, error } = await supabase.auth.getSession();
+    const session = data.session;
+    if (
+      error ||
+      !session?.access_token ||
+      session.user.id !== expectedUserId
+    ) {
+      throw error ?? new Error("Realtime session does not match the participant");
+    }
+
+    // Private-channel authorization happens during the join. Supplying the
+    // current token explicitly avoids a race between Auth hydration and the
+    // first Realtime socket join. Supabase's auth listener keeps this token
+    // current on subsequent SIGNED_IN/TOKEN_REFRESHED events.
+    await supabase.realtime.setAuth(session.access_token);
   },
   createChannel(topic, options) {
     return supabase.channel(topic, options) as unknown as TabletopRealtimeChannelAdapter;
@@ -162,6 +176,7 @@ export class TabletopRealtimeTransport {
   private sceneChannel: TabletopRealtimeChannelAdapter | null = null;
   private sessionChannel: TabletopRealtimeChannelAdapter | null = null;
   private readonly eventGate = new TabletopRealtimeEventGate();
+  private readonly subscribedChannels = new Set<TabletopRealtimeChannelAdapter>();
   private state: TabletopRealtimeConnectionState = "idle";
   private connectPromise: Promise<void> | null = null;
   private disconnecting = false;
@@ -213,7 +228,7 @@ export class TabletopRealtimeTransport {
     }
 
     try {
-      await this.client.setAuth();
+      await this.client.setAuth(presence.data.userId);
     } catch (error) {
       this.setState("idle");
       throw safeTransportError("TABLETOP_REALTIME_AUTH_FAILED", error);
@@ -278,16 +293,29 @@ export class TabletopRealtimeTransport {
       let settled = false;
       channel.subscribe((status, error) => {
         if (status === "SUBSCRIBED") {
+          this.subscribedChannels.add(channel);
           if (!settled) {
             settled = true;
             resolve();
+          } else if (
+            this.sceneChannel &&
+            this.sessionChannel &&
+            this.subscribedChannels.has(this.sceneChannel) &&
+            this.subscribedChannels.has(this.sessionChannel)
+          ) {
+            this.setState("connected");
           }
           return;
         }
 
+        this.subscribedChannels.delete(channel);
         if (settled) {
           if (!this.disconnecting) {
-            this.setState(status === "CLOSED" ? "disconnected" : "degraded");
+            this.setState(
+              this.subscribedChannels.size > 0 && status !== "CLOSED"
+                ? "degraded"
+                : "disconnected",
+            );
           }
           return;
         }
@@ -392,6 +420,7 @@ export class TabletopRealtimeTransport {
     );
     this.sceneChannel = null;
     this.sessionChannel = null;
+    this.subscribedChannels.clear();
     await Promise.allSettled(channels.map((channel) => this.client.removeChannel(channel)));
   }
 
