@@ -11,6 +11,7 @@ import {
 const sceneId = "11111111-1111-4111-8111-111111111111";
 const entityId = "22222222-2222-4222-8222-222222222222";
 const userId = "33333333-3333-4333-8333-333333333333";
+const wallId = "44444444-4444-4444-8444-444444444444";
 
 function event(sequence = 1, sentAt = 5_000): TabletopRealtimeEvent {
   return {
@@ -60,6 +61,23 @@ describe("protocolo Realtime da Mesa", () => {
     expect(gate.accept(event(2), 5_020)).toBe(true);
     expect(gate.accept(event(3), 5_030)).toBe(false);
     expect(gate.accept(event(4), 6_100)).toBe(true);
+  });
+
+  it("valida a notificação mínima de uma porta sem transportar geometria", () => {
+    const doorEvent: TabletopRealtimeEvent = {
+      ...event(),
+      type: "structure.state",
+      payload: { wallId, wallType: "door_open", version: 2 },
+    };
+    expect(
+      parseTabletopRealtimeEvent(doorEvent, { sceneId, now: 5_500 }),
+    ).toEqual(doorEvent);
+    expect(
+      parseTabletopRealtimeEvent(
+        { ...doorEvent, payload: { ...doorEvent.payload, x1: 12 } },
+        { sceneId, now: 5_500 },
+      ),
+    ).toBeNull();
   });
 
   it("limita Presence aos campos lentos previstos", () => {

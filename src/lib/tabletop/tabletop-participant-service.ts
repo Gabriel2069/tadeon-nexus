@@ -1,4 +1,5 @@
 import { z } from "zod";
+import type { SupabaseClient } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
 import type { CampaignRole } from "@/lib/nexus-contracts";
 import type { TabletopScene } from "@/lib/tabletop/types";
@@ -6,6 +7,7 @@ import type { TabletopVisibilityState } from "@/lib/tabletop/tabletop-visibility
 
 const uuidSchema = z.uuid();
 const finiteNumber = z.number().finite();
+const participantDatabase = supabase as unknown as SupabaseClient;
 
 const participantLayerSchema = z
   .object({
@@ -23,7 +25,11 @@ const participantHandoutAttachmentSchema = z
     assetId: uuidSchema,
     name: z.string().trim().min(1).max(240),
     mimeType: z.string().trim().min(1).max(160),
-    sizeBytes: z.number().int().nonnegative().max(100 * 1024 * 1024),
+    sizeBytes: z
+      .number()
+      .int()
+      .nonnegative()
+      .max(100 * 1024 * 1024),
     role: z.string().trim().max(80),
     caption: z.string().trim().max(500),
     url: z.url(),
@@ -72,6 +78,7 @@ const participantEntitySchema = z
     color: z.number().int().min(0).max(0xffffff),
     assetUrl: z.url().optional(),
     elevation: finiteNumber.optional(),
+    levelId: uuidSchema,
     controllable: z.boolean(),
     properties: z.record(z.string(), z.unknown()),
     handout: participantHandoutSchema.optional(),
@@ -88,26 +95,65 @@ const participantVisibilitySchema = z
     globalIllumination: finiteNumber.min(0).max(1),
     fogEnabled: z.boolean(),
     fogOpacity: finiteNumber.min(0).max(1),
-    walls: z.array(z.never()).max(0),
-    lights: z.array(z.object({
-      id: uuidSchema,
-      entityId: z.null(),
-      x: finiteNumber,
-      y: finiteNumber,
-      radius: finiteNumber.min(8).max(100_000),
-      intensity: finiteNumber.min(0).max(1),
-      color: z.string().regex(/^#[0-9a-f]{6}$/i),
-      enabled: z.boolean(),
-      castsShadows: z.boolean(),
-      visibilityPolygon: z.array(visibilityPointSchema).max(2048).optional(),
-    }).strict()).max(256),
-    fogStrokes: z.array(z.object({
-      id: uuidSchema,
-      operation: z.enum(["reveal", "hide"]),
-      points: z.array(visibilityPointSchema).min(1).max(64),
-      radius: finiteNumber.min(8).max(1024),
-      sequenceIndex: z.number().int().min(0).max(100_000),
-    }).strict()).max(512),
+    walls: z
+      .array(
+        z
+          .object({
+            id: uuidSchema,
+            levelId: uuidSchema,
+            x1: finiteNumber,
+            y1: finiteNumber,
+            x2: finiteNumber,
+            y2: finiteNumber,
+            wallType: z.enum(["door_closed", "door_open"]),
+            blocksVision: z.boolean(),
+            blocksMovement: z.boolean(),
+            baseElevation: finiteNumber,
+            height: finiteNumber.min(8).max(100_000),
+            thickness: finiteNumber.min(1).max(1024),
+            playerOperable: z.literal(true),
+            version: z.number().int().positive(),
+          })
+          .strict(),
+      )
+      .max(128),
+    lights: z
+      .array(
+        z
+          .object({
+            id: uuidSchema,
+            levelId: uuidSchema,
+            entityId: z.null(),
+            x: finiteNumber,
+            y: finiteNumber,
+            elevation: finiteNumber,
+            radius: finiteNumber.min(8).max(100_000),
+            intensity: finiteNumber.min(0).max(1),
+            color: z.string().regex(/^#[0-9a-f]{6}$/i),
+            enabled: z.boolean(),
+            castsShadows: z.boolean(),
+            visibilityPolygon: z
+              .array(visibilityPointSchema)
+              .max(2048)
+              .optional(),
+          })
+          .strict(),
+      )
+      .max(256),
+    fogStrokes: z
+      .array(
+        z
+          .object({
+            id: uuidSchema,
+            levelId: uuidSchema,
+            operation: z.enum(["reveal", "hide"]),
+            points: z.array(visibilityPointSchema).min(1).max(64),
+            radius: finiteNumber.min(8).max(1024),
+            sequenceIndex: z.number().int().min(0).max(100_000),
+          })
+          .strict(),
+      )
+      .max(512),
   })
   .strict();
 
@@ -122,6 +168,24 @@ const participantSceneSchema = z
     gridScale: finiteNumber.positive().max(100),
     snap: z.boolean(),
     backgroundAssetUrl: z.url().optional(),
+    activeLevelId: uuidSchema,
+    levels: z
+      .array(
+        z
+          .object({
+            id: uuidSchema,
+            name: z.string().trim().min(1).max(120),
+            order: z.number().int().min(-100).max(100),
+            baseElevation: finiteNumber,
+            height: finiteNumber.min(8).max(100_000),
+            visible: z.literal(true),
+            locked: z.boolean(),
+            version: z.number().int().positive(),
+          })
+          .strict(),
+      )
+      .min(1)
+      .max(1),
     layers: z.array(participantLayerSchema).max(32),
     entities: z.array(participantEntitySchema).max(2_000),
   })
@@ -170,6 +234,8 @@ export interface TabletopParticipantHandout {
 }
 
 export type TabletopParticipantScene = Omit<TabletopScene, "entities"> & {
+  activeLevelId: string;
+  levels: NonNullable<TabletopScene["levels"]>;
   entities: Array<
     TabletopScene["entities"][number] & {
       controllable: boolean;
@@ -209,7 +275,9 @@ export class TabletopParticipantError extends Error {
   }
 }
 
-export function parseTabletopParticipantView(input: unknown): TabletopParticipantView {
+export function parseTabletopParticipantView(
+  input: unknown,
+): TabletopParticipantView {
   const parsed = participantViewSchema.safeParse(input);
   if (!parsed.success) {
     throw new TabletopParticipantError("TABLETOP_PARTICIPANT_INVALID_RESPONSE");
@@ -227,11 +295,14 @@ export class TabletopParticipantService {
       body: { sessionId },
     });
     if (error) {
-      const status = "context" in error && error.context instanceof Response
-        ? error.context.status
-        : 0;
+      const status =
+        "context" in error && error.context instanceof Response
+          ? error.context.status
+          : 0;
       if (status === 401)
-        throw new TabletopParticipantError("TABLETOP_PARTICIPANT_AUTH_REQUIRED");
+        throw new TabletopParticipantError(
+          "TABLETOP_PARTICIPANT_AUTH_REQUIRED",
+        );
       if (status === 403)
         throw new TabletopParticipantError("TABLETOP_PARTICIPANT_FORBIDDEN");
       if (status === 404)
@@ -239,6 +310,45 @@ export class TabletopParticipantService {
       throw new TabletopParticipantError("TABLETOP_PARTICIPANT_UNAVAILABLE");
     }
     return parseTabletopParticipantView(data);
+  }
+
+  async toggleDoor(sessionId: string, wallId: string, expectedVersion: number) {
+    if (
+      !uuidSchema.safeParse(sessionId).success ||
+      !uuidSchema.safeParse(wallId).success ||
+      !Number.isInteger(expectedVersion) ||
+      expectedVersion < 1
+    ) {
+      throw new TabletopParticipantError("TABLETOP_PARTICIPANT_NOT_FOUND");
+    }
+    const { data, error } = await participantDatabase.rpc(
+      "toggle_tabletop_door",
+      {
+        target_session_id: sessionId,
+        target_wall_id: wallId,
+        expected_wall_version: expectedVersion,
+      },
+    );
+    if (error) {
+      if (error.code === "40001")
+        throw new TabletopParticipantError(
+          "TABLETOP_PARTICIPANT_INVALID_RESPONSE",
+        );
+      if (error.code === "42501")
+        throw new TabletopParticipantError("TABLETOP_PARTICIPANT_FORBIDDEN");
+      throw new TabletopParticipantError("TABLETOP_PARTICIPANT_UNAVAILABLE");
+    }
+    return z
+      .object({
+        wallId: uuidSchema,
+        wallType: z.enum(["door_closed", "door_open"]),
+        blocksVision: z.boolean(),
+        blocksMovement: z.boolean(),
+        version: z.number().int().positive(),
+        visibilityVersion: z.number().int().positive(),
+      })
+      .strict()
+      .parse(data);
   }
 }
 
