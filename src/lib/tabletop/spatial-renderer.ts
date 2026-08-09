@@ -1,5 +1,10 @@
 import { Container, Graphics } from "pixi.js";
 import type { TabletopProjectionMode } from "./camera-controller";
+import {
+  DEFAULT_TABLETOP_VIEW_ORIENTATION,
+  elevateTabletopPoint,
+  type TabletopViewOrientation,
+} from "./tabletop-projection";
 import { activeTabletopLevel, tabletopItemLevelId } from "./tabletop-levels";
 import { entityIsBelowRoof } from "./tabletop-structure-editor";
 import {
@@ -29,8 +34,12 @@ function flatPoints(points: SpatialPoint[]) {
   return points.flatMap((point) => [point.x, point.y]);
 }
 
-function elevated(point: SpatialPoint, height: number): SpatialPoint {
-  return { x: point.x - height, y: point.y - height };
+function elevated(
+  point: SpatialPoint,
+  height: number,
+  orientation: TabletopViewOrientation,
+): SpatialPoint {
+  return elevateTabletopPoint(point, height, orientation);
 }
 
 export function tabletopWallFootprint(
@@ -83,6 +92,7 @@ export class TabletopSpatialRenderer {
     selectedEntityIds: string[] = [],
     selectedStructureId: string | null = null,
     activeLevelId?: string | null,
+    orientation: TabletopViewOrientation = DEFAULT_TABLETOP_VIEW_ORIENTATION,
   ) {
     this.architecture.clear();
     this.roofs.clear();
@@ -107,6 +117,7 @@ export class TabletopSpatialRenderer {
           type,
           activeLevel.baseElevation + (wall.baseElevation ?? 0),
           wall.height ?? activeLevel.height,
+          orientation,
           wall.id === selectedStructureId ||
             selectedEntities.some((entity) => entityIsBelowRoof(entity, wall)),
         );
@@ -116,6 +127,7 @@ export class TabletopSpatialRenderer {
           type,
           wall.height ?? wallHeight,
           activeLevel.baseElevation + (wall.baseElevation ?? 0),
+          orientation,
         );
       }
     }
@@ -126,6 +138,7 @@ export class TabletopSpatialRenderer {
     type: TabletopStructureType,
     baseHeight: number,
     baseElevation: number,
+    orientation: TabletopViewOrientation,
   ) {
     const family = structureFamily(type);
     const material = MATERIALS[family];
@@ -138,8 +151,8 @@ export class TabletopSpatialRenderer {
         : family === "door"
           ? baseHeight * 0.92
           : baseHeight;
-    const start = elevated(groundStart, baseElevation);
-    const end = elevated(groundEnd, baseElevation);
+    const start = elevated(groundStart, baseElevation, orientation);
+    const end = elevated(groundEnd, baseElevation, orientation);
     const alpha =
       family === "window"
         ? type === "window_broken"
@@ -153,9 +166,11 @@ export class TabletopSpatialRenderer {
       groundEnd,
       wall.thickness ?? 8,
     );
-    const base = footprint.map((point) => elevated(point, baseElevation));
+    const base = footprint.map((point) =>
+      elevated(point, baseElevation, orientation),
+    );
     const top = footprint.map((point) =>
-      elevated(point, baseElevation + height),
+      elevated(point, baseElevation + height, orientation),
     );
 
     // Prisma real: duas faces, tampas e topo deixam altura/espessura legíveis
@@ -183,10 +198,10 @@ export class TabletopSpatialRenderer {
     });
 
     if (family === "window" && type !== "window_open") {
-      const lowerStart = elevated(start, height * 0.28);
-      const lowerEnd = elevated(end, height * 0.28);
-      const upperStart = elevated(start, height * 0.82);
-      const upperEnd = elevated(end, height * 0.82);
+      const lowerStart = elevated(start, height * 0.28, orientation);
+      const lowerEnd = elevated(end, height * 0.28, orientation);
+      const upperStart = elevated(start, height * 0.82, orientation);
+      const upperEnd = elevated(end, height * 0.82, orientation);
       this.architecture
         .poly(flatPoints([lowerStart, lowerEnd, upperEnd, upperStart]))
         .fill({
@@ -201,6 +216,7 @@ export class TabletopSpatialRenderer {
     type: TabletopStructureType,
     baseElevation: number,
     height: number,
+    orientation: TabletopViewOrientation,
     autoCutaway: boolean,
   ) {
     if (type === "roof_hidden") return;
@@ -214,9 +230,11 @@ export class TabletopSpatialRenderer {
       { x: maxX, y: maxY },
       { x: minX, y: maxY },
     ];
-    const base = footprint.map((point) => elevated(point, baseElevation));
+    const base = footprint.map((point) =>
+      elevated(point, baseElevation, orientation),
+    );
     const top = footprint.map((point) =>
-      elevated(point, baseElevation + height),
+      elevated(point, baseElevation + height, orientation),
     );
     const cutaway = type === "roof_cutaway" || autoCutaway;
     this.roofs
