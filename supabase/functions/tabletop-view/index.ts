@@ -257,6 +257,7 @@ function publicDirectorState(value: unknown) {
     typeof camera.levelId === "string" && UUID_PATTERN.test(camera.levelId)
       ? camera.levelId
       : null;
+  const yaw = ((finiteNumber(camera.yaw, 45) % 360) + 360) % 360;
   return {
     mode,
     title: boundedText(state.title, 160),
@@ -270,6 +271,12 @@ function publicDirectorState(value: unknown) {
       zoom: Math.max(0.15, Math.min(4, finiteNumber(camera.zoom, 1))),
       projection,
       levelId,
+      yaw,
+      tilt: Math.max(0.18, Math.min(0.9, finiteNumber(camera.tilt, 0.5))),
+      elevationScale: Math.max(
+        0.25,
+        Math.min(2.5, finiteNumber(camera.elevationScale, 1)),
+      ),
     },
   };
 }
