@@ -51,6 +51,22 @@ describe("tabletop camera projection", () => {
     expect(camera.worldToScreen(anchoredWorldPoint).y).toBeCloseTo(cursor.y, 8);
   });
 
+  it("keeps pointer and grid coordinates aligned at arbitrary angles", () => {
+    const viewport = new Container();
+    const camera = new CameraController(viewport);
+    camera.setProjection("isometric");
+    camera.setOrientation({ yaw: 217, tilt: 0.68, elevationScale: 1.45 });
+    camera.setElevation(384);
+    viewport.scale.set(1.37);
+    viewport.position.set(460, 210);
+
+    const world = { x: 1_024, y: 768 };
+    const restored = camera.screenToWorld(camera.worldToScreen(world));
+
+    expect(restored.x).toBeCloseTo(world.x, 8);
+    expect(restored.y).toBeCloseTo(world.y, 8);
+  });
+
   it("maps pointer coordinates onto an elevated isometric floor", () => {
     const viewport = new Container();
     const camera = new CameraController(viewport);
