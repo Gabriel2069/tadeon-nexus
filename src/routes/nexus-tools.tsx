@@ -55,7 +55,8 @@ export const Route = createFileRoute("/nexus-tools")({
       { title: "Integridade & Backup · Tadeon Nexus" },
       {
         name: "description",
-        content: "Diagnóstico, cópias de segurança e restauração do Tadeon Nexus.",
+        content:
+          "Diagnóstico, cópias de segurança e restauração do Tadeon Nexus.",
       },
     ],
   }),
@@ -79,7 +80,9 @@ function NexusToolsPage() {
   const [working, setWorking] = useState(false);
   const [snapshotLabel, setSnapshotLabel] = useState("");
   const [snapshots, setSnapshots] = useState<SnapshotSummary[]>([]);
-  const [pendingRestore, setPendingRestore] = useState<NexusBackup | null>(null);
+  const [pendingRestore, setPendingRestore] = useState<NexusBackup | null>(
+    null,
+  );
   const [pendingLabel, setPendingLabel] = useState("");
   const [diagnostics, setDiagnostics] = useState<DiagnosticResult[]>([]);
   const [checking, setChecking] = useState(false);
@@ -98,11 +101,13 @@ function NexusToolsPage() {
   }, [refreshSnapshots]);
 
   const collectBackup = async (): Promise<NexusBackup> => {
-    const [{ data: sheets, error: sheetsError }, { data: settings, error: settingsError }] =
-      await Promise.all([
-        supabase.from("character_sheets").select("*").order("created_at"),
-        supabase.from("game_settings").select("*").order("updated_at"),
-      ]);
+    const [
+      { data: sheets, error: sheetsError },
+      { data: settings, error: settingsError },
+    ] = await Promise.all([
+      supabase.from("character_sheets").select("*").order("created_at"),
+      supabase.from("game_settings").select("*").order("updated_at"),
+    ]);
     if (sheetsError || settingsError) throw new Error("backup");
     return createNexusBackup(
       (sheets ?? []) as unknown as Record<string, unknown>[],
@@ -125,10 +130,14 @@ function NexusToolsPage() {
       setSnapshotLabel("");
       await refreshSnapshots();
       if (!storedLocally) {
-        toast.warning("Backup baixado, mas o navegador bloqueou o histórico local.");
+        toast.warning(
+          "Backup baixado, mas o navegador bloqueou o histórico local.",
+        );
       } else {
         toast.success(
-          download ? "Backup gerado e salvo no histórico local." : "Ponto de restauração criado.",
+          download
+            ? "Backup gerado e salvo no histórico local."
+            : "Ponto de restauração criado.",
         );
       }
     } catch {
@@ -148,7 +157,9 @@ function NexusToolsPage() {
       const sheetResult = pendingRestore.characterSheets.length
         ? await supabase
             .from("character_sheets")
-            .upsert(pendingRestore.characterSheets as never, { onConflict: "id" })
+            .upsert(pendingRestore.characterSheets as never, {
+              onConflict: "id",
+            })
         : { error: null };
       const settingsResult = pendingRestore.gameSettings.length
         ? await supabase
@@ -157,7 +168,9 @@ function NexusToolsPage() {
         : { error: null };
       if (sheetResult.error || settingsResult.error) throw new Error("restore");
 
-      toast.success("Backup mesclado com sucesso. Nenhum registro ausente foi excluído.");
+      toast.success(
+        "Backup mesclado com sucesso. Nenhum registro ausente foi excluído.",
+      );
       setPendingRestore(null);
       setPendingLabel("");
       await refreshSnapshots();
@@ -177,7 +190,9 @@ function NexusToolsPage() {
       setPendingRestore(parsed);
       setPendingLabel(file.name);
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : "Arquivo de backup inválido.");
+      toast.error(
+        error instanceof Error ? error.message : "Arquivo de backup inválido.",
+      );
     } finally {
       if (fileRef.current) fileRef.current.value = "";
     }
@@ -221,7 +236,9 @@ function NexusToolsPage() {
     results.push({
       id: "network",
       label: "Conectividade",
-      detail: online ? "O navegador está conectado à rede." : "O navegador está em modo offline.",
+      detail: online
+        ? "O navegador está conectado à rede."
+        : "O navegador está em modo offline.",
       level: online ? "healthy" : "warning",
     });
 
@@ -279,7 +296,8 @@ function NexusToolsPage() {
           !error && data
             ? `Banco respondeu em ${latency} ms · ${new Date(data).toLocaleString("pt-BR")}.`
             : "O teste controlado do banco não respondeu.",
-        level: !error && data ? (latency < 1500 ? "healthy" : "warning") : "error",
+        level:
+          !error && data ? (latency < 1500 ? "healthy" : "warning") : "error",
       });
     } catch {
       results.push({
@@ -321,7 +339,9 @@ function NexusToolsPage() {
       results.push({
         id: "sheets",
         label: "Arquivo de fichas",
-        detail: !error ? `${count ?? 0} ficha(s) acessível(is).` : "A consulta às fichas falhou.",
+        detail: !error
+          ? `${count ?? 0} ficha(s) acessível(is).`
+          : "A consulta às fichas falhou.",
         level: error ? "error" : "healthy",
       });
     } catch {
@@ -335,7 +355,8 @@ function NexusToolsPage() {
 
     const offlineCache = readOfflineCache();
     const cacheDate = new Date(offlineCache.updatedAt);
-    const cacheValid = Number.isFinite(cacheDate.getTime()) && cacheDate.getTime() > 0;
+    const cacheValid =
+      Number.isFinite(cacheDate.getTime()) && cacheDate.getTime() > 0;
     results.push({
       id: "offline",
       label: "Consulta offline",
@@ -384,18 +405,22 @@ function NexusToolsPage() {
     void runDiagnostics();
   }, [runDiagnostics]);
 
-  const healthyCount = diagnostics.filter((item) => item.level === "healthy").length;
+  const healthyCount = diagnostics.filter(
+    (item) => item.level === "healthy",
+  ).length;
 
   return (
-    <div className="tadeon-page max-w-6xl space-y-6">
-      <section className="tadeon-surface rounded-2xl px-5 py-6 md:px-8 md:py-8">
+    <div className="tadeon-page tadeon-route-tools max-w-6xl space-y-6">
+      <section className="tadeon-page-hero tadeon-surface rounded-2xl px-5 py-6 md:px-8 md:py-8">
         <div className="flex flex-col justify-between gap-5 md:flex-row md:items-end">
           <div>
             <p className="tadeon-eyebrow">Integridade do arquivo</p>
-            <h1 className="font-cinzel text-3xl font-semibold md:text-4xl">Backup & Diagnóstico</h1>
+            <h1 className="font-cinzel text-3xl font-semibold md:text-4xl">
+              Backup & Diagnóstico
+            </h1>
             <p className="mt-2 max-w-2xl text-sm text-muted-foreground">
-              Proteja fichas e dados do mestre, consulte versões locais e identifique falhas sem
-              exibir mensagens internas do banco.
+              Proteja fichas e dados do mestre, consulte versões locais e
+              identifique falhas sem exibir mensagens internas do banco.
             </p>
           </div>
           <Badge variant="outline" className="w-fit gap-1.5 px-3 py-1.5">
@@ -421,7 +446,9 @@ function NexusToolsPage() {
           <Card className="tadeon-surface rounded-2xl p-5 md:p-6">
             <div className="grid gap-5 lg:grid-cols-[1fr_auto] lg:items-end">
               <div>
-                <Label htmlFor="snapshot-label">Nome do ponto de restauração</Label>
+                <Label htmlFor="snapshot-label">
+                  Nome do ponto de restauração
+                </Label>
                 <Input
                   id="snapshot-label"
                   className="mt-2"
@@ -431,7 +458,8 @@ function NexusToolsPage() {
                   maxLength={80}
                 />
                 <p className="mt-2 text-xs text-muted-foreground">
-                  O histórico mantém os dez pontos mais recentes apenas neste navegador.
+                  O histórico mantém os dez pontos mais recentes apenas neste
+                  navegador.
                 </p>
               </div>
               <div className="flex flex-col gap-2 sm:flex-row">
@@ -465,7 +493,9 @@ function NexusToolsPage() {
               <div className="mb-4 flex items-center justify-between gap-3">
                 <div>
                   <p className="tadeon-eyebrow">Versões locais</p>
-                  <h2 className="font-cinzel text-xl font-semibold">Histórico de segurança</h2>
+                  <h2 className="font-cinzel text-xl font-semibold">
+                    Histórico de segurança
+                  </h2>
                 </div>
                 <HardDrive className="h-5 w-5 text-primary" />
               </div>
@@ -481,10 +511,12 @@ function NexusToolsPage() {
                       className="flex flex-col gap-3 rounded-xl border border-border/70 bg-background/35 p-3 sm:flex-row sm:items-center"
                     >
                       <div className="min-w-0 flex-1">
-                        <p className="truncate text-sm font-medium">{snapshot.label}</p>
+                        <p className="truncate text-sm font-medium">
+                          {snapshot.label}
+                        </p>
                         <p className="text-[11px] text-muted-foreground">
-                          {new Date(snapshot.createdAt).toLocaleString("pt-BR")} ·{" "}
-                          {snapshot.sheetCount} ficha(s)
+                          {new Date(snapshot.createdAt).toLocaleString("pt-BR")}{" "}
+                          · {snapshot.sheetCount} ficha(s)
                         </p>
                       </div>
                       <div className="flex gap-1">
@@ -499,7 +531,9 @@ function NexusToolsPage() {
                           size="icon"
                           variant="ghost"
                           aria-label="Baixar ponto"
-                          onClick={() => void downloadStoredSnapshot(snapshot.id)}
+                          onClick={() =>
+                            void downloadStoredSnapshot(snapshot.id)
+                          }
                         >
                           <Download className="h-4 w-4" />
                         </Button>
@@ -521,10 +555,13 @@ function NexusToolsPage() {
 
             <Card className="tadeon-surface rounded-2xl p-5 md:p-6">
               <FileUp className="mb-4 h-6 w-6 text-primary" />
-              <h2 className="font-cinzel text-xl font-semibold">Importar backup</h2>
+              <h2 className="font-cinzel text-xl font-semibold">
+                Importar backup
+              </h2>
               <p className="mt-2 text-sm text-muted-foreground">
-                A restauração mescla registros pelo identificador. Ela pode atualizar fichas
-                existentes, mas não apaga registros que estejam fora do arquivo.
+                A restauração mescla registros pelo identificador. Ela pode
+                atualizar fichas existentes, mas não apaga registros que estejam
+                fora do arquivo.
               </p>
               <input
                 ref={fileRef}
@@ -551,7 +588,8 @@ function NexusToolsPage() {
               <div>
                 <p className="tadeon-eyebrow">Estado atual</p>
                 <h2 className="font-cinzel text-2xl font-semibold">
-                  {healthyCount}/{diagnostics.length || "—"} verificações saudáveis
+                  {healthyCount}/{diagnostics.length || "—"} verificações
+                  saudáveis
                 </h2>
               </div>
               <Button
@@ -560,7 +598,9 @@ function NexusToolsPage() {
                 disabled={checking}
                 className="gap-2"
               >
-                <RefreshCw className={`h-4 w-4 ${checking ? "animate-spin" : ""}`} />
+                <RefreshCw
+                  className={`h-4 w-4 ${checking ? "animate-spin" : ""}`}
+                />
                 Verificar novamente
               </Button>
             </div>
@@ -587,14 +627,17 @@ function NexusToolsPage() {
           <AlertDialogHeader>
             <AlertDialogTitle>Restaurar “{pendingLabel}”?</AlertDialogTitle>
             <AlertDialogDescription>
-              Registros com o mesmo identificador serão atualizados. Antes disso, o Nexus criará
-              automaticamente uma cópia dos dados atuais. Registros que não existam no backup não
-              serão excluídos.
+              Registros com o mesmo identificador serão atualizados. Antes
+              disso, o Nexus criará automaticamente uma cópia dos dados atuais.
+              Registros que não existam no backup não serão excluídos.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel disabled={working}>Cancelar</AlertDialogCancel>
-            <AlertDialogAction onClick={() => void restoreBackup()} disabled={working}>
+            <AlertDialogAction
+              onClick={() => void restoreBackup()}
+              disabled={working}
+            >
               {working && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               Confirmar restauração
             </AlertDialogAction>
@@ -638,7 +681,9 @@ function DiagnosticCard({ result }: { result: DiagnosticResult }) {
         </div>
         <div>
           <p className="text-sm font-semibold">{result.label}</p>
-          <p className="mt-1 text-xs leading-relaxed text-muted-foreground">{result.detail}</p>
+          <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
+            {result.detail}
+          </p>
         </div>
       </div>
     </Card>

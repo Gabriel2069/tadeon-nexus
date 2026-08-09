@@ -44,6 +44,7 @@ import {
   SheetDescription,
   SheetTitle,
 } from "@/components/ui/sheet";
+import "@/styles/desktop-studio.css";
 
 const roleIcons: Record<string, typeof Crown> = {
   mestre: Crown,
@@ -159,6 +160,16 @@ export function AppLayout({ children }: { children: ReactNode }) {
               : path.startsWith("/offline")
                 ? "Consulta offline"
                 : "Dashboard";
+  const currentSectionDescription: Record<string, string> = {
+    Dashboard: "Visão geral do arquivo e personagens",
+    "O Nexus": "Conhecimento, continuidade e referências",
+    "Mesa Nexus": "Montagem e condução visual da sessão",
+    "Painel do Mestre": "Condução, ritmo e estado da campanha",
+    Usuários: "Papéis e acesso ao arquivo",
+    "Saúde do arquivo": "Integridade, backup e diagnóstico",
+    "Consulta offline": "Leitura local protegida",
+    Ficha: "Registro vivo da personagem",
+  };
 
   const handleSignOut = async () => {
     try {
@@ -175,6 +186,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
       aria-label="Navegação principal"
     >
       <GlobalSearch compact={mini} enableShortcut={enableSearchShortcut} />
+      <NavGroupLabel label="Arquivo" mini={mini} />
       <NavItem
         to="/"
         icon={<Home className="w-4 h-4" />}
@@ -203,8 +215,17 @@ export function AppLayout({ children }: { children: ReactNode }) {
           onClick={() => setMobileOpen(false)}
         />
       )}
+      <NavItem
+        to="/offline"
+        icon={<CloudOff className="w-4 h-4" />}
+        label="Consulta Offline"
+        active={path.startsWith("/offline")}
+        mini={mini}
+        onClick={() => setMobileOpen(false)}
+      />
       {isMestre && (
         <>
+          <NavGroupLabel label="Condução" mini={mini} />
           <NavItem
             to="/master-panel"
             icon={<Lightbulb className="w-4 h-4" />}
@@ -213,6 +234,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
             mini={mini}
             onClick={() => setMobileOpen(false)}
           />
+          <NavGroupLabel label="Sistema" mini={mini} />
           <NavItem
             to="/manage-users"
             icon={<Users className="w-4 h-4" />}
@@ -231,14 +253,6 @@ export function AppLayout({ children }: { children: ReactNode }) {
           />
         </>
       )}
-      <NavItem
-        to="/offline"
-        icon={<CloudOff className="w-4 h-4" />}
-        label="Consulta Offline"
-        active={path.startsWith("/offline")}
-        mini={mini}
-        onClick={() => setMobileOpen(false)}
-      />
     </nav>
   );
 
@@ -313,7 +327,10 @@ export function AppLayout({ children }: { children: ReactNode }) {
   );
 
   return (
-    <div className="tadeon-shell relative isolate flex min-h-screen overflow-x-clip">
+    <div
+      className="tadeon-shell relative isolate flex min-h-screen overflow-x-clip"
+      data-section={currentSection}
+    >
       <div aria-hidden className="tadeon-ambient tadeon-ambient--veil" />
       <div aria-hidden className="tadeon-ambient tadeon-ambient--flow" />
       {/* Desktop sidebar */}
@@ -339,6 +356,43 @@ export function AppLayout({ children }: { children: ReactNode }) {
       </aside>
 
       <div className="relative z-10 flex min-w-0 flex-1 flex-col">
+        <header className="tadeon-desktop-toolbar hidden md:flex">
+          <div className="min-w-0">
+            <p className="tadeon-eyebrow">Área em foco</p>
+            <div className="flex min-w-0 items-baseline gap-3">
+              <h2 className="truncate font-cinzel text-xl font-semibold text-foreground">
+                {currentSection}
+              </h2>
+              <p className="hidden truncate text-xs text-muted-foreground xl:block">
+                {currentSectionDescription[currentSection]}
+              </p>
+            </div>
+          </div>
+          <div className="ml-auto flex items-center gap-2">
+            {role && (
+              <span className="tadeon-desktop-toolbar__role">
+                <RoleIcon className="h-3.5 w-3.5" />
+                <span className="capitalize">{role}</span>
+              </span>
+            )}
+            <button
+              type="button"
+              className="tadeon-desktop-toolbar__account"
+              onClick={() => setAccountOpen(true)}
+              aria-label="Abrir configurações da conta"
+            >
+              <span className="min-w-0 text-right">
+                <strong className="block truncate text-xs font-semibold text-foreground">
+                  {profile?.full_name || "Conta"}
+                </strong>
+                <small className="block truncate text-[10px] text-muted-foreground">
+                  {user?.email}
+                </small>
+              </span>
+              <Settings className="h-4 w-4 text-primary" />
+            </button>
+          </div>
+        </header>
         {/* Mobile header */}
         <header className="tadeon-mobile-header sticky top-0 z-30 grid min-h-16 grid-cols-[5.5rem_minmax(0,1fr)_5.5rem] items-center bg-background/85 px-3 py-2 backdrop-blur-xl md:hidden">
           <button
@@ -373,7 +427,11 @@ export function AppLayout({ children }: { children: ReactNode }) {
           </div>
         </header>
 
-        <main key={path} className="tadeon-route-stage min-w-0 flex-1">
+        <main
+          key={path}
+          className="tadeon-route-stage min-w-0 flex-1"
+          data-section={currentSection}
+        >
           {children}
         </main>
       </div>
@@ -436,6 +494,11 @@ function NavItem({
       {!mini && <span className="truncate">{label}</span>}
     </Link>
   );
+}
+
+function NavGroupLabel({ label, mini }: { label: string; mini: boolean }) {
+  if (mini) return <div className="tadeon-nav-group-rule" aria-hidden />;
+  return <p className="tadeon-nav-group-label">{label}</p>;
 }
 
 function SideAction({

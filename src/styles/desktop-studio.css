@@ -1,0 +1,624 @@
+/*
+ * Desktop product language for Tadeon Nexus.
+ * The application shell stays quiet while each workspace receives its own
+ * material, cadence and accent. Mobile rules intentionally remain elsewhere.
+ */
+
+@keyframes tadeon-stage-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(0.35rem);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (min-width: 768px) {
+  .tadeon-shell {
+    --section-accent: var(--tadeon-knowledge);
+    --section-secondary: var(--tadeon-veil);
+    --section-accent-rgb: 217 215 164;
+    min-height: 100dvh;
+    background:
+      radial-gradient(
+        circle at 76% -18%,
+        rgb(var(--section-accent-rgb) / 8%),
+        transparent 32rem
+      ),
+      var(--tadeon-void);
+  }
+
+  .tadeon-shell[data-section="O Nexus"] {
+    --section-accent: var(--tadeon-veil);
+    --section-secondary: var(--tadeon-knowledge);
+    --section-accent-rgb: 113 107 123;
+  }
+
+  .tadeon-shell[data-section="Mesa Nexus"] {
+    --section-accent: var(--tadeon-flow);
+    --section-secondary: var(--tadeon-knowledge);
+    --section-accent-rgb: 79 110 93;
+  }
+
+  .tadeon-shell[data-section="Painel do Mestre"] {
+    --section-accent: var(--tadeon-fear);
+    --section-secondary: var(--tadeon-knowledge);
+    --section-accent-rgb: 116 36 45;
+  }
+
+  .tadeon-shell[data-section="Usuários"] {
+    --section-accent: var(--tadeon-flow);
+    --section-secondary: var(--tadeon-metal);
+    --section-accent-rgb: 79 110 93;
+  }
+
+  .tadeon-shell[data-section="Saúde do arquivo"] {
+    --section-accent: var(--tadeon-metal);
+    --section-secondary: var(--tadeon-flow);
+    --section-accent-rgb: 122 129 135;
+  }
+
+  .tadeon-shell[data-section="Consulta offline"] {
+    --section-accent: var(--tadeon-flow);
+    --section-secondary: var(--tadeon-veil);
+    --section-accent-rgb: 79 110 93;
+  }
+
+  .tadeon-shell[data-section="Ficha"] {
+    --section-accent: var(--tadeon-knowledge);
+    --section-secondary: var(--tadeon-fear);
+    --section-accent-rgb: 217 215 164;
+  }
+
+  .tadeon-sidebar {
+    position: sticky;
+    top: 0;
+    height: 100dvh;
+    border-right-color: color-mix(
+      in srgb,
+      var(--section-accent) 13%,
+      var(--sidebar-border)
+    );
+    background:
+      linear-gradient(180deg, rgb(255 255 255 / 2.5%), transparent 11rem),
+      radial-gradient(
+        circle at 15% 4%,
+        rgb(var(--section-accent-rgb) / 7%),
+        transparent 17rem
+      ),
+      rgb(9 11 15 / 97%);
+    box-shadow:
+      26px 0 80px -62px rgb(0 0 0 / 100%),
+      inset -1px 0 rgb(255 255 255 / 1.5%);
+    transition:
+      width var(--motion-panel) var(--ease-out),
+      border-color var(--motion-panel) var(--ease-out);
+  }
+
+  .tadeon-sidebar::before {
+    position: absolute;
+    top: 1rem;
+    right: 0;
+    bottom: 1rem;
+    width: 1px;
+    background: linear-gradient(
+      transparent,
+      color-mix(in srgb, var(--section-accent) 22%, transparent) 20%,
+      color-mix(in srgb, var(--section-accent) 9%, transparent) 76%,
+      transparent
+    );
+    pointer-events: none;
+    content: "";
+  }
+
+  .tadeon-sidebar .tadeon-primary-nav {
+    gap: 0.125rem;
+  }
+
+  .tadeon-nav-group-label {
+    margin: 1.25rem 0.65rem 0.35rem;
+    color: color-mix(in srgb, var(--sidebar-foreground) 42%, transparent);
+    font-family: var(--font-mono);
+    font-size: 0.57rem;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    line-height: 1rem;
+    text-transform: uppercase;
+  }
+
+  .tadeon-nav-group-rule {
+    width: 1.2rem;
+    height: 1px;
+    margin: 0.75rem auto 0.35rem;
+    background: color-mix(in srgb, var(--section-accent) 24%, transparent);
+  }
+
+  .tadeon-nav-item[aria-current="page"] {
+    border-color: color-mix(in srgb, var(--section-accent) 16%, transparent);
+    background:
+      linear-gradient(
+        90deg,
+        rgb(var(--section-accent-rgb) / 12%),
+        rgb(var(--section-accent-rgb) / 3%) 68%,
+        transparent
+      ),
+      var(--sidebar-accent);
+    box-shadow:
+      inset 2px 0 var(--section-accent),
+      inset 0 1px rgb(255 255 255 / 2.5%);
+  }
+
+  .tadeon-nav-item[aria-current="page"] > svg {
+    color: var(--section-accent);
+    filter: drop-shadow(0 0 9px rgb(var(--section-accent-rgb) / 25%));
+  }
+
+  .tadeon-desktop-toolbar {
+    position: sticky;
+    z-index: 30;
+    top: 0;
+    min-height: 4.65rem;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.75rem clamp(1.5rem, 2.6vw, 2.5rem);
+    border-bottom: 1px solid
+      color-mix(in srgb, var(--section-accent) 12%, var(--border));
+    background:
+      linear-gradient(
+        90deg,
+        rgb(var(--section-accent-rgb) / 4%),
+        transparent 35%
+      ),
+      rgb(8 10 14 / 82%);
+    box-shadow:
+      0 24px 65px -52px rgb(0 0 0 / 100%),
+      inset 0 -1px rgb(255 255 255 / 1.5%);
+    backdrop-filter: blur(24px) saturate(132%);
+  }
+
+  .tadeon-desktop-toolbar::after {
+    position: absolute;
+    right: clamp(1.5rem, 2.6vw, 2.5rem);
+    bottom: -1px;
+    left: clamp(1.5rem, 2.6vw, 2.5rem);
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      color-mix(in srgb, var(--section-accent) 42%, transparent),
+      color-mix(in srgb, var(--section-secondary) 18%, transparent) 38%,
+      transparent 78%
+    );
+    pointer-events: none;
+    content: "";
+  }
+
+  .tadeon-desktop-toolbar .tadeon-eyebrow {
+    color: color-mix(in srgb, var(--section-accent) 82%, var(--foreground));
+    font-size: 0.58rem;
+  }
+
+  .tadeon-desktop-toolbar__role {
+    display: inline-flex;
+    min-height: 2.2rem;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.4rem 0.7rem;
+    border: 1px solid
+      color-mix(in srgb, var(--section-accent) 14%, var(--border));
+    border-radius: 999px;
+    color: color-mix(in srgb, var(--foreground) 75%, var(--section-accent));
+    background: rgb(var(--section-accent-rgb) / 4%);
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .tadeon-desktop-toolbar__account {
+    display: grid;
+    min-width: 11.5rem;
+    min-height: 2.75rem;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.4rem 0.55rem 0.4rem 0.85rem;
+    border: 1px solid
+      color-mix(in srgb, var(--section-accent) 11%, var(--border));
+    border-radius: 0.8rem 0.28rem 0.8rem 0.28rem;
+    background: rgb(255 255 255 / 2.5%);
+  }
+
+  .tadeon-desktop-toolbar__account > svg {
+    display: grid;
+    width: 2rem;
+    height: 2rem;
+    padding: 0.48rem;
+    border-radius: 0.62rem 0.22rem 0.62rem 0.22rem;
+    background: rgb(var(--section-accent-rgb) / 8%);
+  }
+
+  .tadeon-route-stage {
+    position: relative;
+    isolation: isolate;
+    min-height: calc(100dvh - 4.65rem);
+    overflow: clip;
+    background:
+      linear-gradient(90deg, rgb(255 255 255 / 0.9%) 1px, transparent 1px),
+      linear-gradient(rgb(255 255 255 / 0.7%) 1px, transparent 1px),
+      radial-gradient(
+        circle at 82% 8%,
+        rgb(var(--section-accent-rgb) / 7%),
+        transparent 28rem
+      );
+    background-size:
+      96px 96px,
+      96px 96px,
+      auto;
+  }
+
+  .tadeon-route-stage::before {
+    position: absolute;
+    z-index: -1;
+    top: -13rem;
+    right: -10rem;
+    width: min(38rem, 48vw);
+    aspect-ratio: 1;
+    border: 1px solid rgb(var(--section-accent-rgb) / 5%);
+    border-radius: 50%;
+    box-shadow:
+      0 0 0 3.8rem rgb(var(--section-accent-rgb) / 1.6%),
+      0 0 0 8.5rem rgb(var(--section-accent-rgb) / 0.8%);
+    pointer-events: none;
+    content: "";
+  }
+
+  .tadeon-route-stage > * {
+    animation: tadeon-stage-reveal 360ms var(--ease-out) both;
+  }
+
+  .tadeon-route-stage .tadeon-page {
+    padding-top: clamp(1.75rem, 3vw, 3rem);
+    padding-right: clamp(1.5rem, 3vw, 3rem);
+    padding-left: clamp(1.5rem, 3vw, 3rem);
+  }
+
+  .tadeon-page-hero {
+    position: relative;
+    isolation: isolate;
+    overflow: clip;
+    border-color: color-mix(in srgb, var(--section-accent) 20%, var(--border));
+    border-radius: 1.5rem 0.48rem 1.5rem 0.48rem;
+    background:
+      linear-gradient(132deg, rgb(255 255 255 / 4%), transparent 42%),
+      radial-gradient(
+        circle at 86% 5%,
+        rgb(var(--section-accent-rgb) / 12%),
+        transparent 28rem
+      ),
+      color-mix(in srgb, var(--card) 92%, var(--background));
+    box-shadow:
+      0 34px 90px -62px rgb(0 0 0 / 100%),
+      inset 0 1px rgb(255 255 255 / 4%);
+  }
+
+  .tadeon-page-hero::after {
+    position: absolute;
+    right: clamp(1rem, 3vw, 2.25rem);
+    bottom: 0;
+    left: clamp(1rem, 3vw, 2.25rem);
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      color-mix(in srgb, var(--section-accent) 45%, transparent),
+      transparent
+    );
+    pointer-events: none;
+    content: "";
+  }
+
+  .tadeon-route-stage [data-slot="card"] {
+    border-color: color-mix(in srgb, var(--section-accent) 9%, var(--border));
+    border-radius: 1.08rem 0.42rem 1.08rem 0.42rem;
+    background:
+      linear-gradient(145deg, rgb(255 255 255 / 2.8%), transparent 44%),
+      color-mix(in srgb, var(--card) 96%, var(--background));
+    box-shadow:
+      0 24px 70px -54px rgb(0 0 0 / 96%),
+      inset 0 1px rgb(255 255 255 / 2.8%);
+  }
+
+  .tadeon-route-stage [data-slot="card-header"] {
+    border-bottom: 1px solid
+      color-mix(in srgb, var(--section-accent) 8%, var(--border));
+  }
+
+  .tadeon-route-stage [data-slot="card-title"] {
+    font-family: var(--font-cinzel);
+    font-weight: 650;
+    letter-spacing: -0.01em;
+  }
+
+  .tadeon-route-stage .tadeon-surface {
+    border-color: color-mix(in srgb, var(--section-accent) 15%, var(--border));
+  }
+
+  .tadeon-dashboard-hero {
+    min-height: 21rem;
+    padding: clamp(2.25rem, 4vw, 4rem);
+  }
+
+  .tadeon-dashboard-hero h1 {
+    max-width: 12ch;
+    font-size: clamp(3.1rem, 5.2vw, 5.3rem);
+    font-weight: 540;
+    letter-spacing: -0.045em;
+  }
+
+  .tadeon-dashboard-hero .tadeon-dashboard-signals {
+    max-width: 52rem;
+  }
+
+  .tadeon-sheet-gallery {
+    grid-auto-rows: 1fr;
+    gap: clamp(1rem, 1.8vw, 1.5rem);
+  }
+
+  .tadeon-sheet-card {
+    min-height: 15rem;
+    padding: 1.35rem;
+  }
+
+  .tadeon-sheet-card__index {
+    position: absolute;
+    z-index: 0;
+    top: -1rem;
+    right: 0.6rem;
+    color: rgb(var(--section-accent-rgb) / 4.5%);
+    font-family: var(--font-cinzel);
+    font-size: 7rem;
+    font-weight: 600;
+    line-height: 1;
+    pointer-events: none;
+  }
+
+  .tadeon-nexus-commandbar {
+    min-height: 6.5rem;
+    padding: 1.25rem 1.4rem;
+  }
+
+  .tadeon-nexus-commandbar > div:first-child {
+    min-width: 12rem;
+  }
+
+  .tadeon-nexus-actions {
+    justify-content: flex-end;
+  }
+
+  .tadeon-nexus-actions__scope,
+  .tadeon-nexus-actions__tools,
+  .tadeon-nexus-actions__primary {
+    position: relative;
+  }
+
+  .tadeon-nexus-actions__tools,
+  .tadeon-nexus-actions__primary {
+    padding-left: 0.75rem;
+  }
+
+  .tadeon-nexus-actions__tools::before,
+  .tadeon-nexus-actions__primary::before {
+    position: absolute;
+    top: 0.3rem;
+    bottom: 0.3rem;
+    left: 0.25rem;
+    width: 1px;
+    background: color-mix(in srgb, var(--section-accent) 16%, var(--border));
+    content: "";
+  }
+
+  .tadeon-nexus-actions > [data-slot="select-trigger"] {
+    background: rgb(6 8 12 / 58%);
+  }
+
+  .tadeon-route-nexus > div:not([role="dialog"]) > aside {
+    border-color: color-mix(in srgb, var(--section-accent) 14%, var(--border));
+    border-radius: 1.15rem 0.4rem 1.15rem 0.4rem;
+    background:
+      linear-gradient(
+        155deg,
+        rgb(var(--section-accent-rgb) / 6%),
+        transparent 42%
+      ),
+      rgb(13 16 21 / 84%);
+    box-shadow: inset 0 1px rgb(255 255 255 / 2.5%);
+  }
+
+  .tadeon-master-workspace {
+    padding-top: clamp(1.5rem, 2.6vw, 2.5rem);
+  }
+
+  .tadeon-master-commandbar {
+    top: 4.65rem;
+    margin-bottom: 1.25rem;
+    padding: 1rem 1.25rem;
+    border: 1px solid
+      color-mix(in srgb, var(--section-accent) 18%, var(--border));
+  }
+
+  .tadeon-master-navigation > [role="tablist"] {
+    align-items: stretch;
+    gap: 0.3rem;
+    padding: 0.35rem;
+    border: 1px solid
+      color-mix(in srgb, var(--section-accent) 12%, var(--border));
+    border-radius: 1.1rem 0.36rem 1.1rem 0.36rem;
+    background: rgb(8 10 14 / 62%);
+    box-shadow: inset 0 1px rgb(255 255 255 / 2.5%);
+  }
+
+  .tadeon-master-navigation__group {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    padding: 0.2rem;
+  }
+
+  .tadeon-master-navigation__group:not(:last-child)::after {
+    position: absolute;
+    top: 0.4rem;
+    right: -0.18rem;
+    bottom: 0.4rem;
+    width: 1px;
+    background: color-mix(in srgb, var(--section-accent) 12%, var(--border));
+    content: "";
+  }
+
+  .tadeon-master-navigation__label {
+    padding-left: 0.45rem;
+    color: color-mix(in srgb, var(--muted-foreground) 70%, transparent);
+    font-family: var(--font-mono);
+    font-size: 0.52rem;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    line-height: 1rem;
+    text-transform: uppercase;
+  }
+
+  .tadeon-master-navigation [data-slot="tabs-trigger"] {
+    min-height: 2.25rem;
+    border-radius: 0.7rem 0.24rem 0.7rem 0.24rem;
+  }
+
+  .tadeon-master-navigation [data-slot="tabs-trigger"][data-state="active"] {
+    box-shadow:
+      0 8px 24px -18px rgb(var(--section-accent-rgb) / 95%),
+      inset 0 1px rgb(255 255 255 / 14%);
+  }
+
+  .tadeon-route-users > .tadeon-page-hero {
+    min-height: 10rem;
+    align-items: center;
+    padding: 1.6rem 1.8rem;
+    border: 1px solid
+      color-mix(in srgb, var(--section-accent) 17%, var(--border));
+  }
+
+  .tadeon-users-list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.85rem;
+  }
+
+  .tadeon-user-row {
+    min-height: 7.25rem;
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+
+  .tadeon-user-row__sigil {
+    display: grid;
+    width: 2.75rem;
+    aspect-ratio: 1;
+    flex: 0 0 auto;
+    place-items: center;
+    border: 1px solid
+      color-mix(in srgb, var(--section-accent) 24%, var(--border));
+    border-radius: 0.9rem 0.3rem 0.9rem 0.3rem;
+    color: color-mix(in srgb, var(--foreground) 72%, var(--section-accent));
+    background:
+      radial-gradient(
+        circle at 30% 20%,
+        rgb(255 255 255 / 8%),
+        transparent 45%
+      ),
+      rgb(var(--section-accent-rgb) / 10%);
+    font-family: var(--font-cinzel);
+    font-size: 1.05rem;
+    font-weight: 700;
+  }
+
+  .tadeon-route-tools > .tadeon-page-hero,
+  .tadeon-route-offline > .tadeon-page-hero {
+    min-height: 13rem;
+    padding: clamp(2rem, 3.5vw, 3rem);
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1023px) {
+  .tadeon-desktop-toolbar__role {
+    display: none;
+  }
+
+  .tadeon-desktop-toolbar__account {
+    min-width: 2.75rem;
+    grid-template-columns: 1fr;
+    padding: 0.35rem;
+  }
+
+  .tadeon-desktop-toolbar__account > span {
+    display: none;
+  }
+
+  .tadeon-tabletop-studio {
+    min-height: calc(100dvh - 4.65rem);
+  }
+}
+
+@media (min-width: 1180px) {
+  .tadeon-route-stage .tadeon-page {
+    padding-right: clamp(2.5rem, 4vw, 4.75rem);
+    padding-left: clamp(2.5rem, 4vw, 4.75rem);
+  }
+
+  .tadeon-nexus-commandbar {
+    display: grid;
+    grid-template-columns: minmax(12rem, 0.32fr) minmax(0, 1fr);
+  }
+
+  .tadeon-master-navigation > [role="tablist"] {
+    display: flex;
+    flex-wrap: wrap;
+  }
+}
+
+@media (hover: hover) and (pointer: fine) and (min-width: 768px) {
+  .tadeon-desktop-toolbar__account:hover {
+    border-color: color-mix(in srgb, var(--section-accent) 32%, var(--border));
+    background: rgb(var(--section-accent-rgb) / 7%);
+    box-shadow: 0 12px 32px -24px rgb(var(--section-accent-rgb) / 60%);
+  }
+
+  .tadeon-user-row:hover {
+    border-color: color-mix(in srgb, var(--section-accent) 26%, var(--border));
+    box-shadow:
+      0 30px 75px -58px rgb(0 0 0 / 100%),
+      inset 0 1px rgb(255 255 255 / 3%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tadeon-route-stage > * {
+    animation: none;
+  }
+}
+
+@media (prefers-reduced-transparency: reduce) and (min-width: 768px) {
+  .tadeon-desktop-toolbar,
+  .tadeon-sidebar,
+  .tadeon-page-hero {
+    background-color: var(--background);
+    backdrop-filter: none;
+  }
+}
+
+@media (prefers-contrast: more) and (min-width: 768px) {
+  .tadeon-desktop-toolbar,
+  .tadeon-page-hero,
+  .tadeon-route-stage [data-slot="card"] {
+    border-color: var(--border);
+  }
+}

@@ -63,9 +63,14 @@ export const Route = createFileRoute("/")({
         content:
           "Painel principal do Tadeon Nexus: veja e gerencie suas fichas de personagem, atributos, perícias e progresso de RPG.",
       },
-      { property: "og:url", content: "https://tadeon-nexus.gtadeusz.workers.dev/" },
+      {
+        property: "og:url",
+        content: "https://tadeon-nexus.gtadeusz.workers.dev/",
+      },
     ],
-    links: [{ rel: "canonical", href: "https://tadeon-nexus.gtadeusz.workers.dev/" }],
+    links: [
+      { rel: "canonical", href: "https://tadeon-nexus.gtadeusz.workers.dev/" },
+    ],
   }),
   component: () => (
     <ProtectedShell>
@@ -114,7 +119,9 @@ function HomePage() {
       .from("character_sheets")
       .select("id,name,occupation,owner_id,exposure")
       .order("created_at", { ascending: false });
-    const { data, error } = isMestre ? await query : await query.eq("owner_id", user!.id);
+    const { data, error } = isMestre
+      ? await query
+      : await query.eq("owner_id", user!.id);
     if (error) toast.error("Não foi possível carregar as fichas.");
     const rows = (data ?? []) as SheetRow[];
     let labeled = rows;
@@ -125,9 +132,15 @@ function HomePage() {
         .select("id,email,full_name")
         .in("id", ids);
       const names = new Map(
-        (profiles ?? []).map((item) => [item.id, item.full_name || item.email || ""]),
+        (profiles ?? []).map((item) => [
+          item.id,
+          item.full_name || item.email || "",
+        ]),
       );
-      labeled = rows.map((row) => ({ ...row, owner_label: names.get(row.owner_id) ?? null }));
+      labeled = rows.map((row) => ({
+        ...row,
+        owner_label: names.get(row.owner_id) ?? null,
+      }));
     }
     setSheets(labeled);
     cacheSheetSummaries(labeled);
@@ -159,13 +172,16 @@ function HomePage() {
           return;
         }
         const options = (data ?? []).filter(
-          (row): row is OwnerOption => typeof row.email === "string" && row.email.length > 0,
+          (row): row is OwnerOption =>
+            typeof row.email === "string" && row.email.length > 0,
         );
         setOwners(options);
         setOwnerId((current) =>
           options.some((option) => option.id === current)
             ? current
-            : (options.find((option) => option.id === user.id)?.id ?? options[0]?.id ?? ""),
+            : (options.find((option) => option.id === user.id)?.id ??
+              options[0]?.id ??
+              ""),
         );
       });
   }, [isMestre, user]);
@@ -175,7 +191,11 @@ function HomePage() {
     if (!user) return;
     const selectedOwner = isMestre
       ? owners.find((owner) => owner.id === ownerId)
-      : { id: user.id, email: user.email ?? "", full_name: profile?.full_name ?? null };
+      : {
+          id: user.id,
+          email: user.email ?? "",
+          full_name: profile?.full_name ?? null,
+        };
     if (!selectedOwner?.email) {
       toast.error("Selecione um dono válido para a ficha.");
       return;
@@ -223,7 +243,10 @@ function HomePage() {
 
   const handleDelete = async () => {
     if (!toDelete) return;
-    const { error } = await supabase.from("character_sheets").delete().eq("id", toDelete.id);
+    const { error } = await supabase
+      .from("character_sheets")
+      .delete()
+      .eq("id", toDelete.id);
     if (error) toast.error("Não foi possível excluir a ficha.");
     else {
       toast.success("Ficha excluída.");
@@ -233,8 +256,8 @@ function HomePage() {
   };
 
   return (
-    <div className="tadeon-page tadeon-dashboard space-y-8">
-      <section className="tadeon-surface tadeon-dashboard-hero relative min-h-64 rounded-2xl px-5 py-6 sm:px-6 sm:py-7 md:px-9 md:py-9">
+    <div className="tadeon-page tadeon-dashboard tadeon-route-dashboard space-y-8">
+      <section className="tadeon-page-hero tadeon-surface tadeon-dashboard-hero relative min-h-64 rounded-2xl px-5 py-6 sm:px-6 sm:py-7 md:px-9 md:py-9">
         <ThreadField className="text-primary" />
         <div className="relative z-10 flex flex-col justify-between gap-8 lg:flex-row lg:items-end">
           <div className="max-w-2xl">
@@ -248,7 +271,9 @@ function HomePage() {
               </div>
             </div>
             <h1 className="font-cinzel text-3xl font-semibold leading-[1.04] md:text-5xl">
-              {profile?.full_name ? `Olá, ${profile.full_name}.` : "Tadeon Nexus"}
+              {profile?.full_name
+                ? `Olá, ${profile.full_name}.`
+                : "Tadeon Nexus"}
             </h1>
             <p className="mt-3 max-w-xl text-sm leading-relaxed text-muted-foreground md:text-base">
               {isMestre
@@ -273,7 +298,9 @@ function HomePage() {
             <BookOpenText className="h-4 w-4 text-primary" />
             <div>
               <p className="text-lg font-semibold">{sheets.length}</p>
-              <p className="text-[11px] uppercase tracking-wide text-muted-foreground">Fichas</p>
+              <p className="text-[11px] uppercase tracking-wide text-muted-foreground">
+                Fichas
+              </p>
             </div>
           </div>
           <div className="tadeon-dashboard-signal flex min-w-0 items-center gap-3">
@@ -331,11 +358,17 @@ function HomePage() {
                   {isMestre && (
                     <div>
                       <Label htmlFor="owner-id">Dono da ficha</Label>
-                      <Select value={ownerId} onValueChange={setOwnerId} disabled={ownersLoading}>
+                      <Select
+                        value={ownerId}
+                        onValueChange={setOwnerId}
+                        disabled={ownersLoading}
+                      >
                         <SelectTrigger id="owner-id">
                           <SelectValue
                             placeholder={
-                              ownersLoading ? "Carregando usuários…" : "Selecione um usuário"
+                              ownersLoading
+                                ? "Carregando usuários…"
+                                : "Selecione um usuário"
                             }
                           />
                         </SelectTrigger>
@@ -356,18 +389,28 @@ function HomePage() {
                     <Checkbox
                       id="start-sheet-tutorial"
                       checked={startTutorial}
-                      onCheckedChange={(checked) => setStartTutorial(checked === true)}
+                      onCheckedChange={(checked) =>
+                        setStartTutorial(checked === true)
+                      }
                     />
                     <span>
-                      <strong className="block text-sm">Abrir guia da primeira ficha</strong>
+                      <strong className="block text-sm">
+                        Abrir guia da primeira ficha
+                      </strong>
                       <span className="text-xs text-muted-foreground">
-                        Um roteiro curto e dispensável apresenta as áreas da ficha após a criação.
+                        Um roteiro curto e dispensável apresenta as áreas da
+                        ficha após a criação.
                       </span>
                     </span>
                   </label>
                   <DialogFooter>
-                    <Button type="submit" disabled={creating || (isMestre && !ownerId)}>
-                      {creating && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
+                    <Button
+                      type="submit"
+                      disabled={creating || (isMestre && !ownerId)}
+                    >
+                      {creating && (
+                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                      )}
                       Criar
                     </Button>
                   </DialogFooter>
@@ -386,7 +429,9 @@ function HomePage() {
             <BrandMark className="mx-auto mb-4 h-12 w-12 text-muted-foreground" />
             <p className="font-cinzel text-xl">O arquivo ainda está vazio.</p>
             <p className="mt-1 text-sm text-muted-foreground">
-              {canCreate ? "Crie uma ficha para iniciar este fio." : "Nenhuma ficha disponível."}
+              {canCreate
+                ? "Crie uma ficha para iniciar este fio."
+                : "Nenhuma ficha disponível."}
             </p>
           </div>
         ) : (
@@ -396,9 +441,13 @@ function HomePage() {
                 key={sheet.id}
                 className="tadeon-surface tadeon-sheet-card relative flex min-h-44 flex-col p-4 hover:border-primary/35 sm:min-h-52 sm:p-5"
               >
+                <span className="tadeon-sheet-card__index" aria-hidden>
+                  {String(index + 1).padStart(2, "0")}
+                </span>
                 <div className="mb-4 flex items-start justify-between gap-4 sm:mb-6">
                   <span className="tadeon-mono text-[10px] uppercase text-muted-foreground">
-                    Fio {String(index + 1).padStart(2, "0")} · Rank {sheet.exposure || 0}
+                    Fio {String(index + 1).padStart(2, "0")} · Rank{" "}
+                    {sheet.exposure || 0}
                   </span>
                   {canDelete && (
                     <Button
@@ -437,12 +486,16 @@ function HomePage() {
         )}
       </section>
 
-      <AlertDialog open={!!toDelete} onOpenChange={(o) => !o && setToDelete(null)}>
+      <AlertDialog
+        open={!!toDelete}
+        onOpenChange={(o) => !o && setToDelete(null)}
+      >
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Confirmar Exclusão</AlertDialogTitle>
             <AlertDialogDescription>
-              Tem certeza que deseja excluir a ficha "{toDelete?.name}"? Esta ação é irreversível.
+              Tem certeza que deseja excluir a ficha "{toDelete?.name}"? Esta
+              ação é irreversível.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
