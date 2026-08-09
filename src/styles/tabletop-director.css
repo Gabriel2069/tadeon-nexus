@@ -1,0 +1,191 @@
+.tadeon-director-output {
+  position: fixed;
+  z-index: 100;
+  inset: 0;
+  overflow: hidden;
+  background: #040509;
+  color: white;
+  isolation: isolate;
+}
+
+.tadeon-director-output__canvas {
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  pointer-events: none;
+  transition:
+    opacity 500ms ease,
+    filter 500ms ease;
+}
+
+.tadeon-director-output:not(.is-scene) .tadeon-director-output__canvas {
+  opacity: 0;
+  filter: blur(10px);
+}
+
+.tadeon-director-output__blackout,
+.tadeon-director-output__intermission,
+.tadeon-director-output__status {
+  position: absolute;
+  z-index: 4;
+  inset: 0;
+  display: grid;
+  place-content: center;
+  text-align: center;
+}
+
+.tadeon-director-output__blackout {
+  background: #000;
+}
+
+.tadeon-director-output__blackout svg {
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+}
+
+.tadeon-director-output__intermission {
+  padding: 3rem;
+  background:
+    radial-gradient(circle at 50% 40%, rgb(141 49 82 / 24%), transparent 36%),
+    radial-gradient(circle at 50% 80%, rgb(62 99 114 / 12%), transparent 42%),
+    linear-gradient(145deg, #0c0e14, #040509 70%);
+}
+
+.tadeon-director-output__intermission::before,
+.tadeon-director-output__intermission::after {
+  position: absolute;
+  inset: 4%;
+  border: 1px solid rgb(217 215 164 / 10%);
+  pointer-events: none;
+  content: "";
+}
+
+.tadeon-director-output__intermission::after {
+  inset: 5%;
+  border-color: rgb(141 49 82 / 12%);
+}
+
+.tadeon-director-output__intermission > span {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  color: #c99aaa;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+}
+
+.tadeon-director-output__intermission > span svg {
+  width: 1rem;
+  height: 1rem;
+}
+
+.tadeon-director-output__brand {
+  width: min(34vw, 260px);
+  height: auto;
+  margin: 2rem auto 1.2rem;
+  filter: drop-shadow(0 16px 42px rgb(141 49 82 / 32%));
+}
+
+.tadeon-director-output__intermission h1 {
+  max-width: 900px;
+  font-family: Cinzel, serif;
+  font-size: clamp(2rem, 6vw, 5.5rem);
+  line-height: 1.02;
+  text-wrap: balance;
+}
+
+.tadeon-director-output__intermission p {
+  max-width: 760px;
+  margin: 1rem auto 0;
+  color: rgb(255 255 255 / 52%);
+  font-size: clamp(0.85rem, 1.8vw, 1.25rem);
+  letter-spacing: 0.06em;
+}
+
+.tadeon-director-output__hud {
+  position: absolute;
+  z-index: 3;
+  bottom: clamp(1.5rem, 4vw, 3.5rem);
+  left: clamp(1.5rem, 4vw, 3.5rem);
+  display: grid;
+  max-width: min(70vw, 720px);
+  padding: 0.95rem 1.15rem 1rem;
+  border-left: 3px solid #8d3152;
+  background: linear-gradient(90deg, rgb(4 5 9 / 86%), transparent);
+  filter: drop-shadow(0 8px 28px rgb(0 0 0 / 60%));
+  backdrop-filter: blur(8px);
+}
+
+.tadeon-director-output__hud small {
+  color: #c99aaa;
+  font-size: 0.58rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.tadeon-director-output__hud strong {
+  font-family: Cinzel, serif;
+  font-size: clamp(1.25rem, 3vw, 2.4rem);
+}
+
+.tadeon-director-output__hud span {
+  color: rgb(255 255 255 / 58%);
+  font-size: 0.75rem;
+}
+
+.tadeon-director-output__status {
+  gap: 0.8rem;
+  background: rgb(4 5 9 / 88%);
+}
+
+.tadeon-director-output__status > svg {
+  width: 2rem;
+  height: 2rem;
+  margin: auto;
+  color: #c99aaa;
+}
+
+.tadeon-director-output__controls {
+  position: absolute;
+  z-index: 10;
+  top: 1rem;
+  right: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.25rem;
+  border: 1px solid rgb(255 255 255 / 6%);
+  border-radius: 0.7rem;
+  background: rgb(4 5 9 / 55%);
+  opacity: 0.16;
+  backdrop-filter: blur(12px);
+  transition: opacity 160ms ease;
+}
+
+.tadeon-director-output__controls:hover,
+.tadeon-director-output__controls:focus-within {
+  opacity: 1;
+}
+
+.tadeon-director-output__controls > span {
+  width: 0.48rem;
+  height: 0.48rem;
+  margin: 0 0.3rem;
+  border-radius: 50%;
+  background: #7a5353;
+}
+
+.tadeon-director-output__controls > span.is-connected {
+  background: #54a77a;
+  box-shadow: 0 0 10px rgb(84 167 122 / 62%);
+}
+
+.tadeon-director-output__controls svg {
+  width: 1rem;
+  height: 1rem;
+}

@@ -1471,6 +1471,11 @@ export function TabletopWorkspace({
           }
           sceneId={persistedScene?.id ?? null}
           sceneName={persistedScene?.name ?? null}
+          getCurrentCamera={() =>
+            engineReadyRef.current
+              ? engineRef.current?.directorCamera(activeLevelIdRef.current)
+              : null
+          }
         />
       </header>
 

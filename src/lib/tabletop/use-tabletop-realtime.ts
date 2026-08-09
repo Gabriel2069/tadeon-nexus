@@ -41,6 +41,7 @@ export interface UseTabletopRealtimeResult {
     wallType: "door_open" | "door_closed";
     version: number;
   }) => Promise<void>;
+  broadcastDirectorState: (revision: number) => Promise<void>;
   updatePresence: (presence: TabletopPresence) => Promise<void>;
 }
 
@@ -191,6 +192,30 @@ export function useTabletopRealtime({
     [sceneId],
   );
 
+  const broadcastDirectorState = useCallback(
+    async (revision: number) => {
+      const transport = transportRef.current;
+      if (!transport || !sceneId) {
+        throw new TabletopRealtimeTransportError(
+          "TABLETOP_REALTIME_NOT_CONNECTED",
+        );
+      }
+      sequenceRef.current += 1;
+      const sentAt = Date.now();
+      await transport.send({
+        protocol: 1,
+        eventId: `event_${sentAt.toString(36)}_${sequenceRef.current.toString(36)}`,
+        sourceId: sourceIdRef.current,
+        sceneId,
+        sequence: sequenceRef.current,
+        sentAt,
+        type: "director.state",
+        payload: { revision },
+      });
+    },
+    [sceneId],
+  );
+
   const updatePresence = useCallback(async (nextPresence: TabletopPresence) => {
     const transport = transportRef.current;
     if (!transport) {
@@ -208,6 +233,7 @@ export function useTabletopRealtime({
     reconnect,
     send,
     broadcastStructureState,
+    broadcastDirectorState,
     updatePresence,
   };
 }

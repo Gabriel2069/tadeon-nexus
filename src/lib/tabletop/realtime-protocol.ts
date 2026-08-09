@@ -85,6 +85,14 @@ export const tabletopRealtimeEventSchema = z.discriminatedUnion("type", [
       })
       .strict(),
   }),
+  eventBaseSchema.extend({
+    type: z.literal("director.state"),
+    payload: z
+      .object({
+        revision: z.number().int().positive().max(Number.MAX_SAFE_INTEGER),
+      })
+      .strict(),
+  }),
 ]);
 
 export type TabletopRealtimeEvent = z.infer<typeof tabletopRealtimeEventSchema>;

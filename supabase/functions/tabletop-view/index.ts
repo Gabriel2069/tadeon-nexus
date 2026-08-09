@@ -239,6 +239,41 @@ function publicProperties(value: unknown) {
   };
 }
 
+function publicDirectorState(value: unknown) {
+  const state = objectValue(value);
+  const camera = objectValue(state.camera);
+  const mode = ["scene", "intermission", "blackout"].includes(
+    String(state.mode),
+  )
+    ? String(state.mode)
+    : "scene";
+  const cameraMode = ["fit", "manual"].includes(String(camera.mode))
+    ? String(camera.mode)
+    : "fit";
+  const projection = ["plan", "isometric"].includes(String(camera.projection))
+    ? String(camera.projection)
+    : "plan";
+  const levelId =
+    typeof camera.levelId === "string" && UUID_PATTERN.test(camera.levelId)
+      ? camera.levelId
+      : null;
+  return {
+    mode,
+    title: boundedText(state.title, 160),
+    subtitle: boundedText(state.subtitle, 320),
+    showGrid: state.showGrid !== false,
+    showHud: state.showHud === true,
+    camera: {
+      mode: cameraMode,
+      x: Math.max(-1_000_000, Math.min(1_000_000, finiteNumber(camera.x))),
+      y: Math.max(-1_000_000, Math.min(1_000_000, finiteNumber(camera.y))),
+      zoom: Math.max(0.15, Math.min(4, finiteNumber(camera.zoom, 1))),
+      projection,
+      levelId,
+    },
+  };
+}
+
 async function isFlagEnabled(
   admin: ReturnType<typeof createClient>,
   userId: string,
@@ -369,7 +404,9 @@ Deno.serve(async (request) => {
 
   const { data: session, error: sessionError } = await admin
     .from("tabletop_sessions")
-    .select("id,campaign_id,current_scene_id,name,status,join_locked,version")
+    .select(
+      "id,campaign_id,current_scene_id,name,status,join_locked,version,director_state",
+    )
     .eq("id", sessionId)
     .maybeSingle();
   if (sessionError) {
@@ -407,6 +444,7 @@ Deno.serve(async (request) => {
     }
   }
 
+  const directorState = publicDirectorState(session.director_state);
   const sessionView = {
     id: session.id,
     name: boundedText(session.name, 160),
@@ -414,6 +452,7 @@ Deno.serve(async (request) => {
     currentSceneId: session.current_scene_id,
     version: session.version,
     joinLocked: session.join_locked,
+    directorState,
   };
   const participantView = {
     role: participant.role,
@@ -490,8 +529,14 @@ Deno.serve(async (request) => {
             publicLayerIds.has(entity.layer_id),
         )?.level_id
       : null;
+  const directorLevelId =
+    participant.role === "master" || participant.role === "co_master"
+      ? directorState.camera.levelId
+      : null;
   const activeLevel =
-    (levels ?? []).find((level) => level.id === controlledLevelId) ?? levels[0];
+    (levels ?? []).find((level) => level.id === directorLevelId) ??
+    (levels ?? []).find((level) => level.id === controlledLevelId) ??
+    levels[0];
   const activeLevelId = activeLevel.id;
 
   const [

@@ -8,6 +8,10 @@ import {
   tabletopSheetSummarySchema,
   type TabletopSheetSummary,
 } from "@/lib/tabletop/tabletop-entity-insight";
+import {
+  tabletopDirectorStateSchema,
+  type TabletopDirectorState,
+} from "@/lib/tabletop/tabletop-director-state";
 
 const uuidSchema = z.uuid();
 const finiteNumber = z.number().finite();
@@ -206,6 +210,7 @@ const participantViewSchema = z
         currentSceneId: uuidSchema.nullable(),
         version: z.number().int().nonnegative(),
         joinLocked: z.boolean(),
+        directorState: tabletopDirectorStateSchema,
       })
       .strict(),
     participant: z
@@ -258,6 +263,7 @@ export interface TabletopParticipantView {
     currentSceneId: string | null;
     version: number;
     joinLocked: boolean;
+    directorState: TabletopDirectorState;
   };
   participant: {
     role: CampaignRole;

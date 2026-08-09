@@ -24,6 +24,8 @@ import {
   type TabletopSessionParticipant,
 } from "@/lib/tabletop/tabletop-session-service";
 import { TabletopRealtimeStatus } from "@/components/tabletop/realtime-status";
+import { TabletopDirectorRemote } from "@/components/tabletop/tabletop-director-remote";
+import type { TabletopDirectorCamera } from "@/lib/tabletop/tabletop-director-state";
 import "@/styles/tabletop-live-session.css";
 
 const ROLE_LABELS: Record<CampaignRole, string> = {
@@ -59,12 +61,14 @@ export function TabletopLiveSession({
   campaignName,
   sceneId,
   sceneName,
+  getCurrentCamera,
 }: {
   enabled: boolean;
   campaignId?: string | null;
   campaignName?: string | null;
   sceneId?: string | null;
   sceneName?: string | null;
+  getCurrentCamera?: () => TabletopDirectorCamera | null | undefined;
 }) {
   const { user, profile } = useAuth();
   const [expanded, setExpanded] = useState(false);
@@ -74,9 +78,9 @@ export function TabletopLiveSession({
   >([]);
   const [roomName, setRoomName] = useState("Sessão ao vivo");
   const [loading, setLoading] = useState(false);
-  const [lastEvent, setLastEvent] = useState<TabletopRealtimeEvent["type"] | null>(
-    null,
-  );
+  const [lastEvent, setLastEvent] = useState<
+    TabletopRealtimeEvent["type"] | null
+  >(null);
   const [presenceStartedAt, setPresenceStartedAt] = useState(() => Date.now());
 
   const currentParticipant = useMemo(
@@ -150,7 +154,8 @@ export function TabletopLiveSession({
   );
 
   const realtimePresence = useMemo(() => {
-    if (!user?.id || !activeParticipant || !session?.currentSceneId) return null;
+    if (!user?.id || !activeParticipant || !session?.currentSceneId)
+      return null;
     const fallbackName = user.email?.split("@")[0] || "Participante";
     return {
       userId: user.id,
@@ -229,7 +234,9 @@ export function TabletopLiveSession({
           <Radio />
         </span>
         <span className="min-w-0 flex-1 text-left">
-          <span className="tadeon-live-session__eyebrow">Mesa sincronizada</span>
+          <span className="tadeon-live-session__eyebrow">
+            Mesa sincronizada
+          </span>
           <strong>
             {!enabled
               ? "Sala ao vivo em canário"
@@ -243,7 +250,10 @@ export function TabletopLiveSession({
             {activeCount} {activeCount === 1 ? "presente" : "presentes"}
           </span>
         )}
-        <ChevronDown className="tadeon-live-session__chevron" aria-hidden="true" />
+        <ChevronDown
+          className="tadeon-live-session__chevron"
+          aria-hidden="true"
+        />
       </button>
 
       {expanded && (
@@ -347,9 +357,7 @@ export function TabletopLiveSession({
                   variant="outline"
                   className="gap-2"
                   disabled={
-                    loading ||
-                    !sceneId ||
-                    session.currentSceneId === sceneId
+                    loading || !sceneId || session.currentSceneId === sceneId
                   }
                   onClick={() => {
                     if (!sceneId) return;
@@ -405,14 +413,28 @@ export function TabletopLiveSession({
                     )
                   }
                 >
-                  <RefreshCw className={`h-4 w-4 ${loading ? "animate-spin" : ""}`} />
+                  <RefreshCw
+                    className={`h-4 w-4 ${loading ? "animate-spin" : ""}`}
+                  />
                 </Button>
               </div>
 
               {activeParticipant && (
-                <p className="tadeon-live-session__role">
-                  Você está na sala como {ROLE_LABELS[activeParticipant.role]}.
-                </p>
+                <>
+                  <p className="tadeon-live-session__role">
+                    Você está na sala como {ROLE_LABELS[activeParticipant.role]}
+                    .
+                  </p>
+                  {(activeParticipant.role === "master" ||
+                    activeParticipant.role === "co_master") && (
+                    <TabletopDirectorRemote
+                      session={session}
+                      getCurrentCamera={getCurrentCamera}
+                      onSaved={refresh}
+                      broadcastRevision={realtime.broadcastDirectorState}
+                    />
+                  )}
+                </>
               )}
             </div>
           ) : (
