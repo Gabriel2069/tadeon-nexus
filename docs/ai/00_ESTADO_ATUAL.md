@@ -139,21 +139,23 @@ Os elementos visuais persistentes do Comando 10 foram concluídos no PR #60. O m
 o proprietário do token; barras opcionais, ícones e condições são propriedades estritamente
 visuais, sem rolagens nem automação de regras. Rótulos longos são recortados apenas na renderização.
 
-A fundação segura do Realtime começou no PR #62, ainda sem assinatura de canais. O protocolo
-versionado valida cena, idade, sequência, origem, limites e payloads; deduplicação e rate limit
-locais protegem Broadcast, e Presence aceita apenas estado lento. A flag global e os overrides
-`nexus_realtime_enabled` continuam desligados.
+A fundação segura do Realtime começou no PR #62, inicialmente sem assinatura de canais. O
+protocolo versionado valida cena, idade, sequência, origem, limites e payloads; deduplicação e rate
+limit locais protegem Broadcast, e Presence aceita apenas estado lento. Esse era o estado do
+checkpoint inicial; o canário atual está registrado ao final desta seção.
 
 As salas persistentes foram integradas no PR #63 e aplicadas como
 `20260801211122_tabletop_realtime_sessions.sql`. Elas reutilizam `campaign_members`, permitem no
 máximo uma sala aberta por campanha e registram somente participação específica da sessão. RLS e
 RPCs `SECURITY INVOKER` cobrem abrir, entrar, sair, trocar cena, bloquear entrada, remover e encerrar.
 A FK composta da cena foi coberta por `20260801211246_cover_tabletop_session_scene_foreign_key.sql`.
-Ambas as tabelas permanecem vazias e inacessíveis enquanto a flag estiver desligada.
+Ambas as tabelas permanecem vazias; o acesso atual continua restrito pelos overrides individuais
+descritos ao final desta seção.
 
 O teste autenticado auto-revertido confirmou criação, cinco camadas, token, alteração, snapshot,
 restauração, conflito `40001`, negação de escrita e leitura bruta zero para jogador, além de zero
-resíduos. Não há Realtime, iluminação calculada, visão, névoa ou R2.
+resíduos. Naquele checkpoint ainda não havia Realtime, iluminação calculada, visão ou névoa; a
+atualização abaixo substitui especificamente esse estado histórico. R2 continua desligado.
 
 O estado atual da Mesa substitui as limitações históricas descritas acima. Os PRs #88 a #91
 corrigiram a deriva da grade no zoom isométrico, acrescentaram andares persistentes com elevação,
