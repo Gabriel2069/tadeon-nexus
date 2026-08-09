@@ -1,5 +1,8 @@
 import { describe, expect, it } from "vitest";
-import { createLevelRevealStrokes } from "./visibility-tooling";
+import {
+  compactVisibilityToolPoints,
+  createLevelRevealStrokes,
+} from "./visibility-tooling";
 
 describe("createLevelRevealStrokes", () => {
   it("cobre mapas grandes sem ultrapassar os limites persistidos", () => {
@@ -48,5 +51,17 @@ describe("createLevelRevealStrokes", () => {
       { x: 0, y: 0 },
       { x: 0, y: 0 },
     ]);
+  });
+
+  it("compacta um traço livre preservando as duas extremidades", () => {
+    const points = Array.from({ length: 1_000 }, (_, index) => ({
+      x: index,
+      y: Math.sin(index / 20) * 100,
+    }));
+    const compacted = compactVisibilityToolPoints(points);
+
+    expect(compacted).toHaveLength(64);
+    expect(compacted[0]).toEqual(points[0]);
+    expect(compacted.at(-1)).toEqual(points.at(-1));
   });
 });
