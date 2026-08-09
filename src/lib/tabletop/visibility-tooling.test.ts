@@ -2,6 +2,8 @@ import { describe, expect, it } from "vitest";
 import {
   compactVisibilityToolPoints,
   createLevelRevealStrokes,
+  hitTestTabletopLight,
+  transformTabletopLight,
 } from "./visibility-tooling";
 
 describe("createLevelRevealStrokes", () => {
@@ -63,5 +65,42 @@ describe("createLevelRevealStrokes", () => {
     expect(compacted).toHaveLength(64);
     expect(compacted[0]).toEqual(points[0]);
     expect(compacted.at(-1)).toEqual(points.at(-1));
+  });
+});
+
+describe("edição direta de luz", () => {
+  const light = {
+    id: "light-1",
+    levelId: "base",
+    entityId: null,
+    x: 120,
+    y: 90,
+    radius: 80,
+    intensity: 1,
+    color: "#f2c66d",
+    enabled: true,
+    castsShadows: true,
+  };
+
+  it("distingue o centro e a alça de alcance da luz selecionada", () => {
+    expect(hitTestTabletopLight({ x: 121, y: 91 }, [light], 8)).toEqual({
+      id: "light-1",
+      handle: "body",
+    });
+    expect(
+      hitTestTabletopLight({ x: 201, y: 90 }, [light], 8, "light-1"),
+    ).toEqual({ id: "light-1", handle: "radius" });
+  });
+
+  it("move com snap e redimensiona sem ultrapassar os limites persistidos", () => {
+    expect(
+      transformTabletopLight(light, "body", { x: 157, y: 203 }, () => ({
+        x: 160,
+        y: 200,
+      })),
+    ).toMatchObject({ x: 160, y: 200, radius: 80 });
+    expect(
+      transformTabletopLight(light, "radius", { x: 320, y: 90 }, (p) => p),
+    ).toMatchObject({ x: 120, y: 90, radius: 200 });
   });
 });
