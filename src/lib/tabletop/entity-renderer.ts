@@ -1,5 +1,9 @@
-import { Container, Graphics, Sprite, Text } from "pixi.js";
+import { Container, Graphics, Matrix, Sprite, Text } from "pixi.js";
 import type { TabletopProjectionMode } from "./camera-controller";
+import {
+  inverseIsometricEntityMatrix,
+  tabletopEntityRenderMode,
+} from "./isometric-billboard";
 import { readTabletopDrawingPoints } from "./tabletop-drawing";
 import {
   activeTabletopLevel,
@@ -96,7 +100,7 @@ export class EntityRenderer {
           : 0) +
         entity.zIndex;
       this.syncAsset(display, entity);
-      this.paint(display, entity, selected.has(entity.id));
+      this.paint(display, entity, selected.has(entity.id), projection);
     }
     this.view.sortableChildren = true;
     this.view.sortChildren();
@@ -143,7 +147,12 @@ export class EntityRenderer {
     return display;
   }
 
-  private paint(display: Container, entity: TabletopEntity, selected: boolean) {
+  private paint(
+    display: Container,
+    entity: TabletopEntity,
+    selected: boolean,
+    projection: TabletopProjectionMode,
+  ) {
     const shape = display.getChildByLabel("shape") as Graphics;
     shape.clear();
     const outline = display.getChildByLabel("outline") as Graphics;
@@ -261,11 +270,33 @@ export class EntityRenderer {
     label.visible = !isPathDrawing;
     label.position.set(8, Math.max(5, entity.height - (bar.visible ? 30 : 24)));
 
-    const sprite = display.getChildByLabel("asset") as Sprite | null;
-    if (sprite) {
-      sprite.position.set(0, 0);
+    const assetFrame = display.getChildByLabel("asset") as Container | null;
+    const sprite = assetFrame?.getChildByLabel("asset-sprite") as Sprite | null;
+    if (assetFrame && sprite) {
+      const billboard =
+        projection === "isometric" &&
+        tabletopEntityRenderMode(entity) === "billboard";
       sprite.width = entity.width;
       sprite.height = entity.height;
+      if (billboard) {
+        const matrix = inverseIsometricEntityMatrix(entity.rotation);
+        sprite.anchor.set(0.5);
+        sprite.position.set(0, 0);
+        assetFrame.setFromMatrix(
+          new Matrix(
+            matrix.a,
+            matrix.b,
+            matrix.c,
+            matrix.d,
+            entity.width / 2,
+            entity.height / 2,
+          ),
+        );
+      } else {
+        sprite.anchor.set(0);
+        sprite.position.set(0, 0);
+        assetFrame.setFromMatrix(new Matrix());
+      }
     }
   }
 
@@ -295,8 +326,9 @@ export class EntityRenderer {
         display.removeChild(previous);
         previous.destroy();
       }
-      const sprite = new Sprite({ texture, label: "asset" });
-      display.addChildAt(sprite, 1);
+      const assetFrame = new Container({ label: "asset" });
+      assetFrame.addChild(new Sprite({ texture, label: "asset-sprite" }));
+      display.addChildAt(assetFrame, 1);
       this.invalidate();
     } catch (error) {
       if (this.assetUrls.get(entityId) !== url) return;
