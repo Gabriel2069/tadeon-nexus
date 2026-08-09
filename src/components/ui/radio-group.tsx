@@ -8,7 +8,13 @@ const RadioGroup = React.forwardRef<
   React.ElementRef<typeof RadioGroupPrimitive.Root>,
   React.ComponentPropsWithoutRef<typeof RadioGroupPrimitive.Root>
 >(({ className, ...props }, ref) => {
-  return <RadioGroupPrimitive.Root className={cn("grid gap-2", className)} {...props} ref={ref} />;
+  return (
+    <RadioGroupPrimitive.Root
+      className={cn("grid gap-2", className)}
+      {...props}
+      ref={ref}
+    />
+  );
 });
 RadioGroup.displayName = RadioGroupPrimitive.Root.displayName;
 
@@ -20,13 +26,13 @@ const RadioGroupItem = React.forwardRef<
     <RadioGroupPrimitive.Item
       ref={ref}
       className={cn(
-        "aspect-square h-4 w-4 rounded-full border border-primary text-primary shadow cursor-pointer focus:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50",
+        "aspect-square h-5 w-5 cursor-pointer rounded-full border border-primary/70 text-primary shadow-sm transition-[background-color,border-color,box-shadow] duration-150 ease-[var(--ease-out)] focus:outline-none focus-visible:ring-2 focus-visible:ring-ring/70 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:border-primary",
         className,
       )}
       {...props}
     >
       <RadioGroupPrimitive.Indicator className="flex items-center justify-center">
-        <Circle className="h-3.5 w-3.5 fill-primary" />
+        <Circle className="h-3 w-3 fill-primary" />
       </RadioGroupPrimitive.Indicator>
     </RadioGroupPrimitive.Item>
   );
