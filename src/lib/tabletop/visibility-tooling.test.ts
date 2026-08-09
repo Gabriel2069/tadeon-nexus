@@ -6,8 +6,8 @@ describe("createLevelRevealStrokes", () => {
     let id = 0;
     const strokes = createLevelRevealStrokes({
       levelId: "andar-2",
-      sceneWidth: 8_192,
-      sceneHeight: 6_144,
+      sceneWidth: 16_384,
+      sceneHeight: 12_288,
       createId: () => `fog-${++id}`,
     });
     const points = strokes.flatMap((stroke) => stroke.points);
@@ -21,9 +21,9 @@ describe("createLevelRevealStrokes", () => {
 
     for (const corner of [
       { x: 0, y: 0 },
-      { x: 8_192, y: 0 },
-      { x: 0, y: 6_144 },
-      { x: 8_192, y: 6_144 },
+      { x: 16_384, y: 0 },
+      { x: 0, y: 12_288 },
+      { x: 16_384, y: 12_288 },
     ]) {
       expect(
         points.some(
