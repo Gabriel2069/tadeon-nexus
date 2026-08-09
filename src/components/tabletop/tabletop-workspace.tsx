@@ -1032,6 +1032,16 @@ export function TabletopWorkspace({
           },
           "Aplicar imagem à entidade",
         );
+        if (
+          primary?.type === "token" ||
+          primary?.type === "character" ||
+          primary?.type === "npc" ||
+          primary?.type === "creature" ||
+          primary?.type === "object"
+        )
+          engineRef.current?.updateSelectedProperties({
+            render_mode: "billboard",
+          });
       }
       toast.success(
         target === "background"
@@ -1068,7 +1078,11 @@ export function TabletopWorkspace({
         height: payload.entityType === "token" ? 64 : asset.height,
         assetId: asset.id,
         assetUrl: asset.previewUrl,
-        properties: { source: "nexus_assets", mime_type: asset.mimeType },
+        properties: {
+          source: "nexus_assets",
+          mime_type: asset.mimeType,
+          render_mode: "billboard",
+        },
       };
     }
 
@@ -2606,6 +2620,40 @@ export function TabletopWorkspace({
                         ))}
                       </select>
                     </div>
+                    {primary.assetUrl ? (
+                      <div>
+                        <Label
+                          htmlFor="entity-render-mode"
+                          className="text-[10px] uppercase"
+                        >
+                          Imagem no 3D
+                        </Label>
+                        <select
+                          id="entity-render-mode"
+                          value={
+                            primaryProperties.render_mode === "flat"
+                              ? "flat"
+                              : "billboard"
+                          }
+                          disabled={!editable}
+                          onChange={(event) =>
+                            updateProperties({
+                              render_mode: event.target.value,
+                            })
+                          }
+                          className="h-10 w-full rounded-md border border-input bg-background px-2 text-xs"
+                        >
+                          <option value="billboard">
+                            Vertical · sempre legível
+                          </option>
+                          <option value="flat">Plano · acompanha o chão</option>
+                        </select>
+                        <p className="mt-1 text-[10px] text-muted-foreground">
+                          Tokens e objetos usam o modo vertical por padrão;
+                          pisos, tiles e mapas permanecem planos.
+                        </p>
+                      </div>
+                    ) : null}
                     <label className="flex min-h-11 cursor-pointer items-center justify-center gap-2 rounded-md border border-dashed border-primary/35 bg-primary/5 px-3 text-xs font-medium text-primary hover:bg-primary/10">
                       {assetUploading ? (
                         <Loader2 className="h-4 w-4 animate-spin" />

@@ -33,6 +33,25 @@ function elevated(point: SpatialPoint, height: number): SpatialPoint {
   return { x: point.x - height, y: point.y - height };
 }
 
+export function tabletopWallFootprint(
+  start: SpatialPoint,
+  end: SpatialPoint,
+  thickness: number,
+) {
+  const dx = end.x - start.x;
+  const dy = end.y - start.y;
+  const length = Math.max(0.001, Math.hypot(dx, dy));
+  const half = Math.max(1, Math.min(64, thickness)) / 2;
+  const offsetX = (-dy / length) * half;
+  const offsetY = (dx / length) * half;
+  return [
+    { x: start.x + offsetX, y: start.y + offsetY },
+    { x: end.x + offsetX, y: end.y + offsetY },
+    { x: end.x - offsetX, y: end.y - offsetY },
+    { x: start.x - offsetX, y: start.y - offsetY },
+  ] as const;
+}
+
 function rotatedDoorEnd(wall: TabletopWall) {
   const dx = wall.x2 - wall.x1;
   const dy = wall.y2 - wall.y1;
@@ -121,8 +140,6 @@ export class TabletopSpatialRenderer {
           : baseHeight;
     const start = elevated(groundStart, baseElevation);
     const end = elevated(groundEnd, baseElevation);
-    const topStart = elevated(groundStart, baseElevation + height);
-    const topEnd = elevated(groundEnd, baseElevation + height);
     const alpha =
       family === "window"
         ? type === "window_broken"
@@ -131,28 +148,39 @@ export class TabletopSpatialRenderer {
         : type === "door_open"
           ? 0.72
           : 0.92;
+    const footprint = tabletopWallFootprint(
+      groundStart,
+      groundEnd,
+      wall.thickness ?? 8,
+    );
+    const base = footprint.map((point) => elevated(point, baseElevation));
+    const top = footprint.map((point) =>
+      elevated(point, baseElevation + height),
+    );
 
+    // Prisma real: duas faces, tampas e topo deixam altura/espessura legíveis
+    // sem criar centenas de sprites ou elementos DOM.
     this.architecture
-      .poly(flatPoints([start, end, topEnd, topStart]))
+      .poly(flatPoints([base[0], base[1], top[1], top[0]]))
       .fill({ color: material.face, alpha });
     this.architecture
-      .moveTo(topStart.x, topStart.y)
-      .lineTo(topEnd.x, topEnd.y)
-      .stroke({
-        color: material.top,
-        alpha: 0.98,
-        width: Math.max(2, Math.min(64, wall.thickness ?? 8)),
-      });
+      .poly(flatPoints([base[3], base[2], top[2], top[3]]))
+      .fill({ color: material.face, alpha: alpha * 0.68 });
     this.architecture
-      .moveTo(start.x, start.y)
-      .lineTo(topStart.x, topStart.y)
-      .moveTo(end.x, end.y)
-      .lineTo(topEnd.x, topEnd.y)
-      .stroke({
-        color: type === "door_locked" ? 0x9f3540 : material.edge,
-        alpha: 0.82,
-        width: 2,
-      });
+      .poly(flatPoints([base[0], base[3], top[3], top[0]]))
+      .fill({ color: material.face, alpha: alpha * 0.82 });
+    this.architecture
+      .poly(flatPoints([base[1], base[2], top[2], top[1]]))
+      .fill({ color: material.face, alpha: alpha * 0.74 });
+    this.architecture.poly(flatPoints(top)).fill({
+      color: material.top,
+      alpha: 0.98,
+    });
+    this.architecture.poly(flatPoints(top)).stroke({
+      color: type === "door_locked" ? 0x9f3540 : material.edge,
+      alpha: 0.84,
+      width: 2,
+    });
 
     if (family === "window" && type !== "window_open") {
       const lowerStart = elevated(start, height * 0.28);
