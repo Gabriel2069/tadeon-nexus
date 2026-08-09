@@ -10,16 +10,6 @@ import { loadFeatureFlags } from "@/lib/feature-flag-repository";
 import type { FeatureFlags } from "@/lib/feature-flags";
 
 export const Route = createFileRoute("/tabletop")({
-  validateSearch: (search: Record<string, unknown>) => ({
-    view: search.view === "director" ? ("director" as const) : undefined,
-    session:
-      typeof search.session === "string" &&
-      /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(
-        search.session,
-      )
-        ? search.session
-        : undefined,
-  }),
   head: () => ({
     meta: [
       { title: "Mesa Nexus · Tadeon Nexus" },
@@ -39,7 +29,10 @@ export const Route = createFileRoute("/tabletop")({
 
 function TabletopRoute() {
   const navigate = useNavigate();
-  const search = Route.useSearch();
+  const search = Route.useSearch() as {
+    view?: string;
+    session?: string;
+  };
   const { role } = useAuth();
   const [flags, setFlags] = useState<FeatureFlags | null>(null);
 
@@ -70,10 +63,18 @@ function TabletopRoute() {
     );
   }
 
+  const directorSession =
+    typeof search.session === "string" &&
+    /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(
+      search.session,
+    )
+      ? search.session
+      : undefined;
+
   if (role === "mestre" && search.view === "director") {
     return (
       <TabletopDirectorWorkspace
-        sessionId={search.session}
+        sessionId={directorSession}
         realtimeEnabled={flags.nexus_realtime_enabled}
       />
     );
