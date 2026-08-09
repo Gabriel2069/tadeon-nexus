@@ -1,6 +1,11 @@
 import { Container, Graphics } from "pixi.js";
 import type { TabletopProjectionMode } from "./camera-controller";
 import {
+  DEFAULT_TABLETOP_VIEW_ORIENTATION,
+  tabletopElevationOffset,
+  type TabletopViewOrientation,
+} from "./tabletop-projection";
+import {
   activeTabletopLevel,
   filterVisibilityForLevel,
 } from "./tabletop-levels";
@@ -64,6 +69,7 @@ export class TabletopVisibilityRenderer {
     showGuides = false,
     projection: TabletopProjectionMode = "plan",
     activeLevelId?: string | null,
+    orientation: TabletopViewOrientation = DEFAULT_TABLETOP_VIEW_ORIENTATION,
   ) {
     this.lightGlow.clear();
     this.darkness.clear();
@@ -77,9 +83,11 @@ export class TabletopVisibilityRenderer {
       activeLevel.id,
       fallbackLevelId,
     );
-    const levelElevation =
-      projection === "isometric" ? activeLevel.baseElevation : 0;
-    this.view.position.set(-levelElevation, -levelElevation);
+    const levelOffset =
+      projection === "isometric"
+        ? tabletopElevationOffset(activeLevel.baseElevation, orientation)
+        : { x: 0, y: 0 };
+    this.view.position.set(levelOffset.x, levelOffset.y);
 
     const enabledLights = levelState.lights.filter((light) => light.enabled);
     for (const light of enabledLights) {
