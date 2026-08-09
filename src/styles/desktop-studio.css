@@ -424,11 +424,35 @@
   }
 
   .tadeon-master-commandbar {
-    top: 4.65rem;
     margin-bottom: 1.25rem;
-    padding: 1rem 1.25rem;
+    padding: 1.2rem 1.35rem;
     border: 1px solid
       color-mix(in srgb, var(--section-accent) 18%, var(--border));
+    border-radius: 1.35rem 0.45rem 1.35rem 0.45rem;
+    background:
+      linear-gradient(
+        118deg,
+        rgb(var(--section-accent-rgb) / 10%),
+        transparent 44%
+      ),
+      rgb(10 12 16 / 78%);
+    box-shadow:
+      inset 0 1px rgb(255 255 255 / 3%),
+      0 22px 70px -55px rgb(var(--section-accent-rgb) / 75%);
+  }
+
+  .tadeon-master-commandbar__glow {
+    position: absolute;
+    top: -4.5rem;
+    right: -2.5rem;
+    width: 14rem;
+    height: 14rem;
+    border: 1px solid rgb(var(--section-accent-rgb) / 11%);
+    border-radius: 999px;
+    box-shadow:
+      0 0 0 2.8rem rgb(var(--section-accent-rgb) / 2.5%),
+      0 0 0 5.7rem rgb(var(--section-accent-rgb) / 1.5%);
+    pointer-events: none;
   }
 
   .tadeon-master-navigation > [role="tablist"] {
@@ -544,7 +568,6 @@
   .tadeon-desktop-toolbar__account > span {
     display: none;
   }
-
 }
 
 @media (min-width: 1180px) {

@@ -64,63 +64,97 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
   );
 }
 
-export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
-  head: () => ({
-    meta: [
-      { charSet: "utf-8" },
-      { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { name: "theme-color", content: "#74242d" },
-      {
-        name: "tadeon-build-sha",
-        content: import.meta.env.VITE_APP_COMMIT_SHA ?? "development",
-      },
-      { title: "Tadeon Nexus - RPG Online" },
-      {
-        name: "description",
-        content:
-          "Tadeon Nexus: gerencie fichas de personagem, atributos, perícias e a árvore de habilidades do seu RPG online com painel para mestres e jogadores.",
-      },
-      { property: "og:title", content: "Tadeon Nexus - RPG Online" },
-      { name: "twitter:title", content: "Tadeon Nexus - RPG Online" },
-      {
-        property: "og:description",
-        content:
-          "Tadeon Nexus: gerencie fichas de personagem, atributos, perícias e a árvore de habilidades do seu RPG online com painel para mestres e jogadores.",
-      },
-      {
-        name: "twitter:description",
-        content:
-          "Tadeon Nexus: gerencie fichas de personagem, atributos, perícias e a árvore de habilidades do seu RPG online com painel para mestres e jogadores.",
-      },
-      { property: "og:site_name", content: "Tadeon Nexus" },
-      {
-        property: "og:image",
-        content:
-          "https://storage.googleapis.com/gpt-engineer-file-uploads/PVW5PtKIfsZfzEClat2iS5nSbg62/social-images/social-1779415456700-IMG_0562.webp",
-      },
-      {
-        name: "twitter:image",
-        content:
-          "https://storage.googleapis.com/gpt-engineer-file-uploads/PVW5PtKIfsZfzEClat2iS5nSbg62/social-images/social-1779415456700-IMG_0562.webp",
-      },
-      { name: "twitter:card", content: "summary_large_image" },
-      { property: "og:type", content: "website" },
-    ],
-    links: [
-      { rel: "stylesheet", href: appCss },
-      { rel: "manifest", href: "/manifest.webmanifest" },
-      { rel: "icon", href: "/icon.svg", type: "image/svg+xml" },
-      {
-        rel: "stylesheet",
-        href: "https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Inter:wght@400;500;600;700&family=PT+Mono&display=swap",
-      },
-    ],
-  }),
-  shellComponent: RootShell,
-  component: RootComponent,
-  notFoundComponent: NotFoundComponent,
-  errorComponent: ErrorComponent,
-});
+export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
+  {
+    head: () => ({
+      meta: [
+        { charSet: "utf-8" },
+        { name: "viewport", content: "width=device-width, initial-scale=1" },
+        { name: "theme-color", content: "#74242d" },
+        { name: "application-name", content: "Tadeon Nexus" },
+        { name: "apple-mobile-web-app-capable", content: "yes" },
+        {
+          name: "apple-mobile-web-app-status-bar-style",
+          content: "black-translucent",
+        },
+        { name: "apple-mobile-web-app-title", content: "Nexus" },
+        { name: "mobile-web-app-capable", content: "yes" },
+        {
+          name: "tadeon-build-sha",
+          content: import.meta.env.VITE_APP_COMMIT_SHA ?? "development",
+        },
+        { title: "Tadeon Nexus - RPG Online" },
+        {
+          name: "description",
+          content:
+            "Tadeon Nexus: gerencie fichas de personagem, atributos, perícias e a árvore de habilidades do seu RPG online com painel para mestres e jogadores.",
+        },
+        { property: "og:title", content: "Tadeon Nexus - RPG Online" },
+        { name: "twitter:title", content: "Tadeon Nexus - RPG Online" },
+        {
+          property: "og:description",
+          content:
+            "Tadeon Nexus: gerencie fichas de personagem, atributos, perícias e a árvore de habilidades do seu RPG online com painel para mestres e jogadores.",
+        },
+        {
+          name: "twitter:description",
+          content:
+            "Tadeon Nexus: gerencie fichas de personagem, atributos, perícias e a árvore de habilidades do seu RPG online com painel para mestres e jogadores.",
+        },
+        { property: "og:site_name", content: "Tadeon Nexus" },
+        {
+          property: "og:image",
+          content: "https://tadeon-nexus.gtadeusz.workers.dev/social-card.png",
+        },
+        { property: "og:image:width", content: "1200" },
+        { property: "og:image:height", content: "630" },
+        {
+          property: "og:image:alt",
+          content: "Tadeon Nexus — arquivo vivo para Tessitura do Vazio",
+        },
+        {
+          name: "twitter:image",
+          content: "https://tadeon-nexus.gtadeusz.workers.dev/social-card.png",
+        },
+        {
+          name: "twitter:image:alt",
+          content: "Tadeon Nexus — arquivo vivo para Tessitura do Vazio",
+        },
+        { name: "twitter:card", content: "summary_large_image" },
+        { property: "og:type", content: "website" },
+      ],
+      links: [
+        { rel: "stylesheet", href: appCss },
+        { rel: "manifest", href: "/manifest.webmanifest" },
+        {
+          rel: "icon",
+          href: "/icon.svg",
+          type: "image/svg+xml",
+          sizes: "any",
+        },
+        {
+          rel: "icon",
+          href: "/favicon-32x32.png",
+          type: "image/png",
+          sizes: "32x32",
+        },
+        {
+          rel: "apple-touch-icon",
+          href: "/apple-touch-icon.png",
+          sizes: "180x180",
+        },
+        {
+          rel: "stylesheet",
+          href: "https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Inter:wght@400;500;600;700&family=PT+Mono&display=swap",
+        },
+      ],
+    }),
+    shellComponent: RootShell,
+    component: RootComponent,
+    notFoundComponent: NotFoundComponent,
+    errorComponent: ErrorComponent,
+  },
+);
 
 function RootShell({ children }: { children: React.ReactNode }) {
   return (

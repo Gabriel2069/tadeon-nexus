@@ -1,18 +1,50 @@
 {
+  "id": "/",
   "name": "Tadeon Nexus",
   "short_name": "Nexus",
-  "description": "Arquivo de continuidade e painel de Tessitura do Vazio.",
+  "description": "Arquivo vivo, mesa e painel de condução para Tessitura do Vazio.",
   "start_url": "/",
+  "scope": "/",
   "display": "standalone",
-  "background_color": "#100e10",
+  "display_override": ["window-controls-overlay", "standalone"],
+  "orientation": "any",
+  "background_color": "#090a0d",
   "theme_color": "#74242d",
   "lang": "pt-BR",
+  "categories": ["games", "productivity", "entertainment"],
+  "prefer_related_applications": false,
   "icons": [
     {
-      "src": "/icon.svg",
-      "sizes": "any",
-      "type": "image/svg+xml",
+      "src": "/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
       "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Dashboard",
+      "short_name": "Dashboard",
+      "url": "/",
+      "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "O Nexus",
+      "short_name": "Nexus",
+      "url": "/nexus",
+      "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Mesa Nexus",
+      "short_name": "Mesa",
+      "url": "/tabletop",
+      "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }]
     }
   ]
 }

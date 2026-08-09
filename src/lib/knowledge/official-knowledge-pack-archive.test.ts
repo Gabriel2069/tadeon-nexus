@@ -3,9 +3,29 @@ import { resolve } from "node:path";
 import { describe, expect, it } from "vitest";
 import { KNOWLEDGE_NODE_TYPES } from "@/lib/nexus-contracts";
 import { parseKnowledgeArchive } from "@/lib/knowledge/knowledge-portability";
-import { TADEON_NEXUS_LOTE_01 } from "@/lib/knowledge/official-knowledge-packs";
+import {
+  TADEON_NEXUS_LOTE_01,
+  TADEON_NEXUS_OFFICIAL_PACKS,
+} from "@/lib/knowledge/official-knowledge-packs";
 
 describe("Tadeon Nexus official pack", () => {
+  it.each(TADEON_NEXUS_OFFICIAL_PACKS)(
+    "keeps $title importable and complete",
+    (pack) => {
+      const bytes = readFileSync(
+        resolve(process.cwd(), `public${pack.assetPath}`),
+      );
+      const preview = parseKnowledgeArchive(new Uint8Array(bytes), {
+        archiveName: pack.fileName,
+      });
+
+      expect(preview.pages).toHaveLength(pack.pages);
+      expect(preview.relations).toHaveLength(pack.relations);
+      expect(preview.attachments).toHaveLength(0);
+      expect(preview.warnings).toEqual([]);
+    },
+  );
+
   it("keeps the complete Lote 01 graph importable", () => {
     const bytes = readFileSync(
       resolve(process.cwd(), `public${TADEON_NEXUS_LOTE_01.assetPath}`),
