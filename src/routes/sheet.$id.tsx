@@ -717,7 +717,7 @@ function SheetPage() {
                   className="tadeon-sheet-power-button gap-1.5 border-orange-400/60 font-bold tracking-widest text-orange-300 shadow-[0_0_15px_-5px_rgba(255,140,60,0.7)] hover:bg-orange-500/15"
                   title="Abrir Forma de Poder (VP)"
                 >
-                  <Sparkles className="w-4 h-4 animate-pulse" /> VP
+                  <Sparkles className="w-4 h-4" /> VP
                 </Button>
               )}
               <Button size="sm" onClick={doSave} className="tadeon-sheet-save-button gap-1.5">
@@ -801,7 +801,7 @@ function SheetPage() {
       )}
 
       <div
-        className="tadeon-sheet-frame rounded-2xl transition-[box-shadow,background-image,padding] duration-500"
+        className="tadeon-sheet-frame rounded-2xl transition-[box-shadow] duration-200 ease-[var(--ease-out)]"
         style={{
           backgroundImage: conditionAura || undefined,
           boxShadow: borderShadow,
@@ -828,10 +828,7 @@ function SheetPage() {
             </TabsTrigger>
           </TabsList>
 
-          <TabsContent
-            value="ficha"
-            className="space-y-4 mt-0 animate-in fade-in-50 slide-in-from-bottom-1 duration-300"
-          >
+          <TabsContent value="ficha" className="mt-0 space-y-4">
             {/* Quick jump shortcuts */}
             <nav className="tadeon-sheet-jumpbar" aria-label="Ir para uma seção da ficha">
               {sectionAnchors.map((a) => (
@@ -1330,52 +1327,54 @@ function SheetPage() {
                       <button
                         type="button"
                         onClick={() => setDefEquipOpen((o) => !o)}
-                        className="w-full flex items-center justify-between gap-2 mb-1.5 group"
+                        className="group mb-1.5 flex min-h-10 w-full items-center justify-between gap-2"
+                        aria-expanded={defEquipOpen}
+                        aria-controls="defense-equipment-panel"
                       >
                         <Label className="text-[10px] uppercase tracking-wider text-muted-foreground cursor-pointer">
                           Equipamentos ({sheet.defense_items.length}/3)
                         </Label>
                         <ArrowUp
-                          className={`w-3 h-3 text-muted-foreground transition-transform ${defEquipOpen ? "" : "rotate-180"}`}
+                          className={`h-3 w-3 text-muted-foreground transition-transform duration-150 ease-[var(--ease-out)] ${defEquipOpen ? "" : "rotate-180"}`}
                         />
                       </button>
-                      <div
-                        className={`overflow-hidden transition-all duration-300 ${defEquipOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0"}`}
-                      >
-                        <div className="flex justify-end mb-1.5">
-                          {canEdit && sheet.defense_items.length < 3 && (
-                            <button
-                              type="button"
-                              onClick={() =>
-                                update("defense_items", [
-                                  ...sheet.defense_items,
-                                  { id: genId(), nome: "", bonus: 0, rd: 0, peso: 0 },
-                                ])
-                              }
-                              className="text-[10px] flex items-center gap-1 px-1.5 py-0.5 rounded-md bg-primary/15 text-primary hover:bg-primary/25 transition-colors"
-                            >
-                              <Plus className="w-3 h-3" /> Adicionar
-                            </button>
+                      {defEquipOpen && (
+                        <div id="defense-equipment-panel">
+                          <div className="flex justify-end mb-1.5">
+                            {canEdit && sheet.defense_items.length < 3 && (
+                              <button
+                                type="button"
+                                onClick={() =>
+                                  update("defense_items", [
+                                    ...sheet.defense_items,
+                                    { id: genId(), nome: "", bonus: 0, rd: 0, peso: 0 },
+                                  ])
+                                }
+                                className="text-[10px] flex items-center gap-1 px-1.5 py-0.5 rounded-md bg-primary/15 text-primary hover:bg-primary/25 transition-colors"
+                              >
+                                <Plus className="w-3 h-3" /> Adicionar
+                              </button>
+                            )}
+                          </div>
+                          {sheet.defense_items.length === 0 ? (
+                            <p className="text-[10px] italic text-muted-foreground text-center py-1">
+                              Sem equipamentos.
+                            </p>
+                          ) : (
+                            <RowTable
+                              rows={sheet.defense_items}
+                              canEdit={canEdit}
+                              columns={[
+                                { key: "nome", label: "Nome", flex: 1.5 },
+                                { key: "bonus", label: "DEF", type: "number", width: 58 },
+                                { key: "rd", label: "RD", type: "number", width: 58 },
+                                { key: "peso", label: "Espaço", type: "number", width: 68 },
+                              ]}
+                              onChange={(v) => update("defense_items", v as DefenseItem[])}
+                            />
                           )}
                         </div>
-                        {sheet.defense_items.length === 0 ? (
-                          <p className="text-[10px] italic text-muted-foreground text-center py-1">
-                            Sem equipamentos.
-                          </p>
-                        ) : (
-                          <RowTable
-                            rows={sheet.defense_items}
-                            canEdit={canEdit}
-                            columns={[
-                              { key: "nome", label: "Nome", flex: 1.5 },
-                              { key: "bonus", label: "DEF", type: "number", width: 58 },
-                              { key: "rd", label: "RD", type: "number", width: 58 },
-                              { key: "peso", label: "Espaço", type: "number", width: 68 },
-                            ]}
-                            onChange={(v) => update("defense_items", v as DefenseItem[])}
-                          />
-                        )}
-                      </div>
+                      )}
                     </div>
                     <div className="mt-2 rounded-md border border-border/50 bg-background/30 px-2 py-1.5 text-center text-[10px] text-muted-foreground">
                       RD equipada: <strong className="text-foreground">{armorRd}</strong> ·
@@ -1449,7 +1448,7 @@ function SheetPage() {
                   <div className="absolute top-0 bottom-0 left-1/2 w-px bg-foreground/40" />
                   {/* Indicator pill */}
                   <div
-                    className="absolute top-1/2 -translate-y-1/2 h-5 w-5 rounded-full border-2 border-background shadow-md transition-all duration-500"
+                    className="absolute top-1/2 h-5 w-5 -translate-y-1/2 rounded-full border-2 border-background shadow-md transition-[background-color,box-shadow] duration-150"
                     style={{
                       left: `calc(${equilibriumPct}% - 10px)`,
                       background: equilibriumColor(equilibrium),
@@ -1531,7 +1530,7 @@ function SheetPage() {
                 </div>
                 <div className="relative w-full h-4 bg-secondary rounded-full overflow-hidden border border-border">
                   <div
-                    className="absolute inset-y-0 left-0 bg-gradient-to-r from-yellow-500 via-orange-500 to-red-600 transition-all duration-500"
+                    className="absolute inset-y-0 left-0 bg-gradient-to-r from-yellow-500 via-orange-500 to-red-600"
                     style={{ width: `${clamp(sheet.exposure, 0, 100)}%` }}
                   />
                   {/* Rank tick marks every 5 */}
@@ -1582,7 +1581,7 @@ function SheetPage() {
                   return (
                     <div
                       key={c}
-                      className="tadeon-condition-card rounded-xl border border-border/60 bg-secondary/15 p-3 transition-[border-color,background,box-shadow,transform] duration-300"
+                      className="tadeon-condition-card rounded-xl border border-border/60 bg-secondary/15 p-3 transition-[border-color,background,box-shadow,transform] duration-150 ease-[var(--ease-out)]"
                       style={
                         current.length > 0
                           ? {
@@ -2061,7 +2060,7 @@ function SheetPage() {
               </div>
               <div className="w-full h-1.5 bg-secondary rounded mb-3 overflow-hidden">
                 <div
-                  className={`h-full rounded transition-all ${invUsed > invCapacity ? "bg-destructive" : "bg-primary"}`}
+                  className={`h-full rounded transition-colors duration-150 ${invUsed > invCapacity ? "bg-destructive" : "bg-primary"}`}
                   style={{
                     width: `${clamp((Math.max(0, invUsed) / Math.max(1, invCapacity)) * 100, 0, 100)}%`,
                   }}
@@ -2122,7 +2121,7 @@ function SheetPage() {
                     size="sm"
                     variant={fragmentsView ? "default" : "outline"}
                     onClick={() => setFragmentsView((v) => !v)}
-                    className="h-7 gap-1.5 transition-all"
+                    className="h-7 gap-1.5"
                     title="Alternar entre Tramas e quadro de Fragmentos"
                   >
                     <Gem className="w-3.5 h-3.5" />
@@ -2312,10 +2311,7 @@ function SheetPage() {
             </p>
           </TabsContent>
 
-          <TabsContent
-            value="arvore"
-            className="mt-0 animate-in fade-in-50 slide-in-from-bottom-1 duration-300"
-          >
+          <TabsContent value="arvore" className="mt-0">
             <SkillTreeTab
               exposure={sheet.exposure}
               equilibrium={sheet.equilibrium}
@@ -2334,10 +2330,7 @@ function SheetPage() {
             />
           </TabsContent>
 
-          <TabsContent
-            value="descricao"
-            className="space-y-4 mt-0 animate-in fade-in-50 slide-in-from-bottom-1 duration-300"
-          >
+          <TabsContent value="descricao" className="mt-0 space-y-4">
             {(
               [
                 ["historia", "História"],
@@ -2413,7 +2406,7 @@ function SheetPage() {
       <button
         type="button"
         onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-        className="tadeon-sheet-top-button fixed z-30 flex h-11 w-11 items-center justify-center rounded-full border border-border bg-secondary/80 text-muted-foreground shadow-lg backdrop-blur transition-all hover:scale-105 hover:border-primary/60 hover:text-primary"
+        className="tadeon-sheet-top-button fixed z-30 flex h-11 w-11 items-center justify-center rounded-full border border-border bg-secondary/80 text-muted-foreground shadow-lg backdrop-blur transition-[color,background-color,border-color,box-shadow,transform] duration-150 ease-[var(--ease-out)] hover:border-primary/60 hover:text-primary active:scale-[.97]"
         aria-label="Voltar ao topo"
         title="Voltar ao topo"
       >
@@ -2486,7 +2479,7 @@ function Section({
       id={id}
       data-section={presentationKey}
       data-collapsed={collapsed ? "true" : "false"}
-      className={`tadeon-surface tadeon-sheet-section scroll-mt-44 rounded-2xl p-4 transition-all hover:border-primary/25 md:p-5 ${className}`}
+      className={`tadeon-surface tadeon-sheet-section scroll-mt-44 p-4 transition-[border-color,box-shadow] duration-150 hover:border-primary/25 md:p-5 ${className}`}
     >
       <div className="tadeon-sheet-section__heading mb-4 flex flex-wrap items-center justify-between gap-2">
         <div className="tadeon-sheet-section__title-group">
@@ -2592,7 +2585,7 @@ function StatBlock({
       </div>
       <div className="tadeon-stat-block__bar mb-2 h-1.5 w-full overflow-hidden rounded-full bg-secondary">
         <div
-          className={`h-full bg-gradient-to-r ${barColor} rounded-full transition-all duration-300`}
+          className={`h-full rounded-full bg-gradient-to-r ${barColor}`}
           style={{ width: `${clamp((current / Math.max(1, max)) * 100, 0, 100)}%` }}
         />
       </div>
@@ -2672,7 +2665,7 @@ function CounterDots({
             onClick={() => onChange(i + 1 === value ? 0 : i + 1)}
             aria-label={`${label}: ${i + 1} de ${max}`}
             aria-pressed={i < value}
-            className={`w-7 h-7 rounded-full border-2 border-border transition-all hover:scale-110 ${i < value ? color : "bg-transparent"} disabled:cursor-not-allowed disabled:hover:scale-100`}
+            className={`h-7 w-7 rounded-full border-2 border-border transition-[background-color,border-color,box-shadow,transform] duration-150 ease-[var(--ease-out)] active:scale-[.94] ${i < value ? color : "bg-transparent"} disabled:cursor-not-allowed disabled:transform-none`}
           />
         ))}
       </div>
@@ -2736,7 +2729,7 @@ function RowTable<T extends HasId>({
       {rows.map((it, idx) => (
         <div
           key={it.id}
-          className="tadeon-sheet-row flex flex-col items-center gap-2 rounded-xl bg-secondary/30 p-2.5 transition-all hover:bg-secondary/50 sm:grid sm:gap-1.5"
+          className="tadeon-sheet-row flex flex-col items-center gap-2 rounded-xl bg-secondary/30 p-2.5 transition-[background-color,border-color,box-shadow] duration-150 hover:bg-secondary/50 sm:grid sm:gap-1.5"
           style={{ gridTemplateColumns: gridCols }}
         >
           {columns.map((c) => {

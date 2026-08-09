@@ -290,7 +290,7 @@ export function InvestigationHub({
         <EmptyState>Crie a primeira pista para começar a teia.</EmptyState>
       ) : (
         <div className="grid gap-3 lg:grid-cols-2">
-          {clues.map((clue) => (
+          {clues.map((clue, index) => (
             <Card key={clue.id} className={`p-4 ${clue.discovered ? "border-emerald-500/35" : ""}`}>
               <div className="flex items-start gap-2">
                 <Input
@@ -302,6 +302,7 @@ export function InvestigationHub({
                   size="icon"
                   variant="ghost"
                   className="shrink-0 text-destructive"
+                  aria-label={`Remover pista ${index + 1}`}
                   onClick={() => onChange(clues.filter((item) => item.id !== clue.id))}
                 >
                   <Trash className="h-4 w-4" />
@@ -421,8 +422,17 @@ export function NpcHub({
           {npcs.map((npc) => (
             <Card
               key={npc.id}
-              className="cursor-pointer p-4 transition-all hover:border-primary/50"
+              role="button"
+              tabIndex={0}
+              aria-label={`Editar NPC ${npc.name}`}
+              className="cursor-pointer p-4 transition-[background-color,border-color,box-shadow,transform] duration-150 ease-[var(--ease-out)] hover:border-primary/50 active:scale-[.99]"
               onClick={() => setOpenId(npc.id)}
+              onKeyDown={(event) => {
+                if (event.key === "Enter" || event.key === " ") {
+                  event.preventDefault();
+                  setOpenId(npc.id);
+                }
+              }}
             >
               <div className="flex items-start justify-between gap-2">
                 <div>
@@ -1321,7 +1331,7 @@ export function InterludeHub({
         <EmptyState>Nenhum interlúdio preparado.</EmptyState>
       ) : (
         <div className="space-y-3">
-          {interludes.map((item) => (
+          {interludes.map((item, index) => (
             <Card key={item.id} className="p-4">
               <div className="flex gap-2">
                 <Input
@@ -1333,6 +1343,7 @@ export function InterludeHub({
                   variant="ghost"
                   size="icon"
                   className="text-destructive"
+                  aria-label={`Remover interlúdio ${index + 1}`}
                   onClick={() => onChange(interludes.filter((entry) => entry.id !== item.id))}
                 >
                   <Trash className="h-4 w-4" />
@@ -1511,7 +1522,7 @@ export function FoldHub({
         <EmptyState>Nenhuma dobra ativa.</EmptyState>
       ) : (
         <div className="grid gap-3 xl:grid-cols-2">
-          {folds.map((fold) => {
+          {folds.map((fold, index) => {
             const stageReference = getFoldStageReference(fold.stage);
             return (
               <Card
@@ -1537,6 +1548,7 @@ export function FoldHub({
                       size="icon"
                       variant="ghost"
                       className="text-destructive"
+                      aria-label={`Remover dobra ${index + 1}`}
                       onClick={() => onChange(folds.filter((entry) => entry.id !== fold.id))}
                     >
                       <Trash className="h-4 w-4" />
@@ -1802,9 +1814,7 @@ export function EncounterHub({
 
   const toggleSheet = (sheetId: string) => {
     setExcludedSheetIds((current) =>
-      current.includes(sheetId)
-        ? current.filter((id) => id !== sheetId)
-        : [...current, sheetId],
+      current.includes(sheetId) ? current.filter((id) => id !== sheetId) : [...current, sheetId],
     );
   };
 
@@ -1837,9 +1847,7 @@ export function EncounterHub({
                 >
                   <span className="min-w-0">
                     <strong className="block truncate text-xs">{sheet.name}</strong>
-                    <span className="text-[10px] text-muted-foreground">
-                      Rank {sheet.exposure}
-                    </span>
+                    <span className="text-[10px] text-muted-foreground">Rank {sheet.exposure}</span>
                   </span>
                   {active && <Check className="h-4 w-4 shrink-0 text-primary" />}
                 </button>

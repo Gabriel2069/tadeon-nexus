@@ -452,7 +452,7 @@ function PowerFormPage() {
 
   return (
     <div
-      className="tadeon-vp-page relative min-h-screen pb-24 animate-in fade-in-0 duration-500"
+      className="tadeon-vp-page relative min-h-screen pb-24"
       style={{
         background:
           "radial-gradient(ellipse at top, rgba(251,113,133,0.30), transparent 55%), radial-gradient(ellipse at bottom, rgba(168,85,247,0.25), transparent 55%), linear-gradient(180deg, #200712 0%, #0a0210 100%)",
@@ -477,7 +477,7 @@ function PowerFormPage() {
             >
               <ArrowLeft className="w-5 h-5" />
             </Button>
-            <Sparkles className="w-5 h-5 text-orange-300 animate-pulse" />
+            <Sparkles className="w-5 h-5 text-orange-300" />
             <h1 className="font-cinzel text-lg md:text-2xl font-bold flex-1 truncate bg-gradient-to-r from-orange-300 via-pink-300 to-purple-300 bg-clip-text text-transparent drop-shadow-[0_0_10px_rgba(255,150,80,0.6)]">
               {vp.name ?? base.name} · VP
             </h1>
@@ -566,7 +566,7 @@ function PowerFormPage() {
                 />
                 <div className="absolute top-0 bottom-0 left-1/2 w-px bg-orange-100/40" />
                 <div
-                  className="absolute top-1/2 -translate-y-1/2 h-5 w-5 rounded-full border-2 border-background shadow-md transition-all duration-500"
+                  className="absolute top-1/2 h-5 w-5 -translate-y-1/2 rounded-full border-2 border-background shadow-md transition-[background-color,box-shadow] duration-150"
                   style={{
                     left: `calc(${equilibriumPct}% - 10px)`,
                     background: equilibriumColor(equilibrium),
@@ -740,53 +740,55 @@ function PowerFormPage() {
                 <button
                   type="button"
                   onClick={() => setDefEquipOpen((o) => !o)}
-                  className="w-full flex items-center justify-between gap-2 mb-1.5"
+                  className="mb-1.5 flex min-h-10 w-full items-center justify-between gap-2"
+                  aria-expanded={defEquipOpen}
+                  aria-controls="power-defense-equipment-panel"
                 >
                   <span className="text-[11px] uppercase tracking-wider text-orange-100/80">
                     Equipamentos ({vpDefItems.length}/3)
                   </span>
                   <ChevronDown
-                    className={`w-4 h-4 text-orange-100/80 transition-transform ${defEquipOpen ? "rotate-180" : ""}`}
+                    className={`h-4 w-4 text-orange-100/80 transition-transform duration-150 ease-[var(--ease-out)] ${defEquipOpen ? "rotate-180" : ""}`}
                   />
                 </button>
-                <div
-                  className={`overflow-hidden transition-all duration-300 ${defEquipOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0"}`}
-                >
-                  {canEdit && vpDefItems.length < 3 && (
-                    <div className="flex justify-end mb-1.5">
-                      <button
-                        type="button"
-                        onClick={() =>
-                          patch({
-                            defense_items: [
-                              ...vpDefItems,
-                              { id: genId(), nome: "", bonus: 0, rd: 0, peso: 0 },
-                            ],
-                          })
-                        }
-                        className="text-[11px] flex items-center gap-1 px-2 py-1 rounded-md bg-orange-500/20 text-orange-100 hover:bg-orange-500/30 transition-colors"
-                      >
-                        <Plus className="w-3 h-3" /> Equipamento
-                      </button>
-                    </div>
-                  )}
-                  {vpDefItems.length === 0 ? (
-                    <p className="text-[11px] italic text-orange-100/60 text-center py-1">
-                      Sem equipamentos.
-                    </p>
-                  ) : (
-                    <ItemRows
-                      rows={vpDefItems as unknown as InventoryItem[]}
-                      canEdit={canEdit}
-                      fields={
-                        ["nome", "bonus", "peso"] as unknown as Array<
-                          "nome" | "descricao" | "espaco"
+                {defEquipOpen && (
+                  <div id="power-defense-equipment-panel">
+                    {canEdit && vpDefItems.length < 3 && (
+                      <div className="flex justify-end mb-1.5">
+                        <button
+                          type="button"
+                          onClick={() =>
+                            patch({
+                              defense_items: [
+                                ...vpDefItems,
+                                { id: genId(), nome: "", bonus: 0, rd: 0, peso: 0 },
+                              ],
+                            })
+                          }
+                          className="text-[11px] flex items-center gap-1 px-2 py-1 rounded-md bg-orange-500/20 text-orange-100 hover:bg-orange-500/30 transition-colors"
                         >
-                      }
-                      onChange={(v) => patch({ defense_items: v as unknown as DefenseItem[] })}
-                    />
-                  )}
-                </div>
+                          <Plus className="w-3 h-3" /> Equipamento
+                        </button>
+                      </div>
+                    )}
+                    {vpDefItems.length === 0 ? (
+                      <p className="text-[11px] italic text-orange-100/60 text-center py-1">
+                        Sem equipamentos.
+                      </p>
+                    ) : (
+                      <ItemRows
+                        rows={vpDefItems as unknown as InventoryItem[]}
+                        canEdit={canEdit}
+                        fields={
+                          ["nome", "bonus", "peso"] as unknown as Array<
+                            "nome" | "descricao" | "espaco"
+                          >
+                        }
+                        onChange={(v) => patch({ defense_items: v as unknown as DefenseItem[] })}
+                      />
+                    )}
+                  </div>
+                )}
               </div>
             </VPCard>
 
@@ -959,7 +961,7 @@ function PowerFormPage() {
                     size="sm"
                     variant={fragmentsView ? "default" : "outline"}
                     onClick={() => setFragmentsView((v) => !v)}
-                    className={`h-7 gap-1.5 transition-all ${fragmentsView ? "" : "border-orange-400/50 text-orange-200 hover:bg-orange-500/15"}`}
+                    className={`h-7 gap-1.5 ${fragmentsView ? "" : "border-orange-400/50 text-orange-200 hover:bg-orange-500/15"}`}
                     title="Alternar entre Tramas e quadro de Fragmentos"
                   >
                     <Gem className="w-3.5 h-3.5" />
@@ -1125,7 +1127,7 @@ function VPCard({
   extra?: React.ReactNode;
 }) {
   return (
-    <Card className="tadeon-vp-card border-orange-500/30 bg-card/30 p-4 shadow-[0_0_25px_-10px_rgba(255,120,60,0.55)] backdrop-blur-md transition-all hover:border-orange-400/60">
+    <Card className="tadeon-vp-card border-orange-500/30 bg-card/30 p-4 shadow-[0_0_25px_-10px_rgba(255,120,60,0.55)] backdrop-blur-md transition-[background-color,border-color,box-shadow] duration-150 hover:border-orange-400/60">
       <div className="flex items-center justify-between flex-wrap gap-2 mb-3">
         <h2 className="font-cinzel text-sm font-bold text-orange-200 tracking-wide">{title}</h2>
         {extra}
@@ -1208,10 +1210,7 @@ function PointBlock({
         <span className="text-[11px] text-orange-200/70">/ {max}</span>
       </div>
       <div className="h-2 rounded-full bg-black/40 overflow-hidden mb-2">
-        <div
-          className={`h-full bg-gradient-to-r ${color} transition-all`}
-          style={{ width: `${pct}%` }}
-        />
+        <div className={`h-full bg-gradient-to-r ${color}`} style={{ width: `${pct}%` }} />
       </div>
       <div className="flex items-center justify-center gap-1">
         <Button

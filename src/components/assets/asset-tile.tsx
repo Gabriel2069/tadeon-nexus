@@ -49,9 +49,9 @@ export function AssetTile({
           : undefined
       }
       className={cn(
-        "group relative overflow-hidden rounded-xl border bg-card/65 text-left transition-all",
+        "group relative overflow-hidden rounded-[1rem_.4rem_1rem_.4rem] border bg-card/65 text-left transition-[background-color,border-color,box-shadow,transform] duration-150 ease-[var(--ease-out)]",
         selectable &&
-          "cursor-pointer hover:-translate-y-0.5 hover:border-primary/45 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary",
+          "cursor-pointer hover:border-primary/45 active:scale-[.99] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary",
         selected && "border-primary ring-1 ring-primary",
       )}
     >
@@ -61,7 +61,7 @@ export function AssetTile({
             src={previewUrl}
             alt=""
             loading="lazy"
-            className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.025]"
+            className="h-full w-full object-cover transition-transform duration-200 ease-[var(--ease-out)] group-hover:scale-[1.015]"
           />
         ) : (
           <AssetTypeIcon mimeType={asset.mime_type} />
@@ -83,10 +83,7 @@ export function AssetTile({
         )}
       </div>
       <div className="space-y-1 p-3">
-        <h3
-          className="truncate text-sm font-semibold"
-          title={asset.display_name}
-        >
+        <h3 className="truncate text-sm font-semibold" title={asset.display_name}>
           {asset.display_name}
         </h3>
         <div className="flex items-center justify-between gap-2 text-[10px] uppercase tracking-wide text-muted-foreground">

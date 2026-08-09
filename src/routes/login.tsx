@@ -187,14 +187,14 @@ function LoginPage() {
       <section className="tadeon-auth-shell" aria-label="Acesso ao Tadeon Nexus">
         <aside className="tadeon-auth-manifesto">
           <ThreadField className="text-primary" />
-          <div className="relative z-10">
-            <div className="tadeon-auth-manifesto__brand">
-              <BrandMark className="h-14 w-14 text-primary" />
-              <div>
-                <p className="tadeon-eyebrow">Fio-Mestre</p>
-                <p className="font-cinzel text-2xl font-semibold text-primary">Tadeon Nexus</p>
-              </div>
+          <div className="tadeon-auth-manifesto__brand">
+            <BrandMark className="h-14 w-14 text-primary" />
+            <div>
+              <p className="tadeon-eyebrow">Fio-Mestre</p>
+              <p className="font-cinzel text-2xl font-semibold text-primary">Tadeon Nexus</p>
             </div>
+          </div>
+          <div className="relative z-10">
             <div className="tadeon-auth-manifesto__copy">
               <p className="tadeon-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
                 Arquivo de continuidade

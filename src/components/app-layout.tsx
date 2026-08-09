@@ -134,6 +134,21 @@ export function AppLayout({ children }: { children: ReactNode }) {
   const isMestre = isApplicationAdministrator({ appRole: role });
   const knowledgeEnabled = navigationFlags.knowledge || path.startsWith("/nexus");
   const tabletopEnabled = navigationFlags.tabletop || path.startsWith("/tabletop");
+  const currentSection = path.startsWith("/sheet/")
+    ? "Ficha"
+    : path.startsWith("/nexus-tools")
+      ? "Saúde do arquivo"
+      : path.startsWith("/nexus")
+        ? "O Nexus"
+        : path.startsWith("/tabletop")
+          ? "Mesa Nexus"
+          : path.startsWith("/master-panel")
+            ? "Painel do Mestre"
+            : path.startsWith("/manage-users")
+              ? "Usuários"
+              : path.startsWith("/offline")
+                ? "Consulta offline"
+                : "Dashboard";
 
   const handleSignOut = async () => {
     try {
@@ -288,7 +303,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
       <div aria-hidden className="tadeon-ambient tadeon-ambient--flow" />
       {/* Desktop sidebar */}
       <aside
-        className={`tadeon-sidebar relative z-20 hidden shrink-0 border-r border-sidebar-border bg-sidebar/95 text-sidebar-foreground shadow-[24px_0_80px_-50px_rgba(0,0,0,.95)] transition-[width] duration-300 ease-out md:flex ${
+        className={`tadeon-sidebar relative z-20 hidden shrink-0 border-r border-sidebar-border bg-sidebar/95 text-sidebar-foreground shadow-[24px_0_80px_-50px_rgba(0,0,0,.95)] md:flex ${
           collapsed ? "w-16" : "w-64"
         }`}
       >
@@ -298,7 +313,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
           onClick={() => setCollapsed((p) => !p)}
           aria-label={collapsed ? "Expandir menu" : "Recolher menu"}
           title={collapsed ? "Expandir" : "Recolher"}
-          className="absolute -right-3 top-6 z-10 w-6 h-6 rounded-full bg-card border border-border flex items-center justify-center text-muted-foreground hover:text-primary hover:border-primary shadow-md transition-all"
+          className="absolute -right-4 top-6 z-10 flex h-8 w-8 items-center justify-center rounded-full border border-border bg-card text-muted-foreground shadow-md transition-[color,background-color,border-color,box-shadow,transform] duration-150 ease-[var(--ease-out)] hover:border-primary/45 hover:text-primary active:scale-[.97]"
         >
           {collapsed ? (
             <ChevronsRight className="w-3.5 h-3.5" />
@@ -310,27 +325,32 @@ export function AppLayout({ children }: { children: ReactNode }) {
 
       <div className="relative z-10 flex min-w-0 flex-1 flex-col">
         {/* Mobile header */}
-        <header className="tadeon-mobile-header sticky top-0 z-30 flex min-h-16 items-center justify-between border-b border-border/80 bg-background/85 px-3 py-2 backdrop-blur-xl md:hidden">
+        <header className="tadeon-mobile-header sticky top-0 z-30 grid min-h-16 grid-cols-[5.5rem_minmax(0,1fr)_5.5rem] items-center bg-background/85 px-3 py-2 backdrop-blur-xl md:hidden">
           <button
             type="button"
             onClick={() => setMobileOpen(true)}
-            className="flex h-11 w-11 items-center justify-center rounded-xl border border-transparent transition-all hover:border-border hover:bg-secondary active:scale-95"
+            className="flex h-11 w-11 items-center justify-center rounded-xl border border-transparent transition-[color,background-color,border-color,transform] duration-150 ease-[var(--ease-out)] hover:border-border hover:bg-secondary active:scale-[.97]"
             aria-label="Abrir menu"
           >
             <Menu className="w-5 h-5" />
           </button>
-          <div className="flex items-center gap-2">
-            <BrandMark className="h-7 w-7 text-primary" />
-            <h1 className="font-cinzel text-base font-semibold text-primary min-[390px]:text-lg">
-              Tadeon Nexus
-            </h1>
+          <div className="flex min-w-0 items-center justify-center gap-2">
+            <BrandMark className="hidden h-7 w-7 shrink-0 text-primary min-[360px]:block" />
+            <div className="min-w-0 text-center min-[360px]:text-left">
+              <p className="tadeon-mono truncate text-[7px] uppercase tracking-[0.12em] text-muted-foreground">
+                Tadeon Nexus
+              </p>
+              <p className="font-cinzel truncate text-sm font-semibold leading-tight text-primary">
+                {currentSection}
+              </p>
+            </div>
           </div>
-          <div className="flex items-center gap-1">
+          <div className="flex items-center justify-end gap-1">
             <GlobalSearch mobile />
             <button
               type="button"
               onClick={() => setAccountOpen(true)}
-              className="flex h-11 w-11 items-center justify-center rounded-xl border border-transparent transition-all hover:border-border hover:bg-secondary active:scale-95"
+              className="flex h-11 w-11 items-center justify-center rounded-xl border border-transparent transition-[color,background-color,border-color,transform] duration-150 ease-[var(--ease-out)] hover:border-border hover:bg-secondary active:scale-[.97]"
               aria-label="Conta"
             >
               <Settings className="w-5 h-5" />
@@ -345,9 +365,14 @@ export function AppLayout({ children }: { children: ReactNode }) {
 
       {/* Mobile drawer */}
       {mobileOpen && (
-        <div className="md:hidden fixed inset-0 z-40 animate-in fade-in-0 duration-200">
-          <div className="absolute inset-0 bg-black/60" onClick={() => setMobileOpen(false)} />
-          <aside className="absolute left-0 top-0 h-[100dvh] w-[min(18rem,86vw)] border-r border-sidebar-border bg-sidebar text-sidebar-foreground shadow-2xl animate-in slide-in-from-left duration-300">
+        <div className="fixed inset-0 z-40 animate-in fade-in-0 duration-[180ms] md:hidden">
+          <button
+            type="button"
+            className="absolute inset-0 h-full w-full cursor-default bg-black/65"
+            onClick={() => setMobileOpen(false)}
+            aria-label="Fechar menu"
+          />
+          <aside className="absolute left-0 top-0 h-[100dvh] w-[min(18rem,86vw)] border-r border-sidebar-border bg-sidebar text-sidebar-foreground shadow-2xl animate-in slide-in-from-left duration-[240ms] ease-[var(--ease-drawer)]">
             <button
               type="button"
               onClick={() => setMobileOpen(false)}
@@ -393,7 +418,7 @@ function NavItem({
       onClick={onClick}
       aria-current={active ? "page" : undefined}
       title={mini ? label : undefined}
-      className={`tadeon-nav-item group flex min-h-11 items-center gap-3 rounded-xl px-3 py-2.5 text-sm transition-all ${
+      className={`tadeon-nav-item group flex min-h-11 items-center gap-3 rounded-xl px-3 py-2.5 text-sm transition-[color,background-color,border-color,box-shadow,transform] duration-150 ease-[var(--ease-out)] active:scale-[.98] ${
         mini ? "justify-center px-2" : ""
       } ${
         active
@@ -425,7 +450,7 @@ function SideAction({
       variant="ghost"
       onClick={onClick}
       title={mini ? label : undefined}
-      className={`w-full gap-2 transition-all ${mini ? "justify-center px-2" : "justify-start"} ${
+      className={`w-full gap-2 ${mini ? "justify-center px-2" : "justify-start"} ${
         danger
           ? "text-destructive hover:bg-destructive/10 hover:text-destructive"
           : "text-sidebar-foreground/80 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"

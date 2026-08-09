@@ -12,7 +12,7 @@ const TabsList = React.forwardRef<
   <TabsPrimitive.List
     ref={ref}
     className={cn(
-      "inline-flex min-h-11 items-center justify-center gap-1 rounded-xl border border-border/60 bg-muted/80 p-1 text-muted-foreground shadow-[inset_0_1px_0_rgba(255,255,255,.035)] backdrop-blur",
+      "inline-flex min-h-11 items-center justify-center gap-1 rounded-[0.9rem] border border-border/60 bg-muted/78 p-1 text-muted-foreground shadow-[inset_0_1px_0_rgba(255,255,255,.035),0_16px_44px_-38px_rgba(0,0,0,.95)] backdrop-blur",
       className,
     )}
     {...props}
@@ -27,7 +27,7 @@ const TabsTrigger = React.forwardRef<
   <TabsPrimitive.Trigger
     ref={ref}
     className={cn(
-      "inline-flex min-h-9 items-center justify-center whitespace-nowrap rounded-lg border border-transparent px-3 py-1.5 text-sm font-medium ring-offset-background cursor-pointer transition-[color,background-color,border-color,box-shadow,transform] duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 disabled:cursor-not-allowed active:scale-[.98] data-[state=active]:border-primary/20 data-[state=active]:bg-[linear-gradient(145deg,rgba(217,215,164,.14),rgba(255,255,255,.035))] data-[state=active]:text-primary data-[state=active]:shadow-[0_10px_28px_-20px_var(--primary),inset_0_1px_0_rgba(255,255,255,.08)]",
+      "inline-flex min-h-9 items-center justify-center whitespace-nowrap rounded-[0.65rem] border border-transparent px-3 py-1.5 text-sm font-semibold ring-offset-background cursor-pointer transition-[color,background-color,border-color,box-shadow,transform] duration-150 ease-[var(--ease-out)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/60 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 disabled:cursor-not-allowed active:scale-[.97] data-[state=active]:border-primary/20 data-[state=active]:bg-[linear-gradient(145deg,rgba(217,215,164,.14),rgba(255,255,255,.035))] data-[state=active]:text-primary data-[state=active]:shadow-[0_10px_28px_-20px_var(--primary),inset_0_1px_0_rgba(255,255,255,.08)]",
       className,
     )}
     {...props}

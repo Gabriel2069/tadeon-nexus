@@ -661,8 +661,17 @@ function ScenesPanel({ s, upd }: PanelProps) {
             return (
               <Card
                 key={sc.id}
-                className="p-3 bg-card/70 hover:border-primary/50 transition-all cursor-pointer group"
+                className="group cursor-pointer bg-card/70 p-3 transition-[background-color,border-color,box-shadow,transform] duration-150 ease-[var(--ease-out)] hover:border-primary/50 active:scale-[.99]"
+                role="button"
+                tabIndex={0}
+                aria-label={`Abrir cena ${sc.title}`}
                 onClick={() => setExpandedId(sc.id)}
+                onKeyDown={(event) => {
+                  if (event.key === "Enter" || event.key === " ") {
+                    event.preventDefault();
+                    setExpandedId(sc.id);
+                  }
+                }}
               >
                 <div className="flex items-start justify-between gap-1">
                   <h4 className="font-cinzel text-sm font-bold line-clamp-2">{sc.title}</h4>
@@ -849,7 +858,7 @@ function LinkPicker({
                 key={it.id}
                 type="button"
                 onClick={() => toggle(it.id)}
-                className={`text-[11px] px-2 py-1 rounded-full border transition-all ${
+                className={`rounded-full border px-2 py-1 text-[11px] transition-[color,background-color,border-color,box-shadow,transform] duration-150 ease-[var(--ease-out)] active:scale-[.97] ${
                   on
                     ? "bg-primary text-primary-foreground border-primary"
                     : "bg-secondary/40 border-border hover:border-primary/50"
@@ -1022,7 +1031,7 @@ function CrudList<T extends { id: string }>({
               key={it.id}
               type="button"
               onClick={() => setOpenId(it.id)}
-              className="text-left bg-secondary/40 hover:bg-secondary/70 rounded-lg p-2.5 transition-all hover:border-primary/40 border border-transparent"
+              className="rounded-lg border border-transparent bg-secondary/40 p-2.5 text-left transition-[background-color,border-color,box-shadow,transform] duration-150 ease-[var(--ease-out)] hover:border-primary/40 hover:bg-secondary/70 active:scale-[.99]"
             >
               <div className="font-cinzel text-sm font-bold truncate">
                 {String(it[titleKey] || "(sem nome)")}
@@ -1247,7 +1256,7 @@ function PinnedPanel({
                   key={sh.id}
                   type="button"
                   onClick={() => toggle(sh.id)}
-                  className={`text-xs px-3 py-1.5 rounded-full border transition-all flex items-center gap-1.5 ${
+                  className={`flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs transition-[color,background-color,border-color,box-shadow,transform] duration-150 ease-[var(--ease-out)] active:scale-[.97] ${
                     on
                       ? "bg-primary text-primary-foreground border-primary"
                       : "bg-secondary/40 border-border hover:border-primary/50"
@@ -1298,7 +1307,7 @@ function PinnedPanel({
                           ? "Forma de Poder LIBERADA — clique para bloquear"
                           : "Forma de Poder bloqueada — clique para liberar"
                       }
-                      className={`text-[10px] px-2 py-0.5 rounded-full border flex items-center gap-1 transition-all ${
+                      className={`flex items-center gap-1 rounded-full border px-2 py-0.5 text-[10px] transition-[color,background-color,border-color,box-shadow,transform] duration-150 ease-[var(--ease-out)] active:scale-[.97] ${
                         sh.power_form_enabled
                           ? "bg-primary/15 border-primary text-primary shadow-[0_0_8px_-2px_hsl(var(--primary))]"
                           : "bg-secondary/30 border-border text-muted-foreground hover:border-primary/40"
