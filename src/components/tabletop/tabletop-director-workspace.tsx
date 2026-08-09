@@ -182,7 +182,7 @@ export function TabletopDirectorWorkspace({
       className={`tadeon-director-output is-${state?.mode ?? "loading"}`}
       aria-live="polite"
     >
-      <ThreadField density="low" />
+      <ThreadField />
       <div
         ref={hostRef}
         className="tadeon-director-output__canvas"
