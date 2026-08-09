@@ -107,6 +107,7 @@ import {
 import {
   createEmptyVisibilityState,
   tabletopVisibilityService,
+  type TabletopLight,
   type TabletopVisibilityState,
   type TabletopWall,
 } from "@/lib/tabletop/tabletop-visibility-service";
@@ -142,6 +143,7 @@ import "@/styles/tabletop-editor.css";
 
 interface ContextMenuState extends Point {
   entityId?: string;
+  lightId?: string;
 }
 
 const EMPTY_SNAPSHOT: TabletopSnapshot = {
@@ -327,6 +329,7 @@ export function TabletopWorkspace({
   const [selectedStructureId, setSelectedStructureId] = useState<string | null>(
     null,
   );
+  const [selectedLightId, setSelectedLightId] = useState<string | null>(null);
   const [activeLevelId, setActiveLevelId] = useState<string | null>(null);
   const [assetUploading, setAssetUploading] = useState(false);
   const [drawColor, setDrawColor] = useState("#d9d7a4");
@@ -366,6 +369,11 @@ export function TabletopWorkspace({
     () =>
       visibility.walls.find((wall) => wall.id === selectedStructureId) ?? null,
     [selectedStructureId, visibility.walls],
+  );
+  const selectedLight = useMemo(
+    () =>
+      visibility.lights.find((light) => light.id === selectedLightId) ?? null,
+    [selectedLightId, visibility.lights],
   );
   const activeLevel = useMemo(
     () =>
@@ -717,9 +725,50 @@ export function TabletopWorkspace({
         setSelectedStructureId(id);
         if (id) setPanelTab("space");
       },
+      onSelectLight: (id) => {
+        setSelectedLightId(id);
+        if (id) setPanelTab("space");
+      },
       onUpdateStructure: (_before, after) => replaceStructure(after),
       onDeleteStructure: deleteStructure,
       onDuplicateStructure: duplicateStructure,
+      onUpdateLight: (_before: TabletopLight, after: TabletopLight) => {
+        previewVisibility({
+          ...visibilityRef.current,
+          lights: visibilityRef.current.lights.map((light) =>
+            light.id === after.id ? { ...after } : light,
+          ),
+        });
+        setPanelTab("space");
+      },
+      onDeleteLight: (id) => {
+        previewVisibility({
+          ...visibilityRef.current,
+          lights: visibilityRef.current.lights.filter(
+            (light) => light.id !== id,
+          ),
+        });
+        setSelectedLightId(null);
+      },
+      onDuplicateLight: (id) => {
+        const source = visibilityRef.current.lights.find(
+          (light) => light.id === id,
+        );
+        if (!source) return;
+        const copy: TabletopLight = {
+          ...source,
+          id: crypto.randomUUID(),
+          x: source.x + 24,
+          y: source.y + 24,
+          entityId: null,
+          visibilityPolygon: undefined,
+        };
+        previewVisibility({
+          ...visibilityRef.current,
+          lights: [...visibilityRef.current.lights, copy],
+        });
+        engine.setSelectedLight(copy.id);
+      },
       onCreateStructure: ({ start, end }) => {
         const id = crypto.randomUUID();
         const structure = createTabletopStructure({
@@ -798,8 +847,8 @@ export function TabletopWorkspace({
         }
         setPanelTab("space");
       },
-      onContextMenu: (position, entityId) =>
-        setContextMenu({ ...clampContextMenu(position), entityId }),
+      onContextMenu: (position, entityId, lightId) =>
+        setContextMenu({ ...clampContextMenu(position), entityId, lightId }),
       onViewChange: queueViewPreference,
     });
     engineRef.current = engine;
@@ -2707,9 +2756,11 @@ export function TabletopWorkspace({
                 state={visibility}
                 dirty={visibilityDirty}
                 selectedStructureId={selectedStructureId}
+                selectedLightId={selectedLightId}
                 onSelectStructure={(id) =>
                   engineRef.current?.setSelectedStructure(id)
                 }
+                onSelectLight={(id) => engineRef.current?.setSelectedLight(id)}
                 onPreview={previewVisibility}
                 onSaved={installVisibility}
               />
@@ -3656,9 +3707,92 @@ export function TabletopWorkspace({
       {contextMenu && editable && (
         <div
           role="menu"
-          className="fixed z-50 max-h-[calc(100dvh-1rem)] w-44 overflow-y-auto rounded-lg border border-border bg-popover p-1 shadow-2xl"
+          className="fixed z-50 max-h-[calc(100dvh-1rem)] w-56 overflow-y-auto rounded-lg border border-border bg-popover p-1 shadow-2xl"
           style={{ left: contextMenu.x, top: contextMenu.y }}
         >
+          {contextMenu.lightId && selectedLight && (
+            <div className="space-y-2 border-b border-border/60 p-2">
+              <div className="flex items-center gap-2">
+                <Lightbulb className="h-4 w-4 text-primary" />
+                <strong className="min-w-0 flex-1 text-xs">Fonte de luz</strong>
+                <input
+                  type="color"
+                  value={selectedLight.color}
+                  aria-label="Cor da luz selecionada"
+                  onChange={(event) =>
+                    previewVisibility({
+                      ...visibilityRef.current,
+                      lights: visibilityRef.current.lights.map((light) =>
+                        light.id === selectedLight.id
+                          ? { ...light, color: event.target.value }
+                          : light,
+                      ),
+                    })
+                  }
+                />
+              </div>
+              <label className="block text-[10px] text-muted-foreground">
+                <span className="flex justify-between gap-2">
+                  Intensidade
+                  <output>{Math.round(selectedLight.intensity * 100)}%</output>
+                </span>
+                <input
+                  className="w-full"
+                  type="range"
+                  min={0}
+                  max={100}
+                  value={Math.round(selectedLight.intensity * 100)}
+                  onChange={(event) =>
+                    previewVisibility({
+                      ...visibilityRef.current,
+                      lights: visibilityRef.current.lights.map((light) =>
+                        light.id === selectedLight.id
+                          ? {
+                              ...light,
+                              intensity: Number(event.target.value) / 100,
+                            }
+                          : light,
+                      ),
+                    })
+                  }
+                />
+              </label>
+              <div className="grid grid-cols-2 gap-1">
+                <button
+                  type="button"
+                  className="min-h-10 rounded bg-secondary/50 px-2 text-left text-[11px] hover:bg-secondary"
+                  onClick={() =>
+                    previewVisibility({
+                      ...visibilityRef.current,
+                      lights: visibilityRef.current.lights.map((light) =>
+                        light.id === selectedLight.id
+                          ? { ...light, enabled: !light.enabled }
+                          : light,
+                      ),
+                    })
+                  }
+                >
+                  {selectedLight.enabled ? "Apagar" : "Acender"}
+                </button>
+                <button
+                  type="button"
+                  className="min-h-10 rounded bg-secondary/50 px-2 text-left text-[11px] hover:bg-secondary"
+                  onClick={() =>
+                    previewVisibility({
+                      ...visibilityRef.current,
+                      lights: visibilityRef.current.lights.map((light) =>
+                        light.id === selectedLight.id
+                          ? { ...light, castsShadows: !light.castsShadows }
+                          : light,
+                      ),
+                    })
+                  }
+                >
+                  {selectedLight.castsShadows ? "Sem sombras" : "Com sombras"}
+                </button>
+              </div>
+            </div>
+          )}
           {contextMenu.entityId && (
             <button
               type="button"
@@ -3684,56 +3818,60 @@ export function TabletopWorkspace({
           >
             Duplicar
           </button>
-          <button
-            type="button"
-            className="min-h-11 w-full rounded px-3 py-2 text-left text-sm hover:bg-secondary"
-            onClick={() => {
-              engineRef.current?.copySelected();
-              closeContext();
-            }}
-          >
-            Copiar
-          </button>
-          <button
-            type="button"
-            className="min-h-11 w-full rounded px-3 py-2 text-left text-sm hover:bg-secondary"
-            onClick={() => {
-              engineRef.current?.pasteClipboard();
-              closeContext();
-            }}
-          >
-            Colar
-          </button>
-          <button
-            type="button"
-            className="min-h-11 w-full rounded px-3 py-2 text-left text-sm hover:bg-secondary"
-            onClick={() => {
-              engineRef.current?.toggleSelectedLock();
-              closeContext();
-            }}
-          >
-            Bloquear / desbloquear
-          </button>
-          <button
-            type="button"
-            className="min-h-11 w-full rounded px-3 py-2 text-left text-sm hover:bg-secondary"
-            onClick={() => {
-              engineRef.current?.moveSelectedToEdge("front");
-              closeContext();
-            }}
-          >
-            Trazer à frente
-          </button>
-          <button
-            type="button"
-            className="min-h-11 w-full rounded px-3 py-2 text-left text-sm hover:bg-secondary"
-            onClick={() => {
-              engineRef.current?.moveSelectedToEdge("back");
-              closeContext();
-            }}
-          >
-            Enviar ao fundo
-          </button>
+          {!contextMenu.lightId && (
+            <>
+              <button
+                type="button"
+                className="min-h-11 w-full rounded px-3 py-2 text-left text-sm hover:bg-secondary"
+                onClick={() => {
+                  engineRef.current?.copySelected();
+                  closeContext();
+                }}
+              >
+                Copiar
+              </button>
+              <button
+                type="button"
+                className="min-h-11 w-full rounded px-3 py-2 text-left text-sm hover:bg-secondary"
+                onClick={() => {
+                  engineRef.current?.pasteClipboard();
+                  closeContext();
+                }}
+              >
+                Colar
+              </button>
+              <button
+                type="button"
+                className="min-h-11 w-full rounded px-3 py-2 text-left text-sm hover:bg-secondary"
+                onClick={() => {
+                  engineRef.current?.toggleSelectedLock();
+                  closeContext();
+                }}
+              >
+                Bloquear / desbloquear
+              </button>
+              <button
+                type="button"
+                className="min-h-11 w-full rounded px-3 py-2 text-left text-sm hover:bg-secondary"
+                onClick={() => {
+                  engineRef.current?.moveSelectedToEdge("front");
+                  closeContext();
+                }}
+              >
+                Trazer à frente
+              </button>
+              <button
+                type="button"
+                className="min-h-11 w-full rounded px-3 py-2 text-left text-sm hover:bg-secondary"
+                onClick={() => {
+                  engineRef.current?.moveSelectedToEdge("back");
+                  closeContext();
+                }}
+              >
+                Enviar ao fundo
+              </button>
+            </>
+          )}
           <button
             type="button"
             className="min-h-11 w-full rounded px-3 py-2 text-left text-sm text-destructive hover:bg-destructive/10"

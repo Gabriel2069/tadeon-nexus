@@ -1,4 +1,60 @@
-import type { TabletopFogStroke } from "./tabletop-visibility-service";
+import type {
+  TabletopFogStroke,
+  TabletopLight,
+} from "./tabletop-visibility-service";
+
+export type TabletopLightHandle = "body" | "radius";
+
+export interface TabletopLightHit {
+  id: string;
+  handle: TabletopLightHandle;
+}
+
+export function hitTestTabletopLight(
+  point: { x: number; y: number },
+  lights: TabletopLight[],
+  tolerance: number,
+  selectedId?: string | null,
+): TabletopLightHit | null {
+  const safeTolerance = Math.max(1, Number(tolerance) || 1);
+  const ordered = selectedId
+    ? [
+        ...lights.filter((light) => light.id === selectedId),
+        ...lights.filter((light) => light.id !== selectedId),
+      ]
+    : lights;
+  for (const light of ordered) {
+    const radiusHandle = { x: light.x + light.radius, y: light.y };
+    if (
+      light.id === selectedId &&
+      Math.hypot(point.x - radiusHandle.x, point.y - radiusHandle.y) <=
+        safeTolerance * 1.35
+    )
+      return { id: light.id, handle: "radius" };
+    if (Math.hypot(point.x - light.x, point.y - light.y) <= safeTolerance * 1.5)
+      return { id: light.id, handle: "body" };
+  }
+  return null;
+}
+
+export function transformTabletopLight(
+  light: TabletopLight,
+  handle: TabletopLightHandle,
+  point: { x: number; y: number },
+  snap: (point: { x: number; y: number }) => { x: number; y: number },
+  bypassSnap = false,
+): TabletopLight {
+  if (handle === "radius")
+    return {
+      ...light,
+      radius: Math.max(
+        8,
+        Math.min(100_000, Math.hypot(point.x - light.x, point.y - light.y)),
+      ),
+    };
+  const next = bypassSnap ? point : snap(point);
+  return { ...light, x: next.x, y: next.y };
+}
 
 export function compactVisibilityToolPoints(
   points: Array<{ x: number; y: number }>,

@@ -53,7 +53,9 @@ interface TabletopVisibilityPanelProps {
   state: TabletopVisibilityState;
   dirty: boolean;
   selectedStructureId: string | null;
+  selectedLightId: string | null;
   onSelectStructure: (id: string | null) => void;
+  onSelectLight: (id: string | null) => void;
   onPreview: (state: TabletopVisibilityState) => void;
   onSaved: (state: TabletopVisibilityState, sceneVersion: number) => void;
 }
@@ -127,7 +129,9 @@ export function TabletopVisibilityPanel({
   state,
   dirty,
   selectedStructureId,
+  selectedLightId,
   onSelectStructure,
+  onSelectLight,
   onPreview,
   onSaved,
 }: TabletopVisibilityPanelProps) {
@@ -697,7 +701,12 @@ export function TabletopVisibilityPanel({
                 <span>{levelLights.length}</span>
               </header>
               {levelLights.map((light, index) => (
-                <article key={light.id} className="tadeon-visibility__item">
+                <article
+                  key={light.id}
+                  className="tadeon-visibility__item"
+                  data-selected={light.id === selectedLightId}
+                  onPointerDownCapture={() => onSelectLight(light.id)}
+                >
                   <div className="tadeon-visibility__item-title">
                     <strong>Luz {index + 1}</strong>
                     <input
@@ -721,13 +730,14 @@ export function TabletopVisibilityPanel({
                       type="button"
                       disabled={disabled}
                       aria-label="Excluir luz"
-                      onClick={() =>
+                      onClick={() => {
                         update({
                           lights: state.lights.filter(
                             (item) => item.id !== light.id,
                           ),
-                        })
-                      }
+                        });
+                        if (light.id === selectedLightId) onSelectLight(null);
+                      }}
                     >
                       <Trash2 aria-hidden="true" />
                     </button>

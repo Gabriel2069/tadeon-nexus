@@ -81,6 +81,7 @@ export class TabletopVisibilityRenderer {
     activeLevelId?: string | null,
     orientation: TabletopViewOrientation = DEFAULT_TABLETOP_VIEW_ORIENTATION,
     toolPreview?: TabletopVisibilityToolPreview | null,
+    selectedLightId?: string | null,
   ) {
     this.lightGlow.clear();
     this.darkness.clear();
@@ -234,18 +235,24 @@ export class TabletopVisibilityRenderer {
         });
     }
     for (const light of levelState.lights) {
+      const selected = light.id === selectedLightId;
       this.guides
         .circle(light.x, light.y, Math.max(8, light.radius))
         .stroke({
           color: colorFromHex(light.color),
-          alpha: light.enabled ? 0.58 : 0.2,
-          width: 2,
+          alpha: selected ? 0.95 : light.enabled ? 0.58 : 0.2,
+          width: selected ? 3 : 2,
         })
         .circle(light.x, light.y, 7)
         .fill({
           color: colorFromHex(light.color),
           alpha: light.enabled ? 0.95 : 0.35,
         });
+      if (selected)
+        this.guides
+          .circle(light.x + Math.max(8, light.radius), light.y, 8)
+          .fill({ color: 0xf7f1df, alpha: 0.98 })
+          .stroke({ color: colorFromHex(light.color), alpha: 1, width: 3 });
     }
   }
 

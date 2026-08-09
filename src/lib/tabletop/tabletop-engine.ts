@@ -58,9 +58,11 @@ import {
 } from "./tabletop-arrangement";
 import {
   createEmptyVisibilityState,
+  type TabletopLight,
   type TabletopVisibilityState,
   type TabletopWall,
 } from "./tabletop-visibility-service";
+import { hitTestTabletopLight } from "./visibility-tooling";
 import { TabletopVisibilityRenderer } from "./visibility-renderer";
 import {
   activeTabletopLevel,
@@ -85,7 +87,11 @@ import {
 export interface TabletopEngineOptions {
   onChange?: (snapshot: TabletopSnapshot) => void;
   onAssetError?: (message: string) => void;
-  onContextMenu?: (position: Point, entityId?: string) => void;
+  onContextMenu?: (
+    position: Point,
+    entityId?: string,
+    lightId?: string,
+  ) => void;
   onToolModeChange?: (mode: TabletopToolMode) => void;
   onCreateStructure?: (structure: TabletopStructurePreview) => void;
   onSelectStructure?: (id: string | null) => void;
@@ -96,6 +102,14 @@ export interface TabletopEngineOptions {
   ) => void;
   onDeleteStructure?: (id: string) => void;
   onDuplicateStructure?: (id: string) => void;
+  onSelectLight?: (id: string | null) => void;
+  onUpdateLight?: (
+    before: TabletopLight,
+    after: TabletopLight,
+    label: string,
+  ) => void;
+  onDeleteLight?: (id: string) => void;
+  onDuplicateLight?: (id: string) => void;
   onActivateStructure?: (wall: TabletopWall) => void;
   onActivateEntity?: (entity: TabletopEntity) => boolean | void;
   onViewChange?: (view: TabletopViewState) => void;
@@ -128,6 +142,7 @@ export class TabletopEngine {
   private viewOrientation = DEFAULT_TABLETOP_VIEW_ORIENTATION;
   private structureType: TabletopStructureType = "wall";
   private selectedStructureId: string | null = null;
+  private selectedLightId: string | null = null;
   private activeLevelId: string | null = null;
   private interactiveStructureIds = new Set<string>();
   private interaction: InteractionController | null = null;
@@ -194,10 +209,13 @@ export class TabletopEngine {
       camera: this.camera,
       hitTest: (point) => this.hitTest(point),
       hitTestStructure: (point) => this.hitTestStructure(point),
+      hitTestLight: (point) => this.hitTestLight(point),
       isSelected: (id) => this.selection.has(id),
       selectedStructureId: () => this.selectedStructureId,
+      selectedLightId: () => this.selectedLightId,
       select: (id, additive) => this.select(id, additive),
       selectStructure: (id) => this.setSelectedStructure(id),
+      selectLight: (id) => this.setSelectedLight(id),
       selectAll: () => this.selectAll(),
       selectInBounds: (bounds, additive) =>
         this.selectInBounds(bounds, additive),
@@ -214,6 +232,10 @@ export class TabletopEngine {
       commitVisibilityTool: (preview) => this.commitVisibilityTool(preview),
       visibilityToolRadius: (mode) =>
         mode === "light" ? this.lightToolRadius : this.fogToolRadius,
+      editableLight: (id) => this.editableLight(id),
+      previewLight: (light) => this.previewLight(light),
+      commitLightTransform: (before, after, label) =>
+        this.commitLightTransform(before, after, label),
       editableStructure: (id) => this.editableStructure(id),
       previewStructureTransform: (structure) =>
         this.previewStructureTransform(structure),
@@ -235,8 +257,8 @@ export class TabletopEngine {
       focusSelection: () => this.focusSelection(),
       fitToScreen: () => this.fitToScreen(),
       activateTool: (mode) => this.setToolMode(mode),
-      onContextMenu: (position, entityId) =>
-        this.options.onContextMenu?.(position, entityId),
+      onContextMenu: (position, entityId, lightId) =>
+        this.options.onContextMenu?.(position, entityId, lightId),
     });
     this.interaction.setMode(this.toolMode);
     this.resizeObserver = new ResizeObserver(() => this.resize());
@@ -269,6 +291,8 @@ export class TabletopEngine {
     this.selection.clear();
     this.selectedStructureId = null;
     this.options.onSelectStructure?.(null);
+    this.selectedLightId = null;
+    this.options.onSelectLight?.(null);
     this.history.clear();
     this.paintBackground();
     this.render();
@@ -283,6 +307,7 @@ export class TabletopEngine {
     );
     this.selection.clear();
     this.setSelectedStructure(null);
+    this.setSelectedLight(null);
     this.render(false);
   }
 
@@ -327,6 +352,7 @@ export class TabletopEngine {
     if (readOnly) {
       this.selection.clear();
       this.setSelectedStructure(null);
+      this.setSelectedLight(null);
       if (
         this.toolMode === "draw" ||
         this.toolMode === "structure" ||
@@ -511,6 +537,15 @@ export class TabletopEngine {
       this.selectedStructureId = null;
       this.options.onSelectStructure?.(null);
     }
+    if (
+      this.selectedLightId &&
+      !this.visibilityState.lights.some(
+        (light) => light.id === this.selectedLightId,
+      )
+    ) {
+      this.selectedLightId = null;
+      this.options.onSelectLight?.(null);
+    }
     this.render(false);
   }
 
@@ -521,8 +556,32 @@ export class TabletopEngine {
         : null;
     const changed = next !== this.selectedStructureId;
     this.selectedStructureId = next;
-    if (next) this.selection.clear();
+    if (next) {
+      this.selection.clear();
+      if (this.selectedLightId) {
+        this.selectedLightId = null;
+        this.options.onSelectLight?.(null);
+      }
+    }
     if (changed) this.options.onSelectStructure?.(next);
+    this.render();
+  }
+
+  setSelectedLight(id: string | null) {
+    const next =
+      id && this.visibilityState.lights.some((light) => light.id === id)
+        ? id
+        : null;
+    const changed = next !== this.selectedLightId;
+    this.selectedLightId = next;
+    if (next) {
+      this.selection.clear();
+      if (this.selectedStructureId) {
+        this.selectedStructureId = null;
+        this.options.onSelectStructure?.(null);
+      }
+    }
+    if (changed) this.options.onSelectLight?.(next);
     this.render();
   }
 
@@ -670,6 +729,10 @@ export class TabletopEngine {
 
   duplicateSelected() {
     if (this.readOnly) return;
+    if (this.selectedLightId) {
+      this.options.onDuplicateLight?.(this.selectedLightId);
+      return;
+    }
     if (this.selectedStructureId) {
       this.options.onDuplicateStructure?.(this.selectedStructureId);
       return;
@@ -728,6 +791,12 @@ export class TabletopEngine {
 
   deleteSelected() {
     if (this.readOnly) return;
+    if (this.selectedLightId) {
+      const id = this.selectedLightId;
+      this.setSelectedLight(null);
+      this.options.onDeleteLight?.(id);
+      return;
+    }
     if (this.selectedStructureId) {
       const id = this.selectedStructureId;
       this.setSelectedStructure(null);
@@ -763,6 +832,10 @@ export class TabletopEngine {
 
   selectAll() {
     if (this.readOnly) return;
+    if (this.selectedLightId) {
+      this.selectedLightId = null;
+      this.options.onSelectLight?.(null);
+    }
     if (this.selectedStructureId) {
       this.selectedStructureId = null;
       this.options.onSelectStructure?.(null);
@@ -780,6 +853,27 @@ export class TabletopEngine {
   }
 
   focusSelection() {
+    if (this.selectedLightId) {
+      const light = this.visibilityState.lights.find(
+        (item) => item.id === this.selectedLightId,
+      );
+      if (!light) return;
+      const radius = Math.max(8, light.radius);
+      this.camera.fitBounds(
+        {
+          x: light.x - radius,
+          y: light.y - radius,
+          width: radius * 2,
+          height: radius * 2,
+        },
+        this.app.renderer.width,
+        this.app.renderer.height,
+        96,
+        2.25,
+      );
+      this.render(false);
+      return;
+    }
     if (this.selectedStructureId) {
       const structure = this.visibilityState.walls.find(
         (wall) => wall.id === this.selectedStructureId,
@@ -1005,6 +1099,10 @@ export class TabletopEngine {
   }
 
   private select(id: string, additive: boolean) {
+    if (this.selectedLightId) {
+      this.selectedLightId = null;
+      this.options.onSelectLight?.(null);
+    }
     if (this.selectedStructureId) {
       this.selectedStructureId = null;
       this.options.onSelectStructure?.(null);
@@ -1015,6 +1113,10 @@ export class TabletopEngine {
 
   private clearSelection() {
     this.selection.clear();
+    if (this.selectedLightId) {
+      this.selectedLightId = null;
+      this.options.onSelectLight?.(null);
+    }
     if (this.selectedStructureId) {
       this.selectedStructureId = null;
       this.options.onSelectStructure?.(null);
@@ -1023,6 +1125,10 @@ export class TabletopEngine {
   }
 
   private selectInBounds(bounds: TabletopBounds, additive: boolean) {
+    if (this.selectedLightId) {
+      this.selectedLightId = null;
+      this.options.onSelectLight?.(null);
+    }
     if (this.selectedStructureId) {
       this.selectedStructureId = null;
       this.options.onSelectStructure?.(null);
@@ -1093,6 +1199,38 @@ export class TabletopEngine {
       12 / Math.max(this.camera.zoom, 0.01),
       this.selectedStructureId,
     );
+  }
+
+  private hitTestLight(point: Point) {
+    if (!this.visibilityGuides) return null;
+    const activeLevel = activeTabletopLevel(
+      this.scenes.scene,
+      this.activeLevelId,
+    );
+    const fallbackLevelId = activeTabletopLevel(this.scenes.scene).id;
+    return hitTestTabletopLight(
+      point,
+      this.visibilityState.lights.filter(
+        (light) =>
+          tabletopItemLevelId(light, fallbackLevelId) === activeLevel.id,
+      ),
+      10 / Math.max(this.camera.zoom, 0.01),
+      this.selectedLightId,
+    );
+  }
+
+  private editableLight(id: string) {
+    if (this.readOnly || !this.visibilityGuides) return null;
+    const light = this.visibilityState.lights.find((item) => item.id === id);
+    const activeLevel = activeTabletopLevel(
+      this.scenes.scene,
+      this.activeLevelId,
+    );
+    const fallbackLevelId = activeTabletopLevel(this.scenes.scene).id;
+    return light &&
+      tabletopItemLevelId(light, fallbackLevelId) === activeLevel.id
+      ? { ...light }
+      : null;
   }
 
   private editableStructure(id: string) {
@@ -1189,6 +1327,25 @@ export class TabletopEngine {
       ? { ...preview, points: preview.points.map((point) => ({ ...point })) }
       : null;
     this.render(false);
+  }
+
+  private previewLight(light: TabletopLight) {
+    this.visibilityState = {
+      ...this.visibilityState,
+      lights: this.visibilityState.lights.map((item) =>
+        item.id === light.id ? { ...light } : item,
+      ),
+    };
+    this.render(false);
+  }
+
+  private commitLightTransform(
+    before: TabletopLight,
+    after: TabletopLight,
+    label: string,
+  ) {
+    if (this.readOnly) return;
+    this.options.onUpdateLight?.(before, after, label);
   }
 
   private commitVisibilityTool(preview: TabletopVisibilityToolPreview) {
@@ -1318,6 +1475,20 @@ export class TabletopEngine {
 
   private nudge(delta: Point) {
     if (this.readOnly) return;
+    if (this.selectedLightId) {
+      const before = this.visibilityState.lights.find(
+        (light) => light.id === this.selectedLightId,
+      );
+      if (!before) return;
+      const after = {
+        ...before,
+        x: before.x + delta.x,
+        y: before.y + delta.y,
+      };
+      this.previewLight(after);
+      this.commitLightTransform(before, after, "Mover luz");
+      return;
+    }
     if (this.selectedStructureId) {
       const before = this.visibilityState.walls.find(
         (wall) => wall.id === this.selectedStructureId,
@@ -1479,6 +1650,7 @@ export class TabletopEngine {
       activeLevel.id,
       this.viewOrientation,
       this.visibilityToolPreview,
+      this.selectedLightId,
     );
     this.spatial.render(
       this.scenes.scene,
