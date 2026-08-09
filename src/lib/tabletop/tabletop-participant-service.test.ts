@@ -4,7 +4,8 @@ import {
   TabletopParticipantError,
 } from "./tabletop-participant-service";
 
-const id = (suffix: string) => `00000000-0000-4000-8000-${suffix.padStart(12, "0")}`;
+const id = (suffix: string) =>
+  `00000000-0000-4000-8000-${suffix.padStart(12, "0")}`;
 
 function validView() {
   return {
@@ -24,13 +25,16 @@ function validView() {
       fogOpacity: 0.92,
       walls: [],
       lights: [],
-      fogStrokes: [{
-        id: id("6"),
-        operation: "reveal",
-        points: [{ x: 120, y: 160 }],
-        radius: 96,
-        sequenceIndex: 0,
-      }],
+      fogStrokes: [
+        {
+          id: id("6"),
+          levelId: id("13"),
+          operation: "reveal",
+          points: [{ x: 120, y: 160 }],
+          radius: 96,
+          sequenceIndex: 0,
+        },
+      ],
     },
     scene: {
       id: id("3"),
@@ -41,6 +45,19 @@ function validView() {
       gridSize: 64,
       gridScale: 1,
       snap: true,
+      activeLevelId: id("13"),
+      levels: [
+        {
+          id: id("13"),
+          name: "Térreo",
+          order: 0,
+          baseElevation: 0,
+          height: 192,
+          visible: true,
+          locked: false,
+          version: 1,
+        },
+      ],
       layers: [
         {
           id: id("4"),
@@ -66,6 +83,7 @@ function validView() {
           hidden: false,
           locked: false,
           color: 0x8d3152,
+          levelId: id("13"),
           controllable: true,
           properties: { status: "alerta" },
           handout: {
@@ -106,7 +124,9 @@ describe("projeção segura da Mesa para participantes", () => {
     expect(parsed.scene?.entities[0].controllable).toBe(true);
     expect(parsed.scene?.entities[0].handout?.title).toBe("Carta selada");
     expect(parsed.scene?.entities[0].handout?.attachments).toHaveLength(2);
-    expect(parsed.scene?.entities[0].handout?.attachments[0].mimeType).toBe("application/pdf");
+    expect(parsed.scene?.entities[0].handout?.attachments[0].mimeType).toBe(
+      "application/pdf",
+    );
   });
 
   it("rejeita anexos além do limite seguro", () => {
@@ -119,7 +139,9 @@ describe("projeção segura da Mesa para participantes", () => {
         assetId: id(String(100 + index)),
       }),
     );
-    expect(() => parseTabletopParticipantView(input)).toThrow(TabletopParticipantError);
+    expect(() => parseTabletopParticipantView(input)).toThrow(
+      TabletopParticipantError,
+    );
   });
 
   it("rejeita conteúdo integral indevido no handout", () => {
@@ -127,25 +149,61 @@ describe("projeção segura da Mesa para participantes", () => {
     Object.assign(input.scene.entities[0].handout, {
       contentMarkdown: "conteúdo que não pertence ao contrato resumido",
     });
-    expect(() => parseTabletopParticipantView(input)).toThrow(TabletopParticipantError);
+    expect(() => parseTabletopParticipantView(input)).toThrow(
+      TabletopParticipantError,
+    );
   });
 
   it("rejeita geometria privada de paredes", () => {
     const input = validView();
-    input.visibility.walls = [{
-      id: id("7"),
-      x1: 0,
-      y1: 0,
-      x2: 10,
-      y2: 10,
-    }] as never[];
-    expect(() => parseTabletopParticipantView(input)).toThrow(TabletopParticipantError);
+    input.visibility.walls = [
+      {
+        id: id("7"),
+        x1: 0,
+        y1: 0,
+        x2: 10,
+        y2: 10,
+      },
+    ] as never[];
+    expect(() => parseTabletopParticipantView(input)).toThrow(
+      TabletopParticipantError,
+    );
+  });
+
+  it("aceita somente uma porta explicitamente acionável pelo jogador", () => {
+    const input = validView();
+    input.visibility.walls = [
+      {
+        id: id("7"),
+        levelId: id("13"),
+        x1: 0,
+        y1: 0,
+        x2: 64,
+        y2: 0,
+        wallType: "door_closed",
+        blocksVision: true,
+        blocksMovement: true,
+        baseElevation: 0,
+        height: 160,
+        thickness: 8,
+        playerOperable: true,
+        version: 3,
+      },
+    ] as never[];
+    const parsed = parseTabletopParticipantView(input);
+    expect(parsed.visibility?.walls[0]).toMatchObject({
+      wallType: "door_closed",
+      playerOperable: true,
+      version: 3,
+    });
   });
 
   it("rejeita camada do mestre", () => {
     const input = validView();
     input.scene.layers[0].layerType = "master" as "tokens";
-    expect(() => parseTabletopParticipantView(input)).toThrow(TabletopParticipantError);
+    expect(() => parseTabletopParticipantView(input)).toThrow(
+      TabletopParticipantError,
+    );
   });
 
   it("rejeita entidade oculta e campos privados extras", () => {
@@ -155,6 +213,8 @@ describe("projeção segura da Mesa para participantes", () => {
       ownerUserId: id("9"),
       linkedKnowledgeNodeId: id("10"),
     });
-    expect(() => parseTabletopParticipantView(input)).toThrow(TabletopParticipantError);
+    expect(() => parseTabletopParticipantView(input)).toThrow(
+      TabletopParticipantError,
+    );
   });
 });
