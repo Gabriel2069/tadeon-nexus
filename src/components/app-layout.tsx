@@ -19,6 +19,9 @@ import {
   Wrench,
   LibraryBig,
   MapPinned,
+  MonitorDown,
+  Share2,
+  CircleCheck,
 } from "lucide-react";
 import { useAuth } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
@@ -35,6 +38,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { BrandMark, ThreadField } from "@/components/brand-mark";
 import { GlobalSearch } from "@/components/global-search";
+import { usePwaInstall } from "@/components/pwa-registration";
 import { getAuthErrorMessage } from "@/lib/auth-errors";
 import { isApplicationAdministrator } from "@/lib/permissions";
 import { loadFeatureFlags } from "@/lib/feature-flag-repository";
@@ -104,6 +108,8 @@ export function AppLayout({ children }: { children: ReactNode }) {
     return window.localStorage.getItem(COLLAPSE_KEY) === "1";
   });
   const [accountOpen, setAccountOpen] = useState(false);
+  const [installOpen, setInstallOpen] = useState(false);
+  const pwaInstall = usePwaInstall();
   const [navigationFlags, setNavigationFlags] = useState<NavigationFlags>(() =>
     readNavigationFlags(user?.id),
   );
@@ -301,6 +307,17 @@ export function AppLayout({ children }: { children: ReactNode }) {
       </div>
 
       <div className="relative z-10 shrink-0 space-y-1 border-t border-sidebar-border pt-3">
+        {!pwaInstall.installed && (
+          <SideAction
+            mini={mini}
+            icon={<MonitorDown className="w-4 h-4" />}
+            label="Instalar aplicativo"
+            onClick={() => {
+              setMobileOpen(false);
+              setInstallOpen(true);
+            }}
+          />
+        )}
         <SideAction
           mini={mini}
           icon={<Settings className="w-4 h-4" />}
@@ -369,6 +386,18 @@ export function AppLayout({ children }: { children: ReactNode }) {
             </div>
           </div>
           <div className="ml-auto flex items-center gap-2">
+            {!pwaInstall.installed && (
+              <Button
+                type="button"
+                size="sm"
+                variant="outline"
+                className="hidden gap-2 lg:inline-flex"
+                onClick={() => setInstallOpen(true)}
+              >
+                <MonitorDown className="h-3.5 w-3.5" />
+                Instalar app
+              </Button>
+            )}
             {role && (
               <span className="tadeon-desktop-toolbar__role">
                 <RoleIcon className="h-3.5 w-3.5" />
@@ -457,6 +486,13 @@ export function AppLayout({ children }: { children: ReactNode }) {
         email={user?.email || ""}
         onSaved={() => refresh()}
       />
+      <PwaInstallDialog
+        open={installOpen}
+        onOpenChange={setInstallOpen}
+        status={pwaInstall.status}
+        platform={pwaInstall.platform}
+        install={pwaInstall.install}
+      />
     </div>
   );
 }
@@ -528,6 +564,108 @@ function SideAction({
       {icon}
       {!mini && label}
     </Button>
+  );
+}
+
+function PwaInstallDialog({
+  open,
+  onOpenChange,
+  status,
+  platform,
+  install,
+}: {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  status: "checking" | "installable" | "manual" | "installed";
+  platform: "ios" | "other";
+  install: () => Promise<"accepted" | "dismissed" | "manual">;
+}) {
+  const [installing, setInstalling] = useState(false);
+
+  const requestInstall = async () => {
+    setInstalling(true);
+    try {
+      const outcome = await install();
+      if (outcome === "accepted") {
+        toast.success("Tadeon Nexus foi adicionado aos seus aplicativos.");
+        onOpenChange(false);
+      }
+    } finally {
+      setInstalling(false);
+    }
+  };
+
+  const manualTitle =
+    platform === "ios"
+      ? "Adicionar à Tela de Início"
+      : "Instalar pelo navegador";
+  const manualDescription =
+    platform === "ios"
+      ? "No Safari, toque em Compartilhar e depois em “Adicionar à Tela de Início”."
+      : "Abra o menu do navegador e escolha “Instalar Tadeon Nexus” ou “Adicionar à tela inicial”.";
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="overflow-hidden sm:max-w-md">
+        <div
+          aria-hidden
+          className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary to-transparent"
+        />
+        <DialogHeader>
+          <div className="mb-3 flex h-14 w-14 items-center justify-center rounded-2xl border border-primary/25 bg-primary/10 text-primary shadow-[0_18px_50px_-28px_hsl(var(--primary))]">
+            <MonitorDown className="h-6 w-6" />
+          </div>
+          <p className="tadeon-eyebrow">Tadeon no seu dispositivo</p>
+          <DialogTitle className="font-cinzel text-2xl">
+            Instalar como aplicativo
+          </DialogTitle>
+        </DialogHeader>
+        <p className="text-sm leading-relaxed text-muted-foreground">
+          Abra o Nexus em tela própria, com acesso rápido pela área de trabalho
+          ou tela inicial e uma experiência mais próxima de um aplicativo
+          nativo.
+        </p>
+
+        {status === "installable" ? (
+          <div className="rounded-xl border border-primary/25 bg-primary/[0.06] p-4">
+            <div className="flex items-center gap-2 text-sm font-medium">
+              <CircleCheck className="h-4 w-4 text-primary" />
+              Pronto para instalar
+            </div>
+            <p className="mt-1.5 text-xs leading-relaxed text-muted-foreground">
+              O navegador verificou o aplicativo. A instalação não altera suas
+              contas nem os dados do Nexus.
+            </p>
+          </div>
+        ) : (
+          <div className="rounded-xl border border-border/70 bg-secondary/25 p-4">
+            <div className="flex items-center gap-2 text-sm font-medium">
+              {platform === "ios" ? (
+                <Share2 className="h-4 w-4 text-primary" />
+              ) : (
+                <MonitorDown className="h-4 w-4 text-primary" />
+              )}
+              {manualTitle}
+            </div>
+            <p className="mt-1.5 text-xs leading-relaxed text-muted-foreground">
+              {manualDescription}
+            </p>
+          </div>
+        )}
+
+        <DialogFooter>
+          <Button variant="outline" onClick={() => onOpenChange(false)}>
+            Agora não
+          </Button>
+          {status === "installable" ? (
+            <Button onClick={() => void requestInstall()} disabled={installing}>
+              <MonitorDown className="h-4 w-4" />
+              {installing ? "Instalando..." : "Instalar Tadeon Nexus"}
+            </Button>
+          ) : null}
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 }
 

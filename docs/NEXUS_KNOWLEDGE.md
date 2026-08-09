@@ -85,7 +85,14 @@ blocos de código e preserva posições para backlinks. Links não resolvidos s�
 
 O Lote 01 do universo Tadeon fica versionado em
 `public/nexus-packs/tadeon-nexus-lote-01.zip`. Ele reúne 186 páginas e 298 relações extraídas de
-Arden, Geografia de Veth, Ciências de Veth, Urdidura do Vazio e Livro de Regras.
+Arden, Geografia de Veth, Ciências de Veth, Urdidura do Vazio e Livro de Regras. Esta é a opção
+recomendada porque preserva a trama completa entre todas as fontes.
+
+O catálogo também oferece seis projeções verificadas para importação seletiva: Atlas de Conexões,
+Arden, Urdidura do Vazio, Livro de Regras, Geografia de Veth e Ciências de Veth. Elas são geradas de
+forma determinística por `scripts/build-official-knowledge-packs.py` a partir do lote completo; não
+constituem uma segunda fonte editorial. Os volumes de origem incluem seu índice para manter a
+estrutura interna, e o Atlas reúne as páginas de síntese e as relações entre fontes.
 
 A interface verifica o tamanho e o SHA-256 do arquivo antes de abrir o preview. O pacote não é
 gravado automaticamente: o usuário ainda precisa selecionar o workspace ou campanha, executar o

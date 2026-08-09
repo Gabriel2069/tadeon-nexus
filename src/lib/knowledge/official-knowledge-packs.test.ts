@@ -7,6 +7,7 @@ import {
 const TEST_PACK: OfficialKnowledgePack = {
   id: "test-pack",
   title: "Pacote de teste",
+  eyebrow: "Fixture",
   description: "Fixture mínima.",
   assetPath: "/test-pack.zip",
   fileName: "test-pack.zip",

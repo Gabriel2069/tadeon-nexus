@@ -38,7 +38,8 @@ import {
 } from "@/lib/knowledge/knowledge-portability";
 import {
   loadOfficialKnowledgePack,
-  TADEON_NEXUS_LOTE_01,
+  TADEON_NEXUS_OFFICIAL_PACKS,
+  type OfficialKnowledgePack,
 } from "@/lib/knowledge/official-knowledge-packs";
 import {
   downloadKnowledgeArchive,
@@ -82,10 +83,10 @@ function portabilityError(error: unknown) {
     return "A importação falhou e alguns anexos precisam de revisão no catálogo.";
   }
   if (message.includes("KNOWLEDGE_OFFICIAL_PACK_LOAD_FAILED")) {
-    return "Não foi possível carregar o Lote 01 versionado no repositório.";
+    return "Não foi possível carregar este pacote oficial do repositório.";
   }
   if (message.includes("KNOWLEDGE_OFFICIAL_PACK_INTEGRITY_FAILED")) {
-    return "O Lote 01 falhou na verificação de integridade e não foi aberto.";
+    return "O pacote falhou na verificação de integridade e não foi aberto.";
   }
   if (message.includes("MANAGER_REQUIRED")) {
     return "A importação em lote exige permissão de mestre ou administrador.";
@@ -131,6 +132,7 @@ export function KnowledgePortabilityDialog({
     ImportProgress | ExportProgress | null
   >(null);
   const [busy, setBusy] = useState(false);
+  const [loadingPackId, setLoadingPackId] = useState<string | null>(null);
   const [includeAttachments, setIncludeAttachments] = useState(true);
 
   const unsupportedAttachments = useMemo(
@@ -177,15 +179,18 @@ export function KnowledgePortabilityDialog({
     await readFile(nextFile, {});
   };
 
-  const chooseOfficialPack = async () => {
+  const chooseOfficialPack = async (pack: OfficialKnowledgePack) => {
     setBusy(true);
+    setLoadingPackId(pack.id);
     setReport(null);
     try {
-      const nextFile = await loadOfficialKnowledgePack();
+      const nextFile = await loadOfficialKnowledgePack(pack);
       setFile(nextFile);
       const parsed = await readFile(nextFile, {});
       if (parsed) {
-        toast.success("Lote 01 carregado e verificado. Execute o dry-run.");
+        toast.success(
+          `${pack.title} carregado e verificado. Execute o dry-run.`,
+        );
       } else {
         setFile(null);
       }
@@ -195,6 +200,7 @@ export function KnowledgePortabilityDialog({
       toast.error(portabilityError(error));
     } finally {
       setBusy(false);
+      setLoadingPackId(null);
     }
   };
 
@@ -329,31 +335,76 @@ export function KnowledgePortabilityDialog({
 
         {mode === "import" ? (
           <div className="space-y-5">
-            <div className="flex flex-col gap-3 rounded-lg border border-primary/30 bg-primary/5 p-4 sm:flex-row sm:items-center">
-              <PackageOpen className="h-6 w-6 shrink-0 text-primary" />
-              <div className="min-w-0 flex-1">
-                <div className="flex flex-wrap items-center gap-2">
-                  <h3 className="font-medium">{TADEON_NEXUS_LOTE_01.title}</h3>
-                  <Badge variant="secondary">
-                    {TADEON_NEXUS_LOTE_01.pages} páginas ·{" "}
-                    {TADEON_NEXUS_LOTE_01.relations} relações
-                  </Badge>
+            <div className="space-y-3">
+              <div className="flex items-end justify-between gap-4">
+                <div>
+                  <p className="tadeon-eyebrow">Biblioteca oficial</p>
+                  <h3 className="font-cinzel text-lg font-semibold">
+                    Escolha o alcance da importação
+                  </h3>
                 </div>
-                <p className="mt-1 text-xs text-muted-foreground">
-                  {TADEON_NEXUS_LOTE_01.description}
-                </p>
+                <Badge variant="outline" className="hidden sm:inline-flex">
+                  7 pacotes verificados
+                </Badge>
               </div>
-              <Button
-                type="button"
-                variant="secondary"
-                onClick={() => void chooseOfficialPack()}
-                disabled={busy}
-              >
-                {busy ? (
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                ) : null}
-                Carregar Lote 01
-              </Button>
+              <div className="grid gap-3 sm:grid-cols-2">
+                {TADEON_NEXUS_OFFICIAL_PACKS.map((pack) => (
+                  <article
+                    key={pack.id}
+                    className={`group relative flex min-h-44 flex-col overflow-hidden rounded-xl border p-4 transition-colors ${
+                      pack.recommended
+                        ? "border-primary/45 bg-primary/[0.07] sm:col-span-2"
+                        : "border-border/70 bg-card/65 hover:border-primary/30"
+                    }`}
+                  >
+                    <div
+                      aria-hidden
+                      className="absolute inset-y-0 left-0 w-px bg-gradient-to-b from-transparent via-primary/70 to-transparent"
+                    />
+                    <div className="flex items-start gap-3">
+                      <span className="mt-0.5 grid h-9 w-9 shrink-0 place-items-center rounded-lg border border-primary/20 bg-primary/10 text-primary">
+                        <PackageOpen className="h-4 w-4" />
+                      </span>
+                      <div className="min-w-0 flex-1">
+                        <div className="flex flex-wrap items-center gap-2">
+                          <h4 className="font-medium">{pack.title}</h4>
+                          {pack.recommended ? (
+                            <Badge variant="secondary">Recomendado</Badge>
+                          ) : null}
+                        </div>
+                        <p className="tadeon-mono mt-0.5 text-[10px] uppercase tracking-[0.12em] text-primary/80">
+                          {pack.eyebrow}
+                        </p>
+                      </div>
+                    </div>
+                    <p className="mt-3 flex-1 text-xs leading-relaxed text-muted-foreground">
+                      {pack.description}
+                    </p>
+                    <div className="mt-4 flex flex-wrap items-center justify-between gap-3 border-t border-border/60 pt-3">
+                      <span className="text-[11px] text-muted-foreground">
+                        {pack.pages} páginas · {pack.relations} relações
+                      </span>
+                      <Button
+                        type="button"
+                        size="sm"
+                        variant={pack.recommended ? "default" : "secondary"}
+                        onClick={() => void chooseOfficialPack(pack)}
+                        disabled={busy}
+                      >
+                        {loadingPackId === pack.id ? (
+                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        ) : null}
+                        Carregar
+                      </Button>
+                    </div>
+                  </article>
+                ))}
+              </div>
+              <p className="text-[11px] leading-relaxed text-muted-foreground">
+                A Biblioteca completa preserva todas as conexões entre volumes.
+                Os demais pacotes servem para importações seletivas e nunca
+                substituem páginas já existentes.
+              </p>
             </div>
 
             <div className="space-y-2">
