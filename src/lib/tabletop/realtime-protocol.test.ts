@@ -80,6 +80,26 @@ describe("protocolo Realtime da Mesa", () => {
     ).toBeNull();
   });
 
+  it("transporta somente a revisão persistida do Diretor", () => {
+    const directorEvent: TabletopRealtimeEvent = {
+      ...event(),
+      type: "director.state",
+      payload: { revision: 7 },
+    };
+    expect(
+      parseTabletopRealtimeEvent(directorEvent, { sceneId, now: 5_500 }),
+    ).toEqual(directorEvent);
+    expect(
+      parseTabletopRealtimeEvent(
+        {
+          ...directorEvent,
+          payload: { revision: 7, title: "segredo indevido" },
+        },
+        { sceneId, now: 5_500 },
+      ),
+    ).toBeNull();
+  });
+
   it("limita Presence aos campos lentos previstos", () => {
     const presence = {
       userId,
