@@ -1,6 +1,13 @@
 import { Container, Graphics, Sprite, Text } from "pixi.js";
+import type { TabletopProjectionMode } from "./camera-controller";
 import { readTabletopDrawingPoints } from "./tabletop-drawing";
-import type { TabletopEntity, TabletopLayer } from "./types";
+import {
+  activeTabletopLevel,
+  elevateIsometricPoint,
+  tabletopEntityWorldElevation,
+  tabletopItemLevelId,
+} from "./tabletop-levels";
+import type { TabletopEntity, TabletopScene } from "./types";
 import { TextureManager } from "./texture-manager";
 
 function entityProperties(value: unknown): Record<string, unknown> {
@@ -26,10 +33,13 @@ export class EntityRenderer {
   ) {}
 
   render(
-    entities: TabletopEntity[],
-    layers: TabletopLayer[],
+    scene: TabletopScene,
     selectedIds: string[],
+    projection: TabletopProjectionMode = "plan",
+    activeLevelId?: string | null,
   ) {
+    const entities = scene.entities;
+    const layers = scene.layers;
     const live = new Set(entities.map((entity) => entity.id));
     for (const [id, display] of this.displays) {
       if (!live.has(id)) {
@@ -41,6 +51,8 @@ export class EntityRenderer {
 
     const layerMap = new Map(layers.map((layer) => [layer.id, layer]));
     const selected = new Set(selectedIds);
+    const activeLevel = activeTabletopLevel(scene, activeLevelId);
+    const fallbackLevelId = activeTabletopLevel(scene).id;
     const ordered = [...entities].sort((a, b) => {
       const layerOrder =
         (layerMap.get(a.layerId)?.order ?? 0) -
@@ -56,14 +68,33 @@ export class EntityRenderer {
         this.view.addChild(display);
       }
       const layer = layerMap.get(entity.layerId);
-      display.visible = !entity.hidden && Boolean(layer?.visible);
+      const onActiveLevel =
+        tabletopItemLevelId(entity, fallbackLevelId) === activeLevel.id;
+      display.visible =
+        !entity.hidden &&
+        Boolean(layer?.visible) &&
+        activeLevel.visible &&
+        onActiveLevel;
       display.pivot.set(entity.width / 2, entity.height / 2);
-      display.position.set(
-        entity.x + entity.width / 2,
-        entity.y + entity.height / 2,
-      );
+      const center = {
+        x: entity.x + entity.width / 2,
+        y: entity.y + entity.height / 2,
+      };
+      const position =
+        projection === "isometric"
+          ? elevateIsometricPoint(
+              center,
+              tabletopEntityWorldElevation(entity, activeLevel),
+            )
+          : center;
+      display.position.set(position.x, position.y);
       display.rotation = (entity.rotation * Math.PI) / 180;
-      display.zIndex = (layer?.order ?? 0) * 100_000 + entity.zIndex;
+      display.zIndex =
+        (layer?.order ?? 0) * 1_000_000 +
+        (projection === "isometric"
+          ? Math.round((entity.x + entity.y) * 10)
+          : 0) +
+        entity.zIndex;
       this.syncAsset(display, entity);
       this.paint(display, entity, selected.has(entity.id));
     }
