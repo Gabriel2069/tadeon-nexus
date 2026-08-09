@@ -1,5 +1,6 @@
 import { Container, Graphics } from "pixi.js";
 import type { TabletopProjectionMode } from "./camera-controller";
+import { entityIsBelowRoof } from "./tabletop-structure-editor";
 import {
   isRoofStructure,
   structureFamily,
@@ -59,6 +60,8 @@ export class TabletopSpatialRenderer {
     scene: TabletopScene,
     state: TabletopVisibilityState,
     projection: TabletopProjectionMode,
+    selectedEntityIds: string[] = [],
+    selectedStructureId: string | null = null,
   ) {
     this.architecture.clear();
     this.roofs.clear();
@@ -68,10 +71,19 @@ export class TabletopSpatialRenderer {
     if (!visible) return;
 
     const wallHeight = Math.max(42, scene.gridSize * 1.15);
+    const selectedEntities = scene.entities.filter((entity) =>
+      selectedEntityIds.includes(entity.id),
+    );
     for (const wall of state.walls) {
       const type = wall.wallType as TabletopStructureType;
       if (isRoofStructure(type)) {
-        this.paintRoof(wall, type, wallHeight * 1.45);
+        this.paintRoof(
+          wall,
+          type,
+          wallHeight * 1.45,
+          wall.id === selectedStructureId ||
+            selectedEntities.some((entity) => entityIsBelowRoof(entity, wall)),
+        );
       } else {
         this.paintWall(wall, type, wallHeight);
       }
@@ -141,6 +153,7 @@ export class TabletopSpatialRenderer {
     wall: TabletopWall,
     type: TabletopStructureType,
     height: number,
+    autoCutaway: boolean,
   ) {
     if (type === "roof_hidden") return;
     const minX = Math.min(wall.x1, wall.x2);
@@ -154,7 +167,7 @@ export class TabletopSpatialRenderer {
       { x: minX, y: maxY },
     ];
     const top = base.map((point) => elevated(point, height));
-    const cutaway = type === "roof_cutaway";
+    const cutaway = type === "roof_cutaway" || autoCutaway;
     this.roofs
       .poly(flatPoints([base[1], base[2], top[2], top[1]]))
       .fill({ color: MATERIALS.roof.face, alpha: cutaway ? 0.12 : 0.78 });
