@@ -53,6 +53,12 @@ class FakeChannel implements TabletopRealtimeChannelAdapter {
   untracked = false;
   state: Record<string, unknown> = {};
   subscribeStatus: "SUBSCRIBED" | "TIMED_OUT" | "CLOSED" | "CHANNEL_ERROR" = "SUBSCRIBED";
+  private subscribeCallback:
+    | ((
+        status: "SUBSCRIBED" | "TIMED_OUT" | "CLOSED" | "CHANNEL_ERROR",
+        error?: Error,
+      ) => void)
+    | null = null;
 
   on(
     type: "broadcast" | "presence",
@@ -69,6 +75,7 @@ class FakeChannel implements TabletopRealtimeChannelAdapter {
       error?: Error,
     ) => void,
   ) {
+    this.subscribeCallback = callback;
     callback(
       this.subscribeStatus,
       this.subscribeStatus === "CHANNEL_ERROR" ? new Error("raw database detail") : undefined,
@@ -102,6 +109,15 @@ class FakeChannel implements TabletopRealtimeChannelAdapter {
       }
     }
   }
+
+  emitStatus(
+    status: "SUBSCRIBED" | "TIMED_OUT" | "CLOSED" | "CHANNEL_ERROR",
+  ) {
+    this.subscribeCallback?.(
+      status,
+      status === "CHANNEL_ERROR" ? new Error("raw database detail") : undefined,
+    );
+  }
 }
 
 function setup(enabled = true) {
@@ -117,8 +133,8 @@ function setup(enabled = true) {
   const states: string[] = [];
 
   const client: TabletopRealtimeClientAdapter = {
-    async setAuth() {
-      callOrder.push("auth");
+    async setAuth(expectedUserId) {
+      callOrder.push(`auth:${expectedUserId}`);
     },
     createChannel(topic, options) {
       callOrder.push(`channel:${topic}`);
@@ -174,7 +190,7 @@ describe("transporte Realtime privado da Mesa Nexus", () => {
     await context.transport.connect();
 
     expect(context.callOrder).toEqual([
-      "auth",
+      `auth:${userId}`,
       `channel:tabletop:scene:${sceneId}`,
       `channel:tabletop:session:${sessionId}`,
     ]);
@@ -263,6 +279,23 @@ describe("transporte Realtime privado da Mesa Nexus", () => {
     expect(context.channels[1].channel.untracked).toBe(true);
     expect(context.removed).toEqual(context.channels.map(({ channel }) => channel));
     expect(context.transport.connectionState).toBe("disconnected");
+  });
+
+  it("reflete degradação e volta a conectado quando os dois canais se recuperam", async () => {
+    const context = setup();
+    await context.transport.connect();
+
+    context.channels[0].channel.emitStatus("CHANNEL_ERROR");
+    expect(context.transport.connectionState).toBe("degraded");
+
+    context.channels[0].channel.emitStatus("SUBSCRIBED");
+    expect(context.transport.connectionState).toBe("connected");
+
+    context.channels[1].channel.emitStatus("CLOSED");
+    expect(context.transport.connectionState).toBe("disconnected");
+
+    context.channels[1].channel.emitStatus("SUBSCRIBED");
+    expect(context.transport.connectionState).toBe("connected");
   });
 
   it("não expõe a mensagem bruta do provedor em falhas de assinatura", async () => {
