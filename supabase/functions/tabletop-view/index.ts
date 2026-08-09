@@ -52,6 +52,39 @@ function boundedText(value: unknown, max: number) {
   return typeof value === "string" ? value.trim().slice(0, max) : "";
 }
 
+function boundedNumber(value: unknown) {
+  return Math.max(-1_000_000, Math.min(1_000_000, finiteNumber(value)));
+}
+
+function activeConditionNames(value: unknown) {
+  const names: string[] = [];
+  if (Array.isArray(value)) {
+    for (const entry of value) {
+      if (typeof entry === "string") names.push(entry);
+      else {
+        const condition = objectValue(entry);
+        if (condition.active !== false)
+          names.push(
+            boundedText(condition.name ?? condition.label ?? condition.id, 80),
+          );
+      }
+    }
+  } else {
+    for (const [key, entry] of Object.entries(objectValue(value))) {
+      if (entry === true) names.push(key);
+      else {
+        const condition = objectValue(entry);
+        if (condition.active === true || condition.value === true)
+          names.push(boundedText(condition.name ?? condition.label ?? key, 80));
+      }
+    }
+  }
+  return [...new Set(names.map((name) => name.trim()).filter(Boolean))].slice(
+    0,
+    12,
+  );
+}
+
 interface VisibilityPoint {
   x: number;
   y: number;
@@ -426,7 +459,7 @@ Deno.serve(async (request) => {
     admin
       .from("tabletop_entities")
       .select(
-        "id,level_id,layer_id,entity_type,name,asset_id,linked_knowledge_node_id,x,y,width,height,rotation,elevation,z_index,hidden,locked,owner_user_id,properties",
+        "id,level_id,layer_id,entity_type,name,asset_id,linked_sheet_id,linked_knowledge_node_id,x,y,width,height,rotation,elevation,z_index,hidden,locked,owner_user_id,properties",
       )
       .eq("scene_id", session.current_scene_id)
       .eq("hidden", false)
@@ -590,6 +623,16 @@ Deno.serve(async (request) => {
     (entity) =>
       publicLayerIds.has(entity.layer_id) && entity.level_id === activeLevelId,
   );
+  const sheetIds = [
+    ...new Set(
+      publicEntityCandidates
+        .map((entity) => entity.linked_sheet_id)
+        .filter(
+          (value): value is string =>
+            typeof value === "string" && UUID_PATTERN.test(value),
+        ),
+    ),
+  ].slice(0, 64);
   const handoutNodeIds = [
     ...new Set(
       publicEntityCandidates
@@ -620,15 +663,54 @@ Deno.serve(async (request) => {
       sortOrder: number;
     }>
   >();
+  const authorized = publicApiKey
+    ? createClient(supabaseUrl, publicApiKey, {
+        global: { headers: { Authorization: authorization } },
+        auth: { persistSession: false, autoRefreshToken: false },
+      })
+    : null;
+  const sheetSummaries = new Map<string, Record<string, unknown>>();
+  if (sheetIds.length > 0) {
+    if (!authorized) {
+      console.error("[tabletop-view] Public server key unavailable.");
+      return respond({ error: "Integração com fichas indisponível." }, 503);
+    }
+    const { data: sheets, error: sheetError } = await authorized
+      .from("character_sheets")
+      .select(
+        "id,name,occupation,brand,origin,exposure,equilibrium,condition,conditions,stats",
+      )
+      .in("id", sheetIds);
+    if (sheetError) {
+      console.error("[tabletop-view] Could not authorize sheet summaries.");
+      return respond({ error: "Não foi possível validar as fichas." }, 500);
+    }
+    for (const sheet of sheets ?? []) {
+      const stats = objectValue(sheet.stats);
+      sheetSummaries.set(sheet.id, {
+        sheetId: sheet.id,
+        name: boundedText(sheet.name, 160) || "Ficha sem nome",
+        occupation: boundedText(sheet.occupation, 160),
+        brand: boundedText(sheet.brand, 160),
+        origin: boundedText(sheet.origin, 160),
+        exposure: boundedNumber(sheet.exposure),
+        equilibrium: boundedNumber(sheet.equilibrium),
+        condition: boundedText(sheet.condition, 160),
+        resources: {
+          pv: boundedNumber(stats.pv_current),
+          pe: boundedNumber(stats.pe_current),
+          ps: boundedNumber(stats.ps_current),
+          pa: boundedNumber(stats.pa_current),
+        },
+        activeConditions: activeConditionNames(sheet.conditions),
+      });
+    }
+  }
   if (knowledgeEnabled && handoutNodeIds.length > 0) {
-    if (!publicApiKey) {
+    if (!authorized) {
       console.error("[tabletop-view] Public server key unavailable.");
       return respond({ error: "Integração com O Nexus indisponível." }, 503);
     }
-    const authorized = createClient(supabaseUrl, publicApiKey, {
-      global: { headers: { Authorization: authorization } },
-      auth: { persistSession: false, autoRefreshToken: false },
-    });
     const { data: nodes, error: nodeError } = await authorized
       .from("knowledge_nodes")
       .select("id,title,summary,node_type,cover_asset_id")
@@ -804,6 +886,10 @@ Deno.serve(async (request) => {
           entity.owner_user_id === user.id &&
           !entity.locked,
         properties: publicProperties(entity.properties),
+        ...(typeof entity.linked_sheet_id === "string" &&
+        sheetSummaries.has(entity.linked_sheet_id)
+          ? { sheetSummary: sheetSummaries.get(entity.linked_sheet_id) }
+          : {}),
         ...(typeof entity.linked_knowledge_node_id === "string" &&
         handoutViews.has(entity.linked_knowledge_node_id)
           ? { handout: handoutViews.get(entity.linked_knowledge_node_id) }
