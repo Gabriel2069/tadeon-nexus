@@ -30,6 +30,7 @@ import {
   Image,
   ImagePlus,
   Layers3,
+  Lightbulb,
   Loader2,
   Lock,
   LockOpen,
@@ -40,6 +41,8 @@ import {
   PencilLine,
   Plus,
   Redo2,
+  CloudFog,
+  Eraser,
   RefreshCw,
   RotateCcw,
   RotateCw,
@@ -107,6 +110,7 @@ import {
   type TabletopVisibilityState,
   type TabletopWall,
 } from "@/lib/tabletop/tabletop-visibility-service";
+import { compactVisibilityToolPoints } from "@/lib/tabletop/visibility-tooling";
 import {
   fitTabletopAssetSize,
   moveTabletopScene,
@@ -169,6 +173,9 @@ const TOOL_LABELS: Record<TabletopToolMode, string> = {
   measure: "Régua",
   draw: "Desenho",
   structure: "Arquitetura",
+  light: "Luz",
+  fog_reveal: "Revelar névoa",
+  fog_hide: "Cobrir com névoa",
 };
 
 const TOOL_HINTS: Record<TabletopToolMode, string> = {
@@ -178,6 +185,9 @@ const TOOL_HINTS: Record<TabletopToolMode, string> = {
   draw: "Arraste para desenhar · Shift cria uma linha · D ativa o traço",
   structure:
     "Arraste para construir · Shift mantém o eixo · Alt ignora a grade · B ativa",
+  light: "Clique para a luz padrão · arraste para definir o alcance · L ativa",
+  fog_reveal: "Pinte a área que os jogadores podem enxergar · F ativa",
+  fog_hide: "Pinte para devolver uma área à névoa",
 };
 
 const DRAW_COLORS = ["#d9d7a4", "#74242d", "#4f6e5d", "#e9e3d5", "#1f3644"];
@@ -321,6 +331,8 @@ export function TabletopWorkspace({
   const [assetUploading, setAssetUploading] = useState(false);
   const [drawColor, setDrawColor] = useState("#d9d7a4");
   const [drawWidth, setDrawWidth] = useState(5);
+  const [lightToolRadius, setLightToolRadius] = useState(320);
+  const [fogToolRadius, setFogToolRadius] = useState(160);
   const [sceneDialogOpen, setSceneDialogOpen] = useState(false);
   const [sceneName, setSceneName] = useState("Nova cena");
   const [snapshotDialogOpen, setSnapshotDialogOpen] = useState(false);
@@ -394,6 +406,11 @@ export function TabletopWorkspace({
       width: drawWidth,
     });
   }, [drawColor, drawWidth]);
+
+  useEffect(() => {
+    engineRef.current?.setVisibilityToolRadius("light", lightToolRadius);
+    engineRef.current?.setVisibilityToolRadius("fog", fogToolRadius);
+  }, [fogToolRadius, lightToolRadius]);
 
   useEffect(() => {
     structureTypeRef.current = structureType;
@@ -729,6 +746,58 @@ export function TabletopWorkspace({
         setPanelTab("space");
         engine.setSelectedStructure(id);
       },
+      onCommitVisibilityTool: (tool) => {
+        const levelId =
+          activeLevelIdRef.current ??
+          persistedSceneRef.current?.levels[0]?.id ??
+          "";
+        if (!levelId || tool.points.length === 0) return;
+        if (tool.kind === "light") {
+          const point = tool.points[0];
+          previewVisibility({
+            ...visibilityRef.current,
+            lights: [
+              ...visibilityRef.current.lights,
+              {
+                id: crypto.randomUUID(),
+                levelId,
+                entityId: null,
+                x: point.x,
+                y: point.y,
+                elevation: 0,
+                radius: Math.max(8, Math.min(100_000, tool.radius)),
+                intensity: 0.88,
+                color: "#f2c66d",
+                enabled: true,
+                castsShadows: true,
+              },
+            ],
+          });
+        } else {
+          const points = compactVisibilityToolPoints(tool.points);
+          if (points.length === 0) return;
+          const nextSequence = visibilityRef.current.fogStrokes.reduce(
+            (maximum, stroke) => Math.max(maximum, stroke.sequenceIndex + 1),
+            0,
+          );
+          previewVisibility({
+            ...visibilityRef.current,
+            fogEnabled: true,
+            fogStrokes: [
+              ...visibilityRef.current.fogStrokes,
+              {
+                id: crypto.randomUUID(),
+                levelId,
+                operation: tool.kind === "fog_reveal" ? "reveal" : "hide",
+                points,
+                radius: Math.max(8, Math.min(1_024, tool.radius)),
+                sequenceIndex: nextSequence,
+              },
+            ],
+          });
+        }
+        setPanelTab("space");
+      },
       onContextMenu: (position, entityId) =>
         setContextMenu({ ...clampContextMenu(position), entityId }),
       onViewChange: queueViewPreference,
@@ -740,6 +809,8 @@ export function TabletopWorkspace({
         if (cancelled) return;
         engineReadyRef.current = true;
         engine.setStructureType(structureTypeRef.current);
+        engine.setVisibilityToolRadius("light", 320);
+        engine.setVisibilityToolRadius("fog", 160);
         const stored = persistedSceneRef.current;
         if (stored) {
           engine.loadScene(stored);
@@ -1659,6 +1730,30 @@ export function TabletopWorkspace({
             >
               <BrickWall className="h-4 w-4" />
             </CanvasToolButton>
+            <CanvasToolButton
+              label="Posicionar luz e arrastar o alcance (L)"
+              active={toolMode === "light"}
+              disabled={!editable || !lightingEnabled || !visibilityAvailable}
+              onClick={() => setToolMode("light")}
+            >
+              <Lightbulb className="h-4 w-4" />
+            </CanvasToolButton>
+            <CanvasToolButton
+              label="Pincel para revelar névoa (F)"
+              active={toolMode === "fog_reveal"}
+              disabled={!editable || !lightingEnabled || !visibilityAvailable}
+              onClick={() => setToolMode("fog_reveal")}
+            >
+              <CloudFog className="h-4 w-4" />
+            </CanvasToolButton>
+            <CanvasToolButton
+              label="Pincel para cobrir novamente com névoa"
+              active={toolMode === "fog_hide"}
+              disabled={!editable || !lightingEnabled || !visibilityAvailable}
+              onClick={() => setToolMode("fog_hide")}
+            >
+              <Eraser className="h-4 w-4" />
+            </CanvasToolButton>
             <span className="tadeon-tabletop-canvas-rail__divider" />
             <ToolbarButton
               label="Selecionar todas as entidades editáveis"
@@ -1745,6 +1840,75 @@ export function TabletopWorkspace({
                   onChange={(event) => setDrawWidth(Number(event.target.value))}
                 />
               </label>
+            </div>
+          )}
+          {(toolMode === "light" ||
+            toolMode === "fog_reveal" ||
+            toolMode === "fog_hide") && (
+            <div
+              className="tadeon-tabletop-tool-options"
+              aria-label="Opções de luz e névoa no mapa"
+            >
+              <div className="tadeon-tabletop-tool-options__heading">
+                {toolMode === "light" ? (
+                  <Lightbulb className="h-3.5 w-3.5" />
+                ) : toolMode === "fog_reveal" ? (
+                  <CloudFog className="h-3.5 w-3.5" />
+                ) : (
+                  <Eraser className="h-3.5 w-3.5" />
+                )}
+                <span>
+                  {toolMode === "light"
+                    ? "Luz no mapa"
+                    : toolMode === "fog_reveal"
+                      ? "Revelar névoa"
+                      : "Cobrir novamente"}
+                </span>
+              </div>
+              {toolMode !== "light" && (
+                <div className="flex gap-1">
+                  <Button
+                    size="sm"
+                    variant={
+                      toolMode === "fog_reveal" ? "secondary" : "outline"
+                    }
+                    onClick={() => setToolMode("fog_reveal")}
+                  >
+                    Revelar
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant={toolMode === "fog_hide" ? "secondary" : "outline"}
+                    onClick={() => setToolMode("fog_hide")}
+                  >
+                    Cobrir
+                  </Button>
+                </div>
+              )}
+              <label className="tadeon-tabletop-draw-width">
+                <span>
+                  {toolMode === "light"
+                    ? `${lightToolRadius}px padrão`
+                    : `${fogToolRadius}px de pincel`}
+                </span>
+                <input
+                  type="range"
+                  min={toolMode === "light" ? 32 : 16}
+                  max={toolMode === "light" ? 1600 : 512}
+                  step={8}
+                  value={toolMode === "light" ? lightToolRadius : fogToolRadius}
+                  onChange={(event) => {
+                    const value = Number(event.target.value);
+                    if (toolMode === "light") setLightToolRadius(value);
+                    else setFogToolRadius(value);
+                  }}
+                />
+              </label>
+              <small className="max-w-56 text-[10px] text-muted-foreground">
+                {toolMode === "light"
+                  ? "Clique para usar o alcance padrão ou arraste para dimensionar."
+                  : "Arraste sobre o mapa; o traço é compactado sem perder as extremidades."}
+              </small>
             </div>
           )}
           {toolMode === "structure" && (

@@ -1,5 +1,6 @@
 import { Container, Graphics } from "pixi.js";
 import type { TabletopProjectionMode } from "./camera-controller";
+import type { TabletopVisibilityToolPreview } from "./interaction-controller";
 import {
   DEFAULT_TABLETOP_VIEW_ORIENTATION,
   tabletopElevationOffset,
@@ -57,10 +58,19 @@ export class TabletopVisibilityRenderer {
   private readonly darkness = new Graphics({ label: "dynamic-darkness" });
   private readonly fog = new Graphics({ label: "fog-of-war" });
   private readonly guides = new Graphics({ label: "visibility-guides" });
+  private readonly toolPreview = new Graphics({
+    label: "visibility-tool-preview",
+  });
 
   constructor() {
     this.view.eventMode = "none";
-    this.view.addChild(this.lightGlow, this.darkness, this.fog, this.guides);
+    this.view.addChild(
+      this.lightGlow,
+      this.darkness,
+      this.fog,
+      this.guides,
+      this.toolPreview,
+    );
   }
 
   render(
@@ -70,11 +80,13 @@ export class TabletopVisibilityRenderer {
     projection: TabletopProjectionMode = "plan",
     activeLevelId?: string | null,
     orientation: TabletopViewOrientation = DEFAULT_TABLETOP_VIEW_ORIENTATION,
+    toolPreview?: TabletopVisibilityToolPreview | null,
   ) {
     this.lightGlow.clear();
     this.darkness.clear();
     this.fog.clear();
     this.guides.clear();
+    this.toolPreview.clear();
 
     const activeLevel = activeTabletopLevel(scene, activeLevelId);
     const fallbackLevelId = activeTabletopLevel(scene).id;
@@ -140,6 +152,42 @@ export class TabletopVisibilityRenderer {
           if (stroke.operation === "reveal") path.cut();
           else path.fill({ color: FOG_COLOR, alpha: state.fogOpacity });
         }
+      }
+    }
+
+    const previewOrigin = toolPreview?.points[0];
+    if (toolPreview && previewOrigin) {
+      const color =
+        toolPreview.kind === "light"
+          ? 0xf2c66d
+          : toolPreview.kind === "fog_reveal"
+            ? 0x63d9a0
+            : 0xe06b76;
+      if (toolPreview.kind === "light") {
+        this.toolPreview
+          .circle(previewOrigin.x, previewOrigin.y, toolPreview.radius)
+          .fill({ color, alpha: 0.08 })
+          .stroke({ color, alpha: 0.92, width: 2 })
+          .circle(previewOrigin.x, previewOrigin.y, 7)
+          .fill({ color, alpha: 1 });
+      } else if (toolPreview.points.length === 1) {
+        this.toolPreview
+          .circle(previewOrigin.x, previewOrigin.y, toolPreview.radius)
+          .fill({ color, alpha: 0.18 })
+          .stroke({ color, alpha: 0.75, width: 2 });
+      } else {
+        this.toolPreview.moveTo(previewOrigin.x, previewOrigin.y);
+        for (const point of toolPreview.points.slice(1))
+          this.toolPreview.lineTo(point.x, point.y);
+        this.toolPreview.stroke({
+          color,
+          alpha: 0.38,
+          width: toolPreview.radius * 2,
+        });
+        this.toolPreview.moveTo(previewOrigin.x, previewOrigin.y);
+        for (const point of toolPreview.points.slice(1))
+          this.toolPreview.lineTo(point.x, point.y);
+        this.toolPreview.stroke({ color, alpha: 0.94, width: 2 });
       }
     }
 

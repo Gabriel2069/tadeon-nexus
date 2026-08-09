@@ -17,7 +17,10 @@ export type TabletopToolMode =
   | "pan"
   | "measure"
   | "draw"
-  | "structure";
+  | "structure"
+  | "light"
+  | "fog_reveal"
+  | "fog_hide";
 
 export interface TabletopMeasurementPreview {
   start: Point;
@@ -28,6 +31,12 @@ export interface TabletopMeasurementPreview {
 export interface TabletopStructurePreview {
   start: Point;
   end: Point;
+}
+
+export interface TabletopVisibilityToolPreview {
+  kind: "light" | "fog_reveal" | "fog_hide";
+  points: Point[];
+  radius: number;
 }
 
 interface InteractionBindings {
@@ -49,6 +58,9 @@ interface InteractionBindings {
   commitDrawing(points: Point[]): void;
   previewStructure(structure: TabletopStructurePreview | null): void;
   commitStructure(structure: TabletopStructurePreview): void;
+  previewVisibilityTool(preview: TabletopVisibilityToolPreview | null): void;
+  commitVisibilityTool(preview: TabletopVisibilityToolPreview): void;
+  visibilityToolRadius(mode: TabletopToolMode): number;
   editableStructure(id: string): TabletopWall | null;
   previewStructureTransform(structure: TabletopWall): void;
   commitStructureTransform(
@@ -87,6 +99,7 @@ type PointerAction =
   | "measure"
   | "draw"
   | "structure"
+  | "visibility"
   | "structure-transform";
 
 const MIN_ENTITY_SIZE = 8;
@@ -102,6 +115,7 @@ export class InteractionController {
   private measureStartWorld: Point | null = null;
   private drawPoints: Point[] = [];
   private structureStartWorld: Point | null = null;
+  private visibilityToolPoints: Point[] = [];
   private structureBefore: TabletopWall | null = null;
   private activeStructureHandle: TabletopStructureHandle | null = null;
   private activeHandle: TabletopTransformHandle | null = null;
@@ -135,6 +149,7 @@ export class InteractionController {
     this.bindings.previewMeasure(null);
     this.bindings.previewDrawing([]);
     this.bindings.previewStructure(null);
+    this.bindings.previewVisibilityTool(null);
     this.updateCursor();
   }
 
@@ -232,6 +247,19 @@ export class InteractionController {
       this.pointerAction = "structure";
       this.structureStartWorld = start;
       this.bindings.previewStructure({ start, end: start });
+    } else if (
+      this.mode === "light" ||
+      this.mode === "fog_reveal" ||
+      this.mode === "fog_hide"
+    ) {
+      const start = event.altKey ? world : this.bindings.snap(world);
+      this.pointerAction = "visibility";
+      this.visibilityToolPoints = [start];
+      this.bindings.previewVisibilityTool({
+        kind: this.mode,
+        points: this.visibilityToolPoints,
+        radius: this.bindings.visibilityToolRadius(this.mode),
+      });
     } else if (hit) {
       const additive = event.shiftKey || event.metaKey || event.ctrlKey;
       if (additive || !this.bindings.isSelected(hit))
@@ -392,6 +420,34 @@ export class InteractionController {
         end,
       });
     } else if (
+      this.pointerAction === "visibility" &&
+      this.visibilityToolPoints[0] &&
+      (this.mode === "light" ||
+        this.mode === "fog_reveal" ||
+        this.mode === "fog_hide")
+    ) {
+      let radius = this.bindings.visibilityToolRadius(this.mode);
+      if (this.mode === "light") {
+        const origin = this.visibilityToolPoints[0];
+        radius = Math.max(
+          8,
+          Math.hypot(world.x - origin.x, world.y - origin.y),
+        );
+      } else {
+        const last = this.visibilityToolPoints.at(-1) ?? world;
+        const minimumStep = Math.max(
+          2 / Math.max(this.bindings.camera.zoom, 0.01),
+          radius * 0.12,
+        );
+        if (Math.hypot(world.x - last.x, world.y - last.y) >= minimumStep)
+          this.visibilityToolPoints.push(world);
+      }
+      this.bindings.previewVisibilityTool({
+        kind: this.mode,
+        points: this.visibilityToolPoints,
+        radius,
+      });
+    } else if (
       this.pointerAction === "structure-transform" &&
       this.structureBefore &&
       this.activeStructureHandle &&
@@ -507,6 +563,34 @@ export class InteractionController {
       });
       this.bindings.previewStructure(null);
     } else if (
+      this.pointerAction === "visibility" &&
+      this.visibilityToolPoints[0] &&
+      (this.mode === "light" ||
+        this.mode === "fog_reveal" ||
+        this.mode === "fog_hide")
+    ) {
+      const end = this.bindings.camera.screenToWorld(this.screenPoint(event));
+      const points =
+        this.mode === "light"
+          ? this.visibilityToolPoints
+          : [...this.visibilityToolPoints, end];
+      const radius =
+        this.mode === "light"
+          ? Math.max(
+              8,
+              Math.hypot(
+                end.x - this.visibilityToolPoints[0].x,
+                end.y - this.visibilityToolPoints[0].y,
+              ) || this.bindings.visibilityToolRadius(this.mode),
+            )
+          : this.bindings.visibilityToolRadius(this.mode);
+      this.bindings.commitVisibilityTool({
+        kind: this.mode,
+        points,
+        radius,
+      });
+      this.bindings.previewVisibilityTool(null);
+    } else if (
       this.pointerAction === "structure-transform" &&
       this.structureBefore
     ) {
@@ -542,6 +626,7 @@ export class InteractionController {
     this.bindings.previewMeasure(null);
     this.bindings.previewDrawing([]);
     this.bindings.previewStructure(null);
+    this.bindings.previewVisibilityTool(null);
     this.releasePointer(event.pointerId);
   };
 
@@ -568,7 +653,10 @@ export class InteractionController {
     if (
       this.mode === "measure" ||
       this.mode === "draw" ||
-      this.mode === "structure"
+      this.mode === "structure" ||
+      this.mode === "light" ||
+      this.mode === "fog_reveal" ||
+      this.mode === "fog_hide"
     )
       return;
     event.preventDefault();
@@ -633,6 +721,8 @@ export class InteractionController {
         r: "measure",
         d: "draw",
         b: "structure",
+        l: "light",
+        f: "fog_reveal",
       };
       const shortcut = toolShortcuts[event.key.toLowerCase()];
       if (shortcut) {
@@ -686,12 +776,16 @@ export class InteractionController {
       this.bindings.previewMeasure(null);
       this.bindings.previewDrawing([]);
       this.bindings.previewStructure(null);
+      this.bindings.previewVisibilityTool(null);
       this.clearPointerState();
       this.bindings.clearSelection();
       if (
         this.mode === "measure" ||
         this.mode === "draw" ||
-        this.mode === "structure"
+        this.mode === "structure" ||
+        this.mode === "light" ||
+        this.mode === "fog_reveal" ||
+        this.mode === "fog_hide"
       )
         this.bindings.activateTool("select");
       this.updateCursor();
@@ -847,7 +941,12 @@ export class InteractionController {
       this.canvas.style.cursor = "cell";
       return;
     }
-    if (this.mode === "structure") {
+    if (
+      this.mode === "structure" ||
+      this.mode === "light" ||
+      this.mode === "fog_reveal" ||
+      this.mode === "fog_hide"
+    ) {
       this.canvas.style.cursor = "crosshair";
       return;
     }
@@ -905,6 +1004,7 @@ export class InteractionController {
     this.measureStartWorld = null;
     this.drawPoints = [];
     this.structureStartWorld = null;
+    this.visibilityToolPoints = [];
     this.structureBefore = null;
     this.activeStructureHandle = null;
     this.activeHandle = null;
