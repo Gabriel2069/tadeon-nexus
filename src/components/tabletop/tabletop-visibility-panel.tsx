@@ -7,8 +7,13 @@ import {
   EyeOff,
   LampDesk,
   Loader2,
+  Moon,
   Plus,
+  RotateCcw,
   Save,
+  Sparkles,
+  Sun,
+  Sunset,
   Trash2,
 } from "lucide-react";
 import { useState } from "react";
@@ -34,6 +39,7 @@ import {
   type TabletopWall,
 } from "@/lib/tabletop/tabletop-visibility-service";
 import type { TabletopLevel } from "@/lib/tabletop/types";
+import { createLevelRevealStrokes } from "@/lib/tabletop/visibility-tooling";
 import "@/styles/tabletop-visibility.css";
 
 interface TabletopVisibilityPanelProps {
@@ -70,6 +76,20 @@ function numberValue(value: string, fallback = 0) {
   const result = Number(value);
   return Number.isFinite(result) ? result : fallback;
 }
+
+const AMBIENT_PRESETS = [
+  { label: "Dia", value: 1, icon: Sun },
+  { label: "Crepúsculo", value: 0.55, icon: Sunset },
+  { label: "Noite", value: 0.18, icon: Moon },
+  { label: "Escuridão", value: 0, icon: EyeOff },
+] as const;
+
+const LIGHT_PRESETS = [
+  { label: "Vela", color: "#f5b56b", radius: 0.08, intensity: 0.58 },
+  { label: "Tocha", color: "#f28b43", radius: 0.14, intensity: 0.82 },
+  { label: "Lanterna", color: "#f2c66d", radius: 0.2, intensity: 1 },
+  { label: "Arcana", color: "#79c8df", radius: 0.18, intensity: 0.92 },
+] as const;
 
 function NumberField({
   label,
@@ -186,7 +206,9 @@ export function TabletopVisibilityPanel({
     onSelectStructure(spatialStructure.id);
   };
 
-  const addLight = () =>
+  const addLight = (
+    preset: (typeof LIGHT_PRESETS)[number] = LIGHT_PRESETS[2],
+  ) =>
     update({
       lights: [
         ...state.lights,
@@ -197,14 +219,39 @@ export function TabletopVisibilityPanel({
           x: sceneWidth / 2,
           y: sceneHeight / 2,
           elevation: 0,
-          radius: Math.max(160, Math.min(sceneWidth, sceneHeight) / 5),
-          intensity: 1,
-          color: "#f2c66d",
+          radius: Math.max(
+            80,
+            Math.min(sceneWidth, sceneHeight) * preset.radius,
+          ),
+          intensity: preset.intensity,
+          color: preset.color,
           enabled: true,
           castsShadows: true,
         },
       ],
     });
+
+  const replaceLevelFog = (fogStrokes: TabletopFogStroke[]) =>
+    update({
+      fogEnabled: true,
+      fogStrokes: [
+        ...state.fogStrokes.filter(
+          (stroke) => (stroke.levelId || fallbackLevelId) !== currentLevelId,
+        ),
+        ...fogStrokes,
+      ].map((stroke, sequenceIndex) => ({ ...stroke, sequenceIndex })),
+    });
+
+  const coverLevel = () => replaceLevelFog([]);
+
+  const revealLevel = () =>
+    replaceLevelFog(
+      createLevelRevealStrokes({
+        levelId: currentLevelId,
+        sceneWidth,
+        sceneHeight,
+      }),
+    );
 
   const addFogStroke = (operation: TabletopFogStroke["operation"]) =>
     update({
@@ -280,6 +327,28 @@ export function TabletopVisibilityPanel({
                 }
               />
             </label>
+            <div
+              className="tadeon-visibility__preset-grid"
+              aria-label="Cenas de luz ambiente"
+            >
+              {AMBIENT_PRESETS.map((preset) => {
+                const Icon = preset.icon;
+                return (
+                  <button
+                    key={preset.label}
+                    type="button"
+                    disabled={disabled}
+                    aria-pressed={
+                      Math.abs(state.globalIllumination - preset.value) < 0.01
+                    }
+                    onClick={() => update({ globalIllumination: preset.value })}
+                  >
+                    <Icon aria-hidden="true" />
+                    {preset.label}
+                  </button>
+                );
+              })}
+            </div>
             <div className="tadeon-visibility__switch">
               <div>
                 <strong>Névoa de guerra</strong>
@@ -293,23 +362,64 @@ export function TabletopVisibilityPanel({
               />
             </div>
             {state.fogEnabled && (
-              <label>
-                <span>
-                  <EyeOff aria-hidden="true" /> Opacidade
-                </span>
-                <output>{Math.round(state.fogOpacity * 100)}%</output>
-                <input
-                  type="range"
-                  min="35"
-                  max="100"
-                  value={Math.round(state.fogOpacity * 100)}
-                  disabled={disabled}
-                  onChange={(event) =>
-                    update({ fogOpacity: Number(event.target.value) / 100 })
-                  }
-                />
-              </label>
+              <>
+                <label>
+                  <span>
+                    <EyeOff aria-hidden="true" /> Opacidade
+                  </span>
+                  <output>{Math.round(state.fogOpacity * 100)}%</output>
+                  <input
+                    type="range"
+                    min="35"
+                    max="100"
+                    value={Math.round(state.fogOpacity * 100)}
+                    disabled={disabled}
+                    onChange={(event) =>
+                      update({ fogOpacity: Number(event.target.value) / 100 })
+                    }
+                  />
+                </label>
+                <div className="tadeon-visibility__fog-shortcuts">
+                  <button
+                    type="button"
+                    disabled={disabled}
+                    onClick={coverLevel}
+                  >
+                    <EyeOff aria-hidden="true" /> Cobrir andar
+                  </button>
+                  <button
+                    type="button"
+                    disabled={disabled}
+                    onClick={revealLevel}
+                  >
+                    <Eye aria-hidden="true" /> Revelar andar
+                  </button>
+                </div>
+              </>
             )}
+          </div>
+
+          <div className="tadeon-visibility__toolbox">
+            <header>
+              <Sparkles aria-hidden="true" />
+              <span>
+                <strong>Luzes rápidas</strong>
+                <small>cria no centro do andar; ajuste abaixo</small>
+              </span>
+            </header>
+            <div className="tadeon-visibility__light-presets">
+              {LIGHT_PRESETS.map((preset) => (
+                <button
+                  key={preset.label}
+                  type="button"
+                  disabled={disabled}
+                  onClick={() => addLight(preset)}
+                >
+                  <span style={{ backgroundColor: preset.color }} />
+                  {preset.label}
+                </button>
+              ))}
+            </div>
           </div>
 
           <div className="tadeon-visibility__actions">
@@ -354,7 +464,7 @@ export function TabletopVisibilityPanel({
               size="sm"
               variant="outline"
               disabled={disabled}
-              onClick={addLight}
+              onClick={() => addLight()}
             >
               <LampDesk aria-hidden="true" /> Luz
             </Button>
@@ -666,6 +776,20 @@ export function TabletopVisibilityPanel({
                       }
                     />
                   </label>
+                  <div className="tadeon-visibility__switch is-compact">
+                    <span>
+                      <strong>Sombras arquitetônicas</strong>
+                      <small>paredes e portas recortam esta luz</small>
+                    </span>
+                    <Switch
+                      checked={light.castsShadows}
+                      disabled={disabled}
+                      onCheckedChange={(castsShadows) =>
+                        updateLight(light.id, { castsShadows })
+                      }
+                      aria-label={`Sombras da luz ${index + 1}`}
+                    />
+                  </div>
                 </article>
               ))}
             </div>
@@ -745,6 +869,15 @@ export function TabletopVisibilityPanel({
                   </div>
                 ))}
               </div>
+              <button
+                type="button"
+                className="tadeon-visibility__reset"
+                disabled={disabled}
+                onClick={coverLevel}
+              >
+                <RotateCcw aria-hidden="true" /> Reiniciar exploração deste
+                andar
+              </button>
             </div>
           )}
 
