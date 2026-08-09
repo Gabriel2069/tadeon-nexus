@@ -99,12 +99,17 @@ export class TabletopVisibilityRenderer {
         .rect(0, 0, scene.width, scene.height)
         .fill({ color: DARKNESS_COLOR, alpha: darknessAlpha });
       for (const light of enabledLights) {
+        const radius = light.radius * Math.max(0.12, light.intensity);
+        if (!light.castsShadows) {
+          this.darkness.circle(light.x, light.y, radius).cut();
+          continue;
+        }
         const polygon =
           light.visibilityPolygon ??
           buildVisibilityPolygon(
             {
               ...light,
-              radius: light.radius * Math.max(0.12, light.intensity),
+              radius,
             },
             levelState.walls,
             scene.width,
