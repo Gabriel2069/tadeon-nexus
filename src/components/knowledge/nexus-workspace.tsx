@@ -15,6 +15,7 @@ import {
   ImagePlus,
   Link2,
   ListTree,
+  LibraryBig,
   Loader2,
   Maximize2,
   PanelRight,
@@ -23,6 +24,8 @@ import {
   RotateCcw,
   Save,
   Search,
+  SlidersHorizontal,
+  Sparkles,
   Star,
   Tag,
   TextQuote,
@@ -933,6 +936,25 @@ export function NexusWorkspace({
             ? "Falha ao salvar"
             : `Salvo${lastSavedAt ? ` às ${formatTime(lastSavedAt)}` : ""}`;
 
+  const activeFilterCount = [
+    typeFilter !== "all",
+    statusFilter !== "all",
+    visibilityFilter !== "all",
+    searchRelationFilter !== "all",
+    searchOrder !== "relevance",
+    onlyCanonical,
+  ].filter(Boolean).length;
+
+  const resetSearchFilters = () => {
+    setTypeFilter("all");
+    setStatusFilter("all");
+    setVisibilityFilter("all");
+    setSearchRelationFilter("all");
+    setSearchOrder("relevance");
+    setOnlyCanonical(false);
+    setSearchPage(0);
+  };
+
   return (
     <div
       className={
@@ -941,10 +963,16 @@ export function NexusWorkspace({
           : "tadeon-page tadeon-route-nexus max-w-[112rem]"
       }
     >
-      <section className="tadeon-page-hero tadeon-nexus-header tadeon-nexus-commandbar mb-4 flex flex-col justify-between gap-4 rounded-2xl border bg-card/60 p-4 backdrop-blur md:flex-row md:items-center">
-        <div>
+      <section className="tadeon-page-hero tadeon-nexus-header tadeon-nexus-commandbar mb-4 flex flex-col justify-between gap-4 rounded-2xl border bg-card/60 p-4 backdrop-blur min-[1180px]:flex-row min-[1180px]:items-center">
+        <div className="tadeon-nexus-identity">
+          <span className="tadeon-nexus-identity__mark" aria-hidden><LibraryBig /></span>
+          <div>
           <p className="tadeon-eyebrow">Arquivo vivo de continuidade</p>
           <h1 className="font-cinzel text-2xl font-semibold md:text-3xl">O Nexus</h1>
+          <p className="tadeon-nexus-identity__summary">
+            Histórias, personagens, lugares e relações em um acervo que pensa junto com a campanha.
+          </p>
+          </div>
         </div>
         <div className="tadeon-nexus-actions w-full sm:w-auto">
           <div className="tadeon-nexus-scope grid grid-cols-2 gap-2 sm:flex">
@@ -1047,7 +1075,7 @@ export function NexusWorkspace({
         className={
           focusMode
             ? "mx-auto max-w-5xl p-3 md:p-6"
-            : "grid min-h-[72vh] gap-3 lg:grid-cols-[250px_minmax(0,1fr)] xl:grid-cols-[270px_minmax(0,1fr)_310px]"
+            : "tadeon-nexus-shell grid min-h-[72vh] gap-3"
         }
       >
         {!focusMode && (
@@ -1063,7 +1091,13 @@ export function NexusWorkspace({
                 className="pl-9"
               />
             </div>
-            <div className="mt-2 grid grid-cols-2 gap-2">
+            <details className="tadeon-nexus-filters mt-2">
+              <summary>
+                <span><SlidersHorizontal /> Refinar acervo</span>
+                <span>{activeFilterCount ? `${activeFilterCount} ativo${activeFilterCount > 1 ? "s" : ""}` : "Opcional"}</span>
+              </summary>
+              <div className="tadeon-nexus-filters__body">
+            <div className="grid grid-cols-2 gap-2">
               <Select
                 value={typeFilter}
                 onValueChange={(value) => {
@@ -1169,6 +1203,13 @@ export function NexusWorkspace({
               />
               Somente conteúdo canônico
             </label>
+            {activeFilterCount > 0 && (
+              <Button type="button" size="sm" variant="ghost" className="mt-2 w-full" onClick={resetSearchFilters}>
+                Limpar filtros
+              </Button>
+            )}
+              </div>
+            </details>
 
             <div className="mt-4 flex items-center justify-between">
               <p className="tadeon-eyebrow">Páginas</p>
@@ -1389,7 +1430,7 @@ export function NexusWorkspace({
                       aria-label="Título da página"
                       maxLength={200}
                     />
-                    <div className="my-4 flex flex-wrap gap-1 rounded-lg border bg-muted/20 p-1.5">
+                    <div className="tadeon-nexus-editor-toolbar my-4 flex flex-wrap gap-1 rounded-lg border bg-muted/20 p-1.5">
                       <Button variant="ghost" size="sm" onClick={() => applyEditorSyntax("**")}>
                         <strong>B</strong>
                       </Button>
@@ -1402,7 +1443,7 @@ export function NexusWorkspace({
                         onClick={() => applyEditorSyntax("[[", "]]")}
                       >
                         <Link2 className="h-4 w-4" />
-                        Wikilink
+                        Ligação
                       </Button>
                       <Button
                         variant="ghost"
@@ -1410,7 +1451,7 @@ export function NexusWorkspace({
                         onClick={() => applyEditorSyntax("> [!NOTE] ", "")}
                       >
                         <TextQuote className="h-4 w-4" />
-                        Callout
+                        Destaque
                       </Button>
                       <Button
                         variant="ghost"
@@ -1418,15 +1459,18 @@ export function NexusWorkspace({
                         onClick={() => applyEditorSyntax("- [ ] ", "")}
                       >
                         <Check className="h-4 w-4" />
-                        Tarefa
+                        Checklist
                       </Button>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => applyEditorSyntax("```\n", "\n```")}
-                      >
-                        Código
-                      </Button>
+                      <details className="tadeon-nexus-editor-more">
+                        <summary>Mais</summary>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => applyEditorSyntax("```\n", "\n```")}
+                        >
+                          Bloco técnico
+                        </Button>
+                      </details>
                     </div>
                     <Textarea
                       ref={editorRef}
@@ -1436,9 +1480,9 @@ export function NexusWorkspace({
                         setDraftContent(value);
                         markDirty(draftTitle, value);
                       }}
-                      className="min-h-[48vh] resize-y border-0 bg-transparent px-0 font-mono text-sm leading-7 shadow-none focus-visible:ring-0"
+                      className="tadeon-nexus-editor min-h-[48vh] resize-y border-0 bg-transparent px-0 text-sm leading-7 shadow-none focus-visible:ring-0"
                       spellCheck
-                      aria-label="Conteúdo Markdown"
+                      aria-label="Conteúdo da página"
                     />
                     <div className="mt-3 flex flex-wrap items-center justify-between gap-2 border-t pt-3 text-[11px] uppercase tracking-wide text-muted-foreground">
                       <span>
@@ -1467,39 +1511,82 @@ export function NexusWorkspace({
               </article>
             </>
           ) : (
-            <div className="flex min-h-[65vh] flex-col items-center justify-center p-8 text-center">
-              <BookOpen className="h-12 w-12 text-primary/70" />
-              <h2 className="mt-4 font-cinzel text-2xl font-semibold">Abra uma página do Nexus</h2>
-              <p className="mt-2 max-w-md text-sm text-muted-foreground">
-                Pesquise na lateral ou crie a primeira página deste escopo.
-              </p>
+            <div className="tadeon-nexus-home min-h-[65vh] p-5 md:p-8">
+              <div className="tadeon-nexus-home__intro">
+                <span className="tadeon-nexus-home__sigil"><Sparkles /></span>
+                <div>
+                  <p className="tadeon-eyebrow">Entrada do acervo</p>
+                  <h2 className="mt-1 font-cinzel text-2xl font-semibold md:text-3xl">Onde a campanha se conecta</h2>
+                  <p className="mt-2 max-w-2xl text-sm text-muted-foreground">
+                    Encontre uma página pela busca, retome uma memória recente ou comece um novo fio narrativo.
+                  </p>
+                </div>
+              </div>
+              <div className="tadeon-nexus-home__actions">
+                <button type="button" onClick={() => setLibraryOpen(true)}>
+                  <BookMarked /><span><strong>Explorar bibliotecas</strong><small>Acervo por coleções e tipos</small></span><ChevronRight />
+                </button>
+                <button type="button" onClick={() => { setCreateVisibility(campaignScope ? "campaign" : "author"); setCreateOpen(true); }}>
+                  <FilePlus2 /><span><strong>Criar uma página</strong><small>Registre uma ideia sem configurar códigos</small></span><ChevronRight />
+                </button>
+                {graphEnabled && (
+                  <button type="button" onClick={() => setLibraryOpen(true)}>
+                    <ListTree /><span><strong>Ver organização</strong><small>Navegue pela hierarquia do arquivo</small></span><ChevronRight />
+                  </button>
+                )}
+              </div>
+              <div className="tadeon-nexus-home__shelves">
+                <section>
+                  <p><Clock3 /> Retome de onde parou</p>
+                  <div>
+                    {recent.slice(0, 4).map((node) => (
+                      <button type="button" key={node.id} onClick={() => void openNode(node.id)}>
+                        <span>{TYPE_LABELS[node.node_type]}</span><strong>{node.title}</strong>
+                      </button>
+                    ))}
+                    {!recent.length && <small>Nenhuma página recente neste escopo.</small>}
+                  </div>
+                </section>
+                <section>
+                  <p><Star /> Favoritos</p>
+                  <div>
+                    {favorites.slice(0, 4).map((node) => (
+                      <button type="button" key={node.id} onClick={() => void openNode(node.id)}>
+                        <span>{TYPE_LABELS[node.node_type]}</span><strong>{node.title}</strong>
+                      </button>
+                    ))}
+                    {!favorites.length && <small>Favorite páginas essenciais para vê-las aqui.</small>}
+                  </div>
+                </section>
+              </div>
             </div>
           )}
         </main>
 
         {!focusMode && rightOpen && selected && (
-          <aside className="tadeon-nexus-context order-3 min-h-0 rounded-2xl border bg-card/55 p-3 lg:col-span-2 xl:col-span-1">
-            <div className="grid grid-cols-4 gap-1 rounded-lg bg-muted/30 p-1">
+          <aside className="tadeon-nexus-context order-3 min-h-0 rounded-2xl border bg-card/55 p-3">
+            <div className="tadeon-nexus-context-tabs grid grid-cols-4 gap-1 rounded-lg bg-muted/30 p-1">
               {(
                 [
-                  ["properties", ListTree],
-                  ["relations", Link2],
-                  ["history", History],
-                  ["assets", ImagePlus],
+                  ["properties", ListTree, "Página"],
+                  ["relations", Link2, "Relações"],
+                  ["history", History, "Versões"],
+                  ["assets", ImagePlus, "Anexos"],
                 ] as const
-              ).map(([panel, Icon]) => (
+              ).map(([panel, Icon, label]) => (
                 <button
                   key={panel}
                   type="button"
                   onClick={() => setRightPanel(panel)}
-                  className={`flex justify-center rounded-md p-2 ${
+                  className={`flex min-w-0 items-center justify-center gap-1.5 rounded-md p-2 ${
                     rightPanel === panel
                       ? "bg-card text-primary shadow-sm"
                       : "text-muted-foreground hover:text-foreground"
                   }`}
-                  aria-label={panel}
+                  aria-label={label}
                 >
                   <Icon className="h-4 w-4" />
+                  <span>{label}</span>
                 </button>
               ))}
             </div>
@@ -1593,7 +1680,7 @@ export function NexusWorkspace({
                         </p>
                       ))
                     ) : (
-                      <p className="text-xs text-muted-foreground">Nenhum título Markdown.</p>
+                      <p className="text-xs text-muted-foreground">Nenhuma seção criada.</p>
                     )}
                   </div>
                 </div>
@@ -1630,11 +1717,12 @@ export function NexusWorkspace({
                   </div>
                 </div>
                 <div className="rounded-xl border p-3 text-[11px] text-muted-foreground">
-                  <p>ID: {selected.id}</p>
-                  <p className="mt-1">Slug: {selected.slug}</p>
-                  <p className="mt-1">
-                    Atualizado: {new Date(selected.updated_at).toLocaleString("pt-BR")}
-                  </p>
+                  <p>Atualizado: {new Date(selected.updated_at).toLocaleString("pt-BR")}</p>
+                  <details className="tadeon-nexus-technical mt-2">
+                    <summary>Detalhes técnicos</summary>
+                    <p>ID: {selected.id}</p>
+                    <p>Endereço interno: {selected.slug}</p>
+                  </details>
                 </div>
               </div>
             )}
@@ -1900,7 +1988,7 @@ export function NexusWorkspace({
                             {link.caption || link.asset_role}
                           </p>
                           <p className="mt-1 truncate text-[10px] text-muted-foreground">
-                            {link.asset_id}
+                            {link.caption ? link.asset_role : "Arquivo vinculado à página"}
                           </p>
                         </div>
                         <Button
@@ -1987,7 +2075,7 @@ export function NexusWorkspace({
           <DialogHeader>
             <DialogTitle className="font-cinzel">Nova página</DialogTitle>
             <DialogDescription>
-              Comece com Markdown portável e refine as propriedades depois.
+              Dê um nome à ideia. Tipo e visibilidade ajudam o Nexus a guardá-la no lugar certo.
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-4">
@@ -2239,8 +2327,12 @@ export function NexusWorkspace({
               </div>
             </div>
 
-            <div>
-              <Label>Propriedades (JSON)</Label>
+            <details className="tadeon-nexus-relation-advanced rounded-xl border p-3">
+              <summary>Metadados avançados da relação</summary>
+              <p className="mt-1 text-xs text-muted-foreground">
+                Use somente quando uma automação precisar de propriedades estruturadas.
+              </p>
+              <Label className="mt-3 block">Dados técnicos</Label>
               <Textarea
                 value={relationPropertiesText}
                 onChange={(event) => setRelationPropertiesText(event.target.value)}
@@ -2249,7 +2341,7 @@ export function NexusWorkspace({
                 className="mt-1 font-mono text-xs"
                 placeholder='{"período":"Era do Véu","peso":2}'
               />
-            </div>
+            </details>
 
             {!relationEditing && (
               <label className="flex items-start gap-3 rounded-xl border p-3">

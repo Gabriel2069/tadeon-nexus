@@ -441,7 +441,7 @@
   display: none;
 }
 
-@media (min-width: 1024px) {
+@media (min-width: 1180px) {
   .tadeon-tabletop-panel[data-collapsed="true"] {
     overflow: hidden;
     padding: 0.6rem;
@@ -735,7 +735,7 @@
   }
 }
 
-@media (max-width: 1023px) {
+@media (max-width: 1179px) {
   .tadeon-tabletop-panel-backdrop {
     position: fixed;
     z-index: 38;
@@ -877,6 +877,100 @@
 @media (prefers-reduced-motion: reduce) {
   .tadeon-tabletop-panel__section {
     animation: none;
+  }
+}
+
+/* Spatial handling refinements -------------------------------------------- */
+
+.tadeon-tabletop-stage[data-tool="select"]::after {
+  position: absolute;
+  z-index: 2;
+  right: 0.75rem;
+  bottom: 4.25rem;
+  padding: 0.38rem 0.55rem;
+  border: 1px solid rgb(217 215 164 / 12%);
+  border-radius: 0.6rem 0.2rem 0.6rem 0.2rem;
+  color: rgb(217 215 164 / 72%);
+  background: rgb(7 10 14 / 72%);
+  font-family: var(--font-mono);
+  font-size: 0.54rem;
+  letter-spacing: 0.06em;
+  pointer-events: none;
+  content: "CÂMERA TRAVADA · USE MÃO OU ESPAÇO";
+  backdrop-filter: blur(12px);
+  animation: tadeon-camera-lock-arrive 420ms var(--ease-out) both;
+}
+
+@keyframes tadeon-camera-lock-arrive {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+}
+
+.tadeon-tabletop-orbit-controls {
+  display: flex;
+  gap: 0.18rem;
+  padding: 0.16rem;
+  border: 1px solid rgb(var(--studio-cyan) / 13%);
+  border-radius: 0.7rem 0.22rem 0.7rem 0.22rem;
+  background: rgb(0 0 0 / 20%);
+  animation: tadeon-camera-lock-arrive 320ms var(--ease-out) both;
+}
+
+.tadeon-tabletop-orbit-controls button {
+  width: 2rem;
+  min-width: 2rem;
+  height: 2rem;
+}
+
+.tadeon-tabletop-billboard-controls {
+  padding: 0.75rem;
+  border: 1px solid rgb(var(--studio-cyan) / 14%);
+  border-radius: 0.9rem 0.3rem 0.9rem 0.3rem;
+  background:
+    radial-gradient(circle at 100% 0%, rgb(var(--studio-cyan) / 8%), transparent 9rem),
+    rgb(255 255 255 / 1.5%);
+}
+
+.tadeon-tabletop-billboard-controls > div {
+  animation: tadeon-tabletop-panel-enter 260ms var(--ease-out) both;
+}
+
+.tadeon-tabletop-billboard-controls :is(input, select) {
+  color: var(--foreground);
+}
+
+@media (max-width: 1179px) {
+  .tadeon-tabletop-panel {
+    width: min(100%, 48rem);
+    margin-inline: auto;
+  }
+
+  .tadeon-tabletop-stage[data-tool="select"]::after {
+    bottom: 4.6rem;
+    max-width: calc(100% - 1.5rem);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
+@media (max-width: 639px) {
+  .tadeon-tabletop-stage[data-tool="select"]::after {
+    display: none;
+  }
+
+  .tadeon-tabletop-orbit-controls {
+    order: 8;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tadeon-tabletop-stage[data-tool="select"]::after,
+  .tadeon-tabletop-orbit-controls,
+  .tadeon-tabletop-billboard-controls > div {
+    animation: none !important;
   }
 }
 
@@ -1269,7 +1363,7 @@
   }
 }
 
-@media (max-width: 1023px) {
+@media (max-width: 1179px) {
   .tadeon-tabletop-studio__header {
     padding-bottom: 0.6rem;
   }
@@ -1526,7 +1620,7 @@
   }
 }
 
-@media (max-width: 1370px) and (min-width: 1024px) {
+@media (max-width: 1370px) and (min-width: 1180px) {
   .tadeon-tabletop-studio__header > .relative.z-10 {
     align-items: stretch;
   }
@@ -1541,7 +1635,7 @@
   }
 }
 
-@media (max-width: 1023px) {
+@media (max-width: 1179px) {
   .tadeon-tabletop-panel[data-collapsed="false"] {
     animation: tadeon-tabletop-mobile-drawer-in 260ms var(--ease-drawer) both;
   }

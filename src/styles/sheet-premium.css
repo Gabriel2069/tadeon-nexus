@@ -1958,3 +1958,857 @@
     backdrop-filter: none;
   }
 }
+
+/* Character-sheet refinement — balanced odd grids, authored motion and narrative tabs. */
+
+.tadeon-sheet-tabs [role="tabpanel"][data-state="active"] {
+  animation: tadeon-sheet-view-enter 320ms var(--ease-out) both;
+}
+
+.tadeon-attribute-grid {
+  display: flex !important;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1px !important;
+}
+
+.tadeon-attribute-grid .tadeon-attribute-tile {
+  width: calc(33.333% - 1px);
+  min-width: 0;
+  flex: 0 1 calc(33.333% - 1px);
+}
+
+.tadeon-attribute-tile__label,
+.tadeon-attribute-tile__controls,
+.tadeon-attribute-tile__value {
+  justify-self: center;
+}
+
+.tadeon-skill-groups-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0.65rem;
+}
+
+.tadeon-skill-group {
+  --skill-group-rgb: 79 110 93;
+  position: relative;
+  min-width: 0;
+  overflow: hidden;
+  padding: 0.65rem;
+  border: 1px solid rgb(var(--skill-group-rgb) / 12%);
+  border-radius: 0.95rem 0.32rem 0.95rem 0.32rem;
+  background:
+    radial-gradient(circle at 100% 0%, rgb(var(--skill-group-rgb) / 8%), transparent 8rem),
+    rgb(8 12 15 / 54%);
+  box-shadow: inset 0 1px rgb(255 255 255 / 2.5%);
+}
+
+.tadeon-skill-group__heading {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.2rem 0.2rem 0.55rem;
+  border-bottom: 1px solid rgb(var(--skill-group-rgb) / 10%);
+}
+
+.tadeon-skill-group__heading > span {
+  display: grid;
+  width: 2rem;
+  height: 2rem;
+  flex: 0 0 auto;
+  place-items: center;
+  border: 1px solid rgb(var(--skill-group-rgb) / 26%);
+  border-radius: 0.65rem 0.22rem 0.65rem 0.22rem;
+  color: color-mix(in srgb, rgb(var(--skill-group-rgb)) 72%, var(--foreground));
+  background: rgb(var(--skill-group-rgb) / 9%);
+  font-family: var(--font-cinzel);
+  font-size: 0.62rem;
+  font-weight: 760;
+}
+
+.tadeon-skill-group__heading small,
+.tadeon-skill-group__heading h4 {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tadeon-skill-group__heading small {
+  color: var(--muted-foreground);
+  font-family: var(--font-mono);
+  font-size: 0.48rem;
+  letter-spacing: 0.075em;
+  text-transform: uppercase;
+}
+
+.tadeon-skill-group__heading h4 {
+  margin-top: 0.05rem;
+  font-family: var(--font-cinzel);
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+.tadeon-skill-group__list {
+  display: grid;
+  gap: 0.18rem;
+  padding-top: 0.45rem;
+}
+
+.tadeon-skill-row {
+  display: grid;
+  width: 100%;
+  min-height: 2.25rem;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.38rem 0.5rem;
+  border: 1px solid transparent;
+  border-radius: 0.65rem 0.22rem 0.65rem 0.22rem;
+  color: var(--foreground);
+  text-align: left;
+  transition:
+    border-color var(--motion-fast) var(--ease-out),
+    color var(--motion-fast) var(--ease-out),
+    background-color var(--motion-fast) var(--ease-out),
+    transform var(--motion-press) var(--ease-out);
+}
+
+.tadeon-skill-row__name {
+  overflow: hidden;
+  font-size: 0.68rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tadeon-skill-row__value {
+  display: grid;
+  min-width: 1.8rem;
+  min-height: 1.5rem;
+  place-items: center;
+  border: 1px solid rgb(var(--skill-group-rgb) / 13%);
+  border-radius: 999px;
+  background: rgb(0 0 0 / 18%);
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+}
+
+.tadeon-description-hero {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  overflow: hidden;
+  padding: clamp(1rem, 2.2vw, 1.5rem);
+  border-color: rgb(217 215 164 / 17%);
+  border-radius: 1.25rem 0.44rem 1.25rem 0.44rem;
+  background:
+    radial-gradient(circle at 88% 0%, rgb(217 215 164 / 8%), transparent 15rem),
+    linear-gradient(135deg, rgb(113 107 123 / 11%), transparent 52%),
+    rgb(12 15 19 / 94%);
+}
+
+.tadeon-description-hero__mark {
+  display: grid;
+  width: 3.5rem;
+  height: 3.5rem;
+  flex: 0 0 auto;
+  place-items: center;
+  border: 1px solid rgb(217 215 164 / 22%);
+  border-radius: 1rem 0.34rem 1rem 0.34rem;
+  color: var(--primary);
+  background: rgb(217 215 164 / 7%);
+  box-shadow: inset 0 0 28px rgb(217 215 164 / 5%);
+}
+
+.tadeon-description-hero__mark svg {
+  width: 1.35rem;
+  height: 1.35rem;
+}
+
+.tadeon-description-hero h2,
+.tadeon-description-card h3,
+.tadeon-skill-ledger h2,
+.tadeon-vital-upgrades h3,
+.tadeon-skill-branch__heading h3 {
+  font-family: var(--font-cinzel);
+  font-weight: 700;
+}
+
+.tadeon-description-hero h2 {
+  margin-top: 0.15rem;
+  font-size: clamp(1.15rem, 2vw, 1.55rem);
+}
+
+.tadeon-description-hero p:not(.tadeon-eyebrow) {
+  max-width: 52rem;
+  margin-top: 0.35rem;
+  color: var(--muted-foreground);
+  font-size: 0.75rem;
+  line-height: 1.6;
+}
+
+.tadeon-description-hero__progress {
+  display: grid;
+  min-width: 7rem;
+  place-items: center;
+  padding: 0.7rem;
+  border-left: 1px solid rgb(217 215 164 / 11%);
+  text-align: center;
+}
+
+.tadeon-description-hero__progress strong {
+  font-family: var(--font-cinzel);
+  font-size: 1.35rem;
+}
+
+.tadeon-description-hero__progress small {
+  color: var(--muted-foreground);
+  font-size: 0.68rem;
+}
+
+.tadeon-description-hero__progress span {
+  color: var(--muted-foreground);
+  font-family: var(--font-mono);
+  font-size: 0.5rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.tadeon-description-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+
+.tadeon-description-card {
+  --description-index: 0;
+  position: relative;
+  overflow: hidden;
+  min-width: 0;
+  padding: 1rem;
+  border-color: rgb(113 107 123 / 16%);
+  border-radius: 1.15rem 0.4rem 1.15rem 0.4rem;
+  background:
+    radial-gradient(circle at 100% 0%, rgb(113 107 123 / 8%), transparent 12rem),
+    rgb(12 15 19 / 92%);
+  animation: tadeon-description-card-enter 360ms var(--ease-out) both;
+  animation-delay: calc(var(--description-index) * 55ms);
+  transition:
+    border-color var(--motion-fast) var(--ease-out),
+    box-shadow var(--motion-panel) var(--ease-out),
+    transform var(--motion-panel) var(--ease-out);
+}
+
+.tadeon-description-card[data-filled="true"] {
+  border-color: rgb(79 110 93 / 24%);
+  background:
+    radial-gradient(circle at 100% 0%, rgb(79 110 93 / 10%), transparent 12rem),
+    rgb(12 15 19 / 94%);
+}
+
+.tadeon-description-card__heading {
+  display: grid;
+  min-width: 0;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.tadeon-description-card__icon {
+  display: grid;
+  width: 2.35rem;
+  height: 2.35rem;
+  place-items: center;
+  border: 1px solid rgb(113 107 123 / 25%);
+  border-radius: 0.75rem 0.25rem 0.75rem 0.25rem;
+  color: color-mix(in srgb, var(--tadeon-veil) 62%, var(--foreground));
+  background: rgb(113 107 123 / 10%);
+}
+
+.tadeon-description-card__icon svg {
+  width: 1rem;
+  height: 1rem;
+}
+
+.tadeon-description-card__heading small,
+.tadeon-description-card__count {
+  color: var(--muted-foreground);
+  font-family: var(--font-mono);
+  font-size: 0.5rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.tadeon-description-card h3 {
+  margin-top: 0.05rem;
+  font-size: 0.92rem;
+}
+
+.tadeon-description-card__count {
+  white-space: nowrap;
+}
+
+.tadeon-description-card__prompt {
+  min-height: 2.5rem;
+  margin: 0.75rem 0 0.6rem;
+  color: var(--muted-foreground);
+  font-size: 0.7rem;
+  line-height: 1.55;
+}
+
+.tadeon-description-card textarea {
+  min-height: 12.5rem;
+  resize: vertical;
+  border-color: rgb(113 107 123 / 14%);
+  background: rgb(5 8 11 / 44%);
+  font-family: var(--font-inter);
+  font-size: 0.78rem;
+  line-height: 1.65;
+}
+
+.tadeon-skill-ledger,
+.tadeon-vital-upgrades {
+  padding: clamp(1rem, 2vw, 1.35rem);
+  border-color: rgb(113 107 123 / 18%);
+  border-radius: 1.2rem 0.42rem 1.2rem 0.42rem;
+  background:
+    radial-gradient(circle at 92% 0%, rgb(113 107 123 / 12%), transparent 15rem),
+    linear-gradient(135deg, rgb(217 215 164 / 4%), transparent 52%),
+    rgb(12 15 19 / 94%);
+}
+
+.tadeon-skill-ledger__heading {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+}
+
+.tadeon-skill-ledger__icon {
+  display: grid;
+  width: 3rem;
+  height: 3rem;
+  flex: 0 0 auto;
+  place-items: center;
+  border: 1px solid rgb(113 107 123 / 30%);
+  border-radius: 0.9rem 0.3rem 0.9rem 0.3rem;
+  color: color-mix(in srgb, var(--tadeon-veil) 62%, var(--foreground));
+  background: rgb(113 107 123 / 11%);
+}
+
+.tadeon-skill-ledger__icon svg {
+  width: 1.2rem;
+  height: 1.2rem;
+}
+
+.tadeon-skill-ledger h2 {
+  margin-top: 0.12rem;
+  font-size: 1.15rem;
+}
+
+.tadeon-skill-ledger__heading p:not(.tadeon-eyebrow) {
+  margin-top: 0.2rem;
+  color: var(--muted-foreground);
+  font-size: 0.68rem;
+}
+
+.tadeon-skill-ledger__rank {
+  display: grid;
+  grid-template-columns: auto auto;
+  align-items: center;
+  gap: 0.15rem 0.35rem;
+  padding-left: 1rem;
+  border-left: 1px solid rgb(113 107 123 / 17%);
+  color: var(--muted-foreground);
+  font-family: var(--font-mono);
+  font-size: 0.55rem;
+  text-transform: uppercase;
+}
+
+.tadeon-skill-ledger__rank svg {
+  width: 0.85rem;
+  height: 0.85rem;
+  color: var(--primary);
+}
+
+.tadeon-skill-ledger__rank strong {
+  grid-column: 1 / -1;
+  color: var(--foreground);
+  font-family: var(--font-cinzel);
+  font-size: 1.3rem;
+}
+
+.tadeon-skill-ledger__metrics {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1px;
+  overflow: hidden;
+  margin-top: 1rem;
+  padding: 1px;
+  border: 1px solid rgb(113 107 123 / 12%);
+  border-radius: 0.9rem 0.3rem 0.9rem 0.3rem;
+  background: rgb(113 107 123 / 10%);
+}
+
+.tadeon-skill-ledger__metrics > div {
+  display: grid;
+  min-height: 4.25rem;
+  place-items: center;
+  align-content: center;
+  background: rgb(7 10 13 / 86%);
+}
+
+.tadeon-skill-ledger__metrics span,
+.tadeon-vital-upgrade__detail,
+.tadeon-vital-upgrade__cost {
+  color: var(--muted-foreground);
+  font-size: 0.58rem;
+}
+
+.tadeon-skill-ledger__metrics strong {
+  margin-top: 0.12rem;
+  font-family: var(--font-cinzel);
+  font-size: 1.45rem;
+}
+
+.tadeon-skill-ledger__metrics [data-state="available"] strong {
+  color: color-mix(in srgb, var(--tadeon-flow) 72%, var(--foreground));
+}
+
+.tadeon-skill-ledger__metrics [data-state="overdrawn"] strong {
+  color: var(--destructive);
+}
+
+.tadeon-skill-ledger__progress {
+  height: 0.38rem;
+  margin-top: 0.75rem;
+  overflow: hidden;
+  border-radius: 999px;
+  background: rgb(0 0 0 / 32%);
+  box-shadow: inset 0 1px 3px rgb(0 0 0 / 48%);
+}
+
+.tadeon-skill-ledger__progress-value {
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--tadeon-veil), var(--primary));
+  box-shadow: 0 0 14px rgb(217 215 164 / 24%);
+  transition: width 360ms var(--ease-out);
+}
+
+.tadeon-vital-upgrades__heading {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.85rem;
+}
+
+.tadeon-vital-upgrades__heading h3 {
+  margin-top: 0.12rem;
+  font-size: 1.05rem;
+}
+
+.tadeon-vital-upgrades__heading > p {
+  max-width: 22rem;
+  color: var(--muted-foreground);
+  font-size: 0.65rem;
+  text-align: right;
+}
+
+.tadeon-vital-upgrades__grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.55rem;
+}
+
+.tadeon-vital-upgrade {
+  display: grid;
+  min-width: 0;
+  gap: 0.2rem;
+  padding: 0.75rem;
+  border: 1px solid rgb(113 107 123 / 12%);
+  border-radius: 0.85rem 0.28rem 0.85rem 0.28rem;
+  text-align: center;
+  background: rgb(5 8 11 / 38%);
+  transition:
+    border-color var(--motion-fast) var(--ease-out),
+    background-color var(--motion-fast) var(--ease-out),
+    transform var(--motion-panel) var(--ease-out);
+}
+
+.tadeon-vital-upgrade__topline {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.35rem;
+  color: var(--muted-foreground);
+  font-family: var(--font-mono);
+  font-size: 0.5rem;
+}
+
+.tadeon-vital-upgrade__label {
+  font-weight: 760;
+  letter-spacing: 0.075em;
+  text-transform: uppercase;
+}
+
+.tadeon-vital-upgrade__value {
+  margin-block: 0.2rem;
+  font-family: var(--font-cinzel);
+  font-size: 1.4rem;
+  font-weight: 750;
+}
+
+.tadeon-vital-upgrade__cost {
+  min-height: 1rem;
+}
+
+.tadeon-vital-upgrade__actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.3rem;
+  margin-top: 0.4rem;
+}
+
+.tadeon-skill-branch {
+  border-color: color-mix(in srgb, var(--branch-color) 22%, var(--border));
+  border-radius: 1.2rem 0.42rem 1.2rem 0.42rem !important;
+  background:
+    radial-gradient(circle at 100% 0%, color-mix(in srgb, var(--branch-color) 9%, transparent), transparent 15rem),
+    rgb(12 15 19 / 94%);
+  box-shadow:
+    inset 3px 0 var(--branch-color),
+    0 28px 70px -54px rgb(0 0 0 / 100%);
+}
+
+.tadeon-skill-branch__heading {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  padding: 1rem 1.15rem;
+  border-bottom: 1px solid color-mix(in srgb, var(--branch-color) 14%, var(--border));
+  background: color-mix(in srgb, var(--branch-color) 5%, transparent);
+}
+
+.tadeon-skill-branch__mark {
+  width: 0.65rem;
+  height: 2.75rem;
+  flex: 0 0 auto;
+  border-radius: 999px;
+  background: var(--branch-color);
+  box-shadow: 0 0 18px color-mix(in srgb, var(--branch-color) 36%, transparent);
+}
+
+.tadeon-skill-branch__heading h3 {
+  margin-top: 0.08rem;
+  font-size: 1rem;
+}
+
+.tadeon-skill-branch__heading p:not(.tadeon-eyebrow) {
+  margin-top: 0.18rem;
+  color: var(--muted-foreground);
+  font-size: 0.65rem;
+  line-height: 1.5;
+}
+
+.tadeon-skill-branch__progress {
+  display: grid;
+  min-width: 4rem;
+  place-items: center;
+  padding: 0.5rem;
+  border: 1px solid color-mix(in srgb, var(--branch-color) 18%, var(--border));
+  border-radius: 0.75rem 0.25rem 0.75rem 0.25rem;
+  background: rgb(0 0 0 / 18%);
+}
+
+.tadeon-skill-branch__progress strong {
+  font-family: var(--font-cinzel);
+  font-size: 1rem;
+}
+
+.tadeon-skill-branch__progress span {
+  color: var(--muted-foreground);
+  font-family: var(--font-mono);
+  font-size: 0.48rem;
+}
+
+.tadeon-skill-tier__trigger {
+  display: flex;
+  width: 100%;
+  min-height: 2.65rem;
+  align-items: center;
+  gap: 0.7rem;
+  margin-bottom: 0.5rem;
+  padding: 0.35rem 0.5rem;
+  border: 1px solid transparent;
+  border-radius: 0.75rem 0.25rem 0.75rem 0.25rem;
+  text-align: left;
+  transition:
+    border-color var(--motion-fast) var(--ease-out),
+    background-color var(--motion-fast) var(--ease-out),
+    transform var(--motion-press) var(--ease-out);
+}
+
+.tadeon-skill-tier__trigger > svg {
+  transition: transform var(--motion-panel) var(--ease-out);
+}
+
+.tadeon-skill-tier__content {
+  overflow: hidden;
+}
+
+.tadeon-skill-tier__content[data-state="open"] {
+  animation: tadeon-sheet-collapse-down 300ms var(--ease-out);
+}
+
+.tadeon-skill-tier__content[data-state="closed"] {
+  animation: tadeon-sheet-collapse-up 230ms var(--ease-out);
+}
+
+.tadeon-skill-tier__content-inner {
+  padding: 0.1rem 0.1rem 0.65rem;
+}
+
+.tadeon-skill-node {
+  animation: tadeon-skill-node-enter 320ms var(--ease-out) both;
+  animation-delay: calc(var(--skill-index) * 42ms);
+}
+
+.tadeon-skill-node[data-state="purchased"] {
+  box-shadow:
+    0 18px 44px -36px var(--primary),
+    inset 0 1px rgb(255 255 255 / 5%);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .tadeon-skill-row:not(:disabled):hover {
+    border-color: rgb(var(--skill-group-rgb) / 17%);
+    background: rgb(var(--skill-group-rgb) / 7%);
+    transform: translateX(2px);
+  }
+
+  .tadeon-description-card:hover,
+  .tadeon-vital-upgrade:hover {
+    border-color: rgb(217 215 164 / 24%);
+    box-shadow:
+      0 28px 68px -52px rgb(0 0 0 / 100%),
+      inset 0 1px rgb(255 255 255 / 4%);
+    transform: translateY(-2px);
+  }
+
+  .tadeon-description-card:hover .tadeon-description-card__icon,
+  .tadeon-skill-tier__trigger:hover > svg {
+    transform: translateY(-1px) scale(1.06);
+  }
+
+  .tadeon-skill-tier__trigger:hover {
+    border-color: color-mix(in srgb, var(--branch-color) 15%, var(--border));
+    background: color-mix(in srgb, var(--branch-color) 5%, transparent);
+  }
+}
+
+@media (min-width: 640px) and (max-width: 1023px) {
+  .tadeon-skill-groups-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .tadeon-skill-group {
+    grid-column: span 2;
+  }
+
+  .tadeon-skill-group:last-child:nth-child(odd) {
+    grid-column: 2 / span 2;
+  }
+}
+
+@media (min-width: 1024px) and (max-width: 1279px) {
+  .tadeon-skill-groups-grid {
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+  }
+
+  .tadeon-skill-group {
+    grid-column: span 4;
+  }
+
+  .tadeon-skill-group:nth-last-child(2):nth-child(3n + 1) {
+    grid-column: 3 / span 4;
+  }
+
+  .tadeon-skill-group:last-child:nth-child(3n + 2) {
+    grid-column: 7 / span 4;
+  }
+}
+
+@media (min-width: 1280px) {
+  .tadeon-skill-groups-grid {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1179px) {
+  .tadeon-sheet-overview {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .tadeon-sheet-core-grid,
+  .tadeon-sheet-state-grid {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  .tadeon-equilibrium-panel .tadeon-sheet-section__heading {
+    align-items: flex-start;
+  }
+
+  .tadeon-equilibrium-panel .tadeon-sheet-section__actions {
+    width: 100%;
+    justify-content: space-between;
+    padding-left: 2.7rem;
+  }
+}
+
+@media (max-width: 767px) {
+  .tadeon-attribute-grid .tadeon-attribute-tile {
+    width: calc(33.333% - 1px);
+    flex-basis: calc(33.333% - 1px);
+  }
+
+  .tadeon-description-hero {
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .tadeon-description-hero__progress {
+    width: 100%;
+    grid-template-columns: auto 1fr;
+    justify-items: start;
+    border-top: 1px solid rgb(217 215 164 / 11%);
+    border-left: 0;
+    text-align: left;
+  }
+
+  .tadeon-description-grid,
+  .tadeon-vital-upgrades__grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .tadeon-vital-upgrades__heading {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .tadeon-vital-upgrades__heading > p {
+    text-align: left;
+  }
+
+  .tadeon-vital-upgrade {
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    text-align: left;
+  }
+
+  .tadeon-vital-upgrade__topline,
+  .tadeon-vital-upgrade__actions {
+    grid-column: 1 / -1;
+  }
+
+  .tadeon-vital-upgrade__value {
+    grid-row: 2 / 4;
+    grid-column: 2;
+  }
+
+  .tadeon-skill-branch__heading {
+    align-items: flex-start;
+  }
+}
+
+@media (max-width: 389px) {
+  .tadeon-attribute-grid .tadeon-attribute-tile {
+    width: calc(50% - 1px);
+    flex-basis: calc(50% - 1px);
+  }
+
+  .tadeon-attribute-grid .tadeon-attribute-tile:last-child:nth-child(odd) {
+    margin-inline: calc(25% + 0.5px);
+  }
+
+  .tadeon-skill-ledger__heading {
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .tadeon-skill-ledger__rank {
+    width: 100%;
+    grid-template-columns: auto auto 1fr;
+    padding-top: 0.55rem;
+    padding-left: 0;
+    border-top: 1px solid rgb(113 107 123 / 17%);
+    border-left: 0;
+  }
+
+  .tadeon-skill-ledger__rank strong {
+    grid-row: 1;
+    grid-column: 3;
+    justify-self: end;
+  }
+
+  .tadeon-skill-ledger__metrics strong {
+    font-size: 1.1rem;
+  }
+}
+
+@keyframes tadeon-sheet-view-enter {
+  from {
+    opacity: 0;
+    transform: translateY(0.45rem);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes tadeon-description-card-enter {
+  from {
+    opacity: 0;
+    transform: translateY(0.55rem) scale(0.99);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes tadeon-skill-node-enter {
+  from {
+    opacity: 0;
+    transform: translateY(0.55rem) scale(0.99);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tadeon-sheet-tabs [role="tabpanel"][data-state="active"],
+  .tadeon-description-card,
+  .tadeon-skill-node,
+  .tadeon-skill-tier__content,
+  .tadeon-skill-ledger__progress-value {
+    animation: none;
+    transition: none;
+  }
+
+  .tadeon-description-card,
+  .tadeon-vital-upgrade,
+  .tadeon-skill-row,
+  .tadeon-skill-tier__trigger,
+  .tadeon-description-card__icon {
+    transform: none !important;
+  }
+}

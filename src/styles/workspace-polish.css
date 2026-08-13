@@ -703,6 +703,1368 @@
   }
 }
 
+/* Nexus workspace v3: a library first, implementation details second ------ */
+
+.tadeon-nexus-commandbar,
+.tadeon-route-nexus .tadeon-nexus-index,
+.tadeon-route-nexus .tadeon-nexus-document,
+.tadeon-route-nexus .tadeon-nexus-context {
+  color: var(--foreground);
+  background:
+    radial-gradient(circle at 100% 0%, color-mix(in srgb, var(--primary) 7%, transparent), transparent 18rem),
+    color-mix(in srgb, var(--card) 96%, var(--background));
+}
+
+.tadeon-nexus-commandbar {
+  position: relative;
+  overflow: hidden;
+  border-color: color-mix(in srgb, var(--primary) 20%, var(--border));
+  box-shadow:
+    0 28px 70px -58px color-mix(in srgb, var(--primary) 70%, transparent),
+    inset 0 1px color-mix(in srgb, var(--foreground) 6%, transparent);
+}
+
+.tadeon-nexus-commandbar::after {
+  position: absolute;
+  top: -5rem;
+  left: 22%;
+  width: 11rem;
+  height: 11rem;
+  border: 1px solid color-mix(in srgb, var(--primary) 10%, transparent);
+  border-radius: 50%;
+  box-shadow:
+    0 0 0 2.5rem color-mix(in srgb, var(--primary) 2.5%, transparent),
+    0 0 0 5rem color-mix(in srgb, var(--primary) 1.5%, transparent);
+  pointer-events: none;
+  content: "";
+}
+
+.tadeon-nexus-commandbar > * {
+  position: relative;
+  z-index: 1;
+}
+
+.tadeon-nexus-identity {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 0.9rem;
+}
+
+.tadeon-nexus-identity__mark,
+.tadeon-nexus-home__sigil {
+  display: grid;
+  width: 3rem;
+  height: 3rem;
+  flex: 0 0 auto;
+  place-items: center;
+  border: 1px solid color-mix(in srgb, var(--primary) 24%, var(--border));
+  border-radius: 1rem 0.32rem 1rem 0.32rem;
+  color: var(--primary);
+  background:
+    linear-gradient(145deg, color-mix(in srgb, var(--primary) 12%, var(--card)), var(--card));
+  box-shadow:
+    0 18px 34px -28px color-mix(in srgb, var(--primary) 78%, transparent),
+    inset 0 1px color-mix(in srgb, var(--foreground) 7%, transparent);
+}
+
+.tadeon-nexus-identity__mark svg,
+.tadeon-nexus-home__sigil svg {
+  width: 1.2rem;
+  height: 1.2rem;
+  transition: transform 320ms var(--ease-spring), filter 220ms var(--ease-out);
+}
+
+.tadeon-nexus-identity__summary {
+  max-width: 35rem;
+  margin-top: 0.3rem;
+  color: var(--muted-foreground);
+  font-size: 0.72rem;
+  line-height: 1.45;
+}
+
+.tadeon-nexus-actions [data-slot="select-trigger"],
+.tadeon-nexus-filters [data-slot="select-trigger"],
+.tadeon-nexus-context [data-slot="select-trigger"] {
+  color: var(--foreground);
+  background: color-mix(in srgb, var(--background) 54%, var(--card));
+}
+
+.tadeon-nexus-shell {
+  grid-template-columns: minmax(0, 1fr);
+  align-items: start;
+}
+
+.tadeon-route-nexus .tadeon-nexus-index,
+.tadeon-route-nexus .tadeon-nexus-document,
+.tadeon-route-nexus .tadeon-nexus-context {
+  border-color: color-mix(in srgb, var(--primary) 15%, var(--border));
+  border-radius: 1.25rem 0.42rem 1.25rem 0.42rem;
+  box-shadow:
+    0 28px 72px -58px color-mix(in srgb, var(--foreground) 55%, transparent),
+    inset 0 1px color-mix(in srgb, var(--foreground) 5%, transparent);
+  animation: tadeon-nexus-surface-enter 480ms var(--ease-out) both;
+}
+
+.tadeon-route-nexus .tadeon-nexus-document {
+  animation-delay: 55ms;
+}
+
+.tadeon-route-nexus .tadeon-nexus-context {
+  animation-delay: 110ms;
+}
+
+@keyframes tadeon-nexus-surface-enter {
+  from {
+    opacity: 0;
+    transform: translateY(9px);
+  }
+}
+
+.tadeon-nexus-index > .relative input {
+  height: 2.7rem;
+  border-color: color-mix(in srgb, var(--primary) 16%, var(--border));
+  color: var(--foreground);
+  background: color-mix(in srgb, var(--background) 62%, var(--card));
+}
+
+.tadeon-nexus-filters {
+  border: 1px solid color-mix(in srgb, var(--border) 78%, transparent);
+  border-radius: 0.82rem 0.28rem 0.82rem 0.28rem;
+  background: color-mix(in srgb, var(--secondary) 22%, var(--card));
+  transition: border-color 180ms var(--ease-out), background-color 180ms var(--ease-out);
+}
+
+.tadeon-nexus-filters[open] {
+  border-color: color-mix(in srgb, var(--primary) 24%, var(--border));
+  background: color-mix(in srgb, var(--primary) 4%, var(--card));
+}
+
+.tadeon-nexus-filters > summary {
+  display: flex;
+  min-height: 2.65rem;
+  cursor: pointer;
+  list-style: none;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.7rem;
+  padding: 0.65rem 0.75rem;
+  color: var(--foreground);
+  font-size: 0.7rem;
+  font-weight: 650;
+}
+
+.tadeon-nexus-filters > summary::-webkit-details-marker,
+.tadeon-nexus-editor-more > summary::-webkit-details-marker {
+  display: none;
+}
+
+.tadeon-nexus-filters > summary > span:first-child {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.tadeon-nexus-filters > summary svg {
+  width: 0.9rem;
+  height: 0.9rem;
+  color: var(--primary);
+  transition: transform 240ms var(--ease-spring);
+}
+
+.tadeon-nexus-filters[open] > summary svg {
+  transform: rotate(90deg);
+}
+
+.tadeon-nexus-filters > summary > span:last-child {
+  color: var(--muted-foreground);
+  font-size: 0.6rem;
+  font-weight: 500;
+}
+
+.tadeon-nexus-filters__body {
+  padding: 0 0.65rem 0.65rem;
+  animation: tadeon-filter-reveal 260ms var(--ease-out) both;
+}
+
+@keyframes tadeon-filter-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+}
+
+.tadeon-nexus-index__node {
+  min-height: 3.4rem;
+  color: var(--foreground);
+}
+
+.tadeon-nexus-index__node.is-active {
+  border-color: color-mix(in srgb, var(--primary) 28%, var(--border));
+  color: var(--foreground);
+  background:
+    linear-gradient(90deg, color-mix(in srgb, var(--primary) 12%, var(--card)), transparent),
+    var(--card);
+  box-shadow:
+    inset 2px 0 var(--primary),
+    0 12px 28px -26px color-mix(in srgb, var(--primary) 82%, transparent);
+}
+
+.tadeon-nexus-document__tab {
+  color: var(--foreground);
+  background: color-mix(in srgb, var(--card) 92%, var(--primary) 8%);
+  transition:
+    border-color 180ms var(--ease-out),
+    color 180ms var(--ease-out),
+    background-color 180ms var(--ease-out),
+    transform 180ms var(--ease-out);
+}
+
+.tadeon-nexus-document article,
+.tadeon-nexus-document article :is(h1, h2, h3, h4, p, li) {
+  color: var(--foreground);
+}
+
+.tadeon-nexus-document article .text-muted-foreground {
+  color: var(--muted-foreground);
+}
+
+.tadeon-nexus-editor-toolbar {
+  align-items: center;
+  border-color: color-mix(in srgb, var(--primary) 14%, var(--border));
+  background: color-mix(in srgb, var(--secondary) 24%, var(--card));
+}
+
+.tadeon-nexus-editor-toolbar [data-slot="button"] {
+  min-height: 2.25rem;
+  color: var(--foreground);
+  transition: color 150ms var(--ease-out), background-color 150ms var(--ease-out), transform 150ms var(--ease-out);
+}
+
+.tadeon-nexus-editor-more {
+  position: relative;
+}
+
+.tadeon-nexus-editor-more > summary {
+  min-height: 2.25rem;
+  cursor: pointer;
+  list-style: none;
+  padding: 0.55rem 0.75rem;
+  border-radius: var(--radius-sm);
+  color: var(--muted-foreground);
+  font-size: 0.75rem;
+}
+
+.tadeon-nexus-editor-more[open] > [data-slot="button"] {
+  animation: tadeon-filter-reveal 180ms var(--ease-out) both;
+}
+
+.tadeon-nexus-editor {
+  color: var(--foreground);
+  font-family: var(--font-inter);
+  font-size: 0.94rem;
+  line-height: 1.8;
+  caret-color: var(--primary);
+}
+
+.tadeon-nexus-home {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background:
+    radial-gradient(circle at 12% 16%, color-mix(in srgb, var(--primary) 9%, transparent), transparent 19rem),
+    linear-gradient(145deg, transparent, color-mix(in srgb, var(--secondary) 18%, transparent));
+}
+
+.tadeon-nexus-home__intro {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.tadeon-nexus-home__sigil {
+  width: 3.5rem;
+  height: 3.5rem;
+}
+
+.tadeon-nexus-home__actions {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.65rem;
+  margin-top: 1.7rem;
+}
+
+.tadeon-nexus-home__actions > button {
+  display: grid;
+  min-height: 6.25rem;
+  grid-template-columns: 2rem minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.7rem;
+  padding: 0.85rem;
+  border: 1px solid color-mix(in srgb, var(--primary) 14%, var(--border));
+  border-radius: 1rem 0.34rem 1rem 0.34rem;
+  color: var(--foreground);
+  background: color-mix(in srgb, var(--card) 94%, var(--primary) 6%);
+  text-align: left;
+  transition: border-color 200ms var(--ease-out), transform 200ms var(--ease-out), box-shadow 200ms var(--ease-out);
+}
+
+.tadeon-nexus-home__actions > button > svg:first-child {
+  width: 1.2rem;
+  height: 1.2rem;
+  color: var(--primary);
+  transition: transform 260ms var(--ease-spring);
+}
+
+.tadeon-nexus-home__actions > button > svg:last-child {
+  width: 0.9rem;
+  height: 0.9rem;
+  color: var(--muted-foreground);
+  transition: transform 200ms var(--ease-out), color 200ms var(--ease-out);
+}
+
+.tadeon-nexus-home__actions strong,
+.tadeon-nexus-home__actions small {
+  display: block;
+}
+
+.tadeon-nexus-home__actions strong {
+  font-family: var(--font-cinzel);
+  font-size: 0.75rem;
+}
+
+.tadeon-nexus-home__actions small {
+  margin-top: 0.25rem;
+  color: var(--muted-foreground);
+  font-size: 0.65rem;
+  line-height: 1.35;
+}
+
+.tadeon-nexus-home__shelves {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+  margin-top: 0.8rem;
+}
+
+.tadeon-nexus-home__shelves > section {
+  min-width: 0;
+  padding: 0.8rem;
+  border: 1px solid color-mix(in srgb, var(--border) 72%, transparent);
+  border-radius: 0.9rem 0.3rem 0.9rem 0.3rem;
+  background: color-mix(in srgb, var(--secondary) 20%, var(--card));
+}
+
+.tadeon-nexus-home__shelves > section > p {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  color: var(--foreground);
+  font-size: 0.7rem;
+  font-weight: 650;
+}
+
+.tadeon-nexus-home__shelves > section > p svg {
+  width: 0.85rem;
+  height: 0.85rem;
+  color: var(--primary);
+}
+
+.tadeon-nexus-home__shelves > section > div {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.4rem;
+  margin-top: 0.65rem;
+}
+
+.tadeon-nexus-home__shelves button {
+  min-width: 0;
+  padding: 0.55rem;
+  border-radius: 0.55rem;
+  color: var(--foreground);
+  background: color-mix(in srgb, var(--background) 38%, transparent);
+  text-align: left;
+  transition: background-color 160ms var(--ease-out), transform 160ms var(--ease-out);
+}
+
+.tadeon-nexus-home__shelves button span,
+.tadeon-nexus-home__shelves button strong {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tadeon-nexus-home__shelves button span {
+  color: var(--primary);
+  font-size: 0.55rem;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+.tadeon-nexus-home__shelves button strong {
+  margin-top: 0.15rem;
+  font-size: 0.68rem;
+}
+
+.tadeon-nexus-home__shelves section small {
+  grid-column: 1 / -1;
+  color: var(--muted-foreground);
+  font-size: 0.67rem;
+}
+
+.tadeon-nexus-context-tabs {
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  border: 1px solid color-mix(in srgb, var(--border) 65%, transparent);
+  background: color-mix(in srgb, var(--secondary) 25%, var(--card));
+}
+
+.tadeon-nexus-context-tabs button {
+  min-height: 2.35rem;
+  color: var(--muted-foreground);
+  font-size: 0.65rem;
+  transition: color 160ms var(--ease-out), background-color 160ms var(--ease-out), transform 160ms var(--ease-out);
+}
+
+.tadeon-nexus-context-tabs button[class*="bg-card"] {
+  color: var(--primary);
+  background: var(--card);
+  box-shadow: 0 8px 20px -18px color-mix(in srgb, var(--primary) 85%, transparent);
+}
+
+.tadeon-nexus-context-tabs svg {
+  width: 0.85rem;
+  height: 0.85rem;
+}
+
+.tadeon-nexus-technical summary,
+.tadeon-nexus-relation-advanced summary {
+  cursor: pointer;
+  color: var(--foreground);
+  font-weight: 650;
+}
+
+.tadeon-nexus-technical p {
+  overflow-wrap: anywhere;
+  margin-top: 0.35rem;
+  padding: 0.4rem;
+  border-radius: 0.4rem;
+  background: color-mix(in srgb, var(--secondary) 28%, transparent);
+  font-family: var(--font-mono);
+}
+
+.tadeon-nexus-relation-advanced[open] > *:not(summary) {
+  animation: tadeon-filter-reveal 220ms var(--ease-out) both;
+}
+
+@media (hover: hover) {
+  .tadeon-nexus-commandbar:hover .tadeon-nexus-identity__mark svg,
+  .tadeon-nexus-home:hover .tadeon-nexus-home__sigil svg {
+    filter: drop-shadow(0 0 8px color-mix(in srgb, var(--primary) 42%, transparent));
+    transform: rotate(-5deg) scale(1.08);
+  }
+
+  .tadeon-nexus-document__tab:hover {
+    transform: translateY(-2px);
+  }
+
+  .tadeon-nexus-editor-toolbar [data-slot="button"]:hover,
+  .tadeon-nexus-context-tabs button:hover {
+    color: var(--primary);
+    transform: translateY(-1px);
+  }
+
+  .tadeon-nexus-home__actions > button:hover {
+    border-color: color-mix(in srgb, var(--primary) 38%, var(--border));
+    box-shadow: 0 18px 42px -34px color-mix(in srgb, var(--primary) 84%, transparent);
+    transform: translateY(-3px);
+  }
+
+  .tadeon-nexus-home__actions > button:hover > svg:first-child {
+    transform: rotate(-5deg) scale(1.12);
+  }
+
+  .tadeon-nexus-home__actions > button:hover > svg:last-child {
+    color: var(--primary);
+    transform: translateX(3px);
+  }
+
+  .tadeon-nexus-home__shelves button:hover {
+    background: color-mix(in srgb, var(--primary) 7%, var(--card));
+    transform: translateX(2px);
+  }
+}
+
+@media (min-width: 1180px) {
+  .tadeon-nexus-shell {
+    grid-template-columns: 17rem minmax(0, 1fr);
+  }
+
+  .tadeon-nexus-context {
+    grid-column: 1 / -1;
+  }
+
+  .tadeon-nexus-context-tabs {
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  }
+}
+
+@media (min-width: 1500px) {
+  .tadeon-nexus-shell {
+    grid-template-columns: 17rem minmax(0, 1fr) 20rem;
+  }
+
+  .tadeon-nexus-context {
+    grid-column: auto;
+  }
+
+  .tadeon-nexus-context-tabs {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+}
+
+@media (max-width: 1179px) {
+  .tadeon-nexus-actions {
+    width: 100%;
+  }
+
+  .tadeon-nexus-shell .tadeon-nexus-index,
+  .tadeon-nexus-shell .tadeon-nexus-document,
+  .tadeon-nexus-shell .tadeon-nexus-context {
+    grid-column: 1;
+  }
+}
+
+@media (max-width: 767px) {
+  .tadeon-nexus-identity {
+    align-items: flex-start;
+  }
+
+  .tadeon-nexus-identity__mark {
+    width: 2.65rem;
+    height: 2.65rem;
+  }
+
+  .tadeon-nexus-identity__summary {
+    display: none;
+  }
+
+  .tadeon-nexus-home__intro {
+    align-items: flex-start;
+  }
+
+  .tadeon-nexus-home__actions,
+  .tadeon-nexus-home__shelves {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .tadeon-nexus-home__actions > button {
+    min-height: 5.25rem;
+  }
+
+  .tadeon-nexus-home__shelves > section > div {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .tadeon-nexus-context-tabs span {
+    display: inline;
+  }
+}
+
+@media (max-width: 419px) {
+  .tadeon-nexus-home {
+    padding-inline: 1rem;
+  }
+
+  .tadeon-nexus-home__sigil {
+    width: 2.75rem;
+    height: 2.75rem;
+  }
+
+  .tadeon-nexus-filters__body > .grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .tadeon-nexus-filters__body [class*="col-span-2"] {
+    grid-column: auto;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tadeon-route-nexus .tadeon-nexus-index,
+  .tadeon-route-nexus .tadeon-nexus-document,
+  .tadeon-route-nexus .tadeon-nexus-context,
+  .tadeon-nexus-filters__body,
+  .tadeon-nexus-home__actions > button,
+  .tadeon-nexus-home__shelves button {
+    animation: none !important;
+    transform: none !important;
+  }
+}
+
+/* Master workspace v3: parity, readable density and deliberate motion ------- */
+
+.tadeon-master-workspace [data-slot="tabs-content"][data-state="active"] {
+  animation: tadeon-master-panel-enter 420ms var(--ease-out) both;
+}
+
+@keyframes tadeon-master-panel-enter {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.997);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.tadeon-encounter-workspace {
+  --encounter-accent: var(--primary);
+}
+
+.tadeon-encounter-summary,
+.tadeon-encounter-party,
+.tadeon-encounter-threats,
+.tadeon-encounter-context,
+.tadeon-master-notes__hero,
+.tadeon-master-note-card,
+.tadeon-master-data__hero,
+.tadeon-master-data__section {
+  position: relative;
+  overflow: hidden;
+  border-color: color-mix(in srgb, var(--primary) 18%, var(--border));
+  background:
+    radial-gradient(circle at 100% 0%, color-mix(in srgb, var(--primary) 8%, transparent), transparent 15rem),
+    linear-gradient(145deg, color-mix(in srgb, var(--card) 96%, var(--primary) 4%), var(--card));
+  box-shadow:
+    0 22px 48px -42px color-mix(in srgb, var(--foreground) 42%, transparent),
+    inset 0 1px color-mix(in srgb, var(--foreground) 6%, transparent);
+}
+
+.tadeon-encounter-summary {
+  display: grid;
+  grid-template-columns: minmax(14rem, 0.72fr) minmax(0, 1.28fr);
+  gap: 0;
+  padding: 0;
+}
+
+.tadeon-encounter-summary__reading {
+  display: flex;
+  min-height: 9rem;
+  flex-direction: column;
+  justify-content: center;
+  padding: 1.25rem;
+  border-right: 1px solid color-mix(in srgb, var(--primary) 18%, var(--border));
+  background: linear-gradient(130deg, color-mix(in srgb, var(--primary) 13%, var(--card)), transparent);
+}
+
+.tadeon-encounter-summary__reading::before {
+  width: 2.4rem;
+  height: 2px;
+  margin-bottom: 0.8rem;
+  background: var(--primary);
+  box-shadow: 0 0 12px color-mix(in srgb, var(--primary) 55%, transparent);
+  content: "";
+  transition: width 320ms var(--ease-out);
+}
+
+.tadeon-encounter-summary:hover .tadeon-encounter-summary__reading::before {
+  width: 4.25rem;
+}
+
+.tadeon-encounter-summary__reading > span,
+.tadeon-encounter-summary__reading > small,
+.tadeon-encounter-summary__metrics span,
+.tadeon-encounter-total small {
+  color: var(--muted-foreground);
+  font-size: 0.65rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.tadeon-encounter-summary__reading strong {
+  margin-block: 0.2rem;
+  color: var(--foreground);
+  font-family: var(--font-cinzel);
+  font-size: clamp(1.3rem, 2vw, 1.85rem);
+}
+
+.tadeon-encounter-summary__metrics {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  align-items: stretch;
+  padding: 1rem;
+}
+
+.tadeon-encounter-summary__metrics > div {
+  display: flex;
+  min-height: 6rem;
+  flex-direction: column-reverse;
+  justify-content: center;
+  padding: 0.75rem;
+  border-right: 1px solid color-mix(in srgb, var(--border) 68%, transparent);
+  text-align: center;
+}
+
+.tadeon-encounter-summary__metrics > div:last-child {
+  border-right: 0;
+}
+
+.tadeon-encounter-summary__metrics strong {
+  color: var(--foreground);
+  font-family: var(--font-cinzel);
+  font-size: 1.55rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.tadeon-encounter-composer {
+  display: grid;
+  grid-template-columns: minmax(0, 1.08fr) minmax(19rem, 0.92fr);
+  gap: 1rem;
+  align-items: start;
+}
+
+.tadeon-encounter-party,
+.tadeon-encounter-threats {
+  padding: 1rem;
+}
+
+.tadeon-encounter-card-heading,
+.tadeon-encounter-source__heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.tadeon-encounter-card-heading h3 {
+  margin-top: 0.15rem;
+  color: var(--foreground);
+  font-family: var(--font-cinzel);
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+.tadeon-encounter-card-heading > span {
+  display: grid;
+  width: 2.25rem;
+  height: 2.25rem;
+  flex: 0 0 auto;
+  place-items: center;
+  border: 1px solid color-mix(in srgb, var(--primary) 26%, var(--border));
+  border-radius: 0.72rem 0.24rem 0.72rem 0.24rem;
+  color: var(--primary);
+  background: color-mix(in srgb, var(--primary) 9%, var(--card));
+  font-family: var(--font-cinzel);
+  font-weight: 700;
+}
+
+.tadeon-encounter-source {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid color-mix(in srgb, var(--border) 72%, transparent);
+}
+
+.tadeon-encounter-source__heading strong,
+.tadeon-encounter-source__heading small {
+  display: block;
+}
+
+.tadeon-encounter-source__heading strong {
+  color: var(--foreground);
+  font-size: 0.82rem;
+}
+
+.tadeon-encounter-source__heading small {
+  margin-top: 0.1rem;
+  color: var(--muted-foreground);
+  font-size: 0.68rem;
+}
+
+.tadeon-encounter-source__heading button {
+  min-height: 2rem;
+  padding-inline: 0.7rem;
+  border-radius: 999px;
+  color: var(--primary);
+  font-size: 0.68rem;
+  transition: background-color 160ms var(--ease-out), transform 160ms var(--ease-out);
+}
+
+.tadeon-encounter-roster {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.55rem;
+  margin-top: 0.7rem;
+}
+
+.tadeon-encounter-member,
+.tadeon-encounter-npc,
+.tadeon-encounter-threat {
+  border: 1px solid color-mix(in srgb, var(--border) 86%, transparent);
+  border-radius: 0.8rem 0.28rem 0.8rem 0.28rem;
+  color: var(--foreground);
+  background: color-mix(in srgb, var(--secondary) 28%, var(--card));
+  transition:
+    border-color 180ms var(--ease-out),
+    background-color 180ms var(--ease-out),
+    transform 180ms var(--ease-out),
+    box-shadow 180ms var(--ease-out);
+}
+
+.tadeon-encounter-member {
+  display: flex;
+  min-height: 3.45rem;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.65rem;
+  text-align: left;
+}
+
+.tadeon-encounter-member[aria-pressed="true"],
+.tadeon-encounter-npc[data-active="true"],
+.tadeon-encounter-threat[data-active="true"] {
+  border-color: color-mix(in srgb, var(--primary) 46%, var(--border));
+  background: color-mix(in srgb, var(--primary) 9%, var(--card));
+  box-shadow: 0 12px 28px -24px color-mix(in srgb, var(--primary) 85%, transparent);
+}
+
+.tadeon-encounter-member__check {
+  display: grid;
+  width: 1.3rem;
+  height: 1.3rem;
+  flex: 0 0 auto;
+  place-items: center;
+  border: 1px solid color-mix(in srgb, var(--primary) 28%, var(--border));
+  border-radius: 50%;
+  color: var(--primary-foreground);
+  background: color-mix(in srgb, var(--primary) 8%, var(--card));
+}
+
+[aria-pressed="true"] > .tadeon-encounter-member__check,
+.tadeon-encounter-npc[data-active="true"] .tadeon-encounter-member__check {
+  background: var(--primary);
+  animation: tadeon-check-pop 280ms var(--ease-spring) both;
+}
+
+.tadeon-encounter-member__check svg {
+  width: 0.75rem;
+  height: 0.75rem;
+  stroke-width: 3;
+}
+
+.tadeon-encounter-member strong,
+.tadeon-encounter-member small,
+.tadeon-encounter-npc strong,
+.tadeon-encounter-npc small {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tadeon-encounter-member strong,
+.tadeon-encounter-npc strong {
+  font-size: 0.75rem;
+}
+
+.tadeon-encounter-member small,
+.tadeon-encounter-npc small {
+  margin-top: 0.08rem;
+  color: var(--muted-foreground);
+  font-size: 0.66rem;
+}
+
+.tadeon-encounter-npc > button {
+  display: flex;
+  width: 100%;
+  min-height: 3.45rem;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.65rem;
+  text-align: left;
+}
+
+.tadeon-encounter-npc > label {
+  display: grid;
+  grid-template-columns: 1fr 5rem;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0 0.65rem 0.65rem;
+  color: var(--muted-foreground);
+  font-size: 0.68rem;
+  animation: tadeon-master-panel-enter 260ms var(--ease-out) both;
+}
+
+.tadeon-encounter-npc > label input {
+  height: 2rem;
+}
+
+.tadeon-encounter-manual__fields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.65rem;
+  margin-top: 0.7rem;
+}
+
+.tadeon-encounter-manual__fields label > span {
+  display: block;
+  margin-bottom: 0.3rem;
+  color: var(--muted-foreground);
+  font-size: 0.68rem;
+}
+
+.tadeon-encounter-warning {
+  margin-top: 0.8rem;
+  padding: 0.7rem 0.8rem;
+  border: 1px solid color-mix(in srgb, var(--destructive) 36%, var(--border));
+  border-radius: 0.65rem;
+  color: color-mix(in srgb, var(--destructive) 72%, var(--foreground));
+  background: color-mix(in srgb, var(--destructive) 7%, var(--card));
+  font-size: 0.72rem;
+}
+
+.tadeon-encounter-threat-list {
+  display: grid;
+  gap: 0.55rem;
+  margin-top: 1rem;
+}
+
+.tadeon-encounter-threat {
+  display: flex;
+  min-height: 4rem;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.65rem 0.7rem;
+}
+
+.tadeon-encounter-threat strong,
+.tadeon-encounter-threat span {
+  display: block;
+}
+
+.tadeon-encounter-threat strong {
+  font-size: 0.78rem;
+}
+
+.tadeon-encounter-threat span {
+  margin-top: 0.1rem;
+  color: var(--muted-foreground);
+  font-size: 0.66rem;
+}
+
+.tadeon-encounter-threat__quantity {
+  display: grid;
+  flex: 0 0 auto;
+  grid-template-columns: 2rem 2rem 2rem;
+  align-items: center;
+  border: 1px solid color-mix(in srgb, var(--border) 82%, transparent);
+  border-radius: 0.65rem;
+  background: color-mix(in srgb, var(--background) 58%, transparent);
+}
+
+.tadeon-encounter-threat__quantity [data-slot="button"] {
+  width: 2rem;
+  height: 2rem;
+}
+
+.tadeon-encounter-threat__quantity svg {
+  width: 0.8rem;
+  height: 0.8rem;
+}
+
+.tadeon-encounter-threat__quantity output {
+  color: var(--foreground);
+  text-align: center;
+  font-family: var(--font-cinzel);
+  font-size: 0.8rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.tadeon-encounter-total {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.6rem;
+  margin-top: 1rem;
+}
+
+.tadeon-encounter-total > span {
+  padding: 0.8rem;
+  border: 1px solid color-mix(in srgb, var(--primary) 14%, var(--border));
+  border-radius: 0.75rem 0.25rem 0.75rem 0.25rem;
+  background: color-mix(in srgb, var(--primary) 5%, var(--card));
+}
+
+.tadeon-encounter-total strong {
+  display: block;
+  margin-top: 0.15rem;
+  color: var(--foreground);
+  font-family: var(--font-cinzel);
+  font-size: 1.2rem;
+}
+
+.tadeon-encounter-adjustment,
+.tadeon-encounter-formula,
+.tadeon-encounter-empty {
+  margin-top: 0.7rem;
+  color: var(--muted-foreground);
+  font-size: 0.68rem;
+}
+
+.tadeon-encounter-formula {
+  padding: 0.65rem 0.75rem;
+  border: 1px solid color-mix(in srgb, var(--border) 72%, transparent);
+  border-radius: 0.65rem;
+}
+
+.tadeon-encounter-formula summary {
+  cursor: pointer;
+  color: var(--foreground);
+  font-weight: 650;
+}
+
+.tadeon-encounter-formula p {
+  margin-top: 0.55rem;
+  line-height: 1.6;
+}
+
+.tadeon-master-notes__hero::before,
+.tadeon-master-data__hero::before {
+  position: absolute;
+  inset-block: 1rem;
+  left: 0;
+  width: 2px;
+  border-radius: 999px;
+  background: var(--primary);
+  box-shadow: 0 0 14px color-mix(in srgb, var(--primary) 50%, transparent);
+  content: "";
+}
+
+.tadeon-master-notes__metrics {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
+.tadeon-master-notes__metrics > span {
+  min-width: 6.2rem;
+  padding: 0.55rem 0.7rem;
+  border: 1px solid color-mix(in srgb, var(--border) 72%, transparent);
+  border-radius: 0.72rem 0.24rem 0.72rem 0.24rem;
+  background: color-mix(in srgb, var(--secondary) 24%, var(--card));
+}
+
+.tadeon-master-notes__metrics small,
+.tadeon-master-notes__metrics strong {
+  display: block;
+}
+
+.tadeon-master-notes__metrics small {
+  color: var(--muted-foreground);
+  font-size: 0.57rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.tadeon-master-notes__metrics strong {
+  margin-top: 0.12rem;
+  color: var(--foreground);
+  font-size: 0.72rem;
+}
+
+.tadeon-master-notes__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.85rem;
+}
+
+.tadeon-master-note-card {
+  animation: tadeon-note-arrive 480ms var(--ease-out) both;
+  animation-delay: calc(var(--note-index, 0) * 65ms);
+}
+
+@keyframes tadeon-note-arrive {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+}
+
+.tadeon-master-note-card--reference {
+  grid-column: 1 / -1;
+}
+
+.tadeon-master-note-card__heading {
+  display: grid;
+  grid-template-columns: 2.35rem minmax(0, 1fr) 2.25rem;
+  align-items: center;
+  gap: 0.7rem;
+  margin-bottom: 0.8rem;
+}
+
+.tadeon-master-note-card__heading > span {
+  display: grid;
+  width: 2.35rem;
+  height: 2.35rem;
+  place-items: center;
+  border: 1px solid color-mix(in srgb, var(--primary) 20%, var(--border));
+  border-radius: 0.75rem 0.25rem 0.75rem 0.25rem;
+  color: var(--primary);
+  background: color-mix(in srgb, var(--primary) 7%, var(--card));
+}
+
+.tadeon-master-note-card__heading svg {
+  width: 1rem;
+  height: 1rem;
+  transition: transform 260ms var(--ease-spring);
+}
+
+.tadeon-master-note-card__heading [data-slot="button"] {
+  width: 2.25rem;
+  height: 2.25rem;
+}
+
+.tadeon-master-note-card textarea {
+  min-height: 10.5rem;
+  border-color: color-mix(in srgb, var(--border) 78%, transparent);
+  color: var(--foreground);
+  background: color-mix(in srgb, var(--background) 48%, transparent);
+  line-height: 1.65;
+  transition: border-color 180ms var(--ease-out), background-color 180ms var(--ease-out), box-shadow 180ms var(--ease-out);
+}
+
+.tadeon-master-note-card textarea:focus-visible {
+  border-color: color-mix(in srgb, var(--primary) 52%, var(--border));
+  background: color-mix(in srgb, var(--background) 70%, transparent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary) 9%, transparent);
+}
+
+.tadeon-master-reference-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 0.8rem;
+}
+
+.tadeon-master-reference-preview {
+  min-height: 10.5rem;
+  overflow: auto;
+  padding: 0.85rem;
+  border: 1px solid color-mix(in srgb, var(--primary) 16%, var(--border));
+  border-radius: var(--radius-md);
+  color: var(--foreground);
+  background: color-mix(in srgb, var(--primary) 4%, var(--card));
+}
+
+.tadeon-master-data__hero {
+  align-items: center;
+}
+
+.tadeon-master-data__summary {
+  display: flex;
+  flex: 1 1 auto;
+  justify-content: center;
+  gap: 0.35rem;
+}
+
+.tadeon-master-data__summary > span {
+  display: grid;
+  min-width: 5rem;
+  grid-template-columns: auto auto;
+  align-items: center;
+  justify-content: center;
+  gap: 0.15rem 0.35rem;
+  padding: 0.45rem 0.6rem;
+  border: 1px solid color-mix(in srgb, var(--border) 70%, transparent);
+  border-radius: 0.7rem 0.24rem 0.7rem 0.24rem;
+  background: color-mix(in srgb, var(--secondary) 24%, var(--card));
+}
+
+.tadeon-master-data__summary svg {
+  width: 0.82rem;
+  height: 0.82rem;
+  color: var(--primary);
+}
+
+.tadeon-master-data__summary strong {
+  color: var(--foreground);
+  font-family: var(--font-cinzel);
+  font-size: 0.8rem;
+}
+
+.tadeon-master-data__summary small {
+  grid-column: 1 / -1;
+  color: var(--muted-foreground);
+  font-size: 0.56rem;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.tadeon-master-data__section {
+  transition: border-color 220ms var(--ease-out), box-shadow 220ms var(--ease-out), transform 220ms var(--ease-out);
+}
+
+.tadeon-master-data__section :is(input, textarea) {
+  color: var(--foreground);
+  background: color-mix(in srgb, var(--background) 56%, transparent);
+}
+
+.tadeon-master-data__section > div[class*="grid"] > div,
+.tadeon-master-data__section div[class*="bg-secondary"] {
+  border: 1px solid color-mix(in srgb, var(--border) 64%, transparent);
+  color: var(--foreground);
+  background: color-mix(in srgb, var(--secondary) 32%, var(--card));
+}
+
+@media (hover: hover) {
+  .tadeon-encounter-member:hover,
+  .tadeon-encounter-npc:hover,
+  .tadeon-encounter-threat:hover {
+    border-color: color-mix(in srgb, var(--primary) 34%, var(--border));
+    transform: translateY(-2px);
+  }
+
+  .tadeon-encounter-source__heading button:hover {
+    background: color-mix(in srgb, var(--primary) 9%, transparent);
+    transform: translateY(-1px);
+  }
+
+  .tadeon-master-note-card:hover .tadeon-master-note-card__heading > span svg {
+    transform: translateY(-2px) rotate(-4deg) scale(1.08);
+  }
+
+  .tadeon-master-data__section:hover {
+    border-color: color-mix(in srgb, var(--primary) 28%, var(--border));
+    box-shadow: 0 22px 48px -42px color-mix(in srgb, var(--primary) 65%, transparent);
+    transform: translateY(-1px);
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1179px) {
+  .tadeon-encounter-composer,
+  .tadeon-master-reference-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .tadeon-master-sheets-grid {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  .tadeon-master-data__hero {
+    align-items: stretch;
+    flex-wrap: wrap;
+  }
+
+  .tadeon-route-users .tadeon-users-list {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .tadeon-route-users .tadeon-user-row {
+    min-height: 6.4rem;
+    grid-template-columns: minmax(0, 1fr) minmax(12rem, auto);
+  }
+}
+
+@media (max-width: 767px) {
+  .tadeon-encounter-summary,
+  .tadeon-master-notes__grid,
+  .tadeon-master-reference-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .tadeon-encounter-summary__reading {
+    min-height: 7.5rem;
+    border-right: 0;
+    border-bottom: 1px solid color-mix(in srgb, var(--primary) 18%, var(--border));
+  }
+
+  .tadeon-encounter-summary__metrics {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    padding: 0.55rem;
+  }
+
+  .tadeon-encounter-summary__metrics > div {
+    min-height: 4.5rem;
+    border-bottom: 1px solid color-mix(in srgb, var(--border) 68%, transparent);
+  }
+
+  .tadeon-encounter-summary__metrics > div:nth-child(2) {
+    border-right: 0;
+  }
+
+  .tadeon-encounter-summary__metrics > div:nth-last-child(-n + 2) {
+    border-bottom: 0;
+  }
+
+  .tadeon-encounter-composer,
+  .tadeon-encounter-roster {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .tadeon-encounter-threat {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .tadeon-encounter-threat__quantity {
+    width: 100%;
+    grid-template-columns: 2.5rem 1fr 2.5rem;
+  }
+
+  .tadeon-encounter-threat__quantity [data-slot="button"] {
+    width: 2.5rem;
+  }
+
+  .tadeon-master-note-card--reference {
+    grid-column: auto;
+  }
+
+  .tadeon-master-notes__metrics {
+    display: grid;
+    width: 100%;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .tadeon-master-notes__metrics > span {
+    min-width: 0;
+    padding-inline: 0.45rem;
+  }
+
+  .tadeon-master-data__summary {
+    justify-content: flex-start;
+    overflow-x: auto;
+    padding-bottom: 0.2rem;
+  }
+
+  .tadeon-route-users .tadeon-user-row {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 419px) {
+  .tadeon-encounter-manual__fields,
+  .tadeon-encounter-total {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .tadeon-master-notes__metrics {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tadeon-master-workspace [data-slot="tabs-content"][data-state="active"],
+  .tadeon-master-note-card,
+  .tadeon-encounter-member,
+  .tadeon-encounter-npc,
+  .tadeon-encounter-threat,
+  .tadeon-master-data__section {
+    animation: none !important;
+    transform: none !important;
+  }
+}
+
 @media (prefers-reduced-transparency: reduce) {
   .tadeon-library-results__bar,
   .tadeon-graph-toolbar {

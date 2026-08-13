@@ -31,6 +31,11 @@ import {
   Pin,
   Sparkles,
   ExternalLink,
+  ClipboardCopy,
+  StickyNote,
+  ListChecks,
+  BookKey,
+  Database,
 } from "lucide-react";
 import { toast } from "sonner";
 import type {
@@ -610,7 +615,7 @@ function MasterPanel() {
           <FoldHub folds={s.folds} onChange={(value) => upd("folds", value)} />
         </TabsContent>
         <TabsContent value="balance" className="mt-0">
-          <EncounterHub sheets={sheets} threats={s.threats} />
+          <EncounterHub sheets={sheets} npcs={s.master_npcs} threats={s.threats} />
         </TabsContent>
         <TabsContent value="catalog" className="mt-0">
           <MasterCatalog
@@ -1497,37 +1502,113 @@ function LinkifiedText({ text }: { text: string }) {
 
 /* ============ Notes ============ */
 function NotesPanel({ s, upd }: PanelProps) {
+  const copyNote = async (label: string, value: string) => {
+    if (!value.trim()) {
+      toast.info(`${label} ainda está vazio.`);
+      return;
+    }
+    try {
+      await navigator.clipboard.writeText(value);
+      toast.success(`${label} copiado.`);
+    } catch {
+      toast.error("Não foi possível copiar neste navegador.");
+    }
+  };
+
+  const noteMetrics = [
+    { label: "Iniciativa", value: s.initiative_notes?.trim() ? "Pronta" : "Vazia" },
+    { label: "Lembretes", value: s.reminders?.trim() ? "Ativos" : "Vazios" },
+    {
+      label: "Referências",
+      value: `${(s.quick_refs ?? "").trim().split(/\s+/).filter(Boolean).length} palavras`,
+    },
+  ];
+
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-      <Card className="p-4">
-        <h3 className="font-cinzel font-bold mb-2">Notas de Iniciativa</h3>
+    <div className="tadeon-master-notes space-y-4">
+      <Card className="tadeon-master-notes__hero tadeon-surface p-4 md:p-5">
+        <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+          <div>
+            <p className="tadeon-eyebrow">Memória da condução</p>
+            <h2 className="mt-1 font-cinzel text-xl font-bold md:text-2xl">Caderno do mestre</h2>
+            <p className="mt-1 max-w-2xl text-xs text-muted-foreground">
+              Informação de consulta imediata, sem disputar espaço com a cena em andamento.
+            </p>
+          </div>
+          <div className="tadeon-master-notes__metrics">
+            {noteMetrics.map((metric) => (
+              <span key={metric.label}>
+                <small>{metric.label}</small>
+                <strong>{metric.value}</strong>
+              </span>
+            ))}
+          </div>
+        </div>
+      </Card>
+
+      <div className="tadeon-master-notes__grid">
+      <Card className="tadeon-master-note-card p-4" style={{ "--note-index": 0 } as React.CSSProperties}>
+        <div className="tadeon-master-note-card__heading">
+          <span><ListChecks /></span>
+          <div>
+            <p className="tadeon-eyebrow">Ordem e reação</p>
+            <h3 className="font-cinzel font-bold">Notas de iniciativa</h3>
+          </div>
+          <Button type="button" size="icon" variant="ghost" onClick={() => void copyNote("Notas de iniciativa", s.initiative_notes)} aria-label="Copiar notas de iniciativa">
+            <ClipboardCopy />
+          </Button>
+        </div>
         <Textarea
           rows={6}
           value={s.initiative_notes}
           onChange={(e) => upd("initiative_notes", e.target.value)}
+          placeholder="Reações preparadas, mudanças de ordem, efeitos por rodada…"
         />
       </Card>
-      <Card className="p-4">
-        <h3 className="font-cinzel font-bold mb-2">Lembretes</h3>
-        <Textarea rows={6} value={s.reminders} onChange={(e) => upd("reminders", e.target.value)} />
+      <Card className="tadeon-master-note-card p-4" style={{ "--note-index": 1 } as React.CSSProperties}>
+        <div className="tadeon-master-note-card__heading">
+          <span><StickyNote /></span>
+          <div>
+            <p className="tadeon-eyebrow">Antes de encerrar</p>
+            <h3 className="font-cinzel font-bold">Lembretes</h3>
+          </div>
+          <Button type="button" size="icon" variant="ghost" onClick={() => void copyNote("Lembretes", s.reminders)} aria-label="Copiar lembretes">
+            <ClipboardCopy />
+          </Button>
+        </div>
+        <Textarea rows={6} value={s.reminders} onChange={(e) => upd("reminders", e.target.value)} placeholder="Ganchos pendentes, retornos, recompensas, consequências…" />
       </Card>
-      <Card className="p-4 md:col-span-2">
-        <h3 className="font-cinzel font-bold mb-2">Referências Rápidas</h3>
+      <Card className="tadeon-master-note-card tadeon-master-note-card--reference p-4" style={{ "--note-index": 2 } as React.CSSProperties}>
+        <div className="tadeon-master-note-card__heading">
+          <span><BookKey /></span>
+          <div>
+            <p className="tadeon-eyebrow">Consulta durante a sessão</p>
+            <h3 className="font-cinzel font-bold">Referências rápidas</h3>
+          </div>
+          <Button type="button" size="icon" variant="ghost" onClick={() => void copyNote("Referências rápidas", s.quick_refs)} aria-label="Copiar referências rápidas">
+            <ClipboardCopy />
+          </Button>
+        </div>
+        <div className="tadeon-master-reference-layout">
+          <div>
         <Textarea
           rows={6}
           value={s.quick_refs}
           onChange={(e) => upd("quick_refs", e.target.value)}
           placeholder="Cole regras, links (https://...), atalhos. Links aparecem clicáveis no preview abaixo."
         />
-        {s.quick_refs?.trim() && (
-          <div className="mt-3 p-3 rounded-lg bg-secondary/30 border border-border/60 text-sm leading-relaxed whitespace-pre-wrap break-words">
-            <p className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold mb-1.5">
-              Preview
-            </p>
-            <LinkifiedText text={s.quick_refs} />
           </div>
-        )}
+          <div className="tadeon-master-reference-preview text-sm leading-relaxed whitespace-pre-wrap break-words">
+            <p className="tadeon-eyebrow mb-2">Leitura de mesa</p>
+            {s.quick_refs?.trim() ? (
+              <LinkifiedText text={s.quick_refs} />
+            ) : (
+              <p className="text-xs text-muted-foreground">A prévia limpa e os links clicáveis aparecerão aqui.</p>
+            )}
+          </div>
+        </div>
       </Card>
+      </div>
     </div>
   );
 }
@@ -1624,20 +1705,26 @@ function DataPanel({ s, upd }: PanelProps) {
   };
 
   return (
-    <div className="space-y-4">
-      <Card className="flex flex-col gap-3 border-primary/35 bg-primary/5 p-4 sm:flex-row sm:items-center sm:justify-between">
+    <div className="tadeon-master-data space-y-4">
+      <Card className="tadeon-master-data__hero flex flex-col gap-4 border-primary/35 bg-primary/5 p-4 md:p-5 sm:flex-row sm:items-center sm:justify-between">
         <div>
+          <p className="tadeon-eyebrow">Motor de regras</p>
           <h3 className="font-cinzel font-bold">Fonte canônica do Livro de Regras</h3>
           <p className="text-xs text-muted-foreground">
             Restaura Rank, perícias, custos de treino, condições e ramos oficiais da versão
             revisada.
           </p>
         </div>
-        <Button size="sm" variant="outline" onClick={restoreCanonicalRules}>
+        <div className="tadeon-master-data__summary">
+          <span><Database /><strong>{s.rank_table.length}</strong><small>Ranks</small></span>
+          <span><Sparkles /><strong>{s.skill_branches.reduce((sum, branch) => sum + branch.nodes.length, 0)}</strong><small>Habilidades</small></span>
+          <span><ListChecks /><strong>{s.skill_groups.reduce((sum, group) => sum + group.skills.length, 0)}</strong><small>Perícias</small></span>
+        </div>
+        <Button size="sm" variant="outline" onClick={restoreCanonicalRules} className="shrink-0">
           Restaurar regras do livro
         </Button>
       </Card>
-      <Card className="p-4">
+      <Card className="tadeon-master-data__section p-4">
         <div className="flex justify-between items-center mb-3 flex-wrap gap-2">
           <div>
             <h3 className="font-cinzel font-bold">Tabela de Rank</h3>
@@ -1734,7 +1821,7 @@ function DataPanel({ s, upd }: PanelProps) {
       </Card>
 
       {/* Upgrade Costs */}
-      <Card className="p-4">
+      <Card className="tadeon-master-data__section p-4">
         <h3 className="font-cinzel font-bold mb-1">Custos de Aprimoramento (PM)</h3>
         <p className="text-xs text-muted-foreground mb-3">
           Fórmula: até <em>níveis grátis</em>, custa o valor base; depois soma o incremento por
@@ -1795,7 +1882,7 @@ function DataPanel({ s, upd }: PanelProps) {
       </Card>
 
       {/* Skill Training Costs */}
-      <Card className="p-4">
+      <Card className="tadeon-master-data__section p-4">
         <h3 className="font-cinzel font-bold mb-1">Custos de Treinamento de Perícia (PM)</h3>
         <p className="text-xs text-muted-foreground mb-3">
           PM gasto para evoluir cada perícia de um nível de treino para o próximo.
@@ -1821,7 +1908,7 @@ function DataPanel({ s, upd }: PanelProps) {
       </Card>
 
       {/* Conditions editor */}
-      <Card className="p-4">
+      <Card className="tadeon-master-data__section p-4">
         <h3 className="font-cinzel font-bold mb-1">Listas de Condições</h3>
         <p className="text-xs text-muted-foreground mb-3">
           Uma opção por linha. A primeira opção deve ser "Normal".
@@ -1855,7 +1942,7 @@ function DataPanel({ s, upd }: PanelProps) {
       </Card>
 
       {/* Skill Groups editor */}
-      <Card className="p-4">
+      <Card className="tadeon-master-data__section p-4">
         <h3 className="font-cinzel font-bold mb-1">Listas de Perícias</h3>
         <p className="text-xs text-muted-foreground mb-3">
           Uma perícia por linha em cada grupo de atributo.
@@ -1939,7 +2026,7 @@ function DataPanel({ s, upd }: PanelProps) {
         </Button>
       </Card>
 
-      <Card className="p-4">
+      <Card className="tadeon-master-data__section p-4">
         <div className="flex justify-between items-center mb-3">
           <div>
             <h3 className="font-cinzel font-bold">Árvore de Habilidades</h3>
