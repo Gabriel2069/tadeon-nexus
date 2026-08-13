@@ -141,6 +141,10 @@ type PointerAction =
 const MIN_ENTITY_SIZE = 8;
 const HANDLE_HIT_RADIUS = 11;
 
+export function tabletopTransformHandleHitRadius(pointerType: string) {
+  return pointerType === "touch" ? 24 : HANDLE_HIT_RADIUS;
+}
+
 export function shouldStartTabletopPan({
   button,
   spacePressed,
@@ -241,11 +245,11 @@ export class InteractionController {
 
     const world = this.bindings.camera.screenToWorld(screen);
     const handle =
-      event.button === 0 &&
-      event.pointerType !== "touch" &&
-      this.mode === "select" &&
-      !this.spacePressed
-        ? this.hitTransformHandle(screen)
+      event.button === 0 && this.mode === "select" && !this.spacePressed
+        ? this.hitTransformHandle(
+            screen,
+            tabletopTransformHandleHitRadius(event.pointerType),
+          )
         : null;
     const candidateStructureHit =
       event.button === 0 && this.mode === "select" && !this.spacePressed
@@ -272,8 +276,7 @@ export class InteractionController {
         (!candidateEntityHit && !structureHit && !lightHit))
         ? candidateFogHit
         : null;
-    const hit =
-      structureHit || lightHit || fogHit ? undefined : candidateEntityHit;
+    const hit = structureHit || lightHit || fogHit ? undefined : candidateEntityHit;
     const temporaryPan = shouldStartTabletopPan({
       button: event.button,
       spacePressed: this.spacePressed,
@@ -1029,7 +1032,7 @@ export class InteractionController {
     this.updateCursor();
   };
 
-  private hitTransformHandle(screen: Point) {
+  private hitTransformHandle(screen: Point, hitRadius = HANDLE_HIT_RADIUS) {
     const selected = this.bindings.editableSelection();
     if (selected.length !== 1) return null;
     const entity = selected[0];
@@ -1048,7 +1051,7 @@ export class InteractionController {
         screen.y - handleScreen.y,
       );
       if (
-        distance <= HANDLE_HIT_RADIUS &&
+        distance <= hitRadius &&
         (!closest || distance < closest.distance)
       )
         closest = { handle: item.handle, entity, distance };

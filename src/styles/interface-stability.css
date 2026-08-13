@@ -1,7 +1,4 @@
 /* Cross-workspace interaction stability ---------------------------------- */
-
-/* Interactive Lucide icons need breathing room. Using individual transform
-   properties preserves icon-specific rotations and spinner transforms. */
 .tadeon-shell :is([data-slot="button"], button, a[role="button"], .tadeon-nav-item) > svg,
 .tadeon-shell .tadeon-nav-item__icon,
 .tadeon-shell .tadeon-nav-item__icon > svg,
@@ -45,8 +42,6 @@
   }
 }
 
-/* Floating UI can scroll internally, but it must remain inside the visual
-   viewport on desktop, mobile and installed-PWA windows. */
 [data-radix-popper-content-wrapper] {
   max-width: calc(100vw - 1rem) !important;
   max-height: calc(100dvh - 1rem) !important;
@@ -65,31 +60,79 @@
 }
 
 /* Mesa Nexus -------------------------------------------------------------- */
-
-/* Do not resize the Pixi host when contextual controls appear. A selection
-   should change chrome only, never the renderer geometry. */
 .tadeon-tabletop-studio .tadeon-tabletop-stage:has(.tadeon-tabletop-tool-options) .tadeon-tabletop-canvas-host,
 .tadeon-tabletop-studio .tadeon-tabletop-stage:has(.tadeon-tabletop-selection-dock) .tadeon-tabletop-canvas-host,
 .tadeon-tabletop-studio .tadeon-tabletop-stage:has(.tadeon-tabletop-tool-options):has(.tadeon-tabletop-selection-dock) .tadeon-tabletop-canvas-host {
   top: 0.65rem !important;
 }
 
-/* The workspace clamp currently reserves 184 x 248 CSS pixels. Match the
-   actual menu to that contract so right/bottom clicks cannot escape screen. */
 .tadeon-tabletop-context-menu {
   width: min(11.5rem, calc(100vw - 1rem)) !important;
   max-width: calc(100vw - 1rem) !important;
   max-height: min(15.5rem, calc(100dvh - 1rem)) !important;
+  overflow-x: hidden;
   overscroll-behavior: contain;
+  padding: 0.4rem !important;
+  border: 1px solid color-mix(in srgb, var(--primary) 20%, rgb(255 255 255 / 10%)) !important;
+  border-radius: 1rem !important;
+  background:
+    radial-gradient(circle at 18% -15%, color-mix(in srgb, var(--primary) 16%, transparent), transparent 42%),
+    linear-gradient(145deg, rgb(12 15 20 / 96%), rgb(7 10 14 / 93%)) !important;
+  box-shadow:
+    0 24px 72px -22px rgb(0 0 0 / 92%),
+    0 8px 28px -18px color-mix(in srgb, var(--primary) 48%, transparent),
+    inset 0 1px 0 rgb(255 255 255 / 7%) !important;
+  backdrop-filter: blur(20px) saturate(135%);
 }
 
-/* The React exit state remains mounted briefly for motion. Make that mounted
-   copy non-visual immediately to eliminate the menu ghost behind master UI. */
+.tadeon-tabletop-context-menu[data-state="open"] {
+  transform-origin: top left;
+  animation: tadeon-floating-menu-in 170ms var(--ease-out, ease-out) both;
+}
+
+.tadeon-tabletop-context-menu > button {
+  position: relative;
+  gap: 0.62rem;
+  border: 1px solid transparent;
+  border-radius: 0.72rem !important;
+  transition:
+    translate 150ms var(--ease-out, ease-out),
+    background-color 150ms var(--ease-out, ease-out),
+    border-color 150ms var(--ease-out, ease-out),
+    box-shadow 150ms var(--ease-out, ease-out);
+}
+
+.tadeon-tabletop-context-menu > button:hover,
+.tadeon-tabletop-context-menu > button:focus-visible {
+  translate: 2px 0;
+  border-color: color-mix(in srgb, var(--primary) 26%, transparent);
+  outline: none;
+  background: color-mix(in srgb, var(--primary) 11%, rgb(255 255 255 / 4%)) !important;
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 5%);
+}
+
+.tadeon-tabletop-context-menu > button.text-destructive:hover,
+.tadeon-tabletop-context-menu > button.text-destructive:focus-visible {
+  border-color: color-mix(in srgb, var(--destructive) 38%, transparent);
+  background: color-mix(in srgb, var(--destructive) 12%, transparent) !important;
+}
+
 .tadeon-tabletop-context-menu[data-state="closed"] {
   visibility: hidden !important;
   opacity: 0 !important;
   pointer-events: none !important;
   animation: none !important;
+}
+
+.tadeon-tabletop-selection-dock,
+.tadeon-tabletop-tool-options {
+  max-width: calc(100% - 1rem);
+  border-color: color-mix(in srgb, var(--primary) 18%, var(--border)) !important;
+  background: linear-gradient(145deg, rgb(13 16 21 / 91%), rgb(8 11 15 / 86%)) !important;
+  box-shadow:
+    0 18px 48px -30px rgb(0 0 0 / 95%),
+    inset 0 1px 0 rgb(255 255 255 / 5%);
+  backdrop-filter: blur(16px) saturate(125%);
 }
 
 .tadeon-tabletop-panel__tab > span,
@@ -103,9 +146,19 @@
   white-space: nowrap;
 }
 
-.tadeon-tabletop-selection-dock,
-.tadeon-tabletop-tool-options {
-  max-width: calc(100% - 1rem);
+@keyframes tadeon-floating-menu-in {
+  from {
+    opacity: 0;
+    translate: 0 7px;
+    scale: 0.96;
+    filter: blur(2px);
+  }
+  to {
+    opacity: 1;
+    translate: 0 0;
+    scale: 1;
+    filter: blur(0);
+  }
 }
 
 @media (max-width: 639px) {
@@ -118,5 +171,11 @@
   .tadeon-tabletop-selection-dock,
   .tadeon-tabletop-tool-options {
     max-width: calc(100% - 1.1rem);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tadeon-tabletop-context-menu[data-state="open"] {
+    animation: none;
   }
 }
