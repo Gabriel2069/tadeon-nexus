@@ -687,6 +687,7 @@ export function TabletopVisibilityPanel({
                   type="button"
                   className="tadeon-visibility__object-row"
                   data-selected={wall.id === selectedStructureId}
+                  aria-pressed={wall.id === selectedStructureId}
                   onClick={() => onSelectStructure(wall.id)}
                 >
                   <span data-family={structureFamily(wall.wallType)}>
@@ -942,6 +943,7 @@ export function TabletopVisibilityPanel({
                   type="button"
                   className="tadeon-visibility__object-row"
                   data-selected={light.id === selectedLightId}
+                  aria-pressed={light.id === selectedLightId}
                   onClick={() => onSelectLight(light.id)}
                 >
                   <span
@@ -1207,6 +1209,7 @@ export function TabletopVisibilityPanel({
                   className="tadeon-visibility__object-row"
                   data-selected={stroke.id === selectedFogId}
                   data-operation={stroke.operation}
+                  aria-pressed={stroke.id === selectedFogId}
                   onClick={() => onSelectFog(stroke.id)}
                 >
                   <span>

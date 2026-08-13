@@ -10,6 +10,7 @@ const Checkbox = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <CheckboxPrimitive.Root
     ref={ref}
+    data-slot="checkbox"
     className={cn(
       "peer grid h-5 w-5 shrink-0 cursor-pointer place-content-center rounded-[0.35rem] border border-primary/70 shadow-sm transition-[color,background-color,border-color,box-shadow] duration-150 ease-[var(--ease-out)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/70 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:border-primary data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground",
       className,
@@ -17,6 +18,7 @@ const Checkbox = React.forwardRef<
     {...props}
   >
     <CheckboxPrimitive.Indicator
+      data-slot="checkbox-indicator"
       className={cn("grid place-content-center text-current")}
     >
       <Check className="h-3.5 w-3.5" />

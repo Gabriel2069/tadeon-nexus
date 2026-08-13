@@ -14,7 +14,7 @@ const Breadcrumb = React.forwardRef<
   }
 >(({ separator, children, ...props }, ref) => (
   <BreadcrumbSeparatorContext.Provider value={separator}>
-    <nav ref={ref} aria-label="Trilha de navegação" {...props}>
+    <nav ref={ref} data-slot="breadcrumb" aria-label="Trilha de navegação" {...props}>
       {children}
     </nav>
   </BreadcrumbSeparatorContext.Provider>
@@ -27,6 +27,7 @@ const BreadcrumbList = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <ol
     ref={ref}
+    data-slot="breadcrumb-list"
     className={cn(
       "flex flex-nowrap items-center gap-1.5 overflow-x-auto whitespace-nowrap text-sm text-muted-foreground [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:flex-wrap sm:gap-2.5 sm:overflow-visible sm:whitespace-normal",
       className,
@@ -42,6 +43,7 @@ const BreadcrumbItem = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <li
     ref={ref}
+    data-slot="breadcrumb-item"
     className={cn("inline-flex items-center gap-1.5", className)}
     {...props}
   />
@@ -59,6 +61,7 @@ const BreadcrumbLink = React.forwardRef<
   return (
     <Comp
       ref={ref}
+      data-slot="breadcrumb-link"
       className={cn(
         "rounded-sm transition-colors duration-150 ease-[var(--ease-out)] hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/70",
         className,
@@ -75,6 +78,7 @@ const BreadcrumbPage = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <span
     ref={ref}
+    data-slot="breadcrumb-page"
     role="link"
     aria-disabled="true"
     aria-current="page"
@@ -93,6 +97,7 @@ const BreadcrumbSeparator = ({
 
   return (
     <li
+      data-slot="breadcrumb-separator"
       role="presentation"
       aria-hidden="true"
       className={cn(
@@ -112,6 +117,7 @@ const BreadcrumbEllipsis = ({
   ...props
 }: React.ComponentProps<"span">) => (
   <span
+    data-slot="breadcrumb-ellipsis"
     role="presentation"
     aria-hidden="true"
     className={cn("flex h-9 w-9 items-center justify-center", className)}

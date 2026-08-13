@@ -435,7 +435,7 @@ function PowerFormPage() {
   if (loading || !base) {
     return (
       <div className="flex justify-center py-16">
-        <Loader2 className="w-8 h-8 animate-spin text-orange-400" />
+        <Loader2 className="w-8 h-8 animate-spin text-primary" />
       </div>
     );
   }
@@ -496,20 +496,8 @@ function PowerFormPage() {
   const vpFragments = vp.fragments_items ?? [];
 
   return (
-    <div
-      className="tadeon-vp-page relative min-h-screen pb-24"
-      style={{
-        background:
-          "radial-gradient(ellipse at top, rgba(251,113,133,0.30), transparent 55%), radial-gradient(ellipse at bottom, rgba(168,85,247,0.25), transparent 55%), linear-gradient(180deg, #200712 0%, #0a0210 100%)",
-      }}
-    >
-      <div
-        className="pointer-events-none fixed inset-0 z-0 vp-pulse"
-        style={{
-          background:
-            "radial-gradient(circle at 50% 20%, rgba(255,120,40,0.22), transparent 55%)",
-        }}
-      />
+    <div className="tadeon-vp-page relative min-h-screen pb-24">
+      <div className="pointer-events-none fixed inset-0 z-0 vp-pulse" />
       <div className="tadeon-vp-container relative z-10 mx-auto max-w-7xl p-3 md:p-6">
         {/* Header */}
         <div className="tadeon-vp-commandbar sticky z-20 -mx-3 mb-4 border-b border-orange-500/50 bg-background/40 px-3 py-3 shadow-[0_4px_30px_rgba(255,100,50,0.35)] backdrop-blur-xl md:-mx-6 md:px-6">

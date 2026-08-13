@@ -1224,6 +1224,7 @@ export function NexusWorkspace({
                     type="button"
                     key={node.id}
                     onClick={() => void openNode(node)}
+                    aria-current={selected?.id === node.id ? "page" : undefined}
                     className={`tadeon-nexus-index__node w-full rounded-lg px-3 py-2.5 text-left ${
                       selected?.id === node.id ? "is-active text-primary" : ""
                     }`}
@@ -1284,6 +1285,7 @@ export function NexusWorkspace({
                     type="button"
                     key={node.id}
                     onClick={() => void openNode(node.id)}
+                    aria-current={selected?.id === node.id ? "page" : undefined}
                     className="tadeon-nexus-index__shortcut block min-h-11 w-full truncate rounded-lg px-2 py-2 text-left text-xs text-muted-foreground sm:min-h-0 sm:py-1"
                   >
                     {node.title}
@@ -1300,6 +1302,7 @@ export function NexusWorkspace({
                     type="button"
                     key={node.id}
                     onClick={() => void openNode(node.id)}
+                    aria-current={selected?.id === node.id ? "page" : undefined}
                     className="tadeon-nexus-index__shortcut block min-h-11 w-full truncate rounded-lg px-2 py-2 text-left text-xs text-muted-foreground sm:min-h-0 sm:py-1"
                   >
                     {node.title}
@@ -1314,7 +1317,7 @@ export function NexusWorkspace({
           className={`${selected ? "order-1" : "order-2"} tadeon-nexus-document min-w-0 overflow-hidden rounded-2xl border bg-card/55 lg:order-2`}
         >
           {openNodes.length > 0 && (
-            <div className="flex min-w-0 gap-1 overflow-x-auto border-b bg-muted/20 px-2 pt-2">
+            <div className="flex min-w-0 gap-1 overflow-x-auto border-b bg-muted/20 px-2 pt-2" role="tablist" aria-label="Páginas abertas">
               {openNodes.map((node) => (
                 <div
                   key={node.id}
@@ -1326,6 +1329,8 @@ export function NexusWorkspace({
                 >
                   <button
                     type="button"
+                    role="tab"
+                    aria-selected={selected?.id === node.id}
                     onClick={() => void openNode(node)}
                     className="flex min-w-0 flex-1 items-center gap-2 px-3 py-2 text-left"
                   >
@@ -1576,7 +1581,7 @@ export function NexusWorkspace({
 
         {!focusMode && rightOpen && selected && (
           <aside className="tadeon-nexus-context order-3 min-h-0 rounded-2xl border bg-card/55 p-3">
-            <div className="tadeon-nexus-context-tabs grid grid-cols-4 gap-1 rounded-lg bg-muted/30 p-1">
+            <div className="tadeon-nexus-context-tabs grid grid-cols-4 gap-1 rounded-lg bg-muted/30 p-1" role="tablist" aria-label="Detalhes da página">
               {(
                 [
                   ["properties", ListTree, "Página"],
@@ -1588,6 +1593,8 @@ export function NexusWorkspace({
                 <button
                   key={panel}
                   type="button"
+                  role="tab"
+                  aria-selected={rightPanel === panel}
                   onClick={() => setRightPanel(panel)}
                   className={`flex min-w-0 items-center justify-center gap-1.5 rounded-md p-2 ${
                     rightPanel === panel

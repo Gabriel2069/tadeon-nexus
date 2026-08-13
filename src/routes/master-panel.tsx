@@ -916,6 +916,7 @@ function LinkPicker({
                 key={it.id}
                 type="button"
                 onClick={() => toggle(it.id)}
+                aria-pressed={on}
                 className={`rounded-full border px-2 py-1 text-[11px] transition-[color,background-color,border-color,box-shadow,transform] duration-150 ease-[var(--ease-out)] active:scale-[.97] ${
                   on
                     ? "bg-primary text-primary-foreground border-primary"
@@ -1392,6 +1393,7 @@ function PinnedPanel({
                     <button
                       type="button"
                       onClick={() => togglePowerForm(sh)}
+                      aria-pressed={sh.power_form_enabled}
                       title={
                         sh.power_form_enabled
                           ? "Forma de Poder LIBERADA — clique para bloquear"

@@ -9,4 +9,17 @@ describe("Button", () => {
       'type="submit"',
     );
   });
+
+  it("exposes stable control metadata for responsive states and motion", () => {
+    const html = renderToStaticMarkup(
+      <Button variant="outline" size="sm" aria-pressed="true">
+        Selecionado
+      </Button>,
+    );
+
+    expect(html).toContain('data-slot="button"');
+    expect(html).toContain('data-variant="outline"');
+    expect(html).toContain('data-size="sm"');
+    expect(html).toContain('aria-pressed="true"');
+  });
 });
