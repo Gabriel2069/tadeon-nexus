@@ -32,6 +32,10 @@ import {
   Compass,
   Gauge,
   Link2,
+  BookOpen,
+  Heart,
+  Target,
+  NotebookPen,
 } from "lucide-react";
 import { toast } from "sonner";
 import {
@@ -1934,16 +1938,20 @@ function SheetPage() {
                 Os grupos organizam a leitura da ficha; o Atributo usado no
                 teste continua sendo definido pela abordagem descrita na cena.
               </p>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-2.5">
+              <div className="tadeon-skill-groups-grid">
                 {skillGroups.map((g) => (
                   <div
                     key={g.attr}
-                    className="bg-secondary/40 rounded-lg p-2.5"
+                    className="tadeon-skill-group"
                   >
-                    <h4 className="font-cinzel text-xs font-bold mb-1.5">
-                      {g.label}
-                    </h4>
-                    <div className="space-y-0.5">
+                    <div className="tadeon-skill-group__heading">
+                      <span aria-hidden="true">{g.attr}</span>
+                      <div>
+                        <small>Família de perícias</small>
+                        <h4>{g.label}</h4>
+                      </div>
+                    </div>
+                    <div className="tadeon-skill-group__list">
                       {g.skills.map((s) => {
                         const v = sheet.skills[s] ?? 0;
                         const tier: number = tierFromBonus(v);
@@ -2064,10 +2072,11 @@ function SheetPage() {
                               <button
                                 type="button"
                                 disabled={!canEdit}
-                                className="w-full flex items-center justify-between text-xs px-1.5 py-1 rounded hover:bg-background/40 disabled:cursor-not-allowed"
+                                className="tadeon-skill-row"
+                                data-tier={tier}
                               >
-                                <span>{s}</span>
-                                <span className={color}>+{v}</span>
+                                <span className="tadeon-skill-row__name">{s}</span>
+                                <span className={`tadeon-skill-row__value ${color}`}>+{v}</span>
                               </button>
                             </PopoverTrigger>
                             <PopoverContent className="w-64 p-3" align="end">
@@ -2727,30 +2736,108 @@ function SheetPage() {
             />
           </TabsContent>
 
-          <TabsContent value="descricao" className="mt-0 space-y-4">
-            {(
-              [
-                ["historia", "História"],
-                ["personalidade", "Personalidade"],
-                ["objetivos", "Objetivos"],
-                ["observacoes", "Observações"],
-              ] as const
-            ).map(([key, label]) => (
-              <Section key={key} title={label}>
-                <Textarea
-                  disabled={!canEdit}
-                  value={sheet.description[key] || ""}
-                  onChange={(e) =>
-                    update("description", {
-                      ...sheet.description,
-                      [key]: e.target.value,
-                    })
+          <TabsContent value="descricao" className="tadeon-description-tab mt-0 space-y-4">
+            <Card className="tadeon-description-hero">
+              <div className="tadeon-description-hero__mark" aria-hidden="true">
+                <ScrollText />
+              </div>
+              <div className="min-w-0 flex-1">
+                <p className="tadeon-eyebrow">Arquivo narrativo</p>
+                <h2>Quem existe além dos números</h2>
+                <p>
+                  Registre passado, maneira de agir, desejos e detalhes de continuidade. Cada
+                  campo permanece livre, mas agora oferece uma direção clara para escrever.
+                </p>
+              </div>
+              <div className="tadeon-description-hero__progress">
+                <strong>
+                  {
+                    (Object.values(sheet.description) as string[]).filter(
+                      (value) => value.trim().length > 0,
+                    ).length
                   }
-                  rows={6}
-                  placeholder={`Escreva aqui sobre ${label.toLowerCase()}...`}
-                />
-              </Section>
-            ))}
+                  <small>/4</small>
+                </strong>
+                <span>registros iniciados</span>
+              </div>
+            </Card>
+            <div className="tadeon-description-grid">
+              {(
+                [
+                  {
+                    key: "historia",
+                    label: "História",
+                    kicker: "Antes da primeira cena",
+                    prompt:
+                      "Origem, acontecimentos decisivos, perdas, descobertas e o caminho que trouxe a personagem até aqui.",
+                    placeholder: "Quais acontecimentos ainda repercutem no presente?",
+                    icon: BookOpen,
+                  },
+                  {
+                    key: "personalidade",
+                    label: "Personalidade",
+                    kicker: "Presença em cena",
+                    prompt:
+                      "Gestos, contradições, afetos, hábitos e a forma como reage quando está sob pressão.",
+                    placeholder: "Como esta personagem pensa, sente e ocupa um ambiente?",
+                    icon: Heart,
+                  },
+                  {
+                    key: "objetivos",
+                    label: "Objetivos",
+                    kicker: "Vetores de mudança",
+                    prompt:
+                      "Desejos imediatos, ambições distantes e aquilo que não está disposta a sacrificar para alcançá-los.",
+                    placeholder: "O que ela busca — e qual preço se recusa a pagar?",
+                    icon: Target,
+                  },
+                  {
+                    key: "observacoes",
+                    label: "Observações",
+                    kicker: "Continuidade fina",
+                    prompt:
+                      "Voz, aparência, hábitos, promessas, objetos recorrentes e detalhes úteis para as próximas sessões.",
+                    placeholder: "Registre detalhes que não podem se perder entre as sessões.",
+                    icon: NotebookPen,
+                  },
+                ] as const
+              ).map(({ key, label, kicker, prompt, placeholder, icon: Icon }, index) => {
+                const value = sheet.description[key] || "";
+                const words = value.trim() ? value.trim().split(/\s+/).length : 0;
+                return (
+                  <Card
+                    key={key}
+                    className="tadeon-description-card"
+                    data-filled={value.trim() ? "true" : "false"}
+                    style={{ "--description-index": index } as React.CSSProperties}
+                  >
+                    <div className="tadeon-description-card__heading">
+                      <span className="tadeon-description-card__icon" aria-hidden="true">
+                        <Icon />
+                      </span>
+                      <div className="min-w-0">
+                        <small>{kicker}</small>
+                        <h3>{label}</h3>
+                      </div>
+                      <span className="tadeon-description-card__count">{words} palavras</span>
+                    </div>
+                    <p className="tadeon-description-card__prompt">{prompt}</p>
+                    <Textarea
+                      disabled={!canEdit}
+                      value={value}
+                      onChange={(event) =>
+                        update("description", {
+                          ...sheet.description,
+                          [key]: event.target.value,
+                        })
+                      }
+                      rows={8}
+                      placeholder={placeholder}
+                    />
+                  </Card>
+                );
+              })}
+            </div>
           </TabsContent>
         </Tabs>
       </div>

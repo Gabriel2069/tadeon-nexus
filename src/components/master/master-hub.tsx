@@ -9,6 +9,7 @@ import {
   Gauge,
   Link2,
   Map,
+  Minus,
   Pin,
   Plus,
   Radio,
@@ -2196,26 +2197,43 @@ export function FoldHub({
 
 export function EncounterHub({
   sheets,
+  npcs,
   threats,
 }: {
   sheets: MasterSheetOverview[];
+  npcs: MasterNpc[];
   threats: MasterThreat[];
 }) {
-  const [excludedSheetIds, setExcludedSheetIds] = useState<string[]>([]);
-  const [selectedIds, setSelectedIds] = useState<string[]>([]);
-  const selectedSheets = sheets.filter(
-    (sheet) => !excludedSheetIds.includes(sheet.id),
+  const [selectedSheetIds, setSelectedSheetIds] = useState<string[]>(() =>
+    sheets.map((sheet) => sheet.id),
   );
-  const participants = selectedSheets.length;
+  const [selectedNpcIds, setSelectedNpcIds] = useState<string[]>([]);
+  const [npcRankReferences, setNpcRankReferences] = useState<Record<string, number>>({});
+  const [additionalParticipants, setAdditionalParticipants] = useState(0);
+  const [additionalRank, setAdditionalRank] = useState(0);
+  const [threatQuantities, setThreatQuantities] = useState<Record<string, number>>({});
+
+  const selectedSheets = sheets.filter((sheet) => selectedSheetIds.includes(sheet.id));
+  const selectedNpcs = npcs.filter((npc) => selectedNpcIds.includes(npc.id));
+  const participantRanks = [
+    ...selectedSheets.map((sheet) => Math.max(0, sheet.exposure)),
+    ...selectedNpcs.map((npc) => Math.max(0, npcRankReferences[npc.id] ?? 0)),
+    ...Array.from({ length: Math.max(0, additionalParticipants) }, () =>
+      Math.max(0, additionalRank),
+    ),
+  ];
+  const participants = participantRanks.length;
   const partyValid = participants >= 2 && participants <= 7;
-  const rankTotal = selectedSheets.reduce(
-    (sum, sheet) => sum + sheet.exposure,
-    0,
-  );
+  const rankTotal = participantRanks.reduce((sum, rank) => sum + rank, 0);
   const rankAverage = participants ? rankTotal / participants : 0;
-  const selected = threats.filter((threat) => selectedIds.includes(threat.id));
+  const selectedThreats = threats.flatMap((threat) =>
+    Array.from(
+      { length: Math.max(0, Math.min(20, threatQuantities[threat.id] ?? 0)) },
+      () => threat,
+    ),
+  );
   const combinedMagnitude = combinedThreatMagnitude(
-    selected.map((threat) => threat.magnitude),
+    selectedThreats.map((threat) => threat.magnitude),
   );
   const balance = calculateEncounterBalance(
     rankAverage,
@@ -2224,155 +2242,287 @@ export function EncounterHub({
   );
 
   const toggleSheet = (sheetId: string) => {
-    setExcludedSheetIds((current) =>
+    setSelectedSheetIds((current) =>
       current.includes(sheetId)
         ? current.filter((id) => id !== sheetId)
         : [...current, sheetId],
     );
   };
 
+  const toggleNpc = (npcId: string) => {
+    setSelectedNpcIds((current) =>
+      current.includes(npcId)
+        ? current.filter((id) => id !== npcId)
+        : [...current, npcId],
+    );
+  };
+
+  const updateThreatQuantity = (threatId: string, quantity: number) => {
+    setThreatQuantities((current) => ({
+      ...current,
+      [threatId]: Math.max(0, Math.min(20, Math.round(quantity || 0))),
+    }));
+  };
+
   return (
-    <div className="space-y-4">
+    <div className="tadeon-encounter-workspace space-y-4">
       <PanelHeading
         title="Balanço de Encontro"
-        description="Selecione explicitamente as fichas do grupo e compare seu potencial com as Magnitudes. É um apoio de preparação, não uma promessa de resultado."
+        description="Monte o grupo com fichas, NPCs aliados e participantes sem ficha. Depois componha as ameaças por quantidade — a seleção automática agora é apenas uma ajuda, nunca uma limitação."
       />
-      <div className="grid gap-3 lg:grid-cols-[340px_1fr]">
-        <Card className="p-4">
-          <div>
-            <Label>Fichas consideradas</Label>
-            <p className="mt-1 text-[10px] text-muted-foreground">
-              Entre 2 e 7 participantes. A média usa apenas as fichas marcadas.
-            </p>
-          </div>
-          <div className="mt-3 max-h-52 space-y-2 overflow-y-auto pr-1">
-            {sheets.map((sheet) => {
-              const active = !excludedSheetIds.includes(sheet.id);
-              return (
-                <button
-                  key={sheet.id}
-                  type="button"
-                  aria-pressed={active}
-                  onClick={() => toggleSheet(sheet.id)}
-                  className={`flex w-full items-center justify-between rounded-lg border p-2.5 text-left ${
-                    active
-                      ? "border-primary bg-primary/10"
-                      : "border-border bg-secondary/20"
-                  }`}
-                >
-                  <span className="min-w-0">
-                    <strong className="block truncate text-xs">
-                      {sheet.name}
-                    </strong>
-                    <span className="text-[10px] text-muted-foreground">
-                      Rank {sheet.exposure}
-                    </span>
-                  </span>
-                  {active && (
-                    <Check className="h-4 w-4 shrink-0 text-primary" />
-                  )}
-                </button>
-              );
-            })}
-            {sheets.length === 0 && (
-              <p className="text-xs text-muted-foreground">
-                Nenhuma ficha acessível.
-              </p>
-            )}
-          </div>
-          {!partyValid && (
-            <p className="mt-3 rounded-lg border border-destructive/40 bg-destructive/5 p-2 text-xs text-destructive">
-              Selecione de 2 a 7 fichas para obter uma referência válida.
-            </p>
-          )}
-          <div className="mt-3 grid grid-cols-2 gap-2 text-center">
-            <div className="rounded-lg bg-secondary/40 p-3">
-              <span className="text-[10px] text-muted-foreground">
-                Participantes
-              </span>
-              <strong className="block text-xl">{participants}</strong>
+      <Card className="tadeon-encounter-summary">
+        <div className="tadeon-encounter-summary__reading" data-reading={partyValid ? balance.reading : "invalid"}>
+          <span>Leitura atual</span>
+          <strong>
+            {!partyValid
+              ? "Complete o grupo"
+              : selectedThreats.length
+                ? balance.reading
+                : "Aguardando ameaças"}
+          </strong>
+          <small>
+            {partyValid
+              ? `Referência de Magnitude ${balance.reference}`
+              : "Use entre 2 e 7 participantes"}
+          </small>
+        </div>
+        <div className="tadeon-encounter-summary__metrics">
+          {[
+            ["Participantes", participants],
+            ["Rank médio", rankAverage.toFixed(1)],
+            ["Ameaças", selectedThreats.length],
+            ["Magnitude", combinedMagnitude.total],
+          ].map(([label, value]) => (
+            <div key={label}>
+              <span>{label}</span>
+              <strong>{value}</strong>
             </div>
-            <div className="rounded-lg bg-secondary/40 p-3">
-              <span className="text-[10px] text-muted-foreground">
-                Rank médio
-              </span>
-              <strong className="block text-xl">
-                {rankAverage.toFixed(1)}
-              </strong>
+          ))}
+        </div>
+      </Card>
+
+      <div className="tadeon-encounter-composer">
+        <Card className="tadeon-encounter-party">
+          <div className="tadeon-encounter-card-heading">
+            <div>
+              <p className="tadeon-eyebrow">01 · Composição</p>
+              <h3>Grupo participante</h3>
             </div>
+            <span>{participants}/7</span>
           </div>
-          <div className="mt-3 rounded-lg border border-border/60 bg-background/35 p-2 text-[10px] leading-relaxed text-muted-foreground">
-            <p>
-              Média = {rankTotal} ÷ {participants || "N"} ={" "}
-              {rankAverage.toFixed(1)}.
-            </p>
-            {partyValid && (
-              <p>
-                Potencial do grupo = média × fator de {participants}{" "}
-                participantes = {balance.potential.toFixed(1)}. Referência =
-                máx. entre participantes e piso(potencial ÷ 5) + 1.
-              </p>
-            )}
-          </div>
-          <div className="mt-3 rounded-lg border border-primary/30 bg-primary/5 p-3 text-center">
-            <span className="text-xs text-muted-foreground">Referência</span>
-            <strong className="block font-cinzel text-lg text-primary">
-              {!partyValid
-                ? "Grupo inválido"
-                : selected.length
-                  ? `Mag. ${balance.reference} · ${balance.reading}`
-                  : `Mag. ${balance.reference} · selecione ameaças`}
-            </strong>
-          </div>
-        </Card>
-        <Card className="p-4">
-          <h3 className="font-cinzel font-bold">Ameaças do encontro</h3>
-          <div className="mt-3 grid gap-2 sm:grid-cols-2">
-            {threats.map((threat) => {
-              const active = selectedIds.includes(threat.id);
-              return (
+
+          <section className="tadeon-encounter-source">
+            <div className="tadeon-encounter-source__heading">
+              <div>
+                <strong>Fichas da campanha</strong>
+                <small>Rank lido automaticamente</small>
+              </div>
+              {sheets.length > 0 && (
                 <button
-                  key={threat.id}
                   type="button"
-                  aria-pressed={active}
                   onClick={() =>
-                    setSelectedIds(
-                      active
-                        ? selectedIds.filter((id) => id !== threat.id)
-                        : [...selectedIds, threat.id],
+                    setSelectedSheetIds(
+                      selectedSheetIds.length === sheets.length ? [] : sheets.map((sheet) => sheet.id),
                     )
                   }
-                  className={`flex items-center justify-between rounded-lg border p-3 text-left ${active ? "border-primary bg-primary/10" : "border-border"}`}
                 >
-                  <span>
-                    <strong className="block text-sm">{threat.name}</strong>
-                    <span className="text-xs text-muted-foreground">
-                      Magnitude {threat.magnitude}
-                    </span>
-                  </span>
-                  {active && <Check className="h-4 w-4 text-primary" />}
+                  {selectedSheetIds.length === sheets.length ? "Limpar" : "Todas"}
                 </button>
+              )}
+            </div>
+            <div className="tadeon-encounter-roster">
+              {sheets.map((sheet) => {
+                const active = selectedSheetIds.includes(sheet.id);
+                return (
+                  <button
+                    key={sheet.id}
+                    type="button"
+                    aria-pressed={active}
+                    onClick={() => toggleSheet(sheet.id)}
+                    className="tadeon-encounter-member"
+                  >
+                    <span className="tadeon-encounter-member__check">
+                      {active ? <Check /> : null}
+                    </span>
+                    <span className="min-w-0">
+                      <strong>{sheet.name || "Ficha sem nome"}</strong>
+                      <small>Rank {sheet.exposure}</small>
+                    </span>
+                  </button>
+                );
+              })}
+              {sheets.length === 0 && <p>Nenhuma ficha acessível.</p>}
+            </div>
+          </section>
+
+          <section className="tadeon-encounter-source">
+            <div className="tadeon-encounter-source__heading">
+              <div>
+                <strong>NPCs aliados</strong>
+                <small>Informe o Rank de referência desta cena</small>
+              </div>
+            </div>
+            <div className="tadeon-encounter-roster">
+              {npcs.map((npc) => {
+                const active = selectedNpcIds.includes(npc.id);
+                return (
+                  <div key={npc.id} className="tadeon-encounter-npc" data-active={active}>
+                    <button type="button" aria-pressed={active} onClick={() => toggleNpc(npc.id)}>
+                      <span className="tadeon-encounter-member__check">
+                        {active ? <Check /> : null}
+                      </span>
+                      <span className="min-w-0">
+                        <strong>{npc.name}</strong>
+                        <small>{npc.classification}</small>
+                      </span>
+                    </button>
+                    {active && (
+                      <label>
+                        <span>Rank ref.</span>
+                        <Input
+                          type="number"
+                          min={0}
+                          max={100}
+                          step={5}
+                          value={npcRankReferences[npc.id] ?? 0}
+                          onChange={(event) =>
+                            setNpcRankReferences((current) => ({
+                              ...current,
+                              [npc.id]: Math.max(0, Number(event.target.value) || 0),
+                            }))
+                          }
+                        />
+                      </label>
+                    )}
+                  </div>
+                );
+              })}
+              {npcs.length === 0 && <p>Nenhum NPC cadastrado.</p>}
+            </div>
+          </section>
+
+          <section className="tadeon-encounter-source tadeon-encounter-manual">
+            <div className="tadeon-encounter-source__heading">
+              <div>
+                <strong>Participantes sem cadastro</strong>
+                <small>Convidados, aliados temporários ou fichas externas</small>
+              </div>
+            </div>
+            <div className="tadeon-encounter-manual__fields">
+              <label>
+                <span>Quantidade</span>
+                <Input
+                  type="number"
+                  min={0}
+                  max={7}
+                  value={additionalParticipants}
+                  onChange={(event) =>
+                    setAdditionalParticipants(
+                      Math.max(0, Math.min(7, Number(event.target.value) || 0)),
+                    )
+                  }
+                />
+              </label>
+              <label>
+                <span>Rank médio</span>
+                <Input
+                  type="number"
+                  min={0}
+                  max={100}
+                  step={5}
+                  value={additionalRank}
+                  disabled={additionalParticipants === 0}
+                  onChange={(event) =>
+                    setAdditionalRank(Math.max(0, Number(event.target.value) || 0))
+                  }
+                />
+              </label>
+            </div>
+          </section>
+
+          {!partyValid && (
+            <p className="tadeon-encounter-warning" role="status">
+              O grupo precisa ter entre 2 e 7 participantes, somando fichas, NPCs e entradas
+              manuais.
+            </p>
+          )}
+        </Card>
+
+        <Card className="tadeon-encounter-threats">
+          <div className="tadeon-encounter-card-heading">
+            <div>
+              <p className="tadeon-eyebrow">02 · Oposição</p>
+              <h3>Ameaças do encontro</h3>
+            </div>
+            <span>{selectedThreats.length}</span>
+          </div>
+          <div className="tadeon-encounter-threat-list">
+            {threats.map((threat) => {
+              const quantity = threatQuantities[threat.id] ?? 0;
+              return (
+                <div key={threat.id} className="tadeon-encounter-threat" data-active={quantity > 0}>
+                  <div className="min-w-0">
+                    <strong>{threat.name}</strong>
+                    <span>
+                      Magnitude {threat.magnitude} · {threat.archetype}
+                    </span>
+                  </div>
+                  <div className="tadeon-encounter-threat__quantity">
+                    <Button
+                      type="button"
+                      size="icon"
+                      variant="ghost"
+                      aria-label={`Remover ${threat.name}`}
+                      disabled={quantity === 0}
+                      onClick={() => updateThreatQuantity(threat.id, quantity - 1)}
+                    >
+                      <Minus />
+                    </Button>
+                    <output aria-label={`${quantity} ${threat.name}`}>{quantity}</output>
+                    <Button
+                      type="button"
+                      size="icon"
+                      variant={quantity > 0 ? "outline" : "default"}
+                      aria-label={`Adicionar ${threat.name}`}
+                      onClick={() => updateThreatQuantity(threat.id, quantity + 1)}
+                    >
+                      <Plus />
+                    </Button>
+                  </div>
+                </div>
               );
             })}
             {threats.length === 0 && (
-              <p className="text-xs text-muted-foreground">
-                Cadastre ameaças antes de montar o encontro.
-              </p>
+              <p className="tadeon-encounter-empty">Cadastre ameaças antes de montar o encontro.</p>
             )}
           </div>
-          <div className="mt-3 flex items-center justify-between border-t border-border pt-3 text-sm">
-            <span>Magnitude combinada</span>
-            <strong>{combinedMagnitude.total}</strong>
+          <div className="tadeon-encounter-total">
+            <span>
+              <small>Magnitude combinada</small>
+              <strong>{combinedMagnitude.total}</strong>
+            </span>
+            <span>
+              <small>Potencial do grupo</small>
+              <strong>{partyValid ? balance.potential.toFixed(1) : "—"}</strong>
+            </span>
           </div>
           {combinedMagnitude.adjustment > 0 && (
-            <p className="mt-1 text-right text-[10px] text-muted-foreground">
-              soma {combinedMagnitude.base} + {combinedMagnitude.adjustment}{" "}
-              pela economia de ações
+            <p className="tadeon-encounter-adjustment">
+              Soma {combinedMagnitude.base} + {combinedMagnitude.adjustment} pela economia de ações.
             </p>
           )}
+          <details className="tadeon-encounter-formula">
+            <summary>Como esta leitura foi calculada</summary>
+            <p>
+              Rank médio = {rankTotal} ÷ {participants || "N"} = {rankAverage.toFixed(1)}.
+              {partyValid
+                ? ` Potencial = média × fator de ${participants} participantes (${balance.potential.toFixed(1)}). A referência considera também o tamanho do grupo.`
+                : " Complete a composição para calcular o potencial."}
+            </p>
+          </details>
         </Card>
       </div>
-      <Card className="flex items-start gap-3 p-4 text-xs text-muted-foreground">
+      <Card className="tadeon-encounter-context flex items-start gap-3 p-4 text-xs text-muted-foreground">
         <Activity className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
         <p>
           Fatores de terreno, informação, surpresa, recursos e objetivo da cena

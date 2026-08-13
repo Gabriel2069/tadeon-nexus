@@ -188,7 +188,7 @@ const TOOL_LABELS: Record<TabletopToolMode, string> = {
 };
 
 const TOOL_HINTS: Record<TabletopToolMode, string> = {
-  select: "Arraste uma área · alças transformam · Espaço move a cena",
+  select: "Toque e arraste itens · área vazia seleciona · Espaço move a cena",
   pan: "Arraste para navegar · Ctrl/Cmd + roda amplia · duplo clique enquadra",
   measure: "Arraste para medir · Alt ignora a grade · R ativa a régua",
   draw: "Arraste para desenhar · Shift cria uma linha · D ativa o traço",
@@ -1595,7 +1595,7 @@ export function TabletopWorkspace({
             type="button"
             size="icon"
             variant="outline"
-            className="lg:hidden"
+            className="min-[1180px]:hidden"
             aria-label={mobilePanelOpen ? "Fechar painel" : "Abrir painel"}
             aria-expanded={mobilePanelOpen}
             onClick={() => {
@@ -1803,12 +1803,12 @@ export function TabletopWorkspace({
       <div
         className={`tadeon-tabletop-workbench grid min-h-0 flex-1 grid-cols-1 ${
           panelCollapsed
-            ? "lg:grid-cols-[minmax(0,1fr)_3.75rem]"
-            : "lg:grid-cols-[minmax(0,1fr)_23rem] 2xl:grid-cols-[minmax(0,1fr)_25rem]"
+            ? "min-[1180px]:grid-cols-[minmax(0,1fr)_3.75rem]"
+            : "min-[1180px]:grid-cols-[minmax(0,1fr)_23rem] 2xl:grid-cols-[minmax(0,1fr)_25rem]"
         }`}
       >
         <section
-          className="tadeon-tabletop-stage relative min-h-[64svh] overflow-hidden sm:min-h-[70vh] lg:min-h-0"
+          className="tadeon-tabletop-stage relative min-h-[64svh] overflow-hidden sm:min-h-[70vh] min-[1180px]:min-h-0"
           data-projection={projectionMode}
           data-tool={toolMode}
           onClick={closeContext}
@@ -2507,6 +2507,30 @@ export function TabletopWorkspace({
               <span className="ml-auto hidden text-[11px] text-muted-foreground xl:block">
                 {TOOL_HINTS[toolMode]}
               </span>
+              {projectionMode === "isometric" && (
+                <div className="tadeon-tabletop-orbit-controls" aria-label="Órbita rápida da câmera 3D">
+                  <ToolbarButton
+                    label="Girar câmera 45 graus à esquerda"
+                    onClick={() =>
+                      setViewOrientation((current) =>
+                        normalizeTabletopViewOrientation({ ...current, yaw: current.yaw - 45 }),
+                      )
+                    }
+                  >
+                    <RotateCcw className="h-4 w-4" />
+                  </ToolbarButton>
+                  <ToolbarButton
+                    label="Girar câmera 45 graus à direita"
+                    onClick={() =>
+                      setViewOrientation((current) =>
+                        normalizeTabletopViewOrientation({ ...current, yaw: current.yaw + 45 }),
+                      )
+                    }
+                  >
+                    <RotateCw className="h-4 w-4" />
+                  </ToolbarButton>
+                </div>
+              )}
               <ToolbarButton
                 label={
                   projectionMode === "isometric" ? "Voltar à planta 2D" : "Abrir visão espacial 3D"
@@ -2552,14 +2576,14 @@ export function TabletopWorkspace({
         {mobilePanelOpen && (
           <button
             type="button"
-            className="tadeon-tabletop-panel-backdrop lg:hidden"
+            className="tadeon-tabletop-panel-backdrop min-[1180px]:hidden"
             onClick={() => setMobilePanelOpen(false)}
             aria-label="Fechar painel da Mesa"
           />
         )}
 
         <aside
-          className={`${mobilePanelOpen ? "block" : "hidden"} tadeon-tabletop-panel max-h-[72svh] overflow-y-auto border-t border-border/70 p-4 lg:block lg:max-h-none lg:border-l lg:border-t-0`}
+          className={`${mobilePanelOpen ? "block" : "hidden"} tadeon-tabletop-panel max-h-[72svh] overflow-y-auto border-t border-border/70 p-4 min-[1180px]:block min-[1180px]:max-h-none min-[1180px]:border-l min-[1180px]:border-t-0`}
           data-collapsed={panelCollapsed ? "true" : "false"}
           aria-label="Painel de edição da Mesa Nexus"
         >
@@ -2595,7 +2619,7 @@ export function TabletopWorkspace({
               type="button"
               size="icon"
               variant="ghost"
-              className="hidden lg:inline-flex"
+              className="hidden min-[1180px]:inline-flex"
               onClick={() => setPanelCollapsed(true)}
               aria-label="Recolher painel contextual"
               title="Recolher painel"
@@ -2606,7 +2630,7 @@ export function TabletopWorkspace({
               type="button"
               size="sm"
               variant="ghost"
-              className="lg:hidden"
+              className="min-[1180px]:hidden"
               onClick={() => setMobilePanelOpen(false)}
             >
               Fechar
@@ -3123,7 +3147,7 @@ export function TabletopWorkspace({
                 onActivateFogTool={(operation, shape) => {
                   setFogToolShape(shape);
                   setToolMode(operation === "reveal" ? "fog_reveal" : "fog_hide");
-                  if (window.innerWidth < 1024) setMobilePanelOpen(false);
+                  if (window.innerWidth < 1180) setMobilePanelOpen(false);
                 }}
                 onPreview={previewVisibility}
                 onSaved={installVisibility}
@@ -3579,7 +3603,7 @@ export function TabletopWorkspace({
                       </select>
                     </div>
                     {primary.assetUrl ? (
-                      <div>
+                      <div className="tadeon-tabletop-billboard-controls space-y-2">
                         <Label htmlFor="entity-render-mode" className="text-[10px] uppercase">
                           Imagem no 3D
                         </Label>
@@ -3601,6 +3625,56 @@ export function TabletopWorkspace({
                           Tokens e objetos usam o modo vertical por padrão; pisos, tiles e mapas
                           permanecem planos.
                         </p>
+                        {(primaryProperties.render_mode ?? "billboard") !== "flat" && (
+                          <div className="grid grid-cols-2 gap-2 rounded-lg border border-border/60 bg-secondary/15 p-2.5">
+                            <div>
+                              <Label htmlFor="entity-billboard-anchor" className="text-[10px] uppercase">
+                                Ponto de apoio
+                              </Label>
+                              <select
+                                id="entity-billboard-anchor"
+                                value={primaryProperties.billboard_anchor === "center" ? "center" : "base"}
+                                disabled={!editable}
+                                onChange={(event) => updateProperties({ billboard_anchor: event.target.value })}
+                                className="h-9 w-full rounded-md border border-input bg-background px-2 text-xs"
+                              >
+                                <option value="base">Pés no chão</option>
+                                <option value="center">Centro da imagem</option>
+                              </select>
+                            </div>
+                            <div>
+                              <Label htmlFor="entity-visual-scale" className="text-[10px] uppercase">
+                                Escala visual
+                              </Label>
+                              <Input
+                                id="entity-visual-scale"
+                                type="number"
+                                min={0.5}
+                                max={2.5}
+                                step={0.05}
+                                disabled={!editable}
+                                value={Number(primaryProperties.visual_scale ?? 1)}
+                                onChange={(event) =>
+                                  updateProperties({
+                                    visual_scale: Math.max(0.5, Math.min(2.5, Number(event.target.value) || 1)),
+                                  })
+                                }
+                                className="h-9"
+                              />
+                            </div>
+                            <label className="col-span-2 flex min-h-10 items-center justify-between gap-3 rounded-md bg-background/60 px-2 text-[11px]">
+                              <span>
+                                <strong className="block font-medium text-foreground">Sombra de contato</strong>
+                                <small className="text-[10px] text-muted-foreground">Firma o token no piso em qualquer ângulo.</small>
+                              </span>
+                              <Switch
+                                checked={primaryProperties.ground_shadow !== false}
+                                disabled={!editable}
+                                onCheckedChange={(ground_shadow) => updateProperties({ ground_shadow })}
+                              />
+                            </label>
+                          </div>
+                        )}
                       </div>
                     ) : null}
                     {primaryAnimated && (

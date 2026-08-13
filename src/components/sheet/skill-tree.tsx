@@ -1,8 +1,22 @@
 import { useMemo, useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Check, ChevronDown, Lock, Minus, Plus, Sparkles } from "lucide-react";
+import {
+  Check,
+  ChevronDown,
+  Gauge,
+  Lock,
+  Minus,
+  Plus,
+  Sparkles,
+  WandSparkles,
+} from "lucide-react";
 import { toast } from "sonner";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
 import type {
   Attributes,
   SkillBranch,
@@ -187,50 +201,70 @@ export function SkillTreeTab({
 
   return (
     <div className="tadeon-sheet-skill-tree space-y-4">
-      <Card className="tadeon-skill-summary overflow-hidden border-primary/30 bg-[linear-gradient(135deg,rgba(113,107,123,.18),transparent_58%)] p-4">
-        <div className="grid grid-cols-1 gap-3 text-center sm:grid-cols-3 sm:gap-4">
-          <div>
-            <div className="text-xs text-muted-foreground uppercase">PM Totais</div>
-            <div className="font-cinzel text-3xl font-bold text-primary">{totalPM}</div>
+      <Card className="tadeon-skill-summary tadeon-skill-ledger">
+        <div className="tadeon-skill-ledger__heading">
+          <div className="tadeon-skill-ledger__icon" aria-hidden="true">
+            <WandSparkles />
           </div>
-          <div>
-            <div className="text-xs text-muted-foreground uppercase">Gastos</div>
-            <div className="font-cinzel text-3xl font-bold text-muted-foreground">{pmSpent}</div>
+          <div className="min-w-0 flex-1">
+            <p className="tadeon-eyebrow">Trilha de aprimoramento</p>
+            <h2>Potencial em movimento</h2>
+            <p>Distribua PM entre recursos vitais e habilidades liberadas pelo Rank atual.</p>
           </div>
-          <div>
-            <div className="text-xs text-muted-foreground uppercase">Disponíveis</div>
-            <div
-              className={`font-cinzel text-3xl font-bold ${remaining >= 0 ? "text-emerald-400" : "text-red-400"}`}
-            >
-              {remaining}
-            </div>
+          <div className="tadeon-skill-ledger__rank">
+            <Gauge aria-hidden="true" />
+            <span>Rank</span>
+            <strong>{currentRank}</strong>
           </div>
         </div>
-        <div className="mt-3 w-full h-2 bg-secondary rounded-full overflow-hidden">
+        <div className="tadeon-skill-ledger__metrics">
+          <div>
+            <span>PM totais</span>
+            <strong>{totalPM}</strong>
+          </div>
+          <div>
+            <span>Investidos</span>
+            <strong>{pmSpent}</strong>
+          </div>
+          <div data-state={remaining >= 0 ? "available" : "overdrawn"}>
+            <span>Disponíveis</span>
+            <strong>{remaining}</strong>
+          </div>
+        </div>
+        <div className="tadeon-skill-ledger__progress" aria-label={`${pmSpent} de ${totalPM} PM investidos`}>
           <div
-            className="h-full bg-gradient-to-r from-primary to-accent"
+            className="tadeon-skill-ledger__progress-value"
             style={{ width: `${Math.min(100, (pmSpent / Math.max(1, totalPM)) * 100)}%` }}
           />
         </div>
       </Card>
 
-      <Card className="tadeon-skill-summary p-4">
-        <h3 className="font-cinzel font-bold mb-3">Aprimorar Atributos Vitais</h3>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+      <Card className="tadeon-skill-summary tadeon-vital-upgrades">
+        <div className="tadeon-vital-upgrades__heading">
+          <div>
+            <p className="tadeon-eyebrow">Aprimoramentos permanentes</p>
+            <h3>Atributos vitais</h3>
+          </div>
+          <p>Os limites acompanham automaticamente o Rank da ficha.</p>
+        </div>
+        <div className="tadeon-vital-upgrades__grid">
           {UPGRADE_KEYS.map(({ key, label, gain, color }) => {
             const level = statUpgrades[key];
             const cost = upgradeCostAt(upgradeCosts[key], level);
             const maxLevel = maxUpgradeLevel(key);
             const atLimit = level >= maxLevel;
             return (
-              <div key={key} className="bg-secondary/40 rounded-lg p-3 text-center">
-                <div className={`text-xs font-bold uppercase ${color}`}>{label}</div>
-                <div className="text-2xl font-bold my-1">+{level * gain}</div>
-                <div className="text-[10px] text-muted-foreground">{level} aprimoramento(s)</div>
-                <div className="text-[10px] text-muted-foreground mb-2">
+              <div key={key} className="tadeon-vital-upgrade" data-upgrade={key}>
+                <div className="tadeon-vital-upgrade__topline">
+                  <span className={`tadeon-vital-upgrade__label ${color}`}>{label}</span>
+                  <span>{level}/{maxLevel}</span>
+                </div>
+                <div className="tadeon-vital-upgrade__value">+{level * gain}</div>
+                <div className="tadeon-vital-upgrade__detail">{level} aprimoramento(s)</div>
+                <div className="tadeon-vital-upgrade__cost">
                   {atLimit ? `limite no Rank ${currentRank}` : `próximo: ${cost} PM`}
                 </div>
-                <div className="flex gap-1">
+                <div className="tadeon-vital-upgrade__actions">
                   <Button
                     size="sm"
                     variant="ghost"
@@ -272,17 +306,22 @@ export function SkillTreeTab({
         <Card
           key={branch.id}
           className="tadeon-skill-branch overflow-hidden border-border/70"
-          style={{ boxShadow: `inset 3px 0 0 ${branch.color}` }}
+          style={{ "--branch-color": branch.color } as React.CSSProperties}
         >
-          <div className="border-b border-border/60 bg-secondary/20 px-5 py-4">
-            <h3 className="font-cinzel font-bold flex items-center gap-2">
-              <span className="w-2.5 h-2.5 rounded-full" style={{ background: branch.color }} />
-              Ramo {branch.label}
-            </h3>
-            <p className="mt-1 text-xs text-muted-foreground">
+          <div className="tadeon-skill-branch__heading">
+            <span className="tadeon-skill-branch__mark" aria-hidden="true" />
+            <div className="min-w-0 flex-1">
+              <p className="tadeon-eyebrow">Ramo de habilidade</p>
+              <h3>{branch.label}</h3>
+              <p>
               Seis escolhas por Tier. Requisitos mecânicos são validados; requisitos narrativos
               permanecem registrados para a mesa.
-            </p>
+              </p>
+            </div>
+            <div className="tadeon-skill-branch__progress">
+              <strong>{branch.nodes.filter((node) => purchased.has(node.id)).length}</strong>
+              <span>de {branch.nodes.length}</span>
+            </div>
           </div>
           {branch.nodes.length === 0 ? (
             <p className="p-5 text-xs text-muted-foreground italic">Sem habilidades neste ramo.</p>
@@ -295,13 +334,13 @@ export function SkillTreeTab({
                   const tierKey = `${branch.id}:${tierRank}`;
                   const collapsed = collapsedTiers.has(tierKey);
                   return (
-                    <section key={tierRank}>
-                      <button
-                        type="button"
-                        className="mb-3 flex w-full items-center gap-3 text-left"
-                        aria-expanded={!collapsed}
-                        onClick={() => toggleTier(tierKey)}
-                      >
+                    <Collapsible
+                      key={tierRank}
+                      open={!collapsed}
+                      onOpenChange={() => toggleTier(tierKey)}
+                      className="tadeon-skill-tier"
+                    >
+                      <CollapsibleTrigger className="tadeon-skill-tier__trigger">
                         <span className="font-mono text-[10px] uppercase tracking-[0.24em] text-primary">
                           Tier {["I", "II", "III", "IV"][tierIndex]}
                         </span>
@@ -313,23 +352,25 @@ export function SkillTreeTab({
                           className={`h-4 w-4 text-muted-foreground transition-transform ${collapsed ? "" : "rotate-180"}`}
                           aria-hidden="true"
                         />
-                      </button>
-                      {!collapsed && (
-                        <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
-                          {tierNodes.map((node) => {
+                      </CollapsibleTrigger>
+                      <CollapsibleContent className="tadeon-skill-tier__content">
+                        <div className="tadeon-skill-tier__content-inner grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+                          {tierNodes.map((node, nodeIndex) => {
                             const isPurchased = purchased.has(node.id);
                             const check = canBuyNode(node);
                             const locked = !isPurchased && !check.ok;
                             return (
                               <div
                                 key={node.id}
-                                className={`tadeon-skill-node flex min-h-56 flex-col rounded-xl border p-4 transition-[background-color,border-color,box-shadow,transform] duration-150 ease-[var(--ease-out)] ${
+                                className={`tadeon-skill-node flex min-h-56 flex-col rounded-xl border p-4 ${
                                   isPurchased
                                     ? "bg-primary/10 border-primary/50 shadow-[0_12px_40px_-28px_var(--primary)]"
                                     : locked
                                       ? "bg-secondary/20 border-border/70"
                                       : "bg-secondary/35 border-border hover:border-primary/50"
                                 }`}
+                                style={{ "--skill-index": nodeIndex } as React.CSSProperties}
+                                data-state={isPurchased ? "purchased" : locked ? "locked" : "available"}
                               >
                                 <div className="flex items-start justify-between gap-2">
                                   <h4 className="font-cinzel font-bold text-sm">{node.name}</h4>
@@ -386,8 +427,8 @@ export function SkillTreeTab({
                             );
                           })}
                         </div>
-                      )}
-                    </section>
+                      </CollapsibleContent>
+                    </Collapsible>
                   );
                 })}
             </div>

@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   inverseIsometricEntityMatrix,
+  tabletopBillboardAppearance,
   tabletopEntityRenderMode,
 } from "./isometric-billboard";
 import { tabletopProjectionMatrix } from "./tabletop-projection";
@@ -100,5 +101,25 @@ describe("isometric billboards", () => {
         properties: { render_mode: "flat" },
       }),
     ).toBe("flat");
+  });
+
+  it("normalizes billboard anchoring, scale and contact shadow", () => {
+    expect(tabletopBillboardAppearance({ properties: {} })).toEqual({
+      anchor: "base",
+      scale: 1,
+      shadow: true,
+    });
+    expect(
+      tabletopBillboardAppearance({
+        properties: {
+          billboard_anchor: "center",
+          visual_scale: 99,
+          ground_shadow: false,
+        },
+      }),
+    ).toEqual({ anchor: "center", scale: 2.5, shadow: false });
+    expect(
+      tabletopBillboardAppearance({ properties: { visual_scale: 0.1 } }),
+    ).toMatchObject({ scale: 0.5 });
   });
 });

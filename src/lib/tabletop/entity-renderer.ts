@@ -8,6 +8,7 @@ import {
 } from "./tabletop-projection";
 import {
   inverseIsometricEntityMatrix,
+  tabletopBillboardAppearance,
   tabletopEntityRenderMode,
 } from "./isometric-billboard";
 import { readTabletopDrawingPoints } from "./tabletop-drawing";
@@ -124,7 +125,10 @@ export class EntityRenderer {
   private createDisplay(entity: TabletopEntity) {
     const display = new Container({ label: entity.id });
     display.addChild(new Graphics({ label: "shape" }));
+    display.addChild(new Graphics({ label: "ground-shadow" }));
     display.addChild(new Graphics({ label: "outline" }));
+    const hud = new Container({ label: "hud" });
+    hud.addChild(new Graphics({ label: "label-plate" }));
     const label = new Text({
       text: entity.label,
       style: {
@@ -135,7 +139,7 @@ export class EntityRenderer {
       },
     });
     label.label = "label";
-    display.addChild(label);
+    hud.addChild(label);
     const badge = new Text({
       text: "",
       style: {
@@ -146,7 +150,7 @@ export class EntityRenderer {
       },
     });
     badge.label = "badge";
-    display.addChild(badge);
+    hud.addChild(badge);
     const icons = new Text({
       text: "",
       style: {
@@ -156,8 +160,9 @@ export class EntityRenderer {
       },
     });
     icons.label = "icons";
-    display.addChild(icons);
-    display.addChild(new Graphics({ label: "bar" }));
+    hud.addChild(icons);
+    hud.addChild(new Graphics({ label: "bar" }));
+    display.addChild(hud);
 
     return display;
   }
@@ -174,6 +179,20 @@ export class EntityRenderer {
     const outline = display.getChildByLabel("outline") as Graphics;
     outline.clear();
     const properties = entityProperties(entity.properties);
+    const renderMode = tabletopEntityRenderMode(entity);
+    const billboardAppearance = tabletopBillboardAppearance(entity);
+    const billboard =
+      projection === "isometric" && renderMode === "billboard" && Boolean(entity.assetUrl);
+    const groundShadow = display.getChildByLabel("ground-shadow") as Graphics;
+    groundShadow.clear();
+    groundShadow.visible = billboard && billboardAppearance.shadow;
+    if (groundShadow.visible) {
+      const shadowWidth = Math.max(12, entity.width * 0.42 * billboardAppearance.scale);
+      const shadowDepth = Math.max(4, Math.min(entity.height * 0.13, shadowWidth * 0.34));
+      groundShadow
+        .ellipse(entity.width / 2, entity.height, shadowWidth, shadowDepth)
+        .fill({ color: 0x020305, alpha: 0.34 });
+    }
     const drawingPoints =
       entity.type === "drawing"
         ? readTabletopDrawingPoints(properties.drawing_points)
@@ -240,33 +259,31 @@ export class EntityRenderer {
           .slice(0, 4)
       : [];
     const badgeParts = [status, ...conditions].filter(Boolean).slice(0, 2);
-    const badge = display.getChildByLabel("badge") as Text;
+    const hud = display.getChildByLabel("hud") as Container;
+    const labelPlate = hud.getChildByLabel("label-plate") as Graphics;
+    labelPlate.clear();
+    const badge = hud.getChildByLabel("badge") as Text;
     badge.text = badgeParts.join(" · ").slice(0, 30);
     badge.visible =
       !isPathDrawing && badge.text.length > 0 && entity.width >= 56;
-    badge.position.set(7, 5);
 
-    const iconText = display.getChildByLabel("icons") as Text;
+    const iconText = hud.getChildByLabel("icons") as Text;
     iconText.text = icons.join(" ").slice(0, 20);
     iconText.visible =
       !isPathDrawing && iconText.text.length > 0 && entity.width >= 48;
-    iconText.position.set(
-      Math.max(6, entity.width - iconText.width - 7),
-      badge.visible ? 19 : 5,
-    );
 
     const barMax = Math.max(0, finiteNumber(properties.bar_max));
     const barCurrent = Math.max(
       0,
       Math.min(barMax, finiteNumber(properties.bar_current)),
     );
-    const bar = display.getChildByLabel("bar") as Graphics;
+    const bar = hud.getChildByLabel("bar") as Graphics;
     bar.clear();
     bar.visible =
       !isPathDrawing && barMax > 0 && entity.width >= 32 && entity.height >= 32;
-    if (bar.visible) {
+    const ratio = barMax > 0 ? barCurrent / barMax : 0;
+    if (bar.visible && projection !== "isometric") {
       const width = Math.max(8, entity.width - 10);
-      const ratio = barMax > 0 ? barCurrent / barMax : 0;
       bar.roundRect(5, entity.height - 9, width, 5, 3).fill({
         color: 0x191d24,
         alpha: 0.92,
@@ -277,14 +294,54 @@ export class EntityRenderer {
           .fill({ color: 0x57b77a, alpha: 1 });
     }
 
-    const label = display.getChildByLabel("label") as Text;
+    const label = hud.getChildByLabel("label") as Text;
     const maxLabelLength = Math.max(4, Math.floor((entity.width - 16) / 7));
     label.text =
       entity.label.length > maxLabelLength
         ? `${entity.label.slice(0, Math.max(1, maxLabelLength - 1))}…`
         : entity.label;
     label.visible = !isPathDrawing;
-    label.position.set(8, Math.max(5, entity.height - (bar.visible ? 30 : 24)));
+    hud.visible = !isPathDrawing;
+    if (!isPathDrawing && projection === "isometric") {
+      const matrix = inverseIsometricEntityMatrix(
+        entity.rotation,
+        tabletopProjectionMatrix("isometric", orientation),
+      );
+      hud.setFromMatrix(
+        new Matrix(matrix.a, matrix.b, matrix.c, matrix.d, entity.width / 2, entity.height + 7),
+      );
+      label.position.set(-label.width / 2, 5);
+      const imageHeight = billboard
+        ? entity.height * billboardAppearance.scale
+        : entity.height * 0.5;
+      badge.position.set(-badge.width / 2, -imageHeight - 14);
+      iconText.position.set(-iconText.width / 2, badge.visible ? -imageHeight : -12);
+      if (bar.visible) {
+        const width = Math.max(34, Math.min(150, entity.width * billboardAppearance.scale));
+        bar.roundRect(-width / 2, -3, width, 5, 3).fill({
+          color: 0x11151b,
+          alpha: 0.94,
+        });
+        if (ratio > 0)
+          bar
+            .roundRect(-width / 2, -3, width * ratio, 5, 3)
+            .fill({ color: 0x57b77a, alpha: 1 });
+      }
+    } else {
+      hud.setFromMatrix(new Matrix());
+      badge.position.set(7, 5);
+      iconText.position.set(
+        Math.max(6, entity.width - iconText.width - 7),
+        badge.visible ? 19 : 5,
+      );
+      label.position.set(8, Math.max(5, entity.height - (bar.visible ? 30 : 24)));
+    }
+    if (label.visible) {
+      labelPlate
+        .roundRect(label.x - 5, label.y - 2, label.width + 10, label.height + 4, 6)
+        .fill({ color: 0x080b10, alpha: 0.76 })
+        .stroke({ color: selected ? 0xf3be63 : 0xd9d7a4, alpha: selected ? 0.62 : 0.14, width: 1 });
+    }
 
     const assetFrame = display.getChildByLabel("asset") as Container | null;
     const sprite = assetFrame?.getChildByLabel("asset-sprite") as Sprite | null;
@@ -309,18 +366,20 @@ export class EntityRenderer {
             void resource.play().catch(() => undefined);
         }
       }
-      const billboard =
-        projection === "isometric" &&
-        tabletopEntityRenderMode(entity) === "billboard";
-      sprite.width = entity.width;
-      sprite.height = entity.height;
+      sprite.width = billboard ? entity.width * billboardAppearance.scale : entity.width;
+      sprite.height = billboard ? entity.height * billboardAppearance.scale : entity.height;
       if (billboard) {
         const matrix = inverseIsometricEntityMatrix(
           entity.rotation,
           tabletopProjectionMatrix("isometric", orientation),
         );
-        sprite.anchor.set(0.5);
+        sprite.anchor.set(
+          0.5,
+          billboardAppearance.anchor === "base" ? 1 : 0.5,
+        );
         sprite.position.set(0, 0);
+        const anchorY =
+          billboardAppearance.anchor === "base" ? entity.height : entity.height / 2;
         assetFrame.setFromMatrix(
           new Matrix(
             matrix.a,
@@ -328,7 +387,7 @@ export class EntityRenderer {
             matrix.c,
             matrix.d,
             entity.width / 2,
-            entity.height / 2,
+            anchorY,
           ),
         );
       } else {
@@ -400,7 +459,7 @@ export class EntityRenderer {
       }
       const assetFrame = new Container({ label: "asset" });
       assetFrame.addChild(assetSprite);
-      display.addChildAt(assetFrame, 1);
+      display.addChildAt(assetFrame, 2);
       this.invalidate();
     } catch (error) {
       if (this.assetUrls.get(entity.id) !== url) return;

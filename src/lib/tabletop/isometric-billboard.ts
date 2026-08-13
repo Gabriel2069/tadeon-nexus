@@ -1,6 +1,13 @@
 import type { TabletopEntity } from "./types";
 
 export type TabletopEntityRenderMode = "flat" | "billboard";
+export type TabletopBillboardAnchor = "base" | "center";
+
+export interface TabletopBillboardAppearance {
+  anchor: TabletopBillboardAnchor;
+  scale: number;
+  shadow: boolean;
+}
 
 export interface TabletopMatrixCoefficients {
   a: number;
@@ -40,6 +47,21 @@ export function tabletopEntityRenderMode(
   return entity.assetUrl && DEFAULT_BILLBOARD_TYPES.has(entity.type)
     ? "billboard"
     : "flat";
+}
+
+export function tabletopBillboardAppearance(
+  entity: Pick<TabletopEntity, "properties">,
+): TabletopBillboardAppearance {
+  const properties = entityProperties(entity.properties);
+  const anchor = properties.billboard_anchor === "center" ? "center" : "base";
+  const configuredScale = Number(properties.visual_scale);
+  return {
+    anchor,
+    scale: Number.isFinite(configuredScale)
+      ? Math.max(0.5, Math.min(2.5, configuredScale))
+      : 1,
+    shadow: properties.ground_shadow !== false,
+  };
 }
 
 export function inverseIsometricEntityMatrix(

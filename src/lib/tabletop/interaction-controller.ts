@@ -141,6 +141,18 @@ type PointerAction =
 const MIN_ENTITY_SIZE = 8;
 const HANDLE_HIT_RADIUS = 11;
 
+export function shouldStartTabletopPan({
+  button,
+  spacePressed,
+  mode,
+}: {
+  button: number;
+  spacePressed: boolean;
+  mode: TabletopToolMode;
+}) {
+  return button === 1 || spacePressed || mode === "pan";
+}
+
 export class InteractionController {
   private pointerId: number | null = null;
   private pointerAction: PointerAction | null = null;
@@ -262,16 +274,11 @@ export class InteractionController {
         : null;
     const hit =
       structureHit || lightHit || fogHit ? undefined : candidateEntityHit;
-    const temporaryPan =
-      event.button === 1 ||
-      this.spacePressed ||
-      this.mode === "pan" ||
-      (event.pointerType === "touch" &&
-        !hit &&
-        !structureHit &&
-        !lightHit &&
-        !fogHit &&
-        this.mode === "select");
+    const temporaryPan = shouldStartTabletopPan({
+      button: event.button,
+      spacePressed: this.spacePressed,
+      mode: this.mode,
+    });
 
     this.pointerId = event.pointerId;
     this.lastScreen = screen;
