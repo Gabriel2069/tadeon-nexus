@@ -143,6 +143,7 @@ export function TabletopVisibilityPanel({
   const disabled = !editable || !sceneId || saving;
   const fallbackLevelId = levels[0]?.id ?? "";
   const currentLevelId = activeLevelId ?? fallbackLevelId;
+  const currentLevel = levels.find((level) => level.id === currentLevelId);
   const levelWalls = state.walls.filter(
     (wall) => (wall.levelId || fallbackLevelId) === currentLevelId,
   );
@@ -171,6 +172,28 @@ export function TabletopVisibilityPanel({
       fogStrokes: state.fogStrokes.map((stroke) =>
         stroke.id === id ? { ...stroke, ...patch } : stroke,
       ),
+    });
+  const moveFogStroke = (id: string, axis: "x" | "y", nextValue: number) =>
+    update({
+      fogStrokes: state.fogStrokes.map((stroke) => {
+        if (stroke.id !== id || stroke.points.length === 0) return stroke;
+        const anchor = stroke.points[0];
+        const limit = axis === "x" ? sceneWidth : sceneHeight;
+        const target = Math.max(0, Math.min(limit, nextValue));
+        const delta = target - anchor[axis];
+        return {
+          ...stroke,
+          points: stroke.points.map((point) => ({
+            ...point,
+            [axis]: point[axis] + delta,
+          })),
+        };
+      }),
+    });
+  const fitRoofToLevel = (id: string) =>
+    updateWall(id, {
+      baseElevation: 0,
+      height: Math.max(8, currentLevel?.height ?? 192),
     });
 
   const setWallType = (id: string, wallType: TabletopStructureType) =>
@@ -582,6 +605,19 @@ export function TabletopVisibilityPanel({
                       ))}
                     </div>
                   )}
+                  {structureFamily(wall.wallType) === "roof" && (
+                    <Button
+                      type="button"
+                      size="sm"
+                      variant="outline"
+                      className="w-full justify-center"
+                      disabled={disabled}
+                      onClick={() => fitRoofToLevel(wall.id)}
+                    >
+                      <Sparkles aria-hidden="true" />
+                      Encaixar telhado ao andar
+                    </Button>
+                  )}
                   <details className="tadeon-visibility__precision">
                     <summary>
                       Posição precisa <ChevronDown aria-hidden="true" />
@@ -770,6 +806,44 @@ export function TabletopVisibilityPanel({
                       }
                     />
                   </div>
+                  <div className="grid grid-cols-3 gap-1">
+                    <button
+                      type="button"
+                      className="min-h-9 rounded-md border border-border/60 bg-secondary/20 px-2 text-[10px] hover:bg-secondary"
+                      disabled={disabled}
+                      onClick={() =>
+                        updateLight(light.id, {
+                          x: sceneWidth / 2,
+                          y: sceneHeight / 2,
+                        })
+                      }
+                    >
+                      Centralizar
+                    </button>
+                    <button
+                      type="button"
+                      className="min-h-9 rounded-md border border-border/60 bg-secondary/20 px-2 text-[10px] hover:bg-secondary"
+                      disabled={disabled}
+                      onClick={() => updateLight(light.id, { elevation: 0 })}
+                    >
+                      Luz baixa
+                    </button>
+                    <button
+                      type="button"
+                      className="min-h-9 rounded-md border border-border/60 bg-secondary/20 px-2 text-[10px] hover:bg-secondary"
+                      disabled={disabled}
+                      onClick={() =>
+                        updateLight(light.id, {
+                          elevation: Math.max(
+                            8,
+                            (currentLevel?.height ?? 192) * 0.72,
+                          ),
+                        })
+                      }
+                    >
+                      Luz alta
+                    </button>
+                  </div>
                   <label className="tadeon-visibility__intensity">
                     <span>Intensidade</span>
                     <output>{Math.round(light.intensity * 100)}%</output>
@@ -829,6 +903,28 @@ export function TabletopVisibilityPanel({
                       <button
                         type="button"
                         disabled={disabled}
+                        aria-label={
+                          stroke.operation === "reveal"
+                            ? "Trocar para ocultar"
+                            : "Trocar para revelar"
+                        }
+                        title={
+                          stroke.operation === "reveal"
+                            ? "Trocar para ocultar"
+                            : "Trocar para revelar"
+                        }
+                        onClick={() =>
+                          updateFog(stroke.id, {
+                            operation:
+                              stroke.operation === "reveal" ? "hide" : "reveal",
+                          })
+                        }
+                      >
+                        <RotateCcw aria-hidden="true" />
+                      </button>
+                      <button
+                        type="button"
+                        disabled={disabled}
                         aria-label="Excluir operação de névoa"
                         onClick={() =>
                           update({
@@ -849,25 +945,13 @@ export function TabletopVisibilityPanel({
                         label="Centro X"
                         value={stroke.points[0]?.x ?? 0}
                         disabled={disabled}
-                        onChange={(x) =>
-                          updateFog(stroke.id, {
-                            points: stroke.points.map((point, pointIndex) =>
-                              pointIndex === 0 ? { ...point, x } : point,
-                            ),
-                          })
-                        }
+                        onChange={(x) => moveFogStroke(stroke.id, "x", x)}
                       />
                       <NumberField
                         label="Centro Y"
                         value={stroke.points[0]?.y ?? 0}
                         disabled={disabled}
-                        onChange={(y) =>
-                          updateFog(stroke.id, {
-                            points: stroke.points.map((point, pointIndex) =>
-                              pointIndex === 0 ? { ...point, y } : point,
-                            ),
-                          })
-                        }
+                        onChange={(y) => moveFogStroke(stroke.id, "y", y)}
                       />
                       <NumberField
                         label="Raio"
