@@ -71,7 +71,9 @@ const TabsList = React.forwardRef<
   const listRef = React.useRef<React.ElementRef<typeof TabsPrimitive.List>>(null);
   const [indicator, setIndicator] = React.useState({
     left: 0,
+    top: 0,
     width: 0,
+    height: 0,
     visible: false,
   });
 
@@ -85,11 +87,37 @@ const TabsList = React.forwardRef<
       return;
     }
 
+    const listRect = list.getBoundingClientRect();
+    const activeRect = active.getBoundingClientRect();
+    const left = activeRect.left - listRect.left + list.scrollLeft;
+    const top = activeRect.top - listRect.top + list.scrollTop;
+
     setIndicator({
-      left: active.offsetLeft,
-      width: active.offsetWidth,
+      left,
+      top,
+      width: activeRect.width,
+      height: activeRect.height,
       visible: true,
     });
+
+    const horizontalPadding = 12;
+    const outsideLeft = activeRect.left < listRect.left + horizontalPadding;
+    const outsideRight = activeRect.right > listRect.right - horizontalPadding;
+    if (outsideLeft || outsideRight) {
+      const targetLeft = Math.max(
+        0,
+        list.scrollLeft +
+          (activeRect.left - listRect.left) -
+          (list.clientWidth - activeRect.width) / 2,
+      );
+      const reducedMotion =
+        typeof window !== "undefined" &&
+        window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      list.scrollTo({
+        left: targetLeft,
+        behavior: reducedMotion ? "auto" : "smooth",
+      });
+    }
   }, []);
 
   useIsomorphicLayoutEffect(() => {
@@ -136,7 +164,8 @@ const TabsList = React.forwardRef<
         data-visible={indicator.visible ? "true" : "false"}
         style={{
           width: `${indicator.width}px`,
-          transform: `translate3d(${indicator.left}px, 0, 0)`,
+          height: `${indicator.height}px`,
+          transform: `translate3d(${indicator.left}px, ${indicator.top}px, 0)`,
         }}
       />
       {children}

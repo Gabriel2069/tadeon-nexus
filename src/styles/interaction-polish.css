@@ -1,0 +1,827 @@
+/* Tadeon Nexus — global interaction polish
+ * A single motion vocabulary for buttons, tabs, menus and navigation.
+ * This layer is loaded by the shared Button primitive, which AppLayout uses on
+ * every protected workspace. It intentionally relies on individual transform
+ * properties (translate/scale/rotate) so component-specific transforms remain
+ * intact.
+ */
+
+:root {
+  --tadeon-motion-micro: 170ms;
+  --tadeon-motion-select: 300ms;
+  --tadeon-motion-drag: 500ms;
+  --tadeon-ease-spring-soft: cubic-bezier(0.16, 1, 0.3, 1);
+  --tadeon-ease-drag: cubic-bezier(0.22, 0.82, 0.18, 1);
+}
+
+@keyframes tadeon-interaction-icon-settle {
+  0% {
+    scale: 0.82;
+    translate: 0 0.12rem;
+    opacity: 0.62;
+  }
+  58% {
+    scale: 1.11;
+    translate: 0 -0.08rem;
+    opacity: 1;
+  }
+  100% {
+    scale: 1;
+    translate: 0 0;
+    opacity: 1;
+  }
+}
+
+@keyframes tadeon-interaction-icon-orbit {
+  0% {
+    rotate: -7deg;
+    scale: 0.88;
+  }
+  68% {
+    rotate: 17deg;
+    scale: 1.08;
+  }
+  100% {
+    rotate: 0deg;
+    scale: 1;
+  }
+}
+
+@keyframes tadeon-interaction-icon-pin {
+  0% {
+    translate: 0 0;
+    scale: 0.88;
+  }
+  55% {
+    translate: 0 -0.18rem;
+    scale: 1.1;
+  }
+  76% {
+    translate: 0 0.06rem;
+    scale: 0.98;
+  }
+  100% {
+    translate: 0 0;
+    scale: 1;
+  }
+}
+
+@keyframes tadeon-interaction-tab-forward {
+  from {
+    opacity: 0.36;
+    transform: translate3d(0.55rem, 0, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes tadeon-interaction-tab-backward {
+  from {
+    opacity: 0.36;
+    transform: translate3d(-0.55rem, 0, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes tadeon-sidebar-label-arrive {
+  from {
+    opacity: 0;
+    translate: -0.45rem 0;
+  }
+  to {
+    opacity: 1;
+    translate: 0 0;
+  }
+}
+
+/* ---------------------------------------------------------------------
+ * Shared clickable language
+ * ------------------------------------------------------------------ */
+
+.tadeon-shell :where(button, a, [role="button"], [role="tab"], [role="menuitem"]) {
+  min-width: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.tadeon-shell
+  :where(
+    button,
+    a,
+    [role="button"],
+    [role="tab"],
+    [data-slot="button"],
+    [data-slot="tabs-trigger"],
+    [data-slot="toggle"],
+    [data-slot="toggle-group-item"],
+    [data-slot="select-trigger"],
+    [data-slot="dropdown-menu-item"],
+    [data-slot="context-menu-item"],
+    [data-slot="command-item"]
+  )
+  svg:not(.animate-spin):not(.animate-pulse) {
+  flex: 0 0 auto;
+  overflow: visible;
+  transform-origin: center;
+  transition:
+    color var(--tadeon-motion-micro) var(--ease-out),
+    filter var(--tadeon-motion-micro) var(--ease-out),
+    opacity var(--tadeon-motion-micro) var(--ease-out),
+    translate var(--tadeon-motion-micro) var(--tadeon-ease-spring-soft),
+    scale var(--tadeon-motion-micro) var(--tadeon-ease-spring-soft),
+    rotate var(--tadeon-motion-micro) var(--tadeon-ease-spring-soft);
+}
+
+/* Button sheen used to require overflow:hidden, which also clipped animated
+ * icons near an edge. Keep icons free and constrain the sheen itself. */
+.tadeon-shell [data-slot="button"] {
+  overflow: visible;
+}
+
+.tadeon-shell [data-slot="button"]::before {
+  border-radius: inherit;
+  clip-path: inset(0 round 0.7rem);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .tadeon-shell
+    :where(
+      button,
+      a,
+      [role="button"],
+      [role="tab"],
+      [data-slot="button"],
+      [data-slot="tabs-trigger"],
+      [data-slot="toggle"],
+      [data-slot="toggle-group-item"],
+      [data-slot="select-trigger"]
+    ):not(:disabled):active {
+    scale: 0.985;
+  }
+
+  .tadeon-shell
+    :where(
+      button,
+      a,
+      [role="button"],
+      [role="tab"],
+      [data-slot="button"],
+      [data-slot="tabs-trigger"],
+      [data-slot="toggle"],
+      [data-slot="toggle-group-item"],
+      [data-slot="select-trigger"]
+    ):not(:disabled):active
+    svg:not(.animate-spin):not(.animate-pulse) {
+    translate: 0 0.06rem;
+    scale: 0.88;
+  }
+
+  .tadeon-shell
+    :where(
+      button,
+      a,
+      [role="button"],
+      [role="tab"],
+      [data-slot="button"],
+      [data-slot="tabs-trigger"],
+      [data-slot="toggle"],
+      [data-slot="toggle-group-item"]
+    ):is(
+      [aria-current="page"],
+      [aria-pressed="true"],
+      [aria-selected="true"],
+      [data-selected="true"],
+      [data-state="active"],
+      [data-state="on"]
+    )
+    svg:not(.animate-spin):not(.animate-pulse) {
+    animation: tadeon-interaction-icon-settle var(--tadeon-motion-select)
+      var(--tadeon-ease-spring-soft) both;
+  }
+
+  /* Icons whose meaning benefits from a characteristic gesture. */
+  .tadeon-shell
+    :where(button, a, [role="button"], [role="tab"]):hover
+    :is(
+      .lucide-settings,
+      .lucide-cog,
+      .lucide-refresh-cw,
+      .lucide-rotate-cw,
+      .lucide-rotate-ccw
+    ):not(.animate-spin) {
+    rotate: 14deg;
+    scale: 1.06;
+  }
+
+  .tadeon-shell
+    :where(button, a, [role="button"], [role="tab"]):active
+    :is(
+      .lucide-settings,
+      .lucide-cog,
+      .lucide-refresh-cw,
+      .lucide-rotate-cw,
+      .lucide-rotate-ccw
+    ):not(.animate-spin) {
+    rotate: -8deg;
+    scale: 0.88;
+  }
+
+  .tadeon-shell
+    :where(button, a, [role="button"], [role="tab"]):is(
+      [aria-current="page"],
+      [aria-pressed="true"],
+      [data-state="active"],
+      [data-state="on"]
+    )
+    :is(.lucide-settings, .lucide-cog, .lucide-refresh-cw):not(.animate-spin) {
+    animation: tadeon-interaction-icon-orbit 360ms var(--tadeon-ease-spring-soft) both;
+  }
+
+  .tadeon-shell
+    :where(button, a, [role="button"], [role="tab"]):hover
+    :is(.lucide-pin, .lucide-map-pin, .lucide-map-pinned, .lucide-bookmark) {
+    translate: 0 -0.15rem;
+    scale: 1.08;
+  }
+
+  .tadeon-shell
+    :where(button, a, [role="button"], [role="tab"]):is(
+      [aria-current="page"],
+      [aria-pressed="true"],
+      [data-state="active"],
+      [data-state="on"]
+    )
+    :is(.lucide-pin, .lucide-map-pin, .lucide-map-pinned, .lucide-bookmark) {
+    animation: tadeon-interaction-icon-pin 340ms var(--tadeon-ease-spring-soft) both;
+  }
+
+  .tadeon-shell
+    :where(button, a, [role="button"], [role="tab"]):hover
+    :is(.lucide-chevron-right, .lucide-arrow-right, .lucide-chevrons-right) {
+    translate: 0.13rem 0;
+  }
+
+  .tadeon-shell
+    :where(button, a, [role="button"], [role="tab"]):hover
+    :is(.lucide-chevron-left, .lucide-arrow-left, .lucide-chevrons-left) {
+    translate: -0.13rem 0;
+  }
+
+  .tadeon-shell
+    :where(button, a, [role="button"], [role="tab"]):hover
+    :is(.lucide-chevron-up, .lucide-arrow-up) {
+    translate: 0 -0.13rem;
+  }
+
+  .tadeon-shell
+    :where(button, a, [role="button"], [role="tab"]):hover
+    :is(.lucide-chevron-down, .lucide-arrow-down) {
+    translate: 0 0.13rem;
+  }
+
+  .tadeon-shell
+    :where(button, a, [role="button"], [role="tab"]):hover
+    :is(.lucide-plus, .lucide-x, .lucide-trash, .lucide-trash-2) {
+    rotate: 8deg;
+    scale: 1.07;
+  }
+
+  .tadeon-shell
+    :where(button, a, [role="button"], [role="tab"]):hover
+    :is(
+      .lucide-eye,
+      .lucide-eye-off,
+      .lucide-search,
+      .lucide-sparkles,
+      .lucide-lightbulb
+    ) {
+    translate: 0 -0.08rem;
+    scale: 1.08;
+  }
+
+  .tadeon-shell
+    :where(button, a, [role="button"], [role="tab"]):hover
+    :is(.lucide-save, .lucide-download, .lucide-monitor-down) {
+    translate: 0 0.1rem;
+    scale: 1.04;
+  }
+
+  .tadeon-shell
+    :where(button, a, [role="button"], [role="tab"]):hover
+    :is(.lucide-menu, .lucide-more-horizontal, .lucide-more-vertical) {
+    scale: 1.12 1;
+  }
+}
+
+/* ---------------------------------------------------------------------
+ * Sliding selection — Tabs
+ * The Tabs primitive computes real geometry. This layer makes that geometry
+ * visible as a single pill that physically travels from one option to another.
+ * ------------------------------------------------------------------ */
+
+.tadeon-shell [data-slot="tabs-list"] {
+  --tadeon-tabs-accent: var(
+    --tadeon-control-accent,
+    var(--tadeon-section-accent, var(--section-accent, var(--primary)))
+  );
+  position: relative;
+  isolation: isolate;
+}
+
+.tadeon-shell [data-slot="tabs-list"] > [data-slot="tabs-indicator"] {
+  position: absolute;
+  z-index: 0;
+  top: 0 !important;
+  bottom: auto !important;
+  left: 0;
+  min-width: 0;
+  border: 1px solid color-mix(in srgb, var(--tadeon-tabs-accent) 30%, var(--border));
+  border-radius: 0.72rem 0.25rem 0.72rem 0.25rem;
+  opacity: 0;
+  background:
+    linear-gradient(
+      118deg,
+      color-mix(in srgb, var(--tadeon-tabs-accent) 17%, transparent),
+      transparent 72%
+    ),
+    color-mix(in srgb, var(--tadeon-surface-raised, var(--secondary)) 94%, transparent);
+  box-shadow:
+    0 16px 34px -28px var(--tadeon-tabs-accent),
+    inset 0 -1px color-mix(in srgb, var(--tadeon-tabs-accent) 42%, transparent),
+    inset 0 1px rgb(255 255 255 / 7%);
+  pointer-events: none;
+  transition:
+    width 340ms var(--tadeon-ease-drag),
+    height 240ms var(--ease-out),
+    transform var(--tadeon-motion-drag) var(--tadeon-ease-drag),
+    opacity 130ms var(--ease-out);
+  will-change: width, height, transform;
+}
+
+.tadeon-shell
+  [data-slot="tabs-list"]
+  > [data-slot="tabs-indicator"][data-visible="true"] {
+  opacity: 1;
+}
+
+.tadeon-shell [data-slot="tabs-list"] > [data-slot="tabs-indicator"]::after {
+  position: absolute;
+  top: 28%;
+  bottom: 28%;
+  width: 42%;
+  border-radius: 999px;
+  opacity: 0.42;
+  filter: blur(0.32rem);
+  content: "";
+}
+
+.tadeon-shell
+  [data-slot="tabs"][data-motion-direction="forward"]
+  [data-slot="tabs-indicator"]::after {
+  right: 72%;
+  background: linear-gradient(90deg, transparent, var(--tadeon-tabs-accent));
+}
+
+.tadeon-shell
+  [data-slot="tabs"][data-motion-direction="backward"]
+  [data-slot="tabs-indicator"]::after {
+  left: 72%;
+  background: linear-gradient(90deg, var(--tadeon-tabs-accent), transparent);
+}
+
+.tadeon-shell [data-slot="tabs-trigger"] {
+  z-index: 1;
+  background-color: transparent;
+}
+
+/* Remove per-trigger paint that visually hides the moving pill. */
+.tadeon-shell [data-slot="tabs-trigger"][data-state="active"] {
+  background: transparent !important;
+  box-shadow: none;
+}
+
+.tadeon-shell
+  [data-slot="tabs"][data-motion-direction="forward"]
+  [data-slot="tabs-content"][data-state="active"] {
+  animation: tadeon-interaction-tab-forward var(--motion-panel) var(--ease-out) both;
+}
+
+.tadeon-shell
+  [data-slot="tabs"][data-motion-direction="backward"]
+  [data-slot="tabs-content"][data-state="active"] {
+  animation: tadeon-interaction-tab-backward var(--motion-panel) var(--ease-out) both;
+}
+
+/* Dropdown/context options get a short lateral travel instead of a hard
+ * highlight. It is subtle enough to remain useful on dense inspector menus. */
+.tadeon-shell
+  :where(
+    [data-slot="select-item"],
+    [data-slot="dropdown-menu-item"],
+    [data-slot="dropdown-menu-checkbox-item"],
+    [data-slot="dropdown-menu-radio-item"],
+    [data-slot="dropdown-menu-sub-trigger"],
+    [data-slot="context-menu-item"],
+    [data-slot="context-menu-checkbox-item"],
+    [data-slot="context-menu-radio-item"],
+    [data-slot="context-menu-sub-trigger"],
+    [data-slot="menubar-item"],
+    [data-slot="menubar-checkbox-item"],
+    [data-slot="menubar-radio-item"],
+    [data-slot="command-item"]
+  ) {
+  translate: 0 0;
+  transition:
+    color var(--motion-fast) var(--ease-out),
+    background-color var(--motion-fast) var(--ease-out),
+    border-color var(--motion-fast) var(--ease-out),
+    box-shadow var(--motion-fast) var(--ease-out),
+    translate var(--tadeon-motion-micro) var(--tadeon-ease-spring-soft);
+}
+
+.tadeon-shell
+  :where(
+    [data-slot="select-item"],
+    [data-slot="dropdown-menu-item"],
+    [data-slot="dropdown-menu-checkbox-item"],
+    [data-slot="dropdown-menu-radio-item"],
+    [data-slot="dropdown-menu-sub-trigger"],
+    [data-slot="context-menu-item"],
+    [data-slot="context-menu-checkbox-item"],
+    [data-slot="context-menu-radio-item"],
+    [data-slot="context-menu-sub-trigger"],
+    [data-slot="menubar-item"],
+    [data-slot="menubar-checkbox-item"],
+    [data-slot="menubar-radio-item"],
+    [data-slot="command-item"]
+  ):is(:focus, [data-highlighted], [data-selected="true"], [data-state="checked"]) {
+  translate: 0.16rem 0;
+}
+
+/* ---------------------------------------------------------------------
+ * Sidebar and mobile navigation
+ * ------------------------------------------------------------------ */
+
+.tadeon-sidebar {
+  overflow: visible;
+}
+
+.tadeon-sidebar > .relative.flex.h-full,
+.tadeon-mobile-drawer > .relative.flex.h-full {
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+  overscroll-behavior: contain;
+  scrollbar-gutter: stable;
+}
+
+/* The account/install/logout cluster used to be permanently pinned at the
+ * bottom and stole useful navigation height. Let the whole sidebar scroll as
+ * one document so low-priority actions appear after navigation instead. */
+.tadeon-sidebar .relative.z-10.min-h-0.flex-1.overflow-y-auto,
+.tadeon-mobile-drawer .relative.z-10.min-h-0.flex-1.overflow-y-auto {
+  flex: 0 0 auto !important;
+  overflow: visible !important;
+  padding-right: 0 !important;
+}
+
+.tadeon-sidebar .relative.z-10.shrink-0.space-y-1.border-t,
+.tadeon-mobile-drawer .relative.z-10.shrink-0.space-y-1.border-t {
+  flex: 0 0 auto;
+  margin-top: 0.8rem;
+  padding-top: 0.65rem;
+  padding-bottom: 0.25rem;
+  border-top-color: color-mix(
+    in srgb,
+    var(--section-accent, var(--primary)) 12%,
+    var(--sidebar-border)
+  );
+}
+
+.tadeon-sidebar .relative.z-10.shrink-0.space-y-1.border-t > p.tadeon-mono,
+.tadeon-mobile-drawer .relative.z-10.shrink-0.space-y-1.border-t > p.tadeon-mono {
+  display: none;
+}
+
+.tadeon-primary-nav {
+  position: relative;
+  isolation: isolate;
+  padding: 0.16rem;
+}
+
+.tadeon-primary-nav::before {
+  position: absolute;
+  z-index: -1;
+  top: 3.1rem;
+  bottom: 0.5rem;
+  left: 1.47rem;
+  width: 1px;
+  background: linear-gradient(
+    transparent,
+    color-mix(in srgb, var(--section-accent, var(--primary)) 12%, transparent) 10%,
+    color-mix(in srgb, var(--section-accent, var(--primary)) 5%, transparent) 88%,
+    transparent
+  );
+  pointer-events: none;
+  content: "";
+}
+
+.tadeon-nav-item {
+  isolation: isolate;
+  border-color: transparent;
+  background: transparent;
+  box-shadow: none;
+  transition:
+    color var(--motion-fast) var(--ease-out),
+    border-color var(--motion-fast) var(--ease-out),
+    background-color var(--motion-fast) var(--ease-out),
+    box-shadow var(--motion-fast) var(--ease-out),
+    translate var(--tadeon-motion-micro) var(--tadeon-ease-spring-soft),
+    scale var(--tadeon-motion-micro) var(--tadeon-ease-spring-soft);
+}
+
+.tadeon-nav-item::before {
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  border: 1px solid transparent;
+  border-radius: inherit;
+  opacity: 0;
+  background:
+    linear-gradient(
+      100deg,
+      rgb(var(--section-accent-rgb, 217 215 164) / 9%),
+      transparent 72%
+    ),
+    rgb(255 255 255 / 1.5%);
+  transform: scaleX(0.94);
+  transform-origin: left center;
+  transition:
+    opacity var(--motion-fast) var(--ease-out),
+    border-color var(--motion-fast) var(--ease-out),
+    transform var(--motion-fast) var(--tadeon-ease-spring-soft);
+  pointer-events: none;
+  content: "";
+}
+
+.tadeon-nav-item__icon {
+  position: relative;
+  overflow: visible;
+  border: 1px solid transparent;
+  background: rgb(255 255 255 / 1.6%);
+  box-shadow: inset 0 1px rgb(255 255 255 / 2.5%);
+  transition:
+    color var(--motion-fast) var(--ease-out),
+    border-color var(--motion-fast) var(--ease-out),
+    background-color var(--motion-fast) var(--ease-out),
+    box-shadow var(--motion-fast) var(--ease-out),
+    translate var(--tadeon-motion-micro) var(--tadeon-ease-spring-soft),
+    scale var(--tadeon-motion-micro) var(--tadeon-ease-spring-soft),
+    rotate var(--tadeon-motion-micro) var(--tadeon-ease-spring-soft);
+}
+
+.tadeon-nav-item[aria-current="page"] {
+  border-color: color-mix(
+    in srgb,
+    var(--section-accent, var(--primary)) 19%,
+    transparent
+  );
+  background:
+    linear-gradient(
+      90deg,
+      rgb(var(--section-accent-rgb, 217 215 164) / 12%),
+      rgb(var(--section-accent-rgb, 217 215 164) / 3%) 70%,
+      transparent
+    ),
+    color-mix(in srgb, var(--sidebar-accent) 92%, transparent);
+  box-shadow:
+    inset 2px 0 var(--section-accent, var(--sidebar-primary)),
+    0 14px 34px -30px var(--section-accent, var(--primary));
+}
+
+.tadeon-nav-item[aria-current="page"]::before {
+  opacity: 1;
+  border-color: color-mix(
+    in srgb,
+    var(--section-accent, var(--primary)) 16%,
+    transparent
+  );
+  transform: scaleX(1);
+}
+
+.tadeon-nav-item[aria-current="page"] .tadeon-nav-item__icon {
+  translate: 0.06rem 0;
+  border-color: color-mix(
+    in srgb,
+    var(--section-accent, var(--primary)) 18%,
+    transparent
+  );
+  background: rgb(var(--section-accent-rgb, 217 215 164) / 10%);
+  box-shadow:
+    0 0 0 1px rgb(var(--section-accent-rgb, 217 215 164) / 7%),
+    0 0 18px -12px var(--section-accent, var(--primary));
+}
+
+.tadeon-nav-item:not([data-mini="true"]) > span:last-child {
+  min-width: 0;
+  animation: tadeon-sidebar-label-arrive 230ms var(--ease-out) both;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .tadeon-nav-item:not([aria-current="page"]):hover {
+    color: var(--sidebar-accent-foreground);
+    translate: 0.08rem 0;
+  }
+
+  .tadeon-nav-item:not([aria-current="page"]):hover::before {
+    opacity: 0.72;
+    border-color: color-mix(
+      in srgb,
+      var(--section-accent, var(--primary)) 11%,
+      transparent
+    );
+    transform: scaleX(1);
+  }
+
+  .tadeon-nav-item:hover .tadeon-nav-item__icon {
+    translate: 0 -0.07rem;
+    scale: 1.045;
+    border-color: color-mix(
+      in srgb,
+      var(--section-accent, var(--primary)) 16%,
+      transparent
+    );
+  }
+}
+
+.tadeon-sidebar > button[data-state] {
+  overflow: visible;
+  box-shadow:
+    0 14px 34px -23px rgb(0 0 0 / 95%),
+    0 0 0 1px rgb(var(--section-accent-rgb, 217 215 164) / 5%);
+}
+
+.tadeon-mobile-header__control,
+.tadeon-desktop-toolbar__account,
+.tadeon-mobile-dock__item {
+  overflow: visible;
+}
+
+.tadeon-mobile-dock {
+  max-width: calc(100vw - 0.75rem);
+}
+
+.tadeon-mobile-dock__item {
+  position: relative;
+  isolation: isolate;
+  min-width: 0;
+}
+
+.tadeon-mobile-dock__item::before {
+  position: absolute;
+  z-index: -1;
+  inset: 0.18rem;
+  border-radius: 0.7rem 0.25rem 0.7rem 0.25rem;
+  opacity: 0;
+  background: rgb(var(--section-accent-rgb, 217 215 164) / 8%);
+  transform: scale(0.82);
+  transition:
+    opacity var(--motion-fast) var(--ease-out),
+    transform var(--motion-fast) var(--tadeon-ease-spring-soft);
+  content: "";
+}
+
+.tadeon-mobile-dock__item[aria-current="page"]::before,
+.tadeon-mobile-dock__item[aria-expanded="true"]::before {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* ---------------------------------------------------------------------
+ * Responsive collision / clipping guardrails
+ * ------------------------------------------------------------------ */
+
+[data-radix-popper-content-wrapper] {
+  max-width: calc(100dvw - 0.75rem) !important;
+  max-height: calc(100dvh - 0.75rem) !important;
+}
+
+[data-radix-popper-content-wrapper] > * {
+  max-width: 100% !important;
+  max-height: calc(100dvh - 0.75rem) !important;
+}
+
+.tadeon-shell :where([data-slot="dialog-content"], [data-slot="alert-dialog-content"]) {
+  max-width: calc(100dvw - 0.75rem);
+  max-height: calc(100dvh - 0.75rem);
+  overflow: auto;
+  overscroll-behavior: contain;
+}
+
+.tadeon-shell :where(.flex, .grid) > :where(button, a, [role="button"], div, section, article) {
+  min-width: 0;
+}
+
+.tadeon-shell
+  :where(button, a, [role="button"], [data-slot="tabs-trigger"])
+  > :where(span, strong, small):not(.sr-only) {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.tadeon-master-navigation,
+.tadeon-master-navigation > [role="tablist"] {
+  max-width: 100%;
+}
+
+@media (max-width: 1180px) {
+  .tadeon-master-navigation > [role="tablist"] {
+    flex-wrap: nowrap !important;
+    justify-content: flex-start;
+    overflow-x: auto;
+    overflow-y: hidden;
+    overscroll-behavior-inline: contain;
+    scroll-snap-type: x proximity;
+    scrollbar-width: none;
+  }
+
+  .tadeon-master-navigation > [role="tablist"]::-webkit-scrollbar {
+    display: none;
+  }
+
+  .tadeon-master-navigation__group {
+    flex: 0 0 auto;
+    scroll-snap-align: start;
+  }
+}
+
+@media (max-width: 767px) {
+  .tadeon-primary-nav::before {
+    left: 1.5rem;
+  }
+
+  .tadeon-mobile-drawer {
+    max-width: calc(100dvw - 0.5rem);
+  }
+
+  .tadeon-mobile-drawer > .relative.flex.h-full {
+    padding-bottom: max(0.75rem, env(safe-area-inset-bottom));
+  }
+
+  .tadeon-master-navigation {
+    margin-inline: -0.75rem;
+    padding-inline: 0.75rem;
+  }
+
+  .tadeon-master-navigation [data-slot="tabs-trigger"] {
+    min-height: 2.6rem;
+    max-width: min(78dvw, 14rem);
+  }
+
+  .tadeon-mobile-dock__item > span {
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
+@media (pointer: coarse) {
+  .tadeon-shell
+    :where(button, a, [role="button"], [role="tab"]):active
+    svg:not(.animate-spin):not(.animate-pulse) {
+    translate: 0 0.08rem;
+    scale: 0.86;
+  }
+
+  .tadeon-nav-item,
+  .tadeon-mobile-dock__item {
+    touch-action: manipulation;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tadeon-shell [data-slot="tabs-list"] > [data-slot="tabs-indicator"],
+  .tadeon-shell [data-slot="tabs-content"],
+  .tadeon-shell :where(button, a, [role="button"], [role="tab"]) svg,
+  .tadeon-nav-item,
+  .tadeon-nav-item::before,
+  .tadeon-nav-item__icon,
+  .tadeon-mobile-dock__item::before {
+    animation: none !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .tadeon-shell :where(button, a, [role="button"], [role="tab"]) {
+    scale: 1 !important;
+  }
+
+  .tadeon-shell :where(button, a, [role="button"], [role="tab"]) svg {
+    translate: 0 0 !important;
+    scale: 1 !important;
+    rotate: 0deg !important;
+  }
+}
