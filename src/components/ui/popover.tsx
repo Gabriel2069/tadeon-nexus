@@ -5,9 +5,21 @@ import { cn } from "@/lib/utils";
 
 const Popover = PopoverPrimitive.Root;
 
-const PopoverTrigger = PopoverPrimitive.Trigger;
+const PopoverTrigger = React.forwardRef<
+  React.ElementRef<typeof PopoverPrimitive.Trigger>,
+  React.ComponentPropsWithoutRef<typeof PopoverPrimitive.Trigger>
+>((props, ref) => (
+  <PopoverPrimitive.Trigger ref={ref} data-trigger-slot="popover-trigger" {...props} />
+));
+PopoverTrigger.displayName = PopoverPrimitive.Trigger.displayName;
 
-const PopoverAnchor = PopoverPrimitive.Anchor;
+const PopoverAnchor = React.forwardRef<
+  React.ElementRef<typeof PopoverPrimitive.Anchor>,
+  React.ComponentPropsWithoutRef<typeof PopoverPrimitive.Anchor>
+>((props, ref) => (
+  <PopoverPrimitive.Anchor ref={ref} data-trigger-slot="popover-anchor" {...props} />
+));
+PopoverAnchor.displayName = PopoverPrimitive.Anchor.displayName;
 
 const PopoverContent = React.forwardRef<
   React.ElementRef<typeof PopoverPrimitive.Content>,

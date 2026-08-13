@@ -330,6 +330,7 @@ export function TabletopWorkspace({
   const [paletteLoading, setPaletteLoading] = useState(false);
   const [assetDropType, setAssetDropType] = useState<"token" | "object">("object");
   const [contextMenu, setContextMenu] = useState<ContextMenuState | null>(null);
+  const [presentedContextMenu, setPresentedContextMenu] = useState<ContextMenuState | null>(null);
   const [dossierEntityId, setDossierEntityId] = useState<string | null>(null);
   const [dossierSheetSummary, setDossierSheetSummary] = useState<TabletopSheetSummary | null>(null);
   const [dossierHandout, setDossierHandout] = useState<TabletopParticipantHandout | null>(null);
@@ -370,6 +371,18 @@ export function TabletopWorkspace({
   const [saving, setSaving] = useState(false);
   const [dirty, setDirty] = useState(false);
   const [conflict, setConflict] = useState(false);
+
+  useEffect(() => {
+    if (contextMenu) {
+      setPresentedContextMenu(contextMenu);
+      return;
+    }
+    if (!presentedContextMenu) return;
+
+    const timeout = window.setTimeout(() => setPresentedContextMenu(null), 180);
+    return () => window.clearTimeout(timeout);
+  }, [contextMenu, presentedContextMenu]);
+
   const editable = Boolean(persistedScene && persistedScene.status !== "archived");
   const selected = useMemo(
     () => snapshot.scene.entities.filter((entity) => snapshot.selectedIds.includes(entity.id)),
@@ -1820,7 +1833,7 @@ export function TabletopWorkspace({
           }}
           onDrop={dropPaletteItem}
         >
-          <div ref={hostRef} className="absolute inset-0" />
+          <div ref={hostRef} className="tadeon-tabletop-canvas-host" />
           <div className="tadeon-tabletop-canvas-rail" aria-label="Ferramentas do canvas">
             <span className="tadeon-tabletop-canvas-rail__group-label">Navegar</span>
             <CanvasToolButton
@@ -2509,7 +2522,10 @@ export function TabletopWorkspace({
                 {TOOL_HINTS[toolMode]}
               </span>
               {projectionMode === "isometric" && (
-                <div className="tadeon-tabletop-orbit-controls" aria-label="Órbita rápida da câmera 3D">
+                <div
+                  className="tadeon-tabletop-orbit-controls"
+                  aria-label="Órbita rápida da câmera 3D"
+                >
                   <ToolbarButton
                     label="Girar câmera 45 graus à esquerda"
                     onClick={() =>
@@ -2574,18 +2590,20 @@ export function TabletopWorkspace({
           )}
         </section>
 
-        {mobilePanelOpen && (
-          <button
-            type="button"
-            className="tadeon-tabletop-panel-backdrop min-[1180px]:hidden"
-            onClick={() => setMobilePanelOpen(false)}
-            aria-label="Fechar painel da Mesa"
-          />
-        )}
+        <button
+          type="button"
+          className="tadeon-tabletop-panel-backdrop min-[1180px]:hidden"
+          data-open={mobilePanelOpen ? "true" : "false"}
+          tabIndex={mobilePanelOpen ? 0 : -1}
+          onClick={() => setMobilePanelOpen(false)}
+          aria-label="Fechar painel da Mesa"
+          aria-hidden={!mobilePanelOpen}
+        />
 
         <aside
-          className={`${mobilePanelOpen ? "block" : "hidden"} tadeon-tabletop-panel max-h-[72svh] overflow-y-auto border-t border-border/70 p-4 min-[1180px]:block min-[1180px]:max-h-none min-[1180px]:border-l min-[1180px]:border-t-0`}
+          className="tadeon-tabletop-panel max-h-[72svh] overflow-y-auto border-t border-border/70 p-4 min-[1180px]:block min-[1180px]:max-h-none min-[1180px]:border-l min-[1180px]:border-t-0"
           data-collapsed={panelCollapsed ? "true" : "false"}
+          data-mobile-open={mobilePanelOpen ? "true" : "false"}
           aria-label="Painel de edição da Mesa Nexus"
         >
           <button
@@ -2599,12 +2617,14 @@ export function TabletopWorkspace({
             <PanelRightOpen className="h-4 w-4" />
             <span>Editor</span>
           </button>
-          <div className="flex items-center justify-between gap-2">
-            <div className="flex items-center gap-2">
-              <SlidersHorizontal className="h-4 w-4 text-primary" />
-              <div>
+          <div className="tadeon-tabletop-panel__header">
+            <div className="tadeon-tabletop-panel__identity">
+              <span className="tadeon-tabletop-panel__identity-icon" aria-hidden="true">
+                <SlidersHorizontal className="h-4 w-4" />
+              </span>
+              <div className="min-w-0">
                 <p className="tadeon-eyebrow">Painel contextual</p>
-                <p className="font-cinzel text-base font-semibold">
+                <p className="tadeon-tabletop-panel__title">
                   {panelTab === "library"
                     ? "Montagem"
                     : panelTab === "space"
@@ -2617,42 +2637,60 @@ export function TabletopWorkspace({
                 </p>
               </div>
             </div>
-            <Button
-              type="button"
-              size="icon"
-              variant="ghost"
-              className="hidden min-[1180px]:inline-flex"
-              onClick={() => setPanelCollapsed(true)}
-              aria-label="Recolher painel contextual"
-              title="Recolher painel"
-            >
-              <PanelRightClose className="h-4 w-4" />
-            </Button>
-            <Button
-              type="button"
-              size="sm"
-              variant="ghost"
-              className="min-[1180px]:hidden"
-              onClick={() => setMobilePanelOpen(false)}
-            >
-              Fechar
-            </Button>
+            <div className="tadeon-tabletop-panel__header-actions">
+              <Button
+                type="button"
+                size="icon"
+                variant="ghost"
+                className="hidden min-[1180px]:inline-flex"
+                onClick={() => setPanelCollapsed(true)}
+                aria-label="Recolher painel contextual"
+                title="Recolher painel"
+              >
+                <PanelRightClose className="h-4 w-4" />
+              </Button>
+              <Button
+                type="button"
+                size="sm"
+                variant="ghost"
+                className="min-[1180px]:hidden"
+                onClick={() => setMobilePanelOpen(false)}
+              >
+                Fechar
+              </Button>
+            </div>
           </div>
           <div className="tadeon-tabletop-panel__tabs" role="tablist" aria-label="Áreas do editor">
             {(
               [
-                ["library", "Montagem"],
-                ["space", `Espaço${visibilityDirty ? " · não salvo" : ""}`],
-                ["master", `Mestre${masterEntities.length ? ` · ${masterEntities.length}` : ""}`],
-                ["scene", "Cena"],
-                ["inspector", `Inspetor${selected.length ? ` · ${selected.length}` : ""}`],
+                ["library", "Montar", null, "Biblioteca e montagem"],
+                [
+                  "space",
+                  "Ambiente",
+                  visibilityDirty ? "!" : null,
+                  visibilityDirty ? "Ambiente — alterações não salvas" : "Ambiente",
+                ],
+                [
+                  "master",
+                  "Mestre",
+                  masterEntities.length || null,
+                  `Mestre — ${masterEntities.length} itens reservados`,
+                ],
+                ["scene", "Cena", null, "Configuração da cena"],
+                [
+                  "inspector",
+                  "Editar",
+                  selected.length || null,
+                  `Editar — ${selected.length} itens selecionados`,
+                ],
               ] as const
-            ).map(([tab, label]) => (
+            ).map(([tab, label, badge, accessibleLabel]) => (
               <button
                 key={tab}
                 type="button"
                 role="tab"
                 aria-selected={panelTab === tab}
+                aria-label={accessibleLabel}
                 className="tadeon-tabletop-panel__tab"
                 onClick={() => setPanelTab(tab)}
               >
@@ -2668,6 +2706,11 @@ export function TabletopWorkspace({
                   <SlidersHorizontal className="h-3.5 w-3.5" aria-hidden="true" />
                 )}
                 <span>{label}</span>
+                {badge !== null && (
+                  <small className="tadeon-tabletop-panel__tab-badge" aria-hidden="true">
+                    {badge}
+                  </small>
+                )}
               </button>
             ))}
           </div>
@@ -3632,14 +3675,23 @@ export function TabletopWorkspace({
                         {(primaryProperties.render_mode ?? "billboard") !== "flat" && (
                           <div className="grid grid-cols-2 gap-2 rounded-lg border border-border/60 bg-secondary/15 p-2.5">
                             <div>
-                              <Label htmlFor="entity-billboard-anchor" className="text-[10px] uppercase">
+                              <Label
+                                htmlFor="entity-billboard-anchor"
+                                className="text-[10px] uppercase"
+                              >
                                 Ponto de apoio
                               </Label>
                               <select
                                 id="entity-billboard-anchor"
-                                value={primaryProperties.billboard_anchor === "center" ? "center" : "base"}
+                                value={
+                                  primaryProperties.billboard_anchor === "center"
+                                    ? "center"
+                                    : "base"
+                                }
                                 disabled={!editable}
-                                onChange={(event) => updateProperties({ billboard_anchor: event.target.value })}
+                                onChange={(event) =>
+                                  updateProperties({ billboard_anchor: event.target.value })
+                                }
                                 className="h-9 w-full rounded-md border border-input bg-background px-2 text-xs"
                               >
                                 <option value="base">Pés no chão</option>
@@ -3647,7 +3699,10 @@ export function TabletopWorkspace({
                               </select>
                             </div>
                             <div>
-                              <Label htmlFor="entity-visual-scale" className="text-[10px] uppercase">
+                              <Label
+                                htmlFor="entity-visual-scale"
+                                className="text-[10px] uppercase"
+                              >
                                 Escala visual
                               </Label>
                               <Input
@@ -3660,7 +3715,10 @@ export function TabletopWorkspace({
                                 value={Number(primaryProperties.visual_scale ?? 1)}
                                 onChange={(event) =>
                                   updateProperties({
-                                    visual_scale: Math.max(0.5, Math.min(2.5, Number(event.target.value) || 1)),
+                                    visual_scale: Math.max(
+                                      0.5,
+                                      Math.min(2.5, Number(event.target.value) || 1),
+                                    ),
                                   })
                                 }
                                 className="h-9"
@@ -3668,13 +3726,19 @@ export function TabletopWorkspace({
                             </div>
                             <label className="col-span-2 flex min-h-10 items-center justify-between gap-3 rounded-md bg-background/60 px-2 text-[11px]">
                               <span>
-                                <strong className="block font-medium text-foreground">Sombra de contato</strong>
-                                <small className="text-[10px] text-muted-foreground">Firma o token no piso em qualquer ângulo.</small>
+                                <strong className="block font-medium text-foreground">
+                                  Sombra de contato
+                                </strong>
+                                <small className="text-[10px] text-muted-foreground">
+                                  Firma o token no piso em qualquer ângulo.
+                                </small>
                               </span>
                               <Switch
                                 checked={primaryProperties.ground_shadow !== false}
                                 disabled={!editable}
-                                onCheckedChange={(ground_shadow) => updateProperties({ ground_shadow })}
+                                onCheckedChange={(ground_shadow) =>
+                                  updateProperties({ ground_shadow })
+                                }
                               />
                             </label>
                           </div>
@@ -4242,13 +4306,14 @@ export function TabletopWorkspace({
         }}
       />
 
-      {contextMenu && editable && (
+      {presentedContextMenu && editable && (
         <div
           role="menu"
-          className="fixed z-50 max-h-[calc(100dvh-1rem)] w-56 overflow-y-auto rounded-lg border border-border bg-popover p-1 shadow-2xl"
-          style={{ left: contextMenu.x, top: contextMenu.y }}
+          data-state={contextMenu ? "open" : "closed"}
+          className="tadeon-tabletop-context-menu fixed z-50 max-h-[calc(100dvh-1rem)] w-56 overflow-y-auto rounded-lg border border-border bg-popover p-1 shadow-2xl"
+          style={{ left: presentedContextMenu.x, top: presentedContextMenu.y }}
         >
-          {contextMenu.lightId && selectedLight && (
+          {presentedContextMenu.lightId && selectedLight && (
             <div className="space-y-2 border-b border-border/60 p-2">
               <div className="flex items-center gap-2">
                 <Lightbulb className="h-4 w-4 text-primary" />
@@ -4333,13 +4398,13 @@ export function TabletopWorkspace({
               </div>
             </div>
           )}
-          {contextMenu.entityId && (
+          {presentedContextMenu.entityId && (
             <button
               type="button"
               className="min-h-11 w-full rounded px-3 py-2 text-left text-sm font-medium text-primary hover:bg-secondary"
               onClick={() => {
                 const entity = snapshot.scene.entities.find(
-                  (item) => item.id === contextMenu.entityId,
+                  (item) => item.id === presentedContextMenu.entityId,
                 );
                 if (entity) openEntityDossier(entity);
                 closeContext();
@@ -4358,7 +4423,7 @@ export function TabletopWorkspace({
           >
             Duplicar
           </button>
-          {!contextMenu.lightId && (
+          {!presentedContextMenu.lightId && (
             <>
               <button
                 type="button"

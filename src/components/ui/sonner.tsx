@@ -1,18 +1,15 @@
 import { Toaster as Sonner } from "sonner";
-import {
-  AlertTriangle,
-  CheckCircle2,
-  Info,
-  LoaderCircle,
-  XCircle,
-} from "lucide-react";
+import { AlertTriangle, CheckCircle2, Info, LoaderCircle, XCircle } from "lucide-react";
 
 type ToasterProps = React.ComponentProps<typeof Sonner>;
 
 const Toaster = ({ ...props }: ToasterProps) => {
   return (
     <Sonner
+      {...props}
       className="tadeon-toaster"
+      theme="dark"
+      richColors={false}
       closeButton
       expand
       visibleToasts={4}
@@ -42,7 +39,6 @@ const Toaster = ({ ...props }: ToasterProps) => {
           loading: "tadeon-toast--loading",
         },
       }}
-      {...props}
     />
   );
 };

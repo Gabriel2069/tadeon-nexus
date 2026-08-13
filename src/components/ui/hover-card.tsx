@@ -8,15 +8,17 @@ const HoverCard = ({
   closeDelay = 120,
   ...props
 }: React.ComponentProps<typeof HoverCardPrimitive.Root>) => (
-  <HoverCardPrimitive.Root
-    openDelay={openDelay}
-    closeDelay={closeDelay}
-    {...props}
-  />
+  <HoverCardPrimitive.Root openDelay={openDelay} closeDelay={closeDelay} {...props} />
 );
 HoverCard.displayName = HoverCardPrimitive.Root.displayName;
 
-const HoverCardTrigger = HoverCardPrimitive.Trigger;
+const HoverCardTrigger = React.forwardRef<
+  React.ElementRef<typeof HoverCardPrimitive.Trigger>,
+  React.ComponentPropsWithoutRef<typeof HoverCardPrimitive.Trigger>
+>((props, ref) => (
+  <HoverCardPrimitive.Trigger ref={ref} data-trigger-slot="hover-card-trigger" {...props} />
+));
+HoverCardTrigger.displayName = HoverCardPrimitive.Trigger.displayName;
 
 const HoverCardContent = React.forwardRef<
   React.ElementRef<typeof HoverCardPrimitive.Content>,

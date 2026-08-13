@@ -43,12 +43,7 @@ import { usePwaInstall } from "@/components/pwa-registration";
 import { getAuthErrorMessage } from "@/lib/auth-errors";
 import { isApplicationAdministrator } from "@/lib/permissions";
 import { loadFeatureFlags } from "@/lib/feature-flag-repository";
-import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetTitle,
-} from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetDescription, SheetTitle } from "@/components/ui/sheet";
 import "@/styles/desktop-studio.css";
 import "@/styles/workspace-polish.css";
 
@@ -91,10 +86,7 @@ function storeNavigationFlags(userId: string, flags: NavigationFlags) {
     // Feature visibility is not an authorization boundary. Persisting this harmless
     // presentation cache prevents O Nexus and Mesa Nexus from briefly disappearing
     // on every new tab while the secure flag repository is refreshed.
-    window.localStorage.setItem(
-      `${NAV_FLAGS_KEY}:${userId}`,
-      JSON.stringify(flags),
-    );
+    window.localStorage.setItem(`${NAV_FLAGS_KEY}:${userId}`, JSON.stringify(flags));
   } catch {
     // Navegação continua funcional mesmo quando o armazenamento está indisponível.
   }
@@ -160,10 +152,8 @@ export function AppLayout({ children }: { children: ReactNode }) {
 
   const RoleIcon = role ? roleIcons[role] : Eye;
   const isMestre = isApplicationAdministrator({ appRole: role });
-  const knowledgeEnabled =
-    navigationFlags.knowledge || path.startsWith("/nexus");
-  const tabletopEnabled =
-    navigationFlags.tabletop || path.startsWith("/tabletop");
+  const knowledgeEnabled = navigationFlags.knowledge || path.startsWith("/nexus");
+  const tabletopEnabled = navigationFlags.tabletop || path.startsWith("/tabletop");
   const currentSection = path.startsWith("/sheet/")
     ? "Ficha"
     : path.startsWith("/nexus-tools")
@@ -189,8 +179,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
     "Consulta offline": "Leitura local protegida",
     Ficha: "Registro vivo da personagem",
   };
-  const showMobileDock =
-    !path.startsWith("/tabletop") && !path.startsWith("/sheet/");
+  const showMobileDock = !path.startsWith("/tabletop") && !path.startsWith("/sheet/");
 
   const handleSignOut = async () => {
     try {
@@ -202,10 +191,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
   };
 
   const renderNav = (mini: boolean, enableSearchShortcut: boolean) => (
-    <nav
-      className="tadeon-primary-nav space-y-1"
-      aria-label="Navegação principal"
-    >
+    <nav className="tadeon-primary-nav space-y-1" aria-label="Navegação principal">
       <GlobalSearch
         compact={mini}
         enableShortcut={enableSearchShortcut}
@@ -291,9 +277,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
   }) => (
     <div className="relative flex h-full min-h-0 flex-col overflow-hidden p-3 pb-[max(0.75rem,env(safe-area-inset-bottom))]">
       <ThreadField className="text-sidebar-primary opacity-40" />
-      <div
-        className={`relative z-10 mb-4 shrink-0 ${mini ? "text-center" : ""}`}
-      >
+      <div className={`relative z-10 mb-4 shrink-0 ${mini ? "text-center" : ""}`}>
         {mini ? (
           <BrandMark className="mx-auto h-9 w-9 text-primary" />
         ) : (
@@ -508,10 +492,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
       </div>
 
       {showMobileDock && (
-        <nav
-          className="tadeon-mobile-dock md:hidden"
-          aria-label="Atalhos principais"
-        >
+        <nav className="tadeon-mobile-dock md:hidden" aria-label="Atalhos principais">
           <Link
             to="/"
             aria-current={path === "/" ? "page" : undefined}
@@ -545,9 +526,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
             <Link
               to="/master-panel"
               search={{ tab: undefined }}
-              aria-current={
-                path.startsWith("/master-panel") ? "page" : undefined
-              }
+              aria-current={path.startsWith("/master-panel") ? "page" : undefined}
               className="tadeon-mobile-dock__item"
             >
               <Lightbulb className="h-5 w-5" />
@@ -629,6 +608,7 @@ function NavItem({
       to={to}
       onClick={onClick}
       aria-current={active ? "page" : undefined}
+      data-mini={mini ? "true" : "false"}
       title={mini ? label : undefined}
       className={`tadeon-nav-item group flex min-h-11 items-center gap-3 rounded-xl px-3 py-2.5 text-sm transition-[color,background-color,border-color,box-shadow,transform] duration-150 ease-[var(--ease-out)] active:scale-[.98] ${
         mini ? "justify-center px-2" : ""
@@ -638,7 +618,9 @@ function NavItem({
           : "text-sidebar-foreground/70 hover:bg-sidebar-accent/70 hover:text-sidebar-accent-foreground"
       }`}
     >
-      {icon}
+      <span className="tadeon-nav-item__icon" aria-hidden="true">
+        {icon}
+      </span>
       {!mini && <span className="truncate">{label}</span>}
     </Link>
   );
@@ -707,10 +689,7 @@ function PwaInstallDialog({
     }
   };
 
-  const manualTitle =
-    platform === "ios"
-      ? "Adicionar à Tela de Início"
-      : "Instalar pelo navegador";
+  const manualTitle = platform === "ios" ? "Adicionar à Tela de Início" : "Instalar pelo navegador";
   const manualDescription =
     platform === "ios"
       ? "No Safari, toque em Compartilhar e depois em “Adicionar à Tela de Início”."
@@ -728,14 +707,11 @@ function PwaInstallDialog({
             <MonitorDown className="h-6 w-6" />
           </div>
           <p className="tadeon-eyebrow">Tadeon no seu dispositivo</p>
-          <DialogTitle className="font-cinzel text-2xl">
-            Instalar como aplicativo
-          </DialogTitle>
+          <DialogTitle className="font-cinzel text-2xl">Instalar como aplicativo</DialogTitle>
         </DialogHeader>
         <p className="text-sm leading-relaxed text-muted-foreground">
-          Abra o Nexus em tela própria, com acesso rápido pela área de trabalho
-          ou tela inicial e uma experiência mais próxima de um aplicativo
-          nativo.
+          Abra o Nexus em tela própria, com acesso rápido pela área de trabalho ou tela inicial e
+          uma experiência mais próxima de um aplicativo nativo.
         </p>
 
         {status === "installable" ? (
@@ -745,8 +721,8 @@ function PwaInstallDialog({
               Pronto para instalar
             </div>
             <p className="mt-1.5 text-xs leading-relaxed text-muted-foreground">
-              O navegador verificou o aplicativo. A instalação não altera suas
-              contas nem os dados do Nexus.
+              O navegador verificou o aplicativo. A instalação não altera suas contas nem os dados
+              do Nexus.
             </p>
           </div>
         ) : (
@@ -822,10 +798,7 @@ function AccountDialog({
         const { data: u } = await supabase.auth.getUser();
         if (u.user) {
           const [{ error }, { error: metadataError }] = await Promise.all([
-            supabase
-              .from("profiles")
-              .update({ full_name: trimmedName })
-              .eq("id", u.user.id),
+            supabase.from("profiles").update({ full_name: trimmedName }).eq("id", u.user.id),
             supabase.auth.updateUser({ data: { full_name: trimmedName } }),
           ]);
           if (error) throw error;
@@ -837,9 +810,7 @@ function AccountDialog({
           email: trimmedEmail,
         });
         if (error) throw error;
-        toast.info(
-          "Enviamos as confirmações necessárias para trocar o e-mail.",
-        );
+        toast.info("Enviamos as confirmações necessárias para trocar o e-mail.");
       }
       if (password) {
         if (password.length < 8) {
@@ -880,9 +851,7 @@ function AccountDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-lg">
         <DialogHeader>
-          <DialogTitle className="font-cinzel">
-            Configurações da Conta
-          </DialogTitle>
+          <DialogTitle className="font-cinzel">Configurações da Conta</DialogTitle>
         </DialogHeader>
         <div className="space-y-4">
           <div className="rounded-xl border border-border/70 bg-secondary/20 p-4">
@@ -898,8 +867,7 @@ function AccountDialog({
               className="mt-1"
             />
             <p className="mt-1.5 text-[10px] text-muted-foreground">
-              A troca só termina após as confirmações de segurança enviadas por
-              e-mail.
+              A troca só termina após as confirmações de segurança enviadas por e-mail.
             </p>
             <div className="mt-3">
               <Label className="text-xs">Nome de exibição</Label>
@@ -916,9 +884,7 @@ function AccountDialog({
               <ShieldCheck className="h-4 w-4 text-primary" />
               <p className="text-sm font-semibold">Segurança</p>
             </div>
-            <p className="text-xs text-muted-foreground">
-              Trocar senha (opcional)
-            </p>
+            <p className="text-xs text-muted-foreground">Trocar senha (opcional)</p>
             <div>
               <Label className="text-xs">Nova senha</Label>
               <Input
@@ -958,15 +924,9 @@ function AccountDialog({
               <p className="text-sm font-semibold">Seus dados</p>
             </div>
             <p className="mt-2 text-xs text-muted-foreground">
-              Mestres podem gerar cópias independentes de fichas e
-              configurações.
+              Mestres podem gerar cópias independentes de fichas e configurações.
             </p>
-            <Button
-              asChild
-              type="button"
-              variant="outline"
-              className="mt-3 w-full"
-            >
+            <Button asChild type="button" variant="outline" className="mt-3 w-full">
               <Link to="/nexus-tools" onClick={() => onOpenChange(false)}>
                 Abrir Backup & Diagnóstico
               </Link>
@@ -974,11 +934,7 @@ function AccountDialog({
           </div>
         </div>
         <DialogFooter>
-          <Button
-            variant="outline"
-            onClick={() => onOpenChange(false)}
-            disabled={saving}
-          >
+          <Button variant="outline" onClick={() => onOpenChange(false)} disabled={saving}>
             Cancelar
           </Button>
           <Button onClick={save} disabled={saving}>

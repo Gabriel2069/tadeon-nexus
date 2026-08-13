@@ -703,6 +703,116 @@
   }
 }
 
+/* Encounter calculator: container-driven layout prevents the sidebar from
+ * stealing room after viewport breakpoints have already switched to desktop. */
+.tadeon-encounter-workspace,
+.tadeon-encounter-summary,
+.tadeon-encounter-summary__reading,
+.tadeon-encounter-summary__metrics,
+.tadeon-encounter-composer,
+.tadeon-encounter-party,
+.tadeon-encounter-threats,
+.tadeon-encounter-source,
+.tadeon-encounter-source__heading,
+.tadeon-encounter-threat,
+.tadeon-encounter-threat > div:first-child {
+  min-width: 0;
+}
+
+.tadeon-encounter-workspace :where(h2, h3, strong, span, small, p, label) {
+  overflow-wrap: break-word;
+  word-break: normal;
+}
+
+.tadeon-encounter-summary__metrics span {
+  line-height: 1.35;
+  text-wrap: balance;
+}
+
+.tadeon-encounter-source__heading > div,
+.tadeon-encounter-card-heading > div {
+  min-width: 0;
+}
+
+.tadeon-encounter-threat strong,
+.tadeon-encounter-threat span {
+  line-height: 1.35;
+}
+
+@container tadeon-route (max-width: 880px) {
+  .tadeon-encounter-composer {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@container tadeon-route (max-width: 720px) {
+  .tadeon-encounter-summary {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .tadeon-encounter-summary__reading {
+    min-height: 7rem;
+    border-right: 0;
+    border-bottom: 1px solid color-mix(in srgb, var(--primary) 18%, var(--border));
+  }
+
+  .tadeon-encounter-summary__metrics {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    padding: 0.55rem;
+  }
+
+  .tadeon-encounter-summary__metrics > div {
+    min-height: 4.5rem;
+    border-bottom: 1px solid color-mix(in srgb, var(--border) 68%, transparent);
+  }
+
+  .tadeon-encounter-summary__metrics > div:nth-child(2) {
+    border-right: 0;
+  }
+
+  .tadeon-encounter-summary__metrics > div:nth-last-child(-n + 2) {
+    border-bottom: 0;
+  }
+}
+
+@container tadeon-route (max-width: 560px) {
+  .tadeon-encounter-party,
+  .tadeon-encounter-threats {
+    padding: 0.8rem;
+  }
+
+  .tadeon-encounter-roster,
+  .tadeon-encounter-manual__fields,
+  .tadeon-encounter-total {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .tadeon-encounter-source__heading {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .tadeon-encounter-source__heading button {
+    align-self: flex-start;
+  }
+
+  .tadeon-encounter-threat {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    align-items: stretch;
+  }
+
+  .tadeon-encounter-threat__quantity {
+    width: 100%;
+    grid-template-columns: 2.5rem minmax(0, 1fr) 2.5rem;
+  }
+
+  .tadeon-encounter-threat__quantity [data-slot="button"] {
+    width: 2.5rem;
+  }
+}
+
 /* Nexus workspace v3: a library first, implementation details second ------ */
 
 .tadeon-nexus-commandbar,
@@ -711,7 +821,11 @@
 .tadeon-route-nexus .tadeon-nexus-context {
   color: var(--foreground);
   background:
-    radial-gradient(circle at 100% 0%, color-mix(in srgb, var(--primary) 7%, transparent), transparent 18rem),
+    radial-gradient(
+      circle at 100% 0%,
+      color-mix(in srgb, var(--primary) 7%, transparent),
+      transparent 18rem
+    ),
     color-mix(in srgb, var(--card) 96%, var(--background));
 }
 
@@ -761,8 +875,11 @@
   border: 1px solid color-mix(in srgb, var(--primary) 24%, var(--border));
   border-radius: 1rem 0.32rem 1rem 0.32rem;
   color: var(--primary);
-  background:
-    linear-gradient(145deg, color-mix(in srgb, var(--primary) 12%, var(--card)), var(--card));
+  background: linear-gradient(
+    145deg,
+    color-mix(in srgb, var(--primary) 12%, var(--card)),
+    var(--card)
+  );
   box-shadow:
     0 18px 34px -28px color-mix(in srgb, var(--primary) 78%, transparent),
     inset 0 1px color-mix(in srgb, var(--foreground) 7%, transparent);
@@ -772,7 +889,9 @@
 .tadeon-nexus-home__sigil svg {
   width: 1.2rem;
   height: 1.2rem;
-  transition: transform 320ms var(--ease-spring), filter 220ms var(--ease-out);
+  transition:
+    transform 320ms var(--ease-spring),
+    filter 220ms var(--ease-out);
 }
 
 .tadeon-nexus-identity__summary {
@@ -832,7 +951,9 @@
   border: 1px solid color-mix(in srgb, var(--border) 78%, transparent);
   border-radius: 0.82rem 0.28rem 0.82rem 0.28rem;
   background: color-mix(in srgb, var(--secondary) 22%, var(--card));
-  transition: border-color 180ms var(--ease-out), background-color 180ms var(--ease-out);
+  transition:
+    border-color 180ms var(--ease-out),
+    background-color 180ms var(--ease-out);
 }
 
 .tadeon-nexus-filters[open] {
@@ -938,7 +1059,10 @@
 .tadeon-nexus-editor-toolbar [data-slot="button"] {
   min-height: 2.25rem;
   color: var(--foreground);
-  transition: color 150ms var(--ease-out), background-color 150ms var(--ease-out), transform 150ms var(--ease-out);
+  transition:
+    color 150ms var(--ease-out),
+    background-color 150ms var(--ease-out),
+    transform 150ms var(--ease-out);
 }
 
 .tadeon-nexus-editor-more {
@@ -972,7 +1096,11 @@
   flex-direction: column;
   justify-content: center;
   background:
-    radial-gradient(circle at 12% 16%, color-mix(in srgb, var(--primary) 9%, transparent), transparent 19rem),
+    radial-gradient(
+      circle at 12% 16%,
+      color-mix(in srgb, var(--primary) 9%, transparent),
+      transparent 19rem
+    ),
     linear-gradient(145deg, transparent, color-mix(in srgb, var(--secondary) 18%, transparent));
 }
 
@@ -1006,7 +1134,10 @@
   color: var(--foreground);
   background: color-mix(in srgb, var(--card) 94%, var(--primary) 6%);
   text-align: left;
-  transition: border-color 200ms var(--ease-out), transform 200ms var(--ease-out), box-shadow 200ms var(--ease-out);
+  transition:
+    border-color 200ms var(--ease-out),
+    transform 200ms var(--ease-out),
+    box-shadow 200ms var(--ease-out);
 }
 
 .tadeon-nexus-home__actions > button > svg:first-child {
@@ -1020,7 +1151,9 @@
   width: 0.9rem;
   height: 0.9rem;
   color: var(--muted-foreground);
-  transition: transform 200ms var(--ease-out), color 200ms var(--ease-out);
+  transition:
+    transform 200ms var(--ease-out),
+    color 200ms var(--ease-out);
 }
 
 .tadeon-nexus-home__actions strong,
@@ -1084,7 +1217,9 @@
   color: var(--foreground);
   background: color-mix(in srgb, var(--background) 38%, transparent);
   text-align: left;
-  transition: background-color 160ms var(--ease-out), transform 160ms var(--ease-out);
+  transition:
+    background-color 160ms var(--ease-out),
+    transform 160ms var(--ease-out);
 }
 
 .tadeon-nexus-home__shelves button span,
@@ -1123,7 +1258,10 @@
   min-height: 2.35rem;
   color: var(--muted-foreground);
   font-size: 0.65rem;
-  transition: color 160ms var(--ease-out), background-color 160ms var(--ease-out), transform 160ms var(--ease-out);
+  transition:
+    color 160ms var(--ease-out),
+    background-color 160ms var(--ease-out),
+    transform 160ms var(--ease-out);
 }
 
 .tadeon-nexus-context-tabs button[class*="bg-card"] {
@@ -1335,7 +1473,11 @@
   overflow: hidden;
   border-color: color-mix(in srgb, var(--primary) 18%, var(--border));
   background:
-    radial-gradient(circle at 100% 0%, color-mix(in srgb, var(--primary) 8%, transparent), transparent 15rem),
+    radial-gradient(
+      circle at 100% 0%,
+      color-mix(in srgb, var(--primary) 8%, transparent),
+      transparent 15rem
+    ),
     linear-gradient(145deg, color-mix(in srgb, var(--card) 96%, var(--primary) 4%), var(--card));
   box-shadow:
     0 22px 48px -42px color-mix(in srgb, var(--foreground) 42%, transparent),
@@ -1356,7 +1498,11 @@
   justify-content: center;
   padding: 1.25rem;
   border-right: 1px solid color-mix(in srgb, var(--primary) 18%, var(--border));
-  background: linear-gradient(130deg, color-mix(in srgb, var(--primary) 13%, var(--card)), transparent);
+  background: linear-gradient(
+    130deg,
+    color-mix(in srgb, var(--primary) 13%, var(--card)),
+    transparent
+  );
 }
 
 .tadeon-encounter-summary__reading::before {
@@ -1488,7 +1634,9 @@
   border-radius: 999px;
   color: var(--primary);
   font-size: 0.68rem;
-  transition: background-color 160ms var(--ease-out), transform 160ms var(--ease-out);
+  transition:
+    background-color 160ms var(--ease-out),
+    transform 160ms var(--ease-out);
 }
 
 .tadeon-encounter-roster {
@@ -1832,7 +1980,10 @@
   color: var(--foreground);
   background: color-mix(in srgb, var(--background) 48%, transparent);
   line-height: 1.65;
-  transition: border-color 180ms var(--ease-out), background-color 180ms var(--ease-out), box-shadow 180ms var(--ease-out);
+  transition:
+    border-color 180ms var(--ease-out),
+    background-color 180ms var(--ease-out),
+    box-shadow 180ms var(--ease-out);
 }
 
 .tadeon-master-note-card textarea:focus-visible {
@@ -1902,7 +2053,10 @@
 }
 
 .tadeon-master-data__section {
-  transition: border-color 220ms var(--ease-out), box-shadow 220ms var(--ease-out), transform 220ms var(--ease-out);
+  transition:
+    border-color 220ms var(--ease-out),
+    box-shadow 220ms var(--ease-out),
+    transform 220ms var(--ease-out);
 }
 
 .tadeon-master-data__section :is(input, textarea) {
@@ -2433,5 +2587,52 @@
   .tadeon-master-flow__item > svg:last-child,
   .tadeon-master-sheet-filter {
     transform: none !important;
+  }
+}
+
+/* Final container overrides for the encounter workspace. */
+@container tadeon-route (max-width: 880px) {
+  .tadeon-encounter-composer {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@container tadeon-route (max-width: 720px) {
+  .tadeon-encounter-summary {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .tadeon-encounter-summary__reading {
+    min-height: 7rem;
+    border-right: 0;
+    border-bottom: 1px solid color-mix(in srgb, var(--primary) 18%, var(--border));
+  }
+
+  .tadeon-encounter-summary__metrics {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@container tadeon-route (max-width: 560px) {
+  .tadeon-encounter-roster,
+  .tadeon-encounter-manual__fields,
+  .tadeon-encounter-total {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .tadeon-encounter-source__heading {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .tadeon-encounter-threat {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    align-items: stretch;
+  }
+
+  .tadeon-encounter-threat__quantity {
+    width: 100%;
+    grid-template-columns: 2.5rem minmax(0, 1fr) 2.5rem;
   }
 }
