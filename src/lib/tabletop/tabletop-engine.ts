@@ -852,6 +852,14 @@ export class TabletopEngine {
     this.render();
   }
 
+  selectEntityById(id: string) {
+    if (!this.scenes.scene.entities.some((entity) => entity.id === id)) return;
+    this.setSelectedLight(null);
+    this.setSelectedStructure(null);
+    this.selection.replace([id]);
+    this.render();
+  }
+
   focusSelection() {
     if (this.selectedLightId) {
       const light = this.visibilityState.lights.find(
