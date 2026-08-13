@@ -10,7 +10,7 @@ export interface TabletopLightHit {
   handle: TabletopLightHandle;
 }
 
-export type TabletopFogHandle = "body" | "radius" | "end";
+export type TabletopFogHandle = "body" | "start" | "radius" | "end";
 
 export interface TabletopFogHit {
   id: string;
@@ -139,6 +139,13 @@ export function hitTestTabletopFog(
   const safeTolerance = Math.max(1, Number(tolerance) || 1);
   const selected = strokes.find((stroke) => stroke.id === selectedId);
   if (selected) {
+    const anchor = selected.points[0];
+    if (
+      selected.shape !== "brush" &&
+      anchor &&
+      Math.hypot(point.x - anchor.x, point.y - anchor.y) <= safeTolerance * 1.45
+    )
+      return { id: selected.id, handle: "start" };
     const handle = fogHandlePoint(selected);
     if (
       handle &&
@@ -178,6 +185,13 @@ export function transformTabletopFog(
         8,
         Math.min(1024, Math.hypot(point.x - anchor.x, point.y - anchor.y)),
       ),
+    };
+  }
+  if (handle === "start") {
+    const start = bypassSnap ? point : snap(point);
+    return {
+      ...stroke,
+      points: stroke.points.map((item, index) => (index === 0 ? start : item)),
     };
   }
   if (handle === "end") {

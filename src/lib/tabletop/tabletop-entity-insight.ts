@@ -43,33 +43,43 @@ function boundedNumber(value: unknown) {
     : 0;
 }
 
-function activeConditionNames(value: unknown) {
-  const names: string[] = [];
-  if (Array.isArray(value)) {
-    for (const entry of value) {
-      if (typeof entry === "string") names.push(entry);
-      else {
-        const condition = objectValue(entry);
-        if (condition.active !== false)
-          names.push(
-            boundedText(condition.name ?? condition.label ?? condition.id, 80),
-          );
-      }
-    }
-  } else {
-    for (const [key, entry] of Object.entries(objectValue(value))) {
-      if (entry === true) names.push(key);
-      else {
-        const condition = objectValue(entry);
-        if (condition.active === true || condition.value === true)
-          names.push(boundedText(condition.name ?? condition.label ?? key, 80));
-      }
-    }
+function pushConditionNames(value: unknown, names: string[], fallback = "") {
+  if (typeof value === "string") {
+    const name = boundedText(value, 80);
+    if (name && name !== "Normal") names.push(name);
+    return;
   }
-  return [...new Set(names.map((name) => name.trim()).filter(Boolean))].slice(
-    0,
-    12,
-  );
+  if (Array.isArray(value)) {
+    for (const entry of value) pushConditionNames(entry, names, fallback);
+    return;
+  }
+  if (value === true) {
+    if (fallback) names.push(boundedText(fallback, 80));
+    return;
+  }
+  const condition = objectValue(value);
+  if (Object.keys(condition).length === 0) return;
+  if (condition.active === false || condition.value === false) return;
+  if (condition.active === true || condition.value === true) {
+    const name = boundedText(
+      condition.name ?? condition.label ?? condition.id ?? fallback,
+      80,
+    );
+    if (name && name !== "Normal") names.push(name);
+    return;
+  }
+  for (const [key, entry] of Object.entries(condition))
+    pushConditionNames(entry, names, key);
+}
+
+export function activeTabletopConditionNames(value: unknown) {
+  const names: string[] = [];
+  if (Array.isArray(value)) pushConditionNames(value, names);
+  else {
+    for (const [key, entry] of Object.entries(objectValue(value)))
+      pushConditionNames(entry, names, key);
+  }
+  return [...new Set(names.map((name) => name.trim()).filter(Boolean))].slice(0, 12);
 }
 
 export function normalizeTabletopSheetSummary(
@@ -91,6 +101,6 @@ export function normalizeTabletopSheetSummary(
       ps: boundedNumber(stats.ps_current),
       pa: boundedNumber(stats.pa_current),
     },
-    activeConditions: activeConditionNames(row.conditions),
+    activeConditions: activeTabletopConditionNames(row.conditions),
   });
 }

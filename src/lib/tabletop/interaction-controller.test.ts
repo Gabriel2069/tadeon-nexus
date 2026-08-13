@@ -1,5 +1,8 @@
 import { describe, expect, it } from "vitest";
-import { shouldStartTabletopPan } from "./interaction-controller";
+import {
+  shouldStartTabletopPan,
+  tabletopTransformHandleHitRadius,
+} from "./interaction-controller";
 
 describe("tabletop camera intent", () => {
   it("keeps the camera fixed while editing with the selection tool", () => {
@@ -18,5 +21,12 @@ describe("tabletop camera intent", () => {
     expect(
       shouldStartTabletopPan({ button: 1, spacePressed: false, mode: "select" }),
     ).toBe(true);
+  });
+
+  it("gives touch handles a larger target instead of handing the gesture to pan", () => {
+    expect(tabletopTransformHandleHitRadius("touch")).toBeGreaterThan(
+      tabletopTransformHandleHitRadius("mouse"),
+    );
+    expect(tabletopTransformHandleHitRadius("touch")).toBe(24);
   });
 });

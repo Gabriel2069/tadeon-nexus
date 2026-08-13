@@ -85,17 +85,20 @@ describe("edição direta de névoa", () => {
     sequenceIndex: 0,
   };
 
-  it("seleciona corpo e alça de uma região persistente", () => {
+  it("seleciona corpo e as duas alças de uma região persistente", () => {
     expect(hitTestTabletopFog({ x: 180, y: 180 }, [rectangle], 8)).toEqual({
       id: rectangle.id,
       handle: "body",
     });
     expect(
+      hitTestTabletopFog({ x: 101, y: 121 }, [rectangle], 8, rectangle.id),
+    ).toEqual({ id: rectangle.id, handle: "start" });
+    expect(
       hitTestTabletopFog({ x: 302, y: 261 }, [rectangle], 8, rectangle.id),
     ).toEqual({ id: rectangle.id, handle: "end" });
   });
 
-  it("move a região com snap e dimensiona pela extremidade", () => {
+  it("move a região e dimensiona por qualquer extremidade", () => {
     expect(
       transformTabletopFog(
         rectangle,
@@ -121,6 +124,18 @@ describe("edição direta de névoa", () => {
       width: 320,
       height: 240,
     });
+    expect(
+      transformTabletopFog(
+        rectangle,
+        "start",
+        rectangle.points[1],
+        { x: 60, y: 80 },
+        (point) => point,
+      ).points,
+    ).toEqual([
+      { x: 60, y: 80 },
+      { x: 300, y: 260 },
+    ]);
   });
 });
 

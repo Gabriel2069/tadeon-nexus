@@ -1,5 +1,8 @@
 import { describe, expect, it } from "vitest";
-import { normalizeTabletopSheetSummary } from "./tabletop-entity-insight";
+import {
+  activeTabletopConditionNames,
+  normalizeTabletopSheetSummary,
+} from "./tabletop-entity-insight";
 
 describe("resumo de ficha da Mesa", () => {
   it("reduz a ficha ao contrato operacional seguro", () => {
@@ -41,5 +44,16 @@ describe("resumo de ficha da Mesa", () => {
     });
     expect(summary).not.toHaveProperty("owner_id");
     expect(summary).not.toHaveProperty("stats");
+  });
+
+  it("propaga as listas reais de condições da ficha vinculada", () => {
+    expect(
+      activeTabletopConditionNames({
+        fisica: ["Ferido", "Sangrando"],
+        mental: ["Normal", "Confuso"],
+        energetica: [],
+        outras: ["Marcado", "Ferido"],
+      }),
+    ).toEqual(["Ferido", "Sangrando", "Confuso", "Marcado"]);
   });
 });
