@@ -12,6 +12,7 @@
 
 .tadeon-director-remote__head {
   display: flex;
+  min-width: 0;
   align-items: center;
   gap: 0.65rem;
 }
@@ -20,6 +21,7 @@
   display: grid;
   width: 2rem;
   height: 2rem;
+  flex: 0 0 auto;
   place-items: center;
   border: 1px solid rgb(141 49 82 / 36%);
   border-radius: 0.6rem;
@@ -30,6 +32,7 @@
 .tadeon-director-remote__head svg {
   width: 1rem;
   height: 1rem;
+  overflow: visible;
 }
 
 .tadeon-director-remote__head > div {
@@ -40,6 +43,9 @@
 .tadeon-director-remote__head small,
 .tadeon-director-remote__head strong {
   display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .tadeon-director-remote__head small {
@@ -64,6 +70,7 @@
 .tadeon-director-remote__modes button,
 .tadeon-director-remote__camera > button:not([data-slot="button"]) {
   display: flex;
+  min-width: 0;
   min-height: 2.25rem;
   align-items: center;
   justify-content: center;
@@ -73,12 +80,16 @@
   background: rgb(255 255 255 / 2.5%);
   color: rgb(255 255 255 / 58%);
   font-size: 0.68rem;
+  line-height: 1.15;
+  text-align: center;
+  white-space: normal;
   transition: 150ms ease;
 }
 
 .tadeon-director-remote__modes button:hover,
 .tadeon-director-remote__modes button.is-active,
-.tadeon-director-remote__camera > button:not([data-slot="button"]):hover {
+.tadeon-director-remote__camera > button:not([data-slot="button"]):hover,
+.tadeon-director-remote__camera > button:not([data-slot="button"])[aria-pressed="true"] {
   border-color: rgb(141 49 82 / 45%);
   background: rgb(141 49 82 / 13%);
   color: white;
@@ -86,9 +97,12 @@
 
 .tadeon-director-remote__modes svg,
 .tadeon-director-remote__camera svg,
+.tadeon-director-remote__orbit svg,
 .tadeon-director-remote__toggles svg {
   width: 0.85rem;
   height: 0.85rem;
+  flex: 0 0 auto;
+  overflow: visible;
 }
 
 .tadeon-director-remote__copy {
@@ -98,7 +112,18 @@
 
 .tadeon-director-remote__copy input {
   height: 2.25rem;
+  min-width: 0;
   font-size: 0.7rem;
+}
+
+.tadeon-director-remote__orbit {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.4rem;
+}
+
+.tadeon-director-remote__orbit button {
+  min-width: 0;
 }
 
 .tadeon-director-remote__toggles {
@@ -122,4 +147,22 @@
 .tadeon-director-remote__toggles label span {
   min-width: 0;
   flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@media (max-width: 639px) {
+  .tadeon-director-remote__head {
+    flex-wrap: wrap;
+  }
+
+  .tadeon-director-remote__head > [data-slot="button"] {
+    width: 100%;
+  }
+
+  .tadeon-director-remote__camera,
+  .tadeon-director-remote__toggles {
+    grid-template-columns: 1fr;
+  }
 }

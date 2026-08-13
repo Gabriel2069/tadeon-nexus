@@ -1,0 +1,122 @@
+/* Cross-workspace interaction stability ---------------------------------- */
+
+/* Interactive Lucide icons need breathing room. Using individual transform
+   properties preserves icon-specific rotations and spinner transforms. */
+.tadeon-shell :is([data-slot="button"], button, a[role="button"], .tadeon-nav-item) > svg,
+.tadeon-shell .tadeon-nav-item__icon,
+.tadeon-shell .tadeon-nav-item__icon > svg,
+.tadeon-mobile-dock a > svg,
+.tadeon-mobile-dock button > svg {
+  flex: 0 0 auto;
+  overflow: visible;
+  transform-origin: center;
+}
+
+.tadeon-shell .tadeon-nav-item__icon {
+  display: inline-grid;
+  width: 1.5rem;
+  height: 1.5rem;
+  place-items: center;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .tadeon-shell :is([data-slot="button"], button, a[role="button"], .tadeon-nav-item) > svg:not(.animate-spin),
+  .tadeon-shell .tadeon-nav-item__icon > svg:not(.animate-spin),
+  .tadeon-mobile-dock :is(a, button) > svg:not(.animate-spin) {
+    transition:
+      translate 180ms var(--ease-out, ease-out),
+      scale 180ms var(--ease-out, ease-out),
+      filter 180ms var(--ease-out, ease-out),
+      opacity 180ms var(--ease-out, ease-out);
+  }
+
+  .tadeon-shell :is([data-slot="button"], button, a[role="button"], .tadeon-nav-item):hover > svg:not(.animate-spin),
+  .tadeon-shell .tadeon-nav-item:hover .tadeon-nav-item__icon > svg:not(.animate-spin),
+  .tadeon-mobile-dock :is(a, button):hover > svg:not(.animate-spin) {
+    translate: 0 -1px;
+    scale: 1.07;
+  }
+
+  .tadeon-shell :is([data-slot="button"], button, a[role="button"], .tadeon-nav-item):active > svg:not(.animate-spin),
+  .tadeon-shell .tadeon-nav-item:active .tadeon-nav-item__icon > svg:not(.animate-spin),
+  .tadeon-mobile-dock :is(a, button):active > svg:not(.animate-spin) {
+    translate: 0 0;
+    scale: 0.9;
+  }
+}
+
+/* Floating UI can scroll internally, but it must remain inside the visual
+   viewport on desktop, mobile and installed-PWA windows. */
+[data-radix-popper-content-wrapper] {
+  max-width: calc(100vw - 1rem) !important;
+  max-height: calc(100dvh - 1rem) !important;
+}
+
+[data-radix-popper-content-wrapper] > * {
+  max-width: 100% !important;
+  max-height: calc(100dvh - 1rem) !important;
+}
+
+:is([data-slot="dialog-content"], [data-slot="alert-dialog-content"]) {
+  max-width: calc(100vw - 1rem);
+  max-height: calc(100dvh - 1rem);
+  overflow: auto;
+  overscroll-behavior: contain;
+}
+
+/* Mesa Nexus -------------------------------------------------------------- */
+
+/* Do not resize the Pixi host when contextual controls appear. A selection
+   should change chrome only, never the renderer geometry. */
+.tadeon-tabletop-studio .tadeon-tabletop-stage:has(.tadeon-tabletop-tool-options) .tadeon-tabletop-canvas-host,
+.tadeon-tabletop-studio .tadeon-tabletop-stage:has(.tadeon-tabletop-selection-dock) .tadeon-tabletop-canvas-host,
+.tadeon-tabletop-studio .tadeon-tabletop-stage:has(.tadeon-tabletop-tool-options):has(.tadeon-tabletop-selection-dock) .tadeon-tabletop-canvas-host {
+  top: 0.65rem !important;
+}
+
+/* The workspace clamp currently reserves 184 x 248 CSS pixels. Match the
+   actual menu to that contract so right/bottom clicks cannot escape screen. */
+.tadeon-tabletop-context-menu {
+  width: min(11.5rem, calc(100vw - 1rem)) !important;
+  max-width: calc(100vw - 1rem) !important;
+  max-height: min(15.5rem, calc(100dvh - 1rem)) !important;
+  overscroll-behavior: contain;
+}
+
+/* The React exit state remains mounted briefly for motion. Make that mounted
+   copy non-visual immediately to eliminate the menu ghost behind master UI. */
+.tadeon-tabletop-context-menu[data-state="closed"] {
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  animation: none !important;
+}
+
+.tadeon-tabletop-panel__tab > span,
+.tadeon-tabletop-command-spaces button > span,
+.tadeon-tabletop-selection-dock button > span,
+.tadeon-tabletop-tool-options button > span {
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap;
+}
+
+.tadeon-tabletop-selection-dock,
+.tadeon-tabletop-tool-options {
+  max-width: calc(100% - 1rem);
+}
+
+@media (max-width: 639px) {
+  .tadeon-tabletop-studio .tadeon-tabletop-stage:has(.tadeon-tabletop-tool-options) .tadeon-tabletop-canvas-host,
+  .tadeon-tabletop-studio .tadeon-tabletop-stage:has(.tadeon-tabletop-selection-dock) .tadeon-tabletop-canvas-host,
+  .tadeon-tabletop-studio .tadeon-tabletop-stage:has(.tadeon-tabletop-tool-options):has(.tadeon-tabletop-selection-dock) .tadeon-tabletop-canvas-host {
+    top: 0.55rem !important;
+  }
+
+  .tadeon-tabletop-selection-dock,
+  .tadeon-tabletop-tool-options {
+    max-width: calc(100% - 1.1rem);
+  }
+}

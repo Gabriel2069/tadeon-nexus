@@ -1,13 +1,15 @@
 import { useEffect, useState } from "react";
 import {
   Aperture,
+  Axis3d,
   Camera,
   Grid2X2,
   Loader2,
-  Maximize2,
   Moon,
   MonitorUp,
   Projector,
+  RotateCcw,
+  RotateCw,
   Scan,
   Sparkles,
 } from "lucide-react";
@@ -19,6 +21,7 @@ import type { TabletopDirectorCamera } from "@/lib/tabletop/tabletop-director-st
 import type { TabletopSession } from "@/lib/tabletop/tabletop-session-service";
 import { tabletopSessionService } from "@/lib/tabletop/tabletop-session-service";
 import "@/styles/tabletop-director-remote.css";
+import "@/styles/interface-stability.css";
 
 export function TabletopDirectorRemote({
   session,
@@ -60,6 +63,19 @@ export function TabletopDirectorRemote({
     } finally {
       setSaving(false);
     }
+  };
+
+  const persistCamera = (
+    patch: Partial<TabletopDirectorCamera>,
+    success: string,
+  ) => {
+    const next = {
+      ...draft,
+      mode: "scene" as const,
+      camera: { ...draft.camera, ...patch },
+    };
+    setDraft(next);
+    void persist(next, success);
   };
 
   const setMode = (mode: typeof draft.mode) => {
@@ -187,21 +203,56 @@ export function TabletopDirectorRemote({
           type="button"
           aria-pressed={draft.camera.projection === "isometric"}
           disabled={saving}
-          onClick={() =>
-            setDraft((current) => ({
-              ...current,
-              camera: {
-                ...current.camera,
-                projection:
-                  current.camera.projection === "plan" ? "isometric" : "plan",
-              },
-            }))
-          }
+          onClick={() => {
+            const projection =
+              draft.camera.projection === "plan" ? "isometric" : "plan";
+            persistCamera(
+              { projection },
+              projection === "isometric"
+                ? "Projeção 3D ativada na saída."
+                : "Projeção devolvida à planta 2D.",
+            );
+          }}
         >
-          <Maximize2 aria-hidden="true" />
-          {draft.camera.projection === "isometric" ? "Isométrico" : "Planta"}
+          <Axis3d aria-hidden="true" />
+          {draft.camera.projection === "isometric" ? "3D isométrico" : "Planta 2D"}
         </button>
       </div>
+
+      {draft.camera.projection === "isometric" && (
+        <div
+          className="tadeon-director-remote__orbit"
+          role="group"
+          aria-label="Rotação da câmera 3D da projeção"
+        >
+          <Button
+            size="sm"
+            variant="outline"
+            disabled={saving}
+            onClick={() =>
+              persistCamera(
+                { yaw: (draft.camera.yaw + 315) % 360 },
+                "Projeção 3D girada para a esquerda.",
+              )
+            }
+          >
+            <RotateCcw aria-hidden="true" /> Girar esquerda
+          </Button>
+          <Button
+            size="sm"
+            variant="outline"
+            disabled={saving}
+            onClick={() =>
+              persistCamera(
+                { yaw: (draft.camera.yaw + 45) % 360 },
+                "Projeção 3D girada para a direita.",
+              )
+            }
+          >
+            <RotateCw aria-hidden="true" /> Girar direita
+          </Button>
+        </div>
+      )}
 
       <div className="tadeon-director-remote__toggles">
         <label>
