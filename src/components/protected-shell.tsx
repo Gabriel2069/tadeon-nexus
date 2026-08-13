@@ -7,6 +7,7 @@ import { AlertTriangle, Home, Loader2, RefreshCw, ShieldX } from "lucide-react";
 import { can } from "@/lib/permissions";
 import { PageState } from "@/components/page-state";
 import "@/styles/sheet-requested-polish.css";
+import "@/styles/nexus-interaction-polish.css";
 
 interface Props {
   children: ReactNode;
