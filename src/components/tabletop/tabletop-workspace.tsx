@@ -171,7 +171,7 @@ type PaletteDragPayload =
   | { kind: "asset"; id: string; entityType: "token" | "object" }
   | { kind: "knowledge"; id: string };
 
-type TabletopPanelTab = "library" | "space" | "scene" | "inspector";
+type TabletopPanelTab = "library" | "space" | "master" | "scene" | "inspector";
 type PendingNavigation =
   | { kind: "scene"; id: string }
   | { kind: "campaign"; id: string };
@@ -326,6 +326,7 @@ export function TabletopWorkspace({
   const [mobilePanelOpen, setMobilePanelOpen] = useState(false);
   const [panelCollapsed, setPanelCollapsed] = useState(false);
   const [panelTab, setPanelTab] = useState<TabletopPanelTab>("library");
+  const [masterSearch, setMasterSearch] = useState("");
   const [toolMode, setToolMode] = useState<TabletopToolMode>("select");
   const [projectionMode, setProjectionMode] =
     useState<TabletopProjectionMode>("plan");
@@ -391,6 +392,13 @@ export function TabletopWorkspace({
       null,
     [activeLevelId, snapshot.scene.levels],
   );
+  const masterLayer =
+    snapshot.scene.layers.find((layer) => layer.layerType === "master") ?? null;
+  const masterEntities = snapshot.scene.entities.filter((entity) => {
+    if (!entity.hidden && entity.layerId !== masterLayer?.id) return false;
+    const query = masterSearch.trim().toLocaleLowerCase("pt-BR");
+    return !query || entity.label.toLocaleLowerCase("pt-BR").includes(query);
+  });
   const currentSceneIndex = scenes.findIndex(
     (scene) => scene.id === persistedScene?.id,
   );
@@ -2298,9 +2306,11 @@ export function TabletopWorkspace({
                     ? "Montagem"
                     : panelTab === "space"
                       ? "Espaço"
-                      : panelTab === "scene"
-                        ? "Cena"
-                        : "Inspetor"}
+                      : panelTab === "master"
+                        ? "Bastidores"
+                        : panelTab === "scene"
+                          ? "Cena"
+                          : "Inspetor"}
                 </p>
               </div>
             </div>
@@ -2334,6 +2344,10 @@ export function TabletopWorkspace({
               [
                 ["library", "Montagem"],
                 ["space", `Espaço${visibilityDirty ? " · não salvo" : ""}`],
+                [
+                  "master",
+                  `Mestre${masterEntities.length ? ` · ${masterEntities.length}` : ""}`,
+                ],
                 ["scene", "Cena"],
                 [
                   "inspector",
@@ -2823,6 +2837,166 @@ export function TabletopWorkspace({
                 onPreview={previewVisibility}
                 onSaved={installVisibility}
               />
+            </div>
+          )}
+
+          {panelTab === "master" && (
+            <div className="tadeon-tabletop-panel__section" role="tabpanel">
+              <div className="rounded-xl border border-primary/25 bg-primary/5 p-3">
+                <div className="flex items-start gap-2">
+                  <EyeOff className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
+                  <div>
+                    <p className="tadeon-eyebrow">Bastidores do mestre</p>
+                    <p className="mt-1 text-[11px] leading-relaxed text-muted-foreground">
+                      Segredos, notas e peças da camada Mestre ficam fora da
+                      projeção dos jogadores, mas continuam acessíveis durante
+                      a direção.
+                    </p>
+                  </div>
+                </div>
+                {masterLayer && selected.length > 0 && (
+                  <Button
+                    type="button"
+                    size="sm"
+                    variant="outline"
+                    className="mt-3 w-full"
+                    disabled={!editable || masterLayer.locked}
+                    onClick={() =>
+                      engineRef.current?.moveSelectedToLayer(masterLayer.id)
+                    }
+                  >
+                    <EyeOff className="h-4 w-4" />
+                    Levar seleção aos bastidores
+                  </Button>
+                )}
+              </div>
+              <div className="relative mt-3">
+                <FileSearch className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                <Input
+                  aria-label="Buscar nos bastidores"
+                  value={masterSearch}
+                  onChange={(event) => setMasterSearch(event.target.value)}
+                  className="pl-9"
+                  placeholder="Buscar segredo, nota ou token…"
+                />
+              </div>
+              <div className="mt-3 space-y-2">
+                {masterEntities.length === 0 && (
+                  <div className="rounded-xl border border-dashed border-border/60 p-4 text-center text-xs text-muted-foreground">
+                    Nenhum item oculto corresponde à busca.
+                  </div>
+                )}
+                {masterEntities.map((entity) => {
+                  const level = snapshot.scene.levels?.find(
+                    (item) => item.id === entity.levelId,
+                  );
+                  const inMasterLayer = entity.layerId === masterLayer?.id;
+                  const fallbackLayer = snapshot.scene.layers.find(
+                    (layer) =>
+                      layer.layerType ===
+                      (["token", "character", "npc", "creature"].includes(
+                        entity.type,
+                      )
+                        ? "tokens"
+                        : "objects"),
+                  );
+                  return (
+                    <article
+                      key={entity.id}
+                      className="rounded-xl border border-border/60 bg-secondary/15 p-2.5"
+                    >
+                      <div className="flex items-center gap-2.5">
+                        <div className="grid h-11 w-11 shrink-0 place-items-center overflow-hidden rounded-lg bg-black/25">
+                          {entity.assetUrl ? (
+                            <img
+                              src={entity.assetUrl}
+                              alt=""
+                              className="h-full w-full object-cover"
+                            />
+                          ) : (
+                            <EyeOff className="h-4 w-4 text-primary" />
+                          )}
+                        </div>
+                        <div className="min-w-0 flex-1">
+                          <strong className="block truncate text-xs">
+                            {entity.label}
+                          </strong>
+                          <span className="mt-1 block truncate text-[10px] text-muted-foreground">
+                            {level?.name ?? "Andar base"} · {entity.type}
+                          </span>
+                          <div className="mt-1 flex flex-wrap gap-1 text-[9px]">
+                            {entity.hidden && (
+                              <span className="rounded-full bg-destructive/10 px-1.5 py-0.5 text-destructive">
+                                oculto
+                              </span>
+                            )}
+                            {inMasterLayer && (
+                              <span className="rounded-full bg-primary/10 px-1.5 py-0.5 text-primary">
+                                mestre
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                      <div className="mt-2 grid grid-cols-3 gap-1">
+                        <Button
+                          type="button"
+                          size="sm"
+                          variant="outline"
+                          onClick={() => {
+                            engineRef.current?.selectEntityById(entity.id);
+                            engineRef.current?.focusSelection();
+                            setPanelTab("inspector");
+                          }}
+                        >
+                          Localizar
+                        </Button>
+                        <Button
+                          type="button"
+                          size="sm"
+                          variant="outline"
+                          disabled={!editable || entity.locked}
+                          onClick={() => {
+                            engineRef.current?.selectEntityById(entity.id);
+                            engineRef.current?.updateSelected(
+                              { hidden: !entity.hidden },
+                              entity.hidden
+                                ? "Revelar entidade"
+                                : "Ocultar entidade",
+                            );
+                            setPanelTab("master");
+                          }}
+                        >
+                          {entity.hidden ? "Revelar" : "Ocultar"}
+                        </Button>
+                        <Button
+                          type="button"
+                          size="sm"
+                          variant="outline"
+                          disabled={
+                            !editable ||
+                            entity.locked ||
+                            (inMasterLayer
+                              ? !fallbackLayer || fallbackLayer.locked
+                              : !masterLayer || masterLayer.locked)
+                          }
+                          onClick={() => {
+                            const target = inMasterLayer
+                              ? fallbackLayer
+                              : masterLayer;
+                            if (!target) return;
+                            engineRef.current?.selectEntityById(entity.id);
+                            engineRef.current?.moveSelectedToLayer(target.id);
+                            setPanelTab("master");
+                          }}
+                        >
+                          {inMasterLayer ? "À cena" : "Mestre"}
+                        </Button>
+                      </div>
+                    </article>
+                  );
+                })}
+              </div>
             </div>
           )}
 
