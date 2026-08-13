@@ -169,6 +169,7 @@ const TABLETOP_PALETTE_MIME = "application/x-tadeon-tabletop-palette";
 
 type PaletteDragPayload =
   | { kind: "asset"; id: string; entityType: "token" | "object" }
+  | { kind: "sheet"; id: string }
   | { kind: "knowledge"; id: string };
 
 type TabletopPanelTab = "library" | "space" | "master" | "scene" | "inspector";
@@ -211,6 +212,9 @@ function parsePaletteDragPayload(value: string): PaletteDragPayload | null {
     const parsed = JSON.parse(value) as Record<string, unknown>;
     if (parsed.kind === "knowledge" && typeof parsed.id === "string") {
       return { kind: "knowledge", id: parsed.id };
+    }
+    if (parsed.kind === "sheet" && typeof parsed.id === "string") {
+      return { kind: "sheet", id: parsed.id };
     }
     if (
       parsed.kind === "asset" &&
@@ -326,6 +330,7 @@ export function TabletopWorkspace({
   const [mobilePanelOpen, setMobilePanelOpen] = useState(false);
   const [panelCollapsed, setPanelCollapsed] = useState(false);
   const [panelTab, setPanelTab] = useState<TabletopPanelTab>("library");
+  const [paletteSearch, setPaletteSearch] = useState("");
   const [masterSearch, setMasterSearch] = useState("");
   const [toolMode, setToolMode] = useState<TabletopToolMode>("select");
   const [projectionMode, setProjectionMode] =
@@ -399,6 +404,35 @@ export function TabletopWorkspace({
     const query = masterSearch.trim().toLocaleLowerCase("pt-BR");
     return !query || entity.label.toLocaleLowerCase("pt-BR").includes(query);
   });
+  const normalizedPaletteSearch = paletteSearch
+    .trim()
+    .toLocaleLowerCase("pt-BR");
+  const visiblePaletteAssets = paletteAssets
+    .filter(
+      (asset) =>
+        !normalizedPaletteSearch ||
+        asset.displayName
+          .toLocaleLowerCase("pt-BR")
+          .includes(normalizedPaletteSearch),
+    )
+    .slice(0, 36);
+  const visiblePaletteSheets = linkTargets.sheets
+    .filter(
+      (sheet) =>
+        !normalizedPaletteSearch ||
+        sheet.name.toLocaleLowerCase("pt-BR").includes(normalizedPaletteSearch),
+    )
+    .slice(0, 36);
+  const visiblePaletteKnowledge = linkTargets.knowledge
+    .filter(
+      (node) =>
+        !normalizedPaletteSearch ||
+        node.title.toLocaleLowerCase("pt-BR").includes(normalizedPaletteSearch) ||
+        node.nodeType
+          .toLocaleLowerCase("pt-BR")
+          .includes(normalizedPaletteSearch),
+    )
+    .slice(0, 36);
   const currentSceneIndex = scenes.findIndex(
     (scene) => scene.id === persistedScene?.id,
   );
@@ -1398,6 +1432,23 @@ export function TabletopWorkspace({
       };
     }
 
+    if (payload.kind === "sheet") {
+      const sheet = linkTargets.sheets.find((item) => item.id === payload.id);
+      if (!sheet) return null;
+      return {
+        type: "character",
+        label: sheet.name,
+        width: 72,
+        height: 72,
+        linkedSheetId: sheet.id,
+        ownerUserId: sheet.ownerId,
+        properties: {
+          source: "nexus_sheet",
+          render_mode: "billboard",
+        },
+      };
+    }
+
     const node = linkTargets.knowledge.find((item) => item.id === payload.id);
     if (!node) return null;
     return {
@@ -2150,6 +2201,44 @@ export function TabletopWorkspace({
                   <Copy className="h-4 w-4" />
                 </ToolbarButton>
                 <ToolbarButton
+                  label={
+                    selected.some((entity) => !entity.hidden)
+                      ? "Ocultar seleção dos jogadores"
+                      : "Revelar seleção aos jogadores"
+                  }
+                  disabled={
+                    !editable || selected.every((entity) => entity.locked)
+                  }
+                  onClick={() => {
+                    const hidden = selected.some((entity) => !entity.hidden);
+                    engineRef.current?.updateSelected(
+                      { hidden },
+                      hidden ? "Ocultar seleção" : "Revelar seleção",
+                    );
+                  }}
+                >
+                  {selected.some((entity) => !entity.hidden) ? (
+                    <EyeOff className="h-4 w-4" />
+                  ) : (
+                    <Eye className="h-4 w-4" />
+                  )}
+                </ToolbarButton>
+                {masterLayer && (
+                  <ToolbarButton
+                    label="Levar seleção aos bastidores do mestre"
+                    disabled={
+                      !editable ||
+                      masterLayer.locked ||
+                      selected.every((entity) => entity.locked)
+                    }
+                    onClick={() =>
+                      engineRef.current?.moveSelectedToLayer(masterLayer.id)
+                    }
+                  >
+                    <UserRound className="h-4 w-4" />
+                  </ToolbarButton>
+                )}
+                <ToolbarButton
                   label="Bloquear ou desbloquear seleção"
                   disabled={!editable}
                   onClick={() => engineRef.current?.toggleSelectedLock()}
@@ -2372,7 +2461,18 @@ export function TabletopWorkspace({
             <div className="tadeon-tabletop-panel__section" role="tabpanel">
               <p className="mt-1 text-[11px] text-muted-foreground">
                 Arraste no computador ou toque para inserir no centro do mapa.
+                Fichas já entram vinculadas ao personagem e ao jogador.
               </p>
+              <div className="relative mt-3">
+                <FileSearch className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                <Input
+                  aria-label="Buscar na montagem"
+                  value={paletteSearch}
+                  onChange={(event) => setPaletteSearch(event.target.value)}
+                  className="pl-9"
+                  placeholder="Buscar asset, ficha ou página…"
+                />
+              </div>
               <div className="mt-3">
                 <Label
                   htmlFor="asset-drop-type"
@@ -2452,12 +2552,14 @@ export function TabletopWorkspace({
                     <Loader2 className="h-5 w-5 animate-spin text-primary" />
                   </div>
                 )}
-                {!paletteLoading && paletteAssets.length === 0 && (
+                {!paletteLoading && visiblePaletteAssets.length === 0 && (
                   <p className="col-span-2 rounded-md border border-dashed border-border/60 p-3 text-center text-[11px] text-muted-foreground">
-                    Nenhuma mídia visual pronta no Nexus Assets.
+                    {paletteAssets.length === 0
+                      ? "Nenhuma mídia visual pronta no Nexus Assets."
+                      : "Nenhum asset corresponde à busca."}
                   </p>
                 )}
-                {paletteAssets.slice(0, 12).map((asset) => (
+                {visiblePaletteAssets.map((asset) => (
                   <button
                     key={asset.id}
                     type="button"
@@ -2515,18 +2617,63 @@ export function TabletopWorkspace({
               </div>
 
               <div className="mt-4 flex items-center gap-2">
+                <UserRound className="h-4 w-4 text-primary" />
+                <p className="text-[10px] uppercase tracking-wider text-muted-foreground">
+                  Fichas da campanha
+                </p>
+              </div>
+              <div className="mt-2 max-h-40 space-y-1 overflow-y-auto pr-1">
+                {visiblePaletteSheets.length === 0 && (
+                  <p className="rounded-md border border-dashed border-border/60 p-3 text-center text-[11px] text-muted-foreground">
+                    {linkTargets.sheets.length === 0
+                      ? "Nenhuma ficha disponível nesta campanha."
+                      : "Nenhuma ficha corresponde à busca."}
+                  </p>
+                )}
+                {visiblePaletteSheets.map((sheet) => (
+                  <button
+                    key={sheet.id}
+                    type="button"
+                    draggable={editable}
+                    disabled={!editable}
+                    onClick={() =>
+                      insertPaletteItem({ kind: "sheet", id: sheet.id })
+                    }
+                    onDragStart={(event) =>
+                      beginPaletteDrag(
+                        event,
+                        { kind: "sheet", id: sheet.id },
+                        sheet.name,
+                      )
+                    }
+                    className="tadeon-tabletop-asset flex min-h-11 w-full items-center gap-2 rounded-xl border border-primary/25 bg-primary/5 px-2.5 py-2 text-left disabled:opacity-50"
+                  >
+                    <UserRound className="h-3.5 w-3.5 shrink-0 text-primary" />
+                    <span className="min-w-0 flex-1 truncate text-xs">
+                      {sheet.name}
+                    </span>
+                    <span className="text-[10px] uppercase tracking-wide text-primary">
+                      ficha
+                    </span>
+                  </button>
+                ))}
+              </div>
+
+              <div className="mt-4 flex items-center gap-2">
                 <BookOpen className="h-4 w-4 text-primary" />
                 <p className="text-[10px] uppercase tracking-wider text-muted-foreground">
                   Biblioteca de O Nexus
                 </p>
               </div>
               <div className="mt-2 max-h-40 space-y-1 overflow-y-auto pr-1">
-                {linkTargets.knowledge.length === 0 && (
+                {visiblePaletteKnowledge.length === 0 && (
                   <p className="rounded-md border border-dashed border-border/60 p-3 text-center text-[11px] text-muted-foreground">
-                    Nenhuma Página do Nexus disponível.
+                    {linkTargets.knowledge.length === 0
+                      ? "Nenhuma Página do Nexus disponível."
+                      : "Nenhuma Página corresponde à busca."}
                   </p>
                 )}
-                {linkTargets.knowledge.slice(0, 12).map((node) => (
+                {visiblePaletteKnowledge.map((node) => (
                   <button
                     key={node.id}
                     type="button"
@@ -4147,6 +4294,35 @@ export function TabletopWorkspace({
               >
                 Colar
               </button>
+              <button
+                type="button"
+                className="min-h-11 w-full rounded px-3 py-2 text-left text-sm hover:bg-secondary"
+                onClick={() => {
+                  const hidden = selected.some((entity) => !entity.hidden);
+                  engineRef.current?.updateSelected(
+                    { hidden },
+                    hidden ? "Ocultar seleção" : "Revelar seleção",
+                  );
+                  closeContext();
+                }}
+              >
+                {selected.some((entity) => !entity.hidden)
+                  ? "Ocultar dos jogadores"
+                  : "Revelar aos jogadores"}
+              </button>
+              {masterLayer && (
+                <button
+                  type="button"
+                  className="min-h-11 w-full rounded px-3 py-2 text-left text-sm hover:bg-secondary"
+                  onClick={() => {
+                    engineRef.current?.moveSelectedToLayer(masterLayer.id);
+                    setPanelTab("master");
+                    closeContext();
+                  }}
+                >
+                  Levar aos bastidores do mestre
+                </button>
+              )}
               <button
                 type="button"
                 className="min-h-11 w-full rounded px-3 py-2 text-left text-sm hover:bg-secondary"

@@ -70,7 +70,9 @@ export interface TabletopEntitySeed {
   levelId?: string | null;
   assetId?: string | null;
   assetUrl?: string;
+  linkedSheetId?: string | null;
   linkedKnowledgeNodeId?: string | null;
+  ownerUserId?: string | null;
   properties?: unknown;
 }
 
