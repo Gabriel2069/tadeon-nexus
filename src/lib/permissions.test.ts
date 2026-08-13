@@ -17,6 +17,7 @@ describe("central authorization", () => {
     expect(can("knowledge:view", anonymous)).toBe(false);
     expect(can("knowledge:create", anonymous)).toBe(false);
     expect(can("character:create", anonymous)).toBe(false);
+    expect(can("character:delete", anonymous)).toBe(false);
     expect(getScenePermission(anonymous)).toBeNull();
   });
 
@@ -29,6 +30,7 @@ describe("central authorization", () => {
     expect(can("campaign:manage", administrator)).toBe(true);
     expect(can("asset:manage", administrator)).toBe(true);
     expect(can("knowledge:publish", administrator)).toBe(true);
+    expect(can("character:delete", administrator)).toBe(true);
     expect(getScenePermission(administrator)).toBe("manage");
   });
 
@@ -73,8 +75,17 @@ describe("central authorization", () => {
 
     expect(can("character:view", owner)).toBe(true);
     expect(can("character:edit", owner)).toBe(true);
+    expect(can("character:delete", owner)).toBe(true);
     expect(can("character:view", spectatorOwner)).toBe(true);
     expect(can("character:edit", spectatorOwner)).toBe(false);
+    expect(can("character:delete", spectatorOwner)).toBe(false);
+    expect(
+      can("character:delete", {
+        appRole: "jogador",
+        currentUserId: "user-b",
+        resourceOwnerId: "user-a",
+      }),
+    ).toBe(false);
   });
 
   it("keeps asset viewing broader than asset mutation", () => {

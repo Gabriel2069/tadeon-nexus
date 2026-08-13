@@ -1,5 +1,5 @@
 import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
-import { useEffect, useState, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import {
   Home,
   Lightbulb,
@@ -103,6 +103,8 @@ export function AppLayout({ children }: { children: ReactNode }) {
   const { profile, role, user, signOut, refresh } = useAuth();
   const navigate = useNavigate();
   const path = useRouterState({ select: (s) => s.location.pathname });
+  const mainRef = useRef<HTMLElement | null>(null);
+  const previousPathRef = useRef(path);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [collapsed, setCollapsed] = useState<boolean>(() => {
     if (typeof window === "undefined") return false;
@@ -118,6 +120,15 @@ export function AppLayout({ children }: { children: ReactNode }) {
   useEffect(() => {
     window.localStorage.setItem(COLLAPSE_KEY, collapsed ? "1" : "0");
   }, [collapsed]);
+
+  useEffect(() => {
+    if (previousPathRef.current === path) return;
+    previousPathRef.current = path;
+    const frame = window.requestAnimationFrame(() => {
+      mainRef.current?.focus({ preventScroll: true });
+    });
+    return () => window.cancelAnimationFrame(frame);
+  }, [path]);
 
   useEffect(() => {
     if (!user?.id) return;
@@ -194,7 +205,12 @@ export function AppLayout({ children }: { children: ReactNode }) {
       className="tadeon-primary-nav space-y-1"
       aria-label="Navegação principal"
     >
-      <GlobalSearch compact={mini} enableShortcut={enableSearchShortcut} />
+      <GlobalSearch
+        compact={mini}
+        enableShortcut={enableSearchShortcut}
+        knowledgeEnabled={knowledgeEnabled}
+        tabletopEnabled={tabletopEnabled}
+      />
       <NavGroupLabel label="Arquivo" mini={mini} />
       <NavItem
         to="/"
@@ -352,6 +368,9 @@ export function AppLayout({ children }: { children: ReactNode }) {
       data-section={currentSection}
       data-mobile-dock={showMobileDock ? "visible" : "hidden"}
     >
+      <a className="tadeon-skip-link" href="#tadeon-main">
+        Pular para o conteúdo principal
+      </a>
       <div aria-hidden className="tadeon-ambient tadeon-ambient--veil" />
       <div aria-hidden className="tadeon-ambient tadeon-ambient--flow" />
       {/* Desktop sidebar */}
@@ -449,7 +468,11 @@ export function AppLayout({ children }: { children: ReactNode }) {
             </div>
           </div>
           <div className="flex items-center justify-end gap-1">
-            <GlobalSearch mobile />
+            <GlobalSearch
+              mobile
+              knowledgeEnabled={knowledgeEnabled}
+              tabletopEnabled={tabletopEnabled}
+            />
             <button
               type="button"
               onClick={() => setAccountOpen(true)}
@@ -462,7 +485,10 @@ export function AppLayout({ children }: { children: ReactNode }) {
         </header>
 
         <main
+          id="tadeon-main"
+          ref={mainRef}
           key={path}
+          tabIndex={-1}
           className="tadeon-route-stage min-w-0 flex-1"
           data-section={currentSection}
         >

@@ -52,34 +52,44 @@ export function getPublicFeatureFlagEnvironment(): PublicFeatureFlagEnvironment 
   };
 }
 
-export async function loadFeatureFlags(authenticatedUserId?: string): Promise<FeatureFlags> {
+export async function loadFeatureFlags(
+  authenticatedUserId?: string,
+): Promise<FeatureFlags> {
   const environment = getPublicFeatureFlagEnvironment();
-  const globalResponse = await supabase.from("feature_flags").select("key,enabled");
+  try {
+    const globalResponse = await supabase
+      .from("feature_flags")
+      .select("key,enabled");
 
-  if (globalResponse.error) return resolveFeatureFlags({ environment });
+    if (globalResponse.error) return resolveFeatureFlags({ environment });
 
-  let userOverrides: Partial<FeatureFlags> = {};
-  let userId = authenticatedUserId;
+    let userOverrides: Partial<FeatureFlags> = {};
+    let userId = authenticatedUserId;
 
-  if (!userId) {
-    const { data } = await supabase.auth.getUser();
-    userId = data.user?.id;
+    if (!userId) {
+      const { data } = await supabase.auth.getUser();
+      userId = data.user?.id;
+    }
+
+    if (userId) {
+      const { data, error } = await supabase
+        .from("feature_flag_user_overrides")
+        .select("flag_key,enabled")
+        .eq("user_id", userId);
+
+      if (!error) userOverrides = toUserFeatureFlagOverrides(data ?? []);
+    }
+
+    return resolveFeatureFlags({
+      environment,
+      administrative: toAdministrativeFeatureFlags(globalResponse.data ?? []),
+      userOverrides,
+    });
+  } catch {
+    // Navigation must always settle, even when the network fails before the
+    // Supabase client can normalize the request into a PostgREST error.
+    return resolveFeatureFlags({ environment });
   }
-
-  if (userId) {
-    const { data, error } = await supabase
-      .from("feature_flag_user_overrides")
-      .select("flag_key,enabled")
-      .eq("user_id", userId);
-
-    if (!error) userOverrides = toUserFeatureFlagOverrides(data ?? []);
-  }
-
-  return resolveFeatureFlags({
-    environment,
-    administrative: toAdministrativeFeatureFlags(globalResponse.data ?? []),
-    userOverrides,
-  });
 }
 
 export async function updateAdministrativeFeatureFlag({
@@ -99,6 +109,8 @@ export async function updateAdministrativeFeatureFlag({
     .maybeSingle();
 
   if (error || !data) {
-    throw new Error("Não foi possível atualizar a configuração administrativa.");
+    throw new Error(
+      "Não foi possível atualizar a configuração administrativa.",
+    );
   }
 }

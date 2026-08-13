@@ -1,4 +1,10 @@
-import { AlertCircle, CheckCircle2, CloudUpload, Loader2, WifiOff } from "lucide-react";
+import {
+  AlertCircle,
+  CheckCircle2,
+  CloudUpload,
+  Loader2,
+  WifiOff,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export type SaveState = "saved" | "pending" | "saving" | "error" | "offline";
@@ -51,8 +57,13 @@ export function SaveStatus({
         content.style,
       )}
       aria-live="polite"
+      aria-label={content.label}
+      title={compact ? content.label : undefined}
     >
-      <Icon className={cn("h-3.5 w-3.5", state === "saving" && "animate-spin")} />
+      <Icon
+        aria-hidden="true"
+        className={cn("h-3.5 w-3.5", state === "saving" && "animate-spin")}
+      />
       {!compact && content.label}
     </span>
   );

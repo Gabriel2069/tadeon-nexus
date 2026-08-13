@@ -6,14 +6,18 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
 import { toast } from "sonner";
-import { Loader2 } from "lucide-react";
+import { KeyRound, Loader2, ShieldCheck } from "lucide-react";
 import { getAuthErrorMessage, readAuthUrlError } from "@/lib/auth-errors";
+import { BrandMark } from "@/components/brand-mark";
 
 export const Route = createFileRoute("/reset-password")({
   head: () => ({
     meta: [
       { title: "Redefinir Senha · Tadeon Nexus" },
-      { name: "description", content: "Defina uma nova senha para sua conta no Tadeon Nexus." },
+      {
+        name: "description",
+        content: "Defina uma nova senha para sua conta no Tadeon Nexus.",
+      },
       { name: "robots", content: "noindex,nofollow" },
     ],
   }),
@@ -22,7 +26,9 @@ export const Route = createFileRoute("/reset-password")({
 
 function ResetPasswordPage() {
   const navigate = useNavigate();
-  const [status, setStatus] = useState<"checking" | "ready" | "invalid">("checking");
+  const [status, setStatus] = useState<"checking" | "ready" | "invalid">(
+    "checking",
+  );
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
   const [submitting, setSubmitting] = useState(false);
@@ -38,7 +44,9 @@ function ResetPasswordPage() {
     };
 
     const timeout = setTimeout(() => {
-      setIssue("A validação demorou mais que o esperado. Solicite um novo link.");
+      setIssue(
+        "A validação demorou mais que o esperado. Solicite um novo link.",
+      );
       setStatus((current) => (current === "checking" ? "invalid" : current));
     }, 12000);
 
@@ -61,7 +69,11 @@ function ResetPasswordPage() {
       if (code) {
         const { error } = await supabase.auth.exchangeCodeForSession(code);
         url.searchParams.delete("code");
-        window.history.replaceState(null, "", `${url.pathname}${url.search}${url.hash}`);
+        window.history.replaceState(
+          null,
+          "",
+          `${url.pathname}${url.search}${url.hash}`,
+        );
         if (error) {
           markInvalid(error);
           return;
@@ -105,12 +117,27 @@ function ResetPasswordPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4">
-      <Card className="w-full max-w-md p-8 bg-card/80 backdrop-blur border-border">
-        <h1 className="font-cinzel text-2xl font-bold text-primary text-center mb-2">
-          Redefinir Senha
-        </h1>
-        <p className="text-center text-sm text-muted-foreground mb-6">
+    <main className="tadeon-consent-page">
+      <div aria-hidden className="tadeon-consent-thread" />
+      <Card className="tadeon-consent-card w-full max-w-md">
+        <header className="tadeon-consent-card__header">
+          <span className="tadeon-consent-card__mark">
+            <BrandMark className="h-8 w-8" />
+          </span>
+          <div>
+            <p className="tadeon-eyebrow">Segurança da conta</p>
+            <p className="tadeon-mono text-[10px] uppercase tracking-[0.15em] text-muted-foreground">
+              Tadeon Nexus · Acesso protegido
+            </p>
+          </div>
+        </header>
+        <div className="mt-7 flex items-center gap-3">
+          <KeyRound aria-hidden className="h-6 w-6 text-primary" />
+          <h1 className="font-cinzel text-3xl font-semibold text-primary">
+            Redefinir senha
+          </h1>
+        </div>
+        <p className="mb-6 mt-3 text-sm leading-relaxed text-muted-foreground">
           {status === "ready"
             ? "Defina uma nova senha para sua conta."
             : status === "invalid"
@@ -120,7 +147,7 @@ function ResetPasswordPage() {
 
         {status === "ready" ? (
           <form onSubmit={handleSubmit} className="space-y-4">
-            <div>
+            <div className="space-y-1.5">
               <Label htmlFor="password">Nova senha</Label>
               <Input
                 id="password"
@@ -132,7 +159,7 @@ function ResetPasswordPage() {
                 onChange={(e) => setPassword(e.target.value)}
               />
             </div>
-            <div>
+            <div className="space-y-1.5">
               <Label htmlFor="confirm">Confirmar senha</Label>
               <Input
                 id="confirm"
@@ -145,13 +172,24 @@ function ResetPasswordPage() {
               />
             </div>
             <Button type="submit" disabled={submitting} className="w-full">
-              {submitting && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
-              Salvar nova senha
+              {submitting ? (
+                <Loader2 aria-hidden className="mr-2 h-4 w-4 animate-spin" />
+              ) : (
+                <ShieldCheck aria-hidden className="mr-2 h-4 w-4" />
+              )}
+              {submitting ? "Salvando…" : "Salvar nova senha"}
             </Button>
           </form>
         ) : status === "checking" ? (
-          <div className="flex justify-center py-6">
-            <Loader2 className="w-6 h-6 animate-spin text-primary" />
+          <div
+            className="flex items-center justify-center gap-2 py-6 text-sm text-muted-foreground"
+            role="status"
+          >
+            <Loader2
+              aria-hidden
+              className="h-5 w-5 animate-spin text-primary"
+            />
+            Validando acesso…
           </div>
         ) : (
           <Button asChild variant="outline" className="w-full">
@@ -161,12 +199,16 @@ function ResetPasswordPage() {
           </Button>
         )}
 
-        <p className="mt-6 text-center text-[10px] text-muted-foreground">
-          <Link to="/login" search={{ next: "" }} className="hover:text-primary">
+        <p className="mt-6 text-center text-xs text-muted-foreground">
+          <Link
+            to="/login"
+            search={{ next: "" }}
+            className="rounded-sm underline decoration-border underline-offset-4 hover:text-primary"
+          >
             Voltar ao login
           </Link>
         </p>
       </Card>
-    </div>
+    </main>
   );
 }
