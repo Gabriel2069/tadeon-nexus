@@ -1530,8 +1530,19 @@ export function NexusWorkspace({
                   <FilePlus2 /><span><strong>Criar uma página</strong><small>Registre uma ideia sem configurar códigos</small></span><ChevronRight />
                 </button>
                 {graphEnabled && (
-                  <button type="button" onClick={() => setLibraryOpen(true)}>
-                    <ListTree /><span><strong>Ver organização</strong><small>Navegue pela hierarquia do arquivo</small></span><ChevronRight />
+                  <button
+                    type="button"
+                    onClick={async () => {
+                      const seed = recent[0] ?? favorites[0] ?? nodes[0];
+                      if (!seed) {
+                        toast.info("Crie uma página para começar a teia do Nexus.");
+                        return;
+                      }
+                      await openNode(seed.id);
+                      setGraphOpen(true);
+                    }}
+                  >
+                    <ListTree /><span><strong>Ver organização</strong><small>Explore a teia radial ou em árvore</small></span><ChevronRight />
                   </button>
                 )}
               </div>
