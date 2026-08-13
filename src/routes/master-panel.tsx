@@ -1097,6 +1097,7 @@ function InitiativePanel({ s, upd }: PanelProps) {
                 size="sm"
                 variant="ghost"
                 className="h-7 w-7 p-0 text-destructive"
+                aria-label={`Remover ${e.name || "participante"} da iniciativa`}
                 onClick={() => remove(e.id)}
               >
                 <Trash className="w-3.5 h-3.5" />
@@ -1865,6 +1866,7 @@ function DataPanel({ s, upd }: PanelProps) {
                   size="sm"
                   variant="ghost"
                   className="h-7 w-7 p-0 text-destructive"
+                  aria-label={`Excluir Rank ${r.rank}`}
                   onClick={() => rmRank(i)}
                 >
                   <Trash className="w-3.5 h-3.5" />
@@ -2148,6 +2150,7 @@ function DataPanel({ s, upd }: PanelProps) {
                     size="sm"
                     variant="ghost"
                     className="h-8 w-8 p-0 text-destructive"
+                    aria-label={`Excluir ramo ${b.label || "sem nome"}`}
                     onClick={() => rmBranch(b.id)}
                   >
                     <Trash className="w-3.5 h-3.5" />
@@ -2212,6 +2215,7 @@ function DataPanel({ s, upd }: PanelProps) {
                             size="sm"
                             variant="ghost"
                             className="h-8 w-8 p-0 text-destructive"
+                            aria-label={`Excluir nó ${n.name || "sem nome"}`}
                             onClick={() => rmNode(b.id, n.id)}
                           >
                             <Trash className="w-3.5 h-3.5" />

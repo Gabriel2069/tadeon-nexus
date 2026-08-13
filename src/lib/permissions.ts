@@ -25,6 +25,7 @@ export type Permission =
   | "character:create"
   | "character:view"
   | "character:edit"
+  | "character:delete"
   | "scene:view"
   | "scene:interact"
   | "scene:edit"
@@ -140,6 +141,13 @@ export function can(permission: Permission, context: PermissionContext) {
     case "character:view":
       return isResourceOwner(context) || workspaceManager || campaignViewer;
     case "character:edit":
+      return (
+        workspaceManager ||
+        campaignCoManager ||
+        (isResourceOwner(context) &&
+          (context.appRole === "jogador" || campaignRole === "player"))
+      );
+    case "character:delete":
       return (
         workspaceManager ||
         campaignCoManager ||

@@ -4,10 +4,13 @@ import {
   ArchiveRestore,
   BookOpenText,
   CloudOff,
-  FileSearch,
+  LayoutDashboard,
+  LibraryBig,
   Loader2,
+  MapPinned,
   Search,
   ShieldCheck,
+  Users,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
@@ -24,16 +27,39 @@ import {
 } from "@/components/ui/command";
 import { isApplicationAdministrator } from "@/lib/permissions";
 
+type SearchGroup = "Áreas" | "Fichas" | "Campanha";
+type SearchIconName =
+  | "dashboard"
+  | "sheet"
+  | "master"
+  | "tools"
+  | "offline"
+  | "knowledge"
+  | "tabletop"
+  | "users";
+
 interface SearchItem {
   id: string;
   label: string;
   detail: string;
-  group: "Ações" | "Fichas" | "Campanha";
-  icon: "sheet" | "master" | "tools" | "offline";
+  group: SearchGroup;
+  icon: SearchIconName;
   sheetId?: string;
   masterTab?:
-    "session" | "scenes" | "npcs-v2" | "investigation" | "threats" | "interludes" | "folds";
-  route?: "/" | "/nexus-tools" | "/offline";
+    | "session"
+    | "scenes"
+    | "npcs-v2"
+    | "investigation"
+    | "threats"
+    | "interludes"
+    | "folds";
+  route?:
+    | "/"
+    | "/nexus"
+    | "/tabletop"
+    | "/nexus-tools"
+    | "/manage-users"
+    | "/offline";
 }
 
 const masterCollections = [
@@ -49,15 +75,20 @@ export function GlobalSearch({
   compact = false,
   mobile = false,
   enableShortcut = false,
+  knowledgeEnabled = false,
+  tabletopEnabled = false,
 }: {
   compact?: boolean;
   mobile?: boolean;
   enableShortcut?: boolean;
+  knowledgeEnabled?: boolean;
+  tabletopEnabled?: boolean;
 }) {
   const { role } = useAuth();
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [loadNotice, setLoadNotice] = useState<string | null>(null);
   const [items, setItems] = useState<SearchItem[]>([]);
   const isMestre = isApplicationAdministrator({ appRole: role });
 
@@ -75,77 +106,134 @@ export function GlobalSearch({
 
   useEffect(() => {
     if (!open) return;
+    let active = true;
     setLoading(true);
+    setLoadNotice(null);
+
     void (async () => {
       const nextItems: SearchItem[] = [
         {
           id: "dashboard",
           label: "Dashboard",
-          detail: "Abrir o arquivo de personagens",
-          group: "Ações",
-          icon: "sheet",
+          detail: "Arquivo de personagens e visão geral",
+          group: "Áreas",
+          icon: "dashboard",
           route: "/",
         },
         {
           id: "offline",
           label: "Consulta offline",
-          detail: "Abrir a cópia local somente leitura",
-          group: "Ações",
+          detail: "Cópia local protegida para leitura",
+          group: "Áreas",
           icon: "offline",
           route: "/offline",
         },
       ];
+
+      if (knowledgeEnabled) {
+        nextItems.splice(1, 0, {
+          id: "knowledge",
+          label: "O Nexus",
+          detail: "Conhecimento, continuidade e referências",
+          group: "Áreas",
+          icon: "knowledge",
+          route: "/nexus",
+        });
+      }
+
+      if (tabletopEnabled) {
+        nextItems.splice(knowledgeEnabled ? 2 : 1, 0, {
+          id: "tabletop",
+          label: "Mesa Nexus",
+          detail: "Cenas, mapas, tokens e transmissão",
+          group: "Áreas",
+          icon: "tabletop",
+          route: "/tabletop",
+        });
+      }
+
       if (isMestre) {
         nextItems.push(
           {
             id: "session",
-            label: "Sessão ativa",
-            detail: "Abrir o espaço operacional do mestre",
-            group: "Ações",
+            label: "Painel do Mestre",
+            detail: "Condução, ritmo e estado da campanha",
+            group: "Áreas",
             icon: "master",
             masterTab: "session",
           },
           {
+            id: "users",
+            label: "Usuários e acessos",
+            detail: "Papéis, convites e permissões",
+            group: "Áreas",
+            icon: "users",
+            route: "/manage-users",
+          },
+          {
             id: "tools",
             label: "Backup & Diagnóstico",
-            detail: "Ver integridade, versões e restauração",
-            group: "Ações",
+            detail: "Integridade, versões e restauração",
+            group: "Áreas",
             icon: "tools",
             route: "/nexus-tools",
           },
         );
       }
 
+      const failures: string[] = [];
       try {
-        const { data: sheets } = await supabase
+        const sheetRequest = supabase
           .from("character_sheets")
           .select("id,name,occupation,exposure")
           .order("name");
-        for (const sheet of sheets ?? []) {
-          nextItems.push({
-            id: `sheet:${sheet.id}`,
-            label: sheet.name,
-            detail: `${sheet.occupation || "Ocupação não definida"} · Rank ${sheet.exposure || 0}`,
-            group: "Fichas",
-            icon: "sheet",
-            sheetId: sheet.id,
-          });
+        const settingsRequest = isMestre
+          ? supabase
+              .from("game_settings")
+              .select(
+                "scenes_detailed,master_npcs,investigation_clues,threats,interludes,folds",
+              )
+              .eq("key", "global")
+              .maybeSingle()
+          : Promise.resolve({ data: null, error: null });
+        const [sheetResult, settingsResult] = await Promise.all([
+          sheetRequest,
+          settingsRequest,
+        ]);
+
+        if (sheetResult.error) {
+          failures.push("fichas");
+        } else {
+          for (const sheet of sheetResult.data ?? []) {
+            nextItems.push({
+              id: `sheet:${sheet.id}`,
+              label: sheet.name,
+              detail: `${sheet.occupation || "Ocupação não definida"} · Rank ${sheet.exposure || 0}`,
+              group: "Fichas",
+              icon: "sheet",
+              sheetId: sheet.id,
+            });
+          }
         }
 
-        if (isMestre) {
-          const { data: settings } = await supabase
-            .from("game_settings")
-            .select("scenes_detailed,master_npcs,investigation_clues,threats,interludes,folds")
-            .eq("key", "global")
-            .maybeSingle();
-          const source = (settings ?? {}) as unknown as Record<string, unknown>;
+        if (settingsResult.error) {
+          failures.push("campanha");
+        } else if (isMestre) {
+          const source = (settingsResult.data ?? {}) as unknown as Record<
+            string,
+            unknown
+          >;
           for (const [field, tab, type] of masterCollections) {
             const records = Array.isArray(source[field])
               ? (source[field] as Array<Record<string, unknown>>)
               : [];
             for (const record of records) {
-              const name = String(record.name ?? record.title ?? `${type} sem nome`);
-              const status = String(record.status ?? record.stage ?? record.classification ?? "");
+              const name = String(
+                record.name ?? record.title ?? `${type} sem nome`,
+              );
+              const status = String(
+                record.status ?? record.stage ?? record.classification ?? "",
+              );
               nextItems.push({
                 id: `${field}:${String(record.id ?? name)}`,
                 label: name,
@@ -158,17 +246,27 @@ export function GlobalSearch({
           }
         }
       } catch {
-        // Static navigation remains usable while the data source is temporarily offline.
-      } finally {
-        setItems(nextItems);
-        setLoading(false);
+        failures.push("conteúdo dinâmico");
       }
+
+      if (!active) return;
+      setItems(nextItems);
+      setLoadNotice(
+        failures.length
+          ? `Navegação disponível; não foi possível indexar ${failures.join(" e ")}.`
+          : null,
+      );
+      setLoading(false);
     })();
-  }, [isMestre, open]);
+
+    return () => {
+      active = false;
+    };
+  }, [isMestre, knowledgeEnabled, open, tabletopEnabled]);
 
   const groups = useMemo(
     () =>
-      (["Ações", "Fichas", "Campanha"] as const).map((group) => ({
+      (["Áreas", "Fichas", "Campanha"] as const).map((group) => ({
         group,
         items: items.filter((item) => item.group === group),
       })),
@@ -193,17 +291,17 @@ export function GlobalSearch({
       <Button
         variant="ghost"
         onClick={() => setOpen(true)}
-        aria-label="Busca global"
+        aria-label="Abrir busca global"
         title={compact ? "Busca global" : undefined}
         className={
           mobile
-            ? "h-8 w-8 p-0"
-            : `w-full gap-2.5 text-sidebar-foreground/75 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground ${
+            ? "tadeon-mobile-header__control h-11 w-11 p-0"
+            : `tadeon-global-search-trigger w-full gap-2.5 text-sidebar-foreground/75 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground ${
                 compact ? "justify-center px-2" : "justify-start px-3"
               }`
         }
       >
-        <Search className="h-4 w-4" />
+        <Search aria-hidden className="h-4 w-4" />
         {!compact && !mobile && (
           <>
             <span>Busca global</span>
@@ -217,12 +315,15 @@ export function GlobalSearch({
       </Button>
 
       <CommandDialog open={open} onOpenChange={setOpen}>
-        <CommandInput placeholder="Buscar fichas, cenas, NPCs, ameaças e ferramentas…" />
-        <CommandList>
+        <CommandInput placeholder="Buscar áreas, fichas, cenas, NPCs e ferramentas…" />
+        <CommandList className="tadeon-command-list">
           {loading ? (
-            <div className="flex items-center justify-center gap-2 py-8 text-sm text-muted-foreground">
-              <Loader2 className="h-4 w-4 animate-spin" />
-              Indexando o Nexus…
+            <div
+              className="flex items-center justify-center gap-2 py-10 text-sm text-muted-foreground"
+              role="status"
+            >
+              <Loader2 aria-hidden className="h-4 w-4 animate-spin" />
+              Indexando o arquivo…
             </div>
           ) : (
             <>
@@ -237,6 +338,7 @@ export function GlobalSearch({
                           key={item.id}
                           value={`${item.label} ${item.detail}`}
                           onSelect={() => selectItem(item)}
+                          className="tadeon-command-item"
                         >
                           <SearchIcon type={item.icon} />
                           <div className="min-w-0 flex-1">
@@ -245,7 +347,9 @@ export function GlobalSearch({
                               {item.detail}
                             </p>
                           </div>
-                          {item.masterTab && <CommandShortcut>Painel</CommandShortcut>}
+                          <CommandShortcut>
+                            {item.masterTab ? "Painel" : "Abrir"}
+                          </CommandShortcut>
                         </CommandItem>
                       ))}
                     </CommandGroup>
@@ -255,15 +359,34 @@ export function GlobalSearch({
             </>
           )}
         </CommandList>
+        {!loading && (
+          <div className="tadeon-command-footer" role="status">
+            <span>
+              {items.length} {items.length === 1 ? "resultado" : "resultados"}
+            </span>
+            <span className={loadNotice ? "text-destructive" : undefined}>
+              {loadNotice ?? "↑↓ navegar · Enter abrir · Esc fechar"}
+            </span>
+          </div>
+        )}
       </CommandDialog>
     </>
   );
 }
 
-function SearchIcon({ type }: { type: SearchItem["icon"] }) {
-  if (type === "master") return <ShieldCheck className="h-4 w-4 text-primary" />;
-  if (type === "tools") return <ArchiveRestore className="h-4 w-4 text-primary" />;
-  if (type === "offline") return <CloudOff className="h-4 w-4 text-primary" />;
-  if (type === "sheet") return <BookOpenText className="h-4 w-4 text-primary" />;
-  return <FileSearch className="h-4 w-4 text-primary" />;
+function SearchIcon({ type }: { type: SearchIconName }) {
+  const className = "h-4 w-4 text-primary";
+  if (type === "master")
+    return <ShieldCheck aria-hidden className={className} />;
+  if (type === "tools")
+    return <ArchiveRestore aria-hidden className={className} />;
+  if (type === "offline") return <CloudOff aria-hidden className={className} />;
+  if (type === "sheet")
+    return <BookOpenText aria-hidden className={className} />;
+  if (type === "knowledge")
+    return <LibraryBig aria-hidden className={className} />;
+  if (type === "tabletop")
+    return <MapPinned aria-hidden className={className} />;
+  if (type === "users") return <Users aria-hidden className={className} />;
+  return <LayoutDashboard aria-hidden className={className} />;
 }
