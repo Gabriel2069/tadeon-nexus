@@ -21,6 +21,7 @@ import type { TabletopDirectorCamera } from "@/lib/tabletop/tabletop-director-st
 import type { TabletopSession } from "@/lib/tabletop/tabletop-session-service";
 import { tabletopSessionService } from "@/lib/tabletop/tabletop-session-service";
 import "@/styles/tabletop-director-remote.css";
+import "@/styles/interface-stability.css";
 
 export function TabletopDirectorRemote({
   session,
