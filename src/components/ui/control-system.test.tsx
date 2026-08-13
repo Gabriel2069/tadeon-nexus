@@ -1,6 +1,11 @@
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -32,6 +37,7 @@ describe("Fio-Mestre control metadata", () => {
     for (const slot of [
       "tabs",
       "tabs-list",
+      "tabs-indicator",
       "tabs-trigger",
       "tabs-content",
       "toggle",
@@ -45,6 +51,9 @@ describe("Fio-Mestre control metadata", () => {
     }
 
     expect(html).toContain('data-state="active"');
+    expect(html).toContain('data-motion-direction="forward"');
+    expect(html).toContain('data-tab-value="arquivo"');
+    expect(html).toContain('data-visible="false"');
     expect(html).toContain('data-state="on"');
     expect(html).toContain('data-state="checked"');
   });
