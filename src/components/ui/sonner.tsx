@@ -1,18 +1,45 @@
 import { Toaster as Sonner } from "sonner";
+import {
+  AlertTriangle,
+  CheckCircle2,
+  Info,
+  LoaderCircle,
+  XCircle,
+} from "lucide-react";
 
 type ToasterProps = React.ComponentProps<typeof Sonner>;
 
 const Toaster = ({ ...props }: ToasterProps) => {
   return (
     <Sonner
-      className="toaster group"
+      className="tadeon-toaster"
+      closeButton
+      expand
+      visibleToasts={4}
+      gap={10}
+      icons={{
+        success: <CheckCircle2 aria-hidden="true" />,
+        info: <Info aria-hidden="true" />,
+        warning: <AlertTriangle aria-hidden="true" />,
+        error: <XCircle aria-hidden="true" />,
+        loading: <LoaderCircle className="animate-spin" aria-hidden="true" />,
+      }}
       toastOptions={{
+        closeButtonAriaLabel: "Fechar notificação",
         classNames: {
-          toast:
-            "group toast group-[.toaster]:bg-background group-[.toaster]:text-foreground group-[.toaster]:border-border group-[.toaster]:shadow-lg",
-          description: "group-[.toast]:text-muted-foreground",
-          actionButton: "group-[.toast]:bg-primary group-[.toast]:text-primary-foreground",
-          cancelButton: "group-[.toast]:bg-muted group-[.toast]:text-muted-foreground",
+          toast: "tadeon-toast",
+          content: "tadeon-toast__content",
+          title: "tadeon-toast__title",
+          description: "tadeon-toast__description",
+          icon: "tadeon-toast__icon",
+          closeButton: "tadeon-toast__close",
+          actionButton: "tadeon-toast__action",
+          cancelButton: "tadeon-toast__cancel",
+          success: "tadeon-toast--success",
+          info: "tadeon-toast--info",
+          warning: "tadeon-toast--warning",
+          error: "tadeon-toast--error",
+          loading: "tadeon-toast--loading",
         },
       }}
       {...props}

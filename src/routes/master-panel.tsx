@@ -217,16 +217,12 @@ function normalizeNpc(value: Partial<MasterNpc> & Partial<NPC>): MasterNpc {
     attributes: { ...base.attributes, ...(value.attributes ?? {}) },
     vectors: {
       fisico: Number(
-        legacyVectors.fisico ??
-          Math.max(legacyVectors.luta ?? 0, legacyVectors.pontaria ?? 0),
+        legacyVectors.fisico ?? Math.max(legacyVectors.luta ?? 0, legacyVectors.pontaria ?? 0),
       ),
       tecnico: Number(
-        legacyVectors.tecnico ??
-          Math.max(legacyVectors.tecnica ?? 0, legacyVectors.intelecto ?? 0),
+        legacyVectors.tecnico ?? Math.max(legacyVectors.tecnica ?? 0, legacyVectors.intelecto ?? 0),
       ),
-      perceptivo: Number(
-        legacyVectors.perceptivo ?? legacyVectors.percepcao ?? 0,
-      ),
+      perceptivo: Number(legacyVectors.perceptivo ?? legacyVectors.percepcao ?? 0),
       social: Number(legacyVectors.social ?? 0),
       metafisico: Number(legacyVectors.metafisico ?? 0),
     },
@@ -244,18 +240,15 @@ function normalizeClue(value: Partial<MasterClue> & Partial<Clue>): MasterClue {
   };
 }
 
-function normalizeThreat(
-  value: Partial<MasterThreat> & Partial<Monster>,
-): MasterThreat {
+function normalizeThreat(value: Partial<MasterThreat> & Partial<Monster>): MasterThreat {
   const base = createEmptyThreat();
-  const areaMigration: Record<string, MasterThreat["attacks"][number]["area"]> =
-    {
-      Nenhuma: "Engajado",
-      Linha: "Linha curta",
-      "Explosão pequena": "Raio pequeno",
-      "Explosão média": "Raio médio",
-      "Explosão grande": "Raio grande",
-    };
+  const areaMigration: Record<string, MasterThreat["attacks"][number]["area"]> = {
+    Nenhuma: "Engajado",
+    Linha: "Linha curta",
+    "Explosão pequena": "Raio pequeno",
+    "Explosão média": "Raio médio",
+    "Explosão grande": "Raio grande",
+  };
   return {
     ...base,
     ...value,
@@ -321,21 +314,13 @@ function MasterPanel() {
       setLoading(true);
       setLoadError(null);
       setS(null);
-      const [
-        { data: gs, error: settingsError },
-        { data: ch, error: sheetsError },
-      ] = await Promise.all([
-        supabase
-          .from("game_settings")
-          .select("*")
-          .eq("key", "global")
-          .maybeSingle(),
-        supabase
-          .from("character_sheets")
-          .select(
-            "id,name,owner_id,exposure,stats,attributes,equilibrium,power_form_enabled",
-          ),
-      ]);
+      const [{ data: gs, error: settingsError }, { data: ch, error: sheetsError }] =
+        await Promise.all([
+          supabase.from("game_settings").select("*").eq("key", "global").maybeSingle(),
+          supabase
+            .from("character_sheets")
+            .select("id,name,owner_id,exposure,stats,attributes,equilibrium,power_form_enabled"),
+        ]);
       if (settingsError || sheetsError || !gs) {
         setLoadError(
           !gs && !settingsError
@@ -349,46 +334,38 @@ function MasterPanel() {
       const g = gs as unknown as Record<string, unknown>;
       const rulesVersion = Number(g.rules_version ?? 1);
       const storedRankTable = (g.rank_table as RankRow[] | undefined) ?? [];
-      const storedSkillBranches =
-        (g.skill_branches as SkillBranch[] | undefined) ?? [];
+      const storedSkillBranches = (g.skill_branches as SkillBranch[] | undefined) ?? [];
       const usesFinalRules =
-        storedRankTable.some(
-          (row) => row.rank === 100 && row.pm === 170 && row.def === 14,
-        ) &&
+        storedRankTable.some((row) => row.rank === 100 && row.pm === 170 && row.def === 14) &&
         storedSkillBranches.length === 4 &&
         storedSkillBranches.every((branch) => branch.nodes.length === 24);
       const legacyNpcs = (g.npcs as NPC[] | undefined) ?? [];
       const legacyClues = (g.clues as Clue[] | undefined) ?? [];
       const legacyMonsters = (g.monsters as Monster[] | undefined) ?? [];
-      const masterNpcs = (
-        (g.master_npcs as MasterNpc[] | undefined) ?? legacyNpcs
-      ).map(normalizeNpc);
+      const masterNpcs = ((g.master_npcs as MasterNpc[] | undefined) ?? legacyNpcs).map(
+        normalizeNpc,
+      );
       const investigationClues = (
         (g.investigation_clues as MasterClue[] | undefined) ?? legacyClues
       ).map(normalizeClue);
-      const threats = (
-        (g.threats as MasterThreat[] | undefined) ?? legacyMonsters
-      ).map(normalizeThreat);
+      const threats = ((g.threats as MasterThreat[] | undefined) ?? legacyMonsters).map(
+        normalizeThreat,
+      );
       setS({
         ...(gs as unknown as SettingsRow),
         npcs: (g.npcs as NPC[]) ?? [],
         monsters: (g.monsters as Monster[]) ?? [],
         clues: (g.clues as Clue[]) ?? [],
-        scenes_detailed: ((g.scenes_detailed as Scene[]) ?? []).map(
-          normalizeScene,
-        ),
+        scenes_detailed: ((g.scenes_detailed as Scene[]) ?? []).map(normalizeScene),
         initiative_order: (g.initiative_order as InitEntry[]) ?? [],
         pinned_sheet_ids: (g.pinned_sheet_ids as string[]) ?? [],
         rank_table: usesFinalRules ? storedRankTable : CANONICAL_RANK_TABLE,
-        skill_branches: usesFinalRules
-          ? storedSkillBranches
-          : CANONICAL_SKILL_BRANCHES,
+        skill_branches: usesFinalRules ? storedSkillBranches : CANONICAL_SKILL_BRANCHES,
         upgrade_costs: usesFinalRules
           ? ((g.upgrade_costs as UpgradeCosts) ?? DEFAULT_UPGRADE_COSTS)
           : DEFAULT_UPGRADE_COSTS,
         condition_options: usesFinalRules
-          ? ((g.condition_options as ConditionOptionsMap) ??
-            DEFAULT_CONDITION_OPTIONS)
+          ? ((g.condition_options as ConditionOptionsMap) ?? DEFAULT_CONDITION_OPTIONS)
           : DEFAULT_CONDITION_OPTIONS,
         skill_groups: usesFinalRules
           ? ((g.skill_groups as SettingsRow["skill_groups"]) ?? SKILL_GROUPS)
@@ -406,14 +383,12 @@ function MasterPanel() {
         master_npcs: masterNpcs,
         investigation_clues: investigationClues,
         threats,
-        interludes: ((g.interludes as MasterInterlude[] | undefined) ?? []).map(
-          (value) => ({
-            ...createEmptyInterlude(),
-            ...value,
-            id: value.id || genId(),
-            activities: value.activities ?? [],
-          }),
-        ),
+        interludes: ((g.interludes as MasterInterlude[] | undefined) ?? []).map((value) => ({
+          ...createEmptyInterlude(),
+          ...value,
+          id: value.id || genId(),
+          activities: value.activities ?? [],
+        })),
         folds: ((g.folds as MasterFold[] | undefined) ?? []).map((value) => ({
           ...createEmptyFold(),
           ...value,
@@ -422,11 +397,8 @@ function MasterPanel() {
         })),
         rules_version: Math.max(3, rulesVersion),
       });
-      const rawSheets =
-        (ch as unknown as Omit<SheetSummary, "owner_email">[] | null) ?? [];
-      const ownerIds = [
-        ...new Set(rawSheets.map((sheet) => sheet.owner_id).filter(Boolean)),
-      ];
+      const rawSheets = (ch as unknown as Omit<SheetSummary, "owner_email">[] | null) ?? [];
+      const ownerIds = [...new Set(rawSheets.map((sheet) => sheet.owner_id).filter(Boolean))];
       let ownerLabels = new Map<string, string>();
       if (ownerIds.length) {
         const { data: profiles } = await supabase
@@ -451,7 +423,7 @@ function MasterPanel() {
   }, [reloadKey]);
 
   const save = async () => {
-    if (!s) return;
+    if (!s || saving) return false;
     setSaving(true);
     const { id, ...payload } = s;
     const { error } = await supabase
@@ -462,10 +434,12 @@ function MasterPanel() {
     if (error) {
       void reportClientError(error, "save");
       toast.error("Não foi possível salvar o painel do mestre.");
+      return false;
     } else {
       setDirty(false);
       setLastSavedAt(new Date());
       toast.success("Painel salvo!");
+      return true;
     }
   };
 
@@ -474,6 +448,25 @@ function MasterPanel() {
       setDirty(true);
       return p ? { ...p, [k]: v } : p;
     });
+
+  const openMasterTab = (tab: MasterTab) =>
+    void navigate({
+      to: "/master-panel",
+      search: { tab: tab === "dashboard" ? undefined : tab },
+    });
+
+  const openSheet = (sheetId: string) => {
+    if (!s) return;
+    cacheMasterState(s, sheets);
+    void (async () => {
+      if (dirty) {
+        toast.info("Salvando a condução antes de abrir a ficha…");
+        const saved = await save();
+        if (!saved) return;
+      }
+      await navigate({ to: "/sheet/$id", params: { id: sheetId } });
+    })();
+  };
 
   useEffect(() => {
     if (!s) return;
@@ -499,10 +492,7 @@ function MasterPanel() {
           <p className="text-sm text-muted-foreground mt-2">
             {loadError ?? "Não foi possível carregar as configurações da mesa."}
           </p>
-          <Button
-            className="mt-4"
-            onClick={() => setReloadKey((value) => value + 1)}
-          >
+          <Button className="mt-4" onClick={() => setReloadKey((value) => value + 1)}>
             Tentar novamente
           </Button>
         </Card>
@@ -522,8 +512,7 @@ function MasterPanel() {
               <span className="truncate">Painel do Mestre</span>
             </h1>
             <p className="mt-1 truncate text-xs text-muted-foreground">
-              {s.campaign_title || "Campanha sem título"} · comando, ritmo e
-              continuidade
+              {s.campaign_title || "Campanha sem título"} · comando, ritmo e continuidade
             </p>
           </div>
           <div className="flex shrink-0 items-center justify-between gap-2 sm:justify-end">
@@ -532,17 +521,8 @@ function MasterPanel() {
               savedAt={lastSavedAt}
               compact
             />
-            <Button
-              onClick={save}
-              disabled={saving || !dirty}
-              size="sm"
-              className="gap-1.5"
-            >
-              {saving ? (
-                <Loader2 className="w-4 h-4 animate-spin" />
-              ) : (
-                <Save className="w-4 h-4" />
-              )}
+            <Button onClick={save} disabled={saving || !dirty} size="sm" className="gap-1.5">
+              {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
               <span className="hidden sm:inline">Salvar</span>
             </Button>
           </div>
@@ -551,9 +531,7 @@ function MasterPanel() {
 
       <Tabs
         value={
-          search.tab === "assets" && !assetsEnabled
-            ? "dashboard"
-            : (search.tab ?? "dashboard")
+          search.tab === "assets" && !assetsEnabled ? "dashboard" : (search.tab ?? "dashboard")
         }
         onValueChange={(value) =>
           void navigate({
@@ -581,6 +559,8 @@ function MasterPanel() {
             sheets={sheets}
             onCampaignTitle={(value) => upd("campaign_title", value)}
             onCampaignPhase={(value) => upd("campaign_phase", value)}
+            onNavigate={openMasterTab}
+            onOpenSheet={openSheet}
           />
         </TabsContent>
         <TabsContent value="session" className="mt-0">
@@ -600,6 +580,8 @@ function MasterPanel() {
             onNpcsChange={(value) => upd("master_npcs", value)}
             onThreatsChange={(value) => upd("threats", value)}
             onRemindersChange={(value) => upd("reminders", value)}
+            onOpenSheet={openSheet}
+            onOpenCharacterOverview={() => openMasterTab("pinned")}
           />
         </TabsContent>
         <TabsContent value="scenes" className="mt-0">
@@ -609,16 +591,10 @@ function MasterPanel() {
           <InitiativePanel s={s} upd={upd} />
         </TabsContent>
         <TabsContent value="npcs-v2" className="mt-0">
-          <NpcHub
-            npcs={s.master_npcs}
-            onChange={(value) => upd("master_npcs", value)}
-          />
+          <NpcHub npcs={s.master_npcs} onChange={(value) => upd("master_npcs", value)} />
         </TabsContent>
         <TabsContent value="threats" className="mt-0">
-          <ThreatHub
-            threats={s.threats}
-            onChange={(value) => upd("threats", value)}
-          />
+          <ThreatHub threats={s.threats} onChange={(value) => upd("threats", value)} />
         </TabsContent>
         <TabsContent value="investigation" className="mt-0">
           <InvestigationHub
@@ -628,10 +604,7 @@ function MasterPanel() {
           />
         </TabsContent>
         <TabsContent value="interludes" className="mt-0">
-          <InterludeHub
-            interludes={s.interludes}
-            onChange={(value) => upd("interludes", value)}
-          />
+          <InterludeHub interludes={s.interludes} onChange={(value) => upd("interludes", value)} />
         </TabsContent>
         <TabsContent value="folds" className="mt-0">
           <FoldHub folds={s.folds} onChange={(value) => upd("folds", value)} />
@@ -749,14 +722,10 @@ function ScenesPanel({ s, upd }: PanelProps) {
                 }}
               >
                 <div className="flex items-start justify-between gap-1">
-                  <h4 className="font-cinzel text-sm font-bold line-clamp-2">
-                    {sc.title}
-                  </h4>
+                  <h4 className="font-cinzel text-sm font-bold line-clamp-2">{sc.title}</h4>
                   <Maximize2 className="w-3.5 h-3.5 text-muted-foreground group-hover:text-primary shrink-0 mt-0.5" />
                 </div>
-                <div className="text-[10px] text-muted-foreground mt-1">
-                  {sc.type}
-                </div>
+                <div className="text-[10px] text-muted-foreground mt-1">{sc.type}</div>
                 <span
                   className={`inline-block mt-2 text-[10px] px-1.5 py-0.5 rounded-full border ${statusColor}`}
                 >
@@ -764,9 +733,7 @@ function ScenesPanel({ s, upd }: PanelProps) {
                 </span>
                 <div className="flex gap-2 mt-2 text-[10px] text-muted-foreground">
                   {sc.npcIds.length > 0 && <span>👤 {sc.npcIds.length}</span>}
-                  {sc.threatIds.length > 0 && (
-                    <span>💀 {sc.threatIds.length}</span>
-                  )}
+                  {sc.threatIds.length > 0 && <span>💀 {sc.threatIds.length}</span>}
                   {sc.clueIds.length > 0 && <span>🔍 {sc.clueIds.length}</span>}
                 </div>
               </Card>
@@ -776,15 +743,10 @@ function ScenesPanel({ s, upd }: PanelProps) {
       )}
 
       {expanded && (
-        <Dialog
-          open={!!expandedId}
-          onOpenChange={(o) => !o && setExpandedId(null)}
-        >
+        <Dialog open={!!expandedId} onOpenChange={(o) => !o && setExpandedId(null)}>
           <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
             <DialogHeader>
-              <DialogTitle className="font-cinzel">
-                {expanded.title}
-              </DialogTitle>
+              <DialogTitle className="font-cinzel">{expanded.title}</DialogTitle>
             </DialogHeader>
             <div className="space-y-3">
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
@@ -792,18 +754,14 @@ function ScenesPanel({ s, upd }: PanelProps) {
                   <Label className="text-xs">Título</Label>
                   <Input
                     value={expanded.title}
-                    onChange={(e) =>
-                      update(expanded.id, { title: e.target.value })
-                    }
+                    onChange={(e) => update(expanded.id, { title: e.target.value })}
                   />
                 </div>
                 <div>
                   <Label className="text-xs">Tipo</Label>
                   <Input
                     value={expanded.type}
-                    onChange={(e) =>
-                      update(expanded.id, { type: e.target.value })
-                    }
+                    onChange={(e) => update(expanded.id, { type: e.target.value })}
                   />
                 </div>
                 <div className="sm:col-span-3">
@@ -828,9 +786,7 @@ function ScenesPanel({ s, upd }: PanelProps) {
                 <Textarea
                   rows={4}
                   value={expanded.narrative}
-                  onChange={(e) =>
-                    update(expanded.id, { narrative: e.target.value })
-                  }
+                  onChange={(e) => update(expanded.id, { narrative: e.target.value })}
                   placeholder="Texto que o mestre pode ler em voz alta..."
                 />
               </div>
@@ -839,9 +795,7 @@ function ScenesPanel({ s, upd }: PanelProps) {
                 <Textarea
                   rows={3}
                   value={expanded.description}
-                  onChange={(e) =>
-                    update(expanded.id, { description: e.target.value })
-                  }
+                  onChange={(e) => update(expanded.id, { description: e.target.value })}
                 />
               </div>
               <div className="grid gap-2 sm:grid-cols-3">
@@ -850,9 +804,7 @@ function ScenesPanel({ s, upd }: PanelProps) {
                   <Textarea
                     rows={3}
                     value={expanded.superficialLayer}
-                    onChange={(e) =>
-                      update(expanded.id, { superficialLayer: e.target.value })
-                    }
+                    onChange={(e) => update(expanded.id, { superficialLayer: e.target.value })}
                   />
                 </div>
                 <div>
@@ -860,9 +812,7 @@ function ScenesPanel({ s, upd }: PanelProps) {
                   <Textarea
                     rows={3}
                     value={expanded.attentiveLayer}
-                    onChange={(e) =>
-                      update(expanded.id, { attentiveLayer: e.target.value })
-                    }
+                    onChange={(e) => update(expanded.id, { attentiveLayer: e.target.value })}
                   />
                 </div>
                 <div>
@@ -870,9 +820,7 @@ function ScenesPanel({ s, upd }: PanelProps) {
                   <Textarea
                     rows={3}
                     value={expanded.deepLayer}
-                    onChange={(e) =>
-                      update(expanded.id, { deepLayer: e.target.value })
-                    }
+                    onChange={(e) => update(expanded.id, { deepLayer: e.target.value })}
                   />
                 </div>
               </div>
@@ -880,9 +828,7 @@ function ScenesPanel({ s, upd }: PanelProps) {
                 <Label className="text-xs">Próximo passo provável</Label>
                 <Input
                   value={expanded.nextStep}
-                  onChange={(e) =>
-                    update(expanded.id, { nextStep: e.target.value })
-                  }
+                  onChange={(e) => update(expanded.id, { nextStep: e.target.value })}
                 />
               </div>
 
@@ -898,9 +844,7 @@ function ScenesPanel({ s, upd }: PanelProps) {
                 icon={<Skull className="w-3.5 h-3.5" />}
                 items={s.threats.map((m) => ({ id: m.id, label: m.name }))}
                 selected={expanded.threatIds}
-                onChange={(ids) =>
-                  update(expanded.id, { threatIds: ids, monsterIds: ids })
-                }
+                onChange={(ids) => update(expanded.id, { threatIds: ids, monsterIds: ids })}
               />
               <LinkPicker
                 label="Pistas"
@@ -948,11 +892,7 @@ function LinkPicker({
   onChange: (ids: string[]) => void;
 }) {
   const toggle = (id: string) =>
-    onChange(
-      selected.includes(id)
-        ? selected.filter((x) => x !== id)
-        : [...selected, id],
-    );
+    onChange(selected.includes(id) ? selected.filter((x) => x !== id) : [...selected, id]);
   return (
     <div>
       <Label className="text-xs flex items-center gap-1.5">
@@ -995,10 +935,7 @@ function InitiativePanel({ s, upd }: PanelProps) {
 
   const add = (isPlayer = false) => {
     if (!name.trim()) return;
-    upd("initiative_order", [
-      ...s.initiative_order,
-      { id: genId(), name, init, pv: 0, isPlayer },
-    ]);
+    upd("initiative_order", [...s.initiative_order, { id: genId(), name, init, pv: 0, isPlayer }]);
     setName("");
     setInit(0);
   };
@@ -1027,20 +964,12 @@ function InitiativePanel({ s, upd }: PanelProps) {
         </div>
         <div className="w-24">
           <Label className="text-xs">Iniciativa</Label>
-          <Input
-            type="number"
-            value={init}
-            onChange={(e) => setInit(Number(e.target.value))}
-          />
+          <Input type="number" value={init} onChange={(e) => setInit(Number(e.target.value))} />
         </div>
         <Button onClick={() => add(false)} className="gap-1.5">
           <Plus className="w-4 h-4" /> NPC
         </Button>
-        <Button
-          onClick={() => add(true)}
-          variant="secondary"
-          className="gap-1.5"
-        >
+        <Button onClick={() => add(true)} variant="secondary" className="gap-1.5">
           <Plus className="w-4 h-4" /> Jogador
         </Button>
         {sorted.length > 0 && (
@@ -1060,14 +989,10 @@ function InitiativePanel({ s, upd }: PanelProps) {
             <div
               key={e.id}
               className={`flex items-center gap-2 p-2 rounded-lg ${
-                idx === 0
-                  ? "bg-primary/15 border border-primary/40"
-                  : "bg-secondary/40"
+                idx === 0 ? "bg-primary/15 border border-primary/40" : "bg-secondary/40"
               }`}
             >
-              <span className="font-cinzel font-bold w-8 text-center text-primary">
-                {idx + 1}º
-              </span>
+              <span className="font-cinzel font-bold w-8 text-center text-primary">{idx + 1}º</span>
               <Input
                 value={e.name}
                 onChange={(ev) => update(e.id, { name: ev.target.value })}
@@ -1076,9 +1001,7 @@ function InitiativePanel({ s, upd }: PanelProps) {
               <Input
                 type="number"
                 value={e.init}
-                onChange={(ev) =>
-                  update(e.id, { init: Number(ev.target.value) })
-                }
+                onChange={(ev) => update(e.id, { init: Number(ev.target.value) })}
                 className="h-8 w-16 text-center"
               />
               <Input
@@ -1158,9 +1081,7 @@ function CrudList<T extends { id: string }>({
       </div>
 
       {items.length === 0 ? (
-        <p className="text-xs text-muted-foreground italic text-center py-6">
-          Vazio.
-        </p>
+        <p className="text-xs text-muted-foreground italic text-center py-6">Vazio.</p>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
           {items.map((it) => (
@@ -1173,9 +1094,7 @@ function CrudList<T extends { id: string }>({
               <div className="font-cinzel text-sm font-bold truncate">
                 {String(it[titleKey] || "(sem nome)")}
               </div>
-              <div className="text-[10px] text-muted-foreground">
-                Clique para editar
-              </div>
+              <div className="text-[10px] text-muted-foreground">Clique para editar</div>
             </button>
           ))}
         </div>
@@ -1230,17 +1149,10 @@ function CrudList<T extends { id: string }>({
                     <Label className="text-xs">{f.label}</Label>
                     <Input
                       type={f.type === "number" ? "number" : "text"}
-                      value={
-                        f.type === "number"
-                          ? Number(val ?? 0)
-                          : String(val ?? "")
-                      }
+                      value={f.type === "number" ? Number(val ?? 0) : String(val ?? "")}
                       onChange={(e) =>
                         update(editing.id, {
-                          [f.key]:
-                            f.type === "number"
-                              ? Number(e.target.value)
-                              : e.target.value,
+                          [f.key]: f.type === "number" ? Number(e.target.value) : e.target.value,
                         } as Partial<T>)
                       }
                     />
@@ -1366,9 +1278,7 @@ function PinnedPanel({
     const normalized = query.trim().toLocaleLowerCase("pt-BR");
     return [...sheets]
       .filter((sheet) =>
-        `${sheet.name} ${sheet.owner_email}`
-          .toLocaleLowerCase("pt-BR")
-          .includes(normalized),
+        `${sheet.name} ${sheet.owner_email}`.toLocaleLowerCase("pt-BR").includes(normalized),
       )
       .sort((left, right) => left.name.localeCompare(right.name, "pt-BR"));
   }, [query, sheets]);
@@ -1381,11 +1291,7 @@ function PinnedPanel({
 
   const togglePowerForm = async (sh: SheetSummary) => {
     const next = !sh.power_form_enabled;
-    setSheets((prev) =>
-      prev.map((x) =>
-        x.id === sh.id ? { ...x, power_form_enabled: next } : x,
-      ),
-    );
+    setSheets((prev) => prev.map((x) => (x.id === sh.id ? { ...x, power_form_enabled: next } : x)));
     const { error } = await supabase
       .from("character_sheets")
       .update({ power_form_enabled: next })
@@ -1393,20 +1299,16 @@ function PinnedPanel({
     if (error) {
       toast.error("Falha ao atualizar Forma de Poder.");
       setSheets((prev) =>
-        prev.map((x) =>
-          x.id === sh.id ? { ...x, power_form_enabled: !next } : x,
-        ),
+        prev.map((x) => (x.id === sh.id ? { ...x, power_form_enabled: !next } : x)),
       );
     } else {
-      toast.success(
-        next ? "Forma de Poder liberada." : "Forma de Poder bloqueada.",
-      );
+      toast.success(next ? "Forma de Poder liberada." : "Forma de Poder bloqueada.");
     }
   };
 
   return (
     <div className="space-y-4">
-      <Card className="tadeon-surface rounded-2xl p-4 md:p-5">
+      <Card className="tadeon-master-sheets-command tadeon-surface rounded-2xl p-4 md:p-5">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <p className="tadeon-eyebrow">Arquivo de personagens</p>
@@ -1427,9 +1329,7 @@ function PinnedPanel({
         </div>
         <div className="mt-4 flex flex-wrap gap-2">
           {sheets.length === 0 ? (
-            <p className="text-xs text-muted-foreground italic">
-              Nenhuma ficha criada.
-            </p>
+            <p className="text-xs text-muted-foreground italic">Nenhuma ficha criada.</p>
           ) : (
             visibleSheets.map((sh) => {
               const on = s.pinned_sheet_ids.includes(sh.id);
@@ -1438,17 +1338,14 @@ function PinnedPanel({
                   key={sh.id}
                   type="button"
                   onClick={() => toggle(sh.id)}
-                  className={`flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs transition-[color,background-color,border-color,box-shadow,transform] duration-150 ease-[var(--ease-out)] active:scale-[.97] ${
+                  aria-pressed={on}
+                  className={`tadeon-master-sheet-filter flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs ${
                     on
-                      ? "bg-primary text-primary-foreground border-primary"
-                      : "bg-secondary/40 border-border hover:border-primary/50"
+                      ? "is-active bg-primary text-primary-foreground border-primary"
+                      : "bg-secondary/40 border-border"
                   }`}
                 >
-                  {on ? (
-                    <Eye className="w-3 h-3" />
-                  ) : (
-                    <EyeOff className="w-3 h-3" />
-                  )}
+                  {on ? <Eye className="w-3 h-3" /> : <EyeOff className="w-3 h-3" />}
                   {sh.name || sh.owner_email}
                 </button>
               );
@@ -1462,32 +1359,28 @@ function PinnedPanel({
           Selecione fichas acima para comparar.
         </Card>
       ) : (
-        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3">
+        <div className="tadeon-master-sheets-grid grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3">
           {pinned.map((sh) => {
             const eq = Math.max(-10, Math.min(10, Number(sh.equilibrium ?? 0)));
             const eqPct = ((eq + 10) / 20) * 100;
             return (
               <Card
                 key={sh.id}
-                className="tadeon-surface rounded-2xl border-primary/20 bg-card/70 p-4"
+                className="tadeon-master-sheet-card tadeon-interactive-card tadeon-surface rounded-2xl border-primary/20 bg-card/70 p-4"
               >
                 <div className="flex items-start justify-between gap-2">
                   <div className="min-w-0">
-                    <h4 className="font-cinzel font-bold truncate">
+                    <h4 className="tadeon-interactive-card__title truncate font-cinzel font-bold">
                       {sh.name || "Sem nome"}
                     </h4>
-                    <p className="text-[10px] text-muted-foreground truncate">
-                      {sh.owner_email}
-                    </p>
+                    <p className="text-[10px] text-muted-foreground truncate">{sh.owner_email}</p>
                   </div>
                   <div className="flex flex-col items-end gap-1 shrink-0">
                     <Button
                       size="sm"
                       variant="outline"
                       className="h-7 gap-1 text-[11px]"
-                      onClick={() =>
-                        navigate({ to: "/sheet/$id", params: { id: sh.id } })
-                      }
+                      onClick={() => navigate({ to: "/sheet/$id", params: { id: sh.id } })}
                     >
                       <ExternalLink className="w-3 h-3" /> Abrir
                     </Button>
@@ -1512,21 +1405,9 @@ function PinnedPanel({
                 </div>
 
                 <div className="grid grid-cols-3 gap-1.5 mt-2 text-center text-xs">
-                  <Mini
-                    label="PV"
-                    v={sh.stats?.pv_current ?? 0}
-                    color="text-red-400"
-                  />
-                  <Mini
-                    label="PS"
-                    v={sh.stats?.ps_current ?? 0}
-                    color="text-purple-400"
-                  />
-                  <Mini
-                    label="PE"
-                    v={sh.stats?.pe_current ?? 0}
-                    color="text-emerald-400"
-                  />
+                  <Mini label="PV" v={sh.stats?.pv_current ?? 0} color="text-red-400" />
+                  <Mini label="PS" v={sh.stats?.ps_current ?? 0} color="text-purple-400" />
+                  <Mini label="PE" v={sh.stats?.pe_current ?? 0} color="text-emerald-400" />
                 </div>
                 <div className="mt-2">
                   <div className="text-[10px] text-muted-foreground flex justify-between">
@@ -1565,13 +1446,11 @@ function PinnedPanel({
                     />
                   </div>
                 </div>
-                <div className="mt-2 grid grid-cols-2 gap-1 text-center text-[10px] sm:grid-cols-5">
+                <div className="tadeon-master-sheet-card__attributes mt-3 grid grid-cols-5 gap-1 text-center text-[10px]">
                   {["COR", "MEN", "INS", "PRE", "ERU"].map((a) => (
-                    <div key={a} className="bg-secondary/40 rounded p-1">
+                    <div key={a} className="rounded bg-secondary/40 p-1">
                       <div className="text-muted-foreground">{a}</div>
-                      <div className="font-bold text-sm">
-                        {sh.attributes?.[a] ?? 0}
-                      </div>
+                      <div className="font-bold text-sm">{sh.attributes?.[a] ?? 0}</div>
                     </div>
                   ))}
                 </div>
@@ -1583,15 +1462,7 @@ function PinnedPanel({
     </div>
   );
 }
-function Mini({
-  label,
-  v,
-  color,
-}: {
-  label: string;
-  v: number;
-  color: string;
-}) {
+function Mini({ label, v, color }: { label: string; v: number; color: string }) {
   return (
     <div className="bg-secondary/40 rounded p-1">
       <div className={`text-[10px] font-bold ${color}`}>{label}</div>
@@ -1638,11 +1509,7 @@ function NotesPanel({ s, upd }: PanelProps) {
       </Card>
       <Card className="p-4">
         <h3 className="font-cinzel font-bold mb-2">Lembretes</h3>
-        <Textarea
-          rows={6}
-          value={s.reminders}
-          onChange={(e) => upd("reminders", e.target.value)}
-        />
+        <Textarea rows={6} value={s.reminders} onChange={(e) => upd("reminders", e.target.value)} />
       </Card>
       <Card className="p-4 md:col-span-2">
         <h3 className="font-cinzel font-bold mb-2">Referências Rápidas</h3>
@@ -1675,10 +1542,7 @@ function DataPanel({ s, upd }: PanelProps) {
     upd("rank_table", arr);
   };
   const addRank = () =>
-    upd("rank_table", [
-      ...s.rank_table,
-      { rank: 0, pv: 10, ps: 10, pe: 5, pa: 0, def: 10, pm: 0 },
-    ]);
+    upd("rank_table", [...s.rank_table, { rank: 0, pv: 10, ps: 10, pe: 5, pa: 0, def: 10, pm: 0 }]);
   const restoreCanonicalRules = () => {
     upd(
       "rank_table",
@@ -1746,11 +1610,7 @@ function DataPanel({ s, upd }: PanelProps) {
         },
       ],
     });
-  const updNode = (
-    bId: string,
-    nId: string,
-    patch: Partial<SkillBranch["nodes"][0]>,
-  ) => {
+  const updNode = (bId: string, nId: string, patch: Partial<SkillBranch["nodes"][0]>) => {
     const b = s.skill_branches.find((x) => x.id === bId);
     if (!b) return;
     updBranch(bId, {
@@ -1767,12 +1627,10 @@ function DataPanel({ s, upd }: PanelProps) {
     <div className="space-y-4">
       <Card className="flex flex-col gap-3 border-primary/35 bg-primary/5 p-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h3 className="font-cinzel font-bold">
-            Fonte canônica do Livro de Regras
-          </h3>
+          <h3 className="font-cinzel font-bold">Fonte canônica do Livro de Regras</h3>
           <p className="text-xs text-muted-foreground">
-            Restaura Rank, perícias, custos de treino, condições e ramos
-            oficiais da versão revisada.
+            Restaura Rank, perícias, custos de treino, condições e ramos oficiais da versão
+            revisada.
           </p>
         </div>
         <Button size="sm" variant="outline" onClick={restoreCanonicalRules}>
@@ -1848,20 +1706,18 @@ function DataPanel({ s, upd }: PanelProps) {
                     <ChevronDown className="w-3 h-3" />
                   </button>
                 </div>
-                {(["rank", "pv", "ps", "pe", "pa", "def", "pm"] as const).map(
-                  (k) => (
-                    <Input
-                      key={k}
-                      type="number"
-                      min={k === "rank" ? 0 : undefined}
-                      max={k === "rank" ? 100 : undefined}
-                      step={k === "rank" ? 5 : 1}
-                      value={r[k]}
-                      onChange={(e) => updRank(i, k, Number(e.target.value))}
-                      className="h-8 text-xs"
-                    />
-                  ),
-                )}
+                {(["rank", "pv", "ps", "pe", "pa", "def", "pm"] as const).map((k) => (
+                  <Input
+                    key={k}
+                    type="number"
+                    min={k === "rank" ? 0 : undefined}
+                    max={k === "rank" ? 100 : undefined}
+                    step={k === "rank" ? 5 : 1}
+                    value={r[k]}
+                    onChange={(e) => updRank(i, k, Number(e.target.value))}
+                    className="h-8 text-xs"
+                  />
+                ))}
                 <Button
                   size="sm"
                   variant="ghost"
@@ -1879,21 +1735,17 @@ function DataPanel({ s, upd }: PanelProps) {
 
       {/* Upgrade Costs */}
       <Card className="p-4">
-        <h3 className="font-cinzel font-bold mb-1">
-          Custos de Aprimoramento (PM)
-        </h3>
+        <h3 className="font-cinzel font-bold mb-1">Custos de Aprimoramento (PM)</h3>
         <p className="text-xs text-muted-foreground mb-3">
-          Fórmula: até <em>níveis grátis</em>, custa o valor base; depois soma o
-          incremento por nível adicional.
+          Fórmula: até <em>níveis grátis</em>, custa o valor base; depois soma o incremento por
+          nível adicional.
         </p>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
           {(["pv", "ps", "pe", "def"] as const).map((k) => {
             const rule = s.upgrade_costs[k];
             return (
               <div key={k} className="bg-secondary/40 rounded-lg p-3 space-y-2">
-                <div className="font-cinzel font-bold uppercase text-sm">
-                  {k}
-                </div>
+                <div className="font-cinzel font-bold uppercase text-sm">{k}</div>
                 <div>
                   <Label className="text-[10px]">Custo Base</Label>
                   <Input
@@ -1944,39 +1796,27 @@ function DataPanel({ s, upd }: PanelProps) {
 
       {/* Skill Training Costs */}
       <Card className="p-4">
-        <h3 className="font-cinzel font-bold mb-1">
-          Custos de Treinamento de Perícia (PM)
-        </h3>
+        <h3 className="font-cinzel font-bold mb-1">Custos de Treinamento de Perícia (PM)</h3>
         <p className="text-xs text-muted-foreground mb-3">
-          PM gasto para evoluir cada perícia de um nível de treino para o
-          próximo.
+          PM gasto para evoluir cada perícia de um nível de treino para o próximo.
         </p>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-          {(["Iniciado (+5)", "Apurado (+10)", "Versado (+15)"] as const).map(
-            (label, i) => (
-              <div
-                key={label}
-                className="bg-secondary/40 rounded-lg p-3 space-y-2"
-              >
-                <div className="font-cinzel font-bold text-sm">{label}</div>
-                <Input
-                  type="number"
-                  min={0}
-                  value={s.skill_training_costs[i] ?? 0}
-                  className="h-8"
-                  onChange={(e) => {
-                    const next = [...s.skill_training_costs] as [
-                      number,
-                      number,
-                      number,
-                    ];
-                    next[i] = Number(e.target.value);
-                    upd("skill_training_costs", next);
-                  }}
-                />
-              </div>
-            ),
-          )}
+          {(["Iniciado (+5)", "Apurado (+10)", "Versado (+15)"] as const).map((label, i) => (
+            <div key={label} className="bg-secondary/40 rounded-lg p-3 space-y-2">
+              <div className="font-cinzel font-bold text-sm">{label}</div>
+              <Input
+                type="number"
+                min={0}
+                value={s.skill_training_costs[i] ?? 0}
+                className="h-8"
+                onChange={(e) => {
+                  const next = [...s.skill_training_costs] as [number, number, number];
+                  next[i] = Number(e.target.value);
+                  upd("skill_training_costs", next);
+                }}
+              />
+            </div>
+          ))}
         </div>
       </Card>
 
@@ -2022,10 +1862,7 @@ function DataPanel({ s, upd }: PanelProps) {
         </p>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
           {s.skill_groups.map((g, gi) => (
-            <div
-              key={g.attr + gi}
-              className="bg-secondary/30 rounded-lg p-3 space-y-2"
-            >
+            <div key={g.attr + gi} className="bg-secondary/30 rounded-lg p-3 space-y-2">
               <div className="grid grid-cols-[80px_1fr] gap-2">
                 <Input
                   value={g.attr}
@@ -2034,9 +1871,7 @@ function DataPanel({ s, upd }: PanelProps) {
                     upd(
                       "skill_groups",
                       s.skill_groups.map((x, i) =>
-                        i === gi
-                          ? { ...x, attr: e.target.value.toUpperCase() }
-                          : x,
+                        i === gi ? { ...x, attr: e.target.value.toUpperCase() } : x,
                       ),
                     )
                   }
@@ -2117,16 +1952,11 @@ function DataPanel({ s, upd }: PanelProps) {
           </Button>
         </div>
         {s.skill_branches.length === 0 ? (
-          <p className="text-xs text-muted-foreground italic text-center py-4">
-            Nenhum ramo.
-          </p>
+          <p className="text-xs text-muted-foreground italic text-center py-4">Nenhum ramo.</p>
         ) : (
           <div className="space-y-3">
             {s.skill_branches.map((b) => (
-              <div
-                key={b.id}
-                className="border border-border rounded-lg p-3 bg-secondary/30"
-              >
+              <div key={b.id} className="border border-border rounded-lg p-3 bg-secondary/30">
                 <div className="flex items-center gap-2 mb-2">
                   <input
                     type="color"
@@ -2139,11 +1969,7 @@ function DataPanel({ s, upd }: PanelProps) {
                     onChange={(e) => updBranch(b.id, { label: e.target.value })}
                     className="h-8 flex-1"
                   />
-                  <Button
-                    size="sm"
-                    onClick={() => addNode(b.id)}
-                    className="gap-1"
-                  >
+                  <Button size="sm" onClick={() => addNode(b.id)} className="gap-1">
                     <Plus className="w-3 h-3" /> Nó
                   </Button>
                   <Button
@@ -2157,31 +1983,22 @@ function DataPanel({ s, upd }: PanelProps) {
                   </Button>
                 </div>
                 {b.nodes.length === 0 ? (
-                  <p className="text-[11px] text-muted-foreground italic">
-                    Sem nós.
-                  </p>
+                  <p className="text-[11px] text-muted-foreground italic">Sem nós.</p>
                 ) : (
                   <div className="space-y-2">
                     {b.nodes.map((n) => (
-                      <div
-                        key={n.id}
-                        className="bg-background/40 rounded p-2 space-y-2"
-                      >
+                      <div key={n.id} className="bg-background/40 rounded p-2 space-y-2">
                         <div className="grid gap-2 sm:grid-cols-[1fr_1fr_auto_auto_auto] items-center">
                           <Input
                             value={n.name}
                             placeholder="Nome"
-                            onChange={(e) =>
-                              updNode(b.id, n.id, { name: e.target.value })
-                            }
+                            onChange={(e) => updNode(b.id, n.id, { name: e.target.value })}
                             className="h-8 text-xs"
                           />
                           <Input
                             value={n.desc}
                             placeholder="Descrição"
-                            onChange={(e) =>
-                              updNode(b.id, n.id, { desc: e.target.value })
-                            }
+                            onChange={(e) => updNode(b.id, n.id, { desc: e.target.value })}
                             className="h-8 text-xs"
                           />
                           <Input
@@ -2225,47 +2042,33 @@ function DataPanel({ s, upd }: PanelProps) {
                           <span className="text-[10px] uppercase text-muted-foreground mt-1.5">
                             Req. atributos:
                           </span>
-                          {(
-                            [
-                              "COR",
-                              "MEN",
-                              "INS",
-                              "PRE",
-                              "ERU",
-                            ] as (keyof Attributes)[]
-                          ).map((a) => {
-                            const cur =
-                              (n.attrReqs || []).find((x) => x.attr === a)
-                                ?.value ?? 0;
-                            return (
-                              <label
-                                key={a}
-                                className="flex items-center gap-1 text-[10px] bg-secondary/40 px-1.5 py-1 rounded"
-                              >
-                                <span className="font-cinzel font-bold">
-                                  {a}
-                                </span>
-                                <Input
-                                  type="number"
-                                  min={0}
-                                  max={5}
-                                  value={cur}
-                                  onChange={(e) => {
-                                    const v = Number(e.target.value);
-                                    const others = (n.attrReqs || []).filter(
-                                      (x) => x.attr !== a,
-                                    );
-                                    const next =
-                                      v > 0
-                                        ? [...others, { attr: a, value: v }]
-                                        : others;
-                                    updNode(b.id, n.id, { attrReqs: next });
-                                  }}
-                                  className="h-6 w-11 text-xs px-1"
-                                />
-                              </label>
-                            );
-                          })}
+                          {(["COR", "MEN", "INS", "PRE", "ERU"] as (keyof Attributes)[]).map(
+                            (a) => {
+                              const cur = (n.attrReqs || []).find((x) => x.attr === a)?.value ?? 0;
+                              return (
+                                <label
+                                  key={a}
+                                  className="flex items-center gap-1 text-[10px] bg-secondary/40 px-1.5 py-1 rounded"
+                                >
+                                  <span className="font-cinzel font-bold">{a}</span>
+                                  <Input
+                                    type="number"
+                                    min={0}
+                                    max={5}
+                                    value={cur}
+                                    onChange={(e) => {
+                                      const v = Number(e.target.value);
+                                      const others = (n.attrReqs || []).filter((x) => x.attr !== a);
+                                      const next =
+                                        v > 0 ? [...others, { attr: a, value: v }] : others;
+                                      updNode(b.id, n.id, { attrReqs: next });
+                                    }}
+                                    className="h-6 w-11 text-xs px-1"
+                                  />
+                                </label>
+                              );
+                            },
+                          )}
                         </div>
                       </div>
                     ))}

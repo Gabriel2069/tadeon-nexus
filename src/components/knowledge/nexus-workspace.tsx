@@ -34,10 +34,7 @@ import { AssetPickerDialog } from "@/components/assets/asset-picker-dialog";
 import { KnowledgeGraph } from "@/components/knowledge/knowledge-graph";
 import { KnowledgeLibrary } from "@/components/knowledge/knowledge-library";
 import { KnowledgePortabilityDialog } from "@/components/knowledge/knowledge-portability-dialog";
-import {
-  SafeMarkdown,
-  type KnowledgeLinkPreview,
-} from "@/components/knowledge/safe-markdown";
+import { SafeMarkdown, type KnowledgeLinkPreview } from "@/components/knowledge/safe-markdown";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -73,10 +70,7 @@ import {
   type KnowledgeVisibility,
   type RelationType,
 } from "@/lib/nexus-contracts";
-import {
-  KnowledgeServiceError,
-  type KnowledgeErrorCode,
-} from "@/lib/knowledge/knowledge-errors";
+import { KnowledgeServiceError, type KnowledgeErrorCode } from "@/lib/knowledge/knowledge-errors";
 import {
   knowledgeService,
   type KnowledgeAssetLink,
@@ -251,20 +245,12 @@ function renderSearchSnippet(value: string) {
   });
 }
 
-function insertAroundSelection(
-  textarea: HTMLTextAreaElement,
-  before: string,
-  after = before,
-) {
+function insertAroundSelection(textarea: HTMLTextAreaElement, before: string, after = before) {
   const start = textarea.selectionStart;
   const end = textarea.selectionEnd;
   const selected = textarea.value.slice(start, end);
   const next =
-    textarea.value.slice(0, start) +
-    before +
-    selected +
-    after +
-    textarea.value.slice(end);
+    textarea.value.slice(0, start) + before + selected + after + textarea.value.slice(end);
   const cursor = start + before.length + selected.length + after.length;
   return { next, cursor };
 }
@@ -295,9 +281,7 @@ export function NexusWorkspace({
   const [brokenLinks, setBrokenLinks] = useState<KnowledgeBrokenLink[]>([]);
   const [versions, setVersions] = useState<KnowledgeVersion[]>([]);
   const [assetLinks, setAssetLinks] = useState<KnowledgeAssetLink[]>([]);
-  const [previews, setPreviews] = useState<
-    Record<string, KnowledgeLinkPreview | null>
-  >({});
+  const [previews, setPreviews] = useState<Record<string, KnowledgeLinkPreview | null>>({});
   const [loading, setLoading] = useState(true);
   const [nodeLoading, setNodeLoading] = useState(false);
   const [search, setSearch] = useState("");
@@ -305,23 +289,12 @@ export function NexusWorkspace({
   const [searchPage, setSearchPage] = useState(0);
   const [searchCount, setSearchCount] = useState(0);
   const [searchHasMore, setSearchHasMore] = useState(false);
-  const [searchSnippets, setSearchSnippets] = useState<Record<string, string>>(
-    {},
-  );
-  const [typeFilter, setTypeFilter] = useState<KnowledgeNodeType | "all">(
-    "all",
-  );
-  const [statusFilter, setStatusFilter] = useState<KnowledgeNodeStatus | "all">(
-    "all",
-  );
-  const [visibilityFilter, setVisibilityFilter] = useState<
-    KnowledgeVisibility | "all"
-  >("all");
-  const [searchRelationFilter, setSearchRelationFilter] = useState<
-    RelationType | "all"
-  >("all");
-  const [searchOrder, setSearchOrder] =
-    useState<KnowledgeSearchOrder>("relevance");
+  const [searchSnippets, setSearchSnippets] = useState<Record<string, string>>({});
+  const [typeFilter, setTypeFilter] = useState<KnowledgeNodeType | "all">("all");
+  const [statusFilter, setStatusFilter] = useState<KnowledgeNodeStatus | "all">("all");
+  const [visibilityFilter, setVisibilityFilter] = useState<KnowledgeVisibility | "all">("all");
+  const [searchRelationFilter, setSearchRelationFilter] = useState<RelationType | "all">("all");
+  const [searchOrder, setSearchOrder] = useState<KnowledgeSearchOrder>("relevance");
   const [onlyCanonical, setOnlyCanonical] = useState(false);
   const [editMode, setEditMode] = useState(false);
   const [focusMode, setFocusMode] = useState(false);
@@ -334,8 +307,7 @@ export function NexusWorkspace({
   const [createOpen, setCreateOpen] = useState(false);
   const [createTitle, setCreateTitle] = useState("");
   const [createType, setCreateType] = useState<KnowledgeNodeType>("free_note");
-  const [createVisibility, setCreateVisibility] =
-    useState<KnowledgeVisibility>("author");
+  const [createVisibility, setCreateVisibility] = useState<KnowledgeVisibility>("author");
   const [creating, setCreating] = useState(false);
   const [commandOpen, setCommandOpen] = useState(false);
   const [graphOpen, setGraphOpen] = useState(false);
@@ -345,24 +317,18 @@ export function NexusWorkspace({
   const [aliasValue, setAliasValue] = useState("");
   const [assetPickerOpen, setAssetPickerOpen] = useState(false);
   const [relationOpen, setRelationOpen] = useState(false);
-  const [relationEditing, setRelationEditing] = useState<KnowledgeEdge | null>(
-    null,
-  );
+  const [relationEditing, setRelationEditing] = useState<KnowledgeEdge | null>(null);
   const [relationTargetId, setRelationTargetId] = useState("");
   const [relationType, setRelationType] = useState<RelationType>("related_to");
   const [relationLabel, setRelationLabel] = useState("");
   const [relationDirection, setRelationDirection] =
     useState<KnowledgeRelationDirection>("directed");
-  const [relationVisibility, setRelationVisibility] =
-    useState<KnowledgeVisibility>("workspace");
+  const [relationVisibility, setRelationVisibility] = useState<KnowledgeVisibility>("workspace");
   const [relationPropertiesText, setRelationPropertiesText] = useState("{}");
   const [relationInverseEnabled, setRelationInverseEnabled] = useState(false);
-  const [relationInverseType, setRelationInverseType] =
-    useState<RelationType>("related_to");
+  const [relationInverseType, setRelationInverseType] = useState<RelationType>("related_to");
   const [relationInverseLabel, setRelationInverseLabel] = useState("");
-  const [relationFilterType, setRelationFilterType] = useState<
-    RelationType | "all"
-  >("all");
+  const [relationFilterType, setRelationFilterType] = useState<RelationType | "all">("all");
   const [relationFilterDirection, setRelationFilterDirection] = useState<
     KnowledgeRelationDirection | "all"
   >("all");
@@ -372,9 +338,7 @@ export function NexusWorkspace({
   const [relationSaving, setRelationSaving] = useState(false);
 
   const campaignScope = campaignId === "workspace" ? null : campaignId || null;
-  const currentCampaign = campaigns.find(
-    (campaign) => campaign.id === campaignScope,
-  );
+  const currentCampaign = campaigns.find((campaign) => campaign.id === campaignScope);
 
   const loadScopes = useCallback(async () => {
     setLoading(true);
@@ -401,8 +365,7 @@ export function NexusWorkspace({
         : (nextCampaigns[0]?.workspace_id ?? nextWorkspaces[0]?.id ?? ""),
     );
     setCampaignId((current) =>
-      current !== "workspace" &&
-      !nextCampaigns.some((campaign) => campaign.id === current)
+      current !== "workspace" && !nextCampaigns.some((campaign) => campaign.id === current)
         ? (nextCampaigns[0]?.id ?? "workspace")
         : current,
     );
@@ -429,10 +392,8 @@ export function NexusWorkspace({
           includeWorkspace: true,
           nodeTypes: typeFilter === "all" ? undefined : [typeFilter],
           statuses: statusFilter === "all" ? undefined : [statusFilter],
-          visibilities:
-            visibilityFilter === "all" ? undefined : [visibilityFilter],
-          relationTypes:
-            searchRelationFilter === "all" ? undefined : [searchRelationFilter],
+          visibilities: visibilityFilter === "all" ? undefined : [visibilityFilter],
+          relationTypes: searchRelationFilter === "all" ? undefined : [searchRelationFilter],
           onlyCanonical,
           order: searchOrder,
           page: searchPage,
@@ -444,11 +405,7 @@ export function NexusWorkspace({
       setNodes(result.hits.map((hit) => hit.node));
       setSearchCount(result.count);
       setSearchHasMore(result.hasMore);
-      setSearchSnippets(
-        Object.fromEntries(
-          result.hits.map((hit) => [hit.node.id, hit.snippet]),
-        ),
-      );
+      setSearchSnippets(Object.fromEntries(result.hits.map((hit) => [hit.node.id, hit.snippet])));
       const belongsToScope = (node: KnowledgeNode) =>
         node.workspace_id === workspaceId &&
         (campaignScope
@@ -499,11 +456,7 @@ export function NexusWorkspace({
   }, [campaignId, workspaceId]);
 
   useEffect(() => {
-    if (
-      campaignScope &&
-      currentCampaign &&
-      currentCampaign.workspace_id !== workspaceId
-    ) {
+    if (campaignScope && currentCampaign && currentCampaign.workspace_id !== workspaceId) {
       setWorkspaceId(currentCampaign.workspace_id);
     }
   }, [campaignScope, currentCampaign, workspaceId]);
@@ -551,10 +504,7 @@ export function NexusWorkspace({
   const openNode = useCallback(
     async (nodeOrId: KnowledgeNode | string, headingSlug?: string) => {
       try {
-        const node =
-          typeof nodeOrId === "string"
-            ? await knowledgeService.get(nodeOrId)
-            : nodeOrId;
+        const node = typeof nodeOrId === "string" ? await knowledgeService.get(nodeOrId) : nodeOrId;
         setSelected(node);
         setOpenNodes((current) => {
           const without = current.filter((item) => item.id !== node.id);
@@ -576,8 +526,7 @@ export function NexusWorkspace({
             if (
               typeof value.title === "string" &&
               typeof value.content === "string" &&
-              (value.title !== node.title ||
-                value.content !== node.content_markdown)
+              (value.title !== node.title || value.content !== node.content_markdown)
             ) {
               setDraftTitle(value.title);
               setDraftContent(value.content);
@@ -593,8 +542,7 @@ export function NexusWorkspace({
         if (headingSlug) {
           window.setTimeout(() => {
             document.getElementById(headingSlug)?.scrollIntoView({
-              behavior: window.matchMedia("(prefers-reduced-motion: reduce)")
-                .matches
+              behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches
                 ? "auto"
                 : "smooth",
               block: "start",
@@ -615,8 +563,7 @@ export function NexusWorkspace({
       setOpenNodes(remaining);
 
       if (selected?.id !== nodeId) return;
-      const fallback =
-        remaining[Math.min(Math.max(closedIndex, 0), remaining.length - 1)];
+      const fallback = remaining[Math.min(Math.max(closedIndex, 0), remaining.length - 1)];
       setSelected(null);
       if (fallback) void openNode(fallback);
     },
@@ -654,31 +601,20 @@ export function NexusWorkspace({
 
   const save = useCallback(async () => {
     if (!selected || saveState === "saving") return;
-    if (
-      draftTitle.trim() === selected.title &&
-      draftContent === selected.content_markdown
-    ) {
+    if (draftTitle.trim() === selected.title && draftContent === selected.content_markdown) {
       setSaveState("saved");
       window.localStorage.removeItem(draftKey(selected.id));
       return;
     }
     setSaveState("saving");
     try {
-      const result = await knowledgeService.saveContent(
-        selected,
-        draftTitle,
-        draftContent,
-      );
+      const result = await knowledgeService.saveContent(selected, draftTitle, draftContent);
       setSelected(result.node);
       setOpenNodes((current) =>
-        current.map((node) =>
-          node.id === result.node.id ? result.node : node,
-        ),
+        current.map((node) => (node.id === result.node.id ? result.node : node)),
       );
       setNodes((current) =>
-        current.map((node) =>
-          node.id === result.node.id ? result.node : node,
-        ),
+        current.map((node) => (node.id === result.node.id ? result.node : node)),
       );
       setSaveState("saved");
       setLastSavedAt(new Date());
@@ -704,11 +640,7 @@ export function NexusWorkspace({
         event.preventDefault();
         void save();
       }
-      if (
-        (event.ctrlKey || event.metaKey) &&
-        event.shiftKey &&
-        event.key.toLowerCase() === "p"
-      ) {
+      if ((event.ctrlKey || event.metaKey) && event.shiftKey && event.key.toLowerCase() === "p") {
         event.preventDefault();
         setCommandOpen(true);
       }
@@ -763,35 +695,24 @@ export function NexusWorkspace({
   ) => {
     if (!selected) return;
     if (patch.visibility === "campaign" && !selected.campaign_id) {
-      toast.error(
-        "Uma página do workspace não pode usar visibilidade de campanha.",
-      );
+      toast.error("Uma página do workspace não pode usar visibilidade de campanha.");
       return;
     }
     setSaveState("saving");
     try {
-      const result = await knowledgeService.update(
-        selected.id,
-        patch,
-        selected.updated_at,
-      );
+      const result = await knowledgeService.update(selected.id, patch, selected.updated_at);
       setSelected(result.node);
       setOpenNodes((current) =>
-        current.map((node) =>
-          node.id === result.node.id ? result.node : node,
-        ),
+        current.map((node) => (node.id === result.node.id ? result.node : node)),
       );
       setNodes((current) =>
-        current.map((node) =>
-          node.id === result.node.id ? result.node : node,
-        ),
+        current.map((node) => (node.id === result.node.id ? result.node : node)),
       );
       setSaveState("saved");
       setLastSavedAt(new Date());
     } catch (error) {
       setSaveState(
-        error instanceof KnowledgeServiceError &&
-          error.code === "KNOWLEDGE_CONFLICT"
+        error instanceof KnowledgeServiceError && error.code === "KNOWLEDGE_CONFLICT"
           ? "conflict"
           : "error",
       );
@@ -805,9 +726,7 @@ export function NexusWorkspace({
     try {
       await knowledgeService.setFavorite(selected.id, !favorite);
       setFavorites((current) =>
-        favorite
-          ? current.filter((node) => node.id !== selected.id)
-          : [selected, ...current],
+        favorite ? current.filter((node) => node.id !== selected.id) : [selected, ...current],
       );
     } catch (error) {
       toast.error(errorMessage(error));
@@ -820,9 +739,7 @@ export function NexusWorkspace({
       await knowledgeService.addAlias(selected.id, aliasValue);
       setAliasValue("");
       setAliases(
-        (await knowledgeService.listAliases(selected.id)) as Array<
-          Record<string, unknown>
-        >,
+        (await knowledgeService.listAliases(selected.id)) as Array<Record<string, unknown>>,
       );
       toast.success("Alias adicionado.");
     } catch (error) {
@@ -834,9 +751,7 @@ export function NexusWorkspace({
     if (!selected) return;
     try {
       await knowledgeService.removeAlias(aliasId);
-      setAliases((current) =>
-        current.filter((alias) => String(alias.id) !== aliasId),
-      );
+      setAliases((current) => current.filter((alias) => String(alias.id) !== aliasId));
       toast.success("Alias removido.");
     } catch (error) {
       toast.error(errorMessage(error));
@@ -859,10 +774,7 @@ export function NexusWorkspace({
 
   const openRelationEditor = (edge: KnowledgeEdge) => {
     if (!selected) return;
-    const otherId =
-      edge.source_node_id === selected.id
-        ? edge.target_node_id
-        : edge.source_node_id;
+    const otherId = edge.source_node_id === selected.id ? edge.target_node_id : edge.source_node_id;
     setRelationEditing(edge);
     setRelationTargetId(otherId);
     setRelationType(edge.relation_type);
@@ -922,9 +834,7 @@ export function NexusWorkspace({
       setRelationOpen(false);
       setRelationEditing(null);
       setRelationTargetId("");
-      toast.success(
-        relationEditing ? "Relação atualizada." : "Relação criada.",
-      );
+      toast.success(relationEditing ? "Relação atualizada." : "Relação criada.");
     } catch (error) {
       toast.error(errorMessage(error));
     } finally {
@@ -947,19 +857,11 @@ export function NexusWorkspace({
     () =>
       edges.filter(
         (edge) =>
-          (relationFilterType === "all" ||
-            edge.relation_type === relationFilterType) &&
-          (relationFilterDirection === "all" ||
-            edge.direction === relationFilterDirection) &&
-          (relationFilterVisibility === "all" ||
-            edge.visibility === relationFilterVisibility),
+          (relationFilterType === "all" || edge.relation_type === relationFilterType) &&
+          (relationFilterDirection === "all" || edge.direction === relationFilterDirection) &&
+          (relationFilterVisibility === "all" || edge.visibility === relationFilterVisibility),
       ),
-    [
-      edges,
-      relationFilterDirection,
-      relationFilterType,
-      relationFilterVisibility,
-    ],
+    [edges, relationFilterDirection, relationFilterType, relationFilterVisibility],
   );
 
   const filteredCommandNodes = useMemo(() => {
@@ -980,9 +882,7 @@ export function NexusWorkspace({
         .split("\n")
         .flatMap((line) => {
           const match = line.match(/^(#{1,4})\s+(.+)$/);
-          return match
-            ? [{ level: match[1].length, title: match[2].trim() }]
-            : [];
+          return match ? [{ level: match[1].length, title: match[2].trim() }] : [];
         })
         .slice(0, 24),
     [draftContent],
@@ -1013,9 +913,7 @@ export function NexusWorkspace({
       <div className="tadeon-page">
         <Card className="p-10 text-center">
           <BookOpen className="mx-auto h-10 w-10 text-primary" />
-          <h1 className="mt-4 font-cinzel text-2xl font-semibold">
-            Nenhum workspace acessível
-          </h1>
+          <h1 className="mt-4 font-cinzel text-2xl font-semibold">Nenhum workspace acessível</h1>
           <p className="mt-2 text-sm text-muted-foreground">
             O Nexus aparecerá quando você for associado a um workspace.
           </p>
@@ -1046,9 +944,7 @@ export function NexusWorkspace({
       <section className="tadeon-page-hero tadeon-nexus-header tadeon-nexus-commandbar mb-4 flex flex-col justify-between gap-4 rounded-2xl border bg-card/60 p-4 backdrop-blur md:flex-row md:items-center">
         <div>
           <p className="tadeon-eyebrow">Arquivo vivo de continuidade</p>
-          <h1 className="font-cinzel text-2xl font-semibold md:text-3xl">
-            O Nexus
-          </h1>
+          <h1 className="font-cinzel text-2xl font-semibold md:text-3xl">O Nexus</h1>
         </div>
         <div className="tadeon-nexus-actions w-full sm:w-auto">
           <div className="tadeon-nexus-scope grid grid-cols-2 gap-2 sm:flex">
@@ -1100,19 +996,11 @@ export function NexusWorkspace({
             </Select>
           </div>
           <div className="tadeon-nexus-tools mt-2 flex items-center gap-2 overflow-x-auto pb-1 sm:mt-0 sm:flex-wrap sm:justify-end sm:overflow-visible sm:pb-0">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setLibraryOpen(true)}
-            >
+            <Button variant="outline" size="sm" onClick={() => setLibraryOpen(true)}>
               <BookMarked className="h-4 w-4" />
               Bibliotecas
             </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setPortabilityOpen(true)}
-            >
+            <Button variant="outline" size="sm" onClick={() => setPortabilityOpen(true)}>
               <Archive className="h-4 w-4" />
               Importar / exportar
             </Button>
@@ -1164,7 +1052,7 @@ export function NexusWorkspace({
       >
         {!focusMode && (
           <aside
-            className={`${selected ? "order-2" : "order-1"} min-h-0 rounded-2xl border bg-card/55 p-3 lg:order-1`}
+            className={`${selected ? "order-2" : "order-1"} tadeon-nexus-index min-h-0 rounded-2xl border bg-card/55 p-3 lg:order-1`}
           >
             <div className="relative">
               <Search className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
@@ -1259,17 +1147,12 @@ export function NexusWorkspace({
                   setSearchPage(0);
                 }}
               >
-                <SelectTrigger
-                  className="col-span-2"
-                  aria-label="Ordenar pesquisa"
-                >
+                <SelectTrigger className="col-span-2" aria-label="Ordenar pesquisa">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="relevance">Mais relevantes</SelectItem>
-                  <SelectItem value="updated">
-                    Atualizados recentemente
-                  </SelectItem>
+                  <SelectItem value="updated">Atualizados recentemente</SelectItem>
                   <SelectItem value="title">Título</SelectItem>
                 </SelectContent>
               </Select>
@@ -1300,18 +1183,13 @@ export function NexusWorkspace({
                     type="button"
                     key={node.id}
                     onClick={() => void openNode(node)}
-                    className={`w-full rounded-lg px-3 py-2.5 text-left transition-colors ${
-                      selected?.id === node.id
-                        ? "bg-primary/12 text-primary"
-                        : "hover:bg-muted/55"
+                    className={`tadeon-nexus-index__node w-full rounded-lg px-3 py-2.5 text-left ${
+                      selected?.id === node.id ? "is-active text-primary" : ""
                     }`}
                   >
-                    <span className="block truncate text-sm font-medium">
-                      {node.title}
-                    </span>
+                    <span className="block truncate text-sm font-medium">{node.title}</span>
                     <span className="mt-0.5 block truncate text-[11px] uppercase tracking-wide text-muted-foreground">
-                      {TYPE_LABELS[node.node_type]} ·{" "}
-                      {STATUS_LABELS[node.status]}
+                      {TYPE_LABELS[node.node_type]} · {STATUS_LABELS[node.status]}
                     </span>
                     {searchSnippets[node.id] && (
                       <span className="mt-1 line-clamp-2 block text-xs text-muted-foreground">
@@ -1332,9 +1210,7 @@ export function NexusWorkspace({
                   type="button"
                   size="sm"
                   variant="ghost"
-                  onClick={() =>
-                    setSearchPage((current) => Math.max(0, current - 1))
-                  }
+                  onClick={() => setSearchPage((current) => Math.max(0, current - 1))}
                   disabled={searchPage === 0 || nodeLoading}
                   aria-label="Página anterior"
                 >
@@ -1367,7 +1243,7 @@ export function NexusWorkspace({
                     type="button"
                     key={node.id}
                     onClick={() => void openNode(node.id)}
-                    className="block min-h-11 w-full truncate rounded-lg px-2 py-2 text-left text-xs text-muted-foreground hover:bg-muted hover:text-foreground sm:min-h-0 sm:py-1"
+                    className="tadeon-nexus-index__shortcut block min-h-11 w-full truncate rounded-lg px-2 py-2 text-left text-xs text-muted-foreground sm:min-h-0 sm:py-1"
                   >
                     {node.title}
                   </button>
@@ -1383,7 +1259,7 @@ export function NexusWorkspace({
                     type="button"
                     key={node.id}
                     onClick={() => void openNode(node.id)}
-                    className="block min-h-11 w-full truncate rounded-lg px-2 py-2 text-left text-xs text-muted-foreground hover:bg-muted hover:text-foreground sm:min-h-0 sm:py-1"
+                    className="tadeon-nexus-index__shortcut block min-h-11 w-full truncate rounded-lg px-2 py-2 text-left text-xs text-muted-foreground sm:min-h-0 sm:py-1"
                   >
                     {node.title}
                   </button>
@@ -1394,14 +1270,14 @@ export function NexusWorkspace({
         )}
 
         <main
-          className={`${selected ? "order-1" : "order-2"} min-w-0 overflow-hidden rounded-2xl border bg-card/55 lg:order-2`}
+          className={`${selected ? "order-1" : "order-2"} tadeon-nexus-document min-w-0 overflow-hidden rounded-2xl border bg-card/55 lg:order-2`}
         >
           {openNodes.length > 0 && (
             <div className="flex min-w-0 gap-1 overflow-x-auto border-b bg-muted/20 px-2 pt-2">
               {openNodes.map((node) => (
                 <div
                   key={node.id}
-                  className={`flex max-w-56 shrink-0 items-stretch rounded-t-lg border border-b-0 text-xs ${
+                  className={`tadeon-nexus-document__tab flex max-w-56 shrink-0 items-stretch rounded-t-lg border border-b-0 text-xs ${
                     selected?.id === node.id
                       ? "bg-card text-primary"
                       : "border-transparent text-muted-foreground hover:bg-card/50"
@@ -1434,8 +1310,7 @@ export function NexusWorkspace({
                 <div className="min-w-0">
                   <p className="truncate text-[11px] uppercase tracking-wide text-muted-foreground">
                     {currentCampaign?.name ?? "Workspace"}{" "}
-                    <ChevronRight className="inline h-3 w-3" />{" "}
-                    {TYPE_LABELS[selected.node_type]}
+                    <ChevronRight className="inline h-3 w-3" /> {TYPE_LABELS[selected.node_type]}
                   </p>
                   <p
                     className={`mt-1 flex items-center gap-1.5 text-xs ${
@@ -1476,11 +1351,7 @@ export function NexusWorkspace({
                     size="sm"
                     onClick={() => setEditMode((current) => !current)}
                   >
-                    {editMode ? (
-                      <BookOpen className="h-4 w-4" />
-                    ) : (
-                      <Pencil className="h-4 w-4" />
-                    )}
+                    {editMode ? <BookOpen className="h-4 w-4" /> : <Pencil className="h-4 w-4" />}
                     {editMode ? "Leitura" : "Editar"}
                   </Button>
                   <Button
@@ -1519,18 +1390,10 @@ export function NexusWorkspace({
                       maxLength={200}
                     />
                     <div className="my-4 flex flex-wrap gap-1 rounded-lg border bg-muted/20 p-1.5">
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => applyEditorSyntax("**")}
-                      >
+                      <Button variant="ghost" size="sm" onClick={() => applyEditorSyntax("**")}>
                         <strong>B</strong>
                       </Button>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => applyEditorSyntax("*")}
-                      >
+                      <Button variant="ghost" size="sm" onClick={() => applyEditorSyntax("*")}>
                         <em>I</em>
                       </Button>
                       <Button
@@ -1579,17 +1442,14 @@ export function NexusWorkspace({
                     />
                     <div className="mt-3 flex flex-wrap items-center justify-between gap-2 border-t pt-3 text-[11px] uppercase tracking-wide text-muted-foreground">
                       <span>
-                        {wordCount(draftContent)} palavras ·{" "}
-                        {draftContent.length} caracteres
+                        {wordCount(draftContent)} palavras · {draftContent.length} caracteres
                       </span>
                       <span>Ctrl + S salva · Ctrl + E alterna o modo</span>
                     </div>
                   </div>
                 ) : (
                   <div>
-                    <h1 className="font-cinzel text-3xl font-semibold md:text-5xl">
-                      {draftTitle}
-                    </h1>
+                    <h1 className="font-cinzel text-3xl font-semibold md:text-5xl">{draftTitle}</h1>
                     {selected.summary && (
                       <p className="mt-3 max-w-3xl text-base italic text-muted-foreground">
                         {selected.summary}
@@ -1599,9 +1459,7 @@ export function NexusWorkspace({
                     <SafeMarkdown
                       markdown={draftContent}
                       previews={previews}
-                      onOpenNode={(nodeId, headingSlug) =>
-                        void openNode(nodeId, headingSlug)
-                      }
+                      onOpenNode={(nodeId, headingSlug) => void openNode(nodeId, headingSlug)}
                       onCreateMissing={(title) => void createNode(title)}
                     />
                   </div>
@@ -1611,9 +1469,7 @@ export function NexusWorkspace({
           ) : (
             <div className="flex min-h-[65vh] flex-col items-center justify-center p-8 text-center">
               <BookOpen className="h-12 w-12 text-primary/70" />
-              <h2 className="mt-4 font-cinzel text-2xl font-semibold">
-                Abra uma página do Nexus
-              </h2>
+              <h2 className="mt-4 font-cinzel text-2xl font-semibold">Abra uma página do Nexus</h2>
               <p className="mt-2 max-w-md text-sm text-muted-foreground">
                 Pesquise na lateral ou crie a primeira página deste escopo.
               </p>
@@ -1622,7 +1478,7 @@ export function NexusWorkspace({
         </main>
 
         {!focusMode && rightOpen && selected && (
-          <aside className="order-3 min-h-0 rounded-2xl border bg-card/55 p-3 lg:col-span-2 xl:col-span-1">
+          <aside className="tadeon-nexus-context order-3 min-h-0 rounded-2xl border bg-card/55 p-3 lg:col-span-2 xl:col-span-1">
             <div className="grid grid-cols-4 gap-1 rounded-lg bg-muted/30 p-1">
               {(
                 [
@@ -1709,9 +1565,7 @@ export function NexusWorkspace({
                     </SelectTrigger>
                     <SelectContent>
                       {KNOWLEDGE_VISIBILITIES.filter(
-                        (visibility) =>
-                          visibility !== "campaign" ||
-                          Boolean(selected.campaign_id),
+                        (visibility) => visibility !== "campaign" || Boolean(selected.campaign_id),
                       ).map((visibility) => (
                         <SelectItem key={visibility} value={visibility}>
                           {VISIBILITY_LABELS[visibility]}
@@ -1739,9 +1593,7 @@ export function NexusWorkspace({
                         </p>
                       ))
                     ) : (
-                      <p className="text-xs text-muted-foreground">
-                        Nenhum título Markdown.
-                      </p>
+                      <p className="text-xs text-muted-foreground">Nenhum título Markdown.</p>
                     )}
                   </div>
                 </div>
@@ -1763,11 +1615,7 @@ export function NexusWorkspace({
                   </div>
                   <div className="mt-2 flex flex-wrap gap-1">
                     {aliases.map((alias) => (
-                      <Badge
-                        key={String(alias.id)}
-                        variant="outline"
-                        className="gap-1 pr-1"
-                      >
+                      <Badge key={String(alias.id)} variant="outline" className="gap-1 pr-1">
                         {String(alias.alias)}
                         <button
                           type="button"
@@ -1785,8 +1633,7 @@ export function NexusWorkspace({
                   <p>ID: {selected.id}</p>
                   <p className="mt-1">Slug: {selected.slug}</p>
                   <p className="mt-1">
-                    Atualizado:{" "}
-                    {new Date(selected.updated_at).toLocaleString("pt-BR")}
+                    Atualizado: {new Date(selected.updated_at).toLocaleString("pt-BR")}
                   </p>
                 </div>
               </div>
@@ -1810,9 +1657,7 @@ export function NexusWorkspace({
                 <div className="mt-3 grid gap-2">
                   <Select
                     value={relationFilterType}
-                    onValueChange={(value) =>
-                      setRelationFilterType(value as RelationType | "all")
-                    }
+                    onValueChange={(value) => setRelationFilterType(value as RelationType | "all")}
                   >
                     <SelectTrigger className="h-8 text-xs">
                       <SelectValue />
@@ -1830,9 +1675,7 @@ export function NexusWorkspace({
                     <Select
                       value={relationFilterDirection}
                       onValueChange={(value) =>
-                        setRelationFilterDirection(
-                          value as KnowledgeRelationDirection | "all",
-                        )
+                        setRelationFilterDirection(value as KnowledgeRelationDirection | "all")
                       }
                     >
                       <SelectTrigger className="h-8 text-xs">
@@ -1850,9 +1693,7 @@ export function NexusWorkspace({
                     <Select
                       value={relationFilterVisibility}
                       onValueChange={(value) =>
-                        setRelationFilterVisibility(
-                          value as KnowledgeVisibility | "all",
-                        )
+                        setRelationFilterVisibility(value as KnowledgeVisibility | "all")
                       }
                     >
                       <SelectTrigger className="h-8 text-xs">
@@ -1874,16 +1715,10 @@ export function NexusWorkspace({
                   {filteredEdges.length ? (
                     filteredEdges.map((edge) => {
                       const outgoing = edge.source_node_id === selected.id;
-                      const otherId = outgoing
-                        ? edge.target_node_id
-                        : edge.source_node_id;
+                      const otherId = outgoing ? edge.target_node_id : edge.source_node_id;
                       const other = nodes.find((node) => node.id === otherId);
                       const directionSymbol =
-                        edge.direction === "bidirectional"
-                          ? "↔"
-                          : outgoing
-                            ? "→"
-                            : "←";
+                        edge.direction === "bidirectional" ? "↔" : outgoing ? "→" : "←";
                       return (
                         <div
                           key={edge.id}
@@ -1897,8 +1732,7 @@ export function NexusWorkspace({
                             >
                               <p className="text-[10px] uppercase tracking-wide text-primary">
                                 {directionSymbol}{" "}
-                                {edge.label ||
-                                  RELATION_LABELS[edge.relation_type]}
+                                {edge.label || RELATION_LABELS[edge.relation_type]}
                               </p>
                               <p className="mt-1 truncate text-sm">
                                 {other?.title ?? "Página relacionada"}
@@ -1919,9 +1753,7 @@ export function NexusWorkspace({
                                 try {
                                   await knowledgeService.removeEdge(edge.id);
                                   setEdges((current) =>
-                                    current.filter(
-                                      (item) => item.id !== edge.id,
-                                    ),
+                                    current.filter((item) => item.id !== edge.id),
                                   );
                                 } catch (error) {
                                   toast.error(errorMessage(error));
@@ -1933,15 +1765,11 @@ export function NexusWorkspace({
                             </Button>
                           </div>
                           <div className="mt-2 flex flex-wrap gap-1">
-                            <Badge variant="outline">
-                              {RELATION_LABELS[edge.relation_type]}
-                            </Badge>
+                            <Badge variant="outline">{RELATION_LABELS[edge.relation_type]}</Badge>
                             <Badge variant="outline">
                               {RELATION_DIRECTION_LABELS[edge.direction]}
                             </Badge>
-                            <Badge variant="outline">
-                              {VISIBILITY_LABELS[edge.visibility]}
-                            </Badge>
+                            <Badge variant="outline">{VISIBILITY_LABELS[edge.visibility]}</Badge>
                           </div>
                         </div>
                       );
@@ -1993,9 +1821,7 @@ export function NexusWorkspace({
                         >
                           <p className="truncate text-sm font-medium text-destructive">
                             {link.target_text}
-                            {link.target_heading
-                              ? `#${link.target_heading}`
-                              : ""}
+                            {link.target_heading ? `#${link.target_heading}` : ""}
                           </p>
                           <p className="mt-1 text-[11px] text-muted-foreground">
                             {link.reason === "missing_heading"
@@ -2023,13 +1849,9 @@ export function NexusWorkspace({
                       <div key={version.id} className="rounded-lg border p-3">
                         <div className="flex items-start justify-between gap-3">
                           <div>
-                            <p className="text-sm font-semibold">
-                              Versão {version.version_number}
-                            </p>
+                            <p className="text-sm font-semibold">Versão {version.version_number}</p>
                             <p className="mt-1 text-[10px] text-muted-foreground">
-                              {new Date(version.created_at).toLocaleString(
-                                "pt-BR",
-                              )}
+                              {new Date(version.created_at).toLocaleString("pt-BR")}
                             </p>
                           </div>
                           <Button
@@ -2060,11 +1882,7 @@ export function NexusWorkspace({
                 <div className="flex items-center justify-between">
                   <p className="tadeon-eyebrow">Anexos</p>
                   {assetsEnabled && (
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      onClick={() => setAssetPickerOpen(true)}
-                    >
+                    <Button size="sm" variant="outline" onClick={() => setAssetPickerOpen(true)}>
                       <ImagePlus className="h-3.5 w-3.5" />
                       Adicionar
                     </Button>
@@ -2141,17 +1959,14 @@ export function NexusWorkspace({
       </div>
 
       <Dialog open={graphOpen} onOpenChange={setGraphOpen}>
-        <DialogContent className="h-[92vh] max-h-[92vh] overflow-hidden p-4 sm:max-w-[96vw]">
-          <DialogHeader className="shrink-0">
-            <DialogTitle className="font-cinzel">
-              Teia local de O Nexus
-            </DialogTitle>
+        <DialogContent className="tadeon-graph-dialog h-[92vh] max-h-[92vh] overflow-hidden p-4 sm:max-w-[96vw]">
+          <DialogHeader className="shrink-0 pr-12">
+            <DialogTitle className="font-cinzel">Teia local de O Nexus</DialogTitle>
             <DialogDescription>
-              Vizinhança limitada, filtrável e carregada apenas com metadados
-              visíveis.
+              Vizinhança limitada, filtrável e carregada apenas com metadados visíveis.
             </DialogDescription>
           </DialogHeader>
-          <div className="min-h-0 flex-1 overflow-hidden">
+          <div className="tadeon-graph-dialog__body min-h-0 overflow-hidden">
             {selected && (
               <KnowledgeGraph
                 workspaceId={workspaceId}
@@ -2191,9 +2006,7 @@ export function NexusWorkspace({
                 <Label>Tipo</Label>
                 <Select
                   value={createType}
-                  onValueChange={(value) =>
-                    setCreateType(value as KnowledgeNodeType)
-                  }
+                  onValueChange={(value) => setCreateType(value as KnowledgeNodeType)}
                 >
                   <SelectTrigger className="mt-1">
                     <SelectValue />
@@ -2211,17 +2024,14 @@ export function NexusWorkspace({
                 <Label>Visibilidade</Label>
                 <Select
                   value={createVisibility}
-                  onValueChange={(value) =>
-                    setCreateVisibility(value as KnowledgeVisibility)
-                  }
+                  onValueChange={(value) => setCreateVisibility(value as KnowledgeVisibility)}
                 >
                   <SelectTrigger className="mt-1">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
                     {KNOWLEDGE_VISIBILITIES.filter(
-                      (visibility) =>
-                        visibility !== "campaign" || Boolean(campaignScope),
+                      (visibility) => visibility !== "campaign" || Boolean(campaignScope),
                     ).map((visibility) => (
                       <SelectItem key={visibility} value={visibility}>
                         {VISIBILITY_LABELS[visibility]}
@@ -2233,17 +2043,10 @@ export function NexusWorkspace({
             </div>
           </div>
           <DialogFooter>
-            <Button
-              variant="outline"
-              onClick={() => setCreateOpen(false)}
-              disabled={creating}
-            >
+            <Button variant="outline" onClick={() => setCreateOpen(false)} disabled={creating}>
               Cancelar
             </Button>
-            <Button
-              onClick={() => void createNode()}
-              disabled={creating || !createTitle.trim()}
-            >
+            <Button onClick={() => void createNode()} disabled={creating || !createTitle.trim()}>
               {creating ? (
                 <Loader2 className="h-4 w-4 animate-spin" />
               ) : (
@@ -2258,9 +2061,7 @@ export function NexusWorkspace({
       <Dialog open={commandOpen} onOpenChange={setCommandOpen}>
         <DialogContent className="gap-0 overflow-hidden p-0 sm:max-w-2xl">
           <DialogHeader className="border-b p-4">
-            <DialogTitle className="font-cinzel">
-              Paleta de comandos
-            </DialogTitle>
+            <DialogTitle className="font-cinzel">Paleta de comandos</DialogTitle>
             <DialogDescription>Ctrl + Shift + P</DialogDescription>
           </DialogHeader>
           <div className="relative border-b">
@@ -2366,9 +2167,7 @@ export function NexusWorkspace({
                     const nextType = value as RelationType;
                     setRelationType(nextType);
                     if (!relationEditing) {
-                      setRelationInverseType(
-                        DEFAULT_INVERSE_RELATION[nextType],
-                      );
+                      setRelationInverseType(DEFAULT_INVERSE_RELATION[nextType]);
                     }
                   }}
                 >
@@ -2422,18 +2221,14 @@ export function NexusWorkspace({
                 <Label>Visibilidade</Label>
                 <Select
                   value={relationVisibility}
-                  onValueChange={(value) =>
-                    setRelationVisibility(value as KnowledgeVisibility)
-                  }
+                  onValueChange={(value) => setRelationVisibility(value as KnowledgeVisibility)}
                 >
                   <SelectTrigger className="mt-1">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
                     {KNOWLEDGE_VISIBILITIES.filter(
-                      (visibility) =>
-                        visibility !== "campaign" ||
-                        Boolean(selected?.campaign_id),
+                      (visibility) => visibility !== "campaign" || Boolean(selected?.campaign_id),
                     ).map((visibility) => (
                       <SelectItem key={visibility} value={visibility}>
                         {VISIBILITY_LABELS[visibility]}
@@ -2448,9 +2243,7 @@ export function NexusWorkspace({
               <Label>Propriedades (JSON)</Label>
               <Textarea
                 value={relationPropertiesText}
-                onChange={(event) =>
-                  setRelationPropertiesText(event.target.value)
-                }
+                onChange={(event) => setRelationPropertiesText(event.target.value)}
                 rows={5}
                 spellCheck={false}
                 className="mt-1 font-mono text-xs"
@@ -2463,62 +2256,52 @@ export function NexusWorkspace({
                 <input
                   type="checkbox"
                   checked={relationInverseEnabled}
-                  onChange={(event) =>
-                    setRelationInverseEnabled(event.target.checked)
-                  }
+                  onChange={(event) => setRelationInverseEnabled(event.target.checked)}
                   disabled={relationDirection === "bidirectional"}
                   className="mt-1 accent-[var(--tadeon-flow)]"
                 />
                 <span>
-                  <span className="block text-sm font-medium">
-                    Criar relação inversa
-                  </span>
+                  <span className="block text-sm font-medium">Criar relação inversa</span>
                   <span className="mt-1 block text-xs text-muted-foreground">
-                    A relação inversa é criada na mesma transação. Relações
-                    bidirecionais já funcionam nos dois sentidos.
+                    A relação inversa é criada na mesma transação. Relações bidirecionais já
+                    funcionam nos dois sentidos.
                   </span>
                 </span>
               </label>
             )}
 
-            {!relationEditing &&
-              relationInverseEnabled &&
-              relationDirection === "directed" && (
-                <div className="grid gap-4 rounded-xl border bg-muted/20 p-3 sm:grid-cols-2">
-                  <div>
-                    <Label>Tipo inverso</Label>
-                    <Select
-                      value={relationInverseType}
-                      onValueChange={(value) =>
-                        setRelationInverseType(value as RelationType)
-                      }
-                    >
-                      <SelectTrigger className="mt-1">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {RELATION_TYPES.map((type) => (
-                          <SelectItem key={type} value={type}>
-                            {RELATION_LABELS[type]}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div>
-                    <Label>Rótulo inverso</Label>
-                    <Input
-                      value={relationInverseLabel}
-                      onChange={(event) =>
-                        setRelationInverseLabel(event.target.value)
-                      }
-                      placeholder={RELATION_LABELS[relationInverseType]}
-                      maxLength={160}
-                      className="mt-1"
-                    />
-                  </div>
+            {!relationEditing && relationInverseEnabled && relationDirection === "directed" && (
+              <div className="grid gap-4 rounded-xl border bg-muted/20 p-3 sm:grid-cols-2">
+                <div>
+                  <Label>Tipo inverso</Label>
+                  <Select
+                    value={relationInverseType}
+                    onValueChange={(value) => setRelationInverseType(value as RelationType)}
+                  >
+                    <SelectTrigger className="mt-1">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {RELATION_TYPES.map((type) => (
+                        <SelectItem key={type} value={type}>
+                          {RELATION_LABELS[type]}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </div>
-              )}
+                <div>
+                  <Label>Rótulo inverso</Label>
+                  <Input
+                    value={relationInverseLabel}
+                    onChange={(event) => setRelationInverseLabel(event.target.value)}
+                    placeholder={RELATION_LABELS[relationInverseType]}
+                    maxLength={160}
+                    className="mt-1"
+                  />
+                </div>
+              </div>
+            )}
           </div>
           <DialogFooter>
             <Button
@@ -2530,11 +2313,7 @@ export function NexusWorkspace({
             </Button>
             <Button
               onClick={() => void saveRelation()}
-              disabled={
-                relationSaving ||
-                !relationTargetId ||
-                relationTargetId === selected?.id
-              }
+              disabled={relationSaving || !relationTargetId || relationTargetId === selected?.id}
             >
               {relationSaving && <Loader2 className="h-4 w-4 animate-spin" />}
               {relationEditing ? "Salvar relação" : "Criar relação"}
