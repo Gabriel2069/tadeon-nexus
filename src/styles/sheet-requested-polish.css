@@ -1,7 +1,36 @@
-.tadeon-sheet-page .tadeon-attribute-tile {
-  border-color: rgb(255 255 255 / 9%) !important;
-  background: linear-gradient(145deg, rgb(255 255 255 / 2.5%), transparent 48%), rgb(7 9 13 / 96%) !important;
-  box-shadow: inset 0 1px rgb(255 255 255 / 3%), 0 12px 28px -24px rgb(0 0 0 / 100%);
+.tadeon-sheet-page .tadeon-attribute-grid {
+  border-color: rgb(255 255 255 / 8%) !important;
+  background: rgb(5 7 10 / 94%) !important;
+  box-shadow: inset 0 1px rgb(255 255 255 / 2%);
+}
+
+.tadeon-sheet-page .tadeon-attribute-tile,
+.tadeon-sheet-page .tadeon-attribute-grid .tadeon-attribute-tile {
+  border-color: rgb(255 255 255 / 8%) !important;
+  background: linear-gradient(145deg, rgb(255 255 255 / 2.5%), transparent 48%), rgb(7 9 13 / 98%) !important;
+  box-shadow: inset 0 1px rgb(255 255 255 / 3%), 0 12px 28px -24px rgb(0 0 0 / 100%) !important;
+}
+
+.tadeon-sheet-page .tadeon-attribute-tile__value {
+  border-color: rgb(255 255 255 / 10%) !important;
+  color: var(--foreground);
+  background: linear-gradient(145deg, rgb(255 255 255 / 3%), transparent 58%), rgb(4 6 9 / 98%) !important;
+  box-shadow: inset 0 1px rgb(255 255 255 / 3%), 0 10px 22px -18px rgb(0 0 0 / 100%) !important;
+}
+
+.tadeon-sheet-page .tadeon-attributes-panel {
+  background: radial-gradient(circle at 88% -12%, rgb(255 255 255 / 2.5%), transparent 28%), linear-gradient(145deg, rgb(16 19 24 / 98%), rgb(7 9 13 / 96%)) !important;
+}
+
+.tadeon-sheet-page .tadeon-attribute-tile::after {
+  background: linear-gradient(90deg, transparent, rgb(255 255 255 / 13%), transparent) !important;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .tadeon-sheet-page .tadeon-attribute-tile:hover .tadeon-attribute-tile__value {
+    border-color: rgb(217 215 164 / 22%) !important;
+    box-shadow: inset 0 1px rgb(255 255 255 / 4%), 0 12px 26px -20px rgb(0 0 0 / 100%) !important;
+  }
 }
 
 .tadeon-sheet-page :is(.tadeon-equilibrium-panel, .tadeon-exposure-panel) {
@@ -14,17 +43,40 @@
   backdrop-filter: none !important;
 }
 
-.tadeon-sheet-page .tadeon-sheet-tabs-list [role="tab"]:nth-child(2) > span {
+.tadeon-sheet-page .tadeon-sheet-tabs-list [data-tab-value="arvore"] > span,
+.tadeon-sheet-page .tadeon-sheet-tabs-list [data-tab-value="descricao"] > span {
   font-size: 0 !important;
 }
 
-.tadeon-sheet-page .tadeon-sheet-tabs-list [role="tab"]:nth-child(2) > span::after {
-  content: "Aprimoramento";
+.tadeon-sheet-page .tadeon-sheet-tabs-list [data-tab-value="arvore"] > span::after,
+.tadeon-sheet-page .tadeon-sheet-tabs-list [data-tab-value="descricao"] > span::after {
   font-family: inherit;
   font-size: 0.875rem;
   font-weight: inherit;
   letter-spacing: inherit;
   line-height: 1;
+}
+
+.tadeon-sheet-page .tadeon-sheet-tabs-list [data-tab-value="arvore"] > span::after {
+  content: "Maestria";
+}
+
+.tadeon-sheet-page .tadeon-sheet-tabs-list [data-tab-value="descricao"] > span::after {
+  content: "História";
+}
+
+@media (max-width: 767px) {
+  .tadeon-sheet-page .tadeon-sheet-tabs-list {
+    position: relative !important;
+    z-index: 4 !important;
+    top: auto !important;
+    margin-bottom: 0.65rem !important;
+    box-shadow: 0 14px 36px -28px rgb(0 0 0 / 98%), inset 0 1px rgb(255 255 255 / 4%) !important;
+  }
+
+  .tadeon-sheet-page .tadeon-sheet-section {
+    scroll-margin-top: calc(var(--sheet-mobile-header-height) + 0.75rem);
+  }
 }
 
 @media (max-width: 639px) {
@@ -54,7 +106,7 @@
     padding-inline: 0.55rem;
   }
 
-  .tadeon-sheet-page .tadeon-sheet-tabs-list [role="tab"]:nth-child(2) > span::after {
+  .tadeon-sheet-page .tadeon-sheet-tabs-list :is([data-tab-value="arvore"], [data-tab-value="descricao"]) > span::after {
     font-size: 0.78rem;
   }
 }
