@@ -14,6 +14,7 @@ import {
   BrickWall,
   Bug,
   Camera,
+  Circle,
   CheckCircle2,
   ChevronDown,
   ChevronUp,
@@ -40,6 +41,7 @@ import {
   PanelRightOpen,
   PanelRightClose,
   PencilLine,
+  Paintbrush,
   Plus,
   Redo2,
   CloudFog,
@@ -48,6 +50,7 @@ import {
   RotateCcw,
   RotateCw,
   Ruler,
+  Square,
   Save,
   Scan,
   SlidersHorizontal,
@@ -117,6 +120,8 @@ import {
 import {
   createEmptyVisibilityState,
   tabletopVisibilityService,
+  type TabletopFogShape,
+  type TabletopFogStroke,
   type TabletopLight,
   type TabletopVisibilityState,
   type TabletopWall,
@@ -371,6 +376,7 @@ export function TabletopWorkspace({
     null,
   );
   const [selectedLightId, setSelectedLightId] = useState<string | null>(null);
+  const [selectedFogId, setSelectedFogId] = useState<string | null>(null);
   const [activeLevelId, setActiveLevelId] = useState<string | null>(null);
   const [assetUploading, setAssetUploading] = useState(false);
   const [assetUploadProgress, setAssetUploadProgress] = useState(0);
@@ -378,6 +384,7 @@ export function TabletopWorkspace({
   const [drawWidth, setDrawWidth] = useState(5);
   const [lightToolRadius, setLightToolRadius] = useState(320);
   const [fogToolRadius, setFogToolRadius] = useState(160);
+  const [fogToolShape, setFogToolShape] = useState<TabletopFogShape>("brush");
   const [sceneDialogOpen, setSceneDialogOpen] = useState(false);
   const [sceneName, setSceneName] = useState("Nova cena");
   const [snapshotDialogOpen, setSnapshotDialogOpen] = useState(false);
@@ -416,6 +423,12 @@ export function TabletopWorkspace({
     () =>
       visibility.lights.find((light) => light.id === selectedLightId) ?? null,
     [selectedLightId, visibility.lights],
+  );
+  const selectedFog = useMemo(
+    () =>
+      visibility.fogStrokes.find((stroke) => stroke.id === selectedFogId) ??
+      null,
+    [selectedFogId, visibility.fogStrokes],
   );
   const activeLevel = useMemo(
     () =>
@@ -509,6 +522,10 @@ export function TabletopWorkspace({
     engineRef.current?.setVisibilityToolRadius("light", lightToolRadius);
     engineRef.current?.setVisibilityToolRadius("fog", fogToolRadius);
   }, [fogToolRadius, lightToolRadius]);
+
+  useEffect(() => {
+    engineRef.current?.setFogToolShape(fogToolShape);
+  }, [fogToolShape]);
 
   useEffect(() => {
     structureTypeRef.current = structureType;
@@ -851,6 +868,10 @@ export function TabletopWorkspace({
         setSelectedLightId(id);
         if (id) setPanelTab("space");
       },
+      onSelectFog: (id) => {
+        setSelectedFogId(id);
+        if (id) setPanelTab("space");
+      },
       onUpdateStructure: (_before, after) => replaceStructure(after),
       onDeleteStructure: deleteStructure,
       onDuplicateStructure: duplicateStructure,
@@ -890,6 +911,49 @@ export function TabletopWorkspace({
           lights: [...visibilityRef.current.lights, copy],
         });
         engine.setSelectedLight(copy.id);
+      },
+      onUpdateFog: (_before: TabletopFogStroke, after: TabletopFogStroke) => {
+        previewVisibility({
+          ...visibilityRef.current,
+          fogStrokes: visibilityRef.current.fogStrokes.map((stroke) =>
+            stroke.id === after.id
+              ? {
+                  ...after,
+                  points: after.points.map((point) => ({ ...point })),
+                }
+              : stroke,
+          ),
+        });
+        setPanelTab("space");
+      },
+      onDeleteFog: (id) => {
+        previewVisibility({
+          ...visibilityRef.current,
+          fogStrokes: visibilityRef.current.fogStrokes
+            .filter((stroke) => stroke.id !== id)
+            .map((stroke, sequenceIndex) => ({ ...stroke, sequenceIndex })),
+        });
+        setSelectedFogId(null);
+      },
+      onDuplicateFog: (id) => {
+        const source = visibilityRef.current.fogStrokes.find(
+          (stroke) => stroke.id === id,
+        );
+        if (!source) return;
+        const copy: TabletopFogStroke = {
+          ...source,
+          id: crypto.randomUUID(),
+          points: source.points.map((point) => ({
+            x: point.x + 24,
+            y: point.y + 24,
+          })),
+          sequenceIndex: visibilityRef.current.fogStrokes.length,
+        };
+        previewVisibility({
+          ...visibilityRef.current,
+          fogStrokes: [...visibilityRef.current.fogStrokes, copy],
+        });
+        engine.setSelectedFog(copy.id);
       },
       onCreateStructure: ({ start, end }) => {
         const id = crypto.randomUUID();
@@ -960,6 +1024,7 @@ export function TabletopWorkspace({
                 id: crypto.randomUUID(),
                 levelId,
                 operation: tool.kind === "fog_reveal" ? "reveal" : "hide",
+                shape: tool.shape,
                 points,
                 radius: Math.max(8, Math.min(1_024, tool.radius)),
                 sequenceIndex: nextSequence,
@@ -1614,6 +1679,36 @@ export function TabletopWorkspace({
               ))}
             </select>
           </div>
+          <nav
+            className="tadeon-tabletop-command-spaces"
+            aria-label="Fluxos do estúdio"
+          >
+            {(
+              [
+                ["library", "Montar", Image],
+                ["space", "Ambiente", CloudFog],
+                ["master", "Dirigir", EyeOff],
+                ["scene", "Cena", Layers3],
+              ] as const
+            ).map(([tab, label, Icon]) => (
+              <button
+                key={tab}
+                type="button"
+                aria-pressed={
+                  panelTab === tab ||
+                  (tab === "library" && panelTab === "inspector")
+                }
+                onClick={() => {
+                  setPanelTab(tab);
+                  setPanelCollapsed(false);
+                  setMobilePanelOpen(true);
+                }}
+              >
+                <Icon aria-hidden="true" />
+                <span>{label}</span>
+              </button>
+            ))}
+          </nav>
           <Button
             size="sm"
             variant={dirty ? "default" : "outline"}
@@ -1894,6 +1989,7 @@ export function TabletopWorkspace({
         <section
           className="tadeon-tabletop-stage relative min-h-[64svh] overflow-hidden sm:min-h-[70vh] lg:min-h-0"
           data-projection={projectionMode}
+          data-tool={toolMode}
           onClick={closeContext}
           onDragOver={(event) => {
             if (
@@ -1911,8 +2007,12 @@ export function TabletopWorkspace({
             className="tadeon-tabletop-canvas-rail"
             aria-label="Ferramentas do canvas"
           >
+            <span className="tadeon-tabletop-canvas-rail__group-label">
+              Navegar
+            </span>
             <CanvasToolButton
               label="Ferramenta de seleção"
+              caption="Selecionar"
               active={toolMode === "select"}
               onClick={() => setToolMode("select")}
             >
@@ -1920,6 +2020,7 @@ export function TabletopWorkspace({
             </CanvasToolButton>
             <CanvasToolButton
               label="Ferramenta mão para mover a cena"
+              caption="Mover"
               active={toolMode === "pan"}
               onClick={() => setToolMode("pan")}
             >
@@ -1927,13 +2028,18 @@ export function TabletopWorkspace({
             </CanvasToolButton>
             <CanvasToolButton
               label="Régua para medir distâncias (R)"
+              caption="Medir"
               active={toolMode === "measure"}
               onClick={() => setToolMode("measure")}
             >
               <Ruler className="h-4 w-4" />
             </CanvasToolButton>
+            <span className="tadeon-tabletop-canvas-rail__group-label">
+              Criar
+            </span>
             <CanvasToolButton
               label="Desenho livre persistente (D)"
+              caption="Desenhar"
               active={toolMode === "draw"}
               disabled={!editable}
               onClick={() => setToolMode("draw")}
@@ -1942,6 +2048,7 @@ export function TabletopWorkspace({
             </CanvasToolButton>
             <CanvasToolButton
               label="Construir paredes e aberturas (B)"
+              caption="Construir"
               active={toolMode === "structure"}
               disabled={!editable || !lightingEnabled || !visibilityAvailable}
               onClick={() => setToolMode("structure")}
@@ -1950,6 +2057,7 @@ export function TabletopWorkspace({
             </CanvasToolButton>
             <CanvasToolButton
               label="Posicionar luz e arrastar o alcance (L)"
+              caption="Iluminar"
               active={toolMode === "light"}
               disabled={!editable || !lightingEnabled || !visibilityAvailable}
               onClick={() => setToolMode("light")}
@@ -1958,6 +2066,7 @@ export function TabletopWorkspace({
             </CanvasToolButton>
             <CanvasToolButton
               label="Pincel para revelar névoa (F)"
+              caption="Revelar"
               active={toolMode === "fog_reveal"}
               disabled={!editable || !lightingEnabled || !visibilityAvailable}
               onClick={() => setToolMode("fog_reveal")}
@@ -1966,6 +2075,7 @@ export function TabletopWorkspace({
             </CanvasToolButton>
             <CanvasToolButton
               label="Pincel para cobrir novamente com névoa"
+              caption="Cobrir"
               active={toolMode === "fog_hide"}
               disabled={!editable || !lightingEnabled || !visibilityAvailable}
               onClick={() => setToolMode("fog_hide")}
@@ -2084,86 +2194,124 @@ export function TabletopWorkspace({
                 </span>
               </div>
               {toolMode !== "light" && (
-                <div className="flex gap-1">
-                  <Button
-                    size="sm"
-                    variant={
-                      toolMode === "fog_reveal" ? "secondary" : "outline"
-                    }
-                    onClick={() => setToolMode("fog_reveal")}
+                <div className="tadeon-tabletop-fog-tool">
+                  <div className="tadeon-tabletop-fog-tool__operation">
+                    <Button
+                      size="sm"
+                      variant={
+                        toolMode === "fog_reveal" ? "secondary" : "outline"
+                      }
+                      onClick={() => setToolMode("fog_reveal")}
+                    >
+                      <Eye className="h-3.5 w-3.5" />
+                      Revelar
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant={
+                        toolMode === "fog_hide" ? "secondary" : "outline"
+                      }
+                      onClick={() => setToolMode("fog_hide")}
+                    >
+                      <EyeOff className="h-3.5 w-3.5" />
+                      Cobrir
+                    </Button>
+                  </div>
+                  <div
+                    className="tadeon-tabletop-fog-tool__shapes"
+                    role="radiogroup"
+                    aria-label="Geometria da névoa"
                   >
-                    Revelar
-                  </Button>
-                  <Button
-                    size="sm"
-                    variant={toolMode === "fog_hide" ? "secondary" : "outline"}
-                    onClick={() => setToolMode("fog_hide")}
-                  >
-                    Cobrir
-                  </Button>
+                    {(
+                      [
+                        ["brush", "Pincel", Paintbrush],
+                        ["rectangle", "Área", Square],
+                        ["ellipse", "Elipse", Circle],
+                      ] as const
+                    ).map(([shape, label, Icon]) => (
+                      <button
+                        key={shape}
+                        type="button"
+                        role="radio"
+                        aria-checked={fogToolShape === shape}
+                        onClick={() => setFogToolShape(shape)}
+                      >
+                        <Icon aria-hidden="true" />
+                        <span>{label}</span>
+                      </button>
+                    ))}
+                  </div>
                 </div>
               )}
-              <div
-                className="tadeon-tabletop-radius-presets"
-                aria-label={
-                  toolMode === "light"
-                    ? "Alcances rápidos de luz"
-                    : "Tamanhos rápidos do pincel de névoa"
-                }
-              >
-                {(toolMode === "light"
-                  ? [
-                      [160, "Curta"],
-                      [320, "Média"],
-                      [640, "Longa"],
-                    ]
-                  : [
-                      [64, "Preciso"],
-                      [160, "Médio"],
-                      [320, "Amplo"],
-                    ]
-                ).map(([radius, label]) => (
-                  <button
-                    key={radius}
-                    type="button"
-                    aria-pressed={
-                      (toolMode === "light"
-                        ? lightToolRadius
-                        : fogToolRadius) === radius
+              {(toolMode === "light" || fogToolShape === "brush") && (
+                <>
+                  <div
+                    className="tadeon-tabletop-radius-presets"
+                    aria-label={
+                      toolMode === "light"
+                        ? "Alcances rápidos de luz"
+                        : "Tamanhos rápidos do pincel de névoa"
                     }
-                    onClick={() => {
-                      const value = Number(radius);
-                      if (toolMode === "light") setLightToolRadius(value);
-                      else setFogToolRadius(value);
-                    }}
                   >
-                    {label}
-                  </button>
-                ))}
-              </div>
-              <label className="tadeon-tabletop-draw-width">
-                <span>
-                  {toolMode === "light"
-                    ? `${lightToolRadius}px padrão`
-                    : `${fogToolRadius}px de pincel`}
-                </span>
-                <input
-                  type="range"
-                  min={toolMode === "light" ? 32 : 16}
-                  max={toolMode === "light" ? 1600 : 512}
-                  step={8}
-                  value={toolMode === "light" ? lightToolRadius : fogToolRadius}
-                  onChange={(event) => {
-                    const value = Number(event.target.value);
-                    if (toolMode === "light") setLightToolRadius(value);
-                    else setFogToolRadius(value);
-                  }}
-                />
-              </label>
+                    {(toolMode === "light"
+                      ? [
+                          [160, "Curta"],
+                          [320, "Média"],
+                          [640, "Longa"],
+                        ]
+                      : [
+                          [64, "Preciso"],
+                          [160, "Médio"],
+                          [320, "Amplo"],
+                        ]
+                    ).map(([radius, label]) => (
+                      <button
+                        key={radius}
+                        type="button"
+                        aria-pressed={
+                          (toolMode === "light"
+                            ? lightToolRadius
+                            : fogToolRadius) === radius
+                        }
+                        onClick={() => {
+                          const value = Number(radius);
+                          if (toolMode === "light") setLightToolRadius(value);
+                          else setFogToolRadius(value);
+                        }}
+                      >
+                        {label}
+                      </button>
+                    ))}
+                  </div>
+                  <label className="tadeon-tabletop-draw-width">
+                    <span>
+                      {toolMode === "light"
+                        ? `${lightToolRadius}px padrão`
+                        : `${fogToolRadius}px de pincel`}
+                    </span>
+                    <input
+                      type="range"
+                      min={toolMode === "light" ? 32 : 16}
+                      max={toolMode === "light" ? 1600 : 512}
+                      step={8}
+                      value={
+                        toolMode === "light" ? lightToolRadius : fogToolRadius
+                      }
+                      onChange={(event) => {
+                        const value = Number(event.target.value);
+                        if (toolMode === "light") setLightToolRadius(value);
+                        else setFogToolRadius(value);
+                      }}
+                    />
+                  </label>
+                </>
+              )}
               <small className="max-w-56 text-[10px] text-muted-foreground">
                 {toolMode === "light"
                   ? "Clique para usar o alcance padrão ou arraste para dimensionar."
-                  : "Arraste sobre o mapa; o traço é compactado sem perder as extremidades."}
+                  : fogToolShape === "brush"
+                    ? "Pinte livremente. Depois selecione a região para mover ou ajustar o raio."
+                    : "Arraste de um canto ao outro. Depois edite a área pelas alças no próprio mapa."}
               </small>
             </div>
           )}
@@ -2265,6 +2413,157 @@ export function TabletopWorkspace({
               </ToolbarButton>
               <ToolbarButton
                 label="Excluir estrutura"
+                disabled={!editable}
+                onClick={() => engineRef.current?.deleteSelected()}
+              >
+                <Trash2 className="h-4 w-4" />
+              </ToolbarButton>
+            </div>
+          )}
+          {selectedLight && toolMode === "select" && (
+            <div
+              className="tadeon-tabletop-selection-dock tadeon-tabletop-selection-dock--light"
+              aria-label="Edição rápida da luz"
+            >
+              <div className="tadeon-tabletop-structure-selection__identity">
+                <span
+                  className="tadeon-tabletop-selection-dock__swatch"
+                  style={{ backgroundColor: selectedLight.color }}
+                />
+                <span>
+                  <strong>Fonte de luz</strong>
+                  <small>
+                    {Math.round(selectedLight.radius)}px ·{" "}
+                    {Math.round(selectedLight.intensity * 100)}%
+                  </small>
+                </span>
+              </div>
+              <button
+                type="button"
+                className="tadeon-tabletop-selection-dock__state"
+                aria-pressed={selectedLight.enabled}
+                disabled={!editable}
+                onClick={() =>
+                  previewVisibility({
+                    ...visibilityRef.current,
+                    lights: visibilityRef.current.lights.map((light) =>
+                      light.id === selectedLight.id
+                        ? { ...light, enabled: !light.enabled }
+                        : light,
+                    ),
+                  })
+                }
+              >
+                {selectedLight.enabled ? "Acesa" : "Apagada"}
+              </button>
+              <span className="tadeon-tabletop-selection-dock__divider" />
+              <ToolbarButton
+                label="Enquadrar luz"
+                onClick={() => engineRef.current?.focusSelection()}
+              >
+                <Focus className="h-4 w-4" />
+              </ToolbarButton>
+              <ToolbarButton
+                label="Duplicar luz"
+                disabled={!editable}
+                onClick={() => engineRef.current?.duplicateSelected()}
+              >
+                <Copy className="h-4 w-4" />
+              </ToolbarButton>
+              <ToolbarButton
+                label="Abrir controles da luz"
+                onClick={() => {
+                  setPanelTab("space");
+                  setPanelCollapsed(false);
+                  setMobilePanelOpen(true);
+                }}
+              >
+                <SlidersHorizontal className="h-4 w-4" />
+              </ToolbarButton>
+              <ToolbarButton
+                label="Excluir luz"
+                disabled={!editable}
+                onClick={() => engineRef.current?.deleteSelected()}
+              >
+                <Trash2 className="h-4 w-4" />
+              </ToolbarButton>
+            </div>
+          )}
+          {selectedFog && toolMode === "select" && (
+            <div
+              className="tadeon-tabletop-selection-dock tadeon-tabletop-selection-dock--fog"
+              aria-label="Edição rápida da névoa"
+            >
+              <div className="tadeon-tabletop-structure-selection__identity">
+                <CloudFog className="h-4 w-4" aria-hidden="true" />
+                <span>
+                  <strong>
+                    {selectedFog.operation === "reveal"
+                      ? "Área revelada"
+                      : "Área coberta"}
+                  </strong>
+                  <small>
+                    {selectedFog.shape === "brush"
+                      ? "pincel"
+                      : selectedFog.shape === "rectangle"
+                        ? "retângulo"
+                        : selectedFog.shape === "ellipse"
+                          ? "elipse"
+                          : "polígono"}{" "}
+                    · arraste para mover
+                  </small>
+                </span>
+              </div>
+              <button
+                type="button"
+                className="tadeon-tabletop-selection-dock__state"
+                disabled={!editable}
+                onClick={() =>
+                  previewVisibility({
+                    ...visibilityRef.current,
+                    fogStrokes: visibilityRef.current.fogStrokes.map(
+                      (stroke) =>
+                        stroke.id === selectedFog.id
+                          ? {
+                              ...stroke,
+                              operation:
+                                stroke.operation === "reveal"
+                                  ? "hide"
+                                  : "reveal",
+                            }
+                          : stroke,
+                    ),
+                  })
+                }
+              >
+                {selectedFog.operation === "reveal" ? "Revelar" : "Cobrir"}
+              </button>
+              <span className="tadeon-tabletop-selection-dock__divider" />
+              <ToolbarButton
+                label="Enquadrar região"
+                onClick={() => engineRef.current?.focusSelection()}
+              >
+                <Focus className="h-4 w-4" />
+              </ToolbarButton>
+              <ToolbarButton
+                label="Duplicar região"
+                disabled={!editable}
+                onClick={() => engineRef.current?.duplicateSelected()}
+              >
+                <Copy className="h-4 w-4" />
+              </ToolbarButton>
+              <ToolbarButton
+                label="Abrir controles da névoa"
+                onClick={() => {
+                  setPanelTab("space");
+                  setPanelCollapsed(false);
+                  setMobilePanelOpen(true);
+                }}
+              >
+                <SlidersHorizontal className="h-4 w-4" />
+              </ToolbarButton>
+              <ToolbarButton
+                label="Excluir região"
                 disabled={!editable}
                 onClick={() => engineRef.current?.deleteSelected()}
               >
@@ -3156,10 +3455,19 @@ export function TabletopWorkspace({
                 dirty={visibilityDirty}
                 selectedStructureId={selectedStructureId}
                 selectedLightId={selectedLightId}
+                selectedFogId={selectedFogId}
                 onSelectStructure={(id) =>
                   engineRef.current?.setSelectedStructure(id)
                 }
                 onSelectLight={(id) => engineRef.current?.setSelectedLight(id)}
+                onSelectFog={(id) => engineRef.current?.setSelectedFog(id)}
+                onActivateFogTool={(operation, shape) => {
+                  setFogToolShape(shape);
+                  setToolMode(
+                    operation === "reveal" ? "fog_reveal" : "fog_hide",
+                  );
+                  if (window.innerWidth < 1024) setMobilePanelOpen(false);
+                }}
                 onPreview={previewVisibility}
                 onSaved={installVisibility}
               />
@@ -4595,12 +4903,14 @@ function ToolbarButton({
 
 function CanvasToolButton({
   label,
+  caption,
   active,
   disabled,
   children,
   onClick,
 }: {
   label: string;
+  caption?: string;
   active: boolean;
   disabled?: boolean;
   children: React.ReactNode;
@@ -4611,7 +4921,11 @@ function CanvasToolButton({
       type="button"
       variant={active ? "default" : "ghost"}
       size="icon"
-      className="h-10 w-10 sm:h-9 sm:w-9"
+      className={
+        caption
+          ? "tadeon-tabletop-canvas-tool h-12 w-12"
+          : "h-10 w-10 sm:h-9 sm:w-9"
+      }
       title={label}
       aria-label={label}
       aria-pressed={active}
@@ -4619,6 +4933,7 @@ function CanvasToolButton({
       onClick={onClick}
     >
       {children}
+      {caption && <span>{caption}</span>}
     </Button>
   );
 }

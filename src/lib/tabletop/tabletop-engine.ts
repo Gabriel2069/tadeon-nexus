@@ -58,11 +58,17 @@ import {
 } from "./tabletop-arrangement";
 import {
   createEmptyVisibilityState,
+  type TabletopFogShape,
+  type TabletopFogStroke,
   type TabletopLight,
   type TabletopVisibilityState,
   type TabletopWall,
 } from "./tabletop-visibility-service";
-import { hitTestTabletopLight } from "./visibility-tooling";
+import {
+  hitTestTabletopFog,
+  hitTestTabletopLight,
+  tabletopFogBounds,
+} from "./visibility-tooling";
 import { TabletopVisibilityRenderer } from "./visibility-renderer";
 import {
   activeTabletopLevel,
@@ -110,6 +116,14 @@ export interface TabletopEngineOptions {
   ) => void;
   onDeleteLight?: (id: string) => void;
   onDuplicateLight?: (id: string) => void;
+  onSelectFog?: (id: string | null) => void;
+  onUpdateFog?: (
+    before: TabletopFogStroke,
+    after: TabletopFogStroke,
+    label: string,
+  ) => void;
+  onDeleteFog?: (id: string) => void;
+  onDuplicateFog?: (id: string) => void;
   onActivateStructure?: (wall: TabletopWall) => void;
   onActivateEntity?: (entity: TabletopEntity) => boolean | void;
   onViewChange?: (view: TabletopViewState) => void;
@@ -143,6 +157,7 @@ export class TabletopEngine {
   private structureType: TabletopStructureType = "wall";
   private selectedStructureId: string | null = null;
   private selectedLightId: string | null = null;
+  private selectedFogId: string | null = null;
   private activeLevelId: string | null = null;
   private interactiveStructureIds = new Set<string>();
   private interaction: InteractionController | null = null;
@@ -162,6 +177,7 @@ export class TabletopEngine {
   private visibilityToolPreview: TabletopVisibilityToolPreview | null = null;
   private lightToolRadius = 320;
   private fogToolRadius = 160;
+  private fogToolShape: TabletopFogShape = "brush";
   private lastViewFingerprint = "";
   private suppressViewChange = false;
 
@@ -210,12 +226,15 @@ export class TabletopEngine {
       hitTest: (point) => this.hitTest(point),
       hitTestStructure: (point) => this.hitTestStructure(point),
       hitTestLight: (point) => this.hitTestLight(point),
+      hitTestFog: (point) => this.hitTestFog(point),
       isSelected: (id) => this.selection.has(id),
       selectedStructureId: () => this.selectedStructureId,
       selectedLightId: () => this.selectedLightId,
+      selectedFogId: () => this.selectedFogId,
       select: (id, additive) => this.select(id, additive),
       selectStructure: (id) => this.setSelectedStructure(id),
       selectLight: (id) => this.setSelectedLight(id),
+      selectFog: (id) => this.setSelectedFog(id),
       selectAll: () => this.selectAll(),
       selectInBounds: (bounds, additive) =>
         this.selectInBounds(bounds, additive),
@@ -232,10 +251,16 @@ export class TabletopEngine {
       commitVisibilityTool: (preview) => this.commitVisibilityTool(preview),
       visibilityToolRadius: (mode) =>
         mode === "light" ? this.lightToolRadius : this.fogToolRadius,
+      visibilityToolShape: (mode) =>
+        mode === "light" ? "ellipse" : this.fogToolShape,
       editableLight: (id) => this.editableLight(id),
       previewLight: (light) => this.previewLight(light),
       commitLightTransform: (before, after, label) =>
         this.commitLightTransform(before, after, label),
+      editableFog: (id) => this.editableFog(id),
+      previewFog: (stroke) => this.previewFog(stroke),
+      commitFogTransform: (before, after, label) =>
+        this.commitFogTransform(before, after, label),
       editableStructure: (id) => this.editableStructure(id),
       previewStructureTransform: (structure) =>
         this.previewStructureTransform(structure),
@@ -293,6 +318,8 @@ export class TabletopEngine {
     this.options.onSelectStructure?.(null);
     this.selectedLightId = null;
     this.options.onSelectLight?.(null);
+    this.selectedFogId = null;
+    this.options.onSelectFog?.(null);
     this.history.clear();
     this.paintBackground();
     this.render();
@@ -308,6 +335,7 @@ export class TabletopEngine {
     this.selection.clear();
     this.setSelectedStructure(null);
     this.setSelectedLight(null);
+    this.setSelectedFog(null);
     this.render(false);
   }
 
@@ -353,6 +381,7 @@ export class TabletopEngine {
       this.selection.clear();
       this.setSelectedStructure(null);
       this.setSelectedLight(null);
+      this.setSelectedFog(null);
       if (
         this.toolMode === "draw" ||
         this.toolMode === "structure" ||
@@ -406,6 +435,11 @@ export class TabletopEngine {
     );
     if (kind === "light") this.lightToolRadius = normalized;
     else this.fogToolRadius = normalized;
+  }
+
+  setFogToolShape(shape: TabletopFogShape) {
+    this.fogToolShape = shape;
+    this.render(false);
   }
 
   setProjectionMode(mode: TabletopProjectionMode) {
@@ -546,6 +580,15 @@ export class TabletopEngine {
       this.selectedLightId = null;
       this.options.onSelectLight?.(null);
     }
+    if (
+      this.selectedFogId &&
+      !this.visibilityState.fogStrokes.some(
+        (stroke) => stroke.id === this.selectedFogId,
+      )
+    ) {
+      this.selectedFogId = null;
+      this.options.onSelectFog?.(null);
+    }
     this.render(false);
   }
 
@@ -561,6 +604,10 @@ export class TabletopEngine {
       if (this.selectedLightId) {
         this.selectedLightId = null;
         this.options.onSelectLight?.(null);
+      }
+      if (this.selectedFogId) {
+        this.selectedFogId = null;
+        this.options.onSelectFog?.(null);
       }
     }
     if (changed) this.options.onSelectStructure?.(next);
@@ -580,8 +627,34 @@ export class TabletopEngine {
         this.selectedStructureId = null;
         this.options.onSelectStructure?.(null);
       }
+      if (this.selectedFogId) {
+        this.selectedFogId = null;
+        this.options.onSelectFog?.(null);
+      }
     }
     if (changed) this.options.onSelectLight?.(next);
+    this.render();
+  }
+
+  setSelectedFog(id: string | null) {
+    const next =
+      id && this.visibilityState.fogStrokes.some((stroke) => stroke.id === id)
+        ? id
+        : null;
+    const changed = next !== this.selectedFogId;
+    this.selectedFogId = next;
+    if (next) {
+      this.selection.clear();
+      if (this.selectedStructureId) {
+        this.selectedStructureId = null;
+        this.options.onSelectStructure?.(null);
+      }
+      if (this.selectedLightId) {
+        this.selectedLightId = null;
+        this.options.onSelectLight?.(null);
+      }
+    }
+    if (changed) this.options.onSelectFog?.(next);
     this.render();
   }
 
@@ -731,6 +804,10 @@ export class TabletopEngine {
 
   duplicateSelected() {
     if (this.readOnly) return;
+    if (this.selectedFogId) {
+      this.options.onDuplicateFog?.(this.selectedFogId);
+      return;
+    }
     if (this.selectedLightId) {
       this.options.onDuplicateLight?.(this.selectedLightId);
       return;
@@ -793,6 +870,12 @@ export class TabletopEngine {
 
   deleteSelected() {
     if (this.readOnly) return;
+    if (this.selectedFogId) {
+      const id = this.selectedFogId;
+      this.setSelectedFog(null);
+      this.options.onDeleteFog?.(id);
+      return;
+    }
     if (this.selectedLightId) {
       const id = this.selectedLightId;
       this.setSelectedLight(null);
@@ -834,6 +917,10 @@ export class TabletopEngine {
 
   selectAll() {
     if (this.readOnly) return;
+    if (this.selectedFogId) {
+      this.selectedFogId = null;
+      this.options.onSelectFog?.(null);
+    }
     if (this.selectedLightId) {
       this.selectedLightId = null;
       this.options.onSelectLight?.(null);
@@ -858,11 +945,27 @@ export class TabletopEngine {
     if (!this.scenes.scene.entities.some((entity) => entity.id === id)) return;
     this.setSelectedLight(null);
     this.setSelectedStructure(null);
+    this.setSelectedFog(null);
     this.selection.replace([id]);
     this.render();
   }
 
   focusSelection() {
+    if (this.selectedFogId) {
+      const fog = this.visibilityState.fogStrokes.find(
+        (stroke) => stroke.id === this.selectedFogId,
+      );
+      if (!fog) return;
+      this.camera.fitBounds(
+        tabletopFogBounds(fog),
+        this.app.renderer.width,
+        this.app.renderer.height,
+        96,
+        2.25,
+      );
+      this.render(false);
+      return;
+    }
     if (this.selectedLightId) {
       const light = this.visibilityState.lights.find(
         (item) => item.id === this.selectedLightId,
@@ -1109,6 +1212,10 @@ export class TabletopEngine {
   }
 
   private select(id: string, additive: boolean) {
+    if (this.selectedFogId) {
+      this.selectedFogId = null;
+      this.options.onSelectFog?.(null);
+    }
     if (this.selectedLightId) {
       this.selectedLightId = null;
       this.options.onSelectLight?.(null);
@@ -1123,6 +1230,10 @@ export class TabletopEngine {
 
   private clearSelection() {
     this.selection.clear();
+    if (this.selectedFogId) {
+      this.selectedFogId = null;
+      this.options.onSelectFog?.(null);
+    }
     if (this.selectedLightId) {
       this.selectedLightId = null;
       this.options.onSelectLight?.(null);
@@ -1135,6 +1246,10 @@ export class TabletopEngine {
   }
 
   private selectInBounds(bounds: TabletopBounds, additive: boolean) {
+    if (this.selectedFogId) {
+      this.selectedFogId = null;
+      this.options.onSelectFog?.(null);
+    }
     if (this.selectedLightId) {
       this.selectedLightId = null;
       this.options.onSelectLight?.(null);
@@ -1229,6 +1344,24 @@ export class TabletopEngine {
     );
   }
 
+  private hitTestFog(point: Point) {
+    if (!this.visibilityGuides) return null;
+    const activeLevel = activeTabletopLevel(
+      this.scenes.scene,
+      this.activeLevelId,
+    );
+    const fallbackLevelId = activeTabletopLevel(this.scenes.scene).id;
+    return hitTestTabletopFog(
+      point,
+      this.visibilityState.fogStrokes.filter(
+        (stroke) =>
+          tabletopItemLevelId(stroke, fallbackLevelId) === activeLevel.id,
+      ),
+      10 / Math.max(this.camera.zoom, 0.01),
+      this.selectedFogId,
+    );
+  }
+
   private editableLight(id: string) {
     if (this.readOnly || !this.visibilityGuides) return null;
     const light = this.visibilityState.lights.find((item) => item.id === id);
@@ -1240,6 +1373,25 @@ export class TabletopEngine {
     return light &&
       tabletopItemLevelId(light, fallbackLevelId) === activeLevel.id
       ? { ...light }
+      : null;
+  }
+
+  private editableFog(id: string) {
+    if (this.readOnly || !this.visibilityGuides) return null;
+    const stroke = this.visibilityState.fogStrokes.find(
+      (item) => item.id === id,
+    );
+    const activeLevel = activeTabletopLevel(
+      this.scenes.scene,
+      this.activeLevelId,
+    );
+    const fallbackLevelId = activeTabletopLevel(this.scenes.scene).id;
+    return stroke &&
+      tabletopItemLevelId(stroke, fallbackLevelId) === activeLevel.id
+      ? {
+          ...stroke,
+          points: stroke.points.map((point) => ({ ...point })),
+        }
       : null;
   }
 
@@ -1356,6 +1508,30 @@ export class TabletopEngine {
   ) {
     if (this.readOnly) return;
     this.options.onUpdateLight?.(before, after, label);
+  }
+
+  private previewFog(stroke: TabletopFogStroke) {
+    this.visibilityState = {
+      ...this.visibilityState,
+      fogStrokes: this.visibilityState.fogStrokes.map((item) =>
+        item.id === stroke.id
+          ? {
+              ...stroke,
+              points: stroke.points.map((point) => ({ ...point })),
+            }
+          : item,
+      ),
+    };
+    this.render(false);
+  }
+
+  private commitFogTransform(
+    before: TabletopFogStroke,
+    after: TabletopFogStroke,
+    label: string,
+  ) {
+    if (this.readOnly) return;
+    this.options.onUpdateFog?.(before, after, label);
   }
 
   private commitVisibilityTool(preview: TabletopVisibilityToolPreview) {
@@ -1485,6 +1661,22 @@ export class TabletopEngine {
 
   private nudge(delta: Point) {
     if (this.readOnly) return;
+    if (this.selectedFogId) {
+      const before = this.visibilityState.fogStrokes.find(
+        (stroke) => stroke.id === this.selectedFogId,
+      );
+      if (!before) return;
+      const after = {
+        ...before,
+        points: before.points.map((point) => ({
+          x: point.x + delta.x,
+          y: point.y + delta.y,
+        })),
+      };
+      this.previewFog(after);
+      this.commitFogTransform(before, after, "Mover região de névoa");
+      return;
+    }
     if (this.selectedLightId) {
       const before = this.visibilityState.lights.find(
         (light) => light.id === this.selectedLightId,
@@ -1661,6 +1853,7 @@ export class TabletopEngine {
       this.viewOrientation,
       this.visibilityToolPreview,
       this.selectedLightId,
+      this.selectedFogId,
     );
     this.spatial.render(
       this.scenes.scene,

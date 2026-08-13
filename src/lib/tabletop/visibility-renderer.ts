@@ -52,6 +52,92 @@ function sampledStrokePoints(stroke: TabletopFogStroke) {
   return result;
 }
 
+function fogShapeBounds(stroke: TabletopFogStroke) {
+  const first = stroke.points[0] ?? { x: 0, y: 0 };
+  const last = stroke.points.at(-1) ?? first;
+  return {
+    x: Math.min(first.x, last.x),
+    y: Math.min(first.y, last.y),
+    width: Math.max(1, Math.abs(last.x - first.x)),
+    height: Math.max(1, Math.abs(last.y - first.y)),
+  };
+}
+
+function appendFogShape(graphics: Graphics, stroke: TabletopFogStroke) {
+  if (stroke.shape === "rectangle") {
+    const bounds = fogShapeBounds(stroke);
+    return graphics.rect(bounds.x, bounds.y, bounds.width, bounds.height);
+  }
+  if (stroke.shape === "ellipse") {
+    const bounds = fogShapeBounds(stroke);
+    return graphics.ellipse(
+      bounds.x + bounds.width / 2,
+      bounds.y + bounds.height / 2,
+      bounds.width / 2,
+      bounds.height / 2,
+    );
+  }
+  if (stroke.shape === "polygon" && stroke.points.length >= 3)
+    return graphics.poly(pointsForGraphics(stroke.points));
+  return null;
+}
+
+function paintFogStroke(
+  graphics: Graphics,
+  stroke: TabletopFogStroke,
+  color: number,
+  alpha: number,
+) {
+  if (stroke.shape === "brush") {
+    for (const point of sampledStrokePoints(stroke)) {
+      const path = graphics.circle(point.x, point.y, stroke.radius);
+      if (stroke.operation === "reveal") path.cut();
+      else path.fill({ color, alpha });
+    }
+    return;
+  }
+  const path = appendFogShape(graphics, stroke);
+  if (!path) return;
+  if (stroke.operation === "reveal") path.cut();
+  else path.fill({ color, alpha });
+}
+
+function previewFogShape(
+  graphics: Graphics,
+  stroke: TabletopFogStroke,
+  color: number,
+  selected: boolean,
+) {
+  if (stroke.shape === "brush") {
+    const points = sampledStrokePoints(stroke);
+    if (points.length === 1) {
+      graphics
+        .circle(points[0].x, points[0].y, stroke.radius)
+        .fill({ color, alpha: selected ? 0.12 : 0.035 })
+        .stroke({
+          color,
+          alpha: selected ? 0.96 : 0.22,
+          width: selected ? 3 : 1.5,
+        });
+    } else if (points.length > 1) {
+      graphics.moveTo(points[0].x, points[0].y);
+      for (const point of points.slice(1)) graphics.lineTo(point.x, point.y);
+      graphics.stroke({
+        color,
+        alpha: selected ? 0.82 : 0.16,
+        width: selected ? Math.max(3, stroke.radius * 0.08) : 1.5,
+      });
+    }
+    return;
+  }
+  const path = appendFogShape(graphics, stroke);
+  path?.fill({ color, alpha: selected ? 0.1 : 0.025 }).stroke({
+    color,
+    alpha: selected ? 0.96 : 0.2,
+    width: selected ? 3 : 1.5,
+  });
+}
+
 export class TabletopVisibilityRenderer {
   readonly view = new Container({ label: "tabletop-visibility" });
   private readonly lightGlow = new Graphics({ label: "light-glow" });
@@ -82,6 +168,7 @@ export class TabletopVisibilityRenderer {
     orientation: TabletopViewOrientation = DEFAULT_TABLETOP_VIEW_ORIENTATION,
     toolPreview?: TabletopVisibilityToolPreview | null,
     selectedLightId?: string | null,
+    selectedFogId?: string | null,
   ) {
     this.lightGlow.clear();
     this.darkness.clear();
@@ -147,13 +234,8 @@ export class TabletopVisibilityRenderer {
         .fill({ color: FOG_COLOR, alpha: state.fogOpacity });
       for (const stroke of [...levelState.fogStrokes].sort(
         (left, right) => left.sequenceIndex - right.sequenceIndex,
-      )) {
-        for (const point of sampledStrokePoints(stroke)) {
-          const path = this.fog.circle(point.x, point.y, stroke.radius);
-          if (stroke.operation === "reveal") path.cut();
-          else path.fill({ color: FOG_COLOR, alpha: state.fogOpacity });
-        }
-      }
+      ))
+        paintFogStroke(this.fog, stroke, FOG_COLOR, state.fogOpacity);
     }
 
     const previewOrigin = toolPreview?.points[0];
@@ -171,6 +253,23 @@ export class TabletopVisibilityRenderer {
           .stroke({ color, alpha: 0.92, width: 2 })
           .circle(previewOrigin.x, previewOrigin.y, 7)
           .fill({ color, alpha: 1 });
+      } else if (
+        toolPreview.shape !== "brush" &&
+        toolPreview.points.length >= 2
+      ) {
+        previewFogShape(
+          this.toolPreview,
+          {
+            id: "preview",
+            operation: toolPreview.kind === "fog_reveal" ? "reveal" : "hide",
+            shape: toolPreview.shape,
+            points: toolPreview.points,
+            radius: toolPreview.radius,
+            sequenceIndex: 0,
+          },
+          color,
+          true,
+        );
       } else if (toolPreview.points.length === 1) {
         this.toolPreview
           .circle(previewOrigin.x, previewOrigin.y, toolPreview.radius)
@@ -233,6 +332,37 @@ export class TabletopVisibilityRenderer {
           alpha: open ? 0.62 : 0.92,
           width: family === "wall" ? 3 : 5,
         });
+    }
+    const recentFog = levelState.fogStrokes.slice(-64);
+    const selectedFog = selectedFogId
+      ? levelState.fogStrokes.find((stroke) => stroke.id === selectedFogId)
+      : null;
+    const fogGuides = selectedFog
+      ? [
+          ...recentFog.filter((stroke) => stroke.id !== selectedFog.id),
+          selectedFog,
+        ]
+      : recentFog;
+    for (const stroke of fogGuides) {
+      const selected = stroke.id === selectedFogId;
+      const color = stroke.operation === "reveal" ? 0x63d9a0 : 0xe06b76;
+      previewFogShape(this.guides, stroke, color, selected);
+      if (!selected) continue;
+      const anchor = stroke.points[0];
+      const handle =
+        stroke.shape === "brush" && anchor
+          ? { x: anchor.x + stroke.radius, y: anchor.y }
+          : stroke.points.at(-1);
+      if (anchor)
+        this.guides
+          .circle(anchor.x, anchor.y, 6)
+          .fill({ color, alpha: 1 })
+          .stroke({ color: 0xf7f1df, alpha: 0.92, width: 2 });
+      if (handle)
+        this.guides
+          .circle(handle.x, handle.y, 8)
+          .fill({ color: 0xf7f1df, alpha: 0.98 })
+          .stroke({ color, alpha: 1, width: 3 });
     }
     for (const light of levelState.lights) {
       const selected = light.id === selectedLightId;

@@ -2,7 +2,10 @@ import { describe, expect, it } from "vitest";
 import {
   compactVisibilityToolPoints,
   createLevelRevealStrokes,
+  hitTestTabletopFog,
   hitTestTabletopLight,
+  tabletopFogBounds,
+  transformTabletopFog,
   transformTabletopLight,
 } from "./visibility-tooling";
 
@@ -65,6 +68,59 @@ describe("createLevelRevealStrokes", () => {
     expect(compacted).toHaveLength(64);
     expect(compacted[0]).toEqual(points[0]);
     expect(compacted.at(-1)).toEqual(points.at(-1));
+  });
+});
+
+describe("edição direta de névoa", () => {
+  const rectangle = {
+    id: "fog-rectangle",
+    levelId: "base",
+    operation: "reveal" as const,
+    shape: "rectangle" as const,
+    points: [
+      { x: 100, y: 120 },
+      { x: 300, y: 260 },
+    ],
+    radius: 32,
+    sequenceIndex: 0,
+  };
+
+  it("seleciona corpo e alça de uma região persistente", () => {
+    expect(hitTestTabletopFog({ x: 180, y: 180 }, [rectangle], 8)).toEqual({
+      id: rectangle.id,
+      handle: "body",
+    });
+    expect(
+      hitTestTabletopFog({ x: 302, y: 261 }, [rectangle], 8, rectangle.id),
+    ).toEqual({ id: rectangle.id, handle: "end" });
+  });
+
+  it("move a região com snap e dimensiona pela extremidade", () => {
+    expect(
+      transformTabletopFog(
+        rectangle,
+        "body",
+        { x: 150, y: 150 },
+        { x: 187, y: 204 },
+        () => ({ x: 144, y: 176 }),
+      ).points,
+    ).toEqual([
+      { x: 144, y: 176 },
+      { x: 344, y: 316 },
+    ]);
+    const resized = transformTabletopFog(
+      rectangle,
+      "end",
+      rectangle.points[0],
+      { x: 420, y: 360 },
+      (point) => point,
+    );
+    expect(tabletopFogBounds(resized)).toEqual({
+      x: 100,
+      y: 120,
+      width: 320,
+      height: 240,
+    });
   });
 });
 
