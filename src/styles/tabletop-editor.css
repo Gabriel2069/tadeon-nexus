@@ -10,21 +10,9 @@
   overflow: clip;
   min-height: calc(100dvh - 4rem);
   background:
-    radial-gradient(
-      circle at 8% 0%,
-      rgb(var(--studio-forest) / 18%),
-      transparent 36rem
-    ),
-    radial-gradient(
-      circle at 92% 100%,
-      rgb(var(--studio-wine) / 13%),
-      transparent 34rem
-    ),
-    radial-gradient(
-      circle at 50% 38%,
-      rgb(var(--studio-blue) / 10%),
-      transparent 44rem
-    ),
+    radial-gradient(circle at 8% 0%, rgb(var(--studio-forest) / 18%), transparent 36rem),
+    radial-gradient(circle at 92% 100%, rgb(var(--studio-wine) / 13%), transparent 34rem),
+    radial-gradient(circle at 50% 38%, rgb(var(--studio-blue) / 10%), transparent 44rem),
     linear-gradient(145deg, #090c11 0%, #06080c 54%, #090a0f 100%);
 }
 
@@ -57,12 +45,7 @@
   bottom: -1px;
   left: 1rem;
   height: 1px;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgb(217 215 164 / 24%),
-    transparent
-  );
+  background: linear-gradient(90deg, transparent, rgb(217 215 164 / 24%), transparent);
   pointer-events: none;
   content: "";
 }
@@ -122,8 +105,7 @@
   border: 1px solid rgb(255 255 255 / 5%);
   border-radius: 0.9rem 0.35rem 0.9rem 0.35rem;
   background:
-    linear-gradient(135deg, rgb(217 215 164 / 3.5%), transparent 50%),
-    rgb(255 255 255 / 2%);
+    linear-gradient(135deg, rgb(217 215 164 / 3.5%), transparent 50%), rgb(255 255 255 / 2%);
   box-shadow: inset 0 1px 0 rgb(255 255 255 / 3%);
 }
 
@@ -141,13 +123,7 @@
   margin: 0.65rem;
   border: 1px solid rgb(217 215 164 / 12%);
   border-radius: 1.2rem 0.45rem 1.2rem 0.45rem;
-  background:
-    radial-gradient(
-      circle at 50% 50%,
-      rgb(217 215 164 / 3%),
-      transparent 38rem
-    ),
-    #06080c;
+  background: radial-gradient(circle at 50% 50%, rgb(217 215 164 / 3%), transparent 38rem), #06080c;
   box-shadow:
     0 28px 80px -54px rgb(0 0 0 / 100%),
     inset 0 0 0 1px rgb(255 255 255 / 2.5%),
@@ -175,9 +151,7 @@
   padding: 0.35rem;
   border: 1px solid rgb(217 215 164 / 14%);
   border-radius: 1rem 0.35rem 1rem 0.35rem;
-  background:
-    linear-gradient(150deg, rgb(217 215 164 / 7%), transparent 45%),
-    rgb(10 13 17 / 84%);
+  background: linear-gradient(150deg, rgb(217 215 164 / 7%), transparent 45%), rgb(10 13 17 / 84%);
   box-shadow:
     0 18px 52px -30px rgb(0 0 0 / 100%),
     inset 0 1px 0 rgb(255 255 255 / 4%);
@@ -196,9 +170,7 @@
   padding: 0.4rem 0.55rem;
   border: 1px solid rgb(217 215 164 / 16%);
   border-radius: 0.45rem 1rem 0.45rem 1rem;
-  background:
-    linear-gradient(120deg, rgb(116 36 45 / 9%), transparent 48%),
-    rgb(10 13 17 / 88%);
+  background: linear-gradient(120deg, rgb(116 36 45 / 9%), transparent 48%), rgb(10 13 17 / 88%);
   box-shadow:
     0 20px 56px -34px rgb(0 0 0 / 100%),
     inset 0 1px 0 rgb(255 255 255 / 4%);
@@ -310,12 +282,7 @@
   width: 70%;
   height: 1px;
   margin: 0.12rem auto;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgb(217 215 164 / 24%),
-    transparent
-  );
+  background: linear-gradient(90deg, transparent, rgb(217 215 164 / 24%), transparent);
 }
 
 .tadeon-tabletop-selection-dock {
@@ -331,9 +298,7 @@
   padding: 0.35rem;
   border: 1px solid rgb(217 215 164 / 16%);
   border-radius: 0.45rem 1rem 0.45rem 1rem;
-  background:
-    linear-gradient(120deg, rgb(79 110 93 / 11%), transparent 46%),
-    rgb(10 13 17 / 86%);
+  background: linear-gradient(120deg, rgb(79 110 93 / 11%), transparent 46%), rgb(10 13 17 / 86%);
   box-shadow:
     0 20px 54px -32px rgb(0 0 0 / 100%),
     inset 0 1px 0 rgb(255 255 255 / 4%);
@@ -353,8 +318,7 @@
   border-color: rgb(217 215 164 / 22%);
   background:
     linear-gradient(115deg, rgb(116 36 45 / 12%), transparent 36%),
-    linear-gradient(240deg, rgb(79 110 93 / 10%), transparent 42%),
-    rgb(10 13 17 / 90%);
+    linear-gradient(240deg, rgb(79 110 93 / 10%), transparent 42%), rgb(10 13 17 / 90%);
 }
 
 .tadeon-tabletop-structure-selection__identity {
@@ -435,9 +399,7 @@
   padding: 0.4rem 0.55rem 0.4rem 0.8rem;
   border: 1px solid rgb(217 215 164 / 12%);
   border-radius: 0.4rem 0.95rem 0.4rem 0.95rem;
-  background:
-    linear-gradient(90deg, rgb(79 110 93 / 8%), transparent 32%),
-    rgb(8 11 15 / 82%);
+  background: linear-gradient(90deg, rgb(79 110 93 / 8%), transparent 32%), rgb(8 11 15 / 82%);
   box-shadow: 0 18px 48px -34px rgb(0 0 0 / 98%);
   backdrop-filter: blur(18px) saturate(120%);
 }
@@ -469,8 +431,7 @@
   position: relative;
   background:
     radial-gradient(circle at 100% 0%, rgb(79 110 93 / 9%), transparent 18rem),
-    linear-gradient(180deg, rgb(217 215 164 / 4%), transparent 12rem),
-    var(--studio-panel);
+    linear-gradient(180deg, rgb(217 215 164 / 4%), transparent 12rem), var(--studio-panel);
   box-shadow:
     -28px 0 78px -56px rgb(0 0 0 / 100%),
     inset 1px 0 0 rgb(255 255 255 / 2.5%);
@@ -486,13 +447,11 @@
     padding: 0.6rem;
   }
 
-  .tadeon-tabletop-panel[data-collapsed="true"]
-    > :not(.tadeon-tabletop-panel__expand) {
+  .tadeon-tabletop-panel[data-collapsed="true"] > :not(.tadeon-tabletop-panel__expand) {
     display: none !important;
   }
 
-  .tadeon-tabletop-panel[data-collapsed="true"]
-    > .tadeon-tabletop-panel__expand {
+  .tadeon-tabletop-panel[data-collapsed="true"] > .tadeon-tabletop-panel__expand {
     display: flex;
     width: 100%;
     min-height: 12rem;
@@ -533,9 +492,7 @@
   padding: 0.8rem;
   border: 1px solid rgb(217 215 164 / 14%);
   border-radius: 1rem 0.35rem 1rem 0.35rem;
-  background:
-    linear-gradient(135deg, rgb(31 54 68 / 20%), transparent 56%),
-    rgb(255 255 255 / 2%);
+  background: linear-gradient(135deg, rgb(31 54 68 / 20%), transparent 56%), rgb(255 255 255 / 2%);
 }
 
 .tadeon-tabletop-space-intro > div {
@@ -732,8 +689,7 @@
   border: 1px solid rgb(255 255 255 / 6%);
   border-radius: 1rem 0.35rem 1rem 0.35rem;
   background:
-    linear-gradient(145deg, rgb(217 215 164 / 3%), transparent 42%),
-    rgb(255 255 255 / 2%);
+    linear-gradient(145deg, rgb(217 215 164 / 3%), transparent 42%), rgb(255 255 255 / 2%);
   box-shadow: inset 0 1px 0 rgb(255 255 255 / 2.5%);
 }
 
@@ -741,8 +697,7 @@
   border: 1px solid rgb(217 215 164 / 18%);
   border-radius: 1.4rem 0.45rem 1.4rem 0.45rem;
   background:
-    radial-gradient(circle at 50% 0%, rgb(217 215 164 / 9%), transparent 12rem),
-    rgb(12 15 20 / 90%);
+    radial-gradient(circle at 50% 0%, rgb(217 215 164 / 9%), transparent 12rem), rgb(12 15 20 / 90%);
   box-shadow:
     0 32px 88px -44px rgb(0 0 0 / 100%),
     inset 0 1px 0 rgb(255 255 255 / 5%);
@@ -750,8 +705,7 @@
 }
 
 .tadeon-tabletop-workbench {
-  background:
-    linear-gradient(90deg, transparent, rgb(217 215 164 / 2.5%)), #07090d;
+  background: linear-gradient(90deg, transparent, rgb(217 215 164 / 2.5%)), #07090d;
 }
 
 .tadeon-tabletop-asset {
@@ -838,11 +792,7 @@
     width: 1px;
     height: 1.75rem;
     margin: auto 0.12rem;
-    background: linear-gradient(
-      transparent,
-      rgb(217 215 164 / 24%),
-      transparent
-    );
+    background: linear-gradient(transparent, rgb(217 215 164 / 24%), transparent);
   }
 
   .tadeon-tabletop-selection-dock {
@@ -949,27 +899,15 @@
   --studio-gold: 224 193 119;
   --studio-danger: 224 107 118;
   background:
-    radial-gradient(
-      circle at 14% -10%,
-      rgb(var(--studio-cyan) / 13%),
-      transparent 38rem
-    ),
-    radial-gradient(
-      circle at 92% 112%,
-      rgb(var(--studio-wine) / 16%),
-      transparent 36rem
-    ),
+    radial-gradient(circle at 14% -10%, rgb(var(--studio-cyan) / 13%), transparent 38rem),
+    radial-gradient(circle at 92% 112%, rgb(var(--studio-wine) / 16%), transparent 36rem),
     linear-gradient(145deg, #080c11 0%, #05070a 52%, #09090e 100%);
 }
 
 .tadeon-tabletop-studio__header {
   padding-block: 0.72rem;
   background:
-    radial-gradient(
-      circle at 6% 0%,
-      rgb(var(--studio-cyan) / 8%),
-      transparent 24rem
-    ),
+    radial-gradient(circle at 6% 0%, rgb(var(--studio-cyan) / 8%), transparent 24rem),
     linear-gradient(180deg, rgb(14 19 24 / 98%), rgb(8 11 15 / 97%));
   box-shadow:
     0 24px 56px -46px rgb(0 0 0 / 100%),
@@ -979,11 +917,7 @@
 .tadeon-tabletop-studio__brand > svg {
   border-color: rgb(var(--studio-cyan) / 24%);
   background:
-    radial-gradient(
-      circle at 35% 25%,
-      rgb(var(--studio-cyan) / 15%),
-      transparent 58%
-    ),
+    radial-gradient(circle at 35% 25%, rgb(var(--studio-cyan) / 15%), transparent 58%),
     rgb(255 255 255 / 2.5%);
   color: rgb(var(--studio-gold));
 }
@@ -1040,8 +974,7 @@
 .tadeon-tabletop-command-spaces button[aria-pressed="true"] {
   border-color: rgb(var(--studio-cyan) / 22%);
   background:
-    linear-gradient(145deg, rgb(var(--studio-cyan) / 13%), transparent),
-    rgb(255 255 255 / 2%);
+    linear-gradient(145deg, rgb(var(--studio-cyan) / 13%), transparent), rgb(255 255 255 / 2%);
   color: rgb(143 232 216);
   box-shadow:
     inset 0 1px 0 rgb(255 255 255 / 4%),
@@ -1072,12 +1005,7 @@
   border-color: rgb(var(--studio-cyan) / 12%);
   border-radius: 1.25rem;
   background:
-    radial-gradient(
-      circle at 50% 44%,
-      rgb(var(--studio-cyan) / 3%),
-      transparent 34rem
-    ),
-    #04070a;
+    radial-gradient(circle at 50% 44%, rgb(var(--studio-cyan) / 3%), transparent 34rem), #04070a;
   box-shadow:
     0 30px 86px -52px rgb(0 0 0 / 100%),
     inset 0 0 0 1px rgb(255 255 255 / 2%),
@@ -1105,8 +1033,7 @@
   border-color: rgb(var(--studio-cyan) / 14%);
   border-radius: 1rem;
   background:
-    linear-gradient(150deg, rgb(var(--studio-cyan) / 7%), transparent 42%),
-    rgb(8 13 17 / 88%);
+    linear-gradient(150deg, rgb(var(--studio-cyan) / 7%), transparent 42%), rgb(8 13 17 / 88%);
   box-shadow:
     0 22px 58px -32px rgb(0 0 0 / 100%),
     inset 0 1px 0 rgb(255 255 255 / 4%);
@@ -1161,11 +1088,7 @@
 .tadeon-tabletop-canvas-tool[data-state="on"],
 .tadeon-tabletop-canvas-tool[aria-pressed="true"] {
   border-color: rgb(var(--studio-cyan) / 25%);
-  background: linear-gradient(
-    145deg,
-    rgb(var(--studio-cyan) / 18%),
-    rgb(var(--studio-cyan) / 7%)
-  );
+  background: linear-gradient(145deg, rgb(var(--studio-cyan) / 18%), rgb(var(--studio-cyan) / 7%));
   color: rgb(212 250 242);
   box-shadow:
     inset 0 1px 0 rgb(255 255 255 / 5%),
@@ -1183,12 +1106,7 @@
 
 .tadeon-tabletop-canvas-rail__divider {
   width: 82%;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgb(var(--studio-cyan) / 23%),
-    transparent
-  );
+  background: linear-gradient(90deg, transparent, rgb(var(--studio-cyan) / 23%), transparent);
 }
 
 .tadeon-tabletop-tool-options {
@@ -1197,8 +1115,7 @@
   border-color: rgb(var(--studio-cyan) / 16%);
   border-radius: 1rem;
   background:
-    linear-gradient(120deg, rgb(var(--studio-cyan) / 8%), transparent 44%),
-    rgb(8 13 17 / 91%);
+    linear-gradient(120deg, rgb(var(--studio-cyan) / 8%), transparent 44%), rgb(8 13 17 / 91%);
   animation: tadeon-command-shelf-in 190ms cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
@@ -1269,16 +1186,14 @@
   border-color: rgb(var(--studio-cyan) / 16%);
   border-radius: 1rem;
   background:
-    linear-gradient(120deg, rgb(var(--studio-cyan) / 9%), transparent 46%),
-    rgb(8 13 17 / 91%);
+    linear-gradient(120deg, rgb(var(--studio-cyan) / 9%), transparent 46%), rgb(8 13 17 / 91%);
   animation: tadeon-command-shelf-in 170ms cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
 .tadeon-tabletop-selection-dock--light {
   border-color: rgb(var(--studio-gold) / 23%);
   background:
-    linear-gradient(120deg, rgb(var(--studio-gold) / 11%), transparent 44%),
-    rgb(8 13 17 / 92%);
+    linear-gradient(120deg, rgb(var(--studio-gold) / 11%), transparent 44%), rgb(8 13 17 / 92%);
 }
 
 .tadeon-tabletop-selection-dock--fog {
@@ -1315,11 +1230,7 @@
 
 .tadeon-tabletop-panel {
   background:
-    radial-gradient(
-      circle at 100% 0%,
-      rgb(var(--studio-cyan) / 7%),
-      transparent 24rem
-    ),
+    radial-gradient(circle at 100% 0%, rgb(var(--studio-cyan) / 7%), transparent 24rem),
     linear-gradient(180deg, rgb(13 17 22 / 98%), rgb(8 11 15 / 98%));
   box-shadow:
     -24px 0 70px -54px rgb(0 0 0 / 100%),
@@ -1340,8 +1251,7 @@
 .tadeon-tabletop-panel__tab[aria-selected="true"] {
   border-color: rgb(var(--studio-cyan) / 22%);
   background:
-    linear-gradient(145deg, rgb(var(--studio-cyan) / 13%), transparent),
-    rgb(255 255 255 / 2%);
+    linear-gradient(145deg, rgb(var(--studio-cyan) / 13%), transparent), rgb(255 255 255 / 2%);
   color: rgb(170 235 223);
 }
 
@@ -1377,11 +1287,7 @@
   .tadeon-tabletop-panel {
     border-radius: 1.4rem 1.4rem 0 0;
     background:
-      radial-gradient(
-        circle at 50% 0%,
-        rgb(var(--studio-cyan) / 9%),
-        transparent 24rem
-      ),
+      radial-gradient(circle at 50% 0%, rgb(var(--studio-cyan) / 9%), transparent 24rem),
       rgb(9 13 17 / 98%);
   }
 }
@@ -1472,5 +1378,287 @@
   .tadeon-tabletop-tool-options,
   .tadeon-tabletop-selection-dock {
     animation: none;
+  }
+}
+
+/* Collision-safe command geometry --------------------------------------- */
+
+.tadeon-tabletop-studio {
+  --studio-cyan: 79 110 93;
+  --studio-gold: 217 215 164;
+  --studio-danger: 116 36 45;
+}
+
+.tadeon-tabletop-studio__header > .relative.z-10 {
+  min-width: 0;
+  row-gap: 0.65rem;
+}
+
+.tadeon-tabletop-studio__header > .relative.z-10 > * {
+  min-width: 0;
+}
+
+.tadeon-tabletop-studio__header select {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tadeon-tabletop-command-spaces button span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tadeon-tabletop-toolbar > div:last-child {
+  flex: 0 0 auto;
+}
+
+.tadeon-tabletop-workbench {
+  transition: grid-template-columns var(--motion-panel) var(--ease-out);
+}
+
+.tadeon-tabletop-stage {
+  container-type: inline-size;
+}
+
+.tadeon-tabletop-stage:has(.tadeon-tabletop-tool-options) .tadeon-tabletop-selection-dock {
+  top: 4.65rem;
+}
+
+.tadeon-tabletop-tool-options,
+.tadeon-tabletop-selection-dock {
+  max-width: min(50rem, calc(100% - 7.4rem));
+  overflow-x: auto;
+  overscroll-behavior-inline: contain;
+  scroll-padding-inline: 0.45rem;
+}
+
+.tadeon-tabletop-tool-options > *,
+.tadeon-tabletop-selection-dock > * {
+  min-width: 0;
+}
+
+.tadeon-tabletop-selection-dock > [data-slot="button"],
+.tadeon-tabletop-tool-options > [data-slot="button"] {
+  flex: 0 0 auto;
+}
+
+.tadeon-tabletop-stage-status {
+  max-width: calc(100% - 1.5rem);
+  overflow-x: auto;
+  overscroll-behavior-inline: contain;
+  scroll-padding-inline: 0.6rem;
+  scrollbar-width: none;
+}
+
+.tadeon-tabletop-stage-status::-webkit-scrollbar,
+.tadeon-tabletop-selection-dock::-webkit-scrollbar,
+.tadeon-tabletop-tool-options::-webkit-scrollbar,
+.tadeon-tabletop-toolbar::-webkit-scrollbar {
+  display: none;
+}
+
+.tadeon-tabletop-stage-status__metric,
+.tadeon-tabletop-stage-status > [data-slot="button"] {
+  flex: 0 0 auto;
+}
+
+.tadeon-tabletop-panel[data-collapsed="false"] {
+  animation: tadeon-tabletop-panel-unfold 240ms var(--ease-out) both;
+}
+
+.tadeon-tabletop-panel[data-collapsed="true"] > .tadeon-tabletop-panel__expand {
+  animation: tadeon-tabletop-panel-reveal 220ms var(--ease-out) both;
+}
+
+.tadeon-tabletop-panel__tab > svg,
+.tadeon-tabletop-canvas-tool > svg,
+.tadeon-tabletop-command-spaces button > svg {
+  transition:
+    color var(--motion-fast) var(--ease-out),
+    filter var(--motion-fast) var(--ease-out),
+    transform var(--motion-fast) var(--ease-out);
+}
+
+@keyframes tadeon-tabletop-panel-unfold {
+  from {
+    opacity: 0.72;
+    transform: translateX(0.45rem);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes tadeon-tabletop-panel-reveal {
+  from {
+    opacity: 0;
+    transform: translateX(0.35rem);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .tadeon-tabletop-panel__tab:hover > svg,
+  .tadeon-tabletop-command-spaces button:hover > svg {
+    filter: drop-shadow(0 0 9px rgb(var(--studio-cyan) / 30%));
+    transform: translateY(-1px) scale(1.05);
+  }
+
+  .tadeon-tabletop-canvas-tool:not(:disabled):hover > svg {
+    filter: drop-shadow(0 0 9px rgb(var(--studio-cyan) / 32%));
+    transform: translateX(1px) scale(1.045);
+  }
+}
+
+@container (max-width: 760px) {
+  .tadeon-tabletop-stage-status__metric:nth-of-type(2),
+  .tadeon-tabletop-stage-status__metric:nth-of-type(3) {
+    display: none;
+  }
+}
+
+@media (max-width: 1370px) and (min-width: 1024px) {
+  .tadeon-tabletop-studio__header > .relative.z-10 {
+    align-items: stretch;
+  }
+
+  .tadeon-tabletop-command-spaces {
+    max-width: none;
+  }
+
+  .tadeon-tabletop-toolbar {
+    margin-right: -0.25rem;
+    padding-right: 0.25rem;
+  }
+}
+
+@media (max-width: 1023px) {
+  .tadeon-tabletop-panel[data-collapsed="false"] {
+    animation: tadeon-tabletop-mobile-drawer-in 260ms var(--ease-drawer) both;
+  }
+
+  @keyframes tadeon-tabletop-mobile-drawer-in {
+    from {
+      opacity: 0;
+      transform: translateY(1.25rem);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+}
+
+@media (max-width: 639px) {
+  .tadeon-tabletop-studio__header {
+    padding-inline: 0.65rem;
+  }
+
+  .tadeon-tabletop-studio__header > .relative.z-10 {
+    gap: 0.45rem;
+  }
+
+  .tadeon-tabletop-studio__brand {
+    flex: 1 1 calc(100% - 8rem);
+  }
+
+  .tadeon-tabletop-studio__brand h1 {
+    font-size: 1rem;
+  }
+
+  .tadeon-tabletop-studio__brand .tadeon-eyebrow {
+    font-size: 0.55rem;
+    letter-spacing: 0.12em;
+  }
+
+  .tadeon-tabletop-stage {
+    min-height: max(68svh, 34rem);
+  }
+
+  .tadeon-tabletop-stage:has(.tadeon-tabletop-tool-options) .tadeon-tabletop-selection-dock {
+    top: 4.4rem;
+  }
+
+  .tadeon-tabletop-tool-options,
+  .tadeon-tabletop-selection-dock {
+    right: 0.55rem;
+    left: 0.55rem;
+    max-width: none;
+  }
+
+  .tadeon-tabletop-selection-dock--structure,
+  .tadeon-tabletop-selection-dock--light,
+  .tadeon-tabletop-selection-dock--fog {
+    justify-content: flex-start;
+  }
+
+  .tadeon-tabletop-stage-status {
+    width: auto;
+    max-width: none;
+    gap: 0.45rem;
+    padding-left: 0.55rem;
+  }
+
+  .tadeon-tabletop-stage-status__metric:not(:first-child) {
+    padding-left: 0.45rem;
+  }
+
+  .tadeon-tabletop-stage-status__metric span {
+    font-size: 0.58rem;
+  }
+
+  .tadeon-tabletop-panel__tabs {
+    grid-template-columns: repeat(5, minmax(3.35rem, 1fr));
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .tadeon-tabletop-panel__tab {
+    min-width: 0;
+    padding-inline: 0.18rem;
+  }
+}
+
+@media (max-width: 419px) {
+  .tadeon-tabletop-studio__status {
+    display: none;
+  }
+
+  .tadeon-tabletop-command-spaces {
+    grid-template-columns: repeat(4, minmax(4.2rem, 1fr));
+  }
+
+  .tadeon-tabletop-command-spaces button {
+    gap: 0.2rem;
+    padding-inline: 0.25rem;
+    font-size: 0.54rem;
+  }
+
+  .tadeon-tabletop-stage-status__metric:nth-of-type(4),
+  .tadeon-tabletop-stage-status__metric:nth-of-type(6) {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tadeon-tabletop-workbench,
+  .tadeon-tabletop-panel,
+  .tadeon-tabletop-panel__expand,
+  .tadeon-tabletop-panel__tab > svg,
+  .tadeon-tabletop-canvas-tool > svg,
+  .tadeon-tabletop-command-spaces button > svg {
+    animation: none !important;
+    transition-duration: 1ms !important;
+    transform: none !important;
   }
 }

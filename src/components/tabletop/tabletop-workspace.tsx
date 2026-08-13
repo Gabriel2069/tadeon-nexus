@@ -1,11 +1,4 @@
-import {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-  type DragEvent,
-} from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, type DragEvent } from "react";
 import {
   Archive,
   Axis3d,
@@ -181,9 +174,7 @@ type PaletteDragPayload =
   | { kind: "knowledge"; id: string };
 
 type TabletopPanelTab = "library" | "space" | "master" | "scene" | "inspector";
-type PendingNavigation =
-  | { kind: "scene"; id: string }
-  | { kind: "campaign"; id: string };
+type PendingNavigation = { kind: "scene"; id: string } | { kind: "campaign"; id: string };
 
 const TOOL_LABELS: Record<TabletopToolMode, string> = {
   select: "Seleção",
@@ -201,8 +192,7 @@ const TOOL_HINTS: Record<TabletopToolMode, string> = {
   pan: "Arraste para navegar · Ctrl/Cmd + roda amplia · duplo clique enquadra",
   measure: "Arraste para medir · Alt ignora a grade · R ativa a régua",
   draw: "Arraste para desenhar · Shift cria uma linha · D ativa o traço",
-  structure:
-    "Arraste para construir · Shift mantém o eixo · Alt ignora a grade · B ativa",
+  structure: "Arraste para construir · Shift mantém o eixo · Alt ignora a grade · B ativa",
   light: "Clique para a luz padrão · arraste para definir o alcance · L ativa",
   fog_reveal: "Pinte a área que os jogadores podem enxergar · F ativa",
   fog_hide: "Pinte para devolver uma área à névoa",
@@ -317,9 +307,7 @@ export function TabletopWorkspace({
   const engineRef = useRef<TabletopEngine | null>(null);
   const engineReadyRef = useRef(false);
   const persistedSceneRef = useRef<PersistedTabletopScene | null>(null);
-  const visibilityRef = useRef<TabletopVisibilityState>(
-    createEmptyVisibilityState(),
-  );
+  const visibilityRef = useRef<TabletopVisibilityState>(createEmptyVisibilityState());
   const structureTypeRef = useRef<TabletopStructureType>("wall");
   const activeLevelIdRef = useRef<string | null>(null);
   const restoredViewRef = useRef<TabletopViewState | null>(null);
@@ -328,35 +316,24 @@ export function TabletopWorkspace({
   const viewSaveTimerRef = useRef<number | null>(null);
   const dossierRequestRef = useRef(0);
   const [snapshot, setSnapshot] = useState(EMPTY_SNAPSHOT);
-  const [visibility, setVisibility] = useState<TabletopVisibilityState>(
-    createEmptyVisibilityState,
-  );
+  const [visibility, setVisibility] = useState<TabletopVisibilityState>(createEmptyVisibilityState);
   const [visibilityDirty, setVisibilityDirty] = useState(false);
   const [visibilityAvailable, setVisibilityAvailable] = useState(true);
   const [campaigns, setCampaigns] = useState<TabletopCampaignSummary[]>([]);
   const [campaignId, setCampaignId] = useState("");
   const [scenes, setScenes] = useState<TabletopSceneSummary[]>([]);
-  const [persistedScene, setPersistedScene] =
-    useState<PersistedTabletopScene | null>(null);
-  const [snapshots, setSnapshots] = useState<TabletopSceneSnapshotSummary[]>(
-    [],
-  );
+  const [persistedScene, setPersistedScene] = useState<PersistedTabletopScene | null>(null);
+  const [snapshots, setSnapshots] = useState<TabletopSceneSnapshotSummary[]>([]);
   const [snapshotId, setSnapshotId] = useState("");
-  const [linkTargets, setLinkTargets] =
-    useState<TabletopEntityLinkTargets>(EMPTY_LINK_TARGETS);
+  const [linkTargets, setLinkTargets] = useState<TabletopEntityLinkTargets>(EMPTY_LINK_TARGETS);
   const [paletteAssets, setPaletteAssets] = useState<TabletopAssetTarget[]>([]);
   const [paletteLoading, setPaletteLoading] = useState(false);
-  const [assetDropType, setAssetDropType] = useState<"token" | "object">(
-    "object",
-  );
+  const [assetDropType, setAssetDropType] = useState<"token" | "object">("object");
   const [contextMenu, setContextMenu] = useState<ContextMenuState | null>(null);
   const [dossierEntityId, setDossierEntityId] = useState<string | null>(null);
-  const [dossierSheetSummary, setDossierSheetSummary] =
-    useState<TabletopSheetSummary | null>(null);
-  const [dossierHandout, setDossierHandout] =
-    useState<TabletopParticipantHandout | null>(null);
-  const [selectedHandout, setSelectedHandout] =
-    useState<TabletopParticipantHandout | null>(null);
+  const [dossierSheetSummary, setDossierSheetSummary] = useState<TabletopSheetSummary | null>(null);
+  const [dossierHandout, setDossierHandout] = useState<TabletopParticipantHandout | null>(null);
+  const [selectedHandout, setSelectedHandout] = useState<TabletopParticipantHandout | null>(null);
   const [dossierLoading, setDossierLoading] = useState(false);
   const [diagnostics, setDiagnostics] = useState(false);
   const [mobileToolsOpen, setMobileToolsOpen] = useState(false);
@@ -366,15 +343,12 @@ export function TabletopWorkspace({
   const [paletteSearch, setPaletteSearch] = useState("");
   const [masterSearch, setMasterSearch] = useState("");
   const [toolMode, setToolMode] = useState<TabletopToolMode>("select");
-  const [projectionMode, setProjectionMode] =
-    useState<TabletopProjectionMode>("plan");
-  const [viewOrientation, setViewOrientation] =
-    useState<TabletopViewOrientation>(DEFAULT_TABLETOP_VIEW_ORIENTATION);
-  const [structureType, setStructureType] =
-    useState<TabletopStructureType>("wall");
-  const [selectedStructureId, setSelectedStructureId] = useState<string | null>(
-    null,
+  const [projectionMode, setProjectionMode] = useState<TabletopProjectionMode>("plan");
+  const [viewOrientation, setViewOrientation] = useState<TabletopViewOrientation>(
+    DEFAULT_TABLETOP_VIEW_ORIENTATION,
   );
+  const [structureType, setStructureType] = useState<TabletopStructureType>("wall");
+  const [selectedStructureId, setSelectedStructureId] = useState<string | null>(null);
   const [selectedLightId, setSelectedLightId] = useState<string | null>(null);
   const [selectedFogId, setSelectedFogId] = useState<string | null>(null);
   const [activeLevelId, setActiveLevelId] = useState<string | null>(null);
@@ -391,43 +365,31 @@ export function TabletopWorkspace({
   const [snapshotName, setSnapshotName] = useState("Marco da sessão");
   const [archiveDialogOpen, setArchiveDialogOpen] = useState(false);
   const [restoreDialogOpen, setRestoreDialogOpen] = useState(false);
-  const [pendingNavigation, setPendingNavigation] =
-    useState<PendingNavigation | null>(null);
+  const [pendingNavigation, setPendingNavigation] = useState<PendingNavigation | null>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [dirty, setDirty] = useState(false);
   const [conflict, setConflict] = useState(false);
-  const editable = Boolean(
-    persistedScene && persistedScene.status !== "archived",
-  );
+  const editable = Boolean(persistedScene && persistedScene.status !== "archived");
   const selected = useMemo(
-    () =>
-      snapshot.scene.entities.filter((entity) =>
-        snapshot.selectedIds.includes(entity.id),
-      ),
+    () => snapshot.scene.entities.filter((entity) => snapshot.selectedIds.includes(entity.id)),
     [snapshot],
   );
   const primary = selected[0];
   const dossierEntity = useMemo(
-    () =>
-      snapshot.scene.entities.find((entity) => entity.id === dossierEntityId) ??
-      null,
+    () => snapshot.scene.entities.find((entity) => entity.id === dossierEntityId) ?? null,
     [dossierEntityId, snapshot.scene.entities],
   );
   const selectedStructure = useMemo(
-    () =>
-      visibility.walls.find((wall) => wall.id === selectedStructureId) ?? null,
+    () => visibility.walls.find((wall) => wall.id === selectedStructureId) ?? null,
     [selectedStructureId, visibility.walls],
   );
   const selectedLight = useMemo(
-    () =>
-      visibility.lights.find((light) => light.id === selectedLightId) ?? null,
+    () => visibility.lights.find((light) => light.id === selectedLightId) ?? null,
     [selectedLightId, visibility.lights],
   );
   const selectedFog = useMemo(
-    () =>
-      visibility.fogStrokes.find((stroke) => stroke.id === selectedFogId) ??
-      null,
+    () => visibility.fogStrokes.find((stroke) => stroke.id === selectedFogId) ?? null,
     [selectedFogId, visibility.fogStrokes],
   );
   const activeLevel = useMemo(
@@ -438,23 +400,18 @@ export function TabletopWorkspace({
       null,
     [activeLevelId, snapshot.scene.levels],
   );
-  const masterLayer =
-    snapshot.scene.layers.find((layer) => layer.layerType === "master") ?? null;
+  const masterLayer = snapshot.scene.layers.find((layer) => layer.layerType === "master") ?? null;
   const masterEntities = snapshot.scene.entities.filter((entity) => {
     if (!entity.hidden && entity.layerId !== masterLayer?.id) return false;
     const query = masterSearch.trim().toLocaleLowerCase("pt-BR");
     return !query || entity.label.toLocaleLowerCase("pt-BR").includes(query);
   });
-  const normalizedPaletteSearch = paletteSearch
-    .trim()
-    .toLocaleLowerCase("pt-BR");
+  const normalizedPaletteSearch = paletteSearch.trim().toLocaleLowerCase("pt-BR");
   const visiblePaletteAssets = paletteAssets
     .filter(
       (asset) =>
         !normalizedPaletteSearch ||
-        asset.displayName
-          .toLocaleLowerCase("pt-BR")
-          .includes(normalizedPaletteSearch),
+        asset.displayName.toLocaleLowerCase("pt-BR").includes(normalizedPaletteSearch),
     )
     .slice(0, 36);
   const visiblePaletteSheets = linkTargets.sheets
@@ -468,37 +425,23 @@ export function TabletopWorkspace({
     .filter(
       (node) =>
         !normalizedPaletteSearch ||
-        node.title
-          .toLocaleLowerCase("pt-BR")
-          .includes(normalizedPaletteSearch) ||
-        node.nodeType
-          .toLocaleLowerCase("pt-BR")
-          .includes(normalizedPaletteSearch),
+        node.title.toLocaleLowerCase("pt-BR").includes(normalizedPaletteSearch) ||
+        node.nodeType.toLocaleLowerCase("pt-BR").includes(normalizedPaletteSearch),
     )
     .slice(0, 36);
-  const currentSceneIndex = scenes.findIndex(
-    (scene) => scene.id === persistedScene?.id,
-  );
+  const currentSceneIndex = scenes.findIndex((scene) => scene.id === persistedScene?.id);
   const primaryProperties = entityProperties(primary?.properties);
   const primaryMimeType =
-    typeof primaryProperties.mime_type === "string"
-      ? primaryProperties.mime_type
-      : "";
-  const primaryMediaKind = tabletopMediaKind(
-    primaryMimeType,
-    primary?.assetUrl,
-  );
-  const primaryAnimated =
-    primaryMediaKind === "gif" || primaryMediaKind === "video";
+    typeof primaryProperties.mime_type === "string" ? primaryProperties.mime_type : "";
+  const primaryMediaKind = tabletopMediaKind(primaryMimeType, primary?.assetUrl);
+  const primaryAnimated = primaryMediaKind === "gif" || primaryMediaKind === "video";
   const visualConditions = Array.isArray(primaryProperties.visual_conditions)
     ? primaryProperties.visual_conditions.filter(
         (value): value is string => typeof value === "string",
       )
     : [];
   const visualIcons = Array.isArray(primaryProperties.icons)
-    ? primaryProperties.icons.filter(
-        (value): value is string => typeof value === "string",
-      )
+    ? primaryProperties.icons.filter((value): value is string => typeof value === "string")
     : [];
   const barCurrent = Number(primaryProperties.bar_current) || 0;
   const barMax = Number(primaryProperties.bar_max) || 0;
@@ -562,9 +505,7 @@ export function TabletopWorkspace({
     setActiveLevelId((current) =>
       scene.levels.some((level) => level.id === current && level.visible)
         ? current
-        : (scene.levels.find((level) => level.visible)?.id ??
-          scene.levels[0]?.id ??
-          null),
+        : (scene.levels.find((level) => level.visible)?.id ?? scene.levels[0]?.id ?? null),
     );
     if (engineReadyRef.current) {
       engineRef.current?.loadScene(scene);
@@ -697,9 +638,7 @@ export function TabletopWorkspace({
                 (level) => level.id === restoredView.levelId && level.visible,
               )
                 ? restoredView.levelId
-                : (scene.levels.find((level) => level.visible)?.id ??
-                  scene.levels[0]?.id ??
-                  null),
+                : (scene.levels.find((level) => level.visible)?.id ?? scene.levels[0]?.id ?? null),
             }
           : null;
         restoredViewRef.current = nextView;
@@ -712,9 +651,7 @@ export function TabletopWorkspace({
         } else {
           setProjectionMode("plan");
           setViewOrientation(DEFAULT_TABLETOP_VIEW_ORIENTATION);
-          engineRef.current?.setProjectionOrientation(
-            DEFAULT_TABLETOP_VIEW_ORIENTATION,
-          );
+          engineRef.current?.setProjectionOrientation(DEFAULT_TABLETOP_VIEW_ORIENTATION);
           engineRef.current?.setProjectionMode("plan");
           engineRef.current?.fitToScreen();
         }
@@ -729,9 +666,7 @@ export function TabletopWorkspace({
             setVisibilityDirty(false);
             setVisibilityAvailable(false);
             engineRef.current?.setVisibility(fallback, false);
-            toast.error(
-              "A cena abriu, mas a iluminação não pôde ser carregada com segurança.",
-            );
+            toast.error("A cena abriu, mas a iluminação não pôde ser carregada com segurança.");
           }
         } else {
           installVisibility(createEmptyVisibilityState());
@@ -744,13 +679,7 @@ export function TabletopWorkspace({
         setLoading(false);
       }
     },
-    [
-      clearScene,
-      installScene,
-      installVisibility,
-      lightingEnabled,
-      loadSnapshots,
-    ],
+    [clearScene, installScene, installVisibility, lightingEnabled, loadSnapshots],
   );
 
   const refreshScenes = useCallback(async (nextCampaignId: string) => {
@@ -772,14 +701,11 @@ export function TabletopWorkspace({
         tabletopEntityInsightService
           .loadSheetSummary(entity.linkedSheetId)
           .then((summary) => {
-            if (dossierRequestRef.current === request)
-              setDossierSheetSummary(summary);
+            if (dossierRequestRef.current === request) setDossierSheetSummary(summary);
           })
           .catch(() => {
             if (dossierRequestRef.current === request)
-              toast.error(
-                "A ficha vinculada não pôde ser resumida com segurança.",
-              );
+              toast.error("A ficha vinculada não pôde ser resumida com segurança.");
           }),
       );
     }
@@ -799,9 +725,7 @@ export function TabletopWorkspace({
           })
           .catch(() => {
             if (dossierRequestRef.current === request)
-              toast.error(
-                "O arquivo vinculado não pôde ser aberto com segurança.",
-              );
+              toast.error("O arquivo vinculado não pôde ser aberto com segurança.");
           }),
       );
     }
@@ -814,24 +738,20 @@ export function TabletopWorkspace({
   }, []);
 
   const flushViewPreference = useCallback(() => {
-    if (viewSaveTimerRef.current !== null)
-      window.clearTimeout(viewSaveTimerRef.current);
+    if (viewSaveTimerRef.current !== null) window.clearTimeout(viewSaveTimerRef.current);
     viewSaveTimerRef.current = null;
     const pending = pendingViewRef.current;
     const targetSceneId = viewPreferenceSceneRef.current;
     pendingViewRef.current = null;
     if (!pending || !targetSceneId) return;
-    void tabletopViewPreferenceService
-      .save(targetSceneId, pending)
-      .catch(() => undefined);
+    void tabletopViewPreferenceService.save(targetSceneId, pending).catch(() => undefined);
   }, []);
 
   const queueViewPreference = useCallback(
     (view: TabletopViewState) => {
       if (!viewPreferenceSceneRef.current) return;
       pendingViewRef.current = view;
-      if (viewSaveTimerRef.current !== null)
-        window.clearTimeout(viewSaveTimerRef.current);
+      if (viewSaveTimerRef.current !== null) window.clearTimeout(viewSaveTimerRef.current);
       viewSaveTimerRef.current = window.setTimeout(flushViewPreference, 500);
     },
     [flushViewPreference],
@@ -849,8 +769,8 @@ export function TabletopWorkspace({
         setDirty(
           Boolean(
             stored &&
-              stored.id === next.scene.id &&
-              sceneFingerprint(stored) !== sceneFingerprint(next.scene),
+            stored.id === next.scene.id &&
+            sceneFingerprint(stored) !== sceneFingerprint(next.scene),
           ),
         );
       },
@@ -887,16 +807,12 @@ export function TabletopWorkspace({
       onDeleteLight: (id) => {
         previewVisibility({
           ...visibilityRef.current,
-          lights: visibilityRef.current.lights.filter(
-            (light) => light.id !== id,
-          ),
+          lights: visibilityRef.current.lights.filter((light) => light.id !== id),
         });
         setSelectedLightId(null);
       },
       onDuplicateLight: (id) => {
-        const source = visibilityRef.current.lights.find(
-          (light) => light.id === id,
-        );
+        const source = visibilityRef.current.lights.find((light) => light.id === id);
         if (!source) return;
         const copy: TabletopLight = {
           ...source,
@@ -936,9 +852,7 @@ export function TabletopWorkspace({
         setSelectedFogId(null);
       },
       onDuplicateFog: (id) => {
-        const source = visibilityRef.current.fogStrokes.find(
-          (stroke) => stroke.id === id,
-        );
+        const source = visibilityRef.current.fogStrokes.find((stroke) => stroke.id === id);
         if (!source) return;
         const copy: TabletopFogStroke = {
           ...source,
@@ -982,10 +896,7 @@ export function TabletopWorkspace({
         engine.setSelectedStructure(id);
       },
       onCommitVisibilityTool: (tool) => {
-        const levelId =
-          activeLevelIdRef.current ??
-          persistedSceneRef.current?.levels[0]?.id ??
-          "";
+        const levelId = activeLevelIdRef.current ?? persistedSceneRef.current?.levels[0]?.id ?? "";
         if (!levelId || tool.points.length === 0) return;
         if (tool.kind === "light") {
           const point = tool.points[0];
@@ -1052,8 +963,7 @@ export function TabletopWorkspace({
           engine.loadScene(stored);
           engine.setVisibility(visibilityRef.current, lightingEnabled);
           engine.setReadOnly(stored.status === "archived");
-          if (restoredViewRef.current)
-            engine.applyViewState(restoredViewRef.current);
+          if (restoredViewRef.current) engine.applyViewState(restoredViewRef.current);
           else {
             engine.setActiveLevel(activeLevelIdRef.current);
             engine.fitToScreen();
@@ -1117,8 +1027,7 @@ export function TabletopWorkspace({
     void refreshScenes(campaignId)
       .then(async (next) => {
         if (!active) return;
-        const preferred =
-          next.find((scene) => scene.status !== "archived") ?? next[0];
+        const preferred = next.find((scene) => scene.status !== "archived") ?? next[0];
         if (preferred) await loadScene(preferred.id);
         else clearScene();
       })
@@ -1188,19 +1097,11 @@ export function TabletopWorkspace({
         overrides,
       );
       installScene(saved);
-      await Promise.all([
-        refreshScenes(saved.campaignId),
-        loadSnapshots(saved.id),
-      ]);
-      toast.success(
-        overrides.status === "archived" ? "Cena arquivada." : "Cena salva.",
-      );
+      await Promise.all([refreshScenes(saved.campaignId), loadSnapshots(saved.id)]);
+      toast.success(overrides.status === "archived" ? "Cena arquivada." : "Cena salva.");
       return saved;
     } catch (error) {
-      if (
-        error instanceof TabletopServiceError &&
-        error.code === "TABLETOP_CONFLICT"
-      )
+      if (error instanceof TabletopServiceError && error.code === "TABLETOP_CONFLICT")
         setConflict(true);
       toast.error(errorMessage(error));
       return null;
@@ -1218,10 +1119,7 @@ export function TabletopWorkspace({
     }
     setSaving(true);
     try {
-      const created = await tabletopPersistenceService.createScene(
-        campaignId,
-        name,
-      );
+      const created = await tabletopPersistenceService.createScene(campaignId, name);
       await refreshScenes(campaignId);
       installScene(created);
       setSnapshots([]);
@@ -1245,9 +1143,7 @@ export function TabletopWorkspace({
     }
     setSaving(true);
     try {
-      const duplicate = await tabletopPersistenceService.duplicateScene(
-        stored.id,
-      );
+      const duplicate = await tabletopPersistenceService.duplicateScene(stored.id);
       await refreshScenes(duplicate.campaignId);
       installScene(duplicate);
       setSnapshots([]);
@@ -1283,18 +1179,12 @@ export function TabletopWorkspace({
     if (reordered === scenes) return;
     setSaving(true);
     try {
-      const next = await tabletopPersistenceService.reorderScenes(
-        stored.campaignId,
-        reordered,
-      );
+      const next = await tabletopPersistenceService.reorderScenes(stored.campaignId, reordered);
       setScenes(next);
       await loadScene(stored.id);
       toast.success("Ordem das cenas atualizada.");
     } catch (error) {
-      if (
-        error instanceof TabletopServiceError &&
-        error.code === "TABLETOP_CONFLICT"
-      )
+      if (error instanceof TabletopServiceError && error.code === "TABLETOP_CONFLICT")
         setConflict(true);
       toast.error(errorMessage(error));
     } finally {
@@ -1333,19 +1223,13 @@ export function TabletopWorkspace({
     if (!stored || !snapshotId) return;
     setSaving(true);
     try {
-      await tabletopPersistenceService.restoreSnapshot(
-        snapshotId,
-        stored.version,
-      );
+      await tabletopPersistenceService.restoreSnapshot(snapshotId, stored.version);
       await loadScene(stored.id);
       await refreshScenes(stored.campaignId);
       setRestoreDialogOpen(false);
       toast.success("Snapshot restaurado com ponto de recuperação.");
     } catch (error) {
-      if (
-        error instanceof TabletopServiceError &&
-        error.code === "TABLETOP_CONFLICT"
-      )
+      if (error instanceof TabletopServiceError && error.code === "TABLETOP_CONFLICT")
         setConflict(true);
       toast.error(errorMessage(error));
     } finally {
@@ -1378,22 +1262,15 @@ export function TabletopWorkspace({
     else setCampaignId(pending.id);
   };
 
-  const updateNumber = (
-    key: "x" | "y" | "width" | "height" | "rotation",
-    value: string,
-  ) => {
+  const updateNumber = (key: "x" | "y" | "width" | "height" | "rotation", value: string) => {
     const parsed = Number(value);
     if (!Number.isFinite(parsed)) return;
-    const normalized =
-      key === "width" || key === "height" ? Math.max(8, parsed) : parsed;
+    const normalized = key === "width" || key === "height" ? Math.max(8, parsed) : parsed;
     engineRef.current?.updateSelected({ [key]: normalized }, `Alterar ${key}`);
   };
 
   const applySizePreset = (size: number) => {
-    engineRef.current?.updateSelected(
-      { width: size, height: size },
-      "Aplicar preset de tamanho",
-    );
+    engineRef.current?.updateSelected({ width: size, height: size }, "Aplicar preset de tamanho");
   };
 
   const updateProperties = (patch: Record<string, unknown>) =>
@@ -1403,15 +1280,13 @@ export function TabletopWorkspace({
     if (!editable) return;
     const levels = snapshot.scene.levels ?? [];
     const highest = levels.reduce(
-      (value, level) =>
-        Math.max(value, level.baseElevation + Math.max(8, level.height)),
+      (value, level) => Math.max(value, level.baseElevation + Math.max(8, level.height)),
       0,
     );
     const level: TabletopLevel = {
       id: crypto.randomUUID(),
       name: "Andar " + (levels.length + 1),
-      order:
-        levels.reduce((value, item) => Math.max(value, item.order), -1) + 1,
+      order: levels.reduce((value, item) => Math.max(value, item.order), -1) + 1,
       baseElevation: highest,
       height: Math.max(64, snapshot.scene.gridSize * 3),
       visible: true,
@@ -1436,10 +1311,7 @@ export function TabletopWorkspace({
     window.requestAnimationFrame(() => engineRef.current?.fitToScreen());
   };
 
-  const uploadTabletopImage = async (
-    file: File,
-    target: "entity" | "background",
-  ) => {
+  const uploadTabletopImage = async (file: File, target: "entity" | "background") => {
     const campaign = campaigns.find((item) => item.id === campaignId);
     if (
       !campaign ||
@@ -1541,9 +1413,7 @@ export function TabletopWorkspace({
     event.dataTransfer.setData("text/plain", label);
   };
 
-  const paletteSeed = (
-    payload: PaletteDragPayload,
-  ): TabletopEntitySeed | null => {
+  const paletteSeed = (payload: PaletteDragPayload): TabletopEntitySeed | null => {
     if (payload.kind === "asset") {
       const asset = paletteAssets.find((item) => item.id === payload.id);
       if (!asset) return null;
@@ -1606,9 +1476,7 @@ export function TabletopWorkspace({
   };
 
   const dropPaletteItem = (event: DragEvent<HTMLElement>) => {
-    const payload = parsePaletteDragPayload(
-      event.dataTransfer.getData(TABLETOP_PALETTE_MIME),
-    );
+    const payload = parsePaletteDragPayload(event.dataTransfer.getData(TABLETOP_PALETTE_MIME));
     if (!payload || !editable) return;
     event.preventDefault();
 
@@ -1616,10 +1484,7 @@ export function TabletopWorkspace({
     if (!seed) return;
 
     const engine = engineRef.current;
-    engine?.addEntityAt(
-      seed,
-      engine.clientToWorld({ x: event.clientX, y: event.clientY }),
-    );
+    engine?.addEntityAt(seed, engine.clientToWorld({ x: event.clientX, y: event.clientY }));
   };
 
   const closeContext = () => setContextMenu(null);
@@ -1634,9 +1499,7 @@ export function TabletopWorkspace({
             <div className="min-w-0">
               <p className="tadeon-eyebrow">Estúdio de cena</p>
               <div className="flex min-w-0 items-center gap-2">
-                <h1 className="truncate font-cinzel text-lg font-semibold">
-                  Mesa Nexus
-                </h1>
+                <h1 className="truncate font-cinzel text-lg font-semibold">Mesa Nexus</h1>
                 <span className="tadeon-tabletop-studio__status">
                   {persistedScene?.status === "archived"
                     ? "Consulta"
@@ -1654,9 +1517,7 @@ export function TabletopWorkspace({
               onChange={(event) => requestCampaignChange(event.target.value)}
               className="h-10 min-w-0 rounded-md border border-input bg-background px-2 text-xs sm:h-9"
             >
-              {campaigns.length === 0 && (
-                <option value="">Sem campanhas</option>
-              )}
+              {campaigns.length === 0 && <option value="">Sem campanhas</option>}
               {campaigns.map((campaign) => (
                 <option key={campaign.id} value={campaign.id}>
                   {campaign.name}
@@ -1679,10 +1540,7 @@ export function TabletopWorkspace({
               ))}
             </select>
           </div>
-          <nav
-            className="tadeon-tabletop-command-spaces"
-            aria-label="Fluxos do estúdio"
-          >
+          <nav className="tadeon-tabletop-command-spaces" aria-label="Fluxos do estúdio">
             {(
               [
                 ["library", "Montar", Image],
@@ -1694,10 +1552,7 @@ export function TabletopWorkspace({
               <button
                 key={tab}
                 type="button"
-                aria-pressed={
-                  panelTab === tab ||
-                  (tab === "library" && panelTab === "inspector")
-                }
+                aria-pressed={panelTab === tab || (tab === "library" && panelTab === "inspector")}
                 onClick={() => {
                   setPanelTab(tab);
                   setPanelCollapsed(false);
@@ -1743,7 +1598,10 @@ export function TabletopWorkspace({
             className="lg:hidden"
             aria-label={mobilePanelOpen ? "Fechar painel" : "Abrir painel"}
             aria-expanded={mobilePanelOpen}
-            onClick={() => setMobilePanelOpen((value) => !value)}
+            onClick={() => {
+              if (!mobilePanelOpen) setPanelCollapsed(false);
+              setMobilePanelOpen((value) => !value);
+            }}
           >
             <PanelRightOpen className="h-4 w-4" />
           </Button>
@@ -1755,9 +1613,7 @@ export function TabletopWorkspace({
           <ToolbarGroup label="Cena">
             <ToolbarButton
               label="Mover cena para cima"
-              disabled={
-                !persistedScene || saving || dirty || currentSceneIndex <= 0
-              }
+              disabled={!persistedScene || saving || dirty || currentSceneIndex <= 0}
               onClick={() => void moveCurrentScene(-1)}
             >
               <ChevronUp className="h-4 w-4" />
@@ -1799,13 +1655,9 @@ export function TabletopWorkspace({
             <ToolbarButton
               label={conflict ? "Recarregar após conflito" : "Recarregar cena"}
               disabled={!persistedScene || saving}
-              onClick={() =>
-                persistedScene && void loadScene(persistedScene.id)
-              }
+              onClick={() => persistedScene && void loadScene(persistedScene.id)}
             >
-              <RefreshCw
-                className={`h-4 w-4 ${conflict ? "text-destructive" : ""}`}
-              />
+              <RefreshCw className={`h-4 w-4 ${conflict ? "text-destructive" : ""}`} />
             </ToolbarButton>
           </ToolbarGroup>
 
@@ -1862,36 +1714,20 @@ export function TabletopWorkspace({
                   : "Ativar projeção espacial 3D"
               }
               active={projectionMode === "isometric"}
-              onClick={() =>
-                setProjectionMode((mode) =>
-                  mode === "plan" ? "isometric" : "plan",
-                )
-              }
+              onClick={() => setProjectionMode((mode) => (mode === "plan" ? "isometric" : "plan"))}
             >
               <Axis3d className="h-4 w-4" />
             </CanvasToolButton>
-            <ToolbarButton
-              label="Centralizar"
-              onClick={() => engineRef.current?.center()}
-            >
+            <ToolbarButton label="Centralizar" onClick={() => engineRef.current?.center()}>
               <Focus className="h-4 w-4" />
             </ToolbarButton>
-            <ToolbarButton
-              label="Ajustar à tela"
-              onClick={() => engineRef.current?.fitToScreen()}
-            >
+            <ToolbarButton label="Ajustar à tela" onClick={() => engineRef.current?.fitToScreen()}>
               <Maximize2 className="h-4 w-4" />
             </ToolbarButton>
-            <ToolbarButton
-              label="Reduzir zoom"
-              onClick={() => engineRef.current?.zoomBy(0.82)}
-            >
+            <ToolbarButton label="Reduzir zoom" onClick={() => engineRef.current?.zoomBy(0.82)}>
               <ZoomOut className="h-4 w-4" />
             </ToolbarButton>
-            <ToolbarButton
-              label="Ampliar zoom"
-              onClick={() => engineRef.current?.zoomBy(1.22)}
-            >
+            <ToolbarButton label="Ampliar zoom" onClick={() => engineRef.current?.zoomBy(1.22)}>
               <ZoomIn className="h-4 w-4" />
             </ToolbarButton>
           </ToolbarGroup>
@@ -1903,9 +1739,7 @@ export function TabletopWorkspace({
               value={snapshot.scene.gridMode}
               disabled={!editable}
               onChange={(event) =>
-                engineRef.current?.setGrid(
-                  event.target.value === "none" ? "none" : "square",
-                )
+                engineRef.current?.setGrid(event.target.value === "none" ? "none" : "square")
               }
               className="h-10 min-w-0 flex-1 rounded-md border border-input bg-background px-2 text-xs min-[480px]:max-w-36 sm:h-9 sm:flex-none"
             >
@@ -1919,17 +1753,11 @@ export function TabletopWorkspace({
               disabled={!editable}
               value={snapshot.scene.gridSize}
               onChange={(event) =>
-                engineRef.current?.setGrid(
-                  snapshot.scene.gridMode,
-                  Number(event.target.value),
-                )
+                engineRef.current?.setGrid(snapshot.scene.gridMode, Number(event.target.value))
               }
               className="h-10 w-20 sm:h-9"
             />
-            <Label
-              htmlFor="tabletop-snap"
-              className="text-xs text-muted-foreground"
-            >
+            <Label htmlFor="tabletop-snap" className="text-xs text-muted-foreground">
               Snap
             </Label>
             <Switch
@@ -1938,10 +1766,7 @@ export function TabletopWorkspace({
               checked={snapshot.scene.snap}
               onCheckedChange={(checked) => engineRef.current?.setSnap(checked)}
             />
-            <ToolbarButton
-              label="Diagnóstico"
-              onClick={() => setDiagnostics((value) => !value)}
-            >
+            <ToolbarButton label="Diagnóstico" onClick={() => setDiagnostics((value) => !value)}>
               <Bug className="h-4 w-4" />
             </ToolbarButton>
           </div>
@@ -1949,10 +1774,7 @@ export function TabletopWorkspace({
         <TabletopLiveSession
           enabled={realtimeEnabled}
           campaignId={campaignId || null}
-          campaignName={
-            campaigns.find((campaign) => campaign.id === campaignId)?.name ??
-            null
-          }
+          campaignName={campaigns.find((campaign) => campaign.id === campaignId)?.name ?? null}
           sceneId={persistedScene?.id ?? null}
           sceneName={persistedScene?.name ?? null}
           getCurrentCamera={() =>
@@ -1968,14 +1790,13 @@ export function TabletopWorkspace({
           role="alert"
           className="border-b border-destructive/30 bg-destructive/10 px-4 py-2 text-sm text-destructive"
         >
-          Outra sessão alterou esta cena. Suas mudanças locais não foram
-          sobrescritas; recarregue a versão atual antes de editar novamente.
+          Outra sessão alterou esta cena. Suas mudanças locais não foram sobrescritas; recarregue a
+          versão atual antes de editar novamente.
         </div>
       )}
       {persistedScene?.status === "archived" && (
         <div className="border-b border-amber-500/30 bg-amber-500/10 px-4 py-2 text-sm text-amber-200">
-          Cena arquivada em modo de consulta. Duplique-a para continuar
-          editando.
+          Cena arquivada em modo de consulta. Duplique-a para continuar editando.
         </div>
       )}
 
@@ -1992,10 +1813,7 @@ export function TabletopWorkspace({
           data-tool={toolMode}
           onClick={closeContext}
           onDragOver={(event) => {
-            if (
-              editable &&
-              event.dataTransfer.types.includes(TABLETOP_PALETTE_MIME)
-            ) {
+            if (editable && event.dataTransfer.types.includes(TABLETOP_PALETTE_MIME)) {
               event.preventDefault();
               event.dataTransfer.dropEffect = "copy";
             }
@@ -2003,13 +1821,8 @@ export function TabletopWorkspace({
           onDrop={dropPaletteItem}
         >
           <div ref={hostRef} className="absolute inset-0" />
-          <div
-            className="tadeon-tabletop-canvas-rail"
-            aria-label="Ferramentas do canvas"
-          >
-            <span className="tadeon-tabletop-canvas-rail__group-label">
-              Navegar
-            </span>
+          <div className="tadeon-tabletop-canvas-rail" aria-label="Ferramentas do canvas">
+            <span className="tadeon-tabletop-canvas-rail__group-label">Navegar</span>
             <CanvasToolButton
               label="Ferramenta de seleção"
               caption="Selecionar"
@@ -2034,9 +1847,7 @@ export function TabletopWorkspace({
             >
               <Ruler className="h-4 w-4" />
             </CanvasToolButton>
-            <span className="tadeon-tabletop-canvas-rail__group-label">
-              Criar
-            </span>
+            <span className="tadeon-tabletop-canvas-rail__group-label">Criar</span>
             <CanvasToolButton
               label="Desenho livre persistente (D)"
               caption="Desenhar"
@@ -2114,26 +1925,17 @@ export function TabletopWorkspace({
             >
               <Image className="h-4 w-4" />
             </ToolbarButton>
-            <ToolbarButton
-              label="Ajustar à tela"
-              onClick={() => engineRef.current?.fitToScreen()}
-            >
+            <ToolbarButton label="Ajustar à tela" onClick={() => engineRef.current?.fitToScreen()}>
               <Maximize2 className="h-4 w-4" />
             </ToolbarButton>
           </div>
           {toolMode === "draw" && (
-            <div
-              className="tadeon-tabletop-tool-options"
-              aria-label="Opções do desenho"
-            >
+            <div className="tadeon-tabletop-tool-options" aria-label="Opções do desenho">
               <div className="tadeon-tabletop-tool-options__heading">
                 <PencilLine className="h-3.5 w-3.5" />
                 <span>Traço</span>
               </div>
-              <div
-                className="tadeon-tabletop-draw-swatches"
-                aria-label="Cores rápidas"
-              >
+              <div className="tadeon-tabletop-draw-swatches" aria-label="Cores rápidas">
                 {DRAW_COLORS.map((color) => (
                   <button
                     key={color}
@@ -2145,10 +1947,7 @@ export function TabletopWorkspace({
                     onClick={() => setDrawColor(color)}
                   />
                 ))}
-                <label
-                  className="tadeon-tabletop-draw-custom"
-                  title="Cor personalizada"
-                >
+                <label className="tadeon-tabletop-draw-custom" title="Cor personalizada">
                   <span className="sr-only">Cor personalizada</span>
                   <input
                     type="color"
@@ -2170,9 +1969,7 @@ export function TabletopWorkspace({
               </label>
             </div>
           )}
-          {(toolMode === "light" ||
-            toolMode === "fog_reveal" ||
-            toolMode === "fog_hide") && (
+          {(toolMode === "light" || toolMode === "fog_reveal" || toolMode === "fog_hide") && (
             <div
               className="tadeon-tabletop-tool-options"
               aria-label="Opções de luz e névoa no mapa"
@@ -2198,9 +1995,7 @@ export function TabletopWorkspace({
                   <div className="tadeon-tabletop-fog-tool__operation">
                     <Button
                       size="sm"
-                      variant={
-                        toolMode === "fog_reveal" ? "secondary" : "outline"
-                      }
+                      variant={toolMode === "fog_reveal" ? "secondary" : "outline"}
                       onClick={() => setToolMode("fog_reveal")}
                     >
                       <Eye className="h-3.5 w-3.5" />
@@ -2208,9 +2003,7 @@ export function TabletopWorkspace({
                     </Button>
                     <Button
                       size="sm"
-                      variant={
-                        toolMode === "fog_hide" ? "secondary" : "outline"
-                      }
+                      variant={toolMode === "fog_hide" ? "secondary" : "outline"}
                       onClick={() => setToolMode("fog_hide")}
                     >
                       <EyeOff className="h-3.5 w-3.5" />
@@ -2269,9 +2062,7 @@ export function TabletopWorkspace({
                         key={radius}
                         type="button"
                         aria-pressed={
-                          (toolMode === "light"
-                            ? lightToolRadius
-                            : fogToolRadius) === radius
+                          (toolMode === "light" ? lightToolRadius : fogToolRadius) === radius
                         }
                         onClick={() => {
                           const value = Number(radius);
@@ -2294,9 +2085,7 @@ export function TabletopWorkspace({
                       min={toolMode === "light" ? 32 : 16}
                       max={toolMode === "light" ? 1600 : 512}
                       step={8}
-                      value={
-                        toolMode === "light" ? lightToolRadius : fogToolRadius
-                      }
+                      value={toolMode === "light" ? lightToolRadius : fogToolRadius}
                       onChange={(event) => {
                         const value = Number(event.target.value);
                         if (toolMode === "light") setLightToolRadius(value);
@@ -2357,9 +2146,7 @@ export function TabletopWorkspace({
               <div className="tadeon-tabletop-structure-selection__identity">
                 <BrickWall className="h-4 w-4" aria-hidden="true" />
                 <span>
-                  <strong>
-                    {structureStateLabel(selectedStructure.wallType)}
-                  </strong>
+                  <strong>{structureStateLabel(selectedStructure.wallType)}</strong>
                   <small>arraste o centro ou os vértices</small>
                 </span>
               </div>
@@ -2368,23 +2155,18 @@ export function TabletopWorkspace({
                   className="tadeon-tabletop-structure-selection__states"
                   aria-label="Estado rápido"
                 >
-                  {structureStateOptions(
-                    structureFamily(selectedStructure.wallType),
-                  ).map((stateType) => (
-                    <button
-                      key={stateType}
-                      type="button"
-                      aria-pressed={selectedStructure.wallType === stateType}
-                      onClick={() =>
-                        engineRef.current?.setSelectedStructureState(stateType)
-                      }
-                    >
-                      {structureStateLabel(stateType).replace(
-                        /^(Porta|Janela|Telhado) /,
-                        "",
-                      )}
-                    </button>
-                  ))}
+                  {structureStateOptions(structureFamily(selectedStructure.wallType)).map(
+                    (stateType) => (
+                      <button
+                        key={stateType}
+                        type="button"
+                        aria-pressed={selectedStructure.wallType === stateType}
+                        onClick={() => engineRef.current?.setSelectedStructureState(stateType)}
+                      >
+                        {structureStateLabel(stateType).replace(/^(Porta|Janela|Telhado) /, "")}
+                      </button>
+                    ),
+                  )}
                 </div>
               )}
               <span className="tadeon-tabletop-selection-dock__divider" />
@@ -2447,9 +2229,7 @@ export function TabletopWorkspace({
                   previewVisibility({
                     ...visibilityRef.current,
                     lights: visibilityRef.current.lights.map((light) =>
-                      light.id === selectedLight.id
-                        ? { ...light, enabled: !light.enabled }
-                        : light,
+                      light.id === selectedLight.id ? { ...light, enabled: !light.enabled } : light,
                     ),
                   })
                 }
@@ -2498,9 +2278,7 @@ export function TabletopWorkspace({
                 <CloudFog className="h-4 w-4" aria-hidden="true" />
                 <span>
                   <strong>
-                    {selectedFog.operation === "reveal"
-                      ? "Área revelada"
-                      : "Área coberta"}
+                    {selectedFog.operation === "reveal" ? "Área revelada" : "Área coberta"}
                   </strong>
                   <small>
                     {selectedFog.shape === "brush"
@@ -2521,17 +2299,13 @@ export function TabletopWorkspace({
                 onClick={() =>
                   previewVisibility({
                     ...visibilityRef.current,
-                    fogStrokes: visibilityRef.current.fogStrokes.map(
-                      (stroke) =>
-                        stroke.id === selectedFog.id
-                          ? {
-                              ...stroke,
-                              operation:
-                                stroke.operation === "reveal"
-                                  ? "hide"
-                                  : "reveal",
-                            }
-                          : stroke,
+                    fogStrokes: visibilityRef.current.fogStrokes.map((stroke) =>
+                      stroke.id === selectedFog.id
+                        ? {
+                            ...stroke,
+                            operation: stroke.operation === "reveal" ? "hide" : "reveal",
+                          }
+                        : stroke,
                     ),
                   })
                 }
@@ -2571,103 +2345,88 @@ export function TabletopWorkspace({
               </ToolbarButton>
             </div>
           )}
-          {selected.length > 0 &&
-            toolMode !== "draw" &&
-            toolMode !== "structure" && (
-              <div
-                className="tadeon-tabletop-selection-dock"
-                aria-label="Ações rápidas da seleção"
-              >
-                <div className="min-w-0 px-2">
-                  <strong className="block truncate text-xs text-foreground">
-                    {selected.length === 1
-                      ? primary?.label
-                      : `${selected.length} entidades`}
-                  </strong>
-                  <span className="block text-[10px] text-muted-foreground">
-                    Seleção ativa
-                  </span>
-                </div>
-                <span className="tadeon-tabletop-selection-dock__divider" />
-                <ToolbarButton
-                  label="Enquadrar seleção"
-                  onClick={() => engineRef.current?.focusSelection()}
-                >
-                  <Focus className="h-4 w-4" />
-                </ToolbarButton>
-                {selected.length === 1 && primary && (
-                  <ToolbarButton
-                    label="Abrir cartão, ficha ou arquivo"
-                    onClick={() => openEntityDossier(primary)}
-                  >
-                    <FileSearch className="h-4 w-4" />
-                  </ToolbarButton>
-                )}
-                <ToolbarButton
-                  label="Duplicar seleção"
-                  disabled={!editable}
-                  onClick={() => engineRef.current?.duplicateSelected()}
-                >
-                  <Copy className="h-4 w-4" />
-                </ToolbarButton>
-                <ToolbarButton
-                  label={
-                    selected.some((entity) => !entity.hidden)
-                      ? "Ocultar seleção dos jogadores"
-                      : "Revelar seleção aos jogadores"
-                  }
-                  disabled={
-                    !editable || selected.every((entity) => entity.locked)
-                  }
-                  onClick={() => {
-                    const hidden = selected.some((entity) => !entity.hidden);
-                    engineRef.current?.updateSelected(
-                      { hidden },
-                      hidden ? "Ocultar seleção" : "Revelar seleção",
-                    );
-                  }}
-                >
-                  {selected.some((entity) => !entity.hidden) ? (
-                    <EyeOff className="h-4 w-4" />
-                  ) : (
-                    <Eye className="h-4 w-4" />
-                  )}
-                </ToolbarButton>
-                {masterLayer && (
-                  <ToolbarButton
-                    label="Levar seleção aos bastidores do mestre"
-                    disabled={
-                      !editable ||
-                      masterLayer.locked ||
-                      selected.every((entity) => entity.locked)
-                    }
-                    onClick={() =>
-                      engineRef.current?.moveSelectedToLayer(masterLayer.id)
-                    }
-                  >
-                    <UserRound className="h-4 w-4" />
-                  </ToolbarButton>
-                )}
-                <ToolbarButton
-                  label="Bloquear ou desbloquear seleção"
-                  disabled={!editable}
-                  onClick={() => engineRef.current?.toggleSelectedLock()}
-                >
-                  {selected.some((entity) => entity.locked) ? (
-                    <LockOpen className="h-4 w-4" />
-                  ) : (
-                    <Lock className="h-4 w-4" />
-                  )}
-                </ToolbarButton>
-                <ToolbarButton
-                  label="Excluir seleção"
-                  disabled={!editable}
-                  onClick={() => engineRef.current?.deleteSelected()}
-                >
-                  <Trash2 className="h-4 w-4" />
-                </ToolbarButton>
+          {selected.length > 0 && toolMode !== "draw" && toolMode !== "structure" && (
+            <div className="tadeon-tabletop-selection-dock" aria-label="Ações rápidas da seleção">
+              <div className="min-w-0 px-2">
+                <strong className="block truncate text-xs text-foreground">
+                  {selected.length === 1 ? primary?.label : `${selected.length} entidades`}
+                </strong>
+                <span className="block text-[10px] text-muted-foreground">Seleção ativa</span>
               </div>
-            )}
+              <span className="tadeon-tabletop-selection-dock__divider" />
+              <ToolbarButton
+                label="Enquadrar seleção"
+                onClick={() => engineRef.current?.focusSelection()}
+              >
+                <Focus className="h-4 w-4" />
+              </ToolbarButton>
+              {selected.length === 1 && primary && (
+                <ToolbarButton
+                  label="Abrir cartão, ficha ou arquivo"
+                  onClick={() => openEntityDossier(primary)}
+                >
+                  <FileSearch className="h-4 w-4" />
+                </ToolbarButton>
+              )}
+              <ToolbarButton
+                label="Duplicar seleção"
+                disabled={!editable}
+                onClick={() => engineRef.current?.duplicateSelected()}
+              >
+                <Copy className="h-4 w-4" />
+              </ToolbarButton>
+              <ToolbarButton
+                label={
+                  selected.some((entity) => !entity.hidden)
+                    ? "Ocultar seleção dos jogadores"
+                    : "Revelar seleção aos jogadores"
+                }
+                disabled={!editable || selected.every((entity) => entity.locked)}
+                onClick={() => {
+                  const hidden = selected.some((entity) => !entity.hidden);
+                  engineRef.current?.updateSelected(
+                    { hidden },
+                    hidden ? "Ocultar seleção" : "Revelar seleção",
+                  );
+                }}
+              >
+                {selected.some((entity) => !entity.hidden) ? (
+                  <EyeOff className="h-4 w-4" />
+                ) : (
+                  <Eye className="h-4 w-4" />
+                )}
+              </ToolbarButton>
+              {masterLayer && (
+                <ToolbarButton
+                  label="Levar seleção aos bastidores do mestre"
+                  disabled={
+                    !editable || masterLayer.locked || selected.every((entity) => entity.locked)
+                  }
+                  onClick={() => engineRef.current?.moveSelectedToLayer(masterLayer.id)}
+                >
+                  <UserRound className="h-4 w-4" />
+                </ToolbarButton>
+              )}
+              <ToolbarButton
+                label="Bloquear ou desbloquear seleção"
+                disabled={!editable}
+                onClick={() => engineRef.current?.toggleSelectedLock()}
+              >
+                {selected.some((entity) => entity.locked) ? (
+                  <LockOpen className="h-4 w-4" />
+                ) : (
+                  <Lock className="h-4 w-4" />
+                )}
+              </ToolbarButton>
+              <ToolbarButton
+                label="Excluir seleção"
+                disabled={!editable}
+                onClick={() => engineRef.current?.deleteSelected()}
+              >
+                <Trash2 className="h-4 w-4" />
+              </ToolbarButton>
+            </div>
+          )}
           {loading && (
             <div className="pointer-events-none absolute inset-0 z-20 flex items-center justify-center bg-background/55 backdrop-blur-sm">
               <Loader2 className="h-8 w-8 animate-spin text-primary" />
@@ -2679,8 +2438,7 @@ export function TabletopWorkspace({
                 <MousePointer2 className="mx-auto h-8 w-8 text-primary" />
                 <h2 className="mt-3 font-cinzel text-xl">Nenhuma cena</h2>
                 <p className="mt-2 text-sm text-muted-foreground">
-                  Crie uma cena persistente para iniciar o mapa, as camadas e os
-                  tokens.
+                  Crie uma cena persistente para iniciar o mapa, as camadas e os tokens.
                 </p>
                 <Button
                   className="mt-4 gap-2"
@@ -2693,33 +2451,27 @@ export function TabletopWorkspace({
               </div>
             </div>
           )}
-          {persistedScene &&
-            snapshot.scene.entities.length === 0 &&
-            !loading && (
-              <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
-                <div className="tadeon-tabletop-empty-state pointer-events-auto max-w-sm p-6 text-center">
-                  <MousePointer2 className="mx-auto h-8 w-8 text-primary" />
-                  <h2 className="mt-3 font-cinzel text-xl">Cena vazia</h2>
-                  <p className="mt-2 text-sm text-muted-foreground">
-                    Adicione um token ou objeto. As mudanças só chegam ao banco
-                    quando você salvar.
-                  </p>
-                  <Button
-                    className="mt-4 gap-2"
-                    disabled={!editable}
-                    onClick={() => engineRef.current?.addEntity("token")}
-                  >
-                    <UserRound className="h-4 w-4" />
-                    Adicionar token
-                  </Button>
-                </div>
+          {persistedScene && snapshot.scene.entities.length === 0 && !loading && (
+            <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
+              <div className="tadeon-tabletop-empty-state pointer-events-auto max-w-sm p-6 text-center">
+                <MousePointer2 className="mx-auto h-8 w-8 text-primary" />
+                <h2 className="mt-3 font-cinzel text-xl">Cena vazia</h2>
+                <p className="mt-2 text-sm text-muted-foreground">
+                  Adicione um token ou objeto. As mudanças só chegam ao banco quando você salvar.
+                </p>
+                <Button
+                  className="mt-4 gap-2"
+                  disabled={!editable}
+                  onClick={() => engineRef.current?.addEntity("token")}
+                >
+                  <UserRound className="h-4 w-4" />
+                  Adicionar token
+                </Button>
               </div>
-            )}
+            </div>
+          )}
           {persistedScene && !loading && (
-            <div
-              className="tadeon-tabletop-stage-status"
-              aria-label="Estado da cena"
-            >
+            <div className="tadeon-tabletop-stage-status" aria-label="Estado da cena">
               <div className="tadeon-tabletop-stage-status__metric">
                 <strong>{snapshot.scene.entities.length}</strong>
                 <span>entidades</span>
@@ -2730,9 +2482,7 @@ export function TabletopWorkspace({
               </div>
               <div className="tadeon-tabletop-stage-status__metric">
                 <strong>
-                  {snapshot.scene.gridMode === "none"
-                    ? "Livre"
-                    : snapshot.scene.gridSize}
+                  {snapshot.scene.gridMode === "none" ? "Livre" : snapshot.scene.gridSize}
                 </strong>
                 <span>grade</span>
               </div>
@@ -2759,14 +2509,10 @@ export function TabletopWorkspace({
               </span>
               <ToolbarButton
                 label={
-                  projectionMode === "isometric"
-                    ? "Voltar à planta 2D"
-                    : "Abrir visão espacial 3D"
+                  projectionMode === "isometric" ? "Voltar à planta 2D" : "Abrir visão espacial 3D"
                 }
                 onClick={() =>
-                  setProjectionMode((mode) =>
-                    mode === "plan" ? "isometric" : "plan",
-                  )
+                  setProjectionMode((mode) => (mode === "plan" ? "isometric" : "plan"))
                 }
               >
                 <Axis3d className="h-4 w-4" />
@@ -2788,16 +2534,10 @@ export function TabletopWorkspace({
               >
                 <Focus className="h-4 w-4" />
               </ToolbarButton>
-              <ToolbarButton
-                label="Reduzir zoom"
-                onClick={() => engineRef.current?.zoomBy(0.82)}
-              >
+              <ToolbarButton label="Reduzir zoom" onClick={() => engineRef.current?.zoomBy(0.82)}>
                 <ZoomOut className="h-4 w-4" />
               </ToolbarButton>
-              <ToolbarButton
-                label="Ampliar zoom"
-                onClick={() => engineRef.current?.zoomBy(1.22)}
-              >
+              <ToolbarButton label="Ampliar zoom" onClick={() => engineRef.current?.zoomBy(1.22)}>
                 <ZoomIn className="h-4 w-4" />
               </ToolbarButton>
             </div>
@@ -2872,24 +2612,14 @@ export function TabletopWorkspace({
               Fechar
             </Button>
           </div>
-          <div
-            className="tadeon-tabletop-panel__tabs"
-            role="tablist"
-            aria-label="Áreas do editor"
-          >
+          <div className="tadeon-tabletop-panel__tabs" role="tablist" aria-label="Áreas do editor">
             {(
               [
                 ["library", "Montagem"],
                 ["space", `Espaço${visibilityDirty ? " · não salvo" : ""}`],
-                [
-                  "master",
-                  `Mestre${masterEntities.length ? ` · ${masterEntities.length}` : ""}`,
-                ],
+                ["master", `Mestre${masterEntities.length ? ` · ${masterEntities.length}` : ""}`],
                 ["scene", "Cena"],
-                [
-                  "inspector",
-                  `Inspetor${selected.length ? ` · ${selected.length}` : ""}`,
-                ],
+                ["inspector", `Inspetor${selected.length ? ` · ${selected.length}` : ""}`],
               ] as const
             ).map(([tab, label]) => (
               <button
@@ -2909,10 +2639,7 @@ export function TabletopWorkspace({
                 ) : tab === "scene" ? (
                   <Layers3 className="h-3.5 w-3.5" aria-hidden="true" />
                 ) : (
-                  <SlidersHorizontal
-                    className="h-3.5 w-3.5"
-                    aria-hidden="true"
-                  />
+                  <SlidersHorizontal className="h-3.5 w-3.5" aria-hidden="true" />
                 )}
                 <span>{label}</span>
               </button>
@@ -2922,8 +2649,8 @@ export function TabletopWorkspace({
           {panelTab === "library" && (
             <div className="tadeon-tabletop-panel__section" role="tabpanel">
               <p className="mt-1 text-[11px] text-muted-foreground">
-                Arraste no computador ou toque para inserir no centro do mapa.
-                Fichas já entram vinculadas ao personagem e ao jogador.
+                Arraste no computador ou toque para inserir no centro do mapa. Fichas já entram
+                vinculadas ao personagem e ao jogador.
               </p>
               <div className="relative mt-3">
                 <FileSearch className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
@@ -2936,10 +2663,7 @@ export function TabletopWorkspace({
                 />
               </div>
               <div className="mt-3">
-                <Label
-                  htmlFor="asset-drop-type"
-                  className="text-[10px] uppercase"
-                >
+                <Label htmlFor="asset-drop-type" className="text-[10px] uppercase">
                   Asset entra como
                 </Label>
                 <select
@@ -2947,9 +2671,7 @@ export function TabletopWorkspace({
                   value={assetDropType}
                   disabled={!editable}
                   onChange={(event) =>
-                    setAssetDropType(
-                      event.target.value === "token" ? "token" : "object",
-                    )
+                    setAssetDropType(event.target.value === "token" ? "token" : "object")
                   }
                   className="h-9 w-full rounded-md border border-input bg-background px-2 text-xs"
                 >
@@ -2958,19 +2680,14 @@ export function TabletopWorkspace({
                 </select>
               </div>
               <div className="mt-3">
-                <Label
-                  htmlFor="scene-background-asset"
-                  className="text-[10px] uppercase"
-                >
+                <Label htmlFor="scene-background-asset" className="text-[10px] uppercase">
                   Mapa de fundo
                 </Label>
                 <select
                   id="scene-background-asset"
                   value={snapshot.scene.backgroundAssetId ?? ""}
                   disabled={!editable}
-                  onChange={(event) =>
-                    updateBackgroundAsset(event.target.value)
-                  }
+                  onChange={(event) => updateBackgroundAsset(event.target.value)}
                   className="h-10 w-full rounded-md border border-input bg-background px-2 text-xs"
                 >
                   <option value="">Sem mapa de fundo</option>
@@ -3049,8 +2766,7 @@ export function TabletopWorkspace({
                     className="tadeon-tabletop-asset overflow-hidden rounded-xl border border-border/60 bg-secondary/15 text-left disabled:opacity-50"
                   >
                     <div className="flex aspect-video items-center justify-center bg-black/30">
-                      {asset.previewUrl &&
-                      asset.mimeType.startsWith("video/") ? (
+                      {asset.previewUrl && asset.mimeType.startsWith("video/") ? (
                         <video
                           src={asset.previewUrl}
                           className="h-full w-full object-cover"
@@ -3062,11 +2778,7 @@ export function TabletopWorkspace({
                           aria-label={`Prévia animada de ${asset.displayName}`}
                         />
                       ) : asset.previewUrl ? (
-                        <img
-                          src={asset.previewUrl}
-                          alt=""
-                          className="h-full w-full object-cover"
-                        />
+                        <img src={asset.previewUrl} alt="" className="h-full w-full object-cover" />
                       ) : (
                         <Film className="h-5 w-5 text-muted-foreground" />
                       )}
@@ -3098,25 +2810,15 @@ export function TabletopWorkspace({
                     type="button"
                     draggable={editable}
                     disabled={!editable}
-                    onClick={() =>
-                      insertPaletteItem({ kind: "sheet", id: sheet.id })
-                    }
+                    onClick={() => insertPaletteItem({ kind: "sheet", id: sheet.id })}
                     onDragStart={(event) =>
-                      beginPaletteDrag(
-                        event,
-                        { kind: "sheet", id: sheet.id },
-                        sheet.name,
-                      )
+                      beginPaletteDrag(event, { kind: "sheet", id: sheet.id }, sheet.name)
                     }
                     className="tadeon-tabletop-asset flex min-h-11 w-full items-center gap-2 rounded-xl border border-primary/25 bg-primary/5 px-2.5 py-2 text-left disabled:opacity-50"
                   >
                     <UserRound className="h-3.5 w-3.5 shrink-0 text-primary" />
-                    <span className="min-w-0 flex-1 truncate text-xs">
-                      {sheet.name}
-                    </span>
-                    <span className="text-[10px] uppercase tracking-wide text-primary">
-                      ficha
-                    </span>
+                    <span className="min-w-0 flex-1 truncate text-xs">{sheet.name}</span>
+                    <span className="text-[10px] uppercase tracking-wide text-primary">ficha</span>
                   </button>
                 ))}
               </div>
@@ -3141,22 +2843,14 @@ export function TabletopWorkspace({
                     type="button"
                     draggable={editable}
                     disabled={!editable}
-                    onClick={() =>
-                      insertPaletteItem({ kind: "knowledge", id: node.id })
-                    }
+                    onClick={() => insertPaletteItem({ kind: "knowledge", id: node.id })}
                     onDragStart={(event) =>
-                      beginPaletteDrag(
-                        event,
-                        { kind: "knowledge", id: node.id },
-                        node.title,
-                      )
+                      beginPaletteDrag(event, { kind: "knowledge", id: node.id }, node.title)
                     }
                     className="tadeon-tabletop-asset flex min-h-11 w-full items-center gap-2 rounded-xl border border-border/50 bg-secondary/15 px-2.5 py-2 text-left disabled:opacity-50"
                   >
                     <BookOpen className="h-3.5 w-3.5 shrink-0 text-primary" />
-                    <span className="min-w-0 flex-1 truncate text-xs">
-                      {node.title}
-                    </span>
+                    <span className="min-w-0 flex-1 truncate text-xs">{node.title}</span>
                     <span className="text-[11px] uppercase tracking-wide text-muted-foreground">
                       {node.nodeType}
                     </span>
@@ -3179,13 +2873,9 @@ export function TabletopWorkspace({
                 <Button
                   type="button"
                   size="sm"
-                  variant={
-                    projectionMode === "isometric" ? "default" : "outline"
-                  }
+                  variant={projectionMode === "isometric" ? "default" : "outline"}
                   onClick={() =>
-                    setProjectionMode((mode) =>
-                      mode === "plan" ? "isometric" : "plan",
-                    )
+                    setProjectionMode((mode) => (mode === "plan" ? "isometric" : "plan"))
                   }
                 >
                   <Axis3d className="h-4 w-4" />
@@ -3197,8 +2887,7 @@ export function TabletopWorkspace({
                   <div>
                     <p className="tadeon-eyebrow">Câmera espacial</p>
                     <p className="mt-1 text-[11px] text-muted-foreground">
-                      Rotação, angulação e altura preservam o centro e o encaixe
-                      da grade.
+                      Rotação, angulação e altura preservam o centro e o encaixe da grade.
                     </p>
                   </div>
                   <Button
@@ -3206,9 +2895,7 @@ export function TabletopWorkspace({
                     size="sm"
                     variant="outline"
                     disabled={projectionMode !== "isometric"}
-                    onClick={() =>
-                      setViewOrientation(DEFAULT_TABLETOP_VIEW_ORIENTATION)
-                    }
+                    onClick={() => setViewOrientation(DEFAULT_TABLETOP_VIEW_ORIENTATION)}
                   >
                     <Scan className="h-4 w-4" /> Reset
                   </Button>
@@ -3307,9 +2994,7 @@ export function TabletopWorkspace({
                   </label>
                   <label className="grid grid-cols-[1fr_auto] gap-x-2 text-[10px] uppercase text-muted-foreground">
                     <span>Escala de altura</span>
-                    <output>
-                      {viewOrientation.elevationScale.toFixed(2)}×
-                    </output>
+                    <output>{viewOrientation.elevationScale.toFixed(2)}×</output>
                     <input
                       className="col-span-2 mt-1 w-full accent-primary"
                       type="range"
@@ -3334,8 +3019,7 @@ export function TabletopWorkspace({
                   <div>
                     <p className="tadeon-eyebrow">Andares e elevação</p>
                     <p className="mt-1 text-[11px] text-muted-foreground">
-                      A grade, a oclusão, as luzes e as entidades seguem o andar
-                      ativo.
+                      A grade, a oclusão, as luzes e as entidades seguem o andar ativo.
                     </p>
                   </div>
                   <Button
@@ -3351,26 +3035,17 @@ export function TabletopWorkspace({
                 </div>
                 <div className="mt-3 space-y-3">
                   <div>
-                    <Label
-                      htmlFor="tabletop-active-level"
-                      className="text-[10px] uppercase"
-                    >
+                    <Label htmlFor="tabletop-active-level" className="text-[10px] uppercase">
                       Andar ativo
                     </Label>
                     <select
                       id="tabletop-active-level"
                       value={activeLevel?.id ?? ""}
-                      onChange={(event) =>
-                        setActiveLevelId(event.target.value || null)
-                      }
+                      onChange={(event) => setActiveLevelId(event.target.value || null)}
                       className="h-10 w-full rounded-md border border-input bg-background px-2 text-xs"
                     >
                       {(snapshot.scene.levels ?? []).map((level) => (
-                        <option
-                          key={level.id}
-                          value={level.id}
-                          disabled={!level.visible}
-                        >
+                        <option key={level.id} value={level.id} disabled={!level.visible}>
                           {level.name} · {level.baseElevation}
                         </option>
                       ))}
@@ -3379,10 +3054,7 @@ export function TabletopWorkspace({
                   {activeLevel && (
                     <>
                       <div>
-                        <Label
-                          htmlFor="tabletop-level-name"
-                          className="text-[10px] uppercase"
-                        >
+                        <Label htmlFor="tabletop-level-name" className="text-[10px] uppercase">
                           Nome do andar
                         </Label>
                         <Input
@@ -3390,17 +3062,12 @@ export function TabletopWorkspace({
                           disabled={!editable}
                           value={activeLevel.name}
                           maxLength={120}
-                          onChange={(event) =>
-                            updateActiveLevel({ name: event.target.value })
-                          }
+                          onChange={(event) => updateActiveLevel({ name: event.target.value })}
                         />
                       </div>
                       <div className="grid grid-cols-2 gap-2">
                         <div>
-                          <Label
-                            htmlFor="tabletop-level-base"
-                            className="text-[10px] uppercase"
-                          >
+                          <Label htmlFor="tabletop-level-base" className="text-[10px] uppercase">
                             Base
                           </Label>
                           <Input
@@ -3416,10 +3083,7 @@ export function TabletopWorkspace({
                           />
                         </div>
                         <div>
-                          <Label
-                            htmlFor="tabletop-level-height"
-                            className="text-[10px] uppercase"
-                          >
+                          <Label htmlFor="tabletop-level-height" className="text-[10px] uppercase">
                             Pé-direito
                           </Label>
                           <Input
@@ -3430,10 +3094,7 @@ export function TabletopWorkspace({
                             value={activeLevel.height}
                             onChange={(event) =>
                               updateActiveLevel({
-                                height: Math.max(
-                                  8,
-                                  Number(event.target.value) || 8,
-                                ),
+                                height: Math.max(8, Number(event.target.value) || 8),
                               })
                             }
                           />
@@ -3456,16 +3117,12 @@ export function TabletopWorkspace({
                 selectedStructureId={selectedStructureId}
                 selectedLightId={selectedLightId}
                 selectedFogId={selectedFogId}
-                onSelectStructure={(id) =>
-                  engineRef.current?.setSelectedStructure(id)
-                }
+                onSelectStructure={(id) => engineRef.current?.setSelectedStructure(id)}
                 onSelectLight={(id) => engineRef.current?.setSelectedLight(id)}
                 onSelectFog={(id) => engineRef.current?.setSelectedFog(id)}
                 onActivateFogTool={(operation, shape) => {
                   setFogToolShape(shape);
-                  setToolMode(
-                    operation === "reveal" ? "fog_reveal" : "fog_hide",
-                  );
+                  setToolMode(operation === "reveal" ? "fog_reveal" : "fog_hide");
                   if (window.innerWidth < 1024) setMobilePanelOpen(false);
                 }}
                 onPreview={previewVisibility}
@@ -3482,9 +3139,8 @@ export function TabletopWorkspace({
                   <div>
                     <p className="tadeon-eyebrow">Bastidores do mestre</p>
                     <p className="mt-1 text-[11px] leading-relaxed text-muted-foreground">
-                      Segredos, notas e peças da camada Mestre ficam fora da
-                      projeção dos jogadores, mas continuam acessíveis durante a
-                      direção.
+                      Segredos, notas e peças da camada Mestre ficam fora da projeção dos jogadores,
+                      mas continuam acessíveis durante a direção.
                     </p>
                   </div>
                 </div>
@@ -3495,9 +3151,7 @@ export function TabletopWorkspace({
                     variant="outline"
                     className="mt-3 w-full"
                     disabled={!editable || masterLayer.locked}
-                    onClick={() =>
-                      engineRef.current?.moveSelectedToLayer(masterLayer.id)
-                    }
+                    onClick={() => engineRef.current?.moveSelectedToLayer(masterLayer.id)}
                   >
                     <EyeOff className="h-4 w-4" />
                     Levar seleção aos bastidores
@@ -3521,16 +3175,12 @@ export function TabletopWorkspace({
                   </div>
                 )}
                 {masterEntities.map((entity) => {
-                  const level = snapshot.scene.levels?.find(
-                    (item) => item.id === entity.levelId,
-                  );
+                  const level = snapshot.scene.levels?.find((item) => item.id === entity.levelId);
                   const inMasterLayer = entity.layerId === masterLayer?.id;
                   const fallbackLayer = snapshot.scene.layers.find(
                     (layer) =>
                       layer.layerType ===
-                      (["token", "character", "npc", "creature"].includes(
-                        entity.type,
-                      )
+                      (["token", "character", "npc", "creature"].includes(entity.type)
                         ? "tokens"
                         : "objects"),
                   );
@@ -3552,9 +3202,7 @@ export function TabletopWorkspace({
                           )}
                         </div>
                         <div className="min-w-0 flex-1">
-                          <strong className="block truncate text-xs">
-                            {entity.label}
-                          </strong>
+                          <strong className="block truncate text-xs">{entity.label}</strong>
                           <span className="mt-1 block truncate text-[10px] text-muted-foreground">
                             {level?.name ?? "Andar base"} · {entity.type}
                           </span>
@@ -3594,9 +3242,7 @@ export function TabletopWorkspace({
                             engineRef.current?.selectEntityById(entity.id);
                             engineRef.current?.updateSelected(
                               { hidden: !entity.hidden },
-                              entity.hidden
-                                ? "Revelar entidade"
-                                : "Ocultar entidade",
+                              entity.hidden ? "Revelar entidade" : "Ocultar entidade",
                             );
                             setPanelTab("master");
                           }}
@@ -3615,9 +3261,7 @@ export function TabletopWorkspace({
                               : !masterLayer || masterLayer.locked)
                           }
                           onClick={() => {
-                            const target = inMasterLayer
-                              ? fallbackLayer
-                              : masterLayer;
+                            const target = inMasterLayer ? fallbackLayer : masterLayer;
                             if (!target) return;
                             engineRef.current?.selectEntityById(entity.id);
                             engineRef.current?.moveSelectedToLayer(target.id);
@@ -3646,17 +3290,11 @@ export function TabletopWorkspace({
                     key={layer.id}
                     className="flex min-h-12 items-center gap-2 rounded-xl border border-border/50 bg-secondary/15 px-2.5 py-2"
                   >
-                    <span className="min-w-0 flex-1 truncate text-xs">
-                      {layer.name}
-                    </span>
+                    <span className="min-w-0 flex-1 truncate text-xs">{layer.name}</span>
                     <button
                       type="button"
                       className="grid h-10 w-10 place-items-center rounded-lg hover:bg-secondary disabled:opacity-40"
-                      aria-label={
-                        layer.visible
-                          ? `Ocultar ${layer.name}`
-                          : `Exibir ${layer.name}`
-                      }
+                      aria-label={layer.visible ? `Ocultar ${layer.name}` : `Exibir ${layer.name}`}
                       disabled={!editable}
                       onClick={() =>
                         engineRef.current?.updateLayer(layer.id, {
@@ -3674,9 +3312,7 @@ export function TabletopWorkspace({
                       type="button"
                       className="grid h-10 w-10 place-items-center rounded-lg hover:bg-secondary disabled:opacity-40"
                       aria-label={
-                        layer.locked
-                          ? `Desbloquear ${layer.name}`
-                          : `Bloquear ${layer.name}`
+                        layer.locked ? `Desbloquear ${layer.name}` : `Bloquear ${layer.name}`
                       }
                       disabled={!editable || layer.layerType === "map"}
                       onClick={() =>
@@ -3707,9 +3343,7 @@ export function TabletopWorkspace({
                   onChange={(event) => setSnapshotId(event.target.value)}
                   className="h-9 min-w-0 flex-1 rounded-md border border-input bg-background px-2 text-xs"
                 >
-                  {snapshots.length === 0 && (
-                    <option value="">Nenhum snapshot</option>
-                  )}
+                  {snapshots.length === 0 && <option value="">Nenhum snapshot</option>}
                   {snapshots.map((item) => (
                     <option key={item.id} value={item.id}>
                       {item.name} · v{item.sceneVersion}
@@ -3740,12 +3374,9 @@ export function TabletopWorkspace({
               {!primary ? (
                 <div className="tadeon-tabletop-inspector-card mt-4 text-center text-sm text-muted-foreground">
                   <MousePointer2 className="mx-auto h-6 w-6 text-primary/70" />
-                  <p className="mt-3 font-medium text-foreground">
-                    Nada selecionado
-                  </p>
+                  <p className="mt-3 font-medium text-foreground">Nada selecionado</p>
                   <p className="mt-1">
-                    Toque numa entidade ou use Shift para selecionar um
-                    conjunto.
+                    Toque numa entidade ou use Shift para selecionar um conjunto.
                   </p>
                   <Button
                     variant="outline"
@@ -3760,9 +3391,7 @@ export function TabletopWorkspace({
               ) : (
                 <div className="mt-4 space-y-4">
                   <div className="tadeon-tabletop-inspector-card">
-                    <p className="font-cinzel text-lg font-semibold">
-                      {primary.label}
-                    </p>
+                    <p className="font-cinzel text-lg font-semibold">{primary.label}</p>
                     <p className="text-xs text-muted-foreground">
                       {selected.length} selecionada
                       {selected.length === 1 ? "" : "s"}
@@ -3771,10 +3400,7 @@ export function TabletopWorkspace({
                   <div className="tadeon-tabletop-inspector-card space-y-3">
                     <p className="tadeon-eyebrow">Organização</p>
                     <div>
-                      <Label
-                        htmlFor="entity-layer"
-                        className="text-[10px] uppercase"
-                      >
+                      <Label htmlFor="entity-layer" className="text-[10px] uppercase">
                         Camada
                       </Label>
                       <select
@@ -3782,9 +3408,7 @@ export function TabletopWorkspace({
                         value={primary.layerId}
                         disabled={!editable}
                         onChange={(event) =>
-                          engineRef.current?.moveSelectedToLayer(
-                            event.target.value,
-                          )
+                          engineRef.current?.moveSelectedToLayer(event.target.value)
                         }
                         className="h-11 w-full rounded-[0.7rem] border border-input bg-background/55 px-3 text-sm"
                       >
@@ -3792,18 +3416,10 @@ export function TabletopWorkspace({
                           <option
                             key={layer.id}
                             value={layer.id}
-                            disabled={
-                              layer.locked ||
-                              !layer.visible ||
-                              layer.layerType === "map"
-                            }
+                            disabled={layer.locked || !layer.visible || layer.layerType === "map"}
                           >
                             {layer.name}
-                            {layer.locked
-                              ? " · bloqueada"
-                              : !layer.visible
-                                ? " · oculta"
-                                : ""}
+                            {layer.locked ? " · bloqueada" : !layer.visible ? " · oculta" : ""}
                           </option>
                         ))}
                       </select>
@@ -3820,9 +3436,7 @@ export function TabletopWorkspace({
                           size="sm"
                           variant="outline"
                           disabled={!editable}
-                          onClick={() =>
-                            engineRef.current?.moveSelectedToEdge(edge)
-                          }
+                          onClick={() => engineRef.current?.moveSelectedToEdge(edge)}
                         >
                           {label}
                         </Button>
@@ -3830,9 +3444,7 @@ export function TabletopWorkspace({
                     </div>
                     {selected.length > 1 && (
                       <div>
-                        <Label className="text-[10px] uppercase">
-                          Alinhar seleção
-                        </Label>
+                        <Label className="text-[10px] uppercase">Alinhar seleção</Label>
                         <div className="mt-1 grid grid-cols-3 gap-1.5">
                           {(
                             [
@@ -3850,9 +3462,7 @@ export function TabletopWorkspace({
                               variant="outline"
                               className="px-2"
                               disabled={!editable}
-                              onClick={() =>
-                                engineRef.current?.alignSelected(alignment)
-                              }
+                              onClick={() => engineRef.current?.alignSelected(alignment)}
                             >
                               {label}
                             </Button>
@@ -3873,9 +3483,7 @@ export function TabletopWorkspace({
                             size="sm"
                             variant="outline"
                             disabled={!editable}
-                            onClick={() =>
-                              engineRef.current?.distributeSelected(axis)
-                            }
+                            onClick={() => engineRef.current?.distributeSelected(axis)}
                           >
                             {label}
                           </Button>
@@ -3886,10 +3494,7 @@ export function TabletopWorkspace({
                   <div className="tadeon-tabletop-inspector-card space-y-3">
                     <p className="tadeon-eyebrow">Identidade e vínculos</p>
                     <div>
-                      <Label
-                        htmlFor="entity-label"
-                        className="text-[10px] uppercase"
-                      >
+                      <Label htmlFor="entity-label" className="text-[10px] uppercase">
                         Nome
                       </Label>
                       <Input
@@ -3907,10 +3512,7 @@ export function TabletopWorkspace({
                     </div>
                     <div className="grid grid-cols-2 gap-3">
                       <div>
-                        <Label
-                          htmlFor="entity-size-preset"
-                          className="text-[10px] uppercase"
-                        >
+                        <Label htmlFor="entity-size-preset" className="text-[10px] uppercase">
                           Preset
                         </Label>
                         <select
@@ -3933,10 +3535,7 @@ export function TabletopWorkspace({
                         </select>
                       </div>
                       <div>
-                        <Label
-                          htmlFor="entity-elevation"
-                          className="text-[10px] uppercase"
-                        >
+                        <Label htmlFor="entity-elevation" className="text-[10px] uppercase">
                           Elevação
                         </Label>
                         <Input
@@ -3954,10 +3553,7 @@ export function TabletopWorkspace({
                       </div>
                     </div>
                     <div>
-                      <Label
-                        htmlFor="entity-level"
-                        className="text-[10px] uppercase"
-                      >
+                      <Label htmlFor="entity-level" className="text-[10px] uppercase">
                         Andar
                       </Label>
                       <select
@@ -3984,19 +3580,12 @@ export function TabletopWorkspace({
                     </div>
                     {primary.assetUrl ? (
                       <div>
-                        <Label
-                          htmlFor="entity-render-mode"
-                          className="text-[10px] uppercase"
-                        >
+                        <Label htmlFor="entity-render-mode" className="text-[10px] uppercase">
                           Imagem no 3D
                         </Label>
                         <select
                           id="entity-render-mode"
-                          value={
-                            primaryProperties.render_mode === "flat"
-                              ? "flat"
-                              : "billboard"
-                          }
+                          value={primaryProperties.render_mode === "flat" ? "flat" : "billboard"}
                           disabled={!editable}
                           onChange={(event) =>
                             updateProperties({
@@ -4005,14 +3594,12 @@ export function TabletopWorkspace({
                           }
                           className="h-10 w-full rounded-md border border-input bg-background px-2 text-xs"
                         >
-                          <option value="billboard">
-                            Vertical · sempre legível
-                          </option>
+                          <option value="billboard">Vertical · sempre legível</option>
                           <option value="flat">Plano · acompanha o chão</option>
                         </select>
                         <p className="mt-1 text-[10px] text-muted-foreground">
-                          Tokens e objetos usam o modo vertical por padrão;
-                          pisos, tiles e mapas permanecem planos.
+                          Tokens e objetos usam o modo vertical por padrão; pisos, tiles e mapas
+                          permanecem planos.
                         </p>
                       </div>
                     ) : null}
@@ -4028,9 +3615,7 @@ export function TabletopWorkspace({
                           <label className="flex min-h-10 items-center justify-between gap-2 rounded-md bg-background/60 px-2 text-[11px]">
                             Pausado
                             <Switch
-                              checked={
-                                primaryProperties.playback_paused === true
-                              }
+                              checked={primaryProperties.playback_paused === true}
                               disabled={!editable}
                               onCheckedChange={(playback_paused) =>
                                 updateProperties({ playback_paused })
@@ -4040,9 +3625,7 @@ export function TabletopWorkspace({
                           <label className="flex min-h-10 items-center justify-between gap-2 rounded-md bg-background/60 px-2 text-[11px]">
                             Repetir
                             <Switch
-                              checked={
-                                primaryProperties.playback_loop !== false
-                              }
+                              checked={primaryProperties.playback_loop !== false}
                               disabled={!editable}
                               onCheckedChange={(playback_loop) =>
                                 updateProperties({ playback_loop })
@@ -4053,9 +3636,7 @@ export function TabletopWorkspace({
                         <label className="block text-[10px] text-muted-foreground">
                           Velocidade
                           <select
-                            value={String(
-                              primaryProperties.playback_speed ?? 1,
-                            )}
+                            value={String(primaryProperties.playback_speed ?? 1)}
                             disabled={!editable}
                             onChange={(event) =>
                               updateProperties({
@@ -4075,9 +3656,7 @@ export function TabletopWorkspace({
                           <label className="flex min-h-10 items-center justify-between gap-2 rounded-md bg-background/60 px-2 text-[11px]">
                             Sem som
                             <Switch
-                              checked={
-                                primaryProperties.playback_muted !== false
-                              }
+                              checked={primaryProperties.playback_muted !== false}
                               disabled={!editable}
                               onCheckedChange={(playback_muted) =>
                                 updateProperties({ playback_muted })
@@ -4093,9 +3672,7 @@ export function TabletopWorkspace({
                       ) : (
                         <ImagePlus className="h-4 w-4" />
                       )}
-                      {primary.assetId
-                        ? "Substituir mídia"
-                        : "Adicionar imagem ou animação"}
+                      {primary.assetId ? "Substituir mídia" : "Adicionar imagem ou animação"}
                       {assetUploading && assetUploadProgress > 0
                         ? ` · ${Math.round(assetUploadProgress)}%`
                         : ""}
@@ -4112,10 +3689,7 @@ export function TabletopWorkspace({
                       />
                     </label>
                     <div>
-                      <Label
-                        htmlFor="entity-sheet"
-                        className="text-[10px] uppercase"
-                      >
+                      <Label htmlFor="entity-sheet" className="text-[10px] uppercase">
                         Ficha vinculada
                       </Label>
                       <select
@@ -4159,10 +3733,7 @@ export function TabletopWorkspace({
                       )}
                     </div>
                     <div>
-                      <Label
-                        htmlFor="entity-knowledge"
-                        className="text-[10px] uppercase"
-                      >
+                      <Label htmlFor="entity-knowledge" className="text-[10px] uppercase">
                         Página do Nexus
                       </Label>
                       <select
@@ -4212,10 +3783,7 @@ export function TabletopWorkspace({
                       />
                     </div>
                     <div>
-                      <Label
-                        htmlFor="entity-status"
-                        className="text-[10px] uppercase"
-                      >
+                      <Label htmlFor="entity-status" className="text-[10px] uppercase">
                         Estado visual
                       </Label>
                       <Input
@@ -4228,17 +3796,12 @@ export function TabletopWorkspace({
                         }
                         maxLength={80}
                         placeholder="Ex.: alerta, caído, neutro"
-                        onChange={(event) =>
-                          updateProperties({ status: event.target.value })
-                        }
+                        onChange={(event) => updateProperties({ status: event.target.value })}
                       />
                     </div>
                     <div className="grid grid-cols-2 gap-3">
                       <div>
-                        <Label
-                          htmlFor="entity-bar-current"
-                          className="text-[10px] uppercase"
-                        >
+                        <Label htmlFor="entity-bar-current" className="text-[10px] uppercase">
                           Barra atual
                         </Label>
                         <Input
@@ -4249,19 +3812,13 @@ export function TabletopWorkspace({
                           value={barCurrent}
                           onChange={(event) =>
                             updateProperties({
-                              bar_current: Math.max(
-                                0,
-                                Number(event.target.value) || 0,
-                              ),
+                              bar_current: Math.max(0, Number(event.target.value) || 0),
                             })
                           }
                         />
                       </div>
                       <div>
-                        <Label
-                          htmlFor="entity-bar-max"
-                          className="text-[10px] uppercase"
-                        >
+                        <Label htmlFor="entity-bar-max" className="text-[10px] uppercase">
                           Barra máxima
                         </Label>
                         <Input
@@ -4272,24 +3829,17 @@ export function TabletopWorkspace({
                           value={barMax}
                           onChange={(event) =>
                             updateProperties({
-                              bar_max: Math.max(
-                                0,
-                                Number(event.target.value) || 0,
-                              ),
+                              bar_max: Math.max(0, Number(event.target.value) || 0),
                             })
                           }
                         />
                       </div>
                       <p className="col-span-2 -mt-2 text-[10px] text-muted-foreground">
-                        Deixe a máxima em 0 para ocultar a barra. É apenas
-                        visual.
+                        Deixe a máxima em 0 para ocultar a barra. É apenas visual.
                       </p>
                     </div>
                     <div>
-                      <Label
-                        htmlFor="entity-icons"
-                        className="text-[10px] uppercase"
-                      >
+                      <Label htmlFor="entity-icons" className="text-[10px] uppercase">
                         Ícones ou marcadores
                       </Label>
                       <Input
@@ -4309,10 +3859,7 @@ export function TabletopWorkspace({
                       />
                     </div>
                     <div>
-                      <Label
-                        htmlFor="entity-conditions"
-                        className="text-[10px] uppercase"
-                      >
+                      <Label htmlFor="entity-conditions" className="text-[10px] uppercase">
                         Condições visuais
                       </Label>
                       <Input
@@ -4332,65 +3879,43 @@ export function TabletopWorkspace({
                       />
                     </div>
                     <div>
-                      <Label
-                        htmlFor="entity-notes"
-                        className="text-[10px] uppercase"
-                      >
+                      <Label htmlFor="entity-notes" className="text-[10px] uppercase">
                         Anotações
                       </Label>
                       <Textarea
                         id="entity-notes"
                         disabled={!editable}
                         value={
-                          typeof primaryProperties.notes === "string"
-                            ? primaryProperties.notes
-                            : ""
+                          typeof primaryProperties.notes === "string" ? primaryProperties.notes : ""
                         }
                         maxLength={2000}
                         rows={3}
-                        onChange={(event) =>
-                          updateProperties({ notes: event.target.value })
-                        }
+                        onChange={(event) => updateProperties({ notes: event.target.value })}
                         className="min-h-24 resize-y"
                       />
                     </div>
                   </div>
                   <div className="tadeon-tabletop-inspector-card grid grid-cols-2 gap-3">
-                    <p className="tadeon-eyebrow col-span-2">
-                      Transformação precisa
-                    </p>
-                    {(["x", "y", "width", "height", "rotation"] as const).map(
-                      (key) => (
-                        <div
-                          key={key}
-                          className={key === "rotation" ? "col-span-2" : ""}
-                        >
-                          <Label
-                            htmlFor={`entity-${key}`}
-                            className="text-[10px] uppercase"
-                          >
-                            {key === "rotation" ? "Rotação" : key}
-                          </Label>
-                          <Input
-                            id={`entity-${key}`}
-                            type="number"
-                            disabled={!editable}
-                            value={Math.round(primary[key] * 100) / 100}
-                            onChange={(event) =>
-                              updateNumber(key, event.target.value)
-                            }
-                          />
-                        </div>
-                      ),
-                    )}
+                    <p className="tadeon-eyebrow col-span-2">Transformação precisa</p>
+                    {(["x", "y", "width", "height", "rotation"] as const).map((key) => (
+                      <div key={key} className={key === "rotation" ? "col-span-2" : ""}>
+                        <Label htmlFor={`entity-${key}`} className="text-[10px] uppercase">
+                          {key === "rotation" ? "Rotação" : key}
+                        </Label>
+                        <Input
+                          id={`entity-${key}`}
+                          type="number"
+                          disabled={!editable}
+                          value={Math.round(primary[key] * 100) / 100}
+                          onChange={(event) => updateNumber(key, event.target.value)}
+                        />
+                      </div>
+                    ))}
                   </div>
                   <Button
                     variant="outline"
                     className="w-full gap-2"
-                    disabled={
-                      !editable ||
-                      selected.every((entity) => entity.rotation === 0)
-                    }
+                    disabled={!editable || selected.every((entity) => entity.rotation === 0)}
                     onClick={() => engineRef.current?.resetSelectedTransform()}
                   >
                     <RotateCw className="h-4 w-4" />
@@ -4451,9 +3976,7 @@ export function TabletopWorkspace({
                     <p className="flex items-center gap-2 font-medium text-foreground">
                       <RotateCw className="h-3.5 w-3.5" /> Atalhos
                     </p>
-                    <p className="mt-1">
-                      Ctrl/Cmd+A · C · V · D · Z · Del · setas
-                    </p>
+                    <p className="mt-1">Ctrl/Cmd+A · C · V · D · Z · Del · setas</p>
                   </div>
                 </div>
               )}
@@ -4485,22 +4008,14 @@ export function TabletopWorkspace({
                 placeholder="Ex.: Salão das Vozes"
               />
               <p className="mt-2 text-xs leading-relaxed text-muted-foreground">
-                A cena nasce como rascunho com as camadas Mapa, Objetos, Tokens,
-                Desenhos e Mestre.
+                A cena nasce como rascunho com as camadas Mapa, Objetos, Tokens, Desenhos e Mestre.
               </p>
             </div>
             <DialogFooter>
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => setSceneDialogOpen(false)}
-              >
+              <Button type="button" variant="outline" onClick={() => setSceneDialogOpen(false)}>
                 Cancelar
               </Button>
-              <Button
-                type="submit"
-                disabled={!campaignId || saving || !sceneName.trim()}
-              >
+              <Button type="submit" disabled={!campaignId || saving || !sceneName.trim()}>
                 {saving && <Loader2 className="h-4 w-4 animate-spin" />}
                 Criar cena
               </Button>
@@ -4512,9 +4027,7 @@ export function TabletopWorkspace({
       <Dialog open={snapshotDialogOpen} onOpenChange={setSnapshotDialogOpen}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
-            <DialogTitle className="font-cinzel">
-              Criar marco da cena
-            </DialogTitle>
+            <DialogTitle className="font-cinzel">Criar marco da cena</DialogTitle>
           </DialogHeader>
           <form
             className="space-y-4"
@@ -4534,22 +4047,14 @@ export function TabletopWorkspace({
                 placeholder="Ex.: Antes do confronto"
               />
               <p className="mt-2 text-xs leading-relaxed text-muted-foreground">
-                Se houver alterações locais, a cena será salva antes de
-                registrar este ponto.
+                Se houver alterações locais, a cena será salva antes de registrar este ponto.
               </p>
             </div>
             <DialogFooter>
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => setSnapshotDialogOpen(false)}
-              >
+              <Button type="button" variant="outline" onClick={() => setSnapshotDialogOpen(false)}>
                 Cancelar
               </Button>
-              <Button
-                type="submit"
-                disabled={!editable || saving || !snapshotName.trim()}
-              >
+              <Button type="submit" disabled={!editable || saving || !snapshotName.trim()}>
                 {saving && <Loader2 className="h-4 w-4 animate-spin" />}
                 Criar snapshot
               </Button>
@@ -4561,13 +4066,10 @@ export function TabletopWorkspace({
       <AlertDialog open={archiveDialogOpen} onOpenChange={setArchiveDialogOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>
-              Arquivar “{persistedScene?.name}”?
-            </AlertDialogTitle>
+            <AlertDialogTitle>Arquivar “{persistedScene?.name}”?</AlertDialogTitle>
             <AlertDialogDescription>
-              A cena ficará disponível para consulta, mas não poderá ser
-              editada. Você poderá duplicá-la depois para continuar a montagem
-              em um novo rascunho.
+              A cena ficará disponível para consulta, mas não poderá ser editada. Você poderá
+              duplicá-la depois para continuar a montagem em um novo rascunho.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
@@ -4587,8 +4089,8 @@ export function TabletopWorkspace({
           <AlertDialogHeader>
             <AlertDialogTitle>Restaurar este marco da cena?</AlertDialogTitle>
             <AlertDialogDescription>
-              A montagem atual será substituída pela versão escolhida. Antes
-              disso, a Mesa criará automaticamente um ponto de recuperação.
+              A montagem atual será substituída pela versão escolhida. Antes disso, a Mesa criará
+              automaticamente um ponto de recuperação.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
@@ -4614,8 +4116,8 @@ export function TabletopWorkspace({
             <AlertDialogTitle>Descartar alterações locais?</AlertDialogTitle>
             <AlertDialogDescription>
               Há mudanças ainda não salvas nesta cena. Ao continuar para outra
-              {pendingNavigation?.kind === "campaign" ? " campanha" : " cena"},
-              essa montagem local será perdida.
+              {pendingNavigation?.kind === "campaign" ? " campanha" : " cena"}, essa montagem local
+              será perdida.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
@@ -4921,11 +4423,7 @@ function CanvasToolButton({
       type="button"
       variant={active ? "default" : "ghost"}
       size="icon"
-      className={
-        caption
-          ? "tadeon-tabletop-canvas-tool h-12 w-12"
-          : "h-10 w-10 sm:h-9 sm:w-9"
-      }
+      className={caption ? "tadeon-tabletop-canvas-tool h-12 w-12" : "h-10 w-10 sm:h-9 sm:w-9"}
       title={label}
       aria-label={label}
       aria-pressed={active}
@@ -4938,13 +4436,7 @@ function CanvasToolButton({
   );
 }
 
-function ToolbarGroup({
-  label,
-  children,
-}: {
-  label: string;
-  children: React.ReactNode;
-}) {
+function ToolbarGroup({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div className="tadeon-tabletop-toolbar__group">
       <span className="tadeon-tabletop-toolbar__label">{label}</span>

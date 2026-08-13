@@ -50,6 +50,7 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet";
 import "@/styles/desktop-studio.css";
+import "@/styles/workspace-polish.css";
 
 const roleIcons: Record<string, typeof Crown> = {
   mestre: Crown,

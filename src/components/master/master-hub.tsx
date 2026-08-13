@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import {
   Activity,
+  ArrowRight,
   BookOpenCheck,
   BrainCircuit,
   Check,
@@ -8,7 +9,11 @@ import {
   Gauge,
   Link2,
   Map,
+  Pin,
   Plus,
+  Radio,
+  ScrollText,
+  Search,
   ShieldAlert,
   Sparkles,
   Trash,
@@ -26,6 +31,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { genId } from "@/lib/sheet-types";
+import type { MasterTab } from "@/components/master/master-panel-navigation";
 import {
   calculateEncounterBalance,
   combinedThreatMagnitude,
@@ -161,6 +167,8 @@ export function DashboardHub({
   sheets,
   onCampaignTitle,
   onCampaignPhase,
+  onNavigate,
+  onOpenSheet,
 }: {
   campaignTitle: string;
   campaignPhase: string;
@@ -173,6 +181,8 @@ export function DashboardHub({
   sheets: MasterSheetOverview[];
   onCampaignTitle: (value: string) => void;
   onCampaignPhase: (value: string) => void;
+  onNavigate: (tab: MasterTab) => void;
+  onOpenSheet: (sheetId: string) => void;
 }) {
   const openFolds = folds.filter((fold) => !fold.sealed).length;
   const openClues = clues.filter((clue) => !clue.discovered).length;
@@ -227,7 +237,7 @@ export function DashboardHub({
         {metrics.map(([label, value, Icon]) => (
           <Card
             key={label}
-            className="p-3 transition-colors hover:border-primary/40"
+            className="tadeon-master-metric tadeon-interactive-card p-3"
           >
             <div className="flex items-center justify-between text-muted-foreground">
               <span className="text-[10px] uppercase tracking-wider">
@@ -238,6 +248,117 @@ export function DashboardHub({
             <div className="mt-2 font-cinzel text-2xl font-bold">{value}</div>
           </Card>
         ))}
+      </div>
+
+      <div className="tadeon-master-overview-grid grid gap-3 lg:grid-cols-[minmax(15rem,0.72fr)_minmax(0,1.7fr)]">
+        <Card className="tadeon-master-flow p-4">
+          <div className="flex items-start justify-between gap-3">
+            <div>
+              <p className="tadeon-eyebrow">Atalhos conectados</p>
+              <h3 className="mt-1 font-cinzel text-lg font-bold">
+                Fluxo de condução
+              </h3>
+            </div>
+            <ArrowRight className="h-4 w-4 text-primary" aria-hidden="true" />
+          </div>
+          <div className="mt-3 grid gap-1.5">
+            {(
+              [
+                ["session", "Sessão ativa", "Cena, elenco e lembretes", Radio],
+                ["scenes", "Cenas", "Estrutura e camadas", ScrollText],
+                ["investigation", "Investigação", "Pistas e ligações", Search],
+                ["pinned", "Fichas", "Leitura conjunta do grupo", Pin],
+              ] as const
+            ).map(([tab, label, detail, Icon], index) => (
+              <button
+                key={tab}
+                type="button"
+                className="tadeon-master-flow__item"
+                onClick={() => onNavigate(tab)}
+              >
+                <span className="tadeon-master-flow__index" aria-hidden="true">
+                  {String(index + 1).padStart(2, "0")}
+                </span>
+                <Icon className="h-4 w-4" aria-hidden="true" />
+                <span>
+                  <strong>{label}</strong>
+                  <small>{detail}</small>
+                </span>
+                <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
+              </button>
+            ))}
+          </div>
+        </Card>
+
+        <Card className="tadeon-master-roster p-4">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+            <div>
+              <p className="tadeon-eyebrow">Elenco da campanha</p>
+              <h3 className="mt-1 font-cinzel text-lg font-bold">
+                Visão conjunta das fichas
+              </h3>
+              <p className="mt-1 text-xs text-muted-foreground">
+                Recursos atuais, exposição e equilíbrio em uma única leitura.
+              </p>
+            </div>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => onNavigate("pinned")}
+            >
+              <Pin className="h-3.5 w-3.5" />
+              Comparar fichas
+            </Button>
+          </div>
+          {sheets.length ? (
+            <div className="tadeon-master-roster__grid mt-4 grid gap-2 sm:grid-cols-2 xl:grid-cols-3">
+              {sheets.slice(0, 9).map((sheet) => (
+                <button
+                  key={sheet.id}
+                  type="button"
+                  className="tadeon-master-character-card tadeon-interactive-card"
+                  onClick={() => onOpenSheet(sheet.id)}
+                  aria-label={`Abrir ficha de ${sheet.name}`}
+                >
+                  <span className="tadeon-master-character-card__head">
+                    <span className="min-w-0">
+                      <strong className="tadeon-interactive-card__title">
+                        {sheet.name || "Sem nome"}
+                      </strong>
+                      <small>Rank {sheet.exposure}</small>
+                    </span>
+                    <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
+                  </span>
+                  <span className="tadeon-master-character-card__stats">
+                    {[
+                      ["PV", sheet.stats.pv_current],
+                      ["PS", sheet.stats.ps_current],
+                      ["PE", sheet.stats.pe_current],
+                      ["PA", sheet.stats.pa_current ?? 0],
+                    ].map(([label, value]) => (
+                      <span key={String(label)}>
+                        <strong>{value}</strong>
+                        <small>{label}</small>
+                      </span>
+                    ))}
+                  </span>
+                  <span className="tadeon-master-character-card__balance">
+                    <span>Equilíbrio</span>
+                    <strong>
+                      {sheet.equilibrium > 0
+                        ? `+${sheet.equilibrium}`
+                        : sheet.equilibrium}
+                    </strong>
+                  </span>
+                </button>
+              ))}
+            </div>
+          ) : (
+            <p className="mt-4 rounded-xl border border-dashed p-6 text-center text-xs text-muted-foreground">
+              Nenhuma ficha disponível nesta campanha.
+            </p>
+          )}
+        </Card>
       </div>
 
       <div className="grid gap-3 lg:grid-cols-3">

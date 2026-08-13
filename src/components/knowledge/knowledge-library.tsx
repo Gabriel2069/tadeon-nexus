@@ -1,12 +1,15 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   BookCopy,
+  BookOpenText,
+  CalendarClock,
   Check,
   ChevronLeft,
   ChevronRight,
   Copy,
   ExternalLink,
   Grid2X2,
+  Filter,
   LibraryBig,
   List,
   Loader2,
@@ -17,6 +20,7 @@ import {
   Star,
   Table2,
   Trash2,
+  X,
 } from "lucide-react";
 import { toast } from "sonner";
 import { SafeMarkdown } from "@/components/knowledge/safe-markdown";
@@ -160,8 +164,7 @@ function parseRelations(value: string): KnowledgeTemplateRelation[] {
     }
     return {
       relation_type: String(entry.relation_type) as RelationType,
-      label:
-        "label" in entry && typeof entry.label === "string" ? entry.label : "",
+      label: "label" in entry && typeof entry.label === "string" ? entry.label : "",
     };
   });
 }
@@ -171,6 +174,14 @@ function toggleId(current: Set<string>, id: string) {
   if (next.has(id)) next.delete(id);
   else next.add(id);
   return next;
+}
+
+function formatUpdated(value: string) {
+  return new Intl.DateTimeFormat("pt-BR", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+  }).format(new Date(value));
 }
 
 export function KnowledgeLibrary({
@@ -190,15 +201,14 @@ export function KnowledgeLibrary({
   onOpenNode: (node: KnowledgeNode) => void;
   onChanged: () => void;
 }) {
+  const mobilePreviewRef = useRef<HTMLElement>(null);
   const [nodes, setNodes] = useState<KnowledgeNode[]>([]);
   const [count, setCount] = useState(0);
   const [hasMore, setHasMore] = useState(false);
   const [loading, setLoading] = useState(false);
   const [query, setQuery] = useState("");
   const [debouncedQuery, setDebouncedQuery] = useState("");
-  const [nodeType, setNodeType] = useState<
-    (typeof LIBRARY_TYPES)[number] | "all"
-  >("all");
+  const [nodeType, setNodeType] = useState<(typeof LIBRARY_TYPES)[number] | "all">("all");
   const [order, setOrder] = useState<KnowledgeSearchOrder>("updated");
   const [page, setPage] = useState(0);
   const [view, setView] = useState<LibraryView>("cards");
@@ -215,11 +225,9 @@ export function KnowledgeLibrary({
   const [targetCampaignId, setTargetCampaignId] = useState(campaignId ?? "");
   const [actionBusy, setActionBusy] = useState(false);
   const [templateEditorOpen, setTemplateEditorOpen] = useState(false);
-  const [editingTemplate, setEditingTemplate] =
-    useState<KnowledgeTemplate | null>(null);
+  const [editingTemplate, setEditingTemplate] = useState<KnowledgeTemplate | null>(null);
   const [templateName, setTemplateName] = useState("");
-  const [templateType, setTemplateType] =
-    useState<KnowledgeNodeType>("free_note");
+  const [templateType, setTemplateType] = useState<KnowledgeNodeType>("free_note");
   const [templateDescription, setTemplateDescription] = useState("");
   const [templateIcon, setTemplateIcon] = useState("");
   const [templateContent, setTemplateContent] = useState("");
@@ -227,9 +235,7 @@ export function KnowledgeLibrary({
   const [templateRequired, setTemplateRequired] = useState("");
   const [templateRelations, setTemplateRelations] = useState("[]");
   const [templateUseOpen, setTemplateUseOpen] = useState(false);
-  const [templateToUse, setTemplateToUse] = useState<KnowledgeTemplate | null>(
-    null,
-  );
+  const [templateToUse, setTemplateToUse] = useState<KnowledgeTemplate | null>(null);
   const [templateNodeTitle, setTemplateNodeTitle] = useState("");
 
   useEffect(() => {
@@ -239,6 +245,17 @@ export function KnowledgeLibrary({
     }, 250);
     return () => window.clearTimeout(timer);
   }, [query]);
+
+  useEffect(() => {
+    if (!preview || !window.matchMedia("(max-width: 1023px)").matches) return;
+    const frame = window.requestAnimationFrame(() => {
+      mobilePreviewRef.current?.scrollIntoView({
+        behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth",
+        block: "nearest",
+      });
+    });
+    return () => window.cancelAnimationFrame(frame);
+  }, [preview]);
 
   const loadNodes = useCallback(async () => {
     if (!open || !workspaceId) return;
@@ -284,8 +301,7 @@ export function KnowledgeLibrary({
   const loadTemplates = useCallback(async () => {
     if (!open || !workspaceId) return;
     try {
-      const canManage =
-        await knowledgeLibraryService.canManageWorkspace(workspaceId);
+      const canManage = await knowledgeLibraryService.canManageWorkspace(workspaceId);
       setCanManageTemplates(canManage);
       if (canManage) {
         await knowledgeLibraryService.ensureDefaultTemplates(workspaceId);
@@ -310,9 +326,7 @@ export function KnowledgeLibrary({
       .then((nextSheets) => {
         setSheets(nextSheets);
         setSheetId((current) =>
-          nextSheets.some((sheet) => sheet.id === current)
-            ? current
-            : (nextSheets[0]?.id ?? ""),
+          nextSheets.some((sheet) => sheet.id === current) ? current : (nextSheets[0]?.id ?? ""),
         );
       })
       .catch((error) => toast.error(messageFor(error)));
@@ -329,9 +343,7 @@ export function KnowledgeLibrary({
     try {
       await knowledgeLibraryService.setFavoriteBulk([...selectedIds], true);
       setFavoriteIds((current) => new Set([...current, ...selectedIds]));
-      toast.success(
-        `${selectedIds.size} item(ns) adicionado(s) aos favoritos.`,
-      );
+      toast.success(`${selectedIds.size} item(ns) adicionado(s) aos favoritos.`);
     } catch (error) {
       toast.error(messageFor(error));
     } finally {
@@ -343,13 +355,8 @@ export function KnowledgeLibrary({
     if (!selectedIds.size || !targetCampaignId) return;
     setActionBusy(true);
     try {
-      await knowledgeLibraryService.linkNodesToCampaign(
-        [...selectedIds],
-        targetCampaignId,
-      );
-      toast.success(
-        `${selectedIds.size} item(ns) vinculado(s) à campanha sem duplicação.`,
-      );
+      await knowledgeLibraryService.linkNodesToCampaign([...selectedIds], targetCampaignId);
+      toast.success(`${selectedIds.size} item(ns) vinculado(s) à campanha sem duplicação.`);
     } catch (error) {
       toast.error(messageFor(error));
     } finally {
@@ -361,15 +368,9 @@ export function KnowledgeLibrary({
     if (!selectedIds.size || !sheetId) return;
     setActionBusy(true);
     try {
-      await knowledgeLibraryService.linkNodesToSheet(
-        [...selectedIds],
-        sheetId,
-        sheetSlot,
-      );
+      await knowledgeLibraryService.linkNodesToSheet([...selectedIds], sheetId, sheetSlot);
       setSheetDialogOpen(false);
-      toast.success(
-        `${selectedIds.size} item(ns) vinculado(s) à ficha com origem preservada.`,
-      );
+      toast.success(`${selectedIds.size} item(ns) vinculado(s) à ficha com origem preservada.`);
     } catch (error) {
       toast.error(messageFor(error));
     } finally {
@@ -399,13 +400,9 @@ export function KnowledgeLibrary({
     setTemplateDescription(template?.description ?? "");
     setTemplateIcon(template?.icon ?? "");
     setTemplateContent(template?.default_content ?? "# {{title}}\n\n");
-    setTemplateProperties(
-      JSON.stringify(template?.default_properties ?? {}, null, 2),
-    );
+    setTemplateProperties(JSON.stringify(template?.default_properties ?? {}, null, 2));
     setTemplateRequired(template?.required_fields.join(", ") ?? "");
-    setTemplateRelations(
-      JSON.stringify(template?.suggested_relations ?? [], null, 2),
-    );
+    setTemplateRelations(JSON.stringify(template?.suggested_relations ?? [], null, 2));
     setTemplateEditorOpen(true);
   };
 
@@ -432,9 +429,7 @@ export function KnowledgeLibrary({
       }
       setTemplateEditorOpen(false);
       await loadTemplates();
-      toast.success(
-        editingTemplate ? "Template atualizado." : "Template criado.",
-      );
+      toast.success(editingTemplate ? "Template atualizado." : "Template criado.");
     } catch (error) {
       toast.error(error instanceof Error ? error.message : messageFor(error));
     } finally {
@@ -490,123 +485,222 @@ export function KnowledgeLibrary({
     }
   };
 
-  const nodeCard = (node: KnowledgeNode, compact = false) => {
+  const nodeCard = (node: KnowledgeNode, compact = false, index = 0) => {
     const selected = selectedIds.has(node.id);
     return (
       <Card
         key={node.id}
-        className={`group relative cursor-pointer p-3 transition-colors ${
-          selected ? "border-primary/60 bg-primary/[0.06]" : "hover:bg-muted/35"
+        data-node-type={node.node_type}
+        data-selected={selected ? "true" : "false"}
+        className={`tadeon-library-card tadeon-interactive-card group relative cursor-pointer p-3 ${
+          selected ? "is-selected" : ""
         }`}
         onClick={() => setPreview(node)}
       >
-        <div className="flex items-start gap-2">
+        <span className="tadeon-library-card__folio" aria-hidden="true">
+          {String(index + 1).padStart(2, "0")}
+        </span>
+        <div className="tadeon-library-card__body flex items-start gap-2">
           <input
             type="checkbox"
             checked={selected}
-            onChange={() =>
-              setSelectedIds((current) => toggleId(current, node.id))
-            }
+            onChange={() => setSelectedIds((current) => toggleId(current, node.id))}
             onClick={(event) => event.stopPropagation()}
-            className="mt-1 accent-[var(--tadeon-flow)]"
+            className="tadeon-library-card__check mt-1 accent-[var(--tadeon-flow)]"
             aria-label={`Selecionar ${node.title}`}
           />
           <div className="min-w-0 flex-1">
             <div className="flex items-start justify-between gap-2">
-              <p className="truncate text-sm font-semibold">{node.title}</p>
+              <div className="flex min-w-0 items-start gap-2">
+                <span className="tadeon-library-card__mark tadeon-interactive-card__icon">
+                  <BookOpenText aria-hidden="true" />
+                </span>
+                <div className="min-w-0">
+                  <button
+                    type="button"
+                    className="tadeon-library-card__title tadeon-interactive-card__title block w-full truncate text-left text-sm font-semibold"
+                    onClick={(event) => {
+                      event.stopPropagation();
+                      setPreview(node);
+                    }}
+                    aria-label={`Visualizar ${node.title}`}
+                  >
+                    {node.title}
+                  </button>
+                  <p className="tadeon-library-card__meta mt-0.5 text-[10px] uppercase tracking-wide text-muted-foreground">
+                    {TYPE_LABELS[node.node_type]}
+                    <span aria-hidden="true">·</span>
+                    <span data-status={node.status}>{node.status}</span>
+                  </p>
+                </div>
+              </div>
               <button
                 type="button"
                 onClick={(event) => {
                   event.stopPropagation();
                   void toggleFavorite(node);
                 }}
-                className="rounded p-1 hover:bg-muted"
+                className="tadeon-library-card__favorite rounded p-1 hover:bg-muted"
                 aria-label="Alternar favorito"
+                aria-pressed={favoriteIds.has(node.id)}
               >
                 <Star
                   className={`h-3.5 w-3.5 ${
-                    favoriteIds.has(node.id)
-                      ? "fill-primary text-primary"
-                      : "text-muted-foreground"
+                    favoriteIds.has(node.id) ? "fill-primary text-primary" : "text-muted-foreground"
                   }`}
                 />
               </button>
             </div>
-            <p className="mt-0.5 text-[10px] uppercase tracking-wide text-muted-foreground">
-              {TYPE_LABELS[node.node_type]} · {node.status}
-            </p>
             {!compact && (
-              <p className="mt-2 line-clamp-3 text-xs text-muted-foreground">
+              <p className="tadeon-library-card__summary mt-3 line-clamp-3 text-xs text-muted-foreground">
                 {node.summary || node.plain_text || "Sem resumo."}
               </p>
             )}
+            <p className="tadeon-library-card__updated mt-3 flex items-center gap-1.5 text-[10px] text-muted-foreground">
+              <CalendarClock className="h-3 w-3" aria-hidden="true" />
+              Atualizado {formatUpdated(node.updated_at)}
+            </p>
           </div>
         </div>
       </Card>
     );
   };
 
+  const previewPanel = (variant: "desktop" | "mobile") => (
+    <div
+      className={`tadeon-library-preview__inner ${preview ? "has-preview" : "is-empty"}`}
+      aria-live="polite"
+    >
+      {preview ? (
+        <>
+          <div className="tadeon-library-preview__heading flex items-start justify-between gap-3">
+            <div className="min-w-0">
+              <div className="flex flex-wrap items-center gap-2">
+                <Badge variant="outline">{TYPE_LABELS[preview.node_type]}</Badge>
+                <span className="tadeon-library-preview__status">{preview.status}</span>
+              </div>
+              <h3 className="mt-3 font-cinzel text-xl font-semibold">{preview.title}</h3>
+              <p className="mt-2 flex items-center gap-1.5 text-[10px] text-muted-foreground">
+                <CalendarClock className="h-3 w-3" aria-hidden="true" />
+                Atualizado {formatUpdated(preview.updated_at)}
+              </p>
+            </div>
+            <div className="flex shrink-0 items-center gap-1">
+              {favoriteIds.has(preview.id) && (
+                <Star className="h-4 w-4 fill-primary text-primary" />
+              )}
+              {variant === "mobile" && (
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => setPreview(null)}
+                  aria-label="Fechar visualização"
+                >
+                  <X className="h-4 w-4" />
+                </Button>
+              )}
+            </div>
+          </div>
+          {preview.summary && (
+            <p className="tadeon-library-preview__summary mt-3 text-sm text-muted-foreground">
+              {preview.summary}
+            </p>
+          )}
+          <div className="tadeon-library-preview__content mt-4 overflow-y-auto border-t pt-3 text-sm">
+            <SafeMarkdown
+              markdown={preview.content_markdown}
+              previews={{}}
+              onOpenNode={() => undefined}
+              onCreateMissing={() => undefined}
+            />
+          </div>
+          <Button
+            className="tadeon-library-preview__open mt-4 w-full"
+            onClick={() => {
+              onOpenNode(preview);
+              onOpenChange(false);
+            }}
+          >
+            <ExternalLink className="h-4 w-4" />
+            Abrir página completa
+          </Button>
+        </>
+      ) : (
+        <div className="tadeon-library-preview__empty">
+          <BookOpenText aria-hidden="true" />
+          <p>Selecione um item</p>
+          <span>Resumo, conteúdo e ações aparecerão aqui.</span>
+        </div>
+      )}
+    </div>
+  );
+
   return (
     <>
       <Dialog open={open} onOpenChange={onOpenChange}>
-        <DialogContent className="h-[94vh] max-w-[96vw] overflow-hidden p-0">
-          <DialogHeader className="border-b px-5 py-4">
+        <DialogContent className="tadeon-library-dialog h-[94vh] max-w-[96vw] overflow-hidden p-0">
+          <DialogHeader className="tadeon-library-header border-b px-5 py-4">
             <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
-              <div>
+              <div className="tadeon-library-header__identity">
+                <p className="tadeon-eyebrow">Acervo estruturado</p>
                 <DialogTitle className="flex items-center gap-2 font-cinzel">
-                  <LibraryBig className="h-5 w-5 text-primary" />
+                  <span className="tadeon-library-header__mark">
+                    <LibraryBig className="h-5 w-5" />
+                  </span>
                   Bibliotecas de O Nexus
                 </DialogTitle>
                 <DialogDescription>
-                  Visões estruturadas sobre as mesmas páginas, sem duplicar a
-                  fonte canônica.
+                  Visões estruturadas sobre as mesmas páginas, sem duplicar a fonte canônica.
                 </DialogDescription>
               </div>
-              <div className="flex flex-wrap gap-2">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setTemplatesOpen(true)}
-                >
+              <div className="tadeon-library-header__actions flex flex-wrap gap-2">
+                <Button variant="outline" size="sm" onClick={() => setTemplatesOpen(true)}>
                   <BookCopy className="h-4 w-4" />
                   Templates
                 </Button>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => setView("cards")}
-                  aria-label="Visualização em cartões"
+                <div
+                  className="tadeon-library-view-switch"
+                  role="group"
+                  aria-label="Modo de visualização"
                 >
-                  <Grid2X2
-                    className={`h-4 w-4 ${view === "cards" ? "text-primary" : ""}`}
-                  />
-                </Button>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => setView("table")}
-                  aria-label="Visualização em tabela"
-                >
-                  <Table2
-                    className={`h-4 w-4 ${view === "table" ? "text-primary" : ""}`}
-                  />
-                </Button>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => setView("compact")}
-                  aria-label="Visualização compacta"
-                >
-                  <Rows3
-                    className={`h-4 w-4 ${view === "compact" ? "text-primary" : ""}`}
-                  />
-                </Button>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => setView("cards")}
+                    aria-label="Visualização em cartões"
+                    aria-pressed={view === "cards"}
+                  >
+                    <Grid2X2 className="h-4 w-4" />
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => setView("table")}
+                    aria-label="Visualização em tabela"
+                    aria-pressed={view === "table"}
+                  >
+                    <Table2 className="h-4 w-4" />
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => setView("compact")}
+                    aria-label="Visualização compacta"
+                    aria-pressed={view === "compact"}
+                  >
+                    <Rows3 className="h-4 w-4" />
+                  </Button>
+                </div>
               </div>
             </div>
           </DialogHeader>
 
-          <div className="grid min-h-0 flex-1 lg:grid-cols-[220px_minmax(0,1fr)_320px]">
-            <aside className="min-h-0 overflow-y-auto border-r p-3">
+          <div className="tadeon-library-layout grid min-h-0 flex-1 lg:grid-cols-[240px_minmax(0,1fr)_340px]">
+            <aside className="tadeon-library-filters min-h-0 overflow-y-auto border-r p-3">
+              <div className="tadeon-library-filters__label">
+                <Filter className="h-3.5 w-3.5" aria-hidden="true" />
+                <span>Filtros e estantes</span>
+              </div>
               <div className="relative">
                 <Search className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
                 <Input
@@ -641,11 +735,10 @@ export function KnowledgeLibrary({
                   setNodeType("all");
                   setPage(0);
                 }}
-                className={`mt-1 flex w-full items-center justify-between rounded-lg px-2.5 py-2 text-left text-xs ${
-                  nodeType === "all"
-                    ? "bg-primary/12 text-primary"
-                    : "hover:bg-muted"
+                className={`tadeon-library-shelf mt-1 flex w-full items-center justify-between rounded-lg px-2.5 py-2 text-left text-xs ${
+                  nodeType === "all" ? "is-active" : ""
                 }`}
+                aria-pressed={nodeType === "all"}
               >
                 Todas as bibliotecas
                 <List className="h-3.5 w-3.5" />
@@ -658,39 +751,35 @@ export function KnowledgeLibrary({
                     setNodeType(type);
                     setPage(0);
                   }}
-                  className={`mt-0.5 block w-full rounded-lg px-2.5 py-2 text-left text-xs ${
-                    nodeType === type
-                      ? "bg-primary/12 text-primary"
-                      : "hover:bg-muted"
+                  className={`tadeon-library-shelf mt-0.5 block w-full rounded-lg px-2.5 py-2 text-left text-xs ${
+                    nodeType === type ? "is-active" : ""
                   }`}
+                  aria-pressed={nodeType === type}
                 >
                   {TYPE_LABELS[type]}
                 </button>
               ))}
             </aside>
 
-            <section className="min-h-0 overflow-y-auto p-4">
-              <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
+            <section
+              className="tadeon-library-results min-h-0 overflow-y-auto p-4"
+              data-view={view}
+            >
+              <div className="tadeon-library-results__bar mb-3 flex flex-wrap items-center justify-between gap-2">
                 <div className="flex items-center gap-2">
                   <input
                     type="checkbox"
-                    checked={
-                      nodes.length > 0 && selectedIds.size === nodes.length
-                    }
+                    checked={nodes.length > 0 && selectedIds.size === nodes.length}
                     onChange={(event) =>
                       setSelectedIds(
-                        event.target.checked
-                          ? new Set(nodes.map((node) => node.id))
-                          : new Set(),
+                        event.target.checked ? new Set(nodes.map((node) => node.id)) : new Set(),
                       )
                     }
                     className="accent-[var(--tadeon-flow)]"
                     aria-label="Selecionar página atual"
                   />
                   <Badge variant="outline">{count} item(ns)</Badge>
-                  {selectedIds.size > 0 && (
-                    <Badge>{selectedIds.size} selecionado(s)</Badge>
-                  )}
+                  {selectedIds.size > 0 && <Badge>{selectedIds.size} selecionado(s)</Badge>}
                 </div>
                 <div className="flex flex-wrap gap-1.5">
                   <Button
@@ -702,21 +791,13 @@ export function KnowledgeLibrary({
                     <Star className="h-3.5 w-3.5" />
                     Favoritar
                   </Button>
-                  <Select
-                    value={targetCampaignId}
-                    onValueChange={setTargetCampaignId}
-                  >
-                    <SelectTrigger
-                      className="h-9 w-[170px]"
-                      aria-label="Campanha de destino"
-                    >
+                  <Select value={targetCampaignId} onValueChange={setTargetCampaignId}>
+                    <SelectTrigger className="h-9 w-[170px]" aria-label="Campanha de destino">
                       <SelectValue placeholder="Campanha" />
                     </SelectTrigger>
                     <SelectContent>
                       {campaigns
-                        .filter(
-                          (campaign) => campaign.workspace_id === workspaceId,
-                        )
+                        .filter((campaign) => campaign.workspace_id === workspaceId)
                         .map((campaign) => (
                           <SelectItem key={campaign.id} value={campaign.id}>
                             {campaign.name}
@@ -728,9 +809,7 @@ export function KnowledgeLibrary({
                     variant="outline"
                     size="sm"
                     onClick={() => void runCampaignLink()}
-                    disabled={
-                      !selectedIds.size || !targetCampaignId || actionBusy
-                    }
+                    disabled={!selectedIds.size || !targetCampaignId || actionBusy}
                   >
                     Vincular campanha
                   </Button>
@@ -745,6 +824,15 @@ export function KnowledgeLibrary({
                 </div>
               </div>
 
+              {preview && (
+                <aside
+                  ref={mobilePreviewRef}
+                  className="tadeon-library-preview tadeon-library-preview--mobile lg:hidden"
+                >
+                  {previewPanel("mobile")}
+                </aside>
+              )}
+
               {loading ? (
                 <div className="flex min-h-72 items-center justify-center">
                   <Loader2 className="h-7 w-7 animate-spin text-primary" />
@@ -754,7 +842,7 @@ export function KnowledgeLibrary({
                   Nenhum item corresponde à visão e aos filtros.
                 </div>
               ) : view === "table" ? (
-                <div className="overflow-x-auto rounded-xl border">
+                <div className="tadeon-library-table overflow-x-auto rounded-xl border">
                   <table className="w-full text-left text-xs">
                     <thead className="bg-muted/45 text-[10px] uppercase tracking-wide text-muted-foreground">
                       <tr>
@@ -770,32 +858,36 @@ export function KnowledgeLibrary({
                         <tr
                           key={node.id}
                           onClick={() => setPreview(node)}
-                          className="cursor-pointer border-t hover:bg-muted/35"
+                          className="cursor-pointer border-t"
                         >
                           <td className="px-3 py-2">
                             <input
                               type="checkbox"
                               checked={selectedIds.has(node.id)}
                               onChange={() =>
-                                setSelectedIds((current) =>
-                                  toggleId(current, node.id),
-                                )
+                                setSelectedIds((current) => toggleId(current, node.id))
                               }
                               onClick={(event) => event.stopPropagation()}
                               className="accent-[var(--tadeon-flow)]"
                             />
                           </td>
-                          <td className="max-w-80 truncate px-3 py-2 font-medium">
-                            {node.title}
+                          <td className="max-w-80 px-3 py-2 font-medium">
+                            <button
+                              type="button"
+                              className="block max-w-80 truncate text-left hover:text-primary"
+                              onClick={(event) => {
+                                event.stopPropagation();
+                                setPreview(node);
+                              }}
+                              aria-label={`Visualizar ${node.title}`}
+                            >
+                              {node.title}
+                            </button>
                           </td>
-                          <td className="px-3 py-2">
-                            {TYPE_LABELS[node.node_type]}
-                          </td>
+                          <td className="px-3 py-2">{TYPE_LABELS[node.node_type]}</td>
                           <td className="px-3 py-2">{node.status}</td>
                           <td className="whitespace-nowrap px-3 py-2 text-muted-foreground">
-                            {new Date(node.updated_at).toLocaleDateString(
-                              "pt-BR",
-                            )}
+                            {new Date(node.updated_at).toLocaleDateString("pt-BR")}
                           </td>
                         </tr>
                       ))}
@@ -810,7 +902,7 @@ export function KnowledgeLibrary({
                       : "grid gap-3 sm:grid-cols-2 xl:grid-cols-3"
                   }
                 >
-                  {nodes.map((node) => nodeCard(node, view === "compact"))}
+                  {nodes.map((node, index) => nodeCard(node, view === "compact", index))}
                 </div>
               )}
 
@@ -819,17 +911,13 @@ export function KnowledgeLibrary({
                   <Button
                     variant="outline"
                     size="sm"
-                    onClick={() =>
-                      setPage((current) => Math.max(0, current - 1))
-                    }
+                    onClick={() => setPage((current) => Math.max(0, current - 1))}
                     disabled={page === 0 || loading}
                   >
                     <ChevronLeft className="h-4 w-4" />
                     Anterior
                   </Button>
-                  <span className="text-xs text-muted-foreground">
-                    Página {page + 1}
-                  </span>
+                  <span className="text-xs text-muted-foreground">Página {page + 1}</span>
                   <Button
                     variant="outline"
                     size="sm"
@@ -843,51 +931,8 @@ export function KnowledgeLibrary({
               )}
             </section>
 
-            <aside className="hidden min-h-0 overflow-y-auto border-l p-4 lg:block">
-              {preview ? (
-                <>
-                  <div className="flex items-start justify-between gap-3">
-                    <div>
-                      <Badge variant="outline">
-                        {TYPE_LABELS[preview.node_type]}
-                      </Badge>
-                      <h3 className="mt-3 font-cinzel text-xl font-semibold">
-                        {preview.title}
-                      </h3>
-                    </div>
-                    {favoriteIds.has(preview.id) && (
-                      <Star className="h-4 w-4 fill-primary text-primary" />
-                    )}
-                  </div>
-                  {preview.summary && (
-                    <p className="mt-3 text-sm text-muted-foreground">
-                      {preview.summary}
-                    </p>
-                  )}
-                  <div className="mt-4 max-h-[55vh] overflow-y-auto border-t pt-1 text-sm">
-                    <SafeMarkdown
-                      markdown={preview.content_markdown}
-                      previews={{}}
-                      onOpenNode={() => undefined}
-                      onCreateMissing={() => undefined}
-                    />
-                  </div>
-                  <Button
-                    className="mt-4 w-full"
-                    onClick={() => {
-                      onOpenNode(preview);
-                      onOpenChange(false);
-                    }}
-                  >
-                    <ExternalLink className="h-4 w-4" />
-                    Abrir página
-                  </Button>
-                </>
-              ) : (
-                <p className="text-sm text-muted-foreground">
-                  Selecione um item para visualizar.
-                </p>
-              )}
+            <aside className="tadeon-library-preview hidden min-h-0 overflow-y-auto border-l p-4 lg:block">
+              {previewPanel("desktop")}
             </aside>
           </div>
         </DialogContent>
@@ -896,12 +941,10 @@ export function KnowledgeLibrary({
       <Dialog open={templatesOpen} onOpenChange={setTemplatesOpen}>
         <DialogContent className="max-h-[90vh] max-w-4xl overflow-y-auto">
           <DialogHeader>
-            <DialogTitle className="font-cinzel">
-              Templates de página
-            </DialogTitle>
+            <DialogTitle className="font-cinzel">Templates de página</DialogTitle>
             <DialogDescription>
-              Defaults por tipo, propriedades e relações sugeridas. Campos não
-              listados continuam opcionais.
+              Defaults por tipo, propriedades e relações sugeridas. Campos não listados continuam
+              opcionais.
             </DialogDescription>
           </DialogHeader>
           <div className="flex justify-end">
@@ -923,9 +966,7 @@ export function KnowledgeLibrary({
                       {template.is_default ? " · inicial" : ""}
                     </p>
                   </div>
-                  <Badge variant="outline">
-                    {template.required_fields.length} obrigatório(s)
-                  </Badge>
+                  <Badge variant="outline">{template.required_fields.length} obrigatório(s)</Badge>
                 </div>
                 <p className="mt-3 line-clamp-3 text-xs text-muted-foreground">
                   {template.description || "Sem descrição."}
@@ -984,8 +1025,8 @@ export function KnowledgeLibrary({
               {editingTemplate ? "Editar template" : "Novo template"}
             </DialogTitle>
             <DialogDescription>
-              Defina apenas os campos úteis ao tipo. Relações sugeridas não são
-              criadas automaticamente.
+              Defina apenas os campos úteis ao tipo. Relações sugeridas não são criadas
+              automaticamente.
             </DialogDescription>
           </DialogHeader>
           <div className="grid gap-4 sm:grid-cols-2">
@@ -1002,9 +1043,7 @@ export function KnowledgeLibrary({
               <Label>Tipo</Label>
               <Select
                 value={templateType}
-                onValueChange={(value) =>
-                  setTemplateType(value as KnowledgeNodeType)
-                }
+                onValueChange={(value) => setTemplateType(value as KnowledgeNodeType)}
               >
                 <SelectTrigger className="mt-1">
                   <SelectValue />
@@ -1096,9 +1135,7 @@ export function KnowledgeLibrary({
       <Dialog open={templateUseOpen} onOpenChange={setTemplateUseOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle className="font-cinzel">
-              Criar pelo template
-            </DialogTitle>
+            <DialogTitle className="font-cinzel">Criar pelo template</DialogTitle>
             <DialogDescription>
               {templateToUse?.name} ·{" "}
               {templateToUse ? TYPE_LABELS[templateToUse.node_type] : "Página"}
@@ -1136,8 +1173,8 @@ export function KnowledgeLibrary({
           <DialogHeader>
             <DialogTitle className="font-cinzel">Vincular à ficha</DialogTitle>
             <DialogDescription>
-              Cria uma referência com origem rastreável; a ficha não é reescrita
-              nem recebe uma cópia silenciosa.
+              Cria uma referência com origem rastreável; a ficha não é reescrita nem recebe uma
+              cópia silenciosa.
             </DialogDescription>
           </DialogHeader>
           <div className="grid gap-4 sm:grid-cols-2">
@@ -1160,9 +1197,7 @@ export function KnowledgeLibrary({
               <Label>Destino lógico</Label>
               <Select
                 value={sheetSlot}
-                onValueChange={(value) =>
-                  setSheetSlot(value as KnowledgeSheetSlot)
-                }
+                onValueChange={(value) => setSheetSlot(value as KnowledgeSheetSlot)}
               >
                 <SelectTrigger className="mt-1">
                   <SelectValue />
@@ -1181,10 +1216,7 @@ export function KnowledgeLibrary({
             <Button variant="outline" onClick={() => setSheetDialogOpen(false)}>
               Cancelar
             </Button>
-            <Button
-              onClick={() => void runSheetLink()}
-              disabled={!sheetId || actionBusy}
-            >
+            <Button onClick={() => void runSheetLink()} disabled={!sheetId || actionBusy}>
               {actionBusy && <Loader2 className="h-4 w-4 animate-spin" />}
               Vincular {selectedNodes.length} item(ns)
             </Button>
