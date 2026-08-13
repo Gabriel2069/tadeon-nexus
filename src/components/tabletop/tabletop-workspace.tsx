@@ -61,6 +61,7 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { BrandMark, ThreadField } from "@/components/brand-mark";
 import { TabletopLiveSession } from "@/components/tabletop/tabletop-live-session";
+import { TabletopHandoutViewer } from "@/components/tabletop/tabletop-handout-viewer";
 import { TabletopEntityDossier } from "@/components/tabletop/tabletop-entity-dossier";
 import { TabletopVisibilityPanel } from "@/components/tabletop/tabletop-visibility-panel";
 import { Input } from "@/components/ui/input";
@@ -87,6 +88,8 @@ import {
 import { TabletopEngine } from "@/lib/tabletop/tabletop-engine";
 import { tabletopEntityInsightService } from "@/lib/tabletop/tabletop-entity-insight-service";
 import type { TabletopSheetSummary } from "@/lib/tabletop/tabletop-entity-insight";
+import { tabletopMasterHandoutService } from "@/lib/tabletop/tabletop-master-handout-service";
+import type { TabletopParticipantHandout } from "@/lib/tabletop/tabletop-participant-service";
 import { assetService } from "@/lib/assets/asset-service";
 import { AssetServiceError } from "@/lib/assets/asset-errors";
 import type { TabletopToolMode } from "@/lib/tabletop/interaction-controller";
@@ -324,6 +327,10 @@ export function TabletopWorkspace({
   const [dossierEntityId, setDossierEntityId] = useState<string | null>(null);
   const [dossierSheetSummary, setDossierSheetSummary] =
     useState<TabletopSheetSummary | null>(null);
+  const [dossierHandout, setDossierHandout] =
+    useState<TabletopParticipantHandout | null>(null);
+  const [selectedHandout, setSelectedHandout] =
+    useState<TabletopParticipantHandout | null>(null);
   const [dossierLoading, setDossierLoading] = useState(false);
   const [diagnostics, setDiagnostics] = useState(false);
   const [mobileToolsOpen, setMobileToolsOpen] = useState(false);
@@ -717,21 +724,53 @@ export function TabletopWorkspace({
     dossierRequestRef.current = request;
     setDossierEntityId(entity.id);
     setDossierSheetSummary(null);
-    setDossierLoading(Boolean(entity.linkedSheetId));
-    if (!entity.linkedSheetId) return;
-    void tabletopEntityInsightService
-      .loadSheetSummary(entity.linkedSheetId)
-      .then((summary) => {
-        if (dossierRequestRef.current === request)
-          setDossierSheetSummary(summary);
-      })
-      .catch(() => {
-        if (dossierRequestRef.current === request)
-          toast.error("A ficha vinculada não pôde ser resumida com segurança.");
-      })
-      .finally(() => {
-        if (dossierRequestRef.current === request) setDossierLoading(false);
-      });
+    setDossierHandout(null);
+    const tasks: Promise<void>[] = [];
+
+    if (entity.linkedSheetId) {
+      tasks.push(
+        tabletopEntityInsightService
+          .loadSheetSummary(entity.linkedSheetId)
+          .then((summary) => {
+            if (dossierRequestRef.current === request)
+              setDossierSheetSummary(summary);
+          })
+          .catch(() => {
+            if (dossierRequestRef.current === request)
+              toast.error(
+                "A ficha vinculada não pôde ser resumida com segurança.",
+              );
+          }),
+      );
+    }
+
+    if (entity.linkedKnowledgeNodeId) {
+      tasks.push(
+        tabletopMasterHandoutService
+          .load(entity.linkedKnowledgeNodeId)
+          .then((handout) => {
+            if (dossierRequestRef.current !== request) return;
+            if (entity.type === "handout_pin") {
+              setDossierEntityId(null);
+              setSelectedHandout(handout);
+            } else {
+              setDossierHandout(handout);
+            }
+          })
+          .catch(() => {
+            if (dossierRequestRef.current === request)
+              toast.error(
+                "O arquivo vinculado não pôde ser aberto com segurança.",
+              );
+          }),
+      );
+    }
+
+    setDossierLoading(tasks.length > 0);
+    if (tasks.length === 0) return;
+    void Promise.all(tasks).finally(() => {
+      if (dossierRequestRef.current === request) setDossierLoading(false);
+    });
   }, []);
 
   const flushViewPreference = useCallback(() => {
@@ -4143,9 +4182,18 @@ export function TabletopWorkspace({
         </AlertDialogContent>
       </AlertDialog>
 
+      <TabletopHandoutViewer
+        handout={selectedHandout}
+        open={selectedHandout !== null}
+        onOpenChange={(open) => {
+          if (!open) setSelectedHandout(null);
+        }}
+      />
+
       <TabletopEntityDossier
         entity={dossierEntity}
         sheetSummary={dossierSheetSummary}
+        handout={dossierHandout}
         loading={dossierLoading}
         open={dossierEntity !== null}
         onOpenChange={(open) => {
@@ -4153,8 +4201,16 @@ export function TabletopWorkspace({
             dossierRequestRef.current += 1;
             setDossierEntityId(null);
             setDossierSheetSummary(null);
+            setDossierHandout(null);
             setDossierLoading(false);
           }
+        }}
+        onOpenHandout={(handout) => {
+          dossierRequestRef.current += 1;
+          setDossierEntityId(null);
+          setDossierHandout(null);
+          setDossierLoading(false);
+          setSelectedHandout(handout);
         }}
       />
 
