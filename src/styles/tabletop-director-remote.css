@@ -75,14 +75,14 @@
   align-items: center;
   justify-content: center;
   gap: 0.35rem;
-  overflow: hidden;
   border: 1px solid rgb(255 255 255 / 8%);
   border-radius: 0.55rem;
   background: rgb(255 255 255 / 2.5%);
   color: rgb(255 255 255 / 58%);
   font-size: 0.68rem;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  line-height: 1.15;
+  text-align: center;
+  white-space: normal;
   transition: 150ms ease;
 }
 
@@ -164,78 +164,5 @@
   .tadeon-director-remote__camera,
   .tadeon-director-remote__toggles {
     grid-template-columns: 1fr;
-  }
-}
-
-/* Mesa stability follow-up after the responsive/motion pass. */
-.tadeon-tabletop-studio .tadeon-tabletop-stage:has(.tadeon-tabletop-tool-options) .tadeon-tabletop-canvas-host,
-.tadeon-tabletop-studio .tadeon-tabletop-stage:has(.tadeon-tabletop-selection-dock) .tadeon-tabletop-canvas-host,
-.tadeon-tabletop-studio .tadeon-tabletop-stage:has(.tadeon-tabletop-tool-options):has(.tadeon-tabletop-selection-dock) .tadeon-tabletop-canvas-host {
-  top: 0.65rem !important;
-}
-
-.tadeon-tabletop-context-menu {
-  width: min(11rem, calc(100vw - 1rem)) !important;
-  max-width: calc(100vw - 1rem) !important;
-  max-height: min(15rem, calc(100dvh - 1rem)) !important;
-  overscroll-behavior: contain;
-}
-
-.tadeon-tabletop-context-menu[data-state="closed"] {
-  visibility: hidden !important;
-  opacity: 0 !important;
-  pointer-events: none !important;
-  animation: none !important;
-}
-
-[data-radix-popper-content-wrapper] {
-  max-width: calc(100vw - 1rem) !important;
-  max-height: calc(100dvh - 1rem) !important;
-}
-
-.tadeon-tabletop-panel__tab > span,
-.tadeon-tabletop-command-spaces button > span,
-.tadeon-tabletop-selection-dock button > span,
-.tadeon-tabletop-tool-options button > span {
-  min-width: 0;
-  overflow: hidden !important;
-  text-overflow: ellipsis !important;
-  white-space: nowrap;
-}
-
-.tadeon-tabletop-studio :is(button, [role="button"]) > svg,
-.tadeon-tabletop-toolbar svg,
-.tadeon-director-remote button > svg,
-.tadeon-director-output button > svg {
-  flex: 0 0 auto;
-  overflow: visible;
-  transform-origin: center;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .tadeon-tabletop-studio :is(button, [role="button"]) > svg:not(.animate-spin),
-  .tadeon-director-remote button > svg:not(.animate-spin),
-  .tadeon-director-output button > svg:not(.animate-spin) {
-    transition: transform 180ms var(--ease-out, ease-out), filter 180ms var(--ease-out, ease-out);
-  }
-
-  .tadeon-tabletop-studio :is(button, [role="button"]):hover > svg:not(.animate-spin),
-  .tadeon-director-remote button:hover > svg:not(.animate-spin),
-  .tadeon-director-output button:hover > svg:not(.animate-spin) {
-    transform: translateY(-1px) scale(1.07);
-  }
-
-  .tadeon-tabletop-studio :is(button, [role="button"]):active > svg:not(.animate-spin),
-  .tadeon-director-remote button:active > svg:not(.animate-spin),
-  .tadeon-director-output button:active > svg:not(.animate-spin) {
-    transform: scale(0.9);
-  }
-}
-
-@media (max-width: 639px) {
-  .tadeon-tabletop-studio .tadeon-tabletop-stage:has(.tadeon-tabletop-tool-options) .tadeon-tabletop-canvas-host,
-  .tadeon-tabletop-studio .tadeon-tabletop-stage:has(.tadeon-tabletop-selection-dock) .tadeon-tabletop-canvas-host,
-  .tadeon-tabletop-studio .tadeon-tabletop-stage:has(.tadeon-tabletop-tool-options):has(.tadeon-tabletop-selection-dock) .tadeon-tabletop-canvas-host {
-    top: 0.55rem !important;
   }
 }
