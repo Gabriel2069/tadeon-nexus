@@ -33,6 +33,8 @@ const Toggle = React.forwardRef<
 >(({ className, variant, size, ...props }, ref) => (
   <TogglePrimitive.Root
     ref={ref}
+    data-slot="toggle"
+    data-size={size ?? "default"}
     className={cn(toggleVariants({ variant, size, className }))}
     {...props}
   />

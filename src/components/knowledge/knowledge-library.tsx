@@ -492,10 +492,20 @@ export function KnowledgeLibrary({
         key={node.id}
         data-node-type={node.node_type}
         data-selected={selected ? "true" : "false"}
+        role="group"
+        tabIndex={0}
+        aria-label={`Visualizar ${node.title}`}
         className={`tadeon-library-card tadeon-interactive-card group relative cursor-pointer p-3 ${
           selected ? "is-selected" : ""
         }`}
         onClick={() => setPreview(node)}
+        onKeyDown={(event) => {
+          if (event.target !== event.currentTarget) return;
+          if (event.key === "Enter" || event.key === " ") {
+            event.preventDefault();
+            setPreview(node);
+          }
+        }}
       >
         <span className="tadeon-library-card__folio" aria-hidden="true">
           {String(index + 1).padStart(2, "0")}

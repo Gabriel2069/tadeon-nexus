@@ -549,6 +549,7 @@ export function InvestigationHub({
                         <button
                           key={item.id}
                           type="button"
+                          aria-pressed={active}
                           onClick={() =>
                             patch(clue.id, {
                               linkedClueIds: active

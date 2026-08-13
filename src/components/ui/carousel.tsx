@@ -135,6 +135,7 @@ const Carousel = React.forwardRef<
       >
         <div
           ref={ref}
+          data-slot="carousel"
           onKeyDownCapture={handleKeyDown}
           className={cn("relative", className)}
           role="region"
@@ -156,9 +157,10 @@ const CarouselContent = React.forwardRef<
   const { carouselRef, orientation } = useCarousel();
 
   return (
-    <div ref={carouselRef} className="overflow-hidden">
+    <div ref={carouselRef} data-slot="carousel-viewport" className="overflow-hidden">
       <div
         ref={ref}
+        data-slot="carousel-content"
         className={cn(
           "flex",
           orientation === "horizontal" ? "-ml-4" : "-mt-4 flex-col",
@@ -180,6 +182,7 @@ const CarouselItem = React.forwardRef<
   return (
     <div
       ref={ref}
+      data-slot="carousel-item"
       role="group"
       aria-roledescription="slide"
       className={cn(
@@ -202,6 +205,7 @@ const CarouselPrevious = React.forwardRef<
   return (
     <Button
       ref={ref}
+      data-carousel-control="previous"
       variant={variant}
       size={size}
       className={cn(
@@ -231,6 +235,7 @@ const CarouselNext = React.forwardRef<
   return (
     <Button
       ref={ref}
+      data-carousel-control="next"
       variant={variant}
       size={size}
       className={cn(

@@ -45,6 +45,7 @@ const ChartContainer = React.forwardRef<
   return (
     <ChartContext.Provider value={{ config }}>
       <div
+        data-slot="chart"
         data-chart={chartId}
         ref={ref}
         className={cn(
@@ -158,6 +159,7 @@ const ChartTooltipContent = React.forwardRef<
     return (
       <div
         ref={ref}
+        data-slot="chart-tooltip"
         className={cn(
           "grid min-w-[8rem] items-start gap-1.5 rounded-lg border border-border/50 bg-background px-2.5 py-1.5 text-xs shadow-xl",
           className,
@@ -256,6 +258,7 @@ const ChartLegendContent = React.forwardRef<
 
   return (
     <div
+      data-slot="chart-legend"
       ref={ref}
       className={cn(
         "flex items-center justify-center gap-4",

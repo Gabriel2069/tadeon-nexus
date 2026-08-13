@@ -376,6 +376,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
       <div aria-hidden className="tadeon-ambient tadeon-ambient--flow" />
       {/* Desktop sidebar */}
       <aside
+        id="tadeon-desktop-sidebar"
         className={`tadeon-sidebar relative z-20 hidden shrink-0 border-r border-sidebar-border bg-sidebar/95 text-sidebar-foreground shadow-[24px_0_80px_-50px_rgba(0,0,0,.95)] md:flex ${
           collapsed ? "w-16" : "w-64"
         }`}
@@ -385,6 +386,9 @@ export function AppLayout({ children }: { children: ReactNode }) {
           type="button"
           onClick={() => setCollapsed((p) => !p)}
           aria-label={collapsed ? "Expandir menu" : "Recolher menu"}
+          aria-controls="tadeon-desktop-sidebar"
+          aria-expanded={!collapsed}
+          data-state={collapsed ? "collapsed" : "expanded"}
           title={collapsed ? "Expandir" : "Recolher"}
           className="absolute -right-5 top-6 z-10 flex h-10 w-10 items-center justify-center rounded-full border border-border bg-card text-muted-foreground shadow-md transition-[color,background-color,border-color,box-shadow,transform] duration-150 ease-[var(--ease-out)] hover:border-primary/45 hover:text-primary active:scale-[.97]"
         >
@@ -433,6 +437,8 @@ export function AppLayout({ children }: { children: ReactNode }) {
               className="tadeon-desktop-toolbar__account"
               onClick={() => setAccountOpen(true)}
               aria-label="Abrir configurações da conta"
+              aria-haspopup="dialog"
+              aria-expanded={accountOpen}
             >
               <span className="min-w-0 text-right">
                 <strong className="block truncate text-xs font-semibold text-foreground">
@@ -454,6 +460,8 @@ export function AppLayout({ children }: { children: ReactNode }) {
             onClick={() => setMobileOpen(true)}
             className="tadeon-mobile-header__control flex h-11 w-11 items-center justify-center rounded-xl border transition-[color,background-color,border-color,transform] duration-150 ease-[var(--ease-out)] active:scale-[.96]"
             aria-label="Abrir menu"
+            aria-controls="tadeon-mobile-navigation"
+            aria-expanded={mobileOpen}
           >
             <Menu className="w-5 h-5" />
           </button>
@@ -479,6 +487,8 @@ export function AppLayout({ children }: { children: ReactNode }) {
               onClick={() => setAccountOpen(true)}
               className="tadeon-mobile-header__control flex h-11 w-11 items-center justify-center rounded-xl border transition-[color,background-color,border-color,transform] duration-150 ease-[var(--ease-out)] active:scale-[.96]"
               aria-label="Conta"
+              aria-haspopup="dialog"
+              aria-expanded={accountOpen}
             >
               <Settings className="w-5 h-5" />
             </button>
@@ -557,6 +567,8 @@ export function AppLayout({ children }: { children: ReactNode }) {
             type="button"
             className="tadeon-mobile-dock__item"
             onClick={() => setMobileOpen(true)}
+            aria-controls="tadeon-mobile-navigation"
+            aria-expanded={mobileOpen}
           >
             <MoreHorizontal className="h-5 w-5" />
             <span>Mais</span>
@@ -567,6 +579,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
       {/* Mobile drawer: Radix preserves focus, Escape and symmetric exit motion. */}
       <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
         <SheetContent
+          id="tadeon-mobile-navigation"
           side="left"
           className="tadeon-mobile-drawer h-[100dvh] w-[min(19rem,88vw)] border-sidebar-border bg-sidebar p-0 text-sidebar-foreground sm:max-w-none md:hidden"
         >

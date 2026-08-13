@@ -75,6 +75,7 @@ const SelectContent = React.forwardRef<
   <SelectPrimitive.Portal>
     <SelectPrimitive.Content
       ref={ref}
+      data-slot="select-content"
       className={cn(
         "relative z-50 max-h-(--radix-select-content-available-height) min-w-[8rem] overflow-y-auto overflow-x-hidden rounded-[0.8rem] border border-primary/15 bg-popover/98 text-popover-foreground shadow-[0_20px_60px_-24px_rgba(0,0,0,.92),inset_0_1px_0_rgba(255,255,255,.04)] duration-150 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-1 data-[side=left]:slide-in-from-right-1 data-[side=right]:slide-in-from-left-1 data-[side=top]:slide-in-from-bottom-1 origin-(--radix-select-content-transform-origin)",
         position === "popper" &&
@@ -86,6 +87,7 @@ const SelectContent = React.forwardRef<
     >
       <SelectScrollUpButton />
       <SelectPrimitive.Viewport
+        data-slot="select-viewport"
         className={cn(
           "p-1",
           position === "popper" &&
@@ -106,6 +108,7 @@ const SelectLabel = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <SelectPrimitive.Label
     ref={ref}
+    data-slot="select-label"
     className={cn("px-2 py-1.5 text-sm font-semibold", className)}
     {...props}
   />
@@ -141,6 +144,7 @@ const SelectSeparator = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <SelectPrimitive.Separator
     ref={ref}
+    data-slot="select-separator"
     className={cn("-mx-1 my-1 h-px bg-muted", className)}
     {...props}
   />

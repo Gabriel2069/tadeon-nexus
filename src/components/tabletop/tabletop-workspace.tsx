@@ -2295,6 +2295,7 @@ export function TabletopWorkspace({
               <button
                 type="button"
                 className="tadeon-tabletop-selection-dock__state"
+                aria-pressed={selectedFog.operation === "reveal"}
                 disabled={!editable}
                 onClick={() =>
                   previewVisibility({
@@ -2592,6 +2593,7 @@ export function TabletopWorkspace({
             className="tadeon-tabletop-panel__expand"
             onClick={() => setPanelCollapsed(false)}
             aria-label="Expandir painel contextual"
+            aria-expanded={!panelCollapsed}
             title="Expandir painel"
           >
             <PanelRightOpen className="h-4 w-4" />
@@ -3319,6 +3321,7 @@ export function TabletopWorkspace({
                       type="button"
                       className="grid h-10 w-10 place-items-center rounded-lg hover:bg-secondary disabled:opacity-40"
                       aria-label={layer.visible ? `Ocultar ${layer.name}` : `Exibir ${layer.name}`}
+                      aria-pressed={layer.visible}
                       disabled={!editable}
                       onClick={() =>
                         engineRef.current?.updateLayer(layer.id, {
@@ -3338,6 +3341,7 @@ export function TabletopWorkspace({
                       aria-label={
                         layer.locked ? `Desbloquear ${layer.name}` : `Bloquear ${layer.name}`
                       }
+                      aria-pressed={layer.locked}
                       disabled={!editable || layer.layerType === "map"}
                       onClick={() =>
                         engineRef.current?.updateLayer(layer.id, {
@@ -4295,6 +4299,7 @@ export function TabletopWorkspace({
                 <button
                   type="button"
                   className="min-h-10 rounded bg-secondary/50 px-2 text-left text-[11px] hover:bg-secondary"
+                  aria-pressed={selectedLight.enabled}
                   onClick={() =>
                     previewVisibility({
                       ...visibilityRef.current,
@@ -4311,6 +4316,7 @@ export function TabletopWorkspace({
                 <button
                   type="button"
                   className="min-h-10 rounded bg-secondary/50 px-2 text-left text-[11px] hover:bg-secondary"
+                  aria-pressed={selectedLight.castsShadows}
                   onClick={() =>
                     previewVisibility({
                       ...visibilityRef.current,

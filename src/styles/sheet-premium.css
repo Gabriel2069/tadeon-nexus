@@ -1776,6 +1776,33 @@
   }
 }
 
+/* Power-state entry follows the same Fio-Mestre material as the archive. */
+
+.tadeon-sheet-power-button {
+  border-color: color-mix(in srgb, var(--tadeon-fear) 54%, var(--border));
+  color: color-mix(in srgb, var(--tadeon-knowledge) 76%, var(--foreground));
+  background:
+    linear-gradient(120deg, rgb(116 36 45 / 16%), transparent 68%),
+    var(--tadeon-surface-2, var(--secondary));
+  box-shadow:
+    0 14px 32px -25px var(--tadeon-fear),
+    inset 0 1px rgb(255 255 255 / 4%);
+}
+
+.tadeon-sheet-power-button > svg {
+  color: color-mix(in srgb, var(--tadeon-fear) 72%, var(--tadeon-knowledge));
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .tadeon-sheet-power-button:hover {
+    border-color: color-mix(in srgb, var(--tadeon-fear) 72%, var(--primary));
+    color: var(--tadeon-ice);
+    background:
+      linear-gradient(120deg, rgb(116 36 45 / 25%), transparent 72%),
+      var(--tadeon-surface-raised, var(--secondary));
+  }
+}
+
 /* Forma de Poder — intensity through Fio-Mestre material, not neon. */
 .tadeon-vp-page {
   --vp-accent: #9b5961;

@@ -796,7 +796,7 @@ function SheetPage() {
                       });
                     }
                   }}
-                  className="tadeon-sheet-power-button gap-1.5 border-orange-400/60 font-bold tracking-widest text-orange-300 shadow-[0_0_15px_-5px_rgba(255,140,60,0.7)] hover:bg-orange-500/15"
+                  className="tadeon-sheet-power-button gap-1.5 font-bold tracking-widest"
                   title="Abrir Forma de Poder (VP)"
                 >
                   <Sparkles className="w-4 h-4" /> VP
