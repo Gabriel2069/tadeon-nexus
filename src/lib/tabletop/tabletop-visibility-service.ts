@@ -39,10 +39,22 @@ export interface TabletopLight {
   visibilityPolygon?: Array<{ x: number; y: number }>;
 }
 
+export type TabletopFogShape = "brush" | "rectangle" | "ellipse" | "polygon";
+
+export function isTabletopFogShape(value: unknown): value is TabletopFogShape {
+  return (
+    value === "brush" ||
+    value === "rectangle" ||
+    value === "ellipse" ||
+    value === "polygon"
+  );
+}
+
 export interface TabletopFogStroke {
   id: string;
   levelId?: string;
   operation: "reveal" | "hide";
+  shape: TabletopFogShape;
   points: Array<{ x: number; y: number }>;
   radius: number;
   sequenceIndex: number;
@@ -142,6 +154,7 @@ export function clampVisibilityState(
     })),
     fogStrokes: state.fogStrokes.slice(0, 512).map((stroke, index) => ({
       ...stroke,
+      shape: isTabletopFogShape(stroke.shape) ? stroke.shape : "brush",
       points: stroke.points.slice(0, 64),
       radius: Math.max(8, Math.min(1024, finite(stroke.radius, 160))),
       sequenceIndex: index,
@@ -178,7 +191,7 @@ export class TabletopVisibilityService {
           .order("created_at"),
         this.database
           .from("tabletop_fog_strokes")
-          .select("id,level_id,operation,points,radius,sequence_index")
+          .select("id,level_id,operation,geometry,points,radius,sequence_index")
           .eq("scene_id", sceneId)
           .order("sequence_index"),
       ],
@@ -230,6 +243,7 @@ export class TabletopVisibilityService {
         id: stroke.id,
         levelId: stroke.level_id,
         operation: stroke.operation,
+        shape: isTabletopFogShape(stroke.geometry) ? stroke.geometry : "brush",
         points: Array.isArray(stroke.points)
           ? stroke.points.map((point: { x?: unknown; y?: unknown }) => ({
               x: finite(point.x),
@@ -284,6 +298,7 @@ export class TabletopVisibilityService {
           id: stroke.id,
           level_id: stroke.levelId,
           operation: stroke.operation,
+          geometry: stroke.shape,
           points: stroke.points,
           radius: stroke.radius,
           sequence_index: stroke.sequenceIndex,

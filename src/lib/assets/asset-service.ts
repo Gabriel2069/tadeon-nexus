@@ -259,24 +259,13 @@ export class AssetService {
       }
 
       const { data: asset, error: registrationError } = await assetDatabase
-        .from("assets")
-        .insert({
-          id: assetId,
-          workspace_id: options.workspaceId,
-          campaign_id: options.campaignId ?? null,
-          provider,
-          bucket,
-          object_key: objectKey,
-          original_name: validated.originalName,
-          display_name: displayName,
-          mime_type: validated.mimeType,
-          extension: validated.extension,
-          size_bytes: validated.sizeBytes,
-          visibility,
-          created_by: session.user.id,
-          metadata,
+        .rpc("finalize_asset_upload", {
+          target_session_id: uploadSessionId,
+          target_original_name: validated.originalName,
+          target_display_name: displayName,
+          target_visibility: visibility,
+          target_metadata: metadata,
         })
-        .select("*")
         .single();
 
       if (registrationError || !asset) {

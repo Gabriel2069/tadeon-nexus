@@ -6,10 +6,27 @@ import type { TabletopFogStroke } from "./tabletop-visibility-service";
 describe("contrato da névoa", () => {
   it("preserva a ordem explícita de revelar e ocultar", () => {
     const strokes: TabletopFogStroke[] = [
-      { id: "a", operation: "hide", points: [{ x: 1, y: 1 }], radius: 32, sequenceIndex: 2 },
-      { id: "b", operation: "reveal", points: [{ x: 2, y: 2 }], radius: 32, sequenceIndex: 1 },
+      {
+        id: "a",
+        operation: "hide",
+        shape: "brush",
+        points: [{ x: 1, y: 1 }],
+        radius: 32,
+        sequenceIndex: 2,
+      },
+      {
+        id: "b",
+        operation: "reveal",
+        shape: "brush",
+        points: [{ x: 2, y: 2 }],
+        radius: 32,
+        sequenceIndex: 1,
+      },
     ];
-    expect([...strokes].sort((a, b) => a.sequenceIndex - b.sequenceIndex).map((item) => item.operation))
-      .toEqual(["reveal", "hide"]);
+    expect(
+      [...strokes]
+        .sort((a, b) => a.sequenceIndex - b.sequenceIndex)
+        .map((item) => item.operation),
+    ).toEqual(["reveal", "hide"]);
   });
 });
