@@ -205,6 +205,27 @@ const TOOL_HINTS: Record<TabletopToolMode, string> = {
 
 const DRAW_COLORS = ["#d9d7a4", "#74242d", "#4f6e5d", "#e9e3d5", "#1f3644"];
 
+const CAMERA_PRESETS = [
+  {
+    id: "tactical",
+    label: "Tático",
+    description: "Leitura clara de grade e alturas",
+    orientation: { yaw: 315, tilt: 0.58, elevationScale: 1 },
+  },
+  {
+    id: "cinematic",
+    label: "Cinemático",
+    description: "Ângulo baixo para projeção",
+    orientation: { yaw: 330, tilt: 0.34, elevationScale: 1.35 },
+  },
+  {
+    id: "overview",
+    label: "Visão geral",
+    description: "Mais mapa, menos distorção",
+    orientation: { yaw: 0, tilt: 0.78, elevationScale: 0.72 },
+  },
+] as const;
+
 function colorToNumber(value: string) {
   const parsed = Number.parseInt(value.replace("#", ""), 16);
   return Number.isFinite(parsed) ? parsed : 0xd9d7a4;
@@ -434,7 +455,9 @@ export function TabletopWorkspace({
     .filter(
       (node) =>
         !normalizedPaletteSearch ||
-        node.title.toLocaleLowerCase("pt-BR").includes(normalizedPaletteSearch) ||
+        node.title
+          .toLocaleLowerCase("pt-BR")
+          .includes(normalizedPaletteSearch) ||
         node.nodeType
           .toLocaleLowerCase("pt-BR")
           .includes(normalizedPaletteSearch),
@@ -1342,6 +1365,12 @@ export function TabletopWorkspace({
     });
   };
 
+  const applyCameraPreset = (preset: (typeof CAMERA_PRESETS)[number]) => {
+    setProjectionMode("isometric");
+    setViewOrientation(normalizeTabletopViewOrientation(preset.orientation));
+    window.requestAnimationFrame(() => engineRef.current?.fitToScreen());
+  };
+
   const uploadTabletopImage = async (
     file: File,
     target: "entity" | "background",
@@ -2074,6 +2103,44 @@ export function TabletopWorkspace({
                   </Button>
                 </div>
               )}
+              <div
+                className="tadeon-tabletop-radius-presets"
+                aria-label={
+                  toolMode === "light"
+                    ? "Alcances rápidos de luz"
+                    : "Tamanhos rápidos do pincel de névoa"
+                }
+              >
+                {(toolMode === "light"
+                  ? [
+                      [160, "Curta"],
+                      [320, "Média"],
+                      [640, "Longa"],
+                    ]
+                  : [
+                      [64, "Preciso"],
+                      [160, "Médio"],
+                      [320, "Amplo"],
+                    ]
+                ).map(([radius, label]) => (
+                  <button
+                    key={radius}
+                    type="button"
+                    aria-pressed={
+                      (toolMode === "light"
+                        ? lightToolRadius
+                        : fogToolRadius) === radius
+                    }
+                    onClick={() => {
+                      const value = Number(radius);
+                      if (toolMode === "light") setLightToolRadius(value);
+                      else setFogToolRadius(value);
+                    }}
+                  >
+                    {label}
+                  </button>
+                ))}
+              </div>
               <label className="tadeon-tabletop-draw-width">
                 <span>
                   {toolMode === "light"
@@ -2127,6 +2194,11 @@ export function TabletopWorkspace({
                   </button>
                 ))}
               </div>
+              <small className="tadeon-tabletop-structure-guidance">
+                {structureFamily(structureType) === "roof"
+                  ? "Arraste a área; o telhado acompanha o andar ativo e pode ocultar automaticamente."
+                  : "Shift trava o eixo · Alt ignora a grade"}
+              </small>
             </div>
           )}
           {selectedStructure && toolMode === "select" && (
@@ -2369,9 +2441,47 @@ export function TabletopWorkspace({
                 <strong>{TOOL_LABELS[toolMode]}</strong>
                 <span>ferramenta</span>
               </div>
-              <span className="ml-auto hidden text-[11px] text-muted-foreground sm:block">
+              <div className="tadeon-tabletop-stage-status__metric">
+                <strong>{projectionMode === "isometric" ? "3D" : "2D"}</strong>
+                <span>projeção</span>
+              </div>
+              <div className="tadeon-tabletop-stage-status__metric">
+                <strong>{activeLevel?.name ?? "Base"}</strong>
+                <span>andar</span>
+              </div>
+              {visibilityDirty && (
+                <div className="tadeon-tabletop-stage-status__metric is-dirty">
+                  <strong>Prévia</strong>
+                  <span>visão não salva</span>
+                </div>
+              )}
+              <span className="ml-auto hidden text-[11px] text-muted-foreground xl:block">
                 {TOOL_HINTS[toolMode]}
               </span>
+              <ToolbarButton
+                label={
+                  projectionMode === "isometric"
+                    ? "Voltar à planta 2D"
+                    : "Abrir visão espacial 3D"
+                }
+                onClick={() =>
+                  setProjectionMode((mode) =>
+                    mode === "plan" ? "isometric" : "plan",
+                  )
+                }
+              >
+                <Axis3d className="h-4 w-4" />
+              </ToolbarButton>
+              <ToolbarButton
+                label="Abrir controles de espaço, luz e névoa"
+                onClick={() => {
+                  setPanelTab("space");
+                  setPanelCollapsed(false);
+                  setMobilePanelOpen(true);
+                }}
+              >
+                <SlidersHorizontal className="h-4 w-4" />
+              </ToolbarButton>
               <ToolbarButton
                 label="Enquadrar seleção"
                 disabled={selected.length === 0}
@@ -2491,7 +2601,21 @@ export function TabletopWorkspace({
                 className="tadeon-tabletop-panel__tab"
                 onClick={() => setPanelTab(tab)}
               >
-                {label}
+                {tab === "library" ? (
+                  <Image className="h-3.5 w-3.5" aria-hidden="true" />
+                ) : tab === "space" ? (
+                  <Axis3d className="h-3.5 w-3.5" aria-hidden="true" />
+                ) : tab === "master" ? (
+                  <EyeOff className="h-3.5 w-3.5" aria-hidden="true" />
+                ) : tab === "scene" ? (
+                  <Layers3 className="h-3.5 w-3.5" aria-hidden="true" />
+                ) : (
+                  <SlidersHorizontal
+                    className="h-3.5 w-3.5"
+                    aria-hidden="true"
+                  />
+                )}
+                <span>{label}</span>
               </button>
             ))}
           </div>
@@ -2790,6 +2914,22 @@ export function TabletopWorkspace({
                     <Scan className="h-4 w-4" /> Reset
                   </Button>
                 </div>
+                <div
+                  className="tadeon-tabletop-camera-presets"
+                  aria-label="Enquadramentos 3D rápidos"
+                >
+                  {CAMERA_PRESETS.map((preset) => (
+                    <button
+                      key={preset.id}
+                      type="button"
+                      aria-label={`${preset.label}: ${preset.description}`}
+                      onClick={() => applyCameraPreset(preset)}
+                    >
+                      <span>{preset.label}</span>
+                      <small>{preset.description}</small>
+                    </button>
+                  ))}
+                </div>
                 <fieldset
                   disabled={projectionMode !== "isometric"}
                   className="mt-3 space-y-3 disabled:opacity-45"
@@ -3035,8 +3175,8 @@ export function TabletopWorkspace({
                     <p className="tadeon-eyebrow">Bastidores do mestre</p>
                     <p className="mt-1 text-[11px] leading-relaxed text-muted-foreground">
                       Segredos, notas e peças da camada Mestre ficam fora da
-                      projeção dos jogadores, mas continuam acessíveis durante
-                      a direção.
+                      projeção dos jogadores, mas continuam acessíveis durante a
+                      direção.
                     </p>
                   </div>
                 </div>
