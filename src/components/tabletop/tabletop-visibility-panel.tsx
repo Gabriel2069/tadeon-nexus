@@ -28,10 +28,14 @@ import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import {
   createTabletopStructure,
+  structureChannels,
   structureCollision,
   structureFamily,
   structureStateLabel,
   structureStateOptions,
+  type TabletopStructureChannels,
+  type TabletopStructureFamily,
+  type TabletopStructureMaterial,
   type TabletopStructureType,
 } from "@/lib/tabletop/tabletop-spatial";
 import {
@@ -40,6 +44,8 @@ import {
   type TabletopFogShape,
   type TabletopFogStroke,
   type TabletopLight,
+  type TabletopLightProperties,
+  type TabletopLightShape,
   type TabletopVisibilityState,
   type TabletopWall,
 } from "@/lib/tabletop/tabletop-visibility-service";
@@ -102,12 +108,42 @@ const AMBIENT_PRESETS = [
   { label: "Escuridão", value: 0, icon: EyeOff },
 ] as const;
 
-const LIGHT_PRESETS = [
-  { label: "Vela", color: "#f5b56b", radius: 0.08, intensity: 0.58 },
-  { label: "Tocha", color: "#f28b43", radius: 0.14, intensity: 0.82 },
-  { label: "Lanterna", color: "#f2c66d", radius: 0.2, intensity: 1 },
-  { label: "Arcana", color: "#79c8df", radius: 0.18, intensity: 0.92 },
-] as const;
+const LIGHT_PRESETS: Array<{
+  label: string;
+  color: string;
+  radius: number;
+  intensity: number;
+  properties: TabletopLightProperties;
+}> = [
+  {
+    label: "Vela",
+    color: "#f5b56b",
+    radius: 0.08,
+    intensity: 0.58,
+    properties: { shape: "radial", softness: 0.72, falloff: 1.8, flicker: 0.4, temperature: 2300, particles: "embers" },
+  },
+  {
+    label: "Tocha",
+    color: "#f28b43",
+    radius: 0.14,
+    intensity: 0.82,
+    properties: { shape: "radial", softness: 0.5, falloff: 1.55, flicker: 0.55, temperature: 2600, particles: "embers" },
+  },
+  {
+    label: "Lanterna",
+    color: "#f2c66d",
+    radius: 0.2,
+    intensity: 1,
+    properties: { shape: "cone", angle: 58, direction: 0, softness: 0.28, falloff: 1.25, temperature: 3800, particles: "dust" },
+  },
+  {
+    label: "Arcana",
+    color: "#79c8df",
+    radius: 0.18,
+    intensity: 0.92,
+    properties: { shape: "radial", softness: 0.62, falloff: 1.2, temperature: 7600, particles: "sparks" },
+  },
+];
 
 const STUDIO_TABS = [
   { id: "environment", label: "Ambiente", icon: SlidersHorizontal },
@@ -122,12 +158,30 @@ const FOG_SHAPES = [
   { id: "ellipse", label: "Elipse", icon: Circle },
 ] as const;
 
+const MATERIAL_LABELS: Record<TabletopStructureMaterial, string> = {
+  stone: "Pedra / alvenaria",
+  wood: "Madeira",
+  metal: "Metal",
+  glass: "Vidro",
+  fabric: "Tecido",
+  force: "Energia / força",
+  custom: "Personalizado",
+};
+
+const LIGHT_SHAPES: Array<{ id: TabletopLightShape; label: string }> = [
+  { id: "radial", label: "Radial" },
+  { id: "cone", label: "Cone" },
+  { id: "line", label: "Feixe" },
+  { id: "rectangle", label: "Retangular" },
+];
+
 function NumberField({
   label,
   value,
   disabled,
   min,
   max,
+  step = 1,
   onChange,
 }: {
   label: string;
@@ -135,6 +189,7 @@ function NumberField({
   disabled: boolean;
   min?: number;
   max?: number;
+  step?: number;
   onChange: (value: number) => void;
 }) {
   return (
@@ -142,12 +197,39 @@ function NumberField({
       <span>{label}</span>
       <Input
         type="number"
-        step="1"
+        step={step}
         min={min}
         max={max}
-        value={Math.round(value)}
+        value={step < 1 ? Number(value.toFixed(2)) : Math.round(value)}
         disabled={disabled}
         onChange={(event) => onChange(numberValue(event.target.value, value))}
+      />
+    </label>
+  );
+}
+
+function PercentSlider({
+  label,
+  value,
+  disabled,
+  onChange,
+}: {
+  label: string;
+  value: number;
+  disabled: boolean;
+  onChange: (value: number) => void;
+}) {
+  return (
+    <label className="tadeon-visibility__intensity">
+      <span>{label}</span>
+      <output>{Math.round(value * 100)}%</output>
+      <input
+        type="range"
+        min="0"
+        max="100"
+        value={Math.round(value * 100)}
+        disabled={disabled}
+        onChange={(event) => onChange(Number(event.target.value) / 100)}
       />
     </label>
   );
@@ -219,32 +301,32 @@ export function TabletopVisibilityPanel({
   const levelFogStrokes = state.fogStrokes.filter(
     (stroke) => (stroke.levelId || fallbackLevelId) === currentLevelId,
   );
-  const selectedWall =
-    levelWalls.find((wall) => wall.id === selectedStructureId) ?? null;
-  const selectedLight =
-    levelLights.find((light) => light.id === selectedLightId) ?? null;
-  const selectedFog =
-    levelFogStrokes.find((stroke) => stroke.id === selectedFogId) ?? null;
+  const selectedWall = levelWalls.find((wall) => wall.id === selectedStructureId) ?? null;
+  const selectedLight = levelLights.find((light) => light.id === selectedLightId) ?? null;
+  const selectedFog = levelFogStrokes.find((stroke) => stroke.id === selectedFogId) ?? null;
 
   const update = (patch: Partial<TabletopVisibilityState>) =>
     onPreview({ ...state, ...patch });
   const updateWall = (id: string, patch: Partial<TabletopWall>) =>
     update({
-      walls: state.walls.map((wall) =>
-        wall.id === id ? { ...wall, ...patch } : wall,
-      ),
+      walls: state.walls.map((wall) => (wall.id === id ? { ...wall, ...patch } : wall)),
+    });
+  const updateWallChannels = (
+    wall: TabletopWall,
+    patch: Partial<TabletopStructureChannels>,
+  ) =>
+    updateWall(wall.id, {
+      properties: structureChannels(wall.wallType, { ...wall.properties, ...patch }),
     });
   const updateLight = (id: string, patch: Partial<TabletopLight>) =>
     update({
-      lights: state.lights.map((light) =>
-        light.id === id ? { ...light, ...patch } : light,
-      ),
+      lights: state.lights.map((light) => (light.id === id ? { ...light, ...patch } : light)),
     });
+  const updateLightProperties = (light: TabletopLight, patch: Partial<TabletopLightProperties>) =>
+    updateLight(light.id, { properties: { ...light.properties, ...patch } });
   const updateFog = (id: string, patch: Partial<TabletopFogStroke>) =>
     update({
-      fogStrokes: state.fogStrokes.map((stroke) =>
-        stroke.id === id ? { ...stroke, ...patch } : stroke,
-      ),
+      fogStrokes: state.fogStrokes.map((stroke) => (stroke.id === id ? { ...stroke, ...patch } : stroke)),
     });
 
   const removeWall = (id: string) => {
@@ -252,13 +334,14 @@ export function TabletopVisibilityPanel({
     if (id === selectedStructureId) onSelectStructure(null);
   };
   const duplicateWall = (wall: TabletopWall) => {
-    const copy = {
+    const copy: TabletopWall = {
       ...wall,
       id: crypto.randomUUID(),
       x1: wall.x1 + 24,
       y1: wall.y1 + 24,
       x2: wall.x2 + 24,
       y2: wall.y2 + 24,
+      properties: wall.properties ? { ...wall.properties } : undefined,
     };
     update({ walls: [...state.walls, copy] });
     onSelectStructure(copy.id);
@@ -274,6 +357,7 @@ export function TabletopVisibilityPanel({
       entityId: null,
       x: light.x + 24,
       y: light.y + 24,
+      properties: light.properties ? { ...light.properties } : undefined,
       visibilityPolygon: undefined,
     };
     update({ lights: [...state.lights, copy] });
@@ -291,10 +375,7 @@ export function TabletopVisibilityPanel({
     const copy: TabletopFogStroke = {
       ...stroke,
       id: crypto.randomUUID(),
-      points: stroke.points.map((point) => ({
-        x: point.x + 24,
-        y: point.y + 24,
-      })),
+      points: stroke.points.map((point) => ({ x: point.x + 24, y: point.y + 24 })),
       sequenceIndex: state.fogStrokes.length,
     };
     update({ fogStrokes: [...state.fogStrokes, copy] });
@@ -311,26 +392,16 @@ export function TabletopVisibilityPanel({
         const delta = target - anchor[axis];
         return {
           ...stroke,
-          points: stroke.points.map((point) => ({
-            ...point,
-            [axis]: point[axis] + delta,
-          })),
+          points: stroke.points.map((point) => ({ ...point, [axis]: point[axis] + delta })),
         };
       }),
     });
 
-  const resizeFog = (
-    stroke: TabletopFogStroke,
-    axis: "width" | "height",
-    value: number,
-  ) => {
+  const resizeFog = (stroke: TabletopFogStroke, axis: "width" | "height", value: number) => {
     const first = stroke.points[0];
     const last = stroke.points.at(-1);
     if (!first || !last) return;
-    const sign =
-      axis === "width"
-        ? Math.sign(last.x - first.x) || 1
-        : Math.sign(last.y - first.y) || 1;
+    const sign = axis === "width" ? Math.sign(last.x - first.x) || 1 : Math.sign(last.y - first.y) || 1;
     const next = { ...last };
     if (axis === "width") next.x = first.x + sign * Math.max(8, value);
     else next.y = first.y + sign * Math.max(8, value);
@@ -341,25 +412,14 @@ export function TabletopVisibilityPanel({
     });
   };
 
-  const convertFogShape = (
-    stroke: TabletopFogStroke,
-    shape: TabletopFogShape,
-  ) => {
+  const convertFogShape = (stroke: TabletopFogStroke, shape: TabletopFogShape) => {
     if (shape === stroke.shape) return;
     const bounds = tabletopFogBounds(stroke);
     if (shape === "brush") {
       updateFog(stroke.id, {
         shape,
-        radius: Math.max(
-          8,
-          Math.min(1024, Math.max(bounds.width, bounds.height) / 2),
-        ),
-        points: [
-          {
-            x: bounds.x + bounds.width / 2,
-            y: bounds.y + bounds.height / 2,
-          },
-        ],
+        radius: Math.max(8, Math.min(1024, Math.max(bounds.width, bounds.height) / 2)),
+        points: [{ x: bounds.x + bounds.width / 2, y: bounds.y + bounds.height / 2 }],
       });
       return;
     }
@@ -367,16 +427,24 @@ export function TabletopVisibilityPanel({
       shape,
       points: [
         { x: bounds.x, y: bounds.y },
-        {
-          x: bounds.x + Math.max(16, bounds.width),
-          y: bounds.y + Math.max(16, bounds.height),
-        },
+        { x: bounds.x + Math.max(16, bounds.width), y: bounds.y + Math.max(16, bounds.height) },
       ],
     });
   };
 
   const setWallType = (id: string, wallType: TabletopStructureType) =>
-    updateWall(id, { wallType, ...structureCollision(wallType) });
+    update({
+      walls: state.walls.map((wall) =>
+        wall.id === id
+          ? {
+              ...wall,
+              wallType,
+              ...structureCollision(wallType),
+              properties: structureChannels(wallType),
+            }
+          : wall,
+      ),
+    });
 
   const addWall = (wallType: TabletopStructureType = "wall") => {
     const centerX = sceneWidth / 2;
@@ -385,23 +453,18 @@ export function TabletopVisibilityPanel({
     const structure = createTabletopStructure({
       id: crypto.randomUUID(),
       type: wallType,
-      start: roof
-        ? { x: centerX - 240, y: centerY - 180 }
-        : { x: centerX - 160, y: centerY },
-      end: roof
-        ? { x: centerX + 240, y: centerY + 180 }
-        : { x: centerX + 160, y: centerY },
+      start: roof ? { x: centerX - 240, y: centerY - 180 } : { x: centerX - 160, y: centerY },
+      end: roof ? { x: centerX + 240, y: centerY + 180 } : { x: centerX + 160, y: centerY },
     });
     if (!structure) return;
     const spatialStructure: TabletopWall = {
       ...structure,
       levelId: currentLevelId,
       baseElevation: 0,
-      height:
-        structureFamily(wallType) === "roof"
-          ? (currentLevel?.height ?? 192)
-          : Math.max(42, (currentLevel?.height ?? 192) * 0.62),
-      thickness: 8,
+      height: roof
+        ? (currentLevel?.height ?? 192)
+        : Math.max(42, (currentLevel?.height ?? 192) * 0.62),
+      thickness: structureFamily(wallType) === "barrier" ? 4 : 8,
       playerOperable: false,
       version: 1,
     };
@@ -409,9 +472,7 @@ export function TabletopVisibilityPanel({
     onSelectStructure(spatialStructure.id);
   };
 
-  const addLight = (
-    preset: (typeof LIGHT_PRESETS)[number] = LIGHT_PRESETS[2],
-  ) => {
+  const addLight = (preset = LIGHT_PRESETS[2]) => {
     const light: TabletopLight = {
       id: crypto.randomUUID(),
       levelId: currentLevelId,
@@ -424,6 +485,7 @@ export function TabletopVisibilityPanel({
       color: preset.color,
       enabled: true,
       castsShadows: true,
+      properties: { ...preset.properties },
     };
     update({ lights: [...state.lights, light] });
     onSelectLight(light.id);
@@ -433,9 +495,7 @@ export function TabletopVisibilityPanel({
     update({
       fogEnabled: true,
       fogStrokes: [
-        ...state.fogStrokes.filter(
-          (stroke) => (stroke.levelId || fallbackLevelId) !== currentLevelId,
-        ),
+        ...state.fogStrokes.filter((stroke) => (stroke.levelId || fallbackLevelId) !== currentLevelId),
         ...fogStrokes,
       ].map((stroke, sequenceIndex) => ({ ...stroke, sequenceIndex })),
     });
@@ -444,20 +504,11 @@ export function TabletopVisibilityPanel({
     onSelectFog(null);
   };
   const revealLevel = () => {
-    replaceLevelFog(
-      createLevelRevealStrokes({
-        levelId: currentLevelId,
-        sceneWidth,
-        sceneHeight,
-      }),
-    );
+    replaceLevelFog(createLevelRevealStrokes({ levelId: currentLevelId, sceneWidth, sceneHeight }));
     onSelectFog(null);
   };
 
-  const addFogRegion = (
-    operation: TabletopFogStroke["operation"],
-    shape: TabletopFogShape,
-  ) => {
+  const addFogRegion = (operation: TabletopFogStroke["operation"], shape: TabletopFogShape) => {
     const size = Math.max(120, Math.min(sceneWidth, sceneHeight) * 0.16);
     const stroke: TabletopFogStroke = {
       id: crypto.randomUUID(),
@@ -497,13 +548,14 @@ export function TabletopVisibilityPanel({
     lights: levelLights.length,
     fog: levelFogStrokes.length,
   };
+  const selectedChannels = selectedWall
+    ? structureChannels(selectedWall.wallType, selectedWall.properties)
+    : null;
 
   return (
     <section className="tadeon-visibility" aria-label="Estúdio de ambiente">
       <header className="tadeon-visibility__command-head">
-        <span className="tadeon-visibility__mark">
-          <CloudFog aria-hidden="true" />
-        </span>
+        <span className="tadeon-visibility__mark"><CloudFog aria-hidden="true" /></span>
         <span>
           <strong>Estúdio de ambiente</strong>
           <small>{currentLevel?.name ?? "Andar base"} · edição no mapa</small>
@@ -511,21 +563,16 @@ export function TabletopVisibilityPanel({
         {dirty && <span className="tadeon-visibility__dirty">não salvo</span>}
       </header>
 
-      <nav
-        className="tadeon-visibility__studios"
-        role="tablist"
-        aria-label="Áreas do ambiente"
-      >
+      <nav className="tadeon-visibility__studios" role="tablist" aria-label="Áreas do ambiente">
         {STUDIO_TABS.map((tab) => {
           const Icon = tab.icon;
-          const count =
-            tab.id === "architecture"
-              ? counts.architecture
-              : tab.id === "lights"
-                ? counts.lights
-                : tab.id === "fog"
-                  ? counts.fog
-                  : null;
+          const count = tab.id === "architecture"
+            ? counts.architecture
+            : tab.id === "lights"
+              ? counts.lights
+              : tab.id === "fog"
+                ? counts.fog
+                : null;
           return (
             <button
               key={tab.id}
@@ -546,22 +593,15 @@ export function TabletopVisibilityPanel({
         {studio === "environment" && (
           <div className="tadeon-visibility__studio" role="tabpanel">
             <div className="tadeon-visibility__studio-intro">
-              <span>
-                <Sparkles aria-hidden="true" />
-              </span>
+              <span><Sparkles aria-hidden="true" /></span>
               <div>
                 <strong>Atmosfera da cena</strong>
-                <p>
-                  Defina a luz base. Fontes locais e névoa refinam o resultado
-                  por cima.
-                </p>
+                <p>Defina a luz base. Fontes locais, materiais e névoa refinam o resultado por cima.</p>
               </div>
             </div>
             <div className="tadeon-visibility__ambient">
               <label>
-                <span>
-                  <Eye aria-hidden="true" /> Luz ambiente
-                </span>
+                <span><Eye aria-hidden="true" /> Luz ambiente</span>
                 <output>{Math.round(state.globalIllumination * 100)}%</output>
                 <input
                   type="range"
@@ -569,17 +609,10 @@ export function TabletopVisibilityPanel({
                   max="100"
                   value={Math.round(state.globalIllumination * 100)}
                   disabled={disabled}
-                  onChange={(event) =>
-                    update({
-                      globalIllumination: Number(event.target.value) / 100,
-                    })
-                  }
+                  onChange={(event) => update({ globalIllumination: Number(event.target.value) / 100 })}
                 />
               </label>
-              <div
-                className="tadeon-visibility__preset-grid"
-                aria-label="Cenas de luz ambiente"
-              >
+              <div className="tadeon-visibility__preset-grid" aria-label="Cenas de luz ambiente">
                 {AMBIENT_PRESETS.map((preset) => {
                   const Icon = preset.icon;
                   return (
@@ -587,15 +620,10 @@ export function TabletopVisibilityPanel({
                       key={preset.label}
                       type="button"
                       disabled={disabled}
-                      aria-pressed={
-                        Math.abs(state.globalIllumination - preset.value) < 0.01
-                      }
-                      onClick={() =>
-                        update({ globalIllumination: preset.value })
-                      }
+                      aria-pressed={Math.abs(state.globalIllumination - preset.value) < 0.01}
+                      onClick={() => update({ globalIllumination: preset.value })}
                     >
-                      <Icon aria-hidden="true" />
-                      {preset.label}
+                      <Icon aria-hidden="true" />{preset.label}
                     </button>
                   );
                 })}
@@ -613,38 +641,16 @@ export function TabletopVisibilityPanel({
                 aria-label="Ativar névoa de guerra"
               />
             </div>
-            <label className="tadeon-visibility__intensity">
-              <span>Opacidade da névoa</span>
-              <output>{Math.round(state.fogOpacity * 100)}%</output>
-              <input
-                type="range"
-                min="35"
-                max="100"
-                value={Math.round(state.fogOpacity * 100)}
-                disabled={disabled || !state.fogEnabled}
-                onChange={(event) =>
-                  update({ fogOpacity: Number(event.target.value) / 100 })
-                }
-              />
-            </label>
+            <PercentSlider
+              label="Opacidade da névoa"
+              value={state.fogOpacity}
+              disabled={disabled || !state.fogEnabled}
+              onChange={(fogOpacity) => update({ fogOpacity })}
+            />
             <div className="tadeon-visibility__health-grid">
-              <article>
-                <BrickWall aria-hidden="true" />
-                <strong>{levelWalls.length}</strong>
-                <span>estruturas</span>
-              </article>
-              <article>
-                <LampDesk aria-hidden="true" />
-                <strong>
-                  {levelLights.filter((light) => light.enabled).length}
-                </strong>
-                <span>luzes ativas</span>
-              </article>
-              <article>
-                <CloudFog aria-hidden="true" />
-                <strong>{levelFogStrokes.length}</strong>
-                <span>regiões</span>
-              </article>
+              <article><BrickWall aria-hidden="true" /><strong>{levelWalls.length}</strong><span>estruturas</span></article>
+              <article><LampDesk aria-hidden="true" /><strong>{levelLights.filter((light) => light.enabled).length}</strong><span>luzes ativas</span></article>
+              <article><CloudFog aria-hidden="true" /><strong>{levelFogStrokes.length}</strong><span>regiões</span></article>
             </div>
           </div>
         )}
@@ -654,94 +660,65 @@ export function TabletopVisibilityPanel({
             <div className="tadeon-visibility__creation-deck">
               <header>
                 <Crosshair aria-hidden="true" />
-                <span>
-                  <strong>Construir no centro</strong>
-                  <small>ou pressione B e desenhe diretamente no mapa</small>
-                </span>
+                <span><strong>Construir no centro</strong><small>ou pressione B e desenhe diretamente no mapa</small></span>
               </header>
               <div className="tadeon-visibility__creation-grid">
                 {(
                   [
                     ["wall", "Parede"],
+                    ["barrier", "Barreira"],
                     ["door_closed", "Porta"],
-                    ["window_closed", "Janela"],
+                    ["window_closed", "Vidro"],
                     ["roof_visible", "Telhado"],
                   ] as const
                 ).map(([type, label]) => (
-                  <button
-                    key={type}
-                    type="button"
-                    disabled={disabled}
-                    onClick={() => addWall(type)}
-                  >
-                    <Plus aria-hidden="true" />
-                    {label}
+                  <button key={type} type="button" disabled={disabled} onClick={() => addWall(type)}>
+                    <Plus aria-hidden="true" />{label}
                   </button>
                 ))}
               </div>
             </div>
             <div className="tadeon-visibility__object-list">
-              {levelWalls.map((wall, index) => (
-                <button
-                  key={wall.id}
-                  type="button"
-                  className="tadeon-visibility__object-row"
-                  data-selected={wall.id === selectedStructureId}
-                  aria-pressed={wall.id === selectedStructureId}
-                  onClick={() => onSelectStructure(wall.id)}
-                >
-                  <span data-family={structureFamily(wall.wallType)}>
-                    <BrickWall aria-hidden="true" />
-                  </span>
-                  <span>
-                    <strong>{structureStateLabel(wall.wallType)}</strong>
-                    <small>
-                      Estrutura {index + 1} · {Math.round(wall.height ?? 64)}u
-                    </small>
-                  </span>
-                  <Crosshair aria-hidden="true" />
-                </button>
-              ))}
+              {levelWalls.map((wall, index) => {
+                const channels = structureChannels(wall.wallType, wall.properties);
+                return (
+                  <button
+                    key={wall.id}
+                    type="button"
+                    className="tadeon-visibility__object-row"
+                    data-selected={wall.id === selectedStructureId}
+                    aria-pressed={wall.id === selectedStructureId}
+                    onClick={() => onSelectStructure(wall.id)}
+                  >
+                    <span data-family={structureFamily(wall.wallType)}><BrickWall aria-hidden="true" /></span>
+                    <span>
+                      <strong>{structureStateLabel(wall.wallType)}</strong>
+                      <small>
+                        {index + 1} · {MATERIAL_LABELS[channels.material]} · luz {Math.round(channels.lightTransmission * 100)}%
+                      </small>
+                    </span>
+                    <Crosshair aria-hidden="true" />
+                  </button>
+                );
+              })}
             </div>
             {levelWalls.length === 0 && (
               <StudioEmpty
                 icon={BrickWall}
                 title="Nenhuma arquitetura neste andar"
-                description="Desenhe paredes, portas, janelas e telhados diretamente sobre o mapa."
+                description="Desenhe paredes, barreiras, portas, vidros e telhados diretamente sobre o mapa."
               />
             )}
-            {selectedWall && (
+            {selectedWall && selectedChannels && (
               <article className="tadeon-visibility__inspector">
                 <header>
-                  <span>
-                    <BrickWall aria-hidden="true" />
-                  </span>
+                  <span><BrickWall aria-hidden="true" /></span>
                   <div>
-                    <strong>
-                      {structureStateLabel(selectedWall.wallType)}
-                    </strong>
-                    <small>arraste corpo e vértices no mapa</small>
+                    <strong>{structureStateLabel(selectedWall.wallType)}</strong>
+                    <small>geometria + canais físicos, ópticos e acústicos</small>
                   </div>
-                  <Button
-                    type="button"
-                    size="icon"
-                    variant="ghost"
-                    disabled={disabled}
-                    onClick={() => duplicateWall(selectedWall)}
-                    aria-label="Duplicar estrutura"
-                  >
-                    <Copy aria-hidden="true" />
-                  </Button>
-                  <Button
-                    type="button"
-                    size="icon"
-                    variant="ghost"
-                    disabled={disabled}
-                    onClick={() => removeWall(selectedWall.id)}
-                    aria-label="Excluir estrutura"
-                  >
-                    <Trash2 aria-hidden="true" />
-                  </Button>
+                  <Button type="button" size="icon" variant="ghost" disabled={disabled} onClick={() => duplicateWall(selectedWall)} aria-label="Duplicar estrutura"><Copy aria-hidden="true" /></Button>
+                  <Button type="button" size="icon" variant="ghost" disabled={disabled} onClick={() => removeWall(selectedWall.id)} aria-label="Excluir estrutura"><Trash2 aria-hidden="true" /></Button>
                 </header>
                 <label className="tadeon-visibility__select-field">
                   <span>Família</span>
@@ -749,29 +726,26 @@ export function TabletopVisibilityPanel({
                     value={structureFamily(selectedWall.wallType)}
                     disabled={disabled}
                     onChange={(event) => {
-                      const types = {
+                      const types: Record<TabletopStructureFamily, TabletopStructureType> = {
                         wall: "wall",
+                        barrier: "barrier",
                         door: "door_closed",
                         window: "window_closed",
                         roof: "roof_visible",
-                      } as const;
-                      setWallType(
-                        selectedWall.id,
-                        types[event.target.value as keyof typeof types],
-                      );
+                      };
+                      setWallType(selectedWall.id, types[event.target.value as TabletopStructureFamily]);
                     }}
                   >
                     <option value="wall">Parede</option>
+                    <option value="barrier">Barreira</option>
                     <option value="door">Porta</option>
-                    <option value="window">Janela</option>
+                    <option value="window">Janela / vidro</option>
                     <option value="roof">Telhado</option>
                   </select>
                 </label>
-                {structureFamily(selectedWall.wallType) !== "wall" && (
+                {structureStateOptions(structureFamily(selectedWall.wallType)).length > 1 && (
                   <div className="tadeon-visibility__states">
-                    {structureStateOptions(
-                      structureFamily(selectedWall.wallType),
-                    ).map((stateType) => (
+                    {structureStateOptions(structureFamily(selectedWall.wallType)).map((stateType) => (
                       <button
                         key={stateType}
                         type="button"
@@ -779,131 +753,113 @@ export function TabletopVisibilityPanel({
                         aria-pressed={selectedWall.wallType === stateType}
                         onClick={() => setWallType(selectedWall.id, stateType)}
                       >
-                        {structureStateLabel(stateType).replace(
-                          /^(Porta|Janela|Telhado) /,
-                          "",
-                        )}
+                        {structureStateLabel(stateType).replace(/^(Porta|Janela|Telhado) /, "")}
                       </button>
                     ))}
                   </div>
                 )}
                 <div className="tadeon-visibility__coordinates">
-                  <NumberField
-                    label="X1"
-                    value={selectedWall.x1}
+                  <NumberField label="X1" value={selectedWall.x1} disabled={disabled} onChange={(x1) => updateWall(selectedWall.id, { x1 })} />
+                  <NumberField label="Y1" value={selectedWall.y1} disabled={disabled} onChange={(y1) => updateWall(selectedWall.id, { y1 })} />
+                  <NumberField label="X2" value={selectedWall.x2} disabled={disabled} onChange={(x2) => updateWall(selectedWall.id, { x2 })} />
+                  <NumberField label="Y2" value={selectedWall.y2} disabled={disabled} onChange={(y2) => updateWall(selectedWall.id, { y2 })} />
+                  <NumberField label="Base Z" value={selectedWall.baseElevation ?? 0} disabled={disabled} onChange={(baseElevation) => updateWall(selectedWall.id, { baseElevation })} />
+                  <NumberField label="Altura" min={8} value={selectedWall.height ?? 64} disabled={disabled} onChange={(height) => updateWall(selectedWall.id, { height: Math.max(8, height) })} />
+                  <NumberField label="Espessura" min={1} value={selectedWall.thickness ?? 8} disabled={disabled} onChange={(thickness) => updateWall(selectedWall.id, { thickness: Math.max(1, thickness) })} />
+                </div>
+
+                <div className="tadeon-visibility__studio-intro is-compact">
+                  <span><SlidersHorizontal aria-hidden="true" /></span>
+                  <div>
+                    <strong>Canais da estrutura</strong>
+                    <p>Visão, luz, som e colisão podem reagir de forma independente.</p>
+                  </div>
+                </div>
+                <label className="tadeon-visibility__select-field">
+                  <span>Material</span>
+                  <select
+                    value={selectedChannels.material}
                     disabled={disabled}
-                    onChange={(x1) => updateWall(selectedWall.id, { x1 })}
+                    onChange={(event) => updateWallChannels(selectedWall, { material: event.target.value as TabletopStructureMaterial })}
+                  >
+                    {Object.entries(MATERIAL_LABELS).map(([value, label]) => <option key={value} value={value}>{label}</option>)}
+                  </select>
+                </label>
+                <PercentSlider label="Transmissão de visão" value={selectedChannels.visionTransmission} disabled={disabled} onChange={(visionTransmission) => updateWallChannels(selectedWall, { visionTransmission })} />
+                <PercentSlider label="Transmissão de luz" value={selectedChannels.lightTransmission} disabled={disabled} onChange={(lightTransmission) => updateWallChannels(selectedWall, { lightTransmission })} />
+                <PercentSlider label="Transmissão de som" value={selectedChannels.soundTransmission} disabled={disabled} onChange={(soundTransmission) => updateWallChannels(selectedWall, { soundTransmission })} />
+                <div className="tadeon-visibility__coordinates">
+                  <NumberField
+                    label="Custo mov."
+                    min={0.1}
+                    max={999}
+                    step={0.1}
+                    value={selectedChannels.movementCost}
+                    disabled={disabled}
+                    onChange={(movementCost) => updateWallChannels(selectedWall, { movementCost })}
                   />
                   <NumberField
-                    label="Y1"
-                    value={selectedWall.y1}
+                    label="Alt. barreira"
+                    min={0}
+                    value={selectedChannels.barrierHeight ?? selectedWall.height ?? 64}
                     disabled={disabled}
-                    onChange={(y1) => updateWall(selectedWall.id, { y1 })}
-                  />
-                  <NumberField
-                    label="X2"
-                    value={selectedWall.x2}
-                    disabled={disabled}
-                    onChange={(x2) => updateWall(selectedWall.id, { x2 })}
-                  />
-                  <NumberField
-                    label="Y2"
-                    value={selectedWall.y2}
-                    disabled={disabled}
-                    onChange={(y2) => updateWall(selectedWall.id, { y2 })}
-                  />
-                  <NumberField
-                    label="Base Z"
-                    value={selectedWall.baseElevation ?? 0}
-                    disabled={disabled}
-                    onChange={(baseElevation) =>
-                      updateWall(selectedWall.id, { baseElevation })
-                    }
-                  />
-                  <NumberField
-                    label="Altura"
-                    min={8}
-                    value={selectedWall.height ?? 64}
-                    disabled={disabled}
-                    onChange={(height) =>
-                      updateWall(selectedWall.id, {
-                        height: Math.max(8, height),
-                      })
-                    }
-                  />
-                  <NumberField
-                    label="Espessura"
-                    min={1}
-                    value={selectedWall.thickness ?? 8}
-                    disabled={disabled}
-                    onChange={(thickness) =>
-                      updateWall(selectedWall.id, {
-                        thickness: Math.max(1, thickness),
-                      })
-                    }
+                    onChange={(barrierHeight) => updateWallChannels(selectedWall, { barrierHeight })}
                   />
                 </div>
-                {structureFamily(selectedWall.wallType) === "roof" ? (
-                  <Button
-                    type="button"
-                    size="sm"
-                    variant="outline"
-                    className="w-full"
-                    disabled={disabled}
-                    onClick={() =>
-                      updateWall(selectedWall.id, {
-                        baseElevation: 0,
-                        height: Math.max(8, currentLevel?.height ?? 192),
-                      })
-                    }
-                  >
-                    <Sparkles aria-hidden="true" />
-                    Encaixar ao andar automaticamente
-                  </Button>
-                ) : (
-                  <div className="tadeon-visibility__checks">
-                    <label>
-                      <input
-                        type="checkbox"
-                        checked={selectedWall.blocksVision}
+                <div className="tadeon-visibility__checks">
+                  <label>
+                    <input type="checkbox" checked={selectedWall.blocksVision} disabled={disabled} onChange={(event) => updateWall(selectedWall.id, { blocksVision: event.target.checked })} />
+                    bloqueia visão totalmente
+                  </label>
+                  <label>
+                    <input type="checkbox" checked={selectedWall.blocksMovement} disabled={disabled} onChange={(event) => updateWall(selectedWall.id, { blocksMovement: event.target.checked })} />
+                    bloqueia movimento
+                  </label>
+                  <label>
+                    <input type="checkbox" checked={selectedChannels.blocksLight} disabled={disabled} onChange={(event) => updateWallChannels(selectedWall, { blocksLight: event.target.checked })} />
+                    bloqueia luz
+                  </label>
+                  <label>
+                    <input type="checkbox" checked={selectedChannels.blocksSound} disabled={disabled} onChange={(event) => updateWallChannels(selectedWall, { blocksSound: event.target.checked })} />
+                    bloqueia som
+                  </label>
+                </div>
+
+                {structureFamily(selectedWall.wallType) === "roof" && (
+                  <>
+                    <PercentSlider
+                      label="Opacidade do telhado"
+                      value={selectedChannels.roofOpacity ?? 1}
+                      disabled={disabled}
+                      onChange={(roofOpacity) => updateWallChannels(selectedWall, { roofOpacity })}
+                    />
+                    <div className="tadeon-visibility__switch is-compact">
+                      <span><strong>Corte automático</strong><small>abre a cobertura quando a seleção está sob ela</small></span>
+                      <Switch
+                        checked={selectedChannels.roofAutoCutaway ?? true}
                         disabled={disabled}
-                        onChange={(event) =>
-                          updateWall(selectedWall.id, {
-                            blocksVision: event.target.checked,
-                          })
-                        }
+                        onCheckedChange={(roofAutoCutaway) => updateWallChannels(selectedWall, { roofAutoCutaway })}
                       />
-                      bloqueia visão
-                    </label>
-                    <label>
-                      <input
-                        type="checkbox"
-                        checked={selectedWall.blocksMovement}
-                        disabled={disabled}
-                        onChange={(event) =>
-                          updateWall(selectedWall.id, {
-                            blocksMovement: event.target.checked,
-                          })
-                        }
-                      />
-                      bloqueia movimento
-                    </label>
-                  </div>
+                    </div>
+                    <Button
+                      type="button"
+                      size="sm"
+                      variant="outline"
+                      className="w-full"
+                      disabled={disabled}
+                      onClick={() => updateWall(selectedWall.id, { baseElevation: 0, height: Math.max(8, currentLevel?.height ?? 192) })}
+                    >
+                      <Sparkles aria-hidden="true" />Encaixar ao andar automaticamente
+                    </Button>
+                  </>
                 )}
                 {structureFamily(selectedWall.wallType) === "door" && (
                   <div className="tadeon-visibility__switch is-compact">
-                    <span>
-                      <strong>Jogadores podem acionar</strong>
-                      <small>portas trancadas permanecem exclusivas</small>
-                    </span>
+                    <span><strong>Jogadores podem acionar</strong><small>portas trancadas permanecem exclusivas</small></span>
                     <Switch
                       checked={selectedWall.playerOperable ?? false}
-                      disabled={
-                        disabled || selectedWall.wallType === "door_locked"
-                      }
-                      onCheckedChange={(playerOperable) =>
-                        updateWall(selectedWall.id, { playerOperable })
-                      }
+                      disabled={disabled || selectedWall.wallType === "door_locked"}
+                      onCheckedChange={(playerOperable) => updateWall(selectedWall.id, { playerOperable })}
                     />
                   </div>
                 )}
@@ -917,21 +873,12 @@ export function TabletopVisibilityPanel({
             <div className="tadeon-visibility__creation-deck">
               <header>
                 <Sparkles aria-hidden="true" />
-                <span>
-                  <strong>Fontes rápidas</strong>
-                  <small>crie e ajuste o alcance diretamente no mapa</small>
-                </span>
+                <span><strong>Fontes rápidas</strong><small>presets materiais, depois ajuste forma e queda</small></span>
               </header>
               <div className="tadeon-visibility__light-presets">
                 {LIGHT_PRESETS.map((preset) => (
-                  <button
-                    key={preset.label}
-                    type="button"
-                    disabled={disabled}
-                    onClick={() => addLight(preset)}
-                  >
-                    <span style={{ backgroundColor: preset.color }} />
-                    {preset.label}
+                  <button key={preset.label} type="button" disabled={disabled} onClick={() => addLight(preset)}>
+                    <span style={{ backgroundColor: preset.color }} />{preset.label}
                   </button>
                 ))}
               </div>
@@ -946,195 +893,83 @@ export function TabletopVisibilityPanel({
                   aria-pressed={light.id === selectedLightId}
                   onClick={() => onSelectLight(light.id)}
                 >
-                  <span
-                    className="is-light"
-                    style={{ "--light-color": light.color } as CSSProperties}
-                  >
-                    <LampDesk aria-hidden="true" />
-                  </span>
+                  <span className="is-light" style={{ "--light-color": light.color } as CSSProperties}><LampDesk aria-hidden="true" /></span>
                   <span>
                     <strong>Luz {index + 1}</strong>
-                    <small>
-                      {Math.round(light.radius)}px ·{" "}
-                      {Math.round(light.intensity * 100)}% ·{" "}
-                      {light.enabled ? "acesa" : "apagada"}
-                    </small>
+                    <small>{light.properties?.shape ?? "radial"} · {Math.round(light.radius)}px · {Math.round(light.intensity * 100)}% · {light.enabled ? "acesa" : "apagada"}</small>
                   </span>
                   <Crosshair aria-hidden="true" />
                 </button>
               ))}
             </div>
             {levelLights.length === 0 && (
-              <StudioEmpty
-                icon={LampDesk}
-                title="Nenhuma luz neste andar"
-                description="Use um preset ou pressione L e arraste o alcance sobre o mapa."
-              />
+              <StudioEmpty icon={LampDesk} title="Nenhuma luz neste andar" description="Use um preset ou pressione L e arraste o alcance sobre o mapa." />
             )}
             {selectedLight && (
               <article className="tadeon-visibility__inspector">
                 <header>
-                  <span
-                    className="is-light"
-                    style={
-                      {
-                        "--light-color": selectedLight.color,
-                      } as CSSProperties
-                    }
-                  >
-                    <LampDesk aria-hidden="true" />
-                  </span>
-                  <div>
-                    <strong>Fonte de luz</strong>
-                    <small>arraste o núcleo ou a alça do alcance</small>
-                  </div>
-                  <Button
-                    type="button"
-                    size="icon"
-                    variant="ghost"
-                    disabled={disabled}
-                    onClick={() => duplicateLight(selectedLight)}
-                    aria-label="Duplicar luz"
-                  >
-                    <Copy aria-hidden="true" />
-                  </Button>
-                  <Button
-                    type="button"
-                    size="icon"
-                    variant="ghost"
-                    disabled={disabled}
-                    onClick={() => removeLight(selectedLight.id)}
-                    aria-label="Excluir luz"
-                  >
-                    <Trash2 aria-hidden="true" />
-                  </Button>
+                  <span className="is-light" style={{ "--light-color": selectedLight.color } as CSSProperties}><LampDesk aria-hidden="true" /></span>
+                  <div><strong>Fonte de luz</strong><small>forma, direção, queda e atmosfera próprias</small></div>
+                  <Button type="button" size="icon" variant="ghost" disabled={disabled} onClick={() => duplicateLight(selectedLight)} aria-label="Duplicar luz"><Copy aria-hidden="true" /></Button>
+                  <Button type="button" size="icon" variant="ghost" disabled={disabled} onClick={() => removeLight(selectedLight.id)} aria-label="Excluir luz"><Trash2 aria-hidden="true" /></Button>
                 </header>
                 <div className="tadeon-visibility__light-command">
                   <label>
                     <span>Cor</span>
-                    <input
-                      type="color"
-                      value={selectedLight.color}
-                      disabled={disabled}
-                      onChange={(event) =>
-                        updateLight(selectedLight.id, {
-                          color: event.target.value,
-                        })
-                      }
-                    />
+                    <input type="color" value={selectedLight.color} disabled={disabled} onChange={(event) => updateLight(selectedLight.id, { color: event.target.value })} />
                   </label>
                   <div className="tadeon-visibility__switch is-compact">
-                    <span>
-                      <strong>Fonte ativa</strong>
-                      <small>mantém a configuração ao apagar</small>
-                    </span>
-                    <Switch
-                      checked={selectedLight.enabled}
-                      disabled={disabled}
-                      onCheckedChange={(enabled) =>
-                        updateLight(selectedLight.id, { enabled })
-                      }
-                    />
+                    <span><strong>Fonte ativa</strong><small>mantém a configuração ao apagar</small></span>
+                    <Switch checked={selectedLight.enabled} disabled={disabled} onCheckedChange={(enabled) => updateLight(selectedLight.id, { enabled })} />
                   </div>
                 </div>
+                <label className="tadeon-visibility__select-field">
+                  <span>Forma</span>
+                  <select
+                    value={selectedLight.properties?.shape ?? "radial"}
+                    disabled={disabled}
+                    onChange={(event) => updateLightProperties(selectedLight, { shape: event.target.value as TabletopLightShape })}
+                  >
+                    {LIGHT_SHAPES.map((shape) => <option key={shape.id} value={shape.id}>{shape.label}</option>)}
+                  </select>
+                </label>
                 <div className="tadeon-visibility__coordinates">
-                  <NumberField
-                    label="X"
-                    value={selectedLight.x}
-                    disabled={disabled}
-                    onChange={(x) => updateLight(selectedLight.id, { x })}
-                  />
-                  <NumberField
-                    label="Y"
-                    value={selectedLight.y}
-                    disabled={disabled}
-                    onChange={(y) => updateLight(selectedLight.id, { y })}
-                  />
-                  <NumberField
-                    label="Raio"
-                    min={8}
-                    value={selectedLight.radius}
-                    disabled={disabled}
-                    onChange={(radius) =>
-                      updateLight(selectedLight.id, {
-                        radius: Math.max(8, radius),
-                      })
-                    }
-                  />
-                  <NumberField
-                    label="Elevação"
-                    value={selectedLight.elevation ?? 0}
-                    disabled={disabled}
-                    onChange={(elevation) =>
-                      updateLight(selectedLight.id, { elevation })
-                    }
-                  />
+                  <NumberField label="X" value={selectedLight.x} disabled={disabled} onChange={(x) => updateLight(selectedLight.id, { x })} />
+                  <NumberField label="Y" value={selectedLight.y} disabled={disabled} onChange={(y) => updateLight(selectedLight.id, { y })} />
+                  <NumberField label="Raio" min={8} value={selectedLight.radius} disabled={disabled} onChange={(radius) => updateLight(selectedLight.id, { radius: Math.max(8, radius) })} />
+                  <NumberField label="Elevação" value={selectedLight.elevation ?? 0} disabled={disabled} onChange={(elevation) => updateLight(selectedLight.id, { elevation })} />
+                  <NumberField label="Direção °" min={-360} max={360} value={selectedLight.properties?.direction ?? 0} disabled={disabled} onChange={(direction) => updateLightProperties(selectedLight, { direction })} />
+                  {(selectedLight.properties?.shape ?? "radial") === "cone" && (
+                    <NumberField label="Ângulo °" min={1} max={359} value={selectedLight.properties?.angle ?? 90} disabled={disabled} onChange={(angle) => updateLightProperties(selectedLight, { angle })} />
+                  )}
+                  <NumberField label="Queda" min={0.1} max={4} step={0.1} value={selectedLight.properties?.falloff ?? 1.4} disabled={disabled} onChange={(falloff) => updateLightProperties(selectedLight, { falloff })} />
+                  <NumberField label="Temperatura K" min={1000} max={12000} value={selectedLight.properties?.temperature ?? 4200} disabled={disabled} onChange={(temperature) => updateLightProperties(selectedLight, { temperature })} />
                 </div>
-                <label className="tadeon-visibility__intensity">
-                  <span>Intensidade</span>
-                  <output>{Math.round(selectedLight.intensity * 100)}%</output>
-                  <input
-                    type="range"
-                    min="0"
-                    max="100"
-                    value={Math.round(selectedLight.intensity * 100)}
+                <PercentSlider label="Intensidade" value={selectedLight.intensity} disabled={disabled} onChange={(intensity) => updateLight(selectedLight.id, { intensity })} />
+                <PercentSlider label="Suavidade" value={selectedLight.properties?.softness ?? 0.4} disabled={disabled} onChange={(softness) => updateLightProperties(selectedLight, { softness })} />
+                <PercentSlider label="Oscilação" value={selectedLight.properties?.flicker ?? 0} disabled={disabled} onChange={(flicker) => updateLightProperties(selectedLight, { flicker })} />
+                <label className="tadeon-visibility__select-field">
+                  <span>Partículas</span>
+                  <select
+                    value={selectedLight.properties?.particles ?? "none"}
                     disabled={disabled}
-                    onChange={(event) =>
-                      updateLight(selectedLight.id, {
-                        intensity: Number(event.target.value) / 100,
-                      })
-                    }
-                  />
+                    onChange={(event) => updateLightProperties(selectedLight, { particles: event.target.value as NonNullable<TabletopLightProperties["particles"]> })}
+                  >
+                    <option value="none">Nenhuma</option>
+                    <option value="dust">Poeira</option>
+                    <option value="embers">Brasas</option>
+                    <option value="mist">Névoa</option>
+                    <option value="sparks">Faíscas</option>
+                  </select>
                 </label>
                 <div className="tadeon-visibility__switch is-compact">
-                  <span>
-                    <strong>Sombras arquitetônicas</strong>
-                    <small>paredes e portas recortam esta luz</small>
-                  </span>
-                  <Switch
-                    checked={selectedLight.castsShadows}
-                    disabled={disabled}
-                    onCheckedChange={(castsShadows) =>
-                      updateLight(selectedLight.id, { castsShadows })
-                    }
-                  />
+                  <span><strong>Sombras arquitetônicas</strong><small>paredes opacas recortam; vidro transmite</small></span>
+                  <Switch checked={selectedLight.castsShadows} disabled={disabled} onCheckedChange={(castsShadows) => updateLight(selectedLight.id, { castsShadows })} />
                 </div>
                 <div className="tadeon-visibility__quick-grid">
-                  <button
-                    type="button"
-                    disabled={disabled}
-                    onClick={() =>
-                      updateLight(selectedLight.id, {
-                        x: sceneWidth / 2,
-                        y: sceneHeight / 2,
-                      })
-                    }
-                  >
-                    Centralizar
-                  </button>
-                  <button
-                    type="button"
-                    disabled={disabled}
-                    onClick={() =>
-                      updateLight(selectedLight.id, { elevation: 0 })
-                    }
-                  >
-                    Luz baixa
-                  </button>
-                  <button
-                    type="button"
-                    disabled={disabled}
-                    onClick={() =>
-                      updateLight(selectedLight.id, {
-                        elevation: Math.max(
-                          8,
-                          (currentLevel?.height ?? 192) * 0.72,
-                        ),
-                      })
-                    }
-                  >
-                    Luz alta
-                  </button>
+                  <button type="button" disabled={disabled} onClick={() => updateLight(selectedLight.id, { x: sceneWidth / 2, y: sceneHeight / 2 })}>Centralizar</button>
+                  <button type="button" disabled={disabled} onClick={() => updateLight(selectedLight.id, { elevation: 0 })}>Luz baixa</button>
+                  <button type="button" disabled={disabled} onClick={() => updateLight(selectedLight.id, { elevation: Math.max(8, (currentLevel?.height ?? 192) * 0.72) })}>Luz alta</button>
                 </div>
               </article>
             )}
@@ -1146,59 +981,22 @@ export function TabletopVisibilityPanel({
             <div className="tadeon-visibility__fog-command">
               <header>
                 <CloudFog aria-hidden="true" />
-                <span>
-                  <strong>Controle espacial de névoa</strong>
-                  <small>
-                    desenhe e depois selecione para mover ou dimensionar
-                  </small>
-                </span>
+                <span><strong>Controle espacial de névoa</strong><small>desenhe e depois selecione para mover ou dimensionar</small></span>
               </header>
               <div className="tadeon-visibility__fog-operations">
-                <Button
-                  type="button"
-                  size="sm"
-                  variant="secondary"
-                  disabled={disabled}
-                  onClick={() => onActivateFogTool("reveal", "brush")}
-                >
-                  <Eye aria-hidden="true" />
-                  Revelar no mapa
-                </Button>
-                <Button
-                  type="button"
-                  size="sm"
-                  variant="outline"
-                  disabled={disabled}
-                  onClick={() => onActivateFogTool("hide", "brush")}
-                >
-                  <EyeOff aria-hidden="true" />
-                  Cobrir no mapa
-                </Button>
+                <Button type="button" size="sm" variant="secondary" disabled={disabled} onClick={() => onActivateFogTool("reveal", "brush")}><Eye aria-hidden="true" />Revelar no mapa</Button>
+                <Button type="button" size="sm" variant="outline" disabled={disabled} onClick={() => onActivateFogTool("hide", "brush")}><EyeOff aria-hidden="true" />Cobrir no mapa</Button>
               </div>
-              <div
-                className="tadeon-visibility__shape-grid"
-                aria-label="Criar região no centro"
-              >
+              <div className="tadeon-visibility__shape-grid" aria-label="Criar região no centro">
                 {FOG_SHAPES.map(({ id, label, icon: Icon }) => (
-                  <button
-                    key={id}
-                    type="button"
-                    disabled={disabled}
-                    onClick={() => addFogRegion("reveal", id)}
-                  >
-                    <Icon aria-hidden="true" />
-                    <span>{label}</span>
-                    <small>criar</small>
+                  <button key={id} type="button" disabled={disabled} onClick={() => addFogRegion("reveal", id)}>
+                    <Icon aria-hidden="true" /><span>{label}</span><small>criar</small>
                   </button>
                 ))}
               </div>
               <div className="tadeon-visibility__fog-shortcuts">
-                <button type="button" disabled={disabled} onClick={coverLevel}>
-                  <EyeOff aria-hidden="true" /> Cobrir andar
-                </button>
-                <button type="button" disabled={disabled} onClick={revealLevel}>
-                  <Eye aria-hidden="true" /> Revelar andar
-                </button>
+                <button type="button" disabled={disabled} onClick={coverLevel}><EyeOff aria-hidden="true" /> Cobrir andar</button>
+                <button type="button" disabled={disabled} onClick={revealLevel}><Eye aria-hidden="true" /> Revelar andar</button>
               </div>
             </div>
             <div className="tadeon-visibility__object-list">
@@ -1213,24 +1011,13 @@ export function TabletopVisibilityPanel({
                   onClick={() => onSelectFog(stroke.id)}
                 >
                   <span>
-                    {stroke.shape === "brush" ? (
-                      <Paintbrush aria-hidden="true" />
-                    ) : stroke.shape === "rectangle" ? (
-                      <Square aria-hidden="true" />
-                    ) : (
-                      <Circle aria-hidden="true" />
-                    )}
+                    {stroke.shape === "brush" ? <Paintbrush aria-hidden="true" /> : stroke.shape === "rectangle" ? <Square aria-hidden="true" /> : <Circle aria-hidden="true" />}
                   </span>
                   <span>
-                    <strong>
-                      {stroke.operation === "reveal" ? "Revelar" : "Cobrir"} ·{" "}
-                      {index + 1}
-                    </strong>
+                    <strong>{stroke.operation === "reveal" ? "Revelar" : "Cobrir"} · {index + 1}</strong>
                     <small>
                       {stroke.shape === "brush"
-                        ? `${stroke.points.length} ponto(s) · ${Math.round(
-                            stroke.radius,
-                          )}px`
+                        ? `${stroke.points.length} ponto(s) · ${Math.round(stroke.radius)}px`
                         : stroke.shape === "rectangle"
                           ? "região retangular"
                           : stroke.shape === "ellipse"
@@ -1243,181 +1030,56 @@ export function TabletopVisibilityPanel({
               ))}
             </div>
             {levelFogStrokes.length === 0 && (
-              <StudioEmpty
-                icon={CloudFog}
-                title="Andar totalmente coberto"
-                description="Revele com pincel, retângulo ou elipse. Cada região continuará editável."
-              />
+              <StudioEmpty icon={CloudFog} title="Andar totalmente coberto" description="Revele com pincel, retângulo ou elipse. Cada região continuará editável." />
             )}
             {selectedFog && (
               <article className="tadeon-visibility__inspector">
                 <header>
-                  <span data-operation={selectedFog.operation}>
-                    <CloudFog aria-hidden="true" />
-                  </span>
-                  <div>
-                    <strong>
-                      {selectedFog.operation === "reveal"
-                        ? "Região revelada"
-                        : "Região coberta"}
-                    </strong>
-                    <small>arraste corpo e alça diretamente no mapa</small>
-                  </div>
-                  <Button
-                    type="button"
-                    size="icon"
-                    variant="ghost"
-                    disabled={disabled}
-                    onClick={() => duplicateFog(selectedFog)}
-                    aria-label="Duplicar região de névoa"
-                  >
-                    <Copy aria-hidden="true" />
-                  </Button>
-                  <Button
-                    type="button"
-                    size="icon"
-                    variant="ghost"
-                    disabled={disabled}
-                    onClick={() => removeFog(selectedFog.id)}
-                    aria-label="Excluir região de névoa"
-                  >
-                    <Trash2 aria-hidden="true" />
-                  </Button>
+                  <span data-operation={selectedFog.operation}><CloudFog aria-hidden="true" /></span>
+                  <div><strong>{selectedFog.operation === "reveal" ? "Região revelada" : "Região coberta"}</strong><small>arraste corpo e alça diretamente no mapa</small></div>
+                  <Button type="button" size="icon" variant="ghost" disabled={disabled} onClick={() => duplicateFog(selectedFog)} aria-label="Duplicar região de névoa"><Copy aria-hidden="true" /></Button>
+                  <Button type="button" size="icon" variant="ghost" disabled={disabled} onClick={() => removeFog(selectedFog.id)} aria-label="Excluir região de névoa"><Trash2 aria-hidden="true" /></Button>
                 </header>
-                <div
-                  className="tadeon-visibility__states"
-                  aria-label="Operação da região"
-                >
-                  <button
-                    type="button"
-                    disabled={disabled}
-                    aria-pressed={selectedFog.operation === "reveal"}
-                    onClick={() =>
-                      updateFog(selectedFog.id, { operation: "reveal" })
-                    }
-                  >
-                    Revelar
-                  </button>
-                  <button
-                    type="button"
-                    disabled={disabled}
-                    aria-pressed={selectedFog.operation === "hide"}
-                    onClick={() =>
-                      updateFog(selectedFog.id, { operation: "hide" })
-                    }
-                  >
-                    Cobrir
-                  </button>
+                <div className="tadeon-visibility__states" aria-label="Operação da região">
+                  <button type="button" disabled={disabled} aria-pressed={selectedFog.operation === "reveal"} onClick={() => updateFog(selectedFog.id, { operation: "reveal" })}>Revelar</button>
+                  <button type="button" disabled={disabled} aria-pressed={selectedFog.operation === "hide"} onClick={() => updateFog(selectedFog.id, { operation: "hide" })}>Cobrir</button>
                 </div>
-                <div
-                  className="tadeon-visibility__shape-grid is-editor"
-                  role="radiogroup"
-                  aria-label="Geometria da região"
-                >
+                <div className="tadeon-visibility__shape-grid is-editor" role="radiogroup" aria-label="Geometria da região">
                   {FOG_SHAPES.map(({ id, label, icon: Icon }) => (
-                    <button
-                      key={id}
-                      type="button"
-                      role="radio"
-                      disabled={disabled}
-                      aria-checked={selectedFog.shape === id}
-                      onClick={() => convertFogShape(selectedFog, id)}
-                    >
-                      <Icon aria-hidden="true" />
-                      <span>{label}</span>
+                    <button key={id} type="button" role="radio" disabled={disabled} aria-checked={selectedFog.shape === id} onClick={() => convertFogShape(selectedFog, id)}>
+                      <Icon aria-hidden="true" /><span>{label}</span>
                     </button>
                   ))}
                 </div>
                 <div className="tadeon-visibility__coordinates">
-                  <NumberField
-                    label="Âncora X"
-                    value={selectedFog.points[0]?.x ?? 0}
-                    disabled={disabled}
-                    onChange={(x) => moveFogStroke(selectedFog.id, "x", x)}
-                  />
-                  <NumberField
-                    label="Âncora Y"
-                    value={selectedFog.points[0]?.y ?? 0}
-                    disabled={disabled}
-                    onChange={(y) => moveFogStroke(selectedFog.id, "y", y)}
-                  />
+                  <NumberField label="Âncora X" value={selectedFog.points[0]?.x ?? 0} disabled={disabled} onChange={(x) => moveFogStroke(selectedFog.id, "x", x)} />
+                  <NumberField label="Âncora Y" value={selectedFog.points[0]?.y ?? 0} disabled={disabled} onChange={(y) => moveFogStroke(selectedFog.id, "y", y)} />
                   {selectedFog.shape === "brush" ? (
-                    <NumberField
-                      label="Raio"
-                      min={8}
-                      max={1024}
-                      value={selectedFog.radius}
-                      disabled={disabled}
-                      onChange={(radius) =>
-                        updateFog(selectedFog.id, {
-                          radius: Math.max(8, Math.min(1024, radius)),
-                        })
-                      }
-                    />
+                    <NumberField label="Raio" min={8} max={1024} value={selectedFog.radius} disabled={disabled} onChange={(radius) => updateFog(selectedFog.id, { radius: Math.max(8, Math.min(1024, radius)) })} />
                   ) : (
                     <>
-                      <NumberField
-                        label="Largura"
-                        min={8}
-                        value={tabletopFogBounds(selectedFog).width}
-                        disabled={disabled}
-                        onChange={(width) =>
-                          resizeFog(selectedFog, "width", width)
-                        }
-                      />
-                      <NumberField
-                        label="Altura"
-                        min={8}
-                        value={tabletopFogBounds(selectedFog).height}
-                        disabled={disabled}
-                        onChange={(height) =>
-                          resizeFog(selectedFog, "height", height)
-                        }
-                      />
+                      <NumberField label="Largura" min={8} value={tabletopFogBounds(selectedFog).width} disabled={disabled} onChange={(width) => resizeFog(selectedFog, "width", width)} />
+                      <NumberField label="Altura" min={8} value={tabletopFogBounds(selectedFog).height} disabled={disabled} onChange={(height) => resizeFog(selectedFog, "height", height)} />
                     </>
                   )}
                 </div>
                 <div className="tadeon-visibility__tip">
                   <Crosshair aria-hidden="true" />
-                  <span>
-                    <strong>Edição direta ativa</strong>
-                    <small>
-                      arraste para mover · alça clara dimensiona · setas refinam
-                    </small>
-                  </span>
+                  <span><strong>Edição direta ativa</strong><small>arraste para mover · alça clara dimensiona · setas refinam</small></span>
                 </div>
               </article>
             )}
-            <button
-              type="button"
-              className="tadeon-visibility__reset"
-              disabled={disabled}
-              onClick={coverLevel}
-            >
-              <RotateCcw aria-hidden="true" />
-              Reiniciar exploração deste andar
+            <button type="button" className="tadeon-visibility__reset" disabled={disabled} onClick={coverLevel}>
+              <RotateCcw aria-hidden="true" />Reiniciar exploração deste andar
             </button>
           </div>
         )}
       </div>
 
       <footer className="tadeon-visibility__footer">
-        <p>
-          {dirty
-            ? "Prévia local pronta para salvar e transmitir."
-            : `Visão sincronizada · versão ${state.version}`}
-        </p>
-        <Button
-          type="button"
-          size="sm"
-          disabled={disabled || !dirty}
-          onClick={() => void save()}
-        >
-          {saving ? (
-            <Loader2 className="animate-spin" aria-hidden="true" />
-          ) : (
-            <Save aria-hidden="true" />
-          )}
+        <p>{dirty ? "Prévia local pronta para salvar e transmitir." : `Visão sincronizada · versão ${state.version}`}</p>
+        <Button type="button" size="sm" disabled={disabled || !dirty} onClick={() => void save()}>
+          {saving ? <Loader2 className="animate-spin" aria-hidden="true" /> : <Save aria-hidden="true" />}
           Salvar ambiente
         </Button>
       </footer>
