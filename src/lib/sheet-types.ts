@@ -406,22 +406,22 @@ const EQUILIBRIUM_STATES: Record<number, Omit<EquilibriumEffect, "value">> = {
   [-4]: {
     state: "Inclinação ao Medo",
     benefit: "+1d20 em ações claramente alinhadas ao Medo.",
-    penalty: "—",
+    penalty: "~",
   },
   [-3]: {
     state: "Afinidade Visceral",
     benefit: "Uma vez por cena, trate Perícia sem treino como Iniciada em ação alinhada ao Medo.",
-    penalty: "—",
+    penalty: "~",
   },
   [-2]: {
     state: "Sensação Ampliada",
     benefit: "Uma vez por cena, repita um d20 em percepção de risco ou presença ameaçadora.",
-    penalty: "—",
+    penalty: "~",
   },
   [-1]: {
     state: "Toque de Instinto",
     benefit: "Sinais sutis e reflexos respondem antes do habitual.",
-    penalty: "—",
+    penalty: "~",
   },
   0: {
     state: "Inteireza",
@@ -431,23 +431,23 @@ const EQUILIBRIUM_STATES: Record<number, Omit<EquilibriumEffect, "value">> = {
   1: {
     state: "Toque de Clareza",
     benefit: "Padrões, palavras e lembranças aproximam-se da atenção.",
-    penalty: "—",
+    penalty: "~",
   },
   2: {
     state: "Sensibilidade Estrutural",
     benefit: "Uma vez por cena, repita um d20 em análise de padrão, linguagem ou memória.",
-    penalty: "—",
+    penalty: "~",
   },
   3: {
     state: "Afinidade Cognoscível",
     benefit:
       "Uma vez por cena, trate Perícia sem treino como Iniciada em ação alinhada ao Conhecimento.",
-    penalty: "—",
+    penalty: "~",
   },
   4: {
     state: "Inclinação ao Conhecimento",
     benefit: "+1d20 em ações claramente alinhadas ao Conhecimento.",
-    penalty: "—",
+    penalty: "~",
   },
   5: {
     state: "Ponto de Inflexão",

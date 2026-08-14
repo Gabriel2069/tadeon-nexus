@@ -1396,8 +1396,8 @@ function PinnedPanel({
                       aria-pressed={sh.power_form_enabled}
                       title={
                         sh.power_form_enabled
-                          ? "Forma de Poder LIBERADA — clique para bloquear"
-                          : "Forma de Poder bloqueada — clique para liberar"
+                          ? "Forma de Poder LIBERADA ~ clique para bloquear"
+                          : "Forma de Poder bloqueada ~ clique para liberar"
                       }
                       className={`flex items-center gap-1 rounded-full border px-2 py-0.5 text-[10px] transition-[color,background-color,border-color,box-shadow,transform] duration-150 ease-[var(--ease-out)] active:scale-[.97] ${
                         sh.power_form_enabled

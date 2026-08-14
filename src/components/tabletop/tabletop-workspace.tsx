@@ -2668,20 +2668,20 @@ export function TabletopWorkspace({
                   "space",
                   "Ambiente",
                   visibilityDirty ? "!" : null,
-                  visibilityDirty ? "Ambiente — alterações não salvas" : "Ambiente",
+                  visibilityDirty ? "Ambiente ~ alterações não salvas" : "Ambiente",
                 ],
                 [
                   "master",
                   "Mestre",
                   masterEntities.length || null,
-                  `Mestre — ${masterEntities.length} itens reservados`,
+                  `Mestre ~ ${masterEntities.length} itens reservados`,
                 ],
                 ["scene", "Cena", null, "Configuração da cena"],
                 [
                   "inspector",
                   "Editar",
                   selected.length || null,
-                  `Editar — ${selected.length} itens selecionados`,
+                  `Editar ~ ${selected.length} itens selecionados`,
                 ],
               ] as const
             ).map(([tab, label, badge, accessibleLabel]) => (

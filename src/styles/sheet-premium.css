@@ -1791,7 +1791,7 @@
   }
 }
 
-/* Forma de Poder — intensity through Fio-Mestre material, not neon. */
+/* Forma de Poder ~ intensity through Fio-Mestre material, not neon. */
 .tadeon-vp-page {
   --vp-accent: #9b5961;
   --vp-accent-rgb: 155 89 97;
@@ -1956,7 +1956,7 @@
   }
 }
 
-/* Character-sheet refinement — balanced odd grids, authored motion and narrative tabs. */
+/* Character-sheet refinement ~ balanced odd grids, authored motion and narrative tabs. */
 
 .tadeon-sheet-tabs [role="tabpanel"][data-state="active"] {
   animation: tadeon-sheet-view-enter 320ms var(--ease-out) both;

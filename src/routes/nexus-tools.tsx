@@ -551,7 +551,7 @@ function NexusToolsPage() {
               <div>
                 <p className="tadeon-eyebrow">Estado atual</p>
                 <h2 className="font-cinzel text-2xl font-semibold">
-                  {healthyCount}/{diagnostics.length || "—"} verificações saudáveis
+                  {healthyCount}/{diagnostics.length || "~"} verificações saudáveis
                 </h2>
               </div>
               <Button

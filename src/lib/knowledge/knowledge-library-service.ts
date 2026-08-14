@@ -221,7 +221,7 @@ export class KnowledgeLibraryService {
     return this.createTemplate({
       workspaceId: template.workspace_id,
       nodeType: template.node_type,
-      name: `${template.name} — cópia`,
+      name: `${template.name} ~ cópia`,
       description: template.description,
       icon: template.icon,
       defaultContent: template.default_content,

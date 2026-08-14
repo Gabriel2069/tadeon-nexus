@@ -854,7 +854,7 @@ export function buildKnowledgeArchive(snapshot: KnowledgeExportSnapshot) {
   );
   entries["export-report.txt"] = strToU8(
     [
-      "Tadeon Nexus — relatório de exportação",
+      "Tadeon Nexus ~ relatório de exportação",
       `Formato: ${NEXUS_VAULT_FORMAT}@${NEXUS_VAULT_VERSION}`,
       `Páginas: ${snapshot.pages.length}`,
       `Relações: ${snapshot.relations.length}`,

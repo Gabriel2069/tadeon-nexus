@@ -9,7 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-// (Dialog imports removed — Power Form now lives in /sheet/$id/power route)
+// (Dialog imports removed ~ Power Form now lives in /sheet/$id/power route)
 
 import {
   ArrowLeft,
@@ -302,7 +302,7 @@ function SheetPage() {
   const [sheetSkillGroups, setSheetSkillGroups] = useState<typeof SKILL_GROUPS>([]);
   const [trainingCosts, setTrainingCosts] =
     useState<[number, number, number]>(DEFAULT_TRAINING_COSTS);
-  // (removed setPowerFormOpen — Power Form opens via dedicated route)
+  // (removed setPowerFormOpen ~ Power Form opens via dedicated route)
   const [fragmentsView, setFragmentsView] = useState(false);
   const [defEquipOpen, setDefEquipOpen] = useState(false);
   const [openSkill, setOpenSkill] = useState<string | null>(null);
@@ -1831,7 +1831,7 @@ function SheetPage() {
                           );
                           setOpenSkill(null);
                           toast.success(
-                            `${s}: ${nextTier.name} (+${nextTier.bonus}) — ${
+                            `${s}: ${nextTier.name} (+${nextTier.bonus}) ~ ${
                               isInitialDegree ? "grau inicial" : `${nextCost} PM`
                             }`,
                           );
@@ -2543,7 +2543,7 @@ function SheetPage() {
                     kicker: "Vetores de mudança",
                     prompt:
                       "Desejos imediatos, ambições distantes e aquilo que não está disposta a sacrificar para alcançá-los.",
-                    placeholder: "O que ela busca — e qual preço se recusa a pagar?",
+                    placeholder: "O que ela busca ~ e qual preço se recusa a pagar?",
                     icon: Target,
                   },
                   {
