@@ -16,10 +16,9 @@ declare global {
   }
 }
 
-type EngineInternals = TabletopEngine & {
+type EngineInternals = {
   camera: CameraController;
   app: { canvas: HTMLCanvasElement };
-  render(notify?: boolean): void;
 };
 
 type RuntimePrototype = {
@@ -52,7 +51,7 @@ if (!runtimeState.__tadeonPlayerRuntimePatched) {
   prototype.init = async function initWithRuntime(this: TabletopEngine, host: HTMLElement) {
     await originalInit.call(this, host);
     if (typeof window === "undefined") return;
-    const internals = this as EngineInternals;
+    const internals = this as unknown as EngineInternals;
     window.__tadeonTabletopRuntime = {
       engine: this,
       host,
