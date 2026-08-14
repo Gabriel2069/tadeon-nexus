@@ -6,6 +6,7 @@ import {
   type TabletopViewOrientation,
 } from "./tabletop-projection";
 import { activeTabletopLevel, tabletopItemLevelId } from "./tabletop-levels";
+import { tabletopRegionBehavior } from "./tabletop-regions";
 import { entityIsBelowRoof } from "./tabletop-structure-editor";
 import {
   isRoofStructure,
@@ -15,7 +16,7 @@ import {
 } from "./tabletop-spatial";
 import { tabletopStructureWorldSpan } from "./tabletop-structure-vertical";
 import type { TabletopVisibilityState, TabletopWall } from "./tabletop-visibility-service";
-import type { TabletopLevel, TabletopScene } from "./types";
+import type { TabletopEntity, TabletopLevel, TabletopScene } from "./types";
 
 interface SpatialPoint { x: number; y: number }
 
@@ -27,12 +28,46 @@ const MATERIALS = {
   roof: { face: 0x321a20, top: 0x74242d, edge: 0xe7dbc4 },
 } as const;
 
+const REGION_COLORS = {
+  normal: 0x6d8194,
+  difficult: 0xc59a52,
+  water: 0x4d9fc7,
+  mud: 0x755a3f,
+  ice: 0xbde8f2,
+  foliage: 0x4f8a62,
+  smoke: 0x7d818a,
+  hazard: 0xc0584e,
+  custom: 0x8f6bb8,
+} as const;
+
 function flatPoints(points: SpatialPoint[]) {
   return points.flatMap((point) => [point.x, point.y]);
 }
 
 function elevated(point: SpatialPoint, height: number, orientation: TabletopViewOrientation): SpatialPoint {
   return elevateTabletopPoint(point, height, orientation);
+}
+
+function rotatedEntityCorners(entity: TabletopEntity) {
+  const center = { x: entity.x + entity.width / 2, y: entity.y + entity.height / 2 };
+  const angle = (entity.rotation * Math.PI) / 180;
+  const cos = Math.cos(angle);
+  const sin = Math.sin(angle);
+  return [
+    { x: -entity.width / 2, y: -entity.height / 2 },
+    { x: entity.width / 2, y: -entity.height / 2 },
+    { x: entity.width / 2, y: entity.height / 2 },
+    { x: -entity.width / 2, y: entity.height / 2 },
+  ].map((point) => ({
+    x: center.x + point.x * cos - point.y * sin,
+    y: center.y + point.x * sin + point.y * cos,
+  }));
+}
+
+function colorFromHex(value: string | undefined, fallback: number) {
+  if (!value) return fallback;
+  const normalized = value.trim().replace(/^#/, "");
+  return /^[0-9a-f]{6}$/i.test(normalized) ? Number.parseInt(normalized, 16) : fallback;
 }
 
 export function tabletopWallFootprint(start: SpatialPoint, end: SpatialPoint, thickness: number) {
@@ -55,23 +90,21 @@ function rotatedDoorEnd(wall: TabletopWall) {
   const dy = wall.y2 - wall.y1;
   const cosine = Math.cos(-Math.PI * 0.38);
   const sine = Math.sin(-Math.PI * 0.38);
-  return {
-    x: wall.x1 + dx * cosine - dy * sine,
-    y: wall.y1 + dx * sine + dy * cosine,
-  };
+  return { x: wall.x1 + dx * cosine - dy * sine, y: wall.y1 + dx * sine + dy * cosine };
 }
 
 export class TabletopSpatialRenderer {
   readonly below = new Container({ label: "spatial-architecture" });
   readonly above = new Container({ label: "spatial-roofs" });
   private readonly ground = new Graphics({ label: "level-grounding" });
+  private readonly regions = new Graphics({ label: "behavioral-regions" });
   private readonly architecture = new Graphics({ label: "structure-meshes" });
   private readonly roofs = new Graphics({ label: "roof-meshes" });
 
   constructor() {
     this.below.eventMode = "none";
     this.above.eventMode = "none";
-    this.below.addChild(this.ground, this.architecture);
+    this.below.addChild(this.ground, this.regions, this.architecture);
     this.above.addChild(this.roofs);
   }
 
@@ -85,18 +118,22 @@ export class TabletopSpatialRenderer {
     orientation: TabletopViewOrientation = DEFAULT_TABLETOP_VIEW_ORIENTATION,
   ) {
     this.ground.clear();
+    this.regions.clear();
     this.architecture.clear();
     this.roofs.clear();
-    const visible = projection === "isometric";
-    this.below.visible = visible;
-    this.above.visible = visible;
-    if (!visible) return;
+    this.below.visible = true;
+    const isometric = projection === "isometric";
+    this.ground.visible = isometric;
+    this.architecture.visible = isometric;
+    this.above.visible = isometric;
 
     const activeLevel = activeTabletopLevel(scene, activeLevelId);
     const fallbackLevelId = activeTabletopLevel(scene).id;
+    this.paintRegions(scene, activeLevel, fallbackLevelId, projection, orientation, selectedEntityIds);
+    if (!isometric) return;
+
     this.paintGroundContinuity(scene, activeLevel, orientation);
     const selectedEntities = scene.entities.filter((entity) => selectedEntityIds.includes(entity.id));
-
     for (const wall of state.walls) {
       if (tabletopItemLevelId(wall, fallbackLevelId) !== activeLevel.id) continue;
       const type = wall.wallType as TabletopStructureType;
@@ -111,14 +148,45 @@ export class TabletopSpatialRenderer {
           wall.id === selectedStructureId || selectedEntities.some((entity) => entityIsBelowRoof(entity, wall)),
         );
       } else {
-        this.paintWall(
-          wall,
-          type,
-          span.height,
-          span.baseElevation,
-          orientation,
-          wall.id === selectedStructureId,
-        );
+        this.paintWall(wall, type, span.height, span.baseElevation, orientation, wall.id === selectedStructureId);
+      }
+    }
+  }
+
+  private paintRegions(
+    scene: TabletopScene,
+    activeLevel: TabletopLevel,
+    fallbackLevelId: string,
+    projection: TabletopProjectionMode,
+    orientation: TabletopViewOrientation,
+    selectedIds: string[],
+  ) {
+    for (const entity of scene.entities) {
+      const behavior = tabletopRegionBehavior(entity);
+      if (!behavior?.enabled || entity.hidden) continue;
+      if (tabletopItemLevelId(entity, fallbackLevelId) !== activeLevel.id) continue;
+      let corners = rotatedEntityCorners(entity);
+      if (projection === "isometric") {
+        const elevation = activeLevel.baseElevation + behavior.elevationOffset;
+        corners = corners.map((point) => elevated(point, elevation + 0.5, orientation));
+      }
+      const color = colorFromHex(behavior.tint, REGION_COLORS[behavior.surface]);
+      const selected = selectedIds.includes(entity.id);
+      const alpha = selected ? 0.22 : behavior.surface === "smoke" ? 0.12 : 0.08;
+      this.regions.poly(flatPoints(corners)).fill({ color, alpha }).stroke({
+        color,
+        alpha: selected ? 0.9 : 0.28,
+        width: selected ? 2.5 : 1.2,
+      });
+      if (behavior.surface === "water" || behavior.surface === "ice") {
+        const centerY = corners.reduce((sum, point) => sum + point.y, 0) / corners.length;
+        const minX = Math.min(...corners.map((point) => point.x));
+        const maxX = Math.max(...corners.map((point) => point.x));
+        this.regions.moveTo(minX, centerY).lineTo(maxX, centerY).stroke({
+          color: 0xe7fbff,
+          alpha: behavior.surface === "ice" ? 0.32 : 0.18,
+          width: 1,
+        });
       }
     }
   }
