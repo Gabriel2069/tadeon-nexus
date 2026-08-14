@@ -8,6 +8,7 @@ import { TabletopDirectorWorkspace } from "@/components/tabletop/tabletop-direct
 import { useAuth } from "@/lib/auth";
 import { loadFeatureFlags } from "@/lib/feature-flag-repository";
 import type { FeatureFlags } from "@/lib/feature-flags";
+import "@/lib/tabletop/tabletop-advanced-grid-runtime";
 
 export const Route = createFileRoute("/tabletop")({
   head: () => ({

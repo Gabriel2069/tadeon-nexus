@@ -1,3 +1,4 @@
+import { structureChannels } from "./tabletop-spatial";
 import type { TabletopLight, TabletopWall } from "./tabletop-visibility-service";
 
 export interface VisibilityPoint { x: number; y: number }
@@ -18,6 +19,19 @@ function raySegmentDistance(
     : null;
 }
 
+export function tabletopWallLightTransmission(wall: TabletopWall) {
+  const channels = structureChannels(wall.wallType, wall.properties);
+  if (wall.wallType === "door_open" || wall.wallType === "window_open" || wall.wallType === "window_broken") return 1;
+  if (!channels.blocksLight) return channels.lightTransmission;
+  return Math.min(channels.lightTransmission, 0.06);
+}
+
+export function tabletopWallVisionTransmission(wall: TabletopWall) {
+  const channels = structureChannels(wall.wallType, wall.properties);
+  if (!wall.blocksVision) return channels.visionTransmission;
+  return Math.min(channels.visionTransmission, 0.06);
+}
+
 export function buildVisibilityPolygon(
   light: Pick<TabletopLight, "x" | "y" | "radius" | "castsShadows">,
   walls: TabletopWall[],
@@ -32,10 +46,13 @@ export function buildVisibilityPolygon(
     { id: "left", x1: 0, y1: sceneHeight, x2: 0, y2: 0, wallType: "wall", blocksVision: true, blocksMovement: true },
   ];
   const blockers = light.castsShadows
-    ? [...walls.filter((wall) => wall.blocksVision && wall.wallType !== "door_open"), ...boundary]
+    ? [
+        ...walls.filter((wall) => tabletopWallLightTransmission(wall) <= 0.06),
+        ...boundary,
+      ]
     : boundary;
   const angles: number[] = [];
-  for (let index = 0; index < 64; index += 1) angles.push((index / 64) * Math.PI * 2);
+  for (let index = 0; index < 96; index += 1) angles.push((index / 96) * Math.PI * 2);
   for (const wall of blockers) {
     for (const point of [{ x: wall.x1, y: wall.y1 }, { x: wall.x2, y: wall.y2 }]) {
       const angle = Math.atan2(point.y - light.y, point.x - light.x);
@@ -53,4 +70,38 @@ export function buildVisibilityPolygon(
       }
       return { x: light.x + direction.x * distance, y: light.y + direction.y * distance };
     });
+}
+
+/**
+ * Returns transmissive structures crossed by a ray. Used by renderers and
+ * previews to make glass, smoke-like barriers and force fields visibly alter
+ * light without treating them as opaque walls.
+ */
+export function lightTransmissionAlongRay(
+  origin: VisibilityPoint,
+  target: VisibilityPoint,
+  walls: TabletopWall[],
+) {
+  const length = Math.hypot(target.x - origin.x, target.y - origin.y);
+  if (length < 1e-6) return 1;
+  const direction = {
+    x: (target.x - origin.x) / length,
+    y: (target.y - origin.y) / length,
+  };
+  const crossed = walls
+    .map((wall) => ({
+      wall,
+      distance: raySegmentDistance(origin, direction, wall),
+    }))
+    .filter(
+      (entry): entry is { wall: TabletopWall; distance: number } =>
+        entry.distance !== null && entry.distance <= length,
+    )
+    .sort((left, right) => left.distance - right.distance);
+  let transmission = 1;
+  for (const { wall } of crossed) {
+    transmission *= tabletopWallLightTransmission(wall);
+    if (transmission <= 0.02) return 0;
+  }
+  return Math.max(0, Math.min(1, transmission));
 }
