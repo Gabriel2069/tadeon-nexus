@@ -1,0 +1,165 @@
+/* Versão de jogo: preserva todos os campos, reduz o aparato de edição e prioriza leitura. */
+.tadeon-sheet-experience-host {
+  display: inline-flex;
+  align-items: center;
+  gap: .35rem;
+}
+
+.tadeon-sheet-presence {
+  display: inline-flex;
+  min-width: 2rem;
+  height: 2rem;
+  align-items: center;
+  justify-content: center;
+  gap: .25rem;
+  border: 1px solid color-mix(in srgb, var(--border) 84%, transparent);
+  border-radius: 999px;
+  padding: 0 .48rem;
+  color: var(--muted-foreground);
+  font-size: .68rem;
+  font-variant-numeric: tabular-nums;
+  background: color-mix(in srgb, var(--background) 84%, transparent);
+}
+
+.tadeon-sheet-presence svg {
+  width: .8rem;
+  height: .8rem;
+}
+
+.tadeon-workspace-popout-host {
+  display: inline-flex;
+  margin-top: .55rem;
+}
+
+html[data-tadeon-sheet-mode="game"] .tadeon-sheet-page,
+html[data-tadeon-sheet-mode="game"] [class*="tadeon-sheet"] {
+  --tadeon-game-field-height: 2rem;
+}
+
+html[data-tadeon-sheet-mode="game"] input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+html[data-tadeon-sheet-mode="game"] select,
+html[data-tadeon-sheet-mode="game"] button[role="combobox"] {
+  min-height: var(--tadeon-game-field-height) !important;
+  height: var(--tadeon-game-field-height) !important;
+  padding-block: .15rem !important;
+  border-color: transparent !important;
+  background: color-mix(in srgb, var(--card) 68%, transparent) !important;
+  box-shadow: none !important;
+  font-weight: 650;
+}
+
+html[data-tadeon-sheet-mode="game"] textarea {
+  min-height: 2.6rem !important;
+  max-height: 5.6rem;
+  resize: vertical;
+  padding: .48rem .62rem !important;
+  border-color: color-mix(in srgb, var(--border) 55%, transparent) !important;
+  background: color-mix(in srgb, var(--card) 62%, transparent) !important;
+  line-height: 1.35;
+}
+
+html[data-tadeon-sheet-mode="game"] input:focus,
+html[data-tadeon-sheet-mode="game"] textarea:focus,
+html[data-tadeon-sheet-mode="game"] button[role="combobox"]:focus-visible {
+  border-color: color-mix(in srgb, var(--primary) 55%, var(--border)) !important;
+  background: var(--background) !important;
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--primary) 14%, transparent) !important;
+}
+
+html[data-tadeon-sheet-mode="game"] label {
+  font-size: .66rem;
+  letter-spacing: .035em;
+  color: color-mix(in srgb, var(--muted-foreground) 82%, transparent);
+}
+
+html[data-tadeon-sheet-mode="game"] .tadeon-surface,
+html[data-tadeon-sheet-mode="game"] .tadeon-sheet-section,
+html[data-tadeon-sheet-mode="game"] section[id] {
+  scroll-margin-top: 5.5rem;
+}
+
+html[data-tadeon-sheet-mode="game"] #sec-attr strong,
+html[data-tadeon-sheet-mode="game"] #sec-pontos strong,
+html[data-tadeon-sheet-mode="game"] .tadeon-attribute-tile__value,
+html[data-tadeon-sheet-mode="game"] .tadeon-stat-block__value,
+html[data-tadeon-sheet-mode="game"] .tadeon-defense-card__score {
+  font-size: clamp(1.55rem, 2.35vw, 2.55rem) !important;
+  line-height: .96 !important;
+  font-variant-numeric: tabular-nums;
+}
+
+html[data-tadeon-sheet-mode="game"] #sec-info input:first-of-type,
+html[data-tadeon-sheet-mode="game"] input[name="name"] {
+  font-size: clamp(1.05rem, 1.6vw, 1.35rem) !important;
+  font-weight: 760 !important;
+}
+
+html[data-tadeon-sheet-mode="game"] .tadeon-attribute-grid {
+  gap: .48rem !important;
+}
+
+html[data-tadeon-sheet-mode="game"] .tadeon-attribute-tile {
+  min-height: 5.2rem !important;
+  padding: .58rem !important;
+}
+
+html[data-tadeon-sheet-mode="game"] #sec-armas,
+html[data-tadeon-sheet-mode="game"] #sec-inv,
+html[data-tadeon-sheet-mode="game"] #sec-hab,
+html[data-tadeon-sheet-mode="game"] #sec-pericias,
+html[data-tadeon-sheet-mode="game"] #sec-notas,
+html[data-tadeon-sheet-mode="game"] #tramas-fragmentos {
+  --tadeon-section-gap: .55rem;
+}
+
+html[data-tadeon-sheet-mode="game"] [data-tadeon-context-help] {
+  cursor: help;
+}
+
+html[data-tadeon-sheet-embed="tabletop"] body {
+  background: transparent !important;
+}
+
+html[data-tadeon-sheet-embed="tabletop"] aside,
+html[data-tadeon-sheet-embed="tabletop"] nav[aria-label="Navegação principal"],
+html[data-tadeon-sheet-embed="tabletop"] header:not(.tadeon-sheet-header),
+html[data-tadeon-sheet-embed="tabletop"] .tadeon-mobile-dock,
+html[data-tadeon-sheet-embed="tabletop"] .tadeon-app-sidebar {
+  display: none !important;
+}
+
+html[data-tadeon-sheet-embed="tabletop"] main {
+  width: 100% !important;
+  max-width: none !important;
+  margin: 0 !important;
+  padding: .65rem !important;
+}
+
+html[data-tadeon-sheet-embed="tabletop"] .tadeon-sheet-page {
+  max-width: none !important;
+  margin: 0 !important;
+}
+
+@media (max-width: 767px) {
+  .tadeon-sheet-experience-host {
+    gap: .22rem;
+  }
+
+  .tadeon-sheet-game-button span,
+  .tadeon-sheet-presence {
+    font-size: .62rem;
+  }
+
+  html[data-tadeon-sheet-mode="game"] textarea {
+    max-height: 7rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tadeon-sheet-game-button,
+  .tadeon-sheet-popout-button,
+  .tadeon-workspace-popout-host button {
+    transition: none !important;
+    animation: none !important;
+  }
+}
