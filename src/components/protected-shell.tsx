@@ -7,6 +7,7 @@ import { AlertTriangle, Home, Loader2, RefreshCw, ShieldX } from "lucide-react";
 import { can } from "@/lib/permissions";
 import { PageState } from "@/components/page-state";
 import {
+  NexusSheetDragBridge,
   SheetExperienceBridge,
   WorkspacePopoutBridge,
 } from "@/components/sheet/sheet-experience-bridge";
@@ -67,6 +68,7 @@ export function ProtectedShell({ children, requireRole }: Props) {
     <AppLayout>
       <SheetExperienceBridge />
       <WorkspacePopoutBridge />
+      <NexusSheetDragBridge />
       {children}
     </AppLayout>
   );
