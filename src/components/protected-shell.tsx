@@ -12,6 +12,7 @@ import {
   WorkspacePopoutBridge,
 } from "@/components/sheet/sheet-experience-bridge";
 import { SheetInventoryOrganizer } from "@/components/sheet/sheet-inventory-organizer";
+import { TabletopCrossSurfaceBridge } from "@/components/tabletop/tabletop-cross-surface-bridge";
 import "@/styles/sheet-requested-polish.css";
 import "@/styles/sheet-density-final.css";
 import "@/styles/sheet-game-mode.css";
@@ -98,6 +99,7 @@ export function ProtectedShell({ children, requireRole }: Props) {
     <>
       <SheetExperienceBridge />
       <SheetInventoryOrganizer />
+      <TabletopCrossSurfaceBridge />
       {!dedicated && <WorkspacePopoutBridge />}
       <NexusSheetDragBridge />
       {children}
