@@ -1,0 +1,260 @@
+/* Tadeon Nexus ~ precision fixes
+ * Final containment pass for floating surfaces, button reflections, sheet
+ * attributes and long-form Nexus reading. Keep this layer after interaction-polish.
+ */
+
+:root {
+  --tadeon-popup-gutter: 0.875rem;
+}
+
+/* Floating surfaces must never paint beyond the usable viewport. Radix still
+ * owns placement/collision; these rules only give every surface a hard visual
+ * envelope, including custom widths supplied by callers. */
+[data-radix-popper-content-wrapper] {
+  max-width: calc(100dvw - (var(--tadeon-popup-gutter) * 2)) !important;
+  max-height: calc(100dvh - (var(--tadeon-popup-gutter) * 2)) !important;
+}
+
+[data-radix-popper-content-wrapper] > :where(
+  [data-slot="select-content"],
+  [data-slot="popover-content"],
+  [data-slot="hover-card-content"],
+  [data-slot="dropdown-menu-content"],
+  [data-slot="dropdown-menu-sub-content"],
+  [data-slot="context-menu-content"],
+  [data-slot="context-menu-sub-content"],
+  [data-slot="menubar-content"],
+  [data-slot="tooltip-content"]
+) {
+  max-width: min(34rem, calc(100dvw - (var(--tadeon-popup-gutter) * 2))) !important;
+  max-height: calc(100dvh - (var(--tadeon-popup-gutter) * 2)) !important;
+  overscroll-behavior: contain;
+}
+
+:where(
+  [data-slot="dialog-content"],
+  [data-slot="alert-dialog-content"],
+  [data-slot="sheet-content"]
+) {
+  max-width: calc(100dvw - (var(--tadeon-popup-gutter) * 2)) !important;
+  max-height: calc(100dvh - (var(--tadeon-popup-gutter) * 2)) !important;
+  overscroll-behavior: contain;
+}
+
+:where([data-slot$="-overlay"]) {
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+}
+
+/* A reflection belongs to the control that emitted it. Paint clipping keeps
+ * sheen pseudo-elements inside the button while leaving ample room for the
+ * icon motion itself inside the button box. */
+.tadeon-shell [data-slot="button"] {
+  overflow: clip !important;
+  overflow-clip-margin: 0 !important;
+  isolation: isolate;
+}
+
+.tadeon-shell [data-slot="button"]::before,
+.tadeon-shell [data-slot="button"]::after {
+  pointer-events: none;
+}
+
+/* Avoid the blurred-glass wash on desktop selection/menu surfaces. The material
+ * still reads as elevated through border, color and shadow instead of blur. */
+@media (min-width: 900px) {
+  :where(
+    [data-slot="select-content"],
+    [data-slot="popover-content"],
+    [data-slot="hover-card-content"],
+    [data-slot="dropdown-menu-content"],
+    [data-slot="context-menu-content"],
+    [data-slot="menubar-content"]
+  ) {
+    -webkit-backdrop-filter: none !important;
+    backdrop-filter: none !important;
+    background-color: color-mix(in srgb, var(--popover) 98%, black) !important;
+  }
+}
+
+/* ---------------------------------------------------------------------
+ * Character sheet ~ attribute panel
+ * ------------------------------------------------------------------ */
+
+.tadeon-sheet-page .tadeon-attribute-grid {
+  gap: 0.55rem !important;
+  padding: 0.1rem;
+}
+
+.tadeon-sheet-page .tadeon-attribute-tile {
+  --attribute-accent: var(--tadeon-knowledge);
+  min-width: 0;
+  min-height: 4.65rem !important;
+  padding: 0.55rem 0.6rem !important;
+  border-color: color-mix(in srgb, var(--attribute-accent) 26%, var(--border)) !important;
+  background:
+    radial-gradient(circle at 92% 8%, color-mix(in srgb, var(--attribute-accent) 13%, transparent), transparent 42%),
+    linear-gradient(155deg, rgb(255 255 255 / 2.5%), transparent 58%),
+    rgb(6 8 12 / 97%) !important;
+  box-shadow:
+    inset 0 1px color-mix(in srgb, var(--attribute-accent) 9%, transparent),
+    0 12px 24px -22px color-mix(in srgb, var(--attribute-accent) 55%, black) !important;
+}
+
+.tadeon-sheet-page .tadeon-attribute-tile[data-attribute="COR"] {
+  --attribute-accent: #a74c55;
+}
+
+.tadeon-sheet-page .tadeon-attribute-tile[data-attribute="MEN"] {
+  --attribute-accent: #d9d7a4;
+}
+
+.tadeon-sheet-page .tadeon-attribute-tile[data-attribute="INS"] {
+  --attribute-accent: #817a8c;
+}
+
+.tadeon-sheet-page .tadeon-attribute-tile[data-attribute="PRE"] {
+  --attribute-accent: #5f846f;
+}
+
+.tadeon-sheet-page .tadeon-attribute-tile[data-attribute="ERU"] {
+  --attribute-accent: #52788c;
+}
+
+.tadeon-sheet-page .tadeon-attribute-tile__label {
+  display: block;
+  margin-bottom: 0.3rem;
+  color: color-mix(in srgb, var(--attribute-accent) 86%, var(--foreground));
+  font-size: 0.78rem !important;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-align: center;
+}
+
+.tadeon-sheet-page .tadeon-attribute-tile__controls {
+  display: grid;
+  grid-template-columns: 1.9rem minmax(2.35rem, 1fr) 1.9rem;
+  align-items: center;
+  gap: 0.28rem;
+}
+
+.tadeon-sheet-page .tadeon-attribute-tile__controls .tadeon-stepper-button {
+  width: 1.9rem !important;
+  height: 1.9rem !important;
+  min-width: 1.9rem;
+  border: 1px solid color-mix(in srgb, var(--attribute-accent) 16%, transparent);
+  background: color-mix(in srgb, var(--attribute-accent) 6%, transparent);
+}
+
+.tadeon-sheet-page .tadeon-attribute-tile__value {
+  display: grid;
+  min-width: 0;
+  min-height: 2.2rem;
+  place-items: center;
+  padding: 0.12rem 0.3rem;
+  border: 1px solid color-mix(in srgb, var(--attribute-accent) 32%, var(--border)) !important;
+  border-radius: 0.68rem;
+  color: color-mix(in srgb, var(--attribute-accent) 42%, var(--foreground)) !important;
+  background: color-mix(in srgb, var(--attribute-accent) 7%, rgb(4 6 9 / 98%)) !important;
+  font-family: var(--font-cinzel);
+  font-size: clamp(1.35rem, 1.7vw, 1.7rem);
+  font-weight: 700;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.tadeon-sheet-page .tadeon-attribute-radar {
+  width: min(100%, 31rem);
+  height: clamp(12.5rem, 20vw, 15.5rem) !important;
+  margin-inline: auto;
+  overflow: visible;
+}
+
+@media (min-width: 760px) {
+  .tadeon-sheet-page .tadeon-attribute-grid {
+    grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
+  }
+}
+
+@media (max-width: 759px) {
+  .tadeon-sheet-page .tadeon-attribute-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+
+  .tadeon-sheet-page .tadeon-attribute-tile[data-attribute="ERU"] {
+    grid-column: 1 / -1;
+  }
+}
+
+/* ---------------------------------------------------------------------
+ * O Nexus ~ long-form reading
+ * ------------------------------------------------------------------ */
+
+.tadeon-nexus-document article > div > .tadeon-rule + .min-w-0 {
+  width: min(100%, 82ch);
+  margin-inline: auto;
+  color: color-mix(in srgb, var(--foreground) 94%, transparent);
+}
+
+.tadeon-nexus-document article > div > .tadeon-rule + .min-w-0 > p {
+  margin-block: 1.15rem;
+  font-size: clamp(0.98rem, 0.28vw + 0.92rem, 1.08rem);
+  line-height: 1.82;
+  text-wrap: pretty;
+}
+
+.tadeon-nexus-document article > div > .tadeon-rule + .min-w-0 > :is(h1, h2) {
+  position: relative;
+  margin-top: 2.6rem;
+  padding-top: 0.85rem;
+  border-top: 1px solid color-mix(in srgb, var(--primary) 18%, var(--border));
+  color: var(--foreground);
+  line-height: 1.12;
+  text-wrap: balance;
+}
+
+.tadeon-nexus-document article > div > .tadeon-rule + .min-w-0 > :is(h3, h4) {
+  color: color-mix(in srgb, var(--primary) 68%, var(--foreground));
+  line-height: 1.2;
+  text-wrap: balance;
+}
+
+.tadeon-nexus-document article > div > .tadeon-rule + .min-w-0 blockquote {
+  border: 1px solid color-mix(in srgb, var(--primary) 16%, var(--border));
+  border-left: 3px solid color-mix(in srgb, var(--primary) 55%, var(--border));
+  border-radius: 0 0.85rem 0.85rem 0;
+  padding: 0.9rem 1rem;
+  background: linear-gradient(90deg, color-mix(in srgb, var(--primary) 5%, transparent), transparent 70%);
+}
+
+.tadeon-nexus-document article > div > .tadeon-rule + .min-w-0 :where(table) {
+  font-variant-numeric: tabular-nums;
+}
+
+.tadeon-nexus-document article > div > .tadeon-rule + .min-w-0 :where(thead) {
+  background: color-mix(in srgb, var(--primary) 8%, var(--muted));
+}
+
+.tadeon-nexus-document article > div > .tadeon-rule + .min-w-0 :where(tbody tr:nth-child(even)) {
+  background: rgb(255 255 255 / 1.4%);
+}
+
+.tadeon-nexus-document article > div > .tadeon-rule + .min-w-0 :where(th, td) {
+  min-width: 7.5rem;
+  vertical-align: top;
+  line-height: 1.55;
+}
+
+.tadeon-nexus-document article > div > .tadeon-rule + .min-w-0 button {
+  white-space: normal;
+}
+
+@media (max-width: 639px) {
+  :root {
+    --tadeon-popup-gutter: 0.55rem;
+  }
+
+  .tadeon-nexus-document article > div > .tadeon-rule + .min-w-0 > p {
+    line-height: 1.72;
+  }
+}
