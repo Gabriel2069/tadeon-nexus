@@ -98,6 +98,12 @@ function queryMode() {
   return new URLSearchParams(window.location.search).get("mode");
 }
 
+function withDedicatedPopout(pathname: string, search: string) {
+  const params = new URLSearchParams(search);
+  params.set("popout", "1");
+  return `${pathname}?${params.toString()}`;
+}
+
 function findToolbarAnchor() {
   return (
     document.querySelector<HTMLElement>(".tadeon-sheet-power-button") ??
@@ -116,7 +122,12 @@ function ensurePortalHost(anchor: HTMLElement, id: string, className = "tadeon-s
 }
 
 function openPopout(url: string, name: string) {
-  window.open(url, name, "popup=yes,width=1180,height=860,resizable=yes,scrollbars=yes");
+  const popup = window.open(
+    url,
+    name,
+    "popup=yes,width=1180,height=860,resizable=yes,scrollbars=yes,noopener=yes",
+  );
+  if (popup) popup.opener = null;
 }
 
 function compactValue(value: unknown) {
@@ -134,6 +145,7 @@ export function SheetExperienceBridge() {
   const match = typeof window === "undefined" ? null : window.location.pathname.match(SHEET_PATH);
   const sheetId = match?.[1] ?? null;
   const embedded = queryFlag("embed");
+  const popout = queryFlag("popout");
   const [mode, setMode] = useState<"edit" | "game">(() => {
     if (!sheetId || typeof window === "undefined") return "edit";
     if (queryMode() === "game" || embedded) return "game";
@@ -309,6 +321,8 @@ export function SheetExperienceBridge() {
             size="sm"
             variant={mode === "game" ? "default" : "outline"}
             className="tadeon-sheet-game-button gap-1.5"
+            data-state={mode === "game" ? "active" : "inactive"}
+            aria-pressed={mode === "game"}
             onClick={() => setMode((current) => (current === "game" ? "edit" : "game"))}
             title={mode === "game" ? "Voltar à edição completa" : "Ativar versão de jogo"}
           >
@@ -331,21 +345,23 @@ export function SheetExperienceBridge() {
             <Users aria-hidden="true" />
             {onlineCount}
           </span>
-          <Button
-            size="icon"
-            variant="ghost"
-            className="tadeon-sheet-popout-button"
-            onClick={() =>
-              openPopout(
-                `/sheet/${sheetId}?mode=${mode === "game" ? "game" : "edit"}&popout=1`,
-                `tadeon-sheet-${sheetId}`,
-              )
-            }
-            title="Abrir ficha em janela separada"
-            aria-label="Abrir ficha em janela separada"
-          >
-            <ExternalLink className="h-4 w-4" />
-          </Button>
+          {!popout && (
+            <Button
+              size="icon"
+              variant="ghost"
+              className="tadeon-sheet-popout-button"
+              onClick={() =>
+                openPopout(
+                  `/sheet/${sheetId}?mode=${mode === "game" ? "game" : "edit"}&popout=1`,
+                  `tadeon-sheet-${sheetId}`,
+                )
+              }
+              title="Abrir ficha em janela dedicada"
+              aria-label="Abrir ficha em janela dedicada"
+            >
+              <ExternalLink className="h-4 w-4" />
+            </Button>
+          )}
           {nexusLinks.length > 0 && (
             <span className="tadeon-sheet-nexus-links" title="Páginas do Nexus ligadas à ficha">
               <Link2 aria-hidden="true" /> {nexusLinks.length}
@@ -404,7 +420,7 @@ export function WorkspacePopoutBridge() {
   const [host, setHost] = useState<HTMLElement | null>(null);
   const [sessionSaving, setSessionSaving] = useState(false);
   const path = typeof window === "undefined" ? "" : window.location.pathname;
-  const eligible = path === "/master-panel" || path === "/nexus";
+  const eligible = (path === "/master-panel" || path === "/nexus") && !queryFlag("popout");
 
   useEffect(() => {
     if (!eligible) return;
@@ -454,11 +470,11 @@ export function WorkspacePopoutBridge() {
         className="gap-1.5"
         onClick={() =>
           openPopout(
-            `${window.location.pathname}${window.location.search}`,
+            withDedicatedPopout(window.location.pathname, window.location.search),
             `tadeon-workspace-${path.slice(1)}`,
           )
         }
-        title="Abrir este painel em janela separada"
+        title="Abrir este painel em janela dedicada"
       >
         <ExternalLink className="h-4 w-4" />
         <span className="hidden lg:inline">Nova janela</span>
