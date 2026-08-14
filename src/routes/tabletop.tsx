@@ -7,6 +7,7 @@ import { TabletopParticipantWorkspace } from "@/components/tabletop/tabletop-par
 import { TabletopDirectorWorkspace } from "@/components/tabletop/tabletop-director-workspace";
 import { TabletopPlayerInteractionBridge } from "@/components/tabletop/tabletop-player-interaction-bridge";
 import { TabletopReliabilityEditorBridge } from "@/components/tabletop/tabletop-reliability-editor-bridge";
+import { TabletopAtmosphereBridge } from "@/components/tabletop/tabletop-atmosphere-bridge";
 import { useAuth } from "@/lib/auth";
 import { loadFeatureFlags } from "@/lib/feature-flag-repository";
 import type { FeatureFlags } from "@/lib/feature-flags";
@@ -88,6 +89,7 @@ function TabletopRoute() {
     <>
       <TabletopPlayerInteractionBridge />
       <TabletopReliabilityEditorBridge />
+      <TabletopAtmosphereBridge />
       {role === "mestre" ? (
         <TabletopWorkspace
           realtimeEnabled={flags.nexus_realtime_enabled}
