@@ -35,6 +35,31 @@ function finiteNumber(value: unknown, fallback = 0) {
   return Number.isFinite(parsed) ? parsed : fallback;
 }
 
+function hexColor(value: unknown) {
+  if (typeof value !== "string") return null;
+  const normalized = value.trim().replace(/^#/, "");
+  return /^[0-9a-f]{6}$/i.test(normalized) ? Number.parseInt(normalized, 16) : null;
+}
+
+function stateAura(
+  properties: Record<string, unknown>,
+  status: string,
+  conditions: string[],
+) {
+  const explicit = hexColor(properties.aura_color);
+  const intensity = Math.max(0, Math.min(1, finiteNumber(properties.aura_intensity, 0.56)));
+  const text = `${status} ${conditions.join(" ")}`.toLowerCase();
+  if (explicit !== null) return { color: explicit, intensity };
+  if (!text.trim()) return null;
+  if (/morr|incap|sang|ferid|agonia|crític/.test(text)) return { color: 0xe0525d, intensity: Math.max(intensity, 0.66) };
+  if (/insan|colap|mental|pânico|medo|abalad|confus/.test(text)) return { color: 0xaa72e8, intensity: Math.max(intensity, 0.58) };
+  if (/venen|tóxic|doen|ácid|corros/.test(text)) return { color: 0x79c66d, intensity: Math.max(intensity, 0.58) };
+  if (/queim|fogo|bras|calor/.test(text)) return { color: 0xf08a48, intensity: Math.max(intensity, 0.62) };
+  if (/frio|congel|gelo/.test(text)) return { color: 0x72cbe8, intensity: Math.max(intensity, 0.56) };
+  if (/ocult|invis|sombra/.test(text)) return { color: 0x7180a5, intensity: Math.max(intensity, 0.42) };
+  return { color: 0xe4bd71, intensity: Math.max(0.34, intensity * 0.72) };
+}
+
 interface SheetCacheEntry {
   summary: TabletopSheetSummary | null;
   loadedAt: number;
@@ -141,6 +166,7 @@ export class EntityRenderer {
 
   private createDisplay(entity: TabletopEntity) {
     const display = new Container({ label: entity.id });
+    display.addChild(new Graphics({ label: "state-aura" }));
     display.addChild(new Graphics({ label: "shape" }));
     display.addChild(new Graphics({ label: "ground-shadow" }));
     display.addChild(new Graphics({ label: "outline" }));
@@ -187,6 +213,8 @@ export class EntityRenderer {
     shape.clear();
     const outline = display.getChildByLabel("outline") as Graphics;
     outline.clear();
+    const aura = display.getChildByLabel("state-aura") as Graphics;
+    aura.clear();
     const properties = entityProperties(entity.properties);
     const renderMode = tabletopEntityRenderMode(entity);
     const billboardAppearance = tabletopBillboardAppearance(entity);
@@ -207,6 +235,14 @@ export class EntityRenderer {
       : [];
     const isPathDrawing = entity.type === "drawing" && drawingPoints.length > 1;
 
+    const localStatus = typeof properties.status === "string" ? properties.status.trim() : "";
+    const localConditions = Array.isArray(properties.visual_conditions)
+      ? properties.visual_conditions.filter((value): value is string => typeof value === "string")
+      : [];
+    const status = sheetSummary?.condition || localStatus;
+    const conditions = [...new Set([...localConditions, ...(sheetSummary?.activeConditions ?? [])])];
+    const auraState = stateAura(properties, status, conditions);
+
     if (isPathDrawing) {
       const sourceWidth = Math.max(1, finiteNumber(properties.drawing_source_width, entity.width));
       const sourceHeight = Math.max(1, finiteNumber(properties.drawing_source_height, entity.height));
@@ -215,6 +251,17 @@ export class EntityRenderer {
       const scaleStroke = Math.max(0.1, Math.sqrt(scaleX * scaleY));
       const strokeWidth = Math.max(1, Math.min(48, finiteNumber(properties.stroke_width, 5)));
       const strokeOpacity = Math.max(0.1, Math.min(1, finiteNumber(properties.stroke_opacity, 1)));
+      if (auraState) {
+        aura.moveTo(drawingPoints[0].x * scaleX, drawingPoints[0].y * scaleY);
+        for (const point of drawingPoints.slice(1)) aura.lineTo(point.x * scaleX, point.y * scaleY);
+        aura.stroke({
+          color: auraState.color,
+          alpha: auraState.intensity * 0.18,
+          width: strokeWidth * scaleStroke + 12,
+          cap: "round",
+          join: "round",
+        });
+      }
       shape.moveTo(drawingPoints[0].x * scaleX, drawingPoints[0].y * scaleY);
       for (const point of drawingPoints.slice(1)) shape.lineTo(point.x * scaleX, point.y * scaleY);
       shape.stroke({
@@ -231,6 +278,15 @@ export class EntityRenderer {
           width: 2,
         });
     } else {
+      if (auraState && !entity.assetUrl) {
+        const radius = Math.max(8, Math.min(entity.width, entity.height) * 0.12);
+        aura
+          .roundRect(-5, -5, entity.width + 10, entity.height + 10, radius)
+          .fill({ color: auraState.color, alpha: auraState.intensity * 0.14 });
+        aura
+          .roundRect(-11, -11, entity.width + 22, entity.height + 22, radius + 5)
+          .fill({ color: auraState.color, alpha: auraState.intensity * 0.055 });
+      }
       shape.roundRect(0, 0, entity.width, entity.height, 8).fill({
         color: entity.color,
         alpha: entity.locked ? 0.45 : 0.78,
@@ -242,12 +298,6 @@ export class EntityRenderer {
       });
     }
 
-    const localStatus = typeof properties.status === "string" ? properties.status.trim() : "";
-    const localConditions = Array.isArray(properties.visual_conditions)
-      ? properties.visual_conditions.filter((value): value is string => typeof value === "string")
-      : [];
-    const status = sheetSummary?.condition || localStatus;
-    const conditions = [...new Set([...localConditions, ...(sheetSummary?.activeConditions ?? [])])];
     const icons = Array.isArray(properties.icons)
       ? properties.icons.filter((value): value is string => typeof value === "string").slice(0, 4)
       : [];
@@ -336,6 +386,8 @@ export class EntityRenderer {
 
     const assetFrame = display.getChildByLabel("asset") as Container | null;
     const sprite = assetFrame?.getChildByLabel("asset-sprite") as Sprite | null;
+    const auraNear = assetFrame?.getChildByLabel("asset-aura-near") as Sprite | null;
+    const auraFar = assetFrame?.getChildByLabel("asset-aura-far") as Sprite | null;
     if (assetFrame && sprite) {
       const playback = normalizeTabletopPlayback(properties);
       if (sprite instanceof GifSprite) {
@@ -355,20 +407,47 @@ export class EntityRenderer {
       }
       sprite.width = billboard ? entity.width * billboardAppearance.scale : entity.width;
       sprite.height = billboard ? entity.height * billboardAppearance.scale : entity.height;
+      for (const [auraSprite, scale, alpha] of [
+        [auraNear, 1.055, 0.22],
+        [auraFar, 1.13, 0.075],
+      ] as const) {
+        if (!auraSprite) continue;
+        auraSprite.texture = sprite.texture;
+        auraSprite.visible = Boolean(auraState);
+        if (!auraState) continue;
+        auraSprite.tint = auraState.color;
+        auraSprite.alpha = auraState.intensity * alpha;
+        auraSprite.width = sprite.width * scale;
+        auraSprite.height = sprite.height * scale;
+      }
       if (billboard) {
         const matrix = inverseIsometricEntityMatrix(
           entity.rotation,
           tabletopProjectionMatrix("isometric", orientation),
         );
-        sprite.anchor.set(0.5, billboardAppearance.anchor === "base" ? 1 : 0.5);
-        sprite.position.set(0, 0);
         const anchorY = billboardAppearance.anchor === "base" ? entity.height : entity.height / 2;
+        for (const framed of [auraFar, auraNear, sprite]) {
+          if (!framed) continue;
+          framed.anchor.set(0.5, billboardAppearance.anchor === "base" ? 1 : 0.5);
+          framed.position.set(0, 0);
+        }
         assetFrame.setFromMatrix(
           new Matrix(matrix.a, matrix.b, matrix.c, matrix.d, entity.width / 2, anchorY),
         );
       } else {
         sprite.anchor.set(0);
         sprite.position.set(0, 0);
+        for (const [auraSprite, scale] of [
+          [auraNear, 1.055],
+          [auraFar, 1.13],
+        ] as const) {
+          if (!auraSprite) continue;
+          auraSprite.anchor.set(0);
+          auraSprite.position.set(
+            -(entity.width * (scale - 1)) / 2,
+            -(entity.height * (scale - 1)) / 2,
+          );
+        }
         assetFrame.setFromMatrix(new Matrix());
       }
     }
@@ -442,8 +521,12 @@ export class EntityRenderer {
         else void resource.play().catch(() => undefined);
       }
       const assetFrame = new Container({ label: "asset" });
-      assetFrame.addChild(assetSprite);
-      display.addChildAt(assetFrame, 2);
+      const auraFar = new Sprite({ texture: assetSprite.texture, label: "asset-aura-far" });
+      const auraNear = new Sprite({ texture: assetSprite.texture, label: "asset-aura-near" });
+      auraFar.visible = false;
+      auraNear.visible = false;
+      assetFrame.addChild(auraFar, auraNear, assetSprite);
+      display.addChildAt(assetFrame, 3);
       this.invalidate();
     } catch (error) {
       if (this.assetUrls.get(entity.id) !== url) return;
