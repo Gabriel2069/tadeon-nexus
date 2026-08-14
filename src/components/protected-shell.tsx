@@ -7,6 +7,7 @@ import { AlertTriangle, Home, Loader2, RefreshCw, ShieldX } from "lucide-react";
 import { can } from "@/lib/permissions";
 import { PageState } from "@/components/page-state";
 import "@/styles/sheet-requested-polish.css";
+import "@/styles/sheet-density-final.css";
 import "@/styles/nexus-interaction-polish.css";
 
 interface Props {
@@ -34,11 +35,7 @@ export function ProtectedShell({ children, requireRole }: Props) {
   if (loading || !session) {
     return (
       <div className="tadeon-shell flex min-h-screen items-center justify-center">
-        <div
-          className="tadeon-loading-mark"
-          role="status"
-          aria-label="Carregando o Tadeon Nexus"
-        >
+        <div className="tadeon-loading-mark" role="status" aria-label="Carregando o Tadeon Nexus">
           <Loader2 className="h-8 w-8 animate-spin text-primary" />
         </div>
       </div>
@@ -48,18 +45,7 @@ export function ProtectedShell({ children, requireRole }: Props) {
   if (authIssue) {
     return (
       <AppLayout>
-        <PageState
-          icon={AlertTriangle}
-          eyebrow="Sessão preservada"
-          title="Perfil indisponível"
-          description={authIssue}
-          action={
-            <Button onClick={() => void refresh()}>
-              <RefreshCw className="h-4 w-4" />
-              Tentar novamente
-            </Button>
-          }
-        />
+        <PageState icon={AlertTriangle} eyebrow="Sessão preservada" title="Perfil indisponível" description={authIssue} action={<Button onClick={() => void refresh()}><RefreshCw className="h-4 w-4" />Tentar novamente</Button>} />
       </AppLayout>
     );
   }
@@ -67,18 +53,7 @@ export function ProtectedShell({ children, requireRole }: Props) {
   if (requireRole && !can("app:manage", { appRole: role })) {
     return (
       <AppLayout>
-        <PageState
-          icon={ShieldX}
-          eyebrow="Limite de permissão"
-          title="Acesso negado"
-          description="Seu papel atual não permite abrir esta área administrativa. Nenhuma informação foi alterada."
-          action={
-            <Button onClick={() => void navigate({ to: "/" })}>
-              <Home className="h-4 w-4" />
-              Voltar ao dashboard
-            </Button>
-          }
-        />
+        <PageState icon={ShieldX} eyebrow="Limite de permissão" title="Acesso negado" description="Seu papel atual não permite abrir esta área administrativa. Nenhuma informação foi alterada." action={<Button onClick={() => void navigate({ to: "/" })}><Home className="h-4 w-4" />Voltar ao dashboard</Button>} />
       </AppLayout>
     );
   }

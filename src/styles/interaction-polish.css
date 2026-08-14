@@ -1,4 +1,4 @@
-/* Tadeon Nexus — global interaction polish
+/* Tadeon Nexus ~ global interaction polish
  * A single motion vocabulary for buttons, tabs, menus and navigation.
  * This layer is loaded by the shared Button primitive, which AppLayout uses on
  * every protected workspace. It intentionally relies on individual transform
@@ -318,7 +318,7 @@
 }
 
 /* ---------------------------------------------------------------------
- * Sliding selection — Tabs
+ * Sliding selection ~ Tabs
  * The Tabs primitive computes real geometry. This layer makes that geometry
  * visible as a single pill that physically travels from one option to another.
  * ------------------------------------------------------------------ */

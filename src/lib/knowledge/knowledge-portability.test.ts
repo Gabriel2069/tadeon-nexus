@@ -12,7 +12,7 @@ describe("knowledge portability", () => {
   it("parses YAML, aliases, tags, headings, wikilinks and attachment references", () => {
     const archive = zipSync({
       "lore/Myrova.md": strToU8(`---
-title: "Myrova — coração do mundo"
+title: "Myrova ~ coração do mundo"
 type: location
 aliases:
   - Cidade Antiga
@@ -88,7 +88,7 @@ Conteúdo.
           key: "cidade",
           path: "locais/Myrova.md",
           original_id: "22222222-2222-4222-8222-222222222222",
-          title: "Myrova — Cidade d'Água",
+          title: "Myrova ~ Cidade d'Água",
           summary: "Símbolos: á, ç, Ω",
           content_markdown: "# Centro\n\n[[Lobo Alvor]]",
           properties: { clima: "úmido" },
@@ -116,7 +116,7 @@ Conteúdo.
 
     const reimported = parseKnowledgeArchive(bytes);
     expect(reimported.format).toBe(NEXUS_VAULT_FORMAT);
-    expect(reimported.pages[0].title).toBe("Myrova — Cidade d'Água");
+    expect(reimported.pages[0].title).toBe("Myrova ~ Cidade d'Água");
     expect(reimported.pages[0].summary).toBe("Símbolos: á, ç, Ω");
     expect(reimported.pages[0].content_markdown).toContain("[[Lobo Alvor]]");
     expect(reimported.attachments[0].page_keys).toEqual(["locais/Myrova"]);

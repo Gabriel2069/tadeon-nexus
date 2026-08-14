@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { BrandMark } from "@/components/brand-mark";
 
-// Beta auth.oauth namespace — tiny local typed wrapper.
+// Beta auth.oauth namespace ~ tiny local typed wrapper.
 type OAuthDetails = {
   client?: { name?: string; redirect_uri?: string } | null;
   scope?: string | null;

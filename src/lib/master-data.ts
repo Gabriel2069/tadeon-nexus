@@ -410,7 +410,7 @@ const FOLD_STAGE_REFERENCE: Record<FoldStage, FoldStageReference> = {
     basePermanence: 12,
     pulseModifier: 7,
   },
-  Revérbero: { dt: "—", charges: "—", basePermanence: 12, pulseModifier: null },
+  Revérbero: { dt: "~", charges: "~", basePermanence: 12, pulseModifier: null },
 };
 
 export function getFoldStageReference(stage: FoldStage): FoldStageReference {

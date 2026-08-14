@@ -1,0 +1,93 @@
+/* Final sheet density pass: editing chrome yields space to essential reading. */
+.tadeon-sheet-page .tadeon-sheet-field,
+.tadeon-sheet-page .tadeon-sheet-row__field,
+.tadeon-sheet-page .tadeon-stat-block__mod { gap: 0.18rem; }
+
+.tadeon-sheet-page .tadeon-sheet-field > label,
+.tadeon-sheet-page .tadeon-sheet-row__field > span,
+.tadeon-sheet-page .tadeon-stat-block__mod > span {
+  font-size: 0.58rem;
+  line-height: 1.05;
+}
+
+.tadeon-sheet-page .tadeon-sheet-field > input,
+.tadeon-sheet-page .tadeon-sheet-row__field > input,
+.tadeon-sheet-page .tadeon-sheet-row__field > select,
+.tadeon-sheet-page .tadeon-stat-block__mod input {
+  min-height: 2.15rem;
+  height: 2.15rem;
+  padding-block: 0.28rem;
+}
+
+.tadeon-sheet-page .tadeon-identity-question-panel textarea {
+  min-height: 3.1rem;
+  height: 3.1rem;
+}
+
+.tadeon-sheet-page .tadeon-sheet-row { padding-block: 0.5rem; }
+
+.tadeon-sheet-page .tadeon-identity-field--name > input {
+  min-height: 2.65rem;
+  height: 2.65rem;
+  font-size: clamp(1.05rem, 1.8vw, 1.3rem);
+  letter-spacing: 0.015em;
+}
+
+.tadeon-sheet-page .tadeon-attribute-tile__label { font-size: 0.78rem; }
+.tadeon-sheet-page .tadeon-attribute-tile__value {
+  width: 2.5rem;
+  height: 2.5rem;
+  font-size: 1.28rem;
+  font-weight: 800;
+}
+
+.tadeon-sheet-page .tadeon-stat-block__value {
+  font-size: clamp(1.55rem, 2.2vw, 1.9rem);
+  font-weight: 800;
+}
+.tadeon-sheet-page .tadeon-stat-block__value small { font-size: 0.68rem; }
+
+.tadeon-sheet-page .tadeon-defense-card__score,
+.tadeon-sheet-page .tadeon-defense-card__score svg {
+  width: 4.15rem;
+  height: 4.15rem;
+}
+.tadeon-sheet-page .tadeon-defense-card__score span {
+  font-size: 1.65rem;
+  font-weight: 800;
+}
+
+.tadeon-sheet-page :is(.tadeon-stat-block__head, .tadeon-defense-card__summary) .font-cinzel {
+  font-size: 0.92rem;
+}
+
+@media (max-width: 767px) {
+  .tadeon-sheet-page .tadeon-sheet-field > input,
+  .tadeon-sheet-page .tadeon-sheet-row__field > input,
+  .tadeon-sheet-page .tadeon-sheet-row__field > select,
+  .tadeon-sheet-page .tadeon-stat-block__mod input {
+    min-height: 2.4rem !important;
+    height: 2.4rem;
+  }
+  .tadeon-sheet-page .tadeon-identity-field--name > input {
+    min-height: 2.7rem !important;
+    height: 2.7rem;
+    font-size: 1.12rem;
+  }
+  .tadeon-sheet-page .tadeon-stat-block__value { font-size: 1.48rem !important; }
+  .tadeon-sheet-page .tadeon-defense-card__score,
+  .tadeon-sheet-page .tadeon-defense-card__score svg {
+    width: 3.75rem !important;
+    height: 3.75rem !important;
+  }
+  .tadeon-sheet-page .tadeon-defense-card__score span { font-size: 1.5rem !important; }
+}
+
+@media (max-width: 639px) {
+  .tadeon-sheet-page .tadeon-attribute-tile__label { font-size: 0.7rem; }
+  .tadeon-sheet-page .tadeon-attribute-tile__value {
+    width: 2.08rem;
+    height: 2.08rem;
+    font-size: 1.08rem;
+  }
+}

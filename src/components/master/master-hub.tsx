@@ -2269,7 +2269,7 @@ export function EncounterHub({
     <div className="tadeon-encounter-workspace space-y-4">
       <PanelHeading
         title="Balanço de Encontro"
-        description="Monte o grupo com fichas, NPCs aliados e participantes sem ficha. Depois componha as ameaças por quantidade — a seleção automática agora é apenas uma ajuda, nunca uma limitação."
+        description="Monte o grupo com fichas, NPCs aliados e participantes sem ficha. Depois componha as ameaças por quantidade ~ a seleção automática agora é apenas uma ajuda, nunca uma limitação."
       />
       <Card className="tadeon-encounter-summary">
         <div className="tadeon-encounter-summary__reading" data-reading={partyValid ? balance.reading : "invalid"}>
@@ -2504,7 +2504,7 @@ export function EncounterHub({
             </span>
             <span>
               <small>Potencial do grupo</small>
-              <strong>{partyValid ? balance.potential.toFixed(1) : "—"}</strong>
+              <strong>{partyValid ? balance.potential.toFixed(1) : "~"}</strong>
             </span>
           </div>
           {combinedMagnitude.adjustment > 0 && (

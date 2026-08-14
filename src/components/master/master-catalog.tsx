@@ -94,7 +94,7 @@ export function MasterCatalog({
 
   const addToNpc = (npcId: string) => {
     if (!selected) return;
-    const detail = `${selected.name} — ${selected.summary}`;
+    const detail = `${selected.name} ~ ${selected.summary}`;
     onNpcsChange(
       npcs.map((npc) => {
         if (npc.id !== npcId) return npc;
