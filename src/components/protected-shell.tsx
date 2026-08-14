@@ -6,8 +6,13 @@ import { Button } from "@/components/ui/button";
 import { AlertTriangle, Home, Loader2, RefreshCw, ShieldX } from "lucide-react";
 import { can } from "@/lib/permissions";
 import { PageState } from "@/components/page-state";
+import {
+  SheetExperienceBridge,
+  WorkspacePopoutBridge,
+} from "@/components/sheet/sheet-experience-bridge";
 import "@/styles/sheet-requested-polish.css";
 import "@/styles/sheet-density-final.css";
+import "@/styles/sheet-game-mode.css";
 import "@/styles/nexus-interaction-polish.css";
 
 interface Props {
@@ -58,5 +63,11 @@ export function ProtectedShell({ children, requireRole }: Props) {
     );
   }
 
-  return <AppLayout>{children}</AppLayout>;
+  return (
+    <AppLayout>
+      <SheetExperienceBridge />
+      <WorkspacePopoutBridge />
+      {children}
+    </AppLayout>
+  );
 }
