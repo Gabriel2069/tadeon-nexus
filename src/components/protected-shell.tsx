@@ -15,6 +15,7 @@ import { SheetInventoryOrganizer } from "@/components/sheet/sheet-inventory-orga
 import "@/styles/sheet-requested-polish.css";
 import "@/styles/sheet-density-final.css";
 import "@/styles/sheet-game-mode.css";
+import "@/styles/sheet-inventory-organizer.css";
 import "@/styles/nexus-interaction-polish.css";
 
 interface Props {
