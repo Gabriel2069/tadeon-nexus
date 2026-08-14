@@ -64,24 +64,21 @@ export function snapPointToGrid(point: Point, mode: GridMode, size: number): Poi
   }
   const pointy = mode === "hex_pointy";
   const radius = spacing / (pointy ? Math.sqrt(3) : 2);
-  const q = pointy
+  const x = pointy
     ? ((Math.sqrt(3) / 3) * point.x - (1 / 3) * point.y) / radius
     : ((2 / 3) * point.x) / radius;
-  const r = pointy
+  const z = pointy
     ? ((2 / 3) * point.y) / radius
     : ((-1 / 3) * point.x + (Math.sqrt(3) / 3) * point.y) / radius;
-  const x = q;
-  const z = r;
   const y = -x - z;
   let rx = Math.round(x);
-  let ry = Math.round(y);
+  const ry = Math.round(y);
   let rz = Math.round(z);
   const dx = Math.abs(rx - x);
   const dy = Math.abs(ry - y);
   const dz = Math.abs(rz - z);
   if (dx > dy && dx > dz) rx = -ry - rz;
-  else if (dy > dz) ry = -rx - rz;
-  else rz = -rx - ry;
+  else if (dz >= dy) rz = -rx - ry;
   return pointy
     ? {
         x: radius * Math.sqrt(3) * (rx + rz / 2),
