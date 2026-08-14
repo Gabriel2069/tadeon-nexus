@@ -23,10 +23,9 @@ function drawHex(view: Graphics, scene: TabletopScene, radius: number, pointy: b
   const stepY = pointy ? radius * 1.5 : height;
   for (let column = -1, x = 0; x <= scene.width + width; column += 1, x += stepX) {
     const yOffset = pointy ? (column % 2 === 0 ? 0 : stepY / 2) : 0;
-    for (let row = -1, y = yOffset; y <= scene.height + height; row += 1, y += stepY) {
-      const cx = pointy ? x : x;
+    for (let y = yOffset; y <= scene.height + height; y += stepY) {
       const cy = pointy ? y : y + (column % 2 === 0 ? 0 : height / 2);
-      view.poly(hexPoints(cx, cy, radius, pointy));
+      view.poly(hexPoints(x, cy, radius, pointy));
     }
   }
 }
@@ -54,8 +53,8 @@ export function snapPointToGrid(point: Point, mode: GridMode, size: number): Poi
   }
   if (mode === "isometric") {
     const half = spacing / 2;
-    const u = (point.x / spacing) + (point.y / half) / 2;
-    const v = (point.y / half) / 2 - point.x / spacing;
+    const u = point.x / spacing + point.y / half / 2;
+    const v = point.y / half / 2 - point.x / spacing;
     const ru = Math.round(u);
     const rv = Math.round(v);
     return {
@@ -71,9 +70,9 @@ export function snapPointToGrid(point: Point, mode: GridMode, size: number): Poi
   const r = pointy
     ? ((2 / 3) * point.y) / radius
     : ((-1 / 3) * point.x + (Math.sqrt(3) / 3) * point.y) / radius;
-  let x = q;
-  let z = r;
-  let y = -x - z;
+  const x = q;
+  const z = r;
+  const y = -x - z;
   let rx = Math.round(x);
   let ry = Math.round(y);
   let rz = Math.round(z);
@@ -83,17 +82,14 @@ export function snapPointToGrid(point: Point, mode: GridMode, size: number): Poi
   if (dx > dy && dx > dz) rx = -ry - rz;
   else if (dy > dz) ry = -rx - rz;
   else rz = -rx - ry;
-  x = rx;
-  y = ry;
-  z = rz;
   return pointy
     ? {
-        x: radius * Math.sqrt(3) * (x + z / 2),
-        y: radius * 1.5 * z,
+        x: radius * Math.sqrt(3) * (rx + rz / 2),
+        y: radius * 1.5 * rz,
       }
     : {
-        x: radius * 1.5 * x,
-        y: radius * Math.sqrt(3) * (z + x / 2),
+        x: radius * 1.5 * rx,
+        y: radius * Math.sqrt(3) * (rz + rx / 2),
       };
 }
 
