@@ -1,4 +1,4 @@
-export type GridMode = "square" | "none";
+export type GridMode = "square" | "hex_pointy" | "hex_flat" | "isometric" | "none";
 
 export interface Point {
   x: number;
@@ -99,6 +99,14 @@ export interface TabletopSnapshot {
   canRedo: boolean;
 }
 
+export const TABLETOP_GRID_LABELS: Record<GridMode, string> = {
+  square: "Quadrada",
+  hex_pointy: "Hexagonal vertical",
+  hex_flat: "Hexagonal horizontal",
+  isometric: "Isométrica",
+  none: "Sem grade",
+};
+
 export const EMPTY_TABLETOP_SCENE: TabletopScene = {
   id: "local-scene",
   name: "Selecione ou crie uma cena",
@@ -121,46 +129,11 @@ export const EMPTY_TABLETOP_SCENE: TabletopScene = {
     },
   ],
   layers: [
-    {
-      id: "map",
-      name: "Mapa",
-      order: 0,
-      visible: true,
-      locked: true,
-      layerType: "map",
-    },
-    {
-      id: "objects",
-      name: "Objetos",
-      order: 1,
-      visible: true,
-      locked: false,
-      layerType: "objects",
-    },
-    {
-      id: "tokens",
-      name: "Tokens",
-      order: 2,
-      visible: true,
-      locked: false,
-      layerType: "tokens",
-    },
-    {
-      id: "drawings",
-      name: "Desenhos",
-      order: 3,
-      visible: true,
-      locked: false,
-      layerType: "drawings",
-    },
-    {
-      id: "master",
-      name: "Mestre",
-      order: 4,
-      visible: true,
-      locked: false,
-      layerType: "master",
-    },
+    { id: "map", name: "Mapa", order: 0, visible: true, locked: true, layerType: "map" },
+    { id: "objects", name: "Objetos", order: 1, visible: true, locked: false, layerType: "objects" },
+    { id: "tokens", name: "Tokens", order: 2, visible: true, locked: false, layerType: "tokens" },
+    { id: "drawings", name: "Desenhos", order: 3, visible: true, locked: false, layerType: "drawings" },
+    { id: "master", name: "Mestre", order: 4, visible: true, locked: false, layerType: "master" },
   ],
   entities: [],
 };
@@ -177,8 +150,7 @@ export function cloneScene(scene: TabletopScene): TabletopScene {
 export function tabletopSceneLevels(scene: TabletopScene): TabletopLevel[] {
   return scene.levels && scene.levels.length > 0
     ? [...scene.levels].sort(
-        (left, right) =>
-          left.order - right.order || left.id.localeCompare(right.id),
+        (left, right) => left.order - right.order || left.id.localeCompare(right.id),
       )
     : [
         {
