@@ -52,14 +52,15 @@ export function snapPointToGrid(point: Point, mode: GridMode, size: number): Poi
     };
   }
   if (mode === "isometric") {
-    const half = spacing / 2;
-    const u = point.x / spacing + point.y / half / 2;
-    const v = point.y / half / 2 - point.x / spacing;
+    // Diamond lattice basis: (+S/2,+S/4) and (-S/2,+S/4).
+    // Converting to that basis before rounding keeps an already-snapped point stable.
+    const u = point.x / spacing + (2 * point.y) / spacing;
+    const v = -point.x / spacing + (2 * point.y) / spacing;
     const ru = Math.round(u);
     const rv = Math.round(v);
     return {
       x: ((ru - rv) * spacing) / 2,
-      y: ((ru + rv) * half) / 2,
+      y: ((ru + rv) * spacing) / 4,
     };
   }
   const pointy = mode === "hex_pointy";
