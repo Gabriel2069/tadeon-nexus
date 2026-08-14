@@ -1,0 +1,300 @@
+.tadeon-atmosphere-layer,
+.tadeon-scene-transition,
+.tadeon-power-particle-field {
+  pointer-events: none;
+  position: fixed;
+  inset: 0;
+  z-index: 56;
+}
+
+.tadeon-atmosphere-layer {
+  overflow: hidden;
+  contain: layout paint style;
+}
+
+.tadeon-atmosphere-region {
+  --region-tint: rgba(178, 189, 199, 0.68);
+  position: fixed;
+  overflow: hidden;
+  border-radius: 18%;
+  transform-origin: center;
+  mix-blend-mode: screen;
+  filter: saturate(1.1);
+  contain: strict;
+}
+
+.tadeon-atmosphere-region__veil {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background:
+    radial-gradient(circle at 26% 32%, color-mix(in srgb, var(--region-tint) 42%, transparent), transparent 52%),
+    radial-gradient(circle at 78% 68%, color-mix(in srgb, var(--region-tint) 26%, transparent), transparent 58%);
+  opacity: 0.44;
+}
+
+.tadeon-atmosphere-region > i {
+  position: absolute;
+  display: block;
+  border-radius: 999px;
+  background: var(--region-tint);
+  box-shadow: 0 0 12px color-mix(in srgb, var(--region-tint) 72%, transparent);
+  opacity: 0.55;
+  animation: tadeon-atmosphere-drift 5s ease-in-out infinite alternate;
+  will-change: transform, opacity;
+}
+
+.tadeon-atmosphere-region[data-surface="smoke"] {
+  --region-tint: rgba(166, 171, 179, 0.78);
+  mix-blend-mode: normal;
+  filter: blur(0.4px) saturate(0.8);
+}
+
+.tadeon-atmosphere-region[data-surface="smoke"] .tadeon-atmosphere-region__veil {
+  background:
+    radial-gradient(circle at 20% 40%, rgba(118, 122, 132, 0.5), transparent 48%),
+    radial-gradient(circle at 70% 52%, rgba(153, 157, 165, 0.38), transparent 54%),
+    linear-gradient(135deg, rgba(90, 93, 102, 0.12), rgba(181, 183, 190, 0.18));
+  opacity: 0.72;
+}
+
+.tadeon-atmosphere-region[data-surface="smoke"] > i {
+  filter: blur(4px);
+  opacity: 0.28;
+  transform: scale(2.4);
+}
+
+.tadeon-atmosphere-region[data-surface="water"] {
+  --region-tint: rgba(94, 177, 221, 0.78);
+  mix-blend-mode: screen;
+}
+
+.tadeon-atmosphere-region[data-surface="water"] .tadeon-atmosphere-region__veil {
+  background:
+    repeating-linear-gradient(8deg, rgba(160, 225, 255, 0.09) 0 2px, transparent 2px 10px),
+    linear-gradient(180deg, rgba(68, 147, 198, 0.08), rgba(131, 211, 235, 0.18));
+  animation: tadeon-water-sheen 4.8s linear infinite;
+}
+
+.tadeon-atmosphere-region[data-surface="ice"] {
+  --region-tint: rgba(194, 235, 255, 0.88);
+}
+
+.tadeon-atmosphere-region[data-surface="ice"] .tadeon-atmosphere-region__veil {
+  background:
+    linear-gradient(126deg, transparent 0 42%, rgba(237, 250, 255, 0.34) 43% 45%, transparent 46% 100%),
+    linear-gradient(24deg, transparent 0 62%, rgba(207, 239, 255, 0.28) 63% 64%, transparent 65% 100%);
+}
+
+.tadeon-atmosphere-region[data-surface="foliage"] {
+  --region-tint: rgba(98, 179, 111, 0.8);
+  mix-blend-mode: normal;
+}
+
+.tadeon-atmosphere-region[data-surface="foliage"] > i {
+  width: 6px !important;
+  height: 11px !important;
+  border-radius: 70% 0 70% 0;
+  background: rgba(128, 197, 124, 0.72);
+  box-shadow: none;
+  animation-name: tadeon-leaf-drift;
+}
+
+.tadeon-atmosphere-region[data-surface="mud"],
+.tadeon-atmosphere-region[data-surface="difficult"] {
+  --region-tint: rgba(151, 111, 72, 0.65);
+  mix-blend-mode: normal;
+}
+
+.tadeon-atmosphere-region[data-surface="hazard"] {
+  --region-tint: rgba(235, 96, 54, 0.88);
+}
+
+.tadeon-atmosphere-region[data-surface="hazard"] > i {
+  border-radius: 55% 45% 62% 38%;
+  animation-name: tadeon-ember-flicker;
+}
+
+.tadeon-power-particle-field {
+  inset: auto;
+  width: 1px;
+  height: 1px;
+  z-index: 72;
+  --power-color: rgba(214, 223, 233, 0.92);
+  --power-glow: rgba(170, 184, 199, 0.52);
+}
+
+.tadeon-power-particle-field[data-theme="fire"] {
+  --power-color: rgba(255, 176, 82, 0.98);
+  --power-glow: rgba(239, 81, 41, 0.8);
+}
+
+.tadeon-power-particle-field[data-theme="ice"] {
+  --power-color: rgba(215, 245, 255, 0.98);
+  --power-glow: rgba(89, 185, 240, 0.8);
+}
+
+.tadeon-power-particle-field[data-theme="storm"] {
+  --power-color: rgba(232, 228, 255, 0.98);
+  --power-glow: rgba(115, 106, 255, 0.9);
+}
+
+.tadeon-power-particle-field[data-theme="void"] {
+  --power-color: rgba(201, 127, 255, 0.94);
+  --power-glow: rgba(72, 19, 116, 0.92);
+}
+
+.tadeon-power-particle-field[data-theme="blood"] {
+  --power-color: rgba(220, 66, 87, 0.98);
+  --power-glow: rgba(115, 14, 36, 0.86);
+}
+
+.tadeon-power-particle-field[data-theme="nature"] {
+  --power-color: rgba(152, 226, 120, 0.98);
+  --power-glow: rgba(63, 126, 62, 0.82);
+}
+
+.tadeon-power-particle-field[data-theme="water"] {
+  --power-color: rgba(131, 217, 255, 0.98);
+  --power-glow: rgba(37, 125, 188, 0.86);
+}
+
+.tadeon-power-particle-field[data-theme="light"] {
+  --power-color: rgba(255, 246, 181, 1);
+  --power-glow: rgba(255, 209, 107, 0.9);
+}
+
+.tadeon-power-particle-field[data-theme="shadow"] {
+  --power-color: rgba(128, 118, 163, 0.95);
+  --power-glow: rgba(37, 29, 60, 0.94);
+}
+
+.tadeon-power-particle-field > i {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 7px;
+  height: 7px;
+  border-radius: 999px;
+  background: var(--power-color);
+  box-shadow: 0 0 10px var(--power-glow), 0 0 24px var(--power-glow);
+  transform: translate(-50%, -50%);
+  animation: tadeon-power-orbit 1.5s ease-in-out infinite;
+  will-change: transform, opacity;
+}
+
+html[data-tadeon-power-theme="fire"] .tadeon-tactical-overlay__power,
+html[data-tadeon-power-theme="fire"] .tadeon-tactical-overlay__power-line {
+  filter: drop-shadow(0 0 10px rgba(255, 110, 52, 0.9));
+}
+
+html[data-tadeon-power-theme="ice"] .tadeon-tactical-overlay__power,
+html[data-tadeon-power-theme="ice"] .tadeon-tactical-overlay__power-line {
+  filter: drop-shadow(0 0 10px rgba(131, 219, 255, 0.9));
+}
+
+html[data-tadeon-power-theme="storm"] .tadeon-tactical-overlay__power,
+html[data-tadeon-power-theme="storm"] .tadeon-tactical-overlay__power-line {
+  filter: drop-shadow(0 0 12px rgba(139, 127, 255, 0.95));
+}
+
+html[data-tadeon-power-theme="void"] .tadeon-tactical-overlay__power,
+html[data-tadeon-power-theme="void"] .tadeon-tactical-overlay__power-line {
+  filter: drop-shadow(0 0 13px rgba(164, 73, 231, 0.9));
+}
+
+html[data-tadeon-power-theme="light"] .tadeon-tactical-overlay__power,
+html[data-tadeon-power-theme="light"] .tadeon-tactical-overlay__power-line {
+  filter: drop-shadow(0 0 15px rgba(255, 233, 151, 0.95));
+}
+
+.tadeon-scene-transition {
+  z-index: 90;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  background: rgba(4, 5, 8, 0.04);
+  animation: tadeon-scene-fade 720ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+.tadeon-scene-transition > span {
+  width: 42vmax;
+  aspect-ratio: 1;
+  border-radius: 999px;
+  border: 1px solid rgba(228, 221, 179, 0.22);
+  box-shadow:
+    0 0 0 18vmax rgba(5, 6, 9, 0.16),
+    0 0 0 42vmax rgba(3, 4, 7, 0.72);
+  animation: tadeon-scene-iris 720ms cubic-bezier(0.18, 0.82, 0.22, 1) both;
+}
+
+@keyframes tadeon-atmosphere-drift {
+  0% { transform: translate3d(-6px, 8px, 0) scale(0.88); opacity: 0.28; }
+  55% { opacity: 0.72; }
+  100% { transform: translate3d(10px, -14px, 0) scale(1.15); opacity: 0.36; }
+}
+
+@keyframes tadeon-leaf-drift {
+  0% { transform: translate3d(-8px, -6px, 0) rotate(-16deg); opacity: 0.28; }
+  45% { opacity: 0.75; }
+  100% { transform: translate3d(13px, 12px, 0) rotate(42deg); opacity: 0.3; }
+}
+
+@keyframes tadeon-ember-flicker {
+  0% { transform: translate3d(-3px, 9px, 0) scale(0.72); opacity: 0.18; }
+  40% { opacity: 0.9; }
+  100% { transform: translate3d(5px, -15px, 0) scale(1.12); opacity: 0.08; }
+}
+
+@keyframes tadeon-water-sheen {
+  from { background-position: 0 0, 0 0; }
+  to { background-position: 70px 20px, 0 0; }
+}
+
+@keyframes tadeon-power-orbit {
+  0% {
+    transform: translate(calc(-50% + var(--power-x) * 0.55), calc(-50% + var(--power-y) * 0.55)) scale(0.55);
+    opacity: 0.15;
+  }
+  55% { opacity: 1; }
+  100% {
+    transform: translate(calc(-50% + var(--power-x)), calc(-50% + var(--power-y))) scale(1.08);
+    opacity: 0;
+  }
+}
+
+@keyframes tadeon-scene-fade {
+  0% { opacity: 0; }
+  24% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+@keyframes tadeon-scene-iris {
+  0% { transform: scale(1.45); opacity: 0; }
+  32% { opacity: 1; }
+  100% { transform: scale(0.12); opacity: 0; }
+}
+
+@media (max-width: 768px) {
+  .tadeon-atmosphere-region > i:nth-of-type(n + 7) {
+    display: none;
+  }
+
+  .tadeon-power-particle-field > i:nth-of-type(n + 9) {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tadeon-atmosphere-region > i,
+  .tadeon-atmosphere-region__veil,
+  .tadeon-power-particle-field > i,
+  .tadeon-scene-transition,
+  .tadeon-scene-transition > span {
+    animation: none !important;
+  }
+
+  .tadeon-scene-transition {
+    opacity: 0 !important;
+  }
+}
