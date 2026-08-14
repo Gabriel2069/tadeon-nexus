@@ -55,6 +55,7 @@ import {
   tabletopFogBounds,
 } from "@/lib/tabletop/visibility-tooling";
 import "@/styles/tabletop-visibility.css";
+import "@/styles/tabletop-visibility-advanced.css";
 
 type VisibilityStudio = "environment" | "architecture" | "lights" | "fog";
 
