@@ -1,0 +1,248 @@
+/* Camada final do modo Jogo. Não remove dados: troca o peso visual de edição por leitura operacional. */
+.tadeon-dedicated-shell {
+  min-height: 100dvh;
+  width: 100%;
+  overflow-x: clip;
+  background:
+    radial-gradient(circle at 18% 0%, color-mix(in srgb, var(--primary) 8%, transparent), transparent 34rem),
+    var(--background);
+  color: var(--foreground);
+}
+
+.tadeon-dedicated-shell__main {
+  min-height: 100dvh;
+  width: 100%;
+}
+
+.tadeon-dedicated-shell[data-dedicated-presentation="popout"] .tadeon-route-master,
+.tadeon-dedicated-shell[data-dedicated-presentation="popout"] .tadeon-route-nexus,
+.tadeon-dedicated-shell[data-dedicated-presentation="popout"] .tadeon-sheet-page {
+  max-width: none !important;
+  width: 100% !important;
+  margin-inline: auto !important;
+}
+
+.tadeon-sheet-game-button[data-state="active"],
+html[data-tadeon-sheet-mode="game"] .tadeon-sheet-game-button {
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--primary) 42%, transparent),
+    0 8px 24px -16px color-mix(in srgb, var(--primary) 80%, transparent);
+}
+
+html[data-tadeon-sheet-mode="game"] .tadeon-sheet-page {
+  --game-control-height: 1.78rem;
+  --game-section-gap: .58rem;
+  --game-editor-opacity: .56;
+}
+
+/* A ficha passa a se comportar como painel de leitura. */
+html[data-tadeon-sheet-mode="game"] .tadeon-sheet-page .tadeon-sheet-section,
+html[data-tadeon-sheet-mode="game"] .tadeon-sheet-page section[id] {
+  padding: .78rem !important;
+  border-color: color-mix(in srgb, var(--border) 58%, transparent) !important;
+  box-shadow: none !important;
+}
+
+html[data-tadeon-sheet-mode="game"] .tadeon-sheet-page .tadeon-sheet-section + .tadeon-sheet-section,
+html[data-tadeon-sheet-mode="game"] .tadeon-sheet-page section[id] + section[id] {
+  margin-top: var(--game-section-gap) !important;
+}
+
+html[data-tadeon-sheet-mode="game"] .tadeon-sheet-page label,
+html[data-tadeon-sheet-mode="game"] .tadeon-sheet-page .tadeon-eyebrow {
+  opacity: .58;
+  font-size: .61rem !important;
+  line-height: 1.05 !important;
+  letter-spacing: .055em !important;
+}
+
+html[data-tadeon-sheet-mode="game"] .tadeon-sheet-page input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+html[data-tadeon-sheet-mode="game"] .tadeon-sheet-page textarea,
+html[data-tadeon-sheet-mode="game"] .tadeon-sheet-page select,
+html[data-tadeon-sheet-mode="game"] .tadeon-sheet-page button[role="combobox"] {
+  min-height: var(--game-control-height) !important;
+  height: var(--game-control-height) !important;
+  padding: .08rem .42rem !important;
+  border-color: transparent !important;
+  border-radius: .4rem !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  color: var(--foreground) !important;
+  font-size: .79rem !important;
+  font-weight: 680 !important;
+  line-height: 1.12 !important;
+  transition:
+    min-height 160ms ease,
+    height 160ms ease,
+    padding 160ms ease,
+    background-color 160ms ease,
+    border-color 160ms ease,
+    box-shadow 160ms ease,
+    opacity 160ms ease !important;
+}
+
+html[data-tadeon-sheet-mode="game"] .tadeon-sheet-page textarea {
+  height: 2.5rem !important;
+  min-height: 2.5rem !important;
+  max-height: 2.5rem !important;
+  overflow: hidden !important;
+  resize: none !important;
+  line-height: 1.3 !important;
+}
+
+html[data-tadeon-sheet-mode="game"] .tadeon-sheet-page input:hover,
+html[data-tadeon-sheet-mode="game"] .tadeon-sheet-page textarea:hover,
+html[data-tadeon-sheet-mode="game"] .tadeon-sheet-page button[role="combobox"]:hover {
+  background: color-mix(in srgb, var(--card) 76%, transparent) !important;
+}
+
+html[data-tadeon-sheet-mode="game"] .tadeon-sheet-page input:focus,
+html[data-tadeon-sheet-mode="game"] .tadeon-sheet-page textarea:focus,
+html[data-tadeon-sheet-mode="game"] .tadeon-sheet-page button[role="combobox"]:focus-visible {
+  border-color: color-mix(in srgb, var(--primary) 55%, var(--border)) !important;
+  background: var(--background) !important;
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--primary) 13%, transparent) !important;
+}
+
+html[data-tadeon-sheet-mode="game"] .tadeon-sheet-page textarea:focus {
+  height: 8rem !important;
+  min-height: 5.5rem !important;
+  max-height: 14rem !important;
+  overflow: auto !important;
+  resize: vertical !important;
+  padding: .48rem .58rem !important;
+}
+
+/* Controles de manutenção recuam e voltam quando a seção é usada. */
+html[data-tadeon-sheet-mode="game"] .tadeon-sheet-page .tadeon-stepper-button,
+html[data-tadeon-sheet-mode="game"] .tadeon-sheet-page button[aria-label*="Adicionar"],
+html[data-tadeon-sheet-mode="game"] .tadeon-sheet-page button[aria-label*="Remover"],
+html[data-tadeon-sheet-mode="game"] .tadeon-sheet-page button[title*="Adicionar"],
+html[data-tadeon-sheet-mode="game"] .tadeon-sheet-page button[title*="Remover"] {
+  opacity: .22;
+  transform: scale(.88);
+  transition: opacity 150ms ease, transform 150ms ease !important;
+}
+
+html[data-tadeon-sheet-mode="game"] .tadeon-sheet-page section:hover .tadeon-stepper-button,
+html[data-tadeon-sheet-mode="game"] .tadeon-sheet-page section:focus-within .tadeon-stepper-button,
+html[data-tadeon-sheet-mode="game"] .tadeon-sheet-page section:hover button[aria-label*="Adicionar"],
+html[data-tadeon-sheet-mode="game"] .tadeon-sheet-page section:focus-within button[aria-label*="Adicionar"],
+html[data-tadeon-sheet-mode="game"] .tadeon-sheet-page section:hover button[aria-label*="Remover"],
+html[data-tadeon-sheet-mode="game"] .tadeon-sheet-page section:focus-within button[aria-label*="Remover"],
+html[data-tadeon-sheet-mode="game"] .tadeon-sheet-page section:hover button[title*="Adicionar"],
+html[data-tadeon-sheet-mode="game"] .tadeon-sheet-page section:focus-within button[title*="Adicionar"],
+html[data-tadeon-sheet-mode="game"] .tadeon-sheet-page section:hover button[title*="Remover"],
+html[data-tadeon-sheet-mode="game"] .tadeon-sheet-page section:focus-within button[title*="Remover"] {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* Informação operacional ganha escala e contraste. */
+html[data-tadeon-sheet-mode="game"] .tadeon-identity-foundation .tadeon-sheet-title,
+html[data-tadeon-sheet-mode="game"] .tadeon-sheet-page #sec-info input:first-of-type,
+html[data-tadeon-sheet-mode="game"] .tadeon-sheet-page input[name="name"] {
+  min-height: 2.35rem !important;
+  height: 2.35rem !important;
+  padding-inline: .18rem !important;
+  font-family: var(--font-cinzel, inherit) !important;
+  font-size: clamp(1.25rem, 2.15vw, 2rem) !important;
+  font-weight: 780 !important;
+  letter-spacing: -.02em !important;
+}
+
+html[data-tadeon-sheet-mode="game"] .tadeon-attribute-grid {
+  gap: .35rem !important;
+}
+
+html[data-tadeon-sheet-mode="game"] .tadeon-attribute-tile {
+  min-height: 4.35rem !important;
+  padding: .42rem !important;
+  border-color: color-mix(in srgb, var(--border) 62%, transparent) !important;
+}
+
+html[data-tadeon-sheet-mode="game"] .tadeon-attribute-tile__value,
+html[data-tadeon-sheet-mode="game"] .tadeon-stat-block__value,
+html[data-tadeon-sheet-mode="game"] .tadeon-defense-card__score,
+html[data-tadeon-sheet-mode="game"] #sec-pontos strong {
+  font-size: clamp(1.65rem, 2.6vw, 2.6rem) !important;
+  line-height: .9 !important;
+  font-weight: 800 !important;
+  font-variant-numeric: tabular-nums;
+}
+
+html[data-tadeon-sheet-mode="game"] .tadeon-stat-block,
+html[data-tadeon-sheet-mode="game"] .tadeon-defense-card {
+  min-height: 4.15rem !important;
+  padding: .58rem !important;
+}
+
+/* Tabelas de armas, inventário, perícias e habilidades: leitura densa, edição só quando tocada. */
+html[data-tadeon-sheet-mode="game"] #sec-armas input,
+html[data-tadeon-sheet-mode="game"] #sec-inv input,
+html[data-tadeon-sheet-mode="game"] #sec-hab input,
+html[data-tadeon-sheet-mode="game"] #sec-pericias input,
+html[data-tadeon-sheet-mode="game"] #tramas-fragmentos input {
+  min-height: 1.62rem !important;
+  height: 1.62rem !important;
+  padding-inline: .25rem !important;
+  font-size: .76rem !important;
+}
+
+html[data-tadeon-sheet-mode="game"] #sec-armas [class*="gap-"],
+html[data-tadeon-sheet-mode="game"] #sec-inv [class*="gap-"],
+html[data-tadeon-sheet-mode="game"] #sec-hab [class*="gap-"],
+html[data-tadeon-sheet-mode="game"] #sec-pericias [class*="gap-"],
+html[data-tadeon-sheet-mode="game"] #tramas-fragmentos [class*="gap-"] {
+  row-gap: .26rem !important;
+}
+
+html[data-tadeon-sheet-mode="game"] .text-muted-foreground {
+  opacity: .72;
+}
+
+html[data-tadeon-sheet-mode="game"] section[id]:hover .text-muted-foreground,
+html[data-tadeon-sheet-mode="game"] section[id]:focus-within .text-muted-foreground {
+  opacity: .94;
+}
+
+/* Popout/iframe dedicados não carregam moldura da aplicação. */
+.tadeon-dedicated-shell[data-dedicated-presentation="embed"] {
+  background: transparent;
+}
+
+.tadeon-dedicated-shell[data-dedicated-presentation="embed"] .tadeon-dedicated-shell__main {
+  padding: .35rem;
+}
+
+.tadeon-dedicated-shell[data-dedicated-presentation="popout"] .tadeon-dedicated-shell__main {
+  padding: clamp(.5rem, 1.5vw, 1.2rem);
+}
+
+@media (max-width: 767px) {
+  html[data-tadeon-sheet-mode="game"] .tadeon-sheet-page {
+    --game-control-height: 2.05rem;
+  }
+
+  html[data-tadeon-sheet-mode="game"] .tadeon-sheet-page textarea {
+    height: 2.8rem !important;
+    min-height: 2.8rem !important;
+    max-height: 2.8rem !important;
+  }
+
+  html[data-tadeon-sheet-mode="game"] .tadeon-sheet-page textarea:focus {
+    height: 9rem !important;
+    max-height: 16rem !important;
+  }
+
+  html[data-tadeon-sheet-mode="game"] .tadeon-attribute-tile {
+    min-height: 4.7rem !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html[data-tadeon-sheet-mode="game"] .tadeon-sheet-page input,
+  html[data-tadeon-sheet-mode="game"] .tadeon-sheet-page textarea,
+  html[data-tadeon-sheet-mode="game"] .tadeon-sheet-page button {
+    transition: none !important;
+  }
+}
