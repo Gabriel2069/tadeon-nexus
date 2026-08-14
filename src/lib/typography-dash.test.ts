@@ -4,6 +4,12 @@ import { describe, expect, it } from "vitest";
 
 const TEXT_EXTENSIONS = new Set([".ts", ".tsx", ".css", ".md", ".json", ".html"]);
 const FORBIDDEN_DASH = String.fromCodePoint(0x2014);
+const GENERATED_FILES = new Set([
+  "src/routes/mcp.ts",
+  "src/routes/[.mcp]/invoke-tool/$tool.ts",
+  "src/routes/[.mcp]/list-tools.ts",
+  "src/routes/[.well-known]/oauth-protected-resource.ts",
+]);
 
 function collectFiles(root: string): string[] {
   const files: string[] = [];
@@ -19,15 +25,18 @@ function collectFiles(root: string): string[] {
 }
 
 describe("tipografia do produto", () => {
-  it("nao deixa travessao longo voltar ao codigo-fonte", () => {
+  it("nao deixa travessao longo voltar ao codigo autoral", () => {
     const srcRoot = join(process.cwd(), "src");
     const findings: string[] = [];
 
     for (const file of collectFiles(srcRoot)) {
+      const relativePath = relative(process.cwd(), file).replaceAll("\\", "/");
+      if (GENERATED_FILES.has(relativePath)) continue;
+
       const lines = readFileSync(file, "utf8").split(/\r?\n/);
       lines.forEach((line, index) => {
         if (line.includes(FORBIDDEN_DASH)) {
-          findings.push(`${relative(process.cwd(), file)}:${index + 1}: ${line.trim()}`);
+          findings.push(`${relativePath}:${index + 1}: ${line.trim()}`);
         }
       });
     }
