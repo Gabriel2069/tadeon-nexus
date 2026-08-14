@@ -67,7 +67,7 @@ function useSheetDragSource() {
         const payload = JSON.stringify({ id: sheetId, label: name });
         event.dataTransfer.setData(SHEET_MIME, payload);
         event.dataTransfer.setData("text/plain", `${name} ~ /sheet/${sheetId}`);
-        event.dataTransfer.effectAllowed = "linkCopy";
+        event.dataTransfer.effectAllowed = "copyLink";
       }}
     >
       <GripVertical aria-hidden="true" /> Mesa
