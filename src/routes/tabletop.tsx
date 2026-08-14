@@ -5,10 +5,12 @@ import { ProtectedShell } from "@/components/protected-shell";
 import { TabletopWorkspace } from "@/components/tabletop/tabletop-workspace";
 import { TabletopParticipantWorkspace } from "@/components/tabletop/tabletop-participant-workspace";
 import { TabletopDirectorWorkspace } from "@/components/tabletop/tabletop-director-workspace";
+import { TabletopPlayerInteractionBridge } from "@/components/tabletop/tabletop-player-interaction-bridge";
 import { useAuth } from "@/lib/auth";
 import { loadFeatureFlags } from "@/lib/feature-flag-repository";
 import type { FeatureFlags } from "@/lib/feature-flags";
 import "@/lib/tabletop/tabletop-advanced-grid-runtime";
+import "@/lib/tabletop/tabletop-player-runtime";
 
 export const Route = createFileRoute("/tabletop")({
   head: () => ({
@@ -81,14 +83,19 @@ function TabletopRoute() {
     );
   }
 
-  return role === "mestre" ? (
-    <TabletopWorkspace
-      realtimeEnabled={flags.nexus_realtime_enabled}
-      lightingEnabled={flags.nexus_lighting_enabled}
-    />
-  ) : (
-    <TabletopParticipantWorkspace
-      realtimeEnabled={flags.nexus_realtime_enabled}
-    />
+  return (
+    <>
+      <TabletopPlayerInteractionBridge />
+      {role === "mestre" ? (
+        <TabletopWorkspace
+          realtimeEnabled={flags.nexus_realtime_enabled}
+          lightingEnabled={flags.nexus_lighting_enabled}
+        />
+      ) : (
+        <TabletopParticipantWorkspace
+          realtimeEnabled={flags.nexus_realtime_enabled}
+        />
+      )}
+    </>
   );
 }
