@@ -207,18 +207,19 @@ export function TabletopPlayerInteractionBridge() {
     setPowerSources([]);
     if (!linkedSheetId) return;
     setLoadingPowers(true);
-    void supabase
-      .from("character_sheets")
-      .select("name,plots")
-      .eq("id", linkedSheetId)
-      .maybeSingle()
-      .then(({ data }) => {
+    void (async () => {
+      try {
+        const { data } = await supabase
+          .from("character_sheets")
+          .select("name,plots")
+          .eq("id", linkedSheetId)
+          .maybeSingle();
         if (request !== sheetRequestRef.current) return;
         setPowerSources(plotSources((data as SheetPlotRow | null)?.plots));
-      })
-      .finally(() => {
+      } finally {
         if (request === sheetRequestRef.current) setLoadingPowers(false);
-      });
+      }
+    })();
   }, [linkedSheetId]);
 
   const origin = entity ? centerOf(entity) : null;
