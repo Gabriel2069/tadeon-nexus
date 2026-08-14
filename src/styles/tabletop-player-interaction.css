@@ -1,0 +1,333 @@
+.tadeon-tactical-overlay {
+  position: fixed;
+  z-index: 64;
+  inset: 0;
+  width: 100vw;
+  height: 100dvh;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.tadeon-tactical-overlay__movement-shadow,
+.tadeon-tactical-overlay__movement {
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.tadeon-tactical-overlay__movement-shadow {
+  stroke: hsl(220 28% 4% / .82);
+  stroke-width: 8;
+}
+
+.tadeon-tactical-overlay__movement {
+  stroke: hsl(42 78% 66% / .98);
+  stroke-width: 3;
+  stroke-dasharray: 8 7;
+  filter: drop-shadow(0 0 7px hsl(42 78% 58% / .32));
+}
+
+.tadeon-tactical-overlay__node {
+  fill: hsl(42 82% 68% / .96);
+  stroke: hsl(220 25% 7% / .95);
+  stroke-width: 2;
+}
+
+.tadeon-tactical-overlay__power,
+.tadeon-tactical-overlay__power-line {
+  fill: hsl(188 72% 55% / .12);
+  stroke: hsl(188 82% 72% / .95);
+  stroke-width: 2.5;
+  stroke-dasharray: 10 6;
+  vector-effect: non-scaling-stroke;
+  filter: drop-shadow(0 0 10px hsl(188 70% 54% / .28));
+}
+
+.tadeon-tactical-overlay__power-line {
+  stroke-linecap: round;
+}
+
+.tadeon-tactical-dock {
+  position: fixed;
+  z-index: 88;
+  left: 50%;
+  bottom: max(1rem, env(safe-area-inset-bottom));
+  display: flex;
+  max-width: min(94vw, 900px);
+  align-items: center;
+  gap: .45rem;
+  min-height: 3.15rem;
+  padding: .38rem .45rem;
+  border: 1px solid hsl(var(--border) / .72);
+  border-radius: 1rem;
+  background:
+    linear-gradient(135deg, hsl(var(--card) / .94), hsl(var(--background) / .91));
+  box-shadow:
+    0 18px 48px -28px hsl(220 40% 2% / .88),
+    inset 0 1px 0 hsl(var(--foreground) / .05);
+  backdrop-filter: blur(18px) saturate(1.12);
+  transform: translateX(-50%);
+}
+
+.tadeon-tactical-dock[data-mode]:not([data-mode="idle"]) {
+  border-color: hsl(42 68% 62% / .46);
+}
+
+.tadeon-tactical-dock__identity {
+  display: flex;
+  min-width: 0;
+  max-width: 13rem;
+  align-items: center;
+  gap: .48rem;
+  padding: 0 .58rem 0 .22rem;
+  border-right: 1px solid hsl(var(--border) / .55);
+}
+
+.tadeon-tactical-dock__identity > span {
+  display: grid;
+  width: 2rem;
+  height: 2rem;
+  flex: 0 0 auto;
+  place-items: center;
+  border-radius: .7rem;
+  background: hsl(42 72% 54% / .1);
+  color: hsl(42 82% 70%);
+}
+
+.tadeon-tactical-dock__identity svg,
+.tadeon-tactical-dock__readout svg {
+  width: .95rem;
+  height: .95rem;
+}
+
+.tadeon-tactical-dock__identity div,
+.tadeon-tactical-dock__readout span {
+  min-width: 0;
+}
+
+.tadeon-tactical-dock__identity small,
+.tadeon-tactical-dock__identity strong,
+.tadeon-tactical-dock__readout small,
+.tadeon-tactical-dock__readout strong {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tadeon-tactical-dock__identity small {
+  color: hsl(var(--muted-foreground));
+  font-size: .58rem;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+}
+
+.tadeon-tactical-dock__identity strong {
+  margin-top: .05rem;
+  font-family: var(--font-cinzel, serif);
+  font-size: .74rem;
+}
+
+.tadeon-tactical-dock__actions {
+  display: flex;
+  align-items: center;
+  gap: .2rem;
+}
+
+.tadeon-tactical-dock__actions button {
+  min-height: 2.2rem;
+}
+
+.tadeon-tactical-dock__power-menu {
+  position: relative;
+}
+
+.tadeon-tactical-dock__power-list {
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% + .65rem);
+  display: grid;
+  width: min(22rem, 82vw);
+  gap: .28rem;
+  max-height: min(48dvh, 23rem);
+  overflow: auto;
+  padding: .4rem;
+  border: 1px solid hsl(var(--border) / .72);
+  border-radius: .9rem;
+  background: hsl(var(--card) / .97);
+  box-shadow: 0 20px 48px -22px hsl(220 42% 2% / .95);
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(-50%, .35rem) scale(.98);
+  transform-origin: bottom center;
+  transition: opacity 150ms ease, transform 150ms ease;
+}
+
+.tadeon-tactical-dock__power-menu:hover .tadeon-tactical-dock__power-list,
+.tadeon-tactical-dock__power-menu:focus-within .tadeon-tactical-dock__power-list {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translate(-50%, 0) scale(1);
+}
+
+.tadeon-tactical-dock__power-list > button {
+  display: grid;
+  grid-template-columns: 2rem minmax(0, 1fr);
+  gap: .55rem;
+  align-items: center;
+  min-height: 3rem;
+  padding: .42rem .55rem;
+  border: 1px solid transparent;
+  border-radius: .7rem;
+  text-align: left;
+  transition: background-color 140ms ease, border-color 140ms ease, transform 140ms ease;
+}
+
+.tadeon-tactical-dock__power-list > button:hover,
+.tadeon-tactical-dock__power-list > button[aria-pressed="true"] {
+  border-color: hsl(188 72% 62% / .35);
+  background: hsl(188 64% 48% / .08);
+  transform: translateX(2px);
+}
+
+.tadeon-tactical-dock__power-list > button > span:first-child {
+  display: grid;
+  width: 2rem;
+  height: 2rem;
+  place-items: center;
+  border-radius: .62rem;
+  background: hsl(188 66% 48% / .1);
+  color: hsl(188 78% 72%);
+}
+
+.tadeon-tactical-dock__power-list strong,
+.tadeon-tactical-dock__power-list small {
+  display: block;
+}
+
+.tadeon-tactical-dock__power-list strong {
+  font-size: .76rem;
+}
+
+.tadeon-tactical-dock__power-list small {
+  margin-top: .08rem;
+  color: hsl(var(--muted-foreground));
+  font-size: .64rem;
+}
+
+.tadeon-tactical-dock__readout {
+  display: flex;
+  min-width: 10rem;
+  max-width: 17rem;
+  align-items: center;
+  gap: .45rem;
+  padding: .32rem .55rem;
+  border-left: 1px solid hsl(var(--border) / .55);
+  color: hsl(42 80% 70%);
+}
+
+.tadeon-tactical-dock__readout.is-power {
+  color: hsl(188 76% 72%);
+}
+
+.tadeon-tactical-dock__readout strong {
+  font-size: .73rem;
+}
+
+.tadeon-tactical-dock__readout small {
+  color: hsl(var(--muted-foreground));
+  font-size: .61rem;
+}
+
+.tadeon-tactical-dock__readout > button {
+  margin-left: auto;
+  color: hsl(var(--muted-foreground));
+  font-size: .62rem;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.tadeon-tabletop-radial-menu {
+  position: fixed;
+  z-index: 110;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+
+.tadeon-tabletop-radial-menu__item {
+  position: absolute;
+  left: 0;
+  top: 0;
+  display: grid;
+  width: 3.9rem;
+  min-height: 2.75rem;
+  place-items: center;
+  padding: .3rem .35rem;
+  border: 1px solid hsl(var(--border) / .72);
+  border-radius: .82rem;
+  background: hsl(var(--card) / .97);
+  color: hsl(var(--foreground));
+  font-size: .58rem;
+  font-weight: 680;
+  line-height: 1.15;
+  text-align: center;
+  box-shadow: 0 12px 28px -18px hsl(220 45% 2% / .95);
+  pointer-events: auto;
+  transform: translate(calc(var(--radial-x) - 1.95rem), calc(var(--radial-y) - 1.35rem)) scale(.96);
+  transition: transform 150ms ease, border-color 150ms ease, background-color 150ms ease;
+}
+
+.tadeon-tabletop-radial-menu__item:hover,
+.tadeon-tabletop-radial-menu__item:focus-visible {
+  border-color: hsl(42 72% 62% / .58);
+  background: hsl(42 62% 42% / .14);
+  transform: translate(calc(var(--radial-x) - 1.95rem), calc(var(--radial-y) - 1.35rem)) scale(1.04);
+  outline: none;
+}
+
+.tadeon-tabletop-radial-menu__hub {
+  position: absolute;
+  left: -1.85rem;
+  top: -1.85rem;
+  display: grid;
+  width: 3.7rem;
+  height: 3.7rem;
+  place-items: center;
+  border: 1px solid hsl(42 72% 62% / .4);
+  border-radius: 50%;
+  background: radial-gradient(circle, hsl(42 70% 50% / .16), hsl(var(--card) / .97) 68%);
+  color: hsl(42 82% 72%);
+  font-family: var(--font-cinzel, serif);
+  font-size: .62rem;
+  font-weight: 760;
+  box-shadow: 0 0 28px hsl(42 70% 50% / .08);
+  pointer-events: none;
+}
+
+@media (max-width: 760px) {
+  .tadeon-tactical-dock {
+    right: .55rem;
+    bottom: max(.65rem, env(safe-area-inset-bottom));
+    left: .55rem;
+    max-width: none;
+    overflow-x: auto;
+    transform: none;
+  }
+
+  .tadeon-tactical-dock__identity {
+    max-width: 8rem;
+  }
+
+  .tadeon-tabletop-radial-menu {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tadeon-tactical-dock__power-list,
+  .tadeon-tactical-dock__power-list > button,
+  .tadeon-tabletop-radial-menu__item {
+    transition: none;
+  }
+}
