@@ -15,6 +15,7 @@ import { SheetInventoryOrganizer } from "@/components/sheet/sheet-inventory-orga
 import "@/styles/sheet-requested-polish.css";
 import "@/styles/sheet-density-final.css";
 import "@/styles/sheet-game-mode.css";
+import "@/styles/sheet-game-mode-final.css";
 import "@/styles/sheet-inventory-organizer.css";
 import "@/styles/nexus-interaction-polish.css";
 
@@ -23,9 +24,18 @@ interface Props {
   requireRole?: "mestre";
 }
 
+function dedicatedPresentation() {
+  if (typeof window === "undefined") return null;
+  const params = new URLSearchParams(window.location.search);
+  if (params.get("embed") === "1") return "embed" as const;
+  if (params.get("popout") === "1") return "popout" as const;
+  return null;
+}
+
 export function ProtectedShell({ children, requireRole }: Props) {
   const { loading, session, role, authIssue, refresh } = useAuth();
   const navigate = useNavigate();
+  const dedicated = dedicatedPresentation();
 
   useEffect(() => {
     if (!loading && !session) {
@@ -51,28 +61,58 @@ export function ProtectedShell({ children, requireRole }: Props) {
   }
 
   if (authIssue) {
-    return (
-      <AppLayout>
-        <PageState icon={AlertTriangle} eyebrow="Sessão preservada" title="Perfil indisponível" description={authIssue} action={<Button onClick={() => void refresh()}><RefreshCw className="h-4 w-4" />Tentar novamente</Button>} />
-      </AppLayout>
+    const state = (
+      <PageState
+        icon={AlertTriangle}
+        eyebrow="Sessão preservada"
+        title="Perfil indisponível"
+        description={authIssue}
+        action={
+          <Button onClick={() => void refresh()}>
+            <RefreshCw className="h-4 w-4" />Tentar novamente
+          </Button>
+        }
+      />
     );
+    return dedicated ? <div className="tadeon-dedicated-shell">{state}</div> : <AppLayout>{state}</AppLayout>;
   }
 
   if (requireRole && !can("app:manage", { appRole: role })) {
+    const state = (
+      <PageState
+        icon={ShieldX}
+        eyebrow="Limite de permissão"
+        title="Acesso negado"
+        description="Seu papel atual não permite abrir esta área administrativa. Nenhuma informação foi alterada."
+        action={
+          <Button onClick={() => void navigate({ to: "/" })}>
+            <Home className="h-4 w-4" />Voltar ao dashboard
+          </Button>
+        }
+      />
+    );
+    return dedicated ? <div className="tadeon-dedicated-shell">{state}</div> : <AppLayout>{state}</AppLayout>;
+  }
+
+  const content = (
+    <>
+      <SheetExperienceBridge />
+      <SheetInventoryOrganizer />
+      {!dedicated && <WorkspacePopoutBridge />}
+      <NexusSheetDragBridge />
+      {children}
+    </>
+  );
+
+  if (dedicated) {
     return (
-      <AppLayout>
-        <PageState icon={ShieldX} eyebrow="Limite de permissão" title="Acesso negado" description="Seu papel atual não permite abrir esta área administrativa. Nenhuma informação foi alterada." action={<Button onClick={() => void navigate({ to: "/" })}><Home className="h-4 w-4" />Voltar ao dashboard</Button>} />
-      </AppLayout>
+      <div className="tadeon-dedicated-shell" data-dedicated-presentation={dedicated}>
+        <main id="tadeon-main" className="tadeon-dedicated-shell__main">
+          {content}
+        </main>
+      </div>
     );
   }
 
-  return (
-    <AppLayout>
-      <SheetExperienceBridge />
-      <SheetInventoryOrganizer />
-      <WorkspacePopoutBridge />
-      <NexusSheetDragBridge />
-      {children}
-    </AppLayout>
-  );
+  return <AppLayout>{content}</AppLayout>;
 }
