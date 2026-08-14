@@ -2,10 +2,12 @@
 .tadeon-sheet-experience-host {
   display: inline-flex;
   align-items: center;
+  flex-wrap: wrap;
   gap: .35rem;
 }
 
-.tadeon-sheet-presence {
+.tadeon-sheet-presence,
+.tadeon-sheet-nexus-links {
   display: inline-flex;
   min-width: 2rem;
   height: 2rem;
@@ -21,14 +23,62 @@
   background: color-mix(in srgb, var(--background) 84%, transparent);
 }
 
-.tadeon-sheet-presence svg {
+.tadeon-sheet-presence svg,
+.tadeon-sheet-nexus-links svg {
   width: .8rem;
   height: .8rem;
 }
 
-.tadeon-workspace-popout-host {
+.tadeon-workspace-popout-host,
+.tadeon-nexus-sheet-drag-host {
   display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: .35rem;
   margin-top: .55rem;
+}
+
+.tadeon-nexus-drag-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: .35rem;
+  min-height: 2rem;
+  border: 1px dashed color-mix(in srgb, var(--primary) 48%, var(--border));
+  border-radius: 999px;
+  padding: .28rem .68rem;
+  background: color-mix(in srgb, var(--primary) 7%, var(--card));
+  color: var(--foreground);
+  font-size: .72rem;
+  font-weight: 650;
+  cursor: grab;
+  transition: transform 160ms ease, border-color 160ms ease, background 160ms ease;
+}
+
+.tadeon-nexus-drag-chip:hover {
+  transform: translateY(-1px);
+  border-color: color-mix(in srgb, var(--primary) 72%, var(--border));
+  background: color-mix(in srgb, var(--primary) 12%, var(--card));
+}
+
+.tadeon-nexus-drag-chip:active { cursor: grabbing; }
+.tadeon-nexus-drag-chip svg { width: .85rem; height: .85rem; }
+
+html[data-tadeon-nexus-drop="ready"] .tadeon-sheet-page::before {
+  content: "Solte para ligar esta página do Nexus à ficha";
+  position: fixed;
+  z-index: 9998;
+  inset: 1rem;
+  display: grid;
+  place-items: center;
+  border: 2px dashed color-mix(in srgb, var(--primary) 72%, transparent);
+  border-radius: 1.4rem;
+  background: color-mix(in srgb, var(--background) 88%, transparent);
+  color: var(--foreground);
+  font-family: var(--font-cinzel, inherit);
+  font-size: clamp(1rem, 2vw, 1.35rem);
+  font-weight: 700;
+  pointer-events: none;
+  box-shadow: inset 0 0 0 9999px color-mix(in srgb, var(--primary) 3%, transparent);
 }
 
 html[data-tadeon-sheet-mode="game"] .tadeon-sheet-page,
@@ -94,9 +144,7 @@ html[data-tadeon-sheet-mode="game"] input[name="name"] {
   font-weight: 760 !important;
 }
 
-html[data-tadeon-sheet-mode="game"] .tadeon-attribute-grid {
-  gap: .48rem !important;
-}
+html[data-tadeon-sheet-mode="game"] .tadeon-attribute-grid { gap: .48rem !important; }
 
 html[data-tadeon-sheet-mode="game"] .tadeon-attribute-tile {
   min-height: 5.2rem !important;
@@ -112,19 +160,15 @@ html[data-tadeon-sheet-mode="game"] #tramas-fragmentos {
   --tadeon-section-gap: .55rem;
 }
 
-html[data-tadeon-sheet-mode="game"] [data-tadeon-context-help] {
-  cursor: help;
-}
+html[data-tadeon-sheet-mode="game"] [data-tadeon-context-help] { cursor: help; }
 
-html[data-tadeon-sheet-embed="tabletop"] body {
-  background: transparent !important;
-}
+/* Modo embutido usa a mesma ficha, só remove a navegação externa do aplicativo. */
+html[data-tadeon-sheet-embed="tabletop"] body { background: transparent !important; }
 
-html[data-tadeon-sheet-embed="tabletop"] aside,
-html[data-tadeon-sheet-embed="tabletop"] nav[aria-label="Navegação principal"],
-html[data-tadeon-sheet-embed="tabletop"] header:not(.tadeon-sheet-header),
 html[data-tadeon-sheet-embed="tabletop"] .tadeon-mobile-dock,
-html[data-tadeon-sheet-embed="tabletop"] .tadeon-app-sidebar {
+html[data-tadeon-sheet-embed="tabletop"] .tadeon-app-sidebar,
+html[data-tadeon-sheet-embed="tabletop"] [data-app-sidebar],
+html[data-tadeon-sheet-embed="tabletop"] [data-mobile-navigation] {
   display: none !important;
 }
 
@@ -140,25 +184,70 @@ html[data-tadeon-sheet-embed="tabletop"] .tadeon-sheet-page {
   margin: 0 !important;
 }
 
+.tadeon-tabletop-sheet-dialog {
+  max-height: 96dvh;
+  max-width: 96dvw;
+}
+
+.tadeon-tabletop-sheet-frame {
+  display: block;
+  width: 100%;
+  height: 100%;
+  min-height: 70dvh;
+  border: 0;
+  background: transparent;
+}
+
+.tadeon-sheet-diff-row {
+  display: grid;
+  grid-template-columns: minmax(7rem, .8fr) minmax(0, 1fr) auto minmax(0, 1fr);
+  gap: .55rem;
+  align-items: center;
+  padding: .55rem .65rem;
+  border-radius: .65rem;
+  background: color-mix(in srgb, var(--muted) 36%, transparent);
+}
+
+.tadeon-sheet-diff-row > span {
+  font-size: .72rem;
+  font-weight: 700;
+}
+
+.tadeon-sheet-diff-row > small,
+.tadeon-sheet-diff-row > strong {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: .72rem;
+}
+
+.tadeon-sheet-diff-row > small { color: var(--muted-foreground); }
+.tadeon-sheet-diff-row > small::after { content: " →"; margin-left: .35rem; }
+.tadeon-sheet-diff-row > strong { color: var(--foreground); }
+
 @media (max-width: 767px) {
-  .tadeon-sheet-experience-host {
-    gap: .22rem;
-  }
+  .tadeon-sheet-experience-host { gap: .22rem; }
 
   .tadeon-sheet-game-button span,
-  .tadeon-sheet-presence {
-    font-size: .62rem;
+  .tadeon-sheet-presence,
+  .tadeon-sheet-nexus-links { font-size: .62rem; }
+
+  html[data-tadeon-sheet-mode="game"] textarea { max-height: 7rem; }
+
+  .tadeon-sheet-diff-row {
+    grid-template-columns: 1fr;
+    gap: .2rem;
   }
 
-  html[data-tadeon-sheet-mode="game"] textarea {
-    max-height: 7rem;
-  }
+  .tadeon-sheet-diff-row > small::after { content: ""; }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .tadeon-sheet-game-button,
   .tadeon-sheet-popout-button,
-  .tadeon-workspace-popout-host button {
+  .tadeon-workspace-popout-host button,
+  .tadeon-nexus-drag-chip {
     transition: none !important;
     animation: none !important;
   }
