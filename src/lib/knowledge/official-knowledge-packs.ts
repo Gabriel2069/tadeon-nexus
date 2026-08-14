@@ -12,22 +12,37 @@ export type OfficialKnowledgePack = {
   recommended?: boolean;
 };
 
+export const TADEON_NEXUS_LOTE_02: OfficialKnowledgePack = {
+  id: "tadeon-nexus-lote-02-canonico-1847",
+  title: "Biblioteca Canônica 1.847",
+  eyebrow: "Lote oficial 02 ~ teia integral",
+  description:
+    "Os seis documentos canônicos em granularidade de seção, incluindo Instituições de Veth, tabelas, matéria introdutória e 1.615 relações para uma teia densa.",
+  assetPath: "/nexus-packs/tadeon-nexus-lote-02-canonico-1847.zip",
+  fileName: "tadeon-nexus-lote-02-canonico-1847.zip",
+  pages: 489,
+  relations: 1_615,
+  expectedBytes: 645_943,
+  sha256: "f8d2bbfe7ee8823061cd82dd82f74d00685d9fbdc068b0c5c86a91b1a5beb940",
+  recommended: true,
+};
+
 export const TADEON_NEXUS_LOTE_01: OfficialKnowledgePack = {
   id: "tadeon-nexus-lote-01",
-  title: "Biblioteca completa",
+  title: "Biblioteca completa ~ legado",
   eyebrow: "Lote oficial 01",
   description:
-    "Os cinco volumes finais, as sínteses editoriais e toda a trama de conexões do universo.",
+    "Primeira organização editorial do acervo, preservada para compatibilidade e campanhas que já usam seus títulos.",
   assetPath: "/nexus-packs/tadeon-nexus-lote-01.zip",
   fileName: "tadeon-nexus-lote-01.zip",
   pages: 186,
   relations: 298,
   expectedBytes: 396_484,
   sha256: "81372d176fb36357c0fea52720b1b0f891a4175ec98d2d346e30e80e837f4598",
-  recommended: true,
 };
 
 export const TADEON_NEXUS_OFFICIAL_PACKS: readonly OfficialKnowledgePack[] = [
+  TADEON_NEXUS_LOTE_02,
   TADEON_NEXUS_LOTE_01,
   {
     id: "tadeon-nexus-conexoes",
@@ -116,7 +131,7 @@ function toHex(bytes: Uint8Array) {
 }
 
 export async function loadOfficialKnowledgePack(
-  pack: OfficialKnowledgePack = TADEON_NEXUS_LOTE_01,
+  pack: OfficialKnowledgePack = TADEON_NEXUS_LOTE_02,
   fetcher: typeof fetch = fetch,
 ) {
   const response = await fetcher(pack.assetPath, { cache: "no-store" });
