@@ -1,0 +1,240 @@
+/* Mesa Nexus · microinterações finais
+   Movimento comunica estado sem atrasar o canvas nem competir com o mapa. */
+
+.tadeon-tabletop-studio button,
+.tadeon-tabletop-progressive-dock button,
+.tadeon-tabletop-selection-actions button,
+.tadeon-tabletop-command-palette button,
+.tadeon-tabletop-clean-exit {
+  transform-origin: center;
+}
+
+.tadeon-tabletop-studio button svg,
+.tadeon-tabletop-progressive-dock button svg,
+.tadeon-tabletop-selection-actions button svg,
+.tadeon-tabletop-command-palette button svg,
+.tadeon-tabletop-clean-exit svg {
+  transform-origin: center;
+  transition:
+    transform 170ms cubic-bezier(.2,.8,.2,1),
+    opacity 150ms ease,
+    filter 180ms ease;
+}
+
+@media (hover: hover) {
+  .tadeon-tabletop-studio button:not(:disabled):hover > svg,
+  .tadeon-tabletop-progressive-dock button:not(:disabled):hover > svg,
+  .tadeon-tabletop-selection-actions button:not(:disabled):hover > svg,
+  .tadeon-tabletop-command-palette button:not(:disabled):hover > svg,
+  .tadeon-tabletop-clean-exit:hover > svg {
+    transform: translateY(-1px) scale(1.08);
+  }
+
+  .tadeon-tabletop-studio button:not(:disabled):active > svg,
+  .tadeon-tabletop-progressive-dock button:not(:disabled):active > svg,
+  .tadeon-tabletop-selection-actions button:not(:disabled):active > svg,
+  .tadeon-tabletop-command-palette button:not(:disabled):active > svg {
+    transform: translateY(0) scale(.92);
+  }
+}
+
+.tadeon-tabletop-studio button[aria-pressed="true"] > svg,
+.tadeon-tabletop-studio button[aria-selected="true"] > svg,
+.tadeon-tabletop-progressive-dock button[aria-pressed="true"] > svg {
+  color: hsl(var(--primary));
+  filter: drop-shadow(0 0 .45rem hsl(var(--primary) / .24));
+  animation: tadeon-tabletop-icon-select 220ms cubic-bezier(.2,.8,.2,1) both;
+}
+
+.tadeon-tabletop-panel__tab {
+  position: relative;
+  overflow: hidden;
+}
+
+.tadeon-tabletop-panel__tab::after {
+  content: "";
+  position: absolute;
+  right: .48rem;
+  bottom: .12rem;
+  left: .48rem;
+  height: 1.5px;
+  border-radius: 999px;
+  background: hsl(var(--primary));
+  opacity: 0;
+  transform: scaleX(.3);
+  transform-origin: center;
+  transition: opacity 160ms ease, transform 210ms cubic-bezier(.2,.8,.2,1);
+}
+
+.tadeon-tabletop-panel__tab[aria-selected="true"]::after {
+  opacity: .88;
+  transform: scaleX(1);
+}
+
+.tadeon-tabletop-panel__tab[aria-selected="true"] .tadeon-tabletop-panel__tab-badge {
+  animation: tadeon-tabletop-badge-settle 230ms cubic-bezier(.2,.8,.2,1) both;
+}
+
+.tadeon-tabletop-command-spaces button,
+.tadeon-tabletop-toolbar button,
+.tadeon-tabletop-canvas-rail button {
+  transition:
+    background-color 150ms ease,
+    border-color 150ms ease,
+    color 150ms ease,
+    box-shadow 170ms ease,
+    transform 150ms cubic-bezier(.2,.8,.2,1),
+    opacity 150ms ease;
+}
+
+@media (hover: hover) {
+  .tadeon-tabletop-command-spaces button:not(:disabled):hover,
+  .tadeon-tabletop-toolbar button:not(:disabled):hover,
+  .tadeon-tabletop-canvas-rail button:not(:disabled):hover {
+    box-shadow: 0 10px 24px -20px hsl(var(--primary) / .7);
+  }
+}
+
+.tadeon-tabletop-command-spaces button[aria-pressed="true"],
+.tadeon-tabletop-toolbar button[aria-pressed="true"],
+.tadeon-tabletop-canvas-rail button[aria-pressed="true"] {
+  box-shadow:
+    inset 0 0 0 1px hsl(var(--primary) / .17),
+    0 10px 28px -22px hsl(var(--primary) / .65);
+}
+
+.tadeon-tabletop-panel input,
+.tadeon-tabletop-panel textarea,
+.tadeon-tabletop-panel select,
+.tadeon-tabletop-tool-options input,
+.tadeon-tabletop-tool-options select {
+  transition:
+    border-color 150ms ease,
+    background-color 150ms ease,
+    box-shadow 180ms ease,
+    transform 150ms ease;
+}
+
+.tadeon-tabletop-panel input:focus,
+.tadeon-tabletop-panel textarea:focus,
+.tadeon-tabletop-panel select:focus,
+.tadeon-tabletop-tool-options input:focus,
+.tadeon-tabletop-tool-options select:focus {
+  box-shadow: 0 0 0 3px hsl(var(--primary) / .1);
+}
+
+.tadeon-tabletop-context-menu > button,
+.tadeon-tabletop-context-menu [role="menuitem"] {
+  transition:
+    color 130ms ease,
+    background-color 130ms ease,
+    padding-left 160ms cubic-bezier(.2,.8,.2,1);
+}
+
+@media (hover: hover) {
+  .tadeon-tabletop-context-menu > button:hover,
+  .tadeon-tabletop-context-menu [role="menuitem"]:hover {
+    padding-left: .9rem;
+  }
+}
+
+.tadeon-tabletop-stage:focus-within {
+  border-color: hsl(var(--primary) / .24);
+  box-shadow:
+    0 30px 70px -52px hsl(220 50% 2% / .95),
+    0 0 0 1px hsl(var(--primary) / .045);
+}
+
+.tadeon-tabletop-canvas-host,
+.tadeon-tabletop-canvas-host canvas {
+  overscroll-behavior: contain;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.tadeon-tabletop-canvas-host canvas {
+  touch-action: none;
+  -webkit-touch-callout: none;
+}
+
+/* Feedback tátil visual sem depender de hover em tablet/celular. */
+@media (pointer: coarse) {
+  .tadeon-tabletop-studio button,
+  .tadeon-tabletop-progressive-dock button,
+  .tadeon-tabletop-selection-actions button {
+    min-height: 2.75rem;
+  }
+
+  .tadeon-tabletop-panel__tab {
+    min-height: 2.75rem;
+  }
+
+  .tadeon-tabletop-context-menu > button,
+  .tadeon-tabletop-context-menu [role="menuitem"] {
+    min-height: 2.8rem;
+  }
+
+  .tadeon-tabletop-studio button:not(:disabled):active > svg,
+  .tadeon-tabletop-progressive-dock button:not(:disabled):active > svg,
+  .tadeon-tabletop-selection-actions button:not(:disabled):active > svg {
+    transform: scale(.9);
+  }
+
+  .tadeon-tabletop-studio button:not(:disabled):active,
+  .tadeon-tabletop-progressive-dock button:not(:disabled):active,
+  .tadeon-tabletop-selection-actions button:not(:disabled):active {
+    transform: scale(.97);
+  }
+}
+
+/* Os painéis que entram por contexto devem parecer conectados ao elemento que os abriu. */
+.tadeon-tabletop-precision-editor,
+.tadeon-tabletop-context-menu,
+.tadeon-tabletop-tool-options,
+.tadeon-tabletop-reliability-strip {
+  will-change: transform, opacity;
+}
+
+.tadeon-tabletop-tool-options {
+  animation: tadeon-tabletop-tool-options-in 190ms cubic-bezier(.2,.8,.2,1) both;
+}
+
+.tadeon-tabletop-reliability-strip {
+  animation: tadeon-tabletop-status-in 210ms cubic-bezier(.2,.8,.2,1) both;
+}
+
+@keyframes tadeon-tabletop-icon-select {
+  0% { transform: scale(.88); opacity: .72; }
+  65% { transform: scale(1.1); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes tadeon-tabletop-badge-settle {
+  from { transform: translateY(-2px) scale(.9); opacity: .5; }
+  to { transform: translateY(0) scale(1); opacity: 1; }
+}
+
+@keyframes tadeon-tabletop-tool-options-in {
+  from { opacity: 0; transform: translateY(-5px) scale(.985); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes tadeon-tabletop-status-in {
+  from { opacity: 0; transform: translate(-50%, -5px) scale(.985); }
+  to { opacity: 1; transform: translate(-50%, 0) scale(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tadeon-tabletop-studio button,
+  .tadeon-tabletop-studio button svg,
+  .tadeon-tabletop-progressive-dock button,
+  .tadeon-tabletop-progressive-dock button svg,
+  .tadeon-tabletop-selection-actions button,
+  .tadeon-tabletop-selection-actions button svg,
+  .tadeon-tabletop-panel__tab::after,
+  .tadeon-tabletop-tool-options,
+  .tadeon-tabletop-reliability-strip {
+    animation: none !important;
+    transition: none !important;
+  }
+}
