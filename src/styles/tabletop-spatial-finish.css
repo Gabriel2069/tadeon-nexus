@@ -76,6 +76,21 @@ body:has(.tadeon-tabletop-context-menu) :where(
   display: none !important;
 }
 
+/* The responsive inspector is nonmodal. The legacy full-viewport backdrop is
+   still present in the workspace markup for compatibility, but it must never
+   paint, animate or intercept the scene. `display:none` removes the blackout
+   structurally instead of relying on an opacity race with older CSS. */
+.tadeon-tabletop-panel-backdrop,
+.tadeon-tabletop-panel-backdrop[data-open="true"] {
+  display: none !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+  background: transparent !important;
+  backdrop-filter: none !important;
+  animation: none !important;
+}
+
 /* Restore the scene telemetry rail that the previous collision fix hid. It
    reserves physical canvas space rather than sitting over tokens. */
 html[data-tadeon-tabletop-interface="play"] .tadeon-tabletop-stage-status,
@@ -161,15 +176,6 @@ html[data-tadeon-tabletop-interface="advanced"] .tadeon-tabletop-canvas-host {
 /* Tablet/notebook inspector: editing a selected token is not a modal blackout,
    but the inspector itself owns its physical lane while open. */
 @media (max-width: 1179px) {
-  .tadeon-tabletop-panel-backdrop,
-  .tadeon-tabletop-panel-backdrop[data-open="true"] {
-    opacity: 0 !important;
-    visibility: hidden !important;
-    pointer-events: none !important;
-    background: transparent !important;
-    backdrop-filter: none !important;
-  }
-
   .tadeon-tabletop-panel[data-mobile-open="true"] {
     z-index: 124 !important;
     border-color: color-mix(in srgb, var(--border) 86%, transparent) !important;
