@@ -70,9 +70,11 @@ describe("auditoria transversal de paridade e layout", () => {
     expect(css).toContain("z-index: 241 !important");
   });
 
-  it("mantém o dock essencial ao lado do inspector não modal no tablet", () => {
+  it("retira o chrome flutuante enquanto o inspector não modal ocupa o tablet", () => {
     const css = source("src/styles/tabletop-spatial-finish.css");
-    expect(css).toContain("--tadeon-tabletop-inspector-width");
-    expect(css).toContain("visibility: visible !important");
+    expect(css).toContain('body:has(.tadeon-tabletop-panel[data-mobile-open="true"]) :where(');
+    expect(css).toContain(".tadeon-tabletop-progressive-dock");
+    expect(css).toContain("visibility: hidden !important");
+    expect(css).not.toContain("--tadeon-tabletop-inspector-width");
   });
 });
