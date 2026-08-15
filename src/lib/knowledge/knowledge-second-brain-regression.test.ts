@@ -70,6 +70,16 @@ describe("Nexus second-brain graph architecture", () => {
     );
   });
 
+  it("never exposes graph memory execution to anonymous clients", () => {
+    const revoke = source(
+      "supabase/migrations/20260815235900_nexus_second_brain_graph_revoke_anon.sql",
+    );
+
+    expect(revoke).toContain("from anon");
+    expect(revoke).toContain("from public");
+    expect(revoke).toContain("to authenticated");
+  });
+
   it("uses opaque theme surfaces for graph chrome", () => {
     const css = source("src/styles/nexus-second-brain.css");
 
