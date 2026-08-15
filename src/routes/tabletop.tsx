@@ -12,6 +12,7 @@ import { TabletopCreativeDockBridge } from "@/components/tabletop/tabletop-creat
 import { TabletopDirectorEnhancementBridge } from "@/components/tabletop/tabletop-director-enhancement-bridge";
 import { TabletopPlaceablesInspectorBridge } from "@/components/tabletop/tabletop-placeables-inspector-bridge";
 import { TabletopIntegrationToolsBridge } from "@/components/tabletop/tabletop-integration-tools-bridge";
+import { TabletopLocateBridge } from "@/components/tabletop/tabletop-locate-bridge";
 import { useAuth } from "@/lib/auth";
 import { loadFeatureFlags } from "@/lib/feature-flag-repository";
 import type { FeatureFlags } from "@/lib/feature-flags";
@@ -91,6 +92,7 @@ function TabletopRoute() {
 
   return (
     <>
+      <TabletopLocateBridge />
       <TabletopPlayerInteractionBridge />
       <TabletopReliabilityEditorBridge />
       <TabletopAtmosphereBridge />
