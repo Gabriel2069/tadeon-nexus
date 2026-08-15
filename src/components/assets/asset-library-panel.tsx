@@ -290,7 +290,7 @@ export function AssetLibraryPanel({
     try {
       await assetService.softDelete(deleteAsset.id, deleteUsages.length > 0);
       toast.success(
-        "Arquivo arquivado. O binário permanece protegido para recuperação.",
+        "Arquivo excluído da biblioteca ativa. A recuperação continua disponível no catálogo.",
       );
       setDeleteAsset(null);
       setDeleteUsages([]);
@@ -570,7 +570,7 @@ export function AssetLibraryPanel({
                         onClick={() => void requestDelete(asset)}
                       >
                         <Trash2 className="h-4 w-4" />
-                        Arquivar
+                        Excluir arquivo
                       </DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
@@ -724,7 +724,7 @@ export function AssetLibraryPanel({
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>
-              Arquivar {deleteAsset?.display_name}?
+              Excluir {deleteAsset?.display_name}?
             </AlertDialogTitle>
             <AlertDialogDescription>
               {deleteUsages.length
@@ -738,7 +738,7 @@ export function AssetLibraryPanel({
               className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
               onClick={() => void confirmDelete()}
             >
-              Arquivar
+              Excluir
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

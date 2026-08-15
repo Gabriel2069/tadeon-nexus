@@ -1,0 +1,112 @@
+/* Fine alignment pass scoped to the individual character-sheet experience. */
+html[data-tadeon-sheet-mode] .tadeon-sheet-page {
+  min-inline-size: 0;
+  overflow-x: clip;
+}
+
+html[data-tadeon-sheet-mode] .tadeon-sheet-frame,
+html[data-tadeon-sheet-mode] .tadeon-sheet-frame > *,
+html[data-tadeon-sheet-mode] .tadeon-sheet-frame [data-slot="card"],
+html[data-tadeon-sheet-mode] .tadeon-sheet-frame .grid > * {
+  min-inline-size: 0;
+}
+
+html[data-tadeon-sheet-mode] .tadeon-sheet-frame input,
+html[data-tadeon-sheet-mode] .tadeon-sheet-frame textarea,
+html[data-tadeon-sheet-mode] .tadeon-sheet-frame button,
+html[data-tadeon-sheet-mode] .tadeon-sheet-frame [role="combobox"] {
+  max-inline-size: 100%;
+}
+
+html[data-tadeon-sheet-mode] .tadeon-sheet-frame section[id] {
+  scroll-margin-top: 8.5rem;
+}
+
+@media (min-width: 1024px) {
+  html[data-tadeon-sheet-mode] .tadeon-sheet-page {
+    inline-size: min(100%, 96rem);
+    padding-inline: clamp(1.1rem, 2vw, 2rem);
+  }
+
+  html[data-tadeon-sheet-mode] .tadeon-sheet-commandbar__main {
+    grid-template-columns: 2.75rem minmax(12rem, 0.8fr) minmax(16rem, 1.2fr) auto;
+    column-gap: 0.75rem;
+  }
+
+  html[data-tadeon-sheet-mode] .tadeon-sheet-commandbar__identity {
+    overflow: hidden;
+  }
+
+  html[data-tadeon-sheet-mode] .tadeon-sheet-commandbar__actions {
+    max-inline-size: min(100%, 36rem);
+    flex-wrap: wrap;
+    row-gap: 0.4rem;
+  }
+
+  html[data-tadeon-sheet-mode] .tadeon-sheet-tabs-list {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    inline-size: min(100%, 44rem);
+    margin-inline: auto;
+  }
+
+  html[data-tadeon-sheet-mode] .tadeon-sheet-tabs-list [role="tab"] {
+    inline-size: 100%;
+    min-inline-size: 0;
+    justify-content: center;
+    padding-inline: 0.85rem;
+  }
+
+  html[data-tadeon-sheet-mode] .tadeon-sheet-overview {
+    grid-template-columns: repeat(4, minmax(10rem, 1fr));
+    align-items: stretch;
+  }
+
+  html[data-tadeon-sheet-mode] .tadeon-overview-metric {
+    min-inline-size: 0;
+    min-block-size: 5.35rem;
+  }
+
+  html[data-tadeon-sheet-mode] #sec-attr .tadeon-attribute-grid {
+    grid-template-columns: repeat(5, minmax(7.25rem, 1fr));
+    align-items: stretch;
+    justify-items: stretch;
+  }
+
+  html[data-tadeon-sheet-mode] #sec-attr .tadeon-attribute-tile {
+    min-inline-size: 0;
+    inline-size: 100%;
+  }
+
+  html[data-tadeon-sheet-mode] #sec-attr .tadeon-attribute-radar {
+    inline-size: min(100%, 31rem);
+    aspect-ratio: 1;
+    margin-inline: auto;
+  }
+
+  html[data-tadeon-sheet-mode] #sec-pontos .grid,
+  html[data-tadeon-sheet-mode] #sec-pericias .grid,
+  html[data-tadeon-sheet-mode] #sec-armas .grid,
+  html[data-tadeon-sheet-mode] #sec-inv .grid,
+  html[data-tadeon-sheet-mode] #sec-hab .grid {
+    align-items: start;
+  }
+
+  html[data-tadeon-sheet-mode="game"] .tadeon-sheet-commandbar {
+    margin-bottom: 0.9rem;
+  }
+}
+
+@media (min-width: 1024px) and (max-width: 1240px) {
+  html[data-tadeon-sheet-mode] .tadeon-sheet-commandbar__main {
+    grid-template-columns: 2.75rem minmax(10rem, 0.72fr) minmax(12rem, 1fr) auto;
+  }
+
+  html[data-tadeon-sheet-mode] .tadeon-sheet-overview {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  html[data-tadeon-sheet-mode] #sec-attr .tadeon-attribute-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}

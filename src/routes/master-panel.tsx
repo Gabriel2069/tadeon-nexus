@@ -303,6 +303,14 @@ function MasterPanel() {
   const [loadError, setLoadError] = useState<string | null>(null);
   const [reloadKey, setReloadKey] = useState(0);
   const [assetsEnabled, setAssetsEnabled] = useState(false);
+  const [activeTab, setActiveTab] = useState<MasterTab>(() => {
+    if (search.tab) return search.tab;
+    if (typeof window === "undefined") return "dashboard";
+    const stored = window.sessionStorage.getItem("tadeon-master-active-tab");
+    return MASTER_TAB_VALUES.includes(stored as MasterTab)
+      ? (stored as MasterTab)
+      : "dashboard";
+  });
 
   useEffect(() => {
     let active = true;
@@ -454,11 +462,21 @@ function MasterPanel() {
       return p ? { ...p, [k]: v } : p;
     });
 
-  const openMasterTab = (tab: MasterTab) =>
-    void navigate({
-      to: "/master-panel",
-      search: { tab: tab === "dashboard" ? undefined : tab },
-    });
+  const selectMasterTab = (tab: MasterTab) => {
+    setActiveTab(tab);
+    if (typeof window === "undefined") return;
+    window.sessionStorage.setItem("tadeon-master-active-tab", tab);
+    const url = new URL(window.location.href);
+    if (tab === "dashboard") url.searchParams.delete("tab");
+    else url.searchParams.set("tab", tab);
+    window.history.replaceState(
+      window.history.state,
+      "",
+      `${url.pathname}${url.search}${url.hash}`,
+    );
+  };
+
+  const openMasterTab = (tab: MasterTab) => selectMasterTab(tab);
 
   const openSheet = (sheetId: string) => {
     if (!s) return;
@@ -535,18 +553,8 @@ function MasterPanel() {
       </section>
 
       <Tabs
-        value={
-          search.tab === "assets" && !assetsEnabled ? "dashboard" : (search.tab ?? "dashboard")
-        }
-        onValueChange={(value) =>
-          void navigate({
-            to: "/master-panel",
-            search: {
-              tab: value === "dashboard" ? undefined : (value as MasterTab),
-            },
-            replace: true,
-          })
-        }
+        value={activeTab === "assets" && !assetsEnabled ? "dashboard" : activeTab}
+        onValueChange={(value) => selectMasterTab(value as MasterTab)}
         className="space-y-4"
       >
         <MasterPanelNavigation showAssets={assetsEnabled} />
