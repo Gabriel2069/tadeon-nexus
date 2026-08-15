@@ -11,6 +11,7 @@ import { TabletopAtmosphereBridge } from "@/components/tabletop/tabletop-atmosph
 import { TabletopCreativeDockBridge } from "@/components/tabletop/tabletop-creative-dock-bridge";
 import { TabletopDirectorEnhancementBridge } from "@/components/tabletop/tabletop-director-enhancement-bridge";
 import { TabletopPlaceablesInspectorBridge } from "@/components/tabletop/tabletop-placeables-inspector-bridge";
+import { TabletopIntegrationToolsBridge } from "@/components/tabletop/tabletop-integration-tools-bridge";
 import { useAuth } from "@/lib/auth";
 import { loadFeatureFlags } from "@/lib/feature-flag-repository";
 import type { FeatureFlags } from "@/lib/feature-flags";
@@ -98,6 +99,7 @@ function TabletopRoute() {
           <TabletopCreativeDockBridge />
           <TabletopDirectorEnhancementBridge />
           <TabletopPlaceablesInspectorBridge />
+          <TabletopIntegrationToolsBridge />
           <TabletopWorkspace
             realtimeEnabled={flags.nexus_realtime_enabled}
             lightingEnabled={flags.nexus_lighting_enabled}
