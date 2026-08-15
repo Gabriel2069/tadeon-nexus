@@ -94,6 +94,7 @@ export interface TabletopScene {
 
 export interface TabletopSnapshot {
   scene: TabletopScene;
+  activeLevelId?: string | null;
   selectedIds: string[];
   canUndo: boolean;
   canRedo: boolean;

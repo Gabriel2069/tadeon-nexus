@@ -129,6 +129,19 @@ html[data-tadeon-tabletop-interface="advanced"] .tadeon-tabletop-canvas-host {
 }
 
 @media (min-width: 801px) and (max-width: 1179px) {
+  body:has(.tadeon-tabletop-panel[data-mobile-open="true"]) {
+    --tadeon-tabletop-inspector-width: min(28rem, calc(100vw - 2rem));
+  }
+
+  body:has(.tadeon-tabletop-panel[data-mobile-open="true"])
+    .tadeon-tabletop-progressive-dock {
+    left: calc((100vw - var(--tadeon-tabletop-inspector-width)) / 2) !important;
+    max-width: calc(100vw - var(--tadeon-tabletop-inspector-width) - 2rem) !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    pointer-events: auto !important;
+  }
+
   .tadeon-tabletop-panel[data-mobile-open="true"] {
     position: fixed !important;
     top: max(4.75rem, calc(env(safe-area-inset-top) + .75rem)) !important;

@@ -1035,8 +1035,8 @@
 [data-slot="tabs-list"] > [data-slot="tabs-indicator"] {
   position: absolute;
   z-index: 0;
-  top: 0.25rem;
-  bottom: 0.25rem;
+  top: 0;
+  bottom: auto;
   left: 0;
   min-width: 0;
   border: 1px solid color-mix(in srgb, var(--primary) 30%, var(--border));

@@ -96,6 +96,76 @@ interface VisibilityWall {
   y2: number;
   wallType: string;
   blocksVision: boolean;
+  baseElevation: number;
+  height: number;
+}
+
+type PublicLightShape = "radial" | "cone" | "line" | "rectangle";
+
+function normalizedAngleDelta(angle: number, reference: number) {
+  let delta = angle - reference;
+  while (delta <= -Math.PI) delta += Math.PI * 2;
+  while (delta > Math.PI) delta -= Math.PI * 2;
+  return delta;
+}
+
+function publicLightProperties(value: unknown) {
+  const source = objectValue(value);
+  const shape: PublicLightShape =
+    source.shape === "cone" || source.shape === "line" || source.shape === "rectangle"
+      ? source.shape
+      : "radial";
+  const particles =
+    source.particles === "dust" || source.particles === "embers" || source.particles === "mist" || source.particles === "sparks"
+      ? source.particles
+      : "none";
+  return {
+    shape,
+    angle: Math.max(1, Math.min(360, finiteNumber(source.angle, 90))),
+    direction: finiteNumber(source.direction, 0) % 360,
+    falloff: Math.max(0.1, Math.min(4, finiteNumber(source.falloff, 1.4))),
+    softness: Math.max(0, Math.min(1, finiteNumber(source.softness, 0.4))),
+    temperature: Math.max(1000, Math.min(12000, finiteNumber(source.temperature, 4200))),
+    flicker: Math.max(0, Math.min(1, finiteNumber(source.flicker, 0))),
+    particles,
+  };
+}
+
+function lightDirection(light: { properties: ReturnType<typeof publicLightProperties> }) {
+  return (light.properties.direction * Math.PI) / 180;
+}
+
+function lightRayLimit(light: { radius: number; properties: ReturnType<typeof publicLightProperties> }, angle: number) {
+  const radius = Math.max(8, light.radius);
+  if (light.properties.shape === "radial") return radius;
+  const delta = normalizedAngleDelta(angle, lightDirection(light));
+  if (light.properties.shape === "cone") {
+    const aperture = Math.max(1, Math.min(359, light.properties.angle));
+    return Math.abs(delta) <= (aperture * Math.PI) / 360 + 1e-6 ? radius : 0;
+  }
+  if (Math.cos(delta) < -1e-6 || Math.abs(delta) > Math.PI / 2 + 1e-6) return 0;
+  const halfWidth = light.properties.shape === "line" ? Math.max(6, radius * 0.08) : radius * 0.42;
+  const cosine = Math.max(1e-6, Math.cos(delta));
+  const sine = Math.abs(Math.sin(delta));
+  return Math.max(0, Math.min(radius / cosine, sine < 1e-6 ? Number.POSITIVE_INFINITY : halfWidth / sine));
+}
+
+function lightSeedAngles(light: { radius: number; properties: ReturnType<typeof publicLightProperties> }) {
+  const direction = lightDirection(light);
+  const angles: number[] = [];
+  if (light.properties.shape === "radial") {
+    for (let index = 0; index < 128; index += 1) angles.push((index / 128) * Math.PI * 2);
+    return angles;
+  }
+  if (light.properties.shape === "cone") {
+    const aperture = Math.max(1, Math.min(359, light.properties.angle));
+    const half = (aperture * Math.PI) / 360;
+    const steps = Math.max(16, Math.ceil(aperture / 5));
+    for (let index = 0; index <= steps; index += 1) angles.push(direction - half + (index / steps) * half * 2);
+    return angles;
+  }
+  for (let index = 0; index <= 72; index += 1) angles.push(direction - Math.PI / 2 + (index / 72) * Math.PI);
+  return angles;
 }
 
 function raySegmentDistance(
@@ -117,85 +187,51 @@ function raySegmentDistance(
 }
 
 function buildVisibilityPolygon(
-  light: { x: number; y: number; radius: number; castsShadows: boolean },
+  light: {
+    x: number;
+    y: number;
+    radius: number;
+    castsShadows: boolean;
+    elevation: number;
+    properties: ReturnType<typeof publicLightProperties>;
+  },
   walls: VisibilityWall[],
   width: number,
   height: number,
 ) {
   const boundary: VisibilityWall[] = [
-    { x1: 0, y1: 0, x2: width, y2: 0, wallType: "wall", blocksVision: true },
-    {
-      x1: width,
-      y1: 0,
-      x2: width,
-      y2: height,
-      wallType: "wall",
-      blocksVision: true,
-    },
-    {
-      x1: width,
-      y1: height,
-      x2: 0,
-      y2: height,
-      wallType: "wall",
-      blocksVision: true,
-    },
-    { x1: 0, y1: height, x2: 0, y2: 0, wallType: "wall", blocksVision: true },
+    { x1: 0, y1: 0, x2: width, y2: 0, wallType: "wall", blocksVision: true, baseElevation: 0, height: 100_000 },
+    { x1: width, y1: 0, x2: width, y2: height, wallType: "wall", blocksVision: true, baseElevation: 0, height: 100_000 },
+    { x1: width, y1: height, x2: 0, y2: height, wallType: "wall", blocksVision: true, baseElevation: 0, height: 100_000 },
+    { x1: 0, y1: height, x2: 0, y2: 0, wallType: "wall", blocksVision: true, baseElevation: 0, height: 100_000 },
   ];
-  const nearbyWalls = walls
-    .filter((wall) => wall.blocksVision && wall.wallType !== "door_open")
-    .map((wall) => ({
-      wall,
-      distance: (wall.x1 + wall.x2) / 2 - light.x,
-      verticalDistance: (wall.y1 + wall.y2) / 2 - light.y,
-    }))
-    .filter(
-      ({ distance, verticalDistance }) =>
-        Math.abs(distance) <= light.radius &&
-        Math.abs(verticalDistance) <= light.radius,
-    )
-    .sort(
-      (left, right) =>
-        left.distance ** 2 +
-        left.verticalDistance ** 2 -
-        (right.distance ** 2 + right.verticalDistance ** 2),
-    )
-    .slice(0, 64)
-    .map(({ wall }) => wall);
   const blockers = light.castsShadows
-    ? [...nearbyWalls, ...boundary]
+    ? [...walls.filter((wall) => wall.blocksVision && wall.wallType !== "door_open" && light.elevation <= wall.baseElevation + wall.height + 0.5), ...boundary]
     : boundary;
-  const angles: number[] = [];
-  for (let index = 0; index < 64; index += 1) {
-    angles.push((index / 64) * Math.PI * 2);
-  }
+  const angles = lightSeedAngles(light);
   for (const wall of blockers) {
-    for (const point of [
-      { x: wall.x1, y: wall.y1 },
-      { x: wall.x2, y: wall.y2 },
-    ]) {
+    for (const point of [{ x: wall.x1, y: wall.y1 }, { x: wall.x2, y: wall.y2 }]) {
       const angle = Math.atan2(point.y - light.y, point.x - light.x);
+      if (lightRayLimit(light, angle) <= 0) continue;
       angles.push(angle - 0.0001, angle, angle + 0.0001);
     }
   }
-  return angles
-    .sort((left, right) => left - right)
-    .map((angle) => {
-      const direction = { x: Math.cos(angle), y: Math.sin(angle) };
-      let distance = Math.max(8, light.radius);
-      for (const wall of blockers) {
-        const hit = raySegmentDistance(
-          { x: light.x, y: light.y },
-          direction,
-          wall,
-        );
-        if (hit !== null && hit < distance) distance = hit;
-      }
-      return {
-        x: light.x + direction.x * distance,
-        y: light.y + direction.y * distance,
-      };
-    });
+  const direction = lightDirection(light);
+  const unique = [...new Map(angles.filter((angle) => lightRayLimit(light, angle) > 0).map((angle) => [Math.round(angle * 1_000_000), angle])).values()];
+  unique.sort((left, right) =>
+    light.properties.shape === "radial"
+      ? ((left % (Math.PI * 2)) + Math.PI * 2) % (Math.PI * 2) - (((right % (Math.PI * 2)) + Math.PI * 2) % (Math.PI * 2))
+      : normalizedAngleDelta(left, direction) - normalizedAngleDelta(right, direction),
+  );
+  return unique.map((angle) => {
+    const directionVector = { x: Math.cos(angle), y: Math.sin(angle) };
+    let distance = lightRayLimit(light, angle);
+    for (const wall of blockers) {
+      const hit = raySegmentDistance({ x: light.x, y: light.y }, directionVector, wall);
+      if (hit !== null && hit < distance) distance = hit;
+    }
+    return { x: light.x + directionVector.x * distance, y: light.y + directionVector.y * distance };
+  });
 }
 
 function safeFogPoints(value: unknown) {
@@ -231,11 +267,27 @@ function publicProperties(value: unknown) {
     0,
     Math.min(barMax, finiteNumber(properties.bar_current)),
   );
+  const renderMode = properties.render_mode === "flat" || properties.render_mode === "billboard" ? properties.render_mode : undefined;
+  const auraColor = typeof properties.aura_color === "string" && /^#[0-9a-f]{6}$/i.test(properties.aura_color) ? properties.aura_color : undefined;
+  const audioUrl = typeof properties.audio_url === "string" && /^https?:\/\//i.test(properties.audio_url.trim()) ? properties.audio_url.trim().slice(0, 2048) : undefined;
   return {
     ...(status ? { status } : {}),
     ...(icons.length ? { icons } : {}),
     ...(visualConditions.length ? { visual_conditions: visualConditions } : {}),
     ...(barMax > 0 ? { bar_max: barMax, bar_current: barCurrent } : {}),
+    ...(renderMode ? { render_mode: renderMode } : {}),
+    billboard_anchor: properties.billboard_anchor === "center" ? "center" : "base",
+    visual_scale: Math.max(0.5, Math.min(2.5, finiteNumber(properties.visual_scale, 1))),
+    ground_shadow: properties.ground_shadow !== false,
+    token_volume: properties.token_volume !== false,
+    token_base_height: Math.max(4, Math.min(22, finiteNumber(properties.token_base_height, 8))),
+    ...(auraColor ? { aura_color: auraColor } : {}),
+    aura_intensity: Math.max(0, Math.min(1, finiteNumber(properties.aura_intensity, 0.56))),
+    ...(audioUrl ? { audio_url: audioUrl } : {}),
+    audio_enabled: properties.audio_enabled !== false,
+    audio_loop: properties.audio_loop !== false,
+    audio_volume: Math.max(0, Math.min(1, finiteNumber(properties.audio_volume, 0.72))),
+    audio_radius: Math.max(8, Math.min(100_000, finiteNumber(properties.audio_radius, 512))),
   };
 }
 
@@ -562,7 +614,7 @@ Deno.serve(async (request) => {
     admin
       .from("tabletop_lights")
       .select(
-        "id,level_id,x,y,elevation,radius,intensity,color,enabled,casts_shadows",
+        "id,level_id,entity_id,x,y,elevation,radius,intensity,color,enabled,casts_shadows,properties",
       )
       .eq("scene_id", scene.id)
       .eq("level_id", activeLevelId)
@@ -570,7 +622,7 @@ Deno.serve(async (request) => {
       .order("created_at"),
     admin
       .from("tabletop_fog_strokes")
-      .select("id,level_id,operation,points,radius,sequence_index")
+      .select("id,level_id,operation,geometry,points,radius,sequence_index")
       .eq("scene_id", scene.id)
       .eq("level_id", activeLevelId)
       .order("sequence_index"),
@@ -589,6 +641,8 @@ Deno.serve(async (request) => {
     y2: finiteNumber(wall.y2),
     wallType: boundedText(wall.wall_type, 24),
     blocksVision: wall.blocks_vision === true,
+    baseElevation: finiteNumber(wall.base_elevation),
+    height: Math.max(8, finiteNumber(wall.height, 64)),
   }));
   const visibility = {
     version: Math.max(1, Math.trunc(finiteNumber(scene.visibility_version, 1))),
@@ -633,11 +687,18 @@ Deno.serve(async (request) => {
           8,
           Math.min(100_000, finiteNumber(light.radius, 320)),
         );
+        const attachedEntity =
+          typeof light.entity_id === "string"
+            ? (entities ?? []).find((entity) => entity.id === light.entity_id && entity.level_id === activeLevelId)
+            : null;
+        const properties = publicLightProperties(light.properties);
         const safeLight = {
-          x: finiteNumber(light.x),
-          y: finiteNumber(light.y),
+          x: attachedEntity ? finiteNumber(attachedEntity.x) + Math.max(8, finiteNumber(attachedEntity.width, 64)) / 2 : finiteNumber(light.x),
+          y: attachedEntity ? finiteNumber(attachedEntity.y) + Math.max(8, finiteNumber(attachedEntity.height, 64)) / 2 : finiteNumber(light.y),
+          elevation: finiteNumber(light.elevation) + (attachedEntity ? finiteNumber(attachedEntity.elevation) : 0),
           radius: radius * Math.max(0.12, intensity),
           castsShadows: light.casts_shadows === true,
+          properties,
         };
         return {
           id: light.id,
@@ -645,12 +706,13 @@ Deno.serve(async (request) => {
           entityId: null,
           x: safeLight.x,
           y: safeLight.y,
-          elevation: finiteNumber(light.elevation),
+          elevation: safeLight.elevation,
           radius,
           intensity,
           color: /^#[0-9a-f]{6}$/i.test(light.color) ? light.color : "#f2c66d",
           enabled: true,
           castsShadows: safeLight.castsShadows,
+          properties,
           visibilityPolygon: buildVisibilityPolygon(
             safeLight,
             safeWalls,
@@ -664,6 +726,10 @@ Deno.serve(async (request) => {
         id: stroke.id,
         levelId: stroke.level_id,
         operation: stroke.operation === "hide" ? "hide" : "reveal",
+        shape:
+          stroke.geometry === "rectangle" || stroke.geometry === "ellipse" || stroke.geometry === "polygon"
+            ? stroke.geometry
+            : "brush",
         points: safeFogPoints(stroke.points),
         radius: Math.max(8, Math.min(1024, finiteNumber(stroke.radius, 160))),
         sequenceIndex,

@@ -437,7 +437,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
           </div>
         </header>
         {/* Mobile header */}
-        <header className="tadeon-mobile-header sticky top-0 z-30 grid min-h-16 grid-cols-[4.8rem_minmax(0,1fr)_4.8rem] items-center px-3 py-2 md:hidden">
+        <header className="tadeon-mobile-header sticky top-0 z-30 grid min-h-16 grid-cols-[5.9rem_minmax(0,1fr)_5.9rem] items-center px-3 py-2 md:hidden">
           <span aria-hidden className="tadeon-mobile-header__thread" />
           <button
             type="button"

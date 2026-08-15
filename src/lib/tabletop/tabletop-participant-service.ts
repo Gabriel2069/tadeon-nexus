@@ -141,6 +141,19 @@ const participantVisibilitySchema = z
             color: z.string().regex(/^#[0-9a-f]{6}$/i),
             enabled: z.boolean(),
             castsShadows: z.boolean(),
+            properties: z
+              .object({
+                shape: z.enum(["radial", "cone", "line", "rectangle"]).optional(),
+                angle: finiteNumber.min(1).max(360).optional(),
+                direction: finiteNumber.min(-3600).max(3600).optional(),
+                falloff: finiteNumber.min(0.1).max(4).optional(),
+                softness: finiteNumber.min(0).max(1).optional(),
+                temperature: finiteNumber.min(1000).max(12000).optional(),
+                flicker: finiteNumber.min(0).max(1).optional(),
+                particles: z.enum(["none", "dust", "embers", "mist", "sparks"]).optional(),
+              })
+              .strict()
+              .optional(),
             visibilityPolygon: z
               .array(visibilityPointSchema)
               .max(2048)
@@ -156,6 +169,7 @@ const participantVisibilitySchema = z
             id: uuidSchema,
             levelId: uuidSchema,
             operation: z.enum(["reveal", "hide"]),
+            shape: z.enum(["brush", "rectangle", "ellipse", "polygon"]),
             points: z.array(visibilityPointSchema).min(1).max(64),
             radius: finiteNumber.min(8).max(1024),
             sequenceIndex: z.number().int().min(0).max(100_000),

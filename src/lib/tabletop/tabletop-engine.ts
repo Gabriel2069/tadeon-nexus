@@ -296,6 +296,7 @@ export class TabletopEngine {
   get snapshot(): TabletopSnapshot {
     return {
       scene: cloneScene(this.scenes.scene),
+      activeLevelId: this.activeLevelId,
       selectedIds: this.selection.ids,
       canUndo: this.history.canUndo,
       canRedo: this.history.canRedo,
@@ -337,7 +338,7 @@ export class TabletopEngine {
     this.setSelectedStructure(null);
     this.setSelectedLight(null);
     this.setSelectedFog(null);
-    this.render(false);
+    this.render();
   }
 
   setInteractiveStructures(ids: string[]) {
