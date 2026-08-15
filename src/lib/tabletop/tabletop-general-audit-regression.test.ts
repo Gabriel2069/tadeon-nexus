@@ -51,7 +51,9 @@ describe("auditoria transversal de paridade e layout", () => {
   it("expõe forma da névoa e propriedades da luz no contrato sanitizado do jogador", () => {
     const participant = source("src/lib/tabletop/tabletop-participant-service.ts");
     const edge = source("supabase/functions/tabletop-view/index.ts");
-    expect(participant).toContain('shape: z.enum(["brush", "rectangle", "ellipse", "polygon"])');
+    expect(participant).toContain(
+      'shape: z.enum(["brush", "rectangle", "ellipse", "polygon"]).default("brush")',
+    );
     expect(participant).toContain('shape: z.enum(["radial", "cone", "line", "rectangle"])');
     expect(edge).toContain('.eq("hidden", false)');
     expect(edge).toContain("publicLightProperties");
