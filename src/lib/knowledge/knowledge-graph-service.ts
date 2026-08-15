@@ -5,45 +5,25 @@ import {
   toKnowledgeServiceError,
 } from "@/lib/knowledge/knowledge-errors";
 import type {
-  KnowledgeNodeStatus,
   KnowledgeNodeType,
-  KnowledgeRelationDirection,
   KnowledgeVisibility,
   RelationType,
 } from "@/lib/nexus-contracts";
+import type {
+  KnowledgeLocalGraph,
+  KnowledgeMemoryPayload,
+} from "@/lib/knowledge/knowledge-graph-memory";
+
+export type {
+  KnowledgeGraphEdge,
+  KnowledgeGraphNode,
+  KnowledgeLocalGraph,
+  KnowledgeMemoryNode,
+  KnowledgeMemoryPayload,
+  KnowledgeMemorySignal,
+} from "@/lib/knowledge/knowledge-graph-memory";
 
 const graphDatabase = supabase as unknown as SupabaseClient;
-
-export interface KnowledgeGraphNode {
-  id: string;
-  title: string;
-  nodeType: KnowledgeNodeType;
-  icon: string | null;
-  status: KnowledgeNodeStatus;
-  visibility: KnowledgeVisibility;
-  campaignId: string | null;
-  updatedAt: string;
-  depth: number;
-}
-
-export interface KnowledgeGraphEdge {
-  id: string;
-  sourceNodeId: string;
-  targetNodeId: string;
-  relationType: RelationType;
-  label: string;
-  direction: KnowledgeRelationDirection;
-  visibility: KnowledgeVisibility;
-}
-
-export interface KnowledgeLocalGraph {
-  focusNodeId: string;
-  depth: number;
-  limit: number;
-  truncated: boolean;
-  nodes: KnowledgeGraphNode[];
-  edges: KnowledgeGraphEdge[];
-}
 
 export interface KnowledgeLocalGraphOptions {
   workspaceId: string;
@@ -52,6 +32,17 @@ export interface KnowledgeLocalGraphOptions {
   includeWorkspace?: boolean;
   depth?: 1 | 2;
   limit?: number;
+  nodeTypes?: KnowledgeNodeType[];
+  relationTypes?: RelationType[];
+  visibilities?: KnowledgeVisibility[];
+}
+
+export interface KnowledgeMemoryGraphOptions {
+  workspaceId: string;
+  focusNodeId: string;
+  campaignId?: string | null;
+  includeWorkspace?: boolean;
+  candidateLimit?: number;
   nodeTypes?: KnowledgeNodeType[];
   relationTypes?: RelationType[];
   visibilities?: KnowledgeVisibility[];
@@ -67,7 +58,50 @@ function boundedInteger(
   return Math.min(max, Math.max(min, Math.trunc(value!)));
 }
 
+function validatePayload(data: unknown): KnowledgeMemoryPayload {
+  if (!data || typeof data !== "object" || Array.isArray(data)) {
+    throw new KnowledgeServiceError("KNOWLEDGE_UNKNOWN");
+  }
+  const graph = data as KnowledgeMemoryPayload;
+  if (!Array.isArray(graph.nodes) || !Array.isArray(graph.signals)) {
+    throw new KnowledgeServiceError("KNOWLEDGE_UNKNOWN");
+  }
+  return graph;
+}
+
 export class KnowledgeGraphService {
+  async loadMemory(
+    options: KnowledgeMemoryGraphOptions,
+  ): Promise<KnowledgeMemoryPayload> {
+    if (!options.workspaceId || !options.focusNodeId) {
+      throw new KnowledgeServiceError("KNOWLEDGE_INVALID_INPUT");
+    }
+    const candidateLimit = boundedInteger(options.candidateLimit, 400, 40, 500);
+    const { data, error } = await graphDatabase.rpc(
+      "get_knowledge_graph_memory",
+      {
+        p_workspace_id: options.workspaceId,
+        p_focus_node_id: options.focusNodeId,
+        p_campaign_id: options.campaignId ?? null,
+        p_include_workspace: options.includeWorkspace ?? true,
+        p_candidate_limit: candidateLimit,
+        p_node_types: options.nodeTypes?.length ? options.nodeTypes : null,
+        p_relation_types: options.relationTypes?.length
+          ? options.relationTypes
+          : null,
+        p_visibilities: options.visibilities?.length
+          ? options.visibilities
+          : null,
+      },
+    );
+    if (error) throw toKnowledgeServiceError(error);
+    return validatePayload(data);
+  }
+
+  /**
+   * Legacy bounded graph contract kept for older callers and rolling deploys.
+   * The interactive Nexus graph now uses loadMemory + the weighted client model.
+   */
   async loadLocal(
     options: KnowledgeLocalGraphOptions,
   ): Promise<KnowledgeLocalGraph> {
