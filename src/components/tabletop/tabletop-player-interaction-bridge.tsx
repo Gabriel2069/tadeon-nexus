@@ -177,27 +177,31 @@ export function TabletopPlayerInteractionBridge() {
   const [loadingPowers, setLoadingPowers] = useState(false);
   const sheetRequestRef = useRef(0);
 
-  const syncSnapshot = useCallback(() => {
-    const runtime = currentTabletopRuntime();
-    if (runtime) setSnapshot(runtime.snapshot());
-  }, []);
-
   useEffect(() => {
-    syncSnapshot();
-    const interval = window.setInterval(syncSnapshot, 500);
+    let frame = 0;
+    let attempts = 0;
+    const bootstrap = () => {
+      const runtime = currentTabletopRuntime();
+      if (runtime) {
+        setSnapshot(runtime.snapshot());
+        return;
+      }
+      if (attempts++ < 90) frame = window.requestAnimationFrame(bootstrap);
+    };
+    bootstrap();
     const onRender = (event: Event) => {
       const detail = (event as CustomEvent<TabletopSnapshot>).detail;
-      if (detail) setSnapshot(detail);
-      else syncSnapshot();
+      setSnapshot(detail ?? currentTabletopRuntime()?.snapshot() ?? null);
     };
+    const onDestroyed = () => setSnapshot(null);
     window.addEventListener("tadeon-tabletop-render", onRender);
-    window.addEventListener("tadeon-tabletop-runtime-destroyed", syncSnapshot);
+    window.addEventListener("tadeon-tabletop-runtime-destroyed", onDestroyed);
     return () => {
-      window.clearInterval(interval);
+      window.cancelAnimationFrame(frame);
       window.removeEventListener("tadeon-tabletop-render", onRender);
-      window.removeEventListener("tadeon-tabletop-runtime-destroyed", syncSnapshot);
+      window.removeEventListener("tadeon-tabletop-runtime-destroyed", onDestroyed);
     };
-  }, [syncSnapshot]);
+  }, []);
 
   const entity = selectedEntity(snapshot);
   const linkedSheetId = entity?.linkedSheetId ?? null;
@@ -221,6 +225,19 @@ export function TabletopPlayerInteractionBridge() {
       }
     })();
   }, [linkedSheetId]);
+
+  useEffect(() => {
+    const text = activePower
+      ? [activePower.name, activePower.source.effect, activePower.source.damage]
+          .filter(Boolean)
+          .join(" ")
+      : "";
+    window.dispatchEvent(
+      new CustomEvent("tadeon-tabletop-tactical-state", {
+        detail: { mode, text },
+      }),
+    );
+  }, [activePower, mode]);
 
   const origin = entity ? centerOf(entity) : null;
   const plannedPoints = useMemo(() => {
@@ -418,6 +435,24 @@ export function TabletopPlayerInteractionBridge() {
               </small>
             </span>
             <button type="button" onClick={() => setMovementPoints(origin ? [origin] : [])}>Limpar rota</button>
+            {Boolean((entity as (typeof entity & { controllable?: boolean }) | null)?.controllable) && movementPoints.length >= 2 && (
+              <button
+                type="button"
+                className="tadeon-tactical-dock__confirm"
+                onClick={() => {
+                  if (!entity) return;
+                  window.dispatchEvent(
+                    new CustomEvent("tadeon-tabletop-move-request", {
+                      detail: { entityId: entity.id, points: movementPoints },
+                    }),
+                  );
+                  setMode("idle");
+                  setCursorWorld(null);
+                }}
+              >
+                Mover
+              </button>
+            )}
           </div>
         )}
         {mode === "power" && activePower && (

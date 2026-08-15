@@ -21,7 +21,7 @@ import {
   pointInRotatedRect,
   type TabletopBounds,
 } from "./geometry";
-import { GridRenderer } from "./grid-renderer";
+import { GridRenderer, snapPointToGrid } from "./grid-renderer";
 import {
   InteractionController,
   type TabletopMeasurementPreview,
@@ -763,6 +763,18 @@ export class TabletopEngine {
     });
   }
 
+  applyRemoteEntityPatch(id: string, patch: Partial<TabletopEntity>) {
+    if (!this.scenes.scene.entities.some((entity) => entity.id === id)) return;
+    this.scenes.setEntities(
+      this.scenes.scene.entities.map((entity) =>
+        entity.id === id
+          ? this.clampEntity({ ...entity, ...patch, id: entity.id })
+          : entity,
+      ),
+    );
+    this.render();
+  }
+
   updateSelected(patch: Partial<TabletopEntity>, label = "Editar entidade") {
     if (this.readOnly) return;
     const selected = new Set(this.selection.ids);
@@ -1412,11 +1424,11 @@ export class TabletopEngine {
   private snap(point: Point): Point {
     const scene = this.scenes.scene;
     if (!scene.snap || scene.gridMode === "none") return point;
-    const size = scene.gridSize * scene.gridScale;
-    return {
-      x: Math.round(point.x / size) * size,
-      y: Math.round(point.y / size) * size,
-    };
+    return snapPointToGrid(
+      point,
+      scene.gridMode,
+      scene.gridSize * scene.gridScale,
+    );
   }
 
   private previewEntities(next: TabletopEntity[]) {

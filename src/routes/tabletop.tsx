@@ -8,6 +8,9 @@ import { TabletopDirectorWorkspace } from "@/components/tabletop/tabletop-direct
 import { TabletopPlayerInteractionBridge } from "@/components/tabletop/tabletop-player-interaction-bridge";
 import { TabletopReliabilityEditorBridge } from "@/components/tabletop/tabletop-reliability-editor-bridge";
 import { TabletopAtmosphereBridge } from "@/components/tabletop/tabletop-atmosphere-bridge";
+import { TabletopCreativeDockBridge } from "@/components/tabletop/tabletop-creative-dock-bridge";
+import { TabletopDirectorEnhancementBridge } from "@/components/tabletop/tabletop-director-enhancement-bridge";
+import { TabletopPlaceablesInspectorBridge } from "@/components/tabletop/tabletop-placeables-inspector-bridge";
 import { useAuth } from "@/lib/auth";
 import { loadFeatureFlags } from "@/lib/feature-flag-repository";
 import type { FeatureFlags } from "@/lib/feature-flags";
@@ -91,10 +94,15 @@ function TabletopRoute() {
       <TabletopReliabilityEditorBridge />
       <TabletopAtmosphereBridge />
       {role === "mestre" ? (
-        <TabletopWorkspace
-          realtimeEnabled={flags.nexus_realtime_enabled}
-          lightingEnabled={flags.nexus_lighting_enabled}
-        />
+        <>
+          <TabletopCreativeDockBridge />
+          <TabletopDirectorEnhancementBridge />
+          <TabletopPlaceablesInspectorBridge />
+          <TabletopWorkspace
+            realtimeEnabled={flags.nexus_realtime_enabled}
+            lightingEnabled={flags.nexus_lighting_enabled}
+          />
+        </>
       ) : (
         <TabletopParticipantWorkspace
           realtimeEnabled={flags.nexus_realtime_enabled}

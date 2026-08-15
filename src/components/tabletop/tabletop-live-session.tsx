@@ -62,6 +62,7 @@ export function TabletopLiveSession({
   sceneId,
   sceneName,
   getCurrentCamera,
+  onRemoteEntityMove,
 }: {
   enabled: boolean;
   campaignId?: string | null;
@@ -69,6 +70,12 @@ export function TabletopLiveSession({
   sceneId?: string | null;
   sceneName?: string | null;
   getCurrentCamera?: () => TabletopDirectorCamera | null | undefined;
+  onRemoteEntityMove?: (payload: {
+    entityId: string;
+    x: number;
+    y: number;
+    version: number;
+  }) => void;
 }) {
   const { user, profile } = useAuth();
   const [expanded, setExpanded] = useState(false);
@@ -148,9 +155,13 @@ export function TabletopLiveSession({
       setLastEvent(event.type);
       if (event.type === "scene.transition") {
         void refresh().catch(() => undefined);
+        return;
+      }
+      if (event.type === "token.move-commit") {
+        onRemoteEntityMove?.(event.payload);
       }
     },
-    [refresh],
+    [onRemoteEntityMove, refresh],
   );
 
   const realtimePresence = useMemo(() => {
