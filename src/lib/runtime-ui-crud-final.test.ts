@@ -35,9 +35,9 @@ describe("fechamento de UI, Mesa e exclusão", () => {
     const nexus = source("src/components/knowledge/nexus-workspace.tsx");
 
     expect(assets).toContain("Excluir arquivo");
-    expect(assets).toContain("assetService.softDelete");
+    expect(assets).toMatch(/assetService\s*\.softDelete\s*\(/);
     expect(nexus).toContain("Excluir página");
-    expect(nexus).toContain("knowledgeService.softDelete(target)");
+    expect(nexus).toMatch(/knowledgeService\s*\.softDelete\s*\(target\)/);
   });
 
   it("contém os principais overlays dentro da viewport", () => {
