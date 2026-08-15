@@ -12,8 +12,8 @@ describe("Mesa floating chrome regression", () => {
       "src/components/tabletop/tabletop-progressive-interface-bridge.tsx",
     );
 
-    expect(bridge).toContain('getBoundingClientRect()');
-    expect(bridge).toContain('new ResizeObserver(syncStageGeometry)');
+    expect(bridge).toContain("getBoundingClientRect()");
+    expect(bridge).toContain("new ResizeObserver(syncStageGeometry)");
     expect(bridge).toContain('"--tadeon-tabletop-stage-center"');
     expect(bridge).toContain('"--tadeon-tabletop-stage-width"');
     expect(bridge).toContain('"--tadeon-tabletop-stage-right"');
@@ -26,7 +26,9 @@ describe("Mesa floating chrome regression", () => {
     expect(finish).toContain("var(--tadeon-tabletop-stage-width, 100vw)");
     expect(finish).toContain("var(--tadeon-tabletop-stage-right, 0px)");
     expect(finish).toContain("var(--card)");
-    expect(finish).toContain("color-mix(in srgb, var(--card) 92%, var(--background))");
+    expect(finish).toContain(
+      "color-mix(in srgb, var(--card) 92%, var(--background))",
+    );
     expect(finish).not.toContain("background: hsl(var(--card))");
     expect(finish).toContain('body:has(.tadeon-tabletop-context-menu)');
     expect(finish).toContain(
@@ -37,13 +39,17 @@ describe("Mesa floating chrome regression", () => {
 
 describe("Nexus graph expansion regression", () => {
   it("keeps fit and fullscreen expansion as separate actions", () => {
-    const graph = source("src/components/knowledge/knowledge-graph.tsx");
+    const graph = source(
+      "src/components/knowledge/knowledge-graph-second-brain.tsx",
+    );
 
     expect(graph).toContain("const [expanded, setExpanded] = useState(false)");
     expect(graph).toContain('expanded ? "Reduzir grafo" : "Ampliar grafo"');
     expect(graph).toContain("<Minimize2");
     expect(graph).toContain("fixed inset-2 z-[220]");
     expect(graph).toContain('document.body.style.overflow = "hidden"');
-    expect(graph).toContain('onClick={fitGraph} aria-label="Reenquadrar grafo"');
+    expect(graph).toContain(
+      'onClick={fitGraph} aria-label="Reenquadrar grafo"',
+    );
   });
 });
