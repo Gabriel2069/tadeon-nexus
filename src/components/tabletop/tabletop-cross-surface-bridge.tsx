@@ -3,7 +3,6 @@ import { createPortal } from "react-dom";
 import { GripVertical } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
-import { currentTabletopRuntime } from "@/lib/tabletop/tabletop-player-runtime";
 
 const NEXUS_MIME = "application/x-tadeon-nexus-node";
 const SHEET_MIME = "application/x-tadeon-sheet";
@@ -12,6 +11,42 @@ const SHEET_PATH = /^\/sheet\/([^/]+)$/;
 interface DragPayload {
   id?: string;
   label?: string;
+}
+
+interface RuntimePoint {
+  x: number;
+  y: number;
+}
+
+interface RuntimeSnapshot {
+  scene: { gridSize: number };
+}
+
+interface RuntimeEntitySeed {
+  type: "character" | "note";
+  label: string;
+  width: number;
+  height: number;
+  linkedSheetId?: string;
+  linkedKnowledgeNodeId?: string;
+  properties: Record<string, string>;
+}
+
+interface LightweightTabletopRuntime {
+  snapshot(): RuntimeSnapshot;
+  clientToWorld(point: RuntimePoint): RuntimePoint;
+  engine: {
+    addEntityAt(seed: RuntimeEntitySeed, point: RuntimePoint): unknown;
+  };
+}
+
+function currentRuntime() {
+  if (typeof window === "undefined") return undefined;
+  return (
+    window as typeof window & {
+      __tadeonTabletopRuntime?: LightweightTabletopRuntime;
+    }
+  ).__tadeonTabletopRuntime;
 }
 
 function parsePayload(raw: string) {
@@ -92,7 +127,7 @@ function useTabletopDropTarget() {
     };
     const drop = (event: DragEvent) => {
       delete document.documentElement.dataset.tadeonTabletopDrop;
-      const runtime = currentTabletopRuntime();
+      const runtime = currentRuntime();
       if (!runtime || !event.dataTransfer) return;
       const nexusRaw = event.dataTransfer.getData(NEXUS_MIME);
       const sheetRaw = event.dataTransfer.getData(SHEET_MIME);
