@@ -1,0 +1,86 @@
+/* Mesa Nexus · reserva espacial determinística para controles inferiores.
+   Os bridges progressivo, tático, de seleção e criativo são carregados de forma
+   independente. Sem uma régua compartilhada, todos acabavam disputando o mesmo
+   bottom entre .8rem e 1rem. */
+
+@media (min-width: 801px) {
+  body:has(.tadeon-tabletop-studio) {
+    --tadeon-tabletop-bottom-edge: max(.8rem, env(safe-area-inset-bottom));
+    --tadeon-tabletop-bottom-row-height: 3.2rem;
+    --tadeon-tabletop-bottom-row-gap: .55rem;
+    --tadeon-tabletop-bottom-row-1: calc(
+      var(--tadeon-tabletop-bottom-edge) +
+      var(--tadeon-tabletop-bottom-row-height) +
+      var(--tadeon-tabletop-bottom-row-gap)
+    );
+    --tadeon-tabletop-bottom-row-2: calc(
+      var(--tadeon-tabletop-bottom-edge) +
+      var(--tadeon-tabletop-bottom-row-height) +
+      var(--tadeon-tabletop-bottom-row-gap) +
+      var(--tadeon-tabletop-bottom-row-height) +
+      var(--tadeon-tabletop-bottom-row-gap)
+    );
+  }
+
+  /* Linha 0: navegação essencial. */
+  .tadeon-tabletop-progressive-dock {
+    bottom: var(--tadeon-tabletop-bottom-edge) !important;
+  }
+
+  /* Linha 1: planejamento tático. Mantém distância física do dock essencial. */
+  .tadeon-tactical-dock {
+    bottom: var(--tadeon-tabletop-bottom-row-1) !important;
+    max-width: min(56rem, calc(100vw - 2rem));
+  }
+
+  /* Linha 2: ações efêmeras da seleção. */
+  .tadeon-tabletop-selection-actions {
+    bottom: var(--tadeon-tabletop-bottom-row-2) !important;
+    max-width: calc(100vw - 2rem);
+  }
+
+  /* Biblioteca/autoria fica na borda direita da segunda linha em telas largas.
+     Ela não volta a ocupar o mesmo baseline do dock principal. */
+  .tadeon-creative-dock {
+    bottom: var(--tadeon-tabletop-bottom-row-2) !important;
+    width: min(21rem, calc(100vw - 2rem));
+  }
+
+  /* A lista de Tramas é um popup artesanal, portanto recebe a mesma disciplina
+     de viewport aplicada aos overlays Radix. */
+  .tadeon-tactical-dock__power-list {
+    box-sizing: border-box;
+    width: min(22rem, calc(100vw - 2rem));
+    max-width: calc(100vw - 2rem);
+    max-height: min(48dvh, calc(100dvh - 10rem));
+    overscroll-behavior: contain;
+  }
+}
+
+/* Em notebooks/janelas desktop mais estreitas, a biblioteca ganha uma linha
+   exclusiva. Reservar espaço é preferível a sobrepor ou esconder controles. */
+@media (min-width: 801px) and (max-width: 1179px) {
+  .tadeon-creative-dock {
+    bottom: calc(
+      var(--tadeon-tabletop-bottom-row-2) +
+      var(--tadeon-tabletop-bottom-row-height) +
+      var(--tadeon-tabletop-bottom-row-gap)
+    ) !important;
+    width: min(19rem, calc(100vw - 2rem));
+  }
+}
+
+/* Em janelas muito baixas, preservar o canvas útil: os controles continuam em
+   linhas distintas, mas comprimem a distância entre si. */
+@media (min-width: 801px) and (max-height: 720px) {
+  body:has(.tadeon-tabletop-studio) {
+    --tadeon-tabletop-bottom-row-height: 2.9rem;
+    --tadeon-tabletop-bottom-row-gap: .35rem;
+  }
+
+  .tadeon-tactical-dock,
+  .tadeon-tabletop-selection-actions,
+  .tadeon-creative-dock {
+    transform-origin: bottom center;
+  }
+}

@@ -6,8 +6,11 @@
 
 [data-slot="dialog-content"],
 [data-slot="alert-dialog-content"] {
+  box-sizing: border-box;
   max-inline-size: min(var(--tadeon-dialog-max, 64rem), calc(100vw - (var(--tadeon-overlay-gutter) * 2))) !important;
   max-block-size: calc(100dvh - (var(--tadeon-overlay-gutter) * 2)) !important;
+  overflow-x: hidden;
+  overflow-y: auto;
   overscroll-behavior: contain;
 }
 
@@ -24,7 +27,57 @@
   box-sizing: border-box;
   max-inline-size: calc(100vw - (var(--tadeon-overlay-gutter) * 2)) !important;
   max-block-size: calc(100dvh - (var(--tadeon-overlay-gutter) * 2)) !important;
+  overflow-wrap: anywhere;
   overscroll-behavior: contain;
+}
+
+/* Use the actual free space computed by Radix/Floating UI instead of only the
+   viewport width. This prevents a caller-defined width from winning after the
+   collision middleware has already measured a narrower edge position. */
+[data-slot="popover-content"] {
+  max-inline-size: min(
+    var(--radix-popover-content-available-width, 100vw),
+    calc(100vw - (var(--tadeon-overlay-gutter) * 2))
+  ) !important;
+  max-block-size: min(
+    var(--radix-popover-content-available-height, 100dvh),
+    calc(100dvh - (var(--tadeon-overlay-gutter) * 2))
+  ) !important;
+}
+
+[data-slot="select-content"] {
+  max-inline-size: min(
+    var(--radix-select-content-available-width, 100vw),
+    calc(100vw - (var(--tadeon-overlay-gutter) * 2))
+  ) !important;
+  max-block-size: min(
+    var(--radix-select-content-available-height, 100dvh),
+    calc(100dvh - (var(--tadeon-overlay-gutter) * 2))
+  ) !important;
+}
+
+[data-slot="dropdown-menu-content"],
+[data-slot="dropdown-menu-sub-content"] {
+  max-inline-size: min(
+    var(--radix-dropdown-menu-content-available-width, 100vw),
+    calc(100vw - (var(--tadeon-overlay-gutter) * 2))
+  ) !important;
+  max-block-size: min(
+    var(--radix-dropdown-menu-content-available-height, 100dvh),
+    calc(100dvh - (var(--tadeon-overlay-gutter) * 2))
+  ) !important;
+}
+
+[data-slot="context-menu-content"],
+[data-slot="context-menu-sub-content"] {
+  max-inline-size: min(
+    var(--radix-context-menu-content-available-width, 100vw),
+    calc(100vw - (var(--tadeon-overlay-gutter) * 2))
+  ) !important;
+  max-block-size: min(
+    var(--radix-context-menu-content-available-height, 100dvh),
+    calc(100dvh - (var(--tadeon-overlay-gutter) * 2))
+  ) !important;
 }
 
 [data-slot="menubar-content"],
@@ -38,7 +91,24 @@
 }
 
 [data-radix-popper-content-wrapper] {
+  box-sizing: border-box;
   max-inline-size: calc(100vw - (var(--tadeon-overlay-gutter) * 2));
+  max-block-size: calc(100dvh - (var(--tadeon-overlay-gutter) * 2));
+}
+
+@media (min-width: 801px) {
+  /* Dialogs do not use Popper collision middleware. On desktop, force their
+     final anchor back to the viewport centre so route/local utility classes
+     cannot leave a modal partially outside the visible area. `translate`
+     preserves the scale/opacity transform used by the open/close animation. */
+  [data-slot="dialog-content"],
+  [data-slot="alert-dialog-content"] {
+    top: 50% !important;
+    right: auto !important;
+    bottom: auto !important;
+    left: 50% !important;
+    translate: -50% -50% !important;
+  }
 }
 
 @media (min-width: 1024px) {
