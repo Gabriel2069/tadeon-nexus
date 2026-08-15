@@ -68,7 +68,7 @@ export function NexusTabletopLocator({ nodeId }: { nodeId?: string }) {
         variant="outline"
         onClick={() =>
           window.open(
-            `/tabletop?locate=${encodeURIComponent(primary.id)}`,
+            `/tabletop?scene=${encodeURIComponent(primary.sceneId)}&locate=${encodeURIComponent(primary.id)}`,
             "_blank",
             "noopener,noreferrer",
           )
