@@ -7,15 +7,18 @@ function source(path: string) {
 }
 
 describe("estabilidade final da Mesa Nexus", () => {
-  it("mantem a rota segura para render no Worker e monta as pontes finais", () => {
+  it("mantem a rota segura para render no Worker e monta as pontes finais sem bloquear o primeiro chunk", () => {
     const route = source("src/routes/tabletop.tsx");
+    const deferred = source("src/components/tabletop/tabletop-deferred-enhancements.tsx");
     const atmosphere = source("src/components/tabletop/tabletop-atmosphere-bridge.tsx");
 
     expect(atmosphere).not.toContain("useState<Point>({ x: window");
-    expect(route).toContain("<TabletopAtmosphereBridge />");
-    expect(route).toContain("<TabletopCreativeDockBridge />");
-    expect(route).toContain("<TabletopDirectorEnhancementBridge />");
-    expect(route).toContain("<TabletopPlaceablesInspectorBridge />");
+    expect(route).toContain("<TabletopRouteExperience");
+    expect(route).not.toContain('from "@/components/tabletop/tabletop-atmosphere-bridge"');
+    expect(deferred).toContain("<AtmosphereBridge />");
+    expect(deferred).toContain("<CreativeDockBridge />");
+    expect(deferred).toContain("<DirectorEnhancementBridge />");
+    expect(deferred).toContain("<PlaceablesInspectorBridge />");
   });
 
   it("nao volta ao autosave por clique e polling continuo", () => {
