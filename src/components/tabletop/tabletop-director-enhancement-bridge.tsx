@@ -86,18 +86,32 @@ export function TabletopDirectorEnhancementBridge() {
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
   const [commands, setCommands] = useState<DirectorCommand[]>([]);
-  const [heartbeat, setHeartbeat] = useState(0);
 
   useEffect(() => {
+    let frame = 0;
     const refresh = () => {
-      setCommands(discoverDirectorCommands());
-      setHeartbeat((value) => value + 1);
+      frame = 0;
+      const next = discoverDirectorCommands();
+      setCommands((current) => {
+        const before = current.map((item) => `${item.id}:${item.disabled}`).join("|");
+        const after = next.map((item) => `${item.id}:${item.disabled}`).join("|");
+        return before === after ? current : next;
+      });
+    };
+    const schedule = () => {
+      if (!frame) frame = window.requestAnimationFrame(refresh);
     };
     refresh();
-    const observer = new MutationObserver(refresh);
-    observer.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ["disabled", "aria-selected"] });
+    const observer = new MutationObserver(schedule);
+    observer.observe(document.body, {
+      childList: true,
+      subtree: true,
+      attributes: true,
+      attributeFilter: ["disabled", "aria-selected", "aria-pressed"],
+    });
     return () => {
       observer.disconnect();
+      if (frame) window.cancelAnimationFrame(frame);
     };
   }, []);
 
@@ -125,11 +139,11 @@ export function TabletopDirectorEnhancementBridge() {
   }, [commands, query]);
   const hasPlayerView = useMemo(
     () => commands.some((command) => /visão.*jogador|jogador.*visão|player view/.test(command.label.toLowerCase())),
-    [commands, heartbeat],
+    [commands],
   );
   const hasDiagnostics = useMemo(
     () => commands.some((command) => /diagn/.test(command.label.toLowerCase())),
-    [commands, heartbeat],
+    [commands],
   );
 
   return (

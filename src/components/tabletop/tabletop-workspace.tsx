@@ -1112,8 +1112,13 @@ export function TabletopWorkspace({
         snapshot.scene,
         overrides,
       );
-      installScene(saved);
-      await Promise.all([refreshScenes(saved.campaignId), loadSnapshots(saved.id)]);
+      persistedSceneRef.current = saved;
+      setPersistedScene(saved);
+      setDirty(false);
+      setConflict(false);
+      engineRef.current?.setReadOnly(saved.status === "archived");
+      if (!options.silent)
+        await Promise.all([refreshScenes(saved.campaignId), loadSnapshots(saved.id)]);
       if (!options.silent)
         toast.success(overrides.status === "archived" ? "Cena arquivada." : "Cena salva.");
       return saved;

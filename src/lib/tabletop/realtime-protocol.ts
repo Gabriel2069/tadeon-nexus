@@ -34,6 +34,17 @@ export const tabletopRealtimeEventSchema = z.discriminatedUnion("type", [
       .strict(),
   }),
   eventBaseSchema.extend({
+    type: z.literal("token.move-commit"),
+    payload: z
+      .object({
+        entityId: uuidSchema,
+        x: coordinateSchema,
+        y: coordinateSchema,
+        version: z.number().int().positive(),
+      })
+      .strict(),
+  }),
+  eventBaseSchema.extend({
     type: z.literal("pointer.ping"),
     payload: z
       .object({

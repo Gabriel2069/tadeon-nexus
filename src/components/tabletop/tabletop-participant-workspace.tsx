@@ -48,6 +48,8 @@ function participantErrorMessage(error: unknown) {
       return "A sala foi encerrada ou não está mais disponível.";
     case "TABLETOP_PARTICIPANT_INVALID_RESPONSE":
       return "A cena recebida não passou pela validação de segurança.";
+    case "TABLETOP_PARTICIPANT_MOVEMENT_BLOCKED":
+      return "O trajeto cruza uma barreira que bloqueia movimento.";
     default:
       return "A visão compartilhada está temporariamente indisponível.";
   }
@@ -82,6 +84,15 @@ export function TabletopParticipantWorkspace({
     | ((payload: {
         wallId: string;
         wallType: "door_open" | "door_closed";
+        version: number;
+      }) => Promise<void>)
+    | null
+  >(null);
+  const broadcastEntityMoveRef = useRef<
+    | ((payload: {
+        entityId: string;
+        x: number;
+        y: number;
         version: number;
       }) => Promise<void>)
     | null
@@ -258,22 +269,12 @@ export function TabletopParticipantWorkspace({
         if (session) void loadView(session);
         return;
       }
-      if (event.type !== "token.drag-preview") return;
-      setView((current) => {
-        if (!current?.scene || current.scene.id !== event.sceneId)
-          return current;
-        return {
-          ...current,
-          scene: {
-            ...current.scene,
-            entities: current.scene.entities.map((entity) =>
-              entity.id === event.payload.entityId
-                ? { ...entity, x: event.payload.x, y: event.payload.y }
-                : entity,
-            ) as TabletopParticipantScene["entities"],
-          },
-        };
-      });
+      if (event.type === "token.drag-preview" || event.type === "token.move-commit") {
+        engineRef.current?.applyRemoteEntityPatch(event.payload.entityId, {
+          x: event.payload.x,
+          y: event.payload.y,
+        });
+      }
     },
     [loadView, refreshRoom, session],
   );
@@ -300,7 +301,8 @@ export function TabletopParticipantWorkspace({
               "Participante",
             role: view.participant.role,
             sceneId: view.scene.id,
-            controlledTokenId: null,
+            controlledTokenId:
+              view.scene.entities.find((entity) => entity.controllable)?.id ?? null,
             state: "connected" as const,
             color: view.participant.role === "observer" ? "#7f8da8" : "#d5a85b",
             updatedAt: Date.now(),
@@ -324,7 +326,45 @@ export function TabletopParticipantWorkspace({
 
   useEffect(() => {
     broadcastStructureStateRef.current = realtime.broadcastStructureState;
-  }, [realtime.broadcastStructureState]);
+    broadcastEntityMoveRef.current = realtime.broadcastEntityMove;
+  }, [realtime.broadcastEntityMove, realtime.broadcastStructureState]);
+
+  useEffect(() => {
+    const onMoveRequest = (event: Event) => {
+      const detail = (event as CustomEvent<{
+        entityId?: string;
+        points?: Array<{ x: number; y: number }>;
+      }>).detail;
+      const activeSession = sessionRef.current;
+      if (!activeSession || !detail?.entityId || !Array.isArray(detail.points)) return;
+      const entity = view?.scene?.entities.find((item) => item.id === detail.entityId);
+      if (!entity?.controllable) return;
+      void tabletopParticipantService
+        .moveControlledEntity(activeSession.id, entity.id, detail.points)
+        .then(async (result) => {
+          engineRef.current?.applyRemoteEntityPatch(result.entityId, {
+            x: result.x,
+            y: result.y,
+          });
+          try {
+            await broadcastEntityMoveRef.current?.({
+              entityId: result.entityId,
+              x: result.x,
+              y: result.y,
+              version: result.version,
+            });
+          } catch {
+            // A RPC é a fonte de verdade; o servidor continua consistente.
+          }
+        })
+        .catch((error) => {
+          toast.error(participantErrorMessage(error));
+          void loadViewRef.current?.(activeSession);
+        });
+    };
+    window.addEventListener("tadeon-tabletop-move-request", onMoveRequest);
+    return () => window.removeEventListener("tadeon-tabletop-move-request", onMoveRequest);
+  }, [view?.scene?.entities]);
 
   return (
     <main className="tadeon-participant-view">

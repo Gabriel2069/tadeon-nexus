@@ -111,6 +111,7 @@ export function TabletopPlaceablesInspectorBridge() {
   const sceneId = snapshot?.scene.id;
 
   const refreshSpatial = useCallback(async () => {
+    if (!open) return;
     if (!sceneId || sceneId === "local-scene") {
       setWalls([]);
       setLights([]);
@@ -125,7 +126,7 @@ export function TabletopPlaceablesInspectorBridge() {
     if (!wallResult.error) setWalls((wallResult.data ?? []) as unknown as WallRow[]);
     if (!lightResult.error) setLights((lightResult.data ?? []) as unknown as LightRow[]);
     if (!fogResult.error) setFog((fogResult.data ?? []) as unknown as FogRow[]);
-  }, [sceneId]);
+  }, [open, sceneId]);
 
   useEffect(() => {
     void refreshSpatial();

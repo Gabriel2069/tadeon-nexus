@@ -42,6 +42,12 @@ export interface UseTabletopRealtimeResult {
     version: number;
   }) => Promise<void>;
   broadcastDirectorState: (revision: number) => Promise<void>;
+  broadcastEntityMove: (payload: {
+    entityId: string;
+    x: number;
+    y: number;
+    version: number;
+  }) => Promise<void>;
   updatePresence: (presence: TabletopPresence) => Promise<void>;
 }
 
@@ -216,6 +222,30 @@ export function useTabletopRealtime({
     [sceneId],
   );
 
+  const broadcastEntityMove = useCallback(
+    async (payload: { entityId: string; x: number; y: number; version: number }) => {
+      const transport = transportRef.current;
+      if (!transport || !sceneId) {
+        throw new TabletopRealtimeTransportError(
+          "TABLETOP_REALTIME_NOT_CONNECTED",
+        );
+      }
+      sequenceRef.current += 1;
+      const sentAt = Date.now();
+      await transport.send({
+        protocol: 1,
+        eventId: `event_${sentAt.toString(36)}_${sequenceRef.current.toString(36)}`,
+        sourceId: sourceIdRef.current,
+        sceneId,
+        sequence: sequenceRef.current,
+        sentAt,
+        type: "token.move-commit",
+        payload,
+      });
+    },
+    [sceneId],
+  );
+
   const updatePresence = useCallback(async (nextPresence: TabletopPresence) => {
     const transport = transportRef.current;
     if (!transport) {
@@ -234,6 +264,7 @@ export function useTabletopRealtime({
     send,
     broadcastStructureState,
     broadcastDirectorState,
+    broadcastEntityMove,
     updatePresence,
   };
 }

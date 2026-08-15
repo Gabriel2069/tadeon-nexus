@@ -172,7 +172,7 @@ const participantSceneSchema = z
     name: z.string().trim().min(1).max(160),
     width: z.number().int().min(320).max(100_000),
     height: z.number().int().min(320).max(100_000),
-    gridMode: z.enum(["square", "none"]),
+    gridMode: z.enum(["square", "hex_pointy", "hex_flat", "isometric", "none"]),
     gridSize: z.number().int().min(8).max(512),
     gridScale: finiteNumber.positive().max(100),
     snap: z.boolean(),
@@ -278,6 +278,7 @@ export type TabletopParticipantErrorCode =
   | "TABLETOP_PARTICIPANT_FORBIDDEN"
   | "TABLETOP_PARTICIPANT_NOT_FOUND"
   | "TABLETOP_PARTICIPANT_INVALID_RESPONSE"
+  | "TABLETOP_PARTICIPANT_MOVEMENT_BLOCKED"
   | "TABLETOP_PARTICIPANT_UNAVAILABLE";
 
 export class TabletopParticipantError extends Error {
@@ -322,6 +323,50 @@ export class TabletopParticipantService {
       throw new TabletopParticipantError("TABLETOP_PARTICIPANT_UNAVAILABLE");
     }
     return parseTabletopParticipantView(data);
+  }
+
+  async moveControlledEntity(
+    sessionId: string,
+    entityId: string,
+    points: Array<{ x: number; y: number }>,
+  ) {
+    if (
+      !uuidSchema.safeParse(sessionId).success ||
+      !uuidSchema.safeParse(entityId).success ||
+      points.length < 1 ||
+      points.length > 64 ||
+      points.some((point) => !Number.isFinite(point.x) || !Number.isFinite(point.y))
+    ) {
+      throw new TabletopParticipantError("TABLETOP_PARTICIPANT_INVALID_RESPONSE");
+    }
+    const { data, error } = await participantDatabase.rpc(
+      "move_tabletop_controlled_entity",
+      {
+        target_session_id: sessionId,
+        target_entity_id: entityId,
+        path_points: points,
+      },
+    );
+    if (error) {
+      if (error.code === "23514")
+        throw new TabletopParticipantError("TABLETOP_PARTICIPANT_MOVEMENT_BLOCKED");
+      if (error.code === "42501")
+        throw new TabletopParticipantError("TABLETOP_PARTICIPANT_FORBIDDEN");
+      if (error.code === "40001")
+        throw new TabletopParticipantError("TABLETOP_PARTICIPANT_INVALID_RESPONSE");
+      throw new TabletopParticipantError("TABLETOP_PARTICIPANT_UNAVAILABLE");
+    }
+    return z
+      .object({
+        entityId: uuidSchema,
+        x: finiteNumber,
+        y: finiteNumber,
+        centerX: finiteNumber,
+        centerY: finiteNumber,
+        version: z.number().int().positive(),
+      })
+      .strict()
+      .parse(data);
   }
 
   async toggleDoor(sessionId: string, wallId: string, expectedVersion: number) {
