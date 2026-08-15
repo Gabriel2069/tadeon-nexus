@@ -15,8 +15,10 @@
     );
     --tadeon-tabletop-bottom-row-2: calc(
       var(--tadeon-tabletop-bottom-edge) +
-      (var(--tadeon-tabletop-bottom-row-height) * 2) +
-      (var(--tadeon-tabletop-bottom-row-gap) * 2)
+      var(--tadeon-tabletop-bottom-row-height) +
+      var(--tadeon-tabletop-bottom-row-gap) +
+      var(--tadeon-tabletop-bottom-row-height) +
+      var(--tadeon-tabletop-bottom-row-gap)
     );
   }
 
