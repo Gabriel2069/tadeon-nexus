@@ -45,18 +45,19 @@ function TabletopRoute() {
     session?: string;
     scene?: string;
   };
-  const { role } = useAuth();
+  const { role, user } = useAuth();
   const [flags, setFlags] = useState<FeatureFlags | null>(null);
 
   useEffect(() => {
+    if (!user?.id) return;
     let active = true;
-    void loadFeatureFlags().then((nextFlags) => {
+    void loadFeatureFlags(user.id).then((nextFlags) => {
       if (active) setFlags(nextFlags);
     });
     return () => {
       active = false;
     };
-  }, []);
+  }, [user?.id]);
 
   useEffect(() => {
     if (flags && !flags.nexus_tabletop_enabled)

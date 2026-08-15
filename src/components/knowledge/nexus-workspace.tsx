@@ -30,6 +30,7 @@ import {
   Tag,
   TextQuote,
   Unlink,
+  Trash2,
   X,
 } from "lucide-react";
 import { toast } from "sonner";
@@ -49,6 +50,16 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -316,6 +327,8 @@ export function NexusWorkspace({
   const [graphOpen, setGraphOpen] = useState(false);
   const [libraryOpen, setLibraryOpen] = useState(false);
   const [portabilityOpen, setPortabilityOpen] = useState(false);
+  const [deleteOpen, setDeleteOpen] = useState(false);
+  const [deleting, setDeleting] = useState(false);
   const [commandSearch, setCommandSearch] = useState("");
   const [aliasValue, setAliasValue] = useState("");
   const [assetPickerOpen, setAssetPickerOpen] = useState(false);
@@ -2059,10 +2072,60 @@ export function NexusWorkspace({
                 <Archive className="h-4 w-4" />
                 Arquivar página
               </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="w-full justify-start text-destructive hover:text-destructive"
+                onClick={() => setDeleteOpen(true)}
+              >
+                <Trash2 className="h-4 w-4" />
+                Excluir página
+              </Button>
             </div>
           </aside>
         )}
       </div>
+
+      <AlertDialog open={deleteOpen} onOpenChange={(open) => !deleting && setDeleteOpen(open)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Excluir {selected?.title ?? "esta página"}?</AlertDialogTitle>
+            <AlertDialogDescription>
+              A página sairá do Nexus ativo. Relações e histórico permanecem preservados para recuperação administrativa.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={deleting}>Cancelar</AlertDialogCancel>
+            <AlertDialogAction
+              disabled={deleting || !selected}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+              onClick={(event) => {
+                event.preventDefault();
+                if (!selected || deleting) return;
+                const target = selected;
+                setDeleting(true);
+                void knowledgeService
+                  .softDelete(target)
+                  .then(async () => {
+                    setNodes((current) => current.filter((node) => node.id !== target.id));
+                    setRecent((current) => current.filter((node) => node.id !== target.id));
+                    setFavorites((current) => current.filter((node) => node.id !== target.id));
+                    setOpenNodes((current) => current.filter((node) => node.id !== target.id));
+                    setSelected(null);
+                    setDeleteOpen(false);
+                    toast.success("Página excluída do Nexus.");
+                    await loadNodes();
+                  })
+                  .catch((error) => toast.error(errorMessage(error)))
+                  .finally(() => setDeleting(false));
+              }}
+            >
+              {deleting ? <Loader2 className="h-4 w-4 animate-spin" /> : <Trash2 className="h-4 w-4" />}
+              Excluir
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
 
       <Dialog open={graphOpen} onOpenChange={setGraphOpen}>
         <DialogContent className="tadeon-graph-dialog h-[92vh] max-h-[92vh] overflow-hidden p-4 sm:max-w-[96vw]">

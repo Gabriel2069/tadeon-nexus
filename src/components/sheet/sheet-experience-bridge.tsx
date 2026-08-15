@@ -22,6 +22,7 @@ import {
 } from "@/components/ui/dialog";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
+import "@/styles/sheet-individual-fit-final.css";
 
 const SHEET_PATH = /^\/sheet\/([^/]+)$/;
 const NEXUS_DRAG_MIME = "application/x-tadeon-nexus-node";
@@ -147,9 +148,11 @@ export function SheetExperienceBridge() {
   const embedded = queryFlag("embed");
   const popout = queryFlag("popout");
   const [mode, setMode] = useState<"edit" | "game">(() => {
-    if (!sheetId || typeof window === "undefined") return "edit";
-    if (queryMode() === "game" || embedded) return "game";
-    return window.sessionStorage.getItem(`tadeon-sheet-mode:${sheetId}`) === "game" ? "game" : "edit";
+    if (!sheetId || typeof window === "undefined") return "game";
+    if (embedded || queryMode() === "game") return "game";
+    if (queryMode() === "edit") return "edit";
+    const stored = window.sessionStorage.getItem(`tadeon-sheet-mode:${sheetId}`);
+    return stored === "edit" ? "edit" : "game";
   });
   const [portalHost, setPortalHost] = useState<HTMLElement | null>(null);
   const [onlineCount, setOnlineCount] = useState(1);
