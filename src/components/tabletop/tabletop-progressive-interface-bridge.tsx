@@ -112,6 +112,43 @@ export function TabletopProgressiveInterfaceBridge({
     return () => window.cancelAnimationFrame(frame);
   }, [commandOpen]);
 
+  useEffect(() => {
+    const html = document.documentElement;
+    const stage = document.querySelector<HTMLElement>(".tadeon-tabletop-stage");
+    if (!stage) return;
+
+    const syncStageGeometry = () => {
+      const rect = stage.getBoundingClientRect();
+      if (rect.width <= 0 || rect.height <= 0) return;
+      html.style.setProperty("--tadeon-tabletop-stage-left", `${Math.max(0, rect.left)}px`);
+      html.style.setProperty(
+        "--tadeon-tabletop-stage-right",
+        `${Math.max(0, window.innerWidth - rect.right)}px`,
+      );
+      html.style.setProperty("--tadeon-tabletop-stage-center", `${rect.left + rect.width / 2}px`);
+      html.style.setProperty("--tadeon-tabletop-stage-width", `${rect.width}px`);
+    };
+
+    const observer = new ResizeObserver(syncStageGeometry);
+    observer.observe(stage);
+    const workbench = stage.closest<HTMLElement>(".tadeon-tabletop-workbench");
+    if (workbench) observer.observe(workbench);
+    window.addEventListener("resize", syncStageGeometry);
+    window.addEventListener("scroll", syncStageGeometry, true);
+    const frame = window.requestAnimationFrame(syncStageGeometry);
+
+    return () => {
+      window.cancelAnimationFrame(frame);
+      observer.disconnect();
+      window.removeEventListener("resize", syncStageGeometry);
+      window.removeEventListener("scroll", syncStageGeometry, true);
+      html.style.removeProperty("--tadeon-tabletop-stage-left");
+      html.style.removeProperty("--tadeon-tabletop-stage-right");
+      html.style.removeProperty("--tadeon-tabletop-stage-center");
+      html.style.removeProperty("--tadeon-tabletop-stage-width");
+    };
+  }, []);
+
   const selected = useMemo(() => {
     if (!snapshot) return [];
     const ids = new Set(snapshot.selectedIds);
