@@ -1,0 +1,34 @@
+name: Finalizar alvos e direção da Mesa
+
+on:
+  push:
+    branches:
+      - agent/tabletop-final-director-targets
+    paths:
+      - .github/workflows/tabletop-targets-final.yml
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: agent/tabletop-final-director-targets
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Aplicar patch final
+        run: python scripts/finalize_tabletop_targets.py
+      - name: Remover auxiliares e publicar branch
+        run: |
+          rm -f scripts/finalize_tabletop_targets.py .github/workflows/tabletop-targets-final.yml
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git diff --cached --quiet && exit 0
+          git commit -m "feat(tabletop): fecha alvos e direção de cena"
+          git push origin HEAD:agent/tabletop-final-director-targets
