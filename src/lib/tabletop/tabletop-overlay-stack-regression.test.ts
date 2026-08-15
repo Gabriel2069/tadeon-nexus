@@ -74,6 +74,7 @@ describe("contenção de overlays e orquestração visual da Mesa", () => {
       ".tadeon-placeables",
       ".tadeon-tabletop-now",
       ".tadeon-semantic-transform",
+      ".tadeon-nexus-tabletop-locator",
       ".tadeon-tabletop-reliability-strip",
       ".tadeon-director-enhancement-bar",
       ".tadeon-tabletop-precision-editor",
