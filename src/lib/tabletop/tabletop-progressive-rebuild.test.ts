@@ -18,10 +18,17 @@ describe("Mesa Nexus progressiva", () => {
     expect(experience).toContain("TabletopBootScreen");
   });
 
+  it("não puxa Pixi pelo shell global antes de abrir a Mesa", () => {
+    const crossSurface = source("src/components/tabletop/tabletop-cross-surface-bridge.tsx");
+    expect(crossSurface).not.toContain('from "@/lib/tabletop/tabletop-player-runtime"');
+    expect(crossSurface).toContain("__tadeonTabletopRuntime");
+  });
+
   it("não bloqueia a abertura da Mesa em uma consulta remota de feature flag", () => {
     const route = source("src/routes/tabletop.tsx");
     expect(route).toContain("nexus_tabletop_enabled: true");
     expect(route).not.toContain("if (!flags?.nexus_tabletop_enabled)");
+    expect(route).toContain(".catch(() =>");
   });
 
   it("carrega pontes avançadas em camadas depois do canvas", () => {
@@ -40,12 +47,14 @@ describe("Mesa Nexus progressiva", () => {
 
   it("oferece interface progressiva, comandos, seleção contextual e touch", () => {
     const bridge = source("src/components/tabletop/tabletop-progressive-interface-bridge.tsx");
+    const selection = source("src/lib/tabletop/selection-overlay.ts");
     const css = source("src/styles/tabletop-progressive-ui.css");
 
     expect(bridge).toContain('event.key.toLowerCase() === "k"');
     expect(bridge).toContain("duplicateSelected()");
     expect(bridge).toContain("deleteSelected()");
     expect(bridge).toContain("cleanPreview");
+    expect(selection).toContain('matchMedia("(pointer: coarse)")');
     expect(css).toContain('data-tadeon-tabletop-interface="play"');
     expect(css).toContain("@media (pointer: coarse)");
     expect(css).toContain('[data-slot="dialog-content"]');
