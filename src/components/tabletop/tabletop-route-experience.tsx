@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { reportClientError } from "@/lib/client-error-monitor";
 import type { FeatureFlags } from "@/lib/feature-flags";
 import "@/styles/tabletop-progressive-ui.css";
+import "@/styles/tabletop-motion-final.css";
 
 const MasterEntry = lazy(() => import("@/components/tabletop/tabletop-master-entry"));
 const ParticipantEntry = lazy(() => import("@/components/tabletop/tabletop-participant-entry"));
