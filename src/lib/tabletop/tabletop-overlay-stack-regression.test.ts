@@ -31,21 +31,24 @@ describe("contenção de overlays e orquestração visual da Mesa", () => {
     expect(viewport).not.toContain("[data-radix-popper-content-wrapper] {");
   });
 
-  it("mantém famílias de popper aderidas ao espaço realmente disponível", () => {
-    const popover = source("src/components/ui/popover.tsx");
-    const select = source("src/components/ui/select.tsx");
-    const hover = source("src/components/ui/hover-card.tsx");
-    const tooltip = source("src/components/ui/tooltip.tsx");
+  it("mantém todas as famílias de popper aderidas ao espaço realmente disponível", () => {
+    const primitives = [
+      source("src/components/ui/popover.tsx"),
+      source("src/components/ui/select.tsx"),
+      source("src/components/ui/dropdown-menu.tsx"),
+      source("src/components/ui/context-menu.tsx"),
+      source("src/components/ui/menubar.tsx"),
+      source("src/components/ui/hover-card.tsx"),
+      source("src/components/ui/tooltip.tsx"),
+    ];
     const viewport = source("src/styles/viewport-fit-final.css");
 
-    expect(popover).toContain('sticky = "always"');
-    expect(popover).toContain("hideWhenDetached={hideWhenDetached}");
-    expect(select).toContain('sticky = "always"');
-    expect(select).toContain("hideWhenDetached={hideWhenDetached}");
-    expect(hover).toContain('sticky = "always"');
-    expect(hover).toContain("collisionPadding = 16");
-    expect(tooltip).toContain('sticky = "always"');
-    expect(tooltip).toContain("collisionPadding = 16");
+    for (const primitive of primitives) {
+      expect(primitive).toContain('sticky = "always"');
+      expect(primitive).toContain("collisionPadding = 16");
+      expect(primitive).toContain("hideWhenDetached={hideWhenDetached}");
+    }
+
     expect(viewport).toContain("--radix-popover-content-available-width");
     expect(viewport).toContain("--radix-select-content-available-width");
     expect(viewport).toContain("--radix-dropdown-menu-content-available-width");
