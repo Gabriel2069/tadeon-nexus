@@ -1,0 +1,52 @@
+/* Final viewport containment for desktop and compact windows. Radix collision
+   logic handles placement; these rules guarantee custom sizing cannot defeat it. */
+:root {
+  --tadeon-overlay-gutter: 12px;
+}
+
+[data-slot="dialog-content"],
+[data-slot="alert-dialog-content"] {
+  max-inline-size: min(var(--tadeon-dialog-max, 64rem), calc(100vw - (var(--tadeon-overlay-gutter) * 2))) !important;
+  max-block-size: calc(100dvh - (var(--tadeon-overlay-gutter) * 2)) !important;
+  overscroll-behavior: contain;
+}
+
+[data-slot="popover-content"],
+[data-slot="select-content"],
+[data-slot="dropdown-menu-content"],
+[data-slot="dropdown-menu-sub-content"],
+[data-slot="context-menu-content"],
+[data-slot="context-menu-sub-content"],
+[data-slot="hover-card-content"] {
+  box-sizing: border-box;
+  max-inline-size: calc(100vw - (var(--tadeon-overlay-gutter) * 2)) !important;
+  max-block-size: calc(100dvh - (var(--tadeon-overlay-gutter) * 2)) !important;
+  overscroll-behavior: contain;
+}
+
+[data-radix-popper-content-wrapper] {
+  max-inline-size: calc(100vw - (var(--tadeon-overlay-gutter) * 2));
+}
+
+@media (min-width: 1024px) {
+  :root {
+    --tadeon-overlay-gutter: 16px;
+  }
+
+  [data-slot="dialog-content"],
+  [data-slot="alert-dialog-content"] {
+    scrollbar-gutter: stable;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-slot="popover-content"],
+  [data-slot="select-content"],
+  [data-slot="dropdown-menu-content"],
+  [data-slot="dropdown-menu-sub-content"],
+  [data-slot="context-menu-content"],
+  [data-slot="context-menu-sub-content"],
+  [data-slot="hover-card-content"] {
+    scroll-behavior: auto;
+  }
+}
