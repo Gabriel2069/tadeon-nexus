@@ -202,6 +202,62 @@ body:has(.tadeon-tabletop-studio) :where(
   overscroll-behavior: contain;
 }
 
+/* Collapsed desktop navigation has a 4rem shell. The previous p-3 outer gutter
+   plus the scroll rail's pr-1 left only 36px for a 40px mini item, so the last
+   pixels of its frame were physically clipped. Preserve the same shell width
+   and reclaim just enough internal breathing room for the complete card. */
+#tadeon-desktop-sidebar:has(.tadeon-nav-item[data-mini="true"]) > div:first-of-type {
+  padding-right: .5rem !important;
+  padding-left: .5rem !important;
+}
+
+#tadeon-desktop-sidebar .tadeon-nav-item[data-mini="true"] {
+  min-width: 0 !important;
+  padding-right: .2rem !important;
+  padding-left: .2rem !important;
+}
+
+/* The old hover sheen was a skewed blade 170% of the button height
+   (top/bottom:-35%). Even when clipped, compositing made it read beyond the
+   asymmetric button frame. Keep the light entirely inside the border box and
+   animate the gradient itself instead of translating an oversized element. */
+@keyframes tadeon-button-sheen {
+  from {
+    background-position: 160% 0;
+  }
+  to {
+    background-position: -60% 0;
+  }
+}
+
+[data-slot="button"] {
+  overflow: clip !important;
+}
+
+[data-slot="button"]::before {
+  top: 1px !important;
+  right: 1px !important;
+  bottom: 1px !important;
+  left: 1px !important;
+  width: auto !important;
+  border-radius: inherit;
+  background: linear-gradient(
+    112deg,
+    transparent 34%,
+    rgb(255 255 255 / 9%) 49%,
+    transparent 64%
+  ) !important;
+  background-size: 240% 100% !important;
+  background-position: 160% 0;
+  transform: none !important;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  [data-slot="button"]:not(:disabled):hover::before {
+    animation: tadeon-button-sheen 620ms var(--ease-out) both !important;
+  }
+}
+
 @media (min-width: 801px) {
   /* Dialogs do not use Popper collision middleware. On desktop, force their
      final anchor back to the viewport centre so route/local utility classes
@@ -240,5 +296,9 @@ body:has(.tadeon-tabletop-studio) :where(
   [data-slot="hover-card-content"],
   [data-slot="tooltip-content"] {
     scroll-behavior: auto;
+  }
+
+  [data-slot="button"]::before {
+    animation: none !important;
   }
 }
