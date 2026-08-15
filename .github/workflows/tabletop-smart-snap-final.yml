@@ -1,0 +1,33 @@
+name: Finalizar snapping semântico da Mesa
+
+on:
+  push:
+    branches:
+      - agent/tabletop-integration-smart-tools
+    paths:
+      - .github/workflows/tabletop-smart-snap-final.yml
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: agent/tabletop-integration-smart-tools
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Aplicar snapping inteligente
+        run: python scripts/tabletop_smart_snap_patch.py
+      - name: Publicar branch
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add src/lib/tabletop/tabletop-engine.ts
+          git diff --cached --quiet && exit 0
+          git commit -m "feat(tabletop): adiciona snapping inteligente e conversão de traços"
+          git push origin HEAD:agent/tabletop-integration-smart-tools
