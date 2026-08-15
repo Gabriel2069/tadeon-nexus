@@ -99,15 +99,15 @@
 @media (min-width: 801px) {
   /* Dialogs do not use Popper collision middleware. On desktop, force their
      final anchor back to the viewport centre so route/local utility classes
-     cannot leave a modal partially outside the visible area. */
+     cannot leave a modal partially outside the visible area. `translate`
+     preserves the scale/opacity transform used by the open/close animation. */
   [data-slot="dialog-content"],
   [data-slot="alert-dialog-content"] {
     top: 50% !important;
     right: auto !important;
     bottom: auto !important;
     left: 50% !important;
-    translate: none !important;
-    transform: translate3d(-50%, -50%, 0) !important;
+    translate: -50% -50% !important;
   }
 }
 
