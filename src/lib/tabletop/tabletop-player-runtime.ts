@@ -74,7 +74,11 @@ if (!runtimeState.__tadeonPlayerRuntimePatched) {
 
   prototype.render = function renderWithRuntime(this: TabletopEngine, notify = true) {
     originalRender.call(this, notify);
-    dispatchRuntimeRender(this);
+    // Camera pan/zoom, hover previews and resize call render(false). Broadcasting
+    // those frames forced every React bridge to rebuild snapshots, audio and
+    // preload work on each pointer frame, which could make the canvas feel
+    // frozen on desktop. Only semantic/state renders need to wake the bridges.
+    if (notify) dispatchRuntimeRender(this);
   };
 
   prototype.destroy = async function destroyWithRuntime(this: TabletopEngine) {
