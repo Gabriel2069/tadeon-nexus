@@ -47,37 +47,67 @@ ContextMenuSubTrigger.displayName = ContextMenuPrimitive.SubTrigger.displayName;
 const ContextMenuSubContent = React.forwardRef<
   React.ElementRef<typeof ContextMenuPrimitive.SubContent>,
   React.ComponentPropsWithoutRef<typeof ContextMenuPrimitive.SubContent>
->(({ className, collisionPadding = 12, ...props }, ref) => (
-  <ContextMenuPrimitive.SubContent
-    ref={ref}
-    data-slot="context-menu-sub-content"
-    collisionPadding={collisionPadding}
-    className={cn(
-      "z-50 max-h-[min(36rem,var(--radix-context-menu-content-available-height))] max-w-[calc(100vw-1.5rem)] min-w-[10rem] overflow-y-auto overflow-x-hidden overscroll-contain rounded-xl rounded-br-sm border border-border/80 bg-popover/95 p-1.5 text-popover-foreground shadow-[0_24px_70px_-30px_rgba(0,0,0,.95)] backdrop-blur-xl outline-none duration-[160ms] ease-[var(--ease-out)] data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:duration-[120ms] data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 origin-(--radix-context-menu-content-transform-origin)",
+>(
+  (
+    {
       className,
-    )}
-    {...props}
-  />
-));
-ContextMenuSubContent.displayName = ContextMenuPrimitive.SubContent.displayName;
-
-const ContextMenuContent = React.forwardRef<
-  React.ElementRef<typeof ContextMenuPrimitive.Content>,
-  React.ComponentPropsWithoutRef<typeof ContextMenuPrimitive.Content>
->(({ className, collisionPadding = 12, ...props }, ref) => (
-  <ContextMenuPrimitive.Portal>
-    <ContextMenuPrimitive.Content
+      collisionPadding = 16,
+      avoidCollisions = true,
+      sticky = "always",
+      hideWhenDetached = true,
+      ...props
+    },
+    ref,
+  ) => (
+    <ContextMenuPrimitive.SubContent
       ref={ref}
-      data-slot="context-menu-content"
+      data-slot="context-menu-sub-content"
       collisionPadding={collisionPadding}
+      avoidCollisions={avoidCollisions}
+      sticky={sticky}
+      hideWhenDetached={hideWhenDetached}
       className={cn(
         "z-50 max-h-[min(36rem,var(--radix-context-menu-content-available-height))] max-w-[calc(100vw-1.5rem)] min-w-[10rem] overflow-y-auto overflow-x-hidden overscroll-contain rounded-xl rounded-br-sm border border-border/80 bg-popover/95 p-1.5 text-popover-foreground shadow-[0_24px_70px_-30px_rgba(0,0,0,.95)] backdrop-blur-xl outline-none duration-[160ms] ease-[var(--ease-out)] data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:duration-[120ms] data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 origin-(--radix-context-menu-content-transform-origin)",
         className,
       )}
       {...props}
     />
-  </ContextMenuPrimitive.Portal>
-));
+  ),
+);
+ContextMenuSubContent.displayName = ContextMenuPrimitive.SubContent.displayName;
+
+const ContextMenuContent = React.forwardRef<
+  React.ElementRef<typeof ContextMenuPrimitive.Content>,
+  React.ComponentPropsWithoutRef<typeof ContextMenuPrimitive.Content>
+>(
+  (
+    {
+      className,
+      collisionPadding = 16,
+      avoidCollisions = true,
+      sticky = "always",
+      hideWhenDetached = true,
+      ...props
+    },
+    ref,
+  ) => (
+    <ContextMenuPrimitive.Portal>
+      <ContextMenuPrimitive.Content
+        ref={ref}
+        data-slot="context-menu-content"
+        collisionPadding={collisionPadding}
+        avoidCollisions={avoidCollisions}
+        sticky={sticky}
+        hideWhenDetached={hideWhenDetached}
+        className={cn(
+          "z-50 max-h-[min(36rem,var(--radix-context-menu-content-available-height))] max-w-[calc(100vw-1.5rem)] min-w-[10rem] overflow-y-auto overflow-x-hidden overscroll-contain rounded-xl rounded-br-sm border border-border/80 bg-popover/95 p-1.5 text-popover-foreground shadow-[0_24px_70px_-30px_rgba(0,0,0,.95)] backdrop-blur-xl outline-none duration-[160ms] ease-[var(--ease-out)] data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:duration-[120ms] data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 origin-(--radix-context-menu-content-transform-origin)",
+          className,
+        )}
+        {...props}
+      />
+    </ContextMenuPrimitive.Portal>
+  ),
+);
 ContextMenuContent.displayName = ContextMenuPrimitive.Content.displayName;
 
 const ContextMenuItem = React.forwardRef<

@@ -9,6 +9,7 @@ import {
 
 import appCss from "../styles.css?url";
 import mobileCss from "../styles/mobile-studio.css?url";
+import viewportCss from "../styles/viewport-fit-final.css?url";
 import { AuthProvider } from "@/lib/auth";
 import { Toaster } from "@/components/ui/sonner";
 import { PwaRegistration } from "@/components/pwa-registration";
@@ -126,6 +127,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     links: [
       { rel: "stylesheet", href: appCss },
       { rel: "stylesheet", href: mobileCss },
+      { rel: "stylesheet", href: viewportCss },
       { rel: "manifest", href: "/manifest.webmanifest" },
       {
         rel: "icon",
