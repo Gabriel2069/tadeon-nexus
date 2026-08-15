@@ -1,17 +1,21 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   Aperture,
   Axis3d,
   Camera,
+  Eye,
   Grid2X2,
   Loader2,
   Moon,
   MonitorUp,
   Projector,
+  Radio,
   RotateCcw,
   RotateCw,
   Scan,
+  Send,
   Sparkles,
+  Undo2,
 } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -22,6 +26,10 @@ import type { TabletopSession } from "@/lib/tabletop/tabletop-session-service";
 import { tabletopSessionService } from "@/lib/tabletop/tabletop-session-service";
 import "@/styles/tabletop-director-remote.css";
 import "@/styles/interface-stability.css";
+
+function sameComposition(left: TabletopSession["directorState"], right: TabletopSession["directorState"]) {
+  return JSON.stringify(left) === JSON.stringify(right);
+}
 
 export function TabletopDirectorRemote({
   session,
@@ -36,12 +44,31 @@ export function TabletopDirectorRemote({
 }) {
   const [draft, setDraft] = useState(session.directorState);
   const [saving, setSaving] = useState(false);
+  const [localDirty, setLocalDirty] = useState(false);
 
-  useEffect(() => setDraft(session.directorState), [session.directorState]);
+  useEffect(() => {
+    if (!localDirty) setDraft(session.directorState);
+  }, [localDirty, session.directorState]);
 
-  const persist = async (
+  const dirty = useMemo(
+    () => !sameComposition(draft, session.directorState),
+    [draft, session.directorState],
+  );
+
+  const updateDraft = (
+    updater:
+      | TabletopSession["directorState"]
+      | ((current: TabletopSession["directorState"]) => TabletopSession["directorState"]),
+  ) => {
+    setLocalDirty(true);
+    setDraft((current) =>
+      typeof updater === "function" ? updater(current) : updater,
+    );
+  };
+
+  const transmit = async (
     next = draft,
-    success = "Saída do Diretor atualizada.",
+    success = "Composição transmitida para a saída do Diretor.",
   ) => {
     if (saving) return;
     setSaving(true);
@@ -52,43 +79,31 @@ export function TabletopDirectorRemote({
         session.version,
       );
       setDraft(next);
+      setLocalDirty(false);
       await onSaved();
       await broadcastRevision(revision).catch(() => undefined);
       toast.success(success);
     } catch {
       toast.error(
-        "A saída mudou em outra janela. Atualize a sala e tente novamente.",
+        "A saída mudou em outra janela. Atualizei a referência; revise a prévia antes de transmitir novamente.",
       );
+      setLocalDirty(false);
       await onSaved().catch(() => undefined);
     } finally {
       setSaving(false);
     }
   };
 
-  const persistCamera = (
-    patch: Partial<TabletopDirectorCamera>,
-    success: string,
-  ) => {
-    const next = {
-      ...draft,
+  const stageCamera = (patch: Partial<TabletopDirectorCamera>) => {
+    updateDraft((current) => ({
+      ...current,
       mode: "scene" as const,
-      camera: { ...draft.camera, ...patch },
-    };
-    setDraft(next);
-    void persist(next, success);
+      camera: { ...current.camera, ...patch },
+    }));
   };
 
   const setMode = (mode: typeof draft.mode) => {
-    const next = { ...draft, mode };
-    setDraft(next);
-    void persist(
-      next,
-      mode === "blackout"
-        ? "Blackout enviado para a projeção."
-        : mode === "intermission"
-          ? "Tela de intervalo enviada."
-          : "Cena devolvida à projeção.",
-    );
+    updateDraft((current) => ({ ...current, mode }));
   };
 
   const captureCamera = () => {
@@ -97,14 +112,35 @@ export function TabletopDirectorRemote({
       toast.error("A câmera da cena ainda não está pronta para captura.");
       return;
     }
-    const next = { ...draft, mode: "scene" as const, camera };
-    setDraft(next);
-    void persist(next, "Enquadramento atual enviado à projeção.");
+    updateDraft((current) => ({ ...current, mode: "scene" as const, camera }));
+    toast.message("Enquadramento capturado na prévia. Nada foi transmitido ainda.");
   };
+
+  const discardDraft = () => {
+    setDraft(session.directorState);
+    setLocalDirty(false);
+  };
+
+  const emergencyBlackout = () => {
+    const next = { ...session.directorState, mode: "blackout" as const };
+    setDraft(next);
+    setLocalDirty(false);
+    void transmit(next, "Blackout enviado imediatamente para a projeção.");
+  };
+
+  const modeLabel =
+    draft.mode === "blackout" ? "Blackout" : draft.mode === "intermission" ? "Intervalo" : "Cena";
+  const liveModeLabel =
+    session.directorState.mode === "blackout"
+      ? "Blackout"
+      : session.directorState.mode === "intermission"
+        ? "Intervalo"
+        : "Cena";
 
   return (
     <section
       className="tadeon-director-remote"
+      data-dirty={dirty}
       aria-label="Controle do Diretor"
     >
       <div className="tadeon-director-remote__head">
@@ -112,7 +148,7 @@ export function TabletopDirectorRemote({
           <Projector aria-hidden="true" />
         </span>
         <div>
-          <small>Saída independente</small>
+          <small>Preparar primeiro · transmitir depois</small>
           <strong>Câmera do Diretor</strong>
         </div>
         <Button size="sm" variant="outline" asChild>
@@ -126,7 +162,32 @@ export function TabletopDirectorRemote({
         </Button>
       </div>
 
-      <div className="tadeon-director-remote__modes" role="group">
+      <div className="tadeon-director-remote__statebar">
+        <span className="is-live"><Radio aria-hidden="true" /> Ao vivo: {liveModeLabel}</span>
+        <span className={dirty ? "is-draft" : ""}><Eye aria-hidden="true" /> Prévia: {modeLabel}</span>
+        {dirty && <strong>não transmitida</strong>}
+      </div>
+
+      <div className="tadeon-director-remote__preview" data-mode={draft.mode} data-projection={draft.camera.projection}>
+        <div className="tadeon-director-remote__preview-frame">
+          <span className="tadeon-director-remote__preview-grid" data-visible={draft.showGrid} />
+          <span className="tadeon-director-remote__preview-orbit" style={{ transform: `rotate(${draft.camera.yaw}deg)` }} />
+          {draft.mode === "blackout" ? (
+            <div className="tadeon-director-remote__preview-message"><Moon aria-hidden="true" /><strong>Blackout</strong></div>
+          ) : draft.mode === "intermission" ? (
+            <div className="tadeon-director-remote__preview-message"><Sparkles aria-hidden="true" /><strong>{draft.title || "Intervalo"}</strong><small>{draft.subtitle || "Tela de pausa"}</small></div>
+          ) : (
+            <div className="tadeon-director-remote__preview-scene">
+              <Scan aria-hidden="true" />
+              <span>{draft.camera.projection === "isometric" ? "Cena 3D" : "Planta 2D"}</span>
+              {draft.showHud && <small>{draft.title || "Identidade da cena"}</small>}
+            </div>
+          )}
+        </div>
+        <small>Prévia de composição ~ a saída pública continua inalterada até Transmitir.</small>
+      </div>
+
+      <div className="tadeon-director-remote__modes" role="group" aria-label="Modo preparado">
         <button
           type="button"
           className={draft.mode === "scene" ? "is-active" : ""}
@@ -159,7 +220,7 @@ export function TabletopDirectorRemote({
           maxLength={160}
           placeholder="Título opcional para intervalo ou HUD"
           onChange={(event) =>
-            setDraft((current) => ({ ...current, title: event.target.value }))
+            updateDraft((current) => ({ ...current, title: event.target.value }))
           }
         />
         <Input
@@ -167,7 +228,7 @@ export function TabletopDirectorRemote({
           maxLength={320}
           placeholder="Subtítulo opcional"
           onChange={(event) =>
-            setDraft((current) => ({
+            updateDraft((current) => ({
               ...current,
               subtitle: event.target.value,
             }))
@@ -187,15 +248,13 @@ export function TabletopDirectorRemote({
           size="sm"
           variant="outline"
           disabled={saving}
-          onClick={() => {
-            const next = {
-              ...draft,
+          onClick={() =>
+            updateDraft((current) => ({
+              ...current,
               mode: "scene" as const,
-              camera: { ...draft.camera, mode: "fit" as const },
-            };
-            setDraft(next);
-            void persist(next, "Cena ajustada à saída completa.");
-          }}
+              camera: { ...current.camera, mode: "fit" as const },
+            }))
+          }
         >
           <Scan aria-hidden="true" /> Ajustar à tela
         </Button>
@@ -203,16 +262,11 @@ export function TabletopDirectorRemote({
           type="button"
           aria-pressed={draft.camera.projection === "isometric"}
           disabled={saving}
-          onClick={() => {
-            const projection =
-              draft.camera.projection === "plan" ? "isometric" : "plan";
-            persistCamera(
-              { projection },
-              projection === "isometric"
-                ? "Projeção 3D ativada na saída."
-                : "Projeção devolvida à planta 2D.",
-            );
-          }}
+          onClick={() =>
+            stageCamera({
+              projection: draft.camera.projection === "plan" ? "isometric" : "plan",
+            })
+          }
         >
           <Axis3d aria-hidden="true" />
           {draft.camera.projection === "isometric" ? "3D isométrico" : "Planta 2D"}
@@ -223,18 +277,13 @@ export function TabletopDirectorRemote({
         <div
           className="tadeon-director-remote__orbit"
           role="group"
-          aria-label="Rotação da câmera 3D da projeção"
+          aria-label="Rotação da câmera 3D da prévia"
         >
           <Button
             size="sm"
             variant="outline"
             disabled={saving}
-            onClick={() =>
-              persistCamera(
-                { yaw: (draft.camera.yaw + 315) % 360 },
-                "Projeção 3D girada para a esquerda.",
-              )
-            }
+            onClick={() => stageCamera({ yaw: (draft.camera.yaw + 315) % 360 })}
           >
             <RotateCcw aria-hidden="true" /> Girar esquerda
           </Button>
@@ -242,12 +291,7 @@ export function TabletopDirectorRemote({
             size="sm"
             variant="outline"
             disabled={saving}
-            onClick={() =>
-              persistCamera(
-                { yaw: (draft.camera.yaw + 45) % 360 },
-                "Projeção 3D girada para a direita.",
-              )
-            }
+            onClick={() => stageCamera({ yaw: (draft.camera.yaw + 45) % 360 })}
           >
             <RotateCw aria-hidden="true" /> Girar direita
           </Button>
@@ -261,7 +305,7 @@ export function TabletopDirectorRemote({
           <Switch
             checked={draft.showGrid}
             onCheckedChange={(showGrid) =>
-              setDraft((current) => ({ ...current, showGrid }))
+              updateDraft((current) => ({ ...current, showGrid }))
             }
           />
         </label>
@@ -271,26 +315,43 @@ export function TabletopDirectorRemote({
           <Switch
             checked={draft.showHud}
             onCheckedChange={(showHud) =>
-              setDraft((current) => ({ ...current, showHud }))
+              updateDraft((current) => ({ ...current, showHud }))
             }
           />
         </label>
       </div>
 
-      <Button
-        size="sm"
-        variant="secondary"
-        className="w-full"
-        disabled={saving}
-        onClick={() => void persist()}
-      >
-        {saving ? (
-          <Loader2 className="animate-spin" aria-hidden="true" />
-        ) : (
-          <Projector aria-hidden="true" />
-        )}
-        Aplicar composição
-      </Button>
+      <div className="tadeon-director-remote__publish">
+        <Button
+          size="sm"
+          variant="ghost"
+          disabled={saving || !dirty}
+          onClick={discardDraft}
+        >
+          <Undo2 aria-hidden="true" /> Descartar
+        </Button>
+        <Button
+          size="sm"
+          variant="outline"
+          disabled={saving || session.directorState.mode === "blackout"}
+          onClick={emergencyBlackout}
+        >
+          <Moon aria-hidden="true" /> Blackout agora
+        </Button>
+        <Button
+          size="sm"
+          variant="secondary"
+          disabled={saving || !dirty}
+          onClick={() => void transmit()}
+        >
+          {saving ? (
+            <Loader2 className="animate-spin" aria-hidden="true" />
+          ) : (
+            <Send aria-hidden="true" />
+          )}
+          Transmitir composição
+        </Button>
+      </div>
     </section>
   );
 }
