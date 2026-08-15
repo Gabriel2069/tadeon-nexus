@@ -1,86 +1,348 @@
-/* Mesa Nexus · reserva espacial determinística para controles inferiores.
-   Os bridges progressivo, tático, de seleção e criativo são carregados de forma
-   independente. Sem uma régua compartilhada, todos acabavam disputando o mesmo
-   bottom entre .8rem e 1rem. */
+/* Mesa Nexus · orquestração final do chrome.
+   Vários bridges são carregados de forma independente e, sem uma régua comum,
+   cada um escolhia top/bottom/z-index isoladamente. Esta folha é a autoridade
+   final para ocupação da viewport e prioridade visual da Mesa. */
+
+body:has(.tadeon-tabletop-studio) {
+  --tadeon-tabletop-bottom-edge: max(.8rem, env(safe-area-inset-bottom));
+  --tadeon-tabletop-bottom-row-height: 3.2rem;
+  --tadeon-tabletop-bottom-row-gap: .55rem;
+  --tadeon-tabletop-bottom-row-1: calc(
+    var(--tadeon-tabletop-bottom-edge) +
+    var(--tadeon-tabletop-bottom-row-height) +
+    var(--tadeon-tabletop-bottom-row-gap)
+  );
+  --tadeon-tabletop-bottom-row-2: calc(
+    var(--tadeon-tabletop-bottom-row-1) +
+    var(--tadeon-tabletop-bottom-row-height) +
+    var(--tadeon-tabletop-bottom-row-gap)
+  );
+  --tadeon-tabletop-bottom-row-3: calc(
+    var(--tadeon-tabletop-bottom-row-2) +
+    var(--tadeon-tabletop-bottom-row-height) +
+    var(--tadeon-tabletop-bottom-row-gap)
+  );
+  --tadeon-tabletop-shell-top: 4.5rem;
+  --tadeon-tabletop-top-edge: calc(
+    var(--tadeon-tabletop-shell-top) + max(.65rem, env(safe-area-inset-top))
+  );
+  --tadeon-tabletop-top-row-height: 2.55rem;
+  --tadeon-tabletop-top-row-gap: .45rem;
+  --tadeon-tabletop-top-row-1: calc(
+    var(--tadeon-tabletop-top-edge) +
+    var(--tadeon-tabletop-top-row-height) +
+    var(--tadeon-tabletop-top-row-gap)
+  );
+  --tadeon-tabletop-top-row-2: calc(
+    var(--tadeon-tabletop-top-row-1) +
+    var(--tadeon-tabletop-top-row-height) +
+    var(--tadeon-tabletop-top-row-gap)
+  );
+}
+
+/* Dedicated/embed/popout surfaces do not carry the desktop application bar. */
+body:has(.tadeon-dedicated-shell .tadeon-tabletop-studio) {
+  --tadeon-tabletop-shell-top: 0rem;
+}
+
+/* Fixed chrome gets one consistent fade contract. Never animate transform here:
+   centered docks already own transform for their geometry/motion. */
+:where(
+  .tadeon-tabletop-progressive-dock,
+  .tadeon-tactical-dock,
+  .tadeon-tabletop-selection-actions,
+  .tadeon-creative-dock,
+  .tadeon-placeables,
+  .tadeon-tabletop-now,
+  .tadeon-semantic-transform,
+  .tadeon-tabletop-reliability-strip,
+  .tadeon-director-enhancement-bar,
+  .tadeon-tabletop-precision-editor
+) {
+  transition:
+    opacity 160ms ease,
+    visibility 0s linear 0s;
+}
 
 @media (min-width: 801px) {
   body:has(.tadeon-tabletop-studio) {
-    --tadeon-tabletop-bottom-edge: max(.8rem, env(safe-area-inset-bottom));
-    --tadeon-tabletop-bottom-row-height: 3.2rem;
-    --tadeon-tabletop-bottom-row-gap: .55rem;
-    --tadeon-tabletop-bottom-row-1: calc(
-      var(--tadeon-tabletop-bottom-edge) +
-      var(--tadeon-tabletop-bottom-row-height) +
-      var(--tadeon-tabletop-bottom-row-gap)
-    );
-    --tadeon-tabletop-bottom-row-2: calc(
-      var(--tadeon-tabletop-bottom-edge) +
-      var(--tadeon-tabletop-bottom-row-height) +
-      var(--tadeon-tabletop-bottom-row-gap) +
-      var(--tadeon-tabletop-bottom-row-height) +
-      var(--tadeon-tabletop-bottom-row-gap)
-    );
+    --tadeon-tabletop-side-reserve: 12rem;
   }
 
-  /* Linha 0: navegação essencial. */
+  /* Centro, linha 0: navegação essencial. */
   .tadeon-tabletop-progressive-dock {
+    bottom: var(--tadeon-tabletop-bottom-edge) !important;
+    max-width: min(
+      56rem,
+      calc(100vw - var(--tadeon-tabletop-side-reserve) - var(--tadeon-tabletop-side-reserve) - 2rem)
+    ) !important;
+    overflow-x: auto;
+    overscroll-behavior-inline: contain;
+    scrollbar-width: none;
+  }
+
+  .tadeon-tabletop-progressive-dock::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Centro, linha 1: planejamento tático. */
+  .tadeon-tactical-dock {
+    bottom: var(--tadeon-tabletop-bottom-row-1) !important;
+    max-width: min(
+      56rem,
+      calc(100vw - var(--tadeon-tabletop-side-reserve) - var(--tadeon-tabletop-side-reserve) - 2rem)
+    ) !important;
+    overflow-x: auto;
+    overscroll-behavior-inline: contain;
+    scrollbar-width: none;
+  }
+
+  .tadeon-tactical-dock::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Centro, linha 2: ações efêmeras da seleção. */
+  .tadeon-tabletop-selection-actions {
+    bottom: var(--tadeon-tabletop-bottom-row-2) !important;
+    max-width: min(
+      42rem,
+      calc(100vw - var(--tadeon-tabletop-side-reserve) - var(--tadeon-tabletop-side-reserve) - 2rem)
+    ) !important;
+  }
+
+  /* Laterais: utilidades persistentes ganham slots próprios. */
+  .tadeon-tabletop-now {
+    left: max(.8rem, env(safe-area-inset-left)) !important;
     bottom: var(--tadeon-tabletop-bottom-edge) !important;
   }
 
-  /* Linha 1: planejamento tático. Mantém distância física do dock essencial. */
-  .tadeon-tactical-dock {
+  .tadeon-placeables {
+    right: max(.8rem, env(safe-area-inset-right)) !important;
+    bottom: var(--tadeon-tabletop-bottom-edge) !important;
+  }
+
+  .tadeon-semantic-transform {
+    right: max(.8rem, env(safe-area-inset-right)) !important;
     bottom: var(--tadeon-tabletop-bottom-row-1) !important;
-    max-width: min(56rem, calc(100vw - 2rem));
   }
 
-  /* Linha 2: ações efêmeras da seleção. */
-  .tadeon-tabletop-selection-actions {
-    bottom: var(--tadeon-tabletop-bottom-row-2) !important;
-    max-width: calc(100vw - 2rem);
-  }
-
-  /* Biblioteca/autoria fica na borda direita da segunda linha em telas largas.
-     Ela não volta a ocupar o mesmo baseline do dock principal. */
+  /* Biblioteca/autoria ocupa a quarta linha para não disputar a seleção. */
   .tadeon-creative-dock {
-    bottom: var(--tadeon-tabletop-bottom-row-2) !important;
+    right: max(.8rem, env(safe-area-inset-right)) !important;
+    bottom: var(--tadeon-tabletop-bottom-row-3) !important;
     width: min(21rem, calc(100vw - 2rem));
   }
 
-  /* A lista de Tramas é um popup artesanal, portanto recebe a mesma disciplina
-     de viewport aplicada aos overlays Radix. */
+  /* As duas barras superiores antes ocupavam exatamente top=.65rem. */
+  .tadeon-director-enhancement-bar {
+    top: var(--tadeon-tabletop-top-edge) !important;
+    max-width: min(54rem, calc(100vw - 2rem));
+  }
+
+  .tadeon-tabletop-reliability-strip {
+    top: var(--tadeon-tabletop-top-edge) !important;
+    max-width: min(46rem, calc(100vw - 2rem));
+  }
+
+  body:has(.tadeon-director-enhancement-bar) .tadeon-tabletop-reliability-strip {
+    top: var(--tadeon-tabletop-top-row-1) !important;
+  }
+
+  .tadeon-tabletop-precision-editor {
+    top: var(--tadeon-tabletop-top-row-1) !important;
+    right: max(.8rem, env(safe-area-inset-right)) !important;
+    max-height: calc(
+      100dvh - var(--tadeon-tabletop-top-row-1) - var(--tadeon-tabletop-bottom-row-3) - 4.2rem
+    ) !important;
+  }
+
+  body:has(.tadeon-director-enhancement-bar):has(.tadeon-tabletop-reliability-strip)
+    .tadeon-tabletop-precision-editor {
+    top: var(--tadeon-tabletop-top-row-2) !important;
+    max-height: calc(
+      100dvh - var(--tadeon-tabletop-top-row-2) - var(--tadeon-tabletop-bottom-row-3) - 4.2rem
+    ) !important;
+  }
+
+  /* Legacy stage status duplicated the new progressive/tactical chrome at the
+     bottom of the stage. Essential authoring modes use the new controls; the
+     legacy strip remains available only in the explicit advanced surface. */
+  html[data-tadeon-tabletop-interface="play"] .tadeon-tabletop-stage-status,
+  html[data-tadeon-tabletop-interface="build"] .tadeon-tabletop-stage-status,
+  html[data-tadeon-tabletop-interface="direct"] .tadeon-tabletop-stage-status {
+    display: none !important;
+  }
+
+  html[data-tadeon-tabletop-interface="play"] .tadeon-tabletop-canvas-host,
+  html[data-tadeon-tabletop-interface="build"] .tadeon-tabletop-canvas-host,
+  html[data-tadeon-tabletop-interface="direct"] .tadeon-tabletop-canvas-host {
+    bottom: .65rem !important;
+  }
+
+  /* Custom panels also respect the same viewport contract as Radix portals. */
+  .tadeon-placeables__panel,
+  .tadeon-tabletop-now__panel,
+  .tadeon-creative-dock__panel,
+  .tadeon-tabletop-precision-editor,
   .tadeon-tactical-dock__power-list {
     box-sizing: border-box;
-    width: min(22rem, calc(100vw - 2rem));
-    max-width: calc(100vw - 2rem);
-    max-height: min(48dvh, calc(100dvh - 10rem));
+    max-width: calc(100vw - 2rem) !important;
+    max-height: calc(100dvh - var(--tadeon-tabletop-top-edge) - 2rem) !important;
     overscroll-behavior: contain;
+  }
+
+  .tadeon-tactical-dock__power-list {
+    width: min(22rem, calc(100vw - 2rem));
   }
 }
 
-/* Em notebooks/janelas desktop mais estreitas, a biblioteca ganha uma linha
-   exclusiva. Reservar espaço é preferível a sobrepor ou esconder controles. */
+/* An open utility is a temporary working surface. Suppress chrome that would
+   physically sit behind it instead of relying on z-index and showing two UIs
+   through each other. The handle of the active utility remains available. */
+body:has(.tadeon-tabletop-now[data-open="true"]) :where(
+  .tadeon-tabletop-progressive-dock,
+  .tadeon-tactical-dock,
+  .tadeon-tabletop-selection-actions
+),
+body:has(.tadeon-placeables[data-open="true"]) :where(
+  .tadeon-tabletop-progressive-dock,
+  .tadeon-tactical-dock,
+  .tadeon-tabletop-selection-actions,
+  .tadeon-creative-dock,
+  .tadeon-semantic-transform
+),
+body:has(.tadeon-creative-dock[data-open="true"]) :where(
+  .tadeon-tabletop-progressive-dock,
+  .tadeon-tactical-dock,
+  .tadeon-tabletop-selection-actions,
+  .tadeon-placeables,
+  .tadeon-semantic-transform
+),
+body:has(.tadeon-tabletop-precision-editor) :where(
+  .tadeon-creative-dock,
+  .tadeon-placeables,
+  .tadeon-semantic-transform
+) {
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+  transition-delay: 0s, 160ms;
+}
+
+/* The responsive inspector is itself a modal sheet. Nothing fixed should float
+   above it while it is open. */
+@media (max-width: 1179px) {
+  body:has(.tadeon-tabletop-panel[data-mobile-open="true"]) :where(
+    .tadeon-tabletop-progressive-dock,
+    .tadeon-tactical-dock,
+    .tadeon-tabletop-selection-actions,
+    .tadeon-creative-dock,
+    .tadeon-placeables,
+    .tadeon-tabletop-now,
+    .tadeon-semantic-transform,
+    .tadeon-tabletop-reliability-strip,
+    .tadeon-director-enhancement-bar,
+    .tadeon-tabletop-precision-editor
+  ) {
+    opacity: 0 !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+  }
+}
+
+/* Notebooks: reserve side lanes without turning the lower edge into a tower. */
 @media (min-width: 801px) and (max-width: 1179px) {
+  body:has(.tadeon-tabletop-studio) {
+    --tadeon-tabletop-side-reserve: 9.5rem;
+  }
+
   .tadeon-creative-dock {
-    bottom: calc(
-      var(--tadeon-tabletop-bottom-row-2) +
-      var(--tadeon-tabletop-bottom-row-height) +
-      var(--tadeon-tabletop-bottom-row-gap)
-    ) !important;
     width: min(19rem, calc(100vw - 2rem));
   }
 }
 
-/* Em janelas muito baixas, preservar o canvas útil: os controles continuam em
-   linhas distintas, mas comprimem a distância entre si. */
+/* Compact heights keep every row distinct while reducing dead space. */
 @media (min-width: 801px) and (max-height: 720px) {
   body:has(.tadeon-tabletop-studio) {
     --tadeon-tabletop-bottom-row-height: 2.9rem;
     --tadeon-tabletop-bottom-row-gap: .35rem;
+    --tadeon-tabletop-top-row-height: 2.35rem;
+    --tadeon-tabletop-top-row-gap: .3rem;
+  }
+}
+
+/* Mobile/tablet already use the progressive dock as the primary navigation.
+   Keep the tactical dock and selection actions on independent rows. */
+@media (max-width: 800px) {
+  body:has(.tadeon-tabletop-studio) {
+    --tadeon-tabletop-bottom-edge: max(.5rem, env(safe-area-inset-bottom));
+    --tadeon-tabletop-bottom-row-height: 3.7rem;
+    --tadeon-tabletop-bottom-row-gap: .4rem;
   }
 
+  .tadeon-tabletop-progressive-dock {
+    bottom: var(--tadeon-tabletop-bottom-edge) !important;
+  }
+
+  .tadeon-tactical-dock {
+    bottom: var(--tadeon-tabletop-bottom-row-1) !important;
+  }
+
+  .tadeon-tabletop-selection-actions {
+    bottom: var(--tadeon-tabletop-bottom-row-2) !important;
+  }
+
+  .tadeon-tabletop-reliability-strip {
+    top: max(.5rem, env(safe-area-inset-top)) !important;
+    bottom: auto !important;
+  }
+
+  .tadeon-tabletop-precision-editor {
+    top: 4rem !important;
+    bottom: auto !important;
+    max-height: calc(100dvh - 4.5rem - var(--tadeon-tabletop-bottom-row-2) - 3.7rem) !important;
+  }
+
+  .tadeon-placeables__panel,
+  .tadeon-tabletop-now__panel,
+  .tadeon-creative-dock__panel {
+    max-width: calc(100vw - 1rem) !important;
+    max-height: calc(100dvh - var(--tadeon-tabletop-bottom-row-2) - 4.5rem) !important;
+    overscroll-behavior: contain;
+  }
+}
+
+/* Clean/projection mode must actually be clean. Deferred bridges used to remain
+   mounted over the projected scene even after the main progressive dock hid. */
+html[data-tadeon-tabletop-clean="true"] :where(
   .tadeon-tactical-dock,
   .tadeon-tabletop-selection-actions,
-  .tadeon-creative-dock {
-    transform-origin: bottom center;
+  .tadeon-creative-dock,
+  .tadeon-placeables,
+  .tadeon-tabletop-now,
+  .tadeon-semantic-transform,
+  .tadeon-tabletop-reliability-strip,
+  .tadeon-director-enhancement-bar,
+  .tadeon-tabletop-precision-editor,
+  .tadeon-tabletop-stage-status,
+  .tadeon-tabletop-radial-menu
+) {
+  display: none !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :where(
+    .tadeon-tabletop-progressive-dock,
+    .tadeon-tactical-dock,
+    .tadeon-tabletop-selection-actions,
+    .tadeon-creative-dock,
+    .tadeon-placeables,
+    .tadeon-tabletop-now,
+    .tadeon-semantic-transform,
+    .tadeon-tabletop-reliability-strip,
+    .tadeon-director-enhancement-bar,
+    .tadeon-tabletop-precision-editor
+  ) {
+    transition: none !important;
   }
 }
