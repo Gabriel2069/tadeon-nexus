@@ -55,6 +55,7 @@ body:has(.tadeon-dedicated-shell .tadeon-tabletop-studio) {
   .tadeon-placeables,
   .tadeon-tabletop-now,
   .tadeon-semantic-transform,
+  .tadeon-nexus-tabletop-locator,
   .tadeon-tabletop-reliability-strip,
   .tadeon-director-enhancement-bar,
   .tadeon-tabletop-precision-editor
@@ -126,6 +127,13 @@ body:has(.tadeon-dedicated-shell .tadeon-tabletop-studio) {
     bottom: var(--tadeon-tabletop-bottom-row-1) !important;
   }
 
+  /* Localizador cross-surface é contextual e recebe a terceira faixa direita. */
+  .tadeon-nexus-tabletop-locator {
+    right: max(.8rem, env(safe-area-inset-right)) !important;
+    bottom: var(--tadeon-tabletop-bottom-row-2) !important;
+    width: min(26rem, calc(100vw - 2rem));
+  }
+
   /* Biblioteca/autoria ocupa a quarta linha para não disputar a seleção. */
   .tadeon-creative-dock {
     right: max(.8rem, env(safe-area-inset-right)) !important;
@@ -184,7 +192,8 @@ body:has(.tadeon-dedicated-shell .tadeon-tabletop-studio) {
   .tadeon-tabletop-now__panel,
   .tadeon-creative-dock__panel,
   .tadeon-tabletop-precision-editor,
-  .tadeon-tactical-dock__power-list {
+  .tadeon-tactical-dock__power-list,
+  .tadeon-nexus-tabletop-locator {
     box-sizing: border-box;
     max-width: calc(100vw - 2rem) !important;
     max-height: calc(100dvh - var(--tadeon-tabletop-top-edge) - 2rem) !important;
@@ -202,26 +211,30 @@ body:has(.tadeon-dedicated-shell .tadeon-tabletop-studio) {
 body:has(.tadeon-tabletop-now[data-open="true"]) :where(
   .tadeon-tabletop-progressive-dock,
   .tadeon-tactical-dock,
-  .tadeon-tabletop-selection-actions
+  .tadeon-tabletop-selection-actions,
+  .tadeon-nexus-tabletop-locator
 ),
 body:has(.tadeon-placeables[data-open="true"]) :where(
   .tadeon-tabletop-progressive-dock,
   .tadeon-tactical-dock,
   .tadeon-tabletop-selection-actions,
   .tadeon-creative-dock,
-  .tadeon-semantic-transform
+  .tadeon-semantic-transform,
+  .tadeon-nexus-tabletop-locator
 ),
 body:has(.tadeon-creative-dock[data-open="true"]) :where(
   .tadeon-tabletop-progressive-dock,
   .tadeon-tactical-dock,
   .tadeon-tabletop-selection-actions,
   .tadeon-placeables,
-  .tadeon-semantic-transform
+  .tadeon-semantic-transform,
+  .tadeon-nexus-tabletop-locator
 ),
 body:has(.tadeon-tabletop-precision-editor) :where(
   .tadeon-creative-dock,
   .tadeon-placeables,
-  .tadeon-semantic-transform
+  .tadeon-semantic-transform,
+  .tadeon-nexus-tabletop-locator
 ) {
   opacity: 0 !important;
   visibility: hidden !important;
@@ -240,6 +253,7 @@ body:has(.tadeon-tabletop-precision-editor) :where(
     .tadeon-placeables,
     .tadeon-tabletop-now,
     .tadeon-semantic-transform,
+    .tadeon-nexus-tabletop-locator,
     .tadeon-tabletop-reliability-strip,
     .tadeon-director-enhancement-bar,
     .tadeon-tabletop-precision-editor
@@ -292,6 +306,14 @@ body:has(.tadeon-tabletop-precision-editor) :where(
     bottom: var(--tadeon-tabletop-bottom-row-2) !important;
   }
 
+  .tadeon-nexus-tabletop-locator {
+    right: .5rem !important;
+    bottom: var(--tadeon-tabletop-bottom-row-3) !important;
+    left: .5rem !important;
+    width: auto !important;
+    max-width: none !important;
+  }
+
   .tadeon-tabletop-reliability-strip {
     top: max(.5rem, env(safe-area-inset-top)) !important;
     bottom: auto !important;
@@ -321,6 +343,7 @@ html[data-tadeon-tabletop-clean="true"] :where(
   .tadeon-placeables,
   .tadeon-tabletop-now,
   .tadeon-semantic-transform,
+  .tadeon-nexus-tabletop-locator,
   .tadeon-tabletop-reliability-strip,
   .tadeon-director-enhancement-bar,
   .tadeon-tabletop-precision-editor,
@@ -339,6 +362,7 @@ html[data-tadeon-tabletop-clean="true"] :where(
     .tadeon-placeables,
     .tadeon-tabletop-now,
     .tadeon-semantic-transform,
+    .tadeon-nexus-tabletop-locator,
     .tadeon-tabletop-reliability-strip,
     .tadeon-director-enhancement-bar,
     .tadeon-tabletop-precision-editor
