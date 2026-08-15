@@ -302,7 +302,6 @@ function deriveSemanticSignals(
         leftMass > 0 && rightMass > 0
           ? clamp(intersection / Math.sqrt(leftMass * rightMass))
           : 0;
-
       const sharedTags = right.tags
         .map(normalizedTerm)
         .filter((tag) => tag && leftTags.has(tag));
@@ -316,15 +315,14 @@ function deriveSemanticSignals(
 
       sharedTerms.sort((a, b) => b.weight - a.weight || a.term.localeCompare(b.term));
       const topTerms = sharedTerms.slice(0, 4).map((entry) => entry.term);
-      const evidence = unique([
-        topTerms.length ? `Conteúdo em comum: ${topTerms.join(", ")}` : "",
-        sharedTags.length ? `Tags em comum: ${sharedTags.slice(0, 4).join(", ")}` : "",
-      ]);
       candidates.push({
         sourceNodeId: left.id,
         targetNodeId: right.id,
         strength,
-        evidence,
+        evidence: unique([
+          topTerms.length ? `Conteúdo em comum: ${topTerms.join(", ")}` : "",
+          sharedTags.length ? `Tags em comum: ${sharedTags.slice(0, 4).join(", ")}` : "",
+        ]),
       });
     }
   }
@@ -341,24 +339,23 @@ function deriveSemanticSignals(
   });
 }
 
+interface PairMetadata {
+  sourceNodeId: string;
+  targetNodeId: string;
+  relationType: RelationType;
+  label: string;
+  direction: KnowledgeRelationDirection;
+  visibility: KnowledgeVisibility;
+  priority: number;
+  primaryStrength: number;
+}
+
 function combineSignals(
   payload: KnowledgeMemoryPayload,
   semanticCandidates: SemanticCandidate[],
 ) {
   const grouped = new Map<string, KnowledgeGraphSignal[]>();
-  const metadata = new Map<
-    string,
-    {
-      sourceNodeId: string;
-      targetNodeId: string;
-      relationType: RelationType;
-      label: string;
-      direction: KnowledgeRelationDirection;
-      visibility: KnowledgeVisibility;
-      priority: number;
-      primaryStrength: number;
-    }
-  >();
+  const metadata = new Map<string, PairMetadata>();
 
   const register = (
     sourceNodeId: string,
@@ -371,9 +368,7 @@ function combineSignals(
   ) => {
     if (sourceNodeId === targetNodeId) return;
     const key = pairKey(sourceNodeId, targetNodeId);
-    const entries = grouped.get(key) ?? [];
-    entries.push(signal);
-    grouped.set(key, entries);
+    grouped.set(key, [...(grouped.get(key) ?? []), signal]);
     const priority = relationPriority(relationType);
     const current = metadata.get(key);
     if (
@@ -423,7 +418,7 @@ function combineSignals(
       },
       "related_to",
       "Afinidade de conteúdo",
-      "undirected",
+      "bidirectional",
       "workspace",
     );
   }
@@ -431,11 +426,13 @@ function combineSignals(
   return [...grouped.entries()].map(([key, signals]) => {
     const primary = metadata.get(key)!;
     const strength = clamp(
-      1 - signals.reduce((remaining, signal) => remaining * (1 - clamp(signal.strength) * 0.88), 1),
+      1 - signals.reduce(
+        (remaining, signal) => remaining * (1 - clamp(signal.strength) * 0.88),
+        1,
+      ),
       0,
       0.99,
     );
-    const kinds = [...new Set(signals.map((signal) => signal.kind))];
     return {
       id: `memory:${key}`,
       sourceNodeId: primary.sourceNodeId,
@@ -445,19 +442,29 @@ function combineSignals(
       direction: primary.direction,
       visibility: primary.visibility,
       strength,
-      kinds,
+      kinds: [...new Set(signals.map((signal) => signal.kind))],
       signals: [...signals].sort((left, right) => right.strength - left.strength),
       evidence: unique(signals.flatMap((signal) => signal.evidence), 6),
     } satisfies KnowledgeGraphEdge;
   });
 }
 
-function graphDepths(focusNodeId: string, edges: KnowledgeGraphEdge[], minimumStrength: number) {
+function graphDepths(
+  focusNodeId: string,
+  edges: KnowledgeGraphEdge[],
+  minimumStrength: number,
+) {
   const adjacency = new Map<string, string[]>();
   for (const edge of edges) {
     if (edge.strength < minimumStrength) continue;
-    adjacency.set(edge.sourceNodeId, [...(adjacency.get(edge.sourceNodeId) ?? []), edge.targetNodeId]);
-    adjacency.set(edge.targetNodeId, [...(adjacency.get(edge.targetNodeId) ?? []), edge.sourceNodeId]);
+    adjacency.set(edge.sourceNodeId, [
+      ...(adjacency.get(edge.sourceNodeId) ?? []),
+      edge.targetNodeId,
+    ]);
+    adjacency.set(edge.targetNodeId, [
+      ...(adjacency.get(edge.targetNodeId) ?? []),
+      edge.sourceNodeId,
+    ]);
   }
   const depths = new Map<string, number>([[focusNodeId, 0]]);
   const queue = [focusNodeId];
@@ -481,13 +488,19 @@ export function buildKnowledgeGraph(
   const requestedDepth = Math.max(1, Math.min(4, Math.trunc(options.depth ?? 2)));
   const limit = Math.max(20, Math.min(500, Math.trunc(options.limit ?? 220)));
   const semanticThreshold = clamp(options.semanticThreshold ?? 0.22, 0.08, 0.85);
-  const semanticNeighbors = Math.max(1, Math.min(12, Math.trunc(options.semanticNeighbors ?? 5)));
+  const semanticNeighbors = Math.max(
+    1,
+    Math.min(12, Math.trunc(options.semanticNeighbors ?? 5)),
+  );
   const minimumStrength = clamp(options.minimumStrength ?? 0.12, 0, 0.85);
-  const semantic = options.includeSemantic === false
-    ? []
-    : deriveSemanticSignals(payload.nodes, semanticThreshold, semanticNeighbors);
+  const semantic =
+    options.includeSemantic === false
+      ? []
+      : deriveSemanticSignals(payload.nodes, semanticThreshold, semanticNeighbors);
   const allEdges = combineSignals(payload, semantic).filter(
-    (edge) => edge.strength >= minimumStrength || edge.kinds.some((kind) => kind !== "semantic"),
+    (edge) =>
+      edge.strength >= minimumStrength ||
+      edge.kinds.some((kind) => kind !== "semantic"),
   );
   const depths = graphDepths(payload.focusNodeId, allEdges, minimumStrength);
 
@@ -510,29 +523,40 @@ export function buildKnowledgeGraph(
       Math.log1p(node.incomingMentions) * 1.15 +
       Math.log1p(node.outgoingMentions) * 0.35 +
       Math.log1p(degree) * 1.05;
-    const importance = clamp(1 - Math.exp(-referenceWeight / 4.2), 0.08, 1);
     return {
       ...node,
       depth: depths.get(node.id) ?? 99,
-      importance: node.id === payload.focusNodeId ? 1 : importance,
+      importance:
+        node.id === payload.focusNodeId
+          ? 1
+          : clamp(1 - Math.exp(-referenceWeight / 4.2), 0.08, 1),
       weightedDegree: degree,
     } satisfies KnowledgeGraphNode;
   });
 
-  let selected = mode === "local"
-    ? enriched.filter((node) => node.depth <= requestedDepth)
-    : enriched;
+  let selected =
+    mode === "local"
+      ? enriched.filter((node) => node.depth <= requestedDepth)
+      : enriched;
   selected.sort((left, right) => {
     if (left.id === payload.focusNodeId) return -1;
     if (right.id === payload.focusNodeId) return 1;
-    if (mode === "local" && left.depth !== right.depth) return left.depth - right.depth;
-    return right.importance - left.importance || left.title.localeCompare(right.title, "pt-BR");
+    if (mode === "local" && left.depth !== right.depth) {
+      return left.depth - right.depth;
+    }
+    return (
+      right.importance - left.importance ||
+      left.title.localeCompare(right.title, "pt-BR")
+    );
   });
   const wasLimited = selected.length > limit;
   selected = selected.slice(0, limit);
   const selectedIds = new Set(selected.map((node) => node.id));
   const edges = allEdges
-    .filter((edge) => selectedIds.has(edge.sourceNodeId) && selectedIds.has(edge.targetNodeId))
+    .filter(
+      (edge) =>
+        selectedIds.has(edge.sourceNodeId) && selectedIds.has(edge.targetNodeId),
+    )
     .sort((left, right) => right.strength - left.strength);
 
   return {
@@ -561,9 +585,24 @@ function hashNumber(value: string) {
 
 function nodeGroup(type: KnowledgeNodeType) {
   if (["character", "npc", "creature", "people"].includes(type)) return 0;
-  if (["kingdom", "region", "city", "location", "river", "sea", "terrain", "tectonic_plate"].includes(type)) return 1;
+  if (
+    [
+      "kingdom",
+      "region",
+      "city",
+      "location",
+      "river",
+      "sea",
+      "terrain",
+      "tectonic_plate",
+    ].includes(type)
+  ) {
+    return 1;
+  }
   if (["plot", "clue", "historical_event", "session"].includes(type)) return 2;
-  if (["fragment", "transcendental_ability", "weapon", "object"].includes(type)) return 3;
+  if (["fragment", "transcendental_ability", "weapon", "object"].includes(type)) {
+    return 3;
+  }
   if (["organization", "religion", "culture", "language"].includes(type)) return 4;
   return 5;
 }
@@ -589,7 +628,10 @@ export function computeKnowledgeForceLayout(
     };
   });
   const velocity = nodes.map(() => ({ x: 0, y: 0 }));
-  const iterations = Math.max(30, Math.min(180, Math.trunc(options.iterations ?? 105)));
+  const iterations = Math.max(
+    30,
+    Math.min(180, Math.trunc(options.iterations ?? 105)),
+  );
   const linkStrength = Math.max(0, options.linkStrength);
   const repelStrength = Math.max(0, options.repelStrength);
   const centerStrength = Math.max(0, options.centerStrength);
@@ -603,13 +645,17 @@ export function computeKnowledgeForceLayout(
         let dy = positions[right].y - positions[left].y;
         let distanceSquared = dx * dx + dy * dy;
         if (distanceSquared < 4) {
-          const jitter = (((hashNumber(`${nodes[left].id}:${nodes[right].id}`) % 101) - 50) / 50) * 0.8;
+          const jitter =
+            (((hashNumber(`${nodes[left].id}:${nodes[right].id}`) % 101) - 50) /
+              50) *
+            0.8;
           dx += jitter || 0.3;
           dy -= jitter || 0.2;
           distanceSquared = dx * dx + dy * dy;
         }
         const distance = Math.sqrt(distanceSquared);
-        const force = (repelStrength * 820 * cooling) / Math.max(280, distanceSquared);
+        const force =
+          (repelStrength * 820 * cooling) / Math.max(280, distanceSquared);
         const ux = dx / distance;
         const uy = dy / distance;
         velocity[left].x -= ux * force;
@@ -662,8 +708,10 @@ export function computeKnowledgeForceLayout(
       const groupRadius = graph.mode === "global" ? 150 : 72;
       const gx = Math.cos(groupAngle) * groupRadius;
       const gy = Math.sin(groupAngle) * groupRadius;
-      velocity[index].x += (gx - point.x) * clusterStrength * 0.00075 * cooling;
-      velocity[index].y += (gy - point.y) * clusterStrength * 0.00075 * cooling;
+      velocity[index].x +=
+        (gx - point.x) * clusterStrength * 0.00075 * cooling;
+      velocity[index].y +=
+        (gy - point.y) * clusterStrength * 0.00075 * cooling;
 
       if (node.id === graph.focusNodeId && graph.mode === "local") {
         velocity[index].x -= point.x * 0.028 * cooling;
