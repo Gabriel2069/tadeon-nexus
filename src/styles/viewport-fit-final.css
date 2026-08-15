@@ -184,6 +184,24 @@ body:has(.tadeon-tabletop-studio) :where(
   z-index: 241 !important;
 }
 
+/* Sheets/drawers share the same modal authority as dialogs while Mesa chrome is mounted. */
+body:has(.tadeon-tabletop-studio) :where(
+  [data-slot="sheet-overlay"],
+  [data-slot="drawer-overlay"]
+) {
+  z-index: 240 !important;
+}
+
+body:has(.tadeon-tabletop-studio) :where(
+  [data-slot="sheet-content"],
+  [data-slot="drawer-content"]
+) {
+  z-index: 241 !important;
+  max-inline-size: calc(100vw - (var(--tadeon-overlay-gutter) * 2));
+  max-block-size: calc(100dvh - (var(--tadeon-overlay-gutter) * 2));
+  overscroll-behavior: contain;
+}
+
 @media (min-width: 801px) {
   /* Dialogs do not use Popper collision middleware. On desktop, force their
      final anchor back to the viewport centre so route/local utility classes

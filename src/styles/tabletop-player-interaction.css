@@ -164,7 +164,8 @@
 }
 
 .tadeon-tactical-dock__power-menu:hover .tadeon-tactical-dock__power-list,
-.tadeon-tactical-dock__power-menu:focus-within .tadeon-tactical-dock__power-list {
+.tadeon-tactical-dock__power-menu:focus-within .tadeon-tactical-dock__power-list,
+.tadeon-tactical-dock__power-menu[data-open="true"] .tadeon-tactical-dock__power-list {
   opacity: 1;
   pointer-events: auto;
   transform: translate(-50%, 0) scale(1);

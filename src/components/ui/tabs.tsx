@@ -153,7 +153,7 @@ const TabsList = React.forwardRef<
       ref={composeRefs(listRef, ref)}
       data-slot="tabs-list"
       className={cn(
-        "inline-flex min-h-11 items-center justify-center gap-1 rounded-[0.9rem] border border-border/60 bg-muted/78 p-1 text-muted-foreground shadow-[inset_0_1px_0_rgba(255,255,255,.035),0_16px_44px_-38px_rgba(0,0,0,.95)] backdrop-blur",
+        "relative isolate inline-flex min-h-11 items-center justify-center gap-1 rounded-[0.9rem] border border-border/60 bg-muted/78 p-1 text-muted-foreground shadow-[inset_0_1px_0_rgba(255,255,255,.035),0_16px_44px_-38px_rgba(0,0,0,.95)] backdrop-blur",
         className,
       )}
       {...props}

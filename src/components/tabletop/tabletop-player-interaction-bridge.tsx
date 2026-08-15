@@ -151,79 +151,7 @@ function pathForTemplate(template: TabletopPowerTemplate, origin: Point, target:
   };
 }
 
-function useRadialContextMenu() {
-  useEffect(() => {
-    let radial: HTMLDivElement | null = null;
-    let sourceMenu: HTMLElement | null = null;
-
-    const remove = () => {
-      radial?.remove();
-      radial = null;
-      sourceMenu = null;
-    };
-
-    const sync = () => {
-      const menu = document.querySelector<HTMLElement>(".tadeon-tabletop-context-menu");
-      if (!menu) {
-        remove();
-        return;
-      }
-      if (menu === sourceMenu && radial?.isConnected) return;
-      remove();
-      const actions = Array.from(menu.querySelectorAll<HTMLButtonElement>("button"))
-        .filter((button) => {
-          const text = button.textContent?.replace(/\s+/g, " ").trim() ?? "";
-          const style = window.getComputedStyle(button);
-          return !button.disabled && style.display !== "none" && text.length >= 2 && text.length <= 34;
-        })
-        .slice(0, 8);
-      if (actions.length < 2) return;
-
-      radial = document.createElement("div");
-      radial.className = "tadeon-tabletop-radial-menu";
-      radial.setAttribute("role", "menu");
-      radial.setAttribute("aria-label", "Ações radiais da seleção");
-      const rect = menu.getBoundingClientRect();
-      const centerX = Math.max(118, Math.min(window.innerWidth - 118, rect.left - 92));
-      const centerY = Math.max(118, Math.min(window.innerHeight - 118, rect.top + Math.min(rect.height, 240) / 2));
-      radial.style.left = `${centerX}px`;
-      radial.style.top = `${centerY}px`;
-      actions.forEach((original, index) => {
-        const angle = -Math.PI / 2 + (index / actions.length) * Math.PI * 2;
-        const item = document.createElement("button");
-        item.type = "button";
-        item.className = "tadeon-tabletop-radial-menu__item";
-        item.style.setProperty("--radial-x", `${Math.cos(angle) * 78}px`);
-        item.style.setProperty("--radial-y", `${Math.sin(angle) * 78}px`);
-        const label = original.textContent?.replace(/\s+/g, " ").trim() || original.getAttribute("aria-label") || "Ação";
-        item.textContent = label.length > 18 ? `${label.slice(0, 17)}…` : label;
-        item.title = label;
-        item.setAttribute("role", "menuitem");
-        item.addEventListener("click", () => original.click());
-        radial?.appendChild(item);
-      });
-      const hub = document.createElement("div");
-      hub.className = "tadeon-tabletop-radial-menu__hub";
-      hub.textContent = "Ações";
-      radial.appendChild(hub);
-      document.body.appendChild(radial);
-      sourceMenu = menu;
-    };
-
-    sync();
-    const observer = new MutationObserver(sync);
-    observer.observe(document.body, { childList: true, subtree: true });
-    window.addEventListener("resize", sync);
-    return () => {
-      observer.disconnect();
-      window.removeEventListener("resize", sync);
-      remove();
-    };
-  }, []);
-}
-
 export function TabletopPlayerInteractionBridge() {
-  useRadialContextMenu();
   const [snapshot, setSnapshot] = useState<TabletopSnapshot | null>(null);
   const [mode, setMode] = useState<TacticalMode>("idle");
   const [movementPoints, setMovementPoints] = useState<Point[]>([]);
@@ -232,6 +160,7 @@ export function TabletopPlayerInteractionBridge() {
   const [activePower, setActivePower] = useState<TabletopPowerTemplate | null>(null);
   const [targetIds, setTargetIds] = useState<Set<string>>(() => new Set());
   const [loadingPowers, setLoadingPowers] = useState(false);
+  const [powerMenuOpen, setPowerMenuOpen] = useState(false);
   const sheetRequestRef = useRef(0);
 
   useEffect(() => {
@@ -261,7 +190,10 @@ export function TabletopPlayerInteractionBridge() {
   }, []);
 
   const entity = selectedEntity(snapshot);
-  const linkedSheetId = entity?.linkedSheetId ?? null;
+  const linkedSheetId =
+    entity?.linkedSheetId ??
+    ((entity as (TabletopEntity & { sheetSummary?: { sheetId?: string } }) | null)
+      ?.sheetSummary?.sheetId ?? null);
 
   useEffect(() => {
     const request = ++sheetRequestRef.current;
@@ -286,6 +218,10 @@ export function TabletopPlayerInteractionBridge() {
   useEffect(() => {
     setTargetIds(new Set());
   }, [activePower?.id]);
+
+  useEffect(() => {
+    setPowerMenuOpen(false);
+  }, [entity?.id]);
 
   useEffect(() => {
     const text = activePower
@@ -372,6 +308,7 @@ export function TabletopPlayerInteractionBridge() {
     };
     const keyDown = (event: KeyboardEvent) => {
       if (event.key !== "Escape") return;
+      setPowerMenuOpen(false);
       setMode("idle");
       setMovementPoints([]);
       setCursorWorld(null);
@@ -481,11 +418,17 @@ export function TabletopPlayerInteractionBridge() {
           >
             <Footprints aria-hidden="true" /> Planejar
           </Button>
-          <div className="tadeon-tactical-dock__power-menu">
+          <div
+            className="tadeon-tactical-dock__power-menu"
+            data-open={powerMenuOpen ? "true" : "false"}
+          >
             <Button
               size="sm"
               variant={mode === "power" ? "default" : "ghost"}
               disabled={!entity || loadingPowers || templates.length === 0}
+              aria-haspopup="menu"
+              aria-expanded={powerMenuOpen}
+              onClick={() => setPowerMenuOpen((current) => !current)}
               title={
                 !linkedSheetId
                   ? "Vincule uma ficha ao token para usar suas Tramas reais como templates"
@@ -498,13 +441,15 @@ export function TabletopPlayerInteractionBridge() {
               Poderes
             </Button>
             {templates.length > 0 && (
-              <div className="tadeon-tactical-dock__power-list">
+              <div className="tadeon-tactical-dock__power-list" role="menu">
                 {templates.map((template) => (
                   <button
                     key={template.id}
                     type="button"
                     aria-pressed={activePower?.id === template.id}
+                    role="menuitem"
                     onClick={() => {
+                      setPowerMenuOpen(false);
                       setActivePower(template);
                       setTargetIds(new Set());
                       setMode("power");

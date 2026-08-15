@@ -279,6 +279,9 @@ function visibilityPolygonForLight(
   walls: TabletopVisibilityState["walls"],
   scene: TabletopScene,
 ) {
+  if (light.visibilityPolygon && light.visibilityPolygon.length >= 3) {
+    return light.visibilityPolygon;
+  }
   return buildVisibilityPolygon(
     { ...light, radius },
     walls,

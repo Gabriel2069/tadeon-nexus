@@ -27,6 +27,7 @@ type AutosaveState = "idle" | "pending" | "saving" | "saved" | "paused";
 
 interface WallSoundRow {
   id: string;
+  level_id?: string | null;
   x1: number | string;
   y1: number | string;
   x2: number | string;
@@ -164,7 +165,8 @@ function useScenePreloader(snapshot: TabletopSnapshot | null) {
     if (!snapshot) return;
     const connection = (navigator as Navigator & { connection?: { saveData?: boolean } }).connection;
     if (connection?.saveData) return;
-    const activeLevelId = snapshot.scene.levels?.find((level) => level.visible)?.id;
+    const activeLevelId =
+      snapshot.activeLevelId ?? snapshot.scene.levels?.find((level) => level.visible)?.id;
     const prioritized = [
       snapshot.scene.backgroundAssetUrl,
       ...snapshot.scene.entities
@@ -225,7 +227,7 @@ function useSpatialAudio(snapshot: TabletopSnapshot | null, muted: boolean) {
     let active = true;
     void supabase
       .from("tabletop_walls")
-      .select("id,x1,y1,x2,y2,wall_type,blocks_vision,blocks_movement,properties")
+      .select("id,level_id,x1,y1,x2,y2,wall_type,blocks_vision,blocks_movement,properties")
       .eq("scene_id", snapshot.scene.id)
       .then(({ data }) => {
         if (active) setWalls((data ?? []) as unknown as WallSoundRow[]);
@@ -248,7 +250,13 @@ function useSpatialAudio(snapshot: TabletopSnapshot | null, muted: boolean) {
     if (!snapshot) return;
     const runtime = currentTabletopRuntime();
     if (!runtime) return;
+    const activeLevelId =
+      snapshot.activeLevelId ?? snapshot.scene.levels?.find((level) => level.visible)?.id;
+    const activeWalls = activeLevelId
+      ? walls.filter((wall) => !wall.level_id || wall.level_id === activeLevelId)
+      : walls;
     const sources = snapshot.scene.entities
+      .filter((entity) => !activeLevelId || !entity.levelId || entity.levelId === activeLevelId)
       .map((entity) => ({ entity, config: audioConfig(entity, snapshot.scene.gridSize) }))
       .filter((entry): entry is { entity: TabletopEntity; config: AudioSourceConfig } => Boolean(entry.config));
     const live = new Set(sources.map(({ entity }) => entity.id));
@@ -277,7 +285,7 @@ function useSpatialAudio(snapshot: TabletopSnapshot | null, muted: boolean) {
       const source = center(entity);
       const distance = Math.hypot(source.x - listener.x, source.y - listener.y);
       const distanceGain = Math.pow(clamp(1 - distance / config.radius, 0, 1), 1.35);
-      const wallGain = soundTransmissionBetween(source, listener, walls);
+      const wallGain = soundTransmissionBetween(source, listener, activeWalls);
       const sourceRegions = tabletopRegionsAtPoint(snapshot.scene, source);
       const listenerRegions = tabletopRegionsAtPoint(snapshot.scene, listener);
       const regionAbsorption = clamp(
