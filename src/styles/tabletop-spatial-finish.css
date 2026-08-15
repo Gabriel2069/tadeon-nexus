@@ -1,0 +1,255 @@
+/* Mesa Nexus · spatial/UI finishing authority.
+   This file intentionally loads after the older tabletop layers. It resolves
+   modal inspector behavior and viewport-fixed bridges without changing the
+   visual language of Fio Mestre. */
+
+/* Operational chrome must be readable over a detailed map. Translucency here
+   caused the stage and contextual panel to bleed through the controls. */
+:where(
+  .tadeon-tabletop-progressive-dock,
+  .tadeon-tactical-dock,
+  .tadeon-tabletop-selection-actions,
+  .tadeon-tabletop-stage-status,
+  .tadeon-semantic-transform
+) {
+  background: hsl(var(--card)) !important;
+  backdrop-filter: none !important;
+}
+
+.tadeon-tabletop-progressive-dock,
+.tadeon-tactical-dock,
+.tadeon-tabletop-selection-actions {
+  box-shadow:
+    0 22px 54px -34px hsl(220 50% 2% / .98),
+    inset 0 1px 0 hsl(var(--foreground) / .055) !important;
+}
+
+/* The auto-generated radial clone duplicates the canonical context menu and
+   was the source of actions floating above tokens/inspectors. Keep the real
+   context menu as the single source of truth. */
+.tadeon-tabletop-radial-menu {
+  display: none !important;
+}
+
+/* The old Director bridge duplicated commands already available in the master
+   panel. It is no longer mounted, but this guard also neutralizes stale chunks
+   during a hot/realtime client transition. */
+.tadeon-director-enhancement-bar {
+  display: none !important;
+}
+
+/* Restore the scene telemetry rail that the previous collision fix hid. It
+   reserves physical canvas space rather than sitting over tokens. */
+html[data-tadeon-tabletop-interface="play"] .tadeon-tabletop-stage-status,
+html[data-tadeon-tabletop-interface="build"] .tadeon-tabletop-stage-status,
+html[data-tadeon-tabletop-interface="direct"] .tadeon-tabletop-stage-status,
+html[data-tadeon-tabletop-interface="advanced"] .tadeon-tabletop-stage-status {
+  display: flex !important;
+}
+
+html[data-tadeon-tabletop-interface="play"] .tadeon-tabletop-canvas-host,
+html[data-tadeon-tabletop-interface="build"] .tadeon-tabletop-canvas-host,
+html[data-tadeon-tabletop-interface="direct"] .tadeon-tabletop-canvas-host,
+html[data-tadeon-tabletop-interface="advanced"] .tadeon-tabletop-canvas-host {
+  bottom: 4.65rem !important;
+}
+
+.tadeon-tabletop-stage-status {
+  z-index: 15 !important;
+  border-color: hsl(var(--border) / .82) !important;
+  background: hsl(var(--card)) !important;
+  box-shadow: 0 14px 38px -30px hsl(220 48% 2% / .96) !important;
+}
+
+/* Desktop docks are centered on the usable stage, not on the browser viewport.
+   The right contextual panel is 23rem (25rem on 2xl), so its half width must be
+   removed from the fixed-control center. */
+@media (min-width: 1180px) {
+  body:has(.tadeon-tabletop-panel[data-collapsed="false"]) :where(
+    .tadeon-tabletop-progressive-dock,
+    .tadeon-tactical-dock,
+    .tadeon-tabletop-selection-actions
+  ) {
+    left: calc(50% - 11.5rem) !important;
+  }
+
+  body:has(.tadeon-tabletop-panel[data-collapsed="true"]) :where(
+    .tadeon-tabletop-progressive-dock,
+    .tadeon-tactical-dock,
+    .tadeon-tabletop-selection-actions
+  ) {
+    left: calc(50% - 1.875rem) !important;
+  }
+}
+
+@media (min-width: 1536px) {
+  body:has(.tadeon-tabletop-panel[data-collapsed="false"]) :where(
+    .tadeon-tabletop-progressive-dock,
+    .tadeon-tactical-dock,
+    .tadeon-tabletop-selection-actions
+  ) {
+    left: calc(50% - 12.5rem) !important;
+  }
+}
+
+/* Tablet/notebook inspector: editing a selected token is not a modal action.
+   Remove the blackout and keep the stage visible/manipulable outside the sheet. */
+@media (max-width: 1179px) {
+  .tadeon-tabletop-panel-backdrop,
+  .tadeon-tabletop-panel-backdrop[data-open="true"] {
+    opacity: 0 !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+    background: transparent !important;
+    backdrop-filter: none !important;
+  }
+
+  .tadeon-tabletop-panel[data-mobile-open="true"] {
+    z-index: 124 !important;
+    border-color: hsl(var(--border) / .86) !important;
+    background: hsl(var(--card)) !important;
+    box-shadow: 0 26px 70px -34px hsl(220 52% 1% / .98) !important;
+    backdrop-filter: none !important;
+  }
+
+  body:has(.tadeon-tabletop-panel[data-mobile-open="true"]) :where(
+    .tadeon-tabletop-progressive-dock,
+    .tadeon-tactical-dock,
+    .tadeon-tabletop-selection-actions,
+    .tadeon-creative-dock,
+    .tadeon-placeables,
+    .tadeon-tabletop-now,
+    .tadeon-semantic-transform,
+    .tadeon-nexus-tabletop-locator
+  ) {
+    opacity: 0 !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+  }
+}
+
+@media (min-width: 801px) and (max-width: 1179px) {
+  .tadeon-tabletop-panel[data-mobile-open="true"] {
+    position: fixed !important;
+    top: max(4.75rem, calc(env(safe-area-inset-top) + .75rem)) !important;
+    right: max(.75rem, env(safe-area-inset-right)) !important;
+    bottom: max(.75rem, env(safe-area-inset-bottom)) !important;
+    left: auto !important;
+    width: min(28rem, calc(100vw - 2rem)) !important;
+    max-height: none !important;
+    border: 1px solid hsl(var(--border) / .86) !important;
+    border-radius: 1rem !important;
+    overflow-y: auto !important;
+    transform: translate3d(0, 0, 0) !important;
+  }
+}
+
+@media (max-width: 800px) {
+  .tadeon-tabletop-panel[data-mobile-open="true"] {
+    background: hsl(var(--card)) !important;
+  }
+
+  .tadeon-tabletop-stage-status {
+    left: .55rem !important;
+    right: .55rem !important;
+    bottom: .55rem !important;
+    max-width: calc(100% - 1.1rem) !important;
+    overflow-x: auto !important;
+    scrollbar-width: none;
+  }
+
+  .tadeon-tabletop-stage-status::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* Fog authoring bridge: shape first, operation second. The legacy two brush
+   buttons remain in the DOM for backwards compatibility but disappear once the
+   geometry-aware controls are mounted. */
+.tadeon-visibility__fog-operations:has(.tadeon-fog-geometry-tool)
+  > [data-slot="button"] {
+  display: none !important;
+}
+
+.tadeon-fog-geometry-tool {
+  display: grid;
+  width: 100%;
+  gap: .5rem;
+  padding: .55rem;
+  border: 1px solid hsl(var(--border) / .7);
+  border-radius: .85rem;
+  background: hsl(var(--background) / .42);
+}
+
+.tadeon-fog-geometry-tool__shapes,
+.tadeon-fog-geometry-tool__operations {
+  display: grid;
+  gap: .35rem;
+}
+
+.tadeon-fog-geometry-tool__shapes {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.tadeon-fog-geometry-tool__operations {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.tadeon-fog-geometry-tool button {
+  display: inline-flex;
+  min-height: 2.45rem;
+  align-items: center;
+  justify-content: center;
+  gap: .35rem;
+  padding: .4rem .5rem;
+  border: 1px solid hsl(var(--border) / .62);
+  border-radius: .65rem;
+  background: hsl(var(--secondary) / .28);
+  color: hsl(var(--muted-foreground));
+  font-size: .64rem;
+  font-weight: 720;
+  transition:
+    transform 150ms ease,
+    border-color 150ms ease,
+    background-color 150ms ease,
+    color 150ms ease;
+}
+
+.tadeon-fog-geometry-tool button:hover,
+.tadeon-fog-geometry-tool button:focus-visible {
+  color: hsl(var(--foreground));
+  border-color: hsl(var(--primary) / .38);
+  transform: translateY(-1px);
+  outline: none;
+}
+
+.tadeon-fog-geometry-tool button[aria-pressed="true"] {
+  color: hsl(var(--foreground));
+  border-color: hsl(var(--primary) / .5);
+  background: hsl(var(--primary) / .13);
+}
+
+.tadeon-fog-geometry-tool__operations button:first-child {
+  border-color: hsl(145 52% 58% / .34);
+}
+
+.tadeon-fog-geometry-tool__operations button:last-child {
+  border-color: hsl(4 62% 60% / .34);
+}
+
+.tadeon-fog-geometry-tool svg {
+  width: .88rem;
+  height: .88rem;
+}
+
+.tadeon-fog-geometry-tool small {
+  color: hsl(var(--muted-foreground));
+  font-size: .56rem;
+  line-height: 1.35;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tadeon-fog-geometry-tool button {
+    transition: none;
+  }
+}
