@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
+import type { SupabaseClient } from "@supabase/supabase-js";
 import {
   BrickWall,
   ChevronDown,
@@ -21,6 +22,8 @@ import { useAuth } from "@/lib/auth";
 import { currentTabletopRuntime } from "@/lib/tabletop/tabletop-player-runtime";
 import type { TabletopEntity, TabletopSnapshot } from "@/lib/tabletop/types";
 import "@/styles/tabletop-placeables-inspector.css";
+
+const tabletopDatabase = supabase as unknown as SupabaseClient;
 
 type InspectorKind = "all" | "entities" | "walls" | "lights" | "fog";
 
@@ -115,13 +118,13 @@ export function TabletopPlaceablesInspectorBridge() {
       return;
     }
     const [wallResult, lightResult, fogResult] = await Promise.all([
-      supabase.from("tabletop_walls").select("id,level_id,wall_type").eq("scene_id", sceneId),
-      supabase.from("tabletop_lights").select("id,level_id,enabled,color").eq("scene_id", sceneId),
-      supabase.from("tabletop_fog_strokes").select("id,level_id,operation,geometry").eq("scene_id", sceneId).order("sequence_index"),
+      tabletopDatabase.from("tabletop_walls").select("id,level_id,wall_type").eq("scene_id", sceneId),
+      tabletopDatabase.from("tabletop_lights").select("id,level_id,enabled,color").eq("scene_id", sceneId),
+      tabletopDatabase.from("tabletop_fog_strokes").select("id,level_id,operation,geometry").eq("scene_id", sceneId).order("sequence_index"),
     ]);
-    if (!wallResult.error) setWalls((wallResult.data ?? []) as WallRow[]);
-    if (!lightResult.error) setLights((lightResult.data ?? []) as LightRow[]);
-    if (!fogResult.error) setFog((fogResult.data ?? []) as FogRow[]);
+    if (!wallResult.error) setWalls((wallResult.data ?? []) as unknown as WallRow[]);
+    if (!lightResult.error) setLights((lightResult.data ?? []) as unknown as LightRow[]);
+    if (!fogResult.error) setFog((fogResult.data ?? []) as unknown as FogRow[]);
   }, [sceneId]);
 
   useEffect(() => {
@@ -304,7 +307,7 @@ export function TabletopPlaceablesInspectorBridge() {
               ))}
 
             {(kind === "all" || kind === "lights") && lights
-              .filter((light) => !normalizedQuery || "luz iluminação".includes(normalizedQuery))
+              .filter(() => !normalizedQuery || "luz iluminação".includes(normalizedQuery))
               .map((light) => (
                 <button key={light.id} type="button" className="tadeon-placeables__item" onClick={() => {
                   const engine = currentTabletopRuntime()?.engine;
