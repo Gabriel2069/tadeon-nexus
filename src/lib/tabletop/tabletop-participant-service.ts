@@ -169,7 +169,7 @@ const participantVisibilitySchema = z
             id: uuidSchema,
             levelId: uuidSchema,
             operation: z.enum(["reveal", "hide"]),
-            shape: z.enum(["brush", "rectangle", "ellipse", "polygon"]),
+            shape: z.enum(["brush", "rectangle", "ellipse", "polygon"]).default("brush"),
             points: z.array(visibilityPointSchema).min(1).max(64),
             radius: finiteNumber.min(8).max(1024),
             sequenceIndex: z.number().int().min(0).max(100_000),
