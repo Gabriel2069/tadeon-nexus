@@ -32,19 +32,25 @@ function TabletopRoute() {
   const { role, user } = useAuth();
   const [flags, setFlags] = useState<FeatureFlags>(() => ({
     ...DEFAULT_FEATURE_FLAGS,
-    // A Mesa já é produto principal: a rota não deve depender de uma consulta
-    // remota para conseguir abrir. Flags remotas seguem controlando módulos
-    // pesados como realtime e iluminação.
+    // A Mesa é uma superfície principal e precisa conseguir abrir mesmo quando
+    // a leitura remota de flags estiver lenta ou indisponível. Os módulos
+    // opcionais continuam obedecendo às flags carregadas depois.
     nexus_tabletop_enabled: true,
   }));
 
   useEffect(() => {
     if (!user?.id) return;
     let active = true;
-    void loadFeatureFlags(user.id).then((nextFlags) => {
-      if (!active) return;
-      setFlags({ ...nextFlags, nexus_tabletop_enabled: true });
-    });
+    void loadFeatureFlags(user.id)
+      .then((nextFlags) => {
+        if (!active) return;
+        setFlags({ ...nextFlags, nexus_tabletop_enabled: true });
+      })
+      .catch(() => {
+        // Abertura degradável: mantém o canvas essencial e os módulos opcionais
+        // desligados com os defaults em vez de transformar uma falha de flags
+        // numa tela que nunca termina de abrir.
+      });
     return () => {
       active = false;
     };
