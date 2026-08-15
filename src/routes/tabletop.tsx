@@ -11,6 +11,9 @@ import { TabletopAtmosphereBridge } from "@/components/tabletop/tabletop-atmosph
 import { TabletopCreativeDockBridge } from "@/components/tabletop/tabletop-creative-dock-bridge";
 import { TabletopDirectorEnhancementBridge } from "@/components/tabletop/tabletop-director-enhancement-bridge";
 import { TabletopPlaceablesInspectorBridge } from "@/components/tabletop/tabletop-placeables-inspector-bridge";
+import { TabletopIntegrationToolsBridge } from "@/components/tabletop/tabletop-integration-tools-bridge";
+import { TabletopLocateBridge } from "@/components/tabletop/tabletop-locate-bridge";
+import { TabletopSemanticTransformBridge } from "@/components/tabletop/tabletop-semantic-transform-bridge";
 import { useAuth } from "@/lib/auth";
 import { loadFeatureFlags } from "@/lib/feature-flag-repository";
 import type { FeatureFlags } from "@/lib/feature-flags";
@@ -40,6 +43,7 @@ function TabletopRoute() {
   const search = Route.useSearch() as {
     view?: string;
     session?: string;
+    scene?: string;
   };
   const { role } = useAuth();
   const [flags, setFlags] = useState<FeatureFlags | null>(null);
@@ -78,6 +82,13 @@ function TabletopRoute() {
     )
       ? search.session
       : undefined;
+  const requestedScene =
+    typeof search.scene === "string" &&
+    /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(
+      search.scene,
+    )
+      ? search.scene
+      : undefined;
 
   if (role === "mestre" && search.view === "director") {
     return (
@@ -90,6 +101,7 @@ function TabletopRoute() {
 
   return (
     <>
+      <TabletopLocateBridge />
       <TabletopPlayerInteractionBridge />
       <TabletopReliabilityEditorBridge />
       <TabletopAtmosphereBridge />
@@ -98,7 +110,10 @@ function TabletopRoute() {
           <TabletopCreativeDockBridge />
           <TabletopDirectorEnhancementBridge />
           <TabletopPlaceablesInspectorBridge />
+          <TabletopIntegrationToolsBridge />
+          <TabletopSemanticTransformBridge />
           <TabletopWorkspace
+            initialSceneId={requestedScene}
             realtimeEnabled={flags.nexus_realtime_enabled}
             lightingEnabled={flags.nexus_lighting_enabled}
           />

@@ -297,9 +297,11 @@ function errorMessage(error: unknown) {
 }
 
 export function TabletopWorkspace({
+  initialSceneId,
   realtimeEnabled = false,
   lightingEnabled = false,
 }: {
+  initialSceneId?: string;
   realtimeEnabled?: boolean;
   lightingEnabled?: boolean;
 }) {
@@ -307,6 +309,7 @@ export function TabletopWorkspace({
   const engineRef = useRef<TabletopEngine | null>(null);
   const engineReadyRef = useRef(false);
   const persistedSceneRef = useRef<PersistedTabletopScene | null>(null);
+  const requestedSceneIdRef = useRef<string | null>(initialSceneId ?? null);
   const visibilityRef = useRef<TabletopVisibilityState>(createEmptyVisibilityState());
   const structureTypeRef = useRef<TabletopStructureType>("wall");
   const activeLevelIdRef = useRef<string | null>(null);
@@ -371,6 +374,10 @@ export function TabletopWorkspace({
   const [saving, setSaving] = useState(false);
   const [dirty, setDirty] = useState(false);
   const [conflict, setConflict] = useState(false);
+
+  useEffect(() => {
+    if (initialSceneId) requestedSceneIdRef.current = initialSceneId;
+  }, [initialSceneId]);
 
   useEffect(() => {
     if (contextMenu) {
@@ -1017,9 +1024,24 @@ export function TabletopWorkspace({
     let active = true;
     void tabletopPersistenceService
       .listCampaigns()
-      .then((next) => {
+      .then(async (next) => {
         if (!active) return;
         setCampaigns(next);
+        const requestedSceneId = requestedSceneIdRef.current;
+        if (requestedSceneId) {
+          try {
+            const requestedScene = await tabletopPersistenceService.loadScene(requestedSceneId);
+            if (
+              active &&
+              next.some((campaign) => campaign.id === requestedScene.campaignId)
+            ) {
+              setCampaignId(requestedScene.campaignId);
+              return;
+            }
+          } catch {
+            requestedSceneIdRef.current = null;
+          }
+        }
         setCampaignId((current) => current || next[0]?.id || "");
         if (next.length === 0) setLoading(false);
       })
@@ -1040,9 +1062,15 @@ export function TabletopWorkspace({
     void refreshScenes(campaignId)
       .then(async (next) => {
         if (!active) return;
-        const preferred = next.find((scene) => scene.status !== "archived") ?? next[0];
-        if (preferred) await loadScene(preferred.id);
-        else clearScene();
+        const requestedSceneId = requestedSceneIdRef.current;
+        const preferred =
+          next.find((scene) => scene.id === requestedSceneId) ??
+          next.find((scene) => scene.status !== "archived") ??
+          next[0];
+        if (preferred) {
+          if (preferred.id === requestedSceneId) requestedSceneIdRef.current = null;
+          await loadScene(preferred.id);
+        } else clearScene();
       })
       .catch((error) => {
         if (active) toast.error(errorMessage(error));

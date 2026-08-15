@@ -2,10 +2,9 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { Loader2 } from "lucide-react";
 import { NexusWorkspace } from "@/components/knowledge/nexus-workspace";
+import { NexusTabletopLocator } from "@/components/knowledge/nexus-tabletop-locator";
 import { ProtectedShell } from "@/components/protected-shell";
-import {
-  loadFeatureFlags,
-} from "@/lib/feature-flag-repository";
+import { loadFeatureFlags } from "@/lib/feature-flag-repository";
 import type { FeatureFlags } from "@/lib/feature-flags";
 
 export const Route = createFileRoute("/nexus")({
@@ -66,10 +65,13 @@ function NexusRoute() {
   }
 
   return (
-    <NexusWorkspace
-      assetsEnabled={flags.nexus_assets_v2_enabled}
-      graphEnabled={flags.nexus_graph_enabled}
-      initialNodeId={node}
-    />
+    <>
+      <NexusWorkspace
+        assetsEnabled={flags.nexus_assets_v2_enabled}
+        graphEnabled={flags.nexus_graph_enabled}
+        initialNodeId={node}
+      />
+      {flags.nexus_tabletop_enabled && <NexusTabletopLocator nodeId={node} />}
+    </>
   );
 }
