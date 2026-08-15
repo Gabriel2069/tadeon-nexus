@@ -28,7 +28,7 @@ describe("Nexus second-brain graph architecture", () => {
     const model = source("src/lib/knowledge/knowledge-graph-memory.ts");
 
     for (const kind of ["explicit", "mention", "hierarchy", "semantic"]) {
-      expect(model).toContain(`\"${kind}\"`);
+      expect(model).toContain(`"${kind}"`);
     }
     expect(model).toContain("incomingMentions");
     expect(model).toContain("weightedDegree");
@@ -42,13 +42,17 @@ describe("Nexus second-brain graph architecture", () => {
       "supabase/migrations/20260815231500_nexus_second_brain_graph.sql",
     );
 
-    expect(migration).toContain("create or replace function public.get_knowledge_graph_memory");
+    expect(migration).toContain(
+      "create or replace function public.get_knowledge_graph_memory",
+    );
     expect(migration).toContain("public.knowledge_mentions");
     expect(migration).toContain("public.knowledge_node_tags");
     expect(migration).toContain("candidate.plain_text");
     expect(migration).toContain("candidate.parent_node_id");
     expect(migration).not.toMatch(/security\s+definer/i);
-    expect(migration).toContain("revoke all on function public.get_knowledge_graph_memory");
+    expect(migration).toContain(
+      "revoke all on function public.get_knowledge_graph_memory",
+    );
     expect(migration).toContain("to authenticated");
   });
 
