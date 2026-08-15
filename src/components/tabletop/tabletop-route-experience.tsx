@@ -17,7 +17,7 @@ interface TabletopRouteExperienceProps {
   directorMode?: boolean;
 }
 
-function TabletopBootScreen() {
+function TabletopBootScreen({ resolvingRole = false }: { resolvingRole?: boolean }) {
   const [stage, setStage] = useState(0);
 
   useEffect(() => {
@@ -28,11 +28,17 @@ function TabletopBootScreen() {
     return () => timers.forEach((timer) => window.clearTimeout(timer));
   }, []);
 
-  const messages = [
-    "Abrindo o canvas essencial",
-    "Carregando a cena sem bloquear a interface",
-    "Preparando ferramentas avançadas em segundo plano",
-  ];
+  const messages = resolvingRole
+    ? [
+        "Confirmando seu papel na sessão",
+        "Preparando apenas as ferramentas que você pode usar",
+        "Quase pronto para abrir a cena",
+      ]
+    : [
+        "Abrindo o canvas essencial",
+        "Carregando a cena sem bloquear a interface",
+        "Preparando ferramentas avançadas em segundo plano",
+      ];
 
   return (
     <section className="tadeon-tabletop-boot" role="status" aria-live="polite">
@@ -57,10 +63,13 @@ function TabletopBootScreen() {
   );
 }
 
-class TabletopChunkBoundary extends Component<
-  { children: ReactNode; resetKey: number; onRetry: () => void },
-  { error: Error | null }
-> {
+type BoundaryProps = {
+  children: ReactNode;
+  resetKey: number;
+  onRetry: () => void;
+};
+
+class TabletopChunkBoundary extends Component<BoundaryProps, { error: Error | null }> {
   state: { error: Error | null } = { error: null };
 
   static getDerivedStateFromError(error: Error) {
@@ -73,7 +82,7 @@ class TabletopChunkBoundary extends Component<
     );
   }
 
-  componentDidUpdate(previous: Readonly<{ resetKey: number }>) {
+  componentDidUpdate(previous: Readonly<BoundaryProps>) {
     if (previous.resetKey !== this.props.resetKey && this.state.error) {
       this.setState({ error: null });
     }
@@ -110,6 +119,13 @@ export function TabletopRouteExperience({
   directorMode = false,
 }: TabletopRouteExperienceProps) {
   const [resetKey, setResetKey] = useState(0);
+
+  // Não adivinhar "jogador" durante a hidratação do perfil. Isso evitava baixar
+  // e montar o workspace de participante e, logo depois, descartá-lo para baixar
+  // o workspace de mestre no mesmo acesso.
+  if (role !== "mestre" && role !== "jogador") {
+    return <TabletopBootScreen resolvingRole />;
+  }
 
   const entry = directorMode && role === "mestre" ? (
     <DirectorEntry
