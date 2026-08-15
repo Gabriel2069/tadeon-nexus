@@ -13,6 +13,7 @@ import { TabletopDirectorEnhancementBridge } from "@/components/tabletop/tableto
 import { TabletopPlaceablesInspectorBridge } from "@/components/tabletop/tabletop-placeables-inspector-bridge";
 import { TabletopIntegrationToolsBridge } from "@/components/tabletop/tabletop-integration-tools-bridge";
 import { TabletopLocateBridge } from "@/components/tabletop/tabletop-locate-bridge";
+import { TabletopSemanticTransformBridge } from "@/components/tabletop/tabletop-semantic-transform-bridge";
 import { useAuth } from "@/lib/auth";
 import { loadFeatureFlags } from "@/lib/feature-flag-repository";
 import type { FeatureFlags } from "@/lib/feature-flags";
@@ -102,6 +103,7 @@ function TabletopRoute() {
           <TabletopDirectorEnhancementBridge />
           <TabletopPlaceablesInspectorBridge />
           <TabletopIntegrationToolsBridge />
+          <TabletopSemanticTransformBridge />
           <TabletopWorkspace
             realtimeEnabled={flags.nexus_realtime_enabled}
             lightingEnabled={flags.nexus_lighting_enabled}
