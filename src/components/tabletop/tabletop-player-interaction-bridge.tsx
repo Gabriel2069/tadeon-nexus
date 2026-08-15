@@ -19,7 +19,7 @@ import {
   type TabletopPowerTemplate,
 } from "@/lib/tabletop/tabletop-tactical-preview";
 import { currentTabletopRuntime } from "@/lib/tabletop/tabletop-player-runtime";
-import type { Point, TabletopSnapshot } from "@/lib/tabletop/types";
+import type { Point, TabletopEntity, TabletopSnapshot } from "@/lib/tabletop/types";
 import "@/styles/tabletop-player-interaction.css";
 
 type TacticalMode = "idle" | "movement" | "power";
@@ -64,6 +64,62 @@ function svgPoints(points: Point[]) {
     const client = screenPoint(point);
     return `${client.x},${client.y}`;
   }).join(" ");
+}
+
+function pointInsideEntity(point: Point, entity: TabletopEntity) {
+  const center = { x: entity.x + entity.width / 2, y: entity.y + entity.height / 2 };
+  const angle = (-entity.rotation * Math.PI) / 180;
+  const dx = point.x - center.x;
+  const dy = point.y - center.y;
+  const localX = dx * Math.cos(angle) - dy * Math.sin(angle);
+  const localY = dx * Math.sin(angle) + dy * Math.cos(angle);
+  return Math.abs(localX) <= entity.width / 2 && Math.abs(localY) <= entity.height / 2;
+}
+
+function topTargetAtPoint(snapshot: TabletopSnapshot, point: Point, sourceId?: string) {
+  const source = sourceId ? snapshot.scene.entities.find((entity) => entity.id === sourceId) : null;
+  return [...snapshot.scene.entities]
+    .filter(
+      (entity) =>
+        entity.id !== sourceId &&
+        !entity.hidden &&
+        (!source?.levelId || !entity.levelId || entity.levelId === source.levelId) &&
+        pointInsideEntity(point, entity),
+    )
+    .sort((left, right) => right.zIndex - left.zIndex)[0] ?? null;
+}
+
+function pointInsidePolygon(point: Point, polygon: Point[]) {
+  let inside = false;
+  for (let index = 0, previous = polygon.length - 1; index < polygon.length; previous = index++) {
+    const a = polygon[index];
+    const b = polygon[previous];
+    const intersects =
+      (a.y > point.y) !== (b.y > point.y) &&
+      point.x < ((b.x - a.x) * (point.y - a.y)) / (b.y - a.y || Number.EPSILON) + a.x;
+    if (intersects) inside = !inside;
+  }
+  return inside;
+}
+
+function distanceToSegment(point: Point, start: Point, end: Point) {
+  const dx = end.x - start.x;
+  const dy = end.y - start.y;
+  const lengthSquared = dx * dx + dy * dy;
+  if (lengthSquared <= Number.EPSILON) return Math.hypot(point.x - start.x, point.y - start.y);
+  const t = Math.max(0, Math.min(1, ((point.x - start.x) * dx + (point.y - start.y) * dy) / lengthSquared));
+  return Math.hypot(point.x - (start.x + dx * t), point.y - (start.y + dy * t));
+}
+
+function geometryContainsPoint(
+  geometry: ReturnType<typeof templatePath>,
+  point: Point,
+) {
+  if (geometry.kind === "circle")
+    return Math.hypot(point.x - geometry.center.x, point.y - geometry.center.y) <= geometry.radius;
+  if (geometry.kind === "segment")
+    return distanceToSegment(point, geometry.start, geometry.end) <= geometry.width / 2;
+  return pointInsidePolygon(point, geometry.points);
 }
 
 function pathForTemplate(template: TabletopPowerTemplate, origin: Point, target: Point) {
@@ -174,6 +230,7 @@ export function TabletopPlayerInteractionBridge() {
   const [cursorWorld, setCursorWorld] = useState<Point | null>(null);
   const [powerSources, setPowerSources] = useState<TabletopPowerSource[]>([]);
   const [activePower, setActivePower] = useState<TabletopPowerTemplate | null>(null);
+  const [targetIds, setTargetIds] = useState<Set<string>>(() => new Set());
   const [loadingPowers, setLoadingPowers] = useState(false);
   const sheetRequestRef = useRef(0);
 
@@ -227,6 +284,10 @@ export function TabletopPlayerInteractionBridge() {
   }, [linkedSheetId]);
 
   useEffect(() => {
+    setTargetIds(new Set());
+  }, [activePower?.id]);
+
+  useEffect(() => {
     const text = activePower
       ? [activePower.name, activePower.source.effect, activePower.source.damage]
           .filter(Boolean)
@@ -251,12 +312,26 @@ export function TabletopPlayerInteractionBridge() {
       : null,
     [plannedPoints, snapshot],
   );
+  const powerWorldGeometry = useMemo(
+    () => activePower && origin && cursorWorld
+      ? templatePath(activePower, origin, cursorWorld)
+      : null,
+    [activePower, cursorWorld, origin],
+  );
   const powerGeometry = useMemo(
     () => activePower && origin && cursorWorld
       ? pathForTemplate(activePower, origin, cursorWorld)
       : null,
     [activePower, cursorWorld, origin],
   );
+  const affectedEntities = useMemo(() => {
+    if (!snapshot || mode !== "power" || !powerWorldGeometry) return [];
+    return snapshot.scene.entities.filter((candidate) => {
+      if (candidate.id === entity?.id || candidate.hidden) return false;
+      if (entity?.levelId && candidate.levelId && candidate.levelId !== entity.levelId) return false;
+      return geometryContainsPoint(powerWorldGeometry, centerOf(candidate));
+    });
+  }, [entity?.id, entity?.levelId, mode, powerWorldGeometry, snapshot]);
 
   useEffect(() => {
     const runtime = currentTabletopRuntime();
@@ -282,6 +357,17 @@ export function TabletopPlayerInteractionBridge() {
           const start = current.length ? current : origin ? [origin] : [];
           return [...start, world];
         });
+        return;
+      }
+      if (mode === "power") {
+        const target = topTargetAtPoint(runtime.snapshot(), world, entity?.id);
+        if (!target) return;
+        setTargetIds((current) => {
+          const next = new Set(current);
+          if (next.has(target.id)) next.delete(target.id);
+          else next.add(target.id);
+          return next;
+        });
       }
     };
     const keyDown = (event: KeyboardEvent) => {
@@ -290,6 +376,7 @@ export function TabletopPlayerInteractionBridge() {
       setMovementPoints([]);
       setCursorWorld(null);
       setActivePower(null);
+      setTargetIds(new Set());
     };
     canvas.addEventListener("pointermove", pointerMove, true);
     canvas.addEventListener("pointerdown", pointerDown, true);
@@ -299,7 +386,7 @@ export function TabletopPlayerInteractionBridge() {
       canvas.removeEventListener("pointerdown", pointerDown, true);
       window.removeEventListener("keydown", keyDown);
     };
-  }, [mode, origin]);
+  }, [entity?.id, mode, origin]);
 
   if (!snapshot || new URLSearchParams(window.location.search).get("view") === "director") return null;
 
@@ -343,6 +430,32 @@ export function TabletopPlayerInteractionBridge() {
             className="tadeon-tactical-overlay__power-line"
           />
         )}
+        {mode === "power" && affectedEntities.map((candidate) => {
+          const point = screenPoint(centerOf(candidate));
+          const marked = targetIds.has(candidate.id);
+          return (
+            <g key={`affected-${candidate.id}`} className={marked ? "tadeon-tactical-target is-marked" : "tadeon-tactical-target is-affected"}>
+              <circle cx={point.x} cy={point.y} r={marked ? 17 : 12} />
+              {marked && <><line x1={point.x - 23} y1={point.y} x2={point.x - 10} y2={point.y} /><line x1={point.x + 10} y1={point.y} x2={point.x + 23} y2={point.y} /><line x1={point.x} y1={point.y - 23} x2={point.x} y2={point.y - 10} /><line x1={point.x} y1={point.y + 10} x2={point.x} y2={point.y + 23} /></>}
+            </g>
+          );
+        })}
+        {mode === "power" && [...targetIds]
+          .filter((id) => !affectedEntities.some((candidate) => candidate.id === id))
+          .map((id) => snapshot.scene.entities.find((candidate) => candidate.id === id))
+          .filter((candidate): candidate is TabletopEntity => Boolean(candidate))
+          .map((candidate) => {
+            const point = screenPoint(centerOf(candidate));
+            return (
+              <g key={`target-${candidate.id}`} className="tadeon-tactical-target is-marked is-outside">
+                <circle cx={point.x} cy={point.y} r={17} />
+                <line x1={point.x - 23} y1={point.y} x2={point.x - 10} y2={point.y} />
+                <line x1={point.x + 10} y1={point.y} x2={point.x + 23} y2={point.y} />
+                <line x1={point.x} y1={point.y - 23} x2={point.x} y2={point.y - 10} />
+                <line x1={point.x} y1={point.y + 10} x2={point.x} y2={point.y + 23} />
+              </g>
+            );
+          })}
       </svg>
 
       <aside className="tadeon-tactical-dock" data-mode={mode}>
@@ -362,6 +475,7 @@ export function TabletopPlayerInteractionBridge() {
               setMode((current) => current === "movement" ? "idle" : "movement");
               setMovementPoints(origin ? [origin] : []);
               setActivePower(null);
+              setTargetIds(new Set());
               setCursorWorld(null);
             }}
           >
@@ -392,6 +506,7 @@ export function TabletopPlayerInteractionBridge() {
                     aria-pressed={activePower?.id === template.id}
                     onClick={() => {
                       setActivePower(template);
+                      setTargetIds(new Set());
                       setMode("power");
                       setMovementPoints([]);
                       setCursorWorld(origin);
@@ -417,6 +532,7 @@ export function TabletopPlayerInteractionBridge() {
                 setMovementPoints([]);
                 setCursorWorld(null);
                 setActivePower(null);
+                setTargetIds(new Set());
               }}
             >
               <X aria-hidden="true" />
@@ -460,7 +576,9 @@ export function TabletopPlayerInteractionBridge() {
             <Sparkles aria-hidden="true" />
             <span>
               <strong>{activePower.name}</strong>
-              <small>{activePower.source.damage || activePower.source.effect || "prévia visual da Trama"}</small>
+              <small title={activePower.source.damage || activePower.source.effect || "Prévia visual da Trama"}>
+                {affectedEntities.length} na área · {targetIds.size} marcado{targetIds.size === 1 ? "" : "s"}
+              </small>
             </span>
           </div>
         )}
