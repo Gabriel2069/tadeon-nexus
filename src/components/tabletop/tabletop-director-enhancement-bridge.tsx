@@ -93,8 +93,8 @@ export function TabletopDirectorEnhancementBridge() {
       frame = 0;
       const next = discoverDirectorCommands();
       setCommands((current) => {
-        const before = current.map((item) => `${item.id}:${item.disabled}`).join("|");
-        const after = next.map((item) => `${item.id}:${item.disabled}`).join("|");
+        const before = current.map((item) => item.id).join("|");
+        const after = next.map((item) => item.id).join("|");
         return before === after ? current : next;
       });
     };
@@ -118,7 +118,11 @@ export function TabletopDirectorEnhancementBridge() {
   useEffect(() => {
     const keyDown = (event: KeyboardEvent) => {
       const target = event.target;
-      const typing = target instanceof HTMLInputElement || target instanceof HTMLTextAreaElement || target instanceof HTMLSelectElement || (target instanceof HTMLElement && target.isContentEditable);
+      const typing =
+        target instanceof HTMLInputElement ||
+        target instanceof HTMLTextAreaElement ||
+        target instanceof HTMLSelectElement ||
+        (target instanceof HTMLElement && target.isContentEditable);
       if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "k") {
         event.preventDefault();
         setOpen((value) => !value);
@@ -126,7 +130,8 @@ export function TabletopDirectorEnhancementBridge() {
       }
       if (typing || event.metaKey || event.ctrlKey || event.altKey) return;
       if (event.key.toLowerCase() === "d") clickCommand(/diagn/);
-      if (event.key.toLowerCase() === "v") clickCommand(/visão.*jogador|jogador.*visão|player view/);
+      if (event.key.toLowerCase() === "v")
+        clickCommand(/visão.*jogador|jogador.*visão|player view/);
       if (event.key === "Escape") setOpen(false);
     };
     window.addEventListener("keydown", keyDown);
@@ -135,10 +140,20 @@ export function TabletopDirectorEnhancementBridge() {
 
   const filtered = useMemo(() => {
     const value = query.trim().toLowerCase();
-    return commands.filter((command) => !value || command.label.toLowerCase().includes(value) || command.category.includes(value)).slice(0, 24);
+    return commands
+      .filter(
+        (command) =>
+          !value ||
+          command.label.toLowerCase().includes(value) ||
+          command.category.includes(value),
+      )
+      .slice(0, 24);
   }, [commands, query]);
   const hasPlayerView = useMemo(
-    () => commands.some((command) => /visão.*jogador|jogador.*visão|player view/.test(command.label.toLowerCase())),
+    () =>
+      commands.some((command) =>
+        /visão.*jogador|jogador.*visão|player view/.test(command.label.toLowerCase()),
+      ),
     [commands],
   );
   const hasDiagnostics = useMemo(
@@ -149,11 +164,18 @@ export function TabletopDirectorEnhancementBridge() {
   return (
     <>
       <div className="tadeon-director-enhancement-bar">
-        <span data-healthy={commands.length > 0} title="Central construída sobre os comandos canônicos já disponíveis no Painel do Mestre">
+        <span
+          data-healthy={commands.length > 0}
+          title="Central construída sobre os comandos canônicos já disponíveis no Painel do Mestre"
+        >
           <ShieldCheck aria-hidden="true" />
           {commands.length > 0 ? "Direção pronta" : "Aguardando painel"}
         </span>
-        <button type="button" onClick={() => setOpen(true)} title="Central de comandos ~ ⌘/Ctrl+K">
+        <button
+          type="button"
+          onClick={() => setOpen(true)}
+          title="Central de comandos ~ ⌘/Ctrl+K"
+        >
           <Command aria-hidden="true" /> Comandos
         </button>
         <button
@@ -172,14 +194,28 @@ export function TabletopDirectorEnhancementBridge() {
         >
           <HeartPulse aria-hidden="true" /> Diagnóstico
         </button>
-        <button type="button" onClick={openDedicatedDirector} title="Separar o Painel do Mestre em uma janela dedicada">
+        <button
+          type="button"
+          onClick={openDedicatedDirector}
+          title="Separar o Painel do Mestre em uma janela dedicada"
+        >
           <ExternalLink aria-hidden="true" /> Separar
         </button>
       </div>
 
       {open && (
-        <div className="tadeon-director-command-palette" role="dialog" aria-modal="true" aria-label="Central de comandos do mestre">
-          <button className="tadeon-director-command-palette__backdrop" type="button" aria-label="Fechar central" onClick={() => setOpen(false)} />
+        <div
+          className="tadeon-director-command-palette"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Central de comandos do mestre"
+        >
+          <button
+            className="tadeon-director-command-palette__backdrop"
+            type="button"
+            aria-label="Fechar central"
+            onClick={() => setOpen(false)}
+          />
           <section>
             <header>
               <span><Command aria-hidden="true" /></span>
@@ -187,11 +223,23 @@ export function TabletopDirectorEnhancementBridge() {
                 <small>Central do mestre</small>
                 <strong>Comandos da sessão</strong>
               </div>
-              <Button size="icon" variant="ghost" aria-label="Fechar central" onClick={() => setOpen(false)}><X aria-hidden="true" /></Button>
+              <Button
+                size="icon"
+                variant="ghost"
+                aria-label="Fechar central"
+                onClick={() => setOpen(false)}
+              >
+                <X aria-hidden="true" />
+              </Button>
             </header>
             <label className="tadeon-director-command-palette__search">
               <Search aria-hidden="true" />
-              <Input autoFocus value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Buscar visão, foco, participante, diagnóstico..." />
+              <Input
+                autoFocus
+                value={query}
+                onChange={(event) => setQuery(event.target.value)}
+                placeholder="Buscar visão, foco, participante, diagnóstico..."
+              />
               <kbd>⌘K</kbd>
             </label>
             <div className="tadeon-director-command-palette__commands">
@@ -206,7 +254,13 @@ export function TabletopDirectorEnhancementBridge() {
                   }}
                 >
                   <span>
-                    {command.category === "visão" ? <Eye aria-hidden="true" /> : command.category === "diagnóstico" ? <HeartPulse aria-hidden="true" /> : <Command aria-hidden="true" />}
+                    {command.category === "visão" ? (
+                      <Eye aria-hidden="true" />
+                    ) : command.category === "diagnóstico" ? (
+                      <HeartPulse aria-hidden="true" />
+                    ) : (
+                      <Command aria-hidden="true" />
+                    )}
                   </span>
                   <span>
                     <strong>{command.label}</strong>
@@ -215,13 +269,17 @@ export function TabletopDirectorEnhancementBridge() {
                 </button>
               ))}
               {filtered.length === 0 && (
-                <div className="tadeon-director-command-palette__empty">Nenhum comando do painel corresponde à busca.</div>
+                <div className="tadeon-director-command-palette__empty">
+                  Nenhum comando do painel corresponde à busca.
+                </div>
               )}
             </div>
             <footer>
               <span><kbd>D</kbd> diagnóstico</span>
               <span><kbd>V</kbd> visão jogador</span>
-              <span>Os comandos continuam passando pelo painel original, permissões e realtime existentes.</span>
+              <span>
+                Os comandos continuam passando pelo painel original, permissões e realtime existentes.
+              </span>
             </footer>
           </section>
         </div>
