@@ -37,7 +37,7 @@ describe("Nexus second-brain graph architecture", () => {
     expect(model).not.toContain('"undirected"');
   });
 
-  it("builds memory from RLS-scoped content without privileged bypass", () => {
+  it("starts from an RLS-scoped memory contract", () => {
     const migration = source(
       "supabase/migrations/20260815231500_nexus_second_brain_graph.sql",
     );
@@ -54,6 +54,20 @@ describe("Nexus second-brain graph architecture", () => {
       "revoke all on function public.get_knowledge_graph_memory",
     );
     expect(migration).toContain("to authenticated");
+  });
+
+  it("only enables the fast definer path after explicit per-node authorization", () => {
+    const fastPath = source(
+      "supabase/migrations/20260815235500_nexus_second_brain_graph_authorized_fast_path.sql",
+    );
+
+    expect(fastPath).toContain("private.can_read_knowledge_node(node.id)");
+    expect(fastPath).toMatch(/security\s+definer/i);
+    expect(fastPath).toContain("from public");
+    expect(fastPath).toContain("to authenticated");
+    expect(fastPath).toContain(
+      "every candidate before any edge, mention, tag, hierarchy, or content signal",
+    );
   });
 
   it("uses opaque theme surfaces for graph chrome", () => {
