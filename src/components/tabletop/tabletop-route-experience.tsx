@@ -120,12 +120,11 @@ export function TabletopRouteExperience({
 }: TabletopRouteExperienceProps) {
   const [resetKey, setResetKey] = useState(0);
 
-  // Não adivinhar "jogador" durante a hidratação do perfil. Isso evitava baixar
-  // e montar o workspace de participante e, logo depois, descartá-lo para baixar
-  // o workspace de mestre no mesmo acesso.
-  if (role !== "mestre" && role !== "jogador") {
-    return <TabletopBootScreen resolvingRole />;
-  }
+  // Não adivinha um papel enquanto o perfil ainda está hidratando. Antes, isso
+  // podia baixar o workspace de participante e logo depois descartá-lo para
+  // montar o workspace do mestre no mesmo acesso. Espectador usa a entrada
+  // participante, preservando o comportamento de leitura já existente.
+  if (!role) return <TabletopBootScreen resolvingRole />;
 
   const entry = directorMode && role === "mestre" ? (
     <DirectorEntry
