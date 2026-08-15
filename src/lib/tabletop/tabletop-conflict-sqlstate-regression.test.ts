@@ -15,7 +15,7 @@ describe("Tabletop optimistic conflict SQLSTATE regression", () => {
     expect(migration).toContain("save_tabletop_scene_state");
     expect(migration).toContain("TABLETOP_VERSION_CONFLICT");
     expect(migration).toContain("position('40001' in definition) > 0");
-    expect(migration).toContain("'errcode = ''P0001''' ");
+    expect(migration).toContain("'errcode = ''P0001'''");
     expect(migration).toContain("position('P0001' in definition) = 0");
   });
 
