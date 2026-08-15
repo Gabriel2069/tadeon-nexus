@@ -13,6 +13,7 @@ import {
   Focus,
   Loader2,
   Maximize2,
+  Minimize2,
   Network,
   Search,
   Workflow,
@@ -129,11 +130,28 @@ export function KnowledgeGraph({
   const [viewport, setViewport] = useState({ width: 900, height: 560 });
   const [pan, setPan] = useState<Point>({ x: 450, y: 280 });
   const [zoom, setZoom] = useState(1);
+  const [expanded, setExpanded] = useState(false);
 
   useEffect(() => {
     setGraphFocusId(focusNodeId);
     setSelectedId(focusNodeId);
   }, [focusNodeId]);
+
+  useEffect(() => {
+    if (!expanded) return;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key !== "Escape") return;
+      event.preventDefault();
+      setExpanded(false);
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => {
+      window.removeEventListener("keydown", onKeyDown);
+      document.body.style.overflow = previousOverflow;
+    };
+  }, [expanded]);
 
   const loadGraph = useCallback(async () => {
     setLoading(true);
@@ -618,11 +636,28 @@ export function KnowledgeGraph({
   }
 
   return (
-    <div className="tadeon-knowledge-graph grid min-h-[600px] gap-3 lg:grid-cols-[minmax(0,1fr)_300px]">
-      <div className="tadeon-graph-canvas relative min-h-[520px] overflow-hidden rounded-xl border bg-[#090c10]">
+    <div
+      data-expanded={expanded ? "true" : "false"}
+      className={
+        expanded
+          ? "tadeon-knowledge-graph fixed inset-2 z-[220] min-h-0 overflow-hidden rounded-2xl border bg-background p-2 shadow-2xl sm:inset-4"
+          : "tadeon-knowledge-graph grid min-h-[600px] gap-3 lg:grid-cols-[minmax(0,1fr)_300px]"
+      }
+    >
+      <div
+        className={
+          expanded
+            ? "tadeon-graph-canvas relative h-full min-h-0 overflow-hidden rounded-xl border bg-[#090c10]"
+            : "tadeon-graph-canvas relative min-h-[520px] overflow-hidden rounded-xl border bg-[#090c10]"
+        }
+      >
         <canvas
           ref={canvasRef}
-          className="h-full min-h-[520px] w-full cursor-grab touch-none active:cursor-grabbing"
+          className={
+            expanded
+              ? "h-full min-h-0 w-full cursor-grab touch-none active:cursor-grabbing"
+              : "h-full min-h-[520px] w-full cursor-grab touch-none active:cursor-grabbing"
+          }
           data-layout={layout}
           onPointerDown={pointerDown}
           onPointerMove={pointerMove}
@@ -685,8 +720,18 @@ export function KnowledgeGraph({
           >
             <ZoomOut className="h-4 w-4" />
           </Button>
-          <Button size="icon" variant="ghost" onClick={fitGraph} aria-label="Ajustar grafo">
-            <Maximize2 className="h-4 w-4" />
+          <Button size="icon" variant="ghost" onClick={fitGraph} aria-label="Reenquadrar grafo">
+            <Focus className="h-4 w-4" />
+          </Button>
+          <Button
+            size="icon"
+            variant="ghost"
+            onClick={() => setExpanded((current) => !current)}
+            aria-label={expanded ? "Reduzir grafo" : "Ampliar grafo"}
+            aria-pressed={expanded}
+            title={expanded ? "Voltar ao painel" : "Ampliar grafo"}
+          >
+            {expanded ? <Minimize2 className="h-4 w-4" /> : <Maximize2 className="h-4 w-4" />}
           </Button>
         </div>
         {loading && (
@@ -706,171 +751,173 @@ export function KnowledgeGraph({
         )}
       </div>
 
-      <aside className="tadeon-graph-inspector space-y-3 overflow-y-auto rounded-xl border bg-card/55 p-3">
-        <div>
-          <p className="tadeon-eyebrow">{layout === "tree" ? "Árvore local" : "Teia local"}</p>
-          <p className="mt-1 text-xs text-muted-foreground">
-            {graph?.nodes.length ?? 0} nós · {graph?.edges.length ?? 0} relações
-          </p>
-          <p
-            id="nexus-graph-help"
-            className="mt-2 text-[10px] leading-relaxed text-muted-foreground"
-          >
-            Arraste para mover, use a roda para zoom. No teclado, percorra os nós com as setas,
-            Enter abre e 0 reenquadra.
-          </p>
-        </div>
-
-        <div className="tadeon-graph-legend" aria-label="Legenda de categorias">
-          {[
-            ["#d9d7a4", "Pessoas"],
-            ["#4f6e5d", "Lugares"],
-            ["#716b7b", "Tramas"],
-            ["#74242d", "Artefatos"],
-          ].map(([color, label]) => (
-            <span key={label}>
-              <i style={{ backgroundColor: color }} aria-hidden="true" />
-              {label}
-            </span>
-          ))}
-        </div>
-
-        <div className="relative">
-          <Search className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
-          <Input
-            value={query}
-            onChange={(event) => setQuery(event.target.value)}
-            placeholder="Buscar nó carregado…"
-            className="pl-9"
-          />
-        </div>
-        {matches.length > 0 && (
-          <div className="tadeon-graph-matches space-y-1 rounded-lg border p-1">
-            {matches.map((node) => (
-              <button
-                type="button"
-                key={node.id}
-                onClick={() => {
-                  setSelectedId(node.id);
-                  setQuery("");
-                  const point = positions.get(node.id);
-                  if (point) {
-                    setPan({
-                      x: viewport.width / 2 - point.x * zoom,
-                      y: viewport.height / 2 - point.y * zoom,
-                    });
-                  }
-                }}
-                className="block w-full truncate rounded px-2 py-1.5 text-left text-xs"
-              >
-                {node.title}
-              </button>
-            ))}
-          </div>
-        )}
-
-        <div className="grid grid-cols-2 gap-2">
-          <Select value={String(depth)} onValueChange={(value) => setDepth(value === "2" ? 2 : 1)}>
-            <SelectTrigger aria-label="Profundidade">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="1">1 nível</SelectItem>
-              <SelectItem value="2">2 níveis</SelectItem>
-            </SelectContent>
-          </Select>
-          <Select value={String(limit)} onValueChange={(value) => setLimit(Number(value))}>
-            <SelectTrigger aria-label="Limite de nós">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="60">60 nós</SelectItem>
-              <SelectItem value="120">120 nós</SelectItem>
-              <SelectItem value="200">200 nós</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-        <Select
-          value={nodeType}
-          onValueChange={(value) => setNodeType(value as KnowledgeNodeType | "all")}
-        >
-          <SelectTrigger aria-label="Filtrar tipo de nó">
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">Todos os tipos</SelectItem>
-            {KNOWLEDGE_NODE_TYPES.map((type) => (
-              <SelectItem key={type} value={type}>
-                {typeLabel(type)}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-        <Select
-          value={relationType}
-          onValueChange={(value) => setRelationType(value as RelationType | "all")}
-        >
-          <SelectTrigger aria-label="Filtrar relação">
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">Todas as relações</SelectItem>
-            {RELATION_TYPES.map((type) => (
-              <SelectItem key={type} value={type}>
-                {type.replaceAll("_", " ")}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-        <Select
-          value={visibility}
-          onValueChange={(value) => setVisibility(value as KnowledgeVisibility | "all")}
-        >
-          <SelectTrigger aria-label="Filtrar visibilidade">
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">Toda visibilidade</SelectItem>
-            {KNOWLEDGE_VISIBILITIES.map((item) => (
-              <SelectItem key={item} value={item}>
-                {item.replaceAll("_", " ")}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-
-        {selectedNode && (
-          <div className="tadeon-graph-selection rounded-xl border bg-background/35 p-3">
-            <div className="flex items-center gap-2">
-              <span
-                className="h-3 w-3 rounded-full"
-                style={{ backgroundColor: nodeColor(selectedNode.nodeType) }}
-              />
-              <p className="min-w-0 flex-1 truncate text-sm font-semibold">{selectedNode.title}</p>
-            </div>
-            <p className="mt-2 text-[10px] uppercase tracking-wide text-muted-foreground">
-              {typeLabel(selectedNode.nodeType)} · nível {selectedNode.depth}
+      {!expanded && (
+        <aside className="tadeon-graph-inspector space-y-3 overflow-y-auto rounded-xl border bg-card/55 p-3">
+          <div>
+            <p className="tadeon-eyebrow">{layout === "tree" ? "Árvore local" : "Teia local"}</p>
+            <p className="mt-1 text-xs text-muted-foreground">
+              {graph?.nodes.length ?? 0} nós · {graph?.edges.length ?? 0} relações
             </p>
-            <div className="mt-3 grid grid-cols-2 gap-2">
-              <Button
-                size="sm"
-                variant="outline"
-                onClick={() => {
-                  setGraphFocusId(selectedNode.id);
-                  setSelectedId(selectedNode.id);
-                }}
-              >
-                <Focus className="h-3.5 w-3.5" />
-                Focar
-              </Button>
-              <Button size="sm" onClick={() => onOpenNode(selectedNode.id)}>
-                <Crosshair className="h-3.5 w-3.5" />
-                Abrir
-              </Button>
-            </div>
+            <p
+              id="nexus-graph-help"
+              className="mt-2 text-[10px] leading-relaxed text-muted-foreground"
+            >
+              Arraste para mover, use a roda para zoom. No teclado, percorra os nós com as setas,
+              Enter abre e 0 reenquadra.
+            </p>
           </div>
-        )}
-      </aside>
+
+          <div className="tadeon-graph-legend" aria-label="Legenda de categorias">
+            {[
+              ["#d9d7a4", "Pessoas"],
+              ["#4f6e5d", "Lugares"],
+              ["#716b7b", "Tramas"],
+              ["#74242d", "Artefatos"],
+            ].map(([color, label]) => (
+              <span key={label}>
+                <i style={{ backgroundColor: color }} aria-hidden="true" />
+                {label}
+              </span>
+            ))}
+          </div>
+
+          <div className="relative">
+            <Search className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
+            <Input
+              value={query}
+              onChange={(event) => setQuery(event.target.value)}
+              placeholder="Buscar nó carregado…"
+              className="pl-9"
+            />
+          </div>
+          {matches.length > 0 && (
+            <div className="tadeon-graph-matches space-y-1 rounded-lg border p-1">
+              {matches.map((node) => (
+                <button
+                  type="button"
+                  key={node.id}
+                  onClick={() => {
+                    setSelectedId(node.id);
+                    setQuery("");
+                    const point = positions.get(node.id);
+                    if (point) {
+                      setPan({
+                        x: viewport.width / 2 - point.x * zoom,
+                        y: viewport.height / 2 - point.y * zoom,
+                      });
+                    }
+                  }}
+                  className="block w-full truncate rounded px-2 py-1.5 text-left text-xs"
+                >
+                  {node.title}
+                </button>
+              ))}
+            </div>
+          )}
+
+          <div className="grid grid-cols-2 gap-2">
+            <Select value={String(depth)} onValueChange={(value) => setDepth(value === "2" ? 2 : 1)}>
+              <SelectTrigger aria-label="Profundidade">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="1">1 nível</SelectItem>
+                <SelectItem value="2">2 níveis</SelectItem>
+              </SelectContent>
+            </Select>
+            <Select value={String(limit)} onValueChange={(value) => setLimit(Number(value))}>
+              <SelectTrigger aria-label="Limite de nós">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="60">60 nós</SelectItem>
+                <SelectItem value="120">120 nós</SelectItem>
+                <SelectItem value="200">200 nós</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <Select
+            value={nodeType}
+            onValueChange={(value) => setNodeType(value as KnowledgeNodeType | "all")}
+          >
+            <SelectTrigger aria-label="Filtrar tipo de nó">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">Todos os tipos</SelectItem>
+              {KNOWLEDGE_NODE_TYPES.map((type) => (
+                <SelectItem key={type} value={type}>
+                  {typeLabel(type)}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          <Select
+            value={relationType}
+            onValueChange={(value) => setRelationType(value as RelationType | "all")}
+          >
+            <SelectTrigger aria-label="Filtrar relação">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">Todas as relações</SelectItem>
+              {RELATION_TYPES.map((type) => (
+                <SelectItem key={type} value={type}>
+                  {type.replaceAll("_", " ")}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          <Select
+            value={visibility}
+            onValueChange={(value) => setVisibility(value as KnowledgeVisibility | "all")}
+          >
+            <SelectTrigger aria-label="Filtrar visibilidade">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">Toda visibilidade</SelectItem>
+              {KNOWLEDGE_VISIBILITIES.map((item) => (
+                <SelectItem key={item} value={item}>
+                  {item.replaceAll("_", " ")}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+
+          {selectedNode && (
+            <div className="tadeon-graph-selection rounded-xl border bg-background/35 p-3">
+              <div className="flex items-center gap-2">
+                <span
+                  className="h-3 w-3 rounded-full"
+                  style={{ backgroundColor: nodeColor(selectedNode.nodeType) }}
+                />
+                <p className="min-w-0 flex-1 truncate text-sm font-semibold">{selectedNode.title}</p>
+              </div>
+              <p className="mt-2 text-[10px] uppercase tracking-wide text-muted-foreground">
+                {typeLabel(selectedNode.nodeType)} · nível {selectedNode.depth}
+              </p>
+              <div className="mt-3 grid grid-cols-2 gap-2">
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => {
+                    setGraphFocusId(selectedNode.id);
+                    setSelectedId(selectedNode.id);
+                  }}
+                >
+                  <Focus className="h-3.5 w-3.5" />
+                  Focar
+                </Button>
+                <Button size="sm" onClick={() => onOpenNode(selectedNode.id)}>
+                  <Crosshair className="h-3.5 w-3.5" />
+                  Abrir
+                </Button>
+              </div>
+            </div>
+          )}
+        </aside>
+      )}
     </div>
   );
 }

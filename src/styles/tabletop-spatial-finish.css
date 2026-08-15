@@ -3,16 +3,33 @@
    modal inspector behavior and viewport-fixed bridges without changing the
    visual language of Fio Mestre. */
 
-/* Operational chrome must be readable over a detailed map. Translucency here
-   caused the stage and contextual panel to bleed through the controls. */
+/* Operational chrome must be readable over a detailed map. The theme tokens
+   already contain complete colors (hex/oklch values), so wrapping them in
+   hsl() makes the declaration invalid and the browser falls back to a fully
+   transparent surface. Keep every working surface genuinely opaque here. */
 :where(
   .tadeon-tabletop-progressive-dock,
   .tadeon-tactical-dock,
   .tadeon-tabletop-selection-actions,
   .tadeon-tabletop-stage-status,
-  .tadeon-semantic-transform
+  .tadeon-semantic-transform,
+  .tadeon-tabletop-context-menu,
+  .tadeon-tabletop-tool-options,
+  .tadeon-tabletop-selection-dock,
+  .tadeon-tactical-dock__power-list,
+  .tadeon-tabletop-command-palette,
+  .tadeon-tabletop-precision-editor,
+  .tadeon-tabletop-reliability-strip,
+  .tadeon-placeables__panel,
+  .tadeon-tabletop-now__panel,
+  .tadeon-creative-dock__panel,
+  .tadeon-nexus-tabletop-locator
 ) {
-  background: hsl(var(--card)) !important;
+  background: linear-gradient(
+    180deg,
+    var(--card),
+    color-mix(in srgb, var(--card) 92%, var(--background))
+  ) !important;
   backdrop-filter: none !important;
 }
 
@@ -21,7 +38,28 @@
 .tadeon-tabletop-selection-actions {
   box-shadow:
     0 22px 54px -34px hsl(220 50% 2% / .98),
-    inset 0 1px 0 hsl(var(--foreground) / .055) !important;
+    inset 0 1px 0 color-mix(in srgb, var(--foreground) 5.5%, transparent) !important;
+}
+
+/* The progressive selection rail is the canonical quick-action surface for
+   normal entities. Keep the specialized structure/light/fog editors because
+   they expose controls that do not exist in the global rail. */
+body:has(.tadeon-tabletop-selection-actions)
+  .tadeon-tabletop-selection-dock[aria-label="Ações rápidas da seleção"] {
+  display: none !important;
+}
+
+/* A contextual entity menu owns the interaction while it is open. Do not leave
+   persistent docks underneath/through it; they return as soon as the menu is
+   dismissed. */
+body:has(.tadeon-tabletop-context-menu) :where(
+  .tadeon-tabletop-progressive-dock,
+  .tadeon-tactical-dock,
+  .tadeon-tabletop-selection-actions
+) {
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
 }
 
 /* The auto-generated radial clone duplicates the canonical context menu and
@@ -56,44 +94,72 @@ html[data-tadeon-tabletop-interface="advanced"] .tadeon-tabletop-canvas-host {
 
 .tadeon-tabletop-stage-status {
   z-index: 15 !important;
-  border-color: hsl(var(--border) / .82) !important;
-  background: hsl(var(--card)) !important;
+  border-color: color-mix(in srgb, var(--border) 82%, transparent) !important;
+  background: var(--card) !important;
   box-shadow: 0 14px 38px -30px hsl(220 48% 2% / .96) !important;
 }
 
-/* Desktop docks are centered on the usable stage, not on the browser viewport.
-   The right contextual panel is 23rem (25rem on 2xl), so its half width must be
-   removed from the fixed-control center. */
-@media (min-width: 1180px) {
-  body:has(.tadeon-tabletop-panel[data-collapsed="false"]) :where(
+/* Fixed chrome is anchored to the measured stage rectangle, not to guessed
+   viewport offsets. The stage geometry follows the real app sidebar, the
+   contextual inspector and every responsive collapse/expand state. */
+@media (min-width: 801px) {
+  :where(
     .tadeon-tabletop-progressive-dock,
     .tadeon-tactical-dock,
-    .tadeon-tabletop-selection-actions
+    .tadeon-tabletop-selection-actions,
+    .tadeon-tabletop-reliability-strip
   ) {
-    left: calc(50% - 11.5rem) !important;
+    left: var(--tadeon-tabletop-stage-center, 50%) !important;
+    max-width: min(
+      56rem,
+      calc(var(--tadeon-tabletop-stage-width, 100vw) - 1rem)
+    ) !important;
   }
 
-  body:has(.tadeon-tabletop-panel[data-collapsed="true"]) :where(
-    .tadeon-tabletop-progressive-dock,
-    .tadeon-tactical-dock,
-    .tadeon-tabletop-selection-actions
+  .tadeon-tabletop-selection-actions {
+    max-width: min(
+      42rem,
+      calc(var(--tadeon-tabletop-stage-width, 100vw) - 1rem)
+    ) !important;
+  }
+
+  .tadeon-tabletop-now {
+    left: max(
+      calc(var(--tadeon-tabletop-stage-left, 0px) + .8rem),
+      env(safe-area-inset-left)
+    ) !important;
+  }
+
+  :where(
+    .tadeon-placeables,
+    .tadeon-semantic-transform,
+    .tadeon-nexus-tabletop-locator,
+    .tadeon-creative-dock,
+    .tadeon-tabletop-precision-editor
   ) {
-    left: calc(50% - 1.875rem) !important;
+    right: max(
+      calc(var(--tadeon-tabletop-stage-right, 0px) + .8rem),
+      env(safe-area-inset-right)
+    ) !important;
+  }
+
+  :where(
+    .tadeon-placeables__panel,
+    .tadeon-tabletop-now__panel,
+    .tadeon-creative-dock__panel,
+    .tadeon-tabletop-precision-editor,
+    .tadeon-tactical-dock__power-list,
+    .tadeon-nexus-tabletop-locator
+  ) {
+    max-width: min(
+      calc(var(--tadeon-tabletop-stage-width, 100vw) - 1rem),
+      calc(100vw - 1rem)
+    ) !important;
   }
 }
 
-@media (min-width: 1536px) {
-  body:has(.tadeon-tabletop-panel[data-collapsed="false"]) :where(
-    .tadeon-tabletop-progressive-dock,
-    .tadeon-tactical-dock,
-    .tadeon-tabletop-selection-actions
-  ) {
-    left: calc(50% - 12.5rem) !important;
-  }
-}
-
-/* Tablet/notebook inspector: editing a selected token is not a modal action.
-   Remove the blackout and keep the stage visible/manipulable outside the sheet. */
+/* Tablet/notebook inspector: editing a selected token is not a modal blackout,
+   but the inspector itself owns its physical lane while open. */
 @media (max-width: 1179px) {
   .tadeon-tabletop-panel-backdrop,
   .tadeon-tabletop-panel-backdrop[data-open="true"] {
@@ -106,8 +172,8 @@ html[data-tadeon-tabletop-interface="advanced"] .tadeon-tabletop-canvas-host {
 
   .tadeon-tabletop-panel[data-mobile-open="true"] {
     z-index: 124 !important;
-    border-color: hsl(var(--border) / .86) !important;
-    background: hsl(var(--card)) !important;
+    border-color: color-mix(in srgb, var(--border) 86%, transparent) !important;
+    background: var(--card) !important;
     box-shadow: 0 26px 70px -34px hsl(220 52% 1% / .98) !important;
     backdrop-filter: none !important;
   }
@@ -129,19 +195,6 @@ html[data-tadeon-tabletop-interface="advanced"] .tadeon-tabletop-canvas-host {
 }
 
 @media (min-width: 801px) and (max-width: 1179px) {
-  body:has(.tadeon-tabletop-panel[data-mobile-open="true"]) {
-    --tadeon-tabletop-inspector-width: min(28rem, calc(100vw - 2rem));
-  }
-
-  body:has(.tadeon-tabletop-panel[data-mobile-open="true"])
-    .tadeon-tabletop-progressive-dock {
-    left: calc((100vw - var(--tadeon-tabletop-inspector-width)) / 2) !important;
-    max-width: calc(100vw - var(--tadeon-tabletop-inspector-width) - 2rem) !important;
-    opacity: 1 !important;
-    visibility: visible !important;
-    pointer-events: auto !important;
-  }
-
   .tadeon-tabletop-panel[data-mobile-open="true"] {
     position: fixed !important;
     top: max(4.75rem, calc(env(safe-area-inset-top) + .75rem)) !important;
@@ -150,7 +203,7 @@ html[data-tadeon-tabletop-interface="advanced"] .tadeon-tabletop-canvas-host {
     left: auto !important;
     width: min(28rem, calc(100vw - 2rem)) !important;
     max-height: none !important;
-    border: 1px solid hsl(var(--border) / .86) !important;
+    border: 1px solid color-mix(in srgb, var(--border) 86%, transparent) !important;
     border-radius: 1rem !important;
     overflow-y: auto !important;
     transform: translate3d(0, 0, 0) !important;
@@ -159,7 +212,7 @@ html[data-tadeon-tabletop-interface="advanced"] .tadeon-tabletop-canvas-host {
 
 @media (max-width: 800px) {
   .tadeon-tabletop-panel[data-mobile-open="true"] {
-    background: hsl(var(--card)) !important;
+    background: var(--card) !important;
   }
 
   .tadeon-tabletop-stage-status {
@@ -189,9 +242,9 @@ html[data-tadeon-tabletop-interface="advanced"] .tadeon-tabletop-canvas-host {
   width: 100%;
   gap: .5rem;
   padding: .55rem;
-  border: 1px solid hsl(var(--border) / .7);
+  border: 1px solid color-mix(in srgb, var(--border) 70%, transparent);
   border-radius: .85rem;
-  background: hsl(var(--background) / .42);
+  background: color-mix(in srgb, var(--background) 88%, var(--card));
 }
 
 .tadeon-fog-geometry-tool__shapes,
@@ -215,10 +268,10 @@ html[data-tadeon-tabletop-interface="advanced"] .tadeon-tabletop-canvas-host {
   justify-content: center;
   gap: .35rem;
   padding: .4rem .5rem;
-  border: 1px solid hsl(var(--border) / .62);
+  border: 1px solid color-mix(in srgb, var(--border) 62%, transparent);
   border-radius: .65rem;
-  background: hsl(var(--secondary) / .28);
-  color: hsl(var(--muted-foreground));
+  background: color-mix(in srgb, var(--secondary) 82%, var(--background));
+  color: var(--muted-foreground);
   font-size: .64rem;
   font-weight: 720;
   transition:
@@ -230,16 +283,16 @@ html[data-tadeon-tabletop-interface="advanced"] .tadeon-tabletop-canvas-host {
 
 .tadeon-fog-geometry-tool button:hover,
 .tadeon-fog-geometry-tool button:focus-visible {
-  color: hsl(var(--foreground));
-  border-color: hsl(var(--primary) / .38);
+  color: var(--foreground);
+  border-color: color-mix(in srgb, var(--primary) 38%, var(--border));
   transform: translateY(-1px);
   outline: none;
 }
 
 .tadeon-fog-geometry-tool button[aria-pressed="true"] {
-  color: hsl(var(--foreground));
-  border-color: hsl(var(--primary) / .5);
-  background: hsl(var(--primary) / .13);
+  color: var(--foreground);
+  border-color: color-mix(in srgb, var(--primary) 50%, var(--border));
+  background: color-mix(in srgb, var(--primary) 13%, var(--background));
 }
 
 .tadeon-fog-geometry-tool__operations button:first-child {
@@ -256,7 +309,7 @@ html[data-tadeon-tabletop-interface="advanced"] .tadeon-tabletop-canvas-host {
 }
 
 .tadeon-fog-geometry-tool small {
-  color: hsl(var(--muted-foreground));
+  color: var(--muted-foreground);
   font-size: .56rem;
   line-height: 1.35;
 }
