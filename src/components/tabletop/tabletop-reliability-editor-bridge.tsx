@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   Check,
   CloudDownload,
@@ -134,97 +134,24 @@ function selectedEntity(snapshot: TabletopSnapshot | null) {
   return snapshot.scene.entities.find((entity) => entity.id === snapshot.selectedIds[0]) ?? null;
 }
 
-function normalizeButtonText(button: HTMLButtonElement) {
-  return button.textContent?.replace(/\s+/g, " ").trim() ?? "";
-}
-
-function findSaveButtons() {
-  const all = Array.from(document.querySelectorAll<HTMLButtonElement>("button"));
-  return {
-    scene: all.find((button) => normalizeButtonText(button) === "Salvar") ?? null,
-    visibility:
-      all.find((button) => normalizeButtonText(button) === "Salvar ambiente") ?? null,
-  };
-}
-
 function useThrottledAutosave(enabled: boolean) {
   const [state, setState] = useState<AutosaveState>(enabled ? "idle" : "paused");
-  const timers = useRef<Record<"scene" | "visibility", number | null>>({
-    scene: null,
-    visibility: null,
-  });
-  const lastAttempt = useRef<Record<"scene" | "visibility", number>>({
-    scene: 0,
-    visibility: 0,
-  });
-
-  const clearTimer = useCallback((kind: "scene" | "visibility") => {
-    const timer = timers.current[kind];
-    if (timer !== null) window.clearTimeout(timer);
-    timers.current[kind] = null;
-  }, []);
-
-  const clickIfReady = useCallback((kind: "scene" | "visibility", immediate = false) => {
-    if (!enabled) return;
-    const button = findSaveButtons()[kind];
-    if (!button || button.disabled) return;
-    const now = Date.now();
-    if (!immediate && now - lastAttempt.current[kind] < 4500) return;
-    clearTimer(kind);
-    lastAttempt.current[kind] = now;
-    setState("saving");
-    button.click();
-    window.setTimeout(() => setState("saved"), 900);
-    window.setTimeout(() => setState("idle"), 2500);
-  }, [clearTimer, enabled]);
 
   useEffect(() => {
     if (!enabled) {
       setState("paused");
-      clearTimer("scene");
-      clearTimer("visibility");
       return;
     }
     setState("idle");
-    const inspect = () => {
-      const buttons = findSaveButtons();
-      (["scene", "visibility"] as const).forEach((kind) => {
-        const button = buttons[kind];
-        if (!button || button.disabled) {
-          clearTimer(kind);
-          return;
-        }
-        if (timers.current[kind] !== null) return;
-        setState("pending");
-        timers.current[kind] = window.setTimeout(
-          () => clickIfReady(kind),
-          kind === "scene" ? 1900 : 2300,
-        );
-      });
+    const onState = (event: Event) => {
+      const next = (event as CustomEvent<{ state?: AutosaveState }>).detail?.state;
+      if (next === "idle" || next === "pending" || next === "saving" || next === "saved" || next === "paused") {
+        setState(next);
+      }
     };
-    inspect();
-    const observer = new MutationObserver(inspect);
-    observer.observe(document.body, {
-      childList: true,
-      subtree: true,
-      attributes: true,
-      attributeFilter: ["disabled", "aria-disabled"],
-    });
-    const interval = window.setInterval(inspect, 1400);
-    const visibilityChange = () => {
-      if (document.visibilityState !== "hidden") return;
-      clickIfReady("scene", true);
-      clickIfReady("visibility", true);
-    };
-    document.addEventListener("visibilitychange", visibilityChange);
-    return () => {
-      observer.disconnect();
-      window.clearInterval(interval);
-      document.removeEventListener("visibilitychange", visibilityChange);
-      clearTimer("scene");
-      clearTimer("visibility");
-    };
-  }, [clearTimer, clickIfReady, enabled]);
+    window.addEventListener("tadeon-tabletop-autosave-state", onState);
+    return () => window.removeEventListener("tadeon-tabletop-autosave-state", onState);
+  }, [enabled]);
 
   return state;
 }
@@ -408,24 +335,31 @@ export function TabletopReliabilityEditorBridge() {
   const [editorOpen, setEditorOpen] = useState(false);
   const [sample, setSample] = useState<VisualSample | null>(null);
   const [audioMuted, setAudioMuted] = useState(false);
-  const sync = useCallback(() => {
-    const runtime = currentTabletopRuntime();
-    if (runtime) setSnapshot(runtime.snapshot());
-  }, []);
-
   useEffect(() => {
-    sync();
+    let frame = 0;
+    let attempts = 0;
+    const bootstrap = () => {
+      const runtime = currentTabletopRuntime();
+      if (runtime) {
+        setSnapshot(runtime.snapshot());
+        return;
+      }
+      if (attempts++ < 90) frame = window.requestAnimationFrame(bootstrap);
+    };
+    bootstrap();
     const onRender = (event: Event) => {
       const detail = (event as CustomEvent<TabletopSnapshot>).detail;
       setSnapshot(detail ?? currentTabletopRuntime()?.snapshot() ?? null);
     };
+    const onDestroyed = () => setSnapshot(null);
     window.addEventListener("tadeon-tabletop-render", onRender);
-    const timer = window.setInterval(sync, 800);
+    window.addEventListener("tadeon-tabletop-runtime-destroyed", onDestroyed);
     return () => {
+      window.cancelAnimationFrame(frame);
       window.removeEventListener("tadeon-tabletop-render", onRender);
-      window.clearInterval(timer);
+      window.removeEventListener("tadeon-tabletop-runtime-destroyed", onDestroyed);
     };
-  }, [sync]);
+  }, []);
 
   const autosave = useThrottledAutosave(role === "mestre");
   const warmed = useScenePreloader(snapshot);

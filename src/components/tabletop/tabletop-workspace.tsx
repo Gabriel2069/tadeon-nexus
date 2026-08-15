@@ -1099,7 +1099,10 @@ export function TabletopWorkspace({
     };
   }, [campaignId, campaigns]);
 
-  const saveCurrent = async (overrides: TabletopSaveOverrides = {}) => {
+  const saveCurrent = async (
+    overrides: TabletopSaveOverrides = {},
+    options: { silent?: boolean } = {},
+  ) => {
     const stored = persistedSceneRef.current;
     if (!stored || !editable) return null;
     setSaving(true);
@@ -1111,17 +1114,54 @@ export function TabletopWorkspace({
       );
       installScene(saved);
       await Promise.all([refreshScenes(saved.campaignId), loadSnapshots(saved.id)]);
-      toast.success(overrides.status === "archived" ? "Cena arquivada." : "Cena salva.");
+      if (!options.silent)
+        toast.success(overrides.status === "archived" ? "Cena arquivada." : "Cena salva.");
       return saved;
     } catch (error) {
       if (error instanceof TabletopServiceError && error.code === "TABLETOP_CONFLICT")
         setConflict(true);
-      toast.error(errorMessage(error));
+      if (!options.silent) toast.error(errorMessage(error));
       return null;
     } finally {
       setSaving(false);
     }
   };
+
+  const saveVisibilityCurrent = useCallback(
+    async (silent = false) => {
+      const stored = persistedSceneRef.current;
+      if (!stored || !editable || !lightingEnabled || !visibilityAvailable) return true;
+      try {
+        const saved = await tabletopVisibilityService.save(stored.id, visibilityRef.current);
+        installVisibility(saved.visibility, saved.sceneVersion);
+        if (!silent) toast.success("Ambiente, arquitetura, luzes e névoa salvos.");
+        return true;
+      } catch {
+        if (!silent) toast.error("Não foi possível salvar o ambiente desta cena.");
+        return false;
+      }
+    },
+    [editable, installVisibility, lightingEnabled, visibilityAvailable],
+  );
+
+  useEffect(() => {
+    if (!editable || conflict || saving || (!dirty && !visibilityDirty)) return;
+    const dispatch = (state: "pending" | "saving" | "saved" | "idle" | "paused") =>
+      window.dispatchEvent(new CustomEvent("tadeon-tabletop-autosave-state", { detail: { state } }));
+    dispatch("pending");
+    const timer = window.setTimeout(() => {
+      void (async () => {
+        if (conflict || saving) return;
+        dispatch("saving");
+        let ok = true;
+        if (dirty) ok = Boolean(await saveCurrent({}, { silent: true }));
+        if (ok && visibilityDirty) ok = await saveVisibilityCurrent(true);
+        dispatch(ok ? "saved" : "paused");
+        if (ok) window.setTimeout(() => dispatch("idle"), 1600);
+      })();
+    }, 2200);
+    return () => window.clearTimeout(timer);
+  }, [conflict, dirty, editable, saveVisibilityCurrent, saving, visibilityDirty]);
 
   const createScene = async () => {
     if (!campaignId) return;
@@ -1752,11 +1792,14 @@ export function TabletopWorkspace({
               value={snapshot.scene.gridMode}
               disabled={!editable}
               onChange={(event) =>
-                engineRef.current?.setGrid(event.target.value === "none" ? "none" : "square")
+                engineRef.current?.setGrid(event.target.value as typeof snapshot.scene.gridMode)
               }
-              className="h-10 min-w-0 flex-1 rounded-md border border-input bg-background px-2 text-xs min-[480px]:max-w-36 sm:h-9 sm:flex-none"
+              className="h-10 min-w-0 flex-1 rounded-md border border-input bg-background px-2 text-xs min-[480px]:max-w-44 sm:h-9 sm:flex-none"
             >
               <option value="square">Grade quadrada</option>
+              <option value="hex_pointy">Hexagonal vertical</option>
+              <option value="hex_flat">Hexagonal horizontal</option>
+              <option value="isometric">Isométrica</option>
               <option value="none">Sem grade</option>
             </select>
             <Input
@@ -1795,6 +1838,20 @@ export function TabletopWorkspace({
               ? engineRef.current?.directorCamera(activeLevelIdRef.current)
               : null
           }
+          onRemoteEntityMove={({ entityId, x, y, version }) => {
+            const stored = persistedSceneRef.current;
+            if (stored) {
+              const nextStored = {
+                ...stored,
+                entities: stored.entities.map((entity) =>
+                  entity.id === entityId ? { ...entity, x, y, version } : entity,
+                ),
+              };
+              persistedSceneRef.current = nextStored;
+              setPersistedScene(nextStored);
+            }
+            engineRef.current?.applyRemoteEntityPatch(entityId, { x, y });
+          }}
         />
       </header>
 

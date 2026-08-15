@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   Archive,
   Box,
@@ -136,24 +136,31 @@ export function TabletopCreativeDockBridge() {
   const [mode, setMode] = useState<DockMode>("library");
   const [query, setQuery] = useState("");
 
-  const sync = useCallback(() => {
-    const runtime = currentTabletopRuntime();
-    if (runtime) setSnapshot(runtime.snapshot());
-  }, []);
-
   useEffect(() => {
-    sync();
+    let frame = 0;
+    let attempts = 0;
+    const bootstrap = () => {
+      const runtime = currentTabletopRuntime();
+      if (runtime) {
+        setSnapshot(runtime.snapshot());
+        return;
+      }
+      if (attempts++ < 90) frame = window.requestAnimationFrame(bootstrap);
+    };
+    bootstrap();
     const onRender = (event: Event) => {
       const detail = (event as CustomEvent<TabletopSnapshot>).detail;
       setSnapshot(detail ?? currentTabletopRuntime()?.snapshot() ?? null);
     };
-    const timer = window.setInterval(sync, 900);
+    const onDestroyed = () => setSnapshot(null);
     window.addEventListener("tadeon-tabletop-render", onRender);
+    window.addEventListener("tadeon-tabletop-runtime-destroyed", onDestroyed);
     return () => {
-      window.clearInterval(timer);
+      window.cancelAnimationFrame(frame);
       window.removeEventListener("tadeon-tabletop-render", onRender);
+      window.removeEventListener("tadeon-tabletop-runtime-destroyed", onDestroyed);
     };
-  }, [sync]);
+  }, []);
 
   useEffect(() => {
     if (window.location.pathname !== "/tabletop") return;

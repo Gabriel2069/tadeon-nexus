@@ -763,6 +763,18 @@ export class TabletopEngine {
     });
   }
 
+  applyRemoteEntityPatch(id: string, patch: Partial<TabletopEntity>) {
+    if (!this.scenes.scene.entities.some((entity) => entity.id === id)) return;
+    this.scenes.setEntities(
+      this.scenes.scene.entities.map((entity) =>
+        entity.id === id
+          ? this.clampEntity({ ...entity, ...patch, id: entity.id })
+          : entity,
+      ),
+    );
+    this.render();
+  }
+
   updateSelected(patch: Partial<TabletopEntity>, label = "Editar entidade") {
     if (this.readOnly) return;
     const selected = new Set(this.selection.ids);

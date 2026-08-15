@@ -96,10 +96,8 @@ export function TabletopDirectorEnhancementBridge() {
     refresh();
     const observer = new MutationObserver(refresh);
     observer.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ["disabled", "aria-selected"] });
-    const timer = window.setInterval(refresh, 2200);
     return () => {
       observer.disconnect();
-      window.clearInterval(timer);
     };
   }, []);
 
