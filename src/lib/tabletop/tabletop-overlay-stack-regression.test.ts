@@ -18,7 +18,8 @@ describe("contenção de overlays e faixa inferior da Mesa", () => {
     expect(select).toContain("hideWhenDetached={hideWhenDetached}");
     expect(viewport).toContain("--radix-popover-content-available-width");
     expect(viewport).toContain("--radix-select-content-available-width");
-    expect(viewport).toContain("transform: translate3d(-50%, -50%, 0) !important;");
+    expect(viewport).toContain("translate: -50% -50% !important;");
+    expect(viewport).not.toContain("transform: translate3d(-50%, -50%, 0) !important;");
   });
 
   it("reserva linhas diferentes para os controles inferiores da Mesa", () => {
