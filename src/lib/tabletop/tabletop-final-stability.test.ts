@@ -35,7 +35,7 @@ describe("estabilidade final da Mesa Nexus", () => {
     const engine = source("src/lib/tabletop/tabletop-engine.ts");
 
     for (const mode of ["square", "hex_pointy", "hex_flat", "isometric", "none"]) {
-      expect(workspace).toContain(`value=\"${mode}\"`);
+      expect(workspace).toContain(`value="${mode}"`);
     }
     expect(engine).toContain("snapPointToGrid(");
   });
