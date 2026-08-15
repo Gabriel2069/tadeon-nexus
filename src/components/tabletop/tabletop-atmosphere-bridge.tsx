@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { tabletopRegionBehavior, type TabletopSurfaceType } from "@/lib/tabletop/tabletop-regions";
 import { currentTabletopRuntime } from "@/lib/tabletop/tabletop-player-runtime";
 import type { Point, TabletopEntity, TabletopSnapshot } from "@/lib/tabletop/types";
@@ -104,27 +104,32 @@ function inferPowerTheme(text: string): PowerTheme {
 
 function useSnapshot() {
   const [snapshot, setSnapshot] = useState<TabletopSnapshot | null>(null);
-  const sync = useCallback(() => {
-    const runtime = currentTabletopRuntime();
-    setSnapshot(runtime?.snapshot() ?? null);
-  }, []);
 
   useEffect(() => {
-    sync();
+    let frame = 0;
+    let attempts = 0;
+    const bootstrap = () => {
+      const runtime = currentTabletopRuntime();
+      if (runtime) {
+        setSnapshot(runtime.snapshot());
+        return;
+      }
+      if (attempts++ < 90) frame = window.requestAnimationFrame(bootstrap);
+    };
+    bootstrap();
     const onRender = (event: Event) => {
       const detail = (event as CustomEvent<TabletopSnapshot>).detail;
       setSnapshot(detail ?? currentTabletopRuntime()?.snapshot() ?? null);
     };
     const onDestroyed = () => setSnapshot(null);
-    const interval = window.setInterval(sync, 900);
     window.addEventListener("tadeon-tabletop-render", onRender);
     window.addEventListener("tadeon-tabletop-runtime-destroyed", onDestroyed);
     return () => {
-      window.clearInterval(interval);
+      window.cancelAnimationFrame(frame);
       window.removeEventListener("tadeon-tabletop-render", onRender);
       window.removeEventListener("tadeon-tabletop-runtime-destroyed", onDestroyed);
     };
-  }, [sync]);
+  }, []);
 
   return snapshot;
 }
@@ -132,10 +137,14 @@ function useSnapshot() {
 function usePowerTheme() {
   const [theme, setTheme] = useState<PowerTheme>("neutral");
   const [active, setActive] = useState(false);
-  const [pointer, setPointer] = useState<Point>({ x: window.innerWidth / 2, y: window.innerHeight / 2 });
+  const [pointer, setPointer] = useState<Point>(() =>
+    typeof window === "undefined"
+      ? { x: 0, y: 0 }
+      : { x: window.innerWidth / 2, y: window.innerHeight / 2 },
+  );
 
   useEffect(() => {
-    const sync = () => {
+    const syncFromDock = () => {
       const dock = document.querySelector<HTMLElement>(".tadeon-tactical-dock");
       const powerMode = dock?.dataset.mode === "power";
       setActive(Boolean(powerMode));
@@ -154,13 +163,21 @@ function usePowerTheme() {
       setTheme(next);
       document.documentElement.dataset.tadeonPowerTheme = next;
     };
-    sync();
-    const observer = new MutationObserver(sync);
-    observer.observe(document.body, { childList: true, subtree: true, attributes: true });
+    const onTacticalState = (event: Event) => {
+      const detail = (event as CustomEvent<{ mode?: string; text?: string }>).detail;
+      const powerMode = detail?.mode === "power";
+      setActive(powerMode);
+      const next = powerMode ? inferPowerTheme(detail?.text ?? "") : "neutral";
+      setTheme(next);
+      if (powerMode) document.documentElement.dataset.tadeonPowerTheme = next;
+      else delete document.documentElement.dataset.tadeonPowerTheme;
+    };
+    syncFromDock();
     const pointerMove = (event: PointerEvent) => setPointer({ x: event.clientX, y: event.clientY });
+    window.addEventListener("tadeon-tabletop-tactical-state", onTacticalState);
     window.addEventListener("pointermove", pointerMove, { passive: true });
     return () => {
-      observer.disconnect();
+      window.removeEventListener("tadeon-tabletop-tactical-state", onTacticalState);
       window.removeEventListener("pointermove", pointerMove);
       delete document.documentElement.dataset.tadeonPowerTheme;
     };
