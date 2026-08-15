@@ -22,27 +22,27 @@ const ADVANCED_GRID_OPTIONS: Array<[GridMode, string]> = [
   ["none", "Sem grade"],
 ];
 
-function enhanceGridSelects() {
-  if (typeof document === "undefined") return;
-  const selects = document.querySelectorAll<HTMLSelectElement>(
-    'select[aria-label="Modo de grade"]',
-  );
-  for (const select of selects) {
-    const current = runtime.__tadeonActiveGridMode ?? (select.value as GridMode);
-    const existing = new Map(Array.from(select.options).map((option) => [option.value, option]));
-    for (const [value, label] of ADVANCED_GRID_OPTIONS) {
-      let option = existing.get(value);
-      if (!option) {
-        option = document.createElement("option");
-        option.value = value;
-        select.appendChild(option);
-      }
-      option.textContent = label;
+function enhanceGridSelect(select: HTMLSelectElement) {
+  if (select.getAttribute("aria-label") !== "Modo de grade") return;
+  const current = runtime.__tadeonActiveGridMode ?? (select.value as GridMode);
+  const existing = new Map(Array.from(select.options).map((option) => [option.value, option]));
+  for (const [value, label] of ADVANCED_GRID_OPTIONS) {
+    let option = existing.get(value);
+    if (!option) {
+      option = document.createElement("option");
+      option.value = value;
+      select.appendChild(option);
     }
-    if (ADVANCED_GRID_OPTIONS.some(([value]) => value === current)) {
-      select.value = current;
-    }
+    option.textContent = label;
   }
+  if (ADVANCED_GRID_OPTIONS.some(([value]) => value === current)) select.value = current;
+}
+
+function enhanceVisibleGridSelects() {
+  if (typeof document === "undefined") return;
+  document
+    .querySelectorAll<HTMLSelectElement>('select[aria-label="Modo de grade"]')
+    .forEach(enhanceGridSelect);
 }
 
 if (!runtime.__tadeonAdvancedGridRuntime) {
@@ -66,10 +66,16 @@ if (!runtime.__tadeonAdvancedGridRuntime) {
     const effectiveMode = requested ?? mode;
     runtime.__tadeonActiveGridMode = effectiveMode;
     originalSetGrid.call(this, effectiveMode, size);
-    queueMicrotask(enhanceGridSelects);
+    queueMicrotask(enhanceVisibleGridSelects);
   };
 
   if (typeof document !== "undefined") {
+    const maybeEnhanceFromEvent = (event: Event) => {
+      const target = event.target;
+      if (target instanceof HTMLSelectElement) enhanceGridSelect(target);
+    };
+    document.addEventListener("pointerdown", maybeEnhanceFromEvent, true);
+    document.addEventListener("focusin", maybeEnhanceFromEvent, true);
     document.addEventListener(
       "change",
       (event) => {
@@ -82,9 +88,12 @@ if (!runtime.__tadeonAdvancedGridRuntime) {
       },
       true,
     );
-    enhanceGridSelects();
-    const observer = new MutationObserver(enhanceGridSelects);
-    observer.observe(document.documentElement, { childList: true, subtree: true });
+    // Somente algumas tentativas baratas durante a abertura. O antigo
+    // MutationObserver varria o documento inteiro a cada mutação do React e
+    // podia monopolizar a thread principal justamente ao montar a Mesa.
+    queueMicrotask(enhanceVisibleGridSelects);
+    window.setTimeout(enhanceVisibleGridSelects, 250);
+    window.setTimeout(enhanceVisibleGridSelects, 900);
   }
 }
 

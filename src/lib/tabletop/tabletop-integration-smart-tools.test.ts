@@ -7,13 +7,16 @@ function source(path: string) {
 }
 
 describe("integração e ferramentas inteligentes da Mesa Nexus", () => {
-  it("mantem Mesa, Nexus e Ficha ligados nos dois sentidos", () => {
+  it("mantem Mesa, Nexus e Ficha ligados nos dois sentidos sem tornar a rota pesada", () => {
     const tabletopRoute = source("src/routes/tabletop.tsx");
+    const deferred = source("src/components/tabletop/tabletop-deferred-enhancements.tsx");
     const nexusRoute = source("src/routes/nexus.tsx");
     const bridge = source("src/components/tabletop/tabletop-integration-tools-bridge.tsx");
 
-    expect(tabletopRoute).toContain("<TabletopIntegrationToolsBridge />");
-    expect(tabletopRoute).toContain("<TabletopLocateBridge />");
+    expect(tabletopRoute).toContain("<TabletopRouteExperience");
+    expect(tabletopRoute).not.toContain('from "@/components/tabletop/tabletop-integration-tools-bridge"');
+    expect(deferred).toContain("<IntegrationToolsBridge />");
+    expect(deferred).toContain("<LocateBridge />");
     expect(nexusRoute).toContain("<NexusTabletopLocator nodeId={node} />");
     expect(bridge).toContain("knowledgeService.create");
     expect(bridge).toContain("linkedKnowledgeNodeId");
