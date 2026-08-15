@@ -43,6 +43,7 @@
     var(--radix-popover-content-available-height, 100dvh),
     calc(100dvh - (var(--tadeon-overlay-gutter) * 2))
   ) !important;
+  transform-origin: var(--radix-popover-content-transform-origin, center top);
 }
 
 [data-slot="select-content"] {
@@ -54,6 +55,7 @@
     var(--radix-select-content-available-height, 100dvh),
     calc(100dvh - (var(--tadeon-overlay-gutter) * 2))
   ) !important;
+  transform-origin: var(--radix-select-content-transform-origin, center top);
 }
 
 [data-slot="dropdown-menu-content"],
@@ -66,6 +68,7 @@
     var(--radix-dropdown-menu-content-available-height, 100dvh),
     calc(100dvh - (var(--tadeon-overlay-gutter) * 2))
   ) !important;
+  transform-origin: var(--radix-dropdown-menu-content-transform-origin, center top);
 }
 
 [data-slot="context-menu-content"],
@@ -78,29 +81,114 @@
     var(--radix-context-menu-content-available-height, 100dvh),
     calc(100dvh - (var(--tadeon-overlay-gutter) * 2))
   ) !important;
+  transform-origin: var(--radix-context-menu-content-transform-origin, center top);
 }
 
 [data-slot="menubar-content"],
 [data-slot="menubar-sub-content"] {
+  max-inline-size: min(
+    var(--radix-menubar-content-available-width, 100vw),
+    calc(100vw - (var(--tadeon-overlay-gutter) * 2))
+  ) !important;
+  max-block-size: min(
+    var(--radix-menubar-content-available-height, 100dvh),
+    calc(100dvh - (var(--tadeon-overlay-gutter) * 2))
+  ) !important;
   overflow-y: auto !important;
   overflow-x: hidden !important;
+  transform-origin: var(--radix-menubar-content-transform-origin, center top);
+}
+
+[data-slot="hover-card-content"] {
+  max-inline-size: min(
+    var(--radix-hover-card-content-available-width, 100vw),
+    calc(100vw - (var(--tadeon-overlay-gutter) * 2))
+  ) !important;
+  max-block-size: min(
+    var(--radix-hover-card-content-available-height, 100dvh),
+    calc(100dvh - (var(--tadeon-overlay-gutter) * 2))
+  ) !important;
+  transform-origin: var(--radix-hover-card-content-transform-origin, center top);
 }
 
 [data-slot="tooltip-content"] {
+  max-inline-size: min(
+    var(--radix-tooltip-content-available-width, 100vw),
+    calc(100vw - (var(--tadeon-overlay-gutter) * 2))
+  ) !important;
+  max-block-size: min(
+    var(--radix-tooltip-content-available-height, 100dvh),
+    calc(100dvh - (var(--tadeon-overlay-gutter) * 2))
+  ) !important;
   overflow-wrap: anywhere;
+  transform-origin: var(--radix-tooltip-content-transform-origin, center top);
 }
 
-[data-radix-popper-content-wrapper] {
-  box-sizing: border-box;
-  max-inline-size: calc(100vw - (var(--tadeon-overlay-gutter) * 2));
-  max-block-size: calc(100dvh - (var(--tadeon-overlay-gutter) * 2));
+/* Do not size Radix' positioning wrapper. Floating UI owns that element and
+   mutating its box can feed incorrect measurements back into collision logic. */
+
+/* The global motion contract used to include the -50% centering translation in
+   transform. Dialog geometry now centres with the independent `translate`
+   property, so repeating -50% in animation composed both offsets and launched
+   the modal toward the north-west. Motion is now strictly local to the anchor. */
+@keyframes tadeon-modal-in {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 1rem, 0) scale(0.955);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
+@keyframes tadeon-modal-out {
+  from {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: translate3d(0, 0.6rem, 0) scale(0.975);
+  }
+}
+
+/* Mesa Nexus has persistent chrome above the normal application layer. Portal
+   surfaces must sit above that chrome instead of visually interleaving with it. */
+body:has(.tadeon-tabletop-studio) :where(
+  [data-slot="popover-content"],
+  [data-slot="select-content"],
+  [data-slot="dropdown-menu-content"],
+  [data-slot="dropdown-menu-sub-content"],
+  [data-slot="context-menu-content"],
+  [data-slot="context-menu-sub-content"],
+  [data-slot="menubar-content"],
+  [data-slot="menubar-sub-content"],
+  [data-slot="hover-card-content"],
+  [data-slot="tooltip-content"]
+) {
+  z-index: 220 !important;
+}
+
+body:has(.tadeon-tabletop-studio) :where(
+  [data-slot="dialog-overlay"],
+  [data-slot="alert-dialog-overlay"]
+) {
+  z-index: 240 !important;
+}
+
+body:has(.tadeon-tabletop-studio) :where(
+  [data-slot="dialog-content"],
+  [data-slot="alert-dialog-content"]
+) {
+  z-index: 241 !important;
 }
 
 @media (min-width: 801px) {
   /* Dialogs do not use Popper collision middleware. On desktop, force their
      final anchor back to the viewport centre so route/local utility classes
      cannot leave a modal partially outside the visible area. `translate`
-     preserves the scale/opacity transform used by the open/close animation. */
+     owns centering; `transform` remains free for animation only. */
   [data-slot="dialog-content"],
   [data-slot="alert-dialog-content"] {
     top: 50% !important;
