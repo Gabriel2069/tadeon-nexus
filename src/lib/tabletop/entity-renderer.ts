@@ -24,6 +24,13 @@ import { normalizeTabletopPlayback, tabletopMediaKind } from "./tabletop-media";
 import { tabletopEntityInsightService } from "./tabletop-entity-insight-service";
 import type { TabletopSheetSummary } from "./tabletop-entity-insight";
 
+const VOLUMETRIC_TOKEN_TYPES = new Set<TabletopEntity["type"]>([
+  "token",
+  "creature",
+  "npc",
+  "character",
+]);
+
 function entityProperties(value: unknown): Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value)
     ? (value as Record<string, unknown>)
@@ -41,22 +48,49 @@ function hexColor(value: unknown) {
   return /^[0-9a-f]{6}$/i.test(normalized) ? Number.parseInt(normalized, 16) : null;
 }
 
+function tokenVolume(
+  entity: TabletopEntity,
+  properties: Record<string, unknown>,
+  visualScale: number,
+) {
+  const enabled =
+    VOLUMETRIC_TOKEN_TYPES.has(entity.type) && properties.token_volume !== false;
+  const radiusX = Math.max(12, entity.width * 0.29 * visualScale);
+  const radiusY = Math.max(4, Math.min(entity.height * 0.075, radiusX * 0.27));
+  const configuredHeight = finiteNumber(properties.token_base_height, radiusY * 1.35);
+  return {
+    enabled,
+    radiusX,
+    radiusY,
+    height: Math.max(4, Math.min(22, configuredHeight)),
+  };
+}
+
 function stateAura(
   properties: Record<string, unknown>,
   status: string,
   conditions: string[],
 ) {
   const explicit = hexColor(properties.aura_color);
-  const intensity = Math.max(0, Math.min(1, finiteNumber(properties.aura_intensity, 0.56)));
+  const intensity = Math.max(
+    0,
+    Math.min(1, finiteNumber(properties.aura_intensity, 0.56)),
+  );
   const text = `${status} ${conditions.join(" ")}`.toLowerCase();
   if (explicit !== null) return { color: explicit, intensity };
   if (!text.trim()) return null;
-  if (/morr|incap|sang|ferid|agonia|crític/.test(text)) return { color: 0xe0525d, intensity: Math.max(intensity, 0.66) };
-  if (/insan|colap|mental|pânico|medo|abalad|confus/.test(text)) return { color: 0xaa72e8, intensity: Math.max(intensity, 0.58) };
-  if (/venen|tóxic|doen|ácid|corros/.test(text)) return { color: 0x79c66d, intensity: Math.max(intensity, 0.58) };
-  if (/queim|fogo|bras|calor/.test(text)) return { color: 0xf08a48, intensity: Math.max(intensity, 0.62) };
-  if (/frio|congel|gelo/.test(text)) return { color: 0x72cbe8, intensity: Math.max(intensity, 0.56) };
-  if (/ocult|invis|sombra/.test(text)) return { color: 0x7180a5, intensity: Math.max(intensity, 0.42) };
+  if (/morr|incap|sang|ferid|agonia|crític/.test(text))
+    return { color: 0xe0525d, intensity: Math.max(intensity, 0.66) };
+  if (/insan|colap|mental|pânico|medo|abalad|confus/.test(text))
+    return { color: 0xaa72e8, intensity: Math.max(intensity, 0.58) };
+  if (/venen|tóxic|doen|ácid|corros/.test(text))
+    return { color: 0x79c66d, intensity: Math.max(intensity, 0.58) };
+  if (/queim|fogo|bras|calor/.test(text))
+    return { color: 0xf08a48, intensity: Math.max(intensity, 0.62) };
+  if (/frio|congel|gelo/.test(text))
+    return { color: 0x72cbe8, intensity: Math.max(intensity, 0.56) };
+  if (/ocult|invis|sombra/.test(text))
+    return { color: 0x7180a5, intensity: Math.max(intensity, 0.42) };
   return { color: 0xe4bd71, intensity: Math.max(0.34, intensity * 0.72) };
 }
 
@@ -125,7 +159,8 @@ export class EntityRenderer {
         this.view.addChild(display);
       }
       const layer = layerMap.get(entity.layerId);
-      const onActiveLevel = tabletopItemLevelId(entity, fallbackLevelId) === activeLevel.id;
+      const onActiveLevel =
+        tabletopItemLevelId(entity, fallbackLevelId) === activeLevel.id;
       display.visible =
         !entity.hidden && Boolean(layer?.visible) && activeLevel.visible && onActiveLevel;
       display.pivot.set(entity.width / 2, entity.height / 2);
@@ -133,13 +168,14 @@ export class EntityRenderer {
         x: entity.x + entity.width / 2,
         y: entity.y + entity.height / 2,
       };
-      const position = projection === "isometric"
-        ? elevateIsometricPoint(
-            center,
-            tabletopEntityWorldElevation(entity, activeLevel),
-            orientation,
-          )
-        : center;
+      const position =
+        projection === "isometric"
+          ? elevateIsometricPoint(
+              center,
+              tabletopEntityWorldElevation(entity, activeLevel),
+              orientation,
+            )
+          : center;
       display.position.set(position.x, position.y);
       display.rotation = (entity.rotation * Math.PI) / 180;
       display.zIndex =
@@ -169,30 +205,50 @@ export class EntityRenderer {
     display.addChild(new Graphics({ label: "state-aura" }));
     display.addChild(new Graphics({ label: "shape" }));
     display.addChild(new Graphics({ label: "ground-shadow" }));
+    display.addChild(new Graphics({ label: "token-depth" }));
     display.addChild(new Graphics({ label: "outline" }));
     const hud = new Container({ label: "hud" });
     hud.addChild(new Graphics({ label: "label-plate" }));
     const label = new Text({
       text: entity.label,
-      style: { fill: 0xf4ead7, fontFamily: "serif", fontSize: 13, fontWeight: "600" },
+      style: {
+        fill: 0xf4ead7,
+        fontFamily: "serif",
+        fontSize: 13,
+        fontWeight: "600",
+      },
     });
     label.label = "label";
     hud.addChild(label);
     const badge = new Text({
       text: "",
-      style: { fill: 0xffe0a3, fontFamily: "sans-serif", fontSize: 9, fontWeight: "700" },
+      style: {
+        fill: 0xffe0a3,
+        fontFamily: "sans-serif",
+        fontSize: 9,
+        fontWeight: "700",
+      },
     });
     badge.label = "badge";
     hud.addChild(badge);
     const sheetMeta = new Text({
       text: "",
-      style: { fill: 0xb8e7c7, fontFamily: "sans-serif", fontSize: 9, fontWeight: "700" },
+      style: {
+        fill: 0xb8e7c7,
+        fontFamily: "sans-serif",
+        fontSize: 9,
+        fontWeight: "700",
+      },
     });
     sheetMeta.label = "sheet-meta";
     hud.addChild(sheetMeta);
     const icons = new Text({
       text: "",
-      style: { fill: 0xf4ead7, fontFamily: "sans-serif", fontSize: 12 },
+      style: {
+        fill: 0xf4ead7,
+        fontFamily: "sans-serif",
+        fontSize: 12,
+      },
     });
     icons.label = "icons";
     hud.addChild(icons);
@@ -218,42 +274,121 @@ export class EntityRenderer {
     const properties = entityProperties(entity.properties);
     const renderMode = tabletopEntityRenderMode(entity);
     const billboardAppearance = tabletopBillboardAppearance(entity);
-    const billboard = projection === "isometric" && renderMode === "billboard" && Boolean(entity.assetUrl);
+    const billboard =
+      projection === "isometric" &&
+      renderMode === "billboard" &&
+      Boolean(entity.assetUrl);
+    const volume = tokenVolume(entity, properties, billboardAppearance.scale);
     const groundShadow = display.getChildByLabel("ground-shadow") as Graphics;
     groundShadow.clear();
     groundShadow.visible = billboard && billboardAppearance.shadow;
     if (groundShadow.visible) {
-      const shadowWidth = Math.max(12, entity.width * 0.42 * billboardAppearance.scale);
-      const shadowDepth = Math.max(4, Math.min(entity.height * 0.13, shadowWidth * 0.34));
-      groundShadow.ellipse(entity.width / 2, entity.height, shadowWidth, shadowDepth).fill({
-        color: 0x020305,
-        alpha: 0.34,
-      });
+      const shadowWidth = Math.max(
+        12,
+        entity.width * 0.42 * billboardAppearance.scale,
+      );
+      const shadowDepth = Math.max(
+        4,
+        Math.min(entity.height * 0.13, shadowWidth * 0.34),
+      );
+      groundShadow
+        .ellipse(
+          entity.width / 2,
+          entity.height + (volume.enabled ? volume.height * 0.55 : 0),
+          shadowWidth,
+          shadowDepth,
+        )
+        .fill({ color: 0x020305, alpha: 0.34 });
     }
-    const drawingPoints = entity.type === "drawing"
-      ? readTabletopDrawingPoints(properties.drawing_points)
-      : [];
+
+    const tokenDepth = display.getChildByLabel("token-depth") as Graphics;
+    tokenDepth.clear();
+    tokenDepth.visible = billboard && volume.enabled;
+    if (tokenDepth.visible) {
+      const centerX = entity.width / 2;
+      const topY = entity.height - volume.height;
+      const bottomY = entity.height;
+      tokenDepth
+        .poly([
+          centerX - volume.radiusX,
+          topY,
+          centerX + volume.radiusX,
+          topY,
+          centerX + volume.radiusX,
+          bottomY,
+          centerX - volume.radiusX,
+          bottomY,
+        ])
+        .fill({ color: 0x080b10, alpha: 0.92 });
+      tokenDepth
+        .ellipse(centerX, bottomY, volume.radiusX, volume.radiusY)
+        .fill({ color: 0x05070a, alpha: 0.96 })
+        .stroke({
+          color: selected ? 0xf3be63 : 0x191e25,
+          alpha: selected ? 0.72 : 0.88,
+          width: selected ? 2.2 : 1.4,
+        });
+      tokenDepth
+        .ellipse(centerX, topY, volume.radiusX, volume.radiusY)
+        .fill({ color: entity.color, alpha: entity.locked ? 0.58 : 0.9 })
+        .stroke({
+          color: selected ? 0xf3be63 : 0xd9d7a4,
+          alpha: selected ? 0.96 : 0.38,
+          width: selected ? 2.4 : 1.3,
+        });
+      tokenDepth
+        .ellipse(
+          centerX - volume.radiusX * 0.18,
+          topY - volume.radiusY * 0.16,
+          volume.radiusX * 0.68,
+          volume.radiusY * 0.5,
+        )
+        .fill({ color: 0xffffff, alpha: 0.045 });
+    }
+
+    const drawingPoints =
+      entity.type === "drawing"
+        ? readTabletopDrawingPoints(properties.drawing_points)
+        : [];
     const isPathDrawing = entity.type === "drawing" && drawingPoints.length > 1;
 
-    const localStatus = typeof properties.status === "string" ? properties.status.trim() : "";
+    const localStatus =
+      typeof properties.status === "string" ? properties.status.trim() : "";
     const localConditions = Array.isArray(properties.visual_conditions)
-      ? properties.visual_conditions.filter((value): value is string => typeof value === "string")
+      ? properties.visual_conditions.filter(
+          (value): value is string => typeof value === "string",
+        )
       : [];
     const status = sheetSummary?.condition || localStatus;
-    const conditions = [...new Set([...localConditions, ...(sheetSummary?.activeConditions ?? [])])];
+    const conditions = [
+      ...new Set([...localConditions, ...(sheetSummary?.activeConditions ?? [])]),
+    ];
     const auraState = stateAura(properties, status, conditions);
 
     if (isPathDrawing) {
-      const sourceWidth = Math.max(1, finiteNumber(properties.drawing_source_width, entity.width));
-      const sourceHeight = Math.max(1, finiteNumber(properties.drawing_source_height, entity.height));
+      const sourceWidth = Math.max(
+        1,
+        finiteNumber(properties.drawing_source_width, entity.width),
+      );
+      const sourceHeight = Math.max(
+        1,
+        finiteNumber(properties.drawing_source_height, entity.height),
+      );
       const scaleX = entity.width / sourceWidth;
       const scaleY = entity.height / sourceHeight;
       const scaleStroke = Math.max(0.1, Math.sqrt(scaleX * scaleY));
-      const strokeWidth = Math.max(1, Math.min(48, finiteNumber(properties.stroke_width, 5)));
-      const strokeOpacity = Math.max(0.1, Math.min(1, finiteNumber(properties.stroke_opacity, 1)));
+      const strokeWidth = Math.max(
+        1,
+        Math.min(48, finiteNumber(properties.stroke_width, 5)),
+      );
+      const strokeOpacity = Math.max(
+        0.1,
+        Math.min(1, finiteNumber(properties.stroke_opacity, 1)),
+      );
       if (auraState) {
         aura.moveTo(drawingPoints[0].x * scaleX, drawingPoints[0].y * scaleY);
-        for (const point of drawingPoints.slice(1)) aura.lineTo(point.x * scaleX, point.y * scaleY);
+        for (const point of drawingPoints.slice(1))
+          aura.lineTo(point.x * scaleX, point.y * scaleY);
         aura.stroke({
           color: auraState.color,
           alpha: auraState.intensity * 0.18,
@@ -263,7 +398,8 @@ export class EntityRenderer {
         });
       }
       shape.moveTo(drawingPoints[0].x * scaleX, drawingPoints[0].y * scaleY);
-      for (const point of drawingPoints.slice(1)) shape.lineTo(point.x * scaleX, point.y * scaleY);
+      for (const point of drawingPoints.slice(1))
+        shape.lineTo(point.x * scaleX, point.y * scaleY);
       shape.stroke({
         color: entity.color,
         alpha: entity.locked ? strokeOpacity * 0.55 : strokeOpacity,
@@ -279,7 +415,10 @@ export class EntityRenderer {
         });
     } else {
       if (auraState && !entity.assetUrl) {
-        const radius = Math.max(8, Math.min(entity.width, entity.height) * 0.12);
+        const radius = Math.max(
+          8,
+          Math.min(entity.width, entity.height) * 0.12,
+        );
         aura
           .roundRect(-5, -5, entity.width + 10, entity.height + 10, radius)
           .fill({ color: auraState.color, alpha: auraState.intensity * 0.14 });
@@ -299,7 +438,9 @@ export class EntityRenderer {
     }
 
     const icons = Array.isArray(properties.icons)
-      ? properties.icons.filter((value): value is string => typeof value === "string").slice(0, 4)
+      ? properties.icons
+          .filter((value): value is string => typeof value === "string")
+          .slice(0, 4)
       : [];
     const badgeParts = [status, ...conditions].filter(Boolean).slice(0, 2);
     const hud = display.getChildByLabel("hud") as Container;
@@ -311,35 +452,47 @@ export class EntityRenderer {
 
     const sheetMeta = hud.getChildByLabel("sheet-meta") as Text;
     if (sheetSummary) {
-      const equilibrium = sheetSummary.equilibrium > 0
-        ? `+${sheetSummary.equilibrium}`
-        : String(sheetSummary.equilibrium);
+      const equilibrium =
+        sheetSummary.equilibrium > 0
+          ? `+${sheetSummary.equilibrium}`
+          : String(sheetSummary.equilibrium);
       sheetMeta.text = `PV ${sheetSummary.resources.pv} · EQ ${equilibrium} · EX ${sheetSummary.exposure}%`;
     } else sheetMeta.text = "";
-    sheetMeta.visible = !isPathDrawing && sheetMeta.text.length > 0 && entity.width >= 72;
+    sheetMeta.visible =
+      !isPathDrawing && sheetMeta.text.length > 0 && entity.width >= 72;
 
     const iconText = hud.getChildByLabel("icons") as Text;
     iconText.text = icons.join(" ").slice(0, 20);
-    iconText.visible = !isPathDrawing && iconText.text.length > 0 && entity.width >= 48;
+    iconText.visible =
+      !isPathDrawing && iconText.text.length > 0 && entity.width >= 48;
 
     const barMax = Math.max(0, finiteNumber(properties.bar_max));
-    const barCurrent = Math.max(0, Math.min(barMax, finiteNumber(properties.bar_current)));
+    const barCurrent = Math.max(
+      0,
+      Math.min(barMax, finiteNumber(properties.bar_current)),
+    );
     const bar = hud.getChildByLabel("bar") as Graphics;
     bar.clear();
-    bar.visible = !isPathDrawing && barMax > 0 && entity.width >= 32 && entity.height >= 32;
+    bar.visible =
+      !isPathDrawing && barMax > 0 && entity.width >= 32 && entity.height >= 32;
     const ratio = barMax > 0 ? barCurrent / barMax : 0;
     if (bar.visible && projection !== "isometric") {
       const width = Math.max(8, entity.width - 10);
-      bar.roundRect(5, entity.height - 9, width, 5, 3).fill({ color: 0x191d24, alpha: 0.92 });
+      bar
+        .roundRect(5, entity.height - 9, width, 5, 3)
+        .fill({ color: 0x191d24, alpha: 0.92 });
       if (ratio > 0)
-        bar.roundRect(5, entity.height - 9, width * ratio, 5, 3).fill({ color: 0x57b77a, alpha: 1 });
+        bar
+          .roundRect(5, entity.height - 9, width * ratio, 5, 3)
+          .fill({ color: 0x57b77a, alpha: 1 });
     }
 
     const label = hud.getChildByLabel("label") as Text;
     const maxLabelLength = Math.max(4, Math.floor((entity.width - 16) / 7));
-    label.text = entity.label.length > maxLabelLength
-      ? `${entity.label.slice(0, Math.max(1, maxLabelLength - 1))}…`
-      : entity.label;
+    label.text =
+      entity.label.length > maxLabelLength
+        ? `${entity.label.slice(0, Math.max(1, maxLabelLength - 1))}…`
+        : entity.label;
     label.visible = !isPathDrawing;
     hud.visible = !isPathDrawing;
     if (!isPathDrawing && projection === "isometric") {
@@ -348,20 +501,40 @@ export class EntityRenderer {
         tabletopProjectionMatrix("isometric", orientation),
       );
       hud.setFromMatrix(
-        new Matrix(matrix.a, matrix.b, matrix.c, matrix.d, entity.width / 2, entity.height + 7),
+        new Matrix(
+          matrix.a,
+          matrix.b,
+          matrix.c,
+          matrix.d,
+          entity.width / 2,
+          entity.height + 7,
+        ),
       );
       label.position.set(-label.width / 2, 5);
       const imageHeight = billboard
         ? entity.height * billboardAppearance.scale
         : entity.height * 0.5;
       badge.position.set(-badge.width / 2, -imageHeight - 18);
-      sheetMeta.position.set(-sheetMeta.width / 2, -imageHeight - (badge.visible ? 6 : 18));
-      iconText.position.set(-iconText.width / 2, sheetMeta.visible ? -imageHeight + 7 : -12);
+      sheetMeta.position.set(
+        -sheetMeta.width / 2,
+        -imageHeight - (badge.visible ? 6 : 18),
+      );
+      iconText.position.set(
+        -iconText.width / 2,
+        sheetMeta.visible ? -imageHeight + 7 : -12,
+      );
       if (bar.visible) {
-        const width = Math.max(34, Math.min(150, entity.width * billboardAppearance.scale));
-        bar.roundRect(-width / 2, -3, width, 5, 3).fill({ color: 0x11151b, alpha: 0.94 });
+        const width = Math.max(
+          34,
+          Math.min(150, entity.width * billboardAppearance.scale),
+        );
+        bar
+          .roundRect(-width / 2, -3, width, 5, 3)
+          .fill({ color: 0x11151b, alpha: 0.94 });
         if (ratio > 0)
-          bar.roundRect(-width / 2, -3, width * ratio, 5, 3).fill({ color: 0x57b77a, alpha: 1 });
+          bar
+            .roundRect(-width / 2, -3, width * ratio, 5, 3)
+            .fill({ color: 0x57b77a, alpha: 1 });
       }
     } else {
       hud.setFromMatrix(new Matrix());
@@ -371,11 +544,20 @@ export class EntityRenderer {
         Math.max(6, entity.width - iconText.width - 7),
         sheetMeta.visible ? 31 : badge.visible ? 19 : 5,
       );
-      label.position.set(8, Math.max(5, entity.height - (bar.visible ? 30 : 24)));
+      label.position.set(
+        8,
+        Math.max(5, entity.height - (bar.visible ? 30 : 24)),
+      );
     }
     if (label.visible) {
       labelPlate
-        .roundRect(label.x - 5, label.y - 2, label.width + 10, label.height + 4, 6)
+        .roundRect(
+          label.x - 5,
+          label.y - 2,
+          label.width + 10,
+          label.height + 4,
+          6,
+        )
         .fill({ color: 0x080b10, alpha: 0.76 })
         .stroke({
           color: selected ? 0xf3be63 : 0xd9d7a4,
@@ -397,16 +579,24 @@ export class EntityRenderer {
         else if (!playback.paused && !sprite.playing) sprite.play();
       } else {
         const resource = sprite.texture.source.resource;
-        if (typeof HTMLVideoElement !== "undefined" && resource instanceof HTMLVideoElement) {
+        if (
+          typeof HTMLVideoElement !== "undefined" &&
+          resource instanceof HTMLVideoElement
+        ) {
           resource.muted = playback.muted;
           resource.loop = playback.loop;
           resource.playbackRate = playback.speed;
           if (playback.paused && !resource.paused) resource.pause();
-          else if (!playback.paused && resource.paused) void resource.play().catch(() => undefined);
+          else if (!playback.paused && resource.paused)
+            void resource.play().catch(() => undefined);
         }
       }
-      sprite.width = billboard ? entity.width * billboardAppearance.scale : entity.width;
-      sprite.height = billboard ? entity.height * billboardAppearance.scale : entity.height;
+      sprite.width = billboard
+        ? entity.width * billboardAppearance.scale
+        : entity.width;
+      sprite.height = billboard
+        ? entity.height * billboardAppearance.scale
+        : entity.height;
       for (const [auraSprite, scale, alpha] of [
         [auraNear, 1.055, 0.22],
         [auraFar, 1.13, 0.075],
@@ -425,14 +615,28 @@ export class EntityRenderer {
           entity.rotation,
           tabletopProjectionMatrix("isometric", orientation),
         );
-        const anchorY = billboardAppearance.anchor === "base" ? entity.height : entity.height / 2;
+        const baseAnchor = volume.enabled
+          ? entity.height - volume.height
+          : entity.height;
+        const anchorY =
+          billboardAppearance.anchor === "base" ? baseAnchor : entity.height / 2;
         for (const framed of [auraFar, auraNear, sprite]) {
           if (!framed) continue;
-          framed.anchor.set(0.5, billboardAppearance.anchor === "base" ? 1 : 0.5);
+          framed.anchor.set(
+            0.5,
+            billboardAppearance.anchor === "base" ? 1 : 0.5,
+          );
           framed.position.set(0, 0);
         }
         assetFrame.setFromMatrix(
-          new Matrix(matrix.a, matrix.b, matrix.c, matrix.d, entity.width / 2, anchorY),
+          new Matrix(
+            matrix.a,
+            matrix.b,
+            matrix.c,
+            matrix.d,
+            entity.width / 2,
+            anchorY,
+          ),
         );
       } else {
         sprite.anchor.set(0);
@@ -456,8 +660,16 @@ export class EntityRenderer {
   private refreshSheetSummary(sheetId: string) {
     const now = Date.now();
     const current = this.sheetSummaries.get(sheetId);
-    if (current?.pending || (current && now - current.loadedAt < SHEET_REFRESH_MS)) return;
-    const entry: SheetCacheEntry = current ?? { summary: null, loadedAt: 0, pending: false };
+    if (
+      current?.pending ||
+      (current && now - current.loadedAt < SHEET_REFRESH_MS)
+    )
+      return;
+    const entry: SheetCacheEntry = current ?? {
+      summary: null,
+      loadedAt: 0,
+      pending: false,
+    };
     entry.pending = true;
     this.sheetSummaries.set(sheetId, entry);
     void tabletopEntityInsightService
@@ -479,7 +691,11 @@ export class EntityRenderer {
   }
 
   private syncAsset(display: Container, entity: TabletopEntity) {
-    if (this.assetUrls.has(entity.id) && this.assetUrls.get(entity.id) === entity.assetUrl) return;
+    if (
+      this.assetUrls.has(entity.id) &&
+      this.assetUrls.get(entity.id) === entity.assetUrl
+    )
+      return;
     this.assetUrls.set(entity.id, entity.assetUrl);
     const current = display.getChildByLabel("asset");
     if (current) {
@@ -493,15 +709,19 @@ export class EntityRenderer {
     try {
       const properties = entityProperties(entity.properties);
       const playback = normalizeTabletopPlayback(properties);
-      const assetSprite = tabletopMediaKind(properties.mime_type, url) === "gif"
-        ? new GifSprite({
-            source: await this.textures.loadGif(url),
-            label: "asset-sprite",
-            autoPlay: !playback.paused,
-            loop: playback.loop,
-            animationSpeed: playback.speed,
-          })
-        : new Sprite({ texture: await this.textures.load(url), label: "asset-sprite" });
+      const assetSprite =
+        tabletopMediaKind(properties.mime_type, url) === "gif"
+          ? new GifSprite({
+              source: await this.textures.loadGif(url),
+              label: "asset-sprite",
+              autoPlay: !playback.paused,
+              loop: playback.loop,
+              animationSpeed: playback.speed,
+            })
+          : new Sprite({
+              texture: await this.textures.load(url),
+              label: "asset-sprite",
+            });
       if (display.destroyed || this.assetUrls.get(entity.id) !== url) {
         assetSprite.destroy();
         return;
@@ -512,7 +732,10 @@ export class EntityRenderer {
         previous.destroy({ children: true });
       }
       const resource = assetSprite.texture.source.resource;
-      if (typeof HTMLVideoElement !== "undefined" && resource instanceof HTMLVideoElement) {
+      if (
+        typeof HTMLVideoElement !== "undefined" &&
+        resource instanceof HTMLVideoElement
+      ) {
         resource.muted = playback.muted;
         resource.loop = playback.loop;
         resource.playsInline = true;
@@ -521,16 +744,24 @@ export class EntityRenderer {
         else void resource.play().catch(() => undefined);
       }
       const assetFrame = new Container({ label: "asset" });
-      const auraFar = new Sprite({ texture: assetSprite.texture, label: "asset-aura-far" });
-      const auraNear = new Sprite({ texture: assetSprite.texture, label: "asset-aura-near" });
+      const auraFar = new Sprite({
+        texture: assetSprite.texture,
+        label: "asset-aura-far",
+      });
+      const auraNear = new Sprite({
+        texture: assetSprite.texture,
+        label: "asset-aura-near",
+      });
       auraFar.visible = false;
       auraNear.visible = false;
       assetFrame.addChild(auraFar, auraNear, assetSprite);
-      display.addChildAt(assetFrame, 3);
+      display.addChildAt(assetFrame, 4);
       this.invalidate();
     } catch (error) {
       if (this.assetUrls.get(entity.id) !== url) return;
-      this.onAssetError(error instanceof Error ? error.message : "Asset inválido.");
+      this.onAssetError(
+        error instanceof Error ? error.message : "Asset inválido.",
+      );
     }
   }
 

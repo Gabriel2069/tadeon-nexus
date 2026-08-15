@@ -25,9 +25,9 @@ const CreativeDockBridge = lazy(() =>
     default: module.TabletopCreativeDockBridge,
   })),
 );
-const DirectorEnhancementBridge = lazy(() =>
-  import("@/components/tabletop/tabletop-director-enhancement-bridge").then((module) => ({
-    default: module.TabletopDirectorEnhancementBridge,
+const FogGeometryBridge = lazy(() =>
+  import("@/components/tabletop/tabletop-fog-geometry-bridge").then((module) => ({
+    default: module.TabletopFogGeometryBridge,
   })),
 );
 const PlaceablesInspectorBridge = lazy(() =>
@@ -79,7 +79,7 @@ export function TabletopDeferredEnhancements({ master }: { master: boolean }) {
       {master && tier >= 3 && (
         <>
           <CreativeDockBridge />
-          <DirectorEnhancementBridge />
+          <FogGeometryBridge />
           <PlaceablesInspectorBridge />
           <IntegrationToolsBridge />
           <SemanticTransformBridge />

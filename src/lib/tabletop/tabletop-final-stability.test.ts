@@ -17,7 +17,8 @@ describe("estabilidade final da Mesa Nexus", () => {
     expect(route).not.toContain('from "@/components/tabletop/tabletop-atmosphere-bridge"');
     expect(deferred).toContain("<AtmosphereBridge />");
     expect(deferred).toContain("<CreativeDockBridge />");
-    expect(deferred).toContain("<DirectorEnhancementBridge />");
+    expect(deferred).toContain("<FogGeometryBridge />");
+    expect(deferred).not.toContain("<DirectorEnhancementBridge />");
     expect(deferred).toContain("<PlaceablesInspectorBridge />");
   });
 
