@@ -101,13 +101,9 @@ export function TabletopDirectorWorkspace({
   useEffect(() => {
     setLoading(true);
     void load();
-    const interval = window.setInterval(() => void load(), 12_000);
     const refreshOnFocus = () => void load();
     window.addEventListener("focus", refreshOnFocus);
-    return () => {
-      window.clearInterval(interval);
-      window.removeEventListener("focus", refreshOnFocus);
-    };
+    return () => window.removeEventListener("focus", refreshOnFocus);
   }, [load]);
 
   useEffect(() => {
@@ -126,6 +122,13 @@ export function TabletopDirectorWorkspace({
 
   const onRealtimeEvent = useCallback(
     (event: TabletopRealtimeEvent) => {
+      if (event.type === "token.move-commit") {
+        engineRef.current?.applyRemoteEntityPatch(event.payload.entityId, {
+          x: event.payload.x,
+          y: event.payload.y,
+        });
+        return;
+      }
       if (
         event.type === "director.state" ||
         event.type === "scene.transition" ||

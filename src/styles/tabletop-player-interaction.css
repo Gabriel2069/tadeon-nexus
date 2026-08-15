@@ -331,3 +331,5 @@
     transition: none;
   }
 }
+
+.tadeon-tactical-target{fill:none;stroke-linecap:round;vector-effect:non-scaling-stroke;filter:drop-shadow(0 0 7px hsl(188 70% 54% / .28))}.tadeon-tactical-target circle,.tadeon-tactical-target line{fill:none;stroke:currentColor;stroke-width:2;vector-effect:non-scaling-stroke}.tadeon-tactical-target.is-affected{color:hsl(188 78% 72% / .72)}.tadeon-tactical-target.is-affected circle{stroke-dasharray:4 4}.tadeon-tactical-target.is-marked{color:hsl(42 88% 72% / .98);filter:drop-shadow(0 0 8px hsl(42 82% 58% / .38))}.tadeon-tactical-target.is-outside{color:hsl(8 80% 68% / .92)}
