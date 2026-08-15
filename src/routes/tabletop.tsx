@@ -43,6 +43,7 @@ function TabletopRoute() {
   const search = Route.useSearch() as {
     view?: string;
     session?: string;
+    scene?: string;
   };
   const { role } = useAuth();
   const [flags, setFlags] = useState<FeatureFlags | null>(null);
@@ -81,6 +82,13 @@ function TabletopRoute() {
     )
       ? search.session
       : undefined;
+  const requestedScene =
+    typeof search.scene === "string" &&
+    /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(
+      search.scene,
+    )
+      ? search.scene
+      : undefined;
 
   if (role === "mestre" && search.view === "director") {
     return (
@@ -105,6 +113,7 @@ function TabletopRoute() {
           <TabletopIntegrationToolsBridge />
           <TabletopSemanticTransformBridge />
           <TabletopWorkspace
+            initialSceneId={requestedScene}
             realtimeEnabled={flags.nexus_realtime_enabled}
             lightingEnabled={flags.nexus_lighting_enabled}
           />
