@@ -54,6 +54,9 @@ function detectPlatform(): InstallPlatform {
   return classicIos || ipadDesktopMode ? "ios" : "other";
 }
 
+// A store do PWA vive neste módulo junto do componente de registro; extrair o
+// hook exigiria alterar todos os consumidores sem ganho funcional.
+// eslint-disable-next-line react-refresh/only-export-components
 export function usePwaInstall() {
   const current = useSyncExternalStore(
     subscribe,
