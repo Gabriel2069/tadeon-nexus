@@ -84,6 +84,9 @@ export interface TabletopScene {
   gridMode: GridMode;
   gridSize: number;
   gridScale: number;
+  /** Origem da malha no espaço do mapa. Mantida opcional para cenas legadas. */
+  gridOffsetX?: number;
+  gridOffsetY?: number;
   snap: boolean;
   backgroundAssetId?: string | null;
   backgroundAssetUrl?: string;
@@ -116,6 +119,8 @@ export const EMPTY_TABLETOP_SCENE: TabletopScene = {
   gridMode: "square",
   gridSize: 64,
   gridScale: 1,
+  gridOffsetX: 0,
+  gridOffsetY: 0,
   snap: true,
   levels: [
     {
