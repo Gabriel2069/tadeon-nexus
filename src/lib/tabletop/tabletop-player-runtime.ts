@@ -1,3 +1,4 @@
+import "./tabletop-rich-media-runtime";
 import type { CameraController } from "./camera-controller";
 import { TabletopEngine } from "./tabletop-engine";
 import type { Point, TabletopSnapshot } from "./types";
