@@ -1158,7 +1158,7 @@ export function TabletopWorkspace({
     } finally {
       setSaving(false);
     }
-  };
+  }, [editable, loadSnapshots, refreshScenes, snapshot.scene]);
 
   const saveVisibilityCurrent = useCallback(
     async (silent = false) => {
