@@ -56,6 +56,7 @@ export function TabletopNativeModelBridge({
       const canvas = nativeCanvas(runtime.host);
       if (!canvas) return;
       if (!secureVisibility) {
+        canvas.style.visibility = "visible";
         if (maskFingerprint !== "unmasked") {
           canvas.style.maskImage = "none";
           canvas.style.setProperty("-webkit-mask-image", "none");
@@ -63,7 +64,18 @@ export function TabletopNativeModelBridge({
         }
         return;
       }
+
       const state = (runtime.engine as unknown as VisibilityInternals).visibilityState;
+      if (!state) {
+        // Fail closed: the participant must never see a native mesh before the
+        // server-authoritative visibility document has reached the engine.
+        // The Pixi shell remains available as the safe fallback meanwhile.
+        canvas.style.visibility = "hidden";
+        maskFingerprint = "awaiting-visibility";
+        return;
+      }
+
+      canvas.style.visibility = "visible";
       const nextFingerprint = tabletopNativeVisibilityFingerprint(runtime, state);
       if (nextFingerprint === maskFingerprint) return;
       applyTabletopNativeVisibilityMask(canvas, runtime, state);
