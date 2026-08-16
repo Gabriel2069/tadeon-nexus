@@ -9,11 +9,17 @@ import {
   Focus,
   Lock,
   LockOpen,
+  Minus,
   MoreHorizontal,
+  Pause,
+  Play,
+  Plus,
+  RotateCw,
   Search,
   Trash2,
   X,
 } from "lucide-react";
+import { tabletopMediaKind } from "@/lib/tabletop/tabletop-media";
 import { currentTabletopRuntime } from "@/lib/tabletop/tabletop-player-runtime";
 import type { TabletopEntity, TabletopSnapshot } from "@/lib/tabletop/types";
 import "@/styles/tabletop-radial-actions.css";
@@ -36,6 +42,21 @@ function safeAnchor(entity: TabletopEntity) {
     x: Math.max(host.left + 92, Math.min(host.right - 92, point.x)),
     y: Math.max(host.top + 92, Math.min(host.bottom - 92, point.y)),
   };
+}
+
+function objectValue(value: unknown): Record<string, unknown> {
+  return value && typeof value === "object" && !Array.isArray(value)
+    ? (value as Record<string, unknown>)
+    : {};
+}
+
+function finite(value: unknown, fallback: number) {
+  const number = Number(value);
+  return Number.isFinite(number) ? number : fallback;
+}
+
+function clamp(value: number, minimum: number, maximum: number) {
+  return Math.max(minimum, Math.min(maximum, value));
 }
 
 type NexusCaptureAction =
@@ -122,6 +143,13 @@ export function TabletopRadialActionsBridge() {
   ) return null;
 
   const engine = currentTabletopRuntime()?.engine;
+  const properties = objectValue(selected.properties);
+  const isNativeModel =
+    typeof selected.assetUrl === "string" &&
+    tabletopMediaKind(properties.mime_type, selected.assetUrl) === "model";
+  const modelScale = clamp(finite(properties.model_scale, 1), 0.05, 20);
+  const modelPaused = properties.model_animation_paused === true;
+
   const close = () => {
     setMemoryOpen(false);
     setOpen(false);
@@ -129,6 +157,12 @@ export function TabletopRadialActionsBridge() {
   const run = (operation: () => void) => {
     operation();
     close();
+  };
+  const patchModel = (changes: Record<string, unknown>, label: string) => {
+    engine?.updateSelected(
+      { properties: { ...properties, ...changes } },
+      label,
+    );
   };
   const capture = (action: NexusCaptureAction) => {
     if (action === "register-nexus" && selected.linkedKnowledgeNodeId) {
@@ -166,121 +200,196 @@ export function TabletopRadialActionsBridge() {
           <MoreHorizontal aria-hidden="true" />
         </button>
       )}
-      {open && (
+      <div
+        className="tadeon-radial-actions"
+        data-state={open ? "open" : "closed"}
+        style={{ left: anchor.x, top: anchor.y }}
+        role="menu"
+        aria-hidden={!open}
+        aria-label={`Ações rápidas de ${selected.label}`}
+      >
         <div
-          className="tadeon-radial-actions"
-          style={{ left: anchor.x, top: anchor.y }}
-          role="menu"
-          aria-label={`Ações rápidas de ${selected.label}`}
+          className={`tadeon-radial-actions__center${memoryOpen ? " is-memory" : ""}${isNativeModel && !memoryOpen ? " is-model" : ""}`}
         >
-          <div
-            className={`tadeon-radial-actions__center${memoryOpen ? " is-memory" : ""}`}
-          >
-            {memoryOpen ? (
-              <>
-                <button
-                  type="button"
-                  title={selected.linkedKnowledgeNodeId ? "Abrir página vinculada" : "Registrar como página"}
-                  aria-label={selected.linkedKnowledgeNodeId ? "Abrir página vinculada" : "Registrar como página"}
-                  onClick={() => capture("register-nexus")}
-                >
-                  <BookOpen aria-hidden="true" />
-                </button>
-                <button
-                  type="button"
-                  title="Capturar nota"
-                  aria-label="Capturar nota no Nexus"
-                  onClick={() => capture("capture-note")}
-                >
-                  <FileText aria-hidden="true" />
-                </button>
-                <button
-                  type="button"
-                  title="Capturar pista"
-                  aria-label="Capturar pista no Nexus"
-                  onClick={() => capture("capture-clue")}
-                >
-                  <Search aria-hidden="true" />
-                </button>
-                <button
-                  type="button"
-                  title="Capturar evento"
-                  aria-label="Capturar evento no Nexus"
-                  onClick={() => capture("capture-event")}
-                >
-                  <Clock3 aria-hidden="true" />
-                </button>
-                <strong>Memória</strong>
-              </>
-            ) : (
-              <>
-                <button type="button" onClick={close} aria-label="Fechar ações rápidas">
-                  <X aria-hidden="true" />
-                </button>
-                <strong>{selected.label}</strong>
-              </>
-            )}
-          </div>
-          <button
-            type="button"
-            className="is-north"
-            role="menuitem"
-            onClick={() => run(() => engine?.focusSelection())}
-            title="Enquadrar"
-          >
-            <Focus aria-hidden="true" /><span>Foco</span>
-          </button>
-          <button
-            type="button"
-            className="is-north-east"
-            role="menuitem"
-            onClick={() => run(() => engine?.duplicateSelected())}
-            title="Duplicar"
-          >
-            <Copy aria-hidden="true" /><span>Duplicar</span>
-          </button>
-          <button
-            type="button"
-            className="is-south-east"
-            role="menuitem"
-            onClick={() => run(() => engine?.updateSelected({ locked: !selected.locked }, selected.locked ? "Desbloquear entidade" : "Bloquear entidade"))}
-            title={selected.locked ? "Desbloquear" : "Bloquear"}
-          >
-            {selected.locked ? <LockOpen aria-hidden="true" /> : <Lock aria-hidden="true" />}
-            <span>{selected.locked ? "Soltar" : "Travar"}</span>
-          </button>
-          <button
-            type="button"
-            className="is-south"
-            role="menuitem"
-            onClick={() => run(() => engine?.updateSelected({ hidden: !selected.hidden }, selected.hidden ? "Mostrar entidade" : "Ocultar entidade"))}
-            title={selected.hidden ? "Mostrar" : "Ocultar"}
-          >
-            {selected.hidden ? <Eye aria-hidden="true" /> : <EyeOff aria-hidden="true" />}
-            <span>{selected.hidden ? "Mostrar" : "Ocultar"}</span>
-          </button>
-          <button
-            type="button"
-            className="is-south-west"
-            role="menuitem"
-            onClick={() => setMemoryOpen((value) => !value)}
-            title="Memória do Nexus"
-            aria-expanded={memoryOpen}
-          >
-            <BookOpen aria-hidden="true" />
-            <span>Memória</span>
-          </button>
-          <button
-            type="button"
-            className="is-north-west is-danger"
-            role="menuitem"
-            onClick={() => run(() => engine?.deleteSelected())}
-            title="Excluir"
-          >
-            <Trash2 aria-hidden="true" /><span>Excluir</span>
-          </button>
+          {memoryOpen ? (
+            <>
+              <button
+                type="button"
+                tabIndex={open ? 0 : -1}
+                title={selected.linkedKnowledgeNodeId ? "Abrir página vinculada" : "Registrar como página"}
+                aria-label={selected.linkedKnowledgeNodeId ? "Abrir página vinculada" : "Registrar como página"}
+                onClick={() => capture("register-nexus")}
+              >
+                <BookOpen aria-hidden="true" />
+              </button>
+              <button
+                type="button"
+                tabIndex={open ? 0 : -1}
+                title="Capturar nota"
+                aria-label="Capturar nota no Nexus"
+                onClick={() => capture("capture-note")}
+              >
+                <FileText aria-hidden="true" />
+              </button>
+              <button
+                type="button"
+                tabIndex={open ? 0 : -1}
+                title="Capturar pista"
+                aria-label="Capturar pista no Nexus"
+                onClick={() => capture("capture-clue")}
+              >
+                <Search aria-hidden="true" />
+              </button>
+              <button
+                type="button"
+                tabIndex={open ? 0 : -1}
+                title="Capturar evento"
+                aria-label="Capturar evento no Nexus"
+                onClick={() => capture("capture-event")}
+              >
+                <Clock3 aria-hidden="true" />
+              </button>
+              <strong>Memória</strong>
+            </>
+          ) : (
+            <>
+              <button
+                type="button"
+                tabIndex={open ? 0 : -1}
+                onClick={close}
+                aria-label="Fechar ações rápidas"
+              >
+                <X aria-hidden="true" />
+              </button>
+              <strong>{selected.label}</strong>
+              {isNativeModel && (
+                <div className="tadeon-radial-actions__model-controls" aria-label="Ajustes do modelo 3D">
+                  <button
+                    type="button"
+                    tabIndex={open ? 0 : -1}
+                    title="Diminuir modelo 3D"
+                    aria-label="Diminuir modelo 3D"
+                    onClick={() =>
+                      patchModel(
+                        { model_scale: clamp(modelScale - 0.1, 0.05, 20) },
+                        "Diminuir modelo 3D",
+                      )
+                    }
+                  >
+                    <Minus aria-hidden="true" />
+                  </button>
+                  <button
+                    type="button"
+                    tabIndex={open ? 0 : -1}
+                    title={modelPaused ? "Continuar animação 3D" : "Pausar animação 3D"}
+                    aria-label={modelPaused ? "Continuar animação 3D" : "Pausar animação 3D"}
+                    onClick={() =>
+                      patchModel(
+                        { model_animation_paused: !modelPaused },
+                        modelPaused ? "Continuar animação 3D" : "Pausar animação 3D",
+                      )
+                    }
+                  >
+                    {modelPaused ? <Play aria-hidden="true" /> : <Pause aria-hidden="true" />}
+                  </button>
+                  <button
+                    type="button"
+                    tabIndex={open ? 0 : -1}
+                    title="Girar modelo 3D em 15 graus"
+                    aria-label="Girar modelo 3D em 15 graus"
+                    onClick={() =>
+                      patchModel(
+                        { model_yaw: finite(properties.model_yaw, 0) + 15 },
+                        "Girar modelo 3D",
+                      )
+                    }
+                  >
+                    <RotateCw aria-hidden="true" />
+                  </button>
+                  <button
+                    type="button"
+                    tabIndex={open ? 0 : -1}
+                    title="Aumentar modelo 3D"
+                    aria-label="Aumentar modelo 3D"
+                    onClick={() =>
+                      patchModel(
+                        { model_scale: clamp(modelScale + 0.1, 0.05, 20) },
+                        "Aumentar modelo 3D",
+                      )
+                    }
+                  >
+                    <Plus aria-hidden="true" />
+                  </button>
+                </div>
+              )}
+            </>
+          )}
         </div>
-      )}
+        <button
+          type="button"
+          tabIndex={open ? 0 : -1}
+          className="is-north"
+          role="menuitem"
+          onClick={() => run(() => engine?.focusSelection())}
+          title="Enquadrar"
+        >
+          <Focus aria-hidden="true" /><span>Foco</span>
+        </button>
+        <button
+          type="button"
+          tabIndex={open ? 0 : -1}
+          className="is-north-east"
+          role="menuitem"
+          onClick={() => run(() => engine?.duplicateSelected())}
+          title="Duplicar"
+        >
+          <Copy aria-hidden="true" /><span>Duplicar</span>
+        </button>
+        <button
+          type="button"
+          tabIndex={open ? 0 : -1}
+          className="is-south-east"
+          role="menuitem"
+          onClick={() => run(() => engine?.updateSelected({ locked: !selected.locked }, selected.locked ? "Desbloquear entidade" : "Bloquear entidade"))}
+          title={selected.locked ? "Desbloquear" : "Bloquear"}
+        >
+          {selected.locked ? <LockOpen aria-hidden="true" /> : <Lock aria-hidden="true" />}
+          <span>{selected.locked ? "Soltar" : "Travar"}</span>
+        </button>
+        <button
+          type="button"
+          tabIndex={open ? 0 : -1}
+          className="is-south"
+          role="menuitem"
+          onClick={() => run(() => engine?.updateSelected({ hidden: !selected.hidden }, selected.hidden ? "Mostrar entidade" : "Ocultar entidade"))}
+          title={selected.hidden ? "Mostrar" : "Ocultar"}
+        >
+          {selected.hidden ? <Eye aria-hidden="true" /> : <EyeOff aria-hidden="true" />}
+          <span>{selected.hidden ? "Mostrar" : "Ocultar"}</span>
+        </button>
+        <button
+          type="button"
+          tabIndex={open ? 0 : -1}
+          className="is-south-west"
+          role="menuitem"
+          onClick={() => setMemoryOpen((value) => !value)}
+          title="Memória do Nexus"
+          aria-expanded={memoryOpen}
+        >
+          <BookOpen aria-hidden="true" />
+          <span>Memória</span>
+        </button>
+        <button
+          type="button"
+          tabIndex={open ? 0 : -1}
+          className="is-north-west is-danger"
+          role="menuitem"
+          onClick={() => run(() => engine?.deleteSelected())}
+          title="Excluir"
+        >
+          <Trash2 aria-hidden="true" /><span>Excluir</span>
+        </button>
+      </div>
     </>
   );
 }
