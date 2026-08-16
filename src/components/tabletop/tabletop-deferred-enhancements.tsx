@@ -16,6 +16,7 @@ const NexusCaptureBridge = lazy(() => import("@/components/tabletop/tabletop-nex
 const SemanticTransformBridge = lazy(() => import("@/components/tabletop/tabletop-semantic-transform-bridge").then((module) => ({ default: module.TabletopSemanticTransformBridge })));
 const RadialActionsBridge = lazy(() => import("@/components/tabletop/tabletop-radial-actions-bridge").then((module) => ({ default: module.TabletopRadialActionsBridge })));
 const SmartSetupBridge = lazy(() => import("@/components/tabletop/tabletop-smart-setup-bridge").then((module) => ({ default: module.TabletopSmartSetupBridge })));
+const PreflightBridge = lazy(() => import("@/components/tabletop/tabletop-preflight-bridge").then((module) => ({ default: module.TabletopPreflightBridge })));
 
 export function TabletopDeferredEnhancements({ master }: { master: boolean }) {
   const [tier, setTier] = useState(0);
@@ -47,6 +48,7 @@ export function TabletopDeferredEnhancements({ master }: { master: boolean }) {
           <SemanticTransformBridge />
           <RadialActionsBridge />
           <SmartSetupBridge />
+          <PreflightBridge />
         </>
       )}
     </Suspense>
