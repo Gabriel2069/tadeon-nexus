@@ -27,7 +27,7 @@
   .tadeon-tabletop-precision-editor,
   .tadeon-director-remote,
   .tadeon-director-timeline,
-  .tadeon-tabletop-region-automation,
+  .tadeon-region-automation,
   .tadeon-tabletop-visibility-inspector,
   .tadeon-tabletop-atmosphere,
   .tadeon-tabletop-preflight {
@@ -70,11 +70,11 @@
     .tadeon-tabletop-selection-actions,.tadeon-creative-dock,.tadeon-placeables,
     .tadeon-semantic-transform,.tadeon-smart-setup__launcher,.tadeon-nexus-tabletop-locator
   ),
-  body:has(.tadeon-director-remote[data-open="true"]) :is(
+  body:has(.tadeon-director-remote) :is(
     .tadeon-tabletop-selection-actions,.tadeon-creative-dock,.tadeon-placeables,
     .tadeon-semantic-transform,.tadeon-smart-setup__launcher,.tadeon-nexus-tabletop-locator
   ),
-  body:has(.tadeon-tabletop-region-automation[data-open="true"]) :is(
+  body:has(.tadeon-region-automation) :is(
     .tadeon-tabletop-progressive-dock,.tadeon-tactical-dock,.tadeon-tabletop-selection-actions,
     .tadeon-creative-dock,.tadeon-placeables,.tadeon-semantic-transform,.tadeon-smart-setup__launcher
   ),
@@ -100,7 +100,7 @@
   :is(
     .tadeon-smart-setup,.tadeon-placeables__panel,.tadeon-creative-dock__panel,
     .tadeon-tabletop-precision-editor,.tadeon-director-remote,.tadeon-director-timeline,
-    .tadeon-tabletop-region-automation,.tadeon-tabletop-visibility-inspector,
+    .tadeon-region-automation,.tadeon-tabletop-visibility-inspector,
     .tadeon-tabletop-atmosphere,.tadeon-tabletop-preflight
   ) {
     max-width:calc(100vw - max(1rem,env(safe-area-inset-left)) - max(1rem,env(safe-area-inset-right))) !important;
@@ -173,7 +173,8 @@
 .tadeon-radial-trigger {
   width:2.15rem !important;
   height:2.15rem !important;
-  transform:translate(-50%,calc(-100% - .7rem)) !important;
+  translate:-50% calc(-100% - .7rem) !important;
+  transform:none !important;
   transform-origin:50% 100% !important;
   box-shadow:0 10px 32px -16px hsl(var(--primary)/.75),0 0 0 1px hsl(var(--border)/.7) !important;
 }
@@ -240,8 +241,8 @@
 .tadeon-sheet-condition-chip::before {
   position:absolute; z-index:-1; inset:-4px; border-radius:inherit;
   background:radial-gradient(circle at 50% 50%,rgb(var(--condition-rgb,116 36 45)/24%),transparent 72%);
-  filter:blur(9px);
-  opacity:.58;
+  filter:blur(var(--condition-glow-blur,9px));
+  opacity:var(--condition-glow-opacity,.58);
   pointer-events:none; content:"";
 }
 .tadeon-sheet-condition-chip::after {
@@ -254,14 +255,12 @@
   box-shadow:0 0 0 1px rgb(158 61 48 / 35%),0 0 24px -7px rgb(158 61 48 / 86%),inset 0 0 16px rgb(158 61 48 / 8%);
   animation-duration:2.1s;
 }
-.tadeon-sheet-condition-chip[data-condition-severity="danger"]::before { filter:blur(12px); opacity:.76; }
 .tadeon-sheet-condition-chip[data-condition-severity="critical"] {
   --condition-rgb:188 47 58;
   border-color:rgb(188 47 58 / 72%) !important;
   box-shadow:0 0 0 1px rgb(188 47 58 / 46%),0 0 32px -5px rgb(188 47 58 / 96%),0 0 52px -24px rgb(255 132 102 / 82%),inset 0 0 20px rgb(188 47 58 / 12%);
   animation:tadeon-condition-critical 1.35s ease-in-out infinite alternate;
 }
-.tadeon-sheet-condition-chip[data-condition-severity="critical"]::before { filter:blur(16px); opacity:.94; }
 .tadeon-sheet-condition-chip[data-condition-severity="critical"]::after { animation-duration:2.3s; }
 
 /* Exposição and Equilíbrio get deeper, more readable bars. */
