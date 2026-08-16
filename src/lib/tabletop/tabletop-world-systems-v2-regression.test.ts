@@ -38,6 +38,18 @@ describe("Tabletop world systems v2", () => {
     expect(fog).toContain('event.key === "Enter"');
     expect(fog).toContain('event.key === "Backspace"');
     expect(fog).toContain('roles: ["player"]');
+    expect(fog).toContain('scope: "users"');
+    expect(fog).toContain("Participante específico");
+  });
+
+  it("filters participant fog on the server before returning the player projection", () => {
+    const edge = source("supabase/functions/tabletop-view/index.ts");
+    expect(edge).toContain("function fogVisibleToParticipant");
+    expect(edge).toContain("sequence_index,audience");
+    expect(edge).toContain("fogVisibleToParticipant(stroke.audience, user.id, participant.role)");
+    expect(edge).toContain('role === "master" || role === "co_master"');
+    expect(edge).toContain("signedAsset.mimeType");
+    expect(edge).not.toContain("audience: stroke.audience");
   });
 
   it("uses one deliberate radial instead of an automatic observer clone", () => {
