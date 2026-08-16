@@ -13,9 +13,12 @@ import viewportCss from "../styles/viewport-fit-final.css?url";
 import auditCss from "../styles/interface-audit-final.css?url";
 import radialPresenceCss from "../styles/radial-presence-final.css?url";
 import reconciliationCss from "../styles/interface-reconciliation-final.css?url";
+import finalPolishCss from "../styles/interface-final-user-polish.css?url";
 import { AuthProvider } from "@/lib/auth";
 import { Toaster } from "@/components/ui/sonner";
 import { PwaRegistration } from "@/components/pwa-registration";
+import { ExperienceFinalPolishBridge } from "@/components/experience-final-polish-bridge";
+import { TabletopFinalInteractionBridge } from "@/components/tabletop/tabletop-final-interaction-bridge";
 import { useEffect } from "react";
 import { initializeClientErrorMonitor } from "@/lib/client-error-monitor";
 import { PageState } from "@/components/page-state";
@@ -77,53 +80,23 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "theme-color", content: "#74242d" },
       { name: "application-name", content: "Tadeon Nexus" },
       { name: "apple-mobile-web-app-capable", content: "yes" },
-      {
-        name: "apple-mobile-web-app-status-bar-style",
-        content: "black-translucent",
-      },
+      { name: "apple-mobile-web-app-status-bar-style", content: "black-translucent" },
       { name: "apple-mobile-web-app-title", content: "Nexus" },
       { name: "mobile-web-app-capable", content: "yes" },
-      {
-        name: "tadeon-build-sha",
-        content: import.meta.env.VITE_APP_COMMIT_SHA ?? "development",
-      },
+      { name: "tadeon-build-sha", content: import.meta.env.VITE_APP_COMMIT_SHA ?? "development" },
       { title: "Tadeon Nexus - RPG Online" },
-      {
-        name: "description",
-        content:
-          "Tadeon Nexus: gerencie fichas de personagem, atributos, perícias e a árvore de habilidades do seu RPG online com painel para mestres e jogadores.",
-      },
+      { name: "description", content: "Tadeon Nexus: gerencie fichas de personagem, atributos, perícias e a árvore de habilidades do seu RPG online com painel para mestres e jogadores." },
       { property: "og:title", content: "Tadeon Nexus - RPG Online" },
       { name: "twitter:title", content: "Tadeon Nexus - RPG Online" },
-      {
-        property: "og:description",
-        content:
-          "Tadeon Nexus: gerencie fichas de personagem, atributos, perícias e a árvore de habilidades do seu RPG online com painel para mestres e jogadores.",
-      },
-      {
-        name: "twitter:description",
-        content:
-          "Tadeon Nexus: gerencie fichas de personagem, atributos, perícias e a árvore de habilidades do seu RPG online com painel para mestres e jogadores.",
-      },
+      { property: "og:description", content: "Tadeon Nexus: gerencie fichas de personagem, atributos, perícias e a árvore de habilidades do seu RPG online com painel para mestres e jogadores." },
+      { name: "twitter:description", content: "Tadeon Nexus: gerencie fichas de personagem, atributos, perícias e a árvore de habilidades do seu RPG online com painel para mestres e jogadores." },
       { property: "og:site_name", content: "Tadeon Nexus" },
-      {
-        property: "og:image",
-        content: "https://tadeon-nexus.gtadeusz.workers.dev/social-card.png",
-      },
+      { property: "og:image", content: "https://tadeon-nexus.gtadeusz.workers.dev/social-card.png" },
       { property: "og:image:width", content: "1200" },
       { property: "og:image:height", content: "630" },
-      {
-        property: "og:image:alt",
-        content: "Tadeon Nexus ~ arquivo vivo para Tessitura do Vazio",
-      },
-      {
-        name: "twitter:image",
-        content: "https://tadeon-nexus.gtadeusz.workers.dev/social-card.png",
-      },
-      {
-        name: "twitter:image:alt",
-        content: "Tadeon Nexus ~ arquivo vivo para Tessitura do Vazio",
-      },
+      { property: "og:image:alt", content: "Tadeon Nexus ~ arquivo vivo para Tessitura do Vazio" },
+      { name: "twitter:image", content: "https://tadeon-nexus.gtadeusz.workers.dev/social-card.png" },
+      { name: "twitter:image:alt", content: "Tadeon Nexus ~ arquivo vivo para Tessitura do Vazio" },
       { name: "twitter:card", content: "summary_large_image" },
       { property: "og:type", content: "website" },
     ],
@@ -134,27 +107,12 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { rel: "stylesheet", href: auditCss },
       { rel: "stylesheet", href: radialPresenceCss },
       { rel: "stylesheet", href: reconciliationCss },
+      { rel: "stylesheet", href: finalPolishCss },
       { rel: "manifest", href: "/manifest.webmanifest" },
-      {
-        rel: "icon",
-        href: "/favicon.svg?v=3",
-        type: "image/svg+xml",
-        sizes: "any",
-      },
-      {
-        rel: "shortcut icon",
-        href: "/favicon.svg?v=3",
-        type: "image/svg+xml",
-      },
-      {
-        rel: "apple-touch-icon",
-        href: "/apple-touch-icon.png",
-        sizes: "180x180",
-      },
-      {
-        rel: "stylesheet",
-        href: "https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Inter:wght@400;500;600;700&family=PT+Mono&display=swap",
-      },
+      { rel: "icon", href: "/favicon.svg?v=4", type: "image/svg+xml", sizes: "any" },
+      { rel: "shortcut icon", href: "/favicon.svg?v=4", type: "image/svg+xml" },
+      { rel: "apple-touch-icon", href: "/apple-touch-icon.png", sizes: "180x180" },
+      { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Inter:wght@400;500;600;700&family=PT+Mono&display=swap" },
     ],
   }),
   shellComponent: RootShell,
@@ -166,13 +124,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 function RootShell({ children }: { children: React.ReactNode }) {
   return (
     <html lang="pt-BR">
-      <head>
-        <HeadContent />
-      </head>
-      <body>
-        {children}
-        <Scripts />
-      </body>
+      <head><HeadContent /></head>
+      <body>{children}<Scripts /></body>
     </html>
   );
 }
@@ -183,9 +136,9 @@ function RootComponent() {
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
-        <main>
-          <Outlet />
-        </main>
+        <main><Outlet /></main>
+        <ExperienceFinalPolishBridge />
+        <TabletopFinalInteractionBridge />
         <Toaster position="top-right" />
         <PwaRegistration />
       </AuthProvider>
