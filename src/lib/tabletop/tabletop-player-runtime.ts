@@ -1,4 +1,5 @@
 import "./tabletop-rich-media-runtime";
+import "./tabletop-advanced-grid-runtime";
 import type { CameraController } from "./camera-controller";
 import { TabletopEngine } from "./tabletop-engine";
 import type { Point, TabletopSnapshot } from "./types";
@@ -91,15 +92,14 @@ if (!runtimeState.__tadeonPlayerRuntimePatched) {
 
   prototype.render = function renderWithRuntime(this: TabletopEngine, notify = true) {
     originalRender.call(this, notify);
-    // Camera pan/zoom, hover previews and resize call render(false). Broadcasting
-    // those frames forced every React bridge to rebuild snapshots, audio and
-    // preload work on each pointer frame, which could make the canvas feel
-    // frozen on desktop. Only semantic/state renders need to wake the bridges.
     if (notify) dispatchRuntimeRender(this);
   };
 
   prototype.destroy = async function destroyWithRuntime(this: TabletopEngine) {
-    if (typeof window !== "undefined" && window.__tadeonTabletopRuntime?.engine === this) {
+    if (
+      typeof window !== "undefined" &&
+      window.__tadeonTabletopRuntime?.engine === this
+    ) {
       delete window.__tadeonTabletopRuntime;
       window.dispatchEvent(new CustomEvent("tadeon-tabletop-runtime-destroyed"));
     }
