@@ -123,7 +123,7 @@ export function TabletopNexusCaptureBridge() {
         });
 
         if (isPrimaryRegistration) {
-          runtime.engine.selectOnly(entity.id);
+          runtime.engine.selectEntityById(entity.id);
           runtime.engine.updateSelected(
             { linkedKnowledgeNodeId: result.node.id },
             "Vincular entidade ao Nexus",
