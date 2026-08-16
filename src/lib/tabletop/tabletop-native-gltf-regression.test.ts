@@ -94,6 +94,6 @@ describe("native tabletop GLTF renderer", () => {
   it("loads the native renderer only in the deferred tabletop tier", () => {
     const deferred = source("src/components/tabletop/tabletop-deferred-enhancements.tsx");
     expect(deferred).toContain("TabletopNativeModelBridge");
-    expect(deferred).toContain("<NativeModelBridge />");
+    expect(deferred).toContain("<NativeModelBridge secureVisibility={!master} />");
   });
 });
