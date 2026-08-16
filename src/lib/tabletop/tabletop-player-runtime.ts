@@ -2,11 +2,22 @@ import "./tabletop-rich-media-runtime";
 import type { CameraController } from "./camera-controller";
 import { TabletopEngine } from "./tabletop-engine";
 import type { Point, TabletopSnapshot } from "./types";
+import type {
+  TabletopProjectionMode,
+  TabletopViewOrientation,
+} from "./tabletop-projection";
+
+export interface TabletopRuntimeView {
+  projection: TabletopProjectionMode;
+  zoom: number;
+  orientation: TabletopViewOrientation;
+}
 
 export interface TabletopBrowserRuntime {
   engine: TabletopEngine;
   host: HTMLElement;
   snapshot(): TabletopSnapshot;
+  view(): TabletopRuntimeView;
   clientToWorld(point: Point): Point;
   worldToClient(point: Point): Point;
 }
@@ -57,6 +68,11 @@ if (!runtimeState.__tadeonPlayerRuntimePatched) {
       engine: this,
       host,
       snapshot: () => this.snapshot,
+      view: () => ({
+        projection: internals.camera.projection,
+        zoom: internals.camera.zoom,
+        orientation: internals.camera.orientation,
+      }),
       clientToWorld: (point) => {
         const rect = internals.app.canvas.getBoundingClientRect();
         return internals.camera.screenToWorld({
