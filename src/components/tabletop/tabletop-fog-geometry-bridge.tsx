@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { createPortal } from "react-dom";
+import type { SupabaseClient } from "@supabase/supabase-js";
 import {
   Circle,
   Eye,
@@ -11,16 +12,17 @@ import {
   UserRound,
   UsersRound,
 } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 import { currentTabletopRuntime } from "@/lib/tabletop/tabletop-player-runtime";
-import {
-  setTabletopFogAudience,
-} from "@/lib/tabletop/tabletop-fog-audience-runtime";
+import { setTabletopFogAudience } from "@/lib/tabletop/tabletop-fog-audience-runtime";
 import type {
   TabletopFogAudience,
   TabletopFogShape,
 } from "@/lib/tabletop/tabletop-visibility-service";
-import type { Point } from "@/lib/tabletop/types";
+import type { Point, TabletopSnapshot } from "@/lib/tabletop/types";
 import "@/styles/tabletop-world-systems.css";
+
+const database = supabase as unknown as SupabaseClient;
 
 type PracticalFogShape = Extract<
   TabletopFogShape,
@@ -28,6 +30,13 @@ type PracticalFogShape = Extract<
 >;
 type FogOperation = "reveal" | "hide";
 type AudiencePreset = "global" | "players" | "masters" | "observers";
+type AudienceChoice = AudiencePreset | `user:${string}`;
+
+interface FogParticipant {
+  userId: string;
+  name: string;
+  role: string;
+}
 
 const SHAPES: Array<{
   id: PracticalFogShape;
@@ -35,30 +44,15 @@ const SHAPES: Array<{
   description: string;
   icon: typeof Square;
 }> = [
-  {
-    id: "rectangle",
-    label: "Área",
-    description: "arraste dois cantos",
-    icon: Square,
-  },
-  {
-    id: "ellipse",
-    label: "Elipse",
-    description: "arraste o diâmetro",
-    icon: Circle,
-  },
+  { id: "rectangle", label: "Área", description: "arraste dois cantos", icon: Square },
+  { id: "ellipse", label: "Elipse", description: "arraste o diâmetro", icon: Circle },
   {
     id: "polygon",
     label: "Polígono",
     description: "clique os vértices; Enter fecha",
     icon: Hexagon,
   },
-  {
-    id: "brush",
-    label: "Pincel",
-    description: "traço livre",
-    icon: Paintbrush,
-  },
+  { id: "brush", label: "Pincel", description: "traço livre", icon: Paintbrush },
 ];
 
 const AUDIENCES: Array<{
@@ -76,11 +70,14 @@ function fogOperationsHost() {
   return document.querySelector<HTMLElement>(".tadeon-visibility__fog-operations");
 }
 
-function audienceValue(preset: AudiencePreset): TabletopFogAudience {
-  if (preset === "players") return { scope: "roles", roles: ["player"] };
-  if (preset === "masters")
-    return { scope: "roles", roles: ["master", "co_master"] };
-  if (preset === "observers") return { scope: "roles", roles: ["observer"] };
+function audienceValue(choice: AudienceChoice): TabletopFogAudience {
+  if (choice.startsWith("user:")) {
+    const userId = choice.slice("user:".length);
+    return userId ? { scope: "users", userIds: [userId] } : { scope: "global" };
+  }
+  if (choice === "players") return { scope: "roles", roles: ["player"] };
+  if (choice === "masters") return { scope: "roles", roles: ["master", "co_master"] };
+  if (choice === "observers") return { scope: "roles", roles: ["observer"] };
   return { scope: "global" };
 }
 
@@ -103,8 +100,10 @@ type CommitVisibilityTool = {
 
 export function TabletopFogGeometryBridge() {
   const [host, setHost] = useState<HTMLElement | null>(null);
+  const [sceneId, setSceneId] = useState("");
+  const [members, setMembers] = useState<FogParticipant[]>([]);
   const [shape, setShape] = useState<PracticalFogShape>("rectangle");
-  const [audience, setAudience] = useState<AudiencePreset>("global");
+  const [audience, setAudience] = useState<AudienceChoice>("global");
   const [polygonOperation, setPolygonOperation] = useState<FogOperation | null>(null);
   const [polygonPoints, setPolygonPoints] = useState<Point[]>([]);
   const [polygonHover, setPolygonHover] = useState<Point | null>(null);
@@ -129,6 +128,69 @@ export function TabletopFogGeometryBridge() {
       if (frame) window.cancelAnimationFrame(frame);
     };
   }, []);
+
+  useEffect(() => {
+    const refreshScene = (snapshot?: TabletopSnapshot | null) => {
+      const next = snapshot ?? currentTabletopRuntime()?.snapshot() ?? null;
+      setSceneId(next?.scene.id && next.scene.id !== "local-scene" ? next.scene.id : "");
+    };
+    refreshScene();
+    const onRender = (event: Event) =>
+      refreshScene((event as CustomEvent<TabletopSnapshot>).detail);
+    window.addEventListener("tadeon-tabletop-render", onRender);
+    return () => window.removeEventListener("tadeon-tabletop-render", onRender);
+  }, []);
+
+  useEffect(() => {
+    if (!sceneId) {
+      setMembers([]);
+      return;
+    }
+    let active = true;
+    void (async () => {
+      const { data: scene } = await database
+        .from("tabletop_scenes")
+        .select("campaign_id")
+        .eq("id", sceneId)
+        .maybeSingle();
+      if (!scene?.campaign_id) {
+        if (active) setMembers([]);
+        return;
+      }
+      const { data: memberships } = await database
+        .from("campaign_members")
+        .select("user_id,role")
+        .eq("campaign_id", scene.campaign_id);
+      const userIds = [...new Set((memberships ?? []).map((entry) => String(entry.user_id)))];
+      if (!userIds.length) {
+        if (active) setMembers([]);
+        return;
+      }
+      const { data: profiles } = await database
+        .from("profiles")
+        .select("id,full_name,email")
+        .in("id", userIds);
+      if (!active) return;
+      const names = new Map(
+        (profiles ?? []).map((profile) => [
+          String(profile.id),
+          String(profile.full_name || profile.email || "Participante"),
+        ]),
+      );
+      setMembers(
+        (memberships ?? [])
+          .map((entry) => ({
+            userId: String(entry.user_id),
+            role: String(entry.role),
+            name: names.get(String(entry.user_id)) ?? "Participante",
+          }))
+          .sort((left, right) => left.name.localeCompare(right.name, "pt-BR")),
+      );
+    })();
+    return () => {
+      active = false;
+    };
+  }, [sceneId]);
 
   useEffect(() => {
     setTabletopFogAudience(audienceValue(audience));
@@ -168,9 +230,7 @@ export function TabletopFogGeometryBridge() {
       stop(event);
       const world = runtime.clientToWorld({ x: event.clientX, y: event.clientY });
       setPolygonPoints((current) =>
-        closePoint(current, world) || current.length >= 64
-          ? current
-          : [...current, world],
+        closePoint(current, world) || current.length >= 64 ? current : [...current, world],
       );
       setPolygonHover(world);
     };
@@ -283,6 +343,30 @@ export function TabletopFogGeometryBridge() {
           </button>
         ))}
       </div>
+      {members.length > 0 && (
+        <label className="tadeon-fog-audience__person">
+          <UserRound aria-hidden="true" />
+          <span>Participante específico</span>
+          <select
+            value={audience.startsWith("user:") ? audience : ""}
+            onChange={(event) =>
+              setAudience(
+                event.target.value
+                  ? (`user:${event.target.value}` as AudienceChoice)
+                  : "global",
+              )
+            }
+            aria-label="Aplicar névoa a um participante específico"
+          >
+            <option value="">Nenhum — usar grupo acima</option>
+            {members.map((member) => (
+              <option key={member.userId} value={member.userId}>
+                {member.name} · {member.role}
+              </option>
+            ))}
+          </select>
+        </label>
+      )}
       <div className="tadeon-fog-geometry-tool__operations" aria-label="Operação da névoa">
         <button type="button" onClick={() => activate("reveal")}>
           <Eye aria-hidden="true" />
@@ -296,7 +380,9 @@ export function TabletopFogGeometryBridge() {
       <small>
         {polygonOperation
           ? `Polígono: ${polygonPoints.length} vértice(s) · Enter/duplo clique fecha · Backspace desfaz · Esc cancela.`
-          : "A primeira operação do andar define a base; as seguintes só alteram as regiões desenhadas."}
+          : audience.startsWith("user:")
+            ? "Esta operação de névoa ficará registrada apenas para o participante escolhido."
+            : "A primeira operação do andar define a base; as seguintes só alteram as regiões desenhadas."}
       </small>
     </div>,
     host,
