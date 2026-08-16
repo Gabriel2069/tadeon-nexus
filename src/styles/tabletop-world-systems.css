@@ -51,6 +51,45 @@
   scale: 1.08;
 }
 
+.tadeon-fog-audience__person {
+  display: grid;
+  grid-template-columns: auto minmax(0, 0.55fr) minmax(0, 1fr);
+  align-items: center;
+  gap: 0.42rem;
+  margin-top: 0.34rem;
+  padding: 0.38rem 0.46rem;
+  border: 1px solid color-mix(in srgb, var(--primary) 12%, var(--border));
+  border-radius: 0.68rem 0.24rem 0.68rem 0.24rem;
+  color: var(--muted-foreground);
+  background: var(--card);
+}
+
+.tadeon-fog-audience__person > svg {
+  width: 0.92rem;
+  height: 0.92rem;
+  color: var(--primary);
+}
+
+.tadeon-fog-audience__person > span {
+  min-width: 0;
+  overflow: hidden;
+  font-size: 0.62rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tadeon-fog-audience__person select {
+  min-width: 0;
+  width: 100%;
+  height: 1.9rem;
+  border: 1px solid color-mix(in srgb, var(--border) 88%, transparent);
+  border-radius: 0.48rem;
+  padding: 0 0.42rem;
+  color: var(--foreground);
+  background: var(--background);
+  font-size: 0.62rem;
+}
+
 .tadeon-fog-polygon-preview {
   position: fixed;
   z-index: 82;
@@ -80,6 +119,14 @@
 @media (max-width: 720px) {
   .tadeon-fog-audience {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .tadeon-fog-audience__person {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+
+  .tadeon-fog-audience__person select {
+    grid-column: 1 / -1;
   }
 }
 
