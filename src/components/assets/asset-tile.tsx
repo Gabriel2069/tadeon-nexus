@@ -40,7 +40,6 @@ export function AssetTile({
       draggable={draggable}
       title={draggable ? "Arraste para a Mesa Nexus mantendo o vínculo com este asset" : undefined}
       onDragStart={(event) => {
-        const entityType = asset.mime_type.startsWith("image/") ? "object" : "object";
         event.dataTransfer.effectAllowed = "copy";
         event.dataTransfer.setData(
           TADEON_UNIFIED_DRAG_MIME,
@@ -50,7 +49,7 @@ export function AssetTile({
             assetUrl: previewUrl,
             label: asset.display_name,
             mimeType: asset.mime_type,
-            entityType,
+            entityType: "object",
           }),
         );
         event.dataTransfer.setData("text/plain", asset.display_name);
