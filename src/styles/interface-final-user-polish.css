@@ -194,6 +194,18 @@
 }
 .tadeon-sheet-commandbar__main { min-height:3.8rem; align-items:center; }
 .tadeon-sheet-page .tadeon-sheet-nav { margin-top:.45rem; border-radius:.85rem; box-shadow:0 16px 36px -34px rgb(0 0 0/92%); }
+[data-tadeon-sheet-tabletop-action="true"] {
+  width:2.5rem !important;
+  min-width:2.5rem !important;
+  height:2.5rem !important;
+  flex:0 0 2.5rem !important;
+  justify-content:center !important;
+  gap:0 !important;
+  padding:0 !important;
+  overflow:hidden;
+  font-size:0 !important;
+}
+[data-tadeon-sheet-tabletop-action="true"] svg { width:1rem !important; height:1rem !important; margin:0 !important; }
 
 /* Bring the luminous Mesa dossier language back to the principal sheet. */
 .tadeon-sheet-page :is(input,textarea,[role="combobox"],[data-slot="select-trigger"]) {
@@ -221,16 +233,15 @@
   animation:tadeon-condition-breathe 3.8s ease-in-out infinite alternate;
 }
 .tadeon-sheet-condition-chip {
-  --condition-progress:.34;
   position:relative; overflow:visible; border-width:1px !important;
   box-shadow:0 0 0 1px rgb(var(--condition-rgb,116 36 45)/32%),0 0 16px -7px rgb(var(--condition-rgb,116 36 45)/65%),inset 0 1px rgb(255 255 255/5%);
   animation:tadeon-condition-chip 2.8s ease-in-out infinite alternate;
 }
 .tadeon-sheet-condition-chip::before {
   position:absolute; z-index:-1; inset:-4px; border-radius:inherit;
-  background:radial-gradient(circle at 50% 50%,rgb(var(--condition-rgb,116 36 45)/calc(10% + var(--condition-progress) * 20%)),transparent 72%);
-  filter:blur(calc(5px + var(--condition-progress) * 8px));
-  opacity:calc(.38 + var(--condition-progress) * .52);
+  background:radial-gradient(circle at 50% 50%,rgb(var(--condition-rgb,116 36 45)/24%),transparent 72%);
+  filter:blur(9px);
+  opacity:.58;
   pointer-events:none; content:"";
 }
 .tadeon-sheet-condition-chip::after {
@@ -239,18 +250,18 @@
 }
 .tadeon-sheet-condition-chip[data-condition-severity="danger"] {
   --condition-rgb:158 61 48;
-  --condition-progress:.72;
   border-color:rgb(158 61 48 / 58%) !important;
   box-shadow:0 0 0 1px rgb(158 61 48 / 35%),0 0 24px -7px rgb(158 61 48 / 86%),inset 0 0 16px rgb(158 61 48 / 8%);
   animation-duration:2.1s;
 }
+.tadeon-sheet-condition-chip[data-condition-severity="danger"]::before { filter:blur(12px); opacity:.76; }
 .tadeon-sheet-condition-chip[data-condition-severity="critical"] {
   --condition-rgb:188 47 58;
-  --condition-progress:1;
   border-color:rgb(188 47 58 / 72%) !important;
   box-shadow:0 0 0 1px rgb(188 47 58 / 46%),0 0 32px -5px rgb(188 47 58 / 96%),0 0 52px -24px rgb(255 132 102 / 82%),inset 0 0 20px rgb(188 47 58 / 12%);
   animation:tadeon-condition-critical 1.35s ease-in-out infinite alternate;
 }
+.tadeon-sheet-condition-chip[data-condition-severity="critical"]::before { filter:blur(16px); opacity:.94; }
 .tadeon-sheet-condition-chip[data-condition-severity="critical"]::after { animation-duration:2.3s; }
 
 /* Exposição and Equilíbrio get deeper, more readable bars. */
