@@ -1127,7 +1127,7 @@ export function TabletopWorkspace({
     };
   }, [campaignId, campaigns]);
 
-  const saveCurrent = async (
+  const saveCurrent = useCallback(async (
     overrides: TabletopSaveOverrides = {},
     options: { silent?: boolean } = {},
   ) => {
@@ -1158,7 +1158,7 @@ export function TabletopWorkspace({
     } finally {
       setSaving(false);
     }
-  };
+  }, [editable, loadSnapshots, refreshScenes, snapshot.scene]);
 
   const saveVisibilityCurrent = useCallback(
     async (silent = false) => {
@@ -1194,7 +1194,7 @@ export function TabletopWorkspace({
       })();
     }, 2200);
     return () => window.clearTimeout(timer);
-  }, [conflict, dirty, editable, saveVisibilityCurrent, saving, visibilityDirty]);
+  }, [conflict, dirty, editable, saveCurrent, saveVisibilityCurrent, saving, visibilityDirty]);
 
   const createScene = async () => {
     if (!campaignId) return;

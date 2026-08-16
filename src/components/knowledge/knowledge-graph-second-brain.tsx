@@ -409,10 +409,9 @@ export function KnowledgeGraph({
   }, [graph, positions, viewport.height, viewport.width]);
 
   useEffect(() => {
-    if (!graph || !graph.nodes.length) return;
     const frame = window.requestAnimationFrame(fitGraph);
     return () => window.cancelAnimationFrame(frame);
-  }, [fitGraph, graph?.focusNodeId, graph?.nodes.length, layout, mode, expanded]);
+  }, [fitGraph, layout, mode, expanded]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
