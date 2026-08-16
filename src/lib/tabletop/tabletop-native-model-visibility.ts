@@ -1,9 +1,6 @@
 import type { TabletopBrowserRuntime } from "./tabletop-player-runtime";
-import type {
-  TabletopFogStroke,
-  TabletopLight,
-  TabletopVisibilityState,
-} from "./tabletop-visibility-service";
+import { buildTabletopVisibilityFrame, cachedTabletopVisibilityMask } from "./tabletop-visibility-compositor";
+import type { TabletopFogStroke, TabletopLight, TabletopVisibilityState } from "./tabletop-visibility-service";
 
 interface LocalPoint {
   x: number;
@@ -25,37 +22,25 @@ function localPoint(runtime: TabletopBrowserRuntime, point: LocalPoint): LocalPo
   return { x: client.x - bounds.left, y: client.y - bounds.top };
 }
 
-function screenRadius(
-  runtime: TabletopBrowserRuntime,
-  origin: LocalPoint,
-  radius: number,
-) {
+function screenRadius(runtime: TabletopBrowserRuntime, origin: LocalPoint, radius: number) {
   const center = localPoint(runtime, origin);
   const edge = localPoint(runtime, { x: origin.x + radius, y: origin.y });
   return Math.max(0.5, Math.hypot(edge.x - center.x, edge.y - center.y));
 }
 
 function points(pointsValue: LocalPoint[]) {
-  return pointsValue
-    .map((point) => `${point.x.toFixed(2)},${point.y.toFixed(2)}`)
-    .join(" ");
+  return pointsValue.map((point) => `${point.x.toFixed(2)},${point.y.toFixed(2)}`).join(" ");
 }
 
-function fogShape(
-  runtime: TabletopBrowserRuntime,
-  stroke: TabletopFogStroke,
-  fill: string,
-) {
+function fogShape(runtime: TabletopBrowserRuntime, stroke: TabletopFogStroke, fill: string) {
   const source = stroke.points;
   if (source.length === 0) return "";
   if (stroke.shape === "brush") {
-    return source
-      .map((point) => {
-        const center = localPoint(runtime, point);
-        const radius = screenRadius(runtime, point, stroke.radius);
-        return `<circle cx="${center.x.toFixed(2)}" cy="${center.y.toFixed(2)}" r="${radius.toFixed(2)}" fill="${fill}"/>`;
-      })
-      .join("");
+    return source.map((point) => {
+      const center = localPoint(runtime, point);
+      const radius = screenRadius(runtime, point, stroke.radius);
+      return `<circle cx="${center.x.toFixed(2)}" cy="${center.y.toFixed(2)}" r="${radius.toFixed(2)}" fill="${fill}"/>`;
+    }).join("");
   }
   if (stroke.shape === "polygon") {
     if (source.length < 3) return "";
@@ -78,9 +63,8 @@ function lightShape(runtime: TabletopBrowserRuntime, light: TabletopLight) {
   if (light.visibilityPolygon && light.visibilityPolygon.length >= 3) {
     return `<polygon points="${points(light.visibilityPolygon.map((point) => localPoint(runtime, point)))}" fill="white"/>`;
   }
-  // A light that casts shadows without a server-provided polygon must never
-  // broaden visibility on the client. Falling back to nothing is safer than a
-  // radial approximation that could reveal geometry behind a secret wall.
+  // A shadow-casting light without an authoritative polygon must never broaden
+  // player vision. Fail closed instead of approximating through secret walls.
   if (light.castsShadows) return "";
 
   const center = localPoint(runtime, light);
@@ -107,54 +91,28 @@ function lightShape(runtime: TabletopBrowserRuntime, light: TabletopLight) {
   }
 
   const normal = direction + Math.PI / 2;
-  const halfWidth =
-    shape === "line" ? Math.max(6, light.radius * 0.08) : light.radius * 0.42;
+  const halfWidth = shape === "line" ? Math.max(6, light.radius * 0.08) : light.radius * 0.42;
   const depth = light.radius;
   const worldPoints = [
-    {
-      x: light.x + Math.cos(normal) * halfWidth,
-      y: light.y + Math.sin(normal) * halfWidth,
-    },
-    {
-      x: light.x + Math.cos(direction) * depth + Math.cos(normal) * halfWidth,
-      y: light.y + Math.sin(direction) * depth + Math.sin(normal) * halfWidth,
-    },
-    {
-      x: light.x + Math.cos(direction) * depth - Math.cos(normal) * halfWidth,
-      y: light.y + Math.sin(direction) * depth - Math.sin(normal) * halfWidth,
-    },
-    {
-      x: light.x - Math.cos(normal) * halfWidth,
-      y: light.y - Math.sin(normal) * halfWidth,
-    },
+    { x: light.x + Math.cos(normal) * halfWidth, y: light.y + Math.sin(normal) * halfWidth },
+    { x: light.x + Math.cos(direction) * depth + Math.cos(normal) * halfWidth, y: light.y + Math.sin(direction) * depth + Math.sin(normal) * halfWidth },
+    { x: light.x + Math.cos(direction) * depth - Math.cos(normal) * halfWidth, y: light.y + Math.sin(direction) * depth - Math.sin(normal) * halfWidth },
+    { x: light.x - Math.cos(normal) * halfWidth, y: light.y - Math.sin(normal) * halfWidth },
   ];
   return `<polygon points="${points(worldPoints.map((point) => localPoint(runtime, point)))}" fill="white"/>`;
 }
 
-function fogUsesCoveredBase(strokes: TabletopFogStroke[]) {
-  return strokes.length === 0 || strokes[0]?.operation === "reveal";
-}
-
-export function tabletopNativeVisibilityNeedsMask(
-  state: TabletopVisibilityState | undefined,
-) {
+export function tabletopNativeVisibilityNeedsMask(state: TabletopVisibilityState | undefined) {
   if (!state) return false;
   return state.fogEnabled || state.globalIllumination < 0.999;
 }
 
-export function tabletopNativeVisibilityFingerprint(
-  runtime: TabletopBrowserRuntime,
-  state: TabletopVisibilityState | undefined,
-) {
-  if (!state) return "none";
+function cameraFingerprint(runtime: TabletopBrowserRuntime) {
   const bounds = runtime.host.getBoundingClientRect();
   const origin = localPoint(runtime, { x: 0, y: 0 });
   const xAxis = localPoint(runtime, { x: 1, y: 0 });
   const yAxis = localPoint(runtime, { x: 0, y: 1 });
   return [
-    state.version,
-    state.fogEnabled ? 1 : 0,
-    state.globalIllumination.toFixed(3),
     bounds.width.toFixed(1),
     bounds.height.toFixed(1),
     origin.x.toFixed(2),
@@ -166,33 +124,27 @@ export function tabletopNativeVisibilityFingerprint(
   ].join(":");
 }
 
-export function buildTabletopNativeVisibilityMask(
-  runtime: TabletopBrowserRuntime,
-  state: TabletopVisibilityState,
-) {
-  const bounds = runtime.host.getBoundingClientRect();
-  const width = Math.max(1, Math.round(bounds.width));
-  const height = Math.max(1, Math.round(bounds.height));
-  const illumination = clamp(state.globalIllumination, 0, 1);
-  const lights = state.lights.map((light) => lightShape(runtime, light)).join("");
-  const orderedFog = [...state.fogStrokes].sort(
-    (left, right) => left.sequenceIndex - right.sequenceIndex,
-  );
-  const fogBase =
-    !state.fogEnabled || !fogUsesCoveredBase(orderedFog) ? "white" : "black";
-  const fogShapes = state.fogEnabled
-    ? orderedFog
-        .map((stroke) =>
-          fogShape(
-            runtime,
-            stroke,
-            stroke.operation === "reveal" ? "white" : "black",
-          ),
-        )
-        .join("")
-    : "";
-  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}"><defs><mask id="dark" maskUnits="userSpaceOnUse" x="0" y="0" width="${width}" height="${height}"><rect width="${width}" height="${height}" fill="white" fill-opacity="${illumination.toFixed(3)}"/>${lights}</mask><mask id="fog" maskUnits="userSpaceOnUse" x="0" y="0" width="${width}" height="${height}"><rect width="${width}" height="${height}" fill="${fogBase}"/>${fogShapes}</mask></defs><g mask="url(#fog)"><rect width="${width}" height="${height}" fill="white" mask="url(#dark)"/></g></svg>`;
-  return `url("data:image/svg+xml,${encodeURIComponent(svg)}")`;
+export function tabletopNativeVisibilityFingerprint(runtime: TabletopBrowserRuntime, state: TabletopVisibilityState | undefined) {
+  if (!state) return "none";
+  return `${buildTabletopVisibilityFrame(state).fingerprint}::${cameraFingerprint(runtime)}`;
+}
+
+export function buildTabletopNativeVisibilityMask(runtime: TabletopBrowserRuntime, state: TabletopVisibilityState) {
+  const frame = buildTabletopVisibilityFrame(state);
+  const key = `${frame.fingerprint}::${cameraFingerprint(runtime)}`;
+  return cachedTabletopVisibilityMask(key, () => {
+    const bounds = runtime.host.getBoundingClientRect();
+    const width = Math.max(1, Math.round(bounds.width));
+    const height = Math.max(1, Math.round(bounds.height));
+    const lights = frame.lights.map((light) => lightShape(runtime, light)).join("");
+    // frame.fog is state.fogStrokes ordered once by the shared compositor.
+    const fogBase = !state.fogEnabled || !frame.fogCoveredBase ? "white" : "black";
+    const fogShapes = state.fogEnabled
+      ? frame.fog.map((stroke) => fogShape(runtime, stroke, stroke.operation === "reveal" ? "white" : "black")).join("")
+      : "";
+    const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}"><defs><mask id="dark" maskUnits="userSpaceOnUse" x="0" y="0" width="${width}" height="${height}"><rect width="${width}" height="${height}" fill="white" fill-opacity="${frame.illumination.toFixed(3)}"/>${lights}</mask><mask id="fog" maskUnits="userSpaceOnUse" x="0" y="0" width="${width}" height="${height}"><rect width="${width}" height="${height}" fill="${fogBase}"/>${fogShapes}</mask></defs><g mask="url(#fog)"><rect width="${width}" height="${height}" fill="white" mask="url(#dark)"/></g></svg>`;
+    return `url("data:image/svg+xml,${encodeURIComponent(svg)}")`;
+  });
 }
 
 export function applyTabletopNativeVisibilityMask(
