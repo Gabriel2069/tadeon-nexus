@@ -14,6 +14,12 @@ describe("seleção, projeção e superfícies de entrada", () => {
     expect(shell).toContain('return "director" as const');
   });
 
+  it("não monta a interface operacional da Mesa dentro da projeção", () => {
+    const entry = source("src/components/tabletop/tabletop-director-entry.tsx");
+    expect(entry).not.toContain("TabletopProgressiveInterfaceBridge");
+    expect(entry).toContain("TabletopNativeModelBridge");
+  });
+
   it("reserva um cabeçalho físico para a projeção e deixa o canvas preencher o restante", () => {
     const css = source("src/styles/tabletop-director.css");
     expect(css).toContain("--tadeon-director-header-height");
