@@ -1,0 +1,99 @@
+.tadeon-fog-audience {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.28rem;
+  margin-top: 0.38rem;
+  padding-top: 0.38rem;
+  border-top: 1px solid color-mix(in srgb, var(--border) 78%, transparent);
+}
+
+.tadeon-fog-audience button {
+  display: grid;
+  min-width: 0;
+  min-height: 2.2rem;
+  place-items: center;
+  gap: 0.12rem;
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--border) 88%, transparent);
+  border-radius: 0.64rem 0.22rem 0.64rem 0.22rem;
+  color: var(--muted-foreground);
+  background: var(--card);
+  transition:
+    color 170ms var(--ease-out),
+    border-color 170ms var(--ease-out),
+    background-color 170ms var(--ease-out),
+    translate 170ms var(--ease-out);
+}
+
+.tadeon-fog-audience button svg {
+  width: 0.9rem;
+  height: 0.9rem;
+  transition: rotate 210ms var(--ease-out), scale 210ms var(--ease-out);
+}
+
+.tadeon-fog-audience button span {
+  max-width: 100%;
+  overflow: hidden;
+  font-size: 0.56rem;
+  line-height: 1;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tadeon-fog-audience button[aria-pressed="true"] {
+  border-color: color-mix(in srgb, var(--primary) 44%, var(--border));
+  color: var(--primary);
+  background: color-mix(in srgb, var(--card) 91%, var(--primary) 9%);
+}
+
+.tadeon-fog-audience button[aria-pressed="true"] svg {
+  rotate: 4deg;
+  scale: 1.08;
+}
+
+.tadeon-fog-polygon-preview {
+  position: fixed;
+  z-index: 82;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.tadeon-fog-polygon-preview polyline {
+  fill: color-mix(in srgb, var(--primary) 9%, transparent);
+  stroke: var(--primary);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 7 5;
+  filter: drop-shadow(0 0 5px color-mix(in srgb, var(--primary) 52%, transparent));
+}
+
+.tadeon-fog-polygon-preview circle {
+  fill: var(--card);
+  stroke: var(--primary);
+  stroke-width: 2;
+}
+
+@media (max-width: 720px) {
+  .tadeon-fog-audience {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .tadeon-fog-audience button:hover {
+    color: var(--foreground);
+    border-color: color-mix(in srgb, var(--primary) 30%, var(--border));
+    translate: 0 -1px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tadeon-fog-audience button,
+  .tadeon-fog-audience button svg {
+    transition-duration: 0.01ms !important;
+  }
+}
