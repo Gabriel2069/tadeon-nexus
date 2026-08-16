@@ -19,7 +19,7 @@
 .tadeon-smart-setup__launcher > svg { width: 1rem; height: 1rem; color: var(--primary); }
 .tadeon-smart-setup {
   position: fixed;
-  z-index: 246;
+  z-index: 218;
   top: max(.75rem, env(safe-area-inset-top));
   right: max(.75rem, env(safe-area-inset-right));
   bottom: max(.75rem, env(safe-area-inset-bottom));
