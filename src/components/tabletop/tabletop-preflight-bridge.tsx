@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { currentTabletopRuntime } from "@/lib/tabletop/tabletop-player-runtime";
 import { buildTabletopPreflight, type TabletopPreflightReport } from "@/lib/tabletop/tabletop-preflight";
-import { tabletopSessionService, TabletopSessionServiceError } from "@/lib/tabletop/tabletop-session-service";
+import { tabletopSessionService } from "@/lib/tabletop/tabletop-session-service";
 import type { TabletopVisibilityState } from "@/lib/tabletop/tabletop-visibility-service";
 import "@/styles/tabletop-preflight.css";
 
@@ -40,9 +40,6 @@ export function TabletopPreflightBridge() {
         const runtime = currentTabletopRuntime();
         const snapshot = runtime?.snapshot() ?? null;
         if (!runtime || !snapshot || snapshot.scene.id !== args.sceneId) {
-          // If the runtime is unavailable, preserve the service's behavior. This
-          // path is intentionally fail-open only for non-tabletop callers; the
-          // normal Mesa route always has a runtime by the time the button exists.
           void original(args).then(resolve, reject);
           return;
         }
@@ -69,7 +66,7 @@ export function TabletopPreflightBridge() {
   }), []);
 
   const cancel = () => {
-    request?.reject(new TabletopSessionServiceError("TABLETOP_SESSION_INVALID_INPUT"));
+    request?.reject(new DOMException("Abertura da sessão cancelada no preflight.", "AbortError"));
     setRequest(null);
     setReport(null);
   };
