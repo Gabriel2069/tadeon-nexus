@@ -1,0 +1,180 @@
+/* Final user-facing authority. Loaded after every previous stylesheet. */
+
+/* Mesa: selection is contextual, never a modal screen. */
+.tadeon-tabletop-panel-backdrop {
+  display:none !important;
+  opacity:0 !important;
+  visibility:hidden !important;
+  pointer-events:none !important;
+  background:transparent !important;
+  backdrop-filter:none !important;
+  -webkit-backdrop-filter:none !important;
+}
+
+/* Mesa: use the actual stage geometry and make heavyweight work surfaces exclusive. */
+@media (min-width:1180px) {
+  .tadeon-creative-dock,
+  .tadeon-placeables,
+  .tadeon-semantic-transform,
+  .tadeon-nexus-tabletop-locator,
+  .tadeon-smart-setup__launcher {
+    right:calc(var(--tadeon-tabletop-stage-right,0px) + .75rem) !important;
+    left:auto !important;
+  }
+  .tadeon-smart-setup,
+  .tadeon-placeables__panel,
+  .tadeon-creative-dock__panel {
+    right:calc(var(--tadeon-tabletop-stage-right,0px) + .75rem) !important;
+    max-width:min(27rem,calc(var(--tadeon-tabletop-stage-width,100vw) - 1.5rem)) !important;
+  }
+  .tadeon-tabletop-progressive-dock,
+  .tadeon-tactical-dock,
+  .tadeon-tabletop-selection-actions {
+    left:var(--tadeon-tabletop-stage-center,50%) !important;
+    max-width:calc(var(--tadeon-tabletop-stage-width,100vw) - 2rem) !important;
+  }
+  .tadeon-tabletop-selection-actions { bottom:var(--tadeon-tabletop-bottom-row-2) !important; }
+
+  body:has(.tadeon-creative-dock[data-open="true"]) :is(
+    .tadeon-tabletop-progressive-dock,.tadeon-tactical-dock,.tadeon-tabletop-selection-actions,
+    .tadeon-placeables,.tadeon-semantic-transform,.tadeon-smart-setup__launcher,.tadeon-nexus-tabletop-locator
+  ),
+  body:has(.tadeon-placeables[data-open="true"]) :is(
+    .tadeon-tabletop-selection-actions,.tadeon-creative-dock,.tadeon-semantic-transform,
+    .tadeon-smart-setup__launcher,.tadeon-nexus-tabletop-locator
+  ),
+  body:has(.tadeon-smart-setup[data-open="true"]) :is(
+    .tadeon-tabletop-progressive-dock,.tadeon-tactical-dock,.tadeon-tabletop-selection-actions,
+    .tadeon-creative-dock,.tadeon-placeables,.tadeon-semantic-transform,.tadeon-nexus-tabletop-locator
+  ),
+  body:has(.tadeon-tabletop-precision-editor) :is(
+    .tadeon-creative-dock,.tadeon-placeables,.tadeon-semantic-transform,
+    .tadeon-smart-setup__launcher,.tadeon-nexus-tabletop-locator
+  ) {
+    opacity:0 !important;
+    visibility:hidden !important;
+    pointer-events:none !important;
+  }
+}
+
+@media (max-width:1179px) {
+  body:has(.tadeon-tabletop-panel[data-mobile-open="true"]) :is(
+    .tadeon-creative-dock,.tadeon-placeables,.tadeon-smart-setup__launcher,
+    .tadeon-semantic-transform,.tadeon-tabletop-selection-actions,.tadeon-tactical-dock
+  ) { opacity:0 !important; visibility:hidden !important; pointer-events:none !important; }
+}
+
+/* Collapsed desktop sidebar: boxes grow sideways instead of clipping icons. */
+#tadeon-desktop-sidebar:has(.tadeon-nav-item[data-mini="true"]) { width:5rem !important; }
+#tadeon-desktop-sidebar .tadeon-nav-item[data-mini="true"],
+#tadeon-desktop-sidebar button[data-mini="true"] {
+  width:3.35rem; min-width:3.35rem; min-height:3.1rem; margin-inline:auto; padding-inline:.7rem !important;
+}
+#tadeon-desktop-sidebar .tadeon-nav-item[data-mini="true"] .tadeon-nav-item__icon {
+  display:grid; width:1.8rem; height:1.8rem; place-items:center; flex:0 0 1.8rem;
+}
+
+/* Nexus: Obsidian-like breathing room complements the JS physics preset. */
+.tadeon-brain-canvas,.tadeon-brain-viewport,[class*="tadeon-brain"][class*="canvas"] { min-height:42rem !important; }
+.tadeon-brain-canvas canvas,.tadeon-brain-viewport canvas { cursor:grab; }
+.tadeon-brain-canvas canvas:active,.tadeon-brain-viewport canvas:active { cursor:grabbing; }
+
+/* Rename utility lives inside Placeables rather than another viewport layer. */
+[data-tadeon-rename-host] { position:relative; margin-left:auto; }
+.tadeon-rename-launcher { gap:.35rem; white-space:nowrap; }
+.tadeon-rename-launcher svg { width:.8rem; height:.8rem; }
+.tadeon-rename-popover {
+  position:absolute; z-index:12; top:calc(100% + .5rem); right:0; display:grid;
+  width:min(21rem,calc(100vw - 2rem)); gap:.55rem; padding:.7rem;
+  border:1px solid hsl(var(--border)/.78); border-radius:.85rem;
+  background:hsl(var(--popover)/.98); box-shadow:0 28px 70px -35px rgb(0 0 0/95%);
+  backdrop-filter:blur(18px) saturate(1.08); animation:tadeon-final-pop-in 170ms cubic-bezier(.2,.8,.2,1) both;
+}
+.tadeon-rename-popover header { display:grid; grid-template-columns:1.6rem minmax(0,1fr) 2rem; align-items:center; gap:.45rem; }
+.tadeon-rename-popover header>svg { width:1rem; height:1rem; color:hsl(var(--primary)); }
+.tadeon-rename-popover header :is(small,strong) { display:block; }
+.tadeon-rename-popover header small { color:hsl(var(--muted-foreground)); font-size:.56rem; text-transform:uppercase; letter-spacing:.08em; }
+.tadeon-rename-popover header strong { font-family:var(--font-cinzel); font-size:.82rem; }
+.tadeon-rename-popover select { width:100%; min-height:2.25rem; border:1px solid hsl(var(--border)); border-radius:.55rem; padding:.35rem .55rem; color:hsl(var(--foreground)); background:hsl(var(--background)); font-size:.68rem; }
+
+/* Radial trigger stays screen-space sized and pinned above its subject. */
+.tadeon-radial-trigger {
+  width:2.15rem !important; height:2.15rem !important; transform-origin:50% 100% !important;
+  box-shadow:0 10px 32px -16px hsl(var(--primary)/.75),0 0 0 1px hsl(var(--border)/.7) !important;
+}
+.tadeon-radial-trigger svg { width:.92rem !important; height:.92rem !important; }
+
+/* Mobile Mesa launcher matches its neighboring icon actions. */
+@media (max-width:767px) {
+  .tadeon-mobile-dock__item[href="/tabletop"] span { display:none; }
+  .tadeon-mobile-dock__item[href="/tabletop"] { justify-content:center; }
+}
+
+/* Sheet header is visually coupled to the top rail. */
+.tadeon-sheet-page .tadeon-sheet-commandbar {
+  width:100%; max-width:none; min-height:5.2rem; margin-inline:0; padding-block:.7rem !important;
+  border-radius:1rem; background:radial-gradient(circle at 12% 0%,hsl(var(--primary)/.13),transparent 24rem),linear-gradient(180deg,hsl(var(--card)/.96),hsl(var(--card)/.82));
+  box-shadow:0 22px 52px -42px hsl(var(--primary)/.8),inset 0 1px hsl(0 0% 100%/.035);
+}
+.tadeon-sheet-commandbar__main { min-height:3.8rem; align-items:center; }
+.tadeon-sheet-page .tadeon-sheet-nav { margin-top:.45rem; border-radius:.85rem; box-shadow:0 16px 36px -34px rgb(0 0 0/92%); }
+
+/* Conditions: layered glow instead of a clipped outline. */
+.tadeon-condition-section,.tadeon-sheet-condition-panel,[class*="condition-card"] { overflow:visible !important; }
+.tadeon-sheet-frame { position:relative; isolation:isolate; border-radius:1.15rem; transition:box-shadow 320ms ease,filter 320ms ease !important; }
+.tadeon-sheet-frame::before {
+  position:absolute; z-index:-1; inset:-5px; border-radius:inherit; background:inherit;
+  filter:blur(16px) saturate(1.25); opacity:.48; pointer-events:none; content:"";
+  animation:tadeon-condition-breathe 3.8s ease-in-out infinite alternate;
+}
+.tadeon-sheet-condition-chip {
+  position:relative; overflow:hidden; border-width:1px !important;
+  box-shadow:0 0 0 1px rgb(var(--condition-rgb,116 36 45)/32%),0 0 16px -7px rgb(var(--condition-rgb,116 36 45)/65%),inset 0 1px rgb(255 255 255/5%);
+  animation:tadeon-condition-chip 2.8s ease-in-out infinite alternate;
+}
+.tadeon-sheet-condition-chip::after {
+  position:absolute; inset:-45% -25%; background:linear-gradient(105deg,transparent 38%,rgb(255 255 255/14%) 49%,transparent 60%);
+  transform:translateX(-55%); animation:tadeon-condition-sheen 4.2s ease-in-out infinite; pointer-events:none; content:"";
+}
+
+/* Exposição and Equilíbrio get deeper, more readable bars. */
+#equilibrio,#exposicao {
+  overflow:visible; border-color:hsl(var(--primary)/.18);
+  background:radial-gradient(circle at 94% 5%,hsl(var(--primary)/.09),transparent 12rem),hsl(var(--card)/.72);
+  box-shadow:0 20px 52px -46px hsl(var(--primary)/.72),inset 0 1px hsl(0 0% 100%/.025);
+}
+#equilibrio :is([role="progressbar"],div[class*="rounded-full"][class*="overflow-hidden"]),
+#exposicao :is([role="progressbar"],div[class*="rounded-full"][class*="overflow-hidden"]) {
+  min-height:.62rem; box-shadow:inset 0 1px 4px rgb(0 0 0/45%),0 0 18px -7px hsl(var(--primary)/.7);
+}
+
+/* Vínculos become collapsible without changing their data model. */
+.tadeon-link-panel[data-collapsed="true"] .tadeon-link-list { display:none !important; }
+.tadeon-link-collapse { min-width:5.7rem; gap:.35rem; }
+.tadeon-link-collapse svg { width:.85rem; height:.85rem; }
+
+/* Training popover: actual two-tab experience; modifier view replaces training body. */
+.tadeon-skill-modifier-bridge { margin:-.75rem -.75rem .65rem; }
+.tadeon-skill-modifier-tabs { display:grid; grid-template-columns:1fr 1fr; gap:.2rem; padding:.3rem; border-bottom:1px solid hsl(var(--border)/.62); background:hsl(var(--secondary)/.28); }
+.tadeon-skill-modifier-tabs button { display:inline-flex; min-height:2rem; align-items:center; justify-content:center; gap:.32rem; border-radius:.5rem; color:hsl(var(--muted-foreground)); font-size:.66rem; font-weight:700; }
+.tadeon-skill-modifier-tabs button[aria-selected="true"] { color:hsl(var(--foreground)); background:hsl(var(--primary)/.1); box-shadow:inset 0 0 0 1px hsl(var(--primary)/.24); }
+.tadeon-skill-modifier-tabs svg { width:.75rem; height:.75rem; }
+[data-slot="popover-content"][data-modifier-tab="modifiers"]>:not([data-tadeon-skill-modifier-host]) { display:none !important; }
+.tadeon-skill-modifier-panel { padding:.8rem .8rem .2rem; }
+.tadeon-skill-modifier-panel header { display:flex; align-items:center; gap:.55rem; margin-bottom:.75rem; }
+.tadeon-skill-modifier-panel header>svg { width:1rem; height:1rem; color:hsl(var(--primary)); }
+.tadeon-skill-modifier-panel header :is(strong,small) { display:block; }
+.tadeon-skill-modifier-panel :is(header small,label small,.tadeon-skill-modifier-passive small) { color:hsl(var(--muted-foreground)); font-size:.61rem; line-height:1.4; }
+.tadeon-skill-modifier-panel label>span,.tadeon-skill-modifier-passive>span { display:block; margin-bottom:.3rem; font-size:.62rem; font-weight:700; }
+.tadeon-skill-modifier-passive { margin-top:.65rem; padding:.65rem; border:1px solid hsl(var(--border)/.6); border-radius:.65rem; background:hsl(var(--secondary)/.28); }
+.tadeon-skill-modifier-passive strong { float:right; color:hsl(var(--primary)); }
+.tadeon-skill-modifier-panel footer { margin-top:.7rem; padding-top:.55rem; border-top:1px solid hsl(var(--border)/.55); font-size:.66rem; }
+
+@keyframes tadeon-final-pop-in { from{opacity:0;transform:translateY(-5px) scale(.98)} to{opacity:1;transform:none} }
+@keyframes tadeon-condition-breathe { from{opacity:.26;transform:scale(.998)} to{opacity:.58;transform:scale(1.002)} }
+@keyframes tadeon-condition-chip { from{filter:brightness(.92);transform:translateY(0)} to{filter:brightness(1.12);transform:translateY(-1px)} }
+@keyframes tadeon-condition-sheen { 0%,62%{transform:translateX(-62%);opacity:0} 72%{opacity:1} 90%,100%{transform:translateX(62%);opacity:0} }
+
+@media (prefers-reduced-motion:reduce) {
+  .tadeon-rename-popover,.tadeon-sheet-frame::before,.tadeon-sheet-condition-chip,.tadeon-sheet-condition-chip::after { animation:none !important; transition:none !important; }
+}
