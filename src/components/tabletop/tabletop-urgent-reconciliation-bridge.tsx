@@ -1,5 +1,5 @@
 import { createPortal } from "react-dom";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { currentTabletopRuntime } from "@/lib/tabletop/tabletop-player-runtime";
 
@@ -46,6 +46,7 @@ function closeMobileInspectorForSelection() {
 }
 
 export function TabletopUrgentReconciliationBridge() {
+  const previousSelectedCountRef = useRef(0);
   const [mounted, setMounted] = useState(false);
   const [topRailCollapsed, setTopRailCollapsed] = useState(() => {
     if (typeof window === "undefined") return false;
@@ -70,10 +71,17 @@ export function TabletopUrgentReconciliationBridge() {
     const syncSelection = () => {
       const selected = currentTabletopRuntime()?.snapshot().selectedIds.length ?? 0;
       const active = selected > 0;
+      const enteredSelection = previousSelectedCountRef.current === 0 && selected > 0;
+      previousSelectedCountRef.current = selected;
+
       if (active) html.dataset.tadeonTabletopSelectionActive = "true";
       else delete html.dataset.tadeonTabletopSelectionActive;
       neutralSelectionSurfaces(active);
-      if (active) closeMobileInspectorForSelection();
+
+      // Selecting an entity must not automatically turn the inspector into a
+      // modal sheet. Close only on the transition into selection; if the user
+      // explicitly opens the contextual panel afterwards, keep it usable.
+      if (enteredSelection) closeMobileInspectorForSelection();
     };
 
     const observer = new ResizeObserver(syncGeometry);
@@ -97,13 +105,13 @@ export function TabletopUrgentReconciliationBridge() {
       window.removeEventListener("scroll", syncGeometry, true);
       window.removeEventListener("tadeon-tabletop-render", syncSelection);
       window.removeEventListener("tadeon-tabletop-runtime-destroyed", syncSelection);
+      previousSelectedCountRef.current = 0;
       delete html.dataset.tadeonTabletopSelectionActive;
       delete html.dataset.tadeonTabletopToprail;
       html.style.removeProperty("--tadeon-tabletop-stage-top");
       html.style.removeProperty("--tadeon-tabletop-stage-bottom");
       html.style.removeProperty("--tadeon-tabletop-stage-height");
       neutralSelectionSurfaces(false);
-      setMounted(false);
     };
   }, []);
 
