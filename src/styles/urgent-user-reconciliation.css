@@ -1,0 +1,549 @@
+/* Urgent reconciliation after field validation.
+   Loaded last on purpose: this file restores known-good geometry and fixes
+   structural causes instead of layering another translucent modal surface. */
+
+/* --------------------------------------------------------------------------
+   Sidebar — restore the centered, symmetric collapsed state from before #149.
+   -------------------------------------------------------------------------- */
+#tadeon-desktop-sidebar:has(.tadeon-nav-item[data-mini="true"]) {
+  width: 5rem !important;
+}
+
+#tadeon-desktop-sidebar .tadeon-nav-item[data-mini="true"],
+#tadeon-desktop-sidebar button[data-mini="true"] {
+  width: 3.35rem !important;
+  min-width: 3.35rem !important;
+  min-height: 3.1rem !important;
+  margin-inline: auto !important;
+  justify-content: center !important;
+  padding-inline: .7rem !important;
+}
+
+#tadeon-desktop-sidebar .tadeon-nav-item[data-mini="true"] .tadeon-nav-item__icon {
+  display: grid !important;
+  width: 1.8rem !important;
+  height: 1.8rem !important;
+  flex: 0 0 1.8rem !important;
+  place-items: center !important;
+}
+
+#tadeon-desktop-sidebar .tadeon-nav-item[data-mini="true"] .tadeon-nav-item__icon svg {
+  width: 1rem !important;
+  height: 1rem !important;
+}
+
+/* --------------------------------------------------------------------------
+   Mesa — selection can never become a viewport effect.
+   -------------------------------------------------------------------------- */
+html[data-tadeon-tabletop-selection-active="true"] :is(
+  .tadeon-tabletop-panel-backdrop,
+  [data-tadeon-selection-surface="neutral"]
+) {
+  display: none !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+  background: transparent !important;
+  background-image: none !important;
+  filter: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  box-shadow: none !important;
+  animation: none !important;
+}
+
+html[data-tadeon-tabletop-selection-active="true"] .tadeon-tabletop-panel-frame {
+  opacity: 1 !important;
+  background: transparent !important;
+  background-image: none !important;
+  filter: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  box-shadow: none !important;
+  pointer-events: none !important;
+}
+
+html[data-tadeon-tabletop-selection-active="true"] .tadeon-tabletop-panel-frame::before,
+html[data-tadeon-tabletop-selection-active="true"] .tadeon-tabletop-panel-frame::after {
+  display: none !important;
+  content: none !important;
+}
+
+html[data-tadeon-tabletop-selection-active="true"] .tadeon-tabletop-panel-frame > * {
+  pointer-events: auto !important;
+}
+
+html[data-tadeon-tabletop-selection-active="true"] :is(
+  .tadeon-tabletop-studio,
+  .tadeon-tabletop-workbench,
+  .tadeon-tabletop-stage,
+  .tadeon-tabletop-canvas-host
+) {
+  filter: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+/* The map owns the vertical contract; the contextual inspector conforms to it. */
+@media (min-width: 1180px) {
+  .tadeon-tabletop-workbench {
+    --tadeon-tabletop-frame-height: clamp(38rem, calc(100dvh - 9.25rem), 62rem);
+    height: var(--tadeon-tabletop-frame-height) !important;
+    min-height: var(--tadeon-tabletop-frame-height) !important;
+    max-height: var(--tadeon-tabletop-frame-height) !important;
+    flex: 0 0 var(--tadeon-tabletop-frame-height) !important;
+    align-items: stretch !important;
+  }
+
+  .tadeon-tabletop-stage {
+    height: 100% !important;
+    min-height: 0 !important;
+    max-height: 100% !important;
+  }
+
+  .tadeon-tabletop-panel {
+    height: 100% !important;
+    min-height: 0 !important;
+    max-height: 100% !important;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+    overscroll-behavior: contain;
+    scrollbar-gutter: stable;
+  }
+}
+
+@media (min-width: 801px) and (max-width: 1179px) {
+  .tadeon-tabletop-stage {
+    height: clamp(34rem, 70dvh, 50rem) !important;
+    min-height: 0 !important;
+  }
+
+  .tadeon-tabletop-panel[data-mobile-open="true"] {
+    max-height: clamp(34rem, 70dvh, 50rem) !important;
+    overflow-y: auto !important;
+    overscroll-behavior: contain;
+  }
+}
+
+/* Main operational toolbar: fixed to the top edge of the map, not the page header. */
+@media (min-width: 640px) {
+  .tadeon-tabletop-toolbar {
+    position: fixed !important;
+    z-index: 93 !important;
+    top: calc(var(--tadeon-tabletop-stage-top, 5rem) + .7rem) !important;
+    left: var(--tadeon-tabletop-stage-center, 50%) !important;
+    display: flex !important;
+    width: min(64rem, calc(var(--tadeon-tabletop-stage-width, 100vw) - 8rem)) !important;
+    max-width: calc(100vw - 2rem) !important;
+    max-height: 7.25rem;
+    margin: 0 !important;
+    padding: .38rem !important;
+    flex-wrap: nowrap !important;
+    gap: .35rem !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    border: 1px solid color-mix(in srgb, var(--primary) 18%, var(--border)) !important;
+    border-radius: .95rem .35rem .95rem .35rem !important;
+    background:
+      linear-gradient(135deg, rgb(217 215 164 / 5%), transparent 45%),
+      rgb(9 12 16 / 96%) !important;
+    box-shadow:
+      0 22px 52px -34px rgb(0 0 0 / 100%),
+      inset 0 1px rgb(255 255 255 / 4%) !important;
+    backdrop-filter: none !important;
+    transform: translate3d(-50%, 0, 0);
+    transform-origin: 100% 50%;
+    transition:
+      opacity 190ms var(--ease-out),
+      transform 260ms var(--ease-drawer),
+      visibility 190ms linear !important;
+    scrollbar-width: thin;
+  }
+
+  html[data-tadeon-tabletop-toprail="collapsed"] .tadeon-tabletop-toolbar {
+    opacity: 0 !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+    transform: translate3d(28%, 0, 0) scale(.96) !important;
+  }
+
+  .tadeon-tabletop-toprail-toggle {
+    position: fixed;
+    z-index: 96;
+    top: calc(var(--tadeon-tabletop-stage-top, 5rem) + .72rem);
+    right: calc(var(--tadeon-tabletop-stage-right, 0px) + .72rem);
+    display: grid;
+    width: 2.45rem;
+    height: 2.45rem;
+    place-items: center;
+    border: 1px solid color-mix(in srgb, var(--primary) 22%, var(--border));
+    border-radius: .8rem .28rem .8rem .28rem;
+    color: var(--primary);
+    background: rgb(9 12 16 / 97%);
+    box-shadow: 0 16px 38px -26px rgb(0 0 0 / 100%), inset 0 1px rgb(255 255 255 / 4%);
+    transition: transform 170ms var(--ease-out), border-color 170ms ease, background-color 170ms ease;
+  }
+
+  .tadeon-tabletop-toprail-toggle:hover {
+    border-color: color-mix(in srgb, var(--primary) 48%, var(--border));
+    background: color-mix(in srgb, var(--card) 88%, var(--primary));
+    transform: translateX(-1px);
+  }
+
+  .tadeon-tabletop-toprail-toggle svg {
+    width: 1rem;
+    height: 1rem;
+  }
+}
+
+@media (max-width: 639px) {
+  .tadeon-tabletop-toprail-toggle {
+    display: none !important;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Director transmission — fix the parent grid, then restore the old controls.
+   -------------------------------------------------------------------------- */
+.tadeon-live-session__room > .tadeon-director-remote {
+  grid-column: 1 / -1 !important;
+  width: 100% !important;
+  max-width: none !important;
+  min-width: 0 !important;
+}
+
+.tadeon-director-remote__preview-frame {
+  min-height: 7.1rem !important;
+  height: auto !important;
+  aspect-ratio: auto !important;
+}
+
+.tadeon-director-remote__toggles {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: .4rem !important;
+}
+
+.tadeon-director-remote__toggles label {
+  display: flex !important;
+  min-height: 2.55rem !important;
+  min-width: 0 !important;
+  align-items: center !important;
+  gap: .48rem !important;
+  padding: .5rem .6rem !important;
+  border: 1px solid rgb(255 255 255 / 7%) !important;
+  border-radius: .55rem !important;
+  color: rgb(255 255 255 / 62%) !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  transform: none !important;
+  font-size: .65rem !important;
+}
+
+.tadeon-director-remote__toggles label > svg {
+  width: .85rem !important;
+  height: .85rem !important;
+  flex: 0 0 .85rem !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  color: currentColor !important;
+  background: transparent !important;
+}
+
+.tadeon-director-remote__toggles label span {
+  min-width: 0 !important;
+  flex: 1 1 auto !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+  font-size: inherit !important;
+  font-weight: inherit !important;
+}
+
+.tadeon-director-remote__toggles [data-slot="switch"] {
+  width: 2.3rem !important;
+  min-width: 2.3rem !important;
+  height: 1.3rem !important;
+  min-height: 1.3rem !important;
+  flex: 0 0 2.3rem !important;
+  margin-left: auto !important;
+  padding: 0 !important;
+}
+
+.tadeon-director-remote__toggles label:has([data-state="checked"]) {
+  border-color: rgb(217 215 164 / 22%) !important;
+  color: rgb(255 255 255 / 84%) !important;
+  background: rgb(217 215 164 / 5%) !important;
+}
+
+@media (max-width: 639px) {
+  .tadeon-director-remote__toggles {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Master panel parity and navigation geometry.
+   -------------------------------------------------------------------------- */
+@media (min-width: 768px) {
+  .tadeon-master-navigation {
+    width: 100% !important;
+    max-width: none !important;
+    margin-inline: 0 !important;
+    padding-inline: 0 !important;
+  }
+
+  .tadeon-master-navigation > [role="tablist"] {
+    width: 100% !important;
+    min-width: 100% !important;
+    box-sizing: border-box;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Sheet — borrow the dossier's depth, hierarchy and active-state language.
+   -------------------------------------------------------------------------- */
+.tadeon-sheet-page {
+  --tadeon-sheet-accent: 217 215 164;
+}
+
+.tadeon-sheet-page .tadeon-sheet-section {
+  position: relative;
+  isolation: isolate;
+  overflow: clip;
+  border-color: rgb(var(--tadeon-sheet-accent) / 14%) !important;
+  border-radius: 1.05rem .38rem 1.05rem .38rem !important;
+  background:
+    radial-gradient(circle at 100% 0%, rgb(var(--tadeon-sheet-accent) / 7%), transparent 13rem),
+    linear-gradient(145deg, rgb(18 21 26 / 97%), rgb(9 12 16 / 95%)) !important;
+  box-shadow:
+    0 24px 58px -46px rgb(0 0 0 / 96%),
+    inset 0 1px rgb(255 255 255 / 3.5%) !important;
+}
+
+.tadeon-sheet-page .tadeon-sheet-section::before {
+  position: absolute;
+  z-index: -1;
+  top: .9rem;
+  bottom: .9rem;
+  left: 0;
+  width: 2px;
+  border-radius: 999px;
+  background: rgb(var(--tadeon-sheet-accent) / 42%);
+  box-shadow: 0 0 14px rgb(var(--tadeon-sheet-accent) / 20%);
+  pointer-events: none;
+  content: "";
+}
+
+.tadeon-sheet-section__heading {
+  padding-bottom: .75rem;
+  border-bottom: 1px solid rgb(255 255 255 / 5.5%);
+}
+
+.tadeon-sheet-section__index {
+  display: grid !important;
+  min-width: 2.05rem;
+  height: 2.05rem;
+  place-items: center;
+  border: 1px solid rgb(var(--tadeon-sheet-accent) / 15%);
+  border-radius: .65rem .22rem .65rem .22rem;
+  background: rgb(var(--tadeon-sheet-accent) / 5%);
+  box-shadow: inset 0 1px rgb(255 255 255 / 3%);
+}
+
+/* Conditions: inactive states recede; active states become unmistakable. */
+.tadeon-conditions-panel .tadeon-condition-card {
+  position: relative;
+  isolation: isolate;
+  overflow: visible !important;
+  opacity: .68;
+  filter: saturate(.72);
+  transform: translateY(0);
+  transition:
+    opacity 180ms ease,
+    filter 180ms ease,
+    transform 180ms var(--ease-out),
+    box-shadow 220ms ease !important;
+}
+
+.tadeon-conditions-panel .tadeon-condition-card[style*="box-shadow"] {
+  z-index: 1;
+  opacity: 1;
+  filter: saturate(1.18) brightness(1.04);
+  transform: translateY(-2px);
+}
+
+.tadeon-conditions-panel .tadeon-condition-card[style*="box-shadow"]::before {
+  position: absolute;
+  z-index: -1;
+  inset: -5px;
+  border-radius: inherit;
+  background: inherit;
+  filter: blur(14px) saturate(1.2);
+  opacity: .38;
+  pointer-events: none;
+  content: "";
+}
+
+.tadeon-conditions-panel .tadeon-condition-card[style*="box-shadow"]::after {
+  position: absolute;
+  inset: 0;
+  border: 1px solid rgb(255 255 255 / 8%);
+  border-radius: inherit;
+  box-shadow: inset 0 1px rgb(255 255 255 / 6%);
+  pointer-events: none;
+  content: "";
+}
+
+/* Equilibrium and Exposure/Rank read as instruments instead of generic cards. */
+.tadeon-sheet-page :is(#equilibrio, #exposicao) {
+  overflow: hidden !important;
+  min-height: 15rem;
+  border-color: rgb(217 215 164 / 18%) !important;
+  background:
+    radial-gradient(circle at 88% 10%, rgb(217 215 164 / 9%), transparent 14rem),
+    linear-gradient(150deg, rgb(15 19 24 / 99%), rgb(7 10 14 / 98%)) !important;
+  box-shadow:
+    0 28px 62px -48px rgb(0 0 0 / 100%),
+    inset 0 1px rgb(255 255 255 / 4%) !important;
+}
+
+.tadeon-sheet-page #equilibrio {
+  border-left: 3px solid rgb(79 110 93 / 62%) !important;
+}
+
+.tadeon-sheet-page #exposicao {
+  border-left: 3px solid rgb(217 215 164 / 68%) !important;
+}
+
+.tadeon-sheet-page :is(#equilibrio, #exposicao) .tadeon-sheet-section__heading {
+  margin-bottom: 1rem !important;
+}
+
+.tadeon-sheet-page :is(#equilibrio, #exposicao) input {
+  min-height: 2.65rem;
+  border-color: rgb(217 215 164 / 18%) !important;
+  background: rgb(4 7 11 / 70%) !important;
+  box-shadow: inset 0 1px rgb(255 255 255 / 3%), 0 12px 28px -24px rgb(217 215 164 / 55%);
+}
+
+.tadeon-sheet-page #exposicao .font-cinzel.text-lg {
+  padding: .22rem .5rem;
+  border: 1px solid rgb(217 215 164 / 17%);
+  border-radius: .55rem .2rem .55rem .2rem;
+  background: rgb(217 215 164 / 5%);
+  text-shadow: 0 0 16px rgb(217 215 164 / 22%);
+}
+
+/* Links collapse action follows every other icon-only collapse control. */
+.tadeon-link-collapse {
+  width: 2.4rem !important;
+  min-width: 2.4rem !important;
+  height: 2.4rem !important;
+  padding: 0 !important;
+  gap: 0 !important;
+  overflow: hidden;
+  font-size: 0 !important;
+  justify-content: center !important;
+}
+
+.tadeon-link-collapse svg {
+  width: .95rem !important;
+  height: .95rem !important;
+  margin: 0 !important;
+}
+
+/* Keep the Mesa dossier as the visual reference rather than flattening it. */
+.tadeon-entity-dossier {
+  border: 1px solid color-mix(in srgb, var(--dossier-accent) 30%, rgb(255 255 255 / 7%)) !important;
+  box-shadow:
+    0 38px 110px rgb(0 0 0 / 76%),
+    0 0 46px -32px var(--dossier-accent),
+    inset 0 1px rgb(255 255 255 / 5%) !important;
+}
+
+.tadeon-entity-dossier__resources > div,
+.tadeon-entity-dossier__indices span {
+  background:
+    linear-gradient(145deg, color-mix(in srgb, var(--dossier-accent) 7%, transparent), transparent 62%),
+    rgb(255 255 255 / 2.5%) !important;
+}
+
+/* --------------------------------------------------------------------------
+   Login + Dashboard — make the visual change legible, not microscopic.
+   -------------------------------------------------------------------------- */
+@media (min-width: 768px) {
+  .tadeon-auth-shell {
+    width: min(100%, 72rem) !important;
+    grid-template-columns: minmax(0, 1.15fr) minmax(23rem, .85fr) !important;
+    border-radius: 1.8rem .6rem 1.8rem .6rem !important;
+  }
+
+  .tadeon-auth-card {
+    margin: 1rem !important;
+    padding: clamp(1.75rem, 4vw, 3.2rem) !important;
+    border: 1px solid rgb(217 215 164 / 12%) !important;
+    border-radius: 1.15rem .38rem 1.15rem .38rem !important;
+    background:
+      radial-gradient(circle at 100% 0%, rgb(217 215 164 / 8%), transparent 18rem),
+      linear-gradient(155deg, rgb(20 23 29 / 98%), rgb(9 12 16 / 98%)) !important;
+    box-shadow:
+      0 30px 70px -48px rgb(0 0 0 / 100%),
+      inset 0 1px rgb(255 255 255 / 4%) !important;
+  }
+}
+
+.tadeon-auth-manifesto__brand {
+  padding: .55rem .7rem;
+  border: 1px solid rgb(217 215 164 / 10%);
+  border-radius: .9rem .28rem .9rem .28rem;
+  background: rgb(5 8 12 / 32%);
+  box-shadow: inset 0 1px rgb(255 255 255 / 3%);
+}
+
+.tadeon-auth-submit {
+  min-height: 3rem !important;
+  letter-spacing: .035em;
+  box-shadow: 0 20px 42px -27px rgb(217 215 164 / 72%) !important;
+}
+
+.tadeon-dashboard-hero {
+  border-radius: 1.65rem .52rem 1.65rem .52rem !important;
+  border-left-width: 3px !important;
+  border-left-color: rgb(217 215 164 / 36%) !important;
+  background:
+    radial-gradient(circle at 78% 12%, rgb(217 215 164 / 13%), transparent 25rem),
+    radial-gradient(circle at 10% 92%, rgb(79 110 93 / 15%), transparent 22rem),
+    linear-gradient(138deg, rgb(22 25 31 / 99%), rgb(8 11 15 / 98%)) !important;
+}
+
+.tadeon-dashboard-hero > .relative.z-10:first-of-type {
+  padding-left: clamp(.45rem, 1.5vw, 1rem);
+  border-left: 1px solid rgb(217 215 164 / 10%);
+}
+
+.tadeon-dashboard-signals {
+  padding: .7rem !important;
+  border: 1px solid rgb(217 215 164 / 9%) !important;
+  border-radius: 1rem .35rem 1rem .35rem;
+  background: rgb(4 7 11 / 30%);
+}
+
+.tadeon-dashboard-signal {
+  min-height: 4.4rem !important;
+  border-color: rgb(217 215 164 / 8%) !important;
+  background:
+    linear-gradient(145deg, rgb(217 215 164 / 4%), transparent 58%),
+    rgb(7 10 14 / 52%) !important;
+}
+
+@media (max-width: 767px) {
+  .tadeon-auth-card {
+    border-top: 1px solid rgb(217 215 164 / 10%) !important;
+  }
+
+  .tadeon-dashboard-signals {
+    padding: .45rem !important;
+  }
+}
