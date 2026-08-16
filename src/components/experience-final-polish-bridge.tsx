@@ -40,7 +40,11 @@ function tuneKnowledgeGraph() {
     (row.querySelector("span")?.textContent ?? "").includes("Distância-base"),
   );
 
-  if (!hasPhysics && settingsToggle?.getAttribute("aria-expanded") !== "true") {
+  if (
+    !hasPhysics &&
+    settingsToggle &&
+    settingsToggle.getAttribute("aria-expanded") !== "true"
+  ) {
     root.dataset.tadeonObsidianTuning = "true";
     settingsToggle.click();
     return;
