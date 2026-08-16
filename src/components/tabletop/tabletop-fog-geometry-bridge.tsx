@@ -358,7 +358,7 @@ export function TabletopFogGeometryBridge() {
             }
             aria-label="Aplicar névoa a um participante específico"
           >
-            <option value="">Nenhum — usar grupo acima</option>
+            <option value="">Nenhum · usar grupo acima</option>
             {members.map((member) => (
               <option key={member.userId} value={member.userId}>
                 {member.name} · {member.role}
