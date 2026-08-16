@@ -1,0 +1,212 @@
+.tadeon-radial-trigger,
+.tadeon-radial-actions {
+  position: fixed;
+  z-index: 86;
+  translate: -50% -50%;
+}
+
+.tadeon-radial-trigger {
+  display: grid;
+  width: 2.15rem;
+  height: 2.15rem;
+  place-items: center;
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--primary) 38%, var(--border));
+  border-radius: 999px;
+  color: var(--primary);
+  background: var(--card);
+  box-shadow:
+    0 12px 28px -16px rgb(0 0 0 / 92%),
+    inset 0 1px rgb(255 255 255 / 5%);
+  transition:
+    scale 170ms var(--ease-out),
+    border-color 170ms var(--ease-out),
+    box-shadow 170ms var(--ease-out);
+}
+
+.tadeon-radial-trigger svg {
+  width: 1rem;
+  height: 1rem;
+  transition: rotate 220ms var(--ease-out), scale 220ms var(--ease-out);
+}
+
+.tadeon-radial-trigger:hover {
+  scale: 1.06;
+  border-color: color-mix(in srgb, var(--primary) 68%, var(--border));
+  box-shadow:
+    0 14px 32px -15px rgb(0 0 0 / 96%),
+    0 0 18px -8px var(--primary);
+}
+
+.tadeon-radial-trigger:hover svg {
+  rotate: 8deg;
+  scale: 1.08;
+}
+
+.tadeon-radial-actions {
+  width: 11.5rem;
+  height: 11.5rem;
+  border: 1px solid color-mix(in srgb, var(--primary) 18%, var(--border));
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 50% 50%, color-mix(in srgb, var(--card) 96%, var(--primary) 4%) 0 34%, transparent 35%),
+    color-mix(in srgb, var(--card) 98%, var(--background));
+  box-shadow:
+    0 26px 58px -22px rgb(0 0 0 / 96%),
+    inset 0 1px rgb(255 255 255 / 4%);
+  animation: tadeon-radial-open 210ms var(--ease-out) both;
+}
+
+.tadeon-radial-actions > button {
+  position: absolute;
+  display: grid;
+  width: 3.05rem;
+  min-height: 2.65rem;
+  place-items: center;
+  gap: 0.08rem;
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--primary) 13%, var(--border));
+  border-radius: 0.82rem 0.28rem 0.82rem 0.28rem;
+  color: var(--foreground);
+  background: var(--card);
+  box-shadow: 0 12px 24px -19px rgb(0 0 0 / 95%);
+  transition:
+    translate 180ms var(--ease-out),
+    scale 180ms var(--ease-out),
+    border-color 180ms var(--ease-out),
+    background-color 180ms var(--ease-out);
+}
+
+.tadeon-radial-actions > button svg {
+  width: 0.96rem;
+  height: 0.96rem;
+  color: var(--primary);
+  transition: rotate 220ms var(--ease-out), scale 220ms var(--ease-out);
+}
+
+.tadeon-radial-actions > button span {
+  max-width: 2.8rem;
+  overflow: hidden;
+  font-size: 0.57rem;
+  line-height: 1;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tadeon-radial-actions > button:hover {
+  z-index: 2;
+  scale: 1.07;
+  border-color: color-mix(in srgb, var(--primary) 48%, var(--border));
+  background: color-mix(in srgb, var(--card) 92%, var(--primary) 8%);
+}
+
+.tadeon-radial-actions > button:hover svg {
+  rotate: 6deg;
+  scale: 1.1;
+}
+
+.tadeon-radial-actions > button.is-danger svg {
+  color: var(--destructive);
+}
+
+.tadeon-radial-actions .is-north { left: 50%; top: -0.3rem; translate: -50% 0; }
+.tadeon-radial-actions .is-north-east { right: -0.1rem; top: 1.55rem; }
+.tadeon-radial-actions .is-south-east { right: -0.1rem; bottom: 1.55rem; }
+.tadeon-radial-actions .is-south { left: 50%; bottom: -0.3rem; translate: -50% 0; }
+.tadeon-radial-actions .is-south-west { left: -0.1rem; bottom: 1.55rem; }
+.tadeon-radial-actions .is-north-west { left: -0.1rem; top: 1.55rem; }
+
+.tadeon-radial-actions__center {
+  position: absolute;
+  inset: 50% auto auto 50%;
+  display: grid;
+  width: 4.2rem;
+  min-height: 3.8rem;
+  place-items: center;
+  translate: -50% -50%;
+  text-align: center;
+  pointer-events: none;
+}
+
+.tadeon-radial-actions__center button {
+  display: grid;
+  width: 1.65rem;
+  height: 1.65rem;
+  place-items: center;
+  border: 1px solid color-mix(in srgb, var(--primary) 18%, var(--border));
+  border-radius: 999px;
+  color: var(--foreground);
+  background: var(--card);
+  pointer-events: auto;
+  transition:
+    border-color 160ms var(--ease-out),
+    background-color 160ms var(--ease-out),
+    scale 160ms var(--ease-out);
+}
+
+.tadeon-radial-actions__center button:hover {
+  scale: 1.06;
+  border-color: color-mix(in srgb, var(--primary) 48%, var(--border));
+  background: color-mix(in srgb, var(--card) 91%, var(--primary) 9%);
+}
+
+.tadeon-radial-actions__center button svg {
+  width: 0.8rem;
+  height: 0.8rem;
+  color: var(--primary);
+}
+
+.tadeon-radial-actions__center strong {
+  max-width: 4.1rem;
+  overflow: hidden;
+  font-size: 0.62rem;
+  line-height: 1.08;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tadeon-radial-actions__center.is-memory {
+  grid-template-columns: repeat(2, 1.65rem);
+  grid-template-rows: repeat(2, 1.65rem) auto;
+  gap: 0.16rem;
+  width: 4rem;
+  min-height: 4.25rem;
+  align-content: center;
+  border-radius: 0.9rem;
+  background: color-mix(in srgb, var(--card) 96%, var(--primary) 4%);
+  box-shadow: 0 10px 26px -20px rgb(0 0 0 / 95%);
+}
+
+.tadeon-radial-actions__center.is-memory strong {
+  grid-column: 1 / -1;
+  color: var(--primary);
+  font-size: 0.54rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+@keyframes tadeon-radial-open {
+  from { opacity: 0; scale: 0.78; rotate: -5deg; }
+  to { opacity: 1; scale: 1; rotate: 0deg; }
+}
+
+@media (max-width: 720px) {
+  .tadeon-radial-actions {
+    width: 10.2rem;
+    height: 10.2rem;
+  }
+  .tadeon-radial-actions > button {
+    width: 2.8rem;
+    min-height: 2.55rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tadeon-radial-actions,
+  .tadeon-radial-trigger,
+  .tadeon-radial-actions > button,
+  .tadeon-radial-actions svg {
+    animation: none !important;
+    transition-duration: 0.01ms !important;
+  }
+}

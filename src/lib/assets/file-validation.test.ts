@@ -34,10 +34,49 @@ describe("Nexus Assets file validation", () => {
     });
   });
 
+  it("accepts GLTF scene assets and infers GLB when browsers omit its MIME", () => {
+    expect(
+      validateAssetFile({
+        name: "dragao.glb",
+        type: "model/gltf-binary",
+        size: 4096,
+      }),
+    ).toMatchObject({ mimeType: "model/gltf-binary", extension: "glb" });
+    expect(
+      validateAssetFile({ name: "ruina.glb", type: "", size: 4096 }),
+    ).toMatchObject({ mimeType: "model/gltf-binary", extension: "glb" });
+    expect(
+      validateAssetFile({
+        name: "ruina.gltf",
+        type: "model/gltf+json",
+        size: 4096,
+      }),
+    ).toMatchObject({ mimeType: "model/gltf+json", extension: "gltf" });
+  });
+
+  it("accepts richer spatial-audio formats", () => {
+    expect(
+      validateAssetFile({ name: "chuva.m4a", type: "audio/mp4", size: 2048 }),
+    ).toMatchObject({ mimeType: "audio/mp4", extension: "m4a" });
+    expect(
+      validateAssetFile({ name: "sino.flac", type: "audio/flac", size: 2048 }),
+    ).toMatchObject({ mimeType: "audio/flac", extension: "flac" });
+  });
+
   it("rejects generic binaries and executable extensions", () => {
     expect(() =>
       validateAssetFile({
         name: "instalador.exe",
+        type: "application/octet-stream",
+        size: 1024,
+      }),
+    ).toThrowError(AssetValidationError);
+  });
+
+  it("does not infer generic binary uploads even when a model extension is spoofed", () => {
+    expect(() =>
+      validateAssetFile({
+        name: "modelo.glb",
         type: "application/octet-stream",
         size: 1024,
       }),

@@ -10,6 +10,7 @@ describe("tabletop spatial architecture", () => {
   it("classifies every architectural family", () => {
     expect(structureFamily("wall")).toBe("wall");
     expect(structureFamily("door_locked")).toBe("door");
+    expect(structureFamily("door_secret")).toBe("door");
     expect(structureFamily("window_broken")).toBe("window");
     expect(structureFamily("roof_cutaway")).toBe("roof");
   });
@@ -22,6 +23,10 @@ describe("tabletop spatial architecture", () => {
     expect(structureCollision("door_open")).toEqual({
       blocksVision: false,
       blocksMovement: false,
+    });
+    expect(structureCollision("door_secret")).toEqual({
+      blocksVision: true,
+      blocksMovement: true,
     });
     expect(structureCollision("window_closed")).toEqual({
       blocksVision: false,
@@ -53,6 +58,7 @@ describe("tabletop spatial architecture", () => {
       "door_closed",
       "door_open",
       "door_locked",
+      "door_secret",
     ]);
   });
 });

@@ -20,6 +20,11 @@ const AtmosphereBridge = lazy(() =>
     default: module.TabletopAtmosphereBridge,
   })),
 );
+const SpatialAudioBridge = lazy(() =>
+  import("@/components/tabletop/tabletop-spatial-audio-bridge").then((module) => ({
+    default: module.TabletopSpatialAudioBridge,
+  })),
+);
 const CreativeDockBridge = lazy(() =>
   import("@/components/tabletop/tabletop-creative-dock-bridge").then((module) => ({
     default: module.TabletopCreativeDockBridge,
@@ -40,9 +45,19 @@ const IntegrationToolsBridge = lazy(() =>
     default: module.TabletopIntegrationToolsBridge,
   })),
 );
+const NexusCaptureBridge = lazy(() =>
+  import("@/components/tabletop/tabletop-nexus-capture-bridge").then((module) => ({
+    default: module.TabletopNexusCaptureBridge,
+  })),
+);
 const SemanticTransformBridge = lazy(() =>
   import("@/components/tabletop/tabletop-semantic-transform-bridge").then((module) => ({
     default: module.TabletopSemanticTransformBridge,
+  })),
+);
+const RadialActionsBridge = lazy(() =>
+  import("@/components/tabletop/tabletop-radial-actions-bridge").then((module) => ({
+    default: module.TabletopRadialActionsBridge,
   })),
 );
 
@@ -74,6 +89,7 @@ export function TabletopDeferredEnhancements({ master }: { master: boolean }) {
         <>
           <ReliabilityEditorBridge />
           <AtmosphereBridge />
+          <SpatialAudioBridge />
         </>
       )}
       {master && tier >= 3 && (
@@ -82,7 +98,9 @@ export function TabletopDeferredEnhancements({ master }: { master: boolean }) {
           <FogGeometryBridge />
           <PlaceablesInspectorBridge />
           <IntegrationToolsBridge />
+          <NexusCaptureBridge />
           <SemanticTransformBridge />
+          <RadialActionsBridge />
         </>
       )}
     </Suspense>

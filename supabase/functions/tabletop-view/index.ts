@@ -242,9 +242,23 @@ function safeFogPoints(value: unknown) {
   });
 }
 
+function fogVisibleToParticipant(value: unknown, userId: string, role: string) {
+  if (role === "master" || role === "co_master") return true;
+  const audience = objectValue(value);
+  const scope = boundedText(audience.scope, 24) || "global";
+  if (scope === "users") {
+    return Array.isArray(audience.userIds) && audience.userIds.some((entry) => entry === userId);
+  }
+  if (scope === "roles") {
+    return Array.isArray(audience.roles) && audience.roles.some((entry) => entry === role);
+  }
+  return true;
+}
+
 function publicProperties(value: unknown) {
   const properties = objectValue(value);
   const status = boundedText(properties.status, 80);
+  const mimeType = boundedText(properties.mime_type, 160);
   const icons = Array.isArray(properties.icons)
     ? properties.icons
         .filter((item): item is string => typeof item === "string")
@@ -272,6 +286,7 @@ function publicProperties(value: unknown) {
   const audioUrl = typeof properties.audio_url === "string" && /^https?:\/\//i.test(properties.audio_url.trim()) ? properties.audio_url.trim().slice(0, 2048) : undefined;
   return {
     ...(status ? { status } : {}),
+    ...(mimeType ? { mime_type: mimeType } : {}),
     ...(icons.length ? { icons } : {}),
     ...(visualConditions.length ? { visual_conditions: visualConditions } : {}),
     ...(barMax > 0 ? { bar_max: barMax, bar_current: barCurrent } : {}),
@@ -288,6 +303,8 @@ function publicProperties(value: unknown) {
     audio_loop: properties.audio_loop !== false,
     audio_volume: Math.max(0, Math.min(1, finiteNumber(properties.audio_volume, 0.72))),
     audio_radius: Math.max(8, Math.min(100_000, finiteNumber(properties.audio_radius, 512))),
+    audio_rolloff: Math.max(0.35, Math.min(4, finiteNumber(properties.audio_rolloff, 1.45))),
+    audio_occlusion: properties.audio_occlusion !== false,
   };
 }
 
@@ -622,7 +639,7 @@ Deno.serve(async (request) => {
       .order("created_at"),
     admin
       .from("tabletop_fog_strokes")
-      .select("id,level_id,operation,geometry,points,radius,sequence_index")
+      .select("id,level_id,operation,geometry,points,radius,sequence_index,audience")
       .eq("scene_id", scene.id)
       .eq("level_id", activeLevelId)
       .order("sequence_index"),
@@ -722,6 +739,9 @@ Deno.serve(async (request) => {
         };
       }),
     fogStrokes: (lightingEnabled ? (fogStrokes ?? []) : [])
+      .filter((stroke) =>
+        fogVisibleToParticipant(stroke.audience, user.id, participant.role),
+      )
       .map((stroke, sequenceIndex) => ({
         id: stroke.id,
         levelId: stroke.level_id,
@@ -980,39 +1000,46 @@ Deno.serve(async (request) => {
         locked: layer.locked,
         layerType: layer.layer_type,
       })),
-      entities: publicEntities.map((entity) => ({
-        id: entity.id,
-        layerId: entity.layer_id,
-        type: entity.entity_type,
-        label: boundedText(entity.name, 240) || "Entidade",
-        x: finiteNumber(entity.x),
-        y: finiteNumber(entity.y),
-        width: Math.max(8, finiteNumber(entity.width, 64)),
-        height: Math.max(8, finiteNumber(entity.height, 64)),
-        rotation: finiteNumber(entity.rotation),
-        elevation: finiteNumber(entity.elevation),
-        levelId: entity.level_id,
-        zIndex: entity.z_index,
-        hidden: false,
-        locked: entity.locked || participant.role === "observer",
-        color: ENTITY_COLORS[entity.entity_type] ?? 0x4f5560,
-        ...(entity.asset_id && signedAssets.has(entity.asset_id)
-          ? { assetUrl: signedAssets.get(entity.asset_id)?.url }
-          : {}),
-        controllable:
-          participant.role === "player" &&
-          entity.owner_user_id === user.id &&
-          !entity.locked,
-        properties: publicProperties(entity.properties),
-        ...(typeof entity.linked_sheet_id === "string" &&
-        sheetSummaries.has(entity.linked_sheet_id)
-          ? { sheetSummary: sheetSummaries.get(entity.linked_sheet_id) }
-          : {}),
-        ...(typeof entity.linked_knowledge_node_id === "string" &&
-        handoutViews.has(entity.linked_knowledge_node_id)
-          ? { handout: handoutViews.get(entity.linked_knowledge_node_id) }
-          : {}),
-      })),
+      entities: publicEntities.map((entity) => {
+        const signedAsset =
+          entity.asset_id && signedAssets.has(entity.asset_id)
+            ? signedAssets.get(entity.asset_id)
+            : undefined;
+        return {
+          id: entity.id,
+          layerId: entity.layer_id,
+          type: entity.entity_type,
+          label: boundedText(entity.name, 240) || "Entidade",
+          x: finiteNumber(entity.x),
+          y: finiteNumber(entity.y),
+          width: Math.max(8, finiteNumber(entity.width, 64)),
+          height: Math.max(8, finiteNumber(entity.height, 64)),
+          rotation: finiteNumber(entity.rotation),
+          elevation: finiteNumber(entity.elevation),
+          levelId: entity.level_id,
+          zIndex: entity.z_index,
+          hidden: false,
+          locked: entity.locked || participant.role === "observer",
+          color: ENTITY_COLORS[entity.entity_type] ?? 0x4f5560,
+          ...(signedAsset ? { assetUrl: signedAsset.url } : {}),
+          controllable:
+            participant.role === "player" &&
+            entity.owner_user_id === user.id &&
+            !entity.locked,
+          properties: {
+            ...publicProperties(entity.properties),
+            ...(signedAsset ? { mime_type: signedAsset.mimeType } : {}),
+          },
+          ...(typeof entity.linked_sheet_id === "string" &&
+          sheetSummaries.has(entity.linked_sheet_id)
+            ? { sheetSummary: sheetSummaries.get(entity.linked_sheet_id) }
+            : {}),
+          ...(typeof entity.linked_knowledge_node_id === "string" &&
+          handoutViews.has(entity.linked_knowledge_node_id)
+            ? { handout: handoutViews.get(entity.linked_knowledge_node_id) }
+            : {}),
+        };
+      }),
     },
     visibility,
   });

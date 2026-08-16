@@ -6,6 +6,7 @@ export type TabletopStructureType =
   | "door_closed"
   | "door_open"
   | "door_locked"
+  | "door_secret"
   | "window_closed"
   | "window_open"
   | "window_broken"
@@ -108,6 +109,7 @@ const TABLETOP_STRUCTURE_TYPES = new Set<TabletopStructureType>([
   "door_closed",
   "door_open",
   "door_locked",
+  "door_secret",
   "window_closed",
   "window_open",
   "window_broken",
@@ -204,6 +206,7 @@ export function structureStateLabel(type: TabletopStructureType) {
     door_closed: "Porta fechada",
     door_open: "Porta aberta",
     door_locked: "Porta trancada",
+    door_secret: "Porta secreta",
     window_closed: "Janela fechada",
     window_open: "Janela aberta",
     window_broken: "Janela quebrada",
@@ -218,7 +221,7 @@ export function structureStateOptions(family: TabletopStructureFamily) {
   const options: Record<TabletopStructureFamily, TabletopStructureType[]> = {
     wall: ["wall"],
     barrier: ["barrier"],
-    door: ["door_closed", "door_open", "door_locked"],
+    door: ["door_closed", "door_open", "door_locked", "door_secret"],
     window: ["window_closed", "window_open", "window_broken"],
     roof: ["roof_visible", "roof_cutaway", "roof_hidden"],
   };
@@ -238,6 +241,9 @@ export function structureCollision(type: TabletopStructureType) {
       return { blocksVision: false, blocksMovement: true };
     case "barrier":
       return { blocksVision: false, blocksMovement: true };
+    case "door_secret":
+      // Until discovered, a secret door behaves exactly like the wall it is hiding in.
+      return { blocksVision: true, blocksMovement: true };
     default:
       return { blocksVision: true, blocksMovement: true };
   }
