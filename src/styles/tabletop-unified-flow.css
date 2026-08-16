@@ -1,0 +1,22 @@
+.tadeon-tabletop-canvas-host[data-unified-drop="active"]::after {
+  position:absolute;
+  z-index:72;
+  inset:.65rem;
+  display:grid;
+  place-items:center;
+  border:2px dashed color-mix(in srgb,var(--primary) 62%,transparent);
+  border-radius:1.1rem;
+  color:var(--foreground);
+  background:color-mix(in srgb,var(--primary) 9%,transparent);
+  box-shadow:inset 0 0 0 1px rgb(255 255 255 / 4%), 0 0 42px -22px var(--primary);
+  font-family:var(--font-mono);
+  font-size:.68rem;
+  font-weight:700;
+  letter-spacing:.12em;
+  text-transform:uppercase;
+  pointer-events:none;
+  content:"Solte para inserir mantendo os vínculos";
+  animation:tadeon-unified-drop-pulse 900ms ease-in-out infinite alternate;
+}
+@keyframes tadeon-unified-drop-pulse { from { opacity:.68; } to { opacity:1; } }
+@media (prefers-reduced-motion:reduce) { .tadeon-tabletop-canvas-host[data-unified-drop="active"]::after { animation:none; } }
