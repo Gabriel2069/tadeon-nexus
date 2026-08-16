@@ -36,7 +36,9 @@ function tuneKnowledgeGraph() {
 
   const settingsToggle = root.querySelector<HTMLButtonElement>(".tadeon-brain-settings-toggle");
   const sliders = Array.from(root.querySelectorAll<HTMLElement>(".tadeon-brain-slider"));
-  const hasPhysics = sliders.some((row) => (row.querySelector("span")?.textContent ?? "").includes("Distância-base"));
+  const hasPhysics = sliders.some((row) =>
+    (row.querySelector("span")?.textContent ?? "").includes("Distância-base"),
+  );
 
   if (!hasPhysics && settingsToggle?.getAttribute("aria-expanded") !== "true") {
     root.dataset.tadeonObsidianTuning = "true";
@@ -84,6 +86,13 @@ function conditionProgress(text: string) {
   return 0.42;
 }
 
+function setConditionProgress(chip: HTMLElement, progress: number) {
+  const normalized = Math.max(0, Math.min(1, progress));
+  chip.style.setProperty("--condition-progress", normalized.toFixed(2));
+  chip.style.setProperty("--condition-glow-opacity", (0.38 + normalized * 0.5).toFixed(2));
+  chip.style.setProperty("--condition-glow-blur", `${Math.round(7 + normalized * 10)}px`);
+}
+
 function tuneConditionVisuals() {
   const candidates = Array.from(
     document.querySelectorAll<HTMLElement>(
@@ -93,16 +102,16 @@ function tuneConditionVisuals() {
   for (const chip of candidates) {
     const text = normalizedCondition(chip.textContent ?? "");
     const progress = conditionProgress(text);
-    chip.style.setProperty("--condition-progress", progress.toFixed(2));
+    setConditionProgress(chip, progress);
     if (/morrendo|dying/.test(text)) {
       chip.dataset.conditionSeverity = "critical";
-      chip.style.setProperty("--condition-progress", Math.max(progress, 0.86).toFixed(2));
+      setConditionProgress(chip, Math.max(progress, 0.86));
     } else if (/colapsando|colapso|collaps/.test(text)) {
       chip.dataset.conditionSeverity = "critical";
-      chip.style.setProperty("--condition-progress", "1");
+      setConditionProgress(chip, 1);
     } else if (/critico|grave|agoniz|incapacit|inconsciente/.test(text)) {
       chip.dataset.conditionSeverity = "danger";
-      chip.style.setProperty("--condition-progress", Math.max(progress, 0.68).toFixed(2));
+      setConditionProgress(chip, Math.max(progress, 0.68));
     } else {
       delete chip.dataset.conditionSeverity;
     }
@@ -110,13 +119,20 @@ function tuneConditionVisuals() {
 }
 
 function tuneSheetChrome() {
-  const commandbar = document.querySelector<HTMLElement>(".tadeon-sheet-page .tadeon-sheet-commandbar");
+  const commandbar = document.querySelector<HTMLElement>(
+    ".tadeon-sheet-page .tadeon-sheet-commandbar",
+  );
   if (!commandbar) return;
   const actions = Array.from(commandbar.querySelectorAll<HTMLElement>("a,button"));
-  const tabletop = actions.find((action) => /(^|\s)(mesa|mesa nexus)(\s|$)/i.test(action.textContent?.trim() ?? ""));
+  const tabletop = actions.find((action) =>
+    /(^|\s)(mesa|mesa nexus)(\s|$)/i.test(action.textContent?.trim() ?? ""),
+  );
   if (tabletop) {
     tabletop.dataset.tadeonSheetTabletopAction = "true";
-    tabletop.setAttribute("aria-label", tabletop.getAttribute("aria-label") || "Abrir na Mesa Nexus");
+    tabletop.setAttribute(
+      "aria-label",
+      tabletop.getAttribute("aria-label") || "Abrir na Mesa Nexus",
+    );
     tabletop.setAttribute("title", tabletop.getAttribute("title") || "Abrir na Mesa Nexus");
   }
 }
@@ -129,7 +145,9 @@ function passiveModifier(skill: string, abilities: Ability[]) {
     if (!normalized.includes(normalizedSkill)) return total;
     if (!/(per[ií]cia|teste|skill|passiv|treino|b[oô]nus|modificador)/i.test(source)) return total;
     const escaped = skill.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-    const nearSkill = source.match(new RegExp(`${escaped}[^+\\-\\d]{0,36}([+-]\\s*\\d+)`, "i"));
+    const nearSkill = source.match(
+      new RegExp(`${escaped}[^+\\-\\d]{0,36}([+-]\\s*\\d+)`, "i"),
+    );
     const generic = source.match(/([+-]\s*\d+)/);
     const value = Number((nearSkill?.[1] ?? generic?.[1] ?? "0").replace(/\s/g, ""));
     return total + (Number.isFinite(value) ? value : 0);
@@ -174,7 +192,9 @@ export function ExperienceFinalPolishBridge() {
           panel.dataset.collapsed = linksCollapsed ? "true" : "false";
         }
 
-        const popovers = Array.from(document.querySelectorAll<HTMLElement>('[data-slot="popover-content"], [role="dialog"]'));
+        const popovers = Array.from(
+          document.querySelectorAll<HTMLElement>('[data-slot="popover-content"], [role="dialog"]'),
+        );
         const skill = popovers.find((popover) => {
           const title = popover.querySelector<HTMLElement>(".font-cinzel")?.textContent?.trim() ?? "";
           return Boolean(title && /Treino atual/i.test(popover.textContent ?? ""));
@@ -221,64 +241,145 @@ export function ExperienceFinalPolishBridge() {
       .maybeSingle()
       .then(({ data }) => {
         if (!active || !data) return;
-        const row = data as unknown as { power_form_data?: PowerFormData | null; abilities?: Ability[] | null };
+        const row = data as unknown as {
+          power_form_data?: PowerFormData | null;
+          abilities?: Ability[] | null;
+        };
         setManualModifiers(row.power_form_data?.skill_modifiers ?? {});
         setAbilities(row.abilities ?? []);
       });
-    return () => { active = false; };
+    return () => {
+      active = false;
+    };
   }, [skillHost]);
 
   const passive = useMemo(() => passiveModifier(skillName, abilities), [abilities, skillName]);
   const manual = manualModifiers[skillName] ?? 0;
 
-  const persistManual = useCallback(async (nextValue: number) => {
-    if (!sheetId || role !== "mestre" || savingModifier) return;
-    setSavingModifier(true);
-    try {
-      const { data, error } = await db.rpc("set_sheet_skill_modifier", {
-        p_sheet_id: sheetId,
-        p_skill: skillName,
-        p_value: nextValue,
-      });
-      if (error) throw error;
-      const nextPowerForm = (data ?? {}) as PowerFormData;
-      const nextModifiers = nextPowerForm.skill_modifiers ?? { ...manualModifiers, [skillName]: nextValue };
-      setManualModifiers(nextModifiers);
-      window.dispatchEvent(new CustomEvent("tadeon-sheet-skill-modifier", { detail: { skill: skillName, manual: nextValue, passive } }));
-    } finally {
-      setSavingModifier(false);
-    }
-  }, [manualModifiers, passive, role, savingModifier, sheetId, skillName]);
+  const persistManual = useCallback(
+    async (nextValue: number) => {
+      if (!sheetId || role !== "mestre" || savingModifier) return;
+      setSavingModifier(true);
+      try {
+        const { data, error } = await db.rpc("set_sheet_skill_modifier", {
+          p_sheet_id: sheetId,
+          p_skill: skillName,
+          p_value: nextValue,
+        });
+        if (error) throw error;
+        const nextPowerForm = (data ?? {}) as PowerFormData;
+        const nextModifiers =
+          nextPowerForm.skill_modifiers ?? { ...manualModifiers, [skillName]: nextValue };
+        setManualModifiers(nextModifiers);
+        window.dispatchEvent(
+          new CustomEvent("tadeon-sheet-skill-modifier", {
+            detail: { skill: skillName, manual: nextValue, passive },
+          }),
+        );
+      } finally {
+        setSavingModifier(false);
+      }
+    },
+    [manualModifiers, passive, role, savingModifier, sheetId, skillName],
+  );
 
   return (
     <>
-      {linkHost && createPortal(
-        <Button type="button" size="sm" variant="ghost" className="tadeon-link-collapse" aria-expanded={!linksCollapsed} onClick={() => setLinksCollapsed((value) => !value)}>
-          {linksCollapsed ? <ChevronDown /> : <ChevronUp />}{linksCollapsed ? "Mostrar" : "Recolher"}
-        </Button>,
-        linkHost,
-      )}
-      {skillHost && skillPopover && createPortal(
-        <div className="tadeon-skill-modifier-bridge">
-          <div className="tadeon-skill-modifier-tabs" role="tablist" aria-label={`Treino e modificadores de ${skillName}`}>
-            <button type="button" role="tab" aria-selected={modifierTab === "training"} onClick={() => setModifierTab("training")}>Treino</button>
-            <button type="button" role="tab" aria-selected={modifierTab === "modifiers"} onClick={() => setModifierTab("modifiers")}><SlidersHorizontal /> Modificadores</button>
-          </div>
-          {modifierTab === "modifiers" && (
-            <section className="tadeon-skill-modifier-panel">
-              <header><WandSparkles /><div><strong>{skillName}</strong><small>Modificadores não consomem PE.</small></div></header>
-              <label>
-                <span>Modificador do mestre</span>
-                <Input type="number" min={-50} max={50} value={manual} disabled={role !== "mestre" || savingModifier} onChange={(event) => setManualModifiers((current) => ({ ...current, [skillName]: Number(event.target.value) || 0 }))} onBlur={(event) => void persistManual(Math.max(-50, Math.min(50, Number(event.target.value) || 0)))} />
-                <small>{role === "mestre" ? "Ajuste manual da condução." : "Somente o mestre pode editar."}</small>
-              </label>
-              <div className="tadeon-skill-modifier-passive"><span>Habilidades passivas</span><strong>{passive >= 0 ? "+" : ""}{passive}</strong><small>Calculado automaticamente por habilidades que citam esta perícia e um bônus/penalidade.</small></div>
-              <footer>Total adicional: <strong>{manual + passive >= 0 ? "+" : ""}{manual + passive}</strong></footer>
-            </section>
-          )}
-        </div>,
-        skillHost,
-      )}
+      {linkHost &&
+        createPortal(
+          <Button
+            type="button"
+            size="sm"
+            variant="ghost"
+            className="tadeon-link-collapse"
+            aria-expanded={!linksCollapsed}
+            onClick={() => setLinksCollapsed((value) => !value)}
+          >
+            {linksCollapsed ? <ChevronDown /> : <ChevronUp />}
+            {linksCollapsed ? "Mostrar" : "Recolher"}
+          </Button>,
+          linkHost,
+        )}
+      {skillHost &&
+        skillPopover &&
+        createPortal(
+          <div className="tadeon-skill-modifier-bridge">
+            <div
+              className="tadeon-skill-modifier-tabs"
+              role="tablist"
+              aria-label={`Treino e modificadores de ${skillName}`}
+            >
+              <button
+                type="button"
+                role="tab"
+                aria-selected={modifierTab === "training"}
+                onClick={() => setModifierTab("training")}
+              >
+                Treino
+              </button>
+              <button
+                type="button"
+                role="tab"
+                aria-selected={modifierTab === "modifiers"}
+                onClick={() => setModifierTab("modifiers")}
+              >
+                <SlidersHorizontal /> Modificadores
+              </button>
+            </div>
+            {modifierTab === "modifiers" && (
+              <section className="tadeon-skill-modifier-panel">
+                <header>
+                  <WandSparkles />
+                  <div>
+                    <strong>{skillName}</strong>
+                    <small>Modificadores não consomem PE.</small>
+                  </div>
+                </header>
+                <label>
+                  <span>Modificador do mestre</span>
+                  <Input
+                    type="number"
+                    min={-50}
+                    max={50}
+                    value={manual}
+                    disabled={role !== "mestre" || savingModifier}
+                    onChange={(event) =>
+                      setManualModifiers((current) => ({
+                        ...current,
+                        [skillName]: Number(event.target.value) || 0,
+                      }))
+                    }
+                    onBlur={(event) =>
+                      void persistManual(
+                        Math.max(-50, Math.min(50, Number(event.target.value) || 0)),
+                      )
+                    }
+                  />
+                  <small>
+                    {role === "mestre"
+                      ? "Ajuste manual da condução."
+                      : "Somente o mestre pode editar."}
+                  </small>
+                </label>
+                <div className="tadeon-skill-modifier-passive">
+                  <span>Habilidades passivas</span>
+                  <strong>
+                    {passive >= 0 ? "+" : ""}
+                    {passive}
+                  </strong>
+                  <small>
+                    Calculado automaticamente por habilidades que citam esta perícia e um
+                    bônus/penalidade.
+                  </small>
+                </div>
+                <footer>
+                  Total adicional: <strong>{manual + passive >= 0 ? "+" : ""}{manual + passive}</strong>
+                </footer>
+              </section>
+            )}
+          </div>,
+          skillHost,
+        )}
     </>
   );
 }
