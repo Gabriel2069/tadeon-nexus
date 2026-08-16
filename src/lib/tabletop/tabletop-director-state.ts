@@ -18,6 +18,23 @@ export const tabletopDirectorCameraSchema = z
   })
   .strict();
 
+export const tabletopDirectorCueSchema = z
+  .object({
+    id: z.string().trim().min(1).max(96),
+    label: z.string().trim().min(1).max(120),
+    durationMs: z.number().int().min(0).max(600_000).default(0),
+    transition: z.enum(["cut", "fade", "orbit"]).default("fade"),
+    mode: z.enum(["scene", "intermission", "blackout"]).optional(),
+    title: z.string().trim().max(160).optional(),
+    subtitle: z.string().trim().max(320).optional(),
+    showGrid: z.boolean().optional(),
+    showHud: z.boolean().optional(),
+    camera: tabletopDirectorCameraSchema.optional(),
+    globalIllumination: z.number().finite().min(0).max(1).optional(),
+    fogEnabled: z.boolean().optional(),
+  })
+  .strict();
+
 export const tabletopDirectorStateSchema = z
   .object({
     mode: z.enum(["scene", "intermission", "blackout"]),
@@ -26,12 +43,14 @@ export const tabletopDirectorStateSchema = z
     showGrid: z.boolean(),
     showHud: z.boolean(),
     camera: tabletopDirectorCameraSchema,
+    cues: z.array(tabletopDirectorCueSchema).max(32).default([]),
+    activeCueId: z.string().trim().max(96).nullable().default(null),
+    autoAdvance: z.boolean().default(false),
   })
   .strict();
 
-export type TabletopDirectorCamera = z.infer<
-  typeof tabletopDirectorCameraSchema
->;
+export type TabletopDirectorCamera = z.infer<typeof tabletopDirectorCameraSchema>;
+export type TabletopDirectorCue = z.infer<typeof tabletopDirectorCueSchema>;
 export type TabletopDirectorState = z.infer<typeof tabletopDirectorStateSchema>;
 
 export const DEFAULT_TABLETOP_DIRECTOR_STATE: TabletopDirectorState = {
@@ -49,17 +68,19 @@ export const DEFAULT_TABLETOP_DIRECTOR_STATE: TabletopDirectorState = {
     levelId: null,
     ...DEFAULT_TABLETOP_VIEW_ORIENTATION,
   },
+  cues: [],
+  activeCueId: null,
+  autoAdvance: false,
 };
 
-export function parseTabletopDirectorState(
-  value: unknown,
-): TabletopDirectorState {
+export function parseTabletopDirectorState(value: unknown): TabletopDirectorState {
   const parsed = tabletopDirectorStateSchema.safeParse(value);
   return parsed.success
     ? parsed.data
     : {
         ...DEFAULT_TABLETOP_DIRECTOR_STATE,
         camera: { ...DEFAULT_TABLETOP_DIRECTOR_STATE.camera },
+        cues: [],
       };
 }
 
@@ -74,4 +95,20 @@ export function tabletopDirectorCameraFromView(input: {
   elevationScale: number;
 }): TabletopDirectorCamera {
   return tabletopDirectorCameraSchema.parse({ ...input, mode: "manual" });
+}
+
+export function applyTabletopDirectorCue(
+  state: TabletopDirectorState,
+  cue: TabletopDirectorCue,
+): TabletopDirectorState {
+  return tabletopDirectorStateSchema.parse({
+    ...state,
+    mode: cue.mode ?? state.mode,
+    title: cue.title ?? state.title,
+    subtitle: cue.subtitle ?? state.subtitle,
+    showGrid: cue.showGrid ?? state.showGrid,
+    showHud: cue.showHud ?? state.showHud,
+    camera: cue.camera ?? state.camera,
+    activeCueId: cue.id,
+  });
 }
