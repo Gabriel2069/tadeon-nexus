@@ -8,6 +8,7 @@ import { useAuth } from "@/lib/auth";
 import { supabase } from "@/integrations/supabase/client";
 import { currentTabletopRuntime } from "@/lib/tabletop/tabletop-player-runtime";
 import type { TabletopEntity } from "@/lib/tabletop/types";
+import "@/styles/selection-director-entry-polish.css";
 
 const db = supabase as unknown as SupabaseClient;
 type RenameKind = "entity" | "wall" | "light" | "fog";
@@ -21,6 +22,37 @@ function radialAnchor(entity: TabletopEntity) {
   return { x: Math.max(host.left + 34, Math.min(host.right - 34, point.x)), y: Math.max(host.top + 28, Math.min(host.bottom - 34, point.y - 30)) };
 }
 
+function closeTransientTabletopPanel() {
+  const backdrop = document.querySelector<HTMLButtonElement>(
+    '.tadeon-tabletop-panel-backdrop[data-open="true"]',
+  );
+  backdrop?.click();
+
+  const mobileTools = document.querySelector<HTMLButtonElement>(
+    '[aria-expanded="true"][aria-label*="ferrament" i]',
+  );
+  mobileTools?.click();
+}
+
+function isSelectControl(target: EventTarget | null) {
+  if (!(target instanceof Element)) return false;
+  const button = target.closest<HTMLButtonElement>("button");
+  if (!button) return false;
+  const label = `${button.getAttribute("aria-label") ?? ""} ${button.textContent ?? ""}`
+    .replace(/\s+/g, " ")
+    .trim();
+  return /^(ferramenta de sele[cç][aã]o|selecionar|selecionar e manipular)$/i.test(label);
+}
+
+function typingTarget(target: EventTarget | null) {
+  return (
+    target instanceof HTMLInputElement ||
+    target instanceof HTMLTextAreaElement ||
+    target instanceof HTMLSelectElement ||
+    (target instanceof HTMLElement && target.isContentEditable)
+  );
+}
+
 export function TabletopFinalInteractionBridge() {
   const { role } = useAuth();
   const [renameHost, setRenameHost] = useState<HTMLElement | null>(null);
@@ -29,6 +61,28 @@ export function TabletopFinalInteractionBridge() {
   const [selectedKey, setSelectedKey] = useState("");
   const [draft, setDraft] = useState("");
   const [busy, setBusy] = useState(false);
+
+  useEffect(() => {
+    if (typeof window === "undefined" || window.location.pathname !== "/tabletop") return;
+
+    const enterSelectMode = () => {
+      window.requestAnimationFrame(closeTransientTabletopPanel);
+    };
+    const onClick = (event: MouseEvent) => {
+      if (isSelectControl(event.target)) enterSelectMode();
+    };
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.defaultPrevented || typingTarget(event.target)) return;
+      if (event.key.toLocaleLowerCase("pt-BR") === "v") enterSelectMode();
+    };
+
+    document.addEventListener("click", onClick, true);
+    window.addEventListener("keydown", onKeyDown, true);
+    return () => {
+      document.removeEventListener("click", onClick, true);
+      window.removeEventListener("keydown", onKeyDown, true);
+    };
+  }, []);
 
   useEffect(() => {
     if (typeof window === "undefined" || window.location.pathname !== "/tabletop") return;
