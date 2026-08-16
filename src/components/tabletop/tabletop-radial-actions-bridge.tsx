@@ -1,13 +1,16 @@
 import { useEffect, useMemo, useState } from "react";
 import {
   BookOpen,
+  Clock3,
   Copy,
   Eye,
   EyeOff,
+  FileText,
   Focus,
   Lock,
   LockOpen,
   MoreHorizontal,
+  Search,
   Trash2,
   X,
 } from "lucide-react";
@@ -35,9 +38,16 @@ function safeAnchor(entity: TabletopEntity) {
   };
 }
 
+type NexusCaptureAction =
+  | "register-nexus"
+  | "capture-note"
+  | "capture-clue"
+  | "capture-event";
+
 export function TabletopRadialActionsBridge() {
   const [snapshot, setSnapshot] = useState<TabletopSnapshot | null>(null);
   const [open, setOpen] = useState(false);
+  const [memoryOpen, setMemoryOpen] = useState(false);
   const [anchor, setAnchor] = useState<{ x: number; y: number } | null>(null);
   const selected = useMemo(() => selectedEntity(snapshot), [snapshot]);
 
@@ -60,6 +70,7 @@ export function TabletopRadialActionsBridge() {
     const onDestroyed = () => {
       setSnapshot(null);
       setOpen(false);
+      setMemoryOpen(false);
     };
     window.addEventListener("tadeon-tabletop-render", onRender);
     window.addEventListener("tadeon-tabletop-runtime-destroyed", onDestroyed);
@@ -71,6 +82,7 @@ export function TabletopRadialActionsBridge() {
   }, []);
 
   useEffect(() => {
+    setMemoryOpen(false);
     if (!selected) {
       setOpen(false);
       setAnchor(null);
@@ -87,13 +99,19 @@ export function TabletopRadialActionsBridge() {
       if (event.key.toLowerCase() === "q") {
         event.preventDefault();
         setAnchor(safeAnchor(selected));
-        setOpen((value) => !value);
+        setOpen((value) => {
+          if (value) setMemoryOpen(false);
+          return !value;
+        });
       }
-      if (event.key === "Escape") setOpen(false);
+      if (event.key === "Escape") {
+        if (memoryOpen) setMemoryOpen(false);
+        else setOpen(false);
+      }
     };
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
-  }, [selected]);
+  }, [memoryOpen, selected]);
 
   if (
     !selected ||
@@ -104,25 +122,30 @@ export function TabletopRadialActionsBridge() {
   ) return null;
 
   const engine = currentTabletopRuntime()?.engine;
-  const run = (operation: () => void) => {
-    operation();
+  const close = () => {
+    setMemoryOpen(false);
     setOpen(false);
   };
-  const openNexus = () => {
-    if (selected.linkedKnowledgeNodeId) {
+  const run = (operation: () => void) => {
+    operation();
+    close();
+  };
+  const capture = (action: NexusCaptureAction) => {
+    if (action === "register-nexus" && selected.linkedKnowledgeNodeId) {
       window.open(
         `/nexus?node=${encodeURIComponent(selected.linkedKnowledgeNodeId)}`,
         `tadeon-nexus-${selected.linkedKnowledgeNodeId}`,
         "popup=yes,width=1320,height=900,resizable=yes,scrollbars=yes",
       );
-    } else {
-      window.dispatchEvent(
-        new CustomEvent("tadeon-tabletop-open-integration-tools", {
-          detail: { entityId: selected.id, action: "register-nexus" },
-        }),
-      );
+      close();
+      return;
     }
-    setOpen(false);
+    window.dispatchEvent(
+      new CustomEvent("tadeon-tabletop-capture-nexus", {
+        detail: { entityId: selected.id, action },
+      }),
+    );
+    close();
   };
 
   return (
@@ -134,6 +157,7 @@ export function TabletopRadialActionsBridge() {
           style={{ left: anchor.x, top: anchor.y }}
           onClick={() => {
             setAnchor(safeAnchor(selected));
+            setMemoryOpen(false);
             setOpen(true);
           }}
           title="Ações rápidas (Q)"
@@ -149,11 +173,53 @@ export function TabletopRadialActionsBridge() {
           role="menu"
           aria-label={`Ações rápidas de ${selected.label}`}
         >
-          <div className="tadeon-radial-actions__center">
-            <button type="button" onClick={() => setOpen(false)} aria-label="Fechar ações rápidas">
-              <X aria-hidden="true" />
-            </button>
-            <strong>{selected.label}</strong>
+          <div
+            className={`tadeon-radial-actions__center${memoryOpen ? " is-memory" : ""}`}
+          >
+            {memoryOpen ? (
+              <>
+                <button
+                  type="button"
+                  title={selected.linkedKnowledgeNodeId ? "Abrir página vinculada" : "Registrar como página"}
+                  aria-label={selected.linkedKnowledgeNodeId ? "Abrir página vinculada" : "Registrar como página"}
+                  onClick={() => capture("register-nexus")}
+                >
+                  <BookOpen aria-hidden="true" />
+                </button>
+                <button
+                  type="button"
+                  title="Capturar nota"
+                  aria-label="Capturar nota no Nexus"
+                  onClick={() => capture("capture-note")}
+                >
+                  <FileText aria-hidden="true" />
+                </button>
+                <button
+                  type="button"
+                  title="Capturar pista"
+                  aria-label="Capturar pista no Nexus"
+                  onClick={() => capture("capture-clue")}
+                >
+                  <Search aria-hidden="true" />
+                </button>
+                <button
+                  type="button"
+                  title="Capturar evento"
+                  aria-label="Capturar evento no Nexus"
+                  onClick={() => capture("capture-event")}
+                >
+                  <Clock3 aria-hidden="true" />
+                </button>
+                <strong>Memória</strong>
+              </>
+            ) : (
+              <>
+                <button type="button" onClick={close} aria-label="Fechar ações rápidas">
+                  <X aria-hidden="true" />
+                </button>
+                <strong>{selected.label}</strong>
+              </>
+            )}
           </div>
           <button
             type="button"
@@ -197,11 +263,12 @@ export function TabletopRadialActionsBridge() {
             type="button"
             className="is-south-west"
             role="menuitem"
-            onClick={openNexus}
-            title={selected.linkedKnowledgeNodeId ? "Abrir no Nexus" : "Registrar no Nexus"}
+            onClick={() => setMemoryOpen((value) => !value)}
+            title="Memória do Nexus"
+            aria-expanded={memoryOpen}
           >
             <BookOpen aria-hidden="true" />
-            <span>Nexus</span>
+            <span>Memória</span>
           </button>
           <button
             type="button"
