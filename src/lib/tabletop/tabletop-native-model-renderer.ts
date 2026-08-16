@@ -206,11 +206,22 @@ function uniform(gl: WebGL2RenderingContext, program: WebGLProgram, name: string
   return location;
 }
 
-function createBuffer(gl: WebGL2RenderingContext, target: number, values: BufferSource) {
+function copyToArrayBufferBytes(view: ArrayBufferView<ArrayBufferLike>): Uint8Array<ArrayBuffer> {
+  const source = new Uint8Array(view.buffer, view.byteOffset, view.byteLength);
+  const copy = new Uint8Array(new ArrayBuffer(view.byteLength));
+  copy.set(source);
+  return copy;
+}
+
+function createBuffer(
+  gl: WebGL2RenderingContext,
+  target: number,
+  values: ArrayBufferView<ArrayBufferLike>,
+) {
   const buffer = gl.createBuffer();
   if (!buffer) throw new Error("TABLETOP_3D_BUFFER_CREATE_FAILED");
   gl.bindBuffer(target, buffer);
-  gl.bufferData(target, values, gl.STATIC_DRAW);
+  gl.bufferData(target, copyToArrayBufferBytes(values), gl.STATIC_DRAW);
   return buffer;
 }
 
@@ -299,7 +310,8 @@ function isModelEntity(entity: TabletopEntity) {
 
 async function imageSource(image: TabletopGltfImage, signal?: AbortSignal) {
   let blob: Blob;
-  if (image.bytes) blob = new Blob([image.bytes], { type: image.mimeType });
+  if (image.bytes)
+    blob = new Blob([copyToArrayBufferBytes(image.bytes)], { type: image.mimeType });
   else if (image.uri) {
     const response = await fetch(image.uri, { signal, credentials: "omit" });
     if (!response.ok) throw new Error("TABLETOP_3D_TEXTURE_FETCH_FAILED");
