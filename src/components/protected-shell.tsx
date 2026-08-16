@@ -28,6 +28,12 @@ interface Props {
 function dedicatedPresentation() {
   if (typeof window === "undefined") return null;
   const params = new URLSearchParams(window.location.search);
+  if (
+    window.location.pathname === "/tabletop" &&
+    params.get("view") === "director"
+  ) {
+    return "director" as const;
+  }
   if (params.get("embed") === "1") return "embed" as const;
   if (params.get("popout") === "1") return "popout" as const;
   return null;
