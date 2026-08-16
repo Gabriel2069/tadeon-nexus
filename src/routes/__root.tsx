@@ -15,6 +15,7 @@ import radialPresenceCss from "../styles/radial-presence-final.css?url";
 import reconciliationCss from "../styles/interface-reconciliation-final.css?url";
 import finalPolishCss from "../styles/interface-final-user-polish.css?url";
 import selectionDirectorEntryCss from "../styles/selection-director-entry-polish.css?url";
+import urgentReconciliationCss from "../styles/urgent-user-reconciliation.css?url";
 import { AuthProvider } from "@/lib/auth";
 import { Toaster } from "@/components/ui/sonner";
 import { PwaRegistration } from "@/components/pwa-registration";
@@ -110,6 +111,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { rel: "stylesheet", href: reconciliationCss },
       { rel: "stylesheet", href: finalPolishCss },
       { rel: "stylesheet", href: selectionDirectorEntryCss },
+      { rel: "stylesheet", href: urgentReconciliationCss },
       { rel: "manifest", href: "/manifest.webmanifest" },
       { rel: "icon", href: "/favicon.svg?v=4", type: "image/svg+xml", sizes: "any" },
       { rel: "shortcut icon", href: "/favicon.svg?v=4", type: "image/svg+xml" },
