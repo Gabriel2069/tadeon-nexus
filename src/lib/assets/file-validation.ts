@@ -17,8 +17,13 @@ export const ASSET_MIME_EXTENSIONS = {
   "audio/ogg": ["ogg", "oga"],
   "audio/wav": ["wav"],
   "audio/webm": ["webm"],
+  "audio/mp4": ["m4a"],
+  "audio/aac": ["aac"],
+  "audio/flac": ["flac"],
   "video/mp4": ["mp4"],
   "video/webm": ["webm"],
+  "model/gltf-binary": ["glb"],
+  "model/gltf+json": ["gltf"],
   "application/vnd.openxmlformats-officedocument.wordprocessingml.document": [
     "docx",
   ],
@@ -102,6 +107,12 @@ export function isAllowedAssetMime(value: string): value is AllowedAssetMime {
   );
 }
 
+function inferStrictKnownMime(extension: string): AllowedAssetMime | null {
+  if (extension === "glb") return "model/gltf-binary";
+  if (extension === "gltf") return "model/gltf+json";
+  return null;
+}
+
 export function validateAssetFile(
   file: AssetFileDescriptor,
 ): ValidatedAssetFile {
@@ -127,7 +138,10 @@ export function validateAssetFile(
     );
   }
 
-  const mimeType = file.type.toLowerCase();
+  const extension = getAssetExtension(originalName);
+  const reportedMime = file.type.toLowerCase().trim();
+  const inferredMime = reportedMime ? null : inferStrictKnownMime(extension);
+  const mimeType = reportedMime || inferredMime || "";
   if (!isAllowedAssetMime(mimeType)) {
     throw new AssetValidationError(
       "ASSET_TYPE_INVALID",
@@ -135,7 +149,6 @@ export function validateAssetFile(
     );
   }
 
-  const extension = getAssetExtension(originalName);
   if (
     !(ASSET_MIME_EXTENSIONS[mimeType] as readonly string[]).includes(extension)
   ) {
