@@ -1,0 +1,67 @@
+/* Superfícies customizadas da Mesa não têm o Presence do Radix. O DOM fica
+   montado durante o estado fechado para que abertura e saída compartilhem a
+   mesma linguagem de motion sem manter foco ou clique. */
+.tadeon-radial-actions[data-state="open"] {
+  visibility: visible;
+  opacity: 1;
+  scale: 1;
+  rotate: 0deg;
+  pointer-events: auto;
+  transition:
+    opacity 160ms var(--ease-out),
+    scale 190ms var(--ease-out),
+    rotate 190ms var(--ease-out),
+    visibility 0s linear 0s !important;
+}
+
+.tadeon-radial-actions[data-state="closed"] {
+  visibility: hidden;
+  opacity: 0;
+  scale: 0.86;
+  rotate: -3deg;
+  pointer-events: none;
+  transition:
+    opacity 150ms ease,
+    scale 180ms var(--ease-out),
+    rotate 180ms var(--ease-out),
+    visibility 0s linear 180ms !important;
+}
+
+.tadeon-placeables__panel[data-state="open"] {
+  visibility: visible;
+  opacity: 1;
+  translate: 0 0;
+  scale: 1;
+  pointer-events: auto;
+  transition:
+    opacity 160ms var(--ease-out),
+    translate 210ms var(--ease-out),
+    scale 210ms var(--ease-out),
+    visibility 0s linear 0s !important;
+}
+
+.tadeon-placeables__panel[data-state="closed"] {
+  visibility: hidden;
+  opacity: 0;
+  translate: 0 .55rem;
+  scale: .975;
+  pointer-events: none;
+  transition:
+    opacity 150ms ease,
+    translate 190ms var(--ease-out),
+    scale 190ms var(--ease-out),
+    visibility 0s linear 190ms !important;
+}
+
+@media (max-width: 800px) {
+  .tadeon-placeables__panel[data-state="closed"] {
+    translate: .45rem 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tadeon-radial-actions[data-state],
+  .tadeon-placeables__panel[data-state] {
+    transition-duration: .01ms !important;
+  }
+}

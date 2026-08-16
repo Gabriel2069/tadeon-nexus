@@ -1,0 +1,316 @@
+/* Tadeon Nexus · auditoria transversal final de viewport e motion.
+   Esta camada vem depois das folhas de cada superfície e resolve apenas
+   contratos globais: pilha de overlays, safe-area, motion e colisões entre
+   bridges independentes. Não reposiciona conteúdo editorial local. */
+
+:root {
+  --tadeon-safe-top: max(.75rem, env(safe-area-inset-top));
+  --tadeon-safe-right: max(.75rem, env(safe-area-inset-right));
+  --tadeon-safe-bottom: max(.75rem, env(safe-area-inset-bottom));
+  --tadeon-safe-left: max(.75rem, env(safe-area-inset-left));
+  --tadeon-z-floating: 150;
+  --tadeon-z-tooltip: 170;
+  --tadeon-z-modal-overlay: 190;
+  --tadeon-z-modal: 191;
+  --tadeon-z-toast: 320;
+}
+
+/* Portais fora da Mesa também obedecem uma única hierarquia. Isso impede
+   dropdowns atrás de dialogs e tooltips escondidos por painéis locais. */
+:where(
+  [data-slot="popover-content"],
+  [data-slot="select-content"],
+  [data-slot="dropdown-menu-content"],
+  [data-slot="dropdown-menu-sub-content"],
+  [data-slot="context-menu-content"],
+  [data-slot="context-menu-sub-content"],
+  [data-slot="menubar-content"],
+  [data-slot="menubar-sub-content"],
+  [data-slot="hover-card-content"]
+) {
+  z-index: var(--tadeon-z-floating) !important;
+}
+
+[data-slot="tooltip-content"] {
+  z-index: var(--tadeon-z-tooltip) !important;
+}
+
+:where(
+  [data-slot="dialog-overlay"],
+  [data-slot="alert-dialog-overlay"],
+  [data-slot="sheet-overlay"],
+  [data-slot="drawer-overlay"]
+) {
+  z-index: var(--tadeon-z-modal-overlay) !important;
+}
+
+:where(
+  [data-slot="dialog-content"],
+  [data-slot="alert-dialog-content"],
+  [data-slot="sheet-content"],
+  [data-slot="drawer-content"]
+) {
+  z-index: var(--tadeon-z-modal) !important;
+}
+
+/* A Mesa usa chrome persistente acima da aplicação comum. Mantém a autoridade
+   maior que os tokens globais sem depender da ordem de import. */
+body:has(.tadeon-tabletop-studio) :where(
+  [data-slot="popover-content"],
+  [data-slot="select-content"],
+  [data-slot="dropdown-menu-content"],
+  [data-slot="dropdown-menu-sub-content"],
+  [data-slot="context-menu-content"],
+  [data-slot="context-menu-sub-content"],
+  [data-slot="menubar-content"],
+  [data-slot="menubar-sub-content"],
+  [data-slot="hover-card-content"],
+  [data-slot="tooltip-content"]
+) {
+  z-index: 220 !important;
+}
+
+body:has(.tadeon-tabletop-studio) :where(
+  [data-slot="dialog-overlay"],
+  [data-slot="alert-dialog-overlay"],
+  [data-slot="sheet-overlay"],
+  [data-slot="drawer-overlay"]
+) {
+  z-index: 240 !important;
+}
+
+body:has(.tadeon-tabletop-studio) :where(
+  [data-slot="dialog-content"],
+  [data-slot="alert-dialog-content"],
+  [data-slot="sheet-content"],
+  [data-slot="drawer-content"]
+) {
+  z-index: 241 !important;
+}
+
+/* Safe area real para modais e drawers em iPhone/iPad e janelas estreitas. */
+:where(
+  [data-slot="dialog-content"],
+  [data-slot="alert-dialog-content"]
+) {
+  max-width: calc(100vw - var(--tadeon-safe-left) - var(--tadeon-safe-right)) !important;
+  max-height: calc(100dvh - var(--tadeon-safe-top) - var(--tadeon-safe-bottom)) !important;
+}
+
+[data-slot="sheet-content"][data-side="right"] {
+  padding-right: max(1.25rem, env(safe-area-inset-right));
+}
+
+[data-slot="sheet-content"][data-side="left"] {
+  padding-left: max(1.25rem, env(safe-area-inset-left));
+}
+
+[data-slot="sheet-content"][data-side="top"] {
+  padding-top: max(1.25rem, env(safe-area-inset-top));
+}
+
+[data-slot="sheet-content"][data-side="bottom"] {
+  padding-bottom: max(1.25rem, env(safe-area-inset-bottom));
+}
+
+/* Feedback precisa continuar legível sobre fundos claros, mapas e cards. */
+.tadeon-toaster {
+  z-index: var(--tadeon-z-toast) !important;
+}
+
+.tadeon-toaster [data-sonner-toast].tadeon-toast {
+  border: 1px solid hsl(var(--border) / .92) !important;
+  background: hsl(var(--popover) / .985) !important;
+  color: hsl(var(--popover-foreground)) !important;
+  box-shadow: 0 24px 72px -28px rgb(0 0 0 / .88) !important;
+  backdrop-filter: blur(18px) saturate(1.08);
+}
+
+.tadeon-toast__title {
+  color: hsl(var(--popover-foreground)) !important;
+}
+
+.tadeon-toast__description {
+  color: color-mix(in srgb, hsl(var(--popover-foreground)) 72%, transparent) !important;
+}
+
+.tadeon-toast__icon,
+.tadeon-toast__close {
+  color: hsl(var(--foreground)) !important;
+}
+
+.tadeon-toast__action {
+  border: 1px solid hsl(var(--primary) / .3) !important;
+  background: hsl(var(--primary) / .14) !important;
+  color: hsl(var(--foreground)) !important;
+}
+
+.tadeon-toast__cancel {
+  color: hsl(var(--foreground)) !important;
+  background: hsl(var(--secondary) / .72) !important;
+}
+
+.tadeon-toast--success .tadeon-toast__icon { color: hsl(145 62% 58%) !important; }
+.tadeon-toast--warning .tadeon-toast__icon { color: hsl(42 88% 62%) !important; }
+.tadeon-toast--error .tadeon-toast__icon { color: hsl(var(--destructive)) !important; }
+.tadeon-toast--info .tadeon-toast__icon { color: hsl(var(--primary)) !important; }
+
+/* Motion mínimo compartilhado para ícones que não têm coreografia própria.
+   Usa propriedades independentes para não disputar `transform` de Radix ou
+   animações locais. */
+:where(
+  button,
+  [role="button"],
+  [data-slot="button"],
+  [data-slot="select-trigger"],
+  [data-trigger-slot]
+) > svg:not(.animate-spin) {
+  translate: 0 0;
+  scale: 1;
+  transition:
+    translate 170ms var(--ease-out, ease-out),
+    scale 170ms var(--ease-out, ease-out),
+    color 170ms ease,
+    opacity 170ms ease;
+  will-change: translate, scale;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  :where(
+    button,
+    [role="button"],
+    [data-slot="button"],
+    [data-slot="select-trigger"],
+    [data-trigger-slot]
+  ):not(:disabled):hover > svg:not(.animate-spin) {
+    translate: 0 -1px;
+    scale: 1.07;
+  }
+}
+
+:where(
+  button[aria-pressed="true"],
+  button[aria-expanded="true"],
+  [role="button"][aria-pressed="true"],
+  [data-state="open"]
+) > svg:not(.animate-spin) {
+  scale: 1.06;
+}
+
+:where(button, [role="button"]):not(:disabled):active > svg:not(.animate-spin) {
+  scale: .94;
+}
+
+/* Radial atual: o orquestrador antigo ainda referenciava a classe legada.
+   Superfícies limpas e utilidades abertas não podem deixar ações fantasma. */
+html[data-tadeon-tabletop-clean="true"] :where(
+  .tadeon-radial-trigger,
+  .tadeon-radial-actions
+),
+body:has(.tadeon-tabletop-panel[data-mobile-open="true"]) :where(
+  .tadeon-radial-trigger,
+  .tadeon-radial-actions
+),
+body:has(.tadeon-placeables[data-open="true"]) :where(
+  .tadeon-radial-trigger,
+  .tadeon-radial-actions
+),
+body:has(.tadeon-creative-dock[data-open="true"]) :where(
+  .tadeon-radial-trigger,
+  .tadeon-radial-actions
+),
+body:has(.tadeon-tabletop-precision-editor) :where(
+  .tadeon-radial-trigger,
+  .tadeon-radial-actions
+),
+body:has(.tadeon-tabletop-command-layer) :where(
+  .tadeon-radial-trigger,
+  .tadeon-radial-actions
+) {
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+/* O radial deve animar a saída, não apenas desaparecer ao fechar por estado. */
+.tadeon-radial-trigger,
+.tadeon-radial-actions {
+  transition:
+    opacity 150ms ease,
+    visibility 0s linear 0s,
+    filter 180ms ease;
+}
+
+/* No mobile o Placeables disputava a mesma borda inferior dos docks. Ele vira
+   utilidade superior direita e o painel cresce para baixo, sempre dentro da
+   viewport e das safe-areas. */
+@media (max-width: 800px) {
+  .tadeon-placeables {
+    top: calc(var(--tadeon-safe-top) + 3.6rem) !important;
+    right: var(--tadeon-safe-right) !important;
+    bottom: auto !important;
+    left: auto !important;
+  }
+
+  .tadeon-placeables__panel {
+    top: 3.15rem !important;
+    right: 0 !important;
+    bottom: auto !important;
+    width: min(25rem, calc(100vw - var(--tadeon-safe-left) - var(--tadeon-safe-right))) !important;
+    max-height: calc(
+      100dvh - var(--tadeon-safe-top) - var(--tadeon-safe-bottom) - 7.5rem
+    ) !important;
+  }
+
+  .tadeon-radial-actions {
+    max-width: calc(100vw - var(--tadeon-safe-left) - var(--tadeon-safe-right));
+    max-height: calc(100dvh - var(--tadeon-safe-top) - var(--tadeon-safe-bottom));
+  }
+}
+
+/* O segundo cérebro usava 8px físicos para toolbar e seletor de modo. Em
+   iPhone/iPad, especialmente em paisagem, isso pode entrar sob notch/home bar. */
+@media (max-width: 640px) {
+  .tadeon-brain-toolbar {
+    top: var(--tadeon-safe-top) !important;
+    left: var(--tadeon-safe-left) !important;
+    max-width: calc(100% - var(--tadeon-safe-left) - var(--tadeon-safe-right)) !important;
+  }
+
+  .tadeon-brain-mode {
+    right: var(--tadeon-safe-right) !important;
+    bottom: var(--tadeon-safe-bottom) !important;
+    left: var(--tadeon-safe-left) !important;
+  }
+}
+
+/* Em altura baixa, nenhuma utilidade deve atravessar a área de gestos do SO. */
+@media (max-height: 620px) {
+  :where(
+    .tadeon-placeables__panel,
+    .tadeon-tabletop-now__panel,
+    .tadeon-creative-dock__panel,
+    .tadeon-tabletop-precision-editor,
+    .tadeon-nexus-tabletop-locator
+  ) {
+    max-height: calc(100dvh - var(--tadeon-safe-top) - var(--tadeon-safe-bottom) - 5.25rem) !important;
+    overflow-y: auto !important;
+    overscroll-behavior: contain;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :where(
+    button,
+    [role="button"],
+    [data-slot="button"],
+    [data-slot="select-trigger"],
+    [data-trigger-slot]
+  ) > svg:not(.animate-spin),
+  .tadeon-radial-trigger,
+  .tadeon-radial-actions {
+    transition-duration: .01ms !important;
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}

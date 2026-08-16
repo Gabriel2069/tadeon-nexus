@@ -10,6 +10,8 @@ import {
 import appCss from "../styles.css?url";
 import mobileCss from "../styles/mobile-studio.css?url";
 import viewportCss from "../styles/viewport-fit-final.css?url";
+import auditCss from "../styles/interface-audit-final.css?url";
+import radialPresenceCss from "../styles/radial-presence-final.css?url";
 import { AuthProvider } from "@/lib/auth";
 import { Toaster } from "@/components/ui/sonner";
 import { PwaRegistration } from "@/components/pwa-registration";
@@ -128,6 +130,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { rel: "stylesheet", href: appCss },
       { rel: "stylesheet", href: mobileCss },
       { rel: "stylesheet", href: viewportCss },
+      { rel: "stylesheet", href: auditCss },
+      { rel: "stylesheet", href: radialPresenceCss },
       { rel: "manifest", href: "/manifest.webmanifest" },
       {
         rel: "icon",

@@ -54,7 +54,35 @@
   box-shadow:
     0 26px 58px -22px rgb(0 0 0 / 96%),
     inset 0 1px rgb(255 255 255 / 4%);
+  transform-origin: center;
+}
+
+.tadeon-radial-actions[data-state="open"] {
+  visibility: visible;
+  opacity: 1;
+  scale: 1;
+  rotate: 0deg;
+  pointer-events: auto;
   animation: tadeon-radial-open 210ms var(--ease-out) both;
+  transition:
+    opacity 160ms var(--ease-out),
+    scale 190ms var(--ease-out),
+    rotate 190ms var(--ease-out),
+    visibility 0s linear 0s;
+}
+
+.tadeon-radial-actions[data-state="closed"] {
+  visibility: hidden;
+  opacity: 0;
+  scale: 0.86;
+  rotate: -3deg;
+  pointer-events: none;
+  animation: none;
+  transition:
+    opacity 150ms ease,
+    scale 180ms var(--ease-out),
+    rotate 180ms var(--ease-out),
+    visibility 0s linear 180ms;
 }
 
 .tadeon-radial-actions > button {
@@ -126,6 +154,11 @@
   translate: -50% -50%;
   text-align: center;
   pointer-events: none;
+  transition:
+    width 180ms var(--ease-out),
+    min-height 180ms var(--ease-out),
+    background-color 180ms ease,
+    box-shadow 180ms ease;
 }
 
 .tadeon-radial-actions__center button {
@@ -185,6 +218,38 @@
   text-transform: uppercase;
 }
 
+.tadeon-radial-actions__center.is-model {
+  width: 5.35rem;
+  min-height: 4.75rem;
+  align-content: center;
+  gap: 0.18rem;
+  border-radius: 1rem;
+  background: color-mix(in srgb, var(--card) 96%, var(--primary) 4%);
+  box-shadow: 0 10px 26px -20px rgb(0 0 0 / 95%);
+}
+
+.tadeon-radial-actions__center.is-model > strong {
+  max-width: 5rem;
+  font-size: 0.56rem;
+}
+
+.tadeon-radial-actions__model-controls {
+  display: grid;
+  grid-template-columns: repeat(4, 1.35rem);
+  gap: 0.08rem;
+  pointer-events: auto;
+}
+
+.tadeon-radial-actions__model-controls button {
+  width: 1.35rem;
+  height: 1.35rem;
+}
+
+.tadeon-radial-actions__model-controls button svg {
+  width: 0.68rem;
+  height: 0.68rem;
+}
+
 @keyframes tadeon-radial-open {
   from { opacity: 0; scale: 0.78; rotate: -5deg; }
   to { opacity: 1; scale: 1; rotate: 0deg; }
@@ -198,6 +263,9 @@
   .tadeon-radial-actions > button {
     width: 2.8rem;
     min-height: 2.55rem;
+  }
+  .tadeon-radial-actions__center.is-model {
+    width: 5rem;
   }
 }
 

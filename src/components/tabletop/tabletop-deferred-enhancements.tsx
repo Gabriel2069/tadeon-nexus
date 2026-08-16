@@ -25,6 +25,11 @@ const SpatialAudioBridge = lazy(() =>
     default: module.TabletopSpatialAudioBridge,
   })),
 );
+const NativeModelBridge = lazy(() =>
+  import("@/components/tabletop/tabletop-native-model-bridge").then((module) => ({
+    default: module.TabletopNativeModelBridge,
+  })),
+);
 const CreativeDockBridge = lazy(() =>
   import("@/components/tabletop/tabletop-creative-dock-bridge").then((module) => ({
     default: module.TabletopCreativeDockBridge,
@@ -90,6 +95,7 @@ export function TabletopDeferredEnhancements({ master }: { master: boolean }) {
           <ReliabilityEditorBridge />
           <AtmosphereBridge />
           <SpatialAudioBridge />
+          <NativeModelBridge secureVisibility={!master} />
         </>
       )}
       {master && tier >= 3 && (
