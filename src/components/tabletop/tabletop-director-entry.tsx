@@ -1,7 +1,6 @@
 import "@/lib/tabletop/tabletop-player-runtime";
 import { TabletopDirectorWorkspace } from "@/components/tabletop/tabletop-director-workspace";
 import { TabletopNativeModelBridge } from "@/components/tabletop/tabletop-native-model-bridge";
-import { TabletopProgressiveInterfaceBridge } from "@/components/tabletop/tabletop-progressive-interface-bridge";
 
 export default function TabletopDirectorEntry({
   sessionId,
@@ -13,7 +12,6 @@ export default function TabletopDirectorEntry({
   return (
     <>
       <TabletopDirectorWorkspace sessionId={sessionId} realtimeEnabled={realtimeEnabled} />
-      <TabletopProgressiveInterfaceBridge role="mestre" />
       <TabletopNativeModelBridge />
     </>
   );
