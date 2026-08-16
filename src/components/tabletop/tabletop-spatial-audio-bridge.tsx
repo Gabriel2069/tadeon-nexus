@@ -66,7 +66,12 @@ function entityAudio(entity: TabletopEntity) {
   };
 }
 
-function wallTransmission(walls: WallRow[], from: Point, to: Point, levelId?: string) {
+function wallTransmission(
+  walls: WallRow[],
+  from: Point,
+  to: Point,
+  levelId?: string | null,
+) {
   let transmission = 1;
   for (const wall of walls) {
     if (levelId && wall.level_id && wall.level_id !== levelId) continue;
