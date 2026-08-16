@@ -55,6 +55,10 @@ function liveSessionErrorMessage(error: unknown) {
   }
 }
 
+function isCancelledOperation(error: unknown) {
+  return error instanceof DOMException && error.name === "AbortError";
+}
+
 export function TabletopLiveSession({
   enabled,
   campaignId,
@@ -205,6 +209,7 @@ export function TabletopLiveSession({
       await refresh();
       toast.success(successMessage);
     } catch (error) {
+      if (isCancelledOperation(error)) return;
       toast.error(liveSessionErrorMessage(error));
       if (
         error instanceof TabletopSessionServiceError &&
@@ -433,8 +438,7 @@ export function TabletopLiveSession({
               {activeParticipant && (
                 <>
                   <p className="tadeon-live-session__role">
-                    Você está na sala como {ROLE_LABELS[activeParticipant.role]}
-                    .
+                    Você está na sala como {ROLE_LABELS[activeParticipant.role]}.
                   </p>
                   {(activeParticipant.role === "master" ||
                     activeParticipant.role === "co_master") && (
