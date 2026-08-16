@@ -23,6 +23,14 @@ describe("auditoria final de runtime e viewport", () => {
     expect(visibility).toContain("stroke.operation === \"reveal\" ? \"white\" : \"black\"");
   });
 
+  it("mantém o 3D do participante oculto até a visão autoritativa existir", () => {
+    const bridge = source("src/components/tabletop/tabletop-native-model-bridge.tsx");
+    expect(bridge).toContain("if (!state) {");
+    expect(bridge).toContain('canvas.style.visibility = "hidden"');
+    expect(bridge).toContain('maskFingerprint = "awaiting-visibility"');
+    expect(bridge).toContain('canvas.style.visibility = "visible"');
+  });
+
   it("mantém o radial atual fora do modo limpo e de superfícies concorrentes", () => {
     const css = source("src/styles/interface-audit-final.css");
     expect(css).toContain('html[data-tadeon-tabletop-clean="true"] :where(');
