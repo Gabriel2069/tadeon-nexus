@@ -13,6 +13,7 @@ import viewportCss from "../styles/viewport-fit-final.css?url";
 import auditCss from "../styles/interface-audit-final.css?url";
 import radialPresenceCss from "../styles/radial-presence-final.css?url";
 import reconciliationCss from "../styles/interface-reconciliation-final.css?url";
+import finalPolishCss from "../styles/interface-final-user-polish.css?url";
 import { AuthProvider } from "@/lib/auth";
 import { Toaster } from "@/components/ui/sonner";
 import { PwaRegistration } from "@/components/pwa-registration";
@@ -32,14 +33,7 @@ function NotFoundComponent() {
       title="Esta página não faz parte do arquivo"
       description="O endereço pode ter mudado ou o fio que trouxe você até aqui já não existe. Retorne ao arquivo principal para continuar."
       className="min-h-screen"
-      action={
-        <Button asChild>
-          <Link to="/">
-            <Home className="h-4 w-4" />
-            Voltar ao início
-          </Link>
-        </Button>
-      }
+      action={<Button asChild><Link to="/"><Home className="h-4 w-4" />Voltar ao início</Link></Button>}
     />
   );
 }
@@ -53,20 +47,7 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
       title="O Nexus perdeu este fio"
       description="Ocorreu um erro inesperado ao montar esta página. Tente reconstruir a visualização; se o problema continuar, volte ao arquivo principal."
       className="min-h-screen"
-      action={
-        <>
-          <Button onClick={reset}>
-            <RefreshCw className="h-4 w-4" />
-            Tentar novamente
-          </Button>
-          <Button asChild variant="outline">
-            <Link to="/">
-              <Home className="h-4 w-4" />
-              Voltar ao início
-            </Link>
-          </Button>
-        </>
-      }
+      action={<><Button onClick={reset}><RefreshCw className="h-4 w-4" />Tentar novamente</Button><Button asChild variant="outline"><Link to="/"><Home className="h-4 w-4" />Voltar ao início</Link></Button></>}
     />
   );
 }
@@ -106,6 +87,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { rel: "stylesheet", href: auditCss },
       { rel: "stylesheet", href: radialPresenceCss },
       { rel: "stylesheet", href: reconciliationCss },
+      { rel: "stylesheet", href: finalPolishCss },
       { rel: "manifest", href: "/manifest.webmanifest" },
       { rel: "icon", href: "/favicon.svg?v=4", type: "image/svg+xml", sizes: "any" },
       { rel: "shortcut icon", href: "/favicon.svg?v=4", type: "image/svg+xml" },
@@ -120,12 +102,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 });
 
 function RootShell({ children }: { children: React.ReactNode }) {
-  return (
-    <html lang="pt-BR">
-      <head><HeadContent /></head>
-      <body>{children}<Scripts /></body>
-    </html>
-  );
+  return <html lang="pt-BR"><head><HeadContent /></head><body>{children}<Scripts /></body></html>;
 }
 
 function RootComponent() {
