@@ -7,6 +7,7 @@ import {
   type TabletopQualityProfile,
 } from "@/lib/tabletop/tabletop-adaptive-performance";
 import type { TabletopSnapshot } from "@/lib/tabletop/types";
+import "@/styles/tabletop-adaptive-quality.css";
 
 type PixiInternals = {
   app?: {
