@@ -268,6 +268,22 @@ body:has(.tadeon-tabletop-command-layer) :where(
   }
 }
 
+/* O segundo cérebro usava 8px físicos para toolbar e seletor de modo. Em
+   iPhone/iPad, especialmente em paisagem, isso pode entrar sob notch/home bar. */
+@media (max-width: 640px) {
+  .tadeon-brain-toolbar {
+    top: var(--tadeon-safe-top) !important;
+    left: var(--tadeon-safe-left) !important;
+    max-width: calc(100% - var(--tadeon-safe-left) - var(--tadeon-safe-right)) !important;
+  }
+
+  .tadeon-brain-mode {
+    right: var(--tadeon-safe-right) !important;
+    bottom: var(--tadeon-safe-bottom) !important;
+    left: var(--tadeon-safe-left) !important;
+  }
+}
+
 /* Em altura baixa, nenhuma utilidade deve atravessar a área de gestos do SO. */
 @media (max-height: 620px) {
   :where(
