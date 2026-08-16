@@ -13,12 +13,14 @@ type PowerFormData = Record<string, unknown> & { skill_modifiers?: SkillModifier
 const db = supabase as unknown as SupabaseClient;
 
 const GRAPH_PRESETS: Record<string, number> = {
-  "Força dos vínculos": 0.72,
-  "Distância-base": 230,
-  Repulsão: 2.2,
-  Centro: 0.34,
-  "Agrupamento por domínio": 0.24,
-  "Aparecimento dos rótulos": 0.84,
+  "Força mínima visível": 0.16,
+  "Afinidade mínima": 0.28,
+  "Força dos vínculos": 0.62,
+  "Distância-base": 260,
+  Repulsão: 2.4,
+  Centro: 0.08,
+  "Agrupamento por domínio": 0.12,
+  "Aparecimento dos rótulos": 0.98,
 };
 
 function setRangeValue(input: HTMLInputElement, value: number) {
@@ -29,12 +31,23 @@ function setRangeValue(input: HTMLInputElement, value: number) {
 }
 
 function tuneKnowledgeGraph() {
-  const settings = Array.from(document.querySelectorAll<HTMLElement>(".tadeon-brain-slider"));
-  if (!settings.length) return;
-  const root = settings[0]?.closest<HTMLElement>(".tadeon-knowledge-graph, .tadeon-brain-shell, [role='dialog']");
+  const root = document.querySelector<HTMLElement>(".tadeon-knowledge-graph, .tadeon-brain-shell");
   if (!root || root.dataset.tadeonObsidianPreset === "true") return;
+
+  const settingsToggle = root.querySelector<HTMLButtonElement>(".tadeon-brain-settings-toggle");
+  const sliders = Array.from(root.querySelectorAll<HTMLElement>(".tadeon-brain-slider"));
+  const hasPhysics = sliders.some((row) => (row.querySelector("span")?.textContent ?? "").includes("Distância-base"));
+
+  // Force controls are mounted lazily. Open the panel once so the preset is
+  // applied to the actual React state instead of only changing appearance.
+  if (!hasPhysics && settingsToggle?.getAttribute("aria-expanded") !== "true") {
+    root.dataset.tadeonObsidianTuning = "true";
+    settingsToggle.click();
+    return;
+  }
+
   let applied = 0;
-  for (const row of settings) {
+  for (const row of sliders) {
     const text = row.querySelector("span")?.textContent ?? "";
     const entry = Object.entries(GRAPH_PRESETS).find(([label]) => text.includes(label));
     const input = row.querySelector<HTMLInputElement>('input[type="range"]');
@@ -43,14 +56,59 @@ function tuneKnowledgeGraph() {
     setRangeValue(input, Math.max(Number(input.min), Math.min(Number(input.max), value)));
     applied += 1;
   }
-  if (applied >= 4) {
+
+  if (applied >= 7) {
     root.dataset.tadeonObsidianPreset = "true";
+    delete root.dataset.tadeonObsidianTuning;
     window.setTimeout(() => {
-      const fit = Array.from(root.querySelectorAll<HTMLButtonElement>("button")).find((button) =>
-        /enquadr|ajustar|fit/i.test(`${button.title ?? ""} ${button.getAttribute("aria-label") ?? ""}`),
-      );
+      const fit = root.querySelector<HTMLButtonElement>('button[aria-label="Reenquadrar grafo"]');
       fit?.click();
-    }, 120);
+      if (settingsToggle?.getAttribute("aria-expanded") === "true") settingsToggle.click();
+    }, 150);
+  }
+}
+
+function normalizedCondition(value: string) {
+  return value
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLocaleLowerCase("pt-BR");
+}
+
+function conditionProgress(text: string) {
+  const fraction = text.match(/(\d+)\s*\/\s*(\d+)/);
+  if (fraction) {
+    const current = Number(fraction[1]);
+    const maximum = Number(fraction[2]);
+    if (maximum > 0) return Math.max(0, Math.min(1, current / maximum));
+  }
+  const stage = text.match(/(?:nivel|estagio|grau|fase)?\s*(\d+)/i);
+  if (stage) return Math.max(0.25, Math.min(1, Number(stage[1]) / 4));
+  return 0.42;
+}
+
+function tuneConditionVisuals() {
+  const candidates = Array.from(
+    document.querySelectorAll<HTMLElement>(
+      ".tadeon-sheet-condition-chip, [data-condition], [class*='condition-chip']",
+    ),
+  );
+  for (const chip of candidates) {
+    const text = normalizedCondition(chip.textContent ?? "");
+    const progress = conditionProgress(text);
+    chip.style.setProperty("--condition-progress", progress.toFixed(2));
+    if (/morrendo|dying/.test(text)) {
+      chip.dataset.conditionSeverity = "critical";
+      chip.style.setProperty("--condition-progress", Math.max(progress, 0.86).toFixed(2));
+    } else if (/colapsando|colapso|collaps/.test(text)) {
+      chip.dataset.conditionSeverity = "critical";
+      chip.style.setProperty("--condition-progress", "1");
+    } else if (/critico|grave|agoniz|incapacit|inconsciente/.test(text)) {
+      chip.dataset.conditionSeverity = "danger";
+      chip.style.setProperty("--condition-progress", Math.max(progress, 0.68).toFixed(2));
+    } else {
+      delete chip.dataset.conditionSeverity;
+    }
   }
 }
 
@@ -88,10 +146,11 @@ export function ExperienceFinalPolishBridge() {
   const [sheetId, setSheetId] = useState<string | null>(null);
 
   useEffect(() => {
-    let frame = 0;
+    let timer = 0;
     const scan = () => {
       if (window.location.pathname === "/nexus") tuneKnowledgeGraph();
       if (window.location.pathname.startsWith("/sheet/")) {
+        tuneConditionVisuals();
         const panel = document.querySelector<HTMLElement>(".tadeon-link-panel");
         const heading = panel?.querySelector<HTMLElement>(".tadeon-link-panel__heading");
         if (panel && heading) {
@@ -133,10 +192,10 @@ export function ExperienceFinalPolishBridge() {
         setSkillHost(null);
         setSkillPopover(null);
       }
-      frame = window.requestAnimationFrame(scan);
+      timer = window.setTimeout(scan, 180);
     };
-    frame = window.requestAnimationFrame(scan);
-    return () => window.cancelAnimationFrame(frame);
+    scan();
+    return () => window.clearTimeout(timer);
   }, [linksCollapsed, modifierTab]);
 
   useEffect(() => {
