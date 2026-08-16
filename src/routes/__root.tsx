@@ -16,6 +16,7 @@ import reconciliationCss from "../styles/interface-reconciliation-final.css?url"
 import { AuthProvider } from "@/lib/auth";
 import { Toaster } from "@/components/ui/sonner";
 import { PwaRegistration } from "@/components/pwa-registration";
+import { ExperienceFinalPolishBridge } from "@/components/experience-final-polish-bridge";
 import { useEffect } from "react";
 import { initializeClientErrorMonitor } from "@/lib/client-error-monitor";
 import { PageState } from "@/components/page-state";
@@ -137,13 +138,13 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { rel: "manifest", href: "/manifest.webmanifest" },
       {
         rel: "icon",
-        href: "/favicon.svg?v=3",
+        href: "/favicon.svg?v=4",
         type: "image/svg+xml",
         sizes: "any",
       },
       {
         rel: "shortcut icon",
-        href: "/favicon.svg?v=3",
+        href: "/favicon.svg?v=4",
         type: "image/svg+xml",
       },
       {
@@ -186,6 +187,7 @@ function RootComponent() {
         <main>
           <Outlet />
         </main>
+        <ExperienceFinalPolishBridge />
         <Toaster position="top-right" />
         <PwaRegistration />
       </AuthProvider>
