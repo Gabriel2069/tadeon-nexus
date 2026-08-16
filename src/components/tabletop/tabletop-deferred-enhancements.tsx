@@ -45,6 +45,11 @@ const IntegrationToolsBridge = lazy(() =>
     default: module.TabletopIntegrationToolsBridge,
   })),
 );
+const NexusCaptureBridge = lazy(() =>
+  import("@/components/tabletop/tabletop-nexus-capture-bridge").then((module) => ({
+    default: module.TabletopNexusCaptureBridge,
+  })),
+);
 const SemanticTransformBridge = lazy(() =>
   import("@/components/tabletop/tabletop-semantic-transform-bridge").then((module) => ({
     default: module.TabletopSemanticTransformBridge,
@@ -93,6 +98,7 @@ export function TabletopDeferredEnhancements({ master }: { master: boolean }) {
           <FogGeometryBridge />
           <PlaceablesInspectorBridge />
           <IntegrationToolsBridge />
+          <NexusCaptureBridge />
           <SemanticTransformBridge />
           <RadialActionsBridge />
         </>
