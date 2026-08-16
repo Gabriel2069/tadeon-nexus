@@ -3,6 +3,7 @@ import "@/lib/tabletop/tabletop-advanced-grid-runtime";
 import { TabletopWorkspace } from "@/components/tabletop/tabletop-workspace";
 import { TabletopDeferredEnhancements } from "@/components/tabletop/tabletop-deferred-enhancements";
 import { TabletopProgressiveInterfaceBridge } from "@/components/tabletop/tabletop-progressive-interface-bridge";
+import { TabletopUrgentReconciliationBridge } from "@/components/tabletop/tabletop-urgent-reconciliation-bridge";
 
 export default function TabletopMasterEntry({
   initialSceneId,
@@ -21,6 +22,7 @@ export default function TabletopMasterEntry({
         lightingEnabled={lightingEnabled}
       />
       <TabletopProgressiveInterfaceBridge role="mestre" />
+      <TabletopUrgentReconciliationBridge />
       <TabletopDeferredEnhancements master />
     </>
   );
