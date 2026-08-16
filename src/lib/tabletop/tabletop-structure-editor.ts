@@ -60,22 +60,10 @@ function pointNearRoofBoundary(
   const center = { x: (minX + maxX) / 2, y: (minY + maxY) / 2 };
   if (squaredDistance(point, center) <= (tolerance * 1.2) ** 2) return true;
   const edges: Array<[Point, Point]> = [
-    [
-      { x: minX, y: minY },
-      { x: maxX, y: minY },
-    ],
-    [
-      { x: maxX, y: minY },
-      { x: maxX, y: maxY },
-    ],
-    [
-      { x: maxX, y: maxY },
-      { x: minX, y: maxY },
-    ],
-    [
-      { x: minX, y: maxY },
-      { x: minX, y: minY },
-    ],
+    [{ x: minX, y: minY }, { x: maxX, y: minY }],
+    [{ x: maxX, y: minY }, { x: maxX, y: maxY }],
+    [{ x: maxX, y: maxY }, { x: minX, y: maxY }],
+    [{ x: minX, y: maxY }, { x: minX, y: minY }],
   ];
   return edges.some(
     ([start, end]) => distanceToSegment(point, start, end) <= tolerance,
@@ -183,10 +171,19 @@ export function transformTabletopStructure(
 }
 
 export function nextTabletopStructureState(wall: TabletopWall) {
-  const options = structureStateOptions(structureFamily(wall.wallType));
+  const family = structureFamily(wall.wallType);
+  const options = structureStateOptions(family);
   if (options.length <= 1) return wall.wallType;
-  const index = options.indexOf(wall.wallType);
-  return options[(index + 1) % options.length];
+
+  // Secret is an authored property, not a transient door state. Keep it in the
+  // explicit editor, but never let the generic quick-cycle create a secret door
+  // accidentally. Cycling a secret door deliberately reveals it as closed.
+  const cycle = family === "door"
+    ? options.filter((option) => option !== "door_secret")
+    : options;
+  if (wall.wallType === "door_secret") return "door_closed";
+  const index = cycle.indexOf(wall.wallType);
+  return cycle[(index + 1) % cycle.length];
 }
 
 export function entityIsBelowRoof(entity: TabletopEntity, roof: TabletopWall) {
