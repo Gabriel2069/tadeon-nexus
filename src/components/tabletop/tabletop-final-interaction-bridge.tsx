@@ -8,7 +8,6 @@ import { useAuth } from "@/lib/auth";
 import { supabase } from "@/integrations/supabase/client";
 import { currentTabletopRuntime } from "@/lib/tabletop/tabletop-player-runtime";
 import type { TabletopEntity } from "@/lib/tabletop/types";
-import "@/styles/selection-director-entry-polish.css";
 
 const db = supabase as unknown as SupabaseClient;
 type RenameKind = "entity" | "wall" | "light" | "fog";
