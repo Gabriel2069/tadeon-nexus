@@ -1127,7 +1127,7 @@ export function TabletopWorkspace({
     };
   }, [campaignId, campaigns]);
 
-  const saveCurrent = async (
+  const saveCurrent = useCallback(async (
     overrides: TabletopSaveOverrides = {},
     options: { silent?: boolean } = {},
   ) => {
