@@ -1194,7 +1194,7 @@ export function TabletopWorkspace({
       })();
     }, 2200);
     return () => window.clearTimeout(timer);
-  }, [conflict, dirty, editable, saveVisibilityCurrent, saving, visibilityDirty]);
+  }, [conflict, dirty, editable, saveCurrent, saveVisibilityCurrent, saving, visibilityDirty]);
 
   const createScene = async () => {
     if (!campaignId) return;
