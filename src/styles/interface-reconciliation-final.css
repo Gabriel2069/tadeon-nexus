@@ -11,7 +11,6 @@ body:has(.tadeon-tabletop-studio) {
 }
 
 @media (min-width: 1180px) {
-  /* Right-side authoring utilities are constrained to the canvas, never the editor. */
   .tadeon-creative-dock,
   .tadeon-placeables,
   .tadeon-semantic-transform,
@@ -24,31 +23,18 @@ body:has(.tadeon-tabletop-studio) {
     width: var(--tadeon-stage-utility-width) !important;
     bottom: calc(var(--tadeon-tabletop-bottom-row-2) + .25rem) !important;
   }
-
-  /* A collapsed dock must sit above the informational footer/status strip. */
   .tadeon-creative-dock[data-open="false"] {
     bottom: calc(var(--tadeon-tabletop-bottom-row-1) + .25rem) !important;
   }
+  .tadeon-placeables { bottom: var(--tadeon-tabletop-bottom-edge) !important; }
+  .tadeon-semantic-transform { bottom: var(--tadeon-tabletop-bottom-row-1) !important; }
+  .tadeon-smart-setup__launcher { top: var(--tadeon-tabletop-top-row-2) !important; }
 
-  .tadeon-placeables {
-    bottom: var(--tadeon-tabletop-bottom-edge) !important;
-  }
-
-  .tadeon-semantic-transform {
-    bottom: var(--tadeon-tabletop-bottom-row-1) !important;
-  }
-
-  .tadeon-smart-setup__launcher {
-    top: var(--tadeon-tabletop-top-row-2) !important;
-  }
-
-  /* Setup becomes a canvas-side drawer instead of covering the editor column. */
   .tadeon-smart-setup {
     right: var(--tadeon-stage-right-safe) !important;
     width: min(28rem, calc(var(--tadeon-tabletop-stage-width, 100vw) - 1.4rem)) !important;
   }
 
-  /* Center docks are centered on the canvas, not the entire browser viewport. */
   .tadeon-tabletop-progressive-dock,
   .tadeon-tactical-dock,
   .tadeon-tabletop-selection-actions {
@@ -56,7 +42,6 @@ body:has(.tadeon-tabletop-studio) {
     max-width: calc(var(--tadeon-tabletop-stage-width, 100vw) - 2rem) !important;
   }
 
-  /* In explicit advanced mode the legacy status strip is visible; reserve its lane. */
   html[data-tadeon-tabletop-interface="advanced"] .tadeon-tabletop-progressive-dock {
     bottom: calc(var(--tadeon-tabletop-bottom-edge) + 3.15rem) !important;
   }
@@ -71,8 +56,6 @@ body:has(.tadeon-tabletop-studio) {
   }
 }
 
-/* Selection is contextual, not modal. The editor sheet may remain open, but it
-   must not dim or intercept the whole map merely because something was selected. */
 .tadeon-tabletop-panel-backdrop {
   background: transparent !important;
   backdrop-filter: none !important;
@@ -90,9 +73,6 @@ body:has(.tadeon-tabletop-studio) {
   }
 }
 
-/* When a substantial utility is open, keep its launcher/handle but remove only
-   the chrome in the same physical lane. This is less destructive than hiding
-   the entire bottom command system. */
 @media (min-width: 1180px) {
   body:has(.tadeon-creative-dock[data-open="true"]) .tadeon-tabletop-selection-actions,
   body:has(.tadeon-smart-setup[data-open="true"]) .tadeon-creative-dock,
@@ -105,7 +85,6 @@ body:has(.tadeon-tabletop-studio) {
 }
 
 @media (max-width: 1179px) {
-  /* Tablet/mobile: controls become vertical lanes and never sit beneath the editor sheet. */
   .tadeon-creative-dock {
     right: .55rem !important;
     left: .55rem !important;
@@ -172,10 +151,9 @@ body:has(.tadeon-tabletop-studio) {
   color: hsl(var(--foreground));
   box-shadow: inset 0 0 0 1px hsl(var(--primary) / .24);
 }
+.tadeon-nexus-folderbar button small { opacity: .62; font-size: .58rem; }
 .tadeon-nexus-index__node[data-folder-hidden="true"] { display: none !important; }
 
-/* Give graph controls and canvas a little more visual breathing room even before
-   force layout is recalculated. */
 .tadeon-brain-canvas,
 .tadeon-brain-viewport,
 [class*="tadeon-brain"][class*="canvas"] {
@@ -198,9 +176,7 @@ body:has(.tadeon-master-navigation) .tadeon-master-navigation__group {
   position: relative;
   transition: transform 200ms cubic-bezier(.2,.8,.2,1), opacity 180ms ease;
 }
-body:has(.tadeon-master-navigation) .tadeon-master-navigation__group:hover {
-  transform: translateY(-1px);
-}
+body:has(.tadeon-master-navigation) .tadeon-master-navigation__group:hover { transform: translateY(-1px); }
 body:has(.tadeon-master-navigation) [data-master-tab][data-state="active"] {
   background: hsl(var(--tadeon-master-accent)) !important;
   color: white !important;
@@ -217,10 +193,37 @@ body:has(.tadeon-master-navigation) :is(.tadeon-master-hub, .tadeon-session-work
   to { opacity: 1; transform: translateX(0); }
 }
 
+/* ---------------- Director: cue transition is a rendered behavior ------------- */
+.tadeon-director-output.is-transitioning[data-transition="fade"] .tadeon-director-output__canvas,
+.tadeon-director-output.is-transitioning[data-transition="fade"] .tadeon-director-output__intermission,
+.tadeon-director-output.is-transitioning[data-transition="fade"] .tadeon-director-output__hud {
+  animation: tadeon-director-cue-fade 520ms cubic-bezier(.2,.8,.2,1) both;
+}
+.tadeon-director-output.is-transitioning[data-transition="orbit"] .tadeon-director-output__canvas {
+  animation: tadeon-director-cue-orbit 720ms cubic-bezier(.16,.84,.22,1) both;
+  transform-origin: 50% 52%;
+}
+.tadeon-director-output.is-transitioning[data-transition="cut"] .tadeon-director-output__canvas {
+  animation: tadeon-director-cue-cut 110ms steps(2, end) both;
+}
+@keyframes tadeon-director-cue-fade {
+  0% { opacity: .05; filter: blur(5px) saturate(.72); }
+  100% { opacity: 1; filter: blur(0) saturate(1); }
+}
+@keyframes tadeon-director-cue-orbit {
+  0% { opacity: .25; transform: perspective(900px) rotateY(-4deg) scale(.985); filter: blur(2px); }
+  100% { opacity: 1; transform: perspective(900px) rotateY(0) scale(1); filter: blur(0); }
+}
+@keyframes tadeon-director-cue-cut {
+  0%, 45% { opacity: .18; }
+  46%, 100% { opacity: 1; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   body:has(.tadeon-master-navigation) [role="tabpanel"][data-state="active"],
   body:has(.tadeon-master-navigation) .tadeon-master-navigation__group,
-  .tadeon-nexus-folderbar button {
+  .tadeon-nexus-folderbar button,
+  .tadeon-director-output.is-transitioning :is(.tadeon-director-output__canvas, .tadeon-director-output__intermission, .tadeon-director-output__hud) {
     animation: none !important;
     transition: none !important;
   }
