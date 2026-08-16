@@ -38,10 +38,12 @@ function isSelectControl(target: EventTarget | null) {
   if (!(target instanceof Element)) return false;
   const button = target.closest<HTMLButtonElement>("button");
   if (!button) return false;
-  const label = `${button.getAttribute("aria-label") ?? ""} ${button.textContent ?? ""}`
-    .replace(/\s+/g, " ")
-    .trim();
-  return /^(ferramenta de sele[cç][aã]o|selecionar|selecionar e manipular)$/i.test(label);
+  const aria = (button.getAttribute("aria-label") ?? "").replace(/\s+/g, " ").trim();
+  const text = (button.textContent ?? "").replace(/\s+/g, " ").trim();
+  return (
+    /ferramenta de sele[cç][aã]o/i.test(aria) ||
+    /^selecionar(?: e manipular)?$/i.test(text)
+  );
 }
 
 function typingTarget(target: EventTarget | null) {
