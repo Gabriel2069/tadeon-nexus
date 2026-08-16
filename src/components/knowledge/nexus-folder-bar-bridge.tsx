@@ -2,8 +2,14 @@ import { useEffect, useMemo, useState } from "react";
 import { createPortal } from "react-dom";
 import { Folder, FolderOpen, LibraryBig } from "lucide-react";
 
+type FolderDefinition = {
+  id: "all" | "people" | "world" | "story" | "rules" | "items" | "archive";
+  label: string;
+  labels: readonly string[];
+};
+
 const FOLDERS = [
-  { id: "all", label: "Tudo", labels: [] as string[] },
+  { id: "all", label: "Tudo", labels: [] },
   {
     id: "people",
     label: "Pessoas",
@@ -47,9 +53,9 @@ const FOLDERS = [
     label: "Documentos",
     labels: ["Documento", "Mapa", "Campanha", "Nota livre"],
   },
-] as const;
+] satisfies readonly FolderDefinition[];
 
-type FolderId = (typeof FOLDERS)[number]["id"];
+type FolderId = FolderDefinition["id"];
 
 function pageType(button: HTMLElement) {
   const metadata = button.querySelectorAll("span")[1]?.textContent ?? "";
@@ -57,7 +63,9 @@ function pageType(button: HTMLElement) {
 }
 
 function folderForType(type: string): FolderId {
-  return FOLDERS.find((folder) => folder.id !== "all" && folder.labels.includes(type))?.id ?? "archive";
+  return FOLDERS.find(
+    (folder) => folder.id !== "all" && folder.labels.includes(type),
+  )?.id ?? "archive";
 }
 
 export function NexusFolderBarBridge() {
