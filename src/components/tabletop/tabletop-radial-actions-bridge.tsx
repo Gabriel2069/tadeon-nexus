@@ -39,8 +39,8 @@ function safeAnchor(entity: TabletopEntity) {
   const point = runtime.worldToClient(entityCenter(entity));
   const host = runtime.host.getBoundingClientRect();
   return {
-    x: Math.max(host.left + 92, Math.min(host.right - 92, point.x)),
-    y: Math.max(host.top + 92, Math.min(host.bottom - 92, point.y)),
+    x: Math.max(host.left + 44, Math.min(host.right - 44, point.x)),
+    y: Math.max(host.top + 54, Math.min(host.bottom - 44, point.y)),
   };
 }
 
@@ -110,6 +110,26 @@ export function TabletopRadialActionsBridge() {
       return;
     }
     setAnchor(safeAnchor(selected));
+  }, [selected]);
+
+  // Camera pan/zoom is intentionally not a semantic tabletop render. Follow the
+  // selected world point in screen space so the launcher remains visually glued
+  // above the token/object while keeping a constant CSS size.
+  useEffect(() => {
+    if (!selected) return;
+    let frame = 0;
+    const follow = () => {
+      const next = safeAnchor(selected);
+      if (next) {
+        setAnchor((current) => {
+          if (current && Math.abs(current.x - next.x) < 0.35 && Math.abs(current.y - next.y) < 0.35) return current;
+          return next;
+        });
+      }
+      frame = window.requestAnimationFrame(follow);
+    };
+    frame = window.requestAnimationFrame(follow);
+    return () => window.cancelAnimationFrame(frame);
   }, [selected]);
 
   useEffect(() => {
@@ -325,24 +345,10 @@ export function TabletopRadialActionsBridge() {
             </>
           )}
         </div>
-        <button
-          type="button"
-          tabIndex={open ? 0 : -1}
-          className="is-north"
-          role="menuitem"
-          onClick={() => run(() => engine?.focusSelection())}
-          title="Enquadrar"
-        >
+        <button type="button" tabIndex={open ? 0 : -1} className="is-north" role="menuitem" onClick={() => run(() => engine?.focusSelection())} title="Enquadrar">
           <Focus aria-hidden="true" /><span>Foco</span>
         </button>
-        <button
-          type="button"
-          tabIndex={open ? 0 : -1}
-          className="is-north-east"
-          role="menuitem"
-          onClick={() => run(() => engine?.duplicateSelected())}
-          title="Duplicar"
-        >
+        <button type="button" tabIndex={open ? 0 : -1} className="is-north-east" role="menuitem" onClick={() => run(() => engine?.duplicateSelected())} title="Duplicar">
           <Copy aria-hidden="true" /><span>Duplicar</span>
         </button>
         <button
@@ -367,26 +373,10 @@ export function TabletopRadialActionsBridge() {
           {selected.hidden ? <Eye aria-hidden="true" /> : <EyeOff aria-hidden="true" />}
           <span>{selected.hidden ? "Mostrar" : "Ocultar"}</span>
         </button>
-        <button
-          type="button"
-          tabIndex={open ? 0 : -1}
-          className="is-south-west"
-          role="menuitem"
-          onClick={() => setMemoryOpen((value) => !value)}
-          title="Memória do Nexus"
-          aria-expanded={memoryOpen}
-        >
-          <BookOpen aria-hidden="true" />
-          <span>Memória</span>
+        <button type="button" tabIndex={open ? 0 : -1} className="is-south-west" role="menuitem" onClick={() => setMemoryOpen((value) => !value)} title="Memória do Nexus" aria-expanded={memoryOpen}>
+          <BookOpen aria-hidden="true" /><span>Memória</span>
         </button>
-        <button
-          type="button"
-          tabIndex={open ? 0 : -1}
-          className="is-north-west is-danger"
-          role="menuitem"
-          onClick={() => run(() => engine?.deleteSelected())}
-          title="Excluir"
-        >
+        <button type="button" tabIndex={open ? 0 : -1} className="is-north-west is-danger" role="menuitem" onClick={() => run(() => engine?.deleteSelected())} title="Excluir">
           <Trash2 aria-hidden="true" /><span>Excluir</span>
         </button>
       </div>
