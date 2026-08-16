@@ -63,10 +63,11 @@
 .tadeon-smart-setup__actions { display:flex; justify-content:flex-end; gap:.5rem; margin-top:1rem; }
 body:has(.tadeon-smart-setup[data-open="true"]) :is(.tadeon-placeables,.tadeon-radial-trigger,.tadeon-radial-actions) { opacity:0 !important; visibility:hidden !important; pointer-events:none !important; }
 body:has(.tadeon-placeables[data-open="true"]) .tadeon-smart-setup__launcher { opacity:0; translate:0 -4px; scale:.96; pointer-events:none; }
+body:has([role="dialog"][data-state="open"]) :is(.tadeon-smart-setup,.tadeon-smart-setup__launcher) { pointer-events:none; }
 @media (max-width: 800px) {
   .tadeon-smart-setup__launcher { top: calc(max(.6rem, env(safe-area-inset-top)) + 3.8rem); right:calc(max(.55rem, env(safe-area-inset-right)) + 5.4rem); }
   .tadeon-smart-setup__launcher span { display:none; }
-  .tadeon-smart-setup { top:max(.55rem,env(safe-area-inset-top)); right:max(.55rem,env(safe-area-inset-right)); bottom:max(.55rem,env(safe-area-inset-bottom)); left:max(.55rem,env(safe-area-inset-left)); width:auto; }
+  .tadeon-smart-setup { top:max(.55rem,env(safe-area-inset-top)); right:max(.55rem,env(safe-area-inset-right)); bottom:max(.55rem,env(safe-area-inset-bottom)); left:max(.55rem,env(safe-area-inset-left)); width:auto; max-width:none; }
 }
 @media (max-width: 420px) { .tadeon-smart-setup__launcher { right:calc(max(.45rem,env(safe-area-inset-right)) + 4.65rem); padding-inline:.6rem; } }
 @media (prefers-reduced-motion: reduce) { .tadeon-smart-setup,.tadeon-smart-setup__launcher { transition-duration:.01ms !important; } }
