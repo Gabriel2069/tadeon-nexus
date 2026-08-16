@@ -1,0 +1,119 @@
+/* User-facing final details. Loaded after all prior authorities. */
+
+/* Placeables rename utility lives inside the inspector header, so it never adds
+   another floating viewport layer. */
+[data-tadeon-rename-host] { position: relative; margin-left: auto; }
+.tadeon-rename-launcher { gap: .35rem; white-space: nowrap; }
+.tadeon-rename-launcher svg { width: .8rem; height: .8rem; }
+.tadeon-rename-popover {
+  position: absolute;
+  z-index: 12;
+  top: calc(100% + .5rem);
+  right: 0;
+  display: grid;
+  width: min(21rem, calc(100vw - 2rem));
+  gap: .55rem;
+  padding: .7rem;
+  border: 1px solid hsl(var(--border) / .78);
+  border-radius: .85rem;
+  background: hsl(var(--popover) / .98);
+  box-shadow: 0 28px 70px -35px rgb(0 0 0 / 95%);
+  backdrop-filter: blur(18px) saturate(1.08);
+  animation: tadeon-final-pop-in 170ms cubic-bezier(.2,.8,.2,1) both;
+}
+.tadeon-rename-popover header {
+  display: grid;
+  grid-template-columns: 1.6rem minmax(0,1fr) 2rem;
+  align-items: center;
+  gap: .45rem;
+}
+.tadeon-rename-popover header > svg { width:1rem; height:1rem; color:hsl(var(--primary)); }
+.tadeon-rename-popover header :is(small,strong) { display:block; }
+.tadeon-rename-popover header small { color:hsl(var(--muted-foreground)); font-size:.56rem; text-transform:uppercase; letter-spacing:.08em; }
+.tadeon-rename-popover header strong { font-family:var(--font-cinzel); font-size:.82rem; }
+.tadeon-rename-popover select {
+  width:100%;
+  min-height:2.25rem;
+  border:1px solid hsl(var(--border));
+  border-radius:.55rem;
+  padding:.35rem .55rem;
+  color:hsl(var(--foreground));
+  background:hsl(var(--background));
+  font-size:.68rem;
+}
+
+/* The radial opener is screen-space UI pinned above the selected object. It has
+   no scale inherited from the canvas, so zooming never changes its apparent size. */
+.tadeon-radial-trigger {
+  width: 2.15rem !important;
+  height: 2.15rem !important;
+  transform-origin: 50% 100% !important;
+  box-shadow: 0 10px 32px -16px hsl(var(--primary) / .75), 0 0 0 1px hsl(var(--border) / .7) !important;
+}
+.tadeon-radial-trigger svg { width:.92rem !important; height:.92rem !important; }
+
+/* On compact navigation, Mesa is a true icon action like its neighboring icon
+   actions; the full desktop sidebar keeps the descriptive text. */
+@media (max-width: 767px) {
+  .tadeon-mobile-dock__item[href="/tabletop"] span { display:none; }
+  .tadeon-mobile-dock__item[href="/tabletop"] { justify-content:center; }
+}
+
+/* Keep sheet header and top navigation visually interlocked rather than looking
+   like two unrelated bars with different widths. */
+.tadeon-sheet-page .tadeon-sheet-commandbar {
+  width: 100%;
+  max-width: none;
+  margin-inline: 0;
+}
+.tadeon-sheet-page .tadeon-sheet-nav {
+  margin-top: .45rem;
+  border-radius: .85rem;
+  box-shadow: 0 16px 36px -34px rgb(0 0 0 / 92%);
+}
+
+/* Condition accents: no clipped outline. The glow is soft, layered, and remains
+   outside the card boundary. */
+.tadeon-condition-section,
+.tadeon-sheet-condition-panel,
+[class*="condition-card"] {
+  overflow: visible !important;
+}
+.tadeon-sheet-condition-chip {
+  box-shadow:
+    0 0 0 1px rgb(var(--condition-rgb, 116 36 45) / 32%),
+    0 0 16px -7px rgb(var(--condition-rgb, 116 36 45) / 65%),
+    inset 0 1px rgb(255 255 255 / 5%);
+}
+
+/* A more visible bar treatment without changing rule values. */
+#equilibrio [class*="h-2"], #equilibrio [class*="h-3"],
+#exposicao [class*="h-2"], #exposicao [class*="h-3"] {
+  min-height: .65rem !important;
+  overflow: hidden;
+  border: 1px solid hsl(var(--border) / .58);
+  background: hsl(var(--background) / .62);
+  box-shadow: inset 0 2px 5px rgb(0 0 0 / 42%);
+}
+#equilibrio [class*="h-2"] > *, #equilibrio [class*="h-3"] > *,
+#exposicao [class*="h-2"] > *, #exposicao [class*="h-3"] > * {
+  position: relative;
+  overflow: hidden;
+}
+#equilibrio [class*="h-2"] > *::after, #equilibrio [class*="h-3"] > *::after,
+#exposicao [class*="h-2"] > *::after, #exposicao [class*="h-3"] > *::after {
+  position:absolute; inset:0;
+  background:linear-gradient(90deg,transparent,rgb(255 255 255 / 15%),transparent);
+  transform:translateX(-100%);
+  animation:tadeon-bar-sheen 3.8s ease-in-out infinite;
+  content:"";
+}
+
+@keyframes tadeon-final-pop-in { from { opacity:0; transform:translateY(-5px) scale(.98); } to { opacity:1; transform:none; } }
+@keyframes tadeon-bar-sheen { 0%,58% { transform:translateX(-100%); } 78%,100% { transform:translateX(100%); } }
+
+@media (prefers-reduced-motion: reduce) {
+  .tadeon-rename-popover,
+  #equilibrio [class*="h-2"] > *::after, #equilibrio [class*="h-3"] > *::after,
+  #exposicao [class*="h-2"] > *::after, #exposicao [class*="h-3"] > *::after { animation:none !important; }
+}
