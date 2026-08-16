@@ -115,18 +115,24 @@ as $$
       jsonb_typeof(state#>'{camera,elevationScale}') = 'number'
       and (state#>>'{camera,elevationScale}')::numeric between 0.25 and 2.5
     ))
-    and jsonb_typeof(state->'cues') = 'array'
-    and jsonb_array_length(state->'cues') <= 32
-    and not exists (
-      select 1
-      from jsonb_array_elements(state->'cues') as item(cue)
-      where not private.is_valid_tabletop_director_cue(item.cue)
+    and (
+      not (state ? 'cues')
+      or (
+        jsonb_typeof(state->'cues') = 'array'
+        and jsonb_array_length(state->'cues') <= 32
+        and not exists (
+          select 1
+          from jsonb_array_elements(state->'cues') as item(cue)
+          where not private.is_valid_tabletop_director_cue(item.cue)
+        )
+      )
     )
     and (
-      jsonb_typeof(state->'activeCueId') = 'null'
+      not (state ? 'activeCueId')
+      or jsonb_typeof(state->'activeCueId') = 'null'
       or (jsonb_typeof(state->'activeCueId') = 'string' and char_length(state->>'activeCueId') <= 96)
     )
-    and jsonb_typeof(state->'autoAdvance') = 'boolean';
+    and (not (state ? 'autoAdvance') or jsonb_typeof(state->'autoAdvance') = 'boolean');
 $$;
 
 create or replace function private.set_tabletop_director_state_authorized(
