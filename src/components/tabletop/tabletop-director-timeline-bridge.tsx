@@ -18,15 +18,17 @@ import {
   type TabletopSessionParticipant,
 } from "@/lib/tabletop/tabletop-session-service";
 import { tabletopVisibilityService } from "@/lib/tabletop/tabletop-visibility-service";
-import { useTabletopRealtime } from "@/lib/tabletop/use-tabletop-realtime";
+import type { TabletopScene } from "@/lib/tabletop/types";
 import "@/styles/tabletop-director-timeline.css";
 
-type PersistedSceneHints = { campaignId?: string };
+type SceneWithCampaign = TabletopScene & { campaignId?: string };
 
-function cueFromCurrent(state: TabletopDirectorState): TabletopDirectorCue | null {
+async function cueFromCurrent(state: TabletopDirectorState): Promise<TabletopDirectorCue | null> {
   const runtime = currentTabletopRuntime();
   if (!runtime) return null;
   const camera = runtime.engine.directorCamera();
+  const scene = runtime.snapshot().scene;
+  const visibility = await tabletopVisibilityService.load(scene.id).catch(() => null);
   return {
     id: crypto.randomUUID(),
     label: `Cue ${state.cues.length + 1}`,
@@ -38,21 +40,25 @@ function cueFromCurrent(state: TabletopDirectorState): TabletopDirectorCue | nul
     showGrid: state.showGrid,
     showHud: state.showHud,
     camera,
+    globalIllumination: visibility?.globalIllumination,
+    fogEnabled: visibility?.fogEnabled,
   };
 }
 
 export function TabletopDirectorTimelineBridge() {
-  const { user, profile } = useAuth();
+  const { user } = useAuth();
   const [target, setTarget] = useState<HTMLElement | null>(null);
   const [session, setSession] = useState<TabletopSession | null>(null);
   const [participants, setParticipants] = useState<TabletopSessionParticipant[]>([]);
   const [busy, setBusy] = useState(false);
+  const [draftLabels, setDraftLabels] = useState<Record<string, string>>({});
   const autoTimer = useRef(0);
+  const executeCueRef = useRef<(cue: TabletopDirectorCue, schedule?: boolean) => Promise<void>>(
+    async () => undefined,
+  );
 
   const runtime = currentTabletopRuntime();
-  const scene = runtime?.snapshot().scene as
-    | (ReturnType<NonNullable<typeof currentTabletopRuntime>["snapshot"]>["scene"] & PersistedSceneHints)
-    | undefined;
+  const scene = runtime?.snapshot().scene as SceneWithCampaign | undefined;
   const campaignId = scene?.campaignId;
 
   useEffect(() => {
@@ -83,34 +89,17 @@ export function TabletopDirectorTimelineBridge() {
 
   useEffect(() => {
     void refresh().catch(() => undefined);
-    const timer = window.setInterval(() => void refresh().catch(() => undefined), 3500);
+    const timer = window.setInterval(() => void refresh().catch(() => undefined), 4500);
     return () => window.clearInterval(timer);
   }, [refresh]);
 
-  const currentParticipant = participants.find(
-    (participant) => participant.userId === user?.id && participant.state === "active",
+  const currentParticipant = useMemo(
+    () =>
+      participants.find(
+        (participant) => participant.userId === user?.id && participant.state === "active",
+      ),
+    [participants, user?.id],
   );
-  const presence = useMemo(() => {
-    if (!user?.id || !session?.currentSceneId || !currentParticipant) return null;
-    return {
-      userId: user.id,
-      displayName: profile?.full_name || user.email?.split("@")[0] || "Mestre",
-      role: currentParticipant.role,
-      sceneId: session.currentSceneId,
-      controlledTokenId: null,
-      state: "connected" as const,
-      color: "#d9d7a4",
-      updatedAt: Date.now(),
-    };
-  }, [currentParticipant, profile?.full_name, session?.currentSceneId, user?.email, user?.id]);
-
-  const realtime = useTabletopRealtime({
-    enabled: Boolean(session && currentParticipant && presence),
-    sessionId: session?.id,
-    sceneId: session?.currentSceneId,
-    presence,
-    onEvent: () => undefined,
-  });
 
   const saveState = useCallback(
     async (next: TabletopDirectorState, success?: string) => {
@@ -122,19 +111,25 @@ export function TabletopDirectorTimelineBridge() {
           next,
           session.version,
         );
-        await realtime.broadcastDirectorState(revision).catch(() => undefined);
+        window.dispatchEvent(
+          new CustomEvent("tadeon-tabletop-director-state-saved", {
+            detail: { sessionId: session.id, revision },
+          }),
+        );
         await refresh();
         if (success) toast.success(success);
         return revision;
       } catch {
         await refresh().catch(() => undefined);
-        toast.error("A direção mudou em outra janela. Atualizei a timeline para evitar sobrescrita.");
+        toast.error(
+          "A direção mudou em outra janela. Atualizei a timeline para evitar sobrescrita.",
+        );
         return null;
       } finally {
         setBusy(false);
       }
     },
-    [busy, realtime, refresh, session],
+    [busy, refresh, session],
   );
 
   const executeCue = useCallback(
@@ -166,17 +161,20 @@ export function TabletopDirectorTimelineBridge() {
       if (!revision || !schedule || !next.autoAdvance || cue.durationMs <= 0) return;
       window.clearTimeout(autoTimer.current);
       autoTimer.current = window.setTimeout(() => {
-        void refresh().then(async () => {
-          const latest = await tabletopSessionService.findOpenSession(session.campaignId);
+        void tabletopSessionService.findOpenSession(session.campaignId).then((latest) => {
           if (!latest) return;
           const index = latest.directorState.cues.findIndex((item) => item.id === cue.id);
           const following = latest.directorState.cues[index + 1];
-          if (following) await executeCue(following, true);
+          if (following) void executeCueRef.current(following, true);
         });
       }, cue.durationMs);
     },
-    [refresh, saveState, session],
+    [saveState, session],
   );
+
+  useEffect(() => {
+    executeCueRef.current = executeCue;
+  }, [executeCue]);
 
   useEffect(
     () => () => window.clearTimeout(autoTimer.current),
@@ -187,16 +185,30 @@ export function TabletopDirectorTimelineBridge() {
   if (currentParticipant.role !== "master" && currentParticipant.role !== "co_master") return null;
 
   const state = session.directorState;
-  const addCue = () => {
-    const cue = cueFromCurrent(state);
+  const addCue = async () => {
+    if (busy) return;
+    const cue = await cueFromCurrent(state);
     if (!cue) return;
-    void saveState({ ...state, cues: [...state.cues, cue] }, "Enquadramento adicionado à timeline.");
+    await saveState(
+      { ...state, cues: [...state.cues, cue] },
+      "Enquadramento, luz e fog adicionados à timeline.",
+    );
   };
-  const replaceCue = (id: string, patch: Partial<TabletopDirectorCue>) => {
-    void saveState({
+  const replaceCue = (id: string, patch: Partial<TabletopDirectorCue>) =>
+    saveState({
       ...state,
-      cues: state.cues.map((cue) => (cue.id === id ? { ...cue, ...patch, id: cue.id } : cue)),
+      cues: state.cues.map((cue) =>
+        cue.id === id ? { ...cue, ...patch, id: cue.id } : cue,
+      ),
     });
+  const commitLabel = (cue: TabletopDirectorCue, fallbackIndex: number) => {
+    const value = (draftLabels[cue.id] ?? cue.label).trim() || `Cue ${fallbackIndex + 1}`;
+    setDraftLabels((current) => {
+      const next = { ...current };
+      delete next[cue.id];
+      return next;
+    });
+    if (value !== cue.label) void replaceCue(cue.id, { label: value });
   };
   const removeCue = (id: string) => {
     void saveState({
@@ -211,7 +223,7 @@ export function TabletopDirectorTimelineBridge() {
       <header>
         <span><Clapperboard aria-hidden="true" /></span>
         <div><small>Sequência da sessão</small><strong>Cues de direção</strong></div>
-        <Button size="sm" variant="outline" onClick={addCue} disabled={busy}>
+        <Button size="sm" variant="outline" onClick={() => void addCue()} disabled={busy}>
           <Plus /> Capturar atual
         </Button>
       </header>
@@ -233,16 +245,29 @@ export function TabletopDirectorTimelineBridge() {
               <span>{String(index + 1).padStart(2, "0")}</span>
               <div>
                 <Input
-                  value={cue.label}
+                  value={draftLabels[cue.id] ?? cue.label}
                   maxLength={120}
                   disabled={busy}
-                  onChange={(event) => replaceCue(cue.id, { label: event.target.value || `Cue ${index + 1}` })}
+                  onChange={(event) =>
+                    setDraftLabels((current) => ({
+                      ...current,
+                      [cue.id]: event.target.value,
+                    }))
+                  }
+                  onBlur={() => commitLabel(cue, index)}
+                  onKeyDown={(event) => {
+                    if (event.key === "Enter") event.currentTarget.blur();
+                  }}
                 />
                 <div>
                   <select
                     value={cue.transition}
                     disabled={busy}
-                    onChange={(event) => replaceCue(cue.id, { transition: event.target.value as TabletopDirectorCue["transition"] })}
+                    onChange={(event) =>
+                      void replaceCue(cue.id, {
+                        transition: event.target.value as TabletopDirectorCue["transition"],
+                      })
+                    }
                     aria-label={`Transição do cue ${index + 1}`}
                   >
                     <option value="cut">Corte</option>
@@ -256,15 +281,31 @@ export function TabletopDirectorTimelineBridge() {
                     step={0.5}
                     value={cue.durationMs / 1000}
                     disabled={busy}
-                    onChange={(event) => replaceCue(cue.id, { durationMs: Math.max(0, Math.min(600000, Number(event.target.value) * 1000)) })}
+                    onChange={(event) => {
+                      const seconds = Math.max(0, Math.min(600, Number(event.target.value)));
+                      if (Number.isFinite(seconds))
+                        void replaceCue(cue.id, { durationMs: Math.round(seconds * 1000) });
+                    }}
                     aria-label={`Duração do cue ${index + 1} em segundos`}
                   />
                 </div>
               </div>
-              <Button size="icon" variant="secondary" onClick={() => void executeCue(cue)} disabled={busy} aria-label={`Executar ${cue.label}`}>
+              <Button
+                size="icon"
+                variant="secondary"
+                onClick={() => void executeCue(cue)}
+                disabled={busy}
+                aria-label={`Executar ${cue.label}`}
+              >
                 <Play />
               </Button>
-              <Button size="icon" variant="ghost" onClick={() => removeCue(cue.id)} disabled={busy} aria-label={`Remover ${cue.label}`}>
+              <Button
+                size="icon"
+                variant="ghost"
+                onClick={() => removeCue(cue.id)}
+                disabled={busy}
+                aria-label={`Remover ${cue.label}`}
+              >
                 <Trash2 />
               </Button>
             </article>
