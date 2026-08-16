@@ -191,153 +191,155 @@ export function TabletopPlaceablesInspectorBridge() {
         <ChevronDown aria-hidden="true" />
       </button>
 
-      {open && (
-        <div className="tadeon-placeables__panel">
-          <header>
-            <span className="tadeon-placeables__mark"><Shapes aria-hidden="true" /></span>
+      <div
+        className="tadeon-placeables__panel"
+        data-state={open ? "open" : "closed"}
+        aria-hidden={!open}
+      >
+        <header>
+          <span className="tadeon-placeables__mark"><Shapes aria-hidden="true" /></span>
+          <div>
+            <small>Placeables Inspector</small>
+            <strong>{snapshot.scene.name}</strong>
+          </div>
+          <Button size="icon" variant="ghost" aria-label="Fechar inspetor" onClick={() => setOpen(false)}>
+            <X aria-hidden="true" />
+          </Button>
+        </header>
+
+        <label className="tadeon-placeables__search">
+          <Search aria-hidden="true" />
+          <Input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Buscar entidade, tipo..." />
+        </label>
+
+        <nav aria-label="Tipos de placeable">
+          {(
+            [
+              ["all", "Tudo"],
+              ["entities", `Entidades ${snapshot.scene.entities.length}`],
+              ["walls", `Arquitetura ${walls.length}`],
+              ["lights", `Luzes ${lights.length}`],
+              ["fog", `Névoa ${fog.length}`],
+            ] as const
+          ).map(([value, label]) => (
+            <button key={value} type="button" aria-pressed={kind === value} onClick={() => setKind(value)}>
+              {label}
+            </button>
+          ))}
+        </nav>
+
+        {selected && (
+          <section className="tadeon-placeables__selected">
             <div>
-              <small>Placeables Inspector</small>
-              <strong>{snapshot.scene.name}</strong>
+              <small>Seleção</small>
+              <strong>{selected.label}</strong>
             </div>
-            <Button size="icon" variant="ghost" aria-label="Fechar inspetor" onClick={() => setOpen(false)}>
-              <X aria-hidden="true" />
+            <Button size="icon" variant="ghost" title="Enquadrar" onClick={() => currentTabletopRuntime()?.engine.focusSelection()}>
+              <Focus aria-hidden="true" />
             </Button>
-          </header>
+            <button
+              type="button"
+              title={selected.hidden ? "Revelar" : "Ocultar"}
+              onClick={() => currentTabletopRuntime()?.engine.updateSelected({ hidden: !selected.hidden }, selected.hidden ? "Revelar entidade" : "Ocultar entidade")}
+            >
+              {selected.hidden ? <EyeOff aria-hidden="true" /> : <Eye aria-hidden="true" />}
+            </button>
+            <button
+              type="button"
+              title={selected.locked ? "Desbloquear" : "Bloquear"}
+              onClick={() => currentTabletopRuntime()?.engine.updateSelected({ locked: !selected.locked }, selected.locked ? "Desbloquear entidade" : "Bloquear entidade")}
+            >
+              {selected.locked ? <Lock aria-hidden="true" /> : <LockOpen aria-hidden="true" />}
+            </button>
+            {transformOptions.length > 1 && (
+              <label>
+                <span>Transformar em</span>
+                <select
+                  value={selected.type}
+                  onChange={(event) =>
+                    currentTabletopRuntime()?.engine.updateSelected(
+                      { type: event.target.value as TabletopEntity["type"] },
+                      `Transformar em ${event.target.value}`,
+                    )
+                  }
+                >
+                  {transformOptions.map((type) => <option key={type} value={type}>{typeLabel(type)}</option>)}
+                </select>
+              </label>
+            )}
+          </section>
+        )}
 
-          <label className="tadeon-placeables__search">
-            <Search aria-hidden="true" />
-            <Input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Buscar entidade, tipo..." />
-          </label>
-
-          <nav aria-label="Tipos de placeable">
-            {(
-              [
-                ["all", "Tudo"],
-                ["entities", `Entidades ${snapshot.scene.entities.length}`],
-                ["walls", `Arquitetura ${walls.length}`],
-                ["lights", `Luzes ${lights.length}`],
-                ["fog", `Névoa ${fog.length}`],
-              ] as const
-            ).map(([value, label]) => (
-              <button key={value} type="button" aria-pressed={kind === value} onClick={() => setKind(value)}>
-                {label}
-              </button>
-            ))}
-          </nav>
-
-          {selected && (
-            <section className="tadeon-placeables__selected">
-              <div>
-                <small>Seleção</small>
-                <strong>{selected.label}</strong>
-              </div>
-              <Button size="icon" variant="ghost" title="Enquadrar" onClick={() => currentTabletopRuntime()?.engine.focusSelection()}>
-                <Focus aria-hidden="true" />
-              </Button>
-              <button
-                type="button"
-                title={selected.hidden ? "Revelar" : "Ocultar"}
-                onClick={() => currentTabletopRuntime()?.engine.updateSelected({ hidden: !selected.hidden }, selected.hidden ? "Revelar entidade" : "Ocultar entidade")}
-              >
-                {selected.hidden ? <EyeOff aria-hidden="true" /> : <Eye aria-hidden="true" />}
-              </button>
-              <button
-                type="button"
-                title={selected.locked ? "Desbloquear" : "Bloquear"}
-                onClick={() => currentTabletopRuntime()?.engine.updateSelected({ locked: !selected.locked }, selected.locked ? "Desbloquear entidade" : "Bloquear entidade")}
-              >
-                {selected.locked ? <Lock aria-hidden="true" /> : <LockOpen aria-hidden="true" />}
-              </button>
-              {transformOptions.length > 1 && (
-                <label>
-                  <span>Transformar em</span>
-                  <select
-                    value={selected.type}
-                    onChange={(event) =>
-                      currentTabletopRuntime()?.engine.updateSelected(
-                        { type: event.target.value as TabletopEntity["type"] },
-                        `Transformar em ${event.target.value}`,
-                      )
-                    }
-                  >
-                    {transformOptions.map((type) => <option key={type} value={type}>{typeLabel(type)}</option>)}
-                  </select>
-                </label>
-              )}
-            </section>
-          )}
-
-          <div className="tadeon-placeables__list">
-            {(kind === "all" || kind === "entities") && entities.map((entity) => (
-              <button
-                key={entity.id}
-                type="button"
-                className="tadeon-placeables__item"
-                data-active={snapshot.selectedIds.includes(entity.id)}
-                onClick={() => {
-                  const engine = currentTabletopRuntime()?.engine;
-                  engine?.selectEntityById(entity.id);
-                  engine?.focusSelection();
-                }}
-              >
-                <span className="tadeon-placeables__thumb">
-                  {entity.assetUrl ? <img src={entity.assetUrl} alt="" loading="lazy" /> : <Shapes aria-hidden="true" />}
-                </span>
-                <span>
-                  <strong>{entity.label}</strong>
-                  <small>{typeLabel(entity.type)} · {levelName(entity.levelId ?? null)}</small>
-                </span>
-                <span className="tadeon-placeables__flags">
-                  {entity.hidden && <EyeOff aria-label="Oculto" />}
-                  {entity.locked && <Lock aria-label="Bloqueado" />}
-                </span>
-              </button>
-            ))}
-
-            {(kind === "all" || kind === "walls") && walls
-              .filter((wall) => !normalizedQuery || wall.wall_type.toLocaleLowerCase("pt-BR").includes(normalizedQuery))
-              .map((wall) => (
-                <button key={wall.id} type="button" className="tadeon-placeables__item" onClick={() => {
-                  const engine = currentTabletopRuntime()?.engine;
-                  engine?.setSelectedStructure(wall.id);
-                  engine?.focusSelection();
-                }}>
-                  <span className="tadeon-placeables__thumb"><BrickWall aria-hidden="true" /></span>
-                  <span><strong>{wall.wall_type.replaceAll("_", " ")}</strong><small>Arquitetura · {levelName(wall.level_id)}</small></span>
-                </button>
-              ))}
-
-            {(kind === "all" || kind === "lights") && lights
-              .filter(() => !normalizedQuery || "luz iluminação".includes(normalizedQuery))
-              .map((light) => (
-                <button key={light.id} type="button" className="tadeon-placeables__item" onClick={() => {
-                  const engine = currentTabletopRuntime()?.engine;
-                  engine?.setSelectedLight(light.id);
-                  engine?.focusSelection();
-                }}>
-                  <span className="tadeon-placeables__thumb" style={{ color: light.color }}><LampDesk aria-hidden="true" /></span>
-                  <span><strong>{light.enabled ? "Luz acesa" : "Luz apagada"}</strong><small>Iluminação · {levelName(light.level_id)}</small></span>
-                </button>
-              ))}
-
-            {(kind === "all" || kind === "fog") && fog.map((stroke, index) => (
-              <button key={stroke.id} type="button" className="tadeon-placeables__item" onClick={() => {
+        <div className="tadeon-placeables__list">
+          {(kind === "all" || kind === "entities") && entities.map((entity) => (
+            <button
+              key={entity.id}
+              type="button"
+              className="tadeon-placeables__item"
+              data-active={snapshot.selectedIds.includes(entity.id)}
+              onClick={() => {
                 const engine = currentTabletopRuntime()?.engine;
-                engine?.setSelectedFog(stroke.id);
+                engine?.selectEntityById(entity.id);
+                engine?.focusSelection();
+              }}
+            >
+              <span className="tadeon-placeables__thumb">
+                {entity.assetUrl ? <img src={entity.assetUrl} alt="" loading="lazy" /> : <Shapes aria-hidden="true" />}
+              </span>
+              <span>
+                <strong>{entity.label}</strong>
+                <small>{typeLabel(entity.type)} · {levelName(entity.levelId ?? null)}</small>
+              </span>
+              <span className="tadeon-placeables__flags">
+                {entity.hidden && <EyeOff aria-label="Oculto" />}
+                {entity.locked && <Lock aria-label="Bloqueado" />}
+              </span>
+            </button>
+          ))}
+
+          {(kind === "all" || kind === "walls") && walls
+            .filter((wall) => !normalizedQuery || wall.wall_type.toLocaleLowerCase("pt-BR").includes(normalizedQuery))
+            .map((wall) => (
+              <button key={wall.id} type="button" className="tadeon-placeables__item" onClick={() => {
+                const engine = currentTabletopRuntime()?.engine;
+                engine?.setSelectedStructure(wall.id);
                 engine?.focusSelection();
               }}>
-                <span className="tadeon-placeables__thumb"><CloudFog aria-hidden="true" /></span>
-                <span><strong>{stroke.operation === "reveal" ? "Revelação" : "Cobertura"} {index + 1}</strong><small>{stroke.geometry ?? "pincel"} · {levelName(stroke.level_id)}</small></span>
+                <span className="tadeon-placeables__thumb"><BrickWall aria-hidden="true" /></span>
+                <span><strong>{wall.wall_type.replaceAll("_", " ")}</strong><small>Arquitetura · {levelName(wall.level_id)}</small></span>
               </button>
             ))}
 
-            {entities.length === 0 && walls.length === 0 && lights.length === 0 && fog.length === 0 && (
-              <div className="tadeon-placeables__empty">A cena ainda não possui placeables.</div>
-            )}
-          </div>
-          {activeLevelId && <footer>Andar ativo: {levelName(activeLevelId)}</footer>}
+          {(kind === "all" || kind === "lights") && lights
+            .filter(() => !normalizedQuery || "luz iluminação".includes(normalizedQuery))
+            .map((light) => (
+              <button key={light.id} type="button" className="tadeon-placeables__item" onClick={() => {
+                const engine = currentTabletopRuntime()?.engine;
+                engine?.setSelectedLight(light.id);
+                engine?.focusSelection();
+              }}>
+                <span className="tadeon-placeables__thumb" style={{ color: light.color }}><LampDesk aria-hidden="true" /></span>
+                <span><strong>{light.enabled ? "Luz acesa" : "Luz apagada"}</strong><small>Iluminação · {levelName(light.level_id)}</small></span>
+              </button>
+            ))}
+
+          {(kind === "all" || kind === "fog") && fog.map((stroke, index) => (
+            <button key={stroke.id} type="button" className="tadeon-placeables__item" onClick={() => {
+              const engine = currentTabletopRuntime()?.engine;
+              engine?.setSelectedFog(stroke.id);
+              engine?.focusSelection();
+            }}>
+              <span className="tadeon-placeables__thumb"><CloudFog aria-hidden="true" /></span>
+              <span><strong>{stroke.operation === "reveal" ? "Revelação" : "Cobertura"} {index + 1}</strong><small>{stroke.geometry ?? "pincel"} · {levelName(stroke.level_id)}</small></span>
+            </button>
+          ))}
+
+          {entities.length === 0 && walls.length === 0 && lights.length === 0 && fog.length === 0 && (
+            <div className="tadeon-placeables__empty">A cena ainda não possui placeables.</div>
+          )}
         </div>
-      )}
+        {activeLevelId && <footer>Andar ativo: {levelName(activeLevelId)}</footer>}
+      </div>
     </aside>
   );
 }
