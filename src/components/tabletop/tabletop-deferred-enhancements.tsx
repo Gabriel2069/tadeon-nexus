@@ -1,4 +1,5 @@
 import { Suspense, lazy, useEffect, useState } from "react";
+import { TabletopPreflightBridge } from "@/components/tabletop/tabletop-preflight-bridge";
 
 const LocateBridge = lazy(() => import("@/components/tabletop/tabletop-locate-bridge").then((module) => ({ default: module.TabletopLocateBridge })));
 const PlayerInteractionBridge = lazy(() => import("@/components/tabletop/tabletop-player-interaction-bridge").then((module) => ({ default: module.TabletopPlayerInteractionBridge })));
@@ -16,7 +17,6 @@ const NexusCaptureBridge = lazy(() => import("@/components/tabletop/tabletop-nex
 const SemanticTransformBridge = lazy(() => import("@/components/tabletop/tabletop-semantic-transform-bridge").then((module) => ({ default: module.TabletopSemanticTransformBridge })));
 const RadialActionsBridge = lazy(() => import("@/components/tabletop/tabletop-radial-actions-bridge").then((module) => ({ default: module.TabletopRadialActionsBridge })));
 const SmartSetupBridge = lazy(() => import("@/components/tabletop/tabletop-smart-setup-bridge").then((module) => ({ default: module.TabletopSmartSetupBridge })));
-const PreflightBridge = lazy(() => import("@/components/tabletop/tabletop-preflight-bridge").then((module) => ({ default: module.TabletopPreflightBridge })));
 const UnifiedDropBridge = lazy(() => import("@/components/tabletop/tabletop-unified-drop-bridge").then((module) => ({ default: module.TabletopUnifiedDropBridge })));
 
 export function TabletopDeferredEnhancements({ master }: { master: boolean }) {
@@ -36,23 +36,25 @@ export function TabletopDeferredEnhancements({ master }: { master: boolean }) {
   }, []);
 
   return (
-    <Suspense fallback={null}>
-      {tier >= 1 && <><LocateBridge /><PlayerInteractionBridge /></>}
-      {tier >= 2 && <><ReliabilityEditorBridge /><AtmosphereBridge /><SpatialAudioBridge /><NativeModelBridge secureVisibility={!master} /><RoofForegroundBridge /><AdaptivePerformanceBridge /></>}
-      {master && tier >= 3 && (
-        <>
-          <CreativeDockBridge />
-          <FogGeometryBridge />
-          <PlaceablesInspectorBridge />
-          <IntegrationToolsBridge />
-          <NexusCaptureBridge />
-          <SemanticTransformBridge />
-          <RadialActionsBridge />
-          <SmartSetupBridge />
-          <PreflightBridge />
-          <UnifiedDropBridge />
-        </>
-      )}
-    </Suspense>
+    <>
+      {master && <TabletopPreflightBridge />}
+      <Suspense fallback={null}>
+        {tier >= 1 && <><LocateBridge /><PlayerInteractionBridge /></>}
+        {tier >= 2 && <><ReliabilityEditorBridge /><AtmosphereBridge /><SpatialAudioBridge /><NativeModelBridge secureVisibility={!master} /><RoofForegroundBridge /><AdaptivePerformanceBridge /></>}
+        {master && tier >= 3 && (
+          <>
+            <CreativeDockBridge />
+            <FogGeometryBridge />
+            <PlaceablesInspectorBridge />
+            <IntegrationToolsBridge />
+            <NexusCaptureBridge />
+            <SemanticTransformBridge />
+            <RadialActionsBridge />
+            <SmartSetupBridge />
+            <UnifiedDropBridge />
+          </>
+        )}
+      </Suspense>
+    </>
   );
 }
