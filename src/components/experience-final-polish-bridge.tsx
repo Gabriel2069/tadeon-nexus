@@ -38,8 +38,6 @@ function tuneKnowledgeGraph() {
   const sliders = Array.from(root.querySelectorAll<HTMLElement>(".tadeon-brain-slider"));
   const hasPhysics = sliders.some((row) => (row.querySelector("span")?.textContent ?? "").includes("Distância-base"));
 
-  // Force controls are mounted lazily. Open the panel once so the preset is
-  // applied to the actual React state instead of only changing appearance.
   if (!hasPhysics && settingsToggle?.getAttribute("aria-expanded") !== "true") {
     root.dataset.tadeonObsidianTuning = "true";
     settingsToggle.click();
@@ -61,8 +59,7 @@ function tuneKnowledgeGraph() {
     root.dataset.tadeonObsidianPreset = "true";
     delete root.dataset.tadeonObsidianTuning;
     window.setTimeout(() => {
-      const fit = root.querySelector<HTMLButtonElement>('button[aria-label="Reenquadrar grafo"]');
-      fit?.click();
+      root.querySelector<HTMLButtonElement>('button[aria-label="Reenquadrar grafo"]')?.click();
       if (settingsToggle?.getAttribute("aria-expanded") === "true") settingsToggle.click();
     }, 150);
   }
@@ -112,6 +109,18 @@ function tuneConditionVisuals() {
   }
 }
 
+function tuneSheetChrome() {
+  const commandbar = document.querySelector<HTMLElement>(".tadeon-sheet-page .tadeon-sheet-commandbar");
+  if (!commandbar) return;
+  const actions = Array.from(commandbar.querySelectorAll<HTMLElement>("a,button"));
+  const tabletop = actions.find((action) => /(^|\s)(mesa|mesa nexus)(\s|$)/i.test(action.textContent?.trim() ?? ""));
+  if (tabletop) {
+    tabletop.dataset.tadeonSheetTabletopAction = "true";
+    tabletop.setAttribute("aria-label", tabletop.getAttribute("aria-label") || "Abrir na Mesa Nexus");
+    tabletop.setAttribute("title", tabletop.getAttribute("title") || "Abrir na Mesa Nexus");
+  }
+}
+
 function passiveModifier(skill: string, abilities: Ability[]) {
   const normalizedSkill = skill.toLocaleLowerCase("pt-BR");
   return abilities.reduce((total, ability) => {
@@ -151,6 +160,7 @@ export function ExperienceFinalPolishBridge() {
       if (window.location.pathname === "/nexus") tuneKnowledgeGraph();
       if (window.location.pathname.startsWith("/sheet/")) {
         tuneConditionVisuals();
+        tuneSheetChrome();
         const panel = document.querySelector<HTMLElement>(".tadeon-link-panel");
         const heading = panel?.querySelector<HTMLElement>(".tadeon-link-panel__heading");
         if (panel && heading) {
