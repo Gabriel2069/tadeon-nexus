@@ -160,38 +160,9 @@ body:has(.tadeon-tabletop-studio) {
   min-height: 34rem;
 }
 
-/* ---------------- Master panel parity: embedded and separate route ------------ */
-body:has(.tadeon-master-navigation) {
-  --tadeon-master-accent: 351 52% 31%;
-  --tadeon-master-accent-bright: 351 58% 43%;
-}
-body:has(.tadeon-master-navigation) .tadeon-master-navigation {
-  position: relative;
-  border-radius: 1rem;
-  background:
-    radial-gradient(circle at 8% 0%, hsl(var(--tadeon-master-accent-bright) / .15), transparent 22rem),
-    linear-gradient(110deg, hsl(var(--tadeon-master-accent) / .08), transparent 48%);
-}
-body:has(.tadeon-master-navigation) .tadeon-master-navigation__group {
-  position: relative;
-  transition: transform 200ms cubic-bezier(.2,.8,.2,1), opacity 180ms ease;
-}
-body:has(.tadeon-master-navigation) .tadeon-master-navigation__group:hover { transform: translateY(-1px); }
-body:has(.tadeon-master-navigation) [data-master-tab][data-state="active"] {
-  background: hsl(var(--tadeon-master-accent)) !important;
-  color: white !important;
-  box-shadow: 0 10px 28px -16px hsl(var(--tadeon-master-accent-bright) / .95);
-}
-body:has(.tadeon-master-navigation) [role="tabpanel"][data-state="active"] {
-  animation: tadeon-master-surface-slide 260ms cubic-bezier(.2,.8,.2,1) both;
-}
-body:has(.tadeon-master-navigation) :is(.tadeon-master-hub, .tadeon-session-workspace, .tadeon-master-catalog) {
-  --primary: var(--tadeon-master-accent);
-}
-@keyframes tadeon-master-surface-slide {
-  from { opacity: 0; transform: translateX(18px); }
-  to { opacity: 1; transform: translateX(0); }
-}
+/* The master panel deliberately has no rules here. Its original route-specific
+   visual language and slide motion are the authority; this final sheet must not
+   reposition, recolor or replace that navigation. */
 
 /* ---------------- Director: cue transition is a rendered behavior ------------- */
 .tadeon-director-output.is-transitioning[data-transition="fade"] .tadeon-director-output__canvas,
@@ -220,8 +191,6 @@ body:has(.tadeon-master-navigation) :is(.tadeon-master-hub, .tadeon-session-work
 }
 
 @media (prefers-reduced-motion: reduce) {
-  body:has(.tadeon-master-navigation) [role="tabpanel"][data-state="active"],
-  body:has(.tadeon-master-navigation) .tadeon-master-navigation__group,
   .tadeon-nexus-folderbar button,
   .tadeon-director-output.is-transitioning :is(.tadeon-director-output__canvas, .tadeon-director-output__intermission, .tadeon-director-output__hud) {
     animation: none !important;
