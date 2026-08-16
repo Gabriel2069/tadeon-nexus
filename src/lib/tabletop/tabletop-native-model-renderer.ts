@@ -310,7 +310,8 @@ function isModelEntity(entity: TabletopEntity) {
 
 async function imageSource(image: TabletopGltfImage, signal?: AbortSignal) {
   let blob: Blob;
-  if (image.bytes) blob = new Blob([image.bytes], { type: image.mimeType });
+  if (image.bytes)
+    blob = new Blob([copyToArrayBufferBytes(image.bytes)], { type: image.mimeType });
   else if (image.uri) {
     const response = await fetch(image.uri, { signal, credentials: "omit" });
     if (!response.ok) throw new Error("TABLETOP_3D_TEXTURE_FETCH_FAILED");
