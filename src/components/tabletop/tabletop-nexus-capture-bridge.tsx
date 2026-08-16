@@ -23,10 +23,13 @@ function nodeTypeForEntity(type: TabletopEntity["type"]): KnowledgeNodeType {
   return "object";
 }
 
-function actionNodeType(action: CaptureRequest["action"], entity: TabletopEntity) {
-  if (action === "capture-clue") return "clue" satisfies KnowledgeNodeType;
-  if (action === "capture-event") return "event" satisfies KnowledgeNodeType;
-  if (action === "capture-note") return "document" satisfies KnowledgeNodeType;
+function actionNodeType(
+  action: CaptureRequest["action"],
+  entity: TabletopEntity,
+): KnowledgeNodeType {
+  if (action === "capture-clue") return "clue";
+  if (action === "capture-event") return "historical_event";
+  if (action === "capture-note") return "free_note";
   return nodeTypeForEntity(entity.type);
 }
 
@@ -56,8 +59,11 @@ export function TabletopNexusCaptureBridge() {
       if (busyRef.current) return;
       const runtime = currentTabletopRuntime();
       const current = snapshot ?? runtime?.snapshot() ?? null;
-      const entity = current?.scene.entities.find((item) => item.id === request.entityId);
-      if (!runtime || !current || !entity || current.scene.id === "local-scene") return;
+      const entity = current?.scene.entities.find(
+        (item) => item.id === request.entityId,
+      );
+      if (!runtime || !current || !entity || current.scene.id === "local-scene")
+        return;
       busyRef.current = true;
       try {
         const { data: scene, error: sceneError } = await database
@@ -65,7 +71,8 @@ export function TabletopNexusCaptureBridge() {
           .select("id,name,campaign_id")
           .eq("id", current.scene.id)
           .maybeSingle();
-        if (sceneError || !scene?.campaign_id) throw sceneError ?? new Error("scene");
+        if (sceneError || !scene?.campaign_id)
+          throw sceneError ?? new Error("scene");
         const { data: campaign, error: campaignError } = await database
           .from("campaigns")
           .select("id,name,workspace_id")
@@ -106,7 +113,9 @@ export function TabletopNexusCaptureBridge() {
               y: entity.y,
               captured_as: request.action,
             },
-            ...(entity.linkedSheetId ? { linked_sheet_id: entity.linkedSheetId } : {}),
+            ...(entity.linkedSheetId
+              ? { linked_sheet_id: entity.linkedSheetId }
+              : {}),
           },
           status: "draft",
           visibility: "masters",
