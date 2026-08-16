@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react";
 import { currentTabletopRuntime } from "@/lib/tabletop/tabletop-player-runtime";
+import { configureTabletopTextureBudget } from "@/lib/tabletop/texture-manager";
 import {
   lowerTabletopQuality,
   raiseTabletopQuality,
@@ -20,7 +21,16 @@ type PixiInternals = {
 
 type NavigatorWithMemory = Navigator & { deviceMemory?: number };
 
-function applyProfile(profile: TabletopQualityProfile) {
+function activeSceneAssetUrls(snapshot: TabletopSnapshot | null) {
+  if (!snapshot) return [];
+  const urls = snapshot.scene.entities
+    .map((entity) => entity.assetUrl)
+    .filter((url): url is string => Boolean(url));
+  if (snapshot.scene.backgroundAssetUrl) urls.push(snapshot.scene.backgroundAssetUrl);
+  return urls;
+}
+
+function applyProfile(profile: TabletopQualityProfile, snapshot: TabletopSnapshot | null) {
   const runtime = currentTabletopRuntime();
   if (!runtime) return;
   const renderer = (runtime.engine as unknown as PixiInternals).app?.renderer;
@@ -37,6 +47,7 @@ function applyProfile(profile: TabletopQualityProfile) {
   runtime.host.dataset.qualityTier = profile.tier;
   runtime.host.style.setProperty("--tadeon-tabletop-quality-resolution", String(targetResolution));
   runtime.host.style.setProperty("--tadeon-tabletop-texture-budget-mb", String(profile.textureBudgetMb));
+  configureTabletopTextureBudget(activeSceneAssetUrls(snapshot), profile.textureBudgetMb);
   const native = runtime.host.querySelector<HTMLCanvasElement>(".tadeon-tabletop-native-model-layer");
   if (native) native.style.display = profile.nativeModels ? "block" : "none";
   window.dispatchEvent(new CustomEvent("tadeon-tabletop-quality", { detail: profile }));
@@ -94,7 +105,7 @@ export function TabletopAdaptivePerformanceBridge() {
             profile.current = recommendation;
           }
         }
-        applyProfile(profile.current);
+        applyProfile(profile.current, snapshot.current);
         frames.current = 0;
         lastSample.current = now;
       }
