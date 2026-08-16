@@ -61,14 +61,18 @@ describe("roadmap de sofisticação da Mesa Nexus", () => {
     expect(native).toContain("if (light.castsShadows) return \"\"");
   });
 
-  it("monta preflight imediatamente e diagnostica bloqueios e fallback 3D", () => {
+  it("monta preflight imediatamente, diagnostica a sessão e permite cancelar sem erro falso", () => {
     const deferred = source("src/components/tabletop/tabletop-deferred-enhancements.tsx");
     const bridge = source("src/components/tabletop/tabletop-preflight-bridge.tsx");
+    const live = source("src/components/tabletop/tabletop-live-session.tsx");
     const preflight = source("src/lib/tabletop/tabletop-preflight.ts");
     expect(deferred).toContain('import { TabletopPreflightBridge }');
     expect(deferred).toContain("{master && <TabletopPreflightBridge />}");
     expect(deferred).not.toContain("const PreflightBridge = lazy");
     expect(bridge).toContain("tabletopSessionService.openSession =");
+    expect(bridge).toContain('new DOMException("Abertura da sessão cancelada no preflight.", "AbortError")');
+    expect(live).toContain('error.name === "AbortError"');
+    expect(live).toContain("if (isCancelledOperation(error)) return;");
     expect(preflight).toContain('"blocking"');
     expect(preflight).toContain("Realtime desabilitado");
     expect(preflight).toContain("3D sem WebGL2");
@@ -87,10 +91,12 @@ describe("roadmap de sofisticação da Mesa Nexus", () => {
     expect(tile).toContain("TADEON_UNIFIED_DRAG_MIME");
   });
 
-  it("mantém os novos painéis dentro da viewport e sem competição entre overlays", () => {
+  it("mantém os novos painéis dentro da viewport, abaixo dos dialogs e sem competição", () => {
     const setupCss = source("src/styles/tabletop-smart-setup.css");
     const preflightCss = source("src/styles/tabletop-preflight.css");
     const dropCss = source("src/styles/tabletop-unified-flow.css");
+    expect(setupCss).toContain("z-index: 218");
+    expect(setupCss).not.toContain("z-index: 246");
     expect(setupCss).toContain("env(safe-area-inset-top)");
     expect(setupCss).toContain('body:has(.tadeon-smart-setup[data-open="true"])');
     expect(setupCss).toContain('body:has(.tadeon-placeables[data-open="true"])');
