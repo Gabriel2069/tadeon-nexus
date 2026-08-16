@@ -35,6 +35,18 @@ function dedicatedPresentation() {
     return "director" as const;
   }
   if (params.get("embed") === "1") return "embed" as const;
+
+  // The Master Panel popout is meant to be a second copy of the exact same
+  // workspace. Stripping AppLayout made its navigation, widths and commandbar
+  // diverge from the original tab. Keep the normal shell in this one route;
+  // the query flag still prevents recursively offering another popout button.
+  if (
+    params.get("popout") === "1" &&
+    window.location.pathname === "/master-panel"
+  ) {
+    return null;
+  }
+
   if (params.get("popout") === "1") return "popout" as const;
   return null;
 }
