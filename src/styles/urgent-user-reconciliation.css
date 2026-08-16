@@ -3,7 +3,7 @@
    structural causes instead of layering another translucent modal surface. */
 
 /* --------------------------------------------------------------------------
-   Sidebar — restore the centered, symmetric collapsed state from before #149.
+   Sidebar: restore the centered, symmetric collapsed state from before #149.
    -------------------------------------------------------------------------- */
 #tadeon-desktop-sidebar:has(.tadeon-nav-item[data-mini="true"]) {
   width: 5rem !important;
@@ -33,7 +33,7 @@
 }
 
 /* --------------------------------------------------------------------------
-   Mesa — selection can never become a viewport effect.
+   Mesa: selection can never become a viewport effect.
    -------------------------------------------------------------------------- */
 html[data-tadeon-tabletop-selection-active="true"] :is(
   .tadeon-tabletop-panel-backdrop,
@@ -203,7 +203,7 @@ html[data-tadeon-tabletop-selection-active="true"] :is(
 }
 
 /* --------------------------------------------------------------------------
-   Director transmission — fix the parent grid, then restore the old controls.
+   Director transmission: fix the parent grid, then restore the old controls.
    -------------------------------------------------------------------------- */
 .tadeon-live-session__room > .tadeon-director-remote {
   grid-column: 1 / -1 !important;
@@ -302,7 +302,7 @@ html[data-tadeon-tabletop-selection-active="true"] :is(
 }
 
 /* --------------------------------------------------------------------------
-   Sheet — borrow the dossier's depth, hierarchy and active-state language.
+   Sheet: borrow the dossier's depth, hierarchy and active-state language.
    -------------------------------------------------------------------------- */
 .tadeon-sheet-page {
   --tadeon-sheet-accent: 217 215 164;
@@ -471,7 +471,7 @@ html[data-tadeon-tabletop-selection-active="true"] :is(
 }
 
 /* --------------------------------------------------------------------------
-   Login + Dashboard — make the visual change legible, not microscopic.
+   Login + Dashboard: make the visual change legible, not microscopic.
    -------------------------------------------------------------------------- */
 @media (min-width: 768px) {
   .tadeon-auth-shell {
