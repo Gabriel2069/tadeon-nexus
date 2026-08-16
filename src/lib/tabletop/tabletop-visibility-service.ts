@@ -57,8 +57,30 @@ export interface TabletopLight {
 
 export type TabletopFogShape = "brush" | "rectangle" | "ellipse" | "polygon";
 
+export type TabletopFogAudience =
+  | { scope: "global" }
+  | { scope: "users"; userIds: string[] }
+  | { scope: "roles"; roles: string[] };
+
 export function isTabletopFogShape(value: unknown): value is TabletopFogShape {
   return value === "brush" || value === "rectangle" || value === "ellipse" || value === "polygon";
+}
+
+export function normalizeTabletopFogAudience(value: unknown): TabletopFogAudience {
+  const source = objectValue(value);
+  if (source.scope === "users") {
+    const userIds = Array.isArray(source.userIds)
+      ? source.userIds.filter((item): item is string => typeof item === "string" && item.length > 0).slice(0, 128)
+      : [];
+    return userIds.length > 0 ? { scope: "users", userIds } : { scope: "global" };
+  }
+  if (source.scope === "roles") {
+    const roles = Array.isArray(source.roles)
+      ? source.roles.filter((item): item is string => typeof item === "string" && item.length > 0).slice(0, 16)
+      : [];
+    return roles.length > 0 ? { scope: "roles", roles } : { scope: "global" };
+  }
+  return { scope: "global" };
 }
 
 export interface TabletopFogStroke {
@@ -69,6 +91,7 @@ export interface TabletopFogStroke {
   points: Array<{ x: number; y: number }>;
   radius: number;
   sequenceIndex: number;
+  audience?: TabletopFogAudience;
 }
 
 export interface TabletopVisibilityState {
@@ -189,6 +212,7 @@ export function clampVisibilityState(state: TabletopVisibilityState): TabletopVi
       points: stroke.points.slice(0, 64),
       radius: Math.max(8, Math.min(1024, finite(stroke.radius, 160))),
       sequenceIndex: index,
+      audience: normalizeTabletopFogAudience(stroke.audience),
     })),
   };
 }
@@ -215,7 +239,7 @@ export class TabletopVisibilityService {
         .order("created_at"),
       this.database
         .from("tabletop_fog_strokes")
-        .select("id,level_id,operation,geometry,points,radius,sequence_index")
+        .select("id,level_id,operation,geometry,points,radius,sequence_index,audience")
         .eq("scene_id", sceneId)
         .order("sequence_index"),
     ]);
@@ -268,6 +292,7 @@ export class TabletopVisibilityService {
           : [],
         radius: finite(stroke.radius, 160),
         sequenceIndex: stroke.sequence_index,
+        audience: normalizeTabletopFogAudience(stroke.audience),
       })),
     });
   }
@@ -318,6 +343,7 @@ export class TabletopVisibilityService {
         points: stroke.points,
         radius: stroke.radius,
         sequence_index: stroke.sequenceIndex,
+        audience: normalizeTabletopFogAudience(stroke.audience),
       })),
     });
     if (error || typeof data !== "number") throw serviceError(error);
