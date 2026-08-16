@@ -15,6 +15,7 @@ import {
   Waves,
 } from "lucide-react";
 import { TabsList, TabsTrigger } from "@/components/ui/tabs";
+import "@/styles/workspace-polish.css";
 
 export const MASTER_TAB_VALUES = [
   "dashboard",
@@ -63,29 +64,13 @@ const groups: Array<{
   label: string;
   values: MasterTab[];
 }> = [
-  {
-    label: "Condução",
-    values: ["dashboard", "session", "scenes", "initiative"],
-  },
-  {
-    label: "Elenco",
-    values: ["npcs-v2", "threats", "investigation"],
-  },
-  {
-    label: "Ritmo",
-    values: ["interludes", "folds", "balance"],
-  },
-  {
-    label: "Arquivo",
-    values: ["catalog", "assets", "pinned", "notes", "data"],
-  },
+  { label: "Condução", values: ["dashboard", "session", "scenes", "initiative"] },
+  { label: "Elenco", values: ["npcs-v2", "threats", "investigation"] },
+  { label: "Ritmo", values: ["interludes", "folds", "balance"] },
+  { label: "Arquivo", values: ["catalog", "assets", "pinned", "notes", "data"] },
 ];
 
-export function MasterPanelNavigation({
-  showAssets = false,
-}: {
-  showAssets?: boolean;
-}) {
+export function MasterPanelNavigation({ showAssets = false }: { showAssets?: boolean }) {
   return (
     <div className="tadeon-master-navigation -mx-3 overflow-x-auto px-3 pb-1 md:-mx-6 md:px-6">
       <TabsList
@@ -94,11 +79,8 @@ export function MasterPanelNavigation({
       >
         {groups.map((group) => {
           const groupTabs = tabs.filter(
-            (tab) =>
-              group.values.includes(tab.value) &&
-              (tab.feature !== "assets" || showAssets),
+            (tab) => group.values.includes(tab.value) && (tab.feature !== "assets" || showAssets),
           );
-
           return (
             <div
               className="tadeon-master-navigation__group"
@@ -106,9 +88,7 @@ export function MasterPanelNavigation({
               role="presentation"
               data-master-group={group.label.toLocaleLowerCase("pt-BR")}
             >
-              <span className="tadeon-master-navigation__label">
-                {group.label}
-              </span>
+              <span className="tadeon-master-navigation__label">{group.label}</span>
               <div className="flex gap-1" role="presentation">
                 {groupTabs.map(({ value, label, icon: Icon }) => (
                   <TabsTrigger
