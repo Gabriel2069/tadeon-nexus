@@ -53,7 +53,13 @@ if (!runtime.__tadeonAdvancedGridRuntime) {
   prototype.snap = function snapAdvancedGrid(this: TabletopEngine, point: Point) {
     const scene = this.snapshot.scene;
     if (!scene.snap || scene.gridMode === "none") return point;
-    return snapPointToGrid(point, scene.gridMode, scene.gridSize * scene.gridScale);
+    return snapPointToGrid(
+      point,
+      scene.gridMode,
+      scene.gridSize * scene.gridScale,
+      scene.gridOffsetX ?? 0,
+      scene.gridOffsetY ?? 0,
+    );
   };
 
   prototype.setGrid = function setAdvancedGrid(
@@ -88,9 +94,6 @@ if (!runtime.__tadeonAdvancedGridRuntime) {
       },
       true,
     );
-    // Somente algumas tentativas baratas durante a abertura. O antigo
-    // MutationObserver varria o documento inteiro a cada mutação do React e
-    // podia monopolizar a thread principal justamente ao montar a Mesa.
     queueMicrotask(enhanceVisibleGridSelects);
     window.setTimeout(enhanceVisibleGridSelects, 250);
     window.setTimeout(enhanceVisibleGridSelects, 900);
