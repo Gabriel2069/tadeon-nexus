@@ -1,6 +1,11 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
+import {
+  computeKnowledgeForceLayout,
+  type KnowledgeGraphNode,
+  type KnowledgeLocalGraph,
+} from "@/lib/knowledge/knowledge-graph-memory";
 
 function source(path: string) {
   return readFileSync(join(process.cwd(), path), "utf8");
@@ -33,19 +38,73 @@ describe("reconciliação final das superfícies", () => {
     expect(folders).not.toContain("parentFolder");
   });
 
-  it("calibra o grafo denso sem remover os controles manuais", () => {
-    const graph = source("src/components/knowledge/nexus-graph-declutter-bridge.tsx");
-    expect(graph).toContain('setRange("Distância-base", 190)');
-    expect(graph).toContain('setRange("Repulsão", 1.65)');
-    expect(graph).toContain('setRange("Centro", 0.62)');
-    expect(graph).toContain("tadeon-brain-settings-toggle");
+  it("organiza a teia em aros sem permitir interseção entre esferas", () => {
+    const focus: KnowledgeGraphNode = {
+      id: "focus",
+      title: "Centro",
+      summary: "",
+      nodeType: "concept",
+      icon: null,
+      status: "canonical",
+      visibility: "workspace",
+      campaignId: null,
+      parentNodeId: null,
+      updatedAt: new Date(0).toISOString(),
+      tags: [],
+      semanticTerms: [],
+      explicitDegree: 20,
+      incomingMentions: 20,
+      outgoingMentions: 20,
+      depth: 0,
+      importance: 1,
+      weightedDegree: 20,
+    };
+    const nodes: KnowledgeGraphNode[] = [
+      focus,
+      ...Array.from({ length: 72 }, (_, index) => ({
+        ...focus,
+        id: `node-${index}`,
+        title: `Página ${index}`,
+        nodeType: index % 3 === 0 ? "character" as const : index % 3 === 1 ? "location" as const : "plot" as const,
+        depth: 1 + (index % 3),
+        importance: 0.18 + (index % 7) * 0.1,
+        weightedDegree: 1 + (index % 5),
+      })),
+    ];
+    const graph: KnowledgeLocalGraph = {
+      focusNodeId: focus.id,
+      depth: 3,
+      limit: 220,
+      truncated: false,
+      mode: "global",
+      nodes,
+      edges: [],
+    };
+    const positions = computeKnowledgeForceLayout(graph, {
+      linkDistance: 190,
+      linkStrength: 1,
+      repelStrength: 1.65,
+      centerStrength: 0.62,
+      clusterStrength: 0.5,
+    });
+    const radius = (node: KnowledgeGraphNode) => 12 + node.importance * 15 + (node.depth === 0 ? 3 : 0);
+    for (let left = 0; left < nodes.length; left += 1) {
+      for (let right = left + 1; right < nodes.length; right += 1) {
+        const a = positions.get(nodes[left].id)!;
+        const b = positions.get(nodes[right].id)!;
+        expect(Math.hypot(a.x - b.x, a.y - b.y)).toBeGreaterThanOrEqual(
+          radius(nodes[left]) + radius(nodes[right]),
+        );
+      }
+    }
   });
 
-  it("preserva o sotaque vermelho e o slide no painel separado do mestre", () => {
+  it("não sobrescreve mais layout, cor ou motion do menu original do mestre", () => {
     const css = source("src/styles/interface-reconciliation-final.css");
-    expect(css).toContain("--tadeon-master-accent: 351 52% 31%");
-    expect(css).toContain("[data-master-tab][data-state=\"active\"]");
-    expect(css).toContain("tadeon-master-surface-slide");
+    expect(css).toContain("Master panel intentionally has no override");
+    expect(css).not.toContain("--tadeon-master-accent:");
+    expect(css).not.toContain("tadeon-master-surface-slide");
+    expect(css).not.toContain("[data-master-tab][data-state=\"active\"]");
   });
 
   it("executa cues de Região e renderiza transições na saída do Diretor", () => {
