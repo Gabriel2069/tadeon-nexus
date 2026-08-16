@@ -19,10 +19,6 @@ function clamp(value: number, minimum: number, maximum: number) {
   return Math.max(minimum, Math.min(maximum, value));
 }
 
-function escapeAttribute(value: string) {
-  return value.replaceAll("&", "&amp;").replaceAll('"', "&quot;");
-}
-
 function localPoint(runtime: TabletopBrowserRuntime, point: LocalPoint): LocalPoint {
   const client = runtime.worldToClient(point);
   const bounds = runtime.host.getBoundingClientRect();
@@ -39,11 +35,17 @@ function screenRadius(
   return Math.max(0.5, Math.hypot(edge.x - center.x, edge.y - center.y));
 }
 
-function points(points: LocalPoint[]) {
-  return points.map((point) => `${point.x.toFixed(2)},${point.y.toFixed(2)}`).join(" ");
+function points(pointsValue: LocalPoint[]) {
+  return pointsValue
+    .map((point) => `${point.x.toFixed(2)},${point.y.toFixed(2)}`)
+    .join(" ");
 }
 
-function fogShape(runtime: TabletopBrowserRuntime, stroke: TabletopFogStroke, fill: string) {
+function fogShape(
+  runtime: TabletopBrowserRuntime,
+  stroke: TabletopFogStroke,
+  fill: string,
+) {
   const source = stroke.points;
   if (source.length === 0) return "";
   if (stroke.shape === "brush") {
@@ -105,7 +107,8 @@ function lightShape(runtime: TabletopBrowserRuntime, light: TabletopLight) {
   }
 
   const normal = direction + Math.PI / 2;
-  const halfWidth = shape === "line" ? Math.max(6, light.radius * 0.08) : light.radius * 0.42;
+  const halfWidth =
+    shape === "line" ? Math.max(6, light.radius * 0.08) : light.radius * 0.42;
   const depth = light.radius;
   const worldPoints = [
     {
@@ -132,7 +135,9 @@ function fogUsesCoveredBase(strokes: TabletopFogStroke[]) {
   return strokes.length === 0 || strokes[0]?.operation === "reveal";
 }
 
-export function tabletopNativeVisibilityNeedsMask(state: TabletopVisibilityState | undefined) {
+export function tabletopNativeVisibilityNeedsMask(
+  state: TabletopVisibilityState | undefined,
+) {
   if (!state) return false;
   return state.fogEnabled || state.globalIllumination < 0.999;
 }
@@ -173,14 +178,21 @@ export function buildTabletopNativeVisibilityMask(
   const orderedFog = [...state.fogStrokes].sort(
     (left, right) => left.sequenceIndex - right.sequenceIndex,
   );
-  const fogBase = !state.fogEnabled || !fogUsesCoveredBase(orderedFog) ? "white" : "black";
+  const fogBase =
+    !state.fogEnabled || !fogUsesCoveredBase(orderedFog) ? "white" : "black";
   const fogShapes = state.fogEnabled
     ? orderedFog
-        .map((stroke) => fogShape(runtime, stroke, stroke.operation === "reveal" ? "white" : "black"))
+        .map((stroke) =>
+          fogShape(
+            runtime,
+            stroke,
+            stroke.operation === "reveal" ? "white" : "black",
+          ),
+        )
         .join("")
     : "";
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}"><defs><mask id="dark" maskUnits="userSpaceOnUse" x="0" y="0" width="${width}" height="${height}"><rect width="${width}" height="${height}" fill="white" fill-opacity="${illumination.toFixed(3)}"/>${lights}</mask><mask id="fog" maskUnits="userSpaceOnUse" x="0" y="0" width="${width}" height="${height}"><rect width="${width}" height="${height}" fill="${fogBase}"/>${fogShapes}</mask></defs><g mask="url(#fog)"><rect width="${width}" height="${height}" fill="white" mask="url(#dark)"/></g></svg>`;
-  return `url("data:image/svg+xml,${encodeURIComponent(escapeAttribute(svg))}")`;
+  return `url("data:image/svg+xml,${encodeURIComponent(svg)}")`;
 }
 
 export function applyTabletopNativeVisibilityMask(
@@ -190,14 +202,14 @@ export function applyTabletopNativeVisibilityMask(
 ) {
   if (!tabletopNativeVisibilityNeedsMask(state) || !state) {
     canvas.style.maskImage = "none";
-    canvas.style.webkitMaskImage = "none";
+    canvas.style.setProperty("-webkit-mask-image", "none");
     return;
   }
   const mask = buildTabletopNativeVisibilityMask(runtime, state);
   canvas.style.maskImage = mask;
-  canvas.style.webkitMaskImage = mask;
   canvas.style.maskRepeat = "no-repeat";
-  canvas.style.webkitMaskRepeat = "no-repeat";
   canvas.style.maskSize = "100% 100%";
-  canvas.style.webkitMaskSize = "100% 100%";
+  canvas.style.setProperty("-webkit-mask-image", mask);
+  canvas.style.setProperty("-webkit-mask-repeat", "no-repeat");
+  canvas.style.setProperty("-webkit-mask-size", "100% 100%");
 }
