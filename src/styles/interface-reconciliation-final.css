@@ -1,0 +1,230 @@
+/* Final cross-surface reconciliation.
+   This file intentionally loads last and uses the real tabletop stage geometry
+   exposed by TabletopProgressiveInterfaceBridge instead of viewport guesses. */
+
+/* ---------------- Mesa Nexus: one stage, explicit chrome lanes ---------------- */
+body:has(.tadeon-tabletop-studio) {
+  --tadeon-stage-right-safe: calc(var(--tadeon-tabletop-stage-right, 0px) + max(.65rem, env(safe-area-inset-right)));
+  --tadeon-stage-left-safe: calc(var(--tadeon-tabletop-stage-left, 0px) + max(.65rem, env(safe-area-inset-left)));
+  --tadeon-stage-utility-width: min(21rem, max(14rem, calc(var(--tadeon-tabletop-stage-width, 100vw) * .34)));
+  --tadeon-stage-footer-reserve: .7rem;
+}
+
+@media (min-width: 1180px) {
+  .tadeon-creative-dock,
+  .tadeon-placeables,
+  .tadeon-semantic-transform,
+  .tadeon-nexus-tabletop-locator,
+  .tadeon-smart-setup__launcher {
+    right: var(--tadeon-stage-right-safe) !important;
+  }
+
+  .tadeon-creative-dock {
+    width: var(--tadeon-stage-utility-width) !important;
+    bottom: calc(var(--tadeon-tabletop-bottom-row-2) + .25rem) !important;
+  }
+  .tadeon-creative-dock[data-open="false"] {
+    bottom: calc(var(--tadeon-tabletop-bottom-row-1) + .25rem) !important;
+  }
+  .tadeon-placeables { bottom: var(--tadeon-tabletop-bottom-edge) !important; }
+  .tadeon-semantic-transform { bottom: var(--tadeon-tabletop-bottom-row-1) !important; }
+  .tadeon-smart-setup__launcher { top: var(--tadeon-tabletop-top-row-2) !important; }
+
+  .tadeon-smart-setup {
+    right: var(--tadeon-stage-right-safe) !important;
+    width: min(28rem, calc(var(--tadeon-tabletop-stage-width, 100vw) - 1.4rem)) !important;
+  }
+
+  .tadeon-tabletop-progressive-dock,
+  .tadeon-tactical-dock,
+  .tadeon-tabletop-selection-actions {
+    left: var(--tadeon-tabletop-stage-center, 50%) !important;
+    max-width: calc(var(--tadeon-tabletop-stage-width, 100vw) - 2rem) !important;
+  }
+
+  html[data-tadeon-tabletop-interface="advanced"] .tadeon-tabletop-progressive-dock {
+    bottom: calc(var(--tadeon-tabletop-bottom-edge) + 3.15rem) !important;
+  }
+  html[data-tadeon-tabletop-interface="advanced"] .tadeon-tactical-dock {
+    bottom: calc(var(--tadeon-tabletop-bottom-row-1) + 3.15rem) !important;
+  }
+  html[data-tadeon-tabletop-interface="advanced"] .tadeon-tabletop-selection-actions {
+    bottom: calc(var(--tadeon-tabletop-bottom-row-2) + 3.15rem) !important;
+  }
+  html[data-tadeon-tabletop-interface="advanced"] .tadeon-creative-dock[data-open="false"] {
+    bottom: calc(var(--tadeon-tabletop-bottom-row-1) + 3.15rem) !important;
+  }
+}
+
+.tadeon-tabletop-panel-backdrop {
+  background: transparent !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+.tadeon-tabletop-panel-backdrop[data-open="false"] {
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+@media (min-width: 801px) {
+  .tadeon-tabletop-panel-backdrop[data-open="true"] {
+    opacity: 0 !important;
+    pointer-events: none !important;
+  }
+}
+
+@media (min-width: 1180px) {
+  body:has(.tadeon-creative-dock[data-open="true"]) .tadeon-tabletop-selection-actions,
+  body:has(.tadeon-smart-setup[data-open="true"]) .tadeon-creative-dock,
+  body:has(.tadeon-smart-setup[data-open="true"]) .tadeon-placeables,
+  body:has(.tadeon-smart-setup[data-open="true"]) .tadeon-semantic-transform {
+    opacity: 0 !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+  }
+}
+
+@media (max-width: 1179px) {
+  .tadeon-creative-dock {
+    right: .55rem !important;
+    left: .55rem !important;
+    width: auto !important;
+    bottom: var(--tadeon-tabletop-bottom-row-3) !important;
+  }
+  .tadeon-creative-dock[data-open="false"] {
+    left: auto !important;
+    width: min(12rem, calc(100vw - 1.1rem)) !important;
+  }
+  .tadeon-smart-setup__launcher {
+    top: max(.6rem, env(safe-area-inset-top)) !important;
+    right: .6rem !important;
+  }
+  body:has(.tadeon-tabletop-panel[data-mobile-open="true"]) .tadeon-creative-dock,
+  body:has(.tadeon-tabletop-panel[data-mobile-open="true"]) .tadeon-smart-setup__launcher {
+    opacity: 0 !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+  }
+}
+
+/* ---------------- O Nexus: clarity, folders and resilient primary CTA -------- */
+.tadeon-route-nexus .tadeon-nexus-tools > button:last-child,
+.tadeon-route-nexus .tadeon-nexus-tools > [data-slot="button"]:last-child {
+  min-width: 7.8rem !important;
+  opacity: 1 !important;
+  color: hsl(var(--primary-foreground)) !important;
+}
+.tadeon-route-nexus .tadeon-nexus-tools > button:last-child svg,
+.tadeon-route-nexus .tadeon-nexus-tools > button:last-child span {
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+.tadeon-nexus-folderbar {
+  display: flex;
+  gap: .35rem;
+  margin-top: .65rem;
+  padding: .35rem;
+  overflow-x: auto;
+  border: 1px solid hsl(var(--border) / .55);
+  border-radius: .75rem;
+  background: hsl(var(--background) / .18);
+  scrollbar-width: none;
+}
+.tadeon-nexus-folderbar::-webkit-scrollbar { display: none; }
+.tadeon-nexus-folderbar button {
+  display: inline-flex;
+  flex: 0 0 auto;
+  min-height: 1.9rem;
+  align-items: center;
+  gap: .3rem;
+  border-radius: .55rem;
+  padding: .3rem .55rem;
+  color: hsl(var(--muted-foreground));
+  font-size: .64rem;
+  font-weight: 700;
+  transition: transform 150ms ease, color 150ms ease, background-color 150ms ease;
+}
+.tadeon-nexus-folderbar button:hover { transform: translateY(-1px); color: hsl(var(--foreground)); }
+.tadeon-nexus-folderbar button[aria-pressed="true"] {
+  background: hsl(var(--primary) / .12);
+  color: hsl(var(--foreground));
+  box-shadow: inset 0 0 0 1px hsl(var(--primary) / .24);
+}
+.tadeon-nexus-folderbar button small { opacity: .62; font-size: .58rem; }
+.tadeon-nexus-index__node[data-folder-hidden="true"] { display: none !important; }
+
+.tadeon-brain-canvas,
+.tadeon-brain-viewport,
+[class*="tadeon-brain"][class*="canvas"] {
+  min-height: 34rem;
+}
+
+/* ---------------- Master panel parity: embedded and separate route ------------ */
+body:has(.tadeon-master-navigation) {
+  --tadeon-master-accent: 351 52% 31%;
+  --tadeon-master-accent-bright: 351 58% 43%;
+}
+body:has(.tadeon-master-navigation) .tadeon-master-navigation {
+  position: relative;
+  border-radius: 1rem;
+  background:
+    radial-gradient(circle at 8% 0%, hsl(var(--tadeon-master-accent-bright) / .15), transparent 22rem),
+    linear-gradient(110deg, hsl(var(--tadeon-master-accent) / .08), transparent 48%);
+}
+body:has(.tadeon-master-navigation) .tadeon-master-navigation__group {
+  position: relative;
+  transition: transform 200ms cubic-bezier(.2,.8,.2,1), opacity 180ms ease;
+}
+body:has(.tadeon-master-navigation) .tadeon-master-navigation__group:hover { transform: translateY(-1px); }
+body:has(.tadeon-master-navigation) [data-master-tab][data-state="active"] {
+  background: hsl(var(--tadeon-master-accent)) !important;
+  color: white !important;
+  box-shadow: 0 10px 28px -16px hsl(var(--tadeon-master-accent-bright) / .95);
+}
+body:has(.tadeon-master-navigation) [role="tabpanel"][data-state="active"] {
+  animation: tadeon-master-surface-slide 260ms cubic-bezier(.2,.8,.2,1) both;
+}
+body:has(.tadeon-master-navigation) :is(.tadeon-master-hub, .tadeon-session-workspace, .tadeon-master-catalog) {
+  --primary: var(--tadeon-master-accent);
+}
+@keyframes tadeon-master-surface-slide {
+  from { opacity: 0; transform: translateX(18px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+/* ---------------- Director: cue transition is a rendered behavior ------------- */
+.tadeon-director-output.is-transitioning[data-transition="fade"] .tadeon-director-output__canvas,
+.tadeon-director-output.is-transitioning[data-transition="fade"] .tadeon-director-output__intermission,
+.tadeon-director-output.is-transitioning[data-transition="fade"] .tadeon-director-output__hud {
+  animation: tadeon-director-cue-fade 520ms cubic-bezier(.2,.8,.2,1) both;
+}
+.tadeon-director-output.is-transitioning[data-transition="orbit"] .tadeon-director-output__canvas {
+  animation: tadeon-director-cue-orbit 720ms cubic-bezier(.16,.84,.22,1) both;
+  transform-origin: 50% 52%;
+}
+.tadeon-director-output.is-transitioning[data-transition="cut"] .tadeon-director-output__canvas {
+  animation: tadeon-director-cue-cut 110ms steps(2, end) both;
+}
+@keyframes tadeon-director-cue-fade {
+  0% { opacity: .05; filter: blur(5px) saturate(.72); }
+  100% { opacity: 1; filter: blur(0) saturate(1); }
+}
+@keyframes tadeon-director-cue-orbit {
+  0% { opacity: .25; transform: perspective(900px) rotateY(-4deg) scale(.985); filter: blur(2px); }
+  100% { opacity: 1; transform: perspective(900px) rotateY(0) scale(1); filter: blur(0); }
+}
+@keyframes tadeon-director-cue-cut {
+  0%, 45% { opacity: .18; }
+  46%, 100% { opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body:has(.tadeon-master-navigation) [role="tabpanel"][data-state="active"],
+  body:has(.tadeon-master-navigation) .tadeon-master-navigation__group,
+  .tadeon-nexus-folderbar button,
+  .tadeon-director-output.is-transitioning :is(.tadeon-director-output__canvas, .tadeon-director-output__intermission, .tadeon-director-output__hud) {
+    animation: none !important;
+    transition: none !important;
+  }
+}

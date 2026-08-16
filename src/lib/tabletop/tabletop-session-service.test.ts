@@ -76,6 +76,9 @@ describe("tabletop session service", () => {
           tilt: 0.5,
           elevationScale: 1,
         },
+        cues: [],
+        activeCueId: null,
+        autoAdvance: false,
       },
       createdBy: "master",
       createdAt: "2026-08-01T00:00:00Z",
@@ -93,6 +96,12 @@ describe("tabletop session service", () => {
     expect(
       toTabletopSessionServiceError({
         code: "40001",
+        message: "TABLETOP_SESSION_VERSION_CONFLICT",
+      }).code,
+    ).toBe("TABLETOP_SESSION_CONFLICT");
+    expect(
+      toTabletopSessionServiceError({
+        code: "P0001",
         message: "TABLETOP_SESSION_VERSION_CONFLICT",
       }).code,
     ).toBe("TABLETOP_SESSION_CONFLICT");

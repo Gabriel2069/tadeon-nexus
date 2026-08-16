@@ -9,6 +9,7 @@ const SpatialAudioBridge = lazy(() => import("@/components/tabletop/tabletop-spa
 const NativeModelBridge = lazy(() => import("@/components/tabletop/tabletop-native-model-bridge").then((module) => ({ default: module.TabletopNativeModelBridge })));
 const RoofForegroundBridge = lazy(() => import("@/components/tabletop/tabletop-roof-foreground-bridge").then((module) => ({ default: module.TabletopRoofForegroundBridge })));
 const AdaptivePerformanceBridge = lazy(() => import("@/components/tabletop/tabletop-adaptive-performance-bridge").then((module) => ({ default: module.TabletopAdaptivePerformanceBridge })));
+const SpatialStreamingBridge = lazy(() => import("@/components/tabletop/tabletop-spatial-streaming-bridge").then((module) => ({ default: module.TabletopSpatialStreamingBridge })));
 const CreativeDockBridge = lazy(() => import("@/components/tabletop/tabletop-creative-dock-bridge").then((module) => ({ default: module.TabletopCreativeDockBridge })));
 const FogGeometryBridge = lazy(() => import("@/components/tabletop/tabletop-fog-geometry-bridge").then((module) => ({ default: module.TabletopFogGeometryBridge })));
 const PlaceablesInspectorBridge = lazy(() => import("@/components/tabletop/tabletop-placeables-inspector-bridge").then((module) => ({ default: module.TabletopPlaceablesInspectorBridge })));
@@ -18,6 +19,8 @@ const SemanticTransformBridge = lazy(() => import("@/components/tabletop/tableto
 const RadialActionsBridge = lazy(() => import("@/components/tabletop/tabletop-radial-actions-bridge").then((module) => ({ default: module.TabletopRadialActionsBridge })));
 const SmartSetupBridge = lazy(() => import("@/components/tabletop/tabletop-smart-setup-bridge").then((module) => ({ default: module.TabletopSmartSetupBridge })));
 const UnifiedDropBridge = lazy(() => import("@/components/tabletop/tabletop-unified-drop-bridge").then((module) => ({ default: module.TabletopUnifiedDropBridge })));
+const DirectorTimelineBridge = lazy(() => import("@/components/tabletop/tabletop-director-timeline-bridge").then((module) => ({ default: module.TabletopDirectorTimelineBridge })));
+const RegionAutomationBridge = lazy(() => import("@/components/tabletop/tabletop-region-automation-bridge").then((module) => ({ default: module.TabletopRegionAutomationBridge })));
 
 export function TabletopDeferredEnhancements({ master }: { master: boolean }) {
   const [tier, setTier] = useState(0);
@@ -40,7 +43,18 @@ export function TabletopDeferredEnhancements({ master }: { master: boolean }) {
       {master && <TabletopPreflightBridge />}
       <Suspense fallback={null}>
         {tier >= 1 && <><LocateBridge /><PlayerInteractionBridge /></>}
-        {tier >= 2 && <><ReliabilityEditorBridge /><AtmosphereBridge /><SpatialAudioBridge /><NativeModelBridge secureVisibility={!master} /><RoofForegroundBridge /><AdaptivePerformanceBridge /></>}
+        {tier >= 2 && (
+          <>
+            <ReliabilityEditorBridge />
+            <AtmosphereBridge />
+            <SpatialAudioBridge />
+            <NativeModelBridge secureVisibility={!master} />
+            <RoofForegroundBridge />
+            <AdaptivePerformanceBridge />
+            <SpatialStreamingBridge />
+          </>
+        )}
+        {master && tier >= 2 && <DirectorTimelineBridge />}
         {master && tier >= 3 && (
           <>
             <CreativeDockBridge />
@@ -52,6 +66,7 @@ export function TabletopDeferredEnhancements({ master }: { master: boolean }) {
             <RadialActionsBridge />
             <SmartSetupBridge />
             <UnifiedDropBridge />
+            <RegionAutomationBridge />
           </>
         )}
       </Suspense>

@@ -42,10 +42,13 @@ export function TabletopDirectorWorkspace({
   const { user, profile } = useAuth();
   const hostRef = useRef<HTMLDivElement>(null);
   const engineRef = useRef<TabletopEngine | null>(null);
+  const previousCueId = useRef<string | null>(null);
+  const transitionTimer = useRef(0);
   const [view, setView] = useState<TabletopParticipantView | null>(null);
   const [engineReady, setEngineReady] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [transitioning, setTransitioning] = useState(false);
   const [presenceStartedAt] = useState(() => Date.now());
 
   const load = useCallback(async () => {
@@ -120,6 +123,30 @@ export function TabletopDirectorWorkspace({
     engine.applyDirectorCamera(state.camera);
   }, [engineReady, view]);
 
+  const state = view?.session.directorState;
+  const activeCue = useMemo(
+    () => state?.cues.find((cue) => cue.id === state.activeCueId) ?? null,
+    [state?.activeCueId, state?.cues],
+  );
+
+  useEffect(() => {
+    const cueId = activeCue?.id ?? null;
+    if (!cueId || cueId === previousCueId.current) return;
+    previousCueId.current = cueId;
+    window.clearTimeout(transitionTimer.current);
+    setTransitioning(false);
+    window.requestAnimationFrame(() => {
+      setTransitioning(true);
+      const duration = Math.max(180, Math.min(1400, Math.round((activeCue?.durationMs ?? 900) * 0.28)));
+      transitionTimer.current = window.setTimeout(() => setTransitioning(false), duration);
+    });
+  }, [activeCue]);
+
+  useEffect(
+    () => () => window.clearTimeout(transitionTimer.current),
+    [],
+  );
+
   const onRealtimeEvent = useCallback(
     (event: TabletopRealtimeEvent) => {
       if (event.type === "token.move-commit") {
@@ -176,13 +203,14 @@ export function TabletopDirectorWorkspace({
     onEvent: onRealtimeEvent,
   });
 
-  const state = view?.session.directorState;
   const title = state?.title || view?.scene?.name || "Mesa Nexus";
   const subtitle = state?.subtitle || view?.session.name || "Saída do Diretor";
 
   return (
     <main
-      className={`tadeon-director-output is-${state?.mode ?? "loading"}`}
+      className={`tadeon-director-output is-${state?.mode ?? "loading"}${transitioning ? " is-transitioning" : ""}`}
+      data-transition={activeCue?.transition ?? "cut"}
+      data-active-cue={activeCue?.id ?? undefined}
       aria-live="polite"
     >
       <ThreadField />

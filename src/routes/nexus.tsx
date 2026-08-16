@@ -2,6 +2,8 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { Loader2 } from "lucide-react";
 import { NexusWorkspace } from "@/components/knowledge/nexus-workspace";
+import { NexusFolderBarBridge } from "@/components/knowledge/nexus-folder-bar-bridge";
+import { NexusGraphDeclutterBridge } from "@/components/knowledge/nexus-graph-declutter-bridge";
 import { NexusTabletopLocator } from "@/components/knowledge/nexus-tabletop-locator";
 import { ProtectedShell } from "@/components/protected-shell";
 import { loadFeatureFlags } from "@/lib/feature-flag-repository";
@@ -71,6 +73,8 @@ function NexusRoute() {
         graphEnabled={flags.nexus_graph_enabled}
         initialNodeId={node}
       />
+      <NexusFolderBarBridge />
+      {flags.nexus_graph_enabled && <NexusGraphDeclutterBridge />}
       {flags.nexus_tabletop_enabled && <NexusTabletopLocator nodeId={node} />}
     </>
   );

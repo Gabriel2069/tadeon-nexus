@@ -6,6 +6,10 @@ import {
   tabletopNativeVisibilityFingerprint,
 } from "@/lib/tabletop/tabletop-native-model-visibility";
 import { currentTabletopRuntime } from "@/lib/tabletop/tabletop-player-runtime";
+import {
+  filterSceneForTabletopStreaming,
+  type TabletopStreamingPlan,
+} from "@/lib/tabletop/tabletop-spatial-streaming";
 import type { TabletopVisibilityState } from "@/lib/tabletop/tabletop-visibility-service";
 import type { TabletopSnapshot } from "@/lib/tabletop/types";
 
@@ -37,6 +41,16 @@ function nativeCanvas(host: HTMLElement) {
   return host.querySelector<HTMLCanvasElement>(".tadeon-tabletop-native-model-layer");
 }
 
+function streamedSnapshot(
+  snapshot: TabletopSnapshot,
+  plan: TabletopStreamingPlan | null,
+): TabletopSnapshot {
+  return {
+    ...snapshot,
+    scene: filterSceneForTabletopStreaming(snapshot.scene, plan),
+  };
+}
+
 export function TabletopNativeModelBridge({
   secureVisibility = false,
 }: {
@@ -45,10 +59,15 @@ export function TabletopNativeModelBridge({
   useEffect(() => {
     let renderer: TabletopNativeModelRenderer | null = null;
     let snapshot: TabletopSnapshot | null = null;
+    let streamingPlan: TabletopStreamingPlan | null =
+      window.__tadeonTabletopStreamingPlan ?? null;
     let frame = 0;
     let bootstrapFrame = 0;
     let stopped = false;
     let maskFingerprint = "";
+
+    const activeSnapshot = () =>
+      snapshot ? streamedSnapshot(snapshot, streamingPlan) : null;
 
     const syncVisibilityMask = () => {
       const runtime = currentTabletopRuntime();
@@ -67,9 +86,6 @@ export function TabletopNativeModelBridge({
 
       const state = (runtime.engine as unknown as VisibilityInternals).visibilityState;
       if (!state) {
-        // Fail closed: the participant must never see a native mesh before the
-        // server-authoritative visibility document has reached the engine.
-        // The Pixi shell remains available as the safe fallback meanwhile.
         canvas.style.visibility = "hidden";
         maskFingerprint = "awaiting-visibility";
         return;
@@ -85,16 +101,36 @@ export function TabletopNativeModelBridge({
     const draw = (time: number) => {
       frame = 0;
       const runtime = currentTabletopRuntime();
-      if (stopped || !renderer || !runtime || !snapshot || !hasNativeModels(snapshot))
+      const renderSnapshot = activeSnapshot();
+      if (
+        stopped ||
+        !renderer ||
+        !runtime ||
+        !renderSnapshot ||
+        !hasNativeModels(renderSnapshot)
+      )
         return;
       syncVisibilityMask();
-      renderer.render(runtime, snapshot, time);
+      renderer.render(runtime, renderSnapshot, time);
       frame = window.requestAnimationFrame(draw);
     };
 
     const start = () => {
-      if (!frame && renderer && snapshot && hasNativeModels(snapshot))
+      const renderSnapshot = activeSnapshot();
+      if (!frame && renderer && renderSnapshot && hasNativeModels(renderSnapshot))
         frame = window.requestAnimationFrame(draw);
+    };
+
+    const syncRenderer = () => {
+      const renderSnapshot = activeSnapshot();
+      if (!renderer || !renderSnapshot) return;
+      renderer.preload(renderSnapshot);
+      syncVisibilityMask();
+      if (!hasNativeModels(renderSnapshot)) {
+        const runtime = currentTabletopRuntime();
+        if (runtime) renderer.render(runtime, renderSnapshot, performance.now());
+      }
+      start();
     };
 
     const install = () => {
@@ -108,9 +144,7 @@ export function TabletopNativeModelBridge({
       try {
         renderer = new TabletopNativeModelRenderer(runtime.host);
         snapshot = runtime.snapshot();
-        renderer.preload(snapshot);
-        syncVisibilityMask();
-        start();
+        syncRenderer();
       } catch {
         // WebGL2 can be unavailable on restricted WebViews or after context loss.
         // The normal tabletop token shell remains visible as a safe fallback.
@@ -121,15 +155,15 @@ export function TabletopNativeModelBridge({
       const detail = (event as CustomEvent<TabletopSnapshot>).detail;
       snapshot = detail ?? currentTabletopRuntime()?.snapshot() ?? null;
       maskFingerprint = "";
-      if (renderer && snapshot) {
-        renderer.preload(snapshot);
-        syncVisibilityMask();
-        if (!hasNativeModels(snapshot)) {
-          const runtime = currentTabletopRuntime();
-          if (runtime) renderer.render(runtime, snapshot, performance.now());
-        }
-      }
-      start();
+      syncRenderer();
+    };
+
+    const onStreaming = (event: Event) => {
+      streamingPlan =
+        (event as CustomEvent<TabletopStreamingPlan>).detail ??
+        window.__tadeonTabletopStreamingPlan ??
+        null;
+      syncRenderer();
     };
 
     const onDestroyed = () => {
@@ -143,12 +177,14 @@ export function TabletopNativeModelBridge({
 
     install();
     window.addEventListener("tadeon-tabletop-render", onRender);
+    window.addEventListener("tadeon-tabletop-streaming-plan", onStreaming);
     window.addEventListener("tadeon-tabletop-runtime-destroyed", onDestroyed);
     return () => {
       stopped = true;
       if (frame) window.cancelAnimationFrame(frame);
       if (bootstrapFrame) window.cancelAnimationFrame(bootstrapFrame);
       window.removeEventListener("tadeon-tabletop-render", onRender);
+      window.removeEventListener("tadeon-tabletop-streaming-plan", onStreaming);
       window.removeEventListener("tadeon-tabletop-runtime-destroyed", onDestroyed);
       renderer?.destroy();
     };
