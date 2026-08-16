@@ -23,9 +23,23 @@
   }
   .tadeon-smart-setup,
   .tadeon-placeables__panel,
+  .tadeon-creative-dock__panel,
+  .tadeon-tabletop-precision-editor,
+  .tadeon-director-remote,
+  .tadeon-director-timeline,
+  .tadeon-tabletop-region-automation,
+  .tadeon-tabletop-visibility-inspector,
+  .tadeon-tabletop-atmosphere,
+  .tadeon-tabletop-preflight {
+    box-sizing:border-box;
+    max-width:min(27rem,calc(var(--tadeon-tabletop-stage-width,100vw) - 1.5rem)) !important;
+    max-height:calc(100dvh - var(--tadeon-tabletop-top-edge,5rem) - var(--tadeon-tabletop-bottom-row-2,8rem) - 2rem) !important;
+    overscroll-behavior:contain;
+  }
+  .tadeon-smart-setup,
+  .tadeon-placeables__panel,
   .tadeon-creative-dock__panel {
     right:calc(var(--tadeon-tabletop-stage-right,0px) + .75rem) !important;
-    max-width:min(27rem,calc(var(--tadeon-tabletop-stage-width,100vw) - 1.5rem)) !important;
   }
   .tadeon-tabletop-progressive-dock,
   .tadeon-tactical-dock,
@@ -40,16 +54,33 @@
     .tadeon-placeables,.tadeon-semantic-transform,.tadeon-smart-setup__launcher,.tadeon-nexus-tabletop-locator
   ),
   body:has(.tadeon-placeables[data-open="true"]) :is(
-    .tadeon-tabletop-selection-actions,.tadeon-creative-dock,.tadeon-semantic-transform,
-    .tadeon-smart-setup__launcher,.tadeon-nexus-tabletop-locator
+    .tadeon-tabletop-progressive-dock,.tadeon-tactical-dock,.tadeon-tabletop-selection-actions,
+    .tadeon-creative-dock,.tadeon-semantic-transform,.tadeon-smart-setup__launcher,.tadeon-nexus-tabletop-locator
   ),
   body:has(.tadeon-smart-setup[data-open="true"]) :is(
     .tadeon-tabletop-progressive-dock,.tadeon-tactical-dock,.tadeon-tabletop-selection-actions,
     .tadeon-creative-dock,.tadeon-placeables,.tadeon-semantic-transform,.tadeon-nexus-tabletop-locator
   ),
   body:has(.tadeon-tabletop-precision-editor) :is(
+    .tadeon-tabletop-progressive-dock,.tadeon-tactical-dock,.tadeon-tabletop-selection-actions,
     .tadeon-creative-dock,.tadeon-placeables,.tadeon-semantic-transform,
     .tadeon-smart-setup__launcher,.tadeon-nexus-tabletop-locator
+  ),
+  body:has(.tadeon-tactical-dock__power-list) :is(
+    .tadeon-tabletop-selection-actions,.tadeon-creative-dock,.tadeon-placeables,
+    .tadeon-semantic-transform,.tadeon-smart-setup__launcher,.tadeon-nexus-tabletop-locator
+  ),
+  body:has(.tadeon-director-remote[data-open="true"]) :is(
+    .tadeon-tabletop-selection-actions,.tadeon-creative-dock,.tadeon-placeables,
+    .tadeon-semantic-transform,.tadeon-smart-setup__launcher,.tadeon-nexus-tabletop-locator
+  ),
+  body:has(.tadeon-tabletop-region-automation[data-open="true"]) :is(
+    .tadeon-tabletop-progressive-dock,.tadeon-tactical-dock,.tadeon-tabletop-selection-actions,
+    .tadeon-creative-dock,.tadeon-placeables,.tadeon-semantic-transform,.tadeon-smart-setup__launcher
+  ),
+  body:has(.tadeon-tabletop-visibility-inspector[data-open="true"]) :is(
+    .tadeon-tabletop-selection-actions,.tadeon-creative-dock,.tadeon-placeables,
+    .tadeon-semantic-transform,.tadeon-smart-setup__launcher,.tadeon-nexus-tabletop-locator
   ) {
     opacity:0 !important;
     visibility:hidden !important;
@@ -60,24 +91,65 @@
 @media (max-width:1179px) {
   body:has(.tadeon-tabletop-panel[data-mobile-open="true"]) :is(
     .tadeon-creative-dock,.tadeon-placeables,.tadeon-smart-setup__launcher,
-    .tadeon-semantic-transform,.tadeon-tabletop-selection-actions,.tadeon-tactical-dock
+    .tadeon-semantic-transform,.tadeon-tabletop-selection-actions,.tadeon-tactical-dock,
+    .tadeon-tabletop-progressive-dock,.tadeon-nexus-tabletop-locator,
+    .tadeon-tabletop-reliability-strip,.tadeon-director-enhancement-bar,
+    .tadeon-tabletop-precision-editor
   ) { opacity:0 !important; visibility:hidden !important; pointer-events:none !important; }
+
+  :is(
+    .tadeon-smart-setup,.tadeon-placeables__panel,.tadeon-creative-dock__panel,
+    .tadeon-tabletop-precision-editor,.tadeon-director-remote,.tadeon-director-timeline,
+    .tadeon-tabletop-region-automation,.tadeon-tabletop-visibility-inspector,
+    .tadeon-tabletop-atmosphere,.tadeon-tabletop-preflight
+  ) {
+    max-width:calc(100vw - max(1rem,env(safe-area-inset-left)) - max(1rem,env(safe-area-inset-right))) !important;
+    max-height:calc(100dvh - max(1rem,env(safe-area-inset-top)) - max(5rem,env(safe-area-inset-bottom))) !important;
+    overscroll-behavior:contain;
+  }
 }
 
-/* Collapsed desktop sidebar: boxes grow sideways instead of clipping icons. */
-#tadeon-desktop-sidebar:has(.tadeon-nav-item[data-mini="true"]) { width:5rem !important; }
-#tadeon-desktop-sidebar .tadeon-nav-item[data-mini="true"],
-#tadeon-desktop-sidebar button[data-mini="true"] {
-  width:3.35rem; min-width:3.35rem; min-height:3.1rem; margin-inline:auto; padding-inline:.7rem !important;
+/* Collapsed desktop sidebar: boxes deliberately extend to the right of their glyph. */
+#tadeon-desktop-sidebar:has(.tadeon-nav-item[data-mini="true"]) { width:5.5rem !important; }
+#tadeon-desktop-sidebar .tadeon-nav-item[data-mini="true"] {
+  width:4.15rem !important;
+  min-width:4.15rem !important;
+  min-height:3.2rem;
+  margin-left:.2rem !important;
+  margin-right:auto !important;
+  justify-content:flex-start !important;
+  padding-left:1.02rem !important;
+  padding-right:.78rem !important;
 }
 #tadeon-desktop-sidebar .tadeon-nav-item[data-mini="true"] .tadeon-nav-item__icon {
-  display:grid; width:1.8rem; height:1.8rem; place-items:center; flex:0 0 1.8rem;
+  display:grid;
+  width:1.9rem;
+  height:1.9rem;
+  place-items:center;
+  flex:0 0 1.9rem;
+}
+#tadeon-desktop-sidebar .tadeon-nav-item[data-mini="true"] .tadeon-nav-item__icon svg {
+  width:1rem;
+  height:1rem;
 }
 
-/* Nexus: Obsidian-like breathing room complements the JS physics preset. */
-.tadeon-brain-canvas,.tadeon-brain-viewport,[class*="tadeon-brain"][class*="canvas"] { min-height:42rem !important; }
-.tadeon-brain-canvas canvas,.tadeon-brain-viewport canvas { cursor:grab; }
-.tadeon-brain-canvas canvas:active,.tadeon-brain-viewport canvas:active { cursor:grabbing; }
+/* Secondary routes use the same workspace width contract as the principal areas. */
+.tadeon-route-stage > :is(.tadeon-route-tools,.tadeon-route-users,.tadeon-route-offline) {
+  width:100% !important;
+  max-width:min(92rem,100%) !important;
+  margin-inline:auto !important;
+}
+
+/* Nexus: an Obsidian-like graph needs room to breathe; labels appear later than nodes. */
+.tadeon-brain-canvas,.tadeon-brain-viewport,[class*="tadeon-brain"][class*="canvas"],.tadeon-graph-canvas { min-height:44rem !important; }
+.tadeon-brain-canvas canvas,.tadeon-brain-viewport canvas,.tadeon-graph-canvas canvas { cursor:grab; }
+.tadeon-brain-canvas canvas:active,.tadeon-brain-viewport canvas:active,.tadeon-graph-canvas canvas:active { cursor:grabbing; }
+.tadeon-graph-canvas {
+  background:
+    radial-gradient(circle at 50% 48%,rgb(84 123 148 / 8%),transparent 30rem),
+    radial-gradient(circle at 18% 16%,rgb(217 215 164 / 4%),transparent 18rem),
+    #070a0e !important;
+}
 
 /* Rename utility lives inside Placeables rather than another viewport layer. */
 [data-tadeon-rename-host] { position:relative; margin-left:auto; }
@@ -99,7 +171,10 @@
 
 /* Radial trigger stays screen-space sized and pinned above its subject. */
 .tadeon-radial-trigger {
-  width:2.15rem !important; height:2.15rem !important; transform-origin:50% 100% !important;
+  width:2.15rem !important;
+  height:2.15rem !important;
+  transform:translate(-50%,calc(-100% - .7rem)) !important;
+  transform-origin:50% 100% !important;
   box-shadow:0 10px 32px -16px hsl(var(--primary)/.75),0 0 0 1px hsl(var(--border)/.7) !important;
 }
 .tadeon-radial-trigger svg { width:.92rem !important; height:.92rem !important; }
@@ -113,13 +188,31 @@
 /* Sheet header is visually coupled to the top rail. */
 .tadeon-sheet-page .tadeon-sheet-commandbar {
   width:100%; max-width:none; min-height:5.2rem; margin-inline:0; padding-block:.7rem !important;
-  border-radius:1rem; background:radial-gradient(circle at 12% 0%,hsl(var(--primary)/.13),transparent 24rem),linear-gradient(180deg,hsl(var(--card)/.96),hsl(var(--card)/.82));
+  border-radius:1rem;
+  background:radial-gradient(circle at 12% 0%,hsl(var(--primary)/.13),transparent 24rem),linear-gradient(180deg,hsl(var(--card)/.96),hsl(var(--card)/.82));
   box-shadow:0 22px 52px -42px hsl(var(--primary)/.8),inset 0 1px hsl(0 0% 100%/.035);
 }
 .tadeon-sheet-commandbar__main { min-height:3.8rem; align-items:center; }
 .tadeon-sheet-page .tadeon-sheet-nav { margin-top:.45rem; border-radius:.85rem; box-shadow:0 16px 36px -34px rgb(0 0 0/92%); }
 
-/* Conditions: layered glow instead of a clipped outline. */
+/* Bring the luminous Mesa dossier language back to the principal sheet. */
+.tadeon-sheet-page :is(input,textarea,[role="combobox"],[data-slot="select-trigger"]) {
+  border-color:hsl(var(--border)/.78);
+  background:linear-gradient(180deg,hsl(var(--background)/.86),hsl(var(--background)/.7));
+  box-shadow:inset 0 1px hsl(0 0% 100%/.025),0 10px 26px -24px hsl(var(--primary)/.55);
+  transition:border-color 180ms ease,box-shadow 180ms ease,background-color 180ms ease,transform 180ms ease;
+}
+.tadeon-sheet-page :is(input,textarea,[role="combobox"],[data-slot="select-trigger"]):focus,
+.tadeon-sheet-page :is(input,textarea,[role="combobox"],[data-slot="select-trigger"]):focus-visible {
+  border-color:hsl(var(--primary)/.48) !important;
+  box-shadow:0 0 0 1px hsl(var(--primary)/.16),0 0 24px -11px hsl(var(--primary)/.72),inset 0 1px hsl(0 0% 100%/.04) !important;
+}
+.tadeon-sheet-page :is(.tadeon-surface,[data-slot="card"]) {
+  background-image:radial-gradient(circle at 100% 0%,hsl(var(--primary)/.055),transparent 13rem),linear-gradient(145deg,hsl(0 0% 100%/.015),transparent 48%);
+  background-blend-mode:screen,normal;
+}
+
+/* Conditions: layered glow instead of a clipped outline, with readable severity progression. */
 .tadeon-condition-section,.tadeon-sheet-condition-panel,[class*="condition-card"] { overflow:visible !important; }
 .tadeon-sheet-frame { position:relative; isolation:isolate; border-radius:1.15rem; transition:box-shadow 320ms ease,filter 320ms ease !important; }
 .tadeon-sheet-frame::before {
@@ -128,24 +221,56 @@
   animation:tadeon-condition-breathe 3.8s ease-in-out infinite alternate;
 }
 .tadeon-sheet-condition-chip {
-  position:relative; overflow:hidden; border-width:1px !important;
+  --condition-progress:.34;
+  position:relative; overflow:visible; border-width:1px !important;
   box-shadow:0 0 0 1px rgb(var(--condition-rgb,116 36 45)/32%),0 0 16px -7px rgb(var(--condition-rgb,116 36 45)/65%),inset 0 1px rgb(255 255 255/5%);
   animation:tadeon-condition-chip 2.8s ease-in-out infinite alternate;
+}
+.tadeon-sheet-condition-chip::before {
+  position:absolute; z-index:-1; inset:-4px; border-radius:inherit;
+  background:radial-gradient(circle at 50% 50%,rgb(var(--condition-rgb,116 36 45)/calc(10% + var(--condition-progress) * 20%)),transparent 72%);
+  filter:blur(calc(5px + var(--condition-progress) * 8px));
+  opacity:calc(.38 + var(--condition-progress) * .52);
+  pointer-events:none; content:"";
 }
 .tadeon-sheet-condition-chip::after {
   position:absolute; inset:-45% -25%; background:linear-gradient(105deg,transparent 38%,rgb(255 255 255/14%) 49%,transparent 60%);
   transform:translateX(-55%); animation:tadeon-condition-sheen 4.2s ease-in-out infinite; pointer-events:none; content:"";
 }
+.tadeon-sheet-condition-chip[data-condition-severity="danger"] {
+  --condition-rgb:158 61 48;
+  --condition-progress:.72;
+  border-color:rgb(158 61 48 / 58%) !important;
+  box-shadow:0 0 0 1px rgb(158 61 48 / 35%),0 0 24px -7px rgb(158 61 48 / 86%),inset 0 0 16px rgb(158 61 48 / 8%);
+  animation-duration:2.1s;
+}
+.tadeon-sheet-condition-chip[data-condition-severity="critical"] {
+  --condition-rgb:188 47 58;
+  --condition-progress:1;
+  border-color:rgb(188 47 58 / 72%) !important;
+  box-shadow:0 0 0 1px rgb(188 47 58 / 46%),0 0 32px -5px rgb(188 47 58 / 96%),0 0 52px -24px rgb(255 132 102 / 82%),inset 0 0 20px rgb(188 47 58 / 12%);
+  animation:tadeon-condition-critical 1.35s ease-in-out infinite alternate;
+}
+.tadeon-sheet-condition-chip[data-condition-severity="critical"]::after { animation-duration:2.3s; }
 
 /* Exposição and Equilíbrio get deeper, more readable bars. */
 #equilibrio,#exposicao {
   overflow:visible; border-color:hsl(var(--primary)/.18);
-  background:radial-gradient(circle at 94% 5%,hsl(var(--primary)/.09),transparent 12rem),hsl(var(--card)/.72);
+  background:radial-gradient(circle at 94% 5%,hsl(var(--primary)/.11),transparent 12rem),linear-gradient(145deg,hsl(var(--card)/.78),hsl(var(--card)/.64));
   box-shadow:0 20px 52px -46px hsl(var(--primary)/.72),inset 0 1px hsl(0 0% 100%/.025);
 }
 #equilibrio :is([role="progressbar"],div[class*="rounded-full"][class*="overflow-hidden"]),
 #exposicao :is([role="progressbar"],div[class*="rounded-full"][class*="overflow-hidden"]) {
-  min-height:.62rem; box-shadow:inset 0 1px 4px rgb(0 0 0/45%),0 0 18px -7px hsl(var(--primary)/.7);
+  position:relative;
+  min-height:.72rem;
+  border:1px solid hsl(var(--border)/.5);
+  background:hsl(var(--background)/.72);
+  box-shadow:inset 0 2px 5px rgb(0 0 0/52%),0 0 20px -8px hsl(var(--primary)/.76);
+}
+#equilibrio :is([role="progressbar"],div[class*="rounded-full"][class*="overflow-hidden"]) > *,
+#exposicao :is([role="progressbar"],div[class*="rounded-full"][class*="overflow-hidden"]) > * {
+  box-shadow:0 0 18px -5px hsl(var(--primary)/.82),inset 0 1px hsl(0 0% 100%/.16);
+  transition:width 420ms cubic-bezier(.2,.8,.2,1),transform 180ms ease,filter 180ms ease;
 }
 
 /* Vínculos become collapsible without changing their data model. */
@@ -156,8 +281,9 @@
 /* Training popover: actual two-tab experience; modifier view replaces training body. */
 .tadeon-skill-modifier-bridge { margin:-.75rem -.75rem .65rem; }
 .tadeon-skill-modifier-tabs { display:grid; grid-template-columns:1fr 1fr; gap:.2rem; padding:.3rem; border-bottom:1px solid hsl(var(--border)/.62); background:hsl(var(--secondary)/.28); }
-.tadeon-skill-modifier-tabs button { display:inline-flex; min-height:2rem; align-items:center; justify-content:center; gap:.32rem; border-radius:.5rem; color:hsl(var(--muted-foreground)); font-size:.66rem; font-weight:700; }
-.tadeon-skill-modifier-tabs button[aria-selected="true"] { color:hsl(var(--foreground)); background:hsl(var(--primary)/.1); box-shadow:inset 0 0 0 1px hsl(var(--primary)/.24); }
+.tadeon-skill-modifier-tabs button { display:inline-flex; min-height:2rem; align-items:center; justify-content:center; gap:.32rem; border-radius:.5rem; color:hsl(var(--muted-foreground)); font-size:.66rem; font-weight:700; transition:color 160ms ease,background-color 160ms ease,box-shadow 160ms ease,transform 160ms ease; }
+.tadeon-skill-modifier-tabs button:hover { transform:translateY(-1px); }
+.tadeon-skill-modifier-tabs button[aria-selected="true"] { color:hsl(var(--foreground)); background:hsl(var(--primary)/.1); box-shadow:inset 0 0 0 1px hsl(var(--primary)/.24),0 10px 22px -18px hsl(var(--primary)/.72); }
 .tadeon-skill-modifier-tabs svg { width:.75rem; height:.75rem; }
 [data-slot="popover-content"][data-modifier-tab="modifiers"]>:not([data-tadeon-skill-modifier-host]) { display:none !important; }
 .tadeon-skill-modifier-panel { padding:.8rem .8rem .2rem; }
@@ -173,8 +299,15 @@
 @keyframes tadeon-final-pop-in { from{opacity:0;transform:translateY(-5px) scale(.98)} to{opacity:1;transform:none} }
 @keyframes tadeon-condition-breathe { from{opacity:.26;transform:scale(.998)} to{opacity:.58;transform:scale(1.002)} }
 @keyframes tadeon-condition-chip { from{filter:brightness(.92);transform:translateY(0)} to{filter:brightness(1.12);transform:translateY(-1px)} }
+@keyframes tadeon-condition-critical { from{filter:brightness(.9) saturate(1.08);transform:translateY(0) scale(1)} to{filter:brightness(1.18) saturate(1.22);transform:translateY(-1px) scale(1.018)} }
 @keyframes tadeon-condition-sheen { 0%,62%{transform:translateX(-62%);opacity:0} 72%{opacity:1} 90%,100%{transform:translateX(62%);opacity:0} }
 
+@media (max-width:800px) {
+  .tadeon-route-stage > :is(.tadeon-route-tools,.tadeon-route-users,.tadeon-route-offline) { max-width:100% !important; }
+  .tadeon-sheet-page .tadeon-sheet-commandbar { min-height:auto; border-radius:.78rem; }
+  #equilibrio,#exposicao { border-radius:.85rem; }
+}
+
 @media (prefers-reduced-motion:reduce) {
-  .tadeon-rename-popover,.tadeon-sheet-frame::before,.tadeon-sheet-condition-chip,.tadeon-sheet-condition-chip::after { animation:none !important; transition:none !important; }
+  .tadeon-rename-popover,.tadeon-sheet-frame::before,.tadeon-sheet-condition-chip,.tadeon-sheet-condition-chip::before,.tadeon-sheet-condition-chip::after,.tadeon-skill-modifier-tabs button { animation:none !important; transition:none !important; }
 }
