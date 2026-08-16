@@ -51,14 +51,19 @@ describe("auditoria final de runtime e viewport", () => {
     expect(presence).toContain("visibility 0s linear 180ms");
   });
 
-  it("retira Placeables da borda compartilhada pelos docks em telas compactas", () => {
+  it("retira Placeables da borda compartilhada pelos docks e anima a saída", () => {
     const css = source("src/styles/interface-audit-final.css");
+    const bridge = source("src/components/tabletop/tabletop-placeables-inspector-bridge.tsx");
+    const presence = source("src/styles/radial-presence-final.css");
     expect(css).toContain("@media (max-width: 800px)");
     expect(css).toContain(".tadeon-placeables {");
     expect(css).toContain("top: calc(var(--tadeon-safe-top) + 3.6rem) !important");
     expect(css).toContain("bottom: auto !important");
     expect(css).toContain(".tadeon-placeables__panel {");
     expect(css).toContain("top: 3.15rem !important");
+    expect(bridge).toContain('data-state={open ? "open" : "closed"}');
+    expect(presence).toContain('.tadeon-placeables__panel[data-state="closed"]');
+    expect(presence).toContain("visibility 0s linear 190ms");
   });
 
   it("respeita safe-area no segundo cérebro em telas compactas", () => {
