@@ -1,6 +1,7 @@
 import { createPortal } from "react-dom";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { ChevronDown, ChevronUp, SlidersHorizontal, WandSparkles } from "lucide-react";
+import type { SupabaseClient } from "@supabase/supabase-js";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/lib/auth";
@@ -9,6 +10,7 @@ import type { Ability } from "@/lib/sheet-types";
 
 type SkillModifiers = Record<string, number>;
 type PowerFormData = Record<string, unknown> & { skill_modifiers?: SkillModifiers };
+const db = supabase as unknown as SupabaseClient;
 
 const GRAPH_PRESETS: Record<string, number> = {
   "Força dos vínculos": 0.72,
@@ -126,6 +128,10 @@ export function ExperienceFinalPolishBridge() {
           setSkillName("");
           setModifierTab("training");
         }
+      } else {
+        setLinkHost(null);
+        setSkillHost(null);
+        setSkillPopover(null);
       }
       frame = window.requestAnimationFrame(scan);
     };
@@ -160,20 +166,20 @@ export function ExperienceFinalPolishBridge() {
     if (!sheetId || role !== "mestre" || savingModifier) return;
     setSavingModifier(true);
     try {
-      const { data } = await supabase.from("character_sheets").select("power_form_data").eq("id", sheetId).maybeSingle();
-      const current = ((data as unknown as { power_form_data?: PowerFormData | null } | null)?.power_form_data ?? {}) as PowerFormData;
-      const nextModifiers = { ...(current.skill_modifiers ?? {}), [skillName]: nextValue };
-      const { error } = await supabase
-        .from("character_sheets")
-        .update({ power_form_data: { ...current, skill_modifiers: nextModifiers } } as never)
-        .eq("id", sheetId);
+      const { data, error } = await db.rpc("set_sheet_skill_modifier", {
+        p_sheet_id: sheetId,
+        p_skill: skillName,
+        p_value: nextValue,
+      });
       if (error) throw error;
+      const nextPowerForm = (data ?? {}) as PowerFormData;
+      const nextModifiers = nextPowerForm.skill_modifiers ?? { ...manualModifiers, [skillName]: nextValue };
       setManualModifiers(nextModifiers);
       window.dispatchEvent(new CustomEvent("tadeon-sheet-skill-modifier", { detail: { skill: skillName, manual: nextValue, passive } }));
     } finally {
       setSavingModifier(false);
     }
-  }, [passive, role, savingModifier, sheetId, skillName]);
+  }, [manualModifiers, passive, role, savingModifier, sheetId, skillName]);
 
   return (
     <>
