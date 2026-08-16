@@ -51,5 +51,14 @@ export default tseslint.config(
       "react-refresh/only-export-components": "off",
     },
   },
+  {
+    // glTF/GLB JSON chunks are padded with NUL bytes by specification. The
+    // loader strips only trailing padding after decoding the JSON chunk, so the
+    // control character in this one regular expression is intentional.
+    files: ["src/lib/tabletop/tabletop-gltf.ts"],
+    rules: {
+      "no-control-regex": "off",
+    },
+  },
   eslintConfigPrettier,
 );
