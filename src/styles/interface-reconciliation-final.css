@@ -1,13 +1,24 @@
 /* Final cross-surface reconciliation.
-   This file intentionally loads last and uses the real tabletop stage geometry
-   exposed by TabletopProgressiveInterfaceBridge instead of viewport guesses. */
+   Loaded last: this is the authority for collisions, non-modal selection and
+   compact polish shared by the app, Mesa, Nexus and character sheets. */
 
-/* ---------------- Mesa Nexus: one stage, explicit chrome lanes ---------------- */
+/* ---------------- Mesa Nexus: one stage, one visible work surface -------------- */
 body:has(.tadeon-tabletop-studio) {
-  --tadeon-stage-right-safe: calc(var(--tadeon-tabletop-stage-right, 0px) + max(.65rem, env(safe-area-inset-right)));
-  --tadeon-stage-left-safe: calc(var(--tadeon-tabletop-stage-left, 0px) + max(.65rem, env(safe-area-inset-left)));
-  --tadeon-stage-utility-width: min(21rem, max(14rem, calc(var(--tadeon-tabletop-stage-width, 100vw) * .34)));
-  --tadeon-stage-footer-reserve: .7rem;
+  --tadeon-stage-right-safe: calc(var(--tadeon-tabletop-stage-right, 0px) + max(.75rem, env(safe-area-inset-right)));
+  --tadeon-stage-left-safe: calc(var(--tadeon-tabletop-stage-left, 0px) + max(.75rem, env(safe-area-inset-left)));
+  --tadeon-stage-utility-width: min(20rem, max(14rem, calc(var(--tadeon-tabletop-stage-width, 100vw) * .31)));
+}
+
+/* Selection is contextual, never modal. Remove the legacy interception layer
+   entirely; opacity alone was insufficient on some mobile WebKit paths. */
+.tadeon-tabletop-panel-backdrop {
+  display: none !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+  background: transparent !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
 }
 
 @media (min-width: 1180px) {
@@ -17,22 +28,25 @@ body:has(.tadeon-tabletop-studio) {
   .tadeon-nexus-tabletop-locator,
   .tadeon-smart-setup__launcher {
     right: var(--tadeon-stage-right-safe) !important;
+    left: auto !important;
   }
 
   .tadeon-creative-dock {
     width: var(--tadeon-stage-utility-width) !important;
-    bottom: calc(var(--tadeon-tabletop-bottom-row-2) + .25rem) !important;
+    bottom: var(--tadeon-tabletop-bottom-row-2) !important;
   }
   .tadeon-creative-dock[data-open="false"] {
-    bottom: calc(var(--tadeon-tabletop-bottom-row-1) + .25rem) !important;
+    bottom: var(--tadeon-tabletop-bottom-row-1) !important;
   }
   .tadeon-placeables { bottom: var(--tadeon-tabletop-bottom-edge) !important; }
   .tadeon-semantic-transform { bottom: var(--tadeon-tabletop-bottom-row-1) !important; }
   .tadeon-smart-setup__launcher { top: var(--tadeon-tabletop-top-row-2) !important; }
 
-  .tadeon-smart-setup {
+  .tadeon-smart-setup,
+  .tadeon-placeables__panel,
+  .tadeon-creative-dock__panel {
     right: var(--tadeon-stage-right-safe) !important;
-    width: min(28rem, calc(var(--tadeon-tabletop-stage-width, 100vw) - 1.4rem)) !important;
+    max-width: min(28rem, calc(var(--tadeon-tabletop-stage-width, 100vw) - 1.5rem)) !important;
   }
 
   .tadeon-tabletop-progressive-dock,
@@ -40,6 +54,10 @@ body:has(.tadeon-tabletop-studio) {
   .tadeon-tabletop-selection-actions {
     left: var(--tadeon-tabletop-stage-center, 50%) !important;
     max-width: calc(var(--tadeon-tabletop-stage-width, 100vw) - 2rem) !important;
+  }
+
+  .tadeon-tabletop-selection-actions {
+    bottom: var(--tadeon-tabletop-bottom-row-2) !important;
   }
 
   html[data-tadeon-tabletop-interface="advanced"] .tadeon-tabletop-progressive-dock {
@@ -51,33 +69,41 @@ body:has(.tadeon-tabletop-studio) {
   html[data-tadeon-tabletop-interface="advanced"] .tadeon-tabletop-selection-actions {
     bottom: calc(var(--tadeon-tabletop-bottom-row-2) + 3.15rem) !important;
   }
-  html[data-tadeon-tabletop-interface="advanced"] .tadeon-creative-dock[data-open="false"] {
-    bottom: calc(var(--tadeon-tabletop-bottom-row-1) + 3.15rem) !important;
-  }
-}
 
-.tadeon-tabletop-panel-backdrop {
-  background: transparent !important;
-  backdrop-filter: none !important;
-  -webkit-backdrop-filter: none !important;
-}
-.tadeon-tabletop-panel-backdrop[data-open="false"] {
-  opacity: 0 !important;
-  visibility: hidden !important;
-  pointer-events: none !important;
-}
-@media (min-width: 801px) {
-  .tadeon-tabletop-panel-backdrop[data-open="true"] {
-    opacity: 0 !important;
-    pointer-events: none !important;
-  }
-}
-
-@media (min-width: 1180px) {
-  body:has(.tadeon-creative-dock[data-open="true"]) .tadeon-tabletop-selection-actions,
-  body:has(.tadeon-smart-setup[data-open="true"]) .tadeon-creative-dock,
-  body:has(.tadeon-smart-setup[data-open="true"]) .tadeon-placeables,
-  body:has(.tadeon-smart-setup[data-open="true"]) .tadeon-semantic-transform {
+  /* Large editors are mutually exclusive. The active handle remains visible;
+     all other fixed chrome in the same canvas lane yields instead of stacking. */
+  body:has(.tadeon-creative-dock[data-open="true"]) :is(
+    .tadeon-tabletop-progressive-dock,
+    .tadeon-tactical-dock,
+    .tadeon-tabletop-selection-actions,
+    .tadeon-placeables,
+    .tadeon-semantic-transform,
+    .tadeon-smart-setup__launcher,
+    .tadeon-nexus-tabletop-locator
+  ),
+  body:has(.tadeon-placeables[data-open="true"]) :is(
+    .tadeon-tabletop-selection-actions,
+    .tadeon-creative-dock,
+    .tadeon-semantic-transform,
+    .tadeon-smart-setup__launcher,
+    .tadeon-nexus-tabletop-locator
+  ),
+  body:has(.tadeon-smart-setup[data-open="true"]) :is(
+    .tadeon-tabletop-progressive-dock,
+    .tadeon-tactical-dock,
+    .tadeon-tabletop-selection-actions,
+    .tadeon-creative-dock,
+    .tadeon-placeables,
+    .tadeon-semantic-transform,
+    .tadeon-nexus-tabletop-locator
+  ),
+  body:has(.tadeon-tabletop-precision-editor) :is(
+    .tadeon-creative-dock,
+    .tadeon-placeables,
+    .tadeon-semantic-transform,
+    .tadeon-smart-setup__launcher,
+    .tadeon-nexus-tabletop-locator
+  ) {
     opacity: 0 !important;
     visibility: hidden !important;
     pointer-events: none !important;
@@ -93,29 +119,54 @@ body:has(.tadeon-tabletop-studio) {
   }
   .tadeon-creative-dock[data-open="false"] {
     left: auto !important;
-    width: min(12rem, calc(100vw - 1.1rem)) !important;
+    width: min(12.5rem, calc(100vw - 1.1rem)) !important;
   }
   .tadeon-smart-setup__launcher {
-    top: max(.6rem, env(safe-area-inset-top)) !important;
-    right: .6rem !important;
+    top: max(.65rem, env(safe-area-inset-top)) !important;
+    right: .65rem !important;
   }
-  body:has(.tadeon-tabletop-panel[data-mobile-open="true"]) .tadeon-creative-dock,
-  body:has(.tadeon-tabletop-panel[data-mobile-open="true"]) .tadeon-smart-setup__launcher {
+  body:has(.tadeon-tabletop-panel[data-mobile-open="true"]) :is(
+    .tadeon-creative-dock,
+    .tadeon-placeables,
+    .tadeon-smart-setup__launcher,
+    .tadeon-semantic-transform,
+    .tadeon-tabletop-selection-actions,
+    .tadeon-tactical-dock
+  ) {
     opacity: 0 !important;
     visibility: hidden !important;
     pointer-events: none !important;
   }
 }
 
-/* ---------------- O Nexus: clarity, folders and resilient primary CTA -------- */
+/* ---------------- Collapsed application sidebar -------------------------------- */
+#tadeon-desktop-sidebar:has(.tadeon-nav-item[data-mini="true"]) {
+  width: 5rem !important;
+}
+#tadeon-desktop-sidebar .tadeon-nav-item[data-mini="true"],
+#tadeon-desktop-sidebar button[data-mini="true"] {
+  width: 3.35rem;
+  min-width: 3.35rem;
+  min-height: 3.1rem;
+  margin-inline: auto;
+  padding-inline: .7rem !important;
+}
+#tadeon-desktop-sidebar .tadeon-nav-item[data-mini="true"] .tadeon-nav-item__icon {
+  display: grid;
+  width: 1.8rem;
+  height: 1.8rem;
+  place-items: center;
+  flex: 0 0 1.8rem;
+}
+
+/* ---------------- O Nexus: Obsidian-like breathing room ------------------------ */
 .tadeon-route-nexus .tadeon-nexus-tools > button:last-child,
 .tadeon-route-nexus .tadeon-nexus-tools > [data-slot="button"]:last-child {
   min-width: 7.8rem !important;
   opacity: 1 !important;
   color: hsl(var(--primary-foreground)) !important;
 }
-.tadeon-route-nexus .tadeon-nexus-tools > button:last-child svg,
-.tadeon-route-nexus .tadeon-nexus-tools > button:last-child span {
+.tadeon-route-nexus .tadeon-nexus-tools > button:last-child :is(svg, span) {
   opacity: 1 !important;
   visibility: visible !important;
 }
@@ -157,17 +208,156 @@ body:has(.tadeon-tabletop-studio) {
 .tadeon-brain-canvas,
 .tadeon-brain-viewport,
 [class*="tadeon-brain"][class*="canvas"] {
-  min-height: 34rem;
+  min-height: 42rem !important;
+}
+.tadeon-brain-canvas canvas,
+.tadeon-brain-viewport canvas {
+  cursor: grab;
+}
+.tadeon-brain-canvas canvas:active,
+.tadeon-brain-viewport canvas:active { cursor: grabbing; }
+
+/* ---------------- Character sheet: stronger state language -------------------- */
+.tadeon-sheet-commandbar {
+  min-height: 5.2rem;
+  padding-block: .7rem !important;
+  border-radius: 1rem;
+  background:
+    radial-gradient(circle at 12% 0%, hsl(var(--primary) / .13), transparent 24rem),
+    linear-gradient(180deg, hsl(var(--card) / .96), hsl(var(--card) / .82));
+  box-shadow: 0 22px 52px -42px hsl(var(--primary) / .8), inset 0 1px hsl(0 0% 100% / .035);
+}
+.tadeon-sheet-commandbar__main { min-height: 3.8rem; align-items: center; }
+.tadeon-sheet-commandbar__identity { align-self: center; }
+
+.tadeon-sheet-frame {
+  position: relative;
+  isolation: isolate;
+  border-radius: 1.15rem;
+  transition: box-shadow 320ms ease, filter 320ms ease !important;
+}
+.tadeon-sheet-frame::before {
+  position: absolute;
+  z-index: -1;
+  inset: -5px;
+  border-radius: inherit;
+  background: inherit;
+  filter: blur(16px) saturate(1.25);
+  opacity: .48;
+  pointer-events: none;
+  content: "";
+  animation: tadeon-condition-breathe 3.8s ease-in-out infinite alternate;
+}
+.tadeon-sheet-condition-chip {
+  position: relative;
+  overflow: hidden;
+  border-width: 1px !important;
+  animation: tadeon-condition-chip 2.8s ease-in-out infinite alternate;
+}
+.tadeon-sheet-condition-chip::after {
+  position: absolute;
+  inset: -45% -25%;
+  background: linear-gradient(105deg, transparent 38%, rgb(255 255 255 / 14%) 49%, transparent 60%);
+  transform: translateX(-55%);
+  animation: tadeon-condition-sheen 4.2s ease-in-out infinite;
+  pointer-events: none;
+  content: "";
 }
 
-/* The master panel deliberately has no rules here. Its original route-specific
-   visual language and slide motion are the authority; this final sheet must not
-   reposition, recolor or replace that navigation. */
+/* Dying/collapsing already have numeric progression in the sheet state. Turn
+   that progression into unmistakable visual pressure without clipping content. */
+.tadeon-sheet-page:has(input[value="1"][name*="dying"], [data-dying="1"]) .tadeon-sheet-frame { filter: saturate(1.08); }
+.tadeon-sheet-page:has(input[value="2"][name*="dying"], [data-dying="2"]) .tadeon-sheet-frame { filter: saturate(1.18) contrast(1.03); }
+.tadeon-sheet-page:has(input[value="3"][name*="dying"], [data-dying="3"]) .tadeon-sheet-frame { filter: saturate(1.32) contrast(1.06); animation: tadeon-critical-pulse 1.6s ease-in-out infinite; }
 
-/* ---------------- Director: cue transition is a rendered behavior ------------- */
-.tadeon-director-output.is-transitioning[data-transition="fade"] .tadeon-director-output__canvas,
-.tadeon-director-output.is-transitioning[data-transition="fade"] .tadeon-director-output__intermission,
-.tadeon-director-output.is-transitioning[data-transition="fade"] .tadeon-director-output__hud {
+#equilibrio,
+#exposicao {
+  overflow: visible;
+  border-color: hsl(var(--primary) / .18);
+  background:
+    radial-gradient(circle at 94% 5%, hsl(var(--primary) / .09), transparent 12rem),
+    hsl(var(--card) / .72);
+  box-shadow: 0 20px 52px -46px hsl(var(--primary) / .72), inset 0 1px hsl(0 0% 100% / .025);
+}
+#equilibrio [role="progressbar"],
+#exposicao [role="progressbar"],
+#equilibrio div[class*="rounded-full"][class*="overflow-hidden"],
+#exposicao div[class*="rounded-full"][class*="overflow-hidden"] {
+  min-height: .62rem;
+  box-shadow: inset 0 1px 4px rgb(0 0 0 / 45%), 0 0 18px -7px hsl(var(--primary) / .7);
+}
+#equilibrio [role="progressbar"] > *,
+#exposicao [role="progressbar"] > *,
+#equilibrio div[class*="rounded-full"][class*="overflow-hidden"] > div,
+#exposicao div[class*="rounded-full"][class*="overflow-hidden"] > div {
+  box-shadow: 0 0 14px currentColor;
+  transition: width 420ms cubic-bezier(.2,.8,.2,1), transform 220ms ease;
+}
+
+.tadeon-link-panel[data-collapsed="true"] .tadeon-link-list { display: none !important; }
+.tadeon-link-collapse { min-width: 5.7rem; gap: .35rem; }
+.tadeon-link-collapse svg { width: .85rem; height: .85rem; }
+
+.tadeon-skill-modifier-bridge { margin: -.75rem -.75rem .65rem; }
+.tadeon-skill-modifier-tabs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: .2rem;
+  padding: .3rem;
+  border-bottom: 1px solid hsl(var(--border) / .62);
+  background: hsl(var(--secondary) / .28);
+}
+.tadeon-skill-modifier-tabs button {
+  display: inline-flex;
+  min-height: 2rem;
+  align-items: center;
+  justify-content: center;
+  gap: .32rem;
+  border-radius: .5rem;
+  color: hsl(var(--muted-foreground));
+  font-size: .66rem;
+  font-weight: 700;
+}
+.tadeon-skill-modifier-tabs button[aria-selected="true"] {
+  color: hsl(var(--foreground));
+  background: hsl(var(--primary) / .1);
+  box-shadow: inset 0 0 0 1px hsl(var(--primary) / .24);
+}
+.tadeon-skill-modifier-tabs svg { width: .75rem; height: .75rem; }
+[data-slot="popover-content"][data-modifier-tab="modifiers"] > :not([data-tadeon-skill-modifier-host]) { display: none !important; }
+.tadeon-skill-modifier-panel { padding: .8rem .8rem .2rem; }
+.tadeon-skill-modifier-panel header { display:flex; align-items:center; gap:.55rem; margin-bottom:.75rem; }
+.tadeon-skill-modifier-panel header > svg { width:1rem; height:1rem; color:hsl(var(--primary)); }
+.tadeon-skill-modifier-panel header :is(strong,small) { display:block; }
+.tadeon-skill-modifier-panel header small,
+.tadeon-skill-modifier-panel label small,
+.tadeon-skill-modifier-passive small { color:hsl(var(--muted-foreground)); font-size:.61rem; line-height:1.4; }
+.tadeon-skill-modifier-panel label > span,
+.tadeon-skill-modifier-passive > span { display:block; margin-bottom:.3rem; font-size:.62rem; font-weight:700; }
+.tadeon-skill-modifier-passive { margin-top:.65rem; padding:.65rem; border:1px solid hsl(var(--border)/.6); border-radius:.65rem; background:hsl(var(--secondary)/.28); }
+.tadeon-skill-modifier-passive strong { float:right; color:hsl(var(--primary)); }
+.tadeon-skill-modifier-panel footer { margin-top:.7rem; padding-top:.55rem; border-top:1px solid hsl(var(--border)/.55); font-size:.66rem; }
+
+@keyframes tadeon-condition-breathe {
+  from { opacity: .26; transform: scale(.998); }
+  to { opacity: .58; transform: scale(1.002); }
+}
+@keyframes tadeon-condition-chip {
+  from { filter: brightness(.92); transform: translateY(0); }
+  to { filter: brightness(1.12); transform: translateY(-1px); }
+}
+@keyframes tadeon-condition-sheen {
+  0%, 62% { transform: translateX(-62%); opacity: 0; }
+  72% { opacity: 1; }
+  90%, 100% { transform: translateX(62%); opacity: 0; }
+}
+@keyframes tadeon-critical-pulse {
+  0%, 100% { box-shadow: 0 0 18px rgb(116 36 45 / 30%); }
+  50% { box-shadow: 0 0 52px rgb(140 15 24 / 62%), inset 0 0 32px rgb(90 0 8 / 18%); }
+}
+
+/* ---------------- Director cue transition -------------------------------------- */
+.tadeon-director-output.is-transitioning[data-transition="fade"] :is(.tadeon-director-output__canvas, .tadeon-director-output__intermission, .tadeon-director-output__hud) {
   animation: tadeon-director-cue-fade 520ms cubic-bezier(.2,.8,.2,1) both;
 }
 .tadeon-director-output.is-transitioning[data-transition="orbit"] .tadeon-director-output__canvas {
@@ -177,21 +367,15 @@ body:has(.tadeon-tabletop-studio) {
 .tadeon-director-output.is-transitioning[data-transition="cut"] .tadeon-director-output__canvas {
   animation: tadeon-director-cue-cut 110ms steps(2, end) both;
 }
-@keyframes tadeon-director-cue-fade {
-  0% { opacity: .05; filter: blur(5px) saturate(.72); }
-  100% { opacity: 1; filter: blur(0) saturate(1); }
-}
-@keyframes tadeon-director-cue-orbit {
-  0% { opacity: .25; transform: perspective(900px) rotateY(-4deg) scale(.985); filter: blur(2px); }
-  100% { opacity: 1; transform: perspective(900px) rotateY(0) scale(1); filter: blur(0); }
-}
-@keyframes tadeon-director-cue-cut {
-  0%, 45% { opacity: .18; }
-  46%, 100% { opacity: 1; }
-}
+@keyframes tadeon-director-cue-fade { 0% { opacity:.05; filter:blur(5px) saturate(.72); } 100% { opacity:1; filter:blur(0) saturate(1); } }
+@keyframes tadeon-director-cue-orbit { 0% { opacity:.25; transform:perspective(900px) rotateY(-4deg) scale(.985); filter:blur(2px); } 100% { opacity:1; transform:perspective(900px) rotateY(0) scale(1); filter:blur(0); } }
+@keyframes tadeon-director-cue-cut { 0%,45% { opacity:.18; } 46%,100% { opacity:1; } }
 
 @media (prefers-reduced-motion: reduce) {
   .tadeon-nexus-folderbar button,
+  .tadeon-sheet-frame::before,
+  .tadeon-sheet-condition-chip,
+  .tadeon-sheet-condition-chip::after,
   .tadeon-director-output.is-transitioning :is(.tadeon-director-output__canvas, .tadeon-director-output__intermission, .tadeon-director-output__hud) {
     animation: none !important;
     transition: none !important;
