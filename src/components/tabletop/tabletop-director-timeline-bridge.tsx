@@ -176,6 +176,17 @@ export function TabletopDirectorTimelineBridge() {
     executeCueRef.current = executeCue;
   }, [executeCue]);
 
+  useEffect(() => {
+    const runCue = (event: Event) => {
+      const cueId = (event as CustomEvent<{ cueId?: string }>).detail?.cueId;
+      if (!cueId || !session) return;
+      const cue = session.directorState.cues.find((item) => item.id === cueId);
+      if (cue) void executeCueRef.current(cue, true);
+    };
+    window.addEventListener("tadeon-tabletop-director-run-cue", runCue);
+    return () => window.removeEventListener("tadeon-tabletop-director-run-cue", runCue);
+  }, [session]);
+
   useEffect(
     () => () => window.clearTimeout(autoTimer.current),
     [],
