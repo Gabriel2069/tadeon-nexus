@@ -13,12 +13,14 @@ import {
 } from "@/components/sheet/sheet-experience-bridge";
 import { SheetInventoryOrganizer } from "@/components/sheet/sheet-inventory-organizer";
 import { TabletopCrossSurfaceBridge } from "@/components/tabletop/tabletop-cross-surface-bridge";
+import { UserRepair152Bridge } from "@/components/user-repair-152-bridge";
 import "@/styles/sheet-requested-polish.css";
 import "@/styles/sheet-density-final.css";
 import "@/styles/sheet-game-mode.css";
 import "@/styles/sheet-game-mode-final.css";
 import "@/styles/sheet-inventory-organizer.css";
 import "@/styles/nexus-interaction-polish.css";
+import "@/styles/user-repair-152.css";
 
 interface Props {
   children: ReactNode;
@@ -35,18 +37,12 @@ function dedicatedPresentation() {
     return "director" as const;
   }
   if (params.get("embed") === "1") return "embed" as const;
-
-  // The Master Panel popout is meant to be a second copy of the exact same
-  // workspace. Stripping AppLayout made its navigation, widths and commandbar
-  // diverge from the original tab. Keep the normal shell in this one route;
-  // the query flag still prevents recursively offering another popout button.
   if (
     params.get("popout") === "1" &&
     window.location.pathname === "/master-panel"
   ) {
-    return null;
+    return "master-panel" as const;
   }
-
   if (params.get("popout") === "1") return "popout" as const;
   return null;
 }
@@ -118,6 +114,7 @@ export function ProtectedShell({ children, requireRole }: Props) {
       <SheetExperienceBridge />
       <SheetInventoryOrganizer />
       <TabletopCrossSurfaceBridge />
+      <UserRepair152Bridge />
       {!dedicated && <WorkspacePopoutBridge />}
       <NexusSheetDragBridge />
       {children}
