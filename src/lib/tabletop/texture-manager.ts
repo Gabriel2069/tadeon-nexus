@@ -21,6 +21,16 @@ function textureBytes(texture: Texture) {
   return width * height * 4;
 }
 
+function tuneTextureSampling(texture: Texture) {
+  /* Static map/token art benefits from linear sampling and anisotropy whenever
+     the scene is zoomed or viewed obliquely in 3D. Pixi clamps anisotropy to the
+     platform limit, so this remains a capability hint rather than a hard GPU
+     requirement. */
+  texture.source.scaleMode = "linear";
+  texture.source.maxAnisotropy = 8;
+  return texture;
+}
+
 function gifBytes(source: GifSource) {
   const candidate = source as unknown as { width?: number; height?: number; totalFrames?: number };
   const width = Math.max(1, Number(candidate.width) || 512);
@@ -55,10 +65,11 @@ export class TextureManager {
     const entry: TextureEntry = { request: Promise.resolve(Texture.EMPTY), bytes: 4 * 1024 * 1024, touchedAt: performance.now() };
     const request = Assets.load<Texture>(url)
       .then((texture) => {
-        entry.bytes = textureBytes(texture);
+        const tuned = tuneTextureSampling(texture);
+        entry.bytes = textureBytes(tuned);
         entry.touchedAt = performance.now();
         void this.trim();
-        return texture;
+        return tuned;
       })
       .catch((error: unknown) => {
         this.cache.delete(url);
