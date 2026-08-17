@@ -1,0 +1,132 @@
+/* Compatibility authority for the final parity pass.
+   Uses resolved alpha tokens instead of arithmetic inside color alpha channels,
+   and includes 1024px/landscape tablets in the sidebar contract. */
+
+.tadeon-page-header[data-tadeon-page-hero] {
+  --hero-border-alpha: 24%;
+  --hero-primary-glow-alpha: 13%;
+  --hero-secondary-glow-alpha: 8%;
+  --hero-shadow-alpha: 46%;
+  --hero-ring-alpha: 19%;
+  --hero-ring-opacity: .85;
+  --hero-thread-alpha: 56%;
+  --hero-mark-border-alpha: 40%;
+  --hero-mark-fill-alpha: 13%;
+  border-color: rgb(var(--hero-rgb) / var(--hero-border-alpha)) !important;
+  background:
+    radial-gradient(circle at 7% 14%, rgb(var(--hero-rgb) / var(--hero-primary-glow-alpha)), transparent 14rem),
+    radial-gradient(circle at 92% -8%, rgb(var(--hero-secondary-rgb) / var(--hero-secondary-glow-alpha)), transparent 20rem),
+    linear-gradient(136deg, rgb(255 255 255 / 3.5%), transparent 42%),
+    linear-gradient(145deg, rgb(17 20 25 / 97%), rgb(8 11 15 / 96%)) !important;
+  box-shadow:
+    0 34px 84px -58px rgb(0 0 0 / 100%),
+    0 18px 48px -44px rgb(var(--hero-rgb) / var(--hero-shadow-alpha)),
+    inset 0 1px rgb(255 255 255 / 4%) !important;
+}
+
+.tadeon-page-header[data-tadeon-page-hero]::before {
+  border-color: rgb(var(--hero-rgb) / var(--hero-ring-alpha)) !important;
+  opacity: var(--hero-ring-opacity) !important;
+}
+
+.tadeon-page-header[data-tadeon-page-hero]::after {
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgb(var(--hero-rgb) / var(--hero-thread-alpha)) 24%,
+    rgb(var(--hero-secondary-rgb) / 22%) 66%,
+    transparent
+  ) !important;
+}
+
+.tadeon-page-hero-mark-host {
+  border-color: rgb(var(--hero-rgb) / var(--hero-mark-border-alpha)) !important;
+  background:
+    radial-gradient(circle at 34% 28%, rgb(255 255 255 / 10%), transparent 35%),
+    rgb(var(--hero-rgb) / var(--hero-mark-fill-alpha)) !important;
+}
+
+.tadeon-page-header[data-tadeon-page-hero="master"] {
+  --hero-border-alpha: 25%;
+  --hero-primary-glow-alpha: 14%;
+  --hero-secondary-glow-alpha: 9%;
+  --hero-shadow-alpha: 48%;
+  --hero-ring-alpha: 20%;
+  --hero-ring-opacity: .88;
+  --hero-thread-alpha: 58%;
+  --hero-mark-border-alpha: 42%;
+  --hero-mark-fill-alpha: 14%;
+}
+
+.tadeon-page-header[data-tadeon-page-hero="users"] {
+  --hero-border-alpha: 21%;
+  --hero-primary-glow-alpha: 11%;
+  --hero-secondary-glow-alpha: 7%;
+  --hero-shadow-alpha: 34%;
+  --hero-ring-alpha: 16%;
+  --hero-ring-opacity: .76;
+  --hero-thread-alpha: 46%;
+  --hero-mark-border-alpha: 35%;
+  --hero-mark-fill-alpha: 11%;
+}
+
+.tadeon-page-header[data-tadeon-page-hero="tools"] {
+  --hero-border-alpha: 19%;
+  --hero-primary-glow-alpha: 10%;
+  --hero-secondary-glow-alpha: 6%;
+  --hero-shadow-alpha: 28%;
+  --hero-ring-alpha: 14%;
+  --hero-ring-opacity: .7;
+  --hero-thread-alpha: 40%;
+  --hero-mark-border-alpha: 31%;
+  --hero-mark-fill-alpha: 10%;
+}
+
+.tadeon-page-header[data-tadeon-page-hero="offline"] {
+  --hero-border-alpha: 18%;
+  --hero-primary-glow-alpha: 9%;
+  --hero-secondary-glow-alpha: 6%;
+  --hero-shadow-alpha: 25%;
+  --hero-ring-alpha: 13%;
+  --hero-ring-opacity: .66;
+  --hero-thread-alpha: 38%;
+  --hero-mark-border-alpha: 30%;
+  --hero-mark-fill-alpha: 9%;
+}
+
+@media (min-width: 768px) and (max-width: 1180px) {
+  #tadeon-desktop-sidebar {
+    overflow: visible !important;
+  }
+
+  #tadeon-desktop-sidebar:not(:has(.tadeon-nav-item[data-mini="true"])) {
+    width: clamp(13.75rem, 25vw, 15.5rem) !important;
+  }
+
+  #tadeon-desktop-sidebar > div:first-of-type {
+    min-width: 0 !important;
+    padding-right: .6rem !important;
+    padding-left: .6rem !important;
+  }
+
+  #tadeon-desktop-sidebar .tadeon-primary-nav,
+  #tadeon-desktop-sidebar .tadeon-primary-nav > * {
+    min-width: 0 !important;
+    max-width: 100% !important;
+  }
+
+  #tadeon-desktop-sidebar .tadeon-nav-item:not([data-mini="true"]),
+  #tadeon-desktop-sidebar .tadeon-global-search-trigger {
+    width: 100% !important;
+    max-width: 100% !important;
+    padding-right: .65rem !important;
+    padding-left: .65rem !important;
+  }
+
+  #tadeon-desktop-sidebar > button[aria-controls="tadeon-desktop-sidebar"] {
+    right: -.8rem !important;
+    width: 2.3rem !important;
+    height: 2.3rem !important;
+    z-index: 40 !important;
+  }
+}
