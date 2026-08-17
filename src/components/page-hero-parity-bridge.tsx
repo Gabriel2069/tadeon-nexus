@@ -14,18 +14,39 @@ type HeroKind = "master" | "users" | "tools" | "offline";
 interface HeroConfig {
   kind: HeroKind;
   icon: LucideIcon;
+  selector: string;
 }
 
 function configForPath(pathname: string): HeroConfig | null {
-  if (pathname.startsWith("/master-panel")) return { kind: "master", icon: BookKey };
-  if (pathname.startsWith("/manage-users")) return { kind: "users", icon: ShieldCheck };
-  if (pathname.startsWith("/nexus-tools")) return { kind: "tools", icon: ArchiveRestore };
-  if (pathname.startsWith("/offline")) return { kind: "offline", icon: WifiOff };
+  if (pathname.startsWith("/master-panel")) {
+    return {
+      kind: "master",
+      icon: BookKey,
+      selector: "#tadeon-main .tadeon-master-commandbar",
+    };
+  }
+  if (pathname.startsWith("/manage-users")) {
+    return {
+      kind: "users",
+      icon: ShieldCheck,
+      selector: "#tadeon-main .tadeon-route-users > .tadeon-page-hero",
+    };
+  }
+  if (pathname.startsWith("/nexus-tools")) {
+    return {
+      kind: "tools",
+      icon: ArchiveRestore,
+      selector: "#tadeon-main .tadeon-route-tools > .tadeon-page-hero",
+    };
+  }
+  if (pathname.startsWith("/offline")) {
+    return {
+      kind: "offline",
+      icon: WifiOff,
+      selector: "#tadeon-main .tadeon-route-offline > .tadeon-page-hero",
+    };
+  }
   return null;
-}
-
-function findInternalHeader() {
-  return document.querySelector<HTMLElement>("#tadeon-main .tadeon-page-header");
 }
 
 function ensureHeroHost(header: HTMLElement) {
@@ -36,6 +57,14 @@ function ensureHeroHost(header: HTMLElement) {
   host.setAttribute("aria-hidden", "true");
   header.prepend(host);
   return host;
+}
+
+function clearStaleHeroes(active?: HTMLElement | null) {
+  document
+    .querySelectorAll<HTMLElement>("[data-tadeon-page-hero]")
+    .forEach((node) => {
+      if (node !== active) delete node.dataset.tadeonPageHero;
+    });
 }
 
 export function PageHeroParityBridge() {
@@ -51,9 +80,7 @@ export function PageHeroParityBridge() {
     let frame: number | null = null;
     let observer: MutationObserver | null = null;
 
-    document
-      .querySelectorAll<HTMLElement>(".tadeon-page-header[data-tadeon-page-hero]")
-      .forEach((node) => delete node.dataset.tadeonPageHero);
+    clearStaleHeroes();
 
     if (!config) {
       setPortal(null);
@@ -61,8 +88,9 @@ export function PageHeroParityBridge() {
     }
 
     const sync = () => {
-      const header = findInternalHeader();
+      const header = document.querySelector<HTMLElement>(config.selector);
       if (!header) return;
+      clearStaleHeroes(header);
       header.dataset.tadeonPageHero = config.kind;
       const host = ensureHeroHost(header);
       setPortal((current) =>
