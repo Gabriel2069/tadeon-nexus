@@ -30,17 +30,31 @@ function activeSceneAssetUrls(snapshot: TabletopSnapshot | null) {
   return urls;
 }
 
+function profileForCurrentDevice(snapshot: TabletopSnapshot | null) {
+  return recommendTabletopQuality({
+    fps: 60,
+    entityCount: snapshot?.scene.entities.length ?? 0,
+    devicePixelRatio: window.devicePixelRatio || 1,
+    memoryGb: (navigator as NavigatorWithMemory).deviceMemory,
+    coarsePointer: matchMedia("(pointer: coarse)").matches,
+  });
+}
+
 function applyProfile(profile: TabletopQualityProfile, snapshot: TabletopSnapshot | null) {
   const runtime = currentTabletopRuntime();
-  if (!runtime) return;
+  if (!runtime) return false;
   const renderer = (runtime.engine as unknown as PixiInternals).app?.renderer;
   const targetResolution = Math.min(window.devicePixelRatio || 1, profile.maxResolution);
   if (renderer && Math.abs(Number(renderer.resolution ?? targetResolution) - targetResolution) > 0.05) {
     try {
       renderer.resolution = targetResolution;
-      renderer.resize?.(Math.max(320, runtime.host.clientWidth), Math.max(320, runtime.host.clientHeight), targetResolution);
+      renderer.resize?.(
+        Math.max(320, runtime.host.clientWidth),
+        Math.max(320, runtime.host.clientHeight),
+        targetResolution,
+      );
     } catch {
-      // Older Pixi renderers may expose resolution as readonly; CSS/native-model
+      // Older Pixi renderers may expose resolution as readonly; the remaining
       // adaptation still applies and keeps the session safe.
     }
   }
@@ -49,8 +63,16 @@ function applyProfile(profile: TabletopQualityProfile, snapshot: TabletopSnapsho
   runtime.host.style.setProperty("--tadeon-tabletop-texture-budget-mb", String(profile.textureBudgetMb));
   configureTabletopTextureBudget(activeSceneAssetUrls(snapshot), profile.textureBudgetMb);
   const native = runtime.host.querySelector<HTMLCanvasElement>(".tadeon-tabletop-native-model-layer");
-  if (native) native.style.display = profile.nativeModels ? "block" : "none";
-  window.dispatchEvent(new CustomEvent("tadeon-tabletop-quality", { detail: profile }));
+  if (native) {
+    native.style.display = profile.nativeModels ? "block" : "none";
+    native.style.imageRendering = "auto";
+  }
+  window.dispatchEvent(
+    new CustomEvent("tadeon-tabletop-quality", {
+      detail: { ...profile, resolution: targetResolution },
+    }),
+  );
+  return true;
 }
 
 export function TabletopAdaptivePerformanceBridge() {
@@ -63,12 +85,33 @@ export function TabletopAdaptivePerformanceBridge() {
 
   useEffect(() => {
     let raf = 0;
+    let bootstrap = 0;
     let stopped = false;
-    const onRender = (event: Event) => {
-      snapshot.current = (event as CustomEvent<TabletopSnapshot>).detail ?? currentTabletopRuntime()?.snapshot() ?? null;
+
+    const syncImmediateDensity = () => {
+      if (stopped) return;
+      snapshot.current = currentTabletopRuntime()?.snapshot() ?? snapshot.current;
+      const initial = profile.current ?? profileForCurrentDevice(snapshot.current);
+      profile.current = initial;
+      if (!applyProfile(initial, snapshot.current)) {
+        bootstrap = window.requestAnimationFrame(syncImmediateDensity);
+      }
     };
+
+    const onRender = (event: Event) => {
+      snapshot.current =
+        (event as CustomEvent<TabletopSnapshot>).detail ??
+        currentTabletopRuntime()?.snapshot() ??
+        null;
+    };
+
+    const onResize = () => {
+      if (profile.current) applyProfile(profile.current, snapshot.current);
+    };
+
     window.addEventListener("tadeon-tabletop-render", onRender);
-    snapshot.current = currentTabletopRuntime()?.snapshot() ?? null;
+    window.addEventListener("resize", onResize, { passive: true });
+    syncImmediateDensity();
 
     const sample = (now: number) => {
       if (stopped) return;
@@ -111,11 +154,14 @@ export function TabletopAdaptivePerformanceBridge() {
       }
       raf = requestAnimationFrame(sample);
     };
+
     raf = requestAnimationFrame(sample);
     return () => {
       stopped = true;
       cancelAnimationFrame(raf);
+      cancelAnimationFrame(bootstrap);
       window.removeEventListener("tadeon-tabletop-render", onRender);
+      window.removeEventListener("resize", onResize);
     };
   }, []);
 

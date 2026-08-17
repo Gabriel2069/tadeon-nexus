@@ -16,36 +16,35 @@ export interface TabletopQualityProfile {
   textureBudgetMb: number;
 }
 
-/* Rendering resolution is the last quality lever we sacrifice. Modern phones
-   and tablets commonly have dense screens, so dropping the backing canvas to
-   1x/1.25x made the map visibly soft even while the device still had enough
-   GPU headroom. Effects and native models can degrade first; the canvas keeps
-   a useful high-DPI floor throughout the adaptive ladder. */
+/* Resolution is the last lever we sacrifice. The previous ladder still pushed
+   dense 3x mobile/tablet displays to 2x/1.6x and made zoom/projection visibly
+   soft. Effects, model complexity and cache budget degrade first; even economy
+   keeps a 2x backing canvas when the hardware DPR supports it. */
 const PROFILES: Record<TabletopQualityTier, TabletopQualityProfile> = {
   cinematic: {
     tier: "cinematic",
-    maxResolution: 2.5,
+    maxResolution: 3,
     nativeModels: true,
     effects: "full",
     textureBudgetMb: 512,
   },
   high: {
     tier: "high",
-    maxResolution: 2,
+    maxResolution: 3,
     nativeModels: true,
     effects: "full",
     textureBudgetMb: 384,
   },
   balanced: {
     tier: "balanced",
-    maxResolution: 1.6,
+    maxResolution: 2.5,
     nativeModels: true,
     effects: "reduced",
     textureBudgetMb: 256,
   },
   economy: {
     tier: "economy",
-    maxResolution: 1.25,
+    maxResolution: 2,
     nativeModels: false,
     effects: "minimal",
     textureBudgetMb: 160,
@@ -58,7 +57,7 @@ export function recommendTabletopQuality(sample: TabletopPerformanceSample): Tab
   const veryDense = sample.entityCount > 750;
   if (sample.fps < 38 || veryDense || (memoryPressure && sample.coarsePointer)) return PROFILES.economy;
   if (sample.fps < 50 || dense || memoryPressure) return PROFILES.balanced;
-  if (sample.fps < 57 || sample.coarsePointer || sample.devicePixelRatio > 2.5) return PROFILES.high;
+  if (sample.fps < 57 || sample.coarsePointer || sample.devicePixelRatio > 3) return PROFILES.high;
   return PROFILES.cinematic;
 }
 

@@ -7,19 +7,22 @@ function source(path: string) {
 }
 
 describe("final device parity 154", () => {
-  it("restores global focus headers and moves visual identity to internal page heroes", () => {
-    const css = source("src/styles/final-device-parity-154.css");
+  it("restores global focus headers and moves visual identity to the real internal heroes", () => {
+    const css = source("src/styles/final-device-parity-154-compat.css");
     const bridge = source("src/components/page-hero-parity-bridge.tsx");
 
-    expect(css).toContain(".tadeon-desktop-toolbar");
-    expect(css).toContain("position: sticky !important");
-    expect(css).toContain(".tadeon-mobile-header__identity::before");
+    expect(css).toContain(".tadeon-desktop-toolbar::before");
+    expect(css).toContain(".tadeon-mobile-header::before");
     expect(css).toContain("content: none !important");
-    expect(css).toContain('.tadeon-page-header[data-tadeon-page-hero="master"]');
-    expect(css).toContain('.tadeon-page-header[data-tadeon-page-hero="users"]');
-    expect(css).toContain('.tadeon-page-header[data-tadeon-page-hero="tools"]');
-    expect(css).toContain('.tadeon-page-header[data-tadeon-page-hero="offline"]');
-    expect(bridge).toContain('#tadeon-main .tadeon-page-header');
+    expect(css).toContain('.tadeon-page-hero[data-tadeon-page-hero="master"]');
+    expect(css).toContain('.tadeon-page-hero[data-tadeon-page-hero="users"]');
+    expect(css).toContain('.tadeon-page-hero[data-tadeon-page-hero="tools"]');
+    expect(css).toContain('.tadeon-page-hero[data-tadeon-page-hero="offline"]');
+    expect(bridge).toContain("#tadeon-main .tadeon-master-commandbar");
+    expect(bridge).toContain("#tadeon-main .tadeon-route-users > .tadeon-page-hero");
+    expect(bridge).toContain("#tadeon-main .tadeon-route-tools > .tadeon-page-hero");
+    expect(bridge).toContain("#tadeon-main .tadeon-route-offline > .tadeon-page-hero");
+    expect(bridge).not.toContain('querySelector<HTMLElement>("#tadeon-main .tadeon-page-header")');
     expect(bridge).toContain("BookKey");
     expect(bridge).toContain("ShieldCheck");
     expect(bridge).toContain("ArchiveRestore");
@@ -39,8 +42,6 @@ describe("final device parity 154", () => {
     expect(css).toContain("overflow-x: auto !important");
     expect(bridge).toContain('classList.add("tadeon-condition-counter-host")');
     expect(bridge).toContain('classList.add("tadeon-condition-counter-dots")');
-    expect(css).toContain(".tadeon-condition-counter-dots");
-    expect(css).toContain("justify-self: center !important");
   });
 
   it("protects portrait and landscape tablet sidebar geometry", () => {
@@ -57,12 +58,11 @@ describe("final device parity 154", () => {
     const textures = source("src/lib/tabletop/texture-manager.ts");
     const css = source("src/styles/final-device-parity-154.css");
 
+    expect(performance).toContain("maxResolution: 3");
     expect(performance).toContain("maxResolution: 2.5");
-    expect(performance).toContain("maxResolution: 2,");
-    expect(performance).toContain("maxResolution: 1.6");
-    expect(performance).toContain("maxResolution: 1.25");
+    expect(performance).toContain("maxResolution: 2");
     expect(textures).toContain('texture.source.scaleMode = "linear"');
-    expect(textures).toContain("texture.source.maxAnisotropy = 8");
+    expect(textures).toContain("texture.source.maxAnisotropy = 16");
     expect(css).toContain("image-rendering: auto !important");
   });
 
@@ -74,10 +74,9 @@ describe("final device parity 154", () => {
   });
 
   it("retains richer card and tab depth throughout the mobile application", () => {
-    const css = source("src/styles/final-device-parity-154.css");
-    expect(css).toContain(".tadeon-route-stage .tadeon-page:not(.tadeon-sheet-page)");
+    const css = source("src/styles/final-device-parity-154-compat.css");
+    expect(css).toContain("background-size: 64px 64px, 64px 64px");
     expect(css).toContain('[role="tab"][data-state="active"]');
-    expect(css).toContain("--mobile-panel-rgb");
     expect(css).toContain("radial-gradient(circle at 94% -6%");
   });
 

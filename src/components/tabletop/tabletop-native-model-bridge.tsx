@@ -37,6 +37,58 @@ type VisibilityInternals = {
   visibilityState?: TabletopVisibilityState;
 };
 
+type NativeDensityInternals = {
+  host: HTMLElement;
+  canvas: HTMLCanvasElement;
+  gl: WebGL2RenderingContext;
+};
+
+type NativeDensityPrototype = {
+  ensureCanvasSize(this: NativeDensityInternals): {
+    width: number;
+    height: number;
+    ratio: number;
+  };
+};
+
+const nativeDensityState = globalThis as typeof globalThis & {
+  __tadeonNativeDensityPatched?: boolean;
+};
+
+/* The native WebGL model layer used to keep its own hard 2x DPR ceiling while
+   the Pixi scene could render at 2.5x/3x. Because both canvases are composited,
+   the 3D layer remained visibly softer. `private` TS methods are normal
+   prototype methods at runtime, so patch the sizing contract once and make it
+   consume the same quality-resolution variable as the main renderer. */
+function installNativeDensityContract() {
+  if (nativeDensityState.__tadeonNativeDensityPatched) return;
+  nativeDensityState.__tadeonNativeDensityPatched = true;
+  const prototype = TabletopNativeModelRenderer.prototype as unknown as NativeDensityPrototype;
+  prototype.ensureCanvasSize = function ensureHighDensityNativeCanvas() {
+    const deviceRatio = Math.max(1, window.devicePixelRatio || 1);
+    const requested = Number.parseFloat(
+      this.host.style.getPropertyValue("--tadeon-tabletop-quality-resolution"),
+    );
+    const ratio = Math.min(
+      deviceRatio,
+      Number.isFinite(requested) && requested > 0 ? requested : 3,
+    );
+    const cssWidth = Math.max(1, this.host.clientWidth);
+    const cssHeight = Math.max(1, this.host.clientHeight);
+    const width = Math.max(1, Math.round(cssWidth * ratio));
+    const height = Math.max(1, Math.round(cssHeight * ratio));
+    if (this.canvas.width !== width || this.canvas.height !== height) {
+      this.canvas.width = width;
+      this.canvas.height = height;
+    }
+    this.canvas.style.imageRendering = "auto";
+    this.gl.viewport(0, 0, width, height);
+    return { width: cssWidth, height: cssHeight, ratio };
+  };
+}
+
+installNativeDensityContract();
+
 function nativeCanvas(host: HTMLElement) {
   return host.querySelector<HTMLCanvasElement>(".tadeon-tabletop-native-model-layer");
 }

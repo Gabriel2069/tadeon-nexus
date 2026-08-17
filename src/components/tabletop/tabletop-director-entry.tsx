@@ -1,6 +1,7 @@
 import "@/lib/tabletop/tabletop-player-runtime";
 import { TabletopDirectorWorkspace } from "@/components/tabletop/tabletop-director-workspace";
 import { TabletopNativeModelBridge } from "@/components/tabletop/tabletop-native-model-bridge";
+import { TabletopAdaptivePerformanceBridge } from "@/components/tabletop/tabletop-adaptive-performance-bridge";
 
 export default function TabletopDirectorEntry({
   sessionId,
@@ -13,6 +14,7 @@ export default function TabletopDirectorEntry({
     <>
       <TabletopDirectorWorkspace sessionId={sessionId} realtimeEnabled={realtimeEnabled} />
       <TabletopNativeModelBridge />
+      <TabletopAdaptivePerformanceBridge />
     </>
   );
 }
