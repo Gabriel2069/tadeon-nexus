@@ -1,0 +1,305 @@
+/* #159: true shell-header parity + navigation color/geometry parity.
+   No route-specific focus-header selectors live here: every section inherits
+   the exact same shell contract, while section accent only changes color. */
+
+/* --------------------------------------------------------------------------
+   AREA EM FOCO - one contract for every desktop route.
+   This intentionally restates the canonical desktop-studio geometry after all
+   legacy repair files, eliminating the four-route divergence from #156/#157.
+   -------------------------------------------------------------------------- */
+@media (min-width: 768px) {
+  .tadeon-shell .tadeon-desktop-toolbar {
+    position: sticky !important;
+    z-index: 30 !important;
+    top: 0 !important;
+    display: flex !important;
+    width: 100% !important;
+    height: auto !important;
+    min-height: 4.65rem !important;
+    max-height: none !important;
+    flex-flow: row nowrap !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    gap: 1rem !important;
+    padding: .75rem clamp(1.5rem, 2.6vw, 2.5rem) !important;
+    overflow: visible !important;
+    isolation: auto !important;
+    border: 0 !important;
+    border-bottom: 1px solid color-mix(in srgb, var(--section-accent) 12%, var(--border)) !important;
+    border-radius: 0 !important;
+    background:
+      linear-gradient(90deg, rgb(var(--section-accent-rgb) / 4%), transparent 35%),
+      rgb(8 10 14 / 82%) !important;
+    box-shadow:
+      0 24px 65px -52px rgb(0 0 0 / 100%),
+      inset 0 -1px rgb(255 255 255 / 1.5%) !important;
+    backdrop-filter: blur(24px) saturate(132%) !important;
+    -webkit-backdrop-filter: blur(24px) saturate(132%) !important;
+  }
+
+  .tadeon-shell .tadeon-desktop-toolbar::before {
+    display: none !important;
+    width: 0 !important;
+    height: 0 !important;
+    border: 0 !important;
+    background: none !important;
+    box-shadow: none !important;
+    opacity: 0 !important;
+    transform: none !important;
+    content: none !important;
+  }
+
+  .tadeon-shell .tadeon-desktop-toolbar::after {
+    position: absolute !important;
+    right: clamp(1.5rem, 2.6vw, 2.5rem) !important;
+    bottom: -1px !important;
+    left: clamp(1.5rem, 2.6vw, 2.5rem) !important;
+    display: block !important;
+    width: auto !important;
+    height: 1px !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    background: linear-gradient(
+      90deg,
+      color-mix(in srgb, var(--section-accent) 42%, transparent),
+      color-mix(in srgb, var(--section-secondary) 18%, transparent) 38%,
+      transparent 78%
+    ) !important;
+    box-shadow: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+    pointer-events: none !important;
+    content: "" !important;
+  }
+
+  .tadeon-shell .tadeon-desktop-toolbar > .min-w-0 {
+    position: static !important;
+    z-index: auto !important;
+    display: block !important;
+    min-width: 0 !important;
+    flex: 1 1 auto !important;
+    padding: 0 !important;
+    border: 0 !important;
+    isolation: auto !important;
+    transform: none !important;
+  }
+
+  .tadeon-shell .tadeon-desktop-toolbar > .ml-auto {
+    display: flex !important;
+    min-width: 0 !important;
+    flex: 0 0 auto !important;
+    flex-flow: row nowrap !important;
+    align-items: center !important;
+    margin-left: auto !important;
+  }
+
+  .tadeon-shell .tadeon-desktop-toolbar .tadeon-eyebrow {
+    color: color-mix(in srgb, var(--section-accent) 82%, var(--foreground)) !important;
+    font-size: .58rem !important;
+    line-height: 1.2 !important;
+  }
+
+  .tadeon-shell .tadeon-desktop-toolbar h2 {
+    margin: 0 !important;
+    color: var(--foreground) !important;
+    font-size: 1.25rem !important;
+    font-weight: 600 !important;
+    letter-spacing: normal !important;
+    line-height: 1.1 !important;
+    text-shadow: none !important;
+    transform: none !important;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   AREA EM FOCO - one contract for every phone route.
+   The grid, identity and brand mark are reset to the same AppLayout/mobile-
+   studio anatomy regardless of current section.
+   -------------------------------------------------------------------------- */
+@media (max-width: 767px) {
+  .tadeon-shell .tadeon-mobile-header {
+    position: sticky !important;
+    z-index: 30 !important;
+    top: 0 !important;
+    display: grid !important;
+    width: 100% !important;
+    height: auto !important;
+    min-height: var(--tadeon-mobile-header-height) !important;
+    max-height: none !important;
+    grid-template-columns: 5.9rem minmax(0, 1fr) 5.9rem !important;
+    grid-template-rows: minmax(0, 1fr) !important;
+    grid-auto-flow: row !important;
+    align-items: center !important;
+    padding: max(.25rem, env(safe-area-inset-top)) .75rem .5rem !important;
+    overflow: visible !important;
+    isolation: auto !important;
+    border: 0 !important;
+    border-bottom: 1px solid color-mix(in srgb, var(--section-accent) 13%, var(--border)) !important;
+    border-radius: 0 !important;
+    background:
+      linear-gradient(90deg, rgb(var(--section-accent-rgb) / 7%), transparent 48%),
+      rgb(8 10 14 / 88%) !important;
+    box-shadow:
+      0 22px 62px -48px rgb(0 0 0 / 100%),
+      inset 0 -1px rgb(255 255 255 / 1.8%) !important;
+    backdrop-filter: blur(24px) saturate(138%) !important;
+    -webkit-backdrop-filter: blur(24px) saturate(138%) !important;
+  }
+
+  .tadeon-shell .tadeon-mobile-header::before,
+  .tadeon-shell .tadeon-mobile-header__identity::before,
+  .tadeon-shell .tadeon-mobile-header__identity::after {
+    display: none !important;
+    width: 0 !important;
+    height: 0 !important;
+    border: 0 !important;
+    background: none !important;
+    box-shadow: none !important;
+    opacity: 0 !important;
+    transform: none !important;
+    content: none !important;
+  }
+
+  .tadeon-shell .tadeon-mobile-header::after {
+    display: none !important;
+    content: none !important;
+  }
+
+  .tadeon-shell .tadeon-mobile-header__thread {
+    position: absolute !important;
+    right: 1rem !important;
+    bottom: -1px !important;
+    left: 1rem !important;
+    display: block !important;
+    width: auto !important;
+    height: 1px !important;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      color-mix(in srgb, var(--section-accent) 62%, transparent) 32%,
+      color-mix(in srgb, var(--section-secondary) 20%, transparent) 68%,
+      transparent
+    ) !important;
+    opacity: 1 !important;
+    pointer-events: none !important;
+  }
+
+  .tadeon-shell .tadeon-mobile-header__identity {
+    position: static !important;
+    z-index: auto !important;
+    display: flex !important;
+    min-width: 0 !important;
+    align-self: center !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: .625rem !important;
+    padding: 0 !important;
+    overflow: visible !important;
+    isolation: auto !important;
+    border: 0 !important;
+    transform: none !important;
+  }
+
+  .tadeon-shell .tadeon-mobile-header__identity > svg {
+    display: block !important;
+    width: 2rem !important;
+    height: 2rem !important;
+    flex: 0 0 auto !important;
+    color: var(--section-accent) !important;
+    filter: drop-shadow(0 0 12px rgb(var(--section-accent-rgb) / 24%)) !important;
+    transform: none !important;
+  }
+
+  .tadeon-shell .tadeon-mobile-header__identity > div {
+    min-width: 0 !important;
+  }
+
+  .tadeon-shell .tadeon-mobile-header__identity p:last-child {
+    color: color-mix(in srgb, var(--foreground) 82%, var(--section-accent)) !important;
+    font-weight: 600 !important;
+    text-shadow: none !important;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   NAVIGATION SYMBOLS - preserve authored shapes but make them obey the exact
+   same color and dimensions as every other navigation SVG.
+   The old #158 data-URI strokes were permanently gold, causing the mismatch.
+   -------------------------------------------------------------------------- */
+.tadeon-nav-item[href="/master-panel"] .tadeon-nav-item__icon > svg,
+.tadeon-nav-item[href="/nexus-tools"] .tadeon-nav-item__icon > svg,
+.tadeon-mobile-dock__item[href="/master-panel"] > svg {
+  display: none !important;
+}
+
+.tadeon-nav-item[href="/master-panel"] .tadeon-nav-item__icon::before,
+.tadeon-nav-item[href="/nexus-tools"] .tadeon-nav-item__icon::before {
+  display: block !important;
+  width: 1rem !important;
+  height: 1rem !important;
+  flex: 0 0 auto !important;
+  background-color: currentColor !important;
+  background-image: none !important;
+  opacity: 1 !important;
+  transform: none !important;
+  filter: none !important;
+  content: "" !important;
+  transition:
+    background-color 180ms var(--ease-out),
+    filter 180ms var(--ease-out),
+    transform 180ms var(--ease-out) !important;
+}
+
+.tadeon-nav-item[href="/master-panel"] .tadeon-nav-item__icon::before {
+  -webkit-mask: center / contain no-repeat url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.55' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='8.25' stroke-dasharray='9 3.4 2.2 4.3' opacity='.72'/%3E%3Cpath d='M12 2.8v4.1M12 17.1v4.1M2.8 12h4.1M17.1 12h4.1'/%3E%3Cpath d='m8.55 12 3.45-3.45L15.45 12 12 15.45 8.55 12Z'/%3E%3Cpath d='M6.05 6.35 9.6 9.6M17.95 6.35 14.4 9.6M6.05 17.65l3.55-3.25M17.95 17.65l-3.55-3.25'/%3E%3Ccircle cx='6.05' cy='6.35' r='.85'/%3E%3Ccircle cx='17.95' cy='6.35' r='.85'/%3E%3Ccircle cx='6.05' cy='17.65' r='.85'/%3E%3Ccircle cx='17.95' cy='17.65' r='.85'/%3E%3Ccircle cx='12' cy='12' r='1.15' fill='black' stroke='none'/%3E%3C/svg%3E") !important;
+  mask: center / contain no-repeat url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.55' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='8.25' stroke-dasharray='9 3.4 2.2 4.3' opacity='.72'/%3E%3Cpath d='M12 2.8v4.1M12 17.1v4.1M2.8 12h4.1M17.1 12h4.1'/%3E%3Cpath d='m8.55 12 3.45-3.45L15.45 12 12 15.45 8.55 12Z'/%3E%3Cpath d='M6.05 6.35 9.6 9.6M17.95 6.35 14.4 9.6M6.05 17.65l3.55-3.25M17.95 17.65l-3.55-3.25'/%3E%3Ccircle cx='6.05' cy='6.35' r='.85'/%3E%3Ccircle cx='17.95' cy='6.35' r='.85'/%3E%3Ccircle cx='6.05' cy='17.65' r='.85'/%3E%3Ccircle cx='17.95' cy='17.65' r='.85'/%3E%3Ccircle cx='12' cy='12' r='1.15' fill='black' stroke='none'/%3E%3C/svg%3E") !important;
+}
+
+.tadeon-nav-item[href="/nexus-tools"] .tadeon-nav-item__icon::before {
+  -webkit-mask: center / contain no-repeat url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M21 8a2 2 0 0 0-2-2h-2V4a2 2 0 0 0-2-2H9a2 2 0 0 0-2 2v2H5a2 2 0 0 0-2 2v11a3 3 0 0 0 3 3h12a3 3 0 0 0 3-3Z'/%3E%3Cpath d='M9 6h6M8 12h8M8 16h5'/%3E%3C/svg%3E") !important;
+  mask: center / contain no-repeat url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M21 8a2 2 0 0 0-2-2h-2V4a2 2 0 0 0-2-2H9a2 2 0 0 0-2 2v2H5a2 2 0 0 0-2 2v11a3 3 0 0 0 3 3h12a3 3 0 0 0 3-3Z'/%3E%3Cpath d='M9 6h6M8 12h8M8 16h5'/%3E%3C/svg%3E") !important;
+}
+
+.tadeon-nav-item[href="/master-panel"][aria-current="page"] .tadeon-nav-item__icon::before,
+.tadeon-nav-item[href="/nexus-tools"][aria-current="page"] .tadeon-nav-item__icon::before {
+  background-color: var(--section-accent) !important;
+  filter: drop-shadow(0 0 9px rgb(var(--section-accent-rgb) / 25%)) !important;
+  transform: none !important;
+}
+
+/* Bottom dock: the Master symbol now occupies the same 20px SVG slot and uses
+   the same active/inactive color + motion contract as Home/Nexus/Mesa/More. */
+.tadeon-mobile-dock__item[href="/master-panel"]::before {
+  display: block !important;
+  width: 1.25rem !important;
+  height: 1.25rem !important;
+  flex: 0 0 auto !important;
+  margin: 0 !important;
+  background-color: currentColor !important;
+  background-image: none !important;
+  -webkit-mask: center / contain no-repeat url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.55' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='8.25' stroke-dasharray='9 3.4 2.2 4.3' opacity='.72'/%3E%3Cpath d='M12 2.8v4.1M12 17.1v4.1M2.8 12h4.1M17.1 12h4.1'/%3E%3Cpath d='m8.55 12 3.45-3.45L15.45 12 12 15.45 8.55 12Z'/%3E%3Cpath d='M6.05 6.35 9.6 9.6M17.95 6.35 14.4 9.6M6.05 17.65l3.55-3.25M17.95 17.65l-3.55-3.25'/%3E%3Ccircle cx='6.05' cy='6.35' r='.85'/%3E%3Ccircle cx='17.95' cy='6.35' r='.85'/%3E%3Ccircle cx='6.05' cy='17.65' r='.85'/%3E%3Ccircle cx='17.95' cy='17.65' r='.85'/%3E%3Ccircle cx='12' cy='12' r='1.15' fill='black' stroke='none'/%3E%3C/svg%3E") !important;
+  mask: center / contain no-repeat url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.55' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='8.25' stroke-dasharray='9 3.4 2.2 4.3' opacity='.72'/%3E%3Cpath d='M12 2.8v4.1M12 17.1v4.1M2.8 12h4.1M17.1 12h4.1'/%3E%3Cpath d='m8.55 12 3.45-3.45L15.45 12 12 15.45 8.55 12Z'/%3E%3Cpath d='M6.05 6.35 9.6 9.6M17.95 6.35 14.4 9.6M6.05 17.65l3.55-3.25M17.95 17.65l-3.55-3.25'/%3E%3Ccircle cx='6.05' cy='6.35' r='.85'/%3E%3Ccircle cx='17.95' cy='6.35' r='.85'/%3E%3Ccircle cx='6.05' cy='17.65' r='.85'/%3E%3Ccircle cx='17.95' cy='17.65' r='.85'/%3E%3Ccircle cx='12' cy='12' r='1.15' fill='black' stroke='none'/%3E%3C/svg%3E") !important;
+  opacity: 1 !important;
+  filter: none !important;
+  transform: none !important;
+  content: "" !important;
+  transition:
+    background-color var(--motion-fast) var(--ease-out),
+    filter var(--motion-fast) var(--ease-out),
+    transform var(--motion-fast) var(--ease-out) !important;
+}
+
+.tadeon-mobile-dock__item[href="/master-panel"][aria-current="page"]::before {
+  background-color: var(--section-accent) !important;
+  filter: drop-shadow(0 0 8px rgb(var(--section-accent-rgb) / 28%)) !important;
+  transform: translateY(-1px) !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tadeon-nav-item[href="/master-panel"] .tadeon-nav-item__icon::before,
+  .tadeon-nav-item[href="/nexus-tools"] .tadeon-nav-item__icon::before,
+  .tadeon-mobile-dock__item[href="/master-panel"]::before {
+    transition: none !important;
+    transform: none !important;
+  }
+}
