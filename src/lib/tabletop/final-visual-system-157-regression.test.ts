@@ -50,7 +50,7 @@ describe("final visual system 157", () => {
       "command",
       "tabs-list",
     ]) {
-      expect(css).toContain(`[data-slot=\"${slot}\"]`);
+      expect(css).toContain(`[data-slot="${slot}"]`);
     }
     expect(css).toContain("background-size: auto, auto, 42px 42px, 42px 42px !important");
     expect(css).toContain(".rounded-lg, .rounded-xl, .rounded-2xl");
