@@ -3,7 +3,7 @@ import { ProtectedShell } from "@/components/protected-shell";
 import { PopupGallery } from "@/components/visual-audit/popup-gallery";
 import { ResponsiveAuditLab } from "@/components/visual-audit/responsive-audit-lab";
 
-export const Route = createFileRoute("/visual-audit" as never)({
+export const Route = createFileRoute("/visual-audit")({
   head: () => ({
     meta: [
       { title: "Auditoria visual · Tadeon Nexus" },
