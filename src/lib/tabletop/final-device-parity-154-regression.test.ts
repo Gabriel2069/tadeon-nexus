@@ -24,6 +24,9 @@ describe("final device parity 154", () => {
     expect(bridge).toContain("ShieldCheck");
     expect(bridge).toContain("ArchiveRestore");
     expect(bridge).toContain("WifiOff");
+    expect(bridge).toContain("useRouterState");
+    expect(bridge).toContain('document.getElementById("tadeon-main")');
+    expect(bridge).not.toContain("observer.observe(document.body");
   });
 
   it("keeps every sheet header action on one mobile rail and centers the real condition dot row", () => {
