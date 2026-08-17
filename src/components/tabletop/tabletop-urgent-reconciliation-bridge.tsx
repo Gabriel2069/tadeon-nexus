@@ -15,6 +15,17 @@ function stageGeometry() {
   return { stage, rect };
 }
 
+function selectModeActive() {
+  return document.querySelector<HTMLElement>('.tadeon-tabletop-stage[data-tool="select"]') !== null;
+}
+
+function closeSelectModeBackdrop() {
+  if (!selectModeActive()) return;
+  document
+    .querySelector<HTMLButtonElement>('.tadeon-tabletop-panel-backdrop[data-open="true"]')
+    ?.click();
+}
+
 function overlapRatio(a: DOMRect, b: DOMRect) {
   const width = Math.max(0, Math.min(a.right, b.right) - Math.max(a.left, b.left));
   const height = Math.max(0, Math.min(a.bottom, b.bottom) - Math.max(a.top, b.top));
@@ -75,10 +86,7 @@ function guardSelectionSurfaces(original: Map<HTMLElement, string | null>) {
   const geometry = stageGeometry();
   if (!geometry) return;
 
-  const legacyBackdrop = document.querySelector<HTMLButtonElement>(
-    '.tadeon-tabletop-panel-backdrop[data-open="true"]',
-  );
-  legacyBackdrop?.click();
+  closeSelectModeBackdrop();
 
   document.querySelectorAll<HTMLElement>("body *").forEach((element) => {
     if (!visualBlocker(element, geometry.rect)) return;
@@ -171,6 +179,7 @@ export function TabletopUrgentReconciliationBridge() {
     };
 
     const syncSelection = () => {
+      closeSelectModeBackdrop();
       const selected = currentTabletopRuntime()?.snapshot().selectedIds.length ?? 0;
       const active = selected > 0;
       selectionActiveRef.current = active;
@@ -242,6 +251,7 @@ export function TabletopUrgentReconciliationBridge() {
     const resizeObserver = new ResizeObserver(syncGeometry);
     const domObserver = new MutationObserver(() => {
       syncDock();
+      closeSelectModeBackdrop();
       scheduleSelectionGuard();
     });
 
@@ -252,7 +262,7 @@ export function TabletopUrgentReconciliationBridge() {
         childList: true,
         subtree: true,
         attributes: true,
-        attributeFilter: ["class", "style", "data-open", "data-state"],
+        attributeFilter: ["class", "style", "data-open", "data-state", "data-tool"],
       });
       syncGeometry();
       syncDock();
