@@ -21,11 +21,11 @@ import userRepair152Css from "../styles/user-repair-152.css?url";
 import mobileProductRepair153Css from "../styles/mobile-product-repair-153.css?url";
 import finalDeviceParity154Css from "../styles/final-device-parity-154.css?url";
 import finalDeviceParity154CompatCss from "../styles/final-device-parity-154-compat.css?url";
+import userVisibleRepair156Css from "../styles/user-visible-repair-156.css?url";
 import { AuthProvider } from "@/lib/auth";
 import { Toaster } from "@/components/ui/sonner";
 import { PwaRegistration } from "@/components/pwa-registration";
 import { ExperienceFinalPolishBridge } from "@/components/experience-final-polish-bridge";
-import { PageHeroParityBridge } from "@/components/page-hero-parity-bridge";
 import { TabletopFinalInteractionBridge } from "@/components/tabletop/tabletop-final-interaction-bridge";
 import { useEffect } from "react";
 import { initializeClientErrorMonitor } from "@/lib/client-error-monitor";
@@ -123,6 +123,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { rel: "stylesheet", href: mobileProductRepair153Css },
       { rel: "stylesheet", href: finalDeviceParity154Css },
       { rel: "stylesheet", href: finalDeviceParity154CompatCss },
+      { rel: "stylesheet", href: userVisibleRepair156Css },
       { rel: "manifest", href: "/manifest.webmanifest" },
       { rel: "icon", href: "/favicon.svg?v=4", type: "image/svg+xml", sizes: "any" },
       { rel: "shortcut icon", href: "/favicon.svg?v=4", type: "image/svg+xml" },
@@ -153,7 +154,6 @@ function RootComponent() {
       <AuthProvider>
         <main><Outlet /></main>
         <ExperienceFinalPolishBridge />
-        <PageHeroParityBridge />
         <TabletopFinalInteractionBridge />
         <Toaster position="top-right" />
         <PwaRegistration />
