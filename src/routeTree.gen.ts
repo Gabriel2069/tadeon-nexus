@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as VisualAuditRouteImport } from './routes/visual-audit'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as OfflineRouteImport } from './routes/offline'
@@ -27,6 +28,11 @@ import { Route as SheetIdPowerRouteImport } from './routes/sheet.$id_.power'
 import { Route as Char91DotmcpChar93InvokeToolToolRouteImport } from './routes/[.mcp]/invoke-tool/$tool'
 import { Route as DotlovableOauthConsentRouteImport } from './routes/[.]lovable.oauth.consent'
 
+const VisualAuditRoute = VisualAuditRouteImport.update({
+  id: '/visual-audit',
+  path: '/visual-audit',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
   path: '/sitemap.xml',
@@ -128,6 +134,7 @@ export interface FileRoutesByFullPath {
   '/offline': typeof OfflineRoute
   '/reset-password': typeof ResetPasswordRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/visual-audit': typeof VisualAuditRoute
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/sheet/$id': typeof SheetIdRoute
@@ -147,6 +154,7 @@ export interface FileRoutesByTo {
   '/offline': typeof OfflineRoute
   '/reset-password': typeof ResetPasswordRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/visual-audit': typeof VisualAuditRoute
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/sheet/$id': typeof SheetIdRoute
@@ -167,6 +175,7 @@ export interface FileRoutesById {
   '/offline': typeof OfflineRoute
   '/reset-password': typeof ResetPasswordRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/visual-audit': typeof VisualAuditRoute
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/sheet/$id': typeof SheetIdRoute
@@ -188,6 +197,7 @@ export interface FileRouteTypes {
     | '/offline'
     | '/reset-password'
     | '/sitemap.xml'
+    | '/visual-audit'
     | '/.mcp/list-tools'
     | '/.well-known/oauth-protected-resource'
     | '/sheet/$id'
@@ -207,6 +217,7 @@ export interface FileRouteTypes {
     | '/offline'
     | '/reset-password'
     | '/sitemap.xml'
+    | '/visual-audit'
     | '/.mcp/list-tools'
     | '/.well-known/oauth-protected-resource'
     | '/sheet/$id'
@@ -226,6 +237,7 @@ export interface FileRouteTypes {
     | '/offline'
     | '/reset-password'
     | '/sitemap.xml'
+    | '/visual-audit'
     | '/.mcp/list-tools'
     | '/.well-known/oauth-protected-resource'
     | '/sheet/$id'
@@ -246,6 +258,7 @@ export interface RootRouteChildren {
   OfflineRoute: typeof OfflineRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  VisualAuditRoute: typeof VisualAuditRoute
   Char91DotmcpChar93ListToolsRoute: typeof Char91DotmcpChar93ListToolsRoute
   Char91DotwellKnownChar93OauthProtectedResourceRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   SheetIdRoute: typeof SheetIdRoute
@@ -256,6 +269,13 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/visual-audit': {
+      id: '/visual-audit'
+      path: '/visual-audit'
+      fullPath: '/visual-audit'
+      preLoaderRoute: typeof VisualAuditRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/sitemap.xml': {
       id: '/sitemap.xml'
       path: '/sitemap.xml'
@@ -390,6 +410,7 @@ const rootRouteChildren: RootRouteChildren = {
   OfflineRoute: OfflineRoute,
   ResetPasswordRoute: ResetPasswordRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
+  VisualAuditRoute: VisualAuditRoute,
   Char91DotmcpChar93ListToolsRoute: Char91DotmcpChar93ListToolsRoute,
   Char91DotwellKnownChar93OauthProtectedResourceRoute:
     Char91DotwellKnownChar93OauthProtectedResourceRoute,
@@ -411,4 +432,3 @@ declare module '@tanstack/react-start' {
     config: Awaited<ReturnType<typeof startInstance.getOptions>>
   }
 }
-
