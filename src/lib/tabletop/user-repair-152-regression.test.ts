@@ -26,12 +26,13 @@ describe("field repair 152", () => {
     expect(css).toContain('html[data-tadeon-tabletop-toprail="collapsed"] .tadeon-tabletop-reliability-strip');
   });
 
-  it("guards the real visual blocker while a tabletop entity is selected", () => {
+  it("guards the actual visual blocker and keeps select mode non-modal", () => {
     const bridge = source("src/components/tabletop/tabletop-urgent-reconciliation-bridge.tsx");
     const css = source("src/styles/tabletop-map-chrome-repair.css");
     expect(bridge).toContain('document.querySelectorAll<HTMLElement>("body *")');
     expect(bridge).toContain("overlapRatio(rect, stageRect) < 0.58");
-    expect(bridge).toContain("legacyBackdrop?.click()");
+    expect(bridge).toContain("closeSelectModeBackdrop");
+    expect(bridge).toContain('.tadeon-tabletop-stage[data-tool="select"]');
     expect(bridge).toContain('element.dataset.tadeonSelectionGuarded = "true"');
     expect(css).toContain('[data-tadeon-selection-guarded="true"]');
     expect(css).toContain("backdrop-filter: none !important");
