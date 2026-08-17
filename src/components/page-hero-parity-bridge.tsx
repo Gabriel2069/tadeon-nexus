@@ -1,5 +1,6 @@
 import { createPortal } from "react-dom";
 import { useEffect, useState } from "react";
+import { useRouterState } from "@tanstack/react-router";
 import {
   ArchiveRestore,
   BookKey,
@@ -38,6 +39,7 @@ function ensureHeroHost(header: HTMLElement) {
 }
 
 export function PageHeroParityBridge() {
+  const pathname = useRouterState({ select: (state) => state.location.pathname });
   const [portal, setPortal] = useState<{
     host: HTMLElement;
     kind: HeroKind;
@@ -45,23 +47,22 @@ export function PageHeroParityBridge() {
   } | null>(null);
 
   useEffect(() => {
+    const config = configForPath(pathname);
     let frame: number | null = null;
+    let observer: MutationObserver | null = null;
+
+    document
+      .querySelectorAll<HTMLElement>(".tadeon-page-header[data-tadeon-page-hero]")
+      .forEach((node) => delete node.dataset.tadeonPageHero);
+
+    if (!config) {
+      setPortal(null);
+      return;
+    }
 
     const sync = () => {
-      const config = configForPath(window.location.pathname);
       const header = findInternalHeader();
-
-      document
-        .querySelectorAll<HTMLElement>(".tadeon-page-header[data-tadeon-page-hero]")
-        .forEach((node) => {
-          if (node !== header) delete node.dataset.tadeonPageHero;
-        });
-
-      if (!config || !header) {
-        setPortal(null);
-        return;
-      }
-
+      if (!header) return;
       header.dataset.tadeonPageHero = config.kind;
       const host = ensureHeroHost(header);
       setPortal((current) =>
@@ -79,17 +80,18 @@ export function PageHeroParityBridge() {
       });
     };
 
-    const observer = new MutationObserver(schedule);
-    observer.observe(document.body, { childList: true, subtree: true });
-    window.addEventListener("popstate", schedule);
+    const main = document.getElementById("tadeon-main");
+    if (main) {
+      observer = new MutationObserver(schedule);
+      observer.observe(main, { childList: true, subtree: true });
+    }
     schedule();
 
     return () => {
-      observer.disconnect();
-      window.removeEventListener("popstate", schedule);
+      observer?.disconnect();
       if (frame !== null) window.cancelAnimationFrame(frame);
     };
-  }, []);
+  }, [pathname]);
 
   if (!portal) return null;
   const { host, Icon } = portal;
