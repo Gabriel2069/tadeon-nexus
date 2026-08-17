@@ -40,7 +40,7 @@ describe("reconciliação urgente de UI", () => {
     expect(bridge).toContain("TOP_RAIL_KEY");
   });
 
-  it("neutraliza o bloqueador visual real sempre que uma entidade é selecionada", () => {
+  it("mantém a ferramenta de seleção não modal e neutraliza o bloqueador visual real", () => {
     const css = source("src/styles/tabletop-map-chrome-repair.css");
     const bridge = source(
       "src/components/tabletop/tabletop-urgent-reconciliation-bridge.tsx",
@@ -50,9 +50,12 @@ describe("reconciliação urgente de UI", () => {
     expect(css).toContain("filter: none !important");
     expect(bridge).toContain("tadeon-tabletop-render");
     expect(bridge).toContain("guardSelectionSurfaces");
-    expect(bridge).toContain("legacyBackdrop?.click()");
+    expect(bridge).toContain("closeSelectModeBackdrop");
+    expect(bridge).toContain('.tadeon-tabletop-stage[data-tool="select"]');
+    expect(bridge).toContain('.tadeon-tabletop-panel-backdrop[data-open="true"]');
     expect(bridge).toContain('document.querySelectorAll<HTMLElement>("body *")');
     expect(bridge).toContain("snapshot().selectedIds.length");
+    expect(bridge).toContain('"data-tool"');
   });
 
   it("corrige a largura do remoto na grade pai e restaura os toggles compactos", () => {
