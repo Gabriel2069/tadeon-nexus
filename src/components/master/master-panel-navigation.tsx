@@ -74,7 +74,6 @@ function shellHeaderBottom() {
 export function MasterPanelNavigation({ showAssets = false }: { showAssets?: boolean }) {
   const slotRef = useRef<HTMLDivElement>(null);
   const [fixed, setFixed] = useState(false);
-  const [fixedTop, setFixedTop] = useState(0);
 
   useEffect(() => {
     let frame = 0;
@@ -83,8 +82,8 @@ export function MasterPanelNavigation({ showAssets = false }: { showAssets?: boo
       const slot = slotRef.current;
       if (!slot) return;
       const top = shellHeaderBottom();
+      slot.style.setProperty("--tadeon-master-fixed-top", `${top}px`);
       const nextFixed = slot.getBoundingClientRect().top <= top;
-      setFixedTop((current) => (current === top ? current : top));
       setFixed((current) => (current === nextFixed ? current : nextFixed));
     };
     const schedule = () => {
@@ -103,11 +102,7 @@ export function MasterPanelNavigation({ showAssets = false }: { showAssets?: boo
 
   return (
     <div ref={slotRef} className="tadeon-master-navigation-slot" aria-label="Navegação fixa do Painel do Mestre">
-      <div
-        className="tadeon-master-navigation"
-        data-fixed={fixed ? "true" : "false"}
-        style={fixed ? { top: fixedTop } : undefined}
-      >
+      <div className="tadeon-master-navigation" data-fixed={fixed ? "true" : "false"}>
         <div className="tadeon-master-navigation__scroller overflow-x-auto overscroll-x-contain">
           <TabsList className="h-auto min-w-max justify-start gap-1 bg-card/60 p-1 lg:min-w-0 lg:flex-wrap" aria-label="Áreas de condução do mestre">
             {groups.map((group) => {
