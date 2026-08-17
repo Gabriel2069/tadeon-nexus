@@ -64,25 +64,27 @@ const groups: Array<{ label: string; values: MasterTab[] }> = [
 
 export function MasterPanelNavigation({ showAssets = false }: { showAssets?: boolean }) {
   return (
-    <div className="tadeon-master-navigation -mx-3 px-3 pb-1 md:-mx-6 md:px-6">
-      <div className="tadeon-master-navigation__scroller overflow-x-auto overscroll-x-contain">
-        <TabsList className="h-auto min-w-max justify-start gap-1 bg-card/60 p-1 lg:min-w-0 lg:flex-wrap" aria-label="Áreas de condução do mestre">
-          {groups.map((group) => {
-            const groupTabs = tabs.filter((tab) => group.values.includes(tab.value) && (tab.feature !== "assets" || showAssets));
-            return (
-              <div className="tadeon-master-navigation__group" key={group.label} role="presentation" data-master-group={group.label.toLocaleLowerCase("pt-BR")}>
-                <span className="tadeon-master-navigation__label">{group.label}</span>
-                <div className="flex gap-1" role="presentation">
-                  {groupTabs.map(({ value, label, icon: Icon }) => (
-                    <TabsTrigger key={value} value={value} data-master-tab={value} title={`${group.label} · ${label}`} className="gap-1.5 text-xs data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
-                      <Icon className="h-3.5 w-3.5" />{label}
-                    </TabsTrigger>
-                  ))}
+    <div className="tadeon-master-navigation-slot" aria-label="Navegação fixa do Painel do Mestre">
+      <div className="tadeon-master-navigation">
+        <div className="tadeon-master-navigation__scroller overflow-x-auto overscroll-x-contain">
+          <TabsList className="h-auto min-w-max justify-start gap-1 bg-card/60 p-1 lg:min-w-0 lg:flex-wrap" aria-label="Áreas de condução do mestre">
+            {groups.map((group) => {
+              const groupTabs = tabs.filter((tab) => group.values.includes(tab.value) && (tab.feature !== "assets" || showAssets));
+              return (
+                <div className="tadeon-master-navigation__group" key={group.label} role="presentation" data-master-group={group.label.toLocaleLowerCase("pt-BR")}>
+                  <span className="tadeon-master-navigation__label">{group.label}</span>
+                  <div className="flex gap-1" role="presentation">
+                    {groupTabs.map(({ value, label, icon: Icon }) => (
+                      <TabsTrigger key={value} value={value} data-master-tab={value} title={`${group.label} · ${label}`} className="gap-1.5 text-xs data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+                        <Icon className="h-3.5 w-3.5" />{label}
+                      </TabsTrigger>
+                    ))}
+                  </div>
                 </div>
-              </div>
-            );
-          })}
-        </TabsList>
+              );
+            })}
+          </TabsList>
+        </div>
       </div>
     </div>
   );
