@@ -7,29 +7,18 @@ function source(path: string) {
 }
 
 describe("final device parity 154", () => {
-  it("restores global focus headers and moves visual identity to the real internal heroes", () => {
-    const css = source("src/styles/final-device-parity-154-compat.css");
-    const bridge = source("src/components/page-hero-parity-bridge.tsx");
+  it("keeps the pre-153 global focus header while utility identity lives on real route heroes", () => {
+    const css = source("src/styles/user-visible-repair-156.css");
+    const root = source("src/routes/__root.tsx");
 
     expect(css).toContain(".tadeon-desktop-toolbar::before");
     expect(css).toContain(".tadeon-mobile-header::before");
     expect(css).toContain("content: none !important");
-    expect(css).toContain('.tadeon-page-hero[data-tadeon-page-hero="master"]');
-    expect(css).toContain('.tadeon-page-hero[data-tadeon-page-hero="users"]');
-    expect(css).toContain('.tadeon-page-hero[data-tadeon-page-hero="tools"]');
-    expect(css).toContain('.tadeon-page-hero[data-tadeon-page-hero="offline"]');
-    expect(bridge).toContain("#tadeon-main .tadeon-master-commandbar");
-    expect(bridge).toContain("#tadeon-main .tadeon-route-users > .tadeon-page-hero");
-    expect(bridge).toContain("#tadeon-main .tadeon-route-tools > .tadeon-page-hero");
-    expect(bridge).toContain("#tadeon-main .tadeon-route-offline > .tadeon-page-hero");
-    expect(bridge).not.toContain('querySelector<HTMLElement>("#tadeon-main .tadeon-page-header")');
-    expect(bridge).toContain("BookKey");
-    expect(bridge).toContain("ShieldCheck");
-    expect(bridge).toContain("ArchiveRestore");
-    expect(bridge).toContain("WifiOff");
-    expect(bridge).toContain("useRouterState");
-    expect(bridge).toContain('document.getElementById("tadeon-main")');
-    expect(bridge).not.toContain("observer.observe(document.body");
+    expect(css).toContain(".tadeon-route-users > .tadeon-page-hero");
+    expect(css).toContain(".tadeon-route-tools > .tadeon-page-hero");
+    expect(css).toContain(".tadeon-route-offline > .tadeon-page-hero");
+    expect(css).toContain(".tadeon-master-commandbar");
+    expect(root).not.toContain("PageHeroParityBridge");
   });
 
   it("keeps every sheet header action on one mobile rail and centers the real condition dot row", () => {
@@ -73,14 +62,15 @@ describe("final device parity 154", () => {
     expect(css).toContain("color: #090b0f !important");
   });
 
-  it("retains richer card and tab depth throughout the mobile application", () => {
-    const css = source("src/styles/final-device-parity-154-compat.css");
-    expect(css).toContain("background-size: 64px 64px, 64px 64px");
-    expect(css).toContain('[role="tab"][data-state="active"]');
-    expect(css).toContain("radial-gradient(circle at 94% -6%");
+  it("retains richer card and tab depth throughout the mobile utility routes", () => {
+    const css = source("src/styles/user-visible-repair-156.css");
+    expect(css).toContain("background-size: 64px 64px, 64px 64px, auto !important");
+    expect(css).toContain('.tadeon-route-tools [data-slot="tabs-trigger"][data-state="active"]');
+    expect(css).toContain('.tadeon-route-offline [data-slot="tabs-trigger"][data-state="active"]');
+    expect(css).toContain('.tadeon-route-users [data-slot="card"]::before');
   });
 
-  it("loads final parity and compatibility authorities after repair 153", () => {
+  it("loads the field-visible repair after all older visual authorities", () => {
     const root = source("src/routes/__root.tsx");
     expect(root.indexOf("mobileProductRepair153Css")).toBeLessThan(
       root.indexOf("finalDeviceParity154Css"),
@@ -88,12 +78,12 @@ describe("final device parity 154", () => {
     expect(root.indexOf("finalDeviceParity154Css")).toBeLessThan(
       root.indexOf("finalDeviceParity154CompatCss"),
     );
-    expect(root.lastIndexOf("href: mobileProductRepair153Css")).toBeLessThan(
-      root.lastIndexOf("href: finalDeviceParity154Css"),
+    expect(root.indexOf("finalDeviceParity154CompatCss")).toBeLessThan(
+      root.indexOf("userVisibleRepair156Css"),
     );
-    expect(root.lastIndexOf("href: finalDeviceParity154Css")).toBeLessThan(
-      root.lastIndexOf("href: finalDeviceParity154CompatCss"),
+    expect(root.lastIndexOf("href: finalDeviceParity154CompatCss")).toBeLessThan(
+      root.lastIndexOf("href: userVisibleRepair156Css"),
     );
-    expect(root).toContain("<PageHeroParityBridge />");
+    expect(root).not.toContain("PageHeroParityBridge");
   });
 });
