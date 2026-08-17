@@ -24,11 +24,16 @@ function annotateCounters(root: ParentNode) {
     const host = counterHost(element);
     if (!host) return;
     host.dataset.tadeonConditionKind = key;
-    const ratio = host.textContent?.match(/(\d+)\s*\/\s*(\d+)/);
-    if (!ratio) return;
-    const current = Number(ratio[1]);
-    const max = Math.max(1, Number(ratio[2]));
-    host.style.setProperty("--condition-progress", String(Math.max(0, Math.min(1, current / max))));
+
+    const buttons = Array.from(
+      host.querySelectorAll<HTMLButtonElement>('button[aria-pressed]'),
+    );
+    if (!buttons.length) return;
+    const active = buttons.filter((button) => button.getAttribute("aria-pressed") === "true").length;
+    const progress = Math.max(0, Math.min(1, active / buttons.length));
+    host.style.setProperty("--condition-progress", String(progress));
+    host.style.setProperty("--condition-fill", `${progress * 100}%`);
+    host.style.setProperty("--condition-intensity", String(0.35 + progress * 0.55));
   });
 }
 
@@ -65,7 +70,7 @@ export function UserRepair152Bridge() {
       childList: true,
       subtree: true,
       attributes: true,
-      attributeFilter: ["class", "style", "data-state"],
+      attributeFilter: ["class", "style", "data-state", "aria-pressed"],
     });
     schedule();
 
