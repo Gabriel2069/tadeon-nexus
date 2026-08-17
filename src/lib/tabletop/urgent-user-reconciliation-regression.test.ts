@@ -40,22 +40,20 @@ describe("reconciliação urgente de UI", () => {
     expect(bridge).toContain("TOP_RAIL_KEY");
   });
 
-  it("mantém a ferramenta de seleção não modal e neutraliza o bloqueador visual real", () => {
-    const css = source("src/styles/tabletop-map-chrome-repair.css");
+  it("corrige o blackout na geometria do aviso de câmera e abandona o scanner invasivo", () => {
+    const editorCss = source("src/styles/tabletop-editor.css");
+    const repairCss = source("src/styles/mobile-product-repair-153.css");
     const bridge = source(
       "src/components/tabletop/tabletop-urgent-reconciliation-bridge.tsx",
     );
-    expect(css).toContain('data-tadeon-tabletop-selection-active="true"');
-    expect(css).toContain("backdrop-filter: none !important");
-    expect(css).toContain("filter: none !important");
-    expect(bridge).toContain("tadeon-tabletop-render");
-    expect(bridge).toContain("guardSelectionSurfaces");
-    expect(bridge).toContain("closeSelectModeBackdrop");
-    expect(bridge).toContain('.tadeon-tabletop-stage[data-tool="select"]');
-    expect(bridge).toContain('.tadeon-tabletop-panel-backdrop[data-open="true"]');
-    expect(bridge).toContain('document.querySelectorAll<HTMLElement>("body *")');
-    expect(bridge).toContain("snapshot().selectedIds.length");
-    expect(bridge).toContain('"data-tool"');
+    expect(editorCss).toContain('content: "CÂMERA TRAVADA · USE MÃO OU ESPAÇO"');
+    expect(repairCss).toContain('.tadeon-tabletop-stage[data-tool="select"]::after');
+    expect(repairCss).toContain("inset: auto .75rem 4.25rem auto !important");
+    expect(repairCss).toContain("top: auto !important");
+    expect(repairCss).toContain("left: auto !important");
+    expect(bridge).not.toContain("guardSelectionSurfaces");
+    expect(bridge).not.toContain('document.querySelectorAll<HTMLElement>("body *")');
+    expect(bridge).not.toContain("closeSelectModeBackdrop");
   });
 
   it("corrige a largura do remoto na grade pai e restaura os toggles compactos", () => {
@@ -92,15 +90,17 @@ describe("reconciliação urgente de UI", () => {
     expect(css).toContain("gap: 0 !important");
   });
 
-  it("carrega a reparação final depois das autoridades visuais anteriores", () => {
+  it("carrega a reparação 153 depois das autoridades visuais anteriores", () => {
     const root = source("src/routes/__root.tsx");
     const older = root.indexOf("selectionDirectorEntryCss");
     const urgent = root.indexOf("urgentReconciliationCss");
     const mapRepair = root.indexOf("tabletopMapChromeRepairCss");
     const finalRepair = root.indexOf("userRepair152Css");
+    const mobileRepair = root.indexOf("mobileProductRepair153Css");
     expect(older).toBeGreaterThanOrEqual(0);
     expect(urgent).toBeGreaterThan(older);
     expect(mapRepair).toBeGreaterThan(urgent);
     expect(finalRepair).toBeGreaterThan(mapRepair);
+    expect(mobileRepair).toBeGreaterThan(finalRepair);
   });
 });

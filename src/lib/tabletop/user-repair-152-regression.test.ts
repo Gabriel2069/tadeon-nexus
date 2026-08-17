@@ -26,16 +26,14 @@ describe("field repair 152", () => {
     expect(css).toContain('html[data-tadeon-tabletop-toprail="collapsed"] .tadeon-tabletop-reliability-strip');
   });
 
-  it("guards the actual visual blocker and keeps select mode non-modal", () => {
+  it("keeps the movable Dock and delegates selection geometry to repair 153", () => {
     const bridge = source("src/components/tabletop/tabletop-urgent-reconciliation-bridge.tsx");
-    const css = source("src/styles/tabletop-map-chrome-repair.css");
-    expect(bridge).toContain('document.querySelectorAll<HTMLElement>("body *")');
-    expect(bridge).toContain("overlapRatio(rect, stageRect) < 0.58");
-    expect(bridge).toContain("closeSelectModeBackdrop");
-    expect(bridge).toContain('.tadeon-tabletop-stage[data-tool="select"]');
-    expect(bridge).toContain('element.dataset.tadeonSelectionGuarded = "true"');
-    expect(css).toContain('[data-tadeon-selection-guarded="true"]');
-    expect(css).toContain("backdrop-filter: none !important");
+    const css = source("src/styles/mobile-product-repair-153.css");
+    expect(bridge).toContain("DOCK_POSITION_KEY");
+    expect(bridge).toContain("tadeonDockDragging");
+    expect(bridge).not.toContain('document.querySelectorAll<HTMLElement>("body *")');
+    expect(css).toContain('.tadeon-tabletop-stage[data-tool="select"]::after');
+    expect(css).toContain("inset: auto .75rem 4.25rem auto !important");
   });
 
   it("keeps Setup stage anchored and lets the expanded creative Dock move", () => {

@@ -1,0 +1,527 @@
+/* Mobile/product reconciliation after field validation.
+   This file intentionally fixes the real selectors observed in production. */
+
+/* --------------------------------------------------------------------------
+   TABLETOP: the old select hint inherited top/left from the generic stage
+   ::after inset:0 rule. That turned a small hint into a blurred dark sheet.
+   Reset the full inset so the hint is only a compact badge.
+   -------------------------------------------------------------------------- */
+.tadeon-tabletop-stage[data-tool="select"]::after {
+  inset: auto .75rem 4.25rem auto !important;
+  top: auto !important;
+  left: auto !important;
+  width: max-content !important;
+  height: auto !important;
+  max-width: min(25rem, calc(100% - 1.5rem)) !important;
+  min-width: 0 !important;
+  border-radius: .6rem .2rem .6rem .2rem !important;
+  background: rgb(7 10 14 / 78%) !important;
+  backdrop-filter: blur(8px) !important;
+  -webkit-backdrop-filter: blur(8px) !important;
+  box-shadow: 0 12px 28px -22px rgb(0 0 0 / 92%) !important;
+}
+
+/* The diagnostic selection guards from the previous attempt are obsolete.
+   Selection must not hide unrelated UI surfaces. */
+html[data-tadeon-tabletop-selection-active="true"] [data-tadeon-selection-guarded="true"] {
+  display: revert !important;
+  opacity: revert !important;
+  visibility: revert !important;
+  pointer-events: revert !important;
+  filter: revert !important;
+  backdrop-filter: revert !important;
+  -webkit-backdrop-filter: revert !important;
+}
+
+/* --------------------------------------------------------------------------
+   MOBILE SHEET HEADER
+   -------------------------------------------------------------------------- */
+@media (max-width: 767px) {
+  .tadeon-sheet-commandbar {
+    z-index: 22 !important;
+    margin-bottom: .8rem !important;
+    padding: .58rem .68rem .68rem !important;
+    border: 1px solid color-mix(in srgb, var(--primary) 13%, var(--border)) !important;
+    border-top: 0 !important;
+    border-radius: 0 0 1rem .38rem !important;
+    background:
+      radial-gradient(circle at 88% -35%, rgb(217 215 164 / 11%), transparent 11rem),
+      linear-gradient(160deg, rgb(14 17 22 / 97%), rgb(8 10 14 / 95%)) !important;
+    box-shadow: 0 18px 46px -38px rgb(0 0 0 / 98%), inset 0 -1px rgb(255 255 255 / 3%) !important;
+  }
+
+  .tadeon-sheet-commandbar__main {
+    grid-template-columns: 2.6rem minmax(0, 1fr) auto !important;
+    grid-auto-rows: minmax(2.6rem, auto);
+    align-items: center !important;
+    gap: .38rem .55rem !important;
+  }
+
+  .tadeon-sheet-commandbar__back {
+    grid-row: 1;
+    grid-column: 1;
+    width: 2.6rem !important;
+    height: 2.6rem !important;
+    justify-self: start;
+  }
+
+  .tadeon-sheet-commandbar__identity {
+    grid-row: 1;
+    grid-column: 2;
+    min-width: 0;
+    text-align: left;
+  }
+
+  .tadeon-sheet-commandbar__identity h1 {
+    max-width: 100%;
+    font-size: clamp(1.03rem, 4.7vw, 1.28rem) !important;
+    font-weight: 760 !important;
+    letter-spacing: -.018em;
+  }
+
+  .tadeon-sheet-commandbar__main > .text-\[10px\] {
+    grid-row: 1;
+    grid-column: 3;
+    justify-self: end;
+    max-width: 6.4rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .tadeon-sheet-commandbar__actions {
+    grid-row: 2;
+    grid-column: 1 / -1 !important;
+    display: flex !important;
+    width: 100%;
+    min-width: 0;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center !important;
+    gap: .38rem !important;
+    padding-top: .42rem !important;
+    border-top: 1px solid color-mix(in srgb, var(--primary) 10%, transparent);
+  }
+
+  .tadeon-sheet-commandbar__actions > :first-child {
+    margin-right: 0 !important;
+  }
+
+  .tadeon-sheet-commandbar__actions :is(button, [role="status"]) {
+    min-height: 2.35rem;
+  }
+
+  .tadeon-sheet-tabs-list {
+    top: calc(var(--tadeon-mobile-header-height, 4rem) + .35rem) !important;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   SHEET CARDS: keep the decorative divider behind content and give active
+   cards vertical breathing room instead of translating them into a clip edge.
+   -------------------------------------------------------------------------- */
+.tadeon-sheet-page .tadeon-sheet-section__heading {
+  position: relative;
+  z-index: 4;
+}
+
+.tadeon-sheet-page .tadeon-sheet-section__heading::after,
+.tadeon-sheet-page .tadeon-sheet-section__heading::before {
+  pointer-events: none;
+}
+
+.tadeon-sheet-page #condicoes .tadeon-condition-grid,
+.tadeon-sheet-page #sec-info .tadeon-identity-foundation,
+.tadeon-sheet-page #sec-info .tadeon-identity-axis,
+.tadeon-sheet-page #sec-info .tadeon-identity-details {
+  position: relative;
+  z-index: 2;
+  padding-top: .35rem;
+}
+
+.tadeon-conditions-panel .tadeon-condition-card[style*="box-shadow"],
+.tadeon-conditions-panel .tadeon-condition-card[data-tadeon-condition-active="true"] {
+  transform: none !important;
+}
+
+@media (max-width: 767px) {
+  .tadeon-sheet-page .tadeon-sheet-section__heading {
+    margin-bottom: .55rem !important;
+    padding-bottom: .58rem !important;
+  }
+
+  .tadeon-sheet-page #condicoes .tadeon-condition-grid,
+  .tadeon-sheet-page #sec-info .tadeon-identity-foundation,
+  .tadeon-sheet-page #sec-info .tadeon-identity-axis,
+  .tadeon-sheet-page #sec-info .tadeon-identity-details {
+    padding-top: .48rem;
+  }
+
+  .tadeon-conditions-panel .tadeon-condition-card {
+    margin-top: 0 !important;
+    overflow: hidden !important;
+  }
+}
+
+/* Morrendo / Colapsando: center labels and dots on every viewport. */
+[data-tadeon-condition-kind="morrendo"],
+[data-tadeon-condition-kind="colapsando"] {
+  display: grid !important;
+  justify-items: center !important;
+  align-content: center !important;
+  text-align: center !important;
+}
+
+[data-tadeon-condition-kind="morrendo"] > label,
+[data-tadeon-condition-kind="colapsando"] > label {
+  width: 100%;
+  text-align: center !important;
+}
+
+[data-tadeon-condition-kind="morrendo"] > div,
+[data-tadeon-condition-kind="colapsando"] > div {
+  width: 100%;
+  justify-content: center !important;
+}
+
+/* --------------------------------------------------------------------------
+   MOBILE APP NAVIGATION
+   -------------------------------------------------------------------------- */
+@media (max-width: 767px) {
+  .tadeon-mobile-dock__item > span {
+    display: block !important;
+    max-width: 100%;
+    overflow: hidden;
+    opacity: 1 !important;
+    text-align: center;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .tadeon-mobile-dock__item[href="/tabletop"] > span {
+    visibility: visible !important;
+    font-size: .56rem !important;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   TABLETOP MOBILE: header remains the interaction authority, while map rails
+   are centered against the measured stage instead of the viewport.
+   -------------------------------------------------------------------------- */
+@media (max-width: 767px) {
+  .tadeon-tabletop-studio__header {
+    position: relative !important;
+    z-index: 112 !important;
+    pointer-events: auto !important;
+  }
+
+  .tadeon-tabletop-studio__header::before,
+  .tadeon-tabletop-studio__header::after {
+    pointer-events: none !important;
+  }
+
+  .tadeon-tabletop-studio__header :is(button, a, input, select, [role="button"], [role="tab"]) {
+    position: relative;
+    z-index: 2;
+    pointer-events: auto !important;
+    touch-action: manipulation;
+  }
+
+  .tadeon-tabletop-toolbar {
+    display: flex !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    justify-content: center !important;
+    margin-inline: auto !important;
+    padding-inline: .2rem !important;
+    scroll-padding-inline: 1rem;
+  }
+
+  .tadeon-tabletop-toolbar__group {
+    flex: 0 0 auto;
+  }
+
+  .tadeon-tabletop-reliability-strip {
+    left: var(--tadeon-tabletop-stage-center, 50%) !important;
+    justify-content: center !important;
+    transform: translate3d(-50%, 0, 0) !important;
+  }
+
+  .tadeon-tabletop-progressive-dock,
+  .tadeon-tabletop-selection-actions {
+    left: var(--tadeon-tabletop-stage-center, 50%) !important;
+  }
+
+  .tadeon-tabletop-progressive-dock {
+    justify-content: center;
+    max-width: min(calc(var(--tadeon-tabletop-stage-width, 100vw) - 1rem), calc(100vw - 1rem)) !important;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .tadeon-tabletop-progressive-dock::-webkit-scrollbar {
+    display: none;
+  }
+
+  .tadeon-tabletop-toprail-controls {
+    z-index: 104 !important;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   GLOBAL SEARCH + CREATE SHEET DIALOGS
+   -------------------------------------------------------------------------- */
+[data-slot="dialog-content"]:has([data-slot="command"]) {
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  max-height: min(40rem, calc(100dvh - max(1rem, env(safe-area-inset-top)) - max(1rem, env(safe-area-inset-bottom)))) !important;
+  overflow: hidden !important;
+  padding-top: 0 !important;
+}
+
+[data-slot="dialog-content"]:has([data-slot="command"]) > [data-slot="dialog-close"] {
+  z-index: 8;
+  top: .4rem !important;
+  right: .42rem !important;
+  width: 2.35rem !important;
+  height: 2.35rem !important;
+  background: color-mix(in srgb, var(--popover) 88%, transparent);
+}
+
+[data-slot="dialog-content"]:has([data-slot="command"]) [data-slot="command-input-wrapper"] {
+  min-height: 3.2rem;
+  padding-right: 3.35rem !important;
+}
+
+[data-slot="dialog-content"]:has([data-slot="command"]) .tadeon-command-list {
+  min-height: 0;
+  max-height: none !important;
+}
+
+[data-slot="dialog-content"]:has([data-slot="command"]) .tadeon-command-footer {
+  position: sticky;
+  z-index: 4;
+  bottom: 0;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: .75rem;
+  min-height: 2.75rem;
+  padding: .55rem .8rem max(.55rem, env(safe-area-inset-bottom));
+  border-top: 1px solid color-mix(in srgb, var(--primary) 12%, var(--border));
+  background: rgb(9 12 16 / 97%);
+  backdrop-filter: blur(16px);
+}
+
+[data-slot="dialog-content"]:has([data-slot="command"]) .tadeon-command-footer > :last-child {
+  min-width: 0;
+  overflow: hidden;
+  text-align: right;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+[data-slot="dialog-content"]:has(#sheet-name) {
+  max-height: calc(100dvh - max(1rem, env(safe-area-inset-top)) - max(1rem, env(safe-area-inset-bottom))) !important;
+  overflow-y: auto !important;
+  overscroll-behavior: contain;
+  scrollbar-gutter: stable;
+}
+
+@media (max-width: 767px) {
+  [data-slot="dialog-content"]:has([data-slot="command"]),
+  [data-slot="dialog-content"]:has(#sheet-name) {
+    top: max(.55rem, env(safe-area-inset-top)) !important;
+    bottom: max(.55rem, env(safe-area-inset-bottom)) !important;
+    width: calc(100vw - max(1rem, env(safe-area-inset-left)) - max(1rem, env(safe-area-inset-right))) !important;
+    max-height: none !important;
+    transform: translateX(-50%) !important;
+  }
+
+  [data-slot="dialog-content"]:has([data-slot="command"]) .tadeon-command-footer {
+    grid-template-columns: 1fr;
+    gap: .18rem;
+  }
+
+  [data-slot="dialog-content"]:has([data-slot="command"]) .tadeon-command-footer > :last-child {
+    text-align: left;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   MASTER NAVIGATION: sticky inside the route, below the app header on mobile.
+   -------------------------------------------------------------------------- */
+.tadeon-master-navigation {
+  position: sticky !important;
+  z-index: 38 !important;
+  top: .55rem;
+  padding-top: .35rem;
+  padding-bottom: .45rem !important;
+  background: linear-gradient(180deg, rgb(8 10 14 / 97%) 76%, transparent) !important;
+  backdrop-filter: blur(18px) saturate(120%);
+  -webkit-backdrop-filter: blur(18px) saturate(120%);
+}
+
+@media (max-width: 767px) {
+  .tadeon-master-navigation {
+    top: calc(var(--tadeon-mobile-header-height, 4rem) + .25rem) !important;
+    margin-inline: -.55rem !important;
+    padding-inline: .55rem !important;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   PAGE LANGUAGE: extend the Nexus header grammar to Master / Offline /
+   Manage Users / Backup with distinct motifs and controlled intensity.
+   -------------------------------------------------------------------------- */
+.tadeon-shell[data-section="Painel do Mestre"] {
+  --section-accent: var(--tadeon-fear);
+  --section-accent-rgb: 116 36 45;
+  --section-ornament-opacity: .18;
+  --section-card-force: 24%;
+}
+
+.tadeon-shell[data-section="Usuários"] {
+  --section-accent: var(--tadeon-flow);
+  --section-accent-rgb: 79 110 93;
+  --section-ornament-opacity: .1;
+  --section-card-force: 15%;
+}
+
+.tadeon-shell[data-section="Saúde do arquivo"] {
+  --section-accent: var(--tadeon-metal);
+  --section-accent-rgb: 122 129 135;
+  --section-ornament-opacity: .09;
+  --section-card-force: 14%;
+}
+
+.tadeon-shell[data-section="Consulta offline"] {
+  --section-accent: var(--tadeon-flow);
+  --section-accent-rgb: 79 110 93;
+  --section-ornament-opacity: .08;
+  --section-card-force: 13%;
+}
+
+.tadeon-shell:is(
+  [data-section="Painel do Mestre"],
+  [data-section="Usuários"],
+  [data-section="Saúde do arquivo"],
+  [data-section="Consulta offline"]
+) :is(.tadeon-mobile-header, .tadeon-desktop-toolbar) {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+}
+
+.tadeon-shell:is(
+  [data-section="Painel do Mestre"],
+  [data-section="Usuários"],
+  [data-section="Saúde do arquivo"],
+  [data-section="Consulta offline"]
+) :is(.tadeon-mobile-header, .tadeon-desktop-toolbar)::before {
+  position: absolute;
+  z-index: 0;
+  right: -3.2rem;
+  bottom: -4.9rem;
+  width: 10.5rem;
+  aspect-ratio: 1;
+  border: 1px solid rgb(var(--section-accent-rgb) / 22%);
+  border-radius: 50%;
+  box-shadow:
+    0 0 0 1.45rem rgb(var(--section-accent-rgb) / 3.2%),
+    0 0 0 3.25rem rgb(var(--section-accent-rgb) / 1.6%),
+    0 0 38px -21px rgb(var(--section-accent-rgb) / 55%);
+  opacity: var(--section-ornament-opacity, .1);
+  pointer-events: none;
+  content: "";
+}
+
+.tadeon-shell[data-section="Usuários"] :is(.tadeon-mobile-header, .tadeon-desktop-toolbar)::before {
+  right: auto;
+  bottom: -6rem;
+  left: 34%;
+  width: 12rem;
+}
+
+.tadeon-shell[data-section="Saúde do arquivo"] :is(.tadeon-mobile-header, .tadeon-desktop-toolbar)::before {
+  right: 14%;
+  bottom: -7.4rem;
+  width: 14rem;
+  border-radius: 44% 56% 48% 52%;
+}
+
+.tadeon-shell[data-section="Consulta offline"] :is(.tadeon-mobile-header, .tadeon-desktop-toolbar)::before {
+  right: -1.5rem;
+  bottom: -3.7rem;
+  width: 8rem;
+  box-shadow: 0 0 0 1.1rem rgb(var(--section-accent-rgb) / 2.5%);
+}
+
+.tadeon-shell:is(
+  [data-section="Painel do Mestre"],
+  [data-section="Usuários"],
+  [data-section="Saúde do arquivo"],
+  [data-section="Consulta offline"]
+) :is(.tadeon-mobile-header, .tadeon-desktop-toolbar) > * {
+  position: relative;
+  z-index: 1;
+}
+
+.tadeon-shell:is(
+  [data-section="Painel do Mestre"],
+  [data-section="Usuários"],
+  [data-section="Saúde do arquivo"],
+  [data-section="Consulta offline"]
+) .tadeon-mobile-header__identity p:last-child,
+.tadeon-shell:is(
+  [data-section="Painel do Mestre"],
+  [data-section="Usuários"],
+  [data-section="Saúde do arquivo"],
+  [data-section="Consulta offline"]
+) .tadeon-desktop-toolbar h2 {
+  color: color-mix(in srgb, var(--foreground) 84%, var(--section-accent)) !important;
+  font-weight: 780 !important;
+  text-shadow: 0 0 22px rgb(var(--section-accent-rgb) / 20%);
+}
+
+.tadeon-shell:is(
+  [data-section="Painel do Mestre"],
+  [data-section="Usuários"],
+  [data-section="Saúde do arquivo"],
+  [data-section="Consulta offline"]
+) .tadeon-route-stage :is([data-slot="card"], .tadeon-surface) {
+  border-color: color-mix(in srgb, rgb(var(--section-accent-rgb)) var(--section-card-force, 14%), var(--border)) !important;
+  box-shadow:
+    0 22px 58px -48px rgb(0 0 0 / 94%),
+    inset 0 1px rgb(255 255 255 / 3.5%);
+}
+
+.tadeon-shell[data-section="Painel do Mestre"] .tadeon-route-stage :is([data-slot="card"], .tadeon-surface) {
+  background-image: radial-gradient(circle at 96% -8%, rgb(var(--section-accent-rgb) / 6%), transparent 12rem);
+}
+
+@media (max-width: 767px) {
+  .tadeon-shell:is(
+    [data-section="Painel do Mestre"],
+    [data-section="Usuários"],
+    [data-section="Saúde do arquivo"],
+    [data-section="Consulta offline"]
+  ) .tadeon-mobile-header__identity p:last-child {
+    font-size: .9rem !important;
+    letter-spacing: -.01em;
+  }
+
+  .tadeon-shell[data-section="Painel do Mestre"] .tadeon-mobile-header {
+    box-shadow:
+      0 24px 64px -43px rgb(var(--section-accent-rgb) / 58%),
+      inset 0 -1px rgb(var(--section-accent-rgb) / 16%) !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tadeon-tabletop-progressive-dock,
+  .tadeon-tabletop-toolbar,
+  .tadeon-sheet-commandbar,
+  .tadeon-master-navigation {
+    scroll-behavior: auto !important;
+  }
+}

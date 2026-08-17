@@ -1,7 +1,6 @@
 import { createPortal } from "react-dom";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { ChevronLeft, ChevronRight, WandSparkles } from "lucide-react";
-import { currentTabletopRuntime } from "@/lib/tabletop/tabletop-player-runtime";
 import "@/styles/tabletop-map-chrome-repair.css";
 
 const TOP_RAIL_KEY = "tadeon.tabletop.toprail.collapsed";
@@ -13,94 +12,6 @@ function stageGeometry() {
   const rect = stage.getBoundingClientRect();
   if (rect.width <= 0 || rect.height <= 0) return null;
   return { stage, rect };
-}
-
-function selectModeActive() {
-  return document.querySelector<HTMLElement>('.tadeon-tabletop-stage[data-tool="select"]') !== null;
-}
-
-function closeSelectModeBackdrop() {
-  if (!selectModeActive()) return;
-  document
-    .querySelector<HTMLButtonElement>('.tadeon-tabletop-panel-backdrop[data-open="true"]')
-    ?.click();
-}
-
-function overlapRatio(a: DOMRect, b: DOMRect) {
-  const width = Math.max(0, Math.min(a.right, b.right) - Math.max(a.left, b.left));
-  const height = Math.max(0, Math.min(a.bottom, b.bottom) - Math.max(a.top, b.top));
-  const area = width * height;
-  return area / Math.max(1, b.width * b.height);
-}
-
-function darkBackground(style: CSSStyleDeclaration) {
-  const value = style.backgroundColor;
-  const rgba = value.match(/rgba?\(([^)]+)\)/i);
-  if (!rgba) return false;
-  const parts = rgba[1]
-    .split(/[ ,/]+/)
-    .map((part) => Number.parseFloat(part))
-    .filter((part) => Number.isFinite(part));
-  if (parts.length < 3) return false;
-  const alpha = parts.length >= 4 ? parts[3] : 1;
-  return alpha >= 0.18 && parts[0] < 95 && parts[1] < 95 && parts[2] < 105;
-}
-
-function visualBlocker(element: HTMLElement, stageRect: DOMRect) {
-  if (element.dataset.tadeonSelectionGuarded === "true") return false;
-  if (
-    element.matches(
-      ".tadeon-tabletop-stage, .tadeon-tabletop-canvas-host, canvas, svg, .tadeon-tabletop-panel, .tadeon-tabletop-panel-frame, .tadeon-tabletop-toolbar, .tadeon-tabletop-reliability-strip, .tadeon-tabletop-toprail-controls, .tadeon-creative-dock, .tadeon-smart-setup, .tadeon-tabletop-selection-actions, .tadeon-radial-actions",
-    )
-  ) {
-    return false;
-  }
-  if (element.closest('[role="dialog"][data-state="open"]')) return false;
-
-  const rect = element.getBoundingClientRect();
-  if (rect.width <= 0 || rect.height <= 0 || overlapRatio(rect, stageRect) < 0.58) {
-    return false;
-  }
-
-  const style = window.getComputedStyle(element);
-  const position = style.position;
-  const positioned = position === "fixed" || position === "absolute" || position === "sticky";
-  const filter = `${style.filter} ${style.getPropertyValue("backdrop-filter")} ${style.getPropertyValue("-webkit-backdrop-filter")}`;
-  const hasBlur = /blur\([^)]*[1-9]/i.test(filter);
-  const classHint = /backdrop|overlay|scrim|veil|modal|shade/i.test(element.className || "");
-
-  return positioned && (hasBlur || (classHint && darkBackground(style)));
-}
-
-function restoreGuardedSurfaces(original: Map<HTMLElement, string | null>) {
-  original.forEach((style, element) => {
-    if (!element.isConnected) return;
-    if (style === null) element.removeAttribute("style");
-    else element.setAttribute("style", style);
-    delete element.dataset.tadeonSelectionGuarded;
-  });
-  original.clear();
-}
-
-function guardSelectionSurfaces(original: Map<HTMLElement, string | null>) {
-  const geometry = stageGeometry();
-  if (!geometry) return;
-
-  closeSelectModeBackdrop();
-
-  document.querySelectorAll<HTMLElement>("body *").forEach((element) => {
-    if (!visualBlocker(element, geometry.rect)) return;
-    if (!original.has(element)) original.set(element, element.getAttribute("style"));
-    element.dataset.tadeonSelectionGuarded = "true";
-    element.style.setProperty("display", "none", "important");
-    element.style.setProperty("opacity", "0", "important");
-    element.style.setProperty("visibility", "hidden", "important");
-    element.style.setProperty("pointer-events", "none", "important");
-    element.style.setProperty("background", "transparent", "important");
-    element.style.setProperty("filter", "none", "important");
-    element.style.setProperty("backdrop-filter", "none", "important");
-    element.style.setProperty("-webkit-backdrop-filter", "none", "important");
-  });
 }
 
 function clamp(value: number, min: number, max: number) {
@@ -120,9 +31,6 @@ function readDockPosition() {
 }
 
 export function TabletopUrgentReconciliationBridge() {
-  const guardedStylesRef = useRef(new Map<HTMLElement, string | null>());
-  const selectionActiveRef = useRef(false);
-  const selectionFrameRef = useRef<number | null>(null);
   const [mounted, setMounted] = useState(false);
   const [dockCollapsed, setDockCollapsed] = useState(false);
   const [topRailCollapsed, setTopRailCollapsed] = useState(() => {
@@ -134,7 +42,6 @@ export function TabletopUrgentReconciliationBridge() {
     if (window.location.pathname !== "/tabletop") return;
     setMounted(true);
     const html = document.documentElement;
-    const guardedStyles = guardedStylesRef.current;
     let drag:
       | {
           dock: HTMLElement;
@@ -149,8 +56,14 @@ export function TabletopUrgentReconciliationBridge() {
       if (!geometry) return;
       const rect = geometry.rect;
       html.style.setProperty("--tadeon-tabletop-stage-top", `${Math.max(0, rect.top)}px`);
-      html.style.setProperty("--tadeon-tabletop-stage-right", `${Math.max(0, window.innerWidth - rect.right)}px`);
-      html.style.setProperty("--tadeon-tabletop-stage-bottom", `${Math.max(0, window.innerHeight - rect.bottom)}px`);
+      html.style.setProperty(
+        "--tadeon-tabletop-stage-right",
+        `${Math.max(0, window.innerWidth - rect.right)}px`,
+      );
+      html.style.setProperty(
+        "--tadeon-tabletop-stage-bottom",
+        `${Math.max(0, window.innerHeight - rect.bottom)}px`,
+      );
       html.style.setProperty("--tadeon-tabletop-stage-width", `${rect.width}px`);
       html.style.setProperty("--tadeon-tabletop-stage-height", `${rect.height}px`);
       html.style.setProperty("--tadeon-tabletop-stage-center", `${rect.left + rect.width / 2}px`);
@@ -168,28 +81,6 @@ export function TabletopUrgentReconciliationBridge() {
       dock.dataset.tadeonDockDragged = "true";
       dock.style.setProperty("--tadeon-dock-x", `${saved.x}px`);
       dock.style.setProperty("--tadeon-dock-y", `${saved.y}px`);
-    };
-
-    const scheduleSelectionGuard = () => {
-      if (!selectionActiveRef.current || selectionFrameRef.current !== null) return;
-      selectionFrameRef.current = window.requestAnimationFrame(() => {
-        selectionFrameRef.current = null;
-        if (selectionActiveRef.current) guardSelectionSurfaces(guardedStyles);
-      });
-    };
-
-    const syncSelection = () => {
-      closeSelectModeBackdrop();
-      const selected = currentTabletopRuntime()?.snapshot().selectedIds.length ?? 0;
-      const active = selected > 0;
-      selectionActiveRef.current = active;
-      if (active) {
-        html.dataset.tadeonTabletopSelectionActive = "true";
-        guardSelectionSurfaces(guardedStyles);
-      } else {
-        delete html.dataset.tadeonTabletopSelectionActive;
-        restoreGuardedSurfaces(guardedStyles);
-      }
     };
 
     const onPointerDown = (event: PointerEvent) => {
@@ -224,12 +115,18 @@ export function TabletopUrgentReconciliationBridge() {
       const leftBound = Math.max(8, stageRect?.left ?? 8);
       const rightBound = Math.max(
         leftBound,
-        Math.min(window.innerWidth - dockRect.width - 8, (stageRect?.right ?? window.innerWidth) - dockRect.width),
+        Math.min(
+          window.innerWidth - dockRect.width - 8,
+          (stageRect?.right ?? window.innerWidth) - dockRect.width,
+        ),
       );
       const topBound = Math.max(8, stageRect?.top ?? 8);
       const bottomBound = Math.max(
         topBound,
-        Math.min(window.innerHeight - dockRect.height - 8, (stageRect?.bottom ?? window.innerHeight) - dockRect.height),
+        Math.min(
+          window.innerHeight - dockRect.height - 8,
+          (stageRect?.bottom ?? window.innerHeight) - dockRect.height,
+        ),
       );
       const x = clamp(event.clientX - drag.offsetX, leftBound, rightBound);
       const y = clamp(event.clientY - drag.offsetY, topBound, bottomBound);
@@ -251,8 +148,7 @@ export function TabletopUrgentReconciliationBridge() {
     const resizeObserver = new ResizeObserver(syncGeometry);
     const domObserver = new MutationObserver(() => {
       syncDock();
-      closeSelectModeBackdrop();
-      scheduleSelectionGuard();
+      syncGeometry();
     });
 
     const bind = () => {
@@ -262,18 +158,15 @@ export function TabletopUrgentReconciliationBridge() {
         childList: true,
         subtree: true,
         attributes: true,
-        attributeFilter: ["class", "style", "data-open", "data-state", "data-tool"],
+        attributeFilter: ["class", "style", "data-open", "data-state"],
       });
       syncGeometry();
       syncDock();
-      syncSelection();
     };
 
     const frame = window.requestAnimationFrame(bind);
     window.addEventListener("resize", syncGeometry);
     window.addEventListener("scroll", syncGeometry, true);
-    window.addEventListener("tadeon-tabletop-render", syncSelection);
-    window.addEventListener("tadeon-tabletop-runtime-destroyed", syncSelection);
     document.addEventListener("pointerdown", onPointerDown, true);
     window.addEventListener("pointermove", onPointerMove, true);
     window.addEventListener("pointerup", onPointerUp, true);
@@ -281,22 +174,17 @@ export function TabletopUrgentReconciliationBridge() {
 
     return () => {
       window.cancelAnimationFrame(frame);
-      if (selectionFrameRef.current !== null) window.cancelAnimationFrame(selectionFrameRef.current);
       resizeObserver.disconnect();
       domObserver.disconnect();
       window.removeEventListener("resize", syncGeometry);
       window.removeEventListener("scroll", syncGeometry, true);
-      window.removeEventListener("tadeon-tabletop-render", syncSelection);
-      window.removeEventListener("tadeon-tabletop-runtime-destroyed", syncSelection);
       document.removeEventListener("pointerdown", onPointerDown, true);
       window.removeEventListener("pointermove", onPointerMove, true);
       window.removeEventListener("pointerup", onPointerUp, true);
       window.removeEventListener("pointercancel", onPointerUp, true);
-      selectionActiveRef.current = false;
-      restoreGuardedSurfaces(guardedStyles);
-      delete html.dataset.tadeonTabletopSelectionActive;
       delete html.dataset.tadeonTabletopToprail;
       delete html.dataset.tadeonCreativeDock;
+      delete html.dataset.tadeonTabletopSelectionActive;
       [
         "--tadeon-tabletop-stage-top",
         "--tadeon-tabletop-stage-right",
