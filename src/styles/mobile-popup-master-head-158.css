@@ -1,0 +1,536 @@
+/* #158: safe mobile overlays + canonical heroes + authored master identity. */
+
+/* --------------------------------------------------------------------------
+   Shell headers: stop the repair layers from imposing a different geometry on
+   only a subset of routes. The base desktop/mobile studio remains canonical.
+   -------------------------------------------------------------------------- */
+@media (min-width: 768px) {
+  .tadeon-desktop-toolbar {
+    display: flex !important;
+    width: 100% !important;
+    height: auto !important;
+    min-height: 4.65rem !important;
+    max-height: none !important;
+    flex-flow: row nowrap !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+  }
+
+  .tadeon-desktop-toolbar > .min-w-0 {
+    min-width: 0 !important;
+    flex: 1 1 auto !important;
+  }
+
+  .tadeon-desktop-toolbar > .ml-auto {
+    min-width: 0 !important;
+    flex: 0 0 auto !important;
+    flex-wrap: nowrap !important;
+    margin-left: auto !important;
+  }
+}
+
+@media (max-width: 767px) {
+  .tadeon-mobile-header {
+    width: 100% !important;
+    min-height: var(--tadeon-mobile-header-height) !important;
+    grid-template-columns: 5.9rem minmax(0, 1fr) 5.9rem !important;
+    grid-template-rows: minmax(0, 1fr) !important;
+    align-items: center !important;
+  }
+
+  .tadeon-mobile-header__identity {
+    min-width: 0 !important;
+    align-self: center !important;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Utility heads: same compact anatomy as O Nexus. Earlier layers made these
+   into oversized banners; #158 keeps the authored mark but restores cadence.
+   -------------------------------------------------------------------------- */
+:is(
+  .tadeon-route-users > .tadeon-page-hero,
+  .tadeon-route-tools > .tadeon-page-hero,
+  .tadeon-route-offline > .tadeon-page-hero
+) {
+  position: relative !important;
+  isolation: isolate !important;
+  min-height: 5.75rem !important;
+  padding: 1rem 1.1rem 1rem 5.1rem !important;
+  overflow: clip !important;
+  border: 1px solid rgb(var(--archive-hero-rgb, var(--utility-hero-rgb, 217 215 164)) / 20%) !important;
+  border-radius: 1.2rem .4rem 1.2rem .4rem !important;
+  background:
+    radial-gradient(circle at 100% -28%, rgb(var(--archive-hero-rgb, var(--utility-hero-rgb, 217 215 164)) / 9%), transparent 13rem),
+    linear-gradient(145deg, rgb(255 255 255 / 2.8%), transparent 46%),
+    linear-gradient(90deg, rgb(255 255 255 / .85%) 1px, transparent 1px),
+    linear-gradient(rgb(255 255 255 / .65%) 1px, transparent 1px),
+    color-mix(in srgb, var(--card) 96%, var(--background)) !important;
+  background-size: auto, auto, 48px 48px, 48px 48px, auto !important;
+  box-shadow:
+    0 28px 70px -58px rgb(var(--archive-hero-rgb, var(--utility-hero-rgb, 217 215 164)) / 68%),
+    0 24px 64px -52px rgb(0 0 0 / 100%),
+    inset 0 1px rgb(255 255 255 / 4%) !important;
+}
+
+:is(
+  .tadeon-route-users > .tadeon-page-hero,
+  .tadeon-route-tools > .tadeon-page-hero,
+  .tadeon-route-offline > .tadeon-page-hero
+)::before {
+  top: 50% !important;
+  left: 1rem !important;
+  width: 3rem !important;
+  height: 3rem !important;
+  aspect-ratio: auto !important;
+  border-radius: 1rem .32rem 1rem .32rem !important;
+  background-size: 1.18rem 1.18rem !important;
+  transform: translateY(-50%) !important;
+  box-shadow:
+    0 18px 34px -28px rgb(var(--archive-hero-rgb, var(--utility-hero-rgb, 217 215 164)) / 78%),
+    inset 0 1px rgb(255 255 255 / 7%) !important;
+}
+
+:is(
+  .tadeon-route-users > .tadeon-page-hero,
+  .tadeon-route-tools > .tadeon-page-hero,
+  .tadeon-route-offline > .tadeon-page-hero
+) h1 {
+  margin-top: .12rem !important;
+  font-size: clamp(1.55rem, 2.6vw, 2.2rem) !important;
+  line-height: 1.02 !important;
+  letter-spacing: -.024em !important;
+}
+
+:is(
+  .tadeon-route-users > .tadeon-page-hero,
+  .tadeon-route-tools > .tadeon-page-hero,
+  .tadeon-route-offline > .tadeon-page-hero
+) p:not(.tadeon-eyebrow) {
+  max-width: 42rem !important;
+  margin-top: .36rem !important;
+  font-size: .75rem !important;
+  line-height: 1.48 !important;
+}
+
+.tadeon-route-tools > .tadeon-page-hero > div,
+.tadeon-route-offline > .tadeon-page-hero > div {
+  min-width: 0 !important;
+  align-items: center !important;
+}
+
+/* The archive icon in the app navigation now matches the archive head. */
+.tadeon-nav-item[href="/nexus-tools"] .tadeon-nav-item__icon > svg {
+  display: none !important;
+}
+
+.tadeon-nav-item[href="/nexus-tools"] .tadeon-nav-item__icon::before {
+  display: block;
+  width: 1rem;
+  height: 1rem;
+  background: center / contain no-repeat url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23d9d7a4' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M21 8a2 2 0 0 0-2-2h-2V4a2 2 0 0 0-2-2H9a2 2 0 0 0-2 2v2H5a2 2 0 0 0-2 2v11a3 3 0 0 0 3 3h12a3 3 0 0 0 3-3Z'/%3E%3Cpath d='M9 6h6M8 12h8M8 16h5'/%3E%3C/svg%3E");
+  opacity: .78;
+  content: "";
+}
+
+/* --------------------------------------------------------------------------
+   Painel do Mestre: persistent director sigil + the exact active-tab icon.
+   The portal in MasterPanelNavigation is sourced from the same metadata as the
+   tab itself, so those symbols cannot drift apart again.
+   -------------------------------------------------------------------------- */
+.tadeon-master-commandbar {
+  position: relative !important;
+  isolation: isolate !important;
+  min-height: 6.2rem !important;
+  padding: 1.05rem 1.2rem 1.05rem 5.55rem !important;
+  overflow: clip !important;
+  border: 1px solid rgb(116 36 45 / 30%) !important;
+  border-radius: 1.35rem .42rem 1.35rem .42rem !important;
+  background:
+    radial-gradient(circle at 7% 10%, rgb(116 36 45 / 18%), transparent 13rem),
+    radial-gradient(circle at 88% -40%, rgb(217 215 164 / 8%), transparent 17rem),
+    linear-gradient(112deg, transparent 0 61%, rgb(116 36 45 / 4%) 61.2% 61.6%, transparent 61.8%),
+    linear-gradient(90deg, rgb(217 215 164 / 1.1%) 1px, transparent 1px),
+    linear-gradient(rgb(217 215 164 / .8%) 1px, transparent 1px),
+    linear-gradient(145deg, rgb(18 20 25 / 98%), rgb(8 10 14 / 98%)) !important;
+  background-size: auto, auto, auto, 48px 48px, 48px 48px, auto !important;
+  box-shadow:
+    0 30px 76px -58px rgb(116 36 45 / 80%),
+    0 28px 74px -56px rgb(0 0 0 / 100%),
+    inset 0 1px rgb(255 255 255 / 4.5%) !important;
+}
+
+.tadeon-master-commandbar::before {
+  position: absolute !important;
+  z-index: 0 !important;
+  top: -7.2rem !important;
+  right: -2.5rem !important;
+  display: block !important;
+  width: 15rem !important;
+  height: 15rem !important;
+  border: 1px solid rgb(116 36 45 / 14%) !important;
+  border-radius: 50% !important;
+  background: transparent !important;
+  box-shadow:
+    0 0 0 2.7rem rgb(116 36 45 / 2.5%),
+    0 0 0 5.4rem rgb(217 215 164 / 1.2%) !important;
+  opacity: .9 !important;
+  pointer-events: none !important;
+  content: "" !important;
+}
+
+.tadeon-master-commandbar::after {
+  position: absolute !important;
+  z-index: 1 !important;
+  right: 1.25rem !important;
+  bottom: 0 !important;
+  left: 1.25rem !important;
+  display: block !important;
+  width: auto !important;
+  height: 1px !important;
+  background: linear-gradient(90deg, transparent, rgb(116 36 45 / 68%) 24%, rgb(217 215 164 / 30%) 68%, transparent) !important;
+  pointer-events: none !important;
+  content: "" !important;
+}
+
+.tadeon-master-commandbar > * {
+  position: relative;
+  z-index: 2;
+}
+
+.tadeon-master-commandbar__glow {
+  position: absolute !important;
+  z-index: 3 !important;
+  top: 50% !important;
+  left: 1.1rem !important;
+  display: grid !important;
+  width: 3.65rem !important;
+  height: 3.65rem !important;
+  place-items: center !important;
+  overflow: visible !important;
+  border: 1px solid rgb(116 36 45 / 42%) !important;
+  border-radius: 1.2rem .38rem 1.2rem .38rem !important;
+  background:
+    radial-gradient(circle at 34% 28%, rgb(255 255 255 / 8%), transparent 36%),
+    rgb(116 36 45 / 12%) !important;
+  box-shadow:
+    0 0 0 .46rem rgb(116 36 45 / 3%),
+    0 20px 38px -28px rgb(116 36 45 / 86%),
+    inset 0 1px rgb(255 255 255 / 8%) !important;
+  transform: translateY(-50%) !important;
+}
+
+.tadeon-master-commandbar__glow::before,
+.tadeon-master-commandbar__glow::after {
+  position: absolute;
+  inset: -.46rem;
+  border: 1px solid rgb(217 215 164 / 11%);
+  border-radius: 50%;
+  pointer-events: none;
+  content: "";
+}
+
+.tadeon-master-commandbar__glow::before {
+  border-top-color: transparent;
+  transform: rotate(28deg);
+}
+
+.tadeon-master-commandbar__glow::after {
+  inset: -.82rem;
+  border-color: rgb(116 36 45 / 9%);
+  border-right-color: transparent;
+  transform: rotate(-16deg);
+}
+
+.tadeon-master-commandbar__sigil-stack {
+  position: relative;
+  display: grid;
+  width: 100%;
+  height: 100%;
+  place-items: center;
+}
+
+.tadeon-master-commandbar__master-sigil {
+  position: absolute;
+  width: 2.45rem;
+  height: 2.45rem;
+  color: rgb(217 215 164 / 64%);
+  filter: drop-shadow(0 0 12px rgb(116 36 45 / 34%));
+}
+
+.tadeon-master-commandbar__active-icon {
+  position: relative;
+  z-index: 2;
+  width: 1.05rem;
+  height: 1.05rem;
+  padding: .16rem;
+  border-radius: 999px;
+  color: rgb(242 236 205);
+  background: rgb(11 13 17 / 92%);
+  box-shadow:
+    0 0 0 1px rgb(217 215 164 / 20%),
+    0 0 14px rgb(116 36 45 / 45%);
+  animation: tadeon-master-tab-sigil-in-158 320ms var(--ease-spring, var(--ease-out)) both;
+}
+
+@keyframes tadeon-master-tab-sigil-in-158 {
+  from {
+    opacity: 0;
+    scale: .72;
+    rotate: -7deg;
+  }
+  64% {
+    opacity: 1;
+    scale: 1.12;
+    rotate: 3deg;
+  }
+  to {
+    opacity: 1;
+    scale: 1;
+    rotate: 0deg;
+  }
+}
+
+.tadeon-master-commandbar h1 > svg {
+  display: none !important;
+}
+
+.tadeon-master-commandbar h1 {
+  gap: 0 !important;
+  color: color-mix(in srgb, var(--foreground) 92%, rgb(217 215 164)) !important;
+  font-size: clamp(1.6rem, 2.6vw, 2.35rem) !important;
+  letter-spacing: -.025em !important;
+  line-height: 1 !important;
+}
+
+.tadeon-master-commandbar .tadeon-eyebrow {
+  color: color-mix(in srgb, rgb(217 215 164) 66%, rgb(116 36 45)) !important;
+}
+
+.tadeon-master-commandbar p:not(.tadeon-eyebrow) {
+  margin-top: .36rem !important;
+  color: color-mix(in srgb, var(--muted-foreground) 86%, rgb(217 215 164)) !important;
+  font-size: .72rem !important;
+  line-height: 1.45 !important;
+}
+
+/* Main navigation uses the same authored master sigil as the head. */
+.tadeon-nav-item[href="/master-panel"] .tadeon-nav-item__icon > svg,
+.tadeon-mobile-dock__item[href="/master-panel"] > svg {
+  display: none !important;
+}
+
+.tadeon-nav-item[href="/master-panel"] .tadeon-nav-item__icon::before,
+.tadeon-mobile-dock__item[href="/master-panel"]::before {
+  display: block;
+  width: 1.12rem;
+  height: 1.12rem;
+  flex: 0 0 auto;
+  background: center / contain no-repeat url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23d9d7a4' stroke-width='1.55' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='8.25' stroke-dasharray='9 3.4 2.2 4.3' opacity='.46'/%3E%3Cpath d='M12 2.8v4.1M12 17.1v4.1M2.8 12h4.1M17.1 12h4.1' opacity='.62'/%3E%3Cpath d='m8.55 12 3.45-3.45L15.45 12 12 15.45 8.55 12Z'/%3E%3Cpath d='M6.05 6.35 9.6 9.6M17.95 6.35 14.4 9.6M6.05 17.65l3.55-3.25M17.95 17.65l-3.55-3.25' opacity='.72'/%3E%3Ccircle cx='6.05' cy='6.35' r='.85'/%3E%3Ccircle cx='17.95' cy='6.35' r='.85'/%3E%3Ccircle cx='6.05' cy='17.65' r='.85'/%3E%3Ccircle cx='17.95' cy='17.65' r='.85'/%3E%3Ccircle cx='12' cy='12' r='1.15' fill='%23d9d7a4' stroke='none'/%3E%3C/svg%3E");
+  opacity: .78;
+  content: "";
+  transition:
+    transform 220ms var(--ease-spring, var(--ease-out)),
+    filter 220ms var(--ease-out),
+    opacity 180ms var(--ease-out);
+}
+
+.tadeon-nav-item[href="/master-panel"][aria-current="page"] .tadeon-nav-item__icon::before,
+.tadeon-mobile-dock__item[href="/master-panel"][aria-current="page"]::before {
+  opacity: 1;
+  filter: drop-shadow(0 0 9px rgb(116 36 45 / 52%));
+  transform: translateY(-1px) scale(1.08);
+}
+
+.tadeon-master-navigation [data-master-tab] svg {
+  transform-origin: center;
+  transition:
+    color 180ms var(--ease-out),
+    filter 180ms var(--ease-out),
+    transform 220ms var(--ease-spring, var(--ease-out));
+}
+
+.tadeon-master-navigation [data-master-tab][data-state="active"] svg {
+  filter: drop-shadow(0 0 8px rgb(116 36 45 / 34%));
+  transform: translateY(-1px) scale(1.08);
+}
+
+/* --------------------------------------------------------------------------
+   Mobile popup containment. Centered translateY(-50%) is intentionally removed
+   on phones: top + bottom safe-area anchors make upward escape impossible.
+   -------------------------------------------------------------------------- */
+@keyframes tadeon-mobile-popup-safe-in-158 {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(.48rem) scale(.975);
+    filter: blur(5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0) scale(1);
+    filter: blur(0);
+  }
+}
+
+@keyframes tadeon-mobile-popup-safe-out-158 {
+  from {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(-50%) translateY(.36rem) scale(.985);
+  }
+}
+
+@media (max-width: 767px) {
+  :is([data-slot="dialog-content"], [data-slot="alert-dialog-content"]) {
+    --tadeon-popup-top: max(.6rem, env(safe-area-inset-top));
+    --tadeon-popup-bottom: max(.6rem, env(safe-area-inset-bottom));
+    top: var(--tadeon-popup-top) !important;
+    right: auto !important;
+    bottom: var(--tadeon-popup-bottom) !important;
+    left: 50% !important;
+    width: min(
+      var(--tadeon-popup-max, 46rem),
+      calc(100vw - max(1rem, env(safe-area-inset-left)) - max(1rem, env(safe-area-inset-right)))
+    ) !important;
+    max-width: none !important;
+    height: max-content !important;
+    max-height: calc(min(100dvh, 100svh) - var(--tadeon-popup-top) - var(--tadeon-popup-bottom)) !important;
+    margin-block: auto !important;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+    overscroll-behavior: contain !important;
+    scrollbar-gutter: auto !important;
+    transform: translateX(-50%) !important;
+    transform-origin: center !important;
+  }
+
+  :is([data-slot="dialog-content"], [data-slot="alert-dialog-content"])[data-state="open"] {
+    animation: tadeon-mobile-popup-safe-in-158 300ms var(--ease-drawer, var(--ease-out)) both !important;
+  }
+
+  :is([data-slot="dialog-content"], [data-slot="alert-dialog-content"])[data-state="closed"] {
+    animation: tadeon-mobile-popup-safe-out-158 180ms var(--ease-out) both !important;
+  }
+
+  :is(.tadeon-library-dialog, .tadeon-graph-dialog) {
+    height: calc(min(100dvh, 100svh) - var(--tadeon-popup-top) - var(--tadeon-popup-bottom)) !important;
+  }
+
+  [data-slot="sheet-content"],
+  [data-slot="drawer-content"] {
+    max-height: min(100dvh, 100svh) !important;
+  }
+
+  [data-slot="popover-content"] {
+    max-width: calc(100vw - 1rem) !important;
+    max-height: min(
+      var(--radix-popover-content-available-height, calc(100svh - 1rem)),
+      calc(100svh - 1rem)
+    ) !important;
+    overflow-y: auto !important;
+  }
+
+  [data-slot="dropdown-menu-content"] {
+    max-width: calc(100vw - 1rem) !important;
+    max-height: min(
+      var(--radix-dropdown-menu-content-available-height, calc(100svh - 1rem)),
+      calc(100svh - 1rem)
+    ) !important;
+    overflow-y: auto !important;
+  }
+
+  [data-slot="select-content"] {
+    max-width: calc(100vw - 1rem) !important;
+    max-height: min(
+      var(--radix-select-content-available-height, calc(100svh - 1rem)),
+      calc(100svh - 1rem)
+    ) !important;
+    overflow-y: auto !important;
+  }
+
+  [data-sonner-toaster] {
+    max-width: calc(100vw - max(1rem, env(safe-area-inset-left)) - max(1rem, env(safe-area-inset-right))) !important;
+  }
+
+  [data-sonner-toaster][data-y-position="top"] {
+    top: max(.65rem, env(safe-area-inset-top)) !important;
+  }
+
+  :is(
+    .tadeon-route-users > .tadeon-page-hero,
+    .tadeon-route-tools > .tadeon-page-hero,
+    .tadeon-route-offline > .tadeon-page-hero
+  ) {
+    min-height: 5.2rem !important;
+    padding: .9rem .85rem .9rem 4.35rem !important;
+    border-radius: 1.08rem .36rem 1.08rem .36rem !important;
+  }
+
+  :is(
+    .tadeon-route-users > .tadeon-page-hero,
+    .tadeon-route-tools > .tadeon-page-hero,
+    .tadeon-route-offline > .tadeon-page-hero
+  )::before {
+    left: .85rem !important;
+    width: 2.55rem !important;
+    height: 2.55rem !important;
+    background-size: 1rem 1rem !important;
+  }
+
+  :is(
+    .tadeon-route-users > .tadeon-page-hero,
+    .tadeon-route-tools > .tadeon-page-hero,
+    .tadeon-route-offline > .tadeon-page-hero
+  ) h1 {
+    font-size: clamp(1.38rem, 6vw, 1.75rem) !important;
+  }
+
+  :is(
+    .tadeon-route-users > .tadeon-page-hero,
+    .tadeon-route-tools > .tadeon-page-hero,
+    .tadeon-route-offline > .tadeon-page-hero
+  ) p:not(.tadeon-eyebrow) {
+    font-size: .7rem !important;
+  }
+
+  .tadeon-master-commandbar {
+    min-height: 5.9rem !important;
+    padding: .9rem .85rem .9rem 4.75rem !important;
+    border-radius: 1.12rem .36rem 1.12rem .36rem !important;
+  }
+
+  .tadeon-master-commandbar__glow {
+    left: .85rem !important;
+    width: 3.1rem !important;
+    height: 3.1rem !important;
+  }
+
+  .tadeon-master-commandbar__master-sigil {
+    width: 2.1rem;
+    height: 2.1rem;
+  }
+
+  .tadeon-master-commandbar__active-icon {
+    width: .96rem;
+    height: .96rem;
+  }
+
+  .tadeon-master-commandbar h1 {
+    font-size: clamp(1.42rem, 6.2vw, 1.9rem) !important;
+  }
+
+  .tadeon-master-commandbar > .relative {
+    gap: .7rem !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tadeon-master-commandbar__active-icon,
+  :is([data-slot="dialog-content"], [data-slot="alert-dialog-content"]) {
+    animation-duration: .001ms !important;
+    animation-delay: 0ms !important;
+  }
+}
