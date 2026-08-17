@@ -62,7 +62,7 @@ describe("final device parity 154", () => {
     expect(performance).toContain("maxResolution: 2.5");
     expect(performance).toContain("maxResolution: 2");
     expect(textures).toContain('texture.source.scaleMode = "linear"');
-    expect(textures).toContain("texture.source.maxAnisotropy = 8");
+    expect(textures).toContain("texture.source.maxAnisotropy = 16");
     expect(css).toContain("image-rendering: auto !important");
   });
 
