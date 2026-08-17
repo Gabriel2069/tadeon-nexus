@@ -22,12 +22,12 @@ function textureBytes(texture: Texture) {
 }
 
 function tuneTextureSampling(texture: Texture) {
-  /* Static map/token art benefits from linear sampling and anisotropy whenever
-     the scene is zoomed or viewed obliquely in 3D. Pixi clamps anisotropy to the
-     platform limit, so this remains a capability hint rather than a hard GPU
-     requirement. */
+  /* Static map/token art benefits from linear sampling and high anisotropy when
+     zoomed or viewed obliquely. Pixi/WebGL clamps the hint to the platform's
+     actual maximum, so 16 asks for the best supported quality without assuming
+     the GPU can provide that exact level. */
   texture.source.scaleMode = "linear";
-  texture.source.maxAnisotropy = 8;
+  texture.source.maxAnisotropy = 16;
   return texture;
 }
 
