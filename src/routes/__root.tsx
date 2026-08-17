@@ -22,6 +22,7 @@ import mobileProductRepair153Css from "../styles/mobile-product-repair-153.css?u
 import finalDeviceParity154Css from "../styles/final-device-parity-154.css?url";
 import finalDeviceParity154CompatCss from "../styles/final-device-parity-154-compat.css?url";
 import userVisibleRepair156Css from "../styles/user-visible-repair-156.css?url";
+import finalVisualSystem157Css from "../styles/final-visual-system-157.css?url";
 import { AuthProvider } from "@/lib/auth";
 import { Toaster } from "@/components/ui/sonner";
 import { PwaRegistration } from "@/components/pwa-registration";
@@ -124,6 +125,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { rel: "stylesheet", href: finalDeviceParity154Css },
       { rel: "stylesheet", href: finalDeviceParity154CompatCss },
       { rel: "stylesheet", href: userVisibleRepair156Css },
+      { rel: "stylesheet", href: finalVisualSystem157Css },
       { rel: "manifest", href: "/manifest.webmanifest" },
       { rel: "icon", href: "/favicon.svg?v=4", type: "image/svg+xml", sizes: "any" },
       { rel: "shortcut icon", href: "/favicon.svg?v=4", type: "image/svg+xml" },
