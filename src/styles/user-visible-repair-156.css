@@ -1,10 +1,10 @@
-/* #156 — field-visible authority.
+/* #156: field-visible authority.
    Stop layering page identity over the application shell. The global header is
    restored to the pre-153 product language; utility page heroes are targeted
    directly by their real route selectors; master navigation is viewport-fixed. */
 
 /* --------------------------------------------------------------------------
-   1. GLOBAL SHELL HEADER — exact pre-153 visual contract for affected routes.
+   1. GLOBAL SHELL HEADER: exact pre-153 visual contract for affected routes.
    -------------------------------------------------------------------------- */
 @media (min-width: 768px) {
   .tadeon-shell:is(
@@ -186,7 +186,7 @@
 }
 
 /* --------------------------------------------------------------------------
-   2. REAL PAGE HEROES — no MutationObserver, no injected data attributes.
+   2. REAL PAGE HEROES: no MutationObserver, no injected data attributes.
    These selectors match the actual JSX in the three utility routes.
    -------------------------------------------------------------------------- */
 .tadeon-route-users > .tadeon-page-hero,
@@ -351,7 +351,7 @@
 }
 
 /* --------------------------------------------------------------------------
-   3. MASTER NAVIGATION — true viewport-fixed bar; slot preserves document flow.
+   3. MASTER NAVIGATION: true viewport-fixed bar; slot preserves document flow.
    -------------------------------------------------------------------------- */
 .tadeon-master-navigation-slot {
   display: block !important;
@@ -419,7 +419,7 @@
 }
 
 /* --------------------------------------------------------------------------
-   4. MOBILE PARITY — restore the original spatial field, then enrich the real
+   4. MOBILE PARITY: restore the original spatial field, then enrich the real
    utility cards/tabs instead of flattening them with later global overrides.
    -------------------------------------------------------------------------- */
 @media (max-width: 767px) {
