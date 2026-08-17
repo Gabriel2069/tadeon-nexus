@@ -24,20 +24,24 @@ describe("reconciliação urgente de UI", () => {
     expect(css).toContain("scrollbar-gutter: stable");
   });
 
-  it("ancora a barra operacional ao stage e permite recolher para a lateral", () => {
-    const css = source("src/styles/urgent-user-reconciliation.css");
+  it("restaura a barra de modos e ancora a barra operacional correta ao stage", () => {
+    const oldCss = source("src/styles/urgent-user-reconciliation.css");
+    const repairCss = source("src/styles/tabletop-map-chrome-repair.css");
     const bridge = source(
       "src/components/tabletop/tabletop-urgent-reconciliation-bridge.tsx",
     );
-    expect(css).toContain("--tadeon-tabletop-stage-top");
-    expect(css).toContain('html[data-tadeon-tabletop-toprail="collapsed"]');
-    expect(css).toContain(".tadeon-tabletop-toprail-toggle");
+    expect(oldCss).toContain("--tadeon-tabletop-stage-top");
+    expect(repairCss).toContain(".tadeon-tabletop-toolbar[data-tadeon-top-rail]");
+    expect(repairCss).toContain("position: static !important");
+    expect(repairCss).toContain(".tadeon-tabletop-reliability-strip");
+    expect(repairCss).toContain('html[data-tadeon-tabletop-toprail="collapsed"]');
+    expect(repairCss).toContain(".tadeon-tabletop-toprail-toggle");
     expect(bridge).toContain("ResizeObserver");
     expect(bridge).toContain("TOP_RAIL_KEY");
   });
 
-  it("neutraliza superfícies fullscreen sempre que uma entidade é selecionada", () => {
-    const css = source("src/styles/urgent-user-reconciliation.css");
+  it("neutraliza o bloqueador visual real sempre que uma entidade é selecionada", () => {
+    const css = source("src/styles/tabletop-map-chrome-repair.css");
     const bridge = source(
       "src/components/tabletop/tabletop-urgent-reconciliation-bridge.tsx",
     );
@@ -45,7 +49,9 @@ describe("reconciliação urgente de UI", () => {
     expect(css).toContain("backdrop-filter: none !important");
     expect(css).toContain("filter: none !important");
     expect(bridge).toContain("tadeon-tabletop-render");
-    expect(bridge).toContain("closeMobileInspectorForSelection");
+    expect(bridge).toContain("guardSelectionSurfaces");
+    expect(bridge).toContain("legacyBackdrop?.click()");
+    expect(bridge).toContain('document.querySelectorAll<HTMLElement>("body *")');
     expect(bridge).toContain("snapshot().selectedIds.length");
   });
 
@@ -58,19 +64,22 @@ describe("reconciliação urgente de UI", () => {
     expect(css).toContain('[data-slot="switch"]');
   });
 
-  it("mantém o popout do mestre no mesmo AppLayout da rota original", () => {
+  it("abre o popout do mestre em shell dedicado sem AppLayout", () => {
     const shell = source("src/components/protected-shell.tsx");
     expect(shell).toContain('window.location.pathname === "/master-panel"');
     expect(shell).toContain('params.get("popout") === "1"');
-    expect(shell).toContain("return null;");
+    expect(shell).toContain('return "master-panel" as const');
+    expect(shell).toContain('data-dedicated-presentation={dedicated}');
   });
 
   it("torna condições ativas e instrumentos de Equilíbrio/Rank visualmente explícitos", () => {
     const css = source("src/styles/urgent-user-reconciliation.css");
+    const repairCss = source("src/styles/user-repair-152.css");
     expect(css).toContain('.tadeon-condition-card[style*="box-shadow"]');
     expect(css).toContain("#equilibrio");
     expect(css).toContain("#exposicao");
-    expect(css).toContain(".tadeon-entity-dossier");
+    expect(repairCss).toContain('[data-tadeon-condition-kind="morrendo"]');
+    expect(repairCss).toContain('[data-tadeon-condition-kind="colapsando"]');
   });
 
   it("mantém o botão de vínculos visualmente só com ícone", () => {
@@ -80,11 +89,15 @@ describe("reconciliação urgente de UI", () => {
     expect(css).toContain("gap: 0 !important");
   });
 
-  it("carrega a reconciliação depois das autoridades visuais anteriores", () => {
+  it("carrega a reparação final depois das autoridades visuais anteriores", () => {
     const root = source("src/routes/__root.tsx");
     const older = root.indexOf("selectionDirectorEntryCss");
     const urgent = root.indexOf("urgentReconciliationCss");
+    const mapRepair = root.indexOf("tabletopMapChromeRepairCss");
+    const finalRepair = root.indexOf("userRepair152Css");
     expect(older).toBeGreaterThanOrEqual(0);
     expect(urgent).toBeGreaterThan(older);
+    expect(mapRepair).toBeGreaterThan(urgent);
+    expect(finalRepair).toBeGreaterThan(mapRepair);
   });
 });
