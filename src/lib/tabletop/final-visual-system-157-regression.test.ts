@@ -70,16 +70,18 @@ describe("final visual system 157", () => {
 
   it("ships a resizable same-origin audit lab covering phone tablet desktop and overlays", () => {
     const route = source("src/routes/visual-audit.tsx");
+    const lab = source("src/components/visual-audit/responsive-audit-lab.tsx");
     const gallery = source("src/components/visual-audit/popup-gallery.tsx");
     for (const viewport of ["390", "430", "768", "820", "1024", "1366", "1440", "1920"]) {
-      expect(route).toContain(`width: ${viewport}`);
+      expect(lab).toContain(`width: ${viewport}`);
     }
-    expect(route).toContain("getBoundingClientRect");
-    expect(route).toContain("scrollWidth");
-    expect(route).toContain("rect.width < 40 || rect.height < 40");
-    expect(route).toContain("<iframe");
-    expect(route).toContain('"/visual-audit?gallery=1"');
+    expect(lab).toContain("getBoundingClientRect");
+    expect(lab).toContain("scrollWidth");
+    expect(lab).toContain("rect.width < 40 || rect.height < 40");
+    expect(lab).toContain("<iframe");
+    expect(lab).toContain('"/visual-audit?gallery=1"');
     expect(route).toContain('<ProtectedShell requireRole="mestre">');
+    expect(route).toContain('createFileRoute("/visual-audit" as never)');
     expect(gallery).toContain("<Dialog");
     expect(gallery).toContain("<AlertDialog");
     expect(gallery).toContain("<Sheet");
