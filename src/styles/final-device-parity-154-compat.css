@@ -94,6 +94,34 @@
   --hero-mark-fill-alpha: 9%;
 }
 
+@media (max-width: 767px) {
+  .tadeon-sheet-commandbar__actions > button:first-child {
+    width: 2.45rem !important;
+    min-width: 2.45rem !important;
+    max-width: 2.45rem !important;
+    height: 2.45rem !important;
+    min-height: 2.45rem !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+  }
+
+  .tadeon-sheet-commandbar__actions > button:first-child > span {
+    width: 2.45rem !important;
+    min-width: 2.45rem !important;
+    height: 2.45rem !important;
+    min-height: 2.45rem !important;
+    justify-content: center !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+    font-size: 0 !important;
+  }
+
+  .tadeon-sheet-commandbar__actions > button:first-child > span svg {
+    width: .95rem !important;
+    height: .95rem !important;
+  }
+}
+
 @media (min-width: 768px) and (max-width: 1180px) {
   #tadeon-desktop-sidebar {
     overflow: visible !important;
