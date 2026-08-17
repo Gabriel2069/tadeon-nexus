@@ -66,16 +66,17 @@ function normalizeOrganization(value: unknown): InventoryOrganization {
 }
 
 function findInventoryAnchor() {
-  return document.querySelector<HTMLElement>("#sec-inv h2, #sec-inv h3, #sec-inv [data-section-title]");
+  return document.querySelector<HTMLElement>("#sec-inv .tadeon-sheet-section__actions");
 }
 
 function ensureHost(anchor: HTMLElement) {
   let host = document.getElementById("tadeon-inventory-organizer-host");
-  if (host) return host;
-  host = document.createElement("span");
-  host.id = "tadeon-inventory-organizer-host";
-  host.className = "tadeon-inventory-organizer-host";
-  anchor.insertAdjacentElement("afterend", host);
+  if (!host) {
+    host = document.createElement("span");
+    host.id = "tadeon-inventory-organizer-host";
+    host.className = "tadeon-inventory-organizer-host";
+  }
+  if (host.parentElement !== anchor) anchor.insertBefore(host, anchor.firstChild);
   return host;
 }
 
