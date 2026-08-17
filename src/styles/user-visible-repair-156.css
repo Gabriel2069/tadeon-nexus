@@ -1,0 +1,611 @@
+/* #156 — field-visible authority.
+   Stop layering page identity over the application shell. The global header is
+   restored to the pre-153 product language; utility page heroes are targeted
+   directly by their real route selectors; master navigation is viewport-fixed. */
+
+/* --------------------------------------------------------------------------
+   1. GLOBAL SHELL HEADER — exact pre-153 visual contract for affected routes.
+   -------------------------------------------------------------------------- */
+@media (min-width: 768px) {
+  .tadeon-shell:is(
+    [data-section="Painel do Mestre"],
+    [data-section="Usuários"],
+    [data-section="Saúde do arquivo"],
+    [data-section="Consulta offline"]
+  ) .tadeon-desktop-toolbar {
+    position: sticky !important;
+    z-index: 30 !important;
+    top: 0 !important;
+    min-height: 4.65rem !important;
+    align-items: center !important;
+    gap: 1rem !important;
+    padding: .75rem clamp(1.5rem, 2.6vw, 2.5rem) !important;
+    isolation: auto !important;
+    overflow: visible !important;
+    border-bottom: 1px solid color-mix(in srgb, var(--section-accent) 12%, var(--border)) !important;
+    border-radius: 0 !important;
+    background:
+      linear-gradient(90deg, rgb(var(--section-accent-rgb) / 4%), transparent 35%),
+      rgb(8 10 14 / 82%) !important;
+    box-shadow:
+      0 24px 65px -52px rgb(0 0 0 / 100%),
+      inset 0 -1px rgb(255 255 255 / 1.5%) !important;
+    backdrop-filter: blur(24px) saturate(132%) !important;
+    -webkit-backdrop-filter: blur(24px) saturate(132%) !important;
+  }
+
+  .tadeon-shell:is(
+    [data-section="Painel do Mestre"],
+    [data-section="Usuários"],
+    [data-section="Saúde do arquivo"],
+    [data-section="Consulta offline"]
+  ) .tadeon-desktop-toolbar::before {
+    display: none !important;
+    width: 0 !important;
+    height: 0 !important;
+    border: 0 !important;
+    background: none !important;
+    box-shadow: none !important;
+    opacity: 0 !important;
+    content: none !important;
+  }
+
+  .tadeon-shell:is(
+    [data-section="Painel do Mestre"],
+    [data-section="Usuários"],
+    [data-section="Saúde do arquivo"],
+    [data-section="Consulta offline"]
+  ) .tadeon-desktop-toolbar::after {
+    position: absolute !important;
+    right: clamp(1.5rem, 2.6vw, 2.5rem) !important;
+    bottom: -1px !important;
+    left: clamp(1.5rem, 2.6vw, 2.5rem) !important;
+    display: block !important;
+    width: auto !important;
+    height: 1px !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    background: linear-gradient(
+      90deg,
+      color-mix(in srgb, var(--section-accent) 42%, transparent),
+      color-mix(in srgb, var(--section-secondary) 18%, transparent) 38%,
+      transparent 78%
+    ) !important;
+    box-shadow: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+    pointer-events: none !important;
+    content: "" !important;
+  }
+
+  .tadeon-shell:is(
+    [data-section="Painel do Mestre"],
+    [data-section="Usuários"],
+    [data-section="Saúde do arquivo"],
+    [data-section="Consulta offline"]
+  ) .tadeon-desktop-toolbar > .min-w-0 {
+    position: static !important;
+    z-index: auto !important;
+    padding-left: 0 !important;
+    border-left: 0 !important;
+  }
+
+  .tadeon-shell:is(
+    [data-section="Painel do Mestre"],
+    [data-section="Usuários"],
+    [data-section="Saúde do arquivo"],
+    [data-section="Consulta offline"]
+  ) .tadeon-desktop-toolbar h2 {
+    color: var(--foreground) !important;
+    font-weight: 600 !important;
+    letter-spacing: normal !important;
+    text-shadow: none !important;
+  }
+}
+
+@media (max-width: 767px) {
+  .tadeon-shell:is(
+    [data-section="Painel do Mestre"],
+    [data-section="Usuários"],
+    [data-section="Saúde do arquivo"],
+    [data-section="Consulta offline"]
+  ) .tadeon-mobile-header {
+    min-height: var(--tadeon-mobile-header-height) !important;
+    padding-top: max(.25rem, env(safe-area-inset-top)) !important;
+    isolation: auto !important;
+    overflow: visible !important;
+    border-bottom: 1px solid color-mix(in srgb, var(--section-accent) 13%, var(--border)) !important;
+    border-radius: 0 !important;
+    background:
+      linear-gradient(90deg, rgb(var(--section-accent-rgb) / 7%), transparent 48%),
+      rgb(8 10 14 / 88%) !important;
+    box-shadow:
+      0 22px 62px -48px rgb(0 0 0 / 100%),
+      inset 0 -1px rgb(255 255 255 / 1.8%) !important;
+    backdrop-filter: blur(24px) saturate(138%) !important;
+    -webkit-backdrop-filter: blur(24px) saturate(138%) !important;
+  }
+
+  .tadeon-shell:is(
+    [data-section="Painel do Mestre"],
+    [data-section="Usuários"],
+    [data-section="Saúde do arquivo"],
+    [data-section="Consulta offline"]
+  ) .tadeon-mobile-header::before,
+  .tadeon-shell:is(
+    [data-section="Painel do Mestre"],
+    [data-section="Usuários"],
+    [data-section="Saúde do arquivo"],
+    [data-section="Consulta offline"]
+  ) .tadeon-mobile-header::after,
+  .tadeon-shell:is(
+    [data-section="Painel do Mestre"],
+    [data-section="Usuários"],
+    [data-section="Saúde do arquivo"],
+    [data-section="Consulta offline"]
+  ) .tadeon-mobile-header__identity::before,
+  .tadeon-shell:is(
+    [data-section="Painel do Mestre"],
+    [data-section="Usuários"],
+    [data-section="Saúde do arquivo"],
+    [data-section="Consulta offline"]
+  ) .tadeon-mobile-header__identity::after {
+    display: none !important;
+    width: 0 !important;
+    height: 0 !important;
+    border: 0 !important;
+    background: none !important;
+    box-shadow: none !important;
+    opacity: 0 !important;
+    content: none !important;
+  }
+
+  .tadeon-shell:is(
+    [data-section="Painel do Mestre"],
+    [data-section="Usuários"],
+    [data-section="Saúde do arquivo"],
+    [data-section="Consulta offline"]
+  ) .tadeon-mobile-header__identity {
+    position: static !important;
+    z-index: auto !important;
+    isolation: auto !important;
+    padding-left: 0 !important;
+    border-left: 0 !important;
+  }
+
+  .tadeon-shell:is(
+    [data-section="Painel do Mestre"],
+    [data-section="Usuários"],
+    [data-section="Saúde do arquivo"],
+    [data-section="Consulta offline"]
+  ) .tadeon-mobile-header__identity p:last-child {
+    color: color-mix(in srgb, var(--foreground) 82%, var(--section-accent)) !important;
+    font-weight: 600 !important;
+    text-shadow: none !important;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   2. REAL PAGE HEROES — no MutationObserver, no injected data attributes.
+   These selectors match the actual JSX in the three utility routes.
+   -------------------------------------------------------------------------- */
+.tadeon-route-users > .tadeon-page-hero,
+.tadeon-route-tools > .tadeon-page-hero,
+.tadeon-route-offline > .tadeon-page-hero,
+.tadeon-master-commandbar {
+  --utility-hero-rgb: 217 215 164;
+  --utility-secondary-rgb: 113 107 123;
+  position: relative !important;
+  isolation: isolate !important;
+  overflow: clip !important;
+  min-height: clamp(9.5rem, 17vw, 12.5rem) !important;
+  padding: clamp(1.35rem, 2.8vw, 2.25rem) clamp(1.25rem, 3vw, 2.4rem) !important;
+  padding-left: clamp(5.7rem, 8vw, 7.2rem) !important;
+  border: 1px solid rgb(var(--utility-hero-rgb) / 24%) !important;
+  border-radius: 1.5rem .48rem 1.5rem .48rem !important;
+  background:
+    radial-gradient(circle at 88% -18%, transparent 0 6.6rem, rgb(var(--utility-hero-rgb) / 18%) 6.68rem 6.76rem, transparent 6.84rem 9.1rem, rgb(var(--utility-secondary-rgb) / 6%) 9.18rem 9.28rem, transparent 9.36rem),
+    radial-gradient(circle at 8% 12%, rgb(var(--utility-hero-rgb) / 12%), transparent 15rem),
+    radial-gradient(circle at 95% 92%, rgb(var(--utility-secondary-rgb) / 7%), transparent 18rem),
+    linear-gradient(136deg, rgb(255 255 255 / 3.6%), transparent 44%),
+    linear-gradient(145deg, rgb(17 20 25 / 97%), rgb(8 11 15 / 96%)) !important;
+  box-shadow:
+    0 34px 84px -58px rgb(0 0 0 / 100%),
+    0 18px 52px -46px rgb(var(--utility-hero-rgb) / 46%),
+    inset 0 1px rgb(255 255 255 / 4%) !important;
+}
+
+.tadeon-route-users > .tadeon-page-hero {
+  --utility-hero-rgb: 79 110 93;
+  --utility-secondary-rgb: 217 215 164;
+}
+
+.tadeon-route-tools > .tadeon-page-hero {
+  --utility-hero-rgb: 122 129 135;
+  --utility-secondary-rgb: 79 110 93;
+}
+
+.tadeon-route-offline > .tadeon-page-hero {
+  --utility-hero-rgb: 79 110 93;
+  --utility-secondary-rgb: 113 107 123;
+}
+
+.tadeon-master-commandbar {
+  --utility-hero-rgb: 116 36 45;
+  --utility-secondary-rgb: 217 215 164;
+}
+
+.tadeon-route-users > .tadeon-page-hero::before,
+.tadeon-route-tools > .tadeon-page-hero::before,
+.tadeon-route-offline > .tadeon-page-hero::before {
+  position: absolute !important;
+  z-index: 3 !important;
+  top: clamp(1.25rem, 2.6vw, 1.85rem) !important;
+  left: clamp(1.25rem, 2.6vw, 1.85rem) !important;
+  display: grid !important;
+  width: clamp(3.2rem, 5vw, 4.2rem) !important;
+  height: auto !important;
+  aspect-ratio: 1 !important;
+  place-items: center !important;
+  border: 1px solid rgb(var(--utility-hero-rgb) / 42%) !important;
+  border-radius: 50% !important;
+  color: rgb(var(--utility-hero-rgb)) !important;
+  background-color: rgb(var(--utility-hero-rgb) / 12%) !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+  background-size: 1.45rem 1.45rem !important;
+  box-shadow:
+    0 0 0 .52rem rgb(var(--utility-hero-rgb) / 2.4%),
+    0 16px 38px -25px rgb(var(--utility-hero-rgb) / 72%),
+    inset 0 1px rgb(255 255 255 / 6%) !important;
+  opacity: 1 !important;
+  pointer-events: none !important;
+  content: "" !important;
+}
+
+.tadeon-route-users > .tadeon-page-hero::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23d9d7a4' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2'/%3E%3Ccircle cx='9' cy='7' r='4'/%3E%3Cpath d='M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75'/%3E%3C/svg%3E") !important;
+}
+
+.tadeon-route-tools > .tadeon-page-hero::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23d9d7a4' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M21 8a2 2 0 0 0-2-2h-2V4a2 2 0 0 0-2-2H9a2 2 0 0 0-2 2v2H5a2 2 0 0 0-2 2v11a3 3 0 0 0 3 3h12a3 3 0 0 0 3-3Z'/%3E%3Cpath d='M9 6h6M8 12h8M8 16h5'/%3E%3C/svg%3E") !important;
+}
+
+.tadeon-route-offline > .tadeon-page-hero::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23d9d7a4' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 0 1 2.78 8.04'/%3E%3Cpath d='m3 3 18 18'/%3E%3C/svg%3E") !important;
+}
+
+.tadeon-route-users > .tadeon-page-hero::after,
+.tadeon-route-tools > .tadeon-page-hero::after,
+.tadeon-route-offline > .tadeon-page-hero::after,
+.tadeon-master-commandbar::after {
+  position: absolute !important;
+  z-index: 2 !important;
+  right: clamp(1rem, 2vw, 1.8rem) !important;
+  bottom: 0 !important;
+  left: clamp(1rem, 2vw, 1.8rem) !important;
+  display: block !important;
+  width: auto !important;
+  height: 1px !important;
+  border: 0 !important;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgb(var(--utility-hero-rgb) / 58%) 26%,
+    rgb(var(--utility-secondary-rgb) / 26%) 67%,
+    transparent
+  ) !important;
+  pointer-events: none !important;
+  content: "" !important;
+}
+
+.tadeon-route-users > .tadeon-page-hero h1,
+.tadeon-route-tools > .tadeon-page-hero h1,
+.tadeon-route-offline > .tadeon-page-hero h1,
+.tadeon-master-commandbar h1 {
+  color: color-mix(in srgb, var(--foreground) 92%, rgb(var(--utility-secondary-rgb))) !important;
+  font-size: clamp(2rem, 4vw, 3.55rem) !important;
+  font-weight: 610 !important;
+  letter-spacing: -.035em !important;
+  line-height: 1 !important;
+  text-wrap: balance;
+  text-shadow: 0 8px 34px rgb(var(--utility-hero-rgb) / 16%) !important;
+}
+
+.tadeon-route-users > .tadeon-page-hero .tadeon-eyebrow,
+.tadeon-route-tools > .tadeon-page-hero .tadeon-eyebrow,
+.tadeon-route-offline > .tadeon-page-hero .tadeon-eyebrow,
+.tadeon-master-commandbar .tadeon-eyebrow {
+  color: color-mix(in srgb, rgb(var(--utility-hero-rgb)) 76%, var(--foreground)) !important;
+}
+
+/* The master hero already contains a decorative node. Turn that real node into
+   the icon seal instead of injecting another DOM surface. */
+.tadeon-master-commandbar__glow {
+  position: absolute !important;
+  z-index: 3 !important;
+  top: clamp(1.2rem, 2.4vw, 1.65rem) !important;
+  left: clamp(1.2rem, 2.4vw, 1.65rem) !important;
+  display: grid !important;
+  width: clamp(3.2rem, 5vw, 4.2rem) !important;
+  height: auto !important;
+  aspect-ratio: 1 !important;
+  border: 1px solid rgb(var(--utility-hero-rgb) / 44%) !important;
+  border-radius: 50% !important;
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23d9d7a4' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 3v18M3 12h18M6.5 6.5l11 11M17.5 6.5l-11 11'/%3E%3Ccircle cx='12' cy='12' r='3.2'/%3E%3C/svg%3E") center / 1.45rem 1.45rem no-repeat,
+    radial-gradient(circle at 34% 28%, rgb(255 255 255 / 10%), transparent 35%),
+    rgb(var(--utility-hero-rgb) / 13%) !important;
+  box-shadow:
+    0 0 0 .52rem rgb(var(--utility-hero-rgb) / 2.5%),
+    0 16px 38px -25px rgb(var(--utility-hero-rgb) / 72%),
+    inset 0 1px rgb(255 255 255 / 6%) !important;
+  filter: none !important;
+  opacity: 1 !important;
+  transform: none !important;
+  pointer-events: none !important;
+}
+
+.tadeon-master-commandbar__glow + div > .min-w-0 {
+  padding-left: 0 !important;
+}
+
+/* --------------------------------------------------------------------------
+   3. MASTER NAVIGATION — true viewport-fixed bar; slot preserves document flow.
+   -------------------------------------------------------------------------- */
+.tadeon-master-navigation-slot {
+  display: block !important;
+  width: 100% !important;
+  min-height: 5.35rem !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.tadeon-shell[data-section="Painel do Mestre"] .tadeon-master-navigation {
+  position: fixed !important;
+  z-index: 46 !important;
+  top: 4.65rem !important;
+  right: 0 !important;
+  left: 16rem !important;
+  width: auto !important;
+  max-width: none !important;
+  height: auto !important;
+  margin: 0 !important;
+  padding: .38rem clamp(.75rem, 1.8vw, 1.5rem) .44rem !important;
+  overflow: visible !important;
+  border-top: 1px solid rgb(255 255 255 / 2%) !important;
+  border-bottom: 1px solid color-mix(in srgb, var(--section-accent) 14%, var(--border)) !important;
+  background:
+    linear-gradient(90deg, rgb(var(--section-accent-rgb) / 8%), transparent 36%),
+    rgb(8 10 14 / 96%) !important;
+  box-shadow: 0 18px 44px -34px rgb(0 0 0 / 98%) !important;
+  backdrop-filter: blur(22px) saturate(128%) !important;
+  -webkit-backdrop-filter: blur(22px) saturate(128%) !important;
+}
+
+.tadeon-shell[data-section="Painel do Mestre"]:has(#tadeon-desktop-sidebar .tadeon-nav-item[data-mini="true"]) .tadeon-master-navigation {
+  left: 5.5rem !important;
+}
+
+.tadeon-master-navigation__scroller {
+  width: min(100%, 94rem) !important;
+  max-width: 100% !important;
+  margin-inline: auto !important;
+  overflow-x: auto !important;
+  overflow-y: visible !important;
+  padding: .08rem .05rem .14rem !important;
+  overscroll-behavior-x: contain;
+  scrollbar-width: thin;
+}
+
+.tadeon-master-navigation__scroller > [role="tablist"] {
+  display: flex !important;
+  width: max-content !important;
+  min-width: max-content !important;
+  max-width: none !important;
+  height: auto !important;
+  flex-wrap: nowrap !important;
+  align-items: stretch !important;
+  overflow: visible !important;
+  border: 1px solid color-mix(in srgb, var(--section-accent) 11%, var(--border)) !important;
+  background:
+    linear-gradient(135deg, rgb(var(--section-accent-rgb) / 5%), transparent 48%),
+    rgb(12 15 20 / 93%) !important;
+  box-shadow: inset 0 1px rgb(255 255 255 / 3%) !important;
+}
+
+.tadeon-master-navigation__group {
+  flex: 0 0 auto !important;
+}
+
+/* --------------------------------------------------------------------------
+   4. MOBILE PARITY — restore the original spatial field, then enrich the real
+   utility cards/tabs instead of flattening them with later global overrides.
+   -------------------------------------------------------------------------- */
+@media (max-width: 767px) {
+  .tadeon-shell:is(
+    [data-section="Usuários"],
+    [data-section="Saúde do arquivo"],
+    [data-section="Consulta offline"]
+  ) .tadeon-route-stage {
+    background:
+      linear-gradient(90deg, rgb(255 255 255 / .7%) 1px, transparent 1px),
+      linear-gradient(rgb(255 255 255 / .55%) 1px, transparent 1px),
+      radial-gradient(circle at 88% 2%, rgb(var(--section-accent-rgb) / 8%), transparent 20rem) !important;
+    background-size: 64px 64px, 64px 64px, auto !important;
+  }
+
+  .tadeon-shell:is(
+    [data-section="Usuários"],
+    [data-section="Saúde do arquivo"],
+    [data-section="Consulta offline"]
+  ) .tadeon-route-stage::before {
+    top: -8rem !important;
+    right: -8rem !important;
+    width: 19rem !important;
+    height: auto !important;
+    aspect-ratio: 1 !important;
+    border: 1px solid rgb(var(--section-accent-rgb) / 6%) !important;
+    border-radius: 50% !important;
+    background: transparent !important;
+    box-shadow:
+      0 0 0 2.4rem rgb(var(--section-accent-rgb) / 2%),
+      0 0 0 5rem rgb(var(--section-accent-rgb) / 1%) !important;
+    opacity: 1 !important;
+    content: "" !important;
+  }
+
+  .tadeon-route-users > .tadeon-page-hero,
+  .tadeon-route-tools > .tadeon-page-hero,
+  .tadeon-route-offline > .tadeon-page-hero,
+  .tadeon-master-commandbar {
+    min-height: 10rem !important;
+    padding: 1.2rem 1rem 1.2rem 4.75rem !important;
+    border-radius: 1.15rem .38rem 1.15rem .38rem !important;
+    background:
+      radial-gradient(circle at 92% -20%, transparent 0 4.7rem, rgb(var(--utility-hero-rgb) / 17%) 4.78rem 4.85rem, transparent 4.93rem 6.8rem, rgb(var(--utility-secondary-rgb) / 5%) 6.86rem 6.94rem, transparent 7.02rem),
+      radial-gradient(circle at 8% 8%, rgb(var(--utility-hero-rgb) / 12%), transparent 10rem),
+      linear-gradient(142deg, rgb(255 255 255 / 3.4%), transparent 44%),
+      linear-gradient(155deg, rgb(16 19 24 / 98%), rgb(8 11 15 / 97%)) !important;
+  }
+
+  .tadeon-route-users > .tadeon-page-hero::before,
+  .tadeon-route-tools > .tadeon-page-hero::before,
+  .tadeon-route-offline > .tadeon-page-hero::before,
+  .tadeon-master-commandbar__glow {
+    top: 1.15rem !important;
+    left: 1rem !important;
+    width: 2.9rem !important;
+    background-size: 1.15rem 1.15rem !important;
+  }
+
+  .tadeon-route-users > .tadeon-page-hero h1,
+  .tadeon-route-tools > .tadeon-page-hero h1,
+  .tadeon-route-offline > .tadeon-page-hero h1,
+  .tadeon-master-commandbar h1 {
+    font-size: clamp(1.65rem, 7.6vw, 2.35rem) !important;
+  }
+
+  .tadeon-route-users > .tadeon-page-hero > :not(.tadeon-page-hero-mark-host),
+  .tadeon-route-tools > .tadeon-page-hero > :not(.tadeon-page-hero-mark-host),
+  .tadeon-route-offline > .tadeon-page-hero > :not(.tadeon-page-hero-mark-host) {
+    min-width: 0 !important;
+  }
+
+  .tadeon-master-commandbar__glow + div > .min-w-0 {
+    padding-left: 0 !important;
+  }
+
+  .tadeon-master-navigation-slot {
+    min-height: 4.9rem !important;
+  }
+
+  .tadeon-shell[data-section="Painel do Mestre"] .tadeon-master-navigation,
+  .tadeon-shell[data-section="Painel do Mestre"]:has(#tadeon-desktop-sidebar .tadeon-nav-item[data-mini="true"]) .tadeon-master-navigation {
+    top: var(--tadeon-mobile-header-height, 4rem) !important;
+    right: 0 !important;
+    left: 0 !important;
+    padding: .3rem .45rem .36rem !important;
+  }
+
+  .tadeon-master-navigation__scroller {
+    scrollbar-width: none;
+  }
+
+  .tadeon-master-navigation__scroller::-webkit-scrollbar {
+    display: none;
+  }
+
+  .tadeon-route-users [data-slot="card"],
+  .tadeon-route-tools [data-slot="card"],
+  .tadeon-route-offline [data-slot="card"] {
+    position: relative !important;
+    isolation: isolate !important;
+    overflow: clip !important;
+    border-color: color-mix(in srgb, var(--section-accent) 14%, var(--border)) !important;
+    border-radius: 1rem .38rem 1rem .38rem !important;
+    background:
+      radial-gradient(circle at 100% -8%, rgb(var(--section-accent-rgb) / 10%), transparent 9rem),
+      linear-gradient(145deg, rgb(255 255 255 / 3.2%), transparent 46%),
+      color-mix(in srgb, var(--card) 96%, var(--background)) !important;
+    box-shadow:
+      0 24px 58px -46px rgb(0 0 0 / 98%),
+      0 14px 38px -34px rgb(var(--section-accent-rgb) / 32%),
+      inset 0 1px rgb(255 255 255 / 3.8%) !important;
+  }
+
+  .tadeon-route-users [data-slot="card"]::before,
+  .tadeon-route-tools [data-slot="card"]::before,
+  .tadeon-route-offline [data-slot="card"]::before {
+    position: absolute !important;
+    z-index: 0 !important;
+    top: -4.9rem !important;
+    right: -4.2rem !important;
+    display: block !important;
+    width: 8.5rem !important;
+    height: auto !important;
+    aspect-ratio: 1 !important;
+    border: 1px solid rgb(var(--section-accent-rgb) / 9%) !important;
+    border-radius: 50% !important;
+    background: transparent !important;
+    box-shadow: 0 0 0 1.6rem rgb(var(--section-accent-rgb) / 2.2%) !important;
+    pointer-events: none !important;
+    content: "" !important;
+  }
+
+  .tadeon-route-users [data-slot="card"] > *,
+  .tadeon-route-tools [data-slot="card"] > *,
+  .tadeon-route-offline [data-slot="card"] > * {
+    position: relative;
+    z-index: 1;
+  }
+
+  .tadeon-route-tools [data-slot="tabs-list"],
+  .tadeon-route-offline [data-slot="tabs-list"] {
+    border: 1px solid color-mix(in srgb, var(--section-accent) 14%, var(--border)) !important;
+    border-radius: .95rem .32rem .95rem .32rem !important;
+    background:
+      linear-gradient(135deg, rgb(var(--section-accent-rgb) / 7%), transparent 52%),
+      rgb(11 14 19 / 94%) !important;
+    box-shadow:
+      0 16px 34px -30px rgb(0 0 0 / 96%),
+      inset 0 1px rgb(255 255 255 / 3%) !important;
+  }
+
+  .tadeon-route-tools [data-slot="tabs-trigger"],
+  .tadeon-route-offline [data-slot="tabs-trigger"] {
+    position: relative !important;
+    border: 1px solid transparent !important;
+    border-radius: .72rem .24rem .72rem .24rem !important;
+  }
+
+  .tadeon-route-tools [data-slot="tabs-trigger"][data-state="active"],
+  .tadeon-route-offline [data-slot="tabs-trigger"][data-state="active"] {
+    border-color: color-mix(in srgb, var(--section-accent) 30%, var(--border)) !important;
+    color: color-mix(in srgb, var(--foreground) 84%, var(--section-accent)) !important;
+    background:
+      radial-gradient(circle at 50% 115%, rgb(var(--section-accent-rgb) / 18%), transparent 72%),
+      rgb(var(--section-accent-rgb) / 9%) !important;
+    box-shadow:
+      inset 0 -2px color-mix(in srgb, var(--section-accent) 66%, transparent),
+      0 10px 22px -18px rgb(var(--section-accent-rgb) / 60%) !important;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1180px) {
+  .tadeon-shell[data-section="Painel do Mestre"] .tadeon-master-navigation {
+    left: 15.5rem !important;
+  }
+
+  .tadeon-shell[data-section="Painel do Mestre"]:has(#tadeon-desktop-sidebar .tadeon-nav-item[data-mini="true"]) .tadeon-master-navigation {
+    left: 5.5rem !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tadeon-master-navigation [data-slot="tabs-trigger"],
+  .tadeon-route-tools [data-slot="tabs-trigger"],
+  .tadeon-route-offline [data-slot="tabs-trigger"] {
+    transition: none !important;
+  }
+}
