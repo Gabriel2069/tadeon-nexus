@@ -1,0 +1,76 @@
+/* #160: use the real AppLayout SVGs for Master and Backup navigation.
+   This removes the pseudo-element masks introduced in #158/#159 so active and
+   inactive states share the exact same DOM and CSS contract as every other item. */
+
+.tadeon-nav-item[href="/master-panel"] .tadeon-nav-item__icon::before,
+.tadeon-nav-item[href="/nexus-tools"] .tadeon-nav-item__icon::before,
+.tadeon-mobile-dock__item[href="/master-panel"]::before {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+  background: none !important;
+  -webkit-mask: none !important;
+  mask: none !important;
+  opacity: 0 !important;
+  filter: none !important;
+  transform: none !important;
+  content: none !important;
+}
+
+.tadeon-nav-item[href="/master-panel"] .tadeon-nav-item__icon > svg,
+.tadeon-nav-item[href="/nexus-tools"] .tadeon-nav-item__icon > svg {
+  display: block !important;
+  width: 1rem !important;
+  height: 1rem !important;
+  flex: 0 0 auto !important;
+  color: currentColor !important;
+  opacity: 1 !important;
+  filter: none !important;
+  transform: none !important;
+  transition:
+    color 180ms var(--ease-out),
+    filter 180ms var(--ease-out),
+    transform 180ms var(--ease-out) !important;
+}
+
+.tadeon-nav-item[href="/master-panel"][aria-current="page"] .tadeon-nav-item__icon > svg,
+.tadeon-nav-item[href="/nexus-tools"][aria-current="page"] .tadeon-nav-item__icon > svg {
+  display: block !important;
+  color: var(--section-accent) !important;
+  opacity: 1 !important;
+  filter: drop-shadow(0 0 9px rgb(var(--section-accent-rgb) / 25%)) !important;
+  transform: none !important;
+}
+
+.tadeon-mobile-dock__item[href="/master-panel"] > svg {
+  display: block !important;
+  width: 1.25rem !important;
+  height: 1.25rem !important;
+  flex: 0 0 auto !important;
+  margin: 0 !important;
+  color: currentColor !important;
+  opacity: 1 !important;
+  filter: none !important;
+  transform: none !important;
+  transition:
+    color var(--motion-fast) var(--ease-out),
+    filter var(--motion-fast) var(--ease-out),
+    transform var(--motion-fast) var(--ease-out) !important;
+}
+
+.tadeon-mobile-dock__item[href="/master-panel"][aria-current="page"] > svg {
+  display: block !important;
+  color: var(--section-accent) !important;
+  opacity: 1 !important;
+  filter: drop-shadow(0 0 8px rgb(var(--section-accent-rgb) / 28%)) !important;
+  transform: translateY(-1px) !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tadeon-nav-item[href="/master-panel"] .tadeon-nav-item__icon > svg,
+  .tadeon-nav-item[href="/nexus-tools"] .tadeon-nav-item__icon > svg,
+  .tadeon-mobile-dock__item[href="/master-panel"] > svg {
+    transition: none !important;
+    transform: none !important;
+  }
+}
