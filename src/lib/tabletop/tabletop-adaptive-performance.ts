@@ -16,11 +16,40 @@ export interface TabletopQualityProfile {
   textureBudgetMb: number;
 }
 
+/* Rendering resolution is the last quality lever we sacrifice. Modern phones
+   and tablets commonly have dense screens, so dropping the backing canvas to
+   1x/1.25x made the map visibly soft even while the device still had enough
+   GPU headroom. Effects and native models can degrade first; the canvas keeps
+   a useful high-DPI floor throughout the adaptive ladder. */
 const PROFILES: Record<TabletopQualityTier, TabletopQualityProfile> = {
-  cinematic: { tier: "cinematic", maxResolution: 2, nativeModels: true, effects: "full", textureBudgetMb: 512 },
-  high: { tier: "high", maxResolution: 1.6, nativeModels: true, effects: "full", textureBudgetMb: 384 },
-  balanced: { tier: "balanced", maxResolution: 1.25, nativeModels: true, effects: "reduced", textureBudgetMb: 256 },
-  economy: { tier: "economy", maxResolution: 1, nativeModels: false, effects: "minimal", textureBudgetMb: 160 },
+  cinematic: {
+    tier: "cinematic",
+    maxResolution: 2.5,
+    nativeModels: true,
+    effects: "full",
+    textureBudgetMb: 512,
+  },
+  high: {
+    tier: "high",
+    maxResolution: 2,
+    nativeModels: true,
+    effects: "full",
+    textureBudgetMb: 384,
+  },
+  balanced: {
+    tier: "balanced",
+    maxResolution: 1.6,
+    nativeModels: true,
+    effects: "reduced",
+    textureBudgetMb: 256,
+  },
+  economy: {
+    tier: "economy",
+    maxResolution: 1.25,
+    nativeModels: false,
+    effects: "minimal",
+    textureBudgetMb: 160,
+  },
 };
 
 export function recommendTabletopQuality(sample: TabletopPerformanceSample): TabletopQualityProfile {
