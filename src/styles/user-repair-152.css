@@ -1,0 +1,412 @@
+/* User-validated visual repair. This file restores existing reference designs
+   and adds only the requested visual language on top of them. */
+
+/* Dashboard: restore the original dashboard composition from styles.css. */
+.tadeon-dashboard-hero {
+  border: 1px solid color-mix(in srgb, var(--tadeon-metal) 28%, transparent) !important;
+  border-radius: 1.35rem .5rem 1.35rem .5rem !important;
+  background:
+    linear-gradient(135deg, rgb(18 21 26 / 96%), rgb(11 13 17 / 92%)),
+    radial-gradient(circle at 84% 14%, rgb(217 215 164 / 9%), transparent 32%) !important;
+}
+
+.tadeon-dashboard-hero > .relative.z-10:first-of-type {
+  padding-left: 0 !important;
+  border-left: 0 !important;
+}
+
+.tadeon-dashboard-signals {
+  padding: 1.25rem 0 0 !important;
+  border-width: 1px 0 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+}
+
+.tadeon-dashboard-signal {
+  min-height: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+}
+
+/* Separate Master Panel: dedicated wide canvas, no AppLayout/sidebar. */
+.tadeon-dedicated-shell[data-dedicated-presentation="master-panel"] {
+  position: relative;
+  isolation: isolate;
+  min-height: 100dvh;
+  overflow-x: clip;
+  background:
+    radial-gradient(circle at 9% -8%, rgb(217 215 164 / 7%), transparent 28rem),
+    radial-gradient(circle at 96% 32%, rgb(113 107 123 / 8%), transparent 30rem),
+    var(--background);
+}
+
+.tadeon-dedicated-shell[data-dedicated-presentation="master-panel"]::before,
+.tadeon-dedicated-shell[data-dedicated-presentation="master-panel"]::after {
+  position: fixed;
+  z-index: 0;
+  width: min(30rem, 44vw);
+  aspect-ratio: 1;
+  border: 1px solid rgb(217 215 164 / 8%);
+  border-radius: 50%;
+  box-shadow:
+    0 0 0 2.3rem rgb(217 215 164 / 1.5%),
+    0 0 0 5.2rem rgb(113 107 123 / 1.2%);
+  pointer-events: none;
+  content: "";
+}
+
+.tadeon-dedicated-shell[data-dedicated-presentation="master-panel"]::before {
+  top: -18rem;
+  right: -10rem;
+}
+
+.tadeon-dedicated-shell[data-dedicated-presentation="master-panel"]::after {
+  bottom: -22rem;
+  left: -12rem;
+  border-color: rgb(79 110 93 / 8%);
+}
+
+.tadeon-dedicated-shell[data-dedicated-presentation="master-panel"] .tadeon-dedicated-shell__main {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  padding: clamp(.75rem, 1.6vw, 1.4rem);
+}
+
+.tadeon-dedicated-shell[data-dedicated-presentation="master-panel"] .tadeon-page {
+  width: 100% !important;
+  max-width: none !important;
+  margin-inline: 0 !important;
+  padding-inline: clamp(.5rem, 1.5vw, 1.5rem) !important;
+}
+
+.tadeon-dedicated-shell[data-dedicated-presentation="master-panel"] :is(
+  .tadeon-surface,
+  [data-slot="card"],
+  .tadeon-master-navigation
+) {
+  border-color: color-mix(in srgb, var(--tadeon-knowledge) 18%, var(--border)) !important;
+  box-shadow:
+    0 24px 64px -46px rgb(0 0 0 / 96%),
+    inset 0 1px rgb(255 255 255 / 4%) !important;
+}
+
+/* Main sheet: each section carries its own hue, expressed as diagonal corner light. */
+.tadeon-sheet-page {
+  --tadeon-sheet-accent: 217 215 164;
+}
+
+.tadeon-sheet-page #sec-info { --tadeon-sheet-accent: 217 215 164; }
+.tadeon-sheet-page #sec-attr { --tadeon-sheet-accent: 113 107 123; }
+.tadeon-sheet-page #sec-pontos { --tadeon-sheet-accent: 31 54 68; }
+.tadeon-sheet-page #equilibrio { --tadeon-sheet-accent: 79 110 93; }
+.tadeon-sheet-page #exposicao { --tadeon-sheet-accent: 126 91 47; }
+.tadeon-sheet-page #condicoes { --tadeon-sheet-accent: 116 36 45; }
+.tadeon-sheet-page #sec-pericias { --tadeon-sheet-accent: 79 110 93; }
+.tadeon-sheet-page #sec-armas { --tadeon-sheet-accent: 116 36 45; }
+.tadeon-sheet-page #sec-inv { --tadeon-sheet-accent: 122 129 135; }
+.tadeon-sheet-page #sec-hab { --tadeon-sheet-accent: 217 215 164; }
+.tadeon-sheet-page #tramas-fragmentos { --tadeon-sheet-accent: 113 107 123; }
+.tadeon-sheet-page #sec-notas { --tadeon-sheet-accent: 31 54 68; }
+
+.tadeon-sheet-page .tadeon-sheet-section {
+  position: relative;
+  isolation: isolate;
+  overflow: clip;
+  border: 1px solid rgb(var(--tadeon-sheet-accent) / 16%) !important;
+  border-radius: 1.05rem .38rem 1.05rem .38rem !important;
+  background:
+    linear-gradient(135deg, rgb(var(--tadeon-sheet-accent) / 4%), transparent 24%),
+    radial-gradient(circle at 100% 0%, rgb(var(--tadeon-sheet-accent) / 6%), transparent 12rem),
+    linear-gradient(145deg, rgb(18 21 26 / 97%), rgb(9 12 16 / 95%)) !important;
+  box-shadow:
+    0 24px 58px -46px rgb(0 0 0 / 96%),
+    inset 0 1px rgb(255 255 255 / 3.5%) !important;
+}
+
+/* Replace the unwanted vertical stripe with the dossier-like corner arc. */
+.tadeon-sheet-page .tadeon-sheet-section::before {
+  position: absolute !important;
+  z-index: -1 !important;
+  top: -5.6rem !important;
+  right: -4.4rem !important;
+  bottom: auto !important;
+  left: auto !important;
+  width: 11.5rem !important;
+  height: 11.5rem !important;
+  border: 1px solid rgb(var(--tadeon-sheet-accent) / 20%) !important;
+  border-radius: 50% !important;
+  background:
+    conic-gradient(from 208deg, transparent 0 62%, rgb(var(--tadeon-sheet-accent) / 14%) 68% 76%, transparent 82% 100%) !important;
+  box-shadow:
+    0 0 0 1.65rem rgb(var(--tadeon-sheet-accent) / 1.6%),
+    0 0 28px -17px rgb(var(--tadeon-sheet-accent) / 42%) !important;
+  opacity: .9;
+  pointer-events: none;
+  content: "" !important;
+  animation: tadeon-sheet-corner-drift 12s ease-in-out infinite alternate;
+}
+
+.tadeon-sheet-page .tadeon-sheet-section :is(
+  input,
+  textarea,
+  [role="combobox"],
+  [data-slot="select-trigger"]
+) {
+  border-color: rgb(var(--tadeon-sheet-accent) / 20%) !important;
+  background:
+    linear-gradient(135deg, rgb(var(--tadeon-sheet-accent) / 5%), transparent 38%),
+    rgb(5 8 12 / 72%) !important;
+  box-shadow:
+    inset 0 1px rgb(255 255 255 / 3%),
+    0 12px 30px -27px rgb(var(--tadeon-sheet-accent) / 58%) !important;
+}
+
+.tadeon-sheet-page .tadeon-sheet-section :is(
+  input,
+  textarea,
+  [role="combobox"],
+  [data-slot="select-trigger"]
+):focus,
+.tadeon-sheet-page .tadeon-sheet-section :is(
+  input,
+  textarea,
+  [role="combobox"],
+  [data-slot="select-trigger"]
+):focus-visible {
+  border-color: rgb(var(--tadeon-sheet-accent) / 52%) !important;
+  box-shadow:
+    0 0 0 1px rgb(var(--tadeon-sheet-accent) / 14%),
+    0 0 25px -12px rgb(var(--tadeon-sheet-accent) / 72%),
+    inset 0 1px rgb(255 255 255 / 4%) !important;
+}
+
+.tadeon-sheet-page :is(#equilibrio, #exposicao) {
+  border-left-width: 1px !important;
+  border-left-color: rgb(var(--tadeon-sheet-accent) / 16%) !important;
+}
+
+/* Mesa dossier: restore the exact base values that the last override displaced. */
+.tadeon-entity-dossier {
+  border-color: transparent !important;
+  background:
+    linear-gradient(145deg, rgb(15 17 22 / 98%), rgb(8 10 15 / 99%)), #0a0c11 !important;
+  box-shadow:
+    0 34px 100px rgb(0 0 0 / 72%),
+    0 0 0 1px color-mix(in srgb, var(--dossier-accent) 38%, transparent),
+    inset 0 1px rgb(255 255 255 / 5%) !important;
+}
+
+.tadeon-entity-dossier__resources > div {
+  background: linear-gradient(145deg, rgb(255 255 255 / 5%), rgb(255 255 255 / 1%)) !important;
+}
+
+.tadeon-entity-dossier__indices span {
+  background: rgb(255 255 255 / 3%) !important;
+}
+
+/* Condition cards: compact status plates with controlled energy, not fuzzy blocks. */
+.tadeon-conditions-panel .tadeon-condition-card {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden !important;
+  min-height: 4.25rem;
+  opacity: .72 !important;
+  filter: none !important;
+  border-radius: .85rem .28rem .85rem .28rem !important;
+  background: rgb(255 255 255 / 1.8%) !important;
+  box-shadow: inset 0 1px rgb(255 255 255 / 2.5%) !important;
+  transform: none !important;
+}
+
+.tadeon-conditions-panel .tadeon-condition-card::before {
+  position: absolute !important;
+  z-index: -1 !important;
+  top: -3.4rem !important;
+  right: -2.7rem !important;
+  bottom: auto !important;
+  left: auto !important;
+  width: 7.5rem !important;
+  height: 7.5rem !important;
+  border: 1px solid rgb(var(--condition-rgb, 116 36 45) / 16%) !important;
+  border-radius: 50% !important;
+  background: transparent !important;
+  box-shadow: 0 0 0 1.1rem rgb(var(--condition-rgb, 116 36 45) / 1.8%) !important;
+  filter: none !important;
+  opacity: .72 !important;
+  pointer-events: none;
+  content: "" !important;
+}
+
+.tadeon-conditions-panel .tadeon-condition-card::after {
+  position: absolute !important;
+  inset: 0 !important;
+  border: 0 !important;
+  border-radius: inherit;
+  background: linear-gradient(112deg, transparent 0 58%, rgb(255 255 255 / 3.2%) 70%, transparent 82%) !important;
+  box-shadow: none !important;
+  pointer-events: none;
+  content: "" !important;
+  transform: translateX(-42%);
+  opacity: 0;
+}
+
+.tadeon-conditions-panel .tadeon-condition-card[style*="box-shadow"] {
+  opacity: 1 !important;
+  border-color: rgb(var(--condition-rgb, 116 36 45) / 72%) !important;
+  background:
+    radial-gradient(circle at 100% 0%, rgb(var(--condition-rgb, 116 36 45) / 19%), transparent 8rem),
+    linear-gradient(145deg, rgb(var(--condition-rgb, 116 36 45) / 12%), rgb(7 9 13 / 96%)) !important;
+  box-shadow:
+    0 0 0 1px rgb(var(--condition-rgb, 116 36 45) / 24%),
+    0 16px 32px -28px rgb(var(--condition-rgb, 116 36 45) / 88%),
+    inset 0 1px rgb(255 255 255 / 5%) !important;
+  transform: translateY(-1px) !important;
+}
+
+.tadeon-conditions-panel .tadeon-condition-card[style*="box-shadow"]::after {
+  opacity: .75;
+  animation: tadeon-condition-scan 4.8s ease-in-out infinite;
+}
+
+/* Morrendo / Colapsando counters are promoted to first-class danger instruments. */
+[data-tadeon-condition-kind="morrendo"],
+[data-tadeon-condition-kind="colapsando"] {
+  --tadeon-danger-rgb: 116 36 45;
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  min-height: 6rem;
+  padding: .8rem !important;
+  border: 1px solid rgb(var(--tadeon-danger-rgb) / 46%);
+  border-radius: 1rem .32rem 1rem .32rem;
+  background:
+    radial-gradient(circle at 100% 0%, rgb(var(--tadeon-danger-rgb) / 20%), transparent 8.5rem),
+    linear-gradient(145deg, rgb(var(--tadeon-danger-rgb) / 9%), rgb(7 9 13 / 96%));
+  box-shadow:
+    0 18px 38px -31px rgb(var(--tadeon-danger-rgb) / 90%),
+    inset 0 1px rgb(255 255 255 / 4%);
+}
+
+[data-tadeon-condition-kind="colapsando"] {
+  --tadeon-danger-rgb: 113 107 123;
+}
+
+[data-tadeon-condition-kind="morrendo"]::before,
+[data-tadeon-condition-kind="colapsando"]::before {
+  position: absolute;
+  z-index: -1;
+  top: -4.4rem;
+  right: -3.4rem;
+  width: 9.5rem;
+  aspect-ratio: 1;
+  border: 1px solid rgb(var(--tadeon-danger-rgb) / 32%);
+  border-radius: 50%;
+  box-shadow:
+    0 0 0 1.1rem rgb(var(--tadeon-danger-rgb) / 3%),
+    0 0 0 2.6rem rgb(var(--tadeon-danger-rgb) / 1.5%);
+  opacity: calc(.35 + var(--condition-progress, 0) * .55);
+  content: "";
+  animation: tadeon-danger-ring 2.8s ease-in-out infinite alternate;
+}
+
+[data-tadeon-condition-kind="morrendo"]::after,
+[data-tadeon-condition-kind="colapsando"]::after {
+  position: absolute;
+  right: .7rem;
+  bottom: .55rem;
+  left: .7rem;
+  height: 3px;
+  overflow: hidden;
+  border-radius: 999px;
+  background:
+    linear-gradient(90deg,
+      rgb(var(--tadeon-danger-rgb) / 88%) 0,
+      rgb(var(--tadeon-danger-rgb) / 88%) calc(var(--condition-progress, 0) * 100%),
+      rgb(255 255 255 / 7%) calc(var(--condition-progress, 0) * 100%),
+      rgb(255 255 255 / 7%) 100%);
+  box-shadow: 0 0 14px -2px rgb(var(--tadeon-danger-rgb) / 62%);
+  content: "";
+}
+
+[data-tadeon-condition-kind="morrendo"] button,
+[data-tadeon-condition-kind="colapsando"] button {
+  position: relative;
+  z-index: 1;
+  border-color: rgb(var(--tadeon-danger-rgb) / 32%) !important;
+  box-shadow: 0 0 0 1px rgb(var(--tadeon-danger-rgb) / 5%);
+}
+
+/* Subtle partial-circle language for utility/admin pages that had no ambient signature. */
+:is(.tadeon-route-tools, .tadeon-route-users, .tadeon-route-offline) {
+  position: relative;
+  isolation: isolate;
+}
+
+:is(.tadeon-route-tools, .tadeon-route-users, .tadeon-route-offline)::before {
+  position: absolute;
+  z-index: -1;
+  top: 3rem;
+  right: -5rem;
+  width: 15rem;
+  aspect-ratio: 1;
+  border: 1px solid rgb(217 215 164 / 6%);
+  border-radius: 50%;
+  box-shadow:
+    0 0 0 2rem rgb(217 215 164 / 1.3%),
+    0 0 0 4.6rem rgb(113 107 123 / 1%);
+  pointer-events: none;
+  content: "";
+  animation: tadeon-ambient-orbit 18s ease-in-out infinite alternate;
+}
+
+@keyframes tadeon-sheet-corner-drift {
+  from { transform: rotate(-5deg) translate3d(0, 0, 0); opacity: .66; }
+  to { transform: rotate(7deg) translate3d(-.3rem, .25rem, 0); opacity: 1; }
+}
+
+@keyframes tadeon-condition-scan {
+  0%, 18% { transform: translateX(-48%); opacity: 0; }
+  44% { opacity: .72; }
+  72%, 100% { transform: translateX(48%); opacity: 0; }
+}
+
+@keyframes tadeon-danger-ring {
+  from { transform: scale(.96) rotate(-3deg); filter: saturate(.9); }
+  to { transform: scale(1.035) rotate(3deg); filter: saturate(1.2); }
+}
+
+@keyframes tadeon-ambient-orbit {
+  from { transform: translate3d(0, 0, 0) rotate(0); }
+  to { transform: translate3d(-1.2rem, .7rem, 0) rotate(8deg); }
+}
+
+@media (max-width: 767px) {
+  .tadeon-dedicated-shell[data-dedicated-presentation="master-panel"] .tadeon-dedicated-shell__main {
+    padding: .55rem;
+  }
+
+  .tadeon-sheet-page .tadeon-sheet-section::before {
+    width: 8.5rem !important;
+    height: 8.5rem !important;
+    top: -4.5rem !important;
+    right: -3.5rem !important;
+  }
+
+  [data-tadeon-condition-kind="morrendo"],
+  [data-tadeon-condition-kind="colapsando"] {
+    min-height: 5.5rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tadeon-sheet-page .tadeon-sheet-section::before,
+  .tadeon-conditions-panel .tadeon-condition-card::after,
+  [data-tadeon-condition-kind="morrendo"]::before,
+  [data-tadeon-condition-kind="colapsando"]::before,
+  :is(.tadeon-route-tools, .tadeon-route-users, .tadeon-route-offline)::before {
+    animation: none !important;
+  }
+}
