@@ -31,14 +31,16 @@ describe("user-visible repair 156", () => {
     expect(css).not.toContain(".tadeon-page-header[data-tadeon-page-hero]");
   });
 
-  it("uses a fixed master navigation with a flow-preserving slot", () => {
+  it("fixes master navigation only after its slot reaches the real shell header", () => {
     const navigation = source("src/components/master/master-panel-navigation.tsx");
     const css = source("src/styles/user-visible-repair-156.css");
     expect(navigation).toContain("tadeon-master-navigation-slot");
-    expect(css).toContain(".tadeon-master-navigation-slot");
+    expect(navigation).toContain("shellHeaderBottom");
+    expect(navigation).toContain('slot.style.setProperty("--tadeon-master-fixed-top"');
+    expect(navigation).toContain('data-fixed={fixed ? "true" : "false"}');
+    expect(css).toContain('.tadeon-master-navigation[data-fixed="true"]');
     expect(css).toContain("position: fixed !important");
-    expect(css).toContain("top: 4.65rem !important");
-    expect(css).toContain("top: var(--tadeon-mobile-header-height, 4rem) !important");
+    expect(css).toContain("top: var(--tadeon-master-fixed-top, 4.65rem) !important");
   });
 
   it("restores mobile texture and guide detail on users tools and offline", () => {
