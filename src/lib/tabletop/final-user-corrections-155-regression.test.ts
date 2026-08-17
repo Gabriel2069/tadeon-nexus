@@ -7,37 +7,40 @@ function source(path: string) {
 }
 
 describe("final user corrections 155", () => {
-  it("fully removes the accidental page identity from the global focus header", () => {
-    const css = source("src/styles/final-device-parity-154-compat.css");
+  it("fully restores the global focus header to its pre-153 shell contract", () => {
+    const css = source("src/styles/user-visible-repair-156.css");
     expect(css).toContain(".tadeon-desktop-toolbar::before");
     expect(css).toContain(".tadeon-mobile-header::before");
     expect(css).toContain("content: none !important");
     expect(css).toContain("padding-left: 0 !important");
     expect(css).toContain("border-left: 0 !important");
     expect(css).toContain("text-shadow: none !important");
+    expect(css).toContain("rgb(8 10 14 / 82%) !important");
+    expect(css).toContain("rgb(8 10 14 / 88%) !important");
   });
 
-  it("targets the actual route heroes with Nexus-like marks", () => {
-    const bridge = source("src/components/page-hero-parity-bridge.tsx");
-    const css = source("src/styles/final-device-parity-154-compat.css");
-    expect(bridge).toContain("#tadeon-main .tadeon-master-commandbar");
-    expect(bridge).toContain(".tadeon-route-users > .tadeon-page-hero");
-    expect(bridge).toContain(".tadeon-route-tools > .tadeon-page-hero");
-    expect(bridge).toContain(".tadeon-route-offline > .tadeon-page-hero");
-    expect(css).toContain(".tadeon-page-hero-mark-host");
-    expect(css).toContain("--hero-ring-alpha");
-    expect(css).toContain("radial-gradient(circle at 7% 14%");
+  it("targets actual utility route heroes without runtime DOM injection", () => {
+    const css = source("src/styles/user-visible-repair-156.css");
+    const root = source("src/routes/__root.tsx");
+    expect(css).toContain(".tadeon-route-users > .tadeon-page-hero::before");
+    expect(css).toContain(".tadeon-route-tools > .tadeon-page-hero::before");
+    expect(css).toContain(".tadeon-route-offline > .tadeon-page-hero::before");
+    expect(css).toContain("background-image: url(\"data:image/svg+xml");
+    expect(css).toContain("radial-gradient(circle at 88% -18%");
+    expect(root).not.toContain("PageHeroParityBridge");
   });
 
-  it("makes master navigation truly sticky by separating the horizontal scroller", () => {
+  it("makes master navigation genuinely viewport-fixed and preserves layout space", () => {
     const navigation = source("src/components/master/master-panel-navigation.tsx");
-    const css = source("src/styles/final-device-parity-154-compat.css");
-    expect(navigation).toContain('className="tadeon-master-navigation -mx-3 px-3 pb-1');
-    expect(navigation).not.toContain('tadeon-master-navigation -mx-3 overflow-x-auto');
+    const css = source("src/styles/user-visible-repair-156.css");
+    expect(navigation).toContain("tadeon-master-navigation-slot");
+    expect(navigation).toContain('className="tadeon-master-navigation"');
     expect(navigation).toContain("tadeon-master-navigation__scroller overflow-x-auto");
-    expect(css).toContain(".tadeon-master-navigation {");
-    expect(css).toContain("position: sticky !important");
-    expect(css).toContain(".tadeon-master-navigation__scroller");
+    expect(css).toContain(".tadeon-master-navigation-slot");
+    expect(css).toContain("position: fixed !important");
+    expect(css).toContain("left: 16rem !important");
+    expect(css).toContain('data-mini="true"');
+    expect(css).toContain("left: 5.5rem !important");
   });
 
   it("renders dying and collapsing dots as a horizontal row over a full-width track", () => {
@@ -50,12 +53,14 @@ describe("final user corrections 155", () => {
     expect(css).toContain("width: var(--condition-fill, 0%) !important");
   });
 
-  it("ports desktop spatial and guide depth to mobile without touching Mesa or Ficha chrome", () => {
-    const css = source("src/styles/final-device-parity-154-compat.css");
-    expect(css).toContain(':not([data-section="Mesa Nexus"]):not([data-section="Ficha"]) .tadeon-route-stage');
-    expect(css).toContain("background-size: 64px 64px, 64px 64px");
-    expect(css).toContain(".tadeon-route-master [role=\"tab\"][data-state=\"active\"]");
-    expect(css).toContain("0 0 0 5.1rem rgb(var(--section-accent-rgb) / 1.5%)");
+  it("restores the original mobile spatial field and adds real utility-card texture", () => {
+    const css = source("src/styles/user-visible-repair-156.css");
+    expect(css).toContain("rgb(255 255 255 / .7%) 1px");
+    expect(css).toContain("background-size: 64px 64px, 64px 64px, auto !important");
+    expect(css).toContain('.tadeon-route-users [data-slot="card"]');
+    expect(css).toContain('.tadeon-route-tools [data-slot="card"]');
+    expect(css).toContain('.tadeon-route-offline [data-slot="card"]');
+    expect(css).toContain("0 0 0 1.6rem rgb(var(--section-accent-rgb) / 2.2%)");
   });
 
   it("keeps at least a 2x canvas in economy and full 3x on capable displays", () => {
