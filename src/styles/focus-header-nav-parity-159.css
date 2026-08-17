@@ -3,7 +3,7 @@
    the exact same shell contract, while section accent only changes color. */
 
 /* --------------------------------------------------------------------------
-   AREA EM FOCO — one contract for every desktop route.
+   AREA EM FOCO - one contract for every desktop route.
    This intentionally restates the canonical desktop-studio geometry after all
    legacy repair files, eliminating the four-route divergence from #156/#157.
    -------------------------------------------------------------------------- */
@@ -112,7 +112,7 @@
 }
 
 /* --------------------------------------------------------------------------
-   AREA EM FOCO — one contract for every phone route.
+   AREA EM FOCO - one contract for every phone route.
    The grid, identity and brand mark are reset to the same AppLayout/mobile-
    studio anatomy regardless of current section.
    -------------------------------------------------------------------------- */
@@ -222,7 +222,7 @@
 }
 
 /* --------------------------------------------------------------------------
-   NAVIGATION SYMBOLS — preserve authored shapes but make them obey the exact
+   NAVIGATION SYMBOLS - preserve authored shapes but make them obey the exact
    same color and dimensions as every other navigation SVG.
    The old #158 data-URI strokes were permanently gold, causing the mismatch.
    -------------------------------------------------------------------------- */
