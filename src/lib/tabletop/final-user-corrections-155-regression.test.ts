@@ -60,9 +60,14 @@ describe("final user corrections 155", () => {
 
   it("keeps at least a 2x canvas in economy and full 3x on capable displays", () => {
     const performance = source("src/lib/tabletop/tabletop-adaptive-performance.ts");
+    const bridge = source("src/components/tabletop/tabletop-adaptive-performance-bridge.tsx");
+    const director = source("src/components/tabletop/tabletop-director-entry.tsx");
     expect(performance).toContain('tier: "cinematic",\n    maxResolution: 3');
     expect(performance).toContain('tier: "high",\n    maxResolution: 3');
     expect(performance).toContain('tier: "balanced",\n    maxResolution: 2.5');
     expect(performance).toContain('tier: "economy",\n    maxResolution: 2');
+    expect(bridge).toContain("syncImmediateDensity");
+    expect(bridge).toContain("profileForCurrentDevice");
+    expect(director).toContain("<TabletopAdaptivePerformanceBridge />");
   });
 });
