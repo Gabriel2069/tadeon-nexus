@@ -26,6 +26,7 @@ import finalVisualSystem157Css from "../styles/final-visual-system-157.css?url";
 import mobilePopupMasterHead158Css from "../styles/mobile-popup-master-head-158.css?url";
 import focusHeaderNavParity159Css from "../styles/focus-header-nav-parity-159.css?url";
 import navigationRealSvgParity160Css from "../styles/navigation-real-svg-parity-160.css?url";
+import sheetPopupGraphPolish161Css from "../styles/sheet-popup-graph-polish-161.css?url";
 import { AuthProvider } from "@/lib/auth";
 import { Toaster } from "@/components/ui/sonner";
 import { PwaRegistration } from "@/components/pwa-registration";
@@ -132,6 +133,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { rel: "stylesheet", href: mobilePopupMasterHead158Css },
       { rel: "stylesheet", href: focusHeaderNavParity159Css },
       { rel: "stylesheet", href: navigationRealSvgParity160Css },
+      { rel: "stylesheet", href: sheetPopupGraphPolish161Css },
       { rel: "manifest", href: "/manifest.webmanifest" },
       { rel: "icon", href: "/favicon.svg?v=4", type: "image/svg+xml", sizes: "any" },
       { rel: "shortcut icon", href: "/favicon.svg?v=4", type: "image/svg+xml" },
