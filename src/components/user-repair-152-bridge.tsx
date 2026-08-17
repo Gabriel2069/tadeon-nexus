@@ -11,7 +11,7 @@ function normalized(value: string | null | undefined) {
 function counterHost(label: HTMLElement) {
   let current = label.parentElement;
   for (let depth = 0; current && depth < 5; depth += 1) {
-    if (current.querySelectorAll("button").length >= 2) return current;
+    if (current.querySelectorAll("button[aria-pressed]").length >= 2) return current;
     current = current.parentElement;
   }
   return label.parentElement;
@@ -24,11 +24,19 @@ function annotateCounters(root: ParentNode) {
     const host = counterHost(element);
     if (!host) return;
     host.dataset.tadeonConditionKind = key;
+    host.classList.add("tadeon-condition-counter-host");
+    element.classList.add("tadeon-condition-counter-label");
 
     const buttons = Array.from(
       host.querySelectorAll<HTMLButtonElement>('button[aria-pressed]'),
     );
     if (!buttons.length) return;
+
+    const dotRow = buttons[0]?.parentElement;
+    if (dotRow && buttons.every((button) => button.parentElement === dotRow)) {
+      dotRow.classList.add("tadeon-condition-counter-dots");
+    }
+
     const active = buttons.filter((button) => button.getAttribute("aria-pressed") === "true").length;
     const progress = Math.max(0, Math.min(1, active / buttons.length));
     host.style.setProperty("--condition-progress", String(progress));
