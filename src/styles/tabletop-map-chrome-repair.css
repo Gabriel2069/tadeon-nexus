@@ -1,0 +1,211 @@
+/* Exact tabletop chrome contracts after field validation.
+   Keep these selectors tied to the real components rather than generic overlays. */
+
+/* Cena / Editar / Visao belongs to the studio flow. */
+.tadeon-tabletop-toolbar,
+.tadeon-tabletop-toolbar[data-tadeon-top-rail] {
+  position: static !important;
+  z-index: auto !important;
+  inset: auto !important;
+  width: auto !important;
+  max-width: none !important;
+  max-height: none !important;
+  margin: 0 !important;
+  padding: .65rem 0 0 !important;
+  overflow-x: auto !important;
+  overflow-y: visible !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
+  transform: none !important;
+}
+
+/* Autosave / ready / audio / editor is the true upper map rail. */
+.tadeon-tabletop-reliability-strip {
+  position: fixed !important;
+  z-index: 94 !important;
+  top: calc(var(--tadeon-tabletop-stage-top, 5rem) + .65rem) !important;
+  left: var(--tadeon-tabletop-stage-center, 50%) !important;
+  bottom: auto !important;
+  width: max-content !important;
+  max-width: min(46rem, calc(var(--tadeon-tabletop-stage-width, 100vw) - 7.5rem)) !important;
+  border-color: color-mix(in srgb, var(--primary) 24%, var(--border)) !important;
+  background:
+    radial-gradient(circle at 16% 0%, rgb(217 215 164 / 8%), transparent 9rem),
+    rgb(9 12 16 / 94%) !important;
+  box-shadow:
+    0 20px 46px -30px rgb(0 0 0 / 100%),
+    inset 0 1px rgb(255 255 255 / 4%) !important;
+  backdrop-filter: blur(10px) saturate(1.08) !important;
+  -webkit-backdrop-filter: blur(10px) saturate(1.08) !important;
+  transform: translate3d(-50%, 0, 0) !important;
+  transform-origin: 100% 50%;
+  transition:
+    opacity 180ms ease,
+    transform 250ms var(--ease-drawer),
+    visibility 0s linear 0s !important;
+}
+
+html[data-tadeon-tabletop-toprail="collapsed"] .tadeon-tabletop-reliability-strip {
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+  transform: translate3d(22%, 0, 0) scale(.96) !important;
+  transition:
+    opacity 170ms ease,
+    transform 230ms var(--ease-drawer),
+    visibility 0s linear 230ms !important;
+}
+
+.tadeon-tabletop-toprail-controls {
+  position: fixed;
+  z-index: 98;
+  top: calc(var(--tadeon-tabletop-stage-top, 5rem) + .65rem);
+  right: calc(var(--tadeon-tabletop-stage-right, 0px) + .65rem);
+  display: flex;
+  align-items: center;
+  gap: .35rem;
+  pointer-events: none;
+}
+
+.tadeon-tabletop-toprail-toggle,
+.tadeon-tabletop-toprail-setup {
+  display: grid;
+  width: 2.45rem;
+  height: 2.45rem;
+  place-items: center;
+  border: 1px solid color-mix(in srgb, var(--primary) 25%, var(--border));
+  border-radius: .8rem .28rem .8rem .28rem;
+  color: var(--primary);
+  background: rgb(9 12 16 / 97%);
+  box-shadow: 0 16px 38px -26px rgb(0 0 0 / 100%), inset 0 1px rgb(255 255 255 / 4%);
+  pointer-events: auto;
+  transition: transform 170ms var(--ease-out), border-color 170ms ease, background-color 170ms ease;
+}
+
+.tadeon-tabletop-toprail-toggle:hover,
+.tadeon-tabletop-toprail-setup:hover {
+  border-color: color-mix(in srgb, var(--primary) 52%, var(--border));
+  background: color-mix(in srgb, var(--card) 88%, var(--primary));
+  transform: translateY(-1px);
+}
+
+.tadeon-tabletop-toprail-toggle svg,
+.tadeon-tabletop-toprail-setup svg {
+  width: 1rem;
+  height: 1rem;
+}
+
+/* The native Setup launcher is replaced by the stage-anchored proxy while Dock is folded. */
+html[data-tadeon-creative-dock="collapsed"] .tadeon-smart-setup__launcher {
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+/* Expanded Dock can be moved by its header. Folded Dock keeps its canonical lower position. */
+.tadeon-creative-dock[data-open="true"] .tadeon-creative-dock__panel > header {
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+}
+
+.tadeon-creative-dock[data-open="true"][data-tadeon-dock-dragging="true"] .tadeon-creative-dock__panel > header {
+  cursor: grabbing;
+}
+
+.tadeon-creative-dock[data-open="true"][data-tadeon-dock-dragged="true"] {
+  top: var(--tadeon-dock-y, auto) !important;
+  right: auto !important;
+  bottom: auto !important;
+  left: var(--tadeon-dock-x, auto) !important;
+  transform: none !important;
+}
+
+/* Setup always remains inside the visible stage/viewport. */
+.tadeon-smart-setup {
+  top: max(calc(var(--tadeon-tabletop-stage-top, 0px) + .5rem), max(.5rem, env(safe-area-inset-top))) !important;
+  right: calc(var(--tadeon-tabletop-stage-right, 0px) + max(.5rem, env(safe-area-inset-right))) !important;
+  bottom: max(var(--tadeon-tabletop-stage-bottom, 0px), max(.5rem, env(safe-area-inset-bottom))) !important;
+  max-height: calc(100dvh - max(var(--tadeon-tabletop-stage-top, 0px), env(safe-area-inset-top)) - max(var(--tadeon-tabletop-stage-bottom, 0px), env(safe-area-inset-bottom)) - 1rem) !important;
+  overflow: hidden !important;
+}
+
+.tadeon-smart-setup > header {
+  position: sticky;
+  z-index: 3;
+  top: 0;
+}
+
+/* Selecting something must never change the visual exposure of the map. */
+html[data-tadeon-tabletop-selection-active="true"] :is(
+  .tadeon-tabletop-studio,
+  .tadeon-tabletop-workbench,
+  .tadeon-tabletop-stage,
+  .tadeon-tabletop-canvas-host,
+  .tadeon-tabletop-canvas-host canvas
+) {
+  opacity: 1 !important;
+  filter: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+html[data-tadeon-tabletop-selection-active="true"] .tadeon-tabletop-panel-backdrop,
+html[data-tadeon-tabletop-selection-active="true"] [data-tadeon-selection-guarded="true"] {
+  display: none !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+  background: transparent !important;
+  background-image: none !important;
+  filter: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  box-shadow: none !important;
+}
+
+html[data-tadeon-tabletop-selection-active="true"] [data-tadeon-selection-guarded="true"]::before,
+html[data-tadeon-tabletop-selection-active="true"] [data-tadeon-selection-guarded="true"]::after {
+  display: none !important;
+  opacity: 0 !important;
+  content: none !important;
+}
+
+@media (max-width: 800px) {
+  .tadeon-tabletop-reliability-strip {
+    top: calc(var(--tadeon-tabletop-stage-top, 4rem) + .5rem) !important;
+    bottom: auto !important;
+    max-width: calc(var(--tadeon-tabletop-stage-width, 100vw) - 6.5rem) !important;
+  }
+
+  .tadeon-tabletop-reliability-strip > span,
+  .tadeon-tabletop-reliability-strip > button {
+    min-height: 2rem;
+  }
+
+  .tadeon-tabletop-toprail-controls {
+    top: calc(var(--tadeon-tabletop-stage-top, 4rem) + .5rem);
+    right: calc(var(--tadeon-tabletop-stage-right, 0px) + .5rem);
+  }
+
+  .tadeon-smart-setup {
+    right: max(.5rem, env(safe-area-inset-right)) !important;
+    left: max(.5rem, env(safe-area-inset-left)) !important;
+    width: auto !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tadeon-tabletop-reliability-strip,
+  .tadeon-tabletop-toprail-toggle,
+  .tadeon-tabletop-toprail-setup {
+    transition: none !important;
+  }
+}
