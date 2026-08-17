@@ -126,6 +126,7 @@ export function TabletopUrgentReconciliationBridge() {
     if (window.location.pathname !== "/tabletop") return;
     setMounted(true);
     const html = document.documentElement;
+    const guardedStyles = guardedStylesRef.current;
     let drag:
       | {
           dock: HTMLElement;
@@ -165,7 +166,7 @@ export function TabletopUrgentReconciliationBridge() {
       if (!selectionActiveRef.current || selectionFrameRef.current !== null) return;
       selectionFrameRef.current = window.requestAnimationFrame(() => {
         selectionFrameRef.current = null;
-        if (selectionActiveRef.current) guardSelectionSurfaces(guardedStylesRef.current);
+        if (selectionActiveRef.current) guardSelectionSurfaces(guardedStyles);
       });
     };
 
@@ -175,10 +176,10 @@ export function TabletopUrgentReconciliationBridge() {
       selectionActiveRef.current = active;
       if (active) {
         html.dataset.tadeonTabletopSelectionActive = "true";
-        guardSelectionSurfaces(guardedStylesRef.current);
+        guardSelectionSurfaces(guardedStyles);
       } else {
         delete html.dataset.tadeonTabletopSelectionActive;
-        restoreGuardedSurfaces(guardedStylesRef.current);
+        restoreGuardedSurfaces(guardedStyles);
       }
     };
 
@@ -282,7 +283,7 @@ export function TabletopUrgentReconciliationBridge() {
       window.removeEventListener("pointerup", onPointerUp, true);
       window.removeEventListener("pointercancel", onPointerUp, true);
       selectionActiveRef.current = false;
-      restoreGuardedSurfaces(guardedStylesRef.current);
+      restoreGuardedSurfaces(guardedStyles);
       delete html.dataset.tadeonTabletopSelectionActive;
       delete html.dataset.tadeonTabletopToprail;
       delete html.dataset.tadeonCreativeDock;
