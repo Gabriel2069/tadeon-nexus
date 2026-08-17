@@ -105,6 +105,7 @@
 
   #tadeon-desktop-sidebar > div:first-of-type {
     min-width: 0 !important;
+    overflow: visible !important;
     padding-right: .6rem !important;
     padding-left: .6rem !important;
   }
