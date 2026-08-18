@@ -315,3 +315,63 @@ html[data-tadeon-tabletop-drop="ready"] body::after {
     transition: none;
   }
 }
+
+/* #194: these are the real top-rail controls inspected in the browser. Keep them in flow. */
+.tadeon-tabletop-toprail-controls {
+  display: flex !important;
+  align-items: center !important;
+  gap: .42rem !important;
+}
+
+.tadeon-tabletop-toprail-setup,
+.tadeon-tabletop-toprail-toggle {
+  position: relative !important;
+  inset: auto !important;
+  top: auto !important;
+  right: auto !important;
+  bottom: auto !important;
+  left: auto !important;
+  transform: none !important;
+  flex: 0 0 2.45rem !important;
+}
+
+.tadeon-tabletop-toprail-setup {
+  order: 0 !important;
+  z-index: 2 !important;
+  margin: 0 !important;
+}
+
+.tadeon-tabletop-toprail-toggle {
+  order: 1 !important;
+  z-index: 1 !important;
+  margin: 0 !important;
+}
+
+/* The view toggle must be visually identical to the outline siblings beside it. */
+.tadeon-tabletop-toolbar__group button:is(
+  [aria-label="Ativar projeção espacial 3D"],
+  [aria-label="Voltar à planta 2D"]
+) {
+  border: 1px solid hsl(var(--input)) !important;
+  color: hsl(var(--foreground)) !important;
+  background: hsl(var(--background) / .70) !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.035) !important;
+}
+
+.tadeon-tabletop-toolbar__group button:is(
+  [aria-label="Ativar projeção espacial 3D"],
+  [aria-label="Voltar à planta 2D"]
+):hover {
+  border-color: hsl(var(--primary) / .35) !important;
+  color: hsl(var(--accent-foreground)) !important;
+  background: hsl(var(--accent)) !important;
+}
+
+.tadeon-tabletop-toolbar__group button[aria-label="Voltar à planta 2D"][aria-pressed="true"] {
+  border-color: hsl(var(--primary) / .55) !important;
+  color: hsl(var(--foreground)) !important;
+  background: hsl(var(--background) / .70) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.035),
+    0 0 0 1px hsl(var(--primary) / .12) !important;
+}
