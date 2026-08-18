@@ -65,7 +65,7 @@ describe("final system audit 170", () => {
       expect(lab).toContain(`width: ${preset}`);
     }
     for (const kind of ["overflow", "target", "collision", "clipping", "motion", "blocker", "scroll"]) {
-      expect(lab).toContain(`\"${kind}\"`);
+      expect(lab).toContain(`"${kind}"`);
     }
     expect(lab).toContain("intersectionRatio");
     expect(lab).toContain("prefers-reduced-motion: reduce");
