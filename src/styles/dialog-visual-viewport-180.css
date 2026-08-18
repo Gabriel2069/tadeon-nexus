@@ -56,14 +56,10 @@
   }
 
   [data-slot="dialog-content"] [data-slot="dialog-close"] {
-    position: sticky !important;
+    position: absolute !important;
     z-index: 4;
-    top: 0 !important;
-    right: auto !important;
-    justify-self: end;
-    margin-top: -2.5rem;
-    margin-right: -.25rem;
-    margin-bottom: -.15rem;
+    top: .72rem !important;
+    right: .72rem !important;
     flex: 0 0 auto;
     background: color-mix(in srgb, var(--background) 88%, transparent);
     backdrop-filter: blur(10px);
