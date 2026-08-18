@@ -5,28 +5,30 @@ function source(path: string) {
   return readFileSync(path, "utf8");
 }
 
-describe("final navigation and search polish 196", () => {
+describe("final navigation and search polish 196/199", () => {
   it("keeps breathing room below master navigation", () => {
     const css = source("src/styles/final-nav-search-polish-196.css");
     expect(css).toContain(".tadeon-master-navigation-slot");
     expect(css).toContain("margin-bottom:");
   });
 
-  it("gives the 2D/3D control the outline border and a distinct pressed state", () => {
+  it("keeps the 2D/3D border on the rendered Button instead of a stylesheet override", () => {
+    const button = source("src/components/ui/button.tsx");
     const css = source("src/styles/final-nav-search-polish-196.css");
-    expect(css).toContain('[aria-label="Ativar projeção espacial 3D"]');
-    expect(css).toContain('[aria-label="Voltar à planta 2D"]');
-    expect(css).toContain("border: 1px solid hsl(var(--input)) !important");
-    expect(css).toContain('[aria-pressed="true"]');
-    expect(css).toContain("border-color: hsl(var(--primary) / .78) !important");
+    expect(button).toContain('ariaLabel === "Ativar projeção espacial 3D"');
+    expect(button).toContain('ariaLabel === "Voltar à planta 2D"');
+    expect(button).toContain("data-projection-toggle");
+    expect(button).toContain("border: `1px solid");
+    expect(button).toContain("projectionActive");
+    expect(css).not.toContain('.tadeon-tabletop-toolbar__group button:is(');
   });
 
-  it("uses route-specific sidebar hover accents instead of one generic glow", () => {
+  it("does not recolor the sidebar after the requested full revert", () => {
     const css = source("src/styles/final-nav-search-polish-196.css");
-    expect(css).toContain('.tadeon-nav-item[href^="/nexus"]');
-    expect(css).toContain('.tadeon-nav-item[href^="/tabletop"]');
-    expect(css).toContain('.tadeon-nav-item[href^="/master-panel"]');
-    expect(css).toContain("--tadeon-nav-hover-rgb");
+    const runtimeCss = source("src/styles/runtime-ui-repair-198.css");
+    expect(css).not.toContain("--tadeon-nav-hover-rgb");
+    expect(css).not.toContain('.tadeon-nav-item[href^="/master-panel"]');
+    expect(runtimeCss).not.toContain(".tadeon-nav-item");
   });
 
   it("binds the global search to the live visual viewport and keeps only the list scrollable", () => {

@@ -1,34 +1,4 @@
-/* #198: runtime-authoritative overrides for regressions that passed source-only tests. */
-
-/* Restore the menu button surface to the pre-#196 behavior. Only the icon receives the route accent. */
-html body .tadeon-nav-item:not([aria-current="page"]):hover {
-  color: hsl(var(--sidebar-accent-foreground)) !important;
-  background: hsl(var(--sidebar-accent) / .7) !important;
-  box-shadow: none !important;
-}
-
-html body .tadeon-nav-item:not([aria-current="page"]):hover .tadeon-nav-item__icon,
-html body .tadeon-nav-item[aria-current="page"] .tadeon-nav-item__icon {
-  color: rgb(var(--tadeon-nav-hover-rgb)) !important;
-  filter: drop-shadow(0 0 7px rgb(var(--tadeon-nav-hover-rgb) / .34));
-}
-
-/* The projection toggle gets a real border at the rendered button itself. */
-html body button:is(
-  [aria-label="Ativar projeção espacial 3D"],
-  [aria-label="Voltar à planta 2D"]
-) {
-  border-width: 1px !important;
-  border-style: solid !important;
-  border-color: rgb(217 215 164 / 34%) !important;
-}
-
-html body button:is(
-  [aria-label="Ativar projeção espacial 3D"],
-  [aria-label="Voltar à planta 2D"]
-)[aria-pressed="true"] {
-  border-color: rgb(217 215 164 / 62%) !important;
-}
+/* #198: runtime-authoritative containment for the global search only. */
 
 /* iOS/keyboard-safe global search: anchor to the live visual viewport instead of centering with translate. */
 @media (max-width: 639px) {

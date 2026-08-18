@@ -15,12 +15,15 @@ const fingerprint = readFileSync(
   "utf8",
 );
 
-describe("tabletop setup, grid and autosave repair 197/198", () => {
-  it("pins Setup to the map instead of the contextual-panel collapse control", () => {
-    expect(setup).toContain('document.querySelector<HTMLElement>(".tadeon-tabletop-canvas-host")');
-    expect(setup).toContain('canvas.insertAdjacentElement("afterend", portalHost)');
+describe("tabletop setup, grid and autosave repair 197/198/199", () => {
+  it("renders Setup as a fixed control without portal, observer or contextual-panel dependency", () => {
+    expect(setup).toContain('position: "fixed"');
+    expect(setup).toContain('bottom: "max(0.85rem, env(safe-area-inset-bottom))"');
+    expect(setup).toContain("zIndex: 60");
+    expect(setup).not.toContain("createPortal");
+    expect(setup).not.toContain("MutationObserver");
+    expect(setup).not.toContain("querySelector");
     expect(setup).not.toContain('button[aria-label="Recolher painel contextual"]');
-    expect(setup).not.toContain("window.innerWidth < 1180");
     expect(deferred).toContain("{master && <><SmartSetupBridge /><SmartSetupLauncherDockBridge /></>}");
   });
 
