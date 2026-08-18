@@ -29,7 +29,8 @@ describe("final navigation and search polish 196/200", () => {
     expect(css).toContain("--tadeon-nav-icon-hover: var(--tadeon-fear)");
     expect(css).toContain(".tadeon-nav-item:hover .tadeon-nav-item__icon > svg");
     expect(css).not.toContain(".tadeon-nav-item:not([aria-current");
-    expect(css).not.toContain("hover-rgb");
+    expect(css).not.toContain("background: rgb(var(--tadeon-nav-icon-hover");
+    expect(css).not.toContain("box-shadow: inset 2px 0 0 rgb(var(--tadeon-nav-icon-hover");
   });
 
   it("binds the global search to one live visual-viewport geometry without translate", () => {
