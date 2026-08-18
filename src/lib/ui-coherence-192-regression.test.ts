@@ -5,7 +5,7 @@ function source(path: string) {
   return readFileSync(path, "utf8");
 }
 
-describe("ui coherence 192/193/194", () => {
+describe("ui coherence 192/193/194/195", () => {
   it("moves both Nexus and Master popouts to the desktop toolbar", () => {
     const bridge = source("src/components/master/master-toolbar-popout-bridge.tsx");
     const css = source("src/styles/ui-coherence-192.css");
@@ -39,21 +39,27 @@ describe("ui coherence 192/193/194", () => {
     expect(css).toContain("order: 2 !important");
   });
 
-  it("makes the 2D/3D toggle match the outline variant of peer toolbar buttons", () => {
-    const css = source("src/styles/ui-coherence-192.css");
-    expect(css).toContain('[aria-label="Ativar projeção espacial 3D"]');
-    expect(css).toContain('[aria-label="Voltar à planta 2D"]');
-    expect(css).toContain("border: 1px solid hsl(var(--input)) !important");
-    expect(css).toContain("background: hsl(var(--background) / .7) !important");
+  it("makes the 2D/3D toggle use the exact outline Button variant of its peers", () => {
+    const button = source("src/components/ui/button.tsx");
+    expect(button).toContain('ariaLabel === "Ativar projeção espacial 3D"');
+    expect(button).toContain('ariaLabel === "Voltar à planta 2D"');
+    expect(button).toContain('const effectiveVariant = isProjectionToggle ? "outline" : variant');
+    expect(button).toContain("data-variant={effectiveVariant ?? \"default\"}");
+    expect(button).toContain("buttonVariants({ variant: effectiveVariant, size, className })");
   });
 
   it("mounts Salvar sessão immediately above the active-session metrics", () => {
     const bridge = source("src/components/master/master-toolbar-popout-bridge.tsx");
+    const css = source("src/styles/ui-coherence-192.css");
     expect(bridge).toContain("MasterSessionSavePortal");
     expect(bridge).toContain('text.includes("Pistas")');
     expect(bridge).toContain('text.includes("Dobras")');
     expect(bridge).toContain('text.includes("Iniciativa")');
     expect(bridge).toContain("parent.insertBefore(portalHost, metrics)");
     expect(bridge).toContain('rpc("save_session_sheet_changes")');
+    expect(css).toContain("grid-column: 2;");
+    expect(css).toContain("grid-row: 1;");
+    expect(css).toContain(".tadeon-master-session-save-host + .grid.grid-cols-3.gap-2");
+    expect(css).toContain("grid-row: 2 !important;");
   });
 });
