@@ -87,9 +87,9 @@
   }
 }
 
-/* #166/#170: authored Master/Backup marks live only inside the sidebar icon
-   slot. The mobile dock keeps its real AppLayout SVG so its geometry remains
-   identical to Home/Nexus/Mesa/More. */
+/* #166/#170/#174: authored Master/Backup marks live only inside the sidebar
+   icon slot. Their visible artwork is optically scaled and pinned to the true
+   center of the same frame used by every other navigation item. */
 .tadeon-nav-item:is([href="/master-panel"], [href="/nexus-tools"]) .tadeon-nav-item__icon {
   position: relative !important;
   display: grid !important;
@@ -123,19 +123,24 @@
 }
 
 .tadeon-nav-item:is([href="/master-panel"], [href="/nexus-tools"]) .tadeon-nav-item__icon::before {
+  position: absolute !important;
+  top: 50% !important;
+  left: 50% !important;
   display: block !important;
-  width: 1rem !important;
-  height: 1rem !important;
+  width: 1.22rem !important;
+  height: 1.22rem !important;
   flex: 0 0 auto !important;
   margin: 0 !important;
   background: currentColor !important;
-  opacity: .92 !important;
+  opacity: .94 !important;
   filter: none !important;
-  transform: none !important;
+  transform: translate(-50%, -50%) !important;
+  transform-origin: center !important;
   content: "" !important;
   transition:
     background-color 180ms var(--ease-out),
-    opacity 180ms var(--ease-out) !important;
+    opacity 180ms var(--ease-out),
+    filter 180ms var(--ease-out) !important;
 }
 
 .tadeon-nav-item[href="/master-panel"] .tadeon-nav-item__icon::before {
@@ -159,8 +164,8 @@
 .tadeon-nav-item:is([href="/master-panel"], [href="/nexus-tools"])[aria-current="page"] .tadeon-nav-item__icon::before {
   background: currentColor !important;
   opacity: 1 !important;
-  filter: none !important;
-  transform: none !important;
+  filter: drop-shadow(0 0 5px rgb(var(--nav-accent-rgb) / 22%)) !important;
+  transform: translate(-50%, -50%) !important;
 }
 
 /* Restore the canonical mobile dock contract: real SVG, no route-specific
@@ -299,8 +304,13 @@
   transform: translateY(-1px);
 }
 
-/* The app keeps the old Lightbulb in React only as a harmless structural
-   fallback. The visible mobile Master glyph is the authored Panel symbol. */
+/* The app keeps the old Lightbulb in React only as a structural fallback.
+   The visible mobile Master glyph is the authored Panel symbol, scaled to the
+   same optical weight as the 20px Lucide siblings and kept clear of its label. */
+.tadeon-mobile-dock__item[href="/master-panel"] {
+  gap: .31rem !important;
+}
+
 .tadeon-mobile-dock__item[href="/master-panel"] > svg {
   display: none !important;
   visibility: hidden !important;
@@ -314,29 +324,82 @@
 
 .tadeon-mobile-dock__item[href="/master-panel"]::before {
   display: block !important;
-  width: 1.25rem !important;
-  height: 1.25rem !important;
-  flex: 0 0 1.25rem !important;
-  margin: 0 !important;
+  width: 1.44rem !important;
+  height: 1.44rem !important;
+  flex: 0 0 1.44rem !important;
+  align-self: center !important;
+  margin: 0 0 .02rem !important;
   background: currentColor !important;
   -webkit-mask: center / contain no-repeat url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.55' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='8.25' stroke-dasharray='9 3.4 2.2 4.3' opacity='.72'/%3E%3Cpath d='M12 2.8v4.1M12 17.1v4.1M2.8 12h4.1M17.1 12h4.1'/%3E%3Cpath d='m8.55 12 3.45-3.45L15.45 12 12 15.45 8.55 12Z'/%3E%3Cpath d='M6.05 6.35 9.6 9.6M17.95 6.35 14.4 9.6M6.05 17.65l3.55-3.25M17.95 17.65l-3.55-3.25'/%3E%3Ccircle cx='6.05' cy='6.35' r='.85'/%3E%3Ccircle cx='17.95' cy='6.35' r='.85'/%3E%3Ccircle cx='6.05' cy='17.65' r='.85'/%3E%3Ccircle cx='17.95' cy='17.65' r='.85'/%3E%3Ccircle cx='12' cy='12' r='1.15' fill='black' stroke='none'/%3E%3C/svg%3E") !important;
   mask: center / contain no-repeat url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.55' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='8.25' stroke-dasharray='9 3.4 2.2 4.3' opacity='.72'/%3E%3Cpath d='M12 2.8v4.1M12 17.1v4.1M2.8 12h4.1M17.1 12h4.1'/%3E%3Cpath d='m8.55 12 3.45-3.45L15.45 12 12 15.45 8.55 12Z'/%3E%3Cpath d='M6.05 6.35 9.6 9.6M17.95 6.35 14.4 9.6M6.05 17.65l3.55-3.25M17.95 17.65l-3.55-3.25'/%3E%3Ccircle cx='6.05' cy='6.35' r='.85'/%3E%3Ccircle cx='17.95' cy='6.35' r='.85'/%3E%3Ccircle cx='6.05' cy='17.65' r='.85'/%3E%3Ccircle cx='17.95' cy='17.65' r='.85'/%3E%3Ccircle cx='12' cy='12' r='1.15' fill='black' stroke='none'/%3E%3C/svg%3E") !important;
-  opacity: .96 !important;
+  opacity: .97 !important;
   filter: none !important;
   transform: none !important;
+  transform-origin: center !important;
   content: "" !important;
   transition: opacity 180ms var(--ease-out), filter 180ms var(--ease-out), transform 180ms var(--ease-out) !important;
+}
+
+.tadeon-mobile-dock__item[href="/master-panel"] > span {
+  position: relative;
+  z-index: 1;
+  margin: 0 !important;
+  line-height: 1 !important;
 }
 
 .tadeon-mobile-dock__item[href="/master-panel"][aria-current="page"]::before {
   color: var(--nav-accent);
   opacity: 1 !important;
   filter: drop-shadow(0 0 8px rgb(var(--nav-accent-rgb) / 30%)) !important;
-  transform: translateY(-1px) scale(1.04) !important;
+  transform: scale(1.035) !important;
 }
 
-/* Mesa owns its map symbol in both its app identity and its internal studio
-   identity; the generic Tadeon brand mark stays on the rest of the product. */
+/* /nexus-tools is a sibling system route, not a child of the Nexus library.
+   AppLayout currently gives both items aria-current because of startsWith;
+   the section identity is unambiguous, so suppress the false visual active
+   state everywhere until the route predicate is narrowed at component level. */
+.tadeon-shell[data-section="Saúde do arquivo"] .tadeon-nav-item[href="/nexus"][aria-current="page"] {
+  border-color: transparent !important;
+  color: var(--sidebar-foreground) !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  font-weight: inherit !important;
+}
+
+.tadeon-shell[data-section="Saúde do arquivo"] .tadeon-nav-item[href="/nexus"][aria-current="page"]::after {
+  opacity: 0 !important;
+  transform: scaleY(.35) !important;
+}
+
+.tadeon-shell[data-section="Saúde do arquivo"] .tadeon-nav-item[href="/nexus"][aria-current="page"] .tadeon-nav-item__icon {
+  border-color: rgb(var(--nav-accent-rgb) / 11%) !important;
+  background: linear-gradient(145deg, rgb(var(--nav-accent-rgb) / 8%), rgb(255 255 255 / 1.5%)) !important;
+  box-shadow: inset 0 1px rgb(255 255 255 / 4%), 0 12px 26px -23px rgb(var(--nav-accent-rgb) / 48%) !important;
+  transform: none !important;
+}
+
+@media (max-width: 767px) {
+  .tadeon-shell[data-section="Saúde do arquivo"] .tadeon-mobile-dock__item[href="/nexus"][aria-current="page"] {
+    border-color: transparent !important;
+    color: color-mix(in srgb, var(--muted-foreground) 88%, transparent) !important;
+    background: transparent !important;
+    box-shadow: none !important;
+  }
+
+  .tadeon-shell[data-section="Saúde do arquivo"] .tadeon-mobile-dock__item[href="/nexus"][aria-current="page"]::after {
+    display: none !important;
+    content: none !important;
+  }
+
+  .tadeon-shell[data-section="Saúde do arquivo"] .tadeon-mobile-dock__item[href="/nexus"][aria-current="page"] > svg {
+    color: currentColor !important;
+    filter: none !important;
+    transform: none !important;
+  }
+}
+
+/* Mesa uses the exact MapPinned glyph used by its navigation tab. The generic
+   Tadeon BrandMark remains in React as the hidden structural source only. */
 .tadeon-shell[data-section="Mesa Nexus"] .tadeon-mobile-header__identity > svg,
 .tadeon-tabletop-studio__brand > svg {
   display: none !important;
@@ -349,8 +412,8 @@
   height: 2rem;
   flex: 0 0 2rem;
   background: var(--section-accent, var(--primary));
-  -webkit-mask: center / 1.28rem 1.28rem no-repeat url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M14.106 5.553a2 2 0 0 0 1.788 0l3.659-1.83A1 1 0 0 1 21 4.618v12.764a1 1 0 0 1-.553.894l-4.553 2.277a2 2 0 0 1-1.788 0l-4.212-2.106a2 2 0 0 0-1.788 0l-3.659 1.83A1 1 0 0 1 3 19.382V6.618a1 1 0 0 1 .553-.894l4.553-2.277a2 2 0 0 1 1.788 0z'/%3E%3Cpath d='M15 5.764v15M9 3.236v15'/%3E%3C/svg%3E");
-  mask: center / 1.28rem 1.28rem no-repeat url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M14.106 5.553a2 2 0 0 0 1.788 0l3.659-1.83A1 1 0 0 1 21 4.618v12.764a1 1 0 0 1-.553.894l-4.553 2.277a2 2 0 0 1-1.788 0l-4.212-2.106a2 2 0 0 0-1.788 0l-3.659 1.83A1 1 0 0 1 3 19.382V6.618a1 1 0 0 1 .553-.894l4.553-2.277a2 2 0 0 1 1.788 0z'/%3E%3Cpath d='M15 5.764v15M9 3.236v15'/%3E%3C/svg%3E");
+  -webkit-mask: center / 1.28rem 1.28rem no-repeat url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M18 8c0 3.613-3.869 7.429-5.393 8.795a1 1 0 0 1-1.214 0C9.87 15.429 6 11.613 6 8a6 6 0 0 1 12 0'/%3E%3Ccircle cx='12' cy='8' r='2'/%3E%3Cpath d='M8.714 14h-3.71a1 1 0 0 0-.948.683l-2.004 6A1 1 0 0 0 3 22h18a1 1 0 0 0 .948-1.316l-2-6a1 1 0 0 0-.949-.684h-3.712'/%3E%3C/svg%3E");
+  mask: center / 1.28rem 1.28rem no-repeat url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M18 8c0 3.613-3.869 7.429-5.393 8.795a1 1 0 0 1-1.214 0C9.87 15.429 6 11.613 6 8a6 6 0 0 1 12 0'/%3E%3Ccircle cx='12' cy='8' r='2'/%3E%3Cpath d='M8.714 14h-3.71a1 1 0 0 0-.948.683l-2.004 6A1 1 0 0 0 3 22h18a1 1 0 0 0 .948-1.316l-2-6a1 1 0 0 0-.949-.684h-3.712'/%3E%3C/svg%3E");
   opacity: .96;
   content: "" !important;
 }
