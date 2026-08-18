@@ -1,4 +1,6 @@
-/* #200: geometria autoritativa da busca global pelo visual viewport real. */
+/* #202: geometria autoritativa da busca global.
+   Desktop uses the layout viewport center directly; visualViewport offsets are
+   reserved for compact/mobile viewports where browser chrome can move it. */
 
 html body .tadeon-global-search-dialog {
   --tadeon-search-gutter-left: max(.5rem, env(safe-area-inset-left));
@@ -42,6 +44,20 @@ html body .tadeon-global-search-dialog {
   margin: 0 !important;
   transform: none !important;
   overflow: hidden !important;
+}
+
+/* A desktop Radix portal is fixed to the layout viewport. Re-applying a
+   VisualViewport offset here double-counts browser/zoom displacement and was
+   what made the search drift northwest. Keep the transform-based centering
+   completely out of this dialog and derive its top-left from 50vw/50dvh. */
+@media (min-width: 768px) and (min-height: 521px) {
+  html body .tadeon-global-search-dialog {
+    top: max(.75rem, calc(50dvh - 19rem)) !important;
+    left: max(.75rem, calc(50vw - 21rem)) !important;
+    width: min(42rem, calc(100vw - 1.5rem)) !important;
+    height: min(38rem, calc(100dvh - 1.5rem)) !important;
+    max-height: calc(100dvh - 1.5rem) !important;
+  }
 }
 
 @media (max-height: 520px) {

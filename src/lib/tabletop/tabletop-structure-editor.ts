@@ -58,7 +58,7 @@ function pointNearRoofBoundary(
   const minY = Math.min(wall.y1, wall.y2);
   const maxY = Math.max(wall.y1, wall.y2);
   const center = { x: (minX + maxX) / 2, y: (minY + maxY) / 2 };
-  if (squaredDistance(point, center) <= (tolerance * 1.2) ** 2) return true;
+  if (squaredDistance(point, center) <= (tolerance * 1.45) ** 2) return true;
   const edges: Array<[Point, Point]> = [
     [{ x: minX, y: minY }, { x: maxX, y: minY }],
     [{ x: maxX, y: minY }, { x: maxX, y: maxY }],
@@ -66,7 +66,7 @@ function pointNearRoofBoundary(
     [{ x: minX, y: maxY }, { x: minX, y: minY }],
   ];
   return edges.some(
-    ([start, end]) => distanceToSegment(point, start, end) <= tolerance,
+    ([start, end]) => distanceToSegment(point, start, end) <= tolerance * 1.35,
   );
 }
 
@@ -101,7 +101,14 @@ export function hitTestTabletopStructure(
   for (const wall of ordered) {
     if (wall.wallType === "roof_hidden" && wall.id !== selectedId) continue;
     if (isRoofStructure(wall.wallType)) {
-      if (pointNearRoofBoundary(point, wall, safeTolerance))
+      /* Roofs are authored as filled surfaces, not thin wall segments. Let the
+         visible roof body be the primary target; keep the expanded boundary as
+         a forgiving target just outside it. Hidden roofs stay non-interactive
+         unless already selected, preserving their semantic invisibility. */
+      if (
+        pointInsideRoof(point, wall, safeTolerance * 0.35) ||
+        pointNearRoofBoundary(point, wall, safeTolerance)
+      )
         return { id: wall.id, handle: "body" };
       continue;
     }
@@ -123,7 +130,7 @@ function lockDelta(delta: Point): Point {
     : { x: 0, y: delta.y };
 }
 
-function lockEndpoint(point: Point, fixed: Point): Point {
+function lockEndpoint(point: Point, fixed: Point) {
   const delta = { x: point.x - fixed.x, y: point.y - fixed.y };
   return Math.abs(delta.x) >= Math.abs(delta.y)
     ? { x: point.x, y: fixed.y }

@@ -71,7 +71,7 @@ describe("tabletop structure editor", () => {
     ).toBe("door_closed");
   });
 
-  it("detects entities covered by a roof volume", () => {
+  it("detects entities and direct pointer hits across a visible roof surface", () => {
     const roof: TabletopWall = {
       ...wall,
       wallType: "roof_visible",
@@ -93,6 +93,32 @@ describe("tabletop structure editor", () => {
     ).toEqual({ id: roof.id, handle: "body" });
     expect(
       hitTestTabletopStructure({ x: 70, y: 60 }, [roof], 8, null),
+    ).toEqual({ id: roof.id, handle: "body" });
+    expect(
+      hitTestTabletopStructure({ x: 202, y: 80 }, [roof], 8, null),
+    ).toEqual({ id: roof.id, handle: "body" });
+  });
+
+  it("keeps hidden roofs out of hit-testing until explicitly selected", () => {
+    const hiddenRoof: TabletopWall = {
+      ...wall,
+      id: "roof-hidden",
+      wallType: "roof_hidden",
+      x1: 0,
+      y1: 0,
+      x2: 200,
+      y2: 160,
+    };
+    expect(
+      hitTestTabletopStructure({ x: 100, y: 80 }, [hiddenRoof], 8, null),
     ).toBeNull();
+    expect(
+      hitTestTabletopStructure(
+        { x: 100, y: 80 },
+        [hiddenRoof],
+        8,
+        hiddenRoof.id,
+      ),
+    ).toEqual({ id: hiddenRoof.id, handle: "body" });
   });
 });
