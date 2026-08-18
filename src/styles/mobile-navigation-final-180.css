@@ -1,0 +1,125 @@
+/* #180: final mobile navigation parity. Keep the authored Master mark while
+   forcing its button back onto the exact same dock geometry as its siblings. */
+@media (max-width: 767px) {
+  .tadeon-mobile-dock__item[href="/master-panel"] {
+    min-width: 0 !important;
+    min-height: 3.7rem !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: .24rem !important;
+    padding: .3rem .18rem !important;
+    border: 1px solid transparent !important;
+    border-radius: .9rem .32rem .9rem .32rem !important;
+    font-family: var(--font-mono) !important;
+    font-size: .56rem !important;
+    font-weight: 700 !important;
+    letter-spacing: .035em !important;
+    line-height: 1 !important;
+  }
+
+  .tadeon-mobile-dock__item[href="/master-panel"] > svg {
+    display: none !important;
+  }
+
+  .tadeon-mobile-dock__item[href="/master-panel"]::before {
+    position: static !important;
+    display: block !important;
+    width: 1.25rem !important;
+    height: 1.25rem !important;
+    min-width: 1.25rem !important;
+    flex: 0 0 1.25rem !important;
+    align-self: center !important;
+    margin: 0 !important;
+    background: currentColor !important;
+    -webkit-mask: center / contain no-repeat url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.55' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='8.25' stroke-dasharray='9 3.4 2.2 4.3' opacity='.72'/%3E%3Cpath d='M12 2.8v4.1M12 17.1v4.1M2.8 12h4.1M17.1 12h4.1'/%3E%3Cpath d='m8.55 12 3.45-3.45L15.45 12 12 15.45 8.55 12Z'/%3E%3Cpath d='M6.05 6.35 9.6 9.6M17.95 6.35 14.4 9.6M6.05 17.65l3.55-3.25M17.95 17.65l-3.55-3.25'/%3E%3Ccircle cx='6.05' cy='6.35' r='.85'/%3E%3Ccircle cx='17.95' cy='6.35' r='.85'/%3E%3Ccircle cx='6.05' cy='17.65' r='.85'/%3E%3Ccircle cx='17.95' cy='17.65' r='.85'/%3E%3Ccircle cx='12' cy='12' r='1.15' fill='black' stroke='none'/%3E%3C/svg%3E") !important;
+    mask: center / contain no-repeat url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.55' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='8.25' stroke-dasharray='9 3.4 2.2 4.3' opacity='.72'/%3E%3Cpath d='M12 2.8v4.1M12 17.1v4.1M2.8 12h4.1M17.1 12h4.1'/%3E%3Cpath d='m8.55 12 3.45-3.45L15.45 12 12 15.45 8.55 12Z'/%3E%3Cpath d='M6.05 6.35 9.6 9.6M17.95 6.35 14.4 9.6M6.05 17.65l3.55-3.25M17.95 17.65l-3.55-3.25'/%3E%3Ccircle cx='6.05' cy='6.35' r='.85'/%3E%3Ccircle cx='17.95' cy='6.35' r='.85'/%3E%3Ccircle cx='6.05' cy='17.65' r='.85'/%3E%3Ccircle cx='17.95' cy='17.65' r='.85'/%3E%3Ccircle cx='12' cy='12' r='1.15' fill='black' stroke='none'/%3E%3C/svg%3E") !important;
+    opacity: 1 !important;
+    filter: none !important;
+    transform: none !important;
+    transform-origin: center !important;
+    content: "" !important;
+    transition:
+      color var(--motion-fast) var(--ease-out),
+      filter var(--motion-fast) var(--ease-out),
+      transform var(--motion-fast) var(--ease-out) !important;
+  }
+
+  .tadeon-mobile-dock__item[href="/master-panel"][aria-current="page"] {
+    border-color: color-mix(in srgb, var(--section-accent) 17%, transparent) !important;
+    color: color-mix(in srgb, var(--foreground) 84%, var(--section-accent)) !important;
+    background:
+      linear-gradient(180deg, rgb(var(--section-accent-rgb) / 13%), rgb(var(--section-accent-rgb) / 4%)),
+      rgb(255 255 255 / 2%) !important;
+    box-shadow: inset 0 1px rgb(255 255 255 / 3%) !important;
+  }
+
+  .tadeon-mobile-dock__item[href="/master-panel"][aria-current="page"]::before {
+    color: var(--section-accent) !important;
+    filter: drop-shadow(0 0 8px rgb(var(--section-accent-rgb) / 28%)) !important;
+    transform: translateY(-1px) !important;
+  }
+
+  .tadeon-mobile-dock__item[href="/master-panel"]::after {
+    display: none !important;
+  }
+
+  .tadeon-mobile-dock__item[href="/master-panel"][aria-current="page"]::after {
+    position: absolute !important;
+    bottom: .2rem !important;
+    left: 50% !important;
+    display: block !important;
+    width: 1rem !important;
+    height: 2px !important;
+    border-radius: 99px !important;
+    background: var(--section-accent) !important;
+    box-shadow: 0 0 10px rgb(var(--section-accent-rgb) / 45%) !important;
+    opacity: 1 !important;
+    transform: translateX(-50%) !important;
+    content: "" !important;
+  }
+}
+
+/* The circular More menu projects the same navigation glyphs as the drawer.
+   Offline and Users use their canonical Lucide icons; Backup uses the authored
+   toolbox mark used by its navigation tab instead of the generic Wrench. */
+.tadeon-mobile-more-radial__nav-icon {
+  position: relative;
+  display: grid;
+  width: 1.15rem;
+  height: 1.15rem;
+  place-items: center;
+  color: var(--section-accent, var(--primary));
+}
+
+.tadeon-mobile-more-radial__nav-icon > svg {
+  width: 1rem;
+  height: 1rem;
+  color: currentColor;
+}
+
+.tadeon-mobile-more-radial__item[data-nav-target="/nexus-tools"] .tadeon-mobile-more-radial__nav-icon > svg {
+  display: none !important;
+}
+
+.tadeon-mobile-more-radial__item[data-nav-target="/nexus-tools"] .tadeon-mobile-more-radial__nav-icon::before {
+  display: block;
+  width: 1.08rem;
+  height: 1.08rem;
+  background: currentColor;
+  -webkit-mask: center / contain no-repeat url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M21 8a2 2 0 0 0-2-2h-2V4a2 2 0 0 0-2-2H9a2 2 0 0 0-2 2v2H5a2 2 0 0 0-2 2v11a3 3 0 0 0 3 3h12a3 3 0 0 0 3-3Z'/%3E%3Cpath d='M9 6h6M8 12h8M8 16h5'/%3E%3C/svg%3E");
+  mask: center / contain no-repeat url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M21 8a2 2 0 0 0-2-2h-2V4a2 2 0 0 0-2-2H9a2 2 0 0 0-2 2v2H5a2 2 0 0 0-2 2v11a3 3 0 0 0 3 3h12a3 3 0 0 0 3-3Z'/%3E%3Cpath d='M9 6h6M8 12h8M8 16h5'/%3E%3C/svg%3E");
+  content: "";
+}
+
+.tadeon-mobile-more-radial__item:hover .tadeon-mobile-more-radial__nav-icon,
+.tadeon-mobile-more-radial__item:focus-visible .tadeon-mobile-more-radial__nav-icon,
+.tadeon-mobile-more-radial__item.is-active .tadeon-mobile-more-radial__nav-icon {
+  filter: drop-shadow(0 0 7px color-mix(in srgb, currentColor 30%, transparent));
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tadeon-mobile-dock__item[href="/master-panel"]::before {
+    transition: none !important;
+    transform: none !important;
+  }
+}
