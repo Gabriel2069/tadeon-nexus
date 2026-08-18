@@ -78,7 +78,12 @@ describe("final visual system 157", () => {
     }
     expect(lab).toContain("getBoundingClientRect");
     expect(lab).toContain("scrollWidth");
-    expect(lab).toContain("rect.width < 40 || rect.height < 40");
+    expect(lab).toContain("const minTarget = viewportWidth <= 1024 ? 42 : 36");
+    expect(lab).toContain("intersectionRatio");
+    expect(lab).toContain('kind: "collision"');
+    expect(lab).toContain('kind: "clipping"');
+    expect(lab).toContain('kind: "motion"');
+    expect(lab).toContain('kind: "blocker"');
     expect(lab).toContain("<iframe");
     expect(lab).toContain('"/visual-audit?gallery=1"');
     expect(route).toContain('<ProtectedShell requireRole="mestre">');
