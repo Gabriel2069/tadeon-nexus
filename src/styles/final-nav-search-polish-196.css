@@ -1,86 +1,9 @@
 @import "./runtime-ui-repair-198.css";
 
-/* #196: autoridade final para pequenos resíduos de navegação, Mesa e busca global. */
+/* #196: mantém apenas o respiro do Mestre e o containment da busca global. */
 
-/* Respiro entre o menu do Mestre e o primeiro quadro de conteúdo. */
 .tadeon-master-navigation-slot {
   margin-bottom: clamp(.6rem, 1.1vw, .9rem) !important;
-}
-
-/* O controle 2D/3D mantém a mesma superfície dos irmãos outline, com estado ativo legível. */
-.tadeon-tabletop-toolbar__group button:is(
-  [aria-label="Ativar projeção espacial 3D"],
-  [aria-label="Voltar à planta 2D"]
-) {
-  border: 1px solid hsl(var(--input)) !important;
-  background: hsl(var(--background) / .7) !important;
-  color: hsl(var(--foreground)) !important;
-  box-shadow: inset 0 1px 0 rgb(255 255 255 / 3.5%) !important;
-}
-
-.tadeon-tabletop-toolbar__group button:is(
-  [aria-label="Ativar projeção espacial 3D"],
-  [aria-label="Voltar à planta 2D"]
-)[aria-pressed="true"] {
-  border-color: hsl(var(--primary) / .78) !important;
-  color: hsl(var(--primary)) !important;
-  background: hsl(var(--background) / .7) !important;
-  box-shadow:
-    inset 0 1px 0 rgb(255 255 255 / 3.5%),
-    0 0 0 1px hsl(var(--primary) / .28),
-    0 0 18px -11px hsl(var(--primary) / .78) !important;
-}
-
-.tadeon-tabletop-toolbar__group button:is(
-  [aria-label="Ativar projeção espacial 3D"],
-  [aria-label="Voltar à planta 2D"]
-)[aria-pressed="true"] svg {
-  filter: drop-shadow(0 0 5px hsl(var(--primary) / .4));
-}
-
-/* Sidebar: cada área intensifica sua própria assinatura cromática no hover. */
-.tadeon-nav-item {
-  --tadeon-nav-hover-rgb: var(--section-accent-rgb, 217 196 126);
-}
-
-.tadeon-nav-item[href="/"],
-.tadeon-nav-item[href^="/?"] {
-  --tadeon-nav-hover-rgb: 216 196 126;
-}
-
-.tadeon-nav-item[href^="/nexus"]:not([href^="/nexus-tools"]) {
-  --tadeon-nav-hover-rgb: 126 184 174;
-}
-
-.tadeon-nav-item[href^="/tabletop"] {
-  --tadeon-nav-hover-rgb: 135 157 198;
-}
-
-.tadeon-nav-item[href^="/offline"] {
-  --tadeon-nav-hover-rgb: 141 164 177;
-}
-
-.tadeon-nav-item[href^="/master-panel"] {
-  --tadeon-nav-hover-rgb: 225 184 96;
-}
-
-.tadeon-nav-item[href^="/manage-users"] {
-  --tadeon-nav-hover-rgb: 155 181 130;
-}
-
-.tadeon-nav-item[href^="/nexus-tools"] {
-  --tadeon-nav-hover-rgb: 188 139 133;
-}
-
-.tadeon-nav-item:not([aria-current="page"]):hover {
-  color: rgb(var(--tadeon-nav-hover-rgb)) !important;
-  background: rgb(var(--tadeon-nav-hover-rgb) / .075) !important;
-  box-shadow: inset 2px 0 0 rgb(var(--tadeon-nav-hover-rgb) / .52) !important;
-}
-
-.tadeon-nav-item:not([aria-current="page"]):hover .tadeon-nav-item__icon {
-  color: rgb(var(--tadeon-nav-hover-rgb)) !important;
-  filter: drop-shadow(0 0 7px rgb(var(--tadeon-nav-hover-rgb) / .34));
 }
 
 /* Busca global: uma única caixa contida pelo visual viewport, com corpo rolável e footer estável. */
