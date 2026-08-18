@@ -59,6 +59,23 @@ describe("final system audit 170", () => {
     expect(transfer).toContain("clearTabletopTransfer");
   });
 
+  it("completes the Nexus locator deep link through scene load, selection and focus", () => {
+    const nexus = source("src/components/knowledge/nexus-tabletop-locator.tsx");
+    const route = source("src/routes/tabletop.tsx");
+    const experience = source("src/components/tabletop/tabletop-route-experience.tsx");
+    const entry = source("src/components/tabletop/tabletop-master-entry.tsx");
+    const locator = source("src/components/tabletop/tabletop-deep-link-locator-bridge.tsx");
+    expect(nexus).toContain("&locate=");
+    expect(route).toContain("locate?: string");
+    expect(route).toContain("locateEntityId={requestedEntity}");
+    expect(experience).toContain("locateEntityId?: string");
+    expect(experience).toContain("locateEntityId={locateEntityId}");
+    expect(entry).toContain("TabletopDeepLinkLocatorBridge");
+    expect(locator).toContain("selectEntityById(entityId)");
+    expect(locator).toContain("focusSelection()");
+    expect(locator).toContain('window.addEventListener("tadeon-tabletop-render"');
+  });
+
   it("audits every product viewport for geometry, text, blockers, touch and motion", () => {
     const lab = source("src/components/visual-audit/responsive-audit-lab.tsx");
     for (const preset of ["390", "430", "768", "820", "1024", "1366", "1440", "1920"]) {
