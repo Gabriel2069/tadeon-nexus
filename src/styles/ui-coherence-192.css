@@ -56,7 +56,13 @@
   opacity: 0 !important;
 }
 
-.tadeon-master-navigation__rail > [data-slot="tabs-list"],
+.tadeon-master-navigation__rail > [data-slot="tabs-list"] {
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
 @media (min-width: 1024px) {
   .tadeon-master-navigation__rail > [data-slot="tabs-list"] {
     border: 0 !important;
