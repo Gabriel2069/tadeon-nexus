@@ -3,15 +3,16 @@ import { describe, expect, it } from "vitest";
 
 const read = (path: string) => readFileSync(path, "utf8");
 
-describe("ui polish 193/194/199", () => {
-  it("keeps setup permanently fixed and independent from DOM hosts", () => {
-    const bridge = read("src/components/tabletop/tabletop-smart-setup-launcher-dock-bridge.tsx");
-    expect(bridge).toContain('position: "fixed"');
-    expect(bridge).toContain("zIndex: 60");
-    expect(bridge).not.toContain("createPortal");
-    expect(bridge).not.toContain("MutationObserver");
-    expect(bridge).not.toContain("querySelector");
-    expect(bridge).not.toContain('button[aria-label="Recolher painel contextual"]');
+describe("ui polish 193/194/200", () => {
+  it("keeps only the canonical top-right Setup launcher", () => {
+    const duplicateBridge = read("src/components/tabletop/tabletop-smart-setup-launcher-dock-bridge.tsx");
+    const canonical = read("src/components/tabletop/tabletop-smart-setup-bridge.tsx");
+    const css = read("src/styles/tabletop-smart-setup.css");
+    expect(duplicateBridge).toContain("return null");
+    expect(duplicateBridge).not.toContain("position: \"fixed\"");
+    expect(canonical).toContain('className="tadeon-smart-setup__launcher"');
+    expect(css).toContain(".tadeon-smart-setup__launcher {");
+    expect(css).toContain("position: fixed");
   });
 
   it("renders the scroller as the only master navigation surface", () => {

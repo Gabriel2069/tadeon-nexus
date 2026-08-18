@@ -1,42 +1,52 @@
-/* #198: runtime-authoritative containment for the global search only. */
+/* #200: geometria autoritativa da busca global pelo visual viewport real. */
 
-/* iOS/keyboard-safe global search: anchor to the live visual viewport instead of centering with translate. */
-@media (max-width: 639px) {
-  html body .tadeon-global-search-dialog {
-    inset: auto !important;
-    top: calc(var(--tadeon-search-vv-top, 0px) + max(.375rem, env(safe-area-inset-top))) !important;
-    left: calc(var(--tadeon-search-vv-left, 0px) + max(.375rem, env(safe-area-inset-left))) !important;
-    right: auto !important;
-    bottom: auto !important;
-    width: calc(
+html body .tadeon-global-search-dialog {
+  --tadeon-search-gutter-left: max(.5rem, env(safe-area-inset-left));
+  --tadeon-search-gutter-right: max(.5rem, env(safe-area-inset-right));
+  --tadeon-search-gutter-top: max(.5rem, env(safe-area-inset-top));
+  --tadeon-search-gutter-bottom: max(.5rem, env(safe-area-inset-bottom));
+  inset: auto !important;
+  top: max(
+    calc(var(--tadeon-search-vv-top, 0px) + var(--tadeon-search-gutter-top)),
+    calc(var(--tadeon-search-vv-top, 0px) + (var(--tadeon-search-vv-height, 100dvh) - 38rem) / 2)
+  ) !important;
+  left: max(
+    calc(var(--tadeon-search-vv-left, 0px) + var(--tadeon-search-gutter-left)),
+    calc(var(--tadeon-search-vv-left, 0px) + (var(--tadeon-search-vv-width, 100vw) - 42rem) / 2)
+  ) !important;
+  right: auto !important;
+  bottom: auto !important;
+  width: min(
+    42rem,
+    calc(
       var(--tadeon-search-vv-width, 100vw)
-      - max(.375rem, env(safe-area-inset-left))
-      - max(.375rem, env(safe-area-inset-right))
-    ) !important;
-    max-width: none !important;
-    height: calc(
+      - var(--tadeon-search-gutter-left)
+      - var(--tadeon-search-gutter-right)
+    )
+  ) !important;
+  max-width: none !important;
+  height: min(
+    38rem,
+    calc(
       var(--tadeon-search-vv-height, 100dvh)
-      - max(.375rem, env(safe-area-inset-top))
-      - max(.375rem, env(safe-area-inset-bottom))
-    ) !important;
-    min-height: 0 !important;
-    max-height: calc(
-      var(--tadeon-search-vv-height, 100dvh)
-      - max(.375rem, env(safe-area-inset-top))
-      - max(.375rem, env(safe-area-inset-bottom))
-    ) !important;
-    margin: 0 !important;
-    transform: none !important;
-    overflow: hidden !important;
-  }
+      - var(--tadeon-search-gutter-top)
+      - var(--tadeon-search-gutter-bottom)
+    )
+  ) !important;
+  min-height: 0 !important;
+  max-height: calc(
+    var(--tadeon-search-vv-height, 100dvh)
+    - var(--tadeon-search-gutter-top)
+    - var(--tadeon-search-gutter-bottom)
+  ) !important;
+  margin: 0 !important;
+  transform: none !important;
+  overflow: hidden !important;
 }
 
 @media (max-height: 520px) {
   html body .tadeon-global-search-dialog {
-    top: calc(var(--tadeon-search-vv-top, 0px) + .25rem) !important;
-    height: calc(var(--tadeon-search-vv-height, 100dvh) - .5rem) !important;
-    max-height: calc(var(--tadeon-search-vv-height, 100dvh) - .5rem) !important;
-    min-height: 0 !important;
-    transform: none !important;
+    --tadeon-search-gutter-top: .25rem;
+    --tadeon-search-gutter-bottom: .25rem;
   }
 }

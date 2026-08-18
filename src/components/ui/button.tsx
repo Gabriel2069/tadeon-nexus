@@ -44,32 +44,25 @@ export interface ButtonProps
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant, size, asChild = false, type, style, ...props }, ref) => {
+  ({ className, variant, size, asChild = false, type, ...props }, ref) => {
     const Comp = asChild ? Slot : "button";
     const ariaLabel = typeof props["aria-label"] === "string" ? props["aria-label"] : "";
     const isProjectionToggle =
       ariaLabel === "Ativar projeção espacial 3D" || ariaLabel === "Voltar à planta 2D";
-    const projectionActive = isProjectionToggle && props["aria-pressed"] === true;
     const effectiveVariant = isProjectionToggle ? "outline" : variant;
-    const projectionStyle: React.CSSProperties | undefined = isProjectionToggle
-      ? {
-          border: `1px solid ${projectionActive ? "rgba(217,215,164,.72)" : "rgba(217,215,164,.42)"}`,
-          boxShadow: projectionActive
-            ? "inset 0 0 0 1px rgba(217,215,164,.22), 0 0 0 1px rgba(217,215,164,.10)"
-            : "inset 0 1px 0 rgba(255,255,255,.04)",
-        }
-      : undefined;
+    const renderedProps = isProjectionToggle
+      ? { ...props, "aria-pressed": undefined }
+      : props;
+
     return (
       <Comp
         data-slot="button"
         data-size={size ?? "default"}
         data-variant={effectiveVariant ?? "default"}
-        data-projection-toggle={isProjectionToggle ? "true" : undefined}
         className={cn(buttonVariants({ variant: effectiveVariant, size, className }))}
-        style={{ ...style, ...projectionStyle }}
         ref={ref}
         {...(!asChild ? { type: type ?? "button" } : {})}
-        {...props}
+        {...renderedProps}
       />
     );
   },
