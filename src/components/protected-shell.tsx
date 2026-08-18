@@ -13,6 +13,7 @@ import {
 } from "@/components/sheet/sheet-experience-bridge";
 import { SheetInventoryOrganizer } from "@/components/sheet/sheet-inventory-organizer";
 import { TabletopCrossSurfaceBridge } from "@/components/tabletop/tabletop-cross-surface-bridge";
+import { TabletopWorkspacePopoutBridge } from "@/components/tabletop/tabletop-workspace-popout-bridge";
 import { UserRepair152Bridge } from "@/components/user-repair-152-bridge";
 import "@/styles/sheet-requested-polish.css";
 import "@/styles/sheet-density-final.css";
@@ -21,6 +22,7 @@ import "@/styles/sheet-game-mode-final.css";
 import "@/styles/sheet-inventory-organizer.css";
 import "@/styles/nexus-interaction-polish.css";
 import "@/styles/user-repair-152.css";
+import "@/styles/dedicated-workspace-parity-168.css";
 
 interface Props {
   children: ReactNode;
@@ -37,14 +39,43 @@ function dedicatedPresentation() {
     return "director" as const;
   }
   if (params.get("embed") === "1") return "embed" as const;
-  if (
-    params.get("popout") === "1" &&
-    window.location.pathname === "/master-panel"
-  ) {
-    return "master-panel" as const;
+  if (params.get("popout") === "1" || params.get("standalone") === "1") {
+    return "popout" as const;
   }
-  if (params.get("popout") === "1") return "popout" as const;
   return null;
+}
+
+function focusedSection() {
+  if (typeof window === "undefined") return "Dashboard";
+  const path = window.location.pathname;
+  if (path.startsWith("/sheet/")) return "Ficha";
+  if (path.startsWith("/nexus-tools")) return "Saúde do arquivo";
+  if (path.startsWith("/nexus")) return "O Nexus";
+  if (path.startsWith("/tabletop")) return "Mesa Nexus";
+  if (path.startsWith("/master-panel")) return "Painel do Mestre";
+  if (path.startsWith("/manage-users")) return "Usuários";
+  if (path.startsWith("/offline")) return "Consulta offline";
+  return "Dashboard";
+}
+
+function DedicatedShell({ children, presentation }: { children: ReactNode; presentation: NonNullable<ReturnType<typeof dedicatedPresentation>> }) {
+  return (
+    <div
+      className="tadeon-shell tadeon-dedicated-shell relative isolate min-h-screen overflow-x-clip bg-background text-foreground"
+      data-section={focusedSection()}
+      data-dedicated-presentation={presentation}
+    >
+      <div aria-hidden className="tadeon-ambient tadeon-ambient--veil" />
+      <div aria-hidden className="tadeon-ambient tadeon-ambient--flow" />
+      <main
+        id="tadeon-main"
+        tabIndex={-1}
+        className="tadeon-dedicated-shell__main relative z-10 min-h-screen w-full min-w-0 outline-none"
+      >
+        {children}
+      </main>
+    </div>
+  );
 }
 
 export function ProtectedShell({ children, requireRole }: Props) {
@@ -89,7 +120,7 @@ export function ProtectedShell({ children, requireRole }: Props) {
         }
       />
     );
-    return dedicated ? <div className="tadeon-dedicated-shell">{state}</div> : <AppLayout>{state}</AppLayout>;
+    return dedicated ? <DedicatedShell presentation={dedicated}>{state}</DedicatedShell> : <AppLayout>{state}</AppLayout>;
   }
 
   if (requireRole && !can("app:manage", { appRole: role })) {
@@ -106,7 +137,7 @@ export function ProtectedShell({ children, requireRole }: Props) {
         }
       />
     );
-    return dedicated ? <div className="tadeon-dedicated-shell">{state}</div> : <AppLayout>{state}</AppLayout>;
+    return dedicated ? <DedicatedShell presentation={dedicated}>{state}</DedicatedShell> : <AppLayout>{state}</AppLayout>;
   }
 
   const content = (
@@ -115,20 +146,19 @@ export function ProtectedShell({ children, requireRole }: Props) {
       <SheetInventoryOrganizer />
       <TabletopCrossSurfaceBridge />
       <UserRepair152Bridge />
-      {!dedicated && <WorkspacePopoutBridge />}
+      {!dedicated && (
+        <>
+          <WorkspacePopoutBridge />
+          <TabletopWorkspacePopoutBridge />
+        </>
+      )}
       <NexusSheetDragBridge />
       {children}
     </>
   );
 
   if (dedicated) {
-    return (
-      <div className="tadeon-dedicated-shell" data-dedicated-presentation={dedicated}>
-        <main id="tadeon-main" className="tadeon-dedicated-shell__main">
-          {content}
-        </main>
-      </div>
-    );
+    return <DedicatedShell presentation={dedicated}>{content}</DedicatedShell>;
   }
 
   return <AppLayout>{content}</AppLayout>;
