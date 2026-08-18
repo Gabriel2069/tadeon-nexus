@@ -1,0 +1,68 @@
+/* #163: viewport-safe sheet creation and diagnostics polish.
+   This is deliberately scoped to the create-sheet dialog; global search keeps
+   the dedicated geometry introduced in #162. */
+
+@media (max-width: 767px) {
+  [data-slot="dialog-content"]:has(#sheet-name) {
+    --tadeon-create-inline-start: max(.75rem, env(safe-area-inset-left));
+    --tadeon-create-inline-end: max(.75rem, env(safe-area-inset-right));
+    position: fixed !important;
+    top: 50dvh !important;
+    right: var(--tadeon-create-inline-end) !important;
+    bottom: auto !important;
+    left: var(--tadeon-create-inline-start) !important;
+    box-sizing: border-box !important;
+    width: auto !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    height: auto !important;
+    max-height: calc(
+      100dvh
+      - max(.75rem, env(safe-area-inset-top))
+      - max(.75rem, env(safe-area-inset-bottom))
+    ) !important;
+    margin: 0 !important;
+    padding: 1rem !important;
+    overflow-x: clip !important;
+    overflow-y: auto !important;
+    overscroll-behavior: contain !important;
+    scrollbar-gutter: stable !important;
+    transform: translateY(-50%) !important;
+    transform-origin: center !important;
+  }
+
+  [data-slot="dialog-content"]:has(#sheet-name) > *,
+  [data-slot="dialog-content"]:has(#sheet-name) :is(
+    form,
+    label,
+    input,
+    [data-slot="dialog-header"],
+    [data-slot="dialog-footer"],
+    [data-slot="select-trigger"]
+  ) {
+    min-width: 0 !important;
+    max-width: 100% !important;
+  }
+
+  [data-slot="dialog-content"]:has(#sheet-name) [data-slot="dialog-footer"] {
+    flex-wrap: wrap !important;
+    gap: .5rem !important;
+  }
+
+  [data-slot="dialog-content"]:has(#sheet-name) [data-slot="dialog-close"] {
+    top: .7rem !important;
+    right: .7rem !important;
+  }
+}
+
+@media (min-width: 768px) {
+  [data-slot="dialog-content"]:has(#sheet-name) {
+    top: 50% !important;
+    right: auto !important;
+    left: 50% !important;
+    width: min(36rem, calc(100vw - 2rem)) !important;
+    max-width: 36rem !important;
+    max-height: calc(100dvh - 2rem) !important;
+    transform: translate(-50%, -50%) !important;
+  }
+}
