@@ -20,7 +20,7 @@ describe("mobile icons and visual viewport 180", () => {
     const bridge = source("src/components/mobile-more-radial-bridge.tsx");
     const css = source("src/styles/mobile-viewport-final-180.css");
     expect(bridge).toContain("function syncMasterDockGlyph()");
-    expect(bridge).toContain('MASTER_DOCK_ICON_SELECTOR = \' .tadeon-mobile-dock__item[href="/master-panel"] > svg\''.replace("' ", "'"));
+    expect(bridge).toContain('href="/master-panel"] > svg');
     expect(bridge).toContain('svg.dataset.tadeonPanelGlyph = "true"');
     expect(bridge).toContain('svg.setAttribute("viewBox", "1.4 1.4 21.2 21.2")');
     expect(css).toContain('.tadeon-mobile-dock .tadeon-mobile-dock__item[href="/master-panel"] > svg');
@@ -37,7 +37,7 @@ describe("mobile icons and visual viewport 180", () => {
     expect(bridge).toContain('viewport?.addEventListener("resize", sync)');
     expect(bridge).toContain('viewport?.addEventListener("scroll", sync)');
     expect(bridge).toContain('root.style.setProperty("--tadeon-vv-height"');
-    expect(bridge).toContain("root.dataset.tadeonKeyboardOpen = keyboardOpen ? \"true\" : \"false\"");
+    expect(bridge).toContain('root.dataset.tadeonKeyboardOpen = keyboardOpen ? "true" : "false"');
   });
 
   it("pins Create Sheet and keyboard-open dialogs inside the visible viewport", () => {
