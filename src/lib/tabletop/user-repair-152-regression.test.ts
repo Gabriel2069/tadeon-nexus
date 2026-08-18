@@ -47,13 +47,15 @@ describe("field repair 152", () => {
     expect(css).toContain("--tadeon-tabletop-stage-bottom");
   });
 
-  it("uses a dedicated wide no-sidebar presentation for the master panel popout", () => {
+  it("keeps the master popout wide and no-sidebar while inheriting the normal page identity", () => {
     const shell = source("src/components/protected-shell.tsx");
-    const css = source("src/styles/user-repair-152.css");
-    expect(shell).toContain('return "master-panel" as const');
-    expect(shell).toContain('data-dedicated-presentation={dedicated}');
-    expect(css).toContain('[data-dedicated-presentation="master-panel"]');
-    expect(css).toContain("max-width: none !important");
+    const parityCss = source("src/styles/dedicated-workspace-parity-168.css");
+    expect(shell).toContain('return "popout" as const');
+    expect(shell).toContain('className="tadeon-shell tadeon-dedicated-shell');
+    expect(shell).toContain('data-section={focusedSection()}');
+    expect(parityCss).toContain('[data-section="Painel do Mestre"]');
+    expect(parityCss).toContain("max-width: none !important");
+    expect(parityCss).toContain("border-color: color-mix");
   });
 
   it("restores the original dashboard and dossier instead of restyling them again", () => {
