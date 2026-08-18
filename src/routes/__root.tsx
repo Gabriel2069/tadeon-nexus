@@ -28,6 +28,7 @@ import focusHeaderNavParity159Css from "../styles/focus-header-nav-parity-159.cs
 import navigationRealSvgParity160Css from "../styles/navigation-real-svg-parity-160.css?url";
 import sheetPopupGraphPolish161Css from "../styles/sheet-popup-graph-polish-161.css?url";
 import navSheetSearchPolish162Css from "../styles/nav-sheet-search-polish-162.css?url";
+import createSheetSearchViewport163Css from "../styles/create-sheet-search-viewport-163.css?url";
 import { AuthProvider } from "@/lib/auth";
 import { Toaster } from "@/components/ui/sonner";
 import { PwaRegistration } from "@/components/pwa-registration";
@@ -136,6 +137,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { rel: "stylesheet", href: navigationRealSvgParity160Css },
       { rel: "stylesheet", href: sheetPopupGraphPolish161Css },
       { rel: "stylesheet", href: navSheetSearchPolish162Css },
+      { rel: "stylesheet", href: createSheetSearchViewport163Css },
       { rel: "manifest", href: "/manifest.webmanifest" },
       { rel: "icon", href: "/favicon.svg?v=4", type: "image/svg+xml", sizes: "any" },
       { rel: "shortcut icon", href: "/favicon.svg?v=4", type: "image/svg+xml" },
