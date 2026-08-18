@@ -152,13 +152,14 @@ export function AppLayout({ children }: { children: ReactNode }) {
 
   const RoleIcon = role ? roleIcons[role] : Eye;
   const isMestre = isApplicationAdministrator({ appRole: role });
-  const knowledgeEnabled = navigationFlags.knowledge || path.startsWith("/nexus");
+  const isNexusRoute = path === "/nexus" || path.startsWith("/nexus/");
+  const knowledgeEnabled = navigationFlags.knowledge || isNexusRoute;
   const tabletopEnabled = navigationFlags.tabletop || path.startsWith("/tabletop");
   const currentSection = path.startsWith("/sheet/")
     ? "Ficha"
     : path.startsWith("/nexus-tools")
       ? "Saúde do arquivo"
-      : path.startsWith("/nexus")
+      : isNexusRoute
         ? "O Nexus"
         : path.startsWith("/tabletop")
           ? "Mesa Nexus"
@@ -212,7 +213,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
           to="/nexus"
           icon={<LibraryBig className="w-4 h-4" />}
           label="O Nexus"
-          active={path.startsWith("/nexus")}
+          active={isNexusRoute}
           mini={mini}
           onClick={() => setMobileOpen(false)}
         />
@@ -450,7 +451,11 @@ export function AppLayout({ children }: { children: ReactNode }) {
             <Menu className="w-5 h-5" />
           </button>
           <div className="tadeon-mobile-header__identity flex min-w-0 items-center justify-center gap-2.5">
-            <BrandMark className="h-8 w-8 shrink-0 text-primary" />
+            {currentSection === "Mesa Nexus" ? (
+              <MapPinned className="h-8 w-8 shrink-0 text-primary" />
+            ) : (
+              <BrandMark className="h-8 w-8 shrink-0 text-primary" />
+            )}
             <div className="min-w-0 text-left">
               <p className="tadeon-mono truncate text-[9px] uppercase tracking-[0.14em] text-muted-foreground">
                 Área em foco
@@ -505,7 +510,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
             <Link
               to="/nexus"
               search={{ node: undefined }}
-              aria-current={path.startsWith("/nexus") ? "page" : undefined}
+              aria-current={isNexusRoute ? "page" : undefined}
               className="tadeon-mobile-dock__item"
             >
               <LibraryBig className="h-5 w-5" />
