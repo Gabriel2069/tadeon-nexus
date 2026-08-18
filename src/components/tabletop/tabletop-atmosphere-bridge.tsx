@@ -183,10 +183,10 @@ function usePowerTheme() {
   useEffect(() => {
     if (!active) return;
     let frame = 0;
-    let nextPointer = pointer;
+    let nextPointer: Point | null = null;
     const flush = () => {
       frame = 0;
-      setPointer(nextPointer);
+      if (nextPointer) setPointer(nextPointer);
     };
     const pointerMove = (event: PointerEvent) => {
       nextPointer = { x: event.clientX, y: event.clientY };

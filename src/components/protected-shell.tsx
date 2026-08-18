@@ -17,6 +17,7 @@ import { TabletopWorkspacePopoutBridge } from "@/components/tabletop/tabletop-wo
 import { MobileMoreRadialBridge } from "@/components/mobile-more-radial-bridge";
 import { VisualViewportBridge } from "@/components/visual-viewport-bridge";
 import { UserRepair152Bridge } from "@/components/user-repair-152-bridge";
+import { MasterToolbarPopoutBridge } from "@/components/master/master-toolbar-popout-bridge";
 import "@/styles/sheet-requested-polish.css";
 import "@/styles/sheet-density-final.css";
 import "@/styles/sheet-game-mode.css";
@@ -25,6 +26,7 @@ import "@/styles/sheet-inventory-organizer.css";
 import "@/styles/nexus-interaction-polish.css";
 import "@/styles/user-repair-152.css";
 import "@/styles/dedicated-workspace-parity-168.css";
+import "@/styles/navigation-users-uniformity-191.css";
 
 interface Props {
   children: ReactNode;
@@ -152,6 +154,7 @@ export function ProtectedShell({ children, requireRole }: Props) {
       {!dedicated && (
         <>
           <WorkspacePopoutBridge />
+          <MasterToolbarPopoutBridge />
           <TabletopWorkspacePopoutBridge />
           <MobileMoreRadialBridge />
         </>
