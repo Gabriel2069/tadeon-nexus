@@ -1,0 +1,40 @@
+/* Uniformidade final da navegação principal e da administração de usuários. */
+
+.tadeon-primary-nav .tadeon-nav-item {
+  width: 100% !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+}
+
+.tadeon-shell[data-section="Painel do Mestre"]
+  .tadeon-workspace-popout-host
+  > button[title="Abrir este painel em janela dedicada"] {
+  display: none !important;
+}
+
+.tadeon-master-toolbar-popout-host {
+  flex: 0 0 auto;
+  align-items: center;
+}
+
+.tadeon-master-toolbar-popout-host > button {
+  min-width: max-content;
+}
+
+.tadeon-users-list {
+  display: grid !important;
+  grid-auto-rows: 1fr;
+  gap: 0.75rem !important;
+}
+
+.tadeon-users-list > .tadeon-user-row {
+  height: 100% !important;
+  min-height: 6.25rem;
+  align-content: center;
+}
+
+@media (max-width: 639px) {
+  .tadeon-users-list > .tadeon-user-row {
+    min-height: 8.25rem;
+  }
+}
