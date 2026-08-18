@@ -57,17 +57,17 @@ function MasterSessionSavePortal() {
         const text = element.textContent ?? "";
         return text.includes("Pistas") && text.includes("Dobras") && text.includes("Iniciativa");
       });
-
-      if (!metrics) return;
+      const parent = metrics?.parentElement;
+      if (!metrics || !parent) return;
 
       let portalHost = document.getElementById("tadeon-master-session-save");
       if (!portalHost) {
-        portalHost = document.createElement("span");
+        portalHost = document.createElement("div");
         portalHost.id = "tadeon-master-session-save";
         portalHost.className = "tadeon-master-session-save-host";
       }
-      if (portalHost.parentElement !== metrics || metrics.firstElementChild !== portalHost) {
-        metrics.prepend(portalHost);
+      if (portalHost.parentElement !== parent || portalHost.nextSibling !== metrics) {
+        parent.insertBefore(portalHost, metrics);
       }
       setHost((current) => (current === portalHost ? current : portalHost));
     };
