@@ -48,12 +48,17 @@ describe("final user corrections 172", () => {
     expect(graph).toContain('setRange("Agrupamento por domínio", 0.15)');
   });
 
-  it("centers the lateral navigation and removes master-menu dead side space", () => {
+  it("centers the lateral navigation and gives Panel/Backup concrete icon frames", () => {
     const css = source("src/styles/create-sheet-search-viewport-163.css");
+    const nav = source("src/styles/navigation-real-svg-parity-160.css");
     const layout = source("src/components/app-layout.tsx");
     expect(css).toContain(".tadeon-primary-nav .tadeon-nav-item__icon");
     expect(css).toContain("place-items: center;");
+    expect(layout).toContain('data-mini={mini ? "true" : "false"}');
     expect(layout).toContain('mini ? "justify-center px-2" : ""');
+    expect(nav).toContain("--nav-accent-rgb: var(--section-accent-rgb, 217 215 164)");
+    expect(nav).toContain("--nav-accent-rgb: 116 36 45");
+    expect(nav).toContain("--nav-accent-rgb: 122 129 135");
     expect(css).toContain(".tadeon-master-navigation__scroller");
     expect(css).toContain("width: fit-content;");
     expect(css).toContain('> [data-slot="tabs-list"]');
