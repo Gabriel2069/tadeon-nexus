@@ -1,33 +1,8 @@
-/* #163: deterministic viewport containment for the two high-traffic dialogs. */
-
-.tadeon-create-sheet-dialog {
-  box-sizing: border-box;
-  width: min(32rem, calc(100dvw - 2rem)) !important;
-  min-width: 0 !important;
-  max-width: calc(100dvw - 2rem) !important;
-  max-height: calc(100dvh - 2rem) !important;
-  overflow-x: hidden !important;
-  overflow-y: auto !important;
-  overscroll-behavior: contain;
-  scrollbar-gutter: stable;
-}
-
-.tadeon-create-sheet-dialog > form,
-.tadeon-create-sheet-dialog > form > *,
-.tadeon-create-sheet-dialog [data-slot="select-trigger"] {
-  box-sizing: border-box;
-  min-width: 0 !important;
-  max-width: 100% !important;
-}
-
-.tadeon-create-sheet-dialog label,
-.tadeon-create-sheet-dialog span,
-.tadeon-create-sheet-dialog p {
-  overflow-wrap: anywhere;
-}
+/* #163: deterministic viewport containment for high-traffic dialogs. */
 
 @media (max-width: 640px) {
-  .tadeon-create-sheet-dialog {
+  [data-slot="dialog-content"] {
+    box-sizing: border-box;
     top: max(.65rem, env(safe-area-inset-top)) !important;
     right: max(.65rem, env(safe-area-inset-right)) !important;
     bottom: auto !important;
@@ -39,37 +14,58 @@
       100dvh - max(.65rem, env(safe-area-inset-top)) - max(.65rem, env(safe-area-inset-bottom))
     ) !important;
     margin: 0 !important;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+    overscroll-behavior: contain;
+    scrollbar-gutter: stable;
     transform: none !important;
+    transform-origin: center !important;
     animation-name: tadeon-dialog-opacity-only-163 !important;
   }
 
-  [data-slot="dialog-content"]:has(> [data-slot="command"]) {
-    top: max(.65rem, env(safe-area-inset-top)) !important;
-    right: max(.65rem, env(safe-area-inset-right)) !important;
-    bottom: auto !important;
-    left: max(.65rem, env(safe-area-inset-left)) !important;
-    width: auto !important;
+  [data-slot="dialog-content"] > *,
+  [data-slot="dialog-content"] form,
+  [data-slot="dialog-content"] form > *,
+  [data-slot="dialog-content"] [data-slot="select-trigger"] {
+    box-sizing: border-box;
     min-width: 0 !important;
-    max-width: none !important;
-    max-height: calc(
-      100dvh - max(.65rem, env(safe-area-inset-top)) - max(.65rem, env(safe-area-inset-bottom))
-    ) !important;
-    margin: 0 !important;
-    transform: none !important;
-    animation-name: tadeon-dialog-opacity-only-163 !important;
+    max-width: 100% !important;
+  }
+
+  [data-slot="dialog-content"] label,
+  [data-slot="dialog-content"] span,
+  [data-slot="dialog-content"] p {
+    overflow-wrap: anywhere;
+  }
+
+  [data-slot="dialog-content"]:has(> [data-slot="command"]) {
+    overflow: hidden !important;
   }
 
   [data-slot="dialog-content"]:has(> [data-slot="command"]) > [data-slot="command"] {
     display: flex;
+    min-width: 0 !important;
     min-height: 0;
+    max-width: 100% !important;
     max-height: inherit;
     flex-direction: column;
+    overflow: hidden;
   }
 
   [data-slot="dialog-content"]:has(> [data-slot="command"]) [data-slot="command-list"] {
+    min-width: 0 !important;
     min-height: 0;
+    max-width: 100% !important;
+    overflow-x: hidden;
     overflow-y: auto;
     overscroll-behavior: contain;
+  }
+
+  [data-slot="dialog-content"] [data-slot="dialog-close"] {
+    position: absolute;
+    top: .72rem;
+    right: .72rem;
+    flex: 0 0 auto;
   }
 }
 
@@ -85,8 +81,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .tadeon-create-sheet-dialog,
-  [data-slot="dialog-content"]:has(> [data-slot="command"]) {
+  [data-slot="dialog-content"] {
     animation: none !important;
     transition-duration: .001ms !important;
   }
