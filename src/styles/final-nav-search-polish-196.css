@@ -7,42 +7,12 @@
 
 /*
  * Menu lateral: não altera botão, fundo, texto, borda ou sombra.
- * O único efeito no hover é reproduzir no SVG a mesma assinatura cromática
- * que ele recebe quando a respectiva rota está ativa.
+ * A identidade cromática pertence a --nav-accent/--nav-accent-rgb, definidos
+ * pela autoridade de navegação. O hover só projeta essa identidade no SVG.
  */
-.tadeon-nav-item[href="/"],
-.tadeon-nav-item[href^="/?"] {
-  --tadeon-nav-icon-hover: var(--tadeon-knowledge);
-  --tadeon-nav-icon-hover-rgb: 217 215 164;
-}
-.tadeon-nav-item[href^="/nexus"]:not([href^="/nexus-tools"]) {
-  --tadeon-nav-icon-hover: var(--tadeon-veil);
-  --tadeon-nav-icon-hover-rgb: 113 107 123;
-}
-.tadeon-nav-item[href^="/tabletop"] {
-  --tadeon-nav-icon-hover: var(--tadeon-flow);
-  --tadeon-nav-icon-hover-rgb: 79 110 93;
-}
-.tadeon-nav-item[href^="/offline"] {
-  --tadeon-nav-icon-hover: var(--tadeon-flow);
-  --tadeon-nav-icon-hover-rgb: 79 110 93;
-}
-.tadeon-nav-item[href^="/master-panel"] {
-  --tadeon-nav-icon-hover: var(--tadeon-fear);
-  --tadeon-nav-icon-hover-rgb: 116 36 45;
-}
-.tadeon-nav-item[href^="/manage-users"] {
-  --tadeon-nav-icon-hover: var(--tadeon-flow);
-  --tadeon-nav-icon-hover-rgb: 79 110 93;
-}
-.tadeon-nav-item[href^="/nexus-tools"] {
-  --tadeon-nav-icon-hover: var(--tadeon-metal);
-  --tadeon-nav-icon-hover-rgb: 122 129 135;
-}
-
 .tadeon-nav-item:hover .tadeon-nav-item__icon > svg {
-  color: var(--tadeon-nav-icon-hover, currentColor);
-  filter: drop-shadow(0 0 9px rgb(var(--tadeon-nav-icon-hover-rgb, 217 215 164) / 25%));
+  color: var(--nav-accent, currentColor);
+  filter: drop-shadow(0 0 9px rgb(var(--nav-accent-rgb, 217 215 164) / 25%));
 }
 
 /* Busca global: o runtime-ui-repair-198.css é a única autoridade de geometria. */

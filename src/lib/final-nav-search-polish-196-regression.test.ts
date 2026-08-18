@@ -5,7 +5,7 @@ function source(path: string) {
   return readFileSync(path, "utf8");
 }
 
-describe("final navigation and search polish 196/200", () => {
+describe("final navigation and search polish 196/201", () => {
   it("keeps breathing room below master navigation", () => {
     const css = source("src/styles/final-nav-search-polish-196.css");
     expect(css).toContain(".tadeon-master-navigation-slot");
@@ -23,14 +23,15 @@ describe("final navigation and search polish 196/200", () => {
     expect(button).not.toContain("data-projection-toggle");
   });
 
-  it("changes only the sidebar icon on hover and uses each route active accent", () => {
+  it("changes only the sidebar svg on hover and inherits the canonical route accent", () => {
     const css = source("src/styles/final-nav-search-polish-196.css");
-    expect(css).toContain('.tadeon-nav-item[href^="/master-panel"]');
-    expect(css).toContain("--tadeon-nav-icon-hover: var(--tadeon-fear)");
+    const routeCss = source("src/styles/nav-sheet-search-polish-162.css");
     expect(css).toContain(".tadeon-nav-item:hover .tadeon-nav-item__icon > svg");
-    expect(css).not.toContain(".tadeon-nav-item:not([aria-current");
-    expect(css).not.toContain("background: rgb(var(--tadeon-nav-icon-hover");
-    expect(css).not.toContain("box-shadow: inset 2px 0 0 rgb(var(--tadeon-nav-icon-hover");
+    expect(css).toContain("color: var(--nav-accent, currentColor)");
+    expect(css).toContain("var(--nav-accent-rgb, 217 215 164)");
+    expect(css).not.toContain("--tadeon-nav-icon-hover:");
+    expect(routeCss).toContain('.tadeon-nav-item[href="/tabletop"] { --nav-accent: rgb(84 123 148)');
+    expect(routeCss).toContain('.tadeon-nav-item[href="/manage-users"] { --nav-accent: rgb(183 129 77)');
   });
 
   it("binds the global search to one live visual-viewport geometry without translate", () => {

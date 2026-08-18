@@ -85,8 +85,9 @@ export const TABLETOP_STRUCTURE_PRESETS: Array<{
     label: "Janela / vidro",
     channels: {
       material: "glass",
+      blocksLight: true,
       visionTransmission: 0.96,
-      lightTransmission: 0.82,
+      lightTransmission: 0,
       soundTransmission: 0.18,
       surface: "glass",
     },
@@ -132,10 +133,11 @@ export function structureChannels(
   const defaults: TabletopStructureChannels = family === "window"
     ? {
         material: "glass",
-        blocksLight: false,
+        blocksLight: type === "window_closed",
         blocksSound: true,
         visionTransmission: type === "window_closed" ? 0.96 : 1,
-        lightTransmission: type === "window_closed" ? 0.82 : 1,
+        lightTransmission:
+          type === "window_closed" ? 0 : type === "window_open" ? 0.86 : 0.98,
         soundTransmission: type === "window_closed" ? 0.18 : 0.9,
         movementCost: collision.blocksMovement ? 999 : 1,
         surface: "glass",
@@ -174,7 +176,7 @@ export function structureChannels(
             movementCost: collision.blocksMovement ? 999 : 1,
             surface: "solid",
           };
-  return {
+  const resolved: TabletopStructureChannels = {
     ...defaults,
     ...value,
     visionTransmission: clamp01(value?.visionTransmission, defaults.visionTransmission),
@@ -185,6 +187,14 @@ export function structureChannels(
       : clamp01(value.roofOpacity, defaults.roofOpacity ?? 1),
     movementCost: Math.max(0.1, Math.min(999, Number(value?.movementCost ?? defaults.movementCost) || 1)),
   };
+
+  // Window state owns its optical channel. This prevents values persisted while
+  // the pane was in another state from leaking into closed/open/broken behavior.
+  if (family === "window") {
+    resolved.blocksLight = defaults.blocksLight;
+    resolved.lightTransmission = defaults.lightTransmission;
+  }
+  return resolved;
 }
 
 export function isTabletopStructureType(value: unknown): value is TabletopStructureType {

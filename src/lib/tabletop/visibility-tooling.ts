@@ -221,6 +221,16 @@ export function transformTabletopFog(
   };
 }
 
+export function tabletopLightRadiusHandlePoint(
+  light: Pick<TabletopLight, "x" | "y" | "radius" | "properties">,
+) {
+  const direction = ((Number(light.properties?.direction) || 0) * Math.PI) / 180;
+  return {
+    x: light.x + Math.cos(direction) * light.radius,
+    y: light.y + Math.sin(direction) * light.radius,
+  };
+}
+
 export function hitTestTabletopLight(
   point: { x: number; y: number },
   lights: TabletopLight[],
@@ -228,21 +238,28 @@ export function hitTestTabletopLight(
   selectedId?: string | null,
 ): TabletopLightHit | null {
   const safeTolerance = Math.max(1, Number(tolerance) || 1);
-  const ordered = selectedId
-    ? [
-        ...lights.filter((light) => light.id === selectedId),
-        ...lights.filter((light) => light.id !== selectedId),
-      ]
-    : lights;
+  const selected = selectedId
+    ? lights.find((light) => light.id === selectedId)
+    : undefined;
+  const ordered = selected
+    ? [selected, ...lights.filter((light) => light.id !== selected.id).reverse()]
+    : [...lights].reverse();
   for (const light of ordered) {
-    const radiusHandle = { x: light.x + light.radius, y: light.y };
+    const radiusHandle = tabletopLightRadiusHandlePoint(light);
     if (
       light.id === selectedId &&
       Math.hypot(point.x - radiusHandle.x, point.y - radiusHandle.y) <=
-        safeTolerance * 1.35
+        safeTolerance * 1.75
     )
       return { id: light.id, handle: "radius" };
-    if (Math.hypot(point.x - light.x, point.y - light.y) <= safeTolerance * 1.5)
+
+    // Keep the hit target independent from the authored radius: clicking anywhere
+    // in a huge light should not steal entity selection, but its center must be a
+    // comfortable control at every zoom level. The engine supplies screen-scaled
+    // tolerance, so this resolves to roughly 23–26 CSS px.
+    const centerHitRadius =
+      safeTolerance * (light.id === selectedId ? 2.6 : 2.3);
+    if (Math.hypot(point.x - light.x, point.y - light.y) <= centerHitRadius)
       return { id: light.id, handle: "body" };
   }
   return null;

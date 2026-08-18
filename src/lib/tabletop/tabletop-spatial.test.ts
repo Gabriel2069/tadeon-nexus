@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   createTabletopStructure,
+  structureChannels,
   structureCollision,
   structureFamily,
   structureStateOptions,
@@ -31,6 +32,22 @@ describe("tabletop spatial architecture", () => {
     expect(structureCollision("window_closed")).toEqual({
       blocksVision: false,
       blocksMovement: true,
+    });
+  });
+
+  it("makes window light channels follow state even with stale persisted values", () => {
+    const stale = { blocksLight: false, lightTransmission: 0.82 };
+    expect(structureChannels("window_closed", stale)).toMatchObject({
+      blocksLight: true,
+      lightTransmission: 0,
+    });
+    expect(structureChannels("window_open", stale)).toMatchObject({
+      blocksLight: false,
+      lightTransmission: 0.86,
+    });
+    expect(structureChannels("window_broken", stale)).toMatchObject({
+      blocksLight: false,
+      lightTransmission: 0.98,
     });
   });
 

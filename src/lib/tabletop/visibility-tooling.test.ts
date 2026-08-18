@@ -5,6 +5,7 @@ import {
   hitTestTabletopFog,
   hitTestTabletopLight,
   tabletopFogBounds,
+  tabletopLightRadiusHandlePoint,
   transformTabletopFog,
   transformTabletopLight,
 } from "./visibility-tooling";
@@ -153,14 +154,35 @@ describe("edição direta de luz", () => {
     castsShadows: true,
   };
 
-  it("distingue o centro e a alça de alcance da luz selecionada", () => {
+  it("oferece um alvo central confortável sem tornar toda a área iluminada clicável", () => {
     expect(hitTestTabletopLight({ x: 121, y: 91 }, [light], 8)).toEqual({
       id: "light-1",
       handle: "body",
     });
+    expect(hitTestTabletopLight({ x: 137, y: 90 }, [light], 8)).toEqual({
+      id: "light-1",
+      handle: "body",
+    });
+    expect(hitTestTabletopLight({ x: 170, y: 90 }, [light], 8)).toBeNull();
+  });
+
+  it("alinha a alça de alcance à direção visual da luz", () => {
+    const rotated = {
+      ...light,
+      properties: { direction: 90, shape: "cone" as const },
+    };
+    expect(tabletopLightRadiusHandlePoint(rotated)).toEqual({ x: 120, y: 170 });
     expect(
-      hitTestTabletopLight({ x: 201, y: 90 }, [light], 8, "light-1"),
-    ).toEqual({ id: "light-1", handle: "radius" });
+      hitTestTabletopLight({ x: 120, y: 169 }, [rotated], 8, rotated.id),
+    ).toEqual({ id: rotated.id, handle: "radius" });
+  });
+
+  it("prioriza a luz mais recente quando centros se sobrepõem", () => {
+    const newer = { ...light, id: "light-2", x: 124 };
+    expect(hitTestTabletopLight({ x: 124, y: 90 }, [light, newer], 8)).toEqual({
+      id: "light-2",
+      handle: "body",
+    });
   });
 
   it("move com snap e redimensiona sem ultrapassar os limites persistidos", () => {
