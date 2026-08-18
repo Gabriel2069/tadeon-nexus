@@ -4,6 +4,7 @@ import { describe, expect, it } from "vitest";
 const root = readFileSync("src/routes/__root.tsx", "utf8");
 const css = readFileSync("src/styles/nav-sheet-search-polish-162.css", "utf8");
 const finalCss = readFileSync("src/styles/final-nav-search-polish-196.css", "utf8");
+const runtimeCss = readFileSync("src/styles/runtime-ui-repair-198.css", "utf8");
 const sheet = readFileSync("src/routes/sheet.$id.tsx", "utf8");
 const search = readFileSync("src/components/global-search.tsx", "utf8");
 
@@ -67,9 +68,10 @@ describe("nav/sheet/search polish 162", () => {
     expect(search).toContain("window.visualViewport");
     expect(search).toContain('contentClassName="tadeon-global-search-dialog"');
     expect(search).toContain('commandClassName="tadeon-global-search-command"');
-    expect(finalCss).toContain("--tadeon-search-vv-width");
-    expect(finalCss).toContain("--tadeon-search-vv-height");
-    expect(finalCss).toContain("overflow: hidden !important");
+    expect(runtimeCss).toContain("--tadeon-search-vv-width");
+    expect(runtimeCss).toContain("--tadeon-search-vv-height");
+    expect(runtimeCss).toContain("overflow: hidden !important");
+    expect(runtimeCss).toContain("transform: none !important");
     expect(finalCss).toContain(".tadeon-global-search-command .tadeon-command-footer");
     expect(finalCss).toContain("flex: 1 1 auto !important");
   });
