@@ -26,12 +26,19 @@ describe("mobile runtime parity 180", () => {
   });
 
   it("publishes visualViewport bounds and follows virtual keyboard changes", () => {
-    const bridge = source("src/components/mobile-more-radial-bridge.tsx");
-    expect(bridge).toContain("window.visualViewport");
-    expect(bridge).toContain('root.style.setProperty("--tadeon-vv-height"');
-    expect(bridge).toContain('root.dataset.tadeonKeyboard = keyboardInset > 120 ? "open" : "closed"');
-    expect(bridge).toContain('viewport?.addEventListener("resize", sync)');
-    expect(bridge).toContain('document.addEventListener("focusin", keepFocusedControlVisible)');
+    const viewport = source("src/components/visual-viewport-bridge.tsx");
+    expect(viewport).toContain("window.visualViewport");
+    expect(viewport).toContain('root.style.setProperty("--tadeon-vv-height"');
+    expect(viewport).toContain('root.dataset.tadeonKeyboard = keyboardInset > 120 ? "open" : "closed"');
+    expect(viewport).toContain('viewport?.addEventListener("resize", sync)');
+    expect(viewport).toContain('document.addEventListener("focusin", keepFocusedControlVisible)');
+  });
+
+  it("mounts keyboard protection in normal and dedicated protected shells", () => {
+    const shell = source("src/components/protected-shell.tsx");
+    expect(shell).toContain('import { VisualViewportBridge } from "@/components/visual-viewport-bridge"');
+    expect(shell).toContain("<VisualViewportBridge />");
+    expect(shell.indexOf("<VisualViewportBridge />")).toBeLessThan(shell.indexOf("{!dedicated && ("));
   });
 
   it("keeps Create Sheet and shared overlays inside the visible keyboard-safe area", () => {
