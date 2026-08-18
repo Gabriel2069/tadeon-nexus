@@ -86,3 +86,77 @@
     transition-duration: .001ms !important;
   }
 }
+
+/* #166: restore the authored Master/Backup symbols after #160 disabled their masks. */
+.tadeon-nav-item:is([href="/master-panel"], [href="/nexus-tools"]) .tadeon-nav-item__icon > svg {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+}
+
+.tadeon-nav-item:is([href="/master-panel"], [href="/nexus-tools"]) .tadeon-nav-item__icon::after {
+  display: none !important;
+  content: none !important;
+}
+
+.tadeon-nav-item:is([href="/master-panel"], [href="/nexus-tools"]) .tadeon-nav-item__icon::before {
+  display: block !important;
+  width: 1rem !important;
+  height: 1rem !important;
+  flex: 0 0 auto !important;
+  background: currentColor !important;
+  opacity: .92 !important;
+  filter: none !important;
+  transform: none !important;
+  content: "" !important;
+  transition: background-color 180ms var(--ease-out), filter 180ms var(--ease-out), transform 180ms var(--ease-out) !important;
+}
+
+.tadeon-nav-item[href="/master-panel"] .tadeon-nav-item__icon::before,
+.tadeon-mobile-dock__item[href="/master-panel"]::before {
+  -webkit-mask: center / contain no-repeat url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.55' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='8.25' stroke-dasharray='9 3.4 2.2 4.3' opacity='.72'/%3E%3Cpath d='M12 2.8v4.1M12 17.1v4.1M2.8 12h4.1M17.1 12h4.1'/%3E%3Cpath d='m8.55 12 3.45-3.45L15.45 12 12 15.45 8.55 12Z'/%3E%3Cpath d='M6.05 6.35 9.6 9.6M17.95 6.35 14.4 9.6M6.05 17.65l3.55-3.25M17.95 17.65l-3.55-3.25'/%3E%3Ccircle cx='6.05' cy='6.35' r='.85'/%3E%3Ccircle cx='17.95' cy='6.35' r='.85'/%3E%3Ccircle cx='6.05' cy='17.65' r='.85'/%3E%3Ccircle cx='17.95' cy='17.65' r='.85'/%3E%3Ccircle cx='12' cy='12' r='1.15' fill='black' stroke='none'/%3E%3C/svg%3E") !important;
+  mask: center / contain no-repeat url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.55' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='8.25' stroke-dasharray='9 3.4 2.2 4.3' opacity='.72'/%3E%3Cpath d='M12 2.8v4.1M12 17.1v4.1M2.8 12h4.1M17.1 12h4.1'/%3E%3Cpath d='m8.55 12 3.45-3.45L15.45 12 12 15.45 8.55 12Z'/%3E%3Cpath d='M6.05 6.35 9.6 9.6M17.95 6.35 14.4 9.6M6.05 17.65l3.55-3.25M17.95 17.65l-3.55-3.25'/%3E%3Ccircle cx='6.05' cy='6.35' r='.85'/%3E%3Ccircle cx='17.95' cy='6.35' r='.85'/%3E%3Ccircle cx='6.05' cy='17.65' r='.85'/%3E%3Ccircle cx='17.95' cy='17.65' r='.85'/%3E%3Ccircle cx='12' cy='12' r='1.15' fill='black' stroke='none'/%3E%3C/svg%3E") !important;
+}
+
+.tadeon-nav-item[href="/nexus-tools"] .tadeon-nav-item__icon::before {
+  -webkit-mask: center / contain no-repeat url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M21 8a2 2 0 0 0-2-2h-2V4a2 2 0 0 0-2-2H9a2 2 0 0 0-2 2v2H5a2 2 0 0 0-2 2v11a3 3 0 0 0 3 3h12a3 3 0 0 0 3-3Z'/%3E%3Cpath d='M9 6h6M8 12h8M8 16h5'/%3E%3C/svg%3E") !important;
+  mask: center / contain no-repeat url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M21 8a2 2 0 0 0-2-2h-2V4a2 2 0 0 0-2-2H9a2 2 0 0 0-2 2v2H5a2 2 0 0 0-2 2v11a3 3 0 0 0 3 3h12a3 3 0 0 0 3-3Z'/%3E%3Cpath d='M9 6h6M8 12h8M8 16h5'/%3E%3C/svg%3E") !important;
+}
+
+.tadeon-nav-item:is([href="/master-panel"], [href="/nexus-tools"]):hover .tadeon-nav-item__icon::before {
+  opacity: 1 !important;
+  transform: translateY(-1px) scale(1.08) rotate(-2deg) !important;
+  filter: drop-shadow(0 0 7px rgb(var(--nav-accent-rgb) / 24%)) !important;
+}
+
+.tadeon-nav-item:is([href="/master-panel"], [href="/nexus-tools"])[aria-current="page"] .tadeon-nav-item__icon::before {
+  background: var(--nav-accent) !important;
+  opacity: 1 !important;
+  transform: translateY(-1px) scale(1.06) !important;
+  filter: drop-shadow(0 0 9px rgb(var(--nav-accent-rgb) / 38%)) !important;
+}
+
+.tadeon-mobile-dock__item[href="/master-panel"] > svg {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+}
+
+.tadeon-mobile-dock__item[href="/master-panel"]::before {
+  display: block !important;
+  width: 1.25rem !important;
+  height: 1.25rem !important;
+  flex: 0 0 auto !important;
+  margin: 0 !important;
+  background: currentColor !important;
+  opacity: .92 !important;
+  content: "" !important;
+  transition: background-color var(--motion-fast) var(--ease-out), filter var(--motion-fast) var(--ease-out), transform var(--motion-fast) var(--ease-out) !important;
+}
+
+.tadeon-mobile-dock__item[href="/master-panel"][aria-current="page"]::before {
+  background: var(--nav-accent) !important;
+  opacity: 1 !important;
+  filter: drop-shadow(0 0 8px rgb(var(--nav-accent-rgb) / 34%)) !important;
+  transform: translateY(-1px) scale(1.06) !important;
+}
