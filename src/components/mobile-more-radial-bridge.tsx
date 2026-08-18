@@ -5,6 +5,7 @@ import { CloudOff, Users, Wrench, X } from "lucide-react";
 import { useAuth } from "@/lib/auth";
 import { isApplicationAdministrator } from "@/lib/permissions";
 import "@/styles/mobile-more-radial.css";
+import "@/styles/mobile-runtime-parity-180.css";
 
 const MORE_TRIGGER_SELECTOR = ".tadeon-mobile-dock > button.tadeon-mobile-dock__item";
 
