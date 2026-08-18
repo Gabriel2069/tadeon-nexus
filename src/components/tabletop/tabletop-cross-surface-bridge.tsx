@@ -3,6 +3,12 @@ import { createPortal } from "react-dom";
 import { GripVertical } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
+import {
+  clearTabletopTransfer,
+  queueTabletopTransfer,
+  readTabletopTransfer,
+  type CrossSurfaceTransfer,
+} from "@/lib/cross-surface-transfer";
 
 const NEXUS_MIME = "application/x-tadeon-nexus-node";
 const SHEET_MIME = "application/x-tadeon-sheet";
@@ -57,6 +63,50 @@ function parsePayload(raw: string) {
   }
 }
 
+function addTransfer(runtime: LightweightTabletopRuntime, transfer: CrossSurfaceTransfer, point: RuntimePoint) {
+  const gridSize = runtime.snapshot().scene.gridSize;
+  if (transfer.kind === "sheet") {
+    runtime.engine.addEntityAt(
+      {
+        type: "character",
+        label: transfer.label.trim() || "Personagem",
+        width: gridSize,
+        height: gridSize,
+        linkedSheetId: transfer.id,
+        properties: {
+          integration_source: "sheet",
+          integration_linked_at: new Date().toISOString(),
+        },
+      },
+      point,
+    );
+    return "Ficha adicionada à Mesa como personagem vinculado.";
+  }
+
+  runtime.engine.addEntityAt(
+    {
+      type: "note",
+      label: transfer.label.trim() || "Página do Nexus",
+      width: gridSize * 1.5,
+      height: gridSize,
+      linkedKnowledgeNodeId: transfer.id,
+      properties: {
+        integration_source: "nexus",
+        integration_linked_at: new Date().toISOString(),
+      },
+    },
+    point,
+  );
+  return "Página do Nexus adicionada à Mesa com vínculo preservado.";
+}
+
+function stageCenter() {
+  const stage = document.querySelector<HTMLElement>(".tadeon-tabletop-stage");
+  if (!stage) return { x: window.innerWidth / 2, y: window.innerHeight / 2 };
+  const rect = stage.getBoundingClientRect();
+  return { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 };
+}
+
 function useSheetDragSource() {
   const match = typeof window === "undefined" ? null : window.location.pathname.match(SHEET_PATH);
   const sheetId = match?.[1] ?? null;
@@ -97,7 +147,15 @@ function useSheetDragSource() {
       type="button"
       draggable
       className="tadeon-sheet-tabletop-drag"
-      title="Arraste esta ficha para uma Mesa aberta para criar um token vinculado"
+      title="Arraste para uma Mesa aberta ou toque para levar esta ficha à Mesa"
+      onClick={() => {
+        const queued = queueTabletopTransfer({ kind: "sheet", id: sheetId, label: name });
+        if (!queued) {
+          toast.error("Não foi possível preparar a ficha para a Mesa neste navegador.");
+          return;
+        }
+        window.location.assign("/tabletop");
+      }}
       onDragStart={(event) => {
         const payload = JSON.stringify({ id: sheetId, label: name });
         event.dataTransfer.setData(SHEET_MIME, payload);
@@ -114,6 +172,7 @@ function useSheetDragSource() {
 function useTabletopDropTarget() {
   useEffect(() => {
     if (window.location.pathname !== "/tabletop") return;
+
     const dragOver = (event: DragEvent) => {
       const types = event.dataTransfer?.types ?? [];
       if (!types.includes(NEXUS_MIME) && !types.includes(SHEET_MIME)) return;
@@ -135,44 +194,41 @@ function useTabletopDropTarget() {
       event.preventDefault();
       event.stopPropagation();
       const point = runtime.clientToWorld({ x: event.clientX, y: event.clientY });
+
       if (sheetRaw) {
         const payload = parsePayload(sheetRaw);
         if (!payload?.id) return;
-        runtime.engine.addEntityAt(
-          {
-            type: "character",
-            label: payload.label?.trim() || "Personagem",
-            width: runtime.snapshot().scene.gridSize,
-            height: runtime.snapshot().scene.gridSize,
-            linkedSheetId: payload.id,
-            properties: {
-              integration_source: "sheet",
-              integration_linked_at: new Date().toISOString(),
+        toast.success(
+          addTransfer(
+            runtime,
+            {
+              kind: "sheet",
+              id: payload.id,
+              label: payload.label?.trim() || "Personagem",
+              createdAt: Date.now(),
             },
-          },
-          point,
+            point,
+          ),
         );
-        toast.success("Ficha adicionada à Mesa como personagem vinculado.");
         return;
       }
+
       const payload = parsePayload(nexusRaw);
       if (!payload?.id) return;
-      runtime.engine.addEntityAt(
-        {
-          type: "note",
-          label: payload.label?.trim() || "Página do Nexus",
-          width: runtime.snapshot().scene.gridSize * 1.5,
-          height: runtime.snapshot().scene.gridSize,
-          linkedKnowledgeNodeId: payload.id,
-          properties: {
-            integration_source: "nexus",
-            integration_linked_at: new Date().toISOString(),
+      toast.success(
+        addTransfer(
+          runtime,
+          {
+            kind: "nexus",
+            id: payload.id,
+            label: payload.label?.trim() || "Página do Nexus",
+            createdAt: Date.now(),
           },
-        },
-        point,
+          point,
+        ),
       );
-      toast.success("Página do Nexus adicionada à Mesa com vínculo preservado.");
     };
+
     document.addEventListener("dragover", dragOver, true);
     document.addEventListener("dragleave", dragLeave, true);
     document.addEventListener("drop", drop, true);
@@ -182,6 +238,39 @@ function useTabletopDropTarget() {
       document.removeEventListener("drop", drop, true);
       delete document.documentElement.dataset.tadeonTabletopDrop;
     };
+  }, []);
+
+  useEffect(() => {
+    if (window.location.pathname !== "/tabletop") return;
+    const transfer = readTabletopTransfer();
+    if (!transfer) return;
+
+    let attempts = 0;
+    const timer = window.setInterval(() => {
+      const runtime = currentRuntime();
+      attempts += 1;
+      if (!runtime) {
+        if (attempts >= 120) {
+          window.clearInterval(timer);
+          toast.error("A Mesa abriu, mas ainda não ficou pronta para receber o item.");
+        }
+        return;
+      }
+
+      const clientPoint = stageCenter();
+      const worldPoint = runtime.clientToWorld(clientPoint);
+      try {
+        const message = addTransfer(runtime, transfer, worldPoint);
+        clearTabletopTransfer();
+        window.clearInterval(timer);
+        toast.success(message);
+      } catch {
+        window.clearInterval(timer);
+        toast.error("A Mesa não conseguiu inserir o item transferido.");
+      }
+    }, 100);
+
+    return () => window.clearInterval(timer);
   }, []);
 }
 
