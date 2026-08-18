@@ -5,7 +5,7 @@ function source(path: string) {
   return readFileSync(path, "utf8");
 }
 
-describe("master panel navigation fit 185", () => {
+describe("master panel navigation fit 185/186", () => {
   it("loads the final fit authority after workspace polish", () => {
     const component = source("src/components/master/master-panel-navigation.tsx");
     const base = component.indexOf('import "@/styles/workspace-polish.css"');
@@ -14,29 +14,34 @@ describe("master panel navigation fit 185", () => {
     expect(fit).toBeGreaterThan(base);
   });
 
-  it("keeps the navigation inside the workspace instead of sizing the scroller to its contents", () => {
+  it("separates the stationary frame from the horizontally scrolling button rail", () => {
+    const component = source("src/components/master/master-panel-navigation.tsx");
     const css = source("src/styles/master-panel-navigation-fit-185.css");
-    expect(css).toContain(".tadeon-master-navigation-slot");
-    expect(css).toContain("width: 100% !important");
-    expect(css).toContain("max-width: 100% !important");
+    expect(component).toContain('className="tadeon-master-navigation__scroller"');
+    expect(component).toContain('className="tadeon-master-navigation__rail overflow-x-auto overscroll-x-contain"');
+    expect(css).toContain(".tadeon-master-navigation__scroller {");
+    expect(css).toContain("overflow: hidden !important");
+    expect(css).toContain(".tadeon-master-navigation__rail {");
     expect(css).toContain("overflow-x: auto !important");
   });
 
-  it("uses complete wrapped groups on desktop and a padded horizontal rail on compact screens", () => {
+  it("keeps desktop wrapping while compact screens slide only the internal rail", () => {
     const css = source("src/styles/master-panel-navigation-fit-185.css");
     expect(css).toContain("@media (min-width: 1024px)");
     expect(css).toContain("flex-wrap: wrap !important");
     expect(css).toContain("justify-content: center !important");
     expect(css).toContain("@media (max-width: 1023px)");
     expect(css).toContain("flex-wrap: nowrap !important");
-    expect(css).toContain("scroll-snap-align: start");
+    expect(css).toContain("scroll-behavior: smooth");
+    expect(css).toContain("animation: tadeon-master-nav-rail-settle 240ms var(--ease-out) both");
   });
 
-  it("preserves safe-area breathing room so edge groups are not visually clipped", () => {
+  it("preserves the existing button interaction contract and compact safe areas", () => {
+    const component = source("src/components/master/master-panel-navigation.tsx");
     const css = source("src/styles/master-panel-navigation-fit-185.css");
+    expect(component).toContain('className="gap-1.5 text-xs data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"');
+    expect(css).not.toContain("[data-slot=\"tabs-trigger\"]:active");
     expect(css).toContain("env(safe-area-inset-left)");
     expect(css).toContain("env(safe-area-inset-right)");
-    expect(css).toContain("padding-right: max(.8rem, env(safe-area-inset-right))");
-    expect(css).toContain("padding-left: max(.8rem, env(safe-area-inset-left))");
   });
 });
