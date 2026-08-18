@@ -6,8 +6,7 @@ import { useAuth } from "@/lib/auth";
 import { isApplicationAdministrator } from "@/lib/permissions";
 import "@/styles/mobile-more-radial.css";
 
-const MORE_TRIGGER_SELECTOR =
-  '.tadeon-mobile-dock button.tadeon-mobile-dock__item[aria-controls="tadeon-mobile-navigation"]';
+const MORE_TRIGGER_SELECTOR = ".tadeon-mobile-dock > button.tadeon-mobile-dock__item";
 
 const MASTER_MORE_ITEMS = [
   { to: "/offline", label: "Offline", icon: CloudOff, position: "is-left" },
