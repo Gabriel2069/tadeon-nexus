@@ -36,7 +36,8 @@ describe("dedicated workspace parity 168", () => {
     expect(tabletopBridge).toContain('window.location.pathname === "/tabletop"');
     expect(tabletopBridge).toContain('params.set("popout", "1")');
     expect(tabletopBridge).toContain('params.delete("view")');
-    expect(tabletopBridge).toContain(".tadeon-tabletop-toolbar");
+    expect(tabletopBridge).toContain('".tadeon-desktop-toolbar > div:last-child"');
+    expect(tabletopBridge).not.toContain('".tadeon-tabletop-reliability-strip"');
     expect(tabletopBridge).toContain("Abrir Mesa em janela independente");
   });
 });
