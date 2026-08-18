@@ -3,20 +3,34 @@ import type { TabletopLight, TabletopWall } from "./tabletop-visibility-service"
 
 export interface VisibilityPoint { x: number; y: number }
 
+interface RaySegmentHit {
+  distance: number;
+  segmentPosition: number;
+}
+
+function raySegmentHit(
+  origin: VisibilityPoint,
+  direction: VisibilityPoint,
+  wall: Pick<TabletopWall, "x1" | "y1" | "x2" | "y2">,
+): RaySegmentHit | null {
+  const segment = { x: wall.x2 - wall.x1, y: wall.y2 - wall.y1 };
+  const denominator = direction.x * segment.y - direction.y * segment.x;
+  if (Math.abs(denominator) < 1e-9) return null;
+  const offset = { x: wall.x1 - origin.x, y: wall.y1 - origin.y };
+  const distance = (offset.x * segment.y - offset.y * segment.x) / denominator;
+  const segmentPosition =
+    (offset.x * direction.y - offset.y * direction.x) / denominator;
+  return distance >= 0 && segmentPosition >= 0 && segmentPosition <= 1
+    ? { distance, segmentPosition }
+    : null;
+}
+
 function raySegmentDistance(
   origin: VisibilityPoint,
   direction: VisibilityPoint,
   wall: Pick<TabletopWall, "x1" | "y1" | "x2" | "y2">,
 ) {
-  const segment = { x: wall.x2 - wall.x1, y: wall.y2 - wall.y1 };
-  const denominator = direction.x * segment.y - direction.y * segment.x;
-  if (Math.abs(denominator) < 1e-9) return null;
-  const offset = { x: wall.x1 - origin.x, y: wall.y1 - origin.y };
-  const rayDistance = (offset.x * segment.y - offset.y * segment.x) / denominator;
-  const segmentPosition = (offset.x * direction.y - offset.y * direction.x) / denominator;
-  return rayDistance >= 0 && segmentPosition >= 0 && segmentPosition <= 1
-    ? rayDistance
-    : null;
+  return raySegmentHit(origin, direction, wall)?.distance ?? null;
 }
 
 function normalizedAngleDelta(angle: number, reference: number) {
@@ -89,11 +103,127 @@ function wallRelevantToLight(
   return lightElevation <= base + height + 0.5;
 }
 
+/**
+ * Base transmission by authored structure state. Window state is authoritative:
+ * a stale channel persisted by an earlier state must not make a closed pane leak
+ * light or make an open/broken pane behave as the old state.
+ */
 export function tabletopWallLightTransmission(wall: TabletopWall) {
+  if (wall.wallType === "door_open") return 1;
+  if (wall.wallType === "window_closed") return 0;
+  if (wall.wallType === "window_open") return 0.86;
+  if (wall.wallType === "window_broken") return 0.98;
   const channels = structureChannels(wall.wallType, wall.properties);
-  if (wall.wallType === "door_open" || wall.wallType === "window_open" || wall.wallType === "window_broken") return 1;
   if (!channels.blocksLight) return channels.lightTransmission;
   return Math.min(channels.lightTransmission, 0.06);
+}
+
+function stableWallPhase(id: string) {
+  let hash = 2166136261;
+  for (let index = 0; index < id.length; index += 1) {
+    hash ^= id.charCodeAt(index);
+    hash = Math.imul(hash, 16777619);
+  }
+  return ((hash >>> 0) % 10_000) / 10_000;
+}
+
+function tabletopWallLightTransmissionAt(
+  wall: TabletopWall,
+  segmentPosition: number,
+) {
+  const base = tabletopWallLightTransmission(wall);
+  const t = Math.max(0, Math.min(1, segmentPosition));
+  if (wall.wallType === "window_open") {
+    // Broad, smooth profile: center of the opening stays brighter while the
+    // jambs soften the beam. The continuity across t avoids banding/flicker.
+    const aperture = Math.max(0, Math.sin(Math.PI * t));
+    const diffusion = 0.82 + 0.18 * Math.sqrt(aperture);
+    return base * diffusion;
+  }
+  if (wall.wallType === "window_broken") {
+    // Stable multi-frequency modulation gives broken glass a mostly-clear beam
+    // with small irregular shadows. It is deterministic for a wall and position.
+    const phase = stableWallPhase(wall.id) * Math.PI * 2;
+    const fracture =
+      0.94 +
+      0.06 *
+        (0.5 +
+          0.5 *
+            Math.sin(t * Math.PI * 31 + phase) *
+            Math.cos(t * Math.PI * 17 + phase * 1.73));
+    return Math.min(1, base * fracture);
+  }
+  return base;
+}
+
+export interface TabletopLightRayOptics {
+  transmission: number;
+  diffusion: number;
+  irregularity: number;
+  firstAffectedDistance: number | null;
+}
+
+/**
+ * Optical response along one finite light ray. Besides scalar transmission this
+ * exposes material character so renderers can soften open windows and preserve
+ * deterministic broken-glass irregularity without changing collision semantics.
+ */
+export function lightOpticsAlongRay(
+  origin: VisibilityPoint,
+  target: VisibilityPoint,
+  walls: TabletopWall[],
+  lightElevation = 0,
+): TabletopLightRayOptics {
+  const length = Math.hypot(target.x - origin.x, target.y - origin.y);
+  if (length < 1e-6)
+    return {
+      transmission: 1,
+      diffusion: 0,
+      irregularity: 0,
+      firstAffectedDistance: null,
+    };
+  const direction = {
+    x: (target.x - origin.x) / length,
+    y: (target.y - origin.y) / length,
+  };
+  const crossed = walls
+    .filter((wall) => wallRelevantToLight(wall, lightElevation))
+    .map((wall) => ({ wall, hit: raySegmentHit(origin, direction, wall) }))
+    .filter(
+      (entry): entry is { wall: TabletopWall; hit: RaySegmentHit } =>
+        entry.hit !== null && entry.hit.distance < length * 0.985,
+    )
+    .sort((left, right) => left.hit.distance - right.hit.distance);
+
+  let transmission = 1;
+  let diffusion = 0;
+  let irregularity = 0;
+  let firstAffectedDistance: number | null = null;
+  for (const { wall, hit } of crossed) {
+    const wallTransmission = tabletopWallLightTransmissionAt(
+      wall,
+      hit.segmentPosition,
+    );
+    if (wallTransmission < 0.995 && firstAffectedDistance === null)
+      firstAffectedDistance = hit.distance;
+    if (wall.wallType === "window_open") diffusion = Math.max(diffusion, 0.72);
+    if (wall.wallType === "window_broken")
+      irregularity = Math.max(irregularity, 0.28);
+    transmission *= wallTransmission;
+    if (transmission <= 0.02)
+      return {
+        transmission: 0,
+        diffusion,
+        irregularity,
+        firstAffectedDistance,
+      };
+  }
+  return {
+    transmission: Math.max(0, Math.min(1, transmission)),
+    diffusion,
+    irregularity,
+    firstAffectedDistance,
+  };
 }
 
 export function tabletopWallVisionTransmission(wall: TabletopWall) {
@@ -168,9 +298,8 @@ export function buildVisibilityPolygon(
 }
 
 /**
- * Returns transmissive structures crossed by a ray. Used by renderers and
- * previews to make glass, smoke-like barriers and force fields visibly alter
- * light without treating them as opaque walls.
+ * Returns the scalar component of the optical response. Kept as the lightweight
+ * API for callers that do not need diffusion/irregularity metadata.
  */
 export function lightTransmissionAlongRay(
   origin: VisibilityPoint,
@@ -178,27 +307,5 @@ export function lightTransmissionAlongRay(
   walls: TabletopWall[],
   lightElevation = 0,
 ) {
-  const length = Math.hypot(target.x - origin.x, target.y - origin.y);
-  if (length < 1e-6) return 1;
-  const direction = {
-    x: (target.x - origin.x) / length,
-    y: (target.y - origin.y) / length,
-  };
-  const crossed = walls
-    .filter((wall) => wallRelevantToLight(wall, lightElevation))
-    .map((wall) => ({
-      wall,
-      distance: raySegmentDistance(origin, direction, wall),
-    }))
-    .filter(
-      (entry): entry is { wall: TabletopWall; distance: number } =>
-        entry.distance !== null && entry.distance < length * 0.985,
-    )
-    .sort((left, right) => left.distance - right.distance);
-  let transmission = 1;
-  for (const { wall } of crossed) {
-    transmission *= tabletopWallLightTransmission(wall);
-    if (transmission <= 0.02) return 0;
-  }
-  return Math.max(0, Math.min(1, transmission));
+  return lightOpticsAlongRay(origin, target, walls, lightElevation).transmission;
 }
