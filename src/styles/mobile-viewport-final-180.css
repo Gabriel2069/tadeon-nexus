@@ -1,0 +1,170 @@
+/* #180: final mobile dock parity + visual viewport contract. */
+
+:root {
+  --tadeon-vv-top: 0px;
+  --tadeon-vv-left: 0px;
+  --tadeon-vv-width: 100vw;
+  --tadeon-vv-height: 100dvh;
+  --tadeon-vv-center-x: 50vw;
+  --tadeon-keyboard-inset: 0px;
+}
+
+/* Mestre keeps its authored mark, but the button itself is now exactly the
+   canonical dock item. Old pseudo-icon layers are explicitly retired. */
+.tadeon-mobile-dock .tadeon-mobile-dock__item[href="/master-panel"] {
+  gap: .24rem !important;
+}
+
+.tadeon-mobile-dock .tadeon-mobile-dock__item[href="/master-panel"] > svg {
+  display: block !important;
+  visibility: visible !important;
+  width: 1.25rem !important;
+  height: 1.25rem !important;
+  flex: 0 0 auto !important;
+  margin: 0 !important;
+  color: currentColor !important;
+  opacity: 1 !important;
+  filter: none !important;
+  transform: none !important;
+  transform-origin: center !important;
+}
+
+.tadeon-mobile-dock .tadeon-mobile-dock__item[href="/master-panel"]::before {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+  background: none !important;
+  -webkit-mask: none !important;
+  mask: none !important;
+  opacity: 0 !important;
+  filter: none !important;
+  transform: none !important;
+  content: none !important;
+}
+
+.tadeon-mobile-dock .tadeon-mobile-dock__item[href="/master-panel"] > span {
+  margin: 0 !important;
+  line-height: 1 !important;
+}
+
+.tadeon-mobile-dock .tadeon-mobile-dock__item[href="/master-panel"][aria-current="page"] > svg {
+  color: var(--section-accent) !important;
+  filter: drop-shadow(0 0 8px rgb(var(--section-accent-rgb) / 28%)) !important;
+  transform: translateY(-1px) !important;
+}
+
+.tadeon-mobile-dock .tadeon-mobile-dock__item[href="/master-panel"]:not([aria-current="page"])::after {
+  display: none !important;
+  content: none !important;
+}
+
+.tadeon-mobile-dock .tadeon-mobile-dock__item[href="/master-panel"][aria-current="page"]::after {
+  position: absolute !important;
+  bottom: .2rem !important;
+  display: block !important;
+  width: 1rem !important;
+  height: 2px !important;
+  border-radius: 99px !important;
+  background: var(--section-accent) !important;
+  box-shadow: 0 0 10px rgb(var(--section-accent-rgb) / 45%) !important;
+  opacity: 1 !important;
+  transform: none !important;
+  content: "" !important;
+}
+
+/* Create Sheet is never vertically centered on compact/tablet viewports.
+   It is pinned inside the actual visible viewport so tall content cannot leave
+   the screen before or after the software keyboard opens. */
+@media (max-width: 1180px) {
+  [data-slot="dialog-content"]:has(#sheet-name) {
+    box-sizing: border-box !important;
+    top: calc(var(--tadeon-vv-top, 0px) + max(.65rem, env(safe-area-inset-top))) !important;
+    right: auto !important;
+    bottom: auto !important;
+    left: var(--tadeon-vv-center-x, 50vw) !important;
+    width: min(32rem, calc(var(--tadeon-vv-width, 100vw) - 1.3rem)) !important;
+    min-width: 0 !important;
+    max-width: calc(var(--tadeon-vv-width, 100vw) - 1.3rem) !important;
+    max-height: calc(
+      var(--tadeon-vv-height, 100dvh) - max(.65rem, env(safe-area-inset-top)) - max(.65rem, env(safe-area-inset-bottom))
+    ) !important;
+    margin: 0 !important;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+    overscroll-behavior: contain;
+    scrollbar-gutter: stable;
+    scroll-padding-block: .75rem;
+    transform: translateX(-50%) !important;
+    transform-origin: center top !important;
+    animation-name: tadeon-dialog-opacity-only-163 !important;
+  }
+
+  [data-slot="dialog-content"]:has(#sheet-name) form,
+  [data-slot="dialog-content"]:has(#sheet-name) form > *,
+  [data-slot="dialog-content"]:has(#sheet-name) [data-slot="select-trigger"] {
+    box-sizing: border-box;
+    min-width: 0 !important;
+    max-width: 100% !important;
+  }
+}
+
+/* When a software keyboard reduces the visual viewport, every dialog switches
+   from layout-viewport centering to the actual visible rectangle. This covers
+   Search, Create Sheet, account/install dialogs and other dialog primitives. */
+html[data-tadeon-keyboard-open="true"] [data-slot="dialog-content"] {
+  box-sizing: border-box !important;
+  top: calc(var(--tadeon-vv-top, 0px) + max(.5rem, env(safe-area-inset-top))) !important;
+  right: auto !important;
+  bottom: auto !important;
+  left: var(--tadeon-vv-center-x, 50vw) !important;
+  width: min(42rem, calc(var(--tadeon-vv-width, 100vw) - 1rem)) !important;
+  min-width: 0 !important;
+  max-width: calc(var(--tadeon-vv-width, 100vw) - 1rem) !important;
+  max-height: calc(
+    var(--tadeon-vv-height, 100dvh) - max(.5rem, env(safe-area-inset-top)) - max(.5rem, env(safe-area-inset-bottom))
+  ) !important;
+  margin: 0 !important;
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+  overscroll-behavior: contain;
+  scrollbar-gutter: stable;
+  scroll-padding-block: .75rem;
+  transform: translateX(-50%) !important;
+  transform-origin: center top !important;
+}
+
+html[data-tadeon-keyboard-open="true"] [data-slot="dialog-content"] > *,
+html[data-tadeon-keyboard-open="true"] [data-slot="dialog-content"] form,
+html[data-tadeon-keyboard-open="true"] [data-slot="dialog-content"] form > * {
+  box-sizing: border-box;
+  min-width: 0 !important;
+  max-width: 100% !important;
+}
+
+/* Floating menu primitives keep their internal scroll inside the visible
+   keyboard-safe height instead of extending behind the keyboard. */
+html[data-tadeon-keyboard-open="true"] :is(
+  [data-slot="select-content"],
+  [data-slot="popover-content"],
+  [data-slot="dropdown-menu-content"],
+  [data-slot="command-list"]
+) {
+  max-width: calc(var(--tadeon-vv-width, 100vw) - 1rem) !important;
+  max-height: calc(var(--tadeon-vv-height, 100dvh) - 1rem) !important;
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+  overscroll-behavior: contain;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tadeon-mobile-dock .tadeon-mobile-dock__item[href="/master-panel"] > svg {
+    transition: none !important;
+    transform: none !important;
+  }
+
+  [data-slot="dialog-content"]:has(#sheet-name),
+  html[data-tadeon-keyboard-open="true"] [data-slot="dialog-content"] {
+    animation: none !important;
+    transition-duration: .01ms !important;
+  }
+}
