@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import "@/styles/ui-coherence-192.css";
 
 function queryFlag(name: string) {
   if (typeof window === "undefined") return false;
@@ -14,10 +15,10 @@ function dedicatedUrl() {
   return `${window.location.pathname}?${params.toString()}`;
 }
 
-function openMasterPopout() {
+function openWorkspacePopout(path: string) {
   const popup = window.open(
     dedicatedUrl(),
-    "tadeon-workspace-master-panel",
+    `tadeon-workspace-${path.slice(1) || "workspace"}`,
     "popup=yes,width=1180,height=860,resizable=yes,scrollbars=yes,noopener=yes",
   );
   if (popup) popup.opener = null;
@@ -25,10 +26,8 @@ function openMasterPopout() {
 
 export function MasterToolbarPopoutBridge() {
   const [host, setHost] = useState<HTMLElement | null>(null);
-  const eligible =
-    typeof window !== "undefined" &&
-    window.location.pathname === "/master-panel" &&
-    !queryFlag("popout");
+  const path = typeof window === "undefined" ? "" : window.location.pathname;
+  const eligible = (path === "/master-panel" || path === "/nexus") && !queryFlag("popout");
 
   useEffect(() => {
     if (!eligible) return;
@@ -60,15 +59,17 @@ export function MasterToolbarPopoutBridge() {
 
   if (!eligible || !host) return null;
 
+  const workspaceLabel = path === "/nexus" ? "O Nexus" : "Painel do Mestre";
+
   return createPortal(
     <Button
       type="button"
       size="sm"
       variant="ghost"
       className="gap-1.5"
-      onClick={openMasterPopout}
+      onClick={() => openWorkspacePopout(path)}
       title="Abrir este painel em janela dedicada"
-      aria-label="Abrir Painel do Mestre em nova janela"
+      aria-label={`Abrir ${workspaceLabel} em nova janela`}
     >
       <ExternalLink className="h-4 w-4" />
       <span>Nova janela</span>

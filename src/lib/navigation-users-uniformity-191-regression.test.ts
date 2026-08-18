@@ -6,12 +6,13 @@ function source(path: string) {
 }
 
 describe("navigation and users uniformity 191", () => {
-  it("mounts the master popout beside desktop toolbar actions without changing Nexus popout", () => {
+  it("mounts workspace popouts beside desktop toolbar actions", () => {
     const bridge = source("src/components/master/master-toolbar-popout-bridge.tsx");
     const shell = source("src/components/protected-shell.tsx");
     const css = source("src/styles/navigation-users-uniformity-191.css");
 
-    expect(bridge).toContain('window.location.pathname === "/master-panel"');
+    expect(bridge).toContain('path === "/master-panel"');
+    expect(bridge).toContain('path === "/nexus"');
     expect(bridge).toContain('.tadeon-desktop-toolbar > div:last-child');
     expect(bridge).toContain('actions.insertBefore(portalHost, actions.firstChild)');
     expect(bridge).toContain('variant="ghost"');

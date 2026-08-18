@@ -18,6 +18,7 @@ const NexusCaptureBridge = lazy(() => import("@/components/tabletop/tabletop-nex
 const SemanticTransformBridge = lazy(() => import("@/components/tabletop/tabletop-semantic-transform-bridge").then((module) => ({ default: module.TabletopSemanticTransformBridge })));
 const RadialActionsBridge = lazy(() => import("@/components/tabletop/tabletop-radial-actions-bridge").then((module) => ({ default: module.TabletopRadialActionsBridge })));
 const SmartSetupBridge = lazy(() => import("@/components/tabletop/tabletop-smart-setup-bridge").then((module) => ({ default: module.TabletopSmartSetupBridge })));
+const SmartSetupLauncherDockBridge = lazy(() => import("@/components/tabletop/tabletop-smart-setup-launcher-dock-bridge").then((module) => ({ default: module.TabletopSmartSetupLauncherDockBridge })));
 const UnifiedDropBridge = lazy(() => import("@/components/tabletop/tabletop-unified-drop-bridge").then((module) => ({ default: module.TabletopUnifiedDropBridge })));
 const DirectorTimelineBridge = lazy(() => import("@/components/tabletop/tabletop-director-timeline-bridge").then((module) => ({ default: module.TabletopDirectorTimelineBridge })));
 const RegionAutomationBridge = lazy(() => import("@/components/tabletop/tabletop-region-automation-bridge").then((module) => ({ default: module.TabletopRegionAutomationBridge })));
@@ -65,6 +66,7 @@ export function TabletopDeferredEnhancements({ master }: { master: boolean }) {
             <SemanticTransformBridge />
             <RadialActionsBridge />
             <SmartSetupBridge />
+            <SmartSetupLauncherDockBridge />
             <UnifiedDropBridge />
             <RegionAutomationBridge />
           </>
