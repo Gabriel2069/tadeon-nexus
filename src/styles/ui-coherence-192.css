@@ -1,4 +1,4 @@
-/* #192: coerência visual residual de navegação, Mestre e Mesa. */
+/* #192/#193: coerência visual residual de navegação, Mestre e Mesa. */
 
 .tadeon-primary-nav {
   box-sizing: border-box;
@@ -19,7 +19,10 @@
 
 .tadeon-shell:is([data-section="Painel do Mestre"], [data-section="O Nexus"])
   .tadeon-workspace-popout-host
-  > button[title="Abrir este painel em janela dedicada"] {
+  > button[title="Abrir este painel em janela dedicada"],
+.tadeon-shell[data-section="Painel do Mestre"]
+  .tadeon-workspace-popout-host
+  > button[title="Registrar o Diff das fichas neste ponto da sessão"] {
   display: none !important;
 }
 
@@ -33,12 +36,18 @@
   min-width: max-content;
 }
 
+/* Uma única moldura para o menu do Mestre: o scroller é a superfície; o TabsList
+   interno nunca desenha um segundo cartão/quadro. */
 .tadeon-master-navigation__scroller,
 .tadeon-master-navigation[data-fixed="true"] .tadeon-master-navigation__scroller {
-  border-color: transparent !important;
-  border-radius: 0 !important;
-  background: transparent !important;
-  box-shadow: none !important;
+  border: 1px solid rgb(var(--section-accent-rgb) / 12%) !important;
+  border-radius: 1rem .38rem 1rem .38rem !important;
+  background:
+    linear-gradient(105deg, rgb(var(--section-accent-rgb) / 5%), transparent 42%),
+    color-mix(in srgb, var(--card) 91%, transparent) !important;
+  box-shadow:
+    0 18px 44px -34px rgb(0 0 0 / 90%),
+    inset 0 1px rgb(255 255 255 / 3%) !important;
 }
 
 .tadeon-master-navigation__scroller::before,
@@ -47,15 +56,52 @@
   opacity: 0 !important;
 }
 
+.tadeon-master-navigation__rail > [data-slot="tabs-list"] {
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+@media (min-width: 1024px) {
+  .tadeon-master-navigation__rail > [data-slot="tabs-list"] {
+    border: 0 !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+  }
+}
+
+.tadeon-master-session-save-host {
+  grid-column: 1 / -1;
+  display: flex;
+  min-width: 0;
+  justify-content: flex-end;
+  padding-bottom: .15rem;
+}
+
+.tadeon-master-session-save-host > button {
+  min-width: max-content;
+}
+
 .tadeon-smart-setup-launcher-host {
-  display: inline-flex;
-  flex: 0 0 auto;
+  position: relative !important;
+  z-index: 6 !important;
+  display: inline-flex !important;
+  width: max-content !important;
+  min-width: max-content !important;
+  flex: 0 0 auto !important;
   align-items: center;
-  margin-right: .2rem;
+  order: -1;
+  margin-right: .55rem !important;
+  isolation: isolate;
 }
 
 .tadeon-smart-setup-docked-launcher {
+  position: relative;
+  z-index: 7;
   display: inline-flex;
+  min-width: max-content;
   min-height: 2.25rem;
   align-items: center;
   justify-content: center;
@@ -68,6 +114,7 @@
   box-shadow: inset 0 1px rgb(255 255 255 / 4%);
   font-size: .72rem;
   font-weight: 600;
+  white-space: nowrap;
   transition:
     color 160ms var(--ease-out),
     border-color 160ms var(--ease-out),
@@ -87,29 +134,40 @@
   transform: translateY(-1px);
 }
 
+button[aria-label="Recolher painel contextual"] {
+  position: relative;
+  z-index: 2;
+  flex: 0 0 auto;
+}
+
 @media (min-width: 1180px) {
   body:has(.tadeon-smart-setup-launcher-host) > * .tadeon-smart-setup__launcher {
     display: none !important;
   }
 }
 
+/* O toggle 2D/3D mantém exatamente o fundo dos demais CanvasToolButton. O estado
+   ativo é comunicado por contorno e contraste de conteúdo, não por um fundo único. */
 .tadeon-tabletop-toolbar__group button:is(
   [aria-label="Ativar projeção espacial 3D"],
   [aria-label="Voltar à planta 2D"]
 ) {
   border: 1px solid color-mix(in srgb, var(--border) 82%, var(--foreground) 18%) !important;
+  background: transparent !important;
   box-shadow: inset 0 1px rgb(255 255 255 / 3%);
 }
 
 .tadeon-tabletop-toolbar__group button[aria-label="Ativar projeção espacial 3D"] {
   color: var(--foreground) !important;
-  background: color-mix(in srgb, var(--card) 78%, transparent) !important;
 }
 
 .tadeon-tabletop-toolbar__group button[aria-label="Voltar à planta 2D"][aria-pressed="true"] {
-  border-color: color-mix(in srgb, var(--primary) 70%, var(--border)) !important;
-  color: var(--primary-foreground) !important;
-  background: var(--primary) !important;
+  border-color: color-mix(in srgb, var(--primary) 78%, var(--border)) !important;
+  color: var(--foreground) !important;
+  background: transparent !important;
+  box-shadow:
+    inset 0 0 0 1px color-mix(in srgb, var(--primary) 32%, transparent),
+    0 0 0 1px color-mix(in srgb, var(--primary) 10%, transparent) !important;
 }
 
 .tadeon-tabletop-toolbar__group button:is(
