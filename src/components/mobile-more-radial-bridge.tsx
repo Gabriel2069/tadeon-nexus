@@ -20,17 +20,55 @@ function clamp(value: number, minimum: number, maximum: number) {
   return Math.max(minimum, Math.min(maximum, value));
 }
 
+function visibleViewport() {
+  const viewport = window.visualViewport;
+  const left = viewport?.offsetLeft ?? 0;
+  const top = viewport?.offsetTop ?? 0;
+  const width = viewport?.width ?? window.innerWidth;
+  const height = viewport?.height ?? window.innerHeight;
+  return { left, top, width, height };
+}
+
 function anchorFor(trigger: HTMLButtonElement): Anchor {
   const rect = trigger.getBoundingClientRect();
-  const half = window.innerWidth <= 380 ? 78 : 88;
+  const viewport = visibleViewport();
+  const half = viewport.width <= 380 ? 78 : 88;
   return {
-    x: clamp(rect.left + rect.width / 2, half + 8, window.innerWidth - half - 8),
-    y: clamp(rect.top - 76, half + 8, window.innerHeight - half - 84),
+    x: clamp(
+      rect.left + rect.width / 2,
+      viewport.left + half + 8,
+      viewport.left + viewport.width - half - 8,
+    ),
+    y: clamp(
+      rect.top - 76,
+      viewport.top + half + 8,
+      viewport.top + viewport.height - half - 12,
+    ),
   };
 }
 
 function routeIsActive(path: string, target: string) {
   return path === target || path.startsWith(`${target}/`);
+}
+
+function syncVisualViewport() {
+  const root = document.documentElement;
+  const viewport = visibleViewport();
+  const keyboardInset = Math.max(
+    0,
+    window.innerHeight - (viewport.top + viewport.height),
+  );
+
+  root.style.setProperty("--tadeon-vv-left", `${viewport.left}px`);
+  root.style.setProperty("--tadeon-vv-top", `${viewport.top}px`);
+  root.style.setProperty("--tadeon-vv-width", `${viewport.width}px`);
+  root.style.setProperty("--tadeon-vv-height", `${viewport.height}px`);
+  root.style.setProperty(
+    "--tadeon-vv-center-x",
+    `${viewport.left + viewport.width / 2}px`,
+  );
+  root.style.setProperty("--tadeon-keyboard-inset", `${keyboardInset}px`);
+  root.dataset.tadeonKeyboard = keyboardInset > 120 ? "open" : "closed";
 }
 
 export function MobileMoreRadialBridge() {
@@ -41,6 +79,43 @@ export function MobileMoreRadialBridge() {
   const [anchor, setAnchor] = useState<Anchor | null>(null);
   const triggerRef = useRef<HTMLButtonElement | null>(null);
   const menuRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    syncVisualViewport();
+    const viewport = window.visualViewport;
+    const sync = () => syncVisualViewport();
+    const keepFocusedControlVisible = (event: FocusEvent) => {
+      const target = event.target instanceof HTMLElement ? event.target : null;
+      if (!target) return;
+      if (!target.matches("input, textarea, select, [contenteditable='true']")) return;
+      window.setTimeout(() => {
+        if (document.documentElement.dataset.tadeonKeyboard !== "open") return;
+        target.scrollIntoView({ block: "nearest", inline: "nearest" });
+      }, 80);
+    };
+
+    viewport?.addEventListener("resize", sync);
+    viewport?.addEventListener("scroll", sync);
+    window.addEventListener("resize", sync);
+    window.addEventListener("orientationchange", sync);
+    document.addEventListener("focusin", keepFocusedControlVisible);
+
+    return () => {
+      viewport?.removeEventListener("resize", sync);
+      viewport?.removeEventListener("scroll", sync);
+      window.removeEventListener("resize", sync);
+      window.removeEventListener("orientationchange", sync);
+      document.removeEventListener("focusin", keepFocusedControlVisible);
+      const root = document.documentElement;
+      root.style.removeProperty("--tadeon-vv-left");
+      root.style.removeProperty("--tadeon-vv-top");
+      root.style.removeProperty("--tadeon-vv-width");
+      root.style.removeProperty("--tadeon-vv-height");
+      root.style.removeProperty("--tadeon-vv-center-x");
+      root.style.removeProperty("--tadeon-keyboard-inset");
+      delete root.dataset.tadeonKeyboard;
+    };
+  }, []);
 
   useEffect(() => {
     if (!isMestre) return;
@@ -104,6 +179,7 @@ export function MobileMoreRadialBridge() {
       triggerRef.current?.focus();
     };
     const reposition = () => {
+      syncVisualViewport();
       if (triggerRef.current) setAnchor(anchorFor(triggerRef.current));
     };
 
@@ -111,6 +187,8 @@ export function MobileMoreRadialBridge() {
     window.addEventListener("keydown", onKeyDown);
     window.addEventListener("resize", reposition);
     window.addEventListener("orientationchange", reposition);
+    window.visualViewport?.addEventListener("resize", reposition);
+    window.visualViewport?.addEventListener("scroll", reposition);
     const frame = window.requestAnimationFrame(() => {
       menuRef.current?.querySelector<HTMLElement>("a[role='menuitem']")?.focus();
     });
@@ -121,6 +199,8 @@ export function MobileMoreRadialBridge() {
       window.removeEventListener("keydown", onKeyDown);
       window.removeEventListener("resize", reposition);
       window.removeEventListener("orientationchange", reposition);
+      window.visualViewport?.removeEventListener("resize", reposition);
+      window.visualViewport?.removeEventListener("scroll", reposition);
     };
   }, [open]);
 
