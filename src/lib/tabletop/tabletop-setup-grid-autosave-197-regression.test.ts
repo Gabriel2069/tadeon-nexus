@@ -15,7 +15,7 @@ const fingerprint = readFileSync(
   "utf8",
 );
 
-describe("tabletop setup, grid and autosave repair 197", () => {
+describe("tabletop setup, grid and autosave repair 197/198", () => {
   it("pins Setup to the map instead of the contextual-panel collapse control", () => {
     expect(setup).toContain('document.querySelector<HTMLElement>(".tadeon-tabletop-canvas-host")');
     expect(setup).toContain('canvas.insertAdjacentElement("afterend", portalHost)');
@@ -24,12 +24,13 @@ describe("tabletop setup, grid and autosave repair 197", () => {
     expect(deferred).toContain("{master && <><SmartSetupBridge /><SmartSetupLauncherDockBridge /></>}");
   });
 
-  it("keeps the Pixi clipping mask active so grids render without leaking outside the scene", () => {
-    expect(grid).toContain("this.lines.mask = this.clip");
-    expect(grid).toContain("this.view.addChild(this.lines, this.clip)");
-    expect(grid).not.toContain("this.clip.renderable = false");
-    expect(grid).toContain("Math.max(0, scene.width)");
-    expect(grid).toContain("Math.max(0, scene.height)");
+  it("uses the last known-good direct Graphics grid renderer without a Pixi mask", () => {
+    expect(grid).toContain("readonly view = new Graphics()");
+    expect(grid).toContain("function clippedHexPoints");
+    expect(grid).toContain("function clipLineToScene");
+    expect(grid).toContain("drawClippedLine(view, scene");
+    expect(grid).not.toContain("this.lines.mask");
+    expect(grid).not.toContain("new Container");
   });
 
   it("compares scene content without persistence-only metadata", () => {

@@ -1,10 +1,14 @@
-import { Container, Graphics } from "pixi.js";
+import { Graphics } from "pixi.js";
 import "./pixi-destroy-safety";
 import type { GridMode, Point, TabletopScene } from "./types";
 
 function normalizedOffset(value: number | undefined, spacing: number) {
   if (!Number.isFinite(value) || spacing <= 0) return 0;
   return ((Number(value) % spacing) + spacing) % spacing;
+}
+
+function clamp(value: number, min: number, max: number) {
+  return Math.max(min, Math.min(max, value));
 }
 
 function drawSquare(view: Graphics, scene: TabletopScene, spacing: number) {
@@ -26,6 +30,22 @@ function hexPoints(cx: number, cy: number, radius: number, pointy: boolean) {
   return points;
 }
 
+function clippedHexPoints(
+  cx: number,
+  cy: number,
+  radius: number,
+  pointy: boolean,
+  width: number,
+  height: number,
+) {
+  const points = hexPoints(cx, cy, radius, pointy);
+  for (let index = 0; index < points.length; index += 2) {
+    points[index] = clamp(points[index], 0, width);
+    points[index + 1] = clamp(points[index + 1], 0, height);
+  }
+  return points;
+}
+
 function drawHex(view: Graphics, scene: TabletopScene, radius: number, pointy: boolean) {
   const width = pointy ? Math.sqrt(3) * radius : radius * 2;
   const height = pointy ? radius * 2 : Math.sqrt(3) * radius;
@@ -41,9 +61,59 @@ function drawHex(view: Graphics, scene: TabletopScene, radius: number, pointy: b
     const yOffset = pointy ? (column % 2 === 0 ? 0 : stepY / 2) : 0;
     for (let y = offsetY - stepY + yOffset; y <= scene.height + height; y += stepY) {
       const cy = pointy ? y : y + (column % 2 === 0 ? 0 : height / 2);
-      view.poly(hexPoints(x, cy, radius, pointy));
+      if (x + radius < 0 || x - radius > scene.width || cy + radius < 0 || cy - radius > scene.height)
+        continue;
+      view.poly(clippedHexPoints(x, cy, radius, pointy, scene.width, scene.height));
     }
   }
+}
+
+function clipLineToScene(
+  x1: number,
+  y1: number,
+  x2: number,
+  y2: number,
+  width: number,
+  height: number,
+): [number, number, number, number] | null {
+  const dx = x2 - x1;
+  const dy = y2 - y1;
+  let t0 = 0;
+  let t1 = 1;
+  const tests: Array<[number, number]> = [
+    [-dx, x1],
+    [dx, width - x1],
+    [-dy, y1],
+    [dy, height - y1],
+  ];
+  for (const [p, q] of tests) {
+    if (p === 0) {
+      if (q < 0) return null;
+      continue;
+    }
+    const r = q / p;
+    if (p < 0) {
+      if (r > t1) return null;
+      if (r > t0) t0 = r;
+    } else {
+      if (r < t0) return null;
+      if (r < t1) t1 = r;
+    }
+  }
+  return [x1 + t0 * dx, y1 + t0 * dy, x1 + t1 * dx, y1 + t1 * dy];
+}
+
+function drawClippedLine(
+  view: Graphics,
+  scene: TabletopScene,
+  x1: number,
+  y1: number,
+  x2: number,
+  y2: number,
+) {
+  const clipped = clipLineToScene(x1, y1, x2, y2, scene.width, scene.height);
+  if (!clipped) return;
+  view.moveTo(clipped[0], clipped[1]).lineTo(clipped[2], clipped[3]);
 }
 
 function drawIsometric(view: Graphics, scene: TabletopScene, spacing: number) {
@@ -56,10 +126,10 @@ function drawIsometric(view: Graphics, scene: TabletopScene, spacing: number) {
     offset <= span + spacing;
     offset += spacing
   ) {
-    view.moveTo(offset, originY).lineTo(offset + scene.height * 2, scene.height + originY);
-    view.moveTo(offset, originY).lineTo(offset - scene.height * 2, scene.height + originY);
+    drawClippedLine(view, scene, offset, originY, offset + scene.height * 2, scene.height + originY);
+    drawClippedLine(view, scene, offset, originY, offset - scene.height * 2, scene.height + originY);
   }
-  for (let y = originY - rise * 2; y <= scene.height + rise * 2; y += rise * 2)
+  for (let y = originY; y <= scene.height; y += rise * 2)
     view.moveTo(0, y).lineTo(scene.width, y);
 }
 
@@ -119,34 +189,22 @@ export function snapPointToGrid(
 }
 
 export class GridRenderer {
-  readonly view = new Container({ label: "tabletop-grid" });
-  private readonly lines = new Graphics();
-  private readonly clip = new Graphics();
-
-  constructor() {
-    this.lines.mask = this.clip;
-    this.view.addChild(this.lines, this.clip);
-  }
+  readonly view = new Graphics();
 
   render(scene: TabletopScene) {
-    this.lines.clear();
-    this.clip.clear();
-    this.clip
-      .rect(0, 0, Math.max(0, scene.width), Math.max(0, scene.height))
-      .fill({ color: 0xffffff });
+    this.view.clear();
     if (scene.gridMode === "none") return;
     const spacing = Math.max(8, scene.gridSize * scene.gridScale);
-    if (scene.gridMode === "square") drawSquare(this.lines, scene, spacing);
+    if (scene.gridMode === "square") drawSquare(this.view, scene, spacing);
     else if (scene.gridMode === "hex_pointy")
-      drawHex(this.lines, scene, spacing / Math.sqrt(3), true);
-    else if (scene.gridMode === "hex_flat") drawHex(this.lines, scene, spacing / 2, false);
-    else drawIsometric(this.lines, scene, spacing);
-    this.lines.stroke({ color: 0x9c7a4f, alpha: 0.22, width: 1 });
+      drawHex(this.view, scene, spacing / Math.sqrt(3), true);
+    else if (scene.gridMode === "hex_flat") drawHex(this.view, scene, spacing / 2, false);
+    else drawIsometric(this.view, scene, spacing);
+    this.view.stroke({ color: 0x9c7a4f, alpha: 0.22, width: 1 });
   }
 
   destroy() {
-    this.lines.mask = null;
     this.view.removeFromParent();
-    this.view.destroy({ children: true });
+    this.view.destroy();
   }
 }
