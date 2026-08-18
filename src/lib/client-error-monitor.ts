@@ -4,6 +4,15 @@ const DEDUPE_WINDOW_MS = 60_000;
 const recent = new Map<string, number>();
 let initialized = false;
 
+function sanitizeDiagnosticText(value: string, maxLength: number): string {
+  return value
+    .replace(/sb_(?:publishable|secret)_[A-Za-z0-9_-]+/gi, "[chave removida]")
+    .replace(/Bearer\s+[A-Za-z0-9._-]+/gi, "Bearer [removido]")
+    .replace(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/gi, "[email removido]")
+    .replace(/postgres(?:ql)?:\/\/\S+/gi, "[conexão removida]")
+    .slice(0, maxLength);
+}
+
 export function sanitizeClientErrorMessage(value: unknown): string {
   const source =
     value instanceof Error
@@ -11,12 +20,12 @@ export function sanitizeClientErrorMessage(value: unknown): string {
       : typeof value === "string"
         ? value
         : "Falha inesperada no cliente";
-  return source
-    .replace(/sb_(?:publishable|secret)_[A-Za-z0-9_-]+/gi, "[chave removida]")
-    .replace(/Bearer\s+[A-Za-z0-9._-]+/gi, "Bearer [removido]")
-    .replace(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/gi, "[email removido]")
-    .replace(/postgres(?:ql)?:\/\/\S+/gi, "[conexão removida]")
-    .slice(0, 500);
+  return sanitizeDiagnosticText(source, 500);
+}
+
+function sanitizeClientErrorStack(value: unknown): string | undefined {
+  if (!(value instanceof Error) || !value.stack) return undefined;
+  return sanitizeDiagnosticText(value.stack, 4_000);
 }
 
 function fingerprint(message: string, route: string, source: string): string {
@@ -36,6 +45,7 @@ export async function reportClientError(
   try {
     if (typeof window === "undefined" || !navigator.onLine) return;
     const message = sanitizeClientErrorMessage(error);
+    const stack = sanitizeClientErrorStack(error);
     const route = window.location.pathname.slice(0, 240) || "/";
     const key = fingerprint(message, route, source);
     const previous = recent.get(key) ?? 0;
@@ -59,6 +69,10 @@ export async function reportClientError(
       context: {
         online: navigator.onLine,
         viewport: `${window.innerWidth}x${window.innerHeight}`,
+        dpr: window.devicePixelRatio || 1,
+        release: import.meta.env.VITE_APP_COMMIT_SHA ?? "development",
+        userAgent: navigator.userAgent.slice(0, 320),
+        ...(stack ? { stack } : {}),
       },
     });
   } catch {
