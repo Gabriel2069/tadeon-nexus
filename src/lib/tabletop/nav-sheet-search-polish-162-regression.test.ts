@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 
 const root = readFileSync("src/routes/__root.tsx", "utf8");
 const css = readFileSync("src/styles/nav-sheet-search-polish-162.css", "utf8");
+const finalCss = readFileSync("src/styles/final-nav-search-polish-196.css", "utf8");
 const sheet = readFileSync("src/routes/sheet.$id.tsx", "utf8");
 const search = readFileSync("src/components/global-search.tsx", "utf8");
 
@@ -62,12 +63,14 @@ describe("nav/sheet/search polish 162", () => {
     expect(css).toContain("position: fixed");
   });
 
-  it("locks global search to the visual viewport and allows internal wrapping", () => {
-    expect(search).toContain("<CommandDialog open={open} onOpenChange={setOpen}>");
-    expect(css).toContain('[data-slot="dialog-content"]:has(> [data-slot="command"])');
-    expect(css).toContain("100dvw - var(--search-inline-start) - var(--search-inline-end)");
-    expect(css).toContain("100dvh - (var(--search-block-gap) * 2)");
-    expect(css).toContain(".tadeon-command-footer");
-    expect(css).toContain("flex-wrap: wrap");
+  it("locks global search to the live visual viewport and keeps internal regions contained", () => {
+    expect(search).toContain("window.visualViewport");
+    expect(search).toContain('contentClassName="tadeon-global-search-dialog"');
+    expect(search).toContain('commandClassName="tadeon-global-search-command"');
+    expect(finalCss).toContain("--tadeon-search-vv-width");
+    expect(finalCss).toContain("--tadeon-search-vv-height");
+    expect(finalCss).toContain("overflow: hidden !important");
+    expect(finalCss).toContain(".tadeon-global-search-command .tadeon-command-footer");
+    expect(finalCss).toContain("flex: 1 1 auto !important");
   });
 });
