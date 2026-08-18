@@ -176,7 +176,7 @@ export function structureChannels(
             movementCost: collision.blocksMovement ? 999 : 1,
             surface: "solid",
           };
-  return {
+  const resolved: TabletopStructureChannels = {
     ...defaults,
     ...value,
     visionTransmission: clamp01(value?.visionTransmission, defaults.visionTransmission),
@@ -187,6 +187,14 @@ export function structureChannels(
       : clamp01(value.roofOpacity, defaults.roofOpacity ?? 1),
     movementCost: Math.max(0.1, Math.min(999, Number(value?.movementCost ?? defaults.movementCost) || 1)),
   };
+
+  // Window state owns its optical channel. This prevents values persisted while
+  // the pane was in another state from leaking into closed/open/broken behavior.
+  if (family === "window") {
+    resolved.blocksLight = defaults.blocksLight;
+    resolved.lightTransmission = defaults.lightTransmission;
+  }
+  return resolved;
 }
 
 export function isTabletopStructureType(value: unknown): value is TabletopStructureType {
