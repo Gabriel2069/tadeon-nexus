@@ -1,5 +1,5 @@
-/* #185: Master Panel internal navigation should feel fitted to the workspace,
-   never clipped by its own scroller, and remain readable at every viewport. */
+/* #185/#186: Master Panel navigation keeps the frame fitted to the workspace.
+   On touch viewports only the inner rail moves; the outer panel never slides. */
 
 .tadeon-master-navigation-slot {
   width: 100%;
@@ -22,35 +22,7 @@
   min-width: 0;
   margin-inline: auto !important;
   padding: .35rem .4rem .55rem;
-  overflow-x: auto !important;
-  overflow-y: visible !important;
-  overscroll-behavior-x: contain;
-  scroll-padding-inline: .65rem;
-  scrollbar-width: thin;
-  scrollbar-color: rgb(var(--section-accent-rgb) / 22%) transparent;
-}
-
-.tadeon-master-navigation__scroller::-webkit-scrollbar {
-  height: 5px;
-}
-
-.tadeon-master-navigation__scroller::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.tadeon-master-navigation__scroller::-webkit-scrollbar-thumb {
-  border-radius: 999px;
-  background: rgb(var(--section-accent-rgb) / 20%);
-}
-
-.tadeon-master-navigation__scroller > [data-slot="tabs-list"] {
-  box-sizing: border-box;
-  width: max-content !important;
-  min-width: max-content !important;
-  max-width: none !important;
-  margin-inline: auto !important;
-  align-items: stretch;
-  overflow: visible !important;
+  overflow: hidden !important;
   border: 1px solid rgb(var(--section-accent-rgb) / 12%);
   border-radius: 1rem .38rem 1rem .38rem;
   background:
@@ -59,6 +31,73 @@
   box-shadow:
     0 18px 44px -34px rgb(0 0 0 / 90%),
     inset 0 1px rgb(255 255 255 / 3%);
+  transition:
+    border-color 220ms var(--ease-out),
+    box-shadow 260ms var(--ease-out),
+    background-color 260ms var(--ease-out);
+}
+
+.tadeon-master-navigation__scroller::before,
+.tadeon-master-navigation__scroller::after {
+  position: absolute;
+  z-index: 3;
+  top: 0;
+  bottom: 0;
+  width: 1.35rem;
+  pointer-events: none;
+  content: "";
+  opacity: 0;
+  transition: opacity 180ms var(--ease-out);
+}
+
+.tadeon-master-navigation__scroller::before {
+  left: 0;
+  background: linear-gradient(90deg, color-mix(in srgb, var(--card) 96%, transparent), transparent);
+}
+
+.tadeon-master-navigation__scroller::after {
+  right: 0;
+  background: linear-gradient(270deg, color-mix(in srgb, var(--card) 96%, transparent), transparent);
+}
+
+.tadeon-master-navigation__rail {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  overflow-x: auto !important;
+  overflow-y: hidden !important;
+  overscroll-behavior-x: contain;
+  scroll-padding-inline: .8rem;
+  scrollbar-width: thin;
+  scrollbar-color: rgb(var(--section-accent-rgb) / 22%) transparent;
+  -webkit-overflow-scrolling: touch;
+}
+
+.tadeon-master-navigation__rail::-webkit-scrollbar {
+  height: 5px;
+}
+
+.tadeon-master-navigation__rail::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.tadeon-master-navigation__rail::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  background: rgb(var(--section-accent-rgb) / 20%);
+}
+
+.tadeon-master-navigation__rail > [data-slot="tabs-list"] {
+  box-sizing: border-box;
+  width: max-content !important;
+  min-width: max-content !important;
+  max-width: none !important;
+  margin-inline: auto !important;
+  align-items: stretch;
+  overflow: visible !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
 }
 
 .tadeon-master-navigation__group {
@@ -80,26 +119,37 @@
   white-space: nowrap;
 }
 
-/* On desktop the groups can wrap as complete units, producing a centered,
-   intentional command strip instead of a partially clipped single row. */
 @media (min-width: 1024px) {
   .tadeon-master-navigation__scroller {
-    overflow-x: visible !important;
+    overflow: visible !important;
     padding-inline: 0;
+    border-color: transparent;
+    background: transparent;
+    box-shadow: none;
   }
 
-  .tadeon-master-navigation__scroller > [data-slot="tabs-list"] {
+  .tadeon-master-navigation__rail {
+    overflow-x: visible !important;
+  }
+
+  .tadeon-master-navigation__rail > [data-slot="tabs-list"] {
     width: fit-content !important;
     min-width: 0 !important;
     max-width: 100% !important;
     flex-wrap: wrap !important;
     justify-content: center !important;
     row-gap: .35rem;
+    border: 1px solid rgb(var(--section-accent-rgb) / 12%) !important;
+    border-radius: 1rem .38rem 1rem .38rem !important;
+    background:
+      linear-gradient(105deg, rgb(var(--section-accent-rgb) / 5%), transparent 42%),
+      color-mix(in srgb, var(--card) 91%, transparent) !important;
+    box-shadow:
+      0 18px 44px -34px rgb(0 0 0 / 90%),
+      inset 0 1px rgb(255 255 255 / 3%) !important;
   }
 }
 
-/* Tablet/phone deliberately use a horizontal rail. Side breathing room keeps
-   the first and last groups from looking cut by the viewport. */
 @media (max-width: 1023px) {
   .tadeon-master-navigation-slot {
     padding-inline: max(.2rem, env(safe-area-inset-left));
@@ -107,11 +157,22 @@
 
   .tadeon-master-navigation__scroller {
     margin-inline: 0 !important;
-    padding-right: max(.8rem, env(safe-area-inset-right));
-    padding-left: max(.8rem, env(safe-area-inset-left));
+    padding: .35rem 0 .48rem;
   }
 
-  .tadeon-master-navigation__scroller > [data-slot="tabs-list"] {
+  .tadeon-master-navigation__scroller::before,
+  .tadeon-master-navigation__scroller::after {
+    opacity: .82;
+  }
+
+  .tadeon-master-navigation__rail {
+    padding-right: max(.8rem, env(safe-area-inset-right));
+    padding-left: max(.8rem, env(safe-area-inset-left));
+    scroll-behavior: smooth;
+    animation: tadeon-master-nav-rail-settle 240ms var(--ease-out) both;
+  }
+
+  .tadeon-master-navigation__rail > [data-slot="tabs-list"] {
     margin-inline: 0 !important;
     flex-wrap: nowrap !important;
   }
@@ -119,10 +180,15 @@
   .tadeon-master-navigation__group {
     scroll-snap-align: start;
   }
+
+  .tadeon-master-navigation[data-fixed="true"] .tadeon-master-navigation__scroller {
+    border-color: rgb(var(--section-accent-rgb) / 18%);
+    box-shadow:
+      0 20px 48px -35px rgb(0 0 0 / 96%),
+      inset 0 1px rgb(255 255 255 / 4%);
+  }
 }
 
-/* Once fixed below the global header, preserve the same centered workspace
-   width and avoid the old edge-to-edge/cropped appearance. */
 .tadeon-master-navigation[data-fixed="true"] {
   box-sizing: border-box;
   max-width: 100%;
@@ -133,8 +199,26 @@
   padding-bottom: .5rem;
 }
 
+@keyframes tadeon-master-nav-rail-settle {
+  from {
+    opacity: .78;
+    transform: translateX(.35rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .tadeon-master-navigation__scroller {
+  .tadeon-master-navigation__rail {
     scroll-behavior: auto;
+    animation: none !important;
+  }
+
+  .tadeon-master-navigation__scroller,
+  .tadeon-master-navigation__scroller::before,
+  .tadeon-master-navigation__scroller::after {
+    transition: none !important;
   }
 }
