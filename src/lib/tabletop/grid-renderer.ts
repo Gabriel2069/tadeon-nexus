@@ -1,4 +1,5 @@
 import { Graphics } from "pixi.js";
+import "./pixi-destroy-safety";
 import type { GridMode, Point, TabletopScene } from "./types";
 
 function normalizedOffset(value: number | undefined, spacing: number) {
@@ -133,6 +134,7 @@ export class GridRenderer {
   }
 
   destroy() {
+    this.view.removeFromParent();
     this.view.destroy();
   }
 }
