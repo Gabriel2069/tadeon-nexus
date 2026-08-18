@@ -1,0 +1,136 @@
+/* #180: one runtime contract for the mobile dock, authored hidden-route marks,
+   and overlay bounds inside the browser visual viewport. */
+
+/* Master keeps the authored Panel mark, but the actual SVG remains the layout
+   item. This gives it the exact same 20px box, gap, active motion and underline
+   contract as Home, Nexus, Mesa and More. */
+.tadeon-mobile-dock__item[href="/master-panel"] {
+  gap: .24rem !important;
+}
+
+.tadeon-mobile-dock__item[href="/master-panel"]::before {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+  background: none !important;
+  -webkit-mask: none !important;
+  mask: none !important;
+  content: none !important;
+}
+
+.tadeon-mobile-dock__item[href="/master-panel"] > svg {
+  display: block !important;
+  visibility: visible !important;
+  width: 1.25rem !important;
+  height: 1.25rem !important;
+  flex: 0 0 auto !important;
+  margin: 0 !important;
+  color: currentColor !important;
+  background: currentColor !important;
+  -webkit-mask: center / contain no-repeat url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.55' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='8.25' stroke-dasharray='9 3.4 2.2 4.3' opacity='.72'/%3E%3Cpath d='M12 2.8v4.1M12 17.1v4.1M2.8 12h4.1M17.1 12h4.1'/%3E%3Cpath d='m8.55 12 3.45-3.45L15.45 12 12 15.45 8.55 12Z'/%3E%3Cpath d='M6.05 6.35 9.6 9.6M17.95 6.35 14.4 9.6M6.05 17.65l3.55-3.25M17.95 17.65l-3.55-3.25'/%3E%3Ccircle cx='6.05' cy='6.35' r='.85'/%3E%3Ccircle cx='17.95' cy='6.35' r='.85'/%3E%3Ccircle cx='6.05' cy='17.65' r='.85'/%3E%3Ccircle cx='17.95' cy='17.65' r='.85'/%3E%3Ccircle cx='12' cy='12' r='1.15' fill='black' stroke='none'/%3E%3C/svg%3E") !important;
+  mask: center / contain no-repeat url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.55' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='8.25' stroke-dasharray='9 3.4 2.2 4.3' opacity='.72'/%3E%3Cpath d='M12 2.8v4.1M12 17.1v4.1M2.8 12h4.1M17.1 12h4.1'/%3E%3Cpath d='m8.55 12 3.45-3.45L15.45 12 12 15.45 8.55 12Z'/%3E%3Cpath d='M6.05 6.35 9.6 9.6M17.95 6.35 14.4 9.6M6.05 17.65l3.55-3.25M17.95 17.65l-3.55-3.25'/%3E%3Ccircle cx='6.05' cy='6.35' r='.85'/%3E%3Ccircle cx='17.95' cy='6.35' r='.85'/%3E%3Ccircle cx='6.05' cy='17.65' r='.85'/%3E%3Ccircle cx='17.95' cy='17.65' r='.85'/%3E%3Ccircle cx='12' cy='12' r='1.15' fill='black' stroke='none'/%3E%3C/svg%3E") !important;
+  opacity: 1 !important;
+  transform-origin: center !important;
+}
+
+.tadeon-mobile-dock__item[href="/master-panel"] > svg > * {
+  opacity: 0 !important;
+}
+
+.tadeon-mobile-dock__item[href="/master-panel"][aria-current="page"] > svg {
+  color: var(--section-accent) !important;
+  filter: drop-shadow(0 0 8px rgb(var(--section-accent-rgb) / 28%)) !important;
+  transform: translateY(-1px) !important;
+}
+
+/* Hidden routes in More keep the same symbols as their original tabs. Offline
+   and Users already render CloudOff/Users directly; Backup converts its real
+   Wrench SVG box into the authored archive/diagnostic mark used in the sidebar. */
+.tadeon-mobile-more-radial__item[href="/nexus-tools"] > svg {
+  background: currentColor;
+  -webkit-mask: center / contain no-repeat url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M21 8a2 2 0 0 0-2-2h-2V4a2 2 0 0 0-2-2H9a2 2 0 0 0-2 2v2H5a2 2 0 0 0-2 2v11a3 3 0 0 0 3 3h12a3 3 0 0 0 3-3Z'/%3E%3Cpath d='M9 6h6M8 12h8M8 16h5'/%3E%3C/svg%3E");
+  mask: center / contain no-repeat url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M21 8a2 2 0 0 0-2-2h-2V4a2 2 0 0 0-2-2H9a2 2 0 0 0-2 2v2H5a2 2 0 0 0-2 2v11a3 3 0 0 0 3 3h12a3 3 0 0 0 3-3Z'/%3E%3Cpath d='M9 6h6M8 12h8M8 16h5'/%3E%3C/svg%3E");
+}
+
+.tadeon-mobile-more-radial__item[href="/nexus-tools"] > svg > * {
+  opacity: 0 !important;
+}
+
+/* visualViewport is the actual usable rectangle after the virtual keyboard,
+   browser chrome and pinch/scroll offsets are applied. Dialogs use that box
+   rather than 100dvh so Create Sheet and Search cannot escape the visible area. */
+@media (max-width: 1180px) {
+  [data-slot="dialog-content"],
+  [data-slot="alert-dialog-content"] {
+    box-sizing: border-box !important;
+    top: calc(var(--tadeon-vv-top, 0px) + max(.65rem, env(safe-area-inset-top))) !important;
+    right: auto !important;
+    bottom: auto !important;
+    left: var(--tadeon-vv-center-x, 50vw) !important;
+    width: min(
+      32rem,
+      calc(
+        var(--tadeon-vv-width, 100vw) - max(.65rem, env(safe-area-inset-left)) -
+          max(.65rem, env(safe-area-inset-right))
+      )
+    ) !important;
+    min-width: 0 !important;
+    max-width: calc(
+      var(--tadeon-vv-width, 100vw) - max(.65rem, env(safe-area-inset-left)) -
+        max(.65rem, env(safe-area-inset-right))
+    ) !important;
+    max-height: calc(
+      var(--tadeon-vv-height, 100dvh) - max(.65rem, env(safe-area-inset-top)) -
+        max(.65rem, env(safe-area-inset-bottom))
+    ) !important;
+    margin: 0 !important;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+    overscroll-behavior: contain;
+    scrollbar-gutter: stable;
+    transform: translateX(-50%) !important;
+    transform-origin: top center !important;
+  }
+
+  [data-slot="dialog-content"]:has(> [data-slot="command"]) {
+    width: min(
+      42rem,
+      calc(
+        var(--tadeon-vv-width, 100vw) - max(.65rem, env(safe-area-inset-left)) -
+          max(.65rem, env(safe-area-inset-right))
+      )
+    ) !important;
+  }
+
+  [data-slot="dialog-content"] > *,
+  [data-slot="alert-dialog-content"] > *,
+  [data-slot="dialog-content"] form,
+  [data-slot="dialog-content"] form > * {
+    min-width: 0 !important;
+    max-width: 100% !important;
+  }
+}
+
+html[data-tadeon-keyboard="open"] [data-slot="popover-content"],
+html[data-tadeon-keyboard="open"] [data-slot="select-content"],
+html[data-tadeon-keyboard="open"] [data-slot="dropdown-menu-content"],
+html[data-tadeon-keyboard="open"] [data-slot="command"] {
+  box-sizing: border-box !important;
+  max-width: calc(var(--tadeon-vv-width, 100vw) - 1rem) !important;
+  max-height: calc(var(--tadeon-vv-height, 100dvh) - 1rem) !important;
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+  overscroll-behavior: contain;
+}
+
+html[data-tadeon-keyboard="open"] [data-slot="sheet-content"] {
+  max-height: var(--tadeon-vv-height, 100dvh) !important;
+  overflow-y: auto !important;
+  overscroll-behavior: contain;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tadeon-mobile-dock__item[href="/master-panel"] > svg {
+    transition: none !important;
+  }
+}
