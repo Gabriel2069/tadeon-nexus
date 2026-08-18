@@ -17,9 +17,10 @@ function setRange(label: string, value: number) {
 
 /**
  * The graph exposes its physics as controlled sliders. This bridge applies a
- * denser-library preset without forking the graph component: more distance and
- * repulsion, less central/cluster compression. The user can still override all
- * values immediately in “Física e leitura”.
+ * spacious-library preset without forking the graph component: links use
+ * nearly the full supported distance, nodes repel much harder and center/domain
+ * compression is deliberately weak. The user can still override every value
+ * immediately in “Física e leitura”.
  */
 export function NexusGraphDeclutterBridge() {
   useEffect(() => {
@@ -40,11 +41,11 @@ export function NexusGraphDeclutterBridge() {
       window.requestAnimationFrame(() => {
         if (!alive) return;
         const changed = [
-          setRange("Distância-base", 190),
-          setRange("Repulsão", 1.65),
-          setRange("Centro", 0.62),
-          setRange("Agrupamento por domínio", 0.32),
-          setRange("Aparecimento dos rótulos", 0.7),
+          setRange("Distância-base", 250),
+          setRange("Repulsão", 2.3),
+          setRange("Centro", 0.38),
+          setRange("Agrupamento por domínio", 0.15),
+          setRange("Aparecimento dos rótulos", 0.76),
         ].every(Boolean);
         if (changed) surface.dataset.denseGraphCalibrated = "true";
         if (!wasOpen && toggle.getAttribute("aria-expanded") === "true") toggle.click();
