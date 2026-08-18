@@ -5,6 +5,7 @@ import { CloudOff, Users, Wrench, X } from "lucide-react";
 import { useAuth } from "@/lib/auth";
 import { isApplicationAdministrator } from "@/lib/permissions";
 import "@/styles/mobile-more-radial.css";
+import "@/styles/mobile-navigation-final-180.css";
 
 const MORE_TRIGGER_SELECTOR = ".tadeon-mobile-dock > button.tadeon-mobile-dock__item";
 
@@ -20,12 +21,31 @@ function clamp(value: number, minimum: number, maximum: number) {
   return Math.max(minimum, Math.min(maximum, value));
 }
 
+function viewportMetrics() {
+  const viewport = window.visualViewport;
+  return {
+    left: viewport?.offsetLeft ?? 0,
+    top: viewport?.offsetTop ?? 0,
+    width: viewport?.width ?? window.innerWidth,
+    height: viewport?.height ?? window.innerHeight,
+  };
+}
+
 function anchorFor(trigger: HTMLButtonElement): Anchor {
   const rect = trigger.getBoundingClientRect();
-  const half = window.innerWidth <= 380 ? 78 : 88;
+  const viewport = viewportMetrics();
+  const half = viewport.width <= 380 ? 78 : 88;
   return {
-    x: clamp(rect.left + rect.width / 2, half + 8, window.innerWidth - half - 8),
-    y: clamp(rect.top - 76, half + 8, window.innerHeight - half - 84),
+    x: clamp(
+      rect.left + rect.width / 2,
+      viewport.left + half + 8,
+      viewport.left + viewport.width - half - 8,
+    ),
+    y: clamp(
+      rect.top - 76,
+      viewport.top + half + 8,
+      viewport.top + viewport.height - half - 84,
+    ),
   };
 }
 
@@ -111,6 +131,8 @@ export function MobileMoreRadialBridge() {
     window.addEventListener("keydown", onKeyDown);
     window.addEventListener("resize", reposition);
     window.addEventListener("orientationchange", reposition);
+    window.visualViewport?.addEventListener("resize", reposition);
+    window.visualViewport?.addEventListener("scroll", reposition);
     const frame = window.requestAnimationFrame(() => {
       menuRef.current?.querySelector<HTMLElement>("a[role='menuitem']")?.focus();
     });
@@ -121,6 +143,8 @@ export function MobileMoreRadialBridge() {
       window.removeEventListener("keydown", onKeyDown);
       window.removeEventListener("resize", reposition);
       window.removeEventListener("orientationchange", reposition);
+      window.visualViewport?.removeEventListener("resize", reposition);
+      window.visualViewport?.removeEventListener("scroll", reposition);
     };
   }, [open]);
 
@@ -148,10 +172,13 @@ export function MobileMoreRadialBridge() {
             role="menuitem"
             tabIndex={open ? 0 : -1}
             aria-current={active ? "page" : undefined}
+            data-nav-target={item.to}
             className={`tadeon-mobile-more-radial__item ${item.position}${active ? " is-active" : ""}`}
             onClick={() => setOpen(false)}
           >
-            <Icon aria-hidden="true" />
+            <span className="tadeon-mobile-more-radial__nav-icon" aria-hidden="true">
+              <Icon />
+            </span>
             <span>{item.label}</span>
           </Link>
         );
