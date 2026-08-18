@@ -21,6 +21,10 @@ type PixiInternals = {
 
 type NavigatorWithMemory = Navigator & { deviceMemory?: number };
 
+const SAMPLE_WINDOW_MS = 1600;
+const IDLE_BETWEEN_SAMPLES_MS = 6500;
+const ACTIVE_RESAMPLE_DELAY_MS = 220;
+
 function activeSceneAssetUrls(snapshot: TabletopSnapshot | null) {
   if (!snapshot) return [];
   const urls = snapshot.scene.entities
@@ -79,14 +83,16 @@ export function TabletopAdaptivePerformanceBridge() {
   const profile = useRef<TabletopQualityProfile | null>(null);
   const lowFrames = useRef(0);
   const goodFrames = useRef(0);
-  const lastSample = useRef(performance.now());
-  const frames = useRef(0);
   const snapshot = useRef<TabletopSnapshot | null>(null);
 
   useEffect(() => {
     let raf = 0;
     let bootstrap = 0;
+    let restTimer = 0;
     let stopped = false;
+    let sampling = false;
+    let sampleStartedAt = 0;
+    let frames = 0;
 
     const syncImmediateDensity = () => {
       if (stopped) return;
@@ -98,70 +104,114 @@ export function TabletopAdaptivePerformanceBridge() {
       }
     };
 
+    const evaluate = (elapsed: number) => {
+      const fps = Math.min(60, (frames * 1000) / Math.max(1, elapsed));
+      const recommendation = recommendTabletopQuality({
+        fps,
+        entityCount: snapshot.current?.scene.entities.length ?? 0,
+        devicePixelRatio: window.devicePixelRatio || 1,
+        memoryGb: (navigator as NavigatorWithMemory).deviceMemory,
+        coarsePointer: matchMedia("(pointer: coarse)").matches,
+      });
+      if (!profile.current) profile.current = recommendation;
+      else {
+        if (fps < 43) {
+          lowFrames.current += 1;
+          goodFrames.current = 0;
+        } else if (fps > 57) {
+          goodFrames.current += 1;
+          lowFrames.current = 0;
+        } else {
+          lowFrames.current = 0;
+          goodFrames.current = 0;
+        }
+        if (lowFrames.current >= 2) {
+          profile.current = lowerTabletopQuality(profile.current.tier);
+          lowFrames.current = 0;
+        } else if (goodFrames.current >= 5) {
+          profile.current = raiseTabletopQuality(profile.current.tier);
+          goodFrames.current = 0;
+        } else if (recommendation.tier === "economy" && profile.current.tier !== "economy") {
+          profile.current = recommendation;
+        }
+      }
+      applyProfile(profile.current, snapshot.current);
+    };
+
+    const scheduleSample = (delay = IDLE_BETWEEN_SAMPLES_MS) => {
+      if (stopped) return;
+      window.clearTimeout(restTimer);
+      restTimer = window.setTimeout(startSample, delay);
+    };
+
+    const sample = (now: number) => {
+      if (stopped || !sampling) return;
+      if (document.hidden) {
+        sampling = false;
+        scheduleSample();
+        return;
+      }
+      frames += 1;
+      const elapsed = now - sampleStartedAt;
+      if (elapsed >= SAMPLE_WINDOW_MS) {
+        sampling = false;
+        evaluate(elapsed);
+        scheduleSample();
+        return;
+      }
+      raf = window.requestAnimationFrame(sample);
+    };
+
+    function startSample() {
+      if (stopped || sampling) return;
+      if (document.hidden) {
+        scheduleSample();
+        return;
+      }
+      sampling = true;
+      frames = 0;
+      sampleStartedAt = performance.now();
+      raf = window.requestAnimationFrame(sample);
+    }
+
     const onRender = (event: Event) => {
       snapshot.current =
         (event as CustomEvent<TabletopSnapshot>).detail ??
         currentTabletopRuntime()?.snapshot() ??
         null;
+      if (!sampling) scheduleSample(ACTIVE_RESAMPLE_DELAY_MS);
     };
 
     const onResize = () => {
       if (profile.current) applyProfile(profile.current, snapshot.current);
+      if (!sampling) scheduleSample(ACTIVE_RESAMPLE_DELAY_MS);
+    };
+
+    const onVisibilityChange = () => {
+      if (document.hidden) {
+        sampling = false;
+        window.cancelAnimationFrame(raf);
+        window.clearTimeout(restTimer);
+      } else {
+        scheduleSample(ACTIVE_RESAMPLE_DELAY_MS);
+      }
     };
 
     window.addEventListener("tadeon-tabletop-render", onRender);
     window.addEventListener("resize", onResize, { passive: true });
+    document.addEventListener("visibilitychange", onVisibilityChange);
     syncImmediateDensity();
+    startSample();
 
-    const sample = (now: number) => {
-      if (stopped) return;
-      frames.current += 1;
-      const elapsed = now - lastSample.current;
-      if (elapsed >= 1800) {
-        const fps = Math.min(60, (frames.current * 1000) / Math.max(1, elapsed));
-        const recommendation = recommendTabletopQuality({
-          fps,
-          entityCount: snapshot.current?.scene.entities.length ?? 0,
-          devicePixelRatio: window.devicePixelRatio || 1,
-          memoryGb: (navigator as NavigatorWithMemory).deviceMemory,
-          coarsePointer: matchMedia("(pointer: coarse)").matches,
-        });
-        if (!profile.current) profile.current = recommendation;
-        else {
-          if (fps < 43) {
-            lowFrames.current += 1;
-            goodFrames.current = 0;
-          } else if (fps > 57) {
-            goodFrames.current += 1;
-            lowFrames.current = 0;
-          } else {
-            lowFrames.current = 0;
-            goodFrames.current = 0;
-          }
-          if (lowFrames.current >= 2) {
-            profile.current = lowerTabletopQuality(profile.current.tier);
-            lowFrames.current = 0;
-          } else if (goodFrames.current >= 5) {
-            profile.current = raiseTabletopQuality(profile.current.tier);
-            goodFrames.current = 0;
-          } else if (recommendation.tier === "economy" && profile.current.tier !== "economy") {
-            profile.current = recommendation;
-          }
-        }
-        applyProfile(profile.current, snapshot.current);
-        frames.current = 0;
-        lastSample.current = now;
-      }
-      raf = requestAnimationFrame(sample);
-    };
-
-    raf = requestAnimationFrame(sample);
     return () => {
       stopped = true;
-      cancelAnimationFrame(raf);
-      cancelAnimationFrame(bootstrap);
+      sampling = false;
+      window.cancelAnimationFrame(raf);
+      window.cancelAnimationFrame(bootstrap);
+      window.clearTimeout(restTimer);
       window.removeEventListener("tadeon-tabletop-render", onRender);
       window.removeEventListener("resize", onResize);
+      document.removeEventListener("visibilitychange", onVisibilityChange);
     };
   }, []);
 

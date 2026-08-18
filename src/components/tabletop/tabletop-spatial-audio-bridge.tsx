@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
 import { currentTabletopRuntime } from "@/lib/tabletop/tabletop-player-runtime";
@@ -94,8 +94,20 @@ function wallTransmission(
 export function TabletopSpatialAudioBridge() {
   const [snapshot, setSnapshot] = useState<TabletopSnapshot | null>(null);
   const [walls, setWalls] = useState<WallRow[]>([]);
+  const [audioUnlocked, setAudioUnlocked] = useState(false);
   const contextRef = useRef<AudioContext | null>(null);
   const nodesRef = useRef(new Map<string, AudioNodeState>());
+
+  const audioSources = useMemo(
+    () =>
+      (snapshot?.scene.entities ?? []).flatMap((entity) => {
+        const config = entityAudio(entity);
+        return config ? [{ entity, config }] : [];
+      }),
+    [snapshot],
+  );
+  const hasAudio = audioSources.length > 0;
+  const needsOcclusion = audioSources.some(({ config }) => config.occlusion);
 
   useEffect(() => {
     const onRender = (event: Event) => {
@@ -110,12 +122,13 @@ export function TabletopSpatialAudioBridge() {
 
   useEffect(() => {
     const sceneId = snapshot?.scene.id;
-    if (!sceneId || sceneId === "local-scene") {
+    if (!sceneId || sceneId === "local-scene" || !needsOcclusion) {
       setWalls([]);
       return;
     }
     let active = true;
     const refresh = async () => {
+      if (document.hidden) return;
       const { data, error } = await database
         .from("tabletop_walls")
         .select("level_id,x1,y1,x2,y2,wall_type,properties")
@@ -128,15 +141,17 @@ export function TabletopSpatialAudioBridge() {
       active = false;
       window.clearInterval(timer);
     };
-  }, [snapshot?.scene.id]);
+  }, [needsOcclusion, snapshot?.scene.id]);
 
   useEffect(() => {
+    if (!hasAudio) return;
     const unlock = () => {
       const AudioContextCtor = window.AudioContext ??
         (window as typeof window & { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
       if (!AudioContextCtor) return;
       if (!contextRef.current) contextRef.current = new AudioContextCtor();
       if (contextRef.current.state === "suspended") void contextRef.current.resume();
+      setAudioUnlocked(true);
     };
     window.addEventListener("pointerdown", unlock, { once: true, capture: true });
     window.addEventListener("keydown", unlock, { once: true, capture: true });
@@ -144,17 +159,14 @@ export function TabletopSpatialAudioBridge() {
       window.removeEventListener("pointerdown", unlock, true);
       window.removeEventListener("keydown", unlock, true);
     };
-  }, []);
+  }, [hasAudio]);
 
   useEffect(() => {
-    if (!snapshot) return;
-    const live = new Set<string>();
     const context = contextRef.current;
-    if (!context) return;
+    if (!snapshot || !context || !audioUnlocked) return;
+    const live = new Set<string>();
 
-    for (const entity of snapshot.scene.entities) {
-      const config = entityAudio(entity);
-      if (!config) continue;
+    for (const { entity, config } of audioSources) {
       live.add(entity.id);
       let node = nodesRef.current.get(entity.id);
       if (!node || node.url !== config.url) {
@@ -166,7 +178,7 @@ export function TabletopSpatialAudioBridge() {
         }
         const element = new Audio(config.url);
         element.crossOrigin = "anonymous";
-        element.preload = "auto";
+        element.preload = "metadata";
         element.loop = config.loop;
         const source = context.createMediaElementSource(element);
         const gain = context.createGain();
@@ -187,14 +199,16 @@ export function TabletopSpatialAudioBridge() {
       node.pan.disconnect();
       nodesRef.current.delete(id);
     }
-  }, [snapshot]);
+  }, [audioSources, audioUnlocked, snapshot]);
 
   useEffect(() => {
+    if (!audioUnlocked || !hasAudio) return;
     const timer = window.setInterval(() => {
+      if (document.hidden) return;
       const runtime = currentTabletopRuntime();
       const current = snapshot;
       const context = contextRef.current;
-      if (!runtime || !current || !context) return;
+      if (!runtime || !current || !context || nodesRef.current.size === 0) return;
       const rect = runtime.host.getBoundingClientRect();
       const listener = runtime.clientToWorld({
         x: rect.left + rect.width / 2,
@@ -202,10 +216,9 @@ export function TabletopSpatialAudioBridge() {
       });
       const activeLevelId = current.activeLevelId ?? current.scene.levels?.[0]?.id;
 
-      for (const entity of current.scene.entities) {
+      for (const { entity, config } of audioSources) {
         const node = nodesRef.current.get(entity.id);
-        const config = entityAudio(entity);
-        if (!node || !config) continue;
+        if (!node) continue;
         const sourcePoint = center(entity);
         const sameLevel = !activeLevelId || !entity.levelId || entity.levelId === activeLevelId;
         const distance = Math.hypot(sourcePoint.x - listener.x, sourcePoint.y - listener.y);
@@ -225,7 +238,7 @@ export function TabletopSpatialAudioBridge() {
       }
     }, 160);
     return () => window.clearInterval(timer);
-  }, [snapshot, walls]);
+  }, [audioSources, audioUnlocked, hasAudio, snapshot, walls]);
 
   useEffect(
     () => () => {
