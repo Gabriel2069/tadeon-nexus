@@ -1,0 +1,191 @@
+/* #196 — autoridade final para pequenos resíduos de navegação, Mesa e busca global. */
+
+/* Respiro entre o menu do Mestre e o primeiro quadro de conteúdo. */
+.tadeon-master-navigation-slot {
+  margin-bottom: clamp(.6rem, 1.1vw, .9rem) !important;
+}
+
+/* O controle 2D/3D mantém a mesma superfície dos irmãos outline, com estado ativo legível. */
+.tadeon-tabletop-toolbar__group button:is(
+  [aria-label="Ativar projeção espacial 3D"],
+  [aria-label="Voltar à planta 2D"]
+) {
+  border: 1px solid hsl(var(--input)) !important;
+  background: hsl(var(--background) / .7) !important;
+  color: hsl(var(--foreground)) !important;
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 3.5%) !important;
+}
+
+.tadeon-tabletop-toolbar__group button:is(
+  [aria-label="Ativar projeção espacial 3D"],
+  [aria-label="Voltar à planta 2D"]
+)[aria-pressed="true"] {
+  border-color: hsl(var(--primary) / .78) !important;
+  color: hsl(var(--primary)) !important;
+  background: hsl(var(--background) / .7) !important;
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 3.5%),
+    0 0 0 1px hsl(var(--primary) / .28),
+    0 0 18px -11px hsl(var(--primary) / .78) !important;
+}
+
+.tadeon-tabletop-toolbar__group button:is(
+  [aria-label="Ativar projeção espacial 3D"],
+  [aria-label="Voltar à planta 2D"]
+)[aria-pressed="true"] svg {
+  filter: drop-shadow(0 0 5px hsl(var(--primary) / .4));
+}
+
+/* Sidebar: cada área intensifica sua própria assinatura cromática no hover. */
+.tadeon-nav-item {
+  --tadeon-nav-hover-rgb: var(--section-accent-rgb, 217 196 126);
+}
+
+.tadeon-nav-item[href="/"],
+.tadeon-nav-item[href^="/?"] {
+  --tadeon-nav-hover-rgb: 216 196 126;
+}
+
+.tadeon-nav-item[href^="/nexus"]:not([href^="/nexus-tools"]) {
+  --tadeon-nav-hover-rgb: 126 184 174;
+}
+
+.tadeon-nav-item[href^="/tabletop"] {
+  --tadeon-nav-hover-rgb: 135 157 198;
+}
+
+.tadeon-nav-item[href^="/offline"] {
+  --tadeon-nav-hover-rgb: 141 164 177;
+}
+
+.tadeon-nav-item[href^="/master-panel"] {
+  --tadeon-nav-hover-rgb: 225 184 96;
+}
+
+.tadeon-nav-item[href^="/manage-users"] {
+  --tadeon-nav-hover-rgb: 155 181 130;
+}
+
+.tadeon-nav-item[href^="/nexus-tools"] {
+  --tadeon-nav-hover-rgb: 188 139 133;
+}
+
+.tadeon-nav-item:not([aria-current="page"]):hover {
+  color: rgb(var(--tadeon-nav-hover-rgb)) !important;
+  background: rgb(var(--tadeon-nav-hover-rgb) / .075) !important;
+  box-shadow: inset 2px 0 0 rgb(var(--tadeon-nav-hover-rgb) / .52) !important;
+}
+
+.tadeon-nav-item:not([aria-current="page"]):hover .tadeon-nav-item__icon {
+  color: rgb(var(--tadeon-nav-hover-rgb)) !important;
+  filter: drop-shadow(0 0 7px rgb(var(--tadeon-nav-hover-rgb) / .34));
+}
+
+/* Busca global: uma única caixa contida pelo visual viewport, com corpo rolável e footer estável. */
+.tadeon-global-search-dialog {
+  box-sizing: border-box !important;
+  top: calc(var(--tadeon-search-vv-top, 0px) + (var(--tadeon-search-vv-height, 100dvh) / 2)) !important;
+  left: calc(var(--tadeon-search-vv-left, 0px) + (var(--tadeon-search-vv-width, 100vw) / 2)) !important;
+  width: min(42rem, calc(var(--tadeon-search-vv-width, 100vw) - 1rem - env(safe-area-inset-left) - env(safe-area-inset-right))) !important;
+  max-width: none !important;
+  height: min(38rem, calc(var(--tadeon-search-vv-height, 100dvh) - 1rem - env(safe-area-inset-top) - env(safe-area-inset-bottom))) !important;
+  max-height: calc(var(--tadeon-search-vv-height, 100dvh) - 1rem - env(safe-area-inset-top) - env(safe-area-inset-bottom)) !important;
+  min-height: min(18rem, calc(var(--tadeon-search-vv-height, 100dvh) - 1rem)) !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+  transform: translate(-50%, -50%) !important;
+  grid-template-rows: minmax(0, 1fr) !important;
+}
+
+.tadeon-global-search-command {
+  display: flex !important;
+  min-height: 0 !important;
+  height: 100% !important;
+  overflow: hidden !important;
+  border-radius: inherit !important;
+}
+
+.tadeon-global-search-command [data-slot="command-input-wrapper"] {
+  flex: 0 0 auto;
+  min-height: 3.25rem;
+  padding-right: 3.35rem;
+}
+
+.tadeon-global-search-command [data-slot="command-list"] {
+  flex: 1 1 auto !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  padding: .45rem !important;
+  overflow-y: auto !important;
+  overscroll-behavior: contain;
+  scrollbar-gutter: stable;
+}
+
+.tadeon-global-search-command .tadeon-command-footer {
+  box-sizing: border-box;
+  display: flex;
+  flex: 0 0 auto;
+  width: 100%;
+  min-width: 0;
+  align-items: center;
+  justify-content: space-between;
+  gap: .75rem;
+  padding: .7rem .9rem max(.7rem, env(safe-area-inset-bottom));
+  border-top: 1px solid hsl(var(--border) / .72);
+  background: color-mix(in srgb, hsl(var(--popover)) 94%, transparent);
+  color: hsl(var(--muted-foreground));
+  font-size: .68rem;
+  line-height: 1.25;
+}
+
+.tadeon-global-search-command .tadeon-command-footer > span {
+  min-width: 0;
+}
+
+.tadeon-global-search-command .tadeon-command-footer > span:last-child {
+  overflow: hidden;
+  text-align: right;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@media (max-width: 639px) {
+  .tadeon-global-search-dialog {
+    width: calc(var(--tadeon-search-vv-width, 100vw) - .75rem - env(safe-area-inset-left) - env(safe-area-inset-right)) !important;
+    height: calc(var(--tadeon-search-vv-height, 100dvh) - .75rem - env(safe-area-inset-top) - env(safe-area-inset-bottom)) !important;
+    max-height: calc(var(--tadeon-search-vv-height, 100dvh) - .75rem - env(safe-area-inset-top) - env(safe-area-inset-bottom)) !important;
+    border-radius: 1rem .35rem 1rem .35rem !important;
+  }
+
+  .tadeon-global-search-command .tadeon-command-footer {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: .2rem;
+  }
+
+  .tadeon-global-search-command .tadeon-command-footer > span:last-child {
+    width: 100%;
+    text-align: left;
+  }
+
+  .tadeon-global-search-command [data-slot="command-shortcut"] {
+    display: none;
+  }
+}
+
+@media (max-height: 520px) {
+  .tadeon-global-search-dialog {
+    height: calc(var(--tadeon-search-vv-height, 100dvh) - .5rem) !important;
+    max-height: calc(var(--tadeon-search-vv-height, 100dvh) - .5rem) !important;
+    min-height: 0 !important;
+  }
+
+  .tadeon-global-search-command [data-slot="command-input-wrapper"] {
+    min-height: 2.8rem;
+  }
+
+  .tadeon-global-search-command .tadeon-command-footer {
+    padding-top: .45rem;
+    padding-bottom: max(.45rem, env(safe-area-inset-bottom));
+  }
+}
