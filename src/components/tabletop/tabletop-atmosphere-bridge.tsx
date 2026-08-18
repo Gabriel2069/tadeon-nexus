@@ -173,15 +173,31 @@ function usePowerTheme() {
       else delete document.documentElement.dataset.tadeonPowerTheme;
     };
     syncFromDock();
-    const pointerMove = (event: PointerEvent) => setPointer({ x: event.clientX, y: event.clientY });
     window.addEventListener("tadeon-tabletop-tactical-state", onTacticalState);
-    window.addEventListener("pointermove", pointerMove, { passive: true });
     return () => {
       window.removeEventListener("tadeon-tabletop-tactical-state", onTacticalState);
-      window.removeEventListener("pointermove", pointerMove);
       delete document.documentElement.dataset.tadeonPowerTheme;
     };
   }, []);
+
+  useEffect(() => {
+    if (!active) return;
+    let frame = 0;
+    let nextPointer = pointer;
+    const flush = () => {
+      frame = 0;
+      setPointer(nextPointer);
+    };
+    const pointerMove = (event: PointerEvent) => {
+      nextPointer = { x: event.clientX, y: event.clientY };
+      if (!frame) frame = window.requestAnimationFrame(flush);
+    };
+    window.addEventListener("pointermove", pointerMove, { passive: true });
+    return () => {
+      window.cancelAnimationFrame(frame);
+      window.removeEventListener("pointermove", pointerMove);
+    };
+  }, [active]);
 
   return { theme, active, pointer };
 }
