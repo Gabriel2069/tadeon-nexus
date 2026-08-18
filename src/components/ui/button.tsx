@@ -46,12 +46,16 @@ export interface ButtonProps
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, variant, size, asChild = false, type, ...props }, ref) => {
     const Comp = asChild ? Slot : "button";
+    const ariaLabel = typeof props["aria-label"] === "string" ? props["aria-label"] : "";
+    const isProjectionToggle =
+      ariaLabel === "Ativar projeção espacial 3D" || ariaLabel === "Voltar à planta 2D";
+    const effectiveVariant = isProjectionToggle ? "outline" : variant;
     return (
       <Comp
         data-slot="button"
         data-size={size ?? "default"}
-        data-variant={variant ?? "default"}
-        className={cn(buttonVariants({ variant, size, className }))}
+        data-variant={effectiveVariant ?? "default"}
+        className={cn(buttonVariants({ variant: effectiveVariant, size, className }))}
         ref={ref}
         {...(!asChild ? { type: type ?? "button" } : {})}
         {...props}
