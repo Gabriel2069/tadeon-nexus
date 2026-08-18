@@ -6,15 +6,18 @@ function source(path: string) {
 }
 
 describe("final system audit 170", () => {
-  it("restores the canonical mobile Master dock item and aligns authored sidebar symbols", () => {
+  it("keeps authored Master/Backup symbols in the shared navigation geometry", () => {
     const css = source("src/styles/create-sheet-search-viewport-163.css");
+    expect(css).toContain('.tadeon-primary-nav .tadeon-nav-item__icon');
+    expect(css).toContain("width: 2rem;");
+    expect(css).toContain("place-items: center;");
+    expect(css).toContain("border-radius: .66rem .22rem .66rem .22rem;");
+    expect(css).toContain('.tadeon-nav-item[href="/master-panel"] .tadeon-nav-item__icon::before');
+    expect(css).toContain('.tadeon-nav-item[href="/nexus-tools"] .tadeon-nav-item__icon::before');
     expect(css).toContain('.tadeon-mobile-dock__item[href="/master-panel"] > svg');
-    expect(css).toContain("visibility: visible !important");
+    expect(css).toContain("visibility: hidden !important");
     expect(css).toContain('.tadeon-mobile-dock__item[href="/master-panel"]::before');
-    expect(css).toContain("content: none !important");
-    expect(css).toContain("width: 2rem !important");
-    expect(css).toContain("place-items: center !important");
-    expect(css).toContain("border-radius: .66rem .22rem .66rem .22rem !important");
+    expect(css).toContain("mask: center / contain no-repeat url");
   });
 
   it("keeps all protected workspaces under the same integration shell", () => {
