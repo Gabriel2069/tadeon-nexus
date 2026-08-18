@@ -5,6 +5,11 @@ const setup = readFileSync(
   "src/components/tabletop/tabletop-smart-setup-launcher-dock-bridge.tsx",
   "utf8",
 );
+const canonicalSetup = readFileSync(
+  "src/components/tabletop/tabletop-smart-setup-bridge.tsx",
+  "utf8",
+);
+const setupCss = readFileSync("src/styles/tabletop-smart-setup.css", "utf8");
 const deferred = readFileSync(
   "src/components/tabletop/tabletop-deferred-enhancements.tsx",
   "utf8",
@@ -15,16 +20,15 @@ const fingerprint = readFileSync(
   "utf8",
 );
 
-describe("tabletop setup, grid and autosave repair 197/198/199", () => {
-  it("renders Setup as a fixed control without portal, observer or contextual-panel dependency", () => {
-    expect(setup).toContain('position: "fixed"');
-    expect(setup).toContain('bottom: "max(0.85rem, env(safe-area-inset-bottom))"');
-    expect(setup).toContain("zIndex: 60");
-    expect(setup).not.toContain("createPortal");
-    expect(setup).not.toContain("MutationObserver");
-    expect(setup).not.toContain("querySelector");
-    expect(setup).not.toContain('button[aria-label="Recolher painel contextual"]');
-    expect(deferred).toContain("{master && <><SmartSetupBridge /><SmartSetupLauncherDockBridge /></>}");
+describe("tabletop setup, grid and autosave repair 197/198/200", () => {
+  it("keeps the duplicate Setup launcher inert and the canonical launcher fixed at the top", () => {
+    expect(setup).toContain("return null");
+    expect(setup).not.toContain("WandSparkles");
+    expect(canonicalSetup).toContain('className="tadeon-smart-setup__launcher"');
+    expect(setupCss).toContain(".tadeon-smart-setup__launcher {");
+    expect(setupCss).toContain("position: fixed");
+    expect(setupCss).toContain("top:");
+    expect(deferred).toContain("<SmartSetupBridge />");
   });
 
   it("uses the last known-good direct Graphics grid renderer without a Pixi mask", () => {
