@@ -4,14 +4,12 @@ import { describe, expect, it } from "vitest";
 const read = (path: string) => readFileSync(path, "utf8");
 
 describe("ui polish 193/194", () => {
-  it("keeps setup before collapse and targets the actual toprail classes", () => {
+  it("keeps setup independent from the contextual-panel collapse control", () => {
     const bridge = read("src/components/tabletop/tabletop-smart-setup-launcher-dock-bridge.tsx");
-    const css = read("src/styles/ui-coherence-192.css");
-    expect(bridge).toContain("insertBefore(portalHost, minimize)");
-    expect(css).toContain(".tadeon-tabletop-toprail-setup");
-    expect(css).toContain(".tadeon-tabletop-toprail-toggle");
-    expect(css).toContain("order: 1 !important");
-    expect(css).toContain("order: 2 !important");
+    expect(bridge).toContain('.tadeon-tabletop-canvas-host');
+    expect(bridge).toContain('canvas.insertAdjacentElement("afterend", portalHost)');
+    expect(bridge).not.toContain('button[aria-label="Recolher painel contextual"]');
+    expect(bridge).not.toContain("insertBefore(portalHost, minimize)");
   });
 
   it("renders the scroller as the only master navigation surface", () => {

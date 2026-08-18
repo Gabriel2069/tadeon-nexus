@@ -1,5 +1,6 @@
 import { Suspense, lazy, useEffect, useState } from "react";
 import { TabletopPreflightBridge } from "@/components/tabletop/tabletop-preflight-bridge";
+import "@/lib/tabletop/tabletop-scene-fingerprint-guard";
 
 const LocateBridge = lazy(() => import("@/components/tabletop/tabletop-locate-bridge").then((module) => ({ default: module.TabletopLocateBridge })));
 const PlayerInteractionBridge = lazy(() => import("@/components/tabletop/tabletop-player-interaction-bridge").then((module) => ({ default: module.TabletopPlayerInteractionBridge })));
@@ -43,6 +44,7 @@ export function TabletopDeferredEnhancements({ master }: { master: boolean }) {
     <>
       {master && <TabletopPreflightBridge />}
       <Suspense fallback={null}>
+        {master && <><SmartSetupBridge /><SmartSetupLauncherDockBridge /></>}
         {tier >= 1 && <><LocateBridge /><PlayerInteractionBridge /></>}
         {tier >= 2 && (
           <>
@@ -65,8 +67,6 @@ export function TabletopDeferredEnhancements({ master }: { master: boolean }) {
             <NexusCaptureBridge />
             <SemanticTransformBridge />
             <RadialActionsBridge />
-            <SmartSetupBridge />
-            <SmartSetupLauncherDockBridge />
             <UnifiedDropBridge />
             <RegionAutomationBridge />
           </>

@@ -124,7 +124,6 @@ export class GridRenderer {
   private readonly clip = new Graphics();
 
   constructor() {
-    this.clip.renderable = false;
     this.lines.mask = this.clip;
     this.view.addChild(this.lines, this.clip);
   }
@@ -132,7 +131,9 @@ export class GridRenderer {
   render(scene: TabletopScene) {
     this.lines.clear();
     this.clip.clear();
-    this.clip.rect(0, 0, Math.max(0, scene.width), Math.max(0, scene.height)).fill({ color: 0xffffff });
+    this.clip
+      .rect(0, 0, Math.max(0, scene.width), Math.max(0, scene.height))
+      .fill({ color: 0xffffff });
     if (scene.gridMode === "none") return;
     const spacing = Math.max(8, scene.gridSize * scene.gridScale);
     if (scene.gridMode === "square") drawSquare(this.lines, scene, spacing);
