@@ -1,27 +1,51 @@
 @import "./runtime-ui-repair-198.css";
 
-/* #196: mantém apenas o respiro do Mestre e o containment da busca global. */
-
+/* Respiro entre o menu do Mestre e o conteúdo. */
 .tadeon-master-navigation-slot {
   margin-bottom: clamp(.6rem, 1.1vw, .9rem) !important;
 }
 
-/* Busca global: uma única caixa contida pelo visual viewport, com corpo rolável e footer estável. */
-.tadeon-global-search-dialog {
-  box-sizing: border-box !important;
-  top: calc(var(--tadeon-search-vv-top, 0px) + (var(--tadeon-search-vv-height, 100dvh) / 2)) !important;
-  left: calc(var(--tadeon-search-vv-left, 0px) + (var(--tadeon-search-vv-width, 100vw) / 2)) !important;
-  width: min(42rem, calc(var(--tadeon-search-vv-width, 100vw) - 1rem - env(safe-area-inset-left) - env(safe-area-inset-right))) !important;
-  max-width: none !important;
-  height: min(38rem, calc(var(--tadeon-search-vv-height, 100dvh) - 1rem - env(safe-area-inset-top) - env(safe-area-inset-bottom))) !important;
-  max-height: calc(var(--tadeon-search-vv-height, 100dvh) - 1rem - env(safe-area-inset-top) - env(safe-area-inset-bottom)) !important;
-  min-height: min(18rem, calc(var(--tadeon-search-vv-height, 100dvh) - 1rem)) !important;
-  padding: 0 !important;
-  overflow: hidden !important;
-  transform: translate(-50%, -50%) !important;
-  grid-template-rows: minmax(0, 1fr) !important;
+/*
+ * Menu lateral: não altera botão, fundo, texto, borda ou sombra.
+ * O único efeito no hover é reproduzir no SVG a mesma assinatura cromática
+ * que ele recebe quando a respectiva rota está ativa.
+ */
+.tadeon-nav-item[href="/"],
+.tadeon-nav-item[href^="/?"] {
+  --tadeon-nav-icon-hover: var(--tadeon-knowledge);
+  --tadeon-nav-icon-hover-rgb: 217 215 164;
+}
+.tadeon-nav-item[href^="/nexus"]:not([href^="/nexus-tools"]) {
+  --tadeon-nav-icon-hover: var(--tadeon-veil);
+  --tadeon-nav-icon-hover-rgb: 113 107 123;
+}
+.tadeon-nav-item[href^="/tabletop"] {
+  --tadeon-nav-icon-hover: var(--tadeon-flow);
+  --tadeon-nav-icon-hover-rgb: 79 110 93;
+}
+.tadeon-nav-item[href^="/offline"] {
+  --tadeon-nav-icon-hover: var(--tadeon-flow);
+  --tadeon-nav-icon-hover-rgb: 79 110 93;
+}
+.tadeon-nav-item[href^="/master-panel"] {
+  --tadeon-nav-icon-hover: var(--tadeon-fear);
+  --tadeon-nav-icon-hover-rgb: 116 36 45;
+}
+.tadeon-nav-item[href^="/manage-users"] {
+  --tadeon-nav-icon-hover: var(--tadeon-flow);
+  --tadeon-nav-icon-hover-rgb: 79 110 93;
+}
+.tadeon-nav-item[href^="/nexus-tools"] {
+  --tadeon-nav-icon-hover: var(--tadeon-metal);
+  --tadeon-nav-icon-hover-rgb: 122 129 135;
 }
 
+.tadeon-nav-item:hover .tadeon-nav-item__icon > svg {
+  color: var(--tadeon-nav-icon-hover, currentColor);
+  filter: drop-shadow(0 0 9px rgb(var(--tadeon-nav-icon-hover-rgb, 217 215 164) / 25%));
+}
+
+/* Busca global: o runtime-ui-repair-198.css é a única autoridade de geometria. */
 .tadeon-global-search-command {
   display: flex !important;
   min-height: 0 !important;
@@ -76,9 +100,6 @@
 
 @media (max-width: 639px) {
   .tadeon-global-search-dialog {
-    width: calc(var(--tadeon-search-vv-width, 100vw) - .75rem - env(safe-area-inset-left) - env(safe-area-inset-right)) !important;
-    height: calc(var(--tadeon-search-vv-height, 100dvh) - .75rem - env(safe-area-inset-top) - env(safe-area-inset-bottom)) !important;
-    max-height: calc(var(--tadeon-search-vv-height, 100dvh) - .75rem - env(safe-area-inset-top) - env(safe-area-inset-bottom)) !important;
     border-radius: 1rem .35rem 1rem .35rem !important;
   }
 
@@ -99,12 +120,6 @@
 }
 
 @media (max-height: 520px) {
-  .tadeon-global-search-dialog {
-    height: calc(var(--tadeon-search-vv-height, 100dvh) - .5rem) !important;
-    max-height: calc(var(--tadeon-search-vv-height, 100dvh) - .5rem) !important;
-    min-height: 0 !important;
-  }
-
   .tadeon-global-search-command [data-slot="command-input-wrapper"] {
     min-height: 2.8rem;
   }
