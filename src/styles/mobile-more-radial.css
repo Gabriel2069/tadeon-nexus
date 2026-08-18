@@ -5,6 +5,25 @@
   isolation: isolate;
 }
 
+.tadeon-mobile-dock > button.tadeon-mobile-dock__item[aria-haspopup="menu"] > svg {
+  transform-origin: center;
+  transition:
+    color 180ms var(--ease-out),
+    filter 180ms var(--ease-out),
+    rotate 220ms var(--ease-out),
+    scale 220ms var(--ease-out) !important;
+}
+
+.tadeon-mobile-dock > button.tadeon-mobile-dock__item[aria-haspopup="menu"][aria-expanded="true"] {
+  color: var(--section-accent, var(--primary));
+}
+
+.tadeon-mobile-dock > button.tadeon-mobile-dock__item[aria-haspopup="menu"][aria-expanded="true"] > svg {
+  rotate: 90deg;
+  scale: 1.08;
+  filter: drop-shadow(0 0 8px color-mix(in srgb, var(--section-accent, var(--primary)) 36%, transparent));
+}
+
 .tadeon-mobile-more-radial {
   position: fixed;
   z-index: 94;
@@ -256,6 +275,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .tadeon-mobile-dock > button.tadeon-mobile-dock__item[aria-haspopup="menu"] > svg,
   .tadeon-mobile-more-radial,
   .tadeon-mobile-more-radial__orbit,
   .tadeon-mobile-more-radial__item,
