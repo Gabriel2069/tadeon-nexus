@@ -1,0 +1,164 @@
+/* #204: visible Nexus-head parity on the actual authored hero elements.
+   Visual-only layer: no behavior, transition or animation changes. */
+
+:is(
+  .tadeon-route-users > .tadeon-page-hero,
+  .tadeon-route-tools > .tadeon-page-hero,
+  .tadeon-route-offline > .tadeon-page-hero,
+  .tadeon-master-commandbar
+) {
+  position: relative !important;
+  isolation: isolate !important;
+  overflow: clip !important;
+  background:
+    radial-gradient(circle at 80% -38%, rgb(var(--archive-hero-rgb) / 15%) 0 3.2rem, transparent 3.3rem 6.2rem, rgb(var(--archive-hero-rgb) / 7%) 6.3rem 6.42rem, transparent 6.55rem),
+    radial-gradient(circle at 94% 116%, transparent 0 4.2rem, rgb(var(--archive-hero-secondary-rgb) / 11%) 4.3rem 4.42rem, transparent 4.55rem 7.7rem, rgb(var(--archive-hero-rgb) / 4%) 7.8rem 7.92rem, transparent 8.05rem),
+    radial-gradient(circle at 10% 5%, rgb(var(--archive-hero-rgb) / 10%), transparent 12rem),
+    linear-gradient(138deg, rgb(255 255 255 / 4.5%), transparent 43%),
+    linear-gradient(145deg, rgb(18 21 26 / 97%), rgb(8 11 15 / 97%)) !important;
+  box-shadow:
+    0 30px 76px -58px rgb(0 0 0 / 100%),
+    0 20px 54px -46px rgb(var(--archive-hero-rgb) / 42%),
+    inset 0 1px rgb(255 255 255 / 5%) !important;
+}
+
+.tadeon-route-users > .tadeon-page-hero::before,
+.tadeon-route-tools > .tadeon-page-hero::before,
+.tadeon-route-offline > .tadeon-page-hero::before,
+.tadeon-master-commandbar__glow {
+  z-index: 4 !important;
+  top: 1.22rem !important;
+  left: 1.32rem !important;
+  width: 3.42rem !important;
+  height: 3.42rem !important;
+  border: 1px solid rgb(var(--archive-hero-rgb) / 30%) !important;
+  border-radius: 50% !important;
+  background-color: rgb(9 12 16 / 88%) !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+  background-size: 1.42rem 1.42rem !important;
+  box-shadow:
+    0 0 0 .46rem rgb(var(--archive-hero-rgb) / 4%),
+    0 0 0 .88rem rgb(var(--archive-hero-secondary-rgb) / 2.3%),
+    0 18px 42px -24px rgb(var(--archive-hero-rgb) / 72%),
+    inset 0 1px rgb(255 255 255 / 9%),
+    inset 0 0 0 .36rem rgb(var(--archive-hero-rgb) / 4%) !important;
+  opacity: 1 !important;
+  filter: drop-shadow(0 0 12px rgb(var(--archive-hero-rgb) / 28%)) !important;
+  transform: none !important;
+}
+
+:is(
+  .tadeon-route-users > .tadeon-page-hero,
+  .tadeon-route-tools > .tadeon-page-hero,
+  .tadeon-route-offline > .tadeon-page-hero,
+  .tadeon-master-commandbar
+)::after {
+  position: absolute !important;
+  z-index: 0 !important;
+  top: -9rem !important;
+  right: 7% !important;
+  bottom: auto !important;
+  left: auto !important;
+  display: block !important;
+  width: 18.5rem !important;
+  height: 18.5rem !important;
+  border: 1px solid rgb(var(--archive-hero-rgb) / 24%) !important;
+  border-radius: 50% !important;
+  background:
+    radial-gradient(circle at center, transparent 47%, rgb(var(--archive-hero-rgb) / 3.2%) 48% 51%, transparent 52%) !important;
+  box-shadow:
+    0 0 0 2.25rem rgb(var(--archive-hero-rgb) / 3.4%),
+    0 0 0 4.9rem rgb(var(--archive-hero-secondary-rgb) / 2.4%),
+    0 0 72px -34px rgb(var(--archive-hero-rgb) / 46%) !important;
+  opacity: .92 !important;
+  pointer-events: none !important;
+  content: "" !important;
+}
+
+.tadeon-route-users > .tadeon-page-hero::after {
+  top: -10.7rem !important;
+  right: 12% !important;
+  width: 20.5rem !important;
+  height: 20.5rem !important;
+  border-radius: 45% 55% 49% 51% !important;
+}
+
+.tadeon-route-tools > .tadeon-page-hero::after {
+  top: -7.4rem !important;
+  right: -4.2rem !important;
+  width: 17rem !important;
+  height: 17rem !important;
+  border-radius: 43% 57% 47% 53% !important;
+}
+
+.tadeon-route-offline > .tadeon-page-hero::after {
+  top: -11.8rem !important;
+  right: 17% !important;
+  width: 21rem !important;
+  height: 21rem !important;
+  border-style: dashed !important;
+}
+
+.tadeon-master-commandbar::after {
+  top: -9.2rem !important;
+  right: 5% !important;
+  width: 19rem !important;
+  height: 19rem !important;
+}
+
+:is(
+  .tadeon-route-users > .tadeon-page-hero,
+  .tadeon-route-tools > .tadeon-page-hero,
+  .tadeon-route-offline > .tadeon-page-hero,
+  .tadeon-master-commandbar
+) > * {
+  position: relative;
+  z-index: 2;
+}
+
+@media (max-width: 767px) {
+  :is(
+    .tadeon-route-users > .tadeon-page-hero,
+    .tadeon-route-tools > .tadeon-page-hero,
+    .tadeon-route-offline > .tadeon-page-hero,
+    .tadeon-master-commandbar
+  ) {
+    padding-left: 5rem !important;
+    background:
+      radial-gradient(circle at 92% -18%, rgb(var(--archive-hero-rgb) / 13%), transparent 10rem),
+      radial-gradient(circle at 96% 118%, rgb(var(--archive-hero-secondary-rgb) / 8%), transparent 8rem),
+      linear-gradient(145deg, rgb(18 21 26 / 97%), rgb(8 11 15 / 97%)) !important;
+  }
+
+  .tadeon-route-users > .tadeon-page-hero::before,
+  .tadeon-route-tools > .tadeon-page-hero::before,
+  .tadeon-route-offline > .tadeon-page-hero::before,
+  .tadeon-master-commandbar__glow {
+    top: 1.05rem !important;
+    left: 1.05rem !important;
+    width: 3rem !important;
+    height: 3rem !important;
+    background-size: 1.26rem 1.26rem !important;
+    box-shadow:
+      0 0 0 .38rem rgb(var(--archive-hero-rgb) / 4%),
+      0 0 0 .72rem rgb(var(--archive-hero-secondary-rgb) / 2.1%),
+      0 14px 34px -22px rgb(var(--archive-hero-rgb) / 68%),
+      inset 0 1px rgb(255 255 255 / 8%) !important;
+  }
+
+  :is(
+    .tadeon-route-users > .tadeon-page-hero,
+    .tadeon-route-tools > .tadeon-page-hero,
+    .tadeon-route-offline > .tadeon-page-hero,
+    .tadeon-master-commandbar
+  )::after {
+    top: -6.8rem !important;
+    right: -4.5rem !important;
+    width: 13.5rem !important;
+    height: 13.5rem !important;
+    box-shadow:
+      0 0 0 1.25rem rgb(var(--archive-hero-rgb) / 3%),
+      0 0 0 2.8rem rgb(var(--archive-hero-secondary-rgb) / 2%) !important;
+  }
+}
