@@ -65,12 +65,14 @@ describe("reconciliação urgente de UI", () => {
     expect(css).toContain('[data-slot="switch"]');
   });
 
-  it("abre o popout do mestre em shell dedicado sem AppLayout", () => {
+  it("abre o popout do mestre sem AppLayout preservando o shell visual original", () => {
     const shell = source("src/components/protected-shell.tsx");
-    expect(shell).toContain('window.location.pathname === "/master-panel"');
     expect(shell).toContain('params.get("popout") === "1"');
-    expect(shell).toContain('return "master-panel" as const');
-    expect(shell).toContain('data-dedicated-presentation={dedicated}');
+    expect(shell).toContain('return "popout" as const');
+    expect(shell).toContain('className="tadeon-shell tadeon-dedicated-shell');
+    expect(shell).toContain('data-section={focusedSection()}');
+    expect(shell).toContain('data-dedicated-presentation={presentation}');
+    expect(shell).toContain("tadeon-ambient tadeon-ambient--veil");
   });
 
   it("torna condições ativas e instrumentos de Equilíbrio/Rank visualmente explícitos", () => {
