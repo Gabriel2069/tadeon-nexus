@@ -6,6 +6,8 @@ import { useAuth } from "@/lib/auth";
 import { loadFeatureFlags } from "@/lib/feature-flag-repository";
 import { DEFAULT_FEATURE_FLAGS, type FeatureFlags } from "@/lib/feature-flags";
 
+const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+
 export const Route = createFileRoute("/tabletop")({
   head: () => ({
     meta: [
@@ -28,6 +30,7 @@ function TabletopRoute() {
     view?: string;
     session?: string;
     scene?: string;
+    locate?: string;
   };
   const { role, user } = useAuth();
   const [flags, setFlags] = useState<FeatureFlags>(() => ({
@@ -57,18 +60,16 @@ function TabletopRoute() {
   }, [user?.id]);
 
   const directorSession =
-    typeof search.session === "string" &&
-    /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(
-      search.session,
-    )
+    typeof search.session === "string" && UUID_PATTERN.test(search.session)
       ? search.session
       : undefined;
   const requestedScene =
-    typeof search.scene === "string" &&
-    /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(
-      search.scene,
-    )
+    typeof search.scene === "string" && UUID_PATTERN.test(search.scene)
       ? search.scene
+      : undefined;
+  const requestedEntity =
+    typeof search.locate === "string" && UUID_PATTERN.test(search.locate)
+      ? search.locate
       : undefined;
 
   return (
@@ -76,6 +77,7 @@ function TabletopRoute() {
       role={role}
       flags={flags}
       initialSceneId={requestedScene}
+      locateEntityId={requestedEntity}
       directorSession={directorSession}
       directorMode={role === "mestre" && search.view === "director"}
     />
