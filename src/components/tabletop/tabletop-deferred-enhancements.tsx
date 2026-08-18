@@ -44,6 +44,7 @@ export function TabletopDeferredEnhancements({ master }: { master: boolean }) {
     <>
       {master && <TabletopPreflightBridge />}
       <Suspense fallback={null}>
+        {master && <><SmartSetupBridge /><SmartSetupLauncherDockBridge /></>}
         {tier >= 1 && <><LocateBridge /><PlayerInteractionBridge /></>}
         {tier >= 2 && (
           <>
@@ -66,8 +67,6 @@ export function TabletopDeferredEnhancements({ master }: { master: boolean }) {
             <NexusCaptureBridge />
             <SemanticTransformBridge />
             <RadialActionsBridge />
-            <SmartSetupBridge />
-            <SmartSetupLauncherDockBridge />
             <UnifiedDropBridge />
             <RegionAutomationBridge />
           </>
