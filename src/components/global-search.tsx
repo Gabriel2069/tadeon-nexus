@@ -26,6 +26,7 @@ import {
   CommandShortcut,
 } from "@/components/ui/command";
 import { isApplicationAdministrator } from "@/lib/permissions";
+import "@/styles/final-nav-search-polish-196.css";
 
 type SearchGroup = "Áreas" | "Fichas" | "Campanha";
 type SearchIconName =
@@ -71,6 +72,20 @@ const masterCollections = [
   ["folds", "folds", "Dobra"],
 ] as const;
 
+function syncSearchVisualViewport() {
+  if (typeof window === "undefined") return;
+  const viewport = window.visualViewport;
+  const root = document.documentElement;
+  const width = viewport?.width ?? window.innerWidth;
+  const height = viewport?.height ?? window.innerHeight;
+  const left = viewport?.offsetLeft ?? 0;
+  const top = viewport?.offsetTop ?? 0;
+  root.style.setProperty("--tadeon-search-vv-width", `${Math.max(0, width)}px`);
+  root.style.setProperty("--tadeon-search-vv-height", `${Math.max(0, height)}px`);
+  root.style.setProperty("--tadeon-search-vv-left", `${Math.max(0, left)}px`);
+  root.style.setProperty("--tadeon-search-vv-top", `${Math.max(0, top)}px`);
+}
+
 export function GlobalSearch({
   compact = false,
   mobile = false,
@@ -103,6 +118,23 @@ export function GlobalSearch({
     document.addEventListener("keydown", onKeyDown);
     return () => document.removeEventListener("keydown", onKeyDown);
   }, [enableShortcut]);
+
+  useEffect(() => {
+    if (!open || typeof window === "undefined") return;
+    syncSearchVisualViewport();
+    const viewport = window.visualViewport;
+    const sync = () => syncSearchVisualViewport();
+    viewport?.addEventListener("resize", sync);
+    viewport?.addEventListener("scroll", sync);
+    window.addEventListener("resize", sync);
+    window.addEventListener("orientationchange", sync);
+    return () => {
+      viewport?.removeEventListener("resize", sync);
+      viewport?.removeEventListener("scroll", sync);
+      window.removeEventListener("resize", sync);
+      window.removeEventListener("orientationchange", sync);
+    };
+  }, [open]);
 
   useEffect(() => {
     if (!open) return;
@@ -314,7 +346,12 @@ export function GlobalSearch({
         )}
       </Button>
 
-      <CommandDialog open={open} onOpenChange={setOpen}>
+      <CommandDialog
+        open={open}
+        onOpenChange={setOpen}
+        contentClassName="tadeon-global-search-dialog"
+        commandClassName="tadeon-global-search-command"
+      >
         <CommandInput placeholder="Buscar áreas, fichas, cenas, NPCs e ferramentas…" />
         <CommandList className="tadeon-command-list">
           {loading ? (
