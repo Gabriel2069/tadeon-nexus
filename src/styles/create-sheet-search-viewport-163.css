@@ -206,3 +206,270 @@
     transform: none !important;
   }
 }
+
+/* #172: final navigation/tabletop/Nexus reconciliation. ----------------- */
+
+/* Search is a high-traffic popup on tablets too. Keep the command surface
+   centered and bounded without forcing every tablet dialog into phone layout. */
+@media (min-width: 641px) and (max-width: 1180px) {
+  [data-slot="dialog-content"]:has(> [data-slot="command"]) {
+    box-sizing: border-box !important;
+    top: 50% !important;
+    right: auto !important;
+    bottom: auto !important;
+    left: 50% !important;
+    width: min(42rem, calc(100vw - 2rem)) !important;
+    min-width: 0 !important;
+    max-width: calc(100vw - 2rem) !important;
+    max-height: calc(100dvh - max(1rem, env(safe-area-inset-top)) - max(1rem, env(safe-area-inset-bottom))) !important;
+    margin: 0 !important;
+    overflow: hidden !important;
+    transform: translate(-50%, -50%) !important;
+    transform-origin: center !important;
+  }
+
+  [data-slot="dialog-content"]:has(> [data-slot="command"]) > [data-slot="command"] {
+    display: flex !important;
+    min-width: 0 !important;
+    min-height: 0 !important;
+    max-width: 100% !important;
+    max-height: inherit !important;
+    flex-direction: column !important;
+    overflow: hidden !important;
+  }
+
+  [data-slot="dialog-content"]:has(> [data-slot="command"]) [data-slot="command-list"] {
+    min-width: 0 !important;
+    min-height: 0 !important;
+    max-width: 100% !important;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+    overscroll-behavior: contain;
+  }
+}
+
+/* Every lateral navigation icon now uses one shared frame. Panel and Backup
+   merely replace the glyph/color inside that identical geometry. */
+.tadeon-primary-nav .tadeon-nav-item {
+  width: 100%;
+  min-width: 0;
+  align-items: center;
+}
+
+.tadeon-primary-nav .tadeon-nav-item[data-mini="true"] {
+  justify-content: center !important;
+  padding-inline: .5rem !important;
+}
+
+.tadeon-primary-nav .tadeon-nav-item__icon {
+  position: relative;
+  display: grid;
+  width: 2rem;
+  height: 2rem;
+  min-width: 2rem;
+  flex: 0 0 2rem;
+  place-items: center;
+  margin: 0;
+  padding: 0;
+  border: 1px solid rgb(var(--nav-accent-rgb) / 11%);
+  border-radius: .66rem .22rem .66rem .22rem;
+  color: currentColor;
+  background: linear-gradient(145deg, rgb(var(--nav-accent-rgb) / 8%), rgb(255 255 255 / 1.5%));
+  box-shadow: inset 0 1px rgb(255 255 255 / 4%), 0 12px 26px -23px rgb(var(--nav-accent-rgb) / 48%);
+  transform-origin: center;
+  transition:
+    border-color 180ms var(--ease-out),
+    color 180ms var(--ease-out),
+    background-color 180ms var(--ease-out),
+    box-shadow 180ms var(--ease-out),
+    transform 190ms var(--ease-out);
+}
+
+.tadeon-primary-nav .tadeon-nav-item__icon > svg {
+  width: 1rem;
+  height: 1rem;
+  margin: 0;
+}
+
+.tadeon-primary-nav .tadeon-nav-item:hover .tadeon-nav-item__icon,
+.tadeon-primary-nav .tadeon-nav-item[aria-current="page"] .tadeon-nav-item__icon {
+  border-color: rgb(var(--nav-accent-rgb) / 25%);
+  background: linear-gradient(145deg, rgb(var(--nav-accent-rgb) / 15%), rgb(255 255 255 / 2%));
+  box-shadow: inset 0 1px rgb(255 255 255 / 5%), 0 13px 28px -22px rgb(var(--nav-accent-rgb) / 52%);
+  transform: translateY(-1px);
+}
+
+/* The app keeps the old Lightbulb in React only as a harmless structural
+   fallback. The visible mobile Master glyph is the authored Panel symbol. */
+.tadeon-mobile-dock__item[href="/master-panel"] > svg {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+}
+
+.tadeon-mobile-dock__item[href="/master-panel"]::after {
+  display: none !important;
+  content: none !important;
+}
+
+.tadeon-mobile-dock__item[href="/master-panel"]::before {
+  display: block !important;
+  width: 1.25rem !important;
+  height: 1.25rem !important;
+  flex: 0 0 1.25rem !important;
+  margin: 0 !important;
+  background: currentColor !important;
+  -webkit-mask: center / contain no-repeat url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.55' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='8.25' stroke-dasharray='9 3.4 2.2 4.3' opacity='.72'/%3E%3Cpath d='M12 2.8v4.1M12 17.1v4.1M2.8 12h4.1M17.1 12h4.1'/%3E%3Cpath d='m8.55 12 3.45-3.45L15.45 12 12 15.45 8.55 12Z'/%3E%3Cpath d='M6.05 6.35 9.6 9.6M17.95 6.35 14.4 9.6M6.05 17.65l3.55-3.25M17.95 17.65l-3.55-3.25'/%3E%3Ccircle cx='6.05' cy='6.35' r='.85'/%3E%3Ccircle cx='17.95' cy='6.35' r='.85'/%3E%3Ccircle cx='6.05' cy='17.65' r='.85'/%3E%3Ccircle cx='17.95' cy='17.65' r='.85'/%3E%3Ccircle cx='12' cy='12' r='1.15' fill='black' stroke='none'/%3E%3C/svg%3E") !important;
+  mask: center / contain no-repeat url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.55' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='8.25' stroke-dasharray='9 3.4 2.2 4.3' opacity='.72'/%3E%3Cpath d='M12 2.8v4.1M12 17.1v4.1M2.8 12h4.1M17.1 12h4.1'/%3E%3Cpath d='m8.55 12 3.45-3.45L15.45 12 12 15.45 8.55 12Z'/%3E%3Cpath d='M6.05 6.35 9.6 9.6M17.95 6.35 14.4 9.6M6.05 17.65l3.55-3.25M17.95 17.65l-3.55-3.25'/%3E%3Ccircle cx='6.05' cy='6.35' r='.85'/%3E%3Ccircle cx='17.95' cy='6.35' r='.85'/%3E%3Ccircle cx='6.05' cy='17.65' r='.85'/%3E%3Ccircle cx='17.95' cy='17.65' r='.85'/%3E%3Ccircle cx='12' cy='12' r='1.15' fill='black' stroke='none'/%3E%3C/svg%3E") !important;
+  opacity: .96 !important;
+  filter: none !important;
+  transform: none !important;
+  content: "" !important;
+  transition: opacity 180ms var(--ease-out), filter 180ms var(--ease-out), transform 180ms var(--ease-out) !important;
+}
+
+.tadeon-mobile-dock__item[href="/master-panel"][aria-current="page"]::before {
+  color: var(--nav-accent);
+  opacity: 1 !important;
+  filter: drop-shadow(0 0 8px rgb(var(--nav-accent-rgb) / 30%)) !important;
+  transform: translateY(-1px) scale(1.04) !important;
+}
+
+/* Mesa owns its map symbol in both its app identity and its internal studio
+   identity; the generic Tadeon brand mark stays on the rest of the product. */
+.tadeon-shell[data-section="Mesa Nexus"] .tadeon-mobile-header__identity > svg,
+.tadeon-tabletop-studio__brand > svg {
+  display: none !important;
+}
+
+.tadeon-shell[data-section="Mesa Nexus"] .tadeon-mobile-header__identity::before,
+.tadeon-tabletop-studio__brand::before {
+  display: block !important;
+  width: 2rem;
+  height: 2rem;
+  flex: 0 0 2rem;
+  background: var(--section-accent, var(--primary));
+  -webkit-mask: center / 1.28rem 1.28rem no-repeat url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M14.106 5.553a2 2 0 0 0 1.788 0l3.659-1.83A1 1 0 0 1 21 4.618v12.764a1 1 0 0 1-.553.894l-4.553 2.277a2 2 0 0 1-1.788 0l-4.212-2.106a2 2 0 0 0-1.788 0l-3.659 1.83A1 1 0 0 1 3 19.382V6.618a1 1 0 0 1 .553-.894l4.553-2.277a2 2 0 0 1 1.788 0z'/%3E%3Cpath d='M15 5.764v15M9 3.236v15'/%3E%3C/svg%3E");
+  mask: center / 1.28rem 1.28rem no-repeat url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M14.106 5.553a2 2 0 0 0 1.788 0l3.659-1.83A1 1 0 0 1 21 4.618v12.764a1 1 0 0 1-.553.894l-4.553 2.277a2 2 0 0 1-1.788 0l-4.212-2.106a2 2 0 0 0-1.788 0l-3.659 1.83A1 1 0 0 1 3 19.382V6.618a1 1 0 0 1 .553-.894l4.553-2.277a2 2 0 0 1 1.788 0z'/%3E%3Cpath d='M15 5.764v15M9 3.236v15'/%3E%3C/svg%3E");
+  opacity: .96;
+  content: "" !important;
+}
+
+.tadeon-tabletop-studio__brand::before {
+  width: 2.75rem;
+  height: 2.75rem;
+  flex-basis: 2.75rem;
+  border: 1px solid rgb(217 215 164 / 18%);
+  border-radius: 1rem .35rem 1rem .35rem;
+  background-color: var(--primary);
+  -webkit-mask-size: 1.45rem 1.45rem;
+  mask-size: 1.45rem 1.45rem;
+  box-shadow: 0 12px 34px -22px rgb(0 0 0 / 100%);
+}
+
+/* The corner toggle now owns only the floating reliability strip. The native
+   scene/edit/view toolbar remains exposed regardless of this state. */
+html[data-tadeon-tabletop-reliability="collapsed"] .tadeon-tabletop-reliability-strip {
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+  transform: translate3d(22%, 0, 0) scale(.96) !important;
+  transition:
+    opacity 170ms ease,
+    transform 230ms var(--ease-drawer),
+    visibility 0s linear 230ms !important;
+}
+
+html[data-tadeon-tabletop-reliability] .tadeon-tabletop-toolbar {
+  display: flex !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
+  transform: none !important;
+}
+
+/* When the Creative Dock is folded, its handle clears the final in-stage
+   scene/status strip rather than sitting underneath it. Expanded/dragged Dock
+   keeps its own positioning contract. */
+.tadeon-creative-dock[data-open="false"] {
+  right: calc(var(--tadeon-tabletop-stage-right, 0px) + max(.75rem, env(safe-area-inset-right))) !important;
+  bottom: max(
+    calc(var(--tadeon-tabletop-stage-bottom, 0px) + 4.35rem),
+    var(--tadeon-tabletop-bottom-row-1, 4.35rem)
+  ) !important;
+  left: auto !important;
+  z-index: 52 !important;
+}
+
+/* Restore the ornamental orbital field that identifies O Nexus without
+   becoming another interactive layer. */
+.tadeon-nexus-header {
+  position: relative;
+  isolation: isolate;
+  overflow: clip;
+}
+
+.tadeon-nexus-header::before {
+  position: absolute;
+  z-index: 0;
+  top: -7.4rem;
+  right: -4.2rem;
+  width: 19rem;
+  aspect-ratio: 1;
+  border: 1px solid rgb(113 107 123 / 10%);
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 50% 50%, transparent 0 2.2rem, rgb(217 215 164 / 13%) 2.25rem 2.32rem, transparent 2.38rem 4.25rem, rgb(113 107 123 / 18%) 4.31rem 4.39rem, transparent 4.46rem 6.45rem, rgb(217 215 164 / 8%) 6.51rem 6.59rem, transparent 6.66rem 8.3rem, rgb(113 107 123 / 11%) 8.36rem 8.44rem, transparent 8.5rem),
+    conic-gradient(from 18deg, transparent 0 7%, rgb(217 215 164 / 12%) 8% 8.7%, transparent 9.4% 34%, rgb(113 107 123 / 17%) 35% 35.8%, transparent 36.5% 67%, rgb(217 215 164 / 10%) 68% 68.7%, transparent 69.4% 100%);
+  box-shadow:
+    0 0 0 2.15rem rgb(113 107 123 / 2.4%),
+    0 0 0 4.9rem rgb(217 215 164 / 1.4%);
+  opacity: .9;
+  mask-image: linear-gradient(145deg, black 28%, rgb(0 0 0 / 72%) 60%, transparent 88%);
+  pointer-events: none;
+  content: "";
+}
+
+.tadeon-nexus-header > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* The master navigation keeps a full-width sticky host, but the actual menu
+   hugs its content and stays centered rather than leaving arbitrary side air. */
+.tadeon-master-navigation__scroller {
+  width: fit-content;
+  max-width: 100%;
+  margin-inline: auto;
+}
+
+.tadeon-master-navigation__scroller > [data-slot="tabs-list"] {
+  width: max-content;
+  max-width: 100%;
+  margin-inline: auto;
+  justify-content: center !important;
+}
+
+@media (max-width: 1179px) {
+  .tadeon-master-navigation__scroller {
+    width: 100%;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .tadeon-master-navigation__scroller::-webkit-scrollbar {
+    display: none;
+  }
+
+  .tadeon-master-navigation__scroller > [data-slot="tabs-list"] {
+    justify-content: flex-start !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tadeon-primary-nav .tadeon-nav-item__icon,
+  .tadeon-mobile-dock__item[href="/master-panel"]::before {
+    transition: none !important;
+    transform: none !important;
+  }
+}
