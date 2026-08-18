@@ -27,6 +27,7 @@ describe("reconciliação urgente de UI", () => {
   it("restaura a barra de modos e ancora a barra operacional correta ao stage", () => {
     const oldCss = source("src/styles/urgent-user-reconciliation.css");
     const repairCss = source("src/styles/tabletop-map-chrome-repair.css");
+    const finalCss = source("src/styles/create-sheet-search-viewport-163.css");
     const bridge = source(
       "src/components/tabletop/tabletop-urgent-reconciliation-bridge.tsx",
     );
@@ -37,7 +38,14 @@ describe("reconciliação urgente de UI", () => {
     expect(repairCss).toContain('html[data-tadeon-tabletop-toprail="collapsed"]');
     expect(repairCss).toContain(".tadeon-tabletop-toprail-toggle");
     expect(bridge).toContain("ResizeObserver");
-    expect(bridge).toContain("TOP_RAIL_KEY");
+    expect(bridge).toContain("RELIABILITY_KEY");
+    expect(bridge).not.toContain("TOP_RAIL_KEY");
+    expect(finalCss).toContain(
+      'html[data-tadeon-tabletop-reliability="collapsed"] .tadeon-tabletop-reliability-strip',
+    );
+    expect(finalCss).toContain(
+      "html[data-tadeon-tabletop-reliability] .tadeon-tabletop-toolbar",
+    );
   });
 
   it("corrige o blackout na geometria do aviso de câmera e abandona o scanner invasivo", () => {

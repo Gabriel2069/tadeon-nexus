@@ -2,6 +2,26 @@
    This removes the pseudo-element masks introduced in #158/#159 so active and
    inactive states share the exact same DOM and CSS contract as every other item. */
 
+/* #172: downstream authored icon frames need a concrete RGB token. Without
+   this contract their border/background/glow declarations become invalid CSS.
+   Peers inherit the current workspace accent; Master and Backup keep their own
+   semantic identities regardless of which route is currently open. */
+.tadeon-primary-nav .tadeon-nav-item {
+  --nav-accent: var(--section-accent, var(--primary));
+  --nav-accent-rgb: var(--section-accent-rgb, 217 215 164);
+}
+
+.tadeon-primary-nav .tadeon-nav-item[href="/master-panel"],
+.tadeon-mobile-dock__item[href="/master-panel"] {
+  --nav-accent: var(--tadeon-fear, #74242d);
+  --nav-accent-rgb: 116 36 45;
+}
+
+.tadeon-primary-nav .tadeon-nav-item[href="/nexus-tools"] {
+  --nav-accent: var(--tadeon-metal, #7a8187);
+  --nav-accent-rgb: 122 129 135;
+}
+
 .tadeon-nav-item[href="/master-panel"] .tadeon-nav-item__icon::before,
 .tadeon-nav-item[href="/nexus-tools"] .tadeon-nav-item__icon::before,
 .tadeon-mobile-dock__item[href="/master-panel"]::before {

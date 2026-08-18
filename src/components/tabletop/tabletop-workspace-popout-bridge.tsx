@@ -33,7 +33,7 @@ function ensureHost(anchor: HTMLElement) {
   const host = document.createElement("span");
   host.id = "tadeon-tabletop-popout-host";
   host.className = "tadeon-tabletop-popout-host";
-  anchor.append(host);
+  anchor.prepend(host);
   return host;
 }
 
@@ -48,10 +48,16 @@ export function TabletopWorkspacePopoutBridge() {
     if (!eligible) return;
 
     const attach = () => {
-      const anchor =
-        document.querySelector<HTMLElement>(".tadeon-tabletop-toolbar") ??
-        document.querySelector<HTMLElement>(".tadeon-tabletop-reliability-strip") ??
-        document.querySelector<HTMLElement>(".tadeon-tabletop-studio__header");
+      // The regular Nexus/Master popout action belongs to the application focus
+      // header. Mesa follows the same contract instead of injecting its action
+      // into the map toolbar/reliability strip.
+      const desktopActions = document.querySelector<HTMLElement>(
+        ".tadeon-desktop-toolbar > div:last-child",
+      );
+      const fallback = document.querySelector<HTMLElement>(
+        ".tadeon-tabletop-studio__header",
+      );
+      const anchor = desktopActions ?? fallback;
       if (anchor) setHost(ensureHost(anchor));
     };
 
@@ -66,14 +72,15 @@ export function TabletopWorkspacePopoutBridge() {
   return createPortal(
     <Button
       type="button"
-      size="icon"
+      size="sm"
       variant="ghost"
-      className="tadeon-tabletop-popout-button"
+      className="tadeon-tabletop-popout-button gap-1.5"
       onClick={openDedicatedTabletop}
       title="Abrir Mesa em janela independente"
       aria-label="Abrir Mesa em janela independente"
     >
       <ExternalLink className="h-4 w-4" />
+      <span className="hidden lg:inline">Nova janela</span>
     </Button>,
     host,
   );
