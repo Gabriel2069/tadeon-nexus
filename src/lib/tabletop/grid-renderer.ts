@@ -7,12 +7,16 @@ function normalizedOffset(value: number | undefined, spacing: number) {
   return ((Number(value) % spacing) + spacing) % spacing;
 }
 
+function clamp(value: number, min: number, max: number) {
+  return Math.max(min, Math.min(max, value));
+}
+
 function drawSquare(view: Graphics, scene: TabletopScene, spacing: number) {
   const offsetX = normalizedOffset(scene.gridOffsetX, spacing);
   const offsetY = normalizedOffset(scene.gridOffsetY, spacing);
-  for (let x = offsetX - spacing; x <= scene.width + spacing; x += spacing)
+  for (let x = offsetX; x <= scene.width; x += spacing)
     view.moveTo(x, 0).lineTo(x, scene.height);
-  for (let y = offsetY - spacing; y <= scene.height + spacing; y += spacing)
+  for (let y = offsetY; y <= scene.height; y += spacing)
     view.moveTo(0, y).lineTo(scene.width, y);
 }
 
@@ -22,6 +26,22 @@ function hexPoints(cx: number, cy: number, radius: number, pointy: boolean) {
   for (let index = 0; index < 6; index += 1) {
     const angle = offset + (Math.PI / 3) * index;
     points.push(cx + Math.cos(angle) * radius, cy + Math.sin(angle) * radius);
+  }
+  return points;
+}
+
+function clippedHexPoints(
+  cx: number,
+  cy: number,
+  radius: number,
+  pointy: boolean,
+  width: number,
+  height: number,
+) {
+  const points = hexPoints(cx, cy, radius, pointy);
+  for (let index = 0; index < points.length; index += 2) {
+    points[index] = clamp(points[index], 0, width);
+    points[index + 1] = clamp(points[index + 1], 0, height);
   }
   return points;
 }
@@ -41,9 +61,59 @@ function drawHex(view: Graphics, scene: TabletopScene, radius: number, pointy: b
     const yOffset = pointy ? (column % 2 === 0 ? 0 : stepY / 2) : 0;
     for (let y = offsetY - stepY + yOffset; y <= scene.height + height; y += stepY) {
       const cy = pointy ? y : y + (column % 2 === 0 ? 0 : height / 2);
-      view.poly(hexPoints(x, cy, radius, pointy));
+      if (x + radius < 0 || x - radius > scene.width || cy + radius < 0 || cy - radius > scene.height)
+        continue;
+      view.poly(clippedHexPoints(x, cy, radius, pointy, scene.width, scene.height));
     }
   }
+}
+
+function clipLineToScene(
+  x1: number,
+  y1: number,
+  x2: number,
+  y2: number,
+  width: number,
+  height: number,
+): [number, number, number, number] | null {
+  const dx = x2 - x1;
+  const dy = y2 - y1;
+  let t0 = 0;
+  let t1 = 1;
+  const tests: Array<[number, number]> = [
+    [-dx, x1],
+    [dx, width - x1],
+    [-dy, y1],
+    [dy, height - y1],
+  ];
+  for (const [p, q] of tests) {
+    if (p === 0) {
+      if (q < 0) return null;
+      continue;
+    }
+    const r = q / p;
+    if (p < 0) {
+      if (r > t1) return null;
+      if (r > t0) t0 = r;
+    } else {
+      if (r < t0) return null;
+      if (r < t1) t1 = r;
+    }
+  }
+  return [x1 + t0 * dx, y1 + t0 * dy, x1 + t1 * dx, y1 + t1 * dy];
+}
+
+function drawClippedLine(
+  view: Graphics,
+  scene: TabletopScene,
+  x1: number,
+  y1: number,
+  x2: number,
+  y2: number,
+) {
+  const clipped = clipLineToScene(x1, y1, x2, y2, scene.width, scene.height);
+  if (!clipped) return;
+  view.moveTo(clipped[0], clipped[1]).lineTo(clipped[2], clipped[3]);
 }
 
 function drawIsometric(view: Graphics, scene: TabletopScene, spacing: number) {
@@ -56,10 +126,10 @@ function drawIsometric(view: Graphics, scene: TabletopScene, spacing: number) {
     offset <= span + spacing;
     offset += spacing
   ) {
-    view.moveTo(offset, originY).lineTo(offset + scene.height * 2, scene.height + originY);
-    view.moveTo(offset, originY).lineTo(offset - scene.height * 2, scene.height + originY);
+    drawClippedLine(view, scene, offset, originY, offset + scene.height * 2, scene.height + originY);
+    drawClippedLine(view, scene, offset, originY, offset - scene.height * 2, scene.height + originY);
   }
-  for (let y = originY - rise * 2; y <= scene.height + rise * 2; y += rise * 2)
+  for (let y = originY; y <= scene.height; y += rise * 2)
     view.moveTo(0, y).lineTo(scene.width, y);
 }
 

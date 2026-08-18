@@ -1,4 +1,4 @@
-/* #192/#193: coerência visual residual de navegação, Mestre e Mesa. */
+/* #192/#193/#194: coerência visual residual de navegação, Mestre e Mesa. */
 
 .tadeon-primary-nav {
   box-sizing: border-box;
@@ -36,10 +36,24 @@
   min-width: max-content;
 }
 
-/* Uma única moldura para o menu do Mestre: o scroller é a superfície; o TabsList
-   interno nunca desenha um segundo cartão/quadro. */
-.tadeon-master-navigation__scroller,
-.tadeon-master-navigation[data-fixed="true"] .tadeon-master-navigation__scroller {
+/* A caixa .tadeon-master-navigation deixa de ser uma superfície própria. */
+.tadeon-master-navigation {
+  display: contents !important;
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.tadeon-master-navigation-slot,
+.tadeon-master-navigation__scroller {
+  box-sizing: border-box;
+  width: 100% !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+}
+
+.tadeon-master-navigation__scroller {
+  overflow: hidden;
   border: 1px solid rgb(var(--section-accent-rgb) / 12%) !important;
   border-radius: 1rem .38rem 1rem .38rem !important;
   background:
@@ -56,37 +70,58 @@
   opacity: 0 !important;
 }
 
+.tadeon-master-navigation__rail {
+  width: 100% !important;
+  min-width: 0 !important;
+}
+
 .tadeon-master-navigation__rail > [data-slot="tabs-list"] {
+  width: max-content;
+  min-width: 100%;
   border: 0 !important;
   border-radius: 0 !important;
   background: transparent !important;
   box-shadow: none !important;
 }
 
-@media (min-width: 1024px) {
-  .tadeon-master-navigation__rail > [data-slot="tabs-list"] {
-    border: 0 !important;
-    border-radius: 0 !important;
-    background: transparent !important;
-    box-shadow: none !important;
-  }
-}
-
 .tadeon-master-session-save-host {
-  grid-column: 1 / -1;
   display: flex;
+  width: 100%;
   min-width: 0;
   justify-content: flex-end;
-  padding-bottom: .15rem;
+  padding-bottom: .45rem;
 }
 
 .tadeon-master-session-save-host > button {
   min-width: max-content;
 }
 
+/* Setup e minimizar usam as classes reais do top rail inspecionado. */
+.tadeon-tabletop-toprail-setup {
+  position: static !important;
+  inset: auto !important;
+  z-index: 4 !important;
+  order: 1 !important;
+  flex: 0 0 auto !important;
+  transform: none !important;
+  translate: none !important;
+  margin: 0 .5rem 0 0 !important;
+}
+
+.tadeon-tabletop-toprail-toggle {
+  position: static !important;
+  inset: auto !important;
+  z-index: 3 !important;
+  order: 2 !important;
+  flex: 0 0 auto !important;
+  transform: none !important;
+  translate: none !important;
+  margin-left: 0 !important;
+}
+
 .tadeon-smart-setup-launcher-host {
   position: relative !important;
-  z-index: 6 !important;
+  z-index: 4 !important;
   display: inline-flex !important;
   width: max-content !important;
   min-width: max-content !important;
@@ -99,7 +134,7 @@
 
 .tadeon-smart-setup-docked-launcher {
   position: relative;
-  z-index: 7;
+  z-index: 5;
   display: inline-flex;
   min-width: max-content;
   min-height: 2.25rem;
@@ -115,23 +150,6 @@
   font-size: .72rem;
   font-weight: 600;
   white-space: nowrap;
-  transition:
-    color 160ms var(--ease-out),
-    border-color 160ms var(--ease-out),
-    background-color 160ms var(--ease-out),
-    transform 160ms var(--ease-out);
-}
-
-.tadeon-smart-setup-docked-launcher svg {
-  width: .95rem;
-  height: .95rem;
-  color: var(--primary);
-}
-
-.tadeon-smart-setup-docked-launcher:hover {
-  border-color: color-mix(in srgb, var(--primary) 52%, var(--border));
-  background: color-mix(in srgb, var(--primary) 8%, var(--card));
-  transform: translateY(-1px);
 }
 
 button[aria-label="Recolher painel contextual"] {
@@ -146,28 +164,36 @@ button[aria-label="Recolher painel contextual"] {
   }
 }
 
-/* O toggle 2D/3D mantém exatamente o fundo dos demais CanvasToolButton. O estado
-   ativo é comunicado por contorno e contraste de conteúdo, não por um fundo único. */
+/* O controle 2D/3D recebe exatamente a aparência do variant=outline usado pelos irmãos. */
 .tadeon-tabletop-toolbar__group button:is(
   [aria-label="Ativar projeção espacial 3D"],
   [aria-label="Voltar à planta 2D"]
 ) {
-  border: 1px solid color-mix(in srgb, var(--border) 82%, var(--foreground) 18%) !important;
-  background: transparent !important;
-  box-shadow: inset 0 1px rgb(255 255 255 / 3%);
+  border: 1px solid hsl(var(--input)) !important;
+  color: hsl(var(--foreground)) !important;
+  background: hsl(var(--background) / .7) !important;
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 3.5%) !important;
 }
 
-.tadeon-tabletop-toolbar__group button[aria-label="Ativar projeção espacial 3D"] {
-  color: var(--foreground) !important;
+.tadeon-tabletop-toolbar__group button:is(
+  [aria-label="Ativar projeção espacial 3D"],
+  [aria-label="Voltar à planta 2D"]
+):hover {
+  border-color: hsl(var(--primary) / .35) !important;
+  color: hsl(var(--accent-foreground)) !important;
+  background: hsl(var(--accent)) !important;
 }
 
-.tadeon-tabletop-toolbar__group button[aria-label="Voltar à planta 2D"][aria-pressed="true"] {
-  border-color: color-mix(in srgb, var(--primary) 78%, var(--border)) !important;
-  color: var(--foreground) !important;
-  background: transparent !important;
+.tadeon-tabletop-toolbar__group button:is(
+  [aria-label="Ativar projeção espacial 3D"],
+  [aria-label="Voltar à planta 2D"]
+)[aria-pressed="true"] {
+  border-color: hsl(var(--primary) / .62) !important;
+  color: hsl(var(--foreground)) !important;
+  background: hsl(var(--background) / .7) !important;
   box-shadow:
-    inset 0 0 0 1px color-mix(in srgb, var(--primary) 32%, transparent),
-    0 0 0 1px color-mix(in srgb, var(--primary) 10%, transparent) !important;
+    inset 0 1px 0 rgb(255 255 255 / 3.5%),
+    inset 0 0 0 1px hsl(var(--primary) / .18) !important;
 }
 
 .tadeon-tabletop-toolbar__group button:is(

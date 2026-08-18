@@ -5,7 +5,7 @@ function source(path: string) {
   return readFileSync(path, "utf8");
 }
 
-describe("ui coherence 192/193", () => {
+describe("ui coherence 192/193/194", () => {
   it("moves both Nexus and Master popouts to the desktop toolbar", () => {
     const bridge = source("src/components/master/master-toolbar-popout-bridge.tsx");
     const css = source("src/styles/ui-coherence-192.css");
@@ -23,46 +23,37 @@ describe("ui coherence 192/193", () => {
     expect(css).toContain("margin-inline: 0 !important");
   });
 
-  it("keeps one master navigation frame and removes the inner tabs card", () => {
+  it("removes the master navigation wrapper as a visual surface", () => {
     const css = source("src/styles/ui-coherence-192.css");
+    expect(css).toContain(".tadeon-master-navigation {");
+    expect(css).toContain("display: contents !important");
     expect(css).toContain(".tadeon-master-navigation__scroller");
-    expect(css).toContain('.tadeon-master-navigation__rail > [data-slot="tabs-list"]');
-    expect(css).toContain("border: 0 !important");
-    expect(css).toContain("background: transparent !important");
-    expect(css).toContain("box-shadow: none !important");
+    expect(css).toContain("width: 100% !important");
   });
 
-  it("docks smart setup visibly before the contextual panel collapse control", () => {
-    const bridge = source(
-      "src/components/tabletop/tabletop-smart-setup-launcher-dock-bridge.tsx",
-    );
-    const deferred = source("src/components/tabletop/tabletop-deferred-enhancements.tsx");
+  it("targets the inspected setup and collapse controls directly", () => {
     const css = source("src/styles/ui-coherence-192.css");
-    expect(bridge).toContain('button[aria-label="Recolher painel contextual"]');
-    expect(bridge).toContain("insertBefore(portalHost, minimize)");
-    expect(deferred).toContain("<SmartSetupLauncherDockBridge />");
-    expect(css).toContain("z-index: 6 !important");
-    expect(css).toContain("order: -1");
-    expect(css).toContain("margin-right: .55rem !important");
+    expect(css).toContain(".tadeon-tabletop-toprail-setup");
+    expect(css).toContain(".tadeon-tabletop-toprail-toggle");
+    expect(css).toContain("order: 1 !important");
+    expect(css).toContain("order: 2 !important");
   });
 
-  it("keeps the 2D/3D toggle on the same background as peer toolbar buttons", () => {
+  it("makes the 2D/3D toggle match the outline variant of peer toolbar buttons", () => {
     const css = source("src/styles/ui-coherence-192.css");
     expect(css).toContain('[aria-label="Ativar projeção espacial 3D"]');
     expect(css).toContain('[aria-label="Voltar à planta 2D"]');
-    expect(css).toContain("background: transparent !important");
-    expect(css).toContain("border-color: color-mix(in srgb, var(--primary) 78%, var(--border)) !important");
+    expect(css).toContain("border: 1px solid hsl(var(--input)) !important");
+    expect(css).toContain("background: hsl(var(--background) / .7) !important");
   });
 
-  it("moves Salvar sessão into the active-session metric strip and hides the old copy", () => {
+  it("mounts Salvar sessão immediately above the active-session metrics", () => {
     const bridge = source("src/components/master/master-toolbar-popout-bridge.tsx");
-    const css = source("src/styles/ui-coherence-192.css");
     expect(bridge).toContain("MasterSessionSavePortal");
     expect(bridge).toContain('text.includes("Pistas")');
     expect(bridge).toContain('text.includes("Dobras")');
     expect(bridge).toContain('text.includes("Iniciativa")');
+    expect(bridge).toContain("parent.insertBefore(portalHost, metrics)");
     expect(bridge).toContain('rpc("save_session_sheet_changes")');
-    expect(css).toContain(".tadeon-master-session-save-host");
-    expect(css).toContain('button[title="Registrar o Diff das fichas neste ponto da sessão"]');
   });
 });
