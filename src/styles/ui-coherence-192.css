@@ -1,0 +1,88 @@
+/* #192: coerência visual residual de navegação, Mestre e Mesa. */
+
+.tadeon-primary-nav {
+  box-sizing: border-box;
+  width: 100% !important;
+  min-width: 0 !important;
+}
+
+.tadeon-primary-nav > .tadeon-nav-item,
+.tadeon-primary-nav .tadeon-nav-item {
+  box-sizing: border-box !important;
+  inline-size: 100% !important;
+  width: 100% !important;
+  min-width: 100% !important;
+  max-width: 100% !important;
+  margin-inline: 0 !important;
+  justify-self: stretch !important;
+}
+
+.tadeon-shell:is([data-section="Painel do Mestre"], [data-section="O Nexus"])
+  .tadeon-workspace-popout-host
+  > button[title="Abrir este painel em janela dedicada"] {
+  display: none !important;
+}
+
+.tadeon-master-toolbar-popout-host {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+}
+
+.tadeon-master-toolbar-popout-host > button {
+  min-width: max-content;
+}
+
+.tadeon-master-navigation__scroller,
+.tadeon-master-navigation[data-fixed="true"] .tadeon-master-navigation__scroller {
+  border-color: transparent !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.tadeon-master-navigation__scroller::before,
+.tadeon-master-navigation__scroller::after {
+  background: transparent !important;
+  opacity: 0 !important;
+}
+
+.tadeon-smart-setup-launcher-host {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+}
+
+.tadeon-smart-setup-launcher-host .tadeon-smart-setup__launcher {
+  position: static !important;
+  inset: auto !important;
+  min-height: 2.25rem;
+  padding: .4rem .65rem;
+  translate: none !important;
+}
+
+.tadeon-tabletop-toolbar__group button:is(
+  [aria-label="Ativar projeção espacial 3D"],
+  [aria-label="Voltar à planta 2D"]
+) {
+  border: 1px solid color-mix(in srgb, var(--border) 82%, var(--foreground) 18%) !important;
+  box-shadow: inset 0 1px rgb(255 255 255 / 3%);
+}
+
+.tadeon-tabletop-toolbar__group button[aria-label="Ativar projeção espacial 3D"] {
+  color: var(--foreground) !important;
+  background: color-mix(in srgb, var(--card) 78%, transparent) !important;
+}
+
+.tadeon-tabletop-toolbar__group button[aria-label="Voltar à planta 2D"][aria-pressed="true"] {
+  border-color: color-mix(in srgb, var(--primary) 70%, var(--border)) !important;
+  color: var(--primary-foreground) !important;
+  background: var(--primary) !important;
+}
+
+.tadeon-tabletop-toolbar__group button:is(
+  [aria-label="Ativar projeção espacial 3D"],
+  [aria-label="Voltar à planta 2D"]
+) svg {
+  color: currentColor !important;
+}
