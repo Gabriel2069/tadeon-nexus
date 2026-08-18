@@ -1,12 +1,10 @@
 /* #168: dedicated workspaces are the original pages without AppLayout chrome.
-   Do not replace page backgrounds, textures, motion or authored decoration here. */
+   Do not replace page backgrounds, textures, shadows, motion or authored decoration here. */
 
 .tadeon-dedicated-shell[data-dedicated-presentation="popout"] {
   width: 100%;
   min-width: 0;
   min-height: 100dvh;
-  color: var(--foreground);
-  background: var(--background);
 }
 
 .tadeon-dedicated-shell[data-dedicated-presentation="popout"] .tadeon-dedicated-shell__main {
@@ -43,21 +41,6 @@
   .tadeon-tabletop-studio
 ) {
   border-color: color-mix(in srgb, var(--border) 68%, var(--section-accent) 32%) !important;
-}
-
-.tadeon-dedicated-shell[data-dedicated-presentation="popout"]:is(
-  [data-section="O Nexus"],
-  [data-section="Painel do Mestre"],
-  [data-section="Mesa Nexus"]
-) :is(
-  [data-slot="card"],
-  .tadeon-nexus-hero,
-  .tadeon-nexus-commandbar,
-  .tadeon-master-commandbar
-) {
-  box-shadow:
-    var(--shadow, 0 0 transparent),
-    0 0 0 1px color-mix(in srgb, var(--section-accent) 9%, transparent);
 }
 
 .tadeon-tabletop-popout-host {
