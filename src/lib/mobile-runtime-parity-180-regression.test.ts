@@ -27,12 +27,15 @@ describe("mobile runtime parity 180", () => {
 
   it("publishes visualViewport bounds and follows virtual keyboard changes", () => {
     const viewport = source("src/components/visual-viewport-bridge.tsx");
+    const radial = source("src/components/mobile-more-radial-bridge.tsx");
     expect(viewport).toContain('import "@/styles/mobile-runtime-parity-180.css"');
     expect(viewport).toContain("window.visualViewport");
     expect(viewport).toContain('root.style.setProperty("--tadeon-vv-height"');
     expect(viewport).toContain('root.dataset.tadeonKeyboard = keyboardInset > 120 ? "open" : "closed"');
     expect(viewport).toContain('viewport?.addEventListener("resize", sync)');
     expect(viewport).toContain('document.addEventListener("focusin", keepFocusedControlVisible)');
+    expect(radial).not.toContain('root.style.setProperty("--tadeon-vv-height"');
+    expect(radial).not.toContain("keepFocusedControlVisible");
   });
 
   it("mounts keyboard protection in normal and dedicated protected shells", () => {
