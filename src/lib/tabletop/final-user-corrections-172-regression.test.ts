@@ -50,10 +50,10 @@ describe("final user corrections 172", () => {
 
   it("centers the lateral navigation and removes master-menu dead side space", () => {
     const css = source("src/styles/create-sheet-search-viewport-163.css");
+    const layout = source("src/components/app-layout.tsx");
     expect(css).toContain(".tadeon-primary-nav .tadeon-nav-item__icon");
     expect(css).toContain("place-items: center;");
-    expect(css).toContain('.tadeon-primary-nav .tadeon-nav-item[data-mini="true"]');
-    expect(css).toContain("justify-content: center !important");
+    expect(layout).toContain('mini ? "justify-center px-2" : ""');
     expect(css).toContain(".tadeon-master-navigation__scroller");
     expect(css).toContain("width: fit-content;");
     expect(css).toContain('> [data-slot="tabs-list"]');
