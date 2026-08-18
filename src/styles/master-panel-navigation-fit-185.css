@@ -222,3 +222,33 @@
     transition: none !important;
   }
 }
+
+/* #194: the wrapper is layout-only. The scroller is the one and only visible frame. */
+.tadeon-master-navigation {
+  display: contents !important;
+}
+
+.tadeon-master-navigation__scroller,
+.tadeon-master-navigation[data-fixed="true"] .tadeon-master-navigation__scroller {
+  box-sizing: border-box !important;
+  width: 100% !important;
+  max-width: none !important;
+  margin: 0 !important;
+  padding: .4rem !important;
+  overflow: hidden !important;
+  border: 1px solid rgb(var(--section-accent-rgb) / 14%) !important;
+  border-radius: 1rem .38rem 1rem .38rem !important;
+  background:
+    linear-gradient(105deg, rgb(var(--section-accent-rgb) / 5%), transparent 42%),
+    color-mix(in srgb, var(--card) 91%, transparent) !important;
+  box-shadow:
+    0 18px 44px -34px rgb(0 0 0 / 90%),
+    inset 0 1px rgb(255 255 255 / 3%) !important;
+}
+
+.tadeon-master-navigation__rail > [data-slot="tabs-list"] {
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
