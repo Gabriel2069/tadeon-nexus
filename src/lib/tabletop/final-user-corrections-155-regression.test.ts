@@ -35,7 +35,8 @@ describe("final user corrections 155", () => {
     const css = source("src/styles/user-visible-repair-156.css");
     expect(navigation).toContain("tadeon-master-navigation-slot");
     expect(navigation).toContain('className="tadeon-master-navigation"');
-    expect(navigation).toContain("tadeon-master-navigation__scroller overflow-x-auto");
+    expect(navigation).toContain('className="tadeon-master-navigation__scroller"');
+    expect(navigation).toContain("tadeon-master-navigation__rail overflow-x-auto");
     expect(css).toContain(".tadeon-master-navigation-slot");
     expect(css).toContain("position: fixed !important");
     expect(css).toContain("left: 16rem !important");
