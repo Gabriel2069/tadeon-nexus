@@ -1,0 +1,287 @@
+/* #177: the mobile drawer close control must remain above selected navigation
+   surfaces, while the dock More action reuses the tabletop radial language. */
+.tadeon-mobile-drawer [data-slot="sheet-close"] {
+  z-index: 96 !important;
+  isolation: isolate;
+}
+
+.tadeon-mobile-dock > button.tadeon-mobile-dock__item[aria-haspopup="menu"] > svg {
+  transform-origin: center;
+  transition:
+    color 180ms var(--ease-out),
+    filter 180ms var(--ease-out),
+    rotate 220ms var(--ease-out),
+    scale 220ms var(--ease-out) !important;
+}
+
+.tadeon-mobile-dock > button.tadeon-mobile-dock__item[aria-haspopup="menu"][aria-expanded="true"] {
+  color: var(--section-accent, var(--primary));
+}
+
+.tadeon-mobile-dock > button.tadeon-mobile-dock__item[aria-haspopup="menu"][aria-expanded="true"] > svg {
+  rotate: 90deg;
+  scale: 1.08;
+  filter: drop-shadow(0 0 8px color-mix(in srgb, var(--section-accent, var(--primary)) 36%, transparent));
+}
+
+.tadeon-mobile-more-radial {
+  position: fixed;
+  z-index: 94;
+  width: 10.4rem;
+  height: 10.4rem;
+  translate: -50% -50%;
+  overflow: visible;
+  border: 1px solid color-mix(in srgb, var(--section-accent, var(--primary)) 20%, var(--border));
+  border-radius: 50%;
+  background:
+    radial-gradient(
+      circle at 50% 50%,
+      color-mix(in srgb, var(--card) 96%, var(--section-accent, var(--primary)) 4%) 0 34%,
+      transparent 35%
+    ),
+    color-mix(in srgb, var(--card) 98%, var(--background));
+  box-shadow:
+    0 26px 58px -22px rgb(0 0 0 / 96%),
+    inset 0 1px rgb(255 255 255 / 4%);
+  transform-origin: center;
+}
+
+.tadeon-mobile-more-radial::before {
+  position: absolute;
+  inset: .72rem;
+  border: 1px solid color-mix(in srgb, var(--section-accent, var(--primary)) 12%, transparent);
+  border-radius: 50%;
+  box-shadow: inset 0 0 24px color-mix(in srgb, var(--section-accent, var(--primary)) 5%, transparent);
+  pointer-events: none;
+  content: "";
+}
+
+.tadeon-mobile-more-radial[data-state="open"] {
+  visibility: visible;
+  opacity: 1;
+  scale: 1;
+  rotate: 0deg;
+  pointer-events: auto;
+  animation: tadeon-mobile-more-radial-open 210ms var(--ease-out) both;
+  transition:
+    opacity 160ms var(--ease-out),
+    scale 190ms var(--ease-out),
+    rotate 190ms var(--ease-out),
+    visibility 0s linear 0s;
+}
+
+.tadeon-mobile-more-radial[data-state="closed"] {
+  visibility: hidden;
+  opacity: 0;
+  scale: .84;
+  rotate: -4deg;
+  pointer-events: none;
+  transition:
+    opacity 150ms ease,
+    scale 180ms var(--ease-out),
+    rotate 180ms var(--ease-out),
+    visibility 0s linear 180ms;
+}
+
+.tadeon-mobile-more-radial__orbit {
+  position: absolute;
+  inset: 50% auto auto 50%;
+  width: 6.8rem;
+  height: 6.8rem;
+  translate: -50% -50%;
+  border: 1px dashed color-mix(in srgb, var(--section-accent, var(--primary)) 15%, transparent);
+  border-radius: 50%;
+  opacity: .72;
+  pointer-events: none;
+  animation: tadeon-mobile-more-orbit 12s linear infinite;
+}
+
+.tadeon-mobile-more-radial__item {
+  position: absolute;
+  z-index: 2;
+  display: grid;
+  width: 3.2rem;
+  min-height: 2.72rem;
+  place-items: center;
+  gap: .08rem;
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--section-accent, var(--primary)) 14%, var(--border));
+  border-radius: .82rem .28rem .82rem .28rem;
+  color: var(--foreground);
+  background: var(--card);
+  box-shadow: 0 12px 24px -19px rgb(0 0 0 / 95%);
+  outline: none;
+  transition:
+    translate 180ms var(--ease-out),
+    scale 180ms var(--ease-out),
+    border-color 180ms var(--ease-out),
+    color 180ms var(--ease-out),
+    background-color 180ms var(--ease-out),
+    box-shadow 180ms var(--ease-out);
+}
+
+.tadeon-mobile-more-radial__item svg {
+  width: .98rem;
+  height: .98rem;
+  color: var(--section-accent, var(--primary));
+  transition: rotate 220ms var(--ease-out), scale 220ms var(--ease-out);
+}
+
+.tadeon-mobile-more-radial__item span {
+  max-width: 2.9rem;
+  overflow: hidden;
+  font-size: .57rem;
+  line-height: 1;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tadeon-mobile-more-radial__item:hover,
+.tadeon-mobile-more-radial__item:focus-visible,
+.tadeon-mobile-more-radial__item.is-active {
+  scale: 1.06;
+  border-color: color-mix(in srgb, var(--section-accent, var(--primary)) 48%, var(--border));
+  color: var(--section-accent, var(--primary));
+  background: color-mix(in srgb, var(--card) 91%, var(--section-accent, var(--primary)) 9%);
+  box-shadow:
+    0 14px 28px -20px rgb(0 0 0 / 95%),
+    0 0 18px -10px var(--section-accent, var(--primary));
+}
+
+.tadeon-mobile-more-radial__item:hover svg,
+.tadeon-mobile-more-radial__item:focus-visible svg,
+.tadeon-mobile-more-radial__item.is-active svg {
+  rotate: 6deg;
+  scale: 1.1;
+}
+
+.tadeon-mobile-more-radial__item.is-left {
+  top: 1.9rem;
+  left: -.18rem;
+}
+
+.tadeon-mobile-more-radial__item.is-top {
+  top: -.28rem;
+  left: 50%;
+  translate: -50% 0;
+}
+
+.tadeon-mobile-more-radial__item.is-right {
+  top: 1.9rem;
+  right: -.18rem;
+}
+
+.tadeon-mobile-more-radial__center {
+  position: absolute;
+  z-index: 3;
+  inset: 50% auto auto 50%;
+  display: grid;
+  width: 4.1rem;
+  min-height: 3.8rem;
+  place-items: center;
+  align-content: center;
+  gap: .18rem;
+  translate: -50% -50%;
+  border-radius: 1rem;
+  text-align: center;
+  background: color-mix(in srgb, var(--card) 96%, var(--section-accent, var(--primary)) 4%);
+  box-shadow: 0 10px 26px -20px rgb(0 0 0 / 95%);
+}
+
+.tadeon-mobile-more-radial__center button {
+  display: grid;
+  width: 1.72rem;
+  height: 1.72rem;
+  place-items: center;
+  border: 1px solid color-mix(in srgb, var(--section-accent, var(--primary)) 20%, var(--border));
+  border-radius: 999px;
+  color: var(--section-accent, var(--primary));
+  background: var(--card);
+  transition:
+    border-color 160ms var(--ease-out),
+    background-color 160ms var(--ease-out),
+    scale 160ms var(--ease-out),
+    rotate 180ms var(--ease-out);
+}
+
+.tadeon-mobile-more-radial__center button:hover,
+.tadeon-mobile-more-radial__center button:focus-visible {
+  scale: 1.07;
+  rotate: 5deg;
+  border-color: color-mix(in srgb, var(--section-accent, var(--primary)) 50%, var(--border));
+  background: color-mix(in srgb, var(--card) 91%, var(--section-accent, var(--primary)) 9%);
+}
+
+.tadeon-mobile-more-radial__center button svg {
+  width: .82rem;
+  height: .82rem;
+}
+
+.tadeon-mobile-more-radial__center strong {
+  color: var(--muted-foreground);
+  font-family: var(--font-mono);
+  font-size: .54rem;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.tadeon-mobile-dock__item[data-radial-active="true"] {
+  color: var(--section-accent, var(--primary));
+}
+
+.tadeon-mobile-dock__item[data-radial-active="true"]::after {
+  opacity: 1;
+}
+
+@keyframes tadeon-mobile-more-radial-open {
+  from {
+    opacity: 0;
+    scale: .76;
+    rotate: -6deg;
+  }
+  to {
+    opacity: 1;
+    scale: 1;
+    rotate: 0deg;
+  }
+}
+
+@keyframes tadeon-mobile-more-orbit {
+  to {
+    rotate: 360deg;
+  }
+}
+
+@media (max-width: 380px) {
+  .tadeon-mobile-more-radial {
+    width: 9.4rem;
+    height: 9.4rem;
+  }
+
+  .tadeon-mobile-more-radial__orbit {
+    width: 6.15rem;
+    height: 6.15rem;
+  }
+
+  .tadeon-mobile-more-radial__item {
+    width: 3rem;
+    min-height: 2.6rem;
+  }
+
+  .tadeon-mobile-more-radial__item.is-left,
+  .tadeon-mobile-more-radial__item.is-right {
+    top: 1.7rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tadeon-mobile-dock > button.tadeon-mobile-dock__item[aria-haspopup="menu"] > svg,
+  .tadeon-mobile-more-radial,
+  .tadeon-mobile-more-radial__orbit,
+  .tadeon-mobile-more-radial__item,
+  .tadeon-mobile-more-radial__item svg,
+  .tadeon-mobile-more-radial__center button {
+    animation: none !important;
+    transition-duration: .01ms !important;
+  }
+}
