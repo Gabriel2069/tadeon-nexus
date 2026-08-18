@@ -85,8 +85,9 @@ export const TABLETOP_STRUCTURE_PRESETS: Array<{
     label: "Janela / vidro",
     channels: {
       material: "glass",
+      blocksLight: true,
       visionTransmission: 0.96,
-      lightTransmission: 0.82,
+      lightTransmission: 0,
       soundTransmission: 0.18,
       surface: "glass",
     },
@@ -132,10 +133,11 @@ export function structureChannels(
   const defaults: TabletopStructureChannels = family === "window"
     ? {
         material: "glass",
-        blocksLight: false,
+        blocksLight: type === "window_closed",
         blocksSound: true,
         visionTransmission: type === "window_closed" ? 0.96 : 1,
-        lightTransmission: type === "window_closed" ? 0.82 : 1,
+        lightTransmission:
+          type === "window_closed" ? 0 : type === "window_open" ? 0.86 : 0.98,
         soundTransmission: type === "window_closed" ? 0.18 : 0.9,
         movementCost: collision.blocksMovement ? 999 : 1,
         surface: "glass",
