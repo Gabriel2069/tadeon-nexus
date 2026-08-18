@@ -114,65 +114,7 @@ function syncMasterDockGlyph() {
   svg.dataset.tadeonPanelGlyph = "true";
 }
 
-function useVisualViewportContract() {
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    const root = document.documentElement;
-    let frame = 0;
-
-    const sync = () => {
-      window.cancelAnimationFrame(frame);
-      frame = window.requestAnimationFrame(() => {
-        const viewport = visibleViewport();
-        const keyboardInset = Math.max(
-          0,
-          window.innerHeight - viewport.height - viewport.top,
-        );
-        const keyboardOpen = keyboardInset > Math.max(96, window.innerHeight * 0.12);
-
-        root.style.setProperty("--tadeon-vv-top", `${viewport.top}px`);
-        root.style.setProperty("--tadeon-vv-left", `${viewport.left}px`);
-        root.style.setProperty("--tadeon-vv-width", `${viewport.width}px`);
-        root.style.setProperty("--tadeon-vv-height", `${viewport.height}px`);
-        root.style.setProperty(
-          "--tadeon-vv-center-x",
-          `${viewport.left + viewport.width / 2}px`,
-        );
-        root.style.setProperty("--tadeon-keyboard-inset", `${keyboardInset}px`);
-        root.dataset.tadeonKeyboardOpen = keyboardOpen ? "true" : "false";
-      });
-    };
-
-    const viewport = window.visualViewport;
-    sync();
-    viewport?.addEventListener("resize", sync);
-    viewport?.addEventListener("scroll", sync);
-    window.addEventListener("resize", sync);
-    window.addEventListener("orientationchange", sync);
-
-    return () => {
-      window.cancelAnimationFrame(frame);
-      viewport?.removeEventListener("resize", sync);
-      viewport?.removeEventListener("scroll", sync);
-      window.removeEventListener("resize", sync);
-      window.removeEventListener("orientationchange", sync);
-      delete root.dataset.tadeonKeyboardOpen;
-      for (const property of [
-        "--tadeon-vv-top",
-        "--tadeon-vv-left",
-        "--tadeon-vv-width",
-        "--tadeon-vv-height",
-        "--tadeon-vv-center-x",
-        "--tadeon-keyboard-inset",
-      ]) {
-        root.style.removeProperty(property);
-      }
-    };
-  }, []);
-}
-
 export function MobileMoreRadialBridge() {
-  useVisualViewportContract();
   const { role } = useAuth();
   const path = useRouterState({ select: (state) => state.location.pathname });
   const isMestre = isApplicationAdministrator({ appRole: role });

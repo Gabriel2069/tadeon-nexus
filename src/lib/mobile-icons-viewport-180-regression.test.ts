@@ -5,7 +5,7 @@ function source(path: string) {
   return readFileSync(path, "utf8");
 }
 
-describe("mobile icons and visual viewport 180", () => {
+describe("mobile icons and visual viewport 180/184", () => {
   it("uses the authored Backup symbol in the circular More menu", () => {
     const bridge = source("src/components/mobile-more-radial-bridge.tsx");
     expect(bridge).toContain("function BackupDiagnosticsGlyph");
@@ -30,14 +30,24 @@ describe("mobile icons and visual viewport 180", () => {
     expect(css).toContain('.tadeon-mobile-dock .tadeon-mobile-dock__item[href="/master-panel"][aria-current="page"]::after');
   });
 
-  it("tracks the browser visual viewport and a real keyboard-open state", () => {
-    const bridge = source("src/components/mobile-more-radial-bridge.tsx");
-    expect(bridge).toContain("function useVisualViewportContract()");
-    expect(bridge).toContain("window.visualViewport");
-    expect(bridge).toContain('viewport?.addEventListener("resize", sync)');
-    expect(bridge).toContain('viewport?.addEventListener("scroll", sync)');
-    expect(bridge).toContain('root.style.setProperty("--tadeon-vv-height"');
-    expect(bridge).toContain('root.dataset.tadeonKeyboardOpen = keyboardOpen ? "true" : "false"');
+  it("tracks visualViewport globally and protects focused controls when the keyboard opens", () => {
+    const viewport = source("src/components/visual-viewport-bridge.tsx");
+    const radial = source("src/components/mobile-more-radial-bridge.tsx");
+    expect(viewport).toContain("window.visualViewport");
+    expect(viewport).toContain('viewport?.addEventListener("resize", sync)');
+    expect(viewport).toContain('viewport?.addEventListener("scroll", sync)');
+    expect(viewport).toContain('root.style.setProperty("--tadeon-vv-height"');
+    expect(viewport).toContain('root.dataset.tadeonKeyboardOpen = keyboardOpen ? "true" : "false"');
+    expect(viewport).toContain('document.addEventListener("focusin", keepFocusedControlVisible)');
+    expect(viewport).toContain('target.scrollIntoView({ block: "nearest", inline: "nearest" })');
+    expect(radial).not.toContain("function useVisualViewportContract()");
+  });
+
+  it("mounts viewport protection before the normal versus dedicated shell split", () => {
+    const shell = source("src/components/protected-shell.tsx");
+    expect(shell).toContain('import { VisualViewportBridge } from "@/components/visual-viewport-bridge"');
+    expect(shell).toContain("<VisualViewportBridge />");
+    expect(shell.indexOf("<VisualViewportBridge />")).toBeLessThan(shell.indexOf("{!dedicated && ("));
   });
 
   it("pins Create Sheet and keyboard-open dialogs inside the visible viewport", () => {
