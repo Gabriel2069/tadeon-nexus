@@ -16,6 +16,7 @@ interface TabletopRouteExperienceProps {
   role?: string | null;
   flags: FeatureFlags;
   initialSceneId?: string;
+  locateEntityId?: string;
   directorSession?: string;
   directorMode?: boolean;
 }
@@ -118,6 +119,7 @@ export function TabletopRouteExperience({
   role,
   flags,
   initialSceneId,
+  locateEntityId,
   directorSession,
   directorMode = false,
 }: TabletopRouteExperienceProps) {
@@ -137,6 +139,7 @@ export function TabletopRouteExperience({
   ) : role === "mestre" ? (
     <MasterEntry
       initialSceneId={initialSceneId}
+      locateEntityId={locateEntityId}
       realtimeEnabled={flags.nexus_realtime_enabled}
       lightingEnabled={flags.nexus_lighting_enabled}
     />
