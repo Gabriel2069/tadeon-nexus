@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { ChevronLeft, ChevronRight, WandSparkles } from "lucide-react";
 import "@/styles/tabletop-map-chrome-repair.css";
 
-const TOP_RAIL_KEY = "tadeon.tabletop.toprail.collapsed";
+const RELIABILITY_KEY = "tadeon.tabletop.reliability.collapsed";
 const DOCK_POSITION_KEY = "tadeon.tabletop.creative-dock.position";
 
 function stageGeometry() {
@@ -33,9 +33,9 @@ function readDockPosition() {
 export function TabletopUrgentReconciliationBridge() {
   const [mounted, setMounted] = useState(false);
   const [dockCollapsed, setDockCollapsed] = useState(false);
-  const [topRailCollapsed, setTopRailCollapsed] = useState(() => {
+  const [reliabilityCollapsed, setReliabilityCollapsed] = useState(() => {
     if (typeof window === "undefined") return false;
-    return window.localStorage.getItem(TOP_RAIL_KEY) === "1";
+    return window.localStorage.getItem(RELIABILITY_KEY) === "1";
   });
 
   useEffect(() => {
@@ -182,7 +182,7 @@ export function TabletopUrgentReconciliationBridge() {
       window.removeEventListener("pointermove", onPointerMove, true);
       window.removeEventListener("pointerup", onPointerUp, true);
       window.removeEventListener("pointercancel", onPointerUp, true);
-      delete html.dataset.tadeonTabletopToprail;
+      delete html.dataset.tadeonTabletopReliability;
       delete html.dataset.tadeonCreativeDock;
       delete html.dataset.tadeonTabletopSelectionActive;
       [
@@ -198,11 +198,11 @@ export function TabletopUrgentReconciliationBridge() {
 
   useEffect(() => {
     if (!mounted) return;
-    document.documentElement.dataset.tadeonTabletopToprail = topRailCollapsed
+    document.documentElement.dataset.tadeonTabletopReliability = reliabilityCollapsed
       ? "collapsed"
       : "expanded";
-    window.localStorage.setItem(TOP_RAIL_KEY, topRailCollapsed ? "1" : "0");
-  }, [mounted, topRailCollapsed]);
+    window.localStorage.setItem(RELIABILITY_KEY, reliabilityCollapsed ? "1" : "0");
+  }, [mounted, reliabilityCollapsed]);
 
   if (!mounted) return null;
 
@@ -211,7 +211,7 @@ export function TabletopUrgentReconciliationBridge() {
   };
 
   return createPortal(
-    <div className="tadeon-tabletop-toprail-controls" aria-label="Controles superiores da Mesa">
+    <div className="tadeon-tabletop-toprail-controls" aria-label="Controles flutuantes da Mesa">
       {dockCollapsed && (
         <button
           type="button"
@@ -226,12 +226,20 @@ export function TabletopUrgentReconciliationBridge() {
       <button
         type="button"
         className="tadeon-tabletop-toprail-toggle"
-        aria-label={topRailCollapsed ? "Expandir barra superior da Mesa" : "Recolher barra superior da Mesa"}
-        aria-pressed={topRailCollapsed}
-        title={topRailCollapsed ? "Expandir controles superiores" : "Recolher controles para a lateral"}
-        onClick={() => setTopRailCollapsed((current) => !current)}
+        aria-label={
+          reliabilityCollapsed
+            ? "Expandir status de autosave, áudio e editor"
+            : "Minimizar status de autosave, áudio e editor"
+        }
+        aria-pressed={reliabilityCollapsed}
+        title={
+          reliabilityCollapsed
+            ? "Expandir Autosave, Áudio e Editor"
+            : "Minimizar Autosave, Áudio e Editor"
+        }
+        onClick={() => setReliabilityCollapsed((current) => !current)}
       >
-        {topRailCollapsed ? <ChevronLeft aria-hidden="true" /> : <ChevronRight aria-hidden="true" />}
+        {reliabilityCollapsed ? <ChevronLeft aria-hidden="true" /> : <ChevronRight aria-hidden="true" />}
       </button>
     </div>,
     document.body,
