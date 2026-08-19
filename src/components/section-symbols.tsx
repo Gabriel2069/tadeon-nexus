@@ -1,6 +1,5 @@
 import type { SVGProps } from "react";
 import {
-  ArchiveRestore,
   CloudOff,
   Home,
   LibraryBig,
@@ -42,6 +41,24 @@ export function MasterSigil({ className, ...props }: SVGProps<SVGSVGElement>) {
   );
 }
 
+export function BackupSigil({ className, ...props }: SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.7"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={className}
+      {...props}
+    >
+      <path d="M21 8a2 2 0 0 0-2-2h-2V4a2 2 0 0 0-2-2H9a2 2 0 0 0-2 2v2H5a2 2 0 0 0-2 2v11a3 3 0 0 0 3 3h12a3 3 0 0 0 3-3Z" />
+      <path d="M9 6h6M8 12h8M8 16h5" />
+    </svg>
+  );
+}
+
 export function SectionSymbol({
   section,
   className,
@@ -51,7 +68,7 @@ export function SectionSymbol({
   if (section === "nexus") return <LibraryBig className={className} {...props} />;
   if (section === "tabletop") return <MapPinned className={className} {...props} />;
   if (section === "users") return <Users className={className} {...props} />;
-  if (section === "tools") return <ArchiveRestore className={className} {...props} />;
+  if (section === "tools") return <BackupSigil className={className} {...props} />;
   if (section === "offline") return <CloudOff className={className} {...props} />;
   return <Home className={className} {...props} />;
 }

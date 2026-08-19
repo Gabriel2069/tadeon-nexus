@@ -1,0 +1,190 @@
+/* Final structural authority for the four reported visual contracts.
+   Real React SVGs are used for the Mesa and Backup identities. */
+
+/* Backup follows the same hero geometry as Users. */
+html body .tadeon-route-tools > .tadeon-page-hero[data-tadeon-page-hero="tools"] {
+  position: relative !important;
+  box-sizing: border-box !important;
+  min-height: 7rem !important;
+  padding: 1rem 1rem 1rem 5.35rem !important;
+}
+
+html body .tadeon-route-tools > .tadeon-page-hero[data-tadeon-page-hero="tools"] > .tadeon-page-hero-mark-host {
+  position: absolute !important;
+  z-index: 4 !important;
+  top: 50% !important;
+  left: 1.2rem !important;
+  display: grid !important;
+  width: 3rem !important;
+  height: 3rem !important;
+  place-items: center !important;
+  margin: 0 !important;
+  border: 1px solid rgb(122 129 135 / 48%) !important;
+  border-radius: 50% !important;
+  color: rgb(122 129 135) !important;
+  background:
+    radial-gradient(circle at 36% 28%, rgb(255 255 255 / 7%), transparent 35%),
+    radial-gradient(circle at center, rgb(122 129 135 / 12%), rgb(9 12 16 / 90%) 70%) !important;
+  box-shadow:
+    0 0 0 .42rem rgb(122 129 135 / 5%),
+    0 0 0 .82rem rgb(84 123 148 / 2.2%),
+    0 16px 38px -23px rgb(122 129 135 / 72%),
+    inset 0 1px rgb(255 255 255 / 9%),
+    inset 0 0 0 .32rem rgb(122 129 135 / 4%) !important;
+  transform: translateY(-50%) !important;
+  pointer-events: none !important;
+}
+
+html body .tadeon-route-tools > .tadeon-page-hero[data-tadeon-page-hero="tools"] .tadeon-page-hero-mark-icon {
+  display: block !important;
+  width: 1.4rem !important;
+  height: 1.4rem !important;
+  margin: 0 !important;
+  color: rgb(122 129 135) !important;
+  stroke: currentColor !important;
+  stroke-width: 1.7 !important;
+  transform: none !important;
+  filter: drop-shadow(0 0 8px rgb(122 129 135 / 35%)) !important;
+}
+
+html body .tadeon-route-tools > .tadeon-page-hero[data-tadeon-page-hero="tools"] > :not(.tadeon-page-hero-mark-host) {
+  min-width: 0 !important;
+}
+
+/* Mesa top mobile focus header: real Tadeon BrandMark, in Mesa blue. */
+html body .tadeon-shell[data-section="Mesa Nexus"] .tadeon-mobile-header__identity > svg {
+  display: none !important;
+}
+
+html body .tadeon-shell[data-section="Mesa Nexus"] .tadeon-mobile-header__identity::before {
+  display: none !important;
+  content: none !important;
+}
+
+html body .tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-focus-brand-host {
+  display: grid !important;
+  width: 2rem !important;
+  height: 2rem !important;
+  flex: 0 0 2rem !important;
+  place-items: center !important;
+  margin: 0 !important;
+  color: rgb(84 123 148) !important;
+  pointer-events: none !important;
+}
+
+html body .tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-focus-brand-icon {
+  display: block !important;
+  width: 2rem !important;
+  height: 2rem !important;
+  margin: 0 !important;
+  color: rgb(84 123 148) !important;
+  filter: drop-shadow(0 0 12px rgb(84 123 148 / 28%)) !important;
+  transform: none !important;
+}
+
+/* Mesa studio header: replace the legacy BrandMark in its own slot with a real MapPinned medallion. */
+html body .tadeon-tabletop-studio__brand {
+  display: flex !important;
+  min-height: 0 !important;
+  align-items: center !important;
+  gap: .65rem !important;
+  padding-left: 0 !important;
+}
+
+html body .tadeon-tabletop-studio__brand > svg {
+  display: none !important;
+}
+
+html body .tadeon-tabletop-studio__brand::before {
+  display: none !important;
+  content: none !important;
+}
+
+html body .tadeon-tabletop-brand-mark-host {
+  position: relative !important;
+  z-index: 2 !important;
+  display: grid !important;
+  visibility: visible !important;
+  width: 2.5rem !important;
+  height: 2.5rem !important;
+  flex: 0 0 2.5rem !important;
+  place-items: center !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 1px solid rgb(84 123 148 / 52%) !important;
+  border-radius: 50% !important;
+  color: rgb(84 123 148) !important;
+  background:
+    radial-gradient(circle at 36% 28%, rgb(255 255 255 / 7%), transparent 35%),
+    radial-gradient(circle at center, rgb(84 123 148 / 12%), rgb(9 12 16 / 90%) 70%) !important;
+  box-shadow:
+    0 0 0 .38rem rgb(84 123 148 / 4.5%),
+    0 0 0 .72rem rgb(84 123 148 / 2.2%),
+    0 14px 34px -23px rgb(84 123 148 / 68%),
+    inset 0 1px rgb(255 255 255 / 9%),
+    inset 0 0 0 .28rem rgb(84 123 148 / 4%) !important;
+  filter: drop-shadow(0 0 9px rgb(84 123 148 / 30%)) !important;
+  pointer-events: none !important;
+}
+
+html body .tadeon-tabletop-brand-mark-icon {
+  display: block !important;
+  visibility: visible !important;
+  width: 1.2rem !important;
+  height: 1.2rem !important;
+  margin: 0 !important;
+  color: rgb(84 123 148) !important;
+  stroke: currentColor !important;
+  stroke-width: 1.65 !important;
+  transform: none !important;
+}
+
+/* Dashboard: center each signal as a coherent icon + text unit inside equal thirds. */
+html body .tadeon-dashboard-signals {
+  width: 100% !important;
+  align-items: stretch !important;
+}
+
+html body .tadeon-dashboard-signal {
+  display: grid !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  grid-template-columns: auto minmax(0, auto) !important;
+  align-items: center !important;
+  justify-content: center !important;
+  column-gap: .75rem !important;
+}
+
+html body .tadeon-dashboard-signal > svg {
+  flex: 0 0 auto !important;
+  justify-self: end !important;
+}
+
+html body .tadeon-dashboard-signal > div {
+  min-width: 0 !important;
+  justify-self: start !important;
+}
+
+@media (min-width: 420px) {
+  html body .tadeon-dashboard-signals {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  }
+}
+
+@media (max-width: 767px) {
+  html body .tadeon-route-tools > .tadeon-page-hero[data-tadeon-page-hero="tools"] {
+    min-height: 6.5rem !important;
+    padding: .9rem .9rem .9rem 4.75rem !important;
+  }
+
+  html body .tadeon-route-tools > .tadeon-page-hero[data-tadeon-page-hero="tools"] > .tadeon-page-hero-mark-host {
+    left: .95rem !important;
+    width: 2.75rem !important;
+    height: 2.75rem !important;
+  }
+
+  html body .tadeon-route-tools > .tadeon-page-hero[data-tadeon-page-hero="tools"] .tadeon-page-hero-mark-icon {
+    width: 1.3rem !important;
+    height: 1.3rem !important;
+  }
+}
