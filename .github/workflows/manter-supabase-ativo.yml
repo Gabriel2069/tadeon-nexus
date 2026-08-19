@@ -3,7 +3,6 @@ name: Manter Supabase Ativo
 on:
   schedule:
     # 02:17 e 14:17 no horário de Brasília (UTC-3).
-    # Minutos fora do início da hora reduzem atrasos do agendador do GitHub.
     - cron: "17 5,17 * * *"
   workflow_dispatch:
 
@@ -17,15 +16,16 @@ concurrency:
 jobs:
   heartbeat:
     name: Consultar banco
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     timeout-minutes: 3
     env:
-      # A URL e a publishable key são configurações públicas do cliente,
-      # não credenciais administrativas.
       SUPABASE_URL: https://nkxpstyfrzufsnowjrdi.supabase.co
       SUPABASE_PUBLISHABLE_KEY: sb_publishable_TNGEtvRCuME_Kn00KwqkAw_BwdmxQRb
 
     steps:
+      - name: Confirmar runner
+        run: echo "Runner do heartbeat provisionado."
+
       - name: Executar heartbeats no Postgres
         shell: bash
         run: |
