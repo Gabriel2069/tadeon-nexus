@@ -16,12 +16,18 @@ describe("hero icon authority 212", () => {
     expect(css).not.toContain("transform: translateY(-50%) !important");
   });
 
-  it("uses the exact BackupSigil source used by the authored navigation mask", () => {
+  it("uses the exact BackupSigil geometry painted by the navigation", () => {
     const bridge = read("src/components/page-hero-parity-bridge.tsx");
     const symbols = read("src/components/section-symbols.tsx");
+    const navigation = read("src/styles/nav-sheet-search-polish-162.css");
+    const shellPath = "M21 8a2 2 0 0 0-2-2h-2V4";
+    const detailPath = "M9 6h6M8 12h8M8 16h5";
+
     expect(bridge).toContain("icon: BackupSigil");
-    expect(symbols).toContain("M21 8a2 2 0 0 0-2-2h-2V4");
-    expect(symbols).toContain("M9 6h6M8 12h8M8 16h5");
+    expect(symbols).toContain(shellPath);
+    expect(symbols).toContain(detailPath);
+    expect(navigation).toContain(shellPath);
+    expect(navigation).toContain(detailPath);
   });
 
   it("restores both Mesa identities with real React symbols", () => {
