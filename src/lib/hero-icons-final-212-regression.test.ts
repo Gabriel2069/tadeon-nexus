@@ -19,7 +19,7 @@ describe("hero icon authority 212", () => {
   it("uses the exact BackupSigil geometry painted by the navigation", () => {
     const bridge = read("src/components/page-hero-parity-bridge.tsx");
     const symbols = read("src/components/section-symbols.tsx");
-    const navigation = read("src/styles/nav-sheet-search-polish-162.css");
+    const navigation = read("src/styles/focus-header-nav-parity-159.css");
     const shellPath = "M21 8a2 2 0 0 0-2-2h-2V4";
     const detailPath = "M9 6h6M8 12h8M8 16h5";
 
