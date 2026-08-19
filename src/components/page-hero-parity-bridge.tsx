@@ -86,6 +86,22 @@ function clearTabletopHosts() {
     .forEach((node) => node.remove());
 }
 
+function samePortals(current: PortalSpec[], next: PortalSpec[]) {
+  return (
+    current.length === next.length &&
+    current.every((item, index) => {
+      const candidate = next[index];
+      return (
+        candidate &&
+        item.host === candidate.host &&
+        item.key === candidate.key &&
+        item.Icon === candidate.Icon &&
+        item.iconClassName === candidate.iconClassName
+      );
+    })
+  );
+}
+
 export function PageHeroParityBridge() {
   const pathname = useRouterState({ select: (state) => state.location.pathname });
   const [portals, setPortals] = useState<PortalSpec[]>([]);
@@ -93,6 +109,10 @@ export function PageHeroParityBridge() {
   useEffect(() => {
     let frame: number | null = null;
     let observer: MutationObserver | null = null;
+
+    const commitPortals = (next: PortalSpec[]) => {
+      setPortals((current) => (samePortals(current, next) ? current : next));
+    };
 
     const sync = () => {
       if (pathname.startsWith("/tabletop")) {
@@ -125,7 +145,7 @@ export function PageHeroParityBridge() {
           });
         }
 
-        setPortals(next);
+        commitPortals(next);
         return;
       }
 
@@ -133,20 +153,20 @@ export function PageHeroParityBridge() {
       const config = heroConfigForPath(pathname);
       if (!config) {
         clearStaleHeroes();
-        setPortals([]);
+        commitPortals([]);
         return;
       }
 
       const container = document.querySelector<HTMLElement>(config.selector);
       if (!container) {
-        setPortals([]);
+        commitPortals([]);
         return;
       }
 
       clearStaleHeroes(container);
       container.dataset.tadeonPageHero = config.kind;
       const host = ensureHost(container, "tadeon-page-hero-mark-host");
-      setPortals([
+      commitPortals([
         {
           host,
           key: `hero:${config.kind}`,
