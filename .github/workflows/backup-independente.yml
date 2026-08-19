@@ -14,10 +14,13 @@ concurrency:
 
 jobs:
   backup:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     timeout-minutes: 15
 
     steps:
+      - name: Confirmar runner
+        run: echo "Runner do backup provisionado."
+
       - name: Validar configuração
         shell: bash
         env:
@@ -34,7 +37,6 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-
           docker pull postgres:17
           docker run --rm postgres:17 pg_dump --version
 
@@ -55,10 +57,7 @@ jobs:
               --file=/backup/tadeon-nexus.dump
 
           test -s tadeon-nexus.dump
-
           sha256sum tadeon-nexus.dump > tadeon-nexus.dump.sha256
-
-          echo "Backup criado com sucesso:"
           ls -lh tadeon-nexus.dump tadeon-nexus.dump.sha256
 
       - name: Guardar cópia privada
