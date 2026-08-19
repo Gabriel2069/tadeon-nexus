@@ -63,6 +63,15 @@
   white-space: nowrap;
 }
 
+@media (min-width: 768px) {
+  .tadeon-global-search-dialog {
+    width: min(42rem, calc(100vw - 1.5rem)) !important;
+    max-width: 42rem !important;
+    height: min(38rem, calc(100dvh - 1.5rem)) !important;
+    max-height: calc(100dvh - 1.5rem) !important;
+  }
+}
+
 @media (max-width: 767px) {
   .tadeon-global-search-dialog {
     --tadeon-search-gutter-left: max(.5rem, env(safe-area-inset-left));
