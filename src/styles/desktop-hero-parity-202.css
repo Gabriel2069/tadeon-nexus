@@ -272,3 +272,89 @@
     transform: translateY(1px) !important;
   }
 }
+
+/* #209 surgical visual corrections requested from the live screenshots. */
+
+/* The encoded route glyphs still read high inside their rings. Move only the
+   icon paint farther down; the medallions and their orbit geometry stay fixed. */
+.tadeon-dashboard-hero::before,
+.tadeon-tabletop-studio__header::before,
+.tadeon-route-users > .tadeon-page-hero::before,
+.tadeon-route-tools > .tadeon-page-hero::before,
+.tadeon-route-offline > .tadeon-page-hero::before,
+.tadeon-master-commandbar__glow {
+  background-position: 50% calc(50% + 4px) !important;
+}
+
+/* Nexus identity is explicitly the Nexus green. Do not inherit a generic route
+   token here because older themes can resolve that token to another section. */
+.tadeon-route-nexus .tadeon-nexus-identity__mark {
+  border-color: rgb(79 110 93 / 52%) !important;
+  color: rgb(79 110 93) !important;
+  background:
+    radial-gradient(circle at 36% 28%, rgb(255 255 255 / 7%), transparent 35%),
+    radial-gradient(circle at center, rgb(79 110 93 / 12%), rgb(9 12 16 / 90%) 70%) !important;
+  box-shadow:
+    0 0 0 .42rem rgb(79 110 93 / 5%),
+    0 0 0 .82rem rgb(113 107 123 / 2.2%),
+    0 16px 38px -23px rgb(79 110 93 / 72%),
+    inset 0 1px rgb(255 255 255 / 9%),
+    inset 0 0 0 .32rem rgb(79 110 93 / 4%) !important;
+}
+
+.tadeon-route-nexus .tadeon-nexus-identity__mark > svg {
+  color: rgb(79 110 93) !important;
+  stroke: currentColor !important;
+  transform: translateY(2.5px) !important;
+  filter: drop-shadow(0 0 10px rgb(79 110 93 / 38%)) !important;
+}
+
+/* Mesa goes back to its original header footprint. Keep the old BrandMark only
+   as an invisible layout placeholder, so the new MapPinned paint occupies the
+   exact slot without adding a second column or extra vertical space. */
+.tadeon-tabletop-studio__header {
+  display: block !important;
+  height: auto !important;
+  min-height: 0 !important;
+  padding-top: .75rem !important;
+  padding-bottom: .75rem !important;
+}
+
+.tadeon-tabletop-studio__header > .relative.z-10 {
+  height: auto !important;
+  min-height: 0 !important;
+  padding-left: 0 !important;
+  gap: .625rem !important;
+  align-items: center !important;
+}
+
+.tadeon-tabletop-studio__brand {
+  min-height: 0 !important;
+  margin-right: .5rem !important;
+  padding-left: 0 !important;
+  align-items: center !important;
+}
+
+.tadeon-tabletop-studio__brand > svg:first-child {
+  display: block !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  width: 2.5rem !important;
+  height: 2.5rem !important;
+  flex: 0 0 2.5rem !important;
+  margin: 0 !important;
+}
+
+.tadeon-tabletop-studio__header::before {
+  top: .75rem !important;
+  left: .75rem !important;
+  width: 2.5rem !important;
+  height: 2.5rem !important;
+  background-size: 1.15rem 1.15rem !important;
+}
+
+@media (max-width: 767px) {
+  .tadeon-route-nexus .tadeon-nexus-identity__mark > svg {
+    transform: translateY(2px) !important;
+  }
+}
