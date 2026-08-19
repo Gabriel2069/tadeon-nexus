@@ -10,12 +10,12 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as VisualAuditRouteImport } from './routes/visual-audit'
+import { Route as TabletopRouteImport } from './routes/tabletop'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as OfflineRouteImport } from './routes/offline'
 import { Route as NexusToolsRouteImport } from './routes/nexus-tools'
 import { Route as NexusRouteImport } from './routes/nexus'
-import { Route as TabletopRouteImport } from './routes/tabletop'
 import { Route as McpRouteImport } from './routes/mcp'
 import { Route as MasterPanelRouteImport } from './routes/master-panel'
 import { Route as ManageUsersRouteImport } from './routes/manage-users'
@@ -31,6 +31,11 @@ import { Route as DotlovableOauthConsentRouteImport } from './routes/[.]lovable.
 const VisualAuditRoute = VisualAuditRouteImport.update({
   id: '/visual-audit',
   path: '/visual-audit',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TabletopRoute = TabletopRouteImport.update({
+  id: '/tabletop',
+  path: '/tabletop',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
@@ -56,11 +61,6 @@ const NexusToolsRoute = NexusToolsRouteImport.update({
 const NexusRoute = NexusRouteImport.update({
   id: '/nexus',
   path: '/nexus',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const TabletopRoute = TabletopRouteImport.update({
-  id: '/tabletop',
-  path: '/tabletop',
   getParentRoute: () => rootRouteImport,
 } as any)
 const McpRoute = McpRouteImport.update({
@@ -128,12 +128,12 @@ export interface FileRoutesByFullPath {
   '/manage-users': typeof ManageUsersRoute
   '/master-panel': typeof MasterPanelRoute
   '/mcp': typeof McpRoute
-  '/nexus-tools': typeof NexusToolsRoute
   '/nexus': typeof NexusRoute
-  '/tabletop': typeof TabletopRoute
+  '/nexus-tools': typeof NexusToolsRoute
   '/offline': typeof OfflineRoute
   '/reset-password': typeof ResetPasswordRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/tabletop': typeof TabletopRoute
   '/visual-audit': typeof VisualAuditRoute
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
@@ -148,12 +148,12 @@ export interface FileRoutesByTo {
   '/manage-users': typeof ManageUsersRoute
   '/master-panel': typeof MasterPanelRoute
   '/mcp': typeof McpRoute
-  '/nexus-tools': typeof NexusToolsRoute
   '/nexus': typeof NexusRoute
-  '/tabletop': typeof TabletopRoute
+  '/nexus-tools': typeof NexusToolsRoute
   '/offline': typeof OfflineRoute
   '/reset-password': typeof ResetPasswordRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/tabletop': typeof TabletopRoute
   '/visual-audit': typeof VisualAuditRoute
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
@@ -169,12 +169,12 @@ export interface FileRoutesById {
   '/manage-users': typeof ManageUsersRoute
   '/master-panel': typeof MasterPanelRoute
   '/mcp': typeof McpRoute
-  '/nexus-tools': typeof NexusToolsRoute
   '/nexus': typeof NexusRoute
-  '/tabletop': typeof TabletopRoute
+  '/nexus-tools': typeof NexusToolsRoute
   '/offline': typeof OfflineRoute
   '/reset-password': typeof ResetPasswordRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/tabletop': typeof TabletopRoute
   '/visual-audit': typeof VisualAuditRoute
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
@@ -191,12 +191,12 @@ export interface FileRouteTypes {
     | '/manage-users'
     | '/master-panel'
     | '/mcp'
-    | '/nexus-tools'
     | '/nexus'
-    | '/tabletop'
+    | '/nexus-tools'
     | '/offline'
     | '/reset-password'
     | '/sitemap.xml'
+    | '/tabletop'
     | '/visual-audit'
     | '/.mcp/list-tools'
     | '/.well-known/oauth-protected-resource'
@@ -211,12 +211,12 @@ export interface FileRouteTypes {
     | '/manage-users'
     | '/master-panel'
     | '/mcp'
-    | '/nexus-tools'
     | '/nexus'
-    | '/tabletop'
+    | '/nexus-tools'
     | '/offline'
     | '/reset-password'
     | '/sitemap.xml'
+    | '/tabletop'
     | '/visual-audit'
     | '/.mcp/list-tools'
     | '/.well-known/oauth-protected-resource'
@@ -231,12 +231,12 @@ export interface FileRouteTypes {
     | '/manage-users'
     | '/master-panel'
     | '/mcp'
-    | '/nexus-tools'
     | '/nexus'
-    | '/tabletop'
+    | '/nexus-tools'
     | '/offline'
     | '/reset-password'
     | '/sitemap.xml'
+    | '/tabletop'
     | '/visual-audit'
     | '/.mcp/list-tools'
     | '/.well-known/oauth-protected-resource'
@@ -252,12 +252,12 @@ export interface RootRouteChildren {
   ManageUsersRoute: typeof ManageUsersRoute
   MasterPanelRoute: typeof MasterPanelRoute
   McpRoute: typeof McpRoute
-  NexusToolsRoute: typeof NexusToolsRoute
   NexusRoute: typeof NexusRoute
-  TabletopRoute: typeof TabletopRoute
+  NexusToolsRoute: typeof NexusToolsRoute
   OfflineRoute: typeof OfflineRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  TabletopRoute: typeof TabletopRoute
   VisualAuditRoute: typeof VisualAuditRoute
   Char91DotmcpChar93ListToolsRoute: typeof Char91DotmcpChar93ListToolsRoute
   Char91DotwellKnownChar93OauthProtectedResourceRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
@@ -274,6 +274,13 @@ declare module '@tanstack/react-router' {
       path: '/visual-audit'
       fullPath: '/visual-audit'
       preLoaderRoute: typeof VisualAuditRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/tabletop': {
+      id: '/tabletop'
+      path: '/tabletop'
+      fullPath: '/tabletop'
+      preLoaderRoute: typeof TabletopRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/sitemap.xml': {
@@ -309,13 +316,6 @@ declare module '@tanstack/react-router' {
       path: '/nexus'
       fullPath: '/nexus'
       preLoaderRoute: typeof NexusRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/tabletop': {
-      id: '/tabletop'
-      path: '/tabletop'
-      fullPath: '/tabletop'
-      preLoaderRoute: typeof TabletopRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/mcp': {
@@ -404,12 +404,12 @@ const rootRouteChildren: RootRouteChildren = {
   ManageUsersRoute: ManageUsersRoute,
   MasterPanelRoute: MasterPanelRoute,
   McpRoute: McpRoute,
-  NexusToolsRoute: NexusToolsRoute,
   NexusRoute: NexusRoute,
-  TabletopRoute: TabletopRoute,
+  NexusToolsRoute: NexusToolsRoute,
   OfflineRoute: OfflineRoute,
   ResetPasswordRoute: ResetPasswordRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
+  TabletopRoute: TabletopRoute,
   VisualAuditRoute: VisualAuditRoute,
   Char91DotmcpChar93ListToolsRoute: Char91DotmcpChar93ListToolsRoute,
   Char91DotwellKnownChar93OauthProtectedResourceRoute:
