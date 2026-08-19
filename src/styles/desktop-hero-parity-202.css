@@ -141,3 +141,134 @@
     animation: none;
   }
 }
+
+/* #208 final authority — one medallion language across every Hero. */
+
+/* All encoded Hero glyphs were optically high. Move the paint, never the ring. */
+.tadeon-dashboard-hero::before,
+.tadeon-tabletop-studio__header::before,
+.tadeon-route-users > .tadeon-page-hero::before,
+.tadeon-route-tools > .tadeon-page-hero::before,
+.tadeon-route-offline > .tadeon-page-hero::before,
+.tadeon-master-commandbar__glow {
+  background-position: 50% calc(50% + 2.5px) !important;
+}
+
+/* The authored Tadeon mark belongs to the Dashboard identity row and must not
+   be replaced by the route medallion. */
+.tadeon-dashboard-hero .mb-5.flex > svg:first-child {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  width: 3rem !important;
+  height: 3rem !important;
+  flex: 0 0 3rem !important;
+  color: rgb(217 215 164) !important;
+  filter: drop-shadow(0 0 12px rgb(217 215 164 / 32%)) !important;
+}
+
+/* Mesa: keep the new MapPinned medallion as the only hero symbol. The legacy
+   BrandMark remains in markup for compatibility but has no visual footprint. */
+.tadeon-tabletop-studio__brand > svg:first-child {
+  display: none !important;
+  visibility: hidden !important;
+  width: 0 !important;
+  height: 0 !important;
+  flex: 0 0 0 !important;
+  margin: 0 !important;
+}
+
+/* The previous rule padded the whole command row and forced controls to wrap,
+   creating the giant forehead. Reserve space only inside the brand block. */
+.tadeon-tabletop-studio__header {
+  min-height: 0 !important;
+  padding-top: .55rem !important;
+  padding-bottom: .55rem !important;
+}
+
+.tadeon-tabletop-studio__header > .relative.z-10 {
+  min-height: 3.7rem !important;
+  padding-left: 0 !important;
+  gap: .5rem !important;
+}
+
+.tadeon-tabletop-studio__brand {
+  min-height: 3.45rem !important;
+  margin-right: .35rem !important;
+  padding-left: 4.75rem !important;
+  align-items: center !important;
+}
+
+.tadeon-tabletop-studio__header::before {
+  top: .58rem !important;
+  left: .8rem !important;
+  width: 3.35rem !important;
+  height: 3.35rem !important;
+  background-size: 1.45rem 1.45rem !important;
+}
+
+/* Nexus uses the same physical medallion recipe as its siblings, but stays
+   intentionally compact. LibraryBig is the real glyph and receives optical
+   centering rather than being replaced by a background image. */
+.tadeon-route-nexus .tadeon-nexus-identity__mark {
+  display: grid !important;
+  width: 2.8rem !important;
+  height: 2.8rem !important;
+  flex: 0 0 2.8rem !important;
+  place-items: center !important;
+  border: 1px solid color-mix(in srgb, var(--tadeon-veil) 48%, transparent) !important;
+  border-radius: 50% !important;
+  color: var(--tadeon-veil) !important;
+  background:
+    radial-gradient(circle at 36% 28%, rgb(255 255 255 / 7%), transparent 35%),
+    radial-gradient(circle at center, color-mix(in srgb, var(--tadeon-veil) 11%, transparent), rgb(9 12 16 / 90%) 70%) !important;
+  box-shadow:
+    0 0 0 .42rem color-mix(in srgb, var(--tadeon-veil) 5%, transparent),
+    0 0 0 .82rem rgb(113 107 123 / 2.2%),
+    0 16px 38px -23px color-mix(in srgb, var(--tadeon-veil) 72%, transparent),
+    inset 0 1px rgb(255 255 255 / 9%),
+    inset 0 0 0 .32rem color-mix(in srgb, var(--tadeon-veil) 4%, transparent) !important;
+}
+
+.tadeon-route-nexus .tadeon-nexus-identity__mark > svg {
+  display: block !important;
+  width: 1.3rem !important;
+  height: 1.3rem !important;
+  margin: 0 !important;
+  transform: translateY(1.5px) !important;
+  stroke-width: 1.65 !important;
+  filter: drop-shadow(0 0 10px color-mix(in srgb, var(--tadeon-veil) 36%, transparent));
+}
+
+/* Dashboard can be ceremonial; add one more static orbital layer without
+   changing its existing motion contract. */
+.tadeon-dashboard-hero {
+  background:
+    radial-gradient(circle at 5% 118%, transparent 0 3.2rem, rgb(217 215 164 / 9%) 3.35rem 3.52rem, transparent 3.7rem 6.8rem, rgb(183 129 77 / 5%) 6.95rem 7.1rem, transparent 7.25rem),
+    radial-gradient(circle at 13% -22%, rgb(217 215 164 / 20%) 0 2.35rem, transparent 2.5rem 5.4rem, rgb(217 215 164 / 7%) 5.55rem 5.72rem, transparent 5.9rem 8.8rem, rgb(183 129 77 / 5%) 8.95rem 9.12rem, transparent 9.3rem),
+    radial-gradient(circle at 77% -30%, rgb(217 215 164 / 18%) 0 3.4rem, transparent 3.55rem 7.8rem, rgb(217 215 164 / 10%) 7.92rem 8.1rem, transparent 8.25rem),
+    radial-gradient(circle at 96% 112%, transparent 0 3.8rem, rgb(183 129 77 / 16%) 3.95rem 4.16rem, transparent 4.32rem 7.3rem, rgb(217 215 164 / 7%) 7.45rem 7.64rem, transparent 7.82rem 10.8rem),
+    radial-gradient(ellipse at 48% 128%, rgb(116 36 45 / 8%), transparent 19rem),
+    linear-gradient(112deg, transparent 0 58%, rgb(217 215 164 / 3.5%) 58.15% 58.35%, transparent 58.5%),
+    linear-gradient(128deg, rgb(255 255 255 / 5.8%), transparent 39%),
+    linear-gradient(145deg, rgb(21 22 24 / 98%), rgb(8 10 13 / 98%)) !important;
+}
+
+@media (max-width: 767px) {
+  .tadeon-tabletop-studio__brand {
+    min-height: 3.05rem !important;
+    padding-left: 4.15rem !important;
+  }
+
+  .tadeon-tabletop-studio__header::before {
+    top: .55rem !important;
+    left: .65rem !important;
+    width: 2.95rem !important;
+    height: 2.95rem !important;
+    background-size: 1.3rem 1.3rem !important;
+  }
+
+  .tadeon-route-nexus .tadeon-nexus-identity__mark > svg {
+    transform: translateY(1px) !important;
+  }
+}
