@@ -68,13 +68,21 @@ function configForPath(pathname: string): HeroConfig | null {
   return null;
 }
 
-function ensureHost(container: HTMLElement, className: string) {
+function ensureHost(
+  container: HTMLElement,
+  className: string,
+  placement: "prepend" | "after-first" = "prepend",
+) {
   let host = container.querySelector<HTMLElement>(`:scope > .${className}`);
   if (host) return host;
   host = document.createElement("span");
   host.className = className;
   host.setAttribute("aria-hidden", "true");
-  container.prepend(host);
+  if (placement === "after-first" && container.firstChild) {
+    container.insertBefore(host, container.firstChild.nextSibling);
+  } else {
+    container.prepend(host);
+  }
   return host;
 }
 
@@ -130,7 +138,15 @@ export function PageHeroParityBridge() {
       }
 
       clearStaleHeroes();
-      const host = ensureHost(container, "tadeon-tabletop-brand-mark-host");
+      // Keep the authored BrandMark as the first DOM child so the legacy-slot
+      // CSS can collapse it deterministically. The canonical MapPinned host is
+      // inserted immediately after it, which places the new mark in the exact
+      // old icon position without changing the Mesa header footprint.
+      const host = ensureHost(
+        container,
+        "tadeon-tabletop-brand-mark-host",
+        "after-first",
+      );
       const key = "tabletop:brand";
       setPortal((current) =>
         current?.host === host && current.key === key
