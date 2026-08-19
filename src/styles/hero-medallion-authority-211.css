@@ -1,0 +1,129 @@
+/* #211 live hero authority.
+   This file is loaded after desktop-hero-parity-202.css on purpose. It fixes
+   only the remaining Hero icon geometry and restores the Mesa header footprint.
+   No interaction or animation contract is changed. */
+
+/* All remaining encoded Hero glyphs use the same optical center. */
+html body .tadeon-dashboard-hero::before,
+html body .tadeon-route-users > .tadeon-page-hero::before,
+html body .tadeon-route-tools > .tadeon-page-hero::before,
+html body .tadeon-route-offline > .tadeon-page-hero::before,
+html body .tadeon-master-commandbar__glow {
+  background-position: 50% calc(50% + 4px) !important;
+}
+
+/* Backup uses the canonical Lucide Wrench silhouette instead of the older
+   simplified path, keeping the same stroke scale as the other Hero icons. */
+html body .tadeon-route-tools > .tadeon-page-hero::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%237a8187' stroke-width='1.65' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.121 2.121 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94z'/%3E%3C/svg%3E") !important;
+  background-size: 1.5rem 1.5rem !important;
+}
+
+/* The Mesa must keep the exact pre-Hero layout footprint. The old BrandMark is
+   removed visually and the agreed MapPinned medallion occupies its original
+   40px flex slot, so no extra left padding, column, min-height or top rail is
+   introduced. */
+html body .tadeon-tabletop-studio__header {
+  min-height: 0 !important;
+  height: auto !important;
+  padding-top: .75rem !important;
+  padding-bottom: .75rem !important;
+}
+
+html body .tadeon-tabletop-studio__header > .relative.z-10 {
+  min-height: 0 !important;
+  height: auto !important;
+  padding-left: 0 !important;
+  gap: .625rem !important;
+  align-items: center !important;
+}
+
+html body .tadeon-tabletop-studio__header > svg.pointer-events-none.absolute.inset-0 {
+  position: absolute !important;
+  z-index: 0 !important;
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  margin: 0 !important;
+}
+
+/* Disable the detached Mesa medallion that was creating a second visual mark. */
+html body .tadeon-tabletop-studio__header::before {
+  display: none !important;
+  content: none !important;
+}
+
+html body .tadeon-tabletop-studio__brand {
+  min-height: 0 !important;
+  margin-right: .5rem !important;
+  padding-left: 0 !important;
+  align-items: center !important;
+  gap: .65rem !important;
+}
+
+html body .tadeon-tabletop-studio__brand > svg:first-child {
+  display: none !important;
+  visibility: hidden !important;
+  width: 0 !important;
+  height: 0 !important;
+  flex: 0 0 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+/* MapPinned lives inside the original brand row, not as an absolute decoration. */
+html body .tadeon-tabletop-studio__brand::before {
+  position: relative !important;
+  z-index: 2 !important;
+  display: block !important;
+  width: 2.5rem !important;
+  height: 2.5rem !important;
+  flex: 0 0 2.5rem !important;
+  border: 1px solid rgb(84 123 148 / 52%) !important;
+  border-radius: 50% !important;
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23547b94' stroke-width='1.65' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 10c0 5-5 10-8 12-3-2-8-7-8-12a8 8 0 1 1 16 0Z'/%3E%3Ccircle cx='12' cy='10' r='3'/%3E%3C/svg%3E") 50% calc(50% + 2px) / 1.2rem 1.2rem no-repeat,
+    radial-gradient(circle at 36% 28%, rgb(255 255 255 / 7%), transparent 35%),
+    radial-gradient(circle at center, rgb(84 123 148 / 12%), rgb(9 12 16 / 90%) 70%) !important;
+  box-shadow:
+    0 0 0 .38rem rgb(84 123 148 / 4.5%),
+    0 0 0 .72rem rgb(84 123 148 / 2.2%),
+    0 14px 34px -23px rgb(84 123 148 / 68%),
+    inset 0 1px rgb(255 255 255 / 9%),
+    inset 0 0 0 .28rem rgb(84 123 148 / 4%) !important;
+  filter: drop-shadow(0 0 9px rgb(84 123 148 / 30%));
+  pointer-events: none !important;
+  content: "" !important;
+}
+
+/* Restore the Backup Hero's original horizontal padding now that its medallion
+   is no longer used as a reason to expand the left edge of the whole section. */
+html body .tadeon-route-tools > .tadeon-page-hero {
+  padding-left: 1.25rem !important;
+}
+
+@media (min-width: 768px) {
+  html body .tadeon-route-tools > .tadeon-page-hero {
+    padding-left: 2rem !important;
+  }
+}
+
+/* Nexus real SVG keeps the same optical correction as the encoded siblings. */
+html body .tadeon-route-nexus .tadeon-nexus-identity__mark > svg {
+  color: rgb(79 110 93) !important;
+  stroke: rgb(79 110 93) !important;
+  transform: translateY(4px) !important;
+}
+
+@media (max-width: 767px) {
+  html body .tadeon-tabletop-studio__header {
+    padding-top: .75rem !important;
+    padding-bottom: .75rem !important;
+  }
+
+  html body .tadeon-tabletop-studio__brand::before {
+    width: 2.5rem !important;
+    height: 2.5rem !important;
+    flex-basis: 2.5rem !important;
+  }
+}
