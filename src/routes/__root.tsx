@@ -30,12 +30,12 @@ import sheetPopupGraphPolish161Css from "../styles/sheet-popup-graph-polish-161.
 import navSheetSearchPolish162Css from "../styles/nav-sheet-search-polish-162.css?url";
 import createSheetSearchViewport163Css from "../styles/create-sheet-search-viewport-163.css?url";
 import desktopHeroParity202Css from "../styles/desktop-hero-parity-202.css?url";
-import heroMedallionAuthority211Css from "../styles/hero-medallion-authority-211.css?url";
 import heroIconsFinal212Css from "../styles/hero-icons-final-212.css?url";
 import { AuthProvider } from "@/lib/auth";
 import { Toaster } from "@/components/ui/sonner";
 import { PwaRegistration } from "@/components/pwa-registration";
 import { ExperienceFinalPolishBridge } from "@/components/experience-final-polish-bridge";
+import { PageHeroParityBridge } from "@/components/page-hero-parity-bridge";
 import { TabletopFinalInteractionBridge } from "@/components/tabletop/tabletop-final-interaction-bridge";
 import { useEffect } from "react";
 import { initializeClientErrorMonitor } from "@/lib/client-error-monitor";
@@ -142,7 +142,6 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { rel: "stylesheet", href: navSheetSearchPolish162Css },
       { rel: "stylesheet", href: createSheetSearchViewport163Css },
       { rel: "stylesheet", href: desktopHeroParity202Css },
-      { rel: "stylesheet", href: heroMedallionAuthority211Css },
       { rel: "stylesheet", href: heroIconsFinal212Css },
       { rel: "manifest", href: "/manifest.webmanifest" },
       { rel: "icon", href: "/favicon.svg?v=4", type: "image/svg+xml", sizes: "any" },
@@ -174,6 +173,7 @@ function RootComponent() {
       <AuthProvider>
         <main><Outlet /></main>
         <ExperienceFinalPolishBridge />
+        <PageHeroParityBridge />
         <TabletopFinalInteractionBridge />
         <Toaster position="top-right" />
         <PwaRegistration />
