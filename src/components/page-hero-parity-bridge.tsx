@@ -6,9 +6,9 @@ import {
   Lightbulb,
   MapPinned,
   Users,
+  Wrench,
 } from "lucide-react";
 import { BrandMark } from "@/components/brand-mark";
-import { BackupSigil } from "@/components/section-symbols";
 import "@/styles/hero-structure-final-215.css";
 
 type HeroKind = "master" | "users" | "tools" | "offline";
@@ -45,7 +45,7 @@ function heroConfigForPath(pathname: string): HeroConfig | null {
   if (pathname.startsWith("/nexus-tools")) {
     return {
       kind: "tools",
-      icon: BackupSigil,
+      icon: Wrench,
       selector: "#tadeon-main .tadeon-route-tools > .tadeon-page-hero",
     };
   }
@@ -132,14 +132,33 @@ export function PageHeroParityBridge() {
           });
         }
 
-        const focusIdentity = document.querySelector<HTMLElement>(
+        const mobileFocusIdentity = document.querySelector<HTMLElement>(
           ".tadeon-mobile-header__identity",
         );
-        if (focusIdentity) {
-          const host = ensureHost(focusIdentity, "tadeon-tabletop-focus-brand-host");
+        if (mobileFocusIdentity) {
+          const host = ensureHost(
+            mobileFocusIdentity,
+            "tadeon-tabletop-focus-brand-host",
+          );
           next.push({
             host,
-            key: "tabletop:focus",
+            key: "tabletop:focus:mobile",
+            Icon: BrandMark,
+            iconClassName: "tadeon-tabletop-focus-brand-icon",
+          });
+        }
+
+        const desktopFocusToolbar = document.querySelector<HTMLElement>(
+          ".tadeon-desktop-toolbar",
+        );
+        if (desktopFocusToolbar) {
+          const host = ensureHost(
+            desktopFocusToolbar,
+            "tadeon-tabletop-focus-brand-host",
+          );
+          next.push({
+            host,
+            key: "tabletop:focus:desktop",
             Icon: BrandMark,
             iconClassName: "tadeon-tabletop-focus-brand-icon",
           });
