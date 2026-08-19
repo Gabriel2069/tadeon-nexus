@@ -1,12 +1,31 @@
-/* Final structural authority for the four reported visual contracts.
-   Real React SVGs are used for the Mesa and Backup identities. */
+/* Final structural authority for the reported Hero and Dashboard contracts.
+   This file only changes geometry and identity; existing motion stays untouched. */
 
-/* Backup follows the same hero geometry as Users. */
+/* --------------------------------------------------------------------------
+   Backup & Diagnostico
+   Reuse the same layout contract as Gerenciar Usuarios. The mark is a real
+   lucide Wrench, exactly the component rendered by the primary navigation.
+   -------------------------------------------------------------------------- */
 html body .tadeon-route-tools > .tadeon-page-hero[data-tadeon-page-hero="tools"] {
   position: relative !important;
+  display: flex !important;
   box-sizing: border-box !important;
   min-height: 7rem !important;
+  flex-direction: column !important;
+  gap: 1rem !important;
+  overflow: clip !important;
   padding: 1rem 1rem 1rem 5.35rem !important;
+}
+
+/* The authored Backup wrapper only groups the text and badge. Flattening that
+   wrapper makes the outer Hero behave like the working Users Hero. */
+html body .tadeon-route-tools > .tadeon-page-hero[data-tadeon-page-hero="tools"] > div:first-of-type {
+  display: contents !important;
+}
+
+html body .tadeon-route-tools > .tadeon-page-hero[data-tadeon-page-hero="tools"] > div:first-of-type > div {
+  min-width: 0 !important;
+  max-width: 42rem !important;
 }
 
 html body .tadeon-route-tools > .tadeon-page-hero[data-tadeon-page-hero="tools"] > .tadeon-page-hero-mark-host {
@@ -42,7 +61,7 @@ html body .tadeon-route-tools > .tadeon-page-hero[data-tadeon-page-hero="tools"]
   margin: 0 !important;
   color: rgb(122 129 135) !important;
   stroke: currentColor !important;
-  stroke-width: 1.7 !important;
+  stroke-width: 2 !important;
   transform: none !important;
   filter: drop-shadow(0 0 8px rgb(122 129 135 / 35%)) !important;
 }
@@ -51,7 +70,10 @@ html body .tadeon-route-tools > .tadeon-page-hero[data-tadeon-page-hero="tools"]
   min-width: 0 !important;
 }
 
-/* Mesa top mobile focus header: real Tadeon BrandMark, in Mesa blue. */
+/* --------------------------------------------------------------------------
+   Mesa Nexus - Area em foco
+   BrandMark is restored in Mesa blue on both desktop and mobile headers.
+   -------------------------------------------------------------------------- */
 html body .tadeon-shell[data-section="Mesa Nexus"] .tadeon-mobile-header__identity > svg {
   display: none !important;
 }
@@ -72,30 +94,73 @@ html body .tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-focus-brand-
   pointer-events: none !important;
 }
 
+html body .tadeon-shell[data-section="Mesa Nexus"] .tadeon-desktop-toolbar > .tadeon-tabletop-focus-brand-host {
+  width: 2.25rem !important;
+  height: 2.25rem !important;
+  flex-basis: 2.25rem !important;
+  margin-right: .75rem !important;
+}
+
 html body .tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-focus-brand-icon {
   display: block !important;
-  width: 2rem !important;
-  height: 2rem !important;
+  width: 100% !important;
+  height: 100% !important;
   margin: 0 !important;
   color: rgb(84 123 148) !important;
   filter: drop-shadow(0 0 12px rgb(84 123 148 / 28%)) !important;
   transform: none !important;
 }
 
-/* Mesa studio header: replace the legacy BrandMark in its own slot with a real MapPinned medallion. */
+/* --------------------------------------------------------------------------
+   Mesa Nexus - studio identity
+   Preserve the authored header footprint. Only the old BrandMark glyph is
+   replaced by the canonical MapPinned medallion in the same 40px slot.
+   -------------------------------------------------------------------------- */
+html body .tadeon-tabletop-studio__header {
+  min-height: 0 !important;
+  height: auto !important;
+  padding-top: .75rem !important;
+  padding-bottom: .75rem !important;
+}
+
+html body .tadeon-tabletop-studio__header > .relative.z-10 {
+  min-height: 0 !important;
+  height: auto !important;
+  padding-left: 0 !important;
+  align-items: center !important;
+  gap: .625rem !important;
+}
+
+html body .tadeon-tabletop-studio__header > svg.pointer-events-none.absolute.inset-0 {
+  position: absolute !important;
+  z-index: 0 !important;
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  margin: 0 !important;
+}
+
 html body .tadeon-tabletop-studio__brand {
   display: flex !important;
   min-height: 0 !important;
+  margin-right: .5rem !important;
+  padding-left: 0 !important;
   align-items: center !important;
   gap: .65rem !important;
-  padding-left: 0 !important;
 }
 
 html body .tadeon-tabletop-studio__brand > svg {
   display: none !important;
+  visibility: hidden !important;
+  width: 0 !important;
+  height: 0 !important;
+  flex: 0 0 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
 }
 
-html body .tadeon-tabletop-studio__brand::before {
+html body .tadeon-tabletop-studio__brand::before,
+html body .tadeon-tabletop-studio__header::before {
   display: none !important;
   content: none !important;
 }
@@ -135,11 +200,14 @@ html body .tadeon-tabletop-brand-mark-icon {
   margin: 0 !important;
   color: rgb(84 123 148) !important;
   stroke: currentColor !important;
-  stroke-width: 1.65 !important;
+  stroke-width: 2 !important;
   transform: none !important;
 }
 
-/* Dashboard: center each signal as a coherent icon + text unit inside equal thirds. */
+/* --------------------------------------------------------------------------
+   Dashboard signals
+   Exactly three equal columns; each icon + copy group is centered in its cell.
+   -------------------------------------------------------------------------- */
 html body .tadeon-dashboard-signals {
   width: 100% !important;
   align-items: stretch !important;
@@ -153,6 +221,7 @@ html body .tadeon-dashboard-signal {
   align-items: center !important;
   justify-content: center !important;
   column-gap: .75rem !important;
+  margin-inline: auto !important;
 }
 
 html body .tadeon-dashboard-signal > svg {
@@ -168,6 +237,14 @@ html body .tadeon-dashboard-signal > div {
 @media (min-width: 420px) {
   html body .tadeon-dashboard-signals {
     grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  }
+}
+
+@media (min-width: 640px) {
+  html body .tadeon-route-tools > .tadeon-page-hero[data-tadeon-page-hero="tools"] {
+    flex-direction: row !important;
+    align-items: flex-end !important;
+    justify-content: space-between !important;
   }
 }
 
