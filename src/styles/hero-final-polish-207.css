@@ -117,3 +117,101 @@
     filter: drop-shadow(0 0 9px rgb(217 215 164 / 24%));
   }
 }
+
+/* #210 root-cause repair. These selectors intentionally have more specificity
+   than the older hero layers so the fix is authoritative without changing any
+   existing motion or behavior. */
+
+/* The Mesa's ThreadField is an absolute decorative SVG. A generic hero rule
+   accidentally put every direct child into normal flow, making this 1200x360
+   field consume height and push the toolbar to the bottom of a huge header. */
+html body .tadeon-tabletop-studio__header > svg.pointer-events-none.absolute.inset-0 {
+  position: absolute !important;
+  z-index: 0 !important;
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  margin: 0 !important;
+}
+
+/* Center the medallion itself against each Hero's content. Earlier attempts
+   moved the glyph paint while leaving the entire medallion pinned near the top. */
+html body .tadeon-dashboard-hero::before,
+html body .tadeon-tabletop-studio__header::before,
+html body .tadeon-route-users > .tadeon-page-hero::before,
+html body .tadeon-route-tools > .tadeon-page-hero::before,
+html body .tadeon-route-offline > .tadeon-page-hero::before,
+html body .tadeon-master-commandbar__glow {
+  top: 50% !important;
+  translate: 0 -50% !important;
+  background-position: center !important;
+}
+
+/* Restore the Mesa's original layout contract. The invisible legacy BrandMark
+   keeps its original 40px slot; the new MapPinned medallion paints over that
+   slot, so no new padding, row height or gap is required. */
+html body .tadeon-tabletop-studio__header {
+  min-height: 0 !important;
+  padding-top: .75rem !important;
+  padding-bottom: .75rem !important;
+}
+
+html body .tadeon-tabletop-studio__header > .relative.z-10 {
+  min-height: 0 !important;
+  padding-left: 0 !important;
+  gap: .625rem !important;
+  align-items: center !important;
+}
+
+html body .tadeon-tabletop-studio__brand {
+  min-height: 0 !important;
+  margin-right: .5rem !important;
+  padding-left: 0 !important;
+  align-items: center !important;
+}
+
+html body .tadeon-tabletop-studio__brand > svg:first-child {
+  display: block !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  width: 2.5rem !important;
+  height: 2.5rem !important;
+  flex: 0 0 2.5rem !important;
+  margin: 0 !important;
+}
+
+html body .tadeon-tabletop-studio__header::before {
+  left: .75rem !important;
+  width: 2.5rem !important;
+  height: 2.5rem !important;
+  background-size: 1.15rem 1.15rem !important;
+}
+
+@media (min-width: 640px) {
+  html body .tadeon-tabletop-studio__header::before {
+    left: 1rem !important;
+  }
+}
+
+/* Nexus uses its canonical veil green. Force currentColor all the way down to
+   the Lucide SVG so route-level primary/flow colors cannot turn it blue. */
+html body .tadeon-route-nexus .tadeon-nexus-identity__mark {
+  border-color: rgb(79 110 93 / 52%) !important;
+  color: rgb(79 110 93) !important;
+  background:
+    radial-gradient(circle at 36% 28%, rgb(255 255 255 / 7%), transparent 35%),
+    radial-gradient(circle at center, rgb(79 110 93 / 12%), rgb(9 12 16 / 90%) 70%) !important;
+  box-shadow:
+    0 0 0 .42rem rgb(79 110 93 / 5%),
+    0 0 0 .82rem rgb(79 110 93 / 2.4%),
+    0 16px 38px -23px rgb(79 110 93 / 72%),
+    inset 0 1px rgb(255 255 255 / 9%),
+    inset 0 0 0 .32rem rgb(79 110 93 / 4%) !important;
+}
+
+html body .tadeon-route-nexus .tadeon-nexus-identity__mark > svg {
+  color: rgb(79 110 93) !important;
+  stroke: rgb(79 110 93) !important;
+  transform: none !important;
+  filter: drop-shadow(0 0 10px rgb(79 110 93 / 38%)) !important;
+}
