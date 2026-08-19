@@ -1,21 +1,16 @@
-@import "./runtime-ui-repair-198.css";
-
 /* Respiro entre o menu do Mestre e o conteúdo. */
 .tadeon-master-navigation-slot {
   margin-bottom: clamp(.6rem, 1.1vw, .9rem) !important;
 }
 
-/*
- * Menu lateral: não altera botão, fundo, texto, borda ou sombra.
- * A identidade cromática pertence a --nav-accent/--nav-accent-rgb, definidos
- * pela autoridade de navegação. O hover só projeta essa identidade no SVG.
- */
+/* Menu lateral: hover local no SVG, herdando a identidade cromática da rota. */
 .tadeon-nav-item:hover .tadeon-nav-item__icon > svg {
   color: var(--nav-accent, currentColor);
   filter: drop-shadow(0 0 9px rgb(var(--nav-accent-rgb, 217 215 164) / 25%));
 }
 
-/* Busca global: o runtime-ui-repair-198.css é a única autoridade de geometria. */
+/* Busca global: no desktop o DialogContent mantém o centramento nativo por
+   left/top 50% + translate. VisualViewport só corrige teclado e chrome móvel. */
 .tadeon-global-search-command {
   display: flex !important;
   min-height: 0 !important;
@@ -68,8 +63,58 @@
   white-space: nowrap;
 }
 
-@media (max-width: 639px) {
+@media (min-width: 768px) {
   .tadeon-global-search-dialog {
+    width: min(42rem, calc(100vw - 1.5rem)) !important;
+    max-width: 42rem !important;
+    height: min(38rem, calc(100dvh - 1.5rem)) !important;
+    max-height: calc(100dvh - 1.5rem) !important;
+  }
+}
+
+@media (max-width: 767px) {
+  .tadeon-global-search-dialog {
+    --tadeon-search-gutter-left: max(.5rem, env(safe-area-inset-left));
+    --tadeon-search-gutter-right: max(.5rem, env(safe-area-inset-right));
+    --tadeon-search-gutter-top: max(.5rem, env(safe-area-inset-top));
+    --tadeon-search-gutter-bottom: max(.5rem, env(safe-area-inset-bottom));
+    inset: auto !important;
+    top: max(
+      calc(var(--tadeon-search-vv-top, 0px) + var(--tadeon-search-gutter-top)),
+      calc(var(--tadeon-search-vv-top, 0px) + (var(--tadeon-search-vv-height, 100dvh) - 38rem) / 2)
+    ) !important;
+    left: max(
+      calc(var(--tadeon-search-vv-left, 0px) + var(--tadeon-search-gutter-left)),
+      calc(var(--tadeon-search-vv-left, 0px) + (var(--tadeon-search-vv-width, 100vw) - 42rem) / 2)
+    ) !important;
+    right: auto !important;
+    bottom: auto !important;
+    width: min(
+      42rem,
+      calc(
+        var(--tadeon-search-vv-width, 100vw)
+        - var(--tadeon-search-gutter-left)
+        - var(--tadeon-search-gutter-right)
+      )
+    ) !important;
+    max-width: none !important;
+    height: min(
+      38rem,
+      calc(
+        var(--tadeon-search-vv-height, 100dvh)
+        - var(--tadeon-search-gutter-top)
+        - var(--tadeon-search-gutter-bottom)
+      )
+    ) !important;
+    min-height: 0 !important;
+    max-height: calc(
+      var(--tadeon-search-vv-height, 100dvh)
+      - var(--tadeon-search-gutter-top)
+      - var(--tadeon-search-gutter-bottom)
+    ) !important;
+    margin: 0 !important;
+    transform: none !important;
+    overflow: hidden !important;
     border-radius: 1rem .35rem 1rem .35rem !important;
   }
 

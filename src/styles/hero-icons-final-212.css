@@ -1,10 +1,7 @@
 /* Canonical Hero authority.
-   Nexus is the reference. Master, Users, Tools and Offline use the same mark
-   geometry, text scale, spacing and vertical alignment. Dashboard stays unique.
-   Mesa keeps its own header layout and only receives the canonical MapPinned
-   symbol in the legacy brand slot. */
+   Users is the layout reference for Master, Backup and Offline.
+   Dashboard and Mesa keep their own compositions. */
 
-/* Route identities */
 html body [data-tadeon-page-hero="master"] {
   --canonical-hero-rgb: 116 36 45;
   --canonical-hero-secondary-rgb: 217 215 164;
@@ -25,17 +22,22 @@ html body [data-tadeon-page-hero="offline"] {
   --canonical-hero-secondary-rgb: 79 110 93;
 }
 
-/* Shared shell for the four sibling Heros. The icon is a real Lucide component
-   injected by PageHeroParityBridge, not a CSS drawing. */
+/* Shared sibling Hero layout. The mark is a normal grid item, never an
+   absolutely positioned overlay, so its optical center follows the content. */
 html body [data-tadeon-page-hero] {
   position: relative !important;
   isolation: isolate !important;
   box-sizing: border-box !important;
+  display: grid !important;
   min-height: 7rem !important;
+  grid-template-columns: 3rem minmax(0, 1fr) auto !important;
+  align-items: center !important;
+  column-gap: 1.25rem !important;
+  row-gap: .75rem !important;
   overflow: clip !important;
   border: 1px solid rgb(var(--canonical-hero-rgb) / 26%) !important;
   border-radius: 1rem !important;
-  padding: 1rem 1rem 1rem 5.35rem !important;
+  padding: 1rem 1.25rem !important;
   background:
     radial-gradient(circle at 8% 12%, rgb(var(--canonical-hero-rgb) / 10%), transparent 13rem),
     radial-gradient(circle at 88% -18%, rgb(var(--canonical-hero-secondary-rgb) / 9%), transparent 18rem),
@@ -50,17 +52,21 @@ html body [data-tadeon-page-hero] {
 html body [data-tadeon-page-hero] > * {
   position: relative;
   z-index: 2;
+  min-width: 0;
 }
 
 html body [data-tadeon-page-hero] > .tadeon-page-hero-mark-host {
-  position: absolute !important;
+  position: relative !important;
   z-index: 4 !important;
-  top: 50% !important;
-  left: 1.2rem !important;
+  grid-column: 1 !important;
+  grid-row: 1 !important;
+  align-self: center !important;
+  justify-self: center !important;
   display: grid !important;
   width: 3rem !important;
   height: 3rem !important;
   place-items: center !important;
+  margin: 0 !important;
   border: 1px solid rgb(var(--canonical-hero-rgb) / 48%) !important;
   border-radius: 50% !important;
   color: rgb(var(--canonical-hero-rgb)) !important;
@@ -75,7 +81,8 @@ html body [data-tadeon-page-hero] > .tadeon-page-hero-mark-host {
     inset 0 0 0 .32rem rgb(var(--canonical-hero-rgb) / 4%) !important;
   opacity: 1 !important;
   filter: drop-shadow(0 0 10px rgb(var(--canonical-hero-rgb) / 30%)) !important;
-  transform: translateY(-50%) !important;
+  transform: none !important;
+  translate: none !important;
   pointer-events: none !important;
 }
 
@@ -86,9 +93,31 @@ html body [data-tadeon-page-hero] .tadeon-page-hero-mark-icon {
   margin: 0 !important;
   color: rgb(var(--canonical-hero-rgb)) !important;
   stroke: currentColor !important;
-  stroke-width: 1.65 !important;
+  stroke-width: 1.7 !important;
   transform: none !important;
+  translate: none !important;
   filter: drop-shadow(0 0 9px rgb(var(--canonical-hero-rgb) / 34%)) !important;
+}
+
+/* Authored content is placed in the same columns as the Users reference. */
+html body [data-tadeon-page-hero="users"] > div:first-of-type {
+  grid-column: 2 !important;
+  grid-row: 1 !important;
+}
+
+html body [data-tadeon-page-hero="users"] > div:nth-of-type(2) {
+  grid-column: 3 !important;
+  grid-row: 1 !important;
+  align-self: center !important;
+  justify-self: end !important;
+}
+
+html body [data-tadeon-page-hero="tools"] > div:first-of-type,
+html body [data-tadeon-page-hero="offline"] > div:first-of-type,
+html body [data-tadeon-page-hero="master"] > .relative.flex {
+  grid-column: 2 / -1 !important;
+  grid-row: 1 !important;
+  width: 100% !important;
 }
 
 html body [data-tadeon-page-hero] .tadeon-eyebrow {
@@ -103,15 +132,14 @@ html body [data-tadeon-page-hero] h1 {
   font-weight: 600 !important;
 }
 
-/* Master already had a Sparkles glyph in the title. The canonical Lightbulb
-   now lives in the shared mark, so the duplicate title glyph is removed. */
+/* The Master title already owns the shared medallion, so its duplicate title
+   glyph and legacy glow host do not participate in layout. */
 html body [data-tadeon-page-hero="master"] .tadeon-master-commandbar__glow,
 html body [data-tadeon-page-hero="master"] h1 > svg:first-child {
   display: none !important;
 }
 
-/* Restore pseudo-elements to background ornament duty. Older layers reused
-   ::before as an icon, which is what caused icons to sit above the text. */
+/* Pseudo-elements are background ornaments only. */
 html body [data-tadeon-page-hero]::before,
 html body [data-tadeon-page-hero]::after {
   position: absolute !important;
@@ -175,8 +203,7 @@ html body [data-tadeon-page-hero="offline"]::after {
   border-style: dashed !important;
 }
 
-/* Nexus is the native reference. Match the same geometry and optical center
-   while keeping its own background and existing orbit animation untouched. */
+/* Nexus keeps its native inline identity and uses the same optical dimensions. */
 html body .tadeon-route-nexus .tadeon-nexus-identity {
   display: flex !important;
   align-items: center !important;
@@ -212,6 +239,7 @@ html body .tadeon-route-nexus .tadeon-nexus-identity__mark > svg {
   stroke: currentColor !important;
   stroke-width: 1.65 !important;
   transform: none !important;
+  translate: none !important;
   filter: drop-shadow(0 0 9px rgb(79 110 93 / 34%)) !important;
 }
 
@@ -226,16 +254,29 @@ html body .tadeon-route-nexus .tadeon-nexus-identity h1 {
   font-weight: 600 !important;
 }
 
-/* Dashboard remains a different composition. Remove only the extra Home
-   medallion. The authored Tadeon BrandMark inside Arquivo de continuidade is
-   not touched here. */
+/* Dashboard stays unique and only its three signals share equal cells. */
 html body .tadeon-dashboard-hero::before {
   display: none !important;
   content: none !important;
 }
 
-/* Mesa remains a different layout. Only replace the old BrandMark slot with a
-   real MapPinned component from the same Lucide source used by the menu. */
+html body .tadeon-dashboard-signals {
+  width: 100% !important;
+  align-items: stretch !important;
+}
+
+html body .tadeon-dashboard-signal {
+  display: flex !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: .75rem !important;
+  margin: 0 !important;
+}
+
+/* Mesa keeps the original header footprint. The real MapPinned host replaces
+   the legacy BrandMark in that exact flex slot. */
 html body .tadeon-tabletop-studio__header::before,
 html body .tadeon-tabletop-studio__brand::before {
   display: none !important;
@@ -275,7 +316,7 @@ html body .tadeon-tabletop-studio__brand {
   gap: .65rem !important;
 }
 
-html body .tadeon-tabletop-studio__brand > svg:first-child {
+html body .tadeon-tabletop-studio__brand > svg {
   display: none !important;
   visibility: hidden !important;
   width: 0 !important;
@@ -289,10 +330,13 @@ html body .tadeon-tabletop-brand-mark-host {
   position: relative !important;
   z-index: 2 !important;
   display: grid !important;
+  visibility: visible !important;
   width: 2.5rem !important;
   height: 2.5rem !important;
   flex: 0 0 2.5rem !important;
   place-items: center !important;
+  margin: 0 !important;
+  padding: 0 !important;
   border: 1px solid rgb(84 123 148 / 52%) !important;
   border-radius: 50% !important;
   color: rgb(84 123 148) !important;
@@ -311,13 +355,55 @@ html body .tadeon-tabletop-brand-mark-host {
 
 html body .tadeon-tabletop-brand-mark-icon {
   display: block !important;
+  visibility: visible !important;
   width: 1.2rem !important;
   height: 1.2rem !important;
   margin: 0 !important;
   color: rgb(84 123 148) !important;
   stroke: currentColor !important;
-  stroke-width: 1.65 !important;
+  stroke-width: 1.7 !important;
   transform: none !important;
+  translate: none !important;
+}
+
+/* Mesa Area em foco uses the real Tadeon mark in the section blue. */
+html body .tadeon-shell[data-section="Mesa Nexus"] .tadeon-mobile-header__identity > svg {
+  display: none !important;
+}
+
+html body .tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-focus-brand-host {
+  display: grid !important;
+  width: 2rem !important;
+  height: 2rem !important;
+  flex: 0 0 2rem !important;
+  place-items: center !important;
+  margin: 0 !important;
+  color: rgb(84 123 148) !important;
+  pointer-events: none !important;
+}
+
+html body .tadeon-shell[data-section="Mesa Nexus"] .tadeon-desktop-toolbar > .tadeon-tabletop-focus-brand-host {
+  width: 2.25rem !important;
+  height: 2.25rem !important;
+  flex-basis: 2.25rem !important;
+  margin-right: .25rem !important;
+}
+
+html body .tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-focus-brand-icon {
+  display: block !important;
+  width: 100% !important;
+  height: 100% !important;
+  margin: 0 !important;
+  color: rgb(84 123 148) !important;
+  transform: none !important;
+  translate: none !important;
+  filter: drop-shadow(0 0 12px rgb(84 123 148 / 28%)) !important;
+}
+
+@media (min-width: 420px) {
+  html body .tadeon-dashboard-signals {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  }
 }
 
 @media (min-width: 768px) {
@@ -327,14 +413,15 @@ html body .tadeon-tabletop-brand-mark-icon {
   }
 }
 
-@media (max-width: 767px) {
+@media (max-width: 639px) {
   html body [data-tadeon-page-hero] {
     min-height: 6.5rem !important;
-    padding: .9rem .9rem .9rem 4.75rem !important;
+    grid-template-columns: 2.75rem minmax(0, 1fr) !important;
+    padding: .9rem !important;
+    column-gap: 1rem !important;
   }
 
   html body [data-tadeon-page-hero] > .tadeon-page-hero-mark-host {
-    left: .95rem !important;
     width: 2.75rem !important;
     height: 2.75rem !important;
   }
@@ -342,6 +429,20 @@ html body .tadeon-tabletop-brand-mark-icon {
   html body [data-tadeon-page-hero] .tadeon-page-hero-mark-icon {
     width: 1.3rem !important;
     height: 1.3rem !important;
+  }
+
+  html body [data-tadeon-page-hero="users"] > div:first-of-type,
+  html body [data-tadeon-page-hero="tools"] > div:first-of-type,
+  html body [data-tadeon-page-hero="offline"] > div:first-of-type,
+  html body [data-tadeon-page-hero="master"] > .relative.flex {
+    grid-column: 2 !important;
+    grid-row: 1 !important;
+  }
+
+  html body [data-tadeon-page-hero="users"] > div:nth-of-type(2) {
+    grid-column: 2 !important;
+    grid-row: 2 !important;
+    justify-self: start !important;
   }
 
   html body [data-tadeon-page-hero]::before {

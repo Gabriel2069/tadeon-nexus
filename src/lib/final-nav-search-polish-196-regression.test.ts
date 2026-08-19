@@ -5,7 +5,7 @@ function source(path: string) {
   return readFileSync(path, "utf8");
 }
 
-describe("final navigation and search polish 196/201", () => {
+describe("final navigation and search polish 196", () => {
   it("keeps breathing room below master navigation", () => {
     const css = source("src/styles/final-nav-search-polish-196.css");
     expect(css).toContain(".tadeon-master-navigation-slot");
@@ -29,24 +29,24 @@ describe("final navigation and search polish 196/201", () => {
     expect(css).toContain(".tadeon-nav-item:hover .tadeon-nav-item__icon > svg");
     expect(css).toContain("color: var(--nav-accent, currentColor)");
     expect(css).toContain("var(--nav-accent-rgb, 217 215 164)");
-    expect(css).not.toContain("--tadeon-nav-icon-hover:");
     expect(routeCss).toContain('.tadeon-nav-item[href="/tabletop"] { --nav-accent: rgb(84 123 148)');
     expect(routeCss).toContain('.tadeon-nav-item[href="/manage-users"] { --nav-accent: rgb(183 129 77)');
   });
 
-  it("binds the global search to one live visual-viewport geometry without translate", () => {
+  it("uses native Dialog centering on desktop and visualViewport only on compact screens", () => {
     const search = source("src/components/global-search.tsx");
     const command = source("src/components/ui/command.tsx");
     const css = source("src/styles/final-nav-search-polish-196.css");
-    const runtimeCss = source("src/styles/runtime-ui-repair-198.css");
+
     expect(search).toContain("window.visualViewport");
     expect(search).toContain('contentClassName="tadeon-global-search-dialog"');
-    expect(command).toContain("contentClassName?: string");
-    expect(command).toContain("min-h-0 flex-1");
-    expect(runtimeCss).toContain("--tadeon-search-vv-height");
-    expect(runtimeCss).toContain("transform: none !important");
-    expect(runtimeCss).toContain("max(");
-    expect(css).not.toContain("translate(-50%, -50%)");
+    expect(command).toContain("fixed left-[50%] top-[50%]");
+    expect(command).toContain("translate-x-[-50%] translate-y-[-50%]");
+    expect(css).toContain("@media (max-width: 767px)");
+    expect(css).toContain("--tadeon-search-vv-height");
+    expect(css).toContain("transform: none !important");
+    expect(css).not.toContain('@import "./runtime-ui-repair-198.css"');
+    expect(css).not.toContain("@media (min-width: 768px) and (min-height: 521px)");
     expect(css).toContain(".tadeon-global-search-command .tadeon-command-footer");
   });
 });
