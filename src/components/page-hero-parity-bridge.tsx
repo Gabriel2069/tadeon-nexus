@@ -1,80 +1,69 @@
 import { createPortal } from "react-dom";
-import { useEffect, useState, type ComponentType, type SVGProps } from "react";
+import { useEffect, useState } from "react";
 import { useRouterState } from "@tanstack/react-router";
-import {
-  CloudOff,
-  Lightbulb,
-  MapPinned,
-  Users,
-} from "lucide-react";
+import { CloudOff, MapPinned, Users } from "lucide-react";
 import { BrandMark } from "@/components/brand-mark";
 import { BackupSigil } from "@/components/section-symbols";
 
-type HeroKind = "master" | "users" | "tools" | "offline";
-type HeroIcon = ComponentType<SVGProps<SVGSVGElement>>;
+type HeroKind = "users" | "tools" | "offline";
+type IconKind = HeroKind | "tabletop" | "brand";
 
 type HeroConfig = {
   kind: HeroKind;
-  icon: HeroIcon;
   selector: string;
 };
 
 type PortalSpec = {
   host: HTMLElement;
   key: string;
-  Icon: HeroIcon;
+  icon: IconKind;
   iconClassName: string;
 };
 
 function heroConfigForPath(pathname: string): HeroConfig | null {
-  if (pathname.startsWith("/master-panel")) {
-    return {
-      kind: "master",
-      icon: Lightbulb,
-      selector: "#tadeon-main .tadeon-master-commandbar",
-    };
-  }
   if (pathname.startsWith("/manage-users")) {
     return {
       kind: "users",
-      icon: Users,
       selector: "#tadeon-main .tadeon-route-users > .tadeon-page-hero",
     };
   }
   if (pathname.startsWith("/nexus-tools")) {
     return {
       kind: "tools",
-      icon: BackupSigil,
       selector: "#tadeon-main .tadeon-route-tools > .tadeon-page-hero",
     };
   }
   if (pathname.startsWith("/offline")) {
     return {
       kind: "offline",
-      icon: CloudOff,
       selector: "#tadeon-main .tadeon-route-offline > .tadeon-page-hero",
     };
   }
   return null;
 }
 
-function ensureHost(container: HTMLElement, className: string, prepend = true) {
+function renderIcon(icon: IconKind, className: string) {
+  if (icon === "users") return <Users className={className} />;
+  if (icon === "tools") return <BackupSigil className={className} />;
+  if (icon === "offline") return <CloudOff className={className} />;
+  if (icon === "tabletop") return <MapPinned className={className} />;
+  return <BrandMark className={className} />;
+}
+
+function ensureHost(container: HTMLElement, className: string) {
   let host = container.querySelector<HTMLElement>(`:scope > .${className}`);
   if (host) return host;
   host = document.createElement("span");
   host.className = className;
   host.setAttribute("aria-hidden", "true");
-  if (prepend) container.prepend(host);
-  else container.append(host);
+  container.prepend(host);
   return host;
 }
 
 function clearStaleHeroes(active?: HTMLElement | null) {
-  document
-    .querySelectorAll<HTMLElement>("[data-tadeon-page-hero]")
-    .forEach((node) => {
-      if (node !== active) delete node.dataset.tadeonPageHero;
-    });
+  document.querySelectorAll<HTMLElement>("[data-tadeon-page-hero]").forEach((node) => {
+    if (node !== active) delete node.dataset.tadeonPageHero;
+  });
 }
 
 function clearTabletopHosts() {
@@ -94,7 +83,7 @@ function samePortals(current: PortalSpec[], next: PortalSpec[]) {
         candidate &&
         item.host === candidate.host &&
         item.key === candidate.key &&
-        item.Icon === candidate.Icon &&
+        item.icon === candidate.icon &&
         item.iconClassName === candidate.iconClassName
       );
     })
@@ -107,8 +96,6 @@ export function PageHeroParityBridge() {
 
   useEffect(() => {
     let frame: number | null = null;
-    let observer: MutationObserver | null = null;
-
     const commitPortals = (next: PortalSpec[]) => {
       setPortals((current) => (samePortals(current, next) ? current : next));
     };
@@ -116,17 +103,16 @@ export function PageHeroParityBridge() {
     const sync = () => {
       if (pathname.startsWith("/tabletop")) {
         clearStaleHeroes();
-
         const next: PortalSpec[] = [];
+
         const studioBrand = document.querySelector<HTMLElement>(
           "#tadeon-main .tadeon-tabletop-studio__brand",
         );
         if (studioBrand) {
-          const host = ensureHost(studioBrand, "tadeon-tabletop-brand-mark-host");
           next.push({
-            host,
+            host: ensureHost(studioBrand, "tadeon-tabletop-brand-mark-host"),
             key: "tabletop:studio",
-            Icon: MapPinned,
+            icon: "tabletop",
             iconClassName: "tadeon-tabletop-brand-mark-icon",
           });
         }
@@ -135,30 +121,24 @@ export function PageHeroParityBridge() {
           ".tadeon-mobile-header__identity",
         );
         if (mobileFocusIdentity) {
-          const host = ensureHost(
-            mobileFocusIdentity,
-            "tadeon-tabletop-focus-brand-host",
-          );
           next.push({
-            host,
+            host: ensureHost(mobileFocusIdentity, "tadeon-tabletop-focus-brand-host"),
             key: "tabletop:focus:mobile",
-            Icon: BrandMark,
+            icon: "brand",
             iconClassName: "tadeon-tabletop-focus-brand-icon",
           });
         }
 
-        const desktopFocusToolbar = document.querySelector<HTMLElement>(
-          ".tadeon-desktop-toolbar",
+        // Keep the desktop mark inside the authored identity block. It spans the
+        // eyebrow and title rows instead of becoming a sibling that shifts actions.
+        const desktopFocusIdentity = document.querySelector<HTMLElement>(
+          ".tadeon-desktop-toolbar > .min-w-0",
         );
-        if (desktopFocusToolbar) {
-          const host = ensureHost(
-            desktopFocusToolbar,
-            "tadeon-tabletop-focus-brand-host",
-          );
+        if (desktopFocusIdentity) {
           next.push({
-            host,
+            host: ensureHost(desktopFocusIdentity, "tadeon-tabletop-focus-brand-host"),
             key: "tabletop:focus:desktop",
-            Icon: BrandMark,
+            icon: "brand",
             iconClassName: "tadeon-tabletop-focus-brand-icon",
           });
         }
@@ -183,12 +163,11 @@ export function PageHeroParityBridge() {
 
       clearStaleHeroes(container);
       container.dataset.tadeonPageHero = config.kind;
-      const host = ensureHost(container, "tadeon-page-hero-mark-host");
       commitPortals([
         {
-          host,
+          host: ensureHost(container, "tadeon-page-hero-mark-host"),
           key: `hero:${config.kind}`,
-          Icon: config.icon,
+          icon: config.kind,
           iconClassName: "tadeon-page-hero-mark-icon",
         },
       ]);
@@ -202,21 +181,15 @@ export function PageHeroParityBridge() {
       });
     };
 
-    observer = new MutationObserver(schedule);
+    const observer = new MutationObserver(schedule);
     observer.observe(document.body, { childList: true, subtree: true });
     schedule();
 
     return () => {
-      observer?.disconnect();
+      observer.disconnect();
       if (frame !== null) window.cancelAnimationFrame(frame);
     };
   }, [pathname]);
 
-  return (
-    <>
-      {portals.map(({ host, key, Icon, iconClassName }) =>
-        createPortal(<Icon className={iconClassName} />, host, key),
-      )}
-    </>
-  );
+  return <>{portals.map(({ host, key, icon, iconClassName }) => createPortal(renderIcon(icon, iconClassName), host, key))}</>;
 }
