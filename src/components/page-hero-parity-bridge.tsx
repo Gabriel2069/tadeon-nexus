@@ -2,60 +2,79 @@ import { createPortal } from "react-dom";
 import { useEffect, useState } from "react";
 import { useRouterState } from "@tanstack/react-router";
 import {
-  ArchiveRestore,
-  BookKey,
-  ShieldCheck,
-  WifiOff,
+  CloudOff,
+  Lightbulb,
+  MapPinned,
+  Users,
+  Wrench,
   type LucideIcon,
 } from "lucide-react";
 
 type HeroKind = "master" | "users" | "tools" | "offline";
 
-interface HeroConfig {
-  kind: HeroKind;
-  icon: LucideIcon;
-  selector: string;
-}
+type HeroConfig =
+  | {
+      mode: "hero";
+      kind: HeroKind;
+      icon: LucideIcon;
+      selector: string;
+    }
+  | {
+      mode: "tabletop";
+      icon: LucideIcon;
+      selector: string;
+    };
 
 function configForPath(pathname: string): HeroConfig | null {
+  if (pathname.startsWith("/tabletop")) {
+    return {
+      mode: "tabletop",
+      icon: MapPinned,
+      selector: "#tadeon-main .tadeon-tabletop-studio__brand",
+    };
+  }
   if (pathname.startsWith("/master-panel")) {
     return {
+      mode: "hero",
       kind: "master",
-      icon: BookKey,
+      icon: Lightbulb,
       selector: "#tadeon-main .tadeon-master-commandbar",
     };
   }
   if (pathname.startsWith("/manage-users")) {
     return {
+      mode: "hero",
       kind: "users",
-      icon: ShieldCheck,
+      icon: Users,
       selector: "#tadeon-main .tadeon-route-users > .tadeon-page-hero",
     };
   }
   if (pathname.startsWith("/nexus-tools")) {
     return {
+      mode: "hero",
       kind: "tools",
-      icon: ArchiveRestore,
+      icon: Wrench,
       selector: "#tadeon-main .tadeon-route-tools > .tadeon-page-hero",
     };
   }
   if (pathname.startsWith("/offline")) {
     return {
+      mode: "hero",
       kind: "offline",
-      icon: WifiOff,
+      icon: CloudOff,
       selector: "#tadeon-main .tadeon-route-offline > .tadeon-page-hero",
     };
   }
   return null;
 }
 
-function ensureHeroHost(header: HTMLElement) {
-  let host = header.querySelector<HTMLElement>(":scope > .tadeon-page-hero-mark-host");
+function ensureHost(container: HTMLElement, className: string) {
+  let host = container.querySelector<HTMLElement>(`:scope > .${className}`);
   if (host) return host;
   host = document.createElement("span");
-  host.className = "tadeon-page-hero-mark-host";
+  host.className = className;
   host.setAttribute("aria-hidden", "true");
-  header.prepend(host);
+  container.prepend(host);
   return host;
 }
 
@@ -71,8 +90,9 @@ export function PageHeroParityBridge() {
   const pathname = useRouterState({ select: (state) => state.location.pathname });
   const [portal, setPortal] = useState<{
     host: HTMLElement;
-    kind: HeroKind;
+    key: string;
     Icon: LucideIcon;
+    iconClassName: string;
   } | null>(null);
 
   useEffect(() => {
@@ -88,15 +108,39 @@ export function PageHeroParityBridge() {
     }
 
     const sync = () => {
-      const header = document.querySelector<HTMLElement>(config.selector);
-      if (!header) return;
-      clearStaleHeroes(header);
-      header.dataset.tadeonPageHero = config.kind;
-      const host = ensureHeroHost(header);
+      const container = document.querySelector<HTMLElement>(config.selector);
+      if (!container) return;
+
+      if (config.mode === "hero") {
+        clearStaleHeroes(container);
+        container.dataset.tadeonPageHero = config.kind;
+        const host = ensureHost(container, "tadeon-page-hero-mark-host");
+        const key = `hero:${config.kind}`;
+        setPortal((current) =>
+          current?.host === host && current.key === key
+            ? current
+            : {
+                host,
+                key,
+                Icon: config.icon,
+                iconClassName: "tadeon-page-hero-mark-icon",
+              },
+        );
+        return;
+      }
+
+      clearStaleHeroes();
+      const host = ensureHost(container, "tadeon-tabletop-brand-mark-host");
+      const key = "tabletop:brand";
       setPortal((current) =>
-        current?.host === host && current.kind === config.kind
+        current?.host === host && current.key === key
           ? current
-          : { host, kind: config.kind, Icon: config.icon },
+          : {
+              host,
+              key,
+              Icon: config.icon,
+              iconClassName: "tadeon-tabletop-brand-mark-icon",
+            },
       );
     };
 
@@ -122,6 +166,6 @@ export function PageHeroParityBridge() {
   }, [pathname]);
 
   if (!portal) return null;
-  const { host, Icon } = portal;
-  return createPortal(<Icon className="tadeon-page-hero-mark-icon" />, host);
+  const { host, Icon, iconClassName } = portal;
+  return createPortal(<Icon className={iconClassName} />, host);
 }
