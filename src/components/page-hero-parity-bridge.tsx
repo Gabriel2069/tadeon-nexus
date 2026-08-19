@@ -9,6 +9,7 @@ import {
   Wrench,
   type LucideIcon,
 } from "lucide-react";
+import "@/styles/hero-layout-fix-214.css";
 
 type HeroKind = "master" | "users" | "tools" | "offline";
 
