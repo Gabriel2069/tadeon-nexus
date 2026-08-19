@@ -1,37 +1,302 @@
-/* #212 final icon identity authority.
-   Keep the approved hero backgrounds/animations untouched. This file only
-   corrects which symbol is shown and where it lives. */
+/* Canonical Hero authority.
+   Nexus is the reference. Master, Users, Tools and Offline use the same mark
+   geometry, text scale, spacing and vertical alignment. Dashboard stays unique.
+   Mesa keeps its own header layout and only receives the canonical MapPinned
+   symbol in the legacy brand slot. */
 
-/* Dashboard: keep the authored Tadeon mark in "Arquivo de continuidade", but
-   remove the extra route medallion requested by the user. */
+/* Route identities */
+html body [data-tadeon-page-hero="master"] {
+  --canonical-hero-rgb: 116 36 45;
+  --canonical-hero-secondary-rgb: 217 215 164;
+}
+
+html body [data-tadeon-page-hero="users"] {
+  --canonical-hero-rgb: 183 129 77;
+  --canonical-hero-secondary-rgb: 217 215 164;
+}
+
+html body [data-tadeon-page-hero="tools"] {
+  --canonical-hero-rgb: 122 129 135;
+  --canonical-hero-secondary-rgb: 84 123 148;
+}
+
+html body [data-tadeon-page-hero="offline"] {
+  --canonical-hero-rgb: 113 107 123;
+  --canonical-hero-secondary-rgb: 79 110 93;
+}
+
+/* Shared shell for the four sibling Heros. The icon is a real Lucide component
+   injected by PageHeroParityBridge, not a CSS drawing. */
+html body [data-tadeon-page-hero] {
+  position: relative !important;
+  isolation: isolate !important;
+  box-sizing: border-box !important;
+  min-height: 7rem !important;
+  overflow: clip !important;
+  border: 1px solid rgb(var(--canonical-hero-rgb) / 26%) !important;
+  border-radius: 1rem !important;
+  padding: 1rem 1rem 1rem 5.35rem !important;
+  background:
+    radial-gradient(circle at 8% 12%, rgb(var(--canonical-hero-rgb) / 10%), transparent 13rem),
+    radial-gradient(circle at 88% -18%, rgb(var(--canonical-hero-secondary-rgb) / 9%), transparent 18rem),
+    linear-gradient(138deg, rgb(255 255 255 / 4%), transparent 43%),
+    linear-gradient(145deg, rgb(17 20 25 / 97%), rgb(8 11 15 / 96%)) !important;
+  box-shadow:
+    0 28px 72px -56px rgb(0 0 0 / 100%),
+    0 18px 50px -46px rgb(var(--canonical-hero-rgb) / 38%),
+    inset 0 1px rgb(255 255 255 / 4%) !important;
+}
+
+html body [data-tadeon-page-hero] > * {
+  position: relative;
+  z-index: 2;
+}
+
+html body [data-tadeon-page-hero] > .tadeon-page-hero-mark-host {
+  position: absolute !important;
+  z-index: 4 !important;
+  top: 50% !important;
+  left: 1.2rem !important;
+  display: grid !important;
+  width: 3rem !important;
+  height: 3rem !important;
+  place-items: center !important;
+  border: 1px solid rgb(var(--canonical-hero-rgb) / 48%) !important;
+  border-radius: 50% !important;
+  color: rgb(var(--canonical-hero-rgb)) !important;
+  background:
+    radial-gradient(circle at 36% 28%, rgb(255 255 255 / 7%), transparent 35%),
+    radial-gradient(circle at center, rgb(var(--canonical-hero-rgb) / 12%), rgb(9 12 16 / 90%) 70%) !important;
+  box-shadow:
+    0 0 0 .42rem rgb(var(--canonical-hero-rgb) / 5%),
+    0 0 0 .82rem rgb(var(--canonical-hero-secondary-rgb) / 2.2%),
+    0 16px 38px -23px rgb(var(--canonical-hero-rgb) / 72%),
+    inset 0 1px rgb(255 255 255 / 9%),
+    inset 0 0 0 .32rem rgb(var(--canonical-hero-rgb) / 4%) !important;
+  opacity: 1 !important;
+  filter: drop-shadow(0 0 10px rgb(var(--canonical-hero-rgb) / 30%)) !important;
+  transform: translateY(-50%) !important;
+  pointer-events: none !important;
+}
+
+html body [data-tadeon-page-hero] .tadeon-page-hero-mark-icon {
+  display: block !important;
+  width: 1.4rem !important;
+  height: 1.4rem !important;
+  margin: 0 !important;
+  color: rgb(var(--canonical-hero-rgb)) !important;
+  stroke: currentColor !important;
+  stroke-width: 1.65 !important;
+  transform: none !important;
+  filter: drop-shadow(0 0 9px rgb(var(--canonical-hero-rgb) / 34%)) !important;
+}
+
+html body [data-tadeon-page-hero] .tadeon-eyebrow {
+  color: rgb(var(--canonical-hero-rgb) / 88%) !important;
+}
+
+html body [data-tadeon-page-hero] h1 {
+  margin-top: .25rem !important;
+  color: rgb(var(--canonical-hero-rgb)) !important;
+  font-size: 1.5rem !important;
+  line-height: 1.2 !important;
+  font-weight: 600 !important;
+}
+
+/* Master already had a Sparkles glyph in the title. The canonical Lightbulb
+   now lives in the shared mark, so the duplicate title glyph is removed. */
+html body [data-tadeon-page-hero="master"] .tadeon-master-commandbar__glow,
+html body [data-tadeon-page-hero="master"] h1 > svg:first-child {
+  display: none !important;
+}
+
+/* Restore pseudo-elements to background ornament duty. Older layers reused
+   ::before as an icon, which is what caused icons to sit above the text. */
+html body [data-tadeon-page-hero]::before,
+html body [data-tadeon-page-hero]::after {
+  position: absolute !important;
+  z-index: 0 !important;
+  display: block !important;
+  aspect-ratio: 1 !important;
+  border-radius: 50% !important;
+  background-image: none !important;
+  background-repeat: no-repeat !important;
+  pointer-events: none !important;
+  content: "" !important;
+}
+
+html body [data-tadeon-page-hero]::before {
+  top: -8.8rem !important;
+  right: 7% !important;
+  width: 18rem !important;
+  height: 18rem !important;
+  border: 1px solid rgb(var(--canonical-hero-rgb) / 24%) !important;
+  background:
+    radial-gradient(circle at center, transparent 46%, rgb(var(--canonical-hero-rgb) / 3%) 47% 50%, transparent 51%) !important;
+  box-shadow:
+    0 0 0 2rem rgb(var(--canonical-hero-rgb) / 3.2%),
+    0 0 0 4.4rem rgb(var(--canonical-hero-secondary-rgb) / 2.2%),
+    0 0 64px -34px rgb(var(--canonical-hero-rgb) / 42%) !important;
+  opacity: .92 !important;
+  transform: none !important;
+}
+
+html body [data-tadeon-page-hero]::after {
+  right: 3% !important;
+  bottom: -6.6rem !important;
+  width: 12.5rem !important;
+  height: 12.5rem !important;
+  border: 1px solid rgb(var(--canonical-hero-secondary-rgb) / 14%) !important;
+  background: none !important;
+  box-shadow:
+    0 0 0 1.55rem rgb(var(--canonical-hero-secondary-rgb) / 2.5%),
+    0 0 0 3.6rem rgb(var(--canonical-hero-rgb) / 1.8%) !important;
+  opacity: .72 !important;
+  transform: none !important;
+}
+
+html body [data-tadeon-page-hero="users"]::before {
+  top: -9.7rem !important;
+  right: 12% !important;
+}
+
+html body [data-tadeon-page-hero="tools"]::before {
+  top: -7.6rem !important;
+  right: -3rem !important;
+}
+
+html body [data-tadeon-page-hero="offline"]::before {
+  top: -10rem !important;
+  right: 16% !important;
+  border-style: dashed !important;
+}
+
+html body [data-tadeon-page-hero="offline"]::after {
+  border-style: dashed !important;
+}
+
+/* Nexus is the native reference. Match the same geometry and optical center
+   while keeping its own background and existing orbit animation untouched. */
+html body .tadeon-route-nexus .tadeon-nexus-identity {
+  display: flex !important;
+  align-items: center !important;
+  gap: 1rem !important;
+}
+
+html body .tadeon-route-nexus .tadeon-nexus-identity__mark {
+  display: grid !important;
+  width: 3rem !important;
+  height: 3rem !important;
+  flex: 0 0 3rem !important;
+  place-items: center !important;
+  border: 1px solid rgb(79 110 93 / 48%) !important;
+  border-radius: 50% !important;
+  color: rgb(79 110 93) !important;
+  background:
+    radial-gradient(circle at 36% 28%, rgb(255 255 255 / 7%), transparent 35%),
+    radial-gradient(circle at center, rgb(79 110 93 / 12%), rgb(9 12 16 / 90%) 70%) !important;
+  box-shadow:
+    0 0 0 .42rem rgb(79 110 93 / 5%),
+    0 0 0 .82rem rgb(113 107 123 / 2.2%),
+    0 16px 38px -23px rgb(79 110 93 / 72%),
+    inset 0 1px rgb(255 255 255 / 9%),
+    inset 0 0 0 .32rem rgb(79 110 93 / 4%) !important;
+}
+
+html body .tadeon-route-nexus .tadeon-nexus-identity__mark > svg {
+  display: block !important;
+  width: 1.4rem !important;
+  height: 1.4rem !important;
+  margin: 0 !important;
+  color: rgb(79 110 93) !important;
+  stroke: currentColor !important;
+  stroke-width: 1.65 !important;
+  transform: none !important;
+  filter: drop-shadow(0 0 9px rgb(79 110 93 / 34%)) !important;
+}
+
+html body .tadeon-route-nexus .tadeon-nexus-identity .tadeon-eyebrow,
+html body .tadeon-route-nexus .tadeon-nexus-identity h1 {
+  color: rgb(79 110 93) !important;
+}
+
+html body .tadeon-route-nexus .tadeon-nexus-identity h1 {
+  font-size: 1.5rem !important;
+  line-height: 1.2 !important;
+  font-weight: 600 !important;
+}
+
+/* Dashboard remains a different composition. Remove only the extra Home
+   medallion. The authored Tadeon BrandMark inside Arquivo de continuidade is
+   not touched here. */
 html body .tadeon-dashboard-hero::before {
   display: none !important;
   content: none !important;
 }
 
-/* Mesa: there must be no detached hero medallion. Reuse the exact legacy icon
-   slot beside "Mesa Nexus" and repaint that SVG root as the canonical MapPinned
-   symbol used by navigation. The old BrandMark paths become transparent. */
+/* Mesa remains a different layout. Only replace the old BrandMark slot with a
+   real MapPinned component from the same Lucide source used by the menu. */
 html body .tadeon-tabletop-studio__header::before,
 html body .tadeon-tabletop-studio__brand::before {
   display: none !important;
   content: none !important;
 }
 
+html body .tadeon-tabletop-studio__header {
+  min-height: 0 !important;
+  height: auto !important;
+  padding-top: .75rem !important;
+  padding-bottom: .75rem !important;
+}
+
+html body .tadeon-tabletop-studio__header > .relative.z-10 {
+  min-height: 0 !important;
+  height: auto !important;
+  padding-left: 0 !important;
+  gap: .625rem !important;
+  align-items: center !important;
+}
+
+html body .tadeon-tabletop-studio__header > svg.pointer-events-none.absolute.inset-0 {
+  position: absolute !important;
+  z-index: 0 !important;
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  margin: 0 !important;
+}
+
+html body .tadeon-tabletop-studio__brand {
+  display: flex !important;
+  min-height: 0 !important;
+  margin-right: .5rem !important;
+  padding-left: 0 !important;
+  align-items: center !important;
+  gap: .65rem !important;
+}
+
 html body .tadeon-tabletop-studio__brand > svg:first-child {
-  display: block !important;
-  visibility: visible !important;
+  display: none !important;
+  visibility: hidden !important;
+  width: 0 !important;
+  height: 0 !important;
+  flex: 0 0 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+html body .tadeon-tabletop-brand-mark-host {
+  position: relative !important;
+  z-index: 2 !important;
+  display: grid !important;
   width: 2.5rem !important;
   height: 2.5rem !important;
   flex: 0 0 2.5rem !important;
-  margin: 0 !important;
-  padding: 0 !important;
-  overflow: visible !important;
+  place-items: center !important;
   border: 1px solid rgb(84 123 148 / 52%) !important;
   border-radius: 50% !important;
-  color: transparent !important;
+  color: rgb(84 123 148) !important;
   background:
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23547b94' stroke-width='1.65' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M18 8c0 3.613-3.869 7.429-5.393 8.795a1 1 0 0 1-1.214 0C9.87 15.429 6 11.613 6 8a6 6 0 0 1 12 0Z'/%3E%3Ccircle cx='12' cy='8' r='2'/%3E%3Cpath d='m8.714 14.5-5 2.5a1 1 0 0 0-.714.92v2.66a1 1 0 0 0 1.447.894L9 19.197l6 3 4.553-2.277A1 1 0 0 0 20 19.025v-2.61a1 1 0 0 0-.553-.894L15.5 13.547'/%3E%3Cpath d='M9 19.197V14.5'/%3E%3Cpath d='M15 22.197V15.5'/%3E%3C/svg%3E") 50% 50% / 1.22rem 1.22rem no-repeat,
     radial-gradient(circle at 36% 28%, rgb(255 255 255 / 7%), transparent 35%),
     radial-gradient(circle at center, rgb(84 123 148 / 12%), rgb(9 12 16 / 90%) 70%) !important;
   box-shadow:
@@ -41,22 +306,69 @@ html body .tadeon-tabletop-studio__brand > svg:first-child {
     inset 0 1px rgb(255 255 255 / 9%),
     inset 0 0 0 .28rem rgb(84 123 148 / 4%) !important;
   filter: drop-shadow(0 0 9px rgb(84 123 148 / 30%)) !important;
+  pointer-events: none !important;
 }
 
-html body .tadeon-tabletop-studio__brand > svg:first-child > * {
-  opacity: 0 !important;
-}
-
-/* Backup & Diagnostico: use the same canonical Wrench silhouette as the sidebar
-   icon, with the same stroke weight as the other hero glyphs. */
-html body .tadeon-route-tools > .tadeon-page-hero::before {
+html body .tadeon-tabletop-brand-mark-icon {
   display: block !important;
-  background-color: rgb(9 12 16 / 90%) !important;
-  background-image:
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%237a8187' stroke-width='1.65' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.121 2.121 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94z'/%3E%3C/svg%3E"),
-    radial-gradient(circle at 36% 28%, rgb(255 255 255 / 7%), transparent 35%),
-    radial-gradient(circle at center, rgb(122 129 135 / 11%), rgb(9 12 16 / 90%) 70%) !important;
-  background-position: 50% 50%, 50% 50%, 50% 50% !important;
-  background-repeat: no-repeat !important;
-  background-size: 1.5rem 1.5rem, 100% 100%, 100% 100% !important;
+  width: 1.2rem !important;
+  height: 1.2rem !important;
+  margin: 0 !important;
+  color: rgb(84 123 148) !important;
+  stroke: currentColor !important;
+  stroke-width: 1.65 !important;
+  transform: none !important;
+}
+
+@media (min-width: 768px) {
+  html body [data-tadeon-page-hero] h1,
+  html body .tadeon-route-nexus .tadeon-nexus-identity h1 {
+    font-size: 1.875rem !important;
+  }
+}
+
+@media (max-width: 767px) {
+  html body [data-tadeon-page-hero] {
+    min-height: 6.5rem !important;
+    padding: .9rem .9rem .9rem 4.75rem !important;
+  }
+
+  html body [data-tadeon-page-hero] > .tadeon-page-hero-mark-host {
+    left: .95rem !important;
+    width: 2.75rem !important;
+    height: 2.75rem !important;
+  }
+
+  html body [data-tadeon-page-hero] .tadeon-page-hero-mark-icon {
+    width: 1.3rem !important;
+    height: 1.3rem !important;
+  }
+
+  html body [data-tadeon-page-hero]::before {
+    top: -7rem !important;
+    right: -4rem !important;
+    width: 14rem !important;
+    height: 14rem !important;
+    box-shadow:
+      0 0 0 1.35rem rgb(var(--canonical-hero-rgb) / 2.8%),
+      0 0 0 3rem rgb(var(--canonical-hero-secondary-rgb) / 1.9%) !important;
+  }
+
+  html body [data-tadeon-page-hero]::after {
+    right: 12% !important;
+    bottom: -5.4rem !important;
+    width: 9.5rem !important;
+    height: 9.5rem !important;
+  }
+
+  html body .tadeon-route-nexus .tadeon-nexus-identity__mark {
+    width: 2.75rem !important;
+    height: 2.75rem !important;
+    flex-basis: 2.75rem !important;
+  }
+
+  html body .tadeon-route-nexus .tadeon-nexus-identity__mark > svg {
+    width: 1.3rem !important;
+    height: 1.3rem !important;
+  }
 }
