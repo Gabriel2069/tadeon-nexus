@@ -1,16 +1,11 @@
 import { createPortal } from "react-dom";
 import { useEffect, useState, type ComponentType, type SVGProps } from "react";
 import { useRouterState } from "@tanstack/react-router";
-import {
-  CloudOff,
-  Lightbulb,
-  MapPinned,
-  Users,
-} from "lucide-react";
+import { CloudOff, MapPinned, Users } from "lucide-react";
 import { BrandMark } from "@/components/brand-mark";
 import { BackupSigil } from "@/components/section-symbols";
 
-type HeroKind = "master" | "users" | "tools" | "offline";
+type HeroKind = "users" | "tools" | "offline";
 type HeroIcon = ComponentType<SVGProps<SVGSVGElement>>;
 
 type HeroConfig = {
@@ -27,13 +22,6 @@ type PortalSpec = {
 };
 
 function heroConfigForPath(pathname: string): HeroConfig | null {
-  if (pathname.startsWith("/master-panel")) {
-    return {
-      kind: "master",
-      icon: Lightbulb,
-      selector: "#tadeon-main .tadeon-master-commandbar",
-    };
-  }
   if (pathname.startsWith("/manage-users")) {
     return {
       kind: "users",
@@ -147,12 +135,15 @@ export function PageHeroParityBridge() {
           });
         }
 
-        const desktopFocusToolbar = document.querySelector<HTMLElement>(
-          ".tadeon-desktop-toolbar",
+        // Keep the desktop mark inside the authored identity block instead of
+        // inserting another sibling into the toolbar. This preserves the shell's
+        // action alignment and centers the Tadeon mark against the two text rows.
+        const desktopFocusIdentity = document.querySelector<HTMLElement>(
+          ".tadeon-desktop-toolbar > .min-w-0",
         );
-        if (desktopFocusToolbar) {
+        if (desktopFocusIdentity) {
           const host = ensureHost(
-            desktopFocusToolbar,
+            desktopFocusIdentity,
             "tadeon-tabletop-focus-brand-host",
           );
           next.push({
