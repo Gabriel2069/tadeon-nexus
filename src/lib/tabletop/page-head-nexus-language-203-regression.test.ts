@@ -51,6 +51,7 @@ describe("page head canonical layout", () => {
     const css = read("src/styles/hero-icons-final-212.css");
     expect(css).toContain(".tadeon-dashboard-hero::before");
     expect(bridge).toContain('selector: "#tadeon-main .tadeon-tabletop-studio__brand"');
+    expect(bridge).toContain('"tadeon-tabletop-brand-mark-host",\n        "after-first"');
     expect(css).toContain(".tadeon-tabletop-brand-mark-host");
     expect(css).toContain(".tadeon-tabletop-studio__brand > svg:first-child");
     expect(css).toContain("flex: 0 0 0 !important");
