@@ -35,13 +35,13 @@ describe("final navigation and search polish 196", () => {
 
   it("uses native Dialog centering on desktop and visualViewport only on compact screens", () => {
     const search = source("src/components/global-search.tsx");
-    const command = source("src/components/ui/command.tsx");
+    const dialog = source("src/components/ui/dialog.tsx");
     const css = source("src/styles/final-nav-search-polish-196.css");
 
     expect(search).toContain("window.visualViewport");
     expect(search).toContain('contentClassName="tadeon-global-search-dialog"');
-    expect(command).toContain("fixed left-[50%] top-[50%]");
-    expect(command).toContain("translate-x-[-50%] translate-y-[-50%]");
+    expect(dialog).toContain("fixed left-[50%] top-[50%]");
+    expect(dialog).toContain("translate-x-[-50%] translate-y-[-50%]");
     expect(css).toContain("@media (max-width: 767px)");
     expect(css).toContain("--tadeon-search-vv-height");
     expect(css).toContain("transform: none !important");
