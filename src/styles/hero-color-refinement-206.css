@@ -1,0 +1,164 @@
+/* #206: color authority for the six non-Nexus main heads.
+   O Nexus remains untouched. This layer only corrects section identity colors
+   and visual density; it adds no animation, transition, handler or behavior. */
+
+:is(
+  .tadeon-dashboard-hero,
+  .tadeon-tabletop-studio__header,
+  .tadeon-master-commandbar,
+  .tadeon-route-users > .tadeon-page-hero,
+  .tadeon-route-tools > .tadeon-page-hero,
+  .tadeon-route-offline > .tadeon-page-hero
+) {
+  --hero-accent: rgb(var(--archive-hero-rgb));
+  --hero-accent-soft: rgb(var(--archive-hero-rgb) / 72%);
+  --hero-accent-muted: rgb(var(--archive-hero-rgb) / 44%);
+  border-color: rgb(var(--archive-hero-rgb) / 30%) !important;
+}
+
+/* Make the authored text hierarchy use the page identity instead of inherited
+   Nexus/veil green. Body copy remains neutral for readability. */
+:is(
+  .tadeon-dashboard-hero,
+  .tadeon-tabletop-studio__header,
+  .tadeon-master-commandbar,
+  .tadeon-route-users > .tadeon-page-hero,
+  .tadeon-route-tools > .tadeon-page-hero,
+  .tadeon-route-offline > .tadeon-page-hero
+) :is(.tadeon-eyebrow, h1, h2, .font-cinzel) {
+  color: var(--hero-accent) !important;
+}
+
+:is(
+  .tadeon-dashboard-hero,
+  .tadeon-tabletop-studio__header,
+  .tadeon-master-commandbar,
+  .tadeon-route-users > .tadeon-page-hero,
+  .tadeon-route-tools > .tadeon-page-hero,
+  .tadeon-route-offline > .tadeon-page-hero
+) :is(.tadeon-mono, small, [class*="status"]) {
+  border-color: rgb(var(--archive-hero-rgb) / 24%) !important;
+}
+
+:is(
+  .tadeon-dashboard-hero,
+  .tadeon-tabletop-studio__header,
+  .tadeon-master-commandbar,
+  .tadeon-route-users > .tadeon-page-hero,
+  .tadeon-route-tools > .tadeon-page-hero,
+  .tadeon-route-offline > .tadeon-page-hero
+)::after {
+  border-color: rgb(var(--archive-hero-rgb) / 32%) !important;
+}
+
+:is(
+  .tadeon-dashboard-hero::before,
+  .tadeon-tabletop-studio__header::before,
+  .tadeon-route-users > .tadeon-page-hero::before,
+  .tadeon-route-tools > .tadeon-page-hero::before,
+  .tadeon-route-offline > .tadeon-page-hero::before,
+  .tadeon-master-commandbar__glow
+) {
+  border-color: rgb(var(--archive-hero-rgb) / 52%) !important;
+  box-shadow:
+    0 0 0 .5rem rgb(var(--archive-hero-rgb) / 5%),
+    0 0 0 .96rem rgb(var(--archive-hero-secondary-rgb) / 2.4%),
+    0 18px 42px -23px rgb(var(--archive-hero-rgb) / 76%),
+    inset 0 1px rgb(255 255 255 / 9%),
+    inset 0 0 0 .38rem rgb(var(--archive-hero-rgb) / 6%) !important;
+}
+
+/* Dashboard: deliberately richer than the sibling heads. It keeps the same
+   language as Nexus but layers a second warm orbit, offset glows and a stronger
+   illuminated edge so the landing page feels like the archive's grand foyer. */
+.tadeon-dashboard-hero {
+  border-color: rgb(217 215 164 / 38%) !important;
+  background:
+    radial-gradient(circle at 18% -18%, rgb(217 215 164 / 19%) 0 2.5rem, transparent 2.7rem 6.2rem, rgb(183 129 77 / 8%) 6.35rem 6.5rem, transparent 6.65rem),
+    radial-gradient(circle at 78% -30%, rgb(217 215 164 / 18%) 0 3.4rem, transparent 3.55rem 7.8rem, rgb(217 215 164 / 10%) 7.92rem 8.1rem, transparent 8.25rem),
+    radial-gradient(circle at 92% 116%, transparent 0 4.1rem, rgb(183 129 77 / 16%) 4.22rem 4.42rem, transparent 4.58rem 8.2rem, rgb(217 215 164 / 6%) 8.34rem 8.52rem, transparent 8.68rem),
+    radial-gradient(circle at 42% 132%, rgb(116 36 45 / 7%), transparent 17rem),
+    radial-gradient(circle at 8% 12%, rgb(217 215 164 / 13%), transparent 15rem),
+    linear-gradient(128deg, rgb(255 255 255 / 5.5%), transparent 39%),
+    linear-gradient(145deg, rgb(21 22 24 / 98%), rgb(8 10 13 / 98%)) !important;
+  box-shadow:
+    0 34px 88px -58px rgb(0 0 0 / 100%),
+    0 24px 68px -46px rgb(217 215 164 / 38%),
+    0 12px 44px -38px rgb(183 129 77 / 32%),
+    inset 0 1px rgb(255 255 255 / 6%),
+    inset 0 0 0 1px rgb(217 215 164 / 5%) !important;
+}
+
+.tadeon-dashboard-hero::before {
+  width: 4rem !important;
+  height: 4rem !important;
+  border-color: rgb(217 215 164 / 64%) !important;
+  box-shadow:
+    0 0 0 .52rem rgb(217 215 164 / 6%),
+    0 0 0 1rem rgb(183 129 77 / 4%),
+    0 0 0 1.52rem rgb(217 215 164 / 2%),
+    0 20px 48px -22px rgb(217 215 164 / 84%),
+    inset 0 1px rgb(255 255 255 / 12%),
+    inset 0 0 0 .38rem rgb(217 215 164 / 7%) !important;
+}
+
+.tadeon-dashboard-hero::after {
+  top: -10.4rem !important;
+  right: 6% !important;
+  width: 21.5rem !important;
+  height: 21.5rem !important;
+  border-color: rgb(217 215 164 / 36%) !important;
+  background:
+    radial-gradient(circle at center, transparent 43%, rgb(217 215 164 / 5%) 44% 47%, transparent 48% 63%, rgb(183 129 77 / 4%) 64% 65%, transparent 66%) !important;
+  box-shadow:
+    0 0 0 2.2rem rgb(217 215 164 / 4.2%),
+    0 0 0 4.8rem rgb(183 129 77 / 3.2%),
+    0 0 0 7.2rem rgb(217 215 164 / 1.7%),
+    0 0 88px -32px rgb(217 215 164 / 58%) !important;
+}
+
+/* Mesa: the inverse approach. Preserve the blue identity but keep the studio
+   chrome quiet so map content remains dominant. */
+.tadeon-tabletop-studio__header {
+  border-color: rgb(84 123 148 / 20%) !important;
+  background:
+    radial-gradient(circle at 81% -38%, rgb(84 123 148 / 8%) 0 2.7rem, transparent 2.85rem 6.4rem, rgb(84 123 148 / 4%) 6.5rem 6.62rem, transparent 6.75rem),
+    radial-gradient(circle at 96% 120%, transparent 0 4rem, rgb(79 110 93 / 6%) 4.1rem 4.22rem, transparent 4.35rem 7.5rem),
+    linear-gradient(138deg, rgb(255 255 255 / 2.8%), transparent 42%),
+    linear-gradient(145deg, rgb(16 20 24 / 96%), rgb(8 11 15 / 96%)) !important;
+  box-shadow:
+    0 24px 58px -52px rgb(0 0 0 / 100%),
+    0 15px 44px -42px rgb(84 123 148 / 24%),
+    inset 0 1px rgb(255 255 255 / 3.5%) !important;
+}
+
+.tadeon-tabletop-studio__header::before {
+  border-color: rgb(84 123 148 / 42%) !important;
+  box-shadow:
+    0 0 0 .42rem rgb(84 123 148 / 3.2%),
+    0 13px 34px -25px rgb(84 123 148 / 54%),
+    inset 0 1px rgb(255 255 255 / 7%) !important;
+}
+
+.tadeon-tabletop-studio__header::after {
+  top: -9.7rem !important;
+  right: 14% !important;
+  width: 18rem !important;
+  height: 18rem !important;
+  border-color: rgb(84 123 148 / 17%) !important;
+  background: radial-gradient(circle at center, transparent 47%, rgb(84 123 148 / 2.3%) 48% 50%, transparent 51%) !important;
+  box-shadow:
+    0 0 0 1.8rem rgb(84 123 148 / 2.3%),
+    0 0 0 4rem rgb(79 110 93 / 1.5%),
+    0 0 54px -38px rgb(84 123 148 / 30%) !important;
+  opacity: .72 !important;
+}
+
+/* Route-specific text accents: explicit values stop older global green rules
+   from winning the cascade. */
+.tadeon-dashboard-hero :is(.tadeon-eyebrow, h1, h2, .font-cinzel) { color: rgb(217 215 164) !important; }
+.tadeon-tabletop-studio__header :is(.tadeon-eyebrow, h1, h2, .font-cinzel) { color: rgb(84 123 148) !important; }
+.tadeon-master-commandbar :is(.tadeon-eyebrow, h1, h2, .font-cinzel) { color: rgb(116 36 45) !important; }
+.tadeon-route-users > .tadeon-page-hero :is(.tadeon-eyebrow, h1, h2, .font-cinzel) { color: rgb(183 129 77) !important; }
+.tadeon-route-tools > .tadeon-page-hero :is(.tadeon-eyebrow, h1, h2, .font-cinzel) { color: rgb(122 129 135) !important; }
+.tadeon-route-offline > .tadeon-page-hero :is(.tadeon-eyebrow, h1, h2, .font-cinzel) { color: rgb(113 107 123) !important; }
