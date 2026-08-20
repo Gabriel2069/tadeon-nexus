@@ -7,7 +7,14 @@ function setPx(root: HTMLElement, name: string, value: number) {
 
 function isTabletViewport() {
   const width = window.visualViewport?.width ?? window.innerWidth;
-  return width >= 600 && width <= 1180;
+  const shortestScreenSide = Math.min(window.screen.width, window.screen.height);
+  const touchCapable =
+    navigator.maxTouchPoints > 0 || window.matchMedia("(pointer: coarse)").matches;
+
+  // Não usa apenas a largura atual: iPhones em landscape continuam com o lado
+  // curto de tela abaixo de 600px, enquanto iPads grandes chegam a 1194/1366px
+  // na orientação horizontal. Assim preservamos o mobile já validado.
+  return width >= 600 && width <= 1440 && shortestScreenSide >= 600 && touchCapable;
 }
 
 export function VisualViewportPopupBridge() {
@@ -20,10 +27,9 @@ export function VisualViewportPopupBridge() {
     const sync = () => {
       frame = 0;
 
-      // O celular volta a usar integralmente o comportamento nativo/Radix que
-      // já funcionava antes desta intervenção. A ponte só existe no tablet.
       if (!isTabletViewport()) {
         delete root.dataset.tadeonKeyboardOpen;
+        delete root.dataset.tadeonTabletPopup;
         root.style.removeProperty("--tadeon-vv-left");
         root.style.removeProperty("--tadeon-vv-top");
         root.style.removeProperty("--tadeon-vv-width");
@@ -35,17 +41,14 @@ export function VisualViewportPopupBridge() {
         return;
       }
 
+      root.dataset.tadeonTabletPopup = "true";
       const viewport = window.visualViewport;
       const left = viewport?.offsetLeft ?? 0;
       const top = viewport?.offsetTop ?? 0;
       const width = viewport?.width ?? window.innerWidth;
       const height = viewport?.height ?? window.innerHeight;
       const scale = viewport?.scale ?? 1;
-
-      // No iPad, a redução da visualViewport é a fonte mais estável para o
-      // teclado. Não reposicionamos elementos em scroll/focus/mutation: apenas
-      // publicamos uma geometria única quando a viewport realmente muda.
-      const keyboard = Math.max(0, window.innerHeight - height);
+      const keyboard = Math.max(0, window.innerHeight - height - top);
       const keyboardOpen = keyboard > 96;
 
       setPx(root, "--tadeon-vv-left", left);
@@ -64,12 +67,12 @@ export function VisualViewportPopupBridge() {
       frame = window.requestAnimationFrame(sync);
     };
 
-    // Intencionalmente sem MutationObserver, scroll, focusin/focusout ou
-    // correção pós-render. Esses eventos faziam o bridge disputar posição com
-    // Radix/Safari e geravam o sobe-desce observado no iPad.
+    // Sem MutationObserver/focus correction: Radix continua dono do anchor. O
+    // scroll da visualViewport só atualiza offsetLeft/Top do iPad em zoom/teclado.
     window.addEventListener("resize", schedule, { passive: true });
     window.addEventListener("orientationchange", schedule, { passive: true });
     window.visualViewport?.addEventListener("resize", schedule, { passive: true });
+    window.visualViewport?.addEventListener("scroll", schedule, { passive: true });
     schedule();
 
     return () => {
@@ -77,7 +80,9 @@ export function VisualViewportPopupBridge() {
       window.removeEventListener("resize", schedule);
       window.removeEventListener("orientationchange", schedule);
       window.visualViewport?.removeEventListener("resize", schedule);
+      window.visualViewport?.removeEventListener("scroll", schedule);
       delete root.dataset.tadeonKeyboardOpen;
+      delete root.dataset.tadeonTabletPopup;
     };
   }, []);
 
