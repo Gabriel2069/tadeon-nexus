@@ -9,6 +9,17 @@ html:has(.tadeon-tabletop-studio) {
   --tadeon-tabletop-stage-fixed-right: .75rem;
 }
 
+/* O contêiner externo não recorta mais chrome/painéis. O recorte fica no mapa. */
+.tadeon-tabletop-studio,
+.tadeon-tabletop-workbench {
+  overflow: visible !important;
+}
+
+.tadeon-tabletop-stage,
+.tadeon-tabletop-canvas-host {
+  overflow: clip !important;
+}
+
 .tadeon-tabletop-progressive-dock {
   bottom: calc(max(.8rem, env(safe-area-inset-bottom)) + var(--tadeon-tabletop-app-bottom)) !important;
 }
@@ -55,10 +66,6 @@ html:has(.tadeon-tabletop-studio) {
   right: var(--tadeon-tabletop-stage-fixed-right) !important;
   left: auto !important;
   max-width: min(42rem, calc(100vw - var(--tadeon-tabletop-stage-fixed-left) - var(--tadeon-tabletop-stage-fixed-right) - 1rem)) !important;
-}
-
-.tadeon-tabletop-workbench {
-  overflow: visible !important;
 }
 
 .tadeon-tabletop-panel {
