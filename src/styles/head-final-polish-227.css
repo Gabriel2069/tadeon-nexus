@@ -1,0 +1,185 @@
+/* #227 — pente-fino micro dos Heads após estabilização visual.
+   Não redefine paletas nem identidades. Corrige ritmo, legibilidade, camadas e
+   responsividade, mantendo Nexus/Usuários como referências e Dashboard/Mesa com
+   suas anatomias próprias. */
+
+/* Conteúdo funcional sempre acima dos campos decorativos. */
+html body :is(
+  .tadeon-dashboard-hero,
+  .tadeon-tabletop-studio__header,
+  .tadeon-master-commandbar,
+  .tadeon-page-hero[data-tadeon-page-hero]
+) > :not(.tadeon-page-hero-mark-host) {
+  position: relative;
+  z-index: 2;
+}
+
+html body :is(
+  .tadeon-tabletop-studio__header,
+  .tadeon-master-commandbar,
+  .tadeon-page-hero[data-tadeon-page-hero]
+)::before,
+html body :is(
+  .tadeon-tabletop-studio__header,
+  .tadeon-master-commandbar,
+  .tadeon-page-hero[data-tadeon-page-hero]
+)::after {
+  pointer-events: none !important;
+}
+
+/* Utilitários: mesmo ritmo de leitura sem homogeneizar os desenhos. */
+html body .tadeon-page-hero[data-tadeon-page-hero="users"],
+html body .tadeon-page-hero[data-tadeon-page-hero="tools"],
+html body .tadeon-page-hero[data-tadeon-page-hero="offline"] {
+  min-height: clamp(8.25rem, 11vw, 10.25rem) !important;
+}
+
+html body .tadeon-page-hero[data-tadeon-page-hero="users"] h1,
+html body .tadeon-page-hero[data-tadeon-page-hero="tools"] h1,
+html body .tadeon-page-hero[data-tadeon-page-hero="offline"] h1,
+html body .tadeon-master-commandbar h1 {
+  text-wrap: balance;
+}
+
+/* Offline: os estados funcionam definitivamente como eyebrow de status. */
+html body .tadeon-shell[data-section="Consulta offline"]
+  .tadeon-page-hero[data-tadeon-page-hero="offline"] > div:first-of-type > div:first-child {
+  padding-top: 1.14rem !important;
+}
+
+html body .tadeon-shell[data-section="Consulta offline"]
+  .tadeon-page-hero[data-tadeon-page-hero="offline"] > div:first-of-type > div:first-child > .mb-3 {
+  top: .02rem !important;
+  align-items: center !important;
+  gap: .28rem !important;
+}
+
+html body .tadeon-shell[data-section="Consulta offline"]
+  .tadeon-page-hero[data-tadeon-page-hero="offline"] > div:first-of-type > div:first-child > .mb-3 [data-slot="badge"] {
+  min-height: 1.08rem !important;
+  padding: .035rem .29rem !important;
+  border-radius: .34rem !important;
+  font-size: .55rem !important;
+  font-weight: 650 !important;
+  line-height: .82rem !important;
+  letter-spacing: .045em !important;
+}
+
+html body .tadeon-shell[data-section="Consulta offline"]
+  .tadeon-page-hero[data-tadeon-page-hero="offline"] > div:first-of-type > div:first-child > .mb-3 [data-slot="badge"] svg {
+  width: .66rem !important;
+  height: .66rem !important;
+  margin-right: .16rem !important;
+}
+
+/* Backup/Offline: microdetalhes permanecem perceptíveis, mas não competem com o título. */
+html body .tadeon-shell[data-section="Saúde do arquivo"]
+  .tadeon-page-hero[data-tadeon-page-hero="tools"]::after,
+html body .tadeon-shell[data-section="Consulta offline"]
+  .tadeon-page-hero[data-tadeon-page-hero="offline"]::after {
+  mix-blend-mode: screen;
+}
+
+/* Painel: mantém o campo rico sem deixar o astrolábio dominar o texto. */
+html body .tadeon-shell[data-section="Painel do Mestre"] .tadeon-master-commandbar {
+  isolation: isolate !important;
+}
+
+html body .tadeon-shell[data-section="Painel do Mestre"] .tadeon-master-commandbar::before,
+html body .tadeon-shell[data-section="Painel do Mestre"] .tadeon-master-commandbar::after {
+  z-index: 0 !important;
+}
+
+html body .tadeon-shell[data-section="Painel do Mestre"] .tadeon-master-commandbar__glow {
+  z-index: 3 !important;
+}
+
+/* Mesa: grade rica, mas leitura das ações permanece prioritária. */
+html body .tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-studio__header {
+  isolation: isolate !important;
+}
+
+html body .tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-studio__header::before,
+html body .tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-studio__header::after {
+  z-index: 0 !important;
+}
+
+html body .tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-studio__brand {
+  position: relative;
+  z-index: 3;
+}
+
+/* Tablet: reduz apenas contraste/alcance dos ornamentos, não sua identidade. */
+@media (min-width: 640px) and (max-width: 1023px) {
+  html body .tadeon-page-hero[data-tadeon-page-hero="users"],
+  html body .tadeon-page-hero[data-tadeon-page-hero="tools"],
+  html body .tadeon-page-hero[data-tadeon-page-hero="offline"] {
+    min-height: 8.35rem !important;
+  }
+
+  html body .tadeon-shell[data-section="Saúde do arquivo"]
+    .tadeon-page-hero[data-tadeon-page-hero="tools"]::after,
+  html body .tadeon-shell[data-section="Consulta offline"]
+    .tadeon-page-hero[data-tadeon-page-hero="offline"]::after,
+  html body .tadeon-shell[data-section="Painel do Mestre"] .tadeon-master-commandbar::before {
+    filter: saturate(.92) brightness(.96) !important;
+  }
+}
+
+/* Mobile: compacta o ritmo vertical e preserva uma zona limpa ao redor do texto. */
+@media (max-width: 639px) {
+  html body .tadeon-page-hero[data-tadeon-page-hero="users"],
+  html body .tadeon-page-hero[data-tadeon-page-hero="tools"],
+  html body .tadeon-page-hero[data-tadeon-page-hero="offline"] {
+    min-height: 0 !important;
+  }
+
+  html body .tadeon-shell[data-section="Consulta offline"]
+    .tadeon-page-hero[data-tadeon-page-hero="offline"] > div:first-of-type > div:first-child {
+    padding-top: 1.05rem !important;
+  }
+
+  html body .tadeon-shell[data-section="Consulta offline"]
+    .tadeon-page-hero[data-tadeon-page-hero="offline"] > div:first-of-type > div:first-child > .mb-3 [data-slot="badge"] {
+    min-height: 1rem !important;
+    padding: .02rem .25rem !important;
+    font-size: .515rem !important;
+    line-height: .78rem !important;
+  }
+
+  html body .tadeon-shell[data-section="Consulta offline"]
+    .tadeon-page-hero[data-tadeon-page-hero="offline"] > div:first-of-type > div:first-child > .mb-3 [data-slot="badge"] svg {
+    width: .61rem !important;
+    height: .61rem !important;
+  }
+
+  html body .tadeon-shell[data-section="Saúde do arquivo"]
+    .tadeon-page-hero[data-tadeon-page-hero="tools"]::after,
+  html body .tadeon-shell[data-section="Consulta offline"]
+    .tadeon-page-hero[data-tadeon-page-hero="offline"]::after,
+  html body .tadeon-shell[data-section="Painel do Mestre"] .tadeon-master-commandbar::before,
+  html body .tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-studio__header::before {
+    mix-blend-mode: normal;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html body :is(
+    .tadeon-dashboard-hero,
+    .tadeon-tabletop-studio__header,
+    .tadeon-master-commandbar,
+    .tadeon-page-hero[data-tadeon-page-hero]
+  ),
+  html body :is(
+    .tadeon-tabletop-studio__header,
+    .tadeon-master-commandbar,
+    .tadeon-page-hero[data-tadeon-page-hero]
+  )::before,
+  html body :is(
+    .tadeon-tabletop-studio__header,
+    .tadeon-master-commandbar,
+    .tadeon-page-hero[data-tadeon-page-hero]
+  )::after {
+    animation: none !important;
+  }
+}
