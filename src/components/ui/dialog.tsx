@@ -46,26 +46,24 @@ const DialogContent = React.forwardRef<
 >(({ className, children, ...props }, ref) => (
   <DialogPortal>
     <DialogOverlay />
-    <div data-slot="dialog-viewport">
-      <DialogPrimitive.Content
-        ref={ref}
-        data-slot="dialog-content"
-        className={cn(
-          "fixed left-[50%] top-[50%] z-50 grid max-h-[calc(100dvh_-_1rem)] w-[calc(100%_-_1rem)] max-w-lg translate-x-[-50%] translate-y-[-50%] gap-4 overflow-y-auto rounded-[1.15rem_.45rem_1.15rem_.45rem] border border-primary/15 bg-background/96 p-5 shadow-[0_32px_90px_-28px_rgba(0,0,0,.96),inset_0_1px_0_rgba(255,255,255,.045)] backdrop-blur-xl duration-200 ease-[var(--ease-out)] data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 sm:max-h-[calc(100dvh_-_2rem)] sm:w-[calc(100%_-_2rem)] sm:p-6",
-          className,
-        )}
-        {...props}
+    <DialogPrimitive.Content
+      ref={ref}
+      data-slot="dialog-content"
+      className={cn(
+        "fixed left-[50%] top-[50%] z-50 grid max-h-[calc(100dvh_-_1rem)] w-[calc(100%_-_1rem)] max-w-lg translate-x-[-50%] translate-y-[-50%] gap-4 overflow-y-auto rounded-[1.15rem_.45rem_1.15rem_.45rem] border border-primary/15 bg-background/96 p-5 shadow-[0_32px_90px_-28px_rgba(0,0,0,.96),inset_0_1px_0_rgba(255,255,255,.045)] backdrop-blur-xl duration-200 ease-[var(--ease-out)] data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 sm:max-h-[calc(100dvh_-_2rem)] sm:w-[calc(100%_-_2rem)] sm:p-6",
+        className,
+      )}
+      {...props}
+    >
+      {children}
+      <DialogPrimitive.Close
+        data-slot="dialog-close"
+        className="absolute right-3 top-3 grid h-10 w-10 cursor-pointer place-items-center rounded-[0.7rem] border border-transparent text-muted-foreground transition-[color,background-color,border-color,transform] duration-150 ease-[var(--ease-out)] hover:border-border hover:bg-accent hover:text-foreground active:scale-[.97] focus:outline-none focus:ring-2 focus:ring-ring/60 focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent sm:right-4 sm:top-4"
       >
-        {children}
-        <DialogPrimitive.Close
-          data-slot="dialog-close"
-          className="absolute right-3 top-3 grid h-10 w-10 cursor-pointer place-items-center rounded-[0.7rem] border border-transparent text-muted-foreground transition-[color,background-color,border-color,transform] duration-150 ease-[var(--ease-out)] hover:border-border hover:bg-accent hover:text-foreground active:scale-[.97] focus:outline-none focus:ring-2 focus:ring-ring/60 focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent sm:right-4 sm:top-4"
-        >
-          <X className="h-4 w-4" />
-          <span className="sr-only">Fechar</span>
-        </DialogPrimitive.Close>
-      </DialogPrimitive.Content>
-    </div>
+        <X className="h-4 w-4" />
+        <span className="sr-only">Fechar</span>
+      </DialogPrimitive.Close>
+    </DialogPrimitive.Content>
   </DialogPortal>
 ));
 DialogContent.displayName = DialogPrimitive.Content.displayName;
