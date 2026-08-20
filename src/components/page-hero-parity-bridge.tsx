@@ -19,6 +19,7 @@ import "@/styles/tab-accent-propagation-228.css";
 import "@/styles/secondary-tab-accent-propagation-230.css";
 import "@/styles/subtle-motion-pass-231.css";
 import "@/styles/dashboard-hero-motion-depth-232.css";
+import "@/styles/experimental-round-hero-symbols-233.css";
 
 type HeroKind = Extract<AppSectionSymbol, "users" | "tools" | "offline">;
 type IconKind = HeroKind | "tabletop" | "brand";
