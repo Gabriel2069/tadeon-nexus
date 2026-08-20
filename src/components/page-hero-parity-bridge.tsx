@@ -7,6 +7,7 @@ import {
   type AppSectionSymbol,
 } from "@/components/section-symbols";
 import "@/styles/head-parity-final-214.css";
+import "@/styles/head-tab-parity-217.css";
 
 type HeroKind = Extract<AppSectionSymbol, "users" | "tools" | "offline">;
 type IconKind = HeroKind | "tabletop" | "brand";
@@ -128,7 +129,7 @@ export function PageHeroParityBridge() {
         });
       }
 
-      /* Mesa interna: mantém somente o MapPinned azul no estúdio. */
+      /* Mesa interna: mantém somente o símbolo real da aba no estúdio. */
       if (pathname.startsWith("/tabletop")) {
         const studioBrand = document.querySelector<HTMLElement>(
           "#tadeon-main .tadeon-tabletop-studio__brand",
