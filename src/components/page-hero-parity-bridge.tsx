@@ -7,6 +7,7 @@ import {
   type AppSectionSymbol,
 } from "@/components/section-symbols";
 import "@/styles/head-parity-final-214.css";
+import "@/styles/head-parity-lock-215.css";
 
 type HeroKind = Extract<AppSectionSymbol, "users" | "tools" | "offline">;
 type IconKind = HeroKind | "tabletop" | "brand";
@@ -103,8 +104,7 @@ export function PageHeroParityBridge() {
       clearLegacyFocusHosts();
       const next: PortalSpec[] = [];
 
-      /* Área em foco: o símbolo é SEMPRE o BrandMark do Tadeon.
-         A seção muda somente a cor via CSS. */
+      /* Área em foco: SEMPRE BrandMark do Tadeon. A rota muda apenas a cor. */
       const mobileFocusIdentity = document.querySelector<HTMLElement>(
         ".tadeon-mobile-header__identity",
       );
@@ -129,8 +129,7 @@ export function PageHeroParityBridge() {
         });
       }
 
-      /* Mesa interna: mantém somente o MapPinned azul no estúdio e não deixa a
-         BrandMark bege original reaparecer à esquerda. */
+      /* Mesa interna: mantém somente o MapPinned azul no estúdio. */
       if (pathname.startsWith("/tabletop")) {
         const studioBrand = document.querySelector<HTMLElement>(
           "#tadeon-main .tadeon-tabletop-studio__brand",
