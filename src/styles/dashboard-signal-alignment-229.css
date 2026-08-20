@@ -1,0 +1,40 @@
+/* #229 — Dashboard: ícones dos três sinais centralizados no bloco textual. */
+html body .tadeon-dashboard-signal {
+  display: grid !important;
+  grid-template-columns: auto minmax(0, 1fr) !important;
+  align-items: center !important;
+  column-gap: .7rem !important;
+  min-height: 3.35rem !important;
+}
+
+html body .tadeon-dashboard-signal > svg {
+  align-self: center !important;
+  justify-self: center !important;
+  margin: 0 !important;
+  transform: none !important;
+}
+
+html body .tadeon-dashboard-signal > div {
+  display: grid !important;
+  min-width: 0 !important;
+  align-content: center !important;
+  row-gap: .08rem !important;
+}
+
+html body .tadeon-dashboard-signal > div > p {
+  margin: 0 !important;
+}
+
+@media (max-width: 639px) {
+  html body .tadeon-dashboard-signal {
+    grid-template-columns: auto minmax(0, 1fr) !important;
+    align-items: center !important;
+    column-gap: .42rem !important;
+    min-height: 3.1rem !important;
+    padding-inline: .12rem !important;
+  }
+
+  html body .tadeon-dashboard-signal > svg {
+    align-self: center !important;
+  }
+}
