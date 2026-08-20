@@ -1,12 +1,15 @@
 import { createPortal } from "react-dom";
 import { useEffect, useState } from "react";
 import { useRouterState } from "@tanstack/react-router";
-import { CloudOff, MapPinned, Users } from "lucide-react";
 import { BrandMark } from "@/components/brand-mark";
-import { BackupSigil } from "@/components/section-symbols";
+import {
+  SectionSymbol,
+  type AppSectionSymbol,
+} from "@/components/section-symbols";
+import "@/styles/head-parity-final-213.css";
 
-type HeroKind = "users" | "tools" | "offline";
-type IconKind = HeroKind | "tabletop" | "brand";
+type HeroKind = Extract<AppSectionSymbol, "users" | "tools" | "offline">;
+type IconKind = AppSectionSymbol | "brand";
 
 type HeroConfig = {
   kind: HeroKind;
@@ -42,12 +45,20 @@ function heroConfigForPath(pathname: string): HeroConfig | null {
   return null;
 }
 
+function focusIconForPath(pathname: string): IconKind {
+  if (pathname.startsWith("/sheet/")) return "brand";
+  if (pathname.startsWith("/nexus-tools")) return "tools";
+  if (pathname.startsWith("/nexus")) return "nexus";
+  if (pathname.startsWith("/tabletop")) return "tabletop";
+  if (pathname.startsWith("/master-panel")) return "master";
+  if (pathname.startsWith("/manage-users")) return "users";
+  if (pathname.startsWith("/offline")) return "offline";
+  return "dashboard";
+}
+
 function renderIcon(icon: IconKind, className: string) {
-  if (icon === "users") return <Users className={className} />;
-  if (icon === "tools") return <BackupSigil className={className} />;
-  if (icon === "offline") return <CloudOff className={className} />;
-  if (icon === "tabletop") return <MapPinned className={className} />;
-  return <BrandMark className={className} />;
+  if (icon === "brand") return <BrandMark className={className} />;
+  return <SectionSymbol section={icon} className={className} />;
 }
 
 function ensureHost(container: HTMLElement, className: string) {
@@ -66,11 +77,9 @@ function clearStaleHeroes(active?: HTMLElement | null) {
   });
 }
 
-function clearTabletopHosts() {
+function clearLegacyFocusHosts() {
   document
-    .querySelectorAll<HTMLElement>(
-      ".tadeon-tabletop-focus-brand-host, .tadeon-tabletop-brand-mark-host",
-    )
+    .querySelectorAll<HTMLElement>(".tadeon-tabletop-focus-brand-host")
     .forEach((node) => node.remove());
 }
 
@@ -96,15 +105,41 @@ export function PageHeroParityBridge() {
 
   useEffect(() => {
     let frame: number | null = null;
+
     const commitPortals = (next: PortalSpec[]) => {
       setPortals((current) => (samePortals(current, next) ? current : next));
     };
 
     const sync = () => {
-      if (pathname.startsWith("/tabletop")) {
-        clearStaleHeroes();
-        const next: PortalSpec[] = [];
+      clearLegacyFocusHosts();
+      const next: PortalSpec[] = [];
+      const focusIcon = focusIconForPath(pathname);
 
+      const mobileFocusIdentity = document.querySelector<HTMLElement>(
+        ".tadeon-mobile-header__identity",
+      );
+      if (mobileFocusIdentity) {
+        next.push({
+          host: ensureHost(mobileFocusIdentity, "tadeon-focus-section-mark-host"),
+          key: "focus:mobile",
+          icon: focusIcon,
+          iconClassName: "tadeon-focus-section-mark-icon",
+        });
+      }
+
+      const desktopFocusIdentity = document.querySelector<HTMLElement>(
+        ".tadeon-desktop-toolbar > .min-w-0",
+      );
+      if (desktopFocusIdentity) {
+        next.push({
+          host: ensureHost(desktopFocusIdentity, "tadeon-focus-section-mark-host"),
+          key: "focus:desktop",
+          icon: focusIcon,
+          iconClassName: "tadeon-focus-section-mark-icon",
+        });
+      }
+
+      if (pathname.startsWith("/tabletop")) {
         const studioBrand = document.querySelector<HTMLElement>(
           "#tadeon-main .tadeon-tabletop-studio__brand",
         );
@@ -116,61 +151,26 @@ export function PageHeroParityBridge() {
             iconClassName: "tadeon-tabletop-brand-mark-icon",
           });
         }
-
-        const mobileFocusIdentity = document.querySelector<HTMLElement>(
-          ".tadeon-mobile-header__identity",
-        );
-        if (mobileFocusIdentity) {
-          next.push({
-            host: ensureHost(mobileFocusIdentity, "tadeon-tabletop-focus-brand-host"),
-            key: "tabletop:focus:mobile",
-            icon: "brand",
-            iconClassName: "tadeon-tabletop-focus-brand-icon",
-          });
-        }
-
-        // Keep the desktop mark inside the authored identity block. It spans the
-        // eyebrow and title rows instead of becoming a sibling that shifts actions.
-        const desktopFocusIdentity = document.querySelector<HTMLElement>(
-          ".tadeon-desktop-toolbar > .min-w-0",
-        );
-        if (desktopFocusIdentity) {
-          next.push({
-            host: ensureHost(desktopFocusIdentity, "tadeon-tabletop-focus-brand-host"),
-            key: "tabletop:focus:desktop",
-            icon: "brand",
-            iconClassName: "tadeon-tabletop-focus-brand-icon",
-          });
-        }
-
-        commitPortals(next);
-        return;
       }
 
-      clearTabletopHosts();
       const config = heroConfigForPath(pathname);
       if (!config) {
         clearStaleHeroes();
-        commitPortals([]);
-        return;
+      } else {
+        const container = document.querySelector<HTMLElement>(config.selector);
+        if (container) {
+          clearStaleHeroes(container);
+          container.dataset.tadeonPageHero = config.kind;
+          next.push({
+            host: ensureHost(container, "tadeon-page-hero-mark-host"),
+            key: `hero:${config.kind}`,
+            icon: config.kind,
+            iconClassName: "tadeon-page-hero-mark-icon",
+          });
+        }
       }
 
-      const container = document.querySelector<HTMLElement>(config.selector);
-      if (!container) {
-        commitPortals([]);
-        return;
-      }
-
-      clearStaleHeroes(container);
-      container.dataset.tadeonPageHero = config.kind;
-      commitPortals([
-        {
-          host: ensureHost(container, "tadeon-page-hero-mark-host"),
-          key: `hero:${config.kind}`,
-          icon: config.kind,
-          iconClassName: "tadeon-page-hero-mark-icon",
-        },
-      ]);
+      commitPortals(next);
     };
 
     const schedule = () => {
@@ -191,5 +191,11 @@ export function PageHeroParityBridge() {
     };
   }, [pathname]);
 
-  return <>{portals.map(({ host, key, icon, iconClassName }) => createPortal(renderIcon(icon, iconClassName), host, key))}</>;
+  return (
+    <>
+      {portals.map(({ host, key, icon, iconClassName }) =>
+        createPortal(renderIcon(icon, iconClassName), host, key),
+      )}
+    </>
+  );
 }
