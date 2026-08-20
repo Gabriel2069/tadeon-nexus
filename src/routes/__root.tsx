@@ -37,6 +37,7 @@ import { PwaRegistration } from "@/components/pwa-registration";
 import { ExperienceFinalPolishBridge } from "@/components/experience-final-polish-bridge";
 import { PageHeroParityBridge } from "@/components/page-hero-parity-bridge";
 import { RouteFavicon } from "@/components/route-favicon";
+import { VisualViewportPopupBridge } from "@/components/visual-viewport-popup-bridge";
 import { TabletopFinalInteractionBridge } from "@/components/tabletop/tabletop-final-interaction-bridge";
 import { useEffect } from "react";
 import { initializeClientErrorMonitor } from "@/lib/client-error-monitor";
@@ -174,6 +175,7 @@ function RootComponent() {
       <AuthProvider>
         <main><Outlet /></main>
         <RouteFavicon />
+        <VisualViewportPopupBridge />
         <ExperienceFinalPolishBridge />
         <PageHeroParityBridge />
         <TabletopFinalInteractionBridge />
