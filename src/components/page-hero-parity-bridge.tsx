@@ -71,6 +71,23 @@ function ensureHost(container: HTMLElement, className: string) {
   return host;
 }
 
+function lockDesktopFocusGeometry(container: HTMLElement) {
+  /* #212 still contains one Mesa-only 2.25rem column with !important. Inline
+     important values deliberately remove that last route-specific geometry so
+     every desktop/tablet focus identity uses the exact same coordinates. */
+  container.style.setProperty("display", "grid", "important");
+  container.style.setProperty(
+    "grid-template-columns",
+    "2.45rem minmax(0, 1fr)",
+    "important",
+  );
+  container.style.setProperty("grid-template-rows", "auto auto", "important");
+  container.style.setProperty("column-gap", ".85rem", "important");
+  container.style.setProperty("row-gap", ".08rem", "important");
+  container.style.setProperty("align-items", "center", "important");
+  container.style.setProperty("padding", "0", "important");
+}
+
 function clearStaleHeroes(active?: HTMLElement | null) {
   document.querySelectorAll<HTMLElement>("[data-tadeon-page-hero]").forEach((node) => {
     if (node !== active) delete node.dataset.tadeonPageHero;
@@ -131,6 +148,7 @@ export function PageHeroParityBridge() {
         ".tadeon-desktop-toolbar > .min-w-0",
       );
       if (desktopFocusIdentity) {
+        lockDesktopFocusGeometry(desktopFocusIdentity);
         next.push({
           host: ensureHost(desktopFocusIdentity, "tadeon-focus-section-mark-host"),
           key: "focus:desktop",
