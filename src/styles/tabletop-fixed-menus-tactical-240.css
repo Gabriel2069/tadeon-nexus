@@ -1,49 +1,18 @@
-/* #247 — todo o chrome da Mesa usa o retângulo VISÍVEL do mapa como autoridade.
-   O menu final do app é reservado pelo bridge; nenhum controle da Mesa pode
-   escapar desse quadro em desktop, tablet ou mobile. */
+/* #252 — autoridade final de posicionamento da Mesa.
+   O quadro visível do stage é o sistema de coordenadas de TODO o chrome da cena.
+   Nenhuma barra usa offsets independentes da viewport/página. */
 
 html:has(.tadeon-tabletop-studio) {
-  --tadeon-tabletop-stage-fixed-top: .75rem;
-  --tadeon-tabletop-stage-fixed-left: .75rem;
-  --tadeon-tabletop-stage-fixed-right: .75rem;
-  --tadeon-tabletop-stage-fixed-bottom: .75rem;
-  --tadeon-tabletop-stage-fixed-width: calc(100vw - 1.5rem);
-  --tadeon-tabletop-stage-fixed-height: calc(100dvh - 1.5rem);
-  --tadeon-tabletop-stage-fixed-center: 50vw;
+  --tadeon-tabletop-zone-gap: clamp(8px, 1.2vmin, 12px);
+  --tadeon-tabletop-zone-rail-w: 3.45rem;
   --tadeon-tabletop-toolbar-h: 0px;
   --tadeon-tabletop-reliability-h: 0px;
 }
 
-/* Laterais: começam exatamente no topo útil do mapa e nunca usam o topo da
-   viewport inteira como referência. */
-.tadeon-tabletop-canvas-rail,
-.tadeon-tabletop-tool-options {
-  position: fixed !important;
-  top: var(--tadeon-tabletop-stage-fixed-top) !important;
-  bottom: auto !important;
-  max-height: var(--tadeon-tabletop-stage-fixed-height) !important;
-  overflow: auto !important;
-  overscroll-behavior: contain;
-  transform: none !important;
-}
-
-.tadeon-tabletop-canvas-rail {
-  left: var(--tadeon-tabletop-stage-fixed-left) !important;
-  right: auto !important;
-  max-width: min(3.25rem, var(--tadeon-tabletop-stage-fixed-width)) !important;
-}
-
-.tadeon-tabletop-tool-options {
-  right: var(--tadeon-tabletop-stage-fixed-right) !important;
-  left: auto !important;
-  width: auto !important;
-  max-width: min(36rem, calc(var(--tadeon-tabletop-stage-fixed-width) - 4rem)) !important;
-}
-
-/* Todo chrome flutuante da cena pertence ao mapa, não ao documento. O Dock
-   progressivo também entra nessa autoridade para que sua versão compacta fique
-   fixa imediatamente acima da navegação final. */
-:where(
+html:has(.tadeon-tabletop-studio) :is(
+  .tadeon-tabletop-canvas-rail,
+  .tadeon-tabletop-tool-options,
+  .tadeon-tabletop-reliability-strip,
   .tadeon-tabletop-progressive-dock,
   .tadeon-tactical-dock,
   .tadeon-tabletop-selection-actions,
@@ -51,56 +20,134 @@ html:has(.tadeon-tabletop-studio) {
   .tadeon-placeables,
   .tadeon-semantic-transform,
   .tadeon-nexus-tabletop-locator,
-  .tadeon-tabletop-reliability-strip,
-  .tadeon-director-enhancement-bar,
+  .tadeon-creative-dock,
   .tadeon-tabletop-precision-editor,
-  .tadeon-creative-dock
+  .tadeon-director-enhancement-bar
 ) {
   position: fixed !important;
+  box-sizing: border-box !important;
 }
 
-/* Dock inferior principal: centralizado no mapa visível e imediatamente acima
-   do menu final do app, que já foi retirado de stage-fixed-bottom pelo bridge. */
-.tadeon-tabletop-progressive-dock {
-  z-index: 96 !important;
+/* TOPO */
+html:has(.tadeon-tabletop-studio) .tadeon-tabletop-reliability-strip {
+  z-index: 98 !important;
+  top: calc(var(--tadeon-tabletop-stage-fixed-top) + var(--tadeon-tabletop-zone-gap)) !important;
+  right: auto !important;
+  bottom: auto !important;
   left: var(--tadeon-tabletop-stage-fixed-center) !important;
-  right: auto !important;
-  bottom: var(--tadeon-tabletop-stage-fixed-bottom) !important;
   width: max-content !important;
-  max-width: min(56rem, var(--tadeon-tabletop-stage-fixed-width)) !important;
+  max-width: calc(
+    var(--tadeon-tabletop-stage-fixed-width) -
+    var(--tadeon-tabletop-zone-rail-w) -
+    5.25rem -
+    (var(--tadeon-tabletop-zone-gap) * 4)
+  ) !important;
   transform: translateX(-50%) !important;
-}
-
-/* Controle tático: compacto e sempre dentro do quadro. */
-.tadeon-tactical-dock {
-  z-index: 94 !important;
-  right: auto !important;
-  left: var(--tadeon-tabletop-stage-fixed-left) !important;
-  bottom: calc(
-    var(--tadeon-tabletop-stage-fixed-bottom) +
-    var(--tadeon-tabletop-progressive-h, 3.2rem) +
-    .45rem
-  ) !important;
-  width: max-content !important;
-  max-width: min(23rem, var(--tadeon-tabletop-stage-fixed-width)) !important;
-  max-height: min(
-    42dvh,
-    calc(var(--tadeon-tabletop-stage-fixed-height) - var(--tadeon-tabletop-progressive-h, 3.2rem) - .8rem)
-  ) !important;
-  min-height: 0 !important;
-  gap: .12rem !important;
-  padding: .2rem !important;
-  border-radius: .72rem !important;
-  transform: none !important;
+  transform-origin: center !important;
   overflow-x: auto !important;
-  overflow-y: auto !important;
-  overscroll-behavior: contain;
+  overflow-y: hidden !important;
+  overscroll-behavior-inline: contain;
   scrollbar-width: none;
 }
 
-.tadeon-tactical-dock::-webkit-scrollbar { display: none; }
+html:has(.tadeon-tabletop-studio) .tadeon-tabletop-reliability-strip::-webkit-scrollbar {
+  display: none;
+}
 
-.tadeon-tactical-dock :is(button, [role="button"]) {
+html:has(.tadeon-tabletop-studio) .tadeon-tabletop-canvas-rail {
+  z-index: 99 !important;
+  top: calc(var(--tadeon-tabletop-stage-fixed-top) + var(--tadeon-tabletop-zone-gap)) !important;
+  right: auto !important;
+  bottom: auto !important;
+  left: calc(var(--tadeon-tabletop-stage-fixed-left) + var(--tadeon-tabletop-zone-gap)) !important;
+  display: flex !important;
+  width: var(--tadeon-tabletop-zone-rail-w) !important;
+  max-width: var(--tadeon-tabletop-zone-rail-w) !important;
+  max-height: calc(
+    var(--tadeon-tabletop-stage-fixed-height) -
+    var(--tadeon-tabletop-progressive-h, 3.3rem) -
+    var(--tadeon-tabletop-tactical-h, 0px) -
+    (var(--tadeon-tabletop-zone-gap) * 4)
+  ) !important;
+  flex-direction: column !important;
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+  overscroll-behavior: contain;
+  transform: none !important;
+  scrollbar-width: none;
+}
+
+html:has(.tadeon-tabletop-studio) .tadeon-tabletop-canvas-rail::-webkit-scrollbar {
+  display: none;
+}
+
+html:has(.tadeon-tabletop-studio) .tadeon-tabletop-tool-options {
+  z-index: 99 !important;
+  top: calc(var(--tadeon-tabletop-stage-fixed-top) + var(--tadeon-tabletop-zone-gap)) !important;
+  right: calc(var(--tadeon-tabletop-stage-fixed-right) + var(--tadeon-tabletop-zone-gap)) !important;
+  bottom: auto !important;
+  left: auto !important;
+  width: max-content !important;
+  max-width: min(
+    34rem,
+    calc(var(--tadeon-tabletop-stage-fixed-width) - var(--tadeon-tabletop-zone-rail-w) - (var(--tadeon-tabletop-zone-gap) * 4))
+  ) !important;
+  max-height: min(46dvh, calc(var(--tadeon-tabletop-stage-fixed-height) - 1rem)) !important;
+  overflow: auto !important;
+  overscroll-behavior: contain;
+  transform: none !important;
+}
+
+/* BASE: Dock é a âncora; tático/seleção ficam sempre imediatamente acima. */
+html:has(.tadeon-tabletop-studio) .tadeon-tabletop-progressive-dock {
+  z-index: 102 !important;
+  top: auto !important;
+  right: auto !important;
+  bottom: calc(var(--tadeon-tabletop-stage-fixed-bottom) + var(--tadeon-tabletop-zone-gap)) !important;
+  left: var(--tadeon-tabletop-stage-fixed-center) !important;
+  display: flex !important;
+  width: max-content !important;
+  max-width: calc(var(--tadeon-tabletop-stage-fixed-width) - (var(--tadeon-tabletop-zone-gap) * 2)) !important;
+  align-items: stretch !important;
+  justify-content: center !important;
+  gap: .2rem !important;
+  overflow-x: auto !important;
+  overflow-y: hidden !important;
+  overscroll-behavior-inline: contain;
+  transform: translateX(-50%) !important;
+  transform-origin: center !important;
+  scrollbar-width: none;
+}
+
+html:has(.tadeon-tabletop-studio) .tadeon-tabletop-progressive-dock::-webkit-scrollbar {
+  display: none;
+}
+
+html:has(.tadeon-tabletop-studio) .tadeon-tactical-dock {
+  z-index: 101 !important;
+  top: auto !important;
+  right: auto !important;
+  bottom: calc(
+    var(--tadeon-tabletop-stage-fixed-bottom) +
+    var(--tadeon-tabletop-progressive-h, 3.3rem) +
+    (var(--tadeon-tabletop-zone-gap) * 2)
+  ) !important;
+  left: calc(var(--tadeon-tabletop-stage-fixed-left) + var(--tadeon-tabletop-zone-gap)) !important;
+  width: max-content !important;
+  max-width: min(24rem, calc(var(--tadeon-tabletop-stage-fixed-width) - (var(--tadeon-tabletop-zone-gap) * 2))) !important;
+  max-height: min(38dvh, calc(var(--tadeon-tabletop-stage-fixed-height) * .42)) !important;
+  min-height: 0 !important;
+  overflow: auto !important;
+  overscroll-behavior: contain;
+  transform: none !important;
+  scrollbar-width: none;
+}
+
+html:has(.tadeon-tabletop-studio) .tadeon-tactical-dock::-webkit-scrollbar {
+  display: none;
+}
+
+html:has(.tadeon-tabletop-studio) .tadeon-tactical-dock :is(button, [role="button"]) {
   min-width: 1.9rem !important;
   min-height: 1.9rem !important;
   height: 1.9rem !important;
@@ -111,105 +158,82 @@ html:has(.tadeon-tabletop-studio) {
   line-height: 1 !important;
 }
 
-.tadeon-tactical-dock :is(button, [role="button"]) svg {
+html:has(.tadeon-tabletop-studio) .tadeon-tactical-dock :is(button, [role="button"]) svg {
   width: .72rem !important;
   height: .72rem !important;
   flex: 0 0 .72rem !important;
 }
 
-.tadeon-tactical-dock :is(small, kbd) {
-  font-size: .48rem !important;
-}
-
-.tadeon-tactical-dock__power-list {
-  max-width: min(18rem, var(--tadeon-tabletop-stage-fixed-width)) !important;
+html:has(.tadeon-tabletop-studio) .tadeon-tactical-dock__power-list {
+  position: fixed !important;
+  z-index: 108 !important;
+  max-width: min(18rem, calc(var(--tadeon-tabletop-stage-fixed-width) - 1rem)) !important;
   max-height: min(42dvh, calc(var(--tadeon-tabletop-stage-fixed-height) - 1rem)) !important;
-  overflow: auto !important;
-}
-
-.tadeon-tabletop-selection-actions {
-  right: var(--tadeon-tabletop-stage-fixed-right) !important;
-  left: auto !important;
-  bottom: calc(
-    var(--tadeon-tabletop-stage-fixed-bottom) +
-    var(--tadeon-tabletop-progressive-h, 3.2rem) +
-    .45rem
-  ) !important;
-  max-width: min(30rem, var(--tadeon-tabletop-stage-fixed-width)) !important;
-  transform: none !important;
-}
-
-/* Utilidades laterais também seguem as bordas internas do mapa. */
-.tadeon-tabletop-now {
-  left: var(--tadeon-tabletop-stage-fixed-left) !important;
-  right: auto !important;
-  bottom: var(--tadeon-tabletop-stage-fixed-bottom) !important;
-  max-width: var(--tadeon-tabletop-stage-fixed-width) !important;
-}
-
-.tadeon-placeables {
-  right: var(--tadeon-tabletop-stage-fixed-right) !important;
-  left: auto !important;
-  bottom: var(--tadeon-tabletop-stage-fixed-bottom) !important;
-  max-width: var(--tadeon-tabletop-stage-fixed-width) !important;
-}
-
-.tadeon-semantic-transform {
-  right: var(--tadeon-tabletop-stage-fixed-right) !important;
-  left: auto !important;
-  bottom: calc(
-    var(--tadeon-tabletop-stage-fixed-bottom) +
-    var(--tadeon-tabletop-placeables-h, 0px) + .45rem
-  ) !important;
-  max-width: var(--tadeon-tabletop-stage-fixed-width) !important;
-}
-
-.tadeon-nexus-tabletop-locator {
-  right: var(--tadeon-tabletop-stage-fixed-right) !important;
-  left: auto !important;
-  bottom: calc(
-    var(--tadeon-tabletop-stage-fixed-bottom) +
-    var(--tadeon-tabletop-placeables-h, 0px) +
-    var(--tadeon-tabletop-semantic-h, 0px) + .9rem
-  ) !important;
-  max-width: var(--tadeon-tabletop-stage-fixed-width) !important;
-}
-
-.tadeon-creative-dock:not([data-open="true"][data-tadeon-dock-dragged="true"]) {
-  right: var(--tadeon-tabletop-stage-fixed-right) !important;
-  left: auto !important;
-  bottom: var(--tadeon-tabletop-stage-fixed-bottom) !important;
-  max-width: var(--tadeon-tabletop-stage-fixed-width) !important;
-}
-
-.tadeon-tabletop-precision-editor,
-.tadeon-director-enhancement-bar {
-  right: var(--tadeon-tabletop-stage-fixed-right) !important;
-  left: auto !important;
-  max-width: min(30rem, var(--tadeon-tabletop-stage-fixed-width)) !important;
-  max-height: var(--tadeon-tabletop-stage-fixed-height) !important;
   overflow: auto !important;
   overscroll-behavior: contain;
 }
 
-/* Tablet real (inclui iPads largos em landscape): os itens do Dock recebem
-   células iguais. O antigo space-between distribuía as bordas dos botões, não
-   seus centros, portanto textos maiores deixavam os ícones visualmente tortos. */
-html[data-tadeon-tabletop-tablet="true"] .tadeon-tabletop-progressive-dock {
-  right: auto !important;
-  left: var(--tadeon-tabletop-stage-fixed-center) !important;
-  width: min(36rem, var(--tadeon-tabletop-stage-fixed-width)) !important;
-  max-width: var(--tadeon-tabletop-stage-fixed-width) !important;
-  justify-content: stretch !important;
-  gap: .16rem !important;
-  overflow-x: auto !important;
-  overscroll-behavior-inline: contain;
-  scrollbar-width: none;
-  transform: translateX(-50%) !important;
+html:has(.tadeon-tabletop-studio) .tadeon-tabletop-selection-actions {
+  z-index: 101 !important;
+  top: auto !important;
+  right: calc(var(--tadeon-tabletop-stage-fixed-right) + var(--tadeon-tabletop-zone-gap)) !important;
+  bottom: calc(
+    var(--tadeon-tabletop-stage-fixed-bottom) +
+    var(--tadeon-tabletop-progressive-h, 3.3rem) +
+    (var(--tadeon-tabletop-zone-gap) * 2)
+  ) !important;
+  left: auto !important;
+  width: max-content !important;
+  max-width: min(28rem, calc(var(--tadeon-tabletop-stage-fixed-width) - (var(--tadeon-tabletop-zone-gap) * 2))) !important;
+  overflow: auto !important;
+  overscroll-behavior: contain;
+  transform: none !important;
 }
 
-html[data-tadeon-tabletop-tablet="true"] .tadeon-tabletop-progressive-dock::-webkit-scrollbar {
-  display: none;
+/* Utilidades inferiores nunca descem por baixo do Dock. */
+html:has(.tadeon-tabletop-studio) :is(
+  .tadeon-tabletop-now,
+  .tadeon-placeables,
+  .tadeon-semantic-transform,
+  .tadeon-nexus-tabletop-locator,
+  .tadeon-creative-dock:not([data-open="true"][data-tadeon-dock-dragged="true"])
+) {
+  bottom: calc(
+    var(--tadeon-tabletop-stage-fixed-bottom) +
+    var(--tadeon-tabletop-progressive-h, 3.3rem) +
+    (var(--tadeon-tabletop-zone-gap) * 2)
+  ) !important;
+  max-width: calc(var(--tadeon-tabletop-stage-fixed-width) - (var(--tadeon-tabletop-zone-gap) * 2)) !important;
+}
+
+html:has(.tadeon-tabletop-studio) .tadeon-tabletop-now {
+  left: calc(var(--tadeon-tabletop-stage-fixed-left) + var(--tadeon-tabletop-zone-gap)) !important;
+  right: auto !important;
+}
+
+html:has(.tadeon-tabletop-studio) :is(.tadeon-placeables, .tadeon-semantic-transform, .tadeon-nexus-tabletop-locator) {
+  right: calc(var(--tadeon-tabletop-stage-fixed-right) + var(--tadeon-tabletop-zone-gap)) !important;
+  left: auto !important;
+}
+
+html:has(.tadeon-tabletop-studio) .tadeon-creative-dock:not([data-open="true"][data-tadeon-dock-dragged="true"]) {
+  right: calc(var(--tadeon-tabletop-stage-fixed-right) + var(--tadeon-tabletop-zone-gap)) !important;
+  left: auto !important;
+}
+
+html:has(.tadeon-tabletop-studio) :is(.tadeon-tabletop-precision-editor, .tadeon-director-enhancement-bar) {
+  right: calc(var(--tadeon-tabletop-stage-fixed-right) + var(--tadeon-tabletop-zone-gap)) !important;
+  left: auto !important;
+  max-width: min(30rem, calc(var(--tadeon-tabletop-stage-fixed-width) - 1rem)) !important;
+  max-height: calc(var(--tadeon-tabletop-stage-fixed-height) - 1rem) !important;
+  overflow: auto !important;
+  overscroll-behavior: contain;
+}
+
+/* TABLET */
+html[data-tadeon-tabletop-tablet="true"] .tadeon-tabletop-progressive-dock {
+  width: min(43rem, calc(var(--tadeon-tabletop-stage-fixed-width) - (var(--tadeon-tabletop-zone-gap) * 2))) !important;
+  justify-content: stretch !important;
 }
 
 html[data-tadeon-tabletop-tablet="true"] .tadeon-tabletop-progressive-dock__modes {
@@ -221,78 +245,127 @@ html[data-tadeon-tabletop-tablet="true"] :is(
   .tadeon-tabletop-progressive-dock__command,
   .tadeon-tabletop-progressive-dock__modes > button
 ) {
+  min-width: 0 !important;
   flex: 1 1 0 !important;
-  min-width: 3rem !important;
   justify-content: center !important;
-  padding-inline: .4rem !important;
 }
 
-html[data-tadeon-tabletop-tablet="true"] .tadeon-tactical-dock {
-  left: var(--tadeon-tabletop-stage-fixed-left) !important;
-  right: auto !important;
-  width: auto !important;
-  max-width: min(19rem, var(--tadeon-tabletop-stage-fixed-width)) !important;
-  justify-content: flex-start !important;
-}
-
-html[data-tadeon-tabletop-tablet="true"] .tadeon-tabletop-selection-actions {
-  right: var(--tadeon-tabletop-stage-fixed-right) !important;
-  left: auto !important;
-  width: auto !important;
-  max-width: min(22rem, var(--tadeon-tabletop-stage-fixed-width)) !important;
-}
-
-html[data-tadeon-tabletop-tablet="true"] .tadeon-tabletop-tool-options {
-  max-width: min(30rem, calc(var(--tadeon-tabletop-stage-fixed-width) - 4rem)) !important;
-}
-
-@media (max-width: 800px) {
-  .tadeon-tabletop-progressive-dock {
-    width: min(100%, var(--tadeon-tabletop-stage-fixed-width)) !important;
-    max-width: var(--tadeon-tabletop-stage-fixed-width) !important;
+/* CELULAR: rail vertical completo, tático acima do Dock e Dock equidistante. */
+@media (max-width: 700px) {
+  html:has(.tadeon-tabletop-studio) {
+    --tadeon-tabletop-zone-gap: 8px;
+    --tadeon-tabletop-zone-rail-w: 3.55rem;
   }
 
-  .tadeon-tactical-dock {
-    bottom: calc(
-      var(--tadeon-tabletop-stage-fixed-bottom) +
-      var(--tadeon-tabletop-progressive-h, 3.2rem) + .38rem
+  html:has(.tadeon-tabletop-studio) .tadeon-tabletop-reliability-strip {
+    max-width: calc(
+      var(--tadeon-tabletop-stage-fixed-width) -
+      var(--tadeon-tabletop-zone-rail-w) -
+      3.5rem -
+      (var(--tadeon-tabletop-zone-gap) * 4)
     ) !important;
-    max-width: min(15.5rem, var(--tadeon-tabletop-stage-fixed-width)) !important;
   }
 
-  .tadeon-tactical-dock :is(button, [role="button"]) {
-    min-width: 1.78rem !important;
-    min-height: 1.78rem !important;
-    height: 1.78rem !important;
-    padding-inline: .31rem !important;
-    font-size: .54rem !important;
-  }
-
-  .tadeon-tabletop-selection-actions {
-    bottom: calc(
-      var(--tadeon-tabletop-stage-fixed-bottom) +
-      var(--tadeon-tabletop-progressive-h, 3.2rem) + .38rem
+  html:has(.tadeon-tabletop-studio) .tadeon-tabletop-canvas-rail {
+    top: calc(
+      var(--tadeon-tabletop-stage-fixed-top) +
+      var(--tadeon-tabletop-reliability-h, 0px) +
+      (var(--tadeon-tabletop-zone-gap) * 2)
     ) !important;
-    max-width: min(13rem, var(--tadeon-tabletop-stage-fixed-width)) !important;
+    max-height: calc(
+      var(--tadeon-tabletop-stage-fixed-height) -
+      var(--tadeon-tabletop-reliability-h, 0px) -
+      var(--tadeon-tabletop-progressive-h, 3.5rem) -
+      var(--tadeon-tabletop-tactical-h, 0px) -
+      (var(--tadeon-tabletop-zone-gap) * 6)
+    ) !important;
+    padding: .28rem !important;
+    gap: .22rem !important;
   }
 
-  .tadeon-tabletop-canvas-rail {
-    max-height: min(52dvh, var(--tadeon-tabletop-stage-fixed-height)) !important;
+  html:has(.tadeon-tabletop-studio) .tadeon-tabletop-canvas-rail__group-label {
+    display: none !important;
   }
 
-  .tadeon-tabletop-tool-options {
-    max-width: calc(var(--tadeon-tabletop-stage-fixed-width) - 3.8rem) !important;
-    max-height: min(42dvh, var(--tadeon-tabletop-stage-fixed-height)) !important;
+  html:has(.tadeon-tabletop-studio) .tadeon-tabletop-canvas-rail__divider {
+    display: block !important;
+    flex: 0 0 1px !important;
+  }
+
+  html:has(.tadeon-tabletop-studio) .tadeon-tabletop-canvas-rail :is(button, [role="button"]) {
+    display: flex !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    min-height: 2.65rem !important;
+    flex: 0 0 auto !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding-inline: .18rem !important;
+  }
+
+  html:has(.tadeon-tabletop-studio) .tadeon-tabletop-progressive-dock {
+    right: auto !important;
+    left: calc(var(--tadeon-tabletop-stage-fixed-left) + var(--tadeon-tabletop-zone-gap)) !important;
+    width: calc(var(--tadeon-tabletop-stage-fixed-width) - (var(--tadeon-tabletop-zone-gap) * 2)) !important;
+    max-width: none !important;
+    justify-content: stretch !important;
+    gap: .08rem !important;
+    transform: none !important;
+  }
+
+  html:has(.tadeon-tabletop-studio) .tadeon-tabletop-progressive-dock__modes {
+    display: contents !important;
+  }
+
+  html:has(.tadeon-tabletop-studio) :is(
+    .tadeon-tabletop-progressive-dock__button,
+    .tadeon-tabletop-progressive-dock__command,
+    .tadeon-tabletop-progressive-dock__modes > button
+  ) {
+    min-width: 0 !important;
+    flex: 1 1 0 !important;
+    justify-content: center !important;
+    gap: .18rem !important;
+    padding: .34rem .12rem !important;
+  }
+
+  html:has(.tadeon-tabletop-studio) :is(
+    .tadeon-tabletop-progressive-dock__button,
+    .tadeon-tabletop-progressive-dock__command,
+    .tadeon-tabletop-progressive-dock__modes > button
+  ) span {
+    max-width: 100% !important;
+    overflow: hidden !important;
+    font-size: .61rem !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+  }
+
+  html:has(.tadeon-tabletop-studio) .tadeon-tactical-dock {
+    right: auto !important;
+    left: calc(var(--tadeon-tabletop-stage-fixed-left) + var(--tadeon-tabletop-zone-gap)) !important;
+    width: min(20rem, calc(var(--tadeon-tabletop-stage-fixed-width) - (var(--tadeon-tabletop-zone-gap) * 2))) !important;
+    max-width: calc(var(--tadeon-tabletop-stage-fixed-width) - (var(--tadeon-tabletop-zone-gap) * 2)) !important;
+  }
+
+  html:has(.tadeon-tabletop-studio) .tadeon-tabletop-selection-actions {
+    right: calc(var(--tadeon-tabletop-stage-fixed-right) + var(--tadeon-tabletop-zone-gap)) !important;
+    max-width: min(12rem, calc(var(--tadeon-tabletop-stage-fixed-width) * .44)) !important;
+  }
+
+  html:has(.tadeon-tabletop-studio) .tadeon-tabletop-tool-options {
+    max-width: min(10rem, calc(var(--tadeon-tabletop-stage-fixed-width) * .34)) !important;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  :where(
+  html:has(.tadeon-tabletop-studio) :is(
+    .tadeon-tabletop-canvas-rail,
+    .tadeon-tabletop-tool-options,
+    .tadeon-tabletop-reliability-strip,
     .tadeon-tabletop-progressive-dock,
     .tadeon-tactical-dock,
-    .tadeon-tabletop-selection-actions,
-    .tadeon-tabletop-canvas-rail,
-    .tadeon-tabletop-tool-options
+    .tadeon-tabletop-selection-actions
   ) {
     transition: none !important;
   }
