@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import "@/styles/tabletop-floating-layout-236.css";
 import "@/styles/tabletop-floating-menu-shift-236.css";
 import "@/styles/tabletop-floating-layout-238.css";
+import "@/styles/tabletop-fixed-menus-tactical-240.css";
 
 const CORE_FLOATING_SELECTORS = [
   ".tadeon-tabletop-progressive-dock",
@@ -224,7 +225,6 @@ export function TabletopFloatingLayoutBridge() {
     });
     window.addEventListener("resize", schedule, { passive: true });
     window.addEventListener("orientationchange", schedule, { passive: true });
-    window.addEventListener("scroll", schedule, { passive: true, capture: true });
     window.visualViewport?.addEventListener("resize", schedule, { passive: true });
     window.visualViewport?.addEventListener("scroll", schedule, { passive: true });
     schedule();
@@ -235,7 +235,6 @@ export function TabletopFloatingLayoutBridge() {
       resizeObserver?.disconnect();
       window.removeEventListener("resize", schedule);
       window.removeEventListener("orientationchange", schedule);
-      window.removeEventListener("scroll", schedule, true);
       window.visualViewport?.removeEventListener("resize", schedule);
       window.visualViewport?.removeEventListener("scroll", schedule);
       delete root.dataset.tadeonTabletopUtility;
