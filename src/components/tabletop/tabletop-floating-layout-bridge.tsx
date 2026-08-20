@@ -52,13 +52,11 @@ function floatingSurfaces() {
   const surfaces = CORE_FLOATING_SELECTORS
     .map((selector) => document.querySelector<HTMLElement>(selector))
     .filter(visible);
-
   const utilitySurfaces = [
     activeSurface(".tadeon-tabletop-now", ".tadeon-tabletop-now__handle", ".tadeon-tabletop-now__panel"),
     activeSurface(".tadeon-placeables", ".tadeon-placeables__handle", ".tadeon-placeables__panel"),
     activeSurface(".tadeon-creative-dock", ".tadeon-creative-dock__handle", ".tadeon-creative-dock__panel"),
   ].filter(visible);
-
   return [...surfaces, ...utilitySurfaces];
 }
 
@@ -73,13 +71,15 @@ function edgeInsets(elements: HTMLElement[]) {
 
   for (const element of elements) {
     const rect = element.getBoundingClientRect();
+    const centerX = rect.left + rect.width / 2;
+    const centerY = rect.top + rect.height / 2;
     const isWide = rect.width > vw * 0.58;
     const isTall = rect.height > vh * 0.58;
 
-    if (rect.top <= vh * 0.28 && !isTall) top = Math.max(top, rect.bottom + margin);
-    if (rect.bottom >= vh * 0.72 && !isTall) bottom = Math.max(bottom, vh - rect.top + margin);
-    if (rect.left <= vw * 0.22 && !isWide) left = Math.max(left, rect.right + margin);
-    if (rect.right >= vw * 0.78 && !isWide) right = Math.max(right, vw - rect.left + margin);
+    if (centerY < vh * 0.3 && !isTall) top = Math.max(top, rect.bottom + margin);
+    if (centerY > vh * 0.7 && !isTall) bottom = Math.max(bottom, vh - rect.top + margin);
+    if (centerX < vw * 0.28 && !isWide) left = Math.max(left, rect.right + margin);
+    if (centerX > vw * 0.72 && !isWide) right = Math.max(right, vw - rect.left + margin);
   }
 
   return { top, right, bottom, left };
@@ -112,11 +112,9 @@ export function TabletopFloatingLayoutBridge() {
 
     const sync = () => {
       frame = 0;
-      const studio = document.querySelector<HTMLElement>(".tadeon-tabletop-studio");
-      if (!studio) return;
+      if (!document.querySelector(".tadeon-tabletop-studio")) return;
 
       for (const [selector, variable] of HEIGHT_VARIABLES) setPx(root, variable, heightFor(selector));
-
       const floating = floatingSurfaces();
       const insets = edgeInsets(floating);
       setPx(root, "--tadeon-tabletop-safe-top", insets.top);
@@ -138,7 +136,7 @@ export function TabletopFloatingLayoutBridge() {
       childList: true,
       subtree: true,
       attributes: true,
-      attributeFilter: ["class", "data-open", "data-mobile-open", "data-state", "style"],
+      attributeFilter: ["class", "data-open", "data-mobile-open", "data-state"],
     });
     window.addEventListener("resize", schedule, { passive: true });
     window.visualViewport?.addEventListener("resize", schedule, { passive: true });
