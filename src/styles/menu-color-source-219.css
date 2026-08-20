@@ -1,0 +1,114 @@
+/* #219 — fonte cromática única = item ativo do menu.
+   Não redefine a paleta das seções. Apenas faz os elementos internos consumirem
+   as variáveis já usadas pelo menu e elimina as fontes visuais duplicadas da Mesa. */
+
+/* Utilitários e Mestre: a cor primária do Head vem da mesma variável que pinta
+   o item ativo do menu lateral. As cores secundárias continuam pertencendo às
+   assinaturas visuais de cada página. */
+html body .tadeon-shell[data-section="Usuários"] [data-tadeon-page-hero="users"],
+html body .tadeon-shell[data-section="Saúde do arquivo"] [data-tadeon-page-hero="tools"],
+html body .tadeon-shell[data-section="Consulta offline"] [data-tadeon-page-hero="offline"],
+html body .tadeon-shell[data-section="Painel do Mestre"] .tadeon-master-commandbar {
+  --hero-rgb: var(--section-accent-rgb) !important;
+}
+
+/* O símbolo, títulos, borda, brilho e fundos dos Heads que usam --hero-rgb
+   passam, portanto, a acompanhar automaticamente a cor do menu. */
+html body .tadeon-shell:is(
+  [data-section="Usuários"],
+  [data-section="Saúde do arquivo"],
+  [data-section="Consulta offline"]
+) .tadeon-page-hero[data-tadeon-page-hero] > .tadeon-page-hero-mark-host,
+html body .tadeon-shell[data-section="Painel do Mestre"] .tadeon-master-commandbar__glow {
+  color: var(--section-accent) !important;
+  border-color: rgb(var(--section-accent-rgb) / 48%) !important;
+  background:
+    radial-gradient(circle at 34% 28%, rgb(255 255 255 / 7%), transparent 36%),
+    rgb(var(--section-accent-rgb) / 10%) !important;
+  box-shadow:
+    0 0 0 .34rem rgb(var(--section-accent-rgb) / 4%),
+    0 14px 34px -25px rgb(var(--section-accent-rgb) / 72%),
+    inset 0 1px rgb(255 255 255 / 8%) !important;
+}
+
+/* Mesa: TODO o Head interno consome o azul do item Mesa do menu por
+   --section-accent/--section-accent-rgb. Nenhuma paleta paralela. */
+html body .tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-studio__header {
+  --archive-hero-rgb: var(--section-accent-rgb) !important;
+  border-color: rgb(var(--section-accent-rgb) / 24%) !important;
+  background:
+    radial-gradient(circle at 81% -38%, rgb(var(--section-accent-rgb) / 8%) 0 2.7rem, transparent 2.85rem 6.4rem, rgb(var(--section-accent-rgb) / 4%) 6.5rem 6.62rem, transparent 6.75rem),
+    radial-gradient(circle at 96% 120%, transparent 0 4rem, rgb(79 110 93 / 7%) 4.1rem 4.24rem, transparent 4.38rem 7.5rem),
+    radial-gradient(circle at 9% 8%, rgb(var(--section-accent-rgb) / 7%), transparent 11rem),
+    linear-gradient(138deg, rgb(255 255 255 / 2.8%), transparent 42%),
+    linear-gradient(145deg, rgb(16 20 24 / 96%), rgb(8 11 15 / 96%)) !important;
+  box-shadow:
+    0 24px 58px -52px rgb(0 0 0 / 100%),
+    0 15px 44px -42px rgb(var(--section-accent-rgb) / 26%),
+    inset 0 1px rgb(255 255 255 / 3.5%) !important;
+}
+
+html body .tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-studio__header :is(
+  .tadeon-eyebrow,
+  h1,
+  h2,
+  .font-cinzel
+),
+html body .tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-studio__brand > .tadeon-tabletop-brand-mark-host,
+html body .tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-brand-mark-icon {
+  color: var(--section-accent) !important;
+}
+
+html body .tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-studio__brand > .tadeon-tabletop-brand-mark-host {
+  border-color: rgb(var(--section-accent-rgb) / 48%) !important;
+  background:
+    radial-gradient(circle at 34% 28%, rgb(255 255 255 / 7%), transparent 36%),
+    rgb(var(--section-accent-rgb) / 9%) !important;
+  box-shadow:
+    0 0 0 .38rem rgb(var(--section-accent-rgb) / 4%),
+    0 14px 34px -23px rgb(var(--section-accent-rgb) / 66%),
+    inset 0 1px rgb(255 255 255 / 8%) !important;
+}
+
+html body .tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-studio__header::before {
+  border-color: rgb(var(--section-accent-rgb) / 18%) !important;
+  background: radial-gradient(circle at center, transparent 47%, rgb(var(--section-accent-rgb) / 2.6%) 48% 50%, transparent 51%) !important;
+  background-image: radial-gradient(circle at center, transparent 47%, rgb(var(--section-accent-rgb) / 2.6%) 48% 50%, transparent 51%) !important;
+  box-shadow:
+    0 0 0 1.8rem rgb(var(--section-accent-rgb) / 2.5%),
+    0 0 0 4rem rgb(79 110 93 / 1.7%),
+    0 0 54px -38px rgb(var(--section-accent-rgb) / 32%) !important;
+}
+
+/* Mesa: uma única fonte de símbolo em cada Head.
+   - Área em foco: só o BrandMark injetado pelo bridge.
+   - Estúdio: só o MapPinned injetado pelo bridge.
+   O SVG authored/legado é removido visualmente sem reservar qualquer espaço. */
+html body .tadeon-shell[data-section="Mesa Nexus"] .tadeon-mobile-header__identity > svg,
+html body .tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-studio__brand > svg {
+  display: none !important;
+  visibility: hidden !important;
+  width: 0 !important;
+  height: 0 !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  flex: 0 0 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+html body .tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-studio__brand::before,
+html body .tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-studio__brand::after {
+  display: none !important;
+  content: none !important;
+}
+
+/* Se algum legado deixou mais de um host injetado, só o primeiro pode render. */
+html body .tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-studio__brand > .tadeon-tabletop-brand-mark-host ~ .tadeon-tabletop-brand-mark-host,
+html body .tadeon-shell[data-section="Mesa Nexus"] .tadeon-mobile-header__identity > .tadeon-focus-section-mark-host ~ .tadeon-focus-section-mark-host,
+html body .tadeon-shell[data-section="Mesa Nexus"] .tadeon-desktop-toolbar > .min-w-0 > .tadeon-focus-section-mark-host ~ .tadeon-focus-section-mark-host {
+  display: none !important;
+}
