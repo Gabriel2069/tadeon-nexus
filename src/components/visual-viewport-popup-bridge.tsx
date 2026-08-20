@@ -105,16 +105,16 @@ export function VisualViewportPopupBridge() {
       const focusedEditable = activeEditableInModal() !== null;
       const heightLoss = Math.max(0, layoutHeight - height);
       const keyboardThreshold = Math.max(72, layoutHeight * 0.08);
+      const viewportReduced = scale <= 1.05 && heightLoss > keyboardThreshold;
       const keyboardOpen =
-        focusedEditable &&
-        scale <= 1.05 &&
-        (heightLoss > keyboardThreshold || rawTop > 1);
+        focusedEditable && scale <= 1.05 && (viewportReduced || rawTop > 1);
       const zoomed = scale > 1.05;
 
-      // Com um campo do modal focado, offsetTop/Left pertence à visualViewport
-      // ativa e deve ser seguido. Sem foco/zoom, ignoramos offsets residuais que
-      // Safari/iOS pode manter depois de fechar o teclado.
-      const followVisualOffsets = focusedEditable || zoomed;
+      // Enquanto a visualViewport ainda está reduzida (inclusive durante o
+      // fechamento do teclado), seguimos seus offsets. Quando ela volta ao
+      // tamanho normal e não há foco/zoom, offsets residuais do Safari são
+      // ignorados para o modal não ficar deslocado.
+      const followVisualOffsets = focusedEditable || viewportReduced || zoomed;
       const left = followVisualOffsets ? rawLeft : 0;
       const top = followVisualOffsets ? rawTop : 0;
 
