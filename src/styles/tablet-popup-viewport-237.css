@@ -1,0 +1,71 @@
+/* #237 — Tablet/iPad: popups seguem a visual viewport real, inclusive com teclado. */
+:root {
+  --tadeon-vv-left: 0px;
+  --tadeon-vv-top: 0px;
+  --tadeon-vv-width: 100vw;
+  --tadeon-vv-height: 100dvh;
+  --tadeon-vv-center-x: 50vw;
+  --tadeon-vv-center-y: 50dvh;
+  --tadeon-vv-keyboard: 0px;
+}
+
+@media (min-width: 600px) and (max-width: 1180px) {
+  :where([data-slot="dialog-content"], [data-slot="alert-dialog-content"]) {
+    left: var(--tadeon-vv-center-x) !important;
+    top: var(--tadeon-vv-center-y) !important;
+    width: min(calc(var(--tadeon-vv-width) - 2rem), var(--tadeon-popup-max-width, 44rem)) !important;
+    max-width: calc(var(--tadeon-vv-width) - 2rem) !important;
+    max-height: calc(var(--tadeon-vv-height) - 2rem) !important;
+    overflow: auto !important;
+    overscroll-behavior: contain;
+  }
+
+  :where([data-slot="dialog-overlay"], [data-slot="alert-dialog-overlay"]) {
+    inset: var(--tadeon-vv-top) auto auto var(--tadeon-vv-left) !important;
+    width: var(--tadeon-vv-width) !important;
+    height: var(--tadeon-vv-height) !important;
+  }
+
+  [data-slot="popover-content"] {
+    max-width: calc(var(--tadeon-vv-width) - 1.5rem) !important;
+    max-height: min(var(--radix-popover-content-available-height, 38rem), calc(var(--tadeon-vv-height) - 1.5rem)) !important;
+    overflow: auto !important;
+    overscroll-behavior: contain;
+  }
+
+  :where([data-slot="command-list"], [data-slot="scroll-area-viewport"]) {
+    min-height: 0;
+    overscroll-behavior: contain;
+  }
+
+  html[data-tadeon-keyboard-open="true"] :where([data-slot="dialog-content"], [data-slot="alert-dialog-content"]) {
+    top: calc(var(--tadeon-vv-top) + .75rem) !important;
+    transform: translateX(-50%) !important;
+    max-height: calc(var(--tadeon-vv-height) - 1.5rem) !important;
+  }
+
+  html[data-tadeon-keyboard-open="true"] :where(
+    [data-slot="dialog-content"],
+    [data-slot="alert-dialog-content"],
+    [data-slot="popover-content"]
+  ) input:focus,
+  html[data-tadeon-keyboard-open="true"] :where(
+    [data-slot="dialog-content"],
+    [data-slot="alert-dialog-content"],
+    [data-slot="popover-content"]
+  ) textarea:focus {
+    scroll-margin-block: 5rem;
+  }
+}
+
+@media (max-width: 599px) {
+  html[data-tadeon-keyboard-open="true"] :where([data-slot="dialog-content"], [data-slot="alert-dialog-content"]) {
+    left: calc(var(--tadeon-vv-left) + var(--tadeon-vv-width) / 2) !important;
+    top: calc(var(--tadeon-vv-top) + .5rem) !important;
+    width: calc(var(--tadeon-vv-width) - 1rem) !important;
+    max-width: calc(var(--tadeon-vv-width) - 1rem) !important;
+    max-height: calc(var(--tadeon-vv-height) - 1rem) !important;
+    transform: translateX(-50%) !important;
+    overflow: auto !important;
+  }
+}
