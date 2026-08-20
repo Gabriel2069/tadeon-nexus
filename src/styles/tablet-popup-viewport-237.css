@@ -1,7 +1,8 @@
-/* #249 — Tablet/iPad: containment estrutural da visualViewport.
-   O conteúdo deixa de ser o elemento fixed responsável por perseguir offsets do
-   Safari. Um envelope fixed acompanha a área visível; o dialog fica relativo,
-   limitado pelo envelope e com rolagem interna. Mobile/desktop não são tocados. */
+/* #250 — Contrato universal de popups/modais.
+   Dialog e AlertDialog são sempre centralizados dentro da visualViewport real.
+   Quando o teclado reduz a área visível, o modal continua centralizado, limita
+   sua altura ao espaço restante e mantém rolagem interna. Popovers/menus
+   ancorados continuam sob responsabilidade do Radix, apenas com containment. */
 :root {
   --tadeon-vv-left: 0px;
   --tadeon-vv-top: 0px;
@@ -10,54 +11,50 @@
   --tadeon-vv-center-x: 50vw;
   --tadeon-vv-center-y: 50dvh;
   --tadeon-vv-keyboard: 0px;
-  --tadeon-popup-vv-gap-top: max(.75rem, env(safe-area-inset-top, 0px));
-  --tadeon-popup-vv-gap-right: max(.75rem, env(safe-area-inset-right, 0px));
-  --tadeon-popup-vv-gap-bottom: max(.75rem, env(safe-area-inset-bottom, 0px));
-  --tadeon-popup-vv-gap-left: max(.75rem, env(safe-area-inset-left, 0px));
+  --tadeon-popup-vv-gap-top: max(.6rem, env(safe-area-inset-top, 0px));
+  --tadeon-popup-vv-gap-right: max(.6rem, env(safe-area-inset-right, 0px));
+  --tadeon-popup-vv-gap-bottom: max(.6rem, env(safe-area-inset-bottom, 0px));
+  --tadeon-popup-vv-gap-left: max(.6rem, env(safe-area-inset-left, 0px));
 }
 
-/* O overlay cobre o layout viewport inteiro. Isso é deliberado: a visualViewport
-   é sempre um subconjunto dele, então não dependemos de offsetTop para o fundo. */
-html[data-tadeon-tablet-popup="true"] body [data-slot="dialog-overlay"],
-html[data-tadeon-tablet-popup="true"] body [data-slot="alert-dialog-overlay"] {
+html[data-tadeon-popup-viewport="true"] body [data-slot="dialog-overlay"],
+html[data-tadeon-popup-viewport="true"] body [data-slot="alert-dialog-overlay"] {
   position: fixed !important;
   inset: 0 !important;
   width: auto !important;
   height: auto !important;
 }
 
-/* Envelope estrutural inserido pelos componentes-base. Fora do dataset de
-   tablet ele é um div inerte e o comportamento antigo permanece intacto. */
-html[data-tadeon-tablet-popup="true"] body [data-slot="dialog-viewport"],
-html[data-tadeon-tablet-popup="true"] body [data-slot="alert-dialog-viewport"] {
+/* O wrapper é a única superfície responsável pela geometria da tela.
+   O conteúdo fica relativo a ele, o que elimina disputas entre top/left/bottom
+   de camadas antigas e mantém o mesmo comportamento em desktop, tablet e phone. */
+html[data-tadeon-popup-viewport="true"] body [data-slot="dialog-viewport"],
+html[data-tadeon-popup-viewport="true"] body [data-slot="alert-dialog-viewport"] {
   position: fixed !important;
   z-index: 50 !important;
-  top: var(--tadeon-vv-top) !important;
+  top: calc(var(--tadeon-vv-top) + var(--tadeon-popup-vv-gap-top)) !important;
   right: auto !important;
   bottom: auto !important;
-  left: var(--tadeon-vv-left) !important;
+  left: calc(var(--tadeon-vv-left) + var(--tadeon-popup-vv-gap-left)) !important;
   display: flex !important;
-  width: var(--tadeon-vv-width) !important;
-  height: var(--tadeon-vv-height) !important;
+  width: calc(
+    var(--tadeon-vv-width) - var(--tadeon-popup-vv-gap-left) - var(--tadeon-popup-vv-gap-right)
+  ) !important;
+  height: calc(
+    var(--tadeon-vv-height) - var(--tadeon-popup-vv-gap-top) - var(--tadeon-popup-vv-gap-bottom)
+  ) !important;
   min-width: 0 !important;
   min-height: 0 !important;
   box-sizing: border-box !important;
   align-items: center !important;
   justify-content: center !important;
-  padding:
-    var(--tadeon-popup-vv-gap-top)
-    var(--tadeon-popup-vv-gap-right)
-    var(--tadeon-popup-vv-gap-bottom)
-    var(--tadeon-popup-vv-gap-left) !important;
   overflow: hidden !important;
   overscroll-behavior: contain !important;
   pointer-events: none !important;
 }
 
-/* A especificidade inclui html + body para vencer regras antigas de
-   pointer:coarse/bottom-sheet sem alterar essas regras para telefones. */
-html[data-tadeon-tablet-popup="true"] body [data-slot="dialog-content"],
-html[data-tadeon-tablet-popup="true"] body [data-slot="alert-dialog-content"] {
+html[data-tadeon-popup-viewport="true"] body [data-slot="dialog-content"],
+html[data-tadeon-popup-viewport="true"] body [data-slot="alert-dialog-content"] {
   position: relative !important;
   inset: auto !important;
   top: auto !important;
@@ -65,9 +62,7 @@ html[data-tadeon-tablet-popup="true"] body [data-slot="alert-dialog-content"] {
   bottom: auto !important;
   left: auto !important;
   box-sizing: border-box !important;
-  width: min(100%, var(--tadeon-popup-max-width, 44rem)) !important;
   min-width: 0 !important;
-  max-width: 100% !important;
   min-height: 0 !important;
   max-height: 100% !important;
   margin: 0 !important;
@@ -75,51 +70,48 @@ html[data-tadeon-tablet-popup="true"] body [data-slot="alert-dialog-content"] {
   overflow-y: auto !important;
   overscroll-behavior: contain !important;
   -webkit-overflow-scrolling: touch;
+  scrollbar-gutter: stable;
+  scroll-padding-block: 4rem 1rem;
   transform: none !important;
   transform-origin: center !important;
   pointer-events: auto !important;
-  transition: opacity 160ms ease !important;
 }
 
-/* A Mesa tinha uma regra de pointer:coarse que transformava iPad em
-   bottom-sheet. O contrato tablet agora é estrutural e não depende de top/left. */
-html[data-tadeon-tablet-popup="true"] body:has(.tadeon-tabletop-studio) [data-slot="dialog-content"],
-html[data-tadeon-tablet-popup="true"] body:has(.tadeon-tabletop-studio) [data-slot="alert-dialog-content"] {
-  position: relative !important;
-  inset: auto !important;
-  top: auto !important;
-  right: auto !important;
-  bottom: auto !important;
-  left: auto !important;
-  width: min(100%, var(--tadeon-popup-max-width, 44rem)) !important;
-  max-width: 100% !important;
-  max-height: 100% !important;
-  border-radius: var(--radius, .75rem) !important;
-  transform: none !important;
+/* Em telas estreitas vencemos especificamente as antigas regras mobile que
+   impunham width:auto/bottom-sheet. Nos demais tamanhos, os max-width autorais
+   de cada modal continuam valendo normalmente. */
+@media (max-width: 640px) {
+  html[data-tadeon-popup-viewport="true"] body [data-slot="dialog-content"],
+  html[data-tadeon-popup-viewport="true"] body [data-slot="alert-dialog-content"] {
+    width: calc(100% - .25rem) !important;
+    max-width: 100% !important;
+  }
 }
 
-html[data-tadeon-tablet-popup="true"] body [data-slot="dialog-content"]:has(> [data-slot="command"]) {
-  width: min(100%, 42rem) !important;
-  max-width: 100% !important;
-  overflow: hidden !important;
-}
-
-html[data-tadeon-tablet-popup="true"] body [data-slot="dialog-content"] > *,
-html[data-tadeon-tablet-popup="true"] body [data-slot="dialog-content"] form,
-html[data-tadeon-tablet-popup="true"] body [data-slot="dialog-content"] form > *,
-html[data-tadeon-tablet-popup="true"] body [data-slot="dialog-content"] [data-slot="select-trigger"],
-html[data-tadeon-tablet-popup="true"] body [data-slot="alert-dialog-content"] > * {
+html[data-tadeon-popup-viewport="true"] body [data-slot="dialog-content"] > *,
+html[data-tadeon-popup-viewport="true"] body [data-slot="dialog-content"] form,
+html[data-tadeon-popup-viewport="true"] body [data-slot="dialog-content"] form > *,
+html[data-tadeon-popup-viewport="true"] body [data-slot="dialog-content"] [data-slot="select-trigger"],
+html[data-tadeon-popup-viewport="true"] body [data-slot="alert-dialog-content"] > * {
   box-sizing: border-box;
   min-width: 0 !important;
   max-width: 100% !important;
 }
 
-html[data-tadeon-tablet-popup="true"] body [data-slot="dialog-content"] :is(label, span, p),
-html[data-tadeon-tablet-popup="true"] body [data-slot="alert-dialog-content"] :is(label, span, p) {
+html[data-tadeon-popup-viewport="true"] body :is(
+  [data-slot="dialog-content"],
+  [data-slot="alert-dialog-content"]
+) :is(label, span, p) {
   overflow-wrap: anywhere;
 }
 
-html[data-tadeon-tablet-popup="true"] body [data-slot="dialog-content"]:has(> [data-slot="command"]) > [data-slot="command"] {
+/* CommandDialog herda o mesmo envelope; a lista interna é quem rola. */
+html[data-tadeon-popup-viewport="true"] body [data-slot="dialog-content"]:has(> [data-slot="command"]) {
+  max-height: 100% !important;
+  overflow: hidden !important;
+}
+
+html[data-tadeon-popup-viewport="true"] body [data-slot="dialog-content"]:has(> [data-slot="command"]) > [data-slot="command"] {
   display: flex !important;
   min-width: 0 !important;
   min-height: 0 !important;
@@ -130,7 +122,7 @@ html[data-tadeon-tablet-popup="true"] body [data-slot="dialog-content"]:has(> [d
   overflow: hidden !important;
 }
 
-html[data-tadeon-tablet-popup="true"] body [data-slot="dialog-content"]:has(> [data-slot="command"]) [data-slot="command-list"] {
+html[data-tadeon-popup-viewport="true"] body [data-slot="dialog-content"]:has(> [data-slot="command"]) [data-slot="command-list"] {
   min-width: 0 !important;
   min-height: 0 !important;
   max-width: 100% !important;
@@ -140,62 +132,60 @@ html[data-tadeon-tablet-popup="true"] body [data-slot="dialog-content"]:has(> [d
   overscroll-behavior: contain !important;
 }
 
-/* Popper surfaces continuam sob responsabilidade do Radix para anchor/collision,
-   mas nunca podem crescer além da área visível reportada pela visualViewport. */
-html[data-tadeon-tablet-popup="true"] :is(
+/* Select/Dropdown/Popover continuam presos ao gatilho. Só limitamos a caixa à
+   área realmente visível para impedir estouro quando o teclado ou zoom reduzirem
+   a visualViewport. */
+html[data-tadeon-popup-viewport="true"] :is(
   [data-slot="popover-content"],
   [data-slot="select-content"],
   [data-slot="dropdown-menu-content"],
   [data-slot="dropdown-menu-sub-content"],
   [data-slot="context-menu-content"],
   [data-slot="context-menu-sub-content"],
-  [data-slot="hover-card-content"]
+  [data-slot="hover-card-content"],
+  [data-slot="menubar-content"],
+  [data-slot="menubar-sub-content"]
 ) {
   box-sizing: border-box !important;
   min-width: 0 !important;
-  max-width: calc(var(--tadeon-vv-width) - 1.5rem) !important;
-  max-height: min(38rem, calc(var(--tadeon-vv-height) - 1.5rem)) !important;
+  max-width: calc(var(--tadeon-vv-width) - 1rem) !important;
+  max-height: min(38rem, calc(var(--tadeon-vv-height) - 1rem)) !important;
   overflow-x: hidden !important;
   overflow-y: auto !important;
   overscroll-behavior: contain !important;
 }
 
-html[data-tadeon-tablet-popup="true"] :where([data-slot="command-list"], [data-slot="scroll-area-viewport"]) {
+html[data-tadeon-popup-viewport="true"] :where(
+  [data-slot="command-list"],
+  [data-slot="scroll-area-viewport"]
+) {
   min-height: 0;
   overscroll-behavior: contain;
 }
 
-/* Com teclado aberto a visualViewport já reduz a altura do envelope. Alinhar
-   no topo evita que um formulário alto seja recentrado a cada mudança do teclado. */
-html[data-tadeon-tablet-popup="true"][data-tadeon-keyboard-open="true"] body [data-slot="dialog-viewport"],
-html[data-tadeon-tablet-popup="true"][data-tadeon-keyboard-open="true"] body [data-slot="alert-dialog-viewport"] {
-  align-items: flex-start !important;
-}
-
-html[data-tadeon-tablet-popup="true"][data-tadeon-keyboard-open="true"] body :where(
+/* O teclado não muda o princípio: modal continua centralizado na parte visível
+   da tela. A altura do wrapper já encolheu para a visualViewport; o campo focado
+   recebe margem de rolagem e o bridge move somente o scroller interno. */
+html[data-tadeon-popup-viewport="true"][data-tadeon-keyboard-open="true"] body :where(
   [data-slot="dialog-content"],
   [data-slot="alert-dialog-content"]
 ) {
   max-height: 100% !important;
-  transform-origin: top center !important;
-  scroll-padding-block: 3.5rem 1rem;
+  scroll-padding-block: 4.5rem 1.25rem;
 }
 
-html[data-tadeon-tablet-popup="true"][data-tadeon-keyboard-open="true"] :where(
+html[data-tadeon-popup-viewport="true"] :where(
   [data-slot="dialog-content"],
   [data-slot="alert-dialog-content"],
   [data-slot="popover-content"],
   [data-slot="select-content"]
 ) :is(input, textarea, [contenteditable="true"]):focus {
-  scroll-margin-block: 4rem;
+  scroll-margin-block: 4.5rem 2rem;
 }
 
-/* Mobile deliberadamente sem overrides: o dataset só é ligado para iPad-like
-   ou tela física de tablet com pointer coarse. Desktop também fica intacto. */
-
 @media (prefers-reduced-motion: reduce) {
-  html[data-tadeon-tablet-popup="true"] body [data-slot="dialog-content"],
-  html[data-tadeon-tablet-popup="true"] body [data-slot="alert-dialog-content"] {
+  html[data-tadeon-popup-viewport="true"] body [data-slot="dialog-content"],
+  html[data-tadeon-popup-viewport="true"] body [data-slot="alert-dialog-content"] {
     transition: none !important;
   }
 }

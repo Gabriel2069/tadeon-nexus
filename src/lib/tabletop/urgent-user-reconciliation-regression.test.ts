@@ -61,16 +61,18 @@ describe("reconciliação urgente de UI", () => {
     );
   });
 
-  it("mantém dialogs de tablet na visual viewport sem reativar o layout de celular", () => {
+  it("mantém todos os dialogs centralizados na visual viewport e roláveis com teclado", () => {
     const popupBridge = source("src/components/visual-viewport-popup-bridge.tsx");
     const popupCss = source("src/styles/tablet-popup-viewport-237.css");
-    expect(popupBridge).toContain("shortestScreenSide");
-    expect(popupBridge).toContain('root.dataset.tadeonTabletPopup = "true"');
+    expect(popupBridge).toContain('root.dataset.tadeonPopupViewport = "true"');
+    expect(popupBridge).toContain("keepFocusedFieldVisible");
     expect(popupBridge).toContain('window.visualViewport?.addEventListener("scroll", schedule');
-    expect(popupCss).toContain('html[data-tadeon-tablet-popup="true"]');
-    expect(popupCss).toContain("body:has(.tadeon-tabletop-studio)");
-    expect(popupCss).toContain("--tadeon-vv-center-y");
-    expect(popupCss).not.toContain("@media (min-width: 600px) and (max-width: 1180px)");
+    expect(popupCss).toContain('html[data-tadeon-popup-viewport="true"]');
+    expect(popupCss).toContain('[data-slot="dialog-viewport"]');
+    expect(popupCss).toContain("align-items: center !important");
+    expect(popupCss).toContain("justify-content: center !important");
+    expect(popupCss).toContain("overflow-y: auto !important");
+    expect(popupCss).not.toContain('data-tadeon-tablet-popup="true"');
   });
 
   it("corrige o blackout na geometria do aviso de câmera e abandona o scanner invasivo", () => {
