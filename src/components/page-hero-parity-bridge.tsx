@@ -16,6 +16,7 @@ import "@/styles/head-background-coverage-225.css";
 import "@/styles/offline-meta-row-226.css";
 import "@/styles/head-final-polish-227.css";
 import "@/styles/tab-accent-propagation-228.css";
+import "@/styles/secondary-tab-accent-propagation-230.css";
 
 type HeroKind = Extract<AppSectionSymbol, "users" | "tools" | "offline">;
 type IconKind = HeroKind | "tabletop" | "brand";
