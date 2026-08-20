@@ -10,17 +10,35 @@
 }
 
 @media (min-width: 600px) and (max-width: 1180px) {
-  :where([data-slot="dialog-content"], [data-slot="alert-dialog-content"]) {
+  [data-slot="dialog-content"],
+  [data-slot="alert-dialog-content"] {
     left: var(--tadeon-vv-center-x) !important;
     top: var(--tadeon-vv-center-y) !important;
+    right: auto !important;
+    bottom: auto !important;
     width: min(calc(var(--tadeon-vv-width) - 2rem), var(--tadeon-popup-max-width, 44rem)) !important;
     max-width: calc(var(--tadeon-vv-width) - 2rem) !important;
     max-height: calc(var(--tadeon-vv-height) - 2rem) !important;
-    overflow: auto !important;
+    margin: 0 !important;
+    overflow-y: auto !important;
     overscroll-behavior: contain;
+    transform: translate(-50%, -50%) !important;
+    transform-origin: center !important;
   }
 
-  :where([data-slot="dialog-overlay"], [data-slot="alert-dialog-overlay"]) {
+  /* #172 tinha um centro fixo da layout viewport só para Busca/Command. Esta
+     regra precisa ter a mesma especificidade para o visualViewport prevalecer. */
+  [data-slot="dialog-content"]:has(> [data-slot="command"]) {
+    left: var(--tadeon-vv-center-x) !important;
+    top: var(--tadeon-vv-center-y) !important;
+    width: min(42rem, calc(var(--tadeon-vv-width) - 2rem)) !important;
+    max-width: calc(var(--tadeon-vv-width) - 2rem) !important;
+    max-height: calc(var(--tadeon-vv-height) - 2rem) !important;
+    transform: translate(-50%, -50%) !important;
+  }
+
+  [data-slot="dialog-overlay"],
+  [data-slot="alert-dialog-overlay"] {
     inset: var(--tadeon-vv-top) auto auto var(--tadeon-vv-left) !important;
     width: var(--tadeon-vv-width) !important;
     height: var(--tadeon-vv-height) !important;
@@ -38,7 +56,9 @@
     overscroll-behavior: contain;
   }
 
-  html[data-tadeon-keyboard-open="true"] :where([data-slot="dialog-content"], [data-slot="alert-dialog-content"]) {
+  html[data-tadeon-keyboard-open="true"] [data-slot="dialog-content"],
+  html[data-tadeon-keyboard-open="true"] [data-slot="alert-dialog-content"],
+  html[data-tadeon-keyboard-open="true"] [data-slot="dialog-content"]:has(> [data-slot="command"]) {
     top: calc(var(--tadeon-vv-top) + .75rem) !important;
     transform: translateX(-50%) !important;
     max-height: calc(var(--tadeon-vv-height) - 1.5rem) !important;
@@ -59,9 +79,12 @@
 }
 
 @media (max-width: 599px) {
-  html[data-tadeon-keyboard-open="true"] :where([data-slot="dialog-content"], [data-slot="alert-dialog-content"]) {
-    left: calc(var(--tadeon-vv-left) + var(--tadeon-vv-width) / 2) !important;
+  html[data-tadeon-keyboard-open="true"] [data-slot="dialog-content"],
+  html[data-tadeon-keyboard-open="true"] [data-slot="alert-dialog-content"] {
+    left: var(--tadeon-vv-center-x) !important;
     top: calc(var(--tadeon-vv-top) + .5rem) !important;
+    right: auto !important;
+    bottom: auto !important;
     width: calc(var(--tadeon-vv-width) - 1rem) !important;
     max-width: calc(var(--tadeon-vv-width) - 1rem) !important;
     max-height: calc(var(--tadeon-vv-height) - 1rem) !important;
