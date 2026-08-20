@@ -1,13 +1,10 @@
 import { useEffect } from "react";
 import "@/styles/tabletop-floating-layout-236.css";
 
-const FLOATING_SELECTORS = [
+const CORE_FLOATING_SELECTORS = [
   ".tadeon-tabletop-progressive-dock",
   ".tadeon-tactical-dock",
   ".tadeon-tabletop-selection-actions",
-  ".tadeon-tabletop-now",
-  ".tadeon-placeables",
-  ".tadeon-creative-dock",
   ".tadeon-semantic-transform",
   ".tadeon-nexus-tabletop-locator",
   ".tadeon-tabletop-reliability-strip",
@@ -41,6 +38,28 @@ function heightFor(selector: string) {
 
 function setPx(root: HTMLElement, name: string, value: number) {
   root.style.setProperty(name, `${Math.max(0, Math.round(value))}px`);
+}
+
+function activeSurface(rootSelector: string, handleSelector: string, panelSelector: string) {
+  const root = document.querySelector<HTMLElement>(rootSelector);
+  if (!visible(root)) return null;
+  const open = root.dataset.open === "true";
+  const preferred = document.querySelector<HTMLElement>(open ? panelSelector : handleSelector);
+  return visible(preferred) ? preferred : root;
+}
+
+function floatingSurfaces() {
+  const surfaces = CORE_FLOATING_SELECTORS
+    .map((selector) => document.querySelector<HTMLElement>(selector))
+    .filter(visible);
+
+  const utilitySurfaces = [
+    activeSurface(".tadeon-tabletop-now", ".tadeon-tabletop-now__handle", ".tadeon-tabletop-now__panel"),
+    activeSurface(".tadeon-placeables", ".tadeon-placeables__handle", ".tadeon-placeables__panel"),
+    activeSurface(".tadeon-creative-dock", ".tadeon-creative-dock__handle", ".tadeon-creative-dock__panel"),
+  ].filter(visible);
+
+  return [...surfaces, ...utilitySurfaces];
 }
 
 function edgeInsets(elements: HTMLElement[]) {
@@ -86,6 +105,11 @@ export function TabletopFloatingLayoutBridge() {
     let resizeObserver: ResizeObserver | null = null;
     const observed = new Set<Element>();
 
+    const schedule = () => {
+      if (frame) return;
+      frame = window.requestAnimationFrame(sync);
+    };
+
     const sync = () => {
       frame = 0;
       const studio = document.querySelector<HTMLElement>(".tadeon-tabletop-studio");
@@ -93,9 +117,7 @@ export function TabletopFloatingLayoutBridge() {
 
       for (const [selector, variable] of HEIGHT_VARIABLES) setPx(root, variable, heightFor(selector));
 
-      const floating = FLOATING_SELECTORS
-        .map((selector) => document.querySelector<HTMLElement>(selector))
-        .filter(visible);
+      const floating = floatingSurfaces();
       const insets = edgeInsets(floating);
       setPx(root, "--tadeon-tabletop-safe-top", insets.top);
       setPx(root, "--tadeon-tabletop-safe-right", insets.right);
@@ -109,11 +131,6 @@ export function TabletopFloatingLayoutBridge() {
         observed.add(element);
         resizeObserver.observe(element);
       }
-    };
-
-    const schedule = () => {
-      if (frame) return;
-      frame = window.requestAnimationFrame(sync);
     };
 
     const mutationObserver = new MutationObserver(schedule);
