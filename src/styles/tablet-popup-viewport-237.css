@@ -178,9 +178,13 @@ html[data-tadeon-popup-viewport="true"] body [data-slot="dialog-content"]:has(> 
   overscroll-behavior: contain !important;
 }
 
-/* Superfícies ancoradas continuam posicionadas pelo Radix. Só recebem limites
-   e ficam acima do modal para Select/Dropdown nunca desaparecer atrás dele. */
-html[data-tadeon-popup-viewport="true"] :is(
+/* Superfícies ancoradas continuam posicionadas pelo Radix. Quando um modal está
+   aberto, apenas garantimos que Select/Dropdown apareçam acima dele e caibam na
+   área visível; fora de modais, não tocamos no comportamento que já funcionava. */
+html[data-tadeon-popup-viewport="true"] body:has(
+  [data-slot="dialog-content"],
+  [data-slot="alert-dialog-content"]
+) :is(
   [data-slot="popover-content"],
   [data-slot="select-content"],
   [data-slot="dropdown-menu-content"],
@@ -201,10 +205,10 @@ html[data-tadeon-popup-viewport="true"] :is(
   overscroll-behavior: contain !important;
 }
 
-html[data-tadeon-popup-viewport="true"] :where(
-  [data-slot="command-list"],
-  [data-slot="scroll-area-viewport"]
-) {
+html[data-tadeon-popup-viewport="true"] body :is(
+  [data-slot="dialog-content"],
+  [data-slot="alert-dialog-content"]
+) :where([data-slot="command-list"], [data-slot="scroll-area-viewport"]) {
   min-height: 0;
   overscroll-behavior: contain;
 }
