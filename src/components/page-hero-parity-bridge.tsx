@@ -6,10 +6,10 @@ import {
   SectionSymbol,
   type AppSectionSymbol,
 } from "@/components/section-symbols";
-import "@/styles/head-parity-final-213.css";
+import "@/styles/head-parity-final-214.css";
 
 type HeroKind = Extract<AppSectionSymbol, "users" | "tools" | "offline">;
-type IconKind = AppSectionSymbol | "brand";
+type IconKind = HeroKind | "tabletop" | "brand";
 
 type HeroConfig = {
   kind: HeroKind;
@@ -45,17 +45,6 @@ function heroConfigForPath(pathname: string): HeroConfig | null {
   return null;
 }
 
-function focusIconForPath(pathname: string): IconKind {
-  if (pathname.startsWith("/sheet/")) return "brand";
-  if (pathname.startsWith("/nexus-tools")) return "tools";
-  if (pathname.startsWith("/nexus")) return "nexus";
-  if (pathname.startsWith("/tabletop")) return "tabletop";
-  if (pathname.startsWith("/master-panel")) return "master";
-  if (pathname.startsWith("/manage-users")) return "users";
-  if (pathname.startsWith("/offline")) return "offline";
-  return "dashboard";
-}
-
 function renderIcon(icon: IconKind, className: string) {
   if (icon === "brand") return <BrandMark className={className} />;
   return <SectionSymbol section={icon} className={className} />;
@@ -69,23 +58,6 @@ function ensureHost(container: HTMLElement, className: string) {
   host.setAttribute("aria-hidden", "true");
   container.prepend(host);
   return host;
-}
-
-function lockDesktopFocusGeometry(container: HTMLElement) {
-  /* #212 still contains one Mesa-only 2.25rem column with !important. Inline
-     important values deliberately remove that last route-specific geometry so
-     every desktop/tablet focus identity uses the exact same coordinates. */
-  container.style.setProperty("display", "grid", "important");
-  container.style.setProperty(
-    "grid-template-columns",
-    "2.45rem minmax(0, 1fr)",
-    "important",
-  );
-  container.style.setProperty("grid-template-rows", "auto auto", "important");
-  container.style.setProperty("column-gap", ".85rem", "important");
-  container.style.setProperty("row-gap", ".08rem", "important");
-  container.style.setProperty("align-items", "center", "important");
-  container.style.setProperty("padding", "0", "important");
 }
 
 function clearStaleHeroes(active?: HTMLElement | null) {
@@ -130,8 +102,9 @@ export function PageHeroParityBridge() {
     const sync = () => {
       clearLegacyFocusHosts();
       const next: PortalSpec[] = [];
-      const focusIcon = focusIconForPath(pathname);
 
+      /* Área em foco: o símbolo é SEMPRE o BrandMark do Tadeon.
+         A seção muda somente a cor via CSS. */
       const mobileFocusIdentity = document.querySelector<HTMLElement>(
         ".tadeon-mobile-header__identity",
       );
@@ -139,7 +112,7 @@ export function PageHeroParityBridge() {
         next.push({
           host: ensureHost(mobileFocusIdentity, "tadeon-focus-section-mark-host"),
           key: "focus:mobile",
-          icon: focusIcon,
+          icon: "brand",
           iconClassName: "tadeon-focus-section-mark-icon",
         });
       }
@@ -148,15 +121,16 @@ export function PageHeroParityBridge() {
         ".tadeon-desktop-toolbar > .min-w-0",
       );
       if (desktopFocusIdentity) {
-        lockDesktopFocusGeometry(desktopFocusIdentity);
         next.push({
           host: ensureHost(desktopFocusIdentity, "tadeon-focus-section-mark-host"),
           key: "focus:desktop",
-          icon: focusIcon,
+          icon: "brand",
           iconClassName: "tadeon-focus-section-mark-icon",
         });
       }
 
+      /* Mesa interna: mantém somente o MapPinned azul no estúdio e não deixa a
+         BrandMark bege original reaparecer à esquerda. */
       if (pathname.startsWith("/tabletop")) {
         const studioBrand = document.querySelector<HTMLElement>(
           "#tadeon-main .tadeon-tabletop-studio__brand",
