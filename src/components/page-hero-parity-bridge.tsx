@@ -8,6 +8,7 @@ import {
 } from "@/components/section-symbols";
 import "@/styles/head-parity-final-214.css";
 import "@/styles/head-tab-parity-217.css";
+import "@/styles/menu-color-source-219.css";
 
 type HeroKind = Extract<AppSectionSymbol, "users" | "tools" | "offline">;
 type IconKind = HeroKind | "tabletop" | "brand";
@@ -52,13 +53,18 @@ function renderIcon(icon: IconKind, className: string) {
 }
 
 function ensureHost(container: HTMLElement, className: string) {
-  let host = container.querySelector<HTMLElement>(`:scope > .${className}`);
+  const hosts = Array.from(
+    container.querySelectorAll<HTMLElement>(`:scope > .${className}`),
+  );
+  const [host, ...duplicates] = hosts;
+  duplicates.forEach((node) => node.remove());
   if (host) return host;
-  host = document.createElement("span");
-  host.className = className;
-  host.setAttribute("aria-hidden", "true");
-  container.prepend(host);
-  return host;
+
+  const nextHost = document.createElement("span");
+  nextHost.className = className;
+  nextHost.setAttribute("aria-hidden", "true");
+  container.prepend(nextHost);
+  return nextHost;
 }
 
 function clearStaleHeroes(active?: HTMLElement | null) {
