@@ -1,0 +1,54 @@
+/* #226 — Offline: badges como subtítulo compacto acima do título. */
+html body .tadeon-shell[data-section="Consulta offline"]
+  .tadeon-page-hero[data-tadeon-page-hero="offline"] > div:first-of-type > div:first-child {
+  padding-top: 1rem !important;
+}
+
+html body .tadeon-shell[data-section="Consulta offline"]
+  .tadeon-page-hero[data-tadeon-page-hero="offline"] > div:first-of-type > div:first-child > .mb-3 {
+  top: .06rem !important;
+  gap: .32rem !important;
+}
+
+html body .tadeon-shell[data-section="Consulta offline"]
+  .tadeon-page-hero[data-tadeon-page-hero="offline"] > div:first-of-type > div:first-child > .mb-3 [data-slot="badge"] {
+  min-height: 1.2rem !important;
+  padding: .08rem .34rem !important;
+  border-radius: .38rem !important;
+  font-size: .585rem !important;
+  font-weight: 650 !important;
+  line-height: .9rem !important;
+  letter-spacing: .035em !important;
+}
+
+html body .tadeon-shell[data-section="Consulta offline"]
+  .tadeon-page-hero[data-tadeon-page-hero="offline"] > div:first-of-type > div:first-child > .mb-3 [data-slot="badge"] svg {
+  width: .72rem !important;
+  height: .72rem !important;
+  margin-right: .2rem !important;
+}
+
+html body .tadeon-shell[data-section="Consulta offline"]
+  .tadeon-page-hero[data-tadeon-page-hero="offline"] h1 {
+  margin-top: .2rem !important;
+}
+
+@media (max-width: 639px) {
+  html body .tadeon-shell[data-section="Consulta offline"]
+    .tadeon-page-hero[data-tadeon-page-hero="offline"] > div:first-of-type > div:first-child {
+    padding-top: .92rem !important;
+  }
+
+  html body .tadeon-shell[data-section="Consulta offline"]
+    .tadeon-page-hero[data-tadeon-page-hero="offline"] > div:first-of-type > div:first-child > .mb-3 {
+    top: .02rem !important;
+    gap: .28rem !important;
+  }
+
+  html body .tadeon-shell[data-section="Consulta offline"]
+    .tadeon-page-hero[data-tadeon-page-hero="offline"] > div:first-of-type > div:first-child > .mb-3 [data-slot="badge"] {
+    padding: .04rem .28rem !important;
+    font-size: .54rem !important;
+    line-height: .84rem !important;
+  }
+}
