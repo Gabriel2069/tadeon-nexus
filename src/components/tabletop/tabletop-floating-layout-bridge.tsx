@@ -32,6 +32,8 @@ const HEIGHT_VARIABLES: Array<[string, string]> = [
   [".tadeon-tabletop-progressive-dock", "--tadeon-tabletop-progressive-h"],
   [".tadeon-tactical-dock", "--tadeon-tabletop-tactical-h"],
   [".tadeon-tabletop-selection-actions", "--tadeon-tabletop-selection-h"],
+  [".tadeon-tabletop-toolbar", "--tadeon-tabletop-toolbar-h"],
+  [".tadeon-tabletop-reliability-strip", "--tadeon-tabletop-reliability-h"],
   [".tadeon-tabletop-now", "--tadeon-tabletop-now-h"],
   [".tadeon-placeables", "--tadeon-tabletop-placeables-h"],
   [".tadeon-semantic-transform", "--tadeon-tabletop-semantic-h"],
@@ -40,6 +42,14 @@ const HEIGHT_VARIABLES: Array<[string, string]> = [
 ];
 
 type Insets = { top: number; right: number; bottom: number; left: number };
+type StageBounds = {
+  top: number;
+  right: number;
+  bottom: number;
+  left: number;
+  width: number;
+  height: number;
+};
 
 function visible(element: Element | null): element is HTMLElement {
   if (!(element instanceof HTMLElement)) return false;
@@ -92,21 +102,47 @@ function bottomChromeHeight() {
   return Math.min(vh * 0.35, reserved);
 }
 
-function publishStageGeometry(root: HTMLElement, appBottom: number) {
-  const stage = document.querySelector<HTMLElement>(".tadeon-tabletop-stage");
-  if (!visible(stage)) return;
-  const rect = stage.getBoundingClientRect();
-  const viewportTop = window.visualViewport?.offsetTop ?? 0;
-  const viewportHeight = window.visualViewport?.height ?? window.innerHeight;
-  const viewportBottom = viewportTop + viewportHeight - appBottom;
-  const gap = 12;
-  const fixedTop = Math.max(viewportTop + gap, Math.min(rect.top + gap, viewportBottom - 48));
-  const fixedLeft = Math.max(gap, rect.left + gap);
-  const fixedRight = Math.max(gap, window.innerWidth - rect.right + gap);
+function isTabletLike() {
+  const shortestScreenSide = Math.min(window.screen.width, window.screen.height);
+  return navigator.maxTouchPoints > 0 && shortestScreenSide >= 600 && shortestScreenSide <= 1100;
+}
 
-  setPx(root, "--tadeon-tabletop-stage-fixed-top", fixedTop);
-  setPx(root, "--tadeon-tabletop-stage-fixed-left", fixedLeft);
-  setPx(root, "--tadeon-tabletop-stage-fixed-right", fixedRight);
+function publishStageGeometry(root: HTMLElement, appBottom: number): StageBounds | null {
+  const stage = document.querySelector<HTMLElement>(".tadeon-tabletop-stage");
+  if (!visible(stage)) return null;
+
+  const rect = stage.getBoundingClientRect();
+  const viewport = window.visualViewport;
+  const viewportLeft = viewport?.offsetLeft ?? 0;
+  const viewportTop = viewport?.offsetTop ?? 0;
+  const viewportWidth = viewport?.width ?? window.innerWidth;
+  const viewportHeight = viewport?.height ?? window.innerHeight;
+  const viewportRight = viewportLeft + viewportWidth;
+  const viewportBottom = viewportTop + viewportHeight - appBottom;
+
+  const rawLeft = Math.max(rect.left, viewportLeft);
+  const rawTop = Math.max(rect.top, viewportTop);
+  const rawRight = Math.min(rect.right, viewportRight);
+  const rawBottom = Math.min(rect.bottom, viewportBottom);
+  if (rawRight - rawLeft < 48 || rawBottom - rawTop < 48) return null;
+
+  const gap = Math.min(12, Math.max(6, Math.min(rawRight - rawLeft, rawBottom - rawTop) * 0.03));
+  const left = rawLeft + gap;
+  const top = rawTop + gap;
+  const right = rawRight - gap;
+  const bottom = rawBottom - gap;
+  const width = Math.max(1, right - left);
+  const height = Math.max(1, bottom - top);
+
+  setPx(root, "--tadeon-tabletop-stage-fixed-top", top);
+  setPx(root, "--tadeon-tabletop-stage-fixed-left", left);
+  setPx(root, "--tadeon-tabletop-stage-fixed-right", window.innerWidth - right);
+  setPx(root, "--tadeon-tabletop-stage-fixed-bottom", window.innerHeight - bottom);
+  setPx(root, "--tadeon-tabletop-stage-fixed-width", width);
+  setPx(root, "--tadeon-tabletop-stage-fixed-height", height);
+  setPx(root, "--tadeon-tabletop-stage-fixed-center", left + width / 2);
+
+  return { top, right, bottom, left, width, height };
 }
 
 function edgeInsets(elements: HTMLElement[], appBottom: number): Insets {
@@ -134,11 +170,25 @@ function edgeInsets(elements: HTMLElement[], appBottom: number): Insets {
   return { top, right, bottom, left };
 }
 
-function constrainMenus(insets: Insets) {
-  const left = Math.max(8, insets.left + 8);
-  const right = Math.min(window.innerWidth - 8, window.innerWidth - insets.right - 8);
-  const top = Math.max(8, insets.top + 8);
-  const bottom = Math.min(window.innerHeight - 8, window.innerHeight - insets.bottom - 8);
+function constrainMenus(insets: Insets, stageBounds: StageBounds | null) {
+  const stageLeft = stageBounds?.left ?? 8;
+  const stageRight = stageBounds?.right ?? window.innerWidth - 8;
+  const stageTop = stageBounds?.top ?? 8;
+  const stageBottom = stageBounds?.bottom ?? window.innerHeight - 8;
+
+  let left = Math.max(stageLeft, insets.left + 8);
+  let right = Math.min(stageRight, window.innerWidth - insets.right - 8);
+  let top = Math.max(stageTop, insets.top + 8);
+  let bottom = Math.min(stageBottom, window.innerHeight - insets.bottom - 8);
+
+  if (right - left < 120) {
+    left = stageLeft;
+    right = stageRight;
+  }
+  if (bottom - top < 96) {
+    top = stageTop;
+    bottom = stageBottom;
+  }
 
   for (const selector of CONSTRAINED_MENU_SELECTORS) {
     document.querySelectorAll<HTMLElement>(selector).forEach((element) => {
@@ -185,10 +235,11 @@ export function TabletopFloatingLayoutBridge() {
       frame = 0;
       if (!document.querySelector(".tadeon-tabletop-studio")) return;
 
+      root.dataset.tadeonTabletopTablet = isTabletLike() ? "true" : "false";
       for (const [selector, variable] of HEIGHT_VARIABLES) setPx(root, variable, heightFor(selector));
       const appBottom = bottomChromeHeight();
       setPx(root, "--tadeon-tabletop-app-bottom", appBottom);
-      publishStageGeometry(root, appBottom);
+      const stageBounds = publishStageGeometry(root, appBottom);
 
       const floating = floatingSurfaces();
       const insets = edgeInsets(floating, appBottom);
@@ -197,11 +248,13 @@ export function TabletopFloatingLayoutBridge() {
       setPx(root, "--tadeon-tabletop-safe-bottom", insets.bottom);
       setPx(root, "--tadeon-tabletop-safe-left", insets.left);
       root.dataset.tadeonTabletopUtility = openUtility();
-      constrainMenus(insets);
+      constrainMenus(insets, stageBounds);
 
       resizeObserver ??= new ResizeObserver(schedule);
+      const stage = document.querySelector<HTMLElement>(".tadeon-tabletop-stage");
       const measurable = [
         ...floating,
+        ...(visible(stage) ? [stage] : []),
         ...APP_BOTTOM_SELECTORS.flatMap((selector) =>
           [...document.querySelectorAll<HTMLElement>(selector)].filter(visible),
         ),
@@ -225,6 +278,7 @@ export function TabletopFloatingLayoutBridge() {
     });
     window.addEventListener("resize", schedule, { passive: true });
     window.addEventListener("orientationchange", schedule, { passive: true });
+    window.addEventListener("scroll", schedule, { passive: true, capture: true });
     window.visualViewport?.addEventListener("resize", schedule, { passive: true });
     window.visualViewport?.addEventListener("scroll", schedule, { passive: true });
     schedule();
@@ -235,15 +289,21 @@ export function TabletopFloatingLayoutBridge() {
       resizeObserver?.disconnect();
       window.removeEventListener("resize", schedule);
       window.removeEventListener("orientationchange", schedule);
+      window.removeEventListener("scroll", schedule, true);
       window.visualViewport?.removeEventListener("resize", schedule);
       window.visualViewport?.removeEventListener("scroll", schedule);
       delete root.dataset.tadeonTabletopUtility;
+      delete root.dataset.tadeonTabletopTablet;
       for (const [, variable] of HEIGHT_VARIABLES) root.style.removeProperty(variable);
       for (const variable of [
         "--tadeon-tabletop-app-bottom",
         "--tadeon-tabletop-stage-fixed-top",
         "--tadeon-tabletop-stage-fixed-left",
         "--tadeon-tabletop-stage-fixed-right",
+        "--tadeon-tabletop-stage-fixed-bottom",
+        "--tadeon-tabletop-stage-fixed-width",
+        "--tadeon-tabletop-stage-fixed-height",
+        "--tadeon-tabletop-stage-fixed-center",
         "--tadeon-tabletop-safe-top",
         "--tadeon-tabletop-safe-right",
         "--tadeon-tabletop-safe-bottom",
