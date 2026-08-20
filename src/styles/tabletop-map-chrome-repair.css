@@ -1,19 +1,27 @@
 /* Exact tabletop chrome contracts after field validation.
-   Keep these selectors tied to the real components rather than generic overlays. */
+   #247: every upper/lateral surface is now constrained by the visible map box. */
 
-/* Cena / Editar / Visao belongs to the studio flow. */
+/* Cena / Editar / Visão vira um trilho fixo DENTRO da cena. Usamos left/right
+   em vez de translate para continuar compatível com as camadas finais que
+   garantem transform:none nessa barra. */
 .tadeon-tabletop-toolbar,
 .tadeon-tabletop-toolbar[data-tadeon-top-rail] {
-  position: static !important;
-  z-index: auto !important;
-  inset: auto !important;
+  position: fixed !important;
+  z-index: 96 !important;
+  top: var(--tadeon-tabletop-stage-fixed-top, .75rem) !important;
+  right: calc(var(--tadeon-tabletop-stage-fixed-right, .75rem) + 3.55rem) !important;
+  bottom: auto !important;
+  left: calc(var(--tadeon-tabletop-stage-fixed-left, .75rem) + 3.55rem) !important;
+  display: flex !important;
   width: auto !important;
   max-width: none !important;
-  max-height: none !important;
+  max-height: min(4rem, var(--tadeon-tabletop-stage-fixed-height, 100dvh)) !important;
+  align-items: center !important;
+  justify-content: center !important;
   margin: 0 !important;
-  padding: .65rem 0 0 !important;
+  padding: 0 !important;
   overflow-x: auto !important;
-  overflow-y: visible !important;
+  overflow-y: hidden !important;
   border: 0 !important;
   border-radius: 0 !important;
   background: transparent !important;
@@ -24,17 +32,26 @@
   visibility: visible !important;
   pointer-events: auto !important;
   transform: none !important;
+  overscroll-behavior-inline: contain;
+  scrollbar-width: none;
 }
 
-/* Autosave / ready / audio / editor is the true upper map rail. */
+.tadeon-tabletop-toolbar::-webkit-scrollbar { display: none; }
+
+/* Autosave / ready / áudio / editor fica na segunda linha superior, também fixa
+   e limitada à largura útil do mapa. */
 .tadeon-tabletop-reliability-strip {
   position: fixed !important;
   z-index: 94 !important;
-  top: calc(var(--tadeon-tabletop-stage-top, 5rem) + .65rem) !important;
-  left: var(--tadeon-tabletop-stage-center, 50%) !important;
+  top: calc(
+    var(--tadeon-tabletop-stage-fixed-top, .75rem) +
+    var(--tadeon-tabletop-toolbar-h, 0px) + .42rem
+  ) !important;
+  left: var(--tadeon-tabletop-stage-fixed-center, 50vw) !important;
+  right: auto !important;
   bottom: auto !important;
   width: max-content !important;
-  max-width: min(46rem, calc(var(--tadeon-tabletop-stage-width, 100vw) - 7.5rem)) !important;
+  max-width: min(46rem, calc(var(--tadeon-tabletop-stage-fixed-width, 100vw) - 7.5rem)) !important;
   border-color: color-mix(in srgb, var(--primary) 24%, var(--border)) !important;
   background:
     radial-gradient(circle at 16% 0%, rgb(217 215 164 / 8%), transparent 9rem),
@@ -52,7 +69,8 @@
     visibility 0s linear 0s !important;
 }
 
-html[data-tadeon-tabletop-toprail="collapsed"] .tadeon-tabletop-reliability-strip {
+html[data-tadeon-tabletop-toprail="collapsed"] .tadeon-tabletop-reliability-strip,
+html[data-tadeon-tabletop-reliability="collapsed"] .tadeon-tabletop-reliability-strip {
   opacity: 0 !important;
   visibility: hidden !important;
   pointer-events: none !important;
@@ -66,8 +84,11 @@ html[data-tadeon-tabletop-toprail="collapsed"] .tadeon-tabletop-reliability-stri
 .tadeon-tabletop-toprail-controls {
   position: fixed;
   z-index: 98;
-  top: calc(var(--tadeon-tabletop-stage-top, 5rem) + .65rem);
-  right: calc(var(--tadeon-tabletop-stage-right, 0px) + .65rem);
+  top: calc(
+    var(--tadeon-tabletop-stage-fixed-top, .75rem) +
+    var(--tadeon-tabletop-toolbar-h, 0px) + .42rem
+  );
+  right: var(--tadeon-tabletop-stage-fixed-right, .75rem);
   display: flex;
   align-items: center;
   gap: .35rem;
@@ -128,12 +149,13 @@ html[data-tadeon-creative-dock="collapsed"] .tadeon-smart-setup__launcher {
   transform: none !important;
 }
 
-/* Setup always remains inside the visible stage/viewport. */
+/* Setup always remains inside the visible map box. */
 .tadeon-smart-setup {
-  top: max(calc(var(--tadeon-tabletop-stage-top, 0px) + .5rem), max(.5rem, env(safe-area-inset-top))) !important;
-  right: calc(var(--tadeon-tabletop-stage-right, 0px) + max(.5rem, env(safe-area-inset-right))) !important;
-  bottom: max(var(--tadeon-tabletop-stage-bottom, 0px), max(.5rem, env(safe-area-inset-bottom))) !important;
-  max-height: calc(100dvh - max(var(--tadeon-tabletop-stage-top, 0px), env(safe-area-inset-top)) - max(var(--tadeon-tabletop-stage-bottom, 0px), env(safe-area-inset-bottom)) - 1rem) !important;
+  top: var(--tadeon-tabletop-stage-fixed-top, .5rem) !important;
+  right: var(--tadeon-tabletop-stage-fixed-right, .5rem) !important;
+  bottom: var(--tadeon-tabletop-stage-fixed-bottom, .5rem) !important;
+  max-width: var(--tadeon-tabletop-stage-fixed-width, calc(100vw - 1rem)) !important;
+  max-height: var(--tadeon-tabletop-stage-fixed-height, calc(100dvh - 1rem)) !important;
   overflow: hidden !important;
 }
 
@@ -179,10 +201,19 @@ html[data-tadeon-tabletop-selection-active="true"] [data-tadeon-selection-guarde
 }
 
 @media (max-width: 800px) {
+  .tadeon-tabletop-toolbar,
+  .tadeon-tabletop-toolbar[data-tadeon-top-rail] {
+    right: calc(var(--tadeon-tabletop-stage-fixed-right, .5rem) + 3.2rem) !important;
+    left: calc(var(--tadeon-tabletop-stage-fixed-left, .5rem) + 3.2rem) !important;
+  }
+
   .tadeon-tabletop-reliability-strip {
-    top: calc(var(--tadeon-tabletop-stage-top, 4rem) + .5rem) !important;
+    top: calc(
+      var(--tadeon-tabletop-stage-fixed-top, .5rem) +
+      var(--tadeon-tabletop-toolbar-h, 0px) + .35rem
+    ) !important;
     bottom: auto !important;
-    max-width: calc(var(--tadeon-tabletop-stage-width, 100vw) - 6.5rem) !important;
+    max-width: calc(var(--tadeon-tabletop-stage-fixed-width, 100vw) - 6.5rem) !important;
   }
 
   .tadeon-tabletop-reliability-strip > span,
@@ -191,13 +222,16 @@ html[data-tadeon-tabletop-selection-active="true"] [data-tadeon-selection-guarde
   }
 
   .tadeon-tabletop-toprail-controls {
-    top: calc(var(--tadeon-tabletop-stage-top, 4rem) + .5rem);
-    right: calc(var(--tadeon-tabletop-stage-right, 0px) + .5rem);
+    top: calc(
+      var(--tadeon-tabletop-stage-fixed-top, .5rem) +
+      var(--tadeon-tabletop-toolbar-h, 0px) + .35rem
+    );
+    right: var(--tadeon-tabletop-stage-fixed-right, .5rem);
   }
 
   .tadeon-smart-setup {
-    right: max(.5rem, env(safe-area-inset-right)) !important;
-    left: max(.5rem, env(safe-area-inset-left)) !important;
+    right: var(--tadeon-tabletop-stage-fixed-right, .5rem) !important;
+    left: var(--tadeon-tabletop-stage-fixed-left, .5rem) !important;
     width: auto !important;
   }
 }

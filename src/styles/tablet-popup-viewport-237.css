@@ -1,5 +1,5 @@
-/* #246 — Tablet/iPad: popups seguem a visual viewport sem disputar posição
-   com Radix/Safari. Mobile volta ao comportamento nativo anterior. */
+/* #247 — Tablet/iPad: a bridge detecta tablet pela tela física curta, cobrindo
+   também iPads largos em landscape sem tocar no contrato já validado do mobile. */
 :root {
   --tadeon-vv-left: 0px;
   --tadeon-vv-top: 0px;
@@ -10,97 +10,147 @@
   --tadeon-vv-keyboard: 0px;
 }
 
-@media (min-width: 600px) and (max-width: 1180px) {
-  [data-slot="dialog-content"],
-  [data-slot="alert-dialog-content"] {
-    position: fixed !important;
-    left: var(--tadeon-vv-center-x) !important;
-    top: var(--tadeon-vv-center-y) !important;
-    right: auto !important;
-    bottom: auto !important;
-    width: min(calc(var(--tadeon-vv-width) - 2rem), var(--tadeon-popup-max-width, 44rem)) !important;
-    max-width: calc(var(--tadeon-vv-width) - 2rem) !important;
-    max-height: calc(var(--tadeon-vv-height) - 2rem) !important;
-    margin: 0 !important;
-    overflow-x: hidden !important;
-    overflow-y: auto !important;
-    overscroll-behavior: contain;
-    transform: translate(-50%, -50%) !important;
-    transform-origin: center !important;
-    transition: opacity 160ms ease, transform 160ms ease !important;
-  }
+html[data-tadeon-tablet-popup="true"] [data-slot="dialog-content"],
+html[data-tadeon-tablet-popup="true"] [data-slot="alert-dialog-content"] {
+  position: fixed !important;
+  box-sizing: border-box !important;
+  top: var(--tadeon-vv-center-y) !important;
+  right: auto !important;
+  bottom: auto !important;
+  left: var(--tadeon-vv-center-x) !important;
+  width: min(calc(var(--tadeon-vv-width) - 2rem), var(--tadeon-popup-max-width, 44rem)) !important;
+  min-width: 0 !important;
+  max-width: calc(var(--tadeon-vv-width) - 2rem) !important;
+  min-height: 0 !important;
+  max-height: calc(var(--tadeon-vv-height) - 2rem) !important;
+  margin: 0 !important;
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+  overscroll-behavior: contain;
+  transform: translate(-50%, -50%) !important;
+  transform-origin: center !important;
+  transition: opacity 160ms ease, transform 160ms ease !important;
+}
 
-  [data-slot="dialog-content"]:has(> [data-slot="command"]) {
-    width: min(42rem, calc(var(--tadeon-vv-width) - 2rem)) !important;
-    max-width: calc(var(--tadeon-vv-width) - 2rem) !important;
-  }
+/* A Mesa tinha uma regra de pointer:coarse que transformava todo iPad em
+   bottom-sheet. Esta variante deliberadamente mais específica restaura o
+   contrato de tablet sem alterar o bottom-sheet do telefone. */
+html[data-tadeon-tablet-popup="true"] body:has(.tadeon-tabletop-studio) [data-slot="dialog-content"],
+html[data-tadeon-tablet-popup="true"] body:has(.tadeon-tabletop-studio) [data-slot="alert-dialog-content"] {
+  position: fixed !important;
+  top: var(--tadeon-vv-center-y) !important;
+  right: auto !important;
+  bottom: auto !important;
+  left: var(--tadeon-vv-center-x) !important;
+  width: min(calc(var(--tadeon-vv-width) - 2rem), var(--tadeon-popup-max-width, 44rem)) !important;
+  max-width: calc(var(--tadeon-vv-width) - 2rem) !important;
+  max-height: calc(var(--tadeon-vv-height) - 2rem) !important;
+  border-radius: var(--radius, .75rem) !important;
+  transform: translate(-50%, -50%) !important;
+}
 
-  [data-slot="dialog-overlay"],
-  [data-slot="alert-dialog-overlay"] {
-    position: fixed !important;
-    inset: 0 !important;
-    width: 100vw !important;
-    height: 100dvh !important;
-  }
+html[data-tadeon-tablet-popup="true"] [data-slot="dialog-content"]:has(> [data-slot="command"]) {
+  width: min(42rem, calc(var(--tadeon-vv-width) - 2rem)) !important;
+  max-width: calc(var(--tadeon-vv-width) - 2rem) !important;
+  overflow: hidden !important;
+}
 
+html[data-tadeon-tablet-popup="true"] [data-slot="dialog-content"] > *,
+html[data-tadeon-tablet-popup="true"] [data-slot="dialog-content"] form,
+html[data-tadeon-tablet-popup="true"] [data-slot="dialog-content"] form > *,
+html[data-tadeon-tablet-popup="true"] [data-slot="dialog-content"] [data-slot="select-trigger"],
+html[data-tadeon-tablet-popup="true"] [data-slot="alert-dialog-content"] > * {
+  box-sizing: border-box;
+  min-width: 0 !important;
+  max-width: 100% !important;
+}
+
+html[data-tadeon-tablet-popup="true"] [data-slot="dialog-content"] :is(label, span, p),
+html[data-tadeon-tablet-popup="true"] [data-slot="alert-dialog-content"] :is(label, span, p) {
+  overflow-wrap: anywhere;
+}
+
+html[data-tadeon-tablet-popup="true"] [data-slot="dialog-content"]:has(> [data-slot="command"]) > [data-slot="command"] {
+  display: flex !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  max-width: 100% !important;
+  max-height: inherit !important;
+  flex-direction: column !important;
+  overflow: hidden !important;
+}
+
+html[data-tadeon-tablet-popup="true"] [data-slot="dialog-content"]:has(> [data-slot="command"]) [data-slot="command-list"] {
+  min-width: 0 !important;
+  min-height: 0 !important;
+  max-width: 100% !important;
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+  overscroll-behavior: contain;
+}
+
+html[data-tadeon-tablet-popup="true"] [data-slot="dialog-overlay"],
+html[data-tadeon-tablet-popup="true"] [data-slot="alert-dialog-overlay"] {
+  position: fixed !important;
+  top: var(--tadeon-vv-top) !important;
+  right: auto !important;
+  bottom: auto !important;
+  left: var(--tadeon-vv-left) !important;
+  width: var(--tadeon-vv-width) !important;
+  height: var(--tadeon-vv-height) !important;
+}
+
+html[data-tadeon-tablet-popup="true"] :is(
   [data-slot="popover-content"],
   [data-slot="select-content"],
   [data-slot="dropdown-menu-content"],
   [data-slot="dropdown-menu-sub-content"],
   [data-slot="context-menu-content"],
   [data-slot="context-menu-sub-content"],
-  [data-slot="hover-card-content"] {
-    max-width: calc(var(--tadeon-vv-width) - 1.5rem) !important;
-    max-height: min(38rem, calc(var(--tadeon-vv-height) - 1.5rem)) !important;
-    overflow-y: auto !important;
-    overscroll-behavior: contain;
-  }
-
-  :where([data-slot="command-list"], [data-slot="scroll-area-viewport"]) {
-    min-height: 0;
-    overscroll-behavior: contain;
-  }
-
-  /* Com teclado aberto, o popup deixa de tentar permanecer no centro vertical.
-     Ele ocupa a faixa visível acima do teclado, com scroll interno e sem
-     reposicionamentos sucessivos. */
-  html[data-tadeon-keyboard-open="true"] [data-slot="dialog-content"],
-  html[data-tadeon-keyboard-open="true"] [data-slot="alert-dialog-content"] {
-    top: calc(var(--tadeon-vv-top) + .75rem) !important;
-    transform: translateX(-50%) !important;
-    transform-origin: top center !important;
-    max-height: calc(var(--tadeon-vv-height) - 1.5rem) !important;
-  }
-
-  html[data-tadeon-keyboard-open="true"] [data-slot="dialog-content"]:has(> [data-slot="command"]) {
-    top: calc(var(--tadeon-vv-top) + .75rem) !important;
-    transform: translateX(-50%) !important;
-  }
-
-  html[data-tadeon-keyboard-open="true"] :where(
-    [data-slot="dialog-content"],
-    [data-slot="alert-dialog-content"],
-    [data-slot="popover-content"],
-    [data-slot="select-content"]
-  ) input:focus,
-  html[data-tadeon-keyboard-open="true"] :where(
-    [data-slot="dialog-content"],
-    [data-slot="alert-dialog-content"],
-    [data-slot="popover-content"],
-    [data-slot="select-content"]
-  ) textarea:focus {
-    scroll-margin-block: 4rem;
-  }
+  [data-slot="hover-card-content"]
+) {
+  box-sizing: border-box !important;
+  min-width: 0 !important;
+  max-width: calc(var(--tadeon-vv-width) - 1.5rem) !important;
+  max-height: min(38rem, calc(var(--tadeon-vv-height) - 1.5rem)) !important;
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+  overscroll-behavior: contain;
 }
 
-/* Mobile deliberadamente sem overrides. O posicionamento volta a ser 100%
-   responsabilidade dos componentes/Radix, como era antes das correções de tablet. */
+html[data-tadeon-tablet-popup="true"] :where([data-slot="command-list"], [data-slot="scroll-area-viewport"]) {
+  min-height: 0;
+  overscroll-behavior: contain;
+}
+
+/* Com teclado aberto o dialog usa o topo da visualViewport e scroll interno;
+   não há correção de posição por MutationObserver/focus, evitando o sobe-desce. */
+html[data-tadeon-tablet-popup="true"][data-tadeon-keyboard-open="true"] [data-slot="dialog-content"],
+html[data-tadeon-tablet-popup="true"][data-tadeon-keyboard-open="true"] [data-slot="alert-dialog-content"],
+html[data-tadeon-tablet-popup="true"][data-tadeon-keyboard-open="true"] body:has(.tadeon-tabletop-studio) [data-slot="dialog-content"],
+html[data-tadeon-tablet-popup="true"][data-tadeon-keyboard-open="true"] body:has(.tadeon-tabletop-studio) [data-slot="alert-dialog-content"] {
+  top: calc(var(--tadeon-vv-top) + .75rem) !important;
+  bottom: auto !important;
+  transform: translateX(-50%) !important;
+  transform-origin: top center !important;
+  max-height: calc(var(--tadeon-vv-height) - 1.5rem) !important;
+}
+
+html[data-tadeon-tablet-popup="true"][data-tadeon-keyboard-open="true"] :where(
+  [data-slot="dialog-content"],
+  [data-slot="alert-dialog-content"],
+  [data-slot="popover-content"],
+  [data-slot="select-content"]
+) :is(input, textarea):focus {
+  scroll-margin-block: 4rem;
+}
+
+/* Mobile deliberadamente sem overrides: o dataset nunca é ligado quando o
+   menor lado físico da tela tem menos de 600 CSS px. */
 
 @media (prefers-reduced-motion: reduce) {
-  @media (min-width: 600px) and (max-width: 1180px) {
-    [data-slot="dialog-content"],
-    [data-slot="alert-dialog-content"] {
-      transition: none !important;
-    }
+  html[data-tadeon-tablet-popup="true"] [data-slot="dialog-content"],
+  html[data-tadeon-tablet-popup="true"] [data-slot="alert-dialog-content"] {
+    transition: none !important;
   }
 }

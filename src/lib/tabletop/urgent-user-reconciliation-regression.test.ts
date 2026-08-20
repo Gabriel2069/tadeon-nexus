@@ -24,19 +24,32 @@ describe("reconciliação urgente de UI", () => {
     expect(css).toContain("scrollbar-gutter: stable");
   });
 
-  it("restaura a barra de modos e ancora a barra operacional correta ao stage", () => {
+  it("fixa a barra de modos e ancora o chrome ao retângulo visível do stage", () => {
     const oldCss = source("src/styles/urgent-user-reconciliation.css");
     const repairCss = source("src/styles/tabletop-map-chrome-repair.css");
+    const fixedMenusCss = source("src/styles/tabletop-fixed-menus-tactical-240.css");
     const finalCss = source("src/styles/create-sheet-search-viewport-163.css");
     const bridge = source(
       "src/components/tabletop/tabletop-urgent-reconciliation-bridge.tsx",
     );
+    const floatingBridge = source(
+      "src/components/tabletop/tabletop-floating-layout-bridge.tsx",
+    );
     expect(oldCss).toContain("--tadeon-tabletop-stage-top");
     expect(repairCss).toContain(".tadeon-tabletop-toolbar[data-tadeon-top-rail]");
-    expect(repairCss).toContain("position: static !important");
+    expect(repairCss).toContain("position: fixed !important");
+    expect(repairCss).toContain("--tadeon-tabletop-stage-fixed-top");
     expect(repairCss).toContain(".tadeon-tabletop-reliability-strip");
-    expect(repairCss).toContain('html[data-tadeon-tabletop-toprail="collapsed"]');
+    expect(repairCss).toContain('html[data-tadeon-tabletop-reliability="collapsed"]');
     expect(repairCss).toContain(".tadeon-tabletop-toprail-toggle");
+    expect(fixedMenusCss).toContain("--tadeon-tabletop-stage-fixed-bottom");
+    expect(fixedMenusCss).toContain("--tadeon-tabletop-stage-fixed-width");
+    expect(fixedMenusCss).toContain('html[data-tadeon-tabletop-tablet="true"]');
+    expect(fixedMenusCss).toContain("display: contents !important");
+    expect(fixedMenusCss).toContain("flex: 1 1 0 !important");
+    expect(floatingBridge).toContain("visualViewport");
+    expect(floatingBridge).toContain('window.addEventListener("scroll", schedule');
+    expect(floatingBridge).toContain("--tadeon-tabletop-stage-fixed-height");
     expect(bridge).toContain("ResizeObserver");
     expect(bridge).toContain("RELIABILITY_KEY");
     expect(bridge).not.toContain("TOP_RAIL_KEY");
@@ -46,6 +59,18 @@ describe("reconciliação urgente de UI", () => {
     expect(finalCss).toContain(
       "html[data-tadeon-tabletop-reliability] .tadeon-tabletop-toolbar",
     );
+  });
+
+  it("mantém dialogs de tablet na visual viewport sem reativar o layout de celular", () => {
+    const popupBridge = source("src/components/visual-viewport-popup-bridge.tsx");
+    const popupCss = source("src/styles/tablet-popup-viewport-237.css");
+    expect(popupBridge).toContain("shortestScreenSide");
+    expect(popupBridge).toContain('root.dataset.tadeonTabletPopup = "true"');
+    expect(popupBridge).toContain('window.visualViewport?.addEventListener("scroll", schedule');
+    expect(popupCss).toContain('html[data-tadeon-tablet-popup="true"]');
+    expect(popupCss).toContain("body:has(.tadeon-tabletop-studio)");
+    expect(popupCss).toContain("--tadeon-vv-center-y");
+    expect(popupCss).not.toContain("@media (min-width: 600px) and (max-width: 1180px)");
   });
 
   it("corrige o blackout na geometria do aviso de câmera e abandona o scanner invasivo", () => {
