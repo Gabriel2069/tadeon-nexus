@@ -1,0 +1,112 @@
+/* #235 — auditoria final antes do próximo detalhe delicado.
+   Não redesenha as páginas: corrige pequenas arestas de interação, acessibilidade,
+   custos de composição e consistência entre breakpoints após as últimas camadas. */
+
+/* Evita manter camadas de composição reservadas permanentemente em dezenas de
+   ícones. Os movimentos continuam idênticos, mas o navegador pode liberar a GPU
+   entre interações. */
+html body .tadeon-shell .tadeon-dashboard-signal > svg,
+html body .tadeon-shell .tadeon-user-row__sigil,
+html body .tadeon-shell .tadeon-route-offline [data-slot="tabs-trigger"] svg,
+html body .tadeon-shell .tadeon-tabletop-studio [data-slot="button"] > svg,
+html body .tadeon-shell[data-section="Painel do Mestre"] #tadeon-main [data-slot="button"] > svg,
+html body .tadeon-shell[data-section="Saúde do arquivo"] #tadeon-main [data-slot="button"] > svg {
+  will-change: auto !important;
+}
+
+/* Foco por teclado: a cor da aba pode complementar, mas nunca substituir um
+   contorno claro e afastado do controle. */
+html body .tadeon-shell #tadeon-main :is(
+  button,
+  a,
+  input,
+  textarea,
+  select,
+  [data-slot="select-trigger"],
+  [data-slot="tabs-trigger"]
+):focus-visible {
+  outline-width: 2px;
+  outline-style: solid;
+  outline-offset: 2px;
+}
+
+/* Os três sinais do Dashboard são informativos, não botões. Mantemos o hover
+   atmosférico apenas onde existe ponteiro fino e evitamos estados sticky em touch. */
+@media (hover: none), (pointer: coarse) {
+  html body .tadeon-shell[data-section="Dashboard"] .tadeon-dashboard-signal:hover {
+    background: transparent !important;
+    box-shadow: none !important;
+  }
+
+  html body .tadeon-shell[data-section="Dashboard"] .tadeon-dashboard-signal:hover > svg,
+  html body .tadeon-shell[data-section="Dashboard"] .tadeon-dashboard-hero .mb-5:hover > svg,
+  html body .tadeon-shell[data-section="Dashboard"] .tadeon-dashboard-hero [data-slot="button"]:hover svg,
+  html body .tadeon-shell[data-section="Usuários"] .tadeon-user-row:hover .tadeon-user-row__sigil,
+  html body .tadeon-shell[data-section="Consulta offline"] [data-slot="tabs-trigger"]:hover svg,
+  html body .tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-studio [data-slot="button"]:hover > svg,
+  html body .tadeon-shell[data-section="Painel do Mestre"] #tadeon-main [data-slot="button"]:hover > svg,
+  html body .tadeon-shell[data-section="Saúde do arquivo"] #tadeon-main [data-slot="button"]:hover > svg {
+    transform: none !important;
+    filter: none !important;
+  }
+}
+
+/* Compactação de segurança: ornamentos nunca podem ampliar a caixa de rolagem. */
+html body :is(
+  .tadeon-dashboard-hero,
+  .tadeon-tabletop-studio__header,
+  .tadeon-master-commandbar,
+  .tadeon-page-hero[data-tadeon-page-hero]
+) {
+  overflow: clip;
+}
+
+/* Preserva o recorte circular experimental dos símbolos sem permitir que um SVG
+   interno force dimensão diferente em navegadores mais antigos. */
+html body .tadeon-page-hero[data-tadeon-page-hero="users"] > .tadeon-page-hero-mark-host,
+html body .tadeon-page-hero[data-tadeon-page-hero="tools"] > .tadeon-page-hero-mark-host,
+html body .tadeon-page-hero[data-tadeon-page-hero="offline"] > .tadeon-page-hero-mark-host {
+  flex-shrink: 0 !important;
+  border-radius: 50% !important;
+}
+
+html body .tadeon-page-hero[data-tadeon-page-hero] > .tadeon-page-hero-mark-host > svg,
+html body .tadeon-master-commandbar__glow svg,
+html body .tadeon-tabletop-brand-mark-host > svg {
+  display: block;
+  max-width: 100%;
+  max-height: 100%;
+}
+
+/* Em telas muito estreitas, evita que título + ações disputem espaço horizontal
+   sem alterar a anatomia aprovada dos Heads. */
+@media (max-width: 419px) {
+  html body .tadeon-page-hero[data-tadeon-page-hero="users"] > div:nth-of-type(2),
+  html body .tadeon-page-hero[data-tadeon-page-hero="tools"] > div:first-of-type,
+  html body .tadeon-page-hero[data-tadeon-page-hero="offline"] > div:first-of-type,
+  html body .tadeon-master-commandbar > .relative.flex {
+    min-width: 0 !important;
+  }
+
+  html body .tadeon-page-hero[data-tadeon-page-hero] h1,
+  html body .tadeon-master-commandbar h1 {
+    overflow-wrap: anywhere;
+  }
+}
+
+/* Acessibilidade de movimento: cobre também transições adicionadas pelas camadas
+   cromáticas e o motion do Dashboard, não somente as animações contínuas. */
+@media (prefers-reduced-motion: reduce) {
+  html body .tadeon-shell #tadeon-main *,
+  html body .tadeon-shell #tadeon-main *::before,
+  html body .tadeon-shell #tadeon-main *::after,
+  html body .tadeon-dashboard-hero *,
+  html body .tadeon-dashboard-hero *::before,
+  html body .tadeon-dashboard-hero *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    transition-delay: 0ms !important;
+  }
+}
