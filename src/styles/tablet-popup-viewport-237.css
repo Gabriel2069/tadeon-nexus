@@ -1,5 +1,7 @@
-/* #247 — Tablet/iPad: a bridge detecta tablet pela tela física curta, cobrindo
-   também iPads largos em landscape sem tocar no contrato já validado do mobile. */
+/* #249 — Tablet/iPad: containment estrutural da visualViewport.
+   O conteúdo deixa de ser o elemento fixed responsável por perseguir offsets do
+   Safari. Um envelope fixed acompanha a área visível; o dialog fica relativo,
+   limitado pelo envelope e com rolagem interna. Mobile/desktop não são tocados. */
 :root {
   --tadeon-vv-left: 0px;
   --tadeon-vv-top: 0px;
@@ -8,98 +10,138 @@
   --tadeon-vv-center-x: 50vw;
   --tadeon-vv-center-y: 50dvh;
   --tadeon-vv-keyboard: 0px;
+  --tadeon-popup-vv-gap-top: max(.75rem, env(safe-area-inset-top, 0px));
+  --tadeon-popup-vv-gap-right: max(.75rem, env(safe-area-inset-right, 0px));
+  --tadeon-popup-vv-gap-bottom: max(.75rem, env(safe-area-inset-bottom, 0px));
+  --tadeon-popup-vv-gap-left: max(.75rem, env(safe-area-inset-left, 0px));
 }
 
-html[data-tadeon-tablet-popup="true"] [data-slot="dialog-content"],
-html[data-tadeon-tablet-popup="true"] [data-slot="alert-dialog-content"] {
+/* O overlay cobre o layout viewport inteiro. Isso é deliberado: a visualViewport
+   é sempre um subconjunto dele, então não dependemos de offsetTop para o fundo. */
+html[data-tadeon-tablet-popup="true"] body [data-slot="dialog-overlay"],
+html[data-tadeon-tablet-popup="true"] body [data-slot="alert-dialog-overlay"] {
   position: fixed !important;
-  box-sizing: border-box !important;
-  top: var(--tadeon-vv-center-y) !important;
+  inset: 0 !important;
+  width: auto !important;
+  height: auto !important;
+}
+
+/* Envelope estrutural inserido pelos componentes-base. Fora do dataset de
+   tablet ele é um div inerte e o comportamento antigo permanece intacto. */
+html[data-tadeon-tablet-popup="true"] body [data-slot="dialog-viewport"],
+html[data-tadeon-tablet-popup="true"] body [data-slot="alert-dialog-viewport"] {
+  position: fixed !important;
+  z-index: 50 !important;
+  top: var(--tadeon-vv-top) !important;
   right: auto !important;
   bottom: auto !important;
-  left: var(--tadeon-vv-center-x) !important;
-  width: min(calc(var(--tadeon-vv-width) - 2rem), var(--tadeon-popup-max-width, 44rem)) !important;
+  left: var(--tadeon-vv-left) !important;
+  display: flex !important;
+  width: var(--tadeon-vv-width) !important;
+  height: var(--tadeon-vv-height) !important;
   min-width: 0 !important;
-  max-width: calc(var(--tadeon-vv-width) - 2rem) !important;
   min-height: 0 !important;
-  max-height: calc(var(--tadeon-vv-height) - 2rem) !important;
+  box-sizing: border-box !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding:
+    var(--tadeon-popup-vv-gap-top)
+    var(--tadeon-popup-vv-gap-right)
+    var(--tadeon-popup-vv-gap-bottom)
+    var(--tadeon-popup-vv-gap-left) !important;
+  overflow: hidden !important;
+  overscroll-behavior: contain !important;
+  pointer-events: none !important;
+}
+
+/* A especificidade inclui html + body para vencer regras antigas de
+   pointer:coarse/bottom-sheet sem alterar essas regras para telefones. */
+html[data-tadeon-tablet-popup="true"] body [data-slot="dialog-content"],
+html[data-tadeon-tablet-popup="true"] body [data-slot="alert-dialog-content"] {
+  position: relative !important;
+  inset: auto !important;
+  top: auto !important;
+  right: auto !important;
+  bottom: auto !important;
+  left: auto !important;
+  box-sizing: border-box !important;
+  width: min(100%, var(--tadeon-popup-max-width, 44rem)) !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+  min-height: 0 !important;
+  max-height: 100% !important;
   margin: 0 !important;
   overflow-x: hidden !important;
   overflow-y: auto !important;
-  overscroll-behavior: contain;
-  transform: translate(-50%, -50%) !important;
+  overscroll-behavior: contain !important;
+  -webkit-overflow-scrolling: touch;
+  transform: none !important;
   transform-origin: center !important;
-  transition: opacity 160ms ease, transform 160ms ease !important;
+  pointer-events: auto !important;
+  transition: opacity 160ms ease !important;
 }
 
-/* A Mesa tinha uma regra de pointer:coarse que transformava todo iPad em
-   bottom-sheet. Esta variante deliberadamente mais específica restaura o
-   contrato de tablet sem alterar o bottom-sheet do telefone. */
+/* A Mesa tinha uma regra de pointer:coarse que transformava iPad em
+   bottom-sheet. O contrato tablet agora é estrutural e não depende de top/left. */
 html[data-tadeon-tablet-popup="true"] body:has(.tadeon-tabletop-studio) [data-slot="dialog-content"],
 html[data-tadeon-tablet-popup="true"] body:has(.tadeon-tabletop-studio) [data-slot="alert-dialog-content"] {
-  position: fixed !important;
-  top: var(--tadeon-vv-center-y) !important;
+  position: relative !important;
+  inset: auto !important;
+  top: auto !important;
   right: auto !important;
   bottom: auto !important;
-  left: var(--tadeon-vv-center-x) !important;
-  width: min(calc(var(--tadeon-vv-width) - 2rem), var(--tadeon-popup-max-width, 44rem)) !important;
-  max-width: calc(var(--tadeon-vv-width) - 2rem) !important;
-  max-height: calc(var(--tadeon-vv-height) - 2rem) !important;
+  left: auto !important;
+  width: min(100%, var(--tadeon-popup-max-width, 44rem)) !important;
+  max-width: 100% !important;
+  max-height: 100% !important;
   border-radius: var(--radius, .75rem) !important;
-  transform: translate(-50%, -50%) !important;
+  transform: none !important;
 }
 
-html[data-tadeon-tablet-popup="true"] [data-slot="dialog-content"]:has(> [data-slot="command"]) {
-  width: min(42rem, calc(var(--tadeon-vv-width) - 2rem)) !important;
-  max-width: calc(var(--tadeon-vv-width) - 2rem) !important;
+html[data-tadeon-tablet-popup="true"] body [data-slot="dialog-content"]:has(> [data-slot="command"]) {
+  width: min(100%, 42rem) !important;
+  max-width: 100% !important;
   overflow: hidden !important;
 }
 
-html[data-tadeon-tablet-popup="true"] [data-slot="dialog-content"] > *,
-html[data-tadeon-tablet-popup="true"] [data-slot="dialog-content"] form,
-html[data-tadeon-tablet-popup="true"] [data-slot="dialog-content"] form > *,
-html[data-tadeon-tablet-popup="true"] [data-slot="dialog-content"] [data-slot="select-trigger"],
-html[data-tadeon-tablet-popup="true"] [data-slot="alert-dialog-content"] > * {
+html[data-tadeon-tablet-popup="true"] body [data-slot="dialog-content"] > *,
+html[data-tadeon-tablet-popup="true"] body [data-slot="dialog-content"] form,
+html[data-tadeon-tablet-popup="true"] body [data-slot="dialog-content"] form > *,
+html[data-tadeon-tablet-popup="true"] body [data-slot="dialog-content"] [data-slot="select-trigger"],
+html[data-tadeon-tablet-popup="true"] body [data-slot="alert-dialog-content"] > * {
   box-sizing: border-box;
   min-width: 0 !important;
   max-width: 100% !important;
 }
 
-html[data-tadeon-tablet-popup="true"] [data-slot="dialog-content"] :is(label, span, p),
-html[data-tadeon-tablet-popup="true"] [data-slot="alert-dialog-content"] :is(label, span, p) {
+html[data-tadeon-tablet-popup="true"] body [data-slot="dialog-content"] :is(label, span, p),
+html[data-tadeon-tablet-popup="true"] body [data-slot="alert-dialog-content"] :is(label, span, p) {
   overflow-wrap: anywhere;
 }
 
-html[data-tadeon-tablet-popup="true"] [data-slot="dialog-content"]:has(> [data-slot="command"]) > [data-slot="command"] {
+html[data-tadeon-tablet-popup="true"] body [data-slot="dialog-content"]:has(> [data-slot="command"]) > [data-slot="command"] {
   display: flex !important;
   min-width: 0 !important;
   min-height: 0 !important;
   max-width: 100% !important;
-  max-height: inherit !important;
+  max-height: 100% !important;
+  flex: 1 1 auto !important;
   flex-direction: column !important;
   overflow: hidden !important;
 }
 
-html[data-tadeon-tablet-popup="true"] [data-slot="dialog-content"]:has(> [data-slot="command"]) [data-slot="command-list"] {
+html[data-tadeon-tablet-popup="true"] body [data-slot="dialog-content"]:has(> [data-slot="command"]) [data-slot="command-list"] {
   min-width: 0 !important;
   min-height: 0 !important;
   max-width: 100% !important;
+  flex: 1 1 auto !important;
   overflow-x: hidden !important;
   overflow-y: auto !important;
-  overscroll-behavior: contain;
+  overscroll-behavior: contain !important;
 }
 
-html[data-tadeon-tablet-popup="true"] [data-slot="dialog-overlay"],
-html[data-tadeon-tablet-popup="true"] [data-slot="alert-dialog-overlay"] {
-  position: fixed !important;
-  top: var(--tadeon-vv-top) !important;
-  right: auto !important;
-  bottom: auto !important;
-  left: var(--tadeon-vv-left) !important;
-  width: var(--tadeon-vv-width) !important;
-  height: var(--tadeon-vv-height) !important;
-}
-
+/* Popper surfaces continuam sob responsabilidade do Radix para anchor/collision,
+   mas nunca podem crescer além da área visível reportada pela visualViewport. */
 html[data-tadeon-tablet-popup="true"] :is(
   [data-slot="popover-content"],
   [data-slot="select-content"],
@@ -115,7 +157,7 @@ html[data-tadeon-tablet-popup="true"] :is(
   max-height: min(38rem, calc(var(--tadeon-vv-height) - 1.5rem)) !important;
   overflow-x: hidden !important;
   overflow-y: auto !important;
-  overscroll-behavior: contain;
+  overscroll-behavior: contain !important;
 }
 
 html[data-tadeon-tablet-popup="true"] :where([data-slot="command-list"], [data-slot="scroll-area-viewport"]) {
@@ -123,17 +165,20 @@ html[data-tadeon-tablet-popup="true"] :where([data-slot="command-list"], [data-s
   overscroll-behavior: contain;
 }
 
-/* Com teclado aberto o dialog usa o topo da visualViewport e scroll interno;
-   não há correção de posição por MutationObserver/focus, evitando o sobe-desce. */
-html[data-tadeon-tablet-popup="true"][data-tadeon-keyboard-open="true"] [data-slot="dialog-content"],
-html[data-tadeon-tablet-popup="true"][data-tadeon-keyboard-open="true"] [data-slot="alert-dialog-content"],
-html[data-tadeon-tablet-popup="true"][data-tadeon-keyboard-open="true"] body:has(.tadeon-tabletop-studio) [data-slot="dialog-content"],
-html[data-tadeon-tablet-popup="true"][data-tadeon-keyboard-open="true"] body:has(.tadeon-tabletop-studio) [data-slot="alert-dialog-content"] {
-  top: calc(var(--tadeon-vv-top) + .75rem) !important;
-  bottom: auto !important;
-  transform: translateX(-50%) !important;
+/* Com teclado aberto a visualViewport já reduz a altura do envelope. Alinhar
+   no topo evita que um formulário alto seja recentrado a cada mudança do teclado. */
+html[data-tadeon-tablet-popup="true"][data-tadeon-keyboard-open="true"] body [data-slot="dialog-viewport"],
+html[data-tadeon-tablet-popup="true"][data-tadeon-keyboard-open="true"] body [data-slot="alert-dialog-viewport"] {
+  align-items: flex-start !important;
+}
+
+html[data-tadeon-tablet-popup="true"][data-tadeon-keyboard-open="true"] body :where(
+  [data-slot="dialog-content"],
+  [data-slot="alert-dialog-content"]
+) {
+  max-height: 100% !important;
   transform-origin: top center !important;
-  max-height: calc(var(--tadeon-vv-height) - 1.5rem) !important;
+  scroll-padding-block: 3.5rem 1rem;
 }
 
 html[data-tadeon-tablet-popup="true"][data-tadeon-keyboard-open="true"] :where(
@@ -141,16 +186,16 @@ html[data-tadeon-tablet-popup="true"][data-tadeon-keyboard-open="true"] :where(
   [data-slot="alert-dialog-content"],
   [data-slot="popover-content"],
   [data-slot="select-content"]
-) :is(input, textarea):focus {
+) :is(input, textarea, [contenteditable="true"]):focus {
   scroll-margin-block: 4rem;
 }
 
-/* Mobile deliberadamente sem overrides: o dataset nunca é ligado quando o
-   menor lado físico da tela tem menos de 600 CSS px. */
+/* Mobile deliberadamente sem overrides: o dataset só é ligado para iPad-like
+   ou tela física de tablet com pointer coarse. Desktop também fica intacto. */
 
 @media (prefers-reduced-motion: reduce) {
-  html[data-tadeon-tablet-popup="true"] [data-slot="dialog-content"],
-  html[data-tadeon-tablet-popup="true"] [data-slot="alert-dialog-content"] {
+  html[data-tadeon-tablet-popup="true"] body [data-slot="dialog-content"],
+  html[data-tadeon-tablet-popup="true"] body [data-slot="alert-dialog-content"] {
     transition: none !important;
   }
 }
