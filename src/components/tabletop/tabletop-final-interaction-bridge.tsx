@@ -13,12 +13,39 @@ const db = supabase as unknown as SupabaseClient;
 type RenameKind = "entity" | "wall" | "light" | "fog";
 type RenameItem = { id: string; kind: RenameKind; label: string };
 
+function cssPixels(name: string) {
+  const value = window.getComputedStyle(document.documentElement).getPropertyValue(name);
+  const parsed = Number.parseFloat(value);
+  return Number.isFinite(parsed) ? parsed : 0;
+}
+
+function safeCanvasBounds(host: DOMRect, padding: number) {
+  const safeLeft = cssPixels("--tadeon-tabletop-safe-left");
+  const safeRight = cssPixels("--tadeon-tabletop-safe-right");
+  const safeTop = cssPixels("--tadeon-tabletop-safe-top");
+  const safeBottom = cssPixels("--tadeon-tabletop-safe-bottom");
+  const left = Math.max(host.left + padding, safeLeft + padding);
+  const right = Math.min(host.right - padding, window.innerWidth - safeRight - padding);
+  const top = Math.max(host.top + padding, safeTop + padding);
+  const bottom = Math.min(host.bottom - padding, window.innerHeight - safeBottom - padding);
+  return {
+    left: right > left ? left : host.left + padding,
+    right: right > left ? right : host.right - padding,
+    top: bottom > top ? top : host.top + padding,
+    bottom: bottom > top ? bottom : host.bottom - padding,
+  };
+}
+
 function radialAnchor(entity: TabletopEntity) {
   const runtime = currentTabletopRuntime();
   if (!runtime) return null;
   const point = runtime.worldToClient({ x: entity.x + entity.width / 2, y: entity.y });
   const host = runtime.host.getBoundingClientRect();
-  return { x: Math.max(host.left + 34, Math.min(host.right - 34, point.x)), y: Math.max(host.top + 28, Math.min(host.bottom - 34, point.y - 30)) };
+  const bounds = safeCanvasBounds(host, 34);
+  return {
+    x: Math.max(bounds.left, Math.min(bounds.right, point.x)),
+    y: Math.max(bounds.top, Math.min(bounds.bottom, point.y - 30)),
+  };
 }
 
 function closeTransientTabletopPanel() {
@@ -107,9 +134,10 @@ export function TabletopFinalInteractionBridge() {
         const center = runtime?.worldToClient({ x: entity.x + entity.width / 2, y: entity.y + entity.height / 2 });
         const host = runtime?.host.getBoundingClientRect();
         if (center && host) {
+          const bounds = safeCanvasBounds(host, 92);
           radial.style.position = "fixed";
-          radial.style.left = `${Math.max(host.left + 92, Math.min(host.right - 92, center.x))}px`;
-          radial.style.top = `${Math.max(host.top + 92, Math.min(host.bottom - 92, center.y))}px`;
+          radial.style.left = `${Math.max(bounds.left, Math.min(bounds.right, center.x))}px`;
+          radial.style.top = `${Math.max(bounds.top, Math.min(bounds.bottom, center.y))}px`;
         }
       }
       const header = document.querySelector<HTMLElement>(".tadeon-placeables__panel > header");
