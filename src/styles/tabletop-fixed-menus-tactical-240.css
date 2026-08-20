@@ -1,0 +1,226 @@
+/* #240 — menus estáveis na viewport; apenas o Dock explicitamente móvel fica livre.
+   O controle tático deixa a pilha central e vira uma barra secundária compacta. */
+
+html:has(.tadeon-tabletop-studio) {
+  --tadeon-tabletop-fixed-top: max(4.6rem, calc(env(safe-area-inset-top) + 4rem));
+  --tadeon-tabletop-fixed-side: max(.7rem, env(safe-area-inset-left));
+  --tadeon-tabletop-fixed-side-right: max(.7rem, env(safe-area-inset-right));
+}
+
+/* Chrome do mapa: verdadeiramente fixo. Não segue mais o stage durante scroll. */
+.tadeon-tabletop-canvas-rail,
+.tadeon-tabletop-tool-options {
+  position: fixed !important;
+  top: var(--tadeon-tabletop-fixed-top) !important;
+  bottom: auto !important;
+  transform: none !important;
+}
+
+.tadeon-tabletop-canvas-rail {
+  left: var(--tadeon-tabletop-fixed-side) !important;
+  right: auto !important;
+  max-width: min(3.25rem, calc(100vw - 1.4rem)) !important;
+}
+
+.tadeon-tabletop-tool-options {
+  right: var(--tadeon-tabletop-fixed-side-right) !important;
+  left: auto !important;
+  width: auto !important;
+  max-width: min(36rem, calc(100vw - 5.4rem)) !important;
+}
+
+/* Demais superfícies deixam de "acompanhar" conteúdo rolável. O Dock principal
+   não é incluído aqui para preservar sua mobilidade/drag. */
+:where(
+  .tadeon-tactical-dock,
+  .tadeon-tabletop-selection-actions,
+  .tadeon-tabletop-now,
+  .tadeon-placeables,
+  .tadeon-semantic-transform,
+  .tadeon-nexus-tabletop-locator,
+  .tadeon-tabletop-reliability-strip,
+  .tadeon-director-enhancement-bar,
+  .tadeon-tabletop-precision-editor,
+  .tadeon-creative-dock
+) {
+  position: fixed !important;
+}
+
+/* Controle tático: pequeno, secundário e fora do centro visual da cena. */
+.tadeon-tactical-dock {
+  z-index: 94 !important;
+  right: auto !important;
+  left: max(.7rem, env(safe-area-inset-left)) !important;
+  bottom: calc(
+    max(.7rem, env(safe-area-inset-bottom)) +
+    var(--tadeon-tabletop-app-bottom, 0px) +
+    var(--tadeon-tabletop-progressive-h, 3.2rem) +
+    .45rem
+  ) !important;
+  width: max-content !important;
+  max-width: min(23rem, calc(100vw - 1.4rem)) !important;
+  min-height: 0 !important;
+  gap: .12rem !important;
+  padding: .2rem !important;
+  border-radius: .72rem !important;
+  transform: none !important;
+  overflow-x: auto !important;
+  overflow-y: visible !important;
+  overscroll-behavior-inline: contain;
+  scrollbar-width: none;
+}
+
+.tadeon-tactical-dock::-webkit-scrollbar { display: none; }
+
+.tadeon-tactical-dock :is(button, [role="button"]) {
+  min-width: 1.9rem !important;
+  min-height: 1.9rem !important;
+  height: 1.9rem !important;
+  gap: .22rem !important;
+  padding: .24rem .38rem !important;
+  border-radius: .52rem !important;
+  font-size: .58rem !important;
+  line-height: 1 !important;
+}
+
+.tadeon-tactical-dock :is(button, [role="button"]) svg {
+  width: .72rem !important;
+  height: .72rem !important;
+  flex: 0 0 .72rem !important;
+}
+
+.tadeon-tactical-dock :is(small, kbd) {
+  font-size: .48rem !important;
+}
+
+.tadeon-tactical-dock__power-list {
+  max-width: min(18rem, calc(100vw - 1.4rem)) !important;
+  max-height: min(42dvh, 22rem) !important;
+  overflow: auto !important;
+}
+
+/* Seleção fica próxima ao Dock móvel, mas sem disputar exatamente o mesmo eixo. */
+.tadeon-tabletop-selection-actions {
+  right: max(.7rem, env(safe-area-inset-right)) !important;
+  left: auto !important;
+  bottom: calc(
+    max(.7rem, env(safe-area-inset-bottom)) +
+    var(--tadeon-tabletop-app-bottom, 0px) +
+    var(--tadeon-tabletop-progressive-h, 3.2rem) +
+    .45rem
+  ) !important;
+  max-width: min(30rem, calc(100vw - 1.4rem)) !important;
+  transform: none !important;
+}
+
+/* Utilidades laterais recebem slots fixos e previsíveis. */
+.tadeon-tabletop-now {
+  left: max(.7rem, env(safe-area-inset-left)) !important;
+  right: auto !important;
+  bottom: calc(max(.7rem, env(safe-area-inset-bottom)) + var(--tadeon-tabletop-app-bottom, 0px)) !important;
+}
+
+.tadeon-placeables {
+  right: max(.7rem, env(safe-area-inset-right)) !important;
+  left: auto !important;
+  bottom: calc(max(.7rem, env(safe-area-inset-bottom)) + var(--tadeon-tabletop-app-bottom, 0px)) !important;
+}
+
+.tadeon-semantic-transform {
+  right: max(.7rem, env(safe-area-inset-right)) !important;
+  left: auto !important;
+  bottom: calc(
+    max(.7rem, env(safe-area-inset-bottom)) +
+    var(--tadeon-tabletop-app-bottom, 0px) +
+    var(--tadeon-tabletop-placeables-h, 0px) + .45rem
+  ) !important;
+}
+
+.tadeon-nexus-tabletop-locator {
+  right: max(.7rem, env(safe-area-inset-right)) !important;
+  left: auto !important;
+  bottom: calc(
+    max(.7rem, env(safe-area-inset-bottom)) +
+    var(--tadeon-tabletop-app-bottom, 0px) +
+    var(--tadeon-tabletop-placeables-h, 0px) +
+    var(--tadeon-tabletop-semantic-h, 0px) + .9rem
+  ) !important;
+}
+
+/* Tablet: tático continua compacto e não volta a ocupar a largura inteira. */
+@media (max-width: 1179px) {
+  html:has(.tadeon-tabletop-studio) {
+    --tadeon-tabletop-fixed-top: max(4.25rem, calc(env(safe-area-inset-top) + 3.7rem));
+  }
+
+  .tadeon-tactical-dock {
+    left: max(.55rem, env(safe-area-inset-left)) !important;
+    right: auto !important;
+    width: auto !important;
+    max-width: min(19rem, calc(100vw - 1.1rem)) !important;
+    justify-content: flex-start !important;
+  }
+
+  .tadeon-tabletop-selection-actions {
+    right: max(.55rem, env(safe-area-inset-right)) !important;
+    left: auto !important;
+    width: auto !important;
+    max-width: min(22rem, calc(100vw - 1.1rem)) !important;
+  }
+
+  .tadeon-tabletop-tool-options {
+    max-width: min(30rem, calc(100vw - 4.8rem)) !important;
+  }
+}
+
+@media (max-width: 800px) {
+  html:has(.tadeon-tabletop-studio) {
+    --tadeon-tabletop-fixed-top: max(3.9rem, calc(env(safe-area-inset-top) + 3.4rem));
+  }
+
+  .tadeon-tactical-dock {
+    bottom: calc(
+      max(.55rem, env(safe-area-inset-bottom)) +
+      var(--tadeon-tabletop-app-bottom, 0px) +
+      var(--tadeon-tabletop-progressive-h, 3.2rem) + .38rem
+    ) !important;
+    max-width: min(15.5rem, calc(100vw - 1.1rem)) !important;
+  }
+
+  .tadeon-tactical-dock :is(button, [role="button"]) {
+    min-width: 1.78rem !important;
+    min-height: 1.78rem !important;
+    height: 1.78rem !important;
+    padding-inline: .31rem !important;
+    font-size: .54rem !important;
+  }
+
+  .tadeon-tabletop-selection-actions {
+    bottom: calc(
+      max(.55rem, env(safe-area-inset-bottom)) +
+      var(--tadeon-tabletop-app-bottom, 0px) +
+      var(--tadeon-tabletop-progressive-h, 3.2rem) + .38rem
+    ) !important;
+    max-width: min(13rem, calc(100vw - 1.1rem)) !important;
+  }
+
+  .tadeon-tabletop-canvas-rail {
+    max-height: min(52dvh, calc(100dvh - var(--tadeon-tabletop-fixed-top) - var(--tadeon-tabletop-app-bottom, 0px) - 1rem)) !important;
+  }
+
+  .tadeon-tabletop-tool-options {
+    max-width: calc(100vw - 4.45rem) !important;
+    max-height: min(42dvh, calc(100dvh - var(--tadeon-tabletop-fixed-top) - var(--tadeon-tabletop-app-bottom, 0px) - 1rem)) !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :where(
+    .tadeon-tactical-dock,
+    .tadeon-tabletop-selection-actions,
+    .tadeon-tabletop-canvas-rail,
+    .tadeon-tabletop-tool-options
+  ) {
+    transition: none !important;
+  }
+}
