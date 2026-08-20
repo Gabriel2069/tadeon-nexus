@@ -15,6 +15,7 @@ import "@/styles/head-system-audit-224.css";
 import "@/styles/head-background-coverage-225.css";
 import "@/styles/offline-meta-row-226.css";
 import "@/styles/head-final-polish-227.css";
+import "@/styles/tab-accent-propagation-228.css";
 
 type HeroKind = Extract<AppSectionSymbol, "users" | "tools" | "offline">;
 type IconKind = HeroKind | "tabletop" | "brand";
@@ -54,8 +55,6 @@ function heroConfigForPath(pathname: string): HeroConfig | null {
 }
 
 function focusIconForPath(pathname: string): IconKind {
-  // O cabeçalho global "Área em foco" pertence ao Tadeon. A seção muda apenas
-  // sua cor; o símbolo é deliberadamente o mesmo BrandMark em todas as rotas.
   return "brand";
 }
 
@@ -79,9 +78,6 @@ function ensureHost(container: HTMLElement, className: string) {
 }
 
 function lockDesktopFocusGeometry(container: HTMLElement) {
-  /* #212 still contains one Mesa-only 2.25rem column with !important. Inline
-     important values deliberately remove that last route-specific geometry so
-     every desktop/tablet focus identity uses the exact same coordinates. */
   container.style.setProperty("display", "grid", "important");
   container.style.setProperty(
     "grid-template-columns",
