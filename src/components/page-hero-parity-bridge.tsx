@@ -14,6 +14,7 @@ import "@/styles/head-rich-signatures-223.css";
 import "@/styles/head-system-audit-224.css";
 import "@/styles/head-background-coverage-225.css";
 import "@/styles/offline-meta-row-226.css";
+import "@/styles/head-final-polish-227.css";
 
 type HeroKind = Extract<AppSectionSymbol, "users" | "tools" | "offline">;
 type IconKind = HeroKind | "tabletop" | "brand";
@@ -52,24 +53,46 @@ function heroConfigForPath(pathname: string): HeroConfig | null {
   return null;
 }
 
+function focusIconForPath(pathname: string): IconKind {
+  // O cabeçalho global "Área em foco" pertence ao Tadeon. A seção muda apenas
+  // sua cor; o símbolo é deliberadamente o mesmo BrandMark em todas as rotas.
+  return "brand";
+}
+
 function renderIcon(icon: IconKind, className: string) {
   if (icon === "brand") return <BrandMark className={className} />;
   return <SectionSymbol section={icon} className={className} />;
 }
 
 function ensureHost(container: HTMLElement, className: string) {
-  const hosts = Array.from(
+  const matches = Array.from(
     container.querySelectorAll<HTMLElement>(`:scope > .${className}`),
   );
-  const [host, ...duplicates] = hosts;
+  const [host, ...duplicates] = matches;
   duplicates.forEach((node) => node.remove());
   if (host) return host;
+  const created = document.createElement("span");
+  created.className = className;
+  created.setAttribute("aria-hidden", "true");
+  container.prepend(created);
+  return created;
+}
 
-  const nextHost = document.createElement("span");
-  nextHost.className = className;
-  nextHost.setAttribute("aria-hidden", "true");
-  container.prepend(nextHost);
-  return nextHost;
+function lockDesktopFocusGeometry(container: HTMLElement) {
+  /* #212 still contains one Mesa-only 2.25rem column with !important. Inline
+     important values deliberately remove that last route-specific geometry so
+     every desktop/tablet focus identity uses the exact same coordinates. */
+  container.style.setProperty("display", "grid", "important");
+  container.style.setProperty(
+    "grid-template-columns",
+    "2.45rem minmax(0, 1fr)",
+    "important",
+  );
+  container.style.setProperty("grid-template-rows", "auto auto", "important");
+  container.style.setProperty("column-gap", ".85rem", "important");
+  container.style.setProperty("row-gap", ".08rem", "important");
+  container.style.setProperty("align-items", "center", "important");
+  container.style.setProperty("padding", "0", "important");
 }
 
 function clearStaleHeroes(active?: HTMLElement | null) {
@@ -114,8 +137,8 @@ export function PageHeroParityBridge() {
     const sync = () => {
       clearLegacyFocusHosts();
       const next: PortalSpec[] = [];
+      const focusIcon = focusIconForPath(pathname);
 
-      /* Área em foco: SEMPRE BrandMark do Tadeon. A rota muda apenas a cor. */
       const mobileFocusIdentity = document.querySelector<HTMLElement>(
         ".tadeon-mobile-header__identity",
       );
@@ -123,7 +146,7 @@ export function PageHeroParityBridge() {
         next.push({
           host: ensureHost(mobileFocusIdentity, "tadeon-focus-section-mark-host"),
           key: "focus:mobile",
-          icon: "brand",
+          icon: focusIcon,
           iconClassName: "tadeon-focus-section-mark-icon",
         });
       }
@@ -132,15 +155,15 @@ export function PageHeroParityBridge() {
         ".tadeon-desktop-toolbar > .min-w-0",
       );
       if (desktopFocusIdentity) {
+        lockDesktopFocusGeometry(desktopFocusIdentity);
         next.push({
           host: ensureHost(desktopFocusIdentity, "tadeon-focus-section-mark-host"),
           key: "focus:desktop",
-          icon: "brand",
+          icon: focusIcon,
           iconClassName: "tadeon-focus-section-mark-icon",
         });
       }
 
-      /* Mesa interna: mantém somente o símbolo real da aba no estúdio. */
       if (pathname.startsWith("/tabletop")) {
         const studioBrand = document.querySelector<HTMLElement>(
           "#tadeon-main .tadeon-tabletop-studio__brand",
