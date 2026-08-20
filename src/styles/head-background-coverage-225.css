@@ -1,0 +1,238 @@
+/* #225 — cobertura visual dos fundos.
+   Objetivo: aproximar Mesa / Painel / Backup / Offline da ocupação visual de
+   Usuários e O Nexus, sem alterar paleta, tipografia, símbolos ou conteúdo. */
+
+/* -------------------------------------------------------------------------- */
+/* MESA — cartografia passa a atravessar praticamente todo o hero             */
+/* -------------------------------------------------------------------------- */
+html body .tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-studio__header {
+  background:
+    radial-gradient(circle at 12% 74%, rgb(var(--section-accent-rgb) / 9%) 0 .08rem, transparent .11rem),
+    radial-gradient(circle at 33% 22%, color-mix(in srgb, var(--section-secondary) 12%, transparent) 0 .07rem, transparent .1rem),
+    radial-gradient(circle at 52% 67%, rgb(var(--section-accent-rgb) / 11%) 0 .075rem, transparent .105rem),
+    radial-gradient(circle at 71% 24%, rgb(var(--section-accent-rgb) / 25%) 0 .085rem, transparent .115rem),
+    radial-gradient(circle at 87% 63%, color-mix(in srgb, var(--section-secondary) 25%, transparent) 0 .08rem, transparent .11rem),
+    linear-gradient(117deg, transparent 0 31%, rgb(var(--section-accent-rgb) / 3.8%) 31.15% 31.45%, transparent 31.7% 67%, rgb(var(--section-accent-rgb) / 5%) 67.2% 67.5%, transparent 67.8%),
+    repeating-linear-gradient(90deg, transparent 0 2.05rem, rgb(var(--section-accent-rgb) / 3%) 2.05rem 2.09rem),
+    repeating-linear-gradient(0deg, transparent 0 1.55rem, color-mix(in srgb, var(--section-secondary) 3.2%, transparent) 1.55rem 1.59rem),
+    radial-gradient(ellipse at 22% 12%, rgb(var(--section-accent-rgb) / 8%), transparent 16rem),
+    radial-gradient(ellipse at 78% 30%, rgb(var(--section-accent-rgb) / 10%), transparent 15rem),
+    radial-gradient(ellipse at 92% 118%, color-mix(in srgb, var(--section-secondary) 8%, transparent), transparent 14rem),
+    linear-gradient(138deg, rgb(255 255 255 / 3%), transparent 42%),
+    linear-gradient(145deg, rgb(16 20 24 / 96%), rgb(8 11 15 / 96%)) !important;
+  background-size: auto !important;
+}
+
+html body .tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-studio__header::before {
+  top: -10.8rem !important;
+  right: 1.5% !important;
+  width: 24rem !important;
+  height: 24rem !important;
+  opacity: .88 !important;
+}
+
+html body .tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-studio__header::after {
+  right: 20% !important;
+  bottom: -9.5rem !important;
+  width: 17rem !important;
+  height: 17rem !important;
+  opacity: .75 !important;
+}
+
+/* -------------------------------------------------------------------------- */
+/* BACKUP — blueprint ocupa largura total em vez de ficar concentrado à direita */
+/* -------------------------------------------------------------------------- */
+html body .tadeon-shell[data-section="Saúde do arquivo"]
+  .tadeon-page-hero[data-tadeon-page-hero="tools"] {
+  background:
+    radial-gradient(circle at 9% 18%, rgb(var(--section-accent-rgb) / 9%), transparent 12rem),
+    radial-gradient(circle at 46% 118%, color-mix(in srgb, var(--section-secondary) 6%, transparent), transparent 14rem),
+    radial-gradient(circle at 87% 7%, rgb(var(--section-accent-rgb) / 17%), transparent 11rem),
+    repeating-linear-gradient(0deg, transparent 0 1.08rem, rgb(var(--section-accent-rgb) / 3.2%) 1.08rem 1.12rem, transparent 1.12rem 2.18rem),
+    repeating-linear-gradient(90deg, transparent 0 2.35rem, rgb(var(--section-accent-rgb) / 3.7%) 2.35rem 2.39rem),
+    linear-gradient(90deg, transparent 0 16%, rgb(var(--section-accent-rgb) / 4%) 16.15% 16.35%, transparent 16.55% 51%, color-mix(in srgb, var(--section-secondary) 3.5%, transparent) 51.15% 51.35%, transparent 51.55%),
+    linear-gradient(116deg, transparent 0 62%, rgb(var(--section-accent-rgb) / 5.5%) 62.2% 62.5%, transparent 62.8%),
+    linear-gradient(145deg, rgb(18 21 26 / 98%), rgb(8 11 15 / 98%)) !important;
+}
+
+html body .tadeon-shell[data-section="Saúde do arquivo"]
+  .tadeon-page-hero[data-tadeon-page-hero="tools"]::after {
+  top: .3rem !important;
+  right: -1.2rem !important;
+  width: 25rem !important;
+  height: 6.9rem !important;
+  opacity: .92 !important;
+}
+
+html body .tadeon-shell[data-section="Saúde do arquivo"]
+  .tadeon-page-hero[data-tadeon-page-hero="tools"]::before {
+  right: 3% !important;
+  bottom: .28rem !important;
+  width: 20rem !important;
+  height: 1.7rem !important;
+  opacity: .78 !important;
+}
+
+/* -------------------------------------------------------------------------- */
+/* OFFLINE — ecos e interferência atravessam o hero em vários quadrantes      */
+/* -------------------------------------------------------------------------- */
+html body .tadeon-shell[data-section="Consulta offline"]
+  .tadeon-page-hero[data-tadeon-page-hero="offline"] {
+  background:
+    radial-gradient(ellipse at 10% 10%, rgb(var(--section-accent-rgb) / 8%), transparent 12rem),
+    radial-gradient(ellipse at 42% 120%, color-mix(in srgb, var(--section-secondary) 6%, transparent), transparent 13rem),
+    radial-gradient(ellipse at 86% 14%, rgb(var(--section-accent-rgb) / 17%), transparent 12rem),
+    radial-gradient(circle at 24% 32%, rgb(var(--section-accent-rgb) / 10%) 0 .065rem, transparent .095rem),
+    radial-gradient(circle at 48% 72%, color-mix(in srgb, var(--section-secondary) 12%, transparent) 0 .07rem, transparent .1rem),
+    radial-gradient(circle at 72% 28%, rgb(var(--section-accent-rgb) / 18%) 0 .08rem, transparent .11rem),
+    radial-gradient(circle at 82% 56%, rgb(var(--section-accent-rgb) / 13%) 0 .07rem, transparent .1rem),
+    repeating-linear-gradient(128deg, transparent 0 1.02rem, rgb(var(--section-accent-rgb) / 3.4%) 1.02rem 1.08rem, transparent 1.08rem 2.34rem),
+    repeating-linear-gradient(90deg, transparent 0 3.6rem, color-mix(in srgb, var(--section-secondary) 2.4%, transparent) 3.6rem 3.65rem),
+    linear-gradient(102deg, transparent 0 27%, rgb(var(--section-accent-rgb) / 4.2%) 27.2% 27.5%, transparent 27.8% 49%, rgb(var(--section-accent-rgb) / 5.5%) 49.2% 49.5%, transparent 49.8%),
+    linear-gradient(145deg, rgb(17 19 25 / 98%), rgb(8 10 15 / 98%)) !important;
+}
+
+html body .tadeon-shell[data-section="Consulta offline"]
+  .tadeon-page-hero[data-tadeon-page-hero="offline"]::after {
+  top: -6.8rem !important;
+  right: -2.2rem !important;
+  width: 27rem !important;
+  height: 19rem !important;
+  opacity: .88 !important;
+}
+
+html body .tadeon-shell[data-section="Consulta offline"]
+  .tadeon-page-hero[data-tadeon-page-hero="offline"]::before {
+  right: -1.4rem !important;
+  bottom: -.5rem !important;
+  width: 22rem !important;
+  height: 4.6rem !important;
+  opacity: .72 !important;
+}
+
+/* -------------------------------------------------------------------------- */
+/* PAINEL — astrolábio cruza o head inteiro e ganha segundo campo de direção  */
+/* -------------------------------------------------------------------------- */
+html body .tadeon-shell[data-section="Painel do Mestre"] .tadeon-master-commandbar {
+  background:
+    radial-gradient(circle at 7% 18%, rgb(var(--section-accent-rgb) / 20%), transparent 12rem),
+    radial-gradient(circle at 44% 120%, rgb(217 215 164 / 4.5%), transparent 14rem),
+    radial-gradient(circle at 81% -28%, rgb(var(--section-accent-rgb) / 17%), transparent 17rem),
+    radial-gradient(circle at 94% 112%, rgb(217 215 164 / 6.5%), transparent 14rem),
+    linear-gradient(118deg, transparent 0 29%, rgb(var(--section-accent-rgb) / 4.5%) 29.15% 29.4%, transparent 29.7% 58%, rgb(var(--section-accent-rgb) / 7%) 58.2% 58.5%, transparent 58.8%),
+    linear-gradient(72deg, transparent 0 48%, rgb(217 215 164 / 3.2%) 48.15% 48.4%, transparent 48.7% 73%, rgb(217 215 164 / 4%) 73.2% 73.45%, transparent 73.7%),
+    linear-gradient(90deg, rgb(var(--section-accent-rgb) / 2.15%) 1px, transparent 1px),
+    linear-gradient(rgb(217 215 164 / 1.55%) 1px, transparent 1px),
+    linear-gradient(145deg, rgb(20 14 17 / 98%), rgb(8 10 14 / 98%)) !important;
+  background-size: auto, auto, auto, auto, auto, auto, 38px 38px, 38px 38px, auto !important;
+}
+
+html body .tadeon-shell[data-section="Painel do Mestre"] .tadeon-master-commandbar::before {
+  top: -11.6rem !important;
+  right: -2.8rem !important;
+  width: 27rem !important;
+  height: 27rem !important;
+  opacity: .9 !important;
+}
+
+html body .tadeon-shell[data-section="Painel do Mestre"] .tadeon-master-commandbar::after {
+  right: .8rem !important;
+  bottom: .18rem !important;
+  width: 23rem !important;
+  height: 2.8rem !important;
+  opacity: .82 !important;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Tablet: continua preenchido, mas desloca o centro visual para fora do texto */
+/* -------------------------------------------------------------------------- */
+@media (min-width: 640px) and (max-width: 1023px) {
+  html body .tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-studio__header::before {
+    right: -7rem !important;
+    width: 22rem !important;
+    height: 22rem !important;
+    opacity: .68 !important;
+  }
+
+  html body .tadeon-shell[data-section="Saúde do arquivo"]
+    .tadeon-page-hero[data-tadeon-page-hero="tools"]::after {
+    right: -9rem !important;
+    width: 23rem !important;
+    opacity: .68 !important;
+  }
+
+  html body .tadeon-shell[data-section="Consulta offline"]
+    .tadeon-page-hero[data-tadeon-page-hero="offline"]::after {
+    right: -10rem !important;
+    width: 24rem !important;
+    opacity: .64 !important;
+  }
+
+  html body .tadeon-shell[data-section="Painel do Mestre"] .tadeon-master-commandbar::before {
+    right: -10rem !important;
+    width: 24rem !important;
+    height: 24rem !important;
+    opacity: .66 !important;
+  }
+}
+
+/* Mobile: fundo ainda ocupa área perceptível, mas fica atrás do conteúdo. */
+@media (max-width: 639px) {
+  html body .tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-studio__header::before {
+    right: -9rem !important;
+    width: 19rem !important;
+    height: 19rem !important;
+    opacity: .5 !important;
+  }
+
+  html body .tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-studio__header::after {
+    right: 2rem !important;
+    bottom: -8rem !important;
+    width: 13rem !important;
+    height: 13rem !important;
+    opacity: .46 !important;
+  }
+
+  html body .tadeon-shell[data-section="Saúde do arquivo"]
+    .tadeon-page-hero[data-tadeon-page-hero="tools"]::after {
+    right: -11rem !important;
+    width: 20rem !important;
+    height: 5.4rem !important;
+    opacity: .48 !important;
+  }
+
+  html body .tadeon-shell[data-section="Saúde do arquivo"]
+    .tadeon-page-hero[data-tadeon-page-hero="tools"]::before {
+    right: -3rem !important;
+    width: 12rem !important;
+    opacity: .42 !important;
+  }
+
+  html body .tadeon-shell[data-section="Consulta offline"]
+    .tadeon-page-hero[data-tadeon-page-hero="offline"]::after {
+    right: -11rem !important;
+    width: 20rem !important;
+    height: 13rem !important;
+    opacity: .46 !important;
+  }
+
+  html body .tadeon-shell[data-section="Consulta offline"]
+    .tadeon-page-hero[data-tadeon-page-hero="offline"]::before {
+    right: -4rem !important;
+    width: 13rem !important;
+    opacity: .4 !important;
+  }
+
+  html body .tadeon-shell[data-section="Painel do Mestre"] .tadeon-master-commandbar::before {
+    right: -11rem !important;
+    width: 20rem !important;
+    height: 20rem !important;
+    opacity: .48 !important;
+  }
+
+  html body .tadeon-shell[data-section="Painel do Mestre"] .tadeon-master-commandbar::after {
+    right: -4rem !important;
+    width: 13rem !important;
+    opacity: .42 !important;
+  }
+}
