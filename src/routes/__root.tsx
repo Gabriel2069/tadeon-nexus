@@ -36,6 +36,7 @@ import { Toaster } from "@/components/ui/sonner";
 import { PwaRegistration } from "@/components/pwa-registration";
 import { ExperienceFinalPolishBridge } from "@/components/experience-final-polish-bridge";
 import { PageHeroParityBridge } from "@/components/page-hero-parity-bridge";
+import { RouteFavicon } from "@/components/route-favicon";
 import { TabletopFinalInteractionBridge } from "@/components/tabletop/tabletop-final-interaction-bridge";
 import { useEffect } from "react";
 import { initializeClientErrorMonitor } from "@/lib/client-error-monitor";
@@ -144,8 +145,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { rel: "stylesheet", href: desktopHeroParity202Css },
       { rel: "stylesheet", href: heroIconsFinal212Css },
       { rel: "manifest", href: "/manifest.webmanifest" },
-      { rel: "icon", href: "/favicon.svg?v=4", type: "image/svg+xml", sizes: "any" },
-      { rel: "shortcut icon", href: "/favicon.svg?v=4", type: "image/svg+xml" },
+      { rel: "icon", href: "/favicon.svg?v=5", type: "image/svg+xml", sizes: "any" },
+      { rel: "shortcut icon", href: "/favicon.svg?v=5", type: "image/svg+xml" },
       { rel: "apple-touch-icon", href: "/apple-touch-icon.png", sizes: "180x180" },
       { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Inter:wght@400;500;600;700&family=PT+Mono&display=swap" },
     ],
@@ -172,6 +173,7 @@ function RootComponent() {
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
         <main><Outlet /></main>
+        <RouteFavicon />
         <ExperienceFinalPolishBridge />
         <PageHeroParityBridge />
         <TabletopFinalInteractionBridge />
