@@ -9,6 +9,7 @@ import {
 import "@/styles/head-parity-final-214.css";
 import "@/styles/head-tab-parity-217.css";
 import "@/styles/menu-color-source-219.css";
+import "@/styles/head-background-signatures-221.css";
 
 type HeroKind = Extract<AppSectionSymbol, "users" | "tools" | "offline">;
 type IconKind = HeroKind | "tabletop" | "brand";
