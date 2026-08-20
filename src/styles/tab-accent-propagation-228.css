@@ -1,0 +1,248 @@
+/* #228 — propagação cromática das abas fora dos Heroes.
+   Painel e Backup recebem mais identidade da própria seção sem perder o bege
+   Tadeon como contraponto. Estados semânticos (erro, warning, destrutivo, saúde)
+   continuam com suas próprias cores. */
+
+/* -------------------------------------------------------------------------- */
+/* PAINEL DO MESTRE — vermelho da aba + bege complementar                    */
+/* -------------------------------------------------------------------------- */
+html body .tadeon-shell[data-section="Painel do Mestre"] {
+  --tadeon-tab-gold-rgb: 217 215 164;
+}
+
+/* Navegação: selecionado vermelho, texto/ícone com leitura marfim. */
+html body .tadeon-shell[data-section="Painel do Mestre"]
+  .tadeon-master-navigation [data-master-tab] {
+  border: 1px solid transparent;
+  transition:
+    color var(--motion-fast, 160ms) var(--ease-out, ease-out),
+    border-color var(--motion-fast, 160ms) var(--ease-out, ease-out),
+    background-color var(--motion-fast, 160ms) var(--ease-out, ease-out),
+    box-shadow var(--motion-fast, 160ms) var(--ease-out, ease-out),
+    transform var(--motion-press, 110ms) var(--ease-out, ease-out);
+}
+
+html body .tadeon-shell[data-section="Painel do Mestre"]
+  .tadeon-master-navigation [data-master-tab]:not([data-state="active"]):hover {
+  color: rgb(var(--tadeon-tab-gold-rgb));
+  border-color: rgb(var(--section-accent-rgb) / 22%);
+  background: rgb(var(--section-accent-rgb) / 7%);
+}
+
+html body .tadeon-shell[data-section="Painel do Mestre"]
+  .tadeon-master-navigation [data-master-tab][data-state="active"] {
+  color: rgb(var(--tadeon-tab-gold-rgb)) !important;
+  border-color: rgb(var(--section-accent-rgb) / 48%) !important;
+  background:
+    linear-gradient(135deg, rgb(var(--section-accent-rgb) / 22%), transparent 74%),
+    rgb(var(--section-accent-rgb) / 12%) !important;
+  box-shadow:
+    0 12px 28px -22px rgb(var(--section-accent-rgb) / 82%),
+    inset 0 1px rgb(var(--tadeon-tab-gold-rgb) / 7%) !important;
+}
+
+html body .tadeon-shell[data-section="Painel do Mestre"]
+  .tadeon-master-navigation__label {
+  color: color-mix(
+    in srgb,
+    rgb(var(--section-accent-rgb)) 62%,
+    rgb(var(--tadeon-tab-gold-rgb))
+  );
+}
+
+/* Cards: só uma assinatura periférica, sem pintar área de leitura. */
+html body .tadeon-shell[data-section="Painel do Mestre"] #tadeon-main [data-slot="card"] {
+  border-color: color-mix(
+    in srgb,
+    rgb(var(--section-accent-rgb)) 16%,
+    var(--border)
+  );
+  box-shadow:
+    0 16px 38px -34px rgb(var(--section-accent-rgb) / 22%),
+    inset 0 1px rgb(var(--tadeon-tab-gold-rgb) / 2.5%);
+  transition:
+    border-color var(--motion-fast, 160ms) var(--ease-out, ease-out),
+    box-shadow var(--motion-fast, 160ms) var(--ease-out, ease-out),
+    background-color var(--motion-fast, 160ms) var(--ease-out, ease-out);
+}
+
+html body .tadeon-shell[data-section="Painel do Mestre"] #tadeon-main [data-slot="card"]:hover {
+  border-color: rgb(var(--section-accent-rgb) / 28%);
+  box-shadow:
+    0 20px 46px -38px rgb(var(--section-accent-rgb) / 38%),
+    inset 0 1px rgb(var(--tadeon-tab-gold-rgb) / 4%);
+}
+
+/* Eyebrows e ícones auxiliares recebem vermelho; títulos continuam neutros. */
+html body .tadeon-shell[data-section="Painel do Mestre"] #tadeon-main .tadeon-eyebrow,
+html body .tadeon-shell[data-section="Painel do Mestre"] #tadeon-main label svg,
+html body .tadeon-shell[data-section="Painel do Mestre"] #tadeon-main [data-slot="card"] > svg {
+  color: color-mix(in srgb, var(--section-accent) 78%, rgb(var(--tadeon-tab-gold-rgb)));
+}
+
+/* Inputs: foco vermelho; o halo exterior preserva toque bege. */
+html body .tadeon-shell[data-section="Painel do Mestre"] #tadeon-main :is(
+  [data-slot="input"],
+  [data-slot="textarea"],
+  select
+):focus-visible {
+  border-color: rgb(var(--section-accent-rgb) / 58%) !important;
+  outline: 0 !important;
+  box-shadow:
+    0 0 0 2px rgb(var(--section-accent-rgb) / 14%),
+    0 0 0 4px rgb(var(--tadeon-tab-gold-rgb) / 5%) !important;
+}
+
+/* Botões não destrutivos: cor de aba ganha presença; outline/ghost ficam bege no texto. */
+html body .tadeon-shell[data-section="Painel do Mestre"] #tadeon-main [data-slot="button"]:not(.text-destructive):not([data-variant="destructive"]):focus-visible {
+  outline-color: rgb(var(--section-accent-rgb) / 72%);
+}
+
+html body .tadeon-shell[data-section="Painel do Mestre"] #tadeon-main [data-slot="button"]:is(:hover, :focus-visible) svg {
+  color: color-mix(in srgb, var(--section-accent) 72%, rgb(var(--tadeon-tab-gold-rgb)));
+}
+
+/* Chips/seleções pressionadas no painel usam vermelho + marfim, sem atingir estados de erro. */
+html body .tadeon-shell[data-section="Painel do Mestre"] #tadeon-main button[aria-pressed="true"]:not(.text-destructive) {
+  border-color: rgb(var(--section-accent-rgb) / 48%) !important;
+  color: rgb(var(--tadeon-tab-gold-rgb)) !important;
+  background:
+    linear-gradient(135deg, rgb(var(--section-accent-rgb) / 20%), transparent),
+    rgb(var(--section-accent-rgb) / 10%) !important;
+  box-shadow: inset 0 1px rgb(var(--tadeon-tab-gold-rgb) / 5%);
+}
+
+/* -------------------------------------------------------------------------- */
+/* BACKUP & DIAGNÓSTICO — metal da aba + bege complementar                  */
+/* -------------------------------------------------------------------------- */
+html body .tadeon-shell[data-section="Saúde do arquivo"] {
+  --tadeon-tab-gold-rgb: 217 215 164;
+}
+
+/* Tabs principais: metal na estrutura, bege no texto ativo. */
+html body .tadeon-shell[data-section="Saúde do arquivo"]
+  .tadeon-route-tools [data-slot="tabs-list"] {
+  border: 1px solid rgb(var(--section-accent-rgb) / 15%);
+  background:
+    linear-gradient(135deg, rgb(var(--section-accent-rgb) / 6%), transparent 70%),
+    rgb(12 15 19 / 62%);
+}
+
+html body .tadeon-shell[data-section="Saúde do arquivo"]
+  .tadeon-route-tools [data-slot="tabs-trigger"] {
+  border: 1px solid transparent;
+  transition:
+    color var(--motion-fast, 160ms) var(--ease-out, ease-out),
+    border-color var(--motion-fast, 160ms) var(--ease-out, ease-out),
+    background-color var(--motion-fast, 160ms) var(--ease-out, ease-out),
+    box-shadow var(--motion-fast, 160ms) var(--ease-out, ease-out);
+}
+
+html body .tadeon-shell[data-section="Saúde do arquivo"]
+  .tadeon-route-tools [data-slot="tabs-trigger"][data-state="active"] {
+  color: rgb(var(--tadeon-tab-gold-rgb)) !important;
+  border-color: rgb(var(--section-accent-rgb) / 42%) !important;
+  background:
+    linear-gradient(135deg, rgb(var(--section-accent-rgb) / 20%), transparent 74%),
+    rgb(var(--section-accent-rgb) / 9%) !important;
+  box-shadow:
+    0 12px 28px -23px rgb(var(--section-accent-rgb) / 62%),
+    inset 0 1px rgb(var(--tadeon-tab-gold-rgb) / 6%);
+}
+
+html body .tadeon-shell[data-section="Saúde do arquivo"]
+  .tadeon-route-tools [data-slot="tabs-trigger"]:not([data-state="active"]):hover {
+  color: color-mix(in srgb, var(--section-accent) 52%, rgb(var(--tadeon-tab-gold-rgb)));
+  border-color: rgb(var(--section-accent-rgb) / 20%);
+  background: rgb(var(--section-accent-rgb) / 6%);
+}
+
+/* Cards de backup: metal nas bordas e brilho bege mínimo no topo. */
+html body .tadeon-shell[data-section="Saúde do arquivo"]
+  .tadeon-route-tools [data-slot="card"] {
+  border-color: color-mix(
+    in srgb,
+    rgb(var(--section-accent-rgb)) 18%,
+    var(--border)
+  );
+  background:
+    linear-gradient(145deg, rgb(var(--section-accent-rgb) / 3.5%), transparent 36%),
+    linear-gradient(180deg, rgb(var(--tadeon-tab-gold-rgb) / 1.5%), transparent 28%),
+    var(--card);
+  box-shadow:
+    0 16px 38px -34px rgb(var(--section-accent-rgb) / 26%),
+    inset 0 1px rgb(var(--tadeon-tab-gold-rgb) / 3%);
+  transition:
+    border-color var(--motion-fast, 160ms) var(--ease-out, ease-out),
+    box-shadow var(--motion-fast, 160ms) var(--ease-out, ease-out);
+}
+
+html body .tadeon-shell[data-section="Saúde do arquivo"]
+  .tadeon-route-tools [data-slot="card"]:hover {
+  border-color: rgb(var(--section-accent-rgb) / 30%);
+  box-shadow:
+    0 20px 46px -38px rgb(var(--section-accent-rgb) / 40%),
+    inset 0 1px rgb(var(--tadeon-tab-gold-rgb) / 4.5%);
+}
+
+/* Ícones estruturais e eyebrows deixam de parecer bege genérico. */
+html body .tadeon-shell[data-section="Saúde do arquivo"]
+  .tadeon-route-tools .tadeon-eyebrow,
+html body .tadeon-shell[data-section="Saúde do arquivo"]
+  .tadeon-route-tools [data-slot="card"] > svg,
+html body .tadeon-shell[data-section="Saúde do arquivo"]
+  .tadeon-route-tools h2 + svg {
+  color: color-mix(in srgb, var(--section-accent) 72%, rgb(var(--tadeon-tab-gold-rgb))) !important;
+}
+
+/* Campos e ações operacionais ganham a cor metal da seção no foco/hover. */
+html body .tadeon-shell[data-section="Saúde do arquivo"]
+  .tadeon-route-tools :is([data-slot="input"], [data-slot="textarea"]):focus-visible {
+  border-color: rgb(var(--section-accent-rgb) / 56%) !important;
+  outline: 0 !important;
+  box-shadow:
+    0 0 0 2px rgb(var(--section-accent-rgb) / 13%),
+    0 0 0 4px rgb(var(--tadeon-tab-gold-rgb) / 4.5%) !important;
+}
+
+html body .tadeon-shell[data-section="Saúde do arquivo"]
+  .tadeon-route-tools [data-slot="button"]:not(.text-destructive):not([data-variant="destructive"]):is(:hover, :focus-visible) {
+  border-color: rgb(var(--section-accent-rgb) / 38%);
+  box-shadow: 0 10px 28px -24px rgb(var(--section-accent-rgb) / 58%);
+}
+
+html body .tadeon-shell[data-section="Saúde do arquivo"]
+  .tadeon-route-tools [data-slot="button"]:not(.text-destructive):is(:hover, :focus-visible) svg {
+  color: color-mix(in srgb, var(--section-accent) 68%, rgb(var(--tadeon-tab-gold-rgb)));
+}
+
+/* Linhas de histórico: acento discreto na interação, sem alterar legibilidade. */
+html body .tadeon-shell[data-section="Saúde do arquivo"]
+  .tadeon-route-tools [data-slot="card"] .rounded-xl.border.border-border\/70 {
+  transition:
+    border-color var(--motion-fast, 160ms) var(--ease-out, ease-out),
+    background-color var(--motion-fast, 160ms) var(--ease-out, ease-out),
+    box-shadow var(--motion-fast, 160ms) var(--ease-out, ease-out);
+}
+
+html body .tadeon-shell[data-section="Saúde do arquivo"]
+  .tadeon-route-tools [data-slot="card"] .rounded-xl.border.border-border\/70:hover {
+  border-color: rgb(var(--section-accent-rgb) / 34%);
+  background: rgb(var(--section-accent-rgb) / 5%);
+  box-shadow: inset 2px 0 rgb(var(--tadeon-tab-gold-rgb) / 26%);
+}
+
+/* Saúde continua semântica: verde/âmbar/vermelho dos diagnósticos não é sobrescrito. */
+html body .tadeon-shell[data-section="Saúde do arquivo"]
+  .tadeon-route-tools :is(.text-emerald-400, .text-amber-400, .text-destructive) {
+  filter: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html body .tadeon-shell:is(
+    [data-section="Painel do Mestre"],
+    [data-section="Saúde do arquivo"]
+  ) #tadeon-main * {
+    transition-duration: 0.01ms !important;
+  }
+}
