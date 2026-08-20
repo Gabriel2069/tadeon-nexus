@@ -20,7 +20,6 @@ html:has(.tadeon-tabletop-studio) {
   --tadeon-tabletop-safe-left: 0px;
 }
 
-/* Centro inferior: alturas reais, não linhas presumidas. */
 .tadeon-tabletop-progressive-dock {
   bottom: max(.8rem, env(safe-area-inset-bottom)) !important;
 }
@@ -43,7 +42,6 @@ html:has(.tadeon-tabletop-studio) {
   ) !important;
 }
 
-/* Utilidades laterais fechadas formam uma coluna compacta própria. */
 .tadeon-tabletop-now {
   left: max(.8rem, env(safe-area-inset-left)) !important;
   bottom: max(.8rem, env(safe-area-inset-bottom)) !important;
@@ -87,8 +85,6 @@ html:has(.tadeon-tabletop-studio) {
   ) !important;
 }
 
-/* Ao abrir, utilidades são superfícies de trabalho: descem para a borda e usam
-   a altura disponível em vez de permanecerem no quarto/quinto degrau da pilha. */
 .tadeon-tabletop-now[data-open="true"],
 .tadeon-placeables[data-open="true"],
 .tadeon-creative-dock[data-open="true"] {
@@ -107,7 +103,6 @@ html:has(.tadeon-tabletop-studio) {
   overscroll-behavior: contain;
 }
 
-/* O centro encolhe de acordo com as faixas laterais efetivamente ocupadas. */
 @media (min-width: 801px) {
   .tadeon-tabletop-progressive-dock,
   .tadeon-tactical-dock {
@@ -147,8 +142,6 @@ html:has(.tadeon-tabletop-studio) {
   }
 }
 
-/* Uma superfície lateral aberta tem prioridade sobre chrome auxiliar da mesma
-   região; mantemos apenas o handle da superfície ativa e o canvas respirando. */
 html[data-tadeon-tabletop-utility="now"] :where(
   .tadeon-creative-dock,
   .tadeon-placeables,
@@ -176,11 +169,24 @@ html[data-tadeon-tabletop-utility="precision"] :where(
   pointer-events: none !important;
 }
 
-/* Tablet/mobile: não empilha uma parede de controles. Uma utilidade aberta vira
-   uma folha de trabalho acima da área segura; os docks centrais somem até fechar. */
 @media (max-width: 800px) {
   html:has(.tadeon-tabletop-studio) {
     --tadeon-tabletop-float-gap: .4rem;
+    --tadeon-tabletop-mobile-utility-row-1: calc(
+      max(.5rem, env(safe-area-inset-bottom)) +
+      var(--tadeon-tabletop-progressive-h) +
+      var(--tadeon-tabletop-float-gap)
+    );
+    --tadeon-tabletop-mobile-utility-row-2: calc(
+      var(--tadeon-tabletop-mobile-utility-row-1) +
+      max(var(--tadeon-tabletop-now-h), var(--tadeon-tabletop-placeables-h)) +
+      var(--tadeon-tabletop-float-gap)
+    );
+    --tadeon-tabletop-mobile-utility-row-3: calc(
+      var(--tadeon-tabletop-mobile-utility-row-2) +
+      max(var(--tadeon-tabletop-semantic-h), var(--tadeon-tabletop-creative-h)) +
+      var(--tadeon-tabletop-float-gap)
+    );
   }
 
   .tadeon-tabletop-progressive-dock {
@@ -209,25 +215,57 @@ html[data-tadeon-tabletop-utility="precision"] :where(
     display: none;
   }
 
-  .tadeon-nexus-tabletop-locator,
-  .tadeon-creative-dock,
-  .tadeon-placeables,
-  .tadeon-tabletop-now,
+  /* Linha 1: duas utilidades primárias, uma em cada lado. */
+  .tadeon-tabletop-now {
+    right: auto !important;
+    left: .5rem !important;
+    bottom: var(--tadeon-tabletop-mobile-utility-row-1) !important;
+    width: min(10.5rem, calc(50vw - .72rem)) !important;
+    max-width: calc(50vw - .72rem) !important;
+  }
+
+  .tadeon-placeables {
+    right: .5rem !important;
+    left: auto !important;
+    bottom: var(--tadeon-tabletop-mobile-utility-row-1) !important;
+    width: min(10.5rem, calc(50vw - .72rem)) !important;
+    max-width: calc(50vw - .72rem) !important;
+  }
+
+  /* Linha 2: transformação e autoria criativa também não dividem o mesmo slot. */
   .tadeon-semantic-transform {
+    right: auto !important;
+    left: .5rem !important;
+    bottom: var(--tadeon-tabletop-mobile-utility-row-2) !important;
+    max-width: calc(50vw - .72rem) !important;
+  }
+
+  .tadeon-creative-dock {
+    right: .5rem !important;
+    left: auto !important;
+    bottom: var(--tadeon-tabletop-mobile-utility-row-2) !important;
+    width: min(10.5rem, calc(50vw - .72rem)) !important;
+    max-width: calc(50vw - .72rem) !important;
+  }
+
+  /* Localizador é contextual e recebe uma faixa própria, sem cobrir handles. */
+  .tadeon-nexus-tabletop-locator {
     right: .5rem !important;
     left: .5rem !important;
+    bottom: var(--tadeon-tabletop-mobile-utility-row-3) !important;
     width: auto !important;
     max-width: none !important;
   }
 
-  .tadeon-placeables,
-  .tadeon-tabletop-now,
-  .tadeon-creative-dock {
-    bottom: calc(
-      max(.5rem, env(safe-area-inset-bottom)) +
-      var(--tadeon-tabletop-progressive-h) +
-      var(--tadeon-tabletop-float-gap)
-    ) !important;
+  /* Ao abrir uma utilidade, ela vira folha única e pode usar toda a largura. */
+  .tadeon-tabletop-now[data-open="true"],
+  .tadeon-placeables[data-open="true"],
+  .tadeon-creative-dock[data-open="true"] {
+    right: .5rem !important;
+    left: .5rem !important;
+    bottom: max(.5rem, env(safe-area-inset-bottom)) !important;
+    width: auto !important;
+    max-width: none !important;
   }
 
   html:not([data-tadeon-tabletop-utility="none"]) :where(
@@ -266,7 +304,6 @@ html[data-tadeon-tabletop-utility="precision"] :where(
   }
 }
 
-/* Menus/contextos devem caber na viewport mesmo quando o conteúdo interno cresce. */
 .tadeon-tabletop-context-menu,
 .tadeon-tabletop-radial-menu,
 .tadeon-radial-actions,
