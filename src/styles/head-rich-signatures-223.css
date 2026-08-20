@@ -1,0 +1,447 @@
+/* #223 — assinaturas ricas de fundo para Backup, Offline e Painel do Mestre.
+   Objetivo: elevar os três Heads ao mesmo nível de elaboração de Usuários e O Nexus
+   sem alterar tipografia, alinhamento, símbolo, layout funcional ou paleta das abas.
+
+   Linguagens:
+   - Backup: arquivo técnico vivo / blueprint / indexação / checksum.
+   - Offline: rede fragmentada / pacotes perdidos / ecos de sinal / interferência.
+   - Painel: astrolábio de condução / vetores de comando / sigilo diretor.
+*/
+
+/* ========================================================================== */
+/* BACKUP — ARQUIVO TÉCNICO VIVO                                             */
+/* ========================================================================== */
+
+html body .tadeon-shell[data-section="Saúde do arquivo"]
+  .tadeon-page-hero[data-tadeon-page-hero="tools"] {
+  background:
+    /* glow de índice no canto */
+    radial-gradient(circle at 88% 8%, rgb(var(--section-accent-rgb) / 16%), transparent 10.5rem),
+    radial-gradient(circle at 68% 138%, color-mix(in srgb, var(--section-secondary) 9%, transparent), transparent 13rem),
+    /* trilhos horizontais de prontuário */
+    repeating-linear-gradient(
+      0deg,
+      transparent 0 1.18rem,
+      rgb(var(--section-accent-rgb) / 2.6%) 1.18rem 1.22rem,
+      transparent 1.22rem 2.35rem
+    ),
+    /* matriz vertical de arquivo */
+    repeating-linear-gradient(
+      90deg,
+      transparent 0 2.8rem,
+      rgb(var(--section-accent-rgb) / 3.2%) 2.8rem 2.84rem
+    ),
+    /* eixo diagonal de leitura */
+    linear-gradient(
+      116deg,
+      transparent 0 63%,
+      rgb(var(--section-accent-rgb) / 5%) 63.2% 63.5%,
+      transparent 63.7%
+    ),
+    linear-gradient(145deg, rgb(18 21 26 / 98%), rgb(8 11 15 / 98%)) !important;
+  background-size: auto !important;
+  box-shadow:
+    0 28px 72px -56px rgb(0 0 0 / 100%),
+    0 18px 52px -44px rgb(var(--section-accent-rgb) / 38%),
+    inset 0 1px rgb(255 255 255 / 5%) !important;
+}
+
+/* Mapa de indexação: módulos, guias e setores; deliberadamente ortogonal. */
+html body .tadeon-shell[data-section="Saúde do arquivo"]
+  .tadeon-page-hero[data-tadeon-page-hero="tools"]::after {
+  top: .38rem !important;
+  right: -2.85rem !important;
+  bottom: auto !important;
+  left: auto !important;
+  width: 20.4rem !important;
+  height: 6.55rem !important;
+  border: 1px solid rgb(var(--section-accent-rgb) / 23%) !important;
+  border-radius: .42rem 2.6rem .42rem 1.1rem !important;
+  background:
+    /* nós de índice */
+    radial-gradient(circle at 12% 24%, rgb(var(--section-accent-rgb) / 45%) 0 .11rem, transparent .13rem),
+    radial-gradient(circle at 31% 67%, color-mix(in srgb, var(--section-secondary) 42%, transparent) 0 .1rem, transparent .12rem),
+    radial-gradient(circle at 53% 33%, rgb(var(--section-accent-rgb) / 34%) 0 .1rem, transparent .12rem),
+    radial-gradient(circle at 76% 70%, rgb(var(--section-accent-rgb) / 26%) 0 .09rem, transparent .11rem),
+    /* coluna de registro */
+    linear-gradient(90deg, rgb(var(--section-accent-rgb) / 7%) 0 9%, transparent 9.3% 100%),
+    /* duas linhas de separação */
+    linear-gradient(
+      180deg,
+      transparent 0 28%,
+      rgb(var(--section-accent-rgb) / 13%) 28.4% 29.4%,
+      transparent 29.8% 66%,
+      color-mix(in srgb, var(--section-secondary) 12%, transparent) 66.4% 67.4%,
+      transparent 67.8%
+    ),
+    /* ticks de arquivo */
+    repeating-linear-gradient(
+      90deg,
+      rgb(var(--section-accent-rgb) / 15%) 0 .075rem,
+      transparent .075rem .98rem
+    ),
+    linear-gradient(108deg, rgb(255 255 255 / 2.5%), transparent 58%) !important;
+  box-shadow:
+    inset 1.2rem 0 rgb(var(--section-accent-rgb) / 2.8%),
+    inset -4.6rem 0 color-mix(in srgb, var(--section-secondary) 2.8%, transparent),
+    0 0 0 .52rem rgb(var(--section-accent-rgb) / 1.7%),
+    0 18px 52px -40px rgb(var(--section-accent-rgb) / 45%) !important;
+  opacity: .96 !important;
+  transform: rotate(-1deg) !important;
+}
+
+/* Régua de integridade: checksum + pequenos pulsos indexados. */
+html body .tadeon-shell[data-section="Saúde do arquivo"]
+  .tadeon-page-hero[data-tadeon-page-hero="tools"]::before {
+  top: auto !important;
+  right: 1.65rem !important;
+  bottom: .45rem !important;
+  left: auto !important;
+  width: 13.8rem !important;
+  height: 1.65rem !important;
+  border: 0 !important;
+  border-top: 1px solid rgb(var(--section-accent-rgb) / 19%) !important;
+  border-bottom: 1px solid color-mix(in srgb, var(--section-secondary) 14%, transparent) !important;
+  border-radius: .18rem !important;
+  background:
+    radial-gradient(circle at 7% 50%, rgb(var(--section-accent-rgb) / 48%) 0 .1rem, transparent .12rem),
+    radial-gradient(circle at 41% 50%, color-mix(in srgb, var(--section-secondary) 38%, transparent) 0 .09rem, transparent .11rem),
+    radial-gradient(circle at 79% 50%, rgb(var(--section-accent-rgb) / 34%) 0 .09rem, transparent .11rem),
+    repeating-linear-gradient(
+      90deg,
+      rgb(var(--section-accent-rgb) / 18%) 0 .34rem,
+      transparent .34rem .7rem,
+      color-mix(in srgb, var(--section-secondary) 12%, transparent) .7rem .86rem,
+      transparent .86rem 1.22rem
+    ),
+    linear-gradient(90deg, transparent, rgb(var(--section-accent-rgb) / 6%), transparent) !important;
+  box-shadow:
+    0 -8px 24px -22px rgb(var(--section-accent-rgb) / 70%),
+    inset 0 1px rgb(255 255 255 / 3%) !important;
+  opacity: .82 !important;
+  transform: none !important;
+}
+
+/* ========================================================================== */
+/* OFFLINE — REDE FRAGMENTADA / ECO DE SINAL                                 */
+/* ========================================================================== */
+
+html body .tadeon-shell[data-section="Consulta offline"]
+  .tadeon-page-hero[data-tadeon-page-hero="offline"] {
+  background:
+    /* dois campos de eco, com centros deslocados */
+    radial-gradient(ellipse at 87% 14%, rgb(var(--section-accent-rgb) / 16%), transparent 12rem),
+    radial-gradient(ellipse at 16% 120%, color-mix(in srgb, var(--section-secondary) 9%, transparent), transparent 14rem),
+    /* pacotes fantasmas */
+    radial-gradient(circle at 73% 28%, rgb(var(--section-accent-rgb) / 17%) 0 .08rem, transparent .11rem),
+    radial-gradient(circle at 81% 54%, rgb(var(--section-accent-rgb) / 12%) 0 .07rem, transparent .1rem),
+    radial-gradient(circle at 61% 72%, color-mix(in srgb, var(--section-secondary) 16%, transparent) 0 .08rem, transparent .11rem),
+    /* ruído diagonal quebrado */
+    repeating-linear-gradient(
+      128deg,
+      transparent 0 1.12rem,
+      rgb(var(--section-accent-rgb) / 3%) 1.12rem 1.18rem,
+      transparent 1.18rem 2.55rem
+    ),
+    /* linha de perda de conexão */
+    linear-gradient(
+      102deg,
+      transparent 0 49%,
+      rgb(var(--section-accent-rgb) / 5.5%) 49.2% 49.5%,
+      transparent 49.8%
+    ),
+    linear-gradient(145deg, rgb(17 19 25 / 98%), rgb(8 10 15 / 98%)) !important;
+  background-size: auto !important;
+  box-shadow:
+    0 28px 72px -58px rgb(0 0 0 / 100%),
+    0 20px 54px -46px rgb(var(--section-accent-rgb) / 38%),
+    inset 0 1px rgb(255 255 255 / 4.5%) !important;
+}
+
+/* Matriz de sinal quebrado: anéis, setores ausentes e vetores desencontrados. */
+html body .tadeon-shell[data-section="Consulta offline"]
+  .tadeon-page-hero[data-tadeon-page-hero="offline"]::after {
+  top: -4.4rem !important;
+  right: -1.9rem !important;
+  bottom: auto !important;
+  left: auto !important;
+  width: 19.2rem !important;
+  height: 15rem !important;
+  border: 0 !important;
+  border-radius: 50% !important;
+  background:
+    /* setor interrompido */
+    conic-gradient(
+      from 214deg at 18% 52%,
+      transparent 0 7deg,
+      rgb(var(--section-accent-rgb) / 24%) 7deg 9deg,
+      transparent 9deg 31deg,
+      rgb(var(--section-accent-rgb) / 15%) 31deg 33deg,
+      transparent 33deg 68deg,
+      color-mix(in srgb, var(--section-secondary) 15%, transparent) 68deg 70deg,
+      transparent 70deg 360deg
+    ),
+    /* três ecos concêntricos */
+    radial-gradient(
+      ellipse at 18% 52%,
+      transparent 0 28%,
+      rgb(var(--section-accent-rgb) / 27%) 28.4% 29.2%,
+      transparent 29.6% 41%,
+      rgb(var(--section-accent-rgb) / 18%) 41.4% 42.1%,
+      transparent 42.5% 54%,
+      color-mix(in srgb, var(--section-secondary) 14%, transparent) 54.4% 55.1%,
+      transparent 55.5%
+    ),
+    /* cortes de fase */
+    linear-gradient(106deg, transparent 0 42%, rgb(var(--section-accent-rgb) / 6%) 42.4% 42.8%, transparent 43.2%),
+    linear-gradient(78deg, transparent 0 56%, color-mix(in srgb, var(--section-secondary) 5%, transparent) 56.3% 56.7%, transparent 57%) !important;
+  box-shadow:
+    0 0 68px -42px rgb(var(--section-accent-rgb) / 62%) !important;
+  opacity: .94 !important;
+  transform: rotate(-6deg) !important;
+}
+
+/* Trilho inferior de pacotes: ritmos irregulares, gaps e pequenas colisões. */
+html body .tadeon-shell[data-section="Consulta offline"]
+  .tadeon-page-hero[data-tadeon-page-hero="offline"]::before {
+  top: auto !important;
+  right: .72rem !important;
+  bottom: -.35rem !important;
+  left: auto !important;
+  width: 14.6rem !important;
+  height: 4.25rem !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background:
+    radial-gradient(circle at 9% 33%, rgb(var(--section-accent-rgb) / 25%) 0 .08rem, transparent .11rem),
+    radial-gradient(circle at 44% 66%, color-mix(in srgb, var(--section-secondary) 23%, transparent) 0 .075rem, transparent .105rem),
+    radial-gradient(circle at 86% 28%, rgb(var(--section-accent-rgb) / 17%) 0 .075rem, transparent .105rem),
+    repeating-linear-gradient(
+      0deg,
+      transparent 0 .31rem,
+      color-mix(in srgb, var(--section-secondary) 11%, transparent) .31rem .36rem,
+      transparent .36rem .68rem,
+      rgb(var(--section-accent-rgb) / 12%) .68rem .74rem,
+      transparent .74rem 1.08rem
+    ),
+    repeating-linear-gradient(
+      90deg,
+      transparent 0 .78rem,
+      rgb(var(--section-accent-rgb) / 7%) .78rem .91rem,
+      transparent .91rem 1.72rem
+    ),
+    linear-gradient(90deg, transparent 0 6%, rgb(var(--section-accent-rgb) / 8%) 29%, transparent 78%) !important;
+  box-shadow: none !important;
+  opacity: .78 !important;
+  transform: skewX(-12deg) rotate(-2deg) !important;
+}
+
+/* ========================================================================== */
+/* PAINEL DO MESTRE — ASTROLÁBIO DE CONDUÇÃO / SIGILO DIRETOR                */
+/* ========================================================================== */
+
+html body .tadeon-shell[data-section="Painel do Mestre"] .tadeon-master-commandbar {
+  --master-gold: 217 215 164;
+  background:
+    /* campo vermelho próximo do sigilo */
+    radial-gradient(circle at 8% 14%, rgb(var(--section-accent-rgb) / 21%), transparent 12.5rem),
+    /* brilho de comando no quadrante superior */
+    radial-gradient(circle at 82% -34%, rgb(var(--section-accent-rgb) / 15%), transparent 15rem),
+    radial-gradient(circle at 92% 118%, rgb(var(--master-gold) / 6%), transparent 13rem),
+    /* vetores finos */
+    linear-gradient(118deg, transparent 0 58%, rgb(var(--section-accent-rgb) / 7%) 58.2% 58.5%, transparent 58.8%),
+    linear-gradient(72deg, transparent 0 73%, rgb(var(--master-gold) / 3.8%) 73.2% 73.45%, transparent 73.7%),
+    /* grade ritual muito discreta */
+    linear-gradient(90deg, rgb(var(--section-accent-rgb) / 1.8%) 1px, transparent 1px),
+    linear-gradient(rgb(var(--master-gold) / 1.35%) 1px, transparent 1px),
+    linear-gradient(145deg, rgb(20 14 17 / 98%), rgb(8 10 14 / 98%)) !important;
+  background-size: auto, auto, auto, auto, auto, 42px 42px, 42px 42px, auto !important;
+  border-color: rgb(var(--section-accent-rgb) / 36%) !important;
+  box-shadow:
+    0 32px 80px -60px rgb(var(--section-accent-rgb) / 88%),
+    0 28px 74px -56px rgb(0 0 0 / 100%),
+    inset 0 1px rgb(255 255 255 / 5%) !important;
+}
+
+/* Astrolábio: vários anéis, setores, raios e marcas cardeais. */
+html body .tadeon-shell[data-section="Painel do Mestre"] .tadeon-master-commandbar::before {
+  top: -8.6rem !important;
+  right: -1.35rem !important;
+  bottom: auto !important;
+  left: auto !important;
+  width: 19.5rem !important;
+  height: 19.5rem !important;
+  border: 1px solid rgb(var(--section-accent-rgb) / 21%) !important;
+  border-radius: 50% !important;
+  background:
+    /* marcas cardeais */
+    linear-gradient(90deg, transparent 49.65%, rgb(var(--master-gold) / 12%) 49.8% 50.2%, transparent 50.35%),
+    linear-gradient(0deg, transparent 49.65%, rgb(var(--section-accent-rgb) / 16%) 49.8% 50.2%, transparent 50.35%),
+    /* raios diagonais */
+    linear-gradient(45deg, transparent 49.72%, rgb(var(--section-accent-rgb) / 7%) 49.86% 50.14%, transparent 50.28%),
+    linear-gradient(-45deg, transparent 49.72%, rgb(var(--master-gold) / 6%) 49.86% 50.14%, transparent 50.28%),
+    /* setores do astrolábio */
+    conic-gradient(
+      from 18deg,
+      transparent 0 16deg,
+      rgb(var(--section-accent-rgb) / 14%) 16deg 18deg,
+      transparent 18deg 61deg,
+      rgb(var(--master-gold) / 8%) 61deg 63deg,
+      transparent 63deg 118deg,
+      rgb(var(--section-accent-rgb) / 11%) 118deg 120deg,
+      transparent 120deg 184deg,
+      rgb(var(--master-gold) / 6%) 184deg 186deg,
+      transparent 186deg 268deg,
+      rgb(var(--section-accent-rgb) / 10%) 268deg 270deg,
+      transparent 270deg 360deg
+    ),
+    /* anéis */
+    radial-gradient(circle,
+      transparent 0 21%,
+      rgb(var(--master-gold) / 9%) 21.4% 22.1%,
+      transparent 22.5% 37%,
+      rgb(var(--section-accent-rgb) / 18%) 37.4% 38.2%,
+      transparent 38.6% 53%,
+      rgb(var(--master-gold) / 6%) 53.4% 54%,
+      transparent 54.4% 68%,
+      rgb(var(--section-accent-rgb) / 11%) 68.4% 69.1%,
+      transparent 69.5%
+    ) !important;
+  box-shadow:
+    0 0 0 2.2rem rgb(var(--section-accent-rgb) / 2.2%),
+    0 0 0 4.7rem rgb(var(--master-gold) / 1.3%),
+    0 0 74px -38px rgb(var(--section-accent-rgb) / 60%) !important;
+  opacity: .96 !important;
+  transform: rotate(-7deg) !important;
+}
+
+/* Trajetória de comando inferior: ticks, nós e duas rotas cruzadas. */
+html body .tadeon-shell[data-section="Painel do Mestre"] .tadeon-master-commandbar::after {
+  top: auto !important;
+  right: 1.05rem !important;
+  bottom: .28rem !important;
+  left: auto !important;
+  width: 15.8rem !important;
+  height: 2.55rem !important;
+  border: 0 !important;
+  border-top: 1px solid rgb(var(--section-accent-rgb) / 21%) !important;
+  border-bottom: 1px solid rgb(var(--master-gold) / 10%) !important;
+  border-radius: .2rem !important;
+  background:
+    radial-gradient(circle at 8% 50%, rgb(var(--section-accent-rgb) / 55%) 0 .1rem, transparent .125rem),
+    radial-gradient(circle at 37% 50%, rgb(var(--master-gold) / 37%) 0 .09rem, transparent .115rem),
+    radial-gradient(circle at 68% 50%, rgb(var(--section-accent-rgb) / 34%) 0 .09rem, transparent .115rem),
+    radial-gradient(circle at 92% 50%, rgb(var(--master-gold) / 25%) 0 .08rem, transparent .11rem),
+    repeating-linear-gradient(
+      90deg,
+      rgb(var(--section-accent-rgb) / 18%) 0 .07rem,
+      transparent .07rem .82rem
+    ),
+    linear-gradient(10deg, transparent 0 47%, rgb(var(--section-accent-rgb) / 9%) 47.4% 48.2%, transparent 48.6%),
+    linear-gradient(-8deg, transparent 0 58%, rgb(var(--master-gold) / 6.5%) 58.4% 59.1%, transparent 59.5%),
+    linear-gradient(90deg, transparent, rgb(var(--section-accent-rgb) / 8%), transparent) !important;
+  box-shadow:
+    0 -10px 28px -24px rgb(var(--section-accent-rgb) / 80%),
+    inset 0 1px rgb(255 255 255 / 3%) !important;
+  opacity: .88 !important;
+  transform: none !important;
+}
+
+/* O próprio selo do Mestre recebe mais profundidade, ainda sem mudar tamanho/alinhamento. */
+html body .tadeon-shell[data-section="Painel do Mestre"]
+  .tadeon-master-commandbar__glow {
+  border-color: rgb(var(--section-accent-rgb) / 56%) !important;
+  background:
+    radial-gradient(circle at 34% 28%, rgb(255 255 255 / 9%), transparent 34%),
+    radial-gradient(circle, rgb(var(--section-accent-rgb) / 15%), rgb(13 10 13 / 92%) 72%) !important;
+  box-shadow:
+    0 0 0 .34rem rgb(var(--section-accent-rgb) / 5%),
+    0 0 0 .72rem rgb(var(--master-gold) / 2.2%),
+    0 16px 38px -25px rgb(var(--section-accent-rgb) / 78%),
+    inset 0 1px rgb(255 255 255 / 9%) !important;
+}
+
+html body .tadeon-shell[data-section="Painel do Mestre"]
+  .tadeon-master-commandbar__glow::before {
+  border-color: rgb(var(--master-gold) / 16%) !important;
+  border-top-color: transparent !important;
+  border-left-color: rgb(var(--section-accent-rgb) / 20%) !important;
+}
+
+html body .tadeon-shell[data-section="Painel do Mestre"]
+  .tadeon-master-commandbar__glow::after {
+  border-color: rgb(var(--section-accent-rgb) / 14%) !important;
+  border-right-color: transparent !important;
+  box-shadow: 0 0 18px -10px rgb(var(--section-accent-rgb) / 70%) !important;
+}
+
+/* ========================================================================== */
+/* RESPONSIVIDADE — mesma riqueza, menor presença visual                     */
+/* ========================================================================== */
+
+@media (max-width: 639px) {
+  html body .tadeon-shell[data-section="Saúde do arquivo"]
+    .tadeon-page-hero[data-tadeon-page-hero="tools"]::after {
+    top: .3rem !important;
+    right: -8.1rem !important;
+    width: 16.6rem !important;
+    height: 5.35rem !important;
+    opacity: .66 !important;
+  }
+
+  html body .tadeon-shell[data-section="Saúde do arquivo"]
+    .tadeon-page-hero[data-tadeon-page-hero="tools"]::before {
+    right: .5rem !important;
+    bottom: .28rem !important;
+    width: 8.4rem !important;
+    height: 1.05rem !important;
+    opacity: .52 !important;
+  }
+
+  html body .tadeon-shell[data-section="Consulta offline"]
+    .tadeon-page-hero[data-tadeon-page-hero="offline"]::after {
+    top: -2.4rem !important;
+    right: -7rem !important;
+    width: 15.5rem !important;
+    height: 10.4rem !important;
+    opacity: .62 !important;
+  }
+
+  html body .tadeon-shell[data-section="Consulta offline"]
+    .tadeon-page-hero[data-tadeon-page-hero="offline"]::before {
+    right: .2rem !important;
+    bottom: -.14rem !important;
+    width: 8.7rem !important;
+    height: 2.7rem !important;
+    opacity: .46 !important;
+  }
+
+  html body .tadeon-shell[data-section="Painel do Mestre"]
+    .tadeon-master-commandbar::before {
+    top: -6.4rem !important;
+    right: -8.4rem !important;
+    width: 14.8rem !important;
+    height: 14.8rem !important;
+    opacity: .62 !important;
+  }
+
+  html body .tadeon-shell[data-section="Painel do Mestre"]
+    .tadeon-master-commandbar::after {
+    right: .35rem !important;
+    bottom: .18rem !important;
+    width: 8.8rem !important;
+    height: 1.75rem !important;
+    opacity: .52 !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html body .tadeon-shell[data-section="Saúde do arquivo"]
+    .tadeon-page-hero[data-tadeon-page-hero="tools"]::after,
+  html body .tadeon-shell[data-section="Consulta offline"]
+    .tadeon-page-hero[data-tadeon-page-hero="offline"]::after,
+  html body .tadeon-shell[data-section="Painel do Mestre"]
+    .tadeon-master-commandbar::before {
+    transition: none !important;
+  }
+}
