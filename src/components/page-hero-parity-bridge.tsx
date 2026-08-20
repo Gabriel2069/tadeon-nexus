@@ -7,7 +7,6 @@ import {
   type AppSectionSymbol,
 } from "@/components/section-symbols";
 import "@/styles/head-parity-final-214.css";
-import "@/styles/head-parity-lock-215.css";
 
 type HeroKind = Extract<AppSectionSymbol, "users" | "tools" | "offline">;
 type IconKind = HeroKind | "tabletop" | "brand";
