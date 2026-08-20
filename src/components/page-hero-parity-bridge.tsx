@@ -13,6 +13,7 @@ import "@/styles/head-background-signatures-221.css";
 import "@/styles/head-rich-signatures-223.css";
 import "@/styles/head-system-audit-224.css";
 import "@/styles/head-background-coverage-225.css";
+import "@/styles/offline-meta-row-226.css";
 
 type HeroKind = Extract<AppSectionSymbol, "users" | "tools" | "offline">;
 type IconKind = HeroKind | "tabletop" | "brand";
