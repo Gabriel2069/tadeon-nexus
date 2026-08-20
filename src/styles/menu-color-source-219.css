@@ -112,3 +112,88 @@ html body .tadeon-shell[data-section="Mesa Nexus"] .tadeon-mobile-header__identi
 html body .tadeon-shell[data-section="Mesa Nexus"] .tadeon-desktop-toolbar > .min-w-0 > .tadeon-focus-section-mark-host ~ .tadeon-focus-section-mark-host {
   display: none !important;
 }
+
+/* #220 — eixo visual e tipografia dos Heads.
+   Dashboard e Mesa ficam deliberadamente fora deste contrato. */
+
+/* Uma só escala tipográfica para Mestre / Usuários / Backup / Offline. */
+html body .tadeon-master-commandbar h1,
+html body .tadeon-page-hero[data-tadeon-page-hero="users"] h1,
+html body .tadeon-page-hero[data-tadeon-page-hero="tools"] h1,
+html body .tadeon-page-hero[data-tadeon-page-hero="offline"] h1 {
+  margin-top: .14rem !important;
+  font-size: clamp(1.65rem, 2.2vw, 2rem) !important;
+  font-weight: 600 !important;
+  line-height: 1.04 !important;
+  letter-spacing: -.022em !important;
+}
+
+html body .tadeon-master-commandbar .tadeon-eyebrow,
+html body .tadeon-page-hero[data-tadeon-page-hero="users"] .tadeon-eyebrow,
+html body .tadeon-page-hero[data-tadeon-page-hero="tools"] .tadeon-eyebrow,
+html body .tadeon-page-hero[data-tadeon-page-hero="offline"] .tadeon-eyebrow {
+  font-size: .625rem !important;
+  font-weight: 700 !important;
+  line-height: 1rem !important;
+  letter-spacing: .16em !important;
+}
+
+html body [data-tadeon-page-hero="users"] > div:first-of-type > p:not(.tadeon-eyebrow),
+html body [data-tadeon-page-hero="tools"] > div:first-of-type > div:first-child > p:not(.tadeon-eyebrow),
+html body [data-tadeon-page-hero="offline"] > div:first-of-type > div:first-child > p,
+html body .tadeon-master-commandbar > .relative.flex > div:first-child > p:not(.tadeon-eyebrow) {
+  margin-top: .38rem !important;
+  font-size: .76rem !important;
+  line-height: 1.46 !important;
+}
+
+/* O meta-row do Offline deixa de empurrar o título para baixo em relação aos
+   demais Heads: os badges ocupam a mesma faixa visual de um eyebrow. */
+html body [data-tadeon-page-hero="offline"] > div:first-of-type > div:first-child {
+  position: relative !important;
+  padding-top: 1.15rem !important;
+}
+
+html body [data-tadeon-page-hero="offline"] > div:first-of-type > div:first-child > .mb-3 {
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  margin: 0 !important;
+  gap: .4rem !important;
+}
+
+html body [data-tadeon-page-hero="offline"] > div:first-of-type > div:first-child > .mb-3 [data-slot="badge"] {
+  font-size: .66rem !important;
+  line-height: 1rem !important;
+}
+
+/* O centro do símbolo sobe da metade do bloco para a faixa do h1. Como os
+   quatro Heads agora usam a mesma escala, o eixo fica visualmente equivalente. */
+html body .tadeon-master-commandbar > .tadeon-master-commandbar__glow,
+html body .tadeon-page-hero[data-tadeon-page-hero="users"] > .tadeon-page-hero-mark-host,
+html body .tadeon-page-hero[data-tadeon-page-hero="tools"] > .tadeon-page-hero-mark-host,
+html body .tadeon-page-hero[data-tadeon-page-hero="offline"] > .tadeon-page-hero-mark-host {
+  align-self: start !important;
+  margin-top: .6rem !important;
+}
+
+@media (max-width: 639px) {
+  html body .tadeon-master-commandbar h1,
+  html body .tadeon-page-hero[data-tadeon-page-hero="users"] h1,
+  html body .tadeon-page-hero[data-tadeon-page-hero="tools"] h1,
+  html body .tadeon-page-hero[data-tadeon-page-hero="offline"] h1 {
+    font-size: clamp(1.45rem, 6vw, 1.7rem) !important;
+    line-height: 1.05 !important;
+  }
+
+  html body .tadeon-master-commandbar > .tadeon-master-commandbar__glow,
+  html body .tadeon-page-hero[data-tadeon-page-hero="users"] > .tadeon-page-hero-mark-host,
+  html body .tadeon-page-hero[data-tadeon-page-hero="tools"] > .tadeon-page-hero-mark-host,
+  html body .tadeon-page-hero[data-tadeon-page-hero="offline"] > .tadeon-page-hero-mark-host {
+    margin-top: .64rem !important;
+  }
+
+  html body [data-tadeon-page-hero="offline"] > div:first-of-type > div:first-child {
+    padding-top: 1.05rem !important;
+  }
+}
