@@ -5,14 +5,12 @@
 /* Evita manter camadas de composição reservadas permanentemente em dezenas de
    ícones. Os movimentos continuam idênticos, mas o navegador pode liberar a GPU
    entre interações. */
-html body .tadeon-shell :is(
-  .tadeon-dashboard-signal > svg,
-  .tadeon-user-row__sigil,
-  .tadeon-route-offline [data-slot="tabs-trigger"] svg,
-  .tadeon-tabletop-studio [data-slot="button"] > svg,
-  [data-section="Painel do Mestre"] #tadeon-main [data-slot="button"] > svg,
-  [data-section="Saúde do arquivo"] #tadeon-main [data-slot="button"] > svg
-) {
+html body .tadeon-shell .tadeon-dashboard-signal > svg,
+html body .tadeon-shell .tadeon-user-row__sigil,
+html body .tadeon-shell .tadeon-route-offline [data-slot="tabs-trigger"] svg,
+html body .tadeon-shell .tadeon-tabletop-studio [data-slot="button"] > svg,
+html body .tadeon-shell[data-section="Painel do Mestre"] #tadeon-main [data-slot="button"] > svg,
+html body .tadeon-shell[data-section="Saúde do arquivo"] #tadeon-main [data-slot="button"] > svg {
   will-change: auto !important;
 }
 
