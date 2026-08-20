@@ -12,6 +12,12 @@ const CORE_FLOATING_SELECTORS = [
   ".tadeon-tabletop-precision-editor",
 ] as const;
 
+const CONSTRAINED_MENU_SELECTORS = [
+  ".tadeon-tabletop-context-menu",
+  ".tadeon-rename-popover",
+  ".tadeon-tactical-dock__power-list",
+] as const;
+
 const HEIGHT_VARIABLES: Array<[string, string]> = [
   [".tadeon-tabletop-progressive-dock", "--tadeon-tabletop-progressive-h"],
   [".tadeon-tactical-dock", "--tadeon-tabletop-tactical-h"],
@@ -22,6 +28,8 @@ const HEIGHT_VARIABLES: Array<[string, string]> = [
   [".tadeon-nexus-tabletop-locator", "--tadeon-tabletop-locator-h"],
   [".tadeon-creative-dock", "--tadeon-tabletop-creative-h"],
 ];
+
+type Insets = { top: number; right: number; bottom: number; left: number };
 
 function visible(element: Element | null): element is HTMLElement {
   if (!(element instanceof HTMLElement)) return false;
@@ -60,7 +68,7 @@ function floatingSurfaces() {
   return [...surfaces, ...utilitySurfaces];
 }
 
-function edgeInsets(elements: HTMLElement[]) {
+function edgeInsets(elements: HTMLElement[]): Insets {
   const vw = window.innerWidth;
   const vh = window.innerHeight;
   const margin = 10;
@@ -83,6 +91,28 @@ function edgeInsets(elements: HTMLElement[]) {
   }
 
   return { top, right, bottom, left };
+}
+
+function constrainMenus(insets: Insets) {
+  const left = Math.max(8, insets.left + 8);
+  const right = Math.min(window.innerWidth - 8, window.innerWidth - insets.right - 8);
+  const top = Math.max(8, insets.top + 8);
+  const bottom = Math.min(window.innerHeight - 8, window.innerHeight - insets.bottom - 8);
+
+  for (const selector of CONSTRAINED_MENU_SELECTORS) {
+    document.querySelectorAll<HTMLElement>(selector).forEach((element) => {
+      if (!visible(element)) return;
+      const rect = element.getBoundingClientRect();
+      let x = 0;
+      let y = 0;
+      if (rect.left < left) x = left - rect.left;
+      else if (rect.right > right) x = right - rect.right;
+      if (rect.top < top) y = top - rect.top;
+      else if (rect.bottom > bottom) y = bottom - rect.bottom;
+      element.style.setProperty("--tadeon-tabletop-safe-shift-x", `${Math.round(x)}px`);
+      element.style.setProperty("--tadeon-tabletop-safe-shift-y", `${Math.round(y)}px`);
+    });
+  }
 }
 
 function openUtility() {
@@ -122,9 +152,16 @@ export function TabletopFloatingLayoutBridge() {
       setPx(root, "--tadeon-tabletop-safe-bottom", insets.bottom);
       setPx(root, "--tadeon-tabletop-safe-left", insets.left);
       root.dataset.tadeonTabletopUtility = openUtility();
+      constrainMenus(insets);
 
       resizeObserver ??= new ResizeObserver(schedule);
-      for (const element of floating) {
+      const measurable = [
+        ...floating,
+        ...CONSTRAINED_MENU_SELECTORS.flatMap((selector) =>
+          [...document.querySelectorAll<HTMLElement>(selector)].filter(visible),
+        ),
+      ];
+      for (const element of measurable) {
         if (observed.has(element)) continue;
         observed.add(element);
         resizeObserver.observe(element);
