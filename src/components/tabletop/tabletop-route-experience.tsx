@@ -3,6 +3,7 @@ import { AlertTriangle, Layers3, Loader2, RefreshCw, Sparkles } from "lucide-rea
 import { Button } from "@/components/ui/button";
 import { reportClientError } from "@/lib/client-error-monitor";
 import type { FeatureFlags } from "@/lib/feature-flags";
+import { TabletopFloatingLayoutBridge } from "@/components/tabletop/tabletop-floating-layout-bridge";
 import "@/styles/tabletop-progressive-ui.css";
 import "@/styles/tabletop-motion-final.css";
 import "@/styles/tabletop-bottom-stack-fix.css";
@@ -125,10 +126,6 @@ export function TabletopRouteExperience({
 }: TabletopRouteExperienceProps) {
   const [resetKey, setResetKey] = useState(0);
 
-  // Não adivinha um papel enquanto o perfil ainda está hidratando. Antes, isso
-  // podia baixar o workspace de participante e logo depois descartá-lo para
-  // montar o workspace do mestre no mesmo acesso. Espectador usa a entrada
-  // participante, preservando o comportamento de leitura já existente.
   if (!role) return <TabletopBootScreen resolvingRole />;
 
   const entry = directorMode && role === "mestre" ? (
@@ -152,6 +149,7 @@ export function TabletopRouteExperience({
       resetKey={resetKey}
       onRetry={() => setResetKey((current) => current + 1)}
     >
+      <TabletopFloatingLayoutBridge />
       <Suspense key={resetKey} fallback={<TabletopBootScreen />}>
         {entry}
       </Suspense>

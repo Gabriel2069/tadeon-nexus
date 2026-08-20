@@ -1,0 +1,16 @@
+/* Correção pós-layout para popovers que ainda nascem de coordenadas da viewport. */
+.tadeon-tabletop-context-menu,
+.tadeon-rename-popover,
+.tadeon-tactical-dock__power-list {
+  translate:
+    var(--tadeon-tabletop-safe-shift-x, 0px)
+    var(--tadeon-tabletop-safe-shift-y, 0px) !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tadeon-tabletop-context-menu,
+  .tadeon-rename-popover,
+  .tadeon-tactical-dock__power-list {
+    transition: none !important;
+  }
+}
