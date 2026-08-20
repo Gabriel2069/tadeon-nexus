@@ -7,33 +7,46 @@ function source(path: string) {
 }
 
 describe("popup viewport containment", () => {
-  it("centraliza Dialog e AlertDialog dentro da visual viewport em qualquer aparelho", () => {
+  it("mantém Dialog/AlertDialog como filhos diretos do Portal e acima do overlay", () => {
     const dialog = source("src/components/ui/dialog.tsx");
     const alertDialog = source("src/components/ui/alert-dialog.tsx");
     const css = source("src/styles/tablet-popup-viewport-237.css");
 
-    expect(dialog).toContain('data-slot="dialog-viewport"');
-    expect(alertDialog).toContain('data-slot="alert-dialog-viewport"');
+    expect(dialog).not.toContain('data-slot="dialog-viewport"');
+    expect(alertDialog).not.toContain('data-slot="alert-dialog-viewport"');
     expect(css).toContain('html[data-tadeon-popup-viewport="true"]');
-    expect(css).toContain('[data-slot="dialog-viewport"]');
-    expect(css).toContain('[data-slot="alert-dialog-viewport"]');
-    expect(css).toContain("align-items: center !important");
-    expect(css).toContain("justify-content: center !important");
-    expect(css).toContain("position: relative !important");
-    expect(css).toContain("max-height: 100% !important");
-    expect(css).toContain("overflow-y: auto !important");
-    expect(css).not.toContain('data-tadeon-tablet-popup="true"');
+    expect(css).toContain('z-index: 50 !important');
+    expect(css).toContain('z-index: 60 !important');
+    expect(css).toContain('z-index: 80 !important');
+    expect(css).toContain('z-index: 90 !important');
+    expect(css).toContain('backdrop-filter: none !important');
+    expect(css).not.toContain('[data-slot="dialog-viewport"]');
+    expect(css).not.toContain('[data-slot="alert-dialog-viewport"]');
   });
 
-  it("acompanha teclado/visualViewport e mantém o campo focado dentro do scroller do modal", () => {
+  it("centraliza o próprio Content na visualViewport e preserva rolagem", () => {
+    const css = source("src/styles/tablet-popup-viewport-237.css");
+
+    expect(css).toContain('top: var(--tadeon-vv-center-y) !important');
+    expect(css).toContain('left: var(--tadeon-vv-center-x) !important');
+    expect(css).toContain('transform: translate(-50%, -50%) !important');
+    expect(css).toContain('var(--tadeon-vv-height) - var(--tadeon-popup-vv-gap-top)');
+    expect(css).toContain('overflow-y: auto !important');
+    expect(css).toContain('filter: none !important');
+    expect(css).toContain('tadeon-popup-stable-in-251');
+    expect(css).not.toContain('position: relative !important');
+  });
+
+  it("acompanha teclado/visualViewport e mantém o campo focado no scroller interno", () => {
     const bridge = source("src/components/visual-viewport-popup-bridge.tsx");
 
     expect(bridge).toContain('root.dataset.tadeonPopupViewport = "true"');
     expect(bridge).toContain("activeEditableInModal");
     expect(bridge).toContain("scrollContainerFor");
     expect(bridge).toContain("keepFocusedFieldVisible");
-    expect(bridge).toContain("keyboardThreshold");
-    expect(bridge).toContain("for (const delay of [80, 180, 320, 520, 800])");
+    expect(bridge).toContain("followVisualOffsets");
+    expect(bridge).toContain("rawTop > 1");
+    expect(bridge).toContain("for (const delay of [60, 140, 260, 420, 650, 900])");
     expect(bridge).toContain('window.visualViewport?.addEventListener("resize", schedule');
     expect(bridge).toContain('window.visualViewport?.addEventListener("scrollend", schedule');
     expect(bridge).toContain('document.addEventListener("focusin", settleAfterFocusChange');
