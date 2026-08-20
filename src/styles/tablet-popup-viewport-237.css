@@ -1,4 +1,5 @@
-/* #237 — Tablet/iPad: popups seguem a visual viewport real, inclusive com teclado. */
+/* #246 — Tablet/iPad: popups seguem a visual viewport sem disputar posição
+   com Radix/Safari. Mobile volta ao comportamento nativo anterior. */
 :root {
   --tadeon-vv-left: 0px;
   --tadeon-vv-top: 0px;
@@ -12,6 +13,7 @@
 @media (min-width: 600px) and (max-width: 1180px) {
   [data-slot="dialog-content"],
   [data-slot="alert-dialog-content"] {
+    position: fixed !important;
     left: var(--tadeon-vv-center-x) !important;
     top: var(--tadeon-vv-center-y) !important;
     right: auto !important;
@@ -20,34 +22,37 @@
     max-width: calc(var(--tadeon-vv-width) - 2rem) !important;
     max-height: calc(var(--tadeon-vv-height) - 2rem) !important;
     margin: 0 !important;
+    overflow-x: hidden !important;
     overflow-y: auto !important;
     overscroll-behavior: contain;
     transform: translate(-50%, -50%) !important;
     transform-origin: center !important;
+    transition: opacity 160ms ease, transform 160ms ease !important;
   }
 
-  /* #172 tinha um centro fixo da layout viewport só para Busca/Command. Esta
-     regra precisa ter a mesma especificidade para o visualViewport prevalecer. */
   [data-slot="dialog-content"]:has(> [data-slot="command"]) {
-    left: var(--tadeon-vv-center-x) !important;
-    top: var(--tadeon-vv-center-y) !important;
     width: min(42rem, calc(var(--tadeon-vv-width) - 2rem)) !important;
     max-width: calc(var(--tadeon-vv-width) - 2rem) !important;
-    max-height: calc(var(--tadeon-vv-height) - 2rem) !important;
-    transform: translate(-50%, -50%) !important;
   }
 
   [data-slot="dialog-overlay"],
   [data-slot="alert-dialog-overlay"] {
-    inset: var(--tadeon-vv-top) auto auto var(--tadeon-vv-left) !important;
-    width: var(--tadeon-vv-width) !important;
-    height: var(--tadeon-vv-height) !important;
+    position: fixed !important;
+    inset: 0 !important;
+    width: 100vw !important;
+    height: 100dvh !important;
   }
 
-  [data-slot="popover-content"] {
+  [data-slot="popover-content"],
+  [data-slot="select-content"],
+  [data-slot="dropdown-menu-content"],
+  [data-slot="dropdown-menu-sub-content"],
+  [data-slot="context-menu-content"],
+  [data-slot="context-menu-sub-content"],
+  [data-slot="hover-card-content"] {
     max-width: calc(var(--tadeon-vv-width) - 1.5rem) !important;
-    max-height: min(var(--radix-popover-content-available-height, 38rem), calc(var(--tadeon-vv-height) - 1.5rem)) !important;
-    overflow: auto !important;
+    max-height: min(38rem, calc(var(--tadeon-vv-height) - 1.5rem)) !important;
+    overflow-y: auto !important;
     overscroll-behavior: contain;
   }
 
@@ -56,39 +61,46 @@
     overscroll-behavior: contain;
   }
 
+  /* Com teclado aberto, o popup deixa de tentar permanecer no centro vertical.
+     Ele ocupa a faixa visível acima do teclado, com scroll interno e sem
+     reposicionamentos sucessivos. */
   html[data-tadeon-keyboard-open="true"] [data-slot="dialog-content"],
-  html[data-tadeon-keyboard-open="true"] [data-slot="alert-dialog-content"],
+  html[data-tadeon-keyboard-open="true"] [data-slot="alert-dialog-content"] {
+    top: calc(var(--tadeon-vv-top) + .75rem) !important;
+    transform: translateX(-50%) !important;
+    transform-origin: top center !important;
+    max-height: calc(var(--tadeon-vv-height) - 1.5rem) !important;
+  }
+
   html[data-tadeon-keyboard-open="true"] [data-slot="dialog-content"]:has(> [data-slot="command"]) {
     top: calc(var(--tadeon-vv-top) + .75rem) !important;
     transform: translateX(-50%) !important;
-    max-height: calc(var(--tadeon-vv-height) - 1.5rem) !important;
   }
 
   html[data-tadeon-keyboard-open="true"] :where(
     [data-slot="dialog-content"],
     [data-slot="alert-dialog-content"],
-    [data-slot="popover-content"]
+    [data-slot="popover-content"],
+    [data-slot="select-content"]
   ) input:focus,
   html[data-tadeon-keyboard-open="true"] :where(
     [data-slot="dialog-content"],
     [data-slot="alert-dialog-content"],
-    [data-slot="popover-content"]
+    [data-slot="popover-content"],
+    [data-slot="select-content"]
   ) textarea:focus {
-    scroll-margin-block: 5rem;
+    scroll-margin-block: 4rem;
   }
 }
 
-@media (max-width: 599px) {
-  html[data-tadeon-keyboard-open="true"] [data-slot="dialog-content"],
-  html[data-tadeon-keyboard-open="true"] [data-slot="alert-dialog-content"] {
-    left: var(--tadeon-vv-center-x) !important;
-    top: calc(var(--tadeon-vv-top) + .5rem) !important;
-    right: auto !important;
-    bottom: auto !important;
-    width: calc(var(--tadeon-vv-width) - 1rem) !important;
-    max-width: calc(var(--tadeon-vv-width) - 1rem) !important;
-    max-height: calc(var(--tadeon-vv-height) - 1rem) !important;
-    transform: translateX(-50%) !important;
-    overflow: auto !important;
+/* Mobile deliberadamente sem overrides. O posicionamento volta a ser 100%
+   responsabilidade dos componentes/Radix, como era antes das correções de tablet. */
+
+@media (prefers-reduced-motion: reduce) {
+  @media (min-width: 600px) and (max-width: 1180px) {
+    [data-slot="dialog-content"],
+    [data-slot="alert-dialog-content"] {
+      transition: none !important;
+    }
   }
 }
