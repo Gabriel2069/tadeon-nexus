@@ -1,0 +1,296 @@
+/* #217 — paridade estrita entre Head e aba.
+   Esta camada não inventa paletas: usa exatamente as cores canônicas do shell.
+   Painel, Usuários, Backup e Offline compartilham a mesma geometria de símbolo. */
+
+/* --------------------------------------------------------------------------
+   CORES CANÔNICAS DO SHELL / ABAS
+   -------------------------------------------------------------------------- */
+html body .tadeon-shell[data-section="Mesa Nexus"] {
+  --section-accent: var(--tadeon-flow) !important;
+  --section-secondary: var(--tadeon-knowledge) !important;
+  --section-accent-rgb: 79 110 93 !important;
+}
+
+html body .tadeon-shell[data-section="Painel do Mestre"] {
+  --section-accent: var(--tadeon-fear) !important;
+  --section-secondary: var(--tadeon-knowledge) !important;
+  --section-accent-rgb: 116 36 45 !important;
+}
+
+html body .tadeon-shell[data-section="Usuários"] {
+  --section-accent: var(--tadeon-flow) !important;
+  --section-secondary: var(--tadeon-metal) !important;
+  --section-accent-rgb: 79 110 93 !important;
+}
+
+html body .tadeon-shell[data-section="Saúde do arquivo"] {
+  --section-accent: var(--tadeon-metal) !important;
+  --section-secondary: var(--tadeon-flow) !important;
+  --section-accent-rgb: 122 129 135 !important;
+}
+
+html body .tadeon-shell[data-section="Consulta offline"] {
+  --section-accent: var(--tadeon-flow) !important;
+  --section-secondary: var(--tadeon-veil) !important;
+  --section-accent-rgb: 79 110 93 !important;
+}
+
+/* O BrandMark do Área em foco e todos os textos usam a mesma variável da aba. */
+html body .tadeon-focus-section-mark-host {
+  color: var(--section-accent) !important;
+  filter: drop-shadow(0 0 11px rgb(var(--section-accent-rgb) / 26%)) !important;
+}
+
+html body .tadeon-shell .tadeon-desktop-toolbar .tadeon-eyebrow,
+html body .tadeon-shell .tadeon-desktop-toolbar h2,
+html body .tadeon-shell .tadeon-mobile-header__identity p:last-child {
+  color: color-mix(in srgb, var(--section-accent) 82%, var(--foreground)) !important;
+}
+
+/* --------------------------------------------------------------------------
+   CORES DOS HEADS INTERNOS = COR DA RESPECTIVA ABA
+   -------------------------------------------------------------------------- */
+html body [data-tadeon-page-hero="users"] {
+  --hero-rgb: 79 110 93 !important;
+  --hero-secondary-rgb: 122 129 135 !important;
+}
+
+html body [data-tadeon-page-hero="tools"] {
+  --hero-rgb: 122 129 135 !important;
+  --hero-secondary-rgb: 79 110 93 !important;
+}
+
+html body [data-tadeon-page-hero="offline"] {
+  --hero-rgb: 79 110 93 !important;
+  --hero-secondary-rgb: 113 107 123 !important;
+}
+
+html body .tadeon-master-commandbar {
+  --hero-rgb: 116 36 45 !important;
+  --hero-secondary-rgb: 217 215 164 !important;
+}
+
+/* --------------------------------------------------------------------------
+   UMA GEOMETRIA REAL PARA PAINEL / USUÁRIOS / BACKUP / OFFLINE
+   Centro do símbolo desktop/tablet: 2.75rem a partir da borda esquerda.
+   -------------------------------------------------------------------------- */
+html body .tadeon-master-commandbar,
+html body .tadeon-page-hero[data-tadeon-page-hero="users"],
+html body .tadeon-page-hero[data-tadeon-page-hero="tools"],
+html body .tadeon-page-hero[data-tadeon-page-hero="offline"] {
+  position: relative !important;
+  isolation: isolate !important;
+  display: grid !important;
+  min-height: 7rem !important;
+  grid-template-columns: 3rem minmax(0, 1fr) auto !important;
+  grid-template-rows: auto !important;
+  align-items: center !important;
+  column-gap: 1.25rem !important;
+  row-gap: .75rem !important;
+  padding: 1rem 1.25rem !important;
+  overflow: clip !important;
+}
+
+html body .tadeon-master-commandbar > .tadeon-master-commandbar__glow,
+html body .tadeon-page-hero[data-tadeon-page-hero] > .tadeon-page-hero-mark-host {
+  position: relative !important;
+  inset: auto !important;
+  top: auto !important;
+  right: auto !important;
+  bottom: auto !important;
+  left: auto !important;
+  grid-column: 1 !important;
+  grid-row: 1 !important;
+  align-self: center !important;
+  justify-self: center !important;
+  display: grid !important;
+  width: 3rem !important;
+  height: 3rem !important;
+  min-width: 3rem !important;
+  min-height: 3rem !important;
+  place-items: center !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 1px solid rgb(var(--hero-rgb) / 48%) !important;
+  border-radius: 50% !important;
+  color: rgb(var(--hero-rgb)) !important;
+  background: radial-gradient(circle, rgb(var(--hero-rgb) / 12%), rgb(9 12 16 / 92%) 70%) !important;
+  box-shadow:
+    0 0 0 .42rem rgb(var(--hero-rgb) / 5%),
+    0 0 0 .82rem rgb(var(--hero-secondary-rgb) / 2%),
+    0 16px 38px -23px rgb(var(--hero-rgb) / 72%),
+    inset 0 1px rgb(255 255 255 / 9%) !important;
+  filter: drop-shadow(0 0 10px rgb(var(--hero-rgb) / 28%)) !important;
+  transform: none !important;
+  translate: none !important;
+}
+
+html body .tadeon-master-commandbar > .relative.flex {
+  grid-column: 2 / -1 !important;
+  grid-row: 1 !important;
+  width: 100% !important;
+  align-self: center !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+html body [data-tadeon-page-hero="users"] > div:first-of-type {
+  grid-column: 2 !important;
+  grid-row: 1 !important;
+  align-self: center !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+html body [data-tadeon-page-hero="users"] > div:nth-of-type(2) {
+  grid-column: 3 !important;
+  grid-row: 1 !important;
+  align-self: center !important;
+  justify-self: end !important;
+  margin: 0 !important;
+}
+
+html body [data-tadeon-page-hero="tools"] > div:first-of-type,
+html body [data-tadeon-page-hero="offline"] > div:first-of-type {
+  grid-column: 2 / -1 !important;
+  grid-row: 1 !important;
+  width: 100% !important;
+  align-self: center !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+/* Símbolos e títulos obedecem somente ao accent primário da aba. */
+html body .tadeon-page-hero[data-tadeon-page-hero] > .tadeon-page-hero-mark-host > svg,
+html body .tadeon-master-commandbar__master-sigil {
+  color: rgb(var(--hero-rgb)) !important;
+}
+
+html body .tadeon-page-hero[data-tadeon-page-hero] :is(.tadeon-eyebrow, h1, h2, .font-cinzel),
+html body .tadeon-master-commandbar :is(.tadeon-eyebrow, h1, h2, .font-cinzel) {
+  color: rgb(var(--hero-rgb)) !important;
+}
+
+html body [data-tadeon-page-hero="users"] svg.text-primary,
+html body [data-tadeon-page-hero="tools"] svg.text-primary,
+html body [data-tadeon-page-hero="offline"] svg.text-primary {
+  color: rgb(var(--hero-rgb)) !important;
+}
+
+/* Mantém o ícone da guia ativa no centro exato do sigilo do Mestre. */
+html body .tadeon-master-commandbar__sigil-stack {
+  position: relative !important;
+  inset: auto !important;
+  display: grid !important;
+  width: 100% !important;
+  height: 100% !important;
+  place-items: center !important;
+  transform: none !important;
+}
+
+html body .tadeon-master-commandbar__active-icon {
+  position: absolute !important;
+  top: 50% !important;
+  left: 50% !important;
+  width: .78rem !important;
+  height: .78rem !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  color: rgb(var(--hero-secondary-rgb)) !important;
+  background: rgb(9 12 16 / 88%) !important;
+  transform: translate(-50%, -50%) !important;
+}
+
+/* --------------------------------------------------------------------------
+   MESA INTERNA — mesma cor da aba Mesa (Fluxo), sem azul paralelo.
+   -------------------------------------------------------------------------- */
+html body .tadeon-tabletop-studio__header {
+  --archive-hero-rgb: 79 110 93 !important;
+  --archive-hero-secondary-rgb: 217 215 164 !important;
+  border-color: rgb(79 110 93 / 24%) !important;
+  background:
+    radial-gradient(circle at 81% -38%, rgb(79 110 93 / 9%) 0 2.7rem, transparent 2.85rem 6.4rem, rgb(79 110 93 / 4%) 6.5rem 6.62rem, transparent 6.75rem),
+    radial-gradient(circle at 96% 120%, transparent 0 4rem, rgb(217 215 164 / 5%) 4.1rem 4.24rem, transparent 4.38rem 7.5rem),
+    radial-gradient(circle at 9% 8%, rgb(79 110 93 / 7%), transparent 11rem),
+    linear-gradient(138deg, rgb(255 255 255 / 2.8%), transparent 42%),
+    linear-gradient(145deg, rgb(16 20 24 / 96%), rgb(8 11 15 / 96%)) !important;
+  box-shadow:
+    0 24px 58px -52px rgb(0 0 0 / 100%),
+    0 15px 44px -42px rgb(79 110 93 / 28%),
+    inset 0 1px rgb(255 255 255 / 3.5%) !important;
+}
+
+html body .tadeon-tabletop-studio__header :is(.tadeon-eyebrow, h1, h2, .font-cinzel),
+html body .tadeon-tabletop-studio__brand > .tadeon-tabletop-brand-mark-host,
+html body .tadeon-tabletop-brand-mark-icon {
+  color: rgb(79 110 93) !important;
+}
+
+html body .tadeon-tabletop-studio__brand > .tadeon-tabletop-brand-mark-host {
+  border-color: rgb(79 110 93 / 48%) !important;
+  background:
+    radial-gradient(circle at 34% 28%, rgb(255 255 255 / 7%), transparent 36%),
+    rgb(79 110 93 / 9%) !important;
+  box-shadow:
+    0 0 0 .38rem rgb(79 110 93 / 4%),
+    0 14px 34px -23px rgb(79 110 93 / 66%),
+    inset 0 1px rgb(255 255 255 / 8%) !important;
+}
+
+html body .tadeon-tabletop-studio__header::before {
+  border-color: rgb(79 110 93 / 18%) !important;
+  background: radial-gradient(circle at center, transparent 47%, rgb(79 110 93 / 2.6%) 48% 50%, transparent 51%) !important;
+  background-image: radial-gradient(circle at center, transparent 47%, rgb(79 110 93 / 2.6%) 48% 50%, transparent 51%) !important;
+  box-shadow:
+    0 0 0 1.8rem rgb(79 110 93 / 2.5%),
+    0 0 0 4rem rgb(217 215 164 / 1.5%),
+    0 0 54px -38px rgb(79 110 93 / 32%) !important;
+}
+
+html body .tadeon-tabletop-studio__header::after {
+  border-color: rgb(217 215 164 / 11%) !important;
+  box-shadow:
+    0 0 0 1.5rem rgb(217 215 164 / 2.1%),
+    0 0 0 3.5rem rgb(79 110 93 / 1.7%) !important;
+}
+
+/* --------------------------------------------------------------------------
+   PHONE — exatamente a mesma geometria reduzida nos quatro Heads.
+   -------------------------------------------------------------------------- */
+@media (max-width: 639px) {
+  html body .tadeon-master-commandbar,
+  html body .tadeon-page-hero[data-tadeon-page-hero="users"],
+  html body .tadeon-page-hero[data-tadeon-page-hero="tools"],
+  html body .tadeon-page-hero[data-tadeon-page-hero="offline"] {
+    min-height: 5.5rem !important;
+    grid-template-columns: 2.65rem minmax(0, 1fr) !important;
+    grid-template-rows: auto !important;
+    column-gap: .75rem !important;
+    row-gap: .55rem !important;
+    padding: .85rem .9rem !important;
+  }
+
+  html body .tadeon-master-commandbar > .tadeon-master-commandbar__glow,
+  html body .tadeon-page-hero[data-tadeon-page-hero] > .tadeon-page-hero-mark-host {
+    grid-column: 1 !important;
+    grid-row: 1 !important;
+    width: 2.65rem !important;
+    height: 2.65rem !important;
+    min-width: 2.65rem !important;
+    min-height: 2.65rem !important;
+  }
+
+  html body .tadeon-master-commandbar > .relative.flex,
+  html body [data-tadeon-page-hero="users"] > div:first-of-type,
+  html body [data-tadeon-page-hero="tools"] > div:first-of-type,
+  html body [data-tadeon-page-hero="offline"] > div:first-of-type {
+    grid-column: 2 !important;
+    grid-row: 1 !important;
+  }
+
+  html body [data-tadeon-page-hero="users"] > div:nth-of-type(2) {
+    grid-column: 2 !important;
+    grid-row: 2 !important;
+    justify-self: start !important;
+  }
+}
