@@ -1,0 +1,157 @@
+/* #238 — segunda passada estrutural do chrome flutuante da Mesa.
+   Reserva o dock inferior global, prende controles superiores ao stage visível e
+   evita clipping/escape do painel lateral. */
+
+html:has(.tadeon-tabletop-studio) {
+  --tadeon-tabletop-app-bottom: 0px;
+  --tadeon-tabletop-stage-fixed-top: .75rem;
+  --tadeon-tabletop-stage-fixed-left: .75rem;
+  --tadeon-tabletop-stage-fixed-right: .75rem;
+}
+
+/* Docks da Mesa nunca podem atravessar o menu inferior global. */
+.tadeon-tabletop-progressive-dock {
+  bottom: calc(max(.8rem, env(safe-area-inset-bottom)) + var(--tadeon-tabletop-app-bottom)) !important;
+}
+
+.tadeon-tactical-dock {
+  bottom: calc(
+    max(.8rem, env(safe-area-inset-bottom)) +
+    var(--tadeon-tabletop-app-bottom) +
+    var(--tadeon-tabletop-progressive-h) +
+    var(--tadeon-tabletop-float-gap)
+  ) !important;
+}
+
+.tadeon-tabletop-selection-actions {
+  bottom: calc(
+    max(.8rem, env(safe-area-inset-bottom)) +
+    var(--tadeon-tabletop-app-bottom) +
+    var(--tadeon-tabletop-progressive-h) +
+    var(--tadeon-tabletop-tactical-h) +
+    var(--tadeon-tabletop-float-gap) +
+    var(--tadeon-tabletop-float-gap)
+  ) !important;
+}
+
+.tadeon-tabletop-now,
+.tadeon-placeables {
+  bottom: calc(max(.8rem, env(safe-area-inset-bottom)) + var(--tadeon-tabletop-app-bottom)) !important;
+}
+
+.tadeon-semantic-transform {
+  bottom: calc(
+    max(.8rem, env(safe-area-inset-bottom)) +
+    var(--tadeon-tabletop-app-bottom) +
+    var(--tadeon-tabletop-placeables-h) +
+    var(--tadeon-tabletop-float-gap)
+  ) !important;
+}
+
+.tadeon-nexus-tabletop-locator {
+  bottom: calc(
+    max(.8rem, env(safe-area-inset-bottom)) +
+    var(--tadeon-tabletop-app-bottom) +
+    var(--tadeon-tabletop-placeables-h) +
+    var(--tadeon-tabletop-semantic-h) +
+    var(--tadeon-tabletop-float-gap) +
+    var(--tadeon-tabletop-float-gap)
+  ) !important;
+}
+
+.tadeon-creative-dock {
+  bottom: calc(
+    max(.8rem, env(safe-area-inset-bottom)) +
+    var(--tadeon-tabletop-app-bottom) +
+    var(--tadeon-tabletop-placeables-h) +
+    var(--tadeon-tabletop-semantic-h) +
+    var(--tadeon-tabletop-locator-h) +
+    var(--tadeon-tabletop-float-gap) +
+    var(--tadeon-tabletop-float-gap) +
+    var(--tadeon-tabletop-float-gap)
+  ) !important;
+}
+
+/* Rail e setup pertencem à janela visível do mapa, não ao fluxo rolável. */
+.tadeon-tabletop-canvas-rail,
+.tadeon-tabletop-tool-options {
+  position: fixed !important;
+  top: var(--tadeon-tabletop-stage-fixed-top) !important;
+  max-height: calc(100dvh - var(--tadeon-tabletop-stage-fixed-top) - var(--tadeon-tabletop-app-bottom) - 1rem) !important;
+  overflow: auto;
+  overscroll-behavior: contain;
+}
+
+.tadeon-tabletop-canvas-rail {
+  left: var(--tadeon-tabletop-stage-fixed-left) !important;
+}
+
+.tadeon-tabletop-tool-options {
+  right: var(--tadeon-tabletop-stage-fixed-right) !important;
+  left: auto !important;
+  max-width: min(42rem, calc(100vw - var(--tadeon-tabletop-stage-fixed-left) - var(--tadeon-tabletop-stage-fixed-right) - 1rem)) !important;
+}
+
+/* O stage continua recortando o canvas, mas não o chrome externo. */
+.tadeon-tabletop-workbench {
+  overflow: visible !important;
+}
+
+.tadeon-tabletop-panel {
+  box-sizing: border-box !important;
+  min-width: 0 !important;
+  max-width: calc(100vw - max(1rem, env(safe-area-inset-left)) - max(1rem, env(safe-area-inset-right))) !important;
+  max-height: calc(100dvh - var(--tadeon-tabletop-app-bottom) - max(1rem, env(safe-area-inset-top)) - 1rem) !important;
+  overflow: auto !important;
+  overscroll-behavior: contain;
+}
+
+@media (min-width: 1180px) {
+  .tadeon-tabletop-panel {
+    align-self: start;
+    width: min(24rem, calc(100vw - var(--tadeon-tabletop-stage-fixed-left) - 1rem)) !important;
+    position: sticky !important;
+    top: max(.75rem, env(safe-area-inset-top)) !important;
+  }
+}
+
+@media (max-width: 1179px) {
+  .tadeon-tabletop-panel {
+    right: max(.5rem, env(safe-area-inset-right)) !important;
+    bottom: calc(max(.5rem, env(safe-area-inset-bottom)) + var(--tadeon-tabletop-app-bottom)) !important;
+    left: max(.5rem, env(safe-area-inset-left)) !important;
+    width: auto !important;
+    margin: 0 !important;
+  }
+}
+
+@media (max-width: 800px) {
+  .tadeon-tabletop-progressive-dock,
+  .tadeon-tactical-dock,
+  .tadeon-tabletop-selection-actions {
+    right: max(.45rem, env(safe-area-inset-right)) !important;
+    left: max(.45rem, env(safe-area-inset-left)) !important;
+  }
+
+  .tadeon-tabletop-now,
+  .tadeon-placeables,
+  .tadeon-creative-dock,
+  .tadeon-semantic-transform,
+  .tadeon-nexus-tabletop-locator {
+    max-width: calc(100vw - max(1rem, env(safe-area-inset-left)) - max(1rem, env(safe-area-inset-right))) !important;
+  }
+
+  .tadeon-tabletop-canvas-rail,
+  .tadeon-tabletop-tool-options {
+    top: var(--tadeon-tabletop-stage-fixed-top) !important;
+    max-height: min(58dvh, calc(100dvh - var(--tadeon-tabletop-stage-fixed-top) - var(--tadeon-tabletop-app-bottom) - 1rem)) !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tadeon-tabletop-canvas-rail,
+  .tadeon-tabletop-tool-options,
+  .tadeon-tabletop-panel {
+    transition: none !important;
+  }
+}
