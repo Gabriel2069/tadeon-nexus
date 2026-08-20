@@ -38,7 +38,8 @@ html:has(.tadeon-tabletop-studio) {
     max(.8rem, env(safe-area-inset-bottom)) +
     var(--tadeon-tabletop-progressive-h) +
     var(--tadeon-tabletop-tactical-h) +
-    var(--tadeon-tabletop-float-gap) * 2
+    var(--tadeon-tabletop-float-gap) +
+    var(--tadeon-tabletop-float-gap)
   ) !important;
 }
 
@@ -68,7 +69,8 @@ html:has(.tadeon-tabletop-studio) {
     max(.8rem, env(safe-area-inset-bottom)) +
     var(--tadeon-tabletop-placeables-h) +
     var(--tadeon-tabletop-semantic-h) +
-    var(--tadeon-tabletop-float-gap) * 2
+    var(--tadeon-tabletop-float-gap) +
+    var(--tadeon-tabletop-float-gap)
   ) !important;
 }
 
@@ -79,7 +81,9 @@ html:has(.tadeon-tabletop-studio) {
     var(--tadeon-tabletop-placeables-h) +
     var(--tadeon-tabletop-semantic-h) +
     var(--tadeon-tabletop-locator-h) +
-    var(--tadeon-tabletop-float-gap) * 3
+    var(--tadeon-tabletop-float-gap) +
+    var(--tadeon-tabletop-float-gap) +
+    var(--tadeon-tabletop-float-gap)
   ) !important;
 }
 
@@ -130,7 +134,6 @@ html:has(.tadeon-tabletop-studio) {
     ) !important;
   }
 
-  /* Editor e barras superiores nunca atravessam a área de um painel lateral aberto. */
   .tadeon-tabletop-precision-editor {
     right: max(.8rem, env(safe-area-inset-right)) !important;
     max-width: min(28rem, calc(100vw - max(2rem, var(--tadeon-tabletop-safe-left)) - 2rem)) !important;
@@ -253,8 +256,6 @@ html[data-tadeon-tabletop-utility="precision"] :where(
     overscroll-behavior: contain;
   }
 
-  /* Teclado virtual: visualViewport reduz a área útil; folhas não podem ficar
-     presas atrás dele. */
   @supports (height: 100dvh) {
     .tadeon-tabletop-now__panel,
     .tadeon-placeables__panel,
