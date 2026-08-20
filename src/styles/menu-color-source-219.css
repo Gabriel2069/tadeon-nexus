@@ -190,7 +190,7 @@ html body .tadeon-page-hero[data-tadeon-page-hero="offline"] > .tadeon-page-hero
   html body .tadeon-page-hero[data-tadeon-page-hero="users"] > .tadeon-page-hero-mark-host,
   html body .tadeon-page-hero[data-tadeon-page-hero="tools"] > .tadeon-page-hero-mark-host,
   html body .tadeon-page-hero[data-tadeon-page-hero="offline"] > .tadeon-page-hero-mark-host {
-    margin-top: .42rem !important;
+    margin-top: .64rem !important;
   }
 
   html body [data-tadeon-page-hero="offline"] > div:first-of-type > div:first-child {
