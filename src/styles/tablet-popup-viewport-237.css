@@ -1,8 +1,7 @@
-/* #250 — Contrato universal de popups/modais.
-   Dialog e AlertDialog são sempre centralizados dentro da visualViewport real.
-   Quando o teclado reduz a área visível, o modal continua centralizado, limita
-   sua altura ao espaço restante e mantém rolagem interna. Popovers/menus
-   ancorados continuam sob responsabilidade do Radix, apenas com containment. */
+/* #251 — Contrato universal e estável para Dialog/AlertDialog.
+   O próprio Content volta a ser a superfície fixed do Radix. Não existe wrapper
+   geométrico entre Portal e Content: isso preserva stacking, foco, aria e todas
+   as larguras autorais. A visualViewport controla apenas centro e altura útil. */
 :root {
   --tadeon-vv-left: 0px;
   --tadeon-vv-top: 0px;
@@ -11,60 +10,50 @@
   --tadeon-vv-center-x: 50vw;
   --tadeon-vv-center-y: 50dvh;
   --tadeon-vv-keyboard: 0px;
-  --tadeon-popup-vv-gap-top: max(.6rem, env(safe-area-inset-top, 0px));
-  --tadeon-popup-vv-gap-right: max(.6rem, env(safe-area-inset-right, 0px));
-  --tadeon-popup-vv-gap-bottom: max(.6rem, env(safe-area-inset-bottom, 0px));
-  --tadeon-popup-vv-gap-left: max(.6rem, env(safe-area-inset-left, 0px));
+  --tadeon-popup-vv-gap-top: max(.65rem, env(safe-area-inset-top, 0px));
+  --tadeon-popup-vv-gap-right: max(.65rem, env(safe-area-inset-right, 0px));
+  --tadeon-popup-vv-gap-bottom: max(.65rem, env(safe-area-inset-bottom, 0px));
+  --tadeon-popup-vv-gap-left: max(.65rem, env(safe-area-inset-left, 0px));
 }
 
-html[data-tadeon-popup-viewport="true"] body [data-slot="dialog-overlay"],
-html[data-tadeon-popup-viewport="true"] body [data-slot="alert-dialog-overlay"] {
+/* Overlay sempre abaixo do conteúdo. Removemos blur do overlay para impedir o
+   estado de regressão em que somente a superfície borrada permanecia visível. */
+html[data-tadeon-popup-viewport="true"] body [data-slot="dialog-overlay"] {
   position: fixed !important;
+  z-index: 50 !important;
   inset: 0 !important;
   width: auto !important;
   height: auto !important;
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
 }
 
-/* O wrapper é a única superfície responsável pela geometria da tela.
-   O conteúdo fica relativo a ele, o que elimina disputas entre top/left/bottom
-   de camadas antigas e mantém o mesmo comportamento em desktop, tablet e phone. */
-html[data-tadeon-popup-viewport="true"] body [data-slot="dialog-viewport"],
-html[data-tadeon-popup-viewport="true"] body [data-slot="alert-dialog-viewport"] {
+html[data-tadeon-popup-viewport="true"] body [data-slot="alert-dialog-overlay"] {
   position: fixed !important;
-  z-index: 50 !important;
-  top: calc(var(--tadeon-vv-top) + var(--tadeon-popup-vv-gap-top)) !important;
+  z-index: 80 !important;
+  inset: 0 !important;
+  width: auto !important;
+  height: auto !important;
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+}
+
+/* O modal continua sendo fixed, como o Radix espera. Só substituímos as
+   coordenadas por aquelas da visualViewport e limitamos a altura ao espaço
+   realmente visível. Largura/max-width autorais permanecem intactos. */
+html[data-tadeon-popup-viewport="true"] body [data-slot="dialog-content"] {
+  position: fixed !important;
+  z-index: 60 !important;
+  top: var(--tadeon-vv-center-y) !important;
   right: auto !important;
   bottom: auto !important;
-  left: calc(var(--tadeon-vv-left) + var(--tadeon-popup-vv-gap-left)) !important;
-  display: flex !important;
-  width: calc(
-    var(--tadeon-vv-width) - var(--tadeon-popup-vv-gap-left) - var(--tadeon-popup-vv-gap-right)
-  ) !important;
-  height: calc(
+  left: var(--tadeon-vv-center-x) !important;
+  box-sizing: border-box !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  max-height: calc(
     var(--tadeon-vv-height) - var(--tadeon-popup-vv-gap-top) - var(--tadeon-popup-vv-gap-bottom)
   ) !important;
-  min-width: 0 !important;
-  min-height: 0 !important;
-  box-sizing: border-box !important;
-  align-items: center !important;
-  justify-content: center !important;
-  overflow: hidden !important;
-  overscroll-behavior: contain !important;
-  pointer-events: none !important;
-}
-
-html[data-tadeon-popup-viewport="true"] body [data-slot="dialog-content"],
-html[data-tadeon-popup-viewport="true"] body [data-slot="alert-dialog-content"] {
-  position: relative !important;
-  inset: auto !important;
-  top: auto !important;
-  right: auto !important;
-  bottom: auto !important;
-  left: auto !important;
-  box-sizing: border-box !important;
-  min-width: 0 !important;
-  min-height: 0 !important;
-  max-height: 100% !important;
   margin: 0 !important;
   overflow-x: hidden !important;
   overflow-y: auto !important;
@@ -72,20 +61,78 @@ html[data-tadeon-popup-viewport="true"] body [data-slot="alert-dialog-content"] 
   -webkit-overflow-scrolling: touch;
   scrollbar-gutter: stable;
   scroll-padding-block: 4rem 1rem;
-  transform: none !important;
+  transform: translate(-50%, -50%) !important;
   transform-origin: center !important;
+  filter: none !important;
   pointer-events: auto !important;
 }
 
-/* Em telas estreitas vencemos especificamente as antigas regras mobile que
-   impunham width:auto/bottom-sheet. Nos demais tamanhos, os max-width autorais
-   de cada modal continuam valendo normalmente. */
-@media (max-width: 640px) {
+html[data-tadeon-popup-viewport="true"] body [data-slot="alert-dialog-content"] {
+  position: fixed !important;
+  z-index: 90 !important;
+  top: var(--tadeon-vv-center-y) !important;
+  right: auto !important;
+  bottom: auto !important;
+  left: var(--tadeon-vv-center-x) !important;
+  box-sizing: border-box !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  max-height: calc(
+    var(--tadeon-vv-height) - var(--tadeon-popup-vv-gap-top) - var(--tadeon-popup-vv-gap-bottom)
+  ) !important;
+  margin: 0 !important;
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+  overscroll-behavior: contain !important;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-gutter: stable;
+  scroll-padding-block: 4rem 1rem;
+  transform: translate(-50%, -50%) !important;
+  transform-origin: center !important;
+  filter: none !important;
+  pointer-events: auto !important;
+}
+
+/* Em telas estreitas a largura também é limitada pela visualViewport. Acima
+   disso não tocamos em width/max-width, preservando os tamanhos específicos de
+   cada popup grande, biblioteca, gráfico, busca, ficha etc. */
+@media (max-width: 767px) {
   html[data-tadeon-popup-viewport="true"] body [data-slot="dialog-content"],
   html[data-tadeon-popup-viewport="true"] body [data-slot="alert-dialog-content"] {
-    width: calc(100% - .25rem) !important;
-    max-width: 100% !important;
+    width: min(
+      calc(100% - .75rem),
+      calc(var(--tadeon-vv-width) - var(--tadeon-popup-vv-gap-left) - var(--tadeon-popup-vv-gap-right))
+    ) !important;
+    max-width: calc(
+      var(--tadeon-vv-width) - var(--tadeon-popup-vv-gap-left) - var(--tadeon-popup-vv-gap-right)
+    ) !important;
   }
+}
+
+/* Animação somente de opacidade: nenhuma keyframe pode sobrescrever as
+   coordenadas/transform do centro ou deixar filter: blur preso após abrir. */
+@keyframes tadeon-popup-stable-in-251 {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes tadeon-popup-stable-out-251 {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+html[data-tadeon-popup-viewport="true"] body :is(
+  [data-slot="dialog-content"],
+  [data-slot="alert-dialog-content"]
+)[data-state="open"] {
+  animation: tadeon-popup-stable-in-251 170ms var(--ease-out, ease-out) both !important;
+}
+
+html[data-tadeon-popup-viewport="true"] body :is(
+  [data-slot="dialog-content"],
+  [data-slot="alert-dialog-content"]
+)[data-state="closed"] {
+  animation: tadeon-popup-stable-out-251 120ms var(--ease-out, ease-out) both !important;
 }
 
 html[data-tadeon-popup-viewport="true"] body [data-slot="dialog-content"] > *,
@@ -105,9 +152,8 @@ html[data-tadeon-popup-viewport="true"] body :is(
   overflow-wrap: anywhere;
 }
 
-/* CommandDialog herda o mesmo envelope; a lista interna é quem rola. */
+/* CommandDialog mantém o modal contido; sua lista é o scroller interno. */
 html[data-tadeon-popup-viewport="true"] body [data-slot="dialog-content"]:has(> [data-slot="command"]) {
-  max-height: 100% !important;
   overflow: hidden !important;
 }
 
@@ -132,10 +178,13 @@ html[data-tadeon-popup-viewport="true"] body [data-slot="dialog-content"]:has(> 
   overscroll-behavior: contain !important;
 }
 
-/* Select/Dropdown/Popover continuam presos ao gatilho. Só limitamos a caixa à
-   área realmente visível para impedir estouro quando o teclado ou zoom reduzirem
-   a visualViewport. */
-html[data-tadeon-popup-viewport="true"] :is(
+/* Superfícies ancoradas continuam posicionadas pelo Radix. Quando um modal está
+   aberto, apenas garantimos que Select/Dropdown apareçam acima dele e caibam na
+   área visível; fora de modais, não tocamos no comportamento que já funcionava. */
+html[data-tadeon-popup-viewport="true"] body:has(
+  [data-slot="dialog-content"],
+  [data-slot="alert-dialog-content"]
+) :is(
   [data-slot="popover-content"],
   [data-slot="select-content"],
   [data-slot="dropdown-menu-content"],
@@ -146,6 +195,7 @@ html[data-tadeon-popup-viewport="true"] :is(
   [data-slot="menubar-content"],
   [data-slot="menubar-sub-content"]
 ) {
+  z-index: 110 !important;
   box-sizing: border-box !important;
   min-width: 0 !important;
   max-width: calc(var(--tadeon-vv-width) - 1rem) !important;
@@ -155,25 +205,16 @@ html[data-tadeon-popup-viewport="true"] :is(
   overscroll-behavior: contain !important;
 }
 
-html[data-tadeon-popup-viewport="true"] :where(
-  [data-slot="command-list"],
-  [data-slot="scroll-area-viewport"]
-) {
+html[data-tadeon-popup-viewport="true"] body :is(
+  [data-slot="dialog-content"],
+  [data-slot="alert-dialog-content"]
+) :where([data-slot="command-list"], [data-slot="scroll-area-viewport"]) {
   min-height: 0;
   overscroll-behavior: contain;
 }
 
-/* O teclado não muda o princípio: modal continua centralizado na parte visível
-   da tela. A altura do wrapper já encolheu para a visualViewport; o campo focado
-   recebe margem de rolagem e o bridge move somente o scroller interno. */
-html[data-tadeon-popup-viewport="true"][data-tadeon-keyboard-open="true"] body :where(
-  [data-slot="dialog-content"],
-  [data-slot="alert-dialog-content"]
-) {
-  max-height: 100% !important;
-  scroll-padding-block: 4.5rem 1.25rem;
-}
-
+/* Teclado: a visualViewport reduz a max-height e o bridge rola apenas o
+   scroller interno. O modal continua geometricamente centralizado. */
 html[data-tadeon-popup-viewport="true"] :where(
   [data-slot="dialog-content"],
   [data-slot="alert-dialog-content"],
@@ -184,8 +225,11 @@ html[data-tadeon-popup-viewport="true"] :where(
 }
 
 @media (prefers-reduced-motion: reduce) {
-  html[data-tadeon-popup-viewport="true"] body [data-slot="dialog-content"],
-  html[data-tadeon-popup-viewport="true"] body [data-slot="alert-dialog-content"] {
-    transition: none !important;
+  html[data-tadeon-popup-viewport="true"] body :is(
+    [data-slot="dialog-content"],
+    [data-slot="alert-dialog-content"]
+  ) {
+    animation-duration: .001ms !important;
+    transition-duration: .001ms !important;
   }
 }

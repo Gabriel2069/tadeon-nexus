@@ -45,7 +45,7 @@ function keepFocusedFieldVisible() {
   const scrollerRect = scroller.getBoundingClientRect();
   const fieldRect = field.getBoundingClientRect();
   const topGuard = Math.min(56, Math.max(16, scrollerRect.height * 0.08));
-  const bottomGuard = Math.min(80, Math.max(24, scrollerRect.height * 0.12));
+  const bottomGuard = Math.min(88, Math.max(28, scrollerRect.height * 0.14));
   const visibleTop = scrollerRect.top + topGuard;
   const visibleBottom = scrollerRect.bottom - bottomGuard;
 
@@ -92,22 +92,31 @@ export function VisualViewportPopupBridge() {
 
       const viewport = window.visualViewport;
       const layoutWidth = document.documentElement.clientWidth || window.innerWidth;
-      const layoutHeight = window.innerHeight;
+      const layoutHeight = Math.max(
+        1,
+        document.documentElement.clientHeight || 0,
+        window.innerHeight || 0,
+      );
       const rawLeft = viewport?.offsetLeft ?? 0;
       const rawTop = viewport?.offsetTop ?? 0;
       const width = Math.max(1, viewport?.width ?? layoutWidth);
       const height = Math.max(1, viewport?.height ?? layoutHeight);
       const scale = viewport?.scale ?? 1;
-      const heightLoss = Math.max(0, layoutHeight - height);
       const focusedEditable = activeEditableInModal() !== null;
-      const keyboardThreshold = Math.max(80, layoutHeight * 0.1);
-      const keyboardOpen = focusedEditable && scale <= 1.05 && heightLoss > keyboardThreshold;
+      const heightLoss = Math.max(0, layoutHeight - height);
+      const keyboardThreshold = Math.max(72, layoutHeight * 0.08);
+      const viewportReduced = scale <= 1.05 && heightLoss > keyboardThreshold;
+      const keyboardOpen =
+        focusedEditable && scale <= 1.05 && (viewportReduced || rawTop > 1);
       const zoomed = scale > 1.05;
 
-      // Em iOS o visualViewport pode manter offsets residuais após o teclado.
-      // Só seguimos esses offsets quando há teclado ativo ou pinch-zoom real.
-      const left = keyboardOpen || zoomed ? rawLeft : 0;
-      const top = keyboardOpen || zoomed ? rawTop : 0;
+      // Enquanto a visualViewport ainda está reduzida (inclusive durante o
+      // fechamento do teclado), seguimos seus offsets. Quando ela volta ao
+      // tamanho normal e não há foco/zoom, offsets residuais do Safari são
+      // ignorados para o modal não ficar deslocado.
+      const followVisualOffsets = focusedEditable || viewportReduced || zoomed;
+      const left = followVisualOffsets ? rawLeft : 0;
+      const top = followVisualOffsets ? rawTop : 0;
 
       setPx(root, "--tadeon-vv-left", left);
       setPx(root, "--tadeon-vv-top", top);
@@ -119,7 +128,9 @@ export function VisualViewportPopupBridge() {
       root.style.setProperty("--tadeon-vv-scale", String(scale));
       root.dataset.tadeonKeyboardOpen = keyboardOpen ? "true" : "false";
 
-      keepFocusedFieldVisible();
+      // Mede depois de o browser aplicar as novas custom properties; assim a
+      // rolagem interna usa a geometria final do modal, não a do frame anterior.
+      if (focusedEditable) window.requestAnimationFrame(keepFocusedFieldVisible);
     };
 
     const schedule = () => {
@@ -131,9 +142,9 @@ export function VisualViewportPopupBridge() {
       clearTimers();
       schedule();
 
-      // WebKit pode publicar a nova visualViewport apenas no fim da animação
-      // do teclado. Reamostramos por uma janela curta, sem MutationObserver.
-      for (const delay of [80, 180, 320, 520, 800]) {
+      // WebKit pode entregar visualViewport.height/offsetTop em etapas enquanto
+      // o teclado anima. Reamostramos por uma janela curta e finita.
+      for (const delay of [60, 140, 260, 420, 650, 900]) {
         settleTimers.push(
           window.setTimeout(() => {
             schedule();

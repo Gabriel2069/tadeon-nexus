@@ -61,18 +61,25 @@ describe("reconciliação urgente de UI", () => {
     );
   });
 
-  it("mantém todos os dialogs centralizados na visual viewport e roláveis com teclado", () => {
+  it("mantém dialogs fixed acima do overlay, centralizados e roláveis com teclado", () => {
     const popupBridge = source("src/components/visual-viewport-popup-bridge.tsx");
     const popupCss = source("src/styles/tablet-popup-viewport-237.css");
+    const dialog = source("src/components/ui/dialog.tsx");
+    const alertDialog = source("src/components/ui/alert-dialog.tsx");
     expect(popupBridge).toContain('root.dataset.tadeonPopupViewport = "true"');
     expect(popupBridge).toContain("keepFocusedFieldVisible");
+    expect(popupBridge).toContain("followVisualOffsets");
     expect(popupBridge).toContain('window.visualViewport?.addEventListener("scroll", schedule');
     expect(popupCss).toContain('html[data-tadeon-popup-viewport="true"]');
-    expect(popupCss).toContain('[data-slot="dialog-viewport"]');
-    expect(popupCss).toContain("align-items: center !important");
-    expect(popupCss).toContain("justify-content: center !important");
+    expect(popupCss).toContain("top: var(--tadeon-vv-center-y) !important");
+    expect(popupCss).toContain("left: var(--tadeon-vv-center-x) !important");
+    expect(popupCss).toContain("transform: translate(-50%, -50%) !important");
     expect(popupCss).toContain("overflow-y: auto !important");
-    expect(popupCss).not.toContain('data-tadeon-tablet-popup="true"');
+    expect(popupCss).toContain("z-index: 60 !important");
+    expect(popupCss).toContain("z-index: 90 !important");
+    expect(popupCss).toContain("backdrop-filter: none !important");
+    expect(dialog).not.toContain('data-slot="dialog-viewport"');
+    expect(alertDialog).not.toContain('data-slot="alert-dialog-viewport"');
   });
 
   it("corrige o blackout na geometria do aviso de câmera e abandona o scanner invasivo", () => {
