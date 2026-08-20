@@ -1,0 +1,209 @@
+/* #230 — secondary chromatic propagation outside Heroes.
+   Adds section identity to interactive/structural details only. Semantic colors
+   (role, connectivity, warning, destructive) remain untouched. Dashboard and
+   Nexus are intentionally excluded. */
+
+/* --------------------------------------------------------------------------
+   GERENCIAR USUÁRIOS — copper/orange identity with ivory complement
+   -------------------------------------------------------------------------- */
+html body .tadeon-shell[data-section="Usuários"] .tadeon-route-users {
+  --tab-accent-rgb: 183 129 77;
+  --tab-complement-rgb: 217 215 164;
+}
+
+html body .tadeon-shell[data-section="Usuários"] .tadeon-route-users .tadeon-user-row {
+  border-color: rgb(var(--tab-accent-rgb) / 20%);
+  background:
+    linear-gradient(110deg, rgb(var(--tab-accent-rgb) / 4.5%), transparent 42%),
+    rgb(255 255 255 / 2%);
+  box-shadow: inset 0 1px rgb(255 255 255 / 3%);
+  transition:
+    border-color var(--motion-fast) var(--ease-out),
+    background-color var(--motion-fast) var(--ease-out),
+    box-shadow var(--motion-fast) var(--ease-out),
+    transform var(--motion-press) var(--ease-out);
+}
+
+html body .tadeon-shell[data-section="Usuários"] .tadeon-route-users .tadeon-user-row:hover {
+  border-color: rgb(var(--tab-accent-rgb) / 34%);
+  background:
+    linear-gradient(110deg, rgb(var(--tab-accent-rgb) / 8%), transparent 48%),
+    rgb(255 255 255 / 2.5%);
+  box-shadow:
+    0 16px 38px -34px rgb(var(--tab-accent-rgb) / 55%),
+    inset 0 1px rgb(255 255 255 / 4%);
+}
+
+html body .tadeon-shell[data-section="Usuários"] .tadeon-route-users .tadeon-user-row__sigil {
+  border-color: rgb(var(--tab-accent-rgb) / 34%);
+  color: rgb(var(--tab-complement-rgb));
+  background:
+    radial-gradient(circle at 32% 24%, rgb(var(--tab-complement-rgb) / 10%), transparent 38%),
+    rgb(var(--tab-accent-rgb) / 10%);
+  box-shadow:
+    0 0 0 .22rem rgb(var(--tab-accent-rgb) / 3.5%),
+    inset 0 1px rgb(255 255 255 / 5%);
+}
+
+html body .tadeon-shell[data-section="Usuários"] .tadeon-route-users [data-slot="select-trigger"] {
+  border-color: rgb(var(--tab-accent-rgb) / 20%);
+}
+
+html body .tadeon-shell[data-section="Usuários"] .tadeon-route-users [data-slot="select-trigger"]:hover {
+  border-color: rgb(var(--tab-accent-rgb) / 38%);
+}
+
+html body .tadeon-shell[data-section="Usuários"] .tadeon-route-users [data-slot="select-trigger"]:focus-visible,
+html body .tadeon-shell[data-section="Usuários"] .tadeon-route-users [data-slot="button"]:focus-visible {
+  outline-color: rgb(var(--tab-accent-rgb) / 66%);
+  box-shadow: 0 0 0 3px rgb(var(--tab-accent-rgb) / 10%);
+}
+
+html body .tadeon-shell[data-section="Usuários"] .tadeon-route-users .tadeon-users-list > .tadeon-user-row::before {
+  position: absolute;
+  top: .8rem;
+  bottom: .8rem;
+  left: 0;
+  width: 2px;
+  border-radius: 999px;
+  background: linear-gradient(
+    180deg,
+    transparent,
+    rgb(var(--tab-accent-rgb) / 72%),
+    rgb(var(--tab-complement-rgb) / 40%),
+    transparent
+  );
+  opacity: .72;
+  pointer-events: none;
+  content: "";
+}
+
+html body .tadeon-shell[data-section="Usuários"] .tadeon-route-users .tadeon-user-row {
+  position: relative;
+  overflow: hidden;
+}
+
+/* --------------------------------------------------------------------------
+   OFFLINE — violet identity with muted ivory complement. Connectivity badges
+   keep emerald/amber semantic colors.
+   -------------------------------------------------------------------------- */
+html body .tadeon-shell[data-section="Consulta offline"] .tadeon-route-offline {
+  --tab-accent-rgb: 113 107 123;
+  --tab-complement-rgb: 217 215 164;
+}
+
+html body .tadeon-shell[data-section="Consulta offline"] .tadeon-route-offline > [data-slot="tabs"] > [data-slot="tabs-list"] {
+  border: 1px solid rgb(var(--tab-accent-rgb) / 15%);
+  background:
+    linear-gradient(90deg, rgb(var(--tab-accent-rgb) / 7%), transparent 62%),
+    rgb(255 255 255 / 2%);
+}
+
+html body .tadeon-shell[data-section="Consulta offline"] .tadeon-route-offline [data-slot="tabs-trigger"] {
+  color: var(--muted-foreground);
+  transition:
+    color var(--motion-fast) var(--ease-out),
+    background-color var(--motion-fast) var(--ease-out),
+    box-shadow var(--motion-fast) var(--ease-out);
+}
+
+html body .tadeon-shell[data-section="Consulta offline"] .tadeon-route-offline [data-slot="tabs-trigger"][data-state="active"] {
+  color: rgb(var(--tab-complement-rgb));
+  background:
+    linear-gradient(120deg, rgb(var(--tab-accent-rgb) / 18%), rgb(var(--tab-accent-rgb) / 7%));
+  box-shadow:
+    inset 0 -1px rgb(var(--tab-accent-rgb) / 50%),
+    0 10px 24px -20px rgb(var(--tab-accent-rgb) / 75%);
+}
+
+html body .tadeon-shell[data-section="Consulta offline"] .tadeon-route-offline [data-slot="tabs-trigger"][data-state="active"] svg {
+  color: rgb(var(--tab-accent-rgb));
+}
+
+html body .tadeon-shell[data-section="Consulta offline"] .tadeon-route-offline [data-slot="card"] {
+  border-color: rgb(var(--tab-accent-rgb) / 16%);
+  background:
+    radial-gradient(circle at 100% 0%, rgb(var(--tab-accent-rgb) / 6%), transparent 9rem),
+    rgb(255 255 255 / 1.6%);
+}
+
+html body .tadeon-shell[data-section="Consulta offline"] .tadeon-route-offline [data-slot="card"]:hover {
+  border-color: rgb(var(--tab-accent-rgb) / 28%);
+}
+
+html body .tadeon-shell[data-section="Consulta offline"] .tadeon-route-offline [data-slot="button"]:not(.text-destructive):hover {
+  border-color: rgb(var(--tab-accent-rgb) / 34%);
+  background-color: rgb(var(--tab-accent-rgb) / 8%);
+}
+
+html body .tadeon-shell[data-section="Consulta offline"] .tadeon-route-offline [data-slot="button"]:focus-visible,
+html body .tadeon-shell[data-section="Consulta offline"] .tadeon-route-offline [data-slot="tabs-trigger"]:focus-visible {
+  outline-color: rgb(var(--tab-accent-rgb) / 62%);
+  box-shadow: 0 0 0 3px rgb(var(--tab-accent-rgb) / 10%);
+}
+
+html body .tadeon-shell[data-section="Consulta offline"] .tadeon-route-offline .tadeon-eyebrow {
+  color: color-mix(in srgb, rgb(var(--tab-accent-rgb)) 76%, rgb(var(--tab-complement-rgb)));
+}
+
+/* Do not recolor semantic connection/read-only badges. Only give the neutral
+   frame a faint violet context. */
+html body .tadeon-shell[data-section="Consulta offline"] .tadeon-route-offline [data-slot="badge"] {
+  border-color: rgb(var(--tab-accent-rgb) / 24%);
+}
+
+/* --------------------------------------------------------------------------
+   MESA — restrained blue/green accents on controls, not on semantic overlays.
+   -------------------------------------------------------------------------- */
+html body .tadeon-shell[data-section="Mesa Nexus"] #tadeon-main .tadeon-tabletop-studio {
+  --tab-accent-rgb: 84 123 148;
+  --tab-secondary-rgb: 79 110 93;
+  --tab-complement-rgb: 217 215 164;
+}
+
+html body .tadeon-shell[data-section="Mesa Nexus"] #tadeon-main .tadeon-tabletop-studio [data-slot="button"]:not(.text-destructive):not([data-variant="destructive"]) {
+  transition:
+    border-color var(--motion-fast) var(--ease-out),
+    color var(--motion-fast) var(--ease-out),
+    background-color var(--motion-fast) var(--ease-out),
+    box-shadow var(--motion-fast) var(--ease-out),
+    transform var(--motion-press) var(--ease-out);
+}
+
+html body .tadeon-shell[data-section="Mesa Nexus"] #tadeon-main .tadeon-tabletop-studio [data-slot="button"]:not(.text-destructive):not([data-variant="destructive"]):hover {
+  border-color: rgb(var(--tab-accent-rgb) / 34%);
+  color: color-mix(in srgb, rgb(var(--tab-complement-rgb)) 74%, var(--foreground));
+  background-color: rgb(var(--tab-accent-rgb) / 8%);
+  box-shadow: 0 10px 24px -22px rgb(var(--tab-accent-rgb) / 72%);
+}
+
+html body .tadeon-shell[data-section="Mesa Nexus"] #tadeon-main .tadeon-tabletop-studio [data-slot="button"]:focus-visible,
+html body .tadeon-shell[data-section="Mesa Nexus"] #tadeon-main .tadeon-tabletop-studio [data-slot="input"]:focus-visible,
+html body .tadeon-shell[data-section="Mesa Nexus"] #tadeon-main .tadeon-tabletop-studio [data-slot="select-trigger"]:focus-visible {
+  outline-color: rgb(var(--tab-accent-rgb) / 62%);
+  box-shadow: 0 0 0 3px rgb(var(--tab-accent-rgb) / 10%);
+}
+
+html body .tadeon-shell[data-section="Mesa Nexus"] #tadeon-main .tadeon-tabletop-studio [data-state="active"]:not([role="dialog"]) {
+  border-color: rgb(var(--tab-accent-rgb) / 42%);
+  box-shadow: inset 0 -1px rgb(var(--tab-secondary-rgb) / 45%);
+}
+
+html body .tadeon-shell[data-section="Mesa Nexus"] #tadeon-main .tadeon-tabletop-studio .tadeon-eyebrow {
+  color: color-mix(in srgb, rgb(var(--tab-accent-rgb)) 76%, rgb(var(--tab-complement-rgb)));
+}
+
+@media (max-width: 639px) {
+  html body .tadeon-shell[data-section="Usuários"] .tadeon-route-users .tadeon-user-row:hover,
+  html body .tadeon-shell[data-section="Consulta offline"] .tadeon-route-offline [data-slot="card"]:hover {
+    box-shadow: inset 0 1px rgb(255 255 255 / 3%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html body .tadeon-shell[data-section="Usuários"] .tadeon-route-users .tadeon-user-row,
+  html body .tadeon-shell[data-section="Consulta offline"] .tadeon-route-offline [data-slot="tabs-trigger"],
+  html body .tadeon-shell[data-section="Mesa Nexus"] #tadeon-main .tadeon-tabletop-studio [data-slot="button"] {
+    transition: none !important;
+  }
+}
