@@ -1,34 +1,74 @@
-/* #214 — autoridade final apenas para os pontos pedidos.
-   O Nexus não é reestilizado aqui.
-*/
+/* #216 — autoridade canônica dos heads.
+   Esta folha substitui as correções #214/#215: uma única geometria para
+   “Área em foco”, identidade histórica restaurada nos heads internos e nenhuma
+   alteração no Head aprovado de O Nexus. */
 
-/* Área em foco: mesma anatomia em todas as rotas; BrandMark do Tadeon sempre. */
-.tadeon-shell { --focus-head-rgb: 217 215 164; --focus-head-secondary-rgb: 183 129 77; }
-.tadeon-shell[data-section="O Nexus"] { --focus-head-rgb: 113 107 123; --focus-head-secondary-rgb: 217 215 164; }
-.tadeon-shell[data-section="Mesa Nexus"] { --focus-head-rgb: 84 123 148; --focus-head-secondary-rgb: 79 110 93; }
-.tadeon-shell[data-section="Painel do Mestre"] { --focus-head-rgb: 116 36 45; --focus-head-secondary-rgb: 217 215 164; }
-.tadeon-shell[data-section="Usuários"] { --focus-head-rgb: 183 129 77; --focus-head-secondary-rgb: 217 215 164; }
-.tadeon-shell[data-section="Saúde do arquivo"] { --focus-head-rgb: 122 129 135; --focus-head-secondary-rgb: 84 123 148; }
-.tadeon-shell[data-section="Consulta offline"] { --focus-head-rgb: 113 107 123; --focus-head-secondary-rgb: 79 110 93; }
+/* ========================================================================== */
+/* ÁREA EM FOCO — MESMA GEOMETRIA; SÓ A COR DA SEÇÃO MUDA                    */
+/* ========================================================================== */
 
-.tadeon-focus-section-mark-host {
+html body .tadeon-shell[data-section="Dashboard"],
+html body .tadeon-shell[data-section="Ficha"] {
+  --section-accent: rgb(217 215 164);
+  --section-secondary: rgb(183 129 77);
+  --section-accent-rgb: 217 215 164;
+}
+
+/* O Nexus não é redefinido aqui: mantém exatamente as variáveis aprovadas. */
+
+html body .tadeon-shell[data-section="Mesa Nexus"] {
+  --section-accent: rgb(84 123 148);
+  --section-secondary: rgb(79 110 93);
+  --section-accent-rgb: 84 123 148;
+}
+
+html body .tadeon-shell[data-section="Painel do Mestre"] {
+  --section-accent: rgb(116 36 45);
+  --section-secondary: rgb(217 215 164);
+  --section-accent-rgb: 116 36 45;
+}
+
+html body .tadeon-shell[data-section="Usuários"] {
+  --section-accent: rgb(183 129 77);
+  --section-secondary: rgb(217 215 164);
+  --section-accent-rgb: 183 129 77;
+}
+
+html body .tadeon-shell[data-section="Saúde do arquivo"] {
+  --section-accent: rgb(122 129 135);
+  --section-secondary: rgb(84 123 148);
+  --section-accent-rgb: 122 129 135;
+}
+
+html body .tadeon-shell[data-section="Consulta offline"] {
+  --section-accent: rgb(113 107 123);
+  --section-secondary: rgb(79 110 93);
+  --section-accent-rgb: 113 107 123;
+}
+
+html body .tadeon-focus-section-mark-host {
   display: grid !important;
   flex: 0 0 auto !important;
   place-items: center !important;
   margin: 0 !important;
   border: 0 !important;
   border-radius: 0 !important;
-  color: rgb(var(--focus-head-rgb)) !important;
+  color: var(--section-accent) !important;
   background: none !important;
   box-shadow: none !important;
-  filter: drop-shadow(0 0 11px rgb(var(--focus-head-rgb) / 26%)) !important;
+  filter: drop-shadow(0 0 11px rgb(var(--section-accent-rgb) / 26%)) !important;
   transform: none !important;
   translate: none !important;
   pointer-events: none !important;
 }
-.tadeon-focus-section-mark-host::before,
-.tadeon-focus-section-mark-host::after { display: none !important; content: none !important; }
-.tadeon-focus-section-mark-icon {
+
+html body .tadeon-focus-section-mark-host::before,
+html body .tadeon-focus-section-mark-host::after {
+  display: none !important;
+  content: none !important;
+}
+
+html body .tadeon-focus-section-mark-icon {
   display: block !important;
   width: 100% !important;
   height: 100% !important;
@@ -39,7 +79,7 @@
 }
 
 @media (min-width: 768px) {
-  .tadeon-shell .tadeon-desktop-toolbar > .min-w-0 {
+  html body .tadeon-shell .tadeon-desktop-toolbar > .min-w-0 {
     display: grid !important;
     min-width: 0 !important;
     grid-template-columns: 2.25rem minmax(0, 1fr) !important;
@@ -48,8 +88,10 @@
     row-gap: .08rem !important;
     align-items: center !important;
     padding: 0 !important;
+    transform: none !important;
   }
-  .tadeon-shell .tadeon-desktop-toolbar > .min-w-0 > .tadeon-focus-section-mark-host {
+
+  html body .tadeon-shell .tadeon-desktop-toolbar > .min-w-0 > .tadeon-focus-section-mark-host {
     grid-column: 1 !important;
     grid-row: 1 / 3 !important;
     align-self: center !important;
@@ -57,25 +99,28 @@
     width: 2.25rem !important;
     height: 2.25rem !important;
   }
-  .tadeon-shell .tadeon-desktop-toolbar > .min-w-0 > .tadeon-eyebrow {
+
+  html body .tadeon-shell .tadeon-desktop-toolbar > .min-w-0 > .tadeon-eyebrow {
     grid-column: 2 !important;
     grid-row: 1 !important;
     align-self: end !important;
-    color: color-mix(in srgb, rgb(var(--focus-head-rgb)) 84%, var(--foreground)) !important;
+    color: color-mix(in srgb, var(--section-accent) 84%, var(--foreground)) !important;
   }
-  .tadeon-shell .tadeon-desktop-toolbar > .min-w-0 > div {
+
+  html body .tadeon-shell .tadeon-desktop-toolbar > .min-w-0 > div {
     grid-column: 2 !important;
     grid-row: 2 !important;
     align-self: start !important;
     min-width: 0 !important;
   }
-  .tadeon-shell .tadeon-desktop-toolbar h2 {
-    color: color-mix(in srgb, rgb(var(--focus-head-rgb)) 72%, var(--foreground)) !important;
+
+  html body .tadeon-shell .tadeon-desktop-toolbar h2 {
+    color: color-mix(in srgb, var(--section-accent) 70%, var(--foreground)) !important;
   }
 }
 
 @media (max-width: 767px) {
-  .tadeon-shell .tadeon-mobile-header__identity {
+  html body .tadeon-shell .tadeon-mobile-header__identity {
     display: grid !important;
     min-width: 0 !important;
     grid-template-columns: 2rem minmax(0, auto) !important;
@@ -86,13 +131,20 @@
     padding: 0 !important;
     transform: none !important;
   }
-  .tadeon-shell .tadeon-mobile-header__identity > svg {
+
+  /* AppLayout ainda contém o SVG legado; o BrandMark real do bridge é o único
+     símbolo visível para impedir o caso especial da Mesa. */
+  html body .tadeon-shell .tadeon-mobile-header__identity > svg {
     display: none !important;
+    visibility: hidden !important;
     width: 0 !important;
     height: 0 !important;
     flex: 0 0 0 !important;
+    margin: 0 !important;
+    opacity: 0 !important;
   }
-  .tadeon-shell .tadeon-mobile-header__identity > .tadeon-focus-section-mark-host {
+
+  html body .tadeon-shell .tadeon-mobile-header__identity > .tadeon-focus-section-mark-host {
     grid-column: 1 !important;
     grid-row: 1 !important;
     align-self: center !important;
@@ -100,267 +152,457 @@
     width: 2rem !important;
     height: 2rem !important;
   }
-  .tadeon-shell .tadeon-mobile-header__identity > div {
+
+  html body .tadeon-shell .tadeon-mobile-header__identity > div {
     grid-column: 2 !important;
     grid-row: 1 !important;
     min-width: 0 !important;
   }
-  .tadeon-shell .tadeon-mobile-header__identity p:first-child {
-    color: color-mix(in srgb, rgb(var(--focus-head-rgb)) 68%, var(--muted-foreground)) !important;
+
+  html body .tadeon-shell .tadeon-mobile-header__identity p:first-child {
+    color: color-mix(in srgb, var(--section-accent) 68%, var(--muted-foreground)) !important;
   }
-  .tadeon-shell .tadeon-mobile-header__identity p:last-child {
-    color: color-mix(in srgb, rgb(var(--focus-head-rgb)) 80%, var(--foreground)) !important;
+
+  html body .tadeon-shell .tadeon-mobile-header__identity p:last-child {
+    color: color-mix(in srgb, var(--section-accent) 78%, var(--foreground)) !important;
   }
 }
 
-/* Mestre: restaura vermelho/dourado, linhas técnicas e órbita original. */
-.tadeon-master-commandbar {
+/* ========================================================================== */
+/* MESA — SÓ O MAP PINNED AZUL; SUPERFÍCIE E TEXTO NA MESMA PALETA           */
+/* ========================================================================== */
+
+html body .tadeon-tabletop-studio__header {
+  --archive-hero-rgb: 84 123 148;
+  --archive-hero-secondary-rgb: 79 110 93;
   position: relative !important;
   isolation: isolate !important;
-  min-height: 6.2rem !important;
-  padding: 1.05rem 1.2rem 1.05rem 5.55rem !important;
   overflow: clip !important;
-  border: 1px solid rgb(116 36 45 / 30%) !important;
-  border-radius: 1.35rem .42rem 1.35rem .42rem !important;
+  min-height: 0 !important;
+  height: auto !important;
+  padding-block: .75rem !important;
+  border-color: rgb(84 123 148 / 24%) !important;
   background:
-    radial-gradient(circle at 7% 10%, rgb(116 36 45 / 18%), transparent 13rem),
-    radial-gradient(circle at 88% -40%, rgb(217 215 164 / 8%), transparent 17rem),
-    linear-gradient(112deg, transparent 0 61%, rgb(116 36 45 / 4%) 61.2% 61.6%, transparent 61.8%),
-    linear-gradient(90deg, rgb(217 215 164 / 1.1%) 1px, transparent 1px),
-    linear-gradient(rgb(217 215 164 / .8%) 1px, transparent 1px),
-    linear-gradient(145deg, rgb(18 20 25 / 98%), rgb(8 10 14 / 98%)) !important;
-  background-size: auto, auto, auto, 48px 48px, 48px 48px, auto !important;
+    radial-gradient(circle at 81% -38%, rgb(84 123 148 / 8%) 0 2.7rem, transparent 2.85rem 6.4rem, rgb(84 123 148 / 4%) 6.5rem 6.62rem, transparent 6.75rem),
+    radial-gradient(circle at 96% 120%, transparent 0 4rem, rgb(79 110 93 / 7%) 4.1rem 4.24rem, transparent 4.38rem 7.5rem),
+    radial-gradient(circle at 9% 8%, rgb(84 123 148 / 7%), transparent 11rem),
+    linear-gradient(138deg, rgb(255 255 255 / 2.8%), transparent 42%),
+    linear-gradient(145deg, rgb(16 20 24 / 96%), rgb(8 11 15 / 96%)) !important;
   box-shadow:
-    0 30px 76px -58px rgb(116 36 45 / 80%),
-    0 28px 74px -56px rgb(0 0 0 / 100%),
-    inset 0 1px rgb(255 255 255 / 4.5%) !important;
-}
-.tadeon-master-commandbar::before {
-  position: absolute !important;
-  z-index: 0 !important;
-  top: -7.2rem !important;
-  right: -2.5rem !important;
-  bottom: auto !important;
-  left: auto !important;
-  display: block !important;
-  width: 15rem !important;
-  height: 15rem !important;
-  border: 1px solid rgb(116 36 45 / 14%) !important;
-  border-radius: 50% !important;
-  background: transparent !important;
-  box-shadow: 0 0 0 2.7rem rgb(116 36 45 / 2.5%), 0 0 0 5.4rem rgb(217 215 164 / 1.2%) !important;
-  opacity: .9 !important;
-  transform: none !important;
-  pointer-events: none !important;
-  content: "" !important;
-}
-.tadeon-master-commandbar::after {
-  position: absolute !important;
-  z-index: 1 !important;
-  right: 1.25rem !important;
-  bottom: 0 !important;
-  left: 1.25rem !important;
-  display: block !important;
-  width: auto !important;
-  height: 1px !important;
-  border: 0 !important;
-  border-radius: 0 !important;
-  background: linear-gradient(90deg, transparent, rgb(116 36 45 / 68%) 24%, rgb(217 215 164 / 30%) 68%, transparent) !important;
-  box-shadow: none !important;
-  opacity: 1 !important;
-  pointer-events: none !important;
-  content: "" !important;
-}
-.tadeon-master-commandbar > * { position: relative; z-index: 2; min-width: 0; }
-.tadeon-master-commandbar > .tadeon-master-commandbar__glow {
-  position: absolute !important;
-  z-index: 3 !important;
-  top: 50% !important;
-  right: auto !important;
-  bottom: auto !important;
-  left: 1.1rem !important;
-  display: grid !important;
-  width: 3.65rem !important;
-  height: 3.65rem !important;
-  place-items: center !important;
-  margin: 0 !important;
-  overflow: visible !important;
-  border: 1px solid rgb(116 36 45 / 42%) !important;
-  border-radius: 1.2rem .38rem 1.2rem .38rem !important;
-  color: rgb(217 215 164 / 72%) !important;
-  background: radial-gradient(circle at 34% 28%, rgb(255 255 255 / 8%), transparent 36%), rgb(116 36 45 / 12%) !important;
-  box-shadow: 0 0 0 .46rem rgb(116 36 45 / 3%), 0 20px 38px -28px rgb(116 36 45 / 86%), inset 0 1px rgb(255 255 255 / 8%) !important;
-  filter: none !important;
-  transform: translateY(-50%) !important;
-}
-.tadeon-master-commandbar > .relative.flex { width: 100% !important; min-width: 0 !important; }
-.tadeon-master-commandbar__sigil-stack {
-  position: relative !important;
-  inset: auto !important;
-  display: grid !important;
-  width: 100% !important;
-  height: 100% !important;
-  place-items: center !important;
-  transform: none !important;
-}
-.tadeon-master-commandbar__master-sigil {
-  position: absolute !important;
-  width: 2.45rem !important;
-  height: 2.45rem !important;
-  color: rgb(217 215 164 / 64%) !important;
-  filter: drop-shadow(0 0 12px rgb(116 36 45 / 34%)) !important;
-  transform: none !important;
-}
-.tadeon-master-commandbar__active-icon {
-  position: relative !important;
-  z-index: 2 !important;
-  top: auto !important;
-  left: auto !important;
-  width: 1.05rem !important;
-  height: 1.05rem !important;
-  padding: .16rem !important;
-  border-radius: 999px !important;
-  color: rgb(242 236 205) !important;
-  background: rgb(11 13 17 / 92%) !important;
-  box-shadow: 0 0 0 1px rgb(217 215 164 / 20%), 0 0 14px rgb(116 36 45 / 45%) !important;
-  transform: none !important;
+    0 24px 58px -52px rgb(0 0 0 / 100%),
+    0 15px 44px -42px rgb(84 123 148 / 26%),
+    inset 0 1px rgb(255 255 255 / 3.5%) !important;
 }
 
-/* Gerenciar / Backup / Offline: mesmo eixo para os símbolos e identidade própria. */
-.tadeon-page-hero[data-tadeon-page-hero="users"],
-.tadeon-page-hero[data-tadeon-page-hero="tools"],
-.tadeon-page-hero[data-tadeon-page-hero="offline"] {
-  position: relative !important;
-  isolation: isolate !important;
-  min-height: 5.75rem !important;
-  padding-top: 1rem !important;
-  padding-right: 1.1rem !important;
-  padding-bottom: 1rem !important;
-  padding-left: 5.1rem !important;
-  overflow: clip !important;
-  border: 1px solid rgb(var(--hero-rgb) / 24%) !important;
-  border-radius: 1.2rem .4rem 1.2rem .4rem !important;
-  background:
-    radial-gradient(circle at 100% -28%, rgb(var(--hero-rgb) / 12%), transparent 13rem),
-    linear-gradient(145deg, rgb(255 255 255 / 2.8%), transparent 46%),
-    linear-gradient(90deg, rgb(var(--hero-secondary-rgb) / .9%) 1px, transparent 1px),
-    linear-gradient(rgb(var(--hero-secondary-rgb) / .65%) 1px, transparent 1px),
-    color-mix(in srgb, var(--card) 96%, var(--background)) !important;
-  background-size: auto, auto, 48px 48px, 48px 48px, auto !important;
-  box-shadow: 0 28px 70px -58px rgb(var(--hero-rgb) / 68%), 0 24px 64px -52px rgb(0 0 0 / 100%), inset 0 1px rgb(255 255 255 / 4%) !important;
-}
-.tadeon-page-hero[data-tadeon-page-hero] > .tadeon-page-hero-mark-host {
-  position: absolute !important;
-  z-index: 3 !important;
-  top: 50% !important;
-  right: auto !important;
-  bottom: auto !important;
-  left: 1rem !important;
-  display: grid !important;
-  width: 3rem !important;
-  height: 3rem !important;
-  place-items: center !important;
-  margin: 0 !important;
-  border: 1px solid rgb(var(--hero-rgb) / 48%) !important;
-  border-radius: 1rem .32rem 1rem .32rem !important;
-  color: rgb(var(--hero-rgb)) !important;
-  background: radial-gradient(circle at 34% 28%, rgb(255 255 255 / 7%), transparent 36%), rgb(var(--hero-rgb) / 10%) !important;
-  box-shadow: 0 18px 34px -28px rgb(var(--hero-rgb) / 78%), inset 0 1px rgb(255 255 255 / 7%) !important;
-  filter: none !important;
-  transform: translateY(-50%) !important;
-}
-.tadeon-page-hero[data-tadeon-page-hero] > .tadeon-page-hero-mark-host > svg {
-  display: block !important;
-  width: 1.18rem !important;
-  height: 1.18rem !important;
-  color: currentColor !important;
-  transform: none !important;
-}
-.tadeon-page-hero[data-tadeon-page-hero]::before {
+/* Pseudo-elementos da Mesa são exclusivamente ornamentos de fundo. Nenhum
+   deles pode voltar a desenhar o antigo símbolo bege. */
+html body .tadeon-tabletop-studio__header::before {
   position: absolute !important;
   z-index: 0 !important;
-  top: -5.8rem !important;
-  right: -2.8rem !important;
+  top: -9.7rem !important;
+  right: 14% !important;
   bottom: auto !important;
+  left: auto !important;
+  display: block !important;
+  width: 18rem !important;
+  height: 18rem !important;
+  border: 1px solid rgb(84 123 148 / 18%) !important;
+  border-radius: 50% !important;
+  background:
+    radial-gradient(circle at center, transparent 47%, rgb(84 123 148 / 2.6%) 48% 50%, transparent 51%) !important;
+  background-image: radial-gradient(circle at center, transparent 47%, rgb(84 123 148 / 2.6%) 48% 50%, transparent 51%) !important;
+  background-size: auto !important;
+  box-shadow:
+    0 0 0 1.8rem rgb(84 123 148 / 2.5%),
+    0 0 0 4rem rgb(79 110 93 / 1.7%),
+    0 0 54px -38px rgb(84 123 148 / 32%) !important;
+  opacity: .78 !important;
+  transform: none !important;
+  pointer-events: none !important;
+  content: "" !important;
+}
+
+html body .tadeon-tabletop-studio__header::after {
+  position: absolute !important;
+  z-index: 0 !important;
+  right: -4.6rem !important;
+  bottom: -7.2rem !important;
   left: auto !important;
   display: block !important;
   width: 12rem !important;
   height: 12rem !important;
-  border: 1px solid rgb(var(--hero-rgb) / 18%) !important;
+  border: 1px solid rgb(79 110 93 / 13%) !important;
   border-radius: 50% !important;
-  background: transparent !important;
-  box-shadow: 0 0 0 2rem rgb(var(--hero-rgb) / 2.5%), 0 0 0 4rem rgb(var(--hero-secondary-rgb) / 1.5%) !important;
-  opacity: .9 !important;
+  background: none !important;
+  box-shadow:
+    0 0 0 1.5rem rgb(79 110 93 / 2.5%),
+    0 0 0 3.5rem rgb(84 123 148 / 1.6%) !important;
+  opacity: .72 !important;
   transform: none !important;
   pointer-events: none !important;
   content: "" !important;
 }
-.tadeon-page-hero[data-tadeon-page-hero]::after {
-  position: absolute !important;
-  z-index: 1 !important;
-  right: 1rem !important;
-  bottom: 0 !important;
-  left: 1rem !important;
-  display: block !important;
-  width: auto !important;
-  height: 1px !important;
-  border: 0 !important;
-  border-radius: 0 !important;
-  background: linear-gradient(90deg, transparent, rgb(var(--hero-rgb) / 60%) 24%, rgb(var(--hero-secondary-rgb) / 26%) 68%, transparent) !important;
-  box-shadow: none !important;
-  opacity: 1 !important;
-  pointer-events: none !important;
-  content: "" !important;
-}
-.tadeon-page-hero[data-tadeon-page-hero="offline"]::before {
-  border-style: dashed !important;
-  border-color: rgb(113 107 123 / 24%) !important;
-  box-shadow: 0 0 0 2rem rgb(113 107 123 / 2.8%), 0 0 0 4rem rgb(79 110 93 / 1.8%) !important;
-}
-.tadeon-page-hero[data-tadeon-page-hero="tools"]::before {
-  border-color: rgb(84 123 148 / 22%) !important;
-  box-shadow: 0 0 0 2rem rgb(122 129 135 / 2.8%), 0 0 0 4rem rgb(84 123 148 / 1.8%) !important;
+
+html body .tadeon-tabletop-studio__header > .relative.z-10 {
+  position: relative !important;
+  z-index: 2 !important;
+  min-height: 0 !important;
+  align-items: center !important;
+  gap: .625rem !important;
+  padding-left: 0 !important;
 }
 
-/* Mesa interna: apenas o MapPinned azul permanece no estúdio. */
-.tadeon-tabletop-studio__brand > svg {
+html body .tadeon-tabletop-studio__brand {
+  display: flex !important;
+  min-width: 0 !important;
+  align-items: center !important;
+  gap: .65rem !important;
+  margin-right: .5rem !important;
+  padding-left: 0 !important;
+}
+
+/* BrandMark bege authored no JSX: removido por completo, sem reservar espaço. */
+html body .tadeon-tabletop-studio__brand > svg,
+html body .tadeon-tabletop-studio__brand > svg.overflow-visible {
   display: none !important;
   visibility: hidden !important;
   width: 0 !important;
   height: 0 !important;
+  min-width: 0 !important;
   flex: 0 0 0 !important;
   margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  background: none !important;
+  box-shadow: none !important;
   opacity: 0 !important;
 }
-.tadeon-tabletop-studio__brand > .tadeon-tabletop-brand-mark-host {
+
+html body .tadeon-tabletop-studio__brand > .tadeon-tabletop-brand-mark-host {
   display: grid !important;
   width: 2.5rem !important;
   height: 2.5rem !important;
   flex: 0 0 2.5rem !important;
   place-items: center !important;
   margin: 0 !important;
+  border: 1px solid rgb(84 123 148 / 48%) !important;
+  border-radius: 50% !important;
   color: rgb(84 123 148) !important;
+  background:
+    radial-gradient(circle at 34% 28%, rgb(255 255 255 / 7%), transparent 36%),
+    rgb(84 123 148 / 9%) !important;
+  box-shadow:
+    0 0 0 .38rem rgb(84 123 148 / 4%),
+    0 14px 34px -23px rgb(84 123 148 / 66%),
+    inset 0 1px rgb(255 255 255 / 8%) !important;
   transform: none !important;
 }
-.tadeon-tabletop-brand-mark-icon {
+
+html body .tadeon-tabletop-brand-mark-icon {
   display: block !important;
   width: 1.2rem !important;
   height: 1.2rem !important;
   color: currentColor !important;
+  stroke: currentColor !important;
   transform: none !important;
 }
 
-/* Dashboard: três quadros lado a lado inclusive no telefone estreito. */
-.tadeon-dashboard-signals {
+html body .tadeon-tabletop-studio__header :is(.tadeon-eyebrow, h1, h2, .font-cinzel) {
+  color: rgb(84 123 148) !important;
+}
+
+html body .tadeon-tabletop-studio__header .tadeon-tabletop-studio__status {
+  border-color: rgb(84 123 148 / 24%) !important;
+}
+
+/* ========================================================================== */
+/* USUÁRIOS / BACKUP / OFFLINE — TEXTO PRÓXIMO + ASSINATURAS RESTAURADAS     */
+/* ========================================================================== */
+
+html body [data-tadeon-page-hero="users"] {
+  --hero-rgb: 183 129 77;
+  --hero-secondary-rgb: 217 215 164;
+}
+
+html body [data-tadeon-page-hero="tools"] {
+  --hero-rgb: 122 129 135;
+  --hero-secondary-rgb: 84 123 148;
+}
+
+html body [data-tadeon-page-hero="offline"] {
+  --hero-rgb: 113 107 123;
+  --hero-secondary-rgb: 79 110 93;
+}
+
+html body .tadeon-page-hero[data-tadeon-page-hero="users"],
+html body .tadeon-page-hero[data-tadeon-page-hero="tools"],
+html body .tadeon-page-hero[data-tadeon-page-hero="offline"] {
+  position: relative !important;
+  isolation: isolate !important;
+  display: grid !important;
+  min-height: 5.75rem !important;
+  grid-template-columns: 2.55rem minmax(0, 1fr) auto !important;
+  grid-template-rows: auto !important;
+  align-items: center !important;
+  gap: .65rem .7rem !important;
+  padding: .9rem 1rem !important;
+  overflow: clip !important;
+  border: 1px solid rgb(var(--hero-rgb) / 30%) !important;
+  border-radius: 1.2rem .4rem 1.2rem .4rem !important;
+  background:
+    radial-gradient(circle at 78% -24%, rgb(var(--hero-rgb) / 15%) 0 3.1rem, transparent 3.25rem 7rem, rgb(var(--hero-rgb) / 7%) 7.12rem 7.3rem, transparent 7.45rem),
+    radial-gradient(circle at 94% 116%, transparent 0 4.15rem, rgb(var(--hero-secondary-rgb) / 11%) 4.28rem 4.45rem, transparent 4.6rem 7.6rem, rgb(var(--hero-rgb) / 4%) 7.72rem 7.9rem, transparent 8.05rem),
+    radial-gradient(circle at 10% 4%, rgb(var(--hero-rgb) / 10%), transparent 13rem),
+    linear-gradient(138deg, rgb(255 255 255 / 4.5%), transparent 43%),
+    linear-gradient(145deg, rgb(18 21 26 / 97%), rgb(8 11 15 / 97%)) !important;
+  background-size: auto !important;
+  box-shadow:
+    0 30px 76px -58px rgb(0 0 0 / 100%),
+    0 20px 54px -46px rgb(var(--hero-rgb) / 42%),
+    inset 0 1px rgb(255 255 255 / 5%) !important;
+}
+
+html body .tadeon-page-hero[data-tadeon-page-hero] > * {
+  position: relative !important;
+  z-index: 2 !important;
+  min-width: 0 !important;
+}
+
+html body .tadeon-page-hero[data-tadeon-page-hero] > .tadeon-page-hero-mark-host {
+  grid-column: 1 !important;
+  grid-row: 1 !important;
+  align-self: center !important;
+  justify-self: center !important;
+  display: grid !important;
+  width: 2.55rem !important;
+  height: 2.55rem !important;
+  place-items: center !important;
+  margin: 0 !important;
+  border: 1px solid rgb(var(--hero-rgb) / 48%) !important;
+  border-radius: .9rem .3rem .9rem .3rem !important;
+  color: rgb(var(--hero-rgb)) !important;
+  background:
+    radial-gradient(circle at 34% 28%, rgb(255 255 255 / 7%), transparent 36%),
+    rgb(var(--hero-rgb) / 10%) !important;
+  box-shadow:
+    0 0 0 .34rem rgb(var(--hero-rgb) / 4%),
+    0 14px 34px -25px rgb(var(--hero-rgb) / 72%),
+    inset 0 1px rgb(255 255 255 / 8%) !important;
+  filter: none !important;
+  transform: none !important;
+}
+
+html body .tadeon-page-hero[data-tadeon-page-hero] > .tadeon-page-hero-mark-host > svg {
+  display: block !important;
+  width: 1.14rem !important;
+  height: 1.14rem !important;
+  margin: 0 !important;
+  color: currentColor !important;
+  stroke: currentColor !important;
+  transform: none !important;
+}
+
+/* Conteúdo encosta no símbolo pelo grid; nenhum padding-left artificial. */
+html body [data-tadeon-page-hero="users"] > div:first-of-type {
+  grid-column: 2 !important;
+  grid-row: 1 !important;
+  align-self: center !important;
+  margin: 0 !important;
+  padding-left: 0 !important;
+}
+
+html body [data-tadeon-page-hero="users"] > div:nth-of-type(2) {
+  grid-column: 3 !important;
+  grid-row: 1 !important;
+  align-self: center !important;
+  justify-self: end !important;
+  margin: 0 !important;
+}
+
+html body [data-tadeon-page-hero="tools"] > div:first-of-type,
+html body [data-tadeon-page-hero="offline"] > div:first-of-type {
+  grid-column: 2 / -1 !important;
+  grid-row: 1 !important;
+  width: 100% !important;
+  align-self: center !important;
+  margin: 0 !important;
+  padding-left: 0 !important;
+}
+
+html body .tadeon-page-hero[data-tadeon-page-hero] :is(.tadeon-eyebrow, h1, h2, .font-cinzel) {
+  color: rgb(var(--hero-rgb)) !important;
+}
+
+html body .tadeon-page-hero[data-tadeon-page-hero] h1 {
+  margin-top: .12rem !important;
+  font-size: clamp(1.55rem, 2.6vw, 2.2rem) !important;
+  line-height: 1.02 !important;
+  letter-spacing: -.024em !important;
+}
+
+/* Grande campo orbital histórico, com posição própria por seção. */
+html body .tadeon-page-hero[data-tadeon-page-hero]::after {
+  position: absolute !important;
+  z-index: 0 !important;
+  display: block !important;
+  border: 1px solid rgb(var(--hero-rgb) / 30%) !important;
+  border-radius: 50% !important;
+  background:
+    radial-gradient(circle at center, transparent 46%, rgb(var(--hero-rgb) / 3.5%) 47% 50%, transparent 51%) !important;
+  box-shadow:
+    0 0 0 2.3rem rgb(var(--hero-rgb) / 3.5%),
+    0 0 0 5rem rgb(var(--hero-secondary-rgb) / 2.5%),
+    0 0 72px -34px rgb(var(--hero-rgb) / 48%) !important;
+  opacity: .96 !important;
+  transform: none !important;
+  pointer-events: none !important;
+  content: "" !important;
+}
+
+html body [data-tadeon-page-hero="users"]::after {
+  top: -10.9rem !important;
+  right: 12% !important;
+  bottom: auto !important;
+  left: auto !important;
+  width: 21rem !important;
+  height: 21rem !important;
+  border-radius: 45% 55% 49% 51% !important;
+}
+
+html body [data-tadeon-page-hero="tools"]::after {
+  top: -7.5rem !important;
+  right: -4rem !important;
+  bottom: auto !important;
+  left: auto !important;
+  width: 17.5rem !important;
+  height: 17.5rem !important;
+  border-radius: 43% 57% 47% 53% !important;
+  border-style: solid !important;
+}
+
+html body [data-tadeon-page-hero="offline"]::after {
+  top: -11.9rem !important;
+  right: 17% !important;
+  bottom: auto !important;
+  left: auto !important;
+  width: 21.5rem !important;
+  height: 21.5rem !important;
+  border-style: dashed !important;
+  border-color: rgb(113 107 123 / 34%) !important;
+  box-shadow:
+    0 0 0 2.3rem rgb(113 107 123 / 3.5%),
+    0 0 0 5rem rgb(79 110 93 / 2.5%),
+    0 0 72px -34px rgb(113 107 123 / 48%) !important;
+}
+
+/* Segundo detalhe de fundo, discreto, para recuperar profundidade sem ocupar
+   o slot do símbolo real. */
+html body .tadeon-page-hero[data-tadeon-page-hero]::before {
+  position: absolute !important;
+  z-index: 0 !important;
+  bottom: -5.2rem !important;
+  left: 18% !important;
+  top: auto !important;
+  right: auto !important;
+  display: block !important;
+  width: 9rem !important;
+  height: 9rem !important;
+  border: 1px solid rgb(var(--hero-secondary-rgb) / 14%) !important;
+  border-radius: 50% !important;
+  background: none !important;
+  box-shadow: 0 0 0 1.5rem rgb(var(--hero-rgb) / 1.7%) !important;
+  opacity: .78 !important;
+  transform: none !important;
+  pointer-events: none !important;
+  content: "" !important;
+}
+
+html body [data-tadeon-page-hero="tools"]::before {
+  left: 34% !important;
+  border-color: rgb(84 123 148 / 16%) !important;
+}
+
+html body [data-tadeon-page-hero="offline"]::before {
+  left: 7% !important;
+  border-style: dashed !important;
+  border-color: rgb(79 110 93 / 16%) !important;
+}
+
+/* Ícones/controles dentro do Head acompanham a identidade da rota. */
+html body [data-tadeon-page-hero="users"] svg.text-primary {
+  color: rgb(183 129 77) !important;
+}
+
+html body [data-tadeon-page-hero="tools"] svg.text-primary {
+  color: rgb(84 123 148) !important;
+}
+
+html body [data-tadeon-page-hero="offline"] svg.text-primary {
+  color: rgb(113 107 123) !important;
+}
+
+@media (max-width: 639px) {
+  html body .tadeon-page-hero[data-tadeon-page-hero="users"],
+  html body .tadeon-page-hero[data-tadeon-page-hero="tools"],
+  html body .tadeon-page-hero[data-tadeon-page-hero="offline"] {
+    min-height: 5.3rem !important;
+    grid-template-columns: 2.35rem minmax(0, 1fr) !important;
+    gap: .55rem !important;
+    padding: .78rem .82rem !important;
+  }
+
+  html body .tadeon-page-hero[data-tadeon-page-hero] > .tadeon-page-hero-mark-host {
+    grid-column: 1 !important;
+    grid-row: 1 !important;
+    width: 2.35rem !important;
+    height: 2.35rem !important;
+  }
+
+  html body [data-tadeon-page-hero="users"] > div:first-of-type,
+  html body [data-tadeon-page-hero="tools"] > div:first-of-type,
+  html body [data-tadeon-page-hero="offline"] > div:first-of-type {
+    grid-column: 2 !important;
+    grid-row: 1 !important;
+  }
+
+  html body [data-tadeon-page-hero="users"] > div:nth-of-type(2) {
+    grid-column: 2 !important;
+    grid-row: 2 !important;
+    justify-self: start !important;
+  }
+
+  html body .tadeon-page-hero[data-tadeon-page-hero]::after {
+    top: -7rem !important;
+    right: -4.2rem !important;
+    width: 14rem !important;
+    height: 14rem !important;
+  }
+
+  html body .tadeon-page-hero[data-tadeon-page-hero]::before {
+    width: 7rem !important;
+    height: 7rem !important;
+    bottom: -4.4rem !important;
+  }
+}
+
+/* ========================================================================== */
+/* DASHBOARD — OS TRÊS QUADROS SEMPRE LADO A LADO                            */
+/* ========================================================================== */
+
+html body .tadeon-dashboard-signals {
   display: grid !important;
   width: 100% !important;
   grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
   align-items: stretch !important;
   gap: 0 !important;
 }
+
 @media (max-width: 419px) {
-  .tadeon-dashboard-signals { grid-template-columns: repeat(3, minmax(0, 1fr)) !important; }
-  .tadeon-dashboard-signal {
+  html body .tadeon-dashboard-signals {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  }
+
+  html body .tadeon-dashboard-signal {
     min-width: 0 !important;
     min-height: 3.8rem !important;
     flex-direction: column !important;
@@ -370,9 +612,19 @@
     padding: .3rem .18rem !important;
     text-align: center !important;
   }
-  .tadeon-dashboard-signal > svg { width: .95rem !important; height: .95rem !important; flex: 0 0 .95rem !important; }
-  .tadeon-dashboard-signal > div { min-width: 0 !important; max-width: 100% !important; }
-  .tadeon-dashboard-signal > div > p:first-child {
+
+  html body .tadeon-dashboard-signal > svg {
+    width: .95rem !important;
+    height: .95rem !important;
+    flex: 0 0 .95rem !important;
+  }
+
+  html body .tadeon-dashboard-signal > div {
+    min-width: 0 !important;
+    max-width: 100% !important;
+  }
+
+  html body .tadeon-dashboard-signal > div > p:first-child {
     max-width: 100% !important;
     overflow: hidden !important;
     font-size: .88rem !important;
@@ -380,28 +632,10 @@
     text-overflow: ellipsis !important;
     white-space: nowrap !important;
   }
-  .tadeon-dashboard-signal > div > p:last-child { font-size: .5rem !important; line-height: 1.1 !important; letter-spacing: .02em !important; }
-}
 
-@media (max-width: 639px) {
-  .tadeon-master-commandbar { padding: .9rem .9rem .9rem 4.8rem !important; }
-  .tadeon-master-commandbar > .tadeon-master-commandbar__glow {
-    left: .82rem !important;
-    width: 3.15rem !important;
-    height: 3.15rem !important;
-  }
-  .tadeon-page-hero[data-tadeon-page-hero="users"],
-  .tadeon-page-hero[data-tadeon-page-hero="tools"],
-  .tadeon-page-hero[data-tadeon-page-hero="offline"] {
-    min-height: 5.4rem !important;
-    padding-top: .85rem !important;
-    padding-right: .85rem !important;
-    padding-bottom: .85rem !important;
-    padding-left: 4.55rem !important;
-  }
-  .tadeon-page-hero[data-tadeon-page-hero] > .tadeon-page-hero-mark-host {
-    left: .82rem !important;
-    width: 2.8rem !important;
-    height: 2.8rem !important;
+  html body .tadeon-dashboard-signal > div > p:last-child {
+    font-size: .5rem !important;
+    line-height: 1.1 !important;
+    letter-spacing: .02em !important;
   }
 }
