@@ -11,6 +11,7 @@ import "@/styles/head-tab-parity-217.css";
 import "@/styles/menu-color-source-219.css";
 import "@/styles/head-background-signatures-221.css";
 import "@/styles/head-rich-signatures-223.css";
+import "@/styles/head-system-audit-224.css";
 
 type HeroKind = Extract<AppSectionSymbol, "users" | "tools" | "offline">;
 type IconKind = HeroKind | "tabletop" | "brand";
