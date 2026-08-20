@@ -1,50 +1,17 @@
-/* #214 — correção estritamente focada nos cabeçalhos.
-   - Área em foco: mesma geometria, mesmo BrandMark do Tadeon, só muda a cor.
-   - Mestre / Usuários / Backup / Offline: recupera a identidade visual marcante
-     anterior sem tocar no Head aprovado de O Nexus.
-   - Mesa: elimina qualquer BrandMark bege residual do estúdio.
-   - Dashboard: três sinais lado a lado em todos os viewports.
+/* #214 — autoridade final apenas para os pontos pedidos.
+   O Nexus não é reestilizado aqui.
 */
 
-/* ========================================================================== */
-/* ÁREA EM FOCO — UMA GEOMETRIA, UM SÍMBOLO, UMA COR POR SEÇÃO               */
-/* ========================================================================== */
+/* Área em foco: mesma anatomia em todas as rotas; BrandMark do Tadeon sempre. */
+.tadeon-shell { --focus-head-rgb: 217 215 164; --focus-head-secondary-rgb: 183 129 77; }
+.tadeon-shell[data-section="O Nexus"] { --focus-head-rgb: 113 107 123; --focus-head-secondary-rgb: 217 215 164; }
+.tadeon-shell[data-section="Mesa Nexus"] { --focus-head-rgb: 84 123 148; --focus-head-secondary-rgb: 79 110 93; }
+.tadeon-shell[data-section="Painel do Mestre"] { --focus-head-rgb: 116 36 45; --focus-head-secondary-rgb: 217 215 164; }
+.tadeon-shell[data-section="Usuários"] { --focus-head-rgb: 183 129 77; --focus-head-secondary-rgb: 217 215 164; }
+.tadeon-shell[data-section="Saúde do arquivo"] { --focus-head-rgb: 122 129 135; --focus-head-secondary-rgb: 84 123 148; }
+.tadeon-shell[data-section="Consulta offline"] { --focus-head-rgb: 113 107 123; --focus-head-secondary-rgb: 79 110 93; }
 
-.tadeon-shell {
-  --focus-head-rgb: 217 215 164;
-  --focus-head-secondary-rgb: 183 129 77;
-}
-.tadeon-shell[data-section="O Nexus"] {
-  --focus-head-rgb: 113 107 123;
-  --focus-head-secondary-rgb: 217 215 164;
-}
-.tadeon-shell[data-section="Mesa Nexus"] {
-  --focus-head-rgb: 84 123 148;
-  --focus-head-secondary-rgb: 79 110 93;
-}
-.tadeon-shell[data-section="Painel do Mestre"] {
-  --focus-head-rgb: 116 36 45;
-  --focus-head-secondary-rgb: 217 215 164;
-}
-.tadeon-shell[data-section="Usuários"] {
-  --focus-head-rgb: 183 129 77;
-  --focus-head-secondary-rgb: 217 215 164;
-}
-.tadeon-shell[data-section="Saúde do arquivo"] {
-  --focus-head-rgb: 122 129 135;
-  --focus-head-secondary-rgb: 84 123 148;
-}
-.tadeon-shell[data-section="Consulta offline"] {
-  --focus-head-rgb: 113 107 123;
-  --focus-head-secondary-rgb: 79 110 93;
-}
-
-/* O portal de #213 permanece só como host geométrico; qualquer ícone de seção
-   é substituído visualmente pelo BrandMark já presente no AppLayout mobile.
-   No desktop o host usa a silhueta do BrandMark via mask, garantindo o mesmo
-   símbolo sem depender de ícones específicos por rota. */
 .tadeon-focus-section-mark-host {
-  position: relative !important;
   display: grid !important;
   flex: 0 0 auto !important;
   place-items: center !important;
@@ -54,24 +21,21 @@
   color: rgb(var(--focus-head-rgb)) !important;
   background: none !important;
   box-shadow: none !important;
-  filter: drop-shadow(0 0 11px rgb(var(--focus-head-rgb) / 24%)) !important;
+  filter: drop-shadow(0 0 11px rgb(var(--focus-head-rgb) / 26%)) !important;
+  transform: none !important;
+  translate: none !important;
+  pointer-events: none !important;
 }
-
-/* Esconde o SVG específico de seção injetado por #213. */
-.tadeon-focus-section-mark-host > svg {
-  display: none !important;
-}
-
-/* BrandMark do Tadeon: usa o mesmo desenho vetorial como máscara, sem criar um
-   segundo elemento clicável nem alterar a anatomia do cabeçalho. */
-.tadeon-focus-section-mark-host::before {
+.tadeon-focus-section-mark-host::before,
+.tadeon-focus-section-mark-host::after { display: none !important; content: none !important; }
+.tadeon-focus-section-mark-icon {
   display: block !important;
   width: 100% !important;
   height: 100% !important;
-  background: currentColor !important;
-  content: "" !important;
-  -webkit-mask: center / contain no-repeat url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cpath fill='black' d='M32 3.5 48.7 13v19.1c0 12.1-6.8 22.5-16.7 28.4-9.9-5.9-16.7-16.3-16.7-28.4V13L32 3.5Zm0 6.2-11.2 6.4v16c0 9.1 4.7 17.3 11.2 22 6.5-4.7 11.2-12.9 11.2-22v-16L32 9.7Zm0 7.1 6.5 3.8v7.5L32 32l-6.5-3.9v-7.5L32 16.8Zm-8.6 17.7L32 39.6l8.6-5.1v6.1L32 45.7l-8.6-5.1v-6.1Z'/%3E%3C/svg%3E") !important;
-  mask: center / contain no-repeat url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cpath fill='black' d='M32 3.5 48.7 13v19.1c0 12.1-6.8 22.5-16.7 28.4-9.9-5.9-16.7-16.3-16.7-28.4V13L32 3.5Zm0 6.2-11.2 6.4v16c0 9.1 4.7 17.3 11.2 22 6.5-4.7 11.2-12.9 11.2-22v-16L32 9.7Zm0 7.1 6.5 3.8v7.5L32 32l-6.5-3.9v-7.5L32 16.8Zm-8.6 17.7L32 39.6l8.6-5.1v6.1L32 45.7l-8.6-5.1v-6.1Z'/%3E%3C/svg%3E") !important;
+  margin: 0 !important;
+  color: currentColor !important;
+  stroke: currentColor !important;
+  transform: none !important;
 }
 
 @media (min-width: 768px) {
@@ -97,7 +61,7 @@
     grid-column: 2 !important;
     grid-row: 1 !important;
     align-self: end !important;
-    color: color-mix(in srgb, rgb(var(--focus-head-rgb)) 82%, var(--foreground)) !important;
+    color: color-mix(in srgb, rgb(var(--focus-head-rgb)) 84%, var(--foreground)) !important;
   }
   .tadeon-shell .tadeon-desktop-toolbar > .min-w-0 > div {
     grid-column: 2 !important;
@@ -115,21 +79,26 @@
     display: grid !important;
     min-width: 0 !important;
     grid-template-columns: 2rem minmax(0, auto) !important;
+    grid-template-rows: 1fr !important;
     align-items: center !important;
     justify-content: center !important;
     column-gap: .625rem !important;
+    padding: 0 !important;
+    transform: none !important;
   }
-  /* O SVG original do AppLayout e o SVG de seção de #213 não podem coexistir. */
   .tadeon-shell .tadeon-mobile-header__identity > svg {
     display: none !important;
+    width: 0 !important;
+    height: 0 !important;
+    flex: 0 0 0 !important;
   }
   .tadeon-shell .tadeon-mobile-header__identity > .tadeon-focus-section-mark-host {
     grid-column: 1 !important;
     grid-row: 1 !important;
-    width: 2rem !important;
-    height: 2rem !important;
     align-self: center !important;
     justify-self: center !important;
+    width: 2rem !important;
+    height: 2rem !important;
   }
   .tadeon-shell .tadeon-mobile-header__identity > div {
     grid-column: 2 !important;
@@ -144,16 +113,10 @@
   }
 }
 
-/* ========================================================================== */
-/* HEADS INTERNOS — RESTAURAÇÃO DA IDENTIDADE ANTERIOR                        */
-/* ========================================================================== */
-
-/* Mestre: volta ao material vermelho/dourado, linhas técnicas e órbitas do
-   desenho anterior. O sigilo permanece real e fica ancorado em top:50%. */
+/* Mestre: restaura vermelho/dourado, linhas técnicas e órbita original. */
 .tadeon-master-commandbar {
   position: relative !important;
   isolation: isolate !important;
-  display: block !important;
   min-height: 6.2rem !important;
   padding: 1.05rem 1.2rem 1.05rem 5.55rem !important;
   overflow: clip !important;
@@ -177,6 +140,8 @@
   z-index: 0 !important;
   top: -7.2rem !important;
   right: -2.5rem !important;
+  bottom: auto !important;
+  left: auto !important;
   display: block !important;
   width: 15rem !important;
   height: 15rem !important;
@@ -185,6 +150,7 @@
   background: transparent !important;
   box-shadow: 0 0 0 2.7rem rgb(116 36 45 / 2.5%), 0 0 0 5.4rem rgb(217 215 164 / 1.2%) !important;
   opacity: .9 !important;
+  transform: none !important;
   pointer-events: none !important;
   content: "" !important;
 }
@@ -201,10 +167,11 @@
   border-radius: 0 !important;
   background: linear-gradient(90deg, transparent, rgb(116 36 45 / 68%) 24%, rgb(217 215 164 / 30%) 68%, transparent) !important;
   box-shadow: none !important;
+  opacity: 1 !important;
   pointer-events: none !important;
   content: "" !important;
 }
-.tadeon-master-commandbar > * { position: relative; z-index: 2; }
+.tadeon-master-commandbar > * { position: relative; z-index: 2; min-width: 0; }
 .tadeon-master-commandbar > .tadeon-master-commandbar__glow {
   position: absolute !important;
   z-index: 3 !important;
@@ -226,10 +193,7 @@
   filter: none !important;
   transform: translateY(-50%) !important;
 }
-.tadeon-master-commandbar > .relative.flex {
-  width: 100% !important;
-  min-width: 0 !important;
-}
+.tadeon-master-commandbar > .relative.flex { width: 100% !important; min-width: 0 !important; }
 .tadeon-master-commandbar__sigil-stack {
   position: relative !important;
   inset: auto !important;
@@ -245,6 +209,7 @@
   height: 2.45rem !important;
   color: rgb(217 215 164 / 64%) !important;
   filter: drop-shadow(0 0 12px rgb(116 36 45 / 34%)) !important;
+  transform: none !important;
 }
 .tadeon-master-commandbar__active-icon {
   position: relative !important;
@@ -261,16 +226,17 @@
   transform: none !important;
 }
 
-/* Utilitários: recoloca a composição compacta e os elementos de fundo que
-   desapareceram, mas usa o host SVG real já criado pelo bridge. */
+/* Gerenciar / Backup / Offline: mesmo eixo para os símbolos e identidade própria. */
 .tadeon-page-hero[data-tadeon-page-hero="users"],
 .tadeon-page-hero[data-tadeon-page-hero="tools"],
 .tadeon-page-hero[data-tadeon-page-hero="offline"] {
   position: relative !important;
   isolation: isolate !important;
-  display: block !important;
   min-height: 5.75rem !important;
-  padding: 1rem 1.1rem 1rem 5.1rem !important;
+  padding-top: 1rem !important;
+  padding-right: 1.1rem !important;
+  padding-bottom: 1rem !important;
+  padding-left: 5.1rem !important;
   overflow: clip !important;
   border: 1px solid rgb(var(--hero-rgb) / 24%) !important;
   border-radius: 1.2rem .4rem 1.2rem .4rem !important;
@@ -315,6 +281,7 @@
   z-index: 0 !important;
   top: -5.8rem !important;
   right: -2.8rem !important;
+  bottom: auto !important;
   left: auto !important;
   display: block !important;
   width: 12rem !important;
@@ -324,6 +291,7 @@
   background: transparent !important;
   box-shadow: 0 0 0 2rem rgb(var(--hero-rgb) / 2.5%), 0 0 0 4rem rgb(var(--hero-secondary-rgb) / 1.5%) !important;
   opacity: .9 !important;
+  transform: none !important;
   pointer-events: none !important;
   content: "" !important;
 }
@@ -354,10 +322,7 @@
   box-shadow: 0 0 0 2rem rgb(122 129 135 / 2.8%), 0 0 0 4rem rgb(84 123 148 / 1.8%) !important;
 }
 
-/* ========================================================================== */
-/* MESA — REMOVE DE VEZ O SÍMBOLO BEGE ANTIGO                                */
-/* ========================================================================== */
-
+/* Mesa interna: apenas o MapPinned azul permanece no estúdio. */
 .tadeon-tabletop-studio__brand > svg {
   display: none !important;
   visibility: hidden !important;
@@ -377,11 +342,15 @@
   color: rgb(84 123 148) !important;
   transform: none !important;
 }
+.tadeon-tabletop-brand-mark-icon {
+  display: block !important;
+  width: 1.2rem !important;
+  height: 1.2rem !important;
+  color: currentColor !important;
+  transform: none !important;
+}
 
-/* ========================================================================== */
-/* DASHBOARD — 3 QUADROS SEMPRE LADO A LADO                                  */
-/* ========================================================================== */
-
+/* Dashboard: três quadros lado a lado inclusive no telefone estreito. */
 .tadeon-dashboard-signals {
   display: grid !important;
   width: 100% !important;
@@ -390,9 +359,7 @@
   gap: 0 !important;
 }
 @media (max-width: 419px) {
-  .tadeon-dashboard-signals {
-    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
-  }
+  .tadeon-dashboard-signals { grid-template-columns: repeat(3, minmax(0, 1fr)) !important; }
   .tadeon-dashboard-signal {
     min-width: 0 !important;
     min-height: 3.8rem !important;
@@ -403,15 +370,8 @@
     padding: .3rem .18rem !important;
     text-align: center !important;
   }
-  .tadeon-dashboard-signal > svg {
-    width: .95rem !important;
-    height: .95rem !important;
-    flex: 0 0 .95rem !important;
-  }
-  .tadeon-dashboard-signal > div {
-    min-width: 0 !important;
-    max-width: 100% !important;
-  }
+  .tadeon-dashboard-signal > svg { width: .95rem !important; height: .95rem !important; flex: 0 0 .95rem !important; }
+  .tadeon-dashboard-signal > div { min-width: 0 !important; max-width: 100% !important; }
   .tadeon-dashboard-signal > div > p:first-child {
     max-width: 100% !important;
     overflow: hidden !important;
@@ -420,17 +380,11 @@
     text-overflow: ellipsis !important;
     white-space: nowrap !important;
   }
-  .tadeon-dashboard-signal > div > p:last-child {
-    font-size: .5rem !important;
-    line-height: 1.1 !important;
-    letter-spacing: .02em !important;
-  }
+  .tadeon-dashboard-signal > div > p:last-child { font-size: .5rem !important; line-height: 1.1 !important; letter-spacing: .02em !important; }
 }
 
 @media (max-width: 639px) {
-  .tadeon-master-commandbar {
-    padding: .9rem .9rem .9rem 4.8rem !important;
-  }
+  .tadeon-master-commandbar { padding: .9rem .9rem .9rem 4.8rem !important; }
   .tadeon-master-commandbar > .tadeon-master-commandbar__glow {
     left: .82rem !important;
     width: 3.15rem !important;
@@ -440,7 +394,10 @@
   .tadeon-page-hero[data-tadeon-page-hero="tools"],
   .tadeon-page-hero[data-tadeon-page-hero="offline"] {
     min-height: 5.4rem !important;
-    padding: .85rem .85rem .85rem 4.55rem !important;
+    padding-top: .85rem !important;
+    padding-right: .85rem !important;
+    padding-bottom: .85rem !important;
+    padding-left: 4.55rem !important;
   }
   .tadeon-page-hero[data-tadeon-page-hero] > .tadeon-page-hero-mark-host {
     left: .82rem !important;
