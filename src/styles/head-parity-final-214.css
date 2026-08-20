@@ -1,0 +1,450 @@
+/* #214 — correção estritamente focada nos cabeçalhos.
+   - Área em foco: mesma geometria, mesmo BrandMark do Tadeon, só muda a cor.
+   - Mestre / Usuários / Backup / Offline: recupera a identidade visual marcante
+     anterior sem tocar no Head aprovado de O Nexus.
+   - Mesa: elimina qualquer BrandMark bege residual do estúdio.
+   - Dashboard: três sinais lado a lado em todos os viewports.
+*/
+
+/* ========================================================================== */
+/* ÁREA EM FOCO — UMA GEOMETRIA, UM SÍMBOLO, UMA COR POR SEÇÃO               */
+/* ========================================================================== */
+
+.tadeon-shell {
+  --focus-head-rgb: 217 215 164;
+  --focus-head-secondary-rgb: 183 129 77;
+}
+.tadeon-shell[data-section="O Nexus"] {
+  --focus-head-rgb: 113 107 123;
+  --focus-head-secondary-rgb: 217 215 164;
+}
+.tadeon-shell[data-section="Mesa Nexus"] {
+  --focus-head-rgb: 84 123 148;
+  --focus-head-secondary-rgb: 79 110 93;
+}
+.tadeon-shell[data-section="Painel do Mestre"] {
+  --focus-head-rgb: 116 36 45;
+  --focus-head-secondary-rgb: 217 215 164;
+}
+.tadeon-shell[data-section="Usuários"] {
+  --focus-head-rgb: 183 129 77;
+  --focus-head-secondary-rgb: 217 215 164;
+}
+.tadeon-shell[data-section="Saúde do arquivo"] {
+  --focus-head-rgb: 122 129 135;
+  --focus-head-secondary-rgb: 84 123 148;
+}
+.tadeon-shell[data-section="Consulta offline"] {
+  --focus-head-rgb: 113 107 123;
+  --focus-head-secondary-rgb: 79 110 93;
+}
+
+/* O portal de #213 permanece só como host geométrico; qualquer ícone de seção
+   é substituído visualmente pelo BrandMark já presente no AppLayout mobile.
+   No desktop o host usa a silhueta do BrandMark via mask, garantindo o mesmo
+   símbolo sem depender de ícones específicos por rota. */
+.tadeon-focus-section-mark-host {
+  position: relative !important;
+  display: grid !important;
+  flex: 0 0 auto !important;
+  place-items: center !important;
+  margin: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  color: rgb(var(--focus-head-rgb)) !important;
+  background: none !important;
+  box-shadow: none !important;
+  filter: drop-shadow(0 0 11px rgb(var(--focus-head-rgb) / 24%)) !important;
+}
+
+/* Esconde o SVG específico de seção injetado por #213. */
+.tadeon-focus-section-mark-host > svg {
+  display: none !important;
+}
+
+/* BrandMark do Tadeon: usa o mesmo desenho vetorial como máscara, sem criar um
+   segundo elemento clicável nem alterar a anatomia do cabeçalho. */
+.tadeon-focus-section-mark-host::before {
+  display: block !important;
+  width: 100% !important;
+  height: 100% !important;
+  background: currentColor !important;
+  content: "" !important;
+  -webkit-mask: center / contain no-repeat url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cpath fill='black' d='M32 3.5 48.7 13v19.1c0 12.1-6.8 22.5-16.7 28.4-9.9-5.9-16.7-16.3-16.7-28.4V13L32 3.5Zm0 6.2-11.2 6.4v16c0 9.1 4.7 17.3 11.2 22 6.5-4.7 11.2-12.9 11.2-22v-16L32 9.7Zm0 7.1 6.5 3.8v7.5L32 32l-6.5-3.9v-7.5L32 16.8Zm-8.6 17.7L32 39.6l8.6-5.1v6.1L32 45.7l-8.6-5.1v-6.1Z'/%3E%3C/svg%3E") !important;
+  mask: center / contain no-repeat url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cpath fill='black' d='M32 3.5 48.7 13v19.1c0 12.1-6.8 22.5-16.7 28.4-9.9-5.9-16.7-16.3-16.7-28.4V13L32 3.5Zm0 6.2-11.2 6.4v16c0 9.1 4.7 17.3 11.2 22 6.5-4.7 11.2-12.9 11.2-22v-16L32 9.7Zm0 7.1 6.5 3.8v7.5L32 32l-6.5-3.9v-7.5L32 16.8Zm-8.6 17.7L32 39.6l8.6-5.1v6.1L32 45.7l-8.6-5.1v-6.1Z'/%3E%3C/svg%3E") !important;
+}
+
+@media (min-width: 768px) {
+  .tadeon-shell .tadeon-desktop-toolbar > .min-w-0 {
+    display: grid !important;
+    min-width: 0 !important;
+    grid-template-columns: 2.25rem minmax(0, 1fr) !important;
+    grid-template-rows: auto auto !important;
+    column-gap: .8rem !important;
+    row-gap: .08rem !important;
+    align-items: center !important;
+    padding: 0 !important;
+  }
+  .tadeon-shell .tadeon-desktop-toolbar > .min-w-0 > .tadeon-focus-section-mark-host {
+    grid-column: 1 !important;
+    grid-row: 1 / 3 !important;
+    align-self: center !important;
+    justify-self: center !important;
+    width: 2.25rem !important;
+    height: 2.25rem !important;
+  }
+  .tadeon-shell .tadeon-desktop-toolbar > .min-w-0 > .tadeon-eyebrow {
+    grid-column: 2 !important;
+    grid-row: 1 !important;
+    align-self: end !important;
+    color: color-mix(in srgb, rgb(var(--focus-head-rgb)) 82%, var(--foreground)) !important;
+  }
+  .tadeon-shell .tadeon-desktop-toolbar > .min-w-0 > div {
+    grid-column: 2 !important;
+    grid-row: 2 !important;
+    align-self: start !important;
+    min-width: 0 !important;
+  }
+  .tadeon-shell .tadeon-desktop-toolbar h2 {
+    color: color-mix(in srgb, rgb(var(--focus-head-rgb)) 72%, var(--foreground)) !important;
+  }
+}
+
+@media (max-width: 767px) {
+  .tadeon-shell .tadeon-mobile-header__identity {
+    display: grid !important;
+    min-width: 0 !important;
+    grid-template-columns: 2rem minmax(0, auto) !important;
+    align-items: center !important;
+    justify-content: center !important;
+    column-gap: .625rem !important;
+  }
+  /* O SVG original do AppLayout e o SVG de seção de #213 não podem coexistir. */
+  .tadeon-shell .tadeon-mobile-header__identity > svg {
+    display: none !important;
+  }
+  .tadeon-shell .tadeon-mobile-header__identity > .tadeon-focus-section-mark-host {
+    grid-column: 1 !important;
+    grid-row: 1 !important;
+    width: 2rem !important;
+    height: 2rem !important;
+    align-self: center !important;
+    justify-self: center !important;
+  }
+  .tadeon-shell .tadeon-mobile-header__identity > div {
+    grid-column: 2 !important;
+    grid-row: 1 !important;
+    min-width: 0 !important;
+  }
+  .tadeon-shell .tadeon-mobile-header__identity p:first-child {
+    color: color-mix(in srgb, rgb(var(--focus-head-rgb)) 68%, var(--muted-foreground)) !important;
+  }
+  .tadeon-shell .tadeon-mobile-header__identity p:last-child {
+    color: color-mix(in srgb, rgb(var(--focus-head-rgb)) 80%, var(--foreground)) !important;
+  }
+}
+
+/* ========================================================================== */
+/* HEADS INTERNOS — RESTAURAÇÃO DA IDENTIDADE ANTERIOR                        */
+/* ========================================================================== */
+
+/* Mestre: volta ao material vermelho/dourado, linhas técnicas e órbitas do
+   desenho anterior. O sigilo permanece real e fica ancorado em top:50%. */
+.tadeon-master-commandbar {
+  position: relative !important;
+  isolation: isolate !important;
+  display: block !important;
+  min-height: 6.2rem !important;
+  padding: 1.05rem 1.2rem 1.05rem 5.55rem !important;
+  overflow: clip !important;
+  border: 1px solid rgb(116 36 45 / 30%) !important;
+  border-radius: 1.35rem .42rem 1.35rem .42rem !important;
+  background:
+    radial-gradient(circle at 7% 10%, rgb(116 36 45 / 18%), transparent 13rem),
+    radial-gradient(circle at 88% -40%, rgb(217 215 164 / 8%), transparent 17rem),
+    linear-gradient(112deg, transparent 0 61%, rgb(116 36 45 / 4%) 61.2% 61.6%, transparent 61.8%),
+    linear-gradient(90deg, rgb(217 215 164 / 1.1%) 1px, transparent 1px),
+    linear-gradient(rgb(217 215 164 / .8%) 1px, transparent 1px),
+    linear-gradient(145deg, rgb(18 20 25 / 98%), rgb(8 10 14 / 98%)) !important;
+  background-size: auto, auto, auto, 48px 48px, 48px 48px, auto !important;
+  box-shadow:
+    0 30px 76px -58px rgb(116 36 45 / 80%),
+    0 28px 74px -56px rgb(0 0 0 / 100%),
+    inset 0 1px rgb(255 255 255 / 4.5%) !important;
+}
+.tadeon-master-commandbar::before {
+  position: absolute !important;
+  z-index: 0 !important;
+  top: -7.2rem !important;
+  right: -2.5rem !important;
+  display: block !important;
+  width: 15rem !important;
+  height: 15rem !important;
+  border: 1px solid rgb(116 36 45 / 14%) !important;
+  border-radius: 50% !important;
+  background: transparent !important;
+  box-shadow: 0 0 0 2.7rem rgb(116 36 45 / 2.5%), 0 0 0 5.4rem rgb(217 215 164 / 1.2%) !important;
+  opacity: .9 !important;
+  pointer-events: none !important;
+  content: "" !important;
+}
+.tadeon-master-commandbar::after {
+  position: absolute !important;
+  z-index: 1 !important;
+  right: 1.25rem !important;
+  bottom: 0 !important;
+  left: 1.25rem !important;
+  display: block !important;
+  width: auto !important;
+  height: 1px !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: linear-gradient(90deg, transparent, rgb(116 36 45 / 68%) 24%, rgb(217 215 164 / 30%) 68%, transparent) !important;
+  box-shadow: none !important;
+  pointer-events: none !important;
+  content: "" !important;
+}
+.tadeon-master-commandbar > * { position: relative; z-index: 2; }
+.tadeon-master-commandbar > .tadeon-master-commandbar__glow {
+  position: absolute !important;
+  z-index: 3 !important;
+  top: 50% !important;
+  right: auto !important;
+  bottom: auto !important;
+  left: 1.1rem !important;
+  display: grid !important;
+  width: 3.65rem !important;
+  height: 3.65rem !important;
+  place-items: center !important;
+  margin: 0 !important;
+  overflow: visible !important;
+  border: 1px solid rgb(116 36 45 / 42%) !important;
+  border-radius: 1.2rem .38rem 1.2rem .38rem !important;
+  color: rgb(217 215 164 / 72%) !important;
+  background: radial-gradient(circle at 34% 28%, rgb(255 255 255 / 8%), transparent 36%), rgb(116 36 45 / 12%) !important;
+  box-shadow: 0 0 0 .46rem rgb(116 36 45 / 3%), 0 20px 38px -28px rgb(116 36 45 / 86%), inset 0 1px rgb(255 255 255 / 8%) !important;
+  filter: none !important;
+  transform: translateY(-50%) !important;
+}
+.tadeon-master-commandbar > .relative.flex {
+  width: 100% !important;
+  min-width: 0 !important;
+}
+.tadeon-master-commandbar__sigil-stack {
+  position: relative !important;
+  inset: auto !important;
+  display: grid !important;
+  width: 100% !important;
+  height: 100% !important;
+  place-items: center !important;
+  transform: none !important;
+}
+.tadeon-master-commandbar__master-sigil {
+  position: absolute !important;
+  width: 2.45rem !important;
+  height: 2.45rem !important;
+  color: rgb(217 215 164 / 64%) !important;
+  filter: drop-shadow(0 0 12px rgb(116 36 45 / 34%)) !important;
+}
+.tadeon-master-commandbar__active-icon {
+  position: relative !important;
+  z-index: 2 !important;
+  top: auto !important;
+  left: auto !important;
+  width: 1.05rem !important;
+  height: 1.05rem !important;
+  padding: .16rem !important;
+  border-radius: 999px !important;
+  color: rgb(242 236 205) !important;
+  background: rgb(11 13 17 / 92%) !important;
+  box-shadow: 0 0 0 1px rgb(217 215 164 / 20%), 0 0 14px rgb(116 36 45 / 45%) !important;
+  transform: none !important;
+}
+
+/* Utilitários: recoloca a composição compacta e os elementos de fundo que
+   desapareceram, mas usa o host SVG real já criado pelo bridge. */
+.tadeon-page-hero[data-tadeon-page-hero="users"],
+.tadeon-page-hero[data-tadeon-page-hero="tools"],
+.tadeon-page-hero[data-tadeon-page-hero="offline"] {
+  position: relative !important;
+  isolation: isolate !important;
+  display: block !important;
+  min-height: 5.75rem !important;
+  padding: 1rem 1.1rem 1rem 5.1rem !important;
+  overflow: clip !important;
+  border: 1px solid rgb(var(--hero-rgb) / 24%) !important;
+  border-radius: 1.2rem .4rem 1.2rem .4rem !important;
+  background:
+    radial-gradient(circle at 100% -28%, rgb(var(--hero-rgb) / 12%), transparent 13rem),
+    linear-gradient(145deg, rgb(255 255 255 / 2.8%), transparent 46%),
+    linear-gradient(90deg, rgb(var(--hero-secondary-rgb) / .9%) 1px, transparent 1px),
+    linear-gradient(rgb(var(--hero-secondary-rgb) / .65%) 1px, transparent 1px),
+    color-mix(in srgb, var(--card) 96%, var(--background)) !important;
+  background-size: auto, auto, 48px 48px, 48px 48px, auto !important;
+  box-shadow: 0 28px 70px -58px rgb(var(--hero-rgb) / 68%), 0 24px 64px -52px rgb(0 0 0 / 100%), inset 0 1px rgb(255 255 255 / 4%) !important;
+}
+.tadeon-page-hero[data-tadeon-page-hero] > .tadeon-page-hero-mark-host {
+  position: absolute !important;
+  z-index: 3 !important;
+  top: 50% !important;
+  right: auto !important;
+  bottom: auto !important;
+  left: 1rem !important;
+  display: grid !important;
+  width: 3rem !important;
+  height: 3rem !important;
+  place-items: center !important;
+  margin: 0 !important;
+  border: 1px solid rgb(var(--hero-rgb) / 48%) !important;
+  border-radius: 1rem .32rem 1rem .32rem !important;
+  color: rgb(var(--hero-rgb)) !important;
+  background: radial-gradient(circle at 34% 28%, rgb(255 255 255 / 7%), transparent 36%), rgb(var(--hero-rgb) / 10%) !important;
+  box-shadow: 0 18px 34px -28px rgb(var(--hero-rgb) / 78%), inset 0 1px rgb(255 255 255 / 7%) !important;
+  filter: none !important;
+  transform: translateY(-50%) !important;
+}
+.tadeon-page-hero[data-tadeon-page-hero] > .tadeon-page-hero-mark-host > svg {
+  display: block !important;
+  width: 1.18rem !important;
+  height: 1.18rem !important;
+  color: currentColor !important;
+  transform: none !important;
+}
+.tadeon-page-hero[data-tadeon-page-hero]::before {
+  position: absolute !important;
+  z-index: 0 !important;
+  top: -5.8rem !important;
+  right: -2.8rem !important;
+  left: auto !important;
+  display: block !important;
+  width: 12rem !important;
+  height: 12rem !important;
+  border: 1px solid rgb(var(--hero-rgb) / 18%) !important;
+  border-radius: 50% !important;
+  background: transparent !important;
+  box-shadow: 0 0 0 2rem rgb(var(--hero-rgb) / 2.5%), 0 0 0 4rem rgb(var(--hero-secondary-rgb) / 1.5%) !important;
+  opacity: .9 !important;
+  pointer-events: none !important;
+  content: "" !important;
+}
+.tadeon-page-hero[data-tadeon-page-hero]::after {
+  position: absolute !important;
+  z-index: 1 !important;
+  right: 1rem !important;
+  bottom: 0 !important;
+  left: 1rem !important;
+  display: block !important;
+  width: auto !important;
+  height: 1px !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: linear-gradient(90deg, transparent, rgb(var(--hero-rgb) / 60%) 24%, rgb(var(--hero-secondary-rgb) / 26%) 68%, transparent) !important;
+  box-shadow: none !important;
+  opacity: 1 !important;
+  pointer-events: none !important;
+  content: "" !important;
+}
+.tadeon-page-hero[data-tadeon-page-hero="offline"]::before {
+  border-style: dashed !important;
+  border-color: rgb(113 107 123 / 24%) !important;
+  box-shadow: 0 0 0 2rem rgb(113 107 123 / 2.8%), 0 0 0 4rem rgb(79 110 93 / 1.8%) !important;
+}
+.tadeon-page-hero[data-tadeon-page-hero="tools"]::before {
+  border-color: rgb(84 123 148 / 22%) !important;
+  box-shadow: 0 0 0 2rem rgb(122 129 135 / 2.8%), 0 0 0 4rem rgb(84 123 148 / 1.8%) !important;
+}
+
+/* ========================================================================== */
+/* MESA — REMOVE DE VEZ O SÍMBOLO BEGE ANTIGO                                */
+/* ========================================================================== */
+
+.tadeon-tabletop-studio__brand > svg {
+  display: none !important;
+  visibility: hidden !important;
+  width: 0 !important;
+  height: 0 !important;
+  flex: 0 0 0 !important;
+  margin: 0 !important;
+  opacity: 0 !important;
+}
+.tadeon-tabletop-studio__brand > .tadeon-tabletop-brand-mark-host {
+  display: grid !important;
+  width: 2.5rem !important;
+  height: 2.5rem !important;
+  flex: 0 0 2.5rem !important;
+  place-items: center !important;
+  margin: 0 !important;
+  color: rgb(84 123 148) !important;
+  transform: none !important;
+}
+
+/* ========================================================================== */
+/* DASHBOARD — 3 QUADROS SEMPRE LADO A LADO                                  */
+/* ========================================================================== */
+
+.tadeon-dashboard-signals {
+  display: grid !important;
+  width: 100% !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  align-items: stretch !important;
+  gap: 0 !important;
+}
+@media (max-width: 419px) {
+  .tadeon-dashboard-signals {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  }
+  .tadeon-dashboard-signal {
+    min-width: 0 !important;
+    min-height: 3.8rem !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: .25rem !important;
+    padding: .3rem .18rem !important;
+    text-align: center !important;
+  }
+  .tadeon-dashboard-signal > svg {
+    width: .95rem !important;
+    height: .95rem !important;
+    flex: 0 0 .95rem !important;
+  }
+  .tadeon-dashboard-signal > div {
+    min-width: 0 !important;
+    max-width: 100% !important;
+  }
+  .tadeon-dashboard-signal > div > p:first-child {
+    max-width: 100% !important;
+    overflow: hidden !important;
+    font-size: .88rem !important;
+    line-height: 1 !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+  }
+  .tadeon-dashboard-signal > div > p:last-child {
+    font-size: .5rem !important;
+    line-height: 1.1 !important;
+    letter-spacing: .02em !important;
+  }
+}
+
+@media (max-width: 639px) {
+  .tadeon-master-commandbar {
+    padding: .9rem .9rem .9rem 4.8rem !important;
+  }
+  .tadeon-master-commandbar > .tadeon-master-commandbar__glow {
+    left: .82rem !important;
+    width: 3.15rem !important;
+    height: 3.15rem !important;
+  }
+  .tadeon-page-hero[data-tadeon-page-hero="users"],
+  .tadeon-page-hero[data-tadeon-page-hero="tools"],
+  .tadeon-page-hero[data-tadeon-page-hero="offline"] {
+    min-height: 5.4rem !important;
+    padding: .85rem .85rem .85rem 4.55rem !important;
+  }
+  .tadeon-page-hero[data-tadeon-page-hero] > .tadeon-page-hero-mark-host {
+    left: .82rem !important;
+    width: 2.8rem !important;
+    height: 2.8rem !important;
+  }
+}
