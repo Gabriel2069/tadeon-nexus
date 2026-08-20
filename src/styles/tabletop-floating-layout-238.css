@@ -1,5 +1,3 @@
-@import "./tabletop-fixed-menus-tactical-240.css";
-
 /* #238 — segunda passada estrutural do chrome flutuante da Mesa.
    Reserva o dock inferior global, prende controles superiores ao stage visível e
    evita clipping/escape do painel lateral. */
