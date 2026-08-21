@@ -2,7 +2,6 @@ import { useEffect } from "react";
 import "@/styles/tabletop-floating-layout-236.css";
 import "@/styles/tabletop-floating-menu-shift-236.css";
 import "@/styles/tabletop-floating-layout-238.css";
-import "@/styles/tabletop-fixed-menus-tactical-240.css";
 
 const CORE_FLOATING_SELECTORS = [
   ".tadeon-tabletop-progressive-dock",
@@ -41,6 +40,16 @@ const HEIGHT_VARIABLES: Array<[string, string]> = [
   [".tadeon-creative-dock", "--tadeon-tabletop-creative-h"],
 ];
 
+const HARD_LOCK_PROPERTIES = [
+  "position",
+  "top",
+  "right",
+  "bottom",
+  "left",
+  "transform",
+  "z-index",
+] as const;
+
 type Insets = { top: number; right: number; bottom: number; left: number };
 type StageBounds = {
   top: number;
@@ -66,6 +75,15 @@ function heightFor(selector: string) {
 
 function setPx(root: HTMLElement, name: string, value: number) {
   root.style.setProperty(name, `${Math.max(0, Math.round(value))}px`);
+}
+
+function setImportant(element: HTMLElement | null, property: string, value: string) {
+  element?.style.setProperty(property, value, "important");
+}
+
+function clearHardLock(element: HTMLElement | null) {
+  if (!element) return;
+  for (const property of HARD_LOCK_PROPERTIES) element.style.removeProperty(property);
 }
 
 function activeSurface(rootSelector: string, handleSelector: string, panelSelector: string) {
@@ -107,7 +125,7 @@ function isTabletLike() {
   return navigator.maxTouchPoints > 0 && shortestScreenSide >= 600 && shortestScreenSide <= 1100;
 }
 
-function publishStageGeometry(root: HTMLElement, appBottom: number): StageBounds | null {
+function measureStageGeometry(root: HTMLElement, appBottom: number): StageBounds | null {
   const stage = document.querySelector<HTMLElement>(".tadeon-tabletop-stage");
   if (!visible(stage)) return null;
 
@@ -143,6 +161,131 @@ function publishStageGeometry(root: HTMLElement, appBottom: number): StageBounds
   setPx(root, "--tadeon-tabletop-stage-fixed-center", left + width / 2);
 
   return { top, right, bottom, left, width, height };
+}
+
+function hardLockCoreChrome() {
+  const gap = "var(--tadeon-tabletop-zone-gap, 10px)";
+  const stageTop = "var(--tadeon-tabletop-stage-fixed-top)";
+  const stageLeft = "var(--tadeon-tabletop-stage-fixed-left)";
+  const stageRight = "var(--tadeon-tabletop-stage-fixed-right)";
+  const stageBottom = "var(--tadeon-tabletop-stage-fixed-bottom)";
+  const stageCenter = "var(--tadeon-tabletop-stage-fixed-center)";
+  const progressiveHeight = "var(--tadeon-tabletop-progressive-h, 3.5rem)";
+  const reliabilityHeight = "var(--tadeon-tabletop-reliability-h, 0px)";
+  const phone = window.matchMedia("(max-width: 700px)").matches;
+
+  const reliability = document.querySelector<HTMLElement>(".tadeon-tabletop-reliability-strip");
+  setImportant(reliability, "position", "fixed");
+  setImportant(reliability, "top", `calc(${stageTop} + ${gap})`);
+  setImportant(reliability, "right", "auto");
+  setImportant(reliability, "bottom", "auto");
+  setImportant(reliability, "left", stageCenter);
+  setImportant(reliability, "transform", "translateX(-50%)");
+  setImportant(reliability, "z-index", "198");
+
+  const rail = document.querySelector<HTMLElement>(".tadeon-tabletop-canvas-rail");
+  setImportant(rail, "position", "fixed");
+  setImportant(
+    rail,
+    "top",
+    phone
+      ? `calc(${stageTop} + ${reliabilityHeight} + (${gap} * 2))`
+      : `calc(${stageTop} + ${gap})`,
+  );
+  setImportant(rail, "right", "auto");
+  setImportant(rail, "bottom", "auto");
+  setImportant(rail, "left", `calc(${stageLeft} + ${gap})`);
+  setImportant(rail, "transform", "none");
+  setImportant(rail, "z-index", "199");
+
+  if (phone && rail) {
+    rail.querySelectorAll<HTMLElement>("button, [role=\"button\"]").forEach((button) => {
+      if (button.hidden || button.getAttribute("aria-hidden") === "true") return;
+      button.style.setProperty("display", "flex", "important");
+    });
+  }
+
+  const toolOptions = document.querySelector<HTMLElement>(".tadeon-tabletop-tool-options");
+  setImportant(toolOptions, "position", "fixed");
+  setImportant(toolOptions, "top", `calc(${stageTop} + ${gap})`);
+  setImportant(toolOptions, "right", `calc(${stageRight} + ${gap})`);
+  setImportant(toolOptions, "bottom", "auto");
+  setImportant(toolOptions, "left", "auto");
+  setImportant(toolOptions, "transform", "none");
+  setImportant(toolOptions, "z-index", "199");
+
+  const progressive = document.querySelector<HTMLElement>(".tadeon-tabletop-progressive-dock");
+  setImportant(progressive, "position", "fixed");
+  setImportant(progressive, "top", "auto");
+  setImportant(progressive, "right", "auto");
+  setImportant(progressive, "bottom", `calc(${stageBottom} + ${gap})`);
+  setImportant(progressive, "z-index", "202");
+  if (phone) {
+    setImportant(progressive, "left", `calc(${stageLeft} + ${gap})`);
+    setImportant(progressive, "transform", "none");
+    progressive?.style.setProperty(
+      "width",
+      `calc(var(--tadeon-tabletop-stage-fixed-width) - (${gap} * 2))`,
+      "important",
+    );
+  } else {
+    setImportant(progressive, "left", stageCenter);
+    setImportant(progressive, "transform", "translateX(-50%)");
+    progressive?.style.removeProperty("width");
+  }
+
+  const stackedBottom = `calc(${stageBottom} + ${progressiveHeight} + (${gap} * 2))`;
+
+  const tactical = document.querySelector<HTMLElement>(".tadeon-tactical-dock");
+  setImportant(tactical, "position", "fixed");
+  setImportant(tactical, "top", "auto");
+  setImportant(tactical, "right", "auto");
+  setImportant(tactical, "bottom", stackedBottom);
+  setImportant(tactical, "left", `calc(${stageLeft} + ${gap})`);
+  setImportant(tactical, "transform", "none");
+  setImportant(tactical, "z-index", "201");
+
+  const selection = document.querySelector<HTMLElement>(".tadeon-tabletop-selection-actions");
+  setImportant(selection, "position", "fixed");
+  setImportant(selection, "top", "auto");
+  setImportant(selection, "right", `calc(${stageRight} + ${gap})`);
+  setImportant(selection, "bottom", stackedBottom);
+  setImportant(selection, "left", "auto");
+  setImportant(selection, "transform", "none");
+  setImportant(selection, "z-index", "201");
+
+  const now = document.querySelector<HTMLElement>(".tadeon-tabletop-now");
+  setImportant(now, "position", "fixed");
+  setImportant(now, "left", `calc(${stageLeft} + ${gap})`);
+  setImportant(now, "right", "auto");
+  setImportant(now, "bottom", stackedBottom);
+  setImportant(now, "z-index", "197");
+
+  for (const selector of [
+    ".tadeon-placeables",
+    ".tadeon-semantic-transform",
+    ".tadeon-nexus-tabletop-locator",
+  ]) {
+    const element = document.querySelector<HTMLElement>(selector);
+    setImportant(element, "position", "fixed");
+    setImportant(element, "right", `calc(${stageRight} + ${gap})`);
+    setImportant(element, "left", "auto");
+    setImportant(element, "bottom", stackedBottom);
+    setImportant(element, "z-index", "197");
+  }
+
+  const creative = document.querySelector<HTMLElement>(".tadeon-creative-dock");
+  const draggedCreative =
+    creative?.dataset.open === "true" && creative?.dataset.tadeonDockDragged === "true";
+  if (draggedCreative) {
+    clearHardLock(creative);
+  } else {
+    setImportant(creative, "position", "fixed");
+    setImportant(creative, "right", `calc(${stageRight} + ${gap})`);
+    setImportant(creative, "left", "auto");
+    setImportant(creative, "bottom", stackedBottom);
+    setImportant(creative, "z-index", "197");
+  }
 }
 
 function edgeInsets(elements: HTMLElement[], appBottom: number): Insets {
@@ -224,9 +367,13 @@ export function TabletopFloatingLayoutBridge() {
     const root = document.documentElement;
     let frame = 0;
     let resizeObserver: ResizeObserver | null = null;
+    let stageBounds: StageBounds | null = null;
+    let measuredStage: HTMLElement | null = null;
     const observed = new Set<Element>();
+    const settleTimers: number[] = [];
 
-    const schedule = () => {
+    const schedule = (remeasure = false) => {
+      if (remeasure) stageBounds = null;
       if (frame) return;
       frame = window.requestAnimationFrame(sync);
     };
@@ -239,7 +386,15 @@ export function TabletopFloatingLayoutBridge() {
       for (const [selector, variable] of HEIGHT_VARIABLES) setPx(root, variable, heightFor(selector));
       const appBottom = bottomChromeHeight();
       setPx(root, "--tadeon-tabletop-app-bottom", appBottom);
-      const stageBounds = publishStageGeometry(root, appBottom);
+
+      const stage = document.querySelector<HTMLElement>(".tadeon-tabletop-stage");
+      if (stage !== measuredStage) {
+        measuredStage = stage;
+        stageBounds = null;
+      }
+      stageBounds ??= measureStageGeometry(root, appBottom);
+
+      hardLockCoreChrome();
 
       const floating = floatingSurfaces();
       const insets = edgeInsets(floating, appBottom);
@@ -250,15 +405,10 @@ export function TabletopFloatingLayoutBridge() {
       root.dataset.tadeonTabletopUtility = openUtility();
       constrainMenus(insets, stageBounds);
 
-      resizeObserver ??= new ResizeObserver(schedule);
-      const stage = document.querySelector<HTMLElement>(".tadeon-tabletop-stage");
+      resizeObserver ??= new ResizeObserver(() => schedule(true));
       const measurable = [
-        ...floating,
         ...(visible(stage) ? [stage] : []),
         ...APP_BOTTOM_SELECTORS.flatMap((selector) =>
-          [...document.querySelectorAll<HTMLElement>(selector)].filter(visible),
-        ),
-        ...CONSTRAINED_MENU_SELECTORS.flatMap((selector) =>
           [...document.querySelectorAll<HTMLElement>(selector)].filter(visible),
         ),
       ];
@@ -269,31 +419,55 @@ export function TabletopFloatingLayoutBridge() {
       }
     };
 
-    const mutationObserver = new MutationObserver(schedule);
+    const forceRemeasure = () => schedule(true);
+    const mutationObserver = new MutationObserver(() => schedule(false));
     mutationObserver.observe(document.body, {
       childList: true,
       subtree: true,
       attributes: true,
       attributeFilter: ["class", "data-open", "data-mobile-open", "data-state"],
     });
-    window.addEventListener("resize", schedule, { passive: true });
-    window.addEventListener("orientationchange", schedule, { passive: true });
-    window.addEventListener("scroll", schedule, { passive: true, capture: true });
-    window.visualViewport?.addEventListener("resize", schedule, { passive: true });
-    window.visualViewport?.addEventListener("scroll", schedule, { passive: true });
-    schedule();
+
+    window.addEventListener("resize", forceRemeasure, { passive: true });
+    window.addEventListener("orientationchange", forceRemeasure, { passive: true });
+    window.visualViewport?.addEventListener("resize", forceRemeasure, { passive: true });
+
+    // A geometria assenta durante a abertura do chunk; depois disso fica congelada.
+    // Nenhum listener de scroll reposiciona o chrome.
+    for (const delay of [0, 80, 180, 360, 700, 1200]) {
+      settleTimers.push(window.setTimeout(forceRemeasure, delay));
+    }
 
     return () => {
       if (frame) window.cancelAnimationFrame(frame);
+      while (settleTimers.length) {
+        const timer = settleTimers.pop();
+        if (timer !== undefined) window.clearTimeout(timer);
+      }
       mutationObserver.disconnect();
       resizeObserver?.disconnect();
-      window.removeEventListener("resize", schedule);
-      window.removeEventListener("orientationchange", schedule);
-      window.removeEventListener("scroll", schedule, true);
-      window.visualViewport?.removeEventListener("resize", schedule);
-      window.visualViewport?.removeEventListener("scroll", schedule);
+      window.removeEventListener("resize", forceRemeasure);
+      window.removeEventListener("orientationchange", forceRemeasure);
+      window.visualViewport?.removeEventListener("resize", forceRemeasure);
       delete root.dataset.tadeonTabletopUtility;
       delete root.dataset.tadeonTabletopTablet;
+
+      for (const selector of [
+        ".tadeon-tabletop-reliability-strip",
+        ".tadeon-tabletop-canvas-rail",
+        ".tadeon-tabletop-tool-options",
+        ".tadeon-tabletop-progressive-dock",
+        ".tadeon-tactical-dock",
+        ".tadeon-tabletop-selection-actions",
+        ".tadeon-tabletop-now",
+        ".tadeon-placeables",
+        ".tadeon-semantic-transform",
+        ".tadeon-nexus-tabletop-locator",
+        ".tadeon-creative-dock",
+      ]) {
+        clearHardLock(document.querySelector<HTMLElement>(selector));
+      }
+
       for (const [, variable] of HEIGHT_VARIABLES) root.style.removeProperty(variable);
       for (const variable of [
         "--tadeon-tabletop-app-bottom",
