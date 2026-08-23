@@ -23,6 +23,7 @@ describe("tabletop scene tools", () => {
   it("exposes a protected action for deleting the current scene", () => {
     expect(workspace).toContain('label="Excluir cena atual"');
     expect(workspace).toContain("setDeleteSceneDialogOpen(true)");
+    expect(workspace).toContain("onClick={() => setDeleteSceneDialogOpen(false)}");
     expect(workspace).toMatch(/AlertDialogAction[\s\S]*Excluir cena/);
   });
 });
