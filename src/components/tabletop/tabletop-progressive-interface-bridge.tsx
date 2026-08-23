@@ -8,9 +8,9 @@ import {
   Focus,
   Hand,
   Layers3,
+  LibraryBig,
   Lock,
   Maximize2,
-  Menu,
   MousePointer2,
   Redo2,
   Ruler,
@@ -459,10 +459,7 @@ export function TabletopProgressiveInterfaceBridge({
               <button
                 type="button"
                 aria-pressed={mode === "build"}
-                onClick={() => {
-                  setProgressiveMode("build");
-                  window.requestAnimationFrame(openCreativeDock);
-                }}
+                onClick={() => setProgressiveMode("build")}
                 title="Ferramentas de montagem"
               >
                 <Layers3 />
@@ -479,12 +476,12 @@ export function TabletopProgressiveInterfaceBridge({
               </button>
               <button
                 type="button"
-                aria-pressed={mode === "advanced"}
-                onClick={() => setProgressiveMode("advanced")}
-                title="Mostrar todas as ferramentas"
+                onClick={() => window.requestAnimationFrame(openCreativeDock)}
+                title="Abrir Dock criativo"
+                aria-label="Abrir Dock criativo"
               >
-                <Menu />
-                <span>Mais</span>
+                <LibraryBig />
+                <span>Dock</span>
               </button>
             </div>
           )}

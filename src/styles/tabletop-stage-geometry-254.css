@@ -632,3 +632,74 @@ html:has(.tadeon-tabletop-studio)
     transition-duration: 1ms !important;
   }
 }
+
+/* #255 — acabamento do rail oeste sem alterar sua geometria aprovada. */
+html:has(.tadeon-tabletop-studio)
+  .tadeon-tabletop-stage
+  > .tadeon-tabletop-canvas-rail {
+  border: 0 !important;
+  border-radius: 1rem 0.34rem 1rem 0.34rem !important;
+  background:
+    linear-gradient(155deg, rgb(var(--studio-cyan) / 10%), transparent 36%),
+    linear-gradient(180deg, rgb(13 19 24 / 96%), rgb(7 11 15 / 94%)) !important;
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, rgb(var(--studio-cyan)) 24%, var(--border)),
+    0 0 0 4px rgb(5 8 11 / 48%),
+    0 24px 58px -28px rgb(0 0 0 / 100%),
+    inset 1px 0 rgb(255 255 255 / 4%),
+    inset -1px 0 rgb(0 0 0 / 38%) !important;
+}
+
+html:has(.tadeon-tabletop-studio)
+  .tadeon-tabletop-stage
+  > .tadeon-tabletop-canvas-rail
+  .tadeon-tabletop-canvas-tool {
+  position: relative;
+  border: 1px solid transparent !important;
+  border-radius: 0.72rem 0.26rem 0.72rem 0.26rem !important;
+  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 1.8%);
+}
+
+html:has(.tadeon-tabletop-studio)
+  .tadeon-tabletop-stage
+  > .tadeon-tabletop-canvas-rail
+  .tadeon-tabletop-canvas-tool:hover:not(:disabled) {
+  border-color: rgb(var(--studio-cyan) / 22%) !important;
+  background: rgb(var(--studio-cyan) / 8%) !important;
+}
+
+html:has(.tadeon-tabletop-studio)
+  .tadeon-tabletop-stage
+  > .tadeon-tabletop-canvas-rail
+  .tadeon-tabletop-canvas-tool[aria-pressed="true"] {
+  border-color: rgb(var(--studio-cyan) / 42%) !important;
+  background: linear-gradient(
+    135deg,
+    rgb(var(--studio-cyan) / 20%),
+    rgb(var(--studio-cyan) / 7%)
+  ) !important;
+  color: rgb(224 241 241) !important;
+  box-shadow:
+    inset 2px 0 rgb(var(--studio-cyan) / 72%),
+    0 8px 22px -16px rgb(var(--studio-cyan) / 72%) !important;
+}
+
+html:has(.tadeon-tabletop-studio)
+  .tadeon-tabletop-stage
+  > .tadeon-tabletop-canvas-rail
+  .tadeon-tabletop-canvas-tool[aria-pressed="true"]
+  svg {
+  filter: drop-shadow(0 0 0.34rem rgb(var(--studio-cyan) / 48%));
+}
+
+html:has(.tadeon-tabletop-studio)
+  .tadeon-tabletop-stage
+  > .tadeon-tabletop-canvas-rail__divider {
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgb(var(--studio-cyan) / 42%) 24%,
+    rgb(var(--studio-cyan) / 18%) 76%,
+    transparent
+  ) !important;
+}

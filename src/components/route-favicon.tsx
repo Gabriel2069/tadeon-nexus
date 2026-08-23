@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useRouterState } from "@tanstack/react-router";
 
-const FAVICON_VERSION = "5";
+const FAVICON_VERSION = "6";
 
 type RouteIdentity = {
   favicon: string;
@@ -13,7 +13,7 @@ function identityForPath(pathname: string): RouteIdentity {
     return { favicon: "/favicons/backup.svg", themeColor: "#7a8187" };
   }
   if (pathname === "/nexus" || pathname.startsWith("/nexus/")) {
-    return { favicon: "/favicons/nexus.svg", themeColor: "#716b7b" };
+    return { favicon: "/favicons/nexus.svg", themeColor: "#4f6e5d" };
   }
   if (pathname.startsWith("/tabletop")) {
     return { favicon: "/favicons/tabletop.svg", themeColor: "#547b94" };

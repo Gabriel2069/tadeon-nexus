@@ -5,6 +5,7 @@ import * as DialogPrimitive from "@radix-ui/react-dialog";
 import { X } from "lucide-react";
 
 import { cn } from "@/lib/utils";
+import { useRoutePopupFrame } from "@/components/ui/route-popup-frame";
 
 const Dialog = DialogPrimitive.Root;
 
@@ -43,12 +44,16 @@ DialogOverlay.displayName = DialogPrimitive.Overlay.displayName;
 const DialogContent = React.forwardRef<
   React.ElementRef<typeof DialogPrimitive.Content>,
   React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content>
->(({ className, children, ...props }, ref) => (
-  <DialogPortal>
+>(({ className, children, style, ...props }, ref) => {
+  const routeFrame = useRoutePopupFrame();
+  return (
+    <DialogPortal>
     <DialogOverlay />
     <DialogPrimitive.Content
       ref={ref}
       data-slot="dialog-content"
+      data-route-bounded={routeFrame.boundary ? "true" : undefined}
+      style={{ ...routeFrame.style, ...style }}
       className={cn(
         "fixed left-[50%] top-[50%] z-50 grid max-h-[calc(100dvh_-_1rem)] w-[calc(100%_-_1rem)] max-w-lg gap-4 overflow-y-auto overscroll-contain rounded-[1.15rem_.45rem_1.15rem_.45rem] border border-primary/15 bg-background/96 p-5 shadow-[0_32px_90px_-28px_rgba(0,0,0,.96),inset_0_1px_0_rgba(255,255,255,.045)] backdrop-blur-xl duration-200 ease-[var(--ease-out)] data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 sm:max-h-[calc(100dvh_-_2rem)] sm:w-[calc(100%_-_2rem)] sm:p-6",
         className,
@@ -64,8 +69,9 @@ const DialogContent = React.forwardRef<
         <span className="sr-only">Fechar</span>
       </DialogPrimitive.Close>
     </DialogPrimitive.Content>
-  </DialogPortal>
-));
+    </DialogPortal>
+  );
+});
 DialogContent.displayName = DialogPrimitive.Content.displayName;
 
 const DialogHeader = ({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) => (
