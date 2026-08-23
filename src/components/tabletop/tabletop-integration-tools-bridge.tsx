@@ -28,6 +28,7 @@ import { tabletopRegionsAtPoint } from "@/lib/tabletop/tabletop-regions";
 import { currentTabletopRuntime } from "@/lib/tabletop/tabletop-player-runtime";
 import { structureChannels, type TabletopStructureType } from "@/lib/tabletop/tabletop-spatial";
 import type { Point, TabletopEntity, TabletopSnapshot } from "@/lib/tabletop/types";
+import { TabletopStagePortal } from "@/components/tabletop/tabletop-stage-portal";
 import "@/styles/tabletop-integration-tools.css";
 
 const database = supabase as unknown as SupabaseClient;
@@ -378,6 +379,7 @@ export function TabletopIntegrationToolsBridge() {
   const linkedCount = snapshot.scene.entities.filter((entity) => entity.linkedKnowledgeNodeId || entity.linkedSheetId).length;
 
   return (
+    <TabletopStagePortal>
     <aside className="tadeon-tabletop-now" data-open={open}>
       <button type="button" className="tadeon-tabletop-now__handle" aria-expanded={open} onClick={() => setOpen((value) => !value)}>
         <ShieldQuestion aria-hidden="true" />
@@ -449,5 +451,6 @@ export function TabletopIntegrationToolsBridge() {
         </section>
       )}
     </aside>
+    </TabletopStagePortal>
   );
 }

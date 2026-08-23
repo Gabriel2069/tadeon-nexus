@@ -26,6 +26,7 @@ import {
 } from "@/lib/tabletop/tabletop-regions";
 import { currentTabletopRuntime } from "@/lib/tabletop/tabletop-player-runtime";
 import type { Point, TabletopEntity, TabletopEntitySeed, TabletopSnapshot } from "@/lib/tabletop/types";
+import { TabletopStagePortal } from "@/components/tabletop/tabletop-stage-portal";
 import "@/styles/tabletop-creative-dock.css";
 
 const PLACEABLE_MIME = "application/x-tadeon-placeable-preset";
@@ -251,6 +252,7 @@ export function TabletopCreativeDockBridge() {
   if (!snapshot || new URLSearchParams(window.location.search).get("view") === "director") return null;
 
   return (
+    <TabletopStagePortal>
     <aside className="tadeon-creative-dock" data-open={open}>
       <button
         type="button"
@@ -410,5 +412,6 @@ export function TabletopCreativeDockBridge() {
         </div>
       )}
     </aside>
+    </TabletopStagePortal>
   );
 }

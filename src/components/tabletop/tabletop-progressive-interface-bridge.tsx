@@ -23,6 +23,7 @@ import {
 } from "lucide-react";
 import { currentTabletopRuntime } from "@/lib/tabletop/tabletop-player-runtime";
 import type { TabletopSnapshot } from "@/lib/tabletop/types";
+import { TabletopStagePortal } from "@/components/tabletop/tabletop-stage-portal";
 
 type InterfaceMode = "play" | "build" | "direct" | "advanced";
 
@@ -50,6 +51,12 @@ function clickWorkspaceFlow(label: string) {
     document.querySelectorAll<HTMLButtonElement>(".tadeon-tabletop-command-spaces button"),
   );
   buttons.find((button) => button.textContent?.includes(label))?.click();
+}
+
+function openCreativeDock() {
+  const dock = document.querySelector<HTMLElement>(".tadeon-creative-dock");
+  if (dock?.dataset.open === "true") return;
+  dock?.querySelector<HTMLButtonElement>(".tadeon-creative-dock__handle")?.click();
 }
 
 function focusCanvas() {
@@ -404,6 +411,7 @@ export function TabletopProgressiveInterfaceBridge({
 
   return (
     <>
+      <TabletopStagePortal>
       {!cleanPreview && (
         <div className="tadeon-tabletop-progressive-dock" aria-label="Controles rápidos da Mesa">
           <button
@@ -451,7 +459,10 @@ export function TabletopProgressiveInterfaceBridge({
               <button
                 type="button"
                 aria-pressed={mode === "build"}
-                onClick={() => setProgressiveMode("build")}
+                onClick={() => {
+                  setProgressiveMode("build");
+                  window.requestAnimationFrame(openCreativeDock);
+                }}
                 title="Ferramentas de montagem"
               >
                 <Layers3 />
@@ -565,6 +576,8 @@ export function TabletopProgressiveInterfaceBridge({
           Sair da tela limpa
         </button>
       )}
+
+      </TabletopStagePortal>
 
       {commandOpen && (
         <div

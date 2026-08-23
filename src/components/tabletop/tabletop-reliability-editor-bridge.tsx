@@ -21,6 +21,7 @@ import { structureChannels, type TabletopStructureType } from "@/lib/tabletop/ta
 import { tabletopRegionsAtPoint } from "@/lib/tabletop/tabletop-regions";
 import { currentTabletopRuntime } from "@/lib/tabletop/tabletop-player-runtime";
 import type { Point, TabletopEntity, TabletopSnapshot } from "@/lib/tabletop/types";
+import { TabletopStagePortal } from "@/components/tabletop/tabletop-stage-portal";
 import "@/styles/tabletop-reliability-editor.css";
 
 type AutosaveState = "idle" | "pending" | "saving" | "saved" | "paused";
@@ -386,7 +387,8 @@ export function TabletopReliabilityEditorBridge() {
   if (!snapshot) return null;
 
   return (
-    <>
+    <TabletopStagePortal>
+      <>
       <div className="tadeon-tabletop-reliability-strip" aria-label="Estado de confiabilidade da Mesa">
         {role === "mestre" && (
           <span data-state={autosave} title="Autosave desacelera gravações e usa os mesmos salvamentos manuais da Mesa">
@@ -529,6 +531,7 @@ export function TabletopReliabilityEditorBridge() {
           )}
         </aside>
       )}
-    </>
+      </>
+    </TabletopStagePortal>
   );
 }

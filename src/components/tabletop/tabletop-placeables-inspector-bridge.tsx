@@ -21,6 +21,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
 import { currentTabletopRuntime } from "@/lib/tabletop/tabletop-player-runtime";
 import type { TabletopEntity, TabletopSnapshot } from "@/lib/tabletop/types";
+import { TabletopStagePortal } from "@/components/tabletop/tabletop-stage-portal";
 import "@/styles/tabletop-placeables-inspector.css";
 
 const tabletopDatabase = supabase as unknown as SupabaseClient;
@@ -178,6 +179,7 @@ export function TabletopPlaceablesInspectorBridge() {
     snapshot.scene.levels?.find((level) => level.id === id)?.name ?? "Andar base";
 
   return (
+    <TabletopStagePortal>
     <aside className="tadeon-placeables" data-open={open}>
       <button
         type="button"
@@ -341,5 +343,6 @@ export function TabletopPlaceablesInspectorBridge() {
         {activeLevelId && <footer>Andar ativo: {levelName(activeLevelId)}</footer>}
       </div>
     </aside>
+    </TabletopStagePortal>
   );
 }

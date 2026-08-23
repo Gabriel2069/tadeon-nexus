@@ -1,0 +1,634 @@
+/* Mesa #254 — três caixas e um único sistema de coordenadas.
+   Cabeçalho, palco e painel contextual permanecem irmãos. Todo chrome flutuante
+   da cena usa o palco (não a viewport) como containing block. */
+
+html:has(.tadeon-tabletop-studio) {
+  --tadeon-tabletop-zone-gap: clamp(0.45rem, 0.75vw, 0.7rem);
+  --tadeon-tabletop-rail-w: 4.45rem;
+  --tadeon-tabletop-status-h: 3.65rem;
+  --tadeon-tabletop-map-left: calc(
+    var(--tadeon-tabletop-rail-w) + var(--tadeon-tabletop-zone-gap) * 2
+  );
+  --tadeon-tabletop-map-top: var(--tadeon-tabletop-zone-gap);
+  --tadeon-tabletop-map-right: var(--tadeon-tabletop-zone-gap);
+  --tadeon-tabletop-map-bottom: calc(
+    var(--tadeon-tabletop-status-h) + var(--tadeon-tabletop-zone-gap) * 2
+  );
+}
+
+.tadeon-tabletop-studio {
+  overflow: clip;
+}
+
+.tadeon-tabletop-studio__header {
+  flex: 0 0 auto;
+}
+
+.tadeon-tabletop-studio__primary,
+.tadeon-tabletop-toolbar,
+.tadeon-tabletop-studio__header > .tadeon-live-session {
+  width: 100%;
+}
+
+.tadeon-tabletop-workbench {
+  min-width: 0;
+  overflow: hidden;
+  transition: grid-template-columns var(--motion-panel) var(--ease-out);
+}
+
+.tadeon-tabletop-stage {
+  position: relative !important;
+  min-width: 0;
+  isolation: isolate;
+  overflow: hidden !important;
+  contain: layout paint;
+  container-type: size;
+}
+
+/* O canvas ocupa somente a faixa interativa: à direita do rail e acima do status. */
+.tadeon-tabletop-stage > .tadeon-tabletop-canvas-host {
+  position: absolute !important;
+  z-index: 1 !important;
+  top: var(--tadeon-tabletop-map-top) !important;
+  right: var(--tadeon-tabletop-map-right) !important;
+  bottom: var(--tadeon-tabletop-map-bottom) !important;
+  left: var(--tadeon-tabletop-map-left) !important;
+  width: auto !important;
+  height: auto !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  border: 1px solid color-mix(in srgb, var(--border) 78%, transparent);
+  border-radius: 0.8rem 0.28rem 0.8rem 0.28rem;
+  overflow: hidden;
+  box-shadow:
+    0 20px 52px -34px rgb(0 0 0 / 92%),
+    inset 0 0 0 1px rgb(255 255 255 / 2.5%);
+}
+
+.tadeon-tabletop-stage > .tadeon-tabletop-canvas-host > canvas {
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
+  touch-action: none;
+  outline: none;
+}
+
+.tadeon-tabletop-stage > .tadeon-tabletop-overlay-layer {
+  position: absolute;
+  z-index: 80;
+  top: var(--tadeon-tabletop-map-top);
+  right: var(--tadeon-tabletop-map-right);
+  bottom: var(--tadeon-tabletop-map-bottom);
+  left: var(--tadeon-tabletop-map-left);
+  overflow: visible;
+  pointer-events: none;
+  container-type: size;
+}
+
+.tadeon-tabletop-overlay-layer > * {
+  pointer-events: auto;
+}
+
+/* Rail oeste: uma única coluna vertical, inteira e rolável quando a altura encurta. */
+html:has(.tadeon-tabletop-studio)
+  .tadeon-tabletop-stage
+  > .tadeon-tabletop-canvas-rail {
+  position: absolute !important;
+  z-index: 84 !important;
+  top: var(--tadeon-tabletop-map-top) !important;
+  right: auto !important;
+  bottom: var(--tadeon-tabletop-map-bottom) !important;
+  left: var(--tadeon-tabletop-zone-gap) !important;
+  display: flex !important;
+  width: var(--tadeon-tabletop-rail-w) !important;
+  max-width: var(--tadeon-tabletop-rail-w) !important;
+  height: auto !important;
+  max-height: none !important;
+  min-height: 0 !important;
+  grid-template-columns: none !important;
+  flex-direction: column !important;
+  align-content: initial !important;
+  overflow-x: visible !important;
+  overflow-y: auto !important;
+  overscroll-behavior: contain;
+  padding: 0.42rem !important;
+  scrollbar-width: none;
+  transform: none !important;
+}
+
+html:has(.tadeon-tabletop-studio)
+  .tadeon-tabletop-stage
+  > .tadeon-tabletop-canvas-rail::-webkit-scrollbar {
+  display: none;
+}
+
+html:has(.tadeon-tabletop-studio)
+  .tadeon-tabletop-stage
+  > .tadeon-tabletop-canvas-rail__divider {
+  width: 82% !important;
+  height: 1px !important;
+  flex: 0 0 1px !important;
+  grid-column: auto !important;
+  align-self: center;
+}
+
+/* Status é a base fixa da caixa do mapa. */
+html:has(.tadeon-tabletop-studio)
+  .tadeon-tabletop-stage
+  > .tadeon-tabletop-stage-status {
+  position: absolute !important;
+  z-index: 86 !important;
+  top: auto !important;
+  right: var(--tadeon-tabletop-zone-gap) !important;
+  bottom: var(--tadeon-tabletop-zone-gap) !important;
+  left: var(--tadeon-tabletop-zone-gap) !important;
+  display: flex !important;
+  width: auto !important;
+  max-width: none !important;
+  height: var(--tadeon-tabletop-status-h) !important;
+  min-height: var(--tadeon-tabletop-status-h) !important;
+  align-items: center;
+  overflow-x: auto !important;
+  overflow-y: hidden !important;
+  box-sizing: border-box;
+  scrollbar-width: none;
+  transform: none !important;
+}
+
+/* Regra comum: nenhum dock da cena volta a se ancorar na viewport. */
+html:has(.tadeon-tabletop-studio)
+  .tadeon-tabletop-stage
+  :is(
+    .tadeon-tabletop-reliability-strip,
+    .tadeon-tabletop-toprail-controls,
+    .tadeon-tabletop-progressive-dock,
+    .tadeon-tactical-dock,
+    .tadeon-tabletop-selection-actions,
+    .tadeon-tabletop-now,
+    .tadeon-placeables,
+    .tadeon-semantic-transform,
+    .tadeon-nexus-tabletop-locator,
+    .tadeon-creative-dock,
+    .tadeon-tabletop-precision-editor,
+    .tadeon-smart-setup,
+    .tadeon-smart-setup__launcher
+  ) {
+  position: absolute !important;
+  box-sizing: border-box !important;
+}
+
+/* Topo do quadro interativo. */
+html:has(.tadeon-tabletop-studio)
+  .tadeon-tabletop-stage
+  > .tadeon-tabletop-overlay-layer
+  > .tadeon-tabletop-reliability-strip {
+  z-index: 92 !important;
+  top: 0.15rem !important;
+  right: auto !important;
+  bottom: auto !important;
+  left: 50% !important;
+  width: max-content !important;
+  max-width: calc(100% - 8.5rem) !important;
+  overflow-x: auto !important;
+  overflow-y: hidden !important;
+  transform: translateX(-50%) !important;
+  scrollbar-width: none;
+}
+
+html:has(.tadeon-tabletop-studio)
+  .tadeon-tabletop-stage
+  > .tadeon-tabletop-overlay-layer
+  > .tadeon-tabletop-toprail-controls {
+  z-index: 96 !important;
+  top: 0.15rem !important;
+  right: 0.15rem !important;
+  bottom: auto !important;
+  left: auto !important;
+  display: flex;
+  gap: 0.38rem;
+  transform: none !important;
+}
+
+.tadeon-tabletop-stage .tadeon-tabletop-toprail-toggle {
+  order: 1;
+}
+
+.tadeon-tabletop-stage .tadeon-tabletop-toprail-setup {
+  order: 2;
+}
+
+.tadeon-tabletop-stage .tadeon-smart-setup__launcher {
+  display: none !important;
+}
+
+/* Setup abre no centro físico do mapa, não no centro da janela. */
+html:has(.tadeon-tabletop-studio)
+  .tadeon-tabletop-stage
+  > .tadeon-tabletop-overlay-layer
+  > .tadeon-smart-setup {
+  z-index: 110 !important;
+  top: 50% !important;
+  right: auto !important;
+  bottom: auto !important;
+  left: 50% !important;
+  width: min(44rem, calc(100% - 1rem)) !important;
+  max-width: none !important;
+  max-height: calc(100% - 1rem) !important;
+  overflow: hidden !important;
+  transform: translate(-50%, -50%) scale(1) !important;
+  translate: none !important;
+  transition:
+    opacity 190ms var(--ease-out),
+    transform 250ms var(--ease-drawer),
+    visibility 0s linear 0s !important;
+}
+
+html:has(.tadeon-tabletop-studio)
+  .tadeon-tabletop-stage
+  > .tadeon-tabletop-overlay-layer
+  > .tadeon-smart-setup[data-open="false"] {
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+  transform: translate(-50%, calc(-50% + 0.8rem)) scale(0.975) !important;
+  transition-delay: 0s, 0s, 250ms !important;
+}
+
+html:has(.tadeon-tabletop-studio)
+  .tadeon-tabletop-stage
+  > .tadeon-tabletop-overlay-layer
+  > .tadeon-smart-setup[data-open="true"] {
+  opacity: 1 !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
+}
+
+/* Base do quadro interativo: cantos e centro usam o mesmo baseline. */
+html:has(.tadeon-tabletop-studio)
+  .tadeon-tabletop-stage
+  > .tadeon-tabletop-overlay-layer
+  > .tadeon-tabletop-progressive-dock {
+  z-index: 100 !important;
+  top: auto !important;
+  right: auto !important;
+  bottom: 0.15rem !important;
+  left: 50% !important;
+  display: flex !important;
+  width: max-content !important;
+  max-width: calc(100% - 1rem) !important;
+  overflow-x: auto !important;
+  overflow-y: hidden !important;
+  transform: translateX(-50%) !important;
+  scrollbar-width: none;
+}
+
+html:has(.tadeon-tabletop-studio)
+  .tadeon-tabletop-stage
+  > .tadeon-tabletop-overlay-layer
+  > .tadeon-tabletop-now {
+  z-index: 98 !important;
+  top: auto !important;
+  right: auto !important;
+  bottom: 0.15rem !important;
+  left: 0.15rem !important;
+  max-width: 100% !important;
+  transform: none !important;
+}
+
+html:has(.tadeon-tabletop-studio)
+  .tadeon-tabletop-stage
+  > .tadeon-tabletop-overlay-layer
+  > .tadeon-placeables {
+  z-index: 98 !important;
+  top: auto !important;
+  right: 0.15rem !important;
+  bottom: 0.15rem !important;
+  left: auto !important;
+  max-width: 100% !important;
+  transform: none !important;
+}
+
+.tadeon-tabletop-stage .tadeon-tabletop-now__panel {
+  right: auto !important;
+  left: 0 !important;
+  width: min(27rem, calc(100cqi - 0.5rem)) !important;
+  max-height: calc(100cqb - 5rem) !important;
+}
+
+.tadeon-tabletop-stage .tadeon-placeables__panel {
+  right: 0 !important;
+  left: auto !important;
+  width: min(25rem, calc(100cqi - 0.5rem)) !important;
+  max-height: calc(100cqb - 5rem) !important;
+}
+
+/* Dock criativo: abre sem recolher os controles rápidos e só muda de lugar por arrasto explícito. */
+html:has(.tadeon-tabletop-studio)
+  .tadeon-tabletop-stage
+  > .tadeon-tabletop-overlay-layer
+  > .tadeon-creative-dock {
+  z-index: 99 !important;
+  top: auto !important;
+  right: auto !important;
+  bottom: calc(
+    var(--tadeon-tabletop-progressive-h, 3.4rem) +
+      var(--tadeon-tabletop-zone-gap) * 2
+  ) !important;
+  left: 50% !important;
+  width: min(44rem, calc(100% - 1rem)) !important;
+  max-width: none !important;
+  transform: translateX(-50%) !important;
+}
+
+html:has(.tadeon-tabletop-studio)
+  .tadeon-tabletop-stage
+  > .tadeon-tabletop-overlay-layer
+  > .tadeon-creative-dock
+  > .tadeon-creative-dock__handle {
+  display: none !important;
+}
+
+html:has(.tadeon-tabletop-studio)
+  .tadeon-tabletop-stage
+  > .tadeon-tabletop-overlay-layer
+  > .tadeon-creative-dock
+  .tadeon-creative-dock__panel {
+  position: relative !important;
+  top: auto !important;
+  right: auto !important;
+  bottom: auto !important;
+  left: auto !important;
+  width: 100% !important;
+  max-width: none !important;
+  max-height: calc(100cqb - 6rem) !important;
+}
+
+html:has(.tadeon-tabletop-studio)
+  .tadeon-tabletop-stage
+  > .tadeon-tabletop-overlay-layer
+  > .tadeon-creative-dock[data-open="true"] {
+  opacity: 1 !important;
+  visibility: visible !important;
+  pointer-events: none !important;
+}
+
+html:has(.tadeon-tabletop-studio)
+  .tadeon-tabletop-stage
+  > .tadeon-tabletop-overlay-layer
+  > .tadeon-creative-dock[data-open="true"]
+  .tadeon-creative-dock__panel {
+  pointer-events: auto !important;
+}
+
+html:has(.tadeon-tabletop-studio)
+  .tadeon-tabletop-stage
+  > .tadeon-tabletop-overlay-layer
+  > .tadeon-creative-dock[data-open="true"][data-tadeon-dock-dragged="true"] {
+  top: var(--tadeon-dock-y) !important;
+  right: auto !important;
+  bottom: auto !important;
+  left: var(--tadeon-dock-x) !important;
+  transform: none !important;
+}
+
+body:has(.tadeon-creative-dock[data-open="true"])
+  .tadeon-tabletop-progressive-dock {
+  display: flex !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
+  transform: translateX(-50%) !important;
+}
+
+/* Docks contextuais auxiliares também ficam confinados ao mapa. */
+html:has(.tadeon-tabletop-studio)
+  .tadeon-tabletop-stage
+  > .tadeon-tabletop-overlay-layer
+  > .tadeon-tactical-dock {
+  z-index: 97 !important;
+  top: auto !important;
+  right: auto !important;
+  bottom: calc(var(--tadeon-tabletop-progressive-h, 3.4rem) + 1rem) !important;
+  left: 0.15rem !important;
+  max-width: min(24rem, calc(100% - 1rem)) !important;
+  max-height: calc(100% - 5rem) !important;
+  transform: none !important;
+}
+
+html:has(.tadeon-tabletop-studio)
+  .tadeon-tabletop-stage
+  > .tadeon-tabletop-overlay-layer
+  > .tadeon-tabletop-selection-actions {
+  z-index: 97 !important;
+  top: auto !important;
+  right: 0.15rem !important;
+  bottom: calc(var(--tadeon-tabletop-progressive-h, 3.4rem) + 1rem) !important;
+  left: auto !important;
+  max-width: min(28rem, calc(100% - 1rem)) !important;
+  transform: none !important;
+}
+
+html:has(.tadeon-tabletop-studio)
+  .tadeon-tabletop-stage
+  > .tadeon-tabletop-overlay-layer
+  > :is(.tadeon-semantic-transform, .tadeon-nexus-tabletop-locator) {
+  z-index: 96 !important;
+  top: auto !important;
+  right: 0.15rem !important;
+  bottom: calc(var(--tadeon-tabletop-progressive-h, 3.4rem) + 1rem) !important;
+  left: auto !important;
+  max-width: min(28rem, calc(100% - 1rem)) !important;
+  transform: none !important;
+}
+
+html:has(.tadeon-tabletop-studio)
+  .tadeon-tabletop-stage
+  > .tadeon-tabletop-overlay-layer
+  > .tadeon-tabletop-precision-editor {
+  z-index: 102 !important;
+  top: calc(var(--tadeon-tabletop-reliability-h, 2.8rem) + 0.8rem) !important;
+  right: 0.15rem !important;
+  bottom: auto !important;
+  left: auto !important;
+  width: min(30rem, calc(100% - 1rem)) !important;
+  max-width: none !important;
+  max-height: calc(
+    100% - var(--tadeon-tabletop-reliability-h, 2.8rem) - 2rem
+  ) !important;
+  overflow: auto !important;
+  transform: none !important;
+}
+
+/* Ferramentas da própria cena permanecem no mapa, sem cobrir o cabeçalho. */
+html:has(.tadeon-tabletop-studio)
+  .tadeon-tabletop-stage
+  > :is(.tadeon-tabletop-tool-options, .tadeon-tabletop-selection-dock) {
+  position: absolute !important;
+  z-index: 88 !important;
+  right: 0.15rem !important;
+  left: auto !important;
+  max-width: calc(100% - 1rem) !important;
+}
+
+/* Desktop e tablet compartilham o mesmo workbench lateral. */
+@media (min-width: 768px) {
+  .tadeon-tabletop-studio__primary {
+    flex-wrap: nowrap !important;
+  }
+
+  .tadeon-tabletop-studio__primary > .grid {
+    width: min(25rem, 34vw);
+    flex: 1 1 17rem;
+  }
+
+  .tadeon-tabletop-studio__primary .tadeon-tabletop-command-spaces {
+    flex: 0 1 auto;
+  }
+
+  .tadeon-tabletop-studio__header > .tadeon-tabletop-toolbar {
+    position: relative !important;
+    inset: auto !important;
+    display: flex !important;
+    min-height: 3rem;
+    margin-top: 0.75rem !important;
+    transform: none !important;
+  }
+
+  .tadeon-tabletop-workbench {
+    grid-template-rows: minmax(0, 1fr);
+  }
+
+  .tadeon-tabletop-workbench:has(
+    .tadeon-tabletop-panel[data-collapsed="true"]
+  ) {
+    grid-template-columns: minmax(0, 1fr) 3.75rem !important;
+  }
+
+  .tadeon-tabletop-panel-backdrop {
+    display: none !important;
+  }
+
+  .tadeon-tabletop-panel {
+    position: relative !important;
+    z-index: 3 !important;
+    inset: auto !important;
+    display: block !important;
+    width: auto !important;
+    max-height: none !important;
+    overflow-y: auto !important;
+    border-top: 0 !important;
+    border-left: 1px solid rgb(217 215 164 / 16%) !important;
+    border-radius: 0 !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    pointer-events: auto !important;
+    transform: none !important;
+    animation: none !important;
+  }
+
+  .tadeon-tabletop-panel[data-collapsed="true"] {
+    overflow: hidden !important;
+    padding: 0.6rem !important;
+  }
+
+  .tadeon-tabletop-panel[data-collapsed="true"]
+    > :not(.tadeon-tabletop-panel__expand) {
+    display: none !important;
+  }
+
+  .tadeon-tabletop-panel[data-collapsed="true"]
+    > .tadeon-tabletop-panel__expand {
+    display: flex !important;
+    width: 100%;
+    min-height: 12rem;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 0.7rem;
+    padding-block: 0.7rem;
+    color: var(--primary);
+    writing-mode: vertical-rl;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1179px) {
+  .tadeon-tabletop-workbench:has(
+    .tadeon-tabletop-panel[data-collapsed="false"]
+  ) {
+    grid-template-columns: minmax(0, 1fr) min(20rem, 40vw) !important;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 920px) {
+  .tadeon-tabletop-studio__primary {
+    gap: 0.4rem !important;
+  }
+
+  .tadeon-tabletop-studio__brand {
+    margin-right: 0.25rem !important;
+  }
+
+  .tadeon-tabletop-studio__primary > .grid {
+    width: auto;
+    min-width: 12rem;
+  }
+
+  .tadeon-tabletop-command-spaces button {
+    min-width: 2.45rem;
+    padding-inline: 0.55rem;
+  }
+
+  .tadeon-tabletop-command-spaces button > span {
+    display: none;
+  }
+}
+
+/* Proteção mínima para o celular; o passe específico virá depois. */
+@media (max-width: 767px) {
+  html:has(.tadeon-tabletop-studio) {
+    --tadeon-tabletop-rail-w: 3.45rem;
+    --tadeon-tabletop-status-h: 3.45rem;
+  }
+
+  .tadeon-tabletop-stage > .tadeon-tabletop-canvas-host,
+  .tadeon-tabletop-stage > .tadeon-tabletop-overlay-layer {
+    left: var(--tadeon-tabletop-zone-gap) !important;
+  }
+
+  html:has(.tadeon-tabletop-studio)
+    .tadeon-tabletop-stage
+    > .tadeon-tabletop-canvas-rail {
+    top: var(--tadeon-tabletop-zone-gap) !important;
+    right: var(--tadeon-tabletop-zone-gap) !important;
+    bottom: auto !important;
+    left: var(--tadeon-tabletop-zone-gap) !important;
+    width: auto !important;
+    max-width: none !important;
+    height: 3.35rem !important;
+    flex-direction: row !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+  }
+
+  html:has(.tadeon-tabletop-studio)
+    .tadeon-tabletop-stage
+    > .tadeon-tabletop-overlay-layer
+    > .tadeon-tabletop-progressive-dock {
+    right: var(--tadeon-tabletop-zone-gap) !important;
+    left: var(--tadeon-tabletop-zone-gap) !important;
+    width: auto !important;
+    max-width: none !important;
+    transform: none !important;
+  }
+
+  .tadeon-tabletop-stage .tadeon-tabletop-now__panel,
+  .tadeon-tabletop-stage .tadeon-placeables__panel {
+    width: calc(100cqi - var(--tadeon-tabletop-zone-gap) * 2) !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tadeon-tabletop-workbench,
+  .tadeon-smart-setup {
+    transition-duration: 1ms !important;
+  }
+}
