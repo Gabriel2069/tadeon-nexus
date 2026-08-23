@@ -4353,3 +4353,27 @@ legend {
     transition-duration: 1ms !important;
   }
 }
+
+/* #255 — quadros de trabalho e pop-ups compartilham a mesma geometria. */
+@media (min-width: 768px) {
+  :where(.tadeon-route-dashboard, .tadeon-route-nexus, .tadeon-route-master) {
+    width: min(100%, 104rem) !important;
+    max-width: 104rem !important;
+    margin-inline: auto !important;
+  }
+}
+
+:where([data-slot="dialog-content"], [data-slot="alert-dialog-content"])[data-route-bounded="true"] {
+  left: var(--tadeon-popup-frame-center, 50dvw) !important;
+  width: min(
+    var(--tadeon-dialog-width, calc(100% - 1rem)),
+    calc(var(--tadeon-popup-frame-width, 100dvw) - 1rem)
+  ) !important;
+}
+
+[data-slot="popover-content"][data-route-bounded="true"] {
+  max-width: min(
+    calc(100dvw - 1.5rem),
+    calc(var(--tadeon-popup-frame-width, 100dvw) - 1rem)
+  ) !important;
+}

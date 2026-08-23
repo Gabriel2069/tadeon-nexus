@@ -2,8 +2,11 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useCallback, useEffect, useRef, useState } from "react";
 import {
   ArchiveRestore,
+  Bug,
+  CheckCheck,
   CheckCircle2,
   CircleAlert,
+  ClipboardCopy,
   Cloud,
   Database,
   Download,
@@ -48,6 +51,7 @@ import {
   type SnapshotSummary,
 } from "@/lib/nexus-backup";
 import { readOfflineCache } from "@/lib/offline-cache";
+import type { Json } from "@/integrations/supabase/types";
 
 export const Route = createFileRoute("/nexus-tools")({
   head: () => ({
@@ -75,6 +79,23 @@ interface DiagnosticResult {
   level: DiagnosticLevel;
 }
 
+interface ErrorLogEntry {
+  id: string;
+  fingerprint: string;
+  message: string;
+  route: string;
+  source: string;
+  severity: string;
+  context: Json;
+  created_at: string;
+}
+
+function errorContext(value: Json): Record<string, Json | undefined> {
+  return value && typeof value === "object" && !Array.isArray(value)
+    ? (value as Record<string, Json | undefined>)
+    : {};
+}
+
 function NexusToolsPage() {
   const [working, setWorking] = useState(false);
   const [snapshotLabel, setSnapshotLabel] = useState("");
@@ -82,6 +103,7 @@ function NexusToolsPage() {
   const [pendingRestore, setPendingRestore] = useState<NexusBackup | null>(null);
   const [pendingLabel, setPendingLabel] = useState("");
   const [diagnostics, setDiagnostics] = useState<DiagnosticResult[]>([]);
+  const [errorLogs, setErrorLogs] = useState<ErrorLogEntry[]>([]);
   const [checking, setChecking] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
 
@@ -291,10 +313,16 @@ function NexusToolsPage() {
     }
 
     try {
-      const { count, error } = await supabase
+      const { data, count, error } = await supabase
         .from("app_error_logs")
-        .select("id", { count: "exact", head: true })
-        .is("resolved_at", null);
+        .select(
+          "id,fingerprint,message,route,source,severity,context,created_at",
+          { count: "exact" },
+        )
+        .is("resolved_at", null)
+        .order("created_at", { ascending: false })
+        .limit(20);
+      setErrorLogs(error ? [] : ((data ?? []) as ErrorLogEntry[]));
       results.push({
         id: "errors",
         label: "Monitoramento de erros",
@@ -306,6 +334,7 @@ function NexusToolsPage() {
         level: error ? "warning" : count ? "warning" : "healthy",
       });
     } catch {
+      setErrorLogs([]);
       results.push({
         id: "errors",
         label: "Monitoramento de erros",
@@ -385,6 +414,39 @@ function NexusToolsPage() {
   }, [runDiagnostics]);
 
   const healthyCount = diagnostics.filter((item) => item.level === "healthy").length;
+
+  const copyError = async (entry: ErrorLogEntry) => {
+    const context = errorContext(entry.context);
+    const report = [
+      `${entry.severity.toUpperCase()} · ${entry.message}`,
+      `Rota: ${entry.route}`,
+      `Origem: ${entry.source}`,
+      `Horário: ${new Date(entry.created_at).toLocaleString("pt-BR")}`,
+      `Impressão digital: ${entry.fingerprint}`,
+      context.release ? `Versão: ${String(context.release)}` : "",
+      context.viewport ? `Viewport: ${String(context.viewport)}` : "",
+      context.stack ? `Pilha:\n${String(context.stack)}` : "",
+    ]
+      .filter(Boolean)
+      .join("\n");
+    await navigator.clipboard.writeText(report);
+    toast.success("Diagnóstico copiado.");
+  };
+
+  const resolveError = async (entry: ErrorLogEntry) => {
+    const { data } = await supabase.auth.getUser();
+    if (!data.user) return;
+    const { error } = await supabase
+      .from("app_error_logs")
+      .update({ resolved_at: new Date().toISOString(), resolved_by: data.user.id })
+      .eq("id", entry.id);
+    if (error) {
+      toast.error("Não foi possível marcar a ocorrência como resolvida.");
+      return;
+    }
+    toast.success("Ocorrência marcada como resolvida.");
+    await runDiagnostics();
+  };
 
   return (
     <div className="tadeon-page tadeon-route-tools max-w-6xl space-y-6">
@@ -571,6 +633,90 @@ function NexusToolsPage() {
               <DiagnosticCard key={item.id} result={item} />
             ))}
           </div>
+
+          {errorLogs.length > 0 && (
+            <Card className="tadeon-surface rounded-2xl p-5 md:p-6">
+              <div className="mb-4 flex flex-col justify-between gap-3 sm:flex-row sm:items-end">
+                <div>
+                  <p className="tadeon-eyebrow">Ocorrências abertas</p>
+                  <h3 className="font-cinzel text-xl font-semibold">O que realmente falhou</h3>
+                  <p className="mt-1 text-xs text-muted-foreground">
+                    As 20 capturas mais recentes, já sanitizadas pelo coletor do Nexus.
+                  </p>
+                </div>
+                <Badge variant="outline" className="w-fit gap-1.5">
+                  <Bug className="h-3.5 w-3.5" />
+                  {errorLogs.length} visível(is)
+                </Badge>
+              </div>
+              <div className="space-y-2">
+                {errorLogs.map((entry) => {
+                  const context = errorContext(entry.context);
+                  return (
+                    <details
+                      key={entry.id}
+                      className="group rounded-xl border border-border/70 bg-background/35"
+                    >
+                      <summary className="flex cursor-pointer list-none items-start gap-3 p-4">
+                        <Bug className="mt-0.5 h-4 w-4 shrink-0 text-destructive" />
+                        <span className="min-w-0 flex-1">
+                          <strong className="block break-words text-sm">{entry.message}</strong>
+                          <span className="mt-1 flex flex-wrap gap-x-3 gap-y-1 text-[11px] text-muted-foreground">
+                            <span>{entry.route}</span>
+                            <span>{entry.source}</span>
+                            <time dateTime={entry.created_at}>
+                              {new Date(entry.created_at).toLocaleString("pt-BR")}
+                            </time>
+                          </span>
+                        </span>
+                        <span className="tadeon-mono text-[10px] text-muted-foreground">
+                          {entry.fingerprint}
+                        </span>
+                      </summary>
+                      <div className="border-t border-border/60 p-4">
+                        <dl className="grid gap-3 text-xs sm:grid-cols-2 lg:grid-cols-4">
+                          <div>
+                            <dt className="text-muted-foreground">Rota</dt>
+                            <dd className="mt-1 break-all font-medium">{entry.route}</dd>
+                          </div>
+                          <div>
+                            <dt className="text-muted-foreground">Versão</dt>
+                            <dd className="mt-1 break-all font-medium">
+                              {String(context.release ?? "não informada")}
+                            </dd>
+                          </div>
+                          <div>
+                            <dt className="text-muted-foreground">Viewport</dt>
+                            <dd className="mt-1 font-medium">
+                              {String(context.viewport ?? "não informado")}
+                            </dd>
+                          </div>
+                          <div>
+                            <dt className="text-muted-foreground">Origem</dt>
+                            <dd className="mt-1 font-medium">{entry.source}</dd>
+                          </div>
+                        </dl>
+                        {context.stack && (
+                          <pre className="mt-4 max-h-56 overflow-auto whitespace-pre-wrap break-words rounded-lg border border-border/60 bg-black/25 p-3 text-[11px] leading-relaxed text-muted-foreground">
+                            {String(context.stack)}
+                          </pre>
+                        )}
+                        <div className="mt-4 flex flex-wrap justify-end gap-2">
+                          <Button variant="outline" size="sm" onClick={() => void copyError(entry)}>
+                            <ClipboardCopy className="h-3.5 w-3.5" /> Copiar diagnóstico
+                          </Button>
+                          <Button size="sm" onClick={() => void resolveError(entry)}>
+                            <CheckCheck className="h-3.5 w-3.5" /> Marcar como resolvido
+                          </Button>
+                        </div>
+                      </div>
+                    </details>
+                  );
+                })}
+              </div>
+            </Card>
+          )}
+
         </TabsContent>
       </Tabs>
 
