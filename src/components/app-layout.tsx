@@ -307,7 +307,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
         )}
       </div>
 
-      <div className="relative z-10 min-h-0 flex-1 overflow-y-auto overscroll-contain pr-1">
+      <div className="tadeon-sidebar__scroll relative z-10 min-h-0 flex-1 overflow-y-auto overscroll-contain pr-1">
         {renderNav(mini, enableSearchShortcut)}
       </div>
 
@@ -362,6 +362,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
       {/* Desktop sidebar */}
       <aside
         id="tadeon-desktop-sidebar"
+        data-collapsed={collapsed ? "true" : "false"}
         className={`tadeon-sidebar relative z-20 hidden shrink-0 border-r border-sidebar-border bg-sidebar/95 text-sidebar-foreground shadow-[24px_0_80px_-50px_rgba(0,0,0,.95)] md:flex ${
           collapsed ? "w-16" : "w-64"
         }`}
@@ -375,12 +376,12 @@ export function AppLayout({ children }: { children: ReactNode }) {
           aria-expanded={!collapsed}
           data-state={collapsed ? "collapsed" : "expanded"}
           title={collapsed ? "Expandir" : "Recolher"}
-          className="absolute -right-5 top-6 z-10 flex h-10 w-10 items-center justify-center rounded-full border border-border bg-card text-muted-foreground shadow-md transition-[color,background-color,border-color,box-shadow,transform] duration-150 ease-[var(--ease-out)] hover:border-primary/45 hover:text-primary active:scale-[.97]"
+          className="tadeon-sidebar-collapse absolute -right-5 top-6 z-30 flex h-10 w-10 items-center justify-center border text-muted-foreground transition-[color,background-color,border-color,box-shadow,transform] duration-150 ease-[var(--ease-out)] active:scale-[.97]"
         >
           {collapsed ? (
-            <ChevronsRight className="w-3.5 h-3.5" />
+            <ChevronsRight className="h-4 w-4" />
           ) : (
-            <ChevronsLeft className="w-3.5 h-3.5" />
+            <ChevronsLeft className="h-4 w-4" />
           )}
         </button>
       </aside>
