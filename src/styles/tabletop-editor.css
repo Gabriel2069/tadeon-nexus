@@ -1701,6 +1701,10 @@
 }
 
 @media (max-width: 639px) {
+  .tadeon-tabletop-toolbar[data-mobile-open="false"] {
+    display: none;
+  }
+
   .tadeon-tabletop-command-spaces {
     overflow-x: auto;
     grid-template-columns: repeat(4, minmax(4.65rem, 1fr));

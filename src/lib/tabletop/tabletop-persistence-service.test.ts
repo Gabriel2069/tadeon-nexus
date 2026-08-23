@@ -299,6 +299,37 @@ describe("tabletop persistence mapping", () => {
 });
 
 describe("TabletopPersistenceService conflicts", () => {
+  it("deletes a scene only when its expected version still matches", async () => {
+    const maybeSingle = vi.fn().mockResolvedValue({ data: { id: "scene" }, error: null });
+    const select = vi.fn(() => ({ maybeSingle }));
+    const eqVersion = vi.fn(() => ({ select }));
+    const eqId = vi.fn(() => ({ eq: eqVersion }));
+    const remove = vi.fn(() => ({ eq: eqId }));
+    const from = vi.fn(() => ({ delete: remove }));
+    const service = new TabletopPersistenceService({ from } as never, {} as never);
+
+    await service.deleteScene("scene", 7);
+
+    expect(from).toHaveBeenCalledWith("tabletop_scenes");
+    expect(remove).toHaveBeenCalledOnce();
+    expect(eqId).toHaveBeenCalledWith("id", "scene");
+    expect(eqVersion).toHaveBeenCalledWith("version", 7);
+  });
+
+  it("reports a stale scene deletion as TABLETOP_CONFLICT", async () => {
+    const maybeSingle = vi.fn().mockResolvedValue({ data: null, error: null });
+    const select = vi.fn(() => ({ maybeSingle }));
+    const eqVersion = vi.fn(() => ({ select }));
+    const eqId = vi.fn(() => ({ eq: eqVersion }));
+    const remove = vi.fn(() => ({ eq: eqId }));
+    const from = vi.fn(() => ({ delete: remove }));
+    const service = new TabletopPersistenceService({ from } as never, {} as never);
+
+    await expect(service.deleteScene("scene", 7)).rejects.toEqual(
+      new TabletopServiceError("TABLETOP_CONFLICT"),
+    );
+  });
+
   it("reports a silent optimistic miss as TABLETOP_CONFLICT", async () => {
     const maybeSingle = vi.fn().mockResolvedValue({ data: null, error: null });
     const select = vi.fn(() => ({ maybeSingle }));

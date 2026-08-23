@@ -291,6 +291,8 @@ function errorMessage(error: unknown) {
       return "Revise os dados da cena antes de salvar.";
     case "TABLETOP_NOT_FOUND":
       return "A cena não existe mais ou não está disponível.";
+    case "TABLETOP_SCENE_IN_USE":
+      return "Esta cena está em uma transmissão ativa. Troque a cena da transmissão ou encerre a sala antes de excluí-la.";
     default:
       return "A Mesa Nexus não conseguiu acessar o banco com segurança.";
   }
@@ -368,6 +370,7 @@ export function TabletopWorkspace({
   const [snapshotDialogOpen, setSnapshotDialogOpen] = useState(false);
   const [snapshotName, setSnapshotName] = useState("Marco da sessão");
   const [archiveDialogOpen, setArchiveDialogOpen] = useState(false);
+  const [deleteSceneDialogOpen, setDeleteSceneDialogOpen] = useState(false);
   const [restoreDialogOpen, setRestoreDialogOpen] = useState(false);
   const [pendingNavigation, setPendingNavigation] = useState<PendingNavigation | null>(null);
   const [loading, setLoading] = useState(true);
@@ -1255,6 +1258,28 @@ export function TabletopWorkspace({
     else clearScene();
   };
 
+  const deleteCurrentScene = async () => {
+    const stored = persistedSceneRef.current;
+    if (!stored) return;
+    const deletedIndex = scenes.findIndex((scene) => scene.id === stored.id);
+    setSaving(true);
+    try {
+      await tabletopPersistenceService.deleteScene(stored.id, stored.version);
+      const remaining = await refreshScenes(stored.campaignId);
+      setDeleteSceneDialogOpen(false);
+      const next = remaining[Math.min(Math.max(deletedIndex, 0), remaining.length - 1)];
+      if (next) await loadScene(next.id);
+      else clearScene();
+      toast.success(`Cena “${stored.name}” excluída.`);
+    } catch (error) {
+      if (error instanceof TabletopServiceError && error.code === "TABLETOP_CONFLICT")
+        setConflict(true);
+      toast.error(errorMessage(error));
+    } finally {
+      setSaving(false);
+    }
+  };
+
   const moveCurrentScene = async (direction: -1 | 1) => {
     const stored = persistedSceneRef.current;
     if (!stored || dirty) {
@@ -1695,7 +1720,7 @@ export function TabletopWorkspace({
 
         <div
           data-mobile-open={mobileToolsOpen ? "true" : "false"}
-          className={`${mobileToolsOpen ? "flex" : "hidden"} tadeon-tabletop-toolbar relative z-10 mt-3 max-w-full flex-wrap items-center gap-2 overflow-x-auto border-t border-border/50 pt-3 sm:flex`}
+          className="tadeon-tabletop-toolbar relative z-10 mt-3 flex max-w-full flex-wrap items-center gap-2 overflow-x-auto border-t border-border/50 pt-3"
         >
           <ToolbarGroup label="Cena">
             <ToolbarButton
@@ -1738,6 +1763,13 @@ export function TabletopWorkspace({
               onClick={() => setArchiveDialogOpen(true)}
             >
               <Archive className="h-4 w-4" />
+            </ToolbarButton>
+            <ToolbarButton
+              label="Excluir cena atual"
+              disabled={!persistedScene || saving}
+              onClick={() => setDeleteSceneDialogOpen(true)}
+            >
+              <Trash2 className="h-4 w-4 text-destructive" />
             </ToolbarButton>
             <ToolbarButton
               label={conflict ? "Recarregar após conflito" : "Recarregar cena"}
@@ -4313,6 +4345,39 @@ export function TabletopWorkspace({
               className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
             >
               Arquivar cena
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      <AlertDialog open={deleteSceneDialogOpen} onOpenChange={setDeleteSceneDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Excluir “{persistedScene?.name}” definitivamente?</AlertDialogTitle>
+            <AlertDialogDescription className="space-y-2">
+              <span className="block">
+                O mapa, as camadas, os tokens, os objetos, a iluminação, a névoa e os snapshots
+                desta cena serão removidos permanentemente.
+              </span>
+              {dirty && (
+                <span className="block font-medium text-destructive">
+                  Esta cena também possui alterações locais ainda não salvas.
+                </span>
+              )}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={saving}>Manter cena</AlertDialogCancel>
+            <AlertDialogAction
+              disabled={!persistedScene || saving}
+              onClick={(event) => {
+                event.preventDefault();
+                void deleteCurrentScene();
+              }}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              {saving && <Loader2 className="h-4 w-4 animate-spin" />}
+              Excluir cena
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

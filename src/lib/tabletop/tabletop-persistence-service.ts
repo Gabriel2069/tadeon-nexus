@@ -17,6 +17,7 @@ export type TabletopServiceErrorCode =
   | "TABLETOP_CONFLICT"
   | "TABLETOP_INVALID_INPUT"
   | "TABLETOP_NOT_FOUND"
+  | "TABLETOP_SCENE_IN_USE"
   | "TABLETOP_DATABASE_ERROR";
 
 export class TabletopServiceError extends Error {
@@ -254,6 +255,12 @@ function serviceError(error: { code?: string; message?: string } | null) {
   const message = error?.message ?? "";
   if (error?.code === "40001" || message.includes("TABLETOP_VERSION_CONFLICT"))
     return new TabletopServiceError("TABLETOP_CONFLICT");
+  if (
+    error?.code === "23503" &&
+    (message.includes("tabletop_sessions_scene_campaign_fkey") ||
+      message.includes("tabletop_sessions"))
+  )
+    return new TabletopServiceError("TABLETOP_SCENE_IN_USE");
   if (error?.code === "42501" && message.includes("TABLETOP_AUTH_REQUIRED"))
     return new TabletopServiceError("TABLETOP_AUTH_REQUIRED");
   if (error?.code?.startsWith("22") || error?.code === "23514")
@@ -711,6 +718,18 @@ export class TabletopPersistenceService {
     if (error) throw serviceError(error);
     if (!data) throw new TabletopServiceError("TABLETOP_CONFLICT");
     return this.loadScene(scene.id);
+  }
+
+  async deleteScene(sceneId: string, expectedVersion: number) {
+    const { data, error } = await this.database
+      .from("tabletop_scenes")
+      .delete()
+      .eq("id", sceneId)
+      .eq("version", expectedVersion)
+      .select("id")
+      .maybeSingle();
+    if (error) throw serviceError(error);
+    if (!data) throw new TabletopServiceError("TABLETOP_CONFLICT");
   }
 
   async saveWorkspace(
