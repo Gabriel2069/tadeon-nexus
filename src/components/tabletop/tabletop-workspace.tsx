@@ -1653,7 +1653,7 @@ export function TabletopWorkspace({
           <Button
             size="sm"
             variant={dirty ? "default" : "outline"}
-            className="min-w-24 gap-2 sm:ml-auto"
+            className="tadeon-tabletop-mobile-save min-w-24 gap-2 sm:ml-auto"
             disabled={!editable || !dirty || saving || conflict}
             onClick={() => void saveCurrent()}
           >
@@ -1670,7 +1670,7 @@ export function TabletopWorkspace({
             type="button"
             size="sm"
             variant="outline"
-            className="gap-2 sm:hidden"
+            className="tadeon-tabletop-mobile-tools-toggle gap-2 sm:hidden"
             aria-expanded={mobileToolsOpen}
             onClick={() => setMobileToolsOpen((value) => !value)}
           >
@@ -1681,7 +1681,7 @@ export function TabletopWorkspace({
             type="button"
             size="icon"
             variant="outline"
-            className="min-[768px]:hidden"
+            className="tadeon-tabletop-mobile-panel-toggle min-[768px]:hidden"
             aria-label={mobilePanelOpen ? "Fechar painel" : "Abrir painel"}
             aria-expanded={mobilePanelOpen}
             onClick={() => {
@@ -1694,6 +1694,7 @@ export function TabletopWorkspace({
         </div>
 
         <div
+          data-mobile-open={mobileToolsOpen ? "true" : "false"}
           className={`${mobileToolsOpen ? "flex" : "hidden"} tadeon-tabletop-toolbar relative z-10 mt-3 max-w-full flex-wrap items-center gap-2 overflow-x-auto border-t border-border/50 pt-3 sm:flex`}
         >
           <ToolbarGroup label="Cena">

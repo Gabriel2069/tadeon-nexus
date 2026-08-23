@@ -1,0 +1,99 @@
+/* Pop-ups #256 — the route frame owns centering; modal animation never does. */
+
+:where(
+  [data-slot="dialog-positioner"],
+  [data-slot="alert-dialog-positioner"]
+) {
+  position: fixed;
+  z-index: 50;
+  top: var(--tadeon-popup-viewport-top, 0px);
+  left: var(--tadeon-popup-frame-left, 0px);
+  display: grid;
+  width: var(--tadeon-popup-frame-width, 100dvw);
+  height: var(--tadeon-popup-viewport-height, 100dvh);
+  box-sizing: border-box;
+  place-items: center;
+  overflow: hidden;
+  padding:
+    max(0.5rem, env(safe-area-inset-top))
+    max(0.5rem, env(safe-area-inset-right))
+    max(0.5rem, env(safe-area-inset-bottom))
+    max(0.5rem, env(safe-area-inset-left));
+  pointer-events: none;
+}
+
+[data-slot="dialog-positioner"]
+  > [data-slot="dialog-content"][data-popup-contained="true"],
+[data-slot="alert-dialog-positioner"]
+  > [data-slot="alert-dialog-content"][data-popup-contained="true"] {
+  position: relative !important;
+  inset: auto !important;
+  width: min(var(--tadeon-dialog-width, calc(100% - 1rem)), 100%) !important;
+  max-height: 100% !important;
+  translate: none !important;
+  transform: none;
+  pointer-events: auto;
+}
+
+@keyframes tadeon-popup-contained-in {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 0.9rem, 0) scale(0.965);
+  }
+
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
+@keyframes tadeon-popup-contained-out {
+  from {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+
+  to {
+    opacity: 0;
+    transform: translate3d(0, 0.55rem, 0) scale(0.98);
+  }
+}
+
+[data-slot="dialog-positioner"]
+  > [data-slot="dialog-content"][data-popup-contained="true"][data-state="open"],
+[data-slot="alert-dialog-positioner"]
+  > [data-slot="alert-dialog-content"][data-popup-contained="true"][data-state="open"] {
+  animation: tadeon-popup-contained-in 280ms var(--ease-drawer) both !important;
+}
+
+[data-slot="dialog-positioner"]
+  > [data-slot="dialog-content"][data-popup-contained="true"][data-state="closed"],
+[data-slot="alert-dialog-positioner"]
+  > [data-slot="alert-dialog-content"][data-popup-contained="true"][data-state="closed"] {
+  animation: tadeon-popup-contained-out 180ms var(--ease-in-out) both !important;
+}
+
+@media (max-width: 767px) {
+  :where(
+    [data-slot="dialog-positioner"],
+    [data-slot="alert-dialog-positioner"]
+  ) {
+    padding-inline: max(0.5rem, env(safe-area-inset-left));
+  }
+
+  [data-slot="dialog-positioner"]
+    > [data-slot="dialog-content"][data-popup-contained="true"],
+  [data-slot="alert-dialog-positioner"]
+    > [data-slot="alert-dialog-content"][data-popup-contained="true"] {
+    width: 100% !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-slot="dialog-positioner"]
+    > [data-slot="dialog-content"][data-popup-contained="true"],
+  [data-slot="alert-dialog-positioner"]
+    > [data-slot="alert-dialog-content"][data-popup-contained="true"] {
+    animation-duration: 1ms !important;
+  }
+}

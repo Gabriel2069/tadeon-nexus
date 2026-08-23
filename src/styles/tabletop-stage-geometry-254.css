@@ -470,6 +470,33 @@ html:has(.tadeon-tabletop-studio)
   max-width: calc(100% - 1rem) !important;
 }
 
+/* The structure selection follows the reliability strip in the map's own
+   coordinate system, including while the contextual panel changes width. */
+html:has(.tadeon-tabletop-studio)
+  .tadeon-tabletop-stage
+  > .tadeon-tabletop-selection-dock--structure {
+  top: calc(
+    var(--tadeon-tabletop-map-top) +
+      var(--tadeon-tabletop-reliability-h, 2.8rem) + 0.55rem
+  ) !important;
+  right: auto !important;
+  left: calc(
+    var(--tadeon-tabletop-map-left) +
+      (
+          100% - var(--tadeon-tabletop-map-left) -
+            var(--tadeon-tabletop-map-right)
+        ) / 2
+  ) !important;
+  max-width: min(
+    52rem,
+    calc(
+      100% - var(--tadeon-tabletop-map-left) -
+        var(--tadeon-tabletop-map-right) - 1rem
+    )
+  ) !important;
+  transform: translateX(-50%) !important;
+}
+
 /* Desktop e tablet compartilham o mesmo workbench lateral. */
 @media (min-width: 768px) {
   .tadeon-tabletop-studio__primary {
@@ -582,11 +609,97 @@ html:has(.tadeon-tabletop-studio)
   }
 }
 
-/* Proteção mínima para o celular; o passe específico virá depois. */
+/* Celular: chrome in separate shelves, leaving one unobstructed map frame. */
 @media (max-width: 767px) {
   html:has(.tadeon-tabletop-studio) {
-    --tadeon-tabletop-rail-w: 3.45rem;
-    --tadeon-tabletop-status-h: 3.45rem;
+    --tadeon-tabletop-mobile-rail-h: 3.65rem;
+    --tadeon-tabletop-status-h: 3.3rem;
+    --tadeon-tabletop-map-left: var(--tadeon-tabletop-zone-gap);
+    --tadeon-tabletop-map-top: calc(
+      var(--tadeon-tabletop-mobile-rail-h) +
+        var(--tadeon-tabletop-zone-gap) * 2
+    );
+    --tadeon-tabletop-map-right: var(--tadeon-tabletop-zone-gap);
+    --tadeon-tabletop-map-bottom: calc(
+      var(--tadeon-tabletop-status-h) + var(--tadeon-tabletop-zone-gap) * 2
+    );
+  }
+
+  .tadeon-tabletop-studio__primary {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) auto auto;
+    align-items: center !important;
+    gap: 0.55rem !important;
+  }
+
+  .tadeon-tabletop-studio__brand {
+    grid-column: 1 / 3;
+    min-width: 0 !important;
+    margin-right: 0 !important;
+  }
+
+  .tadeon-tabletop-studio__primary > .grid {
+    grid-column: 1 / -1;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    width: 100%;
+  }
+
+  .tadeon-tabletop-command-spaces {
+    grid-column: 1 / -1;
+    display: grid !important;
+    width: 100%;
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+    overflow: hidden !important;
+  }
+
+  .tadeon-tabletop-command-spaces button {
+    min-width: 0 !important;
+    min-height: 2.8rem;
+    padding-inline: 0.38rem !important;
+  }
+
+  .tadeon-tabletop-command-spaces button > span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .tadeon-tabletop-mobile-save {
+    grid-column: 3;
+    grid-row: 1;
+    min-width: 2.8rem !important;
+    padding-inline: 0.65rem !important;
+  }
+
+  .tadeon-tabletop-mobile-tools-toggle {
+    grid-column: 1 / 3;
+    justify-self: start;
+  }
+
+  .tadeon-tabletop-mobile-panel-toggle {
+    grid-column: 3;
+    justify-self: end;
+  }
+
+  .tadeon-tabletop-studio__header > .tadeon-tabletop-toolbar {
+    display: none !important;
+    width: 100%;
+    flex-wrap: nowrap !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    padding-bottom: 0.25rem;
+    scrollbar-width: none;
+  }
+
+  .tadeon-tabletop-studio__header > .tadeon-tabletop-toolbar[data-mobile-open="true"] {
+    display: flex !important;
+  }
+
+  .tadeon-tabletop-toolbar__group {
+    flex: 0 0 auto;
+  }
+
+  .tadeon-tabletop-stage {
+    min-height: max(72svh, 36rem) !important;
   }
 
   .tadeon-tabletop-stage > .tadeon-tabletop-canvas-host,
@@ -603,10 +716,66 @@ html:has(.tadeon-tabletop-studio)
     left: var(--tadeon-tabletop-zone-gap) !important;
     width: auto !important;
     max-width: none !important;
-    height: 3.35rem !important;
+    height: var(--tadeon-tabletop-mobile-rail-h) !important;
     flex-direction: row !important;
+    align-items: center !important;
+    gap: 0.2rem !important;
     overflow-x: auto !important;
     overflow-y: hidden !important;
+    scroll-snap-type: x proximity;
+    scroll-padding-inline: 0.35rem;
+    overscroll-behavior-inline: contain;
+    border-radius: 0.82rem 0.28rem 0.82rem 0.28rem !important;
+  }
+
+  html:has(.tadeon-tabletop-studio)
+    .tadeon-tabletop-stage
+    > .tadeon-tabletop-canvas-rail
+    .tadeon-tabletop-canvas-rail__group-label {
+    position: sticky;
+    left: 0;
+    z-index: 2;
+    display: grid !important;
+    min-width: 3.1rem;
+    height: 2.65rem;
+    place-items: center;
+    padding: 0.2rem !important;
+    background: rgb(8 13 17 / 96%);
+    writing-mode: horizontal-tb !important;
+  }
+
+  html:has(.tadeon-tabletop-studio)
+    .tadeon-tabletop-stage
+    > .tadeon-tabletop-canvas-rail
+    .tadeon-tabletop-canvas-tool {
+    width: 3rem !important;
+    min-width: 3rem !important;
+    height: 2.75rem !important;
+    min-height: 2.75rem !important;
+    flex: 0 0 3rem;
+    scroll-snap-align: start;
+  }
+
+  html:has(.tadeon-tabletop-studio)
+    .tadeon-tabletop-stage
+    > .tadeon-tabletop-selection-dock--structure {
+    top: calc(
+      var(--tadeon-tabletop-map-top) +
+        var(--tadeon-tabletop-reliability-h, 2.8rem) + 0.45rem
+    ) !important;
+    left: 50% !important;
+    width: calc(100% - var(--tadeon-tabletop-zone-gap) * 4) !important;
+    max-width: none !important;
+    justify-content: flex-start;
+    overflow-x: auto;
+    transform: translateX(-50%) !important;
+  }
+
+  html:has(.tadeon-tabletop-studio)
+    .tadeon-tabletop-stage
+    > .tadeon-tabletop-overlay-layer
+    > .tadeon-tabletop-reliability-strip {
+    max-width: calc(100% - 6.5rem) !important;
   }
 
   html:has(.tadeon-tabletop-studio)
@@ -620,16 +789,74 @@ html:has(.tadeon-tabletop-studio)
     transform: none !important;
   }
 
+  html:has(.tadeon-tabletop-studio)
+    .tadeon-tabletop-stage
+    > .tadeon-tabletop-overlay-layer
+    > .tadeon-tabletop-progressive-dock
+    :is(.tadeon-tabletop-progressive-dock__button, .tadeon-tabletop-progressive-dock__command),
+  html:has(.tadeon-tabletop-studio)
+    .tadeon-tabletop-stage
+    > .tadeon-tabletop-overlay-layer
+    > .tadeon-tabletop-progressive-dock
+    .tadeon-tabletop-progressive-dock__modes
+    > button {
+    min-width: 2.8rem;
+    min-height: 2.7rem;
+    flex-direction: column;
+    gap: 0.12rem;
+    padding: 0.35rem 0.45rem;
+  }
+
+  html:has(.tadeon-tabletop-studio)
+    .tadeon-tabletop-stage
+    > .tadeon-tabletop-overlay-layer
+    > :is(.tadeon-tabletop-now, .tadeon-placeables) {
+    bottom: calc(var(--tadeon-tabletop-progressive-h, 3.4rem) + 0.55rem) !important;
+  }
+
   .tadeon-tabletop-stage .tadeon-tabletop-now__panel,
   .tadeon-tabletop-stage .tadeon-placeables__panel {
     width: calc(100cqi - var(--tadeon-tabletop-zone-gap) * 2) !important;
+    max-height: calc(100cqb - var(--tadeon-tabletop-progressive-h, 3.4rem) - 2rem) !important;
+    overflow-y: auto !important;
   }
-}
 
-@media (prefers-reduced-motion: reduce) {
-  .tadeon-tabletop-workbench,
-  .tadeon-smart-setup {
-    transition-duration: 1ms !important;
+  .tadeon-tabletop-panel-backdrop {
+    position: absolute !important;
+    inset: 0 !important;
+  }
+
+  .tadeon-tabletop-panel {
+    position: absolute !important;
+    z-index: 120 !important;
+    inset: auto 0 0 !important;
+    width: 100% !important;
+    max-height: min(78svh, 44rem) !important;
+    overflow-y: auto !important;
+    border-top: 1px solid rgb(217 215 164 / 16%) !important;
+    border-left: 0 !important;
+    border-radius: 1.15rem 1.15rem 0 0 !important;
+    padding-bottom: max(1rem, env(safe-area-inset-bottom)) !important;
+  }
+
+  .tadeon-tabletop-panel__tabs {
+    position: sticky;
+    z-index: 3;
+    top: 0;
+    display: grid !important;
+    grid-template-columns: repeat(5, minmax(3.4rem, 1fr)) !important;
+    overflow-x: auto;
+    background: rgb(9 13 17 / 96%);
+    backdrop-filter: blur(16px);
+  }
+
+  .tadeon-tabletop-panel__tab {
+    min-width: 0 !important;
+  }
+
+  .tadeon-tabletop-panel__tab span {
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 }
 
@@ -702,4 +929,11 @@ html:has(.tadeon-tabletop-studio)
     rgb(var(--studio-cyan) / 18%) 76%,
     transparent
   ) !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tadeon-tabletop-workbench,
+  .tadeon-smart-setup {
+    transition-duration: 1ms !important;
+  }
 }

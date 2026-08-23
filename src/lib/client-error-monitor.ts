@@ -4,6 +4,11 @@ const DEDUPE_WINDOW_MS = 60_000;
 const recent = new Map<string, number>();
 let initialized = false;
 
+const IGNORED_BROWSER_MESSAGES = [
+  "ResizeObserver loop completed with undelivered notifications.",
+  "ResizeObserver loop limit exceeded",
+] as const;
+
 function sanitizeDiagnosticText(value: string, maxLength: number): string {
   return value
     .replace(/sb_(?:publishable|secret)_[A-Za-z0-9_-]+/gi, "[chave removida]")
@@ -21,6 +26,11 @@ export function sanitizeClientErrorMessage(value: unknown): string {
         ? value
         : "Falha inesperada no cliente";
   return sanitizeDiagnosticText(source, 500);
+}
+
+export function isIgnorableClientError(value: unknown): boolean {
+  const message = sanitizeClientErrorMessage(value);
+  return IGNORED_BROWSER_MESSAGES.some((ignored) => message.includes(ignored));
 }
 
 function sanitizeClientErrorStack(value: unknown): string | undefined {
@@ -44,6 +54,7 @@ export async function reportClientError(
 ): Promise<void> {
   try {
     if (typeof window === "undefined" || !navigator.onLine) return;
+    if (isIgnorableClientError(error)) return;
     const message = sanitizeClientErrorMessage(error);
     const stack = sanitizeClientErrorStack(error);
     const route = window.location.pathname.slice(0, 240) || "/";
