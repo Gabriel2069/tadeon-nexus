@@ -853,6 +853,16 @@
   }
 }
 
+@keyframes tadeon-control-sheen-contained {
+  from {
+    background-position: 115% 0;
+  }
+
+  to {
+    background-position: -115% 0;
+  }
+}
+
 @keyframes tadeon-popup-in {
   from {
     opacity: 0;
@@ -939,24 +949,24 @@
 @keyframes tadeon-modal-mobile-in {
   from {
     opacity: 0;
-    transform: translate3d(-50%, 1rem, 0) scale(0.97);
+    transform: translate3d(-50%, calc(-50% + 0.85rem), 0) scale(0.97);
   }
 
   to {
     opacity: 1;
-    transform: translate3d(-50%, 0, 0) scale(1);
+    transform: translate3d(-50%, -50%, 0) scale(1);
   }
 }
 
 @keyframes tadeon-modal-mobile-out {
   from {
     opacity: 1;
-    transform: translate3d(-50%, 0, 0) scale(1);
+    transform: translate3d(-50%, -50%, 0) scale(1);
   }
 
   to {
     opacity: 0;
-    transform: translate3d(-50%, 0.7rem, 0) scale(0.98);
+    transform: translate3d(-50%, calc(-50% + 0.65rem), 0) scale(0.98);
   }
 }
 
@@ -1071,7 +1081,7 @@
 }
 
 [data-slot="tabs-trigger"][data-state="active"] > svg {
-  animation: tadeon-tab-icon-select 360ms var(--ease-spring) both;
+  animation: tadeon-tab-icon-select 360ms var(--ease-spring);
 }
 
 [data-slot="tabs-trigger"][data-state="active"] > span:not(.sr-only) {
@@ -1102,7 +1112,7 @@
   > svg:not(.animate-spin) {
   color: color-mix(in srgb, var(--foreground) 68%, var(--primary));
   filter: drop-shadow(0 0 0.4rem rgb(217 215 164 / 28%));
-  animation: tadeon-trigger-icon-open 320ms var(--ease-spring) both;
+  animation: tadeon-trigger-icon-open 320ms var(--ease-spring);
 }
 
 :where(
@@ -1287,6 +1297,55 @@
   animation: tadeon-sheet-top-out 230ms var(--ease-in-out) both !important;
 }
 
+/* Modal geometry lives in the same transform that animates it. Keeping
+ * centering out of Tailwind's individual `translate` property prevents the
+ * two translations from stacking and pushing dialogs beyond the viewport. */
+:where([data-slot="dialog-content"], [data-slot="alert-dialog-content"]) {
+  top: 50%;
+  right: auto;
+  bottom: auto;
+  left: 50%;
+  width: min(var(--tadeon-dialog-width, calc(100% - 1rem)), calc(100dvw - 1rem));
+  max-height: calc(100dvh - 1rem - env(safe-area-inset-top) - env(safe-area-inset-bottom));
+  box-sizing: border-box;
+  translate: none !important;
+  transform: translate3d(-50%, -50%, 0);
+  scroll-padding-block: 0.75rem;
+}
+
+/* Every anchored surface keeps a physical viewport gutter in addition to
+ * Radix collision detection. Consumer width classes can still make a popup
+ * smaller, but never wider than the visible device area. */
+body
+  :where(
+    [data-slot="select-content"],
+    [data-slot="dropdown-menu-content"],
+    [data-slot="dropdown-menu-sub-content"],
+    [data-slot="context-menu-content"],
+    [data-slot="context-menu-sub-content"],
+    [data-slot="menubar-content"],
+    [data-slot="menubar-sub-content"],
+    [data-slot="popover-content"],
+    [data-slot="hover-card-content"],
+    [data-slot="tooltip-content"]
+  ) {
+  max-inline-size: calc(100dvw - 1rem - env(safe-area-inset-left) - env(safe-area-inset-right));
+  box-sizing: border-box;
+}
+
+body
+  :where(
+    [data-slot="select-content"],
+    [data-slot="dropdown-menu-content"],
+    [data-slot="context-menu-content"],
+    [data-slot="menubar-content"],
+    [data-slot="popover-content"],
+    [data-slot="hover-card-content"]
+  ) {
+  max-block-size: calc(100dvh - 1rem - env(safe-area-inset-top) - env(safe-area-inset-bottom));
+  overscroll-behavior: contain;
+}
+
 /* Preserve words in narrow controls. Only genuinely unbroken identifiers
  * may fall back to a break; normal labels wrap at spaces. */
 .tadeon-shell :where(h1, h2, h3, h4, p, label, legend),
@@ -1303,7 +1362,8 @@
 
 @media (max-width: 767px) {
   :where([data-slot="dialog-content"], [data-slot="alert-dialog-content"]) {
-    translate: 0 0;
+    max-height: calc(100dvh - 1rem - env(safe-area-inset-top) - env(safe-area-inset-bottom));
+    transform: translate3d(-50%, -50%, 0);
   }
 
   :where([data-slot="dialog-content"], [data-slot="alert-dialog-content"])[data-state="open"] {
@@ -1384,7 +1444,7 @@
     [data-state="open"]
   )
   > svg:not(.animate-spin):not(.animate-pulse) {
-  animation: tadeon-control-icon-select 300ms var(--ease-spring) both;
+  animation: tadeon-control-icon-select 300ms var(--ease-spring);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -1901,8 +1961,6 @@ select:focus-visible {
   backdrop-filter: blur(28px) saturate(126%);
 }
 
-[data-slot="dialog-content"][data-state="open"],
-[data-slot="alert-dialog-content"][data-state="open"],
 [data-slot="popover-content"][data-state="open"],
 [data-slot="dropdown-menu-content"][data-state="open"] {
   animation: tadeon-control-arrive 220ms var(--ease-out) both;
@@ -2307,17 +2365,17 @@ select:focus-visible {
 }
 
 [data-slot="button"] {
-  overflow: hidden;
+  overflow: visible;
 }
 
 [data-slot="button"]::before {
   position: absolute;
-  z-index: -1;
-  top: -35%;
-  bottom: -35%;
-  left: -32%;
-  width: 28%;
-  background: linear-gradient(90deg, transparent, rgb(255 255 255 / 9%), transparent);
+  z-index: 0;
+  inset: 1px;
+  border-radius: inherit;
+  background: linear-gradient(105deg, transparent 28%, rgb(255 255 255 / 9%) 48%, transparent 68%);
+  background-position: 115% 0;
+  background-size: 320% 100%;
   opacity: 0;
   pointer-events: none;
   content: "";
@@ -3488,7 +3546,7 @@ legend {
 @media (hover: hover) and (pointer: fine) {
   [data-slot="button"]:not(:disabled):hover::before {
     opacity: 1;
-    animation: tadeon-control-sheen 620ms var(--ease-out) both;
+    animation: tadeon-control-sheen-contained 620ms var(--ease-out) both;
   }
 
   :where(.tadeon-auth-page, .tadeon-consent-page)
@@ -3654,12 +3712,12 @@ legend {
   }
 
   :where([data-slot="dialog-content"], [data-slot="alert-dialog-content"]) {
-    top: max(0.5rem, env(safe-area-inset-top));
-    bottom: max(0.5rem, env(safe-area-inset-bottom));
-    max-height: none;
-    width: calc(100% - 1rem);
-    translate: -50% 0;
-    transform: none;
+    top: 50%;
+    bottom: auto;
+    max-height: calc(100dvh - 1rem - env(safe-area-inset-top) - env(safe-area-inset-bottom));
+    width: calc(100dvw - 1rem - env(safe-area-inset-left) - env(safe-area-inset-right));
+    translate: none;
+    transform: translate3d(-50%, -50%, 0);
     border-radius: 1.15rem 0.4rem 1.15rem 0.4rem;
     padding: 1rem;
   }
@@ -3994,6 +4052,8 @@ legend {
 /* Final specificity guardrails ----------------------------------------- */
 
 .tadeon-nav-item__icon {
+  position: relative;
+  z-index: 3;
   display: grid;
   width: 1.9rem;
   height: 1.9rem;
@@ -4015,6 +4075,7 @@ legend {
 }
 
 .tadeon-nav-item[data-mini="true"] {
+  box-sizing: border-box;
   width: 100%;
   min-width: 2.5rem;
   padding-inline: 0.3rem;
@@ -4030,6 +4091,197 @@ legend {
   color: var(--section-accent, var(--primary));
   background: rgb(var(--section-accent-rgb, 217 215 164) / 8%);
   box-shadow: 0 0 0 1px rgb(var(--section-accent-rgb, 217 215 164) / 10%);
+  animation: tadeon-control-icon-select 320ms var(--ease-spring) both;
+}
+
+/* One physical measure for every sidebar destination. Active Dashboard,
+ * Nexus and Master entries now align with Users, Offline and Backup. */
+.tadeon-primary-nav .tadeon-nav-item,
+.tadeon-primary-nav .tadeon-global-search-trigger {
+  box-sizing: border-box;
+  width: 100%;
+  margin-inline: 0;
+}
+
+/* The decorative edge is background detail, never an icon mask. */
+.tadeon-sidebar {
+  isolation: isolate;
+}
+
+.tadeon-sidebar::before {
+  z-index: 0;
+}
+
+.tadeon-sidebar > :not(.tadeon-sidebar-collapse),
+.tadeon-sidebar__scroll,
+.tadeon-sidebar__scroll .tadeon-primary-nav,
+.tadeon-sidebar__scroll .tadeon-nav-item {
+  position: relative;
+  z-index: 2;
+}
+
+.tadeon-sidebar[data-collapsed="true"] .tadeon-sidebar__scroll {
+  padding-right: 0;
+  scrollbar-width: none;
+}
+
+.tadeon-sidebar[data-collapsed="true"] .tadeon-sidebar__scroll::-webkit-scrollbar {
+  display: none;
+}
+
+.tadeon-sidebar-collapse {
+  isolation: isolate;
+  overflow: visible;
+  border-color: color-mix(in srgb, var(--section-accent) 24%, var(--border));
+  border-radius: 0.82rem 0.28rem 0.82rem 0.28rem;
+  color: color-mix(in srgb, var(--foreground) 68%, var(--section-accent));
+  background:
+    radial-gradient(circle at 28% 18%, rgb(255 255 255 / 10%), transparent 42%),
+    color-mix(in srgb, var(--tadeon-surface-raised) 92%, var(--section-accent) 8%);
+  box-shadow:
+    0 18px 42px -24px rgb(0 0 0 / 100%),
+    0 0 0 1px rgb(var(--section-accent-rgb, 217 215 164) / 4%),
+    inset 0 1px rgb(255 255 255 / 7%);
+}
+
+.tadeon-sidebar-collapse::before {
+  position: absolute;
+  z-index: -1;
+  inset: -0.35rem;
+  border: 1px solid rgb(var(--section-accent-rgb, 217 215 164) / 8%);
+  border-radius: 1rem 0.38rem 1rem 0.38rem;
+  opacity: 0;
+  transform: scale(0.82);
+  transition:
+    opacity var(--motion-fast) var(--ease-out),
+    transform var(--motion-panel) var(--ease-spring);
+  pointer-events: none;
+  content: "";
+}
+
+.tadeon-sidebar-collapse > svg {
+  position: relative;
+  z-index: 2;
+  filter: drop-shadow(0 0 7px rgb(var(--section-accent-rgb, 217 215 164) / 20%));
+}
+
+.tadeon-sidebar-collapse[data-state="collapsed"] > svg {
+  animation: tadeon-control-icon-select 320ms var(--ease-spring) both;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .tadeon-sidebar-collapse:hover {
+    border-color: color-mix(in srgb, var(--section-accent) 50%, var(--border));
+    color: var(--section-accent);
+    background:
+      radial-gradient(circle at 28% 18%, rgb(255 255 255 / 12%), transparent 42%),
+      color-mix(in srgb, var(--tadeon-surface-raised) 86%, var(--section-accent) 14%);
+    box-shadow:
+      0 20px 48px -24px rgb(0 0 0 / 100%),
+      0 0 24px -14px var(--section-accent),
+      inset 0 1px rgb(255 255 255 / 8%);
+    transform: translateY(-1px);
+  }
+
+  .tadeon-sidebar-collapse:hover::before {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  .tadeon-sidebar-collapse:hover > svg {
+    transform: scale(1.08) rotate(-6deg);
+  }
+
+  .tadeon-route-stage [data-slot="card"]:not(:has(input:focus, textarea:focus, select:focus)):hover {
+    border-color: color-mix(in srgb, var(--section-accent, var(--primary)) 18%, var(--border));
+    box-shadow:
+      0 28px 76px -56px rgb(0 0 0 / 100%),
+      inset 0 1px rgb(255 255 255 / 4%);
+  }
+
+  .tadeon-route-stage
+    [data-slot="card"]:hover
+    :where([data-slot="card-header"], [data-slot="card-title"])
+    svg.lucide:not(.animate-spin):not(.animate-pulse) {
+    color: color-mix(in srgb, currentColor 74%, var(--section-accent, var(--primary)));
+    filter: drop-shadow(
+      0 0 7px color-mix(in srgb, var(--section-accent, var(--primary)) 22%, transparent)
+    );
+    transform: translateY(-1px) rotate(-3deg) scale(1.055);
+  }
+}
+
+/* Interactive Lucide icons share the close button's tactile language. SVG
+ * overflow must remain visible because rotation, scale and glow otherwise
+ * get cropped by the icon's own view box. */
+:where(
+    [data-slot="button"],
+    [data-slot="tabs-trigger"],
+    [data-slot="select-trigger"],
+    [data-trigger-slot],
+    .tadeon-shell button:not([data-slot]),
+    .tadeon-nav-item,
+    .tadeon-mobile-dock__item
+  )
+  svg.lucide:not(.animate-spin):not(.animate-pulse) {
+  overflow: visible;
+  transform-box: fill-box;
+  transform-origin: center;
+  transition:
+    color var(--motion-fast) var(--ease-out),
+    filter var(--motion-fast) var(--ease-out),
+    opacity var(--motion-fast) var(--ease-out),
+    transform 220ms var(--ease-spring);
+  will-change: transform;
+}
+
+[data-slot="button"]:active svg.lucide:not(.animate-spin):not(.animate-pulse),
+[data-slot="tabs-trigger"]:active svg.lucide:not(.animate-spin):not(.animate-pulse),
+[data-slot="select-trigger"]:active svg.lucide:not(.animate-spin):not(.animate-pulse),
+.tadeon-shell button:not([data-slot]):active svg.lucide:not(.animate-spin):not(.animate-pulse),
+.tadeon-nav-item:active svg.lucide:not(.animate-spin):not(.animate-pulse),
+.tadeon-mobile-dock__item:active svg.lucide:not(.animate-spin):not(.animate-pulse) {
+  transform: scale(0.84) rotate(-6deg);
+}
+
+:where(
+    [data-slot="button"],
+    [data-slot="tabs-trigger"],
+    [data-slot="select-trigger"],
+    [data-trigger-slot],
+    .tadeon-shell button:not([data-slot]),
+    .tadeon-nav-item,
+    .tadeon-mobile-dock__item
+  ):is(
+    [aria-pressed="true"],
+    [aria-selected="true"],
+    [aria-expanded="true"],
+    [aria-current="page"],
+    [data-state="active"],
+    [data-state="on"],
+    [data-state="open"]
+  )
+  svg.lucide:not(.animate-spin):not(.animate-pulse) {
+  animation: tadeon-control-icon-select 320ms var(--ease-spring);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  [data-slot="button"]:not(:disabled):hover svg.lucide:not(.animate-spin):not(.animate-pulse),
+  [data-slot="tabs-trigger"]:not(:disabled):hover svg.lucide:not(.animate-spin):not(.animate-pulse),
+  [data-slot="select-trigger"]:not(:disabled):hover
+    svg.lucide:not(.animate-spin):not(.animate-pulse),
+  [data-trigger-slot]:not(:disabled):hover svg.lucide:not(.animate-spin):not(.animate-pulse),
+  .tadeon-shell
+    button:not([data-slot]):not(:disabled):hover
+    svg.lucide:not(.animate-spin):not(.animate-pulse),
+  .tadeon-nav-item:hover svg.lucide:not(.animate-spin):not(.animate-pulse),
+  .tadeon-mobile-dock__item:hover svg.lucide:not(.animate-spin):not(.animate-pulse) {
+    color: color-mix(in srgb, currentColor 76%, var(--tadeon-control-accent, var(--primary)));
+    filter: drop-shadow(
+      0 0 8px color-mix(in srgb, var(--tadeon-control-accent, var(--primary)) 26%, transparent)
+    );
+    transform: translateY(-1px) rotate(-4deg) scale(1.075);
+  }
 }
 
 [data-sonner-toaster].tadeon-toaster {
@@ -4067,7 +4319,37 @@ legend {
 
 @media (max-width: 767px) {
   :where([data-slot="dialog-content"], [data-slot="alert-dialog-content"]) {
-    translate: 0 0 !important;
-    transform: translate3d(-50%, 0, 0);
+    translate: none;
+    transform: translate3d(-50%, -50%, 0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tadeon-sidebar-collapse::before,
+  .tadeon-sidebar-collapse > svg,
+  .tadeon-route-stage
+    [data-slot="card"]
+    :where([data-slot="card-header"], [data-slot="card-title"])
+    svg.lucide {
+    animation: none !important;
+    filter: none !important;
+    transform: none !important;
+    transition-duration: 1ms !important;
+  }
+
+  :where(
+      [data-slot="button"],
+      [data-slot="tabs-trigger"],
+      [data-slot="select-trigger"],
+      [data-trigger-slot],
+      .tadeon-shell button:not([data-slot]),
+      .tadeon-nav-item,
+      .tadeon-mobile-dock__item
+    )
+    svg.lucide {
+    animation: none !important;
+    filter: none !important;
+    transform: none !important;
+    transition-duration: 1ms !important;
   }
 }
