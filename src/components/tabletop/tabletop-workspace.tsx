@@ -1720,7 +1720,7 @@ export function TabletopWorkspace({
 
         <div
           data-mobile-open={mobileToolsOpen ? "true" : "false"}
-          className="tadeon-tabletop-toolbar relative z-10 mt-3 flex max-w-full flex-wrap items-center gap-2 overflow-x-auto border-t border-border/50 pt-3"
+          className={`${mobileToolsOpen ? "flex" : "hidden"} tadeon-tabletop-toolbar relative z-10 mt-3 max-w-full flex-wrap items-center gap-2 overflow-x-auto border-t border-border/50 pt-3 sm:!flex`}
         >
           <ToolbarGroup label="Cena">
             <ToolbarButton

@@ -10,11 +10,10 @@ describe("tabletop scene tools", () => {
 
   it("keeps the upper toolbar visible outside the collapsed mobile state", () => {
     expect(workspace).toContain(
-      'className="tadeon-tabletop-toolbar relative z-10 mt-3 flex',
+      'tadeon-tabletop-toolbar relative z-10 mt-3 max-w-full',
     );
-    expect(workspace).not.toContain(
-      'mobileToolsOpen ? "flex" : "hidden"} tadeon-tabletop-toolbar',
-    );
+    expect(workspace).toContain('mobileToolsOpen ? "flex" : "hidden"');
+    expect(workspace).toContain("sm:!flex");
     expect(styles).toContain('.tadeon-tabletop-toolbar[data-mobile-open="false"]');
     expect(styles).toContain(
       "html[data-tadeon-tabletop-interface] .tadeon-tabletop-studio .tadeon-tabletop-toolbar",
