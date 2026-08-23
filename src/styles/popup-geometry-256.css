@@ -33,7 +33,12 @@
   width: min(var(--tadeon-dialog-width, calc(100% - 1rem)), 100%) !important;
   max-height: 100% !important;
   margin: auto !important;
-  translate: none !important;
+  /* A numeric reset survives Lightning CSS and defeats the legacy viewport
+   * stylesheets that still publish `translate: -50% -50% !important`. */
+  --tadeon-popup-zero-translate: 0px;
+  translate:
+    var(--tadeon-popup-zero-translate)
+    var(--tadeon-popup-zero-translate) !important;
   transform: none !important;
   pointer-events: auto;
 }

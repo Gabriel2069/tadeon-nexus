@@ -19,6 +19,8 @@ describe("route-contained popup geometry", () => {
     expect(geometry).toContain("justify-items: center");
     expect(geometry).toContain("overflow: hidden");
     expect(geometry).toContain("position: relative !important");
+    expect(geometry).toContain("--tadeon-popup-zero-translate: 0px");
+    expect(geometry).toContain("var(--tadeon-popup-zero-translate) !important");
   });
 
   it("tracks the visual viewport and schedules ResizeObserver measurements", () => {
