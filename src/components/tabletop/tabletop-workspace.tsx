@@ -4367,12 +4367,14 @@ export function TabletopWorkspace({
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel
+            <Button
+              type="button"
+              variant="outline"
               disabled={saving}
               onClick={() => setDeleteSceneDialogOpen(false)}
             >
               Manter cena
-            </AlertDialogCancel>
+            </Button>
             <AlertDialogAction
               disabled={!persistedScene || saving}
               onClick={(event) => {
