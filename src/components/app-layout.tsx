@@ -46,6 +46,7 @@ import { loadFeatureFlags } from "@/lib/feature-flag-repository";
 import { Sheet, SheetContent, SheetDescription, SheetTitle } from "@/components/ui/sheet";
 import "@/styles/desktop-studio.css";
 import "@/styles/workspace-polish.css";
+import "@/styles/head-background-motion-256.css";
 
 const roleIcons: Record<string, typeof Crown> = {
   mestre: Crown,

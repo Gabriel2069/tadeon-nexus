@@ -163,7 +163,9 @@ export class TabletopEngine {
   private interactiveStructureIds = new Set<string>();
   private interaction: InteractionController | null = null;
   private resizeObserver: ResizeObserver | null = null;
+  private resizeFrame = 0;
   private host: HTMLElement | null = null;
+  private initialized = false;
   private destroyed = false;
   private readOnly = false;
   private clipboard: TabletopEntity[] = [];
@@ -205,6 +207,11 @@ export class TabletopEngine {
       autoStart: false,
       preference: "webgl",
     });
+    this.initialized = true;
+    if (this.destroyed) {
+      await this.destroyInitializedEngine();
+      return;
+    }
     this.app.canvas.className = "block h-full w-full touch-none outline-none";
     this.app.canvas.setAttribute("aria-label", "Canvas da Mesa Nexus");
     host.appendChild(this.app.canvas);
@@ -287,7 +294,13 @@ export class TabletopEngine {
         this.options.onContextMenu?.(position, entityId, lightId),
     });
     this.interaction.setMode(this.toolMode);
-    this.resizeObserver = new ResizeObserver(() => this.resize());
+    this.resizeObserver = new ResizeObserver(() => {
+      if (this.resizeFrame || this.destroyed) return;
+      this.resizeFrame = window.requestAnimationFrame(() => {
+        this.resizeFrame = 0;
+        if (!this.destroyed) this.resize();
+      });
+    });
     this.resizeObserver.observe(host);
     this.loadScene(EMPTY_TABLETOP_SCENE);
     this.fitToScreen();
@@ -2032,11 +2045,17 @@ export class TabletopEngine {
     if (notify) this.options.onChange?.(this.snapshot);
   }
 
-  async destroy() {
-    if (this.destroyed) return;
-    this.destroyed = true;
+  private async destroyInitializedEngine() {
+    if (!this.initialized) return;
+    this.initialized = false;
     this.resizeObserver?.disconnect();
+    this.resizeObserver = null;
+    if (this.resizeFrame) {
+      window.cancelAnimationFrame(this.resizeFrame);
+      this.resizeFrame = 0;
+    }
     this.interaction?.destroy();
+    this.interaction = null;
     this.entities.destroy();
     this.grid.destroy();
     this.visibility.destroy();
@@ -2048,5 +2067,21 @@ export class TabletopEngine {
     await this.textures.clear();
     this.app.destroy({ removeView: true }, { children: true, context: true });
     this.host = null;
+  }
+
+  async destroy() {
+    if (this.destroyed) return;
+    this.destroyed = true;
+    this.resizeObserver?.disconnect();
+    this.resizeObserver = null;
+    if (this.resizeFrame) {
+      window.cancelAnimationFrame(this.resizeFrame);
+      this.resizeFrame = 0;
+    }
+    if (!this.initialized) {
+      this.host = null;
+      return;
+    }
+    await this.destroyInitializedEngine();
   }
 }

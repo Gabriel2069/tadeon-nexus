@@ -1,5 +1,8 @@
 import { describe, expect, it } from "vitest";
-import { sanitizeClientErrorMessage } from "@/lib/client-error-monitor";
+import {
+  isIgnorableClientError,
+  sanitizeClientErrorMessage,
+} from "@/lib/client-error-monitor";
 
 describe("sanitizeClientErrorMessage", () => {
   it("removes public and secret-looking credentials", () => {
@@ -16,5 +19,14 @@ describe("sanitizeClientErrorMessage", () => {
     );
     expect(sanitized).not.toContain("pessoa@example.com");
     expect(sanitized.length).toBeLessThanOrEqual(500);
+  });
+
+  it("ignores ResizeObserver delivery noise emitted by browsers", () => {
+    expect(
+      isIgnorableClientError(
+        "ResizeObserver loop completed with undelivered notifications.",
+      ),
+    ).toBe(true);
+    expect(isIgnorableClientError("Falha real da Mesa")).toBe(false);
   });
 });

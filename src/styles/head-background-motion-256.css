@@ -1,0 +1,166 @@
+/* Heads #256 — ambient motion remains behind content and never moves layout. */
+
+:where(
+  .tadeon-page-hero,
+  .tadeon-dashboard-hero,
+  .tadeon-nexus-commandbar,
+  .tadeon-master-commandbar,
+  .tadeon-tabletop-studio__header,
+  .tadeon-library-header,
+  .tadeon-mobile-header
+) {
+  position: relative;
+  isolation: isolate;
+  overflow: clip;
+}
+
+:where(
+  .tadeon-page-hero,
+  .tadeon-dashboard-hero,
+  .tadeon-nexus-commandbar,
+  .tadeon-master-commandbar,
+  .tadeon-tabletop-studio__header,
+  .tadeon-library-header,
+  .tadeon-mobile-header
+)::before {
+  position: absolute;
+  z-index: 0;
+  inset: -45% -18%;
+  background:
+    radial-gradient(
+      ellipse at 28% 44%,
+      color-mix(in srgb, var(--tadeon-section-accent, var(--primary)) 12%, transparent),
+      transparent 34%
+    ),
+    linear-gradient(
+      108deg,
+      transparent 28%,
+      color-mix(in srgb, var(--tadeon-reflection, var(--foreground)) 4%, transparent) 47%,
+      transparent 66%
+    );
+  opacity: 0.62;
+  pointer-events: none;
+  content: "";
+  transform: translate3d(-4%, 0, 0) rotate(-1deg);
+  animation: tadeon-head-ambient-drift 13s ease-in-out infinite alternate;
+}
+
+:where(
+  .tadeon-page-hero::after,
+  .tadeon-tabletop-studio__header::after,
+  .tadeon-library-header::after,
+  .tadeon-mobile-header::after
+) {
+  background-size: 220% 100%;
+  animation: tadeon-head-thread-travel 8s ease-in-out infinite;
+}
+
+.tadeon-nexus-commandbar::after {
+  transform-origin: center;
+  animation: tadeon-head-orbit 16s ease-in-out infinite alternate;
+}
+
+.tadeon-master-commandbar__glow {
+  animation: tadeon-head-glow-wander 11s ease-in-out infinite alternate;
+}
+
+.tadeon-tabletop-studio__brand > svg,
+.tadeon-nexus-identity__mark,
+.tadeon-nexus-home__sigil,
+.tadeon-description-hero__mark {
+  animation: tadeon-head-mark-breathe 7s ease-in-out infinite;
+}
+
+@keyframes tadeon-head-ambient-drift {
+  0% {
+    opacity: 0.45;
+    transform: translate3d(-5%, -1.5%, 0) rotate(-1deg) scale(1);
+  }
+
+  52% {
+    opacity: 0.68;
+    transform: translate3d(1.5%, 1%, 0) rotate(0.4deg) scale(1.025);
+  }
+
+  100% {
+    opacity: 0.54;
+    transform: translate3d(5%, -0.5%, 0) rotate(1deg) scale(1.01);
+  }
+}
+
+@keyframes tadeon-head-thread-travel {
+  0%,
+  100% {
+    background-position: 110% 0;
+    opacity: 0.55;
+  }
+
+  50% {
+    background-position: -20% 0;
+    opacity: 1;
+  }
+}
+
+@keyframes tadeon-head-orbit {
+  from {
+    opacity: 0.52;
+    transform: translate3d(-0.4rem, -0.2rem, 0) scale(0.98);
+  }
+
+  to {
+    opacity: 0.92;
+    transform: translate3d(0.75rem, 0.45rem, 0) scale(1.045);
+  }
+}
+
+@keyframes tadeon-head-glow-wander {
+  from {
+    opacity: 0.48;
+    transform: translate3d(-5%, 0, 0) scale(0.96);
+  }
+
+  to {
+    opacity: 0.82;
+    transform: translate3d(7%, 2%, 0) scale(1.06);
+  }
+}
+
+@keyframes tadeon-head-mark-breathe {
+  0%,
+  100% {
+    filter: drop-shadow(0 0 0 transparent);
+  }
+
+  50% {
+    filter: drop-shadow(
+      0 0 0.45rem
+        color-mix(in srgb, var(--tadeon-section-accent, var(--primary)) 22%, transparent)
+    );
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :where(
+    .tadeon-page-hero,
+    .tadeon-dashboard-hero,
+    .tadeon-nexus-commandbar,
+    .tadeon-master-commandbar,
+    .tadeon-tabletop-studio__header,
+    .tadeon-library-header,
+    .tadeon-mobile-header
+  )::before,
+  :where(
+    .tadeon-page-hero::after,
+    .tadeon-tabletop-studio__header::after,
+    .tadeon-library-header::after,
+    .tadeon-mobile-header::after
+  ),
+  .tadeon-nexus-commandbar::after,
+  .tadeon-master-commandbar__glow,
+  .tadeon-tabletop-studio__brand > svg,
+  .tadeon-nexus-identity__mark,
+  .tadeon-nexus-home__sigil,
+  .tadeon-description-hero__mark {
+    animation: none !important;
+  }
+}

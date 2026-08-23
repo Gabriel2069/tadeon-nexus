@@ -56,4 +56,22 @@ describe("Mesa stage-local geometry", () => {
       /\.tadeon-tabletop-stage\s*>\s*\.tadeon-tabletop-stage-status/,
     );
   });
+
+  it("centers structure selection below reliability inside the live map width", () => {
+    expect(geometry).toContain(
+      "> .tadeon-tabletop-selection-dock--structure",
+    );
+    expect(geometry).toContain(
+      "var(--tadeon-tabletop-reliability-h, 2.8rem) + 0.55rem",
+    );
+    expect(geometry).toContain("transform: translateX(-50%) !important");
+  });
+
+  it("gives mobile tools a dedicated shelf outside the interactive map", () => {
+    expect(geometry).toContain("--tadeon-tabletop-mobile-rail-h");
+    expect(geometry).toContain("--tadeon-tabletop-map-top: calc(");
+    expect(geometry).toContain("scroll-snap-type: x proximity");
+    expect(workspace).toContain("tadeon-tabletop-mobile-tools-toggle");
+    expect(workspace).toContain('data-mobile-open={mobileToolsOpen ? "true" : "false"}');
+  });
 });
