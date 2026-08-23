@@ -1,3 +1,4 @@
+/* Spatial controls stay synchronized with the tabletop workspace state. */
 .tadeon-smart-setup__launcher {
   position: fixed;
   z-index: 84;
