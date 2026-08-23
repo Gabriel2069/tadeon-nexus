@@ -2185,3 +2185,25 @@
     animation: none !important;
   }
 }
+
+/* The studio header always owns the scene toolbar on tablet/desktop.
+   Progressive work modes may simplify the canvas, but must not remove this row. */
+@media (min-width: 640px) {
+  html[data-tadeon-tabletop-interface] .tadeon-tabletop-studio .tadeon-tabletop-toolbar {
+    display: flex;
+  }
+}
+
+@media (max-width: 639px) {
+  html[data-tadeon-tabletop-interface]
+    .tadeon-tabletop-studio
+    .tadeon-tabletop-toolbar[data-mobile-open="false"] {
+    display: none;
+  }
+
+  html[data-tadeon-tabletop-interface]
+    .tadeon-tabletop-studio
+    .tadeon-tabletop-toolbar[data-mobile-open="true"] {
+    display: flex;
+  }
+}

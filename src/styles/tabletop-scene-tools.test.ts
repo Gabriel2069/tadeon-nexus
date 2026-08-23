@@ -16,6 +16,9 @@ describe("tabletop scene tools", () => {
       'mobileToolsOpen ? "flex" : "hidden"} tadeon-tabletop-toolbar',
     );
     expect(styles).toContain('.tadeon-tabletop-toolbar[data-mobile-open="false"]');
+    expect(styles).toContain(
+      "html[data-tadeon-tabletop-interface] .tadeon-tabletop-studio .tadeon-tabletop-toolbar",
+    );
   });
 
   it("exposes a protected action for deleting the current scene", () => {
