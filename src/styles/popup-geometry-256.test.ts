@@ -10,11 +10,13 @@ describe("route-contained popup geometry", () => {
   const alertDialog = read("src/components/ui/alert-dialog.tsx");
   const frame = read("src/components/ui/route-popup-frame.ts");
   const geometry = read("src/styles/popup-geometry-256.css");
+  const globalCss = read("src/styles.css");
 
   it("centers dialogs through a bounded positioner instead of translated coordinates", () => {
     expect(dialog).toContain('data-slot="dialog-positioner"');
     expect(alertDialog).toContain('data-slot="alert-dialog-positioner"');
-    expect(geometry).toContain("place-items: center");
+    expect(geometry).toContain("align-items: center");
+    expect(geometry).toContain("justify-items: center");
     expect(geometry).toContain("overflow: hidden");
     expect(geometry).toContain("position: relative !important");
   });
@@ -23,5 +25,14 @@ describe("route-contained popup geometry", () => {
     expect(frame).toContain("window.visualViewport");
     expect(frame).toContain("window.requestAnimationFrame");
     expect(frame).toContain('"--tadeon-popup-viewport-height"');
+  });
+
+  it("keeps legacy translate centering away from contained dialogs", () => {
+    expect(globalCss).toContain(
+      '[data-slot="dialog-content"]:not([data-popup-contained="true"])',
+    );
+    expect(globalCss).toContain(
+      '[data-slot="alert-dialog-content"]:not([data-popup-contained="true"])',
+    );
   });
 });

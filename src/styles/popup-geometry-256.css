@@ -12,7 +12,8 @@
   width: var(--tadeon-popup-frame-width, 100dvw);
   height: var(--tadeon-popup-viewport-height, 100dvh);
   box-sizing: border-box;
-  place-items: center;
+  align-items: center;
+  justify-items: center;
   overflow: hidden;
   padding:
     max(0.5rem, env(safe-area-inset-top))
@@ -28,10 +29,12 @@
   > [data-slot="alert-dialog-content"][data-popup-contained="true"] {
   position: relative !important;
   inset: auto !important;
+  min-width: 0;
   width: min(var(--tadeon-dialog-width, calc(100% - 1rem)), 100%) !important;
   max-height: 100% !important;
+  margin: auto !important;
   translate: none !important;
-  transform: none;
+  transform: none !important;
   pointer-events: auto;
 }
 

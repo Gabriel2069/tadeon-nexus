@@ -1045,8 +1045,8 @@
 [data-slot="tabs-list"] > [data-slot="tabs-indicator"] {
   position: absolute;
   z-index: 0;
-  top: 0;
-  bottom: auto;
+  top: 0.25rem;
+  bottom: 0.25rem;
   left: 0;
   min-width: 0;
   border: 1px solid color-mix(in srgb, var(--primary) 30%, var(--border));
@@ -1255,11 +1255,17 @@
   animation: tadeon-overlay-out 180ms var(--ease-in-out) both !important;
 }
 
-:where([data-slot="dialog-content"], [data-slot="alert-dialog-content"])[data-state="open"] {
+:where(
+  [data-slot="dialog-content"]:not([data-popup-contained="true"]),
+  [data-slot="alert-dialog-content"]:not([data-popup-contained="true"])
+)[data-state="open"] {
   animation: tadeon-modal-in 320ms var(--ease-drawer) both !important;
 }
 
-:where([data-slot="dialog-content"], [data-slot="alert-dialog-content"])[data-state="closed"] {
+:where(
+  [data-slot="dialog-content"]:not([data-popup-contained="true"]),
+  [data-slot="alert-dialog-content"]:not([data-popup-contained="true"])
+)[data-state="closed"] {
   animation: tadeon-modal-out 190ms var(--ease-in-out) both !important;
 }
 
@@ -1300,7 +1306,10 @@
 /* Modal geometry lives in the same transform that animates it. Keeping
  * centering out of Tailwind's individual `translate` property prevents the
  * two translations from stacking and pushing dialogs beyond the viewport. */
-:where([data-slot="dialog-content"], [data-slot="alert-dialog-content"]) {
+:where(
+  [data-slot="dialog-content"]:not([data-popup-contained="true"]),
+  [data-slot="alert-dialog-content"]:not([data-popup-contained="true"])
+) {
   top: 50%;
   right: auto;
   bottom: auto;
@@ -1361,16 +1370,25 @@ body
 }
 
 @media (max-width: 767px) {
-  :where([data-slot="dialog-content"], [data-slot="alert-dialog-content"]) {
+  :where(
+    [data-slot="dialog-content"]:not([data-popup-contained="true"]),
+    [data-slot="alert-dialog-content"]:not([data-popup-contained="true"])
+  ) {
     max-height: calc(100dvh - 1rem - env(safe-area-inset-top) - env(safe-area-inset-bottom));
     transform: translate3d(-50%, -50%, 0);
   }
 
-  :where([data-slot="dialog-content"], [data-slot="alert-dialog-content"])[data-state="open"] {
+  :where(
+    [data-slot="dialog-content"]:not([data-popup-contained="true"]),
+    [data-slot="alert-dialog-content"]:not([data-popup-contained="true"])
+  )[data-state="open"] {
     animation-name: tadeon-modal-mobile-in !important;
   }
 
-  :where([data-slot="dialog-content"], [data-slot="alert-dialog-content"])[data-state="closed"] {
+  :where(
+    [data-slot="dialog-content"]:not([data-popup-contained="true"]),
+    [data-slot="alert-dialog-content"]:not([data-popup-contained="true"])
+  )[data-state="closed"] {
     animation-name: tadeon-modal-mobile-out !important;
   }
 }
@@ -1741,7 +1759,7 @@ body
 }
 
 /*
- * Living Archive ~ final shared product layer.
+ * Living Archive — final shared product layer.
  * Content uses quiet, opaque depth; translucency is reserved for navigation,
  * command surfaces and temporary controls. This keeps the archive legible while
  * preserving the Fio-Mestre atmosphere across every route.
@@ -3711,7 +3729,10 @@ legend {
     max-width: min(78vw, 16rem);
   }
 
-  :where([data-slot="dialog-content"], [data-slot="alert-dialog-content"]) {
+  :where(
+    [data-slot="dialog-content"]:not([data-popup-contained="true"]),
+    [data-slot="alert-dialog-content"]:not([data-popup-contained="true"])
+  ) {
     top: 50%;
     bottom: auto;
     max-height: calc(100dvh - 1rem - env(safe-area-inset-top) - env(safe-area-inset-bottom));
@@ -4192,7 +4213,8 @@ legend {
     transform: scale(1.08) rotate(-6deg);
   }
 
-  .tadeon-route-stage [data-slot="card"]:not(:has(input:focus, textarea:focus, select:focus)):hover {
+  .tadeon-route-stage
+    [data-slot="card"]:not(:has(input:focus, textarea:focus, select:focus)):hover {
     border-color: color-mix(in srgb, var(--section-accent, var(--primary)) 18%, var(--border));
     box-shadow:
       0 28px 76px -56px rgb(0 0 0 / 100%),
@@ -4318,7 +4340,10 @@ legend {
 }
 
 @media (max-width: 767px) {
-  :where([data-slot="dialog-content"], [data-slot="alert-dialog-content"]) {
+  :where(
+    [data-slot="dialog-content"]:not([data-popup-contained="true"]),
+    [data-slot="alert-dialog-content"]:not([data-popup-contained="true"])
+  ) {
     translate: none;
     transform: translate3d(-50%, -50%, 0);
   }
@@ -4363,7 +4388,10 @@ legend {
   }
 }
 
-:where([data-slot="dialog-content"], [data-slot="alert-dialog-content"])[data-route-bounded="true"] {
+:where(
+  [data-slot="dialog-content"]:not([data-popup-contained="true"]),
+  [data-slot="alert-dialog-content"]:not([data-popup-contained="true"])
+)[data-route-bounded="true"] {
   left: var(--tadeon-popup-frame-center, 50dvw) !important;
   width: min(
     var(--tadeon-dialog-width, calc(100% - 1rem)),
