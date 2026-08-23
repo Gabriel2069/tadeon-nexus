@@ -5,10 +5,10 @@
   [data-slot="alert-dialog-positioner"]
 ) {
   position: fixed;
-  /* Keep the centered content above its sibling overlay. Equal z-indexes let
-   * the later Radix overlay intercept pointer input while the dialog remained
-   * visually readable. */
-  z-index: 60;
+  /* Keep the centered content above its sibling overlay. The shared visual
+   * layer raises overlays to 80, so the positioner must own a higher stacking
+   * context or the dark layer intercepts every pointer interaction. */
+  z-index: 100;
   top: var(--tadeon-popup-viewport-top, 0px);
   left: var(--tadeon-popup-frame-left, 0px);
   display: grid;
