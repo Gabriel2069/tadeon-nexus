@@ -668,15 +668,11 @@ Deno.serve(async (request) => {
       : 1,
     fogEnabled: lightingEnabled && scene.fog_enabled === true,
     fogOpacity: Math.max(0, Math.min(1, finiteNumber(scene.fog_opacity, 0.92))),
-    // A geometria completa continua no servidor. Somente portas explicitamente
-    // operáveis saem para permitir a interação pontual do jogador.
-    walls: (lightingEnabled ? (walls ?? []) : [])
-      .filter(
-        (wall) =>
-          wall.player_operable === true &&
-          (wall.wall_type === "door_closed" || wall.wall_type === "door_open"),
-      )
-      .slice(0, 128)
+    // A projeção visual precisa receber a arquitetura completa para que a
+    // visão 3D do participante represente paredes, vãos e coberturas. A
+    // permissão de interação continua separada e restrita às portas marcadas.
+    walls: (walls ?? [])
+      .slice(0, 512)
       .map((wall) => ({
         id: wall.id,
         levelId: wall.level_id,
@@ -690,7 +686,9 @@ Deno.serve(async (request) => {
         baseElevation: finiteNumber(wall.base_elevation),
         height: Math.max(8, finiteNumber(wall.height, 64)),
         thickness: Math.max(1, finiteNumber(wall.thickness, 8)),
-        playerOperable: true,
+        playerOperable:
+          wall.player_operable === true &&
+          (wall.wall_type === "door_closed" || wall.wall_type === "door_open"),
         version: Math.max(1, Math.trunc(finiteNumber(wall.version, 1))),
       })),
     lights: (lightingEnabled ? (lights ?? []) : [])

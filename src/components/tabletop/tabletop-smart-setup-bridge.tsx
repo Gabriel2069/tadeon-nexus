@@ -2,11 +2,14 @@ import { useEffect, useMemo, useState } from "react";
 import {
   BrainCircuit,
   Check,
+  Compass,
   Footprints,
   Grid2X2,
   Layers3,
   Lightbulb,
   Loader2,
+  RotateCcw,
+  RotateCw,
   ScanLine,
   Sparkles,
   WandSparkles,
@@ -72,6 +75,12 @@ export function TabletopSmartSetupBridge() {
   const [applyStructures, setApplyStructures] = useState(true);
   const [applyLighting, setApplyLighting] = useState(true);
   const [applyRegions, setApplyRegions] = useState(true);
+  const [spatialView, setSpatialView] = useState({
+    projection: "plan" as "plan" | "isometric",
+    yaw: 45,
+    tilt: 0.5,
+    elevationScale: 1,
+  });
   const scene = snapshot?.scene;
   const canAnalyze = Boolean(
     scene && scene.id !== "local-scene" && scene.backgroundAssetUrl,
@@ -86,6 +95,36 @@ export function TabletopSmartSetupBridge() {
     window.addEventListener("tadeon-tabletop-smart-setup", openSetup);
     return () => window.removeEventListener("tadeon-tabletop-smart-setup", openSetup);
   }, []);
+
+  useEffect(() => {
+    const runtime = currentTabletopRuntime();
+    if (!runtime) return;
+    const current = runtime.engine.viewState();
+    setSpatialView({
+      projection: current.projection,
+      yaw: current.yaw,
+      tilt: current.tilt,
+      elevationScale: current.elevationScale,
+    });
+  }, [snapshot]);
+
+  const applySpatialView = (
+    patch: Partial<typeof spatialView>,
+    fit = false,
+  ) => {
+    const runtime = currentTabletopRuntime();
+    if (!runtime) return;
+    const current = runtime.engine.viewState();
+    runtime.engine.applyViewState({ ...current, ...patch });
+    if (fit) runtime.engine.fitToScreen();
+    const next = runtime.engine.viewState();
+    setSpatialView({
+      projection: next.projection,
+      yaw: next.yaw,
+      tilt: next.tilt,
+      elevationScale: next.elevationScale,
+    });
+  };
 
   const runAnalysis = async () => {
     if (!scene?.backgroundAssetUrl || busy) return;
@@ -304,6 +343,78 @@ export function TabletopSmartSetupBridge() {
           <Button size="icon" variant="ghost" onClick={() => setOpen(false)} aria-label="Fechar setup"><X /></Button>
         </header>
         <div className="tadeon-smart-setup__body">
+          <section className="tadeon-smart-setup__spatial" aria-label="Configuração da visão espacial">
+            <header>
+              <span><Compass aria-hidden="true" /></span>
+              <div>
+                <small>Projeção espacial</small>
+                <strong>Observe e posicione por qualquer direção</strong>
+              </div>
+              <output>{Math.round(spatialView.yaw)}°</output>
+            </header>
+            <div className="tadeon-smart-setup__projection-modes">
+              <button
+                type="button"
+                aria-pressed={spatialView.projection === "plan"}
+                onClick={() => applySpatialView({ projection: "plan" }, true)}
+              >2D tático</button>
+              <button
+                type="button"
+                aria-pressed={spatialView.projection === "isometric"}
+                onClick={() => applySpatialView({ projection: "isometric" }, true)}
+              >3D espacial</button>
+            </div>
+            <div className="tadeon-smart-setup__orientation-presets" aria-label="Direções de observação">
+              {([
+                [315, "Noroeste"],
+                [45, "Nordeste"],
+                [135, "Sudeste"],
+                [225, "Sudoeste"],
+              ] as const).map(([yaw, label]) => (
+                <button
+                  key={yaw}
+                  type="button"
+                  aria-pressed={Math.round(spatialView.yaw) === yaw}
+                  onClick={() => applySpatialView({ projection: "isometric", yaw: Number(yaw) }, true)}
+                >{label}</button>
+              ))}
+            </div>
+            <div className="tadeon-smart-setup__orientation-controls">
+              <button
+                type="button"
+                onClick={() => applySpatialView({ projection: "isometric", yaw: spatialView.yaw - 45 })}
+                aria-label="Girar visão 45 graus para a esquerda"
+                title="Girar 45° para a esquerda"
+              ><RotateCcw aria-hidden="true" /></button>
+              <label>
+                <span>Direção</span>
+                <input
+                  type="range"
+                  min="0"
+                  max="359"
+                  step="1"
+                  value={Math.round(spatialView.yaw)}
+                  onChange={(event) => applySpatialView({ projection: "isometric", yaw: Number(event.target.value) })}
+                />
+              </label>
+              <button
+                type="button"
+                onClick={() => applySpatialView({ projection: "isometric", yaw: spatialView.yaw + 45 })}
+                aria-label="Girar visão 45 graus para a direita"
+                title="Girar 45° para a direita"
+              ><RotateCw aria-hidden="true" /></button>
+            </div>
+            <div className="tadeon-smart-setup__spatial-sliders">
+              <label>
+                <span>Inclinação <output>{Math.round(spatialView.tilt * 100)}%</output></span>
+                <input type="range" min="18" max="90" step="1" value={Math.round(spatialView.tilt * 100)} onChange={(event) => applySpatialView({ projection: "isometric", tilt: Number(event.target.value) / 100 })} />
+              </label>
+              <label>
+                <span>Altura <output>{spatialView.elevationScale.toFixed(2)}×</output></span>
+                <input type="range" min="25" max="250" step="5" value={Math.round(spatialView.elevationScale * 100)} onChange={(event) => applySpatialView({ projection: "isometric", elevationScale: Number(event.target.value) / 100 })} />
+              </label>
+            </div>
+          </section>
           {!canAnalyze ? (
             <div className="tadeon-smart-setup__empty">
               <ScanLine />

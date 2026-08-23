@@ -1,11 +1,12 @@
 .tadeon-participant-view {
-  --studio-panel: rgb(12 15 20 / 94%);
-  --studio-line: rgb(217 215 164 / 12%);
-  --studio-brass: 217 215 164;
-  --studio-highlight: 242 238 200;
-  --studio-forest: 79 110 93;
-  --studio-wine: 116 36 45;
-  --studio-blue: 31 54 68;
+  --studio-panel: rgb(8 17 27 / 95%);
+  --studio-line: rgb(89 189 235 / 14%);
+  --studio-brass: 89 189 235;
+  --studio-highlight: 220 246 255;
+  --studio-forest: 34 91 126;
+  --studio-wine: 42 76 128;
+  --studio-blue: 24 112 169;
+  --studio-cyan: 89 189 235;
   position: relative;
   display: grid;
   min-height: calc(100dvh - 4rem);
@@ -13,10 +14,10 @@
   gap: 1rem;
   padding: clamp(0.75rem, 2vw, 1.5rem);
   background:
-    radial-gradient(circle at 8% 0%, rgb(var(--studio-forest) / 18%), transparent 36rem),
-    radial-gradient(circle at 92% 100%, rgb(var(--studio-wine) / 13%), transparent 34rem),
-    radial-gradient(circle at 50% 38%, rgb(var(--studio-blue) / 10%), transparent 44rem),
-    linear-gradient(145deg, #090c11 0%, #06080c 54%, #090a0f 100%);
+    radial-gradient(circle at 8% 0%, rgb(var(--studio-cyan) / 19%), transparent 34rem),
+    radial-gradient(circle at 92% 100%, rgb(var(--studio-blue) / 21%), transparent 38rem),
+    radial-gradient(circle at 50% 38%, rgb(var(--studio-forest) / 14%), transparent 46rem),
+    linear-gradient(145deg, #07111b 0%, #050b12 54%, #07101a 100%);
 }
 
 .tadeon-participant-view::before {
@@ -41,9 +42,9 @@
   border: 1px solid color-mix(in srgb, var(--border) 72%, rgb(var(--studio-brass)) 28%);
   border-radius: 1.35rem;
   background:
-    linear-gradient(105deg, rgb(var(--studio-brass) / 6%), transparent 30%),
-    radial-gradient(circle at 12% 0%, rgb(var(--studio-forest) / 13%), transparent 40%),
-    linear-gradient(180deg, rgb(14 18 23 / 97%), rgb(9 12 16 / 95%));
+    linear-gradient(105deg, rgb(var(--studio-cyan) / 10%), transparent 34%),
+    radial-gradient(circle at 88% 0%, rgb(var(--studio-blue) / 14%), transparent 44%),
+    linear-gradient(180deg, rgb(10 23 35 / 97%), rgb(6 13 22 / 96%));
   box-shadow:
     0 24px 70px rgb(0 0 0 / 0.25),
     inset 0 1px rgb(255 255 255 / 0.035);
@@ -208,6 +209,17 @@
 .tadeon-participant-view__hud span {
   color: var(--muted-foreground);
   font-size: 0.7rem;
+}
+.tadeon-participant-view__projection {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.28rem;
+  color: rgb(var(--studio-highlight)) !important;
+}
+.tadeon-participant-view__projection svg {
+  width: 0.76rem;
+  height: 0.76rem;
+  color: rgb(var(--studio-cyan));
 }
 .tadeon-participant-view__hud .tadeon-tabletop-realtime {
   pointer-events: auto;

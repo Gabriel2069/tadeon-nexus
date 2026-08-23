@@ -54,6 +54,8 @@ describe("Mesa Nexus progressiva", () => {
     expect(bridge).toContain("duplicateSelected()");
     expect(bridge).toContain("deleteSelected()");
     expect(bridge).toContain("cleanPreview");
+    expect(bridge).toContain('aria-label="Editar Mesa"');
+    expect(bridge).toContain('setProgressiveMode("advanced")');
     expect(selection).toContain('matchMedia("(pointer: coarse)")');
     expect(css).toContain('data-tadeon-tabletop-interface="play"');
     expect(css).toContain("@media (pointer: coarse)");

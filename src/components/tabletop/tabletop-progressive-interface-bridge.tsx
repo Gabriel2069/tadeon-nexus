@@ -19,6 +19,7 @@ import {
   Trash2,
   Undo2,
   Unlock,
+  Wrench,
   X,
 } from "lucide-react";
 import { currentTabletopRuntime } from "@/lib/tabletop/tabletop-player-runtime";
@@ -473,6 +474,16 @@ export function TabletopProgressiveInterfaceBridge({
               >
                 <Eye />
                 <span>Dirigir</span>
+              </button>
+              <button
+                type="button"
+                aria-pressed={mode === "advanced"}
+                onClick={() => setProgressiveMode("advanced")}
+                title="Reabrir todas as ferramentas e o painel de edição"
+                aria-label="Editar Mesa"
+              >
+                <Wrench />
+                <span>Editar</span>
               </button>
               <button
                 type="button"

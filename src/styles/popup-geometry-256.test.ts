@@ -21,7 +21,9 @@ describe("route-contained popup geometry", () => {
     expect(geometry).toContain("position: relative !important");
     expect(geometry).toContain("--tadeon-popup-zero-translate: 0px");
     expect(geometry).toContain("var(--tadeon-popup-zero-translate) !important");
-    expect(geometry).toContain("z-index: 100");
+    expect(geometry).toContain("z-index: 120");
+    expect(geometry).toContain("z-index: 80 !important");
+    expect(geometry).toContain("z-index: 110 !important");
     expect(alertDialog).toContain('"fixed inset-0 z-50');
   });
 

@@ -38,7 +38,24 @@ function validView() {
       globalIllumination: 0.2,
       fogEnabled: true,
       fogOpacity: 0.92,
-      walls: [],
+      walls: [
+        {
+          id: id("15"),
+          levelId: id("13"),
+          x1: 0,
+          y1: 0,
+          x2: 320,
+          y2: 0,
+          wallType: "wall",
+          blocksVision: true,
+          blocksMovement: true,
+          baseElevation: 0,
+          height: 192,
+          thickness: 8,
+          playerOperable: false,
+          version: 1,
+        },
+      ],
       lights: [],
       fogStrokes: [
         {
@@ -157,6 +174,11 @@ describe("projeção segura da Mesa para participantes", () => {
     expect(parsed.scene?.entities[0].sheetSummary).toMatchObject({
       name: "Vigia de Myrova",
       resources: { pv: 18, pe: 7, ps: 9, pa: 2 },
+    });
+    expect(parsed.visibility?.walls[0]).toMatchObject({
+      wallType: "wall",
+      playerOperable: false,
+      height: 192,
     });
   });
 

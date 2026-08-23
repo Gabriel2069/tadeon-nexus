@@ -114,18 +114,29 @@ const participantVisibilitySchema = z
             y1: finiteNumber,
             x2: finiteNumber,
             y2: finiteNumber,
-            wallType: z.enum(["door_closed", "door_open"]),
+            wallType: z.enum([
+              "wall",
+              "door_closed",
+              "door_open",
+              "door_locked",
+              "window_closed",
+              "window_open",
+              "window_broken",
+              "roof_visible",
+              "roof_cutaway",
+              "roof_hidden",
+            ]),
             blocksVision: z.boolean(),
             blocksMovement: z.boolean(),
             baseElevation: finiteNumber,
             height: finiteNumber.min(8).max(100_000),
             thickness: finiteNumber.min(1).max(1024),
-            playerOperable: z.literal(true),
+            playerOperable: z.boolean(),
             version: z.number().int().positive(),
           })
           .strict(),
       )
-      .max(128),
+      .max(512),
     lights: z
       .array(
         z

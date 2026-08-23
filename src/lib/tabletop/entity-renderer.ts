@@ -206,6 +206,7 @@ export class EntityRenderer {
     display.addChild(new Graphics({ label: "shape" }));
     display.addChild(new Graphics({ label: "ground-shadow" }));
     display.addChild(new Graphics({ label: "token-depth" }));
+    display.addChild(new Graphics({ label: "token-standee" }));
     display.addChild(new Graphics({ label: "outline" }));
     const hud = new Container({ label: "hud" });
     hud.addChild(new Graphics({ label: "label-plate" }));
@@ -267,8 +268,10 @@ export class EntityRenderer {
   ) {
     const shape = display.getChildByLabel("shape") as Graphics;
     shape.clear();
+    shape.visible = true;
     const outline = display.getChildByLabel("outline") as Graphics;
     outline.clear();
+    outline.visible = true;
     const aura = display.getChildByLabel("state-aura") as Graphics;
     aura.clear();
     const properties = entityProperties(entity.properties);
@@ -279,9 +282,11 @@ export class EntityRenderer {
       renderMode === "billboard" &&
       Boolean(entity.assetUrl);
     const volume = tokenVolume(entity, properties, billboardAppearance.scale);
+    const spatialToken = projection === "isometric" && volume.enabled;
+    const fallbackStandee = spatialToken && !entity.assetUrl;
     const groundShadow = display.getChildByLabel("ground-shadow") as Graphics;
     groundShadow.clear();
-    groundShadow.visible = billboard && billboardAppearance.shadow;
+    groundShadow.visible = spatialToken && billboardAppearance.shadow;
     if (groundShadow.visible) {
       const shadowWidth = Math.max(
         12,
@@ -303,7 +308,7 @@ export class EntityRenderer {
 
     const tokenDepth = display.getChildByLabel("token-depth") as Graphics;
     tokenDepth.clear();
-    tokenDepth.visible = billboard && volume.enabled;
+    tokenDepth.visible = spatialToken;
     if (tokenDepth.visible) {
       const centerX = entity.width / 2;
       const topY = entity.height - volume.height;
@@ -344,6 +349,61 @@ export class EntityRenderer {
           volume.radiusY * 0.5,
         )
         .fill({ color: 0xffffff, alpha: 0.045 });
+    }
+
+    const tokenStandee = display.getChildByLabel("token-standee") as Graphics;
+    tokenStandee.clear();
+    tokenStandee.visible = fallbackStandee;
+    if (fallbackStandee) {
+      const matrix = inverseIsometricEntityMatrix(
+        entity.rotation,
+        tabletopProjectionMatrix("isometric", orientation),
+      );
+      const standeeHeight = Math.max(32, Math.min(78, entity.height * 0.86));
+      const standeeWidth = Math.max(18, Math.min(52, entity.width * 0.58));
+      tokenStandee.setFromMatrix(
+        new Matrix(
+          matrix.a,
+          matrix.b,
+          matrix.c,
+          matrix.d,
+          entity.width / 2,
+          entity.height - volume.height,
+        ),
+      );
+      tokenStandee
+        .roundRect(
+          -standeeWidth / 2,
+          -standeeHeight * 0.7,
+          standeeWidth,
+          standeeHeight * 0.62,
+          standeeWidth * 0.28,
+        )
+        .fill({ color: entity.color, alpha: entity.locked ? 0.7 : 0.96 })
+        .stroke({
+          color: selected ? 0xf3be63 : 0xd9eff8,
+          alpha: selected ? 1 : 0.52,
+          width: selected ? 2.6 : 1.4,
+        });
+      tokenStandee
+        .circle(0, -standeeHeight * 0.82, standeeWidth * 0.27)
+        .fill({ color: entity.color, alpha: entity.locked ? 0.72 : 1 })
+        .stroke({
+          color: selected ? 0xf3be63 : 0xe5f7ff,
+          alpha: selected ? 1 : 0.58,
+          width: selected ? 2.4 : 1.3,
+        });
+      tokenStandee
+        .roundRect(
+          -standeeWidth * 0.22,
+          -standeeHeight * 0.64,
+          standeeWidth * 0.18,
+          standeeHeight * 0.42,
+          standeeWidth * 0.08,
+        )
+        .fill({ color: 0xffffff, alpha: 0.08 });
+    } else {
+      tokenStandee.setFromMatrix(new Matrix());
     }
 
     const drawingPoints =
@@ -435,6 +495,8 @@ export class EntityRenderer {
         alpha: selected ? 1 : 0.9,
         width: selected ? 4 : 2,
       });
+      shape.visible = !fallbackStandee;
+      outline.visible = !fallbackStandee;
     }
 
     const icons = Array.isArray(properties.icons)

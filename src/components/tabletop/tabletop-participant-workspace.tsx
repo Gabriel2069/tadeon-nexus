@@ -1,5 +1,6 @@
 import {
   BookOpenText,
+  Box,
   Eye,
   Images,
   Loader2,
@@ -137,20 +138,34 @@ export function TabletopParticipantWorkspace({
 
   useEffect(() => {
     if (!view?.scene || !engineRef.current) return;
-    engineRef.current.loadScene(view.scene);
-    engineRef.current.setActiveLevel(view.scene.activeLevelId);
-    engineRef.current.setVisibility(
+    const engine = engineRef.current;
+    engine.loadScene(view.scene);
+    engine.setActiveLevel(view.scene.activeLevelId);
+    engine.setVisibility(
       view.visibility ?? createEmptyVisibilityState(),
       false,
     );
-    engineRef.current.setInteractiveStructures(
+    engine.setInteractiveStructures(
       view.participant.canInteract
-        ? (view.visibility?.walls ?? []).map((wall) => wall.id)
+        ? (view.visibility?.walls ?? [])
+            .filter((wall) => wall.playerOperable)
+            .map((wall) => wall.id)
         : [],
     );
-    engineRef.current.setReadOnly(true);
-    engineRef.current.fitToScreen();
-  }, [view?.participant.canInteract, view?.scene, view?.visibility]);
+    engine.setReadOnly(true);
+    engine.setGridVisible(view.session.directorState.showGrid);
+
+    const camera = view.session.directorState.camera;
+    const levelId = view.scene.levels.some((level) => level.id === camera.levelId)
+      ? camera.levelId
+      : view.scene.activeLevelId;
+    engine.applyDirectorCamera({ ...camera, levelId });
+  }, [
+    view?.participant.canInteract,
+    view?.scene,
+    view?.session.directorState,
+    view?.visibility,
+  ]);
 
   const loadView = useCallback(async (targetSession: TabletopSession) => {
     try {
@@ -258,6 +273,10 @@ export function TabletopParticipantWorkspace({
         if (session) void loadView(session);
         return;
       }
+      if (event.type === "director.state") {
+        if (session) void loadView(session);
+        return;
+      }
       if (event.type !== "token.drag-preview") return;
       setView((current) => {
         if (!current?.scene || current.scene.id !== event.sceneId)
@@ -302,7 +321,7 @@ export function TabletopParticipantWorkspace({
             sceneId: view.scene.id,
             controlledTokenId: null,
             state: "connected" as const,
-            color: view.participant.role === "observer" ? "#4F6E5D" : "#D9D7A4",
+            color: view.participant.role === "observer" ? "#3176A3" : "#59BDEB",
             updatedAt: Date.now(),
           }
         : null,
@@ -443,6 +462,12 @@ export function TabletopParticipantWorkspace({
                 {view.participant.role === "observer"
                   ? "Observador"
                   : "Jogador"}
+              </span>
+              <span className="tadeon-participant-view__projection">
+                <Box aria-hidden="true" />
+                {view.session.directorState.camera.projection === "isometric"
+                  ? `Visão 3D · ${Math.round(view.session.directorState.camera.yaw)}°`
+                  : "Visão tática 2D"}
               </span>
               {view.participant.canInteract &&
                 (view.visibility?.walls.length ?? 0) > 0 && (
