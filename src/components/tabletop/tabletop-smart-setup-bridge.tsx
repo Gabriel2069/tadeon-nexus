@@ -28,6 +28,7 @@ import {
 } from "@/lib/tabletop/tabletop-spatial";
 import { tabletopVisibilityService, type TabletopLight } from "@/lib/tabletop/tabletop-visibility-service";
 import type { TabletopSnapshot } from "@/lib/tabletop/types";
+import { TabletopStagePortal } from "@/components/tabletop/tabletop-stage-portal";
 import "@/styles/tabletop-smart-setup.css";
 
 function useSnapshot() {
@@ -285,6 +286,7 @@ export function TabletopSmartSetupBridge() {
     return null;
 
   return (
+    <TabletopStagePortal>
     <>
       <button
         type="button"
@@ -362,5 +364,6 @@ export function TabletopSmartSetupBridge() {
         </div>
       </aside>
     </>
+    </TabletopStagePortal>
   );
 }

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { BrickWall, ScanLine } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
+import { TabletopStagePortal } from "@/components/tabletop/tabletop-stage-portal";
 import { currentTabletopRuntime } from "@/lib/tabletop/tabletop-player-runtime";
 import type { TabletopEntity, TabletopSnapshot } from "@/lib/tabletop/types";
 import "@/styles/tabletop-semantic-transform.css";
@@ -79,6 +80,7 @@ export function TabletopSemanticTransformBridge() {
   };
 
   return (
+    <TabletopStagePortal>
     <div className="tadeon-semantic-transform" role="toolbar" aria-label="Transformações contextuais">
       <small>Transformar</small>
       {selected.type === "drawing" && (
@@ -99,5 +101,6 @@ export function TabletopSemanticTransformBridge() {
         <ScanLine aria-hidden="true" /> {selected.type === "area" ? "Objeto" : "Região"}
       </Button>
     </div>
+    </TabletopStagePortal>
   );
 }

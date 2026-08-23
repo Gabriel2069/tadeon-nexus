@@ -1579,7 +1579,7 @@ export function TabletopWorkspace({
     <div className="tadeon-tabletop-studio flex min-h-[calc(100dvh-4rem)] flex-col text-foreground">
       <header className="tadeon-tabletop-studio__header relative z-20 border-b border-border/70 px-3 py-3 backdrop-blur-xl sm:px-4">
         <ThreadField className="text-primary opacity-20" />
-        <div className="relative z-10 flex flex-wrap items-center gap-2.5">
+        <div className="tadeon-tabletop-studio__primary relative z-10 flex flex-wrap items-center gap-2.5">
           <div className="tadeon-tabletop-studio__brand mr-2">
             <BrandMark className="h-10 w-10 shrink-0 text-primary" />
             <div className="min-w-0">
@@ -1681,7 +1681,7 @@ export function TabletopWorkspace({
             type="button"
             size="icon"
             variant="outline"
-            className="min-[1180px]:hidden"
+            className="min-[768px]:hidden"
             aria-label={mobilePanelOpen ? "Fechar painel" : "Abrir painel"}
             aria-expanded={mobilePanelOpen}
             onClick={() => {
@@ -1906,12 +1906,12 @@ export function TabletopWorkspace({
       <div
         className={`tadeon-tabletop-workbench grid min-h-0 flex-1 grid-cols-1 ${
           panelCollapsed
-            ? "min-[1180px]:grid-cols-[minmax(0,1fr)_3.75rem]"
-            : "min-[1180px]:grid-cols-[minmax(0,1fr)_23rem] 2xl:grid-cols-[minmax(0,1fr)_25rem]"
+            ? "min-[768px]:grid-cols-[minmax(0,1fr)_3.75rem]"
+            : "min-[768px]:grid-cols-[minmax(0,1fr)_23rem] 2xl:grid-cols-[minmax(0,1fr)_25rem]"
         }`}
       >
         <section
-          className="tadeon-tabletop-stage relative min-h-[64svh] overflow-hidden sm:min-h-[70vh] min-[1180px]:min-h-0"
+          className="tadeon-tabletop-stage relative min-h-[64svh] overflow-hidden sm:min-h-[70vh] min-[768px]:min-h-0"
           data-projection={projectionMode}
           data-tool={toolMode}
           onClick={closeContext}
@@ -1924,6 +1924,7 @@ export function TabletopWorkspace({
           onDrop={dropPaletteItem}
         >
           <div ref={hostRef} className="tadeon-tabletop-canvas-host" />
+          <div className="tadeon-tabletop-overlay-layer" data-tabletop-stage-portal />
           <div className="tadeon-tabletop-canvas-rail" aria-label="Ferramentas do canvas">
             <span className="tadeon-tabletop-canvas-rail__group-label">Navegar</span>
             <CanvasToolButton
@@ -2682,7 +2683,7 @@ export function TabletopWorkspace({
 
         <button
           type="button"
-          className="tadeon-tabletop-panel-backdrop min-[1180px]:hidden"
+          className="tadeon-tabletop-panel-backdrop min-[768px]:hidden"
           data-open={mobilePanelOpen ? "true" : "false"}
           tabIndex={mobilePanelOpen ? 0 : -1}
           onClick={() => setMobilePanelOpen(false)}
@@ -2691,7 +2692,7 @@ export function TabletopWorkspace({
         />
 
         <aside
-          className="tadeon-tabletop-panel max-h-[72svh] overflow-y-auto border-t border-border/70 p-4 min-[1180px]:block min-[1180px]:max-h-none min-[1180px]:border-l min-[1180px]:border-t-0"
+          className="tadeon-tabletop-panel max-h-[72svh] overflow-y-auto border-t border-border/70 p-4 min-[768px]:block min-[768px]:max-h-none min-[768px]:border-l min-[768px]:border-t-0"
           data-collapsed={panelCollapsed ? "true" : "false"}
           data-mobile-open={mobilePanelOpen ? "true" : "false"}
           aria-label="Painel de edição da Mesa Nexus"
@@ -2732,7 +2733,7 @@ export function TabletopWorkspace({
                 type="button"
                 size="icon"
                 variant="ghost"
-                className="hidden min-[1180px]:inline-flex"
+                className="hidden min-[768px]:inline-flex"
                 onClick={() => setPanelCollapsed(true)}
                 aria-label="Recolher painel contextual"
                 title="Recolher painel"
@@ -2743,7 +2744,7 @@ export function TabletopWorkspace({
                 type="button"
                 size="sm"
                 variant="ghost"
-                className="min-[1180px]:hidden"
+                className="min-[768px]:hidden"
                 onClick={() => setMobilePanelOpen(false)}
               >
                 Fechar
@@ -3282,7 +3283,7 @@ export function TabletopWorkspace({
                 onActivateFogTool={(operation, shape) => {
                   setFogToolShape(shape);
                   setToolMode(operation === "reveal" ? "fog_reveal" : "fog_hide");
-                  if (window.innerWidth < 1180) setMobilePanelOpen(false);
+                  if (window.innerWidth < 768) setMobilePanelOpen(false);
                 }}
                 onPreview={previewVisibility}
                 onSaved={installVisibility}

@@ -9,6 +9,7 @@ import "@/styles/tabletop-motion-final.css";
 import "@/styles/tabletop-bottom-stack-fix.css";
 import "@/styles/tabletop-spatial-finish.css";
 import "@/styles/tabletop-fixed-menus-tactical-240.css";
+import "@/styles/tabletop-stage-geometry-254.css";
 
 const MasterEntry = lazy(() => import("@/components/tabletop/tabletop-master-entry"));
 const ParticipantEntry = lazy(() => import("@/components/tabletop/tabletop-participant-entry"));

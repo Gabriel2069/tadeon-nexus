@@ -20,6 +20,7 @@ import {
 } from "@/lib/tabletop/tabletop-tactical-preview";
 import { currentTabletopRuntime } from "@/lib/tabletop/tabletop-player-runtime";
 import type { Point, TabletopEntity, TabletopSnapshot } from "@/lib/tabletop/types";
+import { TabletopStagePortal } from "@/components/tabletop/tabletop-stage-portal";
 import "@/styles/tabletop-player-interaction.css";
 
 type TacticalMode = "idle" | "movement" | "power";
@@ -395,6 +396,7 @@ export function TabletopPlayerInteractionBridge() {
           })}
       </svg>
 
+      <TabletopStagePortal>
       <aside className="tadeon-tactical-dock" data-mode={mode}>
         <div className="tadeon-tactical-dock__identity">
           <span><Target aria-hidden="true" /></span>
@@ -528,6 +530,7 @@ export function TabletopPlayerInteractionBridge() {
           </div>
         )}
       </aside>
+      </TabletopStagePortal>
     </>
   );
 }
