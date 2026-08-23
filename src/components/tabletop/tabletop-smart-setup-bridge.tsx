@@ -117,6 +117,11 @@ export function TabletopSmartSetupBridge() {
     const current = runtime.engine.viewState();
     runtime.engine.applyViewState({ ...current, ...patch });
     if (fit) runtime.engine.fitToScreen();
+    window.dispatchEvent(
+      new CustomEvent("tadeon-tabletop-spatial-view", {
+        detail: { ...patch, fit },
+      }),
+    );
     const next = runtime.engine.viewState();
     setSpatialView({
       projection: next.projection,

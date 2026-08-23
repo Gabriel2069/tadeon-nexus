@@ -10,6 +10,7 @@ describe("Mesa participante em projeção espacial", () => {
   const service = read("src/lib/tabletop/tabletop-participant-service.ts");
   const endpoint = read("supabase/functions/tabletop-view/index.ts");
   const setup = read("src/components/tabletop/tabletop-smart-setup-bridge.tsx");
+  const master = read("src/components/tabletop/tabletop-workspace.tsx");
 
   it("aplica e atualiza a câmera dirigida pelo mestre", () => {
     expect(workspace).toContain("engine.applyDirectorCamera");
@@ -37,5 +38,7 @@ describe("Mesa participante em projeção espacial", () => {
     expect(setup).toContain('"Sudoeste"');
     expect(setup).toContain('aria-label="Girar visão 45 graus para a direita"');
     expect(setup).toContain("elevationScale");
+    expect(setup).toContain('new CustomEvent("tadeon-tabletop-spatial-view"');
+    expect(master).toContain('window.addEventListener("tadeon-tabletop-spatial-view"');
   });
 });

@@ -507,6 +507,35 @@ export function TabletopWorkspace({
   }, [viewOrientation]);
 
   useEffect(() => {
+    const applySpatialView = (event: Event) => {
+      const detail = (
+        event as CustomEvent<
+          Partial<Pick<TabletopViewState, "projection" | "yaw" | "tilt" | "elevationScale">> & {
+            fit?: boolean;
+          }
+        >
+      ).detail;
+      if (!detail || typeof detail !== "object") return;
+      if (detail.projection === "plan" || detail.projection === "isometric")
+        setProjectionMode(detail.projection);
+      if (
+        Number.isFinite(detail.yaw) ||
+        Number.isFinite(detail.tilt) ||
+        Number.isFinite(detail.elevationScale)
+      ) {
+        setViewOrientation((current) =>
+          normalizeTabletopViewOrientation({ ...current, ...detail }),
+        );
+      }
+      if (detail.fit)
+        window.requestAnimationFrame(() => engineRef.current?.fitToScreen());
+    };
+    window.addEventListener("tadeon-tabletop-spatial-view", applySpatialView);
+    return () =>
+      window.removeEventListener("tadeon-tabletop-spatial-view", applySpatialView);
+  }, []);
+
+  useEffect(() => {
     activeLevelIdRef.current = activeLevelId;
     engineRef.current?.setActiveLevel(activeLevelId);
   }, [activeLevelId]);
