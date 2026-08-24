@@ -1,0 +1,388 @@
+/* Tadeon Relational Motion — relationships between origins, targets and layers.
+   This layer adds spatial continuity to the existing premium motion system. */
+
+:root {
+  --tadeon-relational-in: cubic-bezier(.16,1,.3,1);
+  --tadeon-relational-soft: cubic-bezier(.2,.8,.2,1);
+  --tadeon-relational-out: cubic-bezier(.7,0,.84,0);
+  --tadeon-relational-fast: 150ms;
+  --tadeon-relational-ui: 240ms;
+  --tadeon-relational-panel: 420ms;
+}
+
+/* --------------------------------------------------------------------------
+   Directional overlays: popovers and menus inherit their physical origin.
+   -------------------------------------------------------------------------- */
+.tadeon-shell [data-slot="popover-content"][data-side="top"],
+.tadeon-shell [data-slot="dropdown-menu-content"][data-side="top"],
+.tadeon-shell [data-slot="dropdown-menu-sub-content"][data-side="top"] {
+  transform-origin: 50% 100%;
+}
+
+.tadeon-shell [data-slot="popover-content"][data-side="bottom"],
+.tadeon-shell [data-slot="dropdown-menu-content"][data-side="bottom"],
+.tadeon-shell [data-slot="dropdown-menu-sub-content"][data-side="bottom"] {
+  transform-origin: 50% 0%;
+}
+
+.tadeon-shell [data-slot="popover-content"][data-side="left"],
+.tadeon-shell [data-slot="dropdown-menu-content"][data-side="left"],
+.tadeon-shell [data-slot="dropdown-menu-sub-content"][data-side="left"] {
+  transform-origin: 100% 50%;
+}
+
+.tadeon-shell [data-slot="popover-content"][data-side="right"],
+.tadeon-shell [data-slot="dropdown-menu-content"][data-side="right"],
+.tadeon-shell [data-slot="dropdown-menu-sub-content"][data-side="right"] {
+  transform-origin: 0% 50%;
+}
+
+/* --------------------------------------------------------------------------
+   Dialog depth: backdrop, frame, header and actions settle in sequence.
+   -------------------------------------------------------------------------- */
+.tadeon-shell [data-slot="dialog-overlay"],
+.tadeon-shell [data-slot="sheet-overlay"] {
+  will-change: opacity, backdrop-filter;
+}
+
+.tadeon-shell [data-slot="dialog-content"],
+.tadeon-shell [data-slot="sheet-content"] {
+  will-change: transform, opacity, filter;
+  backface-visibility: hidden;
+}
+
+.tadeon-shell [data-slot="dialog-content"] > *:not([data-slot="dialog-overlay"]),
+.tadeon-shell [data-slot="sheet-content"] > * {
+  backface-visibility: hidden;
+}
+
+/* Close affordances feel like the frame is yielding back to the origin. */
+.tadeon-shell [data-slot="dialog-close"],
+.tadeon-shell [data-slot="sheet-close"] {
+  transition: transform var(--tadeon-relational-fast) var(--tadeon-relational-soft),
+    opacity var(--tadeon-relational-fast) ease,
+    background-color var(--tadeon-relational-ui) ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .tadeon-shell [data-slot="dialog-close"]:hover,
+  .tadeon-shell [data-slot="sheet-close"]:hover {
+    transform: rotate(3deg) scale(1.04);
+  }
+}
+
+.tadeon-shell [data-slot="dialog-close"]:active,
+.tadeon-shell [data-slot="sheet-close"]:active {
+  transform: scale(.92);
+}
+
+/* --------------------------------------------------------------------------
+   Menus: the list itself is a shallow depth plane, not a flat rectangle.
+   -------------------------------------------------------------------------- */
+.tadeon-shell [data-slot="dropdown-menu-content"],
+.tadeon-shell [data-slot="dropdown-menu-sub-content"],
+.tadeon-shell [data-slot="popover-content"] {
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
+}
+
+.tadeon-shell [data-slot="dropdown-menu-item"],
+.tadeon-shell [data-slot="dropdown-menu-sub-trigger"],
+.tadeon-shell [data-slot="dropdown-menu-checkbox-item"],
+.tadeon-shell [data-slot="dropdown-menu-radio-item"] {
+  transform-origin: left center;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .tadeon-shell [data-slot="dropdown-menu-item"]:hover,
+  .tadeon-shell [data-slot="dropdown-menu-sub-trigger"]:hover,
+  .tadeon-shell [data-slot="dropdown-menu-checkbox-item"]:hover,
+  .tadeon-shell [data-slot="dropdown-menu-radio-item"]:hover {
+    transform: translateX(3px) translateZ(1px);
+  }
+}
+
+.tadeon-shell [data-slot="dropdown-menu-item"]:active,
+.tadeon-shell [data-slot="dropdown-menu-sub-trigger"]:active,
+.tadeon-shell [data-slot="dropdown-menu-checkbox-item"]:active,
+.tadeon-shell [data-slot="dropdown-menu-radio-item"]:active {
+  transform: translateX(2px) scale(.985);
+}
+
+/* --------------------------------------------------------------------------
+   Tabs: active trigger and panel behave as one authored gesture.
+   -------------------------------------------------------------------------- */
+.tadeon-shell [data-slot="tabs-list"] [data-slot="tabs-trigger"] {
+  transform-origin: center bottom;
+}
+
+.tadeon-shell [data-slot="tabs-list"] [data-slot="tabs-trigger"][data-state="active"] {
+  animation: tadeon-relational-tab-focus 330ms var(--tadeon-relational-in) both;
+}
+
+.tadeon-shell [data-slot="tabs-content"][data-state="active"] {
+  transform-origin: 50% 0%;
+}
+
+.tadeon-shell [data-slot="tabs-content"][data-state="active"] > * {
+  animation: tadeon-relational-panel-rise 360ms var(--tadeon-relational-in) both;
+}
+
+.tadeon-shell [data-slot="tabs-content"][data-state="active"] > :nth-child(2) { animation-delay: 25ms; }
+.tadeon-shell [data-slot="tabs-content"][data-state="active"] > :nth-child(3) { animation-delay: 50ms; }
+.tadeon-shell [data-slot="tabs-content"][data-state="active"] > :nth-child(4) { animation-delay: 75ms; }
+
+/* --------------------------------------------------------------------------
+   Sheets: content follows the direction of the physical panel.
+   -------------------------------------------------------------------------- */
+.tadeon-shell [data-slot="sheet-content"][data-side="right"][data-state="open"] {
+  animation: tadeon-relational-sheet-right 460ms var(--tadeon-relational-in) both;
+}
+
+.tadeon-shell [data-slot="sheet-content"][data-side="left"][data-state="open"] {
+  animation: tadeon-relational-sheet-left 460ms var(--tadeon-relational-in) both;
+}
+
+.tadeon-shell [data-slot="sheet-content"][data-side="bottom"][data-state="open"] {
+  animation: tadeon-relational-sheet-bottom 460ms var(--tadeon-relational-in) both;
+}
+
+.tadeon-shell [data-slot="sheet-content"][data-side="top"][data-state="open"] {
+  animation: tadeon-relational-sheet-top 460ms var(--tadeon-relational-in) both;
+}
+
+/* --------------------------------------------------------------------------
+   Navigation continuity: active item settles before its page becomes calm.
+   -------------------------------------------------------------------------- */
+.tadeon-primary-nav .tadeon-nav-item[aria-current="page"],
+.tadeon-mobile-dock__item[aria-current="page"] {
+  animation: tadeon-relational-nav-focus 360ms var(--tadeon-relational-in) both;
+}
+
+.tadeon-primary-nav .tadeon-nav-item[aria-current="page"]::after,
+.tadeon-mobile-dock__item[aria-current="page"]::after {
+  transform-origin: center;
+}
+
+/* --------------------------------------------------------------------------
+   Lists: adjacent rows stay stable while the focused row gains depth.
+   -------------------------------------------------------------------------- */
+@media (hover: hover) and (pointer: fine) {
+  .tadeon-users-list:hover > *,
+  .tadeon-inventory-list:hover > *,
+  .tadeon-skill-list:hover > * {
+    transition: opacity 260ms var(--tadeon-relational-soft),
+      transform 260ms var(--tadeon-relational-soft),
+      filter 260ms var(--tadeon-relational-soft);
+  }
+
+  .tadeon-users-list:hover > *:not(:hover),
+  .tadeon-inventory-list:hover > *:not(:hover),
+  .tadeon-skill-list:hover > *:not(:hover) {
+    filter: saturate(.92);
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Nexus graph: relation-first focus. Selected nodes advance; context recedes.
+   -------------------------------------------------------------------------- */
+.tadeon-shell [data-tadeon-node][data-selected="true"],
+.tadeon-shell [data-tadeon-map-element][data-selected="true"] {
+  z-index: 3;
+  transform-origin: center;
+  animation: tadeon-relational-node-focus 440ms var(--tadeon-relational-in) both;
+}
+
+.tadeon-shell [data-tadeon-node][data-related="true"],
+.tadeon-shell [data-tadeon-map-element][data-related="true"] {
+  z-index: 2;
+}
+
+.tadeon-shell [data-tadeon-node][data-related="false"],
+.tadeon-shell [data-tadeon-map-element][data-related="false"] {
+  z-index: 1;
+  transition: opacity 420ms var(--tadeon-relational-soft), filter 420ms var(--tadeon-relational-soft), transform 420ms var(--tadeon-relational-soft);
+  filter: saturate(.78);
+}
+
+/* --------------------------------------------------------------------------
+   Tabletop: tools have a tactile axis and selected map elements acquire weight.
+   -------------------------------------------------------------------------- */
+.tadeon-shell[data-section="Mesa Nexus"] [data-tabletop-action],
+.tadeon-shell[data-section="Mesa Nexus"] [data-tabletop-tool] {
+  transform-origin: center bottom;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .tadeon-shell[data-section="Mesa Nexus"] [data-tabletop-action]:hover,
+  .tadeon-shell[data-section="Mesa Nexus"] [data-tabletop-tool]:hover {
+    transform: translateY(-2px) rotateX(1deg);
+  }
+}
+
+.tadeon-shell[data-section="Mesa Nexus"] [data-tadeon-map-element][data-selected="true"] {
+  animation: tadeon-relational-map-acquire 420ms var(--tadeon-relational-in) both;
+}
+
+/* --------------------------------------------------------------------------
+   Background choreography: layered depth rather than one global pulse.
+   -------------------------------------------------------------------------- */
+.tadeon-shell .tadeon-atmosphere,
+.tadeon-shell .tadeon-atmosphere-layer,
+.tadeon-shell [data-tadeon-atmosphere] {
+  transform: translate3d(var(--tadeon-parallax-x, 0), var(--tadeon-parallax-y, 0), 0);
+  transition: transform 900ms var(--tadeon-relational-soft), opacity 700ms ease;
+  will-change: transform;
+}
+
+.tadeon-shell .tadeon-orbit,
+.tadeon-shell [data-tadeon-orbit] {
+  transform-origin: center;
+  animation-duration: 30s;
+}
+
+.tadeon-shell [data-tadeon-atmosphere-line] {
+  transform-origin: center;
+  will-change: transform, opacity;
+}
+
+/* --------------------------------------------------------------------------
+   Focus / hover rings feel like light finding the current object.
+   -------------------------------------------------------------------------- */
+.tadeon-shell :focus-visible {
+  position: relative;
+  z-index: 4;
+  animation: tadeon-relational-focus-ring 220ms var(--tadeon-relational-in) both;
+}
+
+/* --------------------------------------------------------------------------
+   Generic content transitions for skeleton/state swaps.
+   -------------------------------------------------------------------------- */
+.tadeon-shell [aria-busy="true"] > * {
+  animation: tadeon-relational-busy-arrival 360ms var(--tadeon-relational-soft) both;
+}
+
+.tadeon-shell [data-tadeon-feedback="success"],
+.tadeon-shell [data-state="success"] {
+  animation: tadeon-relational-success 480ms var(--tadeon-relational-in) both;
+}
+
+.tadeon-shell [data-tadeon-feedback="error"],
+.tadeon-shell [data-state="error"] {
+  animation: tadeon-relational-error 420ms var(--tadeon-relational-in) both;
+}
+
+@keyframes tadeon-relational-tab-focus {
+  from { opacity: .72; transform: translateY(2px) scale(.985); }
+  70% { opacity: 1; transform: translateY(-1px) scale(1.012); }
+  to { opacity: 1; transform: none; }
+}
+
+@keyframes tadeon-relational-panel-rise {
+  from { opacity: 0; transform: translateY(7px); filter: blur(2px); }
+  to { opacity: 1; transform: none; filter: blur(0); }
+}
+
+@keyframes tadeon-relational-sheet-right {
+  from { opacity: .35; transform: translateX(26px) scaleX(.985); filter: blur(3px); }
+  72% { opacity: 1; transform: translateX(-2px) scaleX(1.002); filter: blur(0); }
+  to { opacity: 1; transform: none; filter: blur(0); }
+}
+
+@keyframes tadeon-relational-sheet-left {
+  from { opacity: .35; transform: translateX(-26px) scaleX(.985); filter: blur(3px); }
+  72% { opacity: 1; transform: translateX(2px) scaleX(1.002); filter: blur(0); }
+  to { opacity: 1; transform: none; filter: blur(0); }
+}
+
+@keyframes tadeon-relational-sheet-bottom {
+  from { opacity: .35; transform: translateY(26px) scaleY(.985); filter: blur(3px); }
+  72% { opacity: 1; transform: translateY(-2px) scaleY(1.002); filter: blur(0); }
+  to { opacity: 1; transform: none; filter: blur(0); }
+}
+
+@keyframes tadeon-relational-sheet-top {
+  from { opacity: .35; transform: translateY(-26px) scaleY(.985); filter: blur(3px); }
+  72% { opacity: 1; transform: translateY(2px) scaleY(1.002); filter: blur(0); }
+  to { opacity: 1; transform: none; filter: blur(0); }
+}
+
+@keyframes tadeon-relational-nav-focus {
+  from { opacity: .76; transform: translateY(1px) scale(.988); }
+  70% { opacity: 1; transform: translateY(-1px) scale(1.01); }
+  to { opacity: 1; transform: none; }
+}
+
+@keyframes tadeon-relational-node-focus {
+  from { opacity: .7; transform: scale(.96); filter: drop-shadow(0 0 0 rgb(217 215 164 / 0%)); }
+  65% { opacity: 1; transform: scale(1.035); filter: drop-shadow(0 14px 30px rgb(217 215 164 / 22%)); }
+  to { opacity: 1; transform: scale(1); filter: drop-shadow(0 10px 24px rgb(217 215 164 / 15%)); }
+}
+
+@keyframes tadeon-relational-map-acquire {
+  from { opacity: .72; transform: scale(.97); filter: drop-shadow(0 0 0 rgb(217 215 164 / 0%)); }
+  62% { opacity: 1; transform: scale(1.028); filter: drop-shadow(0 16px 30px rgb(217 215 164 / 18%)); }
+  to { opacity: 1; transform: scale(1); filter: drop-shadow(0 12px 24px rgb(217 215 164 / 14%)); }
+}
+
+@keyframes tadeon-relational-focus-ring {
+  from { outline-color: rgb(217 215 164 / 0%); outline-offset: 6px; }
+  to { outline-color: rgb(217 215 164 / 52%); outline-offset: 3px; }
+}
+
+@keyframes tadeon-relational-busy-arrival {
+  from { opacity: .52; transform: translateY(3px); }
+  to { opacity: 1; transform: none; }
+}
+
+@keyframes tadeon-relational-success {
+  0% { transform: scale(.975); opacity: .72; }
+  60% { transform: scale(1.018); opacity: 1; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+@keyframes tadeon-relational-error {
+  0%, 100% { transform: translateX(0); }
+  24% { transform: translateX(-3px); }
+  52% { transform: translateX(3px); }
+  76% { transform: translateX(-1px); }
+}
+
+@media (max-width: 767px) {
+  .tadeon-shell .tadeon-atmosphere,
+  .tadeon-shell .tadeon-atmosphere-layer,
+  .tadeon-shell [data-tadeon-atmosphere] {
+    transform: none;
+    transition: opacity 600ms ease;
+  }
+
+  .tadeon-shell[data-section="Mesa Nexus"] [data-tabletop-action]:hover,
+  .tadeon-shell[data-section="Mesa Nexus"] [data-tabletop-tool]:hover {
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tadeon-shell [data-slot="tabs-list"] [data-slot="tabs-trigger"],
+  .tadeon-shell [data-slot="tabs-content"][data-state="active"] > *,
+  .tadeon-shell [data-slot="sheet-content"],
+  .tadeon-shell [data-slot="dropdown-menu-item"],
+  .tadeon-shell [data-slot="dropdown-menu-sub-trigger"],
+  .tadeon-shell [data-slot="dropdown-menu-checkbox-item"],
+  .tadeon-shell [data-slot="dropdown-menu-radio-item"],
+  .tadeon-primary-nav .tadeon-nav-item[aria-current="page"],
+  .tadeon-mobile-dock__item[aria-current="page"],
+  .tadeon-shell [data-tadeon-node][data-selected="true"],
+  .tadeon-shell [data-tadeon-map-element][data-selected="true"],
+  .tadeon-shell [data-tadeon-feedback="success"],
+  .tadeon-shell [data-tadeon-feedback="error"] {
+    animation: none !important;
+  }
+
+  .tadeon-shell .tadeon-atmosphere,
+  .tadeon-shell .tadeon-atmosphere-layer,
+  .tadeon-shell [data-tadeon-atmosphere] {
+    transform: none !important;
+    transition: none !important;
+  }
+}
