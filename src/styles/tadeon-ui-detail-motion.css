@@ -1,0 +1,178 @@
+/* Tadeon UI detail motion — overlays, handles, symbols and ambient background. */
+
+/* Master panel: the drag handle belongs to the wine/red command language. */
+.tadeon-master-panel [data-panel-handle],
+.tadeon-master-panel .tadeon-drag-handle,
+.tadeon-master-workspace [data-drag-handle] {
+  background: #74242d !important;
+  border-color: rgb(180 92 98 / 42%) !important;
+  box-shadow: 0 0 18px rgb(116 36 45 / 24%);
+}
+
+/* Tabletop symbol: slightly larger, while preserving its existing slot and proportions. */
+.tadeon-tabletop-studio__header .tadeon-tabletop-symbol,
+.tadeon-tabletop-studio__header [data-tabletop-symbol],
+.tadeon-tabletop-studio .tadeon-symbol-mark {
+  transform: scale(1.08);
+  transform-origin: center;
+  transition: transform 420ms cubic-bezier(.23,1,.32,1), filter 420ms ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .tadeon-tabletop-studio__header .tadeon-tabletop-symbol:hover,
+  .tadeon-tabletop-studio__header [data-tabletop-symbol]:hover,
+  .tadeon-tabletop-studio .tadeon-symbol-mark:hover {
+    transform: scale(1.12) rotate(.6deg);
+    filter: drop-shadow(0 8px 20px rgb(217 215 164 / 18%));
+  }
+}
+
+/* Popovers: originate from their actual Radix transform origin. */
+.tadeon-shell [data-slot="popover-content"],
+.tadeon-shell [data-slot="dropdown-menu-content"],
+.tadeon-shell [data-slot="dropdown-menu-sub-content"],
+.tadeon-shell [data-slot="tooltip-content"] {
+  animation: tadeon-popup-arrival 360ms cubic-bezier(.22,1,.36,1) both;
+  transform-origin: var(--radix-popover-content-transform-origin, var(--radix-dropdown-menu-content-transform-origin, var(--radix-tooltip-content-transform-origin, 50% 20%)));
+}
+
+.tadeon-shell [data-slot="popover-content"][data-state="closed"],
+.tadeon-shell [data-slot="dropdown-menu-content"][data-state="closed"],
+.tadeon-shell [data-slot="dropdown-menu-sub-content"][data-state="closed"],
+.tadeon-shell [data-slot="tooltip-content"][data-state="closed"] {
+  animation: tadeon-popup-departure 150ms cubic-bezier(.4,0,.2,1) both;
+}
+
+.tadeon-shell [data-slot="dialog-overlay"],
+.tadeon-shell [data-slot="sheet-overlay"] {
+  animation: tadeon-overlay-arrival 300ms ease both;
+}
+
+.tadeon-shell [data-slot="dialog-content"] {
+  animation: tadeon-dialog-arrival 460ms cubic-bezier(.22,1,.36,1) both;
+  transform-origin: 50% 46%;
+}
+
+.tadeon-shell [data-slot="sheet-content"] {
+  animation: tadeon-sheet-arrival 460ms cubic-bezier(.22,1,.36,1) both;
+}
+
+.tadeon-shell [data-slot="dialog-content"] > [data-slot="dialog-header"],
+.tadeon-shell [data-slot="dialog-content"] > [data-slot="dialog-footer"],
+.tadeon-shell [data-slot="dialog-content"] > * {
+  animation: tadeon-popup-content-cascade 420ms cubic-bezier(.22,1,.36,1) both;
+}
+
+.tadeon-shell [data-slot="dialog-content"] > *:nth-child(2) { animation-delay: 35ms; }
+.tadeon-shell [data-slot="dialog-content"] > *:nth-child(3) { animation-delay: 70ms; }
+.tadeon-shell [data-slot="dialog-content"] > *:nth-child(4) { animation-delay: 105ms; }
+
+.tadeon-shell [data-slot="sheet-content"] > * {
+  animation: tadeon-sheet-content-cascade 420ms cubic-bezier(.22,1,.36,1) both;
+}
+.tadeon-shell [data-slot="sheet-content"] > *:nth-child(2) { animation-delay: 40ms; }
+.tadeon-shell [data-slot="sheet-content"] > *:nth-child(3) { animation-delay: 80ms; }
+.tadeon-shell [data-slot="sheet-content"] > *:nth-child(4) { animation-delay: 120ms; }
+
+/* Ambient background details: slow parallax-like drift, not decorative noise. */
+.tadeon-shell .tadeon-atmosphere,
+.tadeon-shell .tadeon-atmosphere-layer,
+.tadeon-shell [data-tadeon-atmosphere] {
+  animation: tadeon-ambient-breathe 14s ease-in-out infinite alternate;
+  transform-origin: center;
+}
+
+.tadeon-shell .tadeon-orbit,
+.tadeon-shell [data-tadeon-orbit] {
+  animation: tadeon-orbit-drift 20s linear infinite;
+  transform-origin: center;
+}
+
+.tadeon-shell .tadeon-grain,
+.tadeon-shell [data-tadeon-grain] {
+  animation: tadeon-grain-shift 9s steps(2,end) infinite;
+}
+
+@keyframes tadeon-popup-arrival {
+  from { opacity: 0; transform: translateY(-5px) scale(.965); filter: blur(3px); }
+  70% { opacity: 1; transform: translateY(1px) scale(1.008); filter: blur(0); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes tadeon-popup-departure {
+  from { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
+  to { opacity: 0; transform: translateY(-3px) scale(.985); filter: blur(2px); }
+}
+
+@keyframes tadeon-overlay-arrival {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes tadeon-dialog-arrival {
+  from { opacity: 0; transform: translateY(14px) scale(.965); filter: blur(4px); }
+  72% { opacity: 1; transform: translateY(-2px) scale(1.006); filter: blur(0); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes tadeon-sheet-arrival {
+  from { opacity: 0; transform: translateX(24px); filter: blur(3px); }
+  75% { opacity: 1; transform: translateX(-2px); filter: blur(0); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes tadeon-popup-content-cascade {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes tadeon-sheet-content-cascade {
+  from { opacity: 0; transform: translateX(7px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes tadeon-ambient-breathe {
+  from { transform: translate3d(-.35%, -.2%, 0) scale(1); opacity: .78; }
+  to { transform: translate3d(.35%, .2%, 0) scale(1.018); opacity: 1; }
+}
+
+@keyframes tadeon-orbit-drift {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes tadeon-grain-shift {
+  0%, 100% { transform: translate3d(0,0,0); opacity: .72; }
+  25% { transform: translate3d(.4%, -.3%, 0); opacity: .82; }
+  50% { transform: translate3d(-.25%, .35%, 0); opacity: .68; }
+  75% { transform: translate3d(.3%, .25%, 0); opacity: .78; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tadeon-tabletop-studio__header .tadeon-tabletop-symbol,
+  .tadeon-tabletop-studio__header [data-tabletop-symbol],
+  .tadeon-tabletop-studio .tadeon-symbol-mark {
+    transition: none !important;
+    transform: none !important;
+  }
+
+  .tadeon-shell [data-slot="popover-content"],
+  .tadeon-shell [data-slot="dropdown-menu-content"],
+  .tadeon-shell [data-slot="dropdown-menu-sub-content"],
+  .tadeon-shell [data-slot="tooltip-content"],
+  .tadeon-shell [data-slot="dialog-overlay"],
+  .tadeon-shell [data-slot="sheet-overlay"],
+  .tadeon-shell [data-slot="dialog-content"],
+  .tadeon-shell [data-slot="sheet-content"],
+  .tadeon-shell [data-slot="dialog-content"] > *,
+  .tadeon-shell [data-slot="sheet-content"] > *,
+  .tadeon-shell .tadeon-atmosphere,
+  .tadeon-shell .tadeon-atmosphere-layer,
+  .tadeon-shell [data-tadeon-atmosphere],
+  .tadeon-shell .tadeon-orbit,
+  .tadeon-shell [data-tadeon-orbit],
+  .tadeon-shell .tadeon-grain,
+  .tadeon-shell [data-tadeon-grain] {
+    animation: none !important;
+  }
+}
