@@ -1,0 +1,96 @@
+/* Tadeon Personality Motion — every interaction has a distinct gesture. */
+:root{--tdv-in:cubic-bezier(.16,1,.3,1);--tdv-spring:cubic-bezier(.175,.885,.32,1.275);--tdv-soft:cubic-bezier(.22,1,.36,1);--tdv-out:cubic-bezier(.7,0,.84,0);--tdv-fast:180ms;--tdv-ui:280ms;--tdv-panel:520ms}
+
+/* Buttons: press, release and icon response are deliberately visible. */
+.tadeon-shell button:not(:disabled),.tadeon-shell [role=button],.tadeon-shell a[href]{transform-origin:center;transition:transform var(--tdv-fast) var(--tdv-spring),box-shadow var(--tdv-ui) var(--tdv-soft),border-color var(--tdv-fast) ease,background-color var(--tdv-fast) ease,filter var(--tdv-ui) ease}
+.tadeon-shell button:not(:disabled):hover,.tadeon-shell [role=button]:hover,.tadeon-shell a[href]:hover{transform:translateY(-3px) scale(1.015);filter:brightness(1.06)}
+.tadeon-shell button:not(:disabled):active,.tadeon-shell [role=button]:active,.tadeon-shell a[href]:active{transform:translateY(2px) scale(.93);filter:brightness(.96);transition-duration:90ms}
+.tadeon-shell button:not(:disabled)::before,.tadeon-shell [role=button]::before,.tadeon-shell a[href]::before{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;opacity:0;transform:scale(.72);background:radial-gradient(circle at 50% 50%,currentColor 0,transparent 62%);transition:opacity 260ms ease,transform 360ms var(--tdv-spring)}
+.tadeon-shell button:not(:disabled):active::before,.tadeon-shell [role=button]:active::before,.tadeon-shell a[href]:active::before{opacity:.08;transform:scale(1.3)}
+.tadeon-shell button :where(svg.lucide),.tadeon-shell [role=button] :where(svg.lucide),.tadeon-shell a[href] :where(svg.lucide){transition:transform 300ms var(--tdv-spring),filter 280ms ease}
+.tadeon-shell button:hover :where(svg.lucide),.tadeon-shell [role=button]:hover :where(svg.lucide),.tadeon-shell a[href]:hover :where(svg.lucide){transform:translateY(-2px) scale(1.1) rotate(-3deg);filter:drop-shadow(0 7px 14px rgb(217 215 164 / 22%))}
+.tadeon-shell button:active :where(svg.lucide),.tadeon-shell [role=button]:active :where(svg.lucide),.tadeon-shell a[href]:active :where(svg.lucide){transform:translateY(2px) scale(.88) rotate(4deg)}
+
+/* Tabs: underline travels; label and icon move independently. */
+.tadeon-shell [data-slot=tabs-list]{position:relative}
+.tadeon-shell [data-slot=tabs-trigger]{overflow:visible!important;transform-origin:center;transition:transform 220ms var(--tdv-spring),color 180ms ease,background-color 260ms ease,box-shadow 320ms var(--tdv-soft)}
+.tadeon-shell [data-slot=tabs-trigger]:hover{transform:translateY(-3px)}
+.tadeon-shell [data-slot=tabs-trigger]:active{transform:translateY(2px) scale(.95)}
+.tadeon-shell [data-slot=tabs-trigger]::after{content:"";position:absolute;left:10%;right:10%;bottom:-2px;height:2px;border-radius:999px;background:currentColor;transform:scaleX(.12);transform-origin:center;opacity:0;transition:transform 420ms var(--tdv-spring),opacity 220ms ease,filter 360ms ease}
+.tadeon-shell [data-slot=tabs-trigger][data-state=active]::after{opacity:.9;transform:scaleX(1);filter:drop-shadow(0 0 9px currentColor)}
+.tadeon-shell [data-slot=tabs-trigger] :where(svg.lucide){transition:transform 360ms var(--tdv-spring)}
+.tadeon-shell [data-slot=tabs-trigger][data-state=active] :where(svg.lucide){transform:translateY(-2px) scale(1.08) rotate(-2deg)}
+.tadeon-shell [data-slot=tabs-content][data-state=active]{animation:tdv-tab-enter 520ms var(--tdv-in) both}
+@keyframes tdv-tab-enter{from{opacity:0;transform:translate3d(0,30px,0) scale(.965);filter:blur(10px)}55%{opacity:1;transform:translate3d(0,-5px,0) scale(1.008);filter:blur(0)}to{opacity:1;transform:none}}
+
+/* Inputs: focus behaves like inscription being lit. */
+.tadeon-shell input,.tadeon-shell textarea,.tadeon-shell [data-slot=select-trigger]{transition:border-color 240ms ease,box-shadow 420ms var(--tdv-soft),background-color 260ms ease,transform 260ms var(--tdv-soft),filter 260ms ease}
+.tadeon-shell input:hover,.tadeon-shell textarea:hover,.tadeon-shell [data-slot=select-trigger]:hover{transform:translateY(-2px)}
+.tadeon-shell input:focus,.tadeon-shell textarea:focus,.tadeon-shell [data-slot=select-trigger]:focus-visible{transform:translateY(-3px);box-shadow:0 0 0 1px rgb(217 215 164 / 30%),0 18px 44px -28px rgb(217 215 164 / 60%);filter:brightness(1.04)}
+.tadeon-shell input::selection,.tadeon-shell textarea::selection{background:rgb(116 36 45 / 42%)}
+
+/* Checkboxes / radios / switches: tactile state change. */
+.tadeon-shell [data-slot=checkbox][data-state=checked],.tadeon-shell [data-slot=radio-group-item][data-state=checked],.tadeon-shell [data-state=checked][role=switch]{animation:tdv-state-pop 440ms var(--tdv-spring) both}
+@keyframes tdv-state-pop{0%{transform:scale(.78) rotate(-6deg)}48%{transform:scale(1.18) rotate(2deg)}76%{transform:scale(.96)}100%{transform:scale(1) rotate(0)}}
+
+/* Cards / rows: distinct lift, lateral drift and material sheen. */
+.tadeon-shell .tadeon-surface,.tadeon-shell .tadeon-sheet-card,.tadeon-shell .tadeon-user-row,.tadeon-shell .tadeon-dashboard-signal,.tadeon-shell .tadeon-state-panel{transition:transform 340ms var(--tdv-spring),box-shadow 440ms var(--tdv-soft),border-color 260ms ease,filter 340ms ease}
+@media (hover:hover) and (pointer:fine){.tadeon-shell .tadeon-surface:hover{transform:translateY(-8px) rotate(-.18deg) scale(1.012);filter:brightness(1.035)}.tadeon-shell .tadeon-sheet-card:hover{transform:translateY(-9px) rotate(.14deg) scale(1.016);filter:brightness(1.045)}.tadeon-shell .tadeon-user-row:hover{transform:translateX(8px) translateY(-2px);filter:brightness(1.025)}.tadeon-shell .tadeon-dashboard-signal:hover{transform:translateY(-10px) rotate(-.25deg) scale(1.02)}.tadeon-shell .tadeon-state-panel:hover{transform:translateY(-6px) scale(1.008)}}
+
+/* Navigation: active destination arrives with a directional sweep. */
+.tadeon-primary-nav .tadeon-nav-item,.tadeon-mobile-dock__item{transition:transform 320ms var(--tdv-spring),color 220ms ease,background-color 320ms ease,box-shadow 420ms var(--tdv-soft)}
+@media (hover:hover) and (pointer:fine){.tadeon-primary-nav .tadeon-nav-item:hover,.tadeon-mobile-dock__item:hover{transform:translateX(7px) translateY(-2px)}}
+.tadeon-primary-nav .tadeon-nav-item[aria-current=page],.tadeon-mobile-dock__item[aria-current=page]{animation:tdv-nav-land 560ms var(--tdv-spring) both}
+@keyframes tdv-nav-land{0%{opacity:.65;transform:translateX(-13px) scale(.92)}55%{opacity:1;transform:translateX(4px) scale(1.045)}100%{opacity:1;transform:none}}
+
+/* Tooltips and floating notes: quick, sharp, directional. */
+.tadeon-shell [data-slot=tooltip-content][data-state=open]{animation:tdv-tooltip-in 260ms var(--tdv-spring) both}
+.tadeon-shell [data-slot=tooltip-content][data-state=closed]{animation:tdv-tooltip-out 130ms var(--tdv-out) both}
+@keyframes tdv-tooltip-in{from{opacity:0;transform:translateY(14px) scale(.86) rotate(-1.2deg);filter:blur(4px)}65%{opacity:1;transform:translateY(-3px) scale(1.04) rotate(.2deg);filter:blur(0)}to{transform:none}}
+@keyframes tdv-tooltip-out{to{opacity:0;transform:translateY(8px) scale(.9);filter:blur(3px)}}
+
+/* Menus: opened like a fan rather than a generic fade. */
+.tadeon-shell [data-slot=dropdown-menu-content][data-state=open],.tadeon-shell [data-slot=popover-content][data-state=open]{animation:tdv-menu-in 320ms var(--tdv-spring) both}
+@keyframes tdv-menu-in{from{opacity:0;transform:translateY(-12px) scale(.84) rotateX(-8deg);filter:blur(5px)}64%{opacity:1;transform:translateY(3px) scale(1.03) rotateX(1deg);filter:blur(0)}to{transform:none}}
+.tadeon-shell [data-slot=dropdown-menu-content][data-state=open] > *, .tadeon-shell [data-slot=dropdown-menu-sub-content][data-state=open] > *{animation:tdv-menu-item 280ms var(--tdv-in) both}
+.tadeon-shell [data-slot=dropdown-menu-content][data-state=open] > :nth-child(2){animation-delay:30ms}.tadeon-shell [data-slot=dropdown-menu-content][data-state=open] > :nth-child(3){animation-delay:60ms}.tadeon-shell [data-slot=dropdown-menu-content][data-state=open] > :nth-child(4){animation-delay:90ms}.tadeon-shell [data-slot=dropdown-menu-content][data-state=open] > :nth-child(5){animation-delay:120ms}
+@keyframes tdv-menu-item{from{opacity:0;transform:translateX(-14px) scale(.94)}to{opacity:1;transform:none}}
+
+/* Toasts: arrive, settle and subtly expand the status line. */
+.tadeon-shell [data-sonner-toast]{animation:tdv-toast-in 480ms var(--tdv-in) both}
+@keyframes tdv-toast-in{from{opacity:0;transform:translate3d(30px,-22px,0) scale(.86);filter:blur(7px)}62%{opacity:1;transform:translate3d(-4px,3px,0) scale(1.035);filter:blur(0)}to{transform:none}}
+
+/* Modal and sheets receive noticeably different silhouettes. */
+.tadeon-shell [data-slot=dialog-content][data-state=open]{animation:tdv-dialog-in 600ms var(--tdv-in) both}
+.tadeon-shell [data-slot=dialog-content][data-state=closed]{animation:tdv-dialog-out 220ms var(--tdv-out) both}
+@keyframes tdv-dialog-in{from{opacity:0;transform:translateY(72px) scale(.82) rotateX(-7deg);filter:blur(14px)}58%{opacity:1;transform:translateY(-7px) scale(1.035) rotateX(1deg);filter:blur(0)}to{opacity:1;transform:none}}
+@keyframes tdv-dialog-out{from{opacity:1;transform:none}to{opacity:0;transform:translateY(38px) scale(.9) rotateX(4deg);filter:blur(7px)}}
+.tadeon-shell [data-slot=sheet-content][data-state=open][data-side=right]{animation:tdv-sheet-r-in 620ms var(--tdv-in) both}.tadeon-shell [data-slot=sheet-content][data-state=closed][data-side=right]{animation:tdv-sheet-r-out 220ms var(--tdv-out) both}.tadeon-shell [data-slot=sheet-content][data-state=open][data-side=left]{animation:tdv-sheet-l-in 620ms var(--tdv-in) both}.tadeon-shell [data-slot=sheet-content][data-state=closed][data-side=left]{animation:tdv-sheet-l-out 220ms var(--tdv-out) both}.tadeon-shell [data-slot=sheet-content][data-state=open][data-side=bottom]{animation:tdv-sheet-b-in 620ms var(--tdv-in) both}.tadeon-shell [data-slot=sheet-content][data-state=closed][data-side=bottom]{animation:tdv-sheet-b-out 220ms var(--tdv-out) both}
+@keyframes tdv-sheet-r-in{from{transform:translateX(100%) scale(.96);opacity:.3}60%{transform:translateX(-18px) scale(1.012);opacity:1}to{transform:none;opacity:1}}@keyframes tdv-sheet-r-out{to{transform:translateX(100%) scale(.98);opacity:0}}@keyframes tdv-sheet-l-in{from{transform:translateX(-100%) scale(.96);opacity:.3}60%{transform:translateX(18px) scale(1.012);opacity:1}to{transform:none;opacity:1}}@keyframes tdv-sheet-l-out{to{transform:translateX(-100%) scale(.98);opacity:0}}@keyframes tdv-sheet-b-in{from{transform:translateY(100%) scale(.96);opacity:.2}60%{transform:translateY(-18px) scale(1.012);opacity:1}to{transform:none;opacity:1}}@keyframes tdv-sheet-b-out{to{transform:translateY(100%) scale(.98);opacity:0}}
+
+/* Background objects: slow, layered drift with different periods. */
+.tadeon-shell .tadeon-atmosphere,.tadeon-shell [data-tadeon-atmosphere]{animation:tdv-atmo-a 19s ease-in-out infinite alternate}.tadeon-shell .tadeon-atmosphere-layer{animation:tdv-atmo-b 27s ease-in-out infinite alternate}.tadeon-shell .tadeon-orbit,[data-tadeon-orbit]{animation:tdv-orbit 31s linear infinite}.tadeon-shell .tadeon-grain,[data-tadeon-grain]{animation:tdv-grain 7s steps(2,end) infinite}.tadeon-shell .tadeon-thread-field{animation:tdv-thread 13s ease-in-out infinite alternate}
+@keyframes tdv-atmo-a{from{transform:translate3d(-2%,-1%,0) scale(.97) rotate(-.4deg)}to{transform:translate3d(3%,2%,0) scale(1.06) rotate(.5deg)}}@keyframes tdv-atmo-b{from{transform:translate3d(2%,-2%,0) scale(1.02)}to{transform:translate3d(-3%,3%,0) scale(.96)}}@keyframes tdv-orbit{from{transform:rotate(-8deg) translate3d(0,0,0)}to{transform:rotate(12deg) translate3d(-24px,14px,0)}}@keyframes tdv-grain{0%{opacity:.25;transform:translate(0,0)}50%{opacity:.5;transform:translate(9px,-6px)}100%{opacity:.3;transform:translate(-6px,7px)}}@keyframes tdv-thread{from{transform:translate3d(-2%,-1%,0);opacity:.45}to{transform:translate3d(3%,2%,0);opacity:.95}}
+
+/* Loading and save states have an authored pulse, not a spinner. */
+.tadeon-shell [aria-busy=true]{overflow:hidden}.tadeon-shell [aria-busy=true]::after{content:"";position:absolute;inset:0;background:linear-gradient(105deg,transparent 34%,rgb(217 215 164 / 18%) 50%,transparent 66%);transform:translateX(-120%);animation:tdv-sweep 1.55s ease-in-out infinite;pointer-events:none}@keyframes tdv-sweep{to{transform:translateX(120%)}}
+[data-tadeon-state=saving],[data-tadeon-feedback=saving]{animation:tdv-saving 1.6s ease-in-out infinite}[data-tadeon-state=saved],[data-tadeon-feedback=success]{animation:tdv-success 600ms var(--tdv-spring) both}[data-tadeon-state=error],[data-tadeon-feedback=error]{animation:tdv-error 460ms var(--tdv-spring) both}
+@keyframes tdv-saving{0%,100%{box-shadow:0 0 0 0 rgb(217 215 164 / 0%)}50%{box-shadow:0 0 34px -14px rgb(217 215 164 / 48%)}}@keyframes tdv-success{0%{opacity:.55;transform:scale(.88)}45%{opacity:1;transform:scale(1.1)}75%{transform:scale(.97)}100%{transform:scale(1)}}@keyframes tdv-error{0%,100%{transform:translateX(0)}20%{transform:translateX(-8px) rotate(-.4deg)}40%{transform:translateX(7px) rotate(.4deg)}60%{transform:translateX(-4px)}80%{transform:translateX(2px)}}
+
+/* Tables / lists: rows arrive as a visible procession. */
+.tadeon-shell .tadeon-users-list > *, .tadeon-shell .tadeon-inventory-list > *, .tadeon-shell .tadeon-skill-list > *, .tadeon-shell .tadeon-sheet-overview > *{animation:tdv-row-in 560ms var(--tdv-in) both}.tadeon-shell .tadeon-users-list > :nth-child(2),.tadeon-shell .tadeon-inventory-list > :nth-child(2),.tadeon-shell .tadeon-skill-list > :nth-child(2){animation-delay:50ms}.tadeon-shell .tadeon-users-list > :nth-child(3),.tadeon-shell .tadeon-inventory-list > :nth-child(3),.tadeon-shell .tadeon-skill-list > :nth-child(3){animation-delay:100ms}.tadeon-shell .tadeon-users-list > :nth-child(4),.tadeon-shell .tadeon-inventory-list > :nth-child(4),.tadeon-shell .tadeon-skill-list > :nth-child(4){animation-delay:150ms}@keyframes tdv-row-in{from{opacity:0;transform:translateX(-28px) translateY(14px) scale(.97);filter:blur(5px)}65%{opacity:1;transform:translateX(4px) translateY(-2px) scale(1.01);filter:blur(0)}to{transform:none}}
+
+/* Nexus: selection becomes a focal event. */
+.tadeon-shell [data-tadeon-node][data-selected=true],.tadeon-shell [data-tadeon-map-element][data-selected=true]{animation:tdv-node-focus 700ms var(--tdv-spring) both;transform-origin:center;filter:drop-shadow(0 18px 32px rgb(217 215 164 / 28%))}.tadeon-shell [data-tadeon-node][data-related=true],.tadeon-shell [data-tadeon-map-element][data-related=true]{transition:opacity 420ms var(--tdv-soft),filter 520ms var(--tdv-soft),transform 500ms var(--tdv-spring)}@keyframes tdv-node-focus{0%{opacity:.55;transform:scale(.72);filter:drop-shadow(0 0 0 rgb(217 215 164 / 0%))}55%{opacity:1;transform:scale(1.15);filter:drop-shadow(0 20px 36px rgb(217 215 164 / 34%))}100%{transform:scale(1)}}
+
+/* Tabletop tools: different from generic buttons — heavier and more mechanical. */
+.tadeon-shell[data-section="Mesa Nexus"] [data-tabletop-tool],.tadeon-shell[data-section="Mesa Nexus"] [data-tabletop-action]{transition:transform 220ms var(--tdv-spring),box-shadow 360ms var(--tdv-soft),filter 220ms ease}.tadeon-shell[data-section="Mesa Nexus"] [data-tabletop-tool]:hover,.tadeon-shell[data-section="Mesa Nexus"] [data-tabletop-action]:hover{transform:translateY(-5px) rotate(-1deg) scale(1.04);filter:brightness(1.08)}.tadeon-shell[data-section="Mesa Nexus"] [data-tabletop-tool]:active,.tadeon-shell[data-section="Mesa Nexus"] [data-tabletop-action]:active{transform:translateY(4px) scale(.9) rotate(.7deg)}
+
+/* Master command surface: command-like horizontal sweep. */
+.tadeon-shell[data-section="Painel do Mestre"] [data-tadeon-command]:hover{transform:translateX(9px);filter:brightness(1.08)}.tadeon-shell[data-section="Painel do Mestre"] [data-tadeon-command]:active{transform:translateX(3px) scale(.94)}
+
+/* Focus ring arrives with a pulse, rather than static outline. */
+.tadeon-shell :focus-visible{outline:1px solid rgb(217 215 164 / 66%);outline-offset:4px;box-shadow:0 0 0 5px rgb(217 215 164 / 8%);animation:tdv-focus 340ms var(--tdv-spring) both}@keyframes tdv-focus{from{outline-offset:9px;opacity:.72}65%{outline-offset:3px;opacity:1}to{outline-offset:4px}}
+
+/* Reduced motion remains explicit and complete. */
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:1ms!important;animation-iteration-count:1!important;transition-duration:1ms!important;scroll-behavior:auto!important}}
