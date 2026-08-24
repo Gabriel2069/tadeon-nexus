@@ -1,0 +1,65 @@
+/* Tadeon shell background repair — the route stage must fill the available viewport;
+   content containers remain constrained independently. */
+
+.tadeon-shell {
+  min-height: 100dvh;
+  width: 100%;
+}
+
+.tadeon-shell > .relative.z-10.flex.min-w-0.flex-1,
+.tadeon-shell > .tadeon-dedicated-shell__main,
+.tadeon-shell__main {
+  min-width: 0;
+  min-height: 100dvh;
+}
+
+.tadeon-route-stage {
+  box-sizing: border-box;
+  width: 100% !important;
+  max-width: none !important;
+  min-width: 0;
+  min-height: calc(100dvh - var(--tadeon-toolbar-height, 0px));
+  margin-inline: 0 !important;
+}
+
+/* The stage owns the atmospheric plane. Page containers own content geometry. */
+.tadeon-route-stage::before {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  content: "";
+  background:
+    linear-gradient(180deg, rgb(8 11 15 / 10%), transparent 22%, rgb(0 0 0 / 8%)),
+    radial-gradient(circle at 50% 0%, rgb(217 215 164 / 2.5%), transparent 42%);
+}
+
+.tadeon-route-stage > .tadeon-page,
+.tadeon-route-stage > .tadeon-master-workspace,
+.tadeon-route-stage > .tadeon-sheet-page,
+.tadeon-route-stage > .tadeon-second-brain {
+  box-sizing: border-box;
+  width: min(100%, var(--tadeon-content-max, 88rem));
+  max-width: var(--tadeon-content-max, 88rem);
+  margin-inline: auto !important;
+}
+
+/* Preserve full-bleed dedicated/tabletop experiences. */
+.tadeon-route-stage > .tadeon-tabletop-studio,
+.tadeon-route-stage > [data-tabletop-stage] {
+  width: 100%;
+  max-width: none;
+  margin-inline: 0;
+}
+
+@media (max-width: 767px) {
+  .tadeon-route-stage {
+    min-height: calc(100dvh - 4rem);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tadeon-route-stage::before {
+    background: linear-gradient(180deg, rgb(8 11 15 / 10%), transparent 22%, rgb(0 0 0 / 8%));
+  }
+}
