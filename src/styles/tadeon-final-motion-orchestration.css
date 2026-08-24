@@ -1,0 +1,153 @@
+/* Tadeon final motion orchestration — real component states, restrained personality. */
+:root {
+  --tm-in: cubic-bezier(.16,1,.3,1);
+  --tm-soft: cubic-bezier(.22,1,.36,1);
+  --tm-smooth: cubic-bezier(.4,0,.2,1);
+  --tm-spring: cubic-bezier(.175,.885,.32,1.12);
+}
+
+/* Buttons and action controls: deliberate press/release, not generic hover. */
+.tadeon-shell button:not(:disabled),
+.tadeon-shell [role="button"] {
+  transition:
+    transform 210ms var(--tm-soft),
+    color 180ms var(--tm-smooth),
+    background-color 220ms var(--tm-smooth),
+    border-color 220ms var(--tm-smooth),
+    box-shadow 260ms var(--tm-soft),
+    filter 220ms var(--tm-smooth);
+}
+.tadeon-shell button:not(:disabled):hover,
+.tadeon-shell [role="button"]:hover { filter: brightness(1.045) saturate(1.03); }
+.tadeon-shell button:not(:disabled):active,
+.tadeon-shell [role="button"]:active { transform: translateY(1px) scale(.965); }
+
+/* Real Radix controls. */
+.tadeon-shell [data-slot="switch"] {
+  transition: background-color 260ms var(--tm-soft), border-color 260ms var(--tm-soft), box-shadow 300ms var(--tm-soft), transform 200ms var(--tm-soft) !important;
+}
+.tadeon-shell [data-slot="switch-thumb"] {
+  transition: transform 320ms var(--tm-spring), box-shadow 260ms var(--tm-soft), width 220ms var(--tm-soft) !important;
+}
+.tadeon-shell [data-slot="switch"]:active { transform: scale(.97); }
+.tadeon-shell [data-slot="switch"]:active [data-slot="switch-thumb"] { transform: scale(.9) !important; }
+.tadeon-shell [data-slot="switch"][data-state="checked"] [data-slot="switch-thumb"] { box-shadow: 0 4px 14px -7px rgb(255 255 255 / 65%); }
+
+.tadeon-shell [data-slot="checkbox"],
+.tadeon-shell [data-slot="radio-group-item"] {
+  transition: transform 220ms var(--tm-spring), background-color 220ms var(--tm-smooth), border-color 220ms var(--tm-smooth), box-shadow 260ms var(--tm-soft), color 180ms ease !important;
+}
+.tadeon-shell [data-slot="checkbox"]:active,
+.tadeon-shell [data-slot="radio-group-item"]:active { transform: scale(.9); }
+.tadeon-shell [data-slot="checkbox"][data-state="checked"],
+.tadeon-shell [data-slot="radio-group-item"][data-state="checked"] { box-shadow: 0 0 0 3px color-mix(in srgb, currentColor 10%, transparent); }
+.tadeon-shell [data-slot="checkbox-indicator"],
+.tadeon-shell [data-slot="radio-group-indicator"] { animation: tm-control-confirm 300ms var(--tm-spring) both; }
+@keyframes tm-control-confirm { from { opacity:0; transform:scale(.45) rotate(-8deg); } 65% { opacity:1; transform:scale(1.12) rotate(1deg); } to { opacity:1; transform:none; } }
+
+/* Progress/range: value change travels along the control. */
+.tadeon-shell [data-slot="progress-indicator"],
+.tadeon-shell [data-slot="slider-range"] { transition: transform 420ms var(--tm-in), background-color 240ms ease !important; }
+.tadeon-shell [data-slot="progress"]::after {
+  content:"";
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  transform:translateX(-100%);
+  background:linear-gradient(90deg, transparent, rgb(255 255 255 / 20%), transparent);
+  animation:tm-progress-sweep 2.8s ease-in-out infinite;
+}
+@keyframes tm-progress-sweep { 0%,65% { transform:translateX(-100%); opacity:0; } 75% { opacity:.75; } 100% { transform:translateX(100%); opacity:0; } }
+.tadeon-shell [data-slot="slider-thumb"] { transition: transform 240ms var(--tm-spring), box-shadow 260ms var(--tm-soft), background-color 220ms ease !important; }
+.tadeon-shell [data-slot="slider-thumb"]:hover { transform:scale(1.08); }
+.tadeon-shell [data-slot="slider-thumb"]:active { transform:scale(.92); }
+
+/* Accordions: header and content behave as one mechanism. */
+.tadeon-shell [data-slot="accordion-trigger"] { transition: color 200ms ease, background-color 220ms ease, padding 260ms var(--tm-soft), transform 220ms var(--tm-soft) !important; }
+.tadeon-shell [data-slot="accordion-trigger"][data-state="open"] { color:var(--section-accent); }
+.tadeon-shell [data-slot="accordion-trigger"][data-state="open"] svg { transform:rotate(180deg) scale(1.05); }
+.tadeon-shell [data-slot="accordion-trigger"] svg { transition:transform 280ms var(--tm-spring), color 180ms ease !important; }
+.tadeon-shell [data-slot="accordion-content"][data-state="open"] > div { animation:tm-accordion-content-in 360ms var(--tm-in) both; }
+@keyframes tm-accordion-content-in { from { opacity:0; transform:translateY(-7px); filter:blur(3px); } to { opacity:1; transform:none; filter:none; } }
+
+/* Tabs: active trigger, moving indicator and panel share a single gesture. */
+.tadeon-shell [data-slot="tabs-indicator"] {
+  position:absolute;
+  z-index:-1;
+  border-radius:.65rem;
+  background:linear-gradient(145deg, rgb(var(--section-accent-rgb,217 215 164) / 15%), rgb(255 255 255 / 4%));
+  border:1px solid color-mix(in srgb, var(--section-accent) 25%, transparent);
+  box-shadow:inset 0 1px rgb(255 255 255 / 6%), 0 10px 30px -24px rgb(0 0 0 / 90%);
+  transition:transform 420ms var(--tm-in), width 360ms var(--tm-in), height 360ms var(--tm-in), opacity 180ms ease;
+}
+.tadeon-shell [data-slot="tabs-content"] { animation:tm-tabs-panel-in 360ms var(--tm-in) both; }
+@keyframes tm-tabs-panel-in { from { opacity:0; transform:translateY(9px); filter:blur(3px); } to { opacity:1; transform:none; filter:none; } }
+.tadeon-shell [data-slot="tabs"][data-motion-direction="backward"] [data-slot="tabs-content"] { animation-name:tm-tabs-panel-back; }
+@keyframes tm-tabs-panel-back { from { opacity:0; transform:translateX(-9px); filter:blur(3px); } to { opacity:1; transform:none; filter:none; } }
+
+/* Dropdown/select/popover items: the list itself arrives first, children follow. */
+[data-slot="select-content"],
+[data-slot="dropdown-menu-content"],
+[data-slot="popover-content"],
+[data-slot="context-menu-content"] { transform-origin:var(--radix-popper-transform-origin, center); }
+[data-slot="select-content"] [data-slot="select-item"],
+[data-slot="dropdown-menu-content"] [data-slot="dropdown-menu-item"],
+[data-slot="context-menu-content"] [data-slot="context-menu-item"] { animation:tm-menu-item-in 250ms var(--tm-in) both; }
+[data-slot="select-content"] [data-slot="select-item"]:nth-child(2),
+[data-slot="dropdown-menu-content"] [data-slot="dropdown-menu-item"]:nth-child(2) { animation-delay:25ms; }
+[data-slot="select-content"] [data-slot="select-item"]:nth-child(3),
+[data-slot="dropdown-menu-content"] [data-slot="dropdown-menu-item"]:nth-child(3) { animation-delay:50ms; }
+[data-slot="select-content"] [data-slot="select-item"]:nth-child(4),
+[data-slot="dropdown-menu-content"] [data-slot="dropdown-menu-item"]:nth-child(4) { animation-delay:75ms; }
+@keyframes tm-menu-item-in { from { opacity:0; transform:translateX(-7px); } to { opacity:1; transform:none; } }
+
+/* Toasts and live feedback have distinct arrival language. */
+[data-sonner-toaster] [data-sonner-toast] { animation:tm-toast-in 420ms var(--tm-in) both; }
+@keyframes tm-toast-in { from { opacity:0; transform:translate3d(18px,8px,0) scale(.97); filter:blur(4px); } 70% { opacity:1; transform:translate3d(-1px,0,0) scale(1.005); filter:none; } to { opacity:1; transform:none; } }
+
+/* Sidebar: keep support actions and search alive in the collapsed rail. */
+@media (min-width:768px) {
+  #tadeon-desktop-sidebar .tadeon-sidebar__scroll,
+  #tadeon-desktop-sidebar .tadeon-primary-nav { overflow:visible; }
+  #tadeon-desktop-sidebar [data-slot="input"] { transition:width 360ms var(--tm-in), opacity 220ms ease, transform 280ms var(--tm-soft); }
+  #tadeon-desktop-sidebar[data-collapsed="true"] .tadeon-sidebar__scroll { padding-inline:.25rem; }
+  #tadeon-desktop-sidebar[data-collapsed="true"] .tadeon-primary-nav { overflow:visible; }
+  #tadeon-desktop-sidebar[data-collapsed="true"] .tadeon-nav-item,
+  #tadeon-desktop-sidebar[data-collapsed="true"] button { will-change:transform; }
+  #tadeon-desktop-sidebar .tadeon-nav-item[aria-current="page"] { animation:tm-sidebar-active-in 360ms var(--tm-in) both; }
+  @keyframes tm-sidebar-active-in { from { opacity:.7; transform:translateX(-6px); } 65% { opacity:1; transform:translateX(2px); } to { opacity:1; transform:none; } }
+  #tadeon-desktop-sidebar[data-collapsed="true"] .tadeon-nav-item[aria-current="page"] { animation:none; box-shadow:inset 2px 0 var(--sidebar-item-accent), inset 0 0 0 1px color-mix(in srgb, var(--sidebar-item-accent) 16%, transparent), 0 12px 30px -28px rgb(var(--sidebar-item-rgb, 217 215 164) / 50%) !important; }
+}
+
+/* Table rows and list items: information moves as a group. */
+.tadeon-shell table tbody tr,
+.tadeon-shell [data-slot="table-row"],
+.tadeon-shell [role="listitem"] { transition:transform 240ms var(--tm-soft), background-color 220ms ease, box-shadow 260ms var(--tm-soft), opacity 200ms ease !important; }
+.tadeon-shell [data-slot="table-row"][data-state="selected"],
+.tadeon-shell [role="listitem"][aria-selected="true"] { box-shadow:inset 2px 0 var(--section-accent), 0 12px 34px -30px rgb(var(--section-accent-rgb,217 215 164) / 45%); }
+
+/* Header/toolbar details: local identity follows section changes. */
+.tadeon-shell .tadeon-desktop-toolbar__role,
+.tadeon-shell .tadeon-desktop-toolbar__account,
+.tadeon-shell .tadeon-mobile-header__control { transition:transform 240ms var(--tm-soft), color 180ms ease, background-color 220ms ease, border-color 220ms ease, box-shadow 260ms var(--tm-soft); }
+.tadeon-shell .tadeon-desktop-toolbar__role:hover,
+.tadeon-shell .tadeon-desktop-toolbar__account:hover,
+.tadeon-shell .tadeon-mobile-header__control:hover { transform:translateY(-2px); box-shadow:0 12px 34px -28px rgb(var(--section-accent-rgb,217 215 164) / 55%); }
+
+@media (prefers-reduced-motion:reduce) {
+  .tadeon-shell button,
+  .tadeon-shell [role="button"],
+  .tadeon-shell [data-slot="switch"],
+  .tadeon-shell [data-slot="switch-thumb"],
+  .tadeon-shell [data-slot="checkbox"],
+  .tadeon-shell [data-slot="radio-group-item"],
+  .tadeon-shell [data-slot="progress-indicator"],
+  .tadeon-shell [data-slot="slider-range"],
+  .tadeon-shell [data-slot="slider-thumb"],
+  .tadeon-shell [data-slot="accordion-trigger"],
+  .tadeon-shell [data-slot="tabs-indicator"],
+  .tadeon-shell [data-slot="tabs-content"],
+  .tadeon-shell table tbody tr,
+  .tadeon-shell [role="listitem"],
+  [data-sonner-toaster] [data-sonner-toast] { transition:none !important; animation:none !important; }
+}
