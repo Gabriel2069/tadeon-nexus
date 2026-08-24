@@ -1,0 +1,96 @@
+/* Tadeon deep interaction motion — authored behaviors for dynamic content that changes without opening a Radix surface. */
+:root{--tdi-in:cubic-bezier(.16,1,.3,1);--tdi-spring:cubic-bezier(.175,.885,.32,1.275);--tdi-soft:cubic-bezier(.22,1,.36,1)}
+
+/* Search / filters — results feel like a new layer arriving, not a redraw. */
+.tadeon-shell [data-slot="input"]:focus-visible,
+.tadeon-shell input:focus-visible,
+.tadeon-shell textarea:focus-visible{animation:tdi-field-focus 360ms var(--tdi-spring) both}
+@keyframes tdi-field-focus{0%{box-shadow:0 0 0 0 rgb(217 215 164 / 0%);transform:translateY(0)}55%{box-shadow:0 0 0 4px rgb(217 215 164 / 10%),0 18px 42px -28px rgb(217 215 164 / 44%);transform:translateY(-2px)}100%{box-shadow:0 0 0 2px rgb(217 215 164 / 6%);transform:none}}
+
+/* Pagination / sortable controls. */
+.tadeon-shell [aria-current="page"]{animation:tdi-page-arrive 360ms var(--tdi-spring) both}
+.tadeon-shell th[aria-sort],
+.tadeon-shell [aria-sort]{transition:color 180ms ease,background-color 240ms ease,transform 260ms var(--tdi-soft)}
+.tadeon-shell th[aria-sort]:hover,
+.tadeon-shell [aria-sort]:hover{transform:translateY(-1px)}
+@keyframes tdi-page-arrive{0%{opacity:.55;transform:translateY(5px) scale(.92)}65%{opacity:1;transform:translateY(-2px) scale(1.05)}100%{opacity:1;transform:none}}
+
+/* Data rows — selection, insertion and removal feel authored. */
+.tadeon-shell tbody tr,
+.tadeon-shell [role="row"]{transition:transform 260ms var(--tdi-soft),background-color 220ms ease,box-shadow 300ms var(--tdi-soft),opacity 240ms ease}
+@media (hover:hover) and (pointer:fine){
+  .tadeon-shell tbody tr:hover,
+  .tadeon-shell [role="row"]:hover{transform:translateX(4px);box-shadow:inset 2px 0 0 rgb(180 92 98 / 55%)}
+}
+.tadeon-shell tbody tr[data-selected="true"],
+.tadeon-shell [role="row"][aria-selected="true"]{animation:tdi-row-select 360ms var(--tdi-spring) both}
+@keyframes tdi-row-select{0%{transform:translateX(-5px);background-color:transparent}55%{transform:translateX(5px);background-color:rgb(116 36 45 / 9%)}100%{transform:none}}
+
+/* Cards entering lists / grids. */
+.tadeon-shell [data-tadeon-list] > *,
+.tadeon-shell .grid > .tadeon-surface{animation:tdi-list-item 460ms var(--tdi-in) both;animation-delay:calc(var(--tadeon-index, 0) * 34ms)}
+@keyframes tdi-list-item{from{opacity:0;transform:translateY(18px) scale(.97);filter:blur(4px)}58%{opacity:1;transform:translateY(-3px) scale(1.01);filter:blur(0)}to{opacity:1;transform:none}}
+
+/* Breadcrumbs / trail of context. */
+.tadeon-shell nav[aria-label*="breadcrumb" i] a,
+.tadeon-shell [aria-label*="breadcrumb" i] a{transition:transform 240ms var(--tdi-spring),color 180ms ease,opacity 180ms ease}
+.tadeon-shell nav[aria-label*="breadcrumb" i] a:hover,
+.tadeon-shell [aria-label*="breadcrumb" i] a:hover{transform:translateX(3px)}
+
+/* Headings / section labels — re-enter when their section changes. */
+.tadeon-shell .tadeon-page h1,
+.tadeon-shell .tadeon-page h2,
+.tadeon-shell .tadeon-page h3,
+.tadeon-shell .tadeon-page [data-tadeon-head]{animation:tdi-head-arrive 480ms var(--tdi-in) both}
+@keyframes tdi-head-arrive{from{opacity:0;transform:translateY(16px);filter:blur(5px)}68%{opacity:1;transform:translateY(-2px);filter:blur(0)}to{transform:none}}
+
+/* Horizontal bars and meters. */
+.tadeon-shell progress::-webkit-progress-value{transition:width 620ms var(--tdi-spring);filter:drop-shadow(0 0 7px rgb(217 215 164 / 24%))}
+.tadeon-shell [role="progressbar"]{overflow:hidden}
+.tadeon-shell [role="progressbar"]::after{content:"";position:absolute;inset:0;background:linear-gradient(105deg,transparent 30%,rgb(255 255 255 / 9%) 50%,transparent 70%);transform:translateX(-120%);animation:tdi-progress-sheen 1.9s ease-in-out infinite;pointer-events:none}
+@keyframes tdi-progress-sheen{to{transform:translateX(120%)}}
+
+/* Toast actions and notifications. */
+.tadeon-shell [data-sonner-toast] button,
+.tadeon-shell [data-sonner-toast] [role="button"]{animation:tdi-toast-action 320ms var(--tdi-spring) 120ms both}
+@keyframes tdi-toast-action{from{opacity:0;transform:translateX(8px) scale(.94)}to{opacity:1;transform:none}}
+
+/* Empty states and page states. */
+.tadeon-shell [data-tadeon-empty],
+.tadeon-shell [data-tadeon-page-state]{animation:tdi-empty-in 620ms var(--tdi-in) both}
+@keyframes tdi-empty-in{from{opacity:0;transform:translateY(26px) scale(.97);filter:blur(8px)}58%{opacity:1;transform:translateY(-4px) scale(1.012);filter:blur(0)}to{transform:none}}
+
+/* Icon semantics — each common action gets a recognizable gesture. */
+.tadeon-shell [aria-label*="fechar" i] svg{transition:transform 300ms var(--tdi-spring)}
+.tadeon-shell [aria-label*="fechar" i]:hover svg{transform:rotate(90deg) scale(1.08)}
+.tadeon-shell [aria-label*="adicionar" i] svg,
+.tadeon-shell [aria-label*="novo" i] svg{transition:transform 320ms var(--tdi-spring)}
+.tadeon-shell [aria-label*="adicionar" i]:hover svg,
+.tadeon-shell [aria-label*="novo" i]:hover svg{transform:rotate(90deg) scale(1.1)}
+.tadeon-shell [aria-label*="voltar" i] svg{transition:transform 280ms var(--tdi-spring)}
+.tadeon-shell [aria-label*="voltar" i]:hover svg{transform:translateX(-4px)}
+.tadeon-shell [aria-label*="avançar" i] svg,
+.tadeon-shell [aria-label*="próximo" i] svg{transition:transform 280ms var(--tdi-spring)}
+.tadeon-shell [aria-label*="avançar" i]:hover svg,
+.tadeon-shell [aria-label*="próximo" i]:hover svg{transform:translateX(4px)}
+.tadeon-shell [aria-label*="atualizar" i] svg,
+.tadeon-shell [aria-label*="recarregar" i] svg{transition:transform 620ms cubic-bezier(.4,0,.2,1)}
+.tadeon-shell [aria-label*="atualizar" i]:hover svg,
+.tadeon-shell [aria-label*="recarregar" i]:hover svg{transform:rotate(180deg)}
+.tadeon-shell [aria-label*="pesquisar" i] svg{transition:transform 300ms var(--tdi-spring)}
+.tadeon-shell [aria-label*="pesquisar" i]:hover svg{transform:scale(1.12) rotate(-8deg)}
+
+/* Sidebar orchestration — icon remains stable while label glides in/out. */
+.tadeon-shell .tadeon-sidebar{transition:width 440ms var(--tdi-in),box-shadow 440ms var(--tdi-soft),background-color 260ms ease}
+.tadeon-shell .tadeon-sidebar .tadeon-nav-item{transition:transform 280ms var(--tdi-spring),padding 420ms var(--tdi-in),gap 300ms var(--tdi-soft),color 180ms ease,background-color 220ms ease}
+.tadeon-shell .tadeon-sidebar[data-collapsed="true"] .tadeon-nav-item{justify-content:center;gap:0;padding-left:0;padding-right:0}
+.tadeon-shell .tadeon-sidebar[data-collapsed="true"] .tadeon-nav-item>span,
+.tadeon-shell .tadeon-sidebar[data-collapsed="true"] .tadeon-nav-item .nav-label{opacity:0;transform:translateX(-10px) scale(.94);max-width:0;overflow:hidden;transition:opacity 150ms ease,transform 280ms var(--tdi-in),max-width 420ms ease}
+.tadeon-shell .tadeon-sidebar:not([data-collapsed="true"]) .tadeon-nav-item>span,
+.tadeon-shell .tadeon-sidebar:not([data-collapsed="true"]) .tadeon-nav-item .nav-label{animation:tdi-side-label-in 360ms var(--tdi-in) both}
+@keyframes tdi-side-label-in{from{opacity:0;transform:translateX(-8px)}to{opacity:1;transform:none}}
+
+@media (prefers-reduced-motion:reduce){
+  .tadeon-shell tbody tr,.tadeon-shell [role="row"],.tadeon-shell [data-sonner-toast] button,.tadeon-shell [data-sonner-toast] [role="button"],.tadeon-shell [data-tadeon-empty],.tadeon-shell [data-tadeon-page-state],.tadeon-shell .tadeon-page h1,.tadeon-shell .tadeon-page h2,.tadeon-shell .tadeon-page h3,.tadeon-shell [data-tadeon-head]{animation:none!important;transition:none!important}
+  .tadeon-shell [role="progressbar"]::after{animation:none!important}
+}
