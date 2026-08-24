@@ -73,13 +73,16 @@
 /* Tabs: active trigger, moving indicator and panel share a single gesture. */
 .tadeon-shell [data-slot="tabs-indicator"] {
   position:absolute;
-  z-index:-1;
+  z-index:0;
+  pointer-events:none;
   border-radius:.65rem;
   background:linear-gradient(145deg, rgb(var(--section-accent-rgb,217 215 164) / 15%), rgb(255 255 255 / 4%));
   border:1px solid color-mix(in srgb, var(--section-accent) 25%, transparent);
   box-shadow:inset 0 1px rgb(255 255 255 / 6%), 0 10px 30px -24px rgb(0 0 0 / 90%);
   transition:transform 420ms var(--tm-in), width 360ms var(--tm-in), height 360ms var(--tm-in), opacity 180ms ease;
 }
+.tadeon-shell [data-slot="tabs-list"] { isolation:isolate; }
+.tadeon-shell [data-slot="tabs-trigger"] { position:relative; z-index:1; }
 .tadeon-shell [data-slot="tabs-content"] { animation:tm-tabs-panel-in 360ms var(--tm-in) both; }
 @keyframes tm-tabs-panel-in { from { opacity:0; transform:translateY(9px); filter:blur(3px); } to { opacity:1; transform:none; filter:none; } }
 .tadeon-shell [data-slot="tabs"][data-motion-direction="backward"] [data-slot="tabs-content"] { animation-name:tm-tabs-panel-back; }
@@ -134,6 +137,48 @@
 .tadeon-shell .tadeon-desktop-toolbar__account:hover,
 .tadeon-shell .tadeon-mobile-header__control:hover { transform:translateY(-2px); box-shadow:0 12px 34px -28px rgb(var(--section-accent-rgb,217 215 164) / 55%); }
 
+/* Refinement: only animate confirmation when the control is actually checked. */
+.tadeon-shell [data-slot="checkbox"][data-state="checked"] [data-slot="checkbox-indicator"],
+.tadeon-shell [data-slot="radio-group-item"][data-state="checked"] [data-slot="radio-group-indicator"] {
+  animation:tm-control-confirm 300ms var(--tm-spring) both;
+}
+.tadeon-shell [data-slot="checkbox"]:not([data-state="checked"]) [data-slot="checkbox-indicator"],
+.tadeon-shell [data-slot="radio-group-item"]:not([data-state="checked"]) [data-slot="radio-group-indicator"] {
+  animation:none;
+}
+
+/* Route/content transitions: treat the whole changing surface as one piece. */
+.tadeon-shell main [data-page-transition],
+.tadeon-shell [data-page-transition] {
+  animation:tm-route-enter 460ms var(--tm-in) both;
+  will-change:transform,opacity,filter;
+}
+@keyframes tm-route-enter {
+  from { opacity:0; transform:translate3d(0,10px,0) scale(.996); filter:blur(5px); }
+  to { opacity:1; transform:none; filter:none; }
+}
+
+/* Semantic feedback: loading resolves forward, errors recoil, success settles. */
+.tadeon-shell [data-motion-state="loading"] { animation:tm-state-loading 680ms var(--tm-soft) infinite alternate; }
+.tadeon-shell [data-motion-state="success"] { animation:tm-state-success 420ms var(--tm-spring) both; }
+.tadeon-shell [data-motion-state="error"] { animation:tm-state-error 360ms var(--tm-soft) both; }
+@keyframes tm-state-loading { from { opacity:.72; transform:translateY(0); } to { opacity:1; transform:translateY(-2px); } }
+@keyframes tm-state-success { from { opacity:.72; transform:scale(.97); filter:brightness(.96); } 72% { opacity:1; transform:scale(1.012); filter:brightness(1.03); } to { opacity:1; transform:none; filter:none; } }
+@keyframes tm-state-error { 0% { transform:translateX(0); } 22% { transform:translateX(-4px); } 44% { transform:translateX(3px); } 68% { transform:translateX(-1px); } 100% { transform:none; } }
+
+/* Empty/placeholder surfaces should enter as compositions, not instant blocks. */
+.tadeon-shell [data-motion="empty"] { animation:tm-empty-in 430ms var(--tm-in) both; }
+@keyframes tm-empty-in { from { opacity:0; transform:translateY(8px); filter:blur(4px); } to { opacity:1; transform:none; filter:none; } }
+
+/* Fine-grain icon semantics. */
+.tadeon-shell [data-motion-icon="close"]:hover { transform:rotate(90deg) scale(1.04); }
+.tadeon-shell [data-motion-icon="add"]:hover { transform:rotate(90deg) scale(1.04); }
+.tadeon-shell [data-motion-icon="refresh"]:hover { transform:rotate(140deg); }
+.tadeon-shell [data-motion-icon="search"]:hover { transform:scale(1.07); }
+.tadeon-shell [data-motion-icon="back"]:hover { transform:translateX(-3px); }
+.tadeon-shell [data-motion-icon="forward"]:hover { transform:translateX(3px); }
+
+/* Make these icon gestures respect reduced motion. */
 @media (prefers-reduced-motion:reduce) {
   .tadeon-shell button,
   .tadeon-shell [role="button"],
@@ -149,5 +194,8 @@
   .tadeon-shell [data-slot="tabs-content"],
   .tadeon-shell table tbody tr,
   .tadeon-shell [role="listitem"],
+  .tadeon-shell [data-motion-state],
+  .tadeon-shell [data-page-transition],
+  .tadeon-shell [data-motion="empty"],
   [data-sonner-toaster] [data-sonner-toast] { transition:none !important; animation:none !important; }
 }
