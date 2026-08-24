@@ -58,6 +58,7 @@ import popupRefinementMotionCss from "../styles/tadeon-popup-refinement-motion.c
 import sidebarRealRepairCss from "../styles/tadeon-sidebar-real-repair.css?url";
 import detailMotionRefinementCss from "../styles/tadeon-detail-motion-refinement.css?url";
 import sidebarFinalCss from "../styles/tadeon-sidebar-final.css?url";
+import finalDetailRefinementCss from "../styles/tadeon-final-detail-refinement.css?url";
 import { AuthProvider } from "@/lib/auth";
 import { Toaster } from "@/components/ui/sonner";
 import { PwaRegistration } from "@/components/pwa-registration";
@@ -105,7 +106,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { rel: "stylesheet", href: atmosphereCss }, { rel: "stylesheet", href: interactionPassCss }, { rel: "stylesheet", href: headMicroanimationsCss },
       { rel: "stylesheet", href: motionSystemCss }, { rel: "stylesheet", href: contextualMotionCss }, { rel: "stylesheet", href: popupMotionCss }, { rel: "stylesheet", href: uiDetailMotionCss },
       { rel: "stylesheet", href: libraryLayoutRestoreCss }, { rel: "stylesheet", href: continuityMotionCss }, { rel: "stylesheet", href: premiumMotionCss }, { rel: "stylesheet", href: relationalMotionCss }, { rel: "stylesheet", href: visibleMotionCss },
-      { rel: "stylesheet", href: personalityMotionCss }, { rel: "stylesheet", href: sectionPersonalityMotionCss }, { rel: "stylesheet", href: actualUiMotionCss }, { rel: "stylesheet", href: frameRefinementMotionCss }, { rel: "stylesheet", href: completeInteractionMotionCss }, { rel: "stylesheet", href: deepInteractionMotionCss }, { rel: "stylesheet", href: semanticMotionCss }, { rel: "stylesheet", href: contextTransitionMotionCss }, { rel: "stylesheet", href: portalSurfaceMotionCss }, { rel: "stylesheet", href: popupRefinementMotionCss }, { rel: "stylesheet", href: sidebarRealRepairCss }, { rel: "stylesheet", href: detailMotionRefinementCss }, { rel: "stylesheet", href: sidebarFinalCss },
+      { rel: "stylesheet", href: personalityMotionCss }, { rel: "stylesheet", href: sectionPersonalityMotionCss }, { rel: "stylesheet", href: actualUiMotionCss }, { rel: "stylesheet", href: frameRefinementMotionCss }, { rel: "stylesheet", href: completeInteractionMotionCss }, { rel: "stylesheet", href: deepInteractionMotionCss }, { rel: "stylesheet", href: semanticMotionCss }, { rel: "stylesheet", href: contextTransitionMotionCss }, { rel: "stylesheet", href: portalSurfaceMotionCss }, { rel: "stylesheet", href: popupRefinementMotionCss }, { rel: "stylesheet", href: sidebarRealRepairCss }, { rel: "stylesheet", href: detailMotionRefinementCss }, { rel: "stylesheet", href: sidebarFinalCss }, { rel: "stylesheet", href: finalDetailRefinementCss },
       { rel: "manifest", href: "/manifest.webmanifest" }, { rel: "icon", href: "/favicon.svg?v=5", type: "image/svg+xml", sizes: "any" }, { rel: "apple-touch-icon", href: "/apple-touch-icon.png", sizes: "180x180" },
       { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Inter:wght@400;500;600;700&family=PT+Mono&display=swap" },
     ],
