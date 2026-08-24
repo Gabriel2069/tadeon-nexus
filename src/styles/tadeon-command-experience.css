@@ -1,0 +1,312 @@
+/* Tadeon Command Experience ~ master + tabletop
+   Editorial control surface, not a dashboard skin. */
+
+/* --------------------------------------------------------------------------
+   Master command center
+   -------------------------------------------------------------------------- */
+
+.tadeon-shell[data-section="Painel do Mestre"] {
+  --tadeon-command-accent: var(--tadeon-flow);
+  --tadeon-command-accent-soft: rgb(79 110 93 / 10%);
+}
+
+.tadeon-shell[data-section="Painel do Mestre"] .tadeon-master-commandbar__glow {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--tadeon-command-accent) 26%, var(--border));
+  border-radius: 1.15rem .38rem 1.15rem .38rem;
+  background:
+    linear-gradient(125deg, color-mix(in srgb, var(--tadeon-command-accent) 7%, var(--card)), transparent 52%),
+    radial-gradient(circle at 92% 4%, rgb(217 215 164 / 6%), transparent 30%),
+    color-mix(in srgb, var(--card) 94%, transparent);
+  box-shadow:
+    0 32px 80px -60px rgb(0 0 0 / 96%),
+    inset 0 1px rgb(255 255 255 / 3%),
+    inset 1px 0 color-mix(in srgb, var(--tadeon-command-accent) 12%, transparent);
+}
+
+.tadeon-shell[data-section="Painel do Mestre"] .tadeon-master-commandbar__glow::before {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(120deg, transparent 0 28%, rgb(217 215 164 / 3%) 42%, transparent 58%),
+    radial-gradient(circle at 78% 100%, var(--tadeon-command-accent-soft), transparent 34%);
+  content: "";
+  pointer-events: none;
+}
+
+.tadeon-master-commandbar__sigil-stack {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  width: 3.1rem;
+  height: 3.1rem;
+  place-items: center;
+  color: var(--tadeon-command-accent);
+  filter: drop-shadow(0 10px 22px rgb(0 0 0 / 34%));
+}
+
+.tadeon-master-commandbar__master-sigil {
+  width: 100%;
+  height: 100%;
+  opacity: .6;
+}
+
+.tadeon-master-commandbar__active-icon {
+  position: absolute;
+  width: 1rem;
+  height: 1rem;
+  color: var(--tadeon-knowledge);
+  filter: drop-shadow(0 0 10px rgb(217 215 164 / 22%));
+}
+
+.tadeon-shell[data-section="Painel do Mestre"] .tadeon-master-navigation__scroller {
+  border-color: color-mix(in srgb, var(--tadeon-command-accent) 24%, var(--border));
+  background:
+    linear-gradient(105deg, rgb(79 110 93 / 6%), transparent 46%),
+    color-mix(in srgb, var(--card) 92%, transparent);
+}
+
+.tadeon-shell[data-section="Painel do Mestre"] .tadeon-master-navigation [data-slot="tabs-trigger"] {
+  position: relative;
+  min-height: 2.5rem;
+  border-radius: .65rem .22rem .65rem .22rem;
+  color: var(--muted-foreground);
+  transition:
+    color 200ms var(--ease-out),
+    background-color 200ms var(--ease-out),
+    border-color 200ms var(--ease-out),
+    transform 160ms var(--ease-out),
+    box-shadow 220ms var(--ease-out);
+}
+
+.tadeon-shell[data-section="Painel do Mestre"] .tadeon-master-navigation [data-slot="tabs-trigger"]::after {
+  position: absolute;
+  inset: auto .45rem .2rem;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--tadeon-command-accent) 76%, var(--tadeon-knowledge)), transparent);
+  content: "";
+  opacity: 0;
+  transform: scaleX(.42);
+  transition: opacity 200ms ease, transform 260ms var(--ease-out);
+}
+
+.tadeon-shell[data-section="Painel do Mestre"] .tadeon-master-navigation [data-slot="tabs-trigger"]:hover {
+  color: var(--foreground);
+  background: color-mix(in srgb, var(--secondary) 84%, transparent);
+  transform: translateY(-1px);
+}
+
+.tadeon-shell[data-section="Painel do Mestre"] .tadeon-master-navigation [data-slot="tabs-trigger"][data-state="active"] {
+  color: var(--foreground);
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--tadeon-command-accent) 16%, transparent), transparent 72%),
+    color-mix(in srgb, var(--secondary) 92%, transparent);
+  box-shadow:
+    inset 0 0 0 1px color-mix(in srgb, var(--tadeon-command-accent) 26%, transparent),
+    0 14px 34px -28px color-mix(in srgb, var(--tadeon-command-accent) 42%, transparent);
+}
+
+.tadeon-shell[data-section="Painel do Mestre"] .tadeon-master-navigation [data-slot="tabs-trigger"][data-state="active"]::after {
+  opacity: .9;
+  transform: scaleX(1);
+}
+
+.tadeon-shell[data-section="Painel do Mestre"] .tadeon-master-navigation__label {
+  color: color-mix(in srgb, var(--tadeon-command-accent) 68%, var(--muted-foreground));
+  font-family: var(--font-mono);
+  font-size: .55rem;
+  font-weight: 700;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+}
+
+/* Give the operational surfaces a clear reading hierarchy. */
+.tadeon-shell[data-section="Painel do Mestre"] .tadeon-route-stage > .tadeon-page > * {
+  --command-depth: 0;
+}
+
+.tadeon-shell[data-section="Painel do Mestre"] .tadeon-dashboard-signal {
+  position: relative;
+  border-color: color-mix(in srgb, var(--tadeon-command-accent) 18%, var(--border));
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--tadeon-command-accent) 7%, transparent), transparent 58%),
+    color-mix(in srgb, var(--card) 96%, transparent);
+}
+
+.tadeon-shell[data-section="Painel do Mestre"] .tadeon-dashboard-signal::after {
+  position: absolute;
+  inset: auto .7rem .35rem;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--tadeon-command-accent) 28%, transparent), transparent);
+  content: "";
+}
+
+.tadeon-shell[data-section="Painel do Mestre"] .tadeon-surface[data-tadeon-material="archive"],
+.tadeon-shell[data-section="Painel do Mestre"] .tadeon-sheet-card[data-tadeon-material="relic"] {
+  border-radius: .9rem .35rem 1rem .4rem;
+}
+
+.tadeon-shell[data-section="Painel do Mestre"] .tadeon-route-stage [role="tabpanel"] > * {
+  scroll-margin-top: 7rem;
+}
+
+/* --------------------------------------------------------------------------
+   Tabletop: turn the canvas into a stage
+   -------------------------------------------------------------------------- */
+
+.tadeon-shell[data-section="Mesa Nexus"] {
+  --tadeon-tabletop-accent: var(--tadeon-arden);
+  --tadeon-tabletop-bronze: var(--tadeon-arden-bronze);
+}
+
+.tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-boot {
+  position: relative;
+  isolation: isolate;
+  min-height: calc(100dvh - 4rem);
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 50% 42%, rgb(31 54 68 / 14%), transparent 36rem),
+    radial-gradient(circle at 10% 100%, rgb(126 91 47 / 8%), transparent 28rem),
+    var(--background);
+}
+
+.tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-boot__halo {
+  position: absolute;
+  inset: 12% 18%;
+  border: 1px solid rgb(126 91 47 / 9%);
+  border-radius: 50%;
+  box-shadow:
+    0 0 0 2rem rgb(126 91 47 / 1.5%),
+    0 0 0 5rem rgb(31 54 68 / 2%);
+  transform: rotate(-5deg);
+}
+
+.tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-boot__card {
+  position: relative;
+  z-index: 1;
+  width: min(30rem, calc(100% - 2rem));
+  padding: 2rem;
+  border: 1px solid color-mix(in srgb, var(--tadeon-tabletop-bronze) 22%, var(--border));
+  border-radius: 1.2rem .42rem 1.2rem .42rem;
+  background:
+    linear-gradient(135deg, rgb(126 91 47 / 7%), transparent 48%),
+    color-mix(in srgb, var(--card) 94%, transparent);
+  box-shadow:
+    0 38px 100px -62px rgb(0 0 0 / 98%),
+    inset 0 1px rgb(255 255 255 / 3%);
+  backdrop-filter: blur(18px) saturate(120%);
+}
+
+.tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-boot__mark {
+  display: grid;
+  width: 2.85rem;
+  height: 2.85rem;
+  margin-bottom: 1rem;
+  place-items: center;
+  border: 1px solid rgb(126 91 47 / 28%);
+  border-radius: .85rem .25rem .85rem .25rem;
+  background: rgb(126 91 47 / 8%);
+  color: color-mix(in srgb, var(--tadeon-tabletop-bronze) 82%, var(--tadeon-knowledge));
+  box-shadow: inset 0 0 20px rgb(126 91 47 / 7%);
+}
+
+.tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-boot__progress {
+  position: relative;
+  height: 2px;
+  margin-top: 1.25rem;
+  overflow: hidden;
+  border-radius: 999px;
+  background: rgb(255 255 255 / 6%);
+}
+
+.tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-boot__progress span {
+  display: block;
+  width: 35%;
+  height: 100%;
+  background: linear-gradient(90deg, var(--tadeon-tabletop-accent), var(--tadeon-tabletop-bronze), var(--tadeon-knowledge));
+  box-shadow: 0 0 18px rgb(126 91 47 / 30%);
+  transition: width 520ms var(--ease-out);
+}
+
+.tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-boot__progress span[data-stage="1"] { width: 66%; }
+.tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-boot__progress span[data-stage="2"] { width: 100%; }
+
+.tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-boot__meta {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  margin-top: 1rem;
+  color: var(--muted-foreground);
+  font-family: var(--font-mono);
+  font-size: .58rem;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+/* Canvas chrome: keep tools inside the scene instead of floating above it. */
+.tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-stage,
+.tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-canvas,
+.tadeon-shell[data-section="Mesa Nexus"] [data-tabletop-stage] {
+  position: relative;
+  isolation: isolate;
+}
+
+.tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-toolbar,
+.tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-floating-toolbar,
+.tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-controls {
+  border: 1px solid rgb(126 91 47 / 18%);
+  border-radius: .9rem .28rem .9rem .28rem;
+  background:
+    linear-gradient(135deg, rgb(31 54 68 / 8%), transparent 52%),
+    color-mix(in srgb, #0b0e12 88%, transparent);
+  box-shadow:
+    0 20px 50px -36px rgb(0 0 0 / 96%),
+    inset 0 1px rgb(255 255 255 / 3%);
+  backdrop-filter: blur(16px) saturate(120%);
+}
+
+.tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-toolbar button,
+.tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-floating-toolbar button,
+.tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-controls button {
+  border-radius: .55rem .18rem .55rem .18rem;
+  transition:
+    color 180ms ease,
+    background-color 180ms ease,
+    border-color 180ms ease,
+    transform 150ms var(--ease-out),
+    box-shadow 220ms var(--ease-out);
+}
+
+.tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-toolbar button:hover,
+.tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-floating-toolbar button:hover,
+.tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-controls button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 12px 28px -24px rgb(126 91 47 / 42%);
+}
+
+@media (max-width: 767px) {
+  .tadeon-shell[data-section="Painel do Mestre"] .tadeon-master-navigation__scroller {
+    border-radius: .85rem .25rem .85rem .25rem;
+  }
+
+  .tadeon-master-commandbar__sigil-stack {
+    width: 2.65rem;
+    height: 2.65rem;
+  }
+
+  .tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-boot__card {
+    width: min(28rem, calc(100% - 1rem));
+    padding: 1.35rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-boot__progress span,
+  .tadeon-shell[data-section="Painel do Mestre"] .tadeon-master-navigation [data-slot="tabs-trigger"] {
+    transition-duration: 1ms !important;
+  }
+}
