@@ -58,6 +58,7 @@ import headCompositionFixCss from "../styles/tadeon-head-composition-fix.css?url
 import headConvergenceCss from "../styles/tadeon-head-convergence.css?url";
 import surfaceSystemNextCss from "../styles/tadeon-surface-system-next.css?url";
 import microinteractionSystemCss from "../styles/tadeon-microinteraction-system.css?url";
+import sheetNexusWave6Css from "../styles/tadeon-sheet-nexus-wave6.css?url";
 import { AuthProvider } from "@/lib/auth";
 import { Toaster } from "@/components/ui/sonner";
 import { PwaRegistration } from "@/components/pwa-registration";
@@ -103,7 +104,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { rel: "stylesheet", href: typographyRhythmCss }, { rel: "stylesheet", href: layoutRhythmCss }, { rel: "stylesheet", href: applicationPassCss }, { rel: "stylesheet", href: responsiveParityCss },
       { rel: "stylesheet", href: headRepairCss }, { rel: "stylesheet", href: stateFeedbackCss }, { rel: "stylesheet", href: shellBackgroundRepairCss }, { rel: "stylesheet", href: headParityNextCss }, { rel: "stylesheet", href: navigationAmbientCss },
       { rel: "stylesheet", href: tabletopThreeLineCss }, { rel: "stylesheet", href: headNexusReferenceCss }, { rel: "stylesheet", href: headCompositionFixCss }, { rel: "stylesheet", href: headConvergenceCss },
-      { rel: "stylesheet", href: surfaceSystemNextCss }, { rel: "stylesheet", href: microinteractionSystemCss },
+      { rel: "stylesheet", href: surfaceSystemNextCss }, { rel: "stylesheet", href: microinteractionSystemCss }, { rel: "stylesheet", href: sheetNexusWave6Css },
       { rel: "manifest", href: "/manifest.webmanifest" }, { rel: "icon", href: "/favicon.svg?v=5", type: "image/svg+xml", sizes: "any" }, { rel: "apple-touch-icon", href: "/apple-touch-icon.png", sizes: "180x180" },
       { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Inter:wght@400;500;600;700&family=PT+Mono&display=swap" },
     ],
