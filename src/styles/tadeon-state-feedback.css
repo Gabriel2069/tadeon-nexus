@@ -1,0 +1,137 @@
+/* Tadeon State Feedback — loading, saved, empty, error and offline states share one language. */
+
+.tadeon-shell {
+  --tadeon-state-radius: .85rem;
+  --tadeon-state-line: rgb(217 215 164 / 18%);
+}
+
+/* Stateful surfaces keep the same material but gain a semantic edge. */
+.tadeon-state-panel,
+.tadeon-save-status,
+[data-tadeon-state-panel],
+[data-tadeon-feedback] {
+  position: relative;
+  isolation: isolate;
+  overflow: clip;
+  border-radius: var(--tadeon-state-radius);
+}
+
+[data-tadeon-feedback]::before,
+.tadeon-save-status::before {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 2px;
+  background: var(--tadeon-state-accent, var(--tadeon-knowledge));
+  content: "";
+  opacity: .72;
+}
+
+[data-tadeon-state="saving"],
+[data-tadeon-feedback="saving"] { --tadeon-state-accent: var(--tadeon-knowledge, #d9d7a4); }
+[data-tadeon-state="saved"],
+[data-tadeon-feedback="saved"] { --tadeon-state-accent: var(--tadeon-flow, #4f6e5d); }
+[data-tadeon-state="error"],
+[data-tadeon-feedback="error"] { --tadeon-state-accent: #b86a62; }
+[data-tadeon-state="offline"],
+[data-tadeon-feedback="offline"] { --tadeon-state-accent: var(--tadeon-veil, #8f7aa0); }
+[data-tadeon-state="empty"],
+[data-tadeon-feedback="empty"] { --tadeon-state-accent: rgb(217 215 164 / 42%); }
+
+/* Save lifecycle: calm while writing, distinct when stabilized. */
+.tadeon-save-status[data-state="saving"],
+[data-tadeon-feedback="saving"] {
+  box-shadow: inset 0 0 0 1px rgb(217 215 164 / 8%);
+  animation: tadeon-feedback-writing 1.7s ease-in-out infinite;
+}
+
+.tadeon-save-status[data-state="saved"],
+[data-tadeon-feedback="saved"] {
+  box-shadow: inset 0 0 0 1px rgb(79 110 93 / 11%);
+  animation: tadeon-feedback-stabilized 520ms cubic-bezier(.23,1,.32,1) both;
+}
+
+.tadeon-save-status[data-state="error"],
+[data-tadeon-feedback="error"] {
+  box-shadow: inset 0 0 0 1px rgb(184 106 98 / 15%);
+  animation: tadeon-feedback-warning 2.8s ease-in-out infinite;
+}
+
+/* Empty state becomes an intentional pause, not an absence of design. */
+.tadeon-state-panel[data-tadeon-state="empty"] {
+  min-height: 11rem;
+  display: grid;
+  place-items: center;
+  text-align: center;
+  border-style: dashed;
+  border-color: rgb(217 215 164 / 16%);
+  background:
+    radial-gradient(circle at 50% 35%, rgb(217 215 164 / 4%), transparent 38%),
+    linear-gradient(180deg, rgb(255 255 255 / 1.5%), transparent);
+}
+
+.tadeon-state-panel[data-tadeon-state="empty"] > :first-child {
+  animation: tadeon-empty-breathe 4.8s ease-in-out infinite;
+}
+
+/* Loading prefers a moving rule over a generic spinner when there is enough width. */
+.tadeon-state-panel[data-tadeon-state="loading"]::after,
+[data-tadeon-feedback="loading"]::after {
+  position: absolute;
+  inset: auto 0 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgb(217 215 164 / 65%), transparent);
+  content: "";
+  transform: translateX(-100%);
+  animation: tadeon-loading-rule 1.55s cubic-bezier(.4,0,.2,1) infinite;
+}
+
+/* Dialog confirmations and toasts should feel like the same application state system. */
+.tadeon-shell [data-sonner-toast] {
+  border-color: rgb(217 215 164 / 16%) !important;
+  background: linear-gradient(145deg, rgb(18 22 24 / 96%), rgb(10 13 16 / 96%)) !important;
+  box-shadow: 0 30px 80px -46px rgb(0 0 0 / 98%), inset 0 1px rgb(255 255 255 / 4%);
+  backdrop-filter: blur(18px) saturate(115%);
+}
+
+.tadeon-shell [data-sonner-toast] [data-description] {
+  color: rgb(214 213 206 / 74%);
+}
+
+@keyframes tadeon-feedback-writing {
+  0%, 100% { box-shadow: inset 0 0 0 1px rgb(217 215 164 / 6%); }
+  50% { box-shadow: inset 0 0 0 1px rgb(217 215 164 / 16%), 0 14px 34px -30px rgb(217 215 164 / 22%); }
+}
+
+@keyframes tadeon-feedback-stabilized {
+  0% { opacity: .72; transform: translateY(2px); }
+  72% { opacity: 1; transform: translateY(-1px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes tadeon-feedback-warning {
+  0%, 100% { box-shadow: inset 0 0 0 1px rgb(184 106 98 / 9%); }
+  50% { box-shadow: inset 0 0 0 1px rgb(184 106 98 / 22%), 0 18px 42px -36px rgb(184 106 98 / 30%); }
+}
+
+@keyframes tadeon-empty-breathe {
+  0%, 100% { opacity: .72; transform: translateY(0); }
+  50% { opacity: 1; transform: translateY(-2px); }
+}
+
+@keyframes tadeon-loading-rule {
+  to { transform: translateX(100%); }
+}
+
+@media (max-width: 767px) {
+  .tadeon-state-panel[data-tadeon-state="empty"] { min-height: 9.5rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tadeon-save-status[data-state],
+  [data-tadeon-feedback],
+  .tadeon-state-panel[data-tadeon-state="empty"] > :first-child,
+  .tadeon-state-panel[data-tadeon-state="loading"]::after,
+  [data-tadeon-feedback="loading"]::after {
+    animation: none !important;
+  }
+}
