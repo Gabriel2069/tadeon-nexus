@@ -9,6 +9,10 @@
   isolation: isolate;
   min-height: clamp(15rem, 30vw, 22rem);
   overflow: clip;
+  background-image:
+    linear-gradient(116deg, rgb(255 255 255 / 3.8%), transparent 32%),
+    radial-gradient(circle at 90% 8%, rgb(217 215 164 / 4%), transparent 28%),
+    linear-gradient(145deg, transparent 62%, rgb(113 107 123 / 3%) 100%);
 }
 
 .tadeon-dashboard-hero[data-tadeon-material="chapter"]::after {
@@ -38,6 +42,66 @@
 .tadeon-dashboard-hero[data-tadeon-material="chapter"] h1,
 .tadeon-dashboard-hero[data-tadeon-material="chapter"] h2,
 .tadeon-dashboard-hero[data-tadeon-material="chapter"] h3 {
+  position: relative;
+  z-index: 1;
+}
+
+/* --------------------------------------------------------------------------
+   Material hierarchy ~ surfaces become different kinds of records
+   -------------------------------------------------------------------------- */
+
+.tadeon-surface[data-tadeon-material="archive"] {
+  border-radius: 0.75rem 0.35rem 0.85rem 0.45rem;
+}
+
+.tadeon-surface[data-tadeon-material="archive"]::after {
+  inset: auto 1rem 0 1rem;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgb(217 215 164 / 20%), transparent);
+}
+
+.tadeon-sheet-card[data-tadeon-material="relic"] {
+  border-radius: 0.7rem 0.25rem 0.95rem 0.35rem;
+  border-color: color-mix(in srgb, var(--tadeon-metal) 34%, transparent);
+  box-shadow:
+    0 26px 74px -52px rgb(0 0 0 / 96%),
+    inset 0 1px 0 rgb(255 255 255 / 4%),
+    inset 2px 0 0 rgb(217 215 164 / 5%);
+}
+
+.tadeon-sheet-card[data-tadeon-material="relic"]::before {
+  background:
+    linear-gradient(142deg, rgb(242 238 200 / 3.8%), transparent 35%),
+    radial-gradient(circle at 12% 0%, rgb(217 215 164 / 4%), transparent 30%);
+}
+
+.tadeon-link-panel[data-tadeon-material="fragment"] {
+  border-left-color: color-mix(in srgb, var(--tadeon-veil) 50%, transparent);
+  border-radius: 0.25rem 0.8rem 0.35rem 0.9rem;
+  background-image: linear-gradient(102deg, rgb(113 107 123 / 4%), transparent 42%);
+}
+
+.tadeon-skill-modifier-panel[data-tadeon-material="record"] {
+  border-style: solid;
+  border-top-color: color-mix(in srgb, var(--tadeon-knowledge) 20%, transparent);
+  border-bottom-color: color-mix(in srgb, var(--tadeon-knowledge) 18%, transparent);
+  box-shadow:
+    0 20px 60px -48px rgb(0 0 0 / 94%),
+    inset 0 1px 0 rgb(217 215 164 / 3%);
+}
+
+.tadeon-skill-modifier-panel[data-tadeon-material="record"] [data-state],
+.tadeon-skill-modifier-panel[data-tadeon-material="record"] .tadeon-mono {
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.06em;
+}
+
+.tadeon-state-panel[data-tadeon-material="state"] {
+  border-radius: 0.35rem 0.75rem 0.55rem 0.9rem;
+  border-color: color-mix(in srgb, var(--tadeon-section-accent, var(--tadeon-metal)) 24%, transparent);
+}
+
+.tadeon-state-panel[data-tadeon-material="state"] > * {
   position: relative;
   z-index: 1;
 }
@@ -175,6 +239,12 @@
   .tadeon-knowledge-graph[data-tadeon-directed="true"]::after,
   .tadeon-brain-shell[data-tadeon-directed="true"]::after {
     inset: 0.65rem;
+  }
+
+  .tadeon-sheet-card[data-tadeon-material="relic"],
+  .tadeon-link-panel[data-tadeon-material="fragment"],
+  .tadeon-state-panel[data-tadeon-material="state"] {
+    border-radius: 0.75rem;
   }
 }
 
