@@ -159,7 +159,8 @@
     line-height: 1.05 !important;
   }
 
-  html body .tadeon-dashboard-hero .tadeon-dashboard-signals .text-[11px] {
+  /* Avoid Tailwind arbitrary-value selectors; target the existing label element structurally. */
+  html body .tadeon-dashboard-hero .tadeon-dashboard-signal > div > p:last-child {
     font-size: .56rem !important;
     line-height: 1.05 !important;
     letter-spacing: .1em !important;
