@@ -103,7 +103,6 @@
 .tadeon-page > section:nth-child(3), .tadeon-page > article:nth-child(3) { animation-delay: 95ms; }
 .tadeon-page > section:nth-child(4), .tadeon-page > article:nth-child(4) { animation-delay: 135ms; }
 
-/* Opt-in stagger for existing grouped content. */
 .tadeon-shell [data-tadeon-stagger] > * { animation: tadeon-content-reveal 480ms var(--tadeon-motion-reveal) both; }
 .tadeon-shell [data-tadeon-stagger] > :nth-child(1) { animation-delay: 0ms; }
 .tadeon-shell [data-tadeon-stagger] > :nth-child(2) { animation-delay: 35ms; }
@@ -112,13 +111,10 @@
 .tadeon-shell [data-tadeon-stagger] > :nth-child(5) { animation-delay: 140ms; }
 .tadeon-shell [data-tadeon-stagger] > :nth-child(n+6) { animation-delay: 175ms; }
 
-/* Natural list groups get gentle settling without changing their layout. */
 .tadeon-users-list > *,
 .tadeon-sheet-overview > *,
 .tadeon-inventory-list > *,
-.tadeon-skill-list > * {
-  animation: tadeon-list-settle 460ms var(--tadeon-motion-reveal) both;
-}
+.tadeon-skill-list > * { animation: tadeon-list-settle 460ms var(--tadeon-motion-reveal) both; }
 .tadeon-users-list > :nth-child(2), .tadeon-sheet-overview > :nth-child(2), .tadeon-inventory-list > :nth-child(2), .tadeon-skill-list > :nth-child(2) { animation-delay: 45ms; }
 .tadeon-users-list > :nth-child(3), .tadeon-sheet-overview > :nth-child(3), .tadeon-inventory-list > :nth-child(3), .tadeon-skill-list > :nth-child(3) { animation-delay: 90ms; }
 .tadeon-users-list > :nth-child(4), .tadeon-sheet-overview > :nth-child(4), .tadeon-inventory-list > :nth-child(4), .tadeon-skill-list > :nth-child(4) { animation-delay: 135ms; }
@@ -174,18 +170,60 @@
   transform-origin: center;
 }
 
+/* Contextual signatures: same physics, different emotional gesture. */
+.tadeon-shell[data-section="Dashboard"] .tadeon-dashboard-signal,
+.tadeon-shell[data-section="Painel"] .tadeon-dashboard-signal {
+  transition: transform 360ms var(--tadeon-motion-material), box-shadow 420ms var(--tadeon-motion-material), border-color 280ms ease;
+}
+@media (hover:hover) and (pointer:fine) {
+  .tadeon-shell[data-section="Dashboard"] .tadeon-dashboard-signal:hover,
+  .tadeon-shell[data-section="Painel"] .tadeon-dashboard-signal:hover { transform: translateY(-3px) rotate(-.15deg); }
+}
+
+.tadeon-shell[data-section="Ficha"] .tadeon-sheet-card,
+.tadeon-shell[data-section="Ficha"] .tadeon-sheet-section {
+  transition: transform 420ms var(--tadeon-motion-material), box-shadow 420ms var(--tadeon-motion-material), border-color 300ms ease;
+}
+@media (hover:hover) and (pointer:fine) {
+  .tadeon-shell[data-section="Ficha"] .tadeon-sheet-card:hover { transform: translateY(-3px) rotate(.08deg); }
+}
+
+.tadeon-shell[data-section="Mestre"] .tadeon-master-navigation [data-slot="tabs-trigger"],
+.tadeon-shell[data-section="Mestre"] [data-tadeon-command] {
+  transition: transform 190ms var(--tadeon-motion-material), box-shadow 260ms var(--tadeon-motion-material), color 180ms ease;
+}
+.tadeon-shell[data-section="Mestre"] [data-tadeon-command]:active { transform: translateY(1px) scale(.975); }
+
+.tadeon-shell[data-section="O Nexus"] [data-tadeon-node][data-selected="true"] {
+  animation: tadeon-nexus-breathe 2.6s ease-in-out infinite;
+}
+.tadeon-shell[data-section="O Nexus"] [data-tadeon-node][data-related="true"] { opacity: .92; }
+
+.tadeon-shell[data-section="Mesa Nexus"] [data-tabletop-action]:hover,
+.tadeon-shell[data-section="Mesa Nexus"] [data-tabletop-tool]:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 28px -24px rgb(217 215 164 / 40%);
+}
+
+.tadeon-shell[data-section="Usuários"] .tadeon-user-row:hover,
+.tadeon-shell[data-section="Backup"] .tadeon-user-row:hover,
+.tadeon-shell[data-section="Offline"] .tadeon-user-row:hover {
+  transform: translateX(3px);
+}
+
 @keyframes tadeon-head-reveal { from { opacity: 0; transform: translateY(8px); filter: blur(5px); } 70% { filter: blur(0); } to { opacity: 1; transform: translateY(0); filter: blur(0); } }
 @keyframes tadeon-content-reveal { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 @keyframes tadeon-list-settle { from { opacity: 0; transform: translateY(9px); } to { opacity: 1; transform: translateY(0); } }
 @keyframes tadeon-unfold { from { opacity: 0; transform: translateY(-4px) scale(.985); filter: blur(2px); } to { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); } }
 @keyframes tadeon-writing-pulse { 0%, 100% { opacity: .86; } 50% { opacity: 1; } }
 @keyframes tadeon-line-drift { from { transform: translate3d(-.25%, -.15%, 0) rotate(-.15deg); opacity: .72; } to { transform: translate3d(.25%, .15%, 0) rotate(.15deg); opacity: 1; } }
+@keyframes tadeon-nexus-breathe { 0%,100% { filter: drop-shadow(0 10px 22px rgb(217 215 164 / 12%)); } 50% { filter: drop-shadow(0 14px 30px rgb(217 215 164 / 24%)); } }
 
 @media (prefers-reduced-motion: reduce) {
   .tadeon-page-hero > *, .tadeon-dashboard-hero > *, .tadeon-master-commandbar > *, .tadeon-tabletop-studio__header > *, .tadeon-auth-hero > *,
   .tadeon-page > section, .tadeon-page > article, .tadeon-shell [role="dialog"], .tadeon-shell [data-radix-popper-content-wrapper] > *,
   .tadeon-shell [data-tadeon-stagger] > *, .tadeon-users-list > *, .tadeon-sheet-overview > *, .tadeon-inventory-list > *, .tadeon-skill-list > *,
-  .tadeon-shell .tadeon-thread-field, .tadeon-shell [data-tadeon-atmosphere-line] { animation: none !important; }
+  .tadeon-shell .tadeon-thread-field, .tadeon-shell [data-tadeon-atmosphere-line], .tadeon-shell[data-section="O Nexus"] [data-tadeon-node][data-selected="true"] { animation: none !important; }
   .tadeon-surface, .tadeon-state-panel, .tadeon-sheet-card, .tadeon-user-row,
   .tadeon-shell button, .tadeon-shell [role="button"], .tadeon-primary-nav .tadeon-nav-item,
   .tadeon-mobile-dock__item, .tadeon-mobile-header__control, .tadeon-shell [data-tadeon-node], .tadeon-shell [data-tadeon-map-element],
