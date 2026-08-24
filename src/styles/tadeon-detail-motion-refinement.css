@@ -1,0 +1,202 @@
+/* Tadeon detail motion refinement — subtle authored motion for the small pieces. */
+
+:root {
+  --tadeon-detail-smooth: cubic-bezier(.22,1,.36,1);
+  --tadeon-detail-soft: cubic-bezier(.4,0,.2,1);
+  --tadeon-detail-quick: 180ms;
+}
+
+/* Fine controls: make the smallest interactions feel intentional. */
+.tadeon-shell button,
+.tadeon-shell [role="button"],
+.tadeon-shell a:not(.tadeon-nav-item) {
+  transition:
+    transform 220ms var(--tadeon-detail-smooth),
+    color 180ms ease,
+    background-color 220ms ease,
+    border-color 220ms ease,
+    box-shadow 280ms var(--tadeon-detail-smooth),
+    filter 220ms ease;
+}
+
+@media (hover:hover) and (pointer:fine) {
+  .tadeon-shell button:not(:disabled):hover,
+  .tadeon-shell [role="button"]:hover,
+  .tadeon-shell a:not(.tadeon-nav-item):hover {
+    filter: brightness(1.035);
+  }
+}
+
+.tadeon-shell button:not(:disabled):active,
+.tadeon-shell [role="button"]:active {
+  transform: translateY(1px) scale(.975);
+}
+
+/* Icons acquire their own directional language. */
+.tadeon-shell button svg,
+.tadeon-shell [role="button"] svg {
+  transition: transform 240ms var(--tadeon-detail-smooth), opacity 180ms ease, filter 240ms ease;
+}
+
+@media (hover:hover) and (pointer:fine) {
+  .tadeon-shell button:hover svg[data-lucide="plus"],
+  .tadeon-shell button:hover svg[data-lucide="plus-circle"],
+  .tadeon-shell [role="button"]:hover svg[data-lucide="plus"] { transform: rotate(8deg) scale(1.06); }
+  .tadeon-shell button:hover svg[data-lucide="search"],
+  .tadeon-shell [role="button"]:hover svg[data-lucide="search"] { transform: translateX(1px) scale(1.05); }
+  .tadeon-shell button:hover svg[data-lucide="refresh-cw"] { transform: rotate(18deg); }
+  .tadeon-shell button:hover svg[data-lucide="chevron-left"],
+  .tadeon-shell button:hover svg[data-lucide="chevron-right"] { transform: translateX(2px); }
+}
+
+/* Focus is a reveal, not just a border swap. */
+.tadeon-shell input,
+.tadeon-shell textarea,
+.tadeon-shell [contenteditable="true"],
+.tadeon-shell [data-slot="select-trigger"] {
+  transition: box-shadow 260ms var(--tadeon-detail-smooth), border-color 220ms ease, background-color 220ms ease, transform 220ms var(--tadeon-detail-smooth);
+}
+
+.tadeon-shell input:focus-visible,
+.tadeon-shell textarea:focus-visible,
+.tadeon-shell [contenteditable="true"]:focus-visible,
+.tadeon-shell [data-slot="select-trigger"]:focus-visible {
+  transform: translateY(-1px);
+}
+
+/* Table/list details. */
+.tadeon-shell table tbody tr,
+.tadeon-shell [role="row"] {
+  transition: background-color 180ms ease, border-color 180ms ease, box-shadow 240ms var(--tadeon-detail-smooth), transform 220ms var(--tadeon-detail-smooth);
+}
+
+@media (hover:hover) and (pointer:fine) {
+  .tadeon-shell table tbody tr:hover,
+  .tadeon-shell [role="row"]:hover {
+    transform: translateX(2px);
+  }
+}
+
+.tadeon-shell table thead th,
+.tadeon-shell [role="columnheader"] {
+  transition: color 220ms ease, opacity 220ms ease, background-color 220ms ease;
+}
+
+.tadeon-shell table thead th:hover,
+.tadeon-shell [role="columnheader"]:hover {
+  color: var(--section-accent, currentColor);
+}
+
+/* Dividers and decorative rules draw themselves into place. */
+.tadeon-shell hr,
+.tadeon-shell [data-tadeon-divider],
+.tadeon-shell .tadeon-nav-group-rule {
+  transform-origin: left center;
+  animation: tadeon-detail-rule-in 520ms var(--tadeon-detail-smooth) both;
+}
+
+@keyframes tadeon-detail-rule-in {
+  from { opacity: 0; transform: scaleX(.2); }
+  to { opacity: 1; transform: scaleX(1); }
+}
+
+/* Badges, chips and status marks have a restrained pulse when their state changes. */
+.tadeon-shell [data-slot="badge"],
+.tadeon-shell [data-tadeon-status],
+.tadeon-shell [data-tadeon-condition],
+.tadeon-shell [data-tadeon-feedback] {
+  transition: transform 220ms var(--tadeon-detail-smooth), box-shadow 260ms var(--tadeon-detail-smooth), border-color 220ms ease, filter 220ms ease;
+}
+
+.tadeon-shell [data-slot="badge"]:focus-visible,
+.tadeon-shell [data-tadeon-status]:focus-visible,
+.tadeon-shell [data-tadeon-condition]:focus-visible {
+  transform: scale(1.025);
+}
+
+/* Avatar/image arrival improves perceived loading without adding weight. */
+.tadeon-shell [data-slot="avatar-image"],
+.tadeon-shell [data-slot="avatar-fallback"],
+.tadeon-shell img {
+  transition: opacity 320ms var(--tadeon-detail-smooth), transform 420ms var(--tadeon-detail-smooth), filter 320ms ease;
+}
+
+@media (hover:hover) and (pointer:fine) {
+  .tadeon-shell [data-slot="avatar"]:hover,
+  .tadeon-shell [data-slot="avatar-image"]:hover { transform: scale(1.035); }
+}
+
+/* Calendar/day details. */
+.tadeon-shell [data-slot="calendar"] button {
+  transition: transform 180ms var(--tadeon-detail-smooth), background-color 180ms ease, color 180ms ease, box-shadow 220ms var(--tadeon-detail-smooth);
+}
+@media (hover:hover) and (pointer:fine) {
+  .tadeon-shell [data-slot="calendar"] button:hover { transform: translateY(-1px); }
+}
+
+/* Carousels get a little kinetic response without interfering with Embla. */
+.tadeon-shell [data-slot="carousel"] [data-carousel-control] {
+  transition: transform 220ms var(--tadeon-detail-smooth), opacity 180ms ease, box-shadow 260ms var(--tadeon-detail-smooth);
+}
+@media (hover:hover) and (pointer:fine) {
+  .tadeon-shell [data-slot="carousel"] [data-carousel-control]:not(:disabled):hover { transform: scale(1.05); }
+}
+
+/* Save/status indicators behave like signals rather than text changes. */
+.tadeon-shell [data-tadeon-save-status],
+.tadeon-shell [data-save-state],
+.tadeon-save-status {
+  transition: opacity 220ms ease, transform 280ms var(--tadeon-detail-smooth), color 220ms ease;
+}
+
+.tadeon-shell [data-save-state="saving"],
+.tadeon-save-status[data-state="saving"] { animation: tadeon-detail-signal 1.8s ease-in-out infinite; }
+
+@keyframes tadeon-detail-signal {
+  0%,100% { opacity: .72; transform: translateX(0); }
+  50% { opacity: 1; transform: translateX(2px); }
+}
+
+/* Toast/notification actions should arrive after the message body. */
+[data-sonner-toaster] [data-sonner-toast] {
+  transition: transform 280ms var(--tadeon-detail-smooth), box-shadow 280ms var(--tadeon-detail-smooth), filter 220ms ease;
+}
+
+[data-sonner-toaster] [data-sonner-toast] button {
+  transition: transform 180ms var(--tadeon-detail-smooth), color 180ms ease, background-color 180ms ease;
+}
+
+@media (hover:hover) and (pointer:fine) {
+  [data-sonner-toaster] [data-sonner-toast]:hover { transform: translateX(-2px); }
+  [data-sonner-toaster] [data-sonner-toast] button:hover { transform: translateY(-1px); }
+}
+
+/* Avoid compounding the stronger Tadeon frame motion. */
+.tadeon-page-hero,
+.tadeon-dashboard-hero,
+.tadeon-sheet-card,
+.tadeon-nav-item,
+[data-slot="dialog-content"],
+[data-slot="sheet-content"],
+[data-slot="popover-content"],
+[data-slot="dropdown-menu-content"] {
+  will-change: auto;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tadeon-shell button,
+  .tadeon-shell [role="button"],
+  .tadeon-shell a:not(.tadeon-nav-item),
+  .tadeon-shell input,
+  .tadeon-shell textarea,
+  .tadeon-shell [contenteditable="true"],
+  .tadeon-shell [data-slot="select-trigger"],
+  .tadeon-shell table tbody tr,
+  .tadeon-shell [role="row"],
+  .tadeon-shell table thead th,
+  .tadeon-shell [role="columnheader"],
+  .tadeon-shell [data-slot="calendar"] button,
+  .tadeon-shell [data-slot="carousel"] [data-carousel-control],
+  [data-sonner-toaster] [data-sonner-toast],
+  [data-sonner-toaster] [data-sonner-toast] button { transition: none !important; animation: none !important; }
+}
