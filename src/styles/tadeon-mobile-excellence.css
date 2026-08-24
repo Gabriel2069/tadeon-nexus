@@ -1,0 +1,110 @@
+/* Tadeon mobile excellence ~ preserve hierarchy, improve touch composition */
+
+@media (max-width: 767px) {
+  .tadeon-mobile-header {
+    padding-left: max(0.75rem, env(safe-area-inset-left));
+    padding-right: max(0.75rem, env(safe-area-inset-right));
+    padding-bottom: 0.55rem;
+    backdrop-filter: blur(18px) saturate(112%);
+    background: rgb(8 10 14 / 88%);
+  }
+
+  .tadeon-mobile-header__control {
+    min-width: 44px;
+    min-height: 44px;
+    touch-action: manipulation;
+  }
+
+  .tadeon-mobile-dock {
+    padding-bottom: max(0.45rem, env(safe-area-inset-bottom));
+    padding-left: max(0.55rem, env(safe-area-inset-left));
+    padding-right: max(0.55rem, env(safe-area-inset-right));
+    background:
+      linear-gradient(180deg, rgb(8 10 14 / 30%), rgb(8 10 14 / 88%)),
+      rgb(8 10 14 / 86%);
+    backdrop-filter: blur(20px) saturate(118%);
+  }
+
+  .tadeon-mobile-dock__item {
+    min-width: 52px;
+    min-height: 48px;
+    touch-action: manipulation;
+  }
+
+  .tadeon-mobile-dock__item[aria-current="page"] {
+    background: linear-gradient(180deg, rgb(217 215 164 / 8%), transparent);
+    border-color: rgb(217 215 164 / 10%);
+  }
+
+  .tadeon-primary-nav .tadeon-nav-item {
+    min-height: 46px;
+    touch-action: manipulation;
+  }
+
+  .tadeon-route-stage {
+    padding-bottom: max(1.5rem, calc(env(safe-area-inset-bottom) + 5.5rem));
+  }
+
+  .tadeon-page {
+    padding-left: max(0.95rem, env(safe-area-inset-left));
+    padding-right: max(0.95rem, env(safe-area-inset-right));
+  }
+
+  .tadeon-dashboard-signal {
+    min-height: 3.4rem;
+  }
+
+  .tadeon-sheet-card,
+  .tadeon-state-panel,
+  .tadeon-dashboard-hero {
+    box-shadow:
+      0 22px 64px -48px rgb(0 0 0 / 96%),
+      inset 0 1px 0 rgb(255 255 255 / 3%);
+  }
+
+  .tadeon-sheet-condition-chip,
+  .tadeon-skill-modifier-tabs button,
+  .tadeon-link-collapse {
+    min-height: 40px;
+    touch-action: manipulation;
+  }
+
+  /* Prevent fixed ambient layers from becoming giant opaque slabs on phones. */
+  .tadeon-ambient {
+    width: 24rem;
+    filter: blur(58px);
+    opacity: 0.08;
+  }
+
+  .tadeon-route-stage::before,
+  .tadeon-route-stage::after {
+    max-width: 90vw;
+  }
+}
+
+@media (max-width: 380px) {
+  .tadeon-mobile-header {
+    grid-template-columns: 3.4rem minmax(0, 1fr) 5.8rem;
+  }
+
+  .tadeon-mobile-header__identity {
+    gap: 0.45rem;
+  }
+
+  .tadeon-mobile-header__identity .overflow-visible {
+    width: 26px;
+    height: 26px;
+  }
+
+  .tadeon-mobile-dock__item {
+    min-width: 46px;
+    font-size: 9px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tadeon-mobile-dock__item,
+  .tadeon-mobile-header__control {
+    transition-duration: 1ms !important;
+  }
+}
