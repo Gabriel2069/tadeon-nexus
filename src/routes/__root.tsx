@@ -40,6 +40,7 @@ import motionSystemCss from "../styles/tadeon-motion-system.css?url";
 import contextualMotionCss from "../styles/tadeon-contextual-motion.css?url";
 import popupMotionCss from "../styles/tadeon-popup-motion.css?url";
 import uiDetailMotionCss from "../styles/tadeon-ui-detail-motion.css?url";
+import libraryLayoutRestoreCss from "../styles/tadeon-library-layout-restore.css?url";
 import { AuthProvider } from "@/lib/auth";
 import { Toaster } from "@/components/ui/sonner";
 import { PwaRegistration } from "@/components/pwa-registration";
@@ -68,8 +69,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "tadeon-build-sha", content: import.meta.env.VITE_APP_COMMIT_SHA ?? "development" }, { title: "Tadeon Nexus - RPG Online" },
       { name: "description", content: "Tadeon Nexus: gerencie fichas de personagem, atributos, perícias e a árvore de habilidades do seu RPG online com painel para mestres e jogadores." },
       { property: "og:title", content: "Tadeon Nexus - RPG Online" }, { name: "twitter:title", content: "Tadeon Nexus - RPG Online" },
-      { property: "og:description", content: "Tadeon Nexus: gerencie fichas de personagem, atributos, perícias e o progresso do seu RPG online." },
-      { name: "twitter:description", content: "Tadeon Nexus: gerencie fichas de personagem, atributos, perícias e o progresso do seu RPG online." },
+      { property: "og:description", content: "Tadeon Nexus: gerencie fichas de personagem, atributos, perícias e o progresso do seu RPG online." }, { name: "twitter:description", content: "Tadeon Nexus: gerencie fichas de personagem, atributos, perícias e o progresso do seu RPG online." },
       { property: "og:site_name", content: "Tadeon Nexus" }, { property: "og:image", content: "https://tadeon-nexus.gtadeusz.workers.dev/social-card.png" },
       { property: "og:image:width", content: "1200" }, { property: "og:image:height", content: "630" }, { property: "og:type", content: "website" },
     ],
@@ -87,6 +87,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { rel: "stylesheet", href: commandExperienceCss }, { rel: "stylesheet", href: nexusMaterialCss }, { rel: "stylesheet", href: visibleUpgradeCss },
       { rel: "stylesheet", href: atmosphereCss }, { rel: "stylesheet", href: interactionPassCss }, { rel: "stylesheet", href: headMicroanimationsCss },
       { rel: "stylesheet", href: motionSystemCss }, { rel: "stylesheet", href: contextualMotionCss }, { rel: "stylesheet", href: popupMotionCss }, { rel: "stylesheet", href: uiDetailMotionCss },
+      { rel: "stylesheet", href: libraryLayoutRestoreCss },
       { rel: "manifest", href: "/manifest.webmanifest" }, { rel: "icon", href: "/favicon.svg?v=5", type: "image/svg+xml", sizes: "any" }, { rel: "apple-touch-icon", href: "/apple-touch-icon.png", sizes: "180x180" },
       { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Inter:wght@400;500;600;700&family=PT+Mono&display=swap" },
     ],
