@@ -1,0 +1,207 @@
+/* Tadeon Interaction Pass — presence, selection, tactile feedback and panel depth. */
+
+/* --------------------------------------------------------------------------
+   Selection is a state, not just a color change
+   -------------------------------------------------------------------------- */
+.tadeon-shell [data-tadeon-directed="true"]:focus-visible,
+.tadeon-shell [data-state="active"]:focus-visible,
+.tadeon-shell [aria-current="page"]:focus-visible {
+  outline: 2px solid rgb(217 215 164 / 58%);
+  outline-offset: 3px;
+}
+
+.tadeon-shell [data-tadeon-directed="true"][data-state="active"],
+.tadeon-shell [data-tadeon-directed="true"][aria-selected="true"],
+.tadeon-shell [data-tadeon-directed="true"][aria-pressed="true"] {
+  position: relative;
+  isolation: isolate;
+  box-shadow:
+    inset 0 0 0 1px rgb(217 215 164 / 24%),
+    0 14px 36px -30px rgb(217 215 164 / 40%);
+}
+
+/* --------------------------------------------------------------------------
+   Cards gain an internal light source on hover/focus
+   -------------------------------------------------------------------------- */
+@media (hover: hover) and (pointer: fine) {
+  .tadeon-shell .tadeon-surface[data-tadeon-directed="true"]:hover,
+  .tadeon-shell .tadeon-sheet-card[data-tadeon-directed="true"]:hover,
+  .tadeon-shell .tadeon-link-panel[data-tadeon-directed="true"]:hover,
+  .tadeon-shell .tadeon-state-panel[data-tadeon-directed="true"]:hover {
+    z-index: 2;
+  }
+
+  .tadeon-shell .tadeon-sheet-card[data-tadeon-directed="true"]:hover {
+    box-shadow:
+      0 34px 84px -56px rgb(0 0 0 / 98%),
+      inset 0 1px rgb(255 255 255 / 6%),
+      inset 3px 0 rgb(217 215 164 / 16%);
+  }
+
+  .tadeon-shell .tadeon-link-panel[data-tadeon-directed="true"]:hover {
+    box-shadow:
+      0 28px 72px -54px rgb(0 0 0 / 96%),
+      inset 0 0 0 1px rgb(143 122 160 / 13%);
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Toolbar groups feel attached to the surface they control
+   -------------------------------------------------------------------------- */
+.tadeon-shell .tadeon-brain-toolbar,
+.tadeon-shell .tadeon-brain-mode,
+.tadeon-shell .tadeon-master-navigation,
+.tadeon-shell .tadeon-master-commandbar,
+.tadeon-shell .tadeon-tabletop-toolbar,
+.tadeon-shell .tadeon-tabletop-floating-toolbar,
+.tadeon-shell .tadeon-tabletop-controls {
+  isolation: isolate;
+}
+
+.tadeon-shell .tadeon-brain-toolbar::after,
+.tadeon-shell .tadeon-brain-mode::after,
+.tadeon-shell .tadeon-master-navigation::after,
+.tadeon-shell .tadeon-tabletop-toolbar::after,
+.tadeon-shell .tadeon-tabletop-floating-toolbar::after,
+.tadeon-shell .tadeon-tabletop-controls::after {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  background: linear-gradient(115deg, rgb(255 255 255 / 2.4%), transparent 44%);
+  content: "";
+  pointer-events: none;
+}
+
+/* --------------------------------------------------------------------------
+   Tabletop: make contextual tools read as layers above the scene
+   -------------------------------------------------------------------------- */
+.tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-toolbar,
+.tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-floating-toolbar,
+.tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-controls {
+  transition:
+    transform 220ms cubic-bezier(.23,1,.32,1),
+    border-color 180ms ease,
+    box-shadow 260ms ease,
+    opacity 180ms ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-toolbar:hover,
+  .tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-floating-toolbar:hover,
+  .tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-controls:hover {
+    transform: translateY(-2px);
+    border-color: rgb(126 91 47 / 48%);
+    box-shadow:
+      0 28px 68px -40px rgb(0 0 0 / 99%),
+      inset 0 1px rgb(255 255 255 / 5%);
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Master: active tab should feel like a marked page
+   -------------------------------------------------------------------------- */
+.tadeon-master-workspace .tadeon-master-navigation [data-slot="tabs-trigger"] {
+  position: relative;
+  overflow: hidden;
+}
+
+.tadeon-master-workspace .tadeon-master-navigation [data-slot="tabs-trigger"]::before {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(100deg, transparent, rgb(217 215 164 / 7%), transparent);
+  content: "";
+  transform: translateX(-110%);
+  transition: transform 480ms cubic-bezier(.23,1,.32,1);
+  pointer-events: none;
+}
+
+.tadeon-master-workspace .tadeon-master-navigation [data-slot="tabs-trigger"][data-state="active"]::before {
+  transform: translateX(110%);
+}
+
+/* --------------------------------------------------------------------------
+   Sheet: numbers and statuses get intentional rhythm
+   -------------------------------------------------------------------------- */
+.tadeon-sheet-page [data-state],
+.tadeon-sheet-page [aria-live],
+.tadeon-sheet-page .tadeon-mono {
+  font-variant-numeric: tabular-nums;
+  text-rendering: geometricPrecision;
+}
+
+.tadeon-sheet-page input:focus-visible,
+.tadeon-sheet-page textarea:focus-visible,
+.tadeon-sheet-page [data-slot="select-trigger"]:focus-visible {
+  border-color: rgb(217 215 164 / 42%);
+  box-shadow:
+    0 0 0 1px rgb(217 215 164 / 10%),
+    0 14px 34px -28px rgb(217 215 164 / 48%);
+}
+
+/* --------------------------------------------------------------------------
+   Knowledge graph inspector: selection becomes a focal event
+   -------------------------------------------------------------------------- */
+.tadeon-second-brain .tadeon-brain-selection {
+  animation: tadeon-selection-arrive 320ms cubic-bezier(.23,1,.32,1) both;
+}
+
+.tadeon-second-brain .tadeon-brain-selection > header > span {
+  animation: tadeon-selection-pulse 2.8s ease-in-out infinite;
+}
+
+@keyframes tadeon-selection-arrive {
+  from { opacity: .55; transform: translateY(5px) scale(.992); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes tadeon-selection-pulse {
+  0%, 100% { box-shadow: 0 0 10px currentColor, 0 0 0 2px rgb(217 215 164 / 2%); }
+  50% { box-shadow: 0 0 18px currentColor, 0 0 0 5px rgb(217 215 164 / 3%); }
+}
+
+/* --------------------------------------------------------------------------
+   Modal/drawer emergence: panels unfold rather than pop
+   -------------------------------------------------------------------------- */
+.tadeon-shell [data-radix-dialog-content],
+.tadeon-shell [data-radix-popover-content],
+.tadeon-shell [data-radix-dropdown-menu-content] {
+  transform-origin: center top;
+}
+
+.tadeon-shell [data-state="open"][data-radix-dialog-content],
+.tadeon-shell [data-state="open"][data-radix-popover-content],
+.tadeon-shell [data-state="open"][data-radix-dropdown-menu-content] {
+  animation: tadeon-panel-unfold 220ms cubic-bezier(.23,1,.32,1) both;
+}
+
+@keyframes tadeon-panel-unfold {
+  from { opacity: 0; transform: translateY(5px) scale(.985); filter: blur(2px); }
+  to { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
+}
+
+/* --------------------------------------------------------------------------
+   Touch surfaces remain calm and don't inherit desktop hover lifts
+   -------------------------------------------------------------------------- */
+@media (hover: none), (max-width: 767px) {
+  .tadeon-shell button:not([data-no-tadeon-motion]):active,
+  .tadeon-shell [role="button"]:not([data-no-tadeon-motion]):active {
+    transform: scale(.985);
+  }
+
+  .tadeon-shell [data-radix-dialog-content],
+  .tadeon-shell [data-radix-popover-content],
+  .tadeon-shell [data-radix-dropdown-menu-content] {
+    animation-duration: 180ms;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tadeon-second-brain .tadeon-brain-selection,
+  .tadeon-second-brain .tadeon-brain-selection > header > span,
+  .tadeon-shell [data-state="open"][data-radix-dialog-content],
+  .tadeon-shell [data-state="open"][data-radix-popover-content],
+  .tadeon-shell [data-state="open"][data-radix-dropdown-menu-content] {
+    animation: none !important;
+  }
+}
