@@ -1,0 +1,122 @@
+/* Tadeon Microinteraction System — Wave 05 */
+
+@keyframes tadeon-presence-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgb(217 215 164 / 0%); }
+  50% { box-shadow: 0 0 0 5px rgb(217 215 164 / 5%); }
+}
+
+@keyframes tadeon-state-arrival {
+  from { opacity: .5; transform: translateY(2px) scale(.985); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* Buttons: material press instead of generic scale. */
+.tadeon-shell button:not(:disabled) {
+  transition:
+    transform 180ms cubic-bezier(.23,1,.32,1),
+    border-color 180ms ease,
+    box-shadow 220ms ease,
+    background-color 180ms ease;
+}
+@media (hover:hover) and (pointer:fine) {
+  .tadeon-shell button:not(:disabled):hover { transform: translateY(-1px); }
+}
+.tadeon-shell button:not(:disabled):active { transform: translateY(1px) scale(.985); }
+
+/* Tabs: the active item feels like a marked page. */
+.tadeon-shell [data-slot="tabs-trigger"] {
+  position: relative;
+  overflow: hidden;
+}
+.tadeon-shell [data-slot="tabs-trigger"]::after {
+  position: absolute;
+  right: .65rem;
+  bottom: 0;
+  left: .65rem;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgb(217 215 164 / 65%), transparent);
+  content: "";
+  opacity: 0;
+  transform: scaleX(.45);
+  transition: opacity 220ms ease, transform 320ms cubic-bezier(.23,1,.32,1);
+}
+.tadeon-shell [data-slot="tabs-trigger"][data-state="active"]::after,
+.tadeon-shell [data-slot="tabs-trigger"][aria-selected="true"]::after {
+  opacity: 1;
+  transform: scaleX(1);
+}
+
+/* Conditions / important states acquire presence, not glow spam. */
+.tadeon-sheet-condition-chip[data-tadeon-state="saving"],
+.tadeon-sheet-condition-chip[data-tadeon-state="pending"] {
+  animation: tadeon-presence-pulse 2.8s ease-in-out infinite;
+}
+.tadeon-sheet-condition-chip[data-tadeon-state="saved"] {
+  animation: tadeon-state-arrival 260ms cubic-bezier(.23,1,.32,1) both;
+}
+.tadeon-sheet-condition-chip[data-tadeon-state="error"] {
+  animation: tadeon-state-arrival 220ms cubic-bezier(.23,1,.32,1) both;
+}
+
+/* Power/ability surfaces: reveal metadata progressively. */
+.tadeon-shell [data-tadeon-power],
+.tadeon-shell [data-tadeon-ability] {
+  position: relative;
+  overflow: hidden;
+}
+.tadeon-shell [data-tadeon-power]::after,
+.tadeon-shell [data-tadeon-ability]::after {
+  position: absolute;
+  inset: auto 0 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgb(217 215 164 / 34%), transparent);
+  content: "";
+  opacity: .5;
+  transform: scaleX(.25);
+  transform-origin: center;
+  transition: transform 420ms cubic-bezier(.23,1,.32,1), opacity 220ms ease;
+}
+@media (hover:hover) and (pointer:fine) {
+  .tadeon-shell [data-tadeon-power]:hover::after,
+  .tadeon-shell [data-tadeon-ability]:hover::after {
+    opacity: 1;
+    transform: scaleX(1);
+  }
+}
+
+/* Knowledge graph: selected node becomes the narrative center. */
+.tadeon-knowledge-graph [data-node-id][aria-selected="true"],
+.tadeon-knowledge-graph [data-selected="true"] {
+  filter: drop-shadow(0 10px 18px rgb(217 215 164 / 16%));
+  animation: tadeon-state-arrival 220ms cubic-bezier(.23,1,.32,1) both;
+}
+.tadeon-knowledge-graph [data-node-id][aria-selected="false"],
+.tadeon-knowledge-graph [data-selected="false"] {
+  transition: opacity 260ms ease, filter 260ms ease;
+}
+
+/* Inspector / popover / dialog opening: unfold from their origin. */
+.tadeon-shell [data-radix-popper-content-wrapper] > *,
+.tadeon-shell [data-slot="dialog-content"],
+.tadeon-shell [data-slot="popover-content"] {
+  animation: tadeon-state-arrival 220ms cubic-bezier(.23,1,.32,1) both;
+}
+
+/* Focus is a material trace, not a heavy ring. */
+.tadeon-shell :is(input, textarea, select, [data-slot="select-trigger"]):focus-visible {
+  outline: none;
+  border-color: rgb(217 215 164 / 45%);
+  box-shadow: 0 0 0 2px rgb(217 215 164 / 8%), inset 0 1px rgb(255 255 255 / 3%);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tadeon-shell button:not(:disabled),
+  .tadeon-shell [data-slot="tabs-trigger"]::after,
+  .tadeon-sheet-condition-chip,
+  .tadeon-shell [data-tadeon-power]::after,
+  .tadeon-shell [data-tadeon-ability]::after,
+  .tadeon-knowledge-graph [data-node-id],
+  .tadeon-shell [data-radix-popper-content-wrapper] > *,
+  .tadeon-shell [data-slot="dialog-content"],
+  .tadeon-shell [data-slot="popover-content"] { animation: none !important; transition-duration: 1ms !important; }
+}
