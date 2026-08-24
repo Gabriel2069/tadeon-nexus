@@ -1,0 +1,70 @@
+/* Tadeon coverage motion — finishes interaction gaps in common UI primitives. */
+:root{--tadeon-cover-in:cubic-bezier(.18,1,.28,1);--tadeon-cover-soft:cubic-bezier(.22,1,.36,1);--tadeon-cover-fast:180ms;--tadeon-cover-base:360ms}
+
+/* Cards become living surfaces without the larger frame jump. */
+.tadeon-shell [data-slot="card"]{transition:transform var(--tadeon-cover-base) var(--tadeon-cover-soft),box-shadow 420ms var(--tadeon-cover-soft),border-color 260ms ease,background-color 300ms ease}
+@media (hover:hover) and (pointer:fine){.tadeon-shell [data-slot="card"]:hover{transform:translateY(-2px);box-shadow:0 28px 70px -46px rgb(0 0 0 / 88%),0 8px 28px -26px rgb(217 215 164 / 18%),inset 0 1px rgb(255 255 255 / 5%)}}
+.tadeon-shell [data-slot="card"]:active{transform:translateY(1px) scale(.995)}
+
+/* Badges/chips: subtle acknowledgement instead of a static color swap. */
+.tadeon-shell [data-slot="badge"]{transform-origin:center;transition:transform 220ms var(--tadeon-cover-soft),filter 260ms ease,box-shadow 260ms ease,background-color 220ms ease,border-color 220ms ease}
+@media (hover:hover) and (pointer:fine){.tadeon-shell [data-slot="badge"]:hover{transform:translateY(-1px) scale(1.025);filter:saturate(1.06);box-shadow:0 8px 22px -18px rgb(217 215 164 / 30%)}}
+
+/* Avatars have an image/fallback handoff instead of a hard replacement. */
+.tadeon-shell [data-slot="avatar"]{transform-origin:center;transition:transform 260ms var(--tadeon-cover-soft),box-shadow 320ms var(--tadeon-cover-soft),border-color 240ms ease}
+.tadeon-shell [data-slot="avatar-image"]{transition:opacity 360ms ease,transform 420ms var(--tadeon-cover-soft),filter 360ms ease}
+.tadeon-shell [data-slot="avatar-fallback"]{transition:opacity 260ms ease,transform 300ms var(--tadeon-cover-soft)}
+@media (hover:hover) and (pointer:fine){.tadeon-shell [data-slot="avatar"]:hover{transform:translateY(-2px) scale(1.035);box-shadow:0 12px 28px -20px rgb(0 0 0 / 80%)}}
+
+/* Calendar: moving between months and selecting days should feel continuous. */
+.tadeon-shell [data-slot="calendar"]{animation:tadeon-calendar-in 420ms var(--tadeon-cover-in) both}
+.tadeon-shell [data-slot="calendar"] .rdp-button_previous,.tadeon-shell [data-slot="calendar"] .rdp-button_next{transition:transform 220ms var(--tadeon-cover-soft),background-color 180ms ease,border-color 180ms ease}
+@media (hover:hover) and (pointer:fine){.tadeon-shell [data-slot="calendar"] .rdp-button_previous:hover{transform:translateX(-2px)}.tadeon-shell [data-slot="calendar"] .rdp-button_next:hover{transform:translateX(2px)}}
+.tadeon-shell [data-slot="calendar"] [data-selected-single="true"],.tadeon-shell [data-slot="calendar"] [data-range-start="true"],.tadeon-shell [data-slot="calendar"] [data-range-end="true"]{animation:tadeon-calendar-select 360ms var(--tadeon-cover-soft) both}
+.tadeon-shell [data-slot="calendar"] [data-day]{transition:transform 180ms var(--tadeon-cover-soft),background-color 180ms ease,color 180ms ease,box-shadow 220ms ease}
+@media (hover:hover) and (pointer:fine){.tadeon-shell [data-slot="calendar"] [data-day]:hover{transform:scale(1.06);z-index:2}}
+@keyframes tadeon-calendar-in{from{opacity:0;transform:translateY(6px);filter:blur(3px)}to{opacity:1;transform:none;filter:none}}
+@keyframes tadeon-calendar-select{0%{transform:scale(.88)}65%{transform:scale(1.06)}100%{transform:none}}
+
+/* Carousel: navigation controls and cards react as one surface. */
+.tadeon-shell [data-slot="carousel"]{transition:box-shadow 360ms var(--tadeon-cover-soft)}
+.tadeon-shell [data-slot="carousel-item"]{transition:transform 360ms var(--tadeon-cover-soft),opacity 300ms ease,filter 360ms ease}
+.tadeon-shell [data-carousel-control]{transition:transform 220ms var(--tadeon-cover-soft),opacity 200ms ease,box-shadow 260ms var(--tadeon-cover-soft)}
+@media (hover:hover) and (pointer:fine){.tadeon-shell [data-carousel-control="previous"]:hover{transform:translateX(-3px)}.tadeon-shell [data-carousel-control="next"]:hover{transform:translateX(3px)}}
+.tadeon-shell [data-carousel-control]:active{transform:scale(.93)}
+
+/* Table headers, rows and sortable cells. */
+.tadeon-shell table thead th{transition:color 180ms ease,background-color 220ms ease,box-shadow 260ms ease}
+@media (hover:hover) and (pointer:fine){.tadeon-shell table thead th:hover{background:rgb(217 215 164 / 4%);box-shadow:inset 0 -1px rgb(217 215 164 / 15%)}}
+.tadeon-shell table tbody tr{transition:background-color 220ms ease,transform 240ms var(--tadeon-cover-soft),box-shadow 280ms var(--tadeon-cover-soft)}
+.tadeon-shell table tbody tr[data-state="selected"],.tadeon-shell table tbody tr[aria-selected="true"]{animation:tadeon-row-selected 360ms var(--tadeon-cover-soft) both}
+@media (hover:hover) and (pointer:fine){.tadeon-shell table tbody tr:hover{transform:translateX(2px);box-shadow:inset 2px 0 rgb(217 215 164 / 18%)}}
+@keyframes tadeon-row-selected{from{transform:translateX(-4px);background:rgb(217 215 164 / 0%)}60%{transform:translateX(2px)}to{transform:none}}
+
+/* Generic removable/filter chips. */
+.tadeon-shell [data-removable="true"],.tadeon-shell [data-filter-chip="true"]{transition:transform 220ms var(--tadeon-cover-soft),opacity 220ms ease,box-shadow 240ms ease,background-color 200ms ease}
+.tadeon-shell [data-removable="true"] [data-remove],.tadeon-shell [data-filter-chip="true"] button{transition:transform 200ms var(--tadeon-cover-soft),opacity 180ms ease}
+@media (hover:hover) and (pointer:fine){.tadeon-shell [data-removable="true"]:hover,.tadeon-shell [data-filter-chip="true"]:hover{transform:translateY(-1px)}.tadeon-shell [data-removable="true"] [data-remove]:hover,.tadeon-shell [data-filter-chip="true"] button:hover{transform:rotate(8deg) scale(1.08)}}
+
+/* Images/figures: loaded media should settle instead of flashing in. */
+.tadeon-shell img:not([aria-hidden="true"]){animation:tadeon-media-arrive 520ms var(--tadeon-cover-in) both}
+.tadeon-shell figure{transition:transform 320ms var(--tadeon-cover-soft),box-shadow 360ms var(--tadeon-cover-soft)}
+@media (hover:hover) and (pointer:fine){.tadeon-shell figure:hover{transform:translateY(-2px)}}
+@keyframes tadeon-media-arrive{from{opacity:0;transform:scale(.985);filter:blur(5px)}to{opacity:1;transform:none;filter:none}}
+
+/* Generic state/data changes. */
+.tadeon-shell [data-state="loading"],.tadeon-shell [aria-busy="true"]{animation:tadeon-busy-breathe 1.5s ease-in-out infinite}
+.tadeon-shell [data-state="success"],.tadeon-shell [data-status="success"]{animation:tadeon-state-success 420ms var(--tadeon-cover-soft) both}
+.tadeon-shell [data-state="error"],.tadeon-shell [data-status="error"]{animation:tadeon-state-error 420ms var(--tadeon-cover-soft) both}
+@keyframes tadeon-busy-breathe{0%,100%{opacity:.72}50%{opacity:1}}
+@keyframes tadeon-state-success{from{opacity:.5;transform:translateY(4px) scale(.97)}65%{opacity:1;transform:translateY(-2px) scale(1.02)}to{transform:none}}
+@keyframes tadeon-state-error{0%{opacity:.55;transform:translateX(0)}25%{transform:translateX(-3px)}50%{transform:translateX(3px)}75%{transform:translateX(-1px)}to{opacity:1;transform:none}}
+
+/* Mobile dock and toolbar controls get their own acquisition gesture. */
+.tadeon-shell .tadeon-mobile-dock__item,.tadeon-shell .tadeon-mobile-header__control,.tadeon-shell .tadeon-desktop-toolbar__account{transform-origin:center;transition:transform 220ms var(--tadeon-cover-soft),background-color 220ms ease,border-color 220ms ease,box-shadow 260ms var(--tadeon-cover-soft)}
+@media (hover:hover) and (pointer:fine){.tadeon-shell .tadeon-desktop-toolbar__account:hover{transform:translateY(-2px)}}
+.tadeon-shell .tadeon-desktop-toolbar__account:active{transform:scale(.975)}
+
+@media (prefers-reduced-motion:reduce){
+  .tadeon-shell [data-slot="card"],.tadeon-shell [data-slot="badge"],.tadeon-shell [data-slot="avatar"],.tadeon-shell [data-slot="avatar-image"],.tadeon-shell [data-slot="avatar-fallback"],.tadeon-shell [data-slot="calendar"],.tadeon-shell [data-slot="carousel-item"],.tadeon-shell [data-state="loading"],.tadeon-shell [aria-busy="true"],.tadeon-shell [data-state="success"],.tadeon-shell [data-state="error"],.tadeon-shell img:not([aria-hidden="true"]),.tadeon-shell table tbody tr{animation:none!important;transition:none!important}
+}
