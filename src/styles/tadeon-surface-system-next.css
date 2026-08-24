@@ -1,0 +1,148 @@
+/* Tadeon Surface System — Wave 04
+   Surfaces are materials, not generic cards. */
+
+:root {
+  --tadeon-surface-ink: 217 215 164;
+  --tadeon-surface-muted: 79 110 93;
+  --tadeon-surface-shadow: 0 28px 80px -60px rgb(0 0 0 / 92%);
+}
+
+.tadeon-surface[data-tadeon-material],
+.tadeon-sheet-card[data-tadeon-material],
+.tadeon-link-panel[data-tadeon-material],
+.tadeon-skill-modifier-panel[data-tadeon-material],
+.tadeon-state-panel[data-tadeon-material] {
+  position: relative;
+  isolation: isolate;
+  overflow: clip;
+  box-shadow: var(--tadeon-surface-shadow), inset 0 1px rgb(255 255 255 / 3%);
+}
+
+.tadeon-surface[data-tadeon-material] > *,
+.tadeon-sheet-card[data-tadeon-material] > *,
+.tadeon-link-panel[data-tadeon-material] > *,
+.tadeon-skill-modifier-panel[data-tadeon-material] > *,
+.tadeon-state-panel[data-tadeon-material] > * {
+  position: relative;
+  z-index: 2;
+}
+
+/* Archive — stable, flat, documental. */
+.tadeon-surface[data-tadeon-material="archive"] {
+  border-color: rgb(var(--tadeon-surface-muted) / 18%);
+  background:
+    linear-gradient(105deg, rgb(255 255 255 / 2.6%), transparent 38%),
+    linear-gradient(160deg, rgb(17 20 25 / 96%), rgb(10 13 17 / 97%));
+}
+.tadeon-surface[data-tadeon-material="archive"]::before {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background: repeating-linear-gradient(0deg, transparent 0 2.6rem, rgb(217 215 164 / 1.5%) 2.65rem 2.68rem);
+  content: "";
+  opacity: .22;
+  pointer-events: none;
+}
+
+/* Relic — slightly sculptural, warmer and heavier. */
+.tadeon-sheet-card[data-tadeon-material="relic"] {
+  border-color: rgb(217 215 164 / 24%);
+  background:
+    radial-gradient(circle at 8% 0%, rgb(217 215 164 / 6%), transparent 24%),
+    linear-gradient(150deg, rgb(26 27 27 / 98%), rgb(12 14 16 / 98%));
+  box-shadow: 0 34px 92px -62px rgb(0 0 0 / 98%), inset 2px 0 rgb(217 215 164 / 7%), inset 0 1px rgb(255 255 255 / 4%);
+  transform: translateZ(0);
+  transition: transform 360ms cubic-bezier(.23,1,.32,1), box-shadow 360ms cubic-bezier(.23,1,.32,1), border-color 240ms ease;
+}
+@media (hover:hover) and (pointer:fine) {
+  .tadeon-sheet-card[data-tadeon-material="relic"]:hover {
+    transform: translateY(-4px) rotate(-.25deg);
+    border-color: rgb(217 215 164 / 34%);
+    box-shadow: 0 42px 100px -62px rgb(0 0 0 / 100%), inset 2px 0 rgb(217 215 164 / 10%), inset 0 1px rgb(255 255 255 / 6%);
+  }
+}
+
+/* Fragment — asymmetric, relational, directional. */
+.tadeon-link-panel[data-tadeon-material="fragment"] {
+  border-left-width: 2px;
+  border-top-color: rgb(113 107 123 / 18%);
+  border-bottom-color: rgb(79 110 93 / 14%);
+  background:
+    linear-gradient(108deg, rgb(113 107 123 / 6%), transparent 42%),
+    linear-gradient(175deg, rgb(14 16 20 / 97%), rgb(10 12 16 / 97%));
+  clip-path: polygon(0 0, 97% 0, 100% 10%, 100% 100%, 3% 100%, 0 92%);
+}
+.tadeon-link-panel[data-tadeon-material="fragment"]::before {
+  position: absolute;
+  top: .75rem;
+  right: 1rem;
+  width: 3.2rem;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgb(113 107 123 / 42%));
+  content: "";
+}
+
+/* Record — precise, technical, dense. */
+.tadeon-skill-modifier-panel[data-tadeon-material="record"] {
+  border-top-width: 2px;
+  border-bottom-width: 1px;
+  border-color: rgb(217 215 164 / 16%);
+  background:
+    linear-gradient(90deg, rgb(217 215 164 / 4%), transparent 24%, transparent 76%, rgb(79 110 93 / 4%)),
+    rgb(10 13 17 / 97%);
+}
+.tadeon-skill-modifier-panel[data-tadeon-material="record"]::before {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 2px;
+  background: linear-gradient(90deg, rgb(217 215 164 / 55%), rgb(79 110 93 / 20%), transparent);
+  content: "";
+}
+
+/* State — compact and expressive. */
+.tadeon-state-panel[data-tadeon-material="state"] {
+  border-color: rgb(var(--tadeon-section-accent, 217 215 164) / 24%);
+  background:
+    radial-gradient(circle at 100% 0%, rgb(var(--tadeon-section-accent, 217 215 164) / 10%), transparent 42%),
+    rgb(12 14 18 / 97%);
+}
+.tadeon-state-panel[data-tadeon-material="state"]::before {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  border-left: 2px solid rgb(var(--tadeon-section-accent, 217 215 164) / 42%);
+  content: "";
+  pointer-events: none;
+}
+
+/* Unified micro-light: follows the pointer sheen already created by the runtime. */
+.tadeon-pointer-sheen {
+  position: absolute !important;
+  inset: 0 !important;
+  z-index: 1 !important;
+  pointer-events: none !important;
+  opacity: 0 !important;
+  background: radial-gradient(circle at var(--tadeon-pointer-x, 50%) var(--tadeon-pointer-y, 50%), rgb(255 255 255 / 7%), transparent 24%);
+  transition: opacity 260ms ease;
+}
+.tadeon-pointer-sheen[data-active="true"] { opacity: 1 !important; }
+
+/* Tables and lists inherit material instead of reverting to generic panels. */
+.tadeon-surface[data-tadeon-material="archive"] :is(table, [role="table"]) th {
+  border-bottom-color: rgb(var(--tadeon-surface-ink) / 11%);
+  font-family: var(--font-mono);
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+
+@media (max-width: 767px) {
+  .tadeon-sheet-card[data-tadeon-material="relic"]:hover { transform: none; }
+  .tadeon-link-panel[data-tadeon-material="fragment"] { clip-path: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tadeon-sheet-card[data-tadeon-material="relic"] { transition: none !important; }
+  .tadeon-pointer-sheen { transition-duration: 1ms !important; }
+}
