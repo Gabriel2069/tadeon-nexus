@@ -33,6 +33,7 @@ import desktopHeroParity202Css from "../styles/desktop-hero-parity-202.css?url";
 import heroIconsFinal212Css from "../styles/hero-icons-final-212.css?url";
 import experienceOrchestrationCss from "../styles/tadeon-experience-orchestration.css?url";
 import experienceStabilizationCss from "../styles/tadeon-experience-stabilization.css?url";
+import experienceRuntimeCss from "../styles/tadeon-experience-runtime.css?url";
 import { AuthProvider } from "@/lib/auth";
 import { Toaster } from "@/components/ui/sonner";
 import { PwaRegistration } from "@/components/pwa-registration";
@@ -41,6 +42,7 @@ import { PageHeroParityBridge } from "@/components/page-hero-parity-bridge";
 import { RouteFavicon } from "@/components/route-favicon";
 import { VisualViewportPopupBridge } from "@/components/visual-viewport-popup-bridge";
 import { TabletopFinalInteractionBridge } from "@/components/tabletop/tabletop-final-interaction-bridge";
+import { TadeonExperienceDirector } from "@/components/tadeon-experience-director";
 import { useEffect } from "react";
 import { initializeClientErrorMonitor } from "@/lib/client-error-monitor";
 import { PageState } from "@/components/page-state";
@@ -73,7 +75,7 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
     <PageState
       icon={RefreshCw}
       eyebrow="Interrupção no arquivo"
-      title="O Nexus perdeu este fio"
+      title="O Tadeon perdeu este fio"
       description="Ocorreu um erro inesperado ao montar esta página. Tente reconstruir a visualização; se o problema continuar, volte ao arquivo principal."
       className="min-h-screen"
       action={
@@ -149,6 +151,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { rel: "stylesheet", href: heroIconsFinal212Css },
       { rel: "stylesheet", href: experienceOrchestrationCss },
       { rel: "stylesheet", href: experienceStabilizationCss },
+      { rel: "stylesheet", href: experienceRuntimeCss },
       { rel: "manifest", href: "/manifest.webmanifest" },
       { rel: "icon", href: "/favicon.svg?v=5", type: "image/svg+xml", sizes: "any" },
       { rel: "shortcut icon", href: "/favicon.svg?v=5", type: "image/svg+xml" },
@@ -183,6 +186,7 @@ function RootComponent() {
         <ExperienceFinalPolishBridge />
         <PageHeroParityBridge />
         <TabletopFinalInteractionBridge />
+        <TadeonExperienceDirector />
         <Toaster position="top-right" />
         <PwaRegistration />
       </AuthProvider>
