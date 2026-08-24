@@ -1,0 +1,101 @@
+/* Tadeon Section Personality Motion — each workspace has its own gesture. */
+:root{
+  --tp-in:cubic-bezier(.16,1,.3,1);
+  --tp-snap:cubic-bezier(.2,1.25,.35,1);
+  --tp-soft:cubic-bezier(.4,0,.2,1);
+}
+
+/* DASHBOARD — composed, deliberate, signal-driven. */
+.tadeon-shell[data-section="Dashboard"] .tadeon-dashboard-signal,
+.tadeon-shell[data-section="Painel"] .tadeon-dashboard-signal{
+  transform-origin:50% 100%;
+}
+.tadeon-shell[data-section="Dashboard"] .tadeon-dashboard-signal:hover,
+.tadeon-shell[data-section="Painel"] .tadeon-dashboard-signal:hover{
+  transform:translateY(-10px) scale(1.025) rotate(-.35deg);
+  box-shadow:0 34px 70px -42px rgb(217 215 164 / 38%);
+}
+.tadeon-shell[data-section="Dashboard"] .tadeon-dashboard-signal:nth-child(2n):hover,
+.tadeon-shell[data-section="Painel"] .tadeon-dashboard-signal:nth-child(2n):hover{transform:translateY(-10px) scale(1.025) rotate(.35deg)}
+
+/* FICHA — cards feel like pages/records being handled. */
+.tadeon-shell[data-section="Ficha"] .tadeon-sheet-card{
+  transform-origin:50% 12%;
+}
+.tadeon-shell[data-section="Ficha"] .tadeon-sheet-card:hover{
+  transform:translateY(-11px) rotate(-.45deg) scale(1.025);
+  box-shadow:0 38px 80px -48px rgb(217 215 164 / 30%);
+}
+.tadeon-shell[data-section="Ficha"] .tadeon-sheet-card:nth-child(even):hover{transform:translateY(-9px) rotate(.42deg) scale(1.022)}
+.tadeon-shell[data-section="Ficha"] .tadeon-sheet-section[data-state="open"]{
+  animation:tp-sheet-open 440ms var(--tp-snap) both;
+}
+@keyframes tp-sheet-open{from{opacity:0;transform:translateY(28px) rotateX(-8deg) scale(.96)}65%{opacity:1;transform:translateY(-4px) rotateX(1deg) scale(1.012)}to{transform:none}}
+
+/* NEXUS — focus travels through the graph. */
+.tadeon-shell[data-section="O Nexus"] .tadeon-knowledge-graph,
+.tadeon-shell[data-section="O Nexus"] .tadeon-brain-shell{perspective:1400px}
+.tadeon-shell[data-section="O Nexus"] [data-tadeon-node][data-selected="true"]{
+  animation:tp-node-acquire 650ms var(--tp-snap) both;
+  transform-origin:center;
+}
+@keyframes tp-node-acquire{0%{opacity:.55;transform:scale(.72) translateZ(-35px);filter:blur(4px) drop-shadow(0 0 0 transparent)}55%{opacity:1;transform:scale(1.14) translateZ(16px);filter:blur(0) drop-shadow(0 20px 42px rgb(217 215 164 / 38%))}100%{transform:scale(1) translateZ(0);filter:drop-shadow(0 14px 30px rgb(217 215 164 / 20%))}}
+.tadeon-shell[data-section="O Nexus"] [data-tadeon-node][data-related="true"]{animation:tp-related-in 520ms var(--tp-in) both}
+@keyframes tp-related-in{from{opacity:.35;transform:translateY(14px) scale(.92)}to{opacity:1;transform:none}}
+.tadeon-shell[data-section="O Nexus"] [data-tadeon-node][data-related="false"]{transition:opacity 460ms var(--tp-soft),filter 460ms var(--tp-soft);opacity:.22;filter:blur(1px)}
+
+/* MESTRE — command surface with directional snap. */
+.tadeon-shell[data-section="Painel do Mestre"] .tadeon-master-navigation [data-slot="tabs-trigger"]{
+  overflow:hidden;
+}
+.tadeon-shell[data-section="Painel do Mestre"] .tadeon-master-navigation [data-slot="tabs-trigger"]::after{
+  content:"";position:absolute;inset:0 auto 0 0;width:0;background:linear-gradient(90deg,rgb(180 92 98 / 0),rgb(180 92 98 / 18%));transition:width 420ms var(--tp-in)
+}
+.tadeon-shell[data-section="Painel do Mestre"] .tadeon-master-navigation [data-slot="tabs-trigger"][data-state="active"]::after{width:100%}
+.tadeon-shell[data-section="Painel do Mestre"] [data-tadeon-command]:active{animation:tp-command-press 300ms var(--tp-snap)}
+@keyframes tp-command-press{0%{transform:scale(1)}42%{transform:scale(.9) rotate(-1.2deg)}78%{transform:scale(1.04) rotate(.3deg)}100%{transform:scale(1)}}
+
+/* MESA NEXUS — physical studio / tools have mechanical feedback. */
+.tadeon-shell[data-section="Mesa Nexus"] [data-tabletop-tool],
+.tadeon-shell[data-section="Mesa Nexus"] [data-tabletop-action]{transform-origin:center bottom}
+.tadeon-shell[data-section="Mesa Nexus"] [data-tabletop-tool]:hover,
+.tadeon-shell[data-section="Mesa Nexus"] [data-tabletop-action]:hover{transform:translateY(-7px) rotate(-1deg) scale(1.045);box-shadow:0 24px 42px -28px rgb(31 54 68 / 62%)}
+.tadeon-shell[data-section="Mesa Nexus"] [data-tabletop-tool]:active,
+.tadeon-shell[data-section="Mesa Nexus"] [data-tabletop-action]:active{animation:tp-tool-hit 260ms var(--tp-snap)}
+@keyframes tp-tool-hit{0%{transform:translateY(0) scale(1)}38%{transform:translateY(5px) scale(.9) rotate(1.4deg)}72%{transform:translateY(-2px) scale(1.045) rotate(-.4deg)}100%{transform:none}}
+
+/* USERS — rows behave like records being selected. */
+.tadeon-shell[data-section="Usuários"] .tadeon-user-row:hover,
+.tadeon-shell[data-section="Backup"] .tadeon-user-row:hover,
+.tadeon-shell[data-section="Offline"] .tadeon-user-row:hover{transform:translateX(10px) translateY(-3px);box-shadow:14px 20px 48px -38px rgb(122 129 135 / 45%)}
+.tadeon-shell[data-section="Usuários"] .tadeon-user-row:active,
+.tadeon-shell[data-section="Backup"] .tadeon-user-row:active,
+.tadeon-shell[data-section="Offline"] .tadeon-user-row:active{transform:translateX(5px) scale(.985)}
+
+/* HEALTH / STATUS — living archive states. */
+.tadeon-shell[data-section="Saúde do arquivo"] .tadeon-state-panel[data-tadeon-state="saving"]{animation:tp-saving 1.55s ease-in-out infinite}
+.tadeon-shell[data-section="Saúde do arquivo"] .tadeon-state-panel[data-tadeon-state="saved"]{animation:tp-saved 600ms var(--tp-snap) both}
+@keyframes tp-saving{0%,100%{box-shadow:0 0 0 0 rgb(217 215 164 / 0%);transform:translateY(0)}50%{box-shadow:0 0 46px -18px rgb(217 215 164 / 45%);transform:translateY(-3px)}}
+@keyframes tp-saved{0%{transform:scale(.9);opacity:.6}55%{transform:scale(1.06);opacity:1}100%{transform:none}}
+
+/* AUTH — ceremonial reveal rather than dashboard-like fade. */
+.tadeon-shell[data-section="Auth"] .tadeon-auth-shell{animation:tp-auth 900ms var(--tp-in) both}
+@keyframes tp-auth{from{opacity:0;transform:translateY(54px) scale(.94) rotateX(7deg);filter:blur(12px)}55%{opacity:1;transform:translateY(-7px) scale(1.012) rotateX(0);filter:blur(0)}to{transform:none}}
+
+@media (max-width:767px){
+  .tadeon-shell[data-section="Dashboard"] .tadeon-dashboard-signal:hover,
+  .tadeon-shell[data-section="Painel"] .tadeon-dashboard-signal:hover,
+  .tadeon-shell[data-section="Ficha"] .tadeon-sheet-card:hover,
+  .tadeon-shell[data-section="Mesa Nexus"] [data-tabletop-tool]:hover,
+  .tadeon-shell[data-section="Mesa Nexus"] [data-tabletop-action]:hover{transform:none}
+}
+
+@media (prefers-reduced-motion:reduce){
+  .tadeon-shell[data-section="O Nexus"] [data-tadeon-node][data-selected="true"],
+  .tadeon-shell[data-section="O Nexus"] [data-tadeon-node][data-related="true"],
+  .tadeon-shell[data-section="Painel do Mestre"] [data-tadeon-command]:active,
+  .tadeon-shell[data-section="Mesa Nexus"] [data-tabletop-tool]:active,
+  .tadeon-shell[data-section="Mesa Nexus"] [data-tabletop-action]:active,
+  .tadeon-shell[data-section="Saúde do arquivo"] .tadeon-state-panel[data-tadeon-state],
+  .tadeon-shell[data-section="Auth"] .tadeon-auth-shell{animation:none!important}
+}
