@@ -1,0 +1,149 @@
+/* Final sidebar implementation pass — loaded by AppLayout after desktop-studio.css. */
+
+@media (min-width: 768px) {
+  #tadeon-desktop-sidebar {
+    transition: width 460ms cubic-bezier(.22,1,.36,1), border-color 320ms ease, box-shadow 460ms cubic-bezier(.22,1,.36,1) !important;
+  }
+
+  #tadeon-desktop-sidebar .tadeon-nav-item {
+    position: relative !important;
+    overflow: visible !important;
+    transform-origin: left center;
+    transition: width 420ms cubic-bezier(.22,1,.36,1), padding 360ms cubic-bezier(.22,1,.36,1), gap 280ms ease, color 220ms ease, background-color 260ms ease, border-color 260ms ease, box-shadow 320ms cubic-bezier(.22,1,.36,1), transform 220ms cubic-bezier(.22,1,.36,1) !important;
+  }
+
+  #tadeon-desktop-sidebar .tadeon-nav-item__icon {
+    display: inline-flex !important;
+    width: 1.25rem !important;
+    min-width: 1.25rem !important;
+    height: 1.25rem !important;
+    min-height: 1.25rem !important;
+    flex: 0 0 1.25rem !important;
+    align-items: center !important;
+    justify-content: center !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    transform: translateZ(0) !important;
+    transition: transform 300ms cubic-bezier(.22,1,.36,1), color 220ms ease, filter 260ms ease !important;
+  }
+
+  #tadeon-desktop-sidebar .tadeon-nav-item__icon > svg {
+    display: block !important;
+    width: 1rem !important;
+    height: 1rem !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+  }
+
+  /* Collapsed: icon remains a physical anchor; labels become an intentional rail hint. */
+  #tadeon-desktop-sidebar[data-collapsed="true"] .tadeon-nav-item {
+    width: 2.5rem !important;
+    min-height: 2.75rem !important;
+    margin-inline: auto !important;
+    justify-content: center !important;
+    gap: 0 !important;
+    padding: .625rem !important;
+    border-radius: .8rem !important;
+  }
+
+  #tadeon-desktop-sidebar[data-collapsed="true"] .tadeon-nav-item:hover,
+  #tadeon-desktop-sidebar[data-collapsed="true"] .tadeon-nav-item:focus-visible {
+    transform: translateX(2px) !important;
+  }
+
+  #tadeon-desktop-sidebar[data-collapsed="true"] .tadeon-nav-item:hover .tadeon-nav-item__icon,
+  #tadeon-desktop-sidebar[data-collapsed="true"] .tadeon-nav-item:focus-visible .tadeon-nav-item__icon {
+    transform: scale(1.09) !important;
+  }
+
+  #tadeon-desktop-sidebar[data-collapsed="true"] .tadeon-nav-item[title]::after {
+    content: attr(title) !important;
+    position: absolute !important;
+    top: 50% !important;
+    left: calc(100% + .7rem) !important;
+    z-index: 100 !important;
+    min-width: max-content !important;
+    padding: .5rem .72rem !important;
+    border: 1px solid color-mix(in srgb, var(--section-accent) 22%, var(--border)) !important;
+    border-radius: .65rem .25rem .65rem .25rem !important;
+    color: var(--foreground) !important;
+    background: color-mix(in srgb, var(--popover) 94%, transparent) !important;
+    box-shadow: 0 18px 45px -28px rgb(0 0 0 / 90%), inset 0 1px rgb(255 255 255 / 4%) !important;
+    backdrop-filter: blur(18px) saturate(125%) !important;
+    font-size: .72rem !important;
+    font-weight: 650 !important;
+    line-height: 1.15 !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+    transform: translate3d(-7px,-50%,0) scale(.95) !important;
+    transform-origin: left center !important;
+    transition: opacity 160ms ease, transform 220ms cubic-bezier(.22,1,.36,1) !important;
+  }
+
+  #tadeon-desktop-sidebar[data-collapsed="true"] .tadeon-nav-item[title]:hover::after,
+  #tadeon-desktop-sidebar[data-collapsed="true"] .tadeon-nav-item[title]:focus-visible::after {
+    opacity: 1 !important;
+    transform: translate3d(0,-50%,0) scale(1) !important;
+  }
+
+  /* Each active item owns its own identity. */
+  #tadeon-desktop-sidebar .tadeon-nav-item[aria-current="page"] { --sidebar-item-accent: var(--section-accent); }
+  #tadeon-desktop-sidebar .tadeon-nav-item[href="/"][aria-current="page"] { --sidebar-item-accent: var(--tadeon-knowledge); --sidebar-item-rgb: 217 215 164; }
+  #tadeon-desktop-sidebar .tadeon-nav-item[href="/nexus"][aria-current="page"] { --sidebar-item-accent: var(--tadeon-veil); --sidebar-item-rgb: 113 107 123; }
+  #tadeon-desktop-sidebar .tadeon-nav-item[href="/tabletop"][aria-current="page"] { --sidebar-item-accent: var(--tadeon-flow); --sidebar-item-rgb: 79 110 93; }
+  #tadeon-desktop-sidebar .tadeon-nav-item[href="/offline"][aria-current="page"] { --sidebar-item-accent: var(--tadeon-flow); --sidebar-item-rgb: 79 110 93; }
+  #tadeon-desktop-sidebar .tadeon-nav-item[href="/master-panel"][aria-current="page"] { --sidebar-item-accent: var(--tadeon-fear); --sidebar-item-rgb: 116 36 45; }
+  #tadeon-desktop-sidebar .tadeon-nav-item[href="/manage-users"][aria-current="page"] { --sidebar-item-accent: var(--tadeon-flow); --sidebar-item-rgb: 79 110 93; }
+  #tadeon-desktop-sidebar .tadeon-nav-item[href="/nexus-tools"][aria-current="page"] { --sidebar-item-accent: var(--tadeon-metal); --sidebar-item-rgb: 122 129 135; }
+
+  #tadeon-desktop-sidebar .tadeon-nav-item[aria-current="page"] {
+    color: var(--sidebar-item-accent) !important;
+    border-color: color-mix(in srgb, var(--sidebar-item-accent) 32%, transparent) !important;
+    background:
+      linear-gradient(90deg, rgb(var(--sidebar-item-rgb) / 16%), rgb(var(--sidebar-item-rgb) / 4%) 72%, transparent),
+      color-mix(in srgb, var(--sidebar-item-accent) 10%, var(--sidebar-accent)) !important;
+    box-shadow:
+      inset 2px 0 var(--sidebar-item-accent),
+      inset 0 1px rgb(255 255 255 / 3%),
+      0 12px 34px -28px rgb(var(--sidebar-item-rgb) / 55%) !important;
+  }
+
+  #tadeon-desktop-sidebar .tadeon-nav-item[aria-current="page"] .tadeon-nav-item__icon {
+    color: var(--sidebar-item-accent) !important;
+    filter: drop-shadow(0 0 9px rgb(var(--sidebar-item-rgb) / 32%)) !important;
+  }
+
+  /* Section headers collapse instead of vanishing abruptly. */
+  #tadeon-desktop-sidebar .tadeon-nav-group-label {
+    overflow: hidden;
+    white-space: nowrap;
+    max-height: 1.25rem;
+    opacity: 1;
+    transform: translateX(0);
+    transition: max-height 280ms cubic-bezier(.22,1,.36,1), opacity 180ms ease, transform 280ms cubic-bezier(.22,1,.36,1), margin 280ms cubic-bezier(.22,1,.36,1);
+  }
+
+  #tadeon-desktop-sidebar[data-collapsed="true"] .tadeon-nav-group-rule {
+    width: 1rem !important;
+    height: 1px !important;
+    margin: .72rem auto .36rem !important;
+    opacity: .85 !important;
+  }
+
+  /* Collapse/expand control follows the rail. */
+  #tadeon-desktop-sidebar .tadeon-sidebar-collapse svg {
+    transition: transform 300ms cubic-bezier(.22,1,.36,1), opacity 180ms ease !important;
+  }
+
+  #tadeon-desktop-sidebar .tadeon-sidebar-collapse[data-state="collapsed"] svg { transform: translateX(1px); }
+  #tadeon-desktop-sidebar .tadeon-sidebar-collapse[data-state="expanded"] svg { transform: translateX(-1px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #tadeon-desktop-sidebar,
+  #tadeon-desktop-sidebar .tadeon-nav-item,
+  #tadeon-desktop-sidebar .tadeon-nav-item__icon,
+  #tadeon-desktop-sidebar .tadeon-nav-group-label,
+  #tadeon-desktop-sidebar .tadeon-sidebar-collapse,
+  #tadeon-desktop-sidebar .tadeon-sidebar-collapse svg { transition: none !important; animation: none !important; }
+}
