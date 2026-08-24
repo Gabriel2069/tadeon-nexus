@@ -1,5 +1,5 @@
 /* Tadeon Experience Runtime
- * Applied after the existing visual system so interactions are real, not only declarative.
+ * Applied after the established visual system so interactions are real, not merely declarative.
  * Editorial ~ ritualistic ~ material ~ archival.
  */
 
@@ -44,7 +44,7 @@
 }
 
 /* --------------------------------------------------------------------------
-   Material cursor response
+   Material pointer layer
    -------------------------------------------------------------------------- */
 
 .tadeon-surface[data-tadeon-directed="true"],
@@ -59,6 +59,30 @@
   overflow: hidden;
 }
 
+.tadeon-pointer-sheen {
+  position: absolute;
+  inset: -18%;
+  z-index: 0;
+  background:
+    radial-gradient(
+      13rem 9rem at var(--tadeon-pointer-x, 50%) var(--tadeon-pointer-y, 0%),
+      rgb(217 215 164 / 8%),
+      transparent 72%
+    ),
+    linear-gradient(90deg, transparent, rgb(217 215 164 / 12%), transparent);
+  opacity: 0;
+  transform: scale(0.98);
+  transition:
+    opacity var(--tadeon-runtime-interaction) ease,
+    transform var(--tadeon-runtime-interaction) var(--tadeon-runtime-material);
+  pointer-events: none;
+}
+
+.tadeon-pointer-sheen[data-active="true"] {
+  opacity: 0.9;
+  transform: scale(1);
+}
+
 .tadeon-surface[data-tadeon-directed="true"]::before,
 .tadeon-dashboard-hero[data-tadeon-directed="true"]::before,
 .tadeon-sheet-card[data-tadeon-directed="true"]::before,
@@ -69,21 +93,6 @@
   transition:
     opacity var(--tadeon-runtime-interaction) var(--tadeon-runtime-material),
     transform var(--tadeon-runtime-interaction) var(--tadeon-runtime-material);
-}
-
-.tadeon-surface[data-tadeon-directed="true"]::after,
-.tadeon-dashboard-hero[data-tadeon-directed="true"]::after,
-.tadeon-sheet-card[data-tadeon-directed="true"]::after,
-.tadeon-state-panel[data-tadeon-directed="true"]::after {
-  background:
-    radial-gradient(
-      13rem 9rem at var(--tadeon-pointer-x, 50%) var(--tadeon-pointer-y, 0%),
-      rgb(217 215 164 / 8%),
-      transparent 72%
-    ),
-    linear-gradient(90deg, transparent, rgb(217 215 164 / 18%), transparent);
-  opacity: 0.72;
-  transition: opacity var(--tadeon-runtime-interaction) ease;
 }
 
 @media (hover: hover) and (pointer: fine) {
@@ -190,6 +199,42 @@ a[data-tadeon-directed="true"] svg,
   animation-duration: 2.4s;
 }
 
+[data-tadeon-state="saving"] {
+  --tadeon-state-accent: var(--tadeon-knowledge);
+}
+
+[data-tadeon-state="saved"] {
+  --tadeon-state-accent: var(--tadeon-flow);
+}
+
+[data-tadeon-state="pending"] {
+  --tadeon-state-accent: var(--tadeon-metal);
+}
+
+[data-tadeon-state="error"] {
+  --tadeon-state-accent: var(--tadeon-fear);
+}
+
+[data-tadeon-state="offline"] {
+  --tadeon-state-accent: var(--tadeon-arden);
+}
+
+[aria-live="polite"][data-tadeon-state] {
+  transition:
+    color 220ms var(--tadeon-runtime-material),
+    border-color 220ms var(--tadeon-runtime-material),
+    background-color 220ms var(--tadeon-runtime-material),
+    box-shadow 260ms var(--tadeon-runtime-material);
+}
+
+[aria-live="polite"][data-tadeon-state="saving"] {
+  box-shadow: 0 10px 34px -28px var(--tadeon-state-accent);
+}
+
+[aria-live="polite"][data-tadeon-state="error"] {
+  box-shadow: 0 14px 36px -28px var(--tadeon-state-accent);
+}
+
 /* --------------------------------------------------------------------------
    Focus clarity
    -------------------------------------------------------------------------- */
@@ -222,6 +267,10 @@ a[data-tadeon-directed="true"]:focus-visible,
     height: 18rem;
     opacity: 0.42;
   }
+
+  .tadeon-pointer-sheen {
+    display: none;
+  }
 }
 
 /* --------------------------------------------------------------------------
@@ -239,7 +288,8 @@ a[data-tadeon-directed="true"]:focus-visible,
   a[data-tadeon-directed="true"],
   [role="button"][data-tadeon-directed="true"],
   .tadeon-surface[data-tadeon-directed="true"],
-  .tadeon-sheet-card[data-tadeon-directed="true"] {
+  .tadeon-sheet-card[data-tadeon-directed="true"],
+  .tadeon-pointer-sheen {
     transition-duration: 1ms !important;
   }
 }
