@@ -97,6 +97,103 @@
   color: rgb(214 213 206 / 74%);
 }
 
+/* --------------------------------------------------------------------------
+   Wave 08 — accessibility + performance hardening.
+   These rules preserve the visual language while making motion, focus,
+   contrast and rendering cost more predictable. */
+
+.tadeon-shell :where(button, [role="button"], a, input, textarea, select, [tabindex]) {
+  -webkit-tap-highlight-color: transparent;
+}
+
+.tadeon-shell :where(button, [role="button"], a, input, textarea, select, [tabindex]):focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--tadeon-knowledge, #d9d7a4) 82%, white);
+  outline-offset: 3px;
+  box-shadow: 0 0 0 1px rgb(8 11 15 / 86%), 0 0 0 4px rgb(217 215 164 / 14%);
+}
+
+.tadeon-shell :where([aria-disabled="true"], :disabled) {
+  cursor: not-allowed;
+}
+
+.tadeon-shell :where(input, textarea, select):focus-visible {
+  border-color: color-mix(in srgb, var(--tadeon-knowledge, #d9d7a4) 38%, var(--border));
+}
+
+/* Keep animated ambient layers from creating unnecessary paint work. */
+.tadeon-shell .tadeon-atmosphere,
+.tadeon-shell .tadeon-route-stage::before,
+.tadeon-shell .tadeon-route-stage::after {
+  pointer-events: none;
+}
+
+.tadeon-shell .tadeon-route-stage {
+  contain: paint;
+}
+
+/* Only promote elements that actually animate continuously. */
+.tadeon-shell :where(.tadeon-orbital, .tadeon-atmosphere-orb, [data-tadeon-parallax]) {
+  will-change: transform;
+}
+
+/* Backdrop blur is expensive on low-power devices; preserve the material with
+   a solid translucent fallback when the browser signals reduced transparency. */
+@media (prefers-reduced-transparency: reduce) {
+  .tadeon-shell :where(.tadeon-surface, .tadeon-page-hero, .tadeon-save-status, [data-sonner-toast]) {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    background-color: rgb(12 15 18 / 96%) !important;
+  }
+}
+
+@media (prefers-contrast: more) {
+  .tadeon-shell :where(.tadeon-surface, .tadeon-page-hero, .tadeon-save-status, [data-tadeon-feedback], [data-tadeon-state-panel]) {
+    border-color: rgb(232 231 214 / 34%) !important;
+  }
+
+  .tadeon-shell :where(.text-muted-foreground, .tadeon-eyebrow, .tadeon-mono) {
+    color: rgb(236 235 226 / 82%) !important;
+  }
+}
+
+@media (forced-colors: active) {
+  .tadeon-shell :where(.tadeon-surface, .tadeon-page-hero, .tadeon-save-status, [data-tadeon-feedback], [data-tadeon-state-panel]) {
+    border: 1px solid CanvasText !important;
+    box-shadow: none !important;
+    background: Canvas !important;
+    color: CanvasText !important;
+  }
+
+  .tadeon-shell :where(a, button, [role="button"], input, textarea, select):focus-visible {
+    outline: 2px solid Highlight !important;
+    box-shadow: none !important;
+  }
+}
+
+@media (max-width: 767px) {
+  .tadeon-shell :where(button, [role="button"], a, input, textarea, select, [tabindex]) {
+    touch-action: manipulation;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tadeon-save-status[data-state],
+  [data-tadeon-feedback],
+  .tadeon-state-panel[data-tadeon-state="empty"] > :first-child,
+  .tadeon-state-panel[data-tadeon-state="loading"]::after,
+  [data-tadeon-feedback="loading"]::after {
+    animation: none !important;
+  }
+
+  .tadeon-shell :where(*) {
+    scroll-behavior: auto !important;
+  }
+
+  .tadeon-shell :where(.tadeon-orbital, .tadeon-atmosphere-orb, [data-tadeon-parallax]) {
+    will-change: auto;
+  }
+}
+
 @keyframes tadeon-feedback-writing {
   0%, 100% { box-shadow: inset 0 0 0 1px rgb(217 215 164 / 6%); }
   50% { box-shadow: inset 0 0 0 1px rgb(217 215 164 / 16%), 0 14px 34px -30px rgb(217 215 164 / 22%); }
@@ -124,14 +221,4 @@
 
 @media (max-width: 767px) {
   .tadeon-state-panel[data-tadeon-state="empty"] { min-height: 9.5rem; }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .tadeon-save-status[data-state],
-  [data-tadeon-feedback],
-  .tadeon-state-panel[data-tadeon-state="empty"] > :first-child,
-  .tadeon-state-panel[data-tadeon-state="loading"]::after,
-  [data-tadeon-feedback="loading"]::after {
-    animation: none !important;
-  }
 }
