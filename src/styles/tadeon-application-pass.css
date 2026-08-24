@@ -1,0 +1,141 @@
+/* Tadeon Application Pass — applying the shared system to real product surfaces. */
+
+/* Dashboard: make the chapter head and signal row read as one composed object. */
+.tadeon-route-dashboard > .tadeon-dashboard-hero {
+  min-height: clamp(20rem, 34vw, 29rem);
+  padding-block: clamp(1.5rem, 3vw, 2.75rem) !important;
+}
+
+.tadeon-route-dashboard .tadeon-dashboard-hero > .relative.z-10 {
+  min-height: 11rem;
+}
+
+.tadeon-route-dashboard .tadeon-dashboard-signals {
+  border-top-color: rgb(217 215 164 / 18%);
+  background: linear-gradient(180deg, rgb(217 215 164 / 2%), transparent 90%);
+}
+
+.tadeon-route-dashboard .tadeon-dashboard-signal {
+  min-height: 3.2rem;
+  padding: .65rem .7rem;
+  border-left: 1px solid rgb(122 129 135 / 17%);
+  transition: transform 180ms cubic-bezier(.23,1,.32,1), border-color 180ms ease, background-color 180ms ease;
+}
+
+.tadeon-route-dashboard .tadeon-dashboard-signal:first-child {
+  border-left: 0;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .tadeon-route-dashboard .tadeon-dashboard-signal:hover {
+    transform: translateY(-2px);
+    border-color: rgb(217 215 164 / 26%);
+    background: rgb(217 215 164 / 3%);
+  }
+}
+
+/* Section opening: the label and title share a measured editorial spine. */
+.tadeon-route-dashboard > section:not(.tadeon-dashboard-hero) > :first-child {
+  padding-inline: .15rem;
+}
+
+.tadeon-route-dashboard .tadeon-section-title {
+  margin-top: .15rem;
+  margin-bottom: 0;
+}
+
+/* Creation dialog follows the same material and type scale. */
+.tadeon-shell [data-radix-dialog-content] {
+  border-radius: 1.05rem .28rem 1.05rem .28rem;
+  border-color: rgb(122 129 135 / 28%);
+  background:
+    radial-gradient(circle at 92% 0%, rgb(217 215 164 / 6%), transparent 17rem),
+    linear-gradient(145deg, rgb(18 21 26 / 98%), rgb(8 11 15 / 98%));
+  box-shadow: 0 50px 120px -70px rgb(0 0 0 / 99%), inset 0 1px rgb(255 255 255 / 5%);
+}
+
+.tadeon-shell [data-radix-dialog-content] [data-slot="dialog-title"] {
+  font-family: "EB Garamond", serif;
+  font-size: clamp(1.35rem, 2vw, 1.85rem);
+  line-height: 1;
+}
+
+/* Generic section headers inherit the same horizontal grammar. */
+.tadeon-shell .tadeon-section-title {
+  font-family: "EB Garamond", serif;
+  text-wrap: balance;
+}
+
+/* Character sheet: make the overview feel like a single document spread. */
+.tadeon-sheet-page .tadeon-sheet-overview {
+  overflow: clip;
+  box-shadow: 0 36px 92px -64px rgb(0 0 0 / 98%), inset 0 1px rgb(255 255 255 / 4%);
+}
+
+.tadeon-sheet-page .tadeon-sheet-overview > * {
+  min-width: 0;
+  position: relative;
+}
+
+.tadeon-sheet-page .tadeon-sheet-overview > * + *::before {
+  position: absolute;
+  left: 0;
+  top: 12%;
+  bottom: 12%;
+  border-left: 1px solid rgb(122 129 135 / 13%);
+  content: "";
+}
+
+/* Master sections gain the same chapter-to-record cadence. */
+.tadeon-master-workspace > section {
+  scroll-margin-top: 5.5rem;
+}
+
+.tadeon-master-workspace [data-section-title],
+.tadeon-master-workspace .tadeon-section-title {
+  text-wrap: balance;
+}
+
+/* Nexus inspector: hierarchy between canvas, selection and metadata. */
+.tadeon-second-brain .tadeon-brain-inspector {
+  min-width: 18rem;
+}
+
+.tadeon-second-brain .tadeon-brain-selection {
+  margin-top: .2rem;
+}
+
+/* Keep dense technical surfaces tight while narrative blocks breathe. */
+.tadeon-shell [data-technical] + [data-technical],
+.tadeon-shell .tadeon-mono + .tadeon-mono {
+  margin-top: .18rem;
+}
+
+@media (max-width: 767px) {
+  .tadeon-route-dashboard > .tadeon-dashboard-hero {
+    min-height: 0;
+  }
+
+  .tadeon-route-dashboard .tadeon-dashboard-hero > .relative.z-10 {
+    min-height: 0;
+  }
+
+  .tadeon-route-dashboard .tadeon-dashboard-signal {
+    border-left: 0;
+    border-top: 1px solid rgb(122 129 135 / 13%);
+  }
+
+  .tadeon-route-dashboard .tadeon-dashboard-signal:first-child {
+    border-top: 0;
+  }
+
+  .tadeon-second-brain .tadeon-brain-inspector {
+    min-width: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tadeon-route-dashboard .tadeon-dashboard-signal {
+    transition: none;
+  }
+}
