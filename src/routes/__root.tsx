@@ -42,23 +42,7 @@ import nexusMaterialCss from "../styles/tadeon-nexus-material.css?url";
 import visibleUpgradeCss from "../styles/tadeon-visible-upgrade.css?url";
 import atmosphereCss from "../styles/tadeon-atmosphere.css?url";
 import interactionPassCss from "../styles/tadeon-interaction-pass.css?url";
-import headSystemCss from "../styles/tadeon-head-system.css?url";
-import typographyRhythmCss from "../styles/tadeon-typography-rhythm.css?url";
-import layoutRhythmCss from "../styles/tadeon-layout-rhythm.css?url";
-import applicationPassCss from "../styles/tadeon-application-pass.css?url";
-import responsiveParityCss from "../styles/tadeon-responsive-parity.css?url";
-import headRepairCss from "../styles/tadeon-head-repair.css?url";
-import stateFeedbackCss from "../styles/tadeon-state-feedback.css?url";
-import shellBackgroundRepairCss from "../styles/tadeon-shell-background-repair.css?url";
-import headParityNextCss from "../styles/tadeon-head-parity-next.css?url";
-import navigationAmbientCss from "../styles/tadeon-navigation-ambient.css?url";
-import tabletopThreeLineCss from "../styles/tadeon-tabletop-head-three-line.css?url";
-import headNexusReferenceCss from "../styles/tadeon-head-nexus-reference.css?url";
-import headCompositionFixCss from "../styles/tadeon-head-composition-fix.css?url";
-import headConvergenceCss from "../styles/tadeon-head-convergence.css?url";
-import surfaceSystemNextCss from "../styles/tadeon-surface-system-next.css?url";
-import microinteractionSystemCss from "../styles/tadeon-microinteraction-system.css?url";
-import sheetNexusWave6Css from "../styles/tadeon-sheet-nexus-wave6.css?url";
+import headMicroanimationsCss from "../styles/tadeon-head-microanimations.css?url";
 import { AuthProvider } from "@/lib/auth";
 import { Toaster } from "@/components/ui/sonner";
 import { PwaRegistration } from "@/components/pwa-registration";
@@ -84,27 +68,27 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "theme-color", content: "#74242d" }, { name: "application-name", content: "Tadeon Nexus" },
       { name: "apple-mobile-web-app-capable", content: "yes" }, { name: "apple-mobile-web-app-status-bar-style", content: "black-translucent" },
       { name: "apple-mobile-web-app-title", content: "Nexus" }, { name: "mobile-web-app-capable", content: "yes" },
-      { name: "tadeon-build-sha", content: import.meta.env.VITE_APP_COMMIT_SHA ?? "development" }, { name: "description", content: "Tadeon Nexus: gerencie fichas de personagem, atributos, perícias e a árvore de habilidades do seu RPG online com painel para mestres e jogadores." },
-      { title: "Tadeon Nexus - RPG Online" },
+      { name: "tadeon-build-sha", content: import.meta.env.VITE_APP_COMMIT_SHA ?? "development" }, { title: "Tadeon Nexus - RPG Online" },
+      { name: "description", content: "Tadeon Nexus: gerencie fichas de personagem, atributos, perícias e a árvore de habilidades do seu RPG online com painel para mestres e jogadores." },
       { property: "og:title", content: "Tadeon Nexus - RPG Online" }, { name: "twitter:title", content: "Tadeon Nexus - RPG Online" },
-      { property: "og:description", content: "Tadeon Nexus: gerencie fichas de personagem, atributos, perícias e o progresso de RPG." }, { name: "twitter:description", content: "Tadeon Nexus: gerencie fichas de personagem, atributos, perícias e o progresso de RPG." },
+      { property: "og:description", content: "Tadeon Nexus: gerencie fichas de personagem, atributos, perícias e a árvore de habilidades do seu RPG online." },
+      { name: "twitter:description", content: "Tadeon Nexus: gerencie fichas de personagem, atributos, perícias e a árvore de habilidades do seu RPG online." },
       { property: "og:site_name", content: "Tadeon Nexus" }, { property: "og:image", content: "https://tadeon-nexus.gtadeusz.workers.dev/social-card.png" },
       { property: "og:image:width", content: "1200" }, { property: "og:image:height", content: "630" }, { property: "og:type", content: "website" },
     ],
     links: [
-      { rel: "stylesheet", href: appCss }, { rel: "stylesheet", href: mobileCss }, { rel: "stylesheet", href: viewportCss }, { rel: "stylesheet", href: auditCss },
-      { rel: "stylesheet", href: radialPresenceCss }, { rel: "stylesheet", href: reconciliationCss }, { rel: "stylesheet", href: finalPolishCss }, { rel: "stylesheet", href: selectionDirectorEntryCss },
-      { rel: "stylesheet", href: urgentReconciliationCss }, { rel: "stylesheet", href: tabletopMapChromeRepairCss }, { rel: "stylesheet", href: userRepair152Css }, { rel: "stylesheet", href: mobileProductRepair153Css },
-      { rel: "stylesheet", href: finalDeviceParity154Css }, { rel: "stylesheet", href: finalDeviceParity154CompatCss }, { rel: "stylesheet", href: userVisibleRepair156Css }, { rel: "stylesheet", href: finalVisualSystem157Css },
-      { rel: "stylesheet", href: mobilePopupMasterHead158Css }, { rel: "stylesheet", href: focusHeaderNavParity159Css }, { rel: "stylesheet", href: navigationRealSvgParity160Css }, { rel: "stylesheet", href: sheetPopupGraphPolish161Css },
-      { rel: "stylesheet", href: navSheetSearchPolish162Css }, { rel: "stylesheet", href: createSheetSearchViewport163Css }, { rel: "stylesheet", href: desktopHeroParity202Css }, { rel: "stylesheet", href: heroIconsFinal212Css },
-      { rel: "stylesheet", href: experienceOrchestrationCss }, { rel: "stylesheet", href: experienceStabilizationCss }, { rel: "stylesheet", href: experienceRuntimeCss }, { rel: "stylesheet", href: experienceMaterialsCss },
-      { rel: "stylesheet", href: experienceMobileCss }, { rel: "stylesheet", href: experienceDetailsCss }, { rel: "stylesheet", href: commandExperienceCss }, { rel: "stylesheet", href: nexusMaterialCss },
-      { rel: "stylesheet", href: visibleUpgradeCss }, { rel: "stylesheet", href: atmosphereCss }, { rel: "stylesheet", href: interactionPassCss }, { rel: "stylesheet", href: headSystemCss },
-      { rel: "stylesheet", href: typographyRhythmCss }, { rel: "stylesheet", href: layoutRhythmCss }, { rel: "stylesheet", href: applicationPassCss }, { rel: "stylesheet", href: responsiveParityCss },
-      { rel: "stylesheet", href: headRepairCss }, { rel: "stylesheet", href: stateFeedbackCss }, { rel: "stylesheet", href: shellBackgroundRepairCss }, { rel: "stylesheet", href: headParityNextCss }, { rel: "stylesheet", href: navigationAmbientCss },
-      { rel: "stylesheet", href: tabletopThreeLineCss }, { rel: "stylesheet", href: headNexusReferenceCss }, { rel: "stylesheet", href: headCompositionFixCss }, { rel: "stylesheet", href: headConvergenceCss },
-      { rel: "stylesheet", href: surfaceSystemNextCss }, { rel: "stylesheet", href: microinteractionSystemCss }, { rel: "stylesheet", href: sheetNexusWave6Css },
+      { rel: "stylesheet", href: appCss }, { rel: "stylesheet", href: mobileCss }, { rel: "stylesheet", href: viewportCss },
+      { rel: "stylesheet", href: auditCss }, { rel: "stylesheet", href: radialPresenceCss }, { rel: "stylesheet", href: reconciliationCss },
+      { rel: "stylesheet", href: finalPolishCss }, { rel: "stylesheet", href: selectionDirectorEntryCss }, { rel: "stylesheet", href: urgentReconciliationCss },
+      { rel: "stylesheet", href: tabletopMapChromeRepairCss }, { rel: "stylesheet", href: userRepair152Css }, { rel: "stylesheet", href: mobileProductRepair153Css },
+      { rel: "stylesheet", href: finalDeviceParity154Css }, { rel: "stylesheet", href: finalDeviceParity154CompatCss }, { rel: "stylesheet", href: userVisibleRepair156Css },
+      { rel: "stylesheet", href: finalVisualSystem157Css }, { rel: "stylesheet", href: mobilePopupMasterHead158Css }, { rel: "stylesheet", href: focusHeaderNavParity159Css },
+      { rel: "stylesheet", href: navigationRealSvgParity160Css }, { rel: "stylesheet", href: sheetPopupGraphPolish161Css }, { rel: "stylesheet", href: navSheetSearchPolish162Css },
+      { rel: "stylesheet", href: createSheetSearchViewport163Css }, { rel: "stylesheet", href: desktopHeroParity202Css }, { rel: "stylesheet", href: heroIconsFinal212Css },
+      { rel: "stylesheet", href: experienceOrchestrationCss }, { rel: "stylesheet", href: experienceStabilizationCss }, { rel: "stylesheet", href: experienceRuntimeCss },
+      { rel: "stylesheet", href: experienceMaterialsCss }, { rel: "stylesheet", href: experienceMobileCss }, { rel: "stylesheet", href: experienceDetailsCss },
+      { rel: "stylesheet", href: commandExperienceCss }, { rel: "stylesheet", href: nexusMaterialCss }, { rel: "stylesheet", href: visibleUpgradeCss },
+      { rel: "stylesheet", href: atmosphereCss }, { rel: "stylesheet", href: interactionPassCss }, { rel: "stylesheet", href: headMicroanimationsCss },
       { rel: "manifest", href: "/manifest.webmanifest" }, { rel: "icon", href: "/favicon.svg?v=5", type: "image/svg+xml", sizes: "any" }, { rel: "apple-touch-icon", href: "/apple-touch-icon.png", sizes: "180x180" },
       { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Inter:wght@400;500;600;700&family=PT+Mono&display=swap" },
     ],
