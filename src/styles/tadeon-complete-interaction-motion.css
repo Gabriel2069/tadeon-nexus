@@ -1,0 +1,211 @@
+/* Tadeon Complete Interaction Motion — remaining UI states and authored transitions. */
+:root{
+  --tci-in:cubic-bezier(.16,1,.3,1);
+  --tci-spring:cubic-bezier(.18,.9,.28,1.18);
+  --tci-soft:cubic-bezier(.22,1,.36,1);
+  --tci-fast:180ms;
+  --tci-ui:320ms;
+}
+
+/* HEADS / HEROES — titles assemble instead of appearing as text blocks. */
+.tadeon-shell .tadeon-page h1,
+.tadeon-shell .tadeon-page h2,
+.tadeon-shell .tadeon-page h3,
+.tadeon-shell [data-tadeon-head],
+.tadeon-shell .tadeon-eyebrow{
+  animation: tci-head-arrive 520ms var(--tci-in) both;
+}
+.tadeon-shell .tadeon-page h1{animation-delay:35ms}
+.tadeon-shell .tadeon-page h2{animation-delay:55ms}
+.tadeon-shell .tadeon-page h3{animation-delay:75ms}
+@keyframes tci-head-arrive{
+  from{opacity:0;transform:translate3d(0,18px,0);filter:blur(7px);letter-spacing:.025em}
+  66%{opacity:1;transform:translate3d(0,-2px,0);filter:blur(0);letter-spacing:0}
+  to{opacity:1;transform:none}
+}
+
+/* SUBHEADS / DESCRIPTION LINES — follow the title with a lighter rhythm. */
+.tadeon-shell .tadeon-page h1 + p,
+.tadeon-shell .tadeon-page h2 + p,
+.tadeon-shell .tadeon-page h3 + p,
+.tadeon-shell .tadeon-page [data-tadeon-head-description]{
+  animation:tci-copy-arrive 460ms var(--tci-in) 80ms both;
+}
+@keyframes tci-copy-arrive{from{opacity:0;transform:translateY(10px);filter:blur(4px)}to{opacity:1;transform:none;filter:blur(0)}}
+
+/* TABLES / RECORDS — rows move as a coherent archive, not one giant block. */
+.tadeon-shell table tbody tr{
+  transition:transform 240ms var(--tci-soft),background-color 220ms ease,box-shadow 280ms var(--tci-soft),border-color 220ms ease;
+}
+.tadeon-shell table tbody tr:hover{transform:translateX(5px);background-color:rgb(116 36 45 / 6%)}
+.tadeon-shell table tbody tr:active{transform:translateX(2px) scale(.994)}
+.tadeon-shell table tbody tr > td:first-child{transition:padding-left 260ms var(--tci-soft)}
+.tadeon-shell table tbody tr:hover > td:first-child{padding-left:.65rem}
+
+/* LISTS — insertion has a place and direction. */
+.tadeon-shell ul > li,
+.tadeon-shell ol > li{
+  transition:transform 260ms var(--tci-soft),opacity 260ms ease,background-color 220ms ease;
+}
+.tadeon-shell ul > li:hover,
+.tadeon-shell ol > li:hover{transform:translateX(5px)}
+
+/* BADGES / CHIPS — selection and state become small physical events. */
+.tadeon-shell [data-slot="badge"],
+.tadeon-shell .tadeon-chip,
+.tadeon-shell .tadeon-sheet-condition-chip{
+  transition:transform 220ms var(--tci-spring),box-shadow 260ms var(--tci-soft),filter 220ms ease,background-color 220ms ease;
+}
+.tadeon-shell [data-slot="badge"]:hover,
+.tadeon-shell .tadeon-chip:hover,
+.tadeon-shell .tadeon-sheet-condition-chip:hover{transform:translateY(-2px) scale(1.025);filter:brightness(1.045)}
+.tadeon-shell [data-slot="badge"]:active,
+.tadeon-shell .tadeon-chip:active,
+.tadeon-shell .tadeon-sheet-condition-chip:active{transform:scale(.95)}
+
+/* INPUTS — values enter the field with a subtle editorial focus. */
+.tadeon-shell input:not([type="checkbox"]):not([type="radio"]),
+.tadeon-shell textarea,
+.tadeon-shell [contenteditable="true"]{
+  transition:transform 220ms var(--tci-soft),box-shadow 340ms var(--tci-soft),border-color 220ms ease,background-color 220ms ease;
+}
+.tadeon-shell input:not([type="checkbox"]):not([type="radio"]):focus,
+.tadeon-shell textarea:focus,
+.tadeon-shell [contenteditable="true"]:focus{
+  transform:translateY(-2px);
+  box-shadow:0 0 0 1px rgb(217 215 164 / 22%),0 15px 34px -25px rgb(217 215 164 / 35%);
+}
+
+/* SEARCH — query activation travels through the field and result set. */
+.tadeon-shell input[placeholder*="Buscar"],
+.tadeon-shell input[placeholder*="buscar"]{
+  transition:transform 260ms var(--tci-soft),box-shadow 360ms var(--tci-soft),width 360ms var(--tci-in),background-color 260ms ease;
+}
+.tadeon-shell input[placeholder*="Buscar"]:focus,
+.tadeon-shell input[placeholder*="buscar"]:focus{transform:translateY(-2px) scale(1.006);box-shadow:0 18px 42px -30px rgb(116 36 45 / 50%)}
+
+/* PROGRESS / METERS / RANGES — the fill has velocity and a trailing light. */
+.tadeon-shell [role="progressbar"],
+.tadeon-shell [role="meter"],
+.tadeon-shell progress{
+  overflow:hidden;
+  position:relative;
+}
+.tadeon-shell [role="progressbar"]::after,
+.tadeon-shell [role="meter"]::after,
+.tadeon-shell progress::after{
+  content:"";
+  position:absolute;
+  inset:0 auto 0 0;
+  width:34%;
+  background:linear-gradient(90deg,transparent,rgb(255 255 255 / 10%),transparent);
+  transform:translateX(-120%);
+  animation:tci-progress-sheen 2.2s ease-in-out infinite;
+  pointer-events:none;
+}
+@keyframes tci-progress-sheen{55%,100%{transform:translateX(330%)}}
+.tadeon-shell [data-slot="slider-range"]{transition:width 280ms var(--tci-soft),transform 280ms var(--tci-soft),filter 240ms ease}
+.tadeon-shell [data-slot="slider-thumb"]{transition:transform 240ms var(--tci-spring),box-shadow 280ms var(--tci-soft),border-color 220ms ease}
+.tadeon-shell [data-slot="slider-thumb"]:hover{transform:scale(1.12)}
+.tadeon-shell [data-slot="slider-thumb"]:active{transform:scale(.88)}
+
+/* PAGINATION / STEPPERS — current position travels instead of snapping. */
+.tadeon-shell [aria-label*="Paginação"] [aria-current="page"],
+.tadeon-shell [aria-label*="página"] [aria-current="page"]{
+  animation:tci-page-land 400ms var(--tci-spring) both;
+}
+@keyframes tci-page-land{from{opacity:.55;transform:translateY(4px) scale(.9)}60%{opacity:1;transform:translateY(-2px) scale(1.07)}to{transform:none}}
+
+/* FORM FEEDBACK — labels / errors / success states reveal instead of flipping. */
+.tadeon-shell [data-slot="form-message"],
+.tadeon-shell [role="alert"],
+.tadeon-shell [data-tadeon-error],
+.tadeon-shell [data-tadeon-success]{animation:tci-feedback-in 340ms var(--tci-spring) both}
+@keyframes tci-feedback-in{from{opacity:0;transform:translateY(-6px) scale(.96)}65%{opacity:1;transform:translateY(1px) scale(1.012)}to{opacity:1;transform:none}}
+
+/* LOADING / SKELETONS — reveal actual content with a crossing wave. */
+.tadeon-shell [aria-busy="true"] [data-slot="skeleton"],
+.tadeon-shell [aria-busy="true"] .animate-pulse{animation:tci-skeleton-pulse 1.35s ease-in-out infinite}
+@keyframes tci-skeleton-pulse{0%,100%{opacity:.55;filter:brightness(.97)}50%{opacity:.9;filter:brightness(1.05)}}
+
+/* EMPTY STATES — become invitations, not dead ends. */
+.tadeon-shell [data-tadeon-empty-state]{animation:tci-empty-in 620ms var(--tci-in) both}
+@keyframes tci-empty-in{from{opacity:0;transform:translateY(22px) scale(.965);filter:blur(8px)}65%{opacity:1;transform:translateY(-3px) scale(1.006);filter:blur(0)}to{transform:none}}
+
+/* ICON BUTTONS — every action category gets a different micro-gesture. */
+.tadeon-shell button[aria-label*="Fechar"]:hover svg,
+.tadeon-shell button[title*="Fechar"]:hover svg{transform:rotate(90deg) scale(1.08)}
+.tadeon-shell button[aria-label*="Adicionar"]:hover svg,
+.tadeon-shell button[title*="Adicionar"]:hover svg{transform:rotate(90deg) scale(1.1)}
+.tadeon-shell button[aria-label*="Voltar"]:hover svg,
+.tadeon-shell button[title*="Voltar"]:hover svg{transform:translateX(-3px)}
+.tadeon-shell button[aria-label*="Avançar"]:hover svg,
+.tadeon-shell button[title*="Avançar"]:hover svg{transform:translateX(3px)}
+.tadeon-shell button[aria-label*="Pesquisar"]:hover svg,
+.tadeon-shell button[title*="Pesquisar"]:hover svg{transform:scale(1.1) rotate(-8deg)}
+.tadeon-shell button[aria-label*="Atualizar"]:hover svg,
+.tadeon-shell button[title*="Atualizar"]:hover svg{transform:rotate(180deg)}
+
+/* BREADCRUMBS — focus advances along the path. */
+.tadeon-shell nav[aria-label*="breadcrumb"] a,
+.tadeon-shell nav[aria-label*="Breadcrumb"] a{
+  transition:transform 220ms var(--tci-soft),color 180ms ease,opacity 180ms ease;
+}
+.tadeon-shell nav[aria-label*="breadcrumb"] a:hover,
+.tadeon-shell nav[aria-label*="Breadcrumb"] a:hover{transform:translateX(3px)}
+
+/* SEPARATORS / ORNAMENTS — decorative lines are drawn into place. */
+.tadeon-shell hr,
+.tadeon-shell [data-tadeon-divider]{transform-origin:left center;animation:tci-line-draw 650ms var(--tci-in) both}
+@keyframes tci-line-draw{from{transform:scaleX(0);opacity:0}to{transform:scaleX(1);opacity:1}}
+
+/* NOTIFICATIONS / TOAST ACTIONS — action row follows the toast body. */
+.tadeon-shell [data-sonner-toast] button{animation:tci-toast-action 360ms var(--tci-spring) 70ms both}
+@keyframes tci-toast-action{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+
+/* DESKTOP SIDEBAR — only after the structural correction, refine item motion. */
+.tadeon-sidebar .tadeon-nav-item{
+  transform-origin:left center;
+  transition:transform 280ms var(--tci-soft),color 200ms ease,background-color 240ms ease,box-shadow 280ms var(--tci-soft);
+}
+.tadeon-sidebar .tadeon-nav-item:hover{transform:translateX(4px)}
+.tadeon-sidebar .tadeon-nav-item[aria-current="page"]{animation:tci-nav-land 360ms var(--tci-spring) both}
+@keyframes tci-nav-land{from{opacity:.65;transform:translateX(-8px) scale(.97)}70%{opacity:1;transform:translateX(2px) scale(1.008)}to{transform:none}}
+.tadeon-sidebar .tadeon-nav-item svg{transition:transform 280ms var(--tci-spring),filter 260ms ease}
+.tadeon-sidebar .tadeon-nav-item:hover svg{transform:translateX(2px) scale(1.08)}
+.tadeon-sidebar-collapse{transition:transform 340ms var(--tci-spring),background-color 240ms ease,border-color 240ms ease,box-shadow 300ms var(--tci-soft)!important}
+.tadeon-sidebar-collapse:hover{transform:translateY(-2px) scale(1.05) rotate(-2deg)!important}
+.tadeon-sidebar-collapse svg{transition:transform 420ms var(--tci-spring)}
+.tadeon-sidebar-collapse[data-state="collapsed"] svg{transform:translateX(1px)}
+.tadeon-sidebar-collapse[data-state="expanded"] svg{transform:translateX(-1px)}
+
+/* GLOBAL SCROLL-REVEAL HOOK — elements marked by the experience director gain direction. */
+.tadeon-shell [data-tadeon-directed="true"]{--tci-stagger:calc(var(--tadeon-index,0) * 24ms)}
+.tadeon-shell [data-tadeon-material="chapter"],
+.tadeon-shell [data-tadeon-material="record"],
+.tadeon-shell [data-tadeon-material="fragment"],
+.tadeon-shell [data-tadeon-material="archive"]{animation-delay:var(--tci-stagger)}
+
+@media (max-width:767px){
+  .tadeon-shell table tbody tr:hover,
+  .tadeon-shell ul > li:hover,
+  .tadeon-shell ol > li:hover,
+  .tadeon-sidebar .tadeon-nav-item:hover{transform:none}
+}
+
+@media (prefers-reduced-motion:reduce){
+  .tadeon-shell .tadeon-page h1,
+  .tadeon-shell .tadeon-page h2,
+  .tadeon-shell .tadeon-page h3,
+  .tadeon-shell [data-tadeon-head],
+  .tadeon-shell .tadeon-eyebrow,
+  .tadeon-shell .tadeon-page h1 + p,
+  .tadeon-shell .tadeon-page h2 + p,
+  .tadeon-shell .tadeon-page h3 + p,
+  .tadeon-shell [data-tadeon-head-description],
+  .tadeon-shell [data-tadeon-empty-state],
+  .tadeon-shell [data-slot="form-message"],
+  .tadeon-shell [role="alert"],
+  .tadeon-shell [data-tadeon-error],
+  .tadeon-shell [data-tadeon-success]{animation:none!important}
+}
