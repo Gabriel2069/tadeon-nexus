@@ -1,0 +1,186 @@
+/* Tadeon experience details ~ hero, navigation, graph, master and states */
+
+/* --------------------------------------------------------------------------
+   Chapter-like heroes
+   -------------------------------------------------------------------------- */
+
+.tadeon-dashboard-hero[data-tadeon-material="chapter"] {
+  position: relative;
+  isolation: isolate;
+  min-height: clamp(15rem, 30vw, 22rem);
+  overflow: clip;
+}
+
+.tadeon-dashboard-hero[data-tadeon-material="chapter"]::after {
+  position: absolute;
+  right: -7rem;
+  bottom: -9rem;
+  width: 24rem;
+  height: 24rem;
+  border: 1px solid rgb(217 215 164 / 9%);
+  border-radius: 50%;
+  box-shadow:
+    0 0 0 2rem rgb(217 215 164 / 2%),
+    0 0 0 5rem rgb(113 107 123 / 1.5%);
+  content: "";
+  pointer-events: none;
+  opacity: 0.72;
+  transition: transform 800ms var(--tadeon-ease-material, cubic-bezier(0.23, 1, 0.32, 1));
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .tadeon-dashboard-hero[data-tadeon-material="chapter"]:hover::after {
+    transform: translate(-0.65rem, -0.35rem) rotate(-2deg);
+  }
+}
+
+.tadeon-dashboard-hero[data-tadeon-material="chapter"] .tadeon-eyebrow,
+.tadeon-dashboard-hero[data-tadeon-material="chapter"] h1,
+.tadeon-dashboard-hero[data-tadeon-material="chapter"] h2,
+.tadeon-dashboard-hero[data-tadeon-material="chapter"] h3 {
+  position: relative;
+  z-index: 1;
+}
+
+/* --------------------------------------------------------------------------
+   Navigation feels like a marked volume
+   -------------------------------------------------------------------------- */
+
+.tadeon-nav-item[data-tadeon-directed="true"] {
+  overflow: hidden;
+  border-radius: 0.65rem 0.2rem 0.65rem 0.2rem;
+}
+
+.tadeon-nav-item[data-tadeon-directed="true"]::before {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, rgb(217 215 164 / 5%), transparent 52%);
+  content: "";
+  opacity: 0;
+  transform: translateX(-8%);
+  transition:
+    opacity 280ms ease,
+    transform 360ms var(--tadeon-ease-material, cubic-bezier(0.23, 1, 0.32, 1));
+  pointer-events: none;
+}
+
+.tadeon-nav-item[data-tadeon-directed="true"]:hover::before,
+.tadeon-nav-item[data-tadeon-directed="true"][aria-current="page"]::before {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.tadeon-nav-item[data-tadeon-directed="true"] .tadeon-nav-item__icon {
+  position: relative;
+  z-index: 1;
+}
+
+/* --------------------------------------------------------------------------
+   Knowledge / brain shell as an instrument
+   -------------------------------------------------------------------------- */
+
+.tadeon-knowledge-graph[data-tadeon-material],
+.tadeon-brain-shell[data-tadeon-material] {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+}
+
+.tadeon-knowledge-graph[data-tadeon-directed="true"]::after,
+.tadeon-brain-shell[data-tadeon-directed="true"]::after {
+  position: absolute;
+  inset: 1rem;
+  border: 1px solid rgb(217 215 164 / 4%);
+  border-radius: inherit;
+  content: "";
+  pointer-events: none;
+}
+
+/* --------------------------------------------------------------------------
+   Master / tabletop command reading
+   -------------------------------------------------------------------------- */
+
+.tadeon-shell[data-section="Painel do Mestre"] .tadeon-surface[data-tadeon-directed="true"],
+.tadeon-shell[data-section="Mesa Nexus"] .tadeon-surface[data-tadeon-directed="true"] {
+  border-color: color-mix(in srgb, var(--tadeon-section-accent, var(--tadeon-metal)) 22%, var(--border));
+}
+
+.tadeon-shell[data-section="Painel do Mestre"] .tadeon-dashboard-signal[data-tadeon-directed="true"],
+.tadeon-shell[data-section="Mesa Nexus"] .tadeon-dashboard-signal[data-tadeon-directed="true"] {
+  font-variant-numeric: tabular-nums;
+}
+
+/* --------------------------------------------------------------------------
+   Empty/error/offline states are compositions, not dead ends
+   -------------------------------------------------------------------------- */
+
+.tadeon-state-panel[data-tadeon-material="state"] {
+  min-height: 10rem;
+}
+
+.tadeon-state-panel[data-tadeon-material="state"]::after {
+  position: absolute;
+  right: -3rem;
+  bottom: -4rem;
+  width: 12rem;
+  height: 12rem;
+  border: 1px solid color-mix(in srgb, var(--tadeon-section-accent, var(--tadeon-metal)) 10%, transparent);
+  border-radius: 50%;
+  content: "";
+  pointer-events: none;
+  opacity: 0.65;
+}
+
+/* --------------------------------------------------------------------------
+   Type hierarchy: make the existing three-font system deliberate
+   -------------------------------------------------------------------------- */
+
+.tadeon-shell h1,
+.tadeon-shell h2,
+.tadeon-shell h3 {
+  font-family: var(--font-cinzel);
+}
+
+.tadeon-shell .tadeon-eyebrow,
+.tadeon-shell .tadeon-mono,
+.tadeon-shell [data-state],
+.tadeon-shell [aria-live] {
+  font-family: var(--font-mono);
+}
+
+.tadeon-shell button,
+.tadeon-shell input,
+.tadeon-shell textarea,
+.tadeon-shell select,
+.tadeon-shell label {
+  font-family: var(--font-inter);
+}
+
+/* --------------------------------------------------------------------------
+   Safe performance fallback
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 767px) {
+  .tadeon-dashboard-hero[data-tadeon-material="chapter"] {
+    min-height: 13rem;
+  }
+
+  .tadeon-dashboard-hero[data-tadeon-material="chapter"]::after {
+    width: 17rem;
+    height: 17rem;
+    right: -6rem;
+    bottom: -7rem;
+  }
+
+  .tadeon-knowledge-graph[data-tadeon-directed="true"]::after,
+  .tadeon-brain-shell[data-tadeon-directed="true"]::after {
+    inset: 0.65rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tadeon-dashboard-hero[data-tadeon-material="chapter"]::after,
+  .tadeon-nav-item[data-tadeon-directed="true"]::before {
+    transition-duration: 1ms !important;
+  }
+}
