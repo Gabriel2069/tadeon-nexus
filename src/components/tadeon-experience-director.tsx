@@ -98,6 +98,44 @@ function ensurePointerSheen(element: HTMLElement) {
   element.addEventListener("pointerleave", leave, { passive: true });
 }
 
+function installAtmosphericParallax(stage: HTMLElement) {
+  if (stage.dataset.tadeonAtmosphereBound === "true") return;
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  if (window.matchMedia("(hover: none), (pointer: coarse)").matches) return;
+
+  stage.dataset.tadeonAtmosphereBound = "true";
+  let frame = 0;
+  let pointerX = 0.5;
+  let pointerY = 0.5;
+
+  const render = () => {
+    frame = 0;
+    const x = (pointerX - 0.5) * 2;
+    const y = (pointerY - 0.5) * 2;
+    stage.style.setProperty("--tadeon-parallax-x", `${(x * 4).toFixed(2)}px`);
+    stage.style.setProperty("--tadeon-parallax-y", `${(y * 3).toFixed(2)}px`);
+  };
+
+  const move = (event: PointerEvent) => {
+    if (event.pointerType === "touch") return;
+    const rect = stage.getBoundingClientRect();
+    if (!rect.width || !rect.height) return;
+    pointerX = Math.max(0, Math.min(1, (event.clientX - rect.left) / rect.width));
+    pointerY = Math.max(0, Math.min(1, (event.clientY - rect.top) / rect.height));
+    if (!frame) frame = window.requestAnimationFrame(render);
+  };
+
+  const leave = () => {
+    pointerX = 0.5;
+    pointerY = 0.5;
+    if (!frame) frame = window.requestAnimationFrame(render);
+  };
+
+  stage.addEventListener("pointermove", move, { passive: true });
+  stage.addEventListener("pointerleave", leave, { passive: true });
+  render();
+}
+
 function processRoot(root: ParentNode) {
   root.querySelectorAll<HTMLElement>(REVEAL).forEach((element) => {
     markElement(element);
@@ -153,6 +191,7 @@ function directRoute() {
 
   processElement(stage);
   processRoot(stage);
+  installAtmosphericParallax(stage);
   return true;
 }
 
