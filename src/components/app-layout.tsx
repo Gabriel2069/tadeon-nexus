@@ -18,7 +18,6 @@ import {
   ShieldCheck,
   Wrench,
   LibraryBig,
-  MapPinned,
   MonitorDown,
   Share2,
   CircleCheck,
@@ -38,6 +37,7 @@ import {
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { BrandMark, ThreadField } from "@/components/brand-mark";
+import { SectionSymbol } from "@/components/section-symbols";
 import { GlobalSearch } from "@/components/global-search";
 import { usePwaInstall } from "@/components/pwa-registration";
 import { getAuthErrorMessage } from "@/lib/auth-errors";
@@ -222,7 +222,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
       {tabletopEnabled && (
         <NavItem
           to="/tabletop"
-          icon={<MapPinned className="w-4 h-4" />}
+          icon={<SectionSymbol section="tabletop" className="w-4 h-4" />}
           label="Mesa Nexus"
           active={path.startsWith("/tabletop")}
           mini={mini}
@@ -454,7 +454,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
           </button>
           <div className="tadeon-mobile-header__identity flex min-w-0 items-center justify-center gap-2.5">
             {currentSection === "Mesa Nexus" ? (
-              <MapPinned className="h-8 w-8 shrink-0 text-primary" />
+              <SectionSymbol section="tabletop" className="h-8 w-8 shrink-0 text-primary" />
             ) : (
               <BrandMark className="h-8 w-8 shrink-0 text-primary" />
             )}
@@ -525,7 +525,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
               aria-current={path.startsWith("/tabletop") ? "page" : undefined}
               className="tadeon-mobile-dock__item"
             >
-              <MapPinned className="h-5 w-5" />
+              <SectionSymbol section="tabletop" className="h-5 w-5" />
               <span>Mesa</span>
             </Link>
           )}

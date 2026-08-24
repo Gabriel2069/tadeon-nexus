@@ -495,8 +495,11 @@ export class EntityRenderer {
         alpha: selected ? 1 : 0.9,
         width: selected ? 4 : 2,
       });
-      shape.visible = !fallbackStandee;
-      outline.visible = !fallbackStandee;
+      // A loaded texture is the token's visible face. Keep the semantic color
+      // available as base/aura data, but never repaint the legacy 2D plate
+      // behind the image. The outline returns only while the asset is selected.
+      shape.visible = !entity.assetUrl && !fallbackStandee;
+      outline.visible = !fallbackStandee && (!entity.assetUrl || selected);
     }
 
     const icons = Array.isArray(properties.icons)

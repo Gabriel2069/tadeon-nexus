@@ -9,6 +9,13 @@ import {
 } from "@/lib/knowledge/official-knowledge-packs";
 
 describe("Tadeon Nexus official pack", () => {
+  it("exposes one canonical archive instead of duplicated projections", () => {
+    expect(TADEON_NEXUS_OFFICIAL_PACKS).toHaveLength(1);
+    expect(TADEON_NEXUS_OFFICIAL_PACKS[0].fileName).toBe(
+      "tadeon-nexus-canonico-atual.zip",
+    );
+  });
+
   it.each(TADEON_NEXUS_OFFICIAL_PACKS)(
     "keeps $title importable and complete",
     (pack) => {
@@ -26,7 +33,7 @@ describe("Tadeon Nexus official pack", () => {
     },
   );
 
-  it("keeps the complete Lote 01 graph importable", () => {
+  it("keeps the complete canonical graph importable", () => {
     const bytes = readFileSync(
       resolve(process.cwd(), `public${TADEON_NEXUS_LOTE_01.assetPath}`),
     );

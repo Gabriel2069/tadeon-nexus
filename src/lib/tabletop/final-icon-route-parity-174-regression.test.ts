@@ -6,13 +6,16 @@ function source(path: string) {
 }
 
 describe("final icon and route parity 174/176", () => {
-  it("uses the exact MapPinned identity for Mesa instead of the old map glyph", () => {
+  it("uses the exact route favicon identity for Mesa on every navigation surface", () => {
     const layout = source("src/components/app-layout.tsx");
-    const css = source("src/styles/create-sheet-search-viewport-163.css");
+    const symbols = source("src/components/section-symbols.tsx");
+    const favicon = source("public/favicons/tabletop.svg");
     expect(layout).toContain('currentSection === "Mesa Nexus"');
-    expect(layout).toContain('<MapPinned className="h-8 w-8 shrink-0 text-primary" />');
-    expect(css).toContain("M18 8c0 3.613-3.869 7.429-5.393 8.795");
-    expect(css).not.toContain("M14.106 5.553");
+    expect(layout).toContain('<SectionSymbol section="tabletop"');
+    expect(layout).not.toContain("MapPinned");
+    expect(symbols).toContain("export function TabletopSigil");
+    expect(symbols).toContain("M18 28 38 20l20 8 20-8v48l-20 8-20-8-20 8Z");
+    expect(favicon).toContain("M18 28 38 20l20 8 20-8v48l-20 8-20-8-20 8Z");
   });
 
   it("pins authored Panel and Backup glyphs to the geometric center of the shared square", () => {

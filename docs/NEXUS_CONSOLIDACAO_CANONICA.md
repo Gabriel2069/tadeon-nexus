@@ -1,8 +1,16 @@
 # Nexus — inventário e consolidação canônica
 
+## Estado da consolidação
+
+Em 24 de agosto de 2026, os sete downloads redundantes foram substituídos por
+`tadeon-nexus-canonico-atual.zip`. O arquivo preserva as 186 páginas únicas,
+298 relações, zero anexos e a proveniência existente. Este é o ponto de partida
+congelado para a próxima revisão a partir dos livros reenviados; não representa
+a conclusão do aprofundamento editorial.
+
 ## Objetivo
 
-Substituir os sete pacotes públicos atuais por um único pacote canônico, aprofundado e versionado, sem perder proveniência, texto primário ou relações estruturadas.
+Manter um único pacote canônico, aprofundado e versionado, sem perder proveniência, texto primário ou relações estruturadas.
 
 Este documento registra o estado dos pacotes publicados em 24 de agosto de 2026. A remoção dos pacotes antigos só deve ocorrer depois de o pacote unificado passar por validação de importação, integridade e revisão editorial.
 

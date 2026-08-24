@@ -2207,3 +2207,87 @@
     display: flex;
   }
 }
+.tadeon-tabletop-token-color {
+  min-width: 0;
+  border: 1px solid color-mix(in srgb, var(--border) 65%, transparent);
+  border-radius: .75rem;
+  padding: .65rem;
+  background: color-mix(in srgb, var(--secondary) 18%, transparent);
+}
+
+.tadeon-tabletop-token-color__controls {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: .65rem;
+  margin-top: .45rem;
+}
+
+.tadeon-tabletop-token-color__swatches {
+  display: flex;
+  min-width: 0;
+  flex-wrap: wrap;
+  gap: .38rem;
+}
+
+.tadeon-tabletop-token-color__swatches > button {
+  width: 1.75rem;
+  height: 1.75rem;
+  flex: 0 0 1.75rem;
+  border: 2px solid rgb(255 255 255 / 15%);
+  border-radius: 50%;
+  box-shadow: 0 0 0 1px rgb(0 0 0 / 48%);
+  transition: transform .16s var(--ease-out), box-shadow .16s var(--ease-out);
+}
+
+.tadeon-tabletop-token-color__swatches > button:hover {
+  transform: translateY(-1px) scale(1.06);
+}
+
+.tadeon-tabletop-token-color__swatches > button[aria-pressed="true"] {
+  box-shadow: 0 0 0 2px var(--background), 0 0 0 4px var(--primary);
+  transform: scale(1.08);
+}
+
+.tadeon-tabletop-token-color__custom {
+  display: grid;
+  justify-items: center;
+  gap: .2rem;
+  color: var(--muted-foreground);
+  font-size: .58rem;
+}
+
+.tadeon-tabletop-token-color__custom input {
+  width: 2.4rem;
+  height: 2rem;
+  cursor: pointer;
+  border: 1px solid var(--border);
+  border-radius: .55rem;
+  padding: .15rem;
+  background: var(--background);
+}
+
+.tadeon-tabletop-token-color > p {
+  margin-top: .55rem;
+  font-size: .625rem;
+  line-height: 1.45;
+  color: var(--muted-foreground);
+}
+
+@media (max-width: 639px) {
+  .tadeon-tabletop-token-color__controls {
+    grid-template-columns: 1fr;
+  }
+
+  .tadeon-tabletop-token-color__custom {
+    grid-template-columns: auto auto;
+    justify-content: start;
+    align-items: center;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tadeon-tabletop-token-color__swatches > button {
+    transition: none;
+  }
+}

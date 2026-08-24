@@ -3,7 +3,6 @@ import {
   CloudOff,
   Home,
   LibraryBig,
-  MapPinned,
   Users,
 } from "lucide-react";
 
@@ -59,6 +58,27 @@ export function BackupSigil({ className, ...props }: SVGProps<SVGSVGElement>) {
   );
 }
 
+/** Exact vector identity used by /favicons/tabletop.svg. */
+export function TabletopSigil({ className, ...props }: SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      viewBox="0 0 96 96"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="6"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={className}
+      {...props}
+    >
+      <path d="M18 28 38 20l20 8 20-8v48l-20 8-20-8-20 8Z" opacity="0.7" />
+      <path d="M38 20v48M58 28v48" opacity="0.5" />
+      <path d="M48 18c-11 0-19 8-19 19 0 13 13 25 17 28a3 3 0 0 0 4 0c4-3 17-15 17-28 0-11-8-19-19-19Z" />
+      <circle cx="48" cy="37" r="6" fill="currentColor" stroke="none" />
+    </svg>
+  );
+}
+
 export function SectionSymbol({
   section,
   className,
@@ -66,7 +86,7 @@ export function SectionSymbol({
 }: SVGProps<SVGSVGElement> & { section: AppSectionSymbol }) {
   if (section === "master") return <MasterSigil className={className} {...props} />;
   if (section === "nexus") return <LibraryBig className={className} {...props} />;
-  if (section === "tabletop") return <MapPinned className={className} {...props} />;
+  if (section === "tabletop") return <TabletopSigil className={className} {...props} />;
   if (section === "users") return <Users className={className} {...props} />;
   if (section === "tools") return <BackupSigil className={className} {...props} />;
   if (section === "offline") return <CloudOff className={className} {...props} />;

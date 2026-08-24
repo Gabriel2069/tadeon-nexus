@@ -199,6 +199,14 @@ const TOOL_HINTS: Record<TabletopToolMode, string> = {
 };
 
 const DRAW_COLORS = ["#d9d7a4", "#74242d", "#4f6e5d", "#e9e3d5", "#1f3644"];
+const TOKEN_BASE_COLORS = [
+  "#8d3152",
+  "#547b94",
+  "#4f6e5d",
+  "#b7814d",
+  "#716b7b",
+  "#d9d7a4",
+];
 
 const CAMERA_PRESETS = [
   {
@@ -3734,6 +3742,53 @@ export function TabletopWorkspace({
                         }
                       />
                     </div>
+                    <fieldset className="tadeon-tabletop-token-color">
+                      <legend className="text-[10px] uppercase text-muted-foreground">
+                        Cor-base do token
+                      </legend>
+                      <div className="tadeon-tabletop-token-color__controls">
+                        <div className="tadeon-tabletop-token-color__swatches">
+                          {TOKEN_BASE_COLORS.map((color) => {
+                            const active = primary.color === colorToNumber(color);
+                            return (
+                              <button
+                                key={color}
+                                type="button"
+                                aria-label={`Usar cor-base ${color}`}
+                                aria-pressed={active}
+                                disabled={!editable}
+                                style={{ backgroundColor: color }}
+                                onClick={() =>
+                                  engineRef.current?.updateSelected(
+                                    { color: colorToNumber(color) },
+                                    "Alterar cor-base do token",
+                                  )
+                                }
+                              />
+                            );
+                          })}
+                        </div>
+                        <label className="tadeon-tabletop-token-color__custom">
+                          <span>Personalizada</span>
+                          <input
+                            type="color"
+                            value={`#${primary.color.toString(16).padStart(6, "0")}`}
+                            disabled={!editable}
+                            onChange={(event) =>
+                              engineRef.current?.updateSelected(
+                                { color: colorToNumber(event.target.value) },
+                                "Alterar cor-base do token",
+                              )
+                            }
+                          />
+                        </label>
+                      </div>
+                      {primary.assetUrl && (
+                        <p>
+                          A cor continua disponível para base 3D, aura e estados, sem cobrir a imagem no modo 2D.
+                        </p>
+                      )}
+                    </fieldset>
                     <div className="grid grid-cols-2 gap-3">
                       <div>
                         <Label htmlFor="entity-size-preset" className="text-[10px] uppercase">
