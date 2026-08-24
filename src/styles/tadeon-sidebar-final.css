@@ -1,3 +1,5 @@
+@import "./tadeon-final-motion-orchestration.css";
+
 /* Final sidebar implementation pass — loaded by AppLayout after desktop-studio.css. */
 
 @media (min-width: 768px) {
