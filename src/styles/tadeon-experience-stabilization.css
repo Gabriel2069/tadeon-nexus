@@ -1,0 +1,279 @@
+/*
+ * Tadeon Experience Stabilization
+ *
+ * Final pass for consistency, touch behavior, accessibility, state feedback,
+ * safe-area handling, and graceful fallbacks. This layer intentionally does
+ * not introduce a new visual language; it makes the existing Tadeon system
+ * behave consistently across devices and interaction modes.
+ */
+
+/* ---------------------------------------------------------------
+   Shared interaction states
+   --------------------------------------------------------------- */
+
+.tadeon-route-stage,
+.tadeon-surface,
+.tadeon-sheet-card,
+.tadeon-state-panel,
+.tadeon-dashboard-hero,
+.tadeon-auth-shell,
+.tadeon-auth-manifesto,
+.tadeon-nav-item,
+.tadeon-mobile-dock__item,
+.tadeon-mobile-header__control,
+.tadeon-sidebar-collapse,
+.tadeon-desktop-toolbar__account,
+.tadeon-link-collapse {
+  -webkit-tap-highlight-color: transparent;
+}
+
+button:disabled,
+a[aria-disabled="true"],
+[aria-busy="true"] {
+  cursor: progress;
+}
+
+button:disabled {
+  transform: none !important;
+  box-shadow: none;
+}
+
+button[aria-busy="true"] > svg,
+[role="button"][aria-busy="true"] > svg {
+  animation: tadeon-state-pulse 1.15s ease-in-out infinite;
+}
+
+@keyframes tadeon-state-pulse {
+  0%, 100% { opacity: 0.52; }
+  50% { opacity: 1; }
+}
+
+/* Make focus feel like an archival mark rather than a browser outline. */
+.tadeon-route-stage :where(button, a, input, textarea, select):focus-visible,
+.tadeon-sidebar :where(button, a, input, textarea, select):focus-visible,
+.tadeon-mobile-header :where(button, a, input, textarea, select):focus-visible,
+.tadeon-mobile-dock :where(button, a):focus-visible {
+  outline: 1px solid color-mix(in srgb, var(--tadeon-knowledge) 78%, transparent);
+  outline-offset: 3px;
+  box-shadow: 0 0 0 4px rgb(217 215 164 / 5%);
+}
+
+/* ---------------------------------------------------------------
+   Touch / pointer parity
+   --------------------------------------------------------------- */
+
+@media (hover: none), (pointer: coarse) {
+  .tadeon-surface:hover,
+  .tadeon-sheet-card:hover,
+  .tadeon-dashboard-hero:hover,
+  .tadeon-state-panel:hover,
+  .tadeon-nav-item:hover,
+  .tadeon-dashboard-signal:hover,
+  .tadeon-sheet-condition-chip:hover {
+    transform: none;
+    filter: none;
+  }
+
+  .tadeon-nav-item:hover .tadeon-nav-item__icon > svg,
+  .tadeon-mobile-dock__item:hover > svg,
+  .tadeon-surface:hover::before,
+  .tadeon-sheet-card:hover::before,
+  .tadeon-dashboard-hero:hover::before,
+  .tadeon-state-panel:hover::before {
+    transform: none;
+    filter: none;
+  }
+
+  .tadeon-nav-item:active,
+  .tadeon-mobile-dock__item:active,
+  .tadeon-mobile-header__control:active,
+  .tadeon-sidebar-collapse:active,
+  .tadeon-link-collapse:active {
+    transform: scale(0.985);
+  }
+}
+
+/* ---------------------------------------------------------------
+   Press feedback for important controls
+   --------------------------------------------------------------- */
+
+.tadeon-nav-item:active,
+.tadeon-mobile-dock__item:active,
+.tadeon-mobile-header__control:active,
+.tadeon-sidebar-collapse:active,
+.tadeon-desktop-toolbar__account:active,
+.tadeon-link-collapse:active,
+.tadeon-skill-modifier-tabs button:active {
+  transform: scale(0.985);
+}
+
+/* ---------------------------------------------------------------
+   Material fallback when backdrop-filter is unavailable
+   --------------------------------------------------------------- */
+
+@supports not ((backdrop-filter: blur(1px))) {
+  .tadeon-surface,
+  .tadeon-sidebar,
+  .tadeon-auth-shell,
+  .tadeon-loading-mark,
+  .tadeon-mobile-header,
+  .tadeon-mobile-dock {
+    background-color: rgb(12 15 20 / 96%);
+  }
+}
+
+/* ---------------------------------------------------------------
+   Mobile safe area + composition
+   --------------------------------------------------------------- */
+
+.tadeon-mobile-header {
+  padding-top: max(0.75rem, env(safe-area-inset-top));
+}
+
+.tadeon-mobile-dock {
+  padding-bottom: max(0.55rem, env(safe-area-inset-bottom));
+}
+
+@media (max-width: 767px) {
+  .tadeon-route-stage {
+    min-height: calc(100dvh - 4rem);
+  }
+
+  .tadeon-page {
+    padding-right: max(1rem, env(safe-area-inset-right));
+    padding-left: max(1rem, env(safe-area-inset-left));
+  }
+
+  .tadeon-auth-page {
+    padding-top: max(1rem, env(safe-area-inset-top));
+    padding-right: max(1rem, env(safe-area-inset-right));
+    padding-bottom: max(1rem, env(safe-area-inset-bottom));
+    padding-left: max(1rem, env(safe-area-inset-left));
+  }
+
+  .tadeon-mobile-dock__item {
+    min-height: 2.9rem;
+  }
+
+  .tadeon-mobile-header__control,
+  .tadeon-mobile-dock__item {
+    touch-action: manipulation;
+  }
+}
+
+/* ---------------------------------------------------------------
+   Very small screens: retain composition instead of squeezing it
+   --------------------------------------------------------------- */
+
+@media (max-width: 380px) {
+  .tadeon-mobile-header {
+    grid-template-columns: 3.4rem minmax(0, 1fr) 3.4rem;
+    padding-right: 0.5rem;
+    padding-left: 0.5rem;
+  }
+
+  .tadeon-mobile-header__identity {
+    gap: 0.45rem;
+  }
+
+  .tadeon-mobile-header__identity .overflow-visible {
+    width: 2rem;
+    height: 2rem;
+  }
+
+  .tadeon-mobile-header__identity p:last-child {
+    font-size: 0.72rem;
+  }
+
+  .tadeon-mobile-dock {
+    gap: 0.15rem;
+  }
+
+  .tadeon-mobile-dock__item {
+    min-width: 0;
+    padding-right: 0.25rem;
+    padding-left: 0.25rem;
+    font-size: 0.58rem;
+  }
+
+  .tadeon-auth-shell {
+    border-radius: 1.1rem 0.4rem 1.1rem 0.4rem;
+  }
+}
+
+/* ---------------------------------------------------------------
+   State surfaces: loading, empty, error, offline and success
+   --------------------------------------------------------------- */
+
+.tadeon-state-panel {
+  position: relative;
+}
+
+.tadeon-state-panel [role="status"],
+.tadeon-state-panel [aria-live] {
+  min-height: 1.25rem;
+}
+
+.tadeon-state-panel[data-state="loading"] .tadeon-loading-mark {
+  animation: tadeon-loading-breathe 2.8s ease-in-out infinite;
+}
+
+.tadeon-state-panel[data-state="success"] {
+  border-color: rgb(79 110 93 / 32%);
+}
+
+.tadeon-state-panel[data-state="error"] {
+  border-color: rgb(116 36 45 / 36%);
+}
+
+/* Prevent a transition layer from becoming a permanent blur on stale routes. */
+.tadeon-route-stage {
+  backface-visibility: hidden;
+}
+
+/* ---------------------------------------------------------------
+   Accessibility / reduced motion
+   --------------------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .tadeon-route-stage,
+  .tadeon-ambient,
+  .tadeon-auth-shell,
+  .tadeon-auth-manifesto::after,
+  .tadeon-loading-mark,
+  .tadeon-sheet-condition-chip[data-condition-severity="critical"],
+  .tadeon-skill-modifier-bridge,
+  .tadeon-skill-modifier-panel,
+  .tadeon-link-panel,
+  .tadeon-link-collapse,
+  .tadeon-desktop-toolbar h2,
+  .tadeon-mobile-header__identity p:last-child,
+  [aria-busy="true"] > svg {
+    animation: none !important;
+  }
+
+  .tadeon-route-stage {
+    filter: none !important;
+    transform: none !important;
+  }
+
+  .tadeon-surface,
+  .tadeon-sheet-card,
+  .tadeon-dashboard-hero,
+  .tadeon-state-panel,
+  .tadeon-nav-item,
+  .tadeon-dashboard-signal {
+    transition-duration: 1ms !important;
+  }
+}
+
+/* ---------------------------------------------------------------
+   Performance guardrails
+   --------------------------------------------------------------- */
+
+@media (prefers-reduced-motion: no-preference) and (hover: hover) and (pointer: fine) {
+  .tadeon-route-stage,
+  .tadeon-ambient {
+    contain: paint;
+  }
+}
