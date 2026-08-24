@@ -3,6 +3,9 @@ name: Publicar no Cloudflare
 on:
   push:
     branches: [main]
+  pull_request:
+    types: [opened, synchronize, reopened]
+    branches: [main]
   workflow_dispatch:
 
 permissions:
@@ -15,6 +18,9 @@ concurrency:
 jobs:
   deploy:
     name: Validar e publicar Worker
+    # O deploy em pull_request existe apenas para este branch de sincronização,
+    # permitindo validar/publicar imediatamente o mesmo artefato que irá para main.
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.ref == 'force-production-sync-2026-08-23'
     runs-on: ubuntu-latest
     timeout-minutes: 20
 
