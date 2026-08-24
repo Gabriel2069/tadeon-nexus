@@ -2,7 +2,7 @@
 :root{--tui-in:cubic-bezier(.16,1,.3,1);--tui-spring:cubic-bezier(.175,.885,.32,1.275);--tui-out:cubic-bezier(.7,0,.84,0);--tui-soft:cubic-bezier(.22,1,.36,1)}
 
 /* Real tabs indicator: the component supplies its position inline, so animate the transform itself. */
-.tadeon-shell [data-slot="tabs-indicator"]{position:absolute;z-index:-1;pointer-events:none;border-radius:.7rem;background:linear-gradient(145deg,rgb(217 215 164 / 16%),rgb(255 255 255 / 4%));box-shadow:0 12px 30px -20px rgb(217 215 164 / 42%),inset 0 1px rgb(255 255 255 / 8%);transition:transform 520ms var(--tui-spring),width 420ms var(--tui-spring),height 360ms var(--tui-soft),opacity 220ms ease;will-change:transform,width;height}
+.tadeon-shell [data-slot="tabs-indicator"]{position:absolute;z-index:-1;pointer-events:none;border-radius:.7rem;background:linear-gradient(145deg,rgb(217 215 164 / 16%),rgb(255 255 255 / 4%));box-shadow:0 12px 30px -20px rgb(217 215 164 / 42%),inset 0 1px rgb(255 255 255 / 8%);transition:transform 520ms var(--tui-spring),width 420ms var(--tui-spring),height 360ms var(--tui-soft),opacity 220ms ease;will-change:transform,width,height}
 .tadeon-shell [data-slot="tabs-indicator"][data-visible="false"]{opacity:0}
 .tadeon-shell [data-slot="tabs-trigger"][data-state="active"]{position:relative;z-index:1}
 .tadeon-shell [data-slot="tabs-trigger"][data-state="active"]:not(:focus-visible){animation:tui-tab-land 420ms var(--tui-spring) both}
@@ -89,8 +89,10 @@
 /* State changes: generic aria-live gets an actual event gesture. */
 .tadeon-shell [aria-live="polite"]{transition:opacity 240ms ease,transform 360ms var(--tui-spring),filter 360ms ease,box-shadow 360ms var(--tui-soft)}
 .tadeon-shell [aria-live="polite"][data-tadeon-state="saved"],.tadeon-shell [aria-live="polite"][data-tadeon-state="success"]{animation:tui-success 520ms var(--tui-spring) both}
-.tadeon-shell [aria-live="polite"][data-tadeon-state="error"]{animation:tui-error 420ms var(--tui-spring) both}
-@keyframes tui-success{0%{opacity:.55;transform:scale(.88);box-shadow:0 0 0 0 rgb(79 110 93 / 0%)}52%{opacity:1;transform:scale(1.07);box-shadow:0 0 34px -17px rgb(79 110 93 / 62%)}100%{transform:none;box-shadow:none}}
-@keyframes tui-error{0%,100%{transform:translateX(0)}25%{transform:translateX(-8px)}50%{transform:translateX(8px)}75%{transform:translateX(-4px)}}
+.tadeon-shell [aria-live="polite"][data-tadeon-state="error"]{animation:tui-error 520ms var(--tui-spring) both}
+@keyframes tui-success{0%{opacity:.45;transform:translateY(8px) scale(.94)}55%{opacity:1;transform:translateY(-3px) scale(1.035)}100%{transform:none}}
+@keyframes tui-error{0%{opacity:.35;transform:translateX(0) scale(.96)}25%{transform:translateX(-5px) rotate(-.4deg)}50%{transform:translateX(5px) rotate(.4deg);opacity:1}75%{transform:translateX(-2px)}100%{transform:none}}
 
-@media (prefers-reduced-motion:reduce){.tadeon-shell *,.tadeon-shell *::before,.tadeon-shell *::after{scroll-behavior:auto}.tadeon-shell [data-slot="tabs-indicator"],.tadeon-shell [data-slot="dialog-content"],.tadeon-shell [data-slot="sheet-content"],.tadeon-shell [data-slot="popover-content"],.tadeon-shell [data-slot="dropdown-menu-content"],.tadeon-shell [data-slot="dropdown-menu-sub-content"],.tadeon-shell [data-slot="hover-card-content"],.tadeon-shell [data-slot="select-content"],.tadeon-shell [data-slot="accordion-content"],.tadeon-shell [data-slot="collapsible-content"],.tadeon-shell [data-slot="checkbox-indicator"],.tadeon-shell [data-slot="switch"],.tadeon-shell [data-slot="aria-live"]{animation:none!important;transition:none!important}}
+@media (prefers-reduced-motion:reduce){
+  .tadeon-shell [data-slot],.tadeon-shell [aria-live="polite"]{animation:none!important;transition:none!important}
+}
