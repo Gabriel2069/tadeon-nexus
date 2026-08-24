@@ -53,6 +53,7 @@ import shellBackgroundRepairCss from "../styles/tadeon-shell-background-repair.c
 import headParityNextCss from "../styles/tadeon-head-parity-next.css?url";
 import navigationAmbientCss from "../styles/tadeon-navigation-ambient.css?url";
 import tabletopThreeLineCss from "../styles/tadeon-tabletop-head-three-line.css?url";
+import headNexusReferenceCss from "../styles/tadeon-head-nexus-reference.css?url";
 import { AuthProvider } from "@/lib/auth";
 import { Toaster } from "@/components/ui/sonner";
 import { PwaRegistration } from "@/components/pwa-registration";
@@ -96,7 +97,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { rel: "stylesheet", href: experienceMobileCss }, { rel: "stylesheet", href: experienceDetailsCss }, { rel: "stylesheet", href: commandExperienceCss }, { rel: "stylesheet", href: nexusMaterialCss },
       { rel: "stylesheet", href: visibleUpgradeCss }, { rel: "stylesheet", href: atmosphereCss }, { rel: "stylesheet", href: interactionPassCss }, { rel: "stylesheet", href: headSystemCss },
       { rel: "stylesheet", href: typographyRhythmCss }, { rel: "stylesheet", href: layoutRhythmCss }, { rel: "stylesheet", href: applicationPassCss }, { rel: "stylesheet", href: responsiveParityCss },
-      { rel: "stylesheet", href: headRepairCss }, { rel: "stylesheet", href: stateFeedbackCss }, { rel: "stylesheet", href: shellBackgroundRepairCss }, { rel: "stylesheet", href: headParityNextCss }, { rel: "stylesheet", href: navigationAmbientCss }, { rel: "stylesheet", href: tabletopThreeLineCss },
+      { rel: "stylesheet", href: headRepairCss }, { rel: "stylesheet", href: stateFeedbackCss }, { rel: "stylesheet", href: shellBackgroundRepairCss }, { rel: "stylesheet", href: headParityNextCss }, { rel: "stylesheet", href: navigationAmbientCss }, { rel: "stylesheet", href: tabletopThreeLineCss }, { rel: "stylesheet", href: headNexusReferenceCss },
       { rel: "manifest", href: "/manifest.webmanifest" }, { rel: "icon", href: "/favicon.svg?v=5", type: "image/svg+xml", sizes: "any" }, { rel: "apple-touch-icon", href: "/apple-touch-icon.png", sizes: "180x180" },
       { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Inter:wght@400;500;600;700&family=PT+Mono&display=swap" },
     ],
