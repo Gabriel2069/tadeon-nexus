@@ -1,0 +1,196 @@
+/* Tadeon Motion System — preserve composition, add authored motion. */
+
+:root {
+  --tadeon-motion-reveal: cubic-bezier(.22,1,.36,1);
+  --tadeon-motion-material: cubic-bezier(.23,1,.32,1);
+  --tadeon-motion-soft: cubic-bezier(.4,0,.2,1);
+  --tadeon-motion-fast: 180ms;
+  --tadeon-motion-base: 320ms;
+  --tadeon-motion-slow: 680ms;
+}
+
+/* Heads: reveal their existing content without changing geometry. */
+.tadeon-page-hero,
+.tadeon-dashboard-hero,
+.tadeon-master-commandbar,
+.tadeon-tabletop-studio__header,
+.tadeon-auth-hero {
+  transition: box-shadow var(--tadeon-motion-base) var(--tadeon-motion-material),
+    border-color var(--tadeon-motion-base) var(--tadeon-motion-material),
+    background-color var(--tadeon-motion-base) var(--tadeon-motion-soft);
+}
+
+.tadeon-page-hero > *,
+.tadeon-dashboard-hero > *,
+.tadeon-master-commandbar > *,
+.tadeon-tabletop-studio__header > *,
+.tadeon-auth-hero > * {
+  animation: tadeon-head-reveal 620ms var(--tadeon-motion-reveal) both;
+}
+
+.tadeon-page-hero > :nth-child(2),
+.tadeon-dashboard-hero > :nth-child(2),
+.tadeon-master-commandbar > :nth-child(2),
+.tadeon-tabletop-studio__header > :nth-child(2),
+.tadeon-auth-hero > :nth-child(2) {
+  animation-delay: 55ms;
+}
+
+.tadeon-page-hero > :nth-child(3),
+.tadeon-dashboard-hero > :nth-child(3),
+.tadeon-master-commandbar > :nth-child(3),
+.tadeon-tabletop-studio__header > :nth-child(3),
+.tadeon-auth-hero > :nth-child(3) {
+  animation-delay: 105ms;
+}
+
+/* Navigation: mark the current place like a page in a tome. */
+.tadeon-primary-nav .tadeon-nav-item,
+.tadeon-mobile-dock__item,
+.tadeon-mobile-header__control {
+  transition: transform var(--tadeon-motion-fast) var(--tadeon-motion-material),
+    color var(--tadeon-motion-fast) ease,
+    background-color var(--tadeon-motion-fast) ease,
+    border-color var(--tadeon-motion-fast) ease,
+    box-shadow var(--tadeon-motion-base) var(--tadeon-motion-material);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .tadeon-primary-nav .tadeon-nav-item:hover,
+  .tadeon-mobile-dock__item:hover,
+  .tadeon-mobile-header__control:hover {
+    transform: translateY(-1px);
+  }
+}
+
+.tadeon-primary-nav .tadeon-nav-item:active,
+.tadeon-mobile-dock__item:active,
+.tadeon-mobile-header__control:active {
+  transform: translateY(1px) scale(.985);
+}
+
+/* Surfaces: material response, never generic neon hover. */
+.tadeon-surface,
+.tadeon-state-panel,
+.tadeon-sheet-card,
+.tadeon-user-row {
+  transition: transform var(--tadeon-motion-base) var(--tadeon-motion-material),
+    border-color var(--tadeon-motion-base) var(--tadeon-motion-material),
+    box-shadow var(--tadeon-motion-base) var(--tadeon-motion-material),
+    background-position var(--tadeon-motion-slow) var(--tadeon-motion-soft);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .tadeon-surface[data-tadeon-interactive="true"]:hover,
+  .tadeon-sheet-card:hover,
+  .tadeon-user-row:hover {
+    transform: translateY(-2px);
+  }
+}
+
+/* Buttons and controls: pressure + release. */
+.tadeon-shell button,
+.tadeon-shell [role="button"] {
+  transition: transform var(--tadeon-motion-fast) var(--tadeon-motion-material),
+    box-shadow var(--tadeon-motion-fast) var(--tadeon-motion-material),
+    border-color var(--tadeon-motion-fast) ease,
+    background-color var(--tadeon-motion-fast) ease;
+}
+
+.tadeon-shell button:active,
+.tadeon-shell [role="button"]:active {
+  transform: translateY(1px) scale(.985);
+}
+
+/* Content blocks reveal with a short editorial cascade. */
+.tadeon-page > section,
+.tadeon-page > article,
+.tadeon-route-stage > .tadeon-page:not(.tadeon-page-hero) > * {
+  animation: tadeon-content-reveal 560ms var(--tadeon-motion-reveal) both;
+}
+
+.tadeon-page > section:nth-child(2),
+.tadeon-page > article:nth-child(2) { animation-delay: 55ms; }
+.tadeon-page > section:nth-child(3),
+.tadeon-page > article:nth-child(3) { animation-delay: 95ms; }
+.tadeon-page > section:nth-child(4),
+.tadeon-page > article:nth-child(4) { animation-delay: 135ms; }
+
+/* Tabs, dialogs and popovers unfold instead of appearing abruptly. */
+.tadeon-shell [role="dialog"],
+.tadeon-shell [data-radix-popper-content-wrapper] > * {
+  animation: tadeon-unfold 360ms var(--tadeon-motion-reveal) both;
+  transform-origin: var(--radix-popper-transform-origin, 50% 20%);
+}
+
+.tadeon-shell [data-state="closed"][role="dialog"] {
+  animation: none;
+}
+
+/* Loading / presence: quiet pulse, not a spinner wall. */
+.tadeon-save-status[data-state="saving"],
+[data-tadeon-feedback="saving"] {
+  animation: tadeon-writing-pulse 1.8s ease-in-out infinite;
+}
+
+/* Graph/map interaction. */
+.tadeon-shell [data-tadeon-node],
+.tadeon-shell [data-tadeon-map-element] {
+  transition: transform 280ms var(--tadeon-motion-material),
+    opacity 280ms var(--tadeon-motion-soft),
+    filter 320ms var(--tadeon-motion-material);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .tadeon-shell [data-tadeon-node]:hover,
+  .tadeon-shell [data-tadeon-map-element]:hover {
+    transform: translateY(-2px) scale(1.015);
+  }
+}
+
+@keyframes tadeon-head-reveal {
+  from { opacity: 0; transform: translateY(8px); filter: blur(5px); }
+  70% { filter: blur(0); }
+  to { opacity: 1; transform: translateY(0); filter: blur(0); }
+}
+
+@keyframes tadeon-content-reveal {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes tadeon-unfold {
+  from { opacity: 0; transform: translateY(-4px) scale(.985); filter: blur(2px); }
+  to { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
+}
+
+@keyframes tadeon-writing-pulse {
+  0%, 100% { opacity: .86; }
+  50% { opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tadeon-page-hero > *,
+  .tadeon-dashboard-hero > *,
+  .tadeon-master-commandbar > *,
+  .tadeon-tabletop-studio__header > *,
+  .tadeon-auth-hero > *,
+  .tadeon-page > section,
+  .tadeon-page > article,
+  .tadeon-shell [role="dialog"],
+  .tadeon-shell [data-radix-popper-content-wrapper] > * {
+    animation: none !important;
+  }
+
+  .tadeon-surface,
+  .tadeon-state-panel,
+  .tadeon-sheet-card,
+  .tadeon-user-row,
+  .tadeon-shell button,
+  .tadeon-shell [role="button"],
+  .tadeon-primary-nav .tadeon-nav-item,
+  .tadeon-mobile-dock__item,
+  .tadeon-mobile-header__control {
+    transition: none !important;
+  }
+}
