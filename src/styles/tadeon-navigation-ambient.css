@@ -1,0 +1,226 @@
+/* Tadeon Navigation + Ambient World — route temperature, chapter transitions and marked-page navigation. */
+
+:root {
+  --tadeon-temp-rgb: 217 215 164;
+  --tadeon-temp-secondary-rgb: 79 110 93;
+}
+
+/* --------------------------------------------------------------------------
+   Page temperature. The identity remains Tadeon; only the local atmosphere
+   changes with the domain currently in focus.
+   -------------------------------------------------------------------------- */
+.tadeon-shell[data-section="Dashboard"] {
+  --tadeon-temp-rgb: 217 215 164;
+  --tadeon-temp-secondary-rgb: 79 110 93;
+}
+
+.tadeon-shell[data-section="O Nexus"],
+.tadeon-shell[data-section="Saúde do arquivo"] {
+  --tadeon-temp-rgb: 217 215 164;
+  --tadeon-temp-secondary-rgb: 79 110 93;
+}
+
+.tadeon-shell[data-section="Ficha"] {
+  --tadeon-temp-rgb: 183 129 77;
+  --tadeon-temp-secondary-rgb: 217 215 164;
+}
+
+.tadeon-shell[data-section="Painel do Mestre"] {
+  --tadeon-temp-rgb: 116 36 45;
+  --tadeon-temp-secondary-rgb: 217 215 164;
+}
+
+.tadeon-shell[data-section="Mesa Nexus"] {
+  --tadeon-temp-rgb: 84 123 148;
+  --tadeon-temp-secondary-rgb: 183 129 77;
+}
+
+.tadeon-shell[data-section="Usuários"] {
+  --tadeon-temp-rgb: 183 129 77;
+  --tadeon-temp-secondary-rgb: 217 215 164;
+}
+
+.tadeon-shell[data-section="Consulta offline"] {
+  --tadeon-temp-rgb: 113 107 123;
+  --tadeon-temp-secondary-rgb: 79 110 93;
+}
+
+.tadeon-shell::before {
+  background:
+    radial-gradient(circle at 12% 16%, rgb(var(--tadeon-temp-rgb) / 7%), transparent 26rem),
+    radial-gradient(circle at 88% 18%, rgb(var(--tadeon-temp-secondary-rgb) / 6%), transparent 30rem),
+    radial-gradient(circle at 76% 86%, rgb(var(--tadeon-temp-rgb) / 3.5%), transparent 34rem),
+    linear-gradient(180deg, rgb(8 11 15 / 18%), transparent 42%, rgb(0 0 0 / 16%));
+  transition: background 700ms cubic-bezier(.23,1,.32,1);
+}
+
+.tadeon-route-stage {
+  --tadeon-route-enter-y: 8px;
+  --tadeon-route-enter-blur: 4px;
+}
+
+.tadeon-route-stage[data-tadeon-route-state="entering"] {
+  animation: tadeon-chapter-enter 460ms cubic-bezier(.23,1,.32,1) both;
+}
+
+.tadeon-route-stage[data-tadeon-route-state="settled"] {
+  animation: none;
+}
+
+@keyframes tadeon-chapter-enter {
+  from {
+    opacity: .72;
+    transform: translate3d(0, var(--tadeon-route-enter-y), 0);
+    filter: blur(var(--tadeon-route-enter-blur));
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+    filter: blur(0);
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Navigation behaves like a marked page in a physical volume.
+   -------------------------------------------------------------------------- */
+.tadeon-primary-nav .tadeon-nav-item,
+.tadeon-primary-nav [data-tadeon-directed="true"] {
+  position: relative;
+  isolation: isolate;
+  transition:
+    color 220ms ease,
+    background-color 220ms ease,
+    border-color 220ms ease,
+    transform 240ms cubic-bezier(.23,1,.32,1),
+    box-shadow 260ms ease;
+}
+
+.tadeon-primary-nav .tadeon-nav-item::before,
+.tadeon-primary-nav [data-tadeon-directed="true"]::before {
+  position: absolute;
+  inset: .35rem auto .35rem 0;
+  width: 2px;
+  border-radius: 999px;
+  background: rgb(var(--tadeon-temp-rgb) / 0%);
+  content: "";
+  transform: scaleY(.15);
+  transform-origin: center;
+  transition:
+    background-color 220ms ease,
+    transform 300ms cubic-bezier(.23,1,.32,1),
+    box-shadow 300ms ease;
+  pointer-events: none;
+}
+
+.tadeon-primary-nav .tadeon-nav-item:hover,
+.tadeon-primary-nav [data-tadeon-directed="true"]:hover {
+  transform: translateX(2px);
+}
+
+.tadeon-primary-nav .tadeon-nav-item[aria-current="page"],
+.tadeon-primary-nav [data-tadeon-directed="true"][data-state="active"] {
+  background: linear-gradient(90deg, rgb(var(--tadeon-temp-rgb) / 8%), transparent 72%);
+  box-shadow: inset 0 0 0 1px rgb(var(--tadeon-temp-rgb) / 5%);
+}
+
+.tadeon-primary-nav .tadeon-nav-item[aria-current="page"]::before,
+.tadeon-primary-nav [data-tadeon-directed="true"][data-state="active"]::before {
+  background: rgb(var(--tadeon-temp-rgb) / 82%);
+  box-shadow: 0 0 16px rgb(var(--tadeon-temp-rgb) / 32%);
+  transform: scaleY(1);
+}
+
+.tadeon-primary-nav .tadeon-nav-item[aria-current="page"] svg,
+.tadeon-primary-nav [data-tadeon-directed="true"][data-state="active"] svg {
+  color: rgb(var(--tadeon-temp-rgb));
+  filter: drop-shadow(0 0 7px rgb(var(--tadeon-temp-rgb) / 18%));
+}
+
+.tadeon-primary-nav .tadeon-nav-item[aria-current="page"] .tadeon-mono,
+.tadeon-primary-nav [data-tadeon-directed="true"][data-state="active"] .tadeon-mono {
+  color: rgb(var(--tadeon-temp-rgb));
+}
+
+/* Collapsed rail: preserve the marker without making the icon float. */
+#tadeon-desktop-sidebar[data-collapsed="true"] .tadeon-primary-nav .tadeon-nav-item::before {
+  inset-inline: .15rem auto;
+  width: 1.5px;
+}
+
+/* Sidebar collapse control follows the active domain instead of generic primary. */
+.tadeon-sidebar-collapse {
+  border-color: rgb(var(--tadeon-temp-rgb) / 20%);
+  background: color-mix(in srgb, var(--sidebar) 90%, rgb(var(--tadeon-temp-rgb) / 12%));
+}
+
+.tadeon-sidebar-collapse:hover {
+  color: rgb(var(--tadeon-temp-rgb));
+  border-color: rgb(var(--tadeon-temp-rgb) / 40%);
+  box-shadow: 0 14px 34px -26px rgb(var(--tadeon-temp-rgb) / 45%);
+}
+
+/* --------------------------------------------------------------------------
+   Ambient markers around the route stage.
+   -------------------------------------------------------------------------- */
+.tadeon-route-stage::before {
+  position: fixed;
+  top: 12vh;
+  right: clamp(2rem, 10vw, 9rem);
+  z-index: -1;
+  width: min(28vw, 26rem);
+  aspect-ratio: 1;
+  border: 1px solid rgb(var(--tadeon-temp-rgb) / 4%);
+  border-radius: 50%;
+  box-shadow:
+    0 0 0 2.2rem rgb(var(--tadeon-temp-rgb) / 1.5%),
+    0 0 0 4.7rem rgb(var(--tadeon-temp-secondary-rgb) / 1.1%);
+  content: "";
+  pointer-events: none;
+  transform: rotate(-12deg);
+  transition:
+    border-color 700ms ease,
+    box-shadow 700ms ease;
+}
+
+/* Temperature should remain quiet on utility/error states. */
+.tadeon-shell[data-section="Saúde do arquivo"] .tadeon-route-stage::before,
+.tadeon-shell[data-section="Consulta offline"] .tadeon-route-stage::before {
+  opacity: .72;
+}
+
+/* --------------------------------------------------------------------------
+   Focus/selection follows the same local temperature.
+   -------------------------------------------------------------------------- */
+.tadeon-shell :is(a, button, [role="button"], input, textarea, select):focus-visible {
+  outline-color: rgb(var(--tadeon-temp-rgb) / 62%);
+  outline-offset: 3px;
+}
+
+@media (max-width: 767px) {
+  .tadeon-shell::before {
+    transition-duration: 900ms;
+  }
+
+  .tadeon-route-stage::before {
+    top: 18vh;
+    right: -10vw;
+    width: 70vw;
+    opacity: .72;
+  }
+
+  .tadeon-primary-nav .tadeon-nav-item:hover,
+  .tadeon-primary-nav [data-tadeon-directed="true"]:hover {
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tadeon-route-stage[data-tadeon-route-state="entering"] {
+    animation: none !important;
+  }
+
+  .tadeon-shell::before,
+  .tadeon-route-stage::before {
+    transition: none !important;
+  }
+}
