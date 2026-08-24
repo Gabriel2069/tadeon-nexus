@@ -15,6 +15,7 @@ describe("Nexus second-brain graph architecture", () => {
 
     expect(wrapper).toContain("knowledge-graph-second-brain");
     expect(graph).toContain("knowledgeGraphService.loadMemory");
+    expect(graph).toContain("knowledge-graph-memory-spaced");
     expect(graph).toContain("buildKnowledgeGraph");
     expect(graph).toContain("computeKnowledgeForceLayout");
     expect(graph).toContain('mode === "global"');
@@ -22,6 +23,9 @@ describe("Nexus second-brain graph architecture", () => {
     expect(graph).toContain("semanticThreshold");
     expect(graph).toContain("minimumStrength");
     expect(graph).toContain("pinnedPositions");
+    expect(graph).toContain("linkDistance: 238");
+    expect(graph).toContain("repelStrength: 1.55");
+    expect(graph).toContain("Math.max(0.34");
   });
 
   it("keeps relation evidence, backlinks, hierarchy and content affinity in the model", () => {

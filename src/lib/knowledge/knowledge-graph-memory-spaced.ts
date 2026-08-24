@@ -62,7 +62,7 @@ function relaxWeb(
   }
 
   const passes = graph.nodes.length > 320 ? 18 : graph.nodes.length > 180 ? 24 : 34;
-  const collisionGap = Math.max(13, Math.min(24, options.linkDistance * 0.115));
+  const collisionGap = Math.max(26, Math.min(52, options.linkDistance * 0.18));
 
   for (let pass = 0; pass < passes; pass += 1) {
     const alpha = 1 - pass / passes;
@@ -85,8 +85,12 @@ function relaxWeb(
         dy = direction.y;
         distance = 1;
       }
-      const desired = graphLinkDistance(edge.strength, options.linkDistance) *
-        (edge.kinds.includes("semantic") && edge.kinds.length === 1 ? 1.14 : 1);
+      const strandSpacing = edge.kinds.includes("semantic") && edge.kinds.length === 1
+        ? 1.28
+        : edge.strength >= 0.8
+          ? 1.04
+          : 1.14;
+      const desired = graphLinkDistance(edge.strength, options.linkDistance) * strandSpacing;
       const delta = distance - desired;
       const spring = delta * (0.024 + edge.strength * 0.026) * alpha;
       const ux = dx / distance;
@@ -153,7 +157,7 @@ function relaxWeb(
         point.x += point.x * outward;
         point.y += point.y * outward;
       } else if (connections >= 4) {
-        const hubPull = Math.min(0.018, connections * 0.0018) * alpha;
+        const hubPull = Math.min(0.012, connections * 0.00125) * alpha;
         point.x *= 1 - hubPull;
         point.y *= 1 - hubPull;
       }
@@ -218,11 +222,11 @@ export function computeKnowledgeForceLayout(
     graph,
     {
       ...options,
-      linkDistance: Math.max(88, options.linkDistance * 0.94),
-      linkStrength: Math.max(0.2, options.linkStrength * 1.08),
-      repelStrength: Math.max(0.25, options.repelStrength * 1.18),
-      centerStrength: options.centerStrength * 0.62,
-      clusterStrength: options.clusterStrength * 0.22,
+      linkDistance: Math.max(140, options.linkDistance * 1.05),
+      linkStrength: Math.max(0.2, options.linkStrength * 1.04),
+      repelStrength: Math.max(0.45, options.repelStrength * 1.5),
+      centerStrength: options.centerStrength * 0.42,
+      clusterStrength: options.clusterStrength * 0.12,
       iterations: Math.max(
         options.iterations ?? 0,
         graph.nodes.length > 300 ? 88 : graph.nodes.length > 180 ? 112 : 132,

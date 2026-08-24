@@ -206,4 +206,21 @@ describe("organic knowledge web layout", () => {
 
     expect(new Set(depthOneRadii).size).toBeGreaterThan(2);
   });
+
+  it("keeps generous Obsidian-like reading space at the new default", () => {
+    const spacious = computeKnowledgeForceLayout(graph, {
+      ...options,
+      linkDistance: 238,
+      repelStrength: 1.55,
+      centerStrength: 0.46,
+      clusterStrength: 0.16,
+    });
+    const edgeLengths = graph.edges.map((edge) => {
+      const source = spacious.get(edge.sourceNodeId)!;
+      const target = spacious.get(edge.targetNodeId)!;
+      return Math.hypot(target.x - source.x, target.y - source.y);
+    }).sort((left, right) => left - right);
+
+    expect(edgeLengths[Math.floor(edgeLengths.length / 2)]).toBeGreaterThan(150);
+  });
 });

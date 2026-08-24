@@ -45,7 +45,7 @@ import {
   type KnowledgeGraphNode,
   type KnowledgeGraphPoint,
   type KnowledgeGraphSignalKind,
-} from "@/lib/knowledge/knowledge-graph-memory";
+} from "@/lib/knowledge/knowledge-graph-memory-spaced";
 import {
   knowledgeGraphService,
   type KnowledgeLocalGraph,
@@ -263,15 +263,15 @@ export function KnowledgeGraph({
   const [includeSemantic, setIncludeSemantic] = useState(true);
   const [semanticThreshold, setSemanticThreshold] = useState(0.22);
   const [minimumStrength, setMinimumStrength] = useState(0.12);
-  const [labelZoom, setLabelZoom] = useState(0.62);
+  const [labelZoom, setLabelZoom] = useState(0.5);
   const [showArrows, setShowArrows] = useState(true);
   const [pinnedPositions, setPinnedPositions] = useState<Record<string, KnowledgeGraphPoint>>({});
   const [forceOptions, setForceOptions] = useState<KnowledgeForceOptions>({
-    linkDistance: 138,
+    linkDistance: 238,
     linkStrength: 1,
-    repelStrength: 1,
-    centerStrength: 0.9,
-    clusterStrength: 0.5,
+    repelStrength: 1.55,
+    centerStrength: 0.46,
+    clusterStrength: 0.16,
   });
 
   useEffect(() => {
@@ -398,9 +398,9 @@ export function KnowledgeGraph({
     const maxX = Math.max(...points.map((point) => point.x));
     const minY = Math.min(...points.map((point) => point.y));
     const maxY = Math.max(...points.map((point) => point.y));
-    const width = Math.max(120, maxX - minX + 140);
-    const height = Math.max(120, maxY - minY + 140);
-    const nextZoom = Math.min(1.55, Math.max(0.24, Math.min((viewport.width - 40) / width, (viewport.height - 40) / height)));
+    const width = Math.max(120, maxX - minX + 190);
+    const height = Math.max(120, maxY - minY + 190);
+    const nextZoom = Math.min(1.4, Math.max(0.34, Math.min((viewport.width - 56) / width, (viewport.height - 56) / height)));
     setZoom(nextZoom);
     setPan({
       x: viewport.width / 2 - ((minX + maxX) / 2) * nextZoom,
@@ -854,10 +854,10 @@ export function KnowledgeGraph({
           {settingsOpen && (
             <div className="tadeon-brain-settings">
               <SliderRow label="Força dos vínculos" value={forceOptions.linkStrength} min={0.25} max={2} step={0.05} onChange={(value) => setForceOptions((current) => ({ ...current, linkStrength: value }))} />
-              <SliderRow label="Distância-base" value={forceOptions.linkDistance} min={70} max={260} step={5} onChange={(value) => setForceOptions((current) => ({ ...current, linkDistance: value }))} display={`${Math.round(forceOptions.linkDistance)} px`} />
-              <SliderRow label="Repulsão" value={forceOptions.repelStrength} min={0.2} max={2.4} step={0.05} onChange={(value) => setForceOptions((current) => ({ ...current, repelStrength: value }))} />
-              <SliderRow label="Centro" value={forceOptions.centerStrength} min={0} max={2} step={0.05} onChange={(value) => setForceOptions((current) => ({ ...current, centerStrength: value }))} />
-              <SliderRow label="Agrupamento por domínio" value={forceOptions.clusterStrength} min={0} max={2} step={0.05} onChange={(value) => setForceOptions((current) => ({ ...current, clusterStrength: value }))} />
+              <SliderRow label="Distância-base" value={forceOptions.linkDistance} min={120} max={420} step={10} onChange={(value) => setForceOptions((current) => ({ ...current, linkDistance: value }))} display={`${Math.round(forceOptions.linkDistance)} px`} />
+              <SliderRow label="Repulsão" value={forceOptions.repelStrength} min={0.35} max={3.2} step={0.05} onChange={(value) => setForceOptions((current) => ({ ...current, repelStrength: value }))} />
+              <SliderRow label="Centro" value={forceOptions.centerStrength} min={0} max={1.4} step={0.05} onChange={(value) => setForceOptions((current) => ({ ...current, centerStrength: value }))} />
+              <SliderRow label="Agrupamento por domínio" value={forceOptions.clusterStrength} min={0} max={1} step={0.05} onChange={(value) => setForceOptions((current) => ({ ...current, clusterStrength: value }))} />
               <SliderRow label="Aparecimento dos rótulos" value={labelZoom} min={0.28} max={1.15} step={0.03} onChange={setLabelZoom} display={`${labelZoom.toFixed(2)}×`} />
               <button type="button" className="tadeon-brain-check" data-active={showArrows} onClick={() => setShowArrows((current) => !current)}>{showArrows && <Check />} Setas em relações direcionais</button>
             </div>

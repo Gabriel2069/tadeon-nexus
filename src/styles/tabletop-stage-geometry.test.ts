@@ -67,6 +67,21 @@ describe("Mesa stage-local geometry", () => {
     expect(geometry).toContain("transform: translateX(-50%) !important");
   });
 
+  it("centers every construction and selection shelf below reliability", () => {
+    expect(geometry).toContain(
+      "> :is(.tadeon-tabletop-tool-options, .tadeon-tabletop-selection-dock)",
+    );
+    expect(geometry).toContain(
+      ".tadeon-tabletop-stage:has(> .tadeon-tabletop-tool-options)",
+    );
+    expect(geometry).toContain(
+      "> .tadeon-tabletop-selection-dock",
+    );
+    expect(geometry).toContain(
+      "var(--tadeon-tabletop-reliability-h, 2.8rem) + 4.35rem",
+    );
+  });
+
   it("gives mobile tools a dedicated shelf outside the interactive map", () => {
     expect(geometry).toContain("--tadeon-tabletop-mobile-rail-h");
     expect(geometry).toContain("--tadeon-tabletop-map-top: calc(");

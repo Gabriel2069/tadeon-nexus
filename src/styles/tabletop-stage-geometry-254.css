@@ -497,6 +497,45 @@ html:has(.tadeon-tabletop-studio)
   transform: translateX(-50%) !important;
 }
 
+/* Every contextual construction/selection shelf follows the exact horizontal
+   center of the interactive map. The first shelf sits below reliability; when
+   tool options and a selection shelf coexist, the latter forms a second row
+   instead of colliding with the first. */
+html:has(.tadeon-tabletop-studio)
+  .tadeon-tabletop-stage
+  > :is(.tadeon-tabletop-tool-options, .tadeon-tabletop-selection-dock) {
+  top: calc(
+    var(--tadeon-tabletop-map-top) +
+      var(--tadeon-tabletop-reliability-h, 2.8rem) + 0.55rem
+  ) !important;
+  right: auto !important;
+  left: calc(
+    var(--tadeon-tabletop-map-left) +
+      (
+          100% - var(--tadeon-tabletop-map-left) -
+            var(--tadeon-tabletop-map-right)
+        ) / 2
+  ) !important;
+  width: max-content;
+  max-width: min(
+    54rem,
+    calc(
+      100% - var(--tadeon-tabletop-map-left) -
+        var(--tadeon-tabletop-map-right) - 1rem
+    )
+  ) !important;
+  transform: translateX(-50%) !important;
+}
+
+html:has(.tadeon-tabletop-studio)
+  .tadeon-tabletop-stage:has(> .tadeon-tabletop-tool-options)
+  > .tadeon-tabletop-selection-dock {
+  top: calc(
+    var(--tadeon-tabletop-map-top) +
+      var(--tadeon-tabletop-reliability-h, 2.8rem) + 4.35rem
+  ) !important;
+}
+
 /* Desktop e tablet compartilham o mesmo workbench lateral. */
 @media (min-width: 768px) {
   .tadeon-tabletop-studio__primary {
