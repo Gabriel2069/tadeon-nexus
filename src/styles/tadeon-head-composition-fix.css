@@ -1,0 +1,225 @@
+/* Tadeon Head Composition Fix — explicit geometry, not just shared styling. */
+
+/* ---------------- Dashboard ---------------- */
+@media (min-width: 1024px) {
+  html body .tadeon-dashboard-hero {
+    min-height: 18rem !important;
+    padding: 1.45rem 1.65rem 1.15rem !important;
+  }
+
+  html body .tadeon-dashboard-hero > .relative.z-10 {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) auto !important;
+    grid-template-rows: auto auto !important;
+    column-gap: 2rem !important;
+    row-gap: 1.35rem !important;
+    align-items: end !important;
+    width: 100% !important;
+  }
+
+  html body .tadeon-dashboard-hero > .relative.z-10 > :first-child {
+    grid-column: 1 !important;
+    grid-row: 1 !important;
+    width: min(100%, 48rem) !important;
+    max-width: 48rem !important;
+    align-self: end !important;
+  }
+
+  html body .tadeon-dashboard-hero > .relative.z-10 > :last-child {
+    grid-column: 2 !important;
+    grid-row: 1 !important;
+    align-self: end !important;
+    justify-self: end !important;
+    margin: 0 !important;
+  }
+
+  html body .tadeon-dashboard-hero .tadeon-dashboard-signals {
+    grid-column: 1 / -1 !important;
+    grid-row: 2 !important;
+    display: grid !important;
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    align-items: stretch !important;
+    width: 100% !important;
+    margin-top: 0 !important;
+    padding-top: 1rem !important;
+    gap: 0 !important;
+  }
+
+  html body .tadeon-dashboard-hero .tadeon-dashboard-signal {
+    min-width: 0 !important;
+    min-height: 3.2rem !important;
+    padding: 0 1.15rem !important;
+    align-items: center !important;
+    border-right: 1px solid rgb(var(--head-secondary-rgb, 79 110 93) / 12%) !important;
+  }
+
+  html body .tadeon-dashboard-hero .tadeon-dashboard-signal:first-child {
+    padding-left: 0 !important;
+  }
+
+  html body .tadeon-dashboard-hero .tadeon-dashboard-signal:last-child {
+    border-right: 0 !important;
+    padding-right: 0 !important;
+  }
+}
+
+/* ---------------- Generic page heads ---------------- */
+@media (min-width: 900px) {
+  html body .tadeon-page-hero[data-tadeon-page-hero] {
+    display: grid !important;
+    grid-template-columns: 3.25rem minmax(0, 1fr) auto !important;
+    grid-template-rows: auto !important;
+    align-items: center !important;
+    column-gap: 1.2rem !important;
+    min-height: 8rem !important;
+    padding: 1.1rem 1.35rem !important;
+  }
+
+  html body .tadeon-page-hero[data-tadeon-page-hero] .tadeon-page-hero-mark-host {
+    grid-column: 1 !important;
+    grid-row: 1 !important;
+    display: grid !important;
+    width: 3.25rem !important;
+    height: 3.25rem !important;
+    place-items: center !important;
+    align-self: center !important;
+    justify-self: center !important;
+    margin: 0 !important;
+  }
+
+  html body .tadeon-page-hero[data-tadeon-page-hero] > div:first-of-type:not(.tadeon-page-hero-mark-host) {
+    grid-column: 2 !important;
+    grid-row: 1 !important;
+    min-width: 0 !important;
+    align-self: center !important;
+  }
+
+  html body .tadeon-page-hero[data-tadeon-page-hero] > div:nth-of-type(2) {
+    grid-column: 3 !important;
+    grid-row: 1 !important;
+    min-width: max-content !important;
+    align-self: center !important;
+    justify-self: end !important;
+  }
+
+  html body .tadeon-page-hero[data-tadeon-page-hero] h1 {
+    max-width: 24ch !important;
+    margin: .2rem 0 0 !important;
+    font-size: clamp(1.8rem, 2.6vw, 2.55rem) !important;
+    line-height: 1 !important;
+  }
+}
+
+/* ---------------- Master ---------------- */
+@media (min-width: 900px) {
+  html body .tadeon-master-commandbar {
+    display: grid !important;
+    grid-template-columns: 3.25rem minmax(0, 1fr) !important;
+    align-items: center !important;
+    column-gap: 1.2rem !important;
+    min-height: 8rem !important;
+    padding: 1.1rem 1.35rem !important;
+  }
+
+  html body .tadeon-master-commandbar > .tadeon-master-commandbar__glow {
+    grid-column: 1 !important;
+    grid-row: 1 !important;
+    width: 3.25rem !important;
+    height: 3.25rem !important;
+    align-self: center !important;
+    justify-self: center !important;
+  }
+
+  html body .tadeon-master-commandbar > .relative.flex {
+    grid-column: 2 !important;
+    grid-row: 1 !important;
+    min-width: 0 !important;
+  }
+
+  html body .tadeon-master-commandbar h1 {
+    margin: .2rem 0 0 !important;
+    max-width: 28ch !important;
+    font-size: clamp(1.8rem, 2.6vw, 2.55rem) !important;
+    line-height: 1 !important;
+  }
+}
+
+/* ---------------- Mesa — three real rows, expandable live row ---------------- */
+@media (min-width: 768px) {
+  html body .tadeon-tabletop-studio__header {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) !important;
+    grid-template-rows: auto auto minmax(min-content, auto) !important;
+    align-content: start !important;
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    overflow: visible !important;
+    padding: .8rem 1rem .85rem !important;
+  }
+
+  html body .tadeon-tabletop-studio__header > .tadeon-tabletop-studio__primary {
+    grid-column: 1 !important;
+    grid-row: 1 !important;
+    min-width: 0 !important;
+    width: 100% !important;
+    min-height: 3.35rem !important;
+  }
+
+  html body .tadeon-tabletop-studio__header > .tadeon-tabletop-toolbar {
+    grid-column: 1 !important;
+    grid-row: 2 !important;
+    min-width: 0 !important;
+    width: 100% !important;
+    margin-top: .55rem !important;
+    margin-bottom: 0 !important;
+  }
+
+  html body .tadeon-tabletop-studio__header > .tadeon-live-session {
+    grid-column: 1 !important;
+    grid-row: 3 !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    min-height: 0 !important;
+    height: auto !important;
+    max-height: none !important;
+    margin: .6rem 0 0 !important;
+    overflow: visible !important;
+    align-self: start !important;
+  }
+
+  html body .tadeon-tabletop-studio__header > .tadeon-live-session .tadeon-live-session__summary {
+    min-height: 2.8rem !important;
+    width: 100% !important;
+  }
+
+  html body .tadeon-tabletop-studio__header > .tadeon-live-session.is-expanded .tadeon-live-session__body,
+  html body .tadeon-tabletop-studio__header > .tadeon-live-session .tadeon-live-session__body {
+    height: auto !important;
+    max-height: none !important;
+    overflow: visible !important;
+  }
+}
+
+/* Keep the three bands visually fused as one Nexus-grade object. */
+@media (min-width: 768px) {
+  html body .tadeon-tabletop-studio__header > .tadeon-tabletop-toolbar {
+    padding-block: .55rem .5rem !important;
+    border-top: 1px solid rgb(var(--head-rgb, 84 123 148) / 16%) !important;
+    border-bottom: 1px solid rgb(var(--head-secondary-rgb, 183 129 77) / 12%) !important;
+  }
+
+  html body .tadeon-tabletop-studio__header > .tadeon-live-session .tadeon-live-session__body {
+    box-sizing: border-box !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html body .tadeon-dashboard-hero *,
+  html body .tadeon-page-hero[data-tadeon-page-hero] *,
+  html body .tadeon-master-commandbar *,
+  html body .tadeon-tabletop-studio__header * {
+    transition-duration: .001ms !important;
+    animation-duration: .001ms !important;
+  }
+}
