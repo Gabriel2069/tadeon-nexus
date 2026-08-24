@@ -1,0 +1,132 @@
+/* Tadeon Contextual Motion — each area has its own rhythm without changing composition. */
+
+/* Dashboard — archival reveal: calm, sequential, slightly wider breathing room. */
+.tadeon-route-dashboard .tadeon-dashboard-signal,
+.tadeon-route-dashboard .tadeon-sheet-card {
+  transition: transform 420ms var(--tadeon-motion-material, cubic-bezier(.23,1,.32,1)),
+    box-shadow 420ms var(--tadeon-motion-material, cubic-bezier(.23,1,.32,1)),
+    border-color 320ms ease;
+}
+
+.tadeon-route-dashboard .tadeon-dashboard-signal:nth-child(1) { --tadeon-stagger: 35ms; }
+.tadeon-route-dashboard .tadeon-dashboard-signal:nth-child(2) { --tadeon-stagger: 75ms; }
+.tadeon-route-dashboard .tadeon-dashboard-signal:nth-child(3) { --tadeon-stagger: 115ms; }
+
+.tadeon-route-dashboard .tadeon-dashboard-signal {
+  animation: tadeon-contextual-rise 560ms var(--tadeon-motion-reveal, cubic-bezier(.22,1,.36,1)) both;
+  animation-delay: var(--tadeon-stagger, 0ms);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .tadeon-route-dashboard .tadeon-dashboard-signal:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 18px 38px -34px rgb(0 0 0 / 90%);
+  }
+}
+
+/* Character sheet — document rhythm: tabs and sections feel like layers of a living record. */
+.tadeon-sheet-page .tadeon-sheet-section,
+.tadeon-sheet-page .tadeon-sheet-card,
+.tadeon-sheet-page .tadeon-sheet-overview > * {
+  transition: transform 360ms var(--tadeon-motion-material, cubic-bezier(.23,1,.32,1)),
+    box-shadow 360ms var(--tadeon-motion-material, cubic-bezier(.23,1,.32,1)),
+    border-color 300ms ease;
+}
+
+.tadeon-sheet-page .tadeon-sheet-section {
+  animation: tadeon-document-settle 620ms var(--tadeon-motion-reveal, cubic-bezier(.22,1,.36,1)) both;
+}
+
+.tadeon-sheet-page .tadeon-sheet-section:nth-child(2) { animation-delay: 55ms; }
+.tadeon-sheet-page .tadeon-sheet-section:nth-child(3) { animation-delay: 100ms; }
+.tadeon-sheet-page .tadeon-sheet-section:nth-child(4) { animation-delay: 145ms; }
+
+@media (hover: hover) and (pointer: fine) {
+  .tadeon-sheet-page .tadeon-sheet-section[data-tadeon-interactive="true"]:hover {
+    transform: translateY(-1px);
+  }
+}
+
+/* Master — faster, more deliberate response: decision before action. */
+.tadeon-master-workspace .tadeon-master-navigation [data-slot="tabs-trigger"],
+.tadeon-master-workspace .tadeon-surface,
+.tadeon-master-workspace button {
+  transition-duration: 220ms;
+  transition-timing-function: var(--tadeon-motion-material, cubic-bezier(.23,1,.32,1));
+}
+
+.tadeon-master-workspace .tadeon-master-navigation [data-slot="tabs-trigger"]::after {
+  transition: transform 360ms var(--tadeon-motion-reveal, cubic-bezier(.22,1,.36,1)), opacity 220ms ease;
+}
+
+.tadeon-master-workspace [data-tadeon-directed="true"] {
+  animation: tadeon-command-arrival 440ms var(--tadeon-motion-reveal, cubic-bezier(.22,1,.36,1)) both;
+}
+
+/* Nexus knowledge graph — focus pulls the relevant relation forward and recedes noise. */
+.tadeon-second-brain [data-tadeon-node],
+.tadeon-second-brain [data-tadeon-relation] {
+  transition: transform 420ms var(--tadeon-motion-material, cubic-bezier(.23,1,.32,1)),
+    opacity 360ms var(--tadeon-motion-soft, cubic-bezier(.4,0,.2,1)),
+    filter 420ms var(--tadeon-motion-material, cubic-bezier(.23,1,.32,1));
+}
+
+.tadeon-second-brain [data-tadeon-node][data-selected="true"] {
+  filter: drop-shadow(0 12px 26px rgb(217 215 164 / 12%));
+}
+
+/* Tabletop — studio physicality, short response and deeper press. */
+.tadeon-tabletop-studio__header,
+.tadeon-tabletop-toolbar,
+.tadeon-tabletop-floating-toolbar,
+.tadeon-tabletop-controls,
+.tadeon-tabletop-studio [data-tabletop-stage] {
+  transition: box-shadow 360ms var(--tadeon-motion-material, cubic-bezier(.23,1,.32,1)),
+    border-color 300ms ease,
+    opacity 280ms ease;
+}
+
+.tadeon-tabletop-studio [data-tabletop-stage] [data-tadeon-map-element]:active {
+  transform: scale(.995);
+}
+
+/* Utility heads — quiet breathing rather than dramatic movement. */
+.tadeon-route-users .tadeon-user-row,
+.tadeon-route-offline .tadeon-surface,
+.tadeon-route-tools .tadeon-surface {
+  transition: transform 360ms var(--tadeon-motion-material, cubic-bezier(.23,1,.32,1)),
+    box-shadow 360ms var(--tadeon-motion-material, cubic-bezier(.23,1,.32,1)),
+    border-color 300ms ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .tadeon-route-users .tadeon-user-row:hover,
+  .tadeon-route-offline .tadeon-surface:hover,
+  .tadeon-route-tools .tadeon-surface[data-tadeon-interactive="true"]:hover {
+    transform: translateY(-1px);
+  }
+}
+
+@keyframes tadeon-contextual-rise {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes tadeon-document-settle {
+  from { opacity: 0; transform: translateY(7px); }
+  70% { opacity: 1; transform: translateY(-1px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes tadeon-command-arrival {
+  from { opacity: 0; transform: translateX(-5px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tadeon-route-dashboard .tadeon-dashboard-signal,
+  .tadeon-sheet-page .tadeon-sheet-section,
+  .tadeon-master-workspace [data-tadeon-directed="true"] {
+    animation: none !important;
+  }
+}
