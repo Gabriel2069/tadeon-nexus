@@ -1,0 +1,53 @@
+/* Tadeon Frame Refinement — reduce vertical jump while keeping tactile depth. */
+:root{
+  --tadeon-frame-ease:cubic-bezier(.22,1,.36,1);
+}
+
+.tadeon-shell .tadeon-surface[data-tadeon-interactive="true"],
+.tadeon-shell .tadeon-sheet-card,
+.tadeon-shell .tadeon-dashboard-signal,
+.tadeon-shell .tadeon-state-panel,
+.tadeon-shell .tadeon-link-panel,
+.tadeon-shell .tadeon-skill-modifier-panel{
+  transition:
+    transform 340ms var(--tadeon-frame-ease),
+    box-shadow 420ms var(--tadeon-frame-ease),
+    filter 320ms ease,
+    border-color 260ms ease !important;
+}
+
+@media (hover:hover) and (pointer:fine){
+  .tadeon-shell .tadeon-surface[data-tadeon-interactive="true"]:hover,
+  .tadeon-shell .tadeon-sheet-card:hover,
+  .tadeon-shell .tadeon-dashboard-signal:hover,
+  .tadeon-shell .tadeon-state-panel:hover,
+  .tadeon-shell .tadeon-link-panel:hover,
+  .tadeon-shell .tadeon-skill-modifier-panel:hover{
+    transform:translate3d(0,-4px,0) scale(1.008) !important;
+    filter:saturate(1.035) brightness(1.015) !important;
+    box-shadow:
+      0 26px 70px -42px rgb(0 0 0 / 94%),
+      0 8px 28px -24px rgb(217 215 164 / 16%),
+      inset 0 1px 0 rgb(255 255 255 / 6%) !important;
+  }
+}
+
+.tadeon-shell .tadeon-surface[data-tadeon-interactive="true"]:active,
+.tadeon-shell .tadeon-sheet-card:active,
+.tadeon-shell .tadeon-dashboard-signal:active,
+.tadeon-shell .tadeon-state-panel:active,
+.tadeon-shell .tadeon-link-panel:active,
+.tadeon-shell .tadeon-skill-modifier-panel:active{
+  transform:translate3d(0,1px,0) scale(.986) !important;
+}
+
+@media (prefers-reduced-motion:reduce){
+  .tadeon-shell .tadeon-surface[data-tadeon-interactive="true"],
+  .tadeon-shell .tadeon-sheet-card,
+  .tadeon-shell .tadeon-dashboard-signal,
+  .tadeon-shell .tadeon-state-panel,
+  .tadeon-shell .tadeon-link-panel,
+  .tadeon-shell .tadeon-skill-modifier-panel{
+    transition:none !important;
+  }
+}
