@@ -133,6 +133,15 @@ function processElement(element: HTMLElement) {
   processRoot(element);
 }
 
+function processStateFromNode(node: Node) {
+  const element = node instanceof HTMLElement
+    ? node
+    : node.parentElement;
+  if (!element) return;
+  const stateful = element.closest<HTMLElement>(STATEFUL);
+  if (stateful) markState(stateful);
+}
+
 function directRoute() {
   const stage = document.querySelector<HTMLElement>(".tadeon-route-stage");
   if (!stage) return false;
@@ -165,9 +174,13 @@ export function TadeonExperienceDirector() {
       window.cancelAnimationFrame(frame);
       frame = window.requestAnimationFrame(() => {
         for (const mutation of mutations) {
+          if (mutation.type === "characterData") {
+            processStateFromNode(mutation.target);
+            continue;
+          }
           mutation.addedNodes.forEach((node) => {
-            if (!(node instanceof HTMLElement)) return;
-            processElement(node);
+            if (node instanceof HTMLElement) processElement(node);
+            else if (node.nodeType === Node.TEXT_NODE) processStateFromNode(node);
           });
         }
       });
@@ -175,7 +188,11 @@ export function TadeonExperienceDirector() {
 
     scheduleFull();
     observer = new MutationObserver(processMutations);
-    observer.observe(document.body, { subtree: true, childList: true });
+    observer.observe(document.body, {
+      subtree: true,
+      childList: true,
+      characterData: true,
+    });
     window.addEventListener("popstate", scheduleFull);
 
     return () => {
