@@ -1,5 +1,5 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { Outlet, Link, createRootRouteWithContext, HeadContent, Scripts } from "@tanstack/react-router";
+import { Outlet, Link, useRouterState, createRootRouteWithContext, HeadContent, Scripts } from "@tanstack/react-router";
 import appCss from "../styles.css?url";
 import mobileCss from "../styles/mobile-studio.css?url";
 import viewportCss from "../styles/viewport-fit-final.css?url";
@@ -77,7 +77,7 @@ import { PageState } from "@/components/page-state";
 import { Button } from "@/components/ui/button";
 import { Compass, Home, RefreshCw } from "lucide-react";
 
-function NotFoundComponent() { return <PageState icon={Compass} eyebrow="Fio não localizado · 404" title="Esta página não faz parte do arquivo" description="O endereço pode ter mudado ou o fio que trouxe você até aqui já não existe. Retorne ao arquivo principal para continuar." className="min-h-screen" action={<Button asChild><Link to="/">Voltar ao início</Link></Button>} />; }
+function NotFoundComponent() { return <PageState icon={Compass} eyebrow="Fio não localizado · 404" title="Esta página não faz parte do arquivo" description="O endereço pode ter mudado ou o fio que trouxe você até aqui já não existe. Retorne ao arquivo principal para continuar." className="min-h-screen" action={<Button asChild><Link to="/"><Home className="h-4 w-4" />Voltar ao início</Link></Button>} />; }
 function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) { console.error(error); return <PageState icon={RefreshCw} eyebrow="Interrupção no arquivo" title="O Tadeon perdeu este fio" description="Ocorreu um erro inesperado ao montar esta página. Tente reconstruir a visualização; se o problema continuar, volte ao arquivo principal para continuar." className="min-h-screen" action={<><Button onClick={reset}><RefreshCw className="h-4 w-4" />Tentar novamente</Button><Button asChild variant="outline"><Link to="/"><Home className="h-4 w-4" />Voltar ao início</Link></Button></>} />; }
 
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
