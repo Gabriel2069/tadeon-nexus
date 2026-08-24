@@ -1,9 +1,8 @@
 name: Publicar no Cloudflare
 
 on:
-  workflow_run:
-    workflows: [Quality]
-    types: [completed]
+  push:
+    branches: [main]
   workflow_dispatch:
 
 permissions:
@@ -15,65 +14,38 @@ concurrency:
 
 jobs:
   deploy:
-    name: Publicar Worker
-    if: >-
-      (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main') ||
-      (github.event.workflow_run.conclusion == 'success' &&
-      github.event.workflow_run.event == 'push' &&
-      github.event.workflow_run.head_branch == 'main' &&
-      github.event.workflow_run.head_repository.full_name == github.repository)
+    name: Validar e publicar Worker
     runs-on: ubuntu-latest
     timeout-minutes: 20
 
     env:
       CI: true
-      TADEON_DEPLOY_SHA: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.head_sha || github.sha }}
+      TADEON_DEPLOY_SHA: ${{ github.sha }}
       TADEON_PUBLIC_APP_URL: https://tadeon-nexus.gtadeusz.workers.dev
-      VITE_APP_COMMIT_SHA: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.head_sha || github.sha }}
-
+      VITE_APP_COMMIT_SHA: ${{ github.sha }}
       CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
       CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
       VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
       VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY }}
 
     steps:
-      - name: Baixar exatamente o SHA aprovado
+      - name: Baixar exatamente o commit
         uses: actions/checkout@v4
         with:
-          ref: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.head_sha || github.sha }}
+          ref: ${{ github.sha }}
 
       - name: Validar configurações obrigatórias
         shell: bash
         run: |
           set -euo pipefail
-
           missing=0
-
-          if [ -z "${CLOUDFLARE_API_TOKEN:-}" ]; then
-            echo "::error::O secret CLOUDFLARE_API_TOKEN não foi configurado."
-            missing=1
-          fi
-
-          if [ -z "${CLOUDFLARE_ACCOUNT_ID:-}" ]; then
-            echo "::error::O secret CLOUDFLARE_ACCOUNT_ID não foi configurado."
-            missing=1
-          fi
-
-          if [ -z "${VITE_SUPABASE_URL:-}" ]; then
-            echo "::error::A variável VITE_SUPABASE_URL não foi configurada."
-            missing=1
-          fi
-
-          if [ -z "${VITE_SUPABASE_PUBLISHABLE_KEY:-}" ]; then
-            echo "::error::A variável VITE_SUPABASE_PUBLISHABLE_KEY não foi configurada."
-            missing=1
-          fi
-
-          if [ "$missing" -ne 0 ]; then
-            exit 1
-          fi
-
-          echo "Todas as configurações obrigatórias foram encontradas."
+          for key in CLOUDFLARE_API_TOKEN CLOUDFLARE_ACCOUNT_ID VITE_SUPABASE_URL VITE_SUPABASE_PUBLISHABLE_KEY; do
+            if [ -z "${!key:-}" ]; then
+              echo "::error::A configuração $key não foi encontrada."
+              missing=1
+            fi
+          done
+          if [ "$missing" -ne 0 ]; then exit 1; fi
 
       - name: Preparar Node
         uses: actions/setup-node@v4
@@ -87,29 +59,8 @@ jobs:
       - name: Instalar dependências
         run: npm ci --include=dev
 
-      - name: Verificar ferramentas
-        shell: bash
-        run: |
-          set -euo pipefail
-
-          npx eslint --version
-          npx tsc --version
-
-      - name: Validar projeto e gerar build
+      - name: Verificar projeto
         run: npm run check
-
-      - name: Verificar arquivos gerados
-        shell: bash
-        run: |
-          set -euo pipefail
-
-          if [ ! -d ".output" ]; then
-            echo "::error::A pasta .output não foi gerada pelo comando npm run check."
-            exit 1
-          fi
-
-          echo "Build gerado corretamente."
-          find .output -maxdepth 2 -type f | head -50
 
       - name: Verificar autenticação da Cloudflare
         run: npx wrangler whoami
@@ -119,11 +70,10 @@ jobs:
           NODE_ENV: production
         run: npx nitro deploy --prebuilt
 
-      - name: Confirmar produção no SHA aprovado
+      - name: Confirmar produção no SHA publicado
         shell: bash
         run: |
           set -euo pipefail
-
           for attempt in {1..12}; do
             page="$(curl --fail --silent --show-error --location "${TADEON_PUBLIC_APP_URL}/login" || true)"
             if printf '%s' "$page" | grep -Fq 'name="tadeon-build-sha"' && \
@@ -131,10 +81,8 @@ jobs:
               echo "Produção confirmada no SHA ${TADEON_DEPLOY_SHA}."
               exit 0
             fi
-
             echo "Tentativa ${attempt}/12: aguardando propagação do Worker."
             sleep 5
           done
-
           echo "::error::O endpoint público não confirmou o SHA ${TADEON_DEPLOY_SHA}."
           exit 1
