@@ -1,0 +1,242 @@
+/* Tadeon Atmosphere — fundo vivo, profundidade e microanimações.
+   A atmosfera deve ser percebida, não competir com o conteúdo. */
+
+.tadeon-shell {
+  --tadeon-atmo-gold: 217 215 164;
+  --tadeon-atmo-olive: 79 110 93;
+  --tadeon-atmo-ink: 8 11 15;
+  position: relative;
+  isolation: isolate;
+  overflow-x: clip;
+}
+
+.tadeon-shell::before,
+.tadeon-shell::after {
+  position: fixed;
+  z-index: -2;
+  pointer-events: none;
+  content: "";
+}
+
+.tadeon-shell::before {
+  inset: -20vh -15vw;
+  background:
+    radial-gradient(circle at 16% 18%, rgb(var(--tadeon-atmo-gold) / 5%), transparent 28rem),
+    radial-gradient(circle at 82% 12%, rgb(var(--tadeon-atmo-olive) / 7%), transparent 32rem),
+    radial-gradient(circle at 74% 86%, rgb(113 107 123 / 5%), transparent 34rem),
+    linear-gradient(180deg, rgb(var(--tadeon-atmo-ink) / 22%), transparent 38%, rgb(0 0 0 / 18%));
+  filter: blur(12px);
+  animation: tadeon-atmo-breathe 18s ease-in-out infinite alternate;
+}
+
+.tadeon-shell::after {
+  inset: 0;
+  z-index: -1;
+  opacity: .45;
+  background-image:
+    radial-gradient(circle at 18% 22%, rgb(255 255 255 / 22%) 0 1px, transparent 1.5px),
+    radial-gradient(circle at 74% 44%, rgb(255 255 255 / 16%) 0 1px, transparent 1.5px),
+    radial-gradient(circle at 42% 78%, rgb(217 215 164 / 18%) 0 1px, transparent 1.4px),
+    radial-gradient(circle at 86% 88%, rgb(79 110 93 / 20%) 0 1px, transparent 1.4px);
+  background-size: 230px 260px, 310px 330px, 270px 300px, 360px 390px;
+  animation: tadeon-atmo-drift 34s linear infinite;
+  mask-image: linear-gradient(180deg, transparent, black 16%, black 82%, transparent);
+}
+
+.tadeon-route-stage {
+  position: relative;
+  transform: translateZ(0);
+}
+
+.tadeon-route-stage::after {
+  position: fixed;
+  inset: 12vh 8vw 10vh auto;
+  z-index: -1;
+  width: min(44vw, 36rem);
+  height: min(72vh, 46rem);
+  border: 1px solid rgb(var(--tadeon-atmo-gold) / 3.5%);
+  border-radius: 50%;
+  box-shadow:
+    0 0 0 2.4rem rgb(var(--tadeon-atmo-gold) / 1.3%),
+    0 0 0 6rem rgb(var(--tadeon-atmo-olive) / 1%);
+  transform: rotate(-8deg);
+  animation: tadeon-orbit-drift 28s ease-in-out infinite alternate;
+  pointer-events: none;
+}
+
+/* Hero breathes very slowly; the content itself remains stable. */
+.tadeon-dashboard-hero,
+.tadeon-page-hero,
+.tadeon-master-commandbar,
+.tadeon-tabletop-boot__card {
+  animation: tadeon-surface-breathe 11s ease-in-out infinite alternate;
+}
+
+/* Section depth: foreground comes forward as the user scrolls into it. */
+.tadeon-page > * {
+  --tadeon-depth-index: var(--tadeon-index, 0);
+  animation:
+    tadeon-reveal 520ms cubic-bezier(.23,1,.32,1) both,
+    tadeon-depth-rest 9s ease-in-out infinite alternate;
+  animation-delay: calc(var(--tadeon-depth-index) * 42ms), calc(var(--tadeon-depth-index) * 70ms + 700ms);
+}
+
+.tadeon-surface[data-tadeon-directed="true"],
+.tadeon-sheet-card[data-tadeon-directed="true"],
+.tadeon-link-panel[data-tadeon-directed="true"],
+.tadeon-state-panel[data-tadeon-directed="true"] {
+  position: relative;
+  will-change: transform;
+}
+
+.tadeon-pointer-sheen {
+  position: absolute;
+  inset: -25%;
+  z-index: 5;
+  pointer-events: none;
+  opacity: 0;
+  background: radial-gradient(circle at var(--tadeon-pointer-x, 50%) var(--tadeon-pointer-y, 50%), rgb(217 215 164 / 14%), transparent 20%);
+  mix-blend-mode: screen;
+  transition: opacity 180ms ease;
+}
+
+.tadeon-pointer-sheen[data-active="true"] {
+  opacity: 1;
+}
+
+/* Navigation indicator moves like a ribbon instead of flashing. */
+.tadeon-nav-item[data-tadeon-directed="true"]::after {
+  transform-origin: left center;
+  animation: tadeon-nav-pulse 3.8s ease-in-out infinite;
+}
+
+/* Buttons: physical press, then release. */
+.tadeon-shell button:not([data-no-tadeon-motion]):not(:disabled),
+.tadeon-shell [role="button"]:not([data-no-tadeon-motion]) {
+  transition:
+    transform 180ms cubic-bezier(.23,1,.32,1),
+    box-shadow 220ms cubic-bezier(.23,1,.32,1),
+    border-color 180ms ease,
+    background-color 180ms ease,
+    color 180ms ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .tadeon-shell button:not([data-no-tadeon-motion]):not(:disabled):hover,
+  .tadeon-shell [role="button"]:not([data-no-tadeon-motion]):hover {
+    transform: translateY(-2px);
+  }
+
+  .tadeon-shell button:not([data-no-tadeon-motion]):not(:disabled):active,
+  .tadeon-shell [role="button"]:not([data-no-tadeon-motion]):active {
+    transform: translateY(0) scale(.975);
+  }
+}
+
+/* Inputs feel like inscription, not generic form controls. */
+.tadeon-shell input:not([data-no-tadeon-motion]),
+.tadeon-shell textarea:not([data-no-tadeon-motion]),
+.tadeon-shell [data-slot="select-trigger"] {
+  transition:
+    border-color 200ms ease,
+    box-shadow 220ms ease,
+    background-color 200ms ease,
+    transform 200ms cubic-bezier(.23,1,.32,1);
+}
+
+.tadeon-shell input:not([data-no-tadeon-motion]):focus-visible,
+.tadeon-shell textarea:not([data-no-tadeon-motion]):focus-visible,
+.tadeon-shell [data-slot="select-trigger"]:focus-visible {
+  transform: translateY(-1px);
+  box-shadow: 0 12px 32px -24px rgb(var(--tadeon-atmo-gold) / 55%);
+}
+
+/* Empty/error panels gain a slow halo so the interface never feels dead. */
+.tadeon-state-panel[data-tadeon-state="offline"],
+.tadeon-state-panel[data-tadeon-state="error"] {
+  animation: tadeon-state-alert 4.8s ease-in-out infinite;
+}
+
+.tadeon-state-panel[data-tadeon-state="saving"] {
+  animation: tadeon-state-saving 1.8s ease-in-out infinite;
+}
+
+.tadeon-state-panel[data-tadeon-state="saved"] {
+  animation: tadeon-state-saved 1.3s cubic-bezier(.23,1,.32,1);
+}
+
+@keyframes tadeon-atmo-breathe {
+  from { transform: translate3d(-1.2%, -.7%, 0) scale(1); }
+  to { transform: translate3d(1.6%, 1.1%, 0) scale(1.045); }
+}
+
+@keyframes tadeon-atmo-drift {
+  from { transform: translate3d(0, 0, 0); }
+  to { transform: translate3d(-18px, -24px, 0); }
+}
+
+@keyframes tadeon-orbit-drift {
+  from { transform: translate3d(0, 0, 0) rotate(-8deg); }
+  to { transform: translate3d(-18px, 10px, 0) rotate(-5deg); }
+}
+
+@keyframes tadeon-surface-breathe {
+  from { box-shadow: 0 42px 110px -72px rgb(0 0 0 / 98%), inset 0 1px rgb(255 255 255 / 4%); }
+  to { box-shadow: 0 46px 120px -72px rgb(0 0 0 / 98%), inset 0 1px rgb(255 255 255 / 6%); }
+}
+
+@keyframes tadeon-reveal {
+  from { opacity: 0; transform: translate3d(0, 12px, 0); filter: blur(5px); }
+  to { opacity: 1; transform: translate3d(0, 0, 0); filter: blur(0); }
+}
+
+@keyframes tadeon-depth-rest {
+  from { transform: translate3d(0, 0, 0); }
+  to { transform: translate3d(0, -.9px, 0); }
+}
+
+@keyframes tadeon-nav-pulse {
+  0%, 100% { opacity: .65; }
+  50% { opacity: 1; }
+}
+
+@keyframes tadeon-state-alert {
+  0%, 100% { box-shadow: 0 24px 66px -52px rgb(0 0 0 / 98%); }
+  50% { box-shadow: 0 30px 80px -54px rgb(239 68 68 / 34%); }
+}
+
+@keyframes tadeon-state-saving {
+  0%, 100% { box-shadow: 0 24px 66px -52px rgb(0 0 0 / 98%); }
+  50% { box-shadow: 0 28px 76px -54px rgb(217 215 164 / 24%); }
+}
+
+@keyframes tadeon-state-saved {
+  0% { transform: scale(.995); opacity: .72; }
+  70% { transform: scale(1.008); opacity: 1; }
+  100% { transform: scale(1); }
+}
+
+@media (max-width: 767px) {
+  .tadeon-shell::after { opacity: .28; }
+  .tadeon-route-stage::after { inset: 16vh -8vw auto auto; width: 78vw; height: 56vh; }
+  .tadeon-dashboard-hero,
+  .tadeon-page-hero,
+  .tadeon-master-commandbar,
+  .tadeon-tabletop-boot__card { animation-duration: 14s; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tadeon-shell::before,
+  .tadeon-shell::after,
+  .tadeon-route-stage::after,
+  .tadeon-dashboard-hero,
+  .tadeon-page-hero,
+  .tadeon-master-commandbar,
+  .tadeon-tabletop-boot__card,
+  .tadeon-page > *,
+  .tadeon-nav-item[data-tadeon-directed="true"]::after,
+  .tadeon-state-panel[data-tadeon-state] {
+    animation: none !important;
+  }
+  .tadeon-page > * { filter: none !important; }
+}
