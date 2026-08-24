@@ -1,0 +1,271 @@
+/* Tadeon Visible Upgrade ~ intentionally perceptible product-level pass. */
+
+:root {
+  --tadeon-visible-gold: #d9d7a4;
+  --tadeon-visible-olive: #4f6e5d;
+  --tadeon-visible-ink: #090c10;
+}
+
+/* --------------------------------------------------------------------------
+   Global: stronger editorial framing
+   -------------------------------------------------------------------------- */
+
+.tadeon-shell {
+  background:
+    radial-gradient(circle at 76% 4%, rgb(217 215 164 / 6%), transparent 24rem),
+    radial-gradient(circle at 8% 82%, rgb(79 110 93 / 5%), transparent 26rem),
+    var(--background);
+}
+
+.tadeon-shell .tadeon-route-stage {
+  position: relative;
+}
+
+.tadeon-shell .tadeon-route-stage::before {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background:
+    linear-gradient(90deg, transparent 0 11%, rgb(217 215 164 / 2%) 11.05%, transparent 11.2%),
+    linear-gradient(0deg, transparent 0 86%, rgb(255 255 255 / 1.8%) 86.05%, transparent 86.2%);
+  content: "";
+  pointer-events: none;
+}
+
+/* --------------------------------------------------------------------------
+   Heroes: clearly become chapter openings
+   -------------------------------------------------------------------------- */
+
+.tadeon-dashboard-hero,
+.tadeon-page-hero {
+  position: relative;
+  overflow: hidden;
+  border-radius: 1.4rem 0.38rem 1.4rem 0.38rem !important;
+  border-width: 1px !important;
+  background:
+    linear-gradient(122deg, rgb(217 215 164 / 9%), transparent 32%),
+    linear-gradient(145deg, rgb(18 21 26 / 98%), rgb(8 11 15 / 94%)) !important;
+  box-shadow:
+    0 42px 110px -72px rgb(0 0 0 / 98%),
+    inset 0 1px rgb(255 255 255 / 6%),
+    inset 2px 0 rgb(217 215 164 / 4%);
+}
+
+.tadeon-dashboard-hero::before,
+.tadeon-page-hero::before {
+  content: "";
+  position: absolute;
+  top: -7rem;
+  right: -5rem;
+  width: 21rem;
+  height: 21rem;
+  border: 1px solid rgb(217 215 164 / 17%);
+  border-radius: 50%;
+  box-shadow:
+    0 0 0 1.8rem rgb(217 215 164 / 2%),
+    0 0 0 4.5rem rgb(79 110 93 / 2%);
+  pointer-events: none;
+  transform: rotate(10deg);
+}
+
+.tadeon-dashboard-hero::after,
+.tadeon-page-hero::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0;
+  height: 4px;
+  background: linear-gradient(90deg, transparent, var(--tadeon-visible-gold), rgb(79 110 93 / 70%), transparent);
+  opacity: .72;
+  pointer-events: none;
+}
+
+.tadeon-dashboard-hero h1,
+.tadeon-page-hero h1 {
+  position: relative;
+  z-index: 2;
+  max-width: 15ch;
+  font-size: clamp(2rem, 4.5vw, 4.6rem) !important;
+  line-height: .94 !important;
+  letter-spacing: -.035em;
+}
+
+.tadeon-dashboard-hero .tadeon-eyebrow,
+.tadeon-page-hero .tadeon-eyebrow {
+  position: relative;
+  z-index: 2;
+  letter-spacing: .22em;
+}
+
+/* --------------------------------------------------------------------------
+   Navigation: visibly turns into a marked volume
+   -------------------------------------------------------------------------- */
+
+.tadeon-nav-item[data-tadeon-directed="true"] {
+  min-height: 3rem;
+  border-radius: .82rem .18rem .82rem .18rem;
+  border: 1px solid transparent;
+}
+
+.tadeon-nav-item[data-tadeon-directed="true"]:hover,
+.tadeon-nav-item[data-tadeon-directed="true"][aria-current="page"] {
+  border-color: rgb(217 215 164 / 18%);
+  background:
+    linear-gradient(90deg, rgb(217 215 164 / 10%), transparent 72%),
+    rgb(255 255 255 / 2%);
+  box-shadow: 0 16px 30px -25px rgb(0 0 0 / 90%);
+}
+
+/* --------------------------------------------------------------------------
+   Surface hierarchy: fewer generic rectangles
+   -------------------------------------------------------------------------- */
+
+.tadeon-surface[data-tadeon-material="archive"] {
+  border-radius: .95rem .28rem 1rem .38rem !important;
+  border-color: rgb(122 129 135 / 30%) !important;
+  background:
+    linear-gradient(135deg, rgb(217 215 164 / 4%), transparent 48%),
+    rgb(17 20 25 / 94%) !important;
+}
+
+.tadeon-sheet-card[data-tadeon-material="relic"] {
+  border-width: 1px 1px 1px 3px !important;
+  border-left-color: rgb(217 215 164 / 42%) !important;
+  border-radius: .55rem .2rem 1.1rem .3rem !important;
+  transform-origin: 20% 50%;
+}
+
+.tadeon-link-panel[data-tadeon-material="fragment"] {
+  border-width: 1px 2px 1px 0 !important;
+  border-radius: .2rem .8rem .3rem 1rem !important;
+}
+
+.tadeon-state-panel[data-tadeon-material="state"] {
+  border-width: 1px 1px 3px !important;
+  border-radius: .3rem .85rem .3rem 1rem !important;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .tadeon-surface[data-tadeon-material],
+  .tadeon-sheet-card[data-tadeon-material],
+  .tadeon-link-panel[data-tadeon-material],
+  .tadeon-state-panel[data-tadeon-material] {
+    transition: transform 220ms cubic-bezier(.23,1,.32,1), box-shadow 220ms cubic-bezier(.23,1,.32,1), border-color 180ms ease !important;
+  }
+
+  .tadeon-surface[data-tadeon-material]:hover { transform: translateY(-5px) !important; }
+  .tadeon-sheet-card[data-tadeon-material="relic"]:hover { transform: translateY(-6px) rotate(-.35deg) !important; }
+  .tadeon-link-panel[data-tadeon-material="fragment"]:hover { transform: translateX(5px) !important; }
+  .tadeon-state-panel[data-tadeon-material="state"]:hover { transform: translateY(-3px) !important; }
+}
+
+/* --------------------------------------------------------------------------
+   Character sheet: unmistakably document-like
+   -------------------------------------------------------------------------- */
+
+.tadeon-sheet-page .tadeon-sheet-commandbar {
+  min-height: 4.7rem;
+  border-bottom-width: 2px;
+  background:
+    linear-gradient(90deg, rgb(217 215 164 / 8%), transparent 30%),
+    rgb(9 12 16 / 96%) !important;
+}
+
+.tadeon-sheet-page .tadeon-sheet-overview {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  border-radius: 1.2rem .35rem 1.2rem .35rem;
+}
+
+.tadeon-sheet-page .tadeon-sheet-section {
+  border-width: 1px 1px 1px 3px !important;
+  border-radius: .45rem 1rem .4rem 1rem !important;
+  box-shadow:
+    0 34px 80px -58px rgb(0 0 0 / 96%),
+    inset 0 1px rgb(255 255 255 / 4%);
+}
+
+.tadeon-sheet-page .tadeon-sheet-section__index {
+  width: 2.4rem;
+  height: 2.4rem;
+  border-radius: .72rem .2rem .72rem .2rem;
+}
+
+.tadeon-sheet-page .tadeon-sheet-section__title-group h2 {
+  font-size: clamp(1.05rem, 1.6vw, 1.45rem);
+}
+
+/* --------------------------------------------------------------------------
+   Master panel: command center becomes visibly distinct
+   -------------------------------------------------------------------------- */
+
+.tadeon-master-workspace .tadeon-master-commandbar {
+  min-height: 8rem;
+  border-radius: 1.35rem .38rem 1.35rem .38rem !important;
+  border-color: rgb(79 110 93 / 32%) !important;
+  background:
+    radial-gradient(circle at 84% 10%, rgb(217 215 164 / 9%), transparent 20rem),
+    linear-gradient(125deg, rgb(79 110 93 / 12%), transparent 42%),
+    rgb(12 16 17 / 96%) !important;
+}
+
+.tadeon-master-workspace .tadeon-master-navigation {
+  margin-top: -1px;
+  margin-bottom: .85rem;
+}
+
+.tadeon-master-workspace .tadeon-master-navigation__scroller {
+  border-width: 1px 1px 2px !important;
+  border-color: rgb(79 110 93 / 30%) !important;
+  border-radius: .85rem .28rem .85rem .28rem !important;
+}
+
+.tadeon-master-workspace .tadeon-master-navigation [data-slot="tabs-trigger"] {
+  min-height: 2.65rem;
+  padding-inline: .95rem;
+}
+
+/* --------------------------------------------------------------------------
+   Tabletop: stronger stage framing without hiding the canvas
+   -------------------------------------------------------------------------- */
+
+.tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-toolbar,
+.tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-floating-toolbar,
+.tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-controls {
+  border-width: 1px 1px 2px !important;
+  border-color: rgb(126 91 47 / 38%) !important;
+  border-radius: .8rem .22rem .8rem .22rem !important;
+  background:
+    linear-gradient(130deg, rgb(126 91 47 / 15%), transparent 50%),
+    rgba(8, 11, 14, .94) !important;
+  box-shadow:
+    0 24px 60px -36px rgb(0 0 0 / 98%),
+    inset 0 1px rgb(255 255 255 / 4%);
+}
+
+.tadeon-shell[data-section="Mesa Nexus"] [data-tabletop-stage] {
+  border: 1px solid rgb(126 91 47 / 20%);
+  box-shadow:
+    0 0 0 5px rgb(126 91 47 / 2%),
+    0 36px 100px -66px rgb(0 0 0 / 98%),
+    inset 0 0 90px rgb(31 54 68 / 9%);
+}
+
+/* --------------------------------------------------------------------------
+   Mobile remains deliberate
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 767px) {
+  .tadeon-dashboard-hero h1,
+  .tadeon-page-hero h1 { font-size: clamp(1.85rem, 10vw, 2.8rem) !important; }
+  .tadeon-dashboard-hero,
+  .tadeon-page-hero { border-radius: 1rem .3rem 1rem .3rem !important; }
+  .tadeon-master-workspace .tadeon-master-commandbar { min-height: 7rem; }
+  .tadeon-sheet-page .tadeon-sheet-overview { grid-template-columns: repeat(2, minmax(0,1fr)); }
+  .tadeon-sheet-page .tadeon-sheet-section { border-radius: .35rem .8rem .35rem .8rem !important; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tadeon-surface[data-tadeon-material],
+  .tadeon-sheet-card[data-tadeon-material],
+  .tadeon-link-panel[data-tadeon-material],
+  .tadeon-state-panel[data-tadeon-material] { transition: none !important; }
+}
