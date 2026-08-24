@@ -1,0 +1,64 @@
+/* Tadeon Semantic Motion — animate changes of meaning, not only surfaces. */
+:root{--tsm-in:cubic-bezier(.16,1,.3,1);--tsm-spring:cubic-bezier(.175,.885,.32,1.275);--tsm-soft:cubic-bezier(.22,1,.36,1)}
+
+/* Data tables: rows arrive, select, and sort with a sense of continuity. */
+.tadeon-shell [data-slot="table-row"]{transition:transform 280ms var(--tsm-spring),background-color 220ms ease,box-shadow 300ms var(--tsm-soft),border-color 220ms ease}
+.tadeon-shell [data-slot="table-row"]:hover{transform:translateX(4px);box-shadow:10px 18px 35px -30px rgb(0 0 0 / 80%)}
+.tadeon-shell [data-slot="table-row"][data-state="selected"]{animation:tsm-row-select 420ms var(--tsm-spring) both;box-shadow:inset 3px 0 0 rgb(180 92 98 / 70%)}
+@keyframes tsm-row-select{0%{transform:translateX(-5px);opacity:.72}55%{transform:translateX(3px);opacity:1}100%{transform:none}}
+.tadeon-shell [data-sort-direction]{transition:transform 300ms var(--tsm-spring),color 180ms ease}
+.tadeon-shell [data-sort-direction="asc"] svg{animation:tsm-sort-up 360ms var(--tsm-spring) both}
+.tadeon-shell [data-sort-direction="desc"] svg{animation:tsm-sort-down 360ms var(--tsm-spring) both}
+@keyframes tsm-sort-up{from{transform:translateY(5px) rotate(0)}55%{transform:translateY(-3px) rotate(-8deg)}to{transform:none}}
+@keyframes tsm-sort-down{from{transform:translateY(-5px) rotate(0)}55%{transform:translateY(3px) rotate(8deg)}to{transform:none}}
+
+/* Search results: query changes feel like a fresh result set rather than a replacement. */
+.tadeon-shell [data-tadeon-search-results]>*{animation:tsm-result-in 420ms var(--tsm-in) both}
+.tadeon-shell [data-tadeon-search-results]>*:nth-child(2){animation-delay:35ms}.tadeon-shell [data-tadeon-search-results]>*:nth-child(3){animation-delay:70ms}.tadeon-shell [data-tadeon-search-results]>*:nth-child(4){animation-delay:105ms}.tadeon-shell [data-tadeon-search-results]>*:nth-child(5){animation-delay:140ms}
+@keyframes tsm-result-in{from{opacity:0;transform:translateY(16px) scale(.97);filter:blur(5px)}65%{opacity:1;transform:translateY(-2px) scale(1.005);filter:blur(0)}to{transform:none}}
+
+/* Chips and filters: selected filters feel placed onto the interface. */
+.tadeon-shell [data-tadeon-filter][data-active="true"],.tadeon-shell [data-slot="badge"][data-selected="true"]{animation:tsm-filter-on 390ms var(--tsm-spring) both}
+.tadeon-shell [data-tadeon-filter][data-active="false"]{animation:tsm-filter-off 220ms ease both}
+@keyframes tsm-filter-on{0%{opacity:.55;transform:translateY(5px) scale(.9)}60%{opacity:1;transform:translateY(-2px) scale(1.06)}to{transform:none}}
+@keyframes tsm-filter-off{from{opacity:1;transform:none}to{opacity:.65;transform:translateY(-3px) scale(.97)}}
+
+/* Form groups: changed values propagate through the field label and control. */
+.tadeon-shell [data-tadeon-field][data-changed="true"]{animation:tsm-field-change 520ms var(--tsm-in) both}
+@keyframes tsm-field-change{0%{box-shadow:0 0 0 0 rgb(217 215 164 / 0%)}35%{box-shadow:0 0 0 3px rgb(217 215 164 / 18%),0 16px 38px -28px rgb(217 215 164 / 44%)}100%{box-shadow:none}}
+.tadeon-shell [data-tadeon-field][data-invalid="true"]{animation:tsm-invalid 460ms var(--tsm-spring)}
+@keyframes tsm-invalid{0%,100%{transform:translateX(0)}22%{transform:translateX(-4px)}44%{transform:translateX(4px)}66%{transform:translateX(-2px)}}
+
+/* Character-sheet sections: changing a record feels like turning a folio. */
+.tadeon-shell[data-section="Ficha"] [data-tadeon-section-change="true"]{animation:tsm-folio-turn 540ms var(--tsm-in) both;transform-origin:12% 50%}
+@keyframes tsm-folio-turn{from{opacity:0;transform:perspective(900px) rotateY(-9deg) translateX(16px);filter:blur(7px)}58%{opacity:1;transform:perspective(900px) rotateY(1deg) translateX(-3px);filter:blur(0)}to{transform:none}}
+
+/* Nexus details: focused references arrive through the graph, panels follow. */
+.tadeon-shell[data-section="O Nexus"] [data-tadeon-detail][data-open="true"]{animation:tsm-reference-open 520ms var(--tsm-in) both}
+@keyframes tsm-reference-open{from{opacity:0;transform:translateX(22px) translateZ(-20px) scale(.96);filter:blur(8px)}58%{opacity:1;transform:translateX(-3px) translateZ(8px) scale(1.01);filter:blur(0)}to{transform:none}}
+.tadeon-shell[data-section="O Nexus"] [data-tadeon-reference][data-highlighted="true"]{animation:tsm-reference-highlight 420ms var(--tsm-spring) both}
+@keyframes tsm-reference-highlight{0%{transform:scale(.92);box-shadow:0 0 0 transparent}56%{transform:scale(1.06);box-shadow:0 0 34px -16px rgb(217 215 164 / 46%)}100%{transform:none}}
+
+/* Tabletop commands: actions have direction and mechanical completion. */
+.tadeon-shell[data-section="Mesa Nexus"] [data-tadeon-action="add"]:active svg{animation:tsm-add 420ms var(--tsm-spring) both}
+.tadeon-shell[data-section="Mesa Nexus"] [data-tadeon-action="delete"]:active svg{animation:tsm-delete 340ms var(--tsm-spring) both}
+.tadeon-shell[data-section="Mesa Nexus"] [data-tadeon-action="undo"]:active svg,.tadeon-shell[data-section="Mesa Nexus"] [data-tadeon-action="back"]:active svg{animation:tsm-back 360ms var(--tsm-spring) both}
+.tadeon-shell[data-section="Mesa Nexus"] [data-tadeon-action="redo"]:active svg,.tadeon-shell[data-section="Mesa Nexus"] [data-tadeon-action="forward"]:active svg{animation:tsm-forward 360ms var(--tsm-spring) both}
+@keyframes tsm-add{from{transform:scale(.65) rotate(-90deg)}60%{transform:scale(1.22) rotate(8deg)}to{transform:none}}
+@keyframes tsm-delete{from{transform:scale(1)}45%{transform:scale(.72) rotate(-12deg)}100%{transform:scale(.82) rotate(12deg);opacity:.65}}
+@keyframes tsm-back{from{transform:translateX(5px)}55%{transform:translateX(-6px)}to{transform:none}}
+@keyframes tsm-forward{from{transform:translateX(-5px)}55%{transform:translateX(6px)}to{transform:none}}
+
+/* Count/value changes: numbers briefly acquire focus. */
+.tadeon-shell [data-tadeon-value][data-updated="true"]{animation:tsm-value-pulse 520ms var(--tsm-spring) both}
+@keyframes tsm-value-pulse{0%{opacity:.55;transform:translateY(7px) scale(.92)}55%{opacity:1;transform:translateY(-3px) scale(1.08)}100%{transform:none}}
+
+/* Generic content swap hooks: application components can opt in without bespoke CSS. */
+.tadeon-shell [data-tadeon-swap="in"]{animation:tsm-swap-in 430ms var(--tsm-in) both}
+.tadeon-shell [data-tadeon-swap="out"]{animation:tsm-swap-out 210ms var(--tsm-soft) both}
+@keyframes tsm-swap-in{from{opacity:0;transform:translateY(13px) scale(.985);filter:blur(4px)}65%{opacity:1;transform:translateY(-2px) scale(1.003);filter:blur(0)}to{transform:none}}
+@keyframes tsm-swap-out{to{opacity:0;transform:translateY(-8px) scale(.985);filter:blur(3px)}}
+
+@media (prefers-reduced-motion:reduce){
+  .tadeon-shell [data-slot="table-row"],.tadeon-shell [data-tadeon-search-results]>* ,.tadeon-shell [data-tadeon-filter],.tadeon-shell [data-tadeon-field],.tadeon-shell [data-tadeon-section-change="true"],.tadeon-shell [data-tadeon-detail],.tadeon-shell [data-tadeon-reference],.tadeon-shell [data-tadeon-value],.tadeon-shell [data-tadeon-swap]{animation:none!important;transition:none!important}
+}
