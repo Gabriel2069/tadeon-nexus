@@ -1,0 +1,96 @@
+/* Tadeon Actual UI Motion — targets the real Radix/data-slot DOM used by the app. */
+:root{--tui-in:cubic-bezier(.16,1,.3,1);--tui-spring:cubic-bezier(.175,.885,.32,1.275);--tui-out:cubic-bezier(.7,0,.84,0);--tui-soft:cubic-bezier(.22,1,.36,1)}
+
+/* Real tabs indicator: the component supplies its position inline, so animate the transform itself. */
+.tadeon-shell [data-slot="tabs-indicator"]{position:absolute;z-index:-1;pointer-events:none;border-radius:.7rem;background:linear-gradient(145deg,rgb(217 215 164 / 16%),rgb(255 255 255 / 4%));box-shadow:0 12px 30px -20px rgb(217 215 164 / 42%),inset 0 1px rgb(255 255 255 / 8%);transition:transform 520ms var(--tui-spring),width 420ms var(--tui-spring),height 360ms var(--tui-soft),opacity 220ms ease;will-change:transform,width;height}
+.tadeon-shell [data-slot="tabs-indicator"][data-visible="false"]{opacity:0}
+.tadeon-shell [data-slot="tabs-trigger"][data-state="active"]{position:relative;z-index:1}
+.tadeon-shell [data-slot="tabs-trigger"][data-state="active"]:not(:focus-visible){animation:tui-tab-land 420ms var(--tui-spring) both}
+@keyframes tui-tab-land{0%{transform:translateY(4px) scale(.94)}58%{transform:translateY(-3px) scale(1.035)}100%{transform:none}}
+
+/* Actual Radix dialogs. */
+.tadeon-shell [data-slot="dialog-overlay"][data-state="open"],.tadeon-shell [data-slot="sheet-overlay"][data-state="open"]{opacity:1;backdrop-filter:blur(10px) saturate(78%)}
+.tadeon-shell [data-slot="dialog-overlay"][data-state="closed"],.tadeon-shell [data-slot="sheet-overlay"][data-state="closed"]{opacity:0;backdrop-filter:blur(0) saturate(100%)}
+.tadeon-shell [data-slot="dialog-content"][data-state="open"]{animation:tui-dialog-in 620ms var(--tui-in) both!important;transform-origin:50% 44%!important;will-change:transform,opacity,filter}
+.tadeon-shell [data-slot="dialog-content"][data-state="closed"]{animation:tui-dialog-out 230ms var(--tui-out) both!important}
+@keyframes tui-dialog-in{0%{opacity:0;transform:translateY(72px) scale(.82) rotateX(-8deg);filter:blur(12px)}52%{opacity:1;transform:translateY(-8px) scale(1.035) rotateX(1deg);filter:blur(0)}78%{transform:translateY(2px) scale(.995)}100%{opacity:1;transform:none}}
+@keyframes tui-dialog-out{0%{opacity:1;transform:none;filter:blur(0)}100%{opacity:0;transform:translateY(34px) scale(.9) rotateX(4deg);filter:blur(7px)}}
+.tadeon-shell [data-slot="dialog-content"][data-state="open"]>[data-slot="dialog-header"]{animation:tui-dialog-child 420ms var(--tui-in) both}
+.tadeon-shell [data-slot="dialog-content"][data-state="open"]>[data-slot="dialog-footer"]{animation:tui-dialog-child 420ms var(--tui-in) 110ms both}
+@keyframes tui-dialog-child{from{opacity:0;transform:translateY(18px) scale(.97)}to{opacity:1;transform:none}}
+
+/* Real sheets: Radix supplies data-side. */
+.tadeon-shell [data-slot="sheet-content"][data-state="open"][data-side="right"]{animation:tui-sheet-right-in 620ms var(--tui-in) both!important}
+.tadeon-shell [data-slot="sheet-content"][data-state="closed"][data-side="right"]{animation:tui-sheet-right-out 240ms var(--tui-out) both!important}
+.tadeon-shell [data-slot="sheet-content"][data-state="open"][data-side="left"]{animation:tui-sheet-left-in 620ms var(--tui-in) both!important}
+.tadeon-shell [data-slot="sheet-content"][data-state="closed"][data-side="left"]{animation:tui-sheet-left-out 240ms var(--tui-out) both!important}
+.tadeon-shell [data-slot="sheet-content"][data-state="open"][data-side="bottom"]{animation:tui-sheet-bottom-in 620ms var(--tui-in) both!important}
+.tadeon-shell [data-slot="sheet-content"][data-state="closed"][data-side="bottom"]{animation:tui-sheet-bottom-out 240ms var(--tui-out) both!important}
+.tadeon-shell [data-slot="sheet-content"][data-state="open"][data-side="top"]{animation:tui-sheet-top-in 620ms var(--tui-in) both!important}
+@keyframes tui-sheet-right-in{0%{transform:translateX(100%) rotateY(-7deg);opacity:.25}58%{transform:translateX(-18px) rotateY(1deg);opacity:1}100%{transform:none;opacity:1}}
+@keyframes tui-sheet-right-out{to{transform:translateX(100%) rotateY(-3deg);opacity:0}}
+@keyframes tui-sheet-left-in{0%{transform:translateX(-100%) rotateY(7deg);opacity:.25}58%{transform:translateX(18px) rotateY(-1deg);opacity:1}100%{transform:none;opacity:1}}
+@keyframes tui-sheet-left-out{to{transform:translateX(-100%) rotateY(3deg);opacity:0}}
+@keyframes tui-sheet-bottom-in{0%{transform:translateY(100%) scale(.97);opacity:.2}58%{transform:translateY(-18px) scale(1.012);opacity:1}100%{transform:none;opacity:1}}
+@keyframes tui-sheet-bottom-out{to{transform:translateY(100%) scale(.97);opacity:0}}
+@keyframes tui-sheet-top-in{0%{transform:translateY(-100%) scale(.97);opacity:.2}58%{transform:translateY(18px) scale(1.012);opacity:1}100%{transform:none;opacity:1}}
+
+/* Real popover / dropdown / hover-card / select content. */
+.tadeon-shell [data-slot="popover-content"][data-state="open"],.tadeon-shell [data-slot="dropdown-menu-content"][data-state="open"],.tadeon-shell [data-slot="dropdown-menu-sub-content"][data-state="open"],.tadeon-shell [data-slot="hover-card-content"][data-state="open"],.tadeon-shell [data-slot="select-content"][data-state="open"]{animation:tui-float-in 340ms var(--tui-spring) both!important;transform-origin:var(--radix-popover-content-transform-origin,var(--radix-dropdown-menu-content-transform-origin,var(--radix-hover-card-content-transform-origin,var(--radix-select-content-transform-origin,50% 0%))))!important}
+.tadeon-shell [data-slot="popover-content"][data-state="closed"],.tadeon-shell [data-slot="dropdown-menu-content"][data-state="closed"],.tadeon-shell [data-slot="dropdown-menu-sub-content"][data-state="closed"],.tadeon-shell [data-slot="hover-card-content"][data-state="closed"],.tadeon-shell [data-slot="select-content"][data-state="closed"]{animation:tui-float-out 170ms var(--tui-out) both!important}
+@keyframes tui-float-in{0%{opacity:0;transform:translateY(15px) scale(.82) rotateX(-7deg);filter:blur(6px)}58%{opacity:1;transform:translateY(-3px) scale(1.035) rotateX(1deg);filter:blur(0)}100%{opacity:1;transform:none}}
+@keyframes tui-float-out{to{opacity:0;transform:translateY(10px) scale(.88);filter:blur(4px)}}
+.tadeon-shell [data-slot="dropdown-menu-content"][data-state="open"]>[data-slot="dropdown-menu-item"],.tadeon-shell [data-slot="dropdown-menu-content"][data-state="open"]>[data-slot="dropdown-menu-checkbox-item"],.tadeon-shell [data-slot="dropdown-menu-content"][data-state="open"]>[data-slot="dropdown-menu-radio-item"],.tadeon-shell [data-slot="dropdown-menu-sub-content"][data-state="open"]>*{animation:tui-menu-item 230ms var(--tui-in) both!important}
+.tadeon-shell [data-slot="dropdown-menu-content"][data-state="open"]>*:nth-child(2){animation-delay:24ms!important}.tadeon-shell [data-slot="dropdown-menu-content"][data-state="open"]>*:nth-child(3){animation-delay:48ms!important}.tadeon-shell [data-slot="dropdown-menu-content"][data-state="open"]>*:nth-child(4){animation-delay:72ms!important}.tadeon-shell [data-slot="dropdown-menu-content"][data-state="open"]>*:nth-child(5){animation-delay:96ms!important}
+@keyframes tui-menu-item{from{opacity:0;transform:translateX(-16px)}to{opacity:1;transform:none}}
+
+/* Real accordion/collapsible content and trigger. */
+.tadeon-shell [data-slot="accordion-trigger"],.tadeon-shell [data-slot="collapsible-trigger"]{transition:color 180ms ease,background-color 220ms ease,transform 260ms var(--tui-spring),box-shadow 300ms var(--tui-soft)}
+.tadeon-shell [data-slot="accordion-trigger"]:hover,.tadeon-shell [data-slot="collapsible-trigger"]:hover{transform:translateX(6px);color:var(--primary)}
+.tadeon-shell [data-slot="accordion-content"][data-state="open"],.tadeon-shell [data-slot="collapsible-content"][data-state="open"]{animation:tui-expand-in 430ms var(--tui-in) both!important}
+.tadeon-shell [data-slot="accordion-content"][data-state="closed"],.tadeon-shell [data-slot="collapsible-content"][data-state="closed"]{animation:tui-expand-out 220ms var(--tui-out) both!important}
+.tadeon-shell [data-slot="accordion-trigger"] svg,.tadeon-shell [data-slot="collapsible-trigger"] svg{transition:transform 360ms var(--tui-spring)}
+@keyframes tui-expand-in{from{opacity:0;transform:translateY(-10px) scaleY(.82);filter:blur(3px)}55%{opacity:1;transform:translateY(2px) scaleY(1.02);filter:blur(0)}to{transform:none}}
+@keyframes tui-expand-out{to{opacity:0;transform:translateY(-7px) scaleY(.9);filter:blur(2px)}}
+
+/* Real switches / checkboxes / sliders. */
+.tadeon-shell [data-slot="switch"]{transition:background-color 260ms ease,border-color 260ms ease,box-shadow 320ms var(--tui-soft),transform 220ms var(--tui-spring);transform-origin:center}
+.tadeon-shell [data-slot="switch"]:hover{transform:scale(1.06)}
+.tadeon-shell [data-slot="switch"][data-state="checked"]{animation:tui-control-on 440ms var(--tui-spring) both;box-shadow:0 8px 24px -17px rgb(217 215 164 / 60%)}
+.tadeon-shell [data-slot="switch-thumb"]{transition:transform 340ms var(--tui-spring),box-shadow 300ms ease}
+.tadeon-shell [data-slot="switch-thumb"][data-state="checked"]{box-shadow:0 5px 18px -10px rgb(0 0 0 / 70%)}
+.tadeon-shell [data-slot="checkbox"],.tadeon-shell [data-slot="radio-group-item"]{transform-origin:center;transition:background-color 220ms ease,border-color 220ms ease,box-shadow 300ms var(--tui-soft),transform 260ms var(--tui-spring)}
+.tadeon-shell [data-slot="checkbox"]:hover,.tadeon-shell [data-slot="radio-group-item"]:hover{transform:scale(1.08) rotate(-2deg)}
+.tadeon-shell [data-slot="checkbox"][data-state="checked"],.tadeon-shell [data-slot="radio-group-item"][data-state="checked"]{animation:tui-control-on 430ms var(--tui-spring) both}
+.tadeon-shell [data-slot="checkbox-indicator"]{animation:tui-checkmark 360ms var(--tui-spring) both}
+@keyframes tui-control-on{0%{transform:scale(.78)}55%{transform:scale(1.16)}78%{transform:scale(.96)}100%{transform:none}}
+@keyframes tui-checkmark{from{opacity:0;transform:scale(.3) rotate(-25deg)}60%{opacity:1;transform:scale(1.2) rotate(4deg)}to{transform:none}}
+.tadeon-shell [data-slot="slider-thumb"]{transition:transform 260ms var(--tui-spring),box-shadow 300ms var(--tui-soft),border-color 220ms ease}
+.tadeon-shell [data-slot="slider-thumb"]:hover{transform:scale(1.2);box-shadow:0 8px 24px -12px rgb(217 215 164 / 50%)}
+.tadeon-shell [data-slot="slider-thumb"]:active{transform:scale(.9)}
+.tadeon-shell [data-slot="slider-range"]{transition:width 360ms var(--tui-spring),left 360ms var(--tui-spring);filter:drop-shadow(0 0 8px rgb(217 215 164 / 22%))}
+
+/* Select trigger and real form affordances. */
+.tadeon-shell [data-slot="select-trigger"]{transform-origin:center;transition:transform 240ms var(--tui-spring),box-shadow 320ms var(--tui-soft),border-color 220ms ease,background-color 220ms ease}
+.tadeon-shell [data-slot="select-trigger"][data-state="open"]{transform:translateY(-3px) scale(1.012);box-shadow:0 14px 36px -24px rgb(217 215 164 / 48%)}
+.tadeon-shell [data-slot="select-trigger"]>svg{transition:transform 360ms var(--tui-spring)}
+.tadeon-shell [data-slot="select-trigger"][data-state="open"]>svg{transform:rotate(180deg) scale(1.08)}
+.tadeon-shell [data-slot="select-item"]{transition:transform 220ms var(--tui-spring),background-color 180ms ease,color 180ms ease,padding-left 220ms var(--tui-spring)}
+.tadeon-shell [data-slot="select-item"]:hover{transform:translateX(5px);padding-left:16px}
+.tadeon-shell [data-slot="select-item"][data-highlighted]{transform:translateX(7px);padding-left:16px}
+.tadeon-shell [data-slot="select-item"] svg{transition:transform 280ms var(--tui-spring)}
+
+/* Tabs content: direction is supplied by Tabs root. */
+.tadeon-shell [data-slot="tabs"][data-motion-direction="forward"] [data-slot="tabs-content"][data-state="active"]{animation-name:tui-tab-forward!important}
+.tadeon-shell [data-slot="tabs"][data-motion-direction="backward"] [data-slot="tabs-content"][data-state="active"]{animation-name:tui-tab-backward!important}
+@keyframes tui-tab-forward{from{opacity:0;transform:translateX(42px) scale(.97);filter:blur(8px)}58%{opacity:1;transform:translateX(-4px) scale(1.01);filter:blur(0)}to{opacity:1;transform:none}}
+@keyframes tui-tab-backward{from{opacity:0;transform:translateX(-42px) scale(.97);filter:blur(8px)}58%{opacity:1;transform:translateX(4px) scale(1.01);filter:blur(0)}to{opacity:1;transform:none}}
+
+/* State changes: generic aria-live gets an actual event gesture. */
+.tadeon-shell [aria-live="polite"]{transition:opacity 240ms ease,transform 360ms var(--tui-spring),filter 360ms ease,box-shadow 360ms var(--tui-soft)}
+.tadeon-shell [aria-live="polite"][data-tadeon-state="saved"],.tadeon-shell [aria-live="polite"][data-tadeon-state="success"]{animation:tui-success 520ms var(--tui-spring) both}
+.tadeon-shell [aria-live="polite"][data-tadeon-state="error"]{animation:tui-error 420ms var(--tui-spring) both}
+@keyframes tui-success{0%{opacity:.55;transform:scale(.88);box-shadow:0 0 0 0 rgb(79 110 93 / 0%)}52%{opacity:1;transform:scale(1.07);box-shadow:0 0 34px -17px rgb(79 110 93 / 62%)}100%{transform:none;box-shadow:none}}
+@keyframes tui-error{0%,100%{transform:translateX(0)}25%{transform:translateX(-8px)}50%{transform:translateX(8px)}75%{transform:translateX(-4px)}}
+
+@media (prefers-reduced-motion:reduce){.tadeon-shell *,.tadeon-shell *::before,.tadeon-shell *::after{scroll-behavior:auto}.tadeon-shell [data-slot="tabs-indicator"],.tadeon-shell [data-slot="dialog-content"],.tadeon-shell [data-slot="sheet-content"],.tadeon-shell [data-slot="popover-content"],.tadeon-shell [data-slot="dropdown-menu-content"],.tadeon-shell [data-slot="dropdown-menu-sub-content"],.tadeon-shell [data-slot="hover-card-content"],.tadeon-shell [data-slot="select-content"],.tadeon-shell [data-slot="accordion-content"],.tadeon-shell [data-slot="collapsible-content"],.tadeon-shell [data-slot="checkbox-indicator"],.tadeon-shell [data-slot="switch"],.tadeon-shell [data-slot="aria-live"]{animation:none!important;transition:none!important}}
