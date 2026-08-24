@@ -31,6 +31,7 @@ import navSheetSearchPolish162Css from "../styles/nav-sheet-search-polish-162.cs
 import createSheetSearchViewport163Css from "../styles/create-sheet-search-viewport-163.css?url";
 import desktopHeroParity202Css from "../styles/desktop-hero-parity-202.css?url";
 import heroIconsFinal212Css from "../styles/hero-icons-final-212.css?url";
+import experienceOrchestrationCss from "../styles/tadeon-experience-orchestration.css?url";
 import { AuthProvider } from "@/lib/auth";
 import { Toaster } from "@/components/ui/sonner";
 import { PwaRegistration } from "@/components/pwa-registration";
@@ -145,6 +146,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { rel: "stylesheet", href: createSheetSearchViewport163Css },
       { rel: "stylesheet", href: desktopHeroParity202Css },
       { rel: "stylesheet", href: heroIconsFinal212Css },
+      { rel: "stylesheet", href: experienceOrchestrationCss },
       { rel: "manifest", href: "/manifest.webmanifest" },
       { rel: "icon", href: "/favicon.svg?v=5", type: "image/svg+xml", sizes: "any" },
       { rel: "shortcut icon", href: "/favicon.svg?v=5", type: "image/svg+xml" },
