@@ -1,86 +1,101 @@
-/* Mesa Nexus — composição desktop original em três faixas.
-   Faixa 1: linha principal do estúdio.
-   Faixa 2: ferramentas.
-   Faixa 3: transmissão / sessão ao vivo.
-   Mantém os materiais e a atmosfera das camadas superiores. */
+/* Mesa Nexus — três faixas funcionais reais no desktop.
+   1) principal: identidade + campanha/cena + fluxos + salvar
+   2) ferramentas: toolbelt completo
+   3) transmissão: sessão ao vivo
+*/
 
 @media (min-width: 768px) {
   html body .tadeon-tabletop-studio__header {
-    display: block !important;
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) !important;
+    grid-template-rows: auto auto auto !important;
+    align-content: start !important;
+    gap: 0 !important;
+    width: 100% !important;
     height: auto !important;
     min-height: 0 !important;
-    padding: .85rem 1rem .75rem !important;
+    padding: .85rem 1rem .8rem !important;
     overflow: visible !important;
   }
 
-  /* 1 — Linha principal */
   html body .tadeon-tabletop-studio__header > .tadeon-tabletop-studio__primary {
+    grid-column: 1 !important;
+    grid-row: 1 !important;
     display: flex !important;
+    flex-wrap: nowrap !important;
     width: 100% !important;
+    min-width: 0 !important;
     min-height: 3.25rem !important;
     align-items: center !important;
-    flex-wrap: nowrap !important;
-    gap: .75rem !important;
+    gap: .8rem !important;
   }
 
   html body .tadeon-tabletop-studio__header > .tadeon-tabletop-studio__primary > .tadeon-tabletop-studio__brand {
     flex: 0 0 auto !important;
-    margin-right: .2rem !important;
+    width: auto !important;
+    margin-right: .25rem !important;
   }
 
   html body .tadeon-tabletop-studio__header > .tadeon-tabletop-studio__primary > .grid {
-    flex: 0 1 28rem !important;
+    flex: 0 1 30rem !important;
     width: auto !important;
-    max-width: 28rem !important;
+    max-width: 30rem !important;
+    min-width: 18rem !important;
   }
 
-  html body .tadeon-tabletop-studio__header .tadeon-tabletop-command-spaces {
+  html body .tadeon-tabletop-studio__header > .tadeon-tabletop-studio__primary > .tadeon-tabletop-command-spaces {
     flex: 0 0 auto !important;
     margin-left: .1rem !important;
   }
 
-  html body .tadeon-tabletop-studio__header .tadeon-tabletop-mobile-save {
+  html body .tadeon-tabletop-studio__header > .tadeon-tabletop-studio__primary > .tadeon-tabletop-mobile-save {
     flex: 0 0 auto !important;
     margin-left: auto !important;
   }
 
-  /* Mobile-only controls stay mobile-only on the desktop studio header. */
-  html body .tadeon-tabletop-studio__header .tadeon-tabletop-mobile-tools-toggle,
-  html body .tadeon-tabletop-studio__header .tadeon-tabletop-mobile-panel-toggle {
+  html body .tadeon-tabletop-studio__header > .tadeon-tabletop-studio__primary > .tadeon-tabletop-mobile-tools-toggle,
+  html body .tadeon-tabletop-studio__header > .tadeon-tabletop-studio__primary > .tadeon-tabletop-mobile-panel-toggle {
     display: none !important;
   }
 
-  /* 2 — Linha de ferramentas */
+  /* Linha 2 — ferramentas. */
   html body .tadeon-tabletop-studio__header > .tadeon-tabletop-toolbar {
+    grid-column: 1 !important;
+    grid-row: 2 !important;
     display: flex !important;
     width: 100% !important;
-    min-height: 2.9rem !important;
-    margin-top: .55rem !important;
-    padding: .5rem 0 .45rem !important;
+    min-width: 0 !important;
+    min-height: 3rem !important;
+    margin: .55rem 0 0 !important;
+    padding: .55rem 0 .45rem !important;
     align-items: center !important;
     flex-wrap: nowrap !important;
     gap: .65rem !important;
     overflow-x: auto !important;
-    border-top: 1px solid rgb(122 129 135 / 14%) !important;
-    border-bottom: 1px solid rgb(122 129 135 / 10%) !important;
+    border-top: 1px solid rgb(84 123 148 / 18%) !important;
+    border-bottom: 1px solid rgb(183 129 77 / 10%) !important;
   }
 
   html body .tadeon-tabletop-studio__header > .tadeon-tabletop-toolbar > * {
     flex: 0 0 auto !important;
   }
 
-  /* 3 — Linha de transmissão */
+  /* Linha 3 — transmissão. */
   html body .tadeon-tabletop-studio__header > .tadeon-live-session {
+    grid-column: 1 !important;
+    grid-row: 3 !important;
     display: block !important;
     width: 100% !important;
-    margin-top: .55rem !important;
+    min-width: 0 !important;
+    margin: .6rem 0 0 !important;
+    border: 1px solid rgb(183 129 77 / 14%) !important;
+    border-radius: .8rem !important;
+    background: linear-gradient(90deg, rgb(183 129 77 / 3%), transparent 42%, rgb(84 123 148 / 3%)) !important;
   }
 
   html body .tadeon-tabletop-studio__header > .tadeon-live-session .tadeon-live-session__summary {
-    display: flex !important;
     width: 100% !important;
-    min-height: 2.7rem !important;
-    align-items: center !important;
+    min-height: 2.75rem !important;
   }
 
   html body .tadeon-tabletop-studio__header > .tadeon-live-session .tadeon-live-session__body {
@@ -93,17 +108,20 @@
   html body .tadeon-tabletop-studio__header > .tadeon-tabletop-studio__primary > .grid {
     flex-basis: 22rem !important;
     max-width: 22rem !important;
+    min-width: 15rem !important;
   }
 }
 
 @media (max-width: 767px) {
-  html body .tadeon-shell[data-section="Mesa Nexus"] .tadeon-mobile-header__identity {
-    gap: .45rem !important;
+  html body .tadeon-tabletop-studio__header > .tadeon-tabletop-toolbar {
+    width: 100%;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
   html body .tadeon-tabletop-studio__header * {
-    scroll-behavior: auto !important;
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .001ms !important;
   }
 }
