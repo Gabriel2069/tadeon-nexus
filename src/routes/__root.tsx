@@ -1,5 +1,5 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { Outlet, Link, useRouterState, createRootRouteWithContext, HeadContent, Scripts } from "@tanstack/react-router";
+import { Outlet, Link, createRootRouteWithContext, HeadContent, Scripts } from "@tanstack/react-router";
 import appCss from "../styles.css?url";
 import mobileCss from "../styles/mobile-studio.css?url";
 import viewportCss from "../styles/viewport-fit-final.css?url";
@@ -59,6 +59,9 @@ import sidebarRealRepairCss from "../styles/tadeon-sidebar-real-repair.css?url";
 import detailMotionRefinementCss from "../styles/tadeon-detail-motion-refinement.css?url";
 import sidebarFinalCss from "../styles/tadeon-sidebar-final.css?url";
 import finalDetailRefinementCss from "../styles/tadeon-final-detail-refinement.css?url";
+import motionPersonalityCss from "../styles/tadeon-motion-personality.css?url";
+import semanticPersonalityRefinementCss from "../styles/tadeon-semantic-personality-refinement.css?url";
+import relationalDepthCss from "../styles/tadeon-motion-relational-depth.css?url";
 import { AuthProvider } from "@/lib/auth";
 import { Toaster } from "@/components/ui/sonner";
 import { PwaRegistration } from "@/components/pwa-registration";
@@ -74,7 +77,7 @@ import { PageState } from "@/components/page-state";
 import { Button } from "@/components/ui/button";
 import { Compass, Home, RefreshCw } from "lucide-react";
 
-function NotFoundComponent() { return <PageState icon={Compass} eyebrow="Fio não localizado · 404" title="Esta página não faz parte do arquivo" description="O endereço pode ter mudado ou o fio que trouxe você até aqui já não existe. Retorne ao arquivo principal para continuar." className="min-h-screen" action={<Button asChild><Link to="/"><Home className="h-4 w-4" />Voltar ao início</Link></Button>} />; }
+function NotFoundComponent() { return <PageState icon={Compass} eyebrow="Fio não localizado · 404" title="Esta página não faz parte do arquivo" description="O endereço pode ter mudado ou o fio que trouxe você até aqui já não existe. Retorne ao arquivo principal para continuar." className="min-h-screen" action={<Button asChild><Link to="/">Voltar ao início</Link></Button>} />; }
 function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) { console.error(error); return <PageState icon={RefreshCw} eyebrow="Interrupção no arquivo" title="O Tadeon perdeu este fio" description="Ocorreu um erro inesperado ao montar esta página. Tente reconstruir a visualização; se o problema continuar, volte ao arquivo principal para continuar." className="min-h-screen" action={<><Button onClick={reset}><RefreshCw className="h-4 w-4" />Tentar novamente</Button><Button asChild variant="outline"><Link to="/"><Home className="h-4 w-4" />Voltar ao início</Link></Button></>} />; }
 
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
@@ -106,7 +109,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { rel: "stylesheet", href: atmosphereCss }, { rel: "stylesheet", href: interactionPassCss }, { rel: "stylesheet", href: headMicroanimationsCss },
       { rel: "stylesheet", href: motionSystemCss }, { rel: "stylesheet", href: contextualMotionCss }, { rel: "stylesheet", href: popupMotionCss }, { rel: "stylesheet", href: uiDetailMotionCss },
       { rel: "stylesheet", href: libraryLayoutRestoreCss }, { rel: "stylesheet", href: continuityMotionCss }, { rel: "stylesheet", href: premiumMotionCss }, { rel: "stylesheet", href: relationalMotionCss }, { rel: "stylesheet", href: visibleMotionCss },
-      { rel: "stylesheet", href: personalityMotionCss }, { rel: "stylesheet", href: sectionPersonalityMotionCss }, { rel: "stylesheet", href: actualUiMotionCss }, { rel: "stylesheet", href: frameRefinementMotionCss }, { rel: "stylesheet", href: completeInteractionMotionCss }, { rel: "stylesheet", href: deepInteractionMotionCss }, { rel: "stylesheet", href: semanticMotionCss }, { rel: "stylesheet", href: contextTransitionMotionCss }, { rel: "stylesheet", href: portalSurfaceMotionCss }, { rel: "stylesheet", href: popupRefinementMotionCss }, { rel: "stylesheet", href: sidebarRealRepairCss }, { rel: "stylesheet", href: detailMotionRefinementCss }, { rel: "stylesheet", href: sidebarFinalCss }, { rel: "stylesheet", href: finalDetailRefinementCss }, { rel: "stylesheet", href: "./styles/tadeon-motion-personality.css?url" }, { rel: "stylesheet", href: "./styles/tadeon-semantic-personality-refinement.css?url" },
+      { rel: "stylesheet", href: personalityMotionCss }, { rel: "stylesheet", href: sectionPersonalityMotionCss }, { rel: "stylesheet", href: actualUiMotionCss }, { rel: "stylesheet", href: frameRefinementMotionCss }, { rel: "stylesheet", href: completeInteractionMotionCss }, { rel: "stylesheet", href: deepInteractionMotionCss }, { rel: "stylesheet", href: semanticMotionCss }, { rel: "stylesheet", href: contextTransitionMotionCss }, { rel: "stylesheet", href: portalSurfaceMotionCss }, { rel: "stylesheet", href: popupRefinementMotionCss }, { rel: "stylesheet", href: sidebarRealRepairCss }, { rel: "stylesheet", href: detailMotionRefinementCss }, { rel: "stylesheet", href: sidebarFinalCss }, { rel: "stylesheet", href: finalDetailRefinementCss }, { rel: "stylesheet", href: motionPersonalityCss }, { rel: "stylesheet", href: semanticPersonalityRefinementCss }, { rel: "stylesheet", href: relationalDepthCss },
       { rel: "manifest", href: "/manifest.webmanifest" }, { rel: "icon", href: "/favicon.svg?v=5", type: "image/svg+xml", sizes: "any" }, { rel: "apple-touch-icon", href: "/apple-touch-icon.png", sizes: "180x180" },
       { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Inter:wght@400;500;600;700&family=PT+Mono&display=swap" },
     ],
