@@ -246,12 +246,189 @@
   }
 }
 
+/* Head repair — Gerenciar, Offline and Dashboard converge to the Nexus text rhythm. */
+@media (min-width: 900px) {
+  /* Dashboard keeps its signal rail but adopts the Nexus head scale and a compact hero. */
+  html body .tadeon-route-dashboard .tadeon-dashboard-hero {
+    min-height: 12rem !important;
+    padding: 1rem 1.35rem .95rem !important;
+    border-radius: .9rem .3rem .9rem .3rem !important;
+  }
+
+  html body .tadeon-route-dashboard .tadeon-dashboard-hero > .relative.z-10 {
+    align-items: center !important;
+    gap: 1.25rem !important;
+  }
+
+  html body .tadeon-route-dashboard .tadeon-dashboard-hero > .relative.z-10 > :first-child {
+    max-width: 50rem !important;
+  }
+
+  html body .tadeon-route-dashboard .tadeon-dashboard-hero .mb-5 {
+    margin-bottom: .7rem !important;
+  }
+
+  html body .tadeon-route-dashboard .tadeon-dashboard-hero .mb-5 .h-12 {
+    width: 2.9rem !important;
+    height: 2.9rem !important;
+  }
+
+  html body .tadeon-route-dashboard .tadeon-dashboard-hero h1 {
+    margin-top: .15rem !important;
+    font-size: clamp(1.65rem, 2.25vw, 2.25rem) !important;
+    line-height: 1 !important;
+    letter-spacing: -.022em !important;
+  }
+
+  html body .tadeon-route-dashboard .tadeon-dashboard-hero .tadeon-eyebrow {
+    font-size: .62rem !important;
+    line-height: 1.1 !important;
+    letter-spacing: .12em !important;
+  }
+
+  html body .tadeon-route-dashboard .tadeon-dashboard-hero .tadeon-mono {
+    font-size: .58rem !important;
+    line-height: 1.1 !important;
+  }
+
+  html body .tadeon-route-dashboard .tadeon-dashboard-hero > .relative.z-10 > :first-child > p:last-child {
+    max-width: 58ch !important;
+    margin-top: .28rem !important;
+    font-size: .76rem !important;
+    line-height: 1.4 !important;
+  }
+
+  /* Gerenciar — compact Nexus-like head with identity/content/action geometry. */
+  html body .tadeon-route-users .tadeon-page-hero {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) auto !important;
+    align-items: center !important;
+    gap: 1.25rem !important;
+    min-height: 8rem !important;
+    padding: 1rem 1.35rem !important;
+    margin-bottom: 1rem !important;
+    border: 1px solid rgb(217 215 164 / 16%) !important;
+    border-radius: .9rem .3rem .9rem .3rem !important;
+    background:
+      radial-gradient(circle at 88% -28%, rgb(183 129 77 / 12%), transparent 18rem),
+      linear-gradient(145deg, rgb(17 20 25 / 97%), rgb(8 11 15 / 96%)) !important;
+    box-shadow: 0 30px 84px -60px rgb(0 0 0 / 100%), inset 0 1px rgb(255 255 255 / 4%) !important;
+  }
+
+  html body .tadeon-route-users .tadeon-page-hero > div:first-child {
+    min-width: 0 !important;
+    max-width: 48rem !important;
+  }
+
+  html body .tadeon-route-users .tadeon-page-hero h1 {
+    margin-top: .16rem !important;
+    font-size: clamp(1.65rem, 2.25vw, 2.25rem) !important;
+    line-height: 1 !important;
+    letter-spacing: -.022em !important;
+  }
+
+  html body .tadeon-route-users .tadeon-page-hero .tadeon-eyebrow {
+    font-size: .62rem !important;
+    line-height: 1.1 !important;
+    letter-spacing: .12em !important;
+  }
+
+  html body .tadeon-route-users .tadeon-page-hero p.mt-2 {
+    margin-top: .28rem !important;
+    max-width: 58ch !important;
+    font-size: .76rem !important;
+    line-height: 1.4 !important;
+  }
+
+  html body .tadeon-route-users .tadeon-page-hero > div:last-child {
+    margin: 0 !important;
+    align-self: center !important;
+    justify-self: end !important;
+  }
+
+  /* Offline — badges form the identity rail; copy and actions retain Nexus sizing. */
+  html body .tadeon-route-offline .tadeon-page-hero {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) auto !important;
+    align-items: center !important;
+    gap: 1.25rem !important;
+    min-height: 9rem !important;
+    padding: 1rem 1.35rem !important;
+    border: 1px solid rgb(113 107 123 / 20%) !important;
+    border-radius: .9rem .3rem .9rem .3rem !important;
+    background:
+      radial-gradient(circle at 88% -28%, rgb(113 107 123 / 13%), transparent 18rem),
+      linear-gradient(145deg, rgb(17 20 25 / 97%), rgb(8 11 15 / 96%)) !important;
+    box-shadow: 0 30px 84px -60px rgb(0 0 0 / 100%), inset 0 1px rgb(255 255 255 / 4%) !important;
+  }
+
+  html body .tadeon-route-offline .tadeon-page-hero > div:first-child {
+    min-width: 0 !important;
+  }
+
+  html body .tadeon-route-offline .tadeon-page-hero > div:first-child > div:first-child {
+    margin-bottom: .55rem !important;
+    gap: .4rem !important;
+  }
+
+  html body .tadeon-route-offline .tadeon-page-hero h1 {
+    margin-top: .16rem !important;
+    font-size: clamp(1.65rem, 2.25vw, 2.25rem) !important;
+    line-height: 1 !important;
+    letter-spacing: -.022em !important;
+  }
+
+  html body .tadeon-route-offline .tadeon-page-hero p.mt-2 {
+    margin-top: .28rem !important;
+    max-width: 58ch !important;
+    font-size: .76rem !important;
+    line-height: 1.4 !important;
+  }
+
+  html body .tadeon-route-offline .tadeon-page-hero > div:last-child {
+    margin: 0 !important;
+    align-self: center !important;
+    justify-self: end !important;
+  }
+}
+
+@media (max-width: 899px) {
+  html body .tadeon-route-dashboard .tadeon-dashboard-hero,
+  html body .tadeon-route-users .tadeon-page-hero,
+  html body .tadeon-route-offline .tadeon-page-hero {
+    height: auto !important;
+    max-height: none !important;
+  }
+
+  html body .tadeon-route-users .tadeon-page-hero,
+  html body .tadeon-route-offline .tadeon-page-hero {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: .9rem !important;
+    padding: .9rem 1rem !important;
+    border-radius: .8rem .25rem .8rem .25rem !important;
+  }
+
+  html body .tadeon-route-users .tadeon-page-hero > div:last-child,
+  html body .tadeon-route-offline .tadeon-page-hero > div:last-child {
+    align-self: stretch !important;
+    justify-self: stretch !important;
+  }
+
+  html body .tadeon-route-users .tadeon-page-hero h1,
+  html body .tadeon-route-offline .tadeon-page-hero h1,
+  html body .tadeon-route-dashboard .tadeon-dashboard-hero h1 {
+    font-size: clamp(1.45rem, 7vw, 2rem) !important;
+    line-height: 1.02 !important;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .tadeon-shell[data-section="Mesa Nexus"] *,
-  .tadeon-sheet-page *,
-  .tadeon-master-workspace *,
-  .tadeon-master-workspace .tadeon-master-navigation [data-slot="tabs-trigger"] {
-    scroll-behavior: auto !important;
+  html body .tadeon-route-dashboard .tadeon-dashboard-hero *,
+  html body .tadeon-route-users .tadeon-page-hero *,
+  html body .tadeon-route-offline .tadeon-page-hero * {
     transition: none !important;
+    animation: none !important;
   }
 }
