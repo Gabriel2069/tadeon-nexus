@@ -1,0 +1,548 @@
+/* Tadeon Visible Motion — expressive final pass.
+   This layer intentionally increases motion amplitude so transitions are perceived immediately.
+   It preserves the Tadeon palette, editorial character and material feel. */
+
+:root {
+  --tadeon-visible-ease-in: cubic-bezier(.16, 1, .3, 1);
+  --tadeon-visible-ease-out: cubic-bezier(.7, 0, .84, 0);
+  --tadeon-visible-ease-standard: cubic-bezier(.2, .85, .2, 1);
+  --tadeon-visible-route: 620ms;
+  --tadeon-visible-panel: 460ms;
+  --tadeon-visible-ui: 220ms;
+  --tadeon-visible-fast: 150ms;
+}
+
+/* --------------------------------------------------------------------------
+   ROUTES — the whole page visibly travels into place.
+   -------------------------------------------------------------------------- */
+.tadeon-route-stage {
+  animation: tadeon-visible-route-in var(--tadeon-visible-route) var(--tadeon-visible-ease-in) both !important;
+  will-change: transform, opacity, filter;
+}
+
+.tadeon-route-stage > .tadeon-page > * {
+  animation-name: tadeon-visible-section-in !important;
+  animation-duration: 500ms !important;
+  animation-timing-function: var(--tadeon-visible-ease-in) !important;
+  animation-fill-mode: both !important;
+}
+
+.tadeon-route-stage > .tadeon-page > :nth-child(2) { animation-delay: 55ms !important; }
+.tadeon-route-stage > .tadeon-page > :nth-child(3) { animation-delay: 100ms !important; }
+.tadeon-route-stage > .tadeon-page > :nth-child(4) { animation-delay: 145ms !important; }
+.tadeon-route-stage > .tadeon-page > :nth-child(5) { animation-delay: 190ms !important; }
+.tadeon-route-stage > .tadeon-page > :nth-child(n+6) { animation-delay: 235ms !important; }
+
+/* --------------------------------------------------------------------------
+   SURFACES — actual depth instead of a 1px lift.
+   -------------------------------------------------------------------------- */
+@media (hover: hover) and (pointer: fine) {
+  .tadeon-shell .tadeon-surface[data-tadeon-interactive="true"],
+  .tadeon-shell .tadeon-sheet-card,
+  .tadeon-shell .tadeon-dashboard-signal,
+  .tadeon-shell .tadeon-state-panel,
+  .tadeon-shell .tadeon-link-panel {
+    transition:
+      transform var(--tadeon-visible-ui) var(--tadeon-visible-ease-standard),
+      border-color var(--tadeon-visible-ui) ease,
+      box-shadow 340ms var(--tadeon-visible-ease-standard),
+      filter var(--tadeon-visible-ui) ease !important;
+  }
+
+  .tadeon-shell .tadeon-surface[data-tadeon-interactive="true"]:hover,
+  .tadeon-shell .tadeon-sheet-card:hover,
+  .tadeon-shell .tadeon-dashboard-signal:hover,
+  .tadeon-shell .tadeon-state-panel:hover,
+  .tadeon-shell .tadeon-link-panel:hover {
+    transform: translate3d(0, -7px, 0) scale(1.012) !important;
+    filter: saturate(1.06) brightness(1.025) !important;
+    box-shadow:
+      0 34px 90px -44px rgb(0 0 0 / 98%),
+      0 10px 34px -28px rgb(217 215 164 / 20%),
+      inset 0 1px 0 rgb(255 255 255 / 7%) !important;
+  }
+
+  .tadeon-shell .tadeon-surface[data-tadeon-interactive="true"]:active,
+  .tadeon-shell .tadeon-sheet-card:active,
+  .tadeon-shell .tadeon-dashboard-signal:active,
+  .tadeon-shell .tadeon-state-panel:active,
+  .tadeon-shell .tadeon-link-panel:active {
+    transform: translate3d(0, 2px, 0) scale(.978) !important;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   BUTTONS / LINKS — obvious physical press and return.
+   -------------------------------------------------------------------------- */
+.tadeon-shell button:not(:disabled),
+.tadeon-shell [role="button"],
+.tadeon-shell a[href] {
+  transition:
+    transform var(--tadeon-visible-fast) var(--tadeon-visible-ease-standard),
+    box-shadow 220ms var(--tadeon-visible-ease-standard),
+    background-color 180ms ease,
+    border-color 180ms ease,
+    color 180ms ease !important;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .tadeon-shell button:not(:disabled):hover,
+  .tadeon-shell [role="button"]:hover,
+  .tadeon-shell a[href]:hover {
+    transform: translate3d(0, -3px, 0) scale(1.015) !important;
+  }
+}
+
+.tadeon-shell button:not(:disabled):active,
+.tadeon-shell [role="button"]:active,
+.tadeon-shell a[href]:active {
+  animation: tadeon-visible-press 180ms var(--tadeon-visible-ease-standard) both !important;
+}
+
+.tadeon-shell button :where(svg.lucide),
+.tadeon-shell [role="button"] :where(svg.lucide),
+.tadeon-shell a[href] :where(svg.lucide) {
+  transition: transform 260ms var(--tadeon-visible-ease-in), filter 260ms ease !important;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .tadeon-shell button:hover :where(svg.lucide),
+  .tadeon-shell [role="button"]:hover :where(svg.lucide),
+  .tadeon-shell a[href]:hover :where(svg.lucide) {
+    transform: translate3d(0, -2px, 0) scale(1.09) rotate(-2deg) !important;
+    filter: drop-shadow(0 7px 16px rgb(217 215 164 / 22%)) !important;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   TABS — the active marker visibly travels and content lifts in.
+   -------------------------------------------------------------------------- */
+.tadeon-shell [data-slot="tabs-trigger"] {
+  transition:
+    transform var(--tadeon-visible-fast) var(--tadeon-visible-ease-standard),
+    color 180ms ease,
+    background-color 220ms ease,
+    border-color 220ms ease,
+    box-shadow 260ms var(--tadeon-visible-ease-standard) !important;
+}
+
+.tadeon-shell [data-slot="tabs-trigger"][data-state="active"] {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 14px 30px -26px rgb(217 215 164 / 44%) !important;
+}
+
+.tadeon-shell [data-slot="tabs-trigger"]::after {
+  height: 2px !important;
+  transform-origin: center !important;
+  transition: transform 420ms var(--tadeon-visible-ease-in), opacity 220ms ease !important;
+}
+
+.tadeon-shell [data-slot="tabs-trigger"][data-state="active"]::after {
+  transform: scaleX(1) !important;
+  opacity: .9 !important;
+  animation: tadeon-visible-tab-marker 420ms var(--tadeon-visible-ease-in) both !important;
+}
+
+.tadeon-shell [data-slot="tabs-content"][data-state="active"] {
+  animation: tadeon-visible-tab-content 470ms var(--tadeon-visible-ease-in) both !important;
+}
+
+/* --------------------------------------------------------------------------
+   ACCORDION / COLLAPSIBLE — visible physical expansion.
+   -------------------------------------------------------------------------- */
+.tadeon-shell [data-slot="accordion-content"][data-state="open"],
+.tadeon-shell [data-slot="collapsible-content"][data-state="open"] {
+  animation: tadeon-visible-expand-in 420ms var(--tadeon-visible-ease-in) both !important;
+}
+
+.tadeon-shell [data-slot="accordion-content"][data-state="closed"],
+.tadeon-shell [data-slot="collapsible-content"][data-state="closed"] {
+  animation: tadeon-visible-expand-out 230ms var(--tadeon-visible-ease-out) both !important;
+}
+
+.tadeon-shell [data-slot="accordion-trigger"] :where(svg.lucide),
+.tadeon-shell [data-slot="collapsible-trigger"] :where(svg.lucide) {
+  transition: transform 320ms var(--tadeon-visible-ease-in) !important;
+}
+
+.tadeon-shell [data-state="open"] > [data-slot="accordion-trigger"] :where(svg.lucide),
+.tadeon-shell [data-state="open"] > [data-slot="collapsible-trigger"] :where(svg.lucide) {
+  transform: rotate(180deg) scale(1.12) !important;
+}
+
+/* --------------------------------------------------------------------------
+   DIALOGS — larger travel, scale, blur, and content cascade.
+   -------------------------------------------------------------------------- */
+.tadeon-shell [data-slot="dialog-overlay"],
+.tadeon-shell [data-slot="sheet-overlay"] {
+  transition:
+    opacity 420ms var(--tadeon-visible-ease-in),
+    backdrop-filter 520ms var(--tadeon-visible-ease-in) !important;
+}
+
+.tadeon-shell [data-slot="dialog-content"][data-state="open"] {
+  animation: tadeon-visible-dialog-in 560ms var(--tadeon-visible-ease-in) both !important;
+  transform-origin: 50% 45% !important;
+}
+
+.tadeon-shell [data-slot="dialog-content"][data-state="closed"] {
+  animation: tadeon-visible-dialog-out 240ms var(--tadeon-visible-ease-out) both !important;
+}
+
+.tadeon-shell [data-slot="dialog-content"][data-state="open"] > * {
+  animation: tadeon-visible-dialog-child 420ms var(--tadeon-visible-ease-in) both !important;
+}
+
+.tadeon-shell [data-slot="dialog-content"][data-state="open"] > :nth-child(2) { animation-delay: 45ms !important; }
+.tadeon-shell [data-slot="dialog-content"][data-state="open"] > :nth-child(3) { animation-delay: 90ms !important; }
+.tadeon-shell [data-slot="dialog-content"][data-state="open"] > :nth-child(4) { animation-delay: 135ms !important; }
+.tadeon-shell [data-slot="dialog-content"][data-state="open"] > :nth-child(5) { animation-delay: 180ms !important; }
+
+/* --------------------------------------------------------------------------
+   SHEETS — distinct physical motion by edge.
+   -------------------------------------------------------------------------- */
+.tadeon-shell [data-slot="sheet-content"][data-state="open"][data-side="right"] {
+  animation: tadeon-visible-sheet-right-in 560ms var(--tadeon-visible-ease-in) both !important;
+}
+.tadeon-shell [data-slot="sheet-content"][data-state="closed"][data-side="right"] {
+  animation: tadeon-visible-sheet-right-out 260ms var(--tadeon-visible-ease-out) both !important;
+}
+.tadeon-shell [data-slot="sheet-content"][data-state="open"][data-side="left"] {
+  animation: tadeon-visible-sheet-left-in 560ms var(--tadeon-visible-ease-in) both !important;
+}
+.tadeon-shell [data-slot="sheet-content"][data-state="closed"][data-side="left"] {
+  animation: tadeon-visible-sheet-left-out 260ms var(--tadeon-visible-ease-out) both !important;
+}
+.tadeon-shell [data-slot="sheet-content"][data-state="open"][data-side="bottom"] {
+  animation: tadeon-visible-sheet-bottom-in 540ms var(--tadeon-visible-ease-in) both !important;
+}
+.tadeon-shell [data-slot="sheet-content"][data-state="closed"][data-side="bottom"] {
+  animation: tadeon-visible-sheet-bottom-out 260ms var(--tadeon-visible-ease-out) both !important;
+}
+
+.tadeon-shell [data-slot="sheet-content"][data-state="open"] > * {
+  animation: tadeon-visible-sheet-child 420ms var(--tadeon-visible-ease-in) both !important;
+}
+.tadeon-shell [data-slot="sheet-content"][data-state="open"] > :nth-child(2) { animation-delay: 45ms !important; }
+.tadeon-shell [data-slot="sheet-content"][data-state="open"] > :nth-child(3) { animation-delay: 90ms !important; }
+.tadeon-shell [data-slot="sheet-content"][data-state="open"] > :nth-child(4) { animation-delay: 135ms !important; }
+
+/* --------------------------------------------------------------------------
+   POPOVERS / MENUS — grow from trigger instead of simply fading.
+   -------------------------------------------------------------------------- */
+.tadeon-shell [data-slot="popover-content"][data-state="open"],
+.tadeon-shell [data-slot="dropdown-menu-content"][data-state="open"],
+.tadeon-shell [data-slot="dropdown-menu-sub-content"][data-state="open"] {
+  animation: tadeon-visible-popover-in 300ms var(--tadeon-visible-ease-in) both !important;
+  transform-origin: var(--radix-popover-content-transform-origin, var(--radix-dropdown-menu-content-transform-origin, 50% 0%)) !important;
+}
+
+.tadeon-shell [data-slot="popover-content"][data-state="closed"],
+.tadeon-shell [data-slot="dropdown-menu-content"][data-state="closed"],
+.tadeon-shell [data-slot="dropdown-menu-sub-content"][data-state="closed"] {
+  animation: tadeon-visible-popover-out 170ms var(--tadeon-visible-ease-out) both !important;
+}
+
+.tadeon-shell [data-slot="dropdown-menu-content"][data-state="open"] > *,
+.tadeon-shell [data-slot="dropdown-menu-sub-content"][data-state="open"] > * {
+  animation: tadeon-visible-menu-item 240ms var(--tadeon-visible-ease-in) both !important;
+}
+.tadeon-shell [data-slot="dropdown-menu-content"][data-state="open"] > :nth-child(2),
+.tadeon-shell [data-slot="dropdown-menu-sub-content"][data-state="open"] > :nth-child(2) { animation-delay: 25ms !important; }
+.tadeon-shell [data-slot="dropdown-menu-content"][data-state="open"] > :nth-child(3),
+.tadeon-shell [data-slot="dropdown-menu-sub-content"][data-state="open"] > :nth-child(3) { animation-delay: 50ms !important; }
+.tadeon-shell [data-slot="dropdown-menu-content"][data-state="open"] > :nth-child(4),
+.tadeon-shell [data-slot="dropdown-menu-sub-content"][data-state="open"] > :nth-child(4) { animation-delay: 75ms !important; }
+.tadeon-shell [data-slot="dropdown-menu-content"][data-state="open"] > :nth-child(5),
+.tadeon-shell [data-slot="dropdown-menu-sub-content"][data-state="open"] > :nth-child(5) { animation-delay: 100ms !important; }
+
+/* --------------------------------------------------------------------------
+   NAVIGATION — clear movement on active state.
+   -------------------------------------------------------------------------- */
+.tadeon-primary-nav .tadeon-nav-item,
+.tadeon-mobile-dock__item,
+.tadeon-mobile-header__control {
+  transition:
+    transform 200ms var(--tadeon-visible-ease-standard),
+    color 180ms ease,
+    background-color 220ms ease,
+    border-color 220ms ease,
+    box-shadow 280ms var(--tadeon-visible-ease-standard) !important;
+}
+
+.tadeon-primary-nav .tadeon-nav-item[aria-current="page"],
+.tadeon-mobile-dock__item[aria-current="page"] {
+  animation: tadeon-visible-nav-arrive 430ms var(--tadeon-visible-ease-in) both !important;
+}
+
+.tadeon-primary-nav .tadeon-nav-item[aria-current="page"]::after,
+.tadeon-mobile-dock__item[aria-current="page"]::after {
+  animation: tadeon-visible-nav-marker 500ms var(--tadeon-visible-ease-in) both !important;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .tadeon-primary-nav .tadeon-nav-item:hover,
+  .tadeon-mobile-dock__item:hover,
+  .tadeon-mobile-header__control:hover {
+    transform: translate3d(0, -3px, 0) scale(1.02) !important;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   NEXUS / TABLETOP — selections become visually acquired.
+   -------------------------------------------------------------------------- */
+.tadeon-shell [data-tadeon-node][data-selected="true"],
+.tadeon-shell [data-tadeon-map-element][data-selected="true"] {
+  animation: tadeon-visible-selection 620ms var(--tadeon-visible-ease-in) both !important;
+  transform-origin: center !important;
+}
+
+.tadeon-shell [data-tadeon-node][data-related="false"],
+.tadeon-shell [data-tadeon-map-element][data-related="false"] {
+  opacity: .28 !important;
+  filter: saturate(.72) blur(.4px) !important;
+  transition: opacity 360ms ease, filter 360ms ease !important;
+}
+
+.tadeon-shell [data-tadeon-node][data-related="true"],
+.tadeon-shell [data-tadeon-map-element][data-related="true"] {
+  opacity: .94 !important;
+  transition: transform 360ms var(--tadeon-visible-ease-in), opacity 360ms ease, filter 360ms ease !important;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .tadeon-shell [data-tadeon-node][data-related="true"]:hover,
+  .tadeon-shell [data-tadeon-map-element][data-related="true"]:hover {
+    transform: translateY(-4px) scale(1.045) !important;
+    filter: drop-shadow(0 12px 26px rgb(217 215 164 / 18%)) !important;
+  }
+}
+
+.tadeon-shell[data-section="Mesa Nexus"] [data-tabletop-action]:active,
+.tadeon-shell[data-section="Mesa Nexus"] [data-tabletop-tool]:active {
+  transform: translateY(3px) scale(.94) !important;
+}
+
+/* --------------------------------------------------------------------------
+   ATMOSPHERE — intentional slow movement.
+   -------------------------------------------------------------------------- */
+.tadeon-shell .tadeon-atmosphere,
+.tadeon-shell .tadeon-atmosphere-layer,
+.tadeon-shell [data-tadeon-atmosphere] {
+  animation: tadeon-visible-atmosphere 16s ease-in-out infinite alternate !important;
+}
+
+.tadeon-shell .tadeon-orbit,
+.tadeon-shell [data-tadeon-orbit] {
+  animation: tadeon-visible-orbit 24s linear infinite !important;
+}
+
+.tadeon-shell .tadeon-grain,
+.tadeon-shell [data-tadeon-grain] {
+  animation: tadeon-visible-grain 6s steps(3,end) infinite !important;
+}
+
+.tadeon-shell .tadeon-thread-field,
+.tadeon-shell [data-tadeon-atmosphere-line] {
+  animation: tadeon-visible-thread 7s ease-in-out infinite alternate !important;
+}
+
+/* --------------------------------------------------------------------------
+   KEYFRAMES
+   -------------------------------------------------------------------------- */
+@keyframes tadeon-visible-route-in {
+  0% { opacity: 0; transform: translate3d(0, 28px, 0) scale(.985); filter: blur(9px); }
+  68% { opacity: 1; transform: translate3d(0, -3px, 0) scale(1.004); filter: blur(0); }
+  100% { opacity: 1; transform: none; filter: none; }
+}
+
+@keyframes tadeon-visible-section-in {
+  0% { opacity: 0; transform: translate3d(0, 24px, 0) scale(.975); filter: blur(7px); }
+  68% { opacity: 1; transform: translate3d(0, -2px, 0) scale(1.008); filter: blur(0); }
+  100% { opacity: 1; transform: none; filter: none; }
+}
+
+@keyframes tadeon-visible-press {
+  0% { transform: scale(1); }
+  45% { transform: translateY(2px) scale(.93); }
+  100% { transform: scale(.975); }
+}
+
+@keyframes tadeon-visible-tab-marker {
+  0% { transform: scaleX(.08); opacity: 0; }
+  55% { transform: scaleX(1.12); opacity: 1; }
+  100% { transform: scaleX(1); opacity: .9; }
+}
+
+@keyframes tadeon-visible-tab-content {
+  0% { opacity: 0; transform: translate3d(0, 22px, 0) scale(.98); filter: blur(6px); }
+  70% { opacity: 1; transform: translate3d(0, -2px, 0) scale(1.006); filter: blur(0); }
+  100% { opacity: 1; transform: none; }
+}
+
+@keyframes tadeon-visible-expand-in {
+  0% { opacity: 0; transform: translateY(-18px) scaleY(.92); filter: blur(5px); }
+  100% { opacity: 1; transform: none; filter: blur(0); }
+}
+
+@keyframes tadeon-visible-expand-out {
+  0% { opacity: 1; transform: none; filter: blur(0); }
+  100% { opacity: 0; transform: translateY(-10px) scaleY(.92); filter: blur(4px); }
+}
+
+@keyframes tadeon-visible-dialog-in {
+  0% { opacity: 0; transform: translate3d(0, 34px, 0) scale(.91) rotateX(4deg); filter: blur(11px); }
+  58% { opacity: 1; transform: translate3d(0, -5px, 0) scale(1.018) rotateX(0); filter: blur(0); }
+  82% { transform: translate3d(0, 1px, 0) scale(.998); }
+  100% { opacity: 1; transform: none; }
+}
+
+@keyframes tadeon-visible-dialog-out {
+  0% { opacity: 1; transform: none; filter: blur(0); }
+  100% { opacity: 0; transform: translate3d(0, 22px, 0) scale(.94) rotateX(-2deg); filter: blur(7px); }
+}
+
+@keyframes tadeon-visible-dialog-child {
+  0% { opacity: 0; transform: translateY(18px); }
+  100% { opacity: 1; transform: none; }
+}
+
+@keyframes tadeon-visible-sheet-right-in {
+  0% { opacity: .45; transform: translate3d(110%, 0, 0); filter: blur(8px); }
+  70% { opacity: 1; transform: translate3d(-12px, 0, 0); filter: blur(0); }
+  100% { opacity: 1; transform: none; }
+}
+
+@keyframes tadeon-visible-sheet-right-out {
+  0% { opacity: 1; transform: none; }
+  100% { opacity: 0; transform: translate3d(105%, 0, 0); filter: blur(7px); }
+}
+
+@keyframes tadeon-visible-sheet-left-in {
+  0% { opacity: .45; transform: translate3d(-110%, 0, 0); filter: blur(8px); }
+  70% { opacity: 1; transform: translate3d(12px, 0, 0); filter: blur(0); }
+  100% { opacity: 1; transform: none; }
+}
+
+@keyframes tadeon-visible-sheet-left-out {
+  0% { opacity: 1; transform: none; }
+  100% { opacity: 0; transform: translate3d(-105%, 0, 0); filter: blur(7px); }
+}
+
+@keyframes tadeon-visible-sheet-bottom-in {
+  0% { opacity: .45; transform: translate3d(0, 110%, 0); filter: blur(8px); }
+  70% { opacity: 1; transform: translate3d(0, -12px, 0); filter: blur(0); }
+  100% { opacity: 1; transform: none; }
+}
+
+@keyframes tadeon-visible-sheet-bottom-out {
+  0% { opacity: 1; transform: none; }
+  100% { opacity: 0; transform: translate3d(0, 105%, 0); filter: blur(7px); }
+}
+
+@keyframes tadeon-visible-sheet-child {
+  0% { opacity: 0; transform: translate3d(24px, 0, 0); }
+  100% { opacity: 1; transform: none; }
+}
+
+@keyframes tadeon-visible-popover-in {
+  0% { opacity: 0; transform: translateY(16px) scale(.88); filter: blur(7px); }
+  65% { opacity: 1; transform: translateY(-3px) scale(1.025); filter: blur(0); }
+  100% { opacity: 1; transform: none; }
+}
+
+@keyframes tadeon-visible-popover-out {
+  0% { opacity: 1; transform: none; }
+  100% { opacity: 0; transform: translateY(10px) scale(.92); filter: blur(5px); }
+}
+
+@keyframes tadeon-visible-menu-item {
+  0% { opacity: 0; transform: translate3d(-14px, 0, 0) scale(.97); }
+  100% { opacity: 1; transform: none; }
+}
+
+@keyframes tadeon-visible-nav-arrive {
+  0% { opacity: .35; transform: translate3d(-10px, 0, 0) scale(.96); }
+  65% { opacity: 1; transform: translate3d(3px, 0, 0) scale(1.025); }
+  100% { opacity: 1; transform: none; }
+}
+
+@keyframes tadeon-visible-nav-marker {
+  0% { transform: scaleY(.15); opacity: 0; }
+  65% { transform: scaleY(1.22); opacity: 1; }
+  100% { transform: scaleY(1); opacity: .9; }
+}
+
+@keyframes tadeon-visible-selection {
+  0% { opacity: .45; transform: scale(.78); filter: drop-shadow(0 0 0 rgb(217 215 164 / 0)); }
+  58% { opacity: 1; transform: scale(1.12); filter: drop-shadow(0 16px 34px rgb(217 215 164 / 30%)); }
+  78% { transform: scale(.985); }
+  100% { opacity: 1; transform: scale(1); filter: drop-shadow(0 10px 24px rgb(217 215 164 / 16%)); }
+}
+
+@keyframes tadeon-visible-atmosphere {
+  from { transform: translate3d(-3%, -2%, 0) scale(1); }
+  to { transform: translate3d(4%, 3%, 0) scale(1.075); }
+}
+
+@keyframes tadeon-visible-orbit {
+  from { transform: rotate(-10deg) translate3d(0, 0, 0); }
+  to { transform: rotate(350deg) translate3d(-18px, 12px, 0); }
+}
+
+@keyframes tadeon-visible-grain {
+  0% { transform: translate3d(0, 0, 0); opacity: .26; }
+  33% { transform: translate3d(-7px, 4px, 0); opacity: .34; }
+  66% { transform: translate3d(5px, -5px, 0); opacity: .24; }
+  100% { transform: translate3d(-3px, 3px, 0); opacity: .31; }
+}
+
+@keyframes tadeon-visible-thread {
+  from { transform: translate3d(-1.2%, -.8%, 0) rotate(-.4deg); opacity: .55; }
+  to { transform: translate3d(1.5%, 1%, 0) rotate(.4deg); opacity: 1; }
+}
+
+/* Accessibility: retain state changes, remove motion. */
+@media (prefers-reduced-motion: reduce) {
+  .tadeon-route-stage,
+  .tadeon-route-stage > .tadeon-page > *,
+  .tadeon-shell [data-slot="tabs-content"][data-state="active"],
+  .tadeon-shell [data-slot="accordion-content"],
+  .tadeon-shell [data-slot="collapsible-content"],
+  .tadeon-shell [data-slot="dialog-content"],
+  .tadeon-shell [data-slot="dialog-content"] > *,
+  .tadeon-shell [data-slot="sheet-content"],
+  .tadeon-shell [data-slot="sheet-content"] > *,
+  .tadeon-shell [data-slot="popover-content"],
+  .tadeon-shell [data-slot="dropdown-menu-content"],
+  .tadeon-shell [data-slot="dropdown-menu-sub-content"],
+  .tadeon-shell [data-slot="dropdown-menu-content"] > *,
+  .tadeon-shell [data-slot="dropdown-menu-sub-content"] > *,
+  .tadeon-primary-nav .tadeon-nav-item[aria-current="page"],
+  .tadeon-mobile-dock__item[aria-current="page"],
+  .tadeon-shell [data-tadeon-node][data-selected="true"],
+  .tadeon-shell [data-tadeon-map-element][data-selected="true"],
+  .tadeon-shell .tadeon-atmosphere,
+  .tadeon-shell .tadeon-atmosphere-layer,
+  .tadeon-shell [data-tadeon-atmosphere],
+  .tadeon-shell .tadeon-orbit,
+  .tadeon-shell [data-tadeon-orbit],
+  .tadeon-shell .tadeon-grain,
+  .tadeon-shell [data-tadeon-grain],
+  .tadeon-shell .tadeon-thread-field,
+  .tadeon-shell [data-tadeon-atmosphere-line] {
+    animation: none !important;
+  }
+
+  .tadeon-shell button:not(:disabled),
+  .tadeon-shell [role="button"],
+  .tadeon-shell a[href],
+  .tadeon-shell .tadeon-surface,
+  .tadeon-shell .tadeon-sheet-card,
+  .tadeon-shell .tadeon-dashboard-signal,
+  .tadeon-shell .tadeon-state-panel,
+  .tadeon-shell .tadeon-link-panel,
+  .tadeon-shell [data-slot="tabs-trigger"] {
+    transition: none !important;
+  }
+}
