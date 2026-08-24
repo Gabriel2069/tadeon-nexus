@@ -9,7 +9,6 @@
   --tadeon-motion-slow: 680ms;
 }
 
-/* Heads: reveal their existing content without changing geometry. */
 .tadeon-page-hero,
 .tadeon-dashboard-hero,
 .tadeon-master-commandbar,
@@ -28,124 +27,128 @@
   animation: tadeon-head-reveal 620ms var(--tadeon-motion-reveal) both;
 }
 
-.tadeon-page-hero > :nth-child(2),
-.tadeon-dashboard-hero > :nth-child(2),
-.tadeon-master-commandbar > :nth-child(2),
-.tadeon-tabletop-studio__header > :nth-child(2),
-.tadeon-auth-hero > :nth-child(2) {
-  animation-delay: 55ms;
-}
+.tadeon-page-hero > :nth-child(2), .tadeon-dashboard-hero > :nth-child(2), .tadeon-master-commandbar > :nth-child(2), .tadeon-tabletop-studio__header > :nth-child(2), .tadeon-auth-hero > :nth-child(2) { animation-delay: 55ms; }
+.tadeon-page-hero > :nth-child(3), .tadeon-dashboard-hero > :nth-child(3), .tadeon-master-commandbar > :nth-child(3), .tadeon-tabletop-studio__header > :nth-child(3), .tadeon-auth-hero > :nth-child(3) { animation-delay: 105ms; }
 
-.tadeon-page-hero > :nth-child(3),
-.tadeon-dashboard-hero > :nth-child(3),
-.tadeon-master-commandbar > :nth-child(3),
-.tadeon-tabletop-studio__header > :nth-child(3),
-.tadeon-auth-hero > :nth-child(3) {
-  animation-delay: 105ms;
-}
-
-/* Navigation: mark the current place like a page in a tome. */
 .tadeon-primary-nav .tadeon-nav-item,
 .tadeon-mobile-dock__item,
 .tadeon-mobile-header__control {
-  transition: transform var(--tadeon-motion-fast) var(--tadeon-motion-material),
-    color var(--tadeon-motion-fast) ease,
-    background-color var(--tadeon-motion-fast) ease,
-    border-color var(--tadeon-motion-fast) ease,
+  transition: transform var(--tadeon-motion-fast) var(--tadeon-motion-material), color var(--tadeon-motion-fast) ease,
+    background-color var(--tadeon-motion-fast) ease, border-color var(--tadeon-motion-fast) ease,
     box-shadow var(--tadeon-motion-base) var(--tadeon-motion-material);
 }
 
 @media (hover: hover) and (pointer: fine) {
   .tadeon-primary-nav .tadeon-nav-item:hover,
   .tadeon-mobile-dock__item:hover,
-  .tadeon-mobile-header__control:hover {
-    transform: translateY(-1px);
-  }
+  .tadeon-mobile-header__control:hover { transform: translateY(-1px); }
 }
 
 .tadeon-primary-nav .tadeon-nav-item:active,
 .tadeon-mobile-dock__item:active,
-.tadeon-mobile-header__control:active {
-  transform: translateY(1px) scale(.985);
+.tadeon-mobile-header__control:active { transform: translateY(1px) scale(.985); }
+
+.tadeon-primary-nav .tadeon-nav-item[aria-current="page"],
+.tadeon-mobile-dock__item[aria-current="page"] {
+  position: relative;
 }
 
-/* Surfaces: material response, never generic neon hover. */
+.tadeon-primary-nav .tadeon-nav-item[aria-current="page"]::after,
+.tadeon-mobile-dock__item[aria-current="page"]::after {
+  content: "";
+  position: absolute;
+  inset-inline: 18%;
+  bottom: 3px;
+  height: 1px;
+  background: currentColor;
+  transform: scaleX(.35);
+  opacity: .35;
+  transition: transform 340ms var(--tadeon-motion-material), opacity 220ms ease;
+}
+
+.tadeon-primary-nav .tadeon-nav-item[aria-current="page"]:hover::after,
+.tadeon-mobile-dock__item[aria-current="page"]:hover::after {
+  transform: scaleX(1);
+  opacity: .8;
+}
+
 .tadeon-surface,
 .tadeon-state-panel,
 .tadeon-sheet-card,
 .tadeon-user-row {
-  transition: transform var(--tadeon-motion-base) var(--tadeon-motion-material),
-    border-color var(--tadeon-motion-base) var(--tadeon-motion-material),
-    box-shadow var(--tadeon-motion-base) var(--tadeon-motion-material),
-    background-position var(--tadeon-motion-slow) var(--tadeon-motion-soft);
+  transition: transform var(--tadeon-motion-base) var(--tadeon-motion-material), border-color var(--tadeon-motion-base) var(--tadeon-motion-material),
+    box-shadow var(--tadeon-motion-base) var(--tadeon-motion-material), background-position var(--tadeon-motion-slow) var(--tadeon-motion-soft);
 }
 
 @media (hover: hover) and (pointer: fine) {
   .tadeon-surface[data-tadeon-interactive="true"]:hover,
   .tadeon-sheet-card:hover,
-  .tadeon-user-row:hover {
-    transform: translateY(-2px);
-  }
+  .tadeon-user-row:hover { transform: translateY(-2px); }
 }
 
-/* Buttons and controls: pressure + release. */
 .tadeon-shell button,
 .tadeon-shell [role="button"] {
-  transition: transform var(--tadeon-motion-fast) var(--tadeon-motion-material),
-    box-shadow var(--tadeon-motion-fast) var(--tadeon-motion-material),
-    border-color var(--tadeon-motion-fast) ease,
-    background-color var(--tadeon-motion-fast) ease;
+  transition: transform var(--tadeon-motion-fast) var(--tadeon-motion-material), box-shadow var(--tadeon-motion-fast) var(--tadeon-motion-material),
+    border-color var(--tadeon-motion-fast) ease, background-color var(--tadeon-motion-fast) ease;
 }
 
 .tadeon-shell button:active,
-.tadeon-shell [role="button"]:active {
-  transform: translateY(1px) scale(.985);
+.tadeon-shell [role="button"]:active { transform: translateY(1px) scale(.985); }
+
+.tadeon-shell input:focus-visible,
+.tadeon-shell textarea:focus-visible,
+.tadeon-shell [data-slot="select-trigger"]:focus-visible {
+  transition: box-shadow 260ms var(--tadeon-motion-material), border-color 180ms ease;
+  box-shadow: 0 0 0 1px rgb(217 215 164 / 18%), 0 12px 34px -26px rgb(217 215 164 / 24%);
 }
 
-/* Content blocks reveal with a short editorial cascade. */
 .tadeon-page > section,
 .tadeon-page > article,
 .tadeon-route-stage > .tadeon-page:not(.tadeon-page-hero) > * {
   animation: tadeon-content-reveal 560ms var(--tadeon-motion-reveal) both;
 }
 
-.tadeon-page > section:nth-child(2),
-.tadeon-page > article:nth-child(2) { animation-delay: 55ms; }
-.tadeon-page > section:nth-child(3),
-.tadeon-page > article:nth-child(3) { animation-delay: 95ms; }
-.tadeon-page > section:nth-child(4),
-.tadeon-page > article:nth-child(4) { animation-delay: 135ms; }
+.tadeon-page > section:nth-child(2), .tadeon-page > article:nth-child(2) { animation-delay: 55ms; }
+.tadeon-page > section:nth-child(3), .tadeon-page > article:nth-child(3) { animation-delay: 95ms; }
+.tadeon-page > section:nth-child(4), .tadeon-page > article:nth-child(4) { animation-delay: 135ms; }
 
-/* Tabs, dialogs and popovers unfold instead of appearing abruptly. */
 .tadeon-shell [role="dialog"],
 .tadeon-shell [data-radix-popper-content-wrapper] > * {
   animation: tadeon-unfold 360ms var(--tadeon-motion-reveal) both;
   transform-origin: var(--radix-popper-transform-origin, 50% 20%);
 }
 
-.tadeon-shell [data-state="closed"][role="dialog"] {
-  animation: none;
-}
+.tadeon-shell [data-state="closed"][role="dialog"] { animation: none; }
 
-/* Loading / presence: quiet pulse, not a spinner wall. */
 .tadeon-save-status[data-state="saving"],
-[data-tadeon-feedback="saving"] {
-  animation: tadeon-writing-pulse 1.8s ease-in-out infinite;
-}
+[data-tadeon-feedback="saving"] { animation: tadeon-writing-pulse 1.8s ease-in-out infinite; }
 
-/* Graph/map interaction. */
 .tadeon-shell [data-tadeon-node],
 .tadeon-shell [data-tadeon-map-element] {
-  transition: transform 280ms var(--tadeon-motion-material),
-    opacity 280ms var(--tadeon-motion-soft),
-    filter 320ms var(--tadeon-motion-material);
+  transition: transform 280ms var(--tadeon-motion-material), opacity 280ms var(--tadeon-motion-soft), filter 320ms var(--tadeon-motion-material);
 }
 
 @media (hover: hover) and (pointer: fine) {
   .tadeon-shell [data-tadeon-node]:hover,
-  .tadeon-shell [data-tadeon-map-element]:hover {
-    transform: translateY(-2px) scale(1.015);
-  }
+  .tadeon-shell [data-tadeon-map-element]:hover { transform: translateY(-2px) scale(1.015); }
+}
+
+/* Lists and narrative blocks get a stagger only when the DOM already groups them. */
+.tadeon-shell [data-tadeon-stagger] > * {
+  animation: tadeon-content-reveal 480ms var(--tadeon-motion-reveal) both;
+}
+.tadeon-shell [data-tadeon-stagger] > :nth-child(1) { animation-delay: 0ms; }
+.tadeon-shell [data-tadeon-stagger] > :nth-child(2) { animation-delay: 35ms; }
+.tadeon-shell [data-tadeon-stagger] > :nth-child(3) { animation-delay: 70ms; }
+.tadeon-shell [data-tadeon-stagger] > :nth-child(4) { animation-delay: 105ms; }
+.tadeon-shell [data-tadeon-stagger] > :nth-child(5) { animation-delay: 140ms; }
+.tadeon-shell [data-tadeon-stagger] > :nth-child(n+6) { animation-delay: 175ms; }
+
+/* Quiet ambient motion on existing decorative lines, never geometry. */
+.tadeon-shell .tadeon-thread-field,
+.tadeon-shell [data-tadeon-atmosphere-line] {
+  animation: tadeon-line-drift 9s ease-in-out infinite alternate;
+  transform-origin: center;
 }
 
 @keyframes tadeon-head-reveal {
@@ -169,28 +172,21 @@
   50% { opacity: 1; }
 }
 
+@keyframes tadeon-line-drift {
+  from { transform: translate3d(-.25%, -.15%, 0) rotate(-.15deg); opacity: .72; }
+  to { transform: translate3d(.25%, .15%, 0) rotate(.15deg); opacity: 1; }
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .tadeon-page-hero > *,
-  .tadeon-dashboard-hero > *,
-  .tadeon-master-commandbar > *,
-  .tadeon-tabletop-studio__header > *,
-  .tadeon-auth-hero > *,
-  .tadeon-page > section,
-  .tadeon-page > article,
-  .tadeon-shell [role="dialog"],
-  .tadeon-shell [data-radix-popper-content-wrapper] > * {
+  .tadeon-page-hero > *, .tadeon-dashboard-hero > *, .tadeon-master-commandbar > *, .tadeon-tabletop-studio__header > *, .tadeon-auth-hero > *,
+  .tadeon-page > section, .tadeon-page > article, .tadeon-shell [role="dialog"], .tadeon-shell [data-radix-popper-content-wrapper] > *,
+  .tadeon-shell [data-tadeon-stagger] > *, .tadeon-shell .tadeon-thread-field, .tadeon-shell [data-tadeon-atmosphere-line] {
     animation: none !important;
   }
 
-  .tadeon-surface,
-  .tadeon-state-panel,
-  .tadeon-sheet-card,
-  .tadeon-user-row,
-  .tadeon-shell button,
-  .tadeon-shell [role="button"],
-  .tadeon-primary-nav .tadeon-nav-item,
-  .tadeon-mobile-dock__item,
-  .tadeon-mobile-header__control {
+  .tadeon-surface, .tadeon-state-panel, .tadeon-sheet-card, .tadeon-user-row,
+  .tadeon-shell button, .tadeon-shell [role="button"], .tadeon-primary-nav .tadeon-nav-item,
+  .tadeon-mobile-dock__item, .tadeon-mobile-header__control, .tadeon-shell [data-tadeon-node], .tadeon-shell [data-tadeon-map-element] {
     transition: none !important;
   }
 }
