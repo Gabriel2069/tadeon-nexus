@@ -34,10 +34,38 @@ function markElement(element: HTMLElement) {
   element.style.setProperty("--tadeon-index", String(getChildIndex(element)));
 }
 
+function markMaterial(element: HTMLElement) {
+  if (element.classList.contains("tadeon-dashboard-hero")) {
+    element.dataset.tadeonMaterial = "chapter";
+  } else if (element.classList.contains("tadeon-sheet-card")) {
+    element.dataset.tadeonMaterial = "relic";
+  } else if (element.classList.contains("tadeon-state-panel")) {
+    element.dataset.tadeonMaterial = "state";
+  } else if (element.classList.contains("tadeon-skill-modifier-panel")) {
+    element.dataset.tadeonMaterial = "record";
+  } else if (element.classList.contains("tadeon-link-panel")) {
+    element.dataset.tadeonMaterial = "fragment";
+  } else if (element.classList.contains("tadeon-surface")) {
+    element.dataset.tadeonMaterial = "archive";
+  }
+}
+
+function markState(element: HTMLElement) {
+  const text = (element.textContent ?? "").toLocaleLowerCase("pt-BR");
+  if (element.classList.contains("tadeon-sheet-condition-chip")) {
+    element.dataset.tadeonState = element.dataset.conditionSeverity ?? "normal";
+  }
+  if (text.includes("salvando")) element.dataset.tadeonState = "saving";
+  else if (text.includes("falha ao salvar")) element.dataset.tadeonState = "error";
+  else if (text.includes("offline")) element.dataset.tadeonState = "offline";
+  else if (text.includes("alterações pendentes")) element.dataset.tadeonState = "pending";
+  else if (text.includes("tudo salvo") || text.includes("salvo às")) element.dataset.tadeonState = "saved";
+}
+
 function getChildIndex(element: HTMLElement) {
   const parent = element.parentElement;
   if (!parent) return 0;
-  return Math.min(8, Array.from(parent.children).indexOf(element));
+  return Math.min(8, Math.max(0, Array.from(parent.children).indexOf(element)));
 }
 
 function applyPointerMotion(element: HTMLElement) {
@@ -76,11 +104,19 @@ function directRoute() {
 
   document.querySelectorAll<HTMLElement>(REVEAL).forEach((element) => {
     markElement(element);
+    markMaterial(element);
+    markState(element);
   });
 
   document.querySelectorAll<HTMLElement>(SURFACES).forEach((element) => {
     markElement(element);
+    markMaterial(element);
+    markState(element);
     applyPointerMotion(element);
+  });
+
+  document.querySelectorAll<HTMLElement>(".tadeon-sheet-condition-chip, [aria-live='polite']").forEach((element) => {
+    markState(element);
   });
 
   document.querySelectorAll<HTMLElement>(INTERACTIVE).forEach((element) => {
