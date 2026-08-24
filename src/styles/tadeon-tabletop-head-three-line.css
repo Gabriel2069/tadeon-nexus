@@ -1,59 +1,98 @@
-/* Mesa Nexus — restaura a composição compacta em três linhas do desktop header.
-   Mantém materiais/atmosfera; altera somente a estrutura tipográfica. */
+/* Mesa Nexus — composição desktop original em três faixas.
+   Faixa 1: linha principal do estúdio.
+   Faixa 2: ferramentas.
+   Faixa 3: transmissão / sessão ao vivo.
+   Mantém os materiais e a atmosfera das camadas superiores. */
 
 @media (min-width: 768px) {
-  html body .tadeon-shell[data-section="Mesa Nexus"] .tadeon-desktop-toolbar {
+  html body .tadeon-tabletop-studio__header {
+    display: block !important;
+    height: auto !important;
+    min-height: 0 !important;
+    padding: .85rem 1rem .75rem !important;
+    overflow: visible !important;
+  }
+
+  /* 1 — Linha principal */
+  html body .tadeon-tabletop-studio__header > .tadeon-tabletop-studio__primary {
+    display: flex !important;
+    width: 100% !important;
+    min-height: 3.25rem !important;
+    align-items: center !important;
+    flex-wrap: nowrap !important;
+    gap: .75rem !important;
+  }
+
+  html body .tadeon-tabletop-studio__header > .tadeon-tabletop-studio__primary > .tadeon-tabletop-studio__brand {
+    flex: 0 0 auto !important;
+    margin-right: .2rem !important;
+  }
+
+  html body .tadeon-tabletop-studio__header > .tadeon-tabletop-studio__primary > .grid {
+    flex: 0 1 28rem !important;
+    width: auto !important;
+    max-width: 28rem !important;
+  }
+
+  html body .tadeon-tabletop-studio__header .tadeon-tabletop-command-spaces {
+    flex: 0 0 auto !important;
+    margin-left: .1rem !important;
+  }
+
+  html body .tadeon-tabletop-studio__header .tadeon-tabletop-mobile-save {
+    flex: 0 0 auto !important;
+    margin-left: auto !important;
+  }
+
+  /* Mobile-only controls stay mobile-only on the desktop studio header. */
+  html body .tadeon-tabletop-studio__header .tadeon-tabletop-mobile-tools-toggle,
+  html body .tadeon-tabletop-studio__header .tadeon-tabletop-mobile-panel-toggle {
+    display: none !important;
+  }
+
+  /* 2 — Linha de ferramentas */
+  html body .tadeon-tabletop-studio__header > .tadeon-tabletop-toolbar {
+    display: flex !important;
+    width: 100% !important;
+    min-height: 2.9rem !important;
+    margin-top: .55rem !important;
+    padding: .5rem 0 .45rem !important;
+    align-items: center !important;
+    flex-wrap: nowrap !important;
+    gap: .65rem !important;
+    overflow-x: auto !important;
+    border-top: 1px solid rgb(122 129 135 / 14%) !important;
+    border-bottom: 1px solid rgb(122 129 135 / 10%) !important;
+  }
+
+  html body .tadeon-tabletop-studio__header > .tadeon-tabletop-toolbar > * {
+    flex: 0 0 auto !important;
+  }
+
+  /* 3 — Linha de transmissão */
+  html body .tadeon-tabletop-studio__header > .tadeon-live-session {
+    display: block !important;
+    width: 100% !important;
+    margin-top: .55rem !important;
+  }
+
+  html body .tadeon-tabletop-studio__header > .tadeon-live-session .tadeon-live-session__summary {
+    display: flex !important;
+    width: 100% !important;
+    min-height: 2.7rem !important;
     align-items: center !important;
   }
 
-  html body .tadeon-shell[data-section="Mesa Nexus"] .tadeon-desktop-toolbar > .min-w-0 {
-    display: grid !important;
-    grid-template-columns: 2.35rem minmax(0, 1fr) !important;
-    grid-template-rows: auto auto auto !important;
-    column-gap: .8rem !important;
-    row-gap: .05rem !important;
-    align-items: center !important;
-    min-width: 0 !important;
+  html body .tadeon-tabletop-studio__header > .tadeon-live-session .tadeon-live-session__body {
+    width: 100% !important;
+    margin-top: .35rem !important;
   }
+}
 
-  html body .tadeon-shell[data-section="Mesa Nexus"] .tadeon-desktop-toolbar > .min-w-0 > .tadeon-tabletop-focus-brand-host {
-    grid-column: 1 !important;
-    grid-row: 1 / 4 !important;
-    align-self: center !important;
-    justify-self: center !important;
-    width: 2.35rem !important;
-    height: 2.35rem !important;
-  }
-
-  html body .tadeon-shell[data-section="Mesa Nexus"] .tadeon-desktop-toolbar > .min-w-0 > .tadeon-eyebrow {
-    grid-column: 2 !important;
-    grid-row: 1 !important;
-    align-self: end !important;
-    margin: 0 !important;
-  }
-
-  html body .tadeon-shell[data-section="Mesa Nexus"] .tadeon-desktop-toolbar > .min-w-0 > div {
-    grid-column: 2 !important;
-    grid-row: 2 !important;
-    min-width: 0 !important;
-    align-self: center !important;
-  }
-
-  html body .tadeon-shell[data-section="Mesa Nexus"] .tadeon-desktop-toolbar > .min-w-0 > div > h2 {
-    margin: 0 !important;
-    font-size: clamp(1.05rem, 1.55vw, 1.28rem) !important;
-    line-height: 1.04 !important;
-    letter-spacing: -.015em !important;
-  }
-
-  html body .tadeon-shell[data-section="Mesa Nexus"] .tadeon-desktop-toolbar > .min-w-0 > div > p {
-    grid-column: 2 !important;
-    grid-row: 3 !important;
-    max-width: 52ch !important;
-    margin: .12rem 0 0 !important;
-    font-size: .69rem !important;
-    line-height: 1.2 !important;
-    letter-spacing: .015em !important;
+@media (min-width: 768px) and (max-width: 1180px) {
+  html body .tadeon-tabletop-studio__header > .tadeon-tabletop-studio__primary > .grid {
+    flex-basis: 22rem !important;
+    max-width: 22rem !important;
   }
 }
 
@@ -64,9 +103,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  html body .tadeon-shell[data-section="Mesa Nexus"] .tadeon-desktop-toolbar * {
-    animation-duration: 0.001ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.001ms !important;
+  html body .tadeon-tabletop-studio__header * {
+    scroll-behavior: auto !important;
   }
 }
