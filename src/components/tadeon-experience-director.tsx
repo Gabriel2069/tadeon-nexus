@@ -136,6 +136,113 @@ function installAtmosphericParallax(stage: HTMLElement) {
   render();
 }
 
+function ensureMasterNavigationStyle() {
+  const id = "tadeon-master-navigation-style";
+  if (document.getElementById(id)) return;
+
+  const style = document.createElement("style");
+  style.id = id;
+  style.textContent = `
+    .tadeon-master-navigation__scroller {
+      border-color: rgb(116 36 45 / 18%) !important;
+      background:
+        linear-gradient(105deg, rgb(116 36 45 / 8%), transparent 42%),
+        color-mix(in srgb, var(--card) 91%, transparent) !important;
+    }
+
+    .tadeon-master-navigation__rail {
+      scrollbar-color: rgb(116 36 45 / 34%) transparent !important;
+    }
+
+    .tadeon-master-navigation__rail::-webkit-scrollbar-thumb {
+      background: rgb(116 36 45 / 34%) !important;
+    }
+
+    .tadeon-master-navigation [data-slot="tabs-trigger"] {
+      position: relative;
+      border: 1px solid transparent;
+      color: var(--muted-foreground);
+      transition:
+        transform 220ms cubic-bezier(.22,1,.36,1),
+        color 180ms ease,
+        background-color 220ms ease,
+        border-color 220ms ease,
+        box-shadow 260ms cubic-bezier(.22,1,.36,1);
+    }
+
+    .tadeon-master-navigation [data-slot="tabs-trigger"]:hover {
+      transform: translateY(-1px);
+      border-color: rgb(180 92 98 / 18%);
+      color: #ede9c8;
+    }
+
+    .tadeon-master-navigation [data-slot="tabs-trigger"][data-state="active"] {
+      color: #ede9c8 !important;
+      background:
+        linear-gradient(105deg, rgb(116 36 45 / 32%), rgb(116 36 45 / 12%)),
+        rgb(116 36 45 / 22%) !important;
+      border-color: rgb(180 92 98 / 42%) !important;
+      box-shadow:
+        inset 0 1px rgb(255 255 255 / 5%),
+        0 12px 28px -22px rgb(116 36 45 / 80%) !important;
+      animation: tadeon-master-tab-arrive 360ms cubic-bezier(.22,1,.36,1) both;
+    }
+
+    .tadeon-master-navigation [data-slot="tabs-trigger"][data-state="active"]::before {
+      content: "";
+      position: absolute;
+      left: 7px;
+      top: 50%;
+      width: 2px;
+      height: 15px;
+      border-radius: 999px;
+      background: #b45c62;
+      box-shadow: 0 0 12px rgb(116 36 45 / 44%);
+      transform: translateY(-50%) scaleY(.55);
+      opacity: .72;
+      animation: tadeon-master-tab-marker 340ms cubic-bezier(.22,1,.36,1) both;
+    }
+
+    .tadeon-master-navigation [data-slot="tabs-trigger"][data-state="active"] svg {
+      color: #d9d7a4;
+      animation: tadeon-master-tab-icon 420ms cubic-bezier(.22,1,.36,1) both;
+    }
+
+    .tadeon-master-navigation [data-slot="tabs-trigger"]:focus-visible {
+      outline: 1px solid rgb(180 92 98 / 72%) !important;
+      outline-offset: 1px;
+      box-shadow: 0 0 0 3px rgb(116 36 45 / 18%) !important;
+    }
+
+    @keyframes tadeon-master-tab-arrive {
+      from { opacity: .72; transform: translateY(1px) scale(.985); }
+      72% { opacity: 1; transform: translateY(-1px) scale(1.012); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    @keyframes tadeon-master-tab-marker {
+      from { opacity: 0; transform: translateY(-50%) scaleY(.2); }
+      to { opacity: .72; transform: translateY(-50%) scaleY(1); }
+    }
+
+    @keyframes tadeon-master-tab-icon {
+      from { opacity: .55; transform: translateY(2px) scale(.9) rotate(-4deg); }
+      70% { opacity: 1; transform: translateY(-1px) scale(1.08) rotate(.6deg); }
+      to { opacity: 1; transform: translateY(0) scale(1) rotate(0); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .tadeon-master-navigation [data-slot="tabs-trigger"],
+      .tadeon-master-navigation [data-slot="tabs-trigger"]::before,
+      .tadeon-master-navigation [data-slot="tabs-trigger"] svg {
+        animation: none !important;
+        transition: none !important;
+      }
+    }
+  `;
+  document.head.appendChild(style);
+}
+
 function processRoot(root: ParentNode) {
   root.querySelectorAll<HTMLElement>(REVEAL).forEach((element) => {
     markElement(element);
@@ -172,9 +279,7 @@ function processElement(element: HTMLElement) {
 }
 
 function processStateFromNode(node: Node) {
-  const element = node instanceof HTMLElement
-    ? node
-    : node.parentElement;
+  const element = node instanceof HTMLElement ? node : node.parentElement;
   if (!element) return;
   const stateful = element.closest<HTMLElement>(STATEFUL);
   if (stateful) markState(stateful);
@@ -198,6 +303,8 @@ function directRoute() {
 export function TadeonExperienceDirector() {
   useEffect(() => {
     if (typeof window === "undefined" || typeof document === "undefined") return;
+
+    ensureMasterNavigationStyle();
 
     let frame = 0;
     let observer: MutationObserver | null = null;
