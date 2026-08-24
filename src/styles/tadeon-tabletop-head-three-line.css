@@ -1,0 +1,72 @@
+/* Mesa Nexus — restaura a composição compacta em três linhas do desktop header.
+   Mantém materiais/atmosfera; altera somente a estrutura tipográfica. */
+
+@media (min-width: 768px) {
+  html body .tadeon-shell[data-section="Mesa Nexus"] .tadeon-desktop-toolbar {
+    align-items: center !important;
+  }
+
+  html body .tadeon-shell[data-section="Mesa Nexus"] .tadeon-desktop-toolbar > .min-w-0 {
+    display: grid !important;
+    grid-template-columns: 2.35rem minmax(0, 1fr) !important;
+    grid-template-rows: auto auto auto !important;
+    column-gap: .8rem !important;
+    row-gap: .05rem !important;
+    align-items: center !important;
+    min-width: 0 !important;
+  }
+
+  html body .tadeon-shell[data-section="Mesa Nexus"] .tadeon-desktop-toolbar > .min-w-0 > .tadeon-tabletop-focus-brand-host {
+    grid-column: 1 !important;
+    grid-row: 1 / 4 !important;
+    align-self: center !important;
+    justify-self: center !important;
+    width: 2.35rem !important;
+    height: 2.35rem !important;
+  }
+
+  html body .tadeon-shell[data-section="Mesa Nexus"] .tadeon-desktop-toolbar > .min-w-0 > .tadeon-eyebrow {
+    grid-column: 2 !important;
+    grid-row: 1 !important;
+    align-self: end !important;
+    margin: 0 !important;
+  }
+
+  html body .tadeon-shell[data-section="Mesa Nexus"] .tadeon-desktop-toolbar > .min-w-0 > div {
+    grid-column: 2 !important;
+    grid-row: 2 !important;
+    min-width: 0 !important;
+    align-self: center !important;
+  }
+
+  html body .tadeon-shell[data-section="Mesa Nexus"] .tadeon-desktop-toolbar > .min-w-0 > div > h2 {
+    margin: 0 !important;
+    font-size: clamp(1.05rem, 1.55vw, 1.28rem) !important;
+    line-height: 1.04 !important;
+    letter-spacing: -.015em !important;
+  }
+
+  html body .tadeon-shell[data-section="Mesa Nexus"] .tadeon-desktop-toolbar > .min-w-0 > div > p {
+    grid-column: 2 !important;
+    grid-row: 3 !important;
+    max-width: 52ch !important;
+    margin: .12rem 0 0 !important;
+    font-size: .69rem !important;
+    line-height: 1.2 !important;
+    letter-spacing: .015em !important;
+  }
+}
+
+@media (max-width: 767px) {
+  html body .tadeon-shell[data-section="Mesa Nexus"] .tadeon-mobile-header__identity {
+    gap: .45rem !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html body .tadeon-shell[data-section="Mesa Nexus"] .tadeon-desktop-toolbar * {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
