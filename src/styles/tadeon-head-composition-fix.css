@@ -3,46 +3,47 @@
 /* ---------------- Dashboard ---------------- */
 @media (min-width: 1024px) {
   html body .tadeon-dashboard-hero {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) !important;
+    grid-template-rows: auto auto !important;
+    align-content: start !important;
     min-height: 18rem !important;
     padding: 1.45rem 1.65rem 1.15rem !important;
   }
 
   html body .tadeon-dashboard-hero > .relative.z-10 {
+    grid-column: 1 !important;
+    grid-row: 1 !important;
     display: grid !important;
     grid-template-columns: minmax(0, 1fr) auto !important;
-    grid-template-rows: auto auto !important;
-    column-gap: 2rem !important;
-    row-gap: 1.35rem !important;
     align-items: end !important;
+    column-gap: 2rem !important;
     width: 100% !important;
   }
 
   html body .tadeon-dashboard-hero > .relative.z-10 > :first-child {
-    grid-column: 1 !important;
-    grid-row: 1 !important;
-    width: min(100%, 48rem) !important;
+    min-width: 0 !important;
     max-width: 48rem !important;
     align-self: end !important;
   }
 
   html body .tadeon-dashboard-hero > .relative.z-10 > :last-child {
-    grid-column: 2 !important;
-    grid-row: 1 !important;
     align-self: end !important;
     justify-self: end !important;
     margin: 0 !important;
   }
 
   html body .tadeon-dashboard-hero .tadeon-dashboard-signals {
-    grid-column: 1 / -1 !important;
+    grid-column: 1 !important;
     grid-row: 2 !important;
     display: grid !important;
     grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
     align-items: stretch !important;
     width: 100% !important;
-    margin-top: 0 !important;
+    margin-top: 1.25rem !important;
     padding-top: 1rem !important;
     gap: 0 !important;
+    border-top: 1px solid rgb(var(--head-secondary-rgb, 79 110 93) / 16%) !important;
   }
 
   html body .tadeon-dashboard-hero .tadeon-dashboard-signal {
@@ -149,7 +150,7 @@
   html body .tadeon-tabletop-studio__header {
     display: grid !important;
     grid-template-columns: minmax(0, 1fr) !important;
-    grid-template-rows: auto auto minmax(min-content, auto) !important;
+    grid-template-rows: auto auto auto !important;
     align-content: start !important;
     height: auto !important;
     min-height: 0 !important;
@@ -193,11 +194,17 @@
     width: 100% !important;
   }
 
-  html body .tadeon-tabletop-studio__header > .tadeon-live-session.is-expanded .tadeon-live-session__body,
   html body .tadeon-tabletop-studio__header > .tadeon-live-session .tadeon-live-session__body {
+    display: block !important;
     height: auto !important;
     max-height: none !important;
     overflow: visible !important;
+  }
+
+  /* The live body is only visually open when its parent is expanded; keep the
+     existing component's visibility rules, but never constrain its height. */
+  html body .tadeon-tabletop-studio__header > .tadeon-live-session:not(.is-expanded) .tadeon-live-session__body {
+    display: none !important;
   }
 }
 
