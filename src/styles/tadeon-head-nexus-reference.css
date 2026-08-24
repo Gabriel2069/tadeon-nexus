@@ -1,3 +1,5 @@
+@import url("./tadeon-surface-system-next.css");
+
 /* Tadeon Head System — Nexus reference applied to sibling heads.
    The Nexus commandbar is the visual benchmark: deep material surface,
    real circular mark, editorial hierarchy, peripheral orbital geometry,
@@ -15,7 +17,6 @@
   50% { transform: translate3d(-7px,4px,0) rotate(4deg); }
 }
 
-/* Shared material. */
 html body :is(
   .tadeon-dashboard-hero,
   .tadeon-page-hero[data-tadeon-page-hero],
@@ -38,7 +39,6 @@ html body :is(
     inset 0 1px rgb(255 255 255 / 5%) !important;
 }
 
-/* Per-domain temperature. */
 .tadeon-dashboard-hero { --head-rgb: 217 215 164; --head-secondary-rgb: 79 110 93; }
 .tadeon-master-commandbar { --head-rgb: 122 49 56; --head-secondary-rgb: 217 215 164; }
 .tadeon-page-hero[data-tadeon-page-hero="users"] { --head-rgb: 183 129 77; --head-secondary-rgb: 217 215 164; }
@@ -93,7 +93,6 @@ html body :is(
   content: "" !important;
 }
 
-/* Dashboard. */
 html body .tadeon-dashboard-hero {
   min-height: 8.8rem !important;
   padding: 1.25rem 1.5rem !important;
@@ -106,12 +105,7 @@ html body .tadeon-dashboard-hero h1 {
   line-height: .98 !important;
   letter-spacing: -.028em !important;
 }
-html body .tadeon-dashboard-hero > .relative.z-10 > :last-child {
-  position: relative !important;
-  z-index: 3 !important;
-}
 
-/* Generic page heads: same presence as Nexus without fake grid assumptions. */
 html body .tadeon-page-hero[data-tadeon-page-hero] {
   min-height: 7.8rem !important;
   padding: 1.1rem 1.35rem !important;
@@ -125,7 +119,6 @@ html body .tadeon-page-hero[data-tadeon-page-hero] h1 {
   letter-spacing: -.02em !important;
 }
 
-/* Master command bar. */
 html body .tadeon-master-commandbar {
   min-height: 7.8rem !important;
   padding: 1.1rem 1.35rem !important;
@@ -137,7 +130,6 @@ html body .tadeon-master-commandbar h1 {
   line-height: 1.02 !important;
 }
 
-/* Mesa: preserve the 3 functional bands, but make all bands read as one Nexus-grade head. */
 @media (min-width: 768px) {
   html body .tadeon-tabletop-studio__header {
     padding: .8rem 1rem .75rem !important;
