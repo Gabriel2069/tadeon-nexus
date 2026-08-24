@@ -1,0 +1,172 @@
+/* Tadeon Head System — one editorial grammar for every page opening. */
+
+.tadeon-page-hero,
+.tadeon-dashboard-hero,
+.tadeon-master-commandbar,
+.tadeon-tabletop-studio__header,
+.tadeon-auth-hero {
+  --head-max-height: 15.5rem;
+  --head-min-height: 10.5rem;
+  box-sizing: border-box;
+  width: 100%;
+  min-height: var(--head-min-height);
+  max-height: var(--head-max-height);
+  margin-inline: auto;
+  padding: clamp(1.15rem, 2.2vw, 2rem) clamp(1.15rem, 3vw, 2.6rem) !important;
+  display: grid;
+  grid-template-columns: minmax(2.6rem, auto) minmax(0, 1fr) auto;
+  grid-template-areas: "mark copy action";
+  align-items: center;
+  gap: clamp(.9rem, 1.8vw, 1.5rem);
+  overflow: hidden;
+}
+
+.tadeon-page-hero-mark-host,
+.tadeon-focus-section-mark-host,
+.tadeon-tabletop-brand-mark-host {
+  grid-area: mark;
+  display: grid;
+  width: clamp(2.65rem, 4vw, 3.35rem);
+  height: clamp(2.65rem, 4vw, 3.35rem);
+  place-items: center;
+  align-self: start;
+  margin-top: .08rem;
+  border: 1px solid rgb(217 215 164 / 24%);
+  border-radius: .85rem .25rem .85rem .25rem;
+  background: linear-gradient(145deg, rgb(217 215 164 / 9%), rgb(79 110 93 / 7%));
+  box-shadow: inset 0 1px rgb(255 255 255 / 5%), 0 18px 34px -28px rgb(0 0 0 / 90%);
+}
+
+.tadeon-page-hero-mark-icon,
+.tadeon-focus-section-mark-icon,
+.tadeon-tabletop-brand-mark-icon {
+  width: 1.25rem;
+  height: 1.25rem;
+  color: var(--tadeon-knowledge, #d9d7a4);
+  filter: drop-shadow(0 0 12px rgb(217 215 164 / 18%));
+}
+
+.tadeon-page-hero > :not(.tadeon-page-hero-mark-host),
+.tadeon-dashboard-hero > :not(.tadeon-page-hero-mark-host) {
+  min-width: 0;
+}
+
+.tadeon-page-hero > :is(div, section, header):has(.tadeon-eyebrow),
+.tadeon-dashboard-hero > :is(div, section, header):has(.tadeon-eyebrow) {
+  grid-area: copy;
+  min-width: 0;
+}
+
+.tadeon-page-hero h1,
+.tadeon-dashboard-hero h1,
+.tadeon-master-commandbar h1 {
+  margin: .22rem 0 0 !important;
+  max-width: 18ch !important;
+  font-size: clamp(1.65rem, 3.2vw, 3.45rem) !important;
+  line-height: .98 !important;
+  letter-spacing: -.028em !important;
+  text-wrap: balance;
+}
+
+.tadeon-page-hero .tadeon-eyebrow,
+.tadeon-dashboard-hero .tadeon-eyebrow,
+.tadeon-master-commandbar .tadeon-eyebrow {
+  margin: 0 !important;
+  font-size: .63rem !important;
+  line-height: 1.1;
+  letter-spacing: .2em !important;
+}
+
+.tadeon-page-hero p,
+.tadeon-dashboard-hero p,
+.tadeon-master-commandbar p {
+  max-width: 62ch;
+}
+
+.tadeon-page-hero [data-head-actions],
+.tadeon-dashboard-hero [data-head-actions],
+.tadeon-master-commandbar [data-head-actions] {
+  grid-area: action;
+  justify-self: end;
+  align-self: center;
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  flex-wrap: wrap;
+  max-width: 19rem;
+  justify-content: flex-end;
+}
+
+/* Standard rhythm between head and first content block. */
+.tadeon-route-stage > .tadeon-page-hero,
+.tadeon-route-stage > .tadeon-dashboard-hero,
+.tadeon-route-stage > .tadeon-master-commandbar {
+  margin-bottom: clamp(1.15rem, 2vw, 1.7rem) !important;
+}
+
+/* Variants change only atmosphere, never geometry. */
+.tadeon-page-hero[data-tadeon-page-hero="users"],
+.tadeon-page-hero[data-tadeon-page-hero="tools"],
+.tadeon-page-hero[data-tadeon-page-hero="offline"] {
+  border-radius: 1.15rem .36rem 1.15rem .36rem !important;
+}
+
+.tadeon-page-hero[data-tadeon-page-hero="users"] { --head-accent: var(--tadeon-flow); }
+.tadeon-page-hero[data-tadeon-page-hero="tools"] { --head-accent: var(--tadeon-knowledge); }
+.tadeon-page-hero[data-tadeon-page-hero="offline"] { --head-accent: var(--tadeon-arden); }
+
+.tadeon-page-hero[data-tadeon-page-hero] .tadeon-page-hero-mark-host {
+  border-color: color-mix(in srgb, var(--head-accent) 38%, var(--border));
+  background: linear-gradient(145deg, color-mix(in srgb, var(--head-accent) 13%, transparent), transparent);
+}
+
+/* Master and tabletop are denser, but preserve the same visual contract. */
+.tadeon-master-commandbar { --head-max-height: 12rem; --head-min-height: 7.5rem; }
+.tadeon-tabletop-studio__header { --head-max-height: 11rem; --head-min-height: 7rem; }
+
+@media (max-width: 767px) {
+  .tadeon-page-hero,
+  .tadeon-dashboard-hero,
+  .tadeon-master-commandbar,
+  .tadeon-tabletop-studio__header,
+  .tadeon-auth-hero {
+    --head-max-height: none;
+    min-height: 0;
+    max-height: none;
+    grid-template-columns: auto minmax(0, 1fr);
+    grid-template-areas: "mark copy" "actions actions";
+    gap: .8rem 1rem;
+    padding: 1rem !important;
+  }
+
+  .tadeon-page-hero h1,
+  .tadeon-dashboard-hero h1,
+  .tadeon-master-commandbar h1 {
+    max-width: 16ch !important;
+    font-size: clamp(1.55rem, 8vw, 2.35rem) !important;
+  }
+
+  .tadeon-page-hero [data-head-actions],
+  .tadeon-dashboard-hero [data-head-actions],
+  .tadeon-master-commandbar [data-head-actions] {
+    grid-area: actions;
+    justify-self: stretch;
+    max-width: none;
+    justify-content: flex-start;
+  }
+
+  .tadeon-page-hero-mark-host,
+  .tadeon-focus-section-mark-host,
+  .tadeon-tabletop-brand-mark-host {
+    width: 2.7rem;
+    height: 2.7rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tadeon-page-hero,
+  .tadeon-dashboard-hero,
+  .tadeon-master-commandbar,
+  .tadeon-tabletop-studio__header,
+  .tadeon-auth-hero { scroll-margin-top: 5rem; }
+}
