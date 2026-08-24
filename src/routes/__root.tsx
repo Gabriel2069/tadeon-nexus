@@ -36,6 +36,7 @@ import experienceStabilizationCss from "../styles/tadeon-experience-stabilizatio
 import experienceRuntimeCss from "../styles/tadeon-experience-runtime.css?url";
 import experienceMaterialsCss from "../styles/tadeon-materials-final.css?url";
 import experienceMobileCss from "../styles/tadeon-mobile-excellence.css?url";
+import experienceDetailsCss from "../styles/tadeon-experience-details.css?url";
 import { AuthProvider } from "@/lib/auth";
 import { Toaster } from "@/components/ui/sonner";
 import { PwaRegistration } from "@/components/pwa-registration";
@@ -156,6 +157,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { rel: "stylesheet", href: experienceRuntimeCss },
       { rel: "stylesheet", href: experienceMaterialsCss },
       { rel: "stylesheet", href: experienceMobileCss },
+      { rel: "stylesheet", href: experienceDetailsCss },
       { rel: "manifest", href: "/manifest.webmanifest" },
       { rel: "icon", href: "/favicon.svg?v=5", type: "image/svg+xml", sizes: "any" },
       { rel: "shortcut icon", href: "/favicon.svg?v=5", type: "image/svg+xml" },
