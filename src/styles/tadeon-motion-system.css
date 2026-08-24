@@ -1,4 +1,4 @@
-/* Tadeon Motion System — preserve composition, add authored motion. */
+/* Tadeon Motion System — authored motion without changing composition. */
 
 :root {
   --tadeon-motion-reveal: cubic-bezier(.22,1,.36,1);
@@ -23,10 +23,7 @@
 .tadeon-dashboard-hero > *,
 .tadeon-master-commandbar > *,
 .tadeon-tabletop-studio__header > *,
-.tadeon-auth-hero > * {
-  animation: tadeon-head-reveal 620ms var(--tadeon-motion-reveal) both;
-}
-
+.tadeon-auth-hero > * { animation: tadeon-head-reveal 620ms var(--tadeon-motion-reveal) both; }
 .tadeon-page-hero > :nth-child(2), .tadeon-dashboard-hero > :nth-child(2), .tadeon-master-commandbar > :nth-child(2), .tadeon-tabletop-studio__header > :nth-child(2), .tadeon-auth-hero > :nth-child(2) { animation-delay: 55ms; }
 .tadeon-page-hero > :nth-child(3), .tadeon-dashboard-hero > :nth-child(3), .tadeon-master-commandbar > :nth-child(3), .tadeon-tabletop-studio__header > :nth-child(3), .tadeon-auth-hero > :nth-child(3) { animation-delay: 105ms; }
 
@@ -49,10 +46,7 @@
 .tadeon-mobile-header__control:active { transform: translateY(1px) scale(.985); }
 
 .tadeon-primary-nav .tadeon-nav-item[aria-current="page"],
-.tadeon-mobile-dock__item[aria-current="page"] {
-  position: relative;
-}
-
+.tadeon-mobile-dock__item[aria-current="page"] { position: relative; }
 .tadeon-primary-nav .tadeon-nav-item[aria-current="page"]::after,
 .tadeon-mobile-dock__item[aria-current="page"]::after {
   content: "";
@@ -65,12 +59,8 @@
   opacity: .35;
   transition: transform 340ms var(--tadeon-motion-material), opacity 220ms ease;
 }
-
 .tadeon-primary-nav .tadeon-nav-item[aria-current="page"]:hover::after,
-.tadeon-mobile-dock__item[aria-current="page"]:hover::after {
-  transform: scaleX(1);
-  opacity: .8;
-}
+.tadeon-mobile-dock__item[aria-current="page"]:hover::after { transform: scaleX(1); opacity: .8; }
 
 .tadeon-surface,
 .tadeon-state-panel,
@@ -91,52 +81,30 @@
   transition: transform var(--tadeon-motion-fast) var(--tadeon-motion-material), box-shadow var(--tadeon-motion-fast) var(--tadeon-motion-material),
     border-color var(--tadeon-motion-fast) ease, background-color var(--tadeon-motion-fast) ease;
 }
-
 .tadeon-shell button:active,
 .tadeon-shell [role="button"]:active { transform: translateY(1px) scale(.985); }
 
+.tadeon-shell input,
+.tadeon-shell textarea,
+.tadeon-shell [data-slot="select-trigger"] {
+  transition: border-color var(--tadeon-motion-fast) ease, box-shadow var(--tadeon-motion-base) var(--tadeon-motion-material),
+    background-color var(--tadeon-motion-fast) ease;
+}
 .tadeon-shell input:focus-visible,
 .tadeon-shell textarea:focus-visible,
 .tadeon-shell [data-slot="select-trigger"]:focus-visible {
-  transition: box-shadow 260ms var(--tadeon-motion-material), border-color 180ms ease;
   box-shadow: 0 0 0 1px rgb(217 215 164 / 18%), 0 12px 34px -26px rgb(217 215 164 / 24%);
 }
 
 .tadeon-page > section,
 .tadeon-page > article,
-.tadeon-route-stage > .tadeon-page:not(.tadeon-page-hero) > * {
-  animation: tadeon-content-reveal 560ms var(--tadeon-motion-reveal) both;
-}
-
+.tadeon-route-stage > .tadeon-page:not(.tadeon-page-hero) > * { animation: tadeon-content-reveal 560ms var(--tadeon-motion-reveal) both; }
 .tadeon-page > section:nth-child(2), .tadeon-page > article:nth-child(2) { animation-delay: 55ms; }
 .tadeon-page > section:nth-child(3), .tadeon-page > article:nth-child(3) { animation-delay: 95ms; }
 .tadeon-page > section:nth-child(4), .tadeon-page > article:nth-child(4) { animation-delay: 135ms; }
 
-.tadeon-shell [role="dialog"],
-.tadeon-shell [data-radix-popper-content-wrapper] > * {
-  animation: tadeon-unfold 360ms var(--tadeon-motion-reveal) both;
-  transform-origin: var(--radix-popper-transform-origin, 50% 20%);
-}
-
-.tadeon-shell [data-state="closed"][role="dialog"] { animation: none; }
-
-.tadeon-save-status[data-state="saving"],
-[data-tadeon-feedback="saving"] { animation: tadeon-writing-pulse 1.8s ease-in-out infinite; }
-
-.tadeon-shell [data-tadeon-node],
-.tadeon-shell [data-tadeon-map-element] {
-  transition: transform 280ms var(--tadeon-motion-material), opacity 280ms var(--tadeon-motion-soft), filter 320ms var(--tadeon-motion-material);
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .tadeon-shell [data-tadeon-node]:hover,
-  .tadeon-shell [data-tadeon-map-element]:hover { transform: translateY(-2px) scale(1.015); }
-}
-
-/* Lists and narrative blocks get a stagger only when the DOM already groups them. */
-.tadeon-shell [data-tadeon-stagger] > * {
-  animation: tadeon-content-reveal 480ms var(--tadeon-motion-reveal) both;
-}
+/* Opt-in stagger for existing grouped content. */
+.tadeon-shell [data-tadeon-stagger] > * { animation: tadeon-content-reveal 480ms var(--tadeon-motion-reveal) both; }
 .tadeon-shell [data-tadeon-stagger] > :nth-child(1) { animation-delay: 0ms; }
 .tadeon-shell [data-tadeon-stagger] > :nth-child(2) { animation-delay: 35ms; }
 .tadeon-shell [data-tadeon-stagger] > :nth-child(3) { animation-delay: 70ms; }
@@ -144,49 +112,83 @@
 .tadeon-shell [data-tadeon-stagger] > :nth-child(5) { animation-delay: 140ms; }
 .tadeon-shell [data-tadeon-stagger] > :nth-child(n+6) { animation-delay: 175ms; }
 
-/* Quiet ambient motion on existing decorative lines, never geometry. */
+/* Natural list groups get gentle settling without changing their layout. */
+.tadeon-users-list > *,
+.tadeon-sheet-overview > *,
+.tadeon-inventory-list > *,
+.tadeon-skill-list > * {
+  animation: tadeon-list-settle 460ms var(--tadeon-motion-reveal) both;
+}
+.tadeon-users-list > :nth-child(2), .tadeon-sheet-overview > :nth-child(2), .tadeon-inventory-list > :nth-child(2), .tadeon-skill-list > :nth-child(2) { animation-delay: 45ms; }
+.tadeon-users-list > :nth-child(3), .tadeon-sheet-overview > :nth-child(3), .tadeon-inventory-list > :nth-child(3), .tadeon-skill-list > :nth-child(3) { animation-delay: 90ms; }
+.tadeon-users-list > :nth-child(4), .tadeon-sheet-overview > :nth-child(4), .tadeon-inventory-list > :nth-child(4), .tadeon-skill-list > :nth-child(4) { animation-delay: 135ms; }
+
+.tadeon-shell [data-slot="tabs-trigger"] {
+  transition: color var(--tadeon-motion-fast) ease, background-color var(--tadeon-motion-fast) ease,
+    border-color var(--tadeon-motion-fast) ease, transform var(--tadeon-motion-fast) var(--tadeon-motion-material);
+}
+@media (hover:hover) and (pointer:fine) { .tadeon-shell [data-slot="tabs-trigger"]:hover { transform: translateY(-1px); } }
+.tadeon-shell [data-slot="tabs-trigger"]:active { transform: translateY(1px) scale(.985); }
+
+.tadeon-shell [data-tadeon-condition],
+.tadeon-shell [data-tadeon-status],
+.tadeon-shell .tadeon-sheet-condition-chip {
+  transition: transform var(--tadeon-motion-fast) var(--tadeon-motion-material), filter var(--tadeon-motion-base) var(--tadeon-motion-material),
+    border-color var(--tadeon-motion-fast) ease, box-shadow var(--tadeon-motion-base) var(--tadeon-motion-material);
+}
+@media (hover:hover) and (pointer:fine) {
+  .tadeon-shell [data-tadeon-condition]:hover,
+  .tadeon-shell [data-tadeon-status]:hover,
+  .tadeon-shell .tadeon-sheet-condition-chip:hover { transform: translateY(-1px); filter: saturate(1.08); }
+}
+
+.tadeon-shell [role="dialog"],
+.tadeon-shell [data-radix-popper-content-wrapper] > * {
+  animation: tadeon-unfold 360ms var(--tadeon-motion-reveal) both;
+  transform-origin: var(--radix-popper-transform-origin, 50% 20%);
+}
+.tadeon-shell [data-state="closed"][role="dialog"] { animation: none; }
+.tadeon-save-status[data-state="saving"], [data-tadeon-feedback="saving"] { animation: tadeon-writing-pulse 1.8s ease-in-out infinite; }
+
+.tadeon-shell [data-tadeon-node],
+.tadeon-shell [data-tadeon-map-element] {
+  transition: transform 280ms var(--tadeon-motion-material), opacity 280ms var(--tadeon-motion-soft), filter 320ms var(--tadeon-motion-material);
+}
+@media (hover:hover) and (pointer:fine) {
+  .tadeon-shell [data-tadeon-node]:hover,
+  .tadeon-shell [data-tadeon-map-element]:hover { transform: translateY(-2px) scale(1.015); }
+}
+.tadeon-shell [data-tadeon-node][data-selected="true"] { filter: drop-shadow(0 10px 22px rgb(217 215 164 / 18%)); }
+.tadeon-shell [data-tadeon-node][data-related="false"] { opacity: .48; }
+
+.tadeon-shell [data-tabletop-action],
+.tadeon-shell [data-tabletop-tool] {
+  transition: transform 150ms var(--tadeon-motion-material), box-shadow 220ms var(--tadeon-motion-material), border-color 180ms ease;
+}
+.tadeon-shell [data-tabletop-action]:active,
+.tadeon-shell [data-tabletop-tool]:active { transform: translateY(1px) scale(.982); }
+
 .tadeon-shell .tadeon-thread-field,
 .tadeon-shell [data-tadeon-atmosphere-line] {
   animation: tadeon-line-drift 9s ease-in-out infinite alternate;
   transform-origin: center;
 }
 
-@keyframes tadeon-head-reveal {
-  from { opacity: 0; transform: translateY(8px); filter: blur(5px); }
-  70% { filter: blur(0); }
-  to { opacity: 1; transform: translateY(0); filter: blur(0); }
-}
-
-@keyframes tadeon-content-reveal {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes tadeon-unfold {
-  from { opacity: 0; transform: translateY(-4px) scale(.985); filter: blur(2px); }
-  to { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
-}
-
-@keyframes tadeon-writing-pulse {
-  0%, 100% { opacity: .86; }
-  50% { opacity: 1; }
-}
-
-@keyframes tadeon-line-drift {
-  from { transform: translate3d(-.25%, -.15%, 0) rotate(-.15deg); opacity: .72; }
-  to { transform: translate3d(.25%, .15%, 0) rotate(.15deg); opacity: 1; }
-}
+@keyframes tadeon-head-reveal { from { opacity: 0; transform: translateY(8px); filter: blur(5px); } 70% { filter: blur(0); } to { opacity: 1; transform: translateY(0); filter: blur(0); } }
+@keyframes tadeon-content-reveal { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes tadeon-list-settle { from { opacity: 0; transform: translateY(9px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes tadeon-unfold { from { opacity: 0; transform: translateY(-4px) scale(.985); filter: blur(2px); } to { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); } }
+@keyframes tadeon-writing-pulse { 0%, 100% { opacity: .86; } 50% { opacity: 1; } }
+@keyframes tadeon-line-drift { from { transform: translate3d(-.25%, -.15%, 0) rotate(-.15deg); opacity: .72; } to { transform: translate3d(.25%, .15%, 0) rotate(.15deg); opacity: 1; } }
 
 @media (prefers-reduced-motion: reduce) {
   .tadeon-page-hero > *, .tadeon-dashboard-hero > *, .tadeon-master-commandbar > *, .tadeon-tabletop-studio__header > *, .tadeon-auth-hero > *,
   .tadeon-page > section, .tadeon-page > article, .tadeon-shell [role="dialog"], .tadeon-shell [data-radix-popper-content-wrapper] > *,
-  .tadeon-shell [data-tadeon-stagger] > *, .tadeon-shell .tadeon-thread-field, .tadeon-shell [data-tadeon-atmosphere-line] {
-    animation: none !important;
-  }
-
+  .tadeon-shell [data-tadeon-stagger] > *, .tadeon-users-list > *, .tadeon-sheet-overview > *, .tadeon-inventory-list > *, .tadeon-skill-list > *,
+  .tadeon-shell .tadeon-thread-field, .tadeon-shell [data-tadeon-atmosphere-line] { animation: none !important; }
   .tadeon-surface, .tadeon-state-panel, .tadeon-sheet-card, .tadeon-user-row,
   .tadeon-shell button, .tadeon-shell [role="button"], .tadeon-primary-nav .tadeon-nav-item,
-  .tadeon-mobile-dock__item, .tadeon-mobile-header__control, .tadeon-shell [data-tadeon-node], .tadeon-shell [data-tadeon-map-element] {
-    transition: none !important;
-  }
+  .tadeon-mobile-dock__item, .tadeon-mobile-header__control, .tadeon-shell [data-tadeon-node], .tadeon-shell [data-tadeon-map-element],
+  .tadeon-shell input, .tadeon-shell textarea, .tadeon-shell [data-slot="select-trigger"], .tadeon-shell [data-slot="tabs-trigger"],
+  .tadeon-shell [data-tadeon-condition], .tadeon-shell [data-tadeon-status], .tadeon-shell .tadeon-sheet-condition-chip { transition: none !important; }
 }
