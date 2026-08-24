@@ -1,0 +1,150 @@
+/* Wave 06 — Character Sheet + Nexus authored experience. */
+
+/* Character sheet: living document. */
+.tadeon-sheet-page {
+  --wave6-accent: 217 215 164;
+  --wave6-accent-2: 79 110 93;
+}
+
+.tadeon-sheet-commandbar {
+  position: relative;
+  isolation: isolate;
+  overflow: clip;
+}
+
+.tadeon-sheet-commandbar::before {
+  position: absolute;
+  top: -7rem;
+  right: 7%;
+  width: 15rem;
+  height: 15rem;
+  border: 1px solid rgb(var(--wave6-accent-2) / 18%);
+  border-radius: 50%;
+  box-shadow: 0 0 0 1.8rem rgb(var(--wave6-accent-2) / 2.6%), 0 0 0 4rem rgb(var(--wave6-accent) / 1.4%);
+  content: "";
+  pointer-events: none;
+  animation: tadeon-wave6-drift 14s ease-in-out infinite alternate;
+}
+
+.tadeon-sheet-commandbar__identity,
+.tadeon-sheet-commandbar__actions {
+  position: relative;
+  z-index: 2;
+}
+
+.tadeon-sheet-overview {
+  background:
+    linear-gradient(115deg, rgb(255 255 255 / 2.5%), transparent 36%),
+    linear-gradient(155deg, rgb(18 21 25 / 98%), rgb(10 13 17 / 98%));
+}
+
+.tadeon-overview-metric {
+  position: relative;
+  overflow: clip;
+  border-left: 1px solid rgb(var(--wave6-accent) / 10%);
+}
+
+.tadeon-overview-metric::after {
+  position: absolute;
+  right: -1.8rem;
+  bottom: -2.2rem;
+  width: 5.5rem;
+  height: 5.5rem;
+  border: 1px solid rgb(var(--wave6-accent-2) / 8%);
+  border-radius: 50%;
+  content: "";
+  pointer-events: none;
+}
+
+.tadeon-sheet-section {
+  position: relative;
+  overflow: clip;
+}
+
+.tadeon-sheet-section::before {
+  position: absolute;
+  left: 0;
+  top: 1rem;
+  bottom: 1rem;
+  width: 2px;
+  background: linear-gradient(180deg, rgb(var(--section-rgb) / 45%), transparent 82%);
+  content: "";
+  opacity: .8;
+  pointer-events: none;
+}
+
+.tadeon-sheet-section__index {
+  box-shadow: 0 10px 28px -24px rgb(var(--section-rgb) / 60%);
+}
+
+.tadeon-sheet-section input:not([type="range"]),
+.tadeon-sheet-section textarea,
+.tadeon-sheet-section [data-slot="select-trigger"] {
+  transition: border-color 180ms ease, box-shadow 220ms ease, transform 220ms cubic-bezier(.23,1,.32,1);
+}
+
+@media (hover:hover) and (pointer:fine) {
+  .tadeon-sheet-section input:not([type="range"]):hover,
+  .tadeon-sheet-section textarea:hover,
+  .tadeon-sheet-section [data-slot="select-trigger"]:hover {
+    transform: translateY(-1px);
+  }
+}
+
+/* Nexus: selected page becomes the visual center of gravity. */
+.tadeon-route-nexus .tadeon-nexus-shell {
+  position: relative;
+}
+
+.tadeon-route-nexus .tadeon-nexus-index,
+.tadeon-route-nexus .tadeon-nexus-reader,
+.tadeon-route-nexus .tadeon-nexus-properties {
+  position: relative;
+  isolation: isolate;
+  overflow: clip;
+}
+
+.tadeon-route-nexus .tadeon-nexus-index::before,
+.tadeon-route-nexus .tadeon-nexus-reader::before,
+.tadeon-route-nexus .tadeon-nexus-properties::before {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(120deg, rgb(217 215 164 / 2.5%), transparent 34%);
+  content: "";
+  pointer-events: none;
+}
+
+.tadeon-route-nexus .tadeon-nexus-reader {
+  box-shadow: 0 36px 96px -68px rgb(0 0 0 / 100%), inset 0 1px rgb(255 255 255 / 3%);
+}
+
+.tadeon-route-nexus .tadeon-nexus-reader :is(h2,h3) {
+  text-wrap: balance;
+}
+
+.tadeon-route-nexus .tadeon-nexus-reader [data-state="saving"],
+.tadeon-route-nexus .tadeon-nexus-reader [data-state="dirty"] {
+  box-shadow: 0 12px 30px -24px rgb(217 215 164 / 42%);
+}
+
+.tadeon-route-nexus .tadeon-nexus-reader [data-state="conflict"],
+.tadeon-route-nexus .tadeon-nexus-reader [data-state="error"] {
+  box-shadow: 0 12px 30px -24px rgb(116 36 45 / 52%);
+}
+
+@keyframes tadeon-wave6-drift {
+  from { transform: translate3d(0,0,0) rotate(-3deg); }
+  to { transform: translate3d(-8px,5px,0) rotate(4deg); }
+}
+
+@media (max-width: 767px) {
+  .tadeon-sheet-commandbar::before { right: -4rem; width: 11rem; height: 11rem; }
+  .tadeon-sheet-section::before { top: .75rem; bottom: .75rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tadeon-sheet-commandbar::before { animation: none; }
+  .tadeon-sheet-section input:not([type="range"]),
+  .tadeon-sheet-section textarea,
+  .tadeon-sheet-section [data-slot="select-trigger"] { transition-duration: 1ms !important; }
+}
