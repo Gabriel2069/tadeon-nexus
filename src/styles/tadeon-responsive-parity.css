@@ -1,0 +1,132 @@
+/* Tadeon Responsive Parity — same visual language, different spatial mode. */
+
+.tadeon-shell {
+  --tadeon-touch-target: 2.75rem;
+  --tadeon-mobile-edge: 1rem;
+}
+
+/* Desktop -> tablet: preserve hierarchy, not raw dimensions. */
+@media (min-width: 768px) and (max-width: 1180px) {
+  .tadeon-route-stage,
+  .tadeon-page,
+  .tadeon-master-workspace,
+  .tadeon-sheet-page,
+  .tadeon-second-brain {
+    width: min(100%, calc(100% - 2rem));
+  }
+
+  .tadeon-dashboard-hero,
+  .tadeon-page-hero {
+    --head-min-height: 9.5rem;
+    padding: 1.2rem 1.35rem !important;
+  }
+
+  .tadeon-dashboard-hero h1,
+  .tadeon-page-hero h1,
+  .tadeon-master-commandbar h1 {
+    font-size: clamp(1.8rem, 4vw, 2.8rem) !important;
+  }
+
+  .tadeon-sheet-page .tadeon-sheet-overview {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+
+  .tadeon-master-navigation__scroller {
+    overflow-x: auto;
+    scrollbar-width: thin;
+  }
+
+  .tadeon-master-navigation [data-slot="tabs-trigger"] {
+    min-height: var(--tadeon-touch-target);
+    white-space: nowrap;
+  }
+}
+
+/* Mobile: preserve the editorial head, never compress it into a desktop miniature. */
+@media (max-width: 767px) {
+  .tadeon-shell {
+    --tadeon-mobile-edge: .75rem;
+  }
+
+  .tadeon-route-stage,
+  .tadeon-page,
+  .tadeon-master-workspace,
+  .tadeon-sheet-page,
+  .tadeon-second-brain {
+    width: min(100%, calc(100% - (2 * var(--tadeon-mobile-edge))));
+  }
+
+  .tadeon-shell button,
+  .tadeon-shell [role="button"],
+  .tadeon-shell [data-slot="tabs-trigger"],
+  .tadeon-shell input,
+  .tadeon-shell textarea,
+  .tadeon-shell [data-slot="select-trigger"] {
+    min-height: max(var(--tadeon-touch-target), 2.5rem);
+  }
+
+  .tadeon-dashboard-hero,
+  .tadeon-page-hero,
+  .tadeon-master-commandbar,
+  .tadeon-tabletop-studio__header {
+    width: 100%;
+  }
+
+  .tadeon-dashboard-hero .tadeon-dashboard-signals {
+    grid-template-columns: 1fr !important;
+    gap: .65rem !important;
+  }
+
+  .tadeon-dashboard-hero .tadeon-dashboard-signal {
+    min-height: 2.8rem;
+    padding-block: .35rem;
+    border-top: 1px solid rgb(122 129 135 / 12%);
+  }
+
+  .tadeon-sheet-page .tadeon-sheet-commandbar {
+    position: sticky;
+    top: env(safe-area-inset-top, 0px);
+    z-index: 30;
+    backdrop-filter: blur(18px) saturate(120%);
+  }
+
+  .tadeon-sheet-page .tadeon-sheet-section,
+  .tadeon-sheet-page .tadeon-surface,
+  .tadeon-master-workspace .tadeon-surface {
+    overflow: clip;
+  }
+
+  .tadeon-master-workspace .tadeon-master-commandbar {
+    position: relative;
+  }
+
+  .tadeon-master-workspace .tadeon-master-navigation {
+    position: sticky;
+    top: calc(env(safe-area-inset-top, 0px) + 3.8rem);
+    z-index: 25;
+  }
+
+  .tadeon-master-workspace .tadeon-master-navigation__scroller {
+    overscroll-behavior-x: contain;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-toolbar,
+  .tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-floating-toolbar,
+  .tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-controls {
+    max-width: calc(100vw - 1rem);
+    min-height: var(--tadeon-touch-target);
+  }
+
+  .tadeon-shell[data-section="Mesa Nexus"] [data-tabletop-stage] {
+    min-height: calc(100dvh - 7.25rem);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tadeon-shell[data-section="Mesa Nexus"] *,
+  .tadeon-sheet-page *,
+  .tadeon-master-workspace * {
+    scroll-behavior: auto !important;
+  }
+}
