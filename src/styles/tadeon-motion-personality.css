@@ -1,0 +1,147 @@
+/* Tadeon Motion Personality
+   Motion language: Arquivo, Fio, Peso, Precisão, Cerimônia, Recuo.
+   The interface should feel authored, deliberate and archival — never generic. */
+:root {
+  --tdm-archive: cubic-bezier(.16,1,.3,1);
+  --tdm-thread: cubic-bezier(.22,1,.36,1);
+  --tdm-weight: cubic-bezier(.18,.89,.32,1.04);
+  --tdm-precise: cubic-bezier(.4,0,.2,1);
+  --tdm-retreat: cubic-bezier(.64,0,.84,0);
+}
+
+/* ARQUIVO — surfaces reveal themselves as something being consulted. */
+.tadeon-shell [data-motion-personality="archive"],
+.tadeon-shell [data-motion="archive"] {
+  animation: tdm-archive-in 520ms var(--tdm-archive) both;
+}
+@keyframes tdm-archive-in {
+  from { opacity:0; transform:translate3d(0,12px,0) scale(.985); filter:blur(5px); clip-path:inset(4% 0 0 round 14px); }
+  72% { opacity:1; transform:translate3d(0,-1px,0) scale(1.002); filter:none; clip-path:inset(0 round 14px); }
+  to { opacity:1; transform:none; filter:none; clip-path:inset(0 round 14px); }
+}
+
+/* FIO — connected navigation feels continuous rather than teleporting. */
+.tadeon-shell [data-motion-personality="thread"],
+.tadeon-shell [data-motion="thread"] {
+  animation:tdm-thread-in 360ms var(--tdm-thread) both;
+}
+@keyframes tdm-thread-in {
+  from { opacity:0; transform:translateX(var(--tdm-thread-x, 8px)); }
+  72% { opacity:1; transform:translateX(calc(var(--tdm-thread-x, 8px) * -.12)); }
+  to { opacity:1; transform:none; }
+}
+
+/* PESO — selection should feel acquired, not highlighted by a color swap. */
+.tadeon-shell [data-motion-personality="weight"],
+.tadeon-shell [data-motion="weight"] {
+  animation:tdm-weight-settle 300ms var(--tdm-weight) both;
+}
+@keyframes tdm-weight-settle {
+  from { transform:translateY(2px) scale(.992); box-shadow:inset 0 0 0 1px color-mix(in srgb, var(--section-accent) 7%, transparent); }
+  68% { transform:translateY(-1px) scale(1.004); box-shadow:inset 2px 0 var(--section-accent), 0 12px 32px -30px color-mix(in srgb, var(--section-accent) 55%, transparent); }
+  to { transform:none; box-shadow:inset 2px 0 var(--section-accent), 0 12px 32px -30px color-mix(in srgb, var(--section-accent) 42%, transparent); }
+}
+
+/* PRECISÃO — data controls respond with crisp, short confirmation. */
+.tadeon-shell [data-motion-personality="precision"],
+.tadeon-shell [data-motion="precision"] {
+  animation:tdm-precision-pulse 230ms var(--tdm-precise) both;
+}
+@keyframes tdm-precision-pulse {
+  from { transform:scale(.985); }
+  55% { transform:scale(1.015); }
+  to { transform:none; }
+}
+
+/* CERIMÔNIA — important destructive/create/save actions get a composed response. */
+.tadeon-shell [data-motion-personality="ceremony"],
+.tadeon-shell [data-motion="ceremony"] {
+  animation:tdm-ceremony 420ms var(--tdm-weight) both;
+}
+@keyframes tdm-ceremony {
+  from { opacity:.78; transform:translateY(4px) scale(.985); filter:saturate(.9); }
+  56% { opacity:1; transform:translateY(-1px) scale(1.006); filter:saturate(1.06); }
+  to { opacity:1; transform:none; filter:none; }
+}
+
+/* RECUO — explicitly opt-in close gesture for self-removing surfaces. */
+.tadeon-shell [data-motion-personality="retreat"],
+.tadeon-shell [data-motion="retreat"] {
+  animation:tdm-retreat 210ms var(--tdm-retreat) both;
+  pointer-events:none;
+}
+@keyframes tdm-retreat {
+  from { opacity:1; transform:none; filter:none; }
+  to { opacity:0; transform:translate3d(7px,4px,0) scale(.985); filter:blur(3px); }
+}
+
+/* Sidebar navigation — the Tadeon rail behaves like a spine, not a list. */
+@media (min-width:768px) {
+  #tadeon-desktop-sidebar .tadeon-nav-item {
+    position:relative;
+    transition:transform 260ms var(--tdm-thread), color 180ms var(--tdm-precise), background-color 240ms var(--tdm-precise), box-shadow 280ms var(--tdm-thread), border-color 220ms var(--tdm-precise) !important;
+  }
+  #tadeon-desktop-sidebar .tadeon-nav-item:hover:not([aria-current="page"]) {
+    transform:translateX(3px);
+  }
+  #tadeon-desktop-sidebar .tadeon-nav-item[aria-current="page"] {
+    animation:tdm-sidebar-acquire 360ms var(--tdm-thread) both;
+  }
+  @keyframes tdm-sidebar-acquire {
+    from { opacity:.74; transform:translateX(-5px); }
+    70% { opacity:1; transform:translateX(1px); }
+    to { opacity:1; transform:none; }
+  }
+  #tadeon-desktop-sidebar[data-collapsed="true"] .tadeon-nav-item[aria-current="page"]::before {
+    content:"";
+    position:absolute;
+    left:-1px;
+    top:24%;
+    width:2px;
+    height:52%;
+    border-radius:999px;
+    background:var(--sidebar-item-accent, var(--section-accent));
+    box-shadow:0 0 16px color-mix(in srgb, var(--sidebar-item-accent, var(--section-accent)) 42%, transparent);
+    animation:tdm-spine-reveal 280ms var(--tdm-thread) both;
+  }
+  @keyframes tdm-spine-reveal { from { opacity:0; transform:scaleY(.2); } to { opacity:1; transform:scaleY(1); } }
+}
+
+/* Headings — archival material settles in layers, never as one flat fade. */
+.tadeon-shell [data-motion-personality="heading"] > :nth-child(1) { animation:tdm-heading-1 360ms var(--tdm-archive) both; }
+.tadeon-shell [data-motion-personality="heading"] > :nth-child(2) { animation:tdm-heading-2 400ms var(--tdm-archive) 45ms both; }
+.tadeon-shell [data-motion-personality="heading"] > :nth-child(3) { animation:tdm-heading-3 400ms var(--tdm-archive) 85ms both; }
+@keyframes tdm-heading-1 { from { opacity:0; transform:translateY(7px); letter-spacing:.015em; } to { opacity:1; transform:none; letter-spacing:normal; } }
+@keyframes tdm-heading-2 { from { opacity:0; transform:translateY(9px); filter:blur(3px); } to { opacity:1; transform:none; filter:none; } }
+@keyframes tdm-heading-3 { from { opacity:0; transform:translateY(7px); } to { opacity:1; transform:none; } }
+
+/* Cards — hover lifts only enough to acknowledge attention; click adds weight. */
+.tadeon-shell [data-motion-personality="surface"] {
+  transition:transform 260ms var(--tdm-thread), box-shadow 300ms var(--tdm-thread), filter 240ms var(--tdm-precise) !important;
+}
+.tadeon-shell [data-motion-personality="surface"]:hover {
+  transform:translateY(-3px) scale(1.004);
+  filter:saturate(1.025);
+}
+.tadeon-shell [data-motion-personality="surface"]:active {
+  transform:translateY(1px) scale(.992);
+}
+
+/* Buttons — intent-specific behavior. */
+.tadeon-shell [data-motion-action="primary"] { transition:transform 190ms var(--tdm-weight), box-shadow 240ms var(--tdm-thread), filter 180ms ease !important; }
+.tadeon-shell [data-motion-action="primary"]:hover { transform:translateY(-2px); filter:saturate(1.04) brightness(1.025); }
+.tadeon-shell [data-motion-action="primary"]:active { transform:translateY(1px) scale(.97); }
+.tadeon-shell [data-motion-action="destructive"]:hover { transform:translateY(-1px); filter:saturate(1.06); }
+.tadeon-shell [data-motion-action="destructive"]:active { transform:scale(.965); }
+.tadeon-shell [data-motion-action="quiet"]:hover { transform:translateX(2px); }
+
+/* Scroll reveal — quiet continuity for archival lists. */
+.tadeon-shell [data-motion-personality="reveal"] { animation:tdm-reveal 420ms var(--tdm-archive) both; }
+@keyframes tdm-reveal { from { opacity:0; transform:translateY(10px); filter:blur(4px); } to { opacity:1; transform:none; filter:none; } }
+
+@media (prefers-reduced-motion:reduce) {
+  .tadeon-shell [data-motion-personality],
+  .tadeon-shell [data-motion],
+  .tadeon-shell [data-motion-action],
+  .tadeon-shell #tadeon-desktop-sidebar .tadeon-nav-item { animation:none !important; transition:none !important; }
+}
