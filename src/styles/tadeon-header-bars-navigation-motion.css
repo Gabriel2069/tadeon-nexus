@@ -1,0 +1,328 @@
+/* Tadeon Header / Bars / Navigation — visible authored motion pass. */
+:root{
+  --thn-in:cubic-bezier(.16,1,.3,1);
+  --thn-spring:cubic-bezier(.175,.885,.32,1.275);
+  --thn-out:cubic-bezier(.7,0,.84,0);
+  --thn-ui:280ms;
+  --thn-panel:520ms;
+}
+
+/* ================================================================
+   DESKTOP SIDEBAR — the menu behaves like one coherent instrument.
+   ================================================================ */
+.tadeon-shell > #tadeon-desktop-sidebar{
+  width:16rem;
+  transition:
+    width 520ms var(--thn-in),
+    box-shadow 520ms var(--thn-in),
+    background-color 360ms ease,
+    border-color 360ms ease !important;
+  overflow:visible;
+  will-change:width;
+}
+.tadeon-shell > #tadeon-desktop-sidebar[data-collapsed="true"]{width:4rem}
+
+.tadeon-shell > #tadeon-desktop-sidebar .tadeon-sidebar__scroll,
+.tadeon-shell > #tadeon-desktop-sidebar .tadeon-primary-nav,
+.tadeon-shell > #tadeon-desktop-sidebar .tadeon-sidebar > div{
+  transition:opacity 280ms ease,transform 520ms var(--thn-in),filter 420ms ease;
+}
+
+.tadeon-shell > #tadeon-desktop-sidebar[data-collapsed="true"] .tadeon-sidebar__scroll,
+.tadeon-shell > #tadeon-desktop-sidebar[data-collapsed="true"] .tadeon-primary-nav{
+  overflow:visible;
+}
+
+.tadeon-shell > #tadeon-desktop-sidebar[data-collapsed="true"] .tadeon-nav-item{
+  justify-content:center;
+  gap:0;
+  padding-inline:0;
+}
+
+.tadeon-shell > #tadeon-desktop-sidebar[data-collapsed="true"] .tadeon-nav-item > :not(svg){
+  width:0;
+  margin:0;
+  overflow:hidden;
+  opacity:0;
+  transform:translateX(-10px);
+}
+
+.tadeon-shell > #tadeon-desktop-sidebar[data-collapsed="false"] .tadeon-nav-item > :not(svg){
+  opacity:1;
+  transform:none;
+  transition:opacity 260ms ease,transform 420ms var(--thn-in),width 420ms var(--thn-in);
+}
+
+.tadeon-shell .tadeon-sidebar-collapse{
+  border-color:rgb(180 92 98 / 30%) !important;
+  border-radius:999px;
+  background:color-mix(in srgb,var(--sidebar) 86%,#000 14%);
+  box-shadow:0 16px 40px -26px rgb(0 0 0 / 95%),inset 0 1px rgb(255 255 255 / 6%);
+  transition:
+    transform 320ms var(--thn-spring),
+    background-color 280ms ease,
+    border-color 280ms ease,
+    box-shadow 360ms var(--thn-in) !important;
+}
+.tadeon-shell .tadeon-sidebar-collapse:hover{
+  transform:translateX(2px) scale(1.08) !important;
+  background:color-mix(in srgb,var(--sidebar) 78%,#74242d 22%);
+  border-color:rgb(180 92 98 / 62%) !important;
+  box-shadow:0 18px 42px -24px rgb(116 36 45 / 65%),0 0 0 5px rgb(116 36 45 / 8%);
+}
+.tadeon-shell .tadeon-sidebar-collapse[data-state="collapsed"] svg{animation:thn-chevron-in 420ms var(--thn-spring) both}
+.tadeon-shell .tadeon-sidebar-collapse[data-state="expanded"] svg{animation:thn-chevron-out 420ms var(--thn-spring) both}
+@keyframes thn-chevron-in{from{opacity:0;transform:translateX(-7px) scale(.72) rotate(-18deg)}65%{opacity:1;transform:translateX(2px) scale(1.08) rotate(2deg)}to{transform:none}}
+@keyframes thn-chevron-out{from{opacity:0;transform:translateX(7px) scale(.72) rotate(18deg)}65%{opacity:1;transform:translateX(-2px) scale(1.08) rotate(-2deg)}to{transform:none}}
+
+/* sidebar headings / identity — arrive separately from navigation */
+.tadeon-shell > #tadeon-desktop-sidebar .tadeon-eyebrow,
+.tadeon-shell > #tadeon-desktop-sidebar h1,
+.tadeon-shell > #tadeon-desktop-sidebar .tadeon-sidebar__scroll,
+.tadeon-shell > #tadeon-desktop-sidebar .tadeon-sidebar > .relative.z-10:last-child{
+  animation:thn-sidebar-arrive 560ms var(--thn-in) both;
+}
+@keyframes thn-sidebar-arrive{from{opacity:0;transform:translateX(-18px);filter:blur(5px)}65%{opacity:1;transform:translateX(3px);filter:blur(0)}to{transform:none}}
+
+/* ================================================================
+   PRIMARY NAV — each destination has a traceable arrival/response.
+   ================================================================ */
+.tadeon-shell .tadeon-primary-nav{position:relative}
+.tadeon-shell .tadeon-primary-nav .tadeon-nav-item{
+  position:relative;
+  isolation:isolate;
+  overflow:hidden;
+  transform-origin:left center;
+  transition:
+    transform 260ms var(--thn-spring),
+    color 220ms ease,
+    background-color 260ms ease,
+    border-color 260ms ease,
+    box-shadow 360ms var(--thn-in) !important;
+}
+.tadeon-shell .tadeon-primary-nav .tadeon-nav-item::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  z-index:-1;
+  border-radius:inherit;
+  background:linear-gradient(90deg,rgb(116 36 45 / 30%),rgb(217 215 164 / 6%),transparent 84%);
+  opacity:0;
+  transform:translateX(-24%) scaleX(.7);
+  transform-origin:left center;
+  transition:opacity 320ms ease,transform 460ms var(--thn-in);
+}
+.tadeon-shell .tadeon-primary-nav .tadeon-nav-item:hover::before,
+.tadeon-shell .tadeon-primary-nav .tadeon-nav-item[aria-current="page"]::before{opacity:1;transform:none}
+.tadeon-shell .tadeon-primary-nav .tadeon-nav-item:hover{transform:translateX(7px) translateY(-2px) !important}
+.tadeon-shell .tadeon-primary-nav .tadeon-nav-item:active{transform:translateX(3px) scale(.965) !important}
+.tadeon-shell .tadeon-primary-nav .tadeon-nav-item[aria-current="page"]{
+  animation:thn-nav-land 520ms var(--thn-spring) both;
+  box-shadow:inset 3px 0 rgb(180 92 98 / 80%),0 14px 30px -26px rgb(116 36 45 / 65%) !important;
+}
+.tadeon-shell .tadeon-primary-nav .tadeon-nav-item[aria-current="page"]::after{
+  content:"";
+  position:absolute;
+  left:0;
+  top:10%;
+  bottom:10%;
+  width:3px;
+  border-radius:999px;
+  background:#b45c62;
+  box-shadow:0 0 16px rgb(116 36 45 / 50%);
+  animation:thn-nav-rail 420ms var(--thn-in) both;
+}
+@keyframes thn-nav-land{from{opacity:.62;transform:translateX(-14px) scale(.94)}62%{opacity:1;transform:translateX(4px) scale(1.025)}to{transform:none}}
+@keyframes thn-nav-rail{from{opacity:0;transform:scaleY(.2)}to{opacity:1;transform:scaleY(1)}}
+
+.tadeon-shell .tadeon-primary-nav [data-slot="global-search-trigger"],
+.tadeon-shell .tadeon-primary-nav .tadeon-global-search-trigger{
+  transition:transform 320ms var(--thn-spring),box-shadow 360ms var(--thn-in),border-color 240ms ease;
+}
+.tadeon-shell .tadeon-primary-nav [data-slot="global-search-trigger"]:hover,
+.tadeon-shell .tadeon-primary-nav .tadeon-global-search-trigger:hover{transform:translateX(6px) scale(1.015)}
+
+/* section labels */
+.tadeon-shell .tadeon-primary-nav [data-tadeon-nav-group-label]{
+  animation:thn-label-in 420ms var(--thn-in) both;
+}
+@keyframes thn-label-in{from{opacity:0;transform:translateX(-10px);letter-spacing:.12em}to{opacity:1;transform:none;letter-spacing:normal}}
+
+/* ================================================================
+   HEADERS / HEROES — titles and utility rails no longer just sit there.
+   ================================================================ */
+.tadeon-shell .tadeon-desktop-toolbar{
+  position:relative;
+  overflow:hidden;
+  transition:background-color 320ms ease,border-color 320ms ease,box-shadow 420ms ease;
+}
+.tadeon-shell .tadeon-desktop-toolbar::after{
+  content:"";
+  position:absolute;
+  left:-12%;
+  right:-12%;
+  bottom:-1px;
+  height:1px;
+  background:linear-gradient(90deg,transparent,rgb(180 92 98 / 34%),rgb(217 215 164 / 22%),transparent);
+  transform:scaleX(.35);
+  transform-origin:center;
+  animation:thn-toolbar-line 820ms var(--thn-in) both;
+}
+@keyframes thn-toolbar-line{from{opacity:0;transform:scaleX(.08)}to{opacity:1;transform:scaleX(1)}}
+
+.tadeon-shell .tadeon-desktop-toolbar .tadeon-eyebrow{
+  animation:thn-eyebrow-in 520ms var(--thn-in) both;
+}
+.tadeon-shell .tadeon-desktop-toolbar h2{
+  animation:thn-title-in 620ms var(--thn-spring) both;
+}
+.tadeon-shell .tadeon-desktop-toolbar h2 + p{
+  animation:thn-description-in 560ms var(--thn-in) 65ms both;
+}
+.tadeon-shell .tadeon-desktop-toolbar__role,
+.tadeon-shell .tadeon-desktop-toolbar__account{
+  animation:thn-utility-in 520ms var(--thn-spring) 90ms both;
+}
+@keyframes thn-eyebrow-in{from{opacity:0;transform:translateY(10px);letter-spacing:.2em}to{opacity:1;transform:none}}
+@keyframes thn-title-in{from{opacity:0;transform:translateY(18px) scale(.96);filter:blur(6px)}65%{opacity:1;transform:translateY(-3px) scale(1.012);filter:blur(0)}to{transform:none}}
+@keyframes thn-description-in{from{opacity:0;transform:translateX(-10px)}to{opacity:1;transform:none}}
+@keyframes thn-utility-in{from{opacity:0;transform:translateY(-10px) scale(.9)}65%{opacity:1;transform:translateY(2px) scale(1.03)}to{transform:none}}
+
+/* broad semantic headings / hero elements */
+.tadeon-shell .tadeon-page :is(h1,h2,h3)[class*="font-cinzel"],
+.tadeon-shell .tadeon-page .tadeon-hero-title,
+.tadeon-shell .tadeon-page .tadeon-headline{
+  animation:thn-content-title 620ms var(--thn-spring) both;
+}
+.tadeon-shell .tadeon-page :is(.tadeon-eyebrow,[class*="eyebrow"]){
+  animation:thn-eyebrow-in 460ms var(--thn-in) both;
+}
+@keyframes thn-content-title{from{opacity:0;transform:translateY(24px) scale(.97);filter:blur(7px)}60%{opacity:1;transform:translateY(-4px) scale(1.015);filter:blur(0)}to{transform:none}}
+
+/* ================================================================
+   BARS / PROGRESS / METERS — movement follows the value, not a pulse.
+   ================================================================ */
+.tadeon-shell [role="progressbar"],
+.tadeon-shell [data-slot="progress"],
+.tadeon-shell [data-slot="slider-track"],
+.tadeon-shell [data-tadeon-meter],
+.tadeon-shell [data-tadeon-progress]{
+  overflow:hidden;
+  position:relative;
+}
+.tadeon-shell [role="progressbar"] > *,
+.tadeon-shell [data-slot="progress"] > *,
+.tadeon-shell [data-slot="slider-range"]{
+  transform-origin:left center;
+  transition:transform 620ms var(--thn-in),width 620ms var(--thn-in),background-color 320ms ease,box-shadow 360ms ease;
+}
+.tadeon-shell [data-slot="progress"] > *::after,
+.tadeon-shell [data-tadeon-progress]::after,
+.tadeon-shell [data-tadeon-meter]::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:linear-gradient(105deg,transparent 32%,rgb(255 255 255 / 12%) 50%,transparent 68%);
+  transform:translateX(-120%);
+  animation:thn-bar-sheen 2.2s ease-in-out infinite;
+  pointer-events:none;
+}
+@keyframes thn-bar-sheen{52%,100%{transform:translateX(120%)}}
+
+.tadeon-shell [data-slot="slider-thumb"]{
+  transform-origin:center;
+  transition:transform 220ms var(--thn-spring),box-shadow 320ms var(--thn-in),border-color 220ms ease !important;
+}
+.tadeon-shell [data-slot="slider-thumb"]:hover{transform:scale(1.18);box-shadow:0 10px 28px -18px rgb(217 215 164 / 70%)}
+.tadeon-shell [data-slot="slider-thumb"]:active{transform:scale(.88)}
+
+/* ================================================================
+   LISTS / TABLES — rows should enter as records, not teleport.
+   ================================================================ */
+.tadeon-shell table tbody tr,
+.tadeon-shell [role="row"]{
+  animation:thn-row-in 430ms var(--thn-in) both;
+  animation-delay:calc(var(--tadeon-index, 0) * 32ms);
+  transition:transform 240ms var(--thn-spring),background-color 220ms ease,box-shadow 320ms ease;
+}
+.tadeon-shell table tbody tr:hover,
+.tadeon-shell [role="row"]:hover{transform:translateX(5px)}
+@keyframes thn-row-in{from{opacity:0;transform:translateX(-16px)}68%{opacity:1;transform:translateX(3px)}to{transform:none}}
+
+/* badges / chips */
+.tadeon-shell [data-slot="badge"],
+.tadeon-shell [data-tadeon-chip],
+.tadeon-shell .tadeon-sheet-condition-chip{
+  transform-origin:center;
+  transition:transform 260ms var(--thn-spring),filter 240ms ease,box-shadow 300ms ease;
+}
+.tadeon-shell [data-slot="badge"]:hover,
+.tadeon-shell [data-tadeon-chip]:hover,
+.tadeon-shell .tadeon-sheet-condition-chip:hover{transform:translateY(-2px) scale(1.035);filter:brightness(1.05);box-shadow:0 12px 24px -22px rgb(217 215 164 / 55%)}
+
+/* ================================================================
+   MOBILE HEADER / DOCK — stronger but still compact.
+   ================================================================ */
+.tadeon-shell .tadeon-mobile-header{
+  transition:background-color 300ms ease,box-shadow 380ms ease,transform 380ms var(--thn-in);
+}
+.tadeon-shell .tadeon-mobile-header__thread{animation:thn-mobile-thread 9s ease-in-out infinite alternate}
+@keyframes thn-mobile-thread{from{transform:translateX(-8%);opacity:.3}to{transform:translateX(9%);opacity:.72}}
+.tadeon-shell .tadeon-mobile-header__control{
+  transition:transform 260ms var(--thn-spring),background-color 220ms ease,border-color 220ms ease,box-shadow 320ms ease !important;
+}
+.tadeon-shell .tadeon-mobile-header__control:hover{transform:translateY(-3px) scale(1.04) !important;box-shadow:0 14px 30px -24px rgb(116 36 45 / 70%)}
+.tadeon-shell .tadeon-mobile-header__control:active{transform:translateY(2px) scale(.9) !important}
+.tadeon-shell .tadeon-mobile-header__identity{animation:thn-mobile-identity 560ms var(--thn-spring) both}
+@keyframes thn-mobile-identity{from{opacity:0;transform:translateY(10px) scale(.94)}60%{opacity:1;transform:translateY(-2px) scale(1.02)}to{transform:none}}
+
+.tadeon-shell .tadeon-mobile-dock__item{
+  transform-origin:center bottom;
+  transition:transform 260ms var(--thn-spring),color 220ms ease,background-color 240ms ease,box-shadow 300ms ease;
+}
+.tadeon-shell .tadeon-mobile-dock__item:hover{transform:translateY(-5px) scale(1.03)}
+.tadeon-shell .tadeon-mobile-dock__item:active{transform:translateY(2px) scale(.9)}
+.tadeon-shell .tadeon-mobile-dock__item[aria-current="page"]{animation:thn-dock-land 480ms var(--thn-spring) both}
+@keyframes thn-dock-land{from{opacity:.55;transform:translateY(8px) scale(.82)}60%{opacity:1;transform:translateY(-4px) scale(1.08)}to{transform:none}}
+
+/* ================================================================
+   MOBILE MENU / DRAWER — preserve the real Sheet mechanics, improve interior.
+   ================================================================ */
+.tadeon-shell .tadeon-mobile-drawer[data-state="open"]{
+  animation:thn-drawer-in 560ms var(--thn-in) both !important;
+}
+.tadeon-shell .tadeon-mobile-drawer[data-state="closed"]{
+  animation:thn-drawer-out 300ms var(--thn-out) both !important;
+}
+.tadeon-shell .tadeon-mobile-drawer .tadeon-sidebar__scroll{
+  scrollbar-width:thin;
+  scrollbar-color:rgb(180 92 98 / 38%) transparent;
+}
+.tadeon-shell .tadeon-mobile-drawer .tadeon-primary-nav .tadeon-nav-item{
+  animation:thn-mobile-nav-in 430ms var(--thn-in) both;
+  animation-delay:calc(var(--tadeon-index,0) * 35ms);
+}
+@keyframes thn-drawer-in{from{opacity:0;transform:translateX(-100%) scale(.97)}65%{opacity:1;transform:translateX(10px) scale(1.006)}to{transform:none}}
+@keyframes thn-drawer-out{to{opacity:0;transform:translateX(-100%) scale(.98)}}
+@keyframes thn-mobile-nav-in{from{opacity:0;transform:translateX(-18px);filter:blur(4px)}to{opacity:1;transform:none;filter:blur(0)}}
+
+/* remove accidental transform stacking from old broad rules */
+.tadeon-shell .tadeon-mobile-drawer .tadeon-primary-nav .tadeon-nav-item:hover{transform:translateX(6px) !important}
+
+/* Reduced motion: preserve state changes, remove choreography. */
+@media (prefers-reduced-motion: reduce){
+  .tadeon-shell > #tadeon-desktop-sidebar,
+  .tadeon-shell .tadeon-sidebar-collapse,
+  .tadeon-shell .tadeon-primary-nav .tadeon-nav-item,
+  .tadeon-shell .tadeon-desktop-toolbar,
+  .tadeon-shell .tadeon-desktop-toolbar h2,
+  .tadeon-shell .tadeon-mobile-header,
+  .tadeon-shell .tadeon-mobile-header__identity,
+  .tadeon-shell .tadeon-mobile-dock__item,
+  .tadeon-shell .tadeon-mobile-drawer,
+  .tadeon-shell table tbody tr,
+  .tadeon-shell [role="row"]{
+    animation:none !important;
+    transition:none !important;
+  }
+}
