@@ -1,0 +1,184 @@
+/* Tadeon Head System — Nexus reference applied to sibling heads.
+   The Nexus commandbar is the visual benchmark: deep material surface,
+   real circular mark, editorial hierarchy, peripheral orbital geometry,
+   and firmly anchored actions. Page-specific DOM remains intact. */
+
+:root {
+  --tadeon-head-bg-a: 17 20 25;
+  --tadeon-head-bg-b: 8 11 15;
+  --tadeon-head-ink: 217 215 164;
+  --tadeon-head-secondary: 79 110 93;
+}
+
+@keyframes tadeon-head-reference-drift {
+  0%, 100% { transform: translate3d(0,0,0) rotate(0deg); }
+  50% { transform: translate3d(-7px,4px,0) rotate(4deg); }
+}
+
+/* Shared material. */
+html body :is(
+  .tadeon-dashboard-hero,
+  .tadeon-page-hero[data-tadeon-page-hero],
+  .tadeon-master-commandbar,
+  .tadeon-tabletop-studio__header
+) {
+  position: relative !important;
+  isolation: isolate !important;
+  overflow: clip !important;
+  border: 1px solid rgb(var(--tadeon-head-secondary) / 22%) !important;
+  border-radius: 1rem !important;
+  background:
+    radial-gradient(circle at 84% -18%, rgb(var(--tadeon-head-secondary) / 11%), transparent 18rem),
+    radial-gradient(circle at 26% 118%, rgb(var(--tadeon-head-ink) / 7%), transparent 22rem),
+    linear-gradient(138deg, rgb(255 255 255 / 4%), transparent 44%),
+    linear-gradient(145deg, rgb(var(--tadeon-head-bg-a) / 97%), rgb(var(--tadeon-head-bg-b) / 97%)) !important;
+  box-shadow:
+    0 30px 82px -58px rgb(0 0 0 / 100%),
+    0 20px 54px -44px rgb(var(--tadeon-head-secondary) / 28%),
+    inset 0 1px rgb(255 255 255 / 5%) !important;
+}
+
+/* Per-domain temperature. */
+.tadeon-dashboard-hero { --head-rgb: 217 215 164; --head-secondary-rgb: 79 110 93; }
+.tadeon-master-commandbar { --head-rgb: 122 49 56; --head-secondary-rgb: 217 215 164; }
+.tadeon-page-hero[data-tadeon-page-hero="users"] { --head-rgb: 183 129 77; --head-secondary-rgb: 217 215 164; }
+.tadeon-page-hero[data-tadeon-page-hero="tools"] { --head-rgb: 122 129 135; --head-secondary-rgb: 84 123 148; }
+.tadeon-page-hero[data-tadeon-page-hero="offline"] { --head-rgb: 113 107 123; --head-secondary-rgb: 79 110 93; }
+.tadeon-tabletop-studio__header { --head-rgb: 84 123 148; --head-secondary-rgb: 183 129 77; }
+
+html body :is(
+  .tadeon-dashboard-hero,
+  .tadeon-page-hero[data-tadeon-page-hero],
+  .tadeon-master-commandbar,
+  .tadeon-tabletop-studio__header
+)::before {
+  position: absolute !important;
+  z-index: 0 !important;
+  top: -8.5rem !important;
+  right: clamp(2rem, 8vw, 10rem) !important;
+  width: 19rem !important;
+  height: 19rem !important;
+  border: 1px solid rgb(var(--head-secondary-rgb) / 24%) !important;
+  border-radius: 50% !important;
+  background: radial-gradient(circle, transparent 47%, rgb(var(--head-secondary-rgb) / 3%) 48% 51%, transparent 52%) !important;
+  box-shadow:
+    0 0 0 2.4rem rgb(var(--head-secondary-rgb) / 3.3%),
+    0 0 0 5.2rem rgb(var(--head-rgb) / 2%),
+    0 0 72px -30px rgb(var(--head-secondary-rgb) / 34%) !important;
+  opacity: .95 !important;
+  pointer-events: none !important;
+  content: "" !important;
+  animation: tadeon-head-reference-drift 12s ease-in-out infinite !important;
+}
+
+html body :is(
+  .tadeon-dashboard-hero,
+  .tadeon-page-hero[data-tadeon-page-hero],
+  .tadeon-master-commandbar,
+  .tadeon-tabletop-studio__header
+)::after {
+  position: absolute !important;
+  z-index: 0 !important;
+  right: 4% !important;
+  bottom: -6.8rem !important;
+  width: 13rem !important;
+  height: 13rem !important;
+  border: 1px solid rgb(var(--head-rgb) / 19%) !important;
+  border-radius: 50% !important;
+  box-shadow:
+    0 0 0 1.8rem rgb(var(--head-rgb) / 2.8%),
+    0 0 0 4rem rgb(var(--head-secondary-rgb) / 2%) !important;
+  opacity: .78 !important;
+  pointer-events: none !important;
+  content: "" !important;
+}
+
+/* Dashboard. */
+html body .tadeon-dashboard-hero {
+  min-height: 8.8rem !important;
+  padding: 1.25rem 1.5rem !important;
+}
+html body .tadeon-dashboard-hero > * { position: relative; z-index: 2; }
+html body .tadeon-dashboard-hero .tadeon-eyebrow,
+html body .tadeon-dashboard-hero h1 { color: rgb(var(--head-rgb)) !important; }
+html body .tadeon-dashboard-hero h1 {
+  font-size: clamp(2rem, 3vw, 3.15rem) !important;
+  line-height: .98 !important;
+  letter-spacing: -.028em !important;
+}
+html body .tadeon-dashboard-hero > .relative.z-10 > :last-child {
+  position: relative !important;
+  z-index: 3 !important;
+}
+
+/* Generic page heads: same presence as Nexus without fake grid assumptions. */
+html body .tadeon-page-hero[data-tadeon-page-hero] {
+  min-height: 7.8rem !important;
+  padding: 1.1rem 1.35rem !important;
+}
+html body .tadeon-page-hero[data-tadeon-page-hero] > * { position: relative; z-index: 2; }
+html body .tadeon-page-hero[data-tadeon-page-hero] .tadeon-eyebrow,
+html body .tadeon-page-hero[data-tadeon-page-hero] h1 { color: rgb(var(--head-rgb)) !important; }
+html body .tadeon-page-hero[data-tadeon-page-hero] h1 {
+  font-size: clamp(1.65rem, 2.5vw, 2.35rem) !important;
+  line-height: 1.02 !important;
+  letter-spacing: -.02em !important;
+}
+
+/* Master command bar. */
+html body .tadeon-master-commandbar {
+  min-height: 7.8rem !important;
+  padding: 1.1rem 1.35rem !important;
+}
+html body .tadeon-master-commandbar > * { position: relative; z-index: 2; }
+html body .tadeon-master-commandbar :is(.tadeon-eyebrow, h1) { color: rgb(var(--head-rgb)) !important; }
+html body .tadeon-master-commandbar h1 {
+  font-size: clamp(1.65rem, 2.4vw, 2.25rem) !important;
+  line-height: 1.02 !important;
+}
+
+/* Mesa: preserve the 3 functional bands, but make all bands read as one Nexus-grade head. */
+@media (min-width: 768px) {
+  html body .tadeon-tabletop-studio__header {
+    padding: .8rem 1rem .75rem !important;
+    border-radius: 1rem !important;
+  }
+  html body .tadeon-tabletop-studio__header > .tadeon-tabletop-studio__primary,
+  html body .tadeon-tabletop-studio__header > .tadeon-tabletop-toolbar,
+  html body .tadeon-tabletop-studio__header > .tadeon-live-session {
+    position: relative;
+    z-index: 2;
+  }
+  html body .tadeon-tabletop-studio__header .tadeon-tabletop-studio__brand {
+    padding: .15rem .4rem .15rem 0 !important;
+  }
+  html body .tadeon-tabletop-studio__header .tadeon-tabletop-studio__brand :is(.tadeon-eyebrow, h1) {
+    color: rgb(var(--head-rgb)) !important;
+  }
+  html body .tadeon-tabletop-studio__header .tadeon-tabletop-toolbar {
+    border-top-color: rgb(var(--head-rgb) / 16%) !important;
+    border-bottom-color: rgb(var(--head-secondary-rgb) / 11%) !important;
+    background: linear-gradient(90deg, rgb(var(--head-rgb) / 4%), transparent 48%, rgb(var(--head-secondary-rgb) / 3%)) !important;
+  }
+  html body .tadeon-tabletop-studio__header .tadeon-live-session {
+    border: 1px solid rgb(var(--head-secondary-rgb) / 12%) !important;
+    border-radius: .8rem !important;
+    background: rgb(255 255 255 / 1.5%) !important;
+  }
+}
+
+@media (max-width: 767px) {
+  html body :is(.tadeon-dashboard-hero, .tadeon-page-hero[data-tadeon-page-hero], .tadeon-master-commandbar, .tadeon-tabletop-studio__header) {
+    border-radius: .8rem !important;
+  }
+  html body :is(.tadeon-dashboard-hero, .tadeon-page-hero[data-tadeon-page-hero], .tadeon-master-commandbar)::before,
+  html body :is(.tadeon-dashboard-hero, .tadeon-page-hero[data-tadeon-page-hero], .tadeon-master-commandbar)::after {
+    transform: scale(.72) !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html body :is(.tadeon-dashboard-hero, .tadeon-page-hero[data-tadeon-page-hero], .tadeon-master-commandbar, .tadeon-tabletop-studio__header)::before {
+    animation: none !important;
+  }
+}
