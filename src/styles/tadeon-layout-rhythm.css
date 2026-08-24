@@ -1,0 +1,166 @@
+/* Tadeon Layout Rhythm — shared grid, spacing and density contract. */
+
+:root {
+  --tadeon-space-1: .25rem;
+  --tadeon-space-2: .5rem;
+  --tadeon-space-3: .75rem;
+  --tadeon-space-4: 1rem;
+  --tadeon-space-5: 1.25rem;
+  --tadeon-space-6: 1.5rem;
+  --tadeon-space-8: 2rem;
+  --tadeon-space-10: 2.5rem;
+  --tadeon-space-12: 3rem;
+  --tadeon-content-max: 88rem;
+  --tadeon-column-gap: clamp(1rem, 2vw, 1.5rem);
+  --tadeon-section-gap: clamp(1.35rem, 2.6vw, 2.15rem);
+}
+
+.tadeon-route-stage,
+.tadeon-page,
+.tadeon-master-workspace,
+.tadeon-sheet-page,
+.tadeon-second-brain {
+  width: min(100%, var(--tadeon-content-max));
+  margin-inline: auto;
+}
+
+.tadeon-page,
+.tadeon-master-workspace,
+.tadeon-sheet-page {
+  display: flow-root;
+}
+
+.tadeon-page > :where(section, article, .tadeon-surface, .tadeon-state-panel),
+.tadeon-master-workspace > :where(section, article, .tadeon-surface),
+.tadeon-sheet-page > :where(section, article, .tadeon-sheet-section) {
+  margin-bottom: var(--tadeon-section-gap);
+}
+
+.tadeon-page > :last-child,
+.tadeon-master-workspace > :last-child,
+.tadeon-sheet-page > :last-child {
+  margin-bottom: 0;
+}
+
+/* Shared two-column rhythm for contextual layouts. */
+.tadeon-page [data-tadeon-layout="split"],
+.tadeon-master-workspace [data-tadeon-layout="split"],
+.tadeon-sheet-page [data-tadeon-layout="split"] {
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(17rem, .75fr);
+  gap: var(--tadeon-column-gap);
+  align-items: start;
+}
+
+/* Card groups share a single density contract. */
+.tadeon-page [data-tadeon-layout="cards"],
+.tadeon-master-workspace [data-tadeon-layout="cards"],
+.tadeon-sheet-page [data-tadeon-layout="cards"] {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: var(--tadeon-column-gap);
+}
+
+.tadeon-page [data-tadeon-layout="cards"] > *,
+.tadeon-master-workspace [data-tadeon-layout="cards"] > *,
+.tadeon-sheet-page [data-tadeon-layout="cards"] > * {
+  min-width: 0;
+  grid-column: span 4;
+}
+
+/* Vertical rhythm inside surfaces: heading, body, metadata, actions. */
+.tadeon-surface,
+.tadeon-state-panel,
+.tadeon-sheet-section,
+.tadeon-link-panel,
+.tadeon-skill-modifier-panel {
+  --surface-pad: clamp(1rem, 1.65vw, 1.45rem);
+}
+
+.tadeon-surface > :first-child,
+.tadeon-state-panel > :first-child,
+.tadeon-sheet-section > :first-child,
+.tadeon-link-panel > :first-child,
+.tadeon-skill-modifier-panel > :first-child {
+  margin-top: 0;
+}
+
+.tadeon-surface > :last-child,
+.tadeon-state-panel > :last-child,
+.tadeon-sheet-section > :last-child,
+.tadeon-link-panel > :last-child,
+.tadeon-skill-modifier-panel > :last-child {
+  margin-bottom: 0;
+}
+
+/* Dense data never uses the same spacing as narrative copy. */
+.tadeon-shell .tadeon-mono,
+.tadeon-shell [data-tadeon-meta],
+.tadeon-shell [data-state],
+.tadeon-shell [aria-live] {
+  line-height: 1.35;
+}
+
+.tadeon-shell [data-tadeon-meta] {
+  letter-spacing: .06em;
+}
+
+/* Prevent long titles from changing component geometry unpredictably. */
+.tadeon-page :is(h1, h2, h3),
+.tadeon-master-workspace :is(h1, h2, h3),
+.tadeon-sheet-page :is(h1, h2, h3),
+.tadeon-second-brain :is(h1, h2, h3) {
+  text-wrap: balance;
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 1024px) {
+  .tadeon-route-stage,
+  .tadeon-page,
+  .tadeon-master-workspace,
+  .tadeon-sheet-page,
+  .tadeon-second-brain {
+    width: min(100%, calc(100% - 2rem));
+  }
+
+  .tadeon-page [data-tadeon-layout="split"],
+  .tadeon-master-workspace [data-tadeon-layout="split"],
+  .tadeon-sheet-page [data-tadeon-layout="split"] {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .tadeon-page [data-tadeon-layout="cards"] > *,
+  .tadeon-master-workspace [data-tadeon-layout="cards"] > *,
+  .tadeon-sheet-page [data-tadeon-layout="cards"] > * {
+    grid-column: span 6;
+  }
+}
+
+@media (max-width: 767px) {
+  :root {
+    --tadeon-column-gap: .8rem;
+    --tadeon-section-gap: 1.1rem;
+  }
+
+  .tadeon-route-stage,
+  .tadeon-page,
+  .tadeon-master-workspace,
+  .tadeon-sheet-page,
+  .tadeon-second-brain {
+    width: min(100%, calc(100% - 1rem));
+  }
+
+  .tadeon-page [data-tadeon-layout="cards"] > *,
+  .tadeon-master-workspace [data-tadeon-layout="cards"] > *,
+  .tadeon-sheet-page [data-tadeon-layout="cards"] > * {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tadeon-page *,
+  .tadeon-master-workspace *,
+  .tadeon-sheet-page * {
+    scroll-behavior: auto !important;
+  }
+}
