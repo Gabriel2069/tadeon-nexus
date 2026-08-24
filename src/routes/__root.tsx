@@ -37,6 +37,7 @@ import atmosphereCss from "../styles/tadeon-atmosphere.css?url";
 import interactionPassCss from "../styles/tadeon-interaction-pass.css?url";
 import headMicroanimationsCss from "../styles/tadeon-head-microanimations.css?url";
 import motionSystemCss from "../styles/tadeon-motion-system.css?url";
+import contextualMotionCss from "../styles/tadeon-contextual-motion.css?url";
 import { AuthProvider } from "@/lib/auth";
 import { Toaster } from "@/components/ui/sonner";
 import { PwaRegistration } from "@/components/pwa-registration";
@@ -83,7 +84,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { rel: "stylesheet", href: experienceMaterialsCss }, { rel: "stylesheet", href: experienceMobileCss }, { rel: "stylesheet", href: experienceDetailsCss },
       { rel: "stylesheet", href: commandExperienceCss }, { rel: "stylesheet", href: nexusMaterialCss }, { rel: "stylesheet", href: visibleUpgradeCss },
       { rel: "stylesheet", href: atmosphereCss }, { rel: "stylesheet", href: interactionPassCss }, { rel: "stylesheet", href: headMicroanimationsCss },
-      { rel: "stylesheet", href: motionSystemCss },
+      { rel: "stylesheet", href: motionSystemCss }, { rel: "stylesheet", href: contextualMotionCss },
       { rel: "manifest", href: "/manifest.webmanifest" }, { rel: "icon", href: "/favicon.svg?v=5", type: "image/svg+xml", sizes: "any" }, { rel: "apple-touch-icon", href: "/apple-touch-icon.png", sizes: "180x180" },
       { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Inter:wght@400;500;600;700&family=PT+Mono&display=swap" },
     ],
