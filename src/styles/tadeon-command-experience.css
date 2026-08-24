@@ -1,20 +1,13 @@
 /* Tadeon Command Experience ~ master + tabletop
    Editorial control surface, not a dashboard skin. */
 
-/* --------------------------------------------------------------------------
-   Master command center
-   -------------------------------------------------------------------------- */
-
 .tadeon-shell[data-section="Painel do Mestre"] {
   --tadeon-command-accent: var(--tadeon-flow);
   --tadeon-command-accent-soft: rgb(79 110 93 / 10%);
 }
 
-.tadeon-shell[data-section="Painel do Mestre"] .tadeon-master-commandbar__glow {
-  position: relative;
-  isolation: isolate;
-  overflow: hidden;
-  border: 1px solid color-mix(in srgb, var(--tadeon-command-accent) 26%, var(--border));
+.tadeon-shell[data-section="Painel do Mestre"] .tadeon-master-commandbar {
+  border-color: color-mix(in srgb, var(--tadeon-command-accent) 24%, var(--border));
   border-radius: 1.15rem .38rem 1.15rem .38rem;
   background:
     linear-gradient(125deg, color-mix(in srgb, var(--tadeon-command-accent) 7%, var(--card)), transparent 52%),
@@ -24,16 +17,37 @@
     0 32px 80px -60px rgb(0 0 0 / 96%),
     inset 0 1px rgb(255 255 255 / 3%),
     inset 1px 0 color-mix(in srgb, var(--tadeon-command-accent) 12%, transparent);
+  backdrop-filter: blur(16px) saturate(115%);
 }
 
-.tadeon-shell[data-section="Painel do Mestre"] .tadeon-master-commandbar__glow::before {
+.tadeon-shell[data-section="Painel do Mestre"] .tadeon-master-commandbar::after {
+  position: absolute;
+  inset: auto 1rem 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--tadeon-command-accent) 34%, var(--tadeon-knowledge)), transparent);
+  content: "";
+  opacity: .66;
+}
+
+.tadeon-shell[data-section="Painel do Mestre"] .tadeon-master-commandbar__glow {
   position: absolute;
   inset: 0;
   background:
     linear-gradient(120deg, transparent 0 28%, rgb(217 215 164 / 3%) 42%, transparent 58%),
     radial-gradient(circle at 78% 100%, var(--tadeon-command-accent-soft), transparent 34%);
-  content: "";
   pointer-events: none;
+}
+
+.tadeon-shell[data-section="Painel do Mestre"] .tadeon-master-commandbar h1,
+.tadeon-shell[data-section="Painel do Mestre"] .tadeon-master-commandbar p,
+.tadeon-shell[data-section="Painel do Mestre"] .tadeon-master-commandbar button,
+.tadeon-shell[data-section="Painel do Mestre"] .tadeon-master-commandbar [data-state] {
+  position: relative;
+  z-index: 1;
+}
+
+.tadeon-shell[data-section="Painel do Mestre"] .tadeon-master-commandbar h1 svg {
+  filter: drop-shadow(0 0 10px rgb(217 215 164 / 18%));
 }
 
 .tadeon-master-commandbar__sigil-stack {
@@ -122,13 +136,9 @@
   text-transform: uppercase;
 }
 
-/* Give the operational surfaces a clear reading hierarchy. */
-.tadeon-shell[data-section="Painel do Mestre"] .tadeon-route-stage > .tadeon-page > * {
-  --command-depth: 0;
-}
-
 .tadeon-shell[data-section="Painel do Mestre"] .tadeon-dashboard-signal {
   position: relative;
+  overflow: hidden;
   border-color: color-mix(in srgb, var(--tadeon-command-accent) 18%, var(--border));
   background:
     linear-gradient(135deg, color-mix(in srgb, var(--tadeon-command-accent) 7%, transparent), transparent 58%),
@@ -151,10 +161,6 @@
 .tadeon-shell[data-section="Painel do Mestre"] .tadeon-route-stage [role="tabpanel"] > * {
   scroll-margin-top: 7rem;
 }
-
-/* --------------------------------------------------------------------------
-   Tabletop: turn the canvas into a stage
-   -------------------------------------------------------------------------- */
 
 .tadeon-shell[data-section="Mesa Nexus"] {
   --tadeon-tabletop-accent: var(--tadeon-arden);
@@ -247,7 +253,6 @@
   text-transform: uppercase;
 }
 
-/* Canvas chrome: keep tools inside the scene instead of floating above it. */
 .tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-stage,
 .tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-canvas,
 .tadeon-shell[data-section="Mesa Nexus"] [data-tabletop-stage] {
