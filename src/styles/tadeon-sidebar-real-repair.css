@@ -1,0 +1,210 @@
+/* Tadeon sidebar — real implementation repair.
+   NavItem currently removes its text node when data-mini=true, so this layer keeps
+   the actual icon rail stable and exposes the item identity through a controlled
+   flyout instead of allowing the icon/details to disappear into the collapse. */
+
+@media (min-width: 768px) {
+  #tadeon-desktop-sidebar {
+    transition: width 420ms cubic-bezier(.22,1,.36,1),
+      border-color 260ms ease,
+      box-shadow 420ms cubic-bezier(.22,1,.36,1) !important;
+  }
+
+  #tadeon-desktop-sidebar .tadeon-primary-nav {
+    overflow: visible;
+  }
+
+  /* Never let the icon be affected by the collapsed label state. */
+  #tadeon-desktop-sidebar .tadeon-nav-item {
+    position: relative;
+    flex-shrink: 0;
+    min-width: 0;
+    transition: width 360ms cubic-bezier(.22,1,.36,1),
+      padding 360ms cubic-bezier(.22,1,.36,1),
+      gap 220ms ease,
+      color 220ms ease,
+      background-color 260ms ease,
+      border-color 260ms ease,
+      box-shadow 300ms cubic-bezier(.22,1,.36,1),
+      transform 180ms cubic-bezier(.22,1,.36,1) !important;
+  }
+
+  #tadeon-desktop-sidebar .tadeon-nav-item__icon {
+    position: relative;
+    z-index: 2;
+    display: inline-flex !important;
+    width: 1.25rem !important;
+    min-width: 1.25rem !important;
+    height: 1.25rem !important;
+    min-height: 1.25rem !important;
+    flex: 0 0 1.25rem !important;
+    align-items: center;
+    justify-content: center;
+    opacity: 1 !important;
+    visibility: visible !important;
+    transform: translateZ(0);
+    transition: color 240ms ease, filter 260ms ease, transform 300ms cubic-bezier(.22,1,.36,1);
+  }
+
+  #tadeon-desktop-sidebar .tadeon-nav-item__icon > svg {
+    display: block !important;
+    width: 1rem !important;
+    height: 1rem !important;
+    flex: 0 0 1rem !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+  }
+
+  /* Collapsed rail: preserve the icon as an anchored object, not a side effect
+     of the removed label. */
+  #tadeon-desktop-sidebar[data-collapsed="true"] .tadeon-nav-item {
+    width: 2.5rem;
+    min-height: 2.75rem;
+    margin-inline: auto;
+    justify-content: center;
+    gap: 0 !important;
+    padding: .625rem !important;
+    border-radius: .78rem;
+  }
+
+  #tadeon-desktop-sidebar[data-collapsed="true"] .tadeon-nav-item__icon {
+    transform: translateZ(0) scale(1);
+  }
+
+  #tadeon-desktop-sidebar[data-collapsed="true"] .tadeon-nav-item:hover .tadeon-nav-item__icon,
+  #tadeon-desktop-sidebar[data-collapsed="true"] .tadeon-nav-item:focus-visible .tadeon-nav-item__icon {
+    transform: translateZ(0) scale(1.08);
+  }
+
+  /* Identity flyout uses the real NavItem title, so every item remains identifiable
+     while collapsed without forcing the sidebar to reopen. */
+  #tadeon-desktop-sidebar[data-collapsed="true"] .tadeon-nav-item[title]::after {
+    position: absolute;
+    top: 50%;
+    left: calc(100% + .7rem);
+    z-index: 80;
+    min-width: max-content;
+    max-width: 16rem;
+    padding: .46rem .7rem;
+    border: 1px solid color-mix(in srgb, currentColor 18%, var(--border));
+    border-radius: .62rem .22rem .62rem .22rem;
+    color: var(--foreground);
+    background: color-mix(in srgb, var(--popover) 92%, transparent);
+    box-shadow: 0 18px 44px -28px rgb(0 0 0 / 90%), inset 0 1px rgb(255 255 255 / 4%);
+    backdrop-filter: blur(18px) saturate(125%);
+    content: attr(title);
+    font-family: var(--font-sans);
+    font-size: .72rem;
+    font-weight: 600;
+    line-height: 1.2;
+    letter-spacing: .01em;
+    opacity: 0;
+    pointer-events: none;
+    transform: translate3d(-6px,-50%,0) scale(.96);
+    transform-origin: left center;
+    transition: opacity 160ms ease, transform 220ms cubic-bezier(.22,1,.36,1);
+  }
+
+  #tadeon-desktop-sidebar[data-collapsed="true"] .tadeon-nav-item[title]:hover::after,
+  #tadeon-desktop-sidebar[data-collapsed="true"] .tadeon-nav-item[title]:focus-visible::after {
+    opacity: 1;
+    transform: translate3d(0,-50%,0) scale(1);
+  }
+
+  #tadeon-desktop-sidebar[data-collapsed="true"] .tadeon-nav-group-rule {
+    width: 1rem;
+    margin-block: .7rem;
+    opacity: .8;
+  }
+
+  /* Section-specific active colors. These intentionally match the existing
+     Tadeon section palette instead of inheriting one global accent. */
+  #tadeon-desktop-sidebar .tadeon-nav-item[href="/"][aria-current="page"] {
+    --sidebar-item-rgb: 217 215 164;
+    --sidebar-item-accent: var(--tadeon-knowledge);
+  }
+
+  #tadeon-desktop-sidebar .tadeon-nav-item[href="/nexus"][aria-current="page"] {
+    --sidebar-item-rgb: 113 107 123;
+    --sidebar-item-accent: var(--tadeon-veil);
+  }
+
+  #tadeon-desktop-sidebar .tadeon-nav-item[href="/tabletop"][aria-current="page"] {
+    --sidebar-item-rgb: 79 110 93;
+    --sidebar-item-accent: var(--tadeon-flow);
+  }
+
+  #tadeon-desktop-sidebar .tadeon-nav-item[href="/offline"][aria-current="page"] {
+    --sidebar-item-rgb: 79 110 93;
+    --sidebar-item-accent: var(--tadeon-flow);
+  }
+
+  #tadeon-desktop-sidebar .tadeon-nav-item[href="/master-panel"][aria-current="page"] {
+    --sidebar-item-rgb: 116 36 45;
+    --sidebar-item-accent: var(--tadeon-fear);
+  }
+
+  #tadeon-desktop-sidebar .tadeon-nav-item[href="/manage-users"][aria-current="page"] {
+    --sidebar-item-rgb: 79 110 93;
+    --sidebar-item-accent: var(--tadeon-flow);
+  }
+
+  #tadeon-desktop-sidebar .tadeon-nav-item[href="/nexus-tools"][aria-current="page"] {
+    --sidebar-item-rgb: 122 129 135;
+    --sidebar-item-accent: var(--tadeon-metal);
+  }
+
+  #tadeon-desktop-sidebar .tadeon-nav-item[aria-current="page"] {
+    border-color: color-mix(in srgb, var(--sidebar-item-accent) 28%, transparent) !important;
+    color: color-mix(in srgb, var(--sidebar-item-accent) 88%, var(--foreground)) !important;
+    background:
+      linear-gradient(90deg, rgb(var(--sidebar-item-rgb) / 15%), rgb(var(--sidebar-item-rgb) / 3%) 72%, transparent),
+      color-mix(in srgb, var(--sidebar-accent) 88%, transparent) !important;
+    box-shadow:
+      inset 2px 0 var(--sidebar-item-accent),
+      inset 0 1px rgb(255 255 255 / 3%),
+      0 10px 34px -28px rgb(var(--sidebar-item-rgb) / 40%) !important;
+  }
+
+  #tadeon-desktop-sidebar .tadeon-nav-item[aria-current="page"] .tadeon-nav-item__icon {
+    color: var(--sidebar-item-accent) !important;
+    filter: drop-shadow(0 0 8px rgb(var(--sidebar-item-rgb) / 28%));
+  }
+
+  #tadeon-desktop-sidebar .tadeon-nav-item:not([aria-current="page"]):hover .tadeon-nav-item__icon,
+  #tadeon-desktop-sidebar .tadeon-nav-item:not([aria-current="page"]):focus-visible .tadeon-nav-item__icon {
+    color: color-mix(in srgb, currentColor 84%, var(--foreground));
+  }
+
+  /* Collapse control gets the same spatial language as the rail itself. */
+  #tadeon-desktop-sidebar + * .tadeon-sidebar-collapse,
+  .tadeon-sidebar-collapse {
+    transition: transform 280ms cubic-bezier(.22,1,.36,1),
+      color 180ms ease,
+      background-color 220ms ease,
+      border-color 220ms ease,
+      box-shadow 280ms cubic-bezier(.22,1,.36,1) !important;
+  }
+
+  .tadeon-sidebar-collapse[data-state="collapsed"] svg {
+    animation: tadeon-sidebar-chevron-in 280ms cubic-bezier(.22,1,.36,1) both;
+  }
+
+  .tadeon-sidebar-collapse[data-state="expanded"] svg {
+    animation: tadeon-sidebar-chevron-in 280ms cubic-bezier(.22,1,.36,1) both;
+  }
+
+  @keyframes tadeon-sidebar-chevron-in {
+    from { opacity: 0; transform: translateX(-4px) scale(.86); }
+    to { opacity: 1; transform: none; }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #tadeon-desktop-sidebar,
+  #tadeon-desktop-sidebar .tadeon-nav-item,
+  #tadeon-desktop-sidebar .tadeon-nav-item__icon,
+  .tadeon-sidebar-collapse { transition: none !important; }
+  .tadeon-sidebar-collapse[data-state="collapsed"] svg,
+  .tadeon-sidebar-collapse[data-state="expanded"] svg { animation: none !important; }
+}
