@@ -1,0 +1,256 @@
+/* Tadeon Experience Runtime
+ * Applied after the existing visual system so interactions are real, not only declarative.
+ * Editorial ~ ritualistic ~ material ~ archival.
+ */
+
+:root {
+  --tadeon-runtime-stagger: 34ms;
+  --tadeon-runtime-enter: 480ms;
+  --tadeon-runtime-interaction: 220ms;
+  --tadeon-runtime-material: cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+/* --------------------------------------------------------------------------
+   Route choreography
+   -------------------------------------------------------------------------- */
+
+.tadeon-route-stage[data-tadeon-route-state="entering"] {
+  opacity: 0.98;
+}
+
+.tadeon-route-stage[data-tadeon-route-state="settled"] {
+  opacity: 1;
+}
+
+[data-tadeon-directed="true"] {
+  --tadeon-stagger-delay: calc(var(--tadeon-index, 0) * var(--tadeon-runtime-stagger));
+}
+
+.tadeon-route-stage > [data-tadeon-directed="true"],
+.tadeon-page > [data-tadeon-directed="true"] {
+  animation: tadeon-runtime-enter var(--tadeon-runtime-enter) var(--tadeon-runtime-material) both;
+  animation-delay: var(--tadeon-stagger-delay, 0ms);
+}
+
+@keyframes tadeon-runtime-enter {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 10px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Material cursor response
+   -------------------------------------------------------------------------- */
+
+.tadeon-surface[data-tadeon-directed="true"],
+.tadeon-dashboard-hero[data-tadeon-directed="true"],
+.tadeon-sheet-card[data-tadeon-directed="true"],
+.tadeon-state-panel[data-tadeon-directed="true"],
+.tadeon-auth-shell[data-tadeon-directed="true"],
+.tadeon-link-panel[data-tadeon-directed="true"],
+.tadeon-skill-modifier-panel[data-tadeon-directed="true"] {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+}
+
+.tadeon-surface[data-tadeon-directed="true"]::before,
+.tadeon-dashboard-hero[data-tadeon-directed="true"]::before,
+.tadeon-sheet-card[data-tadeon-directed="true"]::before,
+.tadeon-state-panel[data-tadeon-directed="true"]::before,
+.tadeon-auth-shell[data-tadeon-directed="true"]::before,
+.tadeon-link-panel[data-tadeon-directed="true"]::before,
+.tadeon-skill-modifier-panel[data-tadeon-directed="true"]::before {
+  transition:
+    opacity var(--tadeon-runtime-interaction) var(--tadeon-runtime-material),
+    transform var(--tadeon-runtime-interaction) var(--tadeon-runtime-material);
+}
+
+.tadeon-surface[data-tadeon-directed="true"]::after,
+.tadeon-dashboard-hero[data-tadeon-directed="true"]::after,
+.tadeon-sheet-card[data-tadeon-directed="true"]::after,
+.tadeon-state-panel[data-tadeon-directed="true"]::after {
+  background:
+    radial-gradient(
+      13rem 9rem at var(--tadeon-pointer-x, 50%) var(--tadeon-pointer-y, 0%),
+      rgb(217 215 164 / 8%),
+      transparent 72%
+    ),
+    linear-gradient(90deg, transparent, rgb(217 215 164 / 18%), transparent);
+  opacity: 0.72;
+  transition: opacity var(--tadeon-runtime-interaction) ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .tadeon-surface[data-tadeon-directed="true"],
+  .tadeon-sheet-card[data-tadeon-directed="true"] {
+    transition:
+      transform var(--tadeon-runtime-interaction) var(--tadeon-runtime-material),
+      border-color var(--tadeon-runtime-interaction) ease,
+      box-shadow var(--tadeon-runtime-interaction) var(--tadeon-runtime-material);
+  }
+
+  .tadeon-surface[data-tadeon-directed="true"]:hover,
+  .tadeon-sheet-card[data-tadeon-directed="true"]:hover {
+    transform: translateY(-3px);
+    box-shadow:
+      0 30px 90px -54px rgb(0 0 0 / 96%),
+      inset 0 1px 0 rgb(255 255 255 / 4%),
+      0 0 0 1px rgb(217 215 164 / 5%);
+  }
+
+  .tadeon-surface[data-tadeon-directed="true"]:hover::before,
+  .tadeon-sheet-card[data-tadeon-directed="true"]:hover::before {
+    transform: translate3d(1%, -0.75%, 0);
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Navigation / actions
+   -------------------------------------------------------------------------- */
+
+button[data-tadeon-directed="true"],
+a[data-tadeon-directed="true"],
+[role="button"][data-tadeon-directed="true"] {
+  transition:
+    color var(--tadeon-runtime-interaction) ease,
+    background-color var(--tadeon-runtime-interaction) ease,
+    border-color var(--tadeon-runtime-interaction) ease,
+    box-shadow var(--tadeon-runtime-interaction) var(--tadeon-runtime-material),
+    transform 150ms var(--tadeon-runtime-material);
+}
+
+button[data-tadeon-directed="true"]:active,
+a[data-tadeon-directed="true"]:active,
+[role="button"][data-tadeon-directed="true"]:active {
+  transform: scale(0.975);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  button[data-tadeon-directed="true"]:hover svg,
+  a[data-tadeon-directed="true"]:hover svg,
+  [role="button"][data-tadeon-directed="true"]:hover svg {
+    transform: translateY(-1px) scale(1.035);
+    filter: drop-shadow(0 0 8px rgb(217 215 164 / 18%));
+  }
+}
+
+button[data-tadeon-directed="true"] svg,
+a[data-tadeon-directed="true"] svg,
+[role="button"][data-tadeon-directed="true"] svg {
+  transition:
+    transform var(--tadeon-runtime-interaction) var(--tadeon-runtime-material),
+    filter var(--tadeon-runtime-interaction) ease;
+}
+
+/* --------------------------------------------------------------------------
+   Section accent makes each domain feel like a place without changing palette
+   -------------------------------------------------------------------------- */
+
+.tadeon-shell[data-section] .tadeon-route-stage {
+  --tadeon-current-accent: var(--tadeon-section-accent, var(--tadeon-knowledge));
+}
+
+.tadeon-shell[data-section] .tadeon-route-stage::after {
+  position: fixed;
+  z-index: -1;
+  top: 0;
+  right: 0;
+  width: min(34rem, 55vw);
+  height: min(24rem, 42vw);
+  background: radial-gradient(circle at 100% 0%, color-mix(in srgb, var(--tadeon-current-accent) 9%, transparent), transparent 70%);
+  content: "";
+  pointer-events: none;
+  opacity: 0.72;
+  transition: opacity 600ms ease;
+}
+
+/* --------------------------------------------------------------------------
+   State language
+   -------------------------------------------------------------------------- */
+
+.tadeon-sheet-condition-chip[data-tadeon-directed="true"] {
+  transition:
+    transform 150ms var(--tadeon-runtime-material),
+    border-color var(--tadeon-runtime-interaction) ease,
+    box-shadow var(--tadeon-runtime-interaction) ease,
+    background-color var(--tadeon-runtime-interaction) ease;
+}
+
+.tadeon-sheet-condition-chip[data-tadeon-directed="true"]:active {
+  transform: scale(0.985);
+}
+
+.tadeon-sheet-condition-chip[data-condition-severity="critical"][data-tadeon-directed="true"] {
+  animation-duration: 2.4s;
+}
+
+/* --------------------------------------------------------------------------
+   Focus clarity
+   -------------------------------------------------------------------------- */
+
+button[data-tadeon-directed="true"]:focus-visible,
+a[data-tadeon-directed="true"]:focus-visible,
+[role="button"][data-tadeon-directed="true"]:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--tadeon-knowledge) 84%, transparent);
+  outline-offset: 3px;
+  box-shadow: 0 0 0 5px rgb(217 215 164 / 7%);
+}
+
+/* --------------------------------------------------------------------------
+   Touch / compact layouts
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 767px) {
+  .tadeon-route-stage > [data-tadeon-directed="true"],
+  .tadeon-page > [data-tadeon-directed="true"] {
+    animation-duration: 360ms;
+  }
+
+  .tadeon-surface[data-tadeon-directed="true"],
+  .tadeon-sheet-card[data-tadeon-directed="true"] {
+    transition-duration: 180ms;
+  }
+
+  .tadeon-shell[data-section] .tadeon-route-stage::after {
+    width: 22rem;
+    height: 18rem;
+    opacity: 0.42;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Accessibility / robustness
+   -------------------------------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .tadeon-route-stage > [data-tadeon-directed="true"],
+  .tadeon-page > [data-tadeon-directed="true"],
+  .tadeon-sheet-condition-chip[data-condition-severity="critical"][data-tadeon-directed="true"] {
+    animation: none !important;
+  }
+
+  button[data-tadeon-directed="true"],
+  a[data-tadeon-directed="true"],
+  [role="button"][data-tadeon-directed="true"],
+  .tadeon-surface[data-tadeon-directed="true"],
+  .tadeon-sheet-card[data-tadeon-directed="true"] {
+    transition-duration: 1ms !important;
+  }
+}
+
+@supports not (backdrop-filter: blur(1px)) {
+  .tadeon-surface,
+  .tadeon-dashboard-hero,
+  .tadeon-sheet-card,
+  .tadeon-state-panel,
+  .tadeon-auth-shell {
+    background-color: var(--card);
+    background-image: none;
+  }
+}
