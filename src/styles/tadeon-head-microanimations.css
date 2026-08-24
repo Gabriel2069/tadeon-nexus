@@ -1,0 +1,125 @@
+/* Tadeon Head Microanimations — motion only. No layout, sizing or positioning rules. */
+
+.tadeon-page-hero,
+.tadeon-dashboard-hero,
+.tadeon-master-commandbar,
+.tadeon-tabletop-studio__header,
+.tadeon-auth-hero {
+  --tadeon-head-motion-ease: cubic-bezier(.23,1,.32,1);
+}
+
+/* Heads reveal themselves without changing their authored composition. */
+.tadeon-page-hero,
+.tadeon-dashboard-hero,
+.tadeon-master-commandbar,
+.tadeon-tabletop-studio__header,
+.tadeon-auth-hero {
+  animation: tadeon-head-arrive 620ms var(--tadeon-head-motion-ease) both;
+}
+
+.tadeon-page-hero > *,
+.tadeon-dashboard-hero > *,
+.tadeon-master-commandbar > *,
+.tadeon-tabletop-studio__header > *,
+.tadeon-auth-hero > * {
+  animation: tadeon-head-content-arrive 560ms var(--tadeon-head-motion-ease) both;
+}
+
+.tadeon-page-hero > *:nth-child(2),
+.tadeon-dashboard-hero > *:nth-child(2),
+.tadeon-master-commandbar > *:nth-child(2),
+.tadeon-tabletop-studio__header > *:nth-child(2),
+.tadeon-auth-hero > *:nth-child(2) {
+  animation-delay: 70ms;
+}
+
+.tadeon-page-hero > *:nth-child(3),
+.tadeon-dashboard-hero > *:nth-child(3),
+.tadeon-master-commandbar > *:nth-child(3),
+.tadeon-tabletop-studio__header > *:nth-child(3),
+.tadeon-auth-hero > *:nth-child(3) {
+  animation-delay: 120ms;
+}
+
+/* Marks get a restrained material pulse, never a glow-heavy effect. */
+.tadeon-page-hero-mark-host,
+.tadeon-focus-section-mark-host,
+.tadeon-tabletop-brand-mark-host {
+  transition: transform 260ms var(--tadeon-head-motion-ease), box-shadow 260ms ease, border-color 260ms ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .tadeon-page-hero-mark-host:hover,
+  .tadeon-focus-section-mark-host:hover,
+  .tadeon-tabletop-brand-mark-host:hover {
+    transform: translateY(-1px) scale(1.025);
+  }
+
+  .tadeon-page-hero button,
+  .tadeon-page-hero a,
+  .tadeon-dashboard-hero button,
+  .tadeon-dashboard-hero a,
+  .tadeon-master-commandbar button,
+  .tadeon-master-commandbar a,
+  .tadeon-tabletop-studio__header button,
+  .tadeon-tabletop-studio__header a,
+  .tadeon-auth-hero button,
+  .tadeon-auth-hero a {
+    transition: transform 220ms var(--tadeon-head-motion-ease), box-shadow 220ms ease, opacity 180ms ease;
+  }
+
+  .tadeon-page-hero button:hover,
+  .tadeon-page-hero a:hover,
+  .tadeon-dashboard-hero button:hover,
+  .tadeon-dashboard-hero a:hover,
+  .tadeon-master-commandbar button:hover,
+  .tadeon-master-commandbar a:hover,
+  .tadeon-tabletop-studio__header button:hover,
+  .tadeon-tabletop-studio__header a:hover,
+  .tadeon-auth-hero button:hover,
+  .tadeon-auth-hero a:hover {
+    transform: translateY(-1px);
+  }
+}
+
+@keyframes tadeon-head-arrive {
+  from { opacity: .72; }
+  to { opacity: 1; }
+}
+
+@keyframes tadeon-head-content-arrive {
+  from { opacity: 0; transform: translate3d(0, 7px, 0); }
+  to { opacity: 1; transform: translate3d(0, 0, 0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tadeon-page-hero,
+  .tadeon-dashboard-hero,
+  .tadeon-master-commandbar,
+  .tadeon-tabletop-studio__header,
+  .tadeon-auth-hero,
+  .tadeon-page-hero > *,
+  .tadeon-dashboard-hero > *,
+  .tadeon-master-commandbar > *,
+  .tadeon-tabletop-studio__header > *,
+  .tadeon-auth-hero > * {
+    animation: none !important;
+    transform: none !important;
+  }
+
+  .tadeon-page-hero button,
+  .tadeon-page-hero a,
+  .tadeon-dashboard-hero button,
+  .tadeon-dashboard-hero a,
+  .tadeon-master-commandbar button,
+  .tadeon-master-commandbar a,
+  .tadeon-tabletop-studio__header button,
+  .tadeon-tabletop-studio__header a,
+  .tadeon-auth-hero button,
+  .tadeon-auth-hero a,
+  .tadeon-page-hero-mark-host,
+  .tadeon-focus-section-mark-host,
+  .tadeon-tabletop-brand-mark-host {
+    transition: none !important;
+  }
+}
