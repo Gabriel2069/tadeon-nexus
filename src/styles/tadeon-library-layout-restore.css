@@ -1,0 +1,78 @@
+/* Library layout restore — keep the original workspace composition intact. */
+
+.tadeon-library-dialog {
+  grid-template-rows: auto minmax(0, 1fr) !important;
+  gap: 0 !important;
+}
+
+.tadeon-library-layout {
+  overflow: hidden !important;
+}
+
+.tadeon-library-results {
+  position: relative !important;
+  scrollbar-gutter: stable;
+}
+
+.tadeon-library-card {
+  min-height: 9.2rem !important;
+  overflow: hidden !important;
+  border-radius: 1rem 0.34rem 1rem 0.34rem !important;
+  transform: none;
+  clip-path: none !important;
+}
+
+.tadeon-library-results[data-view="compact"] .tadeon-library-card {
+  min-height: 6.35rem !important;
+}
+
+.tadeon-library-card__body {
+  position: relative !important;
+  z-index: 1 !important;
+}
+
+.tadeon-library-card__folio {
+  position: absolute !important;
+  z-index: 0 !important;
+}
+
+.tadeon-library-card__mark {
+  width: 1.9rem !important;
+  height: 1.9rem !important;
+  flex: 0 0 auto !important;
+}
+
+.tadeon-library-card__mark svg {
+  width: 0.85rem !important;
+  height: 0.85rem !important;
+}
+
+.tadeon-library-card__meta {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  align-items: center !important;
+}
+
+.tadeon-library-card__favorite {
+  position: relative !important;
+  z-index: 2 !important;
+}
+
+/* The global motion layer must not reposition the library's card grid. */
+.tadeon-library-card:hover,
+.tadeon-library-card:focus-within {
+  transform: none;
+}
+
+.tadeon-library-card button:hover,
+.tadeon-library-card [role="button"]:hover {
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tadeon-library-card,
+  .tadeon-library-card * {
+    animation: none !important;
+    transition-duration: 1ms !important;
+  }
+}
