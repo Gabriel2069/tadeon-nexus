@@ -49,6 +49,7 @@ export function SaveStatus({
       style: "text-amber-200 border-amber-500/30 bg-amber-500/10",
     },
   }[state];
+
   const Icon = content.icon;
   const body = (
     <span
@@ -57,8 +58,11 @@ export function SaveStatus({
         content.style,
       )}
       aria-live="polite"
+      aria-busy={state === "saving"}
       aria-label={content.label}
       title={compact ? content.label : undefined}
+      data-tadeon-state={state}
+      data-tadeon-directed="true"
     >
       <Icon
         aria-hidden="true"
