@@ -48,6 +48,7 @@ import layoutRhythmCss from "../styles/tadeon-layout-rhythm.css?url";
 import applicationPassCss from "../styles/tadeon-application-pass.css?url";
 import responsiveParityCss from "../styles/tadeon-responsive-parity.css?url";
 import headRepairCss from "../styles/tadeon-head-repair.css?url";
+import stateFeedbackCss from "../styles/tadeon-state-feedback.css?url";
 import { AuthProvider } from "@/lib/auth";
 import { Toaster } from "@/components/ui/sonner";
 import { PwaRegistration } from "@/components/pwa-registration";
@@ -73,10 +74,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "theme-color", content: "#74242d" }, { name: "application-name", content: "Tadeon Nexus" },
       { name: "apple-mobile-web-app-capable", content: "yes" }, { name: "apple-mobile-web-app-status-bar-style", content: "black-translucent" },
       { name: "apple-mobile-web-app-title", content: "Nexus" }, { name: "mobile-web-app-capable", content: "yes" },
-      { name: "tadeon-build-sha", content: import.meta.env.VITE_APP_COMMIT_SHA ?? "development" }, { title: "Tadeon Nexus - RPG Online" },
-      { name: "description", content: "Tadeon Nexus: gerencie fichas de personagem, atributos, perícias e a árvore de habilidades do seu RPG online com painel para mestres e jogadores." },
+      { name: "tadeon-build-sha", content: import.meta.env.VITE_APP_COMMIT_SHA ?? "development" }, { name: "description", content: "Tadeon Nexus: gerencie fichas de personagem, atributos, perícias e a árvore de habilidades do seu RPG online com painel para mestres e jogadores." },
+      { title: "Tadeon Nexus - RPG Online" },
       { property: "og:title", content: "Tadeon Nexus - RPG Online" }, { name: "twitter:title", content: "Tadeon Nexus - RPG Online" },
-      { property: "og:description", content: "Tadeon Nexus: gerencie fichas de personagem, atributos, perícias e a árvore de habilidades do seu RPG online." }, { name: "twitter:description", content: "Tadeon Nexus: gerencie fichas de personagem, atributos, perícias e o progresso de RPG." },
+      { property: "og:description", content: "Tadeon Nexus: gerencie fichas de personagem, atributos, perícias e o progresso de RPG." }, { name: "twitter:description", content: "Tadeon Nexus: gerencie fichas de personagem, atributos, perícias e o progresso de RPG." },
       { property: "og:site_name", content: "Tadeon Nexus" }, { property: "og:image", content: "https://tadeon-nexus.gtadeusz.workers.dev/social-card.png" },
       { property: "og:image:width", content: "1200" }, { property: "og:image:height", content: "630" }, { property: "og:type", content: "website" },
     ],
@@ -91,7 +92,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { rel: "stylesheet", href: experienceMobileCss }, { rel: "stylesheet", href: experienceDetailsCss }, { rel: "stylesheet", href: commandExperienceCss }, { rel: "stylesheet", href: nexusMaterialCss },
       { rel: "stylesheet", href: visibleUpgradeCss }, { rel: "stylesheet", href: atmosphereCss }, { rel: "stylesheet", href: interactionPassCss }, { rel: "stylesheet", href: headSystemCss },
       { rel: "stylesheet", href: typographyRhythmCss }, { rel: "stylesheet", href: layoutRhythmCss }, { rel: "stylesheet", href: applicationPassCss }, { rel: "stylesheet", href: responsiveParityCss },
-      { rel: "stylesheet", href: headRepairCss },
+      { rel: "stylesheet", href: headRepairCss }, { rel: "stylesheet", href: stateFeedbackCss },
       { rel: "manifest", href: "/manifest.webmanifest" }, { rel: "icon", href: "/favicon.svg?v=5", type: "image/svg+xml", sizes: "any" }, { rel: "apple-touch-icon", href: "/apple-touch-icon.png", sizes: "180x180" },
       { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Inter:wght@400;500;600;700&family=PT+Mono&display=swap" },
     ],
