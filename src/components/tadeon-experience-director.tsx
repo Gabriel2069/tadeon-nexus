@@ -28,6 +28,8 @@ const REVEAL = [
   ".tadeon-state-panel",
 ].join(",");
 
+const STATEFUL = ".tadeon-sheet-condition-chip, [aria-live='polite']";
+
 function markElement(element: HTMLElement) {
   if (element.dataset.tadeonDirected === "true") return;
   element.dataset.tadeonDirected = "true";
@@ -68,9 +70,14 @@ function getChildIndex(element: HTMLElement) {
   return Math.min(8, Math.max(0, Array.from(parent.children).indexOf(element)));
 }
 
-function applyPointerMotion(element: HTMLElement) {
+function ensurePointerSheen(element: HTMLElement) {
   if (element.dataset.tadeonPointerBound === "true") return;
+
   element.dataset.tadeonPointerBound = "true";
+  const sheen = document.createElement("span");
+  sheen.className = "tadeon-pointer-sheen";
+  sheen.setAttribute("aria-hidden", "true");
+  element.appendChild(sheen);
 
   const move = (event: PointerEvent) => {
     if (event.pointerType === "touch") return;
@@ -78,74 +85,103 @@ function applyPointerMotion(element: HTMLElement) {
     if (!rect.width || !rect.height) return;
     const x = ((event.clientX - rect.left) / rect.width) * 100;
     const y = ((event.clientY - rect.top) / rect.height) * 100;
-    element.style.setProperty("--tadeon-pointer-x", `${x}%`);
-    element.style.setProperty("--tadeon-pointer-y", `${y}%`);
+    sheen.style.setProperty("--tadeon-pointer-x", `${x}%`);
+    sheen.style.setProperty("--tadeon-pointer-y", `${y}%`);
+    sheen.dataset.active = "true";
+  };
+
+  const leave = () => {
+    sheen.dataset.active = "false";
   };
 
   element.addEventListener("pointermove", move, { passive: true });
-  element.addEventListener(
-    "pointerleave",
-    () => {
-      element.style.removeProperty("--tadeon-pointer-x");
-      element.style.removeProperty("--tadeon-pointer-y");
-    },
-    { passive: true },
-  );
+  element.addEventListener("pointerleave", leave, { passive: true });
+}
+
+function processRoot(root: ParentNode) {
+  root.querySelectorAll<HTMLElement>(REVEAL).forEach((element) => {
+    markElement(element);
+    markMaterial(element);
+    markState(element);
+  });
+
+  root.querySelectorAll<HTMLElement>(SURFACES).forEach((element) => {
+    markElement(element);
+    markMaterial(element);
+    markState(element);
+    ensurePointerSheen(element);
+  });
+
+  root.querySelectorAll<HTMLElement>(STATEFUL).forEach(markState);
+  root.querySelectorAll<HTMLElement>(INTERACTIVE).forEach(markElement);
+}
+
+function processElement(element: HTMLElement) {
+  if (element.matches(REVEAL)) {
+    markElement(element);
+    markMaterial(element);
+    markState(element);
+  }
+  if (element.matches(SURFACES)) {
+    markElement(element);
+    markMaterial(element);
+    markState(element);
+    ensurePointerSheen(element);
+  }
+  if (element.matches(STATEFUL)) markState(element);
+  if (element.matches(INTERACTIVE)) markElement(element);
+  processRoot(element);
 }
 
 function directRoute() {
   const stage = document.querySelector<HTMLElement>(".tadeon-route-stage");
-  if (!stage) return;
+  if (!stage) return false;
 
   stage.dataset.tadeonRouteState = "entering";
   window.requestAnimationFrame(() => {
-    stage.dataset.tadeonRouteState = "settled";
+    if (stage.isConnected) stage.dataset.tadeonRouteState = "settled";
   });
 
-  document.querySelectorAll<HTMLElement>(REVEAL).forEach((element) => {
-    markElement(element);
-    markMaterial(element);
-    markState(element);
-  });
-
-  document.querySelectorAll<HTMLElement>(SURFACES).forEach((element) => {
-    markElement(element);
-    markMaterial(element);
-    markState(element);
-    applyPointerMotion(element);
-  });
-
-  document.querySelectorAll<HTMLElement>(".tadeon-sheet-condition-chip, [aria-live='polite']").forEach((element) => {
-    markState(element);
-  });
-
-  document.querySelectorAll<HTMLElement>(INTERACTIVE).forEach((element) => {
-    markElement(element);
-  });
+  processElement(stage);
+  processRoot(stage);
+  return true;
 }
 
 export function TadeonExperienceDirector() {
   useEffect(() => {
-    if (typeof window === "undefined") return;
+    if (typeof window === "undefined" || typeof document === "undefined") return;
 
     let frame = 0;
-    const run = () => {
+    let observer: MutationObserver | null = null;
+
+    const scheduleFull = () => {
       window.cancelAnimationFrame(frame);
-      frame = window.requestAnimationFrame(directRoute);
+      frame = window.requestAnimationFrame(() => {
+        if (!directRoute()) processRoot(document);
+      });
     };
 
-    run();
+    const processMutations = (mutations: MutationRecord[]) => {
+      window.cancelAnimationFrame(frame);
+      frame = window.requestAnimationFrame(() => {
+        for (const mutation of mutations) {
+          mutation.addedNodes.forEach((node) => {
+            if (!(node instanceof HTMLElement)) return;
+            processElement(node);
+          });
+        }
+      });
+    };
 
-    const observer = new MutationObserver(run);
+    scheduleFull();
+    observer = new MutationObserver(processMutations);
     observer.observe(document.body, { subtree: true, childList: true });
-
-    const onPopState = run;
-    window.addEventListener("popstate", onPopState);
+    window.addEventListener("popstate", scheduleFull);
 
     return () => {
       window.cancelAnimationFrame(frame);
-      observer.disconnect();
-      window.removeEventListener("popstate", onPopState);
+      observer?.disconnect();
+      window.removeEventListener("popstate", scheduleFull);
     };
   }, []);
 
