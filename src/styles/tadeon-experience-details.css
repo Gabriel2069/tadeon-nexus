@@ -1,8 +1,4 @@
-/* Tadeon experience details ~ hero, navigation, graph, master and states */
-
-/* --------------------------------------------------------------------------
-   Chapter-like heroes
-   -------------------------------------------------------------------------- */
+/* Tadeon experience details ~ hero, navigation, graph, master, sheet and states */
 
 .tadeon-dashboard-hero[data-tadeon-material="chapter"] {
   position: relative;
@@ -46,75 +42,36 @@
   z-index: 1;
 }
 
-/* --------------------------------------------------------------------------
-   Material hierarchy ~ surfaces become different kinds of records
-   -------------------------------------------------------------------------- */
-
-.tadeon-surface[data-tadeon-material="archive"] {
-  border-radius: 0.75rem 0.35rem 0.85rem 0.45rem;
-}
-
-.tadeon-surface[data-tadeon-material="archive"]::after {
-  inset: auto 1rem 0 1rem;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, rgb(217 215 164 / 20%), transparent);
-}
-
+/* Material hierarchy */
+.tadeon-surface[data-tadeon-material="archive"] { border-radius: 0.75rem 0.35rem 0.85rem 0.45rem; }
 .tadeon-sheet-card[data-tadeon-material="relic"] {
   border-radius: 0.7rem 0.25rem 0.95rem 0.35rem;
   border-color: color-mix(in srgb, var(--tadeon-metal) 34%, transparent);
-  box-shadow:
-    0 26px 74px -52px rgb(0 0 0 / 96%),
-    inset 0 1px 0 rgb(255 255 255 / 4%),
-    inset 2px 0 0 rgb(217 215 164 / 5%);
+  box-shadow: 0 26px 74px -52px rgb(0 0 0 / 96%), inset 0 1px 0 rgb(255 255 255 / 4%), inset 2px 0 0 rgb(217 215 164 / 5%);
 }
-
 .tadeon-sheet-card[data-tadeon-material="relic"]::before {
-  background:
-    linear-gradient(142deg, rgb(242 238 200 / 3.8%), transparent 35%),
-    radial-gradient(circle at 12% 0%, rgb(217 215 164 / 4%), transparent 30%);
+  background: linear-gradient(142deg, rgb(242 238 200 / 3.8%), transparent 35%), radial-gradient(circle at 12% 0%, rgb(217 215 164 / 4%), transparent 30%);
 }
-
 .tadeon-link-panel[data-tadeon-material="fragment"] {
   border-left-color: color-mix(in srgb, var(--tadeon-veil) 50%, transparent);
   border-radius: 0.25rem 0.8rem 0.35rem 0.9rem;
   background-image: linear-gradient(102deg, rgb(113 107 123 / 4%), transparent 42%);
 }
-
 .tadeon-skill-modifier-panel[data-tadeon-material="record"] {
-  border-style: solid;
   border-top-color: color-mix(in srgb, var(--tadeon-knowledge) 20%, transparent);
   border-bottom-color: color-mix(in srgb, var(--tadeon-knowledge) 18%, transparent);
-  box-shadow:
-    0 20px 60px -48px rgb(0 0 0 / 94%),
-    inset 0 1px 0 rgb(217 215 164 / 3%);
+  box-shadow: 0 20px 60px -48px rgb(0 0 0 / 94%), inset 0 1px 0 rgb(217 215 164 / 3%);
 }
-
 .tadeon-skill-modifier-panel[data-tadeon-material="record"] [data-state],
-.tadeon-skill-modifier-panel[data-tadeon-material="record"] .tadeon-mono {
-  font-variant-numeric: tabular-nums;
-  letter-spacing: 0.06em;
-}
-
+.tadeon-skill-modifier-panel[data-tadeon-material="record"] .tadeon-mono { font-variant-numeric: tabular-nums; letter-spacing: 0.06em; }
 .tadeon-state-panel[data-tadeon-material="state"] {
   border-radius: 0.35rem 0.75rem 0.55rem 0.9rem;
   border-color: color-mix(in srgb, var(--tadeon-section-accent, var(--tadeon-metal)) 24%, transparent);
 }
+.tadeon-state-panel[data-tadeon-material="state"] > * { position: relative; z-index: 1; }
 
-.tadeon-state-panel[data-tadeon-material="state"] > * {
-  position: relative;
-  z-index: 1;
-}
-
-/* --------------------------------------------------------------------------
-   Navigation feels like a marked volume
-   -------------------------------------------------------------------------- */
-
-.tadeon-nav-item[data-tadeon-directed="true"] {
-  overflow: hidden;
-  border-radius: 0.65rem 0.2rem 0.65rem 0.2rem;
-}
-
+/* Navigation */
+.tadeon-nav-item[data-tadeon-directed="true"] { overflow: hidden; border-radius: 0.65rem 0.2rem 0.65rem 0.2rem; }
 .tadeon-nav-item[data-tadeon-directed="true"]::before {
   position: absolute;
   inset: 0;
@@ -122,34 +79,78 @@
   content: "";
   opacity: 0;
   transform: translateX(-8%);
-  transition:
-    opacity 280ms ease,
-    transform 360ms var(--tadeon-ease-material, cubic-bezier(0.23, 1, 0.32, 1));
+  transition: opacity 280ms ease, transform 360ms var(--tadeon-ease-material, cubic-bezier(0.23, 1, 0.32, 1));
   pointer-events: none;
 }
-
 .tadeon-nav-item[data-tadeon-directed="true"]:hover::before,
-.tadeon-nav-item[data-tadeon-directed="true"][aria-current="page"]::before {
-  opacity: 1;
-  transform: translateX(0);
+.tadeon-nav-item[data-tadeon-directed="true"][aria-current="page"]::before { opacity: 1; transform: translateX(0); }
+.tadeon-nav-item[data-tadeon-directed="true"] .tadeon-nav-item__icon { position: relative; z-index: 1; }
+
+/* Character sheet ~ living document */
+.tadeon-sheet-page { --sheet-accent: var(--tadeon-knowledge); }
+.tadeon-sheet-commandbar {
+  box-shadow: 0 22px 60px -44px rgb(0 0 0 / 96%), inset 0 -1px 0 rgb(255 255 255 / 2.5%), 0 0 0 1px rgb(217 215 164 / 2%);
 }
-
-.tadeon-nav-item[data-tadeon-directed="true"] .tadeon-nav-item__icon {
-  position: relative;
-  z-index: 1;
+.tadeon-sheet-commandbar__identity { position: relative; }
+.tadeon-sheet-commandbar__identity::after {
+  position: absolute;
+  right: -1rem;
+  bottom: -0.4rem;
+  left: 0;
+  height: 1px;
+  background: linear-gradient(90deg, rgb(217 215 164 / 28%), transparent 76%);
+  content: "";
+  opacity: 0.8;
 }
-
-/* --------------------------------------------------------------------------
-   Knowledge / brain shell as an instrument
-   -------------------------------------------------------------------------- */
-
-.tadeon-knowledge-graph[data-tadeon-material],
-.tadeon-brain-shell[data-tadeon-material] {
+.tadeon-sheet-overview {
   position: relative;
   isolation: isolate;
-  overflow: hidden;
+  box-shadow: 0 22px 60px -46px rgb(0 0 0 / 96%), inset 0 1px 0 rgb(255 255 255 / 3%), 0 0 0 1px rgb(217 215 164 / 2%);
 }
+.tadeon-overview-metric {
+  transition: transform 220ms var(--tadeon-ease-material, cubic-bezier(0.23, 1, 0.32, 1)), box-shadow 220ms var(--tadeon-ease-material, cubic-bezier(0.23, 1, 0.32, 1)), background-color 220ms ease;
+}
+@media (hover: hover) and (pointer: fine) {
+  .tadeon-overview-metric:hover {
+    z-index: 1;
+    transform: translateY(-2px);
+    box-shadow: inset 0 1px 0 rgb(255 255 255 / 4%), 0 18px 42px -34px rgb(var(--metric-rgb) / 48%);
+  }
+}
+.tadeon-sheet-section {
+  transition: transform 260ms var(--tadeon-ease-material, cubic-bezier(0.23, 1, 0.32, 1)), border-color 220ms ease, box-shadow 260ms var(--tadeon-ease-material, cubic-bezier(0.23, 1, 0.32, 1));
+}
+@media (hover: hover) and (pointer: fine) {
+  .tadeon-sheet-section:hover {
+    transform: translateY(-1px);
+    border-color: rgb(var(--section-rgb) / 26%);
+    box-shadow: 0 34px 82px -58px rgb(0 0 0 / 98%), inset 0 1px 0 rgb(255 255 255 / 4%), inset 2px 0 0 rgb(var(--section-rgb) / 11%);
+  }
+}
+.tadeon-sheet-section__index { transition: transform 200ms var(--tadeon-ease-material, cubic-bezier(0.23, 1, 0.32, 1)), box-shadow 200ms ease, background-color 200ms ease; }
+@media (hover: hover) and (pointer: fine) {
+  .tadeon-sheet-section:hover .tadeon-sheet-section__index { transform: translateY(-1px) rotate(-1deg); box-shadow: 0 10px 26px -22px rgb(var(--section-rgb) / 55%); }
+}
+.tadeon-sheet-section input:not([type="range"]),
+.tadeon-sheet-section textarea,
+.tadeon-sheet-section [data-slot="select-trigger"] {
+  border-color: color-mix(in srgb, rgb(var(--section-rgb)) 14%, var(--border));
+  background-color: color-mix(in srgb, var(--card) 90%, transparent);
+}
+.tadeon-sheet-section input:not([type="range"]):focus,
+.tadeon-sheet-section textarea:focus,
+.tadeon-sheet-section [data-slot="select-trigger"]:focus-visible {
+  border-color: color-mix(in srgb, rgb(var(--section-rgb)) 48%, var(--border));
+  box-shadow: 0 0 0 3px rgb(var(--section-rgb) / 8%);
+}
+.tadeon-sheet-condition-chip[data-tadeon-state="saving"],
+.tadeon-sheet-condition-chip[data-tadeon-state="pending"] { box-shadow: 0 10px 28px -24px rgb(217 215 164 / 55%); }
+.tadeon-sheet-condition-chip[data-tadeon-state="error"] { box-shadow: 0 10px 28px -24px rgb(116 36 45 / 70%); }
+.tadeon-sheet-condition-chip[data-tadeon-state="offline"] { opacity: 0.8; }
 
+/* Knowledge / brain shell */
+.tadeon-knowledge-graph[data-tadeon-material],
+.tadeon-brain-shell[data-tadeon-material] { position: relative; isolation: isolate; overflow: hidden; }
 .tadeon-knowledge-graph[data-tadeon-directed="true"]::after,
 .tadeon-brain-shell[data-tadeon-directed="true"]::after {
   position: absolute;
@@ -160,28 +161,14 @@
   pointer-events: none;
 }
 
-/* --------------------------------------------------------------------------
-   Master / tabletop command reading
-   -------------------------------------------------------------------------- */
-
+/* Master / tabletop */
 .tadeon-shell[data-section="Painel do Mestre"] .tadeon-surface[data-tadeon-directed="true"],
-.tadeon-shell[data-section="Mesa Nexus"] .tadeon-surface[data-tadeon-directed="true"] {
-  border-color: color-mix(in srgb, var(--tadeon-section-accent, var(--tadeon-metal)) 22%, var(--border));
-}
-
+.tadeon-shell[data-section="Mesa Nexus"] .tadeon-surface[data-tadeon-directed="true"] { border-color: color-mix(in srgb, var(--tadeon-section-accent, var(--tadeon-metal)) 22%, var(--border)); }
 .tadeon-shell[data-section="Painel do Mestre"] .tadeon-dashboard-signal[data-tadeon-directed="true"],
-.tadeon-shell[data-section="Mesa Nexus"] .tadeon-dashboard-signal[data-tadeon-directed="true"] {
-  font-variant-numeric: tabular-nums;
-}
+.tadeon-shell[data-section="Mesa Nexus"] .tadeon-dashboard-signal[data-tadeon-directed="true"] { font-variant-numeric: tabular-nums; }
 
-/* --------------------------------------------------------------------------
-   Empty/error/offline states are compositions, not dead ends
-   -------------------------------------------------------------------------- */
-
-.tadeon-state-panel[data-tadeon-material="state"] {
-  min-height: 10rem;
-}
-
+/* Empty/error/offline states */
+.tadeon-state-panel[data-tadeon-material="state"] { min-height: 10rem; }
 .tadeon-state-panel[data-tadeon-material="state"]::after {
   position: absolute;
   right: -3rem;
@@ -195,62 +182,33 @@
   opacity: 0.65;
 }
 
-/* --------------------------------------------------------------------------
-   Type hierarchy: make the existing three-font system deliberate
-   -------------------------------------------------------------------------- */
-
 .tadeon-shell h1,
 .tadeon-shell h2,
-.tadeon-shell h3 {
-  font-family: var(--font-cinzel);
-}
-
+.tadeon-shell h3 { font-family: var(--font-cinzel); }
 .tadeon-shell .tadeon-eyebrow,
 .tadeon-shell .tadeon-mono,
 .tadeon-shell [data-state],
-.tadeon-shell [aria-live] {
-  font-family: var(--font-mono);
-}
-
+.tadeon-shell [aria-live] { font-family: var(--font-mono); }
 .tadeon-shell button,
 .tadeon-shell input,
 .tadeon-shell textarea,
 .tadeon-shell select,
-.tadeon-shell label {
-  font-family: var(--font-inter);
-}
-
-/* --------------------------------------------------------------------------
-   Safe performance fallback
-   -------------------------------------------------------------------------- */
+.tadeon-shell label { font-family: var(--font-inter); }
 
 @media (max-width: 767px) {
-  .tadeon-dashboard-hero[data-tadeon-material="chapter"] {
-    min-height: 13rem;
-  }
-
-  .tadeon-dashboard-hero[data-tadeon-material="chapter"]::after {
-    width: 17rem;
-    height: 17rem;
-    right: -6rem;
-    bottom: -7rem;
-  }
-
+  .tadeon-dashboard-hero[data-tadeon-material="chapter"] { min-height: 13rem; }
+  .tadeon-dashboard-hero[data-tadeon-material="chapter"]::after { width: 17rem; height: 17rem; right: -6rem; bottom: -7rem; }
   .tadeon-knowledge-graph[data-tadeon-directed="true"]::after,
-  .tadeon-brain-shell[data-tadeon-directed="true"]::after {
-    inset: 0.65rem;
-  }
-
+  .tadeon-brain-shell[data-tadeon-directed="true"]::after { inset: 0.65rem; }
   .tadeon-sheet-card[data-tadeon-material="relic"],
   .tadeon-link-panel[data-tadeon-material="fragment"],
-  .tadeon-state-panel[data-tadeon-material="state"] {
-    border-radius: 0.75rem;
-  }
+  .tadeon-state-panel[data-tadeon-material="state"] { border-radius: 0.75rem; }
+  .tadeon-sheet-section:hover { transform: none; }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .tadeon-dashboard-hero[data-tadeon-material="chapter"]::after,
-  .tadeon-nav-item[data-tadeon-directed="true"]::before {
-    transition-duration: 1ms !important;
-  }
+  .tadeon-nav-item[data-tadeon-directed="true"]::before,
+  .tadeon-sheet-section,
+  .tadeon-overview-metric { transition-duration: 1ms !important; }
 }
