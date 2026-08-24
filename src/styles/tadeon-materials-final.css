@@ -1,0 +1,137 @@
+/* Tadeon material language ~ final visual hierarchy */
+
+.tadeon-route-stage [data-tadeon-material="chapter"] {
+  border-radius: 1.55rem 0.45rem 1.55rem 0.45rem;
+  background:
+    radial-gradient(circle at 82% 14%, rgb(217 215 164 / 10%), transparent 30%),
+    linear-gradient(140deg, rgb(20 23 28 / 97%), rgb(8 11 15 / 98%));
+}
+
+.tadeon-route-stage [data-tadeon-material="relic"] {
+  border-radius: 1.2rem 0.45rem 1.2rem 0.45rem;
+  background:
+    linear-gradient(145deg, rgb(21 24 29 / 97%), rgb(10 13 17 / 96%)),
+    radial-gradient(circle at 92% 4%, rgb(113 107 123 / 10%), transparent 34%);
+}
+
+.tadeon-route-stage [data-tadeon-material="fragment"] {
+  border-radius: 0.75rem 1.2rem 0.75rem 1.2rem;
+  background:
+    linear-gradient(120deg, rgb(15 18 22 / 98%), rgb(9 12 16 / 96%));
+}
+
+.tadeon-route-stage [data-tadeon-material="record"] {
+  border-radius: 0.85rem 0.35rem 0.85rem 0.35rem;
+  background:
+    linear-gradient(135deg, rgb(18 21 26 / 96%), rgb(11 14 18 / 96%));
+}
+
+.tadeon-route-stage [data-tadeon-material="state"] {
+  border-radius: 1rem 0.35rem 1rem 0.35rem;
+  background:
+    radial-gradient(circle at 90% 0%, color-mix(in srgb, var(--tadeon-section-accent, var(--tadeon-knowledge)) 8%, transparent), transparent 34%),
+    linear-gradient(145deg, rgb(17 20 25 / 97%), rgb(8 11 15 / 97%));
+}
+
+.tadeon-route-stage [data-tadeon-material="archive"] {
+  border-radius: 0.95rem 0.25rem 0.95rem 0.25rem;
+}
+
+/* Distinguish the material edge without adding color noise. */
+.tadeon-route-stage [data-tadeon-material] {
+  position: relative;
+}
+
+.tadeon-route-stage [data-tadeon-material="chapter"]::after,
+.tadeon-route-stage [data-tadeon-material="relic"]::after,
+.tadeon-route-stage [data-tadeon-material="fragment"]::after,
+.tadeon-route-stage [data-tadeon-material="record"]::after {
+  opacity: 0.7;
+}
+
+/* Save-state choreography */
+[aria-live="polite"][data-tadeon-state] {
+  animation: tadeon-state-arrive 260ms var(--tadeon-ease-material, cubic-bezier(0.23, 1, 0.32, 1)) both;
+}
+
+[aria-live="polite"][data-tadeon-state="saving"] {
+  box-shadow: 0 0 0 1px rgb(217 215 164 / 7%), 0 12px 30px -28px rgb(217 215 164 / 55%);
+}
+
+[aria-live="polite"][data-tadeon-state="pending"] {
+  box-shadow: 0 0 0 1px rgb(217 174 70 / 7%), 0 12px 30px -28px rgb(217 174 70 / 48%);
+}
+
+[aria-live="polite"][data-tadeon-state="saved"] {
+  box-shadow: 0 0 0 1px rgb(79 110 93 / 9%), 0 12px 30px -28px rgb(79 110 93 / 48%);
+}
+
+[aria-live="polite"][data-tadeon-state="error"] {
+  animation: tadeon-state-error 420ms var(--tadeon-ease-material, cubic-bezier(0.23, 1, 0.32, 1)) both;
+}
+
+@keyframes tadeon-state-arrive {
+  from { opacity: 0.72; transform: translateY(2px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes tadeon-state-error {
+  0% { transform: translateX(0); }
+  32% { transform: translateX(-2px); }
+  64% { transform: translateX(2px); }
+  100% { transform: translateX(0); }
+}
+
+/* Knowledge graph: make relationships readable before decoration. */
+.tadeon-knowledge-graph[data-tadeon-directed="true"],
+.tadeon-brain-shell[data-tadeon-directed="true"] {
+  border-radius: 1.3rem 0.45rem 1.3rem 0.45rem;
+  background:
+    radial-gradient(circle at 50% 45%, rgb(217 215 164 / 3%), transparent 40%),
+    linear-gradient(145deg, rgb(12 15 19 / 98%), rgb(7 9 12 / 98%));
+}
+
+.tadeon-knowledge-graph[data-tadeon-directed="true"] svg,
+.tadeon-brain-shell[data-tadeon-directed="true"] svg {
+  transition: transform 500ms var(--tadeon-ease-material), opacity 300ms ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .tadeon-knowledge-graph[data-tadeon-directed="true"]:hover svg,
+  .tadeon-brain-shell[data-tadeon-directed="true"]:hover svg {
+    transform: scale(1.008);
+  }
+}
+
+/* Master/tabletop surfaces: stronger hierarchy, not stronger color. */
+.tadeon-shell[data-section="Painel do Mestre"] [data-tadeon-material="state"],
+.tadeon-shell[data-section="Mesa Nexus"] [data-tadeon-material="state"] {
+  box-shadow:
+    0 30px 78px -56px rgb(0 0 0 / 98%),
+    inset 0 1px 0 rgb(255 255 255 / 3%);
+}
+
+/* Mobile is a composition, not a shrunken desktop. */
+@media (max-width: 767px) {
+  .tadeon-route-stage [data-tadeon-material="chapter"] {
+    border-radius: 1.2rem 0.35rem 1.2rem 0.35rem;
+  }
+
+  .tadeon-route-stage [data-tadeon-material="relic"],
+  .tadeon-route-stage [data-tadeon-material="fragment"],
+  .tadeon-route-stage [data-tadeon-material="record"],
+  .tadeon-route-stage [data-tadeon-material="state"] {
+    border-radius: 0.95rem 0.3rem 0.95rem 0.3rem;
+  }
+
+  .tadeon-knowledge-graph[data-tadeon-directed="true"],
+  .tadeon-brain-shell[data-tadeon-directed="true"] {
+    border-radius: 1rem 0.3rem 1rem 0.3rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [aria-live="polite"][data-tadeon-state] {
+    animation: none !important;
+  }
+}
