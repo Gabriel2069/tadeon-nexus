@@ -1,0 +1,138 @@
+/* Tadeon semantic personality refinement — actions should move like their meaning. */
+:root {
+  --tsp-in: cubic-bezier(.16,1,.3,1);
+  --tsp-soft: cubic-bezier(.22,1,.36,1);
+  --tsp-spring: cubic-bezier(.18,.89,.32,1.08);
+}
+
+/* Navigation: a new destination is discovered, not teleported into. */
+.tadeon-shell [data-motion="navigate-in"],
+.tadeon-shell [data-navigation-transition="enter"] {
+  animation: tsp-discover-in 420ms var(--tsp-in) both;
+}
+@keyframes tsp-discover-in {
+  from { opacity:0; transform:translate3d(0,12px,0); filter:blur(4px); clip-path:inset(4% 0 0 0); }
+  68% { opacity:1; transform:translate3d(0,-1px,0); filter:none; clip-path:inset(0); }
+  to { opacity:1; transform:none; clip-path:inset(0); }
+}
+
+/* Reveal/opening of archival material: vertical registration first, content second. */
+.tadeon-shell [data-motion="reveal"] {
+  animation:tsp-reveal 360ms var(--tsp-in) both;
+}
+@keyframes tsp-reveal {
+  from { opacity:0; transform:translateY(7px); clip-path:inset(0 0 12% 0); filter:blur(3px); }
+  to { opacity:1; transform:none; clip-path:inset(0); filter:none; }
+}
+
+/* Editing: precision, not bounce. */
+.tadeon-shell [data-motion="edit-focus"] {
+  animation:tsp-edit-focus 300ms var(--tsp-soft) both;
+}
+@keyframes tsp-edit-focus {
+  from { box-shadow:0 0 0 0 rgb(255 255 255 / 0%); transform:translateY(2px); }
+  65% { box-shadow:0 0 0 3px color-mix(in srgb, var(--section-accent) 10%, transparent); transform:translateY(-1px); }
+  to { box-shadow:0 0 0 1px color-mix(in srgb, var(--section-accent) 6%, transparent); transform:none; }
+}
+
+/* Saving/confirming: settles like a record being committed. */
+.tadeon-shell [data-motion="commit"],
+.tadeon-shell [data-motion-state="committed"] {
+  animation:tsp-commit 430ms var(--tsp-spring) both;
+}
+@keyframes tsp-commit {
+  from { opacity:.82; transform:scale(.988); }
+  58% { opacity:1; transform:scale(1.008); }
+  to { opacity:1; transform:none; }
+}
+
+/* Adding: enter from the same axis as a record being appended. */
+.tadeon-shell [data-motion="append"] {
+  animation:tsp-append 340ms var(--tsp-in) both;
+}
+@keyframes tsp-append {
+  from { opacity:0; transform:translate3d(0,9px,0) scale(.985); filter:blur(2px); }
+  to { opacity:1; transform:none; filter:none; }
+}
+
+/* Deleting: a deliberate retreat rather than a generic fade. */
+.tadeon-shell [data-motion="archive-out"],
+.tadeon-shell [data-motion="delete"] {
+  animation:tsp-retreat 250ms cubic-bezier(.64,0,.84,0) both;
+  pointer-events:none;
+}
+@keyframes tsp-retreat {
+  from { opacity:1; transform:none; filter:none; max-height:var(--tsp-row-height, 200px); }
+  to { opacity:0; transform:translate3d(8px,-2px,0) scale(.985); filter:blur(2px); max-height:0; margin-top:0; margin-bottom:0; padding-top:0; padding-bottom:0; }
+}
+
+/* Connection/relations: directional movement follows the relationship. */
+.tadeon-shell [data-motion="link-in"] {
+  animation:tsp-link-in 380ms var(--tsp-in) both;
+  transform-origin:left center;
+}
+@keyframes tsp-link-in {
+  from { opacity:0; transform:translate3d(-10px,0,0) scaleX(.92); filter:blur(2px); }
+  to { opacity:1; transform:none; filter:none; }
+}
+.tadeon-shell [data-motion="link-highlight"] {
+  animation:tsp-link-highlight 460ms var(--tsp-spring) both;
+}
+@keyframes tsp-link-highlight {
+  from { box-shadow:0 0 0 0 color-mix(in srgb, var(--section-accent) 0%, transparent); }
+  45% { box-shadow:0 0 0 3px color-mix(in srgb, var(--section-accent) 13%, transparent); }
+  to { box-shadow:0 0 0 0 color-mix(in srgb, var(--section-accent) 0%, transparent); }
+}
+
+/* Primary actions have gravitas; quiet actions stay precise. */
+.tadeon-shell [data-motion-role="primary"]:hover {
+  transform:translateY(-2px) scale(1.006);
+  box-shadow:0 16px 36px -28px color-mix(in srgb, var(--section-accent) 70%, transparent);
+}
+.tadeon-shell [data-motion-role="primary"]:active { transform:translateY(1px) scale(.976); }
+.tadeon-shell [data-motion-role="quiet"]:hover { transform:translateX(2px); }
+.tadeon-shell [data-motion-role="quiet"]:active { transform:scale(.985); }
+.tadeon-shell [data-motion-role="destructive"]:hover {
+  transform:translateY(-1px);
+  box-shadow:0 14px 30px -28px rgb(116 36 45 / 62%);
+}
+.tadeon-shell [data-motion-role="destructive"]:active { transform:translateY(1px) scale(.978); }
+
+/* Search: the query field behaves like a lens focusing on the archive. */
+.tadeon-shell [data-motion-role="search"]:focus-within {
+  transform:translateY(-1px);
+  box-shadow:0 14px 36px -30px color-mix(in srgb, var(--section-accent) 48%, transparent);
+}
+.tadeon-shell [data-motion-role="search"] input:focus { transform:translateX(2px); }
+
+/* Import/export: data travels. */
+.tadeon-shell [data-motion="transfer-in"] { animation:tsp-transfer-in 340ms var(--tsp-in) both; }
+@keyframes tsp-transfer-in { from { opacity:0; transform:translate3d(-9px,0,0); } to { opacity:1; transform:none; } }
+.tadeon-shell [data-motion="transfer-out"] { animation:tsp-transfer-out 340ms var(--tsp-in) both; }
+@keyframes tsp-transfer-out { from { opacity:0; transform:translate3d(9px,0,0); } to { opacity:1; transform:none; } }
+
+/* Mobile touch affordance: larger, calmer, less hover-dependent. */
+@media (max-width:767px) {
+  .tadeon-shell [data-motion-role="primary"]:hover,
+  .tadeon-shell [data-motion-role="quiet"]:hover,
+  .tadeon-shell [data-motion-role="destructive"]:hover { transform:none; }
+  .tadeon-shell [data-motion-role="primary"]:active { transform:scale(.97); }
+  .tadeon-shell [data-motion-role="quiet"]:active { transform:translateX(2px); }
+  .tadeon-shell [data-motion-role="destructive"]:active { transform:scale(.97); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tadeon-shell [data-motion="navigate-in"],
+  .tadeon-shell [data-navigation-transition="enter"],
+  .tadeon-shell [data-motion="reveal"],
+  .tadeon-shell [data-motion="edit-focus"],
+  .tadeon-shell [data-motion="commit"],
+  .tadeon-shell [data-motion-state="committed"],
+  .tadeon-shell [data-motion="append"],
+  .tadeon-shell [data-motion="archive-out"],
+  .tadeon-shell [data-motion="delete"],
+  .tadeon-shell [data-motion="link-in"],
+  .tadeon-shell [data-motion="link-highlight"],
+  .tadeon-shell [data-motion="transfer-in"],
+  .tadeon-shell [data-motion="transfer-out"] { animation:none !important; transition:none !important; }
+}
