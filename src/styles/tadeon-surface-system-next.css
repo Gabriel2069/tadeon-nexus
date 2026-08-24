@@ -1,3 +1,5 @@
+@import url("./tadeon-microinteraction-system.css");
+
 /* Tadeon Surface System — Wave 04
    Surfaces are materials, not generic cards. */
 
@@ -27,7 +29,6 @@
   z-index: 2;
 }
 
-/* Archive — stable, flat, documental. */
 .tadeon-surface[data-tadeon-material="archive"] {
   border-color: rgb(var(--tadeon-surface-muted) / 18%);
   background:
@@ -44,7 +45,6 @@
   pointer-events: none;
 }
 
-/* Relic — slightly sculptural, warmer and heavier. */
 .tadeon-sheet-card[data-tadeon-material="relic"] {
   border-color: rgb(217 215 164 / 24%);
   background:
@@ -62,7 +62,6 @@
   }
 }
 
-/* Fragment — asymmetric, relational, directional. */
 .tadeon-link-panel[data-tadeon-material="fragment"] {
   border-left-width: 2px;
   border-top-color: rgb(113 107 123 / 18%);
@@ -82,7 +81,6 @@
   content: "";
 }
 
-/* Record — precise, technical, dense. */
 .tadeon-skill-modifier-panel[data-tadeon-material="record"] {
   border-top-width: 2px;
   border-bottom-width: 1px;
@@ -101,7 +99,6 @@
   content: "";
 }
 
-/* State — compact and expressive. */
 .tadeon-state-panel[data-tadeon-material="state"] {
   border-color: rgb(var(--tadeon-section-accent, 217 215 164) / 24%);
   background:
@@ -117,7 +114,6 @@
   pointer-events: none;
 }
 
-/* Unified micro-light: follows the pointer sheen already created by the runtime. */
 .tadeon-pointer-sheen {
   position: absolute !important;
   inset: 0 !important;
@@ -129,7 +125,6 @@
 }
 .tadeon-pointer-sheen[data-active="true"] { opacity: 1 !important; }
 
-/* Tables and lists inherit material instead of reverting to generic panels. */
 .tadeon-surface[data-tadeon-material="archive"] :is(table, [role="table"]) th {
   border-bottom-color: rgb(var(--tadeon-surface-ink) / 11%);
   font-family: var(--font-mono);
