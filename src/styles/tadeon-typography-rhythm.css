@@ -1,0 +1,162 @@
+/* Tadeon Typography & Rhythm — shared editorial scale. */
+
+:root {
+  --tadeon-step-1: .69rem;
+  --tadeon-step-2: .78rem;
+  --tadeon-step-3: .88rem;
+  --tadeon-step-4: 1rem;
+  --tadeon-step-5: 1.15rem;
+  --tadeon-step-6: 1.38rem;
+  --tadeon-step-7: 1.72rem;
+  --tadeon-step-8: 2.15rem;
+  --tadeon-step-9: 2.72rem;
+  --tadeon-leading-tight: 1.02;
+  --tadeon-leading-copy: 1.55;
+  --tadeon-leading-ui: 1.25;
+  --tadeon-space-section: clamp(1.25rem, 2.3vw, 2rem);
+}
+
+.tadeon-shell {
+  --tadeon-copy-size: var(--tadeon-step-4);
+  --tadeon-meta-size: var(--tadeon-step-2);
+  --tadeon-label-size: var(--tadeon-step-1);
+}
+
+.tadeon-shell p,
+.tadeon-shell li {
+  line-height: var(--tadeon-leading-copy);
+}
+
+.tadeon-shell small,
+.tadeon-shell .tadeon-meta,
+.tadeon-shell [data-meta],
+.tadeon-shell [data-slot="description"] {
+  font-size: var(--tadeon-meta-size);
+  line-height: var(--tadeon-leading-ui);
+}
+
+.tadeon-shell .tadeon-eyebrow,
+.tadeon-shell [data-eyebrow],
+.tadeon-shell [data-label] {
+  font-family: Inter, sans-serif;
+  font-size: var(--tadeon-label-size);
+  font-weight: 600;
+  letter-spacing: .18em;
+  line-height: 1.15;
+  text-transform: uppercase;
+}
+
+.tadeon-shell h1,
+.tadeon-shell h2,
+.tadeon-shell h3,
+.tadeon-shell h4 {
+  font-family: "EB Garamond", serif;
+  text-wrap: balance;
+}
+
+.tadeon-shell h2 {
+  font-size: clamp(var(--tadeon-step-6), 2.2vw, var(--tadeon-step-7));
+  line-height: var(--tadeon-leading-tight);
+  letter-spacing: -.018em;
+}
+
+.tadeon-shell h3 {
+  font-size: clamp(var(--tadeon-step-5), 1.6vw, var(--tadeon-step-6));
+  line-height: 1.08;
+  letter-spacing: -.012em;
+}
+
+.tadeon-shell h4 {
+  font-size: var(--tadeon-step-5);
+  line-height: 1.12;
+}
+
+.tadeon-shell .tadeon-mono,
+.tadeon-shell [data-mono],
+.tadeon-shell code,
+.tadeon-shell kbd,
+.tadeon-shell [data-technical] {
+  font-family: "PT Mono", monospace;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -.015em;
+}
+
+.tadeon-shell .tadeon-stat-number,
+.tadeon-shell [data-stat-value],
+.tadeon-shell [data-metric-value] {
+  font-family: "PT Mono", monospace;
+  font-size: clamp(1.35rem, 2.2vw, 2rem);
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+  letter-spacing: -.035em;
+}
+
+/* Section rhythm: consistent breathing between hierarchy levels. */
+.tadeon-page > section,
+.tadeon-page > .tadeon-section,
+.tadeon-route-stage > section,
+.tadeon-route-stage > .tadeon-section {
+  margin-bottom: var(--tadeon-space-section);
+}
+
+.tadeon-page > section:last-child,
+.tadeon-page > .tadeon-section:last-child,
+.tadeon-route-stage > section:last-child,
+.tadeon-route-stage > .tadeon-section:last-child {
+  margin-bottom: 0;
+}
+
+.tadeon-shell .tadeon-section-title,
+.tadeon-shell [data-section-title] {
+  margin-bottom: .7rem;
+}
+
+.tadeon-shell .tadeon-section-title + p,
+.tadeon-shell [data-section-title] + p {
+  margin-top: .25rem;
+}
+
+.tadeon-shell .tadeon-metadata-row,
+.tadeon-shell [data-metadata-row] {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: .35rem .7rem;
+  font-size: var(--tadeon-step-2);
+  line-height: var(--tadeon-leading-ui);
+}
+
+/* Avoid accidental giant headings inside compact materials. */
+.tadeon-shell .tadeon-surface h1,
+.tadeon-shell .tadeon-sheet-card h1,
+.tadeon-shell .tadeon-link-panel h1,
+.tadeon-shell .tadeon-state-panel h1,
+.tadeon-shell dialog h1 {
+  font-size: clamp(1.25rem, 1.8vw, 1.8rem);
+}
+
+.tadeon-shell .tadeon-surface h2,
+.tadeon-shell .tadeon-sheet-card h2,
+.tadeon-shell .tadeon-link-panel h2,
+.tadeon-shell .tadeon-state-panel h2,
+.tadeon-shell dialog h2 {
+  font-size: clamp(1.1rem, 1.45vw, 1.5rem);
+}
+
+@media (max-width: 767px) {
+  :root {
+    --tadeon-step-7: 1.55rem;
+    --tadeon-step-8: 1.85rem;
+    --tadeon-step-9: 2.2rem;
+    --tadeon-space-section: 1.1rem;
+  }
+
+  .tadeon-shell p,
+  .tadeon-shell li {
+    line-height: 1.48;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tadeon-shell * { scroll-margin-top: 4.5rem; }
+}
