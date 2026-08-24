@@ -1,0 +1,497 @@
+/*
+ * Tadeon Experience Orchestration
+ *
+ * Final interaction layer for the Tadeon visual system.
+ * It deliberately sits above the existing polish layers so we can orchestrate
+ * their behavior without replacing established page-specific styling.
+ *
+ * Visual language: editorial, ritualistic, material, archival.
+ * It must never inherit NexOS motion language.
+ */
+
+:root {
+  --tadeon-motion-reveal: 520ms;
+  --tadeon-motion-fold: 420ms;
+  --tadeon-motion-press: 150ms;
+  --tadeon-motion-hover: 260ms;
+  --tadeon-motion-drift: 14s;
+  --tadeon-ease-reveal: cubic-bezier(0.22, 0.78, 0.18, 1);
+  --tadeon-ease-fold: cubic-bezier(0.32, 0.72, 0, 1);
+  --tadeon-ease-material: cubic-bezier(0.23, 1, 0.32, 1);
+  --tadeon-ink-glow: rgb(217 215 164 / 13%);
+  --tadeon-veil-glow: rgb(113 107 123 / 15%);
+  --tadeon-flow-glow: rgb(79 110 93 / 14%);
+}
+
+/* ================================================================
+   Global page reveal
+   ================================================================ */
+
+.tadeon-route-stage {
+  animation: tadeon-page-reveal var(--tadeon-motion-reveal) var(--tadeon-ease-reveal) both;
+  transform-origin: 50% 1.5rem;
+  will-change: opacity, transform, filter;
+}
+
+@keyframes tadeon-page-reveal {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 12px, 0);
+    filter: blur(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+    filter: blur(0);
+  }
+}
+
+/* The shell keeps the spatial language coherent while the route changes. */
+.tadeon-shell {
+  position: relative;
+  overflow-x: clip;
+}
+
+.tadeon-shell::before {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background:
+    radial-gradient(circle at 78% 12%, rgb(113 107 123 / 5%), transparent 24rem),
+    radial-gradient(circle at 20% 82%, rgb(79 110 93 / 4%), transparent 28rem);
+  content: "";
+  pointer-events: none;
+  opacity: 0.9;
+}
+
+/* ================================================================
+   Ambient drift ~ subtle enough to feel material, not decorative
+   ================================================================ */
+
+.tadeon-ambient {
+  animation: tadeon-ambient-drift var(--tadeon-motion-drift) ease-in-out infinite alternate;
+  will-change: transform;
+}
+
+.tadeon-ambient--flow {
+  animation-delay: -4.5s;
+}
+
+@keyframes tadeon-ambient-drift {
+  from {
+    transform: translate3d(-1%, -1.5%, 0) scale(0.985);
+  }
+  to {
+    transform: translate3d(2%, 2%, 0) scale(1.02);
+  }
+}
+
+/* ================================================================
+   Material surfaces
+   ================================================================ */
+
+.tadeon-surface,
+.tadeon-dashboard-hero,
+.tadeon-sheet-card,
+.tadeon-state-panel,
+.tadeon-auth-shell,
+.tadeon-auth-manifesto {
+  transition:
+    transform var(--tadeon-motion-hover) var(--tadeon-ease-material),
+    border-color var(--tadeon-motion-hover) var(--tadeon-ease-material),
+    box-shadow var(--tadeon-motion-hover) var(--tadeon-ease-material),
+    background-position var(--tadeon-motion-hover) ease;
+}
+
+.tadeon-surface:hover,
+.tadeon-sheet-card:hover {
+  transform: translateY(-2px);
+  border-color: color-mix(in srgb, var(--tadeon-metal) 42%, transparent);
+  box-shadow:
+    0 28px 82px -52px rgb(0 0 0 / 96%),
+    inset 0 1px 0 rgb(255 255 255 / 4%),
+    0 0 0 1px rgb(217 215 164 / 2%);
+}
+
+.tadeon-dashboard-hero:hover,
+.tadeon-state-panel:hover {
+  border-color: color-mix(in srgb, var(--tadeon-metal) 38%, transparent);
+  box-shadow:
+    0 34px 90px -56px rgb(0 0 0 / 97%),
+    inset 0 1px 0 rgb(255 255 255 / 4%);
+}
+
+.tadeon-surface::before,
+.tadeon-sheet-card::before,
+.tadeon-dashboard-hero::before,
+.tadeon-state-panel::before {
+  transition: opacity var(--tadeon-motion-hover) ease, transform var(--tadeon-motion-hover) var(--tadeon-ease-material);
+}
+
+.tadeon-surface:hover::before,
+.tadeon-sheet-card:hover::before,
+.tadeon-dashboard-hero:hover::before,
+.tadeon-state-panel:hover::before {
+  opacity: 1.18;
+  transform: translate3d(1.5%, -1%, 0);
+}
+
+/* ================================================================
+   Navigation as a page marker
+   ================================================================ */
+
+.tadeon-nav-item,
+.tadeon-mobile-dock__item,
+.tadeon-sidebar-collapse,
+.tadeon-mobile-header__control,
+.tadeon-desktop-toolbar__account,
+.tadeon-link-collapse {
+  transition:
+    color var(--tadeon-motion-hover) var(--tadeon-ease-material),
+    background-color var(--tadeon-motion-hover) var(--tadeon-ease-material),
+    border-color var(--tadeon-motion-hover) var(--tadeon-ease-material),
+    box-shadow var(--tadeon-motion-hover) var(--tadeon-ease-material),
+    transform var(--tadeon-motion-press) var(--tadeon-ease-material);
+}
+
+.tadeon-nav-item:hover {
+  transform: translateX(3px);
+}
+
+.tadeon-nav-item[aria-current="page"],
+.tadeon-mobile-dock__item[aria-current="page"] {
+  box-shadow:
+    inset 0 0 0 1px rgb(217 215 164 / 8%),
+    0 10px 26px -24px rgb(217 215 164 / 38%);
+}
+
+.tadeon-nav-item[aria-current="page"]::after {
+  opacity: 1;
+  transform: scaleY(1);
+}
+
+.tadeon-nav-item:hover .tadeon-nav-item__icon > svg,
+.tadeon-mobile-dock__item:hover > svg {
+  transform: translateY(-1px);
+  filter: drop-shadow(0 0 8px rgb(217 215 164 / 16%));
+}
+
+.tadeon-sidebar-collapse:hover,
+.tadeon-mobile-header__control:hover,
+.tadeon-desktop-toolbar__account:hover,
+.tadeon-link-collapse:hover {
+  box-shadow: 0 14px 30px -24px rgb(217 215 164 / 48%);
+}
+
+/* ================================================================
+   Header / chapter feeling
+   ================================================================ */
+
+.tadeon-desktop-toolbar {
+  position: relative;
+}
+
+.tadeon-desktop-toolbar::after {
+  position: absolute;
+  right: 0;
+  bottom: -1px;
+  left: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgb(217 215 164 / 14%), rgb(113 107 123 / 12%), transparent);
+  content: "";
+  opacity: 0.8;
+}
+
+.tadeon-desktop-toolbar h2,
+.tadeon-mobile-header__identity p:last-child {
+  animation: tadeon-title-settle 460ms var(--tadeon-ease-reveal) both;
+}
+
+@keyframes tadeon-title-settle {
+  from {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.tadeon-mobile-header__identity .overflow-visible {
+  transition: transform var(--tadeon-motion-hover) var(--tadeon-ease-material), filter var(--tadeon-motion-hover) ease;
+}
+
+.tadeon-mobile-header__identity:active .overflow-visible {
+  transform: scale(0.94);
+}
+
+/* ================================================================
+   Section personalities
+   ================================================================ */
+
+.tadeon-shell[data-section="O Nexus"] {
+  --tadeon-section-accent: var(--tadeon-knowledge);
+  --tadeon-section-glow: var(--tadeon-ink-glow);
+}
+
+.tadeon-shell[data-section="Painel do Mestre"] {
+  --tadeon-section-accent: var(--tadeon-flow);
+  --tadeon-section-glow: var(--tadeon-flow-glow);
+}
+
+.tadeon-shell[data-section="Mesa Nexus"] {
+  --tadeon-section-accent: var(--tadeon-arden);
+  --tadeon-section-glow: rgb(31 54 68 / 14%);
+}
+
+.tadeon-shell[data-section="Ficha"] {
+  --tadeon-section-accent: var(--tadeon-knowledge);
+  --tadeon-section-glow: var(--tadeon-ink-glow);
+}
+
+.tadeon-shell[data-section="Saúde do arquivo"] {
+  --tadeon-section-accent: var(--tadeon-metal);
+  --tadeon-section-glow: rgb(122 129 135 / 12%);
+}
+
+.tadeon-shell[data-section="Usuários"] {
+  --tadeon-section-accent: var(--tadeon-veil);
+  --tadeon-section-glow: var(--tadeon-veil-glow);
+}
+
+.tadeon-shell[data-section="O Nexus"] .tadeon-route-stage::before,
+.tadeon-shell[data-section="Painel do Mestre"] .tadeon-route-stage::before,
+.tadeon-shell[data-section="Mesa Nexus"] .tadeon-route-stage::before,
+.tadeon-shell[data-section="Ficha"] .tadeon-route-stage::before,
+.tadeon-shell[data-section="Saúde do arquivo"] .tadeon-route-stage::before,
+.tadeon-shell[data-section="Usuários"] .tadeon-route-stage::before {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: min(38rem, 55vw);
+  height: min(28rem, 42vw);
+  background: radial-gradient(circle at 80% 0%, color-mix(in srgb, var(--tadeon-section-accent) 8%, transparent), transparent 68%);
+  content: "";
+  pointer-events: none;
+  opacity: 0.65;
+  transition: opacity 500ms ease;
+}
+
+/* ================================================================
+   Dashboard rhythm / signals
+   ================================================================ */
+
+.tadeon-dashboard-signal {
+  transition: transform var(--tadeon-motion-hover) var(--tadeon-ease-material), color var(--tadeon-motion-hover) ease;
+}
+
+.tadeon-dashboard-signal:hover {
+  transform: translateY(-2px);
+}
+
+/* ================================================================
+   Conditions / status chips
+   ================================================================ */
+
+.tadeon-sheet-condition-chip {
+  position: relative;
+  overflow: hidden;
+  transition:
+    transform var(--tadeon-motion-press) var(--tadeon-ease-material),
+    border-color var(--tadeon-motion-hover) ease,
+    box-shadow var(--tadeon-motion-hover) ease;
+}
+
+.tadeon-sheet-condition-chip::after {
+  position: absolute;
+  inset: auto 0 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, currentColor, transparent);
+  content: "";
+  opacity: var(--condition-glow-opacity, 0.35);
+  filter: blur(var(--condition-glow-blur, 8px));
+  pointer-events: none;
+}
+
+.tadeon-sheet-condition-chip:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 12px 30px -25px currentColor;
+}
+
+.tadeon-sheet-condition-chip[data-condition-severity="critical"] {
+  animation: tadeon-condition-breathe 2.8s ease-in-out infinite;
+}
+
+@keyframes tadeon-condition-breathe {
+  0%, 100% { box-shadow: 0 0 0 0 rgb(116 36 45 / 0%); }
+  50% { box-shadow: 0 0 28px -18px rgb(116 36 45 / 60%); }
+}
+
+/* ================================================================
+   Knowledge graph ~ reveal relationships, do not neonize them
+   ================================================================ */
+
+.tadeon-knowledge-graph,
+.tadeon-brain-shell {
+  transition: border-color var(--tadeon-motion-hover) ease, box-shadow var(--tadeon-motion-hover) ease;
+}
+
+.tadeon-knowledge-graph:hover,
+.tadeon-brain-shell:hover {
+  box-shadow:
+    0 36px 90px -58px rgb(0 0 0 / 96%),
+    inset 0 1px 0 rgb(255 255 255 / 3%);
+}
+
+.tadeon-knowledge-graph svg,
+.tadeon-brain-shell svg {
+  transition: filter var(--tadeon-motion-hover) ease;
+}
+
+.tadeon-knowledge-graph:hover svg,
+.tadeon-brain-shell:hover svg {
+  filter: drop-shadow(0 0 10px rgb(217 215 164 / 5%));
+}
+
+/* ================================================================
+   Skill / modifier surfaces
+   ================================================================ */
+
+.tadeon-skill-modifier-bridge,
+.tadeon-skill-modifier-panel,
+.tadeon-link-panel,
+.tadeon-link-collapse {
+  animation: tadeon-soft-fold var(--tadeon-motion-fold) var(--tadeon-ease-fold) both;
+  transform-origin: 50% 0;
+}
+
+.tadeon-skill-modifier-tabs button {
+  position: relative;
+}
+
+.tadeon-skill-modifier-tabs button::after {
+  position: absolute;
+  right: 0.75rem;
+  bottom: 0.1rem;
+  left: 0.75rem;
+  height: 1px;
+  background: var(--tadeon-knowledge);
+  content: "";
+  opacity: 0;
+  transform: scaleX(0.35);
+  transition: opacity var(--tadeon-motion-hover) ease, transform var(--tadeon-motion-hover) var(--tadeon-ease-material);
+}
+
+.tadeon-skill-modifier-tabs button[aria-selected="true"]::after {
+  opacity: 0.72;
+  transform: scaleX(1);
+}
+
+@keyframes tadeon-soft-fold {
+  from {
+    opacity: 0;
+    transform: translateY(5px) scaleY(0.985);
+    filter: blur(2px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scaleY(1);
+    filter: blur(0);
+  }
+}
+
+/* ================================================================
+   Auth / loading: reveal, not spin
+   ================================================================ */
+
+.tadeon-auth-shell {
+  animation: tadeon-auth-reveal 700ms var(--tadeon-ease-reveal) both;
+}
+
+.tadeon-auth-manifesto::after {
+  animation: tadeon-frame-drift 8s ease-in-out infinite alternate;
+}
+
+.tadeon-loading-mark {
+  animation: tadeon-loading-breathe 2.8s ease-in-out infinite;
+}
+
+@keyframes tadeon-auth-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(14px) scale(0.992);
+    filter: blur(5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+  }
+}
+
+@keyframes tadeon-frame-drift {
+  from { transform: translate(0, 0); }
+  to { transform: translate(0.35rem, -0.35rem); }
+}
+
+@keyframes tadeon-loading-breathe {
+  0%, 100% {
+    box-shadow:
+      0 24px 70px -38px rgb(0 0 0 / 95%),
+      0 0 40px -24px var(--tadeon-knowledge);
+    transform: translateY(0);
+  }
+  50% {
+    box-shadow:
+      0 28px 80px -40px rgb(0 0 0 / 97%),
+      0 0 54px -22px var(--tadeon-knowledge);
+    transform: translateY(-2px);
+  }
+}
+
+/* ================================================================
+   Mobile: preserve the Tadeon composition instead of flattening it
+   ================================================================ */
+
+@media (max-width: 767px) {
+  .tadeon-route-stage {
+    animation-duration: 430ms;
+  }
+
+  .tadeon-surface:hover,
+  .tadeon-sheet-card:hover,
+  .tadeon-dashboard-signal:hover {
+    transform: none;
+  }
+
+  .tadeon-mobile-dock__item[aria-current="page"] {
+    transform: translateY(-1px);
+  }
+
+  .tadeon-shell[data-section] .tadeon-route-stage::before {
+    width: 24rem;
+    height: 20rem;
+    opacity: 0.46;
+  }
+}
+
+/* ================================================================
+   Reduced motion
+   ================================================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  .tadeon-route-stage,
+  .tadeon-ambient,
+  .tadeon-auth-shell,
+  .tadeon-auth-manifesto::after,
+  .tadeon-loading-mark,
+  .tadeon-sheet-condition-chip[data-condition-severity="critical"],
+  .tadeon-skill-modifier-bridge,
+  .tadeon-skill-modifier-panel,
+  .tadeon-link-panel,
+  .tadeon-link-collapse {
+    animation: none !important;
+    transition-duration: 1ms !important;
+  }
+}
