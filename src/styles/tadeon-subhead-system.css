@@ -1,0 +1,195 @@
+/* Tadeon Subhead System — second-level editorial grammar. */
+
+.tadeon-section-head,
+.tadeon-panel-head,
+.tadeon-card-head,
+.tadeon-toolbar-head,
+.tadeon-inspector-head,
+.tadeon-dialog-head,
+.tadeon-sheet-section__header,
+.tadeon-master-section-head {
+  --subhead-accent: var(--tadeon-knowledge, #d9d7a4);
+  --subhead-height: 3.35rem;
+  min-height: var(--subhead-height);
+  padding: .7rem .9rem !important;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: .9rem;
+  border-bottom: 1px solid color-mix(in srgb, var(--subhead-accent) 16%, var(--border));
+  background:
+    linear-gradient(90deg, color-mix(in srgb, var(--subhead-accent) 6%, transparent), transparent 48%),
+    color-mix(in srgb, var(--card) 54%, transparent);
+}
+
+.tadeon-section-head__title,
+.tadeon-panel-head__title,
+.tadeon-card-head__title,
+.tadeon-toolbar-head__title,
+.tadeon-inspector-head__title,
+.tadeon-dialog-head__title,
+.tadeon-sheet-section__title,
+.tadeon-master-section-head__title {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: .6rem;
+}
+
+.tadeon-section-head h2,
+.tadeon-panel-head h2,
+.tadeon-card-head h3,
+.tadeon-toolbar-head h2,
+.tadeon-inspector-head h2,
+.tadeon-dialog-head h2,
+.tadeon-sheet-section__title h2,
+.tadeon-master-section-head h2 {
+  margin: 0;
+  font-family: var(--font-serif, "EB Garamond", serif);
+  font-size: clamp(1rem, 1.35vw, 1.28rem);
+  line-height: 1.05;
+  letter-spacing: -.015em;
+  text-wrap: balance;
+}
+
+.tadeon-section-head p,
+.tadeon-panel-head p,
+.tadeon-card-head p,
+.tadeon-toolbar-head p,
+.tadeon-inspector-head p,
+.tadeon-dialog-head p,
+.tadeon-sheet-section__subtitle,
+.tadeon-master-section-head p {
+  margin: .12rem 0 0;
+  color: var(--muted-foreground);
+  font-size: .7rem;
+  line-height: 1.35;
+  max-width: 58ch;
+}
+
+.tadeon-subhead-mark {
+  width: 1.8rem;
+  height: 1.8rem;
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  border: 1px solid color-mix(in srgb, var(--subhead-accent) 30%, var(--border));
+  border-radius: .55rem .18rem .55rem .18rem;
+  background: linear-gradient(145deg, color-mix(in srgb, var(--subhead-accent) 10%, transparent), transparent);
+  color: var(--subhead-accent);
+}
+
+.tadeon-subhead-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: .4rem;
+  flex: 0 0 auto;
+}
+
+.tadeon-subhead-actions button,
+.tadeon-subhead-actions [role="button"] {
+  min-height: 2rem;
+  border-radius: .48rem .14rem .48rem .14rem;
+}
+
+/* Tabs inherit the subhead rhythm instead of becoming a separate visual language. */
+.tadeon-subhead-tabs,
+.tadeon-master-navigation,
+.tadeon-sheet-tabs,
+.tadeon-brain-mode,
+.tadeon-brain-toolbar {
+  min-height: 2.85rem;
+  padding: .25rem;
+  border: 1px solid color-mix(in srgb, var(--border) 86%, transparent);
+  border-radius: .72rem .22rem .72rem .22rem;
+  background: color-mix(in srgb, var(--card) 80%, transparent);
+  box-shadow: inset 0 1px rgb(255 255 255 / 3%);
+}
+
+.tadeon-subhead-tabs [data-slot="tabs-trigger"],
+.tadeon-master-navigation [data-slot="tabs-trigger"],
+.tadeon-sheet-tabs [data-slot="tabs-trigger"],
+.tadeon-brain-mode button,
+.tadeon-brain-toolbar button {
+  min-height: 2.25rem;
+  border-radius: .5rem .15rem .5rem .15rem;
+  color: var(--muted-foreground);
+  transition: color 180ms ease, background-color 180ms ease, border-color 180ms ease, transform 180ms var(--ease-out), box-shadow 200ms var(--ease-out);
+}
+
+.tadeon-subhead-tabs [data-slot="tabs-trigger"][data-state="active"],
+.tadeon-master-navigation [data-slot="tabs-trigger"][data-state="active"],
+.tadeon-sheet-tabs [data-slot="tabs-trigger"][data-state="active"],
+.tadeon-brain-mode button[data-active="true"] {
+  color: var(--foreground);
+  background: linear-gradient(135deg, color-mix(in srgb, var(--subhead-accent) 12%, transparent), transparent 72%), color-mix(in srgb, var(--secondary) 94%, transparent);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--subhead-accent) 24%, transparent), 0 12px 28px -24px color-mix(in srgb, var(--subhead-accent) 45%, transparent);
+}
+
+.tadeon-subhead-tabs [data-slot="tabs-trigger"]:hover,
+.tadeon-master-navigation [data-slot="tabs-trigger"]:hover,
+.tadeon-sheet-tabs [data-slot="tabs-trigger"]:hover,
+.tadeon-brain-mode button:hover,
+.tadeon-brain-toolbar button:hover {
+  color: var(--foreground);
+  transform: translateY(-1px);
+}
+
+/* Dialogs and inspectors use the same head contract. */
+.tadeon-dialog-head,
+.tadeon-inspector-head {
+  background: linear-gradient(90deg, color-mix(in srgb, var(--subhead-accent) 8%, transparent), transparent 52%), color-mix(in srgb, var(--card) 92%, transparent);
+}
+
+/* Section dividers become editorial markers rather than arbitrary borders. */
+.tadeon-section-divider {
+  display: flex;
+  align-items: center;
+  gap: .65rem;
+  color: var(--muted-foreground);
+  font-family: var(--font-mono);
+  font-size: .56rem;
+  font-weight: 700;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+}
+
+.tadeon-section-divider::before,
+.tadeon-section-divider::after {
+  content: "";
+  height: 1px;
+  flex: 1;
+  background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--subhead-accent) 20%, var(--border)));
+}
+
+.tadeon-section-divider::after {
+  background: linear-gradient(90deg, color-mix(in srgb, var(--subhead-accent) 20%, var(--border)), transparent);
+}
+
+@media (max-width: 767px) {
+  .tadeon-section-head,
+  .tadeon-panel-head,
+  .tadeon-card-head,
+  .tadeon-toolbar-head,
+  .tadeon-inspector-head,
+  .tadeon-dialog-head,
+  .tadeon-sheet-section__header,
+  .tadeon-master-section-head {
+    min-height: 3.05rem;
+    padding: .65rem .75rem !important;
+  }
+  .tadeon-subhead-tabs,
+  .tadeon-master-navigation,
+  .tadeon-sheet-tabs,
+  .tadeon-brain-mode,
+  .tadeon-brain-toolbar { min-height: 2.65rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tadeon-subhead-tabs [data-slot="tabs-trigger"],
+  .tadeon-master-navigation [data-slot="tabs-trigger"],
+  .tadeon-sheet-tabs [data-slot="tabs-trigger"],
+  .tadeon-brain-mode button,
+  .tadeon-brain-toolbar button { transition: none !important; }
+}
