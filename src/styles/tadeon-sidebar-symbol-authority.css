@@ -1,0 +1,51 @@
+/* Tadeon Sidebar Symbol Authority — canonical destination glyphs.
+   Replaces legacy baked-color pseudo-icons with currentColor masks so the
+   sidebar destination palette remains authoritative in every state. */
+
+.tadeon-sidebar .tadeon-nav-item[href="/master-panel"] .tadeon-nav-item__icon > svg,
+.tadeon-sidebar .tadeon-nav-item[href="/nexus-tools"] .tadeon-nav-item__icon > svg {
+  display: none !important;
+}
+
+.tadeon-sidebar .tadeon-nav-item[href="/master-panel"] .tadeon-nav-item__icon::before,
+.tadeon-sidebar .tadeon-nav-item[href="/nexus-tools"] .tadeon-nav-item__icon::before {
+  display: block;
+  width: 1rem;
+  height: 1rem;
+  flex: 0 0 1rem;
+  background-color: currentColor;
+  background-image: none !important;
+  background-repeat: no-repeat !important;
+  background-position: center !important;
+  background-size: contain !important;
+  opacity: 1;
+  transform: none !important;
+  filter: none;
+  content: "";
+  transition: background-color var(--td-seam), filter var(--td-thread);
+}
+
+.tadeon-sidebar .tadeon-nav-item[href="/master-panel"] .tadeon-nav-item__icon::before {
+  -webkit-mask: center / contain no-repeat url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.55' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='8.25' stroke-dasharray='9 3.4 2.2 4.3' opacity='.72'/%3E%3Cpath d='M12 2.8v4.1M12 17.1v4.1M2.8 12h4.1M17.1 12h4.1'/%3E%3Cpath d='m8.55 12 3.45-3.45L15.45 12 12 15.45 8.55 12Z'/%3E%3Cpath d='M6.05 6.35 9.6 9.6M17.95 6.35 14.4 9.6M6.05 17.65l3.55-3.25M17.95 17.65l-3.55-3.25'/%3E%3Ccircle cx='6.05' cy='6.35' r='.85'/%3E%3Ccircle cx='17.95' cy='6.35' r='.85'/%3E%3Ccircle cx='6.05' cy='17.65' r='.85'/%3E%3Ccircle cx='17.95' cy='17.65' r='.85'/%3E%3Ccircle cx='12' cy='12' r='1.15' fill='black' stroke='none'/%3E%3C/svg%3E");
+  mask: center / contain no-repeat url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.55' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='8.25' stroke-dasharray='9 3.4 2.2 4.3' opacity='.72'/%3E%3Cpath d='M12 2.8v4.1M12 17.1v4.1M2.8 12h4.1M17.1 12h4.1'/%3E%3Cpath d='m8.55 12 3.45-3.45L15.45 12 12 15.45 8.55 12Z'/%3E%3Cpath d='M6.05 6.35 9.6 9.6M17.95 6.35 14.4 9.6M6.05 17.65l3.55-3.25M17.95 17.65l-3.55-3.25'/%3E%3Ccircle cx='6.05' cy='6.35' r='.85'/%3E%3Ccircle cx='17.95' cy='6.35' r='.85'/%3E%3Ccircle cx='6.05' cy='17.65' r='.85'/%3E%3Ccircle cx='17.95' cy='17.65' r='.85'/%3E%3Ccircle cx='12' cy='12' r='1.15' fill='black' stroke='none'/%3E%3C/svg%3E");
+}
+
+.tadeon-sidebar .tadeon-nav-item[href="/nexus-tools"] .tadeon-nav-item__icon::before {
+  -webkit-mask: center / contain no-repeat url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M21 8a2 2 0 0 0-2-2h-2V4a2 2 0 0 0-2-2H9a2 2 0 0 0-2 2v2H5a2 2 0 0 0-2 2v11a3 3 0 0 0 3 3h12a3 3 0 0 0 3-3Z'/%3E%3Cpath d='M9 6h6M8 12h8M8 16h5'/%3E%3C/svg%3E");
+  mask: center / contain no-repeat url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M21 8a2 2 0 0 0-2-2h-2V4a2 2 0 0 0-2-2H9a2 2 0 0 0-2 2v2H5a2 2 0 0 0-2 2v11a3 3 0 0 0 3 3h12a3 3 0 0 0 3-3Z'/%3E%3Cpath d='M9 6h6M8 12h8M8 16h5'/%3E%3C/svg%3E");
+}
+
+.tadeon-sidebar .tadeon-nav-item[href="/master-panel"]:hover .tadeon-nav-item__icon::before,
+.tadeon-sidebar .tadeon-nav-item[href="/master-panel"][aria-current="page"] .tadeon-nav-item__icon::before,
+.tadeon-sidebar .tadeon-nav-item[href="/nexus-tools"]:hover .tadeon-nav-item__icon::before,
+.tadeon-sidebar .tadeon-nav-item[href="/nexus-tools"][aria-current="page"] .tadeon-nav-item__icon::before {
+  background-color: var(--nav-accent) !important;
+  filter: drop-shadow(0 0 7px rgb(var(--nav-accent-rgb) / 28%));
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tadeon-sidebar .tadeon-nav-item[href="/master-panel"] .tadeon-nav-item__icon::before,
+  .tadeon-sidebar .tadeon-nav-item[href="/nexus-tools"] .tadeon-nav-item__icon::before {
+    transition: none !important;
+  }
+}
