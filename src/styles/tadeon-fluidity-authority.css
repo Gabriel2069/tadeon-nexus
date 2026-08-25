@@ -1,0 +1,110 @@
+/* TdV Fluidity Authority
+   Final-pass rules for perceived latency, scroll continuity and motion ownership.
+   This file intentionally does not create decorative pseudo-elements. */
+
+:root {
+  --td-fluid-fast: 120ms;
+  --td-fluid-base: 190ms;
+  --td-fluid-surface: 280ms;
+  --td-fluid-ease: cubic-bezier(.22,.72,.2,1);
+  --td-fluid-seam: cubic-bezier(.25,.8,.25,1);
+}
+
+.tadeon-shell {
+  scroll-behavior: smooth;
+  scroll-padding-top: 1.5rem;
+}
+
+/* Do not make content wait for a long reveal after it has entered the viewport. */
+.tadeon-shell [data-td-reveal] {
+  animation-duration: 220ms !important;
+  animation-delay: 0ms !important;
+}
+.tadeon-shell [data-td-apparition] {
+  animation-duration: 300ms !important;
+  animation-delay: 0ms !important;
+}
+.tadeon-shell [data-motion="route-surface"],
+.tadeon-shell [data-route-surface],
+.tadeon-shell .tadeon-route-stage > .tadeon-page {
+  animation-duration: 300ms !important;
+  animation-delay: 0ms !important;
+}
+
+/* The content is already present when it arrives; only its material settles. */
+@keyframes td-fluid-reveal {
+  from { opacity: .86; clip-path: inset(0 0 1.5% 0); filter: blur(.55px); }
+  to { opacity: 1; clip-path: inset(0); filter: none; }
+}
+.tadeon-shell [data-td-reveal] { animation-name: td-fluid-reveal !important; }
+
+/* Prevent compounded micro-transitions from feeling sticky on touch and pointer. */
+.tadeon-shell :is(button,a,[role="button"],[role="tab"],[role="menuitem"],[role="option"],[role="switch"],[role="checkbox"],[role="radio"],summary) {
+  transition-timing-function: var(--td-fluid-seam);
+}
+
+/* Cards/surfaces respond continuously instead of waiting for a large shadow transition. */
+.tadeon-shell :is([data-slot="card"],[data-motion-surface],[data-motion-card]) {
+  transition-duration: var(--td-fluid-surface) !important;
+  will-change: box-shadow, border-color, background-color;
+}
+
+/* Keep content composited when an atmospheric field is moving behind it. */
+.tadeon-shell :is(.tadeon-page-hero,.tadeon-dashboard-hero,.tadeon-tabletop-studio__header,.tadeon-master-commandbar) {
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+/* Hero background motion must never animate the semantic SVG/symbol layer. */
+.tadeon-shell :is(.tadeon-page-hero,.tadeon-tabletop-studio__header,.tadeon-master-commandbar) > svg,
+.tadeon-shell :is(.tadeon-page-hero,.tadeon-tabletop-studio__header,.tadeon-master-commandbar) svg,
+.tadeon-shell .tadeon-dashboard-hero > svg path,
+.tadeon-shell .tadeon-dashboard-hero > svg circle,
+.tadeon-shell .tadeon-dashboard-hero > svg line {
+  animation: none !important;
+  stroke-dasharray: none !important;
+  stroke-dashoffset: 0 !important;
+  transform: none !important;
+  filter: none;
+  will-change: auto;
+}
+
+/* Atmospheric layers remain free to move behind the symbols. */
+.tadeon-shell :is(.tadeon-page-hero,.tadeon-dashboard-hero,.tadeon-tabletop-studio__header,.tadeon-master-commandbar)::before,
+.tadeon-shell :is(.tadeon-page-hero,.tadeon-dashboard-hero,.tadeon-tabletop-studio__header,.tadeon-master-commandbar)::after {
+  will-change: transform, opacity, background-position;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+/* Small lists should not arrive as a visibly delayed cascade. */
+.tadeon-shell [data-motion-list-item],
+.tadeon-shell [data-motion-row],
+.tadeon-shell [data-motion-card] {
+  animation-delay: 0ms !important;
+}
+
+/* Keep ambient signals independent from content entrance timing. */
+.tadeon-shell [data-td-suspension],
+.tadeon-shell [data-td-cloth] {
+  animation-delay: 0ms;
+}
+
+/* Touch devices: remove hover-state latency and let press feedback settle quickly. */
+@media (hover: none), (pointer: coarse) {
+  .tadeon-shell :is(button,a,[role="button"],[role="tab"],[role="menuitem"],[role="option"],[role="switch"],[role="checkbox"],[role="radio"],summary) {
+    transition-duration: var(--td-fluid-base);
+  }
+  .tadeon-shell :is([data-slot="card"],[data-motion-surface],[data-motion-card]) {
+    transition-duration: var(--td-fluid-surface) !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tadeon-shell { scroll-behavior: auto; }
+  .tadeon-shell *, .tadeon-shell *::before, .tadeon-shell *::after {
+    animation-duration: 1ms !important;
+    animation-delay: 0ms !important;
+    transition-duration: 1ms !important;
+  }
+}
