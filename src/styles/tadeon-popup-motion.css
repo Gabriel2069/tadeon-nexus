@@ -1,175 +1,32 @@
-/* Tadeon Popup Motion — rich, directional motion for overlays and transient UI. */
+/* Tadeon Popup Motion — legacy compatibility shim.
+   Surface motion is now owned by tadeon-motion-surfaces.css and the
+   section/hero/workspace authorities. This file no longer imposes its own
+   bounce, rise, scale or duplicate open/close timelines. */
 
 :root {
-  --tadeon-popup-in: cubic-bezier(.16,1,.3,1);
-  --tadeon-popup-out: cubic-bezier(.7,0,.84,0);
+  --tadeon-popup-in: var(--tm-surface-in, cubic-bezier(.16,1,.3,1));
+  --tadeon-popup-out: var(--tm-surface-out, cubic-bezier(.72,0,.88,0));
 }
 
-/* The veil arrives before the artifact. */
+/* Preserve the old variables/hooks for components that still reference them. */
 .tadeon-shell [data-slot="dialog-overlay"],
-.tadeon-shell [data-slot="sheet-overlay"] {
-  transition: opacity 420ms var(--tadeon-popup-in), backdrop-filter 520ms var(--tadeon-popup-in);
-  backdrop-filter: blur(0) saturate(100%);
-}
-
-.tadeon-shell [data-slot="dialog-overlay"][data-state="open"],
-.tadeon-shell [data-slot="sheet-overlay"][data-state="open"] {
-  backdrop-filter: blur(5px) saturate(82%);
-}
-
-.tadeon-shell [data-slot="dialog-overlay"][data-state="closed"],
-.tadeon-shell [data-slot="sheet-overlay"][data-state="closed"] {
-  backdrop-filter: blur(0) saturate(100%);
-}
-
-/* Dialog: rise from the center with a short material overshoot. */
-.tadeon-shell [data-slot="dialog-content"][data-state="open"] {
-  animation: tadeon-dialog-in 520ms var(--tadeon-popup-in) both;
-  transform-origin: 50% 46%;
-}
-
-.tadeon-shell [data-slot="dialog-content"][data-state="closed"] {
-  animation: tadeon-dialog-out 190ms var(--tadeon-popup-out) both;
-}
-
-.tadeon-shell [data-slot="dialog-content"] > [data-slot="dialog-header"],
-.tadeon-shell [data-slot="dialog-content"] > [data-slot="dialog-footer"] {
-  animation: tadeon-popup-settle 460ms var(--tadeon-popup-in) both;
-}
-
-.tadeon-shell [data-slot="dialog-content"] > [data-slot="dialog-header"] { animation-delay: 45ms; }
-.tadeon-shell [data-slot="dialog-content"] > [data-slot="dialog-footer"] { animation-delay: 95ms; }
-
-/* Sheets behave like physical panels, not modal rectangles. */
-.tadeon-shell [data-slot="sheet-content"][data-state="open"] {
-  animation: tadeon-sheet-in 460ms var(--tadeon-popup-in) both;
-}
-
-.tadeon-shell [data-slot="sheet-content"][data-state="closed"] {
-  animation: tadeon-sheet-out 220ms var(--tadeon-popup-out) both;
-}
-
-.tadeon-shell [data-slot="sheet-content"] > * {
-  animation: tadeon-popup-settle 420ms var(--tadeon-popup-in) both;
-}
-
-.tadeon-shell [data-slot="sheet-content"] > :nth-child(1) { animation-delay: 35ms; }
-.tadeon-shell [data-slot="sheet-content"] > :nth-child(2) { animation-delay: 65ms; }
-.tadeon-shell [data-slot="sheet-content"] > :nth-child(3) { animation-delay: 95ms; }
-.tadeon-shell [data-slot="sheet-content"] > :nth-child(4) { animation-delay: 125ms; }
-
-/* Popovers and dropdowns originate from their trigger direction. */
-.tadeon-shell [data-slot="popover-content"][data-state="open"],
-.tadeon-shell [data-slot="dropdown-menu-content"][data-state="open"],
-.tadeon-shell [data-slot="dropdown-menu-sub-content"][data-state="open"] {
-  animation: tadeon-float-in 280ms var(--tadeon-popup-in) both;
-  transform-origin: var(--radix-popover-content-transform-origin, var(--radix-dropdown-menu-content-transform-origin, 50% 0%));
-}
-
-.tadeon-shell [data-slot="popover-content"][data-state="closed"],
-.tadeon-shell [data-slot="dropdown-menu-content"][data-state="closed"],
-.tadeon-shell [data-slot="dropdown-menu-sub-content"][data-state="closed"] {
-  animation: tadeon-float-out 130ms var(--tadeon-popup-out) both;
-}
-
-.tadeon-shell [data-slot="dropdown-menu-content"][data-state="open"] > *,
-.tadeon-shell [data-slot="dropdown-menu-sub-content"][data-state="open"] > * {
-  animation: tadeon-menu-item-in 220ms var(--tadeon-popup-in) both;
-}
-
-.tadeon-shell [data-slot="dropdown-menu-content"][data-state="open"] > :nth-child(1),
-.tadeon-shell [data-slot="dropdown-menu-sub-content"][data-state="open"] > :nth-child(1) { animation-delay: 20ms; }
-.tadeon-shell [data-slot="dropdown-menu-content"][data-state="open"] > :nth-child(2),
-.tadeon-shell [data-slot="dropdown-menu-sub-content"][data-state="open"] > :nth-child(2) { animation-delay: 38ms; }
-.tadeon-shell [data-slot="dropdown-menu-content"][data-state="open"] > :nth-child(3),
-.tadeon-shell [data-slot="dropdown-menu-sub-content"][data-state="open"] > :nth-child(3) { animation-delay: 56ms; }
-.tadeon-shell [data-slot="dropdown-menu-content"][data-state="open"] > :nth-child(4),
-.tadeon-shell [data-slot="dropdown-menu-sub-content"][data-state="open"] > :nth-child(4) { animation-delay: 74ms; }
-.tadeon-shell [data-slot="dropdown-menu-content"][data-state="open"] > :nth-child(5),
-.tadeon-shell [data-slot="dropdown-menu-sub-content"][data-state="open"] > :nth-child(5) { animation-delay: 92ms; }
-
-/* Tooltips feel like a quick note being revealed, not a dialog. */
-.tadeon-shell [data-slot="tooltip-content"][data-state="open"] {
-  animation: tadeon-tooltip-in 180ms var(--tadeon-popup-in) both;
-}
-
-.tadeon-shell [data-slot="tooltip-content"][data-state="closed"] {
-  animation: tadeon-tooltip-out 110ms var(--tadeon-popup-out) both;
-}
-
-/* Sonner notifications settle with a slight vertical drop and material glow. */
+.tadeon-shell [data-slot="sheet-overlay"],
+.tadeon-shell [data-slot="dialog-content"],
+.tadeon-shell [data-slot="sheet-content"],
+.tadeon-shell [data-slot="popover-content"],
+.tadeon-shell [data-slot="dropdown-menu-content"],
+.tadeon-shell [data-slot="dropdown-menu-sub-content"],
+.tadeon-shell [data-slot="tooltip-content"],
 .tadeon-shell [data-sonner-toast] {
-  animation: tadeon-toast-in 420ms var(--tadeon-popup-in) both;
-}
-
-@keyframes tadeon-dialog-in {
-  from { opacity: 0; transform: translateY(18px) scale(.965); filter: blur(7px); }
-  62% { opacity: 1; transform: translateY(-2px) scale(1.006); filter: blur(0); }
-  to { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
-}
-
-@keyframes tadeon-dialog-out {
-  from { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
-  to { opacity: 0; transform: translateY(10px) scale(.985); filter: blur(3px); }
-}
-
-@keyframes tadeon-sheet-in {
-  from { opacity: .35; filter: blur(4px); }
-  to { opacity: 1; filter: blur(0); }
-}
-
-@keyframes tadeon-sheet-out {
-  from { opacity: 1; filter: blur(0); }
-  to { opacity: .55; filter: blur(2px); }
-}
-
-@keyframes tadeon-float-in {
-  from { opacity: 0; transform: translateY(5px) scale(.965); filter: blur(3px); }
-  72% { opacity: 1; transform: translateY(-1px) scale(1.005); filter: blur(0); }
-  to { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
-}
-
-@keyframes tadeon-float-out {
-  from { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
-  to { opacity: 0; transform: translateY(4px) scale(.975); filter: blur(2px); }
-}
-
-@keyframes tadeon-menu-item-in {
-  from { opacity: 0; transform: translateX(-5px); }
-  to { opacity: 1; transform: translateX(0); }
-}
-
-@keyframes tadeon-tooltip-in {
-  from { opacity: 0; transform: translateY(3px) scale(.94); filter: blur(1.5px); }
-  to { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
-}
-
-@keyframes tadeon-tooltip-out {
-  from { opacity: 1; transform: translateY(0) scale(1); }
-  to { opacity: 0; transform: translateY(2px) scale(.97); }
-}
-
-@keyframes tadeon-popup-settle {
-  from { opacity: 0; transform: translateY(4px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes tadeon-toast-in {
-  from { opacity: 0; transform: translate3d(0,-8px,0) scale(.985); filter: blur(2px); }
-  65% { opacity: 1; transform: translate3d(0,1px,0) scale(1.002); filter: blur(0); }
-  to { opacity: 1; transform: translate3d(0,0,0) scale(1); }
+  /* Intentionally neutral: current surface authority owns animation. */
 }
 
 @media (prefers-reduced-motion: reduce) {
   .tadeon-shell [data-slot="dialog-content"],
-  .tadeon-shell [data-slot="dialog-content"] > *,
   .tadeon-shell [data-slot="sheet-content"],
-  .tadeon-shell [data-slot="sheet-content"] > *,
   .tadeon-shell [data-slot="popover-content"],
   .tadeon-shell [data-slot="dropdown-menu-content"],
   .tadeon-shell [data-slot="dropdown-menu-sub-content"],
-  .tadeon-shell [data-slot="dropdown-menu-content"] > *,
-  .tadeon-shell [data-slot="dropdown-menu-sub-content"] > *,
   .tadeon-shell [data-slot="tooltip-content"],
   .tadeon-shell [data-sonner-toast] {
     animation: none !important;
