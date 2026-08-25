@@ -7,14 +7,15 @@
 @import "./tadeon-motion-heroes.css";
 @import "./tadeon-motion-workspace.css";
 @import "./tadeon-motion-microdetails.css";
+@import "./tadeon-motion-context.css";
 
-/* Compatibility layer: legacy motion selectors are intentionally limited.
-   New visual authority now owns interaction, surfaces, sections, heroes,
-   workspace and microdetail behavior in this order. */
+/* Single authored motion authority. Legacy motion files remain only as
+   compatibility shims; they no longer own interaction physics. */
 @media (prefers-reduced-motion: reduce) {
   .tadeon-shell *, .tadeon-shell *::before, .tadeon-shell *::after {
     animation-duration: 1ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 1ms !important;
+    transition-delay: 0ms !important;
   }
 }
