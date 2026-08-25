@@ -1,0 +1,255 @@
+/* Tadeon Hero Atmosphere Elements — motion for the actual decorative matter.
+   No layout transforms: only background material, SVG details and ambient signals move. */
+
+.tadeon-shell [data-tadeon-page-hero],
+.tadeon-shell .tadeon-dashboard-hero,
+.tadeon-shell .tadeon-master-commandbar,
+.tadeon-shell .tadeon-tabletop-studio__header {
+  --td-element-a: color-mix(in srgb, var(--td-section-accent, currentColor) 18%, transparent);
+  --td-element-b: color-mix(in srgb, var(--td-section-secondary, currentColor) 12%, transparent);
+  --td-element-line: color-mix(in srgb, var(--td-section-accent, currentColor) 34%, transparent);
+}
+
+/* Decorative SVGs should feel drawn into the fabric rather than sitting still. */
+.tadeon-shell [data-tadeon-page-hero] > svg,
+.tadeon-shell [data-tadeon-page-hero] svg[aria-hidden="true"],
+.tadeon-shell .tadeon-dashboard-hero > svg,
+.tadeon-shell .tadeon-dashboard-hero svg[aria-hidden="true"],
+.tadeon-shell .tadeon-master-commandbar svg[aria-hidden="true"],
+.tadeon-shell .tadeon-tabletop-studio__header svg[aria-hidden="true"] {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: td-element-fabric-breathe 15s ease-in-out infinite;
+}
+
+.tadeon-shell [data-tadeon-page-hero] svg path,
+.tadeon-shell [data-tadeon-page-hero] svg circle,
+.tadeon-shell [data-tadeon-page-hero] svg line,
+.tadeon-shell [data-tadeon-page-hero] svg polyline,
+.tadeon-shell .tadeon-dashboard-hero svg path,
+.tadeon-shell .tadeon-dashboard-hero svg circle,
+.tadeon-shell .tadeon-dashboard-hero svg line,
+.tadeon-shell .tadeon-dashboard-hero svg polyline,
+.tadeon-shell .tadeon-master-commandbar svg path,
+.tadeon-shell .tadeon-master-commandbar svg circle,
+.tadeon-shell .tadeon-master-commandbar svg line,
+.tadeon-shell .tadeon-master-commandbar svg polyline {
+  stroke-dasharray: 5 11;
+  animation: td-element-thread-pass 11s linear infinite;
+}
+
+/* Different layers move at different phases, creating woven depth. */
+.tadeon-shell [data-tadeon-page-hero] svg:nth-of-type(2n),
+.tadeon-shell .tadeon-dashboard-hero svg:nth-of-type(2n) {
+  animation-delay: -4.2s;
+}
+
+.tadeon-shell [data-tadeon-page-hero] svg:nth-of-type(3n),
+.tadeon-shell .tadeon-dashboard-hero svg:nth-of-type(3n) {
+  animation-delay: -7.4s;
+  animation-duration: 19s;
+}
+
+/* Fine ambient strands: new material for heroes without stealing content space. */
+.tadeon-shell [data-tadeon-page-hero]::marker,
+.tadeon-shell [data-tadeon-page-hero]::selection {
+  color: inherit;
+}
+
+.tadeon-shell [data-tadeon-page-hero],
+.tadeon-shell .tadeon-master-commandbar {
+  overflow: clip;
+}
+
+.tadeon-shell [data-tadeon-page-hero] .tadeon-page-hero-mark-host,
+.tadeon-shell .tadeon-master-commandbar__glow {
+  animation: td-mark-presence 8.5s ease-in-out infinite;
+}
+
+/* Dashboard: richer authored backdrop, kept behind content. */
+.tadeon-shell[data-section="Dashboard"] .tadeon-dashboard-hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 12% 18%, rgb(var(--td-section-rgb) / 11%) 0 1px, transparent 2px),
+    radial-gradient(circle at 28% 68%, rgb(var(--td-section-rgb) / 9%) 0 1px, transparent 2px),
+    radial-gradient(circle at 68% 24%, rgb(var(--td-section-rgb) / 8%) 0 1px, transparent 2px),
+    radial-gradient(circle at 88% 74%, rgb(var(--td-section-rgb) / 7%) 0 1px, transparent 2px),
+    repeating-linear-gradient(118deg, transparent 0 5.2rem, rgb(var(--td-section-rgb) / 4.5%) 5.2rem 5.25rem, transparent 5.25rem 10.4rem);
+  background-size: 12rem 12rem, 16rem 16rem, 18rem 18rem, 14rem 14rem, auto;
+  mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+  animation: td-dashboard-weft 31s linear infinite;
+}
+
+.tadeon-shell[data-section="Dashboard"] .tadeon-dashboard-hero::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(124deg, transparent 0 17%, rgb(var(--td-section-rgb) / 8%) 17.1% 17.22%, transparent 17.4% 100%),
+    linear-gradient(64deg, transparent 0 79%, rgb(var(--td-section-rgb) / 6%) 79.1% 79.22%, transparent 79.4% 100%),
+    repeating-radial-gradient(circle at 82% 16%, transparent 0 2.8rem, rgb(var(--td-section-rgb) / 4%) 2.9rem 2.93rem, transparent 3rem 6rem);
+  opacity: .58;
+  mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
+  animation: td-dashboard-loom 24s ease-in-out infinite alternate;
+}
+
+/* Dashboard decorative accents: animate the existing little shapes rather than moving text. */
+.tadeon-shell[data-section="Dashboard"] .tadeon-dashboard-hero [class*="absolute"]:not(.tadeon-page-hero-mark-host),
+.tadeon-shell[data-section="Dashboard"] .tadeon-dashboard-hero [data-tadeon-atmosphere-line],
+.tadeon-shell[data-section="Dashboard"] .tadeon-dashboard-hero [data-tadeon-thread],
+.tadeon-shell[data-section="Dashboard"] .tadeon-dashboard-hero [data-tadeon-marker] {
+  animation: td-dashboard-accent-drift 12s ease-in-out infinite alternate;
+}
+
+.tadeon-shell[data-section="Dashboard"] .tadeon-dashboard-hero [class*="absolute"]:nth-child(3n) {
+  animation-delay: -3.5s;
+}
+
+.tadeon-shell[data-section="Dashboard"] .tadeon-dashboard-hero [class*="absolute"]:nth-child(4n) {
+  animation-delay: -6s;
+  animation-duration: 17s;
+}
+
+/* Nexus: node-like pulses in the weave. */
+.tadeon-shell[data-section="O Nexus"] [data-tadeon-page-hero]::before {
+  animation: td-nexus-veil 17s ease-in-out infinite alternate;
+}
+
+.tadeon-shell[data-section="O Nexus"] [data-tadeon-page-hero]::after {
+  background-size: 11rem 11rem, 16rem 16rem, auto;
+  animation: td-nexus-network 27s linear infinite;
+}
+
+/* Offline: echo layers move with delay, creating memory residue. */
+.tadeon-shell[data-section="Consulta offline"] [data-tadeon-page-hero] {
+  --td-element-a: color-mix(in srgb, var(--td-section-accent) 13%, transparent);
+}
+
+.tadeon-shell[data-section="Consulta offline"] [data-tadeon-page-hero]::after {
+  animation-duration: 18s;
+  animation-name: td-offline-thread;
+}
+
+/* Users: linked points pulse in opposing phases. */
+.tadeon-shell[data-section="Usuários"] [data-tadeon-page-hero]::after {
+  background-size: 14rem 14rem, 11rem 11rem, auto;
+  animation: td-user-links 21s ease-in-out infinite alternate;
+}
+
+/* Backup: engineering lines should scan, not drift. */
+.tadeon-shell[data-section="Saúde do arquivo"] [data-tadeon-page-hero]::after {
+  animation: td-backup-scan 16s linear infinite;
+}
+
+/* Master: retain the ghost signature, but add a second, delayed fabric layer. */
+.tadeon-shell[data-section="Painel do Mestre"] .tadeon-master-commandbar::before {
+  animation: td-master-ghost-breath 10.5s ease-in-out infinite alternate;
+}
+
+.tadeon-shell[data-section="Painel do Mestre"] .tadeon-master-commandbar::after {
+  animation: td-master-ghost-weave 17s linear infinite;
+}
+
+.tadeon-shell[data-section="Painel do Mestre"] .tadeon-master-commandbar__glow::after {
+  animation: td-master-ghost-halo 7.4s ease-in-out infinite;
+}
+
+@keyframes td-element-fabric-breathe {
+  0%, 100% { opacity: .54; transform: scale(1); }
+  50% { opacity: .78; transform: scale(1.006); }
+}
+
+@keyframes td-element-thread-pass {
+  from { stroke-dashoffset: 0; opacity: .3; }
+  50% { opacity: .62; }
+  to { stroke-dashoffset: -64; opacity: .34; }
+}
+
+@keyframes td-mark-presence {
+  0%, 100% { opacity: .74; filter: saturate(.92); }
+  50% { opacity: .94; filter: saturate(1.08); }
+}
+
+@keyframes td-dashboard-weft {
+  from { background-position: 0 0, 0 0, 0 0, 0 0, 0 0; }
+  to { background-position: 2.8rem -1.4rem, -2rem 1.6rem, 1.5rem -1rem, -2.4rem .8rem, 6rem 0; }
+}
+
+@keyframes td-dashboard-loom {
+  from { transform: translate3d(-.8%, .3%, 0) scale(1); opacity: .36; }
+  to { transform: translate3d(.8%, -.3%, 0) scale(1.025); opacity: .62; }
+}
+
+@keyframes td-dashboard-accent-drift {
+  from { opacity: .26; transform: translate3d(-1px, 0, 0); }
+  to { opacity: .54; transform: translate3d(1px, -1px, 0); }
+}
+
+@keyframes td-nexus-veil {
+  from { transform: translate3d(-1%, .2%, 0) scale(1); opacity: .56; }
+  to { transform: translate3d(1%, -.2%, 0) scale(1.035); opacity: .78; }
+}
+
+@keyframes td-nexus-network {
+  from { background-position: 0 0, 0 0, 0 0; }
+  to { background-position: 5rem -2rem, -3rem 1.5rem, 7rem 0; }
+}
+
+@keyframes td-offline-thread {
+  from { background-position: 0 0; opacity: .16; }
+  to { background-position: 5rem -1.2rem; opacity: .3; }
+}
+
+@keyframes td-user-links {
+  from { background-position: 0 0, 0 0, 0 0; opacity: .34; }
+  to { background-position: 2rem -1rem, -1rem 2rem, 3rem 0; opacity: .58; }
+}
+
+@keyframes td-backup-scan {
+  from { background-position: 0 0, 0 0; }
+  to { background-position: 8rem 0, 0 0; }
+}
+
+@keyframes td-master-ghost-breath {
+  from { transform: scale(.985) translate3d(-.5%, .15%, 0); opacity: .38; }
+  to { transform: scale(1.04) translate3d(.7%, -.2%, 0); opacity: .72; }
+}
+
+@keyframes td-master-ghost-weave {
+  from { background-position: 0 0, 0 0; }
+  to { background-position: 6rem -.9rem, -2rem .8rem; }
+}
+
+@keyframes td-master-ghost-halo {
+  0%, 100% { opacity: .28; transform: scale(.94); }
+  50% { opacity: .68; transform: scale(1.08); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tadeon-shell [data-tadeon-page-hero] > svg,
+  .tadeon-shell [data-tadeon-page-hero] svg[aria-hidden="true"],
+  .tadeon-shell .tadeon-dashboard-hero > svg,
+  .tadeon-shell .tadeon-dashboard-hero svg[aria-hidden="true"],
+  .tadeon-shell .tadeon-master-commandbar svg[aria-hidden="true"],
+  .tadeon-shell .tadeon-tabletop-studio__header svg[aria-hidden="true"],
+  .tadeon-shell [data-tadeon-page-hero] svg path,
+  .tadeon-shell [data-tadeon-page-hero] svg circle,
+  .tadeon-shell [data-tadeon-page-hero] svg line,
+  .tadeon-shell [data-tadeon-page-hero] svg polyline,
+  .tadeon-shell .tadeon-dashboard-hero svg path,
+  .tadeon-shell .tadeon-dashboard-hero svg circle,
+  .tadeon-shell .tadeon-dashboard-hero svg line,
+  .tadeon-shell .tadeon-dashboard-hero svg polyline,
+  .tadeon-shell .tadeon-master-commandbar svg path,
+  .tadeon-shell .tadeon-master-commandbar svg circle,
+  .tadeon-shell .tadeon-master-commandbar svg line,
+  .tadeon-shell .tadeon-master-commandbar svg polyline {
+    animation: none !important;
+  }
+}
