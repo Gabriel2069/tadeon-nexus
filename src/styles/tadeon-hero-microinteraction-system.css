@@ -1,0 +1,222 @@
+/* Tadeon Hero Microinteraction System — authored element-level responses. */
+
+/* Shared Hero material: motion lives in the details, not the frame. */
+.tadeon-page-hero[data-tadeon-page-hero],
+.tadeon-master-commandbar {
+  --td-hero-accent-rgb: var(--section-motion-rgb, 217 215 164);
+  --td-hero-line: rgb(var(--td-hero-accent-rgb) / 34%);
+  --td-hero-glow: rgb(var(--td-hero-accent-rgb) / 18%);
+}
+
+/* Eyebrow: a thread is tightened across the label. */
+.tadeon-page-hero[data-tadeon-page-hero] .tadeon-eyebrow::after,
+.tadeon-master-commandbar .tadeon-eyebrow::after {
+  content: "";
+  display: inline-block;
+  width: 1.7rem;
+  height: 1px;
+  margin-left: .5rem;
+  vertical-align: middle;
+  background: linear-gradient(90deg, var(--td-hero-line), transparent);
+  transform: scaleX(.2);
+  transform-origin: left center;
+  opacity: .45;
+  transition: transform var(--td-seam), opacity var(--td-thread);
+}
+
+.tadeon-page-hero[data-tadeon-page-hero]:hover .tadeon-eyebrow::after,
+.tadeon-master-commandbar:hover .tadeon-eyebrow::after {
+  transform: scaleX(1);
+  opacity: .95;
+}
+
+/* Titles remain stable; only the authored underline acquires tension. */
+.tadeon-page-hero[data-tadeon-page-hero] h1::after,
+.tadeon-master-commandbar h1::after {
+  content: "";
+  display: block;
+  width: 3.2rem;
+  height: 1px;
+  margin-top: .48rem;
+  background: linear-gradient(90deg, var(--td-hero-line), transparent);
+  transform-origin: left center;
+  transform: scaleX(.36);
+  opacity: .34;
+  transition: transform var(--td-thread), opacity var(--td-thread);
+}
+
+.tadeon-page-hero[data-tadeon-page-hero]:hover h1::after,
+.tadeon-master-commandbar:hover h1::after {
+  transform: scaleX(1);
+  opacity: .8;
+}
+
+/* Hero prose settles into a slightly denser atmosphere on hover. */
+.tadeon-page-hero[data-tadeon-page-hero] p:not(.tadeon-eyebrow),
+.tadeon-master-commandbar p:not(.tadeon-eyebrow) {
+  transition: color var(--td-thread), opacity var(--td-thread);
+}
+
+.tadeon-page-hero[data-tadeon-page-hero]:hover p:not(.tadeon-eyebrow),
+.tadeon-master-commandbar:hover p:not(.tadeon-eyebrow) {
+  color: color-mix(in srgb, var(--foreground) 92%, rgb(var(--td-hero-accent-rgb)));
+}
+
+/* Action row: controls feel like instruments, not floating cards. */
+.tadeon-page-hero[data-tadeon-page-hero] [data-slot="button"],
+.tadeon-master-commandbar [data-slot="button"] {
+  position: relative;
+  overflow: hidden;
+  transition:
+    color var(--td-seam),
+    background-color var(--td-seam),
+    border-color var(--td-seam),
+    box-shadow var(--td-thread),
+    filter var(--td-seam);
+}
+
+.tadeon-page-hero[data-tadeon-page-hero] [data-slot="button"]::after,
+.tadeon-master-commandbar [data-slot="button"]::after {
+  content: "";
+  position: absolute;
+  inset: auto .45rem .14rem;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgb(var(--td-hero-accent-rgb) / 68%), transparent);
+  transform: scaleX(.14);
+  transform-origin: center;
+  opacity: 0;
+  transition: transform var(--td-thread), opacity var(--td-seam);
+  pointer-events: none;
+}
+
+.tadeon-page-hero[data-tadeon-page-hero] [data-slot="button"]:hover::after,
+.tadeon-master-commandbar [data-slot="button"]:hover::after {
+  transform: scaleX(1);
+  opacity: 1;
+}
+
+.tadeon-page-hero[data-tadeon-page-hero] [data-slot="button"]:active,
+.tadeon-master-commandbar [data-slot="button"]:active {
+  filter: brightness(.98);
+  transform: none;
+}
+
+/* Symbols and marks: quiet breathing, never bouncing. */
+.tadeon-page-hero[data-tadeon-page-hero] > .tadeon-page-hero-mark-host,
+.tadeon-master-commandbar__glow {
+  transition:
+    border-color var(--td-thread),
+    background-color var(--td-thread),
+    box-shadow var(--td-thread),
+    filter var(--td-ghost);
+}
+
+.tadeon-page-hero[data-tadeon-page-hero]:hover > .tadeon-page-hero-mark-host,
+.tadeon-master-commandbar:hover .tadeon-master-commandbar__glow {
+  border-color: rgb(var(--td-hero-accent-rgb) / 48%);
+  background-color: rgb(var(--td-hero-accent-rgb) / 10%);
+  box-shadow:
+    0 18px 34px -26px rgb(var(--td-hero-accent-rgb) / 72%),
+    inset 0 1px rgb(255 255 255 / 7%),
+    0 0 24px rgb(var(--td-hero-accent-rgb) / 12%);
+  filter: drop-shadow(0 0 9px rgb(var(--td-hero-accent-rgb) / 18%));
+}
+
+/* Decorative lines/signals in Heroes: reveal like a seam being drawn. */
+.tadeon-page-hero[data-tadeon-page-hero] [data-tadeon-hero-line],
+.tadeon-page-hero[data-tadeon-page-hero] [data-tadeon-hero-signal],
+.tadeon-master-commandbar [data-tadeon-hero-line],
+.tadeon-master-commandbar [data-tadeon-hero-signal] {
+  transition:
+    opacity var(--td-thread),
+    filter var(--td-thread),
+    transform var(--td-thread);
+}
+
+.tadeon-page-hero[data-tadeon-page-hero]:hover [data-tadeon-hero-line],
+.tadeon-page-hero[data-tadeon-page-hero]:hover [data-tadeon-hero-signal],
+.tadeon-master-commandbar:hover [data-tadeon-hero-line],
+.tadeon-master-commandbar:hover [data-tadeon-hero-signal] {
+  opacity: .9;
+  filter: drop-shadow(0 0 9px rgb(var(--td-hero-accent-rgb) / 16%));
+}
+
+/* Hovered Hero itself becomes a tiny atmospheric response field. */
+.tadeon-page-hero[data-tadeon-page-hero],
+.tadeon-master-commandbar {
+  transition: border-color var(--td-thread), box-shadow var(--td-thread), background-color var(--td-thread);
+}
+
+.tadeon-page-hero[data-tadeon-page-hero]:hover,
+.tadeon-master-commandbar:hover {
+  border-color: rgb(var(--td-hero-accent-rgb) / 30%);
+  box-shadow:
+    0 28px 74px -58px rgb(0 0 0 / 100%),
+    0 22px 54px -46px rgb(var(--td-hero-accent-rgb) / 24%),
+    inset 0 1px rgb(255 255 255 / 4%);
+}
+
+/* Dashboard: richer layered textile instead of a static field. */
+.tadeon-dashboard-hero {
+  --td-dash-rgb: 217 215 164;
+  position: relative;
+  isolation: isolate;
+  overflow: clip;
+}
+
+.tadeon-dashboard-hero::before,
+.tadeon-dashboard-hero::after {
+  pointer-events: none;
+}
+
+.tadeon-dashboard-hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background:
+    radial-gradient(circle at 16% 18%, rgb(var(--td-dash-rgb) / 7%), transparent 12rem),
+    radial-gradient(circle at 86% 12%, rgb(var(--td-dash-rgb) / 5%), transparent 16rem),
+    linear-gradient(120deg, transparent 0 34%, rgb(var(--td-dash-rgb) / 3%) 34.2% 34.35%, transparent 34.5% 67%, rgb(var(--td-dash-rgb) / 2.5%) 67.2% 67.32%, transparent 67.5%);
+  background-size: auto, auto, 100% 100%;
+  opacity: .78;
+  animation: tadeon-dashboard-weave-drift 17s cubic-bezier(.37,0,.63,1) infinite alternate;
+}
+
+.tadeon-dashboard-hero::after {
+  content: "";
+  position: absolute;
+  inset: 8% 5% 10%;
+  z-index: 0;
+  border: 1px solid rgb(var(--td-dash-rgb) / 7%);
+  border-radius: 1.2rem .28rem 1.2rem .28rem;
+  mask-image: linear-gradient(90deg, transparent, black 18%, black 82%, transparent);
+  opacity: .45;
+  transform: translateX(-1%);
+  animation: tadeon-dashboard-seam-scan 9s cubic-bezier(.37,0,.63,1) infinite alternate;
+}
+
+.tadeon-dashboard-hero > * {
+  position: relative;
+  z-index: 2;
+}
+
+@keyframes tadeon-dashboard-weave-drift {
+  0% { background-position: 0 0, 0 0, 0 0; opacity: .62; }
+  100% { background-position: 1.8rem -1rem, -1rem 1.4rem, 1.6rem 0; opacity: .84; }
+}
+
+@keyframes tadeon-dashboard-seam-scan {
+  from { opacity: .18; transform: translate3d(-1.5%,0,0) scaleX(.98); }
+  to { opacity: .58; transform: translate3d(1.5%,-.25%,0) scaleX(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tadeon-page-hero[data-tadeon-page-hero] *,
+  .tadeon-master-commandbar *,
+  .tadeon-dashboard-hero::before,
+  .tadeon-dashboard-hero::after {
+    transition-duration: .001ms !important;
+    animation: none !important;
+  }
+}
