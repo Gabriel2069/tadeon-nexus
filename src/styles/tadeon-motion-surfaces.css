@@ -1,80 +1,94 @@
-/* Tadeon Surface Authority — fold, tension, seam, apparition. */
+/* Tadeon Surface Authority — one owner for interactive surface physics.
+   Material metaphors: thread, fold, ghost, pressure, apparition.
+   No generic lift; no competing pseudo-element system. */
 :root {
   --tm-surface-in: cubic-bezier(.16,1,.3,1);
   --tm-surface-out: cubic-bezier(.72,0,.88,0);
   --tm-surface-seam: cubic-bezier(.25,.8,.25,1);
   --tm-surface-thread: cubic-bezier(.22,.72,.2,1);
+  --tm-ghost-in: cubic-bezier(.2,.78,.22,1);
 }
 
-/* Controls: pressure without lift. */
+/* Controls: the material answers pressure; it does not jump. */
 .tadeon-shell button:not(:disabled),
 .tadeon-shell [role="button"] {
   position: relative;
-  transition: color 220ms var(--tm-surface-seam), background-color 240ms var(--tm-surface-seam), border-color 260ms var(--tm-surface-seam), box-shadow 300ms var(--tm-surface-seam), filter 260ms var(--tm-surface-seam), transform 120ms var(--tm-surface-thread);
+  transition: color 190ms var(--tm-surface-seam), background-color 210ms var(--tm-surface-seam), border-color 230ms var(--tm-surface-seam), box-shadow 280ms var(--tm-surface-seam), filter 220ms var(--tm-surface-seam), transform 90ms ease-out;
 }
 .tadeon-shell button:not(:disabled):hover,
-.tadeon-shell [role="button"]:hover { filter: brightness(1.025); }
+.tadeon-shell [role="button"]:hover { filter:brightness(1.025); }
 .tadeon-shell button:not(:disabled):active,
-.tadeon-shell [role="button"]:active { transform: scale(.985); }
+.tadeon-shell [role="button"]:active { transform:none; filter:brightness(.985); }
 
-/* Tabs: active thread is sewn into the rail. */
-.tadeon-shell [data-slot="tabs-trigger"] { position: relative; overflow: hidden; transition: color 220ms var(--tm-surface-seam), background-color 240ms var(--tm-surface-seam), border-color 260ms var(--tm-surface-seam), text-shadow 260ms var(--tm-surface-seam); }
-.tadeon-shell [data-slot="tabs-trigger"]::after { content:""; position:absolute; right:10%; bottom:.08rem; left:10%; height:1px; background:currentColor; opacity:.14; transform:scaleX(.08); transform-origin:left center; box-shadow:0 0 11px currentColor; transition:transform 430ms var(--tm-surface-thread),opacity 180ms ease; }
+/* Tabs: selection is a seam sewn into the rail. */
+.tadeon-shell [data-slot="tabs-trigger"] { position:relative; overflow:hidden; transition:color 190ms var(--tm-surface-seam),background-color 210ms var(--tm-surface-seam),border-color 230ms var(--tm-surface-seam),text-shadow 240ms var(--tm-surface-seam); }
+.tadeon-shell [data-slot="tabs-trigger"]::after { content:""; position:absolute; right:10%; bottom:.08rem; left:10%; height:1px; background:currentColor; opacity:.12; transform:scaleX(.08); transform-origin:left center; box-shadow:0 0 11px currentColor; transition:transform 390ms var(--tm-surface-thread),opacity 170ms ease; }
+.tadeon-shell [data-slot="tabs-trigger"]:hover::after { opacity:.46; transform:scaleX(.48); }
 .tadeon-shell [data-slot="tabs-trigger"][data-state="active"]::after { opacity:.9; transform:scaleX(1); }
-.tadeon-shell [data-slot="tabs-content"] { animation:tm-tab-reveal 300ms var(--tm-surface-in) both; }
-@keyframes tm-tab-reveal { from { opacity:0; transform:translateX(4px); clip-path:inset(0 0 0 2%); filter:blur(1px); } to { opacity:1; transform:none; clip-path:inset(0); filter:none; } }
+.tadeon-shell [data-slot="tabs-content"] { animation:tm-tab-reveal 240ms var(--tm-surface-in) both; }
+@keyframes tm-tab-reveal { from{opacity:.72;transform:translateX(2px);filter:blur(.5px)} to{opacity:1;transform:none;filter:none} }
 
-/* Accordions/collapsibles: visible hinge + folded content. */
-.tadeon-shell :is([data-slot="accordion-trigger"],[data-slot="collapsible-trigger"]) { position:relative; transition:color 220ms var(--tm-surface-seam),background-color 260ms var(--tm-surface-seam),box-shadow 280ms var(--tm-surface-seam); }
-.tadeon-shell :is([data-slot="accordion-trigger"],[data-slot="collapsible-trigger"])::before { content:""; position:absolute; left:.25rem; right:.25rem; bottom:0; height:1px; opacity:.12; transform:scaleX(.1); transform-origin:left; background:currentColor; transition:opacity 180ms ease,transform 430ms var(--tm-surface-thread); }
-.tadeon-shell :is([data-slot="accordion-trigger"],[data-slot="collapsible-trigger"])[data-state="open"]::before { opacity:.56; transform:scaleX(1); }
-.tadeon-shell :is([data-slot="accordion-trigger"],[data-slot="collapsible-trigger"]) svg { transition:transform 330ms var(--tm-surface-thread),opacity 180ms ease; }
+/* Accordions: the fold is the interaction; content settles without a bounce. */
+.tadeon-shell :is([data-slot="accordion-trigger"],[data-slot="collapsible-trigger"]) { position:relative; transition:color 190ms var(--tm-surface-seam),background-color 220ms var(--tm-surface-seam),box-shadow 260ms var(--tm-surface-seam); }
+.tadeon-shell :is([data-slot="accordion-trigger"],[data-slot="collapsible-trigger"])::before { content:""; position:absolute; left:.25rem; right:.25rem; bottom:0; height:1px; opacity:.1; transform:scaleX(.1); transform-origin:left; background:currentColor; transition:opacity 170ms ease,transform 380ms var(--tm-surface-thread); }
+.tadeon-shell :is([data-slot="accordion-trigger"],[data-slot="collapsible-trigger"]):hover::before { opacity:.32; transform:scaleX(.42); }
+.tadeon-shell :is([data-slot="accordion-trigger"],[data-slot="collapsible-trigger"])[data-state="open"]::before { opacity:.64; transform:scaleX(1); }
+.tadeon-shell :is([data-slot="accordion-trigger"],[data-slot="collapsible-trigger"]) svg { transition:transform 300ms var(--tm-surface-thread),opacity 160ms ease; }
 .tadeon-shell :is([data-slot="accordion-trigger"],[data-slot="collapsible-trigger"])[data-state="open"] svg { transform:rotate(90deg); }
-.tadeon-shell :is([data-slot="accordion-content"],[data-slot="collapsible-content"])[data-state="open"] { animation:tm-fold-open 320ms var(--tm-surface-in) both; }
-@keyframes tm-fold-open { from { opacity:0; clip-path:inset(0 0 100% 0); } 60% { opacity:1; clip-path:inset(0 0 12% 0); } to { opacity:1; clip-path:inset(0); } }
+.tadeon-shell :is([data-slot="accordion-content"],[data-slot="collapsible-content"])[data-state="open"] { animation:tm-fold-open 270ms var(--tm-surface-in) both; }
+@keyframes tm-fold-open { from{opacity:.4;clip-path:inset(0 0 14% 0)} to{opacity:1;clip-path:inset(0)} }
 
-/* Inputs: seam tension, never floating. */
-.tadeon-shell :is(input,textarea,select) { transition:border-color 240ms var(--tm-surface-seam),background-color 240ms var(--tm-surface-seam),box-shadow 300ms var(--tm-surface-seam),color 220ms var(--tm-surface-seam); }
+/* Inputs: tension gathers around the seam. */
+.tadeon-shell :is(input,textarea,select) { transition:border-color 200ms var(--tm-surface-seam),background-color 210ms var(--tm-surface-seam),box-shadow 260ms var(--tm-surface-seam),color 180ms var(--tm-surface-seam); }
 .tadeon-shell :is(input,textarea,select):focus { transform:none !important; box-shadow:0 0 0 1px color-mix(in srgb,var(--section-accent,var(--tadeon-knowledge)) 42%,transparent),0 10px 28px -24px color-mix(in srgb,var(--section-accent,var(--tadeon-knowledge)) 66%,transparent); }
 
-/* Cards: presence through edge/light, not elevation. */
-.tadeon-shell :is([data-slot="card"],[data-motion-card],[data-motion-surface]) { transition:border-color 280ms var(--tm-surface-seam),box-shadow 340ms var(--tm-surface-seam),background-color 280ms var(--tm-surface-seam); }
-.tadeon-shell :is([data-slot="card"],[data-motion-card],[data-motion-surface]):hover { transform:none !important; border-color:color-mix(in srgb,var(--section-accent,var(--tadeon-knowledge)) 28%,var(--border)); box-shadow:0 20px 54px -46px color-mix(in srgb,var(--section-accent,var(--tadeon-knowledge)) 58%,transparent),inset 0 1px rgb(255 255 255 / 3%); }
+/* Cards: presence through edge/light, never elevation or translation. */
+.tadeon-shell :is([data-slot="card"],[data-motion-card],[data-motion-surface]) { transition:border-color 250ms var(--tm-surface-seam),box-shadow 310ms var(--tm-surface-seam),background-color 250ms var(--tm-surface-seam); }
+.tadeon-shell :is([data-slot="card"],[data-motion-card],[data-motion-surface]):hover { transform:none !important; border-color:color-mix(in srgb,var(--section-accent,var(--tadeon-knowledge)) 30%,var(--border)); box-shadow:0 20px 54px -46px color-mix(in srgb,var(--section-accent,var(--tadeon-knowledge)) 58%,transparent),inset 0 1px rgb(255 255 255 / 3%); }
 
-/* Menus: row receives a lateral stitch. */
-:is([data-slot="dropdown-menu-content"],[data-slot="dropdown-menu-sub-content"],[data-slot="select-content"],[data-slot="popover-content"],[data-slot="context-menu-content"],[data-slot="command-list"]) :is([role="menuitem"],[role="option"]) { transition:color 170ms var(--tm-surface-seam),background-color 180ms var(--tm-surface-seam),box-shadow 220ms var(--tm-surface-seam),transform 220ms var(--tm-surface-thread); }
-:is([data-slot="dropdown-menu-content"],[data-slot="dropdown-menu-sub-content"],[data-slot="select-content"],[data-slot="popover-content"],[data-slot="context-menu-content"],[data-slot="command-list"]) :is([role="menuitem"],[role="option"]):hover { transform:translateX(2px); box-shadow:inset 1px 0 color-mix(in srgb,currentColor 48%,transparent); }
+/* Menu rows: a thread traces the edge rather than moving the row. */
+:is([data-slot="dropdown-menu-content"],[data-slot="dropdown-menu-sub-content"],[data-slot="select-content"],[data-slot="popover-content"],[data-slot="context-menu-content"],[data-slot="command-list"]) :is([role="menuitem"],[role="option"]) { transition:color 160ms var(--tm-surface-seam),background-color 170ms var(--tm-surface-seam),box-shadow 200ms var(--tm-surface-seam); }
+:is([data-slot="dropdown-menu-content"],[data-slot="dropdown-menu-sub-content"],[data-slot="select-content"],[data-slot="popover-content"],[data-slot="context-menu-content"],[data-slot="command-list"]) :is([role="menuitem"],[role="option"]):hover { box-shadow:inset 1px 0 color-mix(in srgb,currentColor 58%,transparent),inset 0 1px rgb(255 255 255 / 2%); }
 
-/* Portaled surfaces: open as a fold, close as a measured release. */
-:is([data-slot="dialog-content"],[data-slot="sheet-content"],[data-slot="drawer-content"],[data-slot="popover-content"],[data-slot="dropdown-menu-content"],[data-slot="dropdown-menu-sub-content"],[data-slot="select-content"],[data-slot="context-menu-content"])[data-state="open"] { animation:tm-surface-in 420ms var(--tm-surface-in) both !important; transform-origin:var(--radix-popover-content-transform-origin,var(--radix-dropdown-menu-content-transform-origin,50% 18%)) !important; will-change:transform,opacity,filter; }
-:is([data-slot="dialog-content"],[data-slot="sheet-content"],[data-slot="drawer-content"],[data-slot="popover-content"],[data-slot="dropdown-menu-content"],[data-slot="dropdown-menu-sub-content"],[data-slot="select-content"],[data-slot="context-menu-content"])[data-state="closed"] { animation:tm-surface-out 190ms var(--tm-surface-out) both !important; }
-@keyframes tm-surface-in { from { opacity:0; transform:translate3d(0,10px,0) scale(.975); filter:blur(3px); } 62% { opacity:1; transform:translate3d(0,-1px,0) scale(1.001); filter:blur(.2px); } to { opacity:1; transform:none; filter:none; } }
-@keyframes tm-surface-out { to { opacity:0; transform:translate3d(0,7px,0) scale(.985); filter:blur(2px); } }
+/* Portaled surfaces: each family has its own physical arrival. */
+[data-slot="dialog-content"][data-state="open"] { animation:tm-dialog-in 360ms var(--tm-ghost-in) both !important; transform-origin:50% 42% !important; will-change:opacity,transform,filter; }
+[data-slot="dialog-content"][data-state="closed"] { animation:tm-dialog-out 170ms var(--tm-surface-out) both !important; }
+@keyframes tm-dialog-in { 0%{opacity:0;transform:translateY(4px) scale(.992);filter:blur(2px)} 58%{opacity:.82;transform:translateY(-1px) scale(1);filter:blur(.35px)} 100%{opacity:1;transform:none;filter:none} }
+@keyframes tm-dialog-out { to{opacity:0;transform:translateY(3px) scale(.994);filter:blur(1.2px)} }
 
-/* Dialog internals: material reveals in reading order. */
-[data-slot="dialog-content"][data-state="open"] > [data-slot="dialog-header"] { animation:tm-surface-child 320ms var(--tm-surface-in) 30ms both; }
-[data-slot="dialog-content"][data-state="open"] > :not([data-slot="dialog-header"]):not([data-slot="dialog-footer"]):not([data-slot="dialog-close"]) { animation:tm-surface-child 320ms var(--tm-surface-in) 65ms both; }
-[data-slot="dialog-content"][data-state="open"] > [data-slot="dialog-footer"] { animation:tm-surface-child 320ms var(--tm-surface-in) 100ms both; }
-@keyframes tm-surface-child { from { opacity:0; transform:translateY(5px); filter:blur(1.5px); } to { opacity:1; transform:none; filter:none; } }
+[data-slot="popover-content"][data-state="open"],[data-slot="dropdown-menu-content"][data-state="open"],[data-slot="dropdown-menu-sub-content"][data-state="open"],[data-slot="select-content"][data-state="open"],[data-slot="context-menu-content"][data-state="open"] { animation:tm-popover-in 250ms var(--tm-surface-in) both !important; transform-origin:var(--radix-popover-content-transform-origin,var(--radix-dropdown-menu-content-transform-origin,50% 18%)) !important; }
+@keyframes tm-popover-in { from{opacity:0;clip-path:inset(7% 0 0 0);filter:blur(1.5px)} to{opacity:1;clip-path:inset(0);filter:none} }
 
-/* Sheets preserve their physical direction. */
-[data-slot="sheet-content"][data-side="right"][data-state="open"] { animation:tm-sheet-r-in 470ms var(--tm-surface-in) both !important; }
+/* Sheets preserve their physical direction, with no overshoot. */
+[data-slot="sheet-content"][data-side="right"][data-state="open"] { animation:tm-sheet-r-in 400ms var(--tm-surface-in) both !important; }
 [data-slot="sheet-content"][data-side="right"][data-state="closed"] { animation:tm-sheet-r-out 180ms var(--tm-surface-out) both !important; }
-[data-slot="sheet-content"][data-side="left"][data-state="open"] { animation:tm-sheet-l-in 470ms var(--tm-surface-in) both !important; }
+[data-slot="sheet-content"][data-side="left"][data-state="open"] { animation:tm-sheet-l-in 400ms var(--tm-surface-in) both !important; }
 [data-slot="sheet-content"][data-side="left"][data-state="closed"] { animation:tm-sheet-l-out 180ms var(--tm-surface-out) both !important; }
-[data-slot="sheet-content"][data-side="bottom"][data-state="open"] { animation:tm-sheet-b-in 440ms var(--tm-surface-in) both !important; }
+[data-slot="sheet-content"][data-side="bottom"][data-state="open"] { animation:tm-sheet-b-in 380ms var(--tm-surface-in) both !important; }
 [data-slot="sheet-content"][data-side="bottom"][data-state="closed"] { animation:tm-sheet-b-out 180ms var(--tm-surface-out) both !important; }
-@keyframes tm-sheet-r-in { from{opacity:.2;transform:translateX(100%)} 68%{opacity:1;transform:translateX(-5px)} to{opacity:1;transform:none} }
-@keyframes tm-sheet-r-out { to{opacity:0;transform:translateX(100%)} }
-@keyframes tm-sheet-l-in { from{opacity:.2;transform:translateX(-100%)} 68%{opacity:1;transform:translateX(5px)} to{opacity:1;transform:none} }
-@keyframes tm-sheet-l-out { to{opacity:0;transform:translateX(-100%)} }
-@keyframes tm-sheet-b-in { from{opacity:.2;transform:translateY(100%)} 70%{opacity:1;transform:translateY(-5px)} to{opacity:1;transform:none} }
-@keyframes tm-sheet-b-out { to{opacity:0;transform:translateY(100%)} }
+@keyframes tm-sheet-r-in { from{opacity:.35;transform:translateX(5%)} to{opacity:1;transform:none} }
+@keyframes tm-sheet-r-out { to{opacity:0;transform:translateX(5%)} }
+@keyframes tm-sheet-l-in { from{opacity:.35;transform:translateX(-5%)} to{opacity:1;transform:none} }
+@keyframes tm-sheet-l-out { to{opacity:0;transform:translateX(-5%)} }
+@keyframes tm-sheet-b-in { from{opacity:.35;transform:translateY(5%)} to{opacity:1;transform:none} }
+@keyframes tm-sheet-b-out { to{opacity:0;transform:translateY(5%)} }
 
-/* Tooltips: annotations emerge from their anchor. */
-[data-slot="tooltip-content"],[data-radix-tooltip-content] { animation:tm-tooltip 220ms var(--tm-surface-in) both; }
-@keyframes tm-tooltip { from { opacity:0; transform:translateY(3px) scale(.985); filter:blur(1px); } to { opacity:1; transform:none; filter:none; } }
+/* Drawer: ghost-like apparition, distinct from dialogs and sheets. */
+[data-slot="drawer-content"][data-state="open"] { animation:tm-drawer-in 430ms var(--tm-ghost-in) both !important; }
+[data-slot="drawer-content"][data-state="closed"] { animation:tm-drawer-out 190ms var(--tm-surface-out) both !important; }
+@keyframes tm-drawer-in { 0%{opacity:0;filter:blur(3px);transform:translateY(6px)} 42%{opacity:.46;filter:blur(1.2px);transform:translateY(0)} 70%{opacity:.82;filter:blur(.2px)} 100%{opacity:1;filter:none;transform:none} }
+@keyframes tm-drawer-out { to{opacity:0;filter:blur(2px);transform:translateY(4px)} }
 
-@media (prefers-reduced-motion: reduce) {
-  .tadeon-shell *, .tadeon-shell *::before, .tadeon-shell *::after, [data-slot="dialog-content"],[data-slot="sheet-content"],[data-slot="drawer-content"],[data-slot="popover-content"],[data-slot="dropdown-menu-content"],[data-slot="select-content"],[data-slot="context-menu-content"],[data-slot="tooltip-content"] { animation-duration:1ms !important; animation-iteration-count:1 !important; transition-duration:1ms !important; transform:none !important; }
+/* Dialog internals: a restrained apparition, no cascading wait. */
+[data-slot="dialog-content"][data-state="open"] > [data-slot="dialog-header"],
+[data-slot="dialog-content"][data-state="open"] > [data-slot="dialog-footer"] { animation:tm-surface-child 220ms var(--tm-surface-in) both; }
+[data-slot="dialog-content"][data-state="open"] > :not([data-slot="dialog-header"]):not([data-slot="dialog-footer"]):not([data-slot="dialog-close"]) { animation:tm-surface-child 220ms var(--tm-surface-in) 25ms both; }
+@keyframes tm-surface-child { from{opacity:.7;transform:translateY(2px);filter:blur(.7px)} to{opacity:1;transform:none;filter:none} }
+
+/* Tooltips: a quiet supernatural annotation. */
+[data-slot="tooltip-content"],[data-radix-tooltip-content] { animation:tm-tooltip 180ms var(--tm-surface-in) both; }
+@keyframes tm-tooltip { from{opacity:0;transform:translateY(2px);filter:blur(.8px)} to{opacity:1;transform:none;filter:none} }
+
+@media(prefers-reduced-motion:reduce){
+ .tadeon-shell *, .tadeon-shell *::before, .tadeon-shell *::after, [data-slot="dialog-content"],[data-slot="sheet-content"],[data-slot="drawer-content"],[data-slot="popover-content"],[data-slot="dropdown-menu-content"],[data-slot="select-content"],[data-slot="context-menu-content"],[data-slot="tooltip-content"] { animation-duration:1ms!important;animation-iteration-count:1!important;transition-duration:1ms!important;transform:none!important; }
 }
