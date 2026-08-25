@@ -1,0 +1,66 @@
+/* Tadeon Motion 2.0 — section personality contract.
+   One section owns one palette and one atmospheric behavior. */
+
+.tadeon-shell {
+  --td-section-key: dashboard;
+  --section-motion-accent: var(--tadeon-knowledge);
+  --section-motion-rgb: 217 215 164;
+  --section-motion-secondary: var(--tadeon-ice);
+}
+
+.tadeon-shell[data-section="O Nexus"] {
+  --td-section-key: nexus;
+  --section-motion-accent: var(--tadeon-flow);
+  --section-motion-rgb: 79 110 93;
+  --section-motion-secondary: var(--tadeon-patina);
+}
+
+.tadeon-shell[data-section="Mesa Nexus"] {
+  --td-section-key: tabletop;
+  --section-motion-accent: var(--tadeon-arden);
+  --section-motion-rgb: 31 54 68;
+  --section-motion-secondary: var(--tadeon-arden-bronze);
+}
+
+.tadeon-shell[data-section="Consulta offline"] {
+  --td-section-key: offline;
+  --section-motion-accent: var(--tadeon-veil);
+  --section-motion-rgb: 113 107 123;
+  --section-motion-secondary: #8f879d;
+}
+
+.tadeon-shell[data-section="Usuários"] {
+  --td-section-key: users;
+  --section-motion-accent: var(--tadeon-arden-bronze);
+  --section-motion-rgb: 126 91 47;
+  --section-motion-secondary: #b8874b;
+}
+
+.tadeon-shell[data-section="Saúde do arquivo"] {
+  --td-section-key: tools;
+  --section-motion-accent: var(--tadeon-metal);
+  --section-motion-rgb: 122 129 135;
+  --section-motion-secondary: var(--tadeon-reflection);
+}
+
+.tadeon-shell[data-section="Painel do Mestre"] {
+  --td-section-key: master;
+  --section-motion-accent: var(--tadeon-fear);
+  --section-motion-rgb: 116 36 45;
+  --section-motion-secondary: var(--tadeon-knowledge);
+}
+
+.tadeon-shell[data-section="Ficha"] {
+  --td-section-key: sheet;
+  --section-motion-accent: var(--tadeon-knowledge);
+  --section-motion-rgb: 217 215 164;
+  --section-motion-secondary: var(--tadeon-veil);
+}
+
+/* Bridge older variables to the new motion contract without changing layout. */
+.tadeon-shell {
+  --td-section-accent: var(--section-motion-accent);
+  --td-section-rgb: var(--section-motion-rgb);
+  --td-section-glow: rgb(var(--section-motion-rgb) / 22%);
+  --td-section-soft: rgb(var(--section-motion-rgb) / 7%);
+}
