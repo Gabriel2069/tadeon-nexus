@@ -1,0 +1,138 @@
+/* Tadeon Context Authority — route, data-state and attention transitions. */
+:root {
+  --tm-context-in: cubic-bezier(.22,.72,.2,1);
+  --tm-context-out: cubic-bezier(.37,0,.63,1);
+  --tm-context-seam: cubic-bezier(.25,.8,.25,1);
+}
+
+/* Route surfaces: the new context is revealed; the old one recedes. */
+.tadeon-shell [data-motion="route-surface"],
+.tadeon-shell [data-route-surface],
+.tadeon-shell .tadeon-route-stage > .tadeon-page {
+  transform-origin: 50% 0;
+}
+
+.tadeon-shell [data-motion="route-surface"],
+.tadeon-shell [data-route-surface] {
+  animation: tm-context-reveal 520ms var(--tm-context-in) both;
+}
+
+@keyframes tm-context-reveal {
+  from { opacity: 0; clip-path: inset(0 0 3.5% 0); filter: blur(2px); }
+  to { opacity: 1; clip-path: inset(0); filter: blur(0); }
+}
+
+/* Data transitions: status changes read as material settling, not bouncing. */
+.tadeon-shell [data-state="loading"],
+.tadeon-shell [aria-busy="true"] {
+  position: relative;
+  isolation: isolate;
+}
+
+.tadeon-shell [data-state="loading"]::after,
+.tadeon-shell [aria-busy="true"]::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(90deg, transparent 0 36%, color-mix(in srgb, var(--section-accent, #c5b87b) 10%, transparent) 50%, transparent 64%);
+  transform: translateX(-115%);
+  animation: tm-context-scan 1.8s var(--tm-context-seam) infinite;
+}
+
+@keyframes tm-context-scan {
+  to { transform: translateX(115%); }
+}
+
+.tadeon-shell [data-state="success"],
+.tadeon-shell [data-tadeon-feedback="success"],
+.tadeon-shell [data-saved="true"] {
+  animation: tm-context-stitch 420ms var(--tm-context-in) both;
+}
+
+@keyframes tm-context-stitch {
+  0% { opacity: .75; box-shadow: inset 0 0 0 0 color-mix(in srgb, var(--section-accent, #c5b87b) 0%, transparent); }
+  65% { opacity: 1; box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--section-accent, #c5b87b) 24%, transparent); }
+  100% { opacity: 1; box-shadow: inset 0 0 0 0 color-mix(in srgb, var(--section-accent, #c5b87b) 0%, transparent); }
+}
+
+.tadeon-shell [data-state="error"],
+.tadeon-shell [data-tadeon-feedback="error"] {
+  animation: tm-context-fray 430ms var(--tm-context-seam) both;
+}
+
+@keyframes tm-context-fray {
+  0% { opacity: .82; filter: saturate(.9); }
+  38% { opacity: 1; filter: saturate(1.1); }
+  100% { opacity: 1; filter: saturate(1); }
+}
+
+/* Empty states remain suspended rather than inert. */
+.tadeon-shell [data-state="empty"],
+.tadeon-shell [data-empty-state="true"] {
+  position: relative;
+  isolation: isolate;
+}
+
+.tadeon-shell [data-state="empty"]::before,
+.tadeon-shell [data-empty-state="true"]::before {
+  content: "";
+  position: absolute;
+  inset-inline: 12%;
+  top: 48%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--section-accent, #c5b87b) 18%, transparent), transparent);
+  transform-origin: center;
+  animation: tm-context-suspense 5.8s var(--tm-context-seam) infinite alternate;
+  pointer-events: none;
+}
+
+@keyframes tm-context-suspense {
+  from { transform: scaleX(.72); opacity: .16; }
+  to { transform: scaleX(1); opacity: .42; }
+}
+
+/* Focus acquisition: surrounding context yields, control gains a thread. */
+.tadeon-shell [data-context-focus="true"] {
+  transition: opacity 260ms var(--tm-context-seam), filter 320ms var(--tm-context-seam), box-shadow 320ms var(--tm-context-seam);
+}
+
+.tadeon-shell [data-context-focus="true"][data-focused="true"] {
+  opacity: 1;
+  filter: none;
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--section-accent, #c5b87b) 22%, transparent);
+}
+
+.tadeon-shell [data-context-focus="true"][data-focused="false"] {
+  opacity: .62;
+  filter: saturate(.82);
+}
+
+/* Selection handoff: make the new object acquire the active thread. */
+.tadeon-shell [data-selection-handoff="true"][data-selected="true"] {
+  animation: tm-context-handoff 360ms var(--tm-context-in) both;
+}
+
+@keyframes tm-context-handoff {
+  from { clip-path: inset(0 4% 0 0); box-shadow: inset 0 0 0 0 color-mix(in srgb, var(--section-accent, #c5b87b) 0%, transparent); }
+  72% { clip-path: inset(0); box-shadow: inset 2px 0 0 color-mix(in srgb, var(--section-accent, #c5b87b) 36%, transparent); }
+  to { clip-path: inset(0); box-shadow: inset 1px 0 0 color-mix(in srgb, var(--section-accent, #c5b87b) 18%, transparent); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tadeon-shell [data-motion="route-surface"],
+  .tadeon-shell [data-route-surface],
+  .tadeon-shell [data-state="loading"]::after,
+  .tadeon-shell [aria-busy="true"]::after,
+  .tadeon-shell [data-state="success"],
+  .tadeon-shell [data-tadeon-feedback="success"],
+  .tadeon-shell [data-saved="true"],
+  .tadeon-shell [data-state="error"],
+  .tadeon-shell [data-tadeon-feedback="error"],
+  .tadeon-shell [data-state="empty"]::before,
+  .tadeon-shell [data-empty-state="true"]::before,
+  .tadeon-shell [data-selection-handoff="true"][data-selected="true"] {
+    animation: none !important;
+    transform: none !important;
+  }
+}
