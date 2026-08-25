@@ -1,0 +1,79 @@
+/* Final sidebar authority: deliberately last in the authored visual stack. */
+.tadeon-sidebar a.tadeon-nav-item {
+  --_nav-accent: var(--nav-accent, var(--tadeon-knowledge));
+  --_nav-rgb: var(--nav-accent-rgb, 217 215 164);
+}
+
+.tadeon-sidebar a.tadeon-nav-item:hover,
+.tadeon-sidebar a.tadeon-nav-item[aria-current="page"] {
+  color: var(--_nav-accent) !important;
+  border-color: rgb(var(--_nav-rgb) / 26%) !important;
+}
+
+.tadeon-sidebar a.tadeon-nav-item[aria-current="page"] {
+  background:
+    linear-gradient(90deg, rgb(var(--_nav-rgb) / 12%), transparent 82%),
+    rgb(var(--_nav-rgb) / 10%) !important;
+  box-shadow:
+    inset 0 1px rgb(255 255 255 / 2%),
+    inset 2px 0 rgb(var(--_nav-rgb) / 78%),
+    0 12px 30px -24px rgb(var(--_nav-rgb) / 34%) !important;
+}
+
+.tadeon-sidebar a.tadeon-nav-item:not([aria-current="page"]):hover {
+  background:
+    linear-gradient(90deg, rgb(var(--_nav-rgb) / 6%), transparent 86%),
+    rgb(var(--_nav-rgb) / 4%) !important;
+}
+
+.tadeon-sidebar a.tadeon-nav-item::before,
+.tadeon-sidebar a.tadeon-nav-item::after {
+  background: var(--_nav-accent) !important;
+  box-shadow: 0 0 14px rgb(var(--_nav-rgb) / 38%) !important;
+}
+
+.tadeon-sidebar a.tadeon-nav-item::after {
+  background: linear-gradient(90deg, transparent, var(--_nav-accent), transparent) !important;
+}
+
+/* Kill the two legacy decorative symbols from final-visual-system-157. */
+.tadeon-sidebar a.tadeon-nav-item[href="/master-panel"] .tadeon-nav-item__icon::before,
+.tadeon-sidebar a.tadeon-nav-item[href="/master-panel"] .tadeon-nav-item__icon::after,
+.tadeon-sidebar a.tadeon-nav-item[href="/nexus-tools"] .tadeon-nav-item__icon::before,
+.tadeon-sidebar a.tadeon-nav-item[href="/nexus-tools"] .tadeon-nav-item__icon::after {
+  content: none !important;
+  display: none !important;
+  background: none !important;
+  background-image: none !important;
+  -webkit-mask: none !important;
+  mask: none !important;
+}
+
+/* The authored SVG is the only icon source for these destinations. */
+.tadeon-sidebar a.tadeon-nav-item[href="/master-panel"] .tadeon-nav-item__icon > svg,
+.tadeon-sidebar a.tadeon-nav-item[href="/nexus-tools"] .tadeon-nav-item__icon > svg {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  width: 1rem !important;
+  height: 1rem !important;
+  color: var(--_nav-accent) !important;
+  stroke: currentColor !important;
+  fill: none !important;
+  filter: drop-shadow(0 0 7px rgb(var(--_nav-rgb) / 24%)) !important;
+}
+
+.tadeon-sidebar a.tadeon-nav-item[href="/master-panel"] .tadeon-nav-item__icon,
+.tadeon-sidebar a.tadeon-nav-item[href="/nexus-tools"] .tadeon-nav-item__icon {
+  background-image: none !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tadeon-sidebar a.tadeon-nav-item,
+  .tadeon-sidebar a.tadeon-nav-item::before,
+  .tadeon-sidebar a.tadeon-nav-item::after,
+  .tadeon-sidebar a.tadeon-nav-item .tadeon-nav-item__icon > svg {
+    transition: none !important;
+    animation: none !important;
+  }
+}
