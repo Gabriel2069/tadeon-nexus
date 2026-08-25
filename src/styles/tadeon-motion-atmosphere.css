@@ -1,0 +1,187 @@
+/* Tadeon Motion 2.0 — atmospheric personality.
+   Motion is sectional: each route gets its own material, rhythm and tension. */
+
+.tadeon-shell {
+  position: relative;
+  --td-atmo-speed: 18s;
+  --td-atmo-opacity: .28;
+}
+
+/* Dashboard — warm archive threads: slow, legible continuity. */
+.tadeon-shell[data-section="Dashboard"] .tadeon-dashboard-hero {
+  --td-atmo-speed: 22s;
+}
+.tadeon-shell[data-section="Dashboard"] .tadeon-dashboard-hero::before {
+  animation: td-atmo-drift 22s ease-in-out infinite alternate;
+}
+.tadeon-shell[data-section="Dashboard"] .tadeon-dashboard-hero::after {
+  animation: td-atmo-thread-orbit 30s linear infinite;
+  transform-origin: 82% 50%;
+}
+
+/* Nexus — connected knowledge: pulses move along the relation, not the card. */
+.tadeon-shell[data-section="O Nexus"] [data-tadeon-node][data-related="true"],
+.tadeon-shell[data-section="O Nexus"] [data-tadeon-map-element][data-related="true"] {
+  animation: td-nexus-thread 4.8s ease-in-out infinite;
+}
+.tadeon-shell[data-section="O Nexus"] [data-tadeon-node][data-selected="true"] {
+  animation: td-nexus-focus 3.8s ease-in-out infinite;
+}
+
+/* Mesa — cartographic flow: restrained horizontal drift and target anticipation. */
+.tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-studio__header {
+  background-image: linear-gradient(90deg, rgb(var(--section-motion-rgb) / 5%), transparent 46%, rgb(var(--section-motion-rgb) / 3%));
+  background-size: 220% 100%;
+  animation: td-map-breathe 15s ease-in-out infinite alternate;
+}
+.tadeon-shell[data-section="Mesa Nexus"] [data-tabletop-tool][data-active="true"],
+.tadeon-shell[data-section="Mesa Nexus"] [data-tabletop-action][data-active="true"] {
+  animation: td-tool-tension 2.8s ease-in-out infinite;
+}
+
+/* Offline — residual memory: delayed echoes and softer disappearance. */
+.tadeon-shell[data-section="Consulta offline"] .tadeon-route-offline [data-slot="tabs-trigger"] {
+  position: relative;
+  overflow: hidden;
+}
+.tadeon-shell[data-section="Consulta offline"] .tadeon-route-offline [data-slot="tabs-trigger"]::after {
+  content: "";
+  position: absolute;
+  inset: auto 12% 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--td-section-accent), transparent);
+  opacity: .45;
+  transform: scaleX(.18);
+  transition: transform 480ms var(--td-fold), opacity 240ms ease;
+}
+.tadeon-shell[data-section="Consulta offline"] .tadeon-route-offline [data-slot="tabs-trigger"][data-state="active"]::after {
+  opacity: .9;
+  transform: scaleX(1);
+}
+.tadeon-shell[data-section="Consulta offline"] .tadeon-route-offline [data-slot="tabs-content"][data-state="active"] {
+  animation: td-echo-reveal 560ms var(--td-fold) both;
+}
+
+/* Users — relational movement: links converge rather than float. */
+.tadeon-shell[data-section="Usuários"] .tadeon-user-row:hover {
+  border-color: rgb(var(--section-motion-rgb) / 28%);
+  box-shadow: inset 1px 0 rgb(var(--section-motion-rgb) / 45%);
+}
+.tadeon-shell[data-section="Usuários"] .tadeon-user-row__sigil {
+  transition: filter 320ms ease, opacity 320ms ease;
+}
+.tadeon-shell[data-section="Usuários"] .tadeon-user-row:hover .tadeon-user-row__sigil {
+  filter: drop-shadow(0 0 10px rgb(var(--section-motion-rgb) / 26%));
+}
+
+/* Backup — technical scan: precise linear motion, no levitation. */
+.tadeon-shell[data-section="Saúde do arquivo"] [data-tadeon-status="checking"],
+.tadeon-shell[data-section="Saúde do arquivo"] [aria-busy="true"] {
+  position: relative;
+  overflow: hidden;
+}
+.tadeon-shell[data-section="Saúde do arquivo"] [data-tadeon-status="checking"]::after,
+.tadeon-shell[data-section="Saúde do arquivo"] [aria-busy="true"]::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(90deg, transparent, rgb(var(--section-motion-rgb) / 15%), transparent);
+  transform: translateX(-100%);
+  animation: td-diagnostic-scan 1.9s linear infinite;
+}
+
+/* Master — the ghost signature: an apparition that lags behind the command surface. */
+.tadeon-shell[data-section="Painel do Mestre"] .tadeon-master-commandbar {
+  isolation: isolate;
+  overflow: hidden;
+}
+.tadeon-shell[data-section="Painel do Mestre"] .tadeon-master-commandbar::before,
+.tadeon-shell[data-section="Painel do Mestre"] .tadeon-master-commandbar::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border: 1px solid rgb(var(--section-motion-rgb) / 12%);
+  opacity: .16;
+  transform: translate3d(0, 0, 0);
+}
+.tadeon-shell[data-section="Painel do Mestre"] .tadeon-master-commandbar::before {
+  animation: td-ghost-drift 7.5s ease-in-out infinite alternate;
+}
+.tadeon-shell[data-section="Painel do Mestre"] .tadeon-master-commandbar::after {
+  animation: td-ghost-drift-reverse 9.6s ease-in-out infinite alternate;
+  opacity: .1;
+}
+.tadeon-shell[data-section="Painel do Mestre"] .tadeon-master-commandbar__glow {
+  animation: td-ghost-breathe 5.8s ease-in-out infinite;
+}
+
+@keyframes td-atmo-drift {
+  from { transform: translate3d(-.7%, -.25%, 0); opacity: .72; }
+  to { transform: translate3d(.7%, .25%, 0); opacity: 1; }
+}
+@keyframes td-atmo-thread-orbit {
+  from { transform: translateY(-50%) rotate(0deg); }
+  to { transform: translateY(-50%) rotate(4deg); }
+}
+@keyframes td-nexus-thread {
+  0%,100% { opacity: .78; filter: brightness(.96); }
+  50% { opacity: 1; filter: brightness(1.12); }
+}
+@keyframes td-nexus-focus {
+  0%,100% { filter: drop-shadow(0 0 10px rgb(var(--section-motion-rgb) / 12%)); }
+  50% { filter: drop-shadow(0 0 18px rgb(var(--section-motion-rgb) / 24%)); }
+}
+@keyframes td-map-breathe {
+  from { background-position: 0% 50%; }
+  to { background-position: 100% 50%; }
+}
+@keyframes td-tool-tension {
+  0%,100% { box-shadow: 0 0 0 0 rgb(var(--section-motion-rgb) / 0%); }
+  50% { box-shadow: 0 0 0 4px rgb(var(--section-motion-rgb) / 6%); }
+}
+@keyframes td-echo-reveal {
+  from { opacity: 0; filter: blur(4px); clip-path: inset(0 3% 0 0); }
+  to { opacity: 1; filter: blur(0); clip-path: inset(0 0 0 0); }
+}
+@keyframes td-diagnostic-scan {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(100%); }
+}
+@keyframes td-ghost-drift {
+  from { transform: translate3d(-2px, 1px, 0); opacity: .08; }
+  to { transform: translate3d(2px, -1px, 0); opacity: .19; }
+}
+@keyframes td-ghost-drift-reverse {
+  from { transform: translate3d(2px, -1px, 0) scale(1.002); opacity: .05; }
+  to { transform: translate3d(-3px, 1px, 0) scale(.998); opacity: .13; }
+}
+@keyframes td-ghost-breathe {
+  0%,100% { opacity: .52; filter: blur(0); }
+  50% { opacity: .82; filter: blur(.25px); }
+}
+
+@media (hover: none), (pointer: coarse) {
+  .tadeon-shell[data-section="Usuários"] .tadeon-user-row:hover .tadeon-user-row__sigil {
+    filter: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tadeon-shell[data-section="Dashboard"] .tadeon-dashboard-hero::before,
+  .tadeon-shell[data-section="Dashboard"] .tadeon-dashboard-hero::after,
+  .tadeon-shell[data-section="O Nexus"] [data-tadeon-node],
+  .tadeon-shell[data-section="O Nexus"] [data-tadeon-map-element],
+  .tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-studio__header,
+  .tadeon-shell[data-section="Mesa Nexus"] [data-tabletop-tool],
+  .tadeon-shell[data-section="Mesa Nexus"] [data-tabletop-action],
+  .tadeon-shell[data-section="Consulta offline"] .tadeon-route-offline [data-slot="tabs-content"],
+  .tadeon-shell[data-section="Saúde do arquivo"] [data-tadeon-status="checking"]::after,
+  .tadeon-shell[data-section="Saúde do arquivo"] [aria-busy="true"]::after,
+  .tadeon-shell[data-section="Painel do Mestre"] .tadeon-master-commandbar::before,
+  .tadeon-shell[data-section="Painel do Mestre"] .tadeon-master-commandbar::after,
+  .tadeon-shell[data-section="Painel do Mestre"] .tadeon-master-commandbar__glow {
+    animation: none !important;
+  }
+}
