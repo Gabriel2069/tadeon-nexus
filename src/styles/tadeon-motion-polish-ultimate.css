@@ -24,10 +24,10 @@
 @import "./tadeon-cinematic-backgrounds.css";
 @import "./tadeon-signature-effects.css";
 @import "./tadeon-signature-atmosphere.css";
-@import "./tadeon-interaction-signature.css";
+@import "./tadeon-master-panel-signature.css";
 
 /* Single authored motion/visual authority. Legacy motion files remain only as
-   compatibility shims; they no longer own interaction physics. */
+   compatibility shims; overlapping interaction experiments are not imported. */
 @media (prefers-reduced-motion: reduce) {
   .tadeon-shell *, .tadeon-shell *::before, .tadeon-shell *::after {
     animation-duration: 1ms !important;
