@@ -17,23 +17,23 @@
 
 .tadeon-shell[data-section="Mesa Nexus"] {
   --td-section-key: tabletop;
-  --section-motion-accent: var(--tadeon-arden);
-  --section-motion-rgb: 31 54 68;
-  --section-motion-secondary: var(--tadeon-arden-bronze);
+  --section-motion-accent: #477fa8;
+  --section-motion-rgb: 71 127 168;
+  --section-motion-secondary: #6fa3c6;
 }
 
 .tadeon-shell[data-section="Consulta offline"] {
   --td-section-key: offline;
-  --section-motion-accent: var(--tadeon-veil);
-  --section-motion-rgb: 113 107 123;
-  --section-motion-secondary: #8f879d;
+  --section-motion-accent: #8a6fa8;
+  --section-motion-rgb: 138 111 168;
+  --section-motion-secondary: #b29ac9;
 }
 
 .tadeon-shell[data-section="Usuários"] {
   --td-section-key: users;
-  --section-motion-accent: var(--tadeon-arden-bronze);
-  --section-motion-rgb: 126 91 47;
-  --section-motion-secondary: #b8874b;
+  --section-motion-accent: #d07a32;
+  --section-motion-rgb: 208 122 50;
+  --section-motion-secondary: #e3a15d;
 }
 
 .tadeon-shell[data-section="Saúde do arquivo"] {
