@@ -24,6 +24,7 @@
 @import "./tadeon-cinematic-backgrounds.css";
 @import "./tadeon-signature-effects.css";
 @import "./tadeon-signature-atmosphere.css";
+@import "./tadeon-interaction-signature.css";
 
 /* Single authored motion/visual authority. Legacy motion files remain only as
    compatibility shims; they no longer own interaction physics. */
