@@ -1,0 +1,136 @@
+/* Tadeon Sidebar — real DOM authority. Uses the actual route hrefs rendered by AppLayout. */
+
+.tadeon-shell .tadeon-nav-item {
+  --td-nav-accent: #d9d7a4;
+  --td-nav-accent-rgb: 217 215 164;
+  --td-nav-muted: color-mix(in srgb, var(--sidebar-foreground) 68%, transparent);
+  position: relative;
+  overflow: hidden;
+  border: 1px solid transparent !important;
+  color: var(--td-nav-muted) !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  transform: none !important;
+}
+
+.tadeon-shell .tadeon-nav-item[href="/"] { --td-nav-accent:#d9d7a4; --td-nav-accent-rgb:217 215 164; }
+.tadeon-shell .tadeon-nav-item[href^="/nexus"] { --td-nav-accent:#4f6e5d; --td-nav-accent-rgb:79 110 93; }
+.tadeon-shell .tadeon-nav-item[href^="/tabletop"] { --td-nav-accent:#587fa8; --td-nav-accent-rgb:88 127 168; }
+.tadeon-shell .tadeon-nav-item[href^="/offline"] { --td-nav-accent:#716b7b; --td-nav-accent-rgb:113 107 123; }
+.tadeon-shell .tadeon-nav-item[href^="/master-panel"] { --td-nav-accent:#74242d; --td-nav-accent-rgb:116 36 45; }
+.tadeon-shell .tadeon-nav-item[href^="/manage-users"] { --td-nav-accent:#c8793d; --td-nav-accent-rgb:200 121 61; }
+.tadeon-shell .tadeon-nav-item[href^="/nexus-tools"] { --td-nav-accent:#7a8187; --td-nav-accent-rgb:122 129 135; }
+
+/* Hover = thread tension. No lift, no slide, no scale. */
+.tadeon-shell .tadeon-nav-item::before {
+  content:"";
+  position:absolute;
+  inset:0;
+  border-radius:inherit;
+  background:linear-gradient(90deg, rgb(var(--td-nav-accent-rgb) / 8%), transparent 72%);
+  opacity:0;
+  transition:opacity 260ms cubic-bezier(.25,.8,.25,1), background-color 260ms ease;
+  pointer-events:none;
+}
+.tadeon-shell .tadeon-nav-item::after {
+  content:"";
+  position:absolute;
+  left:0;
+  top:18%;
+  bottom:18%;
+  width:1px;
+  background:var(--td-nav-accent);
+  box-shadow:0 0 12px rgb(var(--td-nav-accent-rgb) / 34%);
+  opacity:0;
+  transform:none !important;
+  transition:opacity 300ms ease;
+  pointer-events:none;
+}
+.tadeon-shell .tadeon-nav-item:hover::before { opacity:1; }
+.tadeon-shell .tadeon-nav-item:hover::after { opacity:.72; }
+
+.tadeon-shell .tadeon-nav-item[data-nav-active="true"],
+.tadeon-shell .tadeon-nav-item[aria-current="page"] {
+  color:var(--td-nav-accent) !important;
+  border-color:rgb(var(--td-nav-accent-rgb) / 24%) !important;
+  background:linear-gradient(90deg, rgb(var(--td-nav-accent-rgb) / 12%), rgb(var(--td-nav-accent-rgb) / 4%) 62%, transparent) !important;
+  box-shadow:inset 2px 0 0 var(--td-nav-accent), inset 0 0 28px rgb(var(--td-nav-accent-rgb) / 6%) !important;
+  transform:none !important;
+}
+.tadeon-shell .tadeon-nav-item[data-nav-active="true"]::before,
+.tadeon-shell .tadeon-nav-item[aria-current="page"]::before { opacity:1; }
+.tadeon-shell .tadeon-nav-item[data-nav-active="true"]::after,
+.tadeon-shell .tadeon-nav-item[aria-current="page"]::after { opacity:1; }
+
+.tadeon-shell .tadeon-nav-item__icon {
+  position:relative !important;
+  display:grid !important;
+  width:1.25rem !important;
+  height:1.25rem !important;
+  min-width:1.25rem !important;
+  min-height:1.25rem !important;
+  flex:0 0 1.25rem !important;
+  place-items:center !important;
+  color:inherit !important;
+  transform:none !important;
+}
+.tadeon-shell .tadeon-nav-item__icon > svg {
+  position:relative !important;
+  z-index:2 !important;
+  width:1rem !important;
+  height:1rem !important;
+  min-width:1rem !important;
+  min-height:1rem !important;
+  color:inherit !important;
+  stroke:currentColor !important;
+  fill:none !important;
+  transform:none !important;
+  opacity:1 !important;
+}
+.tadeon-shell .tadeon-nav-item:hover .tadeon-nav-item__icon > svg,
+.tadeon-shell .tadeon-nav-item[aria-current="page"] .tadeon-nav-item__icon > svg { transform:none !important; }
+
+/* Replace the legacy Lightbulb/Wrench drawings with the canonical sigils in-place. */
+.tadeon-shell .tadeon-nav-item[href^="/master-panel"] .tadeon-nav-item__icon > svg,
+.tadeon-shell .tadeon-nav-item[href^="/nexus-tools"] .tadeon-nav-item__icon > svg {
+  opacity:0 !important;
+}
+.tadeon-shell .tadeon-nav-item[href^="/master-panel"] .tadeon-nav-item__icon::before,
+.tadeon-shell .tadeon-nav-item[href^="/nexus-tools"] .tadeon-nav-item__icon::before {
+  content:"";
+  position:absolute;
+  z-index:3;
+  inset:0;
+  width:1.05rem;
+  height:1.05rem;
+  margin:auto;
+  background:currentColor;
+  -webkit-mask-repeat:no-repeat;
+  mask-repeat:no-repeat;
+  -webkit-mask-position:center;
+  mask-position:center;
+  -webkit-mask-size:contain;
+  mask-size:contain;
+}
+.tadeon-shell .tadeon-nav-item[href^="/master-panel"] .tadeon-nav-item__icon::before {
+  -webkit-mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Ccircle cx='12' cy='12' r='8.25' fill='none' stroke='black' stroke-width='1.55' stroke-dasharray='9 3.4 2.2 4.3' opacity='.46'/%3E%3Cpath d='M12 2.8v4.1M12 17.1v4.1M2.8 12h4.1M17.1 12h4.1' fill='none' stroke='black' stroke-width='1.55' stroke-linecap='round'/%3E%3Cpath d='m8.55 12 3.45-3.45L15.45 12 12 15.45 8.55 12Z' fill='none' stroke='black' stroke-width='1.55'/%3E%3Cpath d='M6.05 6.35 9.6 9.6M17.95 6.35 14.4 9.6M6.05 17.65l3.55-3.25M17.95 17.65l-3.55-3.25' fill='none' stroke='black' stroke-width='1.55' opacity='.72'/%3E%3Ccircle cx='12' cy='12' r='1.15' fill='black'/%3E%3C/svg%3E");
+  mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Ccircle cx='12' cy='12' r='8.25' fill='none' stroke='black' stroke-width='1.55' stroke-dasharray='9 3.4 2.2 4.3' opacity='.46'/%3E%3Cpath d='M12 2.8v4.1M12 17.1v4.1M2.8 12h4.1M17.1 12h4.1' fill='none' stroke='black' stroke-width='1.55' stroke-linecap='round'/%3E%3Cpath d='m8.55 12 3.45-3.45L15.45 12 12 15.45 8.55 12Z' fill='none' stroke='black' stroke-width='1.55'/%3E%3Cpath d='M6.05 6.35 9.6 9.6M17.95 6.35 14.4 9.6M6.05 17.65l3.55-3.25M17.95 17.65l-3.55-3.25' fill='none' stroke='black' stroke-width='1.55' opacity='.72'/%3E%3Ccircle cx='12' cy='12' r='1.15' fill='black'/%3E%3C/svg%3E");
+}
+.tadeon-shell .tadeon-nav-item[href^="/nexus-tools"] .tadeon-nav-item__icon::before {
+  -webkit-mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M21 8a2 2 0 0 0-2-2h-2V4a2 2 0 0 0-2-2H9a2 2 0 0 0-2 2v2H5a2 2 0 0 0-2 2v11a3 3 0 0 0 3 3h12a3 3 0 0 0 3-3Z' fill='none' stroke='black' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M9 6h6M8 12h8M8 16h5' fill='none' stroke='black' stroke-width='1.7' stroke-linecap='round'/%3E%3C/svg%3E");
+  mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M21 8a2 2 0 0 0-2-2h-2V4a2 2 0 0 0-2-2H9a2 2 0 0 0-2 2v2H5a2 2 0 0 0-2 2v11a3 3 0 0 0 3 3h12a3 3 0 0 0 3-3Z' fill='none' stroke='black' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M9 6h6M8 12h8M8 16h5' fill='none' stroke='black' stroke-width='1.7' stroke-linecap='round'/%3E%3C/svg%3E");
+}
+
+/* Collapsed rail: icon remains the only visible glyph and stays centered in the real box. */
+.tadeon-shell .tadeon-nav-item[data-mini="true"] {
+  justify-content:center !important;
+  padding-inline:.5rem !important;
+}
+.tadeon-shell .tadeon-nav-item[data-mini="true"] .tadeon-nav-item__icon { width:1.35rem !important; height:1.35rem !important; flex-basis:1.35rem !important; }
+.tadeon-shell .tadeon-nav-item[data-mini="true"] .tadeon-nav-item__icon::before { width:1.05rem; height:1.05rem; }
+
+/* Kill all legacy sidebar pseudo-icons and hover transforms that can compete with this layer. */
+.tadeon-shell .tadeon-nav-item[data-nav-section="master"]::marker,
+.tadeon-shell .tadeon-nav-item[data-nav-section="tools"]::marker { content:none; }
+.tadeon-shell .tadeon-nav-item[data-nav-section="master"] .tadeon-nav-item__icon > svg,
+.tadeon-shell .tadeon-nav-item[data-nav-section="tools"] .tadeon-nav-item__icon > svg { transition:none !important; animation:none !important; }
