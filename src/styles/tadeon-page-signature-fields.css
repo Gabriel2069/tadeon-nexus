@@ -1,0 +1,39 @@
+/* TdV page signatures — one atmospheric field per section. */
+@keyframes tdv-field-drift{from{background-position:0 0,100% 100%}to{background-position:180px -90px,-120px 70px}}
+@keyframes tdv-field-breathe{0%,100%{opacity:.18}50%{opacity:.38}}
+@keyframes tdv-field-lumen{0%{transform:translateX(-125%);opacity:0}15%{opacity:.28}85%{opacity:.12}100%{transform:translateX(125%);opacity:0}}
+
+/* Dashboard — cartography of the Tessitura. */
+.tadeon-shell[data-section="Dashboard"] main{background-image:radial-gradient(circle at 12% 18%,rgb(217 215 164 / 4%),transparent 18rem),radial-gradient(circle at 88% 72%,rgb(217 215 164 / 3%),transparent 20rem)}
+.tadeon-shell[data-section="Dashboard"] .tadeon-dashboard-signal:hover{box-shadow:inset 0 0 0 1px rgb(217 215 164 / 20%),0 14px 40px -34px rgb(217 215 164 / 70%)}
+
+/* Nexus — connected threads and living nodes. */
+.tadeon-shell[data-section="Nexus"] main{background-image:repeating-linear-gradient(118deg,transparent 0 8rem,rgb(79 160 116 / 3%) 8.05rem 8.08rem,transparent 8.12rem 16rem)}
+.tadeon-shell[data-section="Nexus"] [data-slot="card"]:hover{box-shadow:inset 0 0 0 1px rgb(79 160 116 / 18%),0 18px 44px -38px rgb(79 160 116 / 72%)}
+
+/* Mesa — folded/cartographic material. */
+.tadeon-shell[data-section="Mesa"] main{background-image:repeating-linear-gradient(90deg,transparent 0 7rem,rgb(73 116 177 / 3%) 7.04rem 7.08rem,transparent 7.12rem 14rem),repeating-linear-gradient(0deg,transparent 0 9rem,rgb(73 116 177 / 2.5%) 9.04rem 9.08rem,transparent 9.12rem 18rem)}
+.tadeon-shell[data-section="Mesa"] [data-slot="card"]:hover{box-shadow:inset 0 0 0 1px rgb(73 116 177 / 18%),0 18px 44px -38px rgb(73 116 177 / 62%)}
+
+/* Offline — residue, memory and interrupted signal. */
+.tadeon-shell[data-section="Offline"] main{background-image:radial-gradient(circle at 24% 34%,rgb(132 92 157 / 5%),transparent 20rem),repeating-linear-gradient(104deg,transparent 0 11rem,rgb(132 92 157 / 2.8%) 11.04rem 11.08rem,transparent 11.12rem 22rem)}
+.tadeon-shell[data-section="Offline"] [data-slot="card"]{box-shadow:inset 0 1px rgb(255 255 255 / 2%)}
+.tadeon-shell[data-section="Offline"] [data-slot="card"]:hover{box-shadow:inset 0 0 0 1px rgb(132 92 157 / 18%),0 18px 44px -40px rgb(132 92 157 / 64%)}
+
+/* Gerenciar — links, knots and controlled orange tension. */
+.tadeon-shell[data-section="Gerenciar"] main{background-image:repeating-linear-gradient(116deg,transparent 0 8rem,rgb(211 124 57 / 3%) 8.04rem 8.08rem,transparent 8.12rem 16rem)}
+.tadeon-shell[data-section="Gerenciar"] [data-slot="card"]:hover{box-shadow:inset 0 0 0 1px rgb(211 124 57 / 20%),0 18px 44px -38px rgb(211 124 57 / 68%)}
+
+/* Backup — monochrome diagnostic weave. */
+.tadeon-shell[data-section="Backup"] main{background-image:repeating-linear-gradient(90deg,transparent 0 6rem,rgb(165 169 174 / 3%) 6.03rem 6.06rem,transparent 6.1rem 12rem)}
+.tadeon-shell[data-section="Backup"] [data-slot="card"]:hover{box-shadow:inset 0 0 0 1px rgb(165 169 174 / 16%),0 18px 44px -40px rgb(165 169 174 / 52%)}
+
+/* Mestre — the most supernatural field: delayed red threads and a deep lumen. */
+.tadeon-shell[data-section="Mestre"] main{background-image:radial-gradient(circle at 76% 24%,rgb(168 68 72 / 6%),transparent 22rem),radial-gradient(circle at 20% 76%,rgb(168 68 72 / 4%),transparent 18rem),repeating-linear-gradient(112deg,transparent 0 10rem,rgb(168 68 72 / 2.8%) 10.05rem 10.09rem,transparent 10.14rem 20rem);background-size:140% 140%,160% 160%,220% 220%;animation:tdv-field-drift 42s linear infinite}
+.tadeon-shell[data-section="Mestre"] [data-slot="card"]:hover{box-shadow:inset 0 0 0 1px rgb(168 68 72 / 22%),0 20px 50px -38px rgb(168 68 72 / 76%)}
+
+/* Shared hover response: light arrives at the surface instead of moving it. */
+.tadeon-shell[data-section] [data-slot="card"],.tadeon-shell[data-section] .tadeon-dashboard-signal{transition:box-shadow 420ms cubic-bezier(.22,.72,.2,1),border-color 320ms ease,background-color 320ms ease}
+
+/* No new pseudo-elements: these fields deliberately coexist with existing component art. */
+@media(prefers-reduced-motion:reduce){.tadeon-shell[data-section="Mestre"] main{animation:none!important}}
