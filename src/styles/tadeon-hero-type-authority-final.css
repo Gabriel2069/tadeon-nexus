@@ -1,0 +1,58 @@
+/* Final Hero type authority.
+   The O Nexus Hero is the canonical scale; utility/master Heroes inherit it.
+   Higher specificity intentionally defeats legacy repair sheets without changing layout. */
+
+html body .tadeon-shell .tadeon-route-users > .tadeon-page-hero h1,
+html body .tadeon-shell .tadeon-route-tools > .tadeon-page-hero h1,
+html body .tadeon-shell .tadeon-route-offline > .tadeon-page-hero h1,
+html body .tadeon-shell .tadeon-master-commandbar h1 {
+  font-size: clamp(2rem, 3.15vw, 2.65rem) !important;
+  line-height: 1.04 !important;
+  font-weight: 620 !important;
+  letter-spacing: -0.028em !important;
+  margin: 0 !important;
+}
+
+html body .tadeon-shell .tadeon-route-users > .tadeon-page-hero .tadeon-eyebrow,
+html body .tadeon-shell .tadeon-route-tools > .tadeon-page-hero .tadeon-eyebrow,
+html body .tadeon-shell .tadeon-route-offline > .tadeon-page-hero .tadeon-eyebrow,
+html body .tadeon-shell .tadeon-master-commandbar .tadeon-eyebrow {
+  font-size: .58rem !important;
+  line-height: 1.15 !important;
+  letter-spacing: .16em !important;
+  font-weight: 700 !important;
+}
+
+html body .tadeon-shell .tadeon-route-users > .tadeon-page-hero p:not(.tadeon-eyebrow),
+html body .tadeon-shell .tadeon-route-tools > .tadeon-page-hero p:not(.tadeon-eyebrow),
+html body .tadeon-shell .tadeon-route-offline > .tadeon-page-hero p:not(.tadeon-eyebrow),
+html body .tadeon-shell .tadeon-master-commandbar p:not(.tadeon-eyebrow) {
+  font-size: .82rem !important;
+  line-height: 1.55 !important;
+  font-weight: 430 !important;
+  letter-spacing: .005em !important;
+}
+
+@media (max-width: 767px) {
+  html body .tadeon-shell .tadeon-route-users > .tadeon-page-hero h1,
+  html body .tadeon-shell .tadeon-route-tools > .tadeon-page-hero h1,
+  html body .tadeon-shell .tadeon-route-offline > .tadeon-page-hero h1,
+  html body .tadeon-shell .tadeon-master-commandbar h1 {
+    font-size: clamp(1.72rem, 7.2vw, 2.18rem) !important;
+  }
+
+  html body .tadeon-shell .tadeon-route-users > .tadeon-page-hero .tadeon-eyebrow,
+  html body .tadeon-shell .tadeon-route-tools > .tadeon-page-hero .tadeon-eyebrow,
+  html body .tadeon-shell .tadeon-route-offline > .tadeon-page-hero .tadeon-eyebrow,
+  html body .tadeon-shell .tadeon-master-commandbar .tadeon-eyebrow {
+    font-size: .54rem !important;
+  }
+
+  html body .tadeon-shell .tadeon-route-users > .tadeon-page-hero p:not(.tadeon-eyebrow),
+  html body .tadeon-shell .tadeon-route-tools > .tadeon-page-hero p:not(.tadeon-eyebrow),
+  html body .tadeon-shell .tadeon-route-offline > .tadeon-page-hero p:not(.tadeon-eyebrow),
+  html body .tadeon-shell .tadeon-master-commandbar p:not(.tadeon-eyebrow) {
+    font-size: .76rem !important;
+    line-height: 1.55 !important;
+  }
+}
