@@ -1,4 +1,5 @@
 @import "./tadeon-motion-universal-weave.css";
+@import "./tadeon-sidebar-definitive.css";
 
 /* Tadeon ultimate motion polish — sustained focus, selection, tooltip and workspace continuity. */
 :root {
@@ -7,32 +8,31 @@
   --tup-spring: cubic-bezier(.18,.89,.32,1.08);
 }
 
-/* Sustained hover: presence without excessive lift. */
-.tadeon-shell [data-motion-surface]:hover { transform: translateY(-2px); box-shadow: 0 18px 42px -36px color-mix(in srgb, var(--section-accent) 62%, transparent); }
-.tadeon-shell [data-motion-surface] { transition: transform 280ms var(--tup-soft), box-shadow 320ms var(--tup-soft), border-color 220ms ease, background-color 220ms ease; }
-.tadeon-shell [data-motion-focus="instrument"]:focus-within { transform: translateY(-1px); box-shadow: 0 0 0 1px color-mix(in srgb, var(--section-accent) 34%, transparent), 0 16px 40px -34px color-mix(in srgb, var(--section-accent) 60%, transparent); }
-[data-slot="tooltip-content"] { animation: tup-tooltip-in 220ms var(--tup-spring) both !important; transform-origin: var(--radix-tooltip-content-transform-origin, center); }
-@keyframes tup-tooltip-in { from { opacity:0; transform:translateY(4px) scale(.96); filter:blur(2px); } to { opacity:1; transform:none; filter:none; } }
+.tadeon-shell [data-motion-surface]:hover { transform:translateY(-2px); box-shadow:0 18px 42px -36px color-mix(in srgb,var(--section-accent) 62%,transparent); }
+.tadeon-shell [data-motion-surface] { transition:transform 280ms var(--tup-soft),box-shadow 320ms var(--tup-soft),border-color 220ms ease,background-color 220ms ease; }
+.tadeon-shell [data-motion-focus="instrument"]:focus-within { transform:translateY(-1px); box-shadow:0 0 0 1px color-mix(in srgb,var(--section-accent) 34%,transparent),0 16px 40px -34px color-mix(in srgb,var(--section-accent) 60%,transparent); }
+[data-slot="tooltip-content"] { animation:tup-tooltip-in 220ms var(--tup-spring) both !important; transform-origin:var(--radix-tooltip-content-transform-origin,center); }
+@keyframes tup-tooltip-in { from { opacity:0;transform:translateY(4px) scale(.96);filter:blur(2px); } to { opacity:1;transform:none;filter:none; } }
 .tadeon-shell [aria-selected="true"][data-motion-group="record"] { animation:tup-record-select 280ms var(--tup-spring) both; }
-@keyframes tup-record-select { from { opacity:.86; transform:translateX(-3px); } 65% { opacity:1; transform:translateX(1px); } to { opacity:1; transform:none; } }
+@keyframes tup-record-select { from { opacity:.86;transform:translateX(-3px); } 65% { opacity:1;transform:translateX(1px); } to { opacity:1;transform:none; } }
 .tadeon-shell [data-motion-group="expand"][data-state="open"] { animation:tup-group-open 300ms var(--tup-in) both; }
-@keyframes tup-group-open { from { opacity:.7; transform:translateY(-4px); } to { opacity:1; transform:none; } }
+@keyframes tup-group-open { from { opacity:.7;transform:translateY(-4px); } to { opacity:1;transform:none; } }
 .tadeon-shell [data-motion-group="expand"] [data-motion-part="body"] { animation:tup-group-body 330ms var(--tup-in) 40ms both; }
-@keyframes tup-group-body { from { opacity:0; transform:translateY(-5px); filter:blur(2px); } to { opacity:1; transform:none; filter:none; } }
+@keyframes tup-group-body { from { opacity:0;transform:translateY(-5px);filter:blur(2px); } to { opacity:1;transform:none;filter:none; } }
 .tadeon-shell [data-motion-state="empty"] { animation:tup-empty 420ms var(--tup-in) both; }
-@keyframes tup-empty { from { opacity:0; transform:translateY(7px) scale(.99); filter:blur(3px); } to { opacity:1; transform:none; filter:none; } }
+@keyframes tup-empty { from { opacity:0;transform:translateY(7px) scale(.99);filter:blur(3px); } to { opacity:1;transform:none;filter:none; } }
 .tadeon-shell [data-motion-node="selected"] { animation:tup-node-select 360ms var(--tup-spring) both; }
-@keyframes tup-node-select { from { transform:scale(.97); filter:brightness(.96); } 70% { transform:scale(1.018); filter:brightness(1.05); } to { transform:none; filter:none; } }
+@keyframes tup-node-select { from { transform:scale(.97);filter:brightness(.96); } 70% { transform:scale(1.018);filter:brightness(1.05); } to { transform:none;filter:none; } }
 .tadeon-shell [data-motion-node="related"] { animation:tup-node-related 320ms var(--tup-soft) both; }
-@keyframes tup-node-related { from { opacity:.58; transform:translateX(-3px); } to { opacity:1; transform:none; } }
+@keyframes tup-node-related { from { opacity:.58;transform:translateX(-3px); } to { opacity:1;transform:none; } }
 .tadeon-shell [data-motion-node="secondary"] { animation:tup-node-secondary 280ms ease both; }
 @keyframes tup-node-secondary { from { opacity:.96; } to { opacity:.42; } }
 .tadeon-shell [data-motion-piece="selected"] { animation:tup-piece-select 320ms var(--tup-spring) both; }
-@keyframes tup-piece-select { from { transform:translateY(2px) scale(.985); box-shadow:0 2px 4px -3px rgb(0 0 0 / 60%); } 68% { transform:translateY(-2px) scale(1.012); box-shadow:0 16px 24px -20px rgb(0 0 0 / 75%); } to { transform:none; } }
-.tadeon-shell [data-motion-piece="dragging"] { cursor:grabbing; transform:translateY(-4px) scale(1.018); box-shadow:0 24px 36px -24px rgb(0 0 0 / 72%); z-index:10; }
+@keyframes tup-piece-select { from { transform:translateY(2px) scale(.985);box-shadow:0 2px 4px -3px rgb(0 0 0 / 60%); } 68% { transform:translateY(-2px) scale(1.012);box-shadow:0 16px 24px -20px rgb(0 0 0 / 75%); } to { transform:none; } }
+.tadeon-shell [data-motion-piece="dragging"] { cursor:grabbing;transform:translateY(-4px) scale(1.018);box-shadow:0 24px 36px -24px rgb(0 0 0 / 72%);z-index:10; }
 .tadeon-shell [data-motion-piece="drop"] { animation:tup-piece-drop 320ms var(--tup-spring) both; }
 @keyframes tup-piece-drop { from { transform:translateY(-3px) scale(1.015); } 68% { transform:translateY(1px) scale(.994); } to { transform:none; } }
-.tadeon-shell [data-motion-tool] { transition:transform 220ms var(--tup-soft), box-shadow 260ms var(--tup-soft), background-color 220ms ease; }
-.tadeon-shell [data-motion-tool]:hover { transform:translateY(-2px); box-shadow:0 12px 28px -24px color-mix(in srgb, var(--section-accent) 55%, transparent); }
+.tadeon-shell [data-motion-tool] { transition:transform 220ms var(--tup-soft),box-shadow 260ms var(--tup-soft),background-color 220ms ease; }
+.tadeon-shell [data-motion-tool]:hover { transform:translateY(-2px);box-shadow:0 12px 28px -24px color-mix(in srgb,var(--section-accent) 55%,transparent); }
 .tadeon-shell [data-motion-tool]:active { transform:translateY(1px) scale(.97); }
-@media (prefers-reduced-motion: reduce) { .tadeon-shell [data-motion-surface], .tadeon-shell [data-motion-focus="instrument"], [data-slot="tooltip-content"], .tadeon-shell [aria-selected="true"][data-motion-group="record"], .tadeon-shell [data-motion-group="expand"], .tadeon-shell [data-motion-group="expand"] [data-motion-part="body"], .tadeon-shell [data-motion-state="empty"], .tadeon-shell [data-motion-node="selected"], .tadeon-shell [data-motion-node="related"], .tadeon-shell [data-motion-node="secondary"], .tadeon-shell [data-motion-piece="selected"], .tadeon-shell [data-motion-piece="drop"], .tadeon-shell [data-motion-tool] { animation:none !important; transition:none !important; transform:none !important; } }
+@media (prefers-reduced-motion:reduce) { .tadeon-shell [data-motion-surface],.tadeon-shell [data-motion-focus="instrument"],[data-slot="tooltip-content"],.tadeon-shell [aria-selected="true"][data-motion-group="record"],.tadeon-shell [data-motion-group="expand"],.tadeon-shell [data-motion-group="expand"] [data-motion-part="body"],.tadeon-shell [data-motion-state="empty"],.tadeon-shell [data-motion-node="selected"],.tadeon-shell [data-motion-node="related"],.tadeon-shell [data-motion-node="secondary"],.tadeon-shell [data-motion-piece="selected"],.tadeon-shell [data-motion-piece="drop"],.tadeon-shell [data-motion-tool] { animation:none !important;transition:none !important;transform:none !important; } }
