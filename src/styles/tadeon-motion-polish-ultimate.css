@@ -1,28 +1,16 @@
-@import "./tadeon-motion-tokens.css";
-@import "./tadeon-motion-foundation.css";
-@import "./tadeon-motion-sections.css";
 @import "./tadeon-motion-universal-weave.css";
 @import "./tadeon-sidebar-definitive.css";
 @import "./tadeon-interaction-final.css";
+@import "./tadeon-motion-surfaces.css";
+@import "./tadeon-motion-foundation.css";
+@import "./tadeon-motion-sections.css";
 
-/* Tadeon Motion 2.0 compatibility bridge.
-   New authority: tokens → foundation → sections → targeted surfaces.
-   Legacy rules below are deliberately de-powered and will be removed block by block. */
-:root { --tup-in:var(--td-fold); --tup-soft:var(--td-fold-soft); --tup-spring:var(--td-thread); }
-.tadeon-shell [data-motion-surface]{transition:border-color var(--td-seam),box-shadow var(--td-thread),background-color var(--td-seam)}
-.tadeon-shell [data-motion-surface]:hover{box-shadow:0 18px 42px -36px color-mix(in srgb,var(--td-section-accent) 48%,transparent)}
-.tadeon-shell [data-motion-focus="instrument"]:focus-within{box-shadow:0 0 0 1px color-mix(in srgb,var(--td-section-accent) 34%,transparent),0 16px 40px -34px color-mix(in srgb,var(--td-section-accent) 45%,transparent)}
-[data-slot="tooltip-content"]{animation:tup-tooltip-in 220ms var(--td-seam) both!important;transform-origin:var(--radix-tooltip-content-transform-origin,center)}
-@keyframes tup-tooltip-in{from{opacity:0;filter:blur(2px)}to{opacity:1;filter:none}}
-.tadeon-shell [data-motion-state="empty"]{animation:tup-empty 420ms var(--td-fold-soft) both}
-@keyframes tup-empty{from{opacity:0;filter:blur(2px)}to{opacity:1;filter:none}}
-.tadeon-shell [data-motion-node="selected"]{animation:tup-node-select 360ms var(--td-thread) both}
-@keyframes tup-node-select{from{filter:brightness(.96)}70%{filter:brightness(1.04)}to{filter:none}}
-.tadeon-shell [data-motion-node="related"]{animation:tup-node-related 320ms var(--td-thread) both}
-@keyframes tup-node-related{from{opacity:.58}to{opacity:1}}
-.tadeon-shell [data-motion-node="secondary"]{animation:tup-node-secondary 280ms ease both}
-@keyframes tup-node-secondary{from{opacity:.96}to{opacity:.42}}
-.tadeon-shell [data-motion-tool]{transition:box-shadow var(--td-thread),background-color var(--td-seam)}
-.tadeon-shell [data-motion-tool]:hover{box-shadow:0 12px 28px -24px color-mix(in srgb,var(--td-section-accent) 45%,transparent)}
-.tadeon-shell [data-motion-tool]:active{transform:scale(.97);transition-duration:90ms}
-@media(prefers-reduced-motion:reduce){.tadeon-shell [data-motion-surface],.tadeon-shell [data-motion-focus="instrument"],[data-slot="tooltip-content"],.tadeon-shell [data-motion-state="empty"],.tadeon-shell [data-motion-node="selected"],.tadeon-shell [data-motion-node="related"],.tadeon-shell [data-motion-node="secondary"],.tadeon-shell [data-motion-tool]{animation:none!important;transition:none!important;transform:none!important}}
+/* Compatibility layer: legacy motion selectors are intentionally limited.
+   New visual authority lives in the core/surfaces/sections system. */
+@media (prefers-reduced-motion: reduce) {
+  .tadeon-shell *, .tadeon-shell *::before, .tadeon-shell *::after {
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 1ms !important;
+  }
+}
