@@ -14,6 +14,7 @@
 @import "./tadeon-hero-type-contract.css";
 @import "./tadeon-hero-microinteraction-system.css";
 @import "./tadeon-hover-weave-authority.css";
+@import "./tadeon-hover-weave-quiet.css";
 
 /* Single authored motion/visual authority. Legacy motion files remain only as
    compatibility shims; they no longer own interaction physics. */
