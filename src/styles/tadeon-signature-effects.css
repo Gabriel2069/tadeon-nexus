@@ -1,0 +1,165 @@
+/* TADEON / TdV SIGNATURE EFFECTS
+ * A visible authored layer: threads, luminares, seams and supernatural residue.
+ * Motion belongs to surfaces and atmosphere; symbols remain stable.
+ */
+
+@keyframes tdv-thread-sweep{0%{background-position:-140% 0}100%{background-position:140% 0}}
+@keyframes tdv-thread-sweep-reverse{0%{background-position:140% 0}100%{background-position:-140% 0}}
+@keyframes tdv-lumen-breathe{0%,100%{opacity:.18;filter:blur(18px)}50%{opacity:.48;filter:blur(26px)}}
+@keyframes tdv-lumen-drift{0%{background-position:0 0,100% 100%}50%{background-position:36% 24%,64% 72%}100%{background-position:100% 0,0 100%}}
+@keyframes tdv-weave-cross{0%{background-position:0 0,100% 0}50%{background-position:50% 8%,50% -7%}100%{background-position:100% 0,0 0}}
+@keyframes tdv-seam-close{0%{transform:scaleX(0);opacity:0}18%{opacity:.7}65%{transform:scaleX(1);opacity:.8}100%{transform:scaleX(1);opacity:.15}}
+@keyframes tdv-materialize{0%{clip-path:inset(0 100% 0 0);opacity:.25}55%{clip-path:inset(0 0 0 0);opacity:1}100%{clip-path:inset(0 0 0 0);opacity:.7}}
+@keyframes tdv-ghost-pass{0%,70%{transform:translateX(-115%);opacity:0}78%{opacity:.32}94%,100%{transform:translateX(115%);opacity:0}}
+@keyframes tdv-pulse-ring{0%,100%{transform:scale(.88);opacity:.08}50%{transform:scale(1.08);opacity:.3}}
+
+/* HERO: four visible fields, independent rhythms. */
+.tadeon-shell .tadeon-page-hero[data-tadeon-page-hero],
+.tadeon-shell .tadeon-dashboard-hero,
+.tadeon-shell .tadeon-master-commandbar,
+.tadeon-shell .tadeon-tabletop-studio__header{
+  isolation:isolate;
+  overflow:hidden;
+}
+.tadeon-shell .tadeon-page-hero[data-tadeon-page-hero]::before,
+.tadeon-shell .tadeon-dashboard-hero::before,
+.tadeon-shell .tadeon-master-commandbar::before,
+.tadeon-shell .tadeon-tabletop-studio__header::before{
+  background-image:
+    radial-gradient(circle at 14% 22%,color-mix(in srgb,var(--section-accent) 18%,transparent),transparent 15%),
+    radial-gradient(circle at 84% 74%,color-mix(in srgb,var(--section-accent) 12%,transparent),transparent 19%),
+    repeating-linear-gradient(112deg,transparent 0 5.6rem,color-mix(in srgb,var(--section-accent) 6%,transparent) 5.63rem 5.68rem,transparent 5.72rem 11.3rem),
+    repeating-linear-gradient(68deg,transparent 0 8.4rem,color-mix(in srgb,var(--section-accent) 3.5%,transparent) 8.43rem 8.47rem,transparent 8.52rem 16.9rem);
+  background-size:150% 150%,150% 150%,180% 180%,210% 210%;
+  animation:tdv-lumen-drift 24s ease-in-out infinite alternate;
+}
+.tadeon-shell .tadeon-page-hero[data-tadeon-page-hero]::after,
+.tadeon-shell .tadeon-dashboard-hero::after,
+.tadeon-shell .tadeon-master-commandbar::after,
+.tadeon-shell .tadeon-tabletop-studio__header::after{
+  background-image:
+    linear-gradient(105deg,transparent 0 18%,color-mix(in srgb,var(--section-accent) 13%,transparent) 18.12% 18.2%,transparent 18.45% 100%),
+    linear-gradient(105deg,transparent 0 63%,color-mix(in srgb,var(--section-accent) 7%,transparent) 63.1% 63.18%,transparent 63.4% 100%),
+    repeating-linear-gradient(90deg,transparent 0 3.3rem,color-mix(in srgb,var(--section-accent) 2.8%,transparent) 3.34rem 3.37rem,transparent 3.42rem 6.7rem);
+  background-size:240% 100%,190% 100%,170% 100%;
+  animation:tdv-thread-sweep 13s linear infinite;
+}
+
+/* A moving light field around the hero mark, never touching the mark itself. */
+.tadeon-shell .tadeon-page-hero-mark-host,
+.tadeon-shell .tadeon-master-commandbar__glow,
+.tadeon-shell .tadeon-tabletop-brand-mark-host{isolation:isolate}
+.tadeon-shell .tadeon-page-hero-mark-host::before,
+.tadeon-shell .tadeon-master-commandbar__glow::before,
+.tadeon-shell .tadeon-tabletop-brand-mark-host::before{
+  content:"";position:absolute;inset:-3rem;border-radius:50%;pointer-events:none;z-index:-1;
+  background:radial-gradient(circle,transparent 34%,color-mix(in srgb,var(--section-accent) 14%,transparent) 35%,transparent 55%),conic-gradient(from 20deg,transparent 0 28%,color-mix(in srgb,var(--section-accent) 12%,transparent) 29% 30%,transparent 31% 67%,color-mix(in srgb,var(--section-accent) 8%,transparent) 68% 69%,transparent 70%);
+  animation:tdv-pulse-ring 9s ease-in-out infinite;
+}
+.tadeon-shell .tadeon-page-hero-mark-host::after,
+.tadeon-shell .tadeon-master-commandbar__glow::after,
+.tadeon-shell .tadeon-tabletop-brand-mark-host::after{
+  content:"";position:absolute;top:-8rem;bottom:-8rem;left:-120%;width:38%;pointer-events:none;
+  background:linear-gradient(90deg,transparent,color-mix(in srgb,var(--section-accent) 22%,transparent),transparent);
+  filter:blur(3px);animation:tdv-ghost-pass 9s ease-in-out infinite;opacity:0;
+}
+
+/* CARDS / PANELS: a seam travels around the surface instead of lifting it. */
+.tadeon-shell .tadeon-card,
+.tadeon-shell [data-tadeon-card],
+.tadeon-shell .tadeon-surface,
+.tadeon-shell [data-slot="card"]{
+  position:relative;isolation:isolate;overflow:hidden;
+}
+.tadeon-shell .tadeon-card::after,
+.tadeon-shell [data-tadeon-card]::after,
+.tadeon-shell .tadeon-surface::after,
+.tadeon-shell [data-slot="card"]::after{
+  content:"";position:absolute;inset:0;pointer-events:none;border-radius:inherit;
+  background:linear-gradient(105deg,transparent 20%,color-mix(in srgb,var(--section-accent,var(--tdv-lumen,white)) 11%,transparent) 48%,transparent 66%);
+  background-size:240% 100%;background-position:-140% 0;opacity:0;
+}
+.tadeon-shell .tadeon-card:hover::after,
+.tadeon-shell [data-tadeon-card]:hover::after,
+.tadeon-shell .tadeon-surface:hover::after,
+.tadeon-shell [data-slot="card"]:hover::after{opacity:1;animation:tdv-thread-sweep 1.9s cubic-bezier(.2,.7,.2,1) both}
+
+/* BUTTONS: a visible thread passes through the control. */
+.tadeon-shell button,
+.tadeon-shell [role="button"],
+.tadeon-shell .tadeon-nav-item{
+  isolation:isolate;overflow:hidden;position:relative;
+}
+.tadeon-shell button::after,
+.tadeon-shell [role="button"]::after,
+.tadeon-shell .tadeon-nav-item::after{
+  content:"";position:absolute;inset:auto -35% 0;height:1px;pointer-events:none;
+  background:linear-gradient(90deg,transparent,color-mix(in srgb,var(--section-accent,var(--tdv-lumen,white)) 72%,transparent),transparent);
+  transform:scaleX(.08);transform-origin:center;opacity:.18;transition:transform .35s ease,opacity .35s ease;
+}
+.tadeon-shell button:hover::after,
+.tadeon-shell [role="button"]:hover::after,
+.tadeon-shell .tadeon-nav-item:hover::after{transform:scaleX(1);opacity:.9}
+.tadeon-shell button:active::after,
+.tadeon-shell [role="button"]:active::after{animation:tdv-seam-close .55s ease-out both}
+
+/* TABS / FILTERS: the selected state is literally stitched into place. */
+.tadeon-shell [role="tab"],
+.tadeon-shell [data-state="active"]{position:relative;isolation:isolate}
+.tadeon-shell [role="tab"]::before,
+.tadeon-shell [data-state="active"]::before{
+  content:"";position:absolute;left:8%;right:8%;bottom:0;height:1px;pointer-events:none;
+  background:linear-gradient(90deg,transparent,var(--section-accent,var(--tdv-lumen,white)),transparent);
+  transform:scaleX(.04);transform-origin:center;opacity:.15;
+}
+.tadeon-shell [role="tab"]:hover::before,
+.tadeon-shell [role="tab"][aria-selected="true"]::before,
+.tadeon-shell [data-state="active"]::before{animation:tdv-seam-close .7s cubic-bezier(.18,.78,.24,1) both}
+
+/* DIALOGS / DRAWERS: materialize through a passing fold of light. */
+.tadeon-shell [data-radix-dialog-content],
+.tadeon-shell [data-radix-popover-content],
+.tadeon-shell [data-radix-dropdown-menu-content],
+.tadeon-shell [data-radix-select-content],
+.tadeon-shell .tadeon-mobile-drawer{
+  isolation:isolate;overflow:hidden;position:relative;
+}
+.tadeon-shell [data-radix-dialog-content]::after,
+.tadeon-shell [data-radix-popover-content]::after,
+.tadeon-shell [data-radix-dropdown-menu-content]::after,
+.tadeon-shell [data-radix-select-content]::after,
+.tadeon-shell .tadeon-mobile-drawer::after{
+  content:"";position:absolute;inset:0;pointer-events:none;z-index:4;
+  background:linear-gradient(110deg,transparent 0 18%,color-mix(in srgb,var(--section-accent,var(--tdv-lumen,white)) 10%,transparent) 49%,transparent 72%);
+  background-size:240% 100%;background-position:-140% 0;animation:tdv-materialize 1.05s cubic-bezier(.18,.78,.24,1) both;
+}
+
+/* SIDEBAR: a vertical thread joins the current destination. */
+.tadeon-shell .tadeon-nav-item:hover,
+.tadeon-shell .tadeon-nav-item[data-nav-active="true"],
+.tadeon-shell .tadeon-nav-item[aria-current="page"]{background-image:linear-gradient(90deg,color-mix(in srgb,var(--nav-accent,var(--section-accent)) 10%,transparent),transparent 70%)}
+.tadeon-shell .tadeon-nav-item:hover::before,
+.tadeon-shell .tadeon-nav-item[data-nav-active="true"]::before{animation:tdv-thread-sweep-reverse 1.7s ease-out both}
+
+/* Bars: the Fluxo becomes visible as a moving internal current. */
+.tadeon-shell [role="progressbar"],
+.tadeon-shell .tadeon-progress,
+.tadeon-shell [data-progress]{position:relative;overflow:hidden}
+.tadeon-shell [role="progressbar"]::after,
+.tadeon-shell .tadeon-progress::after,
+.tadeon-shell [data-progress]::after{
+  content:"";position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(90deg,transparent 10%,color-mix(in srgb,var(--section-accent,var(--tdv-lumen,white)) 28%,transparent) 48%,transparent 72%);
+  background-size:180% 100%;animation:tdv-thread-sweep 2.4s linear infinite;opacity:.65;
+}
+
+/* PAGE FIELD: motion remains visible after the hero, tying the whole site together. */
+.tadeon-shell main::before{
+  content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;opacity:.16;
+  background:radial-gradient(circle at 12% 24%,color-mix(in srgb,var(--section-accent,var(--tdv-lumen,white)) 8%,transparent),transparent 24%),radial-gradient(circle at 88% 76%,color-mix(in srgb,var(--section-accent,var(--tdv-lumen,white)) 5%,transparent),transparent 26%);
+  background-size:135% 135%,150% 150%;animation:tdv-lumen-drift 38s ease-in-out infinite alternate;
+}
+
+@media(prefers-reduced-motion:reduce){
+  .tadeon-shell .tadeon-page-hero-mark-host::before,.tadeon-shell .tadeon-page-hero-mark-host::after,.tadeon-shell .tadeon-master-commandbar__glow::before,.tadeon-shell .tadeon-master-commandbar__glow::after,.tadeon-shell .tadeon-tabletop-brand-mark-host::before,.tadeon-shell .tadeon-tabletop-brand-mark-host::after,.tadeon-shell main::before{animation:none!important}
+}
