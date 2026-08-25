@@ -1,0 +1,33 @@
+/* Tadeon interaction final: concrete DOM coverage for surfaces without motion data attributes. */
+:root{--tif-in:cubic-bezier(.16,1,.3,1);--tif-thread:cubic-bezier(.22,.72,.2,1);--tif-seam:cubic-bezier(.25,.8,.25,1)}
+.tadeon-shell .tadeon-nav-item{transition:color 260ms var(--tif-seam),background-color 300ms var(--tif-seam),border-color 300ms var(--tif-seam),box-shadow 360ms var(--tif-seam),transform 220ms var(--tif-thread)}
+.tadeon-shell .tadeon-nav-item::after{content:"";position:absolute;left:1rem;right:1rem;bottom:3px;height:1px;background:linear-gradient(90deg,transparent,var(--nav-accent,var(--section-accent)),transparent);opacity:0;transform:scaleX(.12);transform-origin:left;transition:opacity 180ms ease,transform 420ms var(--tif-thread);pointer-events:none}
+.tadeon-shell .tadeon-nav-item:hover::after,.tadeon-shell .tadeon-nav-item[aria-current="page"]::after{opacity:.5;transform:scaleX(1)}
+.tadeon-shell .tadeon-nav-item:hover .tadeon-nav-item__icon>svg{transform:translateX(1px)!important}
+.tadeon-shell .tadeon-nav-item[aria-current="page"] .tadeon-nav-item__icon>svg{animation:tif-nav-stitch 420ms var(--tif-thread) both}
+@keyframes tif-nav-stitch{0%{opacity:.65;transform:translateX(-2px) scale(.94)}62%{opacity:1;transform:translateX(1px) scale(1.04)}100%{opacity:1;transform:none}}
+.tadeon-shell .tadeon-desktop-toolbar__role,.tadeon-shell .tadeon-desktop-toolbar__account{transition:transform 240ms var(--tif-thread),border-color 240ms var(--tif-seam),background-color 240ms var(--tif-seam),box-shadow 280ms var(--tif-seam)}
+.tadeon-shell .tadeon-desktop-toolbar__role:hover,.tadeon-shell .tadeon-desktop-toolbar__account:hover{transform:translateY(-1px);box-shadow:0 10px 26px -22px color-mix(in srgb,var(--section-accent) 60%,transparent)}
+.tadeon-shell button:not(:disabled)::after,.tadeon-shell [role="button"]::after{content:"";position:absolute;inset:2px;border:1px solid currentColor;border-radius:inherit;opacity:0;transform:scaleX(.86);transition:opacity 180ms ease,transform 360ms var(--tif-thread);pointer-events:none}
+.tadeon-shell button:not(:disabled):hover::after,.tadeon-shell [role="button"]:hover::after{opacity:.08;transform:scaleX(1)}
+.tadeon-shell button:not(:disabled):active::after,.tadeon-shell [role="button"]:active::after{opacity:.15;transform:scaleX(.96);transition-duration:90ms}
+.tadeon-shell [data-slot="tabs-trigger"]:hover{transform:translateY(-1px)}
+.tadeon-shell [data-slot="tabs-trigger"][data-state="active"]{text-shadow:0 0 18px color-mix(in srgb,currentColor 18%,transparent)}
+.tadeon-shell [data-slot="tabs-content"][data-state="active"]{animation:tif-tab-weave 360ms var(--tif-in) both}
+@keyframes tif-tab-weave{from{opacity:0;transform:translateX(5px);clip-path:inset(0 0 0 3%)}70%{opacity:1;transform:translateX(-1px);clip-path:inset(0)}to{opacity:1;transform:none}}
+:is([data-radix-dialog-content],[data-slot="dialog-content"],[data-slot="sheet-content"],[data-slot="drawer-content"],[data-radix-popover-content],[data-slot="popover-content"],[data-radix-dropdown-menu-content],[data-slot="dropdown-menu-content"])[data-state="open"]{animation:tif-surface-open 360ms var(--tif-in) both}
+:is([data-radix-dialog-content],[data-slot="dialog-content"],[data-slot="sheet-content"],[data-slot="drawer-content"],[data-radix-popover-content],[data-slot="popover-content"],[data-radix-dropdown-menu-content],[data-slot="dropdown-menu-content"])[data-state="closed"]{animation:tif-surface-close 220ms var(--tif-seam) both}
+@keyframes tif-surface-open{from{opacity:0;transform:translateY(6px) scale(.985);filter:blur(3px)}68%{opacity:1;transform:translateY(-1px) scale(1.002);filter:blur(.2px)}to{opacity:1;transform:none;filter:none}}
+@keyframes tif-surface-close{from{opacity:1;transform:none;filter:none}to{opacity:0;transform:translateY(4px) scale(.988);filter:blur(2px)}}
+:is([data-radix-menu-content],[data-radix-dropdown-menu-content],[data-radix-context-menu-content],[data-radix-select-content]) [role="menuitem"],:is([data-radix-menu-content],[data-radix-dropdown-menu-content],[data-radix-context-menu-content],[data-radix-select-content]) [role="option"]{transition:color 180ms var(--tif-seam),background-color 180ms var(--tif-seam),transform 220ms var(--tif-thread),padding-left 220ms var(--tif-thread)}
+:is([data-radix-menu-content],[data-radix-dropdown-menu-content],[data-radix-context-menu-content],[data-radix-select-content]) [role="menuitem"]:hover,:is([data-radix-menu-content],[data-radix-dropdown-menu-content],[data-radix-context-menu-content],[data-radix-select-content]) [role="option"]:hover{transform:translateX(3px)}
+.tadeon-shell [data-slot="accordion-trigger"]:hover,.tadeon-shell [data-slot="collapsible-trigger"]:hover{padding-left:calc(1rem + 2px)}
+.tadeon-shell [data-slot="accordion-content"][data-state="open"],.tadeon-shell [data-slot="collapsible-content"][data-state="open"]{animation:tif-fold-open 320ms var(--tif-in) both}
+@keyframes tif-fold-open{from{opacity:0;transform:translateY(-5px);clip-path:inset(0 0 100%)}to{opacity:1;transform:none;clip-path:inset(0)}}
+.tadeon-shell table tbody tr,.tadeon-shell [role="row"]{transition:background-color 180ms var(--tif-seam),transform 220ms var(--tif-thread),box-shadow 240ms var(--tif-seam)}
+.tadeon-shell table tbody tr:hover,.tadeon-shell [role="row"]:hover{transform:translateX(1px);box-shadow:inset 1px 0 var(--section-accent)}
+.tadeon-shell input:focus,.tadeon-shell textarea:focus,.tadeon-shell select:focus{transform:none!important;box-shadow:0 0 0 1px color-mix(in srgb,var(--section-accent) 42%,transparent),0 8px 22px -20px color-mix(in srgb,var(--section-accent) 55%,transparent)}
+.tadeon-shell .tadeon-mobile-dock__item{transition:color 220ms var(--tif-seam),background-color 240ms var(--tif-seam),transform 240ms var(--tif-thread),box-shadow 280ms var(--tif-seam)}
+.tadeon-shell .tadeon-mobile-dock__item:active{transform:translateY(1px) scale(.96)}
+.tadeon-shell .tadeon-mobile-dock__item[aria-current="page"]{box-shadow:inset 0 2px var(--section-accent)}
+@media(prefers-reduced-motion:reduce){.tadeon-shell .tadeon-nav-item::after,.tadeon-shell button::after{transition:none!important;animation:none!important}}
