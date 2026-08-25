@@ -1,0 +1,81 @@
+/* Tadeon Hero Type Contract — O Nexus is the canonical reference.
+   Dashboard and Mesa retain their authored typography; utility/master heroes inherit this contract. */
+
+.tadeon-route-users > .tadeon-page-hero,
+.tadeon-route-tools > .tadeon-page-hero,
+.tadeon-route-offline > .tadeon-page-hero,
+.tadeon-master-commandbar {
+  --td-hero-title-size: clamp(2rem, 3.15vw, 2.65rem);
+  --td-hero-title-line: 1.04;
+  --td-hero-title-weight: 620;
+  --td-hero-title-track: -0.028em;
+  --td-hero-subtitle-size: .82rem;
+  --td-hero-subtitle-line: 1.55;
+  --td-hero-subtitle-weight: 430;
+  --td-hero-eyebrow-size: .58rem;
+  --td-hero-eyebrow-track: .16em;
+}
+
+.tadeon-route-users > .tadeon-page-hero h1,
+.tadeon-route-tools > .tadeon-page-hero h1,
+.tadeon-route-offline > .tadeon-page-hero h1,
+.tadeon-master-commandbar h1 {
+  margin: 0 !important;
+  font-size: var(--td-hero-title-size) !important;
+  line-height: var(--td-hero-title-line) !important;
+  font-weight: var(--td-hero-title-weight) !important;
+  letter-spacing: var(--td-hero-title-track) !important;
+}
+
+.tadeon-route-users > .tadeon-page-hero .tadeon-eyebrow,
+.tadeon-route-tools > .tadeon-page-hero .tadeon-eyebrow,
+.tadeon-route-offline > .tadeon-page-hero .tadeon-eyebrow,
+.tadeon-master-commandbar .tadeon-eyebrow {
+  margin-bottom: .52rem !important;
+  font-size: var(--td-hero-eyebrow-size) !important;
+  line-height: 1.15 !important;
+  letter-spacing: var(--td-hero-eyebrow-track) !important;
+  font-weight: 700 !important;
+  text-transform: uppercase !important;
+}
+
+.tadeon-route-users > .tadeon-page-hero p:not(.tadeon-eyebrow),
+.tadeon-route-tools > .tadeon-page-hero p:not(.tadeon-eyebrow),
+.tadeon-route-offline > .tadeon-page-hero p:not(.tadeon-eyebrow),
+.tadeon-master-commandbar p:not(.tadeon-eyebrow) {
+  margin-top: .68rem !important;
+  max-width: 42rem;
+  font-size: var(--td-hero-subtitle-size) !important;
+  line-height: var(--td-hero-subtitle-line) !important;
+  font-weight: var(--td-hero-subtitle-weight) !important;
+  letter-spacing: .005em !important;
+}
+
+@media (max-width: 767px) {
+  .tadeon-route-users > .tadeon-page-hero,
+  .tadeon-route-tools > .tadeon-page-hero,
+  .tadeon-route-offline > .tadeon-page-hero,
+  .tadeon-master-commandbar {
+    --td-hero-title-size: clamp(1.72rem, 7.2vw, 2.18rem);
+    --td-hero-subtitle-size: .76rem;
+    --td-hero-eyebrow-size: .54rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .tadeon-route-users > .tadeon-page-hero,
+  .tadeon-route-tools > .tadeon-page-hero,
+  .tadeon-route-offline > .tadeon-page-hero,
+  .tadeon-master-commandbar {
+    --td-hero-title-size: clamp(2.18rem, 3vw, 2.65rem);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tadeon-route-users > .tadeon-page-hero h1,
+  .tadeon-route-tools > .tadeon-page-hero h1,
+  .tadeon-route-offline > .tadeon-page-hero h1,
+  .tadeon-master-commandbar h1 {
+    transition: none !important;
+  }
+}
