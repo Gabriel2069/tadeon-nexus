@@ -20,6 +20,7 @@
 @import "./tadeon-sidebar-real-authority.css";
 @import "./tadeon-ambient-composition-system.css";
 @import "./tadeon-hero-background-motion.css";
+@import "./tadeon-tdv-living-material.css";
 
 /* Single authored motion/visual authority. Legacy motion files remain only as
    compatibility shims; they no longer own interaction physics. */
