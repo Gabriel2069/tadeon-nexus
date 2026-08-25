@@ -25,6 +25,7 @@
 @import "./tadeon-signature-effects.css";
 @import "./tadeon-signature-atmosphere.css";
 @import "./tadeon-master-panel-signature.css";
+@import "./tadeon-page-signature-fields.css";
 
 /* Single authored motion/visual authority. Legacy motion files remain only as
    compatibility shims; overlapping interaction experiments are not imported. */
