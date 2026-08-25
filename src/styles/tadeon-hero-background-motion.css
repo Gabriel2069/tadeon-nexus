@@ -1,232 +1,159 @@
-/* Tadeon Hero Background Motion
-   Background-only motion: gradients, lines, rings, veils and woven fields.
-   Decorative SVG/icon layers are intentionally untouched. */
+/* Tadeon Hero Background Motion — visible field pass
+   The decorative symbols remain static. This pass deliberately animates the
+   actual woven/gradient field so the motion is perceptible without moving UI. */
 
-.tadeon-shell [data-tadeon-page-hero],
-.tadeon-shell .tadeon-dashboard-hero,
-.tadeon-shell .tadeon-master-commandbar,
-.tadeon-shell .tadeon-tabletop-studio__header,
-.tadeon-shell .tadeon-auth-hero {
-  --td-bg-a: rgb(var(--td-section-rgb) / 6%);
-  --td-bg-b: rgb(var(--td-section-rgb) / 3.5%);
-  --td-bg-line: rgb(var(--td-section-rgb) / 5%);
-  --td-bg-glow: var(--td-section-glow);
-}
-
-/* The existing hero ::before is the soft fabric/gradient layer. Move its
-   background field, never the hero or its content. */
 .tadeon-shell [data-tadeon-page-hero]::before,
 .tadeon-shell .tadeon-dashboard-hero::before,
 .tadeon-shell .tadeon-master-commandbar::before,
 .tadeon-shell .tadeon-tabletop-studio__header::before,
 .tadeon-shell .tadeon-auth-hero::before {
-  background-size: 140% 140%, 125% 125%, 135% 135%;
-  background-position: 18% 24%, 78% 14%, 62% 86%;
-  animation: td-background-veil-drift 24s ease-in-out infinite alternate;
-  will-change: background-position, opacity;
+  background-blend-mode: screen;
+  animation: td-visible-hero-veil 13s ease-in-out infinite alternate;
+  will-change: background-position, background-size, opacity;
 }
 
-/* The existing ::after is the woven field. Several layers slide at different
-   rates, like threads crossing one another. */
 .tadeon-shell [data-tadeon-page-hero]::after,
 .tadeon-shell .tadeon-dashboard-hero::after,
 .tadeon-shell .tadeon-master-commandbar::after,
 .tadeon-shell .tadeon-tabletop-studio__header::after,
 .tadeon-shell .tadeon-auth-hero::after {
-  background-size: auto, auto, 180% 180%;
-  background-position: 0 0, 0 0, 0 0;
-  animation: td-background-weave-drift 28s linear infinite;
-  will-change: background-position;
+  background-blend-mode: screen;
+  animation: td-visible-hero-weave 17s linear infinite;
+  will-change: background-position, background-size;
 }
 
-/* Add a second material pass through the same background layer rather than
-   introducing more DOM elements. */
+/* A moving light-thread crossing the actual background field. */
 .tadeon-shell [data-tadeon-page-hero]::after,
+.tadeon-shell .tadeon-dashboard-hero::after,
 .tadeon-shell .tadeon-master-commandbar::after,
 .tadeon-shell .tadeon-tabletop-studio__header::after {
   background-image:
-    linear-gradient(116deg, transparent 0 17%, var(--td-bg-line) 17.12% 17.22%, transparent 17.4% 100%),
-    linear-gradient(68deg, transparent 0 72%, var(--td-bg-b) 72.12% 72.2%, transparent 72.4% 100%),
-    repeating-linear-gradient(90deg, transparent 0 4.8rem, var(--td-bg-a) 4.8rem 4.84rem, transparent 4.84rem 9.6rem),
-    radial-gradient(circle at 24% 36%, var(--td-bg-a), transparent 20%),
-    radial-gradient(circle at 76% 68%, var(--td-bg-b), transparent 24%);
-  background-size: auto, auto, 180% 180%, 130% 130%, 145% 145%;
+    linear-gradient(112deg, transparent 0 9%, rgb(var(--td-section-rgb) / 0%) 9.1%, rgb(var(--td-section-rgb) / 8%) 11%, rgb(var(--td-section-rgb) / 0%) 13%, transparent 13.2% 100%),
+    repeating-linear-gradient(116deg, transparent 0 4.7rem, rgb(var(--td-section-rgb) / 4.5%) 4.7rem 4.74rem, transparent 4.74rem 9.4rem),
+    repeating-linear-gradient(68deg, transparent 0 7.8rem, rgb(var(--td-section-rgb) / 2.8%) 7.8rem 7.83rem, transparent 7.83rem 15.6rem),
+    radial-gradient(circle at 24% 34%, rgb(var(--td-section-rgb) / 7%), transparent 20%),
+    radial-gradient(circle at 76% 68%, rgb(var(--td-section-rgb) / 5%), transparent 25%);
+  background-size: 240% 240%, 180% 180%, 190% 190%, 150% 150%, 160% 160%;
 }
 
-/* Dashboard gets the richest weave: horizontal warp, diagonal thread and
-   slow moving gradient pools. */
+/* Dashboard: noticeably richer, but still slow and restrained. */
 .tadeon-shell[data-section="Dashboard"] .tadeon-dashboard-hero::before {
   background:
-    radial-gradient(circle at 14% 22%, rgb(var(--td-section-rgb) / 12%) 0 1px, transparent 2px),
-    radial-gradient(circle at 72% 68%, rgb(var(--td-section-rgb) / 8%) 0 1.5px, transparent 2.5px),
-    radial-gradient(ellipse at 24% 52%, rgb(var(--td-section-rgb) / 8%), transparent 27%),
-    radial-gradient(ellipse at 78% 24%, rgb(var(--td-section-rgb) / 6%), transparent 24%),
-    linear-gradient(120deg, transparent 0 34%, rgb(var(--td-section-rgb) / 5%) 34.1% 34.2%, transparent 34.4% 100%);
-  background-size: 12rem 12rem, 17rem 17rem, 150% 150%, 135% 135%, 170% 170%;
-  animation: td-dashboard-background-loom 30s ease-in-out infinite alternate;
+    radial-gradient(circle at 12% 24%, rgb(var(--td-section-rgb) / 13%) 0 1px, transparent 2px),
+    radial-gradient(circle at 72% 68%, rgb(var(--td-section-rgb) / 9%) 0 1.5px, transparent 2.5px),
+    radial-gradient(ellipse at 18% 48%, rgb(var(--td-section-rgb) / 10%), transparent 28%),
+    radial-gradient(ellipse at 82% 24%, rgb(var(--td-section-rgb) / 8%), transparent 25%),
+    linear-gradient(124deg, transparent 0 31%, rgb(var(--td-section-rgb) / 6%) 31.1% 31.2%, transparent 31.5% 100%);
+  background-size: 9rem 9rem, 13rem 13rem, 145% 145%, 135% 135%, 190% 190%;
+  animation: td-dashboard-visible-loom 15s ease-in-out infinite alternate;
 }
 
 .tadeon-shell[data-section="Dashboard"] .tadeon-dashboard-hero::after {
   background:
-    repeating-linear-gradient(0deg, transparent 0 2.1rem, rgb(var(--td-section-rgb) / 3.5%) 2.1rem 2.14rem, transparent 2.14rem 4.2rem),
-    repeating-linear-gradient(90deg, transparent 0 5.4rem, rgb(var(--td-section-rgb) / 3%) 5.4rem 5.44rem, transparent 5.44rem 10.8rem),
-    linear-gradient(116deg, transparent 0 28%, rgb(var(--td-section-rgb) / 6%) 28.1% 28.22%, transparent 28.5% 100%),
-    radial-gradient(circle at 82% 20%, rgb(var(--td-section-rgb) / 6%), transparent 18%);
-  background-size: auto, auto, 170% 170%, 140% 140%;
-  animation: td-dashboard-thread-field 34s linear infinite;
+    repeating-linear-gradient(0deg, transparent 0 2.2rem, rgb(var(--td-section-rgb) / 4.5%) 2.2rem 2.54rem, transparent 2.54rem 4.4rem),
+    repeating-linear-gradient(90deg, transparent 0 4.8rem, rgb(var(--td-section-rgb) / 3.8%) 4.8rem 4.84rem, transparent 4.84rem 9.6rem),
+    linear-gradient(116deg, transparent 0 27%, rgb(var(--td-section-rgb) / 7%) 27.1% 27.22%, transparent 27.5% 100%),
+    radial-gradient(circle at 82% 20%, rgb(var(--td-section-rgb) / 7%), transparent 20%);
+  background-size: 100% 100%, 100% 100%, 220% 220%, 150% 150%;
+  animation: td-dashboard-visible-weave 19s linear infinite;
 }
 
-/* Nexus: moving connection field rather than moving the logo/symbol. */
+/* Nexus: the network field itself travels behind the stable mark. */
 .tadeon-shell[data-section="O Nexus"] [data-tadeon-page-hero]::after {
-  background:
-    radial-gradient(circle at 18% 30%, rgb(var(--td-section-rgb) / 8%) 0 1px, transparent 2px),
-    radial-gradient(circle at 74% 66%, rgb(var(--td-section-rgb) / 6%) 0 1px, transparent 2px),
-    repeating-linear-gradient(118deg, transparent 0 4.2rem, rgb(var(--td-section-rgb) / 3.5%) 4.2rem 4.54rem, transparent 4.54rem 8.4rem),
-    linear-gradient(32deg, transparent 0 46%, rgb(var(--td-section-rgb) / 5%) 46.1% 46.2%, transparent 46.4% 100%);
-  background-size: 15rem 15rem, 19rem 19rem, 180% 180%, 155% 155%;
-  animation: td-nexus-background-field 32s linear infinite;
+  background-size: 12rem 12rem, 17rem 17rem, 220% 220%, 190% 190%;
+  animation: td-nexus-visible-field 18s linear infinite;
 }
 
-/* Mesa: map/grid motion stays flat and measured. */
-.tadeon-shell[data-section="Mesa Nexus"] [data-tadeon-page-hero]::after,
-.tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-studio__header::after {
-  background:
-    repeating-linear-gradient(0deg, transparent 0 2.8rem, rgb(var(--td-section-rgb) / 4.5%) 2.8rem 2.84rem, transparent 2.84rem 5.6rem),
-    repeating-linear-gradient(90deg, transparent 0 3.2rem, rgb(var(--td-section-rgb) / 3.5%) 3.2rem 3.54rem, transparent 3.54rem 6.4rem),
-    linear-gradient(116deg, transparent 0 48%, rgb(var(--td-section-rgb) / 6%) 48.1% 48.22%, transparent 48.4% 100%);
-  background-size: auto, auto, 165% 165%;
-  animation: td-tabletop-grid-drift 38s linear infinite;
-}
-
-/* Offline: gradient pools drift apart and reunite, like a retained trace. */
+/* Offline: visible spectral gradients, not moving symbols. */
 .tadeon-shell[data-section="Consulta offline"] [data-tadeon-page-hero]::before {
-  background:
-    radial-gradient(ellipse at 28% 40%, rgb(var(--td-section-rgb) / 13%), transparent 22%),
-    radial-gradient(ellipse at 74% 64%, rgb(var(--td-section-rgb) / 9%), transparent 24%),
-    linear-gradient(108deg, transparent 0 40%, rgb(var(--td-section-rgb) / 4%) 40.1% 40.2%, transparent 40.4% 100%);
-  background-size: 145% 145%, 150% 150%, 170% 170%;
-  animation: td-offline-gradient-memory 18s ease-in-out infinite alternate;
+  animation: td-offline-visible-veil 12s ease-in-out infinite alternate;
 }
 
 .tadeon-shell[data-section="Consulta offline"] [data-tadeon-page-hero]::after {
-  background:
-    repeating-linear-gradient(104deg, transparent 0 5rem, rgb(var(--td-section-rgb) / 4%) 5rem 5.03rem, transparent 5.03rem 10rem),
-    linear-gradient(78deg, transparent 0 63%, rgb(var(--td-section-rgb) / 5%) 63.1% 63.2%, transparent 63.4% 100%);
-  background-size: 180% 180%, 155% 155%;
-  animation: td-offline-thread-memory 22s linear infinite;
+  animation: td-offline-visible-thread 20s linear infinite;
 }
 
-/* Users: linked fields drift on different axes. */
+/* Users: two thread directions cross slowly. */
 .tadeon-shell[data-section="Usuários"] [data-tadeon-page-hero]::after {
-  background:
-    radial-gradient(circle at 22% 34%, rgb(var(--td-section-rgb) / 7%) 0 2px, transparent 2.5px),
-    radial-gradient(circle at 76% 68%, rgb(var(--td-section-rgb) / 6%) 0 2px, transparent 2.5px),
-    linear-gradient(36deg, transparent 0 46%, rgb(var(--td-section-rgb) / 4.5%) 46.1% 46.2%, transparent 46.4% 100%);
-  background-size: 16rem 16rem, 13rem 13rem, 160% 160%;
-  animation: td-user-background-links 25s ease-in-out infinite alternate;
+  animation: td-users-visible-links 16s ease-in-out infinite alternate;
 }
 
-/* Backup: restrained scanning field. */
+/* Backup: the scanning field should be perceptible as a slow technical sweep. */
 .tadeon-shell[data-section="Saúde do arquivo"] [data-tadeon-page-hero]::after {
-  background:
-    repeating-linear-gradient(90deg, transparent 0 4rem, rgb(var(--td-section-rgb) / 4.5%) 4rem 4.02rem, transparent 4.02rem 8rem),
-    linear-gradient(90deg, transparent 0 52%, rgb(var(--td-section-rgb) / 5%) 52.1% 52.2%, transparent 52.4% 100%),
-    linear-gradient(180deg, transparent 0 32%, rgb(var(--td-section-rgb) / 3%) 32.1% 32.2%, transparent 32.4% 100%);
-  background-size: 180% 100%, 160% 100%, 100% 180%;
-  animation: td-backup-field-scan 20s linear infinite;
+  animation: td-backup-visible-scan 11s linear infinite;
 }
 
-/* Master: only the ghost chamber/background fabric moves. */
+/* Master: ghost-chamber gradients breathe while the woven field travels. */
 .tadeon-shell[data-section="Painel do Mestre"] .tadeon-master-commandbar::before {
-  background:
-    radial-gradient(circle at 50% 50%, rgb(var(--td-section-rgb) / 13%), transparent 23%),
-    radial-gradient(circle at 22% 30%, rgb(var(--td-section-rgb) / 8%), transparent 21%),
-    radial-gradient(circle at 78% 64%, rgb(var(--td-section-rgb) / 6%), transparent 25%),
-    linear-gradient(116deg, transparent 0 44%, rgb(var(--td-section-rgb) / 4%) 44.1% 44.2%, transparent 44.4% 100%);
-  background-size: 130% 130%, 145% 145%, 150% 150%, 165% 165%;
-  animation: td-master-background-chamber 23s ease-in-out infinite alternate;
+  animation: td-master-visible-chamber 14s ease-in-out infinite alternate;
 }
 
 .tadeon-shell[data-section="Painel do Mestre"] .tadeon-master-commandbar::after {
-  background:
-    repeating-linear-gradient(96deg, transparent 0 4.6rem, rgb(var(--td-section-rgb) / 4.5%) 4.6rem 4.64rem, transparent 4.64rem 9.2rem),
-    linear-gradient(112deg, transparent 0 38%, rgb(var(--td-section-rgb) / 5%) 38.1% 38.2%, transparent 38.4% 100%),
-    radial-gradient(circle at 52% 48%, rgb(var(--td-section-rgb) / 4%), transparent 32%);
-  background-size: 190% 190%, 165% 165%, 140% 140%;
-  animation: td-master-background-weave 27s linear infinite;
+  animation: td-master-visible-weave 18s linear infinite;
 }
 
-@keyframes td-background-veil-drift {
-  from { background-position: 18% 24%, 78% 14%, 62% 86%; opacity: .58; }
-  to { background-position: 24% 20%, 72% 20%, 56% 80%; opacity: .78; }
+@keyframes td-visible-hero-veil {
+  0% { background-position: 8% 22%, 82% 12%, 64% 82%; background-size: 132% 132%, 122% 122%, 136% 136%; opacity: .48; }
+  50% { background-position: 24% 18%, 68% 24%, 54% 76%; background-size: 148% 148%, 134% 134%, 148% 148%; opacity: .68; }
+  100% { background-position: 16% 30%, 76% 18%, 60% 88%; background-size: 140% 140%, 128% 128%, 142% 142%; opacity: .56; }
 }
 
-@keyframes td-background-weave-drift {
-  from { background-position: 0 0, 0 0, 0 0; }
-  to { background-position: 3.5rem -1.5rem, -2rem 1rem, 6rem 0; }
+@keyframes td-visible-hero-weave {
+  0% { background-position: -18% 0, 0 0, 0 0, 0 0, 0 0; }
+  50% { background-position: 18% -2%, 8rem -2rem, -5rem 2rem, 4rem -2rem, -3rem 1rem; }
+  100% { background-position: 38% 1%, 15rem -4rem, -10rem 4rem, 8rem -4rem, -6rem 2rem; }
 }
 
-@keyframes td-dashboard-background-loom {
-  from { background-position: 0 0, 0 0, 0 0, 0 0, 0 0; opacity: .5; }
-  to { background-position: 2rem -1rem, -1.5rem 2rem, 7rem 0, -3rem 1rem, 5rem -1rem; opacity: .82; }
+@keyframes td-dashboard-visible-loom {
+  0% { background-position: 0 0, 0 0, 12% 50%, 80% 22%, 0 0; opacity: .46; }
+  50% { background-position: 3rem -2rem, -2rem 3rem, 28% 46%, 68% 30%, 8rem -2rem; opacity: .76; }
+  100% { background-position: -2rem 2rem, 3rem -3rem, 42% 54%, 54% 20%, 15rem 2rem; opacity: .58; }
 }
 
-@keyframes td-dashboard-thread-field {
-  from { background-position: 0 0, 0 0, 0 0, 0 0; }
-  to { background-position: 0 2rem, 5rem 0, 8rem -1rem, -2rem 1rem; }
+@keyframes td-dashboard-visible-weave {
+  0% { background-position: 0 0, 0 0, -12% 0, 0 0; }
+  50% { background-position: 0 2.2rem, 4.8rem 0, 35% -2rem, -4rem 2rem; }
+  100% { background-position: 0 4.4rem, 9.6rem 0, 72% -4rem, -8rem 4rem; }
 }
 
-@keyframes td-nexus-background-field {
-  from { background-position: 0 0, 0 0, 0 0, 0 0; }
-  to { background-position: 5rem -2rem, -3rem 1.5rem, 8rem 0, -4rem 1rem; }
+@keyframes td-nexus-visible-field {
+  0% { background-position: 0 0, 0 0, -18% 0, 0 0; }
+  50% { background-position: 3rem -2rem, -3rem 2rem, 40% -2rem, 4rem 1rem; }
+  100% { background-position: 6rem -4rem, -6rem 4rem, 82% -4rem, 8rem 2rem; }
 }
 
-@keyframes td-tabletop-grid-drift {
-  from { background-position: 0 0, 0 0, 0 0; }
-  to { background-position: 0 2.8rem, 3.2rem 0, 7rem -1rem; }
+@keyframes td-offline-visible-veil {
+  0% { background-position: 18% 40%, 82% 60%, 0 0; opacity: .38; }
+  50% { background-position: 34% 48%, 66% 52%, 7rem -2rem; opacity: .72; }
+  100% { background-position: 24% 58%, 76% 42%, -5rem 3rem; opacity: .52; }
 }
 
-@keyframes td-offline-gradient-memory {
-  from { background-position: 20% 40%, 80% 60%, 0 0; opacity: .48; }
-  to { background-position: 34% 48%, 66% 52%, 7rem -1rem; opacity: .76; }
+@keyframes td-offline-visible-thread {
+  0% { background-position: -10% 0, 0 0; }
+  50% { background-position: 42% -2rem, 5rem 1rem; }
+  100% { background-position: 96% -4rem, 10rem 2rem; }
 }
 
-@keyframes td-offline-thread-memory {
-  from { background-position: 0 0, 0 0; }
-  to { background-position: 6rem -1rem, -4rem 1rem; }
+@keyframes td-users-visible-links {
+  0% { background-position: 0 0, 0 0, -10% 0; opacity: .34; }
+  50% { background-position: 3rem -2rem, -2rem 3rem, 42% -1rem; opacity: .64; }
+  100% { background-position: 6rem -4rem, -4rem 6rem, 88% -2rem; opacity: .48; }
 }
 
-@keyframes td-user-background-links {
-  from { background-position: 0 0, 0 0, 0 0; opacity: .38; }
-  to { background-position: 2rem -1rem, -1rem 2rem, 6rem 0; opacity: .62; }
+@keyframes td-backup-visible-scan {
+  0% { background-position: -18% 0, 0 0, 0 0; }
+  50% { background-position: 42% 0, 5rem 0, 0 2rem; }
+  100% { background-position: 118% 0, 10rem 0, 0 4rem; }
 }
 
-@keyframes td-backup-field-scan {
-  from { background-position: 0 0, 0 0, 0 0; }
-  to { background-position: 8rem 0, 5rem 0, 0 4rem; }
+@keyframes td-master-visible-chamber {
+  0% { background-position: 50% 50%, 20% 30%, 80% 66%, 0 0; background-size: 124% 124%, 138% 138%, 150% 150%, 170% 170%; opacity: .42; }
+  50% { background-position: 44% 54%, 30% 24%, 70% 72%, 6rem -2rem; background-size: 142% 142%, 154% 154%, 166% 166%, 190% 190%; opacity: .78; }
+  100% { background-position: 56% 46%, 24% 34%, 76% 60%, -5rem 2rem; background-size: 132% 132%, 146% 146%, 158% 158%, 180% 180%; opacity: .56; }
 }
 
-@keyframes td-master-background-chamber {
-  from { background-position: 50% 50%, 22% 30%, 78% 64%, 0 0; opacity: .42; }
-  to { background-position: 46% 54%, 28% 26%, 72% 70%, 7rem -1rem; opacity: .72; }
-}
-
-@keyframes td-master-background-weave {
-  from { background-position: 0 0, 0 0, 0 0; }
-  to { background-position: 6rem -.9rem, -2rem .8rem, 4rem -1rem; }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .tadeon-shell [data-tadeon-page-hero]::before,
-  .tadeon-shell [data-tadeon-page-hero]::after,
-  .tadeon-shell .tadeon-dashboard-hero::before,
-  .tadeon-shell .tadeon-dashboard-hero::after,
-  .tadeon-shell .tadeon-master-commandbar::before,
-  .tadeon-shell .tadeon-master-commandbar::after,
-  .tadeon-shell .tadeon-tabletop-studio__header::before,
-  .tadeon-shell .tadeon-tabletop-studio__header::after,
-  .tadeon-shell .tadeon-auth-hero::before,
-  .tadeon-shell .tadeon-auth-hero::after {
-    animation: none !important;
-  }
+@keyframes td-master-visible-weave {
+  0% { background-position: -14% 0, 0 0, 0 0; }
+  50% { background-position: 38% -2rem, 5rem 1rem, -4rem 2rem; }
+  100% { background-position: 94% -4rem, 10rem 2rem, -8rem 4rem; }
 }
