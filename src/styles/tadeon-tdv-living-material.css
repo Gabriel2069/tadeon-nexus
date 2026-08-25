@@ -1,0 +1,419 @@
+/*
+ * Tadeon — TdV Living Material
+ *
+ * This layer is intentionally different from generic UI motion:
+ * the interface behaves like a living Tessitura.
+ *
+ * Vocabulary:
+ *   Fluxo        = continuous flow of light/threads through surfaces
+ *   Luminar      = slow localized light presence
+ *   Sutura       = a seam that appears when a state connects
+ *   Materialize  = an element becoming perceptible rather than jumping in
+ *   Medo         = an unstable, delayed spectral residue used sparingly
+ *
+ * Geometry stays still. The atmosphere, light and thread fields carry the motion.
+ */
+
+.tadeon-shell {
+  --tdv-lumen: var(--td-section-accent, rgb(217 215 164));
+  --tdv-lumen-soft: color-mix(in srgb, var(--tdv-lumen) 14%, transparent);
+  --tdv-lumen-faint: color-mix(in srgb, var(--tdv-lumen) 5%, transparent);
+  --tdv-thread: color-mix(in srgb, var(--tdv-lumen) 24%, transparent);
+  --tdv-ghost: color-mix(in srgb, var(--td-section-secondary, var(--tdv-lumen)) 10%, transparent);
+  --tdv-calm: cubic-bezier(.2,.7,.2,1);
+  --tdv-materialize: cubic-bezier(.18,.78,.24,1);
+}
+
+/* ================================================================
+   01. THE LIVING FIELD — the site always has a faint Fluxo underneath
+   ================================================================ */
+
+.tadeon-shell {
+  background-image:
+    radial-gradient(circle at 18% 16%, var(--tdv-lumen-faint), transparent 20rem),
+    radial-gradient(circle at 82% 78%, var(--tdv-ghost), transparent 24rem),
+    linear-gradient(112deg, transparent 0 34%, color-mix(in srgb, var(--tdv-lumen) 2.2%, transparent) 34.1% 34.16%, transparent 34.3% 100%);
+  background-size: 125% 125%, 135% 135%, 155% 155%;
+  animation: tdv-living-field 34s ease-in-out infinite alternate;
+}
+
+/* Fine thread traces across the viewport. They are intentionally slower than UI. */
+.tadeon-shell::after {
+  background:
+    repeating-linear-gradient(118deg, transparent 0 9rem, color-mix(in srgb, var(--tdv-lumen) 3.1%, transparent) 9rem 9.035rem, transparent 9.035rem 18rem),
+    repeating-linear-gradient(64deg, transparent 0 12rem, color-mix(in srgb, var(--tdv-lumen) 1.8%, transparent) 12rem 12.025rem, transparent 12.025rem 24rem);
+  background-size: 155% 155%, 175% 175%;
+  opacity: .32;
+  animation: tdv-loom-drift 46s linear infinite;
+}
+
+/* ================================================================
+   02. HEROES — luminares, flowing threads, suspended depth
+   ================================================================ */
+
+.tadeon-shell [data-tadeon-page-hero],
+.tadeon-shell .tadeon-dashboard-hero,
+.tadeon-shell .tadeon-master-commandbar,
+.tadeon-shell .tadeon-tabletop-studio__header {
+  --tdv-hero-lumen: color-mix(in srgb, var(--tdv-lumen) 28%, transparent);
+  --tdv-hero-thread: color-mix(in srgb, var(--tdv-lumen) 13%, transparent);
+}
+
+/* A slow luminous field, never attached to the symbol itself. */
+.tadeon-shell [data-tadeon-page-hero]::before,
+.tadeon-shell .tadeon-dashboard-hero::before,
+.tadeon-shell .tadeon-master-commandbar::before,
+.tadeon-shell .tadeon-tabletop-studio__header::before {
+  background-image:
+    radial-gradient(circle at 16% 24%, var(--tdv-hero-lumen), transparent 18%),
+    radial-gradient(circle at 78% 68%, color-mix(in srgb, var(--tdv-lumen) 12%, transparent), transparent 24%),
+    radial-gradient(circle at 52% 46%, color-mix(in srgb, var(--tdv-lumen) 5%, transparent), transparent 32%),
+    linear-gradient(118deg, transparent 0 42%, var(--tdv-hero-thread) 42.08% 42.15%, transparent 42.3% 100%);
+  background-size: 140% 140%, 150% 150%, 135% 135%, 165% 165%;
+  animation: tdv-hero-luminar 21s ease-in-out infinite alternate;
+}
+
+/* A crossing weave with two independent directions. */
+.tadeon-shell [data-tadeon-page-hero]::after,
+.tadeon-shell .tadeon-dashboard-hero::after,
+.tadeon-shell .tadeon-master-commandbar::after,
+.tadeon-shell .tadeon-tabletop-studio__header::after {
+  background-image:
+    repeating-linear-gradient(108deg, transparent 0 4.8rem, color-mix(in srgb, var(--tdv-lumen) 7%, transparent) 4.8rem 4.835rem, transparent 4.835rem 9.6rem),
+    repeating-linear-gradient(72deg, transparent 0 7.4rem, color-mix(in srgb, var(--tdv-lumen) 4%, transparent) 7.4rem 7.43rem, transparent 7.43rem 14.8rem),
+    linear-gradient(24deg, transparent 0 55%, color-mix(in srgb, var(--tdv-lumen) 6%, transparent) 55.06% 55.14%, transparent 55.3% 100%);
+  background-size: 175% 175%, 195% 195%, 160% 160%;
+  animation: tdv-hero-weave 29s linear infinite;
+}
+
+/* Luminous accents used by every hero: visible, but not noisy. */
+.tadeon-shell [data-tadeon-page-hero] .tadeon-page-hero-mark-host::after,
+.tadeon-shell .tadeon-master-commandbar__glow::after,
+.tadeon-shell .tadeon-tabletop-brand-mark-host::after {
+  background:
+    radial-gradient(circle, color-mix(in srgb, var(--tdv-lumen) 24%, transparent), transparent 58%),
+    radial-gradient(circle, color-mix(in srgb, var(--tdv-lumen) 8%, transparent), transparent 72%);
+  animation: tdv-luminar-pulse 7.2s ease-in-out infinite;
+}
+
+/* ================================================================
+   03. BUTTONS — Fluxo, pressure, and a seam that completes the action
+   ================================================================ */
+
+.tadeon-shell .tadeon-nav-item,
+.tadeon-shell .tadeon-mobile-dock__item,
+.tadeon-shell button:not([data-radix-collection-item]),
+.tadeon-shell [role="button"] {
+  position: relative;
+  isolation: isolate;
+  transition:
+    color 180ms var(--tdv-calm),
+    background-color 220ms var(--tdv-calm),
+    border-color 220ms var(--tdv-calm),
+    box-shadow 260ms var(--tdv-calm);
+}
+
+/* Never translate the control on hover. The reaction happens inside the skin. */
+.tadeon-shell .tadeon-nav-item:hover,
+.tadeon-shell .tadeon-mobile-dock__item:hover,
+.tadeon-shell button:not([data-radix-collection-item]):hover,
+.tadeon-shell [role="button"]:hover {
+  transform: none !important;
+  box-shadow:
+    inset 0 0 0 1px color-mix(in srgb, var(--tdv-lumen) 16%, transparent),
+    inset 0 -10px 22px color-mix(in srgb, var(--tdv-lumen) 3%, transparent),
+    0 10px 28px -24px color-mix(in srgb, var(--tdv-lumen) 34%, transparent);
+}
+
+/* Flowing highlight: a light thread passes through the surface, then disappears. */
+.tadeon-shell .tadeon-nav-item::before,
+.tadeon-shell .tadeon-mobile-dock__item::before,
+.tadeon-shell button:not([data-radix-collection-item])::before,
+.tadeon-shell [role="button"]::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border-radius: inherit;
+  background: linear-gradient(108deg, transparent 24%, color-mix(in srgb, var(--tdv-lumen) 10%, transparent) 48%, transparent 66%);
+  background-size: 220% 100%;
+  background-position: 120% 0;
+  opacity: 0;
+  z-index: -1;
+}
+
+.tadeon-shell .tadeon-nav-item:hover::before,
+.tadeon-shell .tadeon-mobile-dock__item:hover::before,
+.tadeon-shell button:not([data-radix-collection-item]):hover::before,
+.tadeon-shell [role="button"]:hover::before,
+.tadeon-shell .tadeon-nav-item[data-nav-active="true"]::before {
+  opacity: 1;
+  animation: tdv-surface-flow 1.65s var(--tdv-calm) both;
+}
+
+/* Press feels like a seam being pulled tight — deliberately tiny. */
+.tadeon-shell .tadeon-nav-item:active,
+.tadeon-shell .tadeon-mobile-dock__item:active,
+.tadeon-shell button:not([data-radix-collection-item]):active,
+.tadeon-shell [role="button"]:active {
+  transform: scale(.985) !important;
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--tdv-lumen) 18%, transparent), inset 0 2px 10px color-mix(in srgb, var(--tdv-lumen) 5%, transparent);
+}
+
+/* ================================================================
+   04. BARS / PROGRESS / LOAD — Fluxo travels through the information
+   ================================================================ */
+
+.tadeon-shell [role="progressbar"],
+.tadeon-shell .tadeon-progress,
+.tadeon-shell .tadeon-progress-bar,
+.tadeon-shell [data-progress] {
+  overflow: hidden;
+  background-image: linear-gradient(90deg, transparent, color-mix(in srgb, var(--tdv-lumen) 18%, transparent), transparent);
+  background-size: 220% 100%;
+  animation: tdv-bar-flux 2.8s linear infinite;
+}
+
+.tadeon-shell [aria-busy="true"],
+.tadeon-shell .tadeon-loading,
+.tadeon-shell .tadeon-pending,
+.tadeon-shell [data-loading="true"] {
+  position: relative;
+}
+
+.tadeon-shell [aria-busy="true"]::after,
+.tadeon-shell .tadeon-loading::after,
+.tadeon-shell .tadeon-pending::after,
+.tadeon-shell [data-loading="true"]::after {
+  content: "";
+  position: absolute;
+  inset-block: 0;
+  left: -30%;
+  width: 28%;
+  background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--tdv-lumen) 18%, transparent), transparent);
+  pointer-events: none;
+  animation: tdv-scan-thread 1.8s linear infinite;
+}
+
+/* ================================================================
+   05. TABS — a sutura travels to the selected surface
+   ================================================================ */
+
+.tadeon-shell [role="tab"] {
+  position: relative;
+  isolation: isolate;
+  color: color-mix(in srgb, currentColor 72%, transparent);
+  transition: color 170ms var(--tdv-calm), background-color 220ms var(--tdv-calm), box-shadow 220ms var(--tdv-calm);
+}
+
+.tadeon-shell [role="tab"]::after {
+  content: "";
+  position: absolute;
+  left: 12%;
+  right: 12%;
+  bottom: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--tdv-lumen), transparent);
+  transform-origin: center;
+  transform: scaleX(.14);
+  opacity: .25;
+  transition: transform 220ms var(--tdv-calm), opacity 220ms var(--tdv-calm), box-shadow 220ms var(--tdv-calm);
+}
+
+.tadeon-shell [role="tab"]:hover::after,
+.tadeon-shell [role="tab"][aria-selected="true"]::after,
+.tadeon-shell [role="tab"][data-state="active"]::after {
+  transform: scaleX(1);
+  opacity: .84;
+  box-shadow: 0 0 12px color-mix(in srgb, var(--tdv-lumen) 22%, transparent);
+}
+
+/* ================================================================
+   06. SURFACES — materialize like a fold of cloth, not a popup jump
+   ================================================================ */
+
+.tadeon-shell [data-radix-dialog-content],
+.tadeon-shell [data-radix-popover-content],
+.tadeon-shell [data-radix-dropdown-menu-content],
+.tadeon-shell [data-radix-select-content],
+.tadeon-shell .tadeon-mobile-drawer {
+  position: relative;
+  isolation: isolate;
+  box-shadow:
+    0 28px 80px -44px color-mix(in srgb, var(--tdv-lumen) 22%, transparent),
+    inset 0 1px 0 color-mix(in srgb, var(--tdv-lumen) 7%, transparent);
+}
+
+.tadeon-shell [data-radix-dialog-content]::before,
+.tadeon-shell [data-radix-popover-content]::before,
+.tadeon-shell [data-radix-dropdown-menu-content]::before,
+.tadeon-shell [data-radix-select-content]::before,
+.tadeon-shell .tadeon-mobile-drawer::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border-radius: inherit;
+  background:
+    linear-gradient(120deg, transparent 0 34%, color-mix(in srgb, var(--tdv-lumen) 5%, transparent) 34.08% 34.14%, transparent 34.3% 100%),
+    radial-gradient(circle at 76% 10%, color-mix(in srgb, var(--tdv-lumen) 6%, transparent), transparent 28%);
+  background-size: 170% 170%, 135% 135%;
+  animation: tdv-surface-materialize 8s ease-in-out infinite alternate;
+  z-index: -1;
+}
+
+/* ================================================================
+   07. SELECTION / STATES — a sutura closes around the state
+   ================================================================ */
+
+.tadeon-shell .tadeon-nav-item[data-nav-active="true"],
+.tadeon-shell .tadeon-nav-item[aria-current="page"],
+.tadeon-shell [data-selected="true"],
+.tadeon-shell [aria-selected="true"] {
+  box-shadow:
+    inset 1px 0 0 var(--tdv-lumen),
+    inset 0 0 0 1px color-mix(in srgb, var(--tdv-lumen) 8%, transparent),
+    0 12px 30px -26px color-mix(in srgb, var(--tdv-lumen) 38%, transparent);
+}
+
+/* A quiet pulse only for high-salience selections. */
+.tadeon-shell .tadeon-nav-item[data-nav-active="true"] .tadeon-nav-item__icon,
+.tadeon-shell .tadeon-nav-item[aria-current="page"] .tadeon-nav-item__icon {
+  filter: drop-shadow(0 0 7px color-mix(in srgb, var(--tdv-lumen) 22%, transparent));
+  animation: tdv-selection-lumen 5.6s ease-in-out infinite;
+}
+
+/* ================================================================
+   08. MASTER — Medo is not red glow; it is delayed presence
+   ================================================================ */
+
+.tadeon-shell[data-section="Painel do Mestre"] .tadeon-master-commandbar {
+  --tdv-lumen: var(--td-section-accent);
+}
+
+.tadeon-shell[data-section="Painel do Mestre"] .tadeon-master-commandbar::before {
+  background-image:
+    radial-gradient(circle at 50% 48%, color-mix(in srgb, var(--tdv-lumen) 14%, transparent), transparent 20%),
+    radial-gradient(circle at 18% 30%, color-mix(in srgb, var(--tdv-lumen) 7%, transparent), transparent 19%),
+    radial-gradient(circle at 82% 70%, color-mix(in srgb, var(--tdv-lumen) 6%, transparent), transparent 22%);
+  background-size: 130% 130%, 145% 145%, 150% 150%;
+  animation: tdv-fear-chamber 16s ease-in-out infinite alternate;
+}
+
+.tadeon-shell[data-section="Painel do Mestre"] .tadeon-master-commandbar::after {
+  background-image:
+    repeating-linear-gradient(102deg, transparent 0 5rem, color-mix(in srgb, var(--tdv-lumen) 5%, transparent) 5rem 5.04rem, transparent 5.04rem 10rem),
+    linear-gradient(115deg, transparent 0 38%, color-mix(in srgb, var(--tdv-lumen) 4%, transparent) 38.08% 38.16%, transparent 38.3% 100%);
+  background-size: 190% 190%, 165% 165%;
+  animation: tdv-fear-weave 24s linear infinite;
+}
+
+/* ================================================================
+   09. MYSTERY RESPONSES — hover/focus reveals, it does not jump
+   ================================================================ */
+
+.tadeon-shell [data-tadeon-page-hero] :is(a, button, [role="button"], [data-interactive]),
+.tadeon-shell .tadeon-master-commandbar :is(a, button, [role="button"], [data-interactive]) {
+  transition: color 160ms var(--tdv-calm), background-color 220ms var(--tdv-calm), border-color 220ms var(--tdv-calm), box-shadow 240ms var(--tdv-calm), filter 240ms var(--tdv-calm);
+}
+
+.tadeon-shell [data-tadeon-page-hero] :is(a, button, [role="button"], [data-interactive]):hover,
+.tadeon-shell .tadeon-master-commandbar :is(a, button, [role="button"], [data-interactive]):hover {
+  transform: none !important;
+  filter: brightness(1.04);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--tdv-lumen) 8%, transparent), 0 10px 28px -26px color-mix(in srgb, var(--tdv-lumen) 38%, transparent);
+}
+
+/* ================================================================
+   KEYFRAMES
+   ================================================================ */
+
+@keyframes tdv-living-field {
+  from { background-position: 18% 16%, 82% 78%, 0 0; }
+  to { background-position: 25% 21%, 76% 72%, 5rem -2rem; }
+}
+
+@keyframes tdv-loom-drift {
+  from { background-position: 0 0, 0 0; }
+  to { background-position: 8rem -2rem, -5rem 3rem; }
+}
+
+@keyframes tdv-hero-luminar {
+  from { background-position: 16% 24%, 78% 68%, 52% 46%, 0 0; opacity: .48; }
+  to { background-position: 24% 18%, 72% 74%, 58% 42%, 7rem -1rem; opacity: .78; }
+}
+
+@keyframes tdv-hero-weave {
+  from { background-position: 0 0, 0 0, 0 0; }
+  to { background-position: 5rem -1.4rem, -3rem 2rem, 7rem 0; }
+}
+
+@keyframes tdv-luminar-pulse {
+  0%, 100% { opacity: .26; transform: scale(.96); }
+  50% { opacity: .64; transform: scale(1.06); }
+}
+
+@keyframes tdv-surface-flow {
+  0% { background-position: 120% 0; }
+  100% { background-position: -28% 0; }
+}
+
+@keyframes tdv-bar-flux {
+  from { background-position: 120% 0; }
+  to { background-position: -120% 0; }
+}
+
+@keyframes tdv-scan-thread {
+  from { left: -30%; opacity: 0; }
+  15% { opacity: 1; }
+  70% { opacity: .7; }
+  to { left: 115%; opacity: 0; }
+}
+
+@keyframes tdv-surface-materialize {
+  from { background-position: 0 0, 70% 8%; opacity: .42; }
+  to { background-position: 7rem -1rem, 64% 14%; opacity: .72; }
+}
+
+@keyframes tdv-selection-lumen {
+  0%, 100% { opacity: .78; }
+  50% { opacity: 1; filter: drop-shadow(0 0 10px color-mix(in srgb, var(--tdv-lumen) 28%, transparent)); }
+}
+
+@keyframes tdv-fear-chamber {
+  from { background-position: 50% 48%, 18% 30%, 82% 70%; opacity: .42; }
+  to { background-position: 47% 52%, 25% 26%, 76% 74%; opacity: .78; }
+}
+
+@keyframes tdv-fear-weave {
+  from { background-position: 0 0, 0 0; }
+  to { background-position: 7rem -.8rem, -2.5rem 1.6rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tadeon-shell,
+  .tadeon-shell::after,
+  .tadeon-shell [data-tadeon-page-hero]::before,
+  .tadeon-shell [data-tadeon-page-hero]::after,
+  .tadeon-shell .tadeon-dashboard-hero::before,
+  .tadeon-shell .tadeon-dashboard-hero::after,
+  .tadeon-shell .tadeon-master-commandbar::before,
+  .tadeon-shell .tadeon-master-commandbar::after,
+  .tadeon-shell .tadeon-tabletop-studio__header::before,
+  .tadeon-shell .tadeon-tabletop-studio__header::after,
+  .tadeon-shell [role="progressbar"],
+  .tadeon-shell .tadeon-progress,
+  .tadeon-shell .tadeon-progress-bar,
+  .tadeon-shell [aria-busy="true"]::after,
+  .tadeon-shell .tadeon-loading::after,
+  .tadeon-shell .tadeon-pending::after,
+  .tadeon-shell [data-loading="true"]::after,
+  .tadeon-shell [data-radix-dialog-content]::before,
+  .tadeon-shell [data-radix-popover-content]::before,
+  .tadeon-shell [data-radix-dropdown-menu-content]::before,
+  .tadeon-shell [data-radix-select-content]::before,
+  .tadeon-shell .tadeon-mobile-drawer::before,
+  .tadeon-shell .tadeon-nav-item__icon {
+    animation: none !important;
+  }
+}
