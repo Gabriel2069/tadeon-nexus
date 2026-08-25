@@ -18,6 +18,7 @@
 @import "./tadeon-hover-weave-quiet.css";
 @import "./tadeon-hero-type-authority-final.css";
 @import "./tadeon-sidebar-real-authority.css";
+@import "./tadeon-ambient-composition-system.css";
 
 /* Single authored motion/visual authority. Legacy motion files remain only as
    compatibility shims; they no longer own interaction physics. */
