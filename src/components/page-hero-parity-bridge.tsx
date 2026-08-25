@@ -21,6 +21,7 @@ import "@/styles/subtle-motion-pass-231.css";
 import "@/styles/dashboard-hero-motion-depth-232.css";
 import "@/styles/experimental-round-hero-symbols-233.css";
 import "@/styles/final-pre-detail-audit-235.css";
+import "@/styles/tadeon-final-responsive-weave.css";
 
 type HeroKind = Extract<AppSectionSymbol, "users" | "tools" | "offline">;
 type IconKind = HeroKind | "tabletop" | "brand";
