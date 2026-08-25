@@ -5,9 +5,10 @@
 @import "./tadeon-motion-foundation.css";
 @import "./tadeon-motion-sections.css";
 @import "./tadeon-motion-heroes.css";
+@import "./tadeon-motion-workspace.css";
 
 /* Compatibility layer: legacy motion selectors are intentionally limited.
-   New visual authority lives in the core/foundation/surfaces/sections/hero system. */
+   New visual authority lives in the core/foundation/surfaces/sections/hero/workspace system. */
 @media (prefers-reduced-motion: reduce) {
   .tadeon-shell *, .tadeon-shell *::before, .tadeon-shell *::after {
     animation-duration: 1ms !important;
