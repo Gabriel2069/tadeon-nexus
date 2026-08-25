@@ -1,0 +1,168 @@
+/* Tadeon Hero Authority — atmosphere, weave, suspense, apparition.
+   This layer owns motion inside hero backgrounds without changing layout geometry. */
+:root {
+  --tm-hero-drift: cubic-bezier(.22,.72,.2,1);
+  --tm-hero-ghost: cubic-bezier(.37,0,.63,1);
+  --tm-hero-stitch: cubic-bezier(.25,.8,.25,1);
+}
+
+/* Keep the hero frame itself still. The atmosphere moves inside it. */
+.tadeon-shell :is(.tadeon-page-hero,.tadeon-tabletop-studio__header,.tadeon-master-commandbar) {
+  animation: none !important;
+  isolation: isolate;
+  overflow: clip;
+}
+
+/* Ambient material: slow horizontal weave instead of card motion. */
+.tadeon-shell :is(.tadeon-page-hero,.tadeon-tabletop-studio__header,.tadeon-master-commandbar)::before {
+  animation: tm-hero-weave 24s var(--tm-hero-drift) infinite alternate;
+  transform: translate3d(0,0,0) scale(1.015);
+  transform-origin: 50% 50%;
+  opacity: .58;
+  pointer-events: none;
+  will-change: transform, opacity;
+}
+
+/* Secondary atmospheric layer: a restrained veil / fabric shimmer. */
+.tadeon-shell :is(.tadeon-page-hero,.tadeon-tabletop-studio__header,.tadeon-master-commandbar)::after {
+  animation: tm-hero-veil 17s var(--tm-hero-drift) infinite alternate;
+  transform: translate3d(0,0,0);
+  transform-origin: 50% 50%;
+  opacity: .42;
+  pointer-events: none;
+  will-change: transform, opacity;
+}
+
+@keyframes tm-hero-weave {
+  0% { transform: translate3d(-.4%, .2%, 0) scale(1.015); opacity: .44; }
+  48% { transform: translate3d(.25%, -.18%, 0) scale(1.019); opacity: .62; }
+  100% { transform: translate3d(.6%, .28%, 0) scale(1.016); opacity: .48; }
+}
+
+@keyframes tm-hero-veil {
+  0% { transform: translate3d(.35%, -.2%, 0) scale(1.01); opacity: .30; }
+  50% { transform: translate3d(-.2%, .15%, 0) scale(1.014); opacity: .46; }
+  100% { transform: translate3d(.15%, .3%, 0) scale(1.012); opacity: .34; }
+}
+
+/* ThreadField: the visible paths become slow living threads. */
+.tadeon-shell .tadeon-dashboard-hero > svg {
+  overflow: visible;
+  opacity: .96;
+}
+.tadeon-shell .tadeon-dashboard-hero > svg path {
+  stroke-dasharray: 160 420;
+  animation: tm-thread-draw 22s linear infinite;
+  opacity: .55;
+}
+.tadeon-shell .tadeon-dashboard-hero > svg path:nth-child(2) {
+  animation-duration: 29s;
+  animation-delay: -7s;
+  opacity: .38;
+}
+.tadeon-shell .tadeon-dashboard-hero > svg path:nth-child(3) {
+  animation-duration: 34s;
+  animation-delay: -15s;
+  opacity: .28;
+}
+
+@keyframes tm-thread-draw {
+  to { stroke-dashoffset: -820px; }
+}
+
+/* The thread responds to attention, not by jumping, but by becoming legible. */
+.tadeon-shell .tadeon-dashboard-hero:is(:hover,:focus-within) > svg path {
+  animation-duration: 15s;
+  opacity: .78;
+}
+
+/* Ghost layer — the Master panel's signature: a delayed, almost spectral echo. */
+.tadeon-shell .tadeon-master-commandbar {
+  --tm-ghost-opacity: .20;
+}
+.tadeon-shell .tadeon-master-commandbar::before {
+  animation:
+    tm-master-ghost-drift 11s var(--tm-hero-ghost) infinite alternate,
+    tm-master-ghost-breathe 5.8s var(--tm-hero-ghost) infinite alternate;
+  opacity: var(--tm-ghost-opacity);
+  filter: blur(.25px);
+}
+.tadeon-shell .tadeon-master-commandbar::after {
+  animation:
+    tm-master-ghost-drift-reverse 15s var(--tm-hero-ghost) infinite alternate,
+    tm-master-ghost-breathe-reverse 7.2s var(--tm-hero-ghost) infinite alternate;
+  opacity: .13;
+  filter: blur(1.2px);
+}
+
+@keyframes tm-master-ghost-drift {
+  0% { transform: translate3d(-.15%, .05%, 0); }
+  100% { transform: translate3d(.22%, -.08%, 0); }
+}
+@keyframes tm-master-ghost-drift-reverse {
+  0% { transform: translate3d(.16%, -.05%, 0); }
+  100% { transform: translate3d(-.24%, .1%, 0); }
+}
+@keyframes tm-master-ghost-breathe {
+  0% { opacity: .12; }
+  100% { opacity: .24; }
+}
+@keyframes tm-master-ghost-breathe-reverse {
+  0% { opacity: .08; }
+  100% { opacity: .16; }
+}
+
+/* Suspense response: the atmosphere tightens when interacting with the hero. */
+.tadeon-shell .tadeon-master-commandbar:is(:hover,:focus-within)::before {
+  animation-duration: 7.5s, 4.2s;
+  opacity: .28;
+}
+.tadeon-shell .tadeon-master-commandbar:is(:hover,:focus-within)::after {
+  animation-duration: 10s, 5.4s;
+  opacity: .18;
+}
+
+/* Decorative hero details: draw/reveal when a hero enters the page. */
+.tadeon-shell :is(.tadeon-page-hero,.tadeon-tabletop-studio__header,.tadeon-master-commandbar) {
+  --tm-hero-seam: currentColor;
+}
+.tadeon-shell :is(.tadeon-page-hero,.tadeon-tabletop-studio__header,.tadeon-master-commandbar) :is(hr,[data-motion="hero-line"],[data-hero-line]) {
+  transform-origin: left center;
+  animation: tm-hero-seam-in 700ms var(--tm-hero-stitch) both;
+}
+
+@keyframes tm-hero-seam-in {
+  from { opacity: 0; transform: scaleX(.18); filter: blur(1px); }
+  to { opacity: 1; transform: scaleX(1); filter: none; }
+}
+
+/* Ambient dots/markers: tiny phase differences create a woven field. */
+.tadeon-shell :is(.tadeon-page-hero,.tadeon-tabletop-studio__header,.tadeon-master-commandbar) :is([data-hero-orbit],[data-hero-marker],[data-hero-particle]) {
+  animation: tm-hero-marker 6.5s var(--tm-hero-ghost) infinite alternate;
+  will-change: transform, opacity;
+}
+.tadeon-shell :is(.tadeon-page-hero,.tadeon-tabletop-studio__header,.tadeon-master-commandbar) :is([data-hero-orbit],[data-hero-marker],[data-hero-particle]):nth-of-type(2n) {
+  animation-duration: 8.5s;
+  animation-delay: -2.4s;
+}
+.tadeon-shell :is(.tadeon-page-hero,.tadeon-tabletop-studio__header,.tadeon-master-commandbar) :is([data-hero-orbit],[data-hero-marker],[data-hero-particle]):nth-of-type(3n) {
+  animation-duration: 10.5s;
+  animation-delay: -5s;
+}
+
+@keyframes tm-hero-marker {
+  0% { opacity: .28; transform: translate3d(0,0,0); }
+  100% { opacity: .62; transform: translate3d(.18rem,-.1rem,0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tadeon-shell :is(.tadeon-page-hero,.tadeon-tabletop-studio__header,.tadeon-master-commandbar),
+  .tadeon-shell :is(.tadeon-page-hero,.tadeon-tabletop-studio__header,.tadeon-master-commandbar)::before,
+  .tadeon-shell :is(.tadeon-page-hero,.tadeon-tabletop-studio__header,.tadeon-master-commandbar)::after,
+  .tadeon-shell .tadeon-dashboard-hero > svg path,
+  .tadeon-shell :is(.tadeon-page-hero,.tadeon-tabletop-studio__header,.tadeon-master-commandbar) :is(hr,[data-motion="hero-line"],[data-hero-line],[data-hero-orbit],[data-hero-marker],[data-hero-particle]) {
+    animation: none !important;
+    transform: none !important;
+    will-change: auto !important;
+  }
+}
