@@ -8,6 +8,7 @@
 @import "./tadeon-motion-workspace.css";
 @import "./tadeon-motion-microdetails.css";
 @import "./tadeon-motion-context.css";
+@import "./tadeon-motion-atmosphere.css";
 
 /* Single authored motion authority. Legacy motion files remain only as
    compatibility shims; they no longer own interaction physics. */
