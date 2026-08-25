@@ -1,0 +1,70 @@
+/* Tadeon Microdetail Authority — seam, glyph, status, signal, whisper. */
+:root {
+  --tm-micro-seam: cubic-bezier(.25,.8,.25,1);
+  --tm-micro-thread: cubic-bezier(.22,.72,.2,1);
+  --tm-micro-ghost: cubic-bezier(.37,0,.63,1);
+}
+
+/* Small controls: presence through edge/light, never a generic lift. */
+.tadeon-shell :is([data-slot="button"],[data-slot="toggle"],[data-slot="toggle-group-item"],[data-slot="pagination-link"],[data-slot="breadcrumb-link"]) {
+  transition: color 180ms var(--tm-micro-seam), background-color 220ms var(--tm-micro-seam), border-color 240ms var(--tm-micro-seam), box-shadow 280ms var(--tm-micro-seam), opacity 180ms var(--tm-micro-seam), transform 120ms var(--tm-micro-thread);
+}
+.tadeon-shell :is([data-slot="button"],[data-slot="toggle"],[data-slot="toggle-group-item"],[data-slot="pagination-link"],[data-slot="breadcrumb-link"]):active {
+  transform: scale(.985);
+}
+
+/* Glyphs: semantic micro-gestures. */
+.tadeon-shell :is([data-motion-icon="search"],[aria-label*="Pesquisar"],[aria-label*="Buscar"]) svg { transition: transform 240ms var(--tm-micro-thread), filter 220ms var(--tm-micro-seam); }
+.tadeon-shell :is([data-motion-icon="search"],[aria-label*="Pesquisar"],[aria-label*="Buscar"]):hover svg { transform: scale(1.045); filter: drop-shadow(0 0 4px currentColor); }
+.tadeon-shell :is([data-motion-icon="refresh"],[aria-label*="Atualizar"]) svg { transition: transform 420ms var(--tm-micro-thread); }
+.tadeon-shell :is([data-motion-icon="refresh"],[aria-label*="Atualizar"]):active svg { transform: rotate(180deg); }
+.tadeon-shell :is([data-motion-icon="close"],[aria-label*="Fechar"]) svg { transition: transform 240ms var(--tm-micro-thread); }
+.tadeon-shell :is([data-motion-icon="close"],[aria-label*="Fechar"]):hover svg { transform: rotate(5deg) scale(1.04); }
+
+/* Tooltips / annotations: whisper in from the anchor. */
+:is([data-slot="tooltip-content"],[data-radix-tooltip-content]) { animation: tm-micro-whisper 220ms var(--tm-micro-thread) both !important; }
+@keyframes tm-micro-whisper { from { opacity:0; transform:translateY(2px) scale(.992); filter:blur(1px); } to { opacity:1; transform:none; filter:none; } }
+
+/* Toasts / status: delivered along the information thread. */
+:is([data-slot="toast"],[data-sonner-toast]) { animation: tm-micro-deliver 340ms var(--tm-micro-thread) both; }
+@keyframes tm-micro-deliver { from { opacity:0; transform:translateX(8px); clip-path:inset(0 0 0 8%); } to { opacity:1; transform:none; clip-path:inset(0); } }
+
+/* Data rows: selection is a seam; hover is a trace. */
+.tadeon-shell :is(tr,[role="row"],[data-motion-row]) { transition: background-color 220ms var(--tm-micro-seam), box-shadow 240ms var(--tm-micro-seam), color 200ms var(--tm-micro-seam), opacity 200ms var(--tm-micro-seam); }
+.tadeon-shell :is(tr,[role="row"],[data-motion-row]):hover { box-shadow: inset 1px 0 color-mix(in srgb,var(--section-accent,var(--tadeon-knowledge)) 35%,transparent); }
+.tadeon-shell :is(tr,[role="row"],[data-motion-row])[data-state="selected"],
+.tadeon-shell :is(tr,[role="row"],[data-motion-row])[aria-selected="true"] { box-shadow: inset 2px 0 var(--section-accent,var(--tadeon-knowledge)); }
+
+/* Status indicators: a tiny signal rather than a pulse bomb. */
+.tadeon-shell :is([data-status="saving"],[data-status="pending"],[data-loading="true"])::after {
+  content:"";
+  display:inline-block;
+  width:.32rem;
+  height:.32rem;
+  margin-left:.42rem;
+  vertical-align:middle;
+  border-radius:999px;
+  background:currentColor;
+  opacity:.35;
+  animation: tm-micro-signal 1.8s var(--tm-micro-ghost) infinite alternate;
+}
+@keyframes tm-micro-signal { from { opacity:.24; transform:scale(.85); } to { opacity:.72; transform:scale(1); } }
+
+/* Progress: a moving glint along an existing seam. */
+.tadeon-shell :is(progress,[role="progressbar"]) { position:relative; }
+.tadeon-shell :is(progress,[role="progressbar"])::after { content:""; position:absolute; inset:0; background:linear-gradient(90deg,transparent, currentColor, transparent); opacity:.08; transform:translateX(-110%); animation:tm-micro-sweep 3.6s linear infinite; pointer-events:none; }
+@keyframes tm-micro-sweep { to { transform:translateX(110%); } }
+
+/* Dividers: thread reveals itself when the containing section enters. */
+.tadeon-shell :is(hr,[data-motion-divider],[data-divider])::after { content:""; display:block; height:1px; background:currentColor; opacity:.32; transform-origin:left; transform:scaleX(.18); animation:tm-micro-seam 640ms var(--tm-micro-thread) both; }
+@keyframes tm-micro-seam { to { transform:scaleX(1); } }
+
+/* Empty states: suspended, not bouncing. */
+.tadeon-shell :is([data-empty-state],[data-workspace-empty],[data-mesa-empty],[data-nexus-empty]) { position:relative; }
+.tadeon-shell :is([data-empty-state],[data-workspace-empty],[data-mesa-empty],[data-nexus-empty])::before { content:""; position:absolute; inset:18% 16%; border-block:1px solid color-mix(in srgb,var(--section-accent,var(--tadeon-knowledge)) 10%,transparent); opacity:.18; animation:tm-micro-suspense 8s var(--tm-micro-ghost) infinite alternate; pointer-events:none; }
+@keyframes tm-micro-suspense { from { opacity:.12; transform:scaleX(.96); } to { opacity:.32; transform:scaleX(1); } }
+
+@media (prefers-reduced-motion:reduce) {
+  .tadeon-shell *, .tadeon-shell *::before, .tadeon-shell *::after,
+  [data-slot="tooltip-content"],[data-slot="toast"],[data-sonner-toast] { transition-duration:1ms !important; animation-duration:1ms !important; animation-iteration-count:1 !important; transform:none !important; }
+}
