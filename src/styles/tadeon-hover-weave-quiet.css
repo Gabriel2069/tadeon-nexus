@@ -1,0 +1,158 @@
+/* Tadeon Quiet Weave — hover is tension, not lift. */
+.tadeon-shell {
+  --td-hover-line: 180ms;
+  --td-hover-weave: 420ms;
+  --td-hover-seam: cubic-bezier(.25,.8,.25,1);
+  --td-hover-thread: cubic-bezier(.22,.72,.2,1);
+}
+
+/* Remove component travel from the older universal hover language. */
+.tadeon-shell :is(button,a,[role="button"],[role="tab"],[role="menuitem"],[role="option"],[data-motion-card],[data-motion-surface],[data-motion-list-item],[role="row"],table tbody tr):hover {
+  transform: none !important;
+}
+
+.tadeon-shell :is(button,a,[role="button"],[role="tab"],[role="menuitem"],[role="option"]):hover {
+  filter: none !important;
+}
+
+/* Surface response: the material changes, the object stays put. */
+.tadeon-shell :is(button,[role="button"],[data-motion-card],[data-motion-surface]):not(:disabled) {
+  position: relative;
+  transition:
+    color var(--td-hover-weave) var(--td-hover-seam),
+    background-color var(--td-hover-weave) var(--td-hover-seam),
+    border-color var(--td-hover-weave) var(--td-hover-seam),
+    box-shadow var(--td-hover-weave) var(--td-hover-seam),
+    text-shadow var(--td-hover-weave) var(--td-hover-seam),
+    transform 1ms linear;
+}
+
+.tadeon-shell :is(button,[role="button"],[data-motion-card],[data-motion-surface]):not(:disabled)::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  border: 1px solid currentColor;
+  opacity: 0;
+  transform: none !important;
+  pointer-events: none;
+  transition: opacity var(--td-hover-weave) var(--td-hover-seam);
+}
+
+.tadeon-shell :is(button,[role="button"],[data-motion-card],[data-motion-surface]):not(:disabled)::after {
+  content: "";
+  position: absolute;
+  left: .8rem;
+  right: .8rem;
+  bottom: .28rem;
+  height: 1px;
+  transform-origin: left center;
+  transform: scaleX(.08) !important;
+  background: linear-gradient(90deg, transparent, currentColor 24%, transparent);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--td-hover-line) linear, transform var(--td-hover-weave) var(--td-hover-thread);
+}
+
+.tadeon-shell :is(button,[role="button"]:not(:disabled),[data-motion-card],[data-motion-surface]):hover::before {
+  opacity: .12;
+}
+
+.tadeon-shell :is(button,[role="button"]:not(:disabled),[data-motion-card],[data-motion-surface]):hover::after {
+  opacity: .42;
+  transform: scaleX(1) !important;
+}
+
+/* Sidebar: no travel, only thread, color and density. */
+.tadeon-shell .tadeon-sidebar .tadeon-nav-item:hover {
+  transform: none !important;
+  filter: none !important;
+  background-color: color-mix(in srgb, var(--nav-accent, currentColor) 6%, transparent) !important;
+  box-shadow: inset 1px 0 var(--nav-accent, currentColor);
+}
+
+.tadeon-shell .tadeon-sidebar .tadeon-nav-item:hover .tadeon-nav-item__icon > svg {
+  transform: none !important;
+  filter: drop-shadow(0 0 7px color-mix(in srgb, var(--nav-accent, currentColor) 34%, transparent)) !important;
+}
+
+/* Tabs: active seam travels; tab body does not. */
+.tadeon-shell [data-slot="tabs-trigger"]:hover,
+.tadeon-shell [data-slot="tabs-trigger"][data-state="active"] {
+  transform: none !important;
+}
+
+.tadeon-shell [data-slot="tabs-trigger"]::after {
+  transform-origin: left center;
+  transition: opacity var(--td-hover-line) linear, transform var(--td-hover-weave) var(--td-hover-thread);
+}
+
+/* Menu rows: cloth brightens under the pointer instead of sliding. */
+:is([data-radix-menu-content],[data-radix-dropdown-menu-content],[data-radix-context-menu-content],[data-radix-select-content]) :is([role="menuitem"],[role="option"]):hover {
+  transform: none !important;
+  padding-left: revert !important;
+  background-color: color-mix(in srgb, var(--section-motion-accent, currentColor) 7%, transparent) !important;
+  box-shadow: inset 1px 0 color-mix(in srgb, var(--section-motion-accent, currentColor) 72%, transparent);
+}
+
+/* Accordions: the seam tightens, but the header stays still. */
+.tadeon-shell [data-slot="accordion-trigger"]:hover,
+.tadeon-shell [data-slot="collapsible-trigger"]:hover {
+  transform: none !important;
+  padding-left: revert !important;
+  box-shadow: inset 2px 0 color-mix(in srgb, var(--section-motion-accent, currentColor) 55%, transparent);
+}
+
+/* Inputs: focus/hover remains material, never vertical. */
+.tadeon-shell :is(input,textarea,select):hover,
+.tadeon-shell :is(input,textarea,select):focus {
+  transform: none !important;
+}
+
+/* Rows/tables: a seam appears at the edge. */
+.tadeon-shell :is(table tbody tr,[role="row"]):hover {
+  transform: none !important;
+  box-shadow: inset 1px 0 color-mix(in srgb, var(--section-motion-accent, currentColor) 72%, transparent);
+}
+
+/* Chips/badges: density only. */
+.tadeon-shell [data-motion-chip]:hover,
+.tadeon-shell [data-slot="badge"]:hover {
+  transform: none !important;
+  filter: none !important;
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, currentColor 18%, transparent);
+}
+
+/* Toasts: no hover displacement. */
+:is([data-sonner-toast],[data-slot="toast"]):hover {
+  transform: none !important;
+}
+
+/* Master panel — keep text fully visible, never ellipsized. */
+.tadeon-master-commandbar h1,
+.tadeon-master-commandbar [data-slot="heading"],
+.tadeon-master-commandbar .tadeon-eyebrow,
+.tadeon-master-commandbar p {
+  max-width: none !important;
+  min-width: 0 !important;
+  overflow: visible !important;
+  text-overflow: clip !important;
+  white-space: normal !important;
+  -webkit-line-clamp: unset !important;
+  display: block !important;
+}
+
+.tadeon-master-commandbar h1 {
+  word-break: normal !important;
+  overflow-wrap: normal !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tadeon-shell *,
+  .tadeon-shell *::before,
+  .tadeon-shell *::after {
+    transition-duration: 1ms !important;
+    animation-duration: 1ms !important;
+    transform: none !important;
+  }
+}
