@@ -1,0 +1,286 @@
+/* Tadeon Universal Weave — final interaction coverage
+ * Every interactive surface should feel woven, tensioned and responsive.
+ * This layer complements the Loom language; it does not introduce bounce.
+ */
+:root {
+  --tw-fast: 140ms;
+  --tw-base: 240ms;
+  --tw-slow: 360ms;
+  --tw-thread: cubic-bezier(.22,.72,.2,1);
+  --tw-fold: cubic-bezier(.16,1,.3,1);
+  --tw-stitch: cubic-bezier(.25,.8,.25,1);
+  --tw-release: cubic-bezier(.72,0,.88,0);
+}
+
+/* Universal interactive response */
+.tadeon-shell button,
+.tadeon-shell a,
+.tadeon-shell [role="button"],
+.tadeon-shell [role="tab"],
+.tadeon-shell [role="menuitem"],
+.tadeon-shell [role="option"],
+.tadeon-shell [role="switch"],
+.tadeon-shell [role="checkbox"],
+.tadeon-shell [role="radio"],
+.tadeon-shell summary {
+  transition:
+    color var(--tw-base) var(--tw-stitch),
+    background-color var(--tw-base) var(--tw-stitch),
+    border-color var(--tw-base) var(--tw-stitch),
+    box-shadow var(--tw-base) var(--tw-stitch),
+    opacity var(--tw-fast) linear,
+    transform var(--tw-fast) var(--tw-stitch),
+    filter var(--tw-base) var(--tw-stitch);
+}
+
+.tadeon-shell button:hover:not(:disabled),
+.tadeon-shell a:hover,
+.tadeon-shell [role="button"]:hover,
+.tadeon-shell [role="tab"]:hover,
+.tadeon-shell [role="menuitem"]:hover,
+.tadeon-shell [role="option"]:hover,
+.tadeon-shell summary:hover {
+  filter: brightness(1.035);
+}
+
+.tadeon-shell button:active:not(:disabled),
+.tadeon-shell a:active,
+.tadeon-shell [role="button"]:active,
+.tadeon-shell [role="tab"]:active,
+.tadeon-shell [role="menuitem"]:active,
+.tadeon-shell [role="option"]:active {
+  transform: translateY(1px) scale(.992);
+  transition-duration: 80ms;
+}
+
+/* Focus is a seam being tensioned around the object. */
+.tadeon-shell :is(button,a,input,textarea,select,[role="button"],[role="tab"],[role="menuitem"]):focus-visible {
+  animation: tadeon-weave-focus 360ms var(--tw-stitch) both;
+}
+@keyframes tadeon-weave-focus {
+  0% { outline-offset: 1px; }
+  55% { outline-offset: 4px; }
+  100% { outline-offset: 3px; }
+}
+
+/* Tabs: the active thread travels across the rail. */
+.tadeon-shell [data-slot="tabs-list"] {
+  position: relative;
+  isolation: isolate;
+}
+.tadeon-shell [data-slot="tabs-trigger"] {
+  position: relative;
+  overflow: hidden;
+}
+.tadeon-shell [data-slot="tabs-trigger"]::after {
+  content: "";
+  position: absolute;
+  left: 10%; right: 10%; bottom: 0;
+  height: 1px;
+  opacity: 0;
+  transform: scaleX(.18);
+  transform-origin: left center;
+  background: currentColor;
+  transition: opacity var(--tw-fast) linear, transform var(--tw-base) var(--tw-thread);
+}
+.tadeon-shell [data-slot="tabs-trigger"][data-state="active"]::after {
+  opacity: .9;
+  transform: scaleX(1);
+}
+.tadeon-shell [data-slot="tabs-content"] {
+  animation: tadeon-weave-content 300ms var(--tw-thread) both;
+}
+@keyframes tadeon-weave-content {
+  from { opacity: 0; transform: translateY(4px); filter: blur(1.5px); }
+  to { opacity: 1; transform: translateY(0); filter: blur(0); }
+}
+
+/* Menus: each option is a stitch in the same cloth. */
+:is([data-radix-menu-content],[data-radix-dropdown-menu-content],[data-radix-context-menu-content],[data-radix-select-content],[role="menu"]) [role="menuitem"],
+:is([data-radix-menu-content],[data-radix-dropdown-menu-content],[data-radix-context-menu-content],[data-radix-select-content]) [role="option"] {
+  transition:
+    background-color var(--tw-fast) var(--tw-stitch),
+    color var(--tw-fast) var(--tw-stitch),
+    transform var(--tw-fast) var(--tw-thread),
+    opacity var(--tw-fast) linear;
+}
+:is([data-radix-menu-content],[data-radix-dropdown-menu-content],[data-radix-context-menu-content],[data-radix-select-content]) [role="menuitem"]:hover,
+:is([data-radix-menu-content],[data-radix-dropdown-menu-content],[data-radix-context-menu-content],[data-radix-select-content]) [role="option"]:hover {
+  transform: translateX(2px);
+}
+
+/* Popover/menu rows reveal in a short thread. */
+[data-state="open"] :is([role="menuitem"],[role="option"]) {
+  animation: tadeon-menu-stitch 260ms var(--tw-thread) both;
+}
+[data-state="open"] :is([role="menuitem"],[role="option"]):nth-child(2) { animation-delay: 18ms; }
+[data-state="open"] :is([role="menuitem"],[role="option"]):nth-child(3) { animation-delay: 34ms; }
+[data-state="open"] :is([role="menuitem"],[role="option"]):nth-child(4) { animation-delay: 50ms; }
+[data-state="open"] :is([role="menuitem"],[role="option"]):nth-child(n+5) { animation-delay: 66ms; }
+@keyframes tadeon-menu-stitch {
+  from { opacity: 0; transform: translateX(-4px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+/* Dialogs, sheets, drawers and panels: surface first, contents second. */
+:is([data-slot="dialog-content"],[data-slot="sheet-content"],[data-slot="drawer-content"],[data-slot="popover-content"],[data-slot="dropdown-menu-content"],[data-slot="context-menu-content"]) {
+  transform-origin: var(--t-motion-origin, 50% 18%);
+}
+:is([data-slot="dialog-content"],[data-slot="sheet-content"],[data-slot="drawer-content"]) > :is(header,[data-slot="dialog-header"],[data-slot="sheet-header"]) {
+  animation: tadeon-surface-header 320ms var(--tw-thread) both;
+}
+@keyframes tadeon-surface-header {
+  from { opacity: 0; transform: translateY(-3px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Accordions and collapsibles: fold along a visible seam. */
+.tadeon-shell [data-slot="accordion-trigger"],
+.tadeon-shell [data-slot="collapsible-trigger"] {
+  transition: background-color var(--tw-base) var(--tw-stitch), box-shadow var(--tw-base) var(--tw-stitch), color var(--tw-base) var(--tw-stitch);
+}
+.tadeon-shell [data-slot="accordion-trigger"] svg,
+.tadeon-shell [data-slot="collapsible-trigger"] svg {
+  transition: transform 280ms var(--tw-thread), opacity var(--tw-fast) linear;
+}
+.tadeon-shell [data-slot="accordion-trigger"][data-state="open"] svg,
+.tadeon-shell [data-slot="collapsible-trigger"][data-state="open"] svg {
+  transform: rotate(90deg);
+}
+
+/* Cards become responsive surfaces, but stay almost still. */
+.tadeon-shell [data-slot="card"],
+.tadeon-shell [data-motion-surface],
+.tadeon-shell [data-motion-card] {
+  transition: border-color var(--tw-base) var(--tw-stitch), box-shadow var(--tw-base) var(--tw-stitch), transform var(--tw-base) var(--tw-thread), background-color var(--tw-base) var(--tw-stitch);
+}
+.tadeon-shell [data-motion-surface]:hover,
+.tadeon-shell [data-motion-card]:hover {
+  transform: translateY(-1px);
+}
+
+/* Lists/tables: selection is stitched, not bounced. */
+.tadeon-shell [data-slot="table-row"],
+.tadeon-shell [role="row"],
+.tadeon-shell [data-motion-list-item] {
+  transition: background-color var(--tw-fast) var(--tw-stitch), color var(--tw-fast) var(--tw-stitch), box-shadow var(--tw-base) var(--tw-stitch), transform var(--tw-fast) var(--tw-thread);
+}
+.tadeon-shell [data-slot="table-row"]:hover,
+.tadeon-shell [role="row"]:hover,
+.tadeon-shell [data-motion-list-item]:hover {
+  transform: translateX(1px);
+}
+
+/* Inputs and form controls: tension gathers at the seam. */
+.tadeon-shell :is(input,textarea,select) {
+  transition: border-color var(--tw-base) var(--tw-stitch), box-shadow var(--tw-base) var(--tw-stitch), background-color var(--tw-base) var(--tw-stitch), transform var(--tw-fast) var(--tw-stitch);
+}
+.tadeon-shell :is(input,textarea,select):focus {
+  transform: translateY(-1px);
+}
+
+/* Switches: the thumb travels like a thread across the rail. */
+.tadeon-shell [role="switch"] [data-slot="switch-thumb"],
+.tadeon-shell [data-slot="switch-thumb"] {
+  transition: transform 280ms var(--tw-thread), box-shadow var(--tw-base) var(--tw-stitch);
+}
+
+/* Checkboxes/radios: lock the seam rather than popping. */
+.tadeon-shell [data-slot="checkbox"] svg,
+.tadeon-shell [data-slot="radio-group-item"] svg {
+  transition: opacity var(--tw-fast) linear, transform 240ms var(--tw-thread);
+}
+.tadeon-shell [data-slot="checkbox"][data-state="checked"] svg,
+.tadeon-shell [data-slot="radio-group-item"][data-state="checked"] svg {
+  animation: tadeon-seam-stitch 240ms var(--tw-thread) both;
+}
+@keyframes tadeon-seam-stitch {
+  from { opacity: 0; transform: scale(.72) rotate(-4deg); }
+  to { opacity: 1; transform: scale(1) rotate(0); }
+}
+
+/* Tooltips: annotation unfolds from the point of attention. */
+[data-slot="tooltip-content"],
+[data-radix-tooltip-content] {
+  animation: tadeon-annotation 240ms var(--tw-thread) both;
+}
+@keyframes tadeon-annotation {
+  from { opacity: 0; transform: translateY(3px) scale(.985); filter: blur(1px); }
+  to { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
+}
+
+/* Toasts: delivered along a thread, then settle. */
+[data-sonner-toast], [data-slot="toast"] {
+  transition: transform var(--tw-base) var(--tw-thread), box-shadow var(--tw-base) var(--tw-stitch), opacity var(--tw-base) linear;
+}
+[data-sonner-toast]:hover, [data-slot="toast"]:hover {
+  transform: translateX(-2px);
+}
+
+/* Badges/chips react to their state without jumping. */
+.tadeon-shell [data-slot="badge"],
+.tadeon-shell [data-slot="badge"][data-state],
+.tadeon-shell [data-motion-chip] {
+  transition: background-color var(--tw-base) var(--tw-stitch), border-color var(--tw-base) var(--tw-stitch), color var(--tw-base) var(--tw-stitch), box-shadow var(--tw-base) var(--tw-stitch), transform var(--tw-fast) var(--tw-stitch);
+}
+.tadeon-shell [data-motion-chip]:hover { transform: translateY(-1px); }
+
+/* Progress/meter: draw the fill like a thread being woven. */
+.tadeon-shell [role="progressbar"] > *,
+.tadeon-shell [data-slot="progress"] > *,
+.tadeon-shell [data-slot="progress-indicator"] {
+  transition: transform 520ms var(--tw-thread), width 520ms var(--tw-thread), opacity var(--tw-base) linear;
+}
+
+/* Search: focus creates a subtle lens rather than a glow burst. */
+.tadeon-shell [data-search],
+.tadeon-shell input[type="search"] {
+  transition: border-color var(--tw-base) var(--tw-stitch), box-shadow var(--tw-base) var(--tw-stitch), transform var(--tw-fast) var(--tw-stitch);
+}
+.tadeon-shell input[type="search"]:focus { transform: translateY(-1px); }
+
+/* Sidebar: the active route is sewn into the rail. */
+.tadeon-shell [data-sidebar] [aria-current="page"],
+.tadeon-shell .tadeon-sidebar [aria-current="page"],
+.tadeon-shell .tadeon-sidebar [data-active="true"] {
+  position: relative;
+  transition: background-color var(--tw-base) var(--tw-stitch), color var(--tw-base) var(--tw-stitch), box-shadow var(--tw-base) var(--tw-stitch), transform var(--tw-fast) var(--tw-thread);
+}
+.tadeon-shell .tadeon-sidebar [aria-current="page"]:hover,
+.tadeon-shell .tadeon-sidebar [data-active="true"]:hover { transform: translateX(1px); }
+
+/* Nexus/tabletop spatial state. */
+[data-motion-dragging="true"], [data-dragging="true"] {
+  transition: transform 180ms var(--tw-stitch), box-shadow 180ms var(--tw-stitch), filter 180ms var(--tw-stitch);
+  transform: translateY(-2px) scale(1.008);
+}
+[data-drop-target="true"], [data-motion-drop-target="true"] {
+  animation: tadeon-drop-seam 560ms var(--tw-thread) infinite alternate;
+}
+@keyframes tadeon-drop-seam {
+  from { box-shadow: inset 0 0 0 1px currentColor; opacity: .84; }
+  to { box-shadow: inset 0 0 0 2px currentColor; opacity: 1; }
+}
+
+/* Decorative thread hooks can be used by any future surface. */
+[data-motion-thread]::after {
+  content: "";
+  display: block;
+  width: 100%; height: 1px;
+  transform-origin: left center;
+  animation: tadeon-thread-draw-universal 480ms var(--tw-thread) both;
+}
+@keyframes tadeon-thread-draw-universal {
+  from { transform: scaleX(0); opacity: .2; }
+  to { transform: scaleX(1); opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tadeon-shell *, .tadeon-shell *::before, .tadeon-shell *::after,
+  [data-sonner-toast], [data-slot="tooltip-content"], [data-radix-tooltip-content] {
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 1ms !important;
+  }
+}
