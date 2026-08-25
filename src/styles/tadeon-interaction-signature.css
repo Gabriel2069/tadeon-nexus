@@ -1,0 +1,17 @@
+/* TdV interaction signature — one visual language, no layout motion. */
+@keyframes tdv-thread-pass{0%{transform:translateX(-110%);opacity:0}16%{opacity:.72}84%{opacity:.24}100%{transform:translateX(110%);opacity:0}}
+@keyframes tdv-suture-close{0%{transform:scaleX(0);opacity:.15}55%{opacity:.9}100%{transform:scaleX(1);opacity:.55}}
+@keyframes tdv-materialize{0%{clip-path:inset(0 0 100% 0);opacity:0}45%{opacity:1}100%{clip-path:inset(0 0 0 0);opacity:1}}
+@keyframes tdv-lumen-breathe{0%,100%{opacity:.18}50%{opacity:.42}}
+@keyframes tdv-flow-bar{from{background-position:-160px 0}to{background-position:160px 0}}
+.tadeon-shell button:not([data-no-tdv-signature]),.tadeon-shell [role="button"]:not([data-no-tdv-signature]){position:relative;overflow:hidden}
+.tadeon-shell button:not([data-no-tdv-signature])::after,.tadeon-shell [role="button"]:not([data-no-tdv-signature])::after{content:"";position:absolute;left:-30%;bottom:0;width:32%;height:1px;background:linear-gradient(90deg,transparent,color-mix(in srgb,var(--section-accent) 80%,white),transparent);opacity:0;pointer-events:none}
+.tadeon-shell button:not([data-no-tdv-signature]):hover::after,.tadeon-shell [role="button"]:not([data-no-tdv-signature]):hover::after{opacity:1;animation:tdv-thread-pass 1.7s cubic-bezier(.22,.61,.36,1)}
+.tadeon-shell [role="tab"][aria-selected="true"],.tadeon-shell [data-state="active"]{position:relative}
+.tadeon-shell [role="tab"][aria-selected="true"]::after,.tadeon-shell [data-state="active"]::after{content:"";position:absolute;left:8%;right:8%;bottom:0;height:1px;transform-origin:left;background:linear-gradient(90deg,transparent,color-mix(in srgb,var(--section-accent) 90%,white),transparent);animation:tdv-suture-close .7s cubic-bezier(.22,.61,.36,1) both;pointer-events:none}
+.tadeon-shell [role="dialog"][data-state="open"],.tadeon-shell [data-radix-popper-content-wrapper] [data-state="open"],.tadeon-shell [data-state="open"][data-tdv-surface]{animation:tdv-materialize .48s cubic-bezier(.22,.61,.36,1) both}
+.tadeon-shell [role="progressbar"] > div,.tadeon-shell [data-progress-fill]{background-image:linear-gradient(90deg,transparent,color-mix(in srgb,var(--section-accent) 55%,white),transparent),var(--progress-background-image,none);background-size:160px 100%,auto;animation:tdv-flow-bar 2.8s linear infinite}
+.tadeon-shell [data-tdv-lumen-hover]{position:relative;isolation:isolate}
+.tadeon-shell [data-tdv-lumen-hover]::before{content:"";position:absolute;inset:1px;border-radius:inherit;background:radial-gradient(circle at var(--tdv-lumen-x,50%) var(--tdv-lumen-y,50%),color-mix(in srgb,var(--section-accent) 14%,transparent),transparent 55%);opacity:0;pointer-events:none;z-index:-1}
+.tadeon-shell [data-tdv-lumen-hover]:hover::before{opacity:1;animation:tdv-lumen-breathe 1.8s ease-in-out infinite}
+@media(prefers-reduced-motion:reduce){.tadeon-shell button::after,.tadeon-shell [role="button"]::after,.tadeon-shell [role="tab"]::after,.tadeon-shell [data-state="active"]::after,.tadeon-shell [role="dialog"][data-state="open"],.tadeon-shell [data-radix-popper-content-wrapper] [data-state="open"],.tadeon-shell [data-state="open"][data-tdv-surface],.tadeon-shell [role="progressbar"] > div,.tadeon-shell [data-progress-fill]{animation:none!important}}
