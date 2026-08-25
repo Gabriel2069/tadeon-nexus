@@ -1,72 +1,49 @@
 /* Tadeon Microdetail Authority — every small surface carries a TdV material cue.
    No generic lifts, jumps, or viewport-delayed reveals. */
 :root{--tm-micro-seam:cubic-bezier(.25,.8,.25,1);--tm-micro-thread:cubic-bezier(.22,.72,.2,1);--tm-micro-ghost:cubic-bezier(.37,0,.63,1)}
-
-/* Small controls: pressure changes the material, never the geometry. */
 .tadeon-shell :is([data-slot="button"],[data-slot="toggle"],[data-slot="toggle-group-item"],[data-slot="pagination-link"],[data-slot="breadcrumb-link"]){transition:color 180ms var(--tm-micro-seam),background-color 220ms var(--tm-micro-seam),border-color 240ms var(--tm-micro-seam),box-shadow 280ms var(--tm-micro-seam),opacity 180ms var(--tm-micro-seam),filter 180ms var(--tm-micro-seam)}
 .tadeon-shell :is([data-slot="button"],[data-slot="toggle"],[data-slot="toggle-group-item"],[data-slot="pagination-link"],[data-slot="breadcrumb-link"]):active{transform:none!important;filter:brightness(.985)}
-
-/* Cards: the outer material stays still; their internal signal answers the cursor. */
 .tadeon-shell :is([data-slot="card"],[data-motion-card],[data-motion-surface]) :is([data-slot="card-header"],[data-slot="card-title"],[data-slot="card-description"],[data-slot="card-content"],[data-slot="card-footer"]){transition:opacity 220ms var(--tm-micro-seam),filter 260ms var(--tm-micro-seam),color 220ms var(--tm-micro-seam)}
 .tadeon-shell :is([data-slot="card"],[data-motion-card],[data-motion-surface]):hover [data-slot="card-description"]{opacity:.84}
 .tadeon-shell :is([data-slot="card"],[data-motion-card],[data-motion-surface]):hover [data-slot="card-title"]{text-shadow:0 0 18px color-mix(in srgb,var(--section-accent,var(--tadeon-knowledge)) 18%,transparent)}
-
-/* Card glyphs: a living mark, not a bouncing icon. */
 .tadeon-shell :is([data-slot="card"],[data-motion-card],[data-motion-surface]) :is(svg,[data-card-icon]){transition:filter 300ms var(--tm-micro-thread),opacity 220ms var(--tm-micro-seam)}
 .tadeon-shell :is([data-slot="card"],[data-motion-card],[data-motion-surface]):hover :is(svg,[data-card-icon]){filter:drop-shadow(0 0 6px color-mix(in srgb,var(--section-accent,var(--tadeon-knowledge)) 55%,transparent))}
-
-/* Badges and chips: small seals that briefly illuminate when touched. */
 .tadeon-shell :is([data-slot="badge"],[data-slot="chip"],[data-badge]){transition:color 180ms var(--tm-micro-seam),background-color 200ms var(--tm-micro-seam),border-color 220ms var(--tm-micro-seam),box-shadow 260ms var(--tm-micro-seam),filter 220ms var(--tm-micro-seam)}
 .tadeon-shell :is([data-slot="badge"],[data-slot="chip"],[data-badge]):hover{filter:brightness(1.04);box-shadow:0 0 18px -12px currentColor}
 .tadeon-shell :is([data-slot="badge"],[data-slot="chip"],[data-badge])[data-state="active"],.tadeon-shell :is([data-slot="badge"],[data-slot="chip"],[data-badge])[aria-pressed="true"]{box-shadow:0 0 0 1px color-mix(in srgb,currentColor 22%,transparent),0 0 20px -15px currentColor}
-
-/* Glyphs: tiny semantic gestures, with no layout movement. */
 .tadeon-shell :is([data-motion-icon="search"],[aria-label*="Pesquisar"],[aria-label*="Buscar"]) svg,.tadeon-shell :is([data-motion-icon="refresh"],[aria-label*="Atualizar"]) svg,.tadeon-shell :is([data-motion-icon="close"],[aria-label*="Fechar"]) svg{transition:filter 260ms var(--tm-micro-seam),opacity 180ms ease}
 .tadeon-shell :is([data-motion-icon="search"],[aria-label*="Pesquisar"],[aria-label*="Buscar"]):hover svg{filter:drop-shadow(0 0 5px currentColor)}
 .tadeon-shell :is([data-motion-icon="refresh"],[aria-label*="Atualizar"]):hover svg{filter:drop-shadow(0 0 6px currentColor)}
 .tadeon-shell :is([data-motion-icon="close"],[aria-label*="Fechar"]):hover svg{filter:drop-shadow(0 0 4px currentColor);opacity:.88}
-
-/* Avatars: a quiet halo appears around identity, never a scale jump. */
 .tadeon-shell :is([data-slot="avatar"],[data-avatar]){transition:box-shadow 300ms var(--tm-micro-ghost),filter 260ms var(--tm-micro-seam),border-color 240ms var(--tm-micro-seam)}
 .tadeon-shell :is([data-slot="avatar"],[data-avatar]):hover{box-shadow:0 0 0 1px color-mix(in srgb,var(--section-accent,var(--tadeon-knowledge)) 30%,transparent),0 0 18px -10px color-mix(in srgb,var(--section-accent,var(--tadeon-knowledge)) 65%,transparent);filter:brightness(1.03)}
-
-/* Tooltips: a quiet whisper from the anchor. */
 :is([data-slot="tooltip-content"],[data-radix-tooltip-content]){animation:tm-micro-whisper 220ms var(--tm-micro-thread) both!important}
 @keyframes tm-micro-whisper{from{opacity:0;transform:none;filter:blur(1px)}to{opacity:1;transform:none;filter:none}}
-
-/* Toasts/status: information materializes instead of sliding in. */
 :is([data-slot="toast"],[data-sonner-toast]){animation:tm-micro-deliver 300ms var(--tm-micro-thread) both}
 @keyframes tm-micro-deliver{from{opacity:0;clip-path:inset(0 0 0 7%);filter:blur(1.2px)}to{opacity:1;clip-path:inset(0);filter:none}}
-
-/* Data rows: selection is a seam; hover is a trace. */
 .tadeon-shell :is(tr,[role="row"],[data-motion-row]){transition:background-color 220ms var(--tm-micro-seam),box-shadow 240ms var(--tm-micro-seam),color 200ms var(--tm-micro-seam),opacity 200ms var(--tm-micro-seam)}
 .tadeon-shell :is(tr,[role="row"],[data-motion-row]):hover{box-shadow:inset 1px 0 color-mix(in srgb,var(--section-accent,var(--tadeon-knowledge)) 35%,transparent)}
 .tadeon-shell :is(tr,[role="row"],[data-motion-row])[data-state="selected"],.tadeon-shell :is(tr,[role="row"],[data-motion-row])[aria-selected="true"]{box-shadow:inset 2px 0 var(--section-accent,var(--tadeon-knowledge))}
-
-/* Table cells: information feels threaded, not abruptly swapped. */
 .tadeon-shell :is(td,th){transition:color 180ms var(--tm-micro-seam),opacity 180ms var(--tm-micro-seam),background-color 200ms var(--tm-micro-seam)}
 .tadeon-shell tr:hover td{color:color-mix(in srgb,currentColor 92%,var(--section-accent,var(--tadeon-knowledge)))}
-
-/* Status: a restrained supernatural signal. */
-.tadeon-shell :is([data-status="saving"],[data-status="pending"],[data-loading="true"])::after{content:"";display:inline-block;width:.32rem;height:.32rem;margin-left:.42rem;vertical-align:middle;border-radius:999px;background:currentColor;opacity:.35;animation:tm-micro-signal 1.8s var(--tm-micro-ghost) infinite alternate}
-@keyframes tm-micro-signal{from{opacity:.24;box-shadow:0 0 0 currentColor}to{opacity:.72;box-shadow:0 0 7px color-mix(in srgb,currentColor 45%,transparent)}}
-
-/* Progress: Fluxo glints across an existing seam. */
-.tadeon-shell :is(progress,[role="progressbar"]){position:relative}
-.tadeon-shell :is(progress,[role="progressbar"])::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent,currentColor,transparent);opacity:.08;transform:translateX(-110%);animation:tm-micro-sweep 3.6s linear infinite;pointer-events:none}
-@keyframes tm-micro-sweep{to{transform:translateX(110%)}}
-
-/* Checkboxes/radios/switches: activation is a lock of the seam. */
 .tadeon-shell :is([role="checkbox"],[role="radio"],[role="switch"]){transition:background-color 200ms var(--tm-micro-seam),border-color 220ms var(--tm-micro-seam),box-shadow 260ms var(--tm-micro-thread),filter 220ms var(--tm-micro-seam)}
 .tadeon-shell :is([role="checkbox"],[role="radio"],[role="switch"]):hover{box-shadow:0 0 0 1px color-mix(in srgb,var(--section-accent,var(--tadeon-knowledge)) 18%,transparent),0 0 14px -12px currentColor}
 .tadeon-shell :is([role="checkbox"],[role="radio"],[role="switch"])[aria-checked="true"],.tadeon-shell :is([role="checkbox"],[role="radio"],[role="switch"])[data-state="checked"]{box-shadow:0 0 0 1px color-mix(in srgb,var(--section-accent,var(--tadeon-knowledge)) 34%,transparent),0 0 18px -12px color-mix(in srgb,var(--section-accent,var(--tadeon-knowledge)) 60%,transparent)}
-
-/* Dividers: already present; never wait for viewport entry. */
+.tadeon-shell :focus-visible{outline:none!important;box-shadow:0 0 0 1px color-mix(in srgb,var(--section-accent,var(--tadeon-knowledge)) 48%,transparent),0 0 0 3px color-mix(in srgb,var(--section-accent,var(--tadeon-knowledge)) 10%,transparent),0 8px 24px -20px color-mix(in srgb,var(--section-accent,var(--tadeon-knowledge)) 55%,transparent)!important;transition:box-shadow 180ms var(--tm-micro-seam)}
+.tadeon-shell{scrollbar-color:color-mix(in srgb,var(--section-accent,var(--tadeon-knowledge)) 42%,transparent) transparent;scrollbar-width:thin}
+.tadeon-shell ::-webkit-scrollbar{width:7px;height:7px}.tadeon-shell ::-webkit-scrollbar-track{background:transparent}.tadeon-shell ::-webkit-scrollbar-thumb{background:color-mix(in srgb,var(--section-accent,var(--tadeon-knowledge)) 32%,transparent);border:2px solid transparent;background-clip:padding-box;border-radius:999px}.tadeon-shell ::-webkit-scrollbar-thumb:hover{background:color-mix(in srgb,var(--section-accent,var(--tadeon-knowledge)) 55%,transparent);background-clip:padding-box}
 .tadeon-shell :is(hr,[data-motion-divider],[data-divider])::after{content:"";display:block;height:1px;background:currentColor;opacity:.32;transform-origin:left;transform:scaleX(1)}
-
-/* Empty states: suspended atmosphere, no bounce. */
 .tadeon-shell :is([data-empty-state],[data-workspace-empty],[data-mesa-empty],[data-nexus-empty]){position:relative}
 .tadeon-shell :is([data-empty-state],[data-workspace-empty],[data-mesa-empty],[data-nexus-empty])::before{content:"";position:absolute;inset:18% 16%;border-block:1px solid color-mix(in srgb,var(--section-accent,var(--tadeon-knowledge)) 10%,transparent);opacity:.18;animation:tm-micro-suspense 8s var(--tm-micro-ghost) infinite alternate;pointer-events:none}
 @keyframes tm-micro-suspense{from{opacity:.12}to{opacity:.32}}
-
-@media(prefers-reduced-motion:reduce){.tadeon-shell *, .tadeon-shell *::before,.tadeon-shell *::after,[data-slot="tooltip-content"],[data-slot="toast"],[data-sonner-toast]{transition-duration:1ms!important;animation-duration:1ms!important;animation-iteration-count:1!important;transform:none!important}}
+.tadeon-shell :is([data-separator],[role="separator"]){background:linear-gradient(90deg,transparent,color-mix(in srgb,var(--section-accent,var(--tadeon-knowledge)) 22%,transparent),transparent);opacity:.55;transition:opacity 260ms var(--tm-micro-seam)}
+.tadeon-shell :is([data-separator],[role="separator"]):hover{opacity:.85}
+.tadeon-shell :is([data-skeleton],[data-slot="skeleton"]){background-image:repeating-linear-gradient(112deg,color-mix(in srgb,var(--section-accent,var(--tadeon-knowledge)) 5%,transparent) 0 10px,transparent 10px 22px),linear-gradient(90deg,color-mix(in srgb,currentColor 5%,transparent),color-mix(in srgb,var(--section-accent,var(--tadeon-knowledge)) 10%,transparent),color-mix(in srgb,currentColor 5%,transparent));background-size:180% 100%,100% 100%;animation:tm-micro-weave 2.8s linear infinite;opacity:.7}
+@keyframes tm-micro-weave{from{background-position:180% 0,0 0}to{background-position:-180% 0,0 0}}
+.tadeon-shell :is(input,textarea,select):focus{background-image:linear-gradient(90deg,transparent,color-mix(in srgb,var(--section-accent,var(--tadeon-knowledge)) 5%,transparent),transparent);background-size:180% 100%;animation:tm-micro-field-flow 2.4s linear infinite}
+@keyframes tm-micro-field-flow{from{background-position:180% 0}to{background-position:-180% 0}}
+.tadeon-shell :is([data-status="saving"],[data-status="pending"],[data-loading="true"])::after{content:"";display:inline-block;width:.32rem;height:.32rem;margin-left:.42rem;vertical-align:middle;border-radius:999px;background:currentColor;opacity:.35;animation:tm-micro-signal 1.8s var(--tm-micro-ghost) infinite alternate}
+@keyframes tm-micro-signal{from{opacity:.24;box-shadow:0 0 0 currentColor}to{opacity:.72;box-shadow:0 0 7px color-mix(in srgb,currentColor 45%,transparent)}}
+.tadeon-shell :is(progress,[role="progressbar"]){position:relative}
+.tadeon-shell :is(progress,[role="progressbar"])::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent,currentColor,transparent);opacity:.08;transform:translateX(-110%);animation:tm-micro-sweep 3.6s linear infinite;pointer-events:none}
+@keyframes tm-micro-sweep{to{transform:translateX(110%)}}
