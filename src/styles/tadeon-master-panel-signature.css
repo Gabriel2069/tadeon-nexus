@@ -1,0 +1,52 @@
+/* Master navigation: one owner for its atmosphere. No pseudo-element ownership here. */
+@keyframes tdv-master-weave-drift{from{background-position:0 0,100% 0}to{background-position:180px -36px,-150px 42px}}
+@keyframes tdv-master-lumen-trace{0%,100%{opacity:.2;background-position:-140% 0}50%{opacity:.62;background-position:140% 0}}
+@keyframes tdv-master-fixed-breathe{0%,100%{box-shadow:0 18px 44px -34px rgb(0 0 0 / 90%),inset 0 1px rgb(255 255 255 / 3%)}50%{box-shadow:0 22px 52px -34px rgb(0 0 0 / 94%),inset 0 1px rgb(255 255 255 / 5%)}}
+
+.tadeon-shell .tadeon-master-navigation__scroller{
+  background-image:
+    repeating-linear-gradient(112deg,transparent 0 4.6rem,rgb(var(--section-accent-rgb) / 3.8%) 4.64rem 4.68rem,transparent 4.72rem 9.2rem),
+    repeating-linear-gradient(68deg,transparent 0 7.4rem,rgb(var(--section-accent-rgb) / 2.4%) 7.44rem 7.48rem,transparent 7.52rem 14.8rem),
+    linear-gradient(105deg,rgb(var(--section-accent-rgb) / 6%),transparent 42%),
+    color-mix(in srgb,var(--card) 91%,transparent) !important;
+  background-size:180% 180%,210% 210%,100% 100%,100% 100%;
+  animation:tdv-master-weave-drift 34s linear infinite;
+}
+
+.tadeon-shell .tadeon-master-navigation [data-slot="tabs-trigger"]{
+  transition:color 260ms var(--ease-out),background-color 260ms var(--ease-out),box-shadow 320ms var(--ease-out),border-color 260ms var(--ease-out);
+}
+
+.tadeon-shell .tadeon-master-navigation [data-slot="tabs-trigger"]:hover{
+  background-color:rgb(var(--section-accent-rgb) / 7%);
+  box-shadow:inset 0 -1px rgb(var(--section-accent-rgb) / 24%);
+}
+
+.tadeon-shell .tadeon-master-navigation [data-slot="tabs-trigger"][data-state="active"]{
+  background-color:rgb(var(--section-accent-rgb) / 12%);
+  box-shadow:inset 0 -1px rgb(var(--section-accent-rgb) / 62%),0 0 22px -18px rgb(var(--section-accent-rgb) / 70%);
+}
+
+.tadeon-shell .tadeon-master-navigation[data-fixed="true"] .tadeon-master-navigation__scroller{
+  animation:tdv-master-weave-drift 34s linear infinite,tdv-master-fixed-breathe 6s ease-in-out infinite;
+}
+
+.tadeon-shell .tadeon-master-navigation__label{
+  transition:color 320ms var(--ease-out),letter-spacing 320ms var(--ease-out),opacity 320ms var(--ease-out);
+}
+
+.tadeon-shell .tadeon-master-navigation__group:hover .tadeon-master-navigation__label{
+  color:color-mix(in srgb,var(--section-accent) 78%,white);
+  letter-spacing:.085em;
+  opacity:.92;
+}
+
+.tadeon-shell .tadeon-master-navigation__scroller::after{
+  background:linear-gradient(90deg,transparent,color-mix(in srgb,var(--section-accent) 12%,transparent),transparent) !important;
+  background-size:220% 100% !important;
+  animation:tdv-master-lumen-trace 7s ease-in-out infinite;
+}
+
+@media(prefers-reduced-motion:reduce){
+  .tadeon-shell .tadeon-master-navigation__scroller,.tadeon-shell .tadeon-master-navigation[data-fixed="true"] .tadeon-master-navigation__scroller,.tadeon-shell .tadeon-master-navigation__scroller::after{animation:none!important}
+}
