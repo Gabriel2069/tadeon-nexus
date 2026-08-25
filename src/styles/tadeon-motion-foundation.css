@@ -1,0 +1,126 @@
+/* Tadeon Motion 2.0 — foundation.
+   Removes the old universal "everything lifts" behavior and establishes
+   seam/tension/reveal primitives. */
+
+/* Do not let the motion system move every interactive object by default. */
+.tadeon-shell button,
+.tadeon-shell a,
+.tadeon-shell [role="button"],
+.tadeon-shell [role="tab"],
+.tadeon-shell [role="menuitem"],
+.tadeon-shell [role="option"],
+.tadeon-shell [role="switch"],
+.tadeon-shell [role="checkbox"],
+.tadeon-shell [role="radio"],
+.tadeon-shell summary {
+  transition:
+    color var(--td-seam),
+    background-color var(--td-seam),
+    border-color var(--td-seam),
+    box-shadow var(--td-thread),
+    filter var(--td-seam);
+}
+
+.tadeon-shell button:not(:disabled):active,
+.tadeon-shell [role="button"]:active,
+.tadeon-shell [role="tab"]:active,
+.tadeon-shell [role="menuitem"]:active,
+.tadeon-shell [role="option"]:active {
+  transform: scale(.985);
+  transition-duration: 90ms;
+}
+
+/* A seam is a line that appears along the element rather than lifting it. */
+[data-td-seam] {
+  position: relative;
+  isolation: isolate;
+}
+[data-td-seam]::after {
+  content: "";
+  position: absolute;
+  left: .8rem;
+  right: .8rem;
+  bottom: .15rem;
+  height: 1px;
+  pointer-events: none;
+  background: linear-gradient(90deg, transparent, var(--td-section-accent), transparent);
+  opacity: 0;
+  transform: scaleX(.12);
+  transform-origin: left center;
+  transition: opacity var(--td-seam), transform var(--td-thread);
+}
+[data-td-seam]:hover::after,
+[data-td-seam][data-active="true"]::after {
+  opacity: .72;
+  transform: scaleX(1);
+}
+
+/* Thread: an indicator travels instead of a panel jumping. */
+[data-td-thread] {
+  position: relative;
+}
+[data-td-thread]::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 1px;
+  border-radius: 999px;
+  background: var(--td-section-accent);
+  opacity: 0;
+  transform: scaleY(.16);
+  transform-origin: center;
+  transition: opacity var(--td-seam), transform var(--td-thread);
+  pointer-events: none;
+}
+[data-td-thread]:hover::before,
+[data-td-thread][data-active="true"]::before {
+  opacity: .9;
+  transform: scaleY(1);
+}
+
+/* Reveal: content is uncovered, not bounced in. */
+[data-td-reveal] {
+  animation: td-reveal-in 420ms var(--td-fold-soft) both;
+}
+@keyframes td-reveal-in {
+  from { opacity: 0; clip-path: inset(0 0 8% 0); filter: blur(2px); }
+  to { opacity: 1; clip-path: inset(0); filter: none; }
+}
+
+/* Apparition: the Tadeon ghost language. */
+[data-td-apparition] {
+  animation: td-apparition-in var(--td-ghost) var(--td-fold-soft) both;
+}
+@keyframes td-apparition-in {
+  0% { opacity: 0; transform: translate3d(3px, 2px, 0); filter: blur(4px); }
+  42% { opacity: .52; transform: translate3d(-1px, 0, 0); filter: blur(1px); }
+  75% { opacity: .86; transform: translate3d(1px, 0, 0); filter: none; }
+  100% { opacity: 1; transform: none; filter: none; }
+}
+
+/* Suspension: ambient layers breathe without moving the content. */
+[data-td-suspension] {
+  animation: td-suspension var(--td-suspense) ease-in-out infinite alternate;
+  transform-origin: center;
+}
+@keyframes td-suspension {
+  from { opacity: .52; transform: translate3d(-4px, 0, 0) scale(1); }
+  to { opacity: .82; transform: translate3d(4px, -2px, 0) scale(1.015); }
+}
+
+/* Cloth drift: used by hero background layers. */
+[data-td-cloth] {
+  animation: td-cloth-drift var(--td-drift) linear infinite alternate;
+}
+@keyframes td-cloth-drift {
+  from { transform: translate3d(-1.2%, .4%, 0) rotate(-.15deg); }
+  to { transform: translate3d(1.2%, -.4%, 0) rotate(.15deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-td-reveal], [data-td-apparition], [data-td-suspension], [data-td-cloth] {
+    animation: none !important;
+    transform: none !important;
+    filter: none !important;
+  }
+}
