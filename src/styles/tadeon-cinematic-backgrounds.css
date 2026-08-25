@@ -1,0 +1,162 @@
+/* TADEON — CINEMATIC BACKGROUNDS: Fluxo, Fios, Luminares, Suturas and restrained Medo. */
+@keyframes tadeon-flux-horizontal {
+  0% { background-position: -35% 0, 105% 100%, 0 0; }
+  50% { background-position: 50% 0, 48% 100%, 8% 2%; }
+  100% { background-position: 135% 0, -18% 100%, 16% 4%; }
+}
+@keyframes tadeon-flux-diagonal {
+  0% { background-position: 0 0, 100% 0, 0 100%; }
+  50% { background-position: 42% 8%, 54% 16%, 58% 92%; }
+  100% { background-position: 100% 16%, 0 32%, 100% 84%; }
+}
+@keyframes tadeon-luminar-drift {
+  0% { background-position: 12% 20%, 86% 78%, 50% 50%; opacity: .62; }
+  50% { background-position: 28% 38%, 68% 58%, 62% 44%; opacity: .88; }
+  100% { background-position: 8% 58%, 92% 34%, 42% 60%; opacity: .66; }
+}
+@keyframes tadeon-loom-slow {
+  0% { background-position: 0 0, 100% 0, 0 100%; }
+  100% { background-position: 12% 8%, 88% -10%, -8% 92%; }
+}
+@keyframes tadeon-suture-pass {
+  0%,18% { background-position: -30% 0; opacity: .06; }
+  42% { background-position: 45% 0; opacity: .3; }
+  58%,100% { background-position: 120% 0; opacity: .05; }
+}
+@keyframes tadeon-spectral-delay {
+  0%,62% { background-position: 120% 0; opacity: .02; }
+  74% { background-position: 42% 0; opacity: .16; }
+  82%,100% { background-position: -25% 0; opacity: .03; }
+}
+
+/* Standard heads: several independent fields move behind the stable symbol. */
+html body .tadeon-shell .tadeon-page-hero[data-tadeon-page-hero] {
+  isolation: isolate;
+  overflow: hidden;
+  background-image:
+    radial-gradient(circle at 18% 24%, color-mix(in srgb, var(--section-accent) 13%, transparent), transparent 13rem),
+    radial-gradient(circle at 84% 72%, color-mix(in srgb, var(--section-accent) 9%, transparent), transparent 17rem),
+    repeating-linear-gradient(116deg, transparent 0 5.4rem, color-mix(in srgb, var(--section-accent) 5.5%, transparent) 5.42rem 5.46rem, transparent 5.5rem 10.8rem),
+    repeating-linear-gradient(64deg, transparent 0 7.8rem, color-mix(in srgb, var(--section-accent) 3.5%, transparent) 7.82rem 7.85rem, transparent 7.9rem 15.7rem);
+  background-size: 150% 150%, 145% 145%, 180% 180%, 210% 210%;
+  animation: tadeon-luminar-drift 22s ease-in-out infinite alternate;
+}
+html body .tadeon-shell .tadeon-page-hero[data-tadeon-page-hero]::before {
+  z-index: 0 !important;
+  background-image:
+    linear-gradient(104deg, transparent 0 24%, color-mix(in srgb, var(--section-accent) 11%, transparent) 24.12% 24.2%, transparent 24.35% 100%),
+    linear-gradient(104deg, transparent 0 61%, color-mix(in srgb, var(--section-accent) 6%, transparent) 61.1% 61.16%, transparent 61.3% 100%),
+    repeating-linear-gradient(90deg, transparent 0 3.7rem, color-mix(in srgb, var(--section-accent) 2.8%, transparent) 3.72rem 3.75rem, transparent 3.8rem 7.5rem);
+  background-size: 240% 100%, 190% 100%, 170% 100%;
+  animation: tadeon-flux-diagonal 19s linear infinite;
+  opacity: .72 !important;
+}
+html body .tadeon-shell .tadeon-page-hero[data-tadeon-page-hero]::after {
+  z-index: 0 !important;
+  background-image:
+    radial-gradient(circle at 20% 50%, color-mix(in srgb, var(--section-accent) 7%, transparent), transparent 22%),
+    linear-gradient(90deg, transparent 0 28%, color-mix(in srgb, var(--section-accent) 9%, transparent) 28.15% 28.25%, transparent 28.5% 100%),
+    linear-gradient(90deg, transparent 0 74%, color-mix(in srgb, var(--section-accent) 5%, transparent) 74.1% 74.18%, transparent 74.4% 100%);
+  background-size: 140% 140%, 230% 100%, 190% 100%;
+  animation: tadeon-flux-horizontal 27s linear infinite;
+  opacity: .64 !important;
+}
+
+/* Extra moving seam around the medalion, never touching the SVG itself. */
+html body .tadeon-shell .tadeon-page-hero[data-tadeon-page-hero] .tadeon-page-hero-mark-host {
+  position: relative;
+  z-index: 4;
+}
+html body .tadeon-shell .tadeon-page-hero[data-tadeon-page-hero] .tadeon-page-hero-mark-host::before {
+  content: "";
+  position: absolute;
+  inset: -2.2rem;
+  border-radius: 50%;
+  pointer-events: none;
+  background:
+    radial-gradient(circle, transparent 0 48%, color-mix(in srgb, var(--section-accent) 10%, transparent) 48.5% 49%, transparent 49.5% 64%, color-mix(in srgb, var(--section-accent) 5%, transparent) 64.5% 65%, transparent 65.5%),
+    conic-gradient(from 0deg, transparent 0 21%, color-mix(in srgb, var(--section-accent) 13%, transparent) 21.4% 22%, transparent 22.5% 54%, color-mix(in srgb, var(--section-accent) 7%, transparent) 54.4% 55%, transparent 55.5% 100%);
+  animation: tadeon-loom-slow 15s linear infinite;
+  opacity: .72;
+}
+html body .tadeon-shell .tadeon-page-hero[data-tadeon-page-hero] .tadeon-page-hero-mark-host::after {
+  content: "";
+  position: absolute;
+  top: -8rem;
+  bottom: -8rem;
+  left: -25rem;
+  width: 7rem;
+  pointer-events: none;
+  background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--section-accent) 18%, transparent), transparent);
+  filter: blur(1px);
+  animation: tadeon-suture-pass 8.5s ease-in-out infinite;
+}
+
+/* Dashboard: ceremonial archive field with independent weave and luminary. */
+html body .tadeon-shell[data-section="Dashboard"] .tadeon-dashboard-hero {
+  background-image:
+    radial-gradient(circle at 10% 18%, rgb(217 215 164 / 12%), transparent 13rem),
+    radial-gradient(circle at 88% 74%, rgb(113 107 123 / 9%), transparent 17rem),
+    radial-gradient(circle at 56% 42%, rgb(79 110 93 / 6%), transparent 21rem),
+    repeating-linear-gradient(0deg, transparent 0 2rem, rgb(217 215 164 / 2.7%) 2.02rem 2.06rem, transparent 2.1rem 4rem),
+    repeating-linear-gradient(90deg, transparent 0 4rem, rgb(113 107 123 / 2.2%) 4.02rem 4.05rem, transparent 4.1rem 8rem),
+    linear-gradient(128deg, rgb(255 255 255 / 3%), transparent 44%),
+    var(--card);
+  background-size: 150% 150%,145% 145%,160% 160%,100% 130%,130% 100%,170% 170%,100% 100%;
+  animation: tadeon-luminar-drift 24s ease-in-out infinite alternate;
+}
+html body .tadeon-shell[data-section="Dashboard"] .tadeon-dashboard-hero::before {
+  background-image:
+    linear-gradient(90deg, transparent 0 8%, rgb(217 215 164 / 8%) 8.15% 8.3%, transparent 8.5% 100%),
+    linear-gradient(90deg, transparent 0 37%, rgb(113 107 123 / 5%) 37.1% 37.22%, transparent 37.4% 100%),
+    linear-gradient(90deg, transparent 0 71%, rgb(79 110 93 / 5%) 71.1% 71.2%, transparent 71.4% 100%),
+    repeating-linear-gradient(0deg, transparent 0 1.5rem, rgb(255 255 255 / 1.9%) 1.52rem 1.56rem, transparent 1.6rem 3rem);
+  background-size: 220% 100%,190% 100%,240% 100%,100% 135%;
+  animation: tadeon-flux-horizontal 17s linear infinite;
+}
+html body .tadeon-shell[data-section="Dashboard"] .tadeon-dashboard-hero::after {
+  animation: tadeon-spectral-delay 13s ease-in-out infinite, tadeon-dashboard-orbit 42s linear infinite;
+  transform: translateY(-50%);
+}
+@keyframes tadeon-dashboard-orbit { to { transform: translateY(-50%) rotate(360deg); } }
+
+/* Master: delayed spectral field; the command symbol itself stays still. */
+html body .tadeon-shell[data-section="Painel do Mestre"] .tadeon-master-commandbar::before {
+  background-image:
+    radial-gradient(circle at 20% 30%, color-mix(in srgb, var(--section-accent) 14%, transparent), transparent 12rem),
+    radial-gradient(circle at 82% 70%, color-mix(in srgb, var(--section-accent) 9%, transparent), transparent 15rem),
+    repeating-linear-gradient(118deg, transparent 0 5rem, color-mix(in srgb, var(--section-accent) 4.5%, transparent) 5.03rem 5.07rem, transparent 5.12rem 10.2rem);
+  background-size: 145% 145%,155% 155%,190% 190%;
+  animation: tadeon-luminar-drift 18s ease-in-out infinite alternate;
+}
+html body .tadeon-shell[data-section="Painel do Mestre"] .tadeon-master-commandbar::after {
+  background-image:
+    repeating-linear-gradient(90deg, transparent 0 5.8rem, color-mix(in srgb, var(--section-accent) 6%, transparent) 5.82rem 5.86rem, transparent 5.9rem 11.7rem),
+    linear-gradient(108deg, transparent 0 31%, color-mix(in srgb, var(--section-accent) 12%, transparent) 31.15% 31.23%, transparent 31.4% 100%);
+  background-size: 210% 100%,230% 100%;
+  animation: tadeon-spectral-delay 11s ease-in-out infinite;
+}
+
+/* Keep the content field alive below the hero without moving components. */
+html body .tadeon-shell .tadeon-route-users > main,
+html body .tadeon-shell .tadeon-route-tools > main,
+html body .tadeon-shell .tadeon-route-offline > main {
+  background-image:
+    radial-gradient(circle at 7% 18%, color-mix(in srgb, var(--section-accent) 4%, transparent), transparent 15rem),
+    radial-gradient(circle at 93% 82%, color-mix(in srgb, var(--section-accent) 3%, transparent), transparent 18rem);
+  background-size: 130% 130%,145% 145%;
+  animation: tadeon-luminar-drift 36s ease-in-out infinite alternate;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html body .tadeon-shell .tadeon-page-hero[data-tadeon-page-hero],
+  html body .tadeon-shell .tadeon-page-hero[data-tadeon-page-hero]::before,
+  html body .tadeon-shell .tadeon-page-hero[data-tadeon-page-hero]::after,
+  html body .tadeon-shell .tadeon-page-hero[data-tadeon-page-hero] .tadeon-page-hero-mark-host::before,
+  html body .tadeon-shell .tadeon-page-hero[data-tadeon-page-hero] .tadeon-page-hero-mark-host::after,
+  html body .tadeon-shell[data-section="Dashboard"] .tadeon-dashboard-hero,
+  html body .tadeon-shell[data-section="Dashboard"] .tadeon-dashboard-hero::before,
+  html body .tadeon-shell[data-section="Dashboard"] .tadeon-dashboard-hero::after,
+  html body .tadeon-shell[data-section="Painel do Mestre"] .tadeon-master-commandbar::before,
+  html body .tadeon-shell[data-section="Painel do Mestre"] .tadeon-master-commandbar::after { animation: none !important; }
+}
