@@ -34,6 +34,7 @@
 @import "./tadeon-motion-performance.css";
 @import "./tadeon-final-detail-position-audit.css";
 @import "./tadeon-page-color-authority.css";
+@import "./tadeon-tab-color-authority.css";
 
 /* Single authored motion/visual authority. Legacy motion files remain only as
    compatibility shims; overlapping interaction experiments are not imported. */
