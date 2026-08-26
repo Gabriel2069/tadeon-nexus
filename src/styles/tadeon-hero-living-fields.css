@@ -1,0 +1,115 @@
+/* TdV Hero Living Fields — permanent background motion, never content motion.
+   The Hero frame stays fixed; threads, veils, rings and light fields move inside it. */
+:root{
+  --tdv-hero-live-ease:cubic-bezier(.22,.72,.2,1);
+  --tdv-hero-live-ghost:cubic-bezier(.37,0,.63,1);
+}
+
+.tadeon-shell .tadeon-page-hero{
+  --tdv-live-accent:var(--section-accent,var(--tadeon-knowledge));
+  position:relative;
+  isolation:isolate;
+  overflow:clip;
+}
+
+/* A dedicated woven field sits behind the existing hero artwork. */
+.tadeon-shell .tadeon-page-hero::before{
+  content:"";
+  position:absolute;
+  inset:-18%;
+  z-index:0;
+  pointer-events:none;
+  background:
+    radial-gradient(circle at 14% 24%,color-mix(in srgb,var(--tdv-live-accent) 11%,transparent),transparent 21%),
+    radial-gradient(circle at 78% 72%,color-mix(in srgb,var(--tdv-live-accent) 8%,transparent),transparent 25%),
+    repeating-linear-gradient(116deg,transparent 0 70px,color-mix(in srgb,var(--tdv-live-accent) 4.5%,transparent) 71px 72px,transparent 73px 150px),
+    repeating-linear-gradient(63deg,transparent 0 110px,color-mix(in srgb,var(--tdv-live-accent) 2.6%,transparent) 111px 112px,transparent 113px 220px);
+  background-size:160% 160%,170% 170%,240% 240%,260% 260%;
+  background-position:0 20%,100% 70%,0 0,100% 100%;
+  mix-blend-mode:screen;
+  opacity:.34;
+  animation:tdv-live-weave 27s linear infinite;
+  will-change:background-position,transform,opacity;
+}
+
+/* A second layer behaves like translucent cloth and slowly folds across the field. */
+.tadeon-shell .tadeon-page-hero::after{
+  content:"";
+  position:absolute;
+  inset:-22%;
+  z-index:1;
+  pointer-events:none;
+  background:
+    radial-gradient(ellipse at 70% 28%,color-mix(in srgb,var(--tdv-live-accent) 8%,transparent),transparent 23%),
+    repeating-radial-gradient(ellipse at 78% 54%,transparent 0 48px,color-mix(in srgb,var(--tdv-live-accent) 3.2%,transparent) 49px 50px,transparent 51px 104px),
+    linear-gradient(108deg,transparent 0 41%,color-mix(in srgb,var(--tdv-live-accent) 3.4%,transparent) 42%,transparent 43% 100%);
+  background-size:170% 170%,125% 125%,230% 230%;
+  background-position:100% 0,40% 0,0 50%;
+  mix-blend-mode:screen;
+  opacity:.24;
+  animation:tdv-live-veil 34s var(--tdv-hero-live-ease) infinite alternate;
+  will-change:background-position,transform,opacity;
+}
+
+/* Existing hero content remains above the living field. */
+.tadeon-shell .tadeon-page-hero > *{position:relative;z-index:2}
+
+@keyframes tdv-live-weave{
+  0%{background-position:0 20%,100% 70%,0 0,100% 100%;transform:translate3d(-.3%,.15%,0) scale(1.01);opacity:.25}
+  50%{background-position:62% 0,28% 100%,100% 46%,22% 62%;transform:translate3d(.25%,-.2%,0) scale(1.018);opacity:.42}
+  100%{background-position:100% 78%,0 18%,0 100%,100% 0;transform:translate3d(.45%,.2%,0) scale(1.012);opacity:.3}
+}
+@keyframes tdv-live-veil{
+  0%{background-position:100% 0,40% 0,0 50%;transform:rotate(-.15deg) translate3d(.15%,0,0);opacity:.18}
+  50%{background-position:36% 70%,72% 100%,58% 42%;transform:rotate(.28deg) translate3d(-.2%,.12%,0);opacity:.3}
+  100%{background-position:0 100%,100% 28%,100% 50%;transform:rotate(-.08deg) translate3d(.1%,-.08%,0);opacity:.21}
+}
+
+/* Section personalities: same physical grammar, different cadence and density. */
+.tadeon-shell[data-section="Dashboard"] .tadeon-page-hero::before{animation-duration:21s;opacity:.4}
+.tadeon-shell[data-section="Dashboard"] .tadeon-page-hero::after{animation-duration:29s;opacity:.28}
+.tadeon-shell[data-section="Nexus"] .tadeon-page-hero::before{animation-duration:26s}
+.tadeon-shell[data-section="Nexus"] .tadeon-page-hero::after{animation-duration:38s;opacity:.22}
+.tadeon-shell[data-section="Mesa"] .tadeon-page-hero::before{animation-duration:24s}
+.tadeon-shell[data-section="Mesa"] .tadeon-page-hero::after{animation-duration:41s;opacity:.26}
+.tadeon-shell[data-section="Offline"] .tadeon-page-hero::before{animation-name:tdv-live-ghost;animation-duration:31s;opacity:.3}
+.tadeon-shell[data-section="Offline"] .tadeon-page-hero::after{animation-duration:43s;opacity:.2}
+.tadeon-shell[data-section="Gerenciar"] .tadeon-page-hero::before{animation-name:tdv-live-knot;animation-duration:23s}
+.tadeon-shell[data-section="Gerenciar"] .tadeon-page-hero::after{animation-duration:32s}
+.tadeon-shell[data-section="Backup"] .tadeon-page-hero::before{animation-name:tdv-live-scan;animation-duration:30s}
+.tadeon-shell[data-section="Backup"] .tadeon-page-hero::after{animation-duration:37s;opacity:.2}
+
+@keyframes tdv-live-ghost{
+  0%{background-position:0 55%,100% 20%,0 0,100% 100%;transform:translate3d(-.2%,0,0) scale(1.01);opacity:.22}
+  46%{background-position:44% 18%,52% 78%,82% 46%,24% 60%;transform:translate3d(.22%,-.12%,0) scale(1.018);opacity:.4}
+  100%{background-position:100% 70%,0 60%,0 100%,100% 0;transform:translate3d(.12%,.18%,0) scale(1.012);opacity:.25}
+}
+@keyframes tdv-live-knot{
+  0%{background-position:0 0,100% 100%,0 20%,100% 80%}
+  33%{background-position:78% 28%,26% 72%,58% 100%,30% 12%}
+  66%{background-position:24% 88%,82% 18%,100% 42%,8% 70%}
+  100%{background-position:100% 100%,0 0,0 20%,100% 80%}
+}
+@keyframes tdv-live-scan{
+  0%{background-position:0 0,100% 50%,0 0,100% 100%}
+  50%{background-position:100% 0,0 50%,0 52%,0 48%}
+  100%{background-position:0 0,100% 50%,0 100%,100% 0}
+}
+
+/* Existing decorative nodes become permanent luminares when present. */
+.tadeon-shell .tadeon-page-hero :is([data-hero-orbit],[data-hero-marker],[data-hero-particle],[data-hero-thread]){
+  animation:tdv-luminar-breathe 7.5s var(--tdv-hero-live-ghost) infinite alternate;
+  will-change:opacity,filter,transform;
+}
+.tadeon-shell .tadeon-page-hero :is([data-hero-orbit],[data-hero-marker],[data-hero-particle],[data-hero-thread]):nth-child(2n){animation-duration:10s;animation-delay:-3s}
+.tadeon-shell .tadeon-page-hero :is([data-hero-orbit],[data-hero-marker],[data-hero-particle],[data-hero-thread]):nth-child(3n){animation-duration:13s;animation-delay:-6.5s}
+@keyframes tdv-luminar-breathe{0%{opacity:.2;filter:blur(.2px)}48%{opacity:.52;filter:none}100%{opacity:.28;filter:blur(.12px)}}
+
+/* A slow atmospheric ring can be attached to existing decorative circles without touching symbols. */
+.tadeon-shell .tadeon-page-hero :is([data-hero-ring],[data-hero-orbit]){transform-origin:center;animation-name:tdv-orbit-breathe,tdv-orbit-turn;animation-duration:9s,48s;animation-timing-function:var(--tdv-hero-live-ghost),linear;animation-iteration-count:infinite;animation-direction:alternate,normal}
+@keyframes tdv-orbit-breathe{0%{opacity:.2}100%{opacity:.52}}
+@keyframes tdv-orbit-turn{to{transform:rotate(360deg)}}
+
+@media (prefers-reduced-motion:reduce){
+  .tadeon-shell .tadeon-page-hero::before,.tadeon-shell .tadeon-page-hero::after,.tadeon-shell .tadeon-page-hero :is([data-hero-orbit],[data-hero-marker],[data-hero-particle],[data-hero-thread],[data-hero-ring]){animation:none!important;transform:none!important;will-change:auto!important}
+}
