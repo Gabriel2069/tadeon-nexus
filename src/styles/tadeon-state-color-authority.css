@@ -1,0 +1,73 @@
+/* TdV STATE COLOR AUTHORITY — page identity propagates to secondary interaction states.
+   Semantic states (success/warning/error) remain semantic; page color supplies context. */
+.tadeon-shell[data-section="Dashboard"]{--tdv-state-accent:#d9d7a4;--tdv-state-accent-rgb:217 215 164}
+.tadeon-shell[data-section="Nexus"]{--tdv-state-accent:#4fa074;--tdv-state-accent-rgb:79 160 116}
+.tadeon-shell[data-section="Mesa"]{--tdv-state-accent:#4974b1;--tdv-state-accent-rgb:73 116 177}
+.tadeon-shell[data-section="Offline"]{--tdv-state-accent:#845c9d;--tdv-state-accent-rgb:132 92 157}
+.tadeon-shell[data-section="Gerenciar"]{--tdv-state-accent:#d37c39;--tdv-state-accent-rgb:211 124 57}
+.tadeon-shell[data-section="Backup"]{--tdv-state-accent:#b9bdc2;--tdv-state-accent-rgb:185 189 194}
+.tadeon-shell[data-section="Mestre"]{--tdv-state-accent:#a84448;--tdv-state-accent-rgb:168 68 72}
+
+/* Search/filter chips: the selected chip becomes a local seam, not a solid fill. */
+.tadeon-shell[data-section] :is([data-filter],[data-filter-chip],[data-slot="filter-chip"]):hover{
+  border-color:rgb(var(--tdv-state-accent-rgb)/28%);
+  color:color-mix(in srgb,var(--foreground) 90%,var(--tdv-state-accent));
+  background:rgb(var(--tdv-state-accent-rgb)/4%);
+}
+.tadeon-shell[data-section] :is([data-filter],[data-filter-chip],[data-slot="filter-chip"])[data-active="true"],
+.tadeon-shell[data-section] :is([data-filter],[data-filter-chip],[data-slot="filter-chip"])[aria-pressed="true"],
+.tadeon-shell[data-section] :is([data-filter],[data-filter-chip],[data-slot="filter-chip"])[aria-selected="true"]{
+  border-color:rgb(var(--tdv-state-accent-rgb)/36%);
+  color:var(--tdv-state-accent);
+  background:linear-gradient(100deg,rgb(var(--tdv-state-accent-rgb)/9%),rgb(var(--tdv-state-accent-rgb)/3%) 75%,transparent);
+  box-shadow:inset 0 -1px rgb(var(--tdv-state-accent-rgb)/70%);
+}
+
+/* Select/options/command rows: the focused choice inherits the page's thread. */
+.tadeon-shell[data-section] :is([role="option"],[data-slot="command-item"],[data-command-item]):hover{
+  background:linear-gradient(90deg,rgb(var(--tdv-state-accent-rgb)/8%),transparent 84%);
+  box-shadow:inset 1px 0 rgb(var(--tdv-state-accent-rgb)/48%);
+}
+.tadeon-shell[data-section] :is([role="option"],[data-slot="command-item"],[data-command-item])[aria-selected="true"]{
+  color:var(--tdv-state-accent);
+  background:rgb(var(--tdv-state-accent-rgb)/8%);
+  box-shadow:inset 2px 0 rgb(var(--tdv-state-accent-rgb)/72%);
+}
+
+/* Row selection: preserve text readability while marking the relationship seam. */
+.tadeon-shell[data-section] :is([data-row-selectable],[data-table-row],[role="row"])[aria-selected="true"]{
+  background-image:linear-gradient(105deg,rgb(var(--tdv-state-accent-rgb)/7%),transparent 70%);
+  box-shadow:inset 2px 0 rgb(var(--tdv-state-accent-rgb)/64%);
+}
+
+/* Toggle/switch states: a quiet internal lumen replaces generic blue/green accents. */
+.tadeon-shell[data-section] :is([role="switch"],[data-switch],[data-toggle])[aria-checked="true"],
+.tadeon-shell[data-section] :is([role="switch"],[data-switch],[data-toggle])[data-state="on"]{
+  color:var(--tdv-state-accent);
+  border-color:rgb(var(--tdv-state-accent-rgb)/40%);
+  box-shadow:inset 0 0 20px -18px rgb(var(--tdv-state-accent-rgb)/85%);
+}
+
+/* Counters and small context marks carry a restrained tint. */
+.tadeon-shell[data-section] :is([data-count],[data-counter],[data-context-mark]){
+  border-color:rgb(var(--tdv-state-accent-rgb)/16%);
+  color:color-mix(in srgb,var(--foreground) 86%,var(--tdv-state-accent));
+}
+
+/* Semantic validation keeps priority over the page identity. */
+.tadeon-shell[data-section] :is([aria-invalid="true"],[data-status="error"],[data-state="error"]) {
+  --tdv-local-semantics:1;
+}
+.tadeon-shell[data-section] :is([aria-invalid="true"],[data-status="error"],[data-state="error"]):focus-visible{
+  border-color:color-mix(in srgb,var(--destructive) 68%,var(--border));
+  box-shadow:0 0 0 3px color-mix(in srgb,var(--destructive) 9%,transparent);
+}
+
+/* Compact color response on touch devices keeps tap feedback immediate. */
+@media (hover:none),(pointer:coarse){
+  .tadeon-shell[data-section] :is([data-filter],[data-filter-chip],[data-slot="filter-chip"]):hover,
+  .tadeon-shell[data-section] :is([role="option"],[data-slot="command-item"],[data-command-item]):hover{background:transparent;box-shadow:none}
+}
+@media(prefers-reduced-motion:reduce){
+  .tadeon-shell[data-section] :is([data-filter],[data-filter-chip],[data-slot="filter-chip"],[role="option"],[data-slot="command-item"],[data-command-item],[role="switch"],[data-switch],[data-toggle]){transition-duration:1ms!important}
+}
