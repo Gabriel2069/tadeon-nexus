@@ -1,35 +1,48 @@
-/* TdV Detail Atmosphere — tiny surfaces feel authored without changing layout. */
+/* TdV Detail Atmosphere — micro surfaces feel authored without changing layout. */
 @keyframes tdv-detail-breath{0%,100%{opacity:.12}50%{opacity:.28}}
 @keyframes tdv-detail-thread{0%{background-position:-160% 0}100%{background-position:160% 0}}
 @keyframes tdv-detail-flicker{0%,100%{opacity:.28}47%{opacity:.28}50%{opacity:.48}54%{opacity:.24}70%{opacity:.38}}
-@keyframes tdv-detail-ghost{0%{opacity:0;filter:blur(2px)}35%{opacity:.28;filter:blur(.5px)}100%{opacity:0;filter:blur(2px)}}
+@keyframes tdv-detail-ghost{0%,100%{opacity:.82;filter:blur(.25px)}45%{opacity:1;filter:none}60%{opacity:.9;filter:.15px}}
+@keyframes tdv-detail-node{0%,100%{box-shadow:0 0 0 currentColor}50%{box-shadow:0 0 12px -8px currentColor}}
+@keyframes tdv-detail-seam{0%{transform:scaleX(.18);opacity:.1}45%{transform:scaleX(.62);opacity:.36}100%{transform:scaleX(1);opacity:.58}}
 
+/* Cards: a thread crosses the surface; the object itself never jumps. */
 .tadeon-shell :is([data-slot="card"],[data-motion-card],[data-motion-surface],[data-tadeon-card]){background-image:linear-gradient(135deg,transparent 0 48%,color-mix(in srgb,var(--section-accent,var(--tadeon-knowledge)) 3%,transparent) 50%,transparent 52%);background-size:220% 220%;transition:background-position 900ms var(--tm-surface-thread),background-color 260ms var(--tm-surface-seam),border-color 260ms var(--tm-surface-seam),box-shadow 320ms var(--tm-surface-seam)}
 .tadeon-shell :is([data-slot="card"],[data-motion-card],[data-motion-surface],[data-tadeon-card]):hover{background-position:100% 100%}
-
 .tadeon-shell :is([data-slot="card-title"],[data-card-title]){transition:text-shadow 280ms var(--tm-surface-seam),color 220ms var(--tm-surface-seam)}
 .tadeon-shell :is([data-slot="card"],[data-motion-card],[data-motion-surface]):hover :is([data-slot="card-title"],[data-card-title]){text-shadow:0 0 22px color-mix(in srgb,var(--section-accent,var(--tadeon-knowledge)) 16%,transparent)}
 
-.tadeon-shell :is([data-slot="badge"],[data-slot="chip"],[data-badge]){position:relative;isolation:isolate}
+/* Badges/chips: tiny woven seals. */
+.tadeon-shell :is([data-slot="badge"],[data-slot="chip"],[data-badge]){position:relative;isolation:isolate;transition:background-color 180ms var(--tm-surface-seam),border-color 220ms var(--tm-surface-seam),box-shadow 240ms var(--tm-surface-seam)}
 .tadeon-shell :is([data-slot="badge"],[data-slot="chip"],[data-badge])::after{content:"";position:absolute;inset:0;border-radius:inherit;background:linear-gradient(100deg,transparent 20%,currentColor 50%,transparent 80%);background-size:220% 100%;opacity:0;pointer-events:none;mix-blend-mode:screen}
+.tadeon-shell :is([data-slot="badge"],[data-slot="chip"],[data-badge]):hover{box-shadow:inset 0 0 0 1px color-mix(in srgb,currentColor 20%,transparent)}
 .tadeon-shell :is([data-slot="badge"],[data-slot="chip"],[data-badge]):hover::after{animation:tdv-detail-thread 1.25s var(--tm-surface-thread) both;opacity:.08}
 
+/* Separators: a slow thread, deliberately almost imperceptible. */
 .tadeon-shell :is([data-slot="separator"],[data-separator],[role="separator"]){position:relative}
 .tadeon-shell :is([data-slot="separator"],[data-separator],[role="separator"])::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent,currentColor,transparent);background-size:180% 100%;opacity:.14;animation:tdv-detail-thread 6s linear infinite;pointer-events:none}
 
-.tadeon-shell :is([data-status="online"],[data-status="ready"],[data-status="connected"])::before{content:"";display:inline-block;width:.34rem;height:.34rem;margin-right:.42rem;border-radius:50%;background:currentColor;vertical-align:middle;box-shadow:0 0 0 currentColor;animation:tdv-detail-breath 2.6s ease-in-out infinite}
+/* Status nodes: Flux breathes; rupture flickers irregularly. */
+.tadeon-shell :is([data-status="online"],[data-status="ready"],[data-status="connected"])::before{content:"";display:inline-block;width:.34rem;height:.34rem;margin-right:.42rem;border-radius:50%;background:currentColor;vertical-align:middle;animation:tdv-detail-breath 2.6s ease-in-out infinite}
 .tadeon-shell :is([data-status="error"],[data-status="offline"],[data-status="failed"])::before{content:"";display:inline-block;width:.34rem;height:.34rem;margin-right:.42rem;border-radius:50%;background:currentColor;vertical-align:middle;animation:tdv-detail-flicker 3.4s ease-in-out infinite}
 
+/* Empty states: presence rather than late-loading. */
 .tadeon-shell :is([data-empty-state],[data-workspace-empty],[data-mesa-empty],[data-nexus-empty]) > *{position:relative}
 .tadeon-shell :is([data-empty-state],[data-workspace-empty],[data-mesa-empty],[data-nexus-empty]) > :first-child{animation:tdv-detail-ghost 6s ease-in-out infinite}
 
+/* Pagination and breadcrumbs: connections tighten on contact. */
 .tadeon-shell :is([data-slot="pagination-link"],[data-pagination-item],[aria-current="page"]){transition:color 180ms var(--tm-surface-seam),background-color 210ms var(--tm-surface-seam),box-shadow 280ms var(--tm-surface-seam)}
 .tadeon-shell :is([data-slot="pagination-link"],[data-pagination-item],[aria-current="page"]):hover{box-shadow:inset 0 -1px color-mix(in srgb,var(--section-accent,var(--tadeon-knowledge)) 55%,transparent)}
-
 .tadeon-shell :is([data-slot="breadcrumb-link"],[data-breadcrumb-link]){transition:color 180ms var(--tm-surface-seam),text-shadow 220ms var(--tm-surface-seam)}
 .tadeon-shell :is([data-slot="breadcrumb-link"],[data-breadcrumb-link]):hover{text-shadow:0 0 14px color-mix(in srgb,var(--section-accent,var(--tadeon-knowledge)) 18%,transparent)}
 
-.tadeon-shell :is([data-kbd],[data-slot="kbd"],kbd){transition:box-shadow 220ms var(--tm-surface-seam),border-color 220ms var(--tm-surface-seam)}
+/* Kbd: pressed knowledge, not a generic floating key. */
+.tadeon-shell :is([data-kbd],[data-slot="kbd"],kbd){transition:box-shadow 220ms var(--tm-surface-seam),border-color 220ms var(--tm-surface-seam),background-color 180ms var(--tm-surface-seam)}
 .tadeon-shell :is([data-kbd],[data-slot="kbd"],kbd):hover{box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--section-accent,var(--tadeon-knowledge)) 20%,transparent),0 0 14px -12px currentColor}
+.tadeon-shell :is([data-kbd],[data-slot="kbd"],kbd):active{background-color:color-mix(in srgb,currentColor 7%,transparent);box-shadow:inset 0 1px 0 color-mix(in srgb,currentColor 16%,transparent)}
 
-@media(prefers-reduced-motion:reduce){.tadeon-shell :is([data-slot="card"],[data-motion-card],[data-motion-surface],[data-tadeon-card]),.tadeon-shell :is([data-slot="separator"],[data-separator],[role="separator"])::after,.tadeon-shell :is([data-status="online"],[data-status="ready"],[data-status="connected"])::before,.tadeon-shell :is([data-status="error"],[data-status="offline"],[data-status="failed"])::before,.tadeon-shell :is([data-empty-state],[data-workspace-empty],[data-mesa-empty],[data-nexus-empty]) > :first-child{animation:none!important}}
+/* Tiny indicators and markers: nodes feel attached to the same weave. */
+.tadeon-shell :is([data-dot],[data-node],[data-marker]){animation:tdv-detail-node 3.8s ease-in-out infinite}
+.tadeon-shell :is([data-slot="progress-indicator"],[role="progressbar"]){background-image:linear-gradient(90deg,transparent,color-mix(in srgb,currentColor 24%,transparent),transparent);background-size:180% 100%;animation:tdv-detail-thread 3.2s linear infinite}
+
+@media(prefers-reduced-motion:reduce){.tadeon-shell :is([data-slot="card"],[data-motion-card],[data-motion-surface],[data-tadeon-card]),.tadeon-shell :is([data-slot="separator"],[data-separator],[role="separator"])::after,.tadeon-shell :is([data-status="online"],[data-status="ready"],[data-status="connected"])::before,.tadeon-shell :is([data-status="error"],[data-status="offline"],[data-status="failed"])::before,.tadeon-shell :is([data-empty-state],[data-workspace-empty],[data-mesa-empty],[data-nexus-empty]) > :first-child,.tadeon-shell :is([data-dot],[data-node],[data-marker]),.tadeon-shell :is([data-slot="progress-indicator"],[role="progressbar"]){animation:none!important}}
