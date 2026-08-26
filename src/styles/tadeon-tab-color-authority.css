@@ -1,0 +1,59 @@
+/* TdV TAB COLOR AUTHORITY — tabs, tab groups and their details inherit the active page identity. */
+.tadeon-shell[data-section="Dashboard"]{--tdv-tab-accent:#d9d7a4;--tdv-tab-accent-rgb:217 215 164;}
+.tadeon-shell[data-section="Nexus"]{--tdv-tab-accent:#4fa074;--tdv-tab-accent-rgb:79 160 116;}
+.tadeon-shell[data-section="Mesa"]{--tdv-tab-accent:#4974b1;--tdv-tab-accent-rgb:73 116 177;}
+.tadeon-shell[data-section="Offline"]{--tdv-tab-accent:#845c9d;--tdv-tab-accent-rgb:132 92 157;}
+.tadeon-shell[data-section="Gerenciar"]{--tdv-tab-accent:#d37c39;--tdv-tab-accent-rgb:211 124 57;}
+.tadeon-shell[data-section="Backup"]{--tdv-tab-accent:#b9bdc2;--tdv-tab-accent-rgb:185 189 194;}
+.tadeon-shell[data-section="Mestre"]{--tdv-tab-accent:#a84448;--tdv-tab-accent-rgb:168 68 72;}
+
+/* Neutral tab rails: page color enters through the active thread, not the whole rail. */
+.tadeon-shell :is([data-slot="tabs"],[data-tabs],[role="tablist"]) {
+  --tab-accent:var(--tdv-tab-accent,var(--section-accent));
+  --tab-accent-rgb:var(--tdv-tab-accent-rgb,0 0 0);
+  border-color:color-mix(in srgb,var(--tab-accent) 14%,var(--border));
+}
+
+.tadeon-shell :is([data-slot="tabs-trigger"],[role="tab"]) {
+  color:color-mix(in srgb,var(--foreground) 68%,var(--tab-accent) 32%);
+  border-color:transparent;
+  background:transparent;
+  box-shadow:inset 0 1px transparent;
+  transition:color 220ms cubic-bezier(.22,.72,.2,1),background-color 220ms cubic-bezier(.22,.72,.2,1),border-color 260ms ease,box-shadow 320ms cubic-bezier(.22,.72,.2,1);
+}
+
+.tadeon-shell :is([data-slot="tabs-trigger"],[role="tab"]):not([data-state="active"]):hover {
+  color:color-mix(in srgb,var(--foreground) 88%,var(--tab-accent) 12%);
+  background:linear-gradient(100deg,rgb(var(--tab-accent-rgb)/5%),transparent 78%);
+  box-shadow:inset 0 -1px rgb(var(--tab-accent-rgb)/24%);
+}
+
+.tadeon-shell :is([data-slot="tabs-trigger"],[role="tab"])[data-state="active"],
+.tadeon-shell :is([data-slot="tabs-trigger"],[role="tab"])[aria-selected="true"] {
+  color:color-mix(in srgb,var(--tab-accent) 88%,white);
+  background:linear-gradient(100deg,rgb(var(--tab-accent-rgb)/9%),rgb(var(--tab-accent-rgb)/3%) 70%,transparent);
+  border-color:rgb(var(--tab-accent-rgb)/22%);
+  box-shadow:inset 0 -2px rgb(var(--tab-accent-rgb)/72%),inset 0 0 26px rgb(var(--tab-accent-rgb)/5%);
+}
+
+/* The icon, label and counter all participate in the same color event. */
+.tadeon-shell :is([data-slot="tabs-trigger"],[role="tab"]):hover :is(svg,[data-tab-icon],[data-tab-count]){color:var(--tab-accent);}
+.tadeon-shell :is([data-slot="tabs-trigger"],[role="tab"])[data-state="active"] :is(svg,[data-tab-icon],[data-tab-count]),
+.tadeon-shell :is([data-slot="tabs-trigger"],[role="tab"])[aria-selected="true"] :is(svg,[data-tab-icon],[data-tab-count]){color:var(--tab-accent);filter:drop-shadow(0 0 9px rgb(var(--tab-accent-rgb)/26%));}
+
+/* Active indicator is a seam, with the page's own material color. */
+.tadeon-shell :is([data-slot="tabs-trigger"],[role="tab"])[data-state="active"]::after,
+.tadeon-shell :is([data-slot="tabs-trigger"],[role="tab"])[aria-selected="true"]::after{background:linear-gradient(90deg,transparent,rgb(var(--tab-accent-rgb)/84%),transparent)!important;}
+
+/* Tab-content surfaces inherit the page color only in their edges and atmospheric weave. */
+.tadeon-shell :is([data-slot="tabs-content"],[data-tabs-content]){border-color:rgb(var(--tab-accent-rgb)/12%);box-shadow:inset 0 1px rgb(var(--tab-accent-rgb)/5%);}
+.tadeon-shell :is([data-slot="tabs-content"],[data-tabs-content])::before{border-color:rgb(var(--tab-accent-rgb)/10%);}
+
+/* Secondary segmented controls follow the same contract without becoming saturated. */
+.tadeon-shell :is([data-slot="segmented-control"],[data-segmented-control]) :is(button,[role="button"],[role="tab"]):hover{background:rgb(var(--tab-accent-rgb)/5%);color:var(--tab-accent);}
+.tadeon-shell :is([data-slot="segmented-control"],[data-segmented-control]) :is(button,[role="button"],[role="tab"])[aria-pressed="true"],[data-slot="segmented-control"] :is(button,[role="button"],[role="tab"])[data-state="active"]{color:var(--tab-accent);background:rgb(var(--tab-accent-rgb)/9%);box-shadow:inset 0 -1px rgb(var(--tab-accent-rgb)/70%);}
+
+/* Backup remains intentionally restrained: grey is the signal, not white. */
+.tadeon-shell[data-section="Backup"] :is([data-slot="tabs-trigger"],[role="tab"]):hover{filter:brightness(1.04);}
+
+@media(prefers-reduced-motion:reduce){.tadeon-shell :is([data-slot="tabs-trigger"],[role="tab"]){transition-duration:1ms!important;}}
