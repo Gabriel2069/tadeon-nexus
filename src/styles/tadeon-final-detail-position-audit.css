@@ -1,0 +1,227 @@
+/* TdV final detail + geometry audit.
+   Extends the living-material language while preventing decoration from becoming
+   layout, overflow, or stacking-context noise. This file is intentionally last. */
+
+/* --------------------------------------------------------------------------
+   DETAIL PERSONALITY — surfaces respond through matter, not movement.
+   -------------------------------------------------------------------------- */
+
+.tadeon-shell :is([data-slot="dialog-content"],[data-slot="popover-content"],[data-slot="dropdown-menu-content"],[data-slot="sheet-content"],[data-slot="drawer-content"]) {
+  border-color: color-mix(in srgb, var(--section-accent, var(--tadeon-knowledge)) 20%, var(--border));
+  box-shadow:
+    0 30px 90px -58px rgb(0 0 0 / 96%),
+    inset 0 1px rgb(255 255 255 / 3%),
+    0 0 34px -28px color-mix(in srgb, var(--section-accent, var(--tadeon-knowledge)) 38%, transparent);
+}
+
+.tadeon-shell :is([data-slot="dialog-content"],[data-slot="popover-content"],[data-slot="dropdown-menu-content"],[data-slot="sheet-content"],[data-slot="drawer-content"])::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border-radius: inherit;
+  background:
+    linear-gradient(118deg, transparent 28%, color-mix(in srgb, var(--section-accent, var(--tadeon-knowledge)) 3%, transparent) 50%, transparent 72%);
+  background-size: 240% 100%;
+  opacity: .55;
+  animation: tdv-surface-thread-drift 14s linear infinite;
+}
+
+@keyframes tdv-surface-thread-drift {
+  from { background-position: -120% 0; }
+  to { background-position: 120% 0; }
+}
+
+.tadeon-shell :is([data-slot="dialog-close"],[data-slot="popover-close"]):hover {
+  color: var(--section-accent, var(--tadeon-knowledge));
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--section-accent, var(--tadeon-knowledge)) 24%, transparent);
+}
+
+.tadeon-shell :is([data-slot="dropdown-menu-item"],[role="menuitem"]):hover {
+  color: color-mix(in srgb, var(--foreground) 94%, var(--section-accent, var(--tadeon-knowledge)));
+  background: linear-gradient(90deg, color-mix(in srgb, var(--section-accent, var(--tadeon-knowledge)) 9%, transparent), transparent 82%);
+  box-shadow: inset 1px 0 color-mix(in srgb, var(--section-accent, var(--tadeon-knowledge)) 52%, transparent);
+}
+
+.tadeon-shell :is([data-slot="tabs-trigger"],[role="tab"]):not([data-state="active"]):hover {
+  color: color-mix(in srgb, var(--foreground) 90%, var(--section-accent, var(--tadeon-knowledge)));
+  background: linear-gradient(90deg, color-mix(in srgb, var(--section-accent, var(--tadeon-knowledge)) 5%, transparent), transparent 80%);
+}
+
+.tadeon-shell :is([data-slot="tabs-trigger"],[role="tab"])[data-state="active"] {
+  color: var(--section-accent, var(--tadeon-knowledge));
+  box-shadow: inset 0 -1px color-mix(in srgb, var(--section-accent, var(--tadeon-knowledge)) 68%, transparent);
+}
+
+.tadeon-shell :is([data-toast],[data-notification],[data-alert]) {
+  position: relative;
+  isolation: isolate;
+  overflow: clip;
+}
+
+.tadeon-shell :is([data-toast],[data-notification],[data-alert])::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 1px;
+  background: var(--section-accent, var(--tadeon-knowledge));
+  box-shadow: 0 0 14px color-mix(in srgb, var(--section-accent, var(--tadeon-knowledge)) 42%, transparent);
+  pointer-events: none;
+}
+
+/* --------------------------------------------------------------------------
+   POSITION / OVERLAP CONTRACT
+   -------------------------------------------------------------------------- */
+
+.tadeon-shell .tadeon-page-hero,
+.tadeon-shell .tadeon-dashboard-hero,
+.tadeon-shell .tadeon-tabletop-studio__header,
+.tadeon-shell .tadeon-master-commandbar {
+  overflow: clip;
+}
+
+.tadeon-shell .tadeon-page-hero > *,
+.tadeon-shell .tadeon-dashboard-hero > *,
+.tadeon-shell .tadeon-tabletop-studio__header > *,
+.tadeon-shell .tadeon-master-commandbar > * {
+  min-width: 0;
+}
+
+.tadeon-shell .tadeon-page-hero::before,
+.tadeon-shell .tadeon-page-hero::after {
+  pointer-events: none;
+}
+
+/* Atmospheric layers never become click blockers. */
+.tadeon-shell :is([data-hero-orbit],[data-hero-marker],[data-hero-particle],[data-hero-thread],[data-hero-ring]) {
+  pointer-events: none;
+}
+
+/* Fixed/sticky UI receives a predictable local stacking tier without changing
+   the document flow of the page. */
+.tadeon-shell .tadeon-sidebar { z-index: 40; }
+.tadeon-shell .tadeon-desktop-toolbar,
+.tadeon-shell .tadeon-mobile-header { z-index: 45; }
+.tadeon-shell .tadeon-mobile-dock { z-index: 50; }
+
+.tadeon-shell [data-slot="dialog-overlay"] { z-index: 90; }
+.tadeon-shell [data-slot="dialog-content"] { z-index: 100; }
+.tadeon-shell [data-slot="popover-content"],
+.tadeon-shell [data-slot="dropdown-menu-content"],
+.tadeon-shell [data-slot="select-content"] { z-index: 110; }
+.tadeon-shell [data-slot="tooltip-content"] { z-index: 120; }
+.tadeon-shell :is([data-toast],[data-notification],[data-alert]) { z-index: 130; }
+
+/* Popovers and menus cannot widen the document or escape the viewport. */
+.tadeon-shell :is([data-slot="popover-content"],[data-slot="dropdown-menu-content"],[data-slot="select-content"]) {
+  box-sizing: border-box;
+  max-width: min(30rem, calc(100vw - 1rem));
+  min-width: 0;
+  overflow-x: hidden;
+}
+
+.tadeon-shell :is([data-slot="dialog-content"],[data-slot="sheet-content"],[data-slot="drawer-content"]) {
+  box-sizing: border-box;
+  max-width: calc(100vw - max(1rem, env(safe-area-inset-left)) - max(1rem, env(safe-area-inset-right)));
+  max-height: calc(100dvh - max(1rem, env(safe-area-inset-top)) - max(1rem, env(safe-area-inset-bottom)));
+  min-width: 0;
+}
+
+.tadeon-shell :is([data-slot="dialog-content"],[data-slot="sheet-content"],[data-slot="drawer-content"]) > * {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.tadeon-shell :is([data-slot="sheet-content"],[data-slot="drawer-content"]) {
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.tadeon-shell :is([data-slot="dialog-content"],[data-slot="popover-content"],[data-slot="dropdown-menu-content"],[data-slot="sheet-content"],[data-slot="drawer-content"])[data-state="open"] {
+  transform-origin: center;
+}
+
+/* Search/create-sheet actions stay inside their own surface instead of pushing
+   the parent width. */
+.tadeon-shell :is([data-slot="dialog-content"],[data-slot="sheet-content"]) :is(form,[data-slot="command"],[data-slot="command-list"]) {
+  min-width: 0;
+  max-width: 100%;
+}
+
+/* --------------------------------------------------------------------------
+   SIDEBAR COLLAPSE — preserve icon geometry and the section's own color.
+   -------------------------------------------------------------------------- */
+
+.tadeon-shell .tadeon-nav-item[data-mini="true"] .tadeon-nav-item__icon {
+  margin-inline: auto !important;
+  transform: none !important;
+}
+
+.tadeon-shell .tadeon-nav-item[data-mini="true"] .tadeon-nav-item__label,
+.tadeon-shell .tadeon-nav-item[data-mini="true"] [data-nav-label] {
+  display: none !important;
+}
+
+.tadeon-shell .tadeon-nav-item[data-mini="true"] {
+  color: var(--td-nav-muted, color-mix(in srgb, var(--sidebar-foreground) 68%, transparent)) !important;
+}
+
+.tadeon-shell .tadeon-nav-item[data-mini="true"][aria-current="page"],
+.tadeon-shell .tadeon-nav-item[data-mini="true"][data-nav-active="true"] {
+  color: var(--td-nav-accent, var(--tadeon-knowledge)) !important;
+  background: linear-gradient(90deg, rgb(var(--td-nav-accent-rgb, 217 215 164) / 12%), transparent) !important;
+  box-shadow: inset 2px 0 var(--td-nav-accent, var(--tadeon-knowledge)), inset 0 0 22px rgb(var(--td-nav-accent-rgb, 217 215 164) / 6%) !important;
+}
+
+/* --------------------------------------------------------------------------
+   RESPONSIVE FLUIDITY — avoid expensive fixed backgrounds and heavy blur on
+   smaller devices while preserving the same visual grammar.
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 900px) {
+  body {
+    background-attachment: scroll !important;
+  }
+
+  .tadeon-shell .tadeon-surface,
+  .tadeon-shell .tadeon-sidebar,
+  .tadeon-shell .tadeon-mobile-header,
+  .tadeon-shell :is([data-slot="dialog-content"],[data-slot="sheet-content"],[data-slot="drawer-content"]) {
+    backdrop-filter: blur(10px) saturate(108%) !important;
+    -webkit-backdrop-filter: blur(10px) saturate(108%) !important;
+  }
+
+  .tadeon-shell .tadeon-page-hero::before,
+  .tadeon-shell .tadeon-page-hero::after {
+    background-size: 190% 190%, 190% 190%, 280% 280%, 300% 300%;
+  }
+
+  .tadeon-shell :is([data-hero-orbit],[data-hero-marker],[data-hero-particle],[data-hero-thread]) {
+    will-change: auto !important;
+  }
+}
+
+@media (max-width: 640px) {
+  .tadeon-shell .tadeon-page-hero,
+  .tadeon-shell .tadeon-dashboard-hero {
+    border-radius: 1.1rem .42rem 1.1rem .42rem;
+  }
+
+  .tadeon-shell :is([data-slot="toast"],[data-toast],[data-notification],[data-alert]) {
+    max-width: calc(100vw - 1rem);
+    margin-inline: .5rem;
+  }
+
+  .tadeon-shell :is([data-slot="dialog-content"],[data-slot="sheet-content"],[data-slot="drawer-content"]) {
+    max-width: calc(100vw - 1rem) !important;
+    max-height: calc(100dvh - 1rem - env(safe-area-inset-top) - env(safe-area-inset-bottom)) !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tadeon-shell :is([data-slot="dialog-content"],[data-slot="popover-content"],[data-slot="dropdown-menu-content"],[data-slot="sheet-content"],[data-slot="drawer-content"])::after,
+  .tadeon-shell :is([data-toast],[data-notification],[data-alert])::before {
+    animation: none !important;
+  }
+}
