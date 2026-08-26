@@ -30,6 +30,7 @@
 @import "./tadeon-fluidity-authority.css";
 @import "./tadeon-control-personality.css";
 @import "./tadeon-detail-atmosphere.css";
+@import "./tadeon-hero-living-fields.css";
 
 /* Single authored motion/visual authority. Legacy motion files remain only as
    compatibility shims; overlapping interaction experiments are not imported. */
