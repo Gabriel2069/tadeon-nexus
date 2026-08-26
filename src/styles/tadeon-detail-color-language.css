@@ -7,80 +7,23 @@
 .tadeon-shell[data-section="Backup"]{--tdv-page-accent:#B9BDC2;--tdv-page-accent-rgb:185 189 194}
 .tadeon-shell[data-section="Mestre"]{--tdv-page-accent:#A84448;--tdv-page-accent-rgb:168 68 72}
 
-/* Secondary controls: quiet base, stronger identity only on interaction. */
-.tadeon-shell[data-section] :is([data-slot="select-trigger"],[role="combobox"],[data-filter-trigger],[data-sort-trigger]){
-  border-color:color-mix(in srgb,var(--tdv-page-accent) 15%,var(--border));
-  transition:border-color 220ms ease,box-shadow 260ms ease,background-color 220ms ease,color 180ms ease;
-}
-.tadeon-shell[data-section] :is([data-slot="select-trigger"],[role="combobox"],[data-filter-trigger],[data-sort-trigger]):hover{
-  border-color:color-mix(in srgb,var(--tdv-page-accent) 34%,var(--border));
-  box-shadow:inset 0 0 22px -22px rgb(var(--tdv-page-accent-rgb) / 60%);
-}
-.tadeon-shell[data-section] :is([data-slot="select-trigger"],[role="combobox"],[data-filter-trigger],[data-sort-trigger])[data-state="open"],
-.tadeon-shell[data-section] :is([data-slot="select-trigger"],[role="combobox"],[data-filter-trigger],[data-sort-trigger])[aria-expanded="true"]{
-  color:color-mix(in srgb,var(--tdv-page-accent) 88%,white);
-  border-color:color-mix(in srgb,var(--tdv-page-accent) 56%,var(--border));
-  box-shadow:0 0 0 3px rgb(var(--tdv-page-accent-rgb) / 7%),inset 0 0 30px -25px rgb(var(--tdv-page-accent-rgb) / 82%);
-}
+.tadeon-shell[data-section] :is([data-slot="select-trigger"],[role="combobox"],[data-filter-trigger],[data-sort-trigger]){border-color:color-mix(in srgb,var(--tdv-page-accent) 15%,var(--border));transition:border-color 220ms ease,box-shadow 260ms ease,background-color 220ms ease,color 180ms ease}
+.tadeon-shell[data-section] :is([data-slot="select-trigger"],[role="combobox"],[data-filter-trigger],[data-sort-trigger]):hover{border-color:color-mix(in srgb,var(--tdv-page-accent) 34%,var(--border));box-shadow:inset 0 0 22px -22px rgb(var(--tdv-page-accent-rgb) / 60%)}
+.tadeon-shell[data-section] :is([data-slot="select-trigger"],[role="combobox"],[data-filter-trigger],[data-sort-trigger])[data-state="open"],.tadeon-shell[data-section] :is([data-slot="select-trigger"],[role="combobox"],[data-filter-trigger],[data-sort-trigger])[aria-expanded="true"]{color:color-mix(in srgb,var(--tdv-page-accent) 88%,white);border-color:color-mix(in srgb,var(--tdv-page-accent) 56%,var(--border));box-shadow:0 0 0 3px rgb(var(--tdv-page-accent-rgb) / 7%),inset 0 0 30px -25px rgb(var(--tdv-page-accent-rgb) / 82%)}
 
-/* Menu contents inherit the page accent, but preserve semantic destructive colors. */
-.tadeon-shell[data-section] :is([data-slot="dropdown-menu-content"],[data-slot="select-content"],[data-slot="popover-content"]) :is([data-slot="dropdown-menu-item"],[role="option"],[role="menuitem"],[data-slot="command-item"]):not([data-variant="destructive"]){
-  transition:background-color 170ms ease,color 170ms ease,box-shadow 210ms ease;
-}
-.tadeon-shell[data-section] :is([data-slot="dropdown-menu-content"],[data-slot="select-content"],[data-slot="popover-content"]) :is([data-slot="dropdown-menu-item"],[role="option"],[role="menuitem"],[data-slot="command-item"]):not([data-variant="destructive"]):hover,
-.tadeon-shell[data-section] :is([data-slot="dropdown-menu-content"],[data-slot="select-content"],[data-slot="popover-content"]) :is([role="option"],[role="menuitem"])[aria-selected="true"]{
-  background:linear-gradient(90deg,rgb(var(--tdv-page-accent-rgb) / 10%),transparent 84%);
-  color:color-mix(in srgb,var(--foreground) 92%,var(--tdv-page-accent));
-  box-shadow:inset 1px 0 rgb(var(--tdv-page-accent-rgb) / 58%);
-}
+.tadeon-shell[data-section] :is([data-slot="dropdown-menu-content"],[data-slot="select-content"],[data-slot="popover-content"]) :is([data-slot="dropdown-menu-item"],[role="option"],[role="menuitem"],[data-slot="command-item"]):not([data-variant="destructive"]){transition:background-color 170ms ease,color 170ms ease,box-shadow 210ms ease}
+.tadeon-shell[data-section] :is([data-slot="dropdown-menu-content"],[data-slot="select-content"],[data-slot="popover-content"]) :is([data-slot="dropdown-menu-item"],[role="option"],[role="menuitem"],[data-slot="command-item"]):not([data-variant="destructive"]):hover,.tadeon-shell[data-section] :is([data-slot="dropdown-menu-content"],[data-slot="select-content"],[data-slot="popover-content"]) :is([role="option"],[role="menuitem"])[aria-selected="true"]{background:linear-gradient(90deg,rgb(var(--tdv-page-accent-rgb) / 10%),transparent 84%);color:color-mix(in srgb,var(--foreground) 92%,var(--tdv-page-accent));box-shadow:inset 1px 0 rgb(var(--tdv-page-accent-rgb) / 58%)}
 
-/* Pagination follows the same seam language as tabs. */
-.tadeon-shell[data-section] :is([data-slot="pagination-link"],[data-pagination-item]){
-  border:1px solid transparent;
-  transition:color 180ms ease,border-color 220ms ease,background-color 220ms ease,box-shadow 240ms ease;
-}
-.tadeon-shell[data-section] :is([data-slot="pagination-link"],[data-pagination-item]):hover{
-  color:color-mix(in srgb,var(--foreground) 92%,var(--tdv-page-accent));
-  border-color:rgb(var(--tdv-page-accent-rgb) / 18%);
-  background:rgb(var(--tdv-page-accent-rgb) / 4%);
-}
-.tadeon-shell[data-section] :is([data-slot="pagination-link"],[data-pagination-item])[aria-current="page"],
-.tadeon-shell[data-section] :is([data-slot="pagination-link"],[data-pagination-item])[data-active="true"]{
-  color:var(--tdv-page-accent);
-  border-color:rgb(var(--tdv-page-accent-rgb) / 28%);
-  background:rgb(var(--tdv-page-accent-rgb) / 8%);
-  box-shadow:inset 0 -1px var(--tdv-page-accent),0 0 22px -20px rgb(var(--tdv-page-accent-rgb) / 72%);
-}
+.tadeon-shell[data-section] :is([data-slot="pagination-link"],[data-pagination-item]){border:1px solid transparent;transition:color 180ms ease,border-color 220ms ease,background-color 220ms ease,box-shadow 240ms ease}
+.tadeon-shell[data-section] :is([data-slot="pagination-link"],[data-pagination-item]):hover{color:color-mix(in srgb,var(--foreground) 92%,var(--tdv-page-accent));border-color:rgb(var(--tdv-page-accent-rgb) / 18%);background:rgb(var(--tdv-page-accent-rgb) / 4%)}
+.tadeon-shell[data-section] :is([data-slot="pagination-link"],[data-pagination-item])[aria-current="page"],.tadeon-shell[data-section] :is([data-slot="pagination-link"],[data-pagination-item])[data-active="true"]{color:var(--tdv-page-accent);border-color:rgb(var(--tdv-page-accent-rgb) / 28%);background:rgb(var(--tdv-page-accent-rgb) / 8%);box-shadow:inset 0 -1px var(--tdv-page-accent),0 0 22px -20px rgb(var(--tdv-page-accent-rgb) / 72%)}
 
-/* Chips/badges use the identity color as a seam, not as a fill. */
-.tadeon-shell[data-section] :is([data-slot="badge"],[data-slot="chip"],[data-badge]){
-  border-color:color-mix(in srgb,var(--tdv-page-accent) 18%,var(--border));
-  color:color-mix(in srgb,var(--foreground) 88%,var(--tdv-page-accent));
-}
-.tadeon-shell[data-section] :is([data-slot="badge"],[data-slot="chip"],[data-badge])[data-active="true"],
-.tadeon-shell[data-section] :is([data-slot="badge"],[data-slot="chip"],[data-badge])[aria-pressed="true"]{
-  border-color:rgb(var(--tdv-page-accent-rgb) / 36%);
-  background:rgb(var(--tdv-page-accent-rgb) / 7%);
-  color:var(--tdv-page-accent);
-  box-shadow:inset 0 0 18px -18px rgb(var(--tdv-page-accent-rgb) / 76%);
-}
+.tadeon-shell[data-section] :is([data-slot="badge"],[data-slot="chip"],[data-badge]){border-color:color-mix(in srgb,var(--tdv-page-accent) 18%,var(--border));color:color-mix(in srgb,var(--foreground) 88%,var(--tdv-page-accent))}
+.tadeon-shell[data-section] :is([data-slot="badge"],[data-slot="chip"],[data-badge])[data-active="true"],.tadeon-shell[data-section] :is([data-slot="badge"],[data-slot="chip"],[data-badge])[aria-pressed="true"]{border-color:rgb(var(--tdv-page-accent-rgb) / 36%);background:rgb(var(--tdv-page-accent-rgb) / 7%);color:var(--tdv-page-accent);box-shadow:inset 0 0 18px -18px rgb(var(--tdv-page-accent-rgb) / 76%)}
 
-/* Inline links and action labels quietly inherit the local identity. */
-.tadeon-shell[data-section] main :is(a[data-tadeon-accent],button[data-tadeon-accent],[data-link-accent]){
-  color:color-mix(in srgb,var(--foreground) 88%,var(--tdv-page-accent));
-  transition:color 180ms ease,text-shadow 220ms ease;
-}
-.tadeon-shell[data-section] main :is(a[data-tadeon-accent],button[data-tadeon-accent],[data-link-accent]):hover{
-  color:var(--tdv-page-accent);
-  text-shadow:0 0 14px rgb(var(--tdv-page-accent-rgb) / 22%);
-}
+.tadeon-shell[data-section] main :is(a[data-tadeon-accent],button[data-tadeon-accent],[data-link-accent]){color:color-mix(in srgb,var(--foreground) 88%,var(--tdv-page-accent));transition:color 180ms ease,text-shadow 220ms ease}
+.tadeon-shell[data-section] main :is(a[data-tadeon-accent],button[data-tadeon-accent],[data-link-accent]):hover{color:var(--tdv-page-accent);text-shadow:0 0 14px rgb(var(--tdv-page-accent-rgb) / 22%)}
 
-/* Form validation keeps semantic red/amber/green, but the surrounding focus language remains TdV. */
-.tadeon-shell[data-section] :is(input,textarea,select,[role="combobox"]):focus-visible:not([aria-invalid="true"]){
-  border-color:color-mix(in srgb,var(--tdv-page-accent) 62%,var(--border));
-  box-shadow:0 0 0 3px rgb(var(--tdv-page-accent-rgb) / 7%),inset 0 0 26px -25px rgb(var(--tdv-page-accent-rgb) / 84%);
-}
+.tadeon-shell[data-section] :is(input,textarea,select,[role="combobox"]):focus-visible:not([aria-invalid="true"]){border-color:color-mix(in srgb,var(--tdv-page-accent) 62%,var(--border));box-shadow:0 0 0 3px rgb(var(--tdv-page-accent-rgb) / 7%),inset 0 0 26px -25px rgb(var(--tdv-page-accent-rgb) / 84%)}
 
-@media(prefers-reduced-motion:reduce){
-  .tadeon-shell[data-section] :is([data-slot="select-trigger"],[role="combobox"],[data-filter-trigger],[data-sort-trigger],[data-slot="pagination-link"],[data-pagination-item],[data-slot="badge"],[data-slot="chip"],[data-badge"]){transition-duration:1ms!important}
-}
+@media(prefers-reduced-motion:reduce){.tadeon-shell[data-section] :is([data-slot="select-trigger"],[role="combobox"],[data-filter-trigger],[data-sort-trigger],[data-slot="pagination-link"],[data-pagination-item],[data-slot="badge"],[data-slot="chip"],[data-badge]){transition-duration:1ms!important}}
