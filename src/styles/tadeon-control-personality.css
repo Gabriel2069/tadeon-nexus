@@ -1,70 +1,21 @@
-/* TdV CONTROL PERSONALITY
- * Interaction layer for controls that already exist in the DOM.
- * No pseudo-elements: avoids competing with signature-effects.
- * Personality comes from material, light, color and tension.
- */
-:root{
-  --tdv-control-ease:cubic-bezier(.2,.78,.2,1);
-  --tdv-control-fast:150ms;
-  --tdv-control-base:230ms;
-}
-
-.tadeon-shell :is(button,[role="button"],a,[role="tab"],[role="menuitem"],summary){
-  transition-property:background-color,border-color,color,box-shadow,filter,opacity;
-  transition-duration:var(--tdv-control-base);
-  transition-timing-function:var(--tdv-control-ease);
-}
-
-/* Every control has a material response before it gets a section-specific one. */
-.tadeon-shell :is(button,[role="button"],[role="tab"],[role="menuitem"],summary):hover{
-  filter:saturate(1.045) brightness(1.025);
-}
-.tadeon-shell :is(button,[role="button"],[role="tab"],[role="menuitem"],summary):focus-visible{
-  outline:1px solid color-mix(in srgb,var(--section-accent) 58%,white);
-  outline-offset:3px;
-  box-shadow:0 0 0 4px color-mix(in srgb,var(--section-accent) 9%,transparent),0 0 26px -18px color-mix(in srgb,var(--section-accent) 70%,transparent);
-}
-.tadeon-shell :is(button,[role="button"],[role="tab"],[role="menuitem"],summary):active{
-  filter:brightness(.985) saturate(1.08);
-  transition-duration:var(--tdv-control-fast);
-}
-
-/* Dashboard — orientation / constellation-like control field. */
+/* TdV CONTROL PERSONALITY — living material, no generic UI motion. */
+:root{--tdv-control-ease:cubic-bezier(.2,.78,.2,1);--tdv-control-fast:150ms;--tdv-control-base:230ms}
+.tadeon-shell :is(button,[role="button"],a,[role="tab"],[role="menuitem"],summary){transition:background-color var(--tdv-control-base) var(--tdv-control-ease),border-color var(--tdv-control-base) var(--tdv-control-ease),color var(--tdv-control-base) var(--tdv-control-ease),box-shadow var(--tdv-control-base) var(--tdv-control-ease),filter var(--tdv-control-base) var(--tdv-control-ease),opacity var(--tdv-control-base) var(--tdv-control-ease)}
+.tadeon-shell :is(button,[role="button"],[role="tab"],[role="menuitem"],summary):hover{filter:saturate(1.045) brightness(1.025)}
+.tadeon-shell :is(button,[role="button"],[role="tab"],[role="menuitem"],summary):focus-visible{outline:1px solid color-mix(in srgb,var(--section-accent) 58%,white);outline-offset:3px;box-shadow:0 0 0 4px color-mix(in srgb,var(--section-accent) 9%,transparent),0 0 26px -18px color-mix(in srgb,var(--section-accent) 70%,transparent)}
+.tadeon-shell :is(button,[role="button"],[role="tab"],[role="menuitem"],summary):active{filter:brightness(.985) saturate(1.08);transition-duration:var(--tdv-control-fast)}
 .tadeon-shell[data-section="Dashboard"] :is(button,[role="button"],[role="tab"],[role="menuitem"]):hover{box-shadow:inset 0 0 22px -20px rgb(217 215 164 / 90%),0 0 28px -24px rgb(217 215 164 / 80%)}
-/* Nexus — connective, slightly greener internal glow. */
 .tadeon-shell[data-section="Nexus"] :is(button,[role="button"],[role="tab"],[role="menuitem"]):hover{box-shadow:inset 0 0 22px -20px rgb(79 160 116 / 92%),0 0 30px -25px rgb(79 160 116 / 78%)}
-/* Mesa — blue material feels deeper rather than brighter. */
 .tadeon-shell[data-section="Mesa"] :is(button,[role="button"],[role="tab"],[role="menuitem"]):hover{box-shadow:inset 0 -8px 26px -24px rgb(73 116 177 / 95%),0 0 28px -24px rgb(73 116 177 / 74%)}
-/* Offline — residual violet presence. */
 .tadeon-shell[data-section="Offline"] :is(button,[role="button"],[role="tab"],[role="menuitem"]):hover{box-shadow:inset 0 0 30px -26px rgb(132 92 157 / 94%),0 0 26px -23px rgb(132 92 157 / 70%);filter:saturate(1.02) brightness(1.015)}
-/* Gerenciar — precise orange tension. */
 .tadeon-shell[data-section="Gerenciar"] :is(button,[role="button"],[role="tab"],[role="menuitem"]):hover{box-shadow:inset 0 -6px 24px -22px rgb(211 124 57 / 98%),0 0 30px -24px rgb(211 124 57 / 80%)}
-/* Backup — restrained silver diagnostic field. */
 .tadeon-shell[data-section="Backup"] :is(button,[role="button"],[role="tab"],[role="menuitem"]):hover{box-shadow:inset 0 0 22px -21px rgb(185 189 194 / 90%),0 0 24px -24px rgb(165 169 174 / 60%);filter:brightness(1.02)}
-/* Mestre — pressure, not brightness. */
 .tadeon-shell[data-section="Mestre"] :is(button,[role="button"],[role="tab"],[role="menuitem"]):hover{box-shadow:inset 0 0 34px -25px rgb(168 68 72 / 98%),0 0 34px -25px rgb(168 68 72 / 76%);filter:saturate(1.08) brightness(1.015)}
-
-/* Disabled controls lose the supernatural response but retain readable material. */
-.tadeon-shell :is(button,[role="button"],[role="tab"],[role="menuitem"]):disabled,
-.tadeon-shell :is(button,[role="button"],[role="tab"],[role="menuitem"])[aria-disabled="true"]{
-  filter:none!important;box-shadow:none!important;transition:none!important;
-}
-
-/* Inputs and selectable fields: focus behaves like a thread tightening around the field. */
-.tadeon-shell :is(input,textarea,select,[role="combobox"]):focus-visible{
-  border-color:color-mix(in srgb,var(--section-accent) 58%,currentColor);
-  box-shadow:0 0 0 3px color-mix(in srgb,var(--section-accent) 8%,transparent),inset 0 0 24px -24px color-mix(in srgb,var(--section-accent) 80%,transparent);
-  transition:box-shadow 220ms var(--tdv-control-ease),border-color 220ms var(--tdv-control-ease);
-}
-
-/* Selection states feel held in the weave rather than merely filled. */
-.tadeon-shell :is([aria-selected="true"],[aria-checked="true"],[data-state="checked"],[data-state="on"]){
-  color:color-mix(in srgb,var(--section-accent) 84%,white);
-  background-color:color-mix(in srgb,var(--section-accent) 8%,transparent);
-  box-shadow:inset 0 0 24px -23px color-mix(in srgb,var(--section-accent) 95%,transparent);
-}
-
-@media (hover:none),(pointer:coarse){
-  .tadeon-shell :is(button,[role="button"],a,[role="tab"],[role="menuitem"],summary){transition-duration:190ms}
-}
-@media(prefers-reduced-motion:reduce){.tadeon-shell :is(button,[role="button"],a,[role="tab"],[role="menuitem"],summary,input,textarea,select,[role="combobox"]){transition-duration:1ms!important}}
+.tadeon-shell :is(button,[role="button"],[role="tab"],[role="menuitem"]):disabled,.tadeon-shell :is(button,[role="button"],[role="tab"],[role="menuitem"])[aria-disabled="true"]{filter:none!important;box-shadow:none!important;transition:none!important}
+.tadeon-shell :is(input,textarea,select,[role="combobox"]):focus-visible{border-color:color-mix(in srgb,var(--section-accent) 58%,currentColor);box-shadow:0 0 0 3px color-mix(in srgb,var(--section-accent) 8%,transparent),inset 0 0 24px -24px color-mix(in srgb,var(--section-accent) 80%,transparent);transition:box-shadow 220ms var(--tdv-control-ease),border-color 220ms var(--tdv-control-ease)}
+.tadeon-shell :is([aria-selected="true"],[aria-checked="true"],[data-state="checked"],[data-state="on"]){color:color-mix(in srgb,var(--section-accent) 84%,white);background-color:color-mix(in srgb,var(--section-accent) 8%,transparent);box-shadow:inset 0 0 24px -23px color-mix(in srgb,var(--section-accent) 95%,transparent)}
+/* Active controls receive a quiet moving weave instead of a scale/bounce. */
+.tadeon-shell :is(button,[role="button"],[role="tab"],[role="menuitem"],summary)[aria-pressed="true"],.tadeon-shell :is([role="tab"],[role="menuitem"])[data-state="active"],.tadeon-shell :is([data-state="checked"],[data-state="on"]){background-image:linear-gradient(105deg,transparent 28%,color-mix(in srgb,var(--section-accent) 7%,transparent) 50%,transparent 72%);background-size:220% 100%;animation:tdv-control-weave 4.8s linear infinite}
+@keyframes tdv-control-weave{from{background-position:-120% 0}to{background-position:120% 0}}
+@media (hover:none),(pointer:coarse){.tadeon-shell :is(button,[role="button"],a,[role="tab"],[role="menuitem"],summary){transition-duration:190ms}}
+@media(prefers-reduced-motion:reduce){.tadeon-shell :is(button,[role="button"],a,[role="tab"],[role="menuitem"],summary,input,textarea,select,[role="combobox"]){transition-duration:1ms!important}.tadeon-shell :is(button,[role="button"],[role="tab"],[role="menuitem"],summary)[aria-pressed="true"],.tadeon-shell :is([role="tab"],[role="menuitem"])[data-state="active"],.tadeon-shell :is([data-state="checked"],[data-state="on"]){animation:none!important}}
