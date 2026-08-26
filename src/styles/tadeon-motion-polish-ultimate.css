@@ -32,6 +32,7 @@
 @import "./tadeon-detail-atmosphere.css";
 @import "./tadeon-hero-living-fields.css";
 @import "./tadeon-motion-performance.css";
+@import "./tadeon-final-detail-position-audit.css";
 
 /* Single authored motion/visual authority. Legacy motion files remain only as
    compatibility shims; overlapping interaction experiments are not imported. */
