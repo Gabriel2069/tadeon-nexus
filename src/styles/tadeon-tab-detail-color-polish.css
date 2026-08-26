@@ -1,0 +1,35 @@
+/* TdV TAB DETAIL COLOR POLISH — page identity reaches the small pieces of a tab without flooding the surface. */
+.tadeon-shell[data-section="Dashboard"]{--tdv-detail-accent:#d9d7a4;--tdv-detail-accent-rgb:217 215 164}
+.tadeon-shell[data-section="Nexus"]{--tdv-detail-accent:#4fa074;--tdv-detail-accent-rgb:79 160 116}
+.tadeon-shell[data-section="Mesa"]{--tdv-detail-accent:#4974b1;--tdv-detail-accent-rgb:73 116 177}
+.tadeon-shell[data-section="Offline"]{--tdv-detail-accent:#845c9d;--tdv-detail-accent-rgb:132 92 157}
+.tadeon-shell[data-section="Gerenciar"]{--tdv-detail-accent:#d37c39;--tdv-detail-accent-rgb:211 124 57}
+.tadeon-shell[data-section="Backup"]{--tdv-detail-accent:#b9bdc2;--tdv-detail-accent-rgb:185 189 194}
+.tadeon-shell[data-section="Mestre"]{--tdv-detail-accent:#a84448;--tdv-detail-accent-rgb:168 68 72}
+
+/* Small tab adornments inherit the page identity but remain visually subordinate. */
+.tadeon-shell[data-section] :is([data-slot="tabs-trigger"],[role="tab"]) :is(svg,[data-icon],[data-tab-icon]){transition:color 180ms ease,filter 220ms ease,opacity 180ms ease}
+.tadeon-shell[data-section] :is([data-slot="tabs-trigger"],[role="tab"]):not([data-state="active"]):hover :is(svg,[data-icon],[data-tab-icon]){color:var(--tdv-detail-accent);filter:drop-shadow(0 0 7px rgb(var(--tdv-detail-accent-rgb)/18%))}
+.tadeon-shell[data-section] :is([data-slot="tabs-trigger"],[role="tab"]):is([data-state="active"],[aria-selected="true"]) :is(svg,[data-icon],[data-tab-icon]){color:var(--tdv-detail-accent);filter:drop-shadow(0 0 10px rgb(var(--tdv-detail-accent-rgb)/28%))}
+
+/* Counters, notification dots and small labels follow the tab's material color. */
+.tadeon-shell[data-section] :is([data-slot="tabs-trigger"],[role="tab"]) :is([data-count],[data-tab-count],[data-badge],[data-tab-badge]){border-color:rgb(var(--tdv-detail-accent-rgb)/18%);color:color-mix(in srgb,var(--foreground) 82%,var(--tdv-detail-accent));background:rgb(var(--tdv-detail-accent-rgb)/4%);transition:color 180ms ease,border-color 200ms ease,background-color 200ms ease,box-shadow 240ms ease}
+.tadeon-shell[data-section] :is([data-slot="tabs-trigger"],[role="tab"]):hover :is([data-count],[data-tab-count],[data-badge],[data-tab-badge]){border-color:rgb(var(--tdv-detail-accent-rgb)/28%);background:rgb(var(--tdv-detail-accent-rgb)/7%);box-shadow:inset 0 0 16px -15px rgb(var(--tdv-detail-accent-rgb)/70%)}
+.tadeon-shell[data-section] :is([data-slot="tabs-trigger"],[role="tab"]):is([data-state="active"],[aria-selected="true"]) :is([data-count],[data-tab-count],[data-badge],[data-tab-badge]){border-color:rgb(var(--tdv-detail-accent-rgb)/36%);color:var(--tdv-detail-accent);background:rgb(var(--tdv-detail-accent-rgb)/9%);box-shadow:inset 0 0 18px -15px rgb(var(--tdv-detail-accent-rgb)/82%)}
+
+/* Descriptive tab metadata stays readable, but picks up a local tint on interaction. */
+.tadeon-shell[data-section] :is([data-slot="tabs-trigger"],[role="tab"]) :is([data-tab-description],[data-tab-meta],[data-tab-caption]){color:color-mix(in srgb,var(--muted-foreground) 92%,var(--tdv-detail-accent));transition:color 180ms ease}
+.tadeon-shell[data-section] :is([data-slot="tabs-trigger"],[role="tab"]):hover :is([data-tab-description],[data-tab-meta],[data-tab-caption]),.tadeon-shell[data-section] :is([data-slot="tabs-trigger"],[role="tab"]):is([data-state="active"],[aria-selected="true"]) :is([data-tab-description],[data-tab-meta],[data-tab-caption]){color:color-mix(in srgb,var(--foreground) 84%,var(--tdv-detail-accent))}
+
+/* Tab panels: a quiet chromatic seam at the entry edge communicates continuity. */
+.tadeon-shell[data-section] :is([data-slot="tabs-content"],[data-tabs-content]){border-inline-start-color:rgb(var(--tdv-detail-accent-rgb)/13%);transition:border-color 260ms ease,box-shadow 300ms ease}
+.tadeon-shell[data-section] :is([data-slot="tabs-content"],[data-tabs-content])[data-state="active"]{border-inline-start-color:rgb(var(--tdv-detail-accent-rgb)/30%);box-shadow:inset 2px 0 18px -16px rgb(var(--tdv-detail-accent-rgb)/72%)}
+
+/* Segmented-control separators use the same local color only when adjacent to the active segment. */
+.tadeon-shell[data-section] :is([data-slot="segmented-control"],[data-segmented-control]) :is(button,[role="button"],[role="tab"])+:is(button,[role="button"],[role="tab"]){border-inline-start-color:rgb(var(--tdv-detail-accent-rgb)/10%)}
+.tadeon-shell[data-section] :is([data-slot="segmented-control"],[data-segmented-control]) :is(button,[role="button"],[role="tab"]):hover+:is(button,[role="button"],[role="tab"]){border-inline-start-color:rgb(var(--tdv-detail-accent-rgb)/22%)}
+
+/* Never override semantic danger/success/warning colors. Identity is an atmospheric layer. */
+.tadeon-shell[data-section] :is([data-variant="destructive"],[data-status="success"],[data-status="warning"],[data-status="error"]){color:inherit}
+
+@media(prefers-reduced-motion:reduce){.tadeon-shell[data-section] :is([data-slot="tabs-trigger"],[role="tab"],[data-slot="segmented-control"],[data-segmented-control]) :is(svg,[data-icon],[data-tab-icon],[data-count],[data-tab-count],[data-badge],[data-tab-badge]){transition-duration:1ms!important}}
