@@ -1,0 +1,38 @@
+/* TdV PAGE COLOR AUTHORITY — one palette contract for every interactive surface. */
+
+.tadeon-shell[data-section="Dashboard"]{--section-accent:#d9d7a4;--section-accent-rgb:217 215 164;--tdv-page-accent:#d9d7a4;--tdv-page-accent-rgb:217 215 164}
+.tadeon-shell[data-section="Nexus"]{--section-accent:#4fa074;--section-accent-rgb:79 160 116;--tdv-page-accent:#4fa074;--tdv-page-accent-rgb:79 160 116}
+.tadeon-shell[data-section="Mesa"]{--section-accent:#4974b1;--section-accent-rgb:73 116 177;--tdv-page-accent:#4974b1;--tdv-page-accent-rgb:73 116 177}
+.tadeon-shell[data-section="Offline"]{--section-accent:#845c9d;--section-accent-rgb:132 92 157;--tdv-page-accent:#845c9d;--tdv-page-accent-rgb:132 92 157}
+.tadeon-shell[data-section="Gerenciar"]{--section-accent:#d37c39;--section-accent-rgb:211 124 57;--tdv-page-accent:#d37c39;--tdv-page-accent-rgb:211 124 57}
+.tadeon-shell[data-section="Backup"]{--section-accent:#b9bdc2;--section-accent-rgb:185 189 194;--tdv-page-accent:#b9bdc2;--tdv-page-accent-rgb:185 189 194}
+.tadeon-shell[data-section="Mestre"]{--section-accent:#a84448;--section-accent-rgb:168 68 72;--tdv-page-accent:#a84448;--tdv-page-accent-rgb:168 68 72}
+
+/* All small interaction surfaces inherit the current page rather than a beige fallback. */
+.tadeon-shell[data-section] :is(button,[role="button"],[role="tab"],[role="menuitem"],summary,a){--tdv-local-accent:var(--section-accent);--tdv-local-accent-rgb:var(--section-accent-rgb)}
+.tadeon-shell[data-section] :is(input,textarea,select,[role="combobox"]):focus-visible{border-color:color-mix(in srgb,var(--section-accent) 62%,currentColor)!important;box-shadow:0 0 0 3px rgb(var(--section-accent-rgb) / 9%),inset 0 0 24px -24px rgb(var(--section-accent-rgb) / 72%)!important}
+
+/* Page-specific active/hover language. The geometry stays still; only the thread changes color. */
+.tadeon-shell[data-section] :is(button,[role="button"],[role="tab"],[role="menuitem"],summary):hover{box-shadow:inset 0 0 24px -21px rgb(var(--section-accent-rgb) / 30%),0 0 30px -25px rgb(var(--section-accent-rgb) / 34%)}
+.tadeon-shell[data-section] :is(button,[role="button"],[role="tab"],[role="menuitem"],summary)[aria-pressed="true"],
+.tadeon-shell[data-section] :is([role="tab"],[role="menuitem"])[data-state="active"],
+.tadeon-shell[data-section] :is([data-state="checked"],[data-state="on"],[aria-selected="true"]){color:color-mix(in srgb,var(--section-accent) 88%,white)!important;background-color:rgb(var(--section-accent-rgb) / 8%)!important;border-color:rgb(var(--section-accent-rgb) / 28%)!important;box-shadow:inset 2px 0 var(--section-accent),inset 0 0 26px rgb(var(--section-accent-rgb) / 7%)!important}
+
+/* Sidebar uses the exact page palette, not the older muted approximations. */
+.tadeon-shell .tadeon-nav-item[href="/"]{--td-nav-accent:#d9d7a4;--td-nav-accent-rgb:217 215 164}
+.tadeon-shell .tadeon-nav-item[href^="/nexus"]{--td-nav-accent:#4fa074;--td-nav-accent-rgb:79 160 116}
+.tadeon-shell .tadeon-nav-item[href^="/tabletop"]{--td-nav-accent:#4974b1;--td-nav-accent-rgb:73 116 177}
+.tadeon-shell .tadeon-nav-item[href^="/offline"]{--td-nav-accent:#845c9d;--td-nav-accent-rgb:132 92 157}
+.tadeon-shell .tadeon-nav-item[href^="/manage-users"]{--td-nav-accent:#d37c39;--td-nav-accent-rgb:211 124 57}
+.tadeon-shell .tadeon-nav-item[href^="/nexus-tools"]{--td-nav-accent:#b9bdc2;--td-nav-accent-rgb:185 189 194}
+.tadeon-shell .tadeon-nav-item[href^="/master-panel"]{--td-nav-accent:#a84448;--td-nav-accent-rgb:168 68 72}
+
+/* Hero ornaments, cards, tables and notifications use the same accent automatically. */
+.tadeon-shell[data-section] :is([data-hero-thread],[data-hero-ring],[data-hero-marker],[data-hero-particle],[data-dot],[data-node],[data-marker]){color:var(--section-accent)}
+.tadeon-shell[data-section] :is([data-slot="card"],[data-motion-card],[data-motion-surface],[data-tadeon-card]){border-color:color-mix(in srgb,var(--section-accent) 13%,var(--border))}
+.tadeon-shell[data-section] :is([data-slot="card"],[data-motion-card],[data-motion-surface],[data-tadeon-card]):hover{border-color:color-mix(in srgb,var(--section-accent) 28%,var(--border));box-shadow:inset 0 0 0 1px rgb(var(--section-accent-rgb) / 9%),0 18px 46px -40px rgb(var(--section-accent-rgb) / 48%)}
+
+/* Semantic status remains distinct from page identity; decorative glow still follows the page. */
+.tadeon-shell[data-section] :is([data-status="online"],[data-status="ready"],[data-status="connected"]){--tdv-status-color:var(--section-accent)}
+
+@media(prefers-reduced-motion:reduce){.tadeon-shell[data-section] :is(button,[role="button"],[role="tab"],[role="menuitem"],summary){transition-duration:1ms!important}}
