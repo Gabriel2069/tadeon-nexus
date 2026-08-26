@@ -1,0 +1,71 @@
+/* TdV Motion Performance Authority
+   Preserve authored motion while reducing paint/compositing pressure. */
+
+/* Decorative hero fields do not need permanent layer promotion. */
+.tadeon-shell .tadeon-page-hero::before,
+.tadeon-shell .tadeon-page-hero::after{
+  will-change:auto;
+  contain:paint;
+}
+
+/* Remove expensive filter animation from persistent Hero luminares.
+   Opacity remains the signal; blur stays static in the artwork. */
+.tadeon-shell .tadeon-page-hero :is([data-hero-orbit],[data-hero-marker],[data-hero-particle],[data-hero-thread]){
+  will-change:opacity;
+}
+
+/* Keep the visual language, but avoid continuously animating every divider. */
+.tadeon-shell :is([data-slot="separator"],[data-separator],[role="separator"])::after{
+  animation:none!important;
+  background-position:50% 50%;
+  transition:opacity 240ms ease,background-position 420ms ease;
+}
+.tadeon-shell :is([data-slot="separator"],[data-separator],[role="separator"]):hover::after{
+  animation:tdv-detail-thread .95s var(--tm-micro-thread) both!important;
+}
+
+/* Empty-state atmosphere is persistent but static until interaction. */
+.tadeon-shell :is([data-empty-state],[data-workspace-empty],[data-mesa-empty],[data-nexus-empty])::before{
+  animation:none!important;
+  opacity:.2;
+  transition:opacity 320ms ease,transform 700ms var(--tm-micro-ghost);
+}
+.tadeon-shell :is([data-empty-state],[data-workspace-empty],[data-mesa-empty],[data-nexus-empty]):hover::before{
+  opacity:.34;
+  transform:scaleX(1.025);
+}
+
+/* Progress/loading may remain alive; everything else keeps the main thread lighter. */
+.tadeon-shell :is([data-loading="true"],[data-status="saving"],[data-status="pending"]){
+  contain:paint;
+}
+
+/* Reduce costly filters on ordinary controls; light is carried by shadows. */
+.tadeon-shell :is(button,[role="button"],[role="tab"],[role="menuitem"]):hover svg{
+  filter:none;
+}
+
+/* Touch devices should not spend frames preparing hover-only effects. */
+@media (hover:none),(pointer:coarse){
+  .tadeon-shell :is(button,[role="button"],[role="tab"],[role="menuitem"],a):hover{
+    filter:none!important;
+  }
+  .tadeon-shell :is([data-slot="card"],[data-motion-card],[data-motion-surface]):hover{
+    background-position:50% 50%!important;
+  }
+}
+
+/* Keep only interaction-critical compositing hints. */
+.tadeon-shell :is([data-draggable="true"],[data-motion-draggable],[data-piece],[data-token])[data-dragging="true"]{
+  will-change:transform,filter;
+}
+
+@media(prefers-reduced-motion:reduce){
+  .tadeon-shell .tadeon-page-hero::before,
+  .tadeon-shell .tadeon-page-hero::after,
+  .tadeon-shell :is([data-slot="separator"],[data-separator],[role="separator"])::after,
+  .tadeon-shell :is([data-empty-state],[data-workspace-empty],[data-mesa-empty],[data-nexus-empty])::before{
+    animation:none!important;
+    will-change:auto!important;
+  }
+}
