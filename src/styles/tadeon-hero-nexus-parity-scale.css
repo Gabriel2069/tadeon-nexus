@@ -1,28 +1,18 @@
-/* TdV Hero Nexus parity + graphic scale.
-   Mesa is intentionally excluded. The visual group grows as one unit: symbol,
-   orbital/ring field and its host, while title sizing matches the canonical Nexus. */
+/* TdV Hero Nexus typography parity.
+   Mesa is intentionally excluded. The Nexus Hero remains the canonical title
+   reference; this file does not alter emblem, orbital, ring, or symbol scale. */
 
-/* --------------------------------------------------------------------------
-   TYPOGRAPHY PARITY — Nexus is the canonical desktop Hero title scale.
-   -------------------------------------------------------------------------- */
 html body .tadeon-shell :is(
   .tadeon-page-hero[data-tadeon-page-hero]:not([data-tadeon-page-hero="tabletop"]),
-  .tadeon-master-commandbar
+  .tadeon-master-commandbar,
+  .tadeon-dashboard-hero
 ) h1 {
-  font-size: clamp(2.05rem, 3.15vw, 2.65rem) !important;
+  font-size: clamp(2rem, 3.15vw, 2.65rem) !important;
   line-height: 1.04 !important;
   font-weight: 620 !important;
   letter-spacing: -0.028em !important;
 }
 
-html body .tadeon-shell .tadeon-dashboard-hero h1 {
-  font-size: clamp(2.05rem, 3.15vw, 2.65rem) !important;
-  line-height: 1.04 !important;
-  font-weight: 620 !important;
-  letter-spacing: -0.028em !important;
-}
-
-/* Dashboard and utility/master subtitles follow the same visual proportion. */
 html body .tadeon-shell :is(
   .tadeon-page-hero[data-tadeon-page-hero]:not([data-tadeon-page-hero="tabletop"]),
   .tadeon-master-commandbar,
@@ -33,81 +23,16 @@ html body .tadeon-shell :is(
   font-weight: 430 !important;
 }
 
-/* --------------------------------------------------------------------------
-   GRAPHIC SCALE — enlarge the entire emblem composition without transforming
-   the authored SVG itself, preventing clipping/pixel chopping.
-   -------------------------------------------------------------------------- */
-html body .tadeon-shell :is(
-  .tadeon-page-hero[data-tadeon-page-hero]:not([data-tadeon-page-hero="tabletop"]) > .tadeon-page-hero-mark-host,
-  .tadeon-page-hero[data-tadeon-page-hero]:not([data-tadeon-page-hero="tabletop"]) > .tadeon-page-hero-mark,
-  .tadeon-master-commandbar__glow
-) {
-  width: clamp(6.5rem, 11vw, 9rem) !important;
-  height: clamp(6.5rem, 11vw, 9rem) !important;
-  flex: 0 0 clamp(6.5rem, 11vw, 9rem) !important;
-  overflow: visible;
-}
-
-html body .tadeon-shell :is(
-  .tadeon-page-hero[data-tadeon-page-hero]:not([data-tadeon-page-hero="tabletop"]) > .tadeon-page-hero-mark-host,
-  .tadeon-page-hero[data-tadeon-page-hero]:not([data-tadeon-page-hero="tabletop"]) > .tadeon-page-hero-mark
-) > svg {
-  width: 100% !important;
-  height: 100% !important;
-  max-width: 100% !important;
-  max-height: 100% !important;
-}
-
-/* Dashboard's three surrounding signals grow, while the center artwork keeps
-   its authored geometry. */
-html body .tadeon-shell .tadeon-dashboard-hero .tadeon-dashboard-signal {
-  min-height: 5.35rem;
-}
-
-html body .tadeon-shell .tadeon-dashboard-hero .tadeon-dashboard-signal > svg {
-  width: 2.35rem !important;
-  height: 2.35rem !important;
-}
-
-/* The orbital atmosphere gets more room around the emblem rather than scaling
-   the symbol itself. Existing decorative layers remain behind the content. */
-html body .tadeon-shell :is(
-  .tadeon-page-hero[data-tadeon-page-hero]:not([data-tadeon-page-hero="tabletop"]),
-  .tadeon-master-commandbar,
-  .tadeon-dashboard-hero
-) {
-  --td-hero-graphic-breath: 1.1;
-}
-
 @media (max-width: 767px) {
   html body .tadeon-shell :is(
     .tadeon-page-hero[data-tadeon-page-hero]:not([data-tadeon-page-hero="tabletop"]),
     .tadeon-master-commandbar,
     .tadeon-dashboard-hero
   ) h1 {
-    font-size: clamp(1.78rem, 7.2vw, 2.18rem) !important;
-  }
-
-  html body .tadeon-shell :is(
-    .tadeon-page-hero[data-tadeon-page-hero]:not([data-tadeon-page-hero="tabletop"]) > .tadeon-page-hero-mark-host,
-    .tadeon-page-hero[data-tadeon-page-hero]:not([data-tadeon-page-hero="tabletop"]) > .tadeon-page-hero-mark,
-    .tadeon-master-commandbar__glow
-  ) {
-    width: clamp(5.75rem, 23vw, 7rem) !important;
-    height: clamp(5.75rem, 23vw, 7rem) !important;
-    flex-basis: clamp(5.75rem, 23vw, 7rem) !important;
-  }
-
-  html body .tadeon-shell .tadeon-dashboard-hero .tadeon-dashboard-signal {
-    min-height: 4.65rem;
-  }
-
-  html body .tadeon-shell .tadeon-dashboard-hero .tadeon-dashboard-signal > svg {
-    width: 2.05rem !important;
-    height: 2.05rem !important;
+    font-size: clamp(1.72rem, 7.2vw, 2.18rem) !important;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  /* This file changes scale, not motion. */
+  /* This file changes typography only. */
 }
