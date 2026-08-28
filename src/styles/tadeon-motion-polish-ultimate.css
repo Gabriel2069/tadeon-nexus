@@ -39,6 +39,7 @@
 @import "./tadeon-tab-detail-color-polish.css";
 @import "./tadeon-state-color-authority.css";
 @import "./tadeon-hero-nexus-parity-scale.css";
+@import "./tadeon-backup-offline-drawer-parity.css";
 
 /* Single authored motion/visual authority. Legacy motion files remain only as
    compatibility shims; overlapping interaction experiments are not imported. */
