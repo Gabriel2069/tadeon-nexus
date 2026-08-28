@@ -1,0 +1,87 @@
+/* TdV — Master sliding panel color authority.
+   The Master panel keeps Offline's sliding grammar but belongs to the Master crimson palette. */
+
+.tadeon-shell[data-section="Painel do Mestre"] {
+  --master-accent: #a84448;
+  --master-accent-rgb: 168 68 72;
+}
+
+/* Sliding surface: crimson is present in the material, never as a flat fill. */
+.tadeon-shell[data-section="Painel do Mestre"] .tadeon-master-navigation {
+  --section-accent: var(--master-accent) !important;
+  --section-accent-rgb: var(--master-accent-rgb) !important;
+}
+
+.tadeon-shell[data-section="Painel do Mestre"] .tadeon-master-navigation__scroller {
+  border-color: rgb(var(--master-accent-rgb) / 22%) !important;
+  box-shadow:
+    inset 1px 0 rgb(var(--master-accent-rgb) / 10%),
+    0 24px 70px -52px rgb(0 0 0 / 92%),
+    0 0 34px -28px rgb(var(--master-accent-rgb) / 24%) !important;
+}
+
+/* Ghost trail follows the panel rather than introducing a second purple/neutral field. */
+.tadeon-shell[data-section="Painel do Mestre"] .tadeon-master-navigation__scroller::before {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgb(var(--master-accent-rgb) / 3%) 28%,
+    rgb(var(--master-accent-rgb) / 11%) 52%,
+    rgb(var(--master-accent-rgb) / 4%) 72%,
+    transparent 100%
+  ) !important;
+  opacity: .7;
+}
+
+.tadeon-shell[data-section="Painel do Mestre"] .tadeon-master-navigation__scroller::after {
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgb(var(--master-accent-rgb) / 18%),
+    transparent
+  ) !important;
+  box-shadow: 0 0 20px rgb(var(--master-accent-rgb) / 12%);
+}
+
+/* Every interactive item in the sliding panel uses the Master red. */
+.tadeon-shell[data-section="Painel do Mestre"] .tadeon-master-navigation [data-slot="tabs-trigger"] {
+  color: color-mix(in srgb, var(--master-accent) 76%, white) !important;
+  border-color: transparent !important;
+}
+
+.tadeon-shell[data-section="Painel do Mestre"] .tadeon-master-navigation [data-slot="tabs-trigger"]:hover {
+  color: color-mix(in srgb, var(--master-accent) 88%, white) !important;
+  background: rgb(var(--master-accent-rgb) / 7%) !important;
+  border-color: rgb(var(--master-accent-rgb) / 18%) !important;
+  box-shadow: inset 0 -1px rgb(var(--master-accent-rgb) / 34%) !important;
+}
+
+/* Active = a sewn-in state, not a generic blue/green tab. */
+.tadeon-shell[data-section="Painel do Mestre"] .tadeon-master-navigation [data-slot="tabs-trigger"][data-state="active"] {
+  color: #c86b6f !important;
+  background:
+    linear-gradient(90deg, rgb(var(--master-accent-rgb) / 13%), rgb(var(--master-accent-rgb) / 4%) 72%, transparent) !important;
+  border-color: rgb(var(--master-accent-rgb) / 30%) !important;
+  box-shadow:
+    inset 2px 0 var(--master-accent),
+    inset 0 -1px rgb(var(--master-accent-rgb) / 56%),
+    inset 0 0 24px rgb(var(--master-accent-rgb) / 6%),
+    0 0 20px -16px rgb(var(--master-accent-rgb) / 60%) !important;
+}
+
+.tadeon-shell[data-section="Painel do Mestre"] .tadeon-master-navigation [data-slot="tabs-trigger"][data-state="active"] svg {
+  color: #c86b6f !important;
+  stroke: currentColor !important;
+}
+
+/* Labels inherit the same restrained crimson instead of shifting to white on hover. */
+.tadeon-shell[data-section="Painel do Mestre"] .tadeon-master-navigation__group:hover .tadeon-master-navigation__label {
+  color: color-mix(in srgb, var(--master-accent) 82%, white) !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tadeon-shell[data-section="Painel do Mestre"] .tadeon-master-navigation__scroller::before,
+  .tadeon-shell[data-section="Painel do Mestre"] .tadeon-master-navigation__scroller::after {
+    animation: none !important;
+  }
+}
