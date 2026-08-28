@@ -1,0 +1,91 @@
+/* TdV — Backup drawer parity.
+   The archive/backup surface uses the same sliding grammar as Offline,
+   translated into Backup's restrained metallic palette. Geometry stays stable. */
+
+@keyframes tdv-backup-drawer-in {
+  from { transform: translate3d(100%, 0, 0); opacity: .72; }
+  to { transform: translate3d(0, 0, 0); opacity: 1; }
+}
+
+@keyframes tdv-backup-drawer-out {
+  from { transform: translate3d(0, 0, 0); opacity: 1; }
+  to { transform: translate3d(100%, 0, 0); opacity: .72; }
+}
+
+@keyframes tdv-backup-drawer-thread {
+  from { background-position: -120% 0; }
+  to { background-position: 120% 0; }
+}
+
+/* Backup is named "Saúde do arquivo" in the route contract. */
+.tadeon-shell[data-section="Saúde do arquivo"] :is([data-slot="sheet-content"],[data-slot="drawer-content"]) {
+  --backup-accent: var(--tadeon-metal, #b9bdc2);
+  --backup-accent-rgb: 185 189 194;
+  border-color: rgb(var(--backup-accent-rgb) / 28%);
+  box-shadow:
+    0 30px 90px -56px rgb(0 0 0 / 96%),
+    inset 1px 0 rgb(var(--backup-accent-rgb) / 13%),
+    0 0 38px -28px rgb(var(--backup-accent-rgb) / 30%);
+  will-change: transform;
+}
+
+/* Match the quiet, physical slide: translation only, no bounce or scale. */
+.tadeon-shell[data-section="Saúde do arquivo"] :is([data-slot="sheet-content"],[data-slot="drawer-content"])[data-state="open"] {
+  animation: tdv-backup-drawer-in 420ms cubic-bezier(.22,.72,.2,1) both;
+}
+
+.tadeon-shell[data-section="Saúde do arquivo"] :is([data-slot="sheet-content"],[data-slot="drawer-content"])[data-state="closed"] {
+  animation: tdv-backup-drawer-out 300ms cubic-bezier(.4,0,.2,1) both;
+}
+
+/* The moving material is behind the controls, never over their symbols/text. */
+.tadeon-shell[data-section="Saúde do arquivo"] :is([data-slot="sheet-content"],[data-slot="drawer-content"])::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  border-radius: inherit;
+  background:
+    linear-gradient(112deg, transparent 18%, rgb(var(--backup-accent-rgb) / 7%) 49%, transparent 72%);
+  background-size: 230% 100%;
+  animation: tdv-backup-drawer-thread 12s linear infinite;
+}
+
+.tadeon-shell[data-section="Saúde do arquivo"] :is([data-slot="sheet-content"],[data-slot="drawer-content"]) > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* Backup controls inherit the archive grey rather than Offline's violet. */
+.tadeon-shell[data-section="Saúde do arquivo"] :is([data-slot="sheet-content"],[data-slot="drawer-content"]) :is(button,[role="button"],[role="tab"],[aria-pressed="true"]) {
+  --section-accent: var(--backup-accent);
+}
+
+.tadeon-shell[data-section="Saúde do arquivo"] :is([data-slot="sheet-content"],[data-slot="drawer-content"]) :is(button,[role="button"],[role="tab"]):hover {
+  color: var(--backup-accent);
+  border-color: rgb(var(--backup-accent-rgb) / 28%);
+  box-shadow: inset 1px 0 rgb(var(--backup-accent-rgb) / 38%);
+}
+
+.tadeon-shell[data-section="Saúde do arquivo"] :is([data-slot="sheet-content"],[data-slot="drawer-content"]) :is([data-state="active"],[aria-pressed="true"]) {
+  color: var(--backup-accent);
+  border-color: rgb(var(--backup-accent-rgb) / 34%);
+  background: linear-gradient(90deg, rgb(var(--backup-accent-rgb) / 9%), transparent 84%);
+}
+
+@media (max-width: 640px) {
+  .tadeon-shell[data-section="Saúde do arquivo"] :is([data-slot="sheet-content"],[data-slot="drawer-content"]) {
+    max-width: min(100vw, 28rem);
+    width: min(100vw, 28rem);
+    animation-duration: 360ms;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tadeon-shell[data-section="Saúde do arquivo"] :is([data-slot="sheet-content"],[data-slot="drawer-content"]),
+  .tadeon-shell[data-section="Saúde do arquivo"] :is([data-slot="sheet-content"],[data-slot="drawer-content"])::after {
+    animation: none !important;
+    will-change: auto !important;
+  }
+}
