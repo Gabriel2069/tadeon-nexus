@@ -1,0 +1,28 @@
+/* TdV — Master panel detail authority. Red identity, spectral material, stable geometry. */
+.tadeon-shell[data-section="Mestre"] .tadeon-master-navigation{
+  --master-accent:#a84448;
+  --master-accent-rgb:168 68 72;
+}
+.tadeon-shell[data-section="Mestre"] .tadeon-master-navigation :is(button,[role="button"],[role="tab"],a){
+  color:color-mix(in srgb,var(--master-accent) 22%,var(--foreground));
+  border-color:rgb(var(--master-accent-rgb) / 9%);
+  transition:color 240ms ease,background-color 280ms ease,border-color 280ms ease,box-shadow 320ms ease;
+}
+.tadeon-shell[data-section="Mestre"] .tadeon-master-navigation :is(button,[role="button"],[role="tab"],a):hover{
+  color:color-mix(in srgb,var(--master-accent) 76%,white);
+  background:linear-gradient(90deg,rgb(var(--master-accent-rgb) / 7%),transparent 78%);
+  border-color:rgb(var(--master-accent-rgb) / 22%);
+  box-shadow:inset 2px 0 rgb(var(--master-accent-rgb) / 54%),0 0 24px -22px rgb(var(--master-accent-rgb) / 72%);
+}
+.tadeon-shell[data-section="Mestre"] .tadeon-master-navigation :is([data-state="active"],[aria-selected="true"],[aria-pressed="true"]){
+  color:#f0c6c8;
+  background:linear-gradient(100deg,rgb(var(--master-accent-rgb) / 13%),rgb(var(--master-accent-rgb) / 4%) 58%,transparent);
+  border-color:rgb(var(--master-accent-rgb) / 36%);
+  box-shadow:inset 2px 0 var(--master-accent),inset 0 0 28px rgb(var(--master-accent-rgb) / 6%),0 0 30px -26px rgb(var(--master-accent-rgb) / 76%);
+}
+.tadeon-shell[data-section="Mestre"] .tadeon-master-navigation :is(svg,[data-icon]){color:currentColor;transition:opacity 240ms ease,filter 280ms ease}
+.tadeon-shell[data-section="Mestre"] .tadeon-master-navigation :is(button,[role="button"],a):hover :is(svg,[data-icon]){filter:drop-shadow(0 0 6px rgb(var(--master-accent-rgb) / 42%))}
+.tadeon-shell[data-section="Mestre"] .tadeon-master-navigation :is(input,textarea,select,[role="combobox"]):focus-visible{border-color:rgb(var(--master-accent-rgb) / 52%) !important;box-shadow:0 0 0 3px rgb(var(--master-accent-rgb) / 8%),inset 0 0 20px -18px rgb(var(--master-accent-rgb) / 58%) !important}
+.tadeon-shell[data-section="Mestre"] .tadeon-master-navigation hr,.tadeon-shell[data-section="Mestre"] .tadeon-master-navigation [data-separator]{border-color:rgb(var(--master-accent-rgb) / 12%);background:linear-gradient(90deg,transparent,rgb(var(--master-accent-rgb) / 20%),transparent)}
+.tadeon-shell[data-section="Mestre"] .tadeon-master-navigation ::-webkit-scrollbar-thumb{background:linear-gradient(180deg,rgb(var(--master-accent-rgb) / 34%),rgb(var(--master-accent-rgb) / 14%));border:1px solid rgb(var(--master-accent-rgb) / 10%)}
+@media(prefers-reduced-motion:reduce){.tadeon-shell[data-section="Mestre"] .tadeon-master-navigation :is(button,[role="button"],[role="tab"],a,:is(svg,[data-icon])){transition-duration:1ms!important}}
