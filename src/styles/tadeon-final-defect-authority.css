@@ -25,6 +25,16 @@
 .tadeon-shell[data-section="Mestre"],
 .tadeon-shell[data-section="Painel do Mestre"] { --section-accent: var(--tdv-master); --section-accent-rgb: 168 68 72; }
 
+/* Real sidebar route accents. This intentionally overrides the older muted
+   values so the active/hover indicator uses the same palette as the page. */
+.tadeon-shell .tadeon-nav-item[href="/"] { --td-nav-accent: var(--tdv-dash); --td-nav-accent-rgb: 217 215 164; }
+.tadeon-shell .tadeon-nav-item[href^="/nexus"] { --td-nav-accent: var(--tdv-nexus); --td-nav-accent-rgb: 79 160 116; }
+.tadeon-shell .tadeon-nav-item[href^="/tabletop"] { --td-nav-accent: var(--tdv-mesa); --td-nav-accent-rgb: 73 116 177; }
+.tadeon-shell .tadeon-nav-item[href^="/offline"] { --td-nav-accent: var(--tdv-offline); --td-nav-accent-rgb: 132 92 157; }
+.tadeon-shell .tadeon-nav-item[href^="/master-panel"] { --td-nav-accent: var(--tdv-master); --td-nav-accent-rgb: 168 68 72; }
+.tadeon-shell .tadeon-nav-item[href^="/manage-users"] { --td-nav-accent: var(--tdv-gerenciar); --td-nav-accent-rgb: 211 124 57; }
+.tadeon-shell .tadeon-nav-item[href^="/nexus-tools"] { --td-nav-accent: var(--tdv-backup); --td-nav-accent-rgb: 185 189 194; }
+
 @media (max-width: 900px) {
   .tadeon-global-search-dialog,
   .tadeon-global-search,
@@ -49,8 +59,6 @@
     top: 0 !important;
   }
 
-  /* Paint the safe-area itself as part of the header surface instead of
-     leaving a detached strip of shell background above every mobile tab. */
   .tadeon-mobile-header {
     position: relative;
   }
