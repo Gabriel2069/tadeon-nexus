@@ -34,11 +34,7 @@
   border: 1px solid color-mix(in srgb, var(--section-accent, var(--primary)) 20%, var(--border));
   border-radius: 50%;
   background:
-    radial-gradient(
-      circle at 50% 50%,
-      color-mix(in srgb, var(--card) 96%, var(--section-accent, var(--primary)) 4%) 0 34%,
-      transparent 35%
-    ),
+    radial-gradient(circle at 50% 50%, color-mix(in srgb, var(--card) 96%, var(--section-accent, var(--primary)) 4%) 0 34%, transparent 35%),
     color-mix(in srgb, var(--card) 98%, var(--background));
   box-shadow:
     0 26px 58px -22px rgb(0 0 0 / 96%),
@@ -155,21 +151,9 @@
   scale: 1.1;
 }
 
-.tadeon-mobile-more-radial__item.is-left {
-  top: 1.9rem;
-  left: -.18rem;
-}
-
-.tadeon-mobile-more-radial__item.is-top {
-  top: -.28rem;
-  left: 50%;
-  translate: -50% 0;
-}
-
-.tadeon-mobile-more-radial__item.is-right {
-  top: 1.9rem;
-  right: -.18rem;
-}
+.tadeon-mobile-more-radial__item.is-left { top: 1.9rem; left: -.18rem; }
+.tadeon-mobile-more-radial__item.is-top { top: -.28rem; left: 50%; translate: -50% 0; }
+.tadeon-mobile-more-radial__item.is-right { top: 1.9rem; right: -.18rem; }
 
 .tadeon-mobile-more-radial__center {
   position: absolute;
@@ -212,11 +196,7 @@
   background: color-mix(in srgb, var(--card) 91%, var(--section-accent, var(--primary)) 9%);
 }
 
-.tadeon-mobile-more-radial__center button svg {
-  width: .82rem;
-  height: .82rem;
-}
-
+.tadeon-mobile-more-radial__center button svg { width: .82rem; height: .82rem; }
 .tadeon-mobile-more-radial__center strong {
   color: var(--muted-foreground);
   font-family: var(--font-mono);
@@ -225,53 +205,78 @@
   text-transform: uppercase;
 }
 
-.tadeon-mobile-dock__item[data-radial-active="true"] {
-  color: var(--section-accent, var(--primary));
+.tadeon-mobile-dock__item[data-radial-active="true"] { color: var(--section-accent, var(--primary)); }
+.tadeon-mobile-dock__item[data-radial-active="true"]::after { opacity: 1; }
+
+/* Destination identity for the decentralized links. These selectors match
+   the actual rendered class/href pair, unlike the retired .tadeon-mobile-radial selectors. */
+.tadeon-mobile-more-radial__item[href^="/manage-users"] {
+  --radial-accent: #D37C39;
+}
+.tadeon-mobile-more-radial__item[href^="/offline"] {
+  --radial-accent: #845C9D;
+}
+.tadeon-mobile-more-radial__item[href^="/nexus-tools"] {
+  --radial-accent: #B9BDC2;
 }
 
-.tadeon-mobile-dock__item[data-radial-active="true"]::after {
-  opacity: 1;
+.tadeon-mobile-more-radial__item[href^="/manage-users"],
+.tadeon-mobile-more-radial__item[href^="/offline"],
+.tadeon-mobile-more-radial__item[href^="/nexus-tools"] {
+  border-color: color-mix(in srgb, var(--radial-accent) 24%, var(--border)) !important;
+  background:
+    linear-gradient(145deg, color-mix(in srgb, var(--radial-accent) 9%, transparent), transparent 70%),
+    color-mix(in srgb, var(--card) 96%, var(--radial-accent) 4%) !important;
+}
+
+.tadeon-mobile-more-radial__item[href^="/manage-users"] svg,
+.tadeon-mobile-more-radial__item[href^="/offline"] svg,
+.tadeon-mobile-more-radial__item[href^="/nexus-tools"] svg {
+  color: var(--radial-accent) !important;
+}
+
+.tadeon-mobile-more-radial__item[href^="/manage-users"]:is(:hover, :focus-visible, .is-active),
+.tadeon-mobile-more-radial__item[href^="/offline"]:is(:hover, :focus-visible, .is-active),
+.tadeon-mobile-more-radial__item[href^="/nexus-tools"]:is(:hover, :focus-visible, .is-active) {
+  scale: 1 !important;
+  color: var(--radial-accent) !important;
+  border-color: color-mix(in srgb, var(--radial-accent) 64%, var(--border)) !important;
+  background:
+    linear-gradient(145deg, color-mix(in srgb, var(--radial-accent) 17%, transparent), transparent 72%),
+    color-mix(in srgb, var(--card) 91%, var(--radial-accent) 9%) !important;
+  box-shadow:
+    0 14px 28px -20px rgb(0 0 0 / 95%),
+    0 0 18px -10px color-mix(in srgb, var(--radial-accent) 56%, transparent) !important;
+}
+
+.tadeon-mobile-more-radial__item[href^="/manage-users"].is-active,
+.tadeon-mobile-more-radial__item[href^="/offline"].is-active,
+.tadeon-mobile-more-radial__item[href^="/nexus-tools"].is-active {
+  box-shadow:
+    inset 0 0 0 1px color-mix(in srgb, var(--radial-accent) 76%, transparent),
+    inset 0 0 18px color-mix(in srgb, var(--radial-accent) 11%, transparent),
+    0 0 20px -12px color-mix(in srgb, var(--radial-accent) 68%, transparent) !important;
+}
+
+/* No second glyph is allowed to appear over these destination marks. */
+.tadeon-mobile-more-radial__item[href^="/nexus-tools"] svg,
+.tadeon-mobile-more-radial__item[href^="/master-panel"] svg {
+  display: block;
 }
 
 @keyframes tadeon-mobile-more-radial-open {
-  from {
-    opacity: 0;
-    scale: .76;
-    rotate: -6deg;
-  }
-  to {
-    opacity: 1;
-    scale: 1;
-    rotate: 0deg;
-  }
+  from { opacity: 0; scale: .76; rotate: -6deg; }
+  to { opacity: 1; scale: 1; rotate: 0deg; }
 }
 
-@keyframes tadeon-mobile-more-orbit {
-  to {
-    rotate: 360deg;
-  }
-}
+@keyframes tadeon-mobile-more-orbit { to { rotate: 360deg; } }
 
 @media (max-width: 380px) {
-  .tadeon-mobile-more-radial {
-    width: 9.4rem;
-    height: 9.4rem;
-  }
-
-  .tadeon-mobile-more-radial__orbit {
-    width: 6.15rem;
-    height: 6.15rem;
-  }
-
-  .tadeon-mobile-more-radial__item {
-    width: 3rem;
-    min-height: 2.6rem;
-  }
-
+  .tadeon-mobile-more-radial { width: 9.4rem; height: 9.4rem; }
+  .tadeon-mobile-more-radial__orbit { width: 6.15rem; height: 6.15rem; }
+  .tadeon-mobile-more-radial__item { width: 3rem; min-height: 2.6rem; }
   .tadeon-mobile-more-radial__item.is-left,
-  .tadeon-mobile-more-radial__item.is-right {
-    top: 1.7rem;
-  }
+  .tadeon-mobile-more-radial__item.is-right { top: 1.7rem; }
 }
 
 @media (prefers-reduced-motion: reduce) {
