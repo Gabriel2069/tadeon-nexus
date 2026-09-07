@@ -48,6 +48,26 @@
     margin-top: 0 !important;
     top: 0 !important;
   }
+
+  /* Paint the safe-area itself as part of the header surface instead of
+     leaving a detached strip of shell background above every mobile tab. */
+  .tadeon-mobile-header {
+    position: relative;
+  }
+
+  .tadeon-mobile-header::before {
+    position: absolute;
+    z-index: -1;
+    top: calc(-1 * env(safe-area-inset-top));
+    right: 0;
+    left: 0;
+    height: env(safe-area-inset-top);
+    background:
+      linear-gradient(90deg, rgb(var(--section-accent-rgb) / 7%), transparent 48%),
+      rgb(8 10 14 / 88%);
+    content: "";
+    pointer-events: none;
+  }
 }
 
 .tadeon-master-hero .tadeon-section-hero-mark,
@@ -160,6 +180,15 @@
 .tadeon-shell [data-character-sheet],
 .tadeon-shell .tadeon-character-sheet {
   animation: none !important;
+}
+
+@media (hover: none) {
+  .tadeon-sheet-page .tadeon-description-card,
+  .tadeon-sheet-page .tadeon-attribute-tile,
+  .tadeon-sheet-page .tadeon-stat-block,
+  .tadeon-sheet-page .tadeon-condition-card {
+    transform: none !important;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
