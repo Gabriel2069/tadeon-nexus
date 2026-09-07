@@ -25,8 +25,6 @@
 .tadeon-shell[data-section="Mestre"],
 .tadeon-shell[data-section="Painel do Mestre"] { --section-accent: var(--tdv-master); --section-accent-rgb: 168 68 72; }
 
-/* Real sidebar route accents. This intentionally overrides the older muted
-   values so the active/hover indicator uses the same palette as the page. */
 .tadeon-shell .tadeon-nav-item[href="/"] { --td-nav-accent: var(--tdv-dash); --td-nav-accent-rgb: 217 215 164; }
 .tadeon-shell .tadeon-nav-item[href^="/nexus"] { --td-nav-accent: var(--tdv-nexus); --td-nav-accent-rgb: 79 160 116; }
 .tadeon-shell .tadeon-nav-item[href^="/tabletop"] { --td-nav-accent: var(--tdv-mesa); --td-nav-accent-rgb: 73 116 177; }
@@ -65,7 +63,7 @@
 
   .tadeon-mobile-header::before {
     position: absolute;
-    z-index: -1;
+    z-index: 0;
     top: calc(-1 * env(safe-area-inset-top));
     right: 0;
     left: 0;
