@@ -42,14 +42,15 @@
 @import "./tadeon-backup-offline-drawer-parity.css";
 @import "./tadeon-master-drawer-color-authority.css";
 @import "./tadeon-offline-detail-authority.css";
+@import "./tadeon-final-defect-authority.css";
 
-/* Single authored motion/visual authority. Legacy motion files remain only as
-   compatibility shims; overlapping interaction experiments are not imported. */
 @media (prefers-reduced-motion: reduce) {
-  .tadeon-shell *, .tadeon-shell *::before, .tadeon-shell *::after {
-    animation-duration: 1ms !important;
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
     animation-iteration-count: 1 !important;
-    transition-duration: 1ms !important;
-    transition-delay: 0ms !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
   }
 }
