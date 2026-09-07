@@ -9,8 +9,6 @@
   --tadeon-keyboard-inset: 0px;
 }
 
-/* Mestre keeps its authored mark, but the button itself is now exactly the
-   canonical dock item. Old pseudo-icon layers are explicitly retired. */
 .tadeon-mobile-dock .tadeon-mobile-dock__item[href="/master-panel"] {
   gap: .24rem !important;
 }
@@ -72,9 +70,6 @@
   content: "" !important;
 }
 
-/* Create Sheet is never vertically centered on compact/tablet viewports.
-   It is pinned inside the actual visible viewport so tall content cannot leave
-   the screen before or after the software keyboard opens. */
 @media (max-width: 1180px) {
   [data-slot="dialog-content"]:has(#sheet-name) {
     box-sizing: border-box !important;
@@ -108,9 +103,6 @@
   }
 }
 
-/* When a software keyboard reduces the visual viewport, every dialog switches
-   from layout-viewport centering to the actual visible rectangle. This covers
-   Search, Create Sheet, account/install dialogs and other dialog primitives. */
 html[data-tadeon-keyboard-open="true"] [data-slot="dialog-content"] {
   box-sizing: border-box !important;
   top: calc(var(--tadeon-vv-top, 0px) + max(.5rem, env(safe-area-inset-top))) !important;
@@ -141,8 +133,6 @@ html[data-tadeon-keyboard-open="true"] [data-slot="dialog-content"] form > * {
   max-width: 100% !important;
 }
 
-/* Floating menu primitives keep their internal scroll inside the visible
-   keyboard-safe height instead of extending behind the keyboard. */
 html[data-tadeon-keyboard-open="true"] :is(
   [data-slot="select-content"],
   [data-slot="popover-content"],
@@ -156,8 +146,36 @@ html[data-tadeon-keyboard-open="true"] :is(
   overscroll-behavior: contain;
 }
 
+/* Canonical Master glyph wins over the older generated SVG. The JS bridge may
+   still prepare the historical SVG for compatibility, but it is never painted. */
+.tadeon-mobile-dock .tadeon-mobile-dock__item[href="/master-panel"] > svg {
+  display: none !important;
+  visibility: hidden !important;
+  width: 0 !important;
+  height: 0 !important;
+  opacity: 0 !important;
+}
+
+.tadeon-mobile-dock .tadeon-mobile-dock__item[href="/master-panel"]::before {
+  display: block !important;
+  width: 1.25rem !important;
+  height: 1.25rem !important;
+  margin: 0 !important;
+  background: currentColor !important;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Ccircle cx='12' cy='12' r='8.25' fill='none' stroke='black' stroke-width='1.55' stroke-dasharray='9 3.4 2.2 4.3' opacity='.72'/%3E%3Cpath d='M12 2.8v4.1M12 17.1v4.1M2.8 12h4.1M17.1 12h4.1' fill='none' stroke='black' stroke-width='1.55' stroke-linecap='round'/%3E%3Cpath d='m8.55 12 3.45-3.45L15.45 12 12 15.45 8.55 12Z' fill='none' stroke='black' stroke-width='1.55'/%3E%3Cpath d='M6.05 6.35 9.6 9.6M17.95 6.35 14.4 9.6M6.05 17.65l3.55-3.25M17.95 17.65l-3.55-3.25' fill='none' stroke='black' stroke-width='1.55' opacity='.72'/%3E%3Ccircle cx='6.05' cy='6.35' r='.85' fill='black'/%3E%3Ccircle cx='17.95' cy='6.35' r='.85' fill='black'/%3E%3Ccircle cx='6.05' cy='17.65' r='.85' fill='black'/%3E%3Ccircle cx='17.95' cy='17.65' r='.85' fill='black'/%3E%3Ccircle cx='12' cy='12' r='1.15' fill='black'/%3E%3C/svg%3E") center / contain no-repeat !important;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Ccircle cx='12' cy='12' r='8.25' fill='none' stroke='black' stroke-width='1.55' stroke-dasharray='9 3.4 2.2 4.3' opacity='.72'/%3E%3Cpath d='M12 2.8v4.1M12 17.1v4.1M2.8 12h4.1M17.1 12h4.1' fill='none' stroke='black' stroke-width='1.55' stroke-linecap='round'/%3E%3Cpath d='m8.55 12 3.45-3.45L15.45 12 12 15.45 8.55 12Z' fill='none' stroke='black' stroke-width='1.55'/%3E%3Cpath d='M6.05 6.35 9.6 9.6M17.95 6.35 14.4 9.6M6.05 17.65l3.55-3.25M17.95 17.65l-3.55-3.25' fill='none' stroke='black' stroke-width='1.55' opacity='.72'/%3E%3Ccircle cx='6.05' cy='6.35' r='.85' fill='black'/%3E%3Ccircle cx='17.95' cy='6.35' r='.85' fill='black'/%3E%3Ccircle cx='6.05' cy='17.65' r='.85' fill='black'/%3E%3Ccircle cx='17.95' cy='17.65' r='.85' fill='black'/%3E%3Ccircle cx='12' cy='12' r='1.15' fill='black'/%3E%3C/svg%3E") center / contain no-repeat !important;
+  content: "" !important;
+  color: var(--tdv-master, #A84448) !important;
+}
+
+.tadeon-mobile-dock .tadeon-mobile-dock__item[href="/master-panel"][aria-current="page"]::before {
+  color: var(--section-accent, var(--tdv-master)) !important;
+  filter: drop-shadow(0 0 8px rgb(var(--section-accent-rgb, 168 68 72) / 28%));
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .tadeon-mobile-dock .tadeon-mobile-dock__item[href="/master-panel"] > svg {
+  .tadeon-mobile-dock .tadeon-mobile-dock__item[href="/master-panel"] > svg,
+  .tadeon-mobile-dock .tadeon-mobile-dock__item[href="/master-panel"]::before {
     transition: none !important;
     transform: none !important;
   }
