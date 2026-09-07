@@ -8,8 +8,6 @@
   --tdv-master: #A84448;
 }
 
-/* The shell exposes human-readable section labels. Keep both canonical and
-   visible labels accepted so the visual contract does not depend on wording. */
 .tadeon-shell[data-section="Dashboard"],
 .tadeon-shell[data-section="Dash"],
 .tadeon-shell[data-section="Ficha"] { --section-accent: var(--tdv-dash); --section-accent-rgb: 217 215 164; }
@@ -35,7 +33,7 @@
     left: calc(var(--tadeon-search-vv-left, 0px) + var(--tadeon-search-vv-width, 100vw) / 2) !important;
     right: auto !important;
     margin-left: 0 !important;
-    transform: translateX(-50%) !important;
+    transform: translate(-50%, -50%) !important;
     max-width: min(92vw, 42rem) !important;
   }
 
@@ -86,8 +84,6 @@
               inset 0 0 18px color-mix(in srgb, var(--section-accent) 8%, transparent) !important;
 }
 
-/* Canonical Master/Backup symbols in every decentralized navigation surface.
-   The authored public glyphs replace the legacy Lightbulb/Wrench SVGs. */
 .tadeon-mobile-radial a[href*="mestre"] svg,
 .tadeon-mobile-radial a[href*="master"] svg,
 .tadeon-mobile-radial a[href*="backup"] svg,
