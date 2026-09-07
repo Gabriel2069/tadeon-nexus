@@ -34,21 +34,26 @@
 .tadeon-shell .tadeon-nav-item[href^="/nexus-tools"] { --td-nav-accent: var(--tdv-backup); --td-nav-accent-rgb: 185 189 194; }
 
 @media (max-width: 900px) {
-  .tadeon-global-search-dialog,
-  .tadeon-global-search,
-  [data-tadeon-global-search],
-  [data-search-dialog] {
-    left: calc(var(--tadeon-search-vv-left, 0px) + var(--tadeon-search-vv-width, 100vw) / 2) !important;
+  .tadeon-global-search-dialog {
+    position: relative !important;
+    inset: auto !important;
+    left: auto !important;
     right: auto !important;
-    margin-left: 0 !important;
-    transform: translate(-50%, -50%) !important;
-    max-width: min(92vw, 42rem) !important;
+    top: auto !important;
+    bottom: auto !important;
+    margin: auto !important;
+    transform: none !important;
+    translate: none !important;
+    justify-self: center !important;
+    align-self: center !important;
+    max-width: 92vw !important;
   }
 
   .tadeon-page-hero h1,
   [data-tadeon-page-hero] h1 {
     white-space: nowrap;
     max-width: none;
+    min-width: 0;
   }
 
   .tadeon-shell > header,
@@ -110,75 +115,55 @@
               inset 0 0 18px color-mix(in srgb, var(--section-accent) 8%, transparent) !important;
 }
 
-.tadeon-mobile-radial a[href*="mestre"] svg,
-.tadeon-mobile-radial a[href*="master"] svg,
-.tadeon-mobile-radial a[href*="backup"] svg,
-[data-radial-item][href*="mestre"] svg,
-[data-radial-item][href*="master"] svg,
-[data-radial-item][href*="backup"] svg,
-.tadeon-mobile-dock__item[href="/master-panel"] > svg,
-.tadeon-sidebar .tadeon-nav-item[href="/master-panel"] .tadeon-nav-item__icon > svg,
-.tadeon-sidebar .tadeon-nav-item[href="/nexus-tools"] .tadeon-nav-item__icon > svg {
-  display: none !important;
+/* Actual decentralized radial markup. */
+.tadeon-mobile-more-radial__item[href^="/manage-users"] { --radial-accent: var(--tdv-gerenciar); }
+.tadeon-mobile-more-radial__item[href^="/offline"] { --radial-accent: var(--tdv-offline); }
+.tadeon-mobile-more-radial__item[href^="/nexus-tools"] { --radial-accent: var(--tdv-backup); }
+
+.tadeon-mobile-more-radial__item:is([href^="/manage-users"], [href^="/offline"], [href^="/nexus-tools"]) {
+  border-color: color-mix(in srgb, var(--radial-accent) 24%, var(--border)) !important;
+  background:
+    linear-gradient(145deg, color-mix(in srgb, var(--radial-accent) 9%, transparent), transparent 70%),
+    color-mix(in srgb, var(--card) 96%, var(--radial-accent) 4%) !important;
 }
 
-.tadeon-mobile-radial a[href*="mestre"]::before,
-.tadeon-mobile-radial a[href*="master"]::before,
-[data-radial-item][href*="mestre"]::before,
-[data-radial-item][href*="master"]::before,
-.tadeon-mobile-dock__item[href="/master-panel"]::before,
-.tadeon-sidebar .tadeon-nav-item[href="/master-panel"] .tadeon-nav-item__icon::before {
-  content: "";
-  width: 1.15rem;
-  height: 1.15rem;
-  display: block;
-  background: center / contain no-repeat url("/favicons/master.svg");
-  filter: drop-shadow(0 0 6px color-mix(in srgb, var(--tdv-master) 28%, transparent));
+.tadeon-mobile-more-radial__item:is([href^="/manage-users"], [href^="/offline"], [href^="/nexus-tools"]) svg {
+  color: var(--radial-accent) !important;
 }
 
-.tadeon-mobile-radial a[href*="backup"]::before,
-[data-radial-item][href*="backup"]::before,
-.tadeon-sidebar .tadeon-nav-item[href="/nexus-tools"] .tadeon-nav-item__icon::before {
-  content: "";
-  width: 1.05rem;
-  height: 1.18rem;
-  display: block;
-  background: center / contain no-repeat url("/favicons/backup.svg");
-  filter: drop-shadow(0 0 6px color-mix(in srgb, var(--tdv-backup) 24%, transparent));
+.tadeon-mobile-more-radial__item:is([href^="/manage-users"], [href^="/offline"], [href^="/nexus-tools"]):is(:hover, :focus-visible, .is-active) {
+  scale: 1 !important;
+  color: var(--radial-accent) !important;
+  border-color: color-mix(in srgb, var(--radial-accent) 64%, var(--border)) !important;
+  background:
+    linear-gradient(145deg, color-mix(in srgb, var(--radial-accent) 17%, transparent), transparent 72%),
+    color-mix(in srgb, var(--card) 91%, var(--radial-accent) 9%) !important;
 }
 
-.tadeon-mobile-radial a[href*="mestre"],
-.tadeon-mobile-radial a[href*="master"],
-[data-radial-item][href*="mestre"],
-[data-radial-item][href*="master"] {
-  color: var(--tdv-master) !important;
-  background: color-mix(in srgb, var(--tdv-master) 10%, transparent) !important;
-  border-color: color-mix(in srgb, var(--tdv-master) 46%, transparent) !important;
+.tadeon-mobile-more-radial__item:is([href^="/manage-users"], [href^="/offline"], [href^="/nexus-tools"]) .is-active,
+.tadeon-mobile-more-radial__item:is([href^="/manage-users"], [href^="/offline"], [href^="/nexus-tools"]).is-active {
+  box-shadow:
+    inset 0 0 0 1px color-mix(in srgb, var(--radial-accent) 76%, transparent),
+    inset 0 0 18px color-mix(in srgb, var(--radial-accent) 11%, transparent),
+    0 0 20px -12px color-mix(in srgb, var(--radial-accent) 68%, transparent) !important;
 }
 
-.tadeon-mobile-radial a[href*="backup"],
-[data-radial-item][href*="backup"] {
-  color: var(--tdv-backup) !important;
-  background: color-mix(in srgb, var(--tdv-backup) 10%, transparent) !important;
-  border-color: color-mix(in srgb, var(--tdv-backup) 46%, transparent) !important;
+/* Canonical route glyphs use currentColor rather than the older baked red/gray. */
+.tadeon-sidebar .tadeon-nav-item[href^="/master-panel"] .tadeon-nav-item__icon::before,
+.tadeon-sidebar .tadeon-nav-item[href^="/nexus-tools"] .tadeon-nav-item__icon::before {
+  background-color: currentColor !important;
+  background-image: none !important;
+  filter: none !important;
 }
 
-.tadeon-mobile-radial a[href*="mestre"][aria-current="page"],
-.tadeon-mobile-radial a[href*="mestre"][data-active="true"],
-[data-radial-item][href*="mestre"][aria-current="page"],
-[data-radial-item][href*="mestre"][data-active="true"] {
-  background: color-mix(in srgb, var(--tdv-master) 18%, transparent) !important;
-  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--tdv-master) 72%, transparent),
-              inset 0 0 16px color-mix(in srgb, var(--tdv-master) 10%, transparent) !important;
+.tadeon-sidebar .tadeon-nav-item[href^="/master-panel"] .tadeon-nav-item__icon::before {
+  width: 1.05rem !important;
+  height: 1.05rem !important;
 }
 
-.tadeon-mobile-radial a[href*="backup"][aria-current="page"],
-.tadeon-mobile-radial a[href*="backup"][data-active="true"],
-[data-radial-item][href*="backup"][aria-current="page"],
-[data-radial-item][href*="backup"][data-active="true"] {
-  background: color-mix(in srgb, var(--tdv-backup) 18%, transparent) !important;
-  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--tdv-backup) 72%, transparent),
-              inset 0 0 16px color-mix(in srgb, var(--tdv-backup) 10%, transparent) !important;
+.tadeon-sidebar .tadeon-nav-item[href^="/nexus-tools"] .tadeon-nav-item__icon::before {
+  width: 1.05rem !important;
+  height: 1.18rem !important;
 }
 
 .tadeon-shell .tadeon-ficha,
