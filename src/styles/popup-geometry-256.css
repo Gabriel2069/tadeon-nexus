@@ -5,9 +5,6 @@
   [data-slot="alert-dialog-positioner"]
 ) {
   position: fixed;
-  /* Keep the centered content above its sibling overlay. The shared visual
-   * layer raises overlays to 80, so the positioner must own a higher stacking
-   * context or the dark layer intercepts every pointer interaction. */
   z-index: 120;
   top: var(--tadeon-popup-viewport-top, 0px);
   left: var(--tadeon-popup-frame-left, 0px);
@@ -26,9 +23,6 @@
   pointer-events: none;
 }
 
-/* Every blocking surface has a deterministic layer below its interactive
- * panel. This also covers sheets and drawers, whose legacy utility classes
- * used the same z-index for overlay and content. */
 :where(
   [data-slot="dialog-overlay"],
   [data-slot="alert-dialog-overlay"],
@@ -55,8 +49,6 @@
   width: min(var(--tadeon-dialog-width, calc(100% - 1rem)), 100%) !important;
   max-height: 100% !important;
   margin: auto !important;
-  /* A numeric reset survives Lightning CSS and defeats the legacy viewport
-   * stylesheets that still publish `translate: -50% -50% !important`. */
   --tadeon-popup-zero-translate: 0px;
   translate:
     var(--tadeon-popup-zero-translate)
@@ -65,28 +57,34 @@
   pointer-events: auto;
 }
 
-@keyframes tadeon-popup-contained-in {
-  from {
-    opacity: 0;
-    transform: translate3d(0, 0.9rem, 0) scale(0.965);
-  }
+/* Global command search is centered by the fixed positioner. It must not
+   acquire a second visual-viewport offset of its own. */
+[data-slot="dialog-positioner"]
+  > [data-slot="dialog-content"].tadeon-global-search-dialog {
+  position: relative !important;
+  inset: auto !important;
+  left: auto !important;
+  top: auto !important;
+  right: auto !important;
+  bottom: auto !important;
+  margin: auto !important;
+  translate: none !important;
+  transform: none !important;
+  transform-origin: center !important;
+  justify-self: center !important;
+  align-self: center !important;
+  width: min(42rem, 100%) !important;
+  max-width: min(92vw, 42rem) !important;
+}
 
-  to {
-    opacity: 1;
-    transform: translate3d(0, 0, 0) scale(1);
-  }
+@keyframes tadeon-popup-contained-in {
+  from { opacity: 0; transform: translate3d(0, 0.9rem, 0) scale(0.965); }
+  to { opacity: 1; transform: translate3d(0, 0, 0) scale(1); }
 }
 
 @keyframes tadeon-popup-contained-out {
-  from {
-    opacity: 1;
-    transform: translate3d(0, 0, 0) scale(1);
-  }
-
-  to {
-    opacity: 0;
-    transform: translate3d(0, 0.55rem, 0) scale(0.98);
-  }
+  from { opacity: 1; transform: translate3d(0, 0, 0) scale(1); }
+  to { opacity: 0; transform: translate3d(0, 0.55rem, 0) scale(0.98); }
 }
 
 [data-slot="dialog-positioner"]
@@ -116,6 +114,12 @@
   [data-slot="alert-dialog-positioner"]
     > [data-slot="alert-dialog-content"][data-popup-contained="true"] {
     width: 100% !important;
+  }
+
+  [data-slot="dialog-positioner"]
+    > [data-slot="dialog-content"].tadeon-global-search-dialog {
+    width: min(42rem, 92vw) !important;
+    max-width: 92vw !important;
   }
 }
 
