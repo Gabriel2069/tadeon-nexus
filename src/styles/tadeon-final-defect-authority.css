@@ -8,11 +8,6 @@
   --tdv-master: #A84448;
 }
 
-/* --------------------------------------------------------------------------
-   Canonical section accents.
-   AppLayout currently exposes the human-readable section names in
-   data-section, so this layer deliberately accepts those exact values.
-   -------------------------------------------------------------------------- */
 .tadeon-shell[data-section="Dashboard"],
 .tadeon-shell[data-section="Dash"] { --section-accent: var(--tdv-dash); --section-accent-rgb: 217 215 164; }
 .tadeon-shell[data-section="Nexus"] { --section-accent: var(--tdv-nexus); --section-accent-rgb: 79 160 116; }
@@ -24,12 +19,8 @@
 .tadeon-shell[data-section="Mestre"],
 .tadeon-shell[data-section="Painel do Mestre"] { --section-accent: var(--tdv-master); --section-accent-rgb: 168 68 72; }
 
-/* --------------------------------------------------------------------------
-   1. Global search: anchor to the visual viewport center on mobile.
-   The old implementation mixed viewport offsets with a fixed left edge,
-   which becomes visibly displaced on iOS/PWA layouts.
-   -------------------------------------------------------------------------- */
 @media (max-width: 900px) {
+  .tadeon-global-search-dialog,
   .tadeon-global-search,
   [data-tadeon-global-search],
   [data-search-dialog] {
@@ -40,17 +31,12 @@
     max-width: min(92vw, 42rem) !important;
   }
 
-  /* Prevent hero titles such as "O Nexus" from being broken by a narrow
-     action column. The title remains visually centered without changing its
-     canonical typography. */
   .tadeon-page-hero h1,
   [data-tadeon-page-hero] h1 {
     white-space: nowrap;
     max-width: none;
   }
 
-  /* Remove accidental top offset that exposes the page background above the
-     mobile header. Safe-area padding belongs inside the header surface. */
   .tadeon-shell > header,
   .tadeon-shell header:first-of-type {
     margin-top: 0 !important;
@@ -58,10 +44,6 @@
   }
 }
 
-/* --------------------------------------------------------------------------
-   2. Hero centering: keep the principal mark centered inside its visual host
-   without introducing scale/jump motion.
-   -------------------------------------------------------------------------- */
 .tadeon-master-hero .tadeon-section-hero-mark,
 .tadeon-master-hero [data-section-hero-mark],
 .tadeon-master-hero [data-hero-symbol] {
@@ -70,11 +52,6 @@
   align-self: center !important;
 }
 
-/* --------------------------------------------------------------------------
-   3. Buttons, tab indicators and selected controls inherit the active page
-   accent. Neutral surfaces remain dark; only the seam/halo/tint carries the
-   section color, so semantic status colors are not overwritten.
-   -------------------------------------------------------------------------- */
 .tadeon-shell .tadeon-page-hero button,
 .tadeon-shell .tadeon-page-hero [role="button"],
 .tadeon-shell [data-tadeon-tab] button,
@@ -101,42 +78,44 @@
               inset 0 0 18px color-mix(in srgb, var(--section-accent) 8%, transparent) !important;
 }
 
-/* --------------------------------------------------------------------------
-   4/5. Decentralized/mobile navigation: remove the legacy icon rendering
-   where the target is Master/Backup and replace it with a quiet woven glyph.
-   -------------------------------------------------------------------------- */
+/* Canonical Master/Backup symbols in every decentralized navigation surface.
+   The public SVGs are the same authored glyphs used by the project favicon set,
+   avoiding the legacy Lightbulb/Wrench icon leaking through active states. */
 .tadeon-mobile-radial a[href*="mestre"] svg,
 .tadeon-mobile-radial a[href*="master"] svg,
 .tadeon-mobile-radial a[href*="backup"] svg,
 [data-radial-item][href*="mestre"] svg,
 [data-radial-item][href*="master"] svg,
-[data-radial-item][href*="backup"] svg {
+[data-radial-item][href*="backup"] svg,
+.tadeon-mobile-dock__item[href="/master-panel"] > svg,
+.tadeon-sidebar a[href="/master-panel"] > svg,
+.tadeon-sidebar a[href="/nexus-tools"] > svg {
   display: none !important;
 }
 
 .tadeon-mobile-radial a[href*="mestre"]::before,
 .tadeon-mobile-radial a[href*="master"]::before,
 [data-radial-item][href*="mestre"]::before,
-[data-radial-item][href*="master"]::before {
+[data-radial-item][href*="master"]::before,
+.tadeon-mobile-dock__item[href="/master-panel"]::before,
+.tadeon-sidebar a[href="/master-panel"]::before {
   content: "";
   width: 1.15rem;
   height: 1.15rem;
   display: block;
-  border: 1.5px solid currentColor;
-  border-radius: 42% 58% 48% 52%;
-  box-shadow: inset 0 0 0 3px transparent, 0 0 8px color-mix(in srgb, var(--tdv-master) 26%, transparent);
-  transform: rotate(45deg);
+  background: center / contain no-repeat url("/favicons/master.svg");
+  filter: drop-shadow(0 0 6px color-mix(in srgb, var(--tdv-master) 28%, transparent));
 }
 
 .tadeon-mobile-radial a[href*="backup"]::before,
-[data-radial-item][href*="backup"]::before {
+[data-radial-item][href*="backup"]::before,
+.tadeon-sidebar a[href="/nexus-tools"]::before {
   content: "";
-  width: 1rem;
-  height: 1.15rem;
+  width: 1.05rem;
+  height: 1.18rem;
   display: block;
-  border: 1.5px solid currentColor;
-  border-radius: .22rem;
-  box-shadow: inset 0 -4px 0 color-mix(in srgb, var(--tdv-backup) 20%, transparent);
+  background: center / contain no-repeat url("/favicons/backup.svg");
+  filter: drop-shadow(0 0 6px color-mix(in srgb, var(--tdv-backup) 24%, transparent));
 }
 
 .tadeon-mobile-radial a[href*="mestre"],
@@ -155,8 +134,6 @@
   border-color: color-mix(in srgb, var(--tdv-backup) 46%, transparent) !important;
 }
 
-/* Keep the selected state on the destination palette instead of the current
-   page palette. */
 .tadeon-mobile-radial a[href*="mestre"][aria-current="page"],
 .tadeon-mobile-radial a[href*="mestre"][data-active="true"],
 [data-radial-item][href*="mestre"][aria-current="page"],
@@ -175,10 +152,6 @@
               inset 0 0 16px color-mix(in srgb, var(--tdv-backup) 10%, transparent) !important;
 }
 
-/* --------------------------------------------------------------------------
-   7. Stop vertical card jitter. This is intentionally a transform-free
-   correction; hover/focus states may still use the interaction authorities.
-   -------------------------------------------------------------------------- */
 .tadeon-shell .tadeon-ficha,
 .tadeon-shell [data-ficha],
 .tadeon-shell [data-character-sheet],
