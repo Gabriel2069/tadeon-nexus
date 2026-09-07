@@ -8,14 +8,22 @@
   --tdv-master: #A84448;
 }
 
+/* The shell exposes human-readable section labels. Keep both canonical and
+   visible labels accepted so the visual contract does not depend on wording. */
 .tadeon-shell[data-section="Dashboard"],
-.tadeon-shell[data-section="Dash"] { --section-accent: var(--tdv-dash); --section-accent-rgb: 217 215 164; }
-.tadeon-shell[data-section="Nexus"] { --section-accent: var(--tdv-nexus); --section-accent-rgb: 79 160 116; }
-.tadeon-shell[data-section="Mesa"] { --section-accent: var(--tdv-mesa); --section-accent-rgb: 73 116 177; }
+.tadeon-shell[data-section="Dash"],
+.tadeon-shell[data-section="Ficha"] { --section-accent: var(--tdv-dash); --section-accent-rgb: 217 215 164; }
+.tadeon-shell[data-section="Nexus"],
+.tadeon-shell[data-section="O Nexus"] { --section-accent: var(--tdv-nexus); --section-accent-rgb: 79 160 116; }
+.tadeon-shell[data-section="Mesa"],
+.tadeon-shell[data-section="Mesa Nexus"] { --section-accent: var(--tdv-mesa); --section-accent-rgb: 73 116 177; }
 .tadeon-shell[data-section="Off-line"],
-.tadeon-shell[data-section="Offline"] { --section-accent: var(--tdv-offline); --section-accent-rgb: 132 92 157; }
-.tadeon-shell[data-section="Gerenciar"] { --section-accent: var(--tdv-gerenciar); --section-accent-rgb: 211 124 57; }
-.tadeon-shell[data-section="Backup"] { --section-accent: var(--tdv-backup); --section-accent-rgb: 185 189 194; }
+.tadeon-shell[data-section="Offline"],
+.tadeon-shell[data-section="Consulta offline"] { --section-accent: var(--tdv-offline); --section-accent-rgb: 132 92 157; }
+.tadeon-shell[data-section="Gerenciar"],
+.tadeon-shell[data-section="Usuários"] { --section-accent: var(--tdv-gerenciar); --section-accent-rgb: 211 124 57; }
+.tadeon-shell[data-section="Backup"],
+.tadeon-shell[data-section="Saúde do arquivo"] { --section-accent: var(--tdv-backup); --section-accent-rgb: 185 189 194; }
 .tadeon-shell[data-section="Mestre"],
 .tadeon-shell[data-section="Painel do Mestre"] { --section-accent: var(--tdv-master); --section-accent-rgb: 168 68 72; }
 
@@ -79,8 +87,7 @@
 }
 
 /* Canonical Master/Backup symbols in every decentralized navigation surface.
-   The public SVGs are the same authored glyphs used by the project favicon set,
-   avoiding the legacy Lightbulb/Wrench icon leaking through active states. */
+   The authored public glyphs replace the legacy Lightbulb/Wrench SVGs. */
 .tadeon-mobile-radial a[href*="mestre"] svg,
 .tadeon-mobile-radial a[href*="master"] svg,
 .tadeon-mobile-radial a[href*="backup"] svg,
@@ -88,8 +95,8 @@
 [data-radial-item][href*="master"] svg,
 [data-radial-item][href*="backup"] svg,
 .tadeon-mobile-dock__item[href="/master-panel"] > svg,
-.tadeon-sidebar a[href="/master-panel"] > svg,
-.tadeon-sidebar a[href="/nexus-tools"] > svg {
+.tadeon-sidebar .tadeon-nav-item[href="/master-panel"] .tadeon-nav-item__icon > svg,
+.tadeon-sidebar .tadeon-nav-item[href="/nexus-tools"] .tadeon-nav-item__icon > svg {
   display: none !important;
 }
 
@@ -98,7 +105,7 @@
 [data-radial-item][href*="mestre"]::before,
 [data-radial-item][href*="master"]::before,
 .tadeon-mobile-dock__item[href="/master-panel"]::before,
-.tadeon-sidebar a[href="/master-panel"]::before {
+.tadeon-sidebar .tadeon-nav-item[href="/master-panel"] .tadeon-nav-item__icon::before {
   content: "";
   width: 1.15rem;
   height: 1.15rem;
@@ -109,7 +116,7 @@
 
 .tadeon-mobile-radial a[href*="backup"]::before,
 [data-radial-item][href*="backup"]::before,
-.tadeon-sidebar a[href="/nexus-tools"]::before {
+.tadeon-sidebar .tadeon-nav-item[href="/nexus-tools"] .tadeon-nav-item__icon::before {
   content: "";
   width: 1.05rem;
   height: 1.18rem;
