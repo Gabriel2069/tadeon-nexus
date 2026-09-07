@@ -1,0 +1,196 @@
+:root {
+  --tdv-dash: #D9D7A4;
+  --tdv-nexus: #4FA074;
+  --tdv-mesa: #4974B1;
+  --tdv-offline: #845C9D;
+  --tdv-gerenciar: #D37C39;
+  --tdv-backup: #B9BDC2;
+  --tdv-master: #A84448;
+}
+
+/* --------------------------------------------------------------------------
+   Canonical section accents.
+   AppLayout currently exposes the human-readable section names in
+   data-section, so this layer deliberately accepts those exact values.
+   -------------------------------------------------------------------------- */
+.tadeon-shell[data-section="Dashboard"],
+.tadeon-shell[data-section="Dash"] { --section-accent: var(--tdv-dash); --section-accent-rgb: 217 215 164; }
+.tadeon-shell[data-section="Nexus"] { --section-accent: var(--tdv-nexus); --section-accent-rgb: 79 160 116; }
+.tadeon-shell[data-section="Mesa"] { --section-accent: var(--tdv-mesa); --section-accent-rgb: 73 116 177; }
+.tadeon-shell[data-section="Off-line"],
+.tadeon-shell[data-section="Offline"] { --section-accent: var(--tdv-offline); --section-accent-rgb: 132 92 157; }
+.tadeon-shell[data-section="Gerenciar"] { --section-accent: var(--tdv-gerenciar); --section-accent-rgb: 211 124 57; }
+.tadeon-shell[data-section="Backup"] { --section-accent: var(--tdv-backup); --section-accent-rgb: 185 189 194; }
+.tadeon-shell[data-section="Mestre"],
+.tadeon-shell[data-section="Painel do Mestre"] { --section-accent: var(--tdv-master); --section-accent-rgb: 168 68 72; }
+
+/* --------------------------------------------------------------------------
+   1. Global search: anchor to the visual viewport center on mobile.
+   The old implementation mixed viewport offsets with a fixed left edge,
+   which becomes visibly displaced on iOS/PWA layouts.
+   -------------------------------------------------------------------------- */
+@media (max-width: 900px) {
+  .tadeon-global-search,
+  [data-tadeon-global-search],
+  [data-search-dialog] {
+    left: calc(var(--tadeon-search-vv-left, 0px) + var(--tadeon-search-vv-width, 100vw) / 2) !important;
+    right: auto !important;
+    margin-left: 0 !important;
+    transform: translateX(-50%) !important;
+    max-width: min(92vw, 42rem) !important;
+  }
+
+  /* Prevent hero titles such as "O Nexus" from being broken by a narrow
+     action column. The title remains visually centered without changing its
+     canonical typography. */
+  .tadeon-page-hero h1,
+  [data-tadeon-page-hero] h1 {
+    white-space: nowrap;
+    max-width: none;
+  }
+
+  /* Remove accidental top offset that exposes the page background above the
+     mobile header. Safe-area padding belongs inside the header surface. */
+  .tadeon-shell > header,
+  .tadeon-shell header:first-of-type {
+    margin-top: 0 !important;
+    top: 0 !important;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   2. Hero centering: keep the principal mark centered inside its visual host
+   without introducing scale/jump motion.
+   -------------------------------------------------------------------------- */
+.tadeon-master-hero .tadeon-section-hero-mark,
+.tadeon-master-hero [data-section-hero-mark],
+.tadeon-master-hero [data-hero-symbol] {
+  margin-inline: auto !important;
+  justify-self: center !important;
+  align-self: center !important;
+}
+
+/* --------------------------------------------------------------------------
+   3. Buttons, tab indicators and selected controls inherit the active page
+   accent. Neutral surfaces remain dark; only the seam/halo/tint carries the
+   section color, so semantic status colors are not overwritten.
+   -------------------------------------------------------------------------- */
+.tadeon-shell .tadeon-page-hero button,
+.tadeon-shell .tadeon-page-hero [role="button"],
+.tadeon-shell [data-tadeon-tab] button,
+.tadeon-shell [role="tab"],
+.tadeon-shell [data-tadeon-tab-indicator] {
+  border-color: color-mix(in srgb, var(--section-accent) 42%, transparent) !important;
+  background: color-mix(in srgb, var(--section-accent) 9%, transparent) !important;
+}
+
+.tadeon-shell .tadeon-page-hero button:hover,
+.tadeon-shell .tadeon-page-hero [role="button"]:hover,
+.tadeon-shell [data-tadeon-tab] button:hover,
+.tadeon-shell [role="tab"]:hover {
+  background: color-mix(in srgb, var(--section-accent) 15%, transparent) !important;
+  border-color: color-mix(in srgb, var(--section-accent) 65%, transparent) !important;
+}
+
+.tadeon-shell [role="tab"][aria-selected="true"],
+.tadeon-shell [data-tadeon-tab][data-active="true"] button,
+.tadeon-shell [data-tadeon-tab][aria-selected="true"] button {
+  background: color-mix(in srgb, var(--section-accent) 16%, transparent) !important;
+  border-color: color-mix(in srgb, var(--section-accent) 78%, transparent) !important;
+  box-shadow: inset 0 -1px 0 color-mix(in srgb, var(--section-accent) 82%, transparent),
+              inset 0 0 18px color-mix(in srgb, var(--section-accent) 8%, transparent) !important;
+}
+
+/* --------------------------------------------------------------------------
+   4/5. Decentralized/mobile navigation: remove the legacy icon rendering
+   where the target is Master/Backup and replace it with a quiet woven glyph.
+   -------------------------------------------------------------------------- */
+.tadeon-mobile-radial a[href*="mestre"] svg,
+.tadeon-mobile-radial a[href*="master"] svg,
+.tadeon-mobile-radial a[href*="backup"] svg,
+[data-radial-item][href*="mestre"] svg,
+[data-radial-item][href*="master"] svg,
+[data-radial-item][href*="backup"] svg {
+  display: none !important;
+}
+
+.tadeon-mobile-radial a[href*="mestre"]::before,
+.tadeon-mobile-radial a[href*="master"]::before,
+[data-radial-item][href*="mestre"]::before,
+[data-radial-item][href*="master"]::before {
+  content: "";
+  width: 1.15rem;
+  height: 1.15rem;
+  display: block;
+  border: 1.5px solid currentColor;
+  border-radius: 42% 58% 48% 52%;
+  box-shadow: inset 0 0 0 3px transparent, 0 0 8px color-mix(in srgb, var(--tdv-master) 26%, transparent);
+  transform: rotate(45deg);
+}
+
+.tadeon-mobile-radial a[href*="backup"]::before,
+[data-radial-item][href*="backup"]::before {
+  content: "";
+  width: 1rem;
+  height: 1.15rem;
+  display: block;
+  border: 1.5px solid currentColor;
+  border-radius: .22rem;
+  box-shadow: inset 0 -4px 0 color-mix(in srgb, var(--tdv-backup) 20%, transparent);
+}
+
+.tadeon-mobile-radial a[href*="mestre"],
+.tadeon-mobile-radial a[href*="master"],
+[data-radial-item][href*="mestre"],
+[data-radial-item][href*="master"] {
+  color: var(--tdv-master) !important;
+  background: color-mix(in srgb, var(--tdv-master) 10%, transparent) !important;
+  border-color: color-mix(in srgb, var(--tdv-master) 46%, transparent) !important;
+}
+
+.tadeon-mobile-radial a[href*="backup"],
+[data-radial-item][href*="backup"] {
+  color: var(--tdv-backup) !important;
+  background: color-mix(in srgb, var(--tdv-backup) 10%, transparent) !important;
+  border-color: color-mix(in srgb, var(--tdv-backup) 46%, transparent) !important;
+}
+
+/* Keep the selected state on the destination palette instead of the current
+   page palette. */
+.tadeon-mobile-radial a[href*="mestre"][aria-current="page"],
+.tadeon-mobile-radial a[href*="mestre"][data-active="true"],
+[data-radial-item][href*="mestre"][aria-current="page"],
+[data-radial-item][href*="mestre"][data-active="true"] {
+  background: color-mix(in srgb, var(--tdv-master) 18%, transparent) !important;
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--tdv-master) 72%, transparent),
+              inset 0 0 16px color-mix(in srgb, var(--tdv-master) 10%, transparent) !important;
+}
+
+.tadeon-mobile-radial a[href*="backup"][aria-current="page"],
+.tadeon-mobile-radial a[href*="backup"][data-active="true"],
+[data-radial-item][href*="backup"][aria-current="page"],
+[data-radial-item][href*="backup"][data-active="true"] {
+  background: color-mix(in srgb, var(--tdv-backup) 18%, transparent) !important;
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--tdv-backup) 72%, transparent),
+              inset 0 0 16px color-mix(in srgb, var(--tdv-backup) 10%, transparent) !important;
+}
+
+/* --------------------------------------------------------------------------
+   7. Stop vertical card jitter. This is intentionally a transform-free
+   correction; hover/focus states may still use the interaction authorities.
+   -------------------------------------------------------------------------- */
+.tadeon-shell .tadeon-ficha,
+.tadeon-shell [data-ficha],
+.tadeon-shell [data-character-sheet],
+.tadeon-shell .tadeon-character-sheet {
+  animation: none !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tadeon-shell .tadeon-ficha,
+  .tadeon-shell [data-ficha],
+  .tadeon-shell [data-character-sheet],
+  .tadeon-shell .tadeon-character-sheet {
+    transition: none !important;
+  }
+}
