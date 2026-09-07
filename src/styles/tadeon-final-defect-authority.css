@@ -33,6 +33,9 @@
 .tadeon-shell .tadeon-nav-item[href^="/manage-users"] { --td-nav-accent: var(--tdv-gerenciar); --td-nav-accent-rgb: 211 124 57; }
 .tadeon-shell .tadeon-nav-item[href^="/nexus-tools"] { --td-nav-accent: var(--tdv-backup); --td-nav-accent-rgb: 185 189 194; }
 
+/* The defect authority is deliberately the final stylesheet in Root, so it
+   resolves the older mobile/theme layers rather than fighting them by load
+   order. */
 @media (max-width: 900px) {
   .tadeon-global-search-dialog {
     position: relative !important;
@@ -64,21 +67,54 @@
 
   .tadeon-mobile-header {
     position: relative;
+    isolation: isolate;
   }
 
   .tadeon-mobile-header::before {
     position: absolute;
-    z-index: 0;
+    z-index: -1;
     top: calc(-1 * env(safe-area-inset-top));
     right: 0;
     left: 0;
     height: env(safe-area-inset-top);
     background:
       linear-gradient(90deg, rgb(var(--section-accent-rgb) / 7%), transparent 48%),
-      rgb(8 10 14 / 88%);
+      rgb(8 10 14 / 96%);
     content: "";
     pointer-events: none;
   }
+
+  /* The mobile route wrapper must not replay a vertical entry transform on
+     a sheet as state changes/re-renders happen. */
+  .tadeon-route-stage > .tadeon-sheet-page,
+  .tadeon-route-stage > :has(.tadeon-sheet-page) {
+    animation: none !important;
+    transform: none !important;
+  }
+
+  .tadeon-sheet-page .tadeon-overview-metric,
+  .tadeon-sheet-page .tadeon-description-card,
+  .tadeon-sheet-page .tadeon-skill-node {
+    animation: none !important;
+    transform: none !important;
+  }
+
+  .tadeon-sheet-page .tadeon-sheet-tabs [role="tabpanel"][data-state="active"] {
+    animation: none !important;
+    transform: none !important;
+  }
+}
+
+/* Hero frames may clip atmospheric decoration, but must not clip the authored
+   tab indicator or action label. */
+.tadeon-master-commandbar {
+  overflow: visible !important;
+}
+
+.tadeon-page-hero[data-tadeon-page-hero="users"],
+.tadeon-page-hero[data-tadeon-page-hero="tools"],
+.tadeon-page-hero[data-tadeon-page-hero="offline"] {
+  overflow: visible !important;
 }
 
 .tadeon-master-hero .tadeon-section-hero-mark,
@@ -140,7 +176,6 @@
     color-mix(in srgb, var(--card) 91%, var(--radial-accent) 9%) !important;
 }
 
-.tadeon-mobile-more-radial__item:is([href^="/manage-users"], [href^="/offline"], [href^="/nexus-tools"]) .is-active,
 .tadeon-mobile-more-radial__item:is([href^="/manage-users"], [href^="/offline"], [href^="/nexus-tools"]).is-active {
   box-shadow:
     inset 0 0 0 1px color-mix(in srgb, var(--radial-accent) 76%, transparent),
@@ -148,7 +183,12 @@
     0 0 20px -12px color-mix(in srgb, var(--radial-accent) 68%, transparent) !important;
 }
 
-/* Canonical route glyphs use currentColor rather than the older baked red/gray. */
+/* Canonical route glyphs use the existing authored masks with currentColor. */
+.tadeon-sidebar .tadeon-nav-item[href^="/master-panel"] .tadeon-nav-item__icon > svg,
+.tadeon-sidebar .tadeon-nav-item[href^="/nexus-tools"] .tadeon-nav-item__icon > svg {
+  display: none !important;
+}
+
 .tadeon-sidebar .tadeon-nav-item[href^="/master-panel"] .tadeon-nav-item__icon::before,
 .tadeon-sidebar .tadeon-nav-item[href^="/nexus-tools"] .tadeon-nav-item__icon::before {
   background-color: currentColor !important;
@@ -166,11 +206,25 @@
   height: 1.18rem !important;
 }
 
-.tadeon-shell .tadeon-ficha,
-.tadeon-shell [data-ficha],
-.tadeon-shell [data-character-sheet],
-.tadeon-shell .tadeon-character-sheet {
-  animation: none !important;
+/* The mobile dock has a later viewport stylesheet that used to force the
+   generated Master SVG back on. Retire that path decisively. */
+.tadeon-mobile-dock .tadeon-mobile-dock__item[href="/master-panel"] > svg {
+  display: none !important;
+}
+
+.tadeon-mobile-dock .tadeon-mobile-dock__item[href="/master-panel"]::before {
+  display: block !important;
+  width: 1.25rem !important;
+  height: 1.25rem !important;
+  background: currentColor !important;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Ccircle cx='12' cy='12' r='8.25' fill='none' stroke='black' stroke-width='1.55' stroke-dasharray='9 3.4 2.2 4.3' opacity='.72'/%3E%3Cpath d='M12 2.8v4.1M12 17.1v4.1M2.8 12h4.1M17.1 12h4.1' fill='none' stroke='black' stroke-width='1.55' stroke-linecap='round'/%3E%3Cpath d='m8.55 12 3.45-3.45L15.45 12 12 15.45 8.55 12Z' fill='none' stroke='black' stroke-width='1.55'/%3E%3Cpath d='M6.05 6.35 9.6 9.6M17.95 6.35 14.4 9.6M6.05 17.65l3.55-3.25M17.95 17.65l-3.55-3.25' fill='none' stroke='black' stroke-width='1.55' opacity='.72'/%3E%3Ccircle cx='6.05' cy='6.35' r='.85' fill='black'/%3E%3Ccircle cx='17.95' cy='6.35' r='.85' fill='black'/%3E%3Ccircle cx='6.05' cy='17.65' r='.85' fill='black'/%3E%3Ccircle cx='17.95' cy='17.65' r='.85' fill='black'/%3E%3Ccircle cx='12' cy='12' r='1.15' fill='black'/%3E%3C/svg%3E") center / contain no-repeat !important;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Ccircle cx='12' cy='12' r='8.25' fill='none' stroke='black' stroke-width='1.55' stroke-dasharray='9 3.4 2.2 4.3' opacity='.72'/%3E%3Cpath d='M12 2.8v4.1M12 17.1v4.1M2.8 12h4.1M17.1 12h4.1' fill='none' stroke='black' stroke-width='1.55' stroke-linecap='round'/%3E%3Cpath d='m8.55 12 3.45-3.45L15.45 12 12 15.45 8.55 12Z' fill='none' stroke='black' stroke-width='1.55'/%3E%3Cpath d='M6.05 6.35 9.6 9.6M17.95 6.35 14.4 9.6M6.05 17.65l3.55-3.25M17.95 17.65l-3.55 3.25M17.95 17.65l-3.55-3.25' fill='none' stroke='black' stroke-width='1.55' opacity='.72'/%3E%3Ccircle cx='6.05' cy='6.35' r='.85' fill='black'/%3E%3Ccircle cx='17.95' cy='6.35' r='.85' fill='black'/%3E%3Ccircle cx='6.05' cy='17.65' r='.85' fill='black'/%3E%3Ccircle cx='17.95' cy='17.65' r='.85' fill='black'/%3E%3Ccircle cx='12' cy='12' r='1.15' fill='black'/%3E%3C/svg%3E") center / contain no-repeat !important;
+  content: "" !important;
+  color: var(--tdv-master) !important;
+}
+
+.tadeon-mobile-dock .tadeon-mobile-dock__item[href="/master-panel"][aria-current="page"]::before {
+  color: var(--tdv-master) !important;
 }
 
 @media (hover: none) {
@@ -186,7 +240,12 @@
   .tadeon-shell .tadeon-ficha,
   .tadeon-shell [data-ficha],
   .tadeon-shell [data-character-sheet],
-  .tadeon-shell .tadeon-character-sheet {
+  .tadeon-shell .tadeon-character-sheet,
+  .tadeon-sheet-page .tadeon-overview-metric,
+  .tadeon-sheet-page .tadeon-description-card,
+  .tadeon-sheet-page .tadeon-skill-node,
+  .tadeon-sheet-page .tadeon-sheet-tabs [role="tabpanel"][data-state="active"] {
+    animation: none !important;
     transition: none !important;
   }
 }
