@@ -1,0 +1,32 @@
+/* TdV — Off-line detail authority. Violet spectral material, same interaction grammar as Mestre. */
+.tadeon-shell[data-section="Off-line"]{
+  --offline-accent:#845c9d;
+  --offline-accent-rgb:132 92 157;
+}
+.tadeon-shell[data-section="Off-line"] :is([data-offline-drawer],[data-offline-panel],.tadeon-offline-navigation,.tadeon-offline-drawer){
+  --section-accent:var(--offline-accent);
+  --section-accent-rgb:var(--offline-accent-rgb);
+}
+.tadeon-shell[data-section="Off-line"] :is([data-offline-drawer],[data-offline-panel],.tadeon-offline-navigation,.tadeon-offline-drawer) :is(button,[role="button"],[role="tab"],a){
+  color:color-mix(in srgb,var(--offline-accent) 24%,var(--foreground));
+  border-color:rgb(var(--offline-accent-rgb) / 9%);
+  transition:color 240ms ease,background-color 280ms ease,border-color 280ms ease,box-shadow 320ms ease;
+}
+.tadeon-shell[data-section="Off-line"] :is([data-offline-drawer],[data-offline-panel],.tadeon-offline-navigation,.tadeon-offline-drawer) :is(button,[role="button"],a):hover{
+  color:color-mix(in srgb,var(--offline-accent) 78%,white);
+  background:linear-gradient(90deg,rgb(var(--offline-accent-rgb) / 8%),transparent 78%);
+  border-color:rgb(var(--offline-accent-rgb) / 24%);
+  box-shadow:inset 2px 0 rgb(var(--offline-accent-rgb) / 52%),0 0 24px -22px rgb(var(--offline-accent-rgb) / 72%);
+}
+.tadeon-shell[data-section="Off-line"] :is([data-offline-drawer],[data-offline-panel],.tadeon-offline-navigation,.tadeon-offline-drawer) :is([data-state="active"],[aria-selected="true"],[aria-pressed="true"]){
+  color:#d7c5df;
+  background:linear-gradient(100deg,rgb(var(--offline-accent-rgb) / 14%),rgb(var(--offline-accent-rgb) / 4%) 58%,transparent);
+  border-color:rgb(var(--offline-accent-rgb) / 38%);
+  box-shadow:inset 2px 0 var(--offline-accent),inset 0 0 28px rgb(var(--offline-accent-rgb) / 7%),0 0 30px -26px rgb(var(--offline-accent-rgb) / 78%);
+}
+.tadeon-shell[data-section="Off-line"] :is([data-offline-drawer],[data-offline-panel],.tadeon-offline-navigation,.tadeon-offline-drawer) :is(svg,[data-icon]){color:currentColor;transition:opacity 240ms ease,filter 280ms ease}
+.tadeon-shell[data-section="Off-line"] :is([data-offline-drawer],[data-offline-panel],.tadeon-offline-navigation,.tadeon-offline-drawer) :is(button,[role="button"],a):hover :is(svg,[data-icon]){filter:drop-shadow(0 0 6px rgb(var(--offline-accent-rgb) / 42%))}
+.tadeon-shell[data-section="Off-line"] :is([data-offline-drawer],[data-offline-panel],.tadeon-offline-navigation,.tadeon-offline-drawer) :is(input,textarea,select,[role="combobox"]):focus-visible{border-color:rgb(var(--offline-accent-rgb) / 52%) !important;box-shadow:0 0 0 3px rgb(var(--offline-accent-rgb) / 8%),inset 0 0 20px -18px rgb(var(--offline-accent-rgb) / 58%) !important}
+.tadeon-shell[data-section="Off-line"] :is([data-offline-drawer],[data-offline-panel],.tadeon-offline-navigation,.tadeon-offline-drawer) hr,.tadeon-shell[data-section="Off-line"] :is([data-offline-drawer],[data-offline-panel],.tadeon-offline-navigation,.tadeon-offline-drawer) [data-separator]{border-color:rgb(var(--offline-accent-rgb) / 12%);background:linear-gradient(90deg,transparent,rgb(var(--offline-accent-rgb) / 22%),transparent)}
+.tadeon-shell[data-section="Off-line"] :is([data-offline-drawer],[data-offline-panel],.tadeon-offline-navigation,.tadeon-offline-drawer) ::-webkit-scrollbar-thumb{background:linear-gradient(180deg,rgb(var(--offline-accent-rgb) / 34%),rgb(var(--offline-accent-rgb) / 14%));border:1px solid rgb(var(--offline-accent-rgb) / 10%)}
+@media(prefers-reduced-motion:reduce){.tadeon-shell[data-section="Off-line"] :is([data-offline-drawer],[data-offline-panel],.tadeon-offline-navigation,.tadeon-offline-drawer) *{transition-duration:1ms!important;animation-duration:1ms!important;animation-iteration-count:1!important}}
