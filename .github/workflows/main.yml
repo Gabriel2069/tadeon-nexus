@@ -1,94 +1,95 @@
-#!/bin/bash
-# Gera um único arquivo de texto com os 63 CSS globais do __root.tsx,
-# na ordem exata de carregamento, para colar na conversa com a Perplexity.
-#
-# Uso:
-#   1. Abra um terminal na raiz do repositório clonado (tadeon-nexus/)
-#   2. Rode: bash gerar-bundle-fase1.sh
-#   3. O arquivo "css-globais-para-analise.txt" será criado na raiz.
-#   4. Cole o conteúdo desse arquivo na conversa.
+  - name: Generate css bundle
+    shell: bash
+    run: |
+      set -euo pipefail
 
-OUT="css-globais-para-analise.txt"
-> "$OUT"
+      # Arquivo de saída
+      OUT="css-globais-para-analise.txt"
+      : > "$OUT"
 
-FILES=(
-  "styles.css"
-  "styles/mobile-studio.css"
-  "styles/viewport-fit-final.css"
-  "styles/interface-audit-final.css"
-  "styles/radial-presence-final.css"
-  "styles/interface-reconciliation-final.css"
-  "styles/interface-final-user-polish.css"
-  "styles/selection-director-entry-polish.css"
-  "styles/urgent-user-reconciliation.css"
-  "styles/tabletop-map-chrome-repair.css"
-  "styles/user-repair-152.css"
-  "styles/mobile-product-repair-153.css"
-  "styles/final-device-parity-154.css"
-  "styles/final-device-parity-154-compat.css"
-  "styles/user-visible-repair-156.css"
-  "styles/final-visual-system-157.css"
-  "styles/mobile-popup-master-head-158.css"
-  "styles/focus-header-nav-parity-159.css"
-  "styles/navigation-real-svg-parity-160.css"
-  "styles/sheet-popup-graph-polish-161.css"
-  "styles/nav-sheet-search-polish-162.css"
-  "styles/create-sheet-search-viewport-163.css"
-  "styles/desktop-hero-parity-202.css"
-  "styles/hero-icons-final-212.css"
-  "styles/tadeon-experience-orchestration.css"
-  "styles/tadeon-experience-stabilization.css"
-  "styles/tadeon-experience-runtime.css"
-  "styles/tadeon-materials-final.css"
-  "styles/tadeon-mobile-excellence.css"
-  "styles/tadeon-experience-details.css"
-  "styles/tadeon-command-experience.css"
-  "styles/tadeon-nexus-material.css"
-  "styles/tadeon-visible-upgrade.css"
-  "styles/tadeon-atmosphere.css"
-  "styles/tadeon-interaction-pass.css"
-  "styles/tadeon-head-microanimations.css"
-  "styles/tadeon-motion-system.css"
-  "styles/tadeon-contextual-motion.css"
-  "styles/tadeon-popup-motion.css"
-  "styles/tadeon-ui-detail-motion.css"
-  "styles/tadeon-library-layout-restore.css"
-  "styles/tadeon-continuity-motion.css"
-  "styles/tadeon-premium-motion.css"
-  "styles/tadeon-relational-motion.css"
-  "styles/tadeon-visible-motion.css"
-  "styles/tadeon-personality-motion.css"
-  "styles/tadeon-section-personality-motion.css"
-  "styles/tadeon-actual-ui-motion.css"
-  "styles/tadeon-frame-refinement-motion.css"
-  "styles/tadeon-complete-interaction-motion.css"
-  "styles/tadeon-deep-interaction-motion.css"
-  "styles/tadeon-semantic-motion.css"
-  "styles/tadeon-context-transition-motion.css"
-  "styles/tadeon-portal-surface-motion.css"
-  "styles/tadeon-popup-refinement-motion.css"
-  "styles/tadeon-sidebar-real-repair.css"
-  "styles/tadeon-detail-motion-refinement.css"
-  "styles/tadeon-sidebar-final.css"
-  "styles/tadeon-final-detail-refinement.css"
-  "styles/tadeon-motion-personality.css"
-  "styles/tadeon-semantic-personality-refinement.css"
-  "styles/tadeon-motion-relational-depth.css"
-  "styles/tadeon-motion-polish-ultimate.css"
-  "styles/tadeon-motion-loom.css"
-  "styles/tadeon-final-defect-authority.css"
-)
+      # Lista de arquivos (ordem de carregamento)
+      FILES=(
+        "styles.css"
+        "styles/mobile-studio.css"
+        "styles/viewport-fit-final.css"
+        "styles/interface-audit-final.css"
+        "styles/radial-presence-final.css"
+        "styles/interface-reconciliation-final.css"
+        "styles/interface-final-user-polish.css"
+        "styles/selection-director-entry-polish.css"
+        "styles/urgent-user-reconciliation.css"
+        "styles/tabletop-map-chrome-repair.css"
+        "styles/user-repair-152.css"
+        "styles/mobile-product-repair-153.css"
+        "styles/final-device-parity-154.css"
+        "styles/final-device-parity-154-compat.css"
+        "styles/user-visible-repair-156.css"
+        "styles/final-visual-system-157.css"
+        "styles/mobile-popup-master-head-158.css"
+        "styles/focus-header-nav-parity-159.css"
+        "styles/navigation-real-svg-parity-160.css"
+        "styles/sheet-popup-graph-polish-161.css"
+        "styles/nav-sheet-search-polish-162.css"
+        "styles/create-sheet-search-viewport-163.css"
+        "styles/desktop-hero-parity-202.css"
+        "styles/hero-icons-final-212.css"
+        "styles/tadeon-experience-orchestration.css"
+        "styles/tadeon-experience-stabilization.css"
+        "styles/tadeon-experience-runtime.css"
+        "styles/tadeon-materials-final.css"
+        "styles/tadeon-mobile-excellence.css"
+        "styles/tadeon-experience-details.css"
+        "styles/tadeon-command-experience.css"
+        "styles/tadeon-nexus-material.css"
+        "styles/tadeon-visible-upgrade.css"
+        "styles/tadeon-atmosphere.css"
+        "styles/tadeon-interaction-pass.css"
+        "styles/tadeon-head-microanimations.css"
+        "styles/tadeon-motion-system.css"
+        "styles/tadeon-contextual-motion.css"
+        "styles/tadeon-popup-motion.css"
+        "styles/tadeon-ui-detail-motion.css"
+        "styles/tadeon-library-layout-restore.css"
+        "styles/tadeon-continuity-motion.css"
+        "styles/tadeon-premium-motion.css"
+        "styles/tadeon-relational-motion.css"
+        "styles/tadeon-visible-motion.css"
+        "styles/tadeon-personality-motion.css"
+        "styles/tadeon-section-personality-motion.css"
+        "styles/tadeon-actual-ui-motion.css"
+        "styles/tadeon-frame-refinement-motion.css"
+        "styles/tadeon-complete-interaction-motion.css"
+        "styles/tadeon-deep-interaction-motion.css"
+        "styles/tadeon-semantic-motion.css"
+        "styles/tadeon-context-transition-motion.css"
+        "styles/tadeon-portal-surface-motion.css"
+        "styles/tadeon-popup-refinement-motion.css"
+        "styles/tadeon-sidebar-real-repair.css"
+        "styles/tadeon-detail-motion-refinement.css"
+        "styles/tadeon-sidebar-final.css"
+        "styles/tadeon-final-detail-refinement.css"
+        "styles/tadeon-motion-personality.css"
+        "styles/tadeon-semantic-personality-refinement.css"
+        "styles/tadeon-motion-relational-depth.css"
+        "styles/tadeon-motion-polish-ultimate.css"
+        "styles/tadeon-motion-loom.css"
+        "styles/tadeon-final-defect-authority.css"
+      )
 
-for f in "${FILES[@]}"; do
-  echo "===== ARQUIVO: $f =====" >> "$OUT"
-  if [ -f "src/$f" ]; then
-    cat "src/$f" >> "$OUT"
-  else
-    echo "!!! ARQUIVO NAO ENCONTRADO EM src/$f !!!" >> "$OUT"
-  fi
-  echo "" >> "$OUT"
-  echo "===== FIM: $f =====" >> "$OUT"
-  echo "" >> "$OUT"
-done
+      # Concatena os arquivos na ordem definida
+      for f in "${FILES[@]}"; do
+        echo "===== ARQUIVO: $f =====" >> "$OUT"
+        if [ -f "src/$f" ]; then
+          cat "src/$f" >> "$OUT"
+        elif [ -f "$f" ]; then
+          # fallback caso os arquivos estejam na raiz do repositório (sem src/)
+          cat "$f" >> "$OUT"
+        else
+          echo "!!! ARQUIVO NAO ENCONTRADO: src/$f ou $f !!!" >> "$OUT"
+        fi
+        echo "" >> "$OUT"
+        echo "===== FIM: $f =====" >> "$OUT"
+        echo "" >> "$OUT"
+      done
 
-echo "Gerado: $OUT ($(wc -l < "$OUT") linhas)"
+      echo "Gerado: $OUT ($(wc -l < "$OUT") linhas)"
