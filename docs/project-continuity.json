@@ -1,28 +1,23 @@
 {
   "version": 1,
   "checkedAt": "2026-10-11",
-  "runtimeReference": "662180278fc7b3d872fae2a8b05267d9800db9c6",
+  "runtimeReference": "2b367163610dfc310099ee4a94908752bc6d97be",
   "integration": {
-    "pr": 259,
-    "branch": "design/fio-mestre-visual-board-2026-10-11",
+    "pr": 261,
+    "branch": "design/nexus-navigation-type-2026-10-11",
     "base": "main",
-    "baseCommit": "c6c1ea6c5e3338b4ff111329a8b2b37841e8245d",
-    "headCommit": "419e566f5800304d6fa7e3c79ce35cf386df640c",
+    "baseCommit": "662180278fc7b3d872fae2a8b05267d9800db9c6",
+    "headCommit": "b3f8c4049e8aa7fbb2b32b81a1b587b78cd3b449",
     "state": "integrated",
-    "mergeCommit": "ca49ce09a3f3761a7f68978e194d8cfe8984192c",
-    "qualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38156149188",
+    "mergeCommit": "2b367163610dfc310099ee4a94908752bc6d97be",
+    "qualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38162310175",
     "production": "confirmed",
-    "productionEvidence": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38157372540",
-    "deliveryFollowUp": {
-      "branch": "delivery/verify-production-sha-2026-10-11",
-      "reason": "Confirmar o SHA exclusivamente no marcador HTML, sem pipeline grep -q/pipefail e com diagnóstico de HTTP/SHA observado.",
-      "currentEvidence": "https://github.com/Gabriel2069/tadeon-nexus/actions/workflows/cloudflare-preview.yml",
-      "pr": 260,
-      "state": "integrated",
-      "mergeCommit": "662180278fc7b3d872fae2a8b05267d9800db9c6",
-      "qualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38157372552"
-    },
-    "productionCommit": "662180278fc7b3d872fae2a8b05267d9800db9c6"
+    "productionEvidence": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38162497262",
+    "productionCommit": "2b367163610dfc310099ee4a94908752bc6d97be",
+    "mainQualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38162497219",
+    "productionVerifiedAt": "2026-10-11T18:09:43Z",
+    "productionHttpStatus": 200,
+    "workerVersion": "bad86e08-292f-4af3-bcd7-4131272959b4"
   },
   "domains": [
     {
@@ -370,7 +365,7 @@
       "id": "NEX-004",
       "title": "Sidebar, navegação móvel e portais",
       "domain": "popup",
-      "status": "validated",
+      "status": "integrated",
       "priority": 2,
       "dependsOn": [
         "NEX-003"
@@ -385,9 +380,13 @@
         "scripts/verify-dashboard-design.mjs",
         "scripts/verify-header-ownership.mjs",
         "src/components/mobile-more-menu.test.tsx",
-        "src/components/ui/sheet.test.tsx"
+        "src/components/ui/sheet.test.tsx",
+        "https://github.com/Gabriel2069/tadeon-nexus/pull/261",
+        "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38162310175",
+        "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38162497219",
+        "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38162497262"
       ],
-      "checkpoint": "Validado na branch design/nexus-navigation-type-2026-10-11: Grenze, menu React/Radix, retorno de foco de drawer/portais e foco do main efetivamente montado. 16 vistas Dashboard, 21 vistas de rotas, 6 portais e 2 teclados simulados aprovados. Integração/publicação devem ser confirmadas pela PR e workflow do SHA atual; contas reais e teclado físico permanecem fora da evidência."
+      "checkpoint": "Integrado pela PR #261 em 2b367163610dfc310099ee4a94908752bc6d97be, após Quality do HEAD b3f8c40. 122 suítes/541 testes, 37 vistas, seis portais e dois teclados simulados aprovados. Produção confirmada em 2b36716: HTTP 200, SHA exato no HTML e workflow 38162497262 aprovado; contas reais e teclado físico fora da evidência. Não reimplementar esta etapa; próximas prioridades permanecem na fila."
     },
     {
       "id": "NEX-005",
@@ -805,6 +804,28 @@
       "qualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38149258475",
       "productionEvidence": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38151368993",
       "productionCommit": "c6c1ea6c5e3338b4ff111329a8b2b37841e8245d"
+    },
+    {
+      "pr": 259,
+      "branch": "design/fio-mestre-visual-board-2026-10-11",
+      "base": "main",
+      "baseCommit": "c6c1ea6c5e3338b4ff111329a8b2b37841e8245d",
+      "headCommit": "419e566f5800304d6fa7e3c79ce35cf386df640c",
+      "state": "integrated",
+      "mergeCommit": "ca49ce09a3f3761a7f68978e194d8cfe8984192c",
+      "qualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38156149188",
+      "production": "confirmed",
+      "productionEvidence": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38157372540",
+      "deliveryFollowUp": {
+        "branch": "delivery/verify-production-sha-2026-10-11",
+        "reason": "Confirmar o SHA exclusivamente no marcador HTML, sem pipeline grep -q/pipefail e com diagnóstico de HTTP/SHA observado.",
+        "currentEvidence": "https://github.com/Gabriel2069/tadeon-nexus/actions/workflows/cloudflare-preview.yml",
+        "pr": 260,
+        "state": "integrated",
+        "mergeCommit": "662180278fc7b3d872fae2a8b05267d9800db9c6",
+        "qualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38157372552"
+      },
+      "productionCommit": "662180278fc7b3d872fae2a8b05267d9800db9c6"
     }
   ]
 }

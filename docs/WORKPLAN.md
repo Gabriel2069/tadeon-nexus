@@ -2,7 +2,7 @@
 
 > Gerado de [project-continuity.json](project-continuity.json). Edite o registro e rode `npm run sync:project`; não mantenha uma cópia manual.
 
-Snapshot: 2026-10-11; referência de runtime: `662180278fc7b3d872fae2a8b05267d9800db9c6`. PR #259 em `design/fio-mestre-visual-board-2026-10-11`; integração: `integrated`. Não é prova de deploy.
+Snapshot: 2026-10-11; referência de runtime: `2b367163610dfc310099ee4a94908752bc6d97be`. PR #261 em `design/nexus-navigation-type-2026-10-11`; integração: `integrated`. Não é prova de deploy.
 
 Estados: planejado → próximo → em andamento → validado na branch → integrado. Publicação exige evidência própria do SHA; adiado conserva o requisito. Se um requisito mudar, preservar o ID e registrar a decisão/evidência.
 
@@ -13,7 +13,7 @@ Cada PR usa IDs desta fila e declara dependências. Trabalho sobre o mesmo propr
 | NEX-001 | Preparação estrutural | Integrado | 0 | delivery | — |
 | NEX-002 | Mapa, continuidade e conciliação das PRs | Integrado | 0 | delivery | NEX-001 |
 | NEX-003 | Véu & Trama: referência aplicada ao shell e Dashboard | Integrado | 1 | shell | NEX-001, NEX-002 |
-| NEX-004 | Sidebar, navegação móvel e portais | Validado na branch | 2 | popup | NEX-003 |
+| NEX-004 | Sidebar, navegação móvel e portais | Integrado | 2 | popup | NEX-003 |
 | NEX-005 | Ficha por seções e estados | Planejado | 3 | sheet | NEX-003 |
 | NEX-006 | Biblioteca, documento e grafo do Nexus | Planejado | 4 | knowledge | NEX-003 |
 | NEX-007 | Mesa: hierarquia de ferramentas e workspace | Planejado | 5 | tabletop | NEX-004 |
@@ -52,7 +52,7 @@ Evidências: [docs/DESIGN.md](../docs/DESIGN.md), [docs/design/board.html](../do
 - Testar foco, Escape, retorno ao controle, safe areas e teclado real quando disponível.
 - Cada propriedade alterada mantém uma autoridade; reduzir dívida CSS em vez de adicionar remendo.
 
-Evidências: [docs/navigation-design-validation.json](../docs/navigation-design-validation.json), [scripts/verify-dashboard-design.mjs](../scripts/verify-dashboard-design.mjs), [scripts/verify-header-ownership.mjs](../scripts/verify-header-ownership.mjs), [src/components/mobile-more-menu.test.tsx](../src/components/mobile-more-menu.test.tsx), [src/components/ui/sheet.test.tsx](../src/components/ui/sheet.test.tsx).
+Evidências: [docs/navigation-design-validation.json](../docs/navigation-design-validation.json), [scripts/verify-dashboard-design.mjs](../scripts/verify-dashboard-design.mjs), [scripts/verify-header-ownership.mjs](../scripts/verify-header-ownership.mjs), [src/components/mobile-more-menu.test.tsx](../src/components/mobile-more-menu.test.tsx), [src/components/ui/sheet.test.tsx](../src/components/ui/sheet.test.tsx), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/pull/261), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38162310175), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38162497219), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38162497262).
 
 ## NEX-005 — Ficha por seções e estados
 
