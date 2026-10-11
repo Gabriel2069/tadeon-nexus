@@ -2,7 +2,7 @@
 
 Leia `docs/ai/00_ESTADO_ATUAL.md`, `docs/WORKPLAN.md`, `docs/PROJECT_MAP.md` e `docs/FOUNDATION.md` antes de alterar interface, sessão ou publicação. Para design e visuais, leia também `docs/DESIGN.md`; a direção foi aprovada, e a evidência de implementação está em `docs/dashboard-design-validation.json`; a prancheta isolada não prova runtime.
 
-- Preserve o Fio-Mestre: fundo escuro, marfim, Grenze (editorial), Inter, PT Mono, símbolos autorais e cores por seção. Redesign exige uma decisão visual explícita.
+- Preserve o Fio-Mestre: fundo escuro, marfim, Cormorant Garamond (editorial), Inter (interface e métricas tabulares), PT Mono, símbolos autorais e cores por seção. Redesign exige uma decisão visual explícita.
 - Procure o proprietário da regra em `docs/style-architecture.json` e no mapa de `docs/FOUNDATION.md`. Edite o módulo existente. Não crie outro arquivo numerado, `final`, `repair`, `polish` ou uma nova camada para vencer a anterior.
 - O CSS tem uma transição documentada, não uma cascata já saneada por completo. Ao modificar uma propriedade, identifique todas as declarações concorrentes, mantenha um responsável e elimine as anteriores somente depois de validar os estados e tamanhos afetados.
 - Não repita regras idênticas no mesmo contexto; mantenha a última autoridade existente. A geometria de Área em foco pertence a `page-hero-parity.css`, e os símbolos pertencem aos componentes de cabeçalho.

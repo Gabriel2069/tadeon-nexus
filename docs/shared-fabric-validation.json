@@ -1,0 +1,121 @@
+{
+  "task": "NEX-013",
+  "checkedAt": "2026-10-11",
+  "state": "validated",
+  "branch": "design/liquid-fabric-shared-2026-10-11",
+  "base": "473691326817b3c9f82f33a02792c198d5956110",
+  "scope": [
+    "login",
+    "Dashboard",
+    "header",
+    "sidebar",
+    "mobile header/dock/drawer",
+    "dialog frame",
+    "shared Button"
+  ],
+  "typography": {
+    "editorial": "Cormorant Garamond",
+    "metrics": "Inter 500, lining/tabular numbers",
+    "technical": "PT Mono",
+    "source": "https://github.com/CatharsisFonts/Cormorant",
+    "license": "SIL OFL 1.1",
+    "glyphs": "Portuguese accents verified in 500/600/700 fixture cmap; no font binary redistributed"
+  },
+  "owners": {
+    "reflection": "use-material-light.ts: bounded pointer coordinates, one pending frame, cleanup on leave/unmount; no content transform",
+    "cloth": "brand-mark.tsx ThreadField: decorative SVG, original artwork",
+    "materials": "experience-surfaces.css; navigation-layout.css; button.css",
+    "motion": "motion-composition.css and button.css",
+    "popupFocusViewport": "Existing Radix primitives and root viewport bridge, unchanged"
+  },
+  "validation": {
+    "state": "passed",
+    "browser": "Chromium, real font fixtures loaded from external fixture directory; 320/390/820/1440 px",
+    "dashboard": {
+      "views": 16,
+      "states": [
+        "empty",
+        "loading",
+        "error",
+        "populated"
+      ],
+      "metricsPreserved": [
+        "05",
+        "05",
+        "20"
+      ],
+      "overflow": false,
+      "pageErrors": 0,
+      "cardLight": "Mouse reflection follows local coordinates; heading geometry stays unchanged; legacy nav pseudo absent",
+      "reducedMotion": "Decorative animation and spatial hover disabled"
+    },
+    "login": {
+      "widths": [
+        320,
+        390,
+        820,
+        1440
+      ],
+      "cases": 4,
+      "renders": 12,
+      "states": [
+        "signin",
+        "invalid-credentials",
+        "signup"
+      ],
+      "interactions": [
+        "failed sign-in preserves email",
+        "password recovery intercepted",
+        "mode switch clears password",
+        "keyboard focus",
+        "submit target >=44px"
+      ],
+      "pageErrors": 0,
+      "overflow": false,
+      "auth": "Intercepted fake responses only"
+    },
+    "shell": {
+      "routeViews": 21,
+      "portals": 6,
+      "simulatedKeyboardViewports": 2,
+      "pageErrors": 0,
+      "overflow": false
+    },
+    "styles": {
+      "modules": 57,
+      "rootLinks": 12,
+      "importantBefore": 5598,
+      "importantAfter": 5482,
+      "budgets": "Lowered only; unchanged inventory",
+      "ownership": "Retired competing shell/auth pseudo layers, navigation material writers and navigation text-state overrides; preserved unrelated declarations and domain styles"
+    },
+    "commands": [
+      "npm run check:styles",
+      "npm run check:project",
+      "npm run lint",
+      "npm run typecheck",
+      "npm run test -- --maxWorkers=2",
+      "npm run build",
+      "npm audit --audit-level=high",
+      "node scripts/verify-shared-fabric.mjs",
+      "node scripts/verify-dashboard-design.mjs",
+      "node scripts/verify-header-ownership.mjs fabric"
+    ],
+    "auditVulnerabilities": 0,
+    "unit": {
+      "suites": 123,
+      "tests": 546,
+      "result": "passed",
+      "command": "npm run test -- --maxWorkers=2"
+    },
+    "build": "client/server production build passed",
+    "checkNote": "Individual gates passed. Aggregate command log ended before a test/build summary; test and build were rerun independently and verified."
+  },
+  "limits": [
+    "Fixtures and intercepted requests; no real accounts, messages, auth/database changes or mutations",
+    "Physical keyboard, VoiceOver, 200% zoom and representative GPU/frames not certified",
+    "CSS glass is an approximation of depth/reflection, not native refraction or a fabric physics engine",
+    "Fallback transparency rules are inspected; OS settings/support must be verified on real devices"
+  ],
+  "delivery": "Branch, integration and exact public SHA proof are separate states."
+}

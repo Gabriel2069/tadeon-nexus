@@ -8,7 +8,7 @@ Um arquivo vivo de mitos, personagens e vínculos, sustentado pelo Fio-Mestre. S
 
 Público: jogadores e mestres que consultam, editam e conduzem sessões. Dashboard orienta a retomada; Nexus preserva conhecimento; ficha exige leitura e edição precisas; Mesa privilegia o mapa e as ferramentas. A mitologia é uma linguagem de memória, destino e vínculos, não a introdução de deuses ou fatos novos no cânone. NexOS continua separado. O pedido atual autoriza explorar vidro dimensional no Tadeon, sem importar a identidade cósmica do outro projeto.
 
-Preservar: fundo escuro, marfim, Grenze, Inter, PT Mono, símbolos existentes de `brand-mark.tsx` e `section-symbols.tsx` e cores locais. Não redesenhar os símbolos nem converter toda interface em uma composição ornamental. A direção apresenta uma assinatura coerente; alternativas só se uma decisão material exigir comparação.
+Preservar: fundo escuro, marfim, Cormorant Garamond, Inter, PT Mono, símbolos existentes de `brand-mark.tsx` e `section-symbols.tsx` e cores locais. Não redesenhar os símbolos nem converter toda interface em uma composição ornamental. A direção apresenta uma assinatura coerente; alternativas só se uma decisão material exigir comparação.
 
 ## Hierarquia, composição e densidade
 
@@ -38,7 +38,7 @@ Fallback opaco: #15181E, contorno #7A8187, mesmas dimensões e estados. Aplicar 
 
 ## Tokens e tipografia
 
-Editar os tokens existentes em `src/styles.css`; a prancheta não é uma segunda folha de produção. A revisão autorizada por Tadeu em 11/10/2026 substitui a família editorial EB Garamond por Grenze, híbrida de serifas romanas e traços góticos. Não ampliar o trio de famílias; Inter e PT Mono preservam leitura e utilidade. Verificar carregamento, glifos portugueses e licenças antes de redistribuir fontes no app; a prancheta usa as famílias já solicitadas pelo root via Google Fonts, com fallback sem rede.
+Editar os tokens existentes em `src/styles.css`; a prancheta não é uma segunda folha de produção. A revisão autorizada por Tadeu em 11/10/2026 substitui a família editorial EB Garamond por Cormorant Garamond, de contraste refinado e caráter editorial. Não ampliar o trio de famílias; Inter e PT Mono preservam leitura e utilidade. Verificar carregamento, glifos portugueses e licenças antes de redistribuir fontes no app; a prancheta usa as famílias já solicitadas pelo root via Google Fonts, com fallback sem rede.
 
 | Papel | Valor / família | Uso |
 |---|---|---|
@@ -50,9 +50,10 @@ Editar os tokens existentes em `src/styles.css`; a prancheta não é uma segunda
 | Ação / foco | #D9D7A4 com texto #080A0E | Conhecimento |
 | Véu | #716B7B | Atmosfera, sem texto pequeno nessa cor |
 | Metal | #7A8187 | Sinal/contorno funcional quando necessário |
-| Editorial | Grenze 500/600; Georgia, serif | 36–48px regular, 28–36px compacto, line-height 1,1 |
+| Editorial | Cormorant Garamond 500/600; Georgia, serif | 36–48px regular, 28–36px compacto, line-height 1,1 |
 | Interface | Inter 400/500/600; system-ui, sans-serif | Corpo 16px/1,5; label 14px/1,4; título funcional 20–24px |
-| Utilidade | PT Mono 400; ui-monospace, monospace | Números/metadados 12–14px/1,5 |
+| Métricas | Inter 500; lining/tabular nums | Números do Dashboard 24–32px/1,2 |
+| Utilidade | PT Mono 400; ui-monospace, monospace | Metadados/atalhos 12–14px/1,5 |
 
 A capa da prancheta é editorial; sua escala não deve ser transplantada ao Dashboard. Metadados essenciais não devem diminuir para caber. Os resultados de pares opacos estão na [evidência](design-board-validation.json), calculados pela luminância relativa sRGB, sem arredondamento para determinar o limiar. Não constituem auditoria de todos os estados da aplicação.
 
@@ -124,3 +125,13 @@ O menu radial de Mais conserva as três áreas, com rótulos maiores e alvos de 
 A [evidência de NEX-004](navigation-design-validation.json) registra 16 vistas do Dashboard, 21 vistas de rotas, seis casos de busca/conta e dois viewports de teclado simulado, aprovados sem overflow ou erros de página. O foco acompanha o main efetivamente montado, inclusive quando o router substitui um nó na mesma URL. As fixtures usam as fontes reais e glifos portugueses; não certificam teclado físico, VoiceOver, contas reais ou campanhas povoadas. Integração e publicação têm confirmação separada na PR e workflow atuais.
 
 NEX-004 integrado pela [PR #261](https://github.com/Gabriel2069/tadeon-nexus/pull/261), merge `2b36716`, após Quality 38162310175. A fila canônica conserva critérios e limites, com NEX-005 como próximo lote. Produção confirmada no [workflow 38162497262](https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38162497262): HTTP 200 e SHA exato `2b36716`.
+
+## Liquid fabric compartilhado — NEX-013
+
+Tadeu rejeitou a fonte de NEX-004 e a tipografia numérica do Dashboard, e pediu fundos, animações e interações mais presentes antes da ficha. Cormorant Garamond 500/600/700 e itálico 500 assume o editorial; Inter 500 com lining/tabular nums assume as três métricas, preservando valores e leituras. PT Mono permanece em metadados. A decisão DEC-009 supera a escolha de Grenze em DEC-008, preservada no histórico. Fonte/licença: [CatharsisFonts/Cormorant](https://github.com/CatharsisFonts/Cormorant), OFL 1.1.
+
+A trama vetorial aparece no fundo do login e shell, e em fitas do manifesto; não cobre textos ou recebe foco. Cards conservam tinta opaca com borda/reflexo e uma resposta decorativa finita. Navegação e controles recebem vidro escuro, sombra de contato e luz de borda. Formulários mantêm conteúdo opaco e moldura com reflexo. A tradução CSS segue a separação entre controles e conteúdo descrita em [Apple Materials](https://developer.apple.com/design/human-interface-guidelines/materials), sem alegar equivalência com refração nativa.
+
+useMaterialLight controla somente coordenadas locais de luz para mouse fino, com um frame pendente e limpeza no sair/desmontar; não altera geometria, dados, foco ou transform do conteúdo. CSS controla pressão, abertura e tensão de tecido em camadas decorativas. Toque/teclado recebem estados equivalentes, e movimento reduzido elimina deslocamentos. Sem novo observer, loop global, dependência ou módulo CSS; Button exclui writers genéricos legados de material/motion, preservando estilos funcionais específicos de outras áreas.
+
+A evidência atual pertence a [shared-fabric-validation.json](shared-fabric-validation.json). NEX-013 é a prioridade autorizada antes de NEX-005; a fila continua exclusivamente no JSON canônico. Validação em fixture, integração e publicação exigem provas próprias.

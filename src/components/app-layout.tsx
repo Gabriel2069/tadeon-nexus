@@ -380,6 +380,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
       <div aria-hidden className="tadeon-ambient tadeon-ambient--veil" />
       <div aria-hidden className="tadeon-ambient tadeon-ambient--flow" />
       {/* Desktop sidebar */}
+      <ThreadField variant="backdrop" className="tadeon-fabric-backdrop" />
       <aside
         id="tadeon-desktop-sidebar"
         data-collapsed={collapsed ? "true" : "false"}
@@ -517,6 +518,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
           <Link
             to="/"
             aria-current={path === "/" ? "page" : undefined}
+            data-material-surface="navigation"
             className="tadeon-mobile-dock__item"
           >
             <Home className="h-5 w-5" />
@@ -527,6 +529,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
               to="/nexus"
               search={{ node: undefined }}
               aria-current={isNexusRoute ? "page" : undefined}
+              data-material-surface="navigation"
               className="tadeon-mobile-dock__item"
             >
               <LibraryBig className="h-5 w-5" />
@@ -537,6 +540,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
             <Link
               to="/tabletop"
               aria-current={path.startsWith("/tabletop") ? "page" : undefined}
+              data-material-surface="navigation"
               className="tadeon-mobile-dock__item"
             >
               <SectionSymbol section="tabletop" className="h-5 w-5" />
@@ -548,6 +552,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
               to="/master-panel"
               search={{ tab: undefined }}
               aria-current={path.startsWith("/master-panel") ? "page" : undefined}
+              data-material-surface="navigation"
               className="tadeon-mobile-dock__item"
             >
               <SectionSymbol section="master" className="h-5 w-5" />
@@ -557,6 +562,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
             <Link
               to="/offline"
               aria-current={path.startsWith("/offline") ? "page" : undefined}
+              data-material-surface="navigation"
               className="tadeon-mobile-dock__item"
             >
               <CloudOff className="h-5 w-5" />
@@ -568,6 +574,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
           ) : (
             <button
               type="button"
+              data-material-surface="navigation"
               className="tadeon-mobile-dock__item"
               onClick={() => setMobileOpen(true)}
               aria-controls="tadeon-mobile-navigation"
@@ -640,6 +647,7 @@ function NavItem({
       aria-current={active ? "page" : undefined}
       data-mini={mini ? "true" : "false"}
       title={mini ? label : undefined}
+      data-material-surface="navigation"
       className={`tadeon-nav-item group flex min-h-11 items-center gap-3 rounded-xl px-3 py-2.5 text-sm transition-[color,background-color,border-color,box-shadow,transform] duration-150 ease-[var(--ease-out)] active:scale-[.98] ${
         mini ? "justify-center px-2" : ""
       } ${

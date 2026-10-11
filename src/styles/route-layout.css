@@ -509,12 +509,6 @@ html[data-tadeon-tabletop-selection-active="true"] [data-tadeon-selection-guarde
     font-size: .9rem !important;
     letter-spacing: -.01em;
   }
-
-  .tadeon-shell[data-section="Painel do Mestre"] .tadeon-mobile-header {
-    box-shadow:
-      0 24px 64px -43px rgb(var(--section-accent-rgb) / 58%),
-      inset 0 -1px rgb(var(--section-accent-rgb) / 16%) !important;
-  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -543,14 +537,6 @@ html[data-tadeon-tabletop-selection-active="true"] [data-tadeon-selection-guarde
     overflow: visible !important;
     top: 0 !important;
     border-bottom: 1px solid color-mix(in srgb, var(--section-accent) 12%, var(--border)) !important;
-    background:
-      linear-gradient(90deg, rgb(var(--section-accent-rgb) / 4%), transparent 35%),
-      rgb(8 10 14 / 82%) !important;
-    box-shadow:
-      0 24px 65px -52px rgb(0 0 0 / 100%),
-      inset 0 -1px rgb(255 255 255 / 1.5%) !important;
-    backdrop-filter: blur(24px) saturate(132%) !important;
-    -webkit-backdrop-filter: blur(24px) saturate(132%) !important;
   }
 
   .tadeon-desktop-toolbar > .min-w-0 {
@@ -592,14 +578,6 @@ html[data-tadeon-tabletop-selection-active="true"] [data-tadeon-selection-guarde
     isolation: auto !important;
     overflow: visible !important;
     border-bottom: 1px solid color-mix(in srgb, var(--section-accent) 13%, var(--border)) !important;
-    background:
-      linear-gradient(90deg, rgb(var(--section-accent-rgb) / 7%), transparent 48%),
-      rgb(8 10 14 / 88%) !important;
-    box-shadow:
-      0 22px 62px -48px rgb(0 0 0 / 100%),
-      inset 0 -1px rgb(255 255 255 / 1.8%) !important;
-    backdrop-filter: blur(24px) saturate(138%) !important;
-    -webkit-backdrop-filter: blur(24px) saturate(138%) !important;
   }
 
   .tadeon-mobile-header__identity {
@@ -1341,14 +1319,6 @@ html[data-tadeon-sheet-mode="game"] .tadeon-sheet-game-button svg {
   isolation: auto !important;
   overflow: visible !important;
   border-bottom: 1px solid color-mix(in srgb, var(--section-accent) 12%, var(--border)) !important;
-  background:
-    linear-gradient(90deg, rgb(var(--section-accent-rgb) / 4%), transparent 35%),
-    rgb(8 10 14 / 82%) !important;
-  box-shadow:
-    0 24px 65px -52px rgb(0 0 0 / 100%),
-    inset 0 -1px rgb(255 255 255 / 1.5%) !important;
-  backdrop-filter: blur(24px) saturate(132%) !important;
-  -webkit-backdrop-filter: blur(24px) saturate(132%) !important;
 }
 
 .tadeon-shell:is(
@@ -1516,14 +1486,6 @@ html[data-tadeon-sheet-mode="game"] .tadeon-sheet-game-button svg {
     isolation: auto !important;
     overflow: visible !important;
     border-bottom: 1px solid color-mix(in srgb, var(--section-accent) 13%, var(--border)) !important;
-    background:
-      linear-gradient(90deg, rgb(var(--section-accent-rgb) / 7%), transparent 48%),
-      rgb(8 10 14 / 88%) !important;
-    box-shadow:
-      0 22px 62px -48px rgb(0 0 0 / 100%),
-      inset 0 -1px rgb(255 255 255 / 1.8%) !important;
-    backdrop-filter: blur(24px) saturate(138%) !important;
-    -webkit-backdrop-filter: blur(24px) saturate(138%) !important;
   }
 
   /* Mobile receives the same spatial grammar desktop/tablet already have:
@@ -1740,14 +1702,6 @@ html[data-tadeon-sheet-mode="game"] .tadeon-sheet-game-button svg {
     overflow: visible !important;
     border-bottom: 1px solid color-mix(in srgb, var(--section-accent) 12%, var(--border)) !important;
     border-radius: 0 !important;
-    background:
-      linear-gradient(90deg, rgb(var(--section-accent-rgb) / 4%), transparent 35%),
-      rgb(8 10 14 / 82%) !important;
-    box-shadow:
-      0 24px 65px -52px rgb(0 0 0 / 100%),
-      inset 0 -1px rgb(255 255 255 / 1.5%) !important;
-    backdrop-filter: blur(24px) saturate(132%) !important;
-    -webkit-backdrop-filter: blur(24px) saturate(132%) !important;
   }
 
   .tadeon-shell:is(
@@ -1804,14 +1758,6 @@ html[data-tadeon-sheet-mode="game"] .tadeon-sheet-game-button svg {
     overflow: visible !important;
     border-bottom: 1px solid color-mix(in srgb, var(--section-accent) 13%, var(--border)) !important;
     border-radius: 0 !important;
-    background:
-      linear-gradient(90deg, rgb(var(--section-accent-rgb) / 7%), transparent 48%),
-      rgb(8 10 14 / 88%) !important;
-    box-shadow:
-      0 22px 62px -48px rgb(0 0 0 / 100%),
-      inset 0 -1px rgb(255 255 255 / 1.8%) !important;
-    backdrop-filter: blur(24px) saturate(138%) !important;
-    -webkit-backdrop-filter: blur(24px) saturate(138%) !important;
   }
 
   .tadeon-shell:is(
@@ -2295,14 +2241,6 @@ html[data-tadeon-sheet-mode="game"] .tadeon-sheet-game-button svg {
     border: 0 !important;
     border-bottom: 1px solid color-mix(in srgb, var(--section-accent) 12%, var(--border)) !important;
     border-radius: 0 !important;
-    background:
-      linear-gradient(90deg, rgb(var(--section-accent-rgb) / 4%), transparent 35%),
-      rgb(8 10 14 / 82%) !important;
-    box-shadow:
-      0 24px 65px -52px rgb(0 0 0 / 100%),
-      inset 0 -1px rgb(255 255 255 / 1.5%) !important;
-    backdrop-filter: blur(24px) saturate(132%) !important;
-    -webkit-backdrop-filter: blur(24px) saturate(132%) !important;
   }
 
   .tadeon-shell:is(
@@ -2403,14 +2341,6 @@ html[data-tadeon-sheet-mode="game"] .tadeon-sheet-game-button svg {
     border: 0 !important;
     border-bottom: 1px solid color-mix(in srgb, var(--section-accent) 13%, var(--border)) !important;
     border-radius: 0 !important;
-    background:
-      linear-gradient(90deg, rgb(var(--section-accent-rgb) / 7%), transparent 48%),
-      rgb(8 10 14 / 88%) !important;
-    box-shadow:
-      0 22px 62px -48px rgb(0 0 0 / 100%),
-      inset 0 -1px rgb(255 255 255 / 1.8%) !important;
-    backdrop-filter: blur(24px) saturate(138%) !important;
-    -webkit-backdrop-filter: blur(24px) saturate(138%) !important;
   }
 
   .tadeon-shell:is(
@@ -3533,14 +3463,6 @@ html[data-tadeon-sheet-mode="game"] .tadeon-sheet-game-button svg {
     border: 0 !important;
     border-bottom: 1px solid color-mix(in srgb, var(--section-accent) 12%, var(--border)) !important;
     border-radius: 0 !important;
-    background:
-      linear-gradient(90deg, rgb(var(--section-accent-rgb) / 4%), transparent 35%),
-      rgb(8 10 14 / 82%) !important;
-    box-shadow:
-      0 24px 65px -52px rgb(0 0 0 / 100%),
-      inset 0 -1px rgb(255 255 255 / 1.5%) !important;
-    backdrop-filter: blur(24px) saturate(132%) !important;
-    -webkit-backdrop-filter: blur(24px) saturate(132%) !important;
   }
 
   .tadeon-shell .tadeon-desktop-toolbar::before {
@@ -3640,14 +3562,6 @@ html[data-tadeon-sheet-mode="game"] .tadeon-sheet-game-button svg {
     border: 0 !important;
     border-bottom: 1px solid color-mix(in srgb, var(--section-accent) 13%, var(--border)) !important;
     border-radius: 0 !important;
-    background:
-      linear-gradient(90deg, rgb(var(--section-accent-rgb) / 7%), transparent 48%),
-      rgb(8 10 14 / 88%) !important;
-    box-shadow:
-      0 22px 62px -48px rgb(0 0 0 / 100%),
-      inset 0 -1px rgb(255 255 255 / 1.8%) !important;
-    backdrop-filter: blur(24px) saturate(138%) !important;
-    -webkit-backdrop-filter: blur(24px) saturate(138%) !important;
   }
 
   .tadeon-shell .tadeon-mobile-header::before,
@@ -4461,22 +4375,6 @@ html[data-tadeon-sheet-mode="game"] .tadeon-sheet-game-button svg {
   [href="/manage-users"],
   [href="/nexus-tools"],
   [href="/offline"]
-)[aria-current="page"] {
-  border-color: rgb(var(--nav-accent-rgb) / 18%) !important;
-  background:
-    linear-gradient(90deg, rgb(var(--nav-accent-rgb) / 14%), rgb(var(--nav-accent-rgb) / 3%) 70%, transparent),
-    var(--sidebar-accent) !important;
-  box-shadow: inset 2px 0 var(--nav-accent), inset 0 1px rgb(255 255 255 / 3%) !important;
-}
-
-.tadeon-nav-item:is(
-  [href="/"],
-  [href="/nexus"],
-  [href="/tabletop"],
-  [href="/master-panel"],
-  [href="/manage-users"],
-  [href="/nexus-tools"],
-  [href="/offline"]
 )[aria-current="page"] .tadeon-nav-item__icon {
   color: var(--nav-accent) !important;
   transform: translateY(-1px) scale(1.05);
@@ -4533,10 +4431,6 @@ html[data-tadeon-sheet-mode="game"] .tadeon-sheet-game-button svg {
 .tadeon-mobile-dock__item[href="/tabletop"] { --nav-accent: rgb(84 123 148); --nav-accent-rgb: 84 123 148; }
 .tadeon-mobile-dock__item[href="/master-panel"] { --nav-accent: rgb(116 36 45); --nav-accent-rgb: 116 36 45; }
 .tadeon-mobile-dock__item[href="/offline"] { --nav-accent: rgb(113 107 123); --nav-accent-rgb: 113 107 123; }
-
-.tadeon-mobile-dock__item:is([href="/nexus"], [href="/tabletop"], [href="/master-panel"], [href="/offline"])[aria-current="page"] {
-  color: var(--nav-accent) !important;
-}
 
 .tadeon-mobile-dock__item[href="/master-panel"] > svg {
   visibility: hidden !important;
@@ -5278,10 +5172,6 @@ html[data-tadeon-sheet-mode="game"] .tadeon-sheet-game-button svg {
    the section identity is unambiguous, so suppress the false visual active
    state everywhere until the route predicate is narrowed at component level. */
 .tadeon-shell[data-section="Saúde do arquivo"] .tadeon-nav-item[href="/nexus"][aria-current="page"] {
-  border-color: transparent !important;
-  color: var(--sidebar-foreground) !important;
-  background: transparent !important;
-  box-shadow: none !important;
   font-weight: inherit !important;
 }
 
@@ -5293,12 +5183,6 @@ html[data-tadeon-sheet-mode="game"] .tadeon-sheet-game-button svg {
 }
 
 @media (max-width: 767px) {
-  .tadeon-shell[data-section="Saúde do arquivo"] .tadeon-mobile-dock__item[href="/nexus"][aria-current="page"] {
-    border-color: transparent !important;
-    color: color-mix(in srgb, var(--muted-foreground) 88%, transparent) !important;
-    background: transparent !important;
-    box-shadow: none !important;
-  }
 
   .tadeon-shell[data-section="Saúde do arquivo"] .tadeon-mobile-dock__item[href="/nexus"][aria-current="page"]::after {
     display: none !important;

@@ -28,7 +28,7 @@ const REVEAL = [
 const STATEFUL = ".tadeon-sheet-condition-chip, [aria-live='polite']";
 
 function markElement(element: HTMLElement) {
-  if (element.dataset.tadeonDirected === "true") return;
+  if (element.dataset.tadeonDirected === "true" || element.dataset.materialSurface) return;
   element.dataset.tadeonDirected = "true";
   element.style.setProperty("--tadeon-index", String(getChildIndex(element)));
 }
@@ -65,7 +65,7 @@ function getChildIndex(element: HTMLElement) {
 
 function ensurePointerSheen(element: HTMLElement) {
   // Navigation owns its selected surface; a second light layer obscures labels.
-  if (element.classList.contains("tadeon-nav-item")) return;
+  if (element.classList.contains("tadeon-nav-item") || element.dataset.materialSurface) return;
   if (element.dataset.tadeonPointerBound === "true") return;
 
   element.dataset.tadeonPointerBound = "true";

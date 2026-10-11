@@ -69,9 +69,9 @@
 /* --------------------------------------------------------------------------
    BUTTONS / LINKS - obvious physical press and return.
    -------------------------------------------------------------------------- */
-.tadeon-shell button:not(:disabled),
+.tadeon-shell button:not([data-material-surface], .tadeon-material-button):not(:disabled),
 .tadeon-shell [role="button"],
-.tadeon-shell a[href] {
+.tadeon-shell a:not([data-material-surface], .tadeon-material-button)[href] {
   transition:
     transform var(--tadeon-visible-fast) var(--tadeon-visible-ease-standard),
     box-shadow 220ms var(--tadeon-visible-ease-standard),
@@ -81,29 +81,29 @@
 }
 
 @media (hover: hover) and (pointer: fine) {
-  .tadeon-shell button:not(:disabled):hover,
+  .tadeon-shell button:not([data-material-surface], .tadeon-material-button):not(:disabled):hover,
   .tadeon-shell [role="button"]:hover,
-  .tadeon-shell a[href]:hover {
+  .tadeon-shell a:not([data-material-surface], .tadeon-material-button)[href]:hover {
     transform: translate3d(0, -3px, 0) scale(1.015) !important;
   }
 }
 
-.tadeon-shell button:not(:disabled):active,
+.tadeon-shell button:not([data-material-surface], .tadeon-material-button):not(:disabled):active,
 .tadeon-shell [role="button"]:active,
-.tadeon-shell a[href]:active {
+.tadeon-shell a:not([data-material-surface], .tadeon-material-button)[href]:active {
   animation: tadeon-visible-press 180ms var(--tadeon-visible-ease-standard) both !important;
 }
 
-.tadeon-shell button :where(svg.lucide),
+.tadeon-shell button:not([data-material-surface], .tadeon-material-button) :where(svg.lucide),
 .tadeon-shell [role="button"] :where(svg.lucide),
-.tadeon-shell a[href] :where(svg.lucide) {
+.tadeon-shell a:not([data-material-surface], .tadeon-material-button)[href] :where(svg.lucide) {
   transition: transform 260ms var(--tadeon-visible-ease-in), filter 260ms ease !important;
 }
 
 @media (hover: hover) and (pointer: fine) {
-  .tadeon-shell button:hover :where(svg.lucide),
+  .tadeon-shell button:not([data-material-surface], .tadeon-material-button):hover :where(svg.lucide),
   .tadeon-shell [role="button"]:hover :where(svg.lucide),
-  .tadeon-shell a[href]:hover :where(svg.lucide) {
+  .tadeon-shell a:not([data-material-surface], .tadeon-material-button)[href]:hover :where(svg.lucide) {
     transform: translate3d(0, -2px, 0) scale(1.09) rotate(-2deg) !important;
     filter: drop-shadow(0 7px 16px rgb(217 215 164 / 22%)) !important;
   }
@@ -546,14 +546,14 @@
 :root{--tdv-in:cubic-bezier(.16,1,.3,1);--tdv-spring:cubic-bezier(.175,.885,.32,1.275);--tdv-soft:cubic-bezier(.22,1,.36,1);--tdv-out:cubic-bezier(.7,0,.84,0);--tdv-fast:180ms;--tdv-ui:280ms;--tdv-panel:520ms}
 
 /* Buttons: press, release and icon response are deliberately visible. */
-.tadeon-shell button:not(:disabled),.tadeon-shell [role=button],.tadeon-shell a[href]{transform-origin:center;transition:transform var(--tdv-fast) var(--tdv-spring),box-shadow var(--tdv-ui) var(--tdv-soft),border-color var(--tdv-fast) ease,background-color var(--tdv-fast) ease,filter var(--tdv-ui) ease}
-.tadeon-shell button:not(:disabled):hover,.tadeon-shell [role=button]:hover,.tadeon-shell a[href]:hover{transform:translateY(-3px) scale(1.015);filter:brightness(1.06)}
-.tadeon-shell button:not(:disabled):active,.tadeon-shell [role=button]:active,.tadeon-shell a[href]:active{transform:translateY(2px) scale(.93);filter:brightness(.96);transition-duration:90ms}
-.tadeon-shell button:not(:disabled)::before,.tadeon-shell [role=button]::before,.tadeon-shell a[href]::before{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;opacity:0;transform:scale(.72);background:radial-gradient(circle at 50% 50%,currentColor 0,transparent 62%);transition:opacity 260ms ease,transform 360ms var(--tdv-spring)}
-.tadeon-shell button:not(:disabled):active::before,.tadeon-shell [role=button]:active::before,.tadeon-shell a[href]:active::before{opacity:.08;transform:scale(1.3)}
-.tadeon-shell button :where(svg.lucide),.tadeon-shell [role=button] :where(svg.lucide),.tadeon-shell a[href] :where(svg.lucide){transition:transform 300ms var(--tdv-spring),filter 280ms ease}
-.tadeon-shell button:hover :where(svg.lucide),.tadeon-shell [role=button]:hover :where(svg.lucide),.tadeon-shell a[href]:hover :where(svg.lucide){transform:translateY(-2px) scale(1.1) rotate(-3deg);filter:drop-shadow(0 7px 14px rgb(217 215 164 / 22%))}
-.tadeon-shell button:active :where(svg.lucide),.tadeon-shell [role=button]:active :where(svg.lucide),.tadeon-shell a[href]:active :where(svg.lucide){transform:translateY(2px) scale(.88) rotate(4deg)}
+.tadeon-shell button:not([data-material-surface], .tadeon-material-button):not(:disabled),.tadeon-shell [role=button],.tadeon-shell a:not([data-material-surface], .tadeon-material-button)[href]{transform-origin:center;transition:transform var(--tdv-fast) var(--tdv-spring),box-shadow var(--tdv-ui) var(--tdv-soft),border-color var(--tdv-fast) ease,background-color var(--tdv-fast) ease,filter var(--tdv-ui) ease}
+.tadeon-shell button:not([data-material-surface], .tadeon-material-button):not(:disabled):hover,.tadeon-shell [role=button]:hover,.tadeon-shell a:not([data-material-surface], .tadeon-material-button)[href]:hover{transform:translateY(-3px) scale(1.015);filter:brightness(1.06)}
+.tadeon-shell button:not([data-material-surface], .tadeon-material-button):not(:disabled):active,.tadeon-shell [role=button]:active,.tadeon-shell a:not([data-material-surface], .tadeon-material-button)[href]:active{transform:translateY(2px) scale(.93);filter:brightness(.96);transition-duration:90ms}
+.tadeon-shell button:not([data-material-surface], .tadeon-material-button):not(:disabled)::before,.tadeon-shell [role=button]::before,.tadeon-shell a:not([data-material-surface], .tadeon-material-button)[href]::before{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;opacity:0;transform:scale(.72);background:radial-gradient(circle at 50% 50%,currentColor 0,transparent 62%);transition:opacity 260ms ease,transform 360ms var(--tdv-spring)}
+.tadeon-shell button:not([data-material-surface], .tadeon-material-button):not(:disabled):active::before,.tadeon-shell [role=button]:active::before,.tadeon-shell a:not([data-material-surface], .tadeon-material-button)[href]:active::before{opacity:.08;transform:scale(1.3)}
+.tadeon-shell button:not([data-material-surface], .tadeon-material-button) :where(svg.lucide),.tadeon-shell [role=button] :where(svg.lucide),.tadeon-shell a:not([data-material-surface], .tadeon-material-button)[href] :where(svg.lucide){transition:transform 300ms var(--tdv-spring),filter 280ms ease}
+.tadeon-shell button:not([data-material-surface], .tadeon-material-button):hover :where(svg.lucide),.tadeon-shell [role=button]:hover :where(svg.lucide),.tadeon-shell a:not([data-material-surface], .tadeon-material-button)[href]:hover :where(svg.lucide){transform:translateY(-2px) scale(1.1) rotate(-3deg);filter:drop-shadow(0 7px 14px rgb(217 215 164 / 22%))}
+.tadeon-shell button:not([data-material-surface], .tadeon-material-button):active :where(svg.lucide),.tadeon-shell [role=button]:active :where(svg.lucide),.tadeon-shell a:not([data-material-surface], .tadeon-material-button)[href]:active :where(svg.lucide){transform:translateY(2px) scale(.88) rotate(4deg)}
 
 /* Tabs: underline travels; label and icon move independently. */
 .tadeon-shell [data-slot=tabs-list]{position:relative}
@@ -1008,26 +1008,26 @@
 @keyframes tci-empty-in{from{opacity:0;transform:translateY(22px) scale(.965);filter:blur(8px)}65%{opacity:1;transform:translateY(-3px) scale(1.006);filter:blur(0)}to{transform:none}}
 
 /* ICON BUTTONS - every action category gets a different micro-gesture. */
-.tadeon-shell button[aria-label*="Fechar"]:hover svg,
-.tadeon-shell button[title*="Fechar"]:hover svg{transform:rotate(90deg) scale(1.08)}
-.tadeon-shell button[aria-label*="Adicionar"]:hover svg,
-.tadeon-shell button[title*="Adicionar"]:hover svg{transform:rotate(90deg) scale(1.1)}
-.tadeon-shell button[aria-label*="Voltar"]:hover svg,
-.tadeon-shell button[title*="Voltar"]:hover svg{transform:translateX(-3px)}
-.tadeon-shell button[aria-label*="Avançar"]:hover svg,
-.tadeon-shell button[title*="Avançar"]:hover svg{transform:translateX(3px)}
-.tadeon-shell button[aria-label*="Pesquisar"]:hover svg,
-.tadeon-shell button[title*="Pesquisar"]:hover svg{transform:scale(1.1) rotate(-8deg)}
-.tadeon-shell button[aria-label*="Atualizar"]:hover svg,
-.tadeon-shell button[title*="Atualizar"]:hover svg{transform:rotate(180deg)}
+.tadeon-shell button:not([data-material-surface], .tadeon-material-button)[aria-label*="Fechar"]:hover svg,
+.tadeon-shell button:not([data-material-surface], .tadeon-material-button)[title*="Fechar"]:hover svg{transform:rotate(90deg) scale(1.08)}
+.tadeon-shell button:not([data-material-surface], .tadeon-material-button)[aria-label*="Adicionar"]:hover svg,
+.tadeon-shell button:not([data-material-surface], .tadeon-material-button)[title*="Adicionar"]:hover svg{transform:rotate(90deg) scale(1.1)}
+.tadeon-shell button:not([data-material-surface], .tadeon-material-button)[aria-label*="Voltar"]:hover svg,
+.tadeon-shell button:not([data-material-surface], .tadeon-material-button)[title*="Voltar"]:hover svg{transform:translateX(-3px)}
+.tadeon-shell button:not([data-material-surface], .tadeon-material-button)[aria-label*="Avançar"]:hover svg,
+.tadeon-shell button:not([data-material-surface], .tadeon-material-button)[title*="Avançar"]:hover svg{transform:translateX(3px)}
+.tadeon-shell button:not([data-material-surface], .tadeon-material-button)[aria-label*="Pesquisar"]:hover svg,
+.tadeon-shell button:not([data-material-surface], .tadeon-material-button)[title*="Pesquisar"]:hover svg{transform:scale(1.1) rotate(-8deg)}
+.tadeon-shell button:not([data-material-surface], .tadeon-material-button)[aria-label*="Atualizar"]:hover svg,
+.tadeon-shell button:not([data-material-surface], .tadeon-material-button)[title*="Atualizar"]:hover svg{transform:rotate(180deg)}
 
 /* BREADCRUMBS - focus advances along the path. */
-.tadeon-shell nav[aria-label*="breadcrumb"] a,
-.tadeon-shell nav[aria-label*="Breadcrumb"] a{
+.tadeon-shell nav[aria-label*="breadcrumb"] a:not([data-material-surface], .tadeon-material-button),
+.tadeon-shell nav[aria-label*="Breadcrumb"] a:not([data-material-surface], .tadeon-material-button){
   transition:transform 220ms var(--tci-soft),color 180ms ease,opacity 180ms ease;
 }
-.tadeon-shell nav[aria-label*="breadcrumb"] a:hover,
-.tadeon-shell nav[aria-label*="Breadcrumb"] a:hover{transform:translateX(3px)}
+.tadeon-shell nav[aria-label*="breadcrumb"] a:not([data-material-surface], .tadeon-material-button):hover,
+.tadeon-shell nav[aria-label*="Breadcrumb"] a:not([data-material-surface], .tadeon-material-button):hover{transform:translateX(3px)}
 
 /* SEPARATORS / ORNAMENTS - decorative lines are drawn into place. */
 .tadeon-shell hr,
@@ -1035,7 +1035,7 @@
 @keyframes tci-line-draw{from{transform:scaleX(0);opacity:0}to{transform:scaleX(1);opacity:1}}
 
 /* NOTIFICATIONS / TOAST ACTIONS - action row follows the toast body. */
-.tadeon-shell [data-sonner-toast] button{animation:tci-toast-action 360ms var(--tci-spring) 70ms both}
+.tadeon-shell [data-sonner-toast] button:not([data-material-surface], .tadeon-material-button){animation:tci-toast-action 360ms var(--tci-spring) 70ms both}
 @keyframes tci-toast-action{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
 
 /* DESKTOP SIDEBAR - only after the structural correction, refine item motion. */
@@ -1121,10 +1121,10 @@
 @keyframes tdi-list-item{from{opacity:0;transform:translateY(18px) scale(.97);filter:blur(4px)}58%{opacity:1;transform:translateY(-3px) scale(1.01);filter:blur(0)}to{opacity:1;transform:none}}
 
 /* Breadcrumbs / trail of context. */
-.tadeon-shell nav[aria-label*="breadcrumb" i] a,
-.tadeon-shell [aria-label*="breadcrumb" i] a{transition:transform 240ms var(--tdi-spring),color 180ms ease,opacity 180ms ease}
-.tadeon-shell nav[aria-label*="breadcrumb" i] a:hover,
-.tadeon-shell [aria-label*="breadcrumb" i] a:hover{transform:translateX(3px)}
+.tadeon-shell nav[aria-label*="breadcrumb" i] a:not([data-material-surface], .tadeon-material-button),
+.tadeon-shell [aria-label*="breadcrumb" i] a:not([data-material-surface], .tadeon-material-button){transition:transform 240ms var(--tdi-spring),color 180ms ease,opacity 180ms ease}
+.tadeon-shell nav[aria-label*="breadcrumb" i] a:not([data-material-surface], .tadeon-material-button):hover,
+.tadeon-shell [aria-label*="breadcrumb" i] a:not([data-material-surface], .tadeon-material-button):hover{transform:translateX(3px)}
 
 /* Headings / section labels - re-enter when their section changes. */
 .tadeon-shell .tadeon-page h1,
@@ -1140,7 +1140,7 @@
 @keyframes tdi-progress-sheen{to{transform:translateX(120%)}}
 
 /* Toast actions and notifications. */
-.tadeon-shell [data-sonner-toast] button,
+.tadeon-shell [data-sonner-toast] button:not([data-material-surface], .tadeon-material-button),
 .tadeon-shell [data-sonner-toast] [role="button"]{animation:tdi-toast-action 320ms var(--tdi-spring) 120ms both}
 @keyframes tdi-toast-action{from{opacity:0;transform:translateX(8px) scale(.94)}to{opacity:1;transform:none}}
 
@@ -1322,7 +1322,7 @@
 
 /* Toast action controls and inline feedback settle after their message. */
 .tadeon-shell [data-sonner-toast] [data-button],
-.tadeon-shell [data-sonner-toast] button{animation:tctx-toast-action 360ms var(--tctx-spring) 110ms both}
+.tadeon-shell [data-sonner-toast] button:not([data-material-surface], .tadeon-material-button){animation:tctx-toast-action 360ms var(--tctx-spring) 110ms both}
 @keyframes tctx-toast-action{from{opacity:0;transform:translateX(10px) scale(.94)}to{opacity:1;transform:none}}
 
 /* Back/forward and edit/create/delete semantics. */
@@ -1747,38 +1747,6 @@
 
   /* Identity flyout uses the real NavItem title, so every item remains identifiable
      while collapsed without forcing the sidebar to reopen. */
-  #tadeon-desktop-sidebar[data-collapsed="true"] .tadeon-nav-item[title]::after {
-    position: absolute;
-    top: 50%;
-    left: calc(100% + .7rem);
-    z-index: 80;
-    min-width: max-content;
-    max-width: 16rem;
-    padding: .46rem .7rem;
-    border: 1px solid color-mix(in srgb, currentColor 18%, var(--border));
-    border-radius: .62rem .22rem .62rem .22rem;
-    color: var(--foreground);
-    background: color-mix(in srgb, var(--popover) 92%, transparent);
-    box-shadow: 0 18px 44px -28px rgb(0 0 0 / 90%), inset 0 1px rgb(255 255 255 / 4%);
-    backdrop-filter: blur(18px) saturate(125%);
-    content: attr(title);
-    font-family: var(--font-sans);
-    font-size: .72rem;
-    font-weight: 600;
-    line-height: 1.2;
-    letter-spacing: .01em;
-    opacity: 0;
-    pointer-events: none;
-    transform: translate3d(-6px,-50%,0) scale(.96);
-    transform-origin: left center;
-    transition: opacity 160ms ease, transform 220ms cubic-bezier(.22,1,.36,1);
-  }
-
-  #tadeon-desktop-sidebar[data-collapsed="true"] .tadeon-nav-item[title]:hover::after,
-  #tadeon-desktop-sidebar[data-collapsed="true"] .tadeon-nav-item[title]:focus-visible::after {
-    opacity: 1;
-    transform: translate3d(0,-50%,0) scale(1);
-  }
 
   #tadeon-desktop-sidebar[data-collapsed="true"] .tadeon-nav-group-rule {
     width: 1rem;
@@ -1821,18 +1789,6 @@
   #tadeon-desktop-sidebar .tadeon-nav-item[href="/nexus-tools"][aria-current="page"] {
     --sidebar-item-rgb: 122 129 135;
     --sidebar-item-accent: var(--tadeon-metal);
-  }
-
-  #tadeon-desktop-sidebar .tadeon-nav-item[aria-current="page"] {
-    border-color: color-mix(in srgb, var(--sidebar-item-accent) 28%, transparent) !important;
-    color: color-mix(in srgb, var(--sidebar-item-accent) 88%, var(--foreground)) !important;
-    background:
-      linear-gradient(90deg, rgb(var(--sidebar-item-rgb) / 15%), rgb(var(--sidebar-item-rgb) / 3%) 72%, transparent),
-      color-mix(in srgb, var(--sidebar-accent) 88%, transparent) !important;
-    box-shadow:
-      inset 2px 0 var(--sidebar-item-accent),
-      inset 0 1px rgb(255 255 255 / 3%),
-      0 10px 34px -28px rgb(var(--sidebar-item-rgb) / 40%) !important;
   }
 
   #tadeon-desktop-sidebar .tadeon-nav-item[aria-current="page"] .tadeon-nav-item__icon {

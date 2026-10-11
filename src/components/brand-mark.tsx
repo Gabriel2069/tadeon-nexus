@@ -1,4 +1,4 @@
-import type { SVGProps } from "react";
+import { useId, type SVGProps } from "react";
 import { cn } from "@/lib/utils";
 
 export function BrandMark({
@@ -47,35 +47,48 @@ export function BrandMark({
   );
 }
 
-export function ThreadField({ className = "" }: { className?: string }) {
+export function ThreadField({
+  className = "",
+  variant = "ribbon",
+}: {
+  className?: string;
+  variant?: "ribbon" | "backdrop";
+}) {
+  const id = useId();
   return (
     <svg
-      viewBox="0 0 1200 360"
-      preserveAspectRatio="none"
+      viewBox="0 0 1200 800"
+      preserveAspectRatio="xMidYMid slice"
       aria-hidden="true"
-      className={cn("pointer-events-none absolute inset-0 h-full w-full", className)}
+      className={cn(
+        "tadeon-thread-field pointer-events-none absolute inset-0 h-full w-full",
+        className,
+      )}
     >
-      <path
-        d="M-40 265C156 71 292 330 502 150S865 36 1240 198"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.2"
-        opacity=".28"
-      />
-      <path
-        d="M-20 304C183 130 357 312 557 172S912 75 1230 260"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth=".8"
-        opacity=".18"
-      />
-      <path
-        d="M86-18C266 102 364 82 502 150c166 82 241 114 471 58"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth=".7"
-        opacity=".13"
-      />
+      <defs>
+        <linearGradient id={id} x1="0" y1="0" x2="1200" y2="800" gradientUnits="userSpaceOnUse">
+          <stop stopColor="#716b7b" />
+          <stop offset=".35" stopColor="#e9e3d5" />
+          <stop offset=".62" stopColor="#b7814d" />
+          <stop offset="1" stopColor="#4f6e5d" />
+        </linearGradient>
+      </defs>
+      <g fill="none" stroke={`url(#${id})`} strokeWidth={variant === "backdrop" ? ".65" : ".9"}>
+        {Array.from({ length: 32 }, (_, i) => (
+          <path
+            key={i}
+            opacity={0.12 + (i % 7) * 0.026}
+            d={`M-100 ${110 + i * 5}C240 ${-180 + i * 9} 380 ${540 - i * 5} 610 ${260 + i * 4}S940 ${90 + i * 5} 1300 ${350 + i * 7}`}
+          />
+        ))}
+        {Array.from({ length: 20 }, (_, i) => (
+          <path
+            key={`weft-${i}`}
+            opacity=".12"
+            d={`M${60 + i * 18} -90C${560 + i * 9} 110 ${190 + i * 14} 460 ${880 + i * 11} 890`}
+          />
+        ))}
+      </g>
     </svg>
   );
 }

@@ -1,3 +1,4 @@
+import { MaterialSurface } from "@/components/material-surface";
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { useAuth } from "@/lib/auth";
@@ -100,17 +101,10 @@ function LoginPage() {
     cleanUrl.searchParams.delete("error");
     cleanUrl.searchParams.delete("error_code");
     cleanUrl.searchParams.delete("error_description");
-    window.history.replaceState(
-      null,
-      "",
-      `${cleanUrl.pathname}${cleanUrl.search}`,
-    );
+    window.history.replaceState(null, "", `${cleanUrl.pathname}${cleanUrl.search}`);
   }, []);
 
-  const showError = (
-    error: unknown,
-    action: Parameters<typeof getAuthErrorMessage>[1],
-  ) => {
+  const showError = (error: unknown, action: Parameters<typeof getAuthErrorMessage>[1]) => {
     const message = getAuthErrorMessage(error, action);
     setFeedback({ tone: "error", message });
     toast.error(message);
@@ -128,12 +122,9 @@ function LoginPage() {
     setFeedback(null);
     setResetting(true);
     try {
-      const { error } = await supabase.auth.resetPasswordForEmail(
-        normalizedEmail,
-        {
-          redirectTo: `${getAuthRedirectOrigin()}/reset-password`,
-        },
-      );
+      const { error } = await supabase.auth.resetPasswordForEmail(normalizedEmail, {
+        redirectTo: `${getAuthRedirectOrigin()}/reset-password`,
+      });
       if (error) throw error;
       const message =
         "Se este e-mail estiver cadastrado, enviaremos um link de redefinição. Verifique também a pasta de spam.";
@@ -147,9 +138,7 @@ function LoginPage() {
   };
 
   const handleResendConfirmation = async () => {
-    const normalizedEmail = (pendingConfirmationEmail || email)
-      .trim()
-      .toLowerCase();
+    const normalizedEmail = (pendingConfirmationEmail || email).trim().toLowerCase();
     if (!normalizedEmail) {
       const message = "Informe o e-mail da conta antes de solicitar o reenvio.";
       setFeedback({ tone: "error", message });
@@ -241,7 +230,9 @@ function LoginPage() {
   return (
     <main className="tadeon-auth-page">
       <div aria-hidden="true" className="tadeon-auth-page__glow" />
-      <section
+      <ThreadField variant="backdrop" className="tadeon-fabric-backdrop" />
+      <MaterialSurface
+        as="section"
         className="tadeon-auth-shell"
         aria-label="Acesso ao Tadeon Nexus"
       >
@@ -251,26 +242,21 @@ function LoginPage() {
             <BrandMark className="h-14 w-14 text-primary" />
             <div>
               <p className="tadeon-eyebrow">Fio-Mestre</p>
-              <p className="font-cinzel text-2xl font-semibold text-primary">
-                Tadeon Nexus
-              </p>
+              <p className="font-cinzel text-2xl font-semibold text-primary">Tadeon Nexus</p>
             </div>
           </div>
           <div className="relative z-10">
             <div className="tadeon-auth-manifesto__copy">
-              <p className="tadeon-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
+              <p className="tadeon-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
                 Arquivo de continuidade
               </p>
               <h2>Onde cada fio permanece legível.</h2>
               <p>
-                Personagens, conhecimento e mesa reunidos em um espaço privado,
-                persistente e feito para a campanha continuar de onde parou.
+                Personagens, conhecimento e mesa reunidos em um espaço privado, persistente e feito
+                para a campanha continuar de onde parou.
               </p>
             </div>
-            <div
-              className="tadeon-auth-manifesto__signals"
-              aria-label="Recursos protegidos"
-            >
+            <div className="tadeon-auth-manifesto__signals" aria-label="Recursos protegidos">
               <span>
                 <ShieldCheck aria-hidden="true" /> Acesso protegido
               </span>
@@ -331,9 +317,7 @@ function LoginPage() {
                 onChange={(e) => setPassword(e.target.value)}
                 required
                 minLength={mode === "signup" ? 8 : undefined}
-                autoComplete={
-                  mode === "signin" ? "current-password" : "new-password"
-                }
+                autoComplete={mode === "signin" ? "current-password" : "new-password"}
               />
             </div>
             <Button
@@ -367,15 +351,17 @@ function LoginPage() {
 
           {mode === "signin" && (
             <div className="mt-3 flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-center">
-              <button
+              <Button
+                variant="link"
                 type="button"
                 onClick={handleForgot}
                 disabled={resetting || resending || submitting}
                 className="text-xs text-muted-foreground hover:text-primary hover:underline disabled:opacity-50"
               >
                 {resetting ? "Enviando…" : "Esqueceu a senha?"}
-              </button>
-              <button
+              </Button>
+              <Button
+                variant="link"
                 type="button"
                 onClick={handleResendConfirmation}
                 disabled={resending || resetting || submitting}
@@ -387,13 +373,14 @@ function LoginPage() {
                   <MailCheck className="h-3.5 w-3.5" />
                 )}
                 {resending ? "Solicitando…" : "Reenviar confirmação"}
-              </button>
+              </Button>
             </div>
           )}
 
           <div className="mt-4 text-center text-sm">
             {mode === "signin" ? (
-              <button
+              <Button
+                variant="link"
                 type="button"
                 onClick={() => {
                   setMode("signup");
@@ -403,9 +390,10 @@ function LoginPage() {
                 className="text-primary hover:underline"
               >
                 Não tem conta? Cadastre-se
-              </button>
+              </Button>
             ) : (
-              <button
+              <Button
+                variant="link"
                 type="button"
                 onClick={() => {
                   setMode("signin");
@@ -415,17 +403,17 @@ function LoginPage() {
                 className="text-primary hover:underline"
               >
                 Já tem conta? Entrar
-              </button>
+              </Button>
             )}
           </div>
 
-          <p className="mt-6 text-center text-[10px] uppercase tracking-wider text-muted-foreground">
+          <p className="mt-6 text-center text-[11px] uppercase tracking-wider text-muted-foreground">
             <Link to="/" className="hover:text-primary">
               Voltar ao início
             </Link>
           </p>
         </Card>
-      </section>
+      </MaterialSurface>
     </main>
   );
 }

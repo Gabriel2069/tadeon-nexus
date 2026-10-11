@@ -27,7 +27,7 @@ Encerrar a proposta antiga não declara todos os requisitos visuais concluídos:
 
 ## Fluxo das próximas PRs
 
-- Criar a partir de main integrado. #259 encerrou NEX-003; #261 integrou NEX-004. Próximo lote: NEX-005, a partir do main atual, com critérios da fila canônica e sem reutilizar branches integradas. Reconferir diff e responsáveis antes de expandir.
+- Criar a partir de main integrado. #259 encerrou NEX-003; #261 integrou NEX-004. Prioridade atual: NEX-013 (revisão compartilhada solicitada após #262); NEX-005 vem em seguida, a partir do main atual, com critérios da fila canônica e sem reutilizar branches integradas. Reconferir diff e responsáveis antes de expandir.
 - Cada PR cita IDs existentes da fila, responsáveis tocados, critérios de aceitação e evidências. Não duplicar a tarefa em outra lista.
 - Trabalhos simultâneos que alteram os mesmos proprietários devem ser sequenciais ou declarar dependência explícita. Não abrir duas implementações concorrentes para a mesma tarefa.
 - Antes de merge, comparar HEAD/base e resultados do CI no HEAD atual. Sucesso de commit anterior não aprova commit posterior.

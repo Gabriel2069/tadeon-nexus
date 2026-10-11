@@ -11,9 +11,6 @@
 .tadeon-mobile-dock > button[aria-haspopup="menu"][aria-expanded="true"] > svg {
   rotate: 90deg;
 }
-.tadeon-mobile-dock__item[data-radial-active="true"] {
-  color: var(--primary);
-}
 .tadeon-mobile-dock__item[data-radial-active="true"]::after {
   opacity: 1;
 }

@@ -1,4 +1,5 @@
 import { useId, type ReactNode } from "react";
+import { MaterialSurface } from "@/components/material-surface";
 import { BrandMark } from "@/components/brand-mark";
 
 /** The cloth is a bounded decorative layer, never a writer of product state. */
@@ -15,7 +16,11 @@ export function ContinuityHero({
 }) {
   const gradient = useId();
   return (
-    <section className="tadeon-continuity-hero" aria-labelledby="continuity-title">
+    <MaterialSurface
+      as="section"
+      className="tadeon-continuity-hero"
+      aria-labelledby="continuity-title"
+    >
       <div className="tadeon-continuity-hero__art" aria-hidden="true">
         <svg className="tadeon-continuity-hero__weave" viewBox="0 0 760 460" fill="none">
           <defs>
@@ -73,6 +78,6 @@ export function ContinuityHero({
           </div>
         ))}
       </dl>
-    </section>
+    </MaterialSurface>
   );
 }

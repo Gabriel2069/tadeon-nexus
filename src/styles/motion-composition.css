@@ -28,26 +28,26 @@
   }
 }
 
-.tadeon-shell button:not(:disabled):active,
+.tadeon-shell button:not([data-material-surface], .tadeon-material-button):not(:disabled):active,
 .tadeon-shell [role="button"]:active {
   transform: translateY(1px) scale(.975);
 }
 
 /* Icons acquire their own directional language. */
-.tadeon-shell button svg,
+.tadeon-shell button:not([data-material-surface], .tadeon-material-button) svg,
 .tadeon-shell [role="button"] svg {
   transition: transform 240ms var(--tadeon-detail-smooth), opacity 180ms ease, filter 240ms ease;
 }
 
 @media (hover:hover) and (pointer:fine) {
-  .tadeon-shell button:hover svg[data-lucide="plus"],
-  .tadeon-shell button:hover svg[data-lucide="plus-circle"],
+  .tadeon-shell button:not([data-material-surface], .tadeon-material-button):hover svg[data-lucide="plus"],
+  .tadeon-shell button:not([data-material-surface], .tadeon-material-button):hover svg[data-lucide="plus-circle"],
   .tadeon-shell [role="button"]:hover svg[data-lucide="plus"] { transform: rotate(8deg) scale(1.06); }
-  .tadeon-shell button:hover svg[data-lucide="search"],
+  .tadeon-shell button:not([data-material-surface], .tadeon-material-button):hover svg[data-lucide="search"],
   .tadeon-shell [role="button"]:hover svg[data-lucide="search"] { transform: translateX(1px) scale(1.05); }
-  .tadeon-shell button:hover svg[data-lucide="refresh-cw"] { transform: rotate(18deg); }
-  .tadeon-shell button:hover svg[data-lucide="chevron-left"],
-  .tadeon-shell button:hover svg[data-lucide="chevron-right"] { transform: translateX(2px); }
+  .tadeon-shell button:not([data-material-surface], .tadeon-material-button):hover svg[data-lucide="refresh-cw"] { transform: rotate(18deg); }
+  .tadeon-shell button:not([data-material-surface], .tadeon-material-button):hover svg[data-lucide="chevron-left"],
+  .tadeon-shell button:not([data-material-surface], .tadeon-material-button):hover svg[data-lucide="chevron-right"] { transform: translateX(2px); }
 }
 
 /* Focus is a reveal, not just a border swap. */
@@ -128,11 +128,11 @@
 }
 
 /* Calendar/day details. */
-.tadeon-shell [data-slot="calendar"] button {
+.tadeon-shell [data-slot="calendar"] button:not([data-material-surface], .tadeon-material-button) {
   transition: transform 180ms var(--tadeon-detail-smooth), background-color 180ms ease, color 180ms ease, box-shadow 220ms var(--tadeon-detail-smooth);
 }
 @media (hover:hover) and (pointer:fine) {
-  .tadeon-shell [data-slot="calendar"] button:hover { transform: translateY(-1px); }
+  .tadeon-shell [data-slot="calendar"] button:not([data-material-surface], .tadeon-material-button):hover { transform: translateY(-1px); }
 }
 
 /* Carousels get a little kinetic response without interfering with Embla. */
@@ -163,13 +163,13 @@
   transition: transform 280ms var(--tadeon-detail-smooth), box-shadow 280ms var(--tadeon-detail-smooth), filter 220ms ease;
 }
 
-[data-sonner-toaster] [data-sonner-toast] button {
+[data-sonner-toaster] [data-sonner-toast] button:not([data-material-surface], .tadeon-material-button) {
   transition: transform 180ms var(--tadeon-detail-smooth), color 180ms ease, background-color 180ms ease;
 }
 
 @media (hover:hover) and (pointer:fine) {
   [data-sonner-toaster] [data-sonner-toast]:hover { transform: translateX(-2px); }
-  [data-sonner-toaster] [data-sonner-toast] button:hover { transform: translateY(-1px); }
+  [data-sonner-toaster] [data-sonner-toast] button:not([data-material-surface], .tadeon-material-button):hover { transform: translateY(-1px); }
 }
 
 /* Avoid compounding the stronger Tadeon frame motion. */
@@ -211,7 +211,7 @@
 }
 
 /* Buttons and action controls: deliberate press/release, not generic hover. */
-.tadeon-shell button:not(:disabled),
+.tadeon-shell button:not([data-material-surface], .tadeon-material-button):not(:disabled),
 .tadeon-shell [role="button"] {
   transition:
     transform 210ms var(--tm-soft),
@@ -221,9 +221,9 @@
     box-shadow 260ms var(--tm-soft),
     filter 220ms var(--tm-smooth);
 }
-.tadeon-shell button:not(:disabled):hover,
+.tadeon-shell button:not([data-material-surface], .tadeon-material-button):not(:disabled):hover,
 .tadeon-shell [role="button"]:hover { filter: brightness(1.045) saturate(1.03); }
-.tadeon-shell button:not(:disabled):active,
+.tadeon-shell button:not([data-material-surface], .tadeon-material-button):not(:disabled):active,
 .tadeon-shell [role="button"]:active { transform: translateY(1px) scale(.965); }
 
 /* Real Radix controls. */
@@ -323,7 +323,7 @@
   #tadeon-desktop-sidebar[data-collapsed="true"] button { will-change:transform; }
   #tadeon-desktop-sidebar .tadeon-nav-item[aria-current="page"] { animation:tm-sidebar-active-in 360ms var(--tm-in) both; }
   @keyframes tm-sidebar-active-in { from { opacity:.7; transform:translateX(-6px); } 65% { opacity:1; transform:translateX(2px); } to { opacity:1; transform:none; } }
-  #tadeon-desktop-sidebar[data-collapsed="true"] .tadeon-nav-item[aria-current="page"] { animation:none; box-shadow:inset 2px 0 var(--sidebar-item-accent), inset 0 0 0 1px color-mix(in srgb, var(--sidebar-item-accent) 16%, transparent), 0 12px 30px -28px rgb(var(--sidebar-item-rgb, 217 215 164) / 50%) !important; }
+  #tadeon-desktop-sidebar[data-collapsed="true"] .tadeon-nav-item[aria-current="page"] { animation:none; }
 }
 
 /* Table rows and list items: information moves as a group. */
@@ -384,7 +384,7 @@
 
 /* Make these icon gestures respect reduced motion. */
 @media (prefers-reduced-motion:reduce) {
-  .tadeon-shell button,
+  .tadeon-shell button:not([data-material-surface], .tadeon-material-button),
   .tadeon-shell [role="button"],
   .tadeon-shell [data-slot="switch"],
   .tadeon-shell [data-slot="switch-thumb"],
@@ -465,36 +465,6 @@
     transform: scale(1.09) !important;
   }
 
-  #tadeon-desktop-sidebar[data-collapsed="true"] .tadeon-nav-item[title]::after {
-    content: attr(title) !important;
-    position: absolute !important;
-    top: 50% !important;
-    left: calc(100% + .7rem) !important;
-    z-index: 100 !important;
-    min-width: max-content !important;
-    padding: .5rem .72rem !important;
-    border: 1px solid color-mix(in srgb, var(--section-accent) 22%, var(--border)) !important;
-    border-radius: .65rem .25rem .65rem .25rem !important;
-    color: var(--foreground) !important;
-    background: color-mix(in srgb, var(--popover) 94%, transparent) !important;
-    box-shadow: 0 18px 45px -28px rgb(0 0 0 / 90%), inset 0 1px rgb(255 255 255 / 4%) !important;
-    backdrop-filter: blur(18px) saturate(125%) !important;
-    font-size: .72rem !important;
-    font-weight: 650 !important;
-    line-height: 1.15 !important;
-    opacity: 0 !important;
-    pointer-events: none !important;
-    transform: translate3d(-7px,-50%,0) scale(.95) !important;
-    transform-origin: left center !important;
-    transition: opacity 160ms ease, transform 220ms cubic-bezier(.22,1,.36,1) !important;
-  }
-
-  #tadeon-desktop-sidebar[data-collapsed="true"] .tadeon-nav-item[title]:hover::after,
-  #tadeon-desktop-sidebar[data-collapsed="true"] .tadeon-nav-item[title]:focus-visible::after {
-    opacity: 1 !important;
-    transform: translate3d(0,-50%,0) scale(1) !important;
-  }
-
   /* Each active item owns its own identity. */
   #tadeon-desktop-sidebar .tadeon-nav-item[aria-current="page"] { --sidebar-item-accent: var(--section-accent); }
   #tadeon-desktop-sidebar .tadeon-nav-item[href="/"][aria-current="page"] { --sidebar-item-accent: var(--tadeon-knowledge); --sidebar-item-rgb: 217 215 164; }
@@ -504,18 +474,6 @@
   #tadeon-desktop-sidebar .tadeon-nav-item[href="/master-panel"][aria-current="page"] { --sidebar-item-accent: var(--tadeon-fear); --sidebar-item-rgb: 116 36 45; }
   #tadeon-desktop-sidebar .tadeon-nav-item[href="/manage-users"][aria-current="page"] { --sidebar-item-accent: var(--tadeon-flow); --sidebar-item-rgb: 79 110 93; }
   #tadeon-desktop-sidebar .tadeon-nav-item[href="/nexus-tools"][aria-current="page"] { --sidebar-item-accent: var(--tadeon-metal); --sidebar-item-rgb: 122 129 135; }
-
-  #tadeon-desktop-sidebar .tadeon-nav-item[aria-current="page"] {
-    color: var(--sidebar-item-accent) !important;
-    border-color: color-mix(in srgb, var(--sidebar-item-accent) 32%, transparent) !important;
-    background:
-      linear-gradient(90deg, rgb(var(--sidebar-item-rgb) / 16%), rgb(var(--sidebar-item-rgb) / 4%) 72%, transparent),
-      color-mix(in srgb, var(--sidebar-item-accent) 10%, var(--sidebar-accent)) !important;
-    box-shadow:
-      inset 2px 0 var(--sidebar-item-accent),
-      inset 0 1px rgb(255 255 255 / 3%),
-      0 12px 34px -28px rgb(var(--sidebar-item-rgb) / 55%) !important;
-  }
 
   #tadeon-desktop-sidebar .tadeon-nav-item[aria-current="page"] .tadeon-nav-item__icon {
     color: var(--sidebar-item-accent) !important;
@@ -1175,8 +1133,8 @@
 }
 
 /* Universal interactive response */
-.tadeon-shell button,
-.tadeon-shell a,
+.tadeon-shell button:not([data-material-surface], .tadeon-material-button),
+.tadeon-shell a:not([data-material-surface], .tadeon-material-button),
 .tadeon-shell [role="button"],
 .tadeon-shell [role="tab"],
 .tadeon-shell [role="menuitem"],
@@ -1195,8 +1153,8 @@
     filter var(--tw-base) var(--tw-stitch);
 }
 
-.tadeon-shell button:hover:not(:disabled),
-.tadeon-shell a:hover,
+.tadeon-shell button:not([data-material-surface], .tadeon-material-button):hover:not(:disabled),
+.tadeon-shell a:not([data-material-surface], .tadeon-material-button):hover,
 .tadeon-shell [role="button"]:hover,
 .tadeon-shell [role="tab"]:hover,
 .tadeon-shell [role="menuitem"]:hover,
@@ -1205,8 +1163,8 @@
   filter: brightness(1.035);
 }
 
-.tadeon-shell button:active:not(:disabled),
-.tadeon-shell a:active,
+.tadeon-shell button:not([data-material-surface], .tadeon-material-button):active:not(:disabled),
+.tadeon-shell a:not([data-material-surface], .tadeon-material-button):active,
 .tadeon-shell [role="button"]:active,
 .tadeon-shell [role="tab"]:active,
 .tadeon-shell [role="menuitem"]:active,
@@ -1216,7 +1174,7 @@
 }
 
 /* Focus is a seam being tensioned around the object. */
-.tadeon-shell :is(button,a,input,textarea,select,[role="button"],[role="tab"],[role="menuitem"]):focus-visible {
+.tadeon-shell :is(button:not([data-material-surface], .tadeon-material-button),a:not([data-material-surface], .tadeon-material-button),input,textarea,select,[role="button"],[role="tab"],[role="menuitem"]):focus-visible {
   animation: tadeon-weave-focus 360ms var(--tw-stitch) both;
 }
 @keyframes tadeon-weave-focus {
@@ -1501,17 +1459,6 @@
   filter: drop-shadow(0 0 7px rgb(var(--nav-accent-rgb, var(--sidebar-accent-rgb)) / 24%));
 }
 
-.tadeon-sidebar .tadeon-nav-item[aria-current="page"] {
-  color: var(--nav-accent, var(--sidebar-accent));
-  border-color: rgb(var(--nav-accent-rgb, var(--sidebar-accent-rgb)) / 20%);
-  background:
-    linear-gradient(90deg, rgb(var(--nav-accent-rgb, var(--sidebar-accent-rgb)) / 8%), transparent 76%),
-    color-mix(in srgb, var(--nav-accent, var(--sidebar-accent)) 7%, var(--sidebar));
-  box-shadow:
-    inset 0 1px rgb(255 255 255 / 2%),
-    inset 2px 0 rgb(var(--nav-accent-rgb, var(--sidebar-accent-rgb)) / 12%);
-}
-
 .tadeon-sidebar .tadeon-nav-item[aria-current="page"] .tadeon-nav-item__icon > svg {
   color: var(--nav-accent, var(--sidebar-accent)) !important;
   filter: drop-shadow(0 0 8px rgb(var(--nav-accent-rgb, var(--sidebar-accent-rgb)) / 30%));
@@ -1588,9 +1535,9 @@
 @keyframes tif-nav-stitch{0%{opacity:.65;filter:blur(.6px)}62%{opacity:1;filter:blur(0)}100%{opacity:1;filter:none}}
 .tadeon-shell .tadeon-desktop-toolbar__role,.tadeon-shell .tadeon-desktop-toolbar__account{transition:border-color 240ms var(--tif-seam),background-color 240ms var(--tif-seam),box-shadow 280ms var(--tif-seam)}
 .tadeon-shell .tadeon-desktop-toolbar__role:hover,.tadeon-shell .tadeon-desktop-toolbar__account:hover{box-shadow:0 10px 26px -22px color-mix(in srgb,var(--section-accent) 60%,transparent)}
-.tadeon-shell button:not(:disabled)::after,.tadeon-shell [role="button"]::after{content:"";position:absolute;inset:2px;border:1px solid currentColor;border-radius:inherit;opacity:0;transform:scaleX(.86);transition:opacity 180ms ease,transform 360ms var(--tif-thread);pointer-events:none}
-.tadeon-shell button:not(:disabled):hover::after,.tadeon-shell [role="button"]:hover::after{opacity:.08;transform:scaleX(1)}
-.tadeon-shell button:not(:disabled):active::after,.tadeon-shell [role="button"]:active::after{opacity:.15;transform:scaleX(.96);transition-duration:90ms}
+.tadeon-shell button:not([data-material-surface], .tadeon-material-button):not(:disabled)::after,.tadeon-shell [role="button"]::after{content:"";position:absolute;inset:2px;border:1px solid currentColor;border-radius:inherit;opacity:0;transform:scaleX(.86);transition:opacity 180ms ease,transform 360ms var(--tif-thread);pointer-events:none}
+.tadeon-shell button:not([data-material-surface], .tadeon-material-button):not(:disabled):hover::after,.tadeon-shell [role="button"]:hover::after{opacity:.08;transform:scaleX(1)}
+.tadeon-shell button:not([data-material-surface], .tadeon-material-button):not(:disabled):active::after,.tadeon-shell [role="button"]:active::after{opacity:.15;transform:scaleX(.96);transition-duration:90ms}
 .tadeon-shell [data-slot="tabs-trigger"]:hover{box-shadow:inset 0 -1px color-mix(in srgb,currentColor 28%,transparent)}
 .tadeon-shell [data-slot="tabs-trigger"][data-state="active"]{text-shadow:0 0 18px color-mix(in srgb,currentColor 18%,transparent)}
 .tadeon-shell [data-slot="tabs-content"][data-state="active"]{animation:tif-tab-weave 360ms var(--tif-in) both}
@@ -1609,8 +1556,7 @@
 .tadeon-shell input:focus,.tadeon-shell textarea:focus,.tadeon-shell select:focus{transform:none!important;box-shadow:0 0 0 1px color-mix(in srgb,var(--section-accent) 42%,transparent),0 8px 22px -20px color-mix(in srgb,var(--section-accent) 55%,transparent)}
 .tadeon-shell .tadeon-mobile-dock__item{transition:color 220ms var(--tif-seam),background-color 240ms var(--tif-seam),box-shadow 280ms var(--tif-seam)}
 .tadeon-shell .tadeon-mobile-dock__item:active{filter:brightness(.97)}
-.tadeon-shell .tadeon-mobile-dock__item[aria-current="page"]{box-shadow:inset 0 2px var(--section-accent),0 -4px 18px -16px var(--section-accent)}
-@media(prefers-reduced-motion:reduce){.tadeon-shell button::after{transition:none!important;animation:none!important}}
+@media(prefers-reduced-motion:reduce){.tadeon-shell button:not([data-material-surface], .tadeon-material-button)::after{transition:none!important;animation:none!important}}
 
 /* end-source: src/styles/tadeon-interaction-final.css */
 
@@ -1627,14 +1573,14 @@
 }
 
 /* Controls: the material answers pressure; it does not jump. */
-.tadeon-shell button:not(:disabled),
+.tadeon-shell button:not([data-material-surface], .tadeon-material-button):not(:disabled),
 .tadeon-shell [role="button"] {
   position: relative;
   transition: color 190ms var(--tm-surface-seam), background-color 210ms var(--tm-surface-seam), border-color 230ms var(--tm-surface-seam), box-shadow 280ms var(--tm-surface-seam), filter 220ms var(--tm-surface-seam), transform 90ms ease-out;
 }
-.tadeon-shell button:not(:disabled):hover,
+.tadeon-shell button:not([data-material-surface], .tadeon-material-button):not(:disabled):hover,
 .tadeon-shell [role="button"]:hover { filter:brightness(1.025); }
-.tadeon-shell button:not(:disabled):active,
+.tadeon-shell button:not([data-material-surface], .tadeon-material-button):not(:disabled):active,
 .tadeon-shell [role="button"]:active { transform:none; filter:brightness(.985); }
 
 /* Tabs: selection is a seam sewn into the rail. */
@@ -1718,8 +1664,8 @@
    seam/tension/reveal primitives. */
 
 /* Do not let the motion system move every interactive object by default. */
-.tadeon-shell button,
-.tadeon-shell a,
+.tadeon-shell button:not([data-material-surface], .tadeon-material-button),
+.tadeon-shell a:not([data-material-surface], .tadeon-material-button),
 .tadeon-shell [role="button"],
 .tadeon-shell [role="tab"],
 .tadeon-shell [role="menuitem"],
@@ -1736,7 +1682,7 @@
     filter var(--td-seam);
 }
 
-.tadeon-shell button:not(:disabled):active,
+.tadeon-shell button:not([data-material-surface], .tadeon-material-button):not(:disabled):active,
 .tadeon-shell [role="button"]:active,
 .tadeon-shell [role="tab"]:active,
 .tadeon-shell [role="menuitem"]:active,
@@ -2093,8 +2039,8 @@
 /* Tadeon Microdetail Authority - every small surface carries a TdV material cue.
    No generic lifts, jumps, or viewport-delayed reveals. */
 :root{--tm-micro-seam:cubic-bezier(.25,.8,.25,1);--tm-micro-thread:cubic-bezier(.22,.72,.2,1);--tm-micro-ghost:cubic-bezier(.37,0,.63,1)}
-.tadeon-shell :is([data-slot="button"],[data-slot="toggle"],[data-slot="toggle-group-item"],[data-slot="pagination-link"],[data-slot="breadcrumb-link"]){transition:color 180ms var(--tm-micro-seam),background-color 220ms var(--tm-micro-seam),border-color 240ms var(--tm-micro-seam),box-shadow 280ms var(--tm-micro-seam),opacity 180ms var(--tm-micro-seam),filter 180ms var(--tm-micro-seam)}
-.tadeon-shell :is([data-slot="button"],[data-slot="toggle"],[data-slot="toggle-group-item"],[data-slot="pagination-link"],[data-slot="breadcrumb-link"]):active{transform:none!important;filter:brightness(.985)}
+.tadeon-shell :is([data-slot="button"]:not([data-material-surface], .tadeon-material-button),[data-slot="toggle"],[data-slot="toggle-group-item"],[data-slot="pagination-link"],[data-slot="breadcrumb-link"]){transition:color 180ms var(--tm-micro-seam),background-color 220ms var(--tm-micro-seam),border-color 240ms var(--tm-micro-seam),box-shadow 280ms var(--tm-micro-seam),opacity 180ms var(--tm-micro-seam),filter 180ms var(--tm-micro-seam)}
+.tadeon-shell :is([data-slot="button"]:not([data-material-surface], .tadeon-material-button),[data-slot="toggle"],[data-slot="toggle-group-item"],[data-slot="pagination-link"],[data-slot="breadcrumb-link"]):active{transform:none!important;filter:brightness(.985)}
 .tadeon-shell :is([data-slot="card"],[data-motion-card],[data-motion-surface]) :is([data-slot="card-header"],[data-slot="card-title"],[data-slot="card-description"],[data-slot="card-content"],[data-slot="card-footer"]){transition:opacity 220ms var(--tm-micro-seam),filter 260ms var(--tm-micro-seam),color 220ms var(--tm-micro-seam)}
 .tadeon-shell :is([data-slot="card"],[data-motion-card],[data-motion-surface]):hover [data-slot="card-description"]{opacity:.84}
 .tadeon-shell :is([data-slot="card"],[data-motion-card],[data-motion-surface]):hover [data-slot="card-title"]{text-shadow:0 0 18px color-mix(in srgb,var(--section-accent,var(--tadeon-knowledge)) 18%,transparent)}
@@ -3129,8 +3075,8 @@
   --td-hover-drift: 1400ms cubic-bezier(.37,0,.63,1);
 }
 
-.tadeon-shell button,
-.tadeon-shell a,
+.tadeon-shell button:not([data-material-surface], .tadeon-material-button),
+.tadeon-shell a:not([data-material-surface], .tadeon-material-button),
 .tadeon-shell [role="button"],
 .tadeon-shell [role="tab"],
 .tadeon-shell [role="menuitem"],
@@ -3148,8 +3094,8 @@
 }
 
 /* Quiet response: material changes, geometry stays still. */
-.tadeon-shell button:not(:disabled),
-.tadeon-shell a,
+.tadeon-shell button:not([data-material-surface], .tadeon-material-button):not(:disabled),
+.tadeon-shell a:not([data-material-surface], .tadeon-material-button),
 .tadeon-shell [role="button"],
 .tadeon-shell [role="tab"],
 .tadeon-shell [role="menuitem"],
@@ -3178,8 +3124,8 @@
 }
 
 @media (hover:hover) and (pointer:fine) {
-  .tadeon-shell button:not(:disabled):hover,
-  .tadeon-shell a:hover,
+  .tadeon-shell button:not([data-material-surface], .tadeon-material-button):not(:disabled):hover,
+  .tadeon-shell a:not([data-material-surface], .tadeon-material-button):hover,
   .tadeon-shell [role="button"]:hover,
   .tadeon-shell [role="tab"]:hover,
   .tadeon-shell [role="menuitem"]:hover,
@@ -3204,14 +3150,14 @@
   }
 
   /* Buttons: edge pressure and a thread passing across the surface. */
-  .tadeon-shell button:not(:disabled):hover,
+  .tadeon-shell button:not([data-material-surface], .tadeon-material-button):not(:disabled):hover,
   .tadeon-shell [role="button"]:hover {
     box-shadow:
       inset 0 0 0 1px rgb(var(--td-section-rgb, var(--section-accent-rgb, 217 215 164)) / 13%),
       inset 0 -1px rgb(var(--td-section-rgb, var(--section-accent-rgb, 217 215 164)) / 10%) !important;
   }
 
-  .tadeon-shell button:not(:disabled):active,
+  .tadeon-shell button:not([data-material-surface], .tadeon-material-button):not(:disabled):active,
   .tadeon-shell [role="button"]:active,
   .tadeon-shell [role="tab"]:active,
   .tadeon-shell [role="menuitem"]:active,
@@ -3305,16 +3251,16 @@
 }
 
 /* Remove component travel from the older universal hover language. */
-.tadeon-shell :is(button,a,[role="button"],[role="tab"],[role="menuitem"],[role="option"],[data-motion-card],[data-motion-surface],[data-motion-list-item],[role="row"],table tbody tr):hover {
+.tadeon-shell :is(button:not([data-material-surface], .tadeon-material-button),a:not([data-material-surface], .tadeon-material-button),[role="button"],[role="tab"],[role="menuitem"],[role="option"],[data-motion-card],[data-motion-surface],[data-motion-list-item],[role="row"],table tbody tr):hover {
   transform: none !important;
 }
 
-.tadeon-shell :is(button,a,[role="button"],[role="tab"],[role="menuitem"],[role="option"]):hover {
+.tadeon-shell :is(button:not([data-material-surface], .tadeon-material-button),a:not([data-material-surface], .tadeon-material-button),[role="button"],[role="tab"],[role="menuitem"],[role="option"]):hover {
   filter: none !important;
 }
 
 /* Surface response: the material changes, the object stays put. */
-.tadeon-shell :is(button,[role="button"],[data-motion-card],[data-motion-surface]):not(:disabled) {
+.tadeon-shell :is(button:not([data-material-surface], .tadeon-material-button),[role="button"],[data-motion-card],[data-motion-surface]):not(:disabled) {
   position: relative;
   transition:
     color var(--td-hover-weave) var(--td-hover-seam),
@@ -3325,7 +3271,7 @@
     transform 1ms linear;
 }
 
-.tadeon-shell :is(button,[role="button"],[data-motion-card],[data-motion-surface]):not(:disabled)::before {
+.tadeon-shell :is(button:not([data-material-surface], .tadeon-material-button),[role="button"],[data-motion-card],[data-motion-surface]):not(:disabled)::before {
   content: "";
   position: absolute;
   inset: 0;
@@ -3337,7 +3283,7 @@
   transition: opacity var(--td-hover-weave) var(--td-hover-seam);
 }
 
-.tadeon-shell :is(button,[role="button"],[data-motion-card],[data-motion-surface]):not(:disabled)::after {
+.tadeon-shell :is(button:not([data-material-surface], .tadeon-material-button),[role="button"],[data-motion-card],[data-motion-surface]):not(:disabled)::after {
   content: "";
   position: absolute;
   left: .8rem;
@@ -3352,11 +3298,11 @@
   transition: opacity var(--td-hover-line) linear, transform var(--td-hover-weave) var(--td-hover-thread);
 }
 
-.tadeon-shell :is(button,[role="button"]:not(:disabled),[data-motion-card],[data-motion-surface]):hover::before {
+.tadeon-shell :is(button:not([data-material-surface], .tadeon-material-button),[role="button"]:not(:disabled),[data-motion-card],[data-motion-surface]):hover::before {
   opacity: .12;
 }
 
-.tadeon-shell :is(button,[role="button"]:not(:disabled),[data-motion-card],[data-motion-surface]):hover::after {
+.tadeon-shell :is(button:not([data-material-surface], .tadeon-material-button),[role="button"]:not(:disabled),[data-motion-card],[data-motion-surface]):hover::after {
   opacity: .42;
   transform: scaleX(1) !important;
 }
@@ -3365,8 +3311,6 @@
 .tadeon-shell .tadeon-sidebar .tadeon-nav-item:hover {
   transform: none !important;
   filter: none !important;
-  background-color: color-mix(in srgb, var(--nav-accent, currentColor) 6%, transparent) !important;
-  box-shadow: inset 1px 0 var(--nav-accent, currentColor);
 }
 
 .tadeon-shell .tadeon-sidebar .tadeon-nav-item:hover .tadeon-nav-item__icon > svg {
@@ -3529,9 +3473,6 @@ html body .tadeon-shell .tadeon-master-commandbar p:not(.tadeon-eyebrow) {
   position: relative;
   overflow: hidden;
   border: 1px solid transparent !important;
-  color: var(--td-nav-muted) !important;
-  background: transparent !important;
-  box-shadow: none !important;
   transform: none !important;
 }
 .tadeon-shell .tadeon-nav-item[href^="/nexus"] { --td-nav-accent:#4f6e5d; --td-nav-accent-rgb:79 110 93; }
@@ -3545,10 +3486,6 @@ html body .tadeon-shell .tadeon-master-commandbar p:not(.tadeon-eyebrow) {
 
 .tadeon-shell .tadeon-nav-item[data-nav-active="true"],
 .tadeon-shell .tadeon-nav-item[aria-current="page"] {
-  color:var(--td-nav-accent) !important;
-  border-color:rgb(var(--td-nav-accent-rgb) / 24%) !important;
-  background:linear-gradient(90deg, rgb(var(--td-nav-accent-rgb) / 12%), rgb(var(--td-nav-accent-rgb) / 4%) 62%, transparent) !important;
-  box-shadow:inset 2px 0 0 var(--td-nav-accent), inset 0 0 28px rgb(var(--td-nav-accent-rgb) / 6%) !important;
   transform:none !important;
 }
 
@@ -3637,33 +3574,6 @@ html body .tadeon-shell .tadeon-master-commandbar p:not(.tadeon-eyebrow) {
 }
 
 /* Global atmospheric strata. */
-.tadeon-shell::before,
-.tadeon-shell::after {
-  content: "";
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  z-index: -1;
-}
-
-.tadeon-shell::before {
-  background:
-    radial-gradient(circle at 14% 18%, rgb(var(--td-section-rgb, 217 215 164) / 7%), transparent 22rem),
-    radial-gradient(circle at 84% 72%, rgb(var(--td-section-secondary-rgb, 113 107 123) / 5%), transparent 28rem),
-    linear-gradient(120deg, transparent 20%, rgb(var(--td-section-rgb, 217 215 164) / 2.2%) 20.1% 20.18%, transparent 20.4% 100%);
-  filter: blur(18px);
-  opacity: .6;
-  animation: td-ambient-breathe 24s ease-in-out infinite alternate;
-}
-
-.tadeon-shell::after {
-  background:
-    repeating-linear-gradient(115deg, transparent 0 8rem, var(--td-ambient-line) 8rem 8.035rem, transparent 8.035rem 16rem),
-    repeating-linear-gradient(68deg, transparent 0 11rem, rgb(var(--td-section-rgb, 217 215 164) / 2.2%) 11rem 11.03rem, transparent 11.03rem 22rem);
-  mask-image: linear-gradient(90deg, transparent, #000 13%, #000 87%, transparent);
-  opacity: .35;
-  animation: td-ambient-drift 42s linear infinite;
-}
 
 /* Large work surfaces gain very subtle authored strata. */
 .tadeon-shell :is(.tadeon-page, .tadeon-route-stage, .tadeon-page-content, .tadeon-tabletop-stage, .tadeon-nexus-stage) {
@@ -3872,8 +3782,6 @@ html body .tadeon-shell .tadeon-master-commandbar p:not(.tadeon-eyebrow) {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .tadeon-shell::before,
-  .tadeon-shell::after,
   .tadeon-shell :is(.tadeon-section-divider, .tadeon-content-divider, .tadeon-page-section-divider)::before,
   .tadeon-shell :is(.tadeon-empty-state, .tadeon-page-empty, [data-tadeon-empty])::before,
   .tadeon-shell :is(.tadeon-empty-state, .tadeon-page-empty, [data-tadeon-empty])::after,
@@ -4150,14 +4058,6 @@ html body .tadeon-shell .tadeon-master-commandbar p:not(.tadeon-eyebrow) {
 }
 
 /* Fine thread traces across the viewport. They are intentionally slower than UI. */
-.tadeon-shell::after {
-  background:
-    repeating-linear-gradient(118deg, transparent 0 9rem, color-mix(in srgb, var(--tdv-lumen) 3.1%, transparent) 9rem 9.035rem, transparent 9.035rem 18rem),
-    repeating-linear-gradient(64deg, transparent 0 12rem, color-mix(in srgb, var(--tdv-lumen) 1.8%, transparent) 12rem 12.025rem, transparent 12.025rem 24rem);
-  background-size: 155% 155%, 175% 175%;
-  opacity: .32;
-  animation: tdv-loom-drift 46s linear infinite;
-}
 
 /* ================================================================
    02. HEROES - luminares, flowing threads, suspended depth
@@ -4223,8 +4123,6 @@ html body .tadeon-shell .tadeon-master-commandbar p:not(.tadeon-eyebrow) {
 }
 
 /* Never translate the control on hover. The reaction happens inside the skin. */
-.tadeon-shell .tadeon-nav-item:hover,
-.tadeon-shell .tadeon-mobile-dock__item:hover,
 .tadeon-shell button:not([data-radix-collection-item]):hover,
 .tadeon-shell [role="button"]:hover {
   transform: none !important;
@@ -4232,6 +4130,10 @@ html body .tadeon-shell .tadeon-master-commandbar p:not(.tadeon-eyebrow) {
     inset 0 0 0 1px color-mix(in srgb, var(--tdv-lumen) 16%, transparent),
     inset 0 -10px 22px color-mix(in srgb, var(--tdv-lumen) 3%, transparent),
     0 10px 28px -24px color-mix(in srgb, var(--tdv-lumen) 34%, transparent);
+}
+.tadeon-shell .tadeon-nav-item:hover,
+.tadeon-shell .tadeon-mobile-dock__item:hover {
+  transform: none !important;
 }
 
 /* Flowing highlight: a light thread passes through the surface, then disappears. */
@@ -4260,12 +4162,14 @@ html body .tadeon-shell .tadeon-master-commandbar p:not(.tadeon-eyebrow) {
 }
 
 /* Press feels like a seam being pulled tight - deliberately tiny. */
-.tadeon-shell .tadeon-nav-item:active,
-.tadeon-shell .tadeon-mobile-dock__item:active,
 .tadeon-shell button:not([data-radix-collection-item]):active,
 .tadeon-shell [role="button"]:active {
   transform: scale(.985) !important;
   box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--tdv-lumen) 18%, transparent), inset 0 2px 10px color-mix(in srgb, var(--tdv-lumen) 5%, transparent);
+}
+.tadeon-shell .tadeon-nav-item:active,
+.tadeon-shell .tadeon-mobile-dock__item:active {
+  transform: scale(.985) !important;
 }
 
 /* ================================================================
@@ -4343,13 +4247,17 @@ html body .tadeon-shell .tadeon-master-commandbar p:not(.tadeon-eyebrow) {
 .tadeon-shell [data-radix-dialog-content],
 .tadeon-shell [data-radix-popover-content],
 .tadeon-shell [data-radix-dropdown-menu-content],
-.tadeon-shell [data-radix-select-content],
-.tadeon-shell .tadeon-mobile-drawer {
+.tadeon-shell [data-radix-select-content] {
   position: relative;
   isolation: isolate;
   box-shadow:
     0 28px 80px -44px color-mix(in srgb, var(--tdv-lumen) 22%, transparent),
     inset 0 1px 0 color-mix(in srgb, var(--tdv-lumen) 7%, transparent);
+}
+
+.tadeon-shell .tadeon-mobile-drawer {
+  position: relative;
+  isolation: isolate;
 }
 
 .tadeon-shell [data-radix-dialog-content]::before,
@@ -4374,8 +4282,6 @@ html body .tadeon-shell .tadeon-master-commandbar p:not(.tadeon-eyebrow) {
    07. SELECTION / STATES - a sutura closes around the state
    ================================================================ */
 
-.tadeon-shell .tadeon-nav-item[data-nav-active="true"],
-.tadeon-shell .tadeon-nav-item[aria-current="page"],
 .tadeon-shell [data-selected="true"],
 .tadeon-shell [aria-selected="true"] {
   box-shadow:
@@ -4500,7 +4406,6 @@ html body .tadeon-shell .tadeon-master-commandbar p:not(.tadeon-eyebrow) {
 
 @media (prefers-reduced-motion: reduce) {
   .tadeon-shell,
-  .tadeon-shell::after,
   .tadeon-shell [data-tadeon-page-hero]::before,
   .tadeon-shell [data-tadeon-page-hero]::after,
   .tadeon-shell .tadeon-master-commandbar::before,
@@ -4754,15 +4659,15 @@ html body .tadeon-shell .tadeon-route-offline > main {
 .tadeon-shell .tadeon-nav-item{
   isolation:isolate;overflow:hidden;position:relative;
 }
-.tadeon-shell button::after,
+.tadeon-shell button:not([data-material-surface], .tadeon-material-button)::after,
 .tadeon-shell [role="button"]::after{
   content:"";position:absolute;inset:auto -35% 0;height:1px;pointer-events:none;
   background:linear-gradient(90deg,transparent,color-mix(in srgb,var(--section-accent,var(--tdv-lumen,white)) 72%,transparent),transparent);
   transform:scaleX(.08);transform-origin:center;opacity:.18;transition:transform .35s ease,opacity .35s ease;
 }
-.tadeon-shell button:hover::after,
+.tadeon-shell button:not([data-material-surface], .tadeon-material-button):hover::after,
 .tadeon-shell [role="button"]:hover::after{transform:scaleX(1);opacity:.9}
-.tadeon-shell button:active::after,
+.tadeon-shell button:not([data-material-surface], .tadeon-material-button):active::after,
 .tadeon-shell [role="button"]:active::after{animation:tdv-seam-close .55s ease-out both}
 
 /* TABS / FILTERS: the selected state is literally stitched into place. */
@@ -4797,9 +4702,6 @@ html body .tadeon-shell .tadeon-route-offline > main {
 }
 
 /* SIDEBAR: a vertical thread joins the current destination. */
-.tadeon-shell .tadeon-nav-item:hover,
-.tadeon-shell .tadeon-nav-item[data-nav-active="true"],
-.tadeon-shell .tadeon-nav-item[aria-current="page"]{background-image:linear-gradient(90deg,color-mix(in srgb,var(--nav-accent,var(--section-accent)) 10%,transparent),transparent 70%)}
 
 /* Bars: the Fluxo becomes visible as a moving internal current. */
 .tadeon-shell [role="progressbar"],
@@ -4950,7 +4852,7 @@ html body .tadeon-shell .tadeon-route-offline > main {
 .tadeon-shell[data-section="Mestre"] [data-slot="card"]:hover{background-color:color-mix(in srgb,var(--card) 92%,rgb(168 68 72 / 14%));box-shadow:inset 0 0 0 1px rgb(168 68 72 / 34%),inset 0 0 42px -30px rgb(168 68 72 / 92%),0 20px 54px -38px rgb(168 68 72 / 80%);animation:tdv-motif-breathe 2.8s ease-in-out infinite}
 
 /* Pressed controls feel like tension released in the weave, not a bounce. */
-.tadeon-shell[data-section] button:active,.tadeon-shell[data-section] [role="button"]:active{transform:none;box-shadow:inset 0 2px 10px -8px currentColor,0 0 0 1px color-mix(in srgb,var(--section-accent) 20%,transparent)}
+.tadeon-shell[data-section] button:not([data-material-surface], .tadeon-material-button):active,.tadeon-shell[data-section] [role="button"]:active{transform:none;box-shadow:inset 0 2px 10px -8px currentColor,0 0 0 1px color-mix(in srgb,var(--section-accent) 20%,transparent)}
 
 /* Active section controls inherit their page's material instead of a neutral beige. */
 .tadeon-shell[data-section] [aria-current="page"],.tadeon-shell[data-section] [data-nav-active="true"]{color:color-mix(in srgb,var(--section-accent) 82%,white);background-color:color-mix(in srgb,var(--section-accent) 8%,transparent);box-shadow:inset 2px 0 color-mix(in srgb,var(--section-accent) 74%,transparent),inset 0 0 24px -22px color-mix(in srgb,var(--section-accent) 90%,transparent)}
@@ -5001,7 +4903,7 @@ html body .tadeon-shell .tadeon-route-offline > main {
 .tadeon-shell [data-td-reveal] { animation-name: td-fluid-reveal !important; }
 
 /* Prevent compounded micro-transitions from feeling sticky on touch and pointer. */
-.tadeon-shell :is(button,a,[role="button"],[role="tab"],[role="menuitem"],[role="option"],[role="switch"],[role="checkbox"],[role="radio"],summary) {
+.tadeon-shell :is(button:not([data-material-surface], .tadeon-material-button),a:not([data-material-surface], .tadeon-material-button),[role="button"],[role="tab"],[role="menuitem"],[role="option"],[role="switch"],[role="checkbox"],[role="radio"],summary) {
   transition-timing-function: var(--td-fluid-seam);
 }
 
@@ -5051,7 +4953,7 @@ html body .tadeon-shell .tadeon-route-offline > main {
 
 /* Touch devices: remove hover-state latency and let press feedback settle quickly. */
 @media (hover: none), (pointer: coarse) {
-  .tadeon-shell :is(button,a,[role="button"],[role="tab"],[role="menuitem"],[role="option"],[role="switch"],[role="checkbox"],[role="radio"],summary) {
+  .tadeon-shell :is(button:not([data-material-surface], .tadeon-material-button),a:not([data-material-surface], .tadeon-material-button),[role="button"],[role="tab"],[role="menuitem"],[role="option"],[role="switch"],[role="checkbox"],[role="radio"],summary) {
     transition-duration: var(--td-fluid-base);
   }
   .tadeon-shell :is([data-slot="card"],[data-motion-surface],[data-motion-card]) {
@@ -5073,25 +4975,25 @@ html body .tadeon-shell .tadeon-route-offline > main {
 /* source: src/styles/tadeon-control-personality.css */
 /* TdV CONTROL PERSONALITY - living material, no generic UI motion. */
 :root{--tdv-control-ease:cubic-bezier(.2,.78,.2,1);--tdv-control-fast:150ms;--tdv-control-base:230ms}
-.tadeon-shell :is(button,[role="button"],a,[role="tab"],[role="menuitem"],summary){transition:background-color var(--tdv-control-base) var(--tdv-control-ease),border-color var(--tdv-control-base) var(--tdv-control-ease),color var(--tdv-control-base) var(--tdv-control-ease),box-shadow var(--tdv-control-base) var(--tdv-control-ease),filter var(--tdv-control-base) var(--tdv-control-ease),opacity var(--tdv-control-base) var(--tdv-control-ease)}
-.tadeon-shell :is(button,[role="button"],[role="tab"],[role="menuitem"],summary):hover{filter:saturate(1.045) brightness(1.025)}
-.tadeon-shell :is(button,[role="button"],[role="tab"],[role="menuitem"],summary):focus-visible{outline:1px solid color-mix(in srgb,var(--section-accent) 58%,white);outline-offset:3px;box-shadow:0 0 0 4px color-mix(in srgb,var(--section-accent) 9%,transparent),0 0 26px -18px color-mix(in srgb,var(--section-accent) 70%,transparent)}
-.tadeon-shell :is(button,[role="button"],[role="tab"],[role="menuitem"],summary):active{filter:brightness(.985) saturate(1.08);transition-duration:var(--tdv-control-fast)}
-.tadeon-shell[data-section="Dashboard"] :is(button,[role="button"],[role="tab"],[role="menuitem"]):hover{box-shadow:inset 0 0 22px -20px rgb(217 215 164 / 90%),0 0 28px -24px rgb(217 215 164 / 80%)}
-.tadeon-shell[data-section="Nexus"] :is(button,[role="button"],[role="tab"],[role="menuitem"]):hover{box-shadow:inset 0 0 22px -20px rgb(79 160 116 / 92%),0 0 30px -25px rgb(79 160 116 / 78%)}
-.tadeon-shell[data-section="Mesa"] :is(button,[role="button"],[role="tab"],[role="menuitem"]):hover{box-shadow:inset 0 -8px 26px -24px rgb(73 116 177 / 95%),0 0 28px -24px rgb(73 116 177 / 74%)}
-.tadeon-shell[data-section="Offline"] :is(button,[role="button"],[role="tab"],[role="menuitem"]):hover{box-shadow:inset 0 0 30px -26px rgb(132 92 157 / 94%),0 0 26px -23px rgb(132 92 157 / 70%);filter:saturate(1.02) brightness(1.015)}
-.tadeon-shell[data-section="Gerenciar"] :is(button,[role="button"],[role="tab"],[role="menuitem"]):hover{box-shadow:inset 0 -6px 24px -22px rgb(211 124 57 / 98%),0 0 30px -24px rgb(211 124 57 / 80%)}
-.tadeon-shell[data-section="Backup"] :is(button,[role="button"],[role="tab"],[role="menuitem"]):hover{box-shadow:inset 0 0 22px -21px rgb(185 189 194 / 90%),0 0 24px -24px rgb(165 169 174 / 60%);filter:brightness(1.02)}
-.tadeon-shell[data-section="Mestre"] :is(button,[role="button"],[role="tab"],[role="menuitem"]):hover{box-shadow:inset 0 0 34px -25px rgb(168 68 72 / 98%),0 0 34px -25px rgb(168 68 72 / 76%);filter:saturate(1.08) brightness(1.015)}
-.tadeon-shell :is(button,[role="button"],[role="tab"],[role="menuitem"]):disabled,.tadeon-shell :is(button,[role="button"],[role="tab"],[role="menuitem"])[aria-disabled="true"]{filter:none!important;box-shadow:none!important;transition:none!important}
+.tadeon-shell :is(button:not([data-material-surface], .tadeon-material-button),[role="button"],a:not([data-material-surface], .tadeon-material-button),[role="tab"],[role="menuitem"],summary){transition:background-color var(--tdv-control-base) var(--tdv-control-ease),border-color var(--tdv-control-base) var(--tdv-control-ease),color var(--tdv-control-base) var(--tdv-control-ease),box-shadow var(--tdv-control-base) var(--tdv-control-ease),filter var(--tdv-control-base) var(--tdv-control-ease),opacity var(--tdv-control-base) var(--tdv-control-ease)}
+.tadeon-shell :is(button:not([data-material-surface], .tadeon-material-button),[role="button"],[role="tab"],[role="menuitem"],summary):hover{filter:saturate(1.045) brightness(1.025)}
+.tadeon-shell :is(button:not([data-material-surface], .tadeon-material-button),[role="button"],[role="tab"],[role="menuitem"],summary):focus-visible{outline:1px solid color-mix(in srgb,var(--section-accent) 58%,white);outline-offset:3px;box-shadow:0 0 0 4px color-mix(in srgb,var(--section-accent) 9%,transparent),0 0 26px -18px color-mix(in srgb,var(--section-accent) 70%,transparent)}
+.tadeon-shell :is(button:not([data-material-surface], .tadeon-material-button),[role="button"],[role="tab"],[role="menuitem"],summary):active{filter:brightness(.985) saturate(1.08);transition-duration:var(--tdv-control-fast)}
+.tadeon-shell[data-section="Dashboard"] :is(button:not([data-material-surface], .tadeon-material-button),[role="button"],[role="tab"],[role="menuitem"]):hover{box-shadow:inset 0 0 22px -20px rgb(217 215 164 / 90%),0 0 28px -24px rgb(217 215 164 / 80%)}
+.tadeon-shell[data-section="Nexus"] :is(button:not([data-material-surface], .tadeon-material-button),[role="button"],[role="tab"],[role="menuitem"]):hover{box-shadow:inset 0 0 22px -20px rgb(79 160 116 / 92%),0 0 30px -25px rgb(79 160 116 / 78%)}
+.tadeon-shell[data-section="Mesa"] :is(button:not([data-material-surface], .tadeon-material-button),[role="button"],[role="tab"],[role="menuitem"]):hover{box-shadow:inset 0 -8px 26px -24px rgb(73 116 177 / 95%),0 0 28px -24px rgb(73 116 177 / 74%)}
+.tadeon-shell[data-section="Offline"] :is(button:not([data-material-surface], .tadeon-material-button),[role="button"],[role="tab"],[role="menuitem"]):hover{box-shadow:inset 0 0 30px -26px rgb(132 92 157 / 94%),0 0 26px -23px rgb(132 92 157 / 70%);filter:saturate(1.02) brightness(1.015)}
+.tadeon-shell[data-section="Gerenciar"] :is(button:not([data-material-surface], .tadeon-material-button),[role="button"],[role="tab"],[role="menuitem"]):hover{box-shadow:inset 0 -6px 24px -22px rgb(211 124 57 / 98%),0 0 30px -24px rgb(211 124 57 / 80%)}
+.tadeon-shell[data-section="Backup"] :is(button:not([data-material-surface], .tadeon-material-button),[role="button"],[role="tab"],[role="menuitem"]):hover{box-shadow:inset 0 0 22px -21px rgb(185 189 194 / 90%),0 0 24px -24px rgb(165 169 174 / 60%);filter:brightness(1.02)}
+.tadeon-shell[data-section="Mestre"] :is(button:not([data-material-surface], .tadeon-material-button),[role="button"],[role="tab"],[role="menuitem"]):hover{box-shadow:inset 0 0 34px -25px rgb(168 68 72 / 98%),0 0 34px -25px rgb(168 68 72 / 76%);filter:saturate(1.08) brightness(1.015)}
+.tadeon-shell :is(button:not([data-material-surface], .tadeon-material-button),[role="button"],[role="tab"],[role="menuitem"]):disabled,.tadeon-shell :is(button:not([data-material-surface], .tadeon-material-button),[role="button"],[role="tab"],[role="menuitem"])[aria-disabled="true"]{filter:none!important;box-shadow:none!important;transition:none!important}
 .tadeon-shell :is(input,textarea,select,[role="combobox"]):focus-visible{border-color:color-mix(in srgb,var(--section-accent) 58%,currentColor);box-shadow:0 0 0 3px color-mix(in srgb,var(--section-accent) 8%,transparent),inset 0 0 24px -24px color-mix(in srgb,var(--section-accent) 80%,transparent);transition:box-shadow 220ms var(--tdv-control-ease),border-color 220ms var(--tdv-control-ease)}
 .tadeon-shell :is([aria-selected="true"],[aria-checked="true"],[data-state="checked"],[data-state="on"]){color:color-mix(in srgb,var(--section-accent) 84%,white);background-color:color-mix(in srgb,var(--section-accent) 8%,transparent);box-shadow:inset 0 0 24px -23px color-mix(in srgb,var(--section-accent) 95%,transparent)}
 /* Active controls receive a quiet moving weave instead of a scale/bounce. */
-.tadeon-shell :is(button,[role="button"],[role="tab"],[role="menuitem"],summary)[aria-pressed="true"],.tadeon-shell :is([role="tab"],[role="menuitem"])[data-state="active"],.tadeon-shell :is([data-state="checked"],[data-state="on"]){background-image:linear-gradient(105deg,transparent 28%,color-mix(in srgb,var(--section-accent) 7%,transparent) 50%,transparent 72%);background-size:220% 100%;animation:tdv-control-weave 4.8s linear infinite}
+.tadeon-shell :is(button:not([data-material-surface], .tadeon-material-button),[role="button"],[role="tab"],[role="menuitem"],summary)[aria-pressed="true"],.tadeon-shell :is([role="tab"],[role="menuitem"])[data-state="active"],.tadeon-shell :is([data-state="checked"],[data-state="on"]){background-image:linear-gradient(105deg,transparent 28%,color-mix(in srgb,var(--section-accent) 7%,transparent) 50%,transparent 72%);background-size:220% 100%;animation:tdv-control-weave 4.8s linear infinite}
 @keyframes tdv-control-weave{from{background-position:-120% 0}to{background-position:120% 0}}
-@media (hover:none),(pointer:coarse){.tadeon-shell :is(button,[role="button"],a,[role="tab"],[role="menuitem"],summary){transition-duration:190ms}}
-@media(prefers-reduced-motion:reduce){.tadeon-shell :is(button,[role="button"],a,[role="tab"],[role="menuitem"],summary,input,textarea,select,[role="combobox"]){transition-duration:1ms!important}.tadeon-shell :is(button,[role="button"],[role="tab"],[role="menuitem"],summary)[aria-pressed="true"],.tadeon-shell :is([role="tab"],[role="menuitem"])[data-state="active"],.tadeon-shell :is([data-state="checked"],[data-state="on"]){animation:none!important}}
+@media (hover:none),(pointer:coarse){.tadeon-shell :is(button:not([data-material-surface], .tadeon-material-button),[role="button"],a:not([data-material-surface], .tadeon-material-button),[role="tab"],[role="menuitem"],summary){transition-duration:190ms}}
+@media(prefers-reduced-motion:reduce){.tadeon-shell :is(button:not([data-material-surface], .tadeon-material-button),[role="button"],a:not([data-material-surface], .tadeon-material-button),[role="tab"],[role="menuitem"],summary,input,textarea,select,[role="combobox"]){transition-duration:1ms!important}.tadeon-shell :is(button:not([data-material-surface], .tadeon-material-button),[role="button"],[role="tab"],[role="menuitem"],summary)[aria-pressed="true"],.tadeon-shell :is([role="tab"],[role="menuitem"])[data-state="active"],.tadeon-shell :is([data-state="checked"],[data-state="on"]){animation:none!important}}
 
 /* end-source: src/styles/tadeon-control-personality.css */
 
@@ -5313,13 +5215,13 @@ html body .tadeon-shell .tadeon-route-offline > main {
 }
 
 /* Reduce costly filters on ordinary controls; light is carried by shadows. */
-.tadeon-shell :is(button,[role="button"],[role="tab"],[role="menuitem"]):hover svg{
+.tadeon-shell :is(button:not([data-material-surface], .tadeon-material-button),[role="button"],[role="tab"],[role="menuitem"]):hover svg{
   filter:none;
 }
 
 /* Touch devices should not spend frames preparing hover-only effects. */
 @media (hover:none),(pointer:coarse){
-  .tadeon-shell :is(button,[role="button"],[role="tab"],[role="menuitem"],a):hover{
+  .tadeon-shell :is(button:not([data-material-surface], .tadeon-material-button),[role="button"],[role="tab"],[role="menuitem"],a:not([data-material-surface], .tadeon-material-button)):hover{
     filter:none!important;
   }
   .tadeon-shell :is([data-slot="card"],[data-motion-card],[data-motion-surface]):hover{
@@ -5508,17 +5410,6 @@ html body .tadeon-shell .tadeon-route-offline > main {
   display: none !important;
 }
 
-.tadeon-shell .tadeon-nav-item[data-mini="true"] {
-  color: var(--td-nav-muted, color-mix(in srgb, var(--sidebar-foreground) 68%, transparent)) !important;
-}
-
-.tadeon-shell .tadeon-nav-item[data-mini="true"][aria-current="page"],
-.tadeon-shell .tadeon-nav-item[data-mini="true"][data-nav-active="true"] {
-  color: var(--td-nav-accent, var(--tadeon-knowledge)) !important;
-  background: linear-gradient(90deg, rgb(var(--td-nav-accent-rgb, 217 215 164) / 12%), transparent) !important;
-  box-shadow: inset 2px 0 var(--td-nav-accent, var(--tadeon-knowledge)), inset 0 0 22px rgb(var(--td-nav-accent-rgb, 217 215 164) / 6%) !important;
-}
-
 /* --------------------------------------------------------------------------
    RESPONSIVE FLUIDITY - avoid expensive fixed backgrounds and heavy blur on
    smaller devices while preserving the same visual grammar.
@@ -5530,8 +5421,6 @@ html body .tadeon-shell .tadeon-route-offline > main {
   }
 
   .tadeon-shell .tadeon-surface,
-  .tadeon-shell .tadeon-sidebar,
-  .tadeon-shell .tadeon-mobile-header,
   .tadeon-shell :is([data-slot="dialog-content"],[data-slot="sheet-content"],[data-slot="drawer-content"]) {
     backdrop-filter: blur(10px) saturate(108%) !important;
     -webkit-backdrop-filter: blur(10px) saturate(108%) !important;
@@ -5588,8 +5477,8 @@ html body .tadeon-shell .tadeon-route-offline > main {
 .tadeon-shell[data-section] :is(input,textarea,select,[role="combobox"]):focus-visible{border-color:color-mix(in srgb,var(--section-accent) 62%,currentColor)!important;box-shadow:0 0 0 3px rgb(var(--section-accent-rgb) / 9%),inset 0 0 24px -24px rgb(var(--section-accent-rgb) / 72%)!important}
 
 /* Page-specific active/hover language. The geometry stays still; only the thread changes color. */
-.tadeon-shell[data-section] :is(button,[role="button"],[role="tab"],[role="menuitem"],summary):hover{box-shadow:inset 0 0 24px -21px rgb(var(--section-accent-rgb) / 30%),0 0 30px -25px rgb(var(--section-accent-rgb) / 34%)}
-.tadeon-shell[data-section] :is(button,[role="button"],[role="tab"],[role="menuitem"],summary)[aria-pressed="true"],
+.tadeon-shell[data-section] :is(button:not([data-material-surface], .tadeon-material-button),[role="button"],[role="tab"],[role="menuitem"],summary):hover{box-shadow:inset 0 0 24px -21px rgb(var(--section-accent-rgb) / 30%),0 0 30px -25px rgb(var(--section-accent-rgb) / 34%)}
+.tadeon-shell[data-section] :is(button:not([data-material-surface], .tadeon-material-button),[role="button"],[role="tab"],[role="menuitem"],summary)[aria-pressed="true"],
 .tadeon-shell[data-section] :is([role="tab"],[role="menuitem"])[data-state="active"],
 .tadeon-shell[data-section] :is([data-state="checked"],[data-state="on"],[aria-selected="true"]){color:color-mix(in srgb,var(--section-accent) 88%,white)!important;background-color:rgb(var(--section-accent-rgb) / 8%)!important;border-color:rgb(var(--section-accent-rgb) / 28%)!important;box-shadow:inset 2px 0 var(--section-accent),inset 0 0 26px rgb(var(--section-accent-rgb) / 7%)!important}
 
@@ -5610,7 +5499,7 @@ html body .tadeon-shell .tadeon-route-offline > main {
 /* Semantic status remains distinct from page identity; decorative glow still follows the page. */
 .tadeon-shell[data-section] :is([data-status="online"],[data-status="ready"],[data-status="connected"]){--tdv-status-color:var(--section-accent)}
 
-@media(prefers-reduced-motion:reduce){.tadeon-shell[data-section] :is(button,[role="button"],[role="tab"],[role="menuitem"],summary){transition-duration:1ms!important}}
+@media(prefers-reduced-motion:reduce){.tadeon-shell[data-section] :is(button:not([data-material-surface], .tadeon-material-button),[role="button"],[role="tab"],[role="menuitem"],summary){transition-duration:1ms!important}}
 
 /* end-source: src/styles/tadeon-page-color-authority.css */
 
@@ -5667,8 +5556,8 @@ html body .tadeon-shell .tadeon-route-offline > main {
 .tadeon-shell :is([data-slot="tabs-content"],[data-tabs-content])::before{border-color:rgb(var(--tab-accent-rgb)/10%);}
 
 /* Secondary segmented controls follow the same contract without becoming saturated. */
-.tadeon-shell :is([data-slot="segmented-control"],[data-segmented-control]) :is(button,[role="button"],[role="tab"]):hover{background:rgb(var(--tab-accent-rgb)/5%);color:var(--tab-accent);}
-.tadeon-shell :is([data-slot="segmented-control"],[data-segmented-control]) :is(button,[role="button"],[role="tab"])[aria-pressed="true"],[data-slot="segmented-control"] :is(button,[role="button"],[role="tab"])[data-state="active"]{color:var(--tab-accent);background:rgb(var(--tab-accent-rgb)/9%);box-shadow:inset 0 -1px rgb(var(--tab-accent-rgb)/70%);}
+.tadeon-shell :is([data-slot="segmented-control"],[data-segmented-control]) :is(button:not([data-material-surface], .tadeon-material-button),[role="button"],[role="tab"]):hover{background:rgb(var(--tab-accent-rgb)/5%);color:var(--tab-accent);}
+.tadeon-shell :is([data-slot="segmented-control"],[data-segmented-control]) :is(button:not([data-material-surface], .tadeon-material-button),[role="button"],[role="tab"])[aria-pressed="true"],[data-slot="segmented-control"] :is(button:not([data-material-surface], .tadeon-material-button),[role="button"],[role="tab"])[data-state="active"]{color:var(--tab-accent);background:rgb(var(--tab-accent-rgb)/9%);box-shadow:inset 0 -1px rgb(var(--tab-accent-rgb)/70%);}
 
 /* Backup remains intentionally restrained: grey is the signal, not white. */
 .tadeon-shell[data-section="Backup"] :is([data-slot="tabs-trigger"],[role="tab"]):hover{filter:brightness(1.04);}
@@ -5701,7 +5590,7 @@ html body .tadeon-shell .tadeon-route-offline > main {
 .tadeon-shell[data-section] :is([data-slot="badge"],[data-slot="chip"],[data-badge]){border-color:color-mix(in srgb,var(--tdv-page-accent) 18%,var(--border));color:color-mix(in srgb,var(--foreground) 88%,var(--tdv-page-accent))}
 .tadeon-shell[data-section] :is([data-slot="badge"],[data-slot="chip"],[data-badge])[data-active="true"],.tadeon-shell[data-section] :is([data-slot="badge"],[data-slot="chip"],[data-badge])[aria-pressed="true"]{border-color:rgb(var(--tdv-page-accent-rgb) / 36%);background:rgb(var(--tdv-page-accent-rgb) / 7%);color:var(--tdv-page-accent);box-shadow:inset 0 0 18px -18px rgb(var(--tdv-page-accent-rgb) / 76%)}
 
-.tadeon-shell[data-section] main :is(a[data-tadeon-accent],button[data-tadeon-accent],[data-link-accent]){color:color-mix(in srgb,var(--foreground) 88%,var(--tdv-page-accent));transition:color 180ms ease,text-shadow 220ms ease}
+.tadeon-shell[data-section] main :is(a:not([data-material-surface], .tadeon-material-button)[data-tadeon-accent],button:not([data-material-surface], .tadeon-material-button)[data-tadeon-accent],[data-link-accent]){color:color-mix(in srgb,var(--foreground) 88%,var(--tdv-page-accent));transition:color 180ms ease,text-shadow 220ms ease}
 .tadeon-shell[data-section] main :is(a[data-tadeon-accent],button[data-tadeon-accent],[data-link-accent]):hover{color:var(--tdv-page-accent);text-shadow:0 0 14px rgb(var(--tdv-page-accent-rgb) / 22%)}
 
 .tadeon-shell[data-section] :is(input,textarea,select,[role="combobox"]):focus-visible:not([aria-invalid="true"]){border-color:color-mix(in srgb,var(--tdv-page-accent) 62%,var(--border));box-shadow:0 0 0 3px rgb(var(--tdv-page-accent-rgb) / 7%),inset 0 0 26px -25px rgb(var(--tdv-page-accent-rgb) / 84%)}
@@ -5739,8 +5628,8 @@ html body .tadeon-shell .tadeon-route-offline > main {
 .tadeon-shell[data-section] :is([data-slot="tabs-content"],[data-tabs-content])[data-state="active"]{border-inline-start-color:rgb(var(--tdv-detail-accent-rgb)/30%);box-shadow:inset 2px 0 18px -16px rgb(var(--tdv-detail-accent-rgb)/72%)}
 
 /* Segmented-control separators use the same local color only when adjacent to the active segment. */
-.tadeon-shell[data-section] :is([data-slot="segmented-control"],[data-segmented-control]) :is(button,[role="button"],[role="tab"])+:is(button,[role="button"],[role="tab"]){border-inline-start-color:rgb(var(--tdv-detail-accent-rgb)/10%)}
-.tadeon-shell[data-section] :is([data-slot="segmented-control"],[data-segmented-control]) :is(button,[role="button"],[role="tab"]):hover+:is(button,[role="button"],[role="tab"]){border-inline-start-color:rgb(var(--tdv-detail-accent-rgb)/22%)}
+.tadeon-shell[data-section] :is([data-slot="segmented-control"],[data-segmented-control]) :is(button:not([data-material-surface], .tadeon-material-button),[role="button"],[role="tab"])+:is(button:not([data-material-surface], .tadeon-material-button),[role="button"],[role="tab"]){border-inline-start-color:rgb(var(--tdv-detail-accent-rgb)/10%)}
+.tadeon-shell[data-section] :is([data-slot="segmented-control"],[data-segmented-control]) :is(button:not([data-material-surface], .tadeon-material-button),[role="button"],[role="tab"]):hover+:is(button:not([data-material-surface], .tadeon-material-button),[role="button"],[role="tab"]){border-inline-start-color:rgb(var(--tdv-detail-accent-rgb)/22%)}
 
 /* Never override semantic danger/success/warning colors. Identity is an atmospheric layer. */
 .tadeon-shell[data-section] :is([data-variant="destructive"],[data-status="success"],[data-status="warning"],[data-status="error"]){color:inherit}
@@ -5927,7 +5816,7 @@ html body .tadeon-shell :is(
   --section-accent: var(--backup-accent);
 }
 
-.tadeon-shell[data-section="Saúde do arquivo"] :is([data-slot="sheet-content"],[data-slot="drawer-content"]) :is(button,[role="button"],[role="tab"]):hover {
+.tadeon-shell[data-section="Saúde do arquivo"] :is([data-slot="sheet-content"],[data-slot="drawer-content"]) :is(button:not([data-material-surface], .tadeon-material-button),[role="button"],[role="tab"]):hover {
   color: var(--backup-accent);
   border-color: rgb(var(--backup-accent-rgb) / 28%);
   box-shadow: inset 1px 0 rgb(var(--backup-accent-rgb) / 38%);
@@ -6158,9 +6047,9 @@ html body .tadeon-shell :is(
   --t-local-ease: var(--t-ease-thread);
 }
 
-.tadeon-shell button,
+.tadeon-shell button:not([data-material-surface], .tadeon-material-button),
 .tadeon-shell [role="button"],
-.tadeon-shell a,
+.tadeon-shell a:not([data-material-surface], .tadeon-material-button),
 .tadeon-shell input,
 .tadeon-shell select,
 .tadeon-shell textarea {
@@ -6171,7 +6060,7 @@ html body .tadeon-shell :is(
 /* Stitch: controls acquire a tiny amount of tension instead of jumping.    */
 /* -------------------------------------------------------------------------- */
 
-.tadeon-shell button:not([data-state="open"]),
+.tadeon-shell button:not([data-material-surface], .tadeon-material-button):not([data-state="open"]),
 .tadeon-shell [role="button"] {
   transition:
     transform var(--t-motion-fast) var(--t-ease-stitch),
@@ -6180,20 +6069,20 @@ html body .tadeon-shell :is(
     opacity var(--t-motion-fast) linear;
 }
 
-.tadeon-shell button:hover:not(:disabled),
+.tadeon-shell button:not([data-material-surface], .tadeon-material-button):hover:not(:disabled),
 .tadeon-shell [role="button"]:hover {
   transform: translateY(-1px);
 }
 
-.tadeon-shell button:active:not(:disabled),
+.tadeon-shell button:not([data-material-surface], .tadeon-material-button):active:not(:disabled),
 .tadeon-shell [role="button"]:active {
   transform: translateY(0) scale(.985);
   transition-duration: 90ms;
 }
 
-.tadeon-shell button:focus-visible,
+.tadeon-shell button:not([data-material-surface], .tadeon-material-button):focus-visible,
 .tadeon-shell [role="button"]:focus-visible,
-.tadeon-shell a:focus-visible {
+.tadeon-shell a:not([data-material-surface], .tadeon-material-button):focus-visible {
   animation: tadeon-stitch-focus 420ms var(--t-ease-stitch) both;
 }
 
@@ -6664,8 +6553,8 @@ html body .tadeon-shell :is(
 }
 
 .tadeon-shell [role="tab"][aria-selected="true"],
-.tadeon-shell [data-tadeon-tab][data-active="true"] button,
-.tadeon-shell [data-tadeon-tab][aria-selected="true"] button {
+.tadeon-shell [data-tadeon-tab][data-active="true"] button:not([data-material-surface], .tadeon-material-button),
+.tadeon-shell [data-tadeon-tab][aria-selected="true"] button:not([data-material-surface], .tadeon-material-button) {
   background: color-mix(in srgb, var(--section-accent) 16%, transparent) !important;
   border-color: color-mix(in srgb, var(--section-accent) 78%, transparent) !important;
   box-shadow: inset 0 -1px 0 color-mix(in srgb, var(--section-accent) 82%, transparent),
@@ -6765,4 +6654,26 @@ html body .tadeon-shell :is(
 @media (prefers-reduced-motion: reduce) {
   .tadeon-continuity-hero__weave, .tadeon-continuity-hero__seal { transition: none; }
   .tadeon-continuity-hero:has(a:hover, a:focus-visible) .tadeon-continuity-hero__weave { transform: none; }
+}
+
+/* Event-driven fabric: only decorative planes deform, content never tilts. */
+.tadeon-auth-manifesto .tadeon-thread-field { transition: transform 650ms var(--ease-out), opacity 400ms var(--ease-out); transform-origin: 68% 32%; }
+.tadeon-character-card { transition: border-color 220ms var(--ease-out), box-shadow 220ms var(--ease-out); }
+.tadeon-character-card::before { transition: opacity 250ms var(--ease-out); }
+.tadeon-character-card::after { transition: transform 400ms var(--ease-out), opacity 250ms var(--ease-out); }
+.tadeon-auth-shell { animation: tadeon-fabric-unfold 650ms var(--ease-out) both; }
+@keyframes tadeon-fabric-unfold { from { opacity: .35; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+@media (hover: hover) and (pointer: fine) {
+  .tadeon-auth-shell:hover .tadeon-thread-field { transform: scaleY(1.06) rotate(-1deg); }
+  .tadeon-character-card:hover { border-color: rgb(233 227 213 / 32%); box-shadow: inset 0 1px rgb(233 227 213 / 20%), 0 22px 42px -23px rgb(0 0 0 / 90%); }
+  .tadeon-character-card:hover::before { opacity: 1; }
+  .tadeon-character-card:hover::after { transform: translate(-4px, -3px) scale(1.08); }
+}
+.tadeon-character-card:focus-within::before { opacity: 1; }
+.tadeon-character-card:focus-within { border-color: rgb(233 227 213 / 40%); }
+.tadeon-auth-shell:focus-within .tadeon-thread-field { transform: scaleY(1.035); }
+@media (prefers-reduced-motion: reduce) {
+  .tadeon-auth-shell { animation: none; }
+  .tadeon-auth-manifesto .tadeon-thread-field, .tadeon-character-card, .tadeon-character-card::before, .tadeon-character-card::after { transition: none; }
+  .tadeon-auth-shell:is(:hover, :focus-within) .tadeon-thread-field, .tadeon-character-card:hover::after { transform: none; }
 }

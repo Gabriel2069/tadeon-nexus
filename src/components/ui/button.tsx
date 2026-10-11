@@ -2,18 +2,18 @@ import * as React from "react";
 import { Slot } from "@radix-ui/react-slot";
 import { cva, type VariantProps } from "class-variance-authority";
 
+import { useMaterialLight } from "@/lib/use-material-light";
 import { cn } from "@/lib/utils";
 import "@/styles/button.css";
 import "@/styles/viewport.css";
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-[0.7rem] text-sm font-semibold cursor-pointer transition-[color,background-color,border-color,box-shadow,transform] duration-150 ease-[var(--ease-out)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/70 focus-visible:ring-offset-2 focus-visible:ring-offset-background active:scale-[0.97] disabled:pointer-events-none disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
+  "tadeon-material-button inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-[0.7rem] text-sm font-semibold cursor-pointer transition-[color,background-color,border-color,box-shadow,transform] duration-150 ease-[var(--ease-out)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/70 focus-visible:ring-offset-2 focus-visible:ring-offset-background active:scale-[0.97] disabled:pointer-events-none disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
   {
     variants: {
       variant: {
         default:
           "border border-primary/70 bg-primary text-primary-foreground shadow-[0_10px_28px_-18px_var(--primary),inset_0_1px_0_rgba(255,255,255,.35)] hover:bg-primary/90 hover:shadow-[0_14px_32px_-20px_var(--primary),inset_0_1px_0_rgba(255,255,255,.4)]",
-        destructive:
-          "bg-destructive text-destructive-foreground shadow-sm hover:bg-destructive/90",
+        destructive: "bg-destructive text-destructive-foreground shadow-sm hover:bg-destructive/90",
         outline:
           "border border-input bg-background/70 shadow-[inset_0_1px_0_rgba(255,255,255,.035)] hover:border-primary/35 hover:bg-accent hover:text-accent-foreground",
         secondary:
@@ -36,26 +36,35 @@ const buttonVariants = cva(
 );
 
 export interface ButtonProps
-  extends
-    React.ButtonHTMLAttributes<HTMLButtonElement>,
-    VariantProps<typeof buttonVariants> {
+  extends React.ButtonHTMLAttributes<HTMLButtonElement>, VariantProps<typeof buttonVariants> {
   asChild?: boolean;
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant, size, asChild = false, type, ...props }, ref) => {
+  (
+    { className, variant, size, asChild = false, type, onPointerMove, onPointerLeave, ...props },
+    ref,
+  ) => {
+    const light = useMaterialLight<HTMLButtonElement>();
     const Comp = asChild ? Slot : "button";
     const ariaLabel = typeof props["aria-label"] === "string" ? props["aria-label"] : "";
     const isProjectionToggle =
       ariaLabel === "Ativar projeção espacial 3D" || ariaLabel === "Voltar à planta 2D";
     const effectiveVariant = isProjectionToggle ? "outline" : variant;
-    const renderedProps = isProjectionToggle
-      ? { ...props, "aria-pressed": undefined }
-      : props;
+    const renderedProps = isProjectionToggle ? { ...props, "aria-pressed": undefined } : props;
 
     return (
       <Comp
         data-slot="button"
+        data-material-surface="control"
+        onPointerMove={(event) => {
+          onPointerMove?.(event);
+          if (!event.defaultPrevented) light.onPointerMove(event);
+        }}
+        onPointerLeave={(event) => {
+          onPointerLeave?.(event);
+          light.onPointerLeave();
+        }}
         data-size={size ?? "default"}
         data-variant={effectiveVariant ?? "default"}
         className={cn(buttonVariants({ variant: effectiveVariant, size, className }))}

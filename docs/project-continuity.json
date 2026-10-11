@@ -27,15 +27,20 @@
         "src/components/app-layout.tsx",
         "src/components/protected-shell.tsx",
         "src/components/section-symbols.tsx",
-        "src/components/mobile-more-menu.tsx"
+        "src/components/mobile-more-menu.tsx",
+        "src/components/brand-mark.tsx",
+        "src/components/material-surface.tsx",
+        "src/lib/use-material-light.ts",
+        "src/components/ui/button.tsx"
       ],
       "styles": [
         "src/styles/desktop-shell.css",
         "src/styles/navigation-layout.css",
         "src/styles/page-hero-parity.css",
-        "src/styles/mobile-more-radial.css"
+        "src/styles/mobile-more-radial.css",
+        "src/styles/button.css"
       ],
-      "boundary": "Cabeçalhos renderizam símbolos; geometria de Área em foco pertence a page-hero-parity.css. Gatilho Mais e símbolos pertencem ao render; Radix mantém foco/teclado/colisão, sem captura global."
+      "boundary": "Cabeçalhos renderizam símbolos; geometria de Área em foco pertence a page-hero-parity.css. Gatilho Mais e símbolos pertencem ao render; Radix mantém foco/teclado/colisão, sem captura global. Reflexos pertencem a useMaterialLight e à superfície React; o diretor legado não injeta luz nessas superfícies. Material de navegação pertence a navigation-layout; fundos de trama pertencem a experience-surfaces."
     },
     {
       "id": "popup",
@@ -389,13 +394,35 @@
       "checkpoint": "Integrado pela PR #261 em 2b367163610dfc310099ee4a94908752bc6d97be, após Quality do HEAD b3f8c40. 122 suítes/541 testes, 37 vistas, seis portais e dois teclados simulados aprovados. Produção confirmada em 2b36716: HTTP 200, SHA exato no HTML e workflow 38162497262 aprovado; contas reais e teclado físico fora da evidência. Não reimplementar esta etapa; próximas prioridades permanecem na fila."
     },
     {
+      "id": "NEX-013",
+      "title": "Liquid fabric: login, Dashboard e componentes compartilhados",
+      "domain": "shell",
+      "status": "validated",
+      "priority": 2,
+      "dependsOn": [
+        "NEX-003",
+        "NEX-004"
+      ],
+      "acceptance": [
+        "Substituir a tipografia editorial rejeitada e os números do Dashboard, preservando dados e três famílias.",
+        "Aplicar trama e profundidade coesas ao login, Dashboard, cabeçalhos, navegação, popups e botões compartilhados.",
+        "Um responsável por material e propriedade animada; retirar concorrentes e limpar frames ao sair/desmontar.",
+        "Verificar telas e estados em 320/390/820/1440px, toque, teclado, foco, redução de movimento e fallback de material."
+      ],
+      "evidence": [
+        "docs/shared-fabric-validation.json"
+      ],
+      "checkpoint": "Revisão solicitada validada na branch design/liquid-fabric-shared-2026-10-11, base 4736913: 123 suítes/546 testes, build, auditoria sem vulnerabilidades, 16 vistas Dashboard, 12 login, 21 rotas, seis portais e dois teclados simulados. 116 !important retirados, inventário 57/12 preservado. Integração e publicação ainda exigem os respectivos gates no SHA atual; NEX-005 vem depois."
+    },
+    {
       "id": "NEX-005",
       "title": "Ficha por seções e estados",
       "domain": "sheet",
       "status": "planned",
       "priority": 3,
       "dependsOn": [
-        "NEX-003"
+        "NEX-003",
+        "NEX-013"
       ],
       "acceptance": [
         "Extrair identidade, pontos, atributos, perícias e condições preservando estado, regras e autosave.",
@@ -411,7 +438,8 @@
       "status": "planned",
       "priority": 4,
       "dependsOn": [
-        "NEX-003"
+        "NEX-003",
+        "NEX-013"
       ],
       "acceptance": [
         "Revisar busca/lista/documento/propriedades e prioridades no celular.",
@@ -427,7 +455,8 @@
       "status": "planned",
       "priority": 5,
       "dependsOn": [
-        "NEX-004"
+        "NEX-004",
+        "NEX-013"
       ],
       "acceptance": [
         "Mapear cada bridge para função e destino antes de consolidar.",
@@ -443,7 +472,8 @@
       "status": "planned",
       "priority": 6,
       "dependsOn": [
-        "NEX-003"
+        "NEX-003",
+        "NEX-013"
       ],
       "acceptance": [
         "Revisar densidade, tabs, editor e listas com dados longos.",
@@ -555,10 +585,20 @@
     {
       "id": "DEC-008",
       "decision": "Tipografia editorial Grenze; menu Mais renderizado pelo shell e primitivo Radix.",
-      "reason": "Tadeu pediu fonte mais sofisticada e medieval e autorizou prosseguir em 11/10/2026. Retirar captura global e mutação de SVG preservando destinos e círculo.",
+      "reason": "Tadeu pediu fonte mais sofisticada e medieval e autorizou prosseguir em 11/10/2026. Retirar captura global e mutação de SVG preservando destinos e círculo. Escolha de fonte superada por DEC-009; navegação consolidada permanece válida.",
       "evidence": [
         "docs/DESIGN.md"
       ]
+    },
+    {
+      "id": "DEC-009",
+      "title": "Revisão autorizada da fonte e da profundidade compartilhada",
+      "decision": "Tadeu rejeitou Grenze e os números monoespaçados; Cormorant Garamond 500/600/700 e itálico 500 assumem o editorial, Inter 500 com números tabulares assume métricas. PT Mono fica em metadados. Vidro nos controles e navegação, conteúdo opaco, tecido vetorial e reflexos locais; nenhuma simulação física ou loop global novo.",
+      "evidence": [
+        "docs/DESIGN.md",
+        "docs/shared-fabric-validation.json"
+      ],
+      "reason": "Nova instrução explícita de Tadeu em 11/10/2026: rever fonte, métricas e presença de fundo/motion antes da ficha. A parte tipográfica de DEC-008 passa a ser histórica, sem desfazer a navegação consolidada."
     }
   ],
   "bridges": [
@@ -790,6 +830,10 @@
     {
       "path": "docs/navigation-design-validation.json",
       "purpose": "NEX-004: tipografia, menu, foco/portais, dívida retirada e limites de fixtures."
+    },
+    {
+      "path": "docs/shared-fabric-validation.json",
+      "purpose": "NEX-013: revisão tipográfica autorizada, materiais e movimento compartilhados, critérios e limites de runtime."
     }
   ],
   "integrationHistory": [

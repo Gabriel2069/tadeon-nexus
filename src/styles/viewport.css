@@ -231,11 +231,11 @@ body:has(.tadeon-tabletop-studio) :where(
   }
 }
 
-[data-slot="button"] {
+[data-slot="button"]:not([data-material-surface], .tadeon-material-button) {
   overflow: clip !important;
 }
 
-[data-slot="button"]::before {
+[data-slot="button"]:not([data-material-surface], .tadeon-material-button)::before {
   top: 1px !important;
   right: 1px !important;
   bottom: 1px !important;
@@ -254,7 +254,7 @@ body:has(.tadeon-tabletop-studio) :where(
 }
 
 @media (hover: hover) and (pointer: fine) {
-  [data-slot="button"]:not(:disabled):hover::before {
+  [data-slot="button"]:not([data-material-surface], .tadeon-material-button):not(:disabled):hover::before {
     animation: tadeon-button-sheen 620ms var(--ease-out) both !important;
   }
 }
@@ -299,7 +299,7 @@ body:has(.tadeon-tabletop-studio) :where(
     scroll-behavior: auto;
   }
 
-  [data-slot="button"]::before {
+  [data-slot="button"]:not([data-material-surface], .tadeon-material-button)::before {
     animation: none !important;
   }
 }
