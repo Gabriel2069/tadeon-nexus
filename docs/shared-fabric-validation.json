@@ -1,7 +1,7 @@
 {
   "task": "NEX-013",
   "checkedAt": "2026-10-11",
-  "state": "validated",
+  "state": "integrated",
   "branch": "design/liquid-fabric-shared-2026-10-11",
   "base": "473691326817b3c9f82f33a02792c198d5956110",
   "scope": [
@@ -117,5 +117,26 @@
     "CSS glass is an approximation of depth/reflection, not native refraction or a fabric physics engine",
     "Fallback transparency rules are inspected; OS settings/support must be verified on real devices"
   ],
-  "delivery": "Branch, integration and exact public SHA proof are separate states."
+  "delivery": "Visual integrado e publicado pela PR #263; consolidação documental posterior conserva esta referência visual, sem afirmar deploy de um commit futuro.",
+  "integration": {
+    "pr": 263,
+    "branch": "design/liquid-fabric-shared-2026-10-11",
+    "base": "main",
+    "baseCommit": "473691326817b3c9f82f33a02792c198d5956110",
+    "headCommit": "eba345bb00892948af1dfbbbb6257349be0aa5b8",
+    "state": "integrated",
+    "mergeCommit": "41c2c882e30bb7c03237fd0941aa8c71fd293e5f",
+    "qualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38166007425",
+    "production": "confirmed",
+    "productionEvidence": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38166156073",
+    "productionCommit": "41c2c882e30bb7c03237fd0941aa8c71fd293e5f",
+    "mainQualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38166156123",
+    "productionVerifiedAt": "2026-10-11T19:01:29Z",
+    "productionHttpStatus": 200,
+    "workerVersion": "d3cd6159-bce4-4895-a230-87da5dde9990"
+  },
+  "productionProof": [
+    "Attempt 1/12: HTTP 200, build 41c2c882e30bb7c03237fd0941aa8c71fd293e5f.",
+    "Production confirmed at SHA 41c2c882e30bb7c03237fd0941aa8c71fd293e5f."
+  ]
 }

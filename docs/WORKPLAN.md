@@ -2,7 +2,7 @@
 
 > Gerado de [project-continuity.json](project-continuity.json). Edite o registro e rode `npm run sync:project`; não mantenha uma cópia manual.
 
-Snapshot: 2026-10-11; referência de runtime: `2b367163610dfc310099ee4a94908752bc6d97be`. PR #261 em `design/nexus-navigation-type-2026-10-11`; integração: `integrated`. Não é prova de deploy.
+Snapshot: 2026-10-11; referência de runtime: `41c2c882e30bb7c03237fd0941aa8c71fd293e5f`. PR #263 em `design/liquid-fabric-shared-2026-10-11`; integração: `integrated`. Não é prova de deploy.
 
 Estados: planejado → próximo → em andamento → validado na branch → integrado. Publicação exige evidência própria do SHA; adiado conserva o requisito. Se um requisito mudar, preservar o ID e registrar a decisão/evidência.
 
@@ -14,8 +14,8 @@ Cada PR usa IDs desta fila e declara dependências. Trabalho sobre o mesmo propr
 | NEX-002 | Mapa, continuidade e conciliação das PRs | Integrado | 0 | delivery | NEX-001 |
 | NEX-003 | Véu & Trama: referência aplicada ao shell e Dashboard | Integrado | 1 | shell | NEX-001, NEX-002 |
 | NEX-004 | Sidebar, navegação móvel e portais | Integrado | 2 | popup | NEX-003 |
-| NEX-013 | Liquid fabric: login, Dashboard e componentes compartilhados | Validado na branch | 2 | shell | NEX-003, NEX-004 |
-| NEX-005 | Ficha por seções e estados | Planejado | 3 | sheet | NEX-003, NEX-013 |
+| NEX-013 | Liquid fabric: login, Dashboard e componentes compartilhados | Integrado | 2 | shell | NEX-003, NEX-004 |
+| NEX-005 | Ficha por seções e estados | Próximo | 3 | sheet | NEX-003, NEX-013 |
 | NEX-006 | Biblioteca, documento e grafo do Nexus | Planejado | 4 | knowledge | NEX-003, NEX-013 |
 | NEX-007 | Mesa: hierarquia de ferramentas e workspace | Planejado | 5 | tabletop | NEX-004, NEX-013 |
 | NEX-008 | Painel do Mestre e administração | Planejado | 6 | master | NEX-003, NEX-013 |
@@ -62,7 +62,7 @@ Evidências: [docs/navigation-design-validation.json](../docs/navigation-design-
 - Um responsável por material e propriedade animada; retirar concorrentes e limpar frames ao sair/desmontar.
 - Verificar telas e estados em 320/390/820/1440px, toque, teclado, foco, redução de movimento e fallback de material.
 
-Evidências: [docs/shared-fabric-validation.json](../docs/shared-fabric-validation.json).
+Evidências: [docs/shared-fabric-validation.json](../docs/shared-fabric-validation.json), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/pull/263), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38166007425), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38166156123), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38166156073).
 
 ## NEX-005 — Ficha por seções e estados
 

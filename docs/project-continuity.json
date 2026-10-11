@@ -1,23 +1,23 @@
 {
   "version": 1,
   "checkedAt": "2026-10-11",
-  "runtimeReference": "2b367163610dfc310099ee4a94908752bc6d97be",
+  "runtimeReference": "41c2c882e30bb7c03237fd0941aa8c71fd293e5f",
   "integration": {
-    "pr": 261,
-    "branch": "design/nexus-navigation-type-2026-10-11",
+    "pr": 263,
+    "branch": "design/liquid-fabric-shared-2026-10-11",
     "base": "main",
-    "baseCommit": "662180278fc7b3d872fae2a8b05267d9800db9c6",
-    "headCommit": "b3f8c4049e8aa7fbb2b32b81a1b587b78cd3b449",
+    "baseCommit": "473691326817b3c9f82f33a02792c198d5956110",
+    "headCommit": "eba345bb00892948af1dfbbbb6257349be0aa5b8",
     "state": "integrated",
-    "mergeCommit": "2b367163610dfc310099ee4a94908752bc6d97be",
-    "qualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38162310175",
+    "mergeCommit": "41c2c882e30bb7c03237fd0941aa8c71fd293e5f",
+    "qualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38166007425",
     "production": "confirmed",
-    "productionEvidence": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38162497262",
-    "productionCommit": "2b367163610dfc310099ee4a94908752bc6d97be",
-    "mainQualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38162497219",
-    "productionVerifiedAt": "2026-10-11T18:09:43Z",
+    "productionEvidence": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38166156073",
+    "productionCommit": "41c2c882e30bb7c03237fd0941aa8c71fd293e5f",
+    "mainQualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38166156123",
+    "productionVerifiedAt": "2026-10-11T19:01:29Z",
     "productionHttpStatus": 200,
-    "workerVersion": "bad86e08-292f-4af3-bcd7-4131272959b4"
+    "workerVersion": "d3cd6159-bce4-4895-a230-87da5dde9990"
   },
   "domains": [
     {
@@ -397,7 +397,7 @@
       "id": "NEX-013",
       "title": "Liquid fabric: login, Dashboard e componentes compartilhados",
       "domain": "shell",
-      "status": "validated",
+      "status": "integrated",
       "priority": 2,
       "dependsOn": [
         "NEX-003",
@@ -410,15 +410,19 @@
         "Verificar telas e estados em 320/390/820/1440px, toque, teclado, foco, redução de movimento e fallback de material."
       ],
       "evidence": [
-        "docs/shared-fabric-validation.json"
+        "docs/shared-fabric-validation.json",
+        "https://github.com/Gabriel2069/tadeon-nexus/pull/263",
+        "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38166007425",
+        "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38166156123",
+        "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38166156073"
       ],
-      "checkpoint": "Revisão solicitada validada na branch design/liquid-fabric-shared-2026-10-11, base 4736913: 123 suítes/546 testes, build, auditoria sem vulnerabilidades, 16 vistas Dashboard, 12 login, 21 rotas, seis portais e dois teclados simulados. 116 !important retirados, inventário 57/12 preservado. Integração e publicação ainda exigem os respectivos gates no SHA atual; NEX-005 vem depois."
+      "checkpoint": "Integrado pela PR #263 em 41c2c88, Quality 38166007425 aprovado no HEAD eba345b. 123 suítes/546 testes, build, auditoria sem vulnerabilidades, 49 vistas de fixture, seis portais e dois teclados simulados. Produção confirmou HTTP 200 e SHA exato 41c2c88 no workflow 38166156073 em 11/10/2026 19:01:29Z. 116 !important retirados; fontes e responsáveis registrados. NEX-005 é o próximo lote; fixtures não certificam contas reais, VoiceOver ou GPU."
     },
     {
       "id": "NEX-005",
       "title": "Ficha por seções e estados",
       "domain": "sheet",
-      "status": "planned",
+      "status": "ready",
       "priority": 3,
       "dependsOn": [
         "NEX-003",
@@ -429,7 +433,8 @@
         "Validar ficha povoada, somente leitura, salvamento, erro e transição de usuário.",
         "Transferir vínculos/modificadores e inventário dos bridges antes de retirar suas funções."
       ],
-      "evidence": []
+      "evidence": [],
+      "checkpoint": "Dependências NEX-003/NEX-013 integradas. Começar pela identidade, recursos e seções da ficha, usando os materiais compartilhados; preservar regras e autosave. Não expandir o shell concorrendo com a transferência de ficha."
     },
     {
       "id": "NEX-006",
@@ -870,6 +875,23 @@
         "qualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38157372552"
       },
       "productionCommit": "662180278fc7b3d872fae2a8b05267d9800db9c6"
+    },
+    {
+      "pr": 261,
+      "branch": "design/nexus-navigation-type-2026-10-11",
+      "base": "main",
+      "baseCommit": "662180278fc7b3d872fae2a8b05267d9800db9c6",
+      "headCommit": "b3f8c4049e8aa7fbb2b32b81a1b587b78cd3b449",
+      "state": "integrated",
+      "mergeCommit": "2b367163610dfc310099ee4a94908752bc6d97be",
+      "qualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38162310175",
+      "production": "confirmed",
+      "productionEvidence": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38162497262",
+      "productionCommit": "2b367163610dfc310099ee4a94908752bc6d97be",
+      "mainQualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38162497219",
+      "productionVerifiedAt": "2026-10-11T18:09:43Z",
+      "productionHttpStatus": 200,
+      "workerVersion": "bad86e08-292f-4af3-bcd7-4131272959b4"
     }
   ]
 }
