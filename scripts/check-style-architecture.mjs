@@ -1,6 +1,7 @@
 import { readFileSync, readdirSync } from "node:fs";
 import { resolve, dirname, relative } from "node:path";
 import postcss from "postcss";
+import { duplicateStyleRules } from "./style-rule-duplicates.mjs";
 
 const contract = JSON.parse(readFileSync("docs/style-architecture.json", "utf8"));
 const errors = [];
@@ -22,6 +23,11 @@ for (const file of cssFiles) {
   const budget = contract.files[file];
   if (!budget) continue;
   const ast = postcss.parse(readFileSync(file, "utf8"), { from: file });
+  const duplicates = duplicateStyleRules(ast);
+  for (const { earlier, retained } of duplicates)
+    errors.push(
+      `${file}:${earlier.source.start.line}: duplicate rule; keep the owner at line ${retained.source.start.line}.`,
+    );
   let important = 0;
   let roots = 0;
   ast.walkDecls((declaration) => {
@@ -29,6 +35,25 @@ for (const file of cssFiles) {
   });
   ast.walkRules((rule) => {
     if (rule.selector === ":root") roots += 1;
+    const ownsFocusGeometry =
+      rule.selectors.some((selector) => selector.endsWith(".tadeon-desktop-toolbar > .min-w-0")) &&
+      rule.nodes.some(
+        (node) =>
+          node.type === "decl" &&
+          [
+            "display",
+            "grid-template-columns",
+            "grid-template-rows",
+            "column-gap",
+            "row-gap",
+            "align-items",
+            "padding",
+          ].includes(node.prop),
+      );
+    if (ownsFocusGeometry && file !== "src/styles/page-hero-parity.css")
+      errors.push(
+        `${file}:${rule.source.start.line}: focus geometry belongs to page-hero-parity.css.`,
+      );
   });
   ast.walkAtRules("import", (rule) => {
     if (file !== "src/styles.css")

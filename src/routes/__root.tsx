@@ -28,7 +28,7 @@ import { AuthProvider } from "@/lib/auth";
 import { Toaster } from "@/components/ui/sonner";
 import { PwaRegistration } from "@/components/pwa-registration";
 import { ExperienceFinalPolishBridge } from "@/components/experience-final-polish-bridge";
-import { PageHeroParityBridge } from "@/components/page-hero-parity-bridge";
+import "@/styles/page-hero-parity.css";
 import { RouteFavicon } from "@/components/route-favicon";
 import { VisualViewportPopupBridge } from "@/components/visual-viewport-popup-bridge";
 import { TabletopFinalInteractionBridge } from "@/components/tabletop/tabletop-final-interaction-bridge";
@@ -175,7 +175,6 @@ function RootComponent() {
         <RouteFavicon />
         <VisualViewportPopupBridge />
         <ExperienceFinalPolishBridge />
-        <PageHeroParityBridge />
         <TabletopFinalInteractionBridge />
         <TadeonExperienceDirector />
         <Toaster position="top-right" />

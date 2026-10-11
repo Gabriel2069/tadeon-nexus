@@ -1357,17 +1357,6 @@ body
 
 /* Preserve words in narrow controls. Only genuinely unbroken identifiers
  * may fall back to a break; normal labels wrap at spaces. */
-.tadeon-shell :where(h1, h2, h3, h4, p, label, legend),
-:where(
-    [data-slot="button"],
-    [data-slot="tabs-trigger"],
-    [data-slot="toggle"],
-    [data-slot="toggle-group-item"]
-  )
-  > :where(span, strong, small):not(.sr-only) {
-  overflow-wrap: break-word;
-  word-break: normal;
-}
 
 @media (max-width: 767px) {
   :where(

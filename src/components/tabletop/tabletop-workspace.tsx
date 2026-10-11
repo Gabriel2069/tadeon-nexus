@@ -55,7 +55,8 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
-import { BrandMark, ThreadField } from "@/components/brand-mark";
+import { ThreadField } from "@/components/brand-mark";
+import { SectionSymbol } from "@/components/section-symbols";
 import { TabletopLiveSession } from "@/components/tabletop/tabletop-live-session";
 import { TabletopHandoutViewer } from "@/components/tabletop/tabletop-handout-viewer";
 import { TabletopEntityDossier } from "@/components/tabletop/tabletop-entity-dossier";
@@ -1642,7 +1643,9 @@ export function TabletopWorkspace({
         <ThreadField className="text-primary opacity-20" />
         <div className="tadeon-tabletop-studio__primary relative z-10 flex flex-wrap items-center gap-2.5">
           <div className="tadeon-tabletop-studio__brand mr-2">
-            <BrandMark className="h-10 w-10 shrink-0 text-primary" />
+            <span className="tadeon-tabletop-brand-mark-host" aria-hidden="true">
+              <SectionSymbol section="tabletop" className="tadeon-tabletop-brand-mark-icon" />
+            </span>
             <div className="min-w-0">
               <p className="tadeon-eyebrow">Estúdio de cena</p>
               <div className="flex min-w-0 items-center gap-2">

@@ -14,7 +14,7 @@
       "roots": 0
     },
     "src/styles/experience-surfaces.css": {
-      "important": 259,
+      "important": 253,
       "roots": 2
     },
     "src/styles/global-search.css": {
@@ -54,11 +54,11 @@
       "roots": 1
     },
     "src/styles/motion-composition.css": {
-      "important": 551,
-      "roots": 21
+      "important": 487,
+      "roots": 20
     },
     "src/styles/motion-foundation.css": {
-      "important": 84,
+      "important": 81,
       "roots": 6
     },
     "src/styles/motion-interactions.css": {
@@ -78,7 +78,7 @@
       "roots": 0
     },
     "src/styles/page-hero-parity.css": {
-      "important": 967,
+      "important": 959,
       "roots": 1
     },
     "src/styles/realtime-status.css": {
@@ -90,7 +90,7 @@
       "roots": 0
     },
     "src/styles/route-layout.css": {
-      "important": 1715,
+      "important": 1691,
       "roots": 0
     },
     "src/styles/route-popup-frame.css": {

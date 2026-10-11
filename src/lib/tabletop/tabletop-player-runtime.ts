@@ -57,14 +57,17 @@ function dispatchRuntimeRender(engine: TabletopEngine) {
 if (!runtimeState.__tadeonPlayerRuntimePatched) {
   runtimeState.__tadeonPlayerRuntimePatched = true;
   const prototype = TabletopEngine.prototype as unknown as RuntimePrototype;
+  // init may resolve after its host has unmounted and destroyed the engine.
+  const destroyedEngines = new WeakSet<TabletopEngine>();
   const originalInit = prototype.init;
   const originalDestroy = prototype.destroy;
   const originalRender = prototype.render;
 
   prototype.init = async function initWithRuntime(this: TabletopEngine, host: HTMLElement) {
     await originalInit.call(this, host);
-    if (typeof window === "undefined") return;
+    if (typeof window === "undefined" || destroyedEngines.has(this)) return;
     const internals = this as unknown as EngineInternals;
+    const canvas = internals.app.canvas;
     window.__tadeonTabletopRuntime = {
       engine: this,
       host,
@@ -75,14 +78,14 @@ if (!runtimeState.__tadeonPlayerRuntimePatched) {
         orientation: internals.camera.orientation,
       }),
       clientToWorld: (point) => {
-        const rect = internals.app.canvas.getBoundingClientRect();
+        const rect = canvas.getBoundingClientRect();
         return internals.camera.screenToWorld({
           x: point.x - rect.left,
           y: point.y - rect.top,
         });
       },
       worldToClient: (point) => {
-        const rect = internals.app.canvas.getBoundingClientRect();
+        const rect = canvas.getBoundingClientRect();
         const screen = internals.camera.worldToScreen(point);
         return { x: rect.left + screen.x, y: rect.top + screen.y };
       },
@@ -96,6 +99,7 @@ if (!runtimeState.__tadeonPlayerRuntimePatched) {
   };
 
   prototype.destroy = async function destroyWithRuntime(this: TabletopEngine) {
+    destroyedEngines.add(this);
     if (
       typeof window !== "undefined" &&
       window.__tadeonTabletopRuntime?.engine === this

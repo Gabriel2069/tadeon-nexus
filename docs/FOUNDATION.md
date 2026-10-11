@@ -66,12 +66,43 @@ Novos testes exercitam AuthProvider renderizado, cache com troca de usuário/car
 
 O encerramento da base visual depende desses testes de telas autenticadas e da eliminação das regras concorrentes por proprietário. Esta entrega estabelece o terreno e os gates para executar essa limpeza com rastreabilidade.
 
-## Evidência final desta entrega
+## Evidência do primeiro lote
 
 Depois de uma instalação limpa com `npm ci`, `npm run check` encerrou com código 0: 111 suítes e 494 testes, ESLint, TypeScript e builds de cliente, SSR e Worker. A comparação de 55 módulos CSS permaneceu equivalente à base. O ambiente local usa Node 24; o workflow mantém Node 22 e deve validar o commit remoto.
 
 A auditoria de produção (`--omit=dev`) ficou com 0 avisos altos e 1 baixo. A auditoria completa ainda apresenta dois registros altos relacionados ao SDK MCP transitivo e ao pacote que o incorpora, sem correção disponível no relatório npm, além do aviso baixo de esbuild no servidor de desenvolvimento Windows. O MCP participa do build: sua classificação como dev não prova ausência de exposição em produção. Não foi forçada uma atualização incompatível nem desativada a integração. A revisão específica do fluxo OAuth/SDK continua pendente antes de declarar todos os avisos resolvidos.
 
-A comparação visual por screenshots não foi concluída: o Chromium não estava disponível e seu download falhou. A próxima revisão visual precisa de navegador e acesso às telas autenticadas. O build ainda avisa sobre o chunk Pixi e ajustes do adaptador/bundler; esses avisos não impediram a compilação.
+No primeiro lote, a comparação visual por screenshots não foi concluída: o Chromium não estava disponível e seu download falhou. O segundo lote, documentado abaixo, executou o navegador com fixtures; contas reais continuam fora dessa verificação. O build ainda avisa sobre o chunk Pixi e ajustes do adaptador/bundler; esses avisos não impediram a compilação.
 
 Métricas e limites estão em `foundation-validation.json`. Esta branch não publicou o Worker e não alterou o banco.
+
+## Segundo lote: proprietários de cabeçalhos e regras duplicadas
+
+Referência deste lote: `95cc9c5d5bdcf48921be13b29709f46ad0804910`. A comparação AST da primeira migração é uma evidência histórica; este lote altera deliberadamente a cascata nos pontos registrados em `style-cleanup.json`.
+
+- Foram eliminadas 69 regras idênticas, com 178 declarações, mantendo a última ocorrência dentro do mesmo módulo e contexto condicional. A comparação considera seletor, ordem de declarações, valor e prioridade. Não cruza módulos carregados por rotas, nem deduplica keyframes, seletores aninhados, scopes ou layers anônimos. Os comentários de procedência permanecem ativos.
+- `FocusBrandMark` e `PageSectionMark`, em `section-symbols.tsx`, são renderizados pelos cabeçalhos. A identidade da Mesa pertence ao workspace. O `PageHeroParityBridge` foi removido: não há mais observer de todo o body, portais de ícones ou sete propriedades de geometria impostas inline por esse bridge. O CSS continua carregado no root.
+- A geometria desktop de “Área em foco” pertence a `page-hero-parity.css`. Dez declarações concorrentes foram retiradas de três regras anteriores; os valores finais de coluna e gap usados pelo antigo bridge foram transferidos para a regra responsável. A barra desktop oculta no celular deixa de receber um grid inline sem uso visual.
+- O gate agora rejeita regras idênticas dominadas e outros módulos declarando as propriedades desse contêiner de foco. Os tetos de `!important` foram reduzidos de 5.869 para 5.764. Isso mede redução de dívida; ainda existem outras regras históricas concorrentes.
+- A inspeção no navegador identificou uma corrida no runtime da Mesa: `init` podia terminar depois de `destroy` e publicar um renderer já destruído. Um registro fraco de motores descartados impede essa publicação; a conversão de coordenadas usa o canvas da inicialização válida. Três testes cobrem abertura, destruição durante init e conclusão antiga depois de um motor novo.
+- Dialogs controlados preservam o elemento que tinha foco ao abrir e devolvem foco ao fechar, respeitando um `onCloseAutoFocus` personalizado. Dois testes renderizados cobrem Escape e redirecionamento intencional de foco.
+- Na busca móvel, uma regra antiga de `route-layout.css` agrupava o seletor de Command com o de `#sheet-name`. O CSS compilado misturava a especificidade desse grupo e aplicava `translateX(-50%)` a um conteúdo já centralizado pelo positioner. A ramificação de Command foi retirada; a regra de ficha permanece. Não foi acrescentado `!important` para vencer o conflito.
+
+### Verificação por navegador
+
+`scripts/verify-header-ownership.mjs` executa uma verificação local reproduzível com Playwright, instalado fora das dependências da aplicação. Ele inicia e encerra seu próprio Vite, simula uma sessão mestre e intercepta chamadas Supabase do cliente. Server functions ficam indisponíveis na fixture; a administração de usuários é verificada no estado de erro, sem acessar contas reais. Captura as sete seções principais em 390, 820 e 1.440 px com movimento reduzido, aguarda o canvas da Mesa e verifica busca/conta por teclado. Retorna código não zero para erros de página, overflow ou falhas de foco/contenção.
+
+Exemplo com Chromium instalado pelo Playwright:
+
+```sh
+NEXUS_BROWSER_MODULE=file:///caminho/node_modules/playwright-core/index.mjs \
+NEXUS_CHROMIUM_PATH=/caminho/chromium \
+NEXUS_AUDIT_OUTPUT=/tmp/nexus-header-audit \
+node scripts/verify-header-ownership.mjs current
+```
+
+Para uma comparação, defina `NEXUS_AUDIT_REPO` para o worktree de referência e use outro rótulo no argumento. Binários especiais podem precisar de `NEXUS_CHROMIUM_ARGS`, um array JSON de argumentos. Os screenshots são evidência temporária; as métricas desta rodada ficam em `header-validation.json`.
+
+Esta fixture não cobre autorização real, dados povoados, teclado virtual, zoom/pinch, todos os dialogs da Mesa ou a ficha completa. As diferenças de screenshots inteiros podem incluir efeitos decorativos e estados assíncronos; a comparação dos cabeçalhos usa geometria e cor dos símbolos visíveis. O refinamento visual aprovado e a remoção dos demais bridges continuam nas etapas seguintes.
+
+Validação final deste segundo lote: `npm run check` passou com 115 suítes e 507 testes, lint, TypeScript e builds cliente/SSR/Worker. Foram verificadas 21 telas de fixture, com um único landmark main, nenhum overflow e nenhum erro de página. Geometria e cor dos símbolos de foco visíveis coincidiram com a referência nas 21 comparações. Busca e conta passaram nos seis casos de abertura, foco, Tab, Escape e retorno ao controle. A auditoria de produção mantém zero avisos altos e um baixo. O resumo reproduzível está em `foundation-cleanup-validation.json`. As pendências do SDK MCP e os avisos de build do primeiro lote continuam. A integração Git existente do Cloudflare pode gerar previews de branch; não foi executado deploy manual nem merge.

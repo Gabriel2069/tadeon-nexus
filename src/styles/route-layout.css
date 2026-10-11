@@ -329,7 +329,6 @@ html[data-tadeon-tabletop-selection-active="true"] [data-tadeon-selection-guarde
 }
 
 @media (max-width: 767px) {
-  [data-slot="dialog-content"]:has([data-slot="command"]),
   [data-slot="dialog-content"]:has(#sheet-name) {
     top: max(.55rem, env(safe-area-inset-top)) !important;
     bottom: max(.55rem, env(safe-area-inset-bottom)) !important;
@@ -1643,10 +1642,6 @@ html[data-tadeon-sheet-mode="game"] .tadeon-sheet-game-button svg {
     scrollbar-width: none;
   }
 
-  .tadeon-master-navigation__scroller::-webkit-scrollbar {
-    display: none;
-  }
-
   .tadeon-sheet-commandbar__actions > button:first-child {
     width: 2.45rem !important;
     min-width: 2.45rem !important;
@@ -1769,32 +1764,6 @@ html[data-tadeon-sheet-mode="game"] .tadeon-sheet-game-button svg {
     box-shadow: none !important;
     opacity: 0 !important;
     content: none !important;
-  }
-
-  .tadeon-shell:is(
-    [data-section="Painel do Mestre"],
-    [data-section="Usuários"],
-    [data-section="Saúde do arquivo"],
-    [data-section="Consulta offline"]
-  ) .tadeon-desktop-toolbar::after {
-    position: absolute !important;
-    right: clamp(1.5rem, 2.6vw, 2.5rem) !important;
-    bottom: -1px !important;
-    left: clamp(1.5rem, 2.6vw, 2.5rem) !important;
-    display: block !important;
-    width: auto !important;
-    height: 1px !important;
-    border: 0 !important;
-    background: linear-gradient(
-      90deg,
-      color-mix(in srgb, var(--section-accent) 42%, transparent),
-      color-mix(in srgb, var(--section-secondary) 18%, transparent) 38%,
-      transparent 78%
-    ) !important;
-    box-shadow: none !important;
-    opacity: 1 !important;
-    transform: none !important;
-    content: "" !important;
   }
 
   .tadeon-shell:is(
@@ -1973,18 +1942,6 @@ html[data-tadeon-sheet-mode="game"] .tadeon-sheet-game-button svg {
   opacity: 1 !important;
   pointer-events: none !important;
   content: "" !important;
-}
-
-.tadeon-route-users > .tadeon-page-hero::before {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23d9d7a4' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2'/%3E%3Ccircle cx='9' cy='7' r='4'/%3E%3Cpath d='M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75'/%3E%3C/svg%3E") !important;
-}
-
-.tadeon-route-tools > .tadeon-page-hero::before {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23d9d7a4' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M21 8a2 2 0 0 0-2-2h-2V4a2 2 0 0 0-2-2H9a2 2 0 0 0-2 2v2H5a2 2 0 0 0-2 2v11a3 3 0 0 0 3 3h12a3 3 0 0 0 3-3Z'/%3E%3Cpath d='M9 6h6M8 12h8M8 16h5'/%3E%3C/svg%3E") !important;
-}
-
-.tadeon-route-offline > .tadeon-page-hero::before {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23d9d7a4' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 0 1 2.78 8.04'/%3E%3Cpath d='m3 3 18 18'/%3E%3C/svg%3E") !important;
 }
 
 .tadeon-route-users > .tadeon-page-hero::after,
@@ -2390,10 +2347,8 @@ html[data-tadeon-sheet-mode="game"] .tadeon-sheet-game-button svg {
     [data-section="Saúde do arquivo"],
     [data-section="Consulta offline"]
   ) .tadeon-desktop-toolbar > .min-w-0 {
-    display: block !important;
     min-width: 0 !important;
     flex: 1 1 auto !important;
-    padding: 0 !important;
     border: 0 !important;
   }
 
@@ -3626,10 +3581,8 @@ html[data-tadeon-sheet-mode="game"] .tadeon-sheet-game-button svg {
   .tadeon-shell .tadeon-desktop-toolbar > .min-w-0 {
     position: static !important;
     z-index: auto !important;
-    display: block !important;
     min-width: 0 !important;
     flex: 1 1 auto !important;
-    padding: 0 !important;
     border: 0 !important;
     isolation: auto !important;
     transform: none !important;
@@ -3799,16 +3752,6 @@ html[data-tadeon-sheet-mode="game"] .tadeon-sheet-game-button svg {
     background-color 180ms var(--ease-out),
     filter 180ms var(--ease-out),
     transform 180ms var(--ease-out) !important;
-}
-
-.tadeon-nav-item[href="/master-panel"] .tadeon-nav-item__icon::before {
-  -webkit-mask: center / contain no-repeat url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.55' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='8.25' stroke-dasharray='9 3.4 2.2 4.3' opacity='.72'/%3E%3Cpath d='M12 2.8v4.1M12 17.1v4.1M2.8 12h4.1M17.1 12h4.1'/%3E%3Cpath d='m8.55 12 3.45-3.45L15.45 12 12 15.45 8.55 12Z'/%3E%3Cpath d='M6.05 6.35 9.6 9.6M17.95 6.35 14.4 9.6M6.05 17.65l3.55-3.25M17.95 17.65l-3.55-3.25'/%3E%3Ccircle cx='6.05' cy='6.35' r='.85'/%3E%3Ccircle cx='17.95' cy='6.35' r='.85'/%3E%3Ccircle cx='6.05' cy='17.65' r='.85'/%3E%3Ccircle cx='17.95' cy='17.65' r='.85'/%3E%3Ccircle cx='12' cy='12' r='1.15' fill='black' stroke='none'/%3E%3C/svg%3E") !important;
-  mask: center / contain no-repeat url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.55' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='8.25' stroke-dasharray='9 3.4 2.2 4.3' opacity='.72'/%3E%3Cpath d='M12 2.8v4.1M12 17.1v4.1M2.8 12h4.1M17.1 12h4.1'/%3E%3Cpath d='m8.55 12 3.45-3.45L15.45 12 12 15.45 8.55 12Z'/%3E%3Cpath d='M6.05 6.35 9.6 9.6M17.95 6.35 14.4 9.6M6.05 17.65l3.55-3.25M17.95 17.65l-3.55-3.25'/%3E%3Ccircle cx='6.05' cy='6.35' r='.85'/%3E%3Ccircle cx='17.95' cy='6.35' r='.85'/%3E%3Ccircle cx='6.05' cy='17.65' r='.85'/%3E%3Ccircle cx='17.95' cy='17.65' r='.85'/%3E%3Ccircle cx='12' cy='12' r='1.15' fill='black' stroke='none'/%3E%3C/svg%3E") !important;
-}
-
-.tadeon-nav-item[href="/nexus-tools"] .tadeon-nav-item__icon::before {
-  -webkit-mask: center / contain no-repeat url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M21 8a2 2 0 0 0-2-2h-2V4a2 2 0 0 0-2-2H9a2 2 0 0 0-2 2v2H5a2 2 0 0 0-2 2v11a3 3 0 0 0 3 3h12a3 3 0 0 0 3-3Z'/%3E%3Cpath d='M9 6h6M8 12h8M8 16h5'/%3E%3C/svg%3E") !important;
-  mask: center / contain no-repeat url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M21 8a2 2 0 0 0-2-2h-2V4a2 2 0 0 0-2-2H9a2 2 0 0 0-2 2v2H5a2 2 0 0 0-2 2v11a3 3 0 0 0 3 3h12a3 3 0 0 0 3-3Z'/%3E%3Cpath d='M9 6h6M8 12h8M8 16h5'/%3E%3C/svg%3E") !important;
 }
 
 .tadeon-nav-item[href="/master-panel"][aria-current="page"] .tadeon-nav-item__icon::before,

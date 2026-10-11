@@ -83,9 +83,9 @@ html body .tadeon-focus-section-mark-icon {
   html body .tadeon-shell .tadeon-desktop-toolbar > .min-w-0 {
     display: grid !important;
     min-width: 0 !important;
-    grid-template-columns: 2.25rem minmax(0, 1fr) !important;
+    grid-template-columns: 2.45rem minmax(0, 1fr) !important;
     grid-template-rows: auto auto !important;
-    column-gap: .8rem !important;
+    column-gap: .85rem !important;
     row-gap: .08rem !important;
     align-items: center !important;
     padding: 0 !important;
@@ -412,14 +412,6 @@ html body [data-tadeon-page-hero="users"] > div:first-of-type {
   padding-left: 0 !important;
 }
 
-html body [data-tadeon-page-hero="users"] > div:nth-of-type(2) {
-  grid-column: 3 !important;
-  grid-row: 1 !important;
-  align-self: center !important;
-  justify-self: end !important;
-  margin: 0 !important;
-}
-
 html body [data-tadeon-page-hero="tools"] > div:first-of-type,
 html body [data-tadeon-page-hero="offline"] > div:first-of-type {
   grid-column: 2 / -1 !important;
@@ -564,12 +556,6 @@ html body [data-tadeon-page-hero="offline"] svg.text-primary {
   html body [data-tadeon-page-hero="offline"] > div:first-of-type {
     grid-column: 2 !important;
     grid-row: 1 !important;
-  }
-
-  html body [data-tadeon-page-hero="users"] > div:nth-of-type(2) {
-    grid-column: 2 !important;
-    grid-row: 2 !important;
-    justify-self: start !important;
   }
 
   html body .tadeon-page-hero[data-tadeon-page-hero]::after {

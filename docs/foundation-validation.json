@@ -82,5 +82,6 @@
     "No database changes or production publication.",
     "MCP advisory is classified as dev by npm; the MCP server participates in the build, so deployment exposure still needs separate review.",
     "Build retains a large Pixi chunk and adapter/bundler warnings; they did not fail the build."
-  ]
+  ],
+  "followUpReport": "foundation-cleanup-validation.json"
 }

@@ -1067,13 +1067,6 @@
       visibility 0s linear 280ms;
   }
 
-  .tadeon-tabletop-panel-backdrop[data-open="true"] {
-    opacity: 1;
-    visibility: visible;
-    pointer-events: auto;
-    transition-delay: 0s;
-  }
-
   .tadeon-tabletop-panel {
     display: block;
     opacity: 0;
@@ -1084,14 +1077,6 @@
       opacity 220ms var(--ease-out),
       transform 340ms var(--ease-drawer),
       visibility 0s linear 340ms;
-  }
-
-  .tadeon-tabletop-panel[data-mobile-open="true"] {
-    opacity: 1;
-    visibility: visible;
-    pointer-events: auto;
-    transform: translate3d(0, 0, 0);
-    transition-delay: 0s;
   }
 }
 
@@ -1155,12 +1140,6 @@
   .tadeon-tabletop-stage:has(.tadeon-tabletop-tool-options):has(.tadeon-tabletop-selection-dock)
     .tadeon-tabletop-canvas-host {
     top: 8rem;
-  }
-
-  .tadeon-tabletop-canvas-rail {
-    max-height: none;
-    overflow-x: auto;
-    overflow-y: hidden;
   }
 
   .tadeon-tabletop-panel__header {

@@ -39,7 +39,7 @@ import {
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { BrandMark, ThreadField } from "@/components/brand-mark";
-import { SectionSymbol } from "@/components/section-symbols";
+import { FocusBrandMark, SectionSymbol } from "@/components/section-symbols";
 import { GlobalSearch } from "@/components/global-search";
 import { usePwaInstall } from "@/components/pwa-registration";
 import { getAuthErrorMessage } from "@/lib/auth-errors";
@@ -394,6 +394,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
       <div className="relative z-10 flex min-w-0 flex-1 flex-col">
         <header className="tadeon-desktop-toolbar hidden md:flex">
           <div className="min-w-0">
+            <FocusBrandMark />
             <p className="tadeon-eyebrow">Área em foco</p>
             <div className="flex min-w-0 items-baseline gap-3">
               <h2 className="truncate font-cinzel text-xl font-semibold text-foreground">
@@ -457,11 +458,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
             <Menu className="w-5 h-5" />
           </button>
           <div className="tadeon-mobile-header__identity flex min-w-0 items-center justify-center gap-2.5">
-            {currentSection === "Mesa Nexus" ? (
-              <SectionSymbol section="tabletop" className="h-8 w-8 shrink-0 text-primary" />
-            ) : (
-              <BrandMark className="h-8 w-8 shrink-0 text-primary" />
-            )}
+            <FocusBrandMark />
             <div className="min-w-0 text-left">
               <p className="tadeon-mono truncate text-[9px] uppercase tracking-[0.14em] text-muted-foreground">
                 Área em foco

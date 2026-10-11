@@ -1,4 +1,5 @@
 import type { SVGProps } from "react";
+import { BrandMark } from "@/components/brand-mark";
 import {
   CloudOff,
   Home,
@@ -99,6 +100,23 @@ export function SectionHeroMark({ section }: { section: AppSectionSymbol }) {
       <SectionSymbol section={section} className="tadeon-section-hero-mark__icon" />
       <span className="tadeon-section-hero-mark__orbit tadeon-section-hero-mark__orbit--outer" />
       <span className="tadeon-section-hero-mark__orbit tadeon-section-hero-mark__orbit--inner" />
+    </span>
+  );
+}
+
+/** Decorative marks belong to their header, including the first render. */
+export function FocusBrandMark() {
+  return (
+    <span className="tadeon-focus-section-mark-host" aria-hidden="true">
+      <BrandMark className="tadeon-focus-section-mark-icon" />
+    </span>
+  );
+}
+
+export function PageSectionMark({ section }: { section: "users" | "tools" | "offline" }) {
+  return (
+    <span className="tadeon-page-hero-mark-host" aria-hidden="true">
+      <SectionSymbol section={section} className="tadeon-page-hero-mark-icon" />
     </span>
   );
 }

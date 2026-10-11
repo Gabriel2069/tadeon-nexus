@@ -5,6 +5,7 @@ Leia `docs/FOUNDATION.md` antes de alterar interface, sessão ou publicação.
 - Preserve o Fio-Mestre: fundo escuro, marfim, EB Garamond, Inter, PT Mono, símbolos autorais e cores por seção. Redesign exige uma decisão visual explícita.
 - Procure o proprietário da regra em `docs/style-architecture.json` e no mapa de `docs/FOUNDATION.md`. Edite o módulo existente. Não crie outro arquivo numerado, `final`, `repair`, `polish` ou uma nova camada para vencer a anterior.
 - O CSS tem uma transição documentada, não uma cascata já saneada por completo. Ao modificar uma propriedade, identifique todas as declarações concorrentes, mantenha um responsável e elimine as anteriores somente depois de validar os estados e tamanhos afetados.
+- Não repita regras idênticas no mesmo contexto; mantenha a última autoridade existente. A geometria de Área em foco pertence a `page-hero-parity.css`, e os símbolos pertencem aos componentes de cabeçalho.
 - Não acrescente `!important`, imports CSS aninhados ou observadores globais para contornar um conflito. Resolva a origem. O verificador de estilos usa tetos por módulo; reduza os tetos quando eliminar regras.
 - Não edite arquivos gerados de rotas. Não una/squashe migrações SQL já aplicadas. Não integre branches antigos sem reavaliar seus requisitos contra a base atual.
 - Cache offline só aceita usuário e cargo verificados. Escritas assíncronas devem carregar a identidade que iniciou a operação; nunca atribua uma resposta antiga à conta atual.

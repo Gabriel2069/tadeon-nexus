@@ -741,21 +741,9 @@
 }
 
 @container tadeon-route (max-width: 880px) {
-  .tadeon-encounter-composer {
-    grid-template-columns: minmax(0, 1fr);
-  }
 }
 
 @container tadeon-route (max-width: 720px) {
-  .tadeon-encounter-summary {
-    grid-template-columns: minmax(0, 1fr);
-  }
-
-  .tadeon-encounter-summary__reading {
-    min-height: 7rem;
-    border-right: 0;
-    border-bottom: 1px solid color-mix(in srgb, var(--primary) 18%, var(--border));
-  }
 
   .tadeon-encounter-summary__metrics {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -782,12 +770,6 @@
     padding: 0.8rem;
   }
 
-  .tadeon-encounter-roster,
-  .tadeon-encounter-manual__fields,
-  .tadeon-encounter-total {
-    grid-template-columns: minmax(0, 1fr);
-  }
-
   .tadeon-encounter-source__heading {
     align-items: flex-start;
     flex-direction: column;
@@ -796,17 +778,6 @@
 
   .tadeon-encounter-source__heading button {
     align-self: flex-start;
-  }
-
-  .tadeon-encounter-threat {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr);
-    align-items: stretch;
-  }
-
-  .tadeon-encounter-threat__quantity {
-    width: 100%;
-    grid-template-columns: 2.5rem minmax(0, 1fr) 2.5rem;
   }
 
   .tadeon-encounter-threat__quantity [data-slot="button"] {
