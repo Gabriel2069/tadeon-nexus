@@ -2,7 +2,7 @@
 
 > Gerado de [project-continuity.json](project-continuity.json). Edite o registro e rode `npm run sync:project`; não mantenha uma cópia manual.
 
-Snapshot: 2026-10-11; referência de runtime: `2a458d97531e1d5dc314bdc42df3eadb7b26ef67`. PR #258 em `refactor/nexus-foundation-2026-10-11`; integração: `integrated`. Não é prova de deploy.
+Snapshot: 2026-10-11; referência de runtime: `ca49ce09a3f3761a7f68978e194d8cfe8984192c`. PR #259 em `design/fio-mestre-visual-board-2026-10-11`; integração: `integrated`. Não é prova de deploy.
 
 Estados: planejado → próximo → em andamento → validado na branch → integrado. Publicação exige evidência própria do SHA; adiado conserva o requisito. Se um requisito mudar, preservar o ID e registrar a decisão/evidência.
 
@@ -12,7 +12,7 @@ Cada PR usa IDs desta fila e declara dependências. Trabalho sobre o mesmo propr
 | --- | --- | --- | --- | --- | --- |
 | NEX-001 | Preparação estrutural | Integrado | 0 | delivery | — |
 | NEX-002 | Mapa, continuidade e conciliação das PRs | Integrado | 0 | delivery | NEX-001 |
-| NEX-003 | Véu & Trama: referência aplicada ao shell e Dashboard | Validado na branch | 1 | shell | NEX-001, NEX-002 |
+| NEX-003 | Véu & Trama: referência aplicada ao shell e Dashboard | Integrado | 1 | shell | NEX-001, NEX-002 |
 | NEX-004 | Sidebar, navegação móvel e portais | Próximo | 2 | popup | NEX-003 |
 | NEX-005 | Ficha por seções e estados | Planejado | 3 | sheet | NEX-003 |
 | NEX-006 | Biblioteca, documento e grafo do Nexus | Planejado | 4 | knowledge | NEX-003 |
@@ -44,7 +44,7 @@ Evidências: [scripts/check-project-continuity.mjs](../scripts/check-project-con
 - Revisar hierarquia, leitura, símbolos, superfície, respiro e três indicadores do Dashboard.
 - Preservar Fio-Mestre; definir referência aprovada antes de expandir a linguagem às demais telas.
 
-Evidências: [docs/DESIGN.md](../docs/DESIGN.md), [docs/design/board.html](../docs/design/board.html), [docs/design-board-validation.json](../docs/design-board-validation.json), [docs/dashboard-design-validation.json](../docs/dashboard-design-validation.json), [scripts/verify-dashboard-design.mjs](../scripts/verify-dashboard-design.mjs), [src/lib/dashboard-read.test.tsx](../src/lib/dashboard-read.test.tsx), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/pull/259).
+Evidências: [docs/DESIGN.md](../docs/DESIGN.md), [docs/design/board.html](../docs/design/board.html), [docs/design-board-validation.json](../docs/design-board-validation.json), [docs/dashboard-design-validation.json](../docs/dashboard-design-validation.json), [scripts/verify-dashboard-design.mjs](../scripts/verify-dashboard-design.mjs), [src/lib/dashboard-read.test.tsx](../src/lib/dashboard-read.test.tsx), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/pull/259), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38156149188), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38156316960).
 
 ## NEX-004 — Sidebar, navegação móvel e portais
 

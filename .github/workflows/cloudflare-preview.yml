@@ -76,18 +76,4 @@ jobs:
         run: npx nitro deploy --prebuilt
 
       - name: Confirmar produção no SHA publicado
-        shell: bash
-        run: |
-          set -euo pipefail
-          for attempt in {1..12}; do
-            page="$(curl --fail --silent --show-error --location "${TADEON_PUBLIC_APP_URL}/login" || true)"
-            if printf '%s' "$page" | grep -Fq 'name="tadeon-build-sha"' && \
-              printf '%s' "$page" | grep -Fq "${TADEON_DEPLOY_SHA}"; then
-              echo "Produção confirmada no SHA ${TADEON_DEPLOY_SHA}."
-              exit 0
-            fi
-            echo "Tentativa ${attempt}/12: aguardando propagação do Worker."
-            sleep 5
-          done
-          echo "::error::O endpoint público não confirmou o SHA ${TADEON_DEPLOY_SHA}."
-          exit 1
+        run: node scripts/verify-production-build.mjs
