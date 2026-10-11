@@ -2,7 +2,7 @@
 
 > Gerado de [project-continuity.json](project-continuity.json). Edite o registro e rode `npm run sync:project`; não mantenha uma cópia manual.
 
-Snapshot: 2026-10-11; referência de runtime: `41c2c882e30bb7c03237fd0941aa8c71fd293e5f`. PR #263 em `design/liquid-fabric-shared-2026-10-11`; integração: `integrated`. Não é prova de deploy.
+Snapshot: 2026-10-11; referência de runtime: `1d92120cf210e466889e8f3ba53c5a8f2a1dfa81`. PR #265 em `design/sheet-fabric-sections-2026-10-11`; integração: `integrated`. Não é prova de deploy.
 
 Estados: planejado → próximo → em andamento → validado na branch → integrado. Publicação exige evidência própria do SHA; adiado conserva o requisito. Se um requisito mudar, preservar o ID e registrar a decisão/evidência.
 
@@ -15,8 +15,8 @@ Cada PR usa IDs desta fila e declara dependências. Trabalho sobre o mesmo propr
 | NEX-003 | Véu & Trama: referência aplicada ao shell e Dashboard | Integrado | 1 | shell | NEX-001, NEX-002 |
 | NEX-004 | Sidebar, navegação móvel e portais | Integrado | 2 | popup | NEX-003 |
 | NEX-013 | Liquid fabric: login, Dashboard e componentes compartilhados | Integrado | 2 | shell | NEX-003, NEX-004 |
-| NEX-005 | Ficha por seções e estados | Em andamento | 3 | sheet | NEX-003, NEX-013 |
-| NEX-006 | Biblioteca, documento e grafo do Nexus | Planejado | 4 | knowledge | NEX-003, NEX-013 |
+| NEX-005 | Ficha por seções e estados | Integrado | 3 | sheet | NEX-003, NEX-013 |
+| NEX-006 | Biblioteca, documento e grafo do Nexus | Próximo | 4 | knowledge | NEX-003, NEX-013 |
 | NEX-007 | Mesa: hierarquia de ferramentas e workspace | Planejado | 5 | tabletop | NEX-004, NEX-013 |
 | NEX-008 | Painel do Mestre e administração | Planejado | 6 | master | NEX-003, NEX-013 |
 | NEX-009 | Desempenho e motion | Planejado | 7 | delivery | NEX-003, NEX-007 |
@@ -70,7 +70,7 @@ Evidências: [docs/shared-fabric-validation.json](../docs/shared-fabric-validati
 - Validar ficha povoada, somente leitura, salvamento, erro e transição de usuário.
 - Transferir vínculos/modificadores e inventário dos bridges antes de retirar suas funções.
 
-Evidências: [docs/sheet-design-validation.json](../docs/sheet-design-validation.json).
+Evidências: [docs/sheet-design-validation.json](../docs/sheet-design-validation.json), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38171064466), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38182952991).
 
 ## NEX-006 — Biblioteca, documento e grafo do Nexus
 

@@ -1,7 +1,7 @@
 {
   "task": "NEX-005",
   "date": "2026-10-11",
-  "state": "in_validation",
+  "state": "integrated",
   "branch": "design/sheet-fabric-sections-2026-10-11",
   "baseCommit": "c4ce6d1311d146467b7e3c260086dfdf344feac8",
   "direction": "Véu & Trama / Fio-Mestre; continuidade da tipografia e do liquid fabric aprovados em NEX-013",
@@ -37,17 +37,75 @@
     "retiredGeometryDeclarations": 68
   },
   "verification": {
-    "check": "Lint, TypeScript e testes aprovados; build final e fixtures ampliadas aguardam conclusão.",
+    "check": "npm run check aprovado no código final, Quality remoto aprovado no HEAD e em main",
     "suites": 126,
     "tests": 557,
     "audit": "0 vulnerabilities",
     "browserScript": "scripts/verify-sheet-design.mjs",
-    "browser": "pending final expanded fixtures"
+    "browser": "passed",
+    "views": 16,
+    "widths": [
+      320,
+      390,
+      820,
+      1440
+    ],
+    "states": [
+      "editable",
+      "readonly",
+      "error/retry",
+      "loading"
+    ],
+    "interactions": [
+      "identity edits and serialized save/retry",
+      "attribute one-zero guard",
+      "vitality calculated maximum clamp",
+      "condition selection",
+      "initial skill advance/revert",
+      "section collapse preserves data",
+      "history/inventory keyboard focus return",
+      "read-only mutation controls",
+      "mode switch",
+      "local reflection without content transform and reduced-motion suppression",
+      "attribute controls fully inside their panel with 44px targets"
+    ],
+    "unitBoundaries": [
+      "account change",
+      "role change",
+      "record change",
+      "late save failure after unmount",
+      "read-only explicit save request"
+    ],
+    "browserRuntime": "Chromium fixture, software rendering (--disable-gpu); all backend endpoints and realtime intercepted"
   },
   "limits": [
     "Fixtures interceptam auth, REST, RPC e WebSockets; nenhuma alteração em contas ou dados reais.",
     "Contas reais, RLS ponta a ponta, campanhas, VoiceOver, teclado virtual e performance de GPU não certificados.",
-    "Banco, migrações, flags, OAuth e backup não alterados.",
-    "Validação, merge e confirmação do SHA público são estados distintos; esta evidência ainda não afirma publicação."
-  ]
+    "Banco, migrações, flags, OAuth e backup não alterados."
+  ],
+  "pullRequest": 265,
+  "integration": {
+    "pr": 265,
+    "branch": "design/sheet-fabric-sections-2026-10-11",
+    "base": "main",
+    "baseCommit": "c4ce6d1311d146467b7e3c260086dfdf344feac8",
+    "headCommit": "363dbb8307403169def9341175b7ccc4f3054f08",
+    "state": "integrated",
+    "mergeCommit": "1d92120cf210e466889e8f3ba53c5a8f2a1dfa81",
+    "qualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38171064466",
+    "mainQualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38182952969",
+    "production": "confirmed",
+    "productionEvidence": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38182952991",
+    "productionCommit": "1d92120cf210e466889e8f3ba53c5a8f2a1dfa81",
+    "productionVerifiedAt": "2026-10-11T23:07:42.0673391Z",
+    "productionHttpStatus": 200,
+    "workerVersion": "601dc6f9-538c-4d3a-833c-78075509d59f"
+  },
+  "productionProof": [
+    "2026-10-11T23:07:35.3783681Z Current Version ID: 601dc6f9-538c-4d3a-833c-78075509d59f",
+    "2026-10-11T23:07:36.3694811Z Attempt 1/12: HTTP 200, build development.",
+    "2026-10-11T23:07:42.0672037Z Attempt 2/12: HTTP 200, build 1d92120cf210e466889e8f3ba53c5a8f2a1dfa81.",
+    "2026-10-11T23:07:42.0673391Z Production confirmed at SHA 1d92120cf210e466889e8f3ba53c5a8f2a1dfa81."
+  ],
+  "delivery": "Código visual integrado e SHA público confirmado pela PR #265. A consolidação documental conserva esta referência; o workflow de main e a PR documental registram a publicação de seu próprio commit."
 }
