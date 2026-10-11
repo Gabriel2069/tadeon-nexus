@@ -1,23 +1,23 @@
 {
   "version": 1,
   "checkedAt": "2026-10-11",
-  "runtimeReference": "41c2c882e30bb7c03237fd0941aa8c71fd293e5f",
+  "runtimeReference": "1d92120cf210e466889e8f3ba53c5a8f2a1dfa81",
   "integration": {
-    "pr": 263,
-    "branch": "design/liquid-fabric-shared-2026-10-11",
+    "pr": 265,
+    "branch": "design/sheet-fabric-sections-2026-10-11",
     "base": "main",
-    "baseCommit": "473691326817b3c9f82f33a02792c198d5956110",
-    "headCommit": "eba345bb00892948af1dfbbbb6257349be0aa5b8",
+    "baseCommit": "c4ce6d1311d146467b7e3c260086dfdf344feac8",
+    "headCommit": "363dbb8307403169def9341175b7ccc4f3054f08",
     "state": "integrated",
-    "mergeCommit": "41c2c882e30bb7c03237fd0941aa8c71fd293e5f",
-    "qualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38166007425",
+    "mergeCommit": "1d92120cf210e466889e8f3ba53c5a8f2a1dfa81",
+    "qualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38171064466",
+    "mainQualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38182952969",
     "production": "confirmed",
-    "productionEvidence": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38166156073",
-    "productionCommit": "41c2c882e30bb7c03237fd0941aa8c71fd293e5f",
-    "mainQualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38166156123",
-    "productionVerifiedAt": "2026-10-11T19:01:29Z",
+    "productionEvidence": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38182952991",
+    "productionCommit": "1d92120cf210e466889e8f3ba53c5a8f2a1dfa81",
+    "productionVerifiedAt": "2026-10-11T23:07:42.0673391Z",
     "productionHttpStatus": 200,
-    "workerVersion": "d3cd6159-bce4-4895-a230-87da5dde9990"
+    "workerVersion": "601dc6f9-538c-4d3a-833c-78075509d59f"
   },
   "domains": [
     {
@@ -431,7 +431,7 @@
       "id": "NEX-005",
       "title": "Ficha por seções e estados",
       "domain": "sheet",
-      "status": "active",
+      "status": "integrated",
       "priority": 3,
       "dependsOn": [
         "NEX-003",
@@ -443,15 +443,17 @@
         "Transferir vínculos/modificadores e inventário dos bridges antes de retirar suas funções."
       ],
       "evidence": [
-        "docs/sheet-design-validation.json"
+        "docs/sheet-design-validation.json",
+        "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38171064466",
+        "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38182952991"
       ],
-      "checkpoint": "Em desenvolvimento na branch design/sheet-fabric-sections-2026-10-11, base c4ce6d1. Seções React e montagem explícita de histórico/inventário; revisão visual e de persistência em andamento. Não publicado."
+      "checkpoint": "Integrado pela PR #265 em 1d92120, Quality aprovado no HEAD 363dbb8. 126 suítes/557 testes; 16 estados/larguras de fixture, controles/limites, leitura, salvamento/retry, foco e reflexão. Produção confirmou HTTP 200 e SHA exato no workflow indicado. 73 !important retirados, 5.409 restantes. Sem mudanças de banco/flags ou certificação de contas reais, RLS, VoiceOver/GPU."
     },
     {
       "id": "NEX-006",
       "title": "Biblioteca, documento e grafo do Nexus",
       "domain": "knowledge",
-      "status": "planned",
+      "status": "ready",
       "priority": 4,
       "dependsOn": [
         "NEX-003",
@@ -462,7 +464,8 @@
         "Verificar corpus povoado, filtros e legibilidade da teia sem sobrescrever escolhas manuais.",
         "Preservar vínculos, importação/exportação e diferenças entre cânone e material derivado."
       ],
-      "evidence": []
+      "evidence": [],
+      "checkpoint": "Próximo lote visual: biblioteca, documento e grafo; reutilizar os materiais e controles aprovados, preservando importação/exportação, vínculos e escolhas de visualização. NEX-005 integrado; não recriar montagem da ficha por DOM."
     },
     {
       "id": "NEX-007",
@@ -907,6 +910,23 @@
       "productionVerifiedAt": "2026-10-11T18:09:43Z",
       "productionHttpStatus": 200,
       "workerVersion": "bad86e08-292f-4af3-bcd7-4131272959b4"
+    },
+    {
+      "pr": 263,
+      "branch": "design/liquid-fabric-shared-2026-10-11",
+      "base": "main",
+      "baseCommit": "473691326817b3c9f82f33a02792c198d5956110",
+      "headCommit": "eba345bb00892948af1dfbbbb6257349be0aa5b8",
+      "state": "integrated",
+      "mergeCommit": "41c2c882e30bb7c03237fd0941aa8c71fd293e5f",
+      "qualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38166007425",
+      "production": "confirmed",
+      "productionEvidence": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38166156073",
+      "productionCommit": "41c2c882e30bb7c03237fd0941aa8c71fd293e5f",
+      "mainQualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38166156123",
+      "productionVerifiedAt": "2026-10-11T19:01:29Z",
+      "productionHttpStatus": 200,
+      "workerVersion": "d3cd6159-bce4-4895-a230-87da5dde9990"
     }
   ]
 }
