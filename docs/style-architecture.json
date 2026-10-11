@@ -46,7 +46,7 @@
       "roots": 0
     },
     "src/styles/mobile-more-radial.css": {
-      "important": 13,
+      "important": 0,
       "roots": 0
     },
     "src/styles/mobile-viewport.css": {
@@ -54,7 +54,7 @@
       "roots": 1
     },
     "src/styles/motion-composition.css": {
-      "important": 486,
+      "important": 478,
       "roots": 20
     },
     "src/styles/motion-foundation.css": {

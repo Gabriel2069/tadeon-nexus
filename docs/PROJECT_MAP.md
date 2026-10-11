@@ -6,11 +6,11 @@ A estrutura existente é a base de trabalho. Não criar `features/` ou `services
 
 ## Shell, navegação e cabeçalhos
 
-Cabeçalhos renderizam símbolos; geometria de Área em foco pertence a page-hero-parity.css.
+Cabeçalhos renderizam símbolos; geometria de Área em foco pertence a page-hero-parity.css. Gatilho Mais e símbolos pertencem ao render; Radix mantém foco/teclado/colisão, sem captura global.
 
-Código: [src/components/app-layout.tsx](../src/components/app-layout.tsx), [src/components/protected-shell.tsx](../src/components/protected-shell.tsx), [src/components/section-symbols.tsx](../src/components/section-symbols.tsx).
+Código: [src/components/app-layout.tsx](../src/components/app-layout.tsx), [src/components/protected-shell.tsx](../src/components/protected-shell.tsx), [src/components/section-symbols.tsx](../src/components/section-symbols.tsx), [src/components/mobile-more-menu.tsx](../src/components/mobile-more-menu.tsx).
 
-Estilos: [src/styles/desktop-shell.css](../src/styles/desktop-shell.css), [src/styles/navigation-layout.css](../src/styles/navigation-layout.css), [src/styles/page-hero-parity.css](../src/styles/page-hero-parity.css).
+Estilos: [src/styles/desktop-shell.css](../src/styles/desktop-shell.css), [src/styles/navigation-layout.css](../src/styles/navigation-layout.css), [src/styles/page-hero-parity.css](../src/styles/page-hero-parity.css), [src/styles/mobile-more-radial.css](../src/styles/mobile-more-radial.css).
 
 ## Busca, dialogs e viewport
 
@@ -101,7 +101,6 @@ Nome de bridge não significa código descartável. Antes de transferir, rastrea
 | [src/components/experience-final-polish-bridge.tsx](../src/components/experience-final-polish-bridge.tsx) | sheet | Revisar antes de transferir |
 | [src/components/knowledge/nexus-folder-bar-bridge.tsx](../src/components/knowledge/nexus-folder-bar-bridge.tsx) | knowledge | Revisar antes de transferir |
 | [src/components/master/master-toolbar-popout-bridge.tsx](../src/components/master/master-toolbar-popout-bridge.tsx) | master | Revisar antes de transferir |
-| [src/components/mobile-more-radial-bridge.tsx](../src/components/mobile-more-radial-bridge.tsx) | shell | Revisar antes de transferir |
 | [src/components/sheet/sheet-experience-bridge.tsx](../src/components/sheet/sheet-experience-bridge.tsx) | sheet | Revisar antes de transferir |
 | [src/components/tabletop/tabletop-adaptive-performance-bridge.tsx](../src/components/tabletop/tabletop-adaptive-performance-bridge.tsx) | tabletop | Revisar antes de transferir |
 | [src/components/tabletop/tabletop-atmosphere-bridge.tsx](../src/components/tabletop/tabletop-atmosphere-bridge.tsx) | tabletop | Revisar antes de transferir |

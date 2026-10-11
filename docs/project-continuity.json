@@ -1,7 +1,7 @@
 {
   "version": 1,
   "checkedAt": "2026-10-11",
-  "runtimeReference": "ca49ce09a3f3761a7f68978e194d8cfe8984192c",
+  "runtimeReference": "662180278fc7b3d872fae2a8b05267d9800db9c6",
   "integration": {
     "pr": 259,
     "branch": "design/fio-mestre-visual-board-2026-10-11",
@@ -11,13 +11,18 @@
     "state": "integrated",
     "mergeCommit": "ca49ce09a3f3761a7f68978e194d8cfe8984192c",
     "qualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38156149188",
-    "production": "verify_current_main_workflow",
-    "productionEvidence": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38156316960",
+    "production": "confirmed",
+    "productionEvidence": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38157372540",
     "deliveryFollowUp": {
       "branch": "delivery/verify-production-sha-2026-10-11",
       "reason": "Confirmar o SHA exclusivamente no marcador HTML, sem pipeline grep -q/pipefail e com diagnóstico de HTTP/SHA observado.",
-      "currentEvidence": "https://github.com/Gabriel2069/tadeon-nexus/actions/workflows/cloudflare-preview.yml"
-    }
+      "currentEvidence": "https://github.com/Gabriel2069/tadeon-nexus/actions/workflows/cloudflare-preview.yml",
+      "pr": 260,
+      "state": "integrated",
+      "mergeCommit": "662180278fc7b3d872fae2a8b05267d9800db9c6",
+      "qualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38157372552"
+    },
+    "productionCommit": "662180278fc7b3d872fae2a8b05267d9800db9c6"
   },
   "domains": [
     {
@@ -26,14 +31,16 @@
       "code": [
         "src/components/app-layout.tsx",
         "src/components/protected-shell.tsx",
-        "src/components/section-symbols.tsx"
+        "src/components/section-symbols.tsx",
+        "src/components/mobile-more-menu.tsx"
       ],
       "styles": [
         "src/styles/desktop-shell.css",
         "src/styles/navigation-layout.css",
-        "src/styles/page-hero-parity.css"
+        "src/styles/page-hero-parity.css",
+        "src/styles/mobile-more-radial.css"
       ],
-      "boundary": "Cabeçalhos renderizam símbolos; geometria de Área em foco pertence a page-hero-parity.css."
+      "boundary": "Cabeçalhos renderizam símbolos; geometria de Área em foco pertence a page-hero-parity.css. Gatilho Mais e símbolos pertencem ao render; Radix mantém foco/teclado/colisão, sem captura global."
     },
     {
       "id": "popup",
@@ -357,13 +364,13 @@
         "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38156149188",
         "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38156316960"
       ],
-      "checkpoint": "Revisão aprofundada e merge autorizados por Tadeu. Integrado pela PR #259 em ca49ce09a3f3761a7f68978e194d8cfe8984192c. Quality confirmou a referência. Upload do Worker aceito, mas a confirmação pública inicial falhou; seguir o workflow de main e a correção delivery/verify-production-sha-2026-10-11. Fixtures não certificam contas reais. NEX-004 está pronto, ainda sem implementação deste novo lote."
+      "checkpoint": "Integrado por #259; correção #260 e produção confirmadas em 662180278fc7b3d872fae2a8b05267d9800db9c6, HTTP 200 e SHA exato. Evidência de entrega: workflow 38157372540. Fixtures não certificam contas reais."
     },
     {
       "id": "NEX-004",
       "title": "Sidebar, navegação móvel e portais",
       "domain": "popup",
-      "status": "ready",
+      "status": "validated",
       "priority": 2,
       "dependsOn": [
         "NEX-003"
@@ -373,7 +380,14 @@
         "Testar foco, Escape, retorno ao controle, safe areas e teclado real quando disponível.",
         "Cada propriedade alterada mantém uma autoridade; reduzir dívida CSS em vez de adicionar remendo."
       ],
-      "evidence": []
+      "evidence": [
+        "docs/navigation-design-validation.json",
+        "scripts/verify-dashboard-design.mjs",
+        "scripts/verify-header-ownership.mjs",
+        "src/components/mobile-more-menu.test.tsx",
+        "src/components/ui/sheet.test.tsx"
+      ],
+      "checkpoint": "Validado na branch design/nexus-navigation-type-2026-10-11: Grenze, menu React/Radix, retorno de foco de drawer/portais e foco do main efetivamente montado. 16 vistas Dashboard, 21 vistas de rotas, 6 portais e 2 teclados simulados aprovados. Integração/publicação devem ser confirmadas pela PR e workflow do SHA atual; contas reais e teclado físico permanecem fora da evidência."
     },
     {
       "id": "NEX-005",
@@ -538,6 +552,14 @@
       "id": "DEC-007",
       "decision": "Explorar suspense mitológico, vidro dimensional e movimento de tecidos/fios a partir do Fio-Mestre.",
       "reason": "Direção solicitada e aprovada por Tadeu em 11/10/2026. Véu & Trama foi aplicado ao shell/Dashboard na PR #259; expansão segue os responsáveis e dependências da fila canônica."
+    },
+    {
+      "id": "DEC-008",
+      "decision": "Tipografia editorial Grenze; menu Mais renderizado pelo shell e primitivo Radix.",
+      "reason": "Tadeu pediu fonte mais sofisticada e medieval e autorizou prosseguir em 11/10/2026. Retirar captura global e mutação de SVG preservando destinos e círculo.",
+      "evidence": [
+        "docs/DESIGN.md"
+      ]
     }
   ],
   "bridges": [
@@ -554,11 +576,6 @@
     {
       "path": "src/components/master/master-toolbar-popout-bridge.tsx",
       "domain": "master",
-      "status": "review_before_transfer"
-    },
-    {
-      "path": "src/components/mobile-more-radial-bridge.tsx",
-      "domain": "shell",
       "status": "review_before_transfer"
     },
     {
@@ -770,6 +787,10 @@
     {
       "path": "docs/dashboard-design-validation.json",
       "purpose": "NEX-003: implementação, limpeza de sobreposições, testes de leitura e verificação visual com fixtures."
+    },
+    {
+      "path": "docs/navigation-design-validation.json",
+      "purpose": "NEX-004: tipografia, menu, foco/portais, dívida retirada e limites de fixtures."
     }
   ],
   "integrationHistory": [
