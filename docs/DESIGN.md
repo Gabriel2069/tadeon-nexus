@@ -1,6 +1,6 @@
 # Tadeon Nexus: Véu & Trama
 
-Direção solicitada por Tadeu em 11/10/2026. **Direção aprovada por Tadeu**, vinculada a NEX-003. O primeiro lote de shell/Dashboard foi integrado pela PR #259; a evidência registra o upload e a falha inicial de confirmação pública; a conclusão atual depende do workflow de main. [Prancheta navegável](design/board.html). A fila de execução continua exclusivamente em [project-continuity.json](project-continuity.json).
+Direção solicitada por Tadeu em 11/10/2026. **Direção aprovada por Tadeu**, vinculada a NEX-003. O primeiro lote de shell/Dashboard foi integrado pela PR #259; a publicação foi confirmada após #260, em 6621802, no workflow 38157372540; o estado atual sempre depende do workflow de main. [Prancheta navegável](design/board.html). A fila de execução continua exclusivamente em [project-continuity.json](project-continuity.json).
 
 ## Tese e identidade
 
@@ -8,7 +8,7 @@ Um arquivo vivo de mitos, personagens e vínculos, sustentado pelo Fio-Mestre. S
 
 Público: jogadores e mestres que consultam, editam e conduzem sessões. Dashboard orienta a retomada; Nexus preserva conhecimento; ficha exige leitura e edição precisas; Mesa privilegia o mapa e as ferramentas. A mitologia é uma linguagem de memória, destino e vínculos, não a introdução de deuses ou fatos novos no cânone. NexOS continua separado. O pedido atual autoriza explorar vidro dimensional no Tadeon, sem importar a identidade cósmica do outro projeto.
 
-Preservar: fundo escuro, marfim, EB Garamond, Inter, PT Mono, símbolos existentes de `brand-mark.tsx` e `section-symbols.tsx` e cores locais. Não redesenhar os símbolos nem converter toda interface em uma composição ornamental. A direção apresenta uma assinatura coerente; alternativas só se uma decisão material exigir comparação.
+Preservar: fundo escuro, marfim, Grenze, Inter, PT Mono, símbolos existentes de `brand-mark.tsx` e `section-symbols.tsx` e cores locais. Não redesenhar os símbolos nem converter toda interface em uma composição ornamental. A direção apresenta uma assinatura coerente; alternativas só se uma decisão material exigir comparação.
 
 ## Hierarquia, composição e densidade
 
@@ -38,7 +38,7 @@ Fallback opaco: #15181E, contorno #7A8187, mesmas dimensões e estados. Aplicar 
 
 ## Tokens e tipografia
 
-Editar os tokens existentes em `src/styles.css`; a prancheta não é uma segunda folha de produção. Não acrescentar famílias para obter mitologia. Verificar carregamento, glifos portugueses e licenças antes de redistribuir fontes no app; a prancheta usa as famílias já solicitadas pelo root via Google Fonts, com fallback sem rede.
+Editar os tokens existentes em `src/styles.css`; a prancheta não é uma segunda folha de produção. A revisão autorizada por Tadeu em 11/10/2026 substitui a família editorial EB Garamond por Grenze, híbrida de serifas romanas e traços góticos. Não ampliar o trio de famílias; Inter e PT Mono preservam leitura e utilidade. Verificar carregamento, glifos portugueses e licenças antes de redistribuir fontes no app; a prancheta usa as famílias já solicitadas pelo root via Google Fonts, com fallback sem rede.
 
 | Papel | Valor / família | Uso |
 |---|---|---|
@@ -50,7 +50,7 @@ Editar os tokens existentes em `src/styles.css`; a prancheta não é uma segunda
 | Ação / foco | #D9D7A4 com texto #080A0E | Conhecimento |
 | Véu | #716B7B | Atmosfera, sem texto pequeno nessa cor |
 | Metal | #7A8187 | Sinal/contorno funcional quando necessário |
-| Editorial | EB Garamond 500/600; Georgia, serif | 36–48px regular, 28–36px compacto, line-height 1,1 |
+| Editorial | Grenze 500/600; Georgia, serif | 36–48px regular, 28–36px compacto, line-height 1,1 |
 | Interface | Inter 400/500/600; system-ui, sans-serif | Corpo 16px/1,5; label 14px/1,4; título funcional 20–24px |
 | Utilidade | PT Mono 400; ui-monospace, monospace | Números/metadados 12–14px/1,5 |
 
@@ -112,4 +112,13 @@ A consulta a um arquivo específico do atlas VoltAgent retornou 404; ele não su
 
 A estrutura foi integrada pela PR #258 em `c6c1ea6c5e3338b4ff111329a8b2b37841e8245d`, após Quality bem-sucedido no HEAD `20ba787e496eea4285ee147a0380c175f2f4fe02`. O workflow de publicação no SHA do merge passou, incluindo a confirmação do endpoint público: [execução](https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38151368993). A consulta independente local retornou HTTP 403; não houve validação de conta real.
 
-A [evidência da prancheta](design-board-validation.json) registra vistas, interações demonstradas, movimento reduzido, pares de cor e limites de exportação. O workflow aceitou o upload do SHA de integração, mas a confirmação pública inicial falhou. A correção de entrega mantém o gate por SHA e registra o valor observado. A [validação da implementação](dashboard-design-validation.json) cobre fixtures e interações no navegador; VoiceOver, contas reais, teclado virtual e performance de hardware continuam fora dessa evidência.
+A [evidência da prancheta](design-board-validation.json) registra vistas, interações demonstradas, movimento reduzido, pares de cor e limites de exportação. A confirmação inicial falhou; a correção #260 confirmou HTTP 200 e SHA exato em 6621802. O gate de entrega mantém essa verificação por commit. A [validação da implementação](dashboard-design-validation.json) cobre fixtures e interações no navegador; VoiceOver, contas reais, teclado virtual e performance de hardware continuam fora dessa evidência.
+
+
+## Revisão tipográfica e navegação — NEX-004
+
+Tadeu solicitou uma fonte mais sofisticada e medieval e autorizou prosseguir. Grenze 500/600/700 substitui a família editorial, com Georgia como fallback; nomes legados de utilidade `font-cinzel` são compatibilidade, não outra família. Corpo, campos, atalhos e números conservam Inter/PT Mono. A fonte é carregada pelo link único do root, com `display=swap`; glifos portugueses e métricas devem ser verificados no navegador. Fonte e licença: [Omnibus-Type/Grenze](https://github.com/Omnibus-Type/Grenze), SIL OFL 1.1; nenhum binário é redistribuído por este lote. A prancheta HTML acompanha a escolha; os exports e evidências anteriores são históricos.
+
+O menu radial de Mais conserva as três áreas, com rótulos maiores e alvos de pelo menos 44px. O shell renderiza o gatilho e os símbolos; Radix controla posicionamento, colisão, setas, typeahead, Escape e retorno. Não há captura global de cliques nem reescrita de SVG. O anel é estático; abertura e fechamento são finitos, sem órbita contínua. O vidro fica na moldura funcional, com fallback opaco; dialogs de formulário usam conteúdo opaco e cabeçalho separado. Sheet conserva foco de retorno e respeita transferência para conta/instalação. A validação deste lote pertence à fila canônica.
+
+A [evidência de NEX-004](navigation-design-validation.json) registra 16 vistas do Dashboard, 21 vistas de rotas, seis casos de busca/conta e dois viewports de teclado simulado, aprovados sem overflow ou erros de página. O foco acompanha o main efetivamente montado, inclusive quando o router substitui um nó na mesma URL. As fixtures usam as fontes reais e glifos portugueses; não certificam teclado físico, VoiceOver, contas reais ou campanhas povoadas. Integração e publicação têm confirmação separada na PR e workflow atuais.

@@ -3,7 +3,7 @@
  * For a custom browser set NEXUS_CHROMIUM_PATH and optional NEXUS_CHROMIUM_ARGS (JSON).
  * NEXUS_AUDIT_REPO may point at a baseline worktree; output defaults to /tmp.
  */
-import { mkdirSync, writeFileSync } from "node:fs";
+import { mkdirSync, writeFileSync, readFileSync } from "node:fs";
 import { spawn } from "node:child_process";
 import { resolve } from "node:path";
 const { chromium } = await import(process.env.NEXUS_BROWSER_MODULE || "playwright-core");
@@ -16,7 +16,7 @@ const browser = await chromium.launch({
   executablePath: process.env.NEXUS_CHROMIUM_PATH || undefined,
   args: JSON.parse(process.env.NEXUS_CHROMIUM_ARGS || "[]"),
 });
-const server = spawn("npm", ["run", "dev", "--", "--host", "127.0.0.1", "--port", String(port)], {
+const server = spawn("npm", ["run", "dev", "--", "--host", "127.0.0.1", "--strictPort", "--port", String(port)], {
   cwd: repo,
   detached: true,
   stdio: ["ignore", "pipe", "pipe"],
@@ -109,6 +109,11 @@ try {
           body: JSON.stringify({ error: "Read-only browser fixture: admin service unavailable" }),
         }),
       );
+      if (process.env.NEXUS_FONT_FIXTURES) {
+        const dir = process.env.NEXUS_FONT_FIXTURES;
+        const faces = [["Grenze",500,"grenze-500"],["Grenze",600,"grenze-600"],["Grenze",700,"grenze-700"],["Inter",400,"font-2"],["Inter",500,"font-3"],["Inter",600,"font-4"],["PT Mono",400,"font-5"]].map(([family,weight,file]) => `@font-face{font-family:"${family}";font-weight:${weight};src:url(data:font/ttf;base64,${readFileSync(`${dir}/${file}.ttf`).toString("base64")}) format("truetype");font-display:swap}`).join("\n");
+        await page.route("https://fonts.googleapis.com/**", r => r.fulfill({contentType:"text/css",body:faces}));
+      }
       await page.goto(`http://127.0.0.1:${port}${route}`, {
         waitUntil: "networkidle",
         timeout: 60000,
@@ -123,7 +128,10 @@ try {
         content:
           "*,*::before,*::after { animation:none!important; transition:none!important; caret-color:transparent!important; }",
       });
-      await page.evaluate(() => document.fonts.ready);
+      await page.evaluate(async () => {
+        await Promise.all(['500 16px "Grenze"', '600 16px "Grenze"', '700 16px "Grenze"'].map(font => document.fonts.load(font)));
+        await document.fonts.ready;
+      });
       await page.waitForTimeout(250);
       const metrics = await page.evaluate(() => ({
         overflow: document.documentElement.scrollWidth > innerWidth,

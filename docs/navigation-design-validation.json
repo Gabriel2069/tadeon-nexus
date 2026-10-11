@@ -1,0 +1,114 @@
+{
+  "task": "NEX-004",
+  "checkedAt": "2026-10-11",
+  "state": "validated_branch",
+  "branch": "design/nexus-navigation-type-2026-10-11",
+  "baseCommit": "662180278fc7b3d872fae2a8b05267d9800db9c6",
+  "typography": {
+    "editorial": "Grenze",
+    "weights": [
+      500,
+      600,
+      700
+    ],
+    "body": "Inter",
+    "technical": "PT Mono",
+    "source": "https://github.com/Omnibus-Type/Grenze",
+    "license": "SIL OFL 1.1",
+    "portugueseGlyphs": "ÁÀÂÃÇÉÊÍÓÔÕÚÜáàâãçéêíóôõúü",
+    "glyphCoverage": "verified in fixture font cmap for all three weights",
+    "loading": "Single root link, display=swap; no font binaries redistributed"
+  },
+  "ownership": {
+    "mobileMore": "MobileMoreMenu renders trigger/items; Radix owns keyboard, anchoring and dismissal; mobile-more-radial.css owns material/geometry",
+    "routeFocus": "Stable callback ref focuses actual main mount, including router replacement at same URL",
+    "portalFocus": "Sheet preserves opener; shell transfers return focus to persistent header controls when drawer opens account/install",
+    "deleted": "mobile-more-radial-bridge.tsx; SVG rewrite and global click interception retired"
+  },
+  "debt": {
+    "cssModules": 57,
+    "globalLinks": 12,
+    "bridgesBefore": 36,
+    "bridgesAfter": 35,
+    "importantBefore": 5619,
+    "importantAfter": 5598,
+    "radialImportantAfter": 0
+  },
+  "browser": {
+    "dashboardViews": 16,
+    "widths": [
+      320,
+      390,
+      820,
+      1440
+    ],
+    "states": [
+      "empty",
+      "loading",
+      "error",
+      "populated"
+    ],
+    "routeViews": 21,
+    "routeWidths": [
+      390,
+      820,
+      1440
+    ],
+    "routes": [
+      "/",
+      "/nexus",
+      "/master-panel",
+      "/offline",
+      "/nexus-tools",
+      "/manage-users",
+      "/tabletop"
+    ],
+    "searchAccountCases": 6,
+    "simulatedKeyboardCases": 2,
+    "result": "passed; no horizontal overflow or page errors",
+    "mobile": "Drawer keyboard focus/Escape, radial arrows/typeahead/Escape, touch opening, account focus handoff/return, actual route main focus, desktop breakpoint dismissal passed",
+    "targets": "Three radial links 62.39x56px; close 44x44px",
+    "fonts": "Actual Grenze 500/600/700 fixtures loaded and heading family verified",
+    "methods": [
+      "scripts/verify-dashboard-design.mjs",
+      "scripts/verify-header-ownership.mjs"
+    ],
+    "reproduction": "Set NEXUS_BROWSER_MODULE, NEXUS_CHROMIUM_PATH and NEXUS_FONT_FIXTURES to installed Playwright/Chromium/font fixtures; optional NEXUS_AUDIT_PORT and NEXUS_AUDIT_OUTPUT. Scripts require free strict port."
+  },
+  "unit": {
+    "focusedSuites": 2,
+    "focusedTests": 9,
+    "result": "passed",
+    "behavior": [
+      "Radix keyboard/typeahead/dismissal",
+      "Router prevented-default click closes menu and focuses main",
+      "Sheet returns focus and respects custom handoff"
+    ]
+  },
+  "fullCheck": {
+    "state": "passed",
+    "command": "npm run check",
+    "suites": 122,
+    "tests": 541,
+    "gates": [
+      "style architecture",
+      "project continuity",
+      "eslint",
+      "typescript",
+      "vitest",
+      "production build"
+    ],
+    "audit": {
+      "command": "npm audit --audit-level=high",
+      "allSeverities": 0
+    }
+  },
+  "limits": [
+    "Mocked read-only session/data fixtures; no real account or live backend mutations",
+    "Simulated keyboard viewport is not a physical mobile keyboard test",
+    "No hardware VoiceOver, 200% zoom or GPU/performance certification",
+    "Empty Nexus/Mesa routes do not certify populated corpus/campaign/ficha",
+    "Other existing CSS debt remains; no claim of full-app contrast or conflict elimination"
+  ],
+  "delivery": "Branch validation is separate from merge and publication. Current GitHub PR/workflow must supply exact integration SHA and public HTML SHA proof."
+}

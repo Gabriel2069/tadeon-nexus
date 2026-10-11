@@ -1,7 +1,8 @@
+import { MobileMoreMenu } from "@/components/mobile-more-menu";
 import { CORE_SURFACES } from "@/lib/feature-flags";
 import { createLatestRequestGate } from "@/lib/latest-request";
 import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
 import {
   Home,
   Lightbulb,
@@ -98,8 +99,10 @@ export function AppLayout({ children }: { children: ReactNode }) {
   const { profile, role, user, signOut, refresh } = useAuth();
   const navigate = useNavigate();
   const path = useRouterState({ select: (s) => s.location.pathname });
-  const mainRef = useRef<HTMLElement | null>(null);
-  const previousPathRef = useRef(path);
+  // Routes can replace the main node after an intermediate render at the same URL.
+  const focusRouteMain = useCallback((element: HTMLElement | null) => {
+    element?.focus({ preventScroll: true });
+  }, []);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [collapsed, setCollapsed] = useState<boolean>(() => {
     if (typeof window === "undefined") return false;
@@ -107,6 +110,27 @@ export function AppLayout({ children }: { children: ReactNode }) {
   });
   const [accountOpen, setAccountOpen] = useState(false);
   const [installOpen, setInstallOpen] = useState(false);
+  const mobileMenuTriggerRef = useRef<HTMLButtonElement>(null);
+  const mobileAccountTriggerRef = useRef<HTMLButtonElement>(null);
+  const portalReturnFocusRef = useRef<HTMLElement | null>(null);
+  const openAccount = () => {
+    portalReturnFocusRef.current = mobileOpen ? mobileAccountTriggerRef.current : null;
+    setMobileOpen(false);
+    setAccountOpen(true);
+  };
+  const openInstall = () => {
+    portalReturnFocusRef.current = mobileOpen ? mobileMenuTriggerRef.current : null;
+    setMobileOpen(false);
+    setInstallOpen(true);
+  };
+  const restorePortalFocus = (event: Event) => {
+    const target = portalReturnFocusRef.current;
+    portalReturnFocusRef.current = null;
+    if (target?.isConnected) {
+      event.preventDefault();
+      target.focus({ preventScroll: true });
+    }
+  };
   const pwaInstall = usePwaInstall();
   const [navigationFlags, setNavigationFlags] = useState<NavigationFlags>(() =>
     readNavigationFlags(user?.id),
@@ -115,15 +139,6 @@ export function AppLayout({ children }: { children: ReactNode }) {
   useEffect(() => {
     window.localStorage.setItem(COLLAPSE_KEY, collapsed ? "1" : "0");
   }, [collapsed]);
-
-  useEffect(() => {
-    if (previousPathRef.current === path) return;
-    previousPathRef.current = path;
-    const frame = window.requestAnimationFrame(() => {
-      mainRef.current?.focus({ preventScroll: true });
-    });
-    return () => window.cancelAnimationFrame(frame);
-  }, [path]);
 
   useEffect(() => {
     if (!user?.id) return;
@@ -324,7 +339,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
             label="Instalar aplicativo"
             onClick={() => {
               setMobileOpen(false);
-              setInstallOpen(true);
+              openInstall();
             }}
           />
         )}
@@ -334,7 +349,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
           label="Conta"
           onClick={() => {
             setMobileOpen(false);
-            setAccountOpen(true);
+            openAccount();
           }}
         />
         <SideAction
@@ -383,11 +398,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
           title={collapsed ? "Expandir" : "Recolher"}
           className="tadeon-sidebar-collapse absolute -right-5 top-6 z-30 flex h-10 w-10 items-center justify-center border text-muted-foreground transition-[color,background-color,border-color,box-shadow,transform] duration-150 ease-[var(--ease-out)] active:scale-[.97]"
         >
-          {collapsed ? (
-            <ChevronsRight className="h-4 w-4" />
-          ) : (
-            <ChevronsLeft className="h-4 w-4" />
-          )}
+          {collapsed ? <ChevronsRight className="h-4 w-4" /> : <ChevronsLeft className="h-4 w-4" />}
         </button>
       </aside>
 
@@ -412,7 +423,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
                 size="sm"
                 variant="outline"
                 className="hidden gap-2 lg:inline-flex"
-                onClick={() => setInstallOpen(true)}
+                onClick={() => openInstall()}
               >
                 <MonitorDown className="h-3.5 w-3.5" />
                 Instalar app
@@ -427,7 +438,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
             <button
               type="button"
               className="tadeon-desktop-toolbar__account"
-              onClick={() => setAccountOpen(true)}
+              onClick={() => openAccount()}
               aria-label="Abrir configurações da conta"
               aria-haspopup="dialog"
               aria-expanded={accountOpen}
@@ -451,6 +462,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
             type="button"
             onClick={() => setMobileOpen(true)}
             className="tadeon-mobile-header__control flex h-11 w-11 items-center justify-center rounded-xl border transition-[color,background-color,border-color,transform] duration-150 ease-[var(--ease-out)] active:scale-[.96]"
+            ref={mobileMenuTriggerRef}
             aria-label="Abrir menu"
             aria-controls="tadeon-mobile-navigation"
             aria-expanded={mobileOpen}
@@ -476,8 +488,9 @@ export function AppLayout({ children }: { children: ReactNode }) {
             />
             <button
               type="button"
-              onClick={() => setAccountOpen(true)}
+              onClick={() => openAccount()}
               className="tadeon-mobile-header__control flex h-11 w-11 items-center justify-center rounded-xl border transition-[color,background-color,border-color,transform] duration-150 ease-[var(--ease-out)] active:scale-[.96]"
+              ref={mobileAccountTriggerRef}
               aria-label="Conta"
               aria-haspopup="dialog"
               aria-expanded={accountOpen}
@@ -489,7 +502,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
 
         <main
           id="tadeon-main"
-          ref={mainRef}
+          ref={focusRouteMain}
           key={path}
           tabIndex={-1}
           className="tadeon-route-stage min-w-0 flex-1"
@@ -537,7 +550,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
               aria-current={path.startsWith("/master-panel") ? "page" : undefined}
               className="tadeon-mobile-dock__item"
             >
-              <Lightbulb className="h-5 w-5" />
+              <SectionSymbol section="master" className="h-5 w-5" />
               <span>Mestre</span>
             </Link>
           ) : (
@@ -550,16 +563,20 @@ export function AppLayout({ children }: { children: ReactNode }) {
               <span>Offline</span>
             </Link>
           )}
-          <button
-            type="button"
-            className="tadeon-mobile-dock__item"
-            onClick={() => setMobileOpen(true)}
-            aria-controls="tadeon-mobile-navigation"
-            aria-expanded={mobileOpen}
-          >
-            <MoreHorizontal className="h-5 w-5" />
-            <span>Mais</span>
-          </button>
+          {isMestre ? (
+            <MobileMoreMenu key={path} path={path} />
+          ) : (
+            <button
+              type="button"
+              className="tadeon-mobile-dock__item"
+              onClick={() => setMobileOpen(true)}
+              aria-controls="tadeon-mobile-navigation"
+              aria-expanded={mobileOpen}
+            >
+              <MoreHorizontal className="h-5 w-5" />
+              <span>Mais</span>
+            </button>
+          )}
         </nav>
       )}
 
@@ -568,6 +585,9 @@ export function AppLayout({ children }: { children: ReactNode }) {
         <SheetContent
           id="tadeon-mobile-navigation"
           side="left"
+          onCloseAutoFocus={(event) => {
+            if (accountOpen || installOpen) event.preventDefault();
+          }}
           className="tadeon-mobile-drawer h-[100dvh] w-[min(19rem,88vw)] border-sidebar-border bg-sidebar p-0 text-sidebar-foreground sm:max-w-none md:hidden"
         >
           <SheetTitle className="sr-only">Navegação principal</SheetTitle>
@@ -581,6 +601,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
       <AccountDialog
         open={accountOpen}
         onOpenChange={setAccountOpen}
+        onCloseAutoFocus={restorePortalFocus}
         initialName={profile?.full_name || ""}
         email={user?.email || ""}
         onSaved={() => refresh()}
@@ -588,6 +609,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
       <PwaInstallDialog
         open={installOpen}
         onOpenChange={setInstallOpen}
+        onCloseAutoFocus={restorePortalFocus}
         status={pwaInstall.status}
         platform={pwaInstall.platform}
         install={pwaInstall.install}
@@ -670,12 +692,14 @@ function SideAction({
 }
 
 function PwaInstallDialog({
+  onCloseAutoFocus,
   open,
   onOpenChange,
   status,
   platform,
   install,
 }: {
+  onCloseAutoFocus?: (event: Event) => void;
   open: boolean;
   onOpenChange: (open: boolean) => void;
   status: "checking" | "installable" | "manual" | "installed";
@@ -705,7 +729,7 @@ function PwaInstallDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="overflow-hidden sm:max-w-md">
+      <DialogContent onCloseAutoFocus={onCloseAutoFocus} className="overflow-hidden sm:max-w-md">
         <div
           aria-hidden
           className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary to-transparent"
@@ -766,12 +790,14 @@ function PwaInstallDialog({
 }
 
 function AccountDialog({
+  onCloseAutoFocus,
   open,
   onOpenChange,
   initialName,
   email,
   onSaved,
 }: {
+  onCloseAutoFocus?: (event: Event) => void;
   open: boolean;
   onOpenChange: (v: boolean) => void;
   initialName: string;
@@ -857,7 +883,10 @@ function AccountDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-lg">
+      <DialogContent
+        onCloseAutoFocus={onCloseAutoFocus}
+        className="max-h-[90vh] overflow-y-auto sm:max-w-lg"
+      >
         <DialogHeader>
           <DialogTitle className="font-cinzel">Configurações da Conta</DialogTitle>
         </DialogHeader>

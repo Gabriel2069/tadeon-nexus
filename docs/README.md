@@ -45,3 +45,4 @@ Comece pelo [estado de continuidade](ai/00_ESTADO_ATUAL.md), [mapa do código](P
 | [style-migration.json](style-migration.json) | Procedência da primeira migração e requisitos dos testes aposentados. |
 | [design-board-validation.json](design-board-validation.json) | Evidência da prancheta, referências, contraste, exportação e limites do mockup. |
 | [dashboard-design-validation.json](dashboard-design-validation.json) | NEX-003: implementação, limpeza de sobreposições, testes de leitura e verificação visual com fixtures. |
+| [navigation-design-validation.json](navigation-design-validation.json) | NEX-004: tipografia, menu, foco/portais, dívida retirada e limites de fixtures. |

@@ -3251,7 +3251,7 @@ html body .tadeon-shell :is(.tadeon-page-hero, .tadeon-tabletop-studio__header, 
 }
 .tadeon-continuity-hero__copy { position: relative; z-index: 2; padding: clamp(1.5rem, 3.6vw, 3rem); }
 .tadeon-continuity-hero__greeting { margin: 0 0 1.5rem; font-size: .875rem; }
-.tadeon-continuity-hero h1 { margin: 0; font-family: var(--font-cinzel, "EB Garamond", Georgia, serif); font-size: clamp(2.6rem, 4.2vw, 4.3rem); font-weight: 500; line-height: 1.02; letter-spacing: -.035em; }
+.tadeon-continuity-hero h1 { margin: 0; font-family: var(--font-cinzel, "Grenze", Georgia, serif); font-size: clamp(2.6rem, 4.2vw, 4.3rem); font-weight: 500; line-height: 1.08; letter-spacing: -.015em; }
 .tadeon-continuity-hero h1 em { color: var(--primary); font-style: normal; }
 .tadeon-continuity-hero__description { max-width: 37ch; margin-top: 1.25rem; font-size: .9375rem; line-height: 1.65; }
 .tadeon-continuity-hero__actions { margin-top: 1.75rem; }

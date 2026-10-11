@@ -14,7 +14,6 @@ import {
 import { SheetInventoryOrganizer } from "@/components/sheet/sheet-inventory-organizer";
 import { TabletopCrossSurfaceBridge } from "@/components/tabletop/tabletop-cross-surface-bridge";
 import { TabletopWorkspacePopoutBridge } from "@/components/tabletop/tabletop-workspace-popout-bridge";
-import { MobileMoreRadialBridge } from "@/components/mobile-more-radial-bridge";
 import "@/styles/mobile-viewport.css";
 import { MasterToolbarPopoutBridge } from "@/components/master/master-toolbar-popout-bridge";
 import "@/styles/sheet-layout.css";
@@ -148,7 +147,6 @@ export function ProtectedShell({ children, requireRole }: Props) {
           <WorkspacePopoutBridge />
           <MasterToolbarPopoutBridge />
           <TabletopWorkspacePopoutBridge />
-          <MobileMoreRadialBridge />
         </>
       )}
       <NexusSheetDragBridge />

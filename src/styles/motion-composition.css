@@ -6098,8 +6098,6 @@ html body .tadeon-shell :is(
 /* Hero frames may clip atmospheric decoration, but must not clip the authored
    tab indicator or action label. */
 
-/* Actual decentralized radial markup. */
-
 /* Canonical route glyphs use the existing authored masks with currentColor. */
 
 /* The mobile dock has a later viewport stylesheet that used to force the
@@ -6675,36 +6673,17 @@ html body .tadeon-shell :is(
 }
 
 /* Actual decentralized radial markup. */
-.tadeon-mobile-more-radial__item[href^="/manage-users"] { --radial-accent: var(--tdv-gerenciar); }
-.tadeon-mobile-more-radial__item[href^="/offline"] { --radial-accent: var(--tdv-offline); }
-.tadeon-mobile-more-radial__item[href^="/nexus-tools"] { --radial-accent: var(--tdv-backup); }
 
-.tadeon-mobile-more-radial__item:is([href^="/manage-users"], [href^="/offline"], [href^="/nexus-tools"]) {
-  border-color: color-mix(in srgb, var(--radial-accent) 24%, var(--border)) !important;
-  background:
-    linear-gradient(145deg, color-mix(in srgb, var(--radial-accent) 9%, transparent), transparent 70%),
-    color-mix(in srgb, var(--card) 96%, var(--radial-accent) 4%) !important;
-}
 
-.tadeon-mobile-more-radial__item:is([href^="/manage-users"], [href^="/offline"], [href^="/nexus-tools"]) svg {
-  color: var(--radial-accent) !important;
-}
 
-.tadeon-mobile-more-radial__item:is([href^="/manage-users"], [href^="/offline"], [href^="/nexus-tools"]):is(:hover, :focus-visible, .is-active) {
-  scale: 1 !important;
-  color: var(--radial-accent) !important;
-  border-color: color-mix(in srgb, var(--radial-accent) 64%, var(--border)) !important;
-  background:
-    linear-gradient(145deg, color-mix(in srgb, var(--radial-accent) 17%, transparent), transparent 72%),
-    color-mix(in srgb, var(--card) 91%, var(--radial-accent) 9%) !important;
-}
 
-.tadeon-mobile-more-radial__item:is([href^="/manage-users"], [href^="/offline"], [href^="/nexus-tools"]).is-active {
-  box-shadow:
-    inset 0 0 0 1px color-mix(in srgb, var(--radial-accent) 76%, transparent),
-    inset 0 0 18px color-mix(in srgb, var(--radial-accent) 11%, transparent),
-    0 0 20px -12px color-mix(in srgb, var(--radial-accent) 68%, transparent) !important;
-}
+
+
+
+
+
+
+
 
 /* Canonical route glyphs use the existing authored masks with currentColor. */
 .tadeon-sidebar .tadeon-nav-item[href^="/master-panel"] .tadeon-nav-item__icon > svg,

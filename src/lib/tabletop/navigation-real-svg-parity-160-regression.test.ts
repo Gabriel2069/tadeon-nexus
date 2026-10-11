@@ -16,7 +16,7 @@ describe("navigation real SVG parity 160", () => {
     const layout = source("src/components/app-layout.tsx");
     expect(layout).toContain('to="/master-panel"');
     expect(layout).toContain('<Lightbulb className="w-4 h-4" />');
-    expect(layout).toContain('<Lightbulb className="h-5 w-5" />');
+    expect(layout).toContain('<SectionSymbol section="master" className="h-5 w-5" />');
     expect(layout).toContain('to="/nexus-tools"');
     expect(layout).toContain('<Wrench className="w-4 h-4" />');
   });

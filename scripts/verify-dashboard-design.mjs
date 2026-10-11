@@ -10,7 +10,7 @@ const root = resolve(process.env.NEXUS_AUDIT_OUTPUT || "/tmp/nexus-dashboard-des
 const port = Number(process.env.NEXUS_AUDIT_PORT || 5174);
 mkdirSync(root, { recursive: true });
 const browser = await chromium.launch({ executablePath: process.env.NEXUS_CHROMIUM_PATH, args: JSON.parse(process.env.NEXUS_CHROMIUM_ARGS || "[]") });
-const server = spawn("npm", ["run", "dev", "--", "--host", "127.0.0.1", "--port", String(port)], { detached: true, stdio: ["ignore", "pipe", "pipe"] });
+const server = spawn("npm", ["run", "dev", "--", "--host", "127.0.0.1", "--strictPort", "--port", String(port)], { detached: true, stdio: ["ignore", "pipe", "pipe"] });
 const userId = "00000000-0000-4000-8000-000000000001";
 const user = { id: userId, aud: "authenticated", role: "authenticated", email: "fixture@nexus.test", app_metadata: { provider: "email", providers: ["email"] }, user_metadata: {}, created_at: "2026-01-01T00:00:00Z" };
 const token = [{ alg: "HS256", typ: "JWT" }, { sub: userId, aud: "authenticated", role: "authenticated", exp: 2000000000 }, "fixture"].map(x => typeof x === "string" ? x : Buffer.from(JSON.stringify(x)).toString("base64url")).join(".");
@@ -24,7 +24,7 @@ try {
     setTimeout(() => fail(new Error("Vite timeout")), 30000).unref();
   });
   for (const width of [320, 390, 820, 1440]) for (const state of ["empty", "loading", "error", "populated"]) {
-    const context = await browser.newContext({ viewport: { width, height: 1000 }, reducedMotion: "reduce" });
+    const context = await browser.newContext({ viewport: { width, height: 1000 }, hasTouch: width < 768, reducedMotion: "reduce" });
     const page = await context.newPage();
     const errors = [];
     page.on("pageerror", e => errors.push(e.message));
@@ -48,7 +48,7 @@ try {
     await page.route("**/_serverFn/**", r => r.fulfill({ status: 503, contentType: "application/json", body: '{}' }));
     if (process.env.NEXUS_FONT_FIXTURES) {
       const dir = process.env.NEXUS_FONT_FIXTURES;
-      const faces = [["EB Garamond",500,0],["EB Garamond",600,1],["Inter",400,2],["Inter",500,3],["Inter",600,4],["PT Mono",400,5]].map(([family,weight,index]) => `@font-face{font-family:"${family}";font-weight:${weight};src:url(data:font/ttf;base64,${readFileSync(`${dir}/font-${index}.ttf`).toString("base64")}) format("truetype");font-display:swap}`).join("\n");
+      const faces = [["Grenze",500,"grenze-500"],["Grenze",600,"grenze-600"],["Grenze",700,"grenze-700"],["Inter",400,2],["Inter",500,3],["Inter",600,4],["PT Mono",400,5]].map(([family,weight,index]) => `@font-face{font-family:"${family}";font-weight:${weight};src:url(data:font/ttf;base64,${readFileSync(`${dir}/${typeof index === "number" ? `font-${index}` : index}.ttf`).toString("base64")}) format("truetype");font-display:swap}`).join("\n");
       await page.route("https://fonts.googleapis.com/**", r => r.fulfill({contentType:"text/css",body:faces}));
     }
     await page.goto(`http://127.0.0.1:${port}/`, { waitUntil: "domcontentloaded" });
@@ -58,12 +58,12 @@ try {
     else if (state === "empty") await page.getByText("O arquivo ainda está vazio.").waitFor();
     else await page.locator(".tadeon-character-card").first().waitFor();
     await page.evaluate(async () => {
-      await Promise.all(['500 16px "EB Garamond"','400 16px "Inter"','400 16px "PT Mono"'].map(f=>document.fonts.load(f)));
+      await Promise.all(['500 16px "Grenze"','400 16px "Inter"','400 16px "PT Mono"'].map(f=>document.fonts.load(f)));
       await document.fonts.ready;
     });
-    const metrics = await page.evaluate(() => ({ overflow: document.documentElement.scrollWidth > innerWidth, h1: document.querySelectorAll("h1").length, main: document.querySelectorAll("main").length, cards: document.querySelectorAll(".tadeon-character-card").length, facts: Array.from(document.querySelectorAll(".tadeon-continuity-facts dd:not(.tadeon-continuity-facts__detail)")).map(e => e.textContent), headingFont: getComputedStyle(document.querySelector("#continuity-title")).fontFamily, navAfter: (() => { const s=getComputedStyle(document.querySelector(".tadeon-nav-item[aria-current]"),"::after"); return {width:s.width,height:s.height,inset:s.inset,background:s.background,zIndex:s.zIndex}; })(), fontsLoaded: ['EB Garamond','Inter','PT Mono'].map(f => ({family:f,loaded:document.fonts.check(`${f === "EB Garamond" ? 500 : 400} 16px "${f}"`)})), navContrast: (()=>{const n=document.querySelector(".tadeon-nav-item[aria-current]");return {color:getComputedStyle(n).color,base:getComputedStyle(n).getPropertyValue("--sidebar-accent").trim()};})(), heroHeight: document.querySelector(".tadeon-continuity-hero").getBoundingClientRect().height }));
+    const metrics = await page.evaluate(() => ({ overflow: document.documentElement.scrollWidth > innerWidth, h1: document.querySelectorAll("h1").length, main: document.querySelectorAll("main").length, cards: document.querySelectorAll(".tadeon-character-card").length, facts: Array.from(document.querySelectorAll(".tadeon-continuity-facts dd:not(.tadeon-continuity-facts__detail)")).map(e => e.textContent), headingFont: getComputedStyle(document.querySelector("#continuity-title")).fontFamily, navAfter: (() => { const s=getComputedStyle(document.querySelector(".tadeon-nav-item[aria-current]"),"::after"); return {width:s.width,height:s.height,inset:s.inset,background:s.background,zIndex:s.zIndex}; })(), fontsLoaded: ['Grenze','Inter','PT Mono'].map(f => ({family:f,loaded:document.fonts.check(`${f === "Grenze" ? 500 : 400} 16px "${f}"`)})), navContrast: (()=>{const n=document.querySelector(".tadeon-nav-item[aria-current]");return {color:getComputedStyle(n).color,base:getComputedStyle(n).getPropertyValue("--sidebar-accent").trim()};})(), heroHeight: document.querySelector(".tadeon-continuity-hero").getBoundingClientRect().height }));
     assert(!metrics.overflow && metrics.h1 === 1 && metrics.main === 1 && errors.length === 0, `${width}/${state}: structure or overflow failure`);
-    assert(metrics.headingFont.includes("EB Garamond"), "Editorial heading must preserve its approved family");
+    assert(metrics.headingFont.includes("Grenze"), "Editorial heading must preserve its approved family");
     assert(metrics.navContrast.base === "#1c2026", "Navigation surface must not inherit its text accent");
     if (process.env.NEXUS_FONT_FIXTURES) assert(metrics.fontsLoaded.every(f=>f.loaded), "Font fixtures must load");
     if (state === "populated") assert(metrics.facts.join() === "05,05,20" && metrics.cards === 5, "Metrics must use query data");
@@ -89,6 +89,53 @@ try {
       if (width === 1440) {
         await page.getByRole("button", { name: "Recolher menu" }).click();
         await page.getByRole("button", { name: "Expandir menu" }).click();
+      }
+      if (width < 768) {
+        const opener = page.getByRole("button", { name: "Abrir menu", exact: true });
+        await opener.focus(); await page.keyboard.press("Enter");
+        const drawer = page.getByRole("dialog", { name: "Navegação principal" });
+        await drawer.waitFor();
+        assert(await drawer.evaluate(e => e.contains(document.activeElement)), "Drawer must contain opening focus");
+        await page.keyboard.press("Escape"); await drawer.waitFor({state:"hidden"});
+        assert(await opener.evaluate(e => document.activeElement === e), "Drawer must return focus");
+        const more = page.getByRole("button", { name: "Mais", exact: true });
+        await more.focus(); await page.keyboard.press("Enter");
+        const menu = page.getByRole("menu", { name: "Outras áreas" });
+        await menu.waitFor();
+        await page.keyboard.press("ArrowDown");
+        assert(await menu.evaluate(e => e.contains(document.activeElement)), "Menu arrow focus must stay inside");
+        const menuRect = await menu.boundingBox();
+        assert(menuRect.x >= 0 && menuRect.x + menuRect.width <= width && menuRect.y >= 0, "Radial must fit viewport");
+        const targets = await menu.getByRole("menuitem").evaluateAll(es => es.map(e => {const r=e.getBoundingClientRect();return {w:r.width,h:r.height};}));
+        assert(targets.every(t => t.w >= 44 && t.h >= 44), "Radial targets must be at least 44px");
+        await page.screenshot({path:`${root}/radial-${width}.png`,fullPage:true});
+        await page.keyboard.press("Escape"); await menu.waitFor({state:"hidden"});
+        assert(await more.evaluate(e => document.activeElement === e), "Radial must return focus");
+        await opener.tap(); await drawer.waitFor();
+        await drawer.getByRole("button",{name:"Conta",exact:true}).click();
+        const account = page.getByRole("dialog",{name:"Configurações da Conta"});
+        await account.waitFor(); await drawer.waitFor({state:"hidden"});
+        await page.waitForTimeout(300);
+        assert(await account.evaluate(e => e.contains(document.activeElement)), "Drawer must not steal account focus");
+        await page.screenshot({path:`${root}/account-${width}.png`,fullPage:true});
+        await page.keyboard.press("Escape"); await account.waitFor({state:"hidden"});
+        const accountTrigger = page.locator(".tadeon-mobile-header").getByRole("button",{name:"Conta",exact:true});
+        assert(await accountTrigger.evaluate(e => document.activeElement === e), "Account handoff must return to persistent header control");
+        await more.tap(); await menu.waitFor();
+        await menu.getByRole("menuitem",{name:"Offline",exact:true}).focus();
+        await page.keyboard.press("Enter"); await page.waitForURL("**/offline");
+        await menu.waitFor({state:"hidden"});
+        await page.getByRole("heading",{name:"Arquivo local",exact:true}).waitFor();
+        await page.waitForTimeout(250);
+        assert(await page.locator("#tadeon-main").evaluate(e => document.activeElement === e), "Route selection must focus main, not retired menu");
+        await page.getByRole("link",{name:"Início",exact:true}).tap();
+        await page.locator(".tadeon-continuity-hero").waitFor();
+        await page.getByRole("button",{name:"Mais",exact:true}).tap(); await menu.waitFor();
+        await page.setViewportSize({width:820,height:1000});
+        await menu.waitFor({state:"hidden"});
+        assert(await page.locator("#tadeon-main").evaluate(e => document.activeElement === e), "Desktop transition must close radial and focus main");
+        await page.setViewportSize({width,height:1000});
+        metrics.navigation = { menuRect, targets, drawerFocus:true, radialReturn:true, accountHandoff:true, accountReturn:true, touchOpening:true, routeMainFocus:true, desktopTransition:true };
       }
       await page.emulateMedia({ reducedMotion: "no-preference" });
       await page.locator(".tadeon-continuity-hero a").hover();
