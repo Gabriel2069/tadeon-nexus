@@ -7,8 +7,12 @@
     "branch": "refactor/nexus-foundation-2026-10-11",
     "base": "main",
     "baseCommit": "353808af68c8ba0d08bbc90d6f8ad9117c9e25f8",
-    "state": "validated_unmerged",
-    "production": "not_verified_in_this_stage"
+    "state": "integrated",
+    "production": "confirmed_by_deploy_workflow",
+    "mergeCommit": "c6c1ea6c5e3338b4ff111329a8b2b37841e8245d",
+    "qualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38149258475",
+    "productionEvidence": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38151368993",
+    "productionCommit": "c6c1ea6c5e3338b4ff111329a8b2b37841e8245d"
   },
   "domains": [
     {
@@ -271,6 +275,11 @@
       "path": "docs/PR_RECONCILIATION.md",
       "status": "active",
       "purpose": "Destino de cada requisito da PR antiga e limites da integração."
+    },
+    {
+      "path": "docs/DESIGN.md",
+      "status": "active",
+      "purpose": "Contrato visual proposto Véu & Trama; referência única de execução para NEX-003, sem novo backlog."
     }
   ],
   "tasks": [
@@ -278,7 +287,7 @@
       "id": "NEX-001",
       "title": "Preparação estrutural",
       "domain": "delivery",
-      "status": "validated",
+      "status": "integrated",
       "priority": 0,
       "dependsOn": [],
       "acceptance": [
@@ -288,14 +297,15 @@
       "evidence": [
         "docs/foundation-completion-validation.json",
         "docs/FOUNDATION.md",
-        "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38146306651"
+        "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38146306651",
+        "https://github.com/Gabriel2069/tadeon-nexus/pull/258"
       ]
     },
     {
       "id": "NEX-002",
       "title": "Mapa, continuidade e conciliação das PRs",
       "domain": "delivery",
-      "status": "validated",
+      "status": "integrated",
       "priority": 0,
       "dependsOn": [
         "NEX-001"
@@ -309,14 +319,15 @@
         "scripts/check-project-continuity.mjs",
         "docs/PR_RECONCILIATION.md",
         ".github/PULL_REQUEST_TEMPLATE.md",
-        "docs/continuity-validation.json"
+        "docs/continuity-validation.json",
+        "https://github.com/Gabriel2069/tadeon-nexus/pull/258"
       ]
     },
     {
       "id": "NEX-003",
       "title": "Referência visual do shell e Dashboard",
       "domain": "shell",
-      "status": "ready",
+      "status": "active",
       "priority": 1,
       "dependsOn": [
         "NEX-001",
@@ -327,7 +338,12 @@
         "Revisar hierarquia, leitura, símbolos, superfície, respiro e três indicadores do Dashboard.",
         "Preservar Fio-Mestre; definir referência aprovada antes de expandir a linguagem às demais telas."
       ],
-      "evidence": []
+      "evidence": [
+        "docs/DESIGN.md",
+        "docs/design/board.html",
+        "docs/design-board-validation.json"
+      ],
+      "checkpoint": "Brief solicitado e prancheta proposta. Aprovação visual e implementação composta ainda pendentes; não fechar critérios de runtime pela demonstração."
     },
     {
       "id": "NEX-004",
@@ -477,7 +493,7 @@
     {
       "id": "DEC-001",
       "decision": "Preservar Fio-Mestre; NexOS é outro projeto.",
-      "reason": "Evitar importar cosmos/Liquid Glass e terminologia de outro produto."
+      "reason": "Preservar identidade autoral. O brief de 11/10 permite explorar vidro dimensional no Tadeon, sem importar identidade cósmica do NexOS."
     },
     {
       "id": "DEC-002",
@@ -503,6 +519,11 @@
       "id": "DEC-006",
       "decision": "Branch validada não significa main integrado ou produção publicada.",
       "reason": "Merge em main pode acionar deploy; nenhum desses estados é presumido."
+    },
+    {
+      "id": "DEC-007",
+      "decision": "Explorar suspense mitológico, vidro dimensional e movimento de tecidos/fios a partir do Fio-Mestre.",
+      "reason": "Direção explicitamente solicitada em 11/10/2026; prancheta Véu & Trama é proposta para revisão, antes da implementação e expansão."
     }
   ],
   "bridges": [
@@ -727,6 +748,10 @@
     {
       "path": "docs/style-migration.json",
       "purpose": "Procedência da primeira migração e requisitos dos testes aposentados."
+    },
+    {
+      "path": "docs/design-board-validation.json",
+      "purpose": "Evidência da prancheta, referências, contraste, exportação e limites do mockup."
     }
   ]
 }

@@ -2,7 +2,7 @@
 
 > Gerado de [project-continuity.json](project-continuity.json). Edite o registro e rode `npm run sync:project`; não mantenha uma cópia manual.
 
-Snapshot: 2026-10-11; referência de runtime: `2a458d97531e1d5dc314bdc42df3eadb7b26ef67`. PR #258 em `refactor/nexus-foundation-2026-10-11`; integração: `validated_unmerged`. Não é prova de deploy.
+Snapshot: 2026-10-11; referência de runtime: `2a458d97531e1d5dc314bdc42df3eadb7b26ef67`. PR #258 em `refactor/nexus-foundation-2026-10-11`; integração: `integrated`. Não é prova de deploy.
 
 Estados: planejado → próximo → em andamento → validado na branch → integrado. Publicação exige evidência própria do SHA; adiado conserva o requisito. Se um requisito mudar, preservar o ID e registrar a decisão/evidência.
 
@@ -10,9 +10,9 @@ Cada PR usa IDs desta fila e declara dependências. Trabalho sobre o mesmo propr
 
 | ID | Trabalho | Estado | Prioridade | Responsável | Depende de |
 | --- | --- | --- | --- | --- | --- |
-| NEX-001 | Preparação estrutural | Validado na branch | 0 | delivery | — |
-| NEX-002 | Mapa, continuidade e conciliação das PRs | Validado na branch | 0 | delivery | NEX-001 |
-| NEX-003 | Referência visual do shell e Dashboard | Próximo | 1 | shell | NEX-001, NEX-002 |
+| NEX-001 | Preparação estrutural | Integrado | 0 | delivery | — |
+| NEX-002 | Mapa, continuidade e conciliação das PRs | Integrado | 0 | delivery | NEX-001 |
+| NEX-003 | Referência visual do shell e Dashboard | Em andamento | 1 | shell | NEX-001, NEX-002 |
 | NEX-004 | Sidebar, navegação móvel e portais | Planejado | 2 | popup | NEX-003 |
 | NEX-005 | Ficha por seções e estados | Planejado | 3 | sheet | NEX-003 |
 | NEX-006 | Biblioteca, documento e grafo do Nexus | Planejado | 4 | knowledge | NEX-003 |
@@ -28,7 +28,7 @@ Cada PR usa IDs desta fila e declara dependências. Trabalho sobre o mesmo propr
 - 57 módulos CSS, 12 links globais e responsáveis únicos nos pontos saneados.
 - Checks, auditoria e navegador documentados; integração em main é um estado separado.
 
-Evidências: [docs/foundation-completion-validation.json](../docs/foundation-completion-validation.json), [docs/FOUNDATION.md](../docs/FOUNDATION.md), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38146306651).
+Evidências: [docs/foundation-completion-validation.json](../docs/foundation-completion-validation.json), [docs/FOUNDATION.md](../docs/FOUNDATION.md), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38146306651), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/pull/258).
 
 ## NEX-002 — Mapa, continuidade e conciliação das PRs
 
@@ -36,7 +36,7 @@ Evidências: [docs/foundation-completion-validation.json](../docs/foundation-com
 - Gate detecta referências ausentes, IDs/dependências inválidos, ciclos e mapas desatualizados.
 - PR antiga preserva requisitos e não disputa a fila de integração.
 
-Evidências: [scripts/check-project-continuity.mjs](../scripts/check-project-continuity.mjs), [docs/PR_RECONCILIATION.md](../docs/PR_RECONCILIATION.md), [.github/PULL_REQUEST_TEMPLATE.md](../.github/PULL_REQUEST_TEMPLATE.md), [docs/continuity-validation.json](../docs/continuity-validation.json).
+Evidências: [scripts/check-project-continuity.mjs](../scripts/check-project-continuity.mjs), [docs/PR_RECONCILIATION.md](../docs/PR_RECONCILIATION.md), [.github/PULL_REQUEST_TEMPLATE.md](../.github/PULL_REQUEST_TEMPLATE.md), [docs/continuity-validation.json](../docs/continuity-validation.json), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/pull/258).
 
 ## NEX-003 — Referência visual do shell e Dashboard
 
@@ -44,7 +44,7 @@ Evidências: [scripts/check-project-continuity.mjs](../scripts/check-project-con
 - Revisar hierarquia, leitura, símbolos, superfície, respiro e três indicadores do Dashboard.
 - Preservar Fio-Mestre; definir referência aprovada antes de expandir a linguagem às demais telas.
 
-Evidências: pendentes; não declarar concluído.
+Evidências: [docs/DESIGN.md](../docs/DESIGN.md), [docs/design/board.html](../docs/design/board.html), [docs/design-board-validation.json](../docs/design-board-validation.json).
 
 ## NEX-004 — Sidebar, navegação móvel e portais
 
@@ -120,9 +120,10 @@ Evidências: pendentes; não declarar concluído.
 
 | ID | Decisão | Motivo |
 | --- | --- | --- |
-| DEC-001 | Preservar Fio-Mestre; NexOS é outro projeto. | Evitar importar cosmos/Liquid Glass e terminologia de outro produto. |
+| DEC-001 | Preservar Fio-Mestre; NexOS é outro projeto. | Preservar identidade autoral. O brief de 11/10 permite explorar vidro dimensional no Tadeon, sem importar identidade cósmica do NexOS. |
 | DEC-002 | Uma fonte de verdade para cada responsabilidade. | Estado React, viewport, tokens e dados não recebem escritores paralelos. |
 | DEC-003 | Manter estrutura atual; extrair módulos por responsabilidade. | Criar src/features e src/services em paralelo repetiria os serviços já existentes. |
 | DEC-004 | Preservar migrations e corpus editorial separadamente. | Consolidação do código não autoriza reescrever SQL aplicado ou fontes narrativas. |
 | DEC-005 | Uma fila canônica e PRs de escopo verificável. | Planos históricos não reabrem tarefas sem confrontar a implementação atual. |
 | DEC-006 | Branch validada não significa main integrado ou produção publicada. | Merge em main pode acionar deploy; nenhum desses estados é presumido. |
+| DEC-007 | Explorar suspense mitológico, vidro dimensional e movimento de tecidos/fios a partir do Fio-Mestre. | Direção explicitamente solicitada em 11/10/2026; prancheta Véu & Trama é proposta para revisão, antes da implementação e expansão. |
