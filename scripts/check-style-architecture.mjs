@@ -75,7 +75,13 @@ for (const file of cssFiles) {
 }
 const importPattern = /import\s+(?:\w+\s+from\s+)?["']([^"']+\.css(?:\?url)?)["']/g;
 for (const file of walk("src").filter((file) => /\.tsx?$/.test(file) && !/\.test\./.test(file))) {
-  for (const match of readFileSync(file, "utf8").matchAll(importPattern)) {
+  const source = readFileSync(file, "utf8");
+  if (
+    file !== "src/components/visual-viewport-popup-bridge.tsx" &&
+    /(?:setProperty|setPx)\([^\n]*["']--tadeon-(?:vv-|keyboard-inset)/.test(source)
+  )
+    errors.push(`${file}: viewport measurements belong to VisualViewportPopupBridge at the root.`);
+  for (const match of source.matchAll(importPattern)) {
     const path = match[1].replace(/\?url$/, "");
     const target = path.startsWith("@/")
       ? resolve("src", path.slice(2))

@@ -20,15 +20,6 @@ describe("acabamento transversal solicitado", () => {
     expect(css).toContain("max-width:min(92rem,100%) !important");
   });
 
-  it("aplica de verdade o preset aberto do grafo e reduz sobreposição visual", () => {
-    const bridge = source("src/components/experience-final-polish-bridge.tsx");
-    expect(bridge).toContain('"Distância-base": 260');
-    expect(bridge).toContain("Repulsão: 2.4");
-    expect(bridge).toContain("Centro: 0.08");
-    expect(bridge).toContain("settingsToggle.click()");
-    expect(bridge).toContain('aria-label="Reenquadrar grafo"');
-  });
-
   it("mantém superfícies grandes da Mesa contidas e mutuamente exclusivas", () => {
     const css = source("src/styles/interface-final-user-polish.css");
     expect(css).toContain(".tadeon-region-automation");
@@ -55,7 +46,7 @@ describe("acabamento transversal solicitado", () => {
     expect(css).toContain("--condition-glow-opacity");
     expect(css).toContain("#equilibrio,#exposicao");
     expect(css).toContain('.tadeon-link-panel[data-collapsed="true"]');
-    expect(bridge).toContain("setConditionProgress(chip, 1)");
+    expect(source("src/routes/sheet.$id.tsx")).toContain("conditionChipPresentation");
     expect(bridge).toContain("Modificadores não consomem PE.");
   });
 });

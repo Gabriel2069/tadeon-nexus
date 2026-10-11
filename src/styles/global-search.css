@@ -64,6 +64,13 @@
   white-space: nowrap;
 }
 
+.tadeon-global-search-dialog {
+  --tadeon-search-vv-left: var(--tadeon-vv-left, 0px);
+  --tadeon-search-vv-top: var(--tadeon-vv-top, 0px);
+  --tadeon-search-vv-width: var(--tadeon-vv-width, 100vw);
+  --tadeon-search-vv-height: var(--tadeon-vv-height, 100dvh);
+}
+
 @media (min-width: 768px) {
   .tadeon-global-search-dialog {
     width: min(42rem, calc(100vw - 1.5rem)) !important;

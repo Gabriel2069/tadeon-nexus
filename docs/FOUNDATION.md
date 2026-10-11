@@ -64,7 +64,7 @@ Novos testes exercitam AuthProvider renderizado, cache com troca de usuário/car
 6. Revisar isolamento entre tenants, RLS e migrações com dados de teste e ambiente adequado. Não reunir migrações aplicadas em uma migração única.
 7. Reavaliar requisitos úteis da PR antiga conflitante contra a base atual; não integrar seu diff antigo nem apagar branches sem verificar referências.
 
-O encerramento da base visual depende desses testes de telas autenticadas e da eliminação das regras concorrentes por proprietário. Esta entrega estabelece o terreno e os gates para executar essa limpeza com rastreabilidade.
+A preparação estrutural é encerrada no terceiro lote abaixo. A consolidação visual completa ainda depende de testes com dados reais e da revisão da cascata por proprietário durante os próximos refinamentos.
 
 ## Evidência do primeiro lote
 
@@ -106,3 +106,27 @@ Para uma comparação, defina `NEXUS_AUDIT_REPO` para o worktree de referência 
 Esta fixture não cobre autorização real, dados povoados, teclado virtual, zoom/pinch, todos os dialogs da Mesa ou a ficha completa. As diferenças de screenshots inteiros podem incluir efeitos decorativos e estados assíncronos; a comparação dos cabeçalhos usa geometria e cor dos símbolos visíveis. O refinamento visual aprovado e a remoção dos demais bridges continuam nas etapas seguintes.
 
 Validação final deste segundo lote: `npm run check` passou com 115 suítes e 507 testes, lint, TypeScript e builds cliente/SSR/Worker. Foram verificadas 21 telas de fixture, com um único landmark main, nenhum overflow e nenhum erro de página. Geometria e cor dos símbolos de foco visíveis coincidiram com a referência nas 21 comparações. Busca e conta passaram nos seis casos de abertura, foco, Tab, Escape e retorno ao controle. A auditoria de produção mantém zero avisos altos e um baixo. O resumo reproduzível está em `foundation-cleanup-validation.json`. As pendências do SDK MCP e os avisos de build do primeiro lote continuam. A integração Git existente do Cloudflare pode gerar previews de branch; não foi executado deploy manual nem merge.
+
+## Conclusão da preparação estrutural
+
+Referência do terceiro lote: `1b7af3f90d54023ade03d6ddb4b809741f8e0e63`. As evidências e avisos das seções anteriores são históricos; a auditoria atual resolve a pendência de dependências registrada nos primeiros lotes.
+
+| Responsabilidade | Proprietário atual | Sobreposição retirada |
+| --- | --- | --- |
+| Medidas de viewport e teclado | `VisualViewportPopupBridge`, montado uma vez no root | `VisualViewportBridge` do shell e listeners/escritas de cada instância de GlobalSearch |
+| Dimensões da busca | `global-search.css`, consumindo as medidas do root | Contrato paralelo `--tadeon-search-vv-*` escrito em JavaScript |
+| Preset e ajustes do grafo | Estado de `KnowledgeGraph` | `NexusGraphDeclutterBridge` e rotinas de preset/refit de ExperienceFinalPolishBridge |
+| Contadores de condições | `ConditionCounter`, recebendo valores da ficha | Observer global, descoberta por texto e anotação posterior de UserRepair152Bridge |
+| Severidade e aparência de condições | `conditionChipPresentation` e render da ficha | Varredura periódica de chips e inferência de estado a partir de estilos |
+
+O preset unificado é o do acabamento mais recente: distância 260, repulsão 2,4, centro 0,08, agrupamento 0,12 e força 0,62. Os controles continuam editáveis e mantêm ajustes ao reabrir o painel. Não há mais acionamento artificial de sliders ou abertura/fechamento automático de configurações para impor esse preset.
+
+O proprietário de viewport cobre campos fora de modais, rolagem interna de modais, eventos de orientação e a estabilização finita do WebKit. Desmontar cancela frames, timers e listeners. A busca recebe título e descrição acessíveis. O gate de arquitetura rejeita escritas literais das medidas por outro módulo; ele não constitui uma análise geral de todas as formas possíveis de mutação do DOM.
+
+O SDK MCP transitivo está fixado em 1.32.1 e esbuild em 0.28.2. O override do SDK é limitado a `@lovable.dev/mcp-js`; a integração permanece ativa. O teste de compatibilidade usa o adaptador TanStack real para inicialização, catálogo e execução de ferramenta local, com telemetria desativada e sem chamadas ao banco. Isso verifica compatibilidade do protocolo, não autenticação OAuth real. Ambos os workflows agora auditam dependências de aplicação e build.
+
+A preparação estrutural fica encerrada com módulos, responsáveis, gates e correções verificáveis. O refinamento visual seguinte deve trabalhar nesses responsáveis, mantendo o Fio-Mestre. A migração não declara toda a cascata histórica livre de conflitos: permanecem 5.764 ocorrências permitidas de `!important`, arquivos grandes e bridges que entregam funções reais. ExperienceFinalPolishBridge ainda oferece recolhimento de vínculos e edição de modificadores; removê-lo integralmente exige transferir esses recursos. Outros bridges de ficha, Mesa e ferramentas devem ser revistos por função, sem descarte em massa. Chunks Pixi e avisos do adaptador continuam como itens de desempenho/build.
+
+A cobertura atual está em `foundation-completion-validation.json`. Fixtures não substituem contas reais de jogador/mestre, campanhas povoadas, OAuth real, teclado virtual ou pinch zoom. Não houve alteração de banco, merge ou deploy manual.
+
+Validação do terceiro lote: `npm ci`, `npm run check` e auditorias completa/de produção passaram. Foram 119 suítes e 515 testes. As duas auditorias retornaram zero vulnerabilidades de qualquer severidade. O Chromium verificou 21 telas de fixture e seis casos de busca/conta por teclado sem overflow, erro de página ou falha de foco. Dois casos adicionais simulam `visualViewport.height = 600`: a busca consumiu os 600 px do proprietário e permaneceu contida. Geometria e cor dos cabeçalhos coincidiram com a referência nas 21 vistas; as páginas inteiras não são declaradas idênticas pixel a pixel.

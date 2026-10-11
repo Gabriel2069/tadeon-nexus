@@ -175,9 +175,47 @@ try {
             .first();
           await trigger.focus();
           await page.keyboard.press("Enter");
-          const dialog = page.getByRole("dialog").last();
+          const dialog =
+            label === "Abrir busca global"
+              ? page.getByRole("dialog", { name: "Busca global", exact: true })
+              : page.getByRole("dialog").last();
           await dialog.waitFor({ state: "visible" });
           await page.waitForTimeout(250);
+          let keyboardFixture = null;
+          if (label === "Abrir busca global" && width <= 820) {
+            await dialog.locator("input").first().focus();
+            await page.evaluate(() => {
+              Object.defineProperty(window.visualViewport, "height", {
+                value: 600,
+                configurable: true,
+              });
+              window.dispatchEvent(new Event("resize"));
+            });
+            await page.waitForTimeout(150);
+            const keyboardRect = await dialog.boundingBox();
+            const contract = await dialog.evaluate((element) => ({
+              open: document.documentElement.dataset.tadeonKeyboardOpen,
+              rootHeight: document.documentElement.style.getPropertyValue("--tadeon-vv-height"),
+              searchHeight: getComputedStyle(element)
+                .getPropertyValue("--tadeon-search-vv-height")
+                .trim(),
+            }));
+            const contained =
+              !!keyboardRect && keyboardRect.y >= -1 && keyboardRect.y + keyboardRect.height <= 601;
+            keyboardFixture = { keyboardRect, contract, contained };
+            if (
+              !contained ||
+              contract.open !== "true" ||
+              contract.rootHeight !== "600px" ||
+              contract.searchHeight !== "600px"
+            )
+              errors.push("Simulated keyboard viewport failed: " + JSON.stringify(keyboardFixture));
+            await page.evaluate(() => {
+              delete window.visualViewport.height;
+              window.dispatchEvent(new Event("resize"));
+            });
+            await page.waitForTimeout(150);
+          }
           const rect = await dialog.boundingBox();
           const contained =
             !!rect &&
@@ -200,7 +238,15 @@ try {
           await dialog.waitFor({ state: "hidden" });
           await page.waitForTimeout(100);
           const returned = await trigger.evaluate((e) => document.activeElement === e);
-          interactions.push({ label, rect, contained, focusInside, tabInside, returned });
+          interactions.push({
+            label,
+            rect,
+            contained,
+            focusInside,
+            tabInside,
+            returned,
+            keyboardFixture,
+          });
           if (![contained, focusInside, tabInside, returned].every(Boolean))
             errors.push("Portal/focus failed: " + JSON.stringify(interactions.at(-1)));
         }

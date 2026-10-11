@@ -61,8 +61,8 @@ jobs:
       - name: Instalar dependências
         run: npm ci --include=dev
 
-      - name: Auditar dependências de produção
-        run: npm audit --omit=dev --audit-level=high
+      - name: Auditar dependências de aplicação e build
+        run: npm audit --audit-level=high
 
       - name: Verificar projeto
         run: npm run check

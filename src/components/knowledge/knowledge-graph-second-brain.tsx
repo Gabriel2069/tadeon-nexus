@@ -217,12 +217,12 @@ export function KnowledgeGraph({ workspaceId, campaignId, focusNodeId, onOpenNod
   const [includeMentions, setIncludeMentions] = useState(true);
   const [includeHierarchy, setIncludeHierarchy] = useState(true);
   const [includeSemantic, setIncludeSemantic] = useState(true);
-  const [semanticThreshold, setSemanticThreshold] = useState(0.22);
-  const [minimumStrength, setMinimumStrength] = useState(0.12);
-  const [labelZoom, setLabelZoom] = useState(0.5);
+  const [semanticThreshold, setSemanticThreshold] = useState(0.28);
+  const [minimumStrength, setMinimumStrength] = useState(0.16);
+  const [labelZoom, setLabelZoom] = useState(0.98);
   const [showArrows, setShowArrows] = useState(true);
   const [pinnedPositions, setPinnedPositions] = useState<Record<string, KnowledgeGraphPoint>>({});
-  const [forceOptions, setForceOptions] = useState<KnowledgeForceOptions>({ linkDistance: 238, linkStrength: 1, repelStrength: 1.55, centerStrength: 0.46, clusterStrength: 0.16 });
+  const [forceOptions, setForceOptions] = useState<KnowledgeForceOptions>({ linkDistance: 260, linkStrength: 0.62, repelStrength: 2.4, centerStrength: 0.08, clusterStrength: 0.12 });
 
   useEffect(() => { setGraphFocusId(focusNodeId); setSelectedId(focusNodeId); }, [focusNodeId]);
 

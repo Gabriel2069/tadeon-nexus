@@ -1,3 +1,6 @@
+import type { CSSProperties } from "react";
+import { ConditionCounter } from "@/components/sheet/condition-counter";
+import { conditionChipPresentation } from "@/lib/sheet-condition-presentation";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { lazy, Suspense, useEffect, useMemo, useState } from "react";
 import { ProtectedShell } from "@/components/protected-shell";
@@ -737,11 +740,14 @@ function SheetPage() {
           <div className="tadeon-sheet-condition-rail" aria-label="Condições ativas">
             {activeConditions.map((key) => {
               const meta = CONDITION_META[key];
+              const presentation = conditionChipPresentation(`${meta.label}: ${sheet.conditions[key].join(", ")}`);
               return (
                 <span
                   key={key}
                   className="tadeon-sheet-condition-chip"
+                  data-condition-severity={presentation.severity}
                   style={{
+                    ...presentation.style,
                     borderColor: meta.color,
                     color: meta.color,
                     background: `linear-gradient(135deg, rgba(${meta.rgb}, 0.28), rgba(${meta.rgb}, 0.08))`,
@@ -1663,16 +1669,18 @@ function SheetPage() {
                   return (
                     <div
                       key={c}
+                      data-tadeon-condition-active={current.length > 0 ? "true" : undefined}
                       className="tadeon-condition-card rounded-xl border border-border/60 bg-secondary/15 p-3 transition-[border-color,background,box-shadow,transform] duration-150 ease-[var(--ease-out)]"
-                      style={
+                      style={(
                         current.length > 0
                           ? {
+                              "--condition-rgb": meta.rgb.split(",").map((part) => part.trim()).join(" "),
                               borderColor: meta.color,
                               background: `linear-gradient(145deg, rgba(${meta.rgb}, 0.2), rgba(${meta.rgb}, 0.04))`,
                               boxShadow: `0 0 0 1px ${meta.color}44, inset 0 0 24px rgba(${meta.rgb}, 0.1)`,
                             }
                           : undefined
-                      }
+                      ) as CSSProperties | undefined}
                     >
                       <Label className="text-xs flex items-center gap-1.5">
                         <span className="w-2 h-2 rounded-full" style={{ background: meta.color }} />
@@ -1722,7 +1730,7 @@ function SheetPage() {
                 })}
               </div>
               <div className="grid grid-cols-2 gap-4 mt-4">
-                <CounterDots
+                <ConditionCounter
                   label="Morrendo"
                   max={3}
                   value={sheet.dying}
@@ -1730,7 +1738,7 @@ function SheetPage() {
                   disabled={!canEdit}
                   onChange={(v) => update("dying", v)}
                 />
-                <CounterDots
+                <ConditionCounter
                   label="Colapsando"
                   max={3}
                   value={sheet.going_insane}
@@ -2880,41 +2888,6 @@ function StatBlock({
         </label>
       </div>
     </Card>
-  );
-}
-
-function CounterDots({
-  label,
-  max,
-  value,
-  color,
-  disabled,
-  onChange,
-}: {
-  label: string;
-  max: number;
-  value: number;
-  color: string;
-  disabled?: boolean;
-  onChange: (v: number) => void;
-}) {
-  return (
-    <div>
-      <Label className="text-xs">{label}</Label>
-      <div className="flex gap-2 mt-1">
-        {Array.from({ length: max }).map((_, i) => (
-          <button
-            key={i}
-            type="button"
-            disabled={disabled}
-            onClick={() => onChange(i + 1 === value ? 0 : i + 1)}
-            aria-label={`${label}: ${i + 1} de ${max}`}
-            aria-pressed={i < value}
-            className={`h-7 w-7 rounded-full border-2 border-border transition-[background-color,border-color,box-shadow,transform] duration-150 ease-[var(--ease-out)] active:scale-[.94] ${i < value ? color : "bg-transparent"} disabled:cursor-not-allowed disabled:transform-none`}
-          />
-        ))}
-      </div>
-    </div>
   );
 }
 

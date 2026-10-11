@@ -30,24 +30,13 @@ describe("mobile icons and visual viewport 180/184", () => {
     expect(css).toContain('.tadeon-mobile-dock .tadeon-mobile-dock__item[href="/master-panel"][aria-current="page"]::after');
   });
 
-  it("tracks visualViewport globally and protects focused controls when the keyboard opens", () => {
-    const viewport = source("src/components/visual-viewport-bridge.tsx");
-    const radial = source("src/components/mobile-more-radial-bridge.tsx");
-    expect(viewport).toContain("window.visualViewport");
-    expect(viewport).toContain('viewport?.addEventListener("resize", sync)');
-    expect(viewport).toContain('viewport?.addEventListener("scroll", sync)');
-    expect(viewport).toContain('root.style.setProperty("--tadeon-vv-height"');
-    expect(viewport).toContain('root.dataset.tadeonKeyboardOpen = keyboardOpen ? "true" : "false"');
-    expect(viewport).toContain('document.addEventListener("focusin", keepFocusedControlVisible)');
-    expect(viewport).toContain('target.scrollIntoView({ block: "nearest", inline: "nearest" })');
-    expect(radial).not.toContain("function useVisualViewportContract()");
-  });
-
-  it("mounts viewport protection before the normal versus dedicated shell split", () => {
+  it("mounts a single viewport owner at the root across shell transitions", () => {
+    const root = source("src/routes/__root.tsx");
     const shell = source("src/components/protected-shell.tsx");
-    expect(shell).toContain('import { VisualViewportBridge } from "@/components/visual-viewport-bridge"');
-    expect(shell).toContain("<VisualViewportBridge />");
-    expect(shell.indexOf("<VisualViewportBridge />")).toBeLessThan(shell.indexOf("{!dedicated && ("));
+    const radial = source("src/components/mobile-more-radial-bridge.tsx");
+    expect(root).toContain("<VisualViewportPopupBridge />");
+    expect(shell).not.toContain("<VisualViewportBridge />");
+    expect(radial).not.toContain("function useVisualViewportContract()");
   });
 
   it("pins Create Sheet and keyboard-open dialogs inside the visible viewport", () => {

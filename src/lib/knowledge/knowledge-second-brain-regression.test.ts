@@ -23,8 +23,8 @@ describe("Nexus second-brain graph architecture", () => {
     expect(graph).toContain("semanticThreshold");
     expect(graph).toContain("minimumStrength");
     expect(graph).toContain("pinnedPositions");
-    expect(graph).toContain("linkDistance: 238");
-    expect(graph).toContain("repelStrength: 1.55");
+    expect(graph).toContain("linkDistance: 260");
+    expect(graph).toContain("repelStrength: 2.4");
     expect(graph).toContain("Math.max(0.34");
   });
 

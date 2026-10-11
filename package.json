@@ -98,5 +98,11 @@
     "vite": "^7.3.1",
     "vite-tsconfig-paths": "^6.0.2",
     "vitest": "^4.1.10"
+  },
+  "overrides": {
+    "@lovable.dev/mcp-js": {
+      "@modelcontextprotocol/sdk": "1.32.1"
+    },
+    "esbuild": "0.28.2"
   }
 }

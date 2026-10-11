@@ -6,7 +6,7 @@ import { Command as CommandPrimitive } from "cmdk";
 import { Search } from "lucide-react";
 
 import { cn } from "@/lib/utils";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 
 const Command = React.forwardRef<
   React.ElementRef<typeof CommandPrimitive>,
@@ -37,12 +37,11 @@ const CommandDialog = ({
 }: CommandDialogProps) => {
   return (
     <Dialog {...props}>
-      <DialogContent
-        className={cn(
-          "overflow-hidden p-0 sm:max-w-xl",
-          contentClassName,
-        )}
-      >
+      <DialogContent className={cn("overflow-hidden p-0 sm:max-w-xl", contentClassName)}>
+        <DialogTitle className="sr-only">Busca global</DialogTitle>
+        <DialogDescription className="sr-only">
+          Busque áreas, fichas, cenas e ferramentas do arquivo.
+        </DialogDescription>
         <Command
           className={cn(
             "[&_[cmdk-group-heading]]:px-2 [&_[cmdk-group-heading]]:font-medium [&_[cmdk-group-heading]]:text-muted-foreground [&_[cmdk-group]:not([hidden])_~[cmdk-group]]:pt-0 [&_[cmdk-group]]:px-2 [&_[cmdk-input-wrapper]_svg]:h-5 [&_[cmdk-input-wrapper]_svg]:w-5 [&_[cmdk-input]]:h-12 [&_[cmdk-item]]:px-2 [&_[cmdk-item]]:py-3 [&_[cmdk-item]_svg]:h-5 [&_[cmdk-item]_svg]:w-5",
@@ -65,10 +64,7 @@ const CommandInput = React.forwardRef<
     className="flex shrink-0 items-center border-b border-border/70 bg-muted/20 px-4"
     cmdk-input-wrapper=""
   >
-    <Search
-      className="mr-2 h-4 w-4 shrink-0 text-primary/75"
-      aria-hidden="true"
-    />
+    <Search className="mr-2 h-4 w-4 shrink-0 text-primary/75" aria-hidden="true" />
     <CommandPrimitive.Input
       ref={ref}
       data-slot="command-input"
@@ -161,17 +157,11 @@ const CommandItem = React.forwardRef<
 
 CommandItem.displayName = CommandPrimitive.Item.displayName;
 
-const CommandShortcut = ({
-  className,
-  ...props
-}: React.HTMLAttributes<HTMLSpanElement>) => {
+const CommandShortcut = ({ className, ...props }: React.HTMLAttributes<HTMLSpanElement>) => {
   return (
     <span
       data-slot="command-shortcut"
-      className={cn(
-        "ml-auto text-xs tracking-widest text-muted-foreground",
-        className,
-      )}
+      className={cn("ml-auto text-xs tracking-widest text-muted-foreground", className)}
       {...props}
     />
   );
