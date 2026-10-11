@@ -1,4 +1,31 @@
-const OFFLINE_CACHE_KEY = "tadeon.nexus.offline.v1";
+import type { AppRole } from "@/lib/nexus-contracts";
+
+const LEGACY_CACHE_KEY = "tadeon.nexus.offline.v1";
+export interface OfflineCacheScope {
+  userId: string;
+  role: AppRole;
+}
+let activeScope: OfflineCacheScope | null = null;
+const scopeKey = (scope: OfflineCacheScope) =>
+  `tadeon.nexus.offline.v2.${scope.userId}.${scope.role}`;
+const matchesScope = (scope: OfflineCacheScope | null) =>
+  !!scope &&
+  !!activeScope &&
+  scope.userId === activeScope.userId &&
+  scope.role === activeScope.role;
+
+// Only AuthProvider may establish a scope after verifying profile and role.
+// Account/role transitions discard data instead of adopting the old unscoped cache.
+export function setOfflineCacheScope(scope: OfflineCacheScope | null): void {
+  if (typeof window === "undefined") return;
+  try {
+    window.localStorage.removeItem(LEGACY_CACHE_KEY);
+    if (activeScope && !matchesScope(scope)) window.localStorage.removeItem(scopeKey(activeScope));
+  } catch {
+    /* Storage may be unavailable; authentication must still work. */
+  }
+  activeScope = scope;
+}
 
 export interface OfflineSheetSummary {
   id: string;
@@ -38,9 +65,9 @@ function emptyCache(): OfflineCache {
 }
 
 export function readOfflineCache(): OfflineCache {
-  if (typeof window === "undefined") return emptyCache();
+  if (typeof window === "undefined" || !activeScope) return emptyCache();
   try {
-    const raw = window.localStorage.getItem(OFFLINE_CACHE_KEY);
+    const raw = window.localStorage.getItem(scopeKey(activeScope));
     if (!raw) return emptyCache();
     const parsed = JSON.parse(raw) as Partial<OfflineCache>;
     if (parsed.version !== 1) return emptyCache();
@@ -50,18 +77,18 @@ export function readOfflineCache(): OfflineCache {
         typeof parsed.updatedAt === "string" ? parsed.updatedAt : new Date(0).toISOString(),
       sheetSummaries: Array.isArray(parsed.sheetSummaries) ? parsed.sheetSummaries : [],
       sheets: parsed.sheets && typeof parsed.sheets === "object" ? parsed.sheets : {},
-      master: parsed.master,
+      master: activeScope.role === "mestre" ? parsed.master : undefined,
     };
   } catch {
     return emptyCache();
   }
 }
 
-function writeOfflineCache(cache: OfflineCache): boolean {
-  if (typeof window === "undefined") return false;
+function writeOfflineCache(cache: OfflineCache, scope: OfflineCacheScope | null): boolean {
+  if (typeof window === "undefined" || !scope || !matchesScope(scope)) return false;
   try {
     window.localStorage.setItem(
-      OFFLINE_CACHE_KEY,
+      scopeKey(scope),
       JSON.stringify({ ...cache, updatedAt: new Date().toISOString() }),
     );
     return true;
@@ -70,26 +97,38 @@ function writeOfflineCache(cache: OfflineCache): boolean {
   }
 }
 
-export function cacheSheetSummaries(summaries: OfflineSheetSummary[]): boolean {
+export function cacheSheetSummaries(
+  summaries: OfflineSheetSummary[],
+  scope: OfflineCacheScope | null,
+): boolean {
   const cache = readOfflineCache();
-  return writeOfflineCache({
-    ...cache,
-    sheetSummaries: summaries.map(({ id, name, occupation, exposure, owner_label }) => ({
-      id,
-      name,
-      occupation,
-      exposure,
-      owner_label,
-    })),
-  });
+  return writeOfflineCache(
+    {
+      ...cache,
+      sheetSummaries: summaries.map(({ id, name, occupation, exposure, owner_label }) => ({
+        id,
+        name,
+        occupation,
+        exposure,
+        owner_label,
+      })),
+    },
+    scope,
+  );
 }
 
-export function cacheSheet<T extends { id: string }>(sheet: T): boolean {
+export function cacheSheet<T extends { id: string }>(
+  sheet: T,
+  scope: OfflineCacheScope | null,
+): boolean {
   const cache = readOfflineCache();
-  return writeOfflineCache({
-    ...cache,
-    sheets: { ...cache.sheets, [sheet.id]: sheet as unknown },
-  });
+  return writeOfflineCache(
+    {
+      ...cache,
+      sheets: { ...cache.sheets, [sheet.id]: sheet as unknown },
+    },
+    scope,
+  );
 }
 
 export function cacheMasterState(
@@ -104,24 +143,34 @@ export function cacheMasterState(
     folds: unknown[];
   },
   sheets: unknown[],
+  scope: OfflineCacheScope | null,
 ): boolean {
+  if (scope?.role !== "mestre" || !matchesScope(scope)) return false;
   const cache = readOfflineCache();
-  return writeOfflineCache({
-    ...cache,
-    master: {
-      campaignTitle: settings.campaign_title,
-      campaignPhase: settings.campaign_phase,
-      scenes: settings.scenes_detailed,
-      npcs: settings.master_npcs,
-      clues: settings.investigation_clues,
-      threats: settings.threats,
-      interludes: settings.interludes,
-      folds: settings.folds,
-      sheets,
+  return writeOfflineCache(
+    {
+      ...cache,
+      master: {
+        campaignTitle: settings.campaign_title,
+        campaignPhase: settings.campaign_phase,
+        scenes: settings.scenes_detailed,
+        npcs: settings.master_npcs,
+        clues: settings.investigation_clues,
+        threats: settings.threats,
+        interludes: settings.interludes,
+        folds: settings.folds,
+        sheets,
+      },
     },
-  });
+    scope,
+  );
 }
 
 export function clearOfflineCache(): void {
-  if (typeof window !== "undefined") window.localStorage.removeItem(OFFLINE_CACHE_KEY);
+  if (typeof window === "undefined" || !activeScope) return;
+  try {
+    window.localStorage.removeItem(scopeKey(activeScope));
+  } catch {
+    /* Best effort. */
+  }
 }

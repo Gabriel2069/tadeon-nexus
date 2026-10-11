@@ -1,3 +1,5 @@
+import { CORE_SURFACES } from "@/lib/feature-flags";
+import { createLatestRequestGate } from "@/lib/latest-request";
 import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import {
@@ -44,10 +46,9 @@ import { getAuthErrorMessage } from "@/lib/auth-errors";
 import { isApplicationAdministrator } from "@/lib/permissions";
 import { loadFeatureFlags } from "@/lib/feature-flag-repository";
 import { Sheet, SheetContent, SheetDescription, SheetTitle } from "@/components/ui/sheet";
-import "@/styles/desktop-studio.css";
-import "@/styles/workspace-polish.css";
-import "@/styles/head-background-motion-256.css";
-
+import "@/styles/desktop-shell.css";
+import "@/styles/workspace.css";
+import "@/styles/hero-backgrounds.css";
 const roleIcons: Record<string, typeof Crown> = {
   mestre: Crown,
   jogador: Swords,
@@ -64,7 +65,7 @@ interface NavigationFlags {
 
 const DEFAULT_NAVIGATION_FLAGS: NavigationFlags = {
   knowledge: false,
-  tabletop: false,
+  tabletop: CORE_SURFACES.tabletop,
 };
 
 function readNavigationFlags(userId?: string): NavigationFlags {
@@ -75,7 +76,7 @@ function readNavigationFlags(userId?: string): NavigationFlags {
     const parsed = JSON.parse(value) as Partial<NavigationFlags>;
     return {
       knowledge: parsed.knowledge === true,
-      tabletop: parsed.tabletop === true,
+      tabletop: CORE_SURFACES.tabletop,
     };
   } catch {
     return DEFAULT_NAVIGATION_FLAGS;
@@ -131,12 +132,14 @@ export function AppLayout({ children }: { children: ReactNode }) {
     const cached = readNavigationFlags(userId);
     setNavigationFlags(cached);
 
+    const requests = createLatestRequestGate();
     const refreshFlags = () => {
+      const ticket = requests.begin();
       void loadFeatureFlags(userId).then((flags) => {
-        if (!active) return;
+        if (!active || !requests.isCurrent(ticket)) return;
         const next = {
           knowledge: flags.nexus_knowledge_enabled,
-          tabletop: flags.nexus_tabletop_enabled,
+          tabletop: CORE_SURFACES.tabletop,
         };
         setNavigationFlags(next);
         storeNavigationFlags(userId, next);
@@ -147,6 +150,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
     window.addEventListener("focus", refreshFlags);
     return () => {
       active = false;
+      requests.invalidate();
       window.removeEventListener("focus", refreshFlags);
     };
   }, [user?.id]);

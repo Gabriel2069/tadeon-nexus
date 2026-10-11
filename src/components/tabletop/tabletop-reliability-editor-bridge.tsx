@@ -23,7 +23,6 @@ import { currentTabletopRuntime } from "@/lib/tabletop/tabletop-player-runtime";
 import type { Point, TabletopEntity, TabletopSnapshot } from "@/lib/tabletop/types";
 import { TabletopStagePortal } from "@/components/tabletop/tabletop-stage-portal";
 import "@/styles/tabletop-reliability-editor.css";
-
 type AutosaveState = "idle" | "pending" | "saving" | "saved" | "paused";
 
 interface WallSoundRow {

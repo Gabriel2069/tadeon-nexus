@@ -1759,7 +1759,7 @@ body
 }
 
 /*
- * Living Archive — final shared product layer.
+ * Living Archive - final shared product layer.
  * Content uses quiet, opaque depth; translucency is reserved for navigation,
  * command surfaces and temporary controls. This keeps the archive legible while
  * preserving the Fio-Mestre atmosphere across every route.
@@ -4379,7 +4379,7 @@ legend {
   }
 }
 
-/* #255 — quadros de trabalho e pop-ups compartilham a mesma geometria. */
+/* #255 - quadros de trabalho e pop-ups compartilham a mesma geometria. */
 @media (min-width: 768px) {
   :where(.tadeon-route-dashboard, .tadeon-route-nexus, .tadeon-route-master) {
     width: min(100%, 104rem) !important;

@@ -11,6 +11,8 @@ import type { Session, User } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
 import type { AppRole } from "@/lib/nexus-contracts";
 
+import { setOfflineCacheScope } from "@/lib/offline-cache";
+
 export type { AppRole } from "@/lib/nexus-contracts";
 
 export interface Profile {
@@ -79,6 +81,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const hydrateSession = useCallback(
     async (newSession: Session) => {
       const requestId = ++hydrationRequest.current;
+      if (hydratedUserId.current !== newSession.user.id) setOfflineCacheScope(null);
       setSession(newSession);
       setLoading(true);
       setAuthIssue(null);
@@ -87,6 +90,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         const hydrated = await loadProfileAndRole(newSession.user.id);
         if (requestId !== hydrationRequest.current) return;
 
+        setOfflineCacheScope({ userId: newSession.user.id, role: hydrated.role });
         setProfile(hydrated.profile);
         setRole(hydrated.role);
         hydratedUserId.current = newSession.user.id;
@@ -98,6 +102,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             ? String((error as { code?: unknown }).code ?? "unknown")
             : "unknown";
         console.error(`[Auth] Falha ao carregar perfil e cargo (${errorCode}).`);
+        setOfflineCacheScope(null);
         setProfile(null);
         setRole(null);
         hydratedUserId.current = null;
@@ -112,11 +117,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   );
 
   useEffect(() => {
+    let eventGeneration = 0;
+    let hydrationTimer: ReturnType<typeof setTimeout> | undefined;
     const { data: sub } = supabase.auth.onAuthStateChange((event, newSession) => {
       if (event === "SIGNED_OUT" || !newSession) {
+        eventGeneration += 1;
+        clearTimeout(hydrationTimer);
         hydrationRequest.current += 1;
         hydratedUserId.current = null;
         setSession(null);
+        setOfflineCacheScope(null);
         setProfile(null);
         setRole(null);
         setAuthIssue(null);
@@ -133,17 +143,23 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         (event === "SIGNED_IN" && hydratedUserId.current !== newSession.user.id);
 
       if (!needsHydration) {
-        setLoading(false);
         return;
       }
 
+      hydrationRequest.current += 1;
+      const generation = ++eventGeneration;
+      clearTimeout(hydrationTimer);
+      if (hydratedUserId.current !== newSession.user.id) setOfflineCacheScope(null);
+      setLoading(true);
       // Supabase recommends deferring additional API calls outside this callback.
-      setTimeout(() => {
-        void hydrateSession(newSession);
+      hydrationTimer = setTimeout(() => {
+        if (generation === eventGeneration) void hydrateSession(newSession);
       }, 0);
     });
 
     return () => {
+      eventGeneration += 1;
+      clearTimeout(hydrationTimer);
       hydrationRequest.current += 1;
       sub.subscription.unsubscribe();
     };

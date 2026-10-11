@@ -1,7 +1,6 @@
 import * as React from "react";
 
-import "@/styles/popup-geometry-256.css";
-
+import "@/styles/route-popup-frame.css";
 const ROUTE_FRAME_SELECTOR = [
   ".tadeon-route-nexus",
   ".tadeon-route-dashboard",

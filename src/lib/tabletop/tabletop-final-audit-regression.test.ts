@@ -1,4 +1,5 @@
-import { readFileSync } from "node:fs";
+import { isStyleLoadedAfter } from "@/test/read-foundation-source";
+import { readFoundationSource as readFileSync } from "@/test/read-foundation-source";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 
@@ -74,16 +75,8 @@ describe("auditoria final de runtime e viewport", () => {
     expect(css).toContain("bottom: var(--tadeon-safe-bottom) !important");
   });
 
-  it("carrega as autoridades finais depois das folhas anteriores", () => {
-    const root = source("src/routes/__root.tsx");
-    expect(root).toContain('import auditCss from "../styles/interface-audit-final.css?url"');
-    expect(root).toContain('import radialPresenceCss from "../styles/radial-presence-final.css?url"');
-    const viewportIndex = root.indexOf('{ rel: "stylesheet", href: viewportCss }');
-    const auditIndex = root.indexOf('{ rel: "stylesheet", href: auditCss }');
-    const radialIndex = root.indexOf('{ rel: "stylesheet", href: radialPresenceCss }');
-    expect(viewportIndex).toBeGreaterThan(-1);
-    expect(auditIndex).toBeGreaterThan(viewportIndex);
-    expect(radialIndex).toBeGreaterThan(auditIndex);
+  it("mantém a ordem das regras na cascata consolidada", () => {
+    expect(isStyleLoadedAfter("src/routes/__root.tsx", "src/styles/mobile-studio.css", "src/styles/interface-audit-final.css")).toBe(true);
   });
 
   it("oferece motion de ícones sem sobrescrever transformações locais", () => {

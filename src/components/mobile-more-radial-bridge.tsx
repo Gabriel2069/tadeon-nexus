@@ -5,8 +5,7 @@ import { CloudOff, Users, X } from "lucide-react";
 import { useAuth } from "@/lib/auth";
 import { isApplicationAdministrator } from "@/lib/permissions";
 import "@/styles/mobile-more-radial.css";
-import "@/styles/mobile-viewport-final-180.css";
-
+import "@/styles/mobile-viewport.css";
 const MORE_TRIGGER_SELECTOR = ".tadeon-mobile-dock > button.tadeon-mobile-dock__item";
 const MASTER_DOCK_ICON_SELECTOR = '.tadeon-mobile-dock__item[href="/master-panel"] > svg';
 const SVG_NS = "http://www.w3.org/2000/svg";

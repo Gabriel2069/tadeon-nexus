@@ -101,7 +101,6 @@ import { BrandMark } from "@/components/brand-mark";
 import { SaveStatus } from "@/components/save-status";
 import { ResistanceDtCalculator } from "@/components/master/resistance-dt-calculator";
 import "@/styles/sheet-premium.css";
-
 const LIFE_CYCLE_TRAITS: LifeCycleTrait[] = [
   "Formação recente",
   "Corpo habituado",
@@ -476,9 +475,9 @@ function SheetPage() {
 
   useEffect(() => {
     if (!sheet) return;
-    const timer = window.setTimeout(() => cacheSheet(sheet), 600);
+    const timer = window.setTimeout(() => cacheSheet(sheet, user && role ? { userId: user.id, role } : null), 600);
     return () => window.clearTimeout(timer);
-  }, [sheet]);
+  }, [sheet, user, role]);
 
   // Keep numeric `fragments` field in sync with the fragments list length
   useEffect(() => {

@@ -1,4 +1,5 @@
-import { readFileSync } from "node:fs";
+import { isStyleLoadedAfter } from "@/test/read-foundation-source";
+import { readFoundationSource as readFileSync } from "@/test/read-foundation-source";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 
@@ -7,17 +8,8 @@ function source(path: string) {
 }
 
 describe("contenção de overlays e orquestração visual da Mesa", () => {
-  it("carrega a barreira de viewport globalmente e depois dos estilos-base", () => {
-    const root = source("src/routes/__root.tsx");
-
-    expect(root).toContain('import viewportCss from "../styles/viewport-fit-final.css?url";');
-    expect(root).toContain('{ rel: "stylesheet", href: viewportCss }');
-    expect(root.indexOf('{ rel: "stylesheet", href: appCss }')).toBeLessThan(
-      root.indexOf('{ rel: "stylesheet", href: viewportCss }'),
-    );
-    expect(root.indexOf('{ rel: "stylesheet", href: mobileCss }')).toBeLessThan(
-      root.indexOf('{ rel: "stylesheet", href: viewportCss }'),
-    );
+  it("mantém a ordem das regras na cascata consolidada", () => {
+    expect(isStyleLoadedAfter("src/routes/__root.tsx", "src/styles.css", "src/styles/viewport-fit-final.css")).toBe(true);
   });
 
   it("centraliza dialog por translate e reserva transform apenas para motion local", () => {
@@ -62,7 +54,7 @@ describe("contenção de overlays e orquestração visual da Mesa", () => {
     const route = source("src/components/tabletop/tabletop-route-experience.tsx");
     const stack = source("src/styles/tabletop-bottom-stack-fix.css");
 
-    expect(route).toContain('import "@/styles/tabletop-bottom-stack-fix.css";');
+    expect(route).toContain('import "@/styles/tabletop-route-experience.css";');
     expect(stack).toContain("--tadeon-tabletop-bottom-row-1");
     expect(stack).toContain("--tadeon-tabletop-bottom-row-2");
     expect(stack).toContain("--tadeon-tabletop-bottom-row-3");

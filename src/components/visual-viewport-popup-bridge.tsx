@@ -1,6 +1,5 @@
 import { useEffect } from "react";
-import "@/styles/tablet-popup-viewport-237.css";
-
+import "@/styles/visual-viewport-popup.css";
 const MODAL_SELECTOR =
   '[data-slot="dialog-content"], [data-slot="alert-dialog-content"]';
 

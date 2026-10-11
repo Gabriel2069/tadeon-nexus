@@ -16,7 +16,6 @@ import {
 import { tabletopVisibilityService } from "@/lib/tabletop/tabletop-visibility-service";
 import type { TabletopEntity, TabletopSnapshot } from "@/lib/tabletop/types";
 import "@/styles/tabletop-region-automation.css";
-
 type Membership = Map<string, Set<string>>;
 
 type RuntimeEventDetail = {

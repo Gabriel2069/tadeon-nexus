@@ -33,7 +33,6 @@ import { tabletopVisibilityService, type TabletopLight } from "@/lib/tabletop/ta
 import type { TabletopSnapshot } from "@/lib/tabletop/types";
 import { TabletopStagePortal } from "@/components/tabletop/tabletop-stage-portal";
 import "@/styles/tabletop-smart-setup.css";
-
 function useSnapshot() {
   const [snapshot, setSnapshot] = useState<TabletopSnapshot | null>(null);
   useEffect(() => {

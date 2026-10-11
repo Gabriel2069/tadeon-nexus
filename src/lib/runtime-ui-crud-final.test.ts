@@ -1,4 +1,4 @@
-import { readFileSync } from "node:fs";
+import { readFoundationSource as readFileSync } from "@/test/read-foundation-source";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 
@@ -19,7 +19,7 @@ describe("fechamento de UI, Mesa e exclusão", () => {
 
     expect(bridge).toContain('if (queryMode() === "edit") return "edit";');
     expect(bridge).toContain('return stored === "edit" ? "edit" : "game";');
-    expect(bridge).toContain('import "@/styles/sheet-individual-fit-final.css";');
+    expect(bridge).toContain('import "@/styles/sheet-experience.css";');
   });
 
   it("mantém a aba do mestre sem navegar e remontar a rota", () => {

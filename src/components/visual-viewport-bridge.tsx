@@ -1,6 +1,5 @@
 import { useEffect } from "react";
-import "@/styles/mobile-viewport-final-180.css";
-
+import "@/styles/mobile-viewport.css";
 function visibleViewport() {
   const viewport = window.visualViewport;
   return {

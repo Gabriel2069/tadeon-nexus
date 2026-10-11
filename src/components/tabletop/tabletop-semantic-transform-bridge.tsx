@@ -6,7 +6,6 @@ import { TabletopStagePortal } from "@/components/tabletop/tabletop-stage-portal
 import { currentTabletopRuntime } from "@/lib/tabletop/tabletop-player-runtime";
 import type { TabletopEntity, TabletopSnapshot } from "@/lib/tabletop/types";
 import "@/styles/tabletop-semantic-transform.css";
-
 const REGION_CANDIDATES = new Set<TabletopEntity["type"]>([
   "drawing",
   "object",

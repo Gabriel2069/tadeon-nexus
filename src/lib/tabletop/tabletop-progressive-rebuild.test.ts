@@ -1,4 +1,4 @@
-import { readFileSync } from "node:fs";
+import { readFoundationSource as readFileSync } from "@/test/read-foundation-source";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 
@@ -26,7 +26,7 @@ describe("Mesa Nexus progressiva", () => {
 
   it("não bloqueia a abertura da Mesa em uma consulta remota de feature flag", () => {
     const route = source("src/routes/tabletop.tsx");
-    expect(route).toContain("nexus_tabletop_enabled: true");
+    expect(route).toContain("nexus_tabletop_enabled: CORE_SURFACES.tabletop");
     expect(route).not.toContain("if (!flags?.nexus_tabletop_enabled)");
     expect(route).toContain(".catch(() =>");
   });

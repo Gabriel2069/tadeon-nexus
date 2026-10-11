@@ -35,8 +35,7 @@ import {
   type TabletopSession,
 } from "@/lib/tabletop/tabletop-session-service";
 import { useTabletopRealtime } from "@/lib/tabletop/use-tabletop-realtime";
-import "@/styles/tabletop-participant.css";
-
+import "@/styles/tabletop-participant-workspace.css";
 function participantErrorMessage(error: unknown) {
   if (!(error instanceof TabletopParticipantError))
     return "Não foi possível abrir a visão compartilhada da Mesa.";

@@ -1,3 +1,4 @@
+/* source: src/styles/tabletop-atmosphere.css */
 .tadeon-atmosphere-layer,
 .tadeon-scene-transition,
 .tadeon-power-particle-field {
@@ -298,3 +299,5 @@ html[data-tadeon-power-theme="light"] .tadeon-tactical-overlay__power-line {
     opacity: 0 !important;
   }
 }
+
+/* end-source: src/styles/tabletop-atmosphere.css */

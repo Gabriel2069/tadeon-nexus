@@ -147,8 +147,7 @@ import type {
   TabletopDistribution,
   TabletopStackEdge,
 } from "@/lib/tabletop/tabletop-arrangement";
-import "@/styles/tabletop-editor.css";
-
+import "@/styles/tabletop-workspace.css";
 interface ContextMenuState extends Point {
   entityId?: string;
   lightId?: string;

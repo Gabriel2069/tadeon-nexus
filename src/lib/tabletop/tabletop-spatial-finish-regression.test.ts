@@ -1,4 +1,4 @@
-import { readFileSync } from "node:fs";
+import { readFoundationSource as readFileSync } from "@/test/read-foundation-source";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import { buildVisibilityPolygon } from "./visibility-geometry";
@@ -25,7 +25,7 @@ describe("acabamento espacial da Mesa Nexus", () => {
     const route = source("src/components/tabletop/tabletop-route-experience.tsx");
     const css = source("src/styles/tabletop-spatial-finish.css");
 
-    expect(route).toContain('import "@/styles/tabletop-spatial-finish.css";');
+    expect(route).toContain('import "@/styles/tabletop-route-experience.css";');
     expect(css).toContain(".tadeon-tabletop-panel-backdrop[data-open=\"true\"]");
     expect(css).toContain("pointer-events: none !important;");
     expect(css).toContain(".tadeon-tabletop-stage-status");

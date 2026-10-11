@@ -23,7 +23,6 @@ import { currentTabletopRuntime } from "@/lib/tabletop/tabletop-player-runtime";
 import type { TabletopEntity, TabletopSnapshot } from "@/lib/tabletop/types";
 import { TabletopStagePortal } from "@/components/tabletop/tabletop-stage-portal";
 import "@/styles/tabletop-placeables-inspector.css";
-
 const tabletopDatabase = supabase as unknown as SupabaseClient;
 
 type InspectorKind = "all" | "entities" | "walls" | "lights" | "fog";

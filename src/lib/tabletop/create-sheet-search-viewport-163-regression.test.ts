@@ -1,20 +1,13 @@
-import { readFileSync } from "node:fs";
+import { isStyleLoadedAfter } from "@/test/read-foundation-source";
+import { readFoundationSource as readFileSync } from "@/test/read-foundation-source";
 import { describe, expect, it } from "vitest";
 
 const root = readFileSync("src/routes/__root.tsx", "utf8");
 const css = readFileSync("src/styles/create-sheet-search-viewport-163.css", "utf8");
 
 describe("create sheet/search viewport 163", () => {
-  it("loads the containment authority after 162", () => {
-    expect(root).toContain(
-      'import createSheetSearchViewport163Css from "../styles/create-sheet-search-viewport-163.css?url"',
-    );
-    expect(root.indexOf("navSheetSearchPolish162Css")).toBeLessThan(
-      root.indexOf("createSheetSearchViewport163Css"),
-    );
-    expect(root.indexOf("href: navSheetSearchPolish162Css")).toBeLessThan(
-      root.indexOf("href: createSheetSearchViewport163Css"),
-    );
+  it("mantém a ordem das regras na cascata consolidada", () => {
+    expect(isStyleLoadedAfter("src/routes/__root.tsx", "src/styles/nav-sheet-search-polish-162.css", "src/styles/create-sheet-search-viewport-163.css")).toBe(true);
   });
 
   it("anchors every mobile dialog inside safe-area bounds", () => {

@@ -1,4 +1,5 @@
-import { readFileSync } from "node:fs";
+import { isStyleLoadedAfter } from "@/test/read-foundation-source";
+import { readFoundationSource as readFileSync } from "@/test/read-foundation-source";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 
@@ -7,14 +8,8 @@ function source(path: string) {
 }
 
 describe("focus header + navigation parity 159", () => {
-  it("loads the parity authority after the 158 repair", () => {
-    const root = source("src/routes/__root.tsx");
-    expect(root).toContain(
-      'import focusHeaderNavParity159Css from "../styles/focus-header-nav-parity-159.css?url"',
-    );
-    expect(root.lastIndexOf("href: mobilePopupMasterHead158Css")).toBeLessThan(
-      root.lastIndexOf("href: focusHeaderNavParity159Css"),
-    );
+  it("mantém a ordem das regras na cascata consolidada", () => {
+    expect(isStyleLoadedAfter("src/routes/__root.tsx", "src/styles/mobile-popup-master-head-158.css", "src/styles/focus-header-nav-parity-159.css")).toBe(true);
   });
 
   it("uses one global focus-header contract instead of four route exceptions", () => {

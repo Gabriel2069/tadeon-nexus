@@ -1,3 +1,4 @@
+/* source: src/styles/tabletop-director-enhancement.css */
 .tadeon-director-enhancement-bar {
   position: fixed;
   z-index: 94;
@@ -294,3 +295,5 @@
     transition: none;
   }
 }
+
+/* end-source: src/styles/tabletop-director-enhancement.css */

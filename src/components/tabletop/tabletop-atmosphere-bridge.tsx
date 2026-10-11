@@ -3,7 +3,6 @@ import { tabletopRegionBehavior, type TabletopSurfaceType } from "@/lib/tabletop
 import { currentTabletopRuntime } from "@/lib/tabletop/tabletop-player-runtime";
 import type { Point, TabletopEntity, TabletopSnapshot } from "@/lib/tabletop/types";
 import "@/styles/tabletop-atmosphere.css";
-
 interface AtmosphereRegion {
   id: string;
   surface: TabletopSurfaceType;

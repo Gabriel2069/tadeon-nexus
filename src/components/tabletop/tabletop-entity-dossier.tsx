@@ -24,7 +24,6 @@ import type { TabletopParticipantHandout } from "@/lib/tabletop/tabletop-partici
 import type { TabletopSheetSummary } from "@/lib/tabletop/tabletop-entity-insight";
 import type { TabletopEntity } from "@/lib/tabletop/types";
 import "@/styles/tabletop-entity-dossier.css";
-
 const ENTITY_LABELS: Record<TabletopEntity["type"], string> = {
   token: "Token",
   creature: "Criatura",

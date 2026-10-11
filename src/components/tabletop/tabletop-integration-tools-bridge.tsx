@@ -30,7 +30,6 @@ import { structureChannels, type TabletopStructureType } from "@/lib/tabletop/ta
 import type { Point, TabletopEntity, TabletopSnapshot } from "@/lib/tabletop/types";
 import { TabletopStagePortal } from "@/components/tabletop/tabletop-stage-portal";
 import "@/styles/tabletop-integration-tools.css";
-
 const database = supabase as unknown as SupabaseClient;
 
 interface SceneContext {

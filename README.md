@@ -15,7 +15,11 @@ Requisitos: Node.js 22 ou superior e npm.
 ## Validação
 
 Execute `npm run check` antes de publicar alterações. O comando roda lint, verificação de tipos,
-testes e o build de produção.
+testes e o build de produção. A verificação inclui o contrato da arquitetura de estilos.
+
+Antes de trabalhar na interface, leia [a base de manutenção](docs/FOUNDATION.md) e
+as regras de [AGENTS.md](AGENTS.md). Edite os módulos responsáveis existentes; não acrescente
+outra camada de correção para sobrepor as anteriores.
 
 ## Banco de dados
 

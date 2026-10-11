@@ -1,0 +1,1328 @@
+/* source: src/styles/sheet-requested-polish.css */
+.tadeon-sheet-page .tadeon-attribute-grid {
+  border-color: rgb(255 255 255 / 8%) !important;
+  background: rgb(5 7 10 / 94%) !important;
+  box-shadow: inset 0 1px rgb(255 255 255 / 2%);
+}
+
+.tadeon-sheet-page .tadeon-attribute-tile,
+.tadeon-sheet-page .tadeon-attribute-grid .tadeon-attribute-tile {
+  border-color: rgb(255 255 255 / 8%) !important;
+  background: linear-gradient(145deg, rgb(255 255 255 / 2.5%), transparent 48%), rgb(7 9 13 / 98%) !important;
+  box-shadow: inset 0 1px rgb(255 255 255 / 3%), 0 12px 28px -24px rgb(0 0 0 / 100%) !important;
+}
+
+.tadeon-sheet-page .tadeon-attribute-tile__value {
+  border-color: rgb(255 255 255 / 10%) !important;
+  color: var(--foreground);
+  background: linear-gradient(145deg, rgb(255 255 255 / 3%), transparent 58%), rgb(4 6 9 / 98%) !important;
+  box-shadow: inset 0 1px rgb(255 255 255 / 3%), 0 10px 22px -18px rgb(0 0 0 / 100%) !important;
+}
+
+.tadeon-sheet-page .tadeon-attributes-panel {
+  background: radial-gradient(circle at 88% -12%, rgb(255 255 255 / 2.5%), transparent 28%), linear-gradient(145deg, rgb(16 19 24 / 98%), rgb(7 9 13 / 96%)) !important;
+}
+
+.tadeon-sheet-page .tadeon-attribute-tile::after {
+  background: linear-gradient(90deg, transparent, rgb(255 255 255 / 13%), transparent) !important;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .tadeon-sheet-page .tadeon-attribute-tile:hover .tadeon-attribute-tile__value {
+    border-color: rgb(217 215 164 / 22%) !important;
+    box-shadow: inset 0 1px rgb(255 255 255 / 4%), 0 12px 26px -20px rgb(0 0 0 / 100%) !important;
+  }
+}
+
+.tadeon-sheet-page :is(.tadeon-equilibrium-panel, .tadeon-exposure-panel) {
+  background: radial-gradient(circle at 92% -8%, rgb(var(--section-rgb) / 9%), transparent 30%), linear-gradient(145deg, rgb(18 21 26 / 97%), rgb(10 13 17 / 93%)) !important;
+}
+
+.tadeon-sheet-page :is(.tadeon-equilibrium-panel, .tadeon-exposure-panel) .tadeon-sheet-section__heading {
+  background: transparent !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+}
+
+.tadeon-sheet-page .tadeon-sheet-tabs-list [data-tab-value="arvore"] > span,
+.tadeon-sheet-page .tadeon-sheet-tabs-list [data-tab-value="descricao"] > span {
+  font-size: 0 !important;
+}
+
+.tadeon-sheet-page .tadeon-sheet-tabs-list [data-tab-value="arvore"] > span::after,
+.tadeon-sheet-page .tadeon-sheet-tabs-list [data-tab-value="descricao"] > span::after {
+  font-family: inherit;
+  font-size: 0.875rem;
+  font-weight: inherit;
+  letter-spacing: inherit;
+  line-height: 1;
+}
+
+.tadeon-sheet-page .tadeon-sheet-tabs-list [data-tab-value="arvore"] > span::after {
+  content: "Maestria";
+}
+
+.tadeon-sheet-page .tadeon-sheet-tabs-list [data-tab-value="descricao"] > span::after {
+  content: "História";
+}
+
+@media (max-width: 767px) {
+  .tadeon-sheet-page .tadeon-sheet-tabs-list {
+    position: relative !important;
+    z-index: 4 !important;
+    top: auto !important;
+    margin-bottom: 0.65rem !important;
+    box-shadow: 0 14px 36px -28px rgb(0 0 0 / 98%), inset 0 1px rgb(255 255 255 / 4%) !important;
+  }
+
+  .tadeon-sheet-page .tadeon-sheet-section {
+    scroll-margin-top: calc(var(--sheet-mobile-header-height) + 0.75rem);
+  }
+}
+
+@media (max-width: 639px) {
+  .tadeon-sheet-page .tadeon-vital-upgrades__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 0.55rem !important;
+  }
+
+  .tadeon-sheet-page .tadeon-vital-upgrades__heading h3 {
+    font-size: 1.3rem !important;
+    line-height: 1.08;
+  }
+
+  .tadeon-sheet-page .tadeon-vital-upgrade {
+    min-width: 0;
+  }
+
+  .tadeon-sheet-page .tadeon-vital-upgrade__topline,
+  .tadeon-sheet-page .tadeon-vital-upgrade__detail,
+  .tadeon-sheet-page .tadeon-vital-upgrade__cost {
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+
+  .tadeon-sheet-page .tadeon-sheet-tabs-list [role="tab"] {
+    min-width: 0;
+    padding-inline: 0.55rem;
+  }
+
+  .tadeon-sheet-page .tadeon-sheet-tabs-list :is([data-tab-value="arvore"], [data-tab-value="descricao"]) > span::after {
+    font-size: 0.78rem;
+  }
+}
+/* end-source: src/styles/sheet-requested-polish.css */
+/* source: src/styles/sheet-density-final.css */
+/* Final sheet density pass: editing chrome yields space to essential reading. */
+.tadeon-sheet-page .tadeon-sheet-field,
+.tadeon-sheet-page .tadeon-sheet-row__field,
+.tadeon-sheet-page .tadeon-stat-block__mod { gap: 0.18rem; }
+
+.tadeon-sheet-page .tadeon-sheet-field > label,
+.tadeon-sheet-page .tadeon-sheet-row__field > span,
+.tadeon-sheet-page .tadeon-stat-block__mod > span {
+  font-size: 0.58rem;
+  line-height: 1.05;
+}
+
+.tadeon-sheet-page .tadeon-sheet-field > input,
+.tadeon-sheet-page .tadeon-sheet-row__field > input,
+.tadeon-sheet-page .tadeon-sheet-row__field > select,
+.tadeon-sheet-page .tadeon-stat-block__mod input {
+  min-height: 2.15rem;
+  height: 2.15rem;
+  padding-block: 0.28rem;
+}
+
+.tadeon-sheet-page .tadeon-identity-question-panel textarea {
+  min-height: 3.1rem;
+  height: 3.1rem;
+}
+
+.tadeon-sheet-page .tadeon-sheet-row { padding-block: 0.5rem; }
+
+.tadeon-sheet-page .tadeon-identity-field--name > input {
+  min-height: 2.65rem;
+  height: 2.65rem;
+  font-size: clamp(1.05rem, 1.8vw, 1.3rem);
+  letter-spacing: 0.015em;
+}
+
+.tadeon-sheet-page .tadeon-attribute-tile__label { font-size: 0.78rem; }
+.tadeon-sheet-page .tadeon-attribute-tile__value {
+  width: 2.5rem;
+  height: 2.5rem;
+  font-size: 1.28rem;
+  font-weight: 800;
+}
+
+.tadeon-sheet-page .tadeon-stat-block__value {
+  font-size: clamp(1.55rem, 2.2vw, 1.9rem);
+  font-weight: 800;
+}
+.tadeon-sheet-page .tadeon-stat-block__value small { font-size: 0.68rem; }
+
+.tadeon-sheet-page .tadeon-defense-card__score,
+.tadeon-sheet-page .tadeon-defense-card__score svg {
+  width: 4.15rem;
+  height: 4.15rem;
+}
+.tadeon-sheet-page .tadeon-defense-card__score span {
+  font-size: 1.65rem;
+  font-weight: 800;
+}
+
+.tadeon-sheet-page :is(.tadeon-stat-block__head, .tadeon-defense-card__summary) .font-cinzel {
+  font-size: 0.92rem;
+}
+
+@media (max-width: 767px) {
+  .tadeon-sheet-page .tadeon-sheet-field > input,
+  .tadeon-sheet-page .tadeon-sheet-row__field > input,
+  .tadeon-sheet-page .tadeon-sheet-row__field > select,
+  .tadeon-sheet-page .tadeon-stat-block__mod input {
+    min-height: 2.4rem !important;
+    height: 2.4rem;
+  }
+  .tadeon-sheet-page .tadeon-identity-field--name > input {
+    min-height: 2.7rem !important;
+    height: 2.7rem;
+    font-size: 1.12rem;
+  }
+  .tadeon-sheet-page .tadeon-stat-block__value { font-size: 1.48rem !important; }
+  .tadeon-sheet-page .tadeon-defense-card__score,
+  .tadeon-sheet-page .tadeon-defense-card__score svg {
+    width: 3.75rem !important;
+    height: 3.75rem !important;
+  }
+  .tadeon-sheet-page .tadeon-defense-card__score span { font-size: 1.5rem !important; }
+}
+
+@media (max-width: 639px) {
+  .tadeon-sheet-page .tadeon-attribute-tile__label { font-size: 0.7rem; }
+  .tadeon-sheet-page .tadeon-attribute-tile__value {
+    width: 2.08rem;
+    height: 2.08rem;
+    font-size: 1.08rem;
+  }
+}
+
+/* end-source: src/styles/sheet-density-final.css */
+/* source: src/styles/sheet-game-mode.css */
+/* Versão de jogo: preserva todos os campos, reduz o aparato de edição e prioriza leitura. */
+.tadeon-sheet-experience-host {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: .35rem;
+}
+
+.tadeon-sheet-presence,
+.tadeon-sheet-nexus-links {
+  display: inline-flex;
+  min-width: 2rem;
+  height: 2rem;
+  align-items: center;
+  justify-content: center;
+  gap: .25rem;
+  border: 1px solid color-mix(in srgb, var(--border) 84%, transparent);
+  border-radius: 999px;
+  padding: 0 .48rem;
+  color: var(--muted-foreground);
+  font-size: .68rem;
+  font-variant-numeric: tabular-nums;
+  background: color-mix(in srgb, var(--background) 84%, transparent);
+}
+
+.tadeon-sheet-presence svg,
+.tadeon-sheet-nexus-links svg {
+  width: .8rem;
+  height: .8rem;
+}
+
+.tadeon-workspace-popout-host,
+.tadeon-nexus-sheet-drag-host {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: .35rem;
+  margin-top: .55rem;
+}
+
+.tadeon-nexus-drag-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: .35rem;
+  min-height: 2rem;
+  border: 1px dashed color-mix(in srgb, var(--primary) 48%, var(--border));
+  border-radius: 999px;
+  padding: .28rem .68rem;
+  background: color-mix(in srgb, var(--primary) 7%, var(--card));
+  color: var(--foreground);
+  font-size: .72rem;
+  font-weight: 650;
+  cursor: grab;
+  transition: transform 160ms ease, border-color 160ms ease, background 160ms ease;
+}
+
+.tadeon-nexus-drag-chip:hover {
+  transform: translateY(-1px);
+  border-color: color-mix(in srgb, var(--primary) 72%, var(--border));
+  background: color-mix(in srgb, var(--primary) 12%, var(--card));
+}
+
+.tadeon-nexus-drag-chip:active { cursor: grabbing; }
+.tadeon-nexus-drag-chip svg { width: .85rem; height: .85rem; }
+
+html[data-tadeon-nexus-drop="ready"] .tadeon-sheet-page::before {
+  content: "Solte para ligar esta página do Nexus à ficha";
+  position: fixed;
+  z-index: 9998;
+  inset: 1rem;
+  display: grid;
+  place-items: center;
+  border: 2px dashed color-mix(in srgb, var(--primary) 72%, transparent);
+  border-radius: 1.4rem;
+  background: color-mix(in srgb, var(--background) 88%, transparent);
+  color: var(--foreground);
+  font-family: var(--font-cinzel, inherit);
+  font-size: clamp(1rem, 2vw, 1.35rem);
+  font-weight: 700;
+  pointer-events: none;
+  box-shadow: inset 0 0 0 9999px color-mix(in srgb, var(--primary) 3%, transparent);
+}
+
+html[data-tadeon-sheet-mode="game"] .tadeon-sheet-page,
+html[data-tadeon-sheet-mode="game"] [class*="tadeon-sheet"] {
+  --tadeon-game-field-height: 2rem;
+}
+
+html[data-tadeon-sheet-mode="game"] input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+html[data-tadeon-sheet-mode="game"] select,
+html[data-tadeon-sheet-mode="game"] button[role="combobox"] {
+  min-height: var(--tadeon-game-field-height) !important;
+  height: var(--tadeon-game-field-height) !important;
+  padding-block: .15rem !important;
+  border-color: transparent !important;
+  background: color-mix(in srgb, var(--card) 68%, transparent) !important;
+  box-shadow: none !important;
+  font-weight: 650;
+}
+
+html[data-tadeon-sheet-mode="game"] textarea {
+  min-height: 2.6rem !important;
+  max-height: 5.6rem;
+  resize: vertical;
+  padding: .48rem .62rem !important;
+  border-color: color-mix(in srgb, var(--border) 55%, transparent) !important;
+  background: color-mix(in srgb, var(--card) 62%, transparent) !important;
+  line-height: 1.35;
+}
+
+html[data-tadeon-sheet-mode="game"] input:focus,
+html[data-tadeon-sheet-mode="game"] textarea:focus,
+html[data-tadeon-sheet-mode="game"] button[role="combobox"]:focus-visible {
+  border-color: color-mix(in srgb, var(--primary) 55%, var(--border)) !important;
+  background: var(--background) !important;
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--primary) 14%, transparent) !important;
+}
+
+html[data-tadeon-sheet-mode="game"] label {
+  font-size: .66rem;
+  letter-spacing: .035em;
+  color: color-mix(in srgb, var(--muted-foreground) 82%, transparent);
+}
+
+html[data-tadeon-sheet-mode="game"] .tadeon-surface,
+html[data-tadeon-sheet-mode="game"] .tadeon-sheet-section,
+html[data-tadeon-sheet-mode="game"] section[id] {
+  scroll-margin-top: 5.5rem;
+}
+
+html[data-tadeon-sheet-mode="game"] #sec-attr strong,
+html[data-tadeon-sheet-mode="game"] #sec-pontos strong,
+html[data-tadeon-sheet-mode="game"] .tadeon-attribute-tile__value,
+html[data-tadeon-sheet-mode="game"] .tadeon-stat-block__value,
+html[data-tadeon-sheet-mode="game"] .tadeon-defense-card__score {
+  font-size: clamp(1.55rem, 2.35vw, 2.55rem) !important;
+  line-height: .96 !important;
+  font-variant-numeric: tabular-nums;
+}
+
+html[data-tadeon-sheet-mode="game"] #sec-info input:first-of-type,
+html[data-tadeon-sheet-mode="game"] input[name="name"] {
+  font-size: clamp(1.05rem, 1.6vw, 1.35rem) !important;
+  font-weight: 760 !important;
+}
+
+html[data-tadeon-sheet-mode="game"] .tadeon-attribute-grid { gap: .48rem !important; }
+
+html[data-tadeon-sheet-mode="game"] .tadeon-attribute-tile {
+  min-height: 5.2rem !important;
+  padding: .58rem !important;
+}
+
+html[data-tadeon-sheet-mode="game"] #sec-armas,
+html[data-tadeon-sheet-mode="game"] #sec-inv,
+html[data-tadeon-sheet-mode="game"] #sec-hab,
+html[data-tadeon-sheet-mode="game"] #sec-pericias,
+html[data-tadeon-sheet-mode="game"] #sec-notas,
+html[data-tadeon-sheet-mode="game"] #tramas-fragmentos {
+  --tadeon-section-gap: .55rem;
+}
+
+html[data-tadeon-sheet-mode="game"] [data-tadeon-context-help] { cursor: help; }
+
+/* Modo embutido usa a mesma ficha, só remove a navegação externa do aplicativo. */
+html[data-tadeon-sheet-embed="tabletop"] body { background: transparent !important; }
+
+html[data-tadeon-sheet-embed="tabletop"] .tadeon-mobile-dock,
+html[data-tadeon-sheet-embed="tabletop"] .tadeon-app-sidebar,
+html[data-tadeon-sheet-embed="tabletop"] [data-app-sidebar],
+html[data-tadeon-sheet-embed="tabletop"] [data-mobile-navigation] {
+  display: none !important;
+}
+
+html[data-tadeon-sheet-embed="tabletop"] main {
+  width: 100% !important;
+  max-width: none !important;
+  margin: 0 !important;
+  padding: .65rem !important;
+}
+
+html[data-tadeon-sheet-embed="tabletop"] .tadeon-sheet-page {
+  max-width: none !important;
+  margin: 0 !important;
+}
+
+.tadeon-tabletop-sheet-dialog {
+  max-height: 96dvh;
+  max-width: 96dvw;
+}
+
+.tadeon-tabletop-sheet-frame {
+  display: block;
+  width: 100%;
+  height: 100%;
+  min-height: 70dvh;
+  border: 0;
+  background: transparent;
+}
+
+.tadeon-sheet-diff-row {
+  display: grid;
+  grid-template-columns: minmax(7rem, .8fr) minmax(0, 1fr) auto minmax(0, 1fr);
+  gap: .55rem;
+  align-items: center;
+  padding: .55rem .65rem;
+  border-radius: .65rem;
+  background: color-mix(in srgb, var(--muted) 36%, transparent);
+}
+
+.tadeon-sheet-diff-row > span {
+  font-size: .72rem;
+  font-weight: 700;
+}
+
+.tadeon-sheet-diff-row > small,
+.tadeon-sheet-diff-row > strong {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: .72rem;
+}
+
+.tadeon-sheet-diff-row > small { color: var(--muted-foreground); }
+.tadeon-sheet-diff-row > small::after { content: " →"; margin-left: .35rem; }
+.tadeon-sheet-diff-row > strong { color: var(--foreground); }
+
+@media (max-width: 767px) {
+  .tadeon-sheet-experience-host { gap: .22rem; }
+
+  .tadeon-sheet-game-button span,
+  .tadeon-sheet-presence,
+  .tadeon-sheet-nexus-links { font-size: .62rem; }
+
+  html[data-tadeon-sheet-mode="game"] textarea { max-height: 7rem; }
+
+  .tadeon-sheet-diff-row {
+    grid-template-columns: 1fr;
+    gap: .2rem;
+  }
+
+  .tadeon-sheet-diff-row > small::after { content: ""; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tadeon-sheet-game-button,
+  .tadeon-sheet-popout-button,
+  .tadeon-workspace-popout-host button,
+  .tadeon-nexus-drag-chip {
+    transition: none !important;
+    animation: none !important;
+  }
+}
+
+/* end-source: src/styles/sheet-game-mode.css */
+/* source: src/styles/sheet-game-mode-final.css */
+/* Camada final do modo Jogo. Não remove dados: troca o peso visual de edição por leitura operacional. */
+.tadeon-dedicated-shell {
+  min-height: 100dvh;
+  width: 100%;
+  overflow-x: clip;
+  background:
+    radial-gradient(circle at 18% 0%, color-mix(in srgb, var(--primary) 8%, transparent), transparent 34rem),
+    var(--background);
+  color: var(--foreground);
+}
+
+.tadeon-dedicated-shell__main {
+  min-height: 100dvh;
+  width: 100%;
+}
+
+.tadeon-dedicated-shell[data-dedicated-presentation="popout"] .tadeon-route-master,
+.tadeon-dedicated-shell[data-dedicated-presentation="popout"] .tadeon-route-nexus,
+.tadeon-dedicated-shell[data-dedicated-presentation="popout"] .tadeon-sheet-page {
+  max-width: none !important;
+  width: 100% !important;
+  margin-inline: auto !important;
+}
+
+.tadeon-sheet-game-button[data-state="active"],
+html[data-tadeon-sheet-mode="game"] .tadeon-sheet-game-button {
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--primary) 42%, transparent),
+    0 8px 24px -16px color-mix(in srgb, var(--primary) 80%, transparent);
+}
+
+html[data-tadeon-sheet-mode="game"] .tadeon-sheet-page {
+  --game-control-height: 1.78rem;
+  --game-section-gap: .58rem;
+  --game-editor-opacity: .56;
+}
+
+/* A ficha passa a se comportar como painel de leitura. */
+html[data-tadeon-sheet-mode="game"] .tadeon-sheet-page .tadeon-sheet-section,
+html[data-tadeon-sheet-mode="game"] .tadeon-sheet-page section[id] {
+  padding: .78rem !important;
+  border-color: color-mix(in srgb, var(--border) 58%, transparent) !important;
+  box-shadow: none !important;
+}
+
+html[data-tadeon-sheet-mode="game"] .tadeon-sheet-page .tadeon-sheet-section + .tadeon-sheet-section,
+html[data-tadeon-sheet-mode="game"] .tadeon-sheet-page section[id] + section[id] {
+  margin-top: var(--game-section-gap) !important;
+}
+
+html[data-tadeon-sheet-mode="game"] .tadeon-sheet-page label,
+html[data-tadeon-sheet-mode="game"] .tadeon-sheet-page .tadeon-eyebrow {
+  opacity: .58;
+  font-size: .61rem !important;
+  line-height: 1.05 !important;
+  letter-spacing: .055em !important;
+}
+
+html[data-tadeon-sheet-mode="game"] .tadeon-sheet-page input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+html[data-tadeon-sheet-mode="game"] .tadeon-sheet-page textarea,
+html[data-tadeon-sheet-mode="game"] .tadeon-sheet-page select,
+html[data-tadeon-sheet-mode="game"] .tadeon-sheet-page button[role="combobox"] {
+  min-height: var(--game-control-height) !important;
+  height: var(--game-control-height) !important;
+  padding: .08rem .42rem !important;
+  border-color: transparent !important;
+  border-radius: .4rem !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  color: var(--foreground) !important;
+  font-size: .79rem !important;
+  font-weight: 680 !important;
+  line-height: 1.12 !important;
+  transition:
+    min-height 160ms ease,
+    height 160ms ease,
+    padding 160ms ease,
+    background-color 160ms ease,
+    border-color 160ms ease,
+    box-shadow 160ms ease,
+    opacity 160ms ease !important;
+}
+
+html[data-tadeon-sheet-mode="game"] .tadeon-sheet-page textarea {
+  height: 2.5rem !important;
+  min-height: 2.5rem !important;
+  max-height: 2.5rem !important;
+  overflow: hidden !important;
+  resize: none !important;
+  line-height: 1.3 !important;
+}
+
+html[data-tadeon-sheet-mode="game"] .tadeon-sheet-page input:hover,
+html[data-tadeon-sheet-mode="game"] .tadeon-sheet-page textarea:hover,
+html[data-tadeon-sheet-mode="game"] .tadeon-sheet-page button[role="combobox"]:hover {
+  background: color-mix(in srgb, var(--card) 76%, transparent) !important;
+}
+
+html[data-tadeon-sheet-mode="game"] .tadeon-sheet-page input:focus,
+html[data-tadeon-sheet-mode="game"] .tadeon-sheet-page textarea:focus,
+html[data-tadeon-sheet-mode="game"] .tadeon-sheet-page button[role="combobox"]:focus-visible {
+  border-color: color-mix(in srgb, var(--primary) 55%, var(--border)) !important;
+  background: var(--background) !important;
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--primary) 13%, transparent) !important;
+}
+
+html[data-tadeon-sheet-mode="game"] .tadeon-sheet-page textarea:focus {
+  height: 8rem !important;
+  min-height: 5.5rem !important;
+  max-height: 14rem !important;
+  overflow: auto !important;
+  resize: vertical !important;
+  padding: .48rem .58rem !important;
+}
+
+/* Controles de manutenção recuam e voltam quando a seção é usada. */
+html[data-tadeon-sheet-mode="game"] .tadeon-sheet-page .tadeon-stepper-button,
+html[data-tadeon-sheet-mode="game"] .tadeon-sheet-page button[aria-label*="Adicionar"],
+html[data-tadeon-sheet-mode="game"] .tadeon-sheet-page button[aria-label*="Remover"],
+html[data-tadeon-sheet-mode="game"] .tadeon-sheet-page button[title*="Adicionar"],
+html[data-tadeon-sheet-mode="game"] .tadeon-sheet-page button[title*="Remover"] {
+  opacity: .22;
+  transform: scale(.88);
+  transition: opacity 150ms ease, transform 150ms ease !important;
+}
+
+html[data-tadeon-sheet-mode="game"] .tadeon-sheet-page section:hover .tadeon-stepper-button,
+html[data-tadeon-sheet-mode="game"] .tadeon-sheet-page section:focus-within .tadeon-stepper-button,
+html[data-tadeon-sheet-mode="game"] .tadeon-sheet-page section:hover button[aria-label*="Adicionar"],
+html[data-tadeon-sheet-mode="game"] .tadeon-sheet-page section:focus-within button[aria-label*="Adicionar"],
+html[data-tadeon-sheet-mode="game"] .tadeon-sheet-page section:hover button[aria-label*="Remover"],
+html[data-tadeon-sheet-mode="game"] .tadeon-sheet-page section:focus-within button[aria-label*="Remover"],
+html[data-tadeon-sheet-mode="game"] .tadeon-sheet-page section:hover button[title*="Adicionar"],
+html[data-tadeon-sheet-mode="game"] .tadeon-sheet-page section:focus-within button[title*="Adicionar"],
+html[data-tadeon-sheet-mode="game"] .tadeon-sheet-page section:hover button[title*="Remover"],
+html[data-tadeon-sheet-mode="game"] .tadeon-sheet-page section:focus-within button[title*="Remover"] {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* Informação operacional ganha escala e contraste. */
+html[data-tadeon-sheet-mode="game"] .tadeon-identity-foundation .tadeon-sheet-title,
+html[data-tadeon-sheet-mode="game"] .tadeon-sheet-page #sec-info input:first-of-type,
+html[data-tadeon-sheet-mode="game"] .tadeon-sheet-page input[name="name"] {
+  min-height: 2.35rem !important;
+  height: 2.35rem !important;
+  padding-inline: .18rem !important;
+  font-family: var(--font-cinzel, inherit) !important;
+  font-size: clamp(1.25rem, 2.15vw, 2rem) !important;
+  font-weight: 780 !important;
+  letter-spacing: -.02em !important;
+}
+
+html[data-tadeon-sheet-mode="game"] .tadeon-attribute-grid {
+  gap: .35rem !important;
+}
+
+html[data-tadeon-sheet-mode="game"] .tadeon-attribute-tile {
+  min-height: 4.35rem !important;
+  padding: .42rem !important;
+  border-color: color-mix(in srgb, var(--border) 62%, transparent) !important;
+}
+
+html[data-tadeon-sheet-mode="game"] .tadeon-attribute-tile__value,
+html[data-tadeon-sheet-mode="game"] .tadeon-stat-block__value,
+html[data-tadeon-sheet-mode="game"] .tadeon-defense-card__score,
+html[data-tadeon-sheet-mode="game"] #sec-pontos strong {
+  font-size: clamp(1.65rem, 2.6vw, 2.6rem) !important;
+  line-height: .9 !important;
+  font-weight: 800 !important;
+  font-variant-numeric: tabular-nums;
+}
+
+html[data-tadeon-sheet-mode="game"] .tadeon-stat-block,
+html[data-tadeon-sheet-mode="game"] .tadeon-defense-card {
+  min-height: 4.15rem !important;
+  padding: .58rem !important;
+}
+
+/* Tabelas de armas, inventário, perícias e habilidades: leitura densa, edição só quando tocada. */
+html[data-tadeon-sheet-mode="game"] #sec-armas input,
+html[data-tadeon-sheet-mode="game"] #sec-inv input,
+html[data-tadeon-sheet-mode="game"] #sec-hab input,
+html[data-tadeon-sheet-mode="game"] #sec-pericias input,
+html[data-tadeon-sheet-mode="game"] #tramas-fragmentos input {
+  min-height: 1.62rem !important;
+  height: 1.62rem !important;
+  padding-inline: .25rem !important;
+  font-size: .76rem !important;
+}
+
+html[data-tadeon-sheet-mode="game"] #sec-armas [class*="gap-"],
+html[data-tadeon-sheet-mode="game"] #sec-inv [class*="gap-"],
+html[data-tadeon-sheet-mode="game"] #sec-hab [class*="gap-"],
+html[data-tadeon-sheet-mode="game"] #sec-pericias [class*="gap-"],
+html[data-tadeon-sheet-mode="game"] #tramas-fragmentos [class*="gap-"] {
+  row-gap: .26rem !important;
+}
+
+html[data-tadeon-sheet-mode="game"] .text-muted-foreground {
+  opacity: .72;
+}
+
+html[data-tadeon-sheet-mode="game"] section[id]:hover .text-muted-foreground,
+html[data-tadeon-sheet-mode="game"] section[id]:focus-within .text-muted-foreground {
+  opacity: .94;
+}
+
+/* Popout/iframe dedicados não carregam moldura da aplicação. */
+.tadeon-dedicated-shell[data-dedicated-presentation="embed"] {
+  background: transparent;
+}
+
+.tadeon-dedicated-shell[data-dedicated-presentation="embed"] .tadeon-dedicated-shell__main {
+  padding: .35rem;
+}
+
+.tadeon-dedicated-shell[data-dedicated-presentation="popout"] .tadeon-dedicated-shell__main {
+  padding: clamp(.5rem, 1.5vw, 1.2rem);
+}
+
+@media (max-width: 767px) {
+  html[data-tadeon-sheet-mode="game"] .tadeon-sheet-page {
+    --game-control-height: 2.05rem;
+  }
+
+  html[data-tadeon-sheet-mode="game"] .tadeon-sheet-page textarea {
+    height: 2.8rem !important;
+    min-height: 2.8rem !important;
+    max-height: 2.8rem !important;
+  }
+
+  html[data-tadeon-sheet-mode="game"] .tadeon-sheet-page textarea:focus {
+    height: 9rem !important;
+    max-height: 16rem !important;
+  }
+
+  html[data-tadeon-sheet-mode="game"] .tadeon-attribute-tile {
+    min-height: 4.7rem !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html[data-tadeon-sheet-mode="game"] .tadeon-sheet-page input,
+  html[data-tadeon-sheet-mode="game"] .tadeon-sheet-page textarea,
+  html[data-tadeon-sheet-mode="game"] .tadeon-sheet-page button {
+    transition: none !important;
+  }
+}
+
+/* end-source: src/styles/sheet-game-mode-final.css */
+/* source: src/styles/sheet-inventory-organizer.css */
+.tadeon-inventory-organizer-host {
+  display: inline-flex;
+  align-items: center;
+  margin-left: .45rem;
+  vertical-align: middle;
+}
+
+.tadeon-inventory-organize-button {
+  min-height: 1.9rem;
+  border-radius: 999px;
+  color: var(--muted-foreground);
+}
+
+.tadeon-inventory-organize-button:hover {
+  color: var(--foreground);
+  background: color-mix(in srgb, var(--primary) 9%, transparent);
+}
+
+.tadeon-inventory-container-chip {
+  display: inline-flex;
+  max-width: 100%;
+  align-items: center;
+  gap: .4rem;
+  border: 1px solid color-mix(in srgb, var(--primary) 26%, var(--border));
+  border-radius: 999px;
+  padding: .34rem .46rem .34rem .62rem;
+  background: color-mix(in srgb, var(--primary) 6%, var(--card));
+  font-size: .72rem;
+}
+
+.tadeon-inventory-container-chip > svg {
+  width: .78rem;
+  height: .78rem;
+  color: var(--primary);
+}
+
+.tadeon-inventory-container-chip > button {
+  display: inline-grid;
+  width: 1.45rem;
+  height: 1.45rem;
+  place-items: center;
+  border-radius: 999px;
+  color: var(--muted-foreground);
+  transition: background 150ms ease, color 150ms ease, transform 150ms ease;
+}
+
+.tadeon-inventory-container-chip > button:hover {
+  background: color-mix(in srgb, var(--destructive) 12%, transparent);
+  color: var(--destructive);
+  transform: scale(1.05);
+}
+
+.tadeon-inventory-container-chip > button svg {
+  width: .72rem;
+  height: .72rem;
+}
+
+.tadeon-inventory-placement-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(11rem, .55fr);
+  align-items: center;
+  gap: .8rem;
+  border: 1px solid color-mix(in srgb, var(--border) 78%, transparent);
+  border-radius: .8rem;
+  padding: .7rem .8rem;
+  background: color-mix(in srgb, var(--card) 68%, transparent);
+}
+
+.tadeon-inventory-placement-row strong {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: .82rem;
+}
+
+.tadeon-inventory-placement-row small {
+  display: block;
+  margin-top: .15rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--muted-foreground);
+  font-size: .68rem;
+}
+
+.tadeon-inventory-placement-row select {
+  width: 100%;
+  min-height: 2.35rem;
+  border: 1px solid var(--border);
+  border-radius: .55rem;
+  background: var(--background);
+  padding: 0 .65rem;
+  color: var(--foreground);
+  font-size: .75rem;
+}
+
+@media (max-width: 640px) {
+  .tadeon-inventory-organizer-host {
+    margin-left: .2rem;
+  }
+
+  .tadeon-inventory-organize-button span {
+    display: none;
+  }
+
+  .tadeon-inventory-placement-row {
+    grid-template-columns: 1fr;
+    gap: .5rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tadeon-inventory-container-chip > button,
+  .tadeon-inventory-organize-button {
+    transition: none !important;
+  }
+}
+
+/* end-source: src/styles/sheet-inventory-organizer.css */
+/* source: src/styles/nexus-interaction-polish.css */
+/* O Nexus ~ interaction layer
+ * Brings the archive controls to the same microinteraction language used by
+ * the Master workspace without changing Nexus data or navigation semantics.
+ */
+
+@keyframes tadeon-nexus-control-settle {
+  0% {
+    opacity: 0.7;
+    scale: 0.94;
+    translate: 0 0.08rem;
+  }
+  62% {
+    opacity: 1;
+    scale: 1.035;
+    translate: 0 -0.04rem;
+  }
+  100% {
+    opacity: 1;
+    scale: 1;
+    translate: 0 0;
+  }
+}
+
+@keyframes tadeon-nexus-thread-in {
+  from {
+    opacity: 0;
+    scale: 0.28 1;
+  }
+  to {
+    opacity: 1;
+    scale: 1 1;
+  }
+}
+
+@keyframes tadeon-nexus-menu-slide {
+  from {
+    opacity: 0;
+    translate: -0.32rem 0;
+  }
+  to {
+    opacity: 1;
+    translate: 0 0;
+  }
+}
+
+@keyframes tadeon-nexus-icon-bloom {
+  0% {
+    rotate: -5deg;
+    scale: 0.82;
+  }
+  64% {
+    rotate: 4deg;
+    scale: 1.1;
+  }
+  100% {
+    rotate: 0deg;
+    scale: 1;
+  }
+}
+
+.tadeon-route-nexus {
+  --nexus-control-accent: var(--section-accent, var(--primary));
+}
+
+.tadeon-route-nexus
+  :where(
+    .tadeon-nexus-tools,
+    .tadeon-nexus-editor-toolbar,
+    .tadeon-nexus-context-tabs,
+    .tadeon-nexus-index,
+    .tadeon-nexus-document
+  )
+  :where(button, [role="button"], [data-slot="button"]) {
+  -webkit-tap-highlight-color: transparent;
+}
+
+.tadeon-route-nexus
+  :where(
+    .tadeon-nexus-tools,
+    .tadeon-nexus-editor-toolbar,
+    .tadeon-nexus-context-tabs,
+    .tadeon-nexus-index,
+    .tadeon-nexus-document,
+    .tadeon-nexus-home
+  )
+  :where(button, [role="button"], [data-slot="button"])
+  svg:not(.animate-spin):not(.animate-pulse) {
+  overflow: visible;
+  transform-origin: center;
+  transition:
+    color 170ms var(--ease-out),
+    filter 170ms var(--ease-out),
+    opacity 170ms var(--ease-out),
+    translate 210ms var(--ease-out),
+    scale 210ms var(--ease-out),
+    rotate 210ms var(--ease-out);
+}
+
+.tadeon-route-nexus .tadeon-nexus-tools [data-slot="button"] {
+  min-height: 2.4rem;
+  border-color: color-mix(in srgb, var(--primary) 15%, var(--border));
+  background:
+    linear-gradient(145deg, rgb(255 255 255 / 3%), transparent 50%),
+    color-mix(in srgb, var(--card) 88%, var(--background));
+  box-shadow:
+    inset 0 1px rgb(255 255 255 / 3%),
+    0 12px 30px -26px rgb(0 0 0 / 100%);
+}
+
+.tadeon-route-nexus .tadeon-nexus-tools [data-slot="button"]::after,
+.tadeon-route-nexus .tadeon-nexus-context-tabs button::after,
+.tadeon-route-nexus .tadeon-nexus-index__node::after,
+.tadeon-route-nexus .tadeon-nexus-document__tab::after {
+  position: absolute;
+  right: 16%;
+  bottom: -1px;
+  left: 16%;
+  height: 1px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, transparent, var(--primary), transparent);
+  opacity: 0;
+  scale: 0.28 1;
+  transform-origin: center;
+  pointer-events: none;
+  content: "";
+}
+
+.tadeon-route-nexus .tadeon-nexus-index__node,
+.tadeon-route-nexus .tadeon-nexus-index__shortcut,
+.tadeon-route-nexus .tadeon-nexus-context-tabs button,
+.tadeon-route-nexus .tadeon-nexus-document__tab {
+  position: relative;
+  isolation: isolate;
+  overflow: visible;
+}
+
+.tadeon-route-nexus .tadeon-nexus-index__node.is-active::after,
+.tadeon-route-nexus .tadeon-nexus-context-tabs button[class*="bg-card"]::after,
+.tadeon-route-nexus .tadeon-nexus-document__tab[class*="bg-card"]::after {
+  opacity: 0.88;
+  scale: 1 1;
+  animation: tadeon-nexus-thread-in 280ms var(--ease-out) both;
+}
+
+.tadeon-route-nexus .tadeon-nexus-index__node.is-active,
+.tadeon-route-nexus .tadeon-nexus-context-tabs button[class*="bg-card"],
+.tadeon-route-nexus .tadeon-nexus-document__tab[class*="bg-card"] {
+  animation: tadeon-nexus-control-settle 280ms var(--ease-out) both;
+}
+
+.tadeon-route-nexus .tadeon-nexus-index__node.is-active {
+  border-color: color-mix(in srgb, var(--primary) 34%, var(--border));
+  background:
+    linear-gradient(90deg, color-mix(in srgb, var(--primary) 13%, var(--card)), transparent 82%),
+    color-mix(in srgb, var(--card) 96%, var(--background));
+  box-shadow:
+    inset 2px 0 var(--primary),
+    0 14px 30px -26px color-mix(in srgb, var(--primary) 82%, transparent),
+    inset 0 1px rgb(255 255 255 / 3%);
+}
+
+.tadeon-route-nexus .tadeon-nexus-index__shortcut[aria-current="page"] {
+  color: color-mix(in srgb, var(--foreground) 80%, var(--primary));
+  background: linear-gradient(90deg, rgb(217 215 164 / 7%), transparent 86%);
+  box-shadow: inset 2px 0 rgb(217 215 164 / 42%);
+}
+
+.tadeon-route-nexus .tadeon-nexus-document__tab {
+  min-height: 2.55rem;
+  border-radius: 0.78rem 0.26rem 0 0;
+  box-shadow: inset 0 1px rgb(255 255 255 / 2%);
+}
+
+.tadeon-route-nexus .tadeon-nexus-document__tab[class*="bg-card"] {
+  border-color: color-mix(in srgb, var(--primary) 24%, var(--border));
+  color: var(--primary);
+  background:
+    linear-gradient(180deg, rgb(217 215 164 / 8%), transparent),
+    var(--card);
+  box-shadow:
+    0 12px 28px -24px color-mix(in srgb, var(--primary) 78%, transparent),
+    inset 0 1px rgb(255 255 255 / 4%);
+}
+
+.tadeon-route-nexus .tadeon-nexus-context-tabs {
+  position: relative;
+  overflow: visible;
+  gap: 0.28rem;
+  padding: 0.28rem;
+  border-color: color-mix(in srgb, var(--primary) 12%, var(--border));
+  border-radius: 0.9rem 0.3rem 0.9rem 0.3rem;
+  background:
+    linear-gradient(145deg, rgb(255 255 255 / 2.5%), transparent 52%),
+    color-mix(in srgb, var(--secondary) 30%, var(--card));
+}
+
+.tadeon-route-nexus .tadeon-nexus-context-tabs button {
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid transparent;
+  border-radius: 0.68rem 0.23rem 0.68rem 0.23rem;
+  background: transparent;
+}
+
+.tadeon-route-nexus .tadeon-nexus-context-tabs button[class*="bg-card"] {
+  border-color: color-mix(in srgb, var(--primary) 22%, var(--border));
+  background:
+    linear-gradient(145deg, rgb(217 215 164 / 9%), transparent 64%),
+    color-mix(in srgb, var(--card) 94%, var(--background));
+  box-shadow:
+    0 10px 24px -22px color-mix(in srgb, var(--primary) 78%, transparent),
+    inset 0 1px rgb(255 255 255 / 4%);
+}
+
+.tadeon-route-nexus .tadeon-nexus-context-tabs button[class*="bg-card"] svg {
+  color: var(--primary);
+  filter: drop-shadow(0 0 7px rgb(217 215 164 / 26%));
+  animation: tadeon-nexus-icon-bloom 320ms var(--ease-out) both;
+}
+
+.tadeon-route-nexus .tadeon-nexus-editor-toolbar {
+  position: relative;
+  overflow: visible;
+  gap: 0.22rem;
+  padding: 0.32rem;
+  border-color: color-mix(in srgb, var(--primary) 13%, var(--border));
+  border-radius: 0.9rem 0.3rem 0.9rem 0.3rem;
+  background:
+    linear-gradient(145deg, rgb(255 255 255 / 2.4%), transparent 55%),
+    color-mix(in srgb, var(--secondary) 25%, var(--card));
+  box-shadow: inset 0 1px rgb(255 255 255 / 2.5%);
+}
+
+.tadeon-route-nexus .tadeon-nexus-editor-toolbar [data-slot="button"] {
+  min-height: 2.25rem;
+  overflow: visible;
+  border: 1px solid transparent;
+  border-radius: 0.64rem 0.22rem 0.64rem 0.22rem;
+}
+
+.tadeon-route-nexus .tadeon-nexus-editor-more > summary,
+.tadeon-route-nexus .tadeon-nexus-filters > summary,
+.tadeon-route-nexus .tadeon-nexus-technical > summary,
+.tadeon-route-nexus .tadeon-nexus-relation-advanced > summary {
+  position: relative;
+  min-width: 0;
+  transition:
+    color 180ms var(--ease-out),
+    background-color 180ms var(--ease-out),
+    border-color 180ms var(--ease-out),
+    box-shadow 180ms var(--ease-out),
+    translate 180ms var(--ease-out);
+}
+
+.tadeon-route-nexus .tadeon-nexus-editor-more[open] > summary,
+.tadeon-route-nexus .tadeon-nexus-filters[open] > summary,
+.tadeon-route-nexus .tadeon-nexus-technical[open] > summary,
+.tadeon-route-nexus .tadeon-nexus-relation-advanced[open] > summary {
+  color: color-mix(in srgb, var(--foreground) 76%, var(--primary));
+}
+
+.tadeon-route-nexus .tadeon-nexus-editor-more[open] > [data-slot="button"] {
+  animation: tadeon-nexus-menu-slide 200ms var(--ease-out) both;
+}
+
+.tadeon-route-nexus .tadeon-nexus-home__actions > button {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  border-color: color-mix(in srgb, var(--primary) 13%, var(--border));
+  background:
+    radial-gradient(circle at 8% 0%, rgb(217 215 164 / 6%), transparent 50%),
+    linear-gradient(145deg, rgb(255 255 255 / 2.6%), transparent 55%),
+    color-mix(in srgb, var(--card) 95%, var(--background));
+  box-shadow:
+    0 18px 38px -32px rgb(0 0 0 / 100%),
+    inset 0 1px rgb(255 255 255 / 3%);
+}
+
+.tadeon-route-nexus .tadeon-nexus-home__actions > button::before {
+  position: absolute;
+  z-index: -1;
+  top: 0;
+  bottom: 0;
+  left: -36%;
+  width: 28%;
+  background: linear-gradient(90deg, transparent, rgb(255 255 255 / 8%), transparent);
+  rotate: 8deg;
+  opacity: 0;
+  pointer-events: none;
+  content: "";
+}
+
+.tadeon-route-nexus .tadeon-nexus-home__shelves button {
+  position: relative;
+  border: 1px solid transparent;
+  border-radius: 0.68rem 0.23rem 0.68rem 0.23rem;
+  transition:
+    color 180ms var(--ease-out),
+    border-color 180ms var(--ease-out),
+    background-color 180ms var(--ease-out),
+    box-shadow 180ms var(--ease-out),
+    translate 180ms var(--ease-out);
+}
+
+.tadeon-library-view-switch [data-slot="button"],
+.tadeon-graph-layout-switch [data-slot="button"],
+.tadeon-graph-toolbar [data-slot="button"] {
+  overflow: visible;
+  border-color: transparent;
+  transition:
+    color 180ms var(--ease-out),
+    border-color 180ms var(--ease-out),
+    background-color 180ms var(--ease-out),
+    box-shadow 180ms var(--ease-out),
+    translate 180ms var(--ease-out),
+    scale 180ms var(--ease-out);
+}
+
+.tadeon-library-view-switch [data-slot="button"][aria-pressed="true"],
+.tadeon-graph-layout-switch [data-slot="button"][aria-pressed="true"] {
+  border-color: rgb(217 215 164 / 18%);
+  color: var(--primary);
+  background:
+    linear-gradient(145deg, rgb(217 215 164 / 10%), transparent 65%),
+    rgb(255 255 255 / 2%);
+  box-shadow:
+    0 10px 24px -22px var(--primary),
+    inset 0 1px rgb(255 255 255 / 4%);
+}
+
+.tadeon-library-view-switch [data-slot="button"][aria-pressed="true"] svg,
+.tadeon-graph-layout-switch [data-slot="button"][aria-pressed="true"] svg {
+  animation: tadeon-nexus-icon-bloom 320ms var(--ease-out) both;
+}
+
+.tadeon-library-shelf,
+.tadeon-graph-matches button {
+  transition:
+    color 180ms var(--ease-out),
+    border-color 180ms var(--ease-out),
+    background-color 180ms var(--ease-out),
+    box-shadow 180ms var(--ease-out),
+    translate 180ms var(--ease-out),
+    scale 180ms var(--ease-out);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .tadeon-route-nexus .tadeon-nexus-tools [data-slot="button"]:not(:disabled):hover,
+  .tadeon-route-nexus .tadeon-nexus-editor-toolbar [data-slot="button"]:not(:disabled):hover,
+  .tadeon-route-nexus .tadeon-nexus-context-tabs button:not(:disabled):hover {
+    border-color: color-mix(in srgb, var(--primary) 30%, var(--border));
+    color: color-mix(in srgb, var(--foreground) 78%, var(--primary));
+    background:
+      linear-gradient(145deg, rgb(217 215 164 / 7%), transparent 60%),
+      color-mix(in srgb, var(--card) 94%, var(--background));
+    box-shadow: 0 14px 30px -27px color-mix(in srgb, var(--primary) 68%, transparent);
+    translate: 0 -1px;
+  }
+
+  .tadeon-route-nexus
+    :where(.tadeon-nexus-tools, .tadeon-nexus-editor-toolbar, .tadeon-nexus-context-tabs)
+    :where(button, [data-slot="button"]):not(:disabled):hover
+    svg:not(.animate-spin):not(.animate-pulse) {
+    color: var(--primary);
+    filter: drop-shadow(0 0 7px rgb(217 215 164 / 24%));
+    translate: 0 -0.08rem;
+    scale: 1.07;
+  }
+
+  .tadeon-route-nexus .tadeon-nexus-index__node:not(.is-active):hover,
+  .tadeon-route-nexus .tadeon-nexus-index__shortcut:hover,
+  .tadeon-route-nexus .tadeon-nexus-home__shelves button:hover {
+    border-color: color-mix(in srgb, var(--primary) 14%, var(--border));
+    color: var(--foreground);
+    background: linear-gradient(90deg, rgb(217 215 164 / 6%), transparent 84%);
+    box-shadow: inset 2px 0 rgb(217 215 164 / 24%);
+    translate: 0.14rem 0;
+  }
+
+  .tadeon-route-nexus .tadeon-nexus-document__tab:hover {
+    border-color: color-mix(in srgb, var(--primary) 17%, var(--border));
+    translate: 0 -2px;
+  }
+
+  .tadeon-route-nexus .tadeon-nexus-home__actions > button:hover {
+    border-color: color-mix(in srgb, var(--primary) 38%, var(--border));
+    box-shadow: 0 20px 44px -33px color-mix(in srgb, var(--primary) 78%, transparent);
+    translate: 0 -3px;
+  }
+
+  .tadeon-route-nexus .tadeon-nexus-home__actions > button:hover::before {
+    opacity: 1;
+    translate: 490% 0;
+    transition:
+      opacity 120ms var(--ease-out),
+      translate 620ms var(--ease-out);
+  }
+
+  .tadeon-route-nexus .tadeon-nexus-home__actions > button:hover > svg:first-child {
+    color: var(--primary);
+    filter: drop-shadow(0 0 8px rgb(217 215 164 / 25%));
+    rotate: -5deg;
+    scale: 1.12;
+  }
+
+  .tadeon-route-nexus .tadeon-nexus-home__actions > button:hover > svg:last-child {
+    color: var(--primary);
+    translate: 0.18rem 0;
+  }
+
+  .tadeon-library-view-switch [data-slot="button"]:not(:disabled):hover,
+  .tadeon-graph-layout-switch [data-slot="button"]:not(:disabled):hover,
+  .tadeon-graph-toolbar [data-slot="button"]:not(:disabled):hover {
+    border-color: rgb(217 215 164 / 16%);
+    color: var(--primary);
+    background: rgb(217 215 164 / 6%);
+    translate: 0 -1px;
+  }
+
+  .tadeon-library-shelf:hover,
+  .tadeon-graph-matches button:hover {
+    translate: 0.12rem 0;
+  }
+}
+
+@media (pointer: coarse) {
+  .tadeon-route-nexus
+    :where(
+      .tadeon-nexus-tools,
+      .tadeon-nexus-editor-toolbar,
+      .tadeon-nexus-context-tabs,
+      .tadeon-nexus-home__actions,
+      .tadeon-nexus-home__shelves
+    )
+    :where(button, [data-slot="button"]):not(:disabled):active,
+  .tadeon-library-view-switch [data-slot="button"]:not(:disabled):active,
+  .tadeon-graph-layout-switch [data-slot="button"]:not(:disabled):active {
+    scale: 0.97;
+  }
+
+  .tadeon-route-nexus
+    :where(
+      .tadeon-nexus-tools,
+      .tadeon-nexus-editor-toolbar,
+      .tadeon-nexus-context-tabs,
+      .tadeon-nexus-home__actions,
+      .tadeon-nexus-home__shelves
+    )
+    :where(button, [data-slot="button"]):not(:disabled):active
+    svg:not(.animate-spin):not(.animate-pulse) {
+    scale: 0.88;
+    translate: 0 0.06rem;
+  }
+}
+
+@media (max-width: 767px) {
+  .tadeon-route-nexus .tadeon-nexus-tools {
+    scroll-padding-inline: 0.4rem;
+  }
+
+  .tadeon-route-nexus .tadeon-nexus-tools [data-slot="button"] {
+    flex: 0 0 auto;
+  }
+
+  .tadeon-route-nexus .tadeon-nexus-document__tab {
+    max-width: min(72vw, 14rem);
+  }
+
+  .tadeon-route-nexus .tadeon-nexus-context-tabs button {
+    min-height: 2.75rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tadeon-route-nexus :where(button, [role="button"], [data-slot="button"]),
+  .tadeon-route-nexus :where(button, [role="button"], [data-slot="button"]) svg,
+  .tadeon-library-view-switch [data-slot="button"],
+  .tadeon-library-view-switch [data-slot="button"] svg,
+  .tadeon-graph-layout-switch [data-slot="button"],
+  .tadeon-graph-layout-switch [data-slot="button"] svg {
+    animation: none !important;
+    translate: 0 !important;
+    scale: 1 !important;
+    rotate: 0deg !important;
+  }
+}
+/* end-source: src/styles/nexus-interaction-polish.css */

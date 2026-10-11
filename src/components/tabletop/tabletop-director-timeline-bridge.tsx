@@ -20,7 +20,6 @@ import {
 import { tabletopVisibilityService } from "@/lib/tabletop/tabletop-visibility-service";
 import type { TabletopScene } from "@/lib/tabletop/types";
 import "@/styles/tabletop-director-timeline.css";
-
 type SceneWithCampaign = TabletopScene & { campaignId?: string };
 
 async function cueFromCurrent(state: TabletopDirectorState): Promise<TabletopDirectorCue | null> {

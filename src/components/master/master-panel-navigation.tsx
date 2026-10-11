@@ -20,9 +20,8 @@ import {
 } from "lucide-react";
 import { TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { MasterSigil } from "@/components/section-symbols";
-import "@/styles/workspace-polish.css";
-import "@/styles/master-panel-navigation-fit-185.css";
-
+import "@/styles/workspace.css";
+import "@/styles/master-panel-navigation.css";
 export const MASTER_TAB_VALUES = [
   "dashboard",
   "session",

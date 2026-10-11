@@ -26,8 +26,7 @@ import {
   CommandShortcut,
 } from "@/components/ui/command";
 import { isApplicationAdministrator } from "@/lib/permissions";
-import "@/styles/final-nav-search-polish-196.css";
-
+import "@/styles/global-search.css";
 type SearchGroup = "Áreas" | "Fichas" | "Campanha";
 type SearchIconName =
   | "dashboard"

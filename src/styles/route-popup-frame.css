@@ -1,0 +1,136 @@
+/* source: src/styles/popup-geometry-256.css */
+/* Pop-ups #256 - the route frame owns centering; modal animation never does. */
+
+:where(
+  [data-slot="dialog-positioner"],
+  [data-slot="alert-dialog-positioner"]
+) {
+  position: fixed;
+  z-index: 120;
+  top: var(--tadeon-popup-viewport-top, 0px);
+  left: var(--tadeon-popup-frame-left, 0px);
+  display: grid;
+  width: var(--tadeon-popup-frame-width, 100dvw);
+  height: var(--tadeon-popup-viewport-height, 100dvh);
+  box-sizing: border-box;
+  align-items: center;
+  justify-items: center;
+  overflow: hidden;
+  padding:
+    max(0.5rem, env(safe-area-inset-top))
+    max(0.5rem, env(safe-area-inset-right))
+    max(0.5rem, env(safe-area-inset-bottom))
+    max(0.5rem, env(safe-area-inset-left));
+  pointer-events: none;
+}
+
+:where(
+  [data-slot="dialog-overlay"],
+  [data-slot="alert-dialog-overlay"],
+  [data-slot="sheet-overlay"],
+  [data-slot="drawer-overlay"]
+) {
+  z-index: 80 !important;
+}
+
+:where(
+  [data-slot="sheet-content"],
+  [data-slot="drawer-content"]
+) {
+  z-index: 110 !important;
+}
+
+[data-slot="dialog-positioner"]
+  > [data-slot="dialog-content"][data-popup-contained="true"],
+[data-slot="alert-dialog-positioner"]
+  > [data-slot="alert-dialog-content"][data-popup-contained="true"] {
+  position: relative !important;
+  inset: auto !important;
+  min-width: 0;
+  width: min(var(--tadeon-dialog-width, calc(100% - 1rem)), 100%) !important;
+  max-height: 100% !important;
+  margin: auto !important;
+  --tadeon-popup-zero-translate: 0px;
+  translate:
+    var(--tadeon-popup-zero-translate)
+    var(--tadeon-popup-zero-translate) !important;
+  transform: none !important;
+  pointer-events: auto;
+}
+
+/* Global command search is centered by the fixed positioner. It must not
+   acquire a second visual-viewport offset of its own. */
+[data-slot="dialog-positioner"]
+  > [data-slot="dialog-content"].tadeon-global-search-dialog {
+  position: relative !important;
+  inset: auto !important;
+  left: auto !important;
+  top: auto !important;
+  right: auto !important;
+  bottom: auto !important;
+  margin: auto !important;
+  translate: none !important;
+  transform: none !important;
+  transform-origin: center !important;
+  justify-self: center !important;
+  align-self: center !important;
+  width: min(42rem, 100%) !important;
+  max-width: min(92vw, 42rem) !important;
+}
+
+@keyframes tadeon-popup-contained-in {
+  from { opacity: 0; transform: translate3d(0, 0.9rem, 0) scale(0.965); }
+  to { opacity: 1; transform: translate3d(0, 0, 0) scale(1); }
+}
+
+@keyframes tadeon-popup-contained-out {
+  from { opacity: 1; transform: translate3d(0, 0, 0) scale(1); }
+  to { opacity: 0; transform: translate3d(0, 0.55rem, 0) scale(0.98); }
+}
+
+[data-slot="dialog-positioner"]
+  > [data-slot="dialog-content"][data-popup-contained="true"][data-state="open"],
+[data-slot="alert-dialog-positioner"]
+  > [data-slot="alert-dialog-content"][data-popup-contained="true"][data-state="open"] {
+  animation: tadeon-popup-contained-in 280ms var(--ease-drawer) both !important;
+}
+
+[data-slot="dialog-positioner"]
+  > [data-slot="dialog-content"][data-popup-contained="true"][data-state="closed"],
+[data-slot="alert-dialog-positioner"]
+  > [data-slot="alert-dialog-content"][data-popup-contained="true"][data-state="closed"] {
+  animation: tadeon-popup-contained-out 180ms var(--ease-in-out) both !important;
+}
+
+@media (max-width: 767px) {
+  :where(
+    [data-slot="dialog-positioner"],
+    [data-slot="alert-dialog-positioner"]
+  ) {
+    padding-inline: max(0.5rem, env(safe-area-inset-left));
+  }
+
+  [data-slot="dialog-positioner"]
+    > [data-slot="dialog-content"][data-popup-contained="true"],
+  [data-slot="alert-dialog-positioner"]
+    > [data-slot="alert-dialog-content"][data-popup-contained="true"] {
+    width: 100% !important;
+  }
+
+  [data-slot="dialog-positioner"]
+    > [data-slot="dialog-content"].tadeon-global-search-dialog {
+    width: min(42rem, 92vw) !important;
+    max-width: 92vw !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-slot="dialog-positioner"]
+    > [data-slot="dialog-content"][data-popup-contained="true"],
+  [data-slot="alert-dialog-positioner"]
+    > [data-slot="alert-dialog-content"][data-popup-contained="true"] {
+    animation-duration: 1ms !important;
+  }
+}
+
+/* end-source: src/styles/popup-geometry-256.css */

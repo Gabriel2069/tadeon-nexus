@@ -22,8 +22,7 @@ import {
 } from "@/components/ui/dialog";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
-import "@/styles/sheet-individual-fit-final.css";
-
+import "@/styles/sheet-experience.css";
 const SHEET_PATH = /^\/sheet\/([^/]+)$/;
 const NEXUS_DRAG_MIME = "application/x-tadeon-nexus-node";
 

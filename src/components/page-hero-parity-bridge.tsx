@@ -6,22 +6,7 @@ import {
   SectionSymbol,
   type AppSectionSymbol,
 } from "@/components/section-symbols";
-import "@/styles/head-parity-final-214.css";
-import "@/styles/head-tab-parity-217.css";
-import "@/styles/menu-color-source-219.css";
-import "@/styles/head-background-signatures-221.css";
-import "@/styles/head-rich-signatures-223.css";
-import "@/styles/head-system-audit-224.css";
-import "@/styles/head-background-coverage-225.css";
-import "@/styles/offline-meta-row-226.css";
-import "@/styles/head-final-polish-227.css";
-import "@/styles/tab-accent-propagation-228.css";
-import "@/styles/secondary-tab-accent-propagation-230.css";
-import "@/styles/subtle-motion-pass-231.css";
-import "@/styles/dashboard-hero-motion-depth-232.css";
-import "@/styles/experimental-round-hero-symbols-233.css";
-import "@/styles/final-pre-detail-audit-235.css";
-import "@/styles/tadeon-final-responsive-weave.css";
+import "@/styles/page-hero-parity.css";
 
 type HeroKind = Extract<AppSectionSymbol, "users" | "tools" | "offline">;
 type IconKind = HeroKind | "tabletop" | "brand";

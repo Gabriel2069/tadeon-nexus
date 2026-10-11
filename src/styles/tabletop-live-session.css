@@ -1,3 +1,4 @@
+/* source: src/styles/tabletop-live-session.css */
 .tadeon-live-session {
   position: relative;
   overflow: hidden;
@@ -207,3 +208,5 @@
     animation: none;
   }
 }
+
+/* end-source: src/styles/tabletop-live-session.css */

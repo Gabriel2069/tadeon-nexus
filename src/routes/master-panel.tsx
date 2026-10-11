@@ -1,3 +1,4 @@
+import { useAuth } from "@/lib/auth";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { ProtectedShell } from "@/components/protected-shell";
@@ -292,6 +293,7 @@ function normalizeScene(value: Partial<Scene>): Scene {
 }
 
 function MasterPanel() {
+  const { user, role } = useAuth();
   const search = Route.useSearch();
   const navigate = useNavigate();
   const [s, setS] = useState<SettingsRow | null>(null);
@@ -480,7 +482,7 @@ function MasterPanel() {
 
   const openSheet = (sheetId: string) => {
     if (!s) return;
-    cacheMasterState(s, sheets);
+    cacheMasterState(s, sheets, user && role ? { userId: user.id, role } : null);
     void (async () => {
       if (dirty) {
         toast.info("Salvando a condução antes de abrir a ficha…");
@@ -494,10 +496,10 @@ function MasterPanel() {
   useEffect(() => {
     if (!s) return;
     const timer = window.setTimeout(() => {
-      cacheMasterState(s, sheets);
+      cacheMasterState(s, sheets, user && role ? { userId: user.id, role } : null);
     }, 600);
     return () => window.clearTimeout(timer);
-  }, [s, sheets]);
+  }, [s, sheets, user, role]);
 
   if (loading) {
     return (

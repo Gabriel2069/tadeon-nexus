@@ -4,7 +4,6 @@ import { MapPinned, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import "@/styles/nexus-tabletop-locator.css";
-
 const database = supabase as unknown as SupabaseClient;
 
 interface TabletopLocation {

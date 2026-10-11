@@ -22,6 +22,8 @@ jobs:
       - run: npm ci
       - name: Auditar dependências de produção
         run: npm audit --omit=dev --audit-level=high
+      - name: Verificar arquitetura de estilos
+        run: npm run check:styles
       - run: npm run lint
       - run: npm run typecheck
       - run: npm run test

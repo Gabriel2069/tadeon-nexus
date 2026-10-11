@@ -1,0 +1,247 @@
+{
+  "description": "Ceilings during staged cleanup, not targets. Lower budgets after eliminating overrides; do not increase them to bypass the check.",
+  "files": {
+    "src/styles.css": {
+      "important": 103,
+      "roots": 4
+    },
+    "src/styles/button.css": {
+      "important": 19,
+      "roots": 1
+    },
+    "src/styles/desktop-shell.css": {
+      "important": 0,
+      "roots": 0
+    },
+    "src/styles/experience-surfaces.css": {
+      "important": 259,
+      "roots": 2
+    },
+    "src/styles/global-search.css": {
+      "important": 29,
+      "roots": 0
+    },
+    "src/styles/hero-backgrounds.css": {
+      "important": 1,
+      "roots": 0
+    },
+    "src/styles/interface-layout.css": {
+      "important": 429,
+      "roots": 1
+    },
+    "src/styles/knowledge-graph-second-brain.css": {
+      "important": 7,
+      "roots": 0
+    },
+    "src/styles/layout-compatibility.css": {
+      "important": 87,
+      "roots": 0
+    },
+    "src/styles/master-panel-navigation.css": {
+      "important": 46,
+      "roots": 0
+    },
+    "src/styles/master-toolbar-popout.css": {
+      "important": 68,
+      "roots": 0
+    },
+    "src/styles/mobile-more-radial.css": {
+      "important": 13,
+      "roots": 0
+    },
+    "src/styles/mobile-viewport.css": {
+      "important": 96,
+      "roots": 1
+    },
+    "src/styles/motion-composition.css": {
+      "important": 551,
+      "roots": 21
+    },
+    "src/styles/motion-foundation.css": {
+      "important": 84,
+      "roots": 6
+    },
+    "src/styles/motion-interactions.css": {
+      "important": 194,
+      "roots": 11
+    },
+    "src/styles/navigation-layout.css": {
+      "important": 11,
+      "roots": 0
+    },
+    "src/styles/nexus-material.css": {
+      "important": 1,
+      "roots": 0
+    },
+    "src/styles/nexus-tabletop-locator.css": {
+      "important": 0,
+      "roots": 0
+    },
+    "src/styles/page-hero-parity.css": {
+      "important": 967,
+      "roots": 1
+    },
+    "src/styles/realtime-status.css": {
+      "important": 0,
+      "roots": 0
+    },
+    "src/styles/responsive-shell.css": {
+      "important": 0,
+      "roots": 0
+    },
+    "src/styles/route-layout.css": {
+      "important": 1715,
+      "roots": 0
+    },
+    "src/styles/route-popup-frame.css": {
+      "important": 29,
+      "roots": 0
+    },
+    "src/styles/sheet-experience.css": {
+      "important": 0,
+      "roots": 0
+    },
+    "src/styles/sheet-layout.css": {
+      "important": 133,
+      "roots": 0
+    },
+    "src/styles/sheet-premium.css": {
+      "important": 11,
+      "roots": 0
+    },
+    "src/styles/tabletop-adaptive-performance.css": {
+      "important": 2,
+      "roots": 0
+    },
+    "src/styles/tabletop-atmosphere.css": {
+      "important": 4,
+      "roots": 0
+    },
+    "src/styles/tabletop-chrome.css": {
+      "important": 86,
+      "roots": 0
+    },
+    "src/styles/tabletop-creative-dock.css": {
+      "important": 0,
+      "roots": 0
+    },
+    "src/styles/tabletop-director-enhancement.css": {
+      "important": 0,
+      "roots": 0
+    },
+    "src/styles/tabletop-director-remote.css": {
+      "important": 25,
+      "roots": 0
+    },
+    "src/styles/tabletop-director-timeline.css": {
+      "important": 1,
+      "roots": 0
+    },
+    "src/styles/tabletop-director-workspace.css": {
+      "important": 2,
+      "roots": 0
+    },
+    "src/styles/tabletop-entity-dossier.css": {
+      "important": 0,
+      "roots": 0
+    },
+    "src/styles/tabletop-floating-layout.css": {
+      "important": 100,
+      "roots": 0
+    },
+    "src/styles/tabletop-fog-geometry.css": {
+      "important": 1,
+      "roots": 0
+    },
+    "src/styles/tabletop-integration-tools.css": {
+      "important": 0,
+      "roots": 0
+    },
+    "src/styles/tabletop-live-session.css": {
+      "important": 0,
+      "roots": 0
+    },
+    "src/styles/tabletop-participant-workspace.css": {
+      "important": 2,
+      "roots": 0
+    },
+    "src/styles/tabletop-placeables-inspector.css": {
+      "important": 0,
+      "roots": 0
+    },
+    "src/styles/tabletop-player-interaction.css": {
+      "important": 0,
+      "roots": 0
+    },
+    "src/styles/tabletop-preflight.css": {
+      "important": 1,
+      "roots": 0
+    },
+    "src/styles/tabletop-radial-actions.css": {
+      "important": 2,
+      "roots": 0
+    },
+    "src/styles/tabletop-region-automation.css": {
+      "important": 1,
+      "roots": 0
+    },
+    "src/styles/tabletop-reliability-editor.css": {
+      "important": 28,
+      "roots": 0
+    },
+    "src/styles/tabletop-route-experience.css": {
+      "important": 585,
+      "roots": 0
+    },
+    "src/styles/tabletop-semantic-transform.css": {
+      "important": 0,
+      "roots": 0
+    },
+    "src/styles/tabletop-smart-setup.css": {
+      "important": 4,
+      "roots": 0
+    },
+    "src/styles/tabletop-unified-drop.css": {
+      "important": 0,
+      "roots": 0
+    },
+    "src/styles/tabletop-visibility-panel.css": {
+      "important": 3,
+      "roots": 0
+    },
+    "src/styles/tabletop-workspace.css": {
+      "important": 11,
+      "roots": 0
+    },
+    "src/styles/tadeon-experience-director.css": {
+      "important": 18,
+      "roots": 1
+    },
+    "src/styles/viewport.css": {
+      "important": 46,
+      "roots": 2
+    },
+    "src/styles/visual-viewport-popup.css": {
+      "important": 82,
+      "roots": 1
+    },
+    "src/styles/workspace.css": {
+      "important": 12,
+      "roots": 0
+    }
+  },
+  "rootOrder": [
+    "../styles.css?url",
+    "@/styles/responsive-shell.css?url",
+    "@/styles/viewport.css?url",
+    "@/styles/interface-layout.css?url",
+    "@/styles/tabletop-chrome.css?url",
+    "@/styles/layout-compatibility.css?url",
+    "@/styles/route-layout.css?url",
+    "@/styles/experience-surfaces.css?url",
+    "@/styles/nexus-material.css?url",
+    "@/styles/motion-foundation.css?url",
+    "@/styles/motion-interactions.css?url",
+    "@/styles/motion-composition.css?url"
+  ]
+}

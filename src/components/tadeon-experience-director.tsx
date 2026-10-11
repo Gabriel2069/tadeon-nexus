@@ -1,6 +1,6 @@
+import { createFrameBatch } from "@/lib/frame-batch";
 import { useEffect } from "react";
-import "../styles/tadeon-header-bars-navigation-motion.css";
-
+import "@/styles/tadeon-experience-director.css";
 const INTERACTIVE = [
   "a",
   "button",
@@ -198,23 +198,25 @@ export function TadeonExperienceDirector() {
   useEffect(() => {
     if (typeof window === "undefined" || typeof document === "undefined") return;
     ensureMasterNavigationStyle();
-    let frame = 0;
-    let observer: MutationObserver | null = null;
-    const scheduleFull = () => { window.cancelAnimationFrame(frame); frame = window.requestAnimationFrame(() => { if (!directRoute()) processRoot(document); }); };
-    const processMutations = (mutations: MutationRecord[]) => {
-      window.cancelAnimationFrame(frame);
-      frame = window.requestAnimationFrame(() => {
-        for (const mutation of mutations) {
-          if (mutation.type === "characterData") { processStateFromNode(mutation.target); continue; }
-          mutation.addedNodes.forEach((node) => { if (node instanceof HTMLElement) processElement(node); else if (node.nodeType === Node.TEXT_NODE) processStateFromNode(node); });
-        }
+    let fullFrame: number | null = null;
+    const batch = createFrameBatch<MutationRecord>((mutations) => {
+      for (const mutation of mutations) {
+        if (mutation.type === "characterData") { processStateFromNode(mutation.target); continue; }
+        mutation.addedNodes.forEach((node) => { if (node instanceof HTMLElement) processElement(node); else if (node.nodeType === Node.TEXT_NODE) processStateFromNode(node); });
+      }
+    }, (callback) => window.requestAnimationFrame(callback), (handle) => window.cancelAnimationFrame(handle));
+    const scheduleFull = () => {
+      if (fullFrame !== null) window.cancelAnimationFrame(fullFrame);
+      fullFrame = window.requestAnimationFrame(() => {
+        fullFrame = null;
+        if (!directRoute()) processRoot(document);
       });
     };
     scheduleFull();
-    observer = new MutationObserver(processMutations);
+    const observer = new MutationObserver((mutations) => batch.add(mutations));
     observer.observe(document.body, { subtree:true, childList:true, characterData:true });
     window.addEventListener("popstate", scheduleFull);
-    return () => { window.cancelAnimationFrame(frame); observer?.disconnect(); window.removeEventListener("popstate", scheduleFull); };
+    return () => { if (fullFrame !== null) window.cancelAnimationFrame(fullFrame); batch.dispose(); observer.disconnect(); window.removeEventListener("popstate", scheduleFull); };
   }, []);
   return null;
 }

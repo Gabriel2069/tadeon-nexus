@@ -1,3 +1,4 @@
+/* source: src/styles/tabletop-region-automation.css */
 .tadeon-region-automation {
   display: grid;
   gap: .65rem;
@@ -56,3 +57,5 @@
 @media (prefers-reduced-motion: reduce) {
   .tadeon-region-automation__rules article { transition-duration: .01ms !important; }
 }
+
+/* end-source: src/styles/tabletop-region-automation.css */

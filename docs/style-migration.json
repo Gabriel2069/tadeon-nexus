@@ -1,0 +1,745 @@
+{
+  "baseCommit": "353808af68c8ba0d08bbc90d6f8ad9117c9e25f8",
+  "originalFiles": 212,
+  "currentFiles": 57,
+  "modules": [
+    {
+      "module": "src/styles/workspace.css",
+      "entries": [
+        "src/styles/workspace-polish.css"
+      ]
+    },
+    {
+      "module": "src/styles/mobile-viewport.css",
+      "entries": [
+        "src/styles/mobile-viewport-final-180.css"
+      ]
+    },
+    {
+      "module": "src/styles/nexus-material.css",
+      "entries": [
+        "src/styles/tadeon-nexus-material.css"
+      ]
+    },
+    {
+      "module": "src/styles/layout-compatibility.css",
+      "entries": [
+        "src/styles/user-repair-152.css"
+      ]
+    },
+    {
+      "module": "src/styles/viewport.css",
+      "entries": [
+        "src/styles/viewport-fit-final.css"
+      ]
+    },
+    {
+      "module": "src/styles/tabletop-chrome.css",
+      "entries": [
+        "src/styles/tabletop-map-chrome-repair.css"
+      ]
+    },
+    {
+      "module": "src/styles/global-search.css",
+      "entries": [
+        "src/styles/final-nav-search-polish-196.css"
+      ]
+    },
+    {
+      "module": "src/styles/page-hero-parity.css",
+      "entries": [
+        "src/styles/head-parity-final-214.css",
+        "src/styles/head-tab-parity-217.css",
+        "src/styles/menu-color-source-219.css",
+        "src/styles/head-background-signatures-221.css",
+        "src/styles/head-rich-signatures-223.css",
+        "src/styles/head-system-audit-224.css",
+        "src/styles/head-background-coverage-225.css",
+        "src/styles/offline-meta-row-226.css",
+        "src/styles/head-final-polish-227.css",
+        "src/styles/tab-accent-propagation-228.css",
+        "src/styles/secondary-tab-accent-propagation-230.css",
+        "src/styles/subtle-motion-pass-231.css",
+        "src/styles/dashboard-hero-motion-depth-232.css",
+        "src/styles/experimental-round-hero-symbols-233.css",
+        "src/styles/final-pre-detail-audit-235.css",
+        "src/styles/tadeon-final-responsive-weave.css"
+      ]
+    },
+    {
+      "module": "src/styles/mobile-more-radial.css",
+      "entries": [
+        "src/styles/mobile-more-radial.css"
+      ]
+    },
+    {
+      "module": "src/styles/tadeon-experience-director.css",
+      "entries": [
+        "src/styles/tadeon-header-bars-navigation-motion.css"
+      ]
+    },
+    {
+      "module": "src/styles/sheet-layout.css",
+      "entries": [
+        "src/styles/sheet-requested-polish.css",
+        "src/styles/sheet-density-final.css",
+        "src/styles/sheet-game-mode.css",
+        "src/styles/sheet-game-mode-final.css",
+        "src/styles/sheet-inventory-organizer.css",
+        "src/styles/nexus-interaction-polish.css"
+      ]
+    },
+    {
+      "module": "src/styles/navigation-layout.css",
+      "entries": [
+        "src/styles/dedicated-workspace-parity-168.css",
+        "src/styles/navigation-users-uniformity-191.css"
+      ]
+    },
+    {
+      "module": "src/styles/desktop-shell.css",
+      "entries": [
+        "src/styles/desktop-studio.css"
+      ]
+    },
+    {
+      "module": "src/styles/hero-backgrounds.css",
+      "entries": [
+        "src/styles/head-background-motion-256.css"
+      ]
+    },
+    {
+      "module": "src/styles/visual-viewport-popup.css",
+      "entries": [
+        "src/styles/tablet-popup-viewport-237.css"
+      ]
+    },
+    {
+      "module": "src/styles/responsive-shell.css",
+      "entries": [
+        "src/styles/mobile-studio.css"
+      ]
+    },
+    {
+      "module": "src/styles/interface-layout.css",
+      "entries": [
+        "src/styles/interface-audit-final.css",
+        "src/styles/radial-presence-final.css",
+        "src/styles/interface-reconciliation-final.css",
+        "src/styles/interface-final-user-polish.css",
+        "src/styles/selection-director-entry-polish.css",
+        "src/styles/urgent-user-reconciliation.css"
+      ]
+    },
+    {
+      "module": "src/styles/route-layout.css",
+      "entries": [
+        "src/styles/mobile-product-repair-153.css",
+        "src/styles/final-device-parity-154.css",
+        "src/styles/final-device-parity-154-compat.css",
+        "src/styles/user-visible-repair-156.css",
+        "src/styles/final-visual-system-157.css",
+        "src/styles/mobile-popup-master-head-158.css",
+        "src/styles/focus-header-nav-parity-159.css",
+        "src/styles/navigation-real-svg-parity-160.css",
+        "src/styles/sheet-popup-graph-polish-161.css",
+        "src/styles/nav-sheet-search-polish-162.css",
+        "src/styles/create-sheet-search-viewport-163.css",
+        "src/styles/desktop-hero-parity-202.css"
+      ]
+    },
+    {
+      "module": "src/styles/experience-surfaces.css",
+      "entries": [
+        "src/styles/hero-icons-final-212.css",
+        "src/styles/tadeon-experience-orchestration.css",
+        "src/styles/tadeon-experience-stabilization.css",
+        "src/styles/tadeon-experience-runtime.css",
+        "src/styles/tadeon-materials-final.css",
+        "src/styles/tadeon-mobile-excellence.css",
+        "src/styles/tadeon-experience-details.css",
+        "src/styles/tadeon-command-experience.css"
+      ]
+    },
+    {
+      "module": "src/styles/motion-foundation.css",
+      "entries": [
+        "src/styles/tadeon-visible-upgrade.css",
+        "src/styles/tadeon-atmosphere.css",
+        "src/styles/tadeon-interaction-pass.css",
+        "src/styles/tadeon-head-microanimations.css",
+        "src/styles/tadeon-motion-system.css",
+        "src/styles/tadeon-contextual-motion.css",
+        "src/styles/tadeon-popup-motion.css",
+        "src/styles/tadeon-ui-detail-motion.css",
+        "src/styles/tadeon-library-layout-restore.css",
+        "src/styles/tadeon-continuity-motion.css",
+        "src/styles/tadeon-premium-motion.css",
+        "src/styles/tadeon-relational-motion.css"
+      ]
+    },
+    {
+      "module": "src/styles/motion-interactions.css",
+      "entries": [
+        "src/styles/tadeon-visible-motion.css",
+        "src/styles/tadeon-personality-motion.css",
+        "src/styles/tadeon-section-personality-motion.css",
+        "src/styles/tadeon-actual-ui-motion.css",
+        "src/styles/tadeon-frame-refinement-motion.css",
+        "src/styles/tadeon-complete-interaction-motion.css",
+        "src/styles/tadeon-deep-interaction-motion.css",
+        "src/styles/tadeon-semantic-motion.css",
+        "src/styles/tadeon-context-transition-motion.css",
+        "src/styles/tadeon-portal-surface-motion.css",
+        "src/styles/tadeon-popup-refinement-motion.css",
+        "src/styles/tadeon-sidebar-real-repair.css"
+      ]
+    },
+    {
+      "module": "src/styles/motion-composition.css",
+      "entries": [
+        "src/styles/tadeon-detail-motion-refinement.css",
+        "src/styles/tadeon-sidebar-final.css",
+        "src/styles/tadeon-final-detail-refinement.css",
+        "src/styles/tadeon-motion-personality.css",
+        "src/styles/tadeon-semantic-personality-refinement.css",
+        "src/styles/tadeon-motion-relational-depth.css",
+        "src/styles/tadeon-motion-polish-ultimate.css",
+        "src/styles/tadeon-motion-loom.css",
+        "src/styles/tadeon-final-defect-authority.css"
+      ]
+    },
+    {
+      "module": "src/styles/master-toolbar-popout.css",
+      "entries": [
+        "src/styles/ui-coherence-192.css"
+      ]
+    },
+    {
+      "module": "src/styles/master-panel-navigation.css",
+      "entries": [
+        "src/styles/master-panel-navigation-fit-185.css"
+      ]
+    },
+    {
+      "module": "src/styles/route-popup-frame.css",
+      "entries": [
+        "src/styles/popup-geometry-256.css"
+      ]
+    },
+    {
+      "module": "src/styles/button.css",
+      "entries": [
+        "src/styles/interaction-polish.css"
+      ]
+    },
+    {
+      "module": "src/styles/sheet-experience.css",
+      "entries": [
+        "src/styles/sheet-individual-fit-final.css"
+      ]
+    },
+    {
+      "module": "src/styles/nexus-tabletop-locator.css",
+      "entries": [
+        "src/styles/nexus-tabletop-locator.css"
+      ]
+    },
+    {
+      "module": "src/styles/knowledge-graph-second-brain.css",
+      "entries": [
+        "src/styles/nexus-second-brain.css"
+      ]
+    },
+    {
+      "module": "src/styles/tabletop-live-session.css",
+      "entries": [
+        "src/styles/tabletop-live-session.css"
+      ]
+    },
+    {
+      "module": "src/styles/tabletop-director-remote.css",
+      "entries": [
+        "src/styles/tabletop-director-remote.css",
+        "src/styles/tabletop-director-preview-final.css",
+        "src/styles/interface-stability.css"
+      ]
+    },
+    {
+      "module": "src/styles/tabletop-participant-workspace.css",
+      "entries": [
+        "src/styles/tabletop-participant.css"
+      ]
+    },
+    {
+      "module": "src/styles/tabletop-visibility-panel.css",
+      "entries": [
+        "src/styles/tabletop-visibility.css",
+        "src/styles/tabletop-visibility-advanced.css"
+      ]
+    },
+    {
+      "module": "src/styles/tabletop-fog-geometry.css",
+      "entries": [
+        "src/styles/tabletop-world-systems.css"
+      ]
+    },
+    {
+      "module": "src/styles/tabletop-route-experience.css",
+      "entries": [
+        "src/styles/tabletop-progressive-ui.css",
+        "src/styles/tabletop-motion-final.css",
+        "src/styles/tabletop-bottom-stack-fix.css",
+        "src/styles/tabletop-spatial-finish.css",
+        "src/styles/tabletop-fixed-menus-tactical-240.css",
+        "src/styles/tabletop-stage-geometry-254.css"
+      ]
+    },
+    {
+      "module": "src/styles/tabletop-workspace.css",
+      "entries": [
+        "src/styles/tabletop-editor.css"
+      ]
+    },
+    {
+      "module": "src/styles/tabletop-unified-drop.css",
+      "entries": [
+        "src/styles/tabletop-unified-flow.css"
+      ]
+    },
+    {
+      "module": "src/styles/tabletop-adaptive-performance.css",
+      "entries": [
+        "src/styles/tabletop-adaptive-quality.css"
+      ]
+    },
+    {
+      "module": "src/styles/tabletop-director-workspace.css",
+      "entries": [
+        "src/styles/tabletop-director.css"
+      ]
+    },
+    {
+      "module": "src/styles/tabletop-semantic-transform.css",
+      "entries": [
+        "src/styles/tabletop-semantic-transform.css"
+      ]
+    },
+    {
+      "module": "src/styles/tabletop-atmosphere.css",
+      "entries": [
+        "src/styles/tabletop-atmosphere.css"
+      ]
+    },
+    {
+      "module": "src/styles/tabletop-entity-dossier.css",
+      "entries": [
+        "src/styles/tabletop-entity-dossier.css"
+      ]
+    },
+    {
+      "module": "src/styles/tabletop-director-timeline.css",
+      "entries": [
+        "src/styles/tabletop-director-timeline.css"
+      ]
+    },
+    {
+      "module": "src/styles/tabletop-region-automation.css",
+      "entries": [
+        "src/styles/tabletop-region-automation.css"
+      ]
+    },
+    {
+      "module": "src/styles/tabletop-director-enhancement.css",
+      "entries": [
+        "src/styles/tabletop-director-enhancement.css"
+      ]
+    },
+    {
+      "module": "src/styles/tabletop-placeables-inspector.css",
+      "entries": [
+        "src/styles/tabletop-placeables-inspector.css"
+      ]
+    },
+    {
+      "module": "src/styles/tabletop-smart-setup.css",
+      "entries": [
+        "src/styles/tabletop-smart-setup.css"
+      ]
+    },
+    {
+      "module": "src/styles/tabletop-player-interaction.css",
+      "entries": [
+        "src/styles/tabletop-player-interaction.css"
+      ]
+    },
+    {
+      "module": "src/styles/tabletop-radial-actions.css",
+      "entries": [
+        "src/styles/tabletop-radial-actions.css"
+      ]
+    },
+    {
+      "module": "src/styles/tabletop-floating-layout.css",
+      "entries": [
+        "src/styles/tabletop-floating-layout-236.css",
+        "src/styles/tabletop-floating-menu-shift-236.css",
+        "src/styles/tabletop-floating-layout-238.css"
+      ]
+    },
+    {
+      "module": "src/styles/tabletop-creative-dock.css",
+      "entries": [
+        "src/styles/tabletop-creative-dock.css"
+      ]
+    },
+    {
+      "module": "src/styles/tabletop-integration-tools.css",
+      "entries": [
+        "src/styles/tabletop-integration-tools.css"
+      ]
+    },
+    {
+      "module": "src/styles/realtime-status.css",
+      "entries": [
+        "src/styles/tabletop-realtime.css"
+      ]
+    },
+    {
+      "module": "src/styles/tabletop-preflight.css",
+      "entries": [
+        "src/styles/tabletop-preflight.css"
+      ]
+    },
+    {
+      "module": "src/styles/tabletop-reliability-editor.css",
+      "entries": [
+        "src/styles/tabletop-reliability-editor.css"
+      ]
+    }
+  ],
+  "unreachableRemoved": [
+    "src/styles/tadeon-subhead-system.css",
+    "src/styles/tadeon-head-parity-next.css",
+    "src/styles/tadeon-master-panel-detail-authority.css",
+    "src/styles/tadeon-typography-rhythm.css",
+    "src/styles/tadeon-responsive-parity.css",
+    "src/styles/tadeon-layout-rhythm.css",
+    "src/styles/tadeon-sidebar-final-authority.css",
+    "src/styles/tadeon-surface-system-next.css",
+    "src/styles/tadeon-interaction-signature.css",
+    "src/styles/tadeon-sheet-nexus-wave6.css",
+    "src/styles/tadeon-application-pass.css",
+    "src/styles/tadeon-state-feedback.css",
+    "src/styles/tadeon-tabletop-head-three-line.css",
+    "src/styles/tadeon-head-repair.css",
+    "src/styles/tadeon-shell-background-repair.css",
+    "src/styles/head-parity-final-213.css",
+    "src/styles/tadeon-microinteraction-system.css",
+    "src/styles/tadeon-motion-tokens.css",
+    "src/styles/tadeon-coverage-final.css",
+    "src/styles/tadeon-head-convergence.css",
+    "src/styles/tadeon-navigation-ambient.css",
+    "src/styles/tadeon-head-nexus-reference.css",
+    "src/styles/tadeon-head-composition-fix.css",
+    "src/styles/tadeon-head-system.css"
+  ],
+  "retiredTextualTests": [
+    {
+      "file": "src/lib/hero-icon-unification-208-regression.test.ts",
+      "requirements": [
+        "keeps the encoded hero glyph contract available",
+        "restores the Dashboard Tadeon BrandMark and removes the legacy Mesa mark footprint",
+        "keeps the real Nexus LibraryBig glyph in the circular medallion language",
+        "keeps the Mesa ThreadField absolutely positioned so it cannot inflate the header",
+        "centers the hero medallions themselves rather than shifting only their glyph paint",
+        "forces the Nexus identity glyph to the canonical green",
+        "restores the Mesa"
+      ]
+    },
+    {
+      "file": "src/lib/hero-final-polish-207-regression.test.ts",
+      "requirements": [
+        "loads after the previous hero color authority",
+        "optically centers the six non-Nexus medallion glyphs",
+        "restores the authored Tadeon mark in the Dashboard continuity row",
+        "keeps Dashboard richer while compacting the Nexus content footprint",
+        "does not introduce new motion or behavior"
+      ]
+    },
+    {
+      "file": "src/lib/hero-icons-final-212-regression.test.ts",
+      "requirements": [
+        "keeps the shared Hero mark in normal grid flow",
+        "uses the exact BackupSigil geometry painted by the navigation",
+        "restores both Mesa identities with real React symbols",
+        "keeps the Mesa decorative ThreadField out of layout flow",
+        "centers the three Dashboard signals in equal cells",
+        "remains the final loaded Hero authority"
+      ]
+    },
+    {
+      "file": "src/lib/all-seven-hero-identity-205-regression.test.ts",
+      "requirements": [
+        "targets every non-Nexus main hero directly while leaving Nexus as reference",
+        "keeps the canonical colors of the six sibling tabs",
+        "uses the matching navigation symbols in circular medallions",
+        "does not introduce motion or behavior changes"
+      ]
+    },
+    {
+      "file": "src/lib/final-nav-search-polish-196-regression.test.ts",
+      "requirements": [
+        "keeps breathing room below master navigation",
+        "makes the 2D/3D control resolve to the same outline variant without special inline styling",
+        "changes only the sidebar svg on hover and inherits the canonical route accent",
+        "uses native Dialog centering on desktop and visualViewport only on compact screens"
+      ]
+    },
+    {
+      "file": "src/lib/hero-color-refinement-206-regression.test.ts",
+      "requirements": [
+        "loads after the shared hero identity layer",
+        "pins every sibling head to its canonical color",
+        "makes dashboard richer and tabletop quieter",
+        "does not alter motion or behavior"
+      ]
+    },
+    {
+      "file": "src/lib/hero-corrections-209-regression.test.ts",
+      "requirements": [
+        "moves encoded hero glyph paint down without moving the ring",
+        "pins the Nexus medallion and glyph to the canonical green",
+        "restores the original Mesa row footprint while preserving the replacement icon slot"
+      ]
+    },
+    {
+      "file": "src/lib/page-head-visible-parity-204-regression.test.ts",
+      "requirements": [
+        "loads the final visible layer",
+        "targets the actual authored hero symbols",
+        "targets each real hero background ornament",
+        "does not alter authored motion behavior"
+      ]
+    },
+    {
+      "file": "src/lib/tabletop/tabletop-final-stability.test.ts",
+      "requirements": [
+        "mantem a rota segura para render no Worker e monta as pontes finais sem bloquear o primeiro chunk",
+        "nao volta ao autosave por clique e polling continuo",
+        "preserva grades avancadas e snapping pela malha real",
+        "mantem movimento do jogador autorizado, persistente e sincronizado"
+      ]
+    },
+    {
+      "file": "src/lib/tabletop/urgent-user-reconciliation-regression.test.ts",
+      "requirements": [
+        "restaura a geometria simétrica anterior do menu lateral recolhido",
+        "faz o mapa definir a altura e mantém o painel contextual rolável",
+        "fixa a barra de modos e ancora o chrome ao retângulo visível do stage",
+        "mantém dialogs fixed acima do overlay, centralizados e roláveis com teclado",
+        "corrige o blackout na geometria do aviso de câmera e abandona o scanner invasivo",
+        "corrige a largura do remoto na grade pai e restaura os toggles compactos",
+        "abre o popout do mestre sem AppLayout preservando o shell visual original",
+        "torna condições ativas e instrumentos de Equilíbrio/Rank visualmente explícitos",
+        "mantém o botão de vínculos visualmente só com ícone",
+        "carrega a reparação 153 depois das autoridades visuais anteriores"
+      ]
+    },
+    {
+      "file": "src/lib/tabletop/nav-sheet-search-polish-162-regression.test.ts",
+      "requirements": [
+        "loads 162 after the 161 visual authority",
+        "assigns distinct primary section accents with Nexus as green",
+        "keeps one authored navigation mark layer and restores accent motion",
+        "turns the attribute stepper into one numeric instrument without changing the radar",
+        "strengthens exposure while retaining its mechanical 0-100 inputs",
+        "projects Morrendo and Colapsando into a whole-sheet crisis state",
+        "locks global search to the live visual viewport and keeps internal regions contained"
+      ]
+    },
+    {
+      "file": "src/lib/tabletop/user-visible-repair-156-regression.test.ts",
+      "requirements": [
+        "is the final stylesheet authority and retires the page hero bridge",
+        "matches the utility heroes that actually exist in route JSX",
+        "fixes master navigation only after its slot reaches the real shell header",
+        "restores mobile texture and guide detail on users tools and offline"
+      ]
+    },
+    {
+      "file": "src/lib/tabletop/final-device-parity-154-regression.test.ts",
+      "requirements": [
+        "keeps the pre-153 global focus header while utility identity lives on real route heroes",
+        "keeps every sheet header action on one mobile rail and centers the real condition dot row",
+        "protects portrait and landscape tablet sidebar geometry",
+        "preserves tabletop high-DPI fidelity while keeping adaptive degradation",
+        "gives the Edit button explicit contrast while the sheet is in Game mode",
+        "retains richer card and tab depth throughout the mobile utility routes",
+        "loads the field-visible repair after all older visual authorities"
+      ]
+    },
+    {
+      "file": "src/lib/tabletop/tabletop-fixed-zones-regression.test.ts",
+      "requirements": [
+        "usa o stage como sistema único de coordenadas do chrome",
+        "aplica hard lock inline important aos menus principais",
+        "não recalcula coordenadas por scroll da página ou da visual viewport",
+        "carrega a autoridade de zonas depois das folhas antigas conflitantes",
+        "empilha tático acima do Dock e mantém o Dock equidistante no celular"
+      ]
+    },
+    {
+      "file": "src/lib/tabletop/final-user-corrections-155-regression.test.ts",
+      "requirements": [
+        "fully restores the global focus header to its pre-153 shell contract",
+        "targets actual utility route heroes without runtime DOM injection",
+        "makes master navigation genuinely viewport-fixed and preserves layout space",
+        "renders dying and collapsing dots as a horizontal row over a full-width track",
+        "restores the original mobile spatial field and adds real utility-card texture",
+        "keeps at least a 2x canvas in economy and full 3x on capable displays"
+      ]
+    },
+    {
+      "file": "src/lib/tabletop/page-head-nexus-language-203-regression.test.ts",
+      "requirements": [
+        "mounts the real hero identity bridge and the final authority layer",
+        "uses the same canonical Lucide icons as primary navigation",
+        "uses real icon hosts instead of drawing hero glyphs in pseudo-elements",
+        "shares one mark and title geometry across Nexus and sibling page heroes",
+        "keeps Dashboard unique and Mesa limited to its original brand slot",
+        "does not introduce or replace motion behavior"
+      ]
+    },
+    {
+      "file": "src/lib/tabletop/user-repair-152-regression.test.ts",
+      "requirements": [
+        "loads the field repair after the previous urgent css authority",
+        "returns Cena Editar Visao to flow and anchors the real reliability rail to the stage",
+        "keeps the movable Dock and delegates selection geometry to repair 153",
+        "keeps Setup stage anchored and lets the expanded creative Dock move",
+        "keeps the master popout wide and no-sidebar while inheriting the normal page identity",
+        "restores the original dashboard and dossier instead of restyling them again",
+        "replaces sheet side stripes with colored corner light and upgrades danger states"
+      ]
+    },
+    {
+      "file": "src/lib/tabletop/tabletop-general-audit-regression.test.ts",
+      "requirements": [
+        "ancora o indicador global de Tabs no próprio TabsList",
+        "reserva espaço real para os dois controles do cabeçalho móvel",
+        "propaga o andar ativo e filtra áudio espacial por level_id",
+        "remove o radial invisível e torna Poderes explícito para toque",
+        "mantém o polígono privado do servidor como autoridade de visibilidade",
+        "expõe forma da névoa e propriedades da luz no contrato sanitizado do jogador",
+        "mantém Sheet e Drawer acima do chrome da Mesa",
+        "retira o chrome flutuante enquanto o inspector não modal ocupa o tablet"
+      ]
+    },
+    {
+      "file": "src/lib/tabletop/desktop-parity-roof-202-regression.test.ts",
+      "requirements": [
+        "centers the global search from the desktop layout viewport",
+        "loads the desktop hero parity authority after the prior visual layers",
+        "keeps Nexus orbital presence visible on desktop and varies other page heads by identity"
+      ]
+    }
+  ],
+  "migrationContentSha256": {
+    "src/styles/workspace.css": "bb1b69b6a1d8fac558345687851ba61fa978be1defc5ad90ef2188d394bcd1ea",
+    "src/styles/mobile-viewport.css": "c9ecc10429ece4a22d372ff89376ec5388d3b8c6d7797a44206a7ee5c1020e06",
+    "src/styles/nexus-material.css": "663d90c3b9773312c273249391c3115ea53834313de0d730880b82f3e3041c3e",
+    "src/styles/layout-compatibility.css": "5bf21e08cece5b7cf23a4abf018c83f7e250ed2938973c7db26f290f0b50e6d3",
+    "src/styles/viewport.css": "8498caa755439521283372ad93fd9e0fee909a7f5b3f3295fca6afee6621f655",
+    "src/styles/tabletop-chrome.css": "6b61c5fe3f9013021fcd78816c857334dcbe71ff9a716eed9874b7cfa612c101",
+    "src/styles/global-search.css": "65125ba52332110062a47f8f5319b7bf54981fb08ca2e7867088d1d36acf6b04",
+    "src/styles/page-hero-parity.css": "ea45811edb8df67dbd84991a5125ca523e1bd343c5fbf4dca57d962a60a63780",
+    "src/styles/mobile-more-radial.css": "1a51a0775fba0d7b85c90859994db87fc64836ceed1e888ee4d188690057836f",
+    "src/styles/tadeon-experience-director.css": "bbf63db6ad6fc7a10aecaa169da7d21dbd1c62616cb331390e8a6bc1518919bc",
+    "src/styles/sheet-layout.css": "e37477c4291e1576070fa7d4bfefa45a8991226c81c883a9e76f9eb83e9ad38a",
+    "src/styles/navigation-layout.css": "75fc210ec820c3818655f1ab5e05de916aac98d2344c59775b87828ee14cdaed",
+    "src/styles/desktop-shell.css": "ed565b86f53a7083a7ac1b5b984a40396e6c67f4b054342e425a05af84525cb1",
+    "src/styles/hero-backgrounds.css": "d92c5511558f1d7de69e108e49d110658288b07936492075351f9791dc3e4617",
+    "src/styles/visual-viewport-popup.css": "fa2d9591d1feefe30e6e3662ee7d6cc62332bc78a561292a8e3be93f6792f017",
+    "src/styles/responsive-shell.css": "769f1dc96ec269d0e8d5bd73f1b32003abf51a4f51f1a180921f5d7cd268513c",
+    "src/styles/interface-layout.css": "0f0ca9846f202ef33a7f602ced2279afcda629138e3604468cc8ce17737bd0d0",
+    "src/styles/route-layout.css": "992557a86c35271b7b43e48bf8e556a65b228239dea9a9d6b7e15b19a8b1210a",
+    "src/styles/experience-surfaces.css": "52809e760528f4b46105e40a205396435a685dfe2618abcaac345c096fd6ea00",
+    "src/styles/motion-foundation.css": "1a5f5e4f6ec991cad0766225326ebefb2c624a50a050a0eed48e1ae5ee56a79b",
+    "src/styles/motion-interactions.css": "4fe522fd708b7d23e753dc6c0d814cca5c406d3633130aec5c51554adc90c430",
+    "src/styles/motion-composition.css": "71abd2b7e0993c6ee3827bbf2506e32f49e4862e56fe6627f90909940bd88f0e",
+    "src/styles/master-toolbar-popout.css": "c9a8920cf606f1e9cde2f692069cc3474d41541e011d43f8ebbd446469b5e0b3",
+    "src/styles/master-panel-navigation.css": "c99fd3c2110df3be4688b5318529d36c558155ef009453d4ad7b92ea46243f6f",
+    "src/styles/route-popup-frame.css": "02d29a15088683422dfe2e91a9a919151fec8d4da9ca09637f015d9c6231a901",
+    "src/styles/button.css": "e39ee91bb05e13153cc38943ced8cc1655ec9d8518d39233bb2f87df485ab0b4",
+    "src/styles/sheet-experience.css": "83a8acf7dfcd5bf3b5f8e049e93c17fa054e76018644dcb56acf3676caf894ea",
+    "src/styles/nexus-tabletop-locator.css": "8da3c4be51a971edab1205d37b5fb19470d3be9e9646c1b162d88137b470cd1b",
+    "src/styles/knowledge-graph-second-brain.css": "a4c8ba328b0a2e17c9438efaa491f7b7ab8597603f10d654c09d3f59f1824a5e",
+    "src/styles/tabletop-live-session.css": "5eacbaf2ac28e3290530f13cd65cff51bf2d0e5b6d5b011d169a829a8b2a5d4f",
+    "src/styles/tabletop-director-remote.css": "a5717d76a6c9ff028f432efbafeb061b76c9fe862e5c26691cbd7beefb748860",
+    "src/styles/tabletop-participant-workspace.css": "9140d235c71e187f3d33d6b828865f5cb939bef7430d72ec64469408048431dd",
+    "src/styles/tabletop-visibility-panel.css": "5da6bf8f65cb3b42f8cd6c4c21c25be0bcdec6a7efae1d16ace21bd36dc2110c",
+    "src/styles/tabletop-fog-geometry.css": "8250536686693dc411a7c3e7dbbd3712019c770a4feb6c227496270b0090e4f9",
+    "src/styles/tabletop-route-experience.css": "caab0958bf11bdba9bd3744a8f6df707d2402d4aec20fabe90c8b0c69e11ff73",
+    "src/styles/tabletop-workspace.css": "1bcd0cb1ff27c9724b357dca6c0ee9f3904c13dfec41aaa01c1d1b608648761e",
+    "src/styles/tabletop-unified-drop.css": "b9f2317bcbbc8d1fa89897dfa8dff6201c7624effa9c98e83c4097c48386c0cb",
+    "src/styles/tabletop-adaptive-performance.css": "50de0d5f4312463ad5a4eb566cccb9fbab60944119220ef640b703da7faebd16",
+    "src/styles/tabletop-director-workspace.css": "d92599940ad2dd06eee51f16d20170f3b100103fb32b1626089223834fdd3ddc",
+    "src/styles/tabletop-semantic-transform.css": "d422da789b4d57f17b8f90fc81d910a65e49cc3d21e5d10d5fd37b652b7ac91e",
+    "src/styles/tabletop-atmosphere.css": "033ee549d2455e001eb9acd2104e12081e0ee868c0595d6aa43011627bb2351f",
+    "src/styles/tabletop-entity-dossier.css": "0e92c1f79c571f28381d3554c72400f407556f3412eace5cc02d88839c9ee9d5",
+    "src/styles/tabletop-director-timeline.css": "1ef277b7e2255d2dd97d2ad112f59a1b3ed55ddc8cefc0880af0431b71fb2e6a",
+    "src/styles/tabletop-region-automation.css": "5f63b82d832cc22b60d83e75388598f70a83ba09217429943e68f04dd93790f1",
+    "src/styles/tabletop-director-enhancement.css": "201695d1a0f18e137b6ba86a086c7469beb26540de7c667bd9a65584d4671b5a",
+    "src/styles/tabletop-placeables-inspector.css": "2d674f4f8b3693ece52000b09de84677d420c60904202e8fc09f32e64153ef14",
+    "src/styles/tabletop-smart-setup.css": "47b62ecb0720a90d9a5e0047f4517c6f2d0da2d5ce844112c7293889974b42b8",
+    "src/styles/tabletop-player-interaction.css": "e0cee6001d14e4243aaa21cd96844c5a39e2c7a78f453cb01a1758e388c812f7",
+    "src/styles/tabletop-radial-actions.css": "b50d413e2107fb3818ffb9f738bd405dc515537773aa5567aa9ee4036e57d0da",
+    "src/styles/tabletop-floating-layout.css": "71552607ff7cbc4700098eb7899fee4f399271e49f617f58467391df91f2b8cd",
+    "src/styles/tabletop-creative-dock.css": "04efefb14800505efecd7f25c9f4f2d01ee3e47d2e2f95576cce45079795627a",
+    "src/styles/tabletop-integration-tools.css": "6e91679f424f40f8029b6f876fa07be074695a482a912deddd3c7a745e381c3f",
+    "src/styles/realtime-status.css": "2618baecfbbc6d77074b3ca1bbbaa67a78a41931e12f23c7baf9bea269280359",
+    "src/styles/tabletop-preflight.css": "b24bfb5a23cdaa2a09579a7f661e16ccac6d8af5d940861bd38b6a4ae5df9ecd",
+    "src/styles/tabletop-reliability-editor.css": "ade869b91af068f0f5fe3e80c2872adf752329f7ffd30c55e8d4c63b0fdc821d"
+  },
+  "migratedTextualTests": [
+    "src/lib/mobile-icons-viewport-180-regression.test.ts",
+    "src/lib/master-panel-navigation-fit-185-regression.test.ts",
+    "src/lib/runtime-ui-crud-final.test.ts",
+    "src/lib/mobile-navigation-177-regression.test.ts",
+    "src/lib/ui-coherence-192-regression.test.ts",
+    "src/lib/ui-polish-193-regression.test.ts",
+    "src/lib/navigation-users-uniformity-191-regression.test.ts",
+    "src/styles/tabletop-participant-palette.test.ts",
+    "src/styles/tabletop-scene-tools.test.ts",
+    "src/styles/layout-geometry.test.ts",
+    "src/styles/popup-geometry-256.test.ts",
+    "src/styles/tabletop-stage-geometry.test.ts",
+    "src/lib/ui/popup-viewport-containment-regression.test.ts",
+    "src/lib/knowledge/knowledge-second-brain-regression.test.ts",
+    "src/lib/tabletop/create-sheet-search-viewport-163-regression.test.ts",
+    "src/lib/tabletop/tabletop-setup-grid-autosave-197-regression.test.ts",
+    "src/lib/tabletop/tabletop-final-audit-regression.test.ts",
+    "src/lib/tabletop/final-visual-system-157-regression.test.ts",
+    "src/lib/tabletop/tabletop-progressive-rebuild.test.ts",
+    "src/lib/tabletop/final-icon-route-parity-174-regression.test.ts",
+    "src/lib/tabletop/selection-director-entry-regression.test.ts",
+    "src/lib/tabletop/mobile-popup-master-head-158-regression.test.ts",
+    "src/lib/tabletop/sheet-popup-graph-polish-161-regression.test.ts",
+    "src/lib/tabletop/final-user-polish-regression.test.ts",
+    "src/lib/tabletop/tabletop-floating-chrome-graph-expand-regression.test.ts",
+    "src/lib/tabletop/final-user-corrections-172-regression.test.ts",
+    "src/lib/tabletop/tabletop-roadmap-regression.test.ts",
+    "src/lib/tabletop/dedicated-workspace-parity-168-regression.test.ts",
+    "src/lib/tabletop/tabletop-overlay-stack-regression.test.ts",
+    "src/lib/tabletop/mobile-product-repair-153-regression.test.ts",
+    "src/lib/tabletop/final-system-audit-170-regression.test.ts",
+    "src/lib/tabletop/tabletop-interface-reconciliation-regression.test.ts",
+    "src/lib/tabletop/tabletop-spatial-finish-regression.test.ts",
+    "src/lib/tabletop/navigation-real-svg-parity-160-regression.test.ts",
+    "src/lib/tabletop/entity-renderer-asset-background-regression.test.ts",
+    "src/lib/tabletop/focus-header-nav-parity-159-regression.test.ts",
+    "src/lib/tabletop/tabletop-selection-sidebar-sheen-regression.test.ts",
+    "src/lib/tabletop/navigation-authored-symbols-166-regression.test.ts"
+  ]
+}
