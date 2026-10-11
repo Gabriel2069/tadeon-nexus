@@ -2663,7 +2663,7 @@ html[data-tadeon-sheet-mode="game"] .tadeon-sheet-game-button svg {
 }
 
 /* Preserve richer purpose-built art instead of flattening it. */
-:is(.tadeon-dashboard-hero, .tadeon-sheet-card, .tadeon-library-card, .tadeon-nexus-document, .tadeon-nexus-index, .tadeon-nexus-context, .tadeon-tabletop-stage) {
+:is( .tadeon-library-card, .tadeon-nexus-document, .tadeon-nexus-index, .tadeon-nexus-context, .tadeon-tabletop-stage) {
   background-color: revert-layer;
 }
 
@@ -5283,11 +5283,6 @@ html[data-tadeon-sheet-mode="game"] .tadeon-sheet-game-button svg {
   background: transparent !important;
   box-shadow: none !important;
   font-weight: inherit !important;
-}
-
-.tadeon-shell[data-section="Saúde do arquivo"] .tadeon-nav-item[href="/nexus"][aria-current="page"]::after {
-  opacity: 0 !important;
-  transform: scaleY(.35) !important;
 }
 
 .tadeon-shell[data-section="Saúde do arquivo"] .tadeon-nav-item[href="/nexus"][aria-current="page"] .tadeon-nav-item__icon {

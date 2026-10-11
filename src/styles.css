@@ -312,20 +312,6 @@
     overflow: visible;
   }
 
-  .tadeon-nav-item::after {
-    content: "";
-    position: absolute;
-    inset: 0 auto 0 0;
-    width: 2px;
-    border-radius: 999px;
-    background: var(--sidebar-primary);
-    opacity: 0;
-    transform: scaleY(0.35);
-    transition:
-      opacity 180ms ease,
-      transform 220ms ease;
-  }
-
   .tadeon-primary-nav {
     display: grid;
     gap: 0.25rem;
@@ -342,61 +328,6 @@
       color 180ms ease,
       filter 180ms ease,
       transform 180ms ease;
-  }
-
-  .tadeon-dashboard-hero {
-    overflow: clip;
-    border-radius: 1.35rem 0.5rem 1.35rem 0.5rem;
-    background:
-      linear-gradient(135deg, rgb(18 21 26 / 96%), rgb(11 13 17 / 92%)),
-      radial-gradient(circle at 84% 14%, rgb(217 215 164 / 9%), transparent 32%);
-  }
-
-  .tadeon-dashboard-signal {
-    position: relative;
-  }
-
-  .tadeon-dashboard-signal:not(:last-child)::after {
-    position: absolute;
-    top: 0.15rem;
-    right: -0.4rem;
-    bottom: 0.15rem;
-    width: 1px;
-    background: linear-gradient(
-      transparent,
-      color-mix(in srgb, var(--border) 72%, transparent),
-      transparent
-    );
-    content: "";
-  }
-
-  .tadeon-sheet-card {
-    overflow: clip;
-    border-radius: 1.2rem 0.45rem 1.2rem 0.45rem;
-    background:
-      linear-gradient(145deg, rgb(18 21 26 / 97%), rgb(11 14 18 / 94%)),
-      radial-gradient(circle at 88% 5%, rgb(113 107 123 / 11%), transparent 32%);
-  }
-
-  .tadeon-sheet-card::after {
-    position: absolute;
-    right: -22%;
-    bottom: -54%;
-    width: 13rem;
-    aspect-ratio: 1;
-    border: 1px solid rgb(217 215 164 / 8%);
-    border-radius: 50%;
-    box-shadow: 0 0 0 1.75rem rgb(217 215 164 / 1.8%);
-    pointer-events: none;
-    content: "";
-    transition:
-      transform var(--motion-fast) var(--ease-out),
-      border-color var(--motion-fast) var(--ease-out);
-  }
-
-  .tadeon-sheet-card__open {
-    position: relative;
-    z-index: 1;
   }
 
   .tadeon-loading-mark {
@@ -570,10 +501,6 @@
 }
 
 @media (hover: hover) and (pointer: fine) {
-  .tadeon-nav-item:hover::after {
-    opacity: 0.48;
-    transform: scaleY(0.7);
-  }
 
   .tadeon-nav-item:hover {
     border-color: color-mix(in srgb, var(--sidebar-primary) 11%, transparent);
@@ -583,18 +510,6 @@
     color: var(--sidebar-primary);
     filter: drop-shadow(0 0 8px rgb(217 215 164 / 28%));
     transform: translateX(1px);
-  }
-
-  .tadeon-sheet-card:hover {
-    border-color: color-mix(in srgb, var(--tadeon-knowledge) 28%, var(--border));
-    box-shadow:
-      0 28px 80px -48px rgb(0 0 0 / 96%),
-      inset 0 1px 0 rgb(255 255 255 / 4%);
-  }
-
-  .tadeon-sheet-card:hover::after {
-    border-color: rgb(217 215 164 / 16%);
-    transform: scale(1.05);
   }
 }
 
@@ -655,31 +570,6 @@
     padding: 1.35rem 1.2rem 1.5rem;
   }
 
-  .tadeon-dashboard-signals {
-    gap: 0.5rem;
-  }
-
-  .tadeon-dashboard-signal {
-    align-items: flex-start;
-    gap: 0.45rem;
-  }
-
-  .tadeon-dashboard-signal > svg {
-    width: 0.85rem;
-    height: 0.85rem;
-    margin-top: 0.25rem;
-  }
-
-  .tadeon-dashboard-signal p:first-child {
-    font-size: 0.9rem;
-    line-height: 1.15;
-  }
-
-  .tadeon-dashboard-signal p:last-child {
-    font-size: 0.6875rem;
-    line-height: 1.35;
-  }
-
   .tadeon-nexus-actions > * {
     min-width: 0;
   }
@@ -690,28 +580,6 @@
 }
 
 @media (max-width: 419px) {
-  .tadeon-dashboard-signals {
-    gap: 0;
-  }
-
-  .tadeon-dashboard-signal {
-    min-height: 3.25rem;
-    align-items: center;
-    padding-block: 0.65rem;
-  }
-
-  .tadeon-dashboard-signal:not(:last-child)::after {
-    top: auto;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    width: auto;
-    height: 1px;
-  }
-
-  .tadeon-dashboard-signal > svg {
-    margin-top: 0;
-  }
 }
 
 @media (pointer: coarse) {
@@ -1880,13 +1748,11 @@ body {
 }
 
 .tadeon-page-hero,
-.tadeon-dashboard-hero,
 .tadeon-state-panel {
   border-color: color-mix(in srgb, var(--tadeon-section-accent) 18%, var(--border));
 }
 
-.tadeon-page-hero > *,
-.tadeon-dashboard-hero > * {
+.tadeon-page-hero > * {
   position: relative;
   z-index: 1;
 }
@@ -3660,7 +3526,6 @@ legend {
 
   :where(
     .tadeon-page-hero,
-    .tadeon-dashboard-hero,
     .tadeon-library-header__actions,
     .tadeon-nexus-actions,
     .tadeon-master-navigation
@@ -3833,7 +3698,7 @@ legend {
     flex: 1 1 10rem;
   }
 
-  .tadeon-shell :where(.tadeon-page-hero, .tadeon-dashboard-hero) :where(.flex, .grid) {
+  .tadeon-shell :where(.tadeon-page-hero) :where(.flex, .grid) {
     min-width: 0;
   }
 }
@@ -3912,7 +3777,7 @@ legend {
 }
 
 @container tadeon-route (max-width: 620px) {
-  .tadeon-sheet-gallery,
+
   .tadeon-master-sheets-grid,
   .tadeon-master-notes__grid {
     grid-template-columns: minmax(0, 1fr) !important;

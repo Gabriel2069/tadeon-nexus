@@ -101,37 +101,11 @@
     border-color 260ms ease,
     box-shadow 360ms var(--thn-in) !important;
 }
-.tadeon-shell .tadeon-primary-nav .tadeon-nav-item::before{
-  content:"";
-  position:absolute;
-  inset:0;
-  z-index:-1;
-  border-radius:inherit;
-  background:linear-gradient(90deg,rgb(116 36 45 / 30%),rgb(217 215 164 / 6%),transparent 84%);
-  opacity:0;
-  transform:translateX(-24%) scaleX(.7);
-  transform-origin:left center;
-  transition:opacity 320ms ease,transform 460ms var(--thn-in);
-}
-.tadeon-shell .tadeon-primary-nav .tadeon-nav-item:hover::before,
-.tadeon-shell .tadeon-primary-nav .tadeon-nav-item[aria-current="page"]::before{opacity:1;transform:none}
 .tadeon-shell .tadeon-primary-nav .tadeon-nav-item:hover{transform:translateX(7px) translateY(-2px) !important}
 .tadeon-shell .tadeon-primary-nav .tadeon-nav-item:active{transform:translateX(3px) scale(.965) !important}
 .tadeon-shell .tadeon-primary-nav .tadeon-nav-item[aria-current="page"]{
   animation:thn-nav-land 520ms var(--thn-spring) both;
   box-shadow:inset 3px 0 rgb(180 92 98 / 80%),0 14px 30px -26px rgb(116 36 45 / 65%) !important;
-}
-.tadeon-shell .tadeon-primary-nav .tadeon-nav-item[aria-current="page"]::after{
-  content:"";
-  position:absolute;
-  left:0;
-  top:10%;
-  bottom:10%;
-  width:3px;
-  border-radius:999px;
-  background:#b45c62;
-  box-shadow:0 0 16px rgb(116 36 45 / 50%);
-  animation:thn-nav-rail 420ms var(--thn-in) both;
 }
 @keyframes thn-nav-land{from{opacity:.62;transform:translateX(-14px) scale(.94)}62%{opacity:1;transform:translateX(4px) scale(1.025)}to{transform:none}}
 @keyframes thn-nav-rail{from{opacity:0;transform:scaleY(.2)}to{opacity:1;transform:scaleY(1)}}

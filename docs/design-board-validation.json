@@ -1,0 +1,174 @@
+{
+  "fonts": [
+    {
+      "family": "EB Garamond",
+      "loaded": true
+    },
+    {
+      "family": "Inter",
+      "loaded": true
+    },
+    {
+      "family": "PT Mono",
+      "loaded": true
+    }
+  ],
+  "errors": [],
+  "views": [
+    {
+      "width": 320,
+      "overflow": false,
+      "main": 1
+    },
+    {
+      "width": 390,
+      "overflow": false,
+      "main": 1
+    },
+    {
+      "width": 820,
+      "overflow": false,
+      "main": 1
+    },
+    {
+      "width": 1440,
+      "overflow": false,
+      "main": 1
+    }
+  ],
+  "interactions": [
+    {
+      "confirm": "Exemplo confirmado. Nenhum dado foi enviado ou salvo."
+    },
+    {
+      "opaque": "opaque"
+    },
+    {
+      "selected": "true"
+    },
+    {
+      "fold": "true"
+    },
+    {
+      "reduce": "Fio tensionado: destino imediato, sem animação.",
+      "animations": 0
+    },
+    {
+      "systemReduced": "Fio tensionado: destino imediato, sem animação.",
+      "animations": 0
+    },
+    {
+      "keyboardField": "Memória do limiar",
+      "outline": "solid"
+    }
+  ],
+  "printBounds": [
+    {
+      "id": "p1",
+      "height": 1000,
+      "maxBottom": 740,
+      "footerTop": 943
+    },
+    {
+      "id": "p2",
+      "height": 1000,
+      "maxBottom": 760.28125,
+      "footerTop": 943
+    },
+    {
+      "id": "p3",
+      "height": 1000,
+      "maxBottom": 798.28125,
+      "footerTop": 943
+    },
+    {
+      "id": "p4",
+      "height": 1000,
+      "maxBottom": 907.578125,
+      "footerTop": 943
+    },
+    {
+      "id": "p5",
+      "height": 1000,
+      "maxBottom": 905.171875,
+      "footerTop": 943
+    },
+    {
+      "id": "p6",
+      "height": 1000,
+      "maxBottom": 833.890625,
+      "footerTop": 943
+    },
+    {
+      "id": "p7",
+      "height": 1000,
+      "maxBottom": 786.484375,
+      "footerTop": 943
+    },
+    {
+      "id": "p8",
+      "height": 1000,
+      "maxBottom": 694.671875,
+      "footerTop": 943
+    }
+  ],
+  "checkedAt": "2026-10-11",
+  "scope": "Standalone design proposal, not production UI",
+  "pages": 8,
+  "pdfTextCharacters": [
+    884,
+    1250,
+    1407,
+    1206,
+    1382,
+    1129,
+    1115,
+    1857
+  ],
+  "pdfSHA256": "e0ba26f54304fad74b6a0b66161a8208d30b6ddc7dfbce4bca4ef5ce3299cc97",
+  "htmlSHA256": "04541483d8d0b749588c7bcef8019a97bfa7041868ab306e595aca642c7c40e9",
+  "pdfLibraryFile": "libfile_30b2d0fe115881919a6352e3aa2e8f8b",
+  "visualInspection": "All eight PDF pages rendered with Poppler and inspected; no clipped content or footer overlap. Page 2 reinspected after decoration mask change.",
+  "fontEvidence": "PDF/browser audit use embedded copies downloaded from the same Google Fonts CSS as the HTML. Repository HTML loads fonts remotely, with offline fallbacks.",
+  "limits": [
+    "Conceptual dashboard has fictional data and static navigation, not an authenticated app flow.",
+    "Browser interaction checks cover the board only, not all product components.",
+    "No screen reader, real virtual keyboard, 200% text scaling, or representative hardware performance audit in this design stage.",
+    "Opaque color contrast does not establish worst-case contrast over glass."
+  ],
+  "opaqueContrast": [
+    {
+      "foreground": "#e9e3d5",
+      "background": "#080a0e",
+      "ratio": 15.482927647435933
+    },
+    {
+      "foreground": "#9a9793",
+      "background": "#12151a",
+      "ratio": 6.291447229835304
+    },
+    {
+      "foreground": "#080a0e",
+      "background": "#d9d7a4",
+      "ratio": 13.40139584622058
+    },
+    {
+      "foreground": "#7a8187",
+      "background": "#15181e",
+      "ratio": 4.501422518867207
+    }
+  ],
+  "foundationIntegration": {
+    "pr": 258,
+    "mergeCommit": "c6c1ea6c5e3338b4ff111329a8b2b37841e8245d",
+    "pushQuality": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38151369004",
+    "deployWorkflow": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38151368993",
+    "deployConclusion": "success",
+    "productionSHAConfirmation": "Workflow step Confirmar produção no SHA publicado passed. Independent endpoint fetch from local runtime returned HTTP 403; no real-account verification."
+  },
+  "localRepositoryChecks": {
+    "npmRunCheck": "exit 0; continuity, styles, ESLint, TypeScript, 119 suites / 515 tests, client SSR Worker builds",
+    "npmAudit": "0 vulnerabilities",
+    "runtimeFilesChanged": false
+  }
+}

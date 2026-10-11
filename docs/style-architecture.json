@@ -14,7 +14,7 @@
       "roots": 0
     },
     "src/styles/experience-surfaces.css": {
-      "important": 253,
+      "important": 229,
       "roots": 2
     },
     "src/styles/global-search.css": {
@@ -26,7 +26,7 @@
       "roots": 0
     },
     "src/styles/interface-layout.css": {
-      "important": 429,
+      "important": 406,
       "roots": 1
     },
     "src/styles/knowledge-graph-second-brain.css": {
@@ -34,7 +34,7 @@
       "roots": 0
     },
     "src/styles/layout-compatibility.css": {
-      "important": 87,
+      "important": 75,
       "roots": 0
     },
     "src/styles/master-panel-navigation.css": {
@@ -54,11 +54,11 @@
       "roots": 1
     },
     "src/styles/motion-composition.css": {
-      "important": 487,
+      "important": 486,
       "roots": 20
     },
     "src/styles/motion-foundation.css": {
-      "important": 81,
+      "important": 77,
       "roots": 6
     },
     "src/styles/motion-interactions.css": {
@@ -78,7 +78,7 @@
       "roots": 0
     },
     "src/styles/page-hero-parity.css": {
-      "important": 959,
+      "important": 880,
       "roots": 1
     },
     "src/styles/realtime-status.css": {
@@ -90,7 +90,7 @@
       "roots": 0
     },
     "src/styles/route-layout.css": {
-      "important": 1691,
+      "important": 1689,
       "roots": 0
     },
     "src/styles/route-popup-frame.css": {

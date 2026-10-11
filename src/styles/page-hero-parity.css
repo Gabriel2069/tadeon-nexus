@@ -576,55 +576,7 @@ html body [data-tadeon-page-hero="offline"] svg.text-primary {
 /* DASHBOARD - OS TRÊS QUADROS SEMPRE LADO A LADO                            */
 /* ========================================================================== */
 
-html body .tadeon-dashboard-signals {
-  display: grid !important;
-  width: 100% !important;
-  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
-  align-items: stretch !important;
-  gap: 0 !important;
-}
-
 @media (max-width: 419px) {
-  html body .tadeon-dashboard-signals {
-    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
-  }
-
-  html body .tadeon-dashboard-signal {
-    min-width: 0 !important;
-    min-height: 3.8rem !important;
-    flex-direction: column !important;
-    align-items: center !important;
-    justify-content: center !important;
-    gap: .25rem !important;
-    padding: .3rem .18rem !important;
-    text-align: center !important;
-  }
-
-  html body .tadeon-dashboard-signal > svg {
-    width: .95rem !important;
-    height: .95rem !important;
-    flex: 0 0 .95rem !important;
-  }
-
-  html body .tadeon-dashboard-signal > div {
-    min-width: 0 !important;
-    max-width: 100% !important;
-  }
-
-  html body .tadeon-dashboard-signal > div > p:first-child {
-    max-width: 100% !important;
-    overflow: hidden !important;
-    font-size: .88rem !important;
-    line-height: 1 !important;
-    text-overflow: ellipsis !important;
-    white-space: nowrap !important;
-  }
-
-  html body .tadeon-dashboard-signal > div > p:last-child {
-    font-size: .5rem !important;
-    line-height: 1.1 !important;
-    letter-spacing: .02em !important;
-  }
 }
 
 /* end-source: src/styles/head-parity-final-214.css */
@@ -1666,7 +1618,7 @@ html body .tadeon-shell[data-section="Painel do Mestre"]
 }
 
 /* Entrada comum: mesma qualidade de transição sem homogeneizar a identidade. */
-html body .tadeon-dashboard-hero,
+
 html body .tadeon-tabletop-studio__header,
 html body .tadeon-master-commandbar,
 html body .tadeon-page-hero[data-tadeon-page-hero="users"],
@@ -1679,34 +1631,8 @@ html body .tadeon-page-hero[data-tadeon-page-hero="offline"] {
 /* DASHBOARD - mantém caráter de capa, mas sem inflar o mobile               */
 /* ========================================================================== */
 
-html body .tadeon-dashboard-hero {
-  isolation: isolate !important;
-  overflow: clip !important;
-  border-color: color-mix(in srgb, var(--section-accent) 18%, var(--border)) !important;
-  box-shadow:
-    0 34px 86px -66px rgb(0 0 0 / 100%),
-    0 22px 60px -54px rgb(var(--section-accent-rgb) / 34%),
-    inset 0 1px rgb(255 255 255 / 4%) !important;
-}
-
 /* Os três sinais são parte da assinatura do Dashboard e ficam lado a lado
    em qualquer largura, como definido para a versão final do produto. */
-html body .tadeon-dashboard-signals {
-  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
-  align-items: stretch !important;
-}
-
-html body .tadeon-dashboard-signal {
-  min-width: 0 !important;
-}
-
-html body .tadeon-dashboard-signal > div {
-  min-width: 0 !important;
-}
-
-html body .tadeon-dashboard-signal p {
-  overflow-wrap: anywhere;
-}
 
 /* ========================================================================== */
 /* MESA - CARTOGRAFIA ESPACIAL / COORDENADAS / CAMPO TÁTICO                 */
@@ -1891,53 +1817,6 @@ html body .tadeon-shell[data-section="Painel do Mestre"]
 }
 
 @media (max-width: 639px) {
-  html body .tadeon-dashboard-hero {
-    min-height: 0 !important;
-    padding: 1.05rem !important;
-  }
-
-  html body .tadeon-dashboard-hero > .relative.z-10 {
-    gap: 1.25rem !important;
-  }
-
-  html body .tadeon-dashboard-hero .mb-5 {
-    margin-bottom: .8rem !important;
-  }
-
-  html body .tadeon-dashboard-hero h1 {
-    font-size: clamp(1.8rem, 9vw, 2.35rem) !important;
-    line-height: 1.04 !important;
-  }
-
-  html body .tadeon-dashboard-signals {
-    gap: .28rem !important;
-    margin-top: 1.15rem !important;
-    padding-top: .8rem !important;
-  }
-
-  html body .tadeon-dashboard-signal {
-    align-items: flex-start !important;
-    gap: .34rem !important;
-    padding-inline: .08rem !important;
-  }
-
-  html body .tadeon-dashboard-signal > svg {
-    width: .82rem !important;
-    height: .82rem !important;
-    flex: 0 0 .82rem !important;
-    margin-top: .1rem !important;
-  }
-
-  html body .tadeon-dashboard-signal p:first-child {
-    font-size: .86rem !important;
-    line-height: 1.08 !important;
-  }
-
-  html body .tadeon-dashboard-signal p:last-child {
-    font-size: .52rem !important;
-    line-height: 1.16 !important;
-    letter-spacing: .035em !important;
-  }
 
   html body .tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-studio__header::before {
     right: -7.5rem !important;
@@ -1952,7 +1831,7 @@ html body .tadeon-shell[data-section="Painel do Mestre"]
 }
 
 @media (prefers-reduced-motion: reduce) {
-  html body .tadeon-dashboard-hero,
+
   html body .tadeon-tabletop-studio__header,
   html body .tadeon-master-commandbar,
   html body .tadeon-page-hero[data-tadeon-page-hero="users"],
@@ -2272,44 +2151,8 @@ html body .tadeon-shell[data-section="Consulta offline"]
 /* source: src/styles/head-final-polish-227.css */
 /* source: src/styles/dashboard-signal-alignment-229.css */
 /* #229 - Dashboard: ícones dos três sinais centralizados no bloco textual. */
-html body .tadeon-dashboard-signal {
-  display: grid !important;
-  grid-template-columns: auto minmax(0, 1fr) !important;
-  align-items: center !important;
-  column-gap: .7rem !important;
-  min-height: 3.35rem !important;
-}
-
-html body .tadeon-dashboard-signal > svg {
-  align-self: center !important;
-  justify-self: center !important;
-  margin: 0 !important;
-  transform: none !important;
-}
-
-html body .tadeon-dashboard-signal > div {
-  display: grid !important;
-  min-width: 0 !important;
-  align-content: center !important;
-  row-gap: .08rem !important;
-}
-
-html body .tadeon-dashboard-signal > div > p {
-  margin: 0 !important;
-}
 
 @media (max-width: 639px) {
-  html body .tadeon-dashboard-signal {
-    grid-template-columns: auto minmax(0, 1fr) !important;
-    align-items: center !important;
-    column-gap: .42rem !important;
-    min-height: 3.1rem !important;
-    padding-inline: .12rem !important;
-  }
-
-  html body .tadeon-dashboard-signal > svg {
-    align-self: center !important;
-  }
 }
 
 /* end-source: src/styles/dashboard-signal-alignment-229.css */
@@ -2322,7 +2165,6 @@ html body .tadeon-dashboard-signal > div > p {
 
 /* Conteúdo funcional sempre acima dos campos decorativos. */
 html body :is(
-  .tadeon-dashboard-hero,
   .tadeon-tabletop-studio__header,
   .tadeon-master-commandbar,
   .tadeon-page-hero[data-tadeon-page-hero]
@@ -2482,7 +2324,6 @@ html body .tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-studio__bran
 
 @media (prefers-reduced-motion: reduce) {
   html body :is(
-    .tadeon-dashboard-hero,
     .tadeon-tabletop-studio__header,
     .tadeon-master-commandbar,
     .tadeon-page-hero[data-tadeon-page-hero]
@@ -3104,56 +2945,7 @@ html body .tadeon-shell[data-section="Saúde do arquivo"] #tadeon-main [data-slo
 /* source: src/styles/dashboard-hero-motion-depth-232.css */
 /* Dashboard hero visual depth - static composition only.
    Motion is owned by tadeon-motion-heroes.css and tadeon-motion-microdetails.css. */
-html body .tadeon-shell[data-section="Dashboard"] .tadeon-dashboard-hero {
-  isolation: isolate;
-  overflow: hidden;
-  background:
-    radial-gradient(circle at 12% 12%, rgb(217 215 164 / 10%), transparent 13rem),
-    radial-gradient(circle at 82% 18%, rgb(113 107 123 / 8%), transparent 14rem),
-    radial-gradient(circle at 66% 84%, rgb(79 110 93 / 7%), transparent 13rem),
-    linear-gradient(132deg, rgb(255 255 255 / 3.5%), transparent 42%),
-    var(--card);
-}
-html body .tadeon-shell[data-section="Dashboard"] .tadeon-dashboard-hero::before {
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;
-  content: "";
-  background:
-    linear-gradient(90deg, transparent 0 11%, rgb(217 215 164 / 4.5%) 11.2% 11.35%, transparent 11.55% 100%),
-    linear-gradient(90deg, transparent 0 34%, rgb(113 107 123 / 4%) 34.1% 34.28%, transparent 34.5% 100%),
-    linear-gradient(90deg, transparent 0 73%, rgb(79 110 93 / 3.8%) 73.1% 73.24%, transparent 73.45% 100%),
-    repeating-linear-gradient(0deg, transparent 0 1.7rem, rgb(255 255 255 / 1.6%) 1.7rem 1.74rem, transparent 1.74rem 3.4rem);
-  opacity: .8;
-  mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
-}
-html body .tadeon-shell[data-section="Dashboard"] .tadeon-dashboard-hero::after {
-  position: absolute;
-  z-index: 0;
-  top: 50%;
-  right: -6.5rem;
-  width: 28rem;
-  height: 28rem;
-  border: 1px solid rgb(217 215 164 / 10%);
-  border-radius: 50%;
-  pointer-events: none;
-  content: "";
-  background:
-    radial-gradient(circle at 50% 50%, transparent 0 26%, rgb(217 215 164 / 3.2%) 26.3% 26.9%, transparent 27.2% 39%, rgb(113 107 123 / 3%) 39.3% 39.9%, transparent 40.2% 55%, rgb(79 110 93 / 2.6%) 55.3% 55.8%, transparent 56%),
-    conic-gradient(from 20deg, transparent 0 8%, rgb(217 215 164 / 6%) 8.4% 8.8%, transparent 9.2% 24%, rgb(113 107 123 / 5%) 24.4% 24.9%, transparent 25.3% 46%, rgb(79 110 93 / 5%) 46.4% 46.9%, transparent 47.4% 73%, rgb(217 215 164 / 5%) 73.4% 73.9%, transparent 74.4% 100%);
-  box-shadow:
-    0 0 0 3.8rem rgb(217 215 164 / 1.6%),
-    0 0 0 7rem rgb(113 107 123 / 1.15%);
-  opacity: .82;
-  transform: translateY(-50%);
-}
-html body .tadeon-shell[data-section="Dashboard"] .tadeon-dashboard-hero > * { position: relative; z-index: 2; }
-html body .tadeon-shell[data-section="Dashboard"] .tadeon-dashboard-hero > svg:first-child { opacity: .8; filter: drop-shadow(0 0 12px rgb(217 215 164 / 8%)); }
-html body .tadeon-shell[data-section="Dashboard"] .tadeon-dashboard-signal { position: relative; border-radius: .75rem; }
 @media (max-width: 767px) {
-  html body .tadeon-shell[data-section="Dashboard"] .tadeon-dashboard-hero::after { right: -10rem; width: 24rem; height: 24rem; opacity: .58; }
-  html body .tadeon-shell[data-section="Dashboard"] .tadeon-dashboard-hero::before { opacity: .58; }
 }
 
 /* end-source: src/styles/dashboard-hero-motion-depth-232.css */
@@ -3179,7 +2971,7 @@ html body .tadeon-page-hero[data-tadeon-page-hero="offline"] > .tadeon-page-hero
 /* Evita manter camadas de composição reservadas permanentemente em dezenas de
    ícones. Os movimentos continuam idênticos, mas o navegador pode liberar a GPU
    entre interações. */
-html body .tadeon-shell .tadeon-dashboard-signal > svg,
+
 html body .tadeon-shell .tadeon-user-row__sigil,
 html body .tadeon-shell .tadeon-route-offline [data-slot="tabs-trigger"] svg,
 html body .tadeon-shell .tadeon-tabletop-studio [data-slot="button"] > svg,
@@ -3207,14 +2999,8 @@ html body .tadeon-shell #tadeon-main :is(
 /* Os três sinais do Dashboard são informativos, não botões. Mantemos o hover
    atmosférico apenas onde existe ponteiro fino e evitamos estados sticky em touch. */
 @media (hover: none), (pointer: coarse) {
-  html body .tadeon-shell[data-section="Dashboard"] .tadeon-dashboard-signal:hover {
-    background: transparent !important;
-    box-shadow: none !important;
-  }
 
-  html body .tadeon-shell[data-section="Dashboard"] .tadeon-dashboard-signal:hover > svg,
-  html body .tadeon-shell[data-section="Dashboard"] .tadeon-dashboard-hero .mb-5:hover > svg,
-  html body .tadeon-shell[data-section="Dashboard"] .tadeon-dashboard-hero [data-slot="button"]:hover svg,
+
   html body .tadeon-shell[data-section="Usuários"] .tadeon-user-row:hover .tadeon-user-row__sigil,
   html body .tadeon-shell[data-section="Consulta offline"] [data-slot="tabs-trigger"]:hover svg,
   html body .tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-studio [data-slot="button"]:hover > svg,
@@ -3227,7 +3013,6 @@ html body .tadeon-shell #tadeon-main :is(
 
 /* Compactação de segurança: ornamentos nunca podem ampliar a caixa de rolagem. */
 html body :is(
-  .tadeon-dashboard-hero,
   .tadeon-tabletop-studio__header,
   .tadeon-master-commandbar,
   .tadeon-page-hero[data-tadeon-page-hero]
@@ -3273,10 +3058,7 @@ html body .tadeon-tabletop-brand-mark-host > svg {
 @media (prefers-reduced-motion: reduce) {
   html body .tadeon-shell #tadeon-main *,
   html body .tadeon-shell #tadeon-main *::before,
-  html body .tadeon-shell #tadeon-main *::after,
-  html body .tadeon-dashboard-hero *,
-  html body .tadeon-dashboard-hero *::before,
-  html body .tadeon-dashboard-hero *::after {
+  html body .tadeon-shell #tadeon-main *::after {
     scroll-behavior: auto !important;
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
@@ -3435,13 +3217,6 @@ html body .tadeon-shell :is(
 }
 
 /* Dashboard ThreadField is literal thread: reveal it by drawing its paths. */
-html body .tadeon-shell .tadeon-dashboard-hero > svg path {
-  stroke-dasharray: 210 150;
-  stroke-dashoffset: 0;
-  animation: tadeon-thread-pass 18s linear infinite;
-}
-html body .tadeon-shell .tadeon-dashboard-hero > svg path:nth-child(2) { animation-duration: 23s; animation-delay: -6s; }
-html body .tadeon-shell .tadeon-dashboard-hero > svg path:nth-child(3) { animation-duration: 27s; animation-delay: -11s; }
 
 @keyframes tadeon-thread-pass {
   to { stroke-dashoffset: -720px; }
@@ -3454,11 +3229,55 @@ html body .tadeon-shell :is(.tadeon-page-hero, .tadeon-tabletop-studio__header, 
 
 @media (prefers-reduced-motion: reduce) {
   html body .tadeon-shell :is(.tadeon-page-hero, .tadeon-tabletop-studio__header, .tadeon-master-commandbar),
-  html body .tadeon-shell :is(.tadeon-page-hero::before, .tadeon-page-hero::after, .tadeon-tabletop-studio__header::before, .tadeon-tabletop-studio__header::after, .tadeon-master-commandbar::before, .tadeon-master-commandbar::after),
-  html body .tadeon-shell .tadeon-dashboard-hero > svg path {
+  html body .tadeon-shell :is(.tadeon-page-hero::before, .tadeon-page-hero::after, .tadeon-tabletop-studio__header::before, .tadeon-tabletop-studio__header::after, .tadeon-master-commandbar::before, .tadeon-master-commandbar::after) {
     animation: none !important;
     will-change: auto !important;
   }
 }
 
 /* end-source: src/styles/tadeon-final-responsive-weave.css */
+
+/* NEX-003: ContinuityHero owns its geometry; the retired dashboard selectors
+   have been removed from all importers instead of overridden here. */
+.tadeon-continuity-hero {
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(14rem, .85fr);
+  overflow: hidden;
+  min-height: 25rem;
+  border: 1px solid var(--border);
+  border-radius: 1.5rem;
+}
+.tadeon-continuity-hero__copy { position: relative; z-index: 2; padding: clamp(1.5rem, 3.6vw, 3rem); }
+.tadeon-continuity-hero__greeting { margin: 0 0 1.5rem; font-size: .875rem; }
+.tadeon-continuity-hero h1 { margin: 0; font-family: var(--font-cinzel, "EB Garamond", Georgia, serif); font-size: clamp(2.6rem, 4.2vw, 4.3rem); font-weight: 500; line-height: 1.02; letter-spacing: -.035em; }
+.tadeon-continuity-hero h1 em { color: var(--primary); font-style: normal; }
+.tadeon-continuity-hero__description { max-width: 37ch; margin-top: 1.25rem; font-size: .9375rem; line-height: 1.65; }
+.tadeon-continuity-hero__actions { margin-top: 1.75rem; }
+.tadeon-continuity-hero__art { position: relative; grid-column: 2; grid-row: 1; display: grid; place-items: center; min-width: 0; pointer-events: none; }
+.tadeon-continuity-hero__weave { position: absolute; width: 165%; max-width: none; height: 100%; left: -28%; top: 0; }
+.tadeon-continuity-hero__seal { position: relative; display: grid; place-items: center; width: clamp(8rem, 13vw, 12rem); aspect-ratio: 1; border-radius: 50%; }
+.tadeon-continuity-hero__seal svg { width: 70%; height: 70%; }
+.tadeon-continuity-hero__caption { position: absolute; right: 1.5rem; bottom: 1.5rem; font-family: var(--font-mono, "PT Mono", ui-monospace, monospace); font-size: .625rem; letter-spacing: .1em; text-transform: uppercase; }
+.tadeon-continuity-facts { position: relative; z-index: 2; grid-column: 1 / -1; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); margin: 0; }
+.tadeon-continuity-facts > div { min-width: 0; padding: 1.5rem 2rem; }
+.tadeon-continuity-facts dt { font-size: .75rem; }
+.tadeon-continuity-facts dd:not(.tadeon-continuity-facts__detail) { margin: .625rem 0 .25rem; font-family: var(--font-mono, "PT Mono", ui-monospace, monospace); font-size: 1.75rem; line-height: 1.2; }
+.tadeon-continuity-facts .tadeon-continuity-facts__detail { display: block; margin: 0; font-size: .75rem; }
+@media (max-width: 1000px) {
+  .tadeon-continuity-hero { grid-template-columns: minmax(0, 1fr) minmax(9rem, .55fr); }
+  .tadeon-continuity-facts > div { padding: 1.25rem; }
+}
+@media (max-width: 600px) {
+  .tadeon-continuity-hero { grid-template-columns: 1fr; border-radius: 1.25rem; }
+  .tadeon-continuity-hero__copy { padding: 1.5rem; }
+  .tadeon-continuity-hero h1 { font-size: 2.8rem; }
+  .tadeon-continuity-hero__art { grid-column: 1; grid-row: 2; min-height: 11rem; }
+  .tadeon-continuity-hero__weave { width: 130%; left: -15%; }
+  .tadeon-continuity-hero__seal { width: 7rem; }
+  .tadeon-continuity-hero__caption { right: 1rem; bottom: .5rem; font-size: .5625rem; }
+  .tadeon-continuity-facts { grid-template-columns: 1fr; }
+  .tadeon-continuity-facts > div { display: grid; grid-template-columns: 1fr auto; align-items: baseline; gap: .125rem 1rem; padding: .875rem 1.5rem; }
+  .tadeon-continuity-facts dd:not(.tadeon-continuity-facts__detail) { grid-column: 2; grid-row: 1 / 3; margin: 0; font-size: 1.5rem; }
+}

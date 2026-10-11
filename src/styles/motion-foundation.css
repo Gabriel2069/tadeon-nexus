@@ -37,7 +37,7 @@
    Heroes: clearly become chapter openings
    -------------------------------------------------------------------------- */
 
-.tadeon-dashboard-hero,
+
 .tadeon-page-hero {
   position: relative;
   overflow: hidden;
@@ -52,7 +52,7 @@
     inset 2px 0 rgb(217 215 164 / 4%);
 }
 
-.tadeon-dashboard-hero::before,
+
 .tadeon-page-hero::before {
   content: "";
   position: absolute;
@@ -69,7 +69,7 @@
   transform: rotate(10deg);
 }
 
-.tadeon-dashboard-hero::after,
+
 .tadeon-page-hero::after {
   content: "";
   position: absolute;
@@ -80,7 +80,7 @@
   pointer-events: none;
 }
 
-.tadeon-dashboard-hero h1,
+
 .tadeon-page-hero h1 {
   position: relative;
   z-index: 2;
@@ -90,7 +90,7 @@
   letter-spacing: -.035em;
 }
 
-.tadeon-dashboard-hero .tadeon-eyebrow,
+
 .tadeon-page-hero .tadeon-eyebrow {
   position: relative;
   z-index: 2;
@@ -128,13 +128,6 @@
     rgb(17 20 25 / 94%) !important;
 }
 
-.tadeon-sheet-card[data-tadeon-material="relic"] {
-  border-width: 1px 1px 1px 3px !important;
-  border-left-color: rgb(217 215 164 / 42%) !important;
-  border-radius: .55rem .2rem 1.1rem .3rem !important;
-  transform-origin: 20% 50%;
-}
-
 .tadeon-link-panel[data-tadeon-material="fragment"] {
   border-width: 1px 2px 1px 0 !important;
   border-radius: .2rem .8rem .3rem 1rem !important;
@@ -147,14 +140,12 @@
 
 @media (hover: hover) and (pointer: fine) {
   .tadeon-surface[data-tadeon-material],
-  .tadeon-sheet-card[data-tadeon-material],
   .tadeon-link-panel[data-tadeon-material],
   .tadeon-state-panel[data-tadeon-material] {
     transition: transform 220ms cubic-bezier(.23,1,.32,1), box-shadow 220ms cubic-bezier(.23,1,.32,1), border-color 180ms ease !important;
   }
 
   .tadeon-surface[data-tadeon-material]:hover { transform: translateY(-5px) !important; }
-  .tadeon-sheet-card[data-tadeon-material="relic"]:hover { transform: translateY(-6px) rotate(-.35deg) !important; }
   .tadeon-link-panel[data-tadeon-material="fragment"]:hover { transform: translateX(5px) !important; }
   .tadeon-state-panel[data-tadeon-material="state"]:hover { transform: translateY(-3px) !important; }
 }
@@ -255,9 +246,9 @@
    -------------------------------------------------------------------------- */
 
 @media (max-width: 767px) {
-  .tadeon-dashboard-hero h1,
+
   .tadeon-page-hero h1 { font-size: clamp(1.85rem, 10vw, 2.8rem) !important; }
-  .tadeon-dashboard-hero,
+
   .tadeon-page-hero { border-radius: 1rem .3rem 1rem .3rem !important; }
   .tadeon-master-workspace .tadeon-master-commandbar { min-height: 7rem; }
   .tadeon-sheet-page .tadeon-sheet-overview { grid-template-columns: repeat(2, minmax(0,1fr)); }
@@ -266,7 +257,6 @@
 
 @media (prefers-reduced-motion: reduce) {
   .tadeon-surface[data-tadeon-material],
-  .tadeon-sheet-card[data-tadeon-material],
   .tadeon-link-panel[data-tadeon-material],
   .tadeon-state-panel[data-tadeon-material] { transition: none !important; }
 }
@@ -340,7 +330,7 @@
 }
 
 /* Hero breathes very slowly; the content itself remains stable. */
-.tadeon-dashboard-hero,
+
 .tadeon-page-hero,
 .tadeon-master-commandbar,
 .tadeon-tabletop-boot__card {
@@ -357,7 +347,6 @@
 }
 
 .tadeon-surface[data-tadeon-directed="true"],
-.tadeon-sheet-card[data-tadeon-directed="true"],
 .tadeon-link-panel[data-tadeon-directed="true"],
 .tadeon-state-panel[data-tadeon-directed="true"] {
   position: relative;
@@ -380,10 +369,6 @@
 }
 
 /* Navigation indicator moves like a ribbon instead of flashing. */
-.tadeon-nav-item[data-tadeon-directed="true"]::after {
-  transform-origin: left center;
-  animation: tadeon-nav-pulse 3.8s ease-in-out infinite;
-}
 
 /* Buttons: physical press, then release. */
 .tadeon-shell button:not([data-no-tadeon-motion]):not(:disabled),
@@ -494,7 +479,7 @@
 @media (max-width: 767px) {
   .tadeon-shell::after { opacity: .28; }
   .tadeon-route-stage::after { inset: 16vh -8vw auto auto; width: 78vw; height: 56vh; }
-  .tadeon-dashboard-hero,
+
   .tadeon-page-hero,
   .tadeon-master-commandbar,
   .tadeon-tabletop-boot__card { animation-duration: 14s; }
@@ -504,12 +489,10 @@
   .tadeon-shell::before,
   .tadeon-shell::after,
   .tadeon-route-stage::after,
-  .tadeon-dashboard-hero,
   .tadeon-page-hero,
   .tadeon-master-commandbar,
   .tadeon-tabletop-boot__card,
   .tadeon-page > *,
-  .tadeon-nav-item[data-tadeon-directed="true"]::after,
   .tadeon-state-panel[data-tadeon-state] {
     animation: none !important;
   }
@@ -545,17 +528,9 @@
    -------------------------------------------------------------------------- */
 @media (hover: hover) and (pointer: fine) {
   .tadeon-shell .tadeon-surface[data-tadeon-directed="true"]:hover,
-  .tadeon-shell .tadeon-sheet-card[data-tadeon-directed="true"]:hover,
   .tadeon-shell .tadeon-link-panel[data-tadeon-directed="true"]:hover,
   .tadeon-shell .tadeon-state-panel[data-tadeon-directed="true"]:hover {
     z-index: 2;
-  }
-
-  .tadeon-shell .tadeon-sheet-card[data-tadeon-directed="true"]:hover {
-    box-shadow:
-      0 34px 84px -56px rgb(0 0 0 / 98%),
-      inset 0 1px rgb(255 255 255 / 6%),
-      inset 3px 0 rgb(217 215 164 / 16%);
   }
 
   .tadeon-shell .tadeon-link-panel[data-tadeon-directed="true"]:hover {
@@ -731,7 +706,6 @@
 /* Tadeon Head Microanimations - motion only. No layout, sizing or positioning rules. */
 
 .tadeon-page-hero,
-.tadeon-dashboard-hero,
 .tadeon-master-commandbar,
 .tadeon-tabletop-studio__header,
 .tadeon-auth-hero {
@@ -740,7 +714,6 @@
 
 /* Heads reveal themselves without changing their authored composition. */
 .tadeon-page-hero,
-.tadeon-dashboard-hero,
 .tadeon-master-commandbar,
 .tadeon-tabletop-studio__header,
 .tadeon-auth-hero {
@@ -748,7 +721,6 @@
 }
 
 .tadeon-page-hero > *,
-.tadeon-dashboard-hero > *,
 .tadeon-master-commandbar > *,
 .tadeon-tabletop-studio__header > *,
 .tadeon-auth-hero > * {
@@ -756,7 +728,6 @@
 }
 
 .tadeon-page-hero > *:nth-child(2),
-.tadeon-dashboard-hero > *:nth-child(2),
 .tadeon-master-commandbar > *:nth-child(2),
 .tadeon-tabletop-studio__header > *:nth-child(2),
 .tadeon-auth-hero > *:nth-child(2) {
@@ -764,7 +735,6 @@
 }
 
 .tadeon-page-hero > *:nth-child(3),
-.tadeon-dashboard-hero > *:nth-child(3),
 .tadeon-master-commandbar > *:nth-child(3),
 .tadeon-tabletop-studio__header > *:nth-child(3),
 .tadeon-auth-hero > *:nth-child(3) {
@@ -787,8 +757,6 @@
 
   .tadeon-page-hero button,
   .tadeon-page-hero a,
-  .tadeon-dashboard-hero button,
-  .tadeon-dashboard-hero a,
   .tadeon-master-commandbar button,
   .tadeon-master-commandbar a,
   .tadeon-tabletop-studio__header button,
@@ -800,8 +768,6 @@
 
   .tadeon-page-hero button:hover,
   .tadeon-page-hero a:hover,
-  .tadeon-dashboard-hero button:hover,
-  .tadeon-dashboard-hero a:hover,
   .tadeon-master-commandbar button:hover,
   .tadeon-master-commandbar a:hover,
   .tadeon-tabletop-studio__header button:hover,
@@ -824,12 +790,10 @@
 
 @media (prefers-reduced-motion: reduce) {
   .tadeon-page-hero,
-  .tadeon-dashboard-hero,
   .tadeon-master-commandbar,
   .tadeon-tabletop-studio__header,
   .tadeon-auth-hero,
   .tadeon-page-hero > *,
-  .tadeon-dashboard-hero > *,
   .tadeon-master-commandbar > *,
   .tadeon-tabletop-studio__header > *,
   .tadeon-auth-hero > * {
@@ -839,8 +803,6 @@
 
   .tadeon-page-hero button,
   .tadeon-page-hero a,
-  .tadeon-dashboard-hero button,
-  .tadeon-dashboard-hero a,
   .tadeon-master-commandbar button,
   .tadeon-master-commandbar a,
   .tadeon-tabletop-studio__header button,
@@ -868,13 +830,11 @@
 
 /* Preserve legacy hooks without imposing old motion behavior. */
 .tadeon-page-hero,
-.tadeon-dashboard-hero,
 .tadeon-master-commandbar,
 .tadeon-tabletop-studio__header,
 .tadeon-auth-hero,
 .tadeon-surface,
 .tadeon-state-panel,
-.tadeon-sheet-card,
 .tadeon-user-row,
 .tadeon-shell button,
 .tadeon-shell [role="button"],
@@ -895,32 +855,12 @@
 /* Tadeon Contextual Motion - each area has its own rhythm without changing composition. */
 
 /* Dashboard - archival reveal: calm, sequential, slightly wider breathing room. */
-.tadeon-route-dashboard .tadeon-dashboard-signal,
-.tadeon-route-dashboard .tadeon-sheet-card {
-  transition: transform 420ms var(--tadeon-motion-material, cubic-bezier(.23,1,.32,1)),
-    box-shadow 420ms var(--tadeon-motion-material, cubic-bezier(.23,1,.32,1)),
-    border-color 320ms ease;
-}
-
-.tadeon-route-dashboard .tadeon-dashboard-signal:nth-child(1) { --tadeon-stagger: 35ms; }
-.tadeon-route-dashboard .tadeon-dashboard-signal:nth-child(2) { --tadeon-stagger: 75ms; }
-.tadeon-route-dashboard .tadeon-dashboard-signal:nth-child(3) { --tadeon-stagger: 115ms; }
-
-.tadeon-route-dashboard .tadeon-dashboard-signal {
-  animation: tadeon-contextual-rise 560ms var(--tadeon-motion-reveal, cubic-bezier(.22,1,.36,1)) both;
-  animation-delay: var(--tadeon-stagger, 0ms);
-}
 
 @media (hover: hover) and (pointer: fine) {
-  .tadeon-route-dashboard .tadeon-dashboard-signal:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 18px 38px -34px rgb(0 0 0 / 90%);
-  }
 }
 
 /* Character sheet - document rhythm: tabs and sections feel like layers of a living record. */
 .tadeon-sheet-page .tadeon-sheet-section,
-.tadeon-sheet-page .tadeon-sheet-card,
 .tadeon-sheet-page .tadeon-sheet-overview > * {
   transition: transform 360ms var(--tadeon-motion-material, cubic-bezier(.23,1,.32,1)),
     box-shadow 360ms var(--tadeon-motion-material, cubic-bezier(.23,1,.32,1)),
@@ -1018,7 +958,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .tadeon-route-dashboard .tadeon-dashboard-signal,
+
   .tadeon-sheet-page .tadeon-sheet-section,
   .tadeon-master-workspace [data-tadeon-directed="true"] {
     animation: none !important;
@@ -1331,7 +1271,6 @@
 }
 
 .tadeon-route-stage > .tadeon-page > .tadeon-page-hero,
-.tadeon-route-stage > .tadeon-page > .tadeon-dashboard-hero,
 .tadeon-route-stage > .tadeon-page > .tadeon-master-commandbar,
 .tadeon-route-stage > .tadeon-page > .tadeon-tabletop-studio__header,
 .tadeon-route-stage > .tadeon-page > .tadeon-auth-hero {
@@ -1372,7 +1311,7 @@
   }
 }
 
-.tadeon-primary-nav .tadeon-nav-item[aria-current="page"]::before,
+
 .tadeon-mobile-dock__item[aria-current="page"]::before {
   content: "";
   position: absolute;
@@ -1388,7 +1327,7 @@
   transition: transform 420ms var(--tadeon-motion-settle), opacity 280ms ease;
 }
 
-.tadeon-primary-nav .tadeon-nav-item[aria-current="page"]:hover::before,
+
 .tadeon-mobile-dock__item[aria-current="page"]:hover::before {
   transform: scaleX(1);
   opacity: .09;
@@ -1396,8 +1335,6 @@
 
 /* Surfaces: elevation changes are continuous, not jumpy. */
 .tadeon-shell .tadeon-surface,
-.tadeon-shell .tadeon-sheet-card,
-.tadeon-shell .tadeon-dashboard-signal,
 .tadeon-shell .tadeon-state-panel,
 .tadeon-shell .tadeon-user-row {
   transform-origin: center;
@@ -1406,15 +1343,11 @@
 
 @media (hover: hover) and (pointer: fine) {
   .tadeon-shell .tadeon-surface[data-tadeon-interactive="true"]:hover,
-  .tadeon-shell .tadeon-sheet-card:hover,
-  .tadeon-shell .tadeon-dashboard-signal:hover,
   .tadeon-shell .tadeon-state-panel:hover {
     transform: translateY(-2px) scale(1.003);
   }
 
   .tadeon-shell .tadeon-surface[data-tadeon-interactive="true"]:active,
-  .tadeon-shell .tadeon-sheet-card:active,
-  .tadeon-shell .tadeon-dashboard-signal:active,
   .tadeon-shell .tadeon-state-panel:active {
     transform: translateY(1px) scale(.997);
   }
@@ -1581,8 +1514,6 @@
 .tadeon-route-stage,
 .tadeon-route-stage > .tadeon-page,
 .tadeon-shell .tadeon-surface,
-.tadeon-shell .tadeon-sheet-card,
-.tadeon-shell .tadeon-dashboard-signal,
 .tadeon-shell .tadeon-state-panel,
 .tadeon-shell .tadeon-user-row,
 .tadeon-shell .tadeon-link-panel,
@@ -1778,7 +1709,7 @@
   animation: tadeon-relational-nav-focus 360ms var(--tadeon-relational-in) both;
 }
 
-.tadeon-primary-nav .tadeon-nav-item[aria-current="page"]::after,
+
 .tadeon-mobile-dock__item[aria-current="page"]::after {
   transform-origin: center;
 }

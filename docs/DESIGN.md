@@ -1,0 +1,115 @@
+# Tadeon Nexus: Véu & Trama
+
+Direção solicitada por Tadeu em 11/10/2026. **Direção aprovada por Tadeu**, vinculada a NEX-003. O primeiro lote de shell/Dashboard está implementado na PR #259; a produção permanece no merge estrutural #258. [Prancheta navegável](design/board.html). A fila de execução continua exclusivamente em [project-continuity.json](project-continuity.json).
+
+## Tese e identidade
+
+Um arquivo vivo de mitos, personagens e vínculos, sustentado pelo Fio-Mestre. Suspense na atmosfera e precisão na interação: luz parcial, vazios intencionais, tecido tensionado e controles com profundidade. O símbolo autoral representa um ponto onde os fios encontram continuidade. A trama original da prancheta prolonga essa geometria, sem substituir a marca.
+
+Público: jogadores e mestres que consultam, editam e conduzem sessões. Dashboard orienta a retomada; Nexus preserva conhecimento; ficha exige leitura e edição precisas; Mesa privilegia o mapa e as ferramentas. A mitologia é uma linguagem de memória, destino e vínculos, não a introdução de deuses ou fatos novos no cânone. NexOS continua separado. O pedido atual autoriza explorar vidro dimensional no Tadeon, sem importar a identidade cósmica do outro projeto.
+
+Preservar: fundo escuro, marfim, EB Garamond, Inter, PT Mono, símbolos existentes de `brand-mark.tsx` e `section-symbols.tsx` e cores locais. Não redesenhar os símbolos nem converter toda interface em uma composição ornamental. A direção apresenta uma assinatura coerente; alternativas só se uma decisão material exigir comparação.
+
+## Hierarquia, composição e densidade
+
+1. Localização e nome da área.
+2. Tarefa que o usuário pode retomar ou executar.
+3. Resumo pertinente e origem dos dados.
+4. Exploração e ações secundárias.
+
+Um título editorial e uma ação dominante por região. Tipos funcionais, alinhamento e agrupamento carregam a hierarquia; numeração só quando houver sequência real. Respiro inicial: 8, 12, 16, 24, 32 e 48 CSS px. Conteúdo de painéis com 20–24px de padding; medida de leitura 60–70 caracteres; raio de painel 16px, campo 10–12px. Esses valores são propostas, não tamanhos medidos da aplicação.
+
+Compacto: uma coluna, margem de referência 16px, métricas empilhadas e navegação que mantém acesso a todas as áreas. Intermediário: duas colunas apenas quando textos e controles couberem. Regular: sidebar de referência 224px e margem 32px. Breakpoints derivam do conteúdo. 390, 820 e 1440px são vistas de validação, não leis de dispositivos. Também verificar 320px, zoom/reflow, texto a 200%, rótulos longos e teclado virtual real.
+
+A prancheta contém Dashboard regular e composição compacta com dados fictícios. Os três números da prancheta ilustram hierarquia. Na implementação, foram reconciliados com `src/routes/index.tsx`: fichas disponíveis, seus personagens e maior exposição, todos provenientes da leitura existente. Não criar consultas ou indicadores só para reproduzir o mockup.
+
+## Materiais e sua função
+
+| Camada | Aplicação | Limite |
+|---|---|---|
+| Vazio | Fundo #080A0E e intervalos | Luz localizada fora da leitura; sem starfield |
+| Tinta | Painéis #12151A / #22262D, documentos, ficha e tabelas | Conteúdo opaco e estável |
+| Véu | Trama vetorial, cabeçalho e momentos de descoberta | Não passar sobre parágrafos, números ou cursor |
+| Vidro | Navegação, barra de ferramentas e controles transitórios | Um plano funcional; sem vidro sobre vidro |
+
+Receita inicial de tradução CSS: fundo `rgb(21 24 30 / 88%)`, `backdrop-filter: blur(16px)`, borda de luz, reflexo interno de 1px e sombra `0 12px 32px rgb(0 0 0 / 28%)`. Raio inicial 16px. Não equivale ao Liquid Glass nativo: refração dinâmica verdadeira não está implementada. A profundidade vem de luz, separação de planos e sombra de contato, sem necessidade inicial de WebGL.
+
+Fallback opaco: #15181E, contorno #7A8187, mesmas dimensões e estados. Aplicar sem suporte ao filtro, com redução de transparência quando suportada e com preferência manual de efeitos caso implementada no app. Nenhuma função depende da aparência translúcida. Conteúdo do popup continua estável; controles e moldura podem receber a linguagem de vidro. Medir contraste no pior fundo composto; um ratio de cor opaca não valida uma superfície translúcida.
+
+## Tokens e tipografia
+
+Editar os tokens existentes em `src/styles.css`; a prancheta não é uma segunda folha de produção. Não acrescentar famílias para obter mitologia. Verificar carregamento, glifos portugueses e licenças antes de redistribuir fontes no app; a prancheta usa as famílias já solicitadas pelo root via Google Fonts, com fallback sem rede.
+
+| Papel | Valor / família | Uso |
+|---|---|---|
+| Base | #080A0E | Vazio |
+| Painel | #12151A | Dados opacos |
+| Tinta | #22262D | Superfície elevada estável |
+| Texto | #E9E3D5 | Leitura principal |
+| Texto secundário | #9A9793 | Informação complementar sobre painel opaco |
+| Ação / foco | #D9D7A4 com texto #080A0E | Conhecimento |
+| Véu | #716B7B | Atmosfera, sem texto pequeno nessa cor |
+| Metal | #7A8187 | Sinal/contorno funcional quando necessário |
+| Editorial | EB Garamond 500/600; Georgia, serif | 36–48px regular, 28–36px compacto, line-height 1,1 |
+| Interface | Inter 400/500/600; system-ui, sans-serif | Corpo 16px/1,5; label 14px/1,4; título funcional 20–24px |
+| Utilidade | PT Mono 400; ui-monospace, monospace | Números/metadados 12–14px/1,5 |
+
+A capa da prancheta é editorial; sua escala não deve ser transplantada ao Dashboard. Metadados essenciais não devem diminuir para caber. Os resultados de pares opacos estão na [evidência](design-board-validation.json), calculados pela luminância relativa sRGB, sem arredondamento para determinar o limiar. Não constituem auditoria de todos os estados da aplicação.
+
+Acentos preservados: Dashboard #D9D7A4; Nexus #4F6E5D; Mesa #547B94; Mestre #74242D; Usuários #B7814D; Ferramentas #7A8187; Offline #716B7B. Esses acentos localizam áreas, não substituem status. Verde e vinho escuros ficam em assinatura/atmosfera; erros recebem texto legível, ícone e correção pertinente. Não comunicar seleção, acesso ou risco somente por cor.
+
+## Componentes e dados
+
+Botão primário: uma ação dominante, hit area preferida 44×44 CSS px; secundário com contorno funcional. Hover localizado; press 0,98; foco visível 2px marfim afastado 3px. 44px é decisão do projeto; WCAG 2.2 AA estabelece 24×24 CSS px com exceções, não uma regra universal de 44px.
+
+Campos têm rótulo persistente, ajuda associada e erro que indique a correção. Vínculos/seleção recebem texto, contorno e estado acessível. Sidebar indica localização por texto e forma. Busca e dialogs mantêm abertura por teclado, foco inicial, contenção, Escape e retorno; medidas continuam sob `VisualViewportPopupBridge`. Animação não atrasa foco, leitura ou submissão.
+
+Registrar default, hover, focus-visible, pressed, selected, disabled, loading, error e success quando aplicáveis. Vazio explica o conteúdo e uma ação útil; loading reserva geometria e anuncia o estado; erro preserva entrada e oferece recuperação; sem acesso e offline explicam limite/saída e respeitam identidade/cargo. Nunca simular sucesso visual para uma escrita ainda pendente. Não alterar datas, unidades, cálculos, autorização, cache ou persistência para atender ao desenho.
+
+Ficha: identidade e números legíveis, texto e seleção estáveis, autosave preservado. Nexus: trilha, leitura e lista alternativa aos vínculos do grafo. Mesa: mapa e peças protagonistas, vidro no chrome externo, sem textura animada no canvas. Mestre: precisão e risco explícitos, vinho contido. Não uniformizar a densidade entre telas que têm tarefas diferentes.
+
+## Gramática de movimento
+
+| Intenção | Faixa proposta | Propriedade / destino |
+|---|---|---|
+| Tensionar | 120–180ms | Press/foco ou fio decorativo, sem deslocar o alvo |
+| Desdobrar | 180–280ms | Painel acompanha a origem; percurso até 8px |
+| Conectar contextos | 220–320ms | Somente quando esclarece continuidade |
+| Repouso | Sem animação ambiente | Composição estática sustenta o suspense |
+
+Easing inicial `cubic-bezier(.23, 1, .32, 1)`. Preferir transform/opacity em contêiner decorativo separado; não deformar glifos, números ou coordenadas. Cancelar execução anterior, último estado vence; desmontagem limpa recursos. Sem ondas infinitas, simulação de tecido global, cursor magnético, tilt obrigatório ou parallax de leitura. A prancheta demonstra tensão por escala de um SVG decorativo, não uma simulação física.
+
+`prefers-reduced-motion` elimina o percurso e mostra o destino, preservando a informação. Oferecer equivalente a drag quando não essencial; estados não dependem de hover. Na implementação, medir frames, CPU, memória e filtros em hardware representativo antes de aumentar a intensidade. Não alegar fluidez de produção com base nesta demonstração.
+
+## Construção no terreno existente
+
+| Decisão | Responsável atual | Como evitar sobreposição |
+|---|---|---|
+| Tokens / tipo | `src/styles.css` | Atualizar token existente; nenhuma camada paralela |
+| Superfícies | `src/styles/experience-surfaces.css`, `nexus-material.css` | Separar material de geometria |
+| Cabeçalho | `page-hero-parity.css`, `hero-backgrounds.css`, `section-symbols.tsx` | Preservar símbolo e uma autoridade de geometria |
+| Shell | `desktop-shell.css`, `navigation-layout.css`, `app-layout.tsx` | Localização e navegação pertencem ao componente |
+| Motion | `motion-foundation.css`, `motion-interactions.css`, `motion-composition.css` | Uma propriedade animada por responsável |
+| Portais | Primitivos UI e módulos existentes de popup | Não reintroduzir writers de viewport por rota |
+
+Antes de alterar uma propriedade, buscar todos os concorrentes e conferir `style-architecture.json`. Modificar o módulo responsável; remover regras antigas somente após validar os estados afetados. Não adicionar `!important`, arquivo numerado, `final`, `repair`, `polish` ou observer global. Esta prancheta vive em docs e não entra no bundle da aplicação.
+
+NEX-003 foi validado na branch da PR #259, após aprovação da direção e implementação de shell/Dashboard. Outras etapas conservam as dependências em WORKPLAN gerado; não duplicar aqui outra fila. A expansão para navegação/portais, ficha, Nexus e Mesa depende do fechamento dos critérios pertinentes. Performance real e autenticação real continuam com seus próprios IDs e limites.
+
+## Referências e transferência
+
+Consultadas em 11/10/2026. Estas fontes orientam mecanismos; números e receitas acima são escolhas propostas para o Tadeon.
+
+- [Apple HIG: Materials](https://developer.apple.com/design/human-interface-guidelines/materials): fonte oficial, conteúdo recuperado no índice de busca; abertura direta exige JavaScript. Diferenciar conteúdo de camada funcional, com uso contido de vidro. Aplicar fundamentos à web, sem impor navegação nativa ou alegar equivalência de renderização.
+- [Apple WWDC25: Meet Liquid Glass](https://developer.apple.com/videos/play/wwdc2025/219/): transcrição oficial sobre profundidade, resposta à interação e continuidade entre origem/destino.
+- [V&A: What is tapestry?](https://www.vam.ac.uk/articles/what-is-tapestry): estrutura da urdidura tensionada e trama entrelaçada. Transformada em desenho vetorial original; nenhuma imagem do acervo incorporada.
+- [Remedy / Adobe: Environment Art Technology and Workflows in Alan Wake 2](https://blog.adobe.com/en/publish/2024/08/07/remedy-entertainments-environment-art-technology-workflow-alan-wake-2): entrevista com a equipe de ambiente, especialmente art direction. Transferir o método de trabalhar luz/material para uma atmosfera estranha; sem copiar arte, identidade ou narrativa.
+- [W3C: WCAG 2.2](https://www.w3.org/TR/WCAG22/) e explicações de [contraste](https://www.w3.org/WAI/WCAG22/Understanding/contrast-minimum.html) / [alvos](https://www.w3.org/WAI/WCAG22/Understanding/target-size-minimum.html): texto comum 4,5:1, texto grande 3:1 e sinais não textuais aplicáveis 3:1; requisitos de reflow, foco e alvos devem ser verificados nos componentes efetivos. Animação desativável por interação é SC 2.3.3 AAA; aqui também é decisão de produto, sem confundir níveis.
+
+A consulta a um arquivo específico do atlas VoltAgent retornou 404; ele não sustenta decisões desta proposta. A direção parte do próprio Fio-Mestre e das fontes acima. A prancheta usa vetores e CSS originais; não há colagem de imagens licenciadas nem imagem generativa representada como material técnico exato.
+
+## Evidência e limites
+
+A estrutura foi integrada pela PR #258 em `c6c1ea6c5e3338b4ff111329a8b2b37841e8245d`, após Quality bem-sucedido no HEAD `20ba787e496eea4285ee147a0380c175f2f4fe02`. O workflow de publicação no SHA do merge passou, incluindo a confirmação do endpoint público: [execução](https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38151368993). A consulta independente local retornou HTTP 403; não houve validação de conta real.
+
+A [evidência da prancheta](design-board-validation.json) registra vistas, interações demonstradas, movimento reduzido, pares de cor e limites de exportação. A produção ainda não recebeu este lote. A [validação da implementação](dashboard-design-validation.json) cobre fixtures e interações no navegador; VoiceOver, contas reais, teclado virtual e performance de hardware continuam fora dessa evidência.

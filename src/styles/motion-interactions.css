@@ -39,8 +39,6 @@
    -------------------------------------------------------------------------- */
 @media (hover: hover) and (pointer: fine) {
   .tadeon-shell .tadeon-surface[data-tadeon-interactive="true"],
-  .tadeon-shell .tadeon-sheet-card,
-  .tadeon-shell .tadeon-dashboard-signal,
   .tadeon-shell .tadeon-state-panel,
   .tadeon-shell .tadeon-link-panel {
     transition:
@@ -51,8 +49,6 @@
   }
 
   .tadeon-shell .tadeon-surface[data-tadeon-interactive="true"]:hover,
-  .tadeon-shell .tadeon-sheet-card:hover,
-  .tadeon-shell .tadeon-dashboard-signal:hover,
   .tadeon-shell .tadeon-state-panel:hover,
   .tadeon-shell .tadeon-link-panel:hover {
     transform: translate3d(0, -7px, 0) scale(1.012) !important;
@@ -64,8 +60,6 @@
   }
 
   .tadeon-shell .tadeon-surface[data-tadeon-interactive="true"]:active,
-  .tadeon-shell .tadeon-sheet-card:active,
-  .tadeon-shell .tadeon-dashboard-signal:active,
   .tadeon-shell .tadeon-state-panel:active,
   .tadeon-shell .tadeon-link-panel:active {
     transform: translate3d(0, 2px, 0) scale(.978) !important;
@@ -276,7 +270,7 @@
   animation: tadeon-visible-nav-arrive 430ms var(--tadeon-visible-ease-in) both !important;
 }
 
-.tadeon-primary-nav .tadeon-nav-item[aria-current="page"]::after,
+
 .tadeon-mobile-dock__item[aria-current="page"]::after {
   animation: tadeon-visible-nav-marker 500ms var(--tadeon-visible-ease-in) both !important;
 }
@@ -539,8 +533,6 @@
   .tadeon-shell [role="button"],
   .tadeon-shell a[href],
   .tadeon-shell .tadeon-surface,
-  .tadeon-shell .tadeon-sheet-card,
-  .tadeon-shell .tadeon-dashboard-signal,
   .tadeon-shell .tadeon-state-panel,
   .tadeon-shell .tadeon-link-panel,
   .tadeon-shell [data-slot="tabs-trigger"] {
@@ -586,8 +578,8 @@
 @keyframes tdv-state-pop{0%{transform:scale(.78) rotate(-6deg)}48%{transform:scale(1.18) rotate(2deg)}76%{transform:scale(.96)}100%{transform:scale(1) rotate(0)}}
 
 /* Cards / rows: distinct lift, lateral drift and material sheen. */
-.tadeon-shell .tadeon-surface,.tadeon-shell .tadeon-sheet-card,.tadeon-shell .tadeon-user-row,.tadeon-shell .tadeon-dashboard-signal,.tadeon-shell .tadeon-state-panel{transition:transform 340ms var(--tdv-spring),box-shadow 440ms var(--tdv-soft),border-color 260ms ease,filter 340ms ease}
-@media (hover:hover) and (pointer:fine){.tadeon-shell .tadeon-surface:hover{transform:translateY(-8px) rotate(-.18deg) scale(1.012);filter:brightness(1.035)}.tadeon-shell .tadeon-sheet-card:hover{transform:translateY(-9px) rotate(.14deg) scale(1.016);filter:brightness(1.045)}.tadeon-shell .tadeon-user-row:hover{transform:translateX(8px) translateY(-2px);filter:brightness(1.025)}.tadeon-shell .tadeon-dashboard-signal:hover{transform:translateY(-10px) rotate(-.25deg) scale(1.02)}.tadeon-shell .tadeon-state-panel:hover{transform:translateY(-6px) scale(1.008)}}
+.tadeon-shell .tadeon-surface,.tadeon-shell .tadeon-user-row,.tadeon-shell .tadeon-state-panel{transition:transform 340ms var(--tdv-spring),box-shadow 440ms var(--tdv-soft),border-color 260ms ease,filter 340ms ease}
+@media (hover:hover) and (pointer:fine){.tadeon-shell .tadeon-surface:hover{transform:translateY(-8px) rotate(-.18deg) scale(1.012);filter:brightness(1.035)}.tadeon-shell .tadeon-user-row:hover{transform:translateX(8px) translateY(-2px);filter:brightness(1.025)}.tadeon-shell .tadeon-state-panel:hover{transform:translateY(-6px) scale(1.008)}}
 
 /* Navigation: active destination arrives with a directional sweep. */
 .tadeon-primary-nav .tadeon-nav-item,.tadeon-mobile-dock__item{transition:transform 320ms var(--tdv-spring),color 220ms ease,background-color 320ms ease,box-shadow 420ms var(--tdv-soft)}
@@ -657,27 +649,8 @@
 }
 
 /* DASHBOARD - composed, deliberate, signal-driven. */
-.tadeon-shell[data-section="Dashboard"] .tadeon-dashboard-signal,
-.tadeon-shell[data-section="Painel"] .tadeon-dashboard-signal{
-  transform-origin:50% 100%;
-}
-.tadeon-shell[data-section="Dashboard"] .tadeon-dashboard-signal:hover,
-.tadeon-shell[data-section="Painel"] .tadeon-dashboard-signal:hover{
-  transform:translateY(-10px) scale(1.025) rotate(-.35deg);
-  box-shadow:0 34px 70px -42px rgb(217 215 164 / 38%);
-}
-.tadeon-shell[data-section="Dashboard"] .tadeon-dashboard-signal:nth-child(2n):hover,
-.tadeon-shell[data-section="Painel"] .tadeon-dashboard-signal:nth-child(2n):hover{transform:translateY(-10px) scale(1.025) rotate(.35deg)}
 
 /* FICHA - cards feel like pages/records being handled. */
-.tadeon-shell[data-section="Ficha"] .tadeon-sheet-card{
-  transform-origin:50% 12%;
-}
-.tadeon-shell[data-section="Ficha"] .tadeon-sheet-card:hover{
-  transform:translateY(-11px) rotate(-.45deg) scale(1.025);
-  box-shadow:0 38px 80px -48px rgb(217 215 164 / 30%);
-}
-.tadeon-shell[data-section="Ficha"] .tadeon-sheet-card:nth-child(even):hover{transform:translateY(-9px) rotate(.42deg) scale(1.022)}
 .tadeon-shell[data-section="Ficha"] .tadeon-sheet-section[data-state="open"]{
   animation:tp-sheet-open 440ms var(--tp-snap) both;
 }
@@ -734,9 +707,7 @@
 @keyframes tp-auth{from{opacity:0;transform:translateY(54px) scale(.94) rotateX(7deg);filter:blur(12px)}55%{opacity:1;transform:translateY(-7px) scale(1.012) rotateX(0);filter:blur(0)}to{transform:none}}
 
 @media (max-width:767px){
-  .tadeon-shell[data-section="Dashboard"] .tadeon-dashboard-signal:hover,
-  .tadeon-shell[data-section="Painel"] .tadeon-dashboard-signal:hover,
-  .tadeon-shell[data-section="Ficha"] .tadeon-sheet-card:hover,
+
   .tadeon-shell[data-section="Mesa Nexus"] [data-tabletop-tool]:hover,
   .tadeon-shell[data-section="Mesa Nexus"] [data-tabletop-action]:hover{transform:none}
 }
@@ -860,8 +831,6 @@
 }
 
 .tadeon-shell .tadeon-surface[data-tadeon-interactive="true"],
-.tadeon-shell .tadeon-sheet-card,
-.tadeon-shell .tadeon-dashboard-signal,
 .tadeon-shell .tadeon-state-panel,
 .tadeon-shell .tadeon-link-panel,
 .tadeon-shell .tadeon-skill-modifier-panel{
@@ -874,8 +843,6 @@
 
 @media (hover:hover) and (pointer:fine){
   .tadeon-shell .tadeon-surface[data-tadeon-interactive="true"]:hover,
-  .tadeon-shell .tadeon-sheet-card:hover,
-  .tadeon-shell .tadeon-dashboard-signal:hover,
   .tadeon-shell .tadeon-state-panel:hover,
   .tadeon-shell .tadeon-link-panel:hover,
   .tadeon-shell .tadeon-skill-modifier-panel:hover{
@@ -889,8 +856,6 @@
 }
 
 .tadeon-shell .tadeon-surface[data-tadeon-interactive="true"]:active,
-.tadeon-shell .tadeon-sheet-card:active,
-.tadeon-shell .tadeon-dashboard-signal:active,
 .tadeon-shell .tadeon-state-panel:active,
 .tadeon-shell .tadeon-link-panel:active,
 .tadeon-shell .tadeon-skill-modifier-panel:active{
@@ -899,8 +864,6 @@
 
 @media (prefers-reduced-motion:reduce){
   .tadeon-shell .tadeon-surface[data-tadeon-interactive="true"],
-  .tadeon-shell .tadeon-sheet-card,
-  .tadeon-shell .tadeon-dashboard-signal,
   .tadeon-shell .tadeon-state-panel,
   .tadeon-shell .tadeon-link-panel,
   .tadeon-shell .tadeon-skill-modifier-panel{

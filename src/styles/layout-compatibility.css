@@ -3,31 +3,6 @@
    and adds only the requested visual language on top of them. */
 
 /* Dashboard: restore the original dashboard composition from styles.css. */
-.tadeon-dashboard-hero {
-  border: 1px solid color-mix(in srgb, var(--tadeon-metal) 28%, transparent) !important;
-  border-radius: 1.35rem .5rem 1.35rem .5rem !important;
-  background:
-    linear-gradient(135deg, rgb(18 21 26 / 96%), rgb(11 13 17 / 92%)),
-    radial-gradient(circle at 84% 14%, rgb(217 215 164 / 9%), transparent 32%) !important;
-}
-
-.tadeon-dashboard-hero > .relative.z-10:first-of-type {
-  padding-left: 0 !important;
-  border-left: 0 !important;
-}
-
-.tadeon-dashboard-signals {
-  padding: 1.25rem 0 0 !important;
-  border-width: 1px 0 0 !important;
-  border-radius: 0 !important;
-  background: transparent !important;
-}
-
-.tadeon-dashboard-signal {
-  min-height: 0 !important;
-  border: 0 !important;
-  background: transparent !important;
-}
 
 /* Separate Master Panel: dedicated wide canvas, no AppLayout/sidebar. */
 .tadeon-dedicated-shell[data-dedicated-presentation="master-panel"] {

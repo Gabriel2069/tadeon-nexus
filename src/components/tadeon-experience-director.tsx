@@ -13,8 +13,6 @@ const INTERACTIVE = [
 
 const SURFACES = [
   ".tadeon-surface",
-  ".tadeon-dashboard-hero",
-  ".tadeon-sheet-card",
   ".tadeon-state-panel",
   ".tadeon-auth-shell",
   ".tadeon-link-panel",
@@ -22,10 +20,8 @@ const SURFACES = [
 ].join(",");
 
 const REVEAL = [
-  ".tadeon-page > *",
+  ".tadeon-page > :not(.tadeon-continuity-hero)",
   ".tadeon-route-stage > *",
-  ".tadeon-sheet-card",
-  ".tadeon-dashboard-signal",
   ".tadeon-state-panel",
 ].join(",");
 
@@ -38,11 +34,7 @@ function markElement(element: HTMLElement) {
 }
 
 function markMaterial(element: HTMLElement) {
-  if (element.classList.contains("tadeon-dashboard-hero")) {
-    element.dataset.tadeonMaterial = "chapter";
-  } else if (element.classList.contains("tadeon-sheet-card")) {
-    element.dataset.tadeonMaterial = "relic";
-  } else if (element.classList.contains("tadeon-state-panel")) {
+  if (element.classList.contains("tadeon-state-panel")) {
     element.dataset.tadeonMaterial = "state";
   } else if (element.classList.contains("tadeon-skill-modifier-panel")) {
     element.dataset.tadeonMaterial = "record";
@@ -72,6 +64,8 @@ function getChildIndex(element: HTMLElement) {
 }
 
 function ensurePointerSheen(element: HTMLElement) {
+  // Navigation owns its selected surface; a second light layer obscures labels.
+  if (element.classList.contains("tadeon-nav-item")) return;
   if (element.dataset.tadeonPointerBound === "true") return;
 
   element.dataset.tadeonPointerBound = "true";

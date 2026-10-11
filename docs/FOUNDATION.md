@@ -56,7 +56,7 @@ Novos testes exercitam AuthProvider renderizado, cache com troca de usuário/car
 
 ## Continuidade e próximos lotes
 
-A fila atual pertence a [WORKPLAN.md](WORKPLAN.md), gerada de [project-continuity.json](project-continuity.json). O mapa de código está em [PROJECT_MAP.md](PROJECT_MAP.md). Este arquivo conserva fundamentos e evidências; não mantém uma segunda lista de prioridades. A preparação estrutural está validada na PR #258; integração e publicação são estados separados.
+A fila atual pertence a [WORKPLAN.md](WORKPLAN.md), gerada de [project-continuity.json](project-continuity.json). O mapa de código está em [PROJECT_MAP.md](PROJECT_MAP.md). Este arquivo conserva fundamentos e evidências; não mantém uma segunda lista de prioridades. A preparação estrutural foi integrada pela PR #258 em `c6c1ea6c5e3338b4ff111329a8b2b37841e8245d` após Quality aprovado. A publicação automática passou e confirmou o SHA do merge no endpoint pelo workflow 38151368993. Acesso de contas reais não foi validado. As afirmações de ausência de merge nos lotes abaixo são evidências históricas anteriores à integração.
 
 ## Evidência do primeiro lote
 

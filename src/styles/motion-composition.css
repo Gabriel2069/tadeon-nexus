@@ -174,8 +174,6 @@
 
 /* Avoid compounding the stronger Tadeon frame motion. */
 .tadeon-page-hero,
-.tadeon-dashboard-hero,
-.tadeon-sheet-card,
 .tadeon-nav-item,
 [data-slot="dialog-content"],
 [data-slot="sheet-content"],
@@ -864,18 +862,6 @@
     70% { opacity:1; transform:translateX(1px); }
     to { opacity:1; transform:none; }
   }
-  #tadeon-desktop-sidebar[data-collapsed="true"] .tadeon-nav-item[aria-current="page"]::before {
-    content:"";
-    position:absolute;
-    left:-1px;
-    top:24%;
-    width:2px;
-    height:52%;
-    border-radius:999px;
-    background:var(--sidebar-item-accent, var(--section-accent));
-    box-shadow:0 0 16px color-mix(in srgb, var(--sidebar-item-accent, var(--section-accent)) 42%, transparent);
-    animation:tdm-spine-reveal 280ms var(--tdm-thread) both;
-  }
   @keyframes tdm-spine-reveal { from { opacity:0; transform:scaleY(.2); } to { opacity:1; transform:scaleY(1); } }
 }
 
@@ -1465,7 +1451,6 @@
 
 .tadeon-sidebar {
   --sidebar-motion: var(--td-thread);
-  --sidebar-accent: var(--tadeon-knowledge);
   --sidebar-accent-rgb: 217 215 164;
 }
 
@@ -1480,51 +1465,6 @@
     border-color var(--td-seam),
     box-shadow var(--td-thread),
     filter var(--td-seam);
-}
-
-.tadeon-sidebar .tadeon-nav-item::before {
-  content: "";
-  position: absolute;
-  z-index: 0;
-  top: .42rem;
-  bottom: .42rem;
-  left: 0;
-  width: 1px;
-  border-radius: 999px;
-  background: var(--nav-accent, var(--sidebar-accent));
-  box-shadow: 0 0 14px rgb(var(--nav-accent-rgb, var(--sidebar-accent-rgb)) / 34%);
-  opacity: 0;
-  transform: scaleY(.12);
-  transform-origin: center;
-  transition: opacity var(--td-seam), transform var(--td-thread);
-}
-
-.tadeon-sidebar .tadeon-nav-item::after {
-  content: "";
-  position: absolute;
-  z-index: 0;
-  left: .75rem;
-  right: .75rem;
-  bottom: .14rem;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, var(--nav-accent, var(--sidebar-accent)), transparent);
-  opacity: 0;
-  transform: scaleX(.08);
-  transform-origin: left center;
-  transition: opacity var(--td-seam), transform var(--td-thread);
-  pointer-events: none;
-}
-
-.tadeon-sidebar .tadeon-nav-item:hover::before,
-.tadeon-sidebar .tadeon-nav-item[aria-current="page"]::before {
-  opacity: 1;
-  transform: scaleY(1);
-}
-
-.tadeon-sidebar .tadeon-nav-item:hover::after,
-.tadeon-sidebar .tadeon-nav-item[aria-current="page"]::after {
-  opacity: .55;
-  transform: scaleX(1);
 }
 
 .tadeon-sidebar .tadeon-nav-item__icon {
@@ -1629,8 +1569,6 @@
 
 @media (prefers-reduced-motion: reduce) {
   .tadeon-sidebar .tadeon-nav-item,
-  .tadeon-sidebar .tadeon-nav-item::before,
-  .tadeon-sidebar .tadeon-nav-item::after,
   .tadeon-sidebar .tadeon-nav-item__icon > svg,
   .tadeon-sidebar-collapse {
     transition: none !important;
@@ -1645,8 +1583,6 @@
 /* Tadeon interaction final: concrete DOM coverage without generic jump motion. */
 :root{--tif-in:cubic-bezier(.16,1,.3,1);--tif-thread:cubic-bezier(.22,.72,.2,1);--tif-seam:cubic-bezier(.25,.8,.25,1)}
 .tadeon-shell .tadeon-nav-item{transition:color 260ms var(--tif-seam),background-color 300ms var(--tif-seam),border-color 300ms var(--tif-seam),box-shadow 360ms var(--tif-seam)}
-.tadeon-shell .tadeon-nav-item::after{content:"";position:absolute;left:1rem;right:1rem;bottom:3px;height:1px;background:linear-gradient(90deg,transparent,var(--nav-accent,var(--section-accent)),transparent);opacity:0;transform:scaleX(.12);transform-origin:left;transition:opacity 180ms ease,transform 420ms var(--tif-thread);pointer-events:none}
-.tadeon-shell .tadeon-nav-item:hover::after,.tadeon-shell .tadeon-nav-item[aria-current="page"]::after{opacity:.5;transform:scaleX(1)}
 .tadeon-shell .tadeon-nav-item:hover .tadeon-nav-item__icon>svg{filter:drop-shadow(0 0 4px currentColor)!important}
 .tadeon-shell .tadeon-nav-item[aria-current="page"] .tadeon-nav-item__icon>svg{filter:drop-shadow(0 0 5px currentColor);animation:tif-nav-stitch 420ms var(--tif-thread) both}
 @keyframes tif-nav-stitch{0%{opacity:.65;filter:blur(.6px)}62%{opacity:1;filter:blur(0)}100%{opacity:1;filter:none}}
@@ -1674,7 +1610,7 @@
 .tadeon-shell .tadeon-mobile-dock__item{transition:color 220ms var(--tif-seam),background-color 240ms var(--tif-seam),box-shadow 280ms var(--tif-seam)}
 .tadeon-shell .tadeon-mobile-dock__item:active{filter:brightness(.97)}
 .tadeon-shell .tadeon-mobile-dock__item[aria-current="page"]{box-shadow:inset 0 2px var(--section-accent),0 -4px 18px -16px var(--section-accent)}
-@media(prefers-reduced-motion:reduce){.tadeon-shell .tadeon-nav-item::after,.tadeon-shell button::after{transition:none!important;animation:none!important}}
+@media(prefers-reduced-motion:reduce){.tadeon-shell button::after{transition:none!important;animation:none!important}}
 
 /* end-source: src/styles/tadeon-interaction-final.css */
 
@@ -2025,35 +1961,12 @@
 }
 
 /* ThreadField: the visible paths become slow living threads. */
-.tadeon-shell .tadeon-dashboard-hero > svg {
-  overflow: visible;
-  opacity: .96;
-}
-.tadeon-shell .tadeon-dashboard-hero > svg path {
-  stroke-dasharray: 160 420;
-  animation: tm-thread-draw 22s linear infinite;
-  opacity: .55;
-}
-.tadeon-shell .tadeon-dashboard-hero > svg path:nth-child(2) {
-  animation-duration: 29s;
-  animation-delay: -7s;
-  opacity: .38;
-}
-.tadeon-shell .tadeon-dashboard-hero > svg path:nth-child(3) {
-  animation-duration: 34s;
-  animation-delay: -15s;
-  opacity: .28;
-}
 
 @keyframes tm-thread-draw {
   to { stroke-dashoffset: -820px; }
 }
 
 /* The thread responds to attention, not by jumping, but by becoming legible. */
-.tadeon-shell .tadeon-dashboard-hero:is(:hover,:focus-within) > svg path {
-  animation-duration: 15s;
-  opacity: .78;
-}
 
 /* Ghost layer - the Master panel's signature: a delayed, almost spectral echo. */
 .tadeon-shell .tadeon-master-commandbar {
@@ -2138,7 +2051,6 @@
   .tadeon-shell :is(.tadeon-page-hero,.tadeon-tabletop-studio__header,.tadeon-master-commandbar),
   .tadeon-shell :is(.tadeon-page-hero,.tadeon-tabletop-studio__header,.tadeon-master-commandbar)::before,
   .tadeon-shell :is(.tadeon-page-hero,.tadeon-tabletop-studio__header,.tadeon-master-commandbar)::after,
-  .tadeon-shell .tadeon-dashboard-hero > svg path,
   .tadeon-shell :is(.tadeon-page-hero,.tadeon-tabletop-studio__header,.tadeon-master-commandbar) :is(hr,[data-motion="hero-line"],[data-hero-line],[data-hero-orbit],[data-hero-marker],[data-hero-particle]) {
     animation: none !important;
     transform: none !important;
@@ -2383,16 +2295,6 @@
 }
 
 /* Dashboard - warm archive threads: slow, legible continuity. */
-.tadeon-shell[data-section="Dashboard"] .tadeon-dashboard-hero {
-  --td-atmo-speed: 22s;
-}
-.tadeon-shell[data-section="Dashboard"] .tadeon-dashboard-hero::before {
-  animation: td-atmo-drift 22s ease-in-out infinite alternate;
-}
-.tadeon-shell[data-section="Dashboard"] .tadeon-dashboard-hero::after {
-  animation: td-atmo-thread-orbit 30s linear infinite;
-  transform-origin: 82% 50%;
-}
 
 /* Nexus - connected knowledge: pulses move along the relation, not the card. */
 .tadeon-shell[data-section="O Nexus"] [data-tadeon-node][data-related="true"],
@@ -2544,8 +2446,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .tadeon-shell[data-section="Dashboard"] .tadeon-dashboard-hero::before,
-  .tadeon-shell[data-section="Dashboard"] .tadeon-dashboard-hero::after,
+
   .tadeon-shell[data-section="O Nexus"] [data-tadeon-node],
   .tadeon-shell[data-section="O Nexus"] [data-tadeon-map-element],
   .tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-studio__header,
@@ -2574,7 +2475,6 @@
 }
 
 .tadeon-shell [data-tadeon-page-hero],
-.tadeon-shell .tadeon-dashboard-hero,
 .tadeon-shell .tadeon-master-commandbar,
 .tadeon-shell .tadeon-tabletop-studio__header,
 .tadeon-shell .tadeon-auth-hero {
@@ -2584,8 +2484,6 @@
 
 .tadeon-shell [data-tadeon-page-hero]::before,
 .tadeon-shell [data-tadeon-page-hero]::after,
-.tadeon-shell .tadeon-dashboard-hero::before,
-.tadeon-shell .tadeon-dashboard-hero::after,
 .tadeon-shell .tadeon-master-commandbar::before,
 .tadeon-shell .tadeon-master-commandbar::after,
 .tadeon-shell .tadeon-tabletop-studio__header::before,
@@ -2600,7 +2498,6 @@
 
 /* Soft material veil: the Tadeon equivalent of ambient nebulae. */
 .tadeon-shell [data-tadeon-page-hero]::before,
-.tadeon-shell .tadeon-dashboard-hero::before,
 .tadeon-shell .tadeon-master-commandbar::before,
 .tadeon-shell .tadeon-tabletop-studio__header::before,
 .tadeon-shell .tadeon-auth-hero::before {
@@ -2616,7 +2513,6 @@
 
 /* Woven field: extremely fine lines, staggered to create material depth. */
 .tadeon-shell [data-tadeon-page-hero]::after,
-.tadeon-shell .tadeon-dashboard-hero::after,
 .tadeon-shell .tadeon-master-commandbar::after,
 .tadeon-shell .tadeon-tabletop-studio__header::after,
 .tadeon-shell .tadeon-auth-hero::after {
@@ -2632,7 +2528,6 @@
 
 /* Existing atmospheric lines become thread instead of decoration. */
 .tadeon-shell [data-tadeon-page-hero] svg,
-.tadeon-shell .tadeon-dashboard-hero > svg,
 .tadeon-shell .tadeon-master-commandbar svg,
 .tadeon-shell .tadeon-tabletop-studio__header svg {
   position: relative;
@@ -2683,8 +2578,7 @@
 }
 
 /* Section-specific material signatures. */
-.tadeon-shell[data-section="Dashboard"] [data-tadeon-page-hero]::after,
-.tadeon-shell[data-section="Dashboard"] .tadeon-dashboard-hero::after {
+.tadeon-shell[data-section="Dashboard"] [data-tadeon-page-hero]::after {
   background:
     linear-gradient(104deg, transparent 0 19%, rgb(var(--td-section-rgb) / 8%) 19.12% 19.22%, transparent 19.4% 100%),
     linear-gradient(76deg, transparent 0 71%, rgb(var(--td-section-rgb) / 6%) 71.1% 71.2%, transparent 71.4% 100%),
@@ -2802,7 +2696,6 @@
 
 @media (hover: hover) and (pointer: fine) {
   .tadeon-shell [data-tadeon-page-hero]:hover::before,
-  .tadeon-shell .tadeon-dashboard-hero:hover::before,
   .tadeon-shell .tadeon-master-commandbar:hover::before,
   .tadeon-shell .tadeon-tabletop-studio__header:hover::before {
     animation-play-state: paused;
@@ -2819,8 +2712,6 @@
 @media (prefers-reduced-motion: reduce) {
   .tadeon-shell [data-tadeon-page-hero]::before,
   .tadeon-shell [data-tadeon-page-hero]::after,
-  .tadeon-shell .tadeon-dashboard-hero::before,
-  .tadeon-shell .tadeon-dashboard-hero::after,
   .tadeon-shell .tadeon-master-commandbar::before,
   .tadeon-shell .tadeon-master-commandbar::after,
   .tadeon-shell .tadeon-tabletop-studio__header::before,
@@ -2846,7 +2737,6 @@
    left untouched so symbols never get clipped or visually "chopped". */
 
 .tadeon-shell [data-tadeon-page-hero],
-.tadeon-shell .tadeon-dashboard-hero,
 .tadeon-shell .tadeon-master-commandbar,
 .tadeon-shell .tadeon-tabletop-studio__header {
   --td-element-a: color-mix(in srgb, var(--td-section-accent, currentColor) 18%, transparent);
@@ -2858,8 +2748,6 @@
    opacity animation or filter is applied to symbol geometry here. */
 .tadeon-shell [data-tadeon-page-hero] > svg,
 .tadeon-shell [data-tadeon-page-hero] svg[aria-hidden="true"],
-.tadeon-shell .tadeon-dashboard-hero > svg,
-.tadeon-shell .tadeon-dashboard-hero svg[aria-hidden="true"],
 .tadeon-shell .tadeon-master-commandbar svg[aria-hidden="true"],
 .tadeon-shell .tadeon-tabletop-studio__header svg[aria-hidden="true"] {
   position: relative;
@@ -2871,10 +2759,6 @@
 .tadeon-shell [data-tadeon-page-hero] svg circle,
 .tadeon-shell [data-tadeon-page-hero] svg line,
 .tadeon-shell [data-tadeon-page-hero] svg polyline,
-.tadeon-shell .tadeon-dashboard-hero svg path,
-.tadeon-shell .tadeon-dashboard-hero svg circle,
-.tadeon-shell .tadeon-dashboard-hero svg line,
-.tadeon-shell .tadeon-dashboard-hero svg polyline,
 .tadeon-shell .tadeon-master-commandbar svg path,
 .tadeon-shell .tadeon-master-commandbar svg circle,
 .tadeon-shell .tadeon-master-commandbar svg line,
@@ -2899,17 +2783,9 @@
   overflow: clip;
 }
 
-.tadeon-shell[data-section="Dashboard"] .tadeon-dashboard-hero [data-tadeon-atmosphere-line],
-.tadeon-shell[data-section="Dashboard"] .tadeon-dashboard-hero [data-tadeon-thread],
-.tadeon-shell[data-section="Dashboard"] .tadeon-dashboard-hero [data-tadeon-marker] {
-  animation: none;
-}
-
 @media (prefers-reduced-motion: reduce) {
   .tadeon-shell [data-tadeon-page-hero] > svg,
   .tadeon-shell [data-tadeon-page-hero] svg[aria-hidden="true"],
-  .tadeon-shell .tadeon-dashboard-hero > svg,
-  .tadeon-shell .tadeon-dashboard-hero svg[aria-hidden="true"],
   .tadeon-shell .tadeon-master-commandbar svg[aria-hidden="true"],
   .tadeon-shell .tadeon-tabletop-studio__header svg[aria-hidden="true"],
   .tadeon-shell [data-tadeon-page-hero] svg path,
@@ -3222,49 +3098,6 @@
 }
 
 /* Dashboard: richer layered textile instead of a static field. */
-.tadeon-dashboard-hero {
-  --td-dash-rgb: 217 215 164;
-  position: relative;
-  isolation: isolate;
-  overflow: clip;
-}
-
-.tadeon-dashboard-hero::before,
-.tadeon-dashboard-hero::after {
-  pointer-events: none;
-}
-
-.tadeon-dashboard-hero::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  background:
-    radial-gradient(circle at 16% 18%, rgb(var(--td-dash-rgb) / 7%), transparent 12rem),
-    radial-gradient(circle at 86% 12%, rgb(var(--td-dash-rgb) / 5%), transparent 16rem),
-    linear-gradient(120deg, transparent 0 34%, rgb(var(--td-dash-rgb) / 3%) 34.2% 34.35%, transparent 34.5% 67%, rgb(var(--td-dash-rgb) / 2.5%) 67.2% 67.32%, transparent 67.5%);
-  background-size: auto, auto, 100% 100%;
-  opacity: .78;
-  animation: tadeon-dashboard-weave-drift 17s cubic-bezier(.37,0,.63,1) infinite alternate;
-}
-
-.tadeon-dashboard-hero::after {
-  content: "";
-  position: absolute;
-  inset: 8% 5% 10%;
-  z-index: 0;
-  border: 1px solid rgb(var(--td-dash-rgb) / 7%);
-  border-radius: 1.2rem .28rem 1.2rem .28rem;
-  mask-image: linear-gradient(90deg, transparent, black 18%, black 82%, transparent);
-  opacity: .45;
-  transform: translateX(-1%);
-  animation: tadeon-dashboard-seam-scan 9s cubic-bezier(.37,0,.63,1) infinite alternate;
-}
-
-.tadeon-dashboard-hero > * {
-  position: relative;
-  z-index: 2;
-}
 
 @keyframes tadeon-dashboard-weave-drift {
   0% { background-position: 0 0, 0 0, 0 0; opacity: .62; }
@@ -3278,9 +3111,7 @@
 
 @media (prefers-reduced-motion: reduce) {
   .tadeon-page-hero[data-tadeon-page-hero] *,
-  .tadeon-master-commandbar *,
-  .tadeon-dashboard-hero::before,
-  .tadeon-dashboard-hero::after {
+  .tadeon-master-commandbar * {
     transition-duration: .001ms !important;
     animation: none !important;
   }
@@ -3448,13 +3279,11 @@
 /* Keep the Tadeon atmosphere alive: very slow, low-amplitude drift lives in the
    background material, never on the interactive body. */
 .tadeon-shell .tadeon-page-hero,
-.tadeon-shell .tadeon-dashboard-hero,
 .tadeon-shell .tadeon-master-commandbar {
   transition: border-color 320ms ease, box-shadow 480ms ease !important;
 }
 
 .tadeon-shell .tadeon-page-hero:hover,
-.tadeon-shell .tadeon-dashboard-hero:hover,
 .tadeon-shell .tadeon-master-commandbar:hover {
   box-shadow:
     0 28px 76px -60px rgb(var(--td-section-rgb, var(--section-accent-rgb, 217 215 164)) / 28%),
@@ -3713,32 +3542,6 @@ html body .tadeon-shell .tadeon-master-commandbar p:not(.tadeon-eyebrow) {
 .tadeon-shell .tadeon-nav-item[href^="/nexus-tools"] { --td-nav-accent:#7a8187; --td-nav-accent-rgb:122 129 135; }
 
 /* Hover = thread tension. No lift, no slide, no scale. */
-.tadeon-shell .tadeon-nav-item::before {
-  content:"";
-  position:absolute;
-  inset:0;
-  border-radius:inherit;
-  background:linear-gradient(90deg, rgb(var(--td-nav-accent-rgb) / 8%), transparent 72%);
-  opacity:0;
-  transition:opacity 260ms cubic-bezier(.25,.8,.25,1), background-color 260ms ease;
-  pointer-events:none;
-}
-.tadeon-shell .tadeon-nav-item::after {
-  content:"";
-  position:absolute;
-  left:0;
-  top:18%;
-  bottom:18%;
-  width:1px;
-  background:var(--td-nav-accent);
-  box-shadow:0 0 12px rgb(var(--td-nav-accent-rgb) / 34%);
-  opacity:0;
-  transform:none !important;
-  transition:opacity 300ms ease;
-  pointer-events:none;
-}
-.tadeon-shell .tadeon-nav-item:hover::before { opacity:1; }
-.tadeon-shell .tadeon-nav-item:hover::after { opacity:.72; }
 
 .tadeon-shell .tadeon-nav-item[data-nav-active="true"],
 .tadeon-shell .tadeon-nav-item[aria-current="page"] {
@@ -3748,10 +3551,6 @@ html body .tadeon-shell .tadeon-master-commandbar p:not(.tadeon-eyebrow) {
   box-shadow:inset 2px 0 0 var(--td-nav-accent), inset 0 0 28px rgb(var(--td-nav-accent-rgb) / 6%) !important;
   transform:none !important;
 }
-.tadeon-shell .tadeon-nav-item[data-nav-active="true"]::before,
-.tadeon-shell .tadeon-nav-item[aria-current="page"]::before { opacity:1; }
-.tadeon-shell .tadeon-nav-item[data-nav-active="true"]::after,
-.tadeon-shell .tadeon-nav-item[aria-current="page"]::after { opacity:1; }
 
 .tadeon-shell .tadeon-nav-item__icon {
   position:relative !important;
@@ -3971,28 +3770,6 @@ html body .tadeon-shell .tadeon-master-commandbar p:not(.tadeon-eyebrow) {
 }
 
 /* Dashboard-specific richness: several quiet layers, never marketing-noisy. */
-.tadeon-shell[data-section="Dashboard"] .tadeon-dashboard-hero::before {
-  background:
-    radial-gradient(circle at 12% 22%, rgb(var(--td-section-rgb, 217 215 164) / 10%), transparent 12rem),
-    radial-gradient(circle at 74% 18%, rgb(var(--td-section-rgb, 217 215 164) / 7%), transparent 10rem),
-    radial-gradient(circle at 86% 76%, rgb(var(--td-section-secondary-rgb, 113 107 123) / 7%), transparent 14rem),
-    linear-gradient(126deg, transparent 0 30%, rgb(var(--td-section-rgb, 217 215 164) / 4%) 30.1% 30.18%, transparent 30.34% 100%);
-  animation: td-dashboard-chamber 18s ease-in-out infinite alternate;
-}
-
-.tadeon-shell[data-section="Dashboard"] .tadeon-dashboard-hero::after {
-  background:
-    repeating-linear-gradient(90deg, transparent 0 4.5rem, rgb(var(--td-section-rgb, 217 215 164) / 3.2%) 4.5rem 4.54rem, transparent 4.54rem 9rem),
-    repeating-linear-gradient(0deg, transparent 0 2.2rem, rgb(var(--td-section-rgb, 217 215 164) / 2.2%) 2.2rem 2.24rem, transparent 2.24rem 4.4rem),
-    radial-gradient(circle at 68% 42%, rgb(var(--td-section-rgb, 217 215 164) / 5%) 0 1px, transparent 1.8px),
-    radial-gradient(circle at 24% 66%, rgb(var(--td-section-rgb, 217 215 164) / 4%) 0 1px, transparent 1.8px);
-  background-size: auto, auto, 11rem 11rem, 15rem 15rem;
-  animation: td-dashboard-weave 30s linear infinite;
-}
-
-.tadeon-shell[data-section="Dashboard"] .tadeon-dashboard-hero > :is(svg, .tadeon-dashboard-hero__ornament, [data-tadeon-marker]) {
-  animation: td-dashboard-signal 7.5s ease-in-out infinite alternate;
-}
 
 /* Nexus gets connected micro-constellations instead of generic grids. */
 .tadeon-shell[data-section="O Nexus"] .tadeon-page-hero::after {
@@ -4100,9 +3877,6 @@ html body .tadeon-shell .tadeon-master-commandbar p:not(.tadeon-eyebrow) {
   .tadeon-shell :is(.tadeon-section-divider, .tadeon-content-divider, .tadeon-page-section-divider)::before,
   .tadeon-shell :is(.tadeon-empty-state, .tadeon-page-empty, [data-tadeon-empty])::before,
   .tadeon-shell :is(.tadeon-empty-state, .tadeon-page-empty, [data-tadeon-empty])::after,
-  .tadeon-shell[data-section="Dashboard"] .tadeon-dashboard-hero::before,
-  .tadeon-shell[data-section="Dashboard"] .tadeon-dashboard-hero::after,
-  .tadeon-shell[data-section="Dashboard"] .tadeon-dashboard-hero > :is(svg, .tadeon-dashboard-hero__ornament, [data-tadeon-marker]),
   .tadeon-shell[data-section="O Nexus"] .tadeon-page-hero::after,
   .tadeon-shell[data-section="Consulta offline"] .tadeon-page-hero::after,
   .tadeon-shell[data-section="Painel do Mestre"] .tadeon-master-commandbar::before,
@@ -4119,7 +3893,6 @@ html body .tadeon-shell .tadeon-master-commandbar p:not(.tadeon-eyebrow) {
    Decorative SVG/icon layers are intentionally untouched. */
 
 .tadeon-shell [data-tadeon-page-hero],
-.tadeon-shell .tadeon-dashboard-hero,
 .tadeon-shell .tadeon-master-commandbar,
 .tadeon-shell .tadeon-tabletop-studio__header,
 .tadeon-shell .tadeon-auth-hero {
@@ -4130,7 +3903,6 @@ html body .tadeon-shell .tadeon-master-commandbar p:not(.tadeon-eyebrow) {
 }
 
 .tadeon-shell [data-tadeon-page-hero]::before,
-.tadeon-shell .tadeon-dashboard-hero::before,
 .tadeon-shell .tadeon-master-commandbar::before,
 .tadeon-shell .tadeon-tabletop-studio__header::before,
 .tadeon-shell .tadeon-auth-hero::before {
@@ -4141,7 +3913,6 @@ html body .tadeon-shell .tadeon-master-commandbar p:not(.tadeon-eyebrow) {
 }
 
 .tadeon-shell [data-tadeon-page-hero]::after,
-.tadeon-shell .tadeon-dashboard-hero::after,
 .tadeon-shell .tadeon-master-commandbar::after,
 .tadeon-shell .tadeon-tabletop-studio__header::after,
 .tadeon-shell .tadeon-auth-hero::after {
@@ -4161,27 +3932,6 @@ html body .tadeon-shell .tadeon-master-commandbar p:not(.tadeon-eyebrow) {
     radial-gradient(circle at 24% 36%, var(--td-bg-a), transparent 20%),
     radial-gradient(circle at 76% 68%, var(--td-bg-b), transparent 24%);
   background-size: auto, auto, 180% 180%, 130% 130%, 145% 145%;
-}
-
-.tadeon-shell[data-section="Dashboard"] .tadeon-dashboard-hero::before {
-  background:
-    radial-gradient(circle at 14% 22%, rgb(var(--td-section-rgb) / 12%) 0 1px, transparent 2px),
-    radial-gradient(circle at 72% 68%, rgb(var(--td-section-rgb) / 8%) 0 1.5px, transparent 2.5px),
-    radial-gradient(ellipse at 24% 52%, rgb(var(--td-section-rgb) / 8%), transparent 27%),
-    radial-gradient(ellipse at 78% 24%, rgb(var(--td-section-rgb) / 6%), transparent 24%),
-    linear-gradient(120deg, transparent 0 34%, rgb(var(--td-section-rgb) / 5%) 34.1% 34.2%, transparent 34.4% 100%);
-  background-size: 12rem 12rem, 17rem 17rem, 150% 150%, 135% 135%, 170% 170%;
-  animation: td-dashboard-background-loom 30s ease-in-out infinite alternate;
-}
-
-.tadeon-shell[data-section="Dashboard"] .tadeon-dashboard-hero::after {
-  background:
-    repeating-linear-gradient(0deg, transparent 0 2.1rem, rgb(var(--td-section-rgb) / 3.5%) 2.1rem 2.14rem, transparent 2.14rem 4.2rem),
-    repeating-linear-gradient(90deg, transparent 0 5.4rem, rgb(var(--td-section-rgb) / 3%) 5.4rem 5.44rem, transparent 5.44rem 10.8rem),
-    linear-gradient(116deg, transparent 0 28%, rgb(var(--td-section-rgb) / 6%) 28.1% 28.22%, transparent 28.5% 100%),
-    radial-gradient(circle at 82% 20%, rgb(var(--td-section-rgb) / 6%), transparent 18%);
-  background-size: auto, auto, 170% 170%, 140% 140%;
-  animation: td-dashboard-thread-field 34s linear infinite;
 }
 
 .tadeon-shell[data-section="O Nexus"] [data-tadeon-page-hero]::after {
@@ -4273,7 +4023,6 @@ html body .tadeon-shell .tadeon-master-commandbar p:not(.tadeon-eyebrow) {
 
 /* Visible field pass: animate the actual background matter, never symbols. */
 .tadeon-shell [data-tadeon-page-hero]::before,
-.tadeon-shell .tadeon-dashboard-hero::before,
 .tadeon-shell .tadeon-master-commandbar::before,
 .tadeon-shell .tadeon-tabletop-studio__header::before,
 .tadeon-shell .tadeon-auth-hero::before {
@@ -4283,7 +4032,6 @@ html body .tadeon-shell .tadeon-master-commandbar p:not(.tadeon-eyebrow) {
 }
 
 .tadeon-shell [data-tadeon-page-hero]::after,
-.tadeon-shell .tadeon-dashboard-hero::after,
 .tadeon-shell .tadeon-master-commandbar::after,
 .tadeon-shell .tadeon-tabletop-studio__header::after,
 .tadeon-shell .tadeon-auth-hero::after {
@@ -4302,27 +4050,6 @@ html body .tadeon-shell .tadeon-master-commandbar p:not(.tadeon-eyebrow) {
     radial-gradient(circle at 24% 34%, rgb(var(--td-section-rgb) / 7%), transparent 20%),
     radial-gradient(circle at 76% 68%, rgb(var(--td-section-rgb) / 5%), transparent 25%);
   background-size: 240% 240%, 180% 180%, 190% 190%, 150% 150%, 160% 160%;
-}
-
-.tadeon-shell[data-section="Dashboard"] .tadeon-dashboard-hero::before {
-  background:
-    radial-gradient(circle at 12% 24%, rgb(var(--td-section-rgb) / 13%) 0 1px, transparent 2px),
-    radial-gradient(circle at 72% 68%, rgb(var(--td-section-rgb) / 9%) 0 1.5px, transparent 2.5px),
-    radial-gradient(ellipse at 18% 48%, rgb(var(--td-section-rgb) / 10%), transparent 28%),
-    radial-gradient(ellipse at 82% 24%, rgb(var(--td-section-rgb) / 8%), transparent 25%),
-    linear-gradient(124deg, transparent 0 31%, rgb(var(--td-section-rgb) / 6%) 31.1% 31.2%, transparent 31.5% 100%);
-  background-size: 9rem 9rem, 13rem 13rem, 145% 145%, 135% 135%, 190% 190%;
-  animation: td-dashboard-visible-loom 15s ease-in-out infinite alternate;
-}
-
-.tadeon-shell[data-section="Dashboard"] .tadeon-dashboard-hero::after {
-  background:
-    repeating-linear-gradient(0deg, transparent 0 2.2rem, rgb(var(--td-section-rgb) / 4.5%) 2.2rem 2.54rem, transparent 2.54rem 4.4rem),
-    repeating-linear-gradient(90deg, transparent 0 4.8rem, rgb(var(--td-section-rgb) / 3.8%) 4.8rem 4.84rem, transparent 4.84rem 9.6rem),
-    linear-gradient(116deg, transparent 0 27%, rgb(var(--td-section-rgb) / 7%) 27.1% 27.22%, transparent 27.5% 100%),
-    radial-gradient(circle at 82% 20%, rgb(var(--td-section-rgb) / 7%), transparent 20%);
-  background-size: 100% 100%, 100% 100%, 220% 220%, 150% 150%;
-  animation: td-dashboard-visible-weave 19s linear infinite;
 }
 
 .tadeon-shell[data-section="O Nexus"] [data-tadeon-page-hero]::after { animation: td-nexus-visible-field 18s linear infinite; }
@@ -4372,8 +4099,6 @@ html body .tadeon-shell .tadeon-master-commandbar p:not(.tadeon-eyebrow) {
 @media (prefers-reduced-motion: reduce) {
   .tadeon-shell [data-tadeon-page-hero]::before,
   .tadeon-shell [data-tadeon-page-hero]::after,
-  .tadeon-shell .tadeon-dashboard-hero::before,
-  .tadeon-shell .tadeon-dashboard-hero::after,
   .tadeon-shell .tadeon-master-commandbar::before,
   .tadeon-shell .tadeon-master-commandbar::after,
   .tadeon-shell .tadeon-tabletop-studio__header::before,
@@ -4439,7 +4164,6 @@ html body .tadeon-shell .tadeon-master-commandbar p:not(.tadeon-eyebrow) {
    ================================================================ */
 
 .tadeon-shell [data-tadeon-page-hero],
-.tadeon-shell .tadeon-dashboard-hero,
 .tadeon-shell .tadeon-master-commandbar,
 .tadeon-shell .tadeon-tabletop-studio__header {
   --tdv-hero-lumen: color-mix(in srgb, var(--tdv-lumen) 28%, transparent);
@@ -4448,7 +4172,6 @@ html body .tadeon-shell .tadeon-master-commandbar p:not(.tadeon-eyebrow) {
 
 /* A slow luminous field, never attached to the symbol itself. */
 .tadeon-shell [data-tadeon-page-hero]::before,
-.tadeon-shell .tadeon-dashboard-hero::before,
 .tadeon-shell .tadeon-master-commandbar::before,
 .tadeon-shell .tadeon-tabletop-studio__header::before {
   background-image:
@@ -4462,7 +4185,6 @@ html body .tadeon-shell .tadeon-master-commandbar p:not(.tadeon-eyebrow) {
 
 /* A crossing weave with two independent directions. */
 .tadeon-shell [data-tadeon-page-hero]::after,
-.tadeon-shell .tadeon-dashboard-hero::after,
 .tadeon-shell .tadeon-master-commandbar::after,
 .tadeon-shell .tadeon-tabletop-studio__header::after {
   background-image:
@@ -4513,7 +4235,7 @@ html body .tadeon-shell .tadeon-master-commandbar p:not(.tadeon-eyebrow) {
 }
 
 /* Flowing highlight: a light thread passes through the surface, then disappears. */
-.tadeon-shell .tadeon-nav-item::before,
+
 .tadeon-shell .tadeon-mobile-dock__item::before,
 .tadeon-shell button:not([data-radix-collection-item])::before,
 .tadeon-shell [role="button"]::before {
@@ -4529,11 +4251,10 @@ html body .tadeon-shell .tadeon-master-commandbar p:not(.tadeon-eyebrow) {
   z-index: -1;
 }
 
-.tadeon-shell .tadeon-nav-item:hover::before,
+
 .tadeon-shell .tadeon-mobile-dock__item:hover::before,
 .tadeon-shell button:not([data-radix-collection-item]):hover::before,
-.tadeon-shell [role="button"]:hover::before,
-.tadeon-shell .tadeon-nav-item[data-nav-active="true"]::before {
+.tadeon-shell [role="button"]:hover::before {
   opacity: 1;
   animation: tdv-surface-flow 1.65s var(--tdv-calm) both;
 }
@@ -4782,8 +4503,6 @@ html body .tadeon-shell .tadeon-master-commandbar p:not(.tadeon-eyebrow) {
   .tadeon-shell::after,
   .tadeon-shell [data-tadeon-page-hero]::before,
   .tadeon-shell [data-tadeon-page-hero]::after,
-  .tadeon-shell .tadeon-dashboard-hero::before,
-  .tadeon-shell .tadeon-dashboard-hero::after,
   .tadeon-shell .tadeon-master-commandbar::before,
   .tadeon-shell .tadeon-master-commandbar::after,
   .tadeon-shell .tadeon-tabletop-studio__header::before,
@@ -4903,31 +4622,6 @@ html body .tadeon-shell .tadeon-page-hero[data-tadeon-page-hero] .tadeon-page-he
 }
 
 /* Dashboard: ceremonial archive field with independent weave and luminary. */
-html body .tadeon-shell[data-section="Dashboard"] .tadeon-dashboard-hero {
-  background-image:
-    radial-gradient(circle at 10% 18%, rgb(217 215 164 / 12%), transparent 13rem),
-    radial-gradient(circle at 88% 74%, rgb(113 107 123 / 9%), transparent 17rem),
-    radial-gradient(circle at 56% 42%, rgb(79 110 93 / 6%), transparent 21rem),
-    repeating-linear-gradient(0deg, transparent 0 2rem, rgb(217 215 164 / 2.7%) 2.02rem 2.06rem, transparent 2.1rem 4rem),
-    repeating-linear-gradient(90deg, transparent 0 4rem, rgb(113 107 123 / 2.2%) 4.02rem 4.05rem, transparent 4.1rem 8rem),
-    linear-gradient(128deg, rgb(255 255 255 / 3%), transparent 44%),
-    var(--card);
-  background-size: 150% 150%,145% 145%,160% 160%,100% 130%,130% 100%,170% 170%,100% 100%;
-  animation: tadeon-luminar-drift 24s ease-in-out infinite alternate;
-}
-html body .tadeon-shell[data-section="Dashboard"] .tadeon-dashboard-hero::before {
-  background-image:
-    linear-gradient(90deg, transparent 0 8%, rgb(217 215 164 / 8%) 8.15% 8.3%, transparent 8.5% 100%),
-    linear-gradient(90deg, transparent 0 37%, rgb(113 107 123 / 5%) 37.1% 37.22%, transparent 37.4% 100%),
-    linear-gradient(90deg, transparent 0 71%, rgb(79 110 93 / 5%) 71.1% 71.2%, transparent 71.4% 100%),
-    repeating-linear-gradient(0deg, transparent 0 1.5rem, rgb(255 255 255 / 1.9%) 1.52rem 1.56rem, transparent 1.6rem 3rem);
-  background-size: 220% 100%,190% 100%,240% 100%,100% 135%;
-  animation: tadeon-flux-horizontal 17s linear infinite;
-}
-html body .tadeon-shell[data-section="Dashboard"] .tadeon-dashboard-hero::after {
-  animation: tadeon-spectral-delay 13s ease-in-out infinite, tadeon-dashboard-orbit 42s linear infinite;
-  transform: translateY(-50%);
-}
 @keyframes tadeon-dashboard-orbit { to { transform: translateY(-50%) rotate(360deg); } }
 
 /* Master: delayed spectral field; the command symbol itself stays still. */
@@ -4964,9 +4658,6 @@ html body .tadeon-shell .tadeon-route-offline > main {
   html body .tadeon-shell .tadeon-page-hero[data-tadeon-page-hero]::after,
   html body .tadeon-shell .tadeon-page-hero[data-tadeon-page-hero] .tadeon-page-hero-mark-host::before,
   html body .tadeon-shell .tadeon-page-hero[data-tadeon-page-hero] .tadeon-page-hero-mark-host::after,
-  html body .tadeon-shell[data-section="Dashboard"] .tadeon-dashboard-hero,
-  html body .tadeon-shell[data-section="Dashboard"] .tadeon-dashboard-hero::before,
-  html body .tadeon-shell[data-section="Dashboard"] .tadeon-dashboard-hero::after,
   html body .tadeon-shell[data-section="Painel do Mestre"] .tadeon-master-commandbar::before,
   html body .tadeon-shell[data-section="Painel do Mestre"] .tadeon-master-commandbar::after { animation: none !important; }
 }
@@ -4991,14 +4682,12 @@ html body .tadeon-shell .tadeon-route-offline > main {
 
 /* HERO: four visible fields, independent rhythms. */
 .tadeon-shell .tadeon-page-hero[data-tadeon-page-hero],
-.tadeon-shell .tadeon-dashboard-hero,
 .tadeon-shell .tadeon-master-commandbar,
 .tadeon-shell .tadeon-tabletop-studio__header{
   isolation:isolate;
   overflow:hidden;
 }
 .tadeon-shell .tadeon-page-hero[data-tadeon-page-hero]::before,
-.tadeon-shell .tadeon-dashboard-hero::before,
 .tadeon-shell .tadeon-master-commandbar::before,
 .tadeon-shell .tadeon-tabletop-studio__header::before{
   background-image:
@@ -5010,7 +4699,6 @@ html body .tadeon-shell .tadeon-route-offline > main {
   animation:tdv-lumen-drift 24s ease-in-out infinite alternate;
 }
 .tadeon-shell .tadeon-page-hero[data-tadeon-page-hero]::after,
-.tadeon-shell .tadeon-dashboard-hero::after,
 .tadeon-shell .tadeon-master-commandbar::after,
 .tadeon-shell .tadeon-tabletop-studio__header::after{
   background-image:
@@ -5067,15 +4755,13 @@ html body .tadeon-shell .tadeon-route-offline > main {
   isolation:isolate;overflow:hidden;position:relative;
 }
 .tadeon-shell button::after,
-.tadeon-shell [role="button"]::after,
-.tadeon-shell .tadeon-nav-item::after{
+.tadeon-shell [role="button"]::after{
   content:"";position:absolute;inset:auto -35% 0;height:1px;pointer-events:none;
   background:linear-gradient(90deg,transparent,color-mix(in srgb,var(--section-accent,var(--tdv-lumen,white)) 72%,transparent),transparent);
   transform:scaleX(.08);transform-origin:center;opacity:.18;transition:transform .35s ease,opacity .35s ease;
 }
 .tadeon-shell button:hover::after,
-.tadeon-shell [role="button"]:hover::after,
-.tadeon-shell .tadeon-nav-item:hover::after{transform:scaleX(1);opacity:.9}
+.tadeon-shell [role="button"]:hover::after{transform:scaleX(1);opacity:.9}
 .tadeon-shell button:active::after,
 .tadeon-shell [role="button"]:active::after{animation:tdv-seam-close .55s ease-out both}
 
@@ -5114,8 +4800,6 @@ html body .tadeon-shell .tadeon-route-offline > main {
 .tadeon-shell .tadeon-nav-item:hover,
 .tadeon-shell .tadeon-nav-item[data-nav-active="true"],
 .tadeon-shell .tadeon-nav-item[aria-current="page"]{background-image:linear-gradient(90deg,color-mix(in srgb,var(--nav-accent,var(--section-accent)) 10%,transparent),transparent 70%)}
-.tadeon-shell .tadeon-nav-item:hover::before,
-.tadeon-shell .tadeon-nav-item[data-nav-active="true"]::before{animation:tdv-thread-sweep-reverse 1.7s ease-out both}
 
 /* Bars: the Fluxo becomes visible as a moving internal current. */
 .tadeon-shell [role="progressbar"],
@@ -5147,12 +4831,11 @@ html body .tadeon-shell .tadeon-route-offline > main {
 @keyframes tdv-atmo-thread-a{from{background-position:0 0,0 0}to{background-position:160px -90px,-120px 70px}}
 @keyframes tdv-atmo-lumen{0%,100%{background-position:10% 20%,90% 80%;opacity:.55}50%{background-position:42% 58%,62% 28%;opacity:.82}}
 @keyframes tdv-atmo-sweep{0%{transform:translateX(-120%);opacity:0}18%{opacity:.38}82%{opacity:.18}100%{transform:translateX(120%);opacity:0}}
-.tadeon-shell .tadeon-page-hero[data-tadeon-page-hero],.tadeon-shell .tadeon-dashboard-hero,.tadeon-shell .tadeon-master-commandbar,.tadeon-shell .tadeon-tabletop-studio__header{isolation:isolate}
-.tadeon-shell .tadeon-page-hero[data-tadeon-page-hero]::before,.tadeon-shell .tadeon-dashboard-hero::before,.tadeon-shell .tadeon-master-commandbar::before,.tadeon-shell .tadeon-tabletop-studio__header::before{background-image:radial-gradient(circle at 16% 24%,color-mix(in srgb,var(--section-accent) 16%,transparent),transparent 22%),radial-gradient(circle at 82% 70%,color-mix(in srgb,var(--section-accent) 11%,transparent),transparent 25%);background-size:150% 150%,160% 160%;animation:tdv-atmo-lumen 28s ease-in-out infinite alternate;pointer-events:none}
-.tadeon-shell .tadeon-page-hero[data-tadeon-page-hero]::after,.tadeon-shell .tadeon-dashboard-hero::after,.tadeon-shell .tadeon-master-commandbar::after,.tadeon-shell .tadeon-tabletop-studio__header::after{background-image:repeating-linear-gradient(116deg,transparent 0 7rem,color-mix(in srgb,var(--section-accent) 5%,transparent) 7.05rem 7.1rem,transparent 7.15rem 14rem),repeating-linear-gradient(66deg,transparent 0 10rem,color-mix(in srgb,var(--section-accent) 3%,transparent) 10.05rem 10.1rem,transparent 10.15rem 20rem);background-size:180% 180%,210% 210%;animation:tdv-atmo-thread-a 34s linear infinite;pointer-events:none}
-.tadeon-shell .tadeon-dashboard-hero{background-image:radial-gradient(circle at 20% 35%,color-mix(in srgb,var(--section-accent) 9%,transparent),transparent 24%),linear-gradient(118deg,transparent 0 36%,color-mix(in srgb,var(--section-accent) 3%,transparent) 36.1% 36.25%,transparent 36.4% 100%);background-size:170% 170%,190% 100%;animation:tdv-atmo-lumen 32s ease-in-out infinite alternate}
+.tadeon-shell .tadeon-page-hero[data-tadeon-page-hero],.tadeon-shell .tadeon-master-commandbar,.tadeon-shell .tadeon-tabletop-studio__header{isolation:isolate}
+.tadeon-shell .tadeon-page-hero[data-tadeon-page-hero]::before,.tadeon-shell .tadeon-master-commandbar::before,.tadeon-shell .tadeon-tabletop-studio__header::before{background-image:radial-gradient(circle at 16% 24%,color-mix(in srgb,var(--section-accent) 16%,transparent),transparent 22%),radial-gradient(circle at 82% 70%,color-mix(in srgb,var(--section-accent) 11%,transparent),transparent 25%);background-size:150% 150%,160% 160%;animation:tdv-atmo-lumen 28s ease-in-out infinite alternate;pointer-events:none}
+.tadeon-shell .tadeon-page-hero[data-tadeon-page-hero]::after,.tadeon-shell .tadeon-master-commandbar::after,.tadeon-shell .tadeon-tabletop-studio__header::after{background-image:repeating-linear-gradient(116deg,transparent 0 7rem,color-mix(in srgb,var(--section-accent) 5%,transparent) 7.05rem 7.1rem,transparent 7.15rem 14rem),repeating-linear-gradient(66deg,transparent 0 10rem,color-mix(in srgb,var(--section-accent) 3%,transparent) 10.05rem 10.1rem,transparent 10.15rem 20rem);background-size:180% 180%,210% 210%;animation:tdv-atmo-thread-a 34s linear infinite;pointer-events:none}
 .tadeon-shell main::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;opacity:.11;background:radial-gradient(circle at 15% 30%,color-mix(in srgb,var(--section-accent) 8%,transparent),transparent 26%),radial-gradient(circle at 85% 70%,color-mix(in srgb,var(--section-accent) 5%,transparent),transparent 28%);background-size:140% 140%,160% 160%;animation:tdv-atmo-lumen 44s ease-in-out infinite alternate}
-@media(prefers-reduced-motion:reduce){.tadeon-shell .tadeon-page-hero[data-tadeon-page-hero]::before,.tadeon-shell .tadeon-page-hero[data-tadeon-page-hero]::after,.tadeon-shell .tadeon-dashboard-hero::before,.tadeon-shell .tadeon-dashboard-hero::after,.tadeon-shell .tadeon-master-commandbar::before,.tadeon-shell .tadeon-master-commandbar::after,.tadeon-shell .tadeon-tabletop-studio__header::before,.tadeon-shell .tadeon-tabletop-studio__header::after,.tadeon-shell main::before{animation:none!important}}
+@media(prefers-reduced-motion:reduce){.tadeon-shell .tadeon-page-hero[data-tadeon-page-hero]::before,.tadeon-shell .tadeon-page-hero[data-tadeon-page-hero]::after,.tadeon-shell .tadeon-master-commandbar::before,.tadeon-shell .tadeon-master-commandbar::after,.tadeon-shell .tadeon-tabletop-studio__header::before,.tadeon-shell .tadeon-tabletop-studio__header::after,.tadeon-shell main::before{animation:none!important}}
 
 /* end-source: src/styles/tadeon-signature-atmosphere.css */
 
@@ -5220,7 +4903,6 @@ html body .tadeon-shell .tadeon-route-offline > main {
 
 /* Dashboard - cartography of the Tessitura. */
 .tadeon-shell[data-section="Dashboard"] main{background-image:radial-gradient(circle at 12% 18%,rgb(217 215 164 / 4%),transparent 18rem),radial-gradient(circle at 88% 72%,rgb(217 215 164 / 3%),transparent 20rem)}
-.tadeon-shell[data-section="Dashboard"] .tadeon-dashboard-signal:hover{box-shadow:inset 0 0 0 1px rgb(217 215 164 / 20%),0 14px 40px -34px rgb(217 215 164 / 70%)}
 
 /* Nexus - connected threads and living nodes. */
 .tadeon-shell[data-section="Nexus"] main{background-image:repeating-linear-gradient(118deg,transparent 0 8rem,rgb(79 160 116 / 3%) 8.05rem 8.08rem,transparent 8.12rem 16rem)}
@@ -5248,7 +4930,7 @@ html body .tadeon-shell .tadeon-route-offline > main {
 .tadeon-shell[data-section="Mestre"] [data-slot="card"]:hover{box-shadow:inset 0 0 0 1px rgb(168 68 72 / 22%),0 20px 50px -38px rgb(168 68 72 / 76%)}
 
 /* Shared hover response: light arrives at the surface instead of moving it. */
-.tadeon-shell[data-section] [data-slot="card"],.tadeon-shell[data-section] .tadeon-dashboard-signal{transition:box-shadow 420ms cubic-bezier(.22,.72,.2,1),border-color 320ms ease,background-color 320ms ease}
+.tadeon-shell[data-section] [data-slot="card"]{transition:box-shadow 420ms cubic-bezier(.22,.72,.2,1),border-color 320ms ease,background-color 320ms ease}
 
 /* No new pseudo-elements: these fields deliberately coexist with existing component art. */
 @media(prefers-reduced-motion:reduce){.tadeon-shell[data-section="Mestre"] main{animation:none!important}}
@@ -5330,17 +5012,14 @@ html body .tadeon-shell .tadeon-route-offline > main {
 }
 
 /* Keep content composited when an atmospheric field is moving behind it. */
-.tadeon-shell :is(.tadeon-page-hero,.tadeon-dashboard-hero,.tadeon-tabletop-studio__header,.tadeon-master-commandbar) {
+.tadeon-shell :is(.tadeon-page-hero,.tadeon-tabletop-studio__header,.tadeon-master-commandbar) {
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
 }
 
 /* Hero background motion must never animate the semantic SVG/symbol layer. */
 .tadeon-shell :is(.tadeon-page-hero,.tadeon-tabletop-studio__header,.tadeon-master-commandbar) > svg,
-.tadeon-shell :is(.tadeon-page-hero,.tadeon-tabletop-studio__header,.tadeon-master-commandbar) svg,
-.tadeon-shell .tadeon-dashboard-hero > svg path,
-.tadeon-shell .tadeon-dashboard-hero > svg circle,
-.tadeon-shell .tadeon-dashboard-hero > svg line {
+.tadeon-shell :is(.tadeon-page-hero,.tadeon-tabletop-studio__header,.tadeon-master-commandbar) svg {
   animation: none !important;
   stroke-dasharray: none !important;
   stroke-dashoffset: 0 !important;
@@ -5350,8 +5029,8 @@ html body .tadeon-shell .tadeon-route-offline > main {
 }
 
 /* Atmospheric layers remain free to move behind the symbols. */
-.tadeon-shell :is(.tadeon-page-hero,.tadeon-dashboard-hero,.tadeon-tabletop-studio__header,.tadeon-master-commandbar)::before,
-.tadeon-shell :is(.tadeon-page-hero,.tadeon-dashboard-hero,.tadeon-tabletop-studio__header,.tadeon-master-commandbar)::after {
+.tadeon-shell :is(.tadeon-page-hero,.tadeon-tabletop-studio__header,.tadeon-master-commandbar)::before,
+.tadeon-shell :is(.tadeon-page-hero,.tadeon-tabletop-studio__header,.tadeon-master-commandbar)::after {
   will-change: transform, opacity, background-position;
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
@@ -5742,14 +5421,12 @@ html body .tadeon-shell .tadeon-route-offline > main {
    -------------------------------------------------------------------------- */
 
 .tadeon-shell .tadeon-page-hero,
-.tadeon-shell .tadeon-dashboard-hero,
 .tadeon-shell .tadeon-tabletop-studio__header,
 .tadeon-shell .tadeon-master-commandbar {
   overflow: clip;
 }
 
 .tadeon-shell .tadeon-page-hero > *,
-.tadeon-shell .tadeon-dashboard-hero > *,
 .tadeon-shell .tadeon-tabletop-studio__header > *,
 .tadeon-shell .tadeon-master-commandbar > * {
   min-width: 0;
@@ -5871,8 +5548,7 @@ html body .tadeon-shell .tadeon-route-offline > main {
 }
 
 @media (max-width: 640px) {
-  .tadeon-shell .tadeon-page-hero,
-  .tadeon-shell .tadeon-dashboard-hero {
+  .tadeon-shell .tadeon-page-hero {
     border-radius: 1.1rem .42rem 1.1rem .42rem;
   }
 
@@ -6157,9 +5833,7 @@ html body .tadeon-shell .tadeon-route-offline > main {
 
 html body .tadeon-shell :is(
   .tadeon-page-hero[data-tadeon-page-hero]:not([data-tadeon-page-hero="tabletop"]),
-  .tadeon-master-commandbar,
-  .tadeon-dashboard-hero
-) h1 {
+  .tadeon-master-commandbar) h1 {
   font-size: clamp(2rem, 3.15vw, 2.65rem) !important;
   line-height: 1.04 !important;
   font-weight: 620 !important;
@@ -6168,9 +5842,7 @@ html body .tadeon-shell :is(
 
 html body .tadeon-shell :is(
   .tadeon-page-hero[data-tadeon-page-hero]:not([data-tadeon-page-hero="tabletop"]),
-  .tadeon-master-commandbar,
-  .tadeon-dashboard-hero
-) p:not(.tadeon-eyebrow) {
+  .tadeon-master-commandbar) p:not(.tadeon-eyebrow) {
   font-size: .82rem !important;
   line-height: 1.55 !important;
   font-weight: 430 !important;
@@ -6179,9 +5851,7 @@ html body .tadeon-shell :is(
 @media (max-width: 767px) {
   html body .tadeon-shell :is(
     .tadeon-page-hero[data-tadeon-page-hero]:not([data-tadeon-page-hero="tabletop"]),
-    .tadeon-master-commandbar,
-    .tadeon-dashboard-hero
-  ) h1 {
+    .tadeon-master-commandbar) h1 {
     font-size: clamp(1.72rem, 7.2vw, 2.18rem) !important;
   }
 }
@@ -7104,3 +6774,16 @@ html body .tadeon-shell :is(
 }
 
 /* end-source: src/styles/tadeon-final-defect-authority.css */
+
+/* NEX-003: finite cloth response; content, coordinates and hit regions never move. */
+.tadeon-continuity-hero__weave { transition: transform 240ms var(--ease-out), opacity 180ms var(--ease-out); transform-origin: 52% 55%; }
+.tadeon-continuity-hero__seal { transition: box-shadow 180ms var(--ease-out); }
+@media (hover: hover) and (pointer: fine) {
+  .tadeon-continuity-hero:has(a:hover) .tadeon-continuity-hero__weave { transform: scaleY(.965); opacity: .85; }
+  .tadeon-continuity-hero:has(a:hover) .tadeon-continuity-hero__seal { box-shadow: inset 0 1px 3px rgb(233 227 213 / 24%), inset 0 -12px 26px rgb(0 0 0 / 32%), 0 20px 38px rgb(0 0 0 / 40%); }
+}
+.tadeon-continuity-hero:has(a:focus-visible) .tadeon-continuity-hero__weave { transform: scaleY(.965); }
+@media (prefers-reduced-motion: reduce) {
+  .tadeon-continuity-hero__weave, .tadeon-continuity-hero__seal { transition: none; }
+  .tadeon-continuity-hero:has(a:hover, a:focus-visible) .tadeon-continuity-hero__weave { transform: none; }
+}

@@ -1,3 +1,5 @@
+> Referência anterior do Fio-Mestre. A proposta atual de materiais, hierarquia e movimento está em [DESIGN.md](DESIGN.md), com o brief de 11/10/2026. Preserve a identidade deste documento; escolhas divergentes de execução devem ser conciliadas com o contrato atual antes de implementar.
+
 # Tadeon — linguagem de animação, interação e personalização
 
 Este documento resume o padrão visual e comportamental aprovado no Tadeon Nexus para ser reaplicado em outros projetos.

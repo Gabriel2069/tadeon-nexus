@@ -1,0 +1,96 @@
+{
+  "task": "NEX-003",
+  "date": "2026-10-11",
+  "direction": "Véu & Trama",
+  "approval": "Tadeu aprovou a inspiração visual e autorizou começar a implementação nesta conversa.",
+  "branch": "design/fio-mestre-visual-board-2026-10-11",
+  "pullRequest": 259,
+  "state": "validated_on_branch_not_integrated",
+  "baseCommit": "b022382aa5bed14e78e19396faa1e0aaa472230d",
+  "implementation": {
+    "hero": "SVG original e selo Fio-Mestre dimensional, sem biblioteca ou observer novo",
+    "data": [
+      "fichas disponíveis",
+      "seus personagens",
+      "maior exposição"
+    ],
+    "states": [
+      "empty",
+      "loading",
+      "error with retry",
+      "populated"
+    ],
+    "ownership": [
+      "page-hero-parity: geometry",
+      "experience-surfaces: material",
+      "motion-composition: bounded CSS motion",
+      "route: data and actions"
+    ],
+    "navigation": "Retirados marcadores externos concorrentes; removida a atribuição indevida da cor de texto ao token de superfície --sidebar-accent."
+  },
+  "cleanup": {
+    "dashboardRulesRemoved": 179,
+    "dashboardSelectorsTrimmed": 132,
+    "navigationPseudoRulesRemoved": 27,
+    "navigationPseudoSelectorsTrimmed": 13,
+    "importantBefore": 5764,
+    "importantAfter": 5619,
+    "cssModules": 57,
+    "globalLinks": 12,
+    "newDependencies": 0
+  },
+  "verification": {
+    "dashboardScript": "scripts/verify-dashboard-design.mjs",
+    "widths": [
+      320,
+      390,
+      820,
+      1440
+    ],
+    "statesPerWidth": 4,
+    "dashboardViews": 16,
+    "crossRouteViews": 21,
+    "asyncReadTests": 3,
+    "keyboard": [
+      "create dialog: Enter, Escape and focus return",
+      "delete dialog: cancel preserves cards",
+      "sidebar: collapse and expand"
+    ],
+    "motion": "normal hover transitions 180/240 ms; reduced motion settles without transform",
+    "fixturesOnly": true,
+    "qualityCommand": "npm run check",
+    "suites": 120,
+    "tests": 531,
+    "dependencyAudit": {
+      "command": "npm audit --audit-level=high",
+      "vulnerabilities": 0
+    },
+    "fonts": "EB Garamond, Inter e PT Mono carregadas em fixtures locais do navegador. Em produção, continua a entrega atual via Google Fonts com fallbacks.",
+    "navigation": "Token de superfície escuro preservado; nenhuma camada pointer-sheen injetada nos links de navegação.",
+    "asyncMutationTests": 13
+  },
+  "limits": [
+    "Não integrado nem publicado este lote.",
+    "Fixtures não comprovam RLS, autenticação e CRUD com contas reais.",
+    "Sem teste de VoiceOver, teclado virtual físico, FPS ou bateria.",
+    "Transparência usa fallback CSS, sem controle manual novo.",
+    "A limpeza é delimitada: não declara saneamento de toda a cascata histórica."
+  ],
+  "implementationCommit": "ef45672422378b963ad18ca8336ae3ba3ea19e47",
+  "preMergeReview": {
+    "date": "2026-10-11",
+    "authorization": "Tadeu solicitou aprofundar, revisar e fazer o merge da PR #259.",
+    "baselineHead": "f321dc2771542391961af8693c5cfe6fea59baca",
+    "findingsFixed": [
+      "Criação/exclusão descartam efeitos de UI de uma identidade anterior, inclusive retorno à mesma conta.",
+      "Escritas duplicadas são bloqueadas enquanto pendentes; rejeição libera o controle para recuperação.",
+      "Exclusão verifica a linha retornada pela API antes de anunciar sucesso; leitura posterior atualiza indicadores e cache.",
+      "Falha do armazenamento opcional de tutorial não transforma criação confirmada em erro.",
+      "Descrições dos indicadores agora são dd semânticos junto ao respectivo dt."
+    ],
+    "limits": [
+      "Ignorar a resposta antiga protege a interface; não desfaz uma escrita já enviada ao servidor.",
+      "Regras RLS e autorização do banco não foram alteradas nem certificadas com contas reais."
+    ]
+  }
+}
