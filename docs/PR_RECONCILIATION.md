@@ -6,6 +6,7 @@ Conferência de 11/10/2026. Estados de GitHub são um snapshot: reconferir antes
 | --- | --- | --- |
 | [#258](https://github.com/Gabriel2069/tadeon-nexus/pull/258) | Consolidação integrada | Merge `c6c1ea6` em main; produção confirmada pelo workflow 38151368993. |
 | [#259](https://github.com/Gabriel2069/tadeon-nexus/pull/259) | Primeiro lote visual integrado — NEX-003 | Prancheta aprovada, revisão aprofundada e merge `ca49ce0`. Correção #260 integrada; publicação confirmada no workflow 38157372540, SHA 6621802. Falha inicial preservada como histórico. |
+| [#261](https://github.com/Gabriel2069/tadeon-nexus/pull/261) | NEX-004 integrado — Grenze, navegação e portais | Merge `2b36716`, Quality 38162310175 aprovado. Produção confirmada no [workflow 38162497262](https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38162497262): HTTP 200 e SHA exato `2b36716`. |
 | [#216](https://github.com/Gabriel2069/tadeon-nexus/pull/216) | Patch histórico conflitante | Encerrado como proposta de integração; branch `agent/final-visual-publish-217` e commits preservados. Requisitos conciliados abaixo. |
 
 A #216 tem HEAD `15e93ebe778ff55ecfebfaaf67b61b45469a86ac` e compara nove commits com a base `7df1734964804d2d9bdd0bdbb4114127af4b3625`. Além de símbolos, CSS e teste visual, altera quatro workflows. Integrar esse patch para recuperar um requisito visual misturaria decisões antigas de publicação, backup e qualidade com a base atual. Não fazer merge nem cherry-pick em bloco.
@@ -26,7 +27,7 @@ Encerrar a proposta antiga não declara todos os requisitos visuais concluídos:
 
 ## Fluxo das próximas PRs
 
-- Criar a partir de main integrado. #259 encerrou NEX-003. NEX-004 segue em design/nexus-navigation-type-2026-10-11, a partir de main 6621802, sem reutilizar a branch de design já integrada. Reconferir o diff e os responsáveis antes de expandir.
+- Criar a partir de main integrado. #259 encerrou NEX-003; #261 integrou NEX-004. Próximo lote: NEX-005, a partir do main atual, com critérios da fila canônica e sem reutilizar branches integradas. Reconferir diff e responsáveis antes de expandir.
 - Cada PR cita IDs existentes da fila, responsáveis tocados, critérios de aceitação e evidências. Não duplicar a tarefa em outra lista.
 - Trabalhos simultâneos que alteram os mesmos proprietários devem ser sequenciais ou declarar dependência explícita. Não abrir duas implementações concorrentes para a mesma tarefa.
 - Antes de merge, comparar HEAD/base e resultados do CI no HEAD atual. Sucesso de commit anterior não aprova commit posterior.

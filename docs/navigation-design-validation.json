@@ -1,7 +1,7 @@
 {
   "task": "NEX-004",
   "checkedAt": "2026-10-11",
-  "state": "validated_branch",
+  "state": "integrated_and_published",
   "branch": "design/nexus-navigation-type-2026-10-11",
   "baseCommit": "662180278fc7b3d872fae2a8b05267d9800db9c6",
   "typography": {
@@ -110,5 +110,22 @@
     "Empty Nexus/Mesa routes do not certify populated corpus/campaign/ficha",
     "Other existing CSS debt remains; no claim of full-app contrast or conflict elimination"
   ],
-  "delivery": "Branch validation is separate from merge and publication. Current GitHub PR/workflow must supply exact integration SHA and public HTML SHA proof."
+  "delivery": "Snapshot da entrega visual #261 em 2026-10-11T18:09:43Z, HTTP 200 e SHA exato. Commits posteriores de documentação têm CI/produção próprios; consultar PR e workflow atuais, sem atribuir a este snapshot outro SHA.",
+  "integration": {
+    "pr": 261,
+    "branch": "design/nexus-navigation-type-2026-10-11",
+    "base": "main",
+    "baseCommit": "662180278fc7b3d872fae2a8b05267d9800db9c6",
+    "headCommit": "b3f8c4049e8aa7fbb2b32b81a1b587b78cd3b449",
+    "state": "integrated",
+    "mergeCommit": "2b367163610dfc310099ee4a94908752bc6d97be",
+    "qualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38162310175",
+    "production": "confirmed",
+    "productionEvidence": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38162497262",
+    "productionCommit": "2b367163610dfc310099ee4a94908752bc6d97be",
+    "mainQualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38162497219",
+    "productionVerifiedAt": "2026-10-11T18:09:43Z",
+    "productionHttpStatus": 200,
+    "workerVersion": "bad86e08-292f-4af3-bcd7-4131272959b4"
+  }
 }
