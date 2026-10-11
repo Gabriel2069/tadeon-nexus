@@ -1,91 +1,37 @@
-import type { CSSProperties } from "react";
-import { ConditionCounter } from "@/components/sheet/condition-counter";
-import { conditionChipPresentation } from "@/lib/sheet-condition-presentation";
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { lazy, Suspense, useEffect, useMemo, useState } from "react";
+import { PageState } from "@/components/page-state";
 import { ProtectedShell } from "@/components/protected-shell";
-import { useAuth } from "@/lib/auth";
-import { supabase } from "@/integrations/supabase/client";
+import { SheetAttributesSection } from "@/components/sheet/sheet-attributes-section";
+import { SheetConditionsSection } from "@/components/sheet/sheet-conditions-section";
+import { SheetExperienceBridge } from "@/components/sheet/sheet-experience-bridge";
+import { SheetIdentitySection } from "@/components/sheet/sheet-identity-section";
+import { SheetInventoryOrganizer } from "@/components/sheet/sheet-inventory-organizer";
+import {
+  type DefenseItem,
+  type PowerFormData,
+  type SheetData,
+  clamp,
+  tierFromBonus,
+} from "@/components/sheet/sheet-model";
+import { SheetSkillsSection } from "@/components/sheet/sheet-skills-section";
+import { OverviewMetric, RowTable, Section } from "@/components/sheet/sheet-ui";
+import { SheetVitalsSection } from "@/components/sheet/sheet-vitals-section";
 import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Card } from "@/components/ui/card";
-import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Textarea } from "@/components/ui/textarea";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/lib/auth";
+import { conditionChipPresentation } from "@/lib/sheet-condition-presentation";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { AlertTriangle } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
 // (Dialog imports removed ~ Power Form now lives in /sheet/$id/power route)
 
-import {
-  ArrowLeft,
-  Save,
-  Loader2,
-  Plus,
-  Minus,
-  Trash,
-  Sparkles,
-  Gem,
-  ArrowUp,
-  Shield,
-  ChevronDown,
-  ChevronLeft,
-  ChevronRight,
-  IdCard,
-  GitBranch,
-  ScrollText,
-  Activity,
-  Compass,
-  Gauge,
-  Link2,
-  BookOpen,
-  Heart,
-  Target,
-  NotebookPen,
-} from "lucide-react";
-import { toast } from "sonner";
-import {
-  type Attributes,
-  type Stats,
-  type Conditions,
-  type StatUpgrades,
-  type Weapon,
-  type InventoryItem,
-  type Ability,
-  type Plot,
-  type RankRow,
-  type SkillBranch,
-  type UpgradeCosts,
-  type ConditionOptionsMap,
-  type ConditionKey,
-  type Description,
-  type FragmentItem,
-  type IdentityData,
-  type LifeCycleTrait,
-  type LinkState,
-  type InitialSkillDegrees,
-  type WeaponProficiency,
-  type WeaponProficiencyFamily,
-  SKILL_GROUPS,
-  getRankBase,
-  calcTotalPM,
-  calculatePMSpent,
-  calculateSheetMaximums,
-  attributePointBudget,
-  attributePointsUsed,
-  attributeValueCap,
-  genId,
-  inferInitialSkillDegrees,
-  normalizeConditions,
-  weaponProficiencyMinimumRank,
-  weaponProficiencySpend,
-  WEAPON_PROFICIENCIES,
-  DEFAULT_TRAINING_COSTS,
-  DEFAULT_UPGRADE_COSTS,
-  DEFAULT_CONDITION_OPTIONS,
-  CONDITION_META,
-  getEquilibriumEffect,
-  DEFAULT_IDENTITY_DATA,
-  CANONICAL_RANK_TABLE,
-} from "@/lib/sheet-types";
-import { CANONICAL_SKILL_BRANCHES } from "@/lib/master-data";
+import { BrandMark } from "@/components/brand-mark";
+import { ResistanceDtCalculator } from "@/components/master/resistance-dt-calculator";
+import { SaveStatus } from "@/components/save-status";
 import { AddItemDialog } from "@/components/sheet/add-item-dialog";
 import { SkillTreeTab } from "@/components/sheet/skill-tree";
 import {
@@ -95,28 +41,75 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
-import { useSerializedAutosave } from "@/lib/use-serialized-autosave";
-import { can } from "@/lib/permissions";
+import { CANONICAL_SKILL_BRANCHES } from "@/lib/master-data";
 import { cacheSheet } from "@/lib/offline-cache";
-import { BrandMark } from "@/components/brand-mark";
-import { SaveStatus } from "@/components/save-status";
-import { ResistanceDtCalculator } from "@/components/master/resistance-dt-calculator";
+import { can } from "@/lib/permissions";
+import {
+  type Ability,
+  type Attributes,
+  type ConditionKey,
+  type ConditionOptionsMap,
+  type Description,
+  type FragmentItem,
+  type IdentityData,
+  type InitialSkillDegrees,
+  type InventoryItem,
+  type Plot,
+  type RankRow,
+  type SkillBranch,
+  type Stats,
+  type UpgradeCosts,
+  type Weapon,
+  type WeaponProficiency,
+  type WeaponProficiencyFamily,
+  attributePointBudget,
+  attributePointsUsed,
+  attributeValueCap,
+  calcTotalPM,
+  calculatePMSpent,
+  calculateSheetMaximums,
+  CANONICAL_RANK_TABLE,
+  CONDITION_META,
+  DEFAULT_CONDITION_OPTIONS,
+  DEFAULT_IDENTITY_DATA,
+  DEFAULT_TRAINING_COSTS,
+  DEFAULT_UPGRADE_COSTS,
+  genId,
+  getEquilibriumEffect,
+  getRankBase,
+  inferInitialSkillDegrees,
+  normalizeConditions,
+  SKILL_GROUPS,
+  WEAPON_PROFICIENCIES,
+  weaponProficiencyMinimumRank,
+  weaponProficiencySpend,
+} from "@/lib/sheet-types";
+import { useSerializedAutosave } from "@/lib/use-serialized-autosave";
 import "@/styles/sheet-premium.css";
-const LIFE_CYCLE_TRAITS: LifeCycleTrait[] = [
-  "Formação recente",
-  "Corpo habituado",
-  "Nome reconhecido",
-  "Experiência acumulada",
-  "Responsabilidades",
-  "Cicatriz antiga",
-];
+import {
+  Activity,
+  ArrowLeft,
+  ArrowUp,
+  BookOpen,
+  Compass,
+  Gauge,
+  Gem,
+  GitBranch,
+  Heart,
+  IdCard,
+  Loader2,
+  Minus,
+  NotebookPen,
+  Plus,
+  Save,
+  ScrollText,
+  Shield,
+  Sparkles,
+  Target,
+} from "lucide-react";
+import { toast } from "sonner";
 
-const LINK_STATES: LinkState[] = ["Presente", "Tensionado", "Ferido", "Rompido", "Costurado"];
 type SheetView = "ficha" | "arvore" | "descricao";
-
-const AttributeRadar = lazy(() => import("@/components/sheet/attribute-radar"));
 
 const SHEET_TUTORIAL_STEPS = [
   {
@@ -146,33 +139,6 @@ const SHEET_TUTORIAL_STEPS = [
   },
 ] as const;
 
-const TRAINING_TIERS = [
-  { tier: 1, name: "Iniciado", bonus: 3 },
-  { tier: 2, name: "Apurado", bonus: 6 },
-  { tier: 3, name: "Versado", bonus: 9 },
-] as const;
-
-const SECTION_PRESENTATION: Record<string, { index: string; kicker: string }> = {
-  "sec-info": { index: "01", kicker: "Identidade e continuidade" },
-  "sec-attr": { index: "02", kicker: "Matriz de potencial" },
-  "sec-pontos": { index: "03", kicker: "Recursos e proteção" },
-  equilibrio: { index: "04", kicker: "Estado de tensão" },
-  exposicao: { index: "05", kicker: "Progressão de contato" },
-  condicoes: { index: "06", kicker: "Pressões em curso" },
-  "sec-pericias": { index: "07", kicker: "Competências treinadas" },
-  "sec-armas": { index: "08", kicker: "Arsenal operacional" },
-  "sec-inv": { index: "09", kicker: "Carga e recursos" },
-  "sec-hab": { index: "10", kicker: "Repertório adquirido" },
-  "tramas-fragmentos": { index: "11", kicker: "Fenômenos e manifestações" },
-  "sec-notas": { index: "12", kicker: "Registro de campo" },
-};
-function tierFromBonus(b: number): 0 | 1 | 2 | 3 {
-  if (b >= 9) return 3;
-  if (b >= 6) return 2;
-  if (b >= 3) return 1;
-  return 0;
-}
-
 export const Route = createFileRoute("/sheet/$id")({
   head: () => ({
     meta: [
@@ -192,85 +158,12 @@ export const Route = createFileRoute("/sheet/$id")({
     links: [{ rel: "canonical", href: "https://tadeon-nexus.gtadeusz.workers.dev/" }],
   }),
 
-  component: () => (
-    <ProtectedShell>
-      <SheetPage />
-    </ProtectedShell>
-  ),
+  component: SheetRoute,
 });
-
-interface PowerFormData {
-  attributes?: Partial<Attributes>;
-  abilities?: Ability[];
-  plots?: Plot[];
-  notes?: string;
-  stat_mods?: Partial<Stats>;
-  defense_items?: DefenseItem[];
-}
-
-export interface DefenseItem {
-  id: string;
-  nome: string;
-  bonus: number;
-  rd: number;
-  peso: number;
-}
-
-interface SheetData {
-  id: string;
-  owner_id: string;
-  owner_email?: string;
-  name: string;
-  occupation: string;
-  age: string;
-  brand: string;
-  origin: string;
-  motivation: string;
-  exposure: number;
-  equilibrium: number;
-  drift: number;
-  attributes: Attributes;
-  stats: Stats;
-  condition: string;
-  conditions: Conditions;
-  dying: number;
-  going_insane: number;
-  skill_bonus: string;
-  skills: Record<string, number>;
-  weapons: Weapon[];
-  inventory: InventoryItem[];
-  inventory_capacity: number;
-  abilities: Ability[];
-  plots: Plot[];
-  fragments: number;
-  pm_spent: number;
-  stat_upgrades: StatUpgrades;
-  purchased_skills: string[];
-  notes: string;
-  description: Description;
-  identity_data: IdentityData;
-  power_form_enabled: boolean;
-  power_form_data: PowerFormData;
-  fragments_items: FragmentItem[];
-  defense_items: DefenseItem[];
-  initial_skill_degrees: InitialSkillDegrees;
-  weapon_proficiency: WeaponProficiency;
-  weapon_proficiency_family: WeaponProficiencyFamily;
-}
 
 const RANGE_OPTIONS = ["Engajado", "Próximo", "Distante", "Longo", "Extremo"];
 const PLOT_RANGE_OPTIONS = ["Pessoal", "Curto", "Médio", "Longo", "Extremo"];
 
-function clamp(n: number, min: number, max: number) {
-  return Math.max(min, Math.min(max, n));
-}
-
-function clampCurrent(v: number, max: number): number {
-  return clamp(Math.round(v), 0, Math.max(0, max));
-}
-function clampMod(v: number): number {
-  return clamp(Math.round(v), -100, 150);
-}
 function clampArmor(v: number): number {
   return clamp(Math.round(v), 0, 25);
 }
@@ -290,12 +183,25 @@ function equilibriumColor(value: number): string {
   return `hsl(50, ${s}%, ${l}%)`;
 }
 
+function SheetRoute() {
+  const { id } = Route.useParams();
+  const { user, role } = useAuth();
+  return (
+    <ProtectedShell>
+      <SheetPage key={`${id}:${user?.id ?? "anonymous"}:${role ?? "pending"}`} />
+    </ProtectedShell>
+  );
+}
+
 function SheetPage() {
   const { id } = Route.useParams();
   const { user, role } = useAuth();
   const navigate = useNavigate();
+  const [sheetHost, setSheetHost] = useState<HTMLDivElement | null>(null);
   const [sheet, setSheet] = useState<SheetData | null>(null);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
+  const [loadAttempt, setLoadAttempt] = useState(0);
   const [rankTable, setRankTable] = useState<RankRow[]>([]);
   const [branches, setBranches] = useState<SkillBranch[]>([]);
   const [upgradeCosts, setUpgradeCosts] = useState<UpgradeCosts>(DEFAULT_UPGRADE_COSTS);
@@ -306,8 +212,6 @@ function SheetPage() {
     useState<[number, number, number]>(DEFAULT_TRAINING_COSTS);
   // (removed setPowerFormOpen ~ Power Form opens via dedicated route)
   const [fragmentsView, setFragmentsView] = useState(false);
-  const [defEquipOpen, setDefEquipOpen] = useState(false);
-  const [openSkill, setOpenSkill] = useState<string | null>(null);
   const [tutorialStep, setTutorialStep] = useState<number | null>(null);
   const [sheetView, setSheetView] = useState<SheetView>(() => {
     if (typeof window === "undefined") return "ficha";
@@ -334,123 +238,145 @@ function SheetPage() {
   });
 
   useEffect(() => {
+    const controller = new AbortController();
+    setLoading(true);
+    setLoadError(null);
     void (async () => {
-      const [{ data, error }, { data: settingsJson }] = await Promise.all([
-        supabase.from("character_sheets").select("*").eq("id", id).maybeSingle(),
-        // Use SECURITY DEFINER RPC: returns only player-safe fields, so jogadores/espectadores
-        // cannot read NPCs/clues/scenes from the master settings table.
-        supabase.rpc("get_public_game_settings"),
-      ]);
-      if (error || !data) {
-        toast.error("Ficha não encontrada.");
-        void navigate({ to: "/" });
-        return;
-      }
-      const raw = data as unknown as Record<string, unknown>;
-      const desc = (raw.description as Description | null) ?? {
-        historia: "",
-        personalidade: "",
-        objetivos: "",
-        observacoes: "",
-      };
-      const pfData = (raw.power_form_data as PowerFormData | null) ?? {};
-      const fragItems = ((raw.fragments_items as FragmentItem[] | null) ?? []).map((item) => ({
-        ...item,
-        categoria: item.categoria ?? "I",
-        selo: item.selo ?? "Não selado",
-        integridade: Number(item.integridade ?? 0),
-        limiteSeguro: item.limiteSeguro ?? "Repuxo",
-      }));
-      const defItems = ((raw.defense_items as Partial<DefenseItem>[] | null) ?? []).map((item) => ({
-        id: item.id ?? genId(),
-        nome: item.nome ?? "",
-        bonus: Number(item.bonus ?? 0),
-        rd: Number(item.rd ?? 0),
-        peso: Number(item.peso ?? 0),
-      }));
-      const rawIdentity = (raw.identity_data as Partial<IdentityData> | null) ?? {};
-      const identityData: IdentityData = {
-        ...DEFAULT_IDENTITY_DATA,
-        ...rawIdentity,
-        conviction: rawIdentity.conviction ?? String(raw.motivation ?? ""),
-        links: (rawIdentity.links?.length ? rawIdentity.links : DEFAULT_IDENTITY_DATA.links).map(
-          (link, index) => ({
-            id: link.id || `link-${index + 1}`,
-            name: link.name ?? "",
-            relation: link.relation ?? "",
-            state: link.state ?? "Presente",
+      try {
+        const [{ data, error }, { data: settingsJson }] = await Promise.all([
+          supabase
+            .from("character_sheets")
+            .select("*")
+            .eq("id", id)
+            .abortSignal(controller.signal)
+            .maybeSingle(),
+          // Use SECURITY DEFINER RPC: returns only player-safe fields, so jogadores/espectadores
+          // cannot read NPCs/clues/scenes from the master settings table.
+          supabase.rpc("get_public_game_settings").abortSignal(controller.signal),
+        ]);
+        if (controller.signal.aborted) return;
+        if (error || !data) {
+          setLoadError(
+            "A ficha pode estar indisponível ou seu acesso pode ter mudado. Tente novamente ou volte ao arquivo.",
+          );
+          return;
+        }
+        const raw = data as unknown as Record<string, unknown>;
+        const desc = (raw.description as Description | null) ?? {
+          historia: "",
+          personalidade: "",
+          objetivos: "",
+          observacoes: "",
+        };
+        const pfData = (raw.power_form_data as PowerFormData | null) ?? {};
+        const fragItems = ((raw.fragments_items as FragmentItem[] | null) ?? []).map((item) => ({
+          ...item,
+          categoria: item.categoria ?? "I",
+          selo: item.selo ?? "Não selado",
+          integridade: Number(item.integridade ?? 0),
+          limiteSeguro: item.limiteSeguro ?? "Repuxo",
+        }));
+        const defItems = ((raw.defense_items as Partial<DefenseItem>[] | null) ?? []).map(
+          (item) => ({
+            id: item.id ?? genId(),
+            nome: item.nome ?? "",
+            bonus: Number(item.bonus ?? 0),
+            rd: Number(item.rd ?? 0),
+            peso: Number(item.peso ?? 0),
           }),
-        ),
-      };
-      const loadedSkills = ((raw.skills as Record<string, number> | null) ?? {}) as Record<
-        string,
-        number
-      >;
-      const storedInitialDegrees = (raw.initial_skill_degrees as InitialSkillDegrees | null) ?? {};
-      const initialSkillDegrees = Object.keys(storedInitialDegrees).length
-        ? storedInitialDegrees
-        : inferInitialSkillDegrees(loadedSkills);
-      const storedProficiency = raw.weapon_proficiency as WeaponProficiency | null;
-      const weaponProficiency = WEAPON_PROFICIENCIES.includes(
-        storedProficiency as WeaponProficiency,
-      )
-        ? (storedProficiency as WeaponProficiency)
-        : "operador";
-      const storedFamily = raw.weapon_proficiency_family as WeaponProficiencyFamily | null;
-      setSheet({
-        ...(data as unknown as SheetData),
-        drift: Number(raw.drift ?? 0),
-        stats: {
-          ...((raw.stats as Stats | null) ?? {}),
-          pa_current: Number((raw.stats as Stats | null)?.pa_current ?? 0),
-          pa_mod: Number((raw.stats as Stats | null)?.pa_mod ?? 0),
-        } as Stats,
-        conditions: normalizeConditions(raw.conditions),
-        description: desc,
-        identity_data: identityData,
-        power_form_enabled: Boolean(raw.power_form_enabled),
-        power_form_data: pfData,
-        fragments_items: fragItems,
-        defense_items: defItems,
-        skills: loadedSkills,
-        initial_skill_degrees: initialSkillDegrees,
-        weapon_proficiency: weaponProficiency,
-        weapon_proficiency_family:
-          storedFamily === "Contato" || storedFamily === "Projeção" ? storedFamily : "",
-      });
+        );
+        const rawIdentity = (raw.identity_data as Partial<IdentityData> | null) ?? {};
+        const identityData: IdentityData = {
+          ...DEFAULT_IDENTITY_DATA,
+          ...rawIdentity,
+          conviction: rawIdentity.conviction ?? String(raw.motivation ?? ""),
+          links: (rawIdentity.links?.length ? rawIdentity.links : DEFAULT_IDENTITY_DATA.links).map(
+            (link, index) => ({
+              id: link.id || `link-${index + 1}`,
+              name: link.name ?? "",
+              relation: link.relation ?? "",
+              state: link.state ?? "Presente",
+            }),
+          ),
+        };
+        const loadedSkills = ((raw.skills as Record<string, number> | null) ?? {}) as Record<
+          string,
+          number
+        >;
+        const storedInitialDegrees =
+          (raw.initial_skill_degrees as InitialSkillDegrees | null) ?? {};
+        const initialSkillDegrees = Object.keys(storedInitialDegrees).length
+          ? storedInitialDegrees
+          : inferInitialSkillDegrees(loadedSkills);
+        const storedProficiency = raw.weapon_proficiency as WeaponProficiency | null;
+        const weaponProficiency = WEAPON_PROFICIENCIES.includes(
+          storedProficiency as WeaponProficiency,
+        )
+          ? (storedProficiency as WeaponProficiency)
+          : "operador";
+        const storedFamily = raw.weapon_proficiency_family as WeaponProficiencyFamily | null;
+        setSheet({
+          ...(data as unknown as SheetData),
+          drift: Number(raw.drift ?? 0),
+          stats: {
+            ...((raw.stats as Stats | null) ?? {}),
+            pa_current: Number((raw.stats as Stats | null)?.pa_current ?? 0),
+            pa_mod: Number((raw.stats as Stats | null)?.pa_mod ?? 0),
+          } as Stats,
+          conditions: normalizeConditions(raw.conditions),
+          description: desc,
+          identity_data: identityData,
+          power_form_enabled: Boolean(raw.power_form_enabled),
+          power_form_data: pfData,
+          fragments_items: fragItems,
+          defense_items: defItems,
+          skills: loadedSkills,
+          initial_skill_degrees: initialSkillDegrees,
+          weapon_proficiency: weaponProficiency,
+          weapon_proficiency_family:
+            storedFamily === "Contato" || storedFamily === "Projeção" ? storedFamily : "",
+        });
 
-      const settings = (settingsJson as unknown as Record<string, unknown> | null) ?? {};
-      const configuredRanks = (settings.rank_table as RankRow[] | undefined) ?? [];
-      const configuredBranches = (settings.skill_branches as SkillBranch[] | undefined) ?? [];
-      const finalRulesConfigured =
-        configuredRanks[0]?.def === 10 &&
-        configuredRanks.at(-1)?.pm === 170 &&
-        configuredBranches.length === 4 &&
-        configuredBranches.every((branch) => branch.nodes.length === 24);
-      setRankTable(finalRulesConfigured ? configuredRanks : CANONICAL_RANK_TABLE);
-      setBranches(finalRulesConfigured ? configuredBranches : CANONICAL_SKILL_BRANCHES);
-      setUpgradeCosts(
-        finalRulesConfigured
-          ? ((settings.upgrade_costs as UpgradeCosts | undefined) ?? DEFAULT_UPGRADE_COSTS)
-          : DEFAULT_UPGRADE_COSTS,
-      );
-      setConditionOptions(
-        finalRulesConfigured
-          ? ((settings.condition_options as ConditionOptionsMap | undefined) ??
-              DEFAULT_CONDITION_OPTIONS)
-          : DEFAULT_CONDITION_OPTIONS,
-      );
-      setSheetSkillGroups(
-        finalRulesConfigured
-          ? ((settings.skill_groups as typeof SKILL_GROUPS | undefined) ?? SKILL_GROUPS)
-          : SKILL_GROUPS,
-      );
-      const training = settings.skill_training_costs as number[] | undefined;
-      if (finalRulesConfigured && training && training.length >= 3)
-        setTrainingCosts([training[0], training[1], training[2]]);
-      setLoading(false);
+        const settings = (settingsJson as unknown as Record<string, unknown> | null) ?? {};
+        const configuredRanks = (settings.rank_table as RankRow[] | undefined) ?? [];
+        const configuredBranches = (settings.skill_branches as SkillBranch[] | undefined) ?? [];
+        const finalRulesConfigured =
+          configuredRanks[0]?.def === 10 &&
+          configuredRanks.at(-1)?.pm === 170 &&
+          configuredBranches.length === 4 &&
+          configuredBranches.every((branch) => branch.nodes.length === 24);
+        setRankTable(finalRulesConfigured ? configuredRanks : CANONICAL_RANK_TABLE);
+        setBranches(finalRulesConfigured ? configuredBranches : CANONICAL_SKILL_BRANCHES);
+        setUpgradeCosts(
+          finalRulesConfigured
+            ? ((settings.upgrade_costs as UpgradeCosts | undefined) ?? DEFAULT_UPGRADE_COSTS)
+            : DEFAULT_UPGRADE_COSTS,
+        );
+        setConditionOptions(
+          finalRulesConfigured
+            ? ((settings.condition_options as ConditionOptionsMap | undefined) ??
+                DEFAULT_CONDITION_OPTIONS)
+            : DEFAULT_CONDITION_OPTIONS,
+        );
+        setSheetSkillGroups(
+          finalRulesConfigured
+            ? ((settings.skill_groups as typeof SKILL_GROUPS | undefined) ?? SKILL_GROUPS)
+            : SKILL_GROUPS,
+        );
+        const training = settings.skill_training_costs as number[] | undefined;
+        if (finalRulesConfigured && training && training.length >= 3)
+          setTrainingCosts([training[0], training[1], training[2]]);
+      } catch {
+        if (!controller.signal.aborted)
+          setLoadError(
+            "Não foi possível carregar a ficha. Verifique sua conexão e tente novamente.",
+          );
+      } finally {
+        if (!controller.signal.aborted) setLoading(false);
+      }
     })();
-  }, [id, navigate]);
+    return () => controller.abort();
+  }, [id, loadAttempt]);
 
   const {
     dirty,
@@ -478,7 +404,10 @@ function SheetPage() {
 
   useEffect(() => {
     if (!sheet) return;
-    const timer = window.setTimeout(() => cacheSheet(sheet, user && role ? { userId: user.id, role } : null), 600);
+    const timer = window.setTimeout(
+      () => cacheSheet(sheet, user && role ? { userId: user.id, role } : null),
+      600,
+    );
     return () => window.clearTimeout(timer);
   }, [sheet, user, role]);
 
@@ -596,9 +525,26 @@ function SheetPage() {
     [activeConditions],
   );
 
+  if (loadError)
+    return (
+      <PageState
+        icon={AlertTriangle}
+        title="A ficha não pôde ser aberta"
+        description={loadError}
+        action={
+          <div className="flex flex-wrap justify-center gap-3">
+            <Button onClick={() => setLoadAttempt((n) => n + 1)}>Tentar novamente</Button>
+            <Button variant="outline" onClick={() => navigate({ to: "/" })}>
+              Voltar ao arquivo
+            </Button>
+          </div>
+        }
+      />
+    );
+
   if (loading || !sheet) {
     return (
-      <div className="flex justify-center py-16">
+      <div className="flex justify-center py-16" role="status" aria-label="Carregando ficha">
         <Loader2 className="w-8 h-8 animate-spin text-primary" />
       </div>
     );
@@ -660,7 +606,13 @@ function SheetPage() {
   ];
   const jumpTo = (id: string) => {
     const el = document.getElementById(id);
-    if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+    if (el)
+      el.scrollIntoView({
+        behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches
+          ? "instant"
+          : "smooth",
+        block: "start",
+      });
   };
 
   const equilibrium = clamp(Math.round(sheet.equilibrium || 0), -10, 10);
@@ -669,7 +621,11 @@ function SheetPage() {
   const tutorial = tutorialStep === null ? null : SHEET_TUTORIAL_STEPS[tutorialStep];
 
   return (
-    <div className="tadeon-page tadeon-sheet-page pb-28">
+    <div
+      ref={setSheetHost}
+      data-sheet-presentation="fabric"
+      className="tadeon-page tadeon-sheet-page pb-28"
+    >
       {/* Sticky Header */}
       <div className="tadeon-sheet-commandbar">
         <div className="tadeon-sheet-commandbar__main">
@@ -689,58 +645,63 @@ function SheetPage() {
               {sheet.name || "Ficha"}
             </h1>
           </div>
-          {!canEdit && (
-            <span className="text-[10px] px-2 py-0.5 rounded-full bg-muted text-muted-foreground">
-              somente leitura
-            </span>
-          )}
-          {canEdit && (
-            <div className="tadeon-sheet-commandbar__actions">
-              <SaveStatus
-                state={
-                  typeof navigator !== "undefined" && !navigator.onLine
-                    ? "offline"
-                    : saving
-                      ? "saving"
-                      : saveError
-                        ? "error"
-                        : dirty
-                          ? "pending"
-                          : "saved"
-                }
-                savedAt={lastSavedAt}
-                onRetry={() => void doSave()}
-                compact={typeof window !== "undefined" && window.innerWidth < 640}
-              />
-              {sheet.power_form_enabled && (
-                <Button
-                  size="sm"
-                  variant="outline"
-                  onClick={async () => {
-                    if (await doSave()) {
-                      void navigate({
-                        to: "/sheet/$id/power",
-                        params: { id: sheet.id },
-                      });
-                    }
-                  }}
-                  className="tadeon-sheet-power-button gap-1.5 font-bold tracking-widest"
-                  title="Abrir Forma de Poder (VP)"
-                >
-                  <Sparkles className="w-4 h-4" /> VP
+          <div className="tadeon-sheet-commandbar__actions">
+            <SheetExperienceBridge sheetId={id} dropTarget={sheetHost} canEdit={canEdit} />
+            {!canEdit && (
+              <span className="text-[10px] px-2 py-0.5 rounded-full bg-muted text-muted-foreground">
+                somente leitura
+              </span>
+            )}
+            {canEdit && (
+              <>
+                <SaveStatus
+                  state={
+                    typeof navigator !== "undefined" && !navigator.onLine
+                      ? "offline"
+                      : saving
+                        ? "saving"
+                        : saveError
+                          ? "error"
+                          : dirty
+                            ? "pending"
+                            : "saved"
+                  }
+                  savedAt={lastSavedAt}
+                  onRetry={() => void doSave()}
+                  compact={typeof window !== "undefined" && window.innerWidth < 640}
+                />
+                {sheet.power_form_enabled && (
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={async () => {
+                      if (await doSave()) {
+                        void navigate({
+                          to: "/sheet/$id/power",
+                          params: { id: sheet.id },
+                        });
+                      }
+                    }}
+                    className="tadeon-sheet-power-button gap-1.5 font-bold tracking-widest"
+                    title="Abrir Forma de Poder (VP)"
+                  >
+                    <Sparkles className="w-4 h-4" /> VP
+                  </Button>
+                )}
+                <Button size="sm" onClick={doSave} className="tadeon-sheet-save-button gap-1.5">
+                  <Save className="w-4 h-4" /> <span className="hidden sm:inline">Salvar</span>
                 </Button>
-              )}
-              <Button size="sm" onClick={doSave} className="tadeon-sheet-save-button gap-1.5">
-                <Save className="w-4 h-4" /> <span className="hidden sm:inline">Salvar</span>
-              </Button>
-            </div>
-          )}
+              </>
+            )}
+          </div>
         </div>
         {activeConditions.length > 0 && (
           <div className="tadeon-sheet-condition-rail" aria-label="Condições ativas">
             {activeConditions.map((key) => {
               const meta = CONDITION_META[key];
-              const presentation = conditionChipPresentation(`${meta.label}: ${sheet.conditions[key].join(", ")}`);
+              const presentation = conditionChipPresentation(
+                `${meta.label}: ${sheet.conditions[key].join(", ")}`,
+              );
               return (
                 <span
                   key={key}
@@ -841,7 +802,7 @@ function SheetPage() {
             </TabsTrigger>
           </TabsList>
 
-          <TabsContent value="ficha" className="mt-0 space-y-4">
+          <TabsContent data-sheet-content value="ficha" className="mt-0 space-y-4">
             {/* Quick jump shortcuts */}
             <nav className="tadeon-sheet-jumpbar" aria-label="Ir para uma seção da ficha">
               {sectionAnchors.map((a) => (
@@ -886,591 +847,33 @@ function SheetPage() {
               />
             </div>
 
-            <Section id="sec-info" title="Identidade" className="tadeon-identity-section">
-              <div className="tadeon-identity-lead">
-                <div className="tadeon-identity-sigil" aria-hidden="true">
-                  <IdCard />
-                </div>
-                <div className="min-w-0 flex-1">
-                  <p className="tadeon-eyebrow">Dossiê de continuidade</p>
-                  <p className="mt-1 max-w-3xl text-xs leading-relaxed text-muted-foreground">
-                    Origem situa, Ocupação mostra prática, Convicção sustenta, Limite interrompe,
-                    Ferida pressiona e Marca registra o que já mudou.
-                  </p>
-                </div>
-                <div className="tadeon-identity-link-count">
-                  <Link2 aria-hidden="true" />
-                  <span>{sheet.identity_data.links.length}</span>
-                  <small>vínculos</small>
-                </div>
-              </div>
-
-              <div className="tadeon-identity-foundation">
-                <Field
-                  className="tadeon-identity-field--name"
-                  label="Nome"
-                  value={sheet.name}
-                  onChange={(v) => update("name", v)}
-                  disabled={!canEdit}
-                />
-                <Field
-                  label="Ocupação"
-                  value={sheet.occupation}
-                  onChange={(v) => update("occupation", v)}
-                  disabled={!canEdit}
-                />
-                <Field
-                  label="Origem"
-                  value={sheet.origin}
-                  onChange={(v) => update("origin", v)}
-                  disabled={!canEdit}
-                />
-                <Field
-                  label="Marca"
-                  value={sheet.brand}
-                  onChange={(v) => update("brand", v)}
-                  disabled={!canEdit}
-                />
-              </div>
-
-              <div className="tadeon-identity-axis" aria-label="Núcleo narrativo">
-                <Field
-                  className="tadeon-identity-axis__field"
-                  label="Convicção"
-                  value={sheet.identity_data.conviction}
-                  onChange={(value) =>
-                    update("identity_data", {
-                      ...sheet.identity_data,
-                      conviction: value,
-                    })
-                  }
-                  disabled={!canEdit}
-                />
-                <Field
-                  className="tadeon-identity-axis__field"
-                  label="Limite"
-                  value={sheet.identity_data.limit}
-                  onChange={(value) =>
-                    update("identity_data", {
-                      ...sheet.identity_data,
-                      limit: value,
-                    })
-                  }
-                  disabled={!canEdit}
-                />
-                <Field
-                  className="tadeon-identity-axis__field"
-                  label="Ferida"
-                  value={sheet.identity_data.wound}
-                  onChange={(value) =>
-                    update("identity_data", {
-                      ...sheet.identity_data,
-                      wound: value,
-                    })
-                  }
-                  disabled={!canEdit}
-                />
-              </div>
-
-              <div className="tadeon-identity-details">
-                <div className="tadeon-identity-question-panel">
-                  <div>
-                    <Label className="text-[10px] uppercase tracking-wider">
-                      Traço do ciclo de vida
-                    </Label>
-                    <Select
-                      value={sheet.identity_data.lifeCycleTrait || undefined}
-                      disabled={!canEdit}
-                      onValueChange={(value) =>
-                        update("identity_data", {
-                          ...sheet.identity_data,
-                          lifeCycleTrait: value as LifeCycleTrait,
-                        })
-                      }
-                    >
-                      <SelectTrigger className="mt-1">
-                        <SelectValue placeholder="Escolha um traço" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {LIFE_CYCLE_TRAITS.map((trait) => (
-                          <SelectItem key={trait} value={trait}>
-                            {trait}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div>
-                    <Label className="text-[10px] uppercase tracking-wider">Pergunta</Label>
-                    <Textarea
-                      rows={3}
-                      disabled={!canEdit}
-                      value={sheet.identity_data.question}
-                      onChange={(event) =>
-                        update("identity_data", {
-                          ...sheet.identity_data,
-                          question: event.target.value,
-                        })
-                      }
-                      placeholder="Que pergunta ainda organiza esta personagem?"
-                    />
-                  </div>
-                </div>
-                <div className="tadeon-link-panel">
-                  <div className="tadeon-link-panel__heading">
-                    <div>
-                      <p className="tadeon-eyebrow">Vínculos</p>
-                      <p className="text-xs text-muted-foreground">
-                        Relações que sustentam, tensionam ou transformam a personagem.
-                      </p>
-                    </div>
-                    {canEdit && (
-                      <Button
-                        type="button"
-                        size="sm"
-                        variant="outline"
-                        className="tadeon-link-add gap-1.5"
-                        onClick={() =>
-                          update("identity_data", {
-                            ...sheet.identity_data,
-                            links: [
-                              ...sheet.identity_data.links,
-                              {
-                                id: genId(),
-                                name: "",
-                                relation: "",
-                                state: "Presente",
-                              },
-                            ],
-                          })
-                        }
-                      >
-                        <Plus className="h-3.5 w-3.5" />
-                        Novo vínculo
-                      </Button>
-                    )}
-                  </div>
-                  <div className="tadeon-link-list">
-                    {sheet.identity_data.links.map((link, index) => (
-                      <div key={link.id} className="tadeon-link-row">
-                        <span className="tadeon-link-row__number" aria-hidden="true">
-                          {String(index + 1).padStart(2, "0")}
-                        </span>
-                        <Input
-                          className="tadeon-link-row__name"
-                          disabled={!canEdit}
-                          value={link.name}
-                          placeholder={`Vínculo ${index + 1}`}
-                          aria-label={`Nome do vínculo ${index + 1}`}
-                          onChange={(event) => {
-                            const links = [...sheet.identity_data.links];
-                            links[index] = {
-                              ...link,
-                              name: event.target.value,
-                            };
-                            update("identity_data", {
-                              ...sheet.identity_data,
-                              links,
-                            });
-                          }}
-                        />
-                        <Input
-                          className="tadeon-link-row__relation"
-                          disabled={!canEdit}
-                          value={link.relation}
-                          placeholder="Natureza da relação"
-                          aria-label={`Relação do vínculo ${index + 1}`}
-                          onChange={(event) => {
-                            const links = [...sheet.identity_data.links];
-                            links[index] = {
-                              ...link,
-                              relation: event.target.value,
-                            };
-                            update("identity_data", {
-                              ...sheet.identity_data,
-                              links,
-                            });
-                          }}
-                        />
-                        <Select
-                          value={link.state}
-                          disabled={!canEdit}
-                          onValueChange={(value) => {
-                            const links = [...sheet.identity_data.links];
-                            links[index] = {
-                              ...link,
-                              state: value as LinkState,
-                            };
-                            update("identity_data", {
-                              ...sheet.identity_data,
-                              links,
-                            });
-                          }}
-                        >
-                          <SelectTrigger
-                            className="tadeon-link-row__state"
-                            aria-label={`Estado do vínculo ${index + 1}`}
-                          >
-                            <SelectValue />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {LINK_STATES.map((state) => (
-                              <SelectItem key={state} value={state}>
-                                {state}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                        {canEdit && sheet.identity_data.links.length > 2 && (
-                          <Button
-                            type="button"
-                            size="icon"
-                            variant="ghost"
-                            className="tadeon-link-row__remove text-muted-foreground hover:text-destructive"
-                            aria-label={`Remover vínculo ${index + 1}`}
-                            onClick={() =>
-                              update("identity_data", {
-                                ...sheet.identity_data,
-                                links: sheet.identity_data.links.filter(
-                                  (item) => item.id !== link.id,
-                                ),
-                              })
-                            }
-                          >
-                            <Trash className="h-4 w-4" />
-                          </Button>
-                        )}
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </Section>
+            <SheetIdentitySection sheet={sheet} canEdit={canEdit} update={update} />
 
             {/* Attributes (with radar) + Vital points */}
             <div className="tadeon-sheet-core-grid grid grid-cols-1 gap-4 lg:grid-cols-2">
-              <Section
-                id="sec-attr"
-                title="Atributos"
-                className="tadeon-core-panel tadeon-attributes-panel"
-                extra={
-                  <span
-                    className={`tadeon-attribute-budget rounded-full border px-2 py-0.5 text-[10px] ${
-                      attributeRemaining < 0 || attributesOverCap.length > 0
-                        ? "border-destructive/60 text-destructive"
-                        : "border-border text-muted-foreground"
-                    }`}
-                  >
-                    {attributeUsed}/{attributeBudget} pontos · máx. {attributeCap}
-                  </span>
-                }
-              >
-                {(attributeRemaining < 0 || attributesOverCap.length > 0) && (
-                  <p className="mb-3 rounded-lg border border-destructive/40 bg-destructive/5 px-3 py-2 text-xs text-destructive">
-                    {attributeRemaining < 0
-                      ? `A ficha excede o orçamento deste Rank em ${Math.abs(attributeRemaining)} ponto(s). `
-                      : ""}
-                    {attributesOverCap.length > 0
-                      ? `${attributesOverCap.join(", ")} excede(m) o máximo ${attributeCap}. `
-                      : ""}
-                    Reduza Atributos para voltar à faixa válida.
-                  </p>
-                )}
-                <div className="space-y-4">
-                  <div
-                    className="tadeon-attribute-grid grid grid-cols-2 gap-2 sm:grid-cols-3"
-                    role="group"
-                    aria-label="Distribuição dos atributos"
-                  >
-                    {(Object.keys(attrs) as (keyof Attributes)[]).map((k) => {
-                      const wouldCreateSecondZero = attrs[k] === 1 && zeroAttributes >= 1;
-                      return (
-                        <div
-                          key={k}
-                          data-attribute={k}
-                          className="tadeon-attribute-tile min-h-14 rounded-xl border border-border/60 bg-secondary/30 px-3 py-2"
-                        >
-                          <span className="tadeon-attribute-tile__label font-cinzel text-sm">
-                            {k}
-                          </span>
-                          <div className="tadeon-attribute-tile__controls">
-                            <Button
-                              size="sm"
-                              variant="ghost"
-                              className="tadeon-stepper-button h-9 w-9 p-0"
-                              disabled={!canEdit || attrs[k] <= 0 || wouldCreateSecondZero}
-                              aria-label={`Diminuir ${k}`}
-                              title={
-                                wouldCreateSecondZero
-                                  ? "Apenas um Atributo pode ser reduzido a 0"
-                                  : undefined
-                              }
-                              onClick={() =>
-                                update("attributes", {
-                                  ...attrs,
-                                  [k]: Math.max(0, attrs[k] - 1),
-                                })
-                              }
-                            >
-                              <Minus className="w-3 h-3" />
-                            </Button>
-                            <output
-                              className="tadeon-attribute-tile__value"
-                              aria-label={`${k}: ${attrs[k]}`}
-                            >
-                              {attrs[k]}
-                            </output>
-                            <Button
-                              size="sm"
-                              variant="ghost"
-                              className="tadeon-stepper-button h-9 w-9 p-0"
-                              disabled={
-                                !canEdit || attrs[k] >= attributeCap || attributeRemaining <= 0
-                              }
-                              aria-label={`Aumentar ${k}`}
-                              title={
-                                attrs[k] >= attributeCap
-                                  ? `Máximo ${attributeCap} neste Rank`
-                                  : attributeRemaining <= 0
-                                    ? "Orçamento de Atributos esgotado"
-                                    : undefined
-                              }
-                              onClick={() =>
-                                update("attributes", {
-                                  ...attrs,
-                                  [k]: Math.min(attributeCap, attrs[k] + 1),
-                                })
-                              }
-                            >
-                              <Plus className="w-3 h-3" />
-                            </Button>
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </div>
-                  <p className="text-center text-[10px] leading-relaxed text-muted-foreground">
-                    {attributeRemaining > 0
-                      ? `${attributeRemaining} ponto(s) ainda disponível(is).`
-                      : "Orçamento do Rank totalmente distribuído."}
-                  </p>
-                  <div className="tadeon-attribute-radar h-36 sm:h-52">
-                    <Suspense
-                      fallback={
-                        <Loader2 className="w-6 h-6 animate-spin text-primary mx-auto mt-20" />
-                      }
-                    >
-                      <AttributeRadar data={radarData} color="#a855f7" tickColor="#c084fc" />
-                    </Suspense>
-                  </div>
-                </div>
-              </Section>
+              <SheetAttributesSection
+                attrs={attrs}
+                canEdit={canEdit}
+                update={update}
+                attributeRemaining={attributeRemaining}
+                attributesOverCap={attributesOverCap}
+                attributeUsed={attributeUsed}
+                attributeBudget={attributeBudget}
+                attributeCap={attributeCap}
+                zeroAttributes={zeroAttributes}
+                radarData={radarData}
+              />
 
-              <Section
-                id="sec-pontos"
-                title="Pontos Vitais"
-                className="tadeon-core-panel tadeon-vitals-panel"
-              >
-                <div className="tadeon-vitals-grid grid grid-cols-2 gap-2.5">
-                  <StatBlock
-                    label="PV"
-                    full="Vitalidade"
-                    color="text-red-400"
-                    barColor="from-red-600 to-red-400"
-                    glowRgb="239,68,68"
-                    current={sheet.stats.pv_current}
-                    mod={sheet.stats.pv_mod}
-                    max={pvMax}
-                    disabled={!canEdit}
-                    onCurrent={(v) =>
-                      update("stats", {
-                        ...sheet.stats,
-                        pv_current: clampCurrent(v, pvMax),
-                      })
-                    }
-                    onMod={(v) => update("stats", { ...sheet.stats, pv_mod: clampMod(v) })}
-                  />
-                  <StatBlock
-                    label="PE"
-                    full="Energia"
-                    color="text-emerald-400"
-                    barColor="from-emerald-600 to-emerald-400"
-                    glowRgb="16,185,129"
-                    current={sheet.stats.pe_current}
-                    mod={sheet.stats.pe_mod}
-                    max={peMax}
-                    disabled={!canEdit}
-                    onCurrent={(v) =>
-                      update("stats", {
-                        ...sheet.stats,
-                        pe_current: clampCurrent(v, peMax),
-                      })
-                    }
-                    onMod={(v) => update("stats", { ...sheet.stats, pe_mod: clampMod(v) })}
-                  />
-                  <StatBlock
-                    label="PS"
-                    full="Sanidade"
-                    color="text-purple-400"
-                    barColor="from-purple-600 to-purple-400"
-                    glowRgb="168,85,247"
-                    current={sheet.stats.ps_current}
-                    mod={sheet.stats.ps_mod}
-                    max={psMax}
-                    disabled={!canEdit}
-                    onCurrent={(v) =>
-                      update("stats", {
-                        ...sheet.stats,
-                        ps_current: clampCurrent(v, psMax),
-                      })
-                    }
-                    onMod={(v) => update("stats", { ...sheet.stats, ps_mod: clampMod(v) })}
-                  />
-                  <StatBlock
-                    label="PA"
-                    full="Ancoragem"
-                    color="text-amber-300"
-                    barColor="from-amber-600 to-yellow-300"
-                    glowRgb="245,158,11"
-                    current={sheet.stats.pa_current}
-                    mod={sheet.stats.pa_mod}
-                    max={paMax}
-                    disabled={!canEdit}
-                    onCurrent={(v) =>
-                      update("stats", {
-                        ...sheet.stats,
-                        pa_current: clampCurrent(v, paMax),
-                      })
-                    }
-                    onMod={(v) => update("stats", { ...sheet.stats, pa_mod: clampMod(v) })}
-                  />
-
-                  <Card className="tadeon-defense-card col-span-2 border-blue-500/30 bg-card/60 p-3 shadow-[0_0_22px_-12px_rgba(59,130,246,0.65)]">
-                    <div className="tadeon-defense-card__summary">
-                      <div className="tadeon-defense-card__score">
-                        <Shield aria-hidden="true" strokeWidth={1.5} />
-                        <span>{defTotal}</span>
-                      </div>
-                      <div className="min-w-0 flex-1">
-                        <div className="font-cinzel text-sm font-bold text-blue-300">Defesa</div>
-                        <p className="mt-0.5 text-[10px] leading-relaxed text-muted-foreground">
-                          base {base.def} + INS {attrs.INS} + equip {armorTotal}
-                          {armorRaw > 3 ? " (máx. 3)" : ""} + mod {sheet.stats.def_mod}
-                          {upg.def ? ` + apr ${upg.def}` : ""}
-                        </p>
-                      </div>
-                    </div>
-                    <div className="tadeon-defense-card__inputs grid grid-cols-2 gap-2 text-xs">
-                      <div>
-                        <Label className="text-[10px]">Equip</Label>
-                        <Input
-                          type="number"
-                          readOnly
-                          tabIndex={-1}
-                          value={armorTotal}
-                          className="h-7 bg-muted/40 cursor-not-allowed"
-                          title="Maior bônus entre as proteções registradas (máx. 3)"
-                        />
-                      </div>
-                      <div>
-                        <Label className="text-[10px]">Mod</Label>
-                        <Input
-                          type="number"
-                          disabled={!canEdit}
-                          value={sheet.stats.def_mod}
-                          className="h-7"
-                          onChange={(e) =>
-                            update("stats", {
-                              ...sheet.stats,
-                              def_mod: clampMod(Number(e.target.value)),
-                            })
-                          }
-                        />
-                      </div>
-                    </div>
-
-                    {/* Equipamentos de defesa (retrátil, máx 3) */}
-                    <Collapsible
-                      open={defEquipOpen}
-                      onOpenChange={setDefEquipOpen}
-                      className="mt-3 border-t border-border/60 pt-2"
-                    >
-                      <CollapsibleTrigger asChild>
-                        <button
-                          type="button"
-                          className="group mb-1.5 flex min-h-10 w-full items-center justify-between gap-2"
-                          aria-controls="defense-equipment-panel"
-                        >
-                          <Label className="cursor-pointer text-[10px] uppercase tracking-wider text-muted-foreground">
-                            Equipamentos ({sheet.defense_items.length}/3)
-                          </Label>
-                          <ArrowUp className="h-3 w-3 text-muted-foreground transition-transform duration-200 ease-[var(--ease-out)] group-data-[state=closed]:rotate-180" />
-                        </button>
-                      </CollapsibleTrigger>
-                      <CollapsibleContent id="defense-equipment-panel">
-                        <div className="flex justify-end mb-1.5">
-                          {canEdit && sheet.defense_items.length < 3 && (
-                            <button
-                              type="button"
-                              onClick={() =>
-                                update("defense_items", [
-                                  ...sheet.defense_items,
-                                  {
-                                    id: genId(),
-                                    nome: "",
-                                    bonus: 0,
-                                    rd: 0,
-                                    peso: 0,
-                                  },
-                                ])
-                              }
-                              className="text-[10px] flex items-center gap-1 px-1.5 py-0.5 rounded-md bg-primary/15 text-primary hover:bg-primary/25 transition-colors"
-                            >
-                              <Plus className="w-3 h-3" /> Adicionar
-                            </button>
-                          )}
-                        </div>
-                        {sheet.defense_items.length === 0 ? (
-                          <p className="text-[10px] italic text-muted-foreground text-center py-1">
-                            Sem equipamentos.
-                          </p>
-                        ) : (
-                          <RowTable
-                            rows={sheet.defense_items}
-                            canEdit={canEdit}
-                            columns={[
-                              { key: "nome", label: "Nome", flex: 1.5 },
-                              {
-                                key: "bonus",
-                                label: "DEF",
-                                type: "number",
-                                width: 58,
-                              },
-                              {
-                                key: "rd",
-                                label: "RD",
-                                type: "number",
-                                width: 58,
-                              },
-                              {
-                                key: "peso",
-                                label: "Espaço",
-                                type: "number",
-                                width: 68,
-                              },
-                            ]}
-                            onChange={(v) => update("defense_items", v as DefenseItem[])}
-                          />
-                        )}
-                      </CollapsibleContent>
-                    </Collapsible>
-                    <div className="mt-2 rounded-md border border-border/50 bg-background/30 px-2 py-1.5 text-center text-[10px] text-muted-foreground">
-                      RD equipada: <strong className="text-foreground">{armorRd}</strong> ·
-                      armaduras não acumulam entre si; vale a proteção mais alta.
-                    </div>
-                  </Card>
-                </div>
-              </Section>
+              <SheetVitalsSection
+                sheet={sheet}
+                canEdit={canEdit}
+                update={update}
+                maximums={maximums}
+                base={base}
+                armorTotal={armorTotal}
+                armorRaw={armorRaw}
+                armorRd={armorRd}
+              />
             </div>
 
             <div className="tadeon-sheet-state-grid">
@@ -1658,306 +1061,28 @@ function SheetPage() {
             </div>
 
             {/* Conditions */}
-            <Section id="condicoes" title="Condições" className="tadeon-conditions-panel">
-              <div className="tadeon-condition-grid grid grid-cols-2 gap-2 xl:grid-cols-4">
-                {(Object.keys(CONDITION_META) as ConditionKey[]).map((c) => {
-                  const meta = CONDITION_META[c];
-                  const opts = (conditionOptions[c] ?? ["Normal"]).filter(
-                    (option) => option !== "Normal",
-                  );
-                  const current = sheet.conditions[c];
-                  return (
-                    <div
-                      key={c}
-                      data-tadeon-condition-active={current.length > 0 ? "true" : undefined}
-                      className="tadeon-condition-card rounded-xl border border-border/60 bg-secondary/15 p-3 transition-[border-color,background,box-shadow,transform] duration-150 ease-[var(--ease-out)]"
-                      style={(
-                        current.length > 0
-                          ? {
-                              "--condition-rgb": meta.rgb.split(",").map((part) => part.trim()).join(" "),
-                              borderColor: meta.color,
-                              background: `linear-gradient(145deg, rgba(${meta.rgb}, 0.2), rgba(${meta.rgb}, 0.04))`,
-                              boxShadow: `0 0 0 1px ${meta.color}44, inset 0 0 24px rgba(${meta.rgb}, 0.1)`,
-                            }
-                          : undefined
-                      ) as CSSProperties | undefined}
-                    >
-                      <Label className="text-xs flex items-center gap-1.5">
-                        <span className="w-2 h-2 rounded-full" style={{ background: meta.color }} />
-                        {meta.label}
-                      </Label>
-                      <div className="mt-2 flex flex-wrap gap-1.5">
-                        {opts.map((option) => {
-                          const selected = current.includes(option);
-                          return (
-                            <button
-                              key={option}
-                              type="button"
-                              disabled={!canEdit}
-                              aria-pressed={selected}
-                              className="rounded-full border px-2 py-1 text-[11px] font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-60"
-                              style={
-                                selected
-                                  ? {
-                                      borderColor: meta.color,
-                                      background: `rgba(${meta.rgb}, 0.28)`,
-                                      color: meta.color,
-                                      boxShadow: `inset 0 0 10px rgba(${meta.rgb}, 0.2), 0 0 8px rgba(${meta.rgb}, 0.16)`,
-                                    }
-                                  : undefined
-                              }
-                              onClick={() =>
-                                update("conditions", {
-                                  ...sheet.conditions,
-                                  [c]: selected
-                                    ? current.filter((item) => item !== option)
-                                    : [...current, option],
-                                })
-                              }
-                            >
-                              {option}
-                            </button>
-                          );
-                        })}
-                        {current.length === 0 && (
-                          <span className="px-1 py-1 text-[11px] text-muted-foreground">
-                            Normal
-                          </span>
-                        )}
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-              <div className="grid grid-cols-2 gap-4 mt-4">
-                <ConditionCounter
-                  label="Morrendo"
-                  max={3}
-                  value={sheet.dying}
-                  color="bg-red-500"
-                  disabled={!canEdit}
-                  onChange={(v) => update("dying", v)}
-                />
-                <ConditionCounter
-                  label="Colapsando"
-                  max={3}
-                  value={sheet.going_insane}
-                  color="bg-purple-500"
-                  disabled={!canEdit}
-                  onChange={(v) => update("going_insane", v)}
-                />
-              </div>
-            </Section>
+            <SheetConditionsSection
+              sheet={sheet}
+              canEdit={canEdit}
+              update={update}
+              conditionOptions={conditionOptions}
+            />
 
             {/* Skills */}
-            <Section
-              id="sec-pericias"
-              title="Perícias"
-              extra={
-                <div className="flex items-center gap-2 flex-wrap">
-                  <span className="text-[11px] px-2 py-0.5 rounded-full border border-border text-muted-foreground">
-                    Graus iniciais: {initialTrainingUsed}/7
-                  </span>
-                  <span className="text-[11px] px-2 py-0.5 rounded-full border border-border text-muted-foreground">
-                    Graus totais: {trainingUsed}
-                  </span>
-                  <Input
-                    placeholder="Bônus temporário"
-                    disabled={!canEdit}
-                    value={sheet.skill_bonus}
-                    onChange={(e) => update("skill_bonus", e.target.value)}
-                    className="h-7 w-44 text-xs"
-                  />
-                </div>
-              }
-            >
-              <p className="mb-3 text-xs leading-relaxed text-muted-foreground">
-                Os grupos organizam a leitura da ficha; o Atributo usado no teste continua sendo
-                definido pela abordagem descrita na cena.
-              </p>
-              <div className="tadeon-skill-groups-grid">
-                {skillGroups.map((g) => (
-                  <div key={g.attr} className="tadeon-skill-group">
-                    <div className="tadeon-skill-group__heading">
-                      <span aria-hidden="true">{g.attr}</span>
-                      <div>
-                        <small>Família de perícias</small>
-                        <h4>{g.label}</h4>
-                      </div>
-                    </div>
-                    <div className="tadeon-skill-group__list">
-                      {g.skills.map((s) => {
-                        const v = sheet.skills[s] ?? 0;
-                        const tier: number = tierFromBonus(v);
-                        const color =
-                          tier === 3
-                            ? "text-yellow-400 font-bold"
-                            : tier === 2
-                              ? "text-blue-400 font-semibold"
-                              : tier === 1
-                                ? "text-green-400"
-                                : "text-muted-foreground";
-                        const tierName = tier === 0 ? "Sem treino" : TRAINING_TIERS[tier - 1].name;
-                        const initialForSkill = Math.max(
-                          0,
-                          Math.min(2, sheet.initial_skill_degrees[s] || 0),
-                        );
-                        const isInitialDegree =
-                          initialTrainingRemaining > 0 && tier < 2 && initialForSkill === tier;
-                        const nextCost: number | null =
-                          tier < 3 ? (isInitialDegree ? 0 : (trainingCosts[tier] ?? 0)) : null;
-                        const refund: number =
-                          tier > initialForSkill ? (trainingCosts[tier - 1] ?? 0) : 0;
-                        const minimumRank = [5, 25, 50][tier] ?? 100;
-                        const lacksRank = !isInitialDegree && base.rank < minimumRank;
-                        const lacksPM = nextCost != null && pmAvailable < nextCost;
-                        const upgrade = () => {
-                          if (tier >= 3 || nextCost == null) return;
-                          if (lacksRank) {
-                            toast.error(`Este grau exige Rank ${minimumRank}.`);
-                            return;
-                          }
-                          if (lacksPM) {
-                            toast.error(`PM insuficientes (custa ${nextCost}).`);
-                            return;
-                          }
-                          const nextTier = TRAINING_TIERS[tier]!;
-                          setSheet((p) =>
-                            p
-                              ? {
-                                  ...p,
-                                  skills: { ...p.skills, [s]: nextTier.bonus },
-                                  initial_skill_degrees: isInitialDegree
-                                    ? {
-                                        ...p.initial_skill_degrees,
-                                        [s]: Math.min(2, initialForSkill + 1),
-                                      }
-                                    : p.initial_skill_degrees,
-                                }
-                              : p,
-                          );
-                          setOpenSkill(null);
-                          toast.success(
-                            `${s}: ${nextTier.name} (+${nextTier.bonus}) ~ ${
-                              isInitialDegree ? "grau inicial" : `${nextCost} PM`
-                            }`,
-                          );
-                        };
-                        const downgrade = () => {
-                          if (tier <= 0) return;
-                          if (role !== "mestre") {
-                            toast.error("Apenas o mestre pode reverter.");
-                            return;
-                          }
-                          const prevBonus = tier === 1 ? 0 : TRAINING_TIERS[tier - 2].bonus;
-                          const prevName =
-                            tier === 1 ? "Sem treino" : TRAINING_TIERS[tier - 2].name;
-                          const previousTier = tier - 1;
-                          setSheet((p) =>
-                            p
-                              ? {
-                                  ...p,
-                                  skills: { ...p.skills, [s]: prevBonus },
-                                  initial_skill_degrees: {
-                                    ...p.initial_skill_degrees,
-                                    [s]: Math.min(initialForSkill, previousTier),
-                                  },
-                                }
-                              : p,
-                          );
-                          setOpenSkill(null);
-                          toast.success(
-                            refund > 0
-                              ? `${s}: ${prevName} (+${refund} PM)`
-                              : `${s}: ${prevName} (grau inicial removido)`,
-                          );
-                        };
-
-                        return (
-                          <Popover
-                            key={s}
-                            open={openSkill === s}
-                            onOpenChange={(o) => setOpenSkill(o ? s : null)}
-                          >
-                            <PopoverTrigger asChild>
-                              <button
-                                type="button"
-                                disabled={!canEdit}
-                                className="tadeon-skill-row"
-                                data-tier={tier}
-                              >
-                                <span className="tadeon-skill-row__name">{s}</span>
-                                <span className={`tadeon-skill-row__value ${color}`}>+{v}</span>
-                              </button>
-                            </PopoverTrigger>
-                            <PopoverContent className="w-64 p-3" align="end">
-                              <div className="font-cinzel font-bold text-sm mb-1">{s}</div>
-                              <div className="text-[11px] text-muted-foreground mb-3">
-                                Treino atual:{" "}
-                                <span className={color}>
-                                  {tierName}{" "}
-                                  {tier > 0 ? `(+${TRAINING_TIERS[tier - 1].bonus})` : ""}
-                                </span>
-                              </div>
-                              <div className="flex items-center justify-between gap-2">
-                                <Button
-                                  size="sm"
-                                  variant="ghost"
-                                  className="h-8 w-8 p-0"
-                                  disabled={tier === 0 || role !== "mestre"}
-                                  title={
-                                    role === "mestre" ? `Reverter (+${refund} PM)` : "Apenas mestre"
-                                  }
-                                  onClick={downgrade}
-                                >
-                                  <ChevronLeft className="w-4 h-4" />
-                                </Button>
-                                <div className="flex-1 text-center text-xs">
-                                  {tier < 3 && nextCost != null ? (
-                                    <span className="text-muted-foreground">
-                                      {lacksRank ? (
-                                        <>Requer Rank {minimumRank}</>
-                                      ) : (
-                                        <>
-                                          Avançar:{" "}
-                                          <b className="text-foreground">
-                                            {isInitialDegree ? "grau inicial" : `${nextCost} PM`}
-                                          </b>
-                                        </>
-                                      )}
-                                    </span>
-                                  ) : (
-                                    <span className="text-muted-foreground italic">
-                                      Treino máximo
-                                    </span>
-                                  )}
-                                </div>
-                                <Button
-                                  size="sm"
-                                  variant="ghost"
-                                  className="h-8 w-8 p-0"
-                                  disabled={!canEdit || tier >= 3 || lacksRank || lacksPM}
-                                  title={
-                                    lacksRank
-                                      ? `Requer Rank ${minimumRank}`
-                                      : lacksPM
-                                        ? "PM insuficientes"
-                                        : "Avançar treino"
-                                  }
-                                  onClick={upgrade}
-                                >
-                                  <ChevronRight className="w-4 h-4" />
-                                </Button>
-                              </div>
-                            </PopoverContent>
-                          </Popover>
-                        );
-                      })}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </Section>
+            <SheetSkillsSection
+              sheet={sheet}
+              canEdit={canEdit}
+              update={update}
+              skillGroups={skillGroups}
+              initialTrainingUsed={initialTrainingUsed}
+              trainingUsed={trainingUsed}
+              initialTrainingRemaining={initialTrainingRemaining}
+              trainingCosts={trainingCosts}
+              pmAvailable={pmAvailable}
+              base={base}
+              role={role}
+              setSheet={setSheet}
+            />
 
             {/* Weapons */}
             <Section
@@ -2154,25 +1279,28 @@ function SheetPage() {
               id="sec-inv"
               title="Inventário"
               extra={
-                canEdit && (
-                  <AddItemDialog<InventoryItem>
-                    title="Novo Item"
-                    triggerLabel="Adicionar Item"
-                    initial={{ id: "", nome: "", descricao: "", espaco: 1 }}
-                    fields={[
-                      { key: "nome", label: "Nome" },
-                      {
-                        key: "descricao",
-                        label: "Descrição",
-                        type: "textarea",
-                      },
-                      { key: "espaco", label: "Espaço", type: "number" },
-                    ]}
-                    onAdd={(it) =>
-                      update("inventory", [...sheet.inventory, { ...it, id: genId() }])
-                    }
-                  />
-                )
+                <>
+                  <SheetInventoryOrganizer sheetId={id} canEdit={canEdit} />
+                  {canEdit && (
+                    <AddItemDialog<InventoryItem>
+                      title="Novo Item"
+                      triggerLabel="Adicionar Item"
+                      initial={{ id: "", nome: "", descricao: "", espaco: 1 }}
+                      fields={[
+                        { key: "nome", label: "Nome" },
+                        {
+                          key: "descricao",
+                          label: "Descrição",
+                          type: "textarea",
+                        },
+                        { key: "espaco", label: "Espaço", type: "number" },
+                      ]}
+                      onAdd={(it) =>
+                        update("inventory", [...sheet.inventory, { ...it, id: genId() }])
+                      }
+                    />
+                  )}{" "}
+                </>
               }
             >
               <div className="flex items-center justify-between text-xs mb-2">
@@ -2479,7 +1607,7 @@ function SheetPage() {
             </p>
           </TabsContent>
 
-          <TabsContent value="arvore" className="mt-0">
+          <TabsContent data-sheet-content value="arvore" className="mt-0">
             <SkillTreeTab
               exposure={sheet.exposure}
               equilibrium={sheet.equilibrium}
@@ -2498,7 +1626,7 @@ function SheetPage() {
             />
           </TabsContent>
 
-          <TabsContent value="descricao" className="tadeon-description-tab mt-0 space-y-4">
+          <TabsContent data-sheet-content value="descricao" className="tadeon-description-tab mt-0 space-y-4">
             <Card className="tadeon-description-hero">
               <div className="tadeon-description-hero__mark" aria-hidden="true">
                 <ScrollText />
@@ -2661,344 +1789,6 @@ function SheetPage() {
       >
         <ArrowUp className="w-4 h-4" />
       </button>
-    </div>
-  );
-}
-
-function OverviewMetric({
-  icon,
-  label,
-  value,
-  detail,
-  tone,
-}: {
-  icon: React.ReactNode;
-  label: string;
-  value: string;
-  detail: string;
-  tone: "violet" | "blue" | "amber" | "red";
-}) {
-  return (
-    <div className={`tadeon-overview-metric tadeon-overview-metric--${tone}`}>
-      <div className="tadeon-overview-metric__icon">{icon}</div>
-      <div className="min-w-0">
-        <span>{label}</span>
-        <strong>{value}</strong>
-        <small>{detail}</small>
-      </div>
-    </div>
-  );
-}
-
-function Section({
-  title,
-  children,
-  extra,
-  id,
-  className = "",
-}: {
-  title: string;
-  children: React.ReactNode;
-  extra?: React.ReactNode;
-  id?: string;
-  className?: string;
-}) {
-  const presentationKey = id ?? title.toLocaleLowerCase("pt-BR").replace(/[^a-z0-9]+/g, "-");
-  const presentation = SECTION_PRESENTATION[presentationKey] ?? {
-    index: "•",
-    kicker: "Arquivo da personagem",
-  };
-  const storageKey = `tadeon.sheet.section:${presentationKey}`;
-  const bodyId = `sheet-section-body-${presentationKey}`;
-  const [collapsed, setCollapsed] = useState(() => {
-    if (typeof window === "undefined") return false;
-    return window.localStorage.getItem(storageKey) === "collapsed";
-  });
-
-  useEffect(() => {
-    try {
-      window.localStorage.setItem(storageKey, collapsed ? "collapsed" : "expanded");
-    } catch {
-      // A ficha continua utilizável quando o armazenamento local está indisponível.
-    }
-  }, [collapsed, storageKey]);
-
-  return (
-    <Card
-      id={id}
-      data-section={presentationKey}
-      data-collapsed={collapsed ? "true" : "false"}
-      className={`tadeon-surface tadeon-sheet-section scroll-mt-44 p-4 transition-[border-color,box-shadow] duration-150 hover:border-primary/25 md:p-5 ${className}`}
-    >
-      <Collapsible open={!collapsed} onOpenChange={(open) => setCollapsed(!open)}>
-        <div className="tadeon-sheet-section__heading mb-4 flex flex-wrap items-center justify-between gap-2">
-          <div className="tadeon-sheet-section__title-group">
-            <span className="tadeon-sheet-section__index" aria-hidden="true">
-              {presentation.index}
-            </span>
-            <span className="min-w-0">
-              <small>{presentation.kicker}</small>
-              <h2 className="font-cinzel text-lg font-semibold text-primary">{title}</h2>
-            </span>
-          </div>
-          <div className="tadeon-sheet-section__actions">
-            {extra}
-            <CollapsibleTrigger asChild>
-              <button
-                type="button"
-                className="tadeon-sheet-section__toggle"
-                aria-controls={bodyId}
-                aria-label={`${collapsed ? "Expandir" : "Recolher"} seção ${title}`}
-                title={`${collapsed ? "Expandir" : "Recolher"} ${title}`}
-              >
-                <ChevronDown aria-hidden="true" />
-              </button>
-            </CollapsibleTrigger>
-          </div>
-        </div>
-        <CollapsibleContent id={bodyId} className="tadeon-sheet-section__body">
-          <div className="tadeon-sheet-section__body-inner">{children}</div>
-        </CollapsibleContent>
-      </Collapsible>
-    </Card>
-  );
-}
-
-function Field({
-  label,
-  value,
-  onChange,
-  disabled,
-  className = "",
-}: {
-  label: string;
-  value: string;
-  onChange: (v: string) => void;
-  disabled?: boolean;
-  className?: string;
-}) {
-  return (
-    <div className={`tadeon-sheet-field ${className}`}>
-      <Label className="text-xs">{label}</Label>
-      <Input
-        value={value || ""}
-        onChange={(e) => onChange(e.target.value)}
-        disabled={disabled}
-        className="h-9"
-      />
-    </div>
-  );
-}
-
-function StatBlock({
-  label,
-  full,
-  color,
-  barColor,
-  glowRgb,
-  current,
-  mod,
-  max,
-  disabled,
-  onCurrent,
-  onMod,
-}: {
-  label: string;
-  full: string;
-  color: string;
-  barColor: string;
-  glowRgb: string;
-  current: number;
-  mod: number;
-  max: number;
-  disabled?: boolean;
-  onCurrent: (v: number) => void;
-  onMod: (v: number) => void;
-}) {
-  const borderStyle = {
-    borderColor: `rgba(${glowRgb}, 0.35)`,
-    boxShadow: `0 0 22px -10px rgba(${glowRgb}, 0.7)`,
-  };
-  return (
-    <Card className="tadeon-stat-block border bg-card/60 p-2.5" style={borderStyle}>
-      <div className="tadeon-stat-block__head">
-        <div>
-          <div className={`font-cinzel text-sm font-bold ${color}`}>{label}</div>
-          <span className="text-[10px] text-muted-foreground">{full}</span>
-        </div>
-        <strong
-          className={`tadeon-stat-block__value ${color}`}
-          style={{ textShadow: `0 0 10px rgba(${glowRgb}, 0.75)` }}
-        >
-          {current}
-          <small>/ {max}</small>
-        </strong>
-      </div>
-      <div className="tadeon-stat-block__bar mb-2 h-1.5 w-full overflow-hidden rounded-full bg-secondary">
-        <div
-          className={`h-full rounded-full bg-gradient-to-r ${barColor}`}
-          style={{
-            width: `${clamp((current / Math.max(1, max)) * 100, 0, 100)}%`,
-          }}
-        />
-      </div>
-      <div className="tadeon-stat-block__controls">
-        <div className="tadeon-stat-block__stepper">
-          <Button
-            size="sm"
-            variant="ghost"
-            className="tadeon-stepper-button h-9 w-9 p-0"
-            disabled={disabled || current <= 0}
-            aria-label={`Diminuir ${full}`}
-            onClick={() => onCurrent(current - 1)}
-          >
-            <Minus className="h-3 w-3" />
-          </Button>
-          <Input
-            type="number"
-            min={0}
-            max={Math.max(0, max)}
-            disabled={disabled}
-            value={current}
-            aria-label={`${full} atual`}
-            onChange={(e) => onCurrent(Number(e.target.value))}
-            className="h-9 min-w-0 text-center text-sm font-semibold"
-          />
-          <Button
-            size="sm"
-            variant="ghost"
-            className="tadeon-stepper-button h-9 w-9 p-0"
-            disabled={disabled || current >= max}
-            aria-label={`Aumentar ${full}`}
-            onClick={() => onCurrent(current + 1)}
-          >
-            <Plus className="h-3 w-3" />
-          </Button>
-        </div>
-        <label className="tadeon-stat-block__mod">
-          <span>Mod</span>
-          <Input
-            type="number"
-            disabled={disabled}
-            value={mod}
-            aria-label={`Modificador de ${full}`}
-            onChange={(e) => onMod(Number(e.target.value))}
-            className="h-8 text-center text-xs"
-          />
-        </label>
-      </div>
-    </Card>
-  );
-}
-
-interface HasId {
-  id: string;
-}
-interface ColDef {
-  key: string;
-  label: string;
-  type?: "text" | "number" | "select";
-  options?: string[];
-  flex?: number;
-  width?: number;
-}
-
-function RowTable<T extends HasId>({
-  rows,
-  canEdit,
-  columns,
-  onChange,
-}: {
-  rows: T[];
-  canEdit: boolean;
-  columns: ColDef[];
-  onChange: (v: T[]) => void;
-}) {
-  const update = (idx: number, key: string, value: string) => {
-    const next = [...rows];
-    const isNum = columns.find((c) => c.key === key)?.type === "number";
-    next[idx] = { ...next[idx], [key]: isNum ? Number(value) : value };
-    onChange(next);
-  };
-  const remove = (idx: number) => onChange(rows.filter((_, i) => i !== idx));
-
-  if (rows.length === 0) {
-    return (
-      <p className="text-xs text-muted-foreground italic text-center py-3">Nenhum item ainda.</p>
-    );
-  }
-
-  const gridCols = columns
-    .map((c) => (c.width ? `${c.width}px` : `minmax(0, ${c.flex ?? 1}fr)`))
-    .concat(["auto"])
-    .join(" ");
-
-  return (
-    <div className="space-y-1">
-      <div
-        className="hidden sm:grid gap-1.5 px-2 text-[10px] uppercase text-muted-foreground font-semibold"
-        style={{ gridTemplateColumns: gridCols }}
-      >
-        {columns.map((c) => (
-          <div key={c.key}>{c.label}</div>
-        ))}
-        <div />
-      </div>
-      {rows.map((it, idx) => (
-        <div
-          key={it.id}
-          className="tadeon-sheet-row flex flex-col items-center gap-2 rounded-xl bg-secondary/30 p-2.5 transition-[background-color,border-color,box-shadow] duration-150 hover:bg-secondary/50 sm:grid sm:gap-1.5"
-          style={{ gridTemplateColumns: gridCols }}
-        >
-          {columns.map((c) => {
-            const value = (it as Record<string, unknown>)[c.key];
-            if (c.type === "select") {
-              return (
-                <label key={c.key} className="tadeon-sheet-row__field">
-                  <span>{c.label}</span>
-                  <select
-                    disabled={!canEdit}
-                    value={String(value ?? "")}
-                    onChange={(e) => update(idx, c.key, e.target.value)}
-                    className="h-8 w-full rounded-md border border-border/40 bg-background/40 px-2 text-xs"
-                  >
-                    {c.options?.map((o) => (
-                      <option key={o} value={o}>
-                        {o}
-                      </option>
-                    ))}
-                  </select>
-                </label>
-              );
-            }
-            return (
-              <label key={c.key} className="tadeon-sheet-row__field">
-                <span>{c.label}</span>
-                <Input
-                  type={c.type === "number" ? "number" : "text"}
-                  placeholder={c.label}
-                  disabled={!canEdit}
-                  value={c.type === "number" ? Number(value ?? 0) : String(value ?? "")}
-                  onChange={(e) => update(idx, c.key, e.target.value)}
-                  className="h-8 w-full border-border/40 bg-background/40 text-xs"
-                />
-              </label>
-            );
-          })}
-          {canEdit && (
-            <Button
-              size="sm"
-              variant="ghost"
-              className="h-7 w-7 p-0 text-destructive hover:bg-destructive/10 self-end sm:self-auto"
-              onClick={() => remove(idx)}
-              aria-label={`Remover item ${idx + 1}`}
-              title="Remover item"
-            >
-              <Trash className="w-3.5 h-3.5" />
-            </Button>
-          )}
-        </div>
-      ))}
     </div>
   );
 }

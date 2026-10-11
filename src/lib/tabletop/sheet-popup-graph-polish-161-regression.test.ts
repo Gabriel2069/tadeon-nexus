@@ -48,12 +48,10 @@ describe("sheet popup graph polish 161", () => {
   });
 
   it("mounts the inventory organizer in the action rail, never beside the title", () => {
-    expect(organizer).toContain(
-      'document.querySelector<HTMLElement>("#sec-inv .tadeon-sheet-section__actions")',
-    );
-    expect(organizer).toContain("anchor.insertBefore(host, anchor.firstChild)");
-    expect(organizer).not.toContain("#sec-inv h2");
-    expect(organizer).not.toContain('insertAdjacentElement("afterend"');
+    // The rendered placement is exercised by sheet-ui.test.tsx. No DOM attachment remains.
+    expect(organizer).not.toContain("MutationObserver");
+    expect(organizer).not.toContain("insertBefore");
+    expect(organizer).not.toContain("createPortal");
   });
 
   it("uses an organic force web with post-layout collision instead of concentric rings", () => {

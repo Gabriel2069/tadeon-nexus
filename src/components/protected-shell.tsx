@@ -1,22 +1,20 @@
-import { useEffect, type ReactNode } from "react";
-import { useNavigate } from "@tanstack/react-router";
-import { useAuth } from "@/lib/auth";
 import { AppLayout } from "@/components/app-layout";
-import { Button } from "@/components/ui/button";
-import { AlertTriangle, Home, Loader2, RefreshCw, ShieldX } from "lucide-react";
-import { can } from "@/lib/permissions";
+import { MasterToolbarPopoutBridge } from "@/components/master/master-toolbar-popout-bridge";
 import { PageState } from "@/components/page-state";
 import {
   NexusSheetDragBridge,
-  SheetExperienceBridge,
   WorkspacePopoutBridge,
 } from "@/components/sheet/sheet-experience-bridge";
-import { SheetInventoryOrganizer } from "@/components/sheet/sheet-inventory-organizer";
 import { TabletopCrossSurfaceBridge } from "@/components/tabletop/tabletop-cross-surface-bridge";
 import { TabletopWorkspacePopoutBridge } from "@/components/tabletop/tabletop-workspace-popout-bridge";
+import { Button } from "@/components/ui/button";
+import { useAuth } from "@/lib/auth";
+import { can } from "@/lib/permissions";
 import "@/styles/mobile-viewport.css";
-import { MasterToolbarPopoutBridge } from "@/components/master/master-toolbar-popout-bridge";
 import "@/styles/sheet-layout.css";
+import { useNavigate } from "@tanstack/react-router";
+import { AlertTriangle, Home, Loader2, RefreshCw, ShieldX } from "lucide-react";
+import { useEffect, type ReactNode } from "react";
 
 import "@/styles/layout-compatibility.css";
 import "@/styles/navigation-layout.css";
@@ -29,10 +27,7 @@ interface Props {
 function dedicatedPresentation() {
   if (typeof window === "undefined") return null;
   const params = new URLSearchParams(window.location.search);
-  if (
-    window.location.pathname === "/tabletop" &&
-    params.get("view") === "director"
-  ) {
+  if (window.location.pathname === "/tabletop" && params.get("view") === "director") {
     return "director" as const;
   }
   if (params.get("embed") === "1") return "embed" as const;
@@ -55,7 +50,13 @@ function focusedSection() {
   return "Dashboard";
 }
 
-function DedicatedShell({ children, presentation }: { children: ReactNode; presentation: NonNullable<ReturnType<typeof dedicatedPresentation>> }) {
+function DedicatedShell({
+  children,
+  presentation,
+}: {
+  children: ReactNode;
+  presentation: NonNullable<ReturnType<typeof dedicatedPresentation>>;
+}) {
   return (
     <div
       className="tadeon-shell tadeon-dedicated-shell relative isolate min-h-screen overflow-x-clip bg-background text-foreground"
@@ -83,9 +84,7 @@ export function ProtectedShell({ children, requireRole }: Props) {
   useEffect(() => {
     if (!loading && !session) {
       const next =
-        typeof window === "undefined"
-          ? ""
-          : `${window.location.pathname}${window.location.search}`;
+        typeof window === "undefined" ? "" : `${window.location.pathname}${window.location.search}`;
       void navigate({
         to: "/login",
         search: { next: next === "/" ? "" : next },
@@ -112,12 +111,17 @@ export function ProtectedShell({ children, requireRole }: Props) {
         description={authIssue}
         action={
           <Button onClick={() => void refresh()}>
-            <RefreshCw className="h-4 w-4" />Tentar novamente
+            <RefreshCw className="h-4 w-4" />
+            Tentar novamente
           </Button>
         }
       />
     );
-    return dedicated ? <DedicatedShell presentation={dedicated}>{state}</DedicatedShell> : <AppLayout>{state}</AppLayout>;
+    return dedicated ? (
+      <DedicatedShell presentation={dedicated}>{state}</DedicatedShell>
+    ) : (
+      <AppLayout>{state}</AppLayout>
+    );
   }
 
   if (requireRole && !can("app:manage", { appRole: role })) {
@@ -129,18 +133,21 @@ export function ProtectedShell({ children, requireRole }: Props) {
         description="Seu papel atual não permite abrir esta área administrativa. Nenhuma informação foi alterada."
         action={
           <Button onClick={() => void navigate({ to: "/" })}>
-            <Home className="h-4 w-4" />Voltar ao dashboard
+            <Home className="h-4 w-4" />
+            Voltar ao dashboard
           </Button>
         }
       />
     );
-    return dedicated ? <DedicatedShell presentation={dedicated}>{state}</DedicatedShell> : <AppLayout>{state}</AppLayout>;
+    return dedicated ? (
+      <DedicatedShell presentation={dedicated}>{state}</DedicatedShell>
+    ) : (
+      <AppLayout>{state}</AppLayout>
+    );
   }
 
   const content = (
     <>
-      <SheetExperienceBridge />
-      <SheetInventoryOrganizer />
       <TabletopCrossSurfaceBridge />
       {!dedicated && (
         <>

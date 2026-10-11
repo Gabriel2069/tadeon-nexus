@@ -41,7 +41,7 @@ import {
   SKILL_GROUPS,
 } from "@/lib/sheet-types";
 import { AddItemDialog } from "@/components/sheet/add-item-dialog";
-import type { DefenseItem } from "./sheet.$id";
+import type { DefenseItem } from "@/components/sheet/sheet-model";
 import { useSerializedAutosave } from "@/lib/use-serialized-autosave";
 import { can } from "@/lib/permissions";
 import { SaveStatus } from "@/components/save-status";

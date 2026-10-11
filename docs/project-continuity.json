@@ -80,14 +80,23 @@
         "src/routes/sheet.$id_.power.tsx",
         "src/components/sheet/condition-counter.tsx",
         "src/lib/sheet-types.ts",
-        "src/lib/use-serialized-autosave.ts"
+        "src/lib/use-serialized-autosave.ts",
+        "src/components/sheet/sheet-model.ts",
+        "src/components/sheet/sheet-ui.tsx",
+        "src/components/sheet/sheet-identity-section.tsx",
+        "src/components/sheet/sheet-attributes-section.tsx",
+        "src/components/sheet/sheet-vitals-section.tsx",
+        "src/components/sheet/sheet-conditions-section.tsx",
+        "src/components/sheet/sheet-skills-section.tsx",
+        "src/components/sheet/sheet-experience-bridge.tsx",
+        "src/components/sheet/sheet-inventory-organizer.tsx"
       ],
       "styles": [
         "src/styles/sheet-layout.css",
         "src/styles/sheet-premium.css",
         "src/styles/sheet-experience.css"
       ],
-      "boundary": "Domínio mantém cálculos; rota mantém estado e autosave. Extrair seções por responsabilidade, preservando persistência."
+      "boundary": "Rota mantém estado, regras derivadas, leitura cancelável e autosave por personagem/usuário/cargo. Seções recebem valores/callbacks; não criam estado persistido paralelo. Sheet UI mantém rótulos, recolhimento e material; sheet-premium é dono do material. Histórico/inventário montados explicitamente na ficha, sem observer de montagem; o arquivo de experiência ainda conserva bridges de outras áreas."
     },
     {
       "id": "knowledge",
@@ -422,7 +431,7 @@
       "id": "NEX-005",
       "title": "Ficha por seções e estados",
       "domain": "sheet",
-      "status": "ready",
+      "status": "active",
       "priority": 3,
       "dependsOn": [
         "NEX-003",
@@ -433,8 +442,10 @@
         "Validar ficha povoada, somente leitura, salvamento, erro e transição de usuário.",
         "Transferir vínculos/modificadores e inventário dos bridges antes de retirar suas funções."
       ],
-      "evidence": [],
-      "checkpoint": "Dependências NEX-003/NEX-013 integradas. Começar pela identidade, recursos e seções da ficha, usando os materiais compartilhados; preservar regras e autosave. Não expandir o shell concorrendo com a transferência de ficha."
+      "evidence": [
+        "docs/sheet-design-validation.json"
+      ],
+      "checkpoint": "Em desenvolvimento na branch design/sheet-fabric-sections-2026-10-11, base c4ce6d1. Seções React e montagem explícita de histórico/inventário; revisão visual e de persistência em andamento. Não publicado."
     },
     {
       "id": "NEX-006",
@@ -625,7 +636,7 @@
     {
       "path": "src/components/sheet/sheet-experience-bridge.tsx",
       "domain": "sheet",
-      "status": "review_before_transfer"
+      "status": "sheet_controls_transferred_other_exports_retained"
     },
     {
       "path": "src/components/tabletop/tabletop-adaptive-performance-bridge.tsx",
@@ -839,6 +850,10 @@
     {
       "path": "docs/shared-fabric-validation.json",
       "purpose": "NEX-013: revisão tipográfica autorizada, materiais e movimento compartilhados, critérios e limites de runtime."
+    },
+    {
+      "path": "docs/sheet-design-validation.json",
+      "purpose": "NEX-005: seções, materiais, cancelamento de leituras, autosave e fixtures da ficha."
     }
   ],
   "integrationHistory": [

@@ -26,7 +26,7 @@ export default function AttributeRadar({
         <PolarGrid stroke={color} strokeOpacity={0.3} />
         <PolarAngleAxis
           dataKey="attr"
-          tick={{ fill: tickColor, fontSize: 12, fontFamily: "Cinzel, serif", fontWeight: 650 }}
+          tick={{ fill: tickColor, fontSize: 12, fontFamily: "var(--font-cinzel), Georgia, serif", fontWeight: 650 }}
         />
         <PolarRadiusAxis
           angle={90}
@@ -36,6 +36,7 @@ export default function AttributeRadar({
           strokeOpacity={0.3}
         />
         <Radar
+          isAnimationActive={false}
           dataKey="value"
           stroke={color}
           strokeWidth={2}
