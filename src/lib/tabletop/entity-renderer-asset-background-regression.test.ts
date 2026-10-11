@@ -1,4 +1,4 @@
-import { readFileSync } from "node:fs";
+import { readFoundationSource as readFileSync } from "@/test/read-foundation-source";
 import { describe, expect, it } from "vitest";
 
 const renderer = readFileSync("src/lib/tabletop/entity-renderer.ts", "utf8");

@@ -1,0 +1,2191 @@
+/* source: src/styles/hero-icons-final-212.css */
+/* Canonical page-head authority. Symbols are real SVG elements; pseudo-elements
+   are decoration only. Nexus and Mesa are the geometry reference. */
+
+[data-tadeon-page-hero="users"] { --hero-rgb: 183 129 77; --hero-secondary-rgb: 217 215 164; }
+[data-tadeon-page-hero="tools"] { --hero-rgb: 122 129 135; --hero-secondary-rgb: 84 123 148; }
+[data-tadeon-page-hero="offline"] { --hero-rgb: 113 107 123; --hero-secondary-rgb: 79 110 93; }
+.tadeon-master-commandbar { --hero-rgb: 116 36 45; --hero-secondary-rgb: 217 215 164; }
+
+/* Users / Backup / Offline -------------------------------------------------- */
+html body .tadeon-page-hero[data-tadeon-page-hero] {
+  position: relative !important;
+  isolation: isolate !important;
+  display: grid !important;
+  min-height: 7rem !important;
+  grid-template-columns: 3rem minmax(0, 1fr) auto !important;
+  align-items: center !important;
+  gap: .75rem 1.25rem !important;
+  overflow: clip !important;
+  border: 1px solid rgb(var(--hero-rgb) / 26%) !important;
+  border-radius: 1rem !important;
+  padding: 1rem 1.25rem !important;
+  background:
+    radial-gradient(circle at 8% 12%, rgb(var(--hero-rgb) / 10%), transparent 13rem),
+    radial-gradient(circle at 88% -18%, rgb(var(--hero-secondary-rgb) / 8%), transparent 18rem),
+    linear-gradient(145deg, rgb(17 20 25 / 97%), rgb(8 11 15 / 96%)) !important;
+}
+
+html body .tadeon-page-hero[data-tadeon-page-hero] > * {
+  position: relative;
+  z-index: 2;
+  min-width: 0;
+}
+
+html body .tadeon-page-hero-mark-host {
+  grid-column: 1 !important;
+  grid-row: 1 !important;
+  align-self: center !important;
+  justify-self: center !important;
+  display: grid !important;
+  width: 3rem !important;
+  height: 3rem !important;
+  place-items: center !important;
+  margin: 0 !important;
+  border: 1px solid rgb(var(--hero-rgb) / 48%) !important;
+  border-radius: 50% !important;
+  color: rgb(var(--hero-rgb)) !important;
+  background: radial-gradient(circle, rgb(var(--hero-rgb) / 12%), rgb(9 12 16 / 92%) 70%) !important;
+  box-shadow:
+    0 0 0 .42rem rgb(var(--hero-rgb) / 5%),
+    0 0 0 .82rem rgb(var(--hero-secondary-rgb) / 2%),
+    0 16px 38px -23px rgb(var(--hero-rgb) / 72%),
+    inset 0 1px rgb(255 255 255 / 9%) !important;
+  filter: drop-shadow(0 0 10px rgb(var(--hero-rgb) / 28%)) !important;
+  transform: none !important;
+  pointer-events: none !important;
+}
+
+html body .tadeon-page-hero-mark-icon {
+  display: block !important;
+  width: 1.4rem !important;
+  height: 1.4rem !important;
+  margin: 0 !important;
+  color: rgb(var(--hero-rgb)) !important;
+  stroke: currentColor !important;
+  stroke-width: 1.7 !important;
+  transform: none !important;
+}
+
+html body [data-tadeon-page-hero="users"] > div:first-of-type {
+  grid-column: 2 !important;
+  grid-row: 1 !important;
+  align-self: center !important;
+}
+html body [data-tadeon-page-hero="users"] > div:nth-of-type(2) {
+  grid-column: 3 !important;
+  grid-row: 1 !important;
+  align-self: center !important;
+  justify-self: end !important;
+}
+html body [data-tadeon-page-hero="tools"] > div:first-of-type,
+html body [data-tadeon-page-hero="offline"] > div:first-of-type {
+  grid-column: 2 / -1 !important;
+  grid-row: 1 !important;
+  width: 100% !important;
+  align-self: center !important;
+}
+html body .tadeon-page-hero[data-tadeon-page-hero] .tadeon-eyebrow,
+html body .tadeon-page-hero[data-tadeon-page-hero] h1 {
+  color: rgb(var(--hero-rgb)) !important;
+}
+html body .tadeon-page-hero[data-tadeon-page-hero] h1 {
+  margin-top: .25rem !important;
+  font-size: 1.5rem !important;
+  line-height: 1.2 !important;
+  font-weight: 600 !important;
+}
+
+/* Background orbitals only: never icons, never layout slots. */
+html body .tadeon-page-hero[data-tadeon-page-hero]::before,
+html body .tadeon-master-commandbar::before {
+  position: absolute !important;
+  z-index: 0 !important;
+  top: -8.8rem !important;
+  right: 7% !important;
+  display: block !important;
+  width: 18rem !important;
+  height: 18rem !important;
+  border: 1px solid rgb(var(--hero-rgb) / 22%) !important;
+  border-radius: 50% !important;
+  background: radial-gradient(circle, transparent 46%, rgb(var(--hero-rgb) / 3%) 47% 50%, transparent 51%) !important;
+  box-shadow: 0 0 0 2rem rgb(var(--hero-rgb) / 3%), 0 0 0 4.4rem rgb(var(--hero-secondary-rgb) / 2%) !important;
+  pointer-events: none !important;
+  content: "" !important;
+}
+html body .tadeon-page-hero[data-tadeon-page-hero]::after,
+html body .tadeon-master-commandbar::after {
+  position: absolute !important;
+  z-index: 0 !important;
+  right: 3% !important;
+  bottom: -6.6rem !important;
+  display: block !important;
+  width: 12.5rem !important;
+  height: 12.5rem !important;
+  border: 1px solid rgb(var(--hero-secondary-rgb) / 13%) !important;
+  border-radius: 50% !important;
+  background: none !important;
+  box-shadow: 0 0 0 1.55rem rgb(var(--hero-secondary-rgb) / 2.5%), 0 0 0 3.6rem rgb(var(--hero-rgb) / 1.8%) !important;
+  pointer-events: none !important;
+  content: "" !important;
+}
+[data-tadeon-page-hero="tools"]::before { right: -3rem !important; }
+[data-tadeon-page-hero="offline"]::before,
+[data-tadeon-page-hero="offline"]::after { border-style: dashed !important; }
+
+/* Master ------------------------------------------------------------------- */
+html body .tadeon-master-commandbar {
+  position: relative !important;
+  isolation: isolate !important;
+  display: grid !important;
+  min-height: 7rem !important;
+  grid-template-columns: 3rem minmax(0, 1fr) !important;
+  align-items: center !important;
+  gap: 1.25rem !important;
+  overflow: clip !important;
+  padding: 1rem 1.25rem !important;
+  border-color: rgb(var(--hero-rgb) / 28%) !important;
+  background: linear-gradient(145deg, rgb(17 20 25 / 97%), rgb(8 11 15 / 96%)) !important;
+}
+html body .tadeon-master-commandbar > * { position: relative; z-index: 2; min-width: 0; }
+html body .tadeon-master-commandbar > .tadeon-master-commandbar__glow {
+  grid-column: 1 !important;
+  grid-row: 1 !important;
+  align-self: center !important;
+  justify-self: center !important;
+  display: grid !important;
+  width: 3rem !important;
+  height: 3rem !important;
+  place-items: center !important;
+  margin: 0 !important;
+  border: 1px solid rgb(var(--hero-rgb) / 48%) !important;
+  border-radius: 50% !important;
+  color: rgb(var(--hero-rgb)) !important;
+  background: radial-gradient(circle, rgb(var(--hero-rgb) / 12%), rgb(9 12 16 / 92%) 70%) !important;
+  box-shadow: 0 0 0 .42rem rgb(var(--hero-rgb) / 5%), 0 16px 38px -23px rgb(var(--hero-rgb) / 72%) !important;
+  pointer-events: none !important;
+}
+html body .tadeon-master-commandbar > .relative.flex {
+  grid-column: 2 !important;
+  grid-row: 1 !important;
+  width: 100% !important;
+  align-self: center !important;
+}
+html body .tadeon-master-commandbar h1 > svg:first-child { display: none !important; }
+html body .tadeon-master-commandbar :is(.tadeon-eyebrow, h1) { color: rgb(var(--hero-rgb)) !important; }
+html body .tadeon-master-commandbar__sigil-stack {
+  position: relative !important;
+  display: grid !important;
+  width: 100% !important;
+  height: 100% !important;
+  place-items: center !important;
+}
+html body .tadeon-master-commandbar__master-sigil {
+  width: 2rem !important;
+  height: 2rem !important;
+  color: rgb(var(--hero-rgb)) !important;
+}
+html body .tadeon-master-commandbar__active-icon {
+  position: absolute !important;
+  top: 50% !important;
+  left: 50% !important;
+  width: .78rem !important;
+  height: .78rem !important;
+  color: rgb(var(--hero-secondary-rgb)) !important;
+  transform: translate(-50%, -50%) !important;
+}
+
+/* Nexus -------------------------------------------------------------------- */
+html body .tadeon-route-nexus .tadeon-nexus-identity {
+  display: flex !important;
+  align-items: center !important;
+  gap: 1rem !important;
+}
+html body .tadeon-route-nexus .tadeon-nexus-identity__mark {
+  display: grid !important;
+  width: 3rem !important;
+  height: 3rem !important;
+  flex: 0 0 3rem !important;
+  place-items: center !important;
+  border: 1px solid rgb(79 110 93 / 48%) !important;
+  border-radius: 50% !important;
+  color: rgb(79 110 93) !important;
+  background: radial-gradient(circle, rgb(79 110 93 / 12%), rgb(9 12 16 / 90%) 70%) !important;
+  box-shadow: 0 0 0 .42rem rgb(79 110 93 / 5%), 0 16px 38px -23px rgb(79 110 93 / 72%) !important;
+}
+html body .tadeon-route-nexus .tadeon-nexus-identity__mark > svg {
+  width: 1.4rem !important;
+  height: 1.4rem !important;
+  color: rgb(79 110 93) !important;
+  stroke: currentColor !important;
+  transform: none !important;
+}
+html body .tadeon-route-nexus .tadeon-nexus-identity :is(.tadeon-eyebrow, h1) { color: rgb(79 110 93) !important; }
+
+/* Mesa studio --------------------------------------------------------------- */
+html body .tadeon-tabletop-studio__header::before { display: none !important; content: none !important; }
+html body .tadeon-tabletop-studio__header { min-height: 0 !important; height: auto !important; padding-block: .75rem !important; }
+html body .tadeon-tabletop-studio__header > .relative.z-10 { min-height: 0 !important; padding-left: 0 !important; gap: .625rem !important; align-items: center !important; }
+html body .tadeon-tabletop-studio__header > svg.pointer-events-none.absolute.inset-0 { position: absolute !important; inset: 0 !important; width: 100% !important; height: 100% !important; }
+html body .tadeon-tabletop-studio__brand { display: flex !important; align-items: center !important; gap: .65rem !important; padding-left: 0 !important; }
+html body .tadeon-tabletop-studio__brand > svg { display: none !important; width: 0 !important; height: 0 !important; flex: 0 0 0 !important; }
+html body .tadeon-tabletop-brand-mark-host {
+  display: grid !important;
+  width: 2.5rem !important;
+  height: 2.5rem !important;
+  flex: 0 0 2.5rem !important;
+  place-items: center !important;
+  margin: 0 !important;
+  border: 1px solid rgb(84 123 148 / 52%) !important;
+  border-radius: 50% !important;
+  color: rgb(84 123 148) !important;
+  background: radial-gradient(circle, rgb(84 123 148 / 12%), rgb(9 12 16 / 90%) 70%) !important;
+  box-shadow: 0 0 0 .38rem rgb(84 123 148 / 4.5%), 0 14px 34px -23px rgb(84 123 148 / 68%) !important;
+}
+html body .tadeon-tabletop-brand-mark-icon { width: 1.2rem !important; height: 1.2rem !important; color: rgb(84 123 148) !important; }
+
+/* Mesa / Area em foco ------------------------------------------------------- */
+html body .tadeon-shell[data-section="Mesa Nexus"] .tadeon-mobile-header__identity > svg { display: none !important; }
+html body .tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-focus-brand-host {
+  display: grid !important;
+  width: 2rem !important;
+  height: 2rem !important;
+  flex: 0 0 2rem !important;
+  place-items: center !important;
+  margin: 0 !important;
+  color: rgb(84 123 148) !important;
+}
+html body .tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-focus-brand-icon { width: 100% !important; height: 100% !important; color: rgb(84 123 148) !important; transform: none !important; }
+
+@media (min-width: 768px) {
+  html body .tadeon-shell[data-section="Mesa Nexus"] .tadeon-desktop-toolbar > .min-w-0 > .tadeon-tabletop-focus-brand-host {
+    grid-column: 1 !important;
+    grid-row: 1 / 3 !important;
+    align-self: center !important;
+    justify-self: center !important;
+    width: 2.25rem !important;
+    height: 2.25rem !important;
+  }
+  html body .tadeon-shell[data-section="Mesa Nexus"] .tadeon-desktop-toolbar > .min-w-0 > .tadeon-eyebrow { grid-column: 2 !important; grid-row: 1 !important; align-self: end !important; }
+  html body .tadeon-shell[data-section="Mesa Nexus"] .tadeon-desktop-toolbar > .min-w-0 > div { grid-column: 2 !important; grid-row: 2 !important; align-self: start !important; }
+}
+
+/* Dashboard ---------------------------------------------------------------- */
+html body .tadeon-dashboard-hero::before { display: none !important; content: none !important; }
+html body .tadeon-dashboard-signals {
+  display: grid !important;
+  width: 100% !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  align-items: stretch !important;
+  gap: 0 !important;
+}
+html body .tadeon-dashboard-signal {
+  display: flex !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  min-height: 3.5rem !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: .75rem !important;
+  margin: 0 !important;
+  padding: .15rem 1rem !important;
+}
+html body .tadeon-dashboard-signal:not(:last-child)::after { top: .35rem !important; right: 0 !important; bottom: .35rem !important; }
+html body .tadeon-dashboard-signal > svg,
+html body .tadeon-dashboard-signal > div { flex: 0 0 auto !important; margin: 0 !important; }
+
+@media (max-width: 639px) {
+  html body .tadeon-page-hero[data-tadeon-page-hero],
+  html body .tadeon-master-commandbar { grid-template-columns: 2.75rem minmax(0, 1fr) !important; padding: .9rem !important; gap: 1rem !important; }
+  html body .tadeon-page-hero-mark-host,
+  html body .tadeon-master-commandbar > .tadeon-master-commandbar__glow { width: 2.75rem !important; height: 2.75rem !important; }
+  html body [data-tadeon-page-hero="users"] > div:first-of-type,
+  html body [data-tadeon-page-hero="tools"] > div:first-of-type,
+  html body [data-tadeon-page-hero="offline"] > div:first-of-type,
+  html body .tadeon-master-commandbar > .relative.flex { grid-column: 2 !important; grid-row: 1 !important; }
+  html body [data-tadeon-page-hero="users"] > div:nth-of-type(2) { grid-column: 2 !important; grid-row: 2 !important; justify-self: start !important; }
+}
+
+@media (max-width: 419px) {
+  html body .tadeon-dashboard-signals { grid-template-columns: 1fr !important; }
+  html body .tadeon-dashboard-signal { justify-content: flex-start !important; padding-inline: .25rem !important; }
+}
+
+/* end-source: src/styles/hero-icons-final-212.css */
+/* source: src/styles/tadeon-experience-orchestration.css */
+/*
+ * Tadeon Experience Orchestration
+ *
+ * Final interaction layer for the Tadeon visual system.
+ * It deliberately sits above the existing polish layers so we can orchestrate
+ * their behavior without replacing established page-specific styling.
+ *
+ * Visual language: editorial, ritualistic, material, archival.
+ * It must never inherit NexOS motion language.
+ */
+
+:root {
+  --tadeon-motion-reveal: 520ms;
+  --tadeon-motion-fold: 420ms;
+  --tadeon-motion-press: 150ms;
+  --tadeon-motion-hover: 260ms;
+  --tadeon-motion-drift: 14s;
+  --tadeon-ease-reveal: cubic-bezier(0.22, 0.78, 0.18, 1);
+  --tadeon-ease-fold: cubic-bezier(0.32, 0.72, 0, 1);
+  --tadeon-ease-material: cubic-bezier(0.23, 1, 0.32, 1);
+  --tadeon-ink-glow: rgb(217 215 164 / 13%);
+  --tadeon-veil-glow: rgb(113 107 123 / 15%);
+  --tadeon-flow-glow: rgb(79 110 93 / 14%);
+}
+
+/* ================================================================
+   Global page reveal
+   ================================================================ */
+
+.tadeon-route-stage {
+  animation: tadeon-page-reveal var(--tadeon-motion-reveal) var(--tadeon-ease-reveal) both;
+  transform-origin: 50% 1.5rem;
+  will-change: opacity, transform, filter;
+}
+
+@keyframes tadeon-page-reveal {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 12px, 0);
+    filter: blur(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+    filter: blur(0);
+  }
+}
+
+/* The shell keeps the spatial language coherent while the route changes. */
+.tadeon-shell {
+  position: relative;
+  overflow-x: clip;
+}
+
+.tadeon-shell::before {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background:
+    radial-gradient(circle at 78% 12%, rgb(113 107 123 / 5%), transparent 24rem),
+    radial-gradient(circle at 20% 82%, rgb(79 110 93 / 4%), transparent 28rem);
+  content: "";
+  pointer-events: none;
+  opacity: 0.9;
+}
+
+/* ================================================================
+   Ambient drift ~ subtle enough to feel material, not decorative
+   ================================================================ */
+
+.tadeon-ambient {
+  animation: tadeon-ambient-drift var(--tadeon-motion-drift) ease-in-out infinite alternate;
+  will-change: transform;
+}
+
+.tadeon-ambient--flow {
+  animation-delay: -4.5s;
+}
+
+@keyframes tadeon-ambient-drift {
+  from {
+    transform: translate3d(-1%, -1.5%, 0) scale(0.985);
+  }
+  to {
+    transform: translate3d(2%, 2%, 0) scale(1.02);
+  }
+}
+
+/* ================================================================
+   Material surfaces
+   ================================================================ */
+
+.tadeon-surface,
+.tadeon-dashboard-hero,
+.tadeon-sheet-card,
+.tadeon-state-panel,
+.tadeon-auth-shell,
+.tadeon-auth-manifesto {
+  transition:
+    transform var(--tadeon-motion-hover) var(--tadeon-ease-material),
+    border-color var(--tadeon-motion-hover) var(--tadeon-ease-material),
+    box-shadow var(--tadeon-motion-hover) var(--tadeon-ease-material),
+    background-position var(--tadeon-motion-hover) ease;
+}
+
+.tadeon-surface:hover,
+.tadeon-sheet-card:hover {
+  transform: translateY(-2px);
+  border-color: color-mix(in srgb, var(--tadeon-metal) 42%, transparent);
+  box-shadow:
+    0 28px 82px -52px rgb(0 0 0 / 96%),
+    inset 0 1px 0 rgb(255 255 255 / 4%),
+    0 0 0 1px rgb(217 215 164 / 2%);
+}
+
+.tadeon-dashboard-hero:hover,
+.tadeon-state-panel:hover {
+  border-color: color-mix(in srgb, var(--tadeon-metal) 38%, transparent);
+  box-shadow:
+    0 34px 90px -56px rgb(0 0 0 / 97%),
+    inset 0 1px 0 rgb(255 255 255 / 4%);
+}
+
+.tadeon-surface::before,
+.tadeon-sheet-card::before,
+.tadeon-dashboard-hero::before,
+.tadeon-state-panel::before {
+  transition: opacity var(--tadeon-motion-hover) ease, transform var(--tadeon-motion-hover) var(--tadeon-ease-material);
+}
+
+.tadeon-surface:hover::before,
+.tadeon-sheet-card:hover::before,
+.tadeon-dashboard-hero:hover::before,
+.tadeon-state-panel:hover::before {
+  opacity: 1.18;
+  transform: translate3d(1.5%, -1%, 0);
+}
+
+/* ================================================================
+   Navigation as a page marker
+   ================================================================ */
+
+.tadeon-nav-item,
+.tadeon-mobile-dock__item,
+.tadeon-sidebar-collapse,
+.tadeon-mobile-header__control,
+.tadeon-desktop-toolbar__account,
+.tadeon-link-collapse {
+  transition:
+    color var(--tadeon-motion-hover) var(--tadeon-ease-material),
+    background-color var(--tadeon-motion-hover) var(--tadeon-ease-material),
+    border-color var(--tadeon-motion-hover) var(--tadeon-ease-material),
+    box-shadow var(--tadeon-motion-hover) var(--tadeon-ease-material),
+    transform var(--tadeon-motion-press) var(--tadeon-ease-material);
+}
+
+.tadeon-nav-item:hover {
+  transform: translateX(3px);
+}
+
+.tadeon-nav-item[aria-current="page"],
+.tadeon-mobile-dock__item[aria-current="page"] {
+  box-shadow:
+    inset 0 0 0 1px rgb(217 215 164 / 8%),
+    0 10px 26px -24px rgb(217 215 164 / 38%);
+}
+
+.tadeon-nav-item[aria-current="page"]::after {
+  opacity: 1;
+  transform: scaleY(1);
+}
+
+.tadeon-nav-item:hover .tadeon-nav-item__icon > svg,
+.tadeon-mobile-dock__item:hover > svg {
+  transform: translateY(-1px);
+  filter: drop-shadow(0 0 8px rgb(217 215 164 / 16%));
+}
+
+.tadeon-sidebar-collapse:hover,
+.tadeon-mobile-header__control:hover,
+.tadeon-desktop-toolbar__account:hover,
+.tadeon-link-collapse:hover {
+  box-shadow: 0 14px 30px -24px rgb(217 215 164 / 48%);
+}
+
+/* ================================================================
+   Header / chapter feeling
+   ================================================================ */
+
+.tadeon-desktop-toolbar {
+  position: relative;
+}
+
+.tadeon-desktop-toolbar::after {
+  position: absolute;
+  right: 0;
+  bottom: -1px;
+  left: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgb(217 215 164 / 14%), rgb(113 107 123 / 12%), transparent);
+  content: "";
+  opacity: 0.8;
+}
+
+.tadeon-desktop-toolbar h2,
+.tadeon-mobile-header__identity p:last-child {
+  animation: tadeon-title-settle 460ms var(--tadeon-ease-reveal) both;
+}
+
+@keyframes tadeon-title-settle {
+  from {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.tadeon-mobile-header__identity .overflow-visible {
+  transition: transform var(--tadeon-motion-hover) var(--tadeon-ease-material), filter var(--tadeon-motion-hover) ease;
+}
+
+.tadeon-mobile-header__identity:active .overflow-visible {
+  transform: scale(0.94);
+}
+
+/* ================================================================
+   Section personalities
+   ================================================================ */
+
+.tadeon-shell[data-section="O Nexus"] {
+  --tadeon-section-accent: var(--tadeon-knowledge);
+  --tadeon-section-glow: var(--tadeon-ink-glow);
+}
+
+.tadeon-shell[data-section="Painel do Mestre"] {
+  --tadeon-section-accent: var(--tadeon-flow);
+  --tadeon-section-glow: var(--tadeon-flow-glow);
+}
+
+.tadeon-shell[data-section="Mesa Nexus"] {
+  --tadeon-section-accent: var(--tadeon-arden);
+  --tadeon-section-glow: rgb(31 54 68 / 14%);
+}
+
+.tadeon-shell[data-section="Ficha"] {
+  --tadeon-section-accent: var(--tadeon-knowledge);
+  --tadeon-section-glow: var(--tadeon-ink-glow);
+}
+
+.tadeon-shell[data-section="Saúde do arquivo"] {
+  --tadeon-section-accent: var(--tadeon-metal);
+  --tadeon-section-glow: rgb(122 129 135 / 12%);
+}
+
+.tadeon-shell[data-section="Usuários"] {
+  --tadeon-section-accent: var(--tadeon-veil);
+  --tadeon-section-glow: var(--tadeon-veil-glow);
+}
+
+.tadeon-shell[data-section="O Nexus"] .tadeon-route-stage::before,
+.tadeon-shell[data-section="Painel do Mestre"] .tadeon-route-stage::before,
+.tadeon-shell[data-section="Mesa Nexus"] .tadeon-route-stage::before,
+.tadeon-shell[data-section="Ficha"] .tadeon-route-stage::before,
+.tadeon-shell[data-section="Saúde do arquivo"] .tadeon-route-stage::before,
+.tadeon-shell[data-section="Usuários"] .tadeon-route-stage::before {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: min(38rem, 55vw);
+  height: min(28rem, 42vw);
+  background: radial-gradient(circle at 80% 0%, color-mix(in srgb, var(--tadeon-section-accent) 8%, transparent), transparent 68%);
+  content: "";
+  pointer-events: none;
+  opacity: 0.65;
+  transition: opacity 500ms ease;
+}
+
+/* ================================================================
+   Dashboard rhythm / signals
+   ================================================================ */
+
+.tadeon-dashboard-signal {
+  transition: transform var(--tadeon-motion-hover) var(--tadeon-ease-material), color var(--tadeon-motion-hover) ease;
+}
+
+.tadeon-dashboard-signal:hover {
+  transform: translateY(-2px);
+}
+
+/* ================================================================
+   Conditions / status chips
+   ================================================================ */
+
+.tadeon-sheet-condition-chip {
+  position: relative;
+  overflow: hidden;
+  transition:
+    transform var(--tadeon-motion-press) var(--tadeon-ease-material),
+    border-color var(--tadeon-motion-hover) ease,
+    box-shadow var(--tadeon-motion-hover) ease;
+}
+
+.tadeon-sheet-condition-chip::after {
+  position: absolute;
+  inset: auto 0 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, currentColor, transparent);
+  content: "";
+  opacity: var(--condition-glow-opacity, 0.35);
+  filter: blur(var(--condition-glow-blur, 8px));
+  pointer-events: none;
+}
+
+.tadeon-sheet-condition-chip:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 12px 30px -25px currentColor;
+}
+
+.tadeon-sheet-condition-chip[data-condition-severity="critical"] {
+  animation: tadeon-condition-breathe 2.8s ease-in-out infinite;
+}
+
+@keyframes tadeon-condition-breathe {
+  0%, 100% { box-shadow: 0 0 0 0 rgb(116 36 45 / 0%); }
+  50% { box-shadow: 0 0 28px -18px rgb(116 36 45 / 60%); }
+}
+
+/* ================================================================
+   Knowledge graph ~ reveal relationships, do not neonize them
+   ================================================================ */
+
+.tadeon-knowledge-graph,
+.tadeon-brain-shell {
+  transition: border-color var(--tadeon-motion-hover) ease, box-shadow var(--tadeon-motion-hover) ease;
+}
+
+.tadeon-knowledge-graph:hover,
+.tadeon-brain-shell:hover {
+  box-shadow:
+    0 36px 90px -58px rgb(0 0 0 / 96%),
+    inset 0 1px 0 rgb(255 255 255 / 3%);
+}
+
+.tadeon-knowledge-graph svg,
+.tadeon-brain-shell svg {
+  transition: filter var(--tadeon-motion-hover) ease;
+}
+
+.tadeon-knowledge-graph:hover svg,
+.tadeon-brain-shell:hover svg {
+  filter: drop-shadow(0 0 10px rgb(217 215 164 / 5%));
+}
+
+/* ================================================================
+   Skill / modifier surfaces
+   ================================================================ */
+
+.tadeon-skill-modifier-bridge,
+.tadeon-skill-modifier-panel,
+.tadeon-link-panel,
+.tadeon-link-collapse {
+  animation: tadeon-soft-fold var(--tadeon-motion-fold) var(--tadeon-ease-fold) both;
+  transform-origin: 50% 0;
+}
+
+.tadeon-skill-modifier-tabs button {
+  position: relative;
+}
+
+.tadeon-skill-modifier-tabs button::after {
+  position: absolute;
+  right: 0.75rem;
+  bottom: 0.1rem;
+  left: 0.75rem;
+  height: 1px;
+  background: var(--tadeon-knowledge);
+  content: "";
+  opacity: 0;
+  transform: scaleX(0.35);
+  transition: opacity var(--tadeon-motion-hover) ease, transform var(--tadeon-motion-hover) var(--tadeon-ease-material);
+}
+
+.tadeon-skill-modifier-tabs button[aria-selected="true"]::after {
+  opacity: 0.72;
+  transform: scaleX(1);
+}
+
+@keyframes tadeon-soft-fold {
+  from {
+    opacity: 0;
+    transform: translateY(5px) scaleY(0.985);
+    filter: blur(2px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scaleY(1);
+    filter: blur(0);
+  }
+}
+
+/* ================================================================
+   Auth / loading: reveal, not spin
+   ================================================================ */
+
+.tadeon-auth-shell {
+  animation: tadeon-auth-reveal 700ms var(--tadeon-ease-reveal) both;
+}
+
+.tadeon-auth-manifesto::after {
+  animation: tadeon-frame-drift 8s ease-in-out infinite alternate;
+}
+
+.tadeon-loading-mark {
+  animation: tadeon-loading-breathe 2.8s ease-in-out infinite;
+}
+
+@keyframes tadeon-auth-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(14px) scale(0.992);
+    filter: blur(5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+  }
+}
+
+@keyframes tadeon-frame-drift {
+  from { transform: translate(0, 0); }
+  to { transform: translate(0.35rem, -0.35rem); }
+}
+
+@keyframes tadeon-loading-breathe {
+  0%, 100% {
+    box-shadow:
+      0 24px 70px -38px rgb(0 0 0 / 95%),
+      0 0 40px -24px var(--tadeon-knowledge);
+    transform: translateY(0);
+  }
+  50% {
+    box-shadow:
+      0 28px 80px -40px rgb(0 0 0 / 97%),
+      0 0 54px -22px var(--tadeon-knowledge);
+    transform: translateY(-2px);
+  }
+}
+
+/* ================================================================
+   Mobile: preserve the Tadeon composition instead of flattening it
+   ================================================================ */
+
+@media (max-width: 767px) {
+  .tadeon-route-stage {
+    animation-duration: 430ms;
+  }
+
+  .tadeon-surface:hover,
+  .tadeon-sheet-card:hover,
+  .tadeon-dashboard-signal:hover {
+    transform: none;
+  }
+
+  .tadeon-mobile-dock__item[aria-current="page"] {
+    transform: translateY(-1px);
+  }
+
+  .tadeon-shell[data-section] .tadeon-route-stage::before {
+    width: 24rem;
+    height: 20rem;
+    opacity: 0.46;
+  }
+}
+
+/* ================================================================
+   Reduced motion
+   ================================================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  .tadeon-route-stage,
+  .tadeon-ambient,
+  .tadeon-auth-shell,
+  .tadeon-auth-manifesto::after,
+  .tadeon-loading-mark,
+  .tadeon-sheet-condition-chip[data-condition-severity="critical"],
+  .tadeon-skill-modifier-bridge,
+  .tadeon-skill-modifier-panel,
+  .tadeon-link-panel,
+  .tadeon-link-collapse {
+    animation: none !important;
+    transition-duration: 1ms !important;
+  }
+}
+
+/* end-source: src/styles/tadeon-experience-orchestration.css */
+/* source: src/styles/tadeon-experience-stabilization.css */
+/*
+ * Tadeon Experience Stabilization
+ *
+ * Final pass for consistency, touch behavior, accessibility, state feedback,
+ * safe-area handling, and graceful fallbacks. This layer intentionally does
+ * not introduce a new visual language; it makes the existing Tadeon system
+ * behave consistently across devices and interaction modes.
+ */
+
+/* ---------------------------------------------------------------
+   Shared interaction states
+   --------------------------------------------------------------- */
+
+.tadeon-route-stage,
+.tadeon-surface,
+.tadeon-sheet-card,
+.tadeon-state-panel,
+.tadeon-dashboard-hero,
+.tadeon-auth-shell,
+.tadeon-auth-manifesto,
+.tadeon-nav-item,
+.tadeon-mobile-dock__item,
+.tadeon-mobile-header__control,
+.tadeon-sidebar-collapse,
+.tadeon-desktop-toolbar__account,
+.tadeon-link-collapse {
+  -webkit-tap-highlight-color: transparent;
+}
+
+button:disabled,
+a[aria-disabled="true"],
+[aria-busy="true"] {
+  cursor: progress;
+}
+
+button:disabled {
+  transform: none !important;
+  box-shadow: none;
+}
+
+button[aria-busy="true"] > svg,
+[role="button"][aria-busy="true"] > svg {
+  animation: tadeon-state-pulse 1.15s ease-in-out infinite;
+}
+
+@keyframes tadeon-state-pulse {
+  0%, 100% { opacity: 0.52; }
+  50% { opacity: 1; }
+}
+
+/* Make focus feel like an archival mark rather than a browser outline. */
+.tadeon-route-stage :where(button, a, input, textarea, select):focus-visible,
+.tadeon-sidebar :where(button, a, input, textarea, select):focus-visible,
+.tadeon-mobile-header :where(button, a, input, textarea, select):focus-visible,
+.tadeon-mobile-dock :where(button, a):focus-visible {
+  outline: 1px solid color-mix(in srgb, var(--tadeon-knowledge) 78%, transparent);
+  outline-offset: 3px;
+  box-shadow: 0 0 0 4px rgb(217 215 164 / 5%);
+}
+
+/* ---------------------------------------------------------------
+   Touch / pointer parity
+   --------------------------------------------------------------- */
+
+@media (hover: none), (pointer: coarse) {
+  .tadeon-surface:hover,
+  .tadeon-sheet-card:hover,
+  .tadeon-dashboard-hero:hover,
+  .tadeon-state-panel:hover,
+  .tadeon-nav-item:hover,
+  .tadeon-dashboard-signal:hover,
+  .tadeon-sheet-condition-chip:hover {
+    transform: none;
+    filter: none;
+  }
+
+  .tadeon-nav-item:hover .tadeon-nav-item__icon > svg,
+  .tadeon-mobile-dock__item:hover > svg,
+  .tadeon-surface:hover::before,
+  .tadeon-sheet-card:hover::before,
+  .tadeon-dashboard-hero:hover::before,
+  .tadeon-state-panel:hover::before {
+    transform: none;
+    filter: none;
+  }
+
+  .tadeon-nav-item:active,
+  .tadeon-mobile-dock__item:active,
+  .tadeon-mobile-header__control:active,
+  .tadeon-sidebar-collapse:active,
+  .tadeon-link-collapse:active {
+    transform: scale(0.985);
+  }
+}
+
+/* ---------------------------------------------------------------
+   Press feedback for important controls
+   --------------------------------------------------------------- */
+
+.tadeon-nav-item:active,
+.tadeon-mobile-dock__item:active,
+.tadeon-mobile-header__control:active,
+.tadeon-sidebar-collapse:active,
+.tadeon-desktop-toolbar__account:active,
+.tadeon-link-collapse:active,
+.tadeon-skill-modifier-tabs button:active {
+  transform: scale(0.985);
+}
+
+/* ---------------------------------------------------------------
+   Material fallback when backdrop-filter is unavailable
+   --------------------------------------------------------------- */
+
+@supports not ((backdrop-filter: blur(1px))) {
+  .tadeon-surface,
+  .tadeon-sidebar,
+  .tadeon-auth-shell,
+  .tadeon-loading-mark,
+  .tadeon-mobile-header,
+  .tadeon-mobile-dock {
+    background-color: rgb(12 15 20 / 96%);
+  }
+}
+
+/* ---------------------------------------------------------------
+   Mobile safe area + composition
+   --------------------------------------------------------------- */
+
+.tadeon-mobile-header {
+  padding-top: max(0.75rem, env(safe-area-inset-top));
+}
+
+.tadeon-mobile-dock {
+  padding-bottom: max(0.55rem, env(safe-area-inset-bottom));
+}
+
+@media (max-width: 767px) {
+  .tadeon-route-stage {
+    min-height: calc(100dvh - 4rem);
+  }
+
+  .tadeon-page {
+    padding-right: max(1rem, env(safe-area-inset-right));
+    padding-left: max(1rem, env(safe-area-inset-left));
+  }
+
+  .tadeon-auth-page {
+    padding-top: max(1rem, env(safe-area-inset-top));
+    padding-right: max(1rem, env(safe-area-inset-right));
+    padding-bottom: max(1rem, env(safe-area-inset-bottom));
+    padding-left: max(1rem, env(safe-area-inset-left));
+  }
+
+  .tadeon-mobile-dock__item {
+    min-height: 2.9rem;
+  }
+
+  .tadeon-mobile-header__control,
+  .tadeon-mobile-dock__item {
+    touch-action: manipulation;
+  }
+}
+
+/* ---------------------------------------------------------------
+   Very small screens: retain composition instead of squeezing it
+   --------------------------------------------------------------- */
+
+@media (max-width: 380px) {
+  .tadeon-mobile-header {
+    grid-template-columns: 3.4rem minmax(0, 1fr) 3.4rem;
+    padding-right: 0.5rem;
+    padding-left: 0.5rem;
+  }
+
+  .tadeon-mobile-header__identity .overflow-visible {
+    width: 2rem;
+    height: 2rem;
+  }
+
+  .tadeon-mobile-header__identity p:last-child {
+    font-size: 0.72rem;
+  }
+
+  .tadeon-mobile-dock {
+    gap: 0.15rem;
+  }
+
+  .tadeon-mobile-dock__item {
+    min-width: 0;
+    padding-right: 0.25rem;
+    padding-left: 0.25rem;
+    font-size: 0.58rem;
+  }
+
+  .tadeon-auth-shell {
+    border-radius: 1.1rem 0.4rem 1.1rem 0.4rem;
+  }
+}
+
+/* ---------------------------------------------------------------
+   State surfaces: loading, empty, error, offline and success
+   --------------------------------------------------------------- */
+
+.tadeon-state-panel {
+  position: relative;
+}
+
+.tadeon-state-panel [role="status"],
+.tadeon-state-panel [aria-live] {
+  min-height: 1.25rem;
+}
+
+.tadeon-state-panel[data-state="loading"] .tadeon-loading-mark {
+  animation: tadeon-loading-breathe 2.8s ease-in-out infinite;
+}
+
+.tadeon-state-panel[data-state="success"] {
+  border-color: rgb(79 110 93 / 32%);
+}
+
+.tadeon-state-panel[data-state="error"] {
+  border-color: rgb(116 36 45 / 36%);
+}
+
+/* Prevent a transition layer from becoming a permanent blur on stale routes. */
+.tadeon-route-stage {
+  backface-visibility: hidden;
+}
+
+/* ---------------------------------------------------------------
+   Accessibility / reduced motion
+   --------------------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .tadeon-route-stage,
+  .tadeon-ambient,
+  .tadeon-auth-shell,
+  .tadeon-auth-manifesto::after,
+  .tadeon-loading-mark,
+  .tadeon-sheet-condition-chip[data-condition-severity="critical"],
+  .tadeon-skill-modifier-bridge,
+  .tadeon-skill-modifier-panel,
+  .tadeon-link-panel,
+  .tadeon-link-collapse,
+  .tadeon-desktop-toolbar h2,
+  .tadeon-mobile-header__identity p:last-child,
+  [aria-busy="true"] > svg {
+    animation: none !important;
+  }
+
+  .tadeon-route-stage {
+    filter: none !important;
+    transform: none !important;
+  }
+
+  .tadeon-surface,
+  .tadeon-sheet-card,
+  .tadeon-dashboard-hero,
+  .tadeon-state-panel,
+  .tadeon-nav-item,
+  .tadeon-dashboard-signal {
+    transition-duration: 1ms !important;
+  }
+}
+
+/* ---------------------------------------------------------------
+   Performance guardrails
+   --------------------------------------------------------------- */
+
+@media (prefers-reduced-motion: no-preference) and (hover: hover) and (pointer: fine) {
+  .tadeon-route-stage,
+  .tadeon-ambient {
+    contain: paint;
+  }
+}
+
+/* end-source: src/styles/tadeon-experience-stabilization.css */
+/* source: src/styles/tadeon-experience-runtime.css */
+/* Tadeon Experience Runtime
+ * Applied after the established visual system so interactions are real, not merely declarative.
+ * Editorial ~ ritualistic ~ material ~ archival.
+ */
+
+:root {
+  --tadeon-runtime-stagger: 34ms;
+  --tadeon-runtime-enter: 480ms;
+  --tadeon-runtime-interaction: 220ms;
+  --tadeon-runtime-material: cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+/* --------------------------------------------------------------------------
+   Route choreography
+   -------------------------------------------------------------------------- */
+
+.tadeon-route-stage[data-tadeon-route-state="entering"] {
+  opacity: 0.98;
+}
+
+.tadeon-route-stage[data-tadeon-route-state="settled"] {
+  opacity: 1;
+}
+
+[data-tadeon-directed="true"] {
+  --tadeon-stagger-delay: calc(var(--tadeon-index, 0) * var(--tadeon-runtime-stagger));
+}
+
+.tadeon-route-stage > [data-tadeon-directed="true"],
+.tadeon-page > [data-tadeon-directed="true"] {
+  animation: tadeon-runtime-enter var(--tadeon-runtime-enter) var(--tadeon-runtime-material) both;
+  animation-delay: var(--tadeon-stagger-delay, 0ms);
+}
+
+@keyframes tadeon-runtime-enter {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 10px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Material pointer layer
+   -------------------------------------------------------------------------- */
+
+.tadeon-surface[data-tadeon-directed="true"],
+.tadeon-dashboard-hero[data-tadeon-directed="true"],
+.tadeon-sheet-card[data-tadeon-directed="true"],
+.tadeon-state-panel[data-tadeon-directed="true"],
+.tadeon-auth-shell[data-tadeon-directed="true"],
+.tadeon-link-panel[data-tadeon-directed="true"],
+.tadeon-skill-modifier-panel[data-tadeon-directed="true"] {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+}
+
+.tadeon-pointer-sheen {
+  position: absolute;
+  inset: -18%;
+  z-index: 0;
+  background:
+    radial-gradient(
+      13rem 9rem at var(--tadeon-pointer-x, 50%) var(--tadeon-pointer-y, 0%),
+      rgb(217 215 164 / 8%),
+      transparent 72%
+    ),
+    linear-gradient(90deg, transparent, rgb(217 215 164 / 12%), transparent);
+  opacity: 0;
+  transform: scale(0.98);
+  transition:
+    opacity var(--tadeon-runtime-interaction) ease,
+    transform var(--tadeon-runtime-interaction) var(--tadeon-runtime-material);
+  pointer-events: none;
+}
+
+.tadeon-pointer-sheen[data-active="true"] {
+  opacity: 0.9;
+  transform: scale(1);
+}
+
+.tadeon-surface[data-tadeon-directed="true"]::before,
+.tadeon-dashboard-hero[data-tadeon-directed="true"]::before,
+.tadeon-sheet-card[data-tadeon-directed="true"]::before,
+.tadeon-state-panel[data-tadeon-directed="true"]::before,
+.tadeon-auth-shell[data-tadeon-directed="true"]::before,
+.tadeon-link-panel[data-tadeon-directed="true"]::before,
+.tadeon-skill-modifier-panel[data-tadeon-directed="true"]::before {
+  transition:
+    opacity var(--tadeon-runtime-interaction) var(--tadeon-runtime-material),
+    transform var(--tadeon-runtime-interaction) var(--tadeon-runtime-material);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .tadeon-surface[data-tadeon-directed="true"],
+  .tadeon-sheet-card[data-tadeon-directed="true"] {
+    transition:
+      transform var(--tadeon-runtime-interaction) var(--tadeon-runtime-material),
+      border-color var(--tadeon-runtime-interaction) ease,
+      box-shadow var(--tadeon-runtime-interaction) var(--tadeon-runtime-material);
+  }
+
+  .tadeon-surface[data-tadeon-directed="true"]:hover,
+  .tadeon-sheet-card[data-tadeon-directed="true"]:hover {
+    transform: translateY(-3px);
+    box-shadow:
+      0 30px 90px -54px rgb(0 0 0 / 96%),
+      inset 0 1px 0 rgb(255 255 255 / 4%),
+      0 0 0 1px rgb(217 215 164 / 5%);
+  }
+
+  .tadeon-surface[data-tadeon-directed="true"]:hover::before,
+  .tadeon-sheet-card[data-tadeon-directed="true"]:hover::before {
+    transform: translate3d(1%, -0.75%, 0);
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Navigation / actions
+   -------------------------------------------------------------------------- */
+
+button[data-tadeon-directed="true"],
+a[data-tadeon-directed="true"],
+[role="button"][data-tadeon-directed="true"] {
+  transition:
+    color var(--tadeon-runtime-interaction) ease,
+    background-color var(--tadeon-runtime-interaction) ease,
+    border-color var(--tadeon-runtime-interaction) ease,
+    box-shadow var(--tadeon-runtime-interaction) var(--tadeon-runtime-material),
+    transform 150ms var(--tadeon-runtime-material);
+}
+
+button[data-tadeon-directed="true"]:active,
+a[data-tadeon-directed="true"]:active,
+[role="button"][data-tadeon-directed="true"]:active {
+  transform: scale(0.975);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  button[data-tadeon-directed="true"]:hover svg,
+  a[data-tadeon-directed="true"]:hover svg,
+  [role="button"][data-tadeon-directed="true"]:hover svg {
+    transform: translateY(-1px) scale(1.035);
+    filter: drop-shadow(0 0 8px rgb(217 215 164 / 18%));
+  }
+}
+
+button[data-tadeon-directed="true"] svg,
+a[data-tadeon-directed="true"] svg,
+[role="button"][data-tadeon-directed="true"] svg {
+  transition:
+    transform var(--tadeon-runtime-interaction) var(--tadeon-runtime-material),
+    filter var(--tadeon-runtime-interaction) ease;
+}
+
+/* --------------------------------------------------------------------------
+   Section accent makes each domain feel like a place without changing palette
+   -------------------------------------------------------------------------- */
+
+.tadeon-shell[data-section] .tadeon-route-stage {
+  --tadeon-current-accent: var(--tadeon-section-accent, var(--tadeon-knowledge));
+}
+
+.tadeon-shell[data-section] .tadeon-route-stage::after {
+  position: fixed;
+  z-index: -1;
+  top: 0;
+  right: 0;
+  width: min(34rem, 55vw);
+  height: min(24rem, 42vw);
+  background: radial-gradient(circle at 100% 0%, color-mix(in srgb, var(--tadeon-current-accent) 9%, transparent), transparent 70%);
+  content: "";
+  pointer-events: none;
+  opacity: 0.72;
+  transition: opacity 600ms ease;
+}
+
+/* --------------------------------------------------------------------------
+   State language
+   -------------------------------------------------------------------------- */
+
+.tadeon-sheet-condition-chip[data-tadeon-directed="true"] {
+  transition:
+    transform 150ms var(--tadeon-runtime-material),
+    border-color var(--tadeon-runtime-interaction) ease,
+    box-shadow var(--tadeon-runtime-interaction) ease,
+    background-color var(--tadeon-runtime-interaction) ease;
+}
+
+.tadeon-sheet-condition-chip[data-tadeon-directed="true"]:active {
+  transform: scale(0.985);
+}
+
+.tadeon-sheet-condition-chip[data-condition-severity="critical"][data-tadeon-directed="true"] {
+  animation-duration: 2.4s;
+}
+
+[data-tadeon-state="saving"] {
+  --tadeon-state-accent: var(--tadeon-knowledge);
+}
+
+[data-tadeon-state="saved"] {
+  --tadeon-state-accent: var(--tadeon-flow);
+}
+
+[data-tadeon-state="pending"] {
+  --tadeon-state-accent: var(--tadeon-metal);
+}
+
+[data-tadeon-state="error"] {
+  --tadeon-state-accent: var(--tadeon-fear);
+}
+
+[data-tadeon-state="offline"] {
+  --tadeon-state-accent: var(--tadeon-arden);
+}
+
+[aria-live="polite"][data-tadeon-state] {
+  transition:
+    color 220ms var(--tadeon-runtime-material),
+    border-color 220ms var(--tadeon-runtime-material),
+    background-color 220ms var(--tadeon-runtime-material),
+    box-shadow 260ms var(--tadeon-runtime-material);
+}
+
+[aria-live="polite"][data-tadeon-state="saving"] {
+  box-shadow: 0 10px 34px -28px var(--tadeon-state-accent);
+}
+
+[aria-live="polite"][data-tadeon-state="error"] {
+  box-shadow: 0 14px 36px -28px var(--tadeon-state-accent);
+}
+
+/* --------------------------------------------------------------------------
+   Focus clarity
+   -------------------------------------------------------------------------- */
+
+button[data-tadeon-directed="true"]:focus-visible,
+a[data-tadeon-directed="true"]:focus-visible,
+[role="button"][data-tadeon-directed="true"]:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--tadeon-knowledge) 84%, transparent);
+  outline-offset: 3px;
+  box-shadow: 0 0 0 5px rgb(217 215 164 / 7%);
+}
+
+/* --------------------------------------------------------------------------
+   Touch / compact layouts
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 767px) {
+  .tadeon-route-stage > [data-tadeon-directed="true"],
+  .tadeon-page > [data-tadeon-directed="true"] {
+    animation-duration: 360ms;
+  }
+
+  .tadeon-surface[data-tadeon-directed="true"],
+  .tadeon-sheet-card[data-tadeon-directed="true"] {
+    transition-duration: 180ms;
+  }
+
+  .tadeon-shell[data-section] .tadeon-route-stage::after {
+    width: 22rem;
+    height: 18rem;
+    opacity: 0.42;
+  }
+
+  .tadeon-pointer-sheen {
+    display: none;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Accessibility / robustness
+   -------------------------------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .tadeon-route-stage > [data-tadeon-directed="true"],
+  .tadeon-page > [data-tadeon-directed="true"],
+  .tadeon-sheet-condition-chip[data-condition-severity="critical"][data-tadeon-directed="true"] {
+    animation: none !important;
+  }
+
+  button[data-tadeon-directed="true"],
+  a[data-tadeon-directed="true"],
+  [role="button"][data-tadeon-directed="true"],
+  .tadeon-surface[data-tadeon-directed="true"],
+  .tadeon-sheet-card[data-tadeon-directed="true"],
+  .tadeon-pointer-sheen {
+    transition-duration: 1ms !important;
+  }
+}
+
+@supports not (backdrop-filter: blur(1px)) {
+  .tadeon-surface,
+  .tadeon-dashboard-hero,
+  .tadeon-sheet-card,
+  .tadeon-state-panel,
+  .tadeon-auth-shell {
+    background-color: var(--card);
+    background-image: none;
+  }
+}
+
+/* end-source: src/styles/tadeon-experience-runtime.css */
+/* source: src/styles/tadeon-materials-final.css */
+/* Tadeon material language ~ final visual hierarchy */
+
+.tadeon-route-stage [data-tadeon-material="chapter"] {
+  border-radius: 1.55rem 0.45rem 1.55rem 0.45rem;
+  background:
+    radial-gradient(circle at 82% 14%, rgb(217 215 164 / 10%), transparent 30%),
+    linear-gradient(140deg, rgb(20 23 28 / 97%), rgb(8 11 15 / 98%));
+}
+
+.tadeon-route-stage [data-tadeon-material="relic"] {
+  border-radius: 1.2rem 0.45rem 1.2rem 0.45rem;
+  background:
+    linear-gradient(145deg, rgb(21 24 29 / 97%), rgb(10 13 17 / 96%)),
+    radial-gradient(circle at 92% 4%, rgb(113 107 123 / 10%), transparent 34%);
+}
+
+.tadeon-route-stage [data-tadeon-material="fragment"] {
+  border-radius: 0.75rem 1.2rem 0.75rem 1.2rem;
+  background:
+    linear-gradient(120deg, rgb(15 18 22 / 98%), rgb(9 12 16 / 96%));
+}
+
+.tadeon-route-stage [data-tadeon-material="record"] {
+  border-radius: 0.85rem 0.35rem 0.85rem 0.35rem;
+  background:
+    linear-gradient(135deg, rgb(18 21 26 / 96%), rgb(11 14 18 / 96%));
+}
+
+.tadeon-route-stage [data-tadeon-material="state"] {
+  border-radius: 1rem 0.35rem 1rem 0.35rem;
+  background:
+    radial-gradient(circle at 90% 0%, color-mix(in srgb, var(--tadeon-section-accent, var(--tadeon-knowledge)) 8%, transparent), transparent 34%),
+    linear-gradient(145deg, rgb(17 20 25 / 97%), rgb(8 11 15 / 97%));
+}
+
+.tadeon-route-stage [data-tadeon-material="archive"] {
+  border-radius: 0.95rem 0.25rem 0.95rem 0.25rem;
+}
+
+/* Distinguish the material edge without adding color noise. */
+.tadeon-route-stage [data-tadeon-material] {
+  position: relative;
+}
+
+.tadeon-route-stage [data-tadeon-material="chapter"]::after,
+.tadeon-route-stage [data-tadeon-material="relic"]::after,
+.tadeon-route-stage [data-tadeon-material="fragment"]::after,
+.tadeon-route-stage [data-tadeon-material="record"]::after {
+  opacity: 0.7;
+}
+
+/* Save-state choreography */
+[aria-live="polite"][data-tadeon-state] {
+  animation: tadeon-state-arrive 260ms var(--tadeon-ease-material, cubic-bezier(0.23, 1, 0.32, 1)) both;
+}
+
+[aria-live="polite"][data-tadeon-state="saving"] {
+  box-shadow: 0 0 0 1px rgb(217 215 164 / 7%), 0 12px 30px -28px rgb(217 215 164 / 55%);
+}
+
+[aria-live="polite"][data-tadeon-state="pending"] {
+  box-shadow: 0 0 0 1px rgb(217 174 70 / 7%), 0 12px 30px -28px rgb(217 174 70 / 48%);
+}
+
+[aria-live="polite"][data-tadeon-state="saved"] {
+  box-shadow: 0 0 0 1px rgb(79 110 93 / 9%), 0 12px 30px -28px rgb(79 110 93 / 48%);
+}
+
+[aria-live="polite"][data-tadeon-state="error"] {
+  animation: tadeon-state-error 420ms var(--tadeon-ease-material, cubic-bezier(0.23, 1, 0.32, 1)) both;
+}
+
+@keyframes tadeon-state-arrive {
+  from { opacity: 0.72; transform: translateY(2px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes tadeon-state-error {
+  0% { transform: translateX(0); }
+  32% { transform: translateX(-2px); }
+  64% { transform: translateX(2px); }
+  100% { transform: translateX(0); }
+}
+
+/* Knowledge graph: make relationships readable before decoration. */
+.tadeon-knowledge-graph[data-tadeon-directed="true"],
+.tadeon-brain-shell[data-tadeon-directed="true"] {
+  border-radius: 1.3rem 0.45rem 1.3rem 0.45rem;
+  background:
+    radial-gradient(circle at 50% 45%, rgb(217 215 164 / 3%), transparent 40%),
+    linear-gradient(145deg, rgb(12 15 19 / 98%), rgb(7 9 12 / 98%));
+}
+
+.tadeon-knowledge-graph[data-tadeon-directed="true"] svg,
+.tadeon-brain-shell[data-tadeon-directed="true"] svg {
+  transition: transform 500ms var(--tadeon-ease-material), opacity 300ms ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .tadeon-knowledge-graph[data-tadeon-directed="true"]:hover svg,
+  .tadeon-brain-shell[data-tadeon-directed="true"]:hover svg {
+    transform: scale(1.008);
+  }
+}
+
+/* Master/tabletop surfaces: stronger hierarchy, not stronger color. */
+.tadeon-shell[data-section="Painel do Mestre"] [data-tadeon-material="state"],
+.tadeon-shell[data-section="Mesa Nexus"] [data-tadeon-material="state"] {
+  box-shadow:
+    0 30px 78px -56px rgb(0 0 0 / 98%),
+    inset 0 1px 0 rgb(255 255 255 / 3%);
+}
+
+/* Mobile is a composition, not a shrunken desktop. */
+@media (max-width: 767px) {
+  .tadeon-route-stage [data-tadeon-material="chapter"] {
+    border-radius: 1.2rem 0.35rem 1.2rem 0.35rem;
+  }
+
+  .tadeon-route-stage [data-tadeon-material="relic"],
+  .tadeon-route-stage [data-tadeon-material="fragment"],
+  .tadeon-route-stage [data-tadeon-material="record"],
+  .tadeon-route-stage [data-tadeon-material="state"] {
+    border-radius: 0.95rem 0.3rem 0.95rem 0.3rem;
+  }
+
+  .tadeon-knowledge-graph[data-tadeon-directed="true"],
+  .tadeon-brain-shell[data-tadeon-directed="true"] {
+    border-radius: 1rem 0.3rem 1rem 0.3rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [aria-live="polite"][data-tadeon-state] {
+    animation: none !important;
+  }
+}
+
+/* end-source: src/styles/tadeon-materials-final.css */
+/* source: src/styles/tadeon-mobile-excellence.css */
+/* Tadeon mobile excellence ~ preserve hierarchy, improve touch composition */
+
+@media (max-width: 767px) {
+  .tadeon-mobile-header {
+    padding-left: max(0.75rem, env(safe-area-inset-left));
+    padding-right: max(0.75rem, env(safe-area-inset-right));
+    padding-bottom: 0.55rem;
+    backdrop-filter: blur(18px) saturate(112%);
+    background: rgb(8 10 14 / 88%);
+  }
+
+  .tadeon-mobile-header__control {
+    min-width: 44px;
+    min-height: 44px;
+    touch-action: manipulation;
+  }
+
+  .tadeon-mobile-dock {
+    padding-bottom: max(0.45rem, env(safe-area-inset-bottom));
+    padding-left: max(0.55rem, env(safe-area-inset-left));
+    padding-right: max(0.55rem, env(safe-area-inset-right));
+    background:
+      linear-gradient(180deg, rgb(8 10 14 / 30%), rgb(8 10 14 / 88%)),
+      rgb(8 10 14 / 86%);
+    backdrop-filter: blur(20px) saturate(118%);
+  }
+
+  .tadeon-mobile-dock__item {
+    min-width: 52px;
+    min-height: 48px;
+    touch-action: manipulation;
+  }
+
+  .tadeon-mobile-dock__item[aria-current="page"] {
+    background: linear-gradient(180deg, rgb(217 215 164 / 8%), transparent);
+    border-color: rgb(217 215 164 / 10%);
+  }
+
+  .tadeon-primary-nav .tadeon-nav-item {
+    min-height: 46px;
+    touch-action: manipulation;
+  }
+
+  .tadeon-route-stage {
+    padding-bottom: max(1.5rem, calc(env(safe-area-inset-bottom) + 5.5rem));
+  }
+
+  .tadeon-page {
+    padding-left: max(0.95rem, env(safe-area-inset-left));
+    padding-right: max(0.95rem, env(safe-area-inset-right));
+  }
+
+  .tadeon-dashboard-signal {
+    min-height: 3.4rem;
+  }
+
+  .tadeon-sheet-card,
+  .tadeon-state-panel,
+  .tadeon-dashboard-hero {
+    box-shadow:
+      0 22px 64px -48px rgb(0 0 0 / 96%),
+      inset 0 1px 0 rgb(255 255 255 / 3%);
+  }
+
+  .tadeon-sheet-condition-chip,
+  .tadeon-skill-modifier-tabs button,
+  .tadeon-link-collapse {
+    min-height: 40px;
+    touch-action: manipulation;
+  }
+
+  /* Prevent fixed ambient layers from becoming giant opaque slabs on phones. */
+  .tadeon-ambient {
+    width: 24rem;
+    filter: blur(58px);
+    opacity: 0.08;
+  }
+
+  .tadeon-route-stage::before,
+  .tadeon-route-stage::after {
+    max-width: 90vw;
+  }
+}
+
+@media (max-width: 380px) {
+  .tadeon-mobile-header {
+    grid-template-columns: 3.4rem minmax(0, 1fr) 5.8rem;
+  }
+
+  .tadeon-mobile-header__identity {
+    gap: 0.45rem;
+  }
+
+  .tadeon-mobile-header__identity .overflow-visible {
+    width: 26px;
+    height: 26px;
+  }
+
+  .tadeon-mobile-dock__item {
+    min-width: 46px;
+    font-size: 9px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tadeon-mobile-dock__item,
+  .tadeon-mobile-header__control {
+    transition-duration: 1ms !important;
+  }
+}
+
+/* end-source: src/styles/tadeon-mobile-excellence.css */
+/* source: src/styles/tadeon-experience-details.css */
+/* Tadeon experience details ~ hero, navigation, graph, master, sheet and states */
+
+.tadeon-dashboard-hero[data-tadeon-material="chapter"] {
+  position: relative;
+  isolation: isolate;
+  min-height: clamp(15rem, 30vw, 22rem);
+  overflow: clip;
+  background-image:
+    linear-gradient(116deg, rgb(255 255 255 / 3.8%), transparent 32%),
+    radial-gradient(circle at 90% 8%, rgb(217 215 164 / 4%), transparent 28%),
+    linear-gradient(145deg, transparent 62%, rgb(113 107 123 / 3%) 100%);
+}
+
+.tadeon-dashboard-hero[data-tadeon-material="chapter"]::after {
+  position: absolute;
+  right: -7rem;
+  bottom: -9rem;
+  width: 24rem;
+  height: 24rem;
+  border: 1px solid rgb(217 215 164 / 9%);
+  border-radius: 50%;
+  box-shadow:
+    0 0 0 2rem rgb(217 215 164 / 2%),
+    0 0 0 5rem rgb(113 107 123 / 1.5%);
+  content: "";
+  pointer-events: none;
+  opacity: 0.72;
+  transition: transform 800ms var(--tadeon-ease-material, cubic-bezier(0.23, 1, 0.32, 1));
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .tadeon-dashboard-hero[data-tadeon-material="chapter"]:hover::after {
+    transform: translate(-0.65rem, -0.35rem) rotate(-2deg);
+  }
+}
+
+.tadeon-dashboard-hero[data-tadeon-material="chapter"] .tadeon-eyebrow,
+.tadeon-dashboard-hero[data-tadeon-material="chapter"] h1,
+.tadeon-dashboard-hero[data-tadeon-material="chapter"] h2,
+.tadeon-dashboard-hero[data-tadeon-material="chapter"] h3 {
+  position: relative;
+  z-index: 1;
+}
+
+/* Material hierarchy */
+.tadeon-surface[data-tadeon-material="archive"] { border-radius: 0.75rem 0.35rem 0.85rem 0.45rem; }
+.tadeon-sheet-card[data-tadeon-material="relic"] {
+  border-radius: 0.7rem 0.25rem 0.95rem 0.35rem;
+  border-color: color-mix(in srgb, var(--tadeon-metal) 34%, transparent);
+  box-shadow: 0 26px 74px -52px rgb(0 0 0 / 96%), inset 0 1px 0 rgb(255 255 255 / 4%), inset 2px 0 0 rgb(217 215 164 / 5%);
+}
+.tadeon-sheet-card[data-tadeon-material="relic"]::before {
+  background: linear-gradient(142deg, rgb(242 238 200 / 3.8%), transparent 35%), radial-gradient(circle at 12% 0%, rgb(217 215 164 / 4%), transparent 30%);
+}
+.tadeon-link-panel[data-tadeon-material="fragment"] {
+  border-left-color: color-mix(in srgb, var(--tadeon-veil) 50%, transparent);
+  border-radius: 0.25rem 0.8rem 0.35rem 0.9rem;
+  background-image: linear-gradient(102deg, rgb(113 107 123 / 4%), transparent 42%);
+}
+.tadeon-skill-modifier-panel[data-tadeon-material="record"] {
+  border-top-color: color-mix(in srgb, var(--tadeon-knowledge) 20%, transparent);
+  border-bottom-color: color-mix(in srgb, var(--tadeon-knowledge) 18%, transparent);
+  box-shadow: 0 20px 60px -48px rgb(0 0 0 / 94%), inset 0 1px 0 rgb(217 215 164 / 3%);
+}
+.tadeon-skill-modifier-panel[data-tadeon-material="record"] [data-state],
+.tadeon-skill-modifier-panel[data-tadeon-material="record"] .tadeon-mono { font-variant-numeric: tabular-nums; letter-spacing: 0.06em; }
+.tadeon-state-panel[data-tadeon-material="state"] {
+  border-radius: 0.35rem 0.75rem 0.55rem 0.9rem;
+  border-color: color-mix(in srgb, var(--tadeon-section-accent, var(--tadeon-metal)) 24%, transparent);
+}
+.tadeon-state-panel[data-tadeon-material="state"] > * { position: relative; z-index: 1; }
+
+/* Navigation */
+.tadeon-nav-item[data-tadeon-directed="true"] { overflow: hidden; border-radius: 0.65rem 0.2rem 0.65rem 0.2rem; }
+.tadeon-nav-item[data-tadeon-directed="true"]::before {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, rgb(217 215 164 / 5%), transparent 52%);
+  content: "";
+  opacity: 0;
+  transform: translateX(-8%);
+  transition: opacity 280ms ease, transform 360ms var(--tadeon-ease-material, cubic-bezier(0.23, 1, 0.32, 1));
+  pointer-events: none;
+}
+.tadeon-nav-item[data-tadeon-directed="true"]:hover::before,
+.tadeon-nav-item[data-tadeon-directed="true"][aria-current="page"]::before { opacity: 1; transform: translateX(0); }
+.tadeon-nav-item[data-tadeon-directed="true"] .tadeon-nav-item__icon { position: relative; z-index: 1; }
+
+/* Character sheet ~ living document */
+.tadeon-sheet-page { --sheet-accent: var(--tadeon-knowledge); }
+.tadeon-sheet-commandbar {
+  box-shadow: 0 22px 60px -44px rgb(0 0 0 / 96%), inset 0 -1px 0 rgb(255 255 255 / 2.5%), 0 0 0 1px rgb(217 215 164 / 2%);
+}
+.tadeon-sheet-commandbar__identity { position: relative; }
+.tadeon-sheet-commandbar__identity::after {
+  position: absolute;
+  right: -1rem;
+  bottom: -0.4rem;
+  left: 0;
+  height: 1px;
+  background: linear-gradient(90deg, rgb(217 215 164 / 28%), transparent 76%);
+  content: "";
+  opacity: 0.8;
+}
+.tadeon-sheet-overview {
+  position: relative;
+  isolation: isolate;
+  box-shadow: 0 22px 60px -46px rgb(0 0 0 / 96%), inset 0 1px 0 rgb(255 255 255 / 3%), 0 0 0 1px rgb(217 215 164 / 2%);
+}
+.tadeon-overview-metric {
+  transition: transform 220ms var(--tadeon-ease-material, cubic-bezier(0.23, 1, 0.32, 1)), box-shadow 220ms var(--tadeon-ease-material, cubic-bezier(0.23, 1, 0.32, 1)), background-color 220ms ease;
+}
+@media (hover: hover) and (pointer: fine) {
+  .tadeon-overview-metric:hover {
+    z-index: 1;
+    transform: translateY(-2px);
+    box-shadow: inset 0 1px 0 rgb(255 255 255 / 4%), 0 18px 42px -34px rgb(var(--metric-rgb) / 48%);
+  }
+}
+.tadeon-sheet-section {
+  transition: transform 260ms var(--tadeon-ease-material, cubic-bezier(0.23, 1, 0.32, 1)), border-color 220ms ease, box-shadow 260ms var(--tadeon-ease-material, cubic-bezier(0.23, 1, 0.32, 1));
+}
+@media (hover: hover) and (pointer: fine) {
+  .tadeon-sheet-section:hover {
+    transform: translateY(-1px);
+    border-color: rgb(var(--section-rgb) / 26%);
+    box-shadow: 0 34px 82px -58px rgb(0 0 0 / 98%), inset 0 1px 0 rgb(255 255 255 / 4%), inset 2px 0 0 rgb(var(--section-rgb) / 11%);
+  }
+}
+.tadeon-sheet-section__index { transition: transform 200ms var(--tadeon-ease-material, cubic-bezier(0.23, 1, 0.32, 1)), box-shadow 200ms ease, background-color 200ms ease; }
+@media (hover: hover) and (pointer: fine) {
+  .tadeon-sheet-section:hover .tadeon-sheet-section__index { transform: translateY(-1px) rotate(-1deg); box-shadow: 0 10px 26px -22px rgb(var(--section-rgb) / 55%); }
+}
+.tadeon-sheet-section input:not([type="range"]),
+.tadeon-sheet-section textarea,
+.tadeon-sheet-section [data-slot="select-trigger"] {
+  border-color: color-mix(in srgb, rgb(var(--section-rgb)) 14%, var(--border));
+  background-color: color-mix(in srgb, var(--card) 90%, transparent);
+}
+.tadeon-sheet-section input:not([type="range"]):focus,
+.tadeon-sheet-section textarea:focus,
+.tadeon-sheet-section [data-slot="select-trigger"]:focus-visible {
+  border-color: color-mix(in srgb, rgb(var(--section-rgb)) 48%, var(--border));
+  box-shadow: 0 0 0 3px rgb(var(--section-rgb) / 8%);
+}
+.tadeon-sheet-condition-chip[data-tadeon-state="saving"],
+.tadeon-sheet-condition-chip[data-tadeon-state="pending"] { box-shadow: 0 10px 28px -24px rgb(217 215 164 / 55%); }
+.tadeon-sheet-condition-chip[data-tadeon-state="error"] { box-shadow: 0 10px 28px -24px rgb(116 36 45 / 70%); }
+.tadeon-sheet-condition-chip[data-tadeon-state="offline"] { opacity: 0.8; }
+
+/* Knowledge / brain shell */
+.tadeon-knowledge-graph[data-tadeon-material],
+.tadeon-brain-shell[data-tadeon-material] { position: relative; isolation: isolate; overflow: hidden; }
+.tadeon-knowledge-graph[data-tadeon-directed="true"]::after,
+.tadeon-brain-shell[data-tadeon-directed="true"]::after {
+  position: absolute;
+  inset: 1rem;
+  border: 1px solid rgb(217 215 164 / 4%);
+  border-radius: inherit;
+  content: "";
+  pointer-events: none;
+}
+
+/* Master / tabletop */
+.tadeon-shell[data-section="Painel do Mestre"] .tadeon-surface[data-tadeon-directed="true"],
+.tadeon-shell[data-section="Mesa Nexus"] .tadeon-surface[data-tadeon-directed="true"] { border-color: color-mix(in srgb, var(--tadeon-section-accent, var(--tadeon-metal)) 22%, var(--border)); }
+.tadeon-shell[data-section="Painel do Mestre"] .tadeon-dashboard-signal[data-tadeon-directed="true"],
+.tadeon-shell[data-section="Mesa Nexus"] .tadeon-dashboard-signal[data-tadeon-directed="true"] { font-variant-numeric: tabular-nums; }
+
+/* Empty/error/offline states */
+.tadeon-state-panel[data-tadeon-material="state"] { min-height: 10rem; }
+.tadeon-state-panel[data-tadeon-material="state"]::after {
+  position: absolute;
+  right: -3rem;
+  bottom: -4rem;
+  width: 12rem;
+  height: 12rem;
+  border: 1px solid color-mix(in srgb, var(--tadeon-section-accent, var(--tadeon-metal)) 10%, transparent);
+  border-radius: 50%;
+  content: "";
+  pointer-events: none;
+  opacity: 0.65;
+}
+
+.tadeon-shell h1,
+.tadeon-shell h2,
+.tadeon-shell h3 { font-family: var(--font-cinzel); }
+.tadeon-shell .tadeon-eyebrow,
+.tadeon-shell .tadeon-mono,
+.tadeon-shell [data-state],
+.tadeon-shell [aria-live] { font-family: var(--font-mono); }
+.tadeon-shell button,
+.tadeon-shell input,
+.tadeon-shell textarea,
+.tadeon-shell select,
+.tadeon-shell label { font-family: var(--font-inter); }
+
+@media (max-width: 767px) {
+  .tadeon-dashboard-hero[data-tadeon-material="chapter"] { min-height: 13rem; }
+  .tadeon-dashboard-hero[data-tadeon-material="chapter"]::after { width: 17rem; height: 17rem; right: -6rem; bottom: -7rem; }
+  .tadeon-knowledge-graph[data-tadeon-directed="true"]::after,
+  .tadeon-brain-shell[data-tadeon-directed="true"]::after { inset: 0.65rem; }
+  .tadeon-sheet-card[data-tadeon-material="relic"],
+  .tadeon-link-panel[data-tadeon-material="fragment"],
+  .tadeon-state-panel[data-tadeon-material="state"] { border-radius: 0.75rem; }
+  .tadeon-sheet-section:hover { transform: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tadeon-dashboard-hero[data-tadeon-material="chapter"]::after,
+  .tadeon-nav-item[data-tadeon-directed="true"]::before,
+  .tadeon-sheet-section,
+  .tadeon-overview-metric { transition-duration: 1ms !important; }
+}
+
+/* end-source: src/styles/tadeon-experience-details.css */
+/* source: src/styles/tadeon-command-experience.css */
+/* Tadeon Command Experience ~ master + tabletop
+   Editorial control surface, not a dashboard skin. */
+
+.tadeon-shell[data-section="Painel do Mestre"] {
+  --tadeon-command-accent: var(--tadeon-flow);
+  --tadeon-command-accent-soft: rgb(79 110 93 / 10%);
+}
+
+.tadeon-shell[data-section="Painel do Mestre"] .tadeon-master-commandbar {
+  border-color: color-mix(in srgb, var(--tadeon-command-accent) 24%, var(--border));
+  border-radius: 1.15rem .38rem 1.15rem .38rem;
+  background:
+    linear-gradient(125deg, color-mix(in srgb, var(--tadeon-command-accent) 7%, var(--card)), transparent 52%),
+    radial-gradient(circle at 92% 4%, rgb(217 215 164 / 6%), transparent 30%),
+    color-mix(in srgb, var(--card) 94%, transparent);
+  box-shadow:
+    0 32px 80px -60px rgb(0 0 0 / 96%),
+    inset 0 1px rgb(255 255 255 / 3%),
+    inset 1px 0 color-mix(in srgb, var(--tadeon-command-accent) 12%, transparent);
+  backdrop-filter: blur(16px) saturate(115%);
+}
+
+.tadeon-shell[data-section="Painel do Mestre"] .tadeon-master-commandbar::after {
+  position: absolute;
+  inset: auto 1rem 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--tadeon-command-accent) 34%, var(--tadeon-knowledge)), transparent);
+  content: "";
+  opacity: .66;
+}
+
+.tadeon-shell[data-section="Painel do Mestre"] .tadeon-master-commandbar__glow {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(120deg, transparent 0 28%, rgb(217 215 164 / 3%) 42%, transparent 58%),
+    radial-gradient(circle at 78% 100%, var(--tadeon-command-accent-soft), transparent 34%);
+  pointer-events: none;
+}
+
+.tadeon-shell[data-section="Painel do Mestre"] .tadeon-master-commandbar h1,
+.tadeon-shell[data-section="Painel do Mestre"] .tadeon-master-commandbar p,
+.tadeon-shell[data-section="Painel do Mestre"] .tadeon-master-commandbar button,
+.tadeon-shell[data-section="Painel do Mestre"] .tadeon-master-commandbar [data-state] {
+  position: relative;
+  z-index: 1;
+}
+
+.tadeon-shell[data-section="Painel do Mestre"] .tadeon-master-commandbar h1 svg {
+  filter: drop-shadow(0 0 10px rgb(217 215 164 / 18%));
+}
+
+.tadeon-master-commandbar__sigil-stack {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  width: 3.1rem;
+  height: 3.1rem;
+  place-items: center;
+  color: var(--tadeon-command-accent);
+  filter: drop-shadow(0 10px 22px rgb(0 0 0 / 34%));
+}
+
+.tadeon-master-commandbar__master-sigil {
+  width: 100%;
+  height: 100%;
+  opacity: .6;
+}
+
+.tadeon-master-commandbar__active-icon {
+  position: absolute;
+  width: 1rem;
+  height: 1rem;
+  color: var(--tadeon-knowledge);
+  filter: drop-shadow(0 0 10px rgb(217 215 164 / 22%));
+}
+
+.tadeon-shell[data-section="Painel do Mestre"] .tadeon-master-navigation__scroller {
+  border-color: color-mix(in srgb, var(--tadeon-command-accent) 24%, var(--border));
+  background:
+    linear-gradient(105deg, rgb(79 110 93 / 6%), transparent 46%),
+    color-mix(in srgb, var(--card) 92%, transparent);
+}
+
+.tadeon-shell[data-section="Painel do Mestre"] .tadeon-master-navigation [data-slot="tabs-trigger"] {
+  position: relative;
+  min-height: 2.5rem;
+  border-radius: .65rem .22rem .65rem .22rem;
+  color: var(--muted-foreground);
+  transition:
+    color 200ms var(--ease-out),
+    background-color 200ms var(--ease-out),
+    border-color 200ms var(--ease-out),
+    transform 160ms var(--ease-out),
+    box-shadow 220ms var(--ease-out);
+}
+
+.tadeon-shell[data-section="Painel do Mestre"] .tadeon-master-navigation [data-slot="tabs-trigger"]::after {
+  position: absolute;
+  inset: auto .45rem .2rem;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--tadeon-command-accent) 76%, var(--tadeon-knowledge)), transparent);
+  content: "";
+  opacity: 0;
+  transform: scaleX(.42);
+  transition: opacity 200ms ease, transform 260ms var(--ease-out);
+}
+
+.tadeon-shell[data-section="Painel do Mestre"] .tadeon-master-navigation [data-slot="tabs-trigger"]:hover {
+  color: var(--foreground);
+  background: color-mix(in srgb, var(--secondary) 84%, transparent);
+  transform: translateY(-1px);
+}
+
+.tadeon-shell[data-section="Painel do Mestre"] .tadeon-master-navigation [data-slot="tabs-trigger"][data-state="active"] {
+  color: var(--foreground);
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--tadeon-command-accent) 16%, transparent), transparent 72%),
+    color-mix(in srgb, var(--secondary) 92%, transparent);
+  box-shadow:
+    inset 0 0 0 1px color-mix(in srgb, var(--tadeon-command-accent) 26%, transparent),
+    0 14px 34px -28px color-mix(in srgb, var(--tadeon-command-accent) 42%, transparent);
+}
+
+.tadeon-shell[data-section="Painel do Mestre"] .tadeon-master-navigation [data-slot="tabs-trigger"][data-state="active"]::after {
+  opacity: .9;
+  transform: scaleX(1);
+}
+
+.tadeon-shell[data-section="Painel do Mestre"] .tadeon-master-navigation__label {
+  color: color-mix(in srgb, var(--tadeon-command-accent) 68%, var(--muted-foreground));
+  font-family: var(--font-mono);
+  font-size: .55rem;
+  font-weight: 700;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+}
+
+.tadeon-shell[data-section="Painel do Mestre"] .tadeon-dashboard-signal {
+  position: relative;
+  overflow: hidden;
+  border-color: color-mix(in srgb, var(--tadeon-command-accent) 18%, var(--border));
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--tadeon-command-accent) 7%, transparent), transparent 58%),
+    color-mix(in srgb, var(--card) 96%, transparent);
+}
+
+.tadeon-shell[data-section="Painel do Mestre"] .tadeon-dashboard-signal::after {
+  position: absolute;
+  inset: auto .7rem .35rem;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--tadeon-command-accent) 28%, transparent), transparent);
+  content: "";
+}
+
+.tadeon-shell[data-section="Painel do Mestre"] .tadeon-surface[data-tadeon-material="archive"],
+.tadeon-shell[data-section="Painel do Mestre"] .tadeon-sheet-card[data-tadeon-material="relic"] {
+  border-radius: .9rem .35rem 1rem .4rem;
+}
+
+.tadeon-shell[data-section="Painel do Mestre"] .tadeon-route-stage [role="tabpanel"] > * {
+  scroll-margin-top: 7rem;
+}
+
+.tadeon-shell[data-section="Mesa Nexus"] {
+  --tadeon-tabletop-accent: var(--tadeon-arden);
+  --tadeon-tabletop-bronze: var(--tadeon-arden-bronze);
+}
+
+.tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-boot {
+  position: relative;
+  isolation: isolate;
+  min-height: calc(100dvh - 4rem);
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 50% 42%, rgb(31 54 68 / 14%), transparent 36rem),
+    radial-gradient(circle at 10% 100%, rgb(126 91 47 / 8%), transparent 28rem),
+    var(--background);
+}
+
+.tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-boot__halo {
+  position: absolute;
+  inset: 12% 18%;
+  border: 1px solid rgb(126 91 47 / 9%);
+  border-radius: 50%;
+  box-shadow:
+    0 0 0 2rem rgb(126 91 47 / 1.5%),
+    0 0 0 5rem rgb(31 54 68 / 2%);
+  transform: rotate(-5deg);
+}
+
+.tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-boot__card {
+  position: relative;
+  z-index: 1;
+  width: min(30rem, calc(100% - 2rem));
+  padding: 2rem;
+  border: 1px solid color-mix(in srgb, var(--tadeon-tabletop-bronze) 22%, var(--border));
+  border-radius: 1.2rem .42rem 1.2rem .42rem;
+  background:
+    linear-gradient(135deg, rgb(126 91 47 / 7%), transparent 48%),
+    color-mix(in srgb, var(--card) 94%, transparent);
+  box-shadow:
+    0 38px 100px -62px rgb(0 0 0 / 98%),
+    inset 0 1px rgb(255 255 255 / 3%);
+  backdrop-filter: blur(18px) saturate(120%);
+}
+
+.tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-boot__mark {
+  display: grid;
+  width: 2.85rem;
+  height: 2.85rem;
+  margin-bottom: 1rem;
+  place-items: center;
+  border: 1px solid rgb(126 91 47 / 28%);
+  border-radius: .85rem .25rem .85rem .25rem;
+  background: rgb(126 91 47 / 8%);
+  color: color-mix(in srgb, var(--tadeon-tabletop-bronze) 82%, var(--tadeon-knowledge));
+  box-shadow: inset 0 0 20px rgb(126 91 47 / 7%);
+}
+
+.tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-boot__progress {
+  position: relative;
+  height: 2px;
+  margin-top: 1.25rem;
+  overflow: hidden;
+  border-radius: 999px;
+  background: rgb(255 255 255 / 6%);
+}
+
+.tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-boot__progress span {
+  display: block;
+  width: 35%;
+  height: 100%;
+  background: linear-gradient(90deg, var(--tadeon-tabletop-accent), var(--tadeon-tabletop-bronze), var(--tadeon-knowledge));
+  box-shadow: 0 0 18px rgb(126 91 47 / 30%);
+  transition: width 520ms var(--ease-out);
+}
+
+.tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-boot__progress span[data-stage="1"] { width: 66%; }
+.tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-boot__progress span[data-stage="2"] { width: 100%; }
+
+.tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-boot__meta {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  margin-top: 1rem;
+  color: var(--muted-foreground);
+  font-family: var(--font-mono);
+  font-size: .58rem;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-stage,
+.tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-canvas,
+.tadeon-shell[data-section="Mesa Nexus"] [data-tabletop-stage] {
+  position: relative;
+  isolation: isolate;
+}
+
+.tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-toolbar,
+.tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-floating-toolbar,
+.tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-controls {
+  border: 1px solid rgb(126 91 47 / 18%);
+  border-radius: .9rem .28rem .9rem .28rem;
+  background:
+    linear-gradient(135deg, rgb(31 54 68 / 8%), transparent 52%),
+    color-mix(in srgb, #0b0e12 88%, transparent);
+  box-shadow:
+    0 20px 50px -36px rgb(0 0 0 / 96%),
+    inset 0 1px rgb(255 255 255 / 3%);
+  backdrop-filter: blur(16px) saturate(120%);
+}
+
+.tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-toolbar button,
+.tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-floating-toolbar button,
+.tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-controls button {
+  border-radius: .55rem .18rem .55rem .18rem;
+  transition:
+    color 180ms ease,
+    background-color 180ms ease,
+    border-color 180ms ease,
+    transform 150ms var(--ease-out),
+    box-shadow 220ms var(--ease-out);
+}
+
+.tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-toolbar button:hover,
+.tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-floating-toolbar button:hover,
+.tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-controls button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 12px 28px -24px rgb(126 91 47 / 42%);
+}
+
+@media (max-width: 767px) {
+  .tadeon-shell[data-section="Painel do Mestre"] .tadeon-master-navigation__scroller {
+    border-radius: .85rem .25rem .85rem .25rem;
+  }
+
+  .tadeon-master-commandbar__sigil-stack {
+    width: 2.65rem;
+    height: 2.65rem;
+  }
+
+  .tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-boot__card {
+    width: min(28rem, calc(100% - 1rem));
+    padding: 1.35rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-boot__progress span,
+  .tadeon-shell[data-section="Painel do Mestre"] .tadeon-master-navigation [data-slot="tabs-trigger"] {
+    transition-duration: 1ms !important;
+  }
+}
+
+/* end-source: src/styles/tadeon-command-experience.css */

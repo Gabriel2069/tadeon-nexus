@@ -1,3 +1,4 @@
+/* source: src/styles/tabletop-creative-dock.css */
 .tadeon-creative-dock {
   position: fixed;
   z-index: 86;
@@ -464,3 +465,5 @@
     transition: none;
   }
 }
+
+/* end-source: src/styles/tabletop-creative-dock.css */

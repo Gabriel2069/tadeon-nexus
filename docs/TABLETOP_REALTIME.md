@@ -1,5 +1,7 @@
 # Mesa Nexus — contrato Realtime
 
+> Referência de contrato/procedimento. Afirmações de ambiente, flags, preços ou rollout descrevem seu checkpoint e exigem conferência atual. Consulte [índice](README.md) e [continuidade](ai/00_ESTADO_ATUAL.md).
+
 Esta etapa prepara o transporte ao vivo sem ativá-lo. A flag global
 `nexus_realtime_enabled` permanece desligada e não há override individual.
 

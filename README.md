@@ -2,6 +2,12 @@
 
 Aplicação web para gerenciar fichas, progressão de personagens e a mesa do Tadeon Nexus.
 
+## Organização e continuidade
+
+O [índice de manutenção](docs/README.md) reúne o [estado de continuidade](docs/ai/00_ESTADO_ATUAL.md), o [mapa do código](docs/PROJECT_MAP.md), a [fila de trabalho](docs/WORKPLAN.md) e a [conciliação das PRs](docs/PR_RECONCILIATION.md).
+
+`docs/project-continuity.json` é o registro único de tarefas, responsáveis e decisões. Rode `npm run sync:project` após alterá-lo; `npm run check:project` verifica mapas, caminhos, dependências e inventários. Planos históricos são referência, não uma segunda fila.
+
 ## Desenvolvimento local
 
 Requisitos: Node.js 22 ou superior e npm.
@@ -15,7 +21,11 @@ Requisitos: Node.js 22 ou superior e npm.
 ## Validação
 
 Execute `npm run check` antes de publicar alterações. O comando roda lint, verificação de tipos,
-testes e o build de produção.
+testes e o build de produção. A verificação inclui o contrato da arquitetura de estilos.
+
+Antes de trabalhar na interface, leia [a base de manutenção](docs/FOUNDATION.md) e
+as regras de [AGENTS.md](AGENTS.md). Edite os módulos responsáveis existentes; não acrescente
+outra camada de correção para sobrepor as anteriores.
 
 ## Banco de dados
 

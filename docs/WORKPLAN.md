@@ -1,0 +1,128 @@
+# Fila de produção e decisões
+
+> Gerado de [project-continuity.json](project-continuity.json). Edite o registro e rode `npm run sync:project`; não mantenha uma cópia manual.
+
+Snapshot: 2026-10-11; referência de runtime: `2a458d97531e1d5dc314bdc42df3eadb7b26ef67`. PR #258 em `refactor/nexus-foundation-2026-10-11`; integração: `validated_unmerged`. Não é prova de deploy.
+
+Estados: planejado → próximo → em andamento → validado na branch → integrado. Publicação exige evidência própria do SHA; adiado conserva o requisito. Se um requisito mudar, preservar o ID e registrar a decisão/evidência.
+
+Cada PR usa IDs desta fila e declara dependências. Trabalho sobre o mesmo proprietário deve ser sequencial; não duplicar implementação. [Conciliação das PRs](PR_RECONCILIATION.md).
+
+| ID | Trabalho | Estado | Prioridade | Responsável | Depende de |
+| --- | --- | --- | --- | --- | --- |
+| NEX-001 | Preparação estrutural | Validado na branch | 0 | delivery | — |
+| NEX-002 | Mapa, continuidade e conciliação das PRs | Validado na branch | 0 | delivery | NEX-001 |
+| NEX-003 | Referência visual do shell e Dashboard | Próximo | 1 | shell | NEX-001, NEX-002 |
+| NEX-004 | Sidebar, navegação móvel e portais | Planejado | 2 | popup | NEX-003 |
+| NEX-005 | Ficha por seções e estados | Planejado | 3 | sheet | NEX-003 |
+| NEX-006 | Biblioteca, documento e grafo do Nexus | Planejado | 4 | knowledge | NEX-003 |
+| NEX-007 | Mesa: hierarquia de ferramentas e workspace | Planejado | 5 | tabletop | NEX-004 |
+| NEX-008 | Painel do Mestre e administração | Planejado | 6 | master | NEX-003 |
+| NEX-009 | Desempenho e motion | Planejado | 7 | delivery | NEX-003, NEX-007 |
+| NEX-010 | Validação real de autorização e rollout | Planejado | 8 | session | NEX-001 |
+| NEX-011 | Backup e restauração verificável | Planejado | 8 | assets | NEX-010 |
+| NEX-012 | Revisão editorial do corpus canônico | Adiado | 9 | knowledge | NEX-006 |
+
+## NEX-001 — Preparação estrutural
+
+- 57 módulos CSS, 12 links globais e responsáveis únicos nos pontos saneados.
+- Checks, auditoria e navegador documentados; integração em main é um estado separado.
+
+Evidências: [docs/foundation-completion-validation.json](../docs/foundation-completion-validation.json), [docs/FOUNDATION.md](../docs/FOUNDATION.md), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38146306651).
+
+## NEX-002 — Mapa, continuidade e conciliação das PRs
+
+- Histórico preservado e separado da fila atual.
+- Gate detecta referências ausentes, IDs/dependências inválidos, ciclos e mapas desatualizados.
+- PR antiga preserva requisitos e não disputa a fila de integração.
+
+Evidências: [scripts/check-project-continuity.mjs](../scripts/check-project-continuity.mjs), [docs/PR_RECONCILIATION.md](../docs/PR_RECONCILIATION.md), [.github/PULL_REQUEST_TEMPLATE.md](../.github/PULL_REQUEST_TEMPLATE.md), [docs/continuity-validation.json](../docs/continuity-validation.json).
+
+## NEX-003 — Referência visual do shell e Dashboard
+
+- Registrar estados vazio, carregando, erro e dados povoados em 390, 820 e 1440 px.
+- Revisar hierarquia, leitura, símbolos, superfície, respiro e três indicadores do Dashboard.
+- Preservar Fio-Mestre; definir referência aprovada antes de expandir a linguagem às demais telas.
+
+Evidências: pendentes; não declarar concluído.
+
+## NEX-004 — Sidebar, navegação móvel e portais
+
+- Validar expansão/recolhimento, drawer, busca e conta por mouse, toque e teclado.
+- Testar foco, Escape, retorno ao controle, safe areas e teclado real quando disponível.
+- Cada propriedade alterada mantém uma autoridade; reduzir dívida CSS em vez de adicionar remendo.
+
+Evidências: pendentes; não declarar concluído.
+
+## NEX-005 — Ficha por seções e estados
+
+- Extrair identidade, pontos, atributos, perícias e condições preservando estado, regras e autosave.
+- Validar ficha povoada, somente leitura, salvamento, erro e transição de usuário.
+- Transferir vínculos/modificadores e inventário dos bridges antes de retirar suas funções.
+
+Evidências: pendentes; não declarar concluído.
+
+## NEX-006 — Biblioteca, documento e grafo do Nexus
+
+- Revisar busca/lista/documento/propriedades e prioridades no celular.
+- Verificar corpus povoado, filtros e legibilidade da teia sem sobrescrever escolhas manuais.
+- Preservar vínculos, importação/exportação e diferenças entre cânone e material derivado.
+
+Evidências: pendentes; não declarar concluído.
+
+## NEX-007 — Mesa: hierarquia de ferramentas e workspace
+
+- Mapear cada bridge para função e destino antes de consolidar.
+- Separar estado persistente, estado ao vivo e estado local; conservar coordenadas mundo/tela.
+- Verificar overlays, seleção, inspector, câmera, jogador/mestre e reconexão em cenas de teste.
+
+Evidências: pendentes; não declarar concluído.
+
+## NEX-008 — Painel do Mestre e administração
+
+- Revisar densidade, tabs, editor e listas com dados longos.
+- Separar seções do hub por responsabilidade sem duplicar autorização.
+- Estados vazio/erro/sucesso e usuário sem acesso preservados.
+
+Evidências: pendentes; não declarar concluído.
+
+## NEX-009 — Desempenho e motion
+
+- Medir carregamento por rota, chunk Pixi, frames e custos de efeitos antes de otimizar.
+- Movimento reduzido, cancelamento e ausência de loops redundantes verificados.
+- Registrar ganhos medidos; não inferir redução de bytes da redução de arquivos.
+
+Evidências: pendentes; não declarar concluído.
+
+## NEX-010 — Validação real de autorização e rollout
+
+- Em ambiente adequado, testar mestre, jogador, espectador e acesso negado entre campanhas.
+- Conferir migrations aplicadas, flags e OAuth com evidência datada; não reutilizar status histórico como atual.
+- Não aplicar migrations, ativar flags ou mudar provedores durante refinamento visual.
+
+Evidências: pendentes; não declarar concluído.
+
+## NEX-011 — Backup e restauração verificável
+
+- Verificar dump restaurável e inventário de objetos sem expor credenciais.
+- Ensaiar restauração em ambiente isolado e registrar limites de banco, Storage e R2.
+
+Evidências: pendentes; não declarar concluído.
+
+## NEX-012 — Revisão editorial do corpus canônico
+
+- Revalidar as fontes e o pacote antes de tratar contagens de agosto como atuais.
+- Preservar proveniência, aliases e relações ao revisar as sínteses.
+
+Evidências: pendentes; não declarar concluído.
+
+## Decisões vigentes
+
+| ID | Decisão | Motivo |
+| --- | --- | --- |
+| DEC-001 | Preservar Fio-Mestre; NexOS é outro projeto. | Evitar importar cosmos/Liquid Glass e terminologia de outro produto. |
+| DEC-002 | Uma fonte de verdade para cada responsabilidade. | Estado React, viewport, tokens e dados não recebem escritores paralelos. |
+| DEC-003 | Manter estrutura atual; extrair módulos por responsabilidade. | Criar src/features e src/services em paralelo repetiria os serviços já existentes. |
+| DEC-004 | Preservar migrations e corpus editorial separadamente. | Consolidação do código não autoriza reescrever SQL aplicado ou fontes narrativas. |
+| DEC-005 | Uma fila canônica e PRs de escopo verificável. | Planos históricos não reabrem tarefas sem confrontar a implementação atual. |
+| DEC-006 | Branch validada não significa main integrado ou produção publicada. | Merge em main pode acionar deploy; nenhum desses estados é presumido. |

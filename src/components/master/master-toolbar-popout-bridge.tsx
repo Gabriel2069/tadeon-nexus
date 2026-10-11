@@ -4,8 +4,7 @@ import { ExternalLink, Loader2, Save } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
-import "@/styles/ui-coherence-192.css";
-
+import "@/styles/master-toolbar-popout.css";
 interface RpcResult<T> {
   data: T | null;
   error: { message?: string } | null;

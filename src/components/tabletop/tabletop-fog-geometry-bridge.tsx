@@ -20,8 +20,7 @@ import type {
   TabletopFogShape,
 } from "@/lib/tabletop/tabletop-visibility-service";
 import type { Point, TabletopSnapshot } from "@/lib/tabletop/types";
-import "@/styles/tabletop-world-systems.css";
-
+import "@/styles/tabletop-fog-geometry.css";
 const database = supabase as unknown as SupabaseClient;
 
 type PracticalFogShape = Extract<

@@ -1357,17 +1357,6 @@ body
 
 /* Preserve words in narrow controls. Only genuinely unbroken identifiers
  * may fall back to a break; normal labels wrap at spaces. */
-.tadeon-shell :where(h1, h2, h3, h4, p, label, legend),
-:where(
-    [data-slot="button"],
-    [data-slot="tabs-trigger"],
-    [data-slot="toggle"],
-    [data-slot="toggle-group-item"]
-  )
-  > :where(span, strong, small):not(.sr-only) {
-  overflow-wrap: break-word;
-  word-break: normal;
-}
 
 @media (max-width: 767px) {
   :where(
@@ -1759,7 +1748,7 @@ body
 }
 
 /*
- * Living Archive — final shared product layer.
+ * Living Archive - final shared product layer.
  * Content uses quiet, opaque depth; translucency is reserved for navigation,
  * command surfaces and temporary controls. This keeps the archive legible while
  * preserving the Fio-Mestre atmosphere across every route.
@@ -4379,7 +4368,7 @@ legend {
   }
 }
 
-/* #255 — quadros de trabalho e pop-ups compartilham a mesma geometria. */
+/* #255 - quadros de trabalho e pop-ups compartilham a mesma geometria. */
 @media (min-width: 768px) {
   :where(.tadeon-route-dashboard, .tadeon-route-nexus, .tadeon-route-master) {
     width: min(100%, 104rem) !important;

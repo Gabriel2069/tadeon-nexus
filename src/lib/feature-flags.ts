@@ -67,3 +67,7 @@ export function resolveFeatureFlags({
 export function isFeatureEnabled(flags: FeatureFlags, key: FeatureFlagKey) {
   return flags[key] === true;
 }
+
+// Core route availability is distinct from optional tabletop integrations.
+// Matches the existing degraded opening contract of /tabletop.
+export const CORE_SURFACES = Object.freeze({ tabletop: true });

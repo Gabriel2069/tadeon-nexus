@@ -1,0 +1,970 @@
+{
+  "date": "2026-10-11",
+  "baselineCommit": "95cc9c5d5bdcf48921be13b29709f46ad0804910",
+  "browser": "Chromium 153.0.8010.0",
+  "fixture": "mocked Supabase client session, mestre, empty collections; server functions return 503",
+  "reducedMotion": true,
+  "cases": [
+    {
+      "route": "/",
+      "width": 390,
+      "height": 1000,
+      "visibleFocusMatchesBaseline": true,
+      "mainCount": 1,
+      "overflow": false,
+      "marks": [
+        {
+          "className": "tadeon-focus-section-mark-host",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": "rgb(217, 215, 164)",
+          "display": "grid"
+        },
+        {
+          "className": "tadeon-focus-section-mark-host",
+          "rect": [
+            127.9375,
+            15.5,
+            32,
+            32
+          ],
+          "color": "rgb(217, 215, 164)",
+          "display": "grid"
+        }
+      ],
+      "interactions": [],
+      "pageErrors": []
+    },
+    {
+      "route": "/nexus",
+      "width": 390,
+      "height": 1000,
+      "visibleFocusMatchesBaseline": true,
+      "mainCount": 1,
+      "overflow": false,
+      "marks": [
+        {
+          "className": "tadeon-focus-section-mark-host",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": "rgb(79, 110, 93)",
+          "display": "grid"
+        },
+        {
+          "className": "tadeon-focus-section-mark-host",
+          "rect": [
+            129.421875,
+            15.5,
+            32,
+            32
+          ],
+          "color": "rgb(79, 110, 93)",
+          "display": "grid"
+        }
+      ],
+      "interactions": [],
+      "pageErrors": []
+    },
+    {
+      "route": "/master-panel",
+      "width": 390,
+      "height": 1000,
+      "visibleFocusMatchesBaseline": true,
+      "mainCount": 1,
+      "overflow": false,
+      "marks": [
+        {
+          "className": "tadeon-focus-section-mark-host",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": "rgb(116, 36, 45)",
+          "display": "grid"
+        },
+        {
+          "className": "tadeon-focus-section-mark-host",
+          "rect": [
+            106.390625,
+            15.5,
+            32,
+            32
+          ],
+          "color": "rgb(116, 36, 45)",
+          "display": "grid"
+        }
+      ],
+      "interactions": [],
+      "pageErrors": []
+    },
+    {
+      "route": "/offline",
+      "width": 390,
+      "height": 1000,
+      "visibleFocusMatchesBaseline": true,
+      "mainCount": 1,
+      "overflow": false,
+      "marks": [
+        {
+          "className": "tadeon-focus-section-mark-host",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": "rgb(113, 107, 123)",
+          "display": "grid"
+        },
+        {
+          "className": "tadeon-focus-section-mark-host",
+          "rect": [
+            106.859375,
+            15.5,
+            32,
+            32
+          ],
+          "color": "rgb(113, 107, 123)",
+          "display": "grid"
+        },
+        {
+          "className": "tadeon-page-hero-mark-host",
+          "rect": [
+            29.390625,
+            108.828125,
+            42.390625,
+            42.390625
+          ],
+          "color": "rgb(113, 107, 123)",
+          "display": "grid"
+        }
+      ],
+      "interactions": [
+        {
+          "label": "Abrir busca global",
+          "rect": {
+            "x": 11.09375,
+            "y": 173.828125,
+            "width": 358.796875,
+            "height": 652.34375
+          },
+          "contained": true,
+          "focusInside": true,
+          "tabInside": true,
+          "returned": true
+        },
+        {
+          "label": "Conta",
+          "rect": {
+            "x": 8,
+            "y": 32.796875,
+            "width": 365,
+            "height": 934.390625
+          },
+          "contained": true,
+          "focusInside": true,
+          "tabInside": true,
+          "returned": true
+        }
+      ],
+      "pageErrors": []
+    },
+    {
+      "route": "/nexus-tools",
+      "width": 390,
+      "height": 1000,
+      "visibleFocusMatchesBaseline": true,
+      "mainCount": 1,
+      "overflow": false,
+      "marks": [
+        {
+          "className": "tadeon-focus-section-mark-host",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": "rgb(122, 129, 135)",
+          "display": "grid"
+        },
+        {
+          "className": "tadeon-focus-section-mark-host",
+          "rect": [
+            106.390625,
+            15.5,
+            32,
+            32
+          ],
+          "color": "rgb(122, 129, 135)",
+          "display": "grid"
+        },
+        {
+          "className": "tadeon-page-hero-mark-host",
+          "rect": [
+            29.390625,
+            108.828125,
+            42.390625,
+            42.390625
+          ],
+          "color": "rgb(122, 129, 135)",
+          "display": "grid"
+        }
+      ],
+      "interactions": [],
+      "pageErrors": []
+    },
+    {
+      "route": "/manage-users",
+      "width": 390,
+      "height": 1000,
+      "visibleFocusMatchesBaseline": true,
+      "mainCount": 1,
+      "overflow": false,
+      "marks": [
+        {
+          "className": "tadeon-focus-section-mark-host",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": "rgb(183, 129, 77)",
+          "display": "grid"
+        },
+        {
+          "className": "tadeon-focus-section-mark-host",
+          "rect": [
+            129.421875,
+            15.5,
+            32,
+            32
+          ],
+          "color": "rgb(183, 129, 77)",
+          "display": "grid"
+        },
+        {
+          "className": "tadeon-page-hero-mark-host",
+          "rect": [
+            29.390625,
+            108.828125,
+            42.390625,
+            42.390625
+          ],
+          "color": "rgb(183, 129, 77)",
+          "display": "grid"
+        }
+      ],
+      "interactions": [],
+      "pageErrors": []
+    },
+    {
+      "route": "/tabletop",
+      "width": 390,
+      "height": 1000,
+      "visibleFocusMatchesBaseline": true,
+      "mainCount": 1,
+      "overflow": false,
+      "marks": [
+        {
+          "className": "tadeon-focus-section-mark-host",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": "rgb(84, 123, 148)",
+          "display": "grid"
+        },
+        {
+          "className": "tadeon-focus-section-mark-host",
+          "rect": [
+            123.15625,
+            10.5,
+            32,
+            32
+          ],
+          "color": "rgb(84, 123, 148)",
+          "display": "grid"
+        },
+        {
+          "className": "tadeon-tabletop-brand-mark-host",
+          "rect": [
+            10.390625,
+            82,
+            40,
+            40
+          ],
+          "color": "rgb(84, 123, 148)",
+          "display": "grid"
+        }
+      ],
+      "interactions": [],
+      "pageErrors": []
+    },
+    {
+      "route": "/",
+      "width": 820,
+      "height": 1000,
+      "visibleFocusMatchesBaseline": true,
+      "mainCount": 1,
+      "overflow": false,
+      "marks": [
+        {
+          "className": "tadeon-focus-section-mark-host",
+          "rect": [
+            245.59375,
+            18.6875,
+            36,
+            36
+          ],
+          "color": "rgb(217, 215, 164)",
+          "display": "grid"
+        },
+        {
+          "className": "tadeon-focus-section-mark-host",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": "rgb(217, 215, 164)",
+          "display": "grid"
+        }
+      ],
+      "interactions": [],
+      "pageErrors": []
+    },
+    {
+      "route": "/nexus",
+      "width": 820,
+      "height": 1000,
+      "visibleFocusMatchesBaseline": true,
+      "mainCount": 1,
+      "overflow": false,
+      "marks": [
+        {
+          "className": "tadeon-focus-section-mark-host",
+          "rect": [
+            245.59375,
+            18.6875,
+            36,
+            36
+          ],
+          "color": "rgb(79, 110, 93)",
+          "display": "grid"
+        },
+        {
+          "className": "tadeon-focus-section-mark-host",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": "rgb(79, 110, 93)",
+          "display": "grid"
+        }
+      ],
+      "interactions": [],
+      "pageErrors": []
+    },
+    {
+      "route": "/master-panel",
+      "width": 820,
+      "height": 1000,
+      "visibleFocusMatchesBaseline": true,
+      "mainCount": 1,
+      "overflow": false,
+      "marks": [
+        {
+          "className": "tadeon-focus-section-mark-host",
+          "rect": [
+            245.59375,
+            18.6875,
+            36,
+            36
+          ],
+          "color": "rgb(116, 36, 45)",
+          "display": "grid"
+        },
+        {
+          "className": "tadeon-focus-section-mark-host",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": "rgb(116, 36, 45)",
+          "display": "grid"
+        }
+      ],
+      "interactions": [],
+      "pageErrors": []
+    },
+    {
+      "route": "/offline",
+      "width": 820,
+      "height": 1000,
+      "visibleFocusMatchesBaseline": true,
+      "mainCount": 1,
+      "overflow": false,
+      "marks": [
+        {
+          "className": "tadeon-focus-section-mark-host",
+          "rect": [
+            245.59375,
+            18.6875,
+            36,
+            36
+          ],
+          "color": "rgb(113, 107, 123)",
+          "display": "grid"
+        },
+        {
+          "className": "tadeon-focus-section-mark-host",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": "rgb(113, 107, 123)",
+          "display": "grid"
+        },
+        {
+          "className": "tadeon-page-hero-mark-host",
+          "rect": [
+            265.59375,
+            128.984375,
+            48,
+            48
+          ],
+          "color": "rgb(113, 107, 123)",
+          "display": "grid"
+        }
+      ],
+      "interactions": [
+        {
+          "label": "Abrir busca global",
+          "rect": {
+            "x": 228,
+            "y": 194.296875,
+            "width": 575,
+            "height": 611.390625
+          },
+          "contained": true,
+          "focusInside": true,
+          "tabInside": true,
+          "returned": true
+        },
+        {
+          "label": "Abrir configurações da conta",
+          "rect": {
+            "x": 236,
+            "y": 85,
+            "width": 559,
+            "height": 830
+          },
+          "contained": true,
+          "focusInside": true,
+          "tabInside": true,
+          "returned": true
+        }
+      ],
+      "pageErrors": []
+    },
+    {
+      "route": "/nexus-tools",
+      "width": 820,
+      "height": 1000,
+      "visibleFocusMatchesBaseline": true,
+      "mainCount": 1,
+      "overflow": false,
+      "marks": [
+        {
+          "className": "tadeon-focus-section-mark-host",
+          "rect": [
+            245.59375,
+            18.6875,
+            36,
+            36
+          ],
+          "color": "rgb(122, 129, 135)",
+          "display": "grid"
+        },
+        {
+          "className": "tadeon-focus-section-mark-host",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": "rgb(122, 129, 135)",
+          "display": "grid"
+        },
+        {
+          "className": "tadeon-page-hero-mark-host",
+          "rect": [
+            265.59375,
+            128.984375,
+            48,
+            48
+          ],
+          "color": "rgb(122, 129, 135)",
+          "display": "grid"
+        }
+      ],
+      "interactions": [],
+      "pageErrors": []
+    },
+    {
+      "route": "/manage-users",
+      "width": 820,
+      "height": 1000,
+      "visibleFocusMatchesBaseline": true,
+      "mainCount": 1,
+      "overflow": false,
+      "marks": [
+        {
+          "className": "tadeon-focus-section-mark-host",
+          "rect": [
+            245.59375,
+            18.6875,
+            36,
+            36
+          ],
+          "color": "rgb(183, 129, 77)",
+          "display": "grid"
+        },
+        {
+          "className": "tadeon-focus-section-mark-host",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": "rgb(183, 129, 77)",
+          "display": "grid"
+        },
+        {
+          "className": "tadeon-page-hero-mark-host",
+          "rect": [
+            265.59375,
+            128.984375,
+            48,
+            48
+          ],
+          "color": "rgb(183, 129, 77)",
+          "display": "grid"
+        }
+      ],
+      "interactions": [],
+      "pageErrors": []
+    },
+    {
+      "route": "/tabletop",
+      "width": 820,
+      "height": 1000,
+      "visibleFocusMatchesBaseline": true,
+      "mainCount": 1,
+      "overflow": false,
+      "marks": [
+        {
+          "className": "tadeon-focus-section-mark-host",
+          "rect": [
+            245.59375,
+            18.6875,
+            36,
+            36
+          ],
+          "color": "rgb(84, 123, 148)",
+          "display": "grid"
+        },
+        {
+          "className": "tadeon-focus-section-mark-host",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": "rgb(84, 123, 148)",
+          "display": "grid"
+        },
+        {
+          "className": "tadeon-tabletop-brand-mark-host",
+          "rect": [
+            236,
+            91.890625,
+            40,
+            40
+          ],
+          "color": "rgb(84, 123, 148)",
+          "display": "grid"
+        }
+      ],
+      "interactions": [],
+      "pageErrors": []
+    },
+    {
+      "route": "/",
+      "width": 1440,
+      "height": 1000,
+      "visibleFocusMatchesBaseline": true,
+      "mainCount": 1,
+      "overflow": false,
+      "marks": [
+        {
+          "className": "tadeon-focus-section-mark-host",
+          "rect": [
+            295.03125,
+            18.6875,
+            36,
+            36
+          ],
+          "color": "rgb(217, 215, 164)",
+          "display": "grid"
+        },
+        {
+          "className": "tadeon-focus-section-mark-host",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": "rgb(217, 215, 164)",
+          "display": "grid"
+        }
+      ],
+      "interactions": [],
+      "pageErrors": []
+    },
+    {
+      "route": "/nexus",
+      "width": 1440,
+      "height": 1000,
+      "visibleFocusMatchesBaseline": true,
+      "mainCount": 1,
+      "overflow": false,
+      "marks": [
+        {
+          "className": "tadeon-focus-section-mark-host",
+          "rect": [
+            295.03125,
+            18.6875,
+            36,
+            36
+          ],
+          "color": "rgb(79, 110, 93)",
+          "display": "grid"
+        },
+        {
+          "className": "tadeon-focus-section-mark-host",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": "rgb(79, 110, 93)",
+          "display": "grid"
+        }
+      ],
+      "interactions": [],
+      "pageErrors": []
+    },
+    {
+      "route": "/master-panel",
+      "width": 1440,
+      "height": 1000,
+      "visibleFocusMatchesBaseline": true,
+      "mainCount": 1,
+      "overflow": false,
+      "marks": [
+        {
+          "className": "tadeon-focus-section-mark-host",
+          "rect": [
+            295.03125,
+            18.6875,
+            36,
+            36
+          ],
+          "color": "rgb(116, 36, 45)",
+          "display": "grid"
+        },
+        {
+          "className": "tadeon-focus-section-mark-host",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": "rgb(116, 36, 45)",
+          "display": "grid"
+        }
+      ],
+      "interactions": [],
+      "pageErrors": []
+    },
+    {
+      "route": "/offline",
+      "width": 1440,
+      "height": 1000,
+      "visibleFocusMatchesBaseline": true,
+      "mainCount": 1,
+      "overflow": false,
+      "marks": [
+        {
+          "className": "tadeon-focus-section-mark-host",
+          "rect": [
+            295.03125,
+            18.6875,
+            36,
+            36
+          ],
+          "color": "rgb(113, 107, 123)",
+          "display": "grid"
+        },
+        {
+          "className": "tadeon-focus-section-mark-host",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": "rgb(113, 107, 123)",
+          "display": "grid"
+        },
+        {
+          "className": "tadeon-page-hero-mark-host",
+          "rect": [
+            334.59375,
+            144.171875,
+            48,
+            48
+          ],
+          "color": "rgb(113, 107, 123)",
+          "display": "grid"
+        }
+      ],
+      "interactions": [
+        {
+          "label": "Abrir busca global",
+          "rect": {
+            "x": 507.5,
+            "y": 190.296875,
+            "width": 672,
+            "height": 619.390625
+          },
+          "contained": true,
+          "focusInside": true,
+          "tabInside": true,
+          "returned": true
+        },
+        {
+          "label": "Abrir configurações da conta",
+          "rect": {
+            "x": 331.5,
+            "y": 81,
+            "width": 1024,
+            "height": 838
+          },
+          "contained": true,
+          "focusInside": true,
+          "tabInside": true,
+          "returned": true
+        }
+      ],
+      "pageErrors": []
+    },
+    {
+      "route": "/nexus-tools",
+      "width": 1440,
+      "height": 1000,
+      "visibleFocusMatchesBaseline": true,
+      "mainCount": 1,
+      "overflow": false,
+      "marks": [
+        {
+          "className": "tadeon-focus-section-mark-host",
+          "rect": [
+            295.03125,
+            18.6875,
+            36,
+            36
+          ],
+          "color": "rgb(122, 129, 135)",
+          "display": "grid"
+        },
+        {
+          "className": "tadeon-focus-section-mark-host",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": "rgb(122, 129, 135)",
+          "display": "grid"
+        },
+        {
+          "className": "tadeon-page-hero-mark-host",
+          "rect": [
+            334.59375,
+            144.171875,
+            48,
+            48
+          ],
+          "color": "rgb(122, 129, 135)",
+          "display": "grid"
+        }
+      ],
+      "interactions": [],
+      "pageErrors": []
+    },
+    {
+      "route": "/manage-users",
+      "width": 1440,
+      "height": 1000,
+      "visibleFocusMatchesBaseline": true,
+      "mainCount": 1,
+      "overflow": false,
+      "marks": [
+        {
+          "className": "tadeon-focus-section-mark-host",
+          "rect": [
+            295.03125,
+            18.6875,
+            36,
+            36
+          ],
+          "color": "rgb(183, 129, 77)",
+          "display": "grid"
+        },
+        {
+          "className": "tadeon-focus-section-mark-host",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": "rgb(183, 129, 77)",
+          "display": "grid"
+        },
+        {
+          "className": "tadeon-page-hero-mark-host",
+          "rect": [
+            334.59375,
+            144.171875,
+            48,
+            48
+          ],
+          "color": "rgb(183, 129, 77)",
+          "display": "grid"
+        }
+      ],
+      "interactions": [],
+      "pageErrors": []
+    },
+    {
+      "route": "/tabletop",
+      "width": 1440,
+      "height": 1000,
+      "visibleFocusMatchesBaseline": true,
+      "mainCount": 1,
+      "overflow": false,
+      "marks": [
+        {
+          "className": "tadeon-focus-section-mark-host",
+          "rect": [
+            295.03125,
+            18.6875,
+            36,
+            36
+          ],
+          "color": "rgb(84, 123, 148)",
+          "display": "grid"
+        },
+        {
+          "className": "tadeon-focus-section-mark-host",
+          "rect": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "color": "rgb(84, 123, 148)",
+          "display": "grid"
+        },
+        {
+          "className": "tadeon-tabletop-brand-mark-host",
+          "rect": [
+            272,
+            88.390625,
+            40,
+            40
+          ],
+          "color": "rgb(84, 123, 148)",
+          "display": "grid"
+        }
+      ],
+      "interactions": [],
+      "pageErrors": []
+    }
+  ],
+  "summary": {
+    "viewports": 3,
+    "sections": 7,
+    "screens": 21,
+    "visibleFocusMatchesBaseline": 21,
+    "mainLandmarkErrors": 0,
+    "overflowScreens": 0,
+    "pageErrors": 0,
+    "portalKeyboardCases": 6
+  },
+  "baselineFindings": {
+    "tabletop": "intermittent destroyed canvas access in clientToWorld from spatial streaming; three lifecycle tests and final browser run pass",
+    "mobileSearch": {
+      "width": 390,
+      "oldRect": {
+        "x": -167.5,
+        "width": 358
+      },
+      "newRect": {
+        "x": 11.09375,
+        "y": 173.828125,
+        "width": 358.796875,
+        "height": 652.34375
+      }
+    },
+    "focus": "search/account Escape returned no opening control before the DialogContent fix"
+  },
+  "limits": [
+    "Fixture is not a real authenticated account or populated campaign.",
+    "Admin users tested in controlled service error state.",
+    "No virtual keyboard, pinch zoom, complete sheet, or all Tabletop dialogs.",
+    "Full-page pixel equality not claimed; ambient effects and async states vary.",
+    "Baseline Tabletop runtime errors made studio content intermittent; final run waits for valid canvas."
+  ]
+}

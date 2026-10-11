@@ -1,0 +1,732 @@
+{
+  "version": 1,
+  "checkedAt": "2026-10-11",
+  "runtimeReference": "2a458d97531e1d5dc314bdc42df3eadb7b26ef67",
+  "integration": {
+    "pr": 258,
+    "branch": "refactor/nexus-foundation-2026-10-11",
+    "base": "main",
+    "baseCommit": "353808af68c8ba0d08bbc90d6f8ad9117c9e25f8",
+    "state": "validated_unmerged",
+    "production": "not_verified_in_this_stage"
+  },
+  "domains": [
+    {
+      "id": "shell",
+      "name": "Shell, navegação e cabeçalhos",
+      "code": [
+        "src/components/app-layout.tsx",
+        "src/components/protected-shell.tsx",
+        "src/components/section-symbols.tsx"
+      ],
+      "styles": [
+        "src/styles/desktop-shell.css",
+        "src/styles/navigation-layout.css",
+        "src/styles/page-hero-parity.css"
+      ],
+      "boundary": "Cabeçalhos renderizam símbolos; geometria de Área em foco pertence a page-hero-parity.css."
+    },
+    {
+      "id": "popup",
+      "name": "Busca, dialogs e viewport",
+      "code": [
+        "src/components/global-search.tsx",
+        "src/components/visual-viewport-popup-bridge.tsx",
+        "src/components/ui/dialog.tsx",
+        "src/components/ui/route-popup-frame.ts"
+      ],
+      "styles": [
+        "src/styles/global-search.css",
+        "src/styles/visual-viewport-popup.css",
+        "src/styles/route-popup-frame.css"
+      ],
+      "boundary": "Medidas do viewport pertencem ao bridge único do root; primitivos mantêm foco e portais."
+    },
+    {
+      "id": "dashboard",
+      "name": "Dashboard",
+      "code": [
+        "src/routes/index.tsx"
+      ],
+      "styles": [
+        "src/styles/page-hero-parity.css",
+        "src/styles/experience-surfaces.css"
+      ],
+      "boundary": "Indicadores e galeria pertencem à rota; revisar concorrentes CSS antes de alterar seu layout."
+    },
+    {
+      "id": "sheet",
+      "name": "Ficha e progressão",
+      "code": [
+        "src/routes/sheet.$id.tsx",
+        "src/routes/sheet.$id_.power.tsx",
+        "src/components/sheet/condition-counter.tsx",
+        "src/lib/sheet-types.ts",
+        "src/lib/use-serialized-autosave.ts"
+      ],
+      "styles": [
+        "src/styles/sheet-layout.css",
+        "src/styles/sheet-premium.css",
+        "src/styles/sheet-experience.css"
+      ],
+      "boundary": "Domínio mantém cálculos; rota mantém estado e autosave. Extrair seções por responsabilidade, preservando persistência."
+    },
+    {
+      "id": "knowledge",
+      "name": "O Nexus e grafo",
+      "code": [
+        "src/routes/nexus.tsx",
+        "src/lib/knowledge/knowledge-service.ts",
+        "src/lib/knowledge/knowledge-graph-service.ts",
+        "src/components/knowledge/knowledge-graph-second-brain.tsx"
+      ],
+      "styles": [
+        "src/styles/nexus-material.css",
+        "src/styles/knowledge-graph-second-brain.css"
+      ],
+      "boundary": "Serviços controlam acesso a dados; grafo controla presets e interação em React."
+    },
+    {
+      "id": "tabletop",
+      "name": "Mesa Nexus",
+      "code": [
+        "src/components/tabletop/tabletop-workspace.tsx",
+        "src/lib/tabletop/tabletop-engine.ts",
+        "src/lib/tabletop/tabletop-persistence-service.ts",
+        "src/lib/tabletop/tabletop-player-runtime.ts"
+      ],
+      "styles": [
+        "src/styles/tabletop-workspace.css",
+        "src/styles/tabletop-route-experience.css"
+      ],
+      "boundary": "Motor mantém coordenadas; persistência mantém versões; interfaces não devem criar câmera ou fonte de dados paralela."
+    },
+    {
+      "id": "master",
+      "name": "Painel e administração",
+      "code": [
+        "src/routes/master-panel.tsx",
+        "src/components/master/master-hub.tsx",
+        "src/routes/manage-users.tsx",
+        "supabase/functions/admin-users/index.ts"
+      ],
+      "styles": [
+        "src/styles/master-panel-navigation.css"
+      ],
+      "boundary": "UI não substitui autorização do servidor; dados narrativos não entram em anotação visual."
+    },
+    {
+      "id": "session",
+      "name": "Sessão, offline e flags",
+      "code": [
+        "src/lib/auth.tsx",
+        "src/lib/offline-cache.ts",
+        "src/lib/feature-flags.ts",
+        "src/lib/latest-request.ts"
+      ],
+      "styles": [
+        "src/styles/page-hero-parity.css"
+      ],
+      "boundary": "Identidade verificada acompanha cada escrita; leituras antigas são invalidadas."
+    },
+    {
+      "id": "assets",
+      "name": "Assets e portabilidade",
+      "code": [
+        "src/lib/assets/asset-service.ts",
+        "src/lib/knowledge/knowledge-portability-service.ts"
+      ],
+      "styles": [],
+      "boundary": "URLs privadas não são identidade persistente. Rollout e provedores exigem evidência própria."
+    },
+    {
+      "id": "delivery",
+      "name": "Qualidade, documentação e publicação",
+      "code": [
+        "scripts/check-style-architecture.mjs",
+        "scripts/check-project-continuity.mjs",
+        ".github/workflows/quality.yml",
+        ".github/workflows/cloudflare-preview.yml"
+      ],
+      "styles": [],
+      "boundary": "PR valida a branch; merge em main pode iniciar deploy. Documentação diferencia proposta, validação e integração."
+    },
+    {
+      "id": "presentation",
+      "name": "Direção visual e motion",
+      "code": [
+        "src/components/tadeon-experience-director.tsx",
+        "src/lib/frame-batch.ts"
+      ],
+      "styles": [
+        "src/styles/motion-foundation.css",
+        "src/styles/motion-interactions.css",
+        "src/styles/motion-composition.css"
+      ],
+      "boundary": "Cada propriedade animada tem um responsável; coalescer mutações sem perder registros."
+    }
+  ],
+  "documents": [
+    {
+      "path": "docs/EMAILS_SUPABASE.md",
+      "status": "reference",
+      "purpose": "Templates e operação de emails."
+    },
+    {
+      "path": "docs/EXPANSION_CHECKLIST.md",
+      "status": "historical",
+      "purpose": "Checklist de 08/08; prioridades substituídas pela fila atual."
+    },
+    {
+      "path": "docs/FOUNDATION.md",
+      "status": "active",
+      "purpose": "Consolidação estrutural, proprietários CSS e evidências por lote."
+    },
+    {
+      "path": "docs/NEXUS_ASSETS.md",
+      "status": "reference",
+      "purpose": "Contrato do catálogo/provedores, sem comprovar ativação atual."
+    },
+    {
+      "path": "docs/NEXUS_CONSOLIDACAO_CANONICA.md",
+      "status": "historical",
+      "purpose": "Snapshot editorial de 24/08; não é organização do código."
+    },
+    {
+      "path": "docs/NEXUS_CONTRACTS.md",
+      "status": "reference",
+      "purpose": "Contratos e permissões; runtime e ambiente precisam de conferência atual."
+    },
+    {
+      "path": "docs/NEXUS_EXPANSION_AUDIT.md",
+      "status": "historical",
+      "purpose": "Auditoria de expansão de julho; não é arquitetura implementada atual."
+    },
+    {
+      "path": "docs/NEXUS_KNOWLEDGE.md",
+      "status": "reference",
+      "purpose": "Contrato do conhecimento, sem comprovar rollout atual."
+    },
+    {
+      "path": "docs/NEXUS_R2.md",
+      "status": "reference",
+      "purpose": "Integração/configuração R2; preços e estado exigem revalidação."
+    },
+    {
+      "path": "docs/OPERACAO_GRATUITA.md",
+      "status": "reference",
+      "purpose": "Procedimentos de operação e recuperação; execução exige evidência."
+    },
+    {
+      "path": "docs/TABLETOP_REALTIME.md",
+      "status": "reference",
+      "purpose": "Contrato de transporte; afirmações de flag são históricas até conferência."
+    },
+    {
+      "path": "docs/TADEON_MOTION_AND_VISUAL_LANGUAGE.md",
+      "status": "reference",
+      "purpose": "Identidade Fio-Mestre e comportamento visual aprovado."
+    },
+    {
+      "path": "docs/ai/00_ESTADO_ATUAL.md",
+      "status": "active",
+      "purpose": "Entrada de retomada com separação entre branch e produção."
+    },
+    {
+      "path": "docs/design-engineering-review-2026-08.md",
+      "status": "historical",
+      "purpose": "Revisão visual de agosto; resultados não certificam telas atuais."
+    },
+    {
+      "path": "docs/tabletop-nexus-handouts.md",
+      "status": "reference",
+      "purpose": "Contrato de distribuição de handouts."
+    },
+    {
+      "path": "docs/tabletop-visibility.md",
+      "status": "reference",
+      "purpose": "Contrato de iluminação e visão."
+    },
+    {
+      "path": "docs/README.md",
+      "status": "generated",
+      "purpose": "Índice gerado deste registro."
+    },
+    {
+      "path": "docs/PROJECT_MAP.md",
+      "status": "generated",
+      "purpose": "Mapa de responsáveis gerado deste registro."
+    },
+    {
+      "path": "docs/WORKPLAN.md",
+      "status": "generated",
+      "purpose": "Fila de trabalho gerada deste registro."
+    },
+    {
+      "path": "docs/history/continuity-2026-08.md",
+      "status": "historical",
+      "purpose": "Registro anterior integral preservado; não comprova ambiente atual."
+    },
+    {
+      "path": "docs/PR_RECONCILIATION.md",
+      "status": "active",
+      "purpose": "Destino de cada requisito da PR antiga e limites da integração."
+    }
+  ],
+  "tasks": [
+    {
+      "id": "NEX-001",
+      "title": "Preparação estrutural",
+      "domain": "delivery",
+      "status": "validated",
+      "priority": 0,
+      "dependsOn": [],
+      "acceptance": [
+        "57 módulos CSS, 12 links globais e responsáveis únicos nos pontos saneados.",
+        "Checks, auditoria e navegador documentados; integração em main é um estado separado."
+      ],
+      "evidence": [
+        "docs/foundation-completion-validation.json",
+        "docs/FOUNDATION.md",
+        "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38146306651"
+      ]
+    },
+    {
+      "id": "NEX-002",
+      "title": "Mapa, continuidade e conciliação das PRs",
+      "domain": "delivery",
+      "status": "validated",
+      "priority": 0,
+      "dependsOn": [
+        "NEX-001"
+      ],
+      "acceptance": [
+        "Histórico preservado e separado da fila atual.",
+        "Gate detecta referências ausentes, IDs/dependências inválidos, ciclos e mapas desatualizados.",
+        "PR antiga preserva requisitos e não disputa a fila de integração."
+      ],
+      "evidence": [
+        "scripts/check-project-continuity.mjs",
+        "docs/PR_RECONCILIATION.md",
+        ".github/PULL_REQUEST_TEMPLATE.md",
+        "docs/continuity-validation.json"
+      ]
+    },
+    {
+      "id": "NEX-003",
+      "title": "Referência visual do shell e Dashboard",
+      "domain": "shell",
+      "status": "ready",
+      "priority": 1,
+      "dependsOn": [
+        "NEX-001",
+        "NEX-002"
+      ],
+      "acceptance": [
+        "Registrar estados vazio, carregando, erro e dados povoados em 390, 820 e 1440 px.",
+        "Revisar hierarquia, leitura, símbolos, superfície, respiro e três indicadores do Dashboard.",
+        "Preservar Fio-Mestre; definir referência aprovada antes de expandir a linguagem às demais telas."
+      ],
+      "evidence": []
+    },
+    {
+      "id": "NEX-004",
+      "title": "Sidebar, navegação móvel e portais",
+      "domain": "popup",
+      "status": "planned",
+      "priority": 2,
+      "dependsOn": [
+        "NEX-003"
+      ],
+      "acceptance": [
+        "Validar expansão/recolhimento, drawer, busca e conta por mouse, toque e teclado.",
+        "Testar foco, Escape, retorno ao controle, safe areas e teclado real quando disponível.",
+        "Cada propriedade alterada mantém uma autoridade; reduzir dívida CSS em vez de adicionar remendo."
+      ],
+      "evidence": []
+    },
+    {
+      "id": "NEX-005",
+      "title": "Ficha por seções e estados",
+      "domain": "sheet",
+      "status": "planned",
+      "priority": 3,
+      "dependsOn": [
+        "NEX-003"
+      ],
+      "acceptance": [
+        "Extrair identidade, pontos, atributos, perícias e condições preservando estado, regras e autosave.",
+        "Validar ficha povoada, somente leitura, salvamento, erro e transição de usuário.",
+        "Transferir vínculos/modificadores e inventário dos bridges antes de retirar suas funções."
+      ],
+      "evidence": []
+    },
+    {
+      "id": "NEX-006",
+      "title": "Biblioteca, documento e grafo do Nexus",
+      "domain": "knowledge",
+      "status": "planned",
+      "priority": 4,
+      "dependsOn": [
+        "NEX-003"
+      ],
+      "acceptance": [
+        "Revisar busca/lista/documento/propriedades e prioridades no celular.",
+        "Verificar corpus povoado, filtros e legibilidade da teia sem sobrescrever escolhas manuais.",
+        "Preservar vínculos, importação/exportação e diferenças entre cânone e material derivado."
+      ],
+      "evidence": []
+    },
+    {
+      "id": "NEX-007",
+      "title": "Mesa: hierarquia de ferramentas e workspace",
+      "domain": "tabletop",
+      "status": "planned",
+      "priority": 5,
+      "dependsOn": [
+        "NEX-004"
+      ],
+      "acceptance": [
+        "Mapear cada bridge para função e destino antes de consolidar.",
+        "Separar estado persistente, estado ao vivo e estado local; conservar coordenadas mundo/tela.",
+        "Verificar overlays, seleção, inspector, câmera, jogador/mestre e reconexão em cenas de teste."
+      ],
+      "evidence": []
+    },
+    {
+      "id": "NEX-008",
+      "title": "Painel do Mestre e administração",
+      "domain": "master",
+      "status": "planned",
+      "priority": 6,
+      "dependsOn": [
+        "NEX-003"
+      ],
+      "acceptance": [
+        "Revisar densidade, tabs, editor e listas com dados longos.",
+        "Separar seções do hub por responsabilidade sem duplicar autorização.",
+        "Estados vazio/erro/sucesso e usuário sem acesso preservados."
+      ],
+      "evidence": []
+    },
+    {
+      "id": "NEX-009",
+      "title": "Desempenho e motion",
+      "domain": "delivery",
+      "status": "planned",
+      "priority": 7,
+      "dependsOn": [
+        "NEX-003",
+        "NEX-007"
+      ],
+      "acceptance": [
+        "Medir carregamento por rota, chunk Pixi, frames e custos de efeitos antes de otimizar.",
+        "Movimento reduzido, cancelamento e ausência de loops redundantes verificados.",
+        "Registrar ganhos medidos; não inferir redução de bytes da redução de arquivos."
+      ],
+      "evidence": []
+    },
+    {
+      "id": "NEX-010",
+      "title": "Validação real de autorização e rollout",
+      "domain": "session",
+      "status": "planned",
+      "priority": 8,
+      "dependsOn": [
+        "NEX-001"
+      ],
+      "acceptance": [
+        "Em ambiente adequado, testar mestre, jogador, espectador e acesso negado entre campanhas.",
+        "Conferir migrations aplicadas, flags e OAuth com evidência datada; não reutilizar status histórico como atual.",
+        "Não aplicar migrations, ativar flags ou mudar provedores durante refinamento visual."
+      ],
+      "evidence": []
+    },
+    {
+      "id": "NEX-011",
+      "title": "Backup e restauração verificável",
+      "domain": "assets",
+      "status": "planned",
+      "priority": 8,
+      "dependsOn": [
+        "NEX-010"
+      ],
+      "acceptance": [
+        "Verificar dump restaurável e inventário de objetos sem expor credenciais.",
+        "Ensaiar restauração em ambiente isolado e registrar limites de banco, Storage e R2."
+      ],
+      "evidence": []
+    },
+    {
+      "id": "NEX-012",
+      "title": "Revisão editorial do corpus canônico",
+      "domain": "knowledge",
+      "status": "deferred",
+      "priority": 9,
+      "dependsOn": [
+        "NEX-006"
+      ],
+      "acceptance": [
+        "Revalidar as fontes e o pacote antes de tratar contagens de agosto como atuais.",
+        "Preservar proveniência, aliases e relações ao revisar as sínteses."
+      ],
+      "evidence": []
+    }
+  ],
+  "decisions": [
+    {
+      "id": "DEC-001",
+      "decision": "Preservar Fio-Mestre; NexOS é outro projeto.",
+      "reason": "Evitar importar cosmos/Liquid Glass e terminologia de outro produto."
+    },
+    {
+      "id": "DEC-002",
+      "decision": "Uma fonte de verdade para cada responsabilidade.",
+      "reason": "Estado React, viewport, tokens e dados não recebem escritores paralelos."
+    },
+    {
+      "id": "DEC-003",
+      "decision": "Manter estrutura atual; extrair módulos por responsabilidade.",
+      "reason": "Criar src/features e src/services em paralelo repetiria os serviços já existentes."
+    },
+    {
+      "id": "DEC-004",
+      "decision": "Preservar migrations e corpus editorial separadamente.",
+      "reason": "Consolidação do código não autoriza reescrever SQL aplicado ou fontes narrativas."
+    },
+    {
+      "id": "DEC-005",
+      "decision": "Uma fila canônica e PRs de escopo verificável.",
+      "reason": "Planos históricos não reabrem tarefas sem confrontar a implementação atual."
+    },
+    {
+      "id": "DEC-006",
+      "decision": "Branch validada não significa main integrado ou produção publicada.",
+      "reason": "Merge em main pode acionar deploy; nenhum desses estados é presumido."
+    }
+  ],
+  "bridges": [
+    {
+      "path": "src/components/experience-final-polish-bridge.tsx",
+      "domain": "sheet",
+      "status": "review_before_transfer"
+    },
+    {
+      "path": "src/components/knowledge/nexus-folder-bar-bridge.tsx",
+      "domain": "knowledge",
+      "status": "review_before_transfer"
+    },
+    {
+      "path": "src/components/master/master-toolbar-popout-bridge.tsx",
+      "domain": "master",
+      "status": "review_before_transfer"
+    },
+    {
+      "path": "src/components/mobile-more-radial-bridge.tsx",
+      "domain": "shell",
+      "status": "review_before_transfer"
+    },
+    {
+      "path": "src/components/sheet/sheet-experience-bridge.tsx",
+      "domain": "sheet",
+      "status": "review_before_transfer"
+    },
+    {
+      "path": "src/components/tabletop/tabletop-adaptive-performance-bridge.tsx",
+      "domain": "tabletop",
+      "status": "review_before_transfer"
+    },
+    {
+      "path": "src/components/tabletop/tabletop-atmosphere-bridge.tsx",
+      "domain": "tabletop",
+      "status": "review_before_transfer"
+    },
+    {
+      "path": "src/components/tabletop/tabletop-creative-dock-bridge.tsx",
+      "domain": "tabletop",
+      "status": "review_before_transfer"
+    },
+    {
+      "path": "src/components/tabletop/tabletop-cross-surface-bridge.tsx",
+      "domain": "tabletop",
+      "status": "review_before_transfer"
+    },
+    {
+      "path": "src/components/tabletop/tabletop-deep-link-locator-bridge.tsx",
+      "domain": "tabletop",
+      "status": "review_before_transfer"
+    },
+    {
+      "path": "src/components/tabletop/tabletop-director-enhancement-bridge.tsx",
+      "domain": "tabletop",
+      "status": "review_before_transfer"
+    },
+    {
+      "path": "src/components/tabletop/tabletop-director-timeline-bridge.tsx",
+      "domain": "tabletop",
+      "status": "review_before_transfer"
+    },
+    {
+      "path": "src/components/tabletop/tabletop-final-interaction-bridge.tsx",
+      "domain": "tabletop",
+      "status": "review_before_transfer"
+    },
+    {
+      "path": "src/components/tabletop/tabletop-floating-layout-bridge.tsx",
+      "domain": "tabletop",
+      "status": "review_before_transfer"
+    },
+    {
+      "path": "src/components/tabletop/tabletop-fog-geometry-bridge.tsx",
+      "domain": "tabletop",
+      "status": "review_before_transfer"
+    },
+    {
+      "path": "src/components/tabletop/tabletop-integration-tools-bridge.tsx",
+      "domain": "tabletop",
+      "status": "review_before_transfer"
+    },
+    {
+      "path": "src/components/tabletop/tabletop-locate-bridge.tsx",
+      "domain": "tabletop",
+      "status": "review_before_transfer"
+    },
+    {
+      "path": "src/components/tabletop/tabletop-native-model-bridge.tsx",
+      "domain": "tabletop",
+      "status": "review_before_transfer"
+    },
+    {
+      "path": "src/components/tabletop/tabletop-nexus-capture-bridge.tsx",
+      "domain": "tabletop",
+      "status": "review_before_transfer"
+    },
+    {
+      "path": "src/components/tabletop/tabletop-placeables-inspector-bridge.tsx",
+      "domain": "tabletop",
+      "status": "review_before_transfer"
+    },
+    {
+      "path": "src/components/tabletop/tabletop-player-interaction-bridge.tsx",
+      "domain": "tabletop",
+      "status": "review_before_transfer"
+    },
+    {
+      "path": "src/components/tabletop/tabletop-preflight-bridge.tsx",
+      "domain": "tabletop",
+      "status": "review_before_transfer"
+    },
+    {
+      "path": "src/components/tabletop/tabletop-progressive-interface-bridge.tsx",
+      "domain": "tabletop",
+      "status": "review_before_transfer"
+    },
+    {
+      "path": "src/components/tabletop/tabletop-radial-actions-bridge.tsx",
+      "domain": "tabletop",
+      "status": "review_before_transfer"
+    },
+    {
+      "path": "src/components/tabletop/tabletop-region-automation-bridge.tsx",
+      "domain": "tabletop",
+      "status": "review_before_transfer"
+    },
+    {
+      "path": "src/components/tabletop/tabletop-reliability-editor-bridge.tsx",
+      "domain": "tabletop",
+      "status": "review_before_transfer"
+    },
+    {
+      "path": "src/components/tabletop/tabletop-roof-foreground-bridge.tsx",
+      "domain": "tabletop",
+      "status": "review_before_transfer"
+    },
+    {
+      "path": "src/components/tabletop/tabletop-semantic-transform-bridge.tsx",
+      "domain": "tabletop",
+      "status": "review_before_transfer"
+    },
+    {
+      "path": "src/components/tabletop/tabletop-smart-setup-bridge.tsx",
+      "domain": "tabletop",
+      "status": "review_before_transfer"
+    },
+    {
+      "path": "src/components/tabletop/tabletop-smart-setup-launcher-dock-bridge.tsx",
+      "domain": "tabletop",
+      "status": "review_before_transfer"
+    },
+    {
+      "path": "src/components/tabletop/tabletop-spatial-audio-bridge.tsx",
+      "domain": "tabletop",
+      "status": "review_before_transfer"
+    },
+    {
+      "path": "src/components/tabletop/tabletop-spatial-streaming-bridge.tsx",
+      "domain": "tabletop",
+      "status": "review_before_transfer"
+    },
+    {
+      "path": "src/components/tabletop/tabletop-unified-drop-bridge.tsx",
+      "domain": "tabletop",
+      "status": "review_before_transfer"
+    },
+    {
+      "path": "src/components/tabletop/tabletop-urgent-reconciliation-bridge.tsx",
+      "domain": "tabletop",
+      "status": "review_before_transfer"
+    },
+    {
+      "path": "src/components/tabletop/tabletop-workspace-popout-bridge.tsx",
+      "domain": "tabletop",
+      "status": "review_before_transfer"
+    },
+    {
+      "path": "src/components/visual-viewport-popup-bridge.tsx",
+      "domain": "popup",
+      "status": "owner"
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "docs/continuity-validation.json",
+      "purpose": "Gate de continuidade, cenários de rejeição e preservação do histórico."
+    },
+    {
+      "path": "docs/foundation-cleanup-validation.json",
+      "purpose": "Evidências e limites do segundo lote."
+    },
+    {
+      "path": "docs/foundation-completion-validation.json",
+      "purpose": "Validação de runtime do terceiro lote."
+    },
+    {
+      "path": "docs/foundation-validation.json",
+      "purpose": "Evidências e limites do primeiro lote."
+    },
+    {
+      "path": "docs/header-validation.json",
+      "purpose": "Geometria e cores dos cabeçalhos no segundo lote."
+    },
+    {
+      "path": "docs/project-continuity.json",
+      "purpose": "Registro ativo de responsáveis, tarefas e decisões."
+    },
+    {
+      "path": "docs/style-architecture.json",
+      "purpose": "Contrato ativo de módulos CSS, ordem e tetos."
+    },
+    {
+      "path": "docs/style-cleanup.json",
+      "purpose": "Regras CSS removidas e autoridade preservada no segundo lote."
+    },
+    {
+      "path": "docs/style-migration-verification.json",
+      "purpose": "Equivalência AST histórica da primeira migração."
+    },
+    {
+      "path": "docs/style-migration.json",
+      "purpose": "Procedência da primeira migração e requisitos dos testes aposentados."
+    }
+  ]
+}

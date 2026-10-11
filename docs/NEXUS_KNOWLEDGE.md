@@ -1,5 +1,7 @@
 # O Nexus — fundação de conhecimento
 
+> Referência de contrato/procedimento. Afirmações de ambiente, flags, preços ou rollout descrevem seu checkpoint e exigem conferência atual. Consulte [índice](README.md) e [continuidade](ai/00_ESTADO_ATUAL.md).
+
 ## Estado
 
 O modelo foi preparado de forma aditiva e permanece bloqueado enquanto

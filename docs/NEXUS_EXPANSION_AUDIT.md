@@ -1,5 +1,7 @@
 # Tadeon Nexus — Auditoria e mapa para a expansão
 
+> Auditoria histórica de julho de 2026: propostas de diretórios, dependências, rollout e próxima fase não são o estado atual. Consulte [índice](README.md), [estado de continuidade](ai/00_ESTADO_ATUAL.md) e [fila atual](WORKPLAN.md).
+
 > Fase 0 do Plano Mestre de Expansão  
 > Estado auditado: `main` no commit `84ef3ad21e5dcb7fccbfb87f1c6419ee8472f51d`  
 > Data: 29 de julho de 2026

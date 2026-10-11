@@ -1,5 +1,5 @@
 const CACHE_PREFIX = "tadeon-nexus-static";
-const CACHE_NAME = `${CACHE_PREFIX}-v2`;
+const CACHE_NAME = `${CACHE_PREFIX}-v3`;
 const PUBLIC_FILES = [
   "/manifest.webmanifest",
   "/icon.svg",
@@ -11,9 +11,7 @@ const PUBLIC_FILES = [
 ];
 
 self.addEventListener("install", (event) => {
-  event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => cache.addAll(PUBLIC_FILES)),
-  );
+  event.waitUntil(caches.open(CACHE_NAME).then((cache) => cache.addAll(PUBLIC_FILES)));
   self.skipWaiting();
 });
 
@@ -40,9 +38,7 @@ self.addEventListener("fetch", (event) => {
   if (url.origin !== self.location.origin) return;
 
   if (PUBLIC_FILES.includes(url.pathname)) {
-    event.respondWith(
-      caches.match(request).then((cached) => cached || fetch(request)),
-    );
+    event.respondWith(caches.match(request).then((cached) => cached || fetch(request)));
     return;
   }
 
@@ -50,11 +46,12 @@ self.addEventListener("fetch", (event) => {
     event.respondWith(
       caches.open(CACHE_NAME).then(async (cache) => {
         const cached = await cache.match(request);
-        const fresh = fetch(request).then((response) => {
-          if (response.ok) void cache.put(request, response.clone());
-          return response;
-        });
-        return cached || fresh;
+        // Vite assets carry content hashes: a cached URL is immutable.
+        // Do not start an unobserved fetch that rejects when the user is offline.
+        if (cached) return cached;
+        const response = await fetch(request);
+        if (response.ok) await cache.put(request, response.clone());
+        return response;
       }),
     );
   }

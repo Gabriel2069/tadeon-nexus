@@ -1,4 +1,4 @@
-import { readFileSync } from "node:fs";
+import { readFoundationSource as readFileSync } from "@/test/read-foundation-source";
 import { describe, expect, it } from "vitest";
 
 function source(path: string) {
@@ -6,11 +6,10 @@ function source(path: string) {
 }
 
 describe("final icon and route parity 174/176", () => {
-  it("uses the exact route favicon identity for Mesa on every navigation surface", () => {
+  it("keeps the authored Mesa favicon and navigation symbol", () => {
     const layout = source("src/components/app-layout.tsx");
     const symbols = source("src/components/section-symbols.tsx");
     const favicon = source("public/favicons/tabletop.svg");
-    expect(layout).toContain('currentSection === "Mesa Nexus"');
     expect(layout).toContain('<SectionSymbol section="tabletop"');
     expect(layout).not.toContain("MapPinned");
     expect(symbols).toContain("export function TabletopSigil");

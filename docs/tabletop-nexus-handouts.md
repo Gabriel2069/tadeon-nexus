@@ -1,5 +1,7 @@
 # Integração Mesa Nexus ↔ O Nexus
 
+> Referência de contrato/procedimento. Afirmações de ambiente, flags, preços ou rollout descrevem seu checkpoint e exigem conferência atual. Consulte [índice](README.md) e [continuidade](ai/00_ESTADO_ATUAL.md).
+
 ## Compartilhamento
 
 Páginas de tipo `clue` e `document` arrastadas da Biblioteca de O Nexus para a

@@ -7,7 +7,6 @@ import { buildTabletopPreflight, type TabletopPreflightReport } from "@/lib/tabl
 import { tabletopSessionService } from "@/lib/tabletop/tabletop-session-service";
 import type { TabletopVisibilityState } from "@/lib/tabletop/tabletop-visibility-service";
 import "@/styles/tabletop-preflight.css";
-
 type VisibilityInternals = { visibilityState?: TabletopVisibilityState };
 type OpenSessionArgs = Parameters<typeof tabletopSessionService.openSession>[0];
 type PendingRequest = {

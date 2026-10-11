@@ -1,0 +1,810 @@
+{
+  "baseline": "95cc9c5d5bdcf48921be13b29709f46ad0804910",
+  "geometry": [
+    {
+      "file": "src/styles/experience-surfaces.css",
+      "line": 261,
+      "selectors": [
+        "html body .tadeon-shell[data-section=\"Mesa Nexus\"] .tadeon-desktop-toolbar > .min-w-0"
+      ],
+      "removed": [
+        [
+          "display",
+          "grid",
+          true
+        ],
+        [
+          "grid-template-columns",
+          "2.25rem minmax(0, 1fr)",
+          true
+        ],
+        [
+          "grid-template-rows",
+          "auto auto",
+          true
+        ],
+        [
+          "column-gap",
+          ".8rem",
+          true
+        ],
+        [
+          "row-gap",
+          ".08rem",
+          true
+        ],
+        [
+          "align-items",
+          "center",
+          true
+        ]
+      ]
+    },
+    {
+      "file": "src/styles/route-layout.css",
+      "line": 2387,
+      "selectors": [
+        ".tadeon-shell:is(\n    [data-section=\"Painel do Mestre\"],\n    [data-section=\"Usuários\"],\n    [data-section=\"Saúde do arquivo\"],\n    [data-section=\"Consulta offline\"]\n  ) .tadeon-desktop-toolbar > .min-w-0"
+      ],
+      "removed": [
+        [
+          "display",
+          "block",
+          true
+        ],
+        [
+          "padding",
+          "0",
+          true
+        ]
+      ]
+    },
+    {
+      "file": "src/styles/route-layout.css",
+      "line": 3626,
+      "selectors": [
+        ".tadeon-shell .tadeon-desktop-toolbar > .min-w-0"
+      ],
+      "removed": [
+        [
+          "display",
+          "block",
+          true
+        ],
+        [
+          "padding",
+          "0",
+          true
+        ]
+      ]
+    }
+  ],
+  "duplicates": [
+    {
+      "file": "src/styles.css",
+      "selector": ".tadeon-shell :where(h1, h2, h3, h4, p, label, legend),\n:where(\n    [data-slot=\"button\"],\n    [data-slot=\"tabs-trigger\"],\n    [data-slot=\"toggle\"],\n    [data-slot=\"toggle-group-item\"]\n  )\n  > :where(span, strong, small):not(.sr-only)",
+      "removedLine": 1360,
+      "retainedLine": 4330,
+      "declarations": 2
+    },
+    {
+      "file": "src/styles/experience-surfaces.css",
+      "selector": ".tadeon-mobile-header__identity",
+      "removedLine": 998,
+      "retainedLine": 1644,
+      "declarations": 1
+    },
+    {
+      "file": "src/styles/motion-composition.css",
+      "selector": ".tadeon-shell [data-slot=\"tabs-trigger\"][data-state=\"active\"]::after",
+      "removedLine": 1262,
+      "retainedLine": 1712,
+      "declarations": 2
+    },
+    {
+      "file": "src/styles/motion-composition.css",
+      "selector": ".tadeon-shell *,\n  .tadeon-shell *::before,\n  .tadeon-shell *::after",
+      "removedLine": 3469,
+      "retainedLine": 3631,
+      "declarations": 3
+    },
+    {
+      "file": "src/styles/motion-composition.css",
+      "selector": ".tadeon-shell .tadeon-nav-item[href=\"/\"]",
+      "removedLine": 3720,
+      "retainedLine": 5934,
+      "declarations": 2
+    },
+    {
+      "file": "src/styles/motion-composition.css",
+      "selector": ":root",
+      "removedLine": 6431,
+      "retainedLine": 7093,
+      "declarations": 7
+    },
+    {
+      "file": "src/styles/motion-composition.css",
+      "selector": ".tadeon-shell[data-section=\"Dashboard\"],\n.tadeon-shell[data-section=\"Dash\"],\n.tadeon-shell[data-section=\"Ficha\"]",
+      "removedLine": 6441,
+      "retainedLine": 7103,
+      "declarations": 2
+    },
+    {
+      "file": "src/styles/motion-composition.css",
+      "selector": ".tadeon-shell[data-section=\"Nexus\"],\n.tadeon-shell[data-section=\"O Nexus\"]",
+      "removedLine": 6444,
+      "retainedLine": 7106,
+      "declarations": 2
+    },
+    {
+      "file": "src/styles/motion-composition.css",
+      "selector": ".tadeon-shell[data-section=\"Mesa\"],\n.tadeon-shell[data-section=\"Mesa Nexus\"]",
+      "removedLine": 6446,
+      "retainedLine": 7108,
+      "declarations": 2
+    },
+    {
+      "file": "src/styles/motion-composition.css",
+      "selector": ".tadeon-shell[data-section=\"Off-line\"],\n.tadeon-shell[data-section=\"Offline\"],\n.tadeon-shell[data-section=\"Consulta offline\"]",
+      "removedLine": 6448,
+      "retainedLine": 7110,
+      "declarations": 2
+    },
+    {
+      "file": "src/styles/motion-composition.css",
+      "selector": ".tadeon-shell[data-section=\"Gerenciar\"],\n.tadeon-shell[data-section=\"Usuários\"]",
+      "removedLine": 6451,
+      "retainedLine": 7113,
+      "declarations": 2
+    },
+    {
+      "file": "src/styles/motion-composition.css",
+      "selector": ".tadeon-shell[data-section=\"Backup\"],\n.tadeon-shell[data-section=\"Saúde do arquivo\"]",
+      "removedLine": 6453,
+      "retainedLine": 7115,
+      "declarations": 2
+    },
+    {
+      "file": "src/styles/motion-composition.css",
+      "selector": ".tadeon-shell[data-section=\"Mestre\"],\n.tadeon-shell[data-section=\"Painel do Mestre\"]",
+      "removedLine": 6455,
+      "retainedLine": 7117,
+      "declarations": 2
+    },
+    {
+      "file": "src/styles/motion-composition.css",
+      "selector": ".tadeon-shell .tadeon-nav-item[href=\"/\"]",
+      "removedLine": 6458,
+      "retainedLine": 7120,
+      "declarations": 2
+    },
+    {
+      "file": "src/styles/motion-composition.css",
+      "selector": ".tadeon-shell .tadeon-nav-item[href^=\"/nexus\"]",
+      "removedLine": 6459,
+      "retainedLine": 7121,
+      "declarations": 2
+    },
+    {
+      "file": "src/styles/motion-composition.css",
+      "selector": ".tadeon-shell .tadeon-nav-item[href^=\"/tabletop\"]",
+      "removedLine": 6460,
+      "retainedLine": 7122,
+      "declarations": 2
+    },
+    {
+      "file": "src/styles/motion-composition.css",
+      "selector": ".tadeon-shell .tadeon-nav-item[href^=\"/offline\"]",
+      "removedLine": 6461,
+      "retainedLine": 7123,
+      "declarations": 2
+    },
+    {
+      "file": "src/styles/motion-composition.css",
+      "selector": ".tadeon-shell .tadeon-nav-item[href^=\"/master-panel\"]",
+      "removedLine": 6462,
+      "retainedLine": 7124,
+      "declarations": 2
+    },
+    {
+      "file": "src/styles/motion-composition.css",
+      "selector": ".tadeon-shell .tadeon-nav-item[href^=\"/manage-users\"]",
+      "removedLine": 6463,
+      "retainedLine": 7125,
+      "declarations": 2
+    },
+    {
+      "file": "src/styles/motion-composition.css",
+      "selector": ".tadeon-shell .tadeon-nav-item[href^=\"/nexus-tools\"]",
+      "removedLine": 6464,
+      "retainedLine": 7126,
+      "declarations": 2
+    },
+    {
+      "file": "src/styles/motion-composition.css",
+      "selector": ".tadeon-global-search-dialog",
+      "removedLine": 6470,
+      "retainedLine": 7132,
+      "declarations": 12
+    },
+    {
+      "file": "src/styles/motion-composition.css",
+      "selector": ".tadeon-page-hero h1,\n  [data-tadeon-page-hero] h1",
+      "removedLine": 6485,
+      "retainedLine": 7147,
+      "declarations": 3
+    },
+    {
+      "file": "src/styles/motion-composition.css",
+      "selector": ".tadeon-shell > header,\n  .tadeon-shell header:first-of-type",
+      "removedLine": 6492,
+      "retainedLine": 7154,
+      "declarations": 2
+    },
+    {
+      "file": "src/styles/motion-composition.css",
+      "selector": ".tadeon-mobile-header",
+      "removedLine": 6498,
+      "retainedLine": 7160,
+      "declarations": 2
+    },
+    {
+      "file": "src/styles/motion-composition.css",
+      "selector": ".tadeon-mobile-header::before",
+      "removedLine": 6503,
+      "retainedLine": 7165,
+      "declarations": 9
+    },
+    {
+      "file": "src/styles/motion-composition.css",
+      "selector": ".tadeon-route-stage > .tadeon-sheet-page,\n  .tadeon-route-stage > :has(.tadeon-sheet-page)",
+      "removedLine": 6519,
+      "retainedLine": 7181,
+      "declarations": 2
+    },
+    {
+      "file": "src/styles/motion-composition.css",
+      "selector": ".tadeon-sheet-page .tadeon-overview-metric,\n  .tadeon-sheet-page .tadeon-description-card,\n  .tadeon-sheet-page .tadeon-skill-node",
+      "removedLine": 6525,
+      "retainedLine": 7187,
+      "declarations": 2
+    },
+    {
+      "file": "src/styles/motion-composition.css",
+      "selector": ".tadeon-sheet-page .tadeon-sheet-tabs [role=\"tabpanel\"][data-state=\"active\"]",
+      "removedLine": 6532,
+      "retainedLine": 7194,
+      "declarations": 2
+    },
+    {
+      "file": "src/styles/motion-composition.css",
+      "selector": ".tadeon-master-commandbar",
+      "removedLine": 6540,
+      "retainedLine": 7202,
+      "declarations": 1
+    },
+    {
+      "file": "src/styles/motion-composition.css",
+      "selector": ".tadeon-page-hero[data-tadeon-page-hero=\"users\"],\n.tadeon-page-hero[data-tadeon-page-hero=\"tools\"],\n.tadeon-page-hero[data-tadeon-page-hero=\"offline\"]",
+      "removedLine": 6544,
+      "retainedLine": 7206,
+      "declarations": 1
+    },
+    {
+      "file": "src/styles/motion-composition.css",
+      "selector": ".tadeon-master-hero .tadeon-section-hero-mark,\n.tadeon-master-hero [data-section-hero-mark],\n.tadeon-master-hero [data-hero-symbol]",
+      "removedLine": 6550,
+      "retainedLine": 7212,
+      "declarations": 3
+    },
+    {
+      "file": "src/styles/motion-composition.css",
+      "selector": ".tadeon-shell .tadeon-page-hero button,\n.tadeon-shell .tadeon-page-hero [role=\"button\"],\n.tadeon-shell [data-tadeon-tab] button,\n.tadeon-shell [role=\"tab\"],\n.tadeon-shell [data-tadeon-tab-indicator]",
+      "removedLine": 6558,
+      "retainedLine": 7220,
+      "declarations": 2
+    },
+    {
+      "file": "src/styles/motion-composition.css",
+      "selector": ".tadeon-shell .tadeon-page-hero button:hover,\n.tadeon-shell .tadeon-page-hero [role=\"button\"]:hover,\n.tadeon-shell [data-tadeon-tab] button:hover,\n.tadeon-shell [role=\"tab\"]:hover",
+      "removedLine": 6567,
+      "retainedLine": 7229,
+      "declarations": 2
+    },
+    {
+      "file": "src/styles/motion-composition.css",
+      "selector": ".tadeon-shell [role=\"tab\"][aria-selected=\"true\"],\n.tadeon-shell [data-tadeon-tab][data-active=\"true\"] button,\n.tadeon-shell [data-tadeon-tab][aria-selected=\"true\"] button",
+      "removedLine": 6575,
+      "retainedLine": 7237,
+      "declarations": 3
+    },
+    {
+      "file": "src/styles/motion-composition.css",
+      "selector": ".tadeon-mobile-more-radial__item[href^=\"/manage-users\"]",
+      "removedLine": 6585,
+      "retainedLine": 7247,
+      "declarations": 1
+    },
+    {
+      "file": "src/styles/motion-composition.css",
+      "selector": ".tadeon-mobile-more-radial__item[href^=\"/offline\"]",
+      "removedLine": 6586,
+      "retainedLine": 7248,
+      "declarations": 1
+    },
+    {
+      "file": "src/styles/motion-composition.css",
+      "selector": ".tadeon-mobile-more-radial__item[href^=\"/nexus-tools\"]",
+      "removedLine": 6587,
+      "retainedLine": 7249,
+      "declarations": 1
+    },
+    {
+      "file": "src/styles/motion-composition.css",
+      "selector": ".tadeon-mobile-more-radial__item:is([href^=\"/manage-users\"], [href^=\"/offline\"], [href^=\"/nexus-tools\"])",
+      "removedLine": 6589,
+      "retainedLine": 7251,
+      "declarations": 2
+    },
+    {
+      "file": "src/styles/motion-composition.css",
+      "selector": ".tadeon-mobile-more-radial__item:is([href^=\"/manage-users\"], [href^=\"/offline\"], [href^=\"/nexus-tools\"]) svg",
+      "removedLine": 6596,
+      "retainedLine": 7258,
+      "declarations": 1
+    },
+    {
+      "file": "src/styles/motion-composition.css",
+      "selector": ".tadeon-mobile-more-radial__item:is([href^=\"/manage-users\"], [href^=\"/offline\"], [href^=\"/nexus-tools\"]):is(:hover, :focus-visible, .is-active)",
+      "removedLine": 6600,
+      "retainedLine": 7262,
+      "declarations": 4
+    },
+    {
+      "file": "src/styles/motion-composition.css",
+      "selector": ".tadeon-mobile-more-radial__item:is([href^=\"/manage-users\"], [href^=\"/offline\"], [href^=\"/nexus-tools\"]).is-active",
+      "removedLine": 6609,
+      "retainedLine": 7271,
+      "declarations": 1
+    },
+    {
+      "file": "src/styles/motion-composition.css",
+      "selector": ".tadeon-sidebar .tadeon-nav-item[href^=\"/master-panel\"] .tadeon-nav-item__icon > svg,\n.tadeon-sidebar .tadeon-nav-item[href^=\"/nexus-tools\"] .tadeon-nav-item__icon > svg",
+      "removedLine": 6617,
+      "retainedLine": 7279,
+      "declarations": 1
+    },
+    {
+      "file": "src/styles/motion-composition.css",
+      "selector": ".tadeon-sidebar .tadeon-nav-item[href^=\"/master-panel\"] .tadeon-nav-item__icon::before,\n.tadeon-sidebar .tadeon-nav-item[href^=\"/nexus-tools\"] .tadeon-nav-item__icon::before",
+      "removedLine": 6622,
+      "retainedLine": 7284,
+      "declarations": 3
+    },
+    {
+      "file": "src/styles/motion-composition.css",
+      "selector": ".tadeon-sidebar .tadeon-nav-item[href^=\"/master-panel\"] .tadeon-nav-item__icon::before",
+      "removedLine": 6629,
+      "retainedLine": 7291,
+      "declarations": 2
+    },
+    {
+      "file": "src/styles/motion-composition.css",
+      "selector": ".tadeon-sidebar .tadeon-nav-item[href^=\"/nexus-tools\"] .tadeon-nav-item__icon::before",
+      "removedLine": 6634,
+      "retainedLine": 7296,
+      "declarations": 2
+    },
+    {
+      "file": "src/styles/motion-composition.css",
+      "selector": ".tadeon-mobile-dock .tadeon-mobile-dock__item[href=\"/master-panel\"] > svg",
+      "removedLine": 6641,
+      "retainedLine": 7303,
+      "declarations": 1
+    },
+    {
+      "file": "src/styles/motion-composition.css",
+      "selector": ".tadeon-mobile-dock .tadeon-mobile-dock__item[href=\"/master-panel\"]::before",
+      "removedLine": 6645,
+      "retainedLine": 7307,
+      "declarations": 8
+    },
+    {
+      "file": "src/styles/motion-composition.css",
+      "selector": ".tadeon-mobile-dock .tadeon-mobile-dock__item[href=\"/master-panel\"][aria-current=\"page\"]::before",
+      "removedLine": 6656,
+      "retainedLine": 7318,
+      "declarations": 1
+    },
+    {
+      "file": "src/styles/motion-composition.css",
+      "selector": ".tadeon-sheet-page .tadeon-description-card,\n  .tadeon-sheet-page .tadeon-attribute-tile,\n  .tadeon-sheet-page .tadeon-stat-block,\n  .tadeon-sheet-page .tadeon-condition-card",
+      "removedLine": 6661,
+      "retainedLine": 7323,
+      "declarations": 1
+    },
+    {
+      "file": "src/styles/motion-composition.css",
+      "selector": ".tadeon-shell .tadeon-ficha,\n  .tadeon-shell [data-ficha],\n  .tadeon-shell [data-character-sheet],\n  .tadeon-shell .tadeon-character-sheet,\n  .tadeon-sheet-page .tadeon-overview-metric,\n  .tadeon-sheet-page .tadeon-description-card,\n  .tadeon-sheet-page .tadeon-skill-node,\n  .tadeon-sheet-page .tadeon-sheet-tabs [role=\"tabpanel\"][data-state=\"active\"]",
+      "removedLine": 6670,
+      "retainedLine": 7332,
+      "declarations": 2
+    },
+    {
+      "file": "src/styles/motion-foundation.css",
+      "selector": ".tadeon-shell *,\n  .tadeon-shell *::before,\n  .tadeon-shell *::after",
+      "removedLine": 891,
+      "retainedLine": 1616,
+      "declarations": 3
+    },
+    {
+      "file": "src/styles/page-hero-parity.css",
+      "selector": "html body [data-tadeon-page-hero=\"users\"] > div:nth-of-type(2)",
+      "removedLine": 415,
+      "retainedLine": 710,
+      "declarations": 5
+    },
+    {
+      "file": "src/styles/page-hero-parity.css",
+      "selector": "html body [data-tadeon-page-hero=\"users\"] > div:nth-of-type(2)",
+      "removedLine": 569,
+      "retainedLine": 779,
+      "declarations": 3
+    },
+    {
+      "file": "src/styles/route-layout.css",
+      "selector": ".tadeon-master-navigation__scroller::-webkit-scrollbar",
+      "removedLine": 1646,
+      "retainedLine": 2214,
+      "declarations": 1
+    },
+    {
+      "file": "src/styles/route-layout.css",
+      "selector": ".tadeon-shell:is(\n    [data-section=\"Painel do Mestre\"],\n    [data-section=\"Usuários\"],\n    [data-section=\"Saúde do arquivo\"],\n    [data-section=\"Consulta offline\"]\n  ) .tadeon-desktop-toolbar::after",
+      "removedLine": 1774,
+      "retainedLine": 2361,
+      "declarations": 13
+    },
+    {
+      "file": "src/styles/route-layout.css",
+      "selector": ".tadeon-route-users > .tadeon-page-hero::before",
+      "removedLine": 1978,
+      "retainedLine": 2593,
+      "declarations": 1
+    },
+    {
+      "file": "src/styles/route-layout.css",
+      "selector": ".tadeon-route-tools > .tadeon-page-hero::before",
+      "removedLine": 1982,
+      "retainedLine": 2597,
+      "declarations": 1
+    },
+    {
+      "file": "src/styles/route-layout.css",
+      "selector": ".tadeon-route-offline > .tadeon-page-hero::before",
+      "removedLine": 1986,
+      "retainedLine": 2601,
+      "declarations": 1
+    },
+    {
+      "file": "src/styles/route-layout.css",
+      "selector": ".tadeon-nav-item[href=\"/master-panel\"] .tadeon-nav-item__icon::before",
+      "removedLine": 3804,
+      "retainedLine": 5118,
+      "declarations": 2
+    },
+    {
+      "file": "src/styles/route-layout.css",
+      "selector": ".tadeon-nav-item[href=\"/nexus-tools\"] .tadeon-nav-item__icon::before",
+      "removedLine": 3809,
+      "retainedLine": 5123,
+      "declarations": 2
+    },
+    {
+      "file": "src/styles/tabletop-workspace.css",
+      "selector": ".tadeon-tabletop-panel[data-mobile-open=\"true\"]",
+      "removedLine": 1089,
+      "retainedLine": 2100,
+      "declarations": 5
+    },
+    {
+      "file": "src/styles/tabletop-workspace.css",
+      "selector": ".tadeon-tabletop-panel-backdrop[data-open=\"true\"]",
+      "removedLine": 1070,
+      "retainedLine": 2118,
+      "declarations": 4
+    },
+    {
+      "file": "src/styles/tabletop-workspace.css",
+      "selector": ".tadeon-tabletop-canvas-rail",
+      "removedLine": 1160,
+      "retainedLine": 2127,
+      "declarations": 3
+    },
+    {
+      "file": "src/styles/workspace.css",
+      "selector": ".tadeon-encounter-composer",
+      "removedLine": 744,
+      "retainedLine": 2596,
+      "declarations": 1
+    },
+    {
+      "file": "src/styles/workspace.css",
+      "selector": ".tadeon-encounter-summary",
+      "removedLine": 750,
+      "retainedLine": 2602,
+      "declarations": 1
+    },
+    {
+      "file": "src/styles/workspace.css",
+      "selector": ".tadeon-encounter-summary__reading",
+      "removedLine": 754,
+      "retainedLine": 2606,
+      "declarations": 3
+    },
+    {
+      "file": "src/styles/workspace.css",
+      "selector": ".tadeon-encounter-roster,\n  .tadeon-encounter-manual__fields,\n  .tadeon-encounter-total",
+      "removedLine": 785,
+      "retainedLine": 2618,
+      "declarations": 1
+    },
+    {
+      "file": "src/styles/workspace.css",
+      "selector": ".tadeon-encounter-threat",
+      "removedLine": 801,
+      "retainedLine": 2629,
+      "declarations": 3
+    },
+    {
+      "file": "src/styles/workspace.css",
+      "selector": ".tadeon-encounter-threat__quantity",
+      "removedLine": 807,
+      "retainedLine": 2635,
+      "declarations": 2
+    }
+  ],
+  "summary": {
+    "removedDuplicateRules": 69,
+    "removedDuplicateDeclarations": 178,
+    "removedCompetingFocusDeclarations": 10,
+    "remainingImportantDeclarations": 5764
+  },
+  "popup": {
+    "file": "src/styles/route-layout.css",
+    "removedSelector": "[data-slot=\"dialog-content\"]:has([data-slot=\"command\"])",
+    "retainedSelector": "[data-slot=\"dialog-content\"]:has(#sheet-name)",
+    "owner": "src/styles/route-popup-frame.css",
+    "reason": "Compiled mixed-specificity selector applied legacy translateX(-50%) to the grid-centered mobile search; retain the sheet branch and let the positioner center search."
+  },
+  "currentCss": {
+    "src/styles.css": {
+      "bytes": 113560,
+      "sha256": "b37becd243463eab0bc6f41b57aff4e63cb744a0f9ab9e6e1c8bf766407371fb"
+    },
+    "src/styles/button.css": {
+      "bytes": 22067,
+      "sha256": "e39ee91bb05e13153cc38943ced8cc1655ec9d8518d39233bb2f87df485ab0b4"
+    },
+    "src/styles/desktop-shell.css": {
+      "bytes": 21858,
+      "sha256": "ed565b86f53a7083a7ac1b5b984a40396e6c67f4b054342e425a05af84525cb1"
+    },
+    "src/styles/experience-surfaces.css": {
+      "bytes": 74324,
+      "sha256": "db51d99743d0d0990c0a2cc8442b56bf826af84501fae67c04516c25c90d4f11"
+    },
+    "src/styles/global-search.css": {
+      "bytes": 4549,
+      "sha256": "65125ba52332110062a47f8f5319b7bf54981fb08ca2e7867088d1d36acf6b04"
+    },
+    "src/styles/hero-backgrounds.css": {
+      "bytes": 3816,
+      "sha256": "d92c5511558f1d7de69e108e49d110658288b07936492075351f9791dc3e4617"
+    },
+    "src/styles/interface-layout.css": {
+      "bytes": 66498,
+      "sha256": "0f0ca9846f202ef33a7f602ced2279afcda629138e3604468cc8ce17737bd0d0"
+    },
+    "src/styles/knowledge-graph-second-brain.css": {
+      "bytes": 13343,
+      "sha256": "a4c8ba328b0a2e17c9438efaa491f7b7ab8597603f10d654c09d3f59f1824a5e"
+    },
+    "src/styles/layout-compatibility.css": {
+      "bytes": 13976,
+      "sha256": "5bf21e08cece5b7cf23a4abf018c83f7e250ed2938973c7db26f290f0b50e6d3"
+    },
+    "src/styles/master-panel-navigation.css": {
+      "bytes": 7020,
+      "sha256": "c99fd3c2110df3be4688b5318529d36c558155ef009453d4ad7b92ea46243f6f"
+    },
+    "src/styles/master-toolbar-popout.css": {
+      "bytes": 5472,
+      "sha256": "c9a8920cf606f1e9cde2f692069cc3474d41541e011d43f8ebbd446469b5e0b3"
+    },
+    "src/styles/mobile-more-radial.css": {
+      "bytes": 10165,
+      "sha256": "1a51a0775fba0d7b85c90859994db87fc64836ceed1e888ee4d188690057836f"
+    },
+    "src/styles/mobile-viewport.css": {
+      "bytes": 8491,
+      "sha256": "c9ecc10429ece4a22d372ff89376ec5388d3b8c6d7797a44206a7ee5c1020e06"
+    },
+    "src/styles/motion-composition.css": {
+      "bytes": 376742,
+      "sha256": "06391d565398ab79e345511a2afa6ef82bb37d7389715686aa85d17ce5a585b5"
+    },
+    "src/styles/motion-foundation.css": {
+      "bytes": 82707,
+      "sha256": "8fe21f884bb114ac9c5a894fd56fa7d722d02a2ab1e2073c90434164f811a847"
+    },
+    "src/styles/motion-interactions.css": {
+      "bytes": 122651,
+      "sha256": "4fe522fd708b7d23e753dc6c0d814cca5c406d3633130aec5c51554adc90c430"
+    },
+    "src/styles/navigation-layout.css": {
+      "bytes": 3334,
+      "sha256": "75fc210ec820c3818655f1ab5e05de916aac98d2344c59775b87828ee14cdaed"
+    },
+    "src/styles/nexus-material.css": {
+      "bytes": 4499,
+      "sha256": "663d90c3b9773312c273249391c3115ea53834313de0d730880b82f3e3041c3e"
+    },
+    "src/styles/nexus-tabletop-locator.css": {
+      "bytes": 2331,
+      "sha256": "8da3c4be51a971edab1205d37b5fb19470d3be9e9646c1b162d88137b470cd1b"
+    },
+    "src/styles/page-hero-parity.css": {
+      "bytes": 143149,
+      "sha256": "6dd1c209757687393c68961567bc9eac232745c079bb9a83967d4211a14262e2"
+    },
+    "src/styles/realtime-status.css": {
+      "bytes": 3169,
+      "sha256": "2618baecfbbc6d77074b3ca1bbbaa67a78a41931e12f23c7baf9bea269280359"
+    },
+    "src/styles/responsive-shell.css": {
+      "bytes": 27999,
+      "sha256": "769f1dc96ec269d0e8d5bd73f1b32003abf51a4f51f1a180921f5d7cd268513c"
+    },
+    "src/styles/route-layout.css": {
+      "bytes": 202581,
+      "sha256": "ffc0e6d7493ab6704a2a536a98ffd169047ab1ed6e2c98456928378578054655"
+    },
+    "src/styles/route-popup-frame.css": {
+      "bytes": 4302,
+      "sha256": "02d29a15088683422dfe2e91a9a919151fec8d4da9ca09637f015d9c6231a901"
+    },
+    "src/styles/sheet-experience.css": {
+      "bytes": 3416,
+      "sha256": "83a8acf7dfcd5bf3b5f8e049e93c17fa054e76018644dcb56acf3676caf894ea"
+    },
+    "src/styles/sheet-layout.css": {
+      "bytes": 42756,
+      "sha256": "e37477c4291e1576070fa7d4bfefa45a8991226c81c883a9e76f9eb83e9ad38a"
+    },
+    "src/styles/sheet-premium.css": {
+      "bytes": 64438,
+      "sha256": "ee801ea1f365d464b82fe83a84e2d7f56d260e3505ea2f0b19d7c095d180121a"
+    },
+    "src/styles/tabletop-adaptive-performance.css": {
+      "bytes": 1137,
+      "sha256": "50de0d5f4312463ad5a4eb566cccb9fbab60944119220ef640b703da7faebd16"
+    },
+    "src/styles/tabletop-atmosphere.css": {
+      "bytes": 8711,
+      "sha256": "033ee549d2455e001eb9acd2104e12081e0ee868c0595d6aa43011627bb2351f"
+    },
+    "src/styles/tabletop-chrome.css": {
+      "bytes": 8593,
+      "sha256": "6b61c5fe3f9013021fcd78816c857334dcbe71ff9a716eed9874b7cfa612c101"
+    },
+    "src/styles/tabletop-creative-dock.css": {
+      "bytes": 10841,
+      "sha256": "04efefb14800505efecd7f25c9f4f2d01ee3e47d2e2f95576cce45079795627a"
+    },
+    "src/styles/tabletop-director-enhancement.css": {
+      "bytes": 7502,
+      "sha256": "201695d1a0f18e137b6ba86a086c7469beb26540de7c667bd9a65584d4671b5a"
+    },
+    "src/styles/tabletop-director-remote.css": {
+      "bytes": 14193,
+      "sha256": "a5717d76a6c9ff028f432efbafeb061b76c9fe862e5c26691cbd7beefb748860"
+    },
+    "src/styles/tabletop-director-timeline.css": {
+      "bytes": 3521,
+      "sha256": "1ef277b7e2255d2dd97d2ad112f59a1b3ed55ddc8cefc0880af0431b71fb2e6a"
+    },
+    "src/styles/tabletop-director-workspace.css": {
+      "bytes": 6789,
+      "sha256": "d92599940ad2dd06eee51f16d20170f3b100103fb32b1626089223834fdd3ddc"
+    },
+    "src/styles/tabletop-entity-dossier.css": {
+      "bytes": 7663,
+      "sha256": "0e92c1f79c571f28381d3554c72400f407556f3412eace5cc02d88839c9ee9d5"
+    },
+    "src/styles/tabletop-floating-layout.css": {
+      "bytes": 15560,
+      "sha256": "71552607ff7cbc4700098eb7899fee4f399271e49f617f58467391df91f2b8cd"
+    },
+    "src/styles/tabletop-fog-geometry.css": {
+      "bytes": 3611,
+      "sha256": "8250536686693dc411a7c3e7dbbd3712019c770a4feb6c227496270b0090e4f9"
+    },
+    "src/styles/tabletop-integration-tools.css": {
+      "bytes": 5998,
+      "sha256": "6e91679f424f40f8029b6f876fa07be074695a482a912deddd3c7a745e381c3f"
+    },
+    "src/styles/tabletop-live-session.css": {
+      "bytes": 4235,
+      "sha256": "5eacbaf2ac28e3290530f13cd65cff51bf2d0e5b6d5b011d169a829a8b2a5d4f"
+    },
+    "src/styles/tabletop-participant-workspace.css": {
+      "bytes": 19782,
+      "sha256": "9140d235c71e187f3d33d6b828865f5cb939bef7430d72ec64469408048431dd"
+    },
+    "src/styles/tabletop-placeables-inspector.css": {
+      "bytes": 6846,
+      "sha256": "2d674f4f8b3693ece52000b09de84677d420c60904202e8fc09f32e64153ef14"
+    },
+    "src/styles/tabletop-player-interaction.css": {
+      "bytes": 8635,
+      "sha256": "e0cee6001d14e4243aaa21cd96844c5a39e2c7a78f453cb01a1758e388c812f7"
+    },
+    "src/styles/tabletop-preflight.css": {
+      "bytes": 3702,
+      "sha256": "b24bfb5a23cdaa2a09579a7f661e16ccac6d8af5d940861bd38b6a4ae5df9ecd"
+    },
+    "src/styles/tabletop-radial-actions.css": {
+      "bytes": 7147,
+      "sha256": "b50d413e2107fb3818ffb9f738bd405dc515537773aa5567aa9ee4036e57d0da"
+    },
+    "src/styles/tabletop-region-automation.css": {
+      "bytes": 3166,
+      "sha256": "5f63b82d832cc22b60d83e75388598f70a83ba09217429943e68f04dd93790f1"
+    },
+    "src/styles/tabletop-reliability-editor.css": {
+      "bytes": 9650,
+      "sha256": "ade869b91af068f0f5fe3e80c2872adf752329f7ffd30c55e8d4c63b0fdc821d"
+    },
+    "src/styles/tabletop-route-experience.css": {
+      "bytes": 93043,
+      "sha256": "caab0958bf11bdba9bd3744a8f6df707d2402d4aec20fabe90c8b0c69e11ff73"
+    },
+    "src/styles/tabletop-semantic-transform.css": {
+      "bytes": 1197,
+      "sha256": "d422da789b4d57f17b8f90fc81d910a65e49cc3d21e5d10d5fd37b652b7ac91e"
+    },
+    "src/styles/tabletop-smart-setup.css": {
+      "bytes": 10266,
+      "sha256": "47b62ecb0720a90d9a5e0047f4517c6f2d0da2d5ce844112c7293889974b42b8"
+    },
+    "src/styles/tabletop-unified-drop.css": {
+      "bytes": 1016,
+      "sha256": "b9f2317bcbbc8d1fa89897dfa8dff6201c7624effa9c98e83c4097c48386c0cb"
+    },
+    "src/styles/tabletop-visibility-panel.css": {
+      "bytes": 26652,
+      "sha256": "5da6bf8f65cb3b42f8cd6c4c21c25be0bcdec6a7efae1d16ace21bd36dc2110c"
+    },
+    "src/styles/tabletop-workspace.css": {
+      "bytes": 54713,
+      "sha256": "3921ad94cbaa61ef57b9cb1b5b98fa101b3a2453c41ce51bb115497e927beca8"
+    },
+    "src/styles/tadeon-experience-director.css": {
+      "bytes": 15675,
+      "sha256": "bbf63db6ad6fc7a10aecaa169da7d21dbd1c62616cb331390e8a6bc1518919bc"
+    },
+    "src/styles/viewport.css": {
+      "bytes": 9921,
+      "sha256": "8498caa755439521283372ad93fd9e0fee909a7f5b3f3295fca6afee6621f655"
+    },
+    "src/styles/visual-viewport-popup.css": {
+      "bytes": 8841,
+      "sha256": "fa2d9591d1feefe30e6e3662ee7d6cc62332bc78a561292a8e3be93f6792f017"
+    },
+    "src/styles/workspace.css": {
+      "bytes": 62513,
+      "sha256": "3f5cba1f5f8d7bbeadcb2ae0e1ea8eb223b527d720ce527251e29b2b64300155"
+    }
+  }
+}

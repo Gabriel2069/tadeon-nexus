@@ -9,73 +9,28 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as VisualAuditRouteImport } from './routes/visual-audit'
-import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
-import { Route as ResetPasswordRouteImport } from './routes/reset-password'
-import { Route as OfflineRouteImport } from './routes/offline'
-import { Route as NexusToolsRouteImport } from './routes/nexus-tools'
-import { Route as NexusRouteImport } from './routes/nexus'
-import { Route as TabletopRouteImport } from './routes/tabletop'
-import { Route as McpRouteImport } from './routes/mcp'
-import { Route as MasterPanelRouteImport } from './routes/master-panel'
-import { Route as ManageUsersRouteImport } from './routes/manage-users'
-import { Route as LoginRouteImport } from './routes/login'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as SheetIdRouteImport } from './routes/sheet.$id'
-import { Route as Char91DotwellKnownChar93OauthProtectedResourceRouteImport } from './routes/[.well-known]/oauth-protected-resource'
+import { Route as LoginRouteImport } from './routes/login'
+import { Route as ManageUsersRouteImport } from './routes/manage-users'
+import { Route as MasterPanelRouteImport } from './routes/master-panel'
+import { Route as McpRouteImport } from './routes/mcp'
+import { Route as NexusRouteImport } from './routes/nexus'
+import { Route as NexusToolsRouteImport } from './routes/nexus-tools'
+import { Route as OfflineRouteImport } from './routes/offline'
+import { Route as ResetPasswordRouteImport } from './routes/reset-password'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
+import { Route as TabletopRouteImport } from './routes/tabletop'
+import { Route as VisualAuditRouteImport } from './routes/visual-audit'
 import { Route as Char91DotmcpChar93ListToolsRouteImport } from './routes/[.mcp]/list-tools'
-import { Route as SheetIdPowerRouteImport } from './routes/sheet.$id_.power'
-import { Route as Char91DotmcpChar93InvokeToolToolRouteImport } from './routes/[.mcp]/invoke-tool/$tool'
+import { Route as Char91DotwellKnownChar93OauthProtectedResourceRouteImport } from './routes/[.well-known]/oauth-protected-resource'
+import { Route as SheetIdRouteImport } from './routes/sheet.$id'
 import { Route as DotlovableOauthConsentRouteImport } from './routes/[.]lovable.oauth.consent'
+import { Route as Char91DotmcpChar93InvokeToolToolRouteImport } from './routes/[.mcp]/invoke-tool/$tool'
+import { Route as SheetIdPowerRouteImport } from './routes/sheet.$id_.power'
 
-const VisualAuditRoute = VisualAuditRouteImport.update({
-  id: '/visual-audit',
-  path: '/visual-audit',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
-  id: '/sitemap.xml',
-  path: '/sitemap.xml',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ResetPasswordRoute = ResetPasswordRouteImport.update({
-  id: '/reset-password',
-  path: '/reset-password',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const OfflineRoute = OfflineRouteImport.update({
-  id: '/offline',
-  path: '/offline',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const NexusToolsRoute = NexusToolsRouteImport.update({
-  id: '/nexus-tools',
-  path: '/nexus-tools',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const NexusRoute = NexusRouteImport.update({
-  id: '/nexus',
-  path: '/nexus',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const TabletopRoute = TabletopRouteImport.update({
-  id: '/tabletop',
-  path: '/tabletop',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const McpRoute = McpRouteImport.update({
-  id: '/mcp',
-  path: '/mcp',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const MasterPanelRoute = MasterPanelRouteImport.update({
-  id: '/master-panel',
-  path: '/master-panel',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ManageUsersRoute = ManageUsersRouteImport.update({
-  id: '/manage-users',
-  path: '/manage-users',
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LoginRoute = LoginRouteImport.update({
@@ -83,31 +38,76 @@ const LoginRoute = LoginRouteImport.update({
   path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
+const ManageUsersRoute = ManageUsersRouteImport.update({
+  id: '/manage-users',
+  path: '/manage-users',
   getParentRoute: () => rootRouteImport,
 } as any)
-const SheetIdRoute = SheetIdRouteImport.update({
-  id: '/sheet/$id',
-  path: '/sheet/$id',
+const MasterPanelRoute = MasterPanelRouteImport.update({
+  id: '/master-panel',
+  path: '/master-panel',
   getParentRoute: () => rootRouteImport,
 } as any)
-const Char91DotwellKnownChar93OauthProtectedResourceRoute =
-  Char91DotwellKnownChar93OauthProtectedResourceRouteImport.update({
-    id: '/.well-known/oauth-protected-resource',
-    path: '/.well-known/oauth-protected-resource',
-    getParentRoute: () => rootRouteImport,
-  } as any)
+const McpRoute = McpRouteImport.update({
+  id: '/mcp',
+  path: '/mcp',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NexusRoute = NexusRouteImport.update({
+  id: '/nexus',
+  path: '/nexus',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NexusToolsRoute = NexusToolsRouteImport.update({
+  id: '/nexus-tools',
+  path: '/nexus-tools',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OfflineRoute = OfflineRouteImport.update({
+  id: '/offline',
+  path: '/offline',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ResetPasswordRoute = ResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TabletopRoute = TabletopRouteImport.update({
+  id: '/tabletop',
+  path: '/tabletop',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const VisualAuditRoute = VisualAuditRouteImport.update({
+  id: '/visual-audit',
+  path: '/visual-audit',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const Char91DotmcpChar93ListToolsRoute =
   Char91DotmcpChar93ListToolsRouteImport.update({
     id: '/.mcp/list-tools',
     path: '/.mcp/list-tools',
     getParentRoute: () => rootRouteImport,
   } as any)
-const SheetIdPowerRoute = SheetIdPowerRouteImport.update({
-  id: '/sheet/$id_/power',
-  path: '/sheet/$id/power',
+const Char91DotwellKnownChar93OauthProtectedResourceRoute =
+  Char91DotwellKnownChar93OauthProtectedResourceRouteImport.update({
+    id: '/.well-known/oauth-protected-resource',
+    path: '/.well-known/oauth-protected-resource',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const SheetIdRoute = SheetIdRouteImport.update({
+  id: '/sheet/$id',
+  path: '/sheet/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DotlovableOauthConsentRoute = DotlovableOauthConsentRouteImport.update({
+  id: '/.lovable/oauth/consent',
+  path: '/.lovable/oauth/consent',
   getParentRoute: () => rootRouteImport,
 } as any)
 const Char91DotmcpChar93InvokeToolToolRoute =
@@ -116,9 +116,9 @@ const Char91DotmcpChar93InvokeToolToolRoute =
     path: '/.mcp/invoke-tool/$tool',
     getParentRoute: () => rootRouteImport,
   } as any)
-const DotlovableOauthConsentRoute = DotlovableOauthConsentRouteImport.update({
-  id: '/.lovable/oauth/consent',
-  path: '/.lovable/oauth/consent',
+const SheetIdPowerRoute = SheetIdPowerRouteImport.update({
+  id: '/sheet/$id_/power',
+  path: '/sheet/$id/power',
   getParentRoute: () => rootRouteImport,
 } as any)
 
@@ -128,12 +128,12 @@ export interface FileRoutesByFullPath {
   '/manage-users': typeof ManageUsersRoute
   '/master-panel': typeof MasterPanelRoute
   '/mcp': typeof McpRoute
-  '/nexus-tools': typeof NexusToolsRoute
   '/nexus': typeof NexusRoute
-  '/tabletop': typeof TabletopRoute
+  '/nexus-tools': typeof NexusToolsRoute
   '/offline': typeof OfflineRoute
   '/reset-password': typeof ResetPasswordRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/tabletop': typeof TabletopRoute
   '/visual-audit': typeof VisualAuditRoute
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
@@ -148,12 +148,12 @@ export interface FileRoutesByTo {
   '/manage-users': typeof ManageUsersRoute
   '/master-panel': typeof MasterPanelRoute
   '/mcp': typeof McpRoute
-  '/nexus-tools': typeof NexusToolsRoute
   '/nexus': typeof NexusRoute
-  '/tabletop': typeof TabletopRoute
+  '/nexus-tools': typeof NexusToolsRoute
   '/offline': typeof OfflineRoute
   '/reset-password': typeof ResetPasswordRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/tabletop': typeof TabletopRoute
   '/visual-audit': typeof VisualAuditRoute
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
@@ -169,12 +169,12 @@ export interface FileRoutesById {
   '/manage-users': typeof ManageUsersRoute
   '/master-panel': typeof MasterPanelRoute
   '/mcp': typeof McpRoute
-  '/nexus-tools': typeof NexusToolsRoute
   '/nexus': typeof NexusRoute
-  '/tabletop': typeof TabletopRoute
+  '/nexus-tools': typeof NexusToolsRoute
   '/offline': typeof OfflineRoute
   '/reset-password': typeof ResetPasswordRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/tabletop': typeof TabletopRoute
   '/visual-audit': typeof VisualAuditRoute
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
@@ -191,12 +191,12 @@ export interface FileRouteTypes {
     | '/manage-users'
     | '/master-panel'
     | '/mcp'
-    | '/nexus-tools'
     | '/nexus'
-    | '/tabletop'
+    | '/nexus-tools'
     | '/offline'
     | '/reset-password'
     | '/sitemap.xml'
+    | '/tabletop'
     | '/visual-audit'
     | '/.mcp/list-tools'
     | '/.well-known/oauth-protected-resource'
@@ -211,12 +211,12 @@ export interface FileRouteTypes {
     | '/manage-users'
     | '/master-panel'
     | '/mcp'
-    | '/nexus-tools'
     | '/nexus'
-    | '/tabletop'
+    | '/nexus-tools'
     | '/offline'
     | '/reset-password'
     | '/sitemap.xml'
+    | '/tabletop'
     | '/visual-audit'
     | '/.mcp/list-tools'
     | '/.well-known/oauth-protected-resource'
@@ -231,12 +231,12 @@ export interface FileRouteTypes {
     | '/manage-users'
     | '/master-panel'
     | '/mcp'
-    | '/nexus-tools'
     | '/nexus'
-    | '/tabletop'
+    | '/nexus-tools'
     | '/offline'
     | '/reset-password'
     | '/sitemap.xml'
+    | '/tabletop'
     | '/visual-audit'
     | '/.mcp/list-tools'
     | '/.well-known/oauth-protected-resource'
@@ -252,12 +252,12 @@ export interface RootRouteChildren {
   ManageUsersRoute: typeof ManageUsersRoute
   MasterPanelRoute: typeof MasterPanelRoute
   McpRoute: typeof McpRoute
-  NexusToolsRoute: typeof NexusToolsRoute
   NexusRoute: typeof NexusRoute
-  TabletopRoute: typeof TabletopRoute
+  NexusToolsRoute: typeof NexusToolsRoute
   OfflineRoute: typeof OfflineRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  TabletopRoute: typeof TabletopRoute
   VisualAuditRoute: typeof VisualAuditRoute
   Char91DotmcpChar93ListToolsRoute: typeof Char91DotmcpChar93ListToolsRoute
   Char91DotwellKnownChar93OauthProtectedResourceRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
@@ -269,74 +269,11 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/visual-audit': {
-      id: '/visual-audit'
-      path: '/visual-audit'
-      fullPath: '/visual-audit'
-      preLoaderRoute: typeof VisualAuditRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/sitemap.xml': {
-      id: '/sitemap.xml'
-      path: '/sitemap.xml'
-      fullPath: '/sitemap.xml'
-      preLoaderRoute: typeof SitemapDotxmlRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/reset-password': {
-      id: '/reset-password'
-      path: '/reset-password'
-      fullPath: '/reset-password'
-      preLoaderRoute: typeof ResetPasswordRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/offline': {
-      id: '/offline'
-      path: '/offline'
-      fullPath: '/offline'
-      preLoaderRoute: typeof OfflineRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/nexus-tools': {
-      id: '/nexus-tools'
-      path: '/nexus-tools'
-      fullPath: '/nexus-tools'
-      preLoaderRoute: typeof NexusToolsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/nexus': {
-      id: '/nexus'
-      path: '/nexus'
-      fullPath: '/nexus'
-      preLoaderRoute: typeof NexusRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/tabletop': {
-      id: '/tabletop'
-      path: '/tabletop'
-      fullPath: '/tabletop'
-      preLoaderRoute: typeof TabletopRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/mcp': {
-      id: '/mcp'
-      path: '/mcp'
-      fullPath: '/mcp'
-      preLoaderRoute: typeof McpRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/master-panel': {
-      id: '/master-panel'
-      path: '/master-panel'
-      fullPath: '/master-panel'
-      preLoaderRoute: typeof MasterPanelRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/manage-users': {
-      id: '/manage-users'
-      path: '/manage-users'
-      fullPath: '/manage-users'
-      preLoaderRoute: typeof ManageUsersRouteImport
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/login': {
@@ -346,25 +283,74 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
+    '/manage-users': {
+      id: '/manage-users'
+      path: '/manage-users'
+      fullPath: '/manage-users'
+      preLoaderRoute: typeof ManageUsersRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/sheet/$id': {
-      id: '/sheet/$id'
-      path: '/sheet/$id'
-      fullPath: '/sheet/$id'
-      preLoaderRoute: typeof SheetIdRouteImport
+    '/master-panel': {
+      id: '/master-panel'
+      path: '/master-panel'
+      fullPath: '/master-panel'
+      preLoaderRoute: typeof MasterPanelRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/.well-known/oauth-protected-resource': {
-      id: '/.well-known/oauth-protected-resource'
-      path: '/.well-known/oauth-protected-resource'
-      fullPath: '/.well-known/oauth-protected-resource'
-      preLoaderRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRouteImport
+    '/mcp': {
+      id: '/mcp'
+      path: '/mcp'
+      fullPath: '/mcp'
+      preLoaderRoute: typeof McpRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/nexus': {
+      id: '/nexus'
+      path: '/nexus'
+      fullPath: '/nexus'
+      preLoaderRoute: typeof NexusRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/nexus-tools': {
+      id: '/nexus-tools'
+      path: '/nexus-tools'
+      fullPath: '/nexus-tools'
+      preLoaderRoute: typeof NexusToolsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/offline': {
+      id: '/offline'
+      path: '/offline'
+      fullPath: '/offline'
+      preLoaderRoute: typeof OfflineRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reset-password': {
+      id: '/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/tabletop': {
+      id: '/tabletop'
+      path: '/tabletop'
+      fullPath: '/tabletop'
+      preLoaderRoute: typeof TabletopRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/visual-audit': {
+      id: '/visual-audit'
+      path: '/visual-audit'
+      fullPath: '/visual-audit'
+      preLoaderRoute: typeof VisualAuditRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/.mcp/list-tools': {
@@ -374,11 +360,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof Char91DotmcpChar93ListToolsRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/sheet/$id_/power': {
-      id: '/sheet/$id_/power'
-      path: '/sheet/$id/power'
-      fullPath: '/sheet/$id/power'
-      preLoaderRoute: typeof SheetIdPowerRouteImport
+    '/.well-known/oauth-protected-resource': {
+      id: '/.well-known/oauth-protected-resource'
+      path: '/.well-known/oauth-protected-resource'
+      fullPath: '/.well-known/oauth-protected-resource'
+      preLoaderRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sheet/$id': {
+      id: '/sheet/$id'
+      path: '/sheet/$id'
+      fullPath: '/sheet/$id'
+      preLoaderRoute: typeof SheetIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/.lovable/oauth/consent': {
+      id: '/.lovable/oauth/consent'
+      path: '/.lovable/oauth/consent'
+      fullPath: '/.lovable/oauth/consent'
+      preLoaderRoute: typeof DotlovableOauthConsentRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/.mcp/invoke-tool/$tool': {
@@ -388,11 +388,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof Char91DotmcpChar93InvokeToolToolRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/.lovable/oauth/consent': {
-      id: '/.lovable/oauth/consent'
-      path: '/.lovable/oauth/consent'
-      fullPath: '/.lovable/oauth/consent'
-      preLoaderRoute: typeof DotlovableOauthConsentRouteImport
+    '/sheet/$id_/power': {
+      id: '/sheet/$id_/power'
+      path: '/sheet/$id/power'
+      fullPath: '/sheet/$id/power'
+      preLoaderRoute: typeof SheetIdPowerRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
@@ -404,12 +404,12 @@ const rootRouteChildren: RootRouteChildren = {
   ManageUsersRoute: ManageUsersRoute,
   MasterPanelRoute: MasterPanelRoute,
   McpRoute: McpRoute,
-  NexusToolsRoute: NexusToolsRoute,
   NexusRoute: NexusRoute,
-  TabletopRoute: TabletopRoute,
+  NexusToolsRoute: NexusToolsRoute,
   OfflineRoute: OfflineRoute,
   ResetPasswordRoute: ResetPasswordRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
+  TabletopRoute: TabletopRoute,
   VisualAuditRoute: VisualAuditRoute,
   Char91DotmcpChar93ListToolsRoute: Char91DotmcpChar93ListToolsRoute,
   Char91DotwellKnownChar93OauthProtectedResourceRoute:

@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { ChevronLeft, ChevronRight, WandSparkles } from "lucide-react";
-import "@/styles/tabletop-map-chrome-repair.css";
-
+import "@/styles/tabletop-chrome.css";
 const RELIABILITY_KEY = "tadeon.tabletop.reliability.collapsed";
 const DOCK_POSITION_KEY = "tadeon.tabletop.creative-dock.position.v2";
 

@@ -27,7 +27,6 @@ import { TabletopRealtimeStatus } from "@/components/tabletop/realtime-status";
 import { TabletopDirectorRemote } from "@/components/tabletop/tabletop-director-remote";
 import type { TabletopDirectorCamera } from "@/lib/tabletop/tabletop-director-state";
 import "@/styles/tabletop-live-session.css";
-
 const ROLE_LABELS: Record<CampaignRole, string> = {
   master: "Mestre",
   co_master: "Co-mestre",

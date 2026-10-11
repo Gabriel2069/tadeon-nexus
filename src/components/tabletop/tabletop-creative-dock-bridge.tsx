@@ -28,7 +28,6 @@ import { currentTabletopRuntime } from "@/lib/tabletop/tabletop-player-runtime";
 import type { Point, TabletopEntity, TabletopEntitySeed, TabletopSnapshot } from "@/lib/tabletop/types";
 import { TabletopStagePortal } from "@/components/tabletop/tabletop-stage-portal";
 import "@/styles/tabletop-creative-dock.css";
-
 const PLACEABLE_MIME = "application/x-tadeon-placeable-preset";
 
 type DockMode = "library" | "regions";

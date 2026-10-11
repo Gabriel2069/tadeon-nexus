@@ -1,4 +1,4 @@
-import { readFileSync } from "node:fs";
+import { readFoundationSource as readFileSync } from "@/test/read-foundation-source";
 import { describe, expect, it } from "vitest";
 
 function source(path: string) {
@@ -39,13 +39,13 @@ describe("final user corrections 172", () => {
 
   it("restores Nexus ornament and substantially opens the force graph", () => {
     const css = source("src/styles/create-sheet-search-viewport-163.css");
-    const graph = source("src/components/knowledge/nexus-graph-declutter-bridge.tsx");
+    const graph = source("src/components/knowledge/knowledge-graph-second-brain.tsx");
     expect(css).toContain(".tadeon-nexus-header::before");
     expect(css).toContain("conic-gradient(from 18deg");
-    expect(graph).toContain('setRange("Distância-base", 250)');
-    expect(graph).toContain('setRange("Repulsão", 2.3)');
-    expect(graph).toContain('setRange("Centro", 0.38)');
-    expect(graph).toContain('setRange("Agrupamento por domínio", 0.15)');
+    expect(graph).toContain('linkDistance: 260');
+    expect(graph).toContain('repelStrength: 2.4');
+    expect(graph).toContain('centerStrength: 0.08');
+    expect(graph).toContain('clusterStrength: 0.12');
   });
 
   it("centers the lateral navigation and gives Panel/Backup concrete icon frames", () => {

@@ -1,3 +1,4 @@
+import { CORE_SURFACES } from "@/lib/feature-flags";
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { ProtectedShell } from "@/components/protected-shell";
@@ -38,7 +39,7 @@ function TabletopRoute() {
     // A Mesa é uma superfície principal e precisa conseguir abrir mesmo quando
     // a leitura remota de flags estiver lenta ou indisponível. Os módulos
     // opcionais continuam obedecendo às flags carregadas depois.
-    nexus_tabletop_enabled: true,
+    nexus_tabletop_enabled: CORE_SURFACES.tabletop,
   }));
 
   useEffect(() => {
@@ -47,7 +48,7 @@ function TabletopRoute() {
     void loadFeatureFlags(user.id)
       .then((nextFlags) => {
         if (!active) return;
-        setFlags({ ...nextFlags, nexus_tabletop_enabled: true });
+        setFlags({ ...nextFlags, nexus_tabletop_enabled: CORE_SURFACES.tabletop });
       })
       .catch(() => {
         // Abertura degradável: mantém o canvas essencial e os módulos opcionais

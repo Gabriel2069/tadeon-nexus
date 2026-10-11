@@ -1,4 +1,5 @@
-import { readFileSync } from "node:fs";
+import { isStyleLoadedAfter } from "@/test/read-foundation-source";
+import { readFoundationSource as readFileSync } from "@/test/read-foundation-source";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 
@@ -7,12 +8,8 @@ function source(path: string) {
 }
 
 describe("final visual system 157", () => {
-  it("loads the final visual authority after all previous repair layers", () => {
-    const root = source("src/routes/__root.tsx");
-    expect(root).toContain('import finalVisualSystem157Css from "../styles/final-visual-system-157.css?url"');
-    expect(root.lastIndexOf("href: userVisibleRepair156Css")).toBeLessThan(
-      root.lastIndexOf("href: finalVisualSystem157Css"),
-    );
+  it("mantém a ordem das regras na cascata consolidada", () => {
+    expect(isStyleLoadedAfter("src/routes/__root.tsx", "src/styles/user-visible-repair-156.css", "src/styles/final-visual-system-157.css")).toBe(true);
   });
 
   it("forces the repaired shell headers back to a single canonical row", () => {

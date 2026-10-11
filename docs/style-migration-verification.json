@@ -1,0 +1,336 @@
+{
+  "baseCommit": "353808af68c8ba0d08bbc90d6f8ad9117c9e25f8",
+  "method": "Ordered PostCSS AST events: selectors, at-rules, declarations, values and important flags; comments and whitespace excluded. Shared import boundaries retained. This does not prove every authenticated route visually correct.",
+  "modules": [
+    {
+      "module": "src/styles/workspace.css",
+      "before": "503cd7426b56ad19e353db5bf5e8e96557542276ba9d7131de097c49371b0a4a",
+      "after": "503cd7426b56ad19e353db5bf5e8e96557542276ba9d7131de097c49371b0a4a",
+      "equivalent": true
+    },
+    {
+      "module": "src/styles/mobile-viewport.css",
+      "before": "215201b99b89109475ad95aa0520a04c00d0f3cf27ca1907c45f59fa9bb2436d",
+      "after": "215201b99b89109475ad95aa0520a04c00d0f3cf27ca1907c45f59fa9bb2436d",
+      "equivalent": true
+    },
+    {
+      "module": "src/styles/nexus-material.css",
+      "before": "8b92ab19eae53ff9f933be3bde810f567b8fe9a5f26e98219d3172daab74dd7f",
+      "after": "8b92ab19eae53ff9f933be3bde810f567b8fe9a5f26e98219d3172daab74dd7f",
+      "equivalent": true
+    },
+    {
+      "module": "src/styles/layout-compatibility.css",
+      "before": "7475d9a25fdf6f312192779549736671b6cb3876619ad394d12177007b52b8cd",
+      "after": "7475d9a25fdf6f312192779549736671b6cb3876619ad394d12177007b52b8cd",
+      "equivalent": true
+    },
+    {
+      "module": "src/styles/viewport.css",
+      "before": "6acb0246b892c4edc09d0c18f34a5faabd34335fe2d3db43c5924638428e791e",
+      "after": "6acb0246b892c4edc09d0c18f34a5faabd34335fe2d3db43c5924638428e791e",
+      "equivalent": true
+    },
+    {
+      "module": "src/styles/tabletop-chrome.css",
+      "before": "4871124074d555fd3ffad23f6e87c54e42006b3e3d254828ceda7945b5b3cdfd",
+      "after": "4871124074d555fd3ffad23f6e87c54e42006b3e3d254828ceda7945b5b3cdfd",
+      "equivalent": true
+    },
+    {
+      "module": "src/styles/global-search.css",
+      "before": "9568c8ce9c0b0b0bc0979e203f5c76607949de075e78da19cda5b0992c3f0781",
+      "after": "9568c8ce9c0b0b0bc0979e203f5c76607949de075e78da19cda5b0992c3f0781",
+      "equivalent": true
+    },
+    {
+      "module": "src/styles/page-hero-parity.css",
+      "before": "fdcb6f4d0c4734e8654acfcc5d2f6c5aa79ec5fe3364c982af824b4d9cfaa358",
+      "after": "fdcb6f4d0c4734e8654acfcc5d2f6c5aa79ec5fe3364c982af824b4d9cfaa358",
+      "equivalent": true
+    },
+    {
+      "module": "src/styles/mobile-more-radial.css",
+      "before": "d16f2310381b437d602d05a350fe9beff5676693d7395e0ff4012ba692de5f19",
+      "after": "d16f2310381b437d602d05a350fe9beff5676693d7395e0ff4012ba692de5f19",
+      "equivalent": true
+    },
+    {
+      "module": "src/styles/tadeon-experience-director.css",
+      "before": "3872fd8d1382a38a836cc878c606d012f1ccb13a6f746baa8de6d8eb9d926a7d",
+      "after": "3872fd8d1382a38a836cc878c606d012f1ccb13a6f746baa8de6d8eb9d926a7d",
+      "equivalent": true
+    },
+    {
+      "module": "src/styles/sheet-layout.css",
+      "before": "9d4a37bfbc0f762c74be3cdb20613ea22917652bd6a25adadcb2ca21111898dd",
+      "after": "9d4a37bfbc0f762c74be3cdb20613ea22917652bd6a25adadcb2ca21111898dd",
+      "equivalent": true
+    },
+    {
+      "module": "src/styles/navigation-layout.css",
+      "before": "13c90e3948c55bb2942706f13fc534d75c2241a5830c4a3d9c0925b546e60b59",
+      "after": "13c90e3948c55bb2942706f13fc534d75c2241a5830c4a3d9c0925b546e60b59",
+      "equivalent": true
+    },
+    {
+      "module": "src/styles/desktop-shell.css",
+      "before": "8063ef58ecc094ea43d381566cd594f0ed3340085c5528117defb24e2e9dcafb",
+      "after": "8063ef58ecc094ea43d381566cd594f0ed3340085c5528117defb24e2e9dcafb",
+      "equivalent": true
+    },
+    {
+      "module": "src/styles/hero-backgrounds.css",
+      "before": "08a982fb952f7b9a57aea4c9148d3921fe27b7b5a475c52be0b711d9e8d9d656",
+      "after": "08a982fb952f7b9a57aea4c9148d3921fe27b7b5a475c52be0b711d9e8d9d656",
+      "equivalent": true
+    },
+    {
+      "module": "src/styles/visual-viewport-popup.css",
+      "before": "212ea53248b6ec3b831a576622aefcda9014c920fd82fe25894150d7b1373b33",
+      "after": "212ea53248b6ec3b831a576622aefcda9014c920fd82fe25894150d7b1373b33",
+      "equivalent": true
+    },
+    {
+      "module": "src/styles/responsive-shell.css",
+      "before": "3a7577e26fb13818ed49abce4fea8661c64e416afefe411586646807caf0ecc7",
+      "after": "3a7577e26fb13818ed49abce4fea8661c64e416afefe411586646807caf0ecc7",
+      "equivalent": true
+    },
+    {
+      "module": "src/styles/interface-layout.css",
+      "before": "833e27a64596233b09e051b6cce4fa6aeee18344fb2e23d6411217000f640c2e",
+      "after": "833e27a64596233b09e051b6cce4fa6aeee18344fb2e23d6411217000f640c2e",
+      "equivalent": true
+    },
+    {
+      "module": "src/styles/route-layout.css",
+      "before": "1a08e83f7eb36ce280fe8d1d8cd915dad285dd07f74fe69a6543bae173c85fc9",
+      "after": "1a08e83f7eb36ce280fe8d1d8cd915dad285dd07f74fe69a6543bae173c85fc9",
+      "equivalent": true
+    },
+    {
+      "module": "src/styles/experience-surfaces.css",
+      "before": "6a59737a27d7b3f8492fdaeee44d82ffed702f4f4918c5b541c93e68061075d4",
+      "after": "6a59737a27d7b3f8492fdaeee44d82ffed702f4f4918c5b541c93e68061075d4",
+      "equivalent": true
+    },
+    {
+      "module": "src/styles/motion-foundation.css",
+      "before": "de83079770c6246fa408a37e32b2e458b1ab332b7a81408330e9d28a8edc2efb",
+      "after": "de83079770c6246fa408a37e32b2e458b1ab332b7a81408330e9d28a8edc2efb",
+      "equivalent": true
+    },
+    {
+      "module": "src/styles/motion-interactions.css",
+      "before": "8c2113608fad560ec1bc3d489aaa69a93961aa453d8fab30eafdffe570a28229",
+      "after": "8c2113608fad560ec1bc3d489aaa69a93961aa453d8fab30eafdffe570a28229",
+      "equivalent": true
+    },
+    {
+      "module": "src/styles/motion-composition.css",
+      "before": "0f3b3dbba9f02050c53a5ad97523e8cf94f6e255928dd08f227de475c24138ba",
+      "after": "0f3b3dbba9f02050c53a5ad97523e8cf94f6e255928dd08f227de475c24138ba",
+      "equivalent": true
+    },
+    {
+      "module": "src/styles/master-toolbar-popout.css",
+      "before": "c4ce92f5ce65f3b8a8a001baa12729c4b47b6491c27775b2e2921af2597db98e",
+      "after": "c4ce92f5ce65f3b8a8a001baa12729c4b47b6491c27775b2e2921af2597db98e",
+      "equivalent": true
+    },
+    {
+      "module": "src/styles/master-panel-navigation.css",
+      "before": "97300ade9f4a8df358048bad6187fee4bf63872ccab91b86ce978fe2ab7ba429",
+      "after": "97300ade9f4a8df358048bad6187fee4bf63872ccab91b86ce978fe2ab7ba429",
+      "equivalent": true
+    },
+    {
+      "module": "src/styles/route-popup-frame.css",
+      "before": "7e0310916ec19f1f75183a6afd52f66a9170dd276f5bd0d24bda810876d1778f",
+      "after": "7e0310916ec19f1f75183a6afd52f66a9170dd276f5bd0d24bda810876d1778f",
+      "equivalent": true
+    },
+    {
+      "module": "src/styles/button.css",
+      "before": "409e0c3b3d30e50010363540fee7bb8949248396a5d2cef0e5cf298df8843430",
+      "after": "409e0c3b3d30e50010363540fee7bb8949248396a5d2cef0e5cf298df8843430",
+      "equivalent": true
+    },
+    {
+      "module": "src/styles/sheet-experience.css",
+      "before": "34e159293ce42ca0f012f909056115f52445c94819811555e601fefcb14f96b5",
+      "after": "34e159293ce42ca0f012f909056115f52445c94819811555e601fefcb14f96b5",
+      "equivalent": true
+    },
+    {
+      "module": "src/styles/nexus-tabletop-locator.css",
+      "before": "16dd0b12c7a6f51626baefe280da99813c81ac322bd425d17709c02d5f2b2ce5",
+      "after": "16dd0b12c7a6f51626baefe280da99813c81ac322bd425d17709c02d5f2b2ce5",
+      "equivalent": true
+    },
+    {
+      "module": "src/styles/knowledge-graph-second-brain.css",
+      "before": "b2a2180eaa7944a64e250364ad77f14d5eadd79ca487445b563adffe60365fc6",
+      "after": "b2a2180eaa7944a64e250364ad77f14d5eadd79ca487445b563adffe60365fc6",
+      "equivalent": true
+    },
+    {
+      "module": "src/styles/tabletop-live-session.css",
+      "before": "e8a7029efc934fce46bc4fe3496686e871b9ae9efdd36fc3b9fdf027f9e53fe3",
+      "after": "e8a7029efc934fce46bc4fe3496686e871b9ae9efdd36fc3b9fdf027f9e53fe3",
+      "equivalent": true
+    },
+    {
+      "module": "src/styles/tabletop-director-remote.css",
+      "before": "1aca97c7f19e8a596290d8e3b879341cfec6887ccf9abecbf711bafae4740414",
+      "after": "1aca97c7f19e8a596290d8e3b879341cfec6887ccf9abecbf711bafae4740414",
+      "equivalent": true
+    },
+    {
+      "module": "src/styles/tabletop-participant-workspace.css",
+      "before": "487ed80f83625299faf8a0dd84300fecfb8e076e33643224dc40c6804eef8bac",
+      "after": "487ed80f83625299faf8a0dd84300fecfb8e076e33643224dc40c6804eef8bac",
+      "equivalent": true
+    },
+    {
+      "module": "src/styles/tabletop-visibility-panel.css",
+      "before": "e4c76cc7e407109a859d8c420a54c2a902857d4ea284c0f5143b79517ba4df70",
+      "after": "e4c76cc7e407109a859d8c420a54c2a902857d4ea284c0f5143b79517ba4df70",
+      "equivalent": true
+    },
+    {
+      "module": "src/styles/tabletop-fog-geometry.css",
+      "before": "5029169be179c7c9a64fa6fb8daa362c6812245a64e66188482a2bc600bc41ad",
+      "after": "5029169be179c7c9a64fa6fb8daa362c6812245a64e66188482a2bc600bc41ad",
+      "equivalent": true
+    },
+    {
+      "module": "src/styles/tabletop-route-experience.css",
+      "before": "c43a43b6e6144f3f63260c684d8e43ab8d7d9ab49ef4c10bbd8abcc87fa16f73",
+      "after": "c43a43b6e6144f3f63260c684d8e43ab8d7d9ab49ef4c10bbd8abcc87fa16f73",
+      "equivalent": true
+    },
+    {
+      "module": "src/styles/tabletop-workspace.css",
+      "before": "346cf41d80c82f11d811d32b7b11152ae1f63efdc836ca56490328148a5a347a",
+      "after": "346cf41d80c82f11d811d32b7b11152ae1f63efdc836ca56490328148a5a347a",
+      "equivalent": true
+    },
+    {
+      "module": "src/styles/tabletop-unified-drop.css",
+      "before": "af6da522a271b7894d06fe50ae76b961137bf833bc979ffd89dbd6e4571e0293",
+      "after": "af6da522a271b7894d06fe50ae76b961137bf833bc979ffd89dbd6e4571e0293",
+      "equivalent": true
+    },
+    {
+      "module": "src/styles/tabletop-adaptive-performance.css",
+      "before": "bcd23a5cb008414f4c9b032de9ce25f6dd6530fdf7fec9bd29d7ce8c073ede93",
+      "after": "bcd23a5cb008414f4c9b032de9ce25f6dd6530fdf7fec9bd29d7ce8c073ede93",
+      "equivalent": true
+    },
+    {
+      "module": "src/styles/tabletop-director-workspace.css",
+      "before": "a4ff036c7f14fb50a1cb65084ce7b58b28971bb2db61d55320e873ce3873f725",
+      "after": "a4ff036c7f14fb50a1cb65084ce7b58b28971bb2db61d55320e873ce3873f725",
+      "equivalent": true
+    },
+    {
+      "module": "src/styles/tabletop-semantic-transform.css",
+      "before": "040b26d213b9afc77cb7c651a1b8c39b500e8943495546a891c2967f7f1dcd3f",
+      "after": "040b26d213b9afc77cb7c651a1b8c39b500e8943495546a891c2967f7f1dcd3f",
+      "equivalent": true
+    },
+    {
+      "module": "src/styles/tabletop-atmosphere.css",
+      "before": "a5c715d5eb3a9372ef74a4cf22ee4efbf634948c82a52b147521259834e6028b",
+      "after": "a5c715d5eb3a9372ef74a4cf22ee4efbf634948c82a52b147521259834e6028b",
+      "equivalent": true
+    },
+    {
+      "module": "src/styles/tabletop-entity-dossier.css",
+      "before": "376060e20954644a85c5de0bf92ef72813a881d6e2e163e47612e5556d17c596",
+      "after": "376060e20954644a85c5de0bf92ef72813a881d6e2e163e47612e5556d17c596",
+      "equivalent": true
+    },
+    {
+      "module": "src/styles/tabletop-director-timeline.css",
+      "before": "3c877c2c25701f05c874235c0f715bd5a897ebfac04f5e6d9b976e4e5331acbf",
+      "after": "3c877c2c25701f05c874235c0f715bd5a897ebfac04f5e6d9b976e4e5331acbf",
+      "equivalent": true
+    },
+    {
+      "module": "src/styles/tabletop-region-automation.css",
+      "before": "f428c981584f26d4d73d7d44d9e3130be062d27aa817e670ea497771380b8072",
+      "after": "f428c981584f26d4d73d7d44d9e3130be062d27aa817e670ea497771380b8072",
+      "equivalent": true
+    },
+    {
+      "module": "src/styles/tabletop-director-enhancement.css",
+      "before": "6d2cb8ec8b349e1a3c8585780ad0a8a4a49a3968e7d8a5eae539008f9adb9620",
+      "after": "6d2cb8ec8b349e1a3c8585780ad0a8a4a49a3968e7d8a5eae539008f9adb9620",
+      "equivalent": true
+    },
+    {
+      "module": "src/styles/tabletop-placeables-inspector.css",
+      "before": "119f368970184dddcec3de575a88255fe4fcc9c12f731861cec5197dfb9e9b89",
+      "after": "119f368970184dddcec3de575a88255fe4fcc9c12f731861cec5197dfb9e9b89",
+      "equivalent": true
+    },
+    {
+      "module": "src/styles/tabletop-smart-setup.css",
+      "before": "99cf249c07d117150886aa77991a6455d9c5e0f4b1ae95e7d58ceb61f9e92e5c",
+      "after": "99cf249c07d117150886aa77991a6455d9c5e0f4b1ae95e7d58ceb61f9e92e5c",
+      "equivalent": true
+    },
+    {
+      "module": "src/styles/tabletop-player-interaction.css",
+      "before": "7115cbd61c3c5cb0edffe09a6879d55a653300674a025fb3f5c1e08025433ead",
+      "after": "7115cbd61c3c5cb0edffe09a6879d55a653300674a025fb3f5c1e08025433ead",
+      "equivalent": true
+    },
+    {
+      "module": "src/styles/tabletop-radial-actions.css",
+      "before": "44688a35f01ef1e8752513c764532e6592bc268d78d09d798423d19dfd87a5d7",
+      "after": "44688a35f01ef1e8752513c764532e6592bc268d78d09d798423d19dfd87a5d7",
+      "equivalent": true
+    },
+    {
+      "module": "src/styles/tabletop-floating-layout.css",
+      "before": "7c71681855e907583ad5663725aa358b76b7d6f83f1ff5cbae7d46950e8c3677",
+      "after": "7c71681855e907583ad5663725aa358b76b7d6f83f1ff5cbae7d46950e8c3677",
+      "equivalent": true
+    },
+    {
+      "module": "src/styles/tabletop-creative-dock.css",
+      "before": "866c6edfa85826554a590f1923a3d2bbf0ee9ff2131e2212d7c0b4c8c5f9307e",
+      "after": "866c6edfa85826554a590f1923a3d2bbf0ee9ff2131e2212d7c0b4c8c5f9307e",
+      "equivalent": true
+    },
+    {
+      "module": "src/styles/tabletop-integration-tools.css",
+      "before": "91aab2bb7499edd420d04519f2699451979a7590e960ab2d8484ee97e6c6c245",
+      "after": "91aab2bb7499edd420d04519f2699451979a7590e960ab2d8484ee97e6c6c245",
+      "equivalent": true
+    },
+    {
+      "module": "src/styles/realtime-status.css",
+      "before": "7d743eb501f61ca74ce22d2b4aa094675f4f525e3e4aef58f006f3d5907c9872",
+      "after": "7d743eb501f61ca74ce22d2b4aa094675f4f525e3e4aef58f006f3d5907c9872",
+      "equivalent": true
+    },
+    {
+      "module": "src/styles/tabletop-preflight.css",
+      "before": "422b5cd88e1053ae8ff6a93243759a3f3683cb6584be335bd020ade278b2d217",
+      "after": "422b5cd88e1053ae8ff6a93243759a3f3683cb6584be335bd020ade278b2d217",
+      "equivalent": true
+    },
+    {
+      "module": "src/styles/tabletop-reliability-editor.css",
+      "before": "1b151aeb1be65cd97a6f2b312a51bfc4f220e1147132b8f2866aa7247d968f46",
+      "after": "1b151aeb1be65cd97a6f2b312a51bfc4f220e1147132b8f2866aa7247d968f46",
+      "equivalent": true
+    }
+  ]
+}

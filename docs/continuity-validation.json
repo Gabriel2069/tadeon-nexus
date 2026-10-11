@@ -1,0 +1,76 @@
+{
+  "date": "2026-10-11",
+  "runtimeReference": "2a458d97531e1d5dc314bdc42df3eadb7b26ef67",
+  "gate": {
+    "status": "passed",
+    "domains": 11,
+    "tasks": 12,
+    "documents": 21,
+    "bridges": 36,
+    "negativeProbes": [
+      {
+        "case": "missing code owner",
+        "result": "rejected",
+        "matchedDiagnostic": "Missing or invalid repository path"
+      },
+      {
+        "case": "duplicate task IDs",
+        "result": "rejected",
+        "matchedDiagnostic": "duplicate id"
+      },
+      {
+        "case": "unknown dependency",
+        "result": "rejected",
+        "matchedDiagnostic": "unknown dependency"
+      },
+      {
+        "case": "dependency cycle",
+        "result": "rejected",
+        "matchedDiagnostic": "Dependency cycle"
+      },
+      {
+        "case": "stale generated map",
+        "result": "rejected",
+        "matchedDiagnostic": "stale generated map"
+      },
+      {
+        "case": "unmapped bridge",
+        "result": "rejected",
+        "matchedDiagnostic": "Bridge inventory changed"
+      },
+      {
+        "case": "competing active work",
+        "result": "rejected",
+        "matchedDiagnostic": "competing active tasks"
+      }
+    ],
+    "indexedArtifacts": 10
+  },
+  "runtimeChanged": false,
+  "browserEvidenceReused": "docs/foundation-completion-validation.json",
+  "limitations": [
+    "No merge or production verification",
+    "PR metadata is a dated snapshot, not a live service",
+    "Gate checks registered paths, task relations and generated maps; it cannot guarantee all future code changes conflict-free"
+  ],
+  "historyPreserved": {
+    "path": "docs/history/continuity-2026-08.md",
+    "previousContentSha256": "2a9b8902dc709da8fa7d7f8feda546cae1b3920bfebedb5813af016b74a2d6b4",
+    "entirePreviousTextPreserved": true
+  },
+  "pr216": {
+    "head": "15e93ebe778ff55ecfebfaaf67b61b45469a86ac",
+    "reviewDiscussion": "no comments returned",
+    "reconciledIn": "docs/PR_RECONCILIATION.md",
+    "branchDeleted": false
+  },
+  "checks": {
+    "npmRunCheckExitCode": 0,
+    "lint": "passed",
+    "typecheck": "passed",
+    "testSuites": 119,
+    "tests": 515,
+    "build": "passed via npm run check",
+    "runtimeBrowser": "reused unchanged-runtime evidence"
+  }
+}

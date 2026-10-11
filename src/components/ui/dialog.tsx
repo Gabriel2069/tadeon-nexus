@@ -44,8 +44,9 @@ DialogOverlay.displayName = DialogPrimitive.Overlay.displayName;
 const DialogContent = React.forwardRef<
   React.ElementRef<typeof DialogPrimitive.Content>,
   React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content>
->(({ className, children, style, ...props }, ref) => {
+>(({ className, children, style, onOpenAutoFocus, onCloseAutoFocus, ...props }, ref) => {
   const routeFrame = useRoutePopupFrame();
+  const returnFocusRef = React.useRef<HTMLElement | null>(null);
   return (
     <DialogPortal>
       <DialogOverlay />
@@ -56,6 +57,18 @@ const DialogContent = React.forwardRef<
           data-popup-contained="true"
           data-route-bounded={routeFrame.boundary ? "true" : undefined}
           style={style}
+          onOpenAutoFocus={(event) => {
+            returnFocusRef.current =
+              document.activeElement instanceof HTMLElement ? document.activeElement : null;
+            onOpenAutoFocus?.(event);
+          }}
+          onCloseAutoFocus={(event) => {
+            onCloseAutoFocus?.(event);
+            if (!event.defaultPrevented && returnFocusRef.current?.isConnected) {
+              event.preventDefault();
+              returnFocusRef.current.focus({ preventScroll: true });
+            }
+          }}
           className={cn(
             "z-50 grid max-h-[calc(100dvh_-_1rem)] w-[calc(100%_-_1rem)] max-w-lg gap-4 overflow-y-auto overscroll-contain rounded-[1.15rem_.45rem_1.15rem_.45rem] border border-primary/15 bg-background/96 p-5 shadow-[0_32px_90px_-28px_rgba(0,0,0,.96),inset_0_1px_0_rgba(255,255,255,.045)] backdrop-blur-xl duration-200 ease-[var(--ease-out)] sm:p-6",
             className,

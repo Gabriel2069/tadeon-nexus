@@ -1,5 +1,7 @@
 # Operação gratuita e recuperação
 
+> Referência de contrato/procedimento. Afirmações de ambiente, flags, preços ou rollout descrevem seu checkpoint e exigem conferência atual. Consulte [índice](README.md) e [continuidade](ai/00_ESTADO_ATUAL.md).
+
 ## Backup independente
 
 O workflow `backup-independente.yml` exporta o PostgreSQL uma vez por semana e conserva cada

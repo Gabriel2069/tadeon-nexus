@@ -1,4 +1,4 @@
-import { readFileSync } from "node:fs";
+import { readFoundationSource as readFileSync } from "@/test/read-foundation-source";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 
@@ -41,7 +41,7 @@ describe("popup viewport containment", () => {
     const bridge = source("src/components/visual-viewport-popup-bridge.tsx");
 
     expect(bridge).toContain('root.dataset.tadeonPopupViewport = "true"');
-    expect(bridge).toContain("activeEditableInModal");
+    expect(bridge).toContain("activeEditable");
     expect(bridge).toContain("scrollContainerFor");
     expect(bridge).toContain("keepFocusedFieldVisible");
     expect(bridge).toContain("followVisualOffsets");

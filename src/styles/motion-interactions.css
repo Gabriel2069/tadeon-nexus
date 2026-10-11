@@ -1,0 +1,1917 @@
+/* source: src/styles/tadeon-visible-motion.css */
+/* Tadeon Visible Motion - expressive final pass.
+   This layer intentionally increases motion amplitude so transitions are perceived immediately.
+   It preserves the Tadeon palette, editorial character and material feel. */
+
+:root {
+  --tadeon-visible-ease-in: cubic-bezier(.16, 1, .3, 1);
+  --tadeon-visible-ease-out: cubic-bezier(.7, 0, .84, 0);
+  --tadeon-visible-ease-standard: cubic-bezier(.2, .85, .2, 1);
+  --tadeon-visible-route: 620ms;
+  --tadeon-visible-panel: 460ms;
+  --tadeon-visible-ui: 220ms;
+  --tadeon-visible-fast: 150ms;
+}
+
+/* --------------------------------------------------------------------------
+   ROUTES - the whole page visibly travels into place.
+   -------------------------------------------------------------------------- */
+.tadeon-route-stage {
+  animation: tadeon-visible-route-in var(--tadeon-visible-route) var(--tadeon-visible-ease-in) both !important;
+  will-change: transform, opacity, filter;
+}
+
+.tadeon-route-stage > .tadeon-page > * {
+  animation-name: tadeon-visible-section-in !important;
+  animation-duration: 500ms !important;
+  animation-timing-function: var(--tadeon-visible-ease-in) !important;
+  animation-fill-mode: both !important;
+}
+
+.tadeon-route-stage > .tadeon-page > :nth-child(2) { animation-delay: 55ms !important; }
+.tadeon-route-stage > .tadeon-page > :nth-child(3) { animation-delay: 100ms !important; }
+.tadeon-route-stage > .tadeon-page > :nth-child(4) { animation-delay: 145ms !important; }
+.tadeon-route-stage > .tadeon-page > :nth-child(5) { animation-delay: 190ms !important; }
+.tadeon-route-stage > .tadeon-page > :nth-child(n+6) { animation-delay: 235ms !important; }
+
+/* --------------------------------------------------------------------------
+   SURFACES - actual depth instead of a 1px lift.
+   -------------------------------------------------------------------------- */
+@media (hover: hover) and (pointer: fine) {
+  .tadeon-shell .tadeon-surface[data-tadeon-interactive="true"],
+  .tadeon-shell .tadeon-sheet-card,
+  .tadeon-shell .tadeon-dashboard-signal,
+  .tadeon-shell .tadeon-state-panel,
+  .tadeon-shell .tadeon-link-panel {
+    transition:
+      transform var(--tadeon-visible-ui) var(--tadeon-visible-ease-standard),
+      border-color var(--tadeon-visible-ui) ease,
+      box-shadow 340ms var(--tadeon-visible-ease-standard),
+      filter var(--tadeon-visible-ui) ease !important;
+  }
+
+  .tadeon-shell .tadeon-surface[data-tadeon-interactive="true"]:hover,
+  .tadeon-shell .tadeon-sheet-card:hover,
+  .tadeon-shell .tadeon-dashboard-signal:hover,
+  .tadeon-shell .tadeon-state-panel:hover,
+  .tadeon-shell .tadeon-link-panel:hover {
+    transform: translate3d(0, -7px, 0) scale(1.012) !important;
+    filter: saturate(1.06) brightness(1.025) !important;
+    box-shadow:
+      0 34px 90px -44px rgb(0 0 0 / 98%),
+      0 10px 34px -28px rgb(217 215 164 / 20%),
+      inset 0 1px 0 rgb(255 255 255 / 7%) !important;
+  }
+
+  .tadeon-shell .tadeon-surface[data-tadeon-interactive="true"]:active,
+  .tadeon-shell .tadeon-sheet-card:active,
+  .tadeon-shell .tadeon-dashboard-signal:active,
+  .tadeon-shell .tadeon-state-panel:active,
+  .tadeon-shell .tadeon-link-panel:active {
+    transform: translate3d(0, 2px, 0) scale(.978) !important;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   BUTTONS / LINKS - obvious physical press and return.
+   -------------------------------------------------------------------------- */
+.tadeon-shell button:not(:disabled),
+.tadeon-shell [role="button"],
+.tadeon-shell a[href] {
+  transition:
+    transform var(--tadeon-visible-fast) var(--tadeon-visible-ease-standard),
+    box-shadow 220ms var(--tadeon-visible-ease-standard),
+    background-color 180ms ease,
+    border-color 180ms ease,
+    color 180ms ease !important;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .tadeon-shell button:not(:disabled):hover,
+  .tadeon-shell [role="button"]:hover,
+  .tadeon-shell a[href]:hover {
+    transform: translate3d(0, -3px, 0) scale(1.015) !important;
+  }
+}
+
+.tadeon-shell button:not(:disabled):active,
+.tadeon-shell [role="button"]:active,
+.tadeon-shell a[href]:active {
+  animation: tadeon-visible-press 180ms var(--tadeon-visible-ease-standard) both !important;
+}
+
+.tadeon-shell button :where(svg.lucide),
+.tadeon-shell [role="button"] :where(svg.lucide),
+.tadeon-shell a[href] :where(svg.lucide) {
+  transition: transform 260ms var(--tadeon-visible-ease-in), filter 260ms ease !important;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .tadeon-shell button:hover :where(svg.lucide),
+  .tadeon-shell [role="button"]:hover :where(svg.lucide),
+  .tadeon-shell a[href]:hover :where(svg.lucide) {
+    transform: translate3d(0, -2px, 0) scale(1.09) rotate(-2deg) !important;
+    filter: drop-shadow(0 7px 16px rgb(217 215 164 / 22%)) !important;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   TABS - the active marker visibly travels and content lifts in.
+   -------------------------------------------------------------------------- */
+.tadeon-shell [data-slot="tabs-trigger"] {
+  transition:
+    transform var(--tadeon-visible-fast) var(--tadeon-visible-ease-standard),
+    color 180ms ease,
+    background-color 220ms ease,
+    border-color 220ms ease,
+    box-shadow 260ms var(--tadeon-visible-ease-standard) !important;
+}
+
+.tadeon-shell [data-slot="tabs-trigger"][data-state="active"] {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 14px 30px -26px rgb(217 215 164 / 44%) !important;
+}
+
+.tadeon-shell [data-slot="tabs-trigger"]::after {
+  height: 2px !important;
+  transform-origin: center !important;
+  transition: transform 420ms var(--tadeon-visible-ease-in), opacity 220ms ease !important;
+}
+
+.tadeon-shell [data-slot="tabs-trigger"][data-state="active"]::after {
+  transform: scaleX(1) !important;
+  opacity: .9 !important;
+  animation: tadeon-visible-tab-marker 420ms var(--tadeon-visible-ease-in) both !important;
+}
+
+.tadeon-shell [data-slot="tabs-content"][data-state="active"] {
+  animation: tadeon-visible-tab-content 470ms var(--tadeon-visible-ease-in) both !important;
+}
+
+/* --------------------------------------------------------------------------
+   ACCORDION / COLLAPSIBLE - visible physical expansion.
+   -------------------------------------------------------------------------- */
+.tadeon-shell [data-slot="accordion-content"][data-state="open"],
+.tadeon-shell [data-slot="collapsible-content"][data-state="open"] {
+  animation: tadeon-visible-expand-in 420ms var(--tadeon-visible-ease-in) both !important;
+}
+
+.tadeon-shell [data-slot="accordion-content"][data-state="closed"],
+.tadeon-shell [data-slot="collapsible-content"][data-state="closed"] {
+  animation: tadeon-visible-expand-out 230ms var(--tadeon-visible-ease-out) both !important;
+}
+
+.tadeon-shell [data-slot="accordion-trigger"] :where(svg.lucide),
+.tadeon-shell [data-slot="collapsible-trigger"] :where(svg.lucide) {
+  transition: transform 320ms var(--tadeon-visible-ease-in) !important;
+}
+
+.tadeon-shell [data-state="open"] > [data-slot="accordion-trigger"] :where(svg.lucide),
+.tadeon-shell [data-state="open"] > [data-slot="collapsible-trigger"] :where(svg.lucide) {
+  transform: rotate(180deg) scale(1.12) !important;
+}
+
+/* --------------------------------------------------------------------------
+   DIALOGS - larger travel, scale, blur, and content cascade.
+   -------------------------------------------------------------------------- */
+.tadeon-shell [data-slot="dialog-overlay"],
+.tadeon-shell [data-slot="sheet-overlay"] {
+  transition:
+    opacity 420ms var(--tadeon-visible-ease-in),
+    backdrop-filter 520ms var(--tadeon-visible-ease-in) !important;
+}
+
+.tadeon-shell [data-slot="dialog-content"][data-state="open"] {
+  animation: tadeon-visible-dialog-in 560ms var(--tadeon-visible-ease-in) both !important;
+  transform-origin: 50% 45% !important;
+}
+
+.tadeon-shell [data-slot="dialog-content"][data-state="closed"] {
+  animation: tadeon-visible-dialog-out 240ms var(--tadeon-visible-ease-out) both !important;
+}
+
+.tadeon-shell [data-slot="dialog-content"][data-state="open"] > * {
+  animation: tadeon-visible-dialog-child 420ms var(--tadeon-visible-ease-in) both !important;
+}
+
+.tadeon-shell [data-slot="dialog-content"][data-state="open"] > :nth-child(2) { animation-delay: 45ms !important; }
+.tadeon-shell [data-slot="dialog-content"][data-state="open"] > :nth-child(3) { animation-delay: 90ms !important; }
+.tadeon-shell [data-slot="dialog-content"][data-state="open"] > :nth-child(4) { animation-delay: 135ms !important; }
+.tadeon-shell [data-slot="dialog-content"][data-state="open"] > :nth-child(5) { animation-delay: 180ms !important; }
+
+/* --------------------------------------------------------------------------
+   SHEETS - distinct physical motion by edge.
+   -------------------------------------------------------------------------- */
+.tadeon-shell [data-slot="sheet-content"][data-state="open"][data-side="right"] {
+  animation: tadeon-visible-sheet-right-in 560ms var(--tadeon-visible-ease-in) both !important;
+}
+.tadeon-shell [data-slot="sheet-content"][data-state="closed"][data-side="right"] {
+  animation: tadeon-visible-sheet-right-out 260ms var(--tadeon-visible-ease-out) both !important;
+}
+.tadeon-shell [data-slot="sheet-content"][data-state="open"][data-side="left"] {
+  animation: tadeon-visible-sheet-left-in 560ms var(--tadeon-visible-ease-in) both !important;
+}
+.tadeon-shell [data-slot="sheet-content"][data-state="closed"][data-side="left"] {
+  animation: tadeon-visible-sheet-left-out 260ms var(--tadeon-visible-ease-out) both !important;
+}
+.tadeon-shell [data-slot="sheet-content"][data-state="open"][data-side="bottom"] {
+  animation: tadeon-visible-sheet-bottom-in 540ms var(--tadeon-visible-ease-in) both !important;
+}
+.tadeon-shell [data-slot="sheet-content"][data-state="closed"][data-side="bottom"] {
+  animation: tadeon-visible-sheet-bottom-out 260ms var(--tadeon-visible-ease-out) both !important;
+}
+
+.tadeon-shell [data-slot="sheet-content"][data-state="open"] > * {
+  animation: tadeon-visible-sheet-child 420ms var(--tadeon-visible-ease-in) both !important;
+}
+.tadeon-shell [data-slot="sheet-content"][data-state="open"] > :nth-child(2) { animation-delay: 45ms !important; }
+.tadeon-shell [data-slot="sheet-content"][data-state="open"] > :nth-child(3) { animation-delay: 90ms !important; }
+.tadeon-shell [data-slot="sheet-content"][data-state="open"] > :nth-child(4) { animation-delay: 135ms !important; }
+
+/* --------------------------------------------------------------------------
+   POPOVERS / MENUS - grow from trigger instead of simply fading.
+   -------------------------------------------------------------------------- */
+.tadeon-shell [data-slot="popover-content"][data-state="open"],
+.tadeon-shell [data-slot="dropdown-menu-content"][data-state="open"],
+.tadeon-shell [data-slot="dropdown-menu-sub-content"][data-state="open"] {
+  animation: tadeon-visible-popover-in 300ms var(--tadeon-visible-ease-in) both !important;
+  transform-origin: var(--radix-popover-content-transform-origin, var(--radix-dropdown-menu-content-transform-origin, 50% 0%)) !important;
+}
+
+.tadeon-shell [data-slot="popover-content"][data-state="closed"],
+.tadeon-shell [data-slot="dropdown-menu-content"][data-state="closed"],
+.tadeon-shell [data-slot="dropdown-menu-sub-content"][data-state="closed"] {
+  animation: tadeon-visible-popover-out 170ms var(--tadeon-visible-ease-out) both !important;
+}
+
+.tadeon-shell [data-slot="dropdown-menu-content"][data-state="open"] > *,
+.tadeon-shell [data-slot="dropdown-menu-sub-content"][data-state="open"] > * {
+  animation: tadeon-visible-menu-item 240ms var(--tadeon-visible-ease-in) both !important;
+}
+.tadeon-shell [data-slot="dropdown-menu-content"][data-state="open"] > :nth-child(2),
+.tadeon-shell [data-slot="dropdown-menu-sub-content"][data-state="open"] > :nth-child(2) { animation-delay: 25ms !important; }
+.tadeon-shell [data-slot="dropdown-menu-content"][data-state="open"] > :nth-child(3),
+.tadeon-shell [data-slot="dropdown-menu-sub-content"][data-state="open"] > :nth-child(3) { animation-delay: 50ms !important; }
+.tadeon-shell [data-slot="dropdown-menu-content"][data-state="open"] > :nth-child(4),
+.tadeon-shell [data-slot="dropdown-menu-sub-content"][data-state="open"] > :nth-child(4) { animation-delay: 75ms !important; }
+.tadeon-shell [data-slot="dropdown-menu-content"][data-state="open"] > :nth-child(5),
+.tadeon-shell [data-slot="dropdown-menu-sub-content"][data-state="open"] > :nth-child(5) { animation-delay: 100ms !important; }
+
+/* --------------------------------------------------------------------------
+   NAVIGATION - clear movement on active state.
+   -------------------------------------------------------------------------- */
+.tadeon-primary-nav .tadeon-nav-item,
+.tadeon-mobile-dock__item,
+.tadeon-mobile-header__control {
+  transition:
+    transform 200ms var(--tadeon-visible-ease-standard),
+    color 180ms ease,
+    background-color 220ms ease,
+    border-color 220ms ease,
+    box-shadow 280ms var(--tadeon-visible-ease-standard) !important;
+}
+
+.tadeon-primary-nav .tadeon-nav-item[aria-current="page"],
+.tadeon-mobile-dock__item[aria-current="page"] {
+  animation: tadeon-visible-nav-arrive 430ms var(--tadeon-visible-ease-in) both !important;
+}
+
+.tadeon-primary-nav .tadeon-nav-item[aria-current="page"]::after,
+.tadeon-mobile-dock__item[aria-current="page"]::after {
+  animation: tadeon-visible-nav-marker 500ms var(--tadeon-visible-ease-in) both !important;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .tadeon-primary-nav .tadeon-nav-item:hover,
+  .tadeon-mobile-dock__item:hover,
+  .tadeon-mobile-header__control:hover {
+    transform: translate3d(0, -3px, 0) scale(1.02) !important;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   NEXUS / TABLETOP - selections become visually acquired.
+   -------------------------------------------------------------------------- */
+.tadeon-shell [data-tadeon-node][data-selected="true"],
+.tadeon-shell [data-tadeon-map-element][data-selected="true"] {
+  animation: tadeon-visible-selection 620ms var(--tadeon-visible-ease-in) both !important;
+  transform-origin: center !important;
+}
+
+.tadeon-shell [data-tadeon-node][data-related="false"],
+.tadeon-shell [data-tadeon-map-element][data-related="false"] {
+  opacity: .28 !important;
+  filter: saturate(.72) blur(.4px) !important;
+  transition: opacity 360ms ease, filter 360ms ease !important;
+}
+
+.tadeon-shell [data-tadeon-node][data-related="true"],
+.tadeon-shell [data-tadeon-map-element][data-related="true"] {
+  opacity: .94 !important;
+  transition: transform 360ms var(--tadeon-visible-ease-in), opacity 360ms ease, filter 360ms ease !important;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .tadeon-shell [data-tadeon-node][data-related="true"]:hover,
+  .tadeon-shell [data-tadeon-map-element][data-related="true"]:hover {
+    transform: translateY(-4px) scale(1.045) !important;
+    filter: drop-shadow(0 12px 26px rgb(217 215 164 / 18%)) !important;
+  }
+}
+
+.tadeon-shell[data-section="Mesa Nexus"] [data-tabletop-action]:active,
+.tadeon-shell[data-section="Mesa Nexus"] [data-tabletop-tool]:active {
+  transform: translateY(3px) scale(.94) !important;
+}
+
+/* --------------------------------------------------------------------------
+   ATMOSPHERE - intentional slow movement.
+   -------------------------------------------------------------------------- */
+.tadeon-shell .tadeon-atmosphere,
+.tadeon-shell .tadeon-atmosphere-layer,
+.tadeon-shell [data-tadeon-atmosphere] {
+  animation: tadeon-visible-atmosphere 16s ease-in-out infinite alternate !important;
+}
+
+.tadeon-shell .tadeon-orbit,
+.tadeon-shell [data-tadeon-orbit] {
+  animation: tadeon-visible-orbit 24s linear infinite !important;
+}
+
+.tadeon-shell .tadeon-grain,
+.tadeon-shell [data-tadeon-grain] {
+  animation: tadeon-visible-grain 6s steps(3,end) infinite !important;
+}
+
+.tadeon-shell .tadeon-thread-field,
+.tadeon-shell [data-tadeon-atmosphere-line] {
+  animation: tadeon-visible-thread 7s ease-in-out infinite alternate !important;
+}
+
+/* --------------------------------------------------------------------------
+   KEYFRAMES
+   -------------------------------------------------------------------------- */
+@keyframes tadeon-visible-route-in {
+  0% { opacity: 0; transform: translate3d(0, 28px, 0) scale(.985); filter: blur(9px); }
+  68% { opacity: 1; transform: translate3d(0, -3px, 0) scale(1.004); filter: blur(0); }
+  100% { opacity: 1; transform: none; filter: none; }
+}
+
+@keyframes tadeon-visible-section-in {
+  0% { opacity: 0; transform: translate3d(0, 24px, 0) scale(.975); filter: blur(7px); }
+  68% { opacity: 1; transform: translate3d(0, -2px, 0) scale(1.008); filter: blur(0); }
+  100% { opacity: 1; transform: none; filter: none; }
+}
+
+@keyframes tadeon-visible-press {
+  0% { transform: scale(1); }
+  45% { transform: translateY(2px) scale(.93); }
+  100% { transform: scale(.975); }
+}
+
+@keyframes tadeon-visible-tab-marker {
+  0% { transform: scaleX(.08); opacity: 0; }
+  55% { transform: scaleX(1.12); opacity: 1; }
+  100% { transform: scaleX(1); opacity: .9; }
+}
+
+@keyframes tadeon-visible-tab-content {
+  0% { opacity: 0; transform: translate3d(0, 22px, 0) scale(.98); filter: blur(6px); }
+  70% { opacity: 1; transform: translate3d(0, -2px, 0) scale(1.006); filter: blur(0); }
+  100% { opacity: 1; transform: none; }
+}
+
+@keyframes tadeon-visible-expand-in {
+  0% { opacity: 0; transform: translateY(-18px) scaleY(.92); filter: blur(5px); }
+  100% { opacity: 1; transform: none; filter: blur(0); }
+}
+
+@keyframes tadeon-visible-expand-out {
+  0% { opacity: 1; transform: none; filter: blur(0); }
+  100% { opacity: 0; transform: translateY(-10px) scaleY(.92); filter: blur(4px); }
+}
+
+@keyframes tadeon-visible-dialog-in {
+  0% { opacity: 0; transform: translate3d(0, 34px, 0) scale(.91) rotateX(4deg); filter: blur(11px); }
+  58% { opacity: 1; transform: translate3d(0, -5px, 0) scale(1.018) rotateX(0); filter: blur(0); }
+  82% { transform: translate3d(0, 1px, 0) scale(.998); }
+  100% { opacity: 1; transform: none; }
+}
+
+@keyframes tadeon-visible-dialog-out {
+  0% { opacity: 1; transform: none; filter: blur(0); }
+  100% { opacity: 0; transform: translate3d(0, 22px, 0) scale(.94) rotateX(-2deg); filter: blur(7px); }
+}
+
+@keyframes tadeon-visible-dialog-child {
+  0% { opacity: 0; transform: translateY(18px); }
+  100% { opacity: 1; transform: none; }
+}
+
+@keyframes tadeon-visible-sheet-right-in {
+  0% { opacity: .45; transform: translate3d(110%, 0, 0); filter: blur(8px); }
+  70% { opacity: 1; transform: translate3d(-12px, 0, 0); filter: blur(0); }
+  100% { opacity: 1; transform: none; }
+}
+
+@keyframes tadeon-visible-sheet-right-out {
+  0% { opacity: 1; transform: none; }
+  100% { opacity: 0; transform: translate3d(105%, 0, 0); filter: blur(7px); }
+}
+
+@keyframes tadeon-visible-sheet-left-in {
+  0% { opacity: .45; transform: translate3d(-110%, 0, 0); filter: blur(8px); }
+  70% { opacity: 1; transform: translate3d(12px, 0, 0); filter: blur(0); }
+  100% { opacity: 1; transform: none; }
+}
+
+@keyframes tadeon-visible-sheet-left-out {
+  0% { opacity: 1; transform: none; }
+  100% { opacity: 0; transform: translate3d(-105%, 0, 0); filter: blur(7px); }
+}
+
+@keyframes tadeon-visible-sheet-bottom-in {
+  0% { opacity: .45; transform: translate3d(0, 110%, 0); filter: blur(8px); }
+  70% { opacity: 1; transform: translate3d(0, -12px, 0); filter: blur(0); }
+  100% { opacity: 1; transform: none; }
+}
+
+@keyframes tadeon-visible-sheet-bottom-out {
+  0% { opacity: 1; transform: none; }
+  100% { opacity: 0; transform: translate3d(0, 105%, 0); filter: blur(7px); }
+}
+
+@keyframes tadeon-visible-sheet-child {
+  0% { opacity: 0; transform: translate3d(24px, 0, 0); }
+  100% { opacity: 1; transform: none; }
+}
+
+@keyframes tadeon-visible-popover-in {
+  0% { opacity: 0; transform: translateY(16px) scale(.88); filter: blur(7px); }
+  65% { opacity: 1; transform: translateY(-3px) scale(1.025); filter: blur(0); }
+  100% { opacity: 1; transform: none; }
+}
+
+@keyframes tadeon-visible-popover-out {
+  0% { opacity: 1; transform: none; }
+  100% { opacity: 0; transform: translateY(10px) scale(.92); filter: blur(5px); }
+}
+
+@keyframes tadeon-visible-menu-item {
+  0% { opacity: 0; transform: translate3d(-14px, 0, 0) scale(.97); }
+  100% { opacity: 1; transform: none; }
+}
+
+@keyframes tadeon-visible-nav-arrive {
+  0% { opacity: .35; transform: translate3d(-10px, 0, 0) scale(.96); }
+  65% { opacity: 1; transform: translate3d(3px, 0, 0) scale(1.025); }
+  100% { opacity: 1; transform: none; }
+}
+
+@keyframes tadeon-visible-nav-marker {
+  0% { transform: scaleY(.15); opacity: 0; }
+  65% { transform: scaleY(1.22); opacity: 1; }
+  100% { transform: scaleY(1); opacity: .9; }
+}
+
+@keyframes tadeon-visible-selection {
+  0% { opacity: .45; transform: scale(.78); filter: drop-shadow(0 0 0 rgb(217 215 164 / 0)); }
+  58% { opacity: 1; transform: scale(1.12); filter: drop-shadow(0 16px 34px rgb(217 215 164 / 30%)); }
+  78% { transform: scale(.985); }
+  100% { opacity: 1; transform: scale(1); filter: drop-shadow(0 10px 24px rgb(217 215 164 / 16%)); }
+}
+
+@keyframes tadeon-visible-atmosphere {
+  from { transform: translate3d(-3%, -2%, 0) scale(1); }
+  to { transform: translate3d(4%, 3%, 0) scale(1.075); }
+}
+
+@keyframes tadeon-visible-orbit {
+  from { transform: rotate(-10deg) translate3d(0, 0, 0); }
+  to { transform: rotate(350deg) translate3d(-18px, 12px, 0); }
+}
+
+@keyframes tadeon-visible-grain {
+  0% { transform: translate3d(0, 0, 0); opacity: .26; }
+  33% { transform: translate3d(-7px, 4px, 0); opacity: .34; }
+  66% { transform: translate3d(5px, -5px, 0); opacity: .24; }
+  100% { transform: translate3d(-3px, 3px, 0); opacity: .31; }
+}
+
+@keyframes tadeon-visible-thread {
+  from { transform: translate3d(-1.2%, -.8%, 0) rotate(-.4deg); opacity: .55; }
+  to { transform: translate3d(1.5%, 1%, 0) rotate(.4deg); opacity: 1; }
+}
+
+/* Accessibility: retain state changes, remove motion. */
+@media (prefers-reduced-motion: reduce) {
+  .tadeon-route-stage,
+  .tadeon-route-stage > .tadeon-page > *,
+  .tadeon-shell [data-slot="tabs-content"][data-state="active"],
+  .tadeon-shell [data-slot="accordion-content"],
+  .tadeon-shell [data-slot="collapsible-content"],
+  .tadeon-shell [data-slot="dialog-content"],
+  .tadeon-shell [data-slot="dialog-content"] > *,
+  .tadeon-shell [data-slot="sheet-content"],
+  .tadeon-shell [data-slot="sheet-content"] > *,
+  .tadeon-shell [data-slot="popover-content"],
+  .tadeon-shell [data-slot="dropdown-menu-content"],
+  .tadeon-shell [data-slot="dropdown-menu-sub-content"],
+  .tadeon-shell [data-slot="dropdown-menu-content"] > *,
+  .tadeon-shell [data-slot="dropdown-menu-sub-content"] > *,
+  .tadeon-primary-nav .tadeon-nav-item[aria-current="page"],
+  .tadeon-mobile-dock__item[aria-current="page"],
+  .tadeon-shell [data-tadeon-node][data-selected="true"],
+  .tadeon-shell [data-tadeon-map-element][data-selected="true"],
+  .tadeon-shell .tadeon-atmosphere,
+  .tadeon-shell .tadeon-atmosphere-layer,
+  .tadeon-shell [data-tadeon-atmosphere],
+  .tadeon-shell .tadeon-orbit,
+  .tadeon-shell [data-tadeon-orbit],
+  .tadeon-shell .tadeon-grain,
+  .tadeon-shell [data-tadeon-grain],
+  .tadeon-shell .tadeon-thread-field,
+  .tadeon-shell [data-tadeon-atmosphere-line] {
+    animation: none !important;
+  }
+
+  .tadeon-shell button:not(:disabled),
+  .tadeon-shell [role="button"],
+  .tadeon-shell a[href],
+  .tadeon-shell .tadeon-surface,
+  .tadeon-shell .tadeon-sheet-card,
+  .tadeon-shell .tadeon-dashboard-signal,
+  .tadeon-shell .tadeon-state-panel,
+  .tadeon-shell .tadeon-link-panel,
+  .tadeon-shell [data-slot="tabs-trigger"] {
+    transition: none !important;
+  }
+}
+
+/* end-source: src/styles/tadeon-visible-motion.css */
+/* source: src/styles/tadeon-personality-motion.css */
+/* Tadeon Personality Motion - every interaction has a distinct gesture. */
+:root{--tdv-in:cubic-bezier(.16,1,.3,1);--tdv-spring:cubic-bezier(.175,.885,.32,1.275);--tdv-soft:cubic-bezier(.22,1,.36,1);--tdv-out:cubic-bezier(.7,0,.84,0);--tdv-fast:180ms;--tdv-ui:280ms;--tdv-panel:520ms}
+
+/* Buttons: press, release and icon response are deliberately visible. */
+.tadeon-shell button:not(:disabled),.tadeon-shell [role=button],.tadeon-shell a[href]{transform-origin:center;transition:transform var(--tdv-fast) var(--tdv-spring),box-shadow var(--tdv-ui) var(--tdv-soft),border-color var(--tdv-fast) ease,background-color var(--tdv-fast) ease,filter var(--tdv-ui) ease}
+.tadeon-shell button:not(:disabled):hover,.tadeon-shell [role=button]:hover,.tadeon-shell a[href]:hover{transform:translateY(-3px) scale(1.015);filter:brightness(1.06)}
+.tadeon-shell button:not(:disabled):active,.tadeon-shell [role=button]:active,.tadeon-shell a[href]:active{transform:translateY(2px) scale(.93);filter:brightness(.96);transition-duration:90ms}
+.tadeon-shell button:not(:disabled)::before,.tadeon-shell [role=button]::before,.tadeon-shell a[href]::before{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;opacity:0;transform:scale(.72);background:radial-gradient(circle at 50% 50%,currentColor 0,transparent 62%);transition:opacity 260ms ease,transform 360ms var(--tdv-spring)}
+.tadeon-shell button:not(:disabled):active::before,.tadeon-shell [role=button]:active::before,.tadeon-shell a[href]:active::before{opacity:.08;transform:scale(1.3)}
+.tadeon-shell button :where(svg.lucide),.tadeon-shell [role=button] :where(svg.lucide),.tadeon-shell a[href] :where(svg.lucide){transition:transform 300ms var(--tdv-spring),filter 280ms ease}
+.tadeon-shell button:hover :where(svg.lucide),.tadeon-shell [role=button]:hover :where(svg.lucide),.tadeon-shell a[href]:hover :where(svg.lucide){transform:translateY(-2px) scale(1.1) rotate(-3deg);filter:drop-shadow(0 7px 14px rgb(217 215 164 / 22%))}
+.tadeon-shell button:active :where(svg.lucide),.tadeon-shell [role=button]:active :where(svg.lucide),.tadeon-shell a[href]:active :where(svg.lucide){transform:translateY(2px) scale(.88) rotate(4deg)}
+
+/* Tabs: underline travels; label and icon move independently. */
+.tadeon-shell [data-slot=tabs-list]{position:relative}
+.tadeon-shell [data-slot=tabs-trigger]{overflow:visible!important;transform-origin:center;transition:transform 220ms var(--tdv-spring),color 180ms ease,background-color 260ms ease,box-shadow 320ms var(--tdv-soft)}
+.tadeon-shell [data-slot=tabs-trigger]:hover{transform:translateY(-3px)}
+.tadeon-shell [data-slot=tabs-trigger]:active{transform:translateY(2px) scale(.95)}
+.tadeon-shell [data-slot=tabs-trigger]::after{content:"";position:absolute;left:10%;right:10%;bottom:-2px;height:2px;border-radius:999px;background:currentColor;transform:scaleX(.12);transform-origin:center;opacity:0;transition:transform 420ms var(--tdv-spring),opacity 220ms ease,filter 360ms ease}
+.tadeon-shell [data-slot=tabs-trigger][data-state=active]::after{opacity:.9;transform:scaleX(1);filter:drop-shadow(0 0 9px currentColor)}
+.tadeon-shell [data-slot=tabs-trigger] :where(svg.lucide){transition:transform 360ms var(--tdv-spring)}
+.tadeon-shell [data-slot=tabs-trigger][data-state=active] :where(svg.lucide){transform:translateY(-2px) scale(1.08) rotate(-2deg)}
+.tadeon-shell [data-slot=tabs-content][data-state=active]{animation:tdv-tab-enter 520ms var(--tdv-in) both}
+@keyframes tdv-tab-enter{from{opacity:0;transform:translate3d(0,30px,0) scale(.965);filter:blur(10px)}55%{opacity:1;transform:translate3d(0,-5px,0) scale(1.008);filter:blur(0)}to{opacity:1;transform:none}}
+
+/* Inputs: focus behaves like inscription being lit. */
+.tadeon-shell input,.tadeon-shell textarea,.tadeon-shell [data-slot=select-trigger]{transition:border-color 240ms ease,box-shadow 420ms var(--tdv-soft),background-color 260ms ease,transform 260ms var(--tdv-soft),filter 260ms ease}
+.tadeon-shell input:hover,.tadeon-shell textarea:hover,.tadeon-shell [data-slot=select-trigger]:hover{transform:translateY(-2px)}
+.tadeon-shell input:focus,.tadeon-shell textarea:focus,.tadeon-shell [data-slot=select-trigger]:focus-visible{transform:translateY(-3px);box-shadow:0 0 0 1px rgb(217 215 164 / 30%),0 18px 44px -28px rgb(217 215 164 / 60%);filter:brightness(1.04)}
+.tadeon-shell input::selection,.tadeon-shell textarea::selection{background:rgb(116 36 45 / 42%)}
+
+/* Checkboxes / radios / switches: tactile state change. */
+.tadeon-shell [data-slot=checkbox][data-state=checked],.tadeon-shell [data-slot=radio-group-item][data-state=checked],.tadeon-shell [data-state=checked][role=switch]{animation:tdv-state-pop 440ms var(--tdv-spring) both}
+@keyframes tdv-state-pop{0%{transform:scale(.78) rotate(-6deg)}48%{transform:scale(1.18) rotate(2deg)}76%{transform:scale(.96)}100%{transform:scale(1) rotate(0)}}
+
+/* Cards / rows: distinct lift, lateral drift and material sheen. */
+.tadeon-shell .tadeon-surface,.tadeon-shell .tadeon-sheet-card,.tadeon-shell .tadeon-user-row,.tadeon-shell .tadeon-dashboard-signal,.tadeon-shell .tadeon-state-panel{transition:transform 340ms var(--tdv-spring),box-shadow 440ms var(--tdv-soft),border-color 260ms ease,filter 340ms ease}
+@media (hover:hover) and (pointer:fine){.tadeon-shell .tadeon-surface:hover{transform:translateY(-8px) rotate(-.18deg) scale(1.012);filter:brightness(1.035)}.tadeon-shell .tadeon-sheet-card:hover{transform:translateY(-9px) rotate(.14deg) scale(1.016);filter:brightness(1.045)}.tadeon-shell .tadeon-user-row:hover{transform:translateX(8px) translateY(-2px);filter:brightness(1.025)}.tadeon-shell .tadeon-dashboard-signal:hover{transform:translateY(-10px) rotate(-.25deg) scale(1.02)}.tadeon-shell .tadeon-state-panel:hover{transform:translateY(-6px) scale(1.008)}}
+
+/* Navigation: active destination arrives with a directional sweep. */
+.tadeon-primary-nav .tadeon-nav-item,.tadeon-mobile-dock__item{transition:transform 320ms var(--tdv-spring),color 220ms ease,background-color 320ms ease,box-shadow 420ms var(--tdv-soft)}
+@media (hover:hover) and (pointer:fine){.tadeon-primary-nav .tadeon-nav-item:hover,.tadeon-mobile-dock__item:hover{transform:translateX(7px) translateY(-2px)}}
+.tadeon-primary-nav .tadeon-nav-item[aria-current=page],.tadeon-mobile-dock__item[aria-current=page]{animation:tdv-nav-land 560ms var(--tdv-spring) both}
+@keyframes tdv-nav-land{0%{opacity:.65;transform:translateX(-13px) scale(.92)}55%{opacity:1;transform:translateX(4px) scale(1.045)}100%{opacity:1;transform:none}}
+
+/* Tooltips and floating notes: quick, sharp, directional. */
+.tadeon-shell [data-slot=tooltip-content][data-state=open]{animation:tdv-tooltip-in 260ms var(--tdv-spring) both}
+.tadeon-shell [data-slot=tooltip-content][data-state=closed]{animation:tdv-tooltip-out 130ms var(--tdv-out) both}
+@keyframes tdv-tooltip-in{from{opacity:0;transform:translateY(14px) scale(.86) rotate(-1.2deg);filter:blur(4px)}65%{opacity:1;transform:translateY(-3px) scale(1.04) rotate(.2deg);filter:blur(0)}to{transform:none}}
+@keyframes tdv-tooltip-out{to{opacity:0;transform:translateY(8px) scale(.9);filter:blur(3px)}}
+
+/* Menus: opened like a fan rather than a generic fade. */
+.tadeon-shell [data-slot=dropdown-menu-content][data-state=open],.tadeon-shell [data-slot=popover-content][data-state=open]{animation:tdv-menu-in 320ms var(--tdv-spring) both}
+@keyframes tdv-menu-in{from{opacity:0;transform:translateY(-12px) scale(.84) rotateX(-8deg);filter:blur(5px)}64%{opacity:1;transform:translateY(3px) scale(1.03) rotateX(1deg);filter:blur(0)}to{transform:none}}
+.tadeon-shell [data-slot=dropdown-menu-content][data-state=open] > *, .tadeon-shell [data-slot=dropdown-menu-sub-content][data-state=open] > *{animation:tdv-menu-item 280ms var(--tdv-in) both}
+.tadeon-shell [data-slot=dropdown-menu-content][data-state=open] > :nth-child(2){animation-delay:30ms}.tadeon-shell [data-slot=dropdown-menu-content][data-state=open] > :nth-child(3){animation-delay:60ms}.tadeon-shell [data-slot=dropdown-menu-content][data-state=open] > :nth-child(4){animation-delay:90ms}.tadeon-shell [data-slot=dropdown-menu-content][data-state=open] > :nth-child(5){animation-delay:120ms}
+@keyframes tdv-menu-item{from{opacity:0;transform:translateX(-14px) scale(.94)}to{opacity:1;transform:none}}
+
+/* Toasts: arrive, settle and subtly expand the status line. */
+.tadeon-shell [data-sonner-toast]{animation:tdv-toast-in 480ms var(--tdv-in) both}
+@keyframes tdv-toast-in{from{opacity:0;transform:translate3d(30px,-22px,0) scale(.86);filter:blur(7px)}62%{opacity:1;transform:translate3d(-4px,3px,0) scale(1.035);filter:blur(0)}to{transform:none}}
+
+/* Modal and sheets receive noticeably different silhouettes. */
+.tadeon-shell [data-slot=dialog-content][data-state=open]{animation:tdv-dialog-in 600ms var(--tdv-in) both}
+.tadeon-shell [data-slot=dialog-content][data-state=closed]{animation:tdv-dialog-out 220ms var(--tdv-out) both}
+@keyframes tdv-dialog-in{from{opacity:0;transform:translateY(72px) scale(.82) rotateX(-7deg);filter:blur(14px)}58%{opacity:1;transform:translateY(-7px) scale(1.035) rotateX(1deg);filter:blur(0)}to{opacity:1;transform:none}}
+@keyframes tdv-dialog-out{from{opacity:1;transform:none}to{opacity:0;transform:translateY(38px) scale(.9) rotateX(4deg);filter:blur(7px)}}
+.tadeon-shell [data-slot=sheet-content][data-state=open][data-side=right]{animation:tdv-sheet-r-in 620ms var(--tdv-in) both}.tadeon-shell [data-slot=sheet-content][data-state=closed][data-side=right]{animation:tdv-sheet-r-out 220ms var(--tdv-out) both}.tadeon-shell [data-slot=sheet-content][data-state=open][data-side=left]{animation:tdv-sheet-l-in 620ms var(--tdv-in) both}.tadeon-shell [data-slot=sheet-content][data-state=closed][data-side=left]{animation:tdv-sheet-l-out 220ms var(--tdv-out) both}.tadeon-shell [data-slot=sheet-content][data-state=open][data-side=bottom]{animation:tdv-sheet-b-in 620ms var(--tdv-in) both}.tadeon-shell [data-slot=sheet-content][data-state=closed][data-side=bottom]{animation:tdv-sheet-b-out 220ms var(--tdv-out) both}
+@keyframes tdv-sheet-r-in{from{transform:translateX(100%) scale(.96);opacity:.3}60%{transform:translateX(-18px) scale(1.012);opacity:1}to{transform:none;opacity:1}}@keyframes tdv-sheet-r-out{to{transform:translateX(100%) scale(.98);opacity:0}}@keyframes tdv-sheet-l-in{from{transform:translateX(-100%) scale(.96);opacity:.3}60%{transform:translateX(18px) scale(1.012);opacity:1}to{transform:none;opacity:1}}@keyframes tdv-sheet-l-out{to{transform:translateX(-100%) scale(.98);opacity:0}}@keyframes tdv-sheet-b-in{from{transform:translateY(100%) scale(.96);opacity:.2}60%{transform:translateY(-18px) scale(1.012);opacity:1}to{transform:none;opacity:1}}@keyframes tdv-sheet-b-out{to{transform:translateY(100%) scale(.98);opacity:0}}
+
+/* Background objects: slow, layered drift with different periods. */
+.tadeon-shell .tadeon-atmosphere,.tadeon-shell [data-tadeon-atmosphere]{animation:tdv-atmo-a 19s ease-in-out infinite alternate}.tadeon-shell .tadeon-atmosphere-layer{animation:tdv-atmo-b 27s ease-in-out infinite alternate}.tadeon-shell .tadeon-orbit,[data-tadeon-orbit]{animation:tdv-orbit 31s linear infinite}.tadeon-shell .tadeon-grain,[data-tadeon-grain]{animation:tdv-grain 7s steps(2,end) infinite}.tadeon-shell .tadeon-thread-field{animation:tdv-thread 13s ease-in-out infinite alternate}
+@keyframes tdv-atmo-a{from{transform:translate3d(-2%,-1%,0) scale(.97) rotate(-.4deg)}to{transform:translate3d(3%,2%,0) scale(1.06) rotate(.5deg)}}@keyframes tdv-atmo-b{from{transform:translate3d(2%,-2%,0) scale(1.02)}to{transform:translate3d(-3%,3%,0) scale(.96)}}@keyframes tdv-orbit{from{transform:rotate(-8deg) translate3d(0,0,0)}to{transform:rotate(12deg) translate3d(-24px,14px,0)}}@keyframes tdv-grain{0%{opacity:.25;transform:translate(0,0)}50%{opacity:.5;transform:translate(9px,-6px)}100%{opacity:.3;transform:translate(-6px,7px)}}@keyframes tdv-thread{from{transform:translate3d(-2%,-1%,0);opacity:.45}to{transform:translate3d(3%,2%,0);opacity:.95}}
+
+/* Loading and save states have an authored pulse, not a spinner. */
+.tadeon-shell [aria-busy=true]{overflow:hidden}.tadeon-shell [aria-busy=true]::after{content:"";position:absolute;inset:0;background:linear-gradient(105deg,transparent 34%,rgb(217 215 164 / 18%) 50%,transparent 66%);transform:translateX(-120%);animation:tdv-sweep 1.55s ease-in-out infinite;pointer-events:none}@keyframes tdv-sweep{to{transform:translateX(120%)}}
+[data-tadeon-state=saving],[data-tadeon-feedback=saving]{animation:tdv-saving 1.6s ease-in-out infinite}[data-tadeon-state=saved],[data-tadeon-feedback=success]{animation:tdv-success 600ms var(--tdv-spring) both}[data-tadeon-state=error],[data-tadeon-feedback=error]{animation:tdv-error 460ms var(--tdv-spring) both}
+@keyframes tdv-saving{0%,100%{box-shadow:0 0 0 0 rgb(217 215 164 / 0%)}50%{box-shadow:0 0 34px -14px rgb(217 215 164 / 48%)}}@keyframes tdv-success{0%{opacity:.55;transform:scale(.88)}45%{opacity:1;transform:scale(1.1)}75%{transform:scale(.97)}100%{transform:scale(1)}}@keyframes tdv-error{0%,100%{transform:translateX(0)}20%{transform:translateX(-8px) rotate(-.4deg)}40%{transform:translateX(7px) rotate(.4deg)}60%{transform:translateX(-4px)}80%{transform:translateX(2px)}}
+
+/* Tables / lists: rows arrive as a visible procession. */
+.tadeon-shell .tadeon-users-list > *, .tadeon-shell .tadeon-inventory-list > *, .tadeon-shell .tadeon-skill-list > *, .tadeon-shell .tadeon-sheet-overview > *{animation:tdv-row-in 560ms var(--tdv-in) both}.tadeon-shell .tadeon-users-list > :nth-child(2),.tadeon-shell .tadeon-inventory-list > :nth-child(2),.tadeon-shell .tadeon-skill-list > :nth-child(2){animation-delay:50ms}.tadeon-shell .tadeon-users-list > :nth-child(3),.tadeon-shell .tadeon-inventory-list > :nth-child(3),.tadeon-shell .tadeon-skill-list > :nth-child(3){animation-delay:100ms}.tadeon-shell .tadeon-users-list > :nth-child(4),.tadeon-shell .tadeon-inventory-list > :nth-child(4),.tadeon-shell .tadeon-skill-list > :nth-child(4){animation-delay:150ms}@keyframes tdv-row-in{from{opacity:0;transform:translateX(-28px) translateY(14px) scale(.97);filter:blur(5px)}65%{opacity:1;transform:translateX(4px) translateY(-2px) scale(1.01);filter:blur(0)}to{transform:none}}
+
+/* Nexus: selection becomes a focal event. */
+.tadeon-shell [data-tadeon-node][data-selected=true],.tadeon-shell [data-tadeon-map-element][data-selected=true]{animation:tdv-node-focus 700ms var(--tdv-spring) both;transform-origin:center;filter:drop-shadow(0 18px 32px rgb(217 215 164 / 28%))}.tadeon-shell [data-tadeon-node][data-related=true],.tadeon-shell [data-tadeon-map-element][data-related=true]{transition:opacity 420ms var(--tdv-soft),filter 520ms var(--tdv-soft),transform 500ms var(--tdv-spring)}@keyframes tdv-node-focus{0%{opacity:.55;transform:scale(.72);filter:drop-shadow(0 0 0 rgb(217 215 164 / 0%))}55%{opacity:1;transform:scale(1.15);filter:drop-shadow(0 20px 36px rgb(217 215 164 / 34%))}100%{transform:scale(1)}}
+
+/* Tabletop tools: different from generic buttons - heavier and more mechanical. */
+.tadeon-shell[data-section="Mesa Nexus"] [data-tabletop-tool],.tadeon-shell[data-section="Mesa Nexus"] [data-tabletop-action]{transition:transform 220ms var(--tdv-spring),box-shadow 360ms var(--tdv-soft),filter 220ms ease}.tadeon-shell[data-section="Mesa Nexus"] [data-tabletop-tool]:hover,.tadeon-shell[data-section="Mesa Nexus"] [data-tabletop-action]:hover{transform:translateY(-5px) rotate(-1deg) scale(1.04);filter:brightness(1.08)}.tadeon-shell[data-section="Mesa Nexus"] [data-tabletop-tool]:active,.tadeon-shell[data-section="Mesa Nexus"] [data-tabletop-action]:active{transform:translateY(4px) scale(.9) rotate(.7deg)}
+
+/* Master command surface: command-like horizontal sweep. */
+.tadeon-shell[data-section="Painel do Mestre"] [data-tadeon-command]:hover{transform:translateX(9px);filter:brightness(1.08)}.tadeon-shell[data-section="Painel do Mestre"] [data-tadeon-command]:active{transform:translateX(3px) scale(.94)}
+
+/* Focus ring arrives with a pulse, rather than static outline. */
+.tadeon-shell :focus-visible{outline:1px solid rgb(217 215 164 / 66%);outline-offset:4px;box-shadow:0 0 0 5px rgb(217 215 164 / 8%);animation:tdv-focus 340ms var(--tdv-spring) both}@keyframes tdv-focus{from{outline-offset:9px;opacity:.72}65%{outline-offset:3px;opacity:1}to{outline-offset:4px}}
+
+/* Reduced motion remains explicit and complete. */
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:1ms!important;animation-iteration-count:1!important;transition-duration:1ms!important;scroll-behavior:auto!important}}
+
+/* end-source: src/styles/tadeon-personality-motion.css */
+/* source: src/styles/tadeon-section-personality-motion.css */
+/* Tadeon Section Personality Motion - each workspace has its own gesture. */
+:root{
+  --tp-in:cubic-bezier(.16,1,.3,1);
+  --tp-snap:cubic-bezier(.2,1.25,.35,1);
+  --tp-soft:cubic-bezier(.4,0,.2,1);
+}
+
+/* DASHBOARD - composed, deliberate, signal-driven. */
+.tadeon-shell[data-section="Dashboard"] .tadeon-dashboard-signal,
+.tadeon-shell[data-section="Painel"] .tadeon-dashboard-signal{
+  transform-origin:50% 100%;
+}
+.tadeon-shell[data-section="Dashboard"] .tadeon-dashboard-signal:hover,
+.tadeon-shell[data-section="Painel"] .tadeon-dashboard-signal:hover{
+  transform:translateY(-10px) scale(1.025) rotate(-.35deg);
+  box-shadow:0 34px 70px -42px rgb(217 215 164 / 38%);
+}
+.tadeon-shell[data-section="Dashboard"] .tadeon-dashboard-signal:nth-child(2n):hover,
+.tadeon-shell[data-section="Painel"] .tadeon-dashboard-signal:nth-child(2n):hover{transform:translateY(-10px) scale(1.025) rotate(.35deg)}
+
+/* FICHA - cards feel like pages/records being handled. */
+.tadeon-shell[data-section="Ficha"] .tadeon-sheet-card{
+  transform-origin:50% 12%;
+}
+.tadeon-shell[data-section="Ficha"] .tadeon-sheet-card:hover{
+  transform:translateY(-11px) rotate(-.45deg) scale(1.025);
+  box-shadow:0 38px 80px -48px rgb(217 215 164 / 30%);
+}
+.tadeon-shell[data-section="Ficha"] .tadeon-sheet-card:nth-child(even):hover{transform:translateY(-9px) rotate(.42deg) scale(1.022)}
+.tadeon-shell[data-section="Ficha"] .tadeon-sheet-section[data-state="open"]{
+  animation:tp-sheet-open 440ms var(--tp-snap) both;
+}
+@keyframes tp-sheet-open{from{opacity:0;transform:translateY(28px) rotateX(-8deg) scale(.96)}65%{opacity:1;transform:translateY(-4px) rotateX(1deg) scale(1.012)}to{transform:none}}
+
+/* NEXUS - focus travels through the graph. */
+.tadeon-shell[data-section="O Nexus"] .tadeon-knowledge-graph,
+.tadeon-shell[data-section="O Nexus"] .tadeon-brain-shell{perspective:1400px}
+.tadeon-shell[data-section="O Nexus"] [data-tadeon-node][data-selected="true"]{
+  animation:tp-node-acquire 650ms var(--tp-snap) both;
+  transform-origin:center;
+}
+@keyframes tp-node-acquire{0%{opacity:.55;transform:scale(.72) translateZ(-35px);filter:blur(4px) drop-shadow(0 0 0 transparent)}55%{opacity:1;transform:scale(1.14) translateZ(16px);filter:blur(0) drop-shadow(0 20px 42px rgb(217 215 164 / 38%))}100%{transform:scale(1) translateZ(0);filter:drop-shadow(0 14px 30px rgb(217 215 164 / 20%))}}
+.tadeon-shell[data-section="O Nexus"] [data-tadeon-node][data-related="true"]{animation:tp-related-in 520ms var(--tp-in) both}
+@keyframes tp-related-in{from{opacity:.35;transform:translateY(14px) scale(.92)}to{opacity:1;transform:none}}
+.tadeon-shell[data-section="O Nexus"] [data-tadeon-node][data-related="false"]{transition:opacity 460ms var(--tp-soft),filter 460ms var(--tp-soft);opacity:.22;filter:blur(1px)}
+
+/* MESTRE - command surface with directional snap. */
+.tadeon-shell[data-section="Painel do Mestre"] .tadeon-master-navigation [data-slot="tabs-trigger"]{
+  overflow:hidden;
+}
+.tadeon-shell[data-section="Painel do Mestre"] .tadeon-master-navigation [data-slot="tabs-trigger"]::after{
+  content:"";position:absolute;inset:0 auto 0 0;width:0;background:linear-gradient(90deg,rgb(180 92 98 / 0),rgb(180 92 98 / 18%));transition:width 420ms var(--tp-in)
+}
+.tadeon-shell[data-section="Painel do Mestre"] .tadeon-master-navigation [data-slot="tabs-trigger"][data-state="active"]::after{width:100%}
+.tadeon-shell[data-section="Painel do Mestre"] [data-tadeon-command]:active{animation:tp-command-press 300ms var(--tp-snap)}
+@keyframes tp-command-press{0%{transform:scale(1)}42%{transform:scale(.9) rotate(-1.2deg)}78%{transform:scale(1.04) rotate(.3deg)}100%{transform:scale(1)}}
+
+/* MESA NEXUS - physical studio / tools have mechanical feedback. */
+.tadeon-shell[data-section="Mesa Nexus"] [data-tabletop-tool],
+.tadeon-shell[data-section="Mesa Nexus"] [data-tabletop-action]{transform-origin:center bottom}
+.tadeon-shell[data-section="Mesa Nexus"] [data-tabletop-tool]:hover,
+.tadeon-shell[data-section="Mesa Nexus"] [data-tabletop-action]:hover{transform:translateY(-7px) rotate(-1deg) scale(1.045);box-shadow:0 24px 42px -28px rgb(31 54 68 / 62%)}
+.tadeon-shell[data-section="Mesa Nexus"] [data-tabletop-tool]:active,
+.tadeon-shell[data-section="Mesa Nexus"] [data-tabletop-action]:active{animation:tp-tool-hit 260ms var(--tp-snap)}
+@keyframes tp-tool-hit{0%{transform:translateY(0) scale(1)}38%{transform:translateY(5px) scale(.9) rotate(1.4deg)}72%{transform:translateY(-2px) scale(1.045) rotate(-.4deg)}100%{transform:none}}
+
+/* USERS - rows behave like records being selected. */
+.tadeon-shell[data-section="Usuários"] .tadeon-user-row:hover,
+.tadeon-shell[data-section="Backup"] .tadeon-user-row:hover,
+.tadeon-shell[data-section="Offline"] .tadeon-user-row:hover{transform:translateX(10px) translateY(-3px);box-shadow:14px 20px 48px -38px rgb(122 129 135 / 45%)}
+.tadeon-shell[data-section="Usuários"] .tadeon-user-row:active,
+.tadeon-shell[data-section="Backup"] .tadeon-user-row:active,
+.tadeon-shell[data-section="Offline"] .tadeon-user-row:active{transform:translateX(5px) scale(.985)}
+
+/* HEALTH / STATUS - living archive states. */
+.tadeon-shell[data-section="Saúde do arquivo"] .tadeon-state-panel[data-tadeon-state="saving"]{animation:tp-saving 1.55s ease-in-out infinite}
+.tadeon-shell[data-section="Saúde do arquivo"] .tadeon-state-panel[data-tadeon-state="saved"]{animation:tp-saved 600ms var(--tp-snap) both}
+@keyframes tp-saving{0%,100%{box-shadow:0 0 0 0 rgb(217 215 164 / 0%);transform:translateY(0)}50%{box-shadow:0 0 46px -18px rgb(217 215 164 / 45%);transform:translateY(-3px)}}
+@keyframes tp-saved{0%{transform:scale(.9);opacity:.6}55%{transform:scale(1.06);opacity:1}100%{transform:none}}
+
+/* AUTH - ceremonial reveal rather than dashboard-like fade. */
+.tadeon-shell[data-section="Auth"] .tadeon-auth-shell{animation:tp-auth 900ms var(--tp-in) both}
+@keyframes tp-auth{from{opacity:0;transform:translateY(54px) scale(.94) rotateX(7deg);filter:blur(12px)}55%{opacity:1;transform:translateY(-7px) scale(1.012) rotateX(0);filter:blur(0)}to{transform:none}}
+
+@media (max-width:767px){
+  .tadeon-shell[data-section="Dashboard"] .tadeon-dashboard-signal:hover,
+  .tadeon-shell[data-section="Painel"] .tadeon-dashboard-signal:hover,
+  .tadeon-shell[data-section="Ficha"] .tadeon-sheet-card:hover,
+  .tadeon-shell[data-section="Mesa Nexus"] [data-tabletop-tool]:hover,
+  .tadeon-shell[data-section="Mesa Nexus"] [data-tabletop-action]:hover{transform:none}
+}
+
+@media (prefers-reduced-motion:reduce){
+  .tadeon-shell[data-section="O Nexus"] [data-tadeon-node][data-selected="true"],
+  .tadeon-shell[data-section="O Nexus"] [data-tadeon-node][data-related="true"],
+  .tadeon-shell[data-section="Painel do Mestre"] [data-tadeon-command]:active,
+  .tadeon-shell[data-section="Mesa Nexus"] [data-tabletop-tool]:active,
+  .tadeon-shell[data-section="Mesa Nexus"] [data-tabletop-action]:active,
+  .tadeon-shell[data-section="Saúde do arquivo"] .tadeon-state-panel[data-tadeon-state],
+  .tadeon-shell[data-section="Auth"] .tadeon-auth-shell{animation:none!important}
+}
+
+/* end-source: src/styles/tadeon-section-personality-motion.css */
+/* source: src/styles/tadeon-actual-ui-motion.css */
+/* Tadeon Actual UI Motion - targets the real Radix/data-slot DOM used by the app. */
+:root{--tui-in:cubic-bezier(.16,1,.3,1);--tui-spring:cubic-bezier(.175,.885,.32,1.275);--tui-out:cubic-bezier(.7,0,.84,0);--tui-soft:cubic-bezier(.22,1,.36,1)}
+
+/* Real tabs indicator: the component supplies its position inline, so animate the transform itself. */
+.tadeon-shell [data-slot="tabs-indicator"]{position:absolute;z-index:-1;pointer-events:none;border-radius:.7rem;background:linear-gradient(145deg,rgb(217 215 164 / 16%),rgb(255 255 255 / 4%));box-shadow:0 12px 30px -20px rgb(217 215 164 / 42%),inset 0 1px rgb(255 255 255 / 8%);transition:transform 520ms var(--tui-spring),width 420ms var(--tui-spring),height 360ms var(--tui-soft),opacity 220ms ease;will-change:transform,width,height}
+.tadeon-shell [data-slot="tabs-indicator"][data-visible="false"]{opacity:0}
+.tadeon-shell [data-slot="tabs-trigger"][data-state="active"]{position:relative;z-index:1}
+.tadeon-shell [data-slot="tabs-trigger"][data-state="active"]:not(:focus-visible){animation:tui-tab-land 420ms var(--tui-spring) both}
+@keyframes tui-tab-land{0%{transform:translateY(4px) scale(.94)}58%{transform:translateY(-3px) scale(1.035)}100%{transform:none}}
+
+/* Actual Radix dialogs. */
+.tadeon-shell [data-slot="dialog-overlay"][data-state="open"],.tadeon-shell [data-slot="sheet-overlay"][data-state="open"]{opacity:1;backdrop-filter:blur(10px) saturate(78%)}
+.tadeon-shell [data-slot="dialog-overlay"][data-state="closed"],.tadeon-shell [data-slot="sheet-overlay"][data-state="closed"]{opacity:0;backdrop-filter:blur(0) saturate(100%)}
+.tadeon-shell [data-slot="dialog-content"][data-state="open"]{animation:tui-dialog-in 620ms var(--tui-in) both!important;transform-origin:50% 44%!important;will-change:transform,opacity,filter}
+.tadeon-shell [data-slot="dialog-content"][data-state="closed"]{animation:tui-dialog-out 230ms var(--tui-out) both!important}
+@keyframes tui-dialog-in{0%{opacity:0;transform:translateY(72px) scale(.82) rotateX(-8deg);filter:blur(12px)}52%{opacity:1;transform:translateY(-8px) scale(1.035) rotateX(1deg);filter:blur(0)}78%{transform:translateY(2px) scale(.995)}100%{opacity:1;transform:none}}
+@keyframes tui-dialog-out{0%{opacity:1;transform:none;filter:blur(0)}100%{opacity:0;transform:translateY(34px) scale(.9) rotateX(4deg);filter:blur(7px)}}
+.tadeon-shell [data-slot="dialog-content"][data-state="open"]>[data-slot="dialog-header"]{animation:tui-dialog-child 420ms var(--tui-in) both}
+.tadeon-shell [data-slot="dialog-content"][data-state="open"]>[data-slot="dialog-footer"]{animation:tui-dialog-child 420ms var(--tui-in) 110ms both}
+@keyframes tui-dialog-child{from{opacity:0;transform:translateY(18px) scale(.97)}to{opacity:1;transform:none}}
+
+/* Real sheets: Radix supplies data-side. */
+.tadeon-shell [data-slot="sheet-content"][data-state="open"][data-side="right"]{animation:tui-sheet-right-in 620ms var(--tui-in) both!important}
+.tadeon-shell [data-slot="sheet-content"][data-state="closed"][data-side="right"]{animation:tui-sheet-right-out 240ms var(--tui-out) both!important}
+.tadeon-shell [data-slot="sheet-content"][data-state="open"][data-side="left"]{animation:tui-sheet-left-in 620ms var(--tui-in) both!important}
+.tadeon-shell [data-slot="sheet-content"][data-state="closed"][data-side="left"]{animation:tui-sheet-left-out 240ms var(--tui-out) both!important}
+.tadeon-shell [data-slot="sheet-content"][data-state="open"][data-side="bottom"]{animation:tui-sheet-bottom-in 620ms var(--tui-in) both!important}
+.tadeon-shell [data-slot="sheet-content"][data-state="closed"][data-side="bottom"]{animation:tui-sheet-bottom-out 240ms var(--tui-out) both!important}
+.tadeon-shell [data-slot="sheet-content"][data-state="open"][data-side="top"]{animation:tui-sheet-top-in 620ms var(--tui-in) both!important}
+@keyframes tui-sheet-right-in{0%{transform:translateX(100%) rotateY(-7deg);opacity:.25}58%{transform:translateX(-18px) rotateY(1deg);opacity:1}100%{transform:none;opacity:1}}
+@keyframes tui-sheet-right-out{to{transform:translateX(100%) rotateY(-3deg);opacity:0}}
+@keyframes tui-sheet-left-in{0%{transform:translateX(-100%) rotateY(7deg);opacity:.25}58%{transform:translateX(18px) rotateY(-1deg);opacity:1}100%{transform:none;opacity:1}}
+@keyframes tui-sheet-left-out{to{transform:translateX(-100%) rotateY(3deg);opacity:0}}
+@keyframes tui-sheet-bottom-in{0%{transform:translateY(100%) scale(.97);opacity:.2}58%{transform:translateY(-18px) scale(1.012);opacity:1}100%{transform:none;opacity:1}}
+@keyframes tui-sheet-bottom-out{to{transform:translateY(100%) scale(.97);opacity:0}}
+@keyframes tui-sheet-top-in{0%{transform:translateY(-100%) scale(.97);opacity:.2}58%{transform:translateY(18px) scale(1.012);opacity:1}100%{transform:none;opacity:1}}
+
+/* Real popover / dropdown / hover-card / select content. */
+.tadeon-shell [data-slot="popover-content"][data-state="open"],.tadeon-shell [data-slot="dropdown-menu-content"][data-state="open"],.tadeon-shell [data-slot="dropdown-menu-sub-content"][data-state="open"],.tadeon-shell [data-slot="hover-card-content"][data-state="open"],.tadeon-shell [data-slot="select-content"][data-state="open"]{animation:tui-float-in 340ms var(--tui-spring) both!important;transform-origin:var(--radix-popover-content-transform-origin,var(--radix-dropdown-menu-content-transform-origin,var(--radix-hover-card-content-transform-origin,var(--radix-select-content-transform-origin,50% 0%))))!important}
+.tadeon-shell [data-slot="popover-content"][data-state="closed"],.tadeon-shell [data-slot="dropdown-menu-content"][data-state="closed"],.tadeon-shell [data-slot="dropdown-menu-sub-content"][data-state="closed"],.tadeon-shell [data-slot="hover-card-content"][data-state="closed"],.tadeon-shell [data-slot="select-content"][data-state="closed"]{animation:tui-float-out 170ms var(--tui-out) both!important}
+@keyframes tui-float-in{0%{opacity:0;transform:translateY(15px) scale(.82) rotateX(-7deg);filter:blur(6px)}58%{opacity:1;transform:translateY(-3px) scale(1.035) rotateX(1deg);filter:blur(0)}100%{opacity:1;transform:none}}
+@keyframes tui-float-out{to{opacity:0;transform:translateY(10px) scale(.88);filter:blur(4px)}}
+.tadeon-shell [data-slot="dropdown-menu-content"][data-state="open"]>[data-slot="dropdown-menu-item"],.tadeon-shell [data-slot="dropdown-menu-content"][data-state="open"]>[data-slot="dropdown-menu-checkbox-item"],.tadeon-shell [data-slot="dropdown-menu-content"][data-state="open"]>[data-slot="dropdown-menu-radio-item"],.tadeon-shell [data-slot="dropdown-menu-sub-content"][data-state="open"]>*{animation:tui-menu-item 230ms var(--tui-in) both!important}
+.tadeon-shell [data-slot="dropdown-menu-content"][data-state="open"]>*:nth-child(2){animation-delay:24ms!important}.tadeon-shell [data-slot="dropdown-menu-content"][data-state="open"]>*:nth-child(3){animation-delay:48ms!important}.tadeon-shell [data-slot="dropdown-menu-content"][data-state="open"]>*:nth-child(4){animation-delay:72ms!important}.tadeon-shell [data-slot="dropdown-menu-content"][data-state="open"]>*:nth-child(5){animation-delay:96ms!important}
+@keyframes tui-menu-item{from{opacity:0;transform:translateX(-16px)}to{opacity:1;transform:none}}
+
+/* Real accordion/collapsible content and trigger. */
+.tadeon-shell [data-slot="accordion-trigger"],.tadeon-shell [data-slot="collapsible-trigger"]{transition:color 180ms ease,background-color 220ms ease,transform 260ms var(--tui-spring),box-shadow 300ms var(--tui-soft)}
+.tadeon-shell [data-slot="accordion-trigger"]:hover,.tadeon-shell [data-slot="collapsible-trigger"]:hover{transform:translateX(6px);color:var(--primary)}
+.tadeon-shell [data-slot="accordion-content"][data-state="open"],.tadeon-shell [data-slot="collapsible-content"][data-state="open"]{animation:tui-expand-in 430ms var(--tui-in) both!important}
+.tadeon-shell [data-slot="accordion-content"][data-state="closed"],.tadeon-shell [data-slot="collapsible-content"][data-state="closed"]{animation:tui-expand-out 220ms var(--tui-out) both!important}
+.tadeon-shell [data-slot="accordion-trigger"] svg,.tadeon-shell [data-slot="collapsible-trigger"] svg{transition:transform 360ms var(--tui-spring)}
+@keyframes tui-expand-in{from{opacity:0;transform:translateY(-10px) scaleY(.82);filter:blur(3px)}55%{opacity:1;transform:translateY(2px) scaleY(1.02);filter:blur(0)}to{transform:none}}
+@keyframes tui-expand-out{to{opacity:0;transform:translateY(-7px) scaleY(.9);filter:blur(2px)}}
+
+/* Real switches / checkboxes / sliders. */
+.tadeon-shell [data-slot="switch"]{transition:background-color 260ms ease,border-color 260ms ease,box-shadow 320ms var(--tui-soft),transform 220ms var(--tui-spring);transform-origin:center}
+.tadeon-shell [data-slot="switch"]:hover{transform:scale(1.06)}
+.tadeon-shell [data-slot="switch"][data-state="checked"]{animation:tui-control-on 440ms var(--tui-spring) both;box-shadow:0 8px 24px -17px rgb(217 215 164 / 60%)}
+.tadeon-shell [data-slot="switch-thumb"]{transition:transform 340ms var(--tui-spring),box-shadow 300ms ease}
+.tadeon-shell [data-slot="switch-thumb"][data-state="checked"]{box-shadow:0 5px 18px -10px rgb(0 0 0 / 70%)}
+.tadeon-shell [data-slot="checkbox"],.tadeon-shell [data-slot="radio-group-item"]{transform-origin:center;transition:background-color 220ms ease,border-color 220ms ease,box-shadow 300ms var(--tui-soft),transform 260ms var(--tui-spring)}
+.tadeon-shell [data-slot="checkbox"]:hover,.tadeon-shell [data-slot="radio-group-item"]:hover{transform:scale(1.08) rotate(-2deg)}
+.tadeon-shell [data-slot="checkbox"][data-state="checked"],.tadeon-shell [data-slot="radio-group-item"][data-state="checked"]{animation:tui-control-on 430ms var(--tui-spring) both}
+.tadeon-shell [data-slot="checkbox-indicator"]{animation:tui-checkmark 360ms var(--tui-spring) both}
+@keyframes tui-control-on{0%{transform:scale(.78)}55%{transform:scale(1.16)}78%{transform:scale(.96)}100%{transform:none}}
+@keyframes tui-checkmark{from{opacity:0;transform:scale(.3) rotate(-25deg)}60%{opacity:1;transform:scale(1.2) rotate(4deg)}to{transform:none}}
+.tadeon-shell [data-slot="slider-thumb"]{transition:transform 260ms var(--tui-spring),box-shadow 300ms var(--tui-soft),border-color 220ms ease}
+.tadeon-shell [data-slot="slider-thumb"]:hover{transform:scale(1.2);box-shadow:0 8px 24px -12px rgb(217 215 164 / 50%)}
+.tadeon-shell [data-slot="slider-thumb"]:active{transform:scale(.9)}
+.tadeon-shell [data-slot="slider-range"]{transition:width 360ms var(--tui-spring),left 360ms var(--tui-spring);filter:drop-shadow(0 0 8px rgb(217 215 164 / 22%))}
+
+/* Select trigger and real form affordances. */
+.tadeon-shell [data-slot="select-trigger"]{transform-origin:center;transition:transform 240ms var(--tui-spring),box-shadow 320ms var(--tui-soft),border-color 220ms ease,background-color 220ms ease}
+.tadeon-shell [data-slot="select-trigger"][data-state="open"]{transform:translateY(-3px) scale(1.012);box-shadow:0 14px 36px -24px rgb(217 215 164 / 48%)}
+.tadeon-shell [data-slot="select-trigger"]>svg{transition:transform 360ms var(--tui-spring)}
+.tadeon-shell [data-slot="select-trigger"][data-state="open"]>svg{transform:rotate(180deg) scale(1.08)}
+.tadeon-shell [data-slot="select-item"]{transition:transform 220ms var(--tui-spring),background-color 180ms ease,color 180ms ease,padding-left 220ms var(--tui-spring)}
+.tadeon-shell [data-slot="select-item"]:hover{transform:translateX(5px);padding-left:16px}
+.tadeon-shell [data-slot="select-item"][data-highlighted]{transform:translateX(7px);padding-left:16px}
+.tadeon-shell [data-slot="select-item"] svg{transition:transform 280ms var(--tui-spring)}
+
+/* Tabs content: direction is supplied by Tabs root. */
+.tadeon-shell [data-slot="tabs"][data-motion-direction="forward"] [data-slot="tabs-content"][data-state="active"]{animation-name:tui-tab-forward!important}
+.tadeon-shell [data-slot="tabs"][data-motion-direction="backward"] [data-slot="tabs-content"][data-state="active"]{animation-name:tui-tab-backward!important}
+@keyframes tui-tab-forward{from{opacity:0;transform:translateX(42px) scale(.97);filter:blur(8px)}58%{opacity:1;transform:translateX(-4px) scale(1.01);filter:blur(0)}to{opacity:1;transform:none}}
+@keyframes tui-tab-backward{from{opacity:0;transform:translateX(-42px) scale(.97);filter:blur(8px)}58%{opacity:1;transform:translateX(4px) scale(1.01);filter:blur(0)}to{opacity:1;transform:none}}
+
+/* State changes: generic aria-live gets an actual event gesture. */
+.tadeon-shell [aria-live="polite"]{transition:opacity 240ms ease,transform 360ms var(--tui-spring),filter 360ms ease,box-shadow 360ms var(--tui-soft)}
+.tadeon-shell [aria-live="polite"][data-tadeon-state="saved"],.tadeon-shell [aria-live="polite"][data-tadeon-state="success"]{animation:tui-success 520ms var(--tui-spring) both}
+.tadeon-shell [aria-live="polite"][data-tadeon-state="error"]{animation:tui-error 520ms var(--tui-spring) both}
+@keyframes tui-success{0%{opacity:.45;transform:translateY(8px) scale(.94)}55%{opacity:1;transform:translateY(-3px) scale(1.035)}100%{transform:none}}
+@keyframes tui-error{0%{opacity:.35;transform:translateX(0) scale(.96)}25%{transform:translateX(-5px) rotate(-.4deg)}50%{transform:translateX(5px) rotate(.4deg);opacity:1}75%{transform:translateX(-2px)}100%{transform:none}}
+
+@media (prefers-reduced-motion:reduce){
+  .tadeon-shell [data-slot],.tadeon-shell [aria-live="polite"]{animation:none!important;transition:none!important}
+}
+
+/* end-source: src/styles/tadeon-actual-ui-motion.css */
+/* source: src/styles/tadeon-frame-refinement-motion.css */
+/* Tadeon Frame Refinement - reduce vertical jump while keeping tactile depth. */
+:root{
+  --tadeon-frame-ease:cubic-bezier(.22,1,.36,1);
+}
+
+.tadeon-shell .tadeon-surface[data-tadeon-interactive="true"],
+.tadeon-shell .tadeon-sheet-card,
+.tadeon-shell .tadeon-dashboard-signal,
+.tadeon-shell .tadeon-state-panel,
+.tadeon-shell .tadeon-link-panel,
+.tadeon-shell .tadeon-skill-modifier-panel{
+  transition:
+    transform 340ms var(--tadeon-frame-ease),
+    box-shadow 420ms var(--tadeon-frame-ease),
+    filter 320ms ease,
+    border-color 260ms ease !important;
+}
+
+@media (hover:hover) and (pointer:fine){
+  .tadeon-shell .tadeon-surface[data-tadeon-interactive="true"]:hover,
+  .tadeon-shell .tadeon-sheet-card:hover,
+  .tadeon-shell .tadeon-dashboard-signal:hover,
+  .tadeon-shell .tadeon-state-panel:hover,
+  .tadeon-shell .tadeon-link-panel:hover,
+  .tadeon-shell .tadeon-skill-modifier-panel:hover{
+    transform:translate3d(0,-4px,0) scale(1.008) !important;
+    filter:saturate(1.035) brightness(1.015) !important;
+    box-shadow:
+      0 26px 70px -42px rgb(0 0 0 / 94%),
+      0 8px 28px -24px rgb(217 215 164 / 16%),
+      inset 0 1px 0 rgb(255 255 255 / 6%) !important;
+  }
+}
+
+.tadeon-shell .tadeon-surface[data-tadeon-interactive="true"]:active,
+.tadeon-shell .tadeon-sheet-card:active,
+.tadeon-shell .tadeon-dashboard-signal:active,
+.tadeon-shell .tadeon-state-panel:active,
+.tadeon-shell .tadeon-link-panel:active,
+.tadeon-shell .tadeon-skill-modifier-panel:active{
+  transform:translate3d(0,1px,0) scale(.986) !important;
+}
+
+@media (prefers-reduced-motion:reduce){
+  .tadeon-shell .tadeon-surface[data-tadeon-interactive="true"],
+  .tadeon-shell .tadeon-sheet-card,
+  .tadeon-shell .tadeon-dashboard-signal,
+  .tadeon-shell .tadeon-state-panel,
+  .tadeon-shell .tadeon-link-panel,
+  .tadeon-shell .tadeon-skill-modifier-panel{
+    transition:none !important;
+  }
+}
+
+/* end-source: src/styles/tadeon-frame-refinement-motion.css */
+/* source: src/styles/tadeon-complete-interaction-motion.css */
+/* Tadeon Complete Interaction Motion - remaining UI states and authored transitions. */
+:root{
+  --tci-in:cubic-bezier(.16,1,.3,1);
+  --tci-spring:cubic-bezier(.18,.9,.28,1.18);
+  --tci-soft:cubic-bezier(.22,1,.36,1);
+  --tci-fast:180ms;
+  --tci-ui:320ms;
+}
+
+/* HEADS / HEROES - titles assemble instead of appearing as text blocks. */
+.tadeon-shell .tadeon-page h1,
+.tadeon-shell .tadeon-page h2,
+.tadeon-shell .tadeon-page h3,
+.tadeon-shell [data-tadeon-head],
+.tadeon-shell .tadeon-eyebrow{
+  animation: tci-head-arrive 520ms var(--tci-in) both;
+}
+.tadeon-shell .tadeon-page h1{animation-delay:35ms}
+.tadeon-shell .tadeon-page h2{animation-delay:55ms}
+.tadeon-shell .tadeon-page h3{animation-delay:75ms}
+@keyframes tci-head-arrive{
+  from{opacity:0;transform:translate3d(0,18px,0);filter:blur(7px);letter-spacing:.025em}
+  66%{opacity:1;transform:translate3d(0,-2px,0);filter:blur(0);letter-spacing:0}
+  to{opacity:1;transform:none}
+}
+
+/* SUBHEADS / DESCRIPTION LINES - follow the title with a lighter rhythm. */
+.tadeon-shell .tadeon-page h1 + p,
+.tadeon-shell .tadeon-page h2 + p,
+.tadeon-shell .tadeon-page h3 + p,
+.tadeon-shell .tadeon-page [data-tadeon-head-description]{
+  animation:tci-copy-arrive 460ms var(--tci-in) 80ms both;
+}
+@keyframes tci-copy-arrive{from{opacity:0;transform:translateY(10px);filter:blur(4px)}to{opacity:1;transform:none;filter:blur(0)}}
+
+/* TABLES / RECORDS - rows move as a coherent archive, not one giant block. */
+.tadeon-shell table tbody tr{
+  transition:transform 240ms var(--tci-soft),background-color 220ms ease,box-shadow 280ms var(--tci-soft),border-color 220ms ease;
+}
+.tadeon-shell table tbody tr:hover{transform:translateX(5px);background-color:rgb(116 36 45 / 6%)}
+.tadeon-shell table tbody tr:active{transform:translateX(2px) scale(.994)}
+.tadeon-shell table tbody tr > td:first-child{transition:padding-left 260ms var(--tci-soft)}
+.tadeon-shell table tbody tr:hover > td:first-child{padding-left:.65rem}
+
+/* LISTS - insertion has a place and direction. */
+.tadeon-shell ul > li,
+.tadeon-shell ol > li{
+  transition:transform 260ms var(--tci-soft),opacity 260ms ease,background-color 220ms ease;
+}
+.tadeon-shell ul > li:hover,
+.tadeon-shell ol > li:hover{transform:translateX(5px)}
+
+/* BADGES / CHIPS - selection and state become small physical events. */
+.tadeon-shell [data-slot="badge"],
+.tadeon-shell .tadeon-chip,
+.tadeon-shell .tadeon-sheet-condition-chip{
+  transition:transform 220ms var(--tci-spring),box-shadow 260ms var(--tci-soft),filter 220ms ease,background-color 220ms ease;
+}
+.tadeon-shell [data-slot="badge"]:hover,
+.tadeon-shell .tadeon-chip:hover,
+.tadeon-shell .tadeon-sheet-condition-chip:hover{transform:translateY(-2px) scale(1.025);filter:brightness(1.045)}
+.tadeon-shell [data-slot="badge"]:active,
+.tadeon-shell .tadeon-chip:active,
+.tadeon-shell .tadeon-sheet-condition-chip:active{transform:scale(.95)}
+
+/* INPUTS - values enter the field with a subtle editorial focus. */
+.tadeon-shell input:not([type="checkbox"]):not([type="radio"]),
+.tadeon-shell textarea,
+.tadeon-shell [contenteditable="true"]{
+  transition:transform 220ms var(--tci-soft),box-shadow 340ms var(--tci-soft),border-color 220ms ease,background-color 220ms ease;
+}
+.tadeon-shell input:not([type="checkbox"]):not([type="radio"]):focus,
+.tadeon-shell textarea:focus,
+.tadeon-shell [contenteditable="true"]:focus{
+  transform:translateY(-2px);
+  box-shadow:0 0 0 1px rgb(217 215 164 / 22%),0 15px 34px -25px rgb(217 215 164 / 35%);
+}
+
+/* SEARCH - query activation travels through the field and result set. */
+.tadeon-shell input[placeholder*="Buscar"],
+.tadeon-shell input[placeholder*="buscar"]{
+  transition:transform 260ms var(--tci-soft),box-shadow 360ms var(--tci-soft),width 360ms var(--tci-in),background-color 260ms ease;
+}
+.tadeon-shell input[placeholder*="Buscar"]:focus,
+.tadeon-shell input[placeholder*="buscar"]:focus{transform:translateY(-2px) scale(1.006);box-shadow:0 18px 42px -30px rgb(116 36 45 / 50%)}
+
+/* PROGRESS / METERS / RANGES - the fill has velocity and a trailing light. */
+.tadeon-shell [role="progressbar"],
+.tadeon-shell [role="meter"],
+.tadeon-shell progress{
+  overflow:hidden;
+  position:relative;
+}
+.tadeon-shell [role="progressbar"]::after,
+.tadeon-shell [role="meter"]::after,
+.tadeon-shell progress::after{
+  content:"";
+  position:absolute;
+  inset:0 auto 0 0;
+  width:34%;
+  background:linear-gradient(90deg,transparent,rgb(255 255 255 / 10%),transparent);
+  transform:translateX(-120%);
+  animation:tci-progress-sheen 2.2s ease-in-out infinite;
+  pointer-events:none;
+}
+@keyframes tci-progress-sheen{55%,100%{transform:translateX(330%)}}
+.tadeon-shell [data-slot="slider-range"]{transition:width 280ms var(--tci-soft),transform 280ms var(--tci-soft),filter 240ms ease}
+.tadeon-shell [data-slot="slider-thumb"]{transition:transform 240ms var(--tci-spring),box-shadow 280ms var(--tci-soft),border-color 220ms ease}
+.tadeon-shell [data-slot="slider-thumb"]:hover{transform:scale(1.12)}
+.tadeon-shell [data-slot="slider-thumb"]:active{transform:scale(.88)}
+
+/* PAGINATION / STEPPERS - current position travels instead of snapping. */
+.tadeon-shell [aria-label*="Paginação"] [aria-current="page"],
+.tadeon-shell [aria-label*="página"] [aria-current="page"]{
+  animation:tci-page-land 400ms var(--tci-spring) both;
+}
+@keyframes tci-page-land{from{opacity:.55;transform:translateY(4px) scale(.9)}60%{opacity:1;transform:translateY(-2px) scale(1.07)}to{transform:none}}
+
+/* FORM FEEDBACK - labels / errors / success states reveal instead of flipping. */
+.tadeon-shell [data-slot="form-message"],
+.tadeon-shell [role="alert"],
+.tadeon-shell [data-tadeon-error],
+.tadeon-shell [data-tadeon-success]{animation:tci-feedback-in 340ms var(--tci-spring) both}
+@keyframes tci-feedback-in{from{opacity:0;transform:translateY(-6px) scale(.96)}65%{opacity:1;transform:translateY(1px) scale(1.012)}to{opacity:1;transform:none}}
+
+/* LOADING / SKELETONS - reveal actual content with a crossing wave. */
+.tadeon-shell [aria-busy="true"] [data-slot="skeleton"],
+.tadeon-shell [aria-busy="true"] .animate-pulse{animation:tci-skeleton-pulse 1.35s ease-in-out infinite}
+@keyframes tci-skeleton-pulse{0%,100%{opacity:.55;filter:brightness(.97)}50%{opacity:.9;filter:brightness(1.05)}}
+
+/* EMPTY STATES - become invitations, not dead ends. */
+.tadeon-shell [data-tadeon-empty-state]{animation:tci-empty-in 620ms var(--tci-in) both}
+@keyframes tci-empty-in{from{opacity:0;transform:translateY(22px) scale(.965);filter:blur(8px)}65%{opacity:1;transform:translateY(-3px) scale(1.006);filter:blur(0)}to{transform:none}}
+
+/* ICON BUTTONS - every action category gets a different micro-gesture. */
+.tadeon-shell button[aria-label*="Fechar"]:hover svg,
+.tadeon-shell button[title*="Fechar"]:hover svg{transform:rotate(90deg) scale(1.08)}
+.tadeon-shell button[aria-label*="Adicionar"]:hover svg,
+.tadeon-shell button[title*="Adicionar"]:hover svg{transform:rotate(90deg) scale(1.1)}
+.tadeon-shell button[aria-label*="Voltar"]:hover svg,
+.tadeon-shell button[title*="Voltar"]:hover svg{transform:translateX(-3px)}
+.tadeon-shell button[aria-label*="Avançar"]:hover svg,
+.tadeon-shell button[title*="Avançar"]:hover svg{transform:translateX(3px)}
+.tadeon-shell button[aria-label*="Pesquisar"]:hover svg,
+.tadeon-shell button[title*="Pesquisar"]:hover svg{transform:scale(1.1) rotate(-8deg)}
+.tadeon-shell button[aria-label*="Atualizar"]:hover svg,
+.tadeon-shell button[title*="Atualizar"]:hover svg{transform:rotate(180deg)}
+
+/* BREADCRUMBS - focus advances along the path. */
+.tadeon-shell nav[aria-label*="breadcrumb"] a,
+.tadeon-shell nav[aria-label*="Breadcrumb"] a{
+  transition:transform 220ms var(--tci-soft),color 180ms ease,opacity 180ms ease;
+}
+.tadeon-shell nav[aria-label*="breadcrumb"] a:hover,
+.tadeon-shell nav[aria-label*="Breadcrumb"] a:hover{transform:translateX(3px)}
+
+/* SEPARATORS / ORNAMENTS - decorative lines are drawn into place. */
+.tadeon-shell hr,
+.tadeon-shell [data-tadeon-divider]{transform-origin:left center;animation:tci-line-draw 650ms var(--tci-in) both}
+@keyframes tci-line-draw{from{transform:scaleX(0);opacity:0}to{transform:scaleX(1);opacity:1}}
+
+/* NOTIFICATIONS / TOAST ACTIONS - action row follows the toast body. */
+.tadeon-shell [data-sonner-toast] button{animation:tci-toast-action 360ms var(--tci-spring) 70ms both}
+@keyframes tci-toast-action{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+
+/* DESKTOP SIDEBAR - only after the structural correction, refine item motion. */
+.tadeon-sidebar .tadeon-nav-item{
+  transform-origin:left center;
+  transition:transform 280ms var(--tci-soft),color 200ms ease,background-color 240ms ease,box-shadow 280ms var(--tci-soft);
+}
+.tadeon-sidebar .tadeon-nav-item:hover{transform:translateX(4px)}
+.tadeon-sidebar .tadeon-nav-item[aria-current="page"]{animation:tci-nav-land 360ms var(--tci-spring) both}
+@keyframes tci-nav-land{from{opacity:.65;transform:translateX(-8px) scale(.97)}70%{opacity:1;transform:translateX(2px) scale(1.008)}to{transform:none}}
+.tadeon-sidebar .tadeon-nav-item svg{transition:transform 280ms var(--tci-spring),filter 260ms ease}
+.tadeon-sidebar .tadeon-nav-item:hover svg{transform:translateX(2px) scale(1.08)}
+.tadeon-sidebar-collapse{transition:transform 340ms var(--tci-spring),background-color 240ms ease,border-color 240ms ease,box-shadow 300ms var(--tci-soft)!important}
+.tadeon-sidebar-collapse:hover{transform:translateY(-2px) scale(1.05) rotate(-2deg)!important}
+.tadeon-sidebar-collapse svg{transition:transform 420ms var(--tci-spring)}
+.tadeon-sidebar-collapse[data-state="collapsed"] svg{transform:translateX(1px)}
+.tadeon-sidebar-collapse[data-state="expanded"] svg{transform:translateX(-1px)}
+
+/* GLOBAL SCROLL-REVEAL HOOK - elements marked by the experience director gain direction. */
+.tadeon-shell [data-tadeon-directed="true"]{--tci-stagger:calc(var(--tadeon-index,0) * 24ms)}
+.tadeon-shell [data-tadeon-material="chapter"],
+.tadeon-shell [data-tadeon-material="record"],
+.tadeon-shell [data-tadeon-material="fragment"],
+.tadeon-shell [data-tadeon-material="archive"]{animation-delay:var(--tci-stagger)}
+
+@media (max-width:767px){
+  .tadeon-shell table tbody tr:hover,
+  .tadeon-shell ul > li:hover,
+  .tadeon-shell ol > li:hover,
+  .tadeon-sidebar .tadeon-nav-item:hover{transform:none}
+}
+
+@media (prefers-reduced-motion:reduce){
+  .tadeon-shell .tadeon-page h1,
+  .tadeon-shell .tadeon-page h2,
+  .tadeon-shell .tadeon-page h3,
+  .tadeon-shell [data-tadeon-head],
+  .tadeon-shell .tadeon-eyebrow,
+  .tadeon-shell .tadeon-page h1 + p,
+  .tadeon-shell .tadeon-page h2 + p,
+  .tadeon-shell .tadeon-page h3 + p,
+  .tadeon-shell [data-tadeon-head-description],
+  .tadeon-shell [data-tadeon-empty-state],
+  .tadeon-shell [data-slot="form-message"],
+  .tadeon-shell [role="alert"],
+  .tadeon-shell [data-tadeon-error],
+  .tadeon-shell [data-tadeon-success]{animation:none!important}
+}
+
+/* end-source: src/styles/tadeon-complete-interaction-motion.css */
+/* source: src/styles/tadeon-deep-interaction-motion.css */
+/* Tadeon deep interaction motion - authored behaviors for dynamic content that changes without opening a Radix surface. */
+:root{--tdi-in:cubic-bezier(.16,1,.3,1);--tdi-spring:cubic-bezier(.175,.885,.32,1.275);--tdi-soft:cubic-bezier(.22,1,.36,1)}
+
+/* Search / filters - results feel like a new layer arriving, not a redraw. */
+.tadeon-shell [data-slot="input"]:focus-visible,
+.tadeon-shell input:focus-visible,
+.tadeon-shell textarea:focus-visible{animation:tdi-field-focus 360ms var(--tdi-spring) both}
+@keyframes tdi-field-focus{0%{box-shadow:0 0 0 0 rgb(217 215 164 / 0%);transform:translateY(0)}55%{box-shadow:0 0 0 4px rgb(217 215 164 / 10%),0 18px 42px -28px rgb(217 215 164 / 44%);transform:translateY(-2px)}100%{box-shadow:0 0 0 2px rgb(217 215 164 / 6%);transform:none}}
+
+/* Pagination / sortable controls. */
+.tadeon-shell [aria-current="page"]{animation:tdi-page-arrive 360ms var(--tdi-spring) both}
+.tadeon-shell th[aria-sort],
+.tadeon-shell [aria-sort]{transition:color 180ms ease,background-color 240ms ease,transform 260ms var(--tdi-soft)}
+.tadeon-shell th[aria-sort]:hover,
+.tadeon-shell [aria-sort]:hover{transform:translateY(-1px)}
+@keyframes tdi-page-arrive{0%{opacity:.55;transform:translateY(5px) scale(.92)}65%{opacity:1;transform:translateY(-2px) scale(1.05)}100%{opacity:1;transform:none}}
+
+/* Data rows - selection, insertion and removal feel authored. */
+.tadeon-shell tbody tr,
+.tadeon-shell [role="row"]{transition:transform 260ms var(--tdi-soft),background-color 220ms ease,box-shadow 300ms var(--tdi-soft),opacity 240ms ease}
+@media (hover:hover) and (pointer:fine){
+  .tadeon-shell tbody tr:hover,
+  .tadeon-shell [role="row"]:hover{transform:translateX(4px);box-shadow:inset 2px 0 0 rgb(180 92 98 / 55%)}
+}
+.tadeon-shell tbody tr[data-selected="true"],
+.tadeon-shell [role="row"][aria-selected="true"]{animation:tdi-row-select 360ms var(--tdi-spring) both}
+@keyframes tdi-row-select{0%{transform:translateX(-5px);background-color:transparent}55%{transform:translateX(5px);background-color:rgb(116 36 45 / 9%)}100%{transform:none}}
+
+/* Cards entering lists / grids. */
+.tadeon-shell [data-tadeon-list] > *,
+.tadeon-shell .grid > .tadeon-surface{animation:tdi-list-item 460ms var(--tdi-in) both;animation-delay:calc(var(--tadeon-index, 0) * 34ms)}
+@keyframes tdi-list-item{from{opacity:0;transform:translateY(18px) scale(.97);filter:blur(4px)}58%{opacity:1;transform:translateY(-3px) scale(1.01);filter:blur(0)}to{opacity:1;transform:none}}
+
+/* Breadcrumbs / trail of context. */
+.tadeon-shell nav[aria-label*="breadcrumb" i] a,
+.tadeon-shell [aria-label*="breadcrumb" i] a{transition:transform 240ms var(--tdi-spring),color 180ms ease,opacity 180ms ease}
+.tadeon-shell nav[aria-label*="breadcrumb" i] a:hover,
+.tadeon-shell [aria-label*="breadcrumb" i] a:hover{transform:translateX(3px)}
+
+/* Headings / section labels - re-enter when their section changes. */
+.tadeon-shell .tadeon-page h1,
+.tadeon-shell .tadeon-page h2,
+.tadeon-shell .tadeon-page h3,
+.tadeon-shell .tadeon-page [data-tadeon-head]{animation:tdi-head-arrive 480ms var(--tdi-in) both}
+@keyframes tdi-head-arrive{from{opacity:0;transform:translateY(16px);filter:blur(5px)}68%{opacity:1;transform:translateY(-2px);filter:blur(0)}to{transform:none}}
+
+/* Horizontal bars and meters. */
+.tadeon-shell progress::-webkit-progress-value{transition:width 620ms var(--tdi-spring);filter:drop-shadow(0 0 7px rgb(217 215 164 / 24%))}
+.tadeon-shell [role="progressbar"]{overflow:hidden}
+.tadeon-shell [role="progressbar"]::after{content:"";position:absolute;inset:0;background:linear-gradient(105deg,transparent 30%,rgb(255 255 255 / 9%) 50%,transparent 70%);transform:translateX(-120%);animation:tdi-progress-sheen 1.9s ease-in-out infinite;pointer-events:none}
+@keyframes tdi-progress-sheen{to{transform:translateX(120%)}}
+
+/* Toast actions and notifications. */
+.tadeon-shell [data-sonner-toast] button,
+.tadeon-shell [data-sonner-toast] [role="button"]{animation:tdi-toast-action 320ms var(--tdi-spring) 120ms both}
+@keyframes tdi-toast-action{from{opacity:0;transform:translateX(8px) scale(.94)}to{opacity:1;transform:none}}
+
+/* Empty states and page states. */
+.tadeon-shell [data-tadeon-empty],
+.tadeon-shell [data-tadeon-page-state]{animation:tdi-empty-in 620ms var(--tdi-in) both}
+@keyframes tdi-empty-in{from{opacity:0;transform:translateY(26px) scale(.97);filter:blur(8px)}58%{opacity:1;transform:translateY(-4px) scale(1.012);filter:blur(0)}to{transform:none}}
+
+/* Icon semantics - each common action gets a recognizable gesture. */
+.tadeon-shell [aria-label*="fechar" i] svg{transition:transform 300ms var(--tdi-spring)}
+.tadeon-shell [aria-label*="fechar" i]:hover svg{transform:rotate(90deg) scale(1.08)}
+.tadeon-shell [aria-label*="adicionar" i] svg,
+.tadeon-shell [aria-label*="novo" i] svg{transition:transform 320ms var(--tdi-spring)}
+.tadeon-shell [aria-label*="adicionar" i]:hover svg,
+.tadeon-shell [aria-label*="novo" i]:hover svg{transform:rotate(90deg) scale(1.1)}
+.tadeon-shell [aria-label*="voltar" i] svg{transition:transform 280ms var(--tdi-spring)}
+.tadeon-shell [aria-label*="voltar" i]:hover svg{transform:translateX(-4px)}
+.tadeon-shell [aria-label*="avançar" i] svg,
+.tadeon-shell [aria-label*="próximo" i] svg{transition:transform 280ms var(--tdi-spring)}
+.tadeon-shell [aria-label*="avançar" i]:hover svg,
+.tadeon-shell [aria-label*="próximo" i]:hover svg{transform:translateX(4px)}
+.tadeon-shell [aria-label*="atualizar" i] svg,
+.tadeon-shell [aria-label*="recarregar" i] svg{transition:transform 620ms cubic-bezier(.4,0,.2,1)}
+.tadeon-shell [aria-label*="atualizar" i]:hover svg,
+.tadeon-shell [aria-label*="recarregar" i]:hover svg{transform:rotate(180deg)}
+.tadeon-shell [aria-label*="pesquisar" i] svg{transition:transform 300ms var(--tdi-spring)}
+.tadeon-shell [aria-label*="pesquisar" i]:hover svg{transform:scale(1.12) rotate(-8deg)}
+
+/* Sidebar orchestration - icon remains stable while label glides in/out. */
+.tadeon-shell .tadeon-sidebar{transition:width 440ms var(--tdi-in),box-shadow 440ms var(--tdi-soft),background-color 260ms ease}
+.tadeon-shell .tadeon-sidebar .tadeon-nav-item{transition:transform 280ms var(--tdi-spring),padding 420ms var(--tdi-in),gap 300ms var(--tdi-soft),color 180ms ease,background-color 220ms ease}
+.tadeon-shell .tadeon-sidebar[data-collapsed="true"] .tadeon-nav-item{justify-content:center;gap:0;padding-left:0;padding-right:0}
+.tadeon-shell .tadeon-sidebar[data-collapsed="true"] .tadeon-nav-item>span,
+.tadeon-shell .tadeon-sidebar[data-collapsed="true"] .tadeon-nav-item .nav-label{opacity:0;transform:translateX(-10px) scale(.94);max-width:0;overflow:hidden;transition:opacity 150ms ease,transform 280ms var(--tdi-in),max-width 420ms ease}
+.tadeon-shell .tadeon-sidebar:not([data-collapsed="true"]) .tadeon-nav-item>span,
+.tadeon-shell .tadeon-sidebar:not([data-collapsed="true"]) .tadeon-nav-item .nav-label{animation:tdi-side-label-in 360ms var(--tdi-in) both}
+@keyframes tdi-side-label-in{from{opacity:0;transform:translateX(-8px)}to{opacity:1;transform:none}}
+
+@media (prefers-reduced-motion:reduce){
+  .tadeon-shell tbody tr,.tadeon-shell [role="row"],.tadeon-shell [data-sonner-toast] button,.tadeon-shell [data-sonner-toast] [role="button"],.tadeon-shell [data-tadeon-empty],.tadeon-shell [data-tadeon-page-state],.tadeon-shell .tadeon-page h1,.tadeon-shell .tadeon-page h2,.tadeon-shell .tadeon-page h3,.tadeon-shell [data-tadeon-head]{animation:none!important;transition:none!important}
+  .tadeon-shell [role="progressbar"]::after{animation:none!important}
+}
+
+/* end-source: src/styles/tadeon-deep-interaction-motion.css */
+/* source: src/styles/tadeon-semantic-motion.css */
+/* Tadeon Semantic Motion - animate changes of meaning, not only surfaces. */
+:root{--tsm-in:cubic-bezier(.16,1,.3,1);--tsm-spring:cubic-bezier(.175,.885,.32,1.275);--tsm-soft:cubic-bezier(.22,1,.36,1)}
+
+/* Data tables: rows arrive, select, and sort with a sense of continuity. */
+.tadeon-shell [data-slot="table-row"]{transition:transform 280ms var(--tsm-spring),background-color 220ms ease,box-shadow 300ms var(--tsm-soft),border-color 220ms ease}
+.tadeon-shell [data-slot="table-row"]:hover{transform:translateX(4px);box-shadow:10px 18px 35px -30px rgb(0 0 0 / 80%)}
+.tadeon-shell [data-slot="table-row"][data-state="selected"]{animation:tsm-row-select 420ms var(--tsm-spring) both;box-shadow:inset 3px 0 0 rgb(180 92 98 / 70%)}
+@keyframes tsm-row-select{0%{transform:translateX(-5px);opacity:.72}55%{transform:translateX(3px);opacity:1}100%{transform:none}}
+.tadeon-shell [data-sort-direction]{transition:transform 300ms var(--tsm-spring),color 180ms ease}
+.tadeon-shell [data-sort-direction="asc"] svg{animation:tsm-sort-up 360ms var(--tsm-spring) both}
+.tadeon-shell [data-sort-direction="desc"] svg{animation:tsm-sort-down 360ms var(--tsm-spring) both}
+@keyframes tsm-sort-up{from{transform:translateY(5px) rotate(0)}55%{transform:translateY(-3px) rotate(-8deg)}to{transform:none}}
+@keyframes tsm-sort-down{from{transform:translateY(-5px) rotate(0)}55%{transform:translateY(3px) rotate(8deg)}to{transform:none}}
+
+/* Search results: query changes feel like a fresh result set rather than a replacement. */
+.tadeon-shell [data-tadeon-search-results]>*{animation:tsm-result-in 420ms var(--tsm-in) both}
+.tadeon-shell [data-tadeon-search-results]>*:nth-child(2){animation-delay:35ms}.tadeon-shell [data-tadeon-search-results]>*:nth-child(3){animation-delay:70ms}.tadeon-shell [data-tadeon-search-results]>*:nth-child(4){animation-delay:105ms}.tadeon-shell [data-tadeon-search-results]>*:nth-child(5){animation-delay:140ms}
+@keyframes tsm-result-in{from{opacity:0;transform:translateY(16px) scale(.97);filter:blur(5px)}65%{opacity:1;transform:translateY(-2px) scale(1.005);filter:blur(0)}to{transform:none}}
+
+/* Chips and filters: selected filters feel placed onto the interface. */
+.tadeon-shell [data-tadeon-filter][data-active="true"],.tadeon-shell [data-slot="badge"][data-selected="true"]{animation:tsm-filter-on 390ms var(--tsm-spring) both}
+.tadeon-shell [data-tadeon-filter][data-active="false"]{animation:tsm-filter-off 220ms ease both}
+@keyframes tsm-filter-on{0%{opacity:.55;transform:translateY(5px) scale(.9)}60%{opacity:1;transform:translateY(-2px) scale(1.06)}to{transform:none}}
+@keyframes tsm-filter-off{from{opacity:1;transform:none}to{opacity:.65;transform:translateY(-3px) scale(.97)}}
+
+/* Form groups: changed values propagate through the field label and control. */
+.tadeon-shell [data-tadeon-field][data-changed="true"]{animation:tsm-field-change 520ms var(--tsm-in) both}
+@keyframes tsm-field-change{0%{box-shadow:0 0 0 0 rgb(217 215 164 / 0%)}35%{box-shadow:0 0 0 3px rgb(217 215 164 / 18%),0 16px 38px -28px rgb(217 215 164 / 44%)}100%{box-shadow:none}}
+.tadeon-shell [data-tadeon-field][data-invalid="true"]{animation:tsm-invalid 460ms var(--tsm-spring)}
+@keyframes tsm-invalid{0%,100%{transform:translateX(0)}22%{transform:translateX(-4px)}44%{transform:translateX(4px)}66%{transform:translateX(-2px)}}
+
+/* Character-sheet sections: changing a record feels like turning a folio. */
+.tadeon-shell[data-section="Ficha"] [data-tadeon-section-change="true"]{animation:tsm-folio-turn 540ms var(--tsm-in) both;transform-origin:12% 50%}
+@keyframes tsm-folio-turn{from{opacity:0;transform:perspective(900px) rotateY(-9deg) translateX(16px);filter:blur(7px)}58%{opacity:1;transform:perspective(900px) rotateY(1deg) translateX(-3px);filter:blur(0)}to{transform:none}}
+
+/* Nexus details: focused references arrive through the graph, panels follow. */
+.tadeon-shell[data-section="O Nexus"] [data-tadeon-detail][data-open="true"]{animation:tsm-reference-open 520ms var(--tsm-in) both}
+@keyframes tsm-reference-open{from{opacity:0;transform:translateX(22px) translateZ(-20px) scale(.96);filter:blur(8px)}58%{opacity:1;transform:translateX(-3px) translateZ(8px) scale(1.01);filter:blur(0)}to{transform:none}}
+.tadeon-shell[data-section="O Nexus"] [data-tadeon-reference][data-highlighted="true"]{animation:tsm-reference-highlight 420ms var(--tsm-spring) both}
+@keyframes tsm-reference-highlight{0%{transform:scale(.92);box-shadow:0 0 0 transparent}56%{transform:scale(1.06);box-shadow:0 0 34px -16px rgb(217 215 164 / 46%)}100%{transform:none}}
+
+/* Tabletop commands: actions have direction and mechanical completion. */
+.tadeon-shell[data-section="Mesa Nexus"] [data-tadeon-action="add"]:active svg{animation:tsm-add 420ms var(--tsm-spring) both}
+.tadeon-shell[data-section="Mesa Nexus"] [data-tadeon-action="delete"]:active svg{animation:tsm-delete 340ms var(--tsm-spring) both}
+.tadeon-shell[data-section="Mesa Nexus"] [data-tadeon-action="undo"]:active svg,.tadeon-shell[data-section="Mesa Nexus"] [data-tadeon-action="back"]:active svg{animation:tsm-back 360ms var(--tsm-spring) both}
+.tadeon-shell[data-section="Mesa Nexus"] [data-tadeon-action="redo"]:active svg,.tadeon-shell[data-section="Mesa Nexus"] [data-tadeon-action="forward"]:active svg{animation:tsm-forward 360ms var(--tsm-spring) both}
+@keyframes tsm-add{from{transform:scale(.65) rotate(-90deg)}60%{transform:scale(1.22) rotate(8deg)}to{transform:none}}
+@keyframes tsm-delete{from{transform:scale(1)}45%{transform:scale(.72) rotate(-12deg)}100%{transform:scale(.82) rotate(12deg);opacity:.65}}
+@keyframes tsm-back{from{transform:translateX(5px)}55%{transform:translateX(-6px)}to{transform:none}}
+@keyframes tsm-forward{from{transform:translateX(-5px)}55%{transform:translateX(6px)}to{transform:none}}
+
+/* Count/value changes: numbers briefly acquire focus. */
+.tadeon-shell [data-tadeon-value][data-updated="true"]{animation:tsm-value-pulse 520ms var(--tsm-spring) both}
+@keyframes tsm-value-pulse{0%{opacity:.55;transform:translateY(7px) scale(.92)}55%{opacity:1;transform:translateY(-3px) scale(1.08)}100%{transform:none}}
+
+/* Generic content swap hooks: application components can opt in without bespoke CSS. */
+.tadeon-shell [data-tadeon-swap="in"]{animation:tsm-swap-in 430ms var(--tsm-in) both}
+.tadeon-shell [data-tadeon-swap="out"]{animation:tsm-swap-out 210ms var(--tsm-soft) both}
+@keyframes tsm-swap-in{from{opacity:0;transform:translateY(13px) scale(.985);filter:blur(4px)}65%{opacity:1;transform:translateY(-2px) scale(1.003);filter:blur(0)}to{transform:none}}
+@keyframes tsm-swap-out{to{opacity:0;transform:translateY(-8px) scale(.985);filter:blur(3px)}}
+
+@media (prefers-reduced-motion:reduce){
+  .tadeon-shell [data-slot="table-row"],.tadeon-shell [data-tadeon-search-results]>* ,.tadeon-shell [data-tadeon-filter],.tadeon-shell [data-tadeon-field],.tadeon-shell [data-tadeon-section-change="true"],.tadeon-shell [data-tadeon-detail],.tadeon-shell [data-tadeon-reference],.tadeon-shell [data-tadeon-value],.tadeon-shell [data-tadeon-swap]{animation:none!important;transition:none!important}
+}
+
+/* end-source: src/styles/tadeon-semantic-motion.css */
+/* source: src/styles/tadeon-context-transition-motion.css */
+/* Tadeon Context Transition Motion - information changes should travel, not snap. */
+:root{
+  --tctx-in:cubic-bezier(.16,1,.3,1);
+  --tctx-spring:cubic-bezier(.175,.885,.32,1.275);
+  --tctx-out:cubic-bezier(.7,0,.84,0);
+}
+
+/* Dynamic lists / search results / filtered collections. */
+.tadeon-shell [data-radix-collection-item],
+.tadeon-shell [role="option"],
+.tadeon-shell [data-slot="command-item"]{
+  transition:transform 240ms var(--tctx-spring),opacity 220ms ease,background-color 220ms ease,box-shadow 260ms var(--tctx-in),color 180ms ease!important;
+}
+.tadeon-shell [role="option"][aria-selected="true"],
+.tadeon-shell [data-slot="command-item"][data-selected="true"]{
+  transform:translateX(5px) scale(1.012)!important;
+  box-shadow:inset 3px 0 0 var(--primary),0 12px 28px -26px currentColor!important;
+}
+.tadeon-shell [role="option"]:hover,
+.tadeon-shell [data-slot="command-item"]:hover{transform:translateX(4px)!important}
+
+/* Form value changes: make the field feel like information entering the record. */
+.tadeon-shell input[data-tadeon-changed="true"],
+.tadeon-shell textarea[data-tadeon-changed="true"],
+.tadeon-shell [data-slot="select-trigger"][data-tadeon-changed="true"]{
+  animation:tctx-field-change 420ms var(--tctx-spring) both;
+}
+@keyframes tctx-field-change{
+  0%{transform:translateY(3px) scale(.985);box-shadow:0 0 0 0 rgb(217 215 164 / 0%)}
+  54%{transform:translateY(-2px) scale(1.008);box-shadow:0 0 0 4px rgb(217 215 164 / 10%),0 14px 32px -28px rgb(217 215 164 / 48%)}
+  100%{transform:none}
+}
+
+/* Table sorting: header arrow and active column acquire focus. */
+.tadeon-shell th[aria-sort]{transition:color 220ms ease,background-color 260ms ease,transform 260ms var(--tctx-spring)}
+.tadeon-shell th[aria-sort="ascending"],
+.tadeon-shell th[aria-sort="descending"]{background:linear-gradient(90deg,rgb(116 36 45 / 12%),transparent);color:var(--foreground);transform:translateY(-1px)}
+.tadeon-shell th[aria-sort="ascending"] svg,
+.tadeon-shell th[aria-sort="descending"] svg{animation:tctx-sort-icon 420ms var(--tctx-spring) both}
+@keyframes tctx-sort-icon{from{transform:scale(.7) rotate(-18deg);opacity:.4}65%{transform:scale(1.18) rotate(2deg);opacity:1}to{transform:none}}
+
+/* Pagination and segmented navigation: active page lands, neighbours respond. */
+.tadeon-shell [aria-current="page"],
+.tadeon-shell [data-active="true"]{transform-origin:center;}
+.tadeon-shell [aria-current="page"]{animation:tctx-active-land 380ms var(--tctx-spring) both}
+@keyframes tctx-active-land{from{opacity:.72;transform:translateY(3px) scale(.95)}60%{opacity:1;transform:translateY(-2px) scale(1.03)}to{transform:none}}
+
+/* Sheet/Ficha sections - opened content reads like a page being revealed. */
+.tadeon-shell [data-tadeon-section][data-open="true"],
+.tadeon-shell [data-section-state="open"]{
+  animation:tctx-record-open 460ms var(--tctx-in) both;
+}
+@keyframes tctx-record-open{
+  from{opacity:0;transform:translateY(18px);clip-path:inset(8% 0 0 0)}
+  62%{opacity:1;transform:translateY(-3px);clip-path:inset(0)}
+  to{opacity:1;transform:none}
+}
+
+/* Nexus detail / reference swaps - incoming information slides along the thread. */
+.tadeon-shell [data-tadeon-detail][data-state="open"],
+.tadeon-shell [data-tadeon-detail][data-open="true"]{animation:tctx-detail-in 500ms var(--tctx-in) both}
+@keyframes tctx-detail-in{
+  from{opacity:0;transform:translate3d(22px,6px,0) scale(.96);filter:blur(6px)}
+  62%{opacity:1;transform:translate3d(-3px,-1px,0) scale(1.01);filter:blur(0)}
+  to{opacity:1;transform:none}
+}
+
+/* Toast action controls and inline feedback settle after their message. */
+.tadeon-shell [data-sonner-toast] [data-button],
+.tadeon-shell [data-sonner-toast] button{animation:tctx-toast-action 360ms var(--tctx-spring) 110ms both}
+@keyframes tctx-toast-action{from{opacity:0;transform:translateX(10px) scale(.94)}to{opacity:1;transform:none}}
+
+/* Back/forward and edit/create/delete semantics. */
+.tadeon-shell [data-tadeon-motion="back"]{animation:tctx-back 360ms var(--tctx-spring) both}
+.tadeon-shell [data-tadeon-motion="forward"]{animation:tctx-forward 360ms var(--tctx-spring) both}
+.tadeon-shell [data-tadeon-motion="edit"]{animation:tctx-edit 380ms var(--tctx-spring) both}
+.tadeon-shell [data-tadeon-motion="create"]{animation:tctx-create 420ms var(--tctx-spring) both}
+.tadeon-shell [data-tadeon-motion="delete"]{animation:tctx-delete 380ms var(--tctx-out) both}
+@keyframes tctx-back{from{opacity:.5;transform:translateX(-16px)}65%{opacity:1;transform:translateX(3px)}to{transform:none}}
+@keyframes tctx-forward{from{opacity:.5;transform:translateX(16px)}65%{opacity:1;transform:translateX(-3px)}to{transform:none}}
+@keyframes tctx-edit{0%{transform:scale(.985)}50%{transform:scale(1.012) translateY(-2px)}100%{transform:none}}
+@keyframes tctx-create{0%{opacity:0;transform:translateY(20px) scale(.94)}60%{opacity:1;transform:translateY(-3px) scale(1.015)}100%{transform:none}}
+@keyframes tctx-delete{0%{opacity:1;transform:none}55%{opacity:.55;transform:translateX(-4px) scale(.98)}100%{opacity:0;transform:translateX(14px) scale(.94)}}
+
+@media (prefers-reduced-motion:reduce){
+  .tadeon-shell [data-radix-collection-item],.tadeon-shell [role="option"],.tadeon-shell [data-slot="command-item"],.tadeon-shell [data-tadeon-changed="true"],.tadeon-shell [aria-current="page"],.tadeon-shell [data-tadeon-section],.tadeon-shell [data-section-state],.tadeon-shell [data-tadeon-detail],.tadeon-shell [data-tadeon-motion]{animation:none!important;transition:none!important}
+}
+
+/* end-source: src/styles/tadeon-context-transition-motion.css */
+/* source: src/styles/tadeon-portal-surface-motion.css */
+/* Tadeon Portal Surface Motion - final motion layer for Radix portals.
+   Dialogs, sheets, popovers, selects and menus are portaled to body, so these
+   selectors intentionally do NOT require .tadeon-shell. */
+
+:root {
+  --tadeon-portal-enter: cubic-bezier(.16, 1, .3, 1);
+  --tadeon-portal-spring: cubic-bezier(.18, .89, .32, 1.12);
+  --tadeon-portal-exit: cubic-bezier(.7, 0, .84, 0);
+}
+
+/* Overlays: the room dims and gains depth with the surface. */
+[data-slot="dialog-overlay"],
+[data-slot="sheet-overlay"] {
+  animation-duration: 420ms !important;
+  animation-timing-function: var(--tadeon-portal-enter) !important;
+  transition: opacity 420ms var(--tadeon-portal-enter), backdrop-filter 420ms var(--tadeon-portal-enter) !important;
+}
+
+[data-slot="dialog-overlay"][data-state="open"],
+[data-slot="sheet-overlay"][data-state="open"] {
+  opacity: 1 !important;
+  backdrop-filter: blur(8px) saturate(.82) !important;
+}
+
+[data-slot="dialog-overlay"][data-state="closed"],
+[data-slot="sheet-overlay"][data-state="closed"] {
+  opacity: 0 !important;
+  backdrop-filter: blur(0) saturate(1) !important;
+}
+
+/* Dialog positioner gives the whole surface a coherent arrival before the
+   content itself settles. */
+[data-slot="dialog-positioner"] {
+  perspective: 1200px;
+}
+
+[data-slot="dialog-content"][data-state="open"] {
+  animation: tadeon-portal-dialog-in 560ms var(--tadeon-portal-enter) both !important;
+  transform-origin: 50% 46% !important;
+  will-change: transform, opacity, filter;
+}
+
+[data-slot="dialog-content"][data-state="closed"] {
+  animation: tadeon-portal-dialog-out 220ms var(--tadeon-portal-exit) both !important;
+}
+
+@keyframes tadeon-portal-dialog-in {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, 46px, 0) scale(.88) rotateX(-5deg);
+    filter: blur(10px);
+  }
+  55% {
+    opacity: 1;
+    transform: translate3d(0, -5px, 0) scale(1.018) rotateX(.4deg);
+    filter: blur(0);
+  }
+  78% {
+    transform: translate3d(0, 1px, 0) scale(.997);
+  }
+  100% {
+    opacity: 1;
+    transform: none;
+    filter: blur(0);
+  }
+}
+
+@keyframes tadeon-portal-dialog-out {
+  0% {
+    opacity: 1;
+    transform: none;
+    filter: blur(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translate3d(0, 24px, 0) scale(.94) rotateX(3deg);
+    filter: blur(6px);
+  }
+}
+
+[data-slot="dialog-content"][data-state="open"] > [data-slot="dialog-header"] {
+  animation: tadeon-portal-content-in 360ms var(--tadeon-portal-enter) 35ms both;
+}
+
+[data-slot="dialog-content"][data-state="open"] > [data-slot="dialog-footer"] {
+  animation: tadeon-portal-content-in 360ms var(--tadeon-portal-enter) 115ms both;
+}
+
+[data-slot="dialog-content"][data-state="open"] > :not([data-slot="dialog-header"]):not([data-slot="dialog-footer"]):not([data-slot="dialog-close"]) {
+  animation: tadeon-portal-content-in 360ms var(--tadeon-portal-enter) 70ms both;
+}
+
+@keyframes tadeon-portal-content-in {
+  from { opacity: 0; transform: translate3d(0, 12px, 0) scale(.975); }
+  to { opacity: 1; transform: none; }
+}
+
+/* Sheets: real physical travel from their actual edge, with a restrained
+   overshoot instead of a generic fade. */
+[data-slot="sheet-content"][data-state="open"][data-side="right"] {
+  animation: tadeon-portal-sheet-right-in 560ms var(--tadeon-portal-enter) both !important;
+  will-change: transform, opacity;
+}
+[data-slot="sheet-content"][data-state="closed"][data-side="right"] {
+  animation: tadeon-portal-sheet-right-out 220ms var(--tadeon-portal-exit) both !important;
+}
+[data-slot="sheet-content"][data-state="open"][data-side="left"] {
+  animation: tadeon-portal-sheet-left-in 560ms var(--tadeon-portal-enter) both !important;
+}
+[data-slot="sheet-content"][data-state="closed"][data-side="left"] {
+  animation: tadeon-portal-sheet-left-out 220ms var(--tadeon-portal-exit) both !important;
+}
+[data-slot="sheet-content"][data-state="open"][data-side="bottom"] {
+  animation: tadeon-portal-sheet-bottom-in 520ms var(--tadeon-portal-enter) both !important;
+}
+[data-slot="sheet-content"][data-state="closed"][data-side="bottom"] {
+  animation: tadeon-portal-sheet-bottom-out 220ms var(--tadeon-portal-exit) both !important;
+}
+[data-slot="sheet-content"][data-state="open"][data-side="top"] {
+  animation: tadeon-portal-sheet-top-in 520ms var(--tadeon-portal-enter) both !important;
+}
+[data-slot="sheet-content"][data-state="closed"][data-side="top"] {
+  animation: tadeon-portal-sheet-top-out 220ms var(--tadeon-portal-exit) both !important;
+}
+
+@keyframes tadeon-portal-sheet-right-in {
+  0% { opacity: .2; transform: translate3d(100%, 0, 0) rotateY(-3deg); }
+  64% { opacity: 1; transform: translate3d(-9px, 0, 0) rotateY(.5deg); }
+  100% { opacity: 1; transform: none; }
+}
+@keyframes tadeon-portal-sheet-right-out {
+  to { opacity: 0; transform: translate3d(100%, 0, 0) rotateY(-2deg); }
+}
+@keyframes tadeon-portal-sheet-left-in {
+  0% { opacity: .2; transform: translate3d(-100%, 0, 0) rotateY(3deg); }
+  64% { opacity: 1; transform: translate3d(9px, 0, 0) rotateY(-.5deg); }
+  100% { opacity: 1; transform: none; }
+}
+@keyframes tadeon-portal-sheet-left-out {
+  to { opacity: 0; transform: translate3d(-100%, 0, 0) rotateY(2deg); }
+}
+@keyframes tadeon-portal-sheet-bottom-in {
+  0% { opacity: .2; transform: translate3d(0, 100%, 0) scale(.985); }
+  66% { opacity: 1; transform: translate3d(0, -8px, 0) scale(1.006); }
+  100% { opacity: 1; transform: none; }
+}
+@keyframes tadeon-portal-sheet-bottom-out {
+  to { opacity: 0; transform: translate3d(0, 100%, 0) scale(.985); }
+}
+@keyframes tadeon-portal-sheet-top-in {
+  0% { opacity: .2; transform: translate3d(0, -100%, 0) scale(.985); }
+  66% { opacity: 1; transform: translate3d(0, 8px, 0) scale(1.006); }
+  100% { opacity: 1; transform: none; }
+}
+@keyframes tadeon-portal-sheet-top-out {
+  to { opacity: 0; transform: translate3d(0, -100%, 0) scale(.985); }
+}
+
+[data-slot="sheet-content"][data-state="open"] > *:not([data-slot="sheet-close"]) {
+  animation: tadeon-portal-sheet-child 360ms var(--tadeon-portal-enter) 55ms both;
+}
+[data-slot="sheet-content"][data-state="open"] > :nth-child(2) { animation-delay: 95ms; }
+[data-slot="sheet-content"][data-state="open"] > :nth-child(3) { animation-delay: 135ms; }
+[data-slot="sheet-content"][data-state="open"] > :nth-child(4) { animation-delay: 175ms; }
+@keyframes tadeon-portal-sheet-child {
+  from { opacity: 0; transform: translate3d(0, 10px, 0) scale(.98); }
+  to { opacity: 1; transform: none; }
+}
+
+/* Floating surfaces: popovers, dropdowns, hover cards and selects. */
+[data-slot="popover-content"][data-state="open"],
+[data-slot="dropdown-menu-content"][data-state="open"],
+[data-slot="dropdown-menu-sub-content"][data-state="open"],
+[data-slot="hover-card-content"][data-state="open"],
+[data-slot="select-content"][data-state="open"] {
+  animation: tadeon-portal-float-in 300ms var(--tadeon-portal-spring) both !important;
+  transform-origin: var(--radix-popover-content-transform-origin, var(--radix-dropdown-menu-content-transform-origin, var(--radix-hover-card-content-transform-origin, var(--radix-select-content-transform-origin, 50% 0%)))) !important;
+  will-change: transform, opacity, filter;
+}
+
+[data-slot="popover-content"][data-state="closed"],
+[data-slot="dropdown-menu-content"][data-state="closed"],
+[data-slot="dropdown-menu-sub-content"][data-state="closed"],
+[data-slot="hover-card-content"][data-state="closed"],
+[data-slot="select-content"][data-state="closed"] {
+  animation: tadeon-portal-float-out 170ms var(--tadeon-portal-exit) both !important;
+}
+
+@keyframes tadeon-portal-float-in {
+  0% { opacity: 0; transform: translate3d(0, 12px, 0) scale(.86) rotateX(-4deg); filter: blur(7px); }
+  62% { opacity: 1; transform: translate3d(0, -3px, 0) scale(1.012) rotateX(.5deg); filter: blur(0); }
+  100% { opacity: 1; transform: none; filter: blur(0); }
+}
+@keyframes tadeon-portal-float-out {
+  to { opacity: 0; transform: translate3d(0, 8px, 0) scale(.92); filter: blur(4px); }
+}
+
+[data-slot="dropdown-menu-content"][data-state="open"] > *,
+[data-slot="dropdown-menu-sub-content"][data-state="open"] > * {
+  animation: tadeon-portal-menu-item 210ms var(--tadeon-portal-enter) both;
+}
+[data-slot="dropdown-menu-content"][data-state="open"] > :nth-child(2) { animation-delay: 22ms; }
+[data-slot="dropdown-menu-content"][data-state="open"] > :nth-child(3) { animation-delay: 44ms; }
+[data-slot="dropdown-menu-content"][data-state="open"] > :nth-child(4) { animation-delay: 66ms; }
+[data-slot="dropdown-menu-content"][data-state="open"] > :nth-child(5) { animation-delay: 88ms; }
+@keyframes tadeon-portal-menu-item {
+  from { opacity: 0; transform: translate3d(-10px, 0, 0) scale(.98); }
+  to { opacity: 1; transform: none; }
+}
+
+/* Close controls get an identity of their own. */
+[data-slot="dialog-close"],
+[data-slot="sheet-close"] {
+  transition: transform 220ms var(--tadeon-portal-spring), background-color 180ms ease, border-color 180ms ease, color 180ms ease !important;
+}
+[data-slot="dialog-close"]:hover,
+[data-slot="sheet-close"]:hover {
+  transform: rotate(8deg) scale(1.06);
+}
+[data-slot="dialog-close"]:active,
+[data-slot="sheet-close"]:active {
+  transform: rotate(-4deg) scale(.92);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-slot="dialog-overlay"],
+  [data-slot="sheet-overlay"],
+  [data-slot="dialog-content"],
+  [data-slot="dialog-content"] > *,
+  [data-slot="sheet-content"],
+  [data-slot="sheet-content"] > *,
+  [data-slot="popover-content"],
+  [data-slot="dropdown-menu-content"],
+  [data-slot="dropdown-menu-sub-content"],
+  [data-slot="hover-card-content"],
+  [data-slot="select-content"] {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+/* end-source: src/styles/tadeon-portal-surface-motion.css */
+/* source: src/styles/tadeon-popup-refinement-motion.css */
+/* Tadeon Popup Refinement - reduced overshoot, preserved presence. */
+:root{--tadeon-refine-in:cubic-bezier(.2,.82,.2,1);--tadeon-refine-spring:cubic-bezier(.2,.9,.3,1.05);--tadeon-refine-out:cubic-bezier(.65,0,.8,1)}
+
+[data-slot="dialog-content"][data-state="open"]{animation:tadeon-refine-dialog-in 520ms var(--tadeon-refine-in) both!important}
+@keyframes tadeon-refine-dialog-in{0%{opacity:0;transform:translate3d(0,34px,0) scale(.92) rotateX(-3deg);filter:blur(7px)}62%{opacity:1;transform:translate3d(0,-2px,0) scale(1.006) rotateX(.2deg);filter:blur(0)}100%{opacity:1;transform:none;filter:none}}
+[data-slot="dialog-content"][data-state="closed"]{animation:tadeon-refine-dialog-out 205ms var(--tadeon-refine-out) both!important}
+@keyframes tadeon-refine-dialog-out{to{opacity:0;transform:translate3d(0,18px,0) scale(.965);filter:blur(4px)}}
+
+[data-slot="dialog-content"][data-state="open"]>[data-slot="dialog-header"]{animation:tadeon-refine-child 330ms var(--tadeon-refine-in) 35ms both!important}
+[data-slot="dialog-content"][data-state="open"]>[data-slot="dialog-footer"]{animation:tadeon-refine-child 330ms var(--tadeon-refine-in) 95ms both!important}
+@keyframes tadeon-refine-child{from{opacity:0;transform:translate3d(0,8px,0) scale(.985)}to{opacity:1;transform:none}}
+
+[data-slot="sheet-content"][data-state="open"][data-side="right"]{animation:tadeon-refine-sheet-r 520ms var(--tadeon-refine-in) both!important}
+[data-slot="sheet-content"][data-state="open"][data-side="left"]{animation:tadeon-refine-sheet-l 520ms var(--tadeon-refine-in) both!important}
+[data-slot="sheet-content"][data-state="open"][data-side="bottom"]{animation:tadeon-refine-sheet-b 500ms var(--tadeon-refine-in) both!important}
+[data-slot="sheet-content"][data-state="open"][data-side="top"]{animation:tadeon-refine-sheet-t 500ms var(--tadeon-refine-in) both!important}
+@keyframes tadeon-refine-sheet-r{0%{opacity:.25;transform:translateX(100%)}68%{opacity:1;transform:translateX(-4px)}100%{opacity:1;transform:none}}
+@keyframes tadeon-refine-sheet-l{0%{opacity:.25;transform:translateX(-100%)}68%{opacity:1;transform:translateX(4px)}100%{opacity:1;transform:none}}
+@keyframes tadeon-refine-sheet-b{0%{opacity:.25;transform:translateY(100%)}70%{opacity:1;transform:translateY(-4px)}100%{opacity:1;transform:none}}
+@keyframes tadeon-refine-sheet-t{0%{opacity:.25;transform:translateY(-100%)}70%{opacity:1;transform:translateY(4px)}100%{opacity:1;transform:none}}
+
+[data-slot="popover-content"][data-state="open"],[data-slot="dropdown-menu-content"][data-state="open"],[data-slot="dropdown-menu-sub-content"][data-state="open"],[data-slot="hover-card-content"][data-state="open"],[data-slot="select-content"][data-state="open"]{animation:tadeon-refine-float 270ms var(--tadeon-refine-spring) both!important}
+@keyframes tadeon-refine-float{0%{opacity:0;transform:translate3d(0,8px,0) scale(.92);filter:blur(4px)}68%{opacity:1;transform:translate3d(0,-1px,0) scale(1.006);filter:blur(0)}100%{opacity:1;transform:none;filter:none}}
+
+@media (prefers-reduced-motion:reduce){[data-slot="dialog-content"],[data-slot="sheet-content"],[data-slot="popover-content"],[data-slot="dropdown-menu-content"],[data-slot="dropdown-menu-sub-content"],[data-slot="hover-card-content"],[data-slot="select-content"]{animation:none!important}}
+
+/* Coverage pass: common UI primitives that still changed instantly. */
+.tadeon-shell [data-slot="card"]{transition:transform 360ms cubic-bezier(.22,1,.36,1),box-shadow 420ms cubic-bezier(.22,1,.36,1),border-color 260ms ease,background-color 300ms ease}
+@media (hover:hover) and (pointer:fine){.tadeon-shell [data-slot="card"]:hover{transform:translateY(-2px);box-shadow:0 28px 70px -46px rgb(0 0 0 / 88%),0 8px 28px -26px rgb(217 215 164 / 18%),inset 0 1px rgb(255 255 255 / 5%)}}
+.tadeon-shell [data-slot="card"]:active{transform:translateY(1px) scale(.995)}
+
+.tadeon-shell [data-slot="badge"]{transform-origin:center;transition:transform 220ms cubic-bezier(.22,1,.36,1),filter 260ms ease,box-shadow 260ms ease,background-color 220ms ease,border-color 220ms ease}
+@media (hover:hover) and (pointer:fine){.tadeon-shell [data-slot="badge"]:hover{transform:translateY(-1px) scale(1.025);filter:saturate(1.06);box-shadow:0 8px 22px -18px rgb(217 215 164 / 30%)}}
+
+.tadeon-shell [data-slot="avatar"]{transform-origin:center;transition:transform 260ms cubic-bezier(.22,1,.36,1),box-shadow 320ms cubic-bezier(.22,1,.36,1),border-color 240ms ease}
+.tadeon-shell [data-slot="avatar-image"],.tadeon-shell [data-slot="avatar-fallback"]{transition:opacity 320ms ease,transform 360ms cubic-bezier(.22,1,.36,1),filter 320ms ease}
+@media (hover:hover) and (pointer:fine){.tadeon-shell [data-slot="avatar"]:hover{transform:translateY(-2px) scale(1.03);box-shadow:0 12px 28px -20px rgb(0 0 0 / 80%)}}
+
+.tadeon-shell [data-slot="calendar"]{animation:tadeon-calendar-in 420ms cubic-bezier(.18,1,.28,1) both}
+.tadeon-shell [data-slot="calendar"] .rdp-button_previous,.tadeon-shell [data-slot="calendar"] .rdp-button_next{transition:transform 220ms cubic-bezier(.22,1,.36,1),background-color 180ms ease,border-color 180ms ease}
+@media (hover:hover) and (pointer:fine){.tadeon-shell [data-slot="calendar"] .rdp-button_previous:hover{transform:translateX(-2px)}.tadeon-shell [data-slot="calendar"] .rdp-button_next:hover{transform:translateX(2px)}}
+.tadeon-shell [data-slot="calendar"] [data-selected-single="true"],.tadeon-shell [data-slot="calendar"] [data-range-start="true"],.tadeon-shell [data-slot="calendar"] [data-range-end="true"]{animation:tadeon-calendar-select 360ms cubic-bezier(.22,1,.36,1) both}
+.tadeon-shell [data-slot="calendar"] [data-day]{transition:transform 180ms cubic-bezier(.22,1,.36,1),background-color 180ms ease,color 180ms ease,box-shadow 220ms ease}
+@media (hover:hover) and (pointer:fine){.tadeon-shell [data-slot="calendar"] [data-day]:hover{transform:scale(1.06);z-index:2}}
+@keyframes tadeon-calendar-in{from{opacity:0;transform:translateY(6px);filter:blur(3px)}to{opacity:1;transform:none;filter:none}}
+@keyframes tadeon-calendar-select{0%{transform:scale(.88)}65%{transform:scale(1.06)}100%{transform:none}}
+
+.tadeon-shell [data-slot="carousel-item"]{transition:transform 360ms cubic-bezier(.22,1,.36,1),opacity 300ms ease,filter 360ms ease}
+.tadeon-shell [data-carousel-control]{transition:transform 220ms cubic-bezier(.22,1,.36,1),opacity 200ms ease,box-shadow 260ms cubic-bezier(.22,1,.36,1)}
+@media (hover:hover) and (pointer:fine){.tadeon-shell [data-carousel-control="previous"]:hover{transform:translateX(-3px)}.tadeon-shell [data-carousel-control="next"]:hover{transform:translateX(3px)}}
+.tadeon-shell [data-carousel-control]:active{transform:scale(.93)}
+
+.tadeon-shell table thead th{transition:color 180ms ease,background-color 220ms ease,box-shadow 260ms ease}
+@media (hover:hover) and (pointer:fine){.tadeon-shell table thead th:hover{background:rgb(217 215 164 / 4%);box-shadow:inset 0 -1px rgb(217 215 164 / 15%)}}
+.tadeon-shell table tbody tr{transition:background-color 220ms ease,transform 240ms cubic-bezier(.22,1,.36,1),box-shadow 280ms cubic-bezier(.22,1,.36,1)}
+.tadeon-shell table tbody tr[data-state="selected"],.tadeon-shell table tbody tr[aria-selected="true"]{animation:tadeon-row-selected 360ms cubic-bezier(.22,1,.36,1) both}
+@media (hover:hover) and (pointer:fine){.tadeon-shell table tbody tr:hover{transform:translateX(2px);box-shadow:inset 2px 0 rgb(217 215 164 / 18%)}}
+@keyframes tadeon-row-selected{from{transform:translateX(-4px);background:rgb(217 215 164 / 0%)}60%{transform:translateX(2px)}to{transform:none}}
+
+.tadeon-shell [data-removable="true"],.tadeon-shell [data-filter-chip="true"]{transition:transform 220ms cubic-bezier(.22,1,.36,1),opacity 220ms ease,box-shadow 240ms ease,background-color 200ms ease}
+@media (hover:hover) and (pointer:fine){.tadeon-shell [data-removable="true"]:hover,.tadeon-shell [data-filter-chip="true"]:hover{transform:translateY(-1px)}}
+
+.tadeon-shell img:not([aria-hidden="true"]){animation:tadeon-media-arrive 520ms cubic-bezier(.18,1,.28,1) both}
+.tadeon-shell figure{transition:transform 320ms cubic-bezier(.22,1,.36,1),box-shadow 360ms cubic-bezier(.22,1,.36,1)}
+@media (hover:hover) and (pointer:fine){.tadeon-shell figure:hover{transform:translateY(-2px)}}
+@keyframes tadeon-media-arrive{from{opacity:0;transform:scale(.985);filter:blur(5px)}to{opacity:1;transform:none;filter:none}}
+
+.tadeon-shell [data-state="loading"],.tadeon-shell [aria-busy="true"]{animation:tadeon-busy-breathe 1.5s ease-in-out infinite}
+.tadeon-shell [data-state="success"],.tadeon-shell [data-status="success"]{animation:tadeon-state-success 420ms cubic-bezier(.22,1,.36,1) both}
+.tadeon-shell [data-state="error"],.tadeon-shell [data-status="error"]{animation:tadeon-state-error 420ms cubic-bezier(.22,1,.36,1) both}
+@keyframes tadeon-busy-breathe{0%,100%{opacity:.72}50%{opacity:1}}
+@keyframes tadeon-state-success{from{opacity:.5;transform:translateY(4px) scale(.97)}65%{opacity:1;transform:translateY(-2px) scale(1.02)}to{transform:none}}
+@keyframes tadeon-state-error{0%{opacity:.55;transform:translateX(0)}25%{transform:translateX(-3px)}50%{transform:translateX(3px)}75%{transform:translateX(-1px)}to{opacity:1;transform:none}}
+
+.tadeon-shell .tadeon-desktop-toolbar__account{transform-origin:center;transition:transform 220ms cubic-bezier(.22,1,.36,1),background-color 220ms ease,border-color 220ms ease,box-shadow 260ms cubic-bezier(.22,1,.36,1)}
+@media (hover:hover) and (pointer:fine){.tadeon-shell .tadeon-desktop-toolbar__account:hover{transform:translateY(-2px)}}
+.tadeon-shell .tadeon-desktop-toolbar__account:active{transform:scale(.975)}
+
+@media (prefers-reduced-motion:reduce){.tadeon-shell [data-slot="card"],.tadeon-shell [data-slot="badge"],.tadeon-shell [data-slot="avatar"],.tadeon-shell [data-slot="avatar-image"],.tadeon-shell [data-slot="avatar-fallback"],.tadeon-shell [data-slot="calendar"],.tadeon-shell [data-slot="carousel-item"],.tadeon-shell [data-state="loading"],.tadeon-shell [aria-busy="true"],.tadeon-shell [data-state="success"],.tadeon-shell [data-state="error"],.tadeon-shell img:not([aria-hidden="true"]),.tadeon-shell table tbody tr{animation:none!important;transition:none!important}}
+
+/* end-source: src/styles/tadeon-popup-refinement-motion.css */
+/* source: src/styles/tadeon-sidebar-real-repair.css */
+/* Tadeon sidebar - real implementation repair.
+   NavItem currently removes its text node when data-mini=true, so this layer keeps
+   the actual icon rail stable and exposes the item identity through a controlled
+   flyout instead of allowing the icon/details to disappear into the collapse. */
+
+@media (min-width: 768px) {
+  #tadeon-desktop-sidebar {
+    transition: width 420ms cubic-bezier(.22,1,.36,1),
+      border-color 260ms ease,
+      box-shadow 420ms cubic-bezier(.22,1,.36,1) !important;
+  }
+
+  #tadeon-desktop-sidebar .tadeon-primary-nav {
+    overflow: visible;
+  }
+
+  /* Never let the icon be affected by the collapsed label state. */
+  #tadeon-desktop-sidebar .tadeon-nav-item {
+    position: relative;
+    flex-shrink: 0;
+    min-width: 0;
+    transition: width 360ms cubic-bezier(.22,1,.36,1),
+      padding 360ms cubic-bezier(.22,1,.36,1),
+      gap 220ms ease,
+      color 220ms ease,
+      background-color 260ms ease,
+      border-color 260ms ease,
+      box-shadow 300ms cubic-bezier(.22,1,.36,1),
+      transform 180ms cubic-bezier(.22,1,.36,1) !important;
+  }
+
+  #tadeon-desktop-sidebar .tadeon-nav-item__icon {
+    position: relative;
+    z-index: 2;
+    display: inline-flex !important;
+    width: 1.25rem !important;
+    min-width: 1.25rem !important;
+    height: 1.25rem !important;
+    min-height: 1.25rem !important;
+    flex: 0 0 1.25rem !important;
+    align-items: center;
+    justify-content: center;
+    opacity: 1 !important;
+    visibility: visible !important;
+    transform: translateZ(0);
+    transition: color 240ms ease, filter 260ms ease, transform 300ms cubic-bezier(.22,1,.36,1);
+  }
+
+  #tadeon-desktop-sidebar .tadeon-nav-item__icon > svg {
+    display: block !important;
+    width: 1rem !important;
+    height: 1rem !important;
+    flex: 0 0 1rem !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+  }
+
+  /* Collapsed rail: preserve the icon as an anchored object, not a side effect
+     of the removed label. */
+  #tadeon-desktop-sidebar[data-collapsed="true"] .tadeon-nav-item {
+    width: 2.5rem;
+    min-height: 2.75rem;
+    margin-inline: auto;
+    justify-content: center;
+    gap: 0 !important;
+    padding: .625rem !important;
+    border-radius: .78rem;
+  }
+
+  #tadeon-desktop-sidebar[data-collapsed="true"] .tadeon-nav-item__icon {
+    transform: translateZ(0) scale(1);
+  }
+
+  #tadeon-desktop-sidebar[data-collapsed="true"] .tadeon-nav-item:hover .tadeon-nav-item__icon,
+  #tadeon-desktop-sidebar[data-collapsed="true"] .tadeon-nav-item:focus-visible .tadeon-nav-item__icon {
+    transform: translateZ(0) scale(1.08);
+  }
+
+  /* Identity flyout uses the real NavItem title, so every item remains identifiable
+     while collapsed without forcing the sidebar to reopen. */
+  #tadeon-desktop-sidebar[data-collapsed="true"] .tadeon-nav-item[title]::after {
+    position: absolute;
+    top: 50%;
+    left: calc(100% + .7rem);
+    z-index: 80;
+    min-width: max-content;
+    max-width: 16rem;
+    padding: .46rem .7rem;
+    border: 1px solid color-mix(in srgb, currentColor 18%, var(--border));
+    border-radius: .62rem .22rem .62rem .22rem;
+    color: var(--foreground);
+    background: color-mix(in srgb, var(--popover) 92%, transparent);
+    box-shadow: 0 18px 44px -28px rgb(0 0 0 / 90%), inset 0 1px rgb(255 255 255 / 4%);
+    backdrop-filter: blur(18px) saturate(125%);
+    content: attr(title);
+    font-family: var(--font-sans);
+    font-size: .72rem;
+    font-weight: 600;
+    line-height: 1.2;
+    letter-spacing: .01em;
+    opacity: 0;
+    pointer-events: none;
+    transform: translate3d(-6px,-50%,0) scale(.96);
+    transform-origin: left center;
+    transition: opacity 160ms ease, transform 220ms cubic-bezier(.22,1,.36,1);
+  }
+
+  #tadeon-desktop-sidebar[data-collapsed="true"] .tadeon-nav-item[title]:hover::after,
+  #tadeon-desktop-sidebar[data-collapsed="true"] .tadeon-nav-item[title]:focus-visible::after {
+    opacity: 1;
+    transform: translate3d(0,-50%,0) scale(1);
+  }
+
+  #tadeon-desktop-sidebar[data-collapsed="true"] .tadeon-nav-group-rule {
+    width: 1rem;
+    margin-block: .7rem;
+    opacity: .8;
+  }
+
+  /* Section-specific active colors. These intentionally match the existing
+     Tadeon section palette instead of inheriting one global accent. */
+  #tadeon-desktop-sidebar .tadeon-nav-item[href="/"][aria-current="page"] {
+    --sidebar-item-rgb: 217 215 164;
+    --sidebar-item-accent: var(--tadeon-knowledge);
+  }
+
+  #tadeon-desktop-sidebar .tadeon-nav-item[href="/nexus"][aria-current="page"] {
+    --sidebar-item-rgb: 113 107 123;
+    --sidebar-item-accent: var(--tadeon-veil);
+  }
+
+  #tadeon-desktop-sidebar .tadeon-nav-item[href="/tabletop"][aria-current="page"] {
+    --sidebar-item-rgb: 79 110 93;
+    --sidebar-item-accent: var(--tadeon-flow);
+  }
+
+  #tadeon-desktop-sidebar .tadeon-nav-item[href="/offline"][aria-current="page"] {
+    --sidebar-item-rgb: 79 110 93;
+    --sidebar-item-accent: var(--tadeon-flow);
+  }
+
+  #tadeon-desktop-sidebar .tadeon-nav-item[href="/master-panel"][aria-current="page"] {
+    --sidebar-item-rgb: 116 36 45;
+    --sidebar-item-accent: var(--tadeon-fear);
+  }
+
+  #tadeon-desktop-sidebar .tadeon-nav-item[href="/manage-users"][aria-current="page"] {
+    --sidebar-item-rgb: 79 110 93;
+    --sidebar-item-accent: var(--tadeon-flow);
+  }
+
+  #tadeon-desktop-sidebar .tadeon-nav-item[href="/nexus-tools"][aria-current="page"] {
+    --sidebar-item-rgb: 122 129 135;
+    --sidebar-item-accent: var(--tadeon-metal);
+  }
+
+  #tadeon-desktop-sidebar .tadeon-nav-item[aria-current="page"] {
+    border-color: color-mix(in srgb, var(--sidebar-item-accent) 28%, transparent) !important;
+    color: color-mix(in srgb, var(--sidebar-item-accent) 88%, var(--foreground)) !important;
+    background:
+      linear-gradient(90deg, rgb(var(--sidebar-item-rgb) / 15%), rgb(var(--sidebar-item-rgb) / 3%) 72%, transparent),
+      color-mix(in srgb, var(--sidebar-accent) 88%, transparent) !important;
+    box-shadow:
+      inset 2px 0 var(--sidebar-item-accent),
+      inset 0 1px rgb(255 255 255 / 3%),
+      0 10px 34px -28px rgb(var(--sidebar-item-rgb) / 40%) !important;
+  }
+
+  #tadeon-desktop-sidebar .tadeon-nav-item[aria-current="page"] .tadeon-nav-item__icon {
+    color: var(--sidebar-item-accent) !important;
+    filter: drop-shadow(0 0 8px rgb(var(--sidebar-item-rgb) / 28%));
+  }
+
+  #tadeon-desktop-sidebar .tadeon-nav-item:not([aria-current="page"]):hover .tadeon-nav-item__icon,
+  #tadeon-desktop-sidebar .tadeon-nav-item:not([aria-current="page"]):focus-visible .tadeon-nav-item__icon {
+    color: color-mix(in srgb, currentColor 84%, var(--foreground));
+  }
+
+  /* Collapse control gets the same spatial language as the rail itself. */
+  #tadeon-desktop-sidebar + * .tadeon-sidebar-collapse,
+  .tadeon-sidebar-collapse {
+    transition: transform 280ms cubic-bezier(.22,1,.36,1),
+      color 180ms ease,
+      background-color 220ms ease,
+      border-color 220ms ease,
+      box-shadow 280ms cubic-bezier(.22,1,.36,1) !important;
+  }
+
+  .tadeon-sidebar-collapse[data-state="collapsed"] svg {
+    animation: tadeon-sidebar-chevron-in 280ms cubic-bezier(.22,1,.36,1) both;
+  }
+
+  .tadeon-sidebar-collapse[data-state="expanded"] svg {
+    animation: tadeon-sidebar-chevron-in 280ms cubic-bezier(.22,1,.36,1) both;
+  }
+
+  @keyframes tadeon-sidebar-chevron-in {
+    from { opacity: 0; transform: translateX(-4px) scale(.86); }
+    to { opacity: 1; transform: none; }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #tadeon-desktop-sidebar,
+  #tadeon-desktop-sidebar .tadeon-nav-item,
+  #tadeon-desktop-sidebar .tadeon-nav-item__icon,
+  .tadeon-sidebar-collapse { transition: none !important; }
+  .tadeon-sidebar-collapse[data-state="collapsed"] svg,
+  .tadeon-sidebar-collapse[data-state="expanded"] svg { animation: none !important; }
+}
+/* end-source: src/styles/tadeon-sidebar-real-repair.css */

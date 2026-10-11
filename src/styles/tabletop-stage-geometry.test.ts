@@ -1,4 +1,5 @@
-import { readFileSync } from "node:fs";
+import { isStyleLoadedAfter } from "@/test/read-foundation-source";
+import { readFoundationSource as readFileSync } from "@/test/read-foundation-source";
 import { resolve } from "node:path";
 import { describe, expect, it } from "vitest";
 
@@ -24,11 +25,8 @@ describe("Mesa stage-local geometry", () => {
     expect(workspace).toContain("min-[768px]:grid-cols-[minmax(0,1fr)_23rem]");
   });
 
-  it("loads the stage-local authority after the legacy tactical sheet", () => {
-    const legacy = route.indexOf("tabletop-fixed-menus-tactical-240.css");
-    const local = route.indexOf("tabletop-stage-geometry-254.css");
-    expect(legacy).toBeGreaterThan(-1);
-    expect(local).toBeGreaterThan(legacy);
+  it("mantém a ordem das regras na cascata consolidada", () => {
+    expect(isStyleLoadedAfter("src/components/tabletop/tabletop-route-experience.tsx", "src/styles/tabletop-fixed-menus-tactical-240.css", "src/styles/tabletop-stage-geometry-254.css")).toBe(true);
   });
 
   it("does not hard-lock Mesa chrome to viewport coordinates", () => {

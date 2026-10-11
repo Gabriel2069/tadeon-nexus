@@ -4,12 +4,7 @@ import { Button } from "@/components/ui/button";
 import { reportClientError } from "@/lib/client-error-monitor";
 import type { FeatureFlags } from "@/lib/feature-flags";
 import { TabletopFloatingLayoutBridge } from "@/components/tabletop/tabletop-floating-layout-bridge";
-import "@/styles/tabletop-progressive-ui.css";
-import "@/styles/tabletop-motion-final.css";
-import "@/styles/tabletop-bottom-stack-fix.css";
-import "@/styles/tabletop-spatial-finish.css";
-import "@/styles/tabletop-fixed-menus-tactical-240.css";
-import "@/styles/tabletop-stage-geometry-254.css";
+import "@/styles/tabletop-route-experience.css";
 
 const MasterEntry = lazy(() => import("@/components/tabletop/tabletop-master-entry"));
 const ParticipantEntry = lazy(() => import("@/components/tabletop/tabletop-participant-entry"));

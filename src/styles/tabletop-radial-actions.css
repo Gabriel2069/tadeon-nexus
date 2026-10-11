@@ -1,3 +1,4 @@
+/* source: src/styles/tabletop-radial-actions.css */
 .tadeon-radial-trigger,
 .tadeon-radial-actions {
   position: fixed;
@@ -278,3 +279,5 @@
     transition-duration: 0.01ms !important;
   }
 }
+
+/* end-source: src/styles/tabletop-radial-actions.css */

@@ -1,3 +1,4 @@
+/* source: src/styles/tabletop-preflight.css */
 .tadeon-preflight { overflow:hidden; padding:0 !important; }
 .tadeon-preflight > [data-slot="dialog-header"] { padding:1rem 1rem .75rem; border-bottom:1px solid var(--border); background:linear-gradient(100deg,color-mix(in srgb,var(--primary) 8%,transparent),transparent); }
 .tadeon-preflight__heading { display:grid; grid-template-columns:auto minmax(0,1fr); align-items:center; gap:.75rem; }
@@ -26,3 +27,5 @@
 .tadeon-preflight__checks small { margin-top:.15rem; padding-left:.5rem; border-left:2px solid color-mix(in srgb,var(--primary) 40%,var(--border)); color:color-mix(in srgb,var(--foreground) 72%,var(--muted-foreground)); font-size:.6rem; line-height:1.4; }
 .tadeon-preflight > [data-slot="dialog-footer"] { padding:.75rem 1rem max(.8rem,env(safe-area-inset-bottom)); border-top:1px solid var(--border); background:rgb(255 255 255 / 1.5%); }
 @media (max-width:640px) { .tadeon-preflight__body { max-height:62dvh; padding:.75rem; } .tadeon-preflight > [data-slot="dialog-footer"] { display:grid; grid-template-columns:1fr; } }
+
+/* end-source: src/styles/tabletop-preflight.css */

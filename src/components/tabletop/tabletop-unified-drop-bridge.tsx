@@ -2,8 +2,7 @@ import { useEffect } from "react";
 import { toast } from "sonner";
 import { TADEON_UNIFIED_DRAG_MIME, decodeTadeonUnifiedItem, unifiedItemToEntitySeed } from "@/lib/tabletop/tabletop-asset-flow";
 import { currentTabletopRuntime } from "@/lib/tabletop/tabletop-player-runtime";
-import "@/styles/tabletop-unified-flow.css";
-
+import "@/styles/tabletop-unified-drop.css";
 export function TabletopUnifiedDropBridge() {
   useEffect(() => {
     const accepts = (event: DragEvent) => Array.from(event.dataTransfer?.types ?? []).includes(TADEON_UNIFIED_DRAG_MIME);

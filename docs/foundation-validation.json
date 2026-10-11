@@ -1,0 +1,87 @@
+{
+  "date": "2026-10-11",
+  "baseCommit": "353808af68c8ba0d08bbc90d6f8ad9117c9e25f8",
+  "node": "v24.19.0",
+  "cleanInstall": true,
+  "check": {
+    "command": "npm run check",
+    "exitCode": 0,
+    "suites": 111,
+    "tests": 494,
+    "stages": [
+      "style architecture",
+      "eslint",
+      "typescript",
+      "vitest",
+      "client build",
+      "SSR build",
+      "Cloudflare Worker build"
+    ]
+  },
+  "styles": {
+    "beforeFiles": 212,
+    "afterFiles": 57,
+    "beforeLocalRootLinks": 65,
+    "afterLocalRootLinks": 12,
+    "currentSourceBytes": 1909214,
+    "currentImportantDeclarations": 5869,
+    "migrationModulesVerified": 55
+  },
+  "audit": {
+    "production": {
+      "info": 0,
+      "low": 1,
+      "moderate": 0,
+      "high": 0,
+      "critical": 0,
+      "total": 1
+    },
+    "allDependencies": {
+      "info": 0,
+      "low": 1,
+      "moderate": 0,
+      "high": 2,
+      "critical": 0,
+      "total": 3
+    },
+    "unresolved": [
+      {
+        "name": "@lovable.dev/mcp-js",
+        "severity": "high",
+        "fixAvailable": false,
+        "advisories": []
+      },
+      {
+        "name": "@modelcontextprotocol/sdk",
+        "severity": "high",
+        "fixAvailable": false,
+        "advisories": [
+          {
+            "title": "MCP TypeScript SDK: OAuth client could send credentials to an authorization server chosen by the MCP server",
+            "url": "https://github.com/advisories/GHSA-6qxp-vccf-f47h"
+          }
+        ]
+      },
+      {
+        "name": "esbuild",
+        "severity": "low",
+        "fixAvailable": true,
+        "advisories": [
+          {
+            "title": "esbuild allows arbitrary file read when running the development server on Windows",
+            "url": "https://github.com/advisories/GHSA-g7r4-m6w7-qqqr"
+          }
+        ]
+      }
+    ]
+  },
+  "limitations": [
+    "Browser screenshot comparison not completed: Chromium was unavailable and the download failed.",
+    "Ordered CSS AST equivalence is migration evidence, not proof of every authenticated page.",
+    "Historical cascade overrides remain; their property-by-property removal is the next visual maintenance step.",
+    "No database changes or production publication.",
+    "MCP advisory is classified as dev by npm; the MCP server participates in the build, so deployment exposure still needs separate review.",
+    "Build retains a large Pixi chunk and adapter/bundler warnings; they did not fail the build."
+  ],
+  "followUpReport": "foundation-cleanup-validation.json"
+}

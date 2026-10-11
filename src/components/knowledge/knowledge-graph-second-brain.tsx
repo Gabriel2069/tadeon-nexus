@@ -1,3 +1,4 @@
+import { createLatestRequestGate } from "@/lib/latest-request";
 import {
   useCallback,
   useEffect,
@@ -59,9 +60,8 @@ import {
   type KnowledgeVisibility,
   type RelationType,
 } from "@/lib/nexus-contracts";
-import "@/styles/nexus-second-brain.css";
-import "@/styles/tadeon-nexus-material.css";
-
+import "@/styles/knowledge-graph-second-brain.css";
+import "@/styles/nexus-material.css";
 interface KnowledgeGraphProps {
   workspaceId: string;
   campaignId: string | null;
@@ -191,6 +191,7 @@ function SliderRow({ label, value, min, max, step, onChange, display }: { label:
 }
 
 export function KnowledgeGraph({ workspaceId, campaignId, focusNodeId, onOpenNode }: KnowledgeGraphProps) {
+  const memoryRequests = useRef(createLatestRequestGate());
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const dragRef = useRef<{ active: boolean; moved: boolean; mode: "pan" | "node"; nodeId: string | null; x: number; y: number; pan: KnowledgeGraphPoint }>({ active: false, moved: false, mode: "pan", nodeId: null, x: 0, y: 0, pan: { x: 0, y: 0 } });
   const [graphFocusId, setGraphFocusId] = useState(focusNodeId);
@@ -216,12 +217,12 @@ export function KnowledgeGraph({ workspaceId, campaignId, focusNodeId, onOpenNod
   const [includeMentions, setIncludeMentions] = useState(true);
   const [includeHierarchy, setIncludeHierarchy] = useState(true);
   const [includeSemantic, setIncludeSemantic] = useState(true);
-  const [semanticThreshold, setSemanticThreshold] = useState(0.22);
-  const [minimumStrength, setMinimumStrength] = useState(0.12);
-  const [labelZoom, setLabelZoom] = useState(0.5);
+  const [semanticThreshold, setSemanticThreshold] = useState(0.28);
+  const [minimumStrength, setMinimumStrength] = useState(0.16);
+  const [labelZoom, setLabelZoom] = useState(0.98);
   const [showArrows, setShowArrows] = useState(true);
   const [pinnedPositions, setPinnedPositions] = useState<Record<string, KnowledgeGraphPoint>>({});
-  const [forceOptions, setForceOptions] = useState<KnowledgeForceOptions>({ linkDistance: 238, linkStrength: 1, repelStrength: 1.55, centerStrength: 0.46, clusterStrength: 0.16 });
+  const [forceOptions, setForceOptions] = useState<KnowledgeForceOptions>({ linkDistance: 260, linkStrength: 0.62, repelStrength: 2.4, centerStrength: 0.08, clusterStrength: 0.12 });
 
   useEffect(() => { setGraphFocusId(focusNodeId); setSelectedId(focusNodeId); }, [focusNodeId]);
 
@@ -235,15 +236,27 @@ export function KnowledgeGraph({ workspaceId, campaignId, focusNodeId, onOpenNod
   }, [expanded]);
 
   const loadMemory = useCallback(async () => {
+    const ticket = memoryRequests.current.begin();
     setLoading(true); setError("");
     try {
       const result = await knowledgeGraphService.loadMemory({ workspaceId, focusNodeId: graphFocusId, campaignId, includeWorkspace: true, candidateLimit: 500, nodeTypes: nodeType === "all" ? undefined : [nodeType], relationTypes: relationType === "all" ? undefined : [relationType], visibilities: visibility === "all" ? undefined : [visibility] });
+      if (!memoryRequests.current.isCurrent(ticket)) return;
       setMemory(result);
       setSelectedId((current) => result.nodes.some((node) => node.id === current) ? current : result.focusNodeId);
-    } catch (nextError) { setMemory(null); setError(graphError(nextError)); } finally { setLoading(false); }
+    } catch (nextError) {
+      if (!memoryRequests.current.isCurrent(ticket)) return;
+      setMemory(null);
+      setError(graphError(nextError));
+    } finally {
+      if (memoryRequests.current.isCurrent(ticket)) setLoading(false);
+    }
   }, [campaignId, graphFocusId, nodeType, relationType, visibility, workspaceId]);
 
-  useEffect(() => void loadMemory(), [loadMemory]);
+  useEffect(() => {
+    const requests = memoryRequests.current;
+    void loadMemory();
+    return () => requests.invalidate();
+  }, [loadMemory]);
 
   useEffect(() => {
     const canvas = canvasRef.current; if (!canvas) return;

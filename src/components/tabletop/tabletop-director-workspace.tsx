@@ -20,8 +20,7 @@ import {
 import type { TabletopRealtimeEvent } from "@/lib/tabletop/realtime-protocol";
 import { useTabletopRealtime } from "@/lib/tabletop/use-tabletop-realtime";
 import { createEmptyVisibilityState } from "@/lib/tabletop/tabletop-visibility-service";
-import "@/styles/tabletop-director.css";
-
+import "@/styles/tabletop-director-workspace.css";
 function directorError(error: unknown) {
   if (error instanceof TabletopParticipantError) {
     if (error.code === "TABLETOP_PARTICIPANT_FORBIDDEN")

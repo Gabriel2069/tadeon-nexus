@@ -1,0 +1,307 @@
+/* source: src/styles/viewport-fit-final.css */
+/* Final viewport containment for desktop and compact windows. Radix collision
+   logic handles placement; these rules guarantee custom sizing cannot defeat it. */
+:root {
+  --tadeon-overlay-gutter: 12px;
+}
+
+[data-slot="dialog-content"],
+[data-slot="alert-dialog-content"] {
+  box-sizing: border-box;
+  max-inline-size: min(var(--tadeon-dialog-max, 64rem), calc(100vw - (var(--tadeon-overlay-gutter) * 2))) !important;
+  max-block-size: calc(100dvh - (var(--tadeon-overlay-gutter) * 2)) !important;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+[data-slot="popover-content"],
+[data-slot="select-content"],
+[data-slot="dropdown-menu-content"],
+[data-slot="dropdown-menu-sub-content"],
+[data-slot="context-menu-content"],
+[data-slot="context-menu-sub-content"],
+[data-slot="menubar-content"],
+[data-slot="menubar-sub-content"],
+[data-slot="hover-card-content"],
+[data-slot="tooltip-content"] {
+  box-sizing: border-box;
+  max-inline-size: calc(100vw - (var(--tadeon-overlay-gutter) * 2)) !important;
+  max-block-size: calc(100dvh - (var(--tadeon-overlay-gutter) * 2)) !important;
+  overflow-wrap: anywhere;
+  overscroll-behavior: contain;
+}
+
+/* Use the actual free space computed by Radix/Floating UI instead of only the
+   viewport width. This prevents a caller-defined width from winning after the
+   collision middleware has already measured a narrower edge position. */
+[data-slot="popover-content"] {
+  max-inline-size: min(
+    var(--radix-popover-content-available-width, 100vw),
+    calc(100vw - (var(--tadeon-overlay-gutter) * 2))
+  ) !important;
+  max-block-size: min(
+    var(--radix-popover-content-available-height, 100dvh),
+    calc(100dvh - (var(--tadeon-overlay-gutter) * 2))
+  ) !important;
+  transform-origin: var(--radix-popover-content-transform-origin, center top);
+}
+
+[data-slot="select-content"] {
+  max-inline-size: min(
+    var(--radix-select-content-available-width, 100vw),
+    calc(100vw - (var(--tadeon-overlay-gutter) * 2))
+  ) !important;
+  max-block-size: min(
+    var(--radix-select-content-available-height, 100dvh),
+    calc(100dvh - (var(--tadeon-overlay-gutter) * 2))
+  ) !important;
+  transform-origin: var(--radix-select-content-transform-origin, center top);
+}
+
+[data-slot="dropdown-menu-content"],
+[data-slot="dropdown-menu-sub-content"] {
+  max-inline-size: min(
+    var(--radix-dropdown-menu-content-available-width, 100vw),
+    calc(100vw - (var(--tadeon-overlay-gutter) * 2))
+  ) !important;
+  max-block-size: min(
+    var(--radix-dropdown-menu-content-available-height, 100dvh),
+    calc(100dvh - (var(--tadeon-overlay-gutter) * 2))
+  ) !important;
+  transform-origin: var(--radix-dropdown-menu-content-transform-origin, center top);
+}
+
+[data-slot="context-menu-content"],
+[data-slot="context-menu-sub-content"] {
+  max-inline-size: min(
+    var(--radix-context-menu-content-available-width, 100vw),
+    calc(100vw - (var(--tadeon-overlay-gutter) * 2))
+  ) !important;
+  max-block-size: min(
+    var(--radix-context-menu-content-available-height, 100dvh),
+    calc(100dvh - (var(--tadeon-overlay-gutter) * 2))
+  ) !important;
+  transform-origin: var(--radix-context-menu-content-transform-origin, center top);
+}
+
+[data-slot="menubar-content"],
+[data-slot="menubar-sub-content"] {
+  max-inline-size: min(
+    var(--radix-menubar-content-available-width, 100vw),
+    calc(100vw - (var(--tadeon-overlay-gutter) * 2))
+  ) !important;
+  max-block-size: min(
+    var(--radix-menubar-content-available-height, 100dvh),
+    calc(100dvh - (var(--tadeon-overlay-gutter) * 2))
+  ) !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  transform-origin: var(--radix-menubar-content-transform-origin, center top);
+}
+
+[data-slot="hover-card-content"] {
+  max-inline-size: min(
+    var(--radix-hover-card-content-available-width, 100vw),
+    calc(100vw - (var(--tadeon-overlay-gutter) * 2))
+  ) !important;
+  max-block-size: min(
+    var(--radix-hover-card-content-available-height, 100dvh),
+    calc(100dvh - (var(--tadeon-overlay-gutter) * 2))
+  ) !important;
+  transform-origin: var(--radix-hover-card-content-transform-origin, center top);
+}
+
+[data-slot="tooltip-content"] {
+  max-inline-size: min(
+    var(--radix-tooltip-content-available-width, 100vw),
+    calc(100vw - (var(--tadeon-overlay-gutter) * 2))
+  ) !important;
+  max-block-size: min(
+    var(--radix-tooltip-content-available-height, 100dvh),
+    calc(100dvh - (var(--tadeon-overlay-gutter) * 2))
+  ) !important;
+  overflow-wrap: anywhere;
+  transform-origin: var(--radix-tooltip-content-transform-origin, center top);
+}
+
+/* Do not size Radix' positioning wrapper. Floating UI owns that element and
+   mutating its box can feed incorrect measurements back into collision logic. */
+
+/* The global motion contract used to include the -50% centering translation in
+   transform. Dialog geometry now centres with the independent `translate`
+   property, so repeating -50% in animation composed both offsets and launched
+   the modal toward the north-west. Motion is now strictly local to the anchor. */
+@keyframes tadeon-modal-in {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 1rem, 0) scale(0.955);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
+@keyframes tadeon-modal-out {
+  from {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: translate3d(0, 0.6rem, 0) scale(0.975);
+  }
+}
+
+/* Mesa Nexus has persistent chrome above the normal application layer. Portal
+   surfaces must sit above that chrome instead of visually interleaving with it. */
+body:has(.tadeon-tabletop-studio) :where(
+  [data-slot="popover-content"],
+  [data-slot="select-content"],
+  [data-slot="dropdown-menu-content"],
+  [data-slot="dropdown-menu-sub-content"],
+  [data-slot="context-menu-content"],
+  [data-slot="context-menu-sub-content"],
+  [data-slot="menubar-content"],
+  [data-slot="menubar-sub-content"],
+  [data-slot="hover-card-content"],
+  [data-slot="tooltip-content"]
+) {
+  z-index: 220 !important;
+}
+
+body:has(.tadeon-tabletop-studio) :where(
+  [data-slot="dialog-overlay"],
+  [data-slot="alert-dialog-overlay"]
+) {
+  z-index: 240 !important;
+}
+
+body:has(.tadeon-tabletop-studio) :where(
+  [data-slot="dialog-content"],
+  [data-slot="alert-dialog-content"]
+) {
+  z-index: 241 !important;
+}
+
+/* Sheets/drawers share the same modal authority as dialogs while Mesa chrome is mounted. */
+body:has(.tadeon-tabletop-studio) :where(
+  [data-slot="sheet-overlay"],
+  [data-slot="drawer-overlay"]
+) {
+  z-index: 240 !important;
+}
+
+body:has(.tadeon-tabletop-studio) :where(
+  [data-slot="sheet-content"],
+  [data-slot="drawer-content"]
+) {
+  z-index: 241 !important;
+  max-inline-size: calc(100vw - (var(--tadeon-overlay-gutter) * 2));
+  max-block-size: calc(100dvh - (var(--tadeon-overlay-gutter) * 2));
+  overscroll-behavior: contain;
+}
+
+/* Collapsed desktop navigation has a 4rem shell. The previous p-3 outer gutter
+   plus the scroll rail's pr-1 left only 36px for a 40px mini item, so the last
+   pixels of its frame were physically clipped. Preserve the same shell width
+   and reclaim just enough internal breathing room for the complete card. */
+#tadeon-desktop-sidebar:has(.tadeon-nav-item[data-mini="true"]) > div:first-of-type {
+  padding-right: .5rem !important;
+  padding-left: .5rem !important;
+}
+
+#tadeon-desktop-sidebar .tadeon-nav-item[data-mini="true"] {
+  min-width: 0 !important;
+  padding-right: .2rem !important;
+  padding-left: .2rem !important;
+}
+
+/* The old hover sheen was a skewed blade 170% of the button height
+   (top/bottom:-35%). Even when clipped, compositing made it read beyond the
+   asymmetric button frame. Keep the light entirely inside the border box and
+   animate the gradient itself instead of translating an oversized element. */
+@keyframes tadeon-button-sheen {
+  from {
+    background-position: 160% 0;
+  }
+  to {
+    background-position: -60% 0;
+  }
+}
+
+[data-slot="button"] {
+  overflow: clip !important;
+}
+
+[data-slot="button"]::before {
+  top: 1px !important;
+  right: 1px !important;
+  bottom: 1px !important;
+  left: 1px !important;
+  width: auto !important;
+  border-radius: inherit;
+  background: linear-gradient(
+    112deg,
+    transparent 34%,
+    rgb(255 255 255 / 9%) 49%,
+    transparent 64%
+  ) !important;
+  background-size: 240% 100% !important;
+  background-position: 160% 0;
+  transform: none !important;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  [data-slot="button"]:not(:disabled):hover::before {
+    animation: tadeon-button-sheen 620ms var(--ease-out) both !important;
+  }
+}
+
+@media (min-width: 801px) {
+  /* Dialogs do not use Popper collision middleware. On desktop, force their
+     final anchor back to the viewport centre so route/local utility classes
+     cannot leave a modal partially outside the visible area. `translate`
+     owns centering; `transform` remains free for animation only. */
+  [data-slot="dialog-content"],
+  [data-slot="alert-dialog-content"] {
+    top: 50% !important;
+    right: auto !important;
+    bottom: auto !important;
+    left: 50% !important;
+    translate: -50% -50% !important;
+  }
+}
+
+@media (min-width: 1024px) {
+  :root {
+    --tadeon-overlay-gutter: 16px;
+  }
+
+  [data-slot="dialog-content"],
+  [data-slot="alert-dialog-content"] {
+    scrollbar-gutter: stable;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-slot="popover-content"],
+  [data-slot="select-content"],
+  [data-slot="dropdown-menu-content"],
+  [data-slot="dropdown-menu-sub-content"],
+  [data-slot="context-menu-content"],
+  [data-slot="context-menu-sub-content"],
+  [data-slot="menubar-content"],
+  [data-slot="menubar-sub-content"],
+  [data-slot="hover-card-content"],
+  [data-slot="tooltip-content"] {
+    scroll-behavior: auto;
+  }
+
+  [data-slot="button"]::before {
+    animation: none !important;
+  }
+}
+
+/* end-source: src/styles/viewport-fit-final.css */

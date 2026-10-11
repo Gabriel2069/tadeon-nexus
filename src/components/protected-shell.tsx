@@ -15,18 +15,12 @@ import { SheetInventoryOrganizer } from "@/components/sheet/sheet-inventory-orga
 import { TabletopCrossSurfaceBridge } from "@/components/tabletop/tabletop-cross-surface-bridge";
 import { TabletopWorkspacePopoutBridge } from "@/components/tabletop/tabletop-workspace-popout-bridge";
 import { MobileMoreRadialBridge } from "@/components/mobile-more-radial-bridge";
-import { VisualViewportBridge } from "@/components/visual-viewport-bridge";
-import { UserRepair152Bridge } from "@/components/user-repair-152-bridge";
+import "@/styles/mobile-viewport.css";
 import { MasterToolbarPopoutBridge } from "@/components/master/master-toolbar-popout-bridge";
-import "@/styles/sheet-requested-polish.css";
-import "@/styles/sheet-density-final.css";
-import "@/styles/sheet-game-mode.css";
-import "@/styles/sheet-game-mode-final.css";
-import "@/styles/sheet-inventory-organizer.css";
-import "@/styles/nexus-interaction-polish.css";
-import "@/styles/user-repair-152.css";
-import "@/styles/dedicated-workspace-parity-168.css";
-import "@/styles/navigation-users-uniformity-191.css";
+import "@/styles/sheet-layout.css";
+
+import "@/styles/layout-compatibility.css";
+import "@/styles/navigation-layout.css";
 
 interface Props {
   children: ReactNode;
@@ -146,11 +140,9 @@ export function ProtectedShell({ children, requireRole }: Props) {
 
   const content = (
     <>
-      <VisualViewportBridge />
       <SheetExperienceBridge />
       <SheetInventoryOrganizer />
       <TabletopCrossSurfaceBridge />
-      <UserRepair152Bridge />
       {!dedicated && (
         <>
           <WorkspacePopoutBridge />

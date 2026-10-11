@@ -1,4 +1,5 @@
-import { readFileSync } from "node:fs";
+import { isStyleLoadedAfter } from "@/test/read-foundation-source";
+import { readFoundationSource as readFileSync } from "@/test/read-foundation-source";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 
@@ -7,14 +8,8 @@ function source(path: string) {
 }
 
 describe("navigation real SVG parity 160", () => {
-  it("loads the real SVG authority after the 159 repair layer", () => {
-    const root = source("src/routes/__root.tsx");
-    expect(root).toContain(
-      'import navigationRealSvgParity160Css from "../styles/navigation-real-svg-parity-160.css?url"',
-    );
-    expect(root.lastIndexOf("href: focusHeaderNavParity159Css")).toBeLessThan(
-      root.lastIndexOf("href: navigationRealSvgParity160Css"),
-    );
+  it("mantém a ordem das regras na cascata consolidada", () => {
+    expect(isStyleLoadedAfter("src/routes/__root.tsx", "src/styles/focus-header-nav-parity-159.css", "src/styles/navigation-real-svg-parity-160.css")).toBe(true);
   });
 
   it("keeps real React SVGs in AppLayout for Master and Backup", () => {

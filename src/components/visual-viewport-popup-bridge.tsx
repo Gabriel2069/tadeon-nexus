@@ -1,12 +1,10 @@
 import { useEffect } from "react";
-import "@/styles/tablet-popup-viewport-237.css";
-
-const MODAL_SELECTOR =
-  '[data-slot="dialog-content"], [data-slot="alert-dialog-content"]';
+import "@/styles/visual-viewport-popup.css";
+const MODAL_SELECTOR = '[data-slot="dialog-content"], [data-slot="alert-dialog-content"]';
 
 const EDITABLE_SELECTOR = [
   'input:not([type="checkbox"]):not([type="radio"]):not([type="button"]):not([type="submit"]):not([type="reset"]):not([type="range"]):not([readonly])',
-  'textarea:not([readonly])',
+  "textarea:not([readonly])",
   '[contenteditable="true"]',
 ].join(", ");
 
@@ -14,11 +12,10 @@ function setPx(root: HTMLElement, name: string, value: number) {
   root.style.setProperty(name, `${Math.max(0, Math.round(value))}px`);
 }
 
-function activeEditableInModal() {
+function activeEditable() {
   const active = document.activeElement;
   if (!(active instanceof HTMLElement)) return null;
   if (!active.matches(EDITABLE_SELECTOR)) return null;
-  if (!active.closest(MODAL_SELECTOR)) return null;
   return active;
 }
 
@@ -37,7 +34,7 @@ function scrollContainerFor(field: HTMLElement, modal: HTMLElement) {
 }
 
 function keepFocusedFieldVisible() {
-  const field = activeEditableInModal();
+  const field = activeEditable();
   const modal = field?.closest<HTMLElement>(MODAL_SELECTOR);
   if (!field || !modal) return;
 
@@ -64,6 +61,7 @@ export function VisualViewportPopupBridge() {
 
     const root = document.documentElement;
     let frame = 0;
+    let scrollFrame = 0;
     const settleTimers: number[] = [];
 
     const clearTimers = () => {
@@ -83,6 +81,7 @@ export function VisualViewportPopupBridge() {
       root.style.removeProperty("--tadeon-vv-center-x");
       root.style.removeProperty("--tadeon-vv-center-y");
       root.style.removeProperty("--tadeon-vv-keyboard");
+      root.style.removeProperty("--tadeon-keyboard-inset");
       root.style.removeProperty("--tadeon-vv-scale");
     };
 
@@ -102,12 +101,11 @@ export function VisualViewportPopupBridge() {
       const width = Math.max(1, viewport?.width ?? layoutWidth);
       const height = Math.max(1, viewport?.height ?? layoutHeight);
       const scale = viewport?.scale ?? 1;
-      const focusedEditable = activeEditableInModal() !== null;
+      const focusedEditable = activeEditable() !== null;
       const heightLoss = Math.max(0, layoutHeight - height);
       const keyboardThreshold = Math.max(72, layoutHeight * 0.08);
       const viewportReduced = scale <= 1.05 && heightLoss > keyboardThreshold;
-      const keyboardOpen =
-        focusedEditable && scale <= 1.05 && (viewportReduced || rawTop > 1);
+      const keyboardOpen = focusedEditable && scale <= 1.05 && (viewportReduced || rawTop > 1);
       const zoomed = scale > 1.05;
 
       // Enquanto a visualViewport ainda está reduzida (inclusive durante o
@@ -125,12 +123,25 @@ export function VisualViewportPopupBridge() {
       setPx(root, "--tadeon-vv-center-x", left + width / 2);
       setPx(root, "--tadeon-vv-center-y", top + height / 2);
       setPx(root, "--tadeon-vv-keyboard", heightLoss);
+      setPx(root, "--tadeon-keyboard-inset", Math.max(0, layoutHeight - height - top));
       root.style.setProperty("--tadeon-vv-scale", String(scale));
       root.dataset.tadeonKeyboardOpen = keyboardOpen ? "true" : "false";
 
       // Mede depois de o browser aplicar as novas custom properties; assim a
       // rolagem interna usa a geometria final do modal, não a do frame anterior.
-      if (focusedEditable) window.requestAnimationFrame(keepFocusedFieldVisible);
+      if (focusedEditable) scheduleFocusedScroll();
+    };
+
+    const scheduleFocusedScroll = () => {
+      if (scrollFrame) return;
+      scrollFrame = window.requestAnimationFrame(() => {
+        scrollFrame = 0;
+        const field = activeEditable();
+        if (!field?.isConnected) return;
+        if (field.closest(MODAL_SELECTOR)) keepFocusedFieldVisible();
+        else if (root.dataset.tadeonKeyboardOpen === "true")
+          field.scrollIntoView({ block: "nearest", inline: "nearest" });
+      });
     };
 
     const schedule = () => {
@@ -148,7 +159,7 @@ export function VisualViewportPopupBridge() {
         settleTimers.push(
           window.setTimeout(() => {
             schedule();
-            window.requestAnimationFrame(keepFocusedFieldVisible);
+            scheduleFocusedScroll();
           }, delay),
         );
       }
@@ -167,6 +178,7 @@ export function VisualViewportPopupBridge() {
 
     return () => {
       if (frame) window.cancelAnimationFrame(frame);
+      if (scrollFrame) window.cancelAnimationFrame(scrollFrame);
       clearTimers();
       window.removeEventListener("resize", schedule);
       window.removeEventListener("orientationchange", settleAfterFocusChange);

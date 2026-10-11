@@ -1,4 +1,5 @@
-import { readFileSync } from "node:fs";
+import { isStyleLoadedAfter } from "@/test/read-foundation-source";
+import { readFoundationSource as readFileSync } from "@/test/read-foundation-source";
 import { describe, expect, it } from "vitest";
 
 const root = readFileSync("src/routes/__root.tsx", "utf8");
@@ -13,14 +14,8 @@ const graph = readFileSync(
 );
 
 describe("sheet popup graph polish 161", () => {
-  it("loads the 161 visual authority after navigation parity 160", () => {
-    expect(root).toContain("sheet-popup-graph-polish-161.css?url");
-    expect(root.indexOf("navigationRealSvgParity160Css")).toBeLessThan(
-      root.indexOf("sheetPopupGraphPolish161Css"),
-    );
-    expect(root.lastIndexOf("href: sheetPopupGraphPolish161Css")).toBeGreaterThan(
-      root.lastIndexOf("href: navigationRealSvgParity160Css"),
-    );
+  it("mantém a ordem das regras na cascata consolidada", () => {
+    expect(isStyleLoadedAfter("src/routes/__root.tsx", "src/styles/navigation-real-svg-parity-160.css", "src/styles/sheet-popup-graph-polish-161.css")).toBe(true);
   });
 
   it("keeps authored Master and Backup marks while preserving real SVG geometry", () => {

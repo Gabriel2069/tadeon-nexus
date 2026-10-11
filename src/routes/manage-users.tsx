@@ -1,3 +1,4 @@
+import { PageSectionMark } from "@/components/section-symbols";
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { ProtectedShell } from "@/components/protected-shell";
@@ -140,7 +141,8 @@ function ManageUsersPage() {
 
   return (
     <div className="tadeon-page tadeon-route-users max-w-5xl">
-      <header className="tadeon-page-hero mb-6 flex flex-col gap-4 border-b border-border/60 pb-5 sm:flex-row sm:items-end sm:justify-between">
+      <header data-tadeon-page-hero="users" className="tadeon-page-hero mb-6 flex flex-col gap-4 border-b border-border/60 pb-5 sm:flex-row sm:items-end sm:justify-between">
+        <PageSectionMark section="users" />
         <div className="max-w-2xl">
           <p className="tadeon-eyebrow">Administração do arquivo</p>
           <h1 className="mt-1 font-cinzel text-2xl font-semibold md:text-3xl">

@@ -1,3 +1,4 @@
+import { PageSectionMark } from "@/components/section-symbols";
 import { createFileRoute } from "@tanstack/react-router";
 import { useCallback, useEffect, useRef, useState } from "react";
 import {
@@ -450,7 +451,8 @@ function NexusToolsPage() {
 
   return (
     <div className="tadeon-page tadeon-route-tools max-w-6xl space-y-6">
-      <section className="tadeon-page-hero tadeon-surface rounded-2xl px-5 py-6 md:px-8 md:py-8">
+      <section data-tadeon-page-hero="tools" className="tadeon-page-hero tadeon-surface rounded-2xl px-5 py-6 md:px-8 md:py-8">
+        <PageSectionMark section="tools" />
         <div className="flex flex-col justify-between gap-5 md:flex-row md:items-end">
           <div>
             <p className="tadeon-eyebrow">Integridade do arquivo</p>

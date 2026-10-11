@@ -1,3 +1,4 @@
+import { createLatestRequestGate } from "@/lib/latest-request";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   Archive,
@@ -278,6 +279,7 @@ export function NexusWorkspace({
   graphEnabled: boolean;
   initialNodeId?: string;
 }) {
+  const nodeRequests = useRef(createLatestRequestGate());
   const editorRef = useRef<HTMLTextAreaElement>(null);
   const initialNodeOpenedRef = useRef<string | null>(null);
   const [workspaces, setWorkspaces] = useState<WorkspaceOption[]>([]);
@@ -397,7 +399,11 @@ export function NexusWorkspace({
   }, [search]);
 
   const loadNodes = useCallback(async () => {
-    if (!workspaceId) return;
+    const ticket = nodeRequests.current.begin();
+    if (!workspaceId) {
+      setNodeLoading(false);
+      return;
+    }
     setNodeLoading(true);
     try {
       const [result, nextRecent, nextFavorites] = await Promise.all([
@@ -418,6 +424,7 @@ export function NexusWorkspace({
         knowledgeService.listRecentNodes(40),
         knowledgeService.listFavoriteNodes(40),
       ]);
+      if (!nodeRequests.current.isCurrent(ticket)) return;
       setNodes(result.hits.map((hit) => hit.node));
       setSearchCount(result.count);
       setSearchHasMore(result.hasMore);
@@ -430,13 +437,14 @@ export function NexusWorkspace({
       setRecent(nextRecent.filter(belongsToScope).slice(0, 12));
       setFavorites(nextFavorites.filter(belongsToScope).slice(0, 12));
     } catch (error) {
+      if (!nodeRequests.current.isCurrent(ticket)) return;
       toast.error(errorMessage(error));
       setNodes([]);
       setSearchCount(0);
       setSearchHasMore(false);
       setSearchSnippets({});
     } finally {
-      setNodeLoading(false);
+      if (nodeRequests.current.isCurrent(ticket)) setNodeLoading(false);
     }
   }, [
     campaignScope,
@@ -456,7 +464,9 @@ export function NexusWorkspace({
   }, [loadScopes]);
 
   useEffect(() => {
+    const requests = nodeRequests.current;
     void loadNodes();
+    return () => requests.invalidate();
   }, [loadNodes]);
 
   useEffect(() => {

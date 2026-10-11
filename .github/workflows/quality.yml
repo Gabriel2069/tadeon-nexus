@@ -20,8 +20,12 @@ jobs:
       - name: Fixar npm do projeto
         run: npm install --global npm@11.9.0
       - run: npm ci
-      - name: Auditar dependências de produção
-        run: npm audit --omit=dev --audit-level=high
+      - name: Auditar dependências de aplicação e build
+        run: npm audit --audit-level=high
+      - name: Verificar arquitetura de estilos
+        run: npm run check:styles
+      - name: Verificar mapas e continuidade
+        run: npm run check:project
       - run: npm run lint
       - run: npm run typecheck
       - run: npm run test

@@ -1,4 +1,5 @@
-import { readFileSync } from "node:fs";
+import { isStyleLoadedAfter } from "@/test/read-foundation-source";
+import { readFoundationSource as readFileSync } from "@/test/read-foundation-source";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 
@@ -7,14 +8,8 @@ function source(path: string) {
 }
 
 describe("mobile popup + master head 158", () => {
-  it("loads the 158 authority after the complete 157 visual system", () => {
-    const root = source("src/routes/__root.tsx");
-    expect(root).toContain(
-      'import mobilePopupMasterHead158Css from "../styles/mobile-popup-master-head-158.css?url"',
-    );
-    expect(root.lastIndexOf("href: finalVisualSystem157Css")).toBeLessThan(
-      root.lastIndexOf("href: mobilePopupMasterHead158Css"),
-    );
+  it("mantém a ordem das regras na cascata consolidada", () => {
+    expect(isStyleLoadedAfter("src/routes/__root.tsx", "src/styles/final-visual-system-157.css", "src/styles/mobile-popup-master-head-158.css")).toBe(true);
   });
 
   it("anchors centered mobile dialogs inside both safe-area edges", () => {

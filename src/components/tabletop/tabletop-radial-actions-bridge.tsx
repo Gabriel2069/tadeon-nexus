@@ -23,7 +23,6 @@ import { tabletopMediaKind } from "@/lib/tabletop/tabletop-media";
 import { currentTabletopRuntime } from "@/lib/tabletop/tabletop-player-runtime";
 import type { TabletopEntity, TabletopSnapshot } from "@/lib/tabletop/types";
 import "@/styles/tabletop-radial-actions.css";
-
 function selectedEntity(snapshot: TabletopSnapshot | null) {
   if (!snapshot || snapshot.selectedIds.length !== 1) return null;
   return snapshot.scene.entities.find((entity) => entity.id === snapshot.selectedIds[0]) ?? null;

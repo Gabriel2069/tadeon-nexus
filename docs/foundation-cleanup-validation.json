@@ -1,0 +1,65 @@
+{
+  "date": "2026-10-11",
+  "baselineCommit": "95cc9c5d5bdcf48921be13b29709f46ad0804910",
+  "node": "v24.19.0",
+  "cleanInstallThisLot": false,
+  "installNote": "Uses the unchanged lockfile/dependency installation validated with npm ci in the preceding lot.",
+  "check": {
+    "command": "npm run check",
+    "exitCode": 0,
+    "suites": 115,
+    "tests": 507,
+    "stages": [
+      "style architecture",
+      "eslint",
+      "typescript",
+      "vitest",
+      "client build",
+      "SSR build",
+      "Cloudflare Worker build"
+    ]
+  },
+  "styles": {
+    "files": 57,
+    "globalLinks": 12,
+    "removedDuplicateRules": 69,
+    "removedDuplicateDeclarations": 178,
+    "removedCompetingFocusDeclarations": 10,
+    "remainingImportantDeclarations": 5764,
+    "sourceBytes": 1890332,
+    "provenance": "style-cleanup.json"
+  },
+  "browser": {
+    "report": "header-validation.json",
+    "command": "scripts/verify-header-ownership.mjs current with external Playwright/Chromium runtime",
+    "exitCode": 0,
+    "screens": 21,
+    "sections": 7,
+    "viewportWidths": [
+      390,
+      820,
+      1440
+    ],
+    "keyboardPortalCases": 6,
+    "data": "read-only fixtures, mestre, empty collections; admin server functions unavailable"
+  },
+  "productionAudit": {
+    "command": "npm audit --omit=dev --audit-level=high",
+    "exitCode": 0,
+    "vulnerabilities": {
+      "info": 0,
+      "low": 1,
+      "moderate": 0,
+      "high": 0,
+      "critical": 0,
+      "total": 1
+    }
+  },
+  "remaining": [
+    "Other historical CSS owners and presentation bridges still need state-by-state cleanup.",
+    "Full audit MCP SDK findings from the first lot are not resolved by this cleanup.",
+    "Real accounts, populated campaigns, virtual keyboard, pinch zoom, sheet and remaining Tabletop dialogs are not covered.",
+    "Build retains Pixi chunk and adapter/bundler warnings; local Node 24 does not replace CI Node 22."
+  ],
+  "publication": "No manual deploy or merge. Existing Cloudflare Git integration may generate branch previews."
+}

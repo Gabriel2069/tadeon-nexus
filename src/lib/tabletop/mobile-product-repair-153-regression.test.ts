@@ -1,4 +1,4 @@
-import { readFileSync } from "node:fs";
+import { readFoundationSource as readFileSync } from "@/test/read-foundation-source";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 

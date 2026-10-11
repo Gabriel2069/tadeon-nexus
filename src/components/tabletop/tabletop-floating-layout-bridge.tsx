@@ -1,7 +1,5 @@
 import { useEffect } from "react";
-import "@/styles/tabletop-floating-layout-236.css";
-import "@/styles/tabletop-floating-menu-shift-236.css";
-import "@/styles/tabletop-floating-layout-238.css";
+import "@/styles/tabletop-floating-layout.css";
 
 const CORE_FLOATING_SELECTORS = [
   ".tadeon-tabletop-progressive-dock",

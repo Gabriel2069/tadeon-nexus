@@ -47,7 +47,6 @@ import { can } from "@/lib/permissions";
 import { SaveStatus } from "@/components/save-status";
 import { ResistanceDtCalculator } from "@/components/master/resistance-dt-calculator";
 import "@/styles/sheet-premium.css";
-
 const AttributeRadar = lazy(() => import("@/components/sheet/attribute-radar"));
 
 export const Route = createFileRoute("/sheet/$id_/power")({

@@ -4,8 +4,7 @@ import { Button } from "@/components/ui/button";
 import type { TabletopPresence } from "@/lib/tabletop/realtime-protocol";
 import type { TabletopRealtimeConnectionState } from "@/lib/tabletop/realtime-transport";
 import { getTabletopRealtimeStatusPresentation } from "@/lib/tabletop/realtime-status";
-import "@/styles/tabletop-realtime.css";
-
+import "@/styles/realtime-status.css";
 export function TabletopRealtimeStatus({
   enabled,
   state,

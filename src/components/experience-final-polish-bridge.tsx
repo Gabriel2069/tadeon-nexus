@@ -12,116 +12,6 @@ type SkillModifiers = Record<string, number>;
 type PowerFormData = Record<string, unknown> & { skill_modifiers?: SkillModifiers };
 const db = supabase as unknown as SupabaseClient;
 
-const GRAPH_PRESETS: Record<string, number> = {
-  "Força mínima visível": 0.16,
-  "Afinidade mínima": 0.28,
-  "Força dos vínculos": 0.62,
-  "Distância-base": 260,
-  Repulsão: 2.4,
-  Centro: 0.08,
-  "Agrupamento por domínio": 0.12,
-  "Aparecimento dos rótulos": 0.98,
-};
-
-function setRangeValue(input: HTMLInputElement, value: number) {
-  const setter = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, "value")?.set;
-  setter?.call(input, String(value));
-  input.dispatchEvent(new Event("input", { bubbles: true }));
-  input.dispatchEvent(new Event("change", { bubbles: true }));
-}
-
-function tuneKnowledgeGraph() {
-  const root = document.querySelector<HTMLElement>(".tadeon-knowledge-graph, .tadeon-brain-shell");
-  if (!root || root.dataset.tadeonObsidianPreset === "true") return;
-
-  const settingsToggle = root.querySelector<HTMLButtonElement>(".tadeon-brain-settings-toggle");
-  const sliders = Array.from(root.querySelectorAll<HTMLElement>(".tadeon-brain-slider"));
-  const hasPhysics = sliders.some((row) =>
-    (row.querySelector("span")?.textContent ?? "").includes("Distância-base"),
-  );
-
-  if (
-    !hasPhysics &&
-    settingsToggle &&
-    settingsToggle.getAttribute("aria-expanded") !== "true"
-  ) {
-    root.dataset.tadeonObsidianTuning = "true";
-    settingsToggle.click();
-    return;
-  }
-
-  let applied = 0;
-  for (const row of sliders) {
-    const text = row.querySelector("span")?.textContent ?? "";
-    const entry = Object.entries(GRAPH_PRESETS).find(([label]) => text.includes(label));
-    const input = row.querySelector<HTMLInputElement>('input[type="range"]');
-    if (!entry || !input) continue;
-    const [, value] = entry;
-    setRangeValue(input, Math.max(Number(input.min), Math.min(Number(input.max), value)));
-    applied += 1;
-  }
-
-  if (applied >= 7) {
-    root.dataset.tadeonObsidianPreset = "true";
-    delete root.dataset.tadeonObsidianTuning;
-    window.setTimeout(() => {
-      root.querySelector<HTMLButtonElement>('button[aria-label="Reenquadrar grafo"]')?.click();
-      if (settingsToggle?.getAttribute("aria-expanded") === "true") settingsToggle.click();
-    }, 150);
-  }
-}
-
-function normalizedCondition(value: string) {
-  return value
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .toLocaleLowerCase("pt-BR");
-}
-
-function conditionProgress(text: string) {
-  const fraction = text.match(/(\d+)\s*\/\s*(\d+)/);
-  if (fraction) {
-    const current = Number(fraction[1]);
-    const maximum = Number(fraction[2]);
-    if (maximum > 0) return Math.max(0, Math.min(1, current / maximum));
-  }
-  const stage = text.match(/(?:nivel|estagio|grau|fase)?\s*(\d+)/i);
-  if (stage) return Math.max(0.25, Math.min(1, Number(stage[1]) / 4));
-  return 0.42;
-}
-
-function setConditionProgress(chip: HTMLElement, progress: number) {
-  const normalized = Math.max(0, Math.min(1, progress));
-  chip.style.setProperty("--condition-progress", normalized.toFixed(2));
-  chip.style.setProperty("--condition-glow-opacity", (0.38 + normalized * 0.5).toFixed(2));
-  chip.style.setProperty("--condition-glow-blur", `${Math.round(7 + normalized * 10)}px`);
-}
-
-function tuneConditionVisuals() {
-  const candidates = Array.from(
-    document.querySelectorAll<HTMLElement>(
-      ".tadeon-sheet-condition-chip, [data-condition], [class*='condition-chip']",
-    ),
-  );
-  for (const chip of candidates) {
-    const text = normalizedCondition(chip.textContent ?? "");
-    const progress = conditionProgress(text);
-    setConditionProgress(chip, progress);
-    if (/morrendo|dying/.test(text)) {
-      chip.dataset.conditionSeverity = "critical";
-      setConditionProgress(chip, Math.max(progress, 0.86));
-    } else if (/colapsando|colapso|collaps/.test(text)) {
-      chip.dataset.conditionSeverity = "critical";
-      setConditionProgress(chip, 1);
-    } else if (/critico|grave|agoniz|incapacit|inconsciente/.test(text)) {
-      chip.dataset.conditionSeverity = "danger";
-      setConditionProgress(chip, Math.max(progress, 0.68));
-    } else {
-      delete chip.dataset.conditionSeverity;
-    }
-  }
-}
-
 function tuneSheetChrome() {
   const commandbar = document.querySelector<HTMLElement>(
     ".tadeon-sheet-page .tadeon-sheet-commandbar",
@@ -179,9 +69,7 @@ export function ExperienceFinalPolishBridge() {
   useEffect(() => {
     let timer = 0;
     const scan = () => {
-      if (window.location.pathname === "/nexus") tuneKnowledgeGraph();
       if (window.location.pathname.startsWith("/sheet/")) {
-        tuneConditionVisuals();
         tuneSheetChrome();
         const panel = document.querySelector<HTMLElement>(".tadeon-link-panel");
         const heading = panel?.querySelector<HTMLElement>(".tadeon-link-panel__heading");

@@ -1,4 +1,5 @@
-import { readFileSync } from "node:fs";
+import { isStyleLoadedAfter } from "@/test/read-foundation-source";
+import { readFoundationSource as readFileSync } from "@/test/read-foundation-source";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import {
@@ -118,11 +119,7 @@ describe("reconciliação final das superfícies", () => {
     expect(css).toContain("tadeon-director-cue-orbit");
   });
 
-  it("carrega a reconciliação depois das autoridades visuais anteriores", () => {
-    const root = source("src/routes/__root.tsx");
-    const radial = root.indexOf('{ rel: "stylesheet", href: radialPresenceCss }');
-    const reconciliation = root.indexOf('{ rel: "stylesheet", href: reconciliationCss }');
-    expect(radial).toBeGreaterThan(-1);
-    expect(reconciliation).toBeGreaterThan(radial);
+  it("mantém a ordem das regras na cascata consolidada", () => {
+    expect(isStyleLoadedAfter("src/routes/__root.tsx", "src/styles/radial-presence-final.css", "src/styles/interface-reconciliation-final.css")).toBe(true);
   });
 });

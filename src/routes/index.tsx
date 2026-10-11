@@ -149,7 +149,7 @@ function HomePage() {
       }));
     }
     setSheets(labeled);
-    cacheSheetSummaries(labeled);
+    cacheSheetSummaries(labeled, user && role ? { userId: user.id, role } : null);
     setLoading(false);
   };
 
