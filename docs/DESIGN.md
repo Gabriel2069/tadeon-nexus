@@ -1,6 +1,6 @@
 # Tadeon Nexus: Véu & Trama
 
-Direção solicitada por Tadeu em 11/10/2026. **Direção aprovada por Tadeu**, vinculada a NEX-003. O primeiro lote de shell/Dashboard está implementado na PR #259; a produção permanece no merge estrutural #258. [Prancheta navegável](design/board.html). A fila de execução continua exclusivamente em [project-continuity.json](project-continuity.json).
+Direção solicitada por Tadeu em 11/10/2026. **Direção aprovada por Tadeu**, vinculada a NEX-003. O primeiro lote de shell/Dashboard foi integrado pela PR #259; a evidência registra o upload e a falha inicial de confirmação pública; a conclusão atual depende do workflow de main. [Prancheta navegável](design/board.html). A fila de execução continua exclusivamente em [project-continuity.json](project-continuity.json).
 
 ## Tese e identidade
 
@@ -94,7 +94,7 @@ Easing inicial `cubic-bezier(.23, 1, .32, 1)`. Preferir transform/opacity em con
 
 Antes de alterar uma propriedade, buscar todos os concorrentes e conferir `style-architecture.json`. Modificar o módulo responsável; remover regras antigas somente após validar os estados afetados. Não adicionar `!important`, arquivo numerado, `final`, `repair`, `polish` ou observer global. Esta prancheta vive em docs e não entra no bundle da aplicação.
 
-NEX-003 foi validado na branch da PR #259, após aprovação da direção e implementação de shell/Dashboard. Outras etapas conservam as dependências em WORKPLAN gerado; não duplicar aqui outra fila. A expansão para navegação/portais, ficha, Nexus e Mesa depende do fechamento dos critérios pertinentes. Performance real e autenticação real continuam com seus próprios IDs e limites.
+NEX-003 foi integrado pela PR #259, após aprovação da direção e implementação de shell/Dashboard. Outras etapas conservam as dependências em WORKPLAN gerado; não duplicar aqui outra fila. A expansão para navegação/portais, ficha, Nexus e Mesa depende do fechamento dos critérios pertinentes. Performance real e autenticação real continuam com seus próprios IDs e limites.
 
 ## Referências e transferência
 
@@ -112,4 +112,4 @@ A consulta a um arquivo específico do atlas VoltAgent retornou 404; ele não su
 
 A estrutura foi integrada pela PR #258 em `c6c1ea6c5e3338b4ff111329a8b2b37841e8245d`, após Quality bem-sucedido no HEAD `20ba787e496eea4285ee147a0380c175f2f4fe02`. O workflow de publicação no SHA do merge passou, incluindo a confirmação do endpoint público: [execução](https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38151368993). A consulta independente local retornou HTTP 403; não houve validação de conta real.
 
-A [evidência da prancheta](design-board-validation.json) registra vistas, interações demonstradas, movimento reduzido, pares de cor e limites de exportação. A produção ainda não recebeu este lote. A [validação da implementação](dashboard-design-validation.json) cobre fixtures e interações no navegador; VoiceOver, contas reais, teclado virtual e performance de hardware continuam fora dessa evidência.
+A [evidência da prancheta](design-board-validation.json) registra vistas, interações demonstradas, movimento reduzido, pares de cor e limites de exportação. O workflow aceitou o upload do SHA de integração, mas a confirmação pública inicial falhou. A correção de entrega mantém o gate por SHA e registra o valor observado. A [validação da implementação](dashboard-design-validation.json) cobre fixtures e interações no navegador; VoiceOver, contas reais, teclado virtual e performance de hardware continuam fora dessa evidência.

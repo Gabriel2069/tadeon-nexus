@@ -10,11 +10,11 @@ Verificado em 11/10/2026. Entrada curta de retomada; o registro único de tarefa
 - O código dessa referência passou por 119 suítes/515 testes, builds, auditorias sem vulnerabilidades e 21 telas de fixture. A verificação não representa campanhas reais ou autorização ponta a ponta.
 - A PR antiga #216 é conciliada em [PR_RECONCILIATION](../PR_RECONCILIATION.md); seu patch não é uma base de trabalho.
 
-## Direção visual aplicada na branch
+## Direção visual integrada
 
-Tadeu aprovou Véu & Trama e autorizou sua implementação. NEX-003 está validado na PR [#259](https://github.com/Gabriel2069/tadeon-nexus/pull/259): hero autoral, galeria, dados existentes e estados vazio/loading/erro/povoado. Leituras antigas não alteram o estado nem o cache de outra conta. A limpeza retirou os concorrentes das classes Dashboard aposentadas e dos marcadores externos da navegação; a superfície ativa voltou a usar seu token escuro, separado da cor de destaque.
+Tadeu aprovou Véu & Trama e autorizou sua implementação. NEX-003 foi integrado pela PR [#259](https://github.com/Gabriel2069/tadeon-nexus/pull/259): hero autoral, galeria, dados existentes e estados vazio/loading/erro/povoado. Leituras antigas não alteram o estado nem o cache de outra conta. A limpeza retirou os concorrentes das classes Dashboard aposentadas e dos marcadores externos da navegação; a superfície ativa voltou a usar seu token escuro, separado da cor de destaque.
 
-[DESIGN](../DESIGN.md) orienta a expansão; [evidência do lote](../dashboard-design-validation.json) registra escopo e limites. A produção permanece em #258. NEX-004 é a próxima tarefa pronta: navegação e portais, a partir dos responsáveis existentes, sem nova fila ou PR concorrente.
+[DESIGN](../DESIGN.md) orienta a expansão; [evidência do lote](../dashboard-design-validation.json) registra escopo e limites. O merge `ca49ce0` passou no Quality e foi enviado à Cloudflare. A confirmação pública inicial falhou no [workflow 38156316960](https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38156316960); a correção de entrega está em `delivery/verify-production-sha-2026-10-11`. A conclusão atual da publicação deve ser consultada no workflow de main. A revisão passou em 120 suítes/531 testes e 16 vistas do Dashboard (320/390/820/1440 px). A referência é um snapshot de integração; reconferir HEAD e workflow para saber o SHA atual. NEX-004 é a próxima tarefa pronta: navegação e portais, a partir dos responsáveis existentes, sem nova fila ou PR concorrente.
 
 ## Como retomar
 
@@ -26,6 +26,6 @@ Tadeu aprovou Véu & Trama e autorizou sua implementação. NEX-003 está valida
 
 ## Limites preservados
 
-Fio-Mestre é a identidade deste projeto; NexOS é separado. O workflow de produção 38151368993 passou, inclusive a confirmação do SHA do merge no endpoint; acesso independente local retornou 403. Banco, flags, rollout, OAuth, backup restaurável e contas reais não foram reconsultados nesta etapa. Não transformar claims do histórico em fatos atuais. Não há promessa de ausência absoluta de conflitos futuros.
+Fio-Mestre é a identidade deste projeto; NexOS é separado. A referência estrutural tem confirmação de publicação histórica. A integração visual tem Quality aprovado e upload aceito; a confirmação inicial falhou. O workflow de main é a autoridade atual de publicação, sem equivaler a teste com contas reais. Banco, flags, rollout, OAuth, backup restaurável e contas reais não foram reconsultados nesta etapa. Não transformar claims do histórico em fatos atuais. Não há promessa de ausência absoluta de conflitos futuros.
 
 O registro anterior permanece em [history/continuity-2026-08.md](../history/continuity-2026-08.md), sem perda de texto. As prioridades históricas foram substituídas por IDs da fila atual; requisitos pertinentes continuam registrados.

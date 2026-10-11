@@ -1,18 +1,23 @@
 {
   "version": 1,
   "checkedAt": "2026-10-11",
-  "runtimeReference": "2a458d97531e1d5dc314bdc42df3eadb7b26ef67",
+  "runtimeReference": "ca49ce09a3f3761a7f68978e194d8cfe8984192c",
   "integration": {
-    "pr": 258,
-    "branch": "refactor/nexus-foundation-2026-10-11",
+    "pr": 259,
+    "branch": "design/fio-mestre-visual-board-2026-10-11",
     "base": "main",
-    "baseCommit": "353808af68c8ba0d08bbc90d6f8ad9117c9e25f8",
+    "baseCommit": "c6c1ea6c5e3338b4ff111329a8b2b37841e8245d",
+    "headCommit": "419e566f5800304d6fa7e3c79ce35cf386df640c",
     "state": "integrated",
-    "production": "confirmed_by_deploy_workflow",
-    "mergeCommit": "c6c1ea6c5e3338b4ff111329a8b2b37841e8245d",
-    "qualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38149258475",
-    "productionEvidence": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38151368993",
-    "productionCommit": "c6c1ea6c5e3338b4ff111329a8b2b37841e8245d"
+    "mergeCommit": "ca49ce09a3f3761a7f68978e194d8cfe8984192c",
+    "qualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38156149188",
+    "production": "verify_current_main_workflow",
+    "productionEvidence": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38156316960",
+    "deliveryFollowUp": {
+      "branch": "delivery/verify-production-sha-2026-10-11",
+      "reason": "Confirmar o SHA exclusivamente no marcador HTML, sem pipeline grep -q/pipefail e com diagnóstico de HTTP/SHA observado.",
+      "currentEvidence": "https://github.com/Gabriel2069/tadeon-nexus/actions/workflows/cloudflare-preview.yml"
+    }
   },
   "domains": [
     {
@@ -152,7 +157,8 @@
         "scripts/check-style-architecture.mjs",
         "scripts/check-project-continuity.mjs",
         ".github/workflows/quality.yml",
-        ".github/workflows/cloudflare-preview.yml"
+        ".github/workflows/cloudflare-preview.yml",
+        "scripts/verify-production-build.mjs"
       ],
       "styles": [],
       "boundary": "PR valida a branch; merge em main pode iniciar deploy. Documentação diferencia proposta, validação e integração."
@@ -329,7 +335,7 @@
       "id": "NEX-003",
       "title": "Véu & Trama: referência aplicada ao shell e Dashboard",
       "domain": "shell",
-      "status": "validated",
+      "status": "integrated",
       "priority": 1,
       "dependsOn": [
         "NEX-001",
@@ -347,9 +353,11 @@
         "docs/dashboard-design-validation.json",
         "scripts/verify-dashboard-design.mjs",
         "src/lib/dashboard-read.test.tsx",
-        "https://github.com/Gabriel2069/tadeon-nexus/pull/259"
+        "https://github.com/Gabriel2069/tadeon-nexus/pull/259",
+        "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38156149188",
+        "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38156316960"
       ],
-      "checkpoint": "Direção aprovada e merge autorizado por Tadeu. Revisão pré-merge fortalece criação/exclusão por identidade, confirma exclusão na API, corrige semântica dos indicadores e amplia a fixture a 320 px. Lote validado na PR #259; integração/publicação serão registradas após confirmação remota."
+      "checkpoint": "Revisão aprofundada e merge autorizados por Tadeu. Integrado pela PR #259 em ca49ce09a3f3761a7f68978e194d8cfe8984192c. Quality confirmou a referência. Upload do Worker aceito, mas a confirmação pública inicial falhou; seguir o workflow de main e a correção delivery/verify-production-sha-2026-10-11. Fixtures não certificam contas reais. NEX-004 está pronto, ainda sem implementação deste novo lote."
     },
     {
       "id": "NEX-004",
@@ -762,6 +770,20 @@
     {
       "path": "docs/dashboard-design-validation.json",
       "purpose": "NEX-003: implementação, limpeza de sobreposições, testes de leitura e verificação visual com fixtures."
+    }
+  ],
+  "integrationHistory": [
+    {
+      "pr": 258,
+      "branch": "refactor/nexus-foundation-2026-10-11",
+      "base": "main",
+      "baseCommit": "353808af68c8ba0d08bbc90d6f8ad9117c9e25f8",
+      "state": "integrated",
+      "production": "confirmed_by_deploy_workflow",
+      "mergeCommit": "c6c1ea6c5e3338b4ff111329a8b2b37841e8245d",
+      "qualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38149258475",
+      "productionEvidence": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38151368993",
+      "productionCommit": "c6c1ea6c5e3338b4ff111329a8b2b37841e8245d"
     }
   ]
 }

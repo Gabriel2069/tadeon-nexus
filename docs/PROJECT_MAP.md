@@ -80,7 +80,7 @@ Estilos: sem proprietário CSS exclusivo.
 
 PR valida a branch; merge em main pode iniciar deploy. Documentação diferencia proposta, validação e integração.
 
-Código: [scripts/check-style-architecture.mjs](../scripts/check-style-architecture.mjs), [scripts/check-project-continuity.mjs](../scripts/check-project-continuity.mjs), [.github/workflows/quality.yml](../.github/workflows/quality.yml), [.github/workflows/cloudflare-preview.yml](../.github/workflows/cloudflare-preview.yml).
+Código: [scripts/check-style-architecture.mjs](../scripts/check-style-architecture.mjs), [scripts/check-project-continuity.mjs](../scripts/check-project-continuity.mjs), [.github/workflows/quality.yml](../.github/workflows/quality.yml), [.github/workflows/cloudflare-preview.yml](../.github/workflows/cloudflare-preview.yml), [scripts/verify-production-build.mjs](../scripts/verify-production-build.mjs).
 
 Estilos: sem proprietário CSS exclusivo.
 

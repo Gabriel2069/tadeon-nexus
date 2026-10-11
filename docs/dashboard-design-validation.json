@@ -5,7 +5,7 @@
   "approval": "Tadeu aprovou a inspiração visual e autorizou começar a implementação nesta conversa.",
   "branch": "design/fio-mestre-visual-board-2026-10-11",
   "pullRequest": 259,
-  "state": "validated_on_branch_not_integrated",
+  "state": "integrated",
   "baseCommit": "b022382aa5bed14e78e19396faa1e0aaa472230d",
   "implementation": {
     "hero": "SVG original e selo Fio-Mestre dimensional, sem biblioteca ou observer novo",
@@ -70,11 +70,11 @@
     "asyncMutationTests": 13
   },
   "limits": [
-    "Não integrado nem publicado este lote.",
     "Fixtures não comprovam RLS, autenticação e CRUD com contas reais.",
     "Sem teste de VoiceOver, teclado virtual físico, FPS ou bateria.",
     "Transparência usa fallback CSS, sem controle manual novo.",
-    "A limpeza é delimitada: não declara saneamento de toda a cascata histórica."
+    "A limpeza é delimitada: não declara saneamento de toda a cascata histórica.",
+    "A evidência inicial é histórica. A publicação atual é confirmada pelo workflow de main, com diagnóstico HTTP e SHA observado; reconsultar HEAD e a conclusão do workflow ao retomar."
   ],
   "implementationCommit": "ef45672422378b963ad18ca8336ae3ba3ea19e47",
   "preMergeReview": {
@@ -92,5 +92,29 @@
       "Ignorar a resposta antiga protege a interface; não desfaz uma escrita já enviada ao servidor.",
       "Regras RLS e autorização do banco não foram alteradas nem certificadas com contas reais."
     ]
+  },
+  "reviewCommit": "419e566f5800304d6fa7e3c79ce35cf386df640c",
+  "mergeCommit": "ca49ce09a3f3761a7f68978e194d8cfe8984192c",
+  "remoteQuality": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38156149188",
+  "productionVerification": {
+    "commit": "ca49ce09a3f3761a7f68978e194d8cfe8984192c",
+    "workflow": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38156316960",
+    "method": "Upload aceito pela Cloudflare; a etapa inicial de confirmação pública falhou. Snapshot do workflow da integração, não da conclusão posterior da correção de entrega.",
+    "realAccountTest": false,
+    "initialConfirmation": "failed",
+    "workerVersionId": "68a63ddf-0efd-4d79-a94f-b39587729739"
+  },
+  "deliveryFix": {
+    "branch": "delivery/verify-production-sha-2026-10-11",
+    "verificationScript": "scripts/verify-production-build.mjs",
+    "tests": "scripts/verify-production-build.test.mjs",
+    "finding": "Pipeline com grep -q e pipefail pode gerar falso negativo em HTML grande com múltiplas linhas; reprodução local confirmou o risco. O log inicial não capturou o SHA observado, portanto não prova isoladamente essa causa no endpoint.",
+    "behavior": "Exige SHA completo, HTTP de sucesso e exatamente um marcador meta com o SHA esperado. Retry finito, timeout, diagnóstico e bypass de cache; erros continuam fechando o gate.",
+    "validation": {
+      "command": "npm run check",
+      "suites": 121,
+      "tests": 538,
+      "verifierTests": 7
+    }
   }
 }
