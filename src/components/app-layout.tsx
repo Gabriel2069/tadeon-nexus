@@ -292,9 +292,9 @@ export function AppLayout({ children }: { children: ReactNode }) {
               <BrandMark className="h-11 w-11 shrink-0 text-primary" />
               <div className="min-w-0">
                 <div className="tadeon-eyebrow">Fio-Mestre</div>
-                <h1 className="font-cinzel text-xl font-semibold leading-none text-primary">
+                <p className="font-cinzel text-xl font-semibold leading-none text-primary">
                   Tadeon Nexus
-                </h1>
+                </p>
               </div>
             </div>
             <div className="mt-4 border-l border-primary/25 pl-3">

@@ -22,11 +22,11 @@ Estilos: [src/styles/global-search.css](../src/styles/global-search.css), [src/s
 
 ## Dashboard
 
-Indicadores e galeria pertencem à rota; revisar concorrentes CSS antes de alterar seu layout.
+Dados, estados e galeria pertencem à rota; hero decorativo pertence a ContinuityHero. Geometria em page-hero-parity, material em experience-surfaces e movimento CSS finito em motion-composition; não reintroduzir os seletores Dashboard aposentados.
 
-Código: [src/routes/index.tsx](../src/routes/index.tsx).
+Código: [src/routes/index.tsx](../src/routes/index.tsx), [src/components/continuity-hero.tsx](../src/components/continuity-hero.tsx).
 
-Estilos: [src/styles/page-hero-parity.css](../src/styles/page-hero-parity.css), [src/styles/experience-surfaces.css](../src/styles/experience-surfaces.css).
+Estilos: [src/styles/page-hero-parity.css](../src/styles/page-hero-parity.css), [src/styles/experience-surfaces.css](../src/styles/experience-surfaces.css), [src/styles/motion-composition.css](../src/styles/motion-composition.css).
 
 ## Ficha e progressão
 

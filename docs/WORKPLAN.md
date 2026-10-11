@@ -12,8 +12,8 @@ Cada PR usa IDs desta fila e declara dependências. Trabalho sobre o mesmo propr
 | --- | --- | --- | --- | --- | --- |
 | NEX-001 | Preparação estrutural | Integrado | 0 | delivery | — |
 | NEX-002 | Mapa, continuidade e conciliação das PRs | Integrado | 0 | delivery | NEX-001 |
-| NEX-003 | Referência visual do shell e Dashboard | Em andamento | 1 | shell | NEX-001, NEX-002 |
-| NEX-004 | Sidebar, navegação móvel e portais | Planejado | 2 | popup | NEX-003 |
+| NEX-003 | Véu & Trama: referência aplicada ao shell e Dashboard | Validado na branch | 1 | shell | NEX-001, NEX-002 |
+| NEX-004 | Sidebar, navegação móvel e portais | Próximo | 2 | popup | NEX-003 |
 | NEX-005 | Ficha por seções e estados | Planejado | 3 | sheet | NEX-003 |
 | NEX-006 | Biblioteca, documento e grafo do Nexus | Planejado | 4 | knowledge | NEX-003 |
 | NEX-007 | Mesa: hierarquia de ferramentas e workspace | Planejado | 5 | tabletop | NEX-004 |
@@ -38,13 +38,13 @@ Evidências: [docs/foundation-completion-validation.json](../docs/foundation-com
 
 Evidências: [scripts/check-project-continuity.mjs](../scripts/check-project-continuity.mjs), [docs/PR_RECONCILIATION.md](../docs/PR_RECONCILIATION.md), [.github/PULL_REQUEST_TEMPLATE.md](../.github/PULL_REQUEST_TEMPLATE.md), [docs/continuity-validation.json](../docs/continuity-validation.json), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/pull/258).
 
-## NEX-003 — Referência visual do shell e Dashboard
+## NEX-003 — Véu & Trama: referência aplicada ao shell e Dashboard
 
 - Registrar estados vazio, carregando, erro e dados povoados em 390, 820 e 1440 px.
 - Revisar hierarquia, leitura, símbolos, superfície, respiro e três indicadores do Dashboard.
 - Preservar Fio-Mestre; definir referência aprovada antes de expandir a linguagem às demais telas.
 
-Evidências: [docs/DESIGN.md](../docs/DESIGN.md), [docs/design/board.html](../docs/design/board.html), [docs/design-board-validation.json](../docs/design-board-validation.json).
+Evidências: [docs/DESIGN.md](../docs/DESIGN.md), [docs/design/board.html](../docs/design/board.html), [docs/design-board-validation.json](../docs/design-board-validation.json), [docs/dashboard-design-validation.json](../docs/dashboard-design-validation.json), [scripts/verify-dashboard-design.mjs](../scripts/verify-dashboard-design.mjs), [src/lib/dashboard-read.test.tsx](../src/lib/dashboard-read.test.tsx), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/pull/259).
 
 ## NEX-004 — Sidebar, navegação móvel e portais
 

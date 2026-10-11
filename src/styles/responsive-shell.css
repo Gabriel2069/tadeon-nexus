@@ -447,114 +447,6 @@
     gap: 1.45rem;
   }
 
-  .tadeon-dashboard-hero {
-    min-height: 25rem;
-    padding: 1.35rem 1.15rem 1.2rem;
-  }
-
-  .tadeon-dashboard-hero > div:first-of-type {
-    gap: 1.25rem;
-  }
-
-  .tadeon-dashboard-hero h1 {
-    max-width: 13ch;
-    font-size: clamp(2.45rem, 12vw, 3.4rem);
-    font-weight: 540;
-    letter-spacing: -0.045em;
-  }
-
-  .tadeon-dashboard-hero .tadeon-eyebrow {
-    color: color-mix(in srgb, var(--section-accent) 84%, var(--foreground));
-  }
-
-  .tadeon-dashboard-hero [data-slot="button"] {
-    width: 100%;
-    justify-content: space-between;
-    border-radius: 0.9rem 0.3rem 0.9rem 0.3rem;
-  }
-
-  .tadeon-dashboard-signals {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 0;
-    margin-top: 1.4rem;
-    padding-top: 1rem;
-  }
-
-  .tadeon-dashboard-signal {
-    min-height: 4rem;
-    flex-direction: column;
-    align-items: flex-start;
-    justify-content: center;
-    gap: 0.28rem;
-    padding: 0.55rem 0.5rem;
-  }
-
-  .tadeon-dashboard-signal:not(:last-child)::after {
-    top: 0.55rem;
-    right: 0;
-    bottom: 0.55rem;
-  }
-
-  .tadeon-dashboard-signal > svg {
-    width: 0.9rem;
-    height: 0.9rem;
-    margin: 0;
-  }
-
-  .tadeon-dashboard-signal p:first-child {
-    max-width: 100%;
-    font-size: 0.9rem;
-    line-height: 1.1;
-  }
-
-  .tadeon-dashboard-signal p:last-child {
-    font-size: 0.52rem;
-    letter-spacing: 0.08em;
-    line-height: 1.25;
-  }
-
-  .tadeon-sheet-gallery {
-    display: grid;
-    margin-right: -0.875rem;
-    grid-auto-columns: minmax(16.5rem, 87vw);
-    grid-auto-flow: column;
-    grid-template-columns: none;
-    gap: 0.85rem;
-    overflow-x: auto;
-    padding: 0.1rem 0.875rem 0.65rem 0.05rem;
-    scroll-padding-left: 0.05rem;
-    scroll-snap-type: x proximity;
-    scrollbar-width: none;
-  }
-
-  .tadeon-sheet-gallery::-webkit-scrollbar {
-    display: none;
-  }
-
-  .tadeon-sheet-card {
-    min-height: 15.5rem;
-    padding: 1.15rem;
-    scroll-snap-align: start;
-  }
-
-  .tadeon-sheet-card__index {
-    position: absolute;
-    z-index: 0;
-    top: -0.5rem;
-    right: 0.5rem;
-    color: rgb(var(--section-accent-rgb) / 5%);
-    font-family: var(--font-cinzel);
-    font-size: 5.4rem;
-    font-weight: 600;
-    line-height: 1;
-    pointer-events: none;
-  }
-
-  .tadeon-sheet-card__open {
-    border-radius: 0.82rem 0.28rem 0.82rem 0.28rem;
-    background: rgb(var(--section-accent-rgb) / 6%);
-  }
-
   .tadeon-nexus-commandbar {
     gap: 1rem;
     padding: 1.1rem;
@@ -772,18 +664,6 @@
   .tadeon-mobile-dock__item {
     font-size: 0.5rem;
   }
-
-  .tadeon-dashboard-hero h1 {
-    font-size: 2.25rem;
-  }
-
-  .tadeon-dashboard-signal {
-    padding-inline: 0.35rem;
-  }
-
-  .tadeon-dashboard-signal p:last-child {
-    letter-spacing: 0.045em;
-  }
 }
 
 @media (hover: none) and (pointer: coarse) and (max-width: 767px) {
@@ -817,68 +697,9 @@
   .tadeon-dashboard {
     gap: 1.1rem;
   }
-
-  .tadeon-dashboard-hero {
-    min-height: 0;
-    padding: 1rem 0.95rem;
-  }
-
-  .tadeon-dashboard-hero > div:first-of-type {
-    gap: 0.9rem;
-  }
-
-  .tadeon-dashboard-hero h1 {
-    max-width: 16ch;
-    font-size: clamp(1.85rem, 8.5vw, 2.55rem);
-    line-height: 1.02;
-  }
-
-  .tadeon-dashboard-hero p.mt-3 {
-    margin-top: 0.6rem;
-    font-size: 0.8rem;
-    line-height: 1.5;
-  }
-
-  .tadeon-dashboard-signals {
-    margin-top: 0.95rem;
-    padding-top: 0.7rem;
-  }
-
-  .tadeon-dashboard-signal {
-    min-height: 3.15rem;
-    gap: 0.18rem;
-    padding: 0.35rem 0.4rem;
-  }
-
-  .tadeon-sheet-gallery {
-    grid-auto-columns: minmax(14.5rem, 80vw);
-    gap: 0.7rem;
-  }
-
-  .tadeon-sheet-card {
-    min-height: 12.75rem;
-    padding: 0.9rem;
-  }
-
-  .tadeon-sheet-card__index {
-    font-size: 4.25rem;
-  }
 }
 
 @media (max-width: 479px) {
-  .tadeon-sheet-gallery {
-    display: grid;
-    margin-right: 0;
-    grid-auto-flow: row;
-    grid-template-columns: minmax(0, 1fr);
-    gap: 0.65rem;
-    overflow: visible;
-    padding: 0;
-  }
-
-  .tadeon-sheet-card {
-    min-height: 11.75rem;
-  }
 }
 
 @media (prefers-contrast: more) and (max-width: 767px) {

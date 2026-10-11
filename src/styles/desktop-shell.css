@@ -351,45 +351,6 @@
     border-color: color-mix(in srgb, var(--section-accent) 15%, var(--border));
   }
 
-  .tadeon-dashboard-hero {
-    min-height: 21rem;
-    padding: clamp(2.25rem, 4vw, 4rem);
-  }
-
-  .tadeon-dashboard-hero h1 {
-    max-width: 12ch;
-    font-size: clamp(3.1rem, 5.2vw, 5.3rem);
-    font-weight: 540;
-    letter-spacing: -0.045em;
-  }
-
-  .tadeon-dashboard-hero .tadeon-dashboard-signals {
-    max-width: 52rem;
-  }
-
-  .tadeon-sheet-gallery {
-    grid-auto-rows: 1fr;
-    gap: clamp(1rem, 1.8vw, 1.5rem);
-  }
-
-  .tadeon-sheet-card {
-    min-height: 15rem;
-    padding: 1.35rem;
-  }
-
-  .tadeon-sheet-card__index {
-    position: absolute;
-    z-index: 0;
-    top: -1rem;
-    right: 0.6rem;
-    color: rgb(var(--section-accent-rgb) / 4.5%);
-    font-family: var(--font-cinzel);
-    font-size: 7rem;
-    font-weight: 600;
-    line-height: 1;
-    pointer-events: none;
-  }
-
   .tadeon-nexus-commandbar {
     min-height: 6.5rem;
     padding: 1.25rem 1.4rem;
@@ -618,14 +579,6 @@
   }
 }
 
-@media (prefers-reduced-transparency: reduce) and (min-width: 768px) {
-  .tadeon-desktop-toolbar,
-  .tadeon-sidebar,
-  .tadeon-page-hero {
-    background-color: var(--background);
-    backdrop-filter: none;
-  }
-}
 
 @media (prefers-contrast: more) and (min-width: 768px) {
   .tadeon-desktop-toolbar,
@@ -663,7 +616,7 @@
         rgb(var(--section-accent-rgb) / 8%),
         transparent 72%
       ),
-      rgb(9 11 15 / 96%);
+      rgb(9 11 15 / 90%);
   }
 
   .tadeon-primary-nav .tadeon-global-search-trigger {
@@ -691,7 +644,7 @@
         rgb(var(--section-accent-rgb) / 5%),
         transparent 38%
       ),
-      rgb(8 10 14 / 84%);
+      rgb(8 10 14 / 80%);
   }
 
   .tadeon-desktop-toolbar h2 {
@@ -807,12 +760,12 @@
       inset 0 1px rgb(255 255 255 / 2.5%);
   }
 
-  .tadeon-sheet-gallery,
+
   .tadeon-users-list {
     perspective: 1200px;
   }
 
-  .tadeon-sheet-card,
+
   .tadeon-user-row {
     transition:
       border-color var(--motion-panel) var(--ease-out),
@@ -822,7 +775,7 @@
 }
 
 @media (hover: hover) and (pointer: fine) and (min-width: 768px) {
-  .tadeon-sheet-card:hover,
+
   .tadeon-user-row:hover {
     transform: translateY(-2px);
   }
@@ -836,3 +789,19 @@
 }
 
 /* end-source: src/styles/desktop-studio.css */
+
+/* Material fallback follows its normal owner, preserving dimensions and focus. */
+@media (prefers-reduced-transparency: reduce) and (min-width: 768px) {
+  .tadeon-desktop-toolbar,
+  .tadeon-sidebar {
+    background: #15181e;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+}
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  @media (min-width: 768px) {
+    .tadeon-desktop-toolbar,
+    .tadeon-sidebar { background: #15181e; }
+  }
+}

@@ -3,7 +3,6 @@
 
 :where(
   .tadeon-page-hero,
-  .tadeon-dashboard-hero,
   .tadeon-nexus-commandbar,
   .tadeon-master-commandbar,
   .tadeon-tabletop-studio__header,
@@ -17,7 +16,6 @@
 
 :where(
   .tadeon-page-hero,
-  .tadeon-dashboard-hero,
   .tadeon-nexus-commandbar,
   .tadeon-master-commandbar,
   .tadeon-tabletop-studio__header,
@@ -143,7 +141,6 @@
 @media (prefers-reduced-motion: reduce) {
   :where(
     .tadeon-page-hero,
-    .tadeon-dashboard-hero,
     .tadeon-nexus-commandbar,
     .tadeon-master-commandbar,
     .tadeon-tabletop-studio__header,

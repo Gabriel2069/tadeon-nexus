@@ -27,7 +27,7 @@ Comece pelo [estado de continuidade](ai/00_ESTADO_ATUAL.md), [mapa do código](P
 | [WORKPLAN.md](WORKPLAN.md) | generated | Fila de trabalho gerada deste registro. |
 | [history/continuity-2026-08.md](history/continuity-2026-08.md) | historical | Registro anterior integral preservado; não comprova ambiente atual. |
 | [PR_RECONCILIATION.md](PR_RECONCILIATION.md) | active | Destino de cada requisito da PR antiga e limites da integração. |
-| [DESIGN.md](DESIGN.md) | active | Contrato visual proposto Véu & Trama; referência única de execução para NEX-003, sem novo backlog. |
+| [DESIGN.md](DESIGN.md) | active | Direção Véu & Trama aprovada; contrato visual e referência única de execução, sem novo backlog. |
 
 ## Contratos e evidências
 
@@ -44,3 +44,4 @@ Comece pelo [estado de continuidade](ai/00_ESTADO_ATUAL.md), [mapa do código](P
 | [style-migration-verification.json](style-migration-verification.json) | Equivalência AST histórica da primeira migração. |
 | [style-migration.json](style-migration.json) | Procedência da primeira migração e requisitos dos testes aposentados. |
 | [design-board-validation.json](design-board-validation.json) | Evidência da prancheta, referências, contraste, exportação e limites do mockup. |
+| [dashboard-design-validation.json](dashboard-design-validation.json) | NEX-003: implementação, limpeza de sobreposições, testes de leitura e verificação visual com fixtures. |

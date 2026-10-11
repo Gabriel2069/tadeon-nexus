@@ -1,6 +1,6 @@
 # Tadeon Nexus: Véu & Trama
 
-Direção solicitada por Tadeu em 11/10/2026. **Proposta para revisão visual**, vinculada a NEX-003; não é redesign aplicado nem referência composta já aprovada. [Prancheta navegável](design/board.html). A fila de execução continua exclusivamente em [project-continuity.json](project-continuity.json).
+Direção solicitada por Tadeu em 11/10/2026. **Direção aprovada por Tadeu**, vinculada a NEX-003. O primeiro lote de shell/Dashboard está implementado na PR #259; a produção permanece no merge estrutural #258. [Prancheta navegável](design/board.html). A fila de execução continua exclusivamente em [project-continuity.json](project-continuity.json).
 
 ## Tese e identidade
 
@@ -21,7 +21,7 @@ Um título editorial e uma ação dominante por região. Tipos funcionais, alinh
 
 Compacto: uma coluna, margem de referência 16px, métricas empilhadas e navegação que mantém acesso a todas as áreas. Intermediário: duas colunas apenas quando textos e controles couberem. Regular: sidebar de referência 224px e margem 32px. Breakpoints derivam do conteúdo. 390, 820 e 1440px são vistas de validação, não leis de dispositivos. Também verificar 320px, zoom/reflow, texto a 200%, rótulos longos e teclado virtual real.
 
-A prancheta contém Dashboard regular e composição compacta com dados fictícios. Os três números ilustram hierarquia; seus rótulos e fontes deverão ser reconciliados com `src/routes/index.tsx` antes da implementação. Não criar consultas ou indicadores só para reproduzir o mockup.
+A prancheta contém Dashboard regular e composição compacta com dados fictícios. Os três números da prancheta ilustram hierarquia. Na implementação, foram reconciliados com `src/routes/index.tsx`: fichas disponíveis, seus personagens e maior exposição, todos provenientes da leitura existente. Não criar consultas ou indicadores só para reproduzir o mockup.
 
 ## Materiais e sua função
 
@@ -94,7 +94,7 @@ Easing inicial `cubic-bezier(.23, 1, .32, 1)`. Preferir transform/opacity em con
 
 Antes de alterar uma propriedade, buscar todos os concorrentes e conferir `style-architecture.json`. Modificar o módulo responsável; remover regras antigas somente após validar os estados afetados. Não adicionar `!important`, arquivo numerado, `final`, `repair`, `polish` ou observer global. Esta prancheta vive em docs e não entra no bundle da aplicação.
 
-NEX-003 é o lote ativo: referência composta e implementação de shell/Dashboard permanecem pendentes de revisão da proposta. Outras etapas conservam as dependências em WORKPLAN gerado; não duplicar aqui outra fila. A expansão para navegação/portais, ficha, Nexus e Mesa depende do fechamento dos critérios pertinentes. Performance real e autenticação real continuam com seus próprios IDs e limites.
+NEX-003 foi validado na branch da PR #259, após aprovação da direção e implementação de shell/Dashboard. Outras etapas conservam as dependências em WORKPLAN gerado; não duplicar aqui outra fila. A expansão para navegação/portais, ficha, Nexus e Mesa depende do fechamento dos critérios pertinentes. Performance real e autenticação real continuam com seus próprios IDs e limites.
 
 ## Referências e transferência
 
@@ -112,4 +112,4 @@ A consulta a um arquivo específico do atlas VoltAgent retornou 404; ele não su
 
 A estrutura foi integrada pela PR #258 em `c6c1ea6c5e3338b4ff111329a8b2b37841e8245d`, após Quality bem-sucedido no HEAD `20ba787e496eea4285ee147a0380c175f2f4fe02`. O workflow de publicação no SHA do merge passou, incluindo a confirmação do endpoint público: [execução](https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38151368993). A consulta independente local retornou HTTP 403; não houve validação de conta real.
 
-A [evidência da prancheta](design-board-validation.json) registra vistas, interações demonstradas, movimento reduzido, pares de cor e limites de exportação. Nenhuma tela de produção foi redesenhada; composição conceitual não comprova VoiceOver, autorização, dados reais, teclado virtual, performance de hardware ou cobertura de todos os estados do app. Validar esses aspectos no lote de implementação.
+A [evidência da prancheta](design-board-validation.json) registra vistas, interações demonstradas, movimento reduzido, pares de cor e limites de exportação. A produção ainda não recebeu este lote. A [validação da implementação](dashboard-design-validation.json) cobre fixtures e interações no navegador; VoiceOver, contas reais, teclado virtual e performance de hardware continuam fora dessa evidência.

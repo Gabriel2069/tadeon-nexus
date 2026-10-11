@@ -1,6 +1,6 @@
 # Manutenção do Tadeon Nexus
 
-Leia `docs/ai/00_ESTADO_ATUAL.md`, `docs/WORKPLAN.md`, `docs/PROJECT_MAP.md` e `docs/FOUNDATION.md` antes de alterar interface, sessão ou publicação. Para design e visuais, leia também `docs/DESIGN.md`; a prancheta é uma proposta e não prova implementação.
+Leia `docs/ai/00_ESTADO_ATUAL.md`, `docs/WORKPLAN.md`, `docs/PROJECT_MAP.md` e `docs/FOUNDATION.md` antes de alterar interface, sessão ou publicação. Para design e visuais, leia também `docs/DESIGN.md`; a direção foi aprovada, e a evidência de implementação está em `docs/dashboard-design-validation.json`; a prancheta isolada não prova runtime.
 
 - Preserve o Fio-Mestre: fundo escuro, marfim, EB Garamond, Inter, PT Mono, símbolos autorais e cores por seção. Redesign exige uma decisão visual explícita.
 - Procure o proprietário da regra em `docs/style-architecture.json` e no mapa de `docs/FOUNDATION.md`. Edite o módulo existente. Não crie outro arquivo numerado, `final`, `repair`, `polish` ou uma nova camada para vencer a anterior.

@@ -50,13 +50,15 @@
       "id": "dashboard",
       "name": "Dashboard",
       "code": [
-        "src/routes/index.tsx"
+        "src/routes/index.tsx",
+        "src/components/continuity-hero.tsx"
       ],
       "styles": [
         "src/styles/page-hero-parity.css",
-        "src/styles/experience-surfaces.css"
+        "src/styles/experience-surfaces.css",
+        "src/styles/motion-composition.css"
       ],
-      "boundary": "Indicadores e galeria pertencem à rota; revisar concorrentes CSS antes de alterar seu layout."
+      "boundary": "Dados, estados e galeria pertencem à rota; hero decorativo pertence a ContinuityHero. Geometria em page-hero-parity, material em experience-surfaces e movimento CSS finito em motion-composition; não reintroduzir os seletores Dashboard aposentados."
     },
     {
       "id": "sheet",
@@ -279,7 +281,7 @@
     {
       "path": "docs/DESIGN.md",
       "status": "active",
-      "purpose": "Contrato visual proposto Véu & Trama; referência única de execução para NEX-003, sem novo backlog."
+      "purpose": "Direção Véu & Trama aprovada; contrato visual e referência única de execução, sem novo backlog."
     }
   ],
   "tasks": [
@@ -325,9 +327,9 @@
     },
     {
       "id": "NEX-003",
-      "title": "Referência visual do shell e Dashboard",
+      "title": "Véu & Trama: referência aplicada ao shell e Dashboard",
       "domain": "shell",
-      "status": "active",
+      "status": "validated",
       "priority": 1,
       "dependsOn": [
         "NEX-001",
@@ -341,15 +343,19 @@
       "evidence": [
         "docs/DESIGN.md",
         "docs/design/board.html",
-        "docs/design-board-validation.json"
+        "docs/design-board-validation.json",
+        "docs/dashboard-design-validation.json",
+        "scripts/verify-dashboard-design.mjs",
+        "src/lib/dashboard-read.test.tsx",
+        "https://github.com/Gabriel2069/tadeon-nexus/pull/259"
       ],
-      "checkpoint": "Brief solicitado e prancheta proposta. Aprovação visual e implementação composta ainda pendentes; não fechar critérios de runtime pela demonstração."
+      "checkpoint": "Direção aprovada por Tadeu em 11/10/2026. Primeiro lote implementado e validado na branch da PR #259; sem integração ou nova publicação em main. Dados existentes reconciliados, estados separados, leituras antigas invalidadas e sobreposições aposentadas. Expandir a linguagem a partir destes responsáveis."
     },
     {
       "id": "NEX-004",
       "title": "Sidebar, navegação móvel e portais",
       "domain": "popup",
-      "status": "planned",
+      "status": "ready",
       "priority": 2,
       "dependsOn": [
         "NEX-003"
@@ -752,6 +758,10 @@
     {
       "path": "docs/design-board-validation.json",
       "purpose": "Evidência da prancheta, referências, contraste, exportação e limites do mockup."
+    },
+    {
+      "path": "docs/dashboard-design-validation.json",
+      "purpose": "NEX-003: implementação, limpeza de sobreposições, testes de leitura e verificação visual com fixtures."
     }
   ]
 }

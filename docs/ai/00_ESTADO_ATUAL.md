@@ -10,9 +10,11 @@ Verificado em 11/10/2026. Entrada curta de retomada; o registro único de tarefa
 - O código dessa referência passou por 119 suítes/515 testes, builds, auditorias sem vulnerabilidades e 21 telas de fixture. A verificação não representa campanhas reais ou autorização ponta a ponta.
 - A PR antiga #216 é conciliada em [PR_RECONCILIATION](../PR_RECONCILIATION.md); seu patch não é uma base de trabalho.
 
-## Direção visual em preparação
+## Direção visual aplicada na branch
 
-NEX-003 está ativo: [DESIGN](../DESIGN.md) e [prancheta Véu & Trama](../design/board.html) desenvolvem o brief de suspense mitológico, vidro dimensional e tecidos/fios solicitado em 11/10. A proposta ainda requer revisão visual; não é interface de produção implementada. O próximo lote é shell/Dashboard com estados e dados da rota. As demais tarefas mantêm suas dependências, sem fila paralela.
+Tadeu aprovou Véu & Trama e autorizou sua implementação. NEX-003 está validado na PR [#259](https://github.com/Gabriel2069/tadeon-nexus/pull/259): hero autoral, galeria, dados existentes e estados vazio/loading/erro/povoado. Leituras antigas não alteram o estado nem o cache de outra conta. A limpeza retirou os concorrentes das classes Dashboard aposentadas e dos marcadores externos da navegação; a superfície ativa voltou a usar seu token escuro, separado da cor de destaque.
+
+[DESIGN](../DESIGN.md) orienta a expansão; [evidência do lote](../dashboard-design-validation.json) registra escopo e limites. A produção permanece em #258. NEX-004 é a próxima tarefa pronta: navegação e portais, a partir dos responsáveis existentes, sem nova fila ou PR concorrente.
 
 ## Como retomar
 

@@ -53,12 +53,12 @@ describe("seleção, projeção e superfícies de entrada", () => {
     expect(css).toContain(':has([data-state="checked"])');
   });
 
-  it("refina só o portal de login e o quadro inicial do Dashboard", () => {
+  it("preserva o portal de login sem reintroduzir o Dashboard aposentado", () => {
     const css = source("src/styles/selection-director-entry-polish.css");
     expect(css).toContain(".tadeon-auth-shell");
     expect(css).toContain(".tadeon-auth-card input:focus-visible");
-    expect(css).toContain(".tadeon-dashboard-hero");
-    expect(css).toContain(".tadeon-dashboard-signal");
+    expect(css).not.toContain(".tadeon-dashboard-hero");
+    expect(css).not.toContain(".tadeon-dashboard-signal");
     expect(css).not.toContain(".tadeon-sheet-card {");
   });
 });
