@@ -23,14 +23,19 @@ describe("final system audit 170", () => {
   it("keeps all protected workspaces under the same integration shell", () => {
     const shell = source("src/components/protected-shell.tsx");
     for (const bridge of [
-      "SheetExperienceBridge",
-      "SheetInventoryOrganizer",
       "TabletopCrossSurfaceBridge",
       "WorkspacePopoutBridge",
       "TabletopWorkspacePopoutBridge",
       "NexusSheetDragBridge",
     ]) {
       expect(shell).toContain(bridge);
+    }
+
+    // Sheet-specific controls now belong to the keyed record route, not every workspace.
+    const sheet = source("src/routes/sheet.$id.tsx");
+    for (const control of ["SheetExperienceBridge", "SheetInventoryOrganizer"]) {
+      expect(sheet).toContain(control);
+      expect(shell).not.toContain(control);
     }
 
     for (const route of [

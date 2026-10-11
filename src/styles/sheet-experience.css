@@ -69,7 +69,6 @@ html[data-tadeon-sheet-mode] .tadeon-sheet-frame section[id] {
   }
 
   html[data-tadeon-sheet-mode] #sec-attr .tadeon-attribute-grid {
-    grid-template-columns: repeat(5, minmax(7.25rem, 1fr));
     align-items: stretch;
     justify-items: stretch;
   }
@@ -105,10 +104,6 @@ html[data-tadeon-sheet-mode] .tadeon-sheet-frame section[id] {
 
   html[data-tadeon-sheet-mode] .tadeon-sheet-overview {
     grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  html[data-tadeon-sheet-mode] #sec-attr .tadeon-attribute-grid {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
 

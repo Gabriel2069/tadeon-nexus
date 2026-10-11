@@ -34,6 +34,7 @@ function markElement(element: HTMLElement) {
 }
 
 function markMaterial(element: HTMLElement) {
+  if (element.dataset.materialSurface) return;
   if (element.classList.contains("tadeon-state-panel")) {
     element.dataset.tadeonMaterial = "state";
   } else if (element.classList.contains("tadeon-skill-modifier-panel")) {
@@ -46,6 +47,7 @@ function markMaterial(element: HTMLElement) {
 }
 
 function markState(element: HTMLElement) {
+  if (element.dataset.materialSurface) return;
   const text = (element.textContent ?? "").toLocaleLowerCase("pt-BR");
   if (element.classList.contains("tadeon-sheet-condition-chip")) {
     element.dataset.tadeonState = element.dataset.conditionSeverity ?? "normal";

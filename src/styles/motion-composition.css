@@ -287,9 +287,9 @@
 }
 .tadeon-shell [data-slot="tabs-list"] { isolation:isolate; }
 .tadeon-shell [data-slot="tabs-trigger"] { position:relative; z-index:1; }
-.tadeon-shell [data-slot="tabs-content"] { animation:tm-tabs-panel-in 360ms var(--tm-in) both; }
+.tadeon-shell [data-slot="tabs-content"]:not([data-sheet-content]) { animation:tm-tabs-panel-in 360ms var(--tm-in) both; }
 @keyframes tm-tabs-panel-in { from { opacity:0; transform:translateY(9px); filter:blur(3px); } to { opacity:1; transform:none; filter:none; } }
-.tadeon-shell [data-slot="tabs"][data-motion-direction="backward"] [data-slot="tabs-content"] { animation-name:tm-tabs-panel-back; }
+.tadeon-shell [data-slot="tabs"][data-motion-direction="backward"] [data-slot="tabs-content"]:not([data-sheet-content]) { animation-name:tm-tabs-panel-back; }
 @keyframes tm-tabs-panel-back { from { opacity:0; transform:translateX(-9px); filter:blur(3px); } to { opacity:1; transform:none; filter:none; } }
 
 /* Dropdown/select/popover items: the list itself arrives first, children follow. */
@@ -395,7 +395,7 @@
   .tadeon-shell [data-slot="slider-thumb"],
   .tadeon-shell [data-slot="accordion-trigger"],
   .tadeon-shell [data-slot="tabs-indicator"],
-  .tadeon-shell [data-slot="tabs-content"],
+  .tadeon-shell [data-slot="tabs-content"]:not([data-sheet-content]),
   .tadeon-shell table tbody tr,
   .tadeon-shell [role="listitem"],
   .tadeon-shell [data-motion-state],
@@ -1203,7 +1203,7 @@
   background: currentColor;
   transition: opacity var(--tw-fast) linear, transform var(--tw-base) var(--tw-thread);
 }
-.tadeon-shell [data-slot="tabs-content"] {
+.tadeon-shell [data-slot="tabs-content"]:not([data-sheet-content]) {
   animation: tadeon-weave-content 300ms var(--tw-thread) both;
 }
 @keyframes tadeon-weave-content {
@@ -1540,7 +1540,7 @@
 .tadeon-shell button:not([data-material-surface], .tadeon-material-button):not(:disabled):active::after,.tadeon-shell [role="button"]:active::after{opacity:.15;transform:scaleX(.96);transition-duration:90ms}
 .tadeon-shell [data-slot="tabs-trigger"]:hover{box-shadow:inset 0 -1px color-mix(in srgb,currentColor 28%,transparent)}
 .tadeon-shell [data-slot="tabs-trigger"][data-state="active"]{text-shadow:0 0 18px color-mix(in srgb,currentColor 18%,transparent)}
-.tadeon-shell [data-slot="tabs-content"][data-state="active"]{animation:tif-tab-weave 360ms var(--tif-in) both}
+.tadeon-shell [data-slot="tabs-content"]:not([data-sheet-content])[data-state="active"]{animation:tif-tab-weave 360ms var(--tif-in) both}
 @keyframes tif-tab-weave{from{opacity:.74;filter:blur(.6px);clip-path:inset(0 0 0 3%)}70%{opacity:1;filter:none;clip-path:inset(0)}to{opacity:1;filter:none}}
 :is([data-radix-dialog-content],[data-slot="dialog-content"],[data-slot="sheet-content"],[data-slot="drawer-content"],[data-radix-popover-content],[data-slot="popover-content"],[data-radix-dropdown-menu-content],[data-slot="dropdown-menu-content"])[data-state="open"]{animation:tif-surface-open 300ms var(--tif-in) both}
 :is([data-radix-dialog-content],[data-slot="dialog-content"],[data-slot="sheet-content"],[data-slot="drawer-content"],[data-radix-popover-content],[data-slot="popover-content"],[data-radix-dropdown-menu-content],[data-slot="dropdown-menu-content"])[data-state="closed"]{animation:tif-surface-close 180ms var(--tif-seam) both}
@@ -1588,7 +1588,7 @@
 .tadeon-shell [data-slot="tabs-trigger"]::after { content:""; position:absolute; right:10%; bottom:.08rem; left:10%; height:1px; background:currentColor; opacity:.12; transform:scaleX(.08); transform-origin:left center; box-shadow:0 0 11px currentColor; transition:transform 390ms var(--tm-surface-thread),opacity 170ms ease; }
 .tadeon-shell [data-slot="tabs-trigger"]:hover::after { opacity:.46; transform:scaleX(.48); }
 .tadeon-shell [data-slot="tabs-trigger"][data-state="active"]::after { opacity:.9; transform:scaleX(1); }
-.tadeon-shell [data-slot="tabs-content"] { animation:tm-tab-reveal 240ms var(--tm-surface-in) both; }
+.tadeon-shell [data-slot="tabs-content"]:not([data-sheet-content]) { animation:tm-tab-reveal 240ms var(--tm-surface-in) both; }
 @keyframes tm-tab-reveal { from{opacity:.72;transform:translateX(2px);filter:blur(.5px)} to{opacity:1;transform:none;filter:none} }
 
 /* Accordions: the fold is the interaction; content settles without a bounce. */
@@ -2281,7 +2281,7 @@
   opacity: .9;
   transform: scaleX(1);
 }
-.tadeon-shell[data-section="Consulta offline"] .tadeon-route-offline [data-slot="tabs-content"][data-state="active"] {
+.tadeon-shell[data-section="Consulta offline"] .tadeon-route-offline [data-slot="tabs-content"]:not([data-sheet-content])[data-state="active"] {
   animation: td-echo-reveal 560ms var(--td-fold) both;
 }
 
@@ -2398,7 +2398,7 @@
   .tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-studio__header,
   .tadeon-shell[data-section="Mesa Nexus"] [data-tabletop-tool],
   .tadeon-shell[data-section="Mesa Nexus"] [data-tabletop-action],
-  .tadeon-shell[data-section="Consulta offline"] .tadeon-route-offline [data-slot="tabs-content"],
+  .tadeon-shell[data-section="Consulta offline"] .tadeon-route-offline [data-slot="tabs-content"]:not([data-sheet-content]),
   .tadeon-shell[data-section="Saúde do arquivo"] [data-tadeon-status="checking"]::after,
   .tadeon-shell[data-section="Saúde do arquivo"] [aria-busy="true"]::after,
   .tadeon-shell[data-section="Painel do Mestre"] .tadeon-master-commandbar::before,
@@ -5552,8 +5552,8 @@ html body .tadeon-shell .tadeon-route-offline > main {
 .tadeon-shell :is([data-slot="tabs-trigger"],[role="tab"])[aria-selected="true"]::after{background:linear-gradient(90deg,transparent,rgb(var(--tab-accent-rgb)/84%),transparent)!important;}
 
 /* Tab-content surfaces inherit the page color only in their edges and atmospheric weave. */
-.tadeon-shell :is([data-slot="tabs-content"],[data-tabs-content]){border-color:rgb(var(--tab-accent-rgb)/12%);box-shadow:inset 0 1px rgb(var(--tab-accent-rgb)/5%);}
-.tadeon-shell :is([data-slot="tabs-content"],[data-tabs-content])::before{border-color:rgb(var(--tab-accent-rgb)/10%);}
+.tadeon-shell :is([data-slot="tabs-content"]:not([data-sheet-content]),[data-tabs-content]){border-color:rgb(var(--tab-accent-rgb)/12%);box-shadow:inset 0 1px rgb(var(--tab-accent-rgb)/5%);}
+.tadeon-shell :is([data-slot="tabs-content"]:not([data-sheet-content]),[data-tabs-content])::before{border-color:rgb(var(--tab-accent-rgb)/10%);}
 
 /* Secondary segmented controls follow the same contract without becoming saturated. */
 .tadeon-shell :is([data-slot="segmented-control"],[data-segmented-control]) :is(button:not([data-material-surface], .tadeon-material-button),[role="button"],[role="tab"]):hover{background:rgb(var(--tab-accent-rgb)/5%);color:var(--tab-accent);}
@@ -5624,8 +5624,8 @@ html body .tadeon-shell .tadeon-route-offline > main {
 .tadeon-shell[data-section] :is([data-slot="tabs-trigger"],[role="tab"]):hover :is([data-tab-description],[data-tab-meta],[data-tab-caption]),.tadeon-shell[data-section] :is([data-slot="tabs-trigger"],[role="tab"]):is([data-state="active"],[aria-selected="true"]) :is([data-tab-description],[data-tab-meta],[data-tab-caption]){color:color-mix(in srgb,var(--foreground) 84%,var(--tdv-detail-accent))}
 
 /* Tab panels: a quiet chromatic seam at the entry edge communicates continuity. */
-.tadeon-shell[data-section] :is([data-slot="tabs-content"],[data-tabs-content]){border-inline-start-color:rgb(var(--tdv-detail-accent-rgb)/13%);transition:border-color 260ms ease,box-shadow 300ms ease}
-.tadeon-shell[data-section] :is([data-slot="tabs-content"],[data-tabs-content])[data-state="active"]{border-inline-start-color:rgb(var(--tdv-detail-accent-rgb)/30%);box-shadow:inset 2px 0 18px -16px rgb(var(--tdv-detail-accent-rgb)/72%)}
+.tadeon-shell[data-section] :is([data-slot="tabs-content"]:not([data-sheet-content]),[data-tabs-content]){border-inline-start-color:rgb(var(--tdv-detail-accent-rgb)/13%);transition:border-color 260ms ease,box-shadow 300ms ease}
+.tadeon-shell[data-section] :is([data-slot="tabs-content"]:not([data-sheet-content]),[data-tabs-content])[data-state="active"]{border-inline-start-color:rgb(var(--tdv-detail-accent-rgb)/30%);box-shadow:inset 2px 0 18px -16px rgb(var(--tdv-detail-accent-rgb)/72%)}
 
 /* Segmented-control separators use the same local color only when adjacent to the active segment. */
 .tadeon-shell[data-section] :is([data-slot="segmented-control"],[data-segmented-control]) :is(button:not([data-material-surface], .tadeon-material-button),[role="button"],[role="tab"])+:is(button:not([data-material-surface], .tadeon-material-button),[role="button"],[role="tab"]){border-inline-start-color:rgb(var(--tdv-detail-accent-rgb)/10%)}
@@ -6502,7 +6502,6 @@ html body .tadeon-shell :is(
     transform: none !important;
   }
 
-  .tadeon-sheet-page .tadeon-overview-metric,
   .tadeon-sheet-page .tadeon-description-card,
   .tadeon-sheet-page .tadeon-skill-node {
     animation: none !important;
@@ -6620,8 +6619,6 @@ html body .tadeon-shell :is(
 
 @media (hover: none) {
   .tadeon-sheet-page .tadeon-description-card,
-  .tadeon-sheet-page .tadeon-attribute-tile,
-  .tadeon-sheet-page .tadeon-stat-block,
   .tadeon-sheet-page .tadeon-condition-card {
     transform: none !important;
   }
@@ -6636,8 +6633,16 @@ html body .tadeon-shell :is(
   .tadeon-sheet-page .tadeon-description-card,
   .tadeon-sheet-page .tadeon-skill-node,
   .tadeon-sheet-page .tadeon-sheet-tabs [role="tabpanel"][data-state="active"] {
-    animation: none !important;
     transition: none !important;
+  }
+  .tadeon-shell .tadeon-ficha,
+  .tadeon-shell [data-ficha],
+  .tadeon-shell [data-character-sheet],
+  .tadeon-shell .tadeon-character-sheet,
+  .tadeon-sheet-page .tadeon-description-card,
+  .tadeon-sheet-page .tadeon-skill-node,
+  .tadeon-sheet-page .tadeon-sheet-tabs [role="tabpanel"][data-state="active"] {
+    animation: none !important;
   }
 }
 

@@ -1,17 +1,3 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
-import { createPortal } from "react-dom";
-import {
-  ExternalLink,
-  Gamepad2,
-  GripVertical,
-  History,
-  Link2,
-  Loader2,
-  Pencil,
-  Save,
-  Users,
-} from "lucide-react";
-import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -23,7 +9,20 @@ import {
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
 import "@/styles/sheet-experience.css";
-const SHEET_PATH = /^\/sheet\/([^/]+)$/;
+import {
+  ExternalLink,
+  Gamepad2,
+  GripVertical,
+  History,
+  Link2,
+  Loader2,
+  Pencil,
+  Save,
+  Users,
+} from "lucide-react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { createPortal } from "react-dom";
+import { toast } from "sonner";
 const NEXUS_DRAG_MIME = "application/x-tadeon-nexus-node";
 
 interface RpcResult<T> {
@@ -104,14 +103,11 @@ function withDedicatedPopout(pathname: string, search: string) {
   return `${pathname}?${params.toString()}`;
 }
 
-function findToolbarAnchor() {
-  return (
-    document.querySelector<HTMLElement>(".tadeon-sheet-power-button") ??
-    document.querySelector<HTMLElement>(".tadeon-sheet-save-button")
-  );
-}
-
-function ensurePortalHost(anchor: HTMLElement, id: string, className = "tadeon-sheet-experience-host") {
+function ensurePortalHost(
+  anchor: HTMLElement,
+  id: string,
+  className = "tadeon-sheet-experience-host",
+) {
   let host = document.getElementById(id);
   if (host) return host;
   host = document.createElement("span");
@@ -136,14 +132,28 @@ function compactValue(value: unknown) {
     return String(value);
   }
   if (Array.isArray(value)) return `${value.length} registro(s)`;
-  if (typeof value === "object") return `${Object.keys(value as Record<string, unknown>).length} campo(s)`;
+  if (typeof value === "object")
+    return `${Object.keys(value as Record<string, unknown>).length} campo(s)`;
   return String(value);
 }
 
-export function SheetExperienceBridge() {
+export function SheetExperienceBridge({
+  sheetId,
+  dropTarget,
+  canEdit,
+}: {
+  sheetId: string;
+  dropTarget: HTMLElement | null;
+  canEdit: boolean;
+}) {
+  const active = useRef(true);
+  useEffect(() => {
+    active.current = true;
+    return () => {
+      active.current = false;
+    };
+  }, []);
   const { user } = useAuth();
-  const match = typeof window === "undefined" ? null : window.location.pathname.match(SHEET_PATH);
-  const sheetId = match?.[1] ?? null;
   const embedded = queryFlag("embed");
   const popout = queryFlag("popout");
   const [mode, setMode] = useState<"edit" | "game">(() => {
@@ -153,7 +163,6 @@ export function SheetExperienceBridge() {
     const stored = window.sessionStorage.getItem(`tadeon-sheet-mode:${sheetId}`);
     return stored === "edit" ? "edit" : "game";
   });
-  const [portalHost, setPortalHost] = useState<HTMLElement | null>(null);
   const [onlineCount, setOnlineCount] = useState(1);
   const [historyOpen, setHistoryOpen] = useState(false);
   const [historyLoading, setHistoryLoading] = useState(false);
@@ -164,6 +173,7 @@ export function SheetExperienceBridge() {
   const loadNexusLinks = useCallback(async () => {
     if (!sheetId) return;
     const result = await rpcClient().rpc("get_sheet_knowledge_links", { p_sheet_id: sheetId });
+    if (!active.current) return;
     if (!result.error && Array.isArray(result.data)) {
       setNexusLinks(result.data as SheetNexusLink[]);
     }
@@ -176,6 +186,7 @@ export function SheetExperienceBridge() {
       p_sheet_id: sheetId,
       p_limit: 16,
     });
+    if (!active.current) return;
     setHistoryLoading(false);
     if (result.error) {
       toast.error("Não foi possível carregar as mudanças de sessão.");
@@ -196,19 +207,6 @@ export function SheetExperienceBridge() {
       delete root.dataset.tadeonSheetEmbed;
     };
   }, [embedded, mode, sheetId, storageKey]);
-
-  useEffect(() => {
-    if (!sheetId || embedded) return;
-    const attach = () => {
-      const anchor = findToolbarAnchor();
-      if (!anchor) return;
-      setPortalHost(ensurePortalHost(anchor, "tadeon-sheet-experience-actions"));
-    };
-    attach();
-    const observer = new MutationObserver(attach);
-    observer.observe(document.body, { childList: true, subtree: true });
-    return () => observer.disconnect();
-  }, [embedded, sheetId]);
 
   useEffect(() => {
     if (!sheetId || !user?.id) return;
@@ -239,37 +237,7 @@ export function SheetExperienceBridge() {
   }, [loadNexusLinks, sheetId]);
 
   useEffect(() => {
-    if (!sheetId) return;
-    const glossary: Record<string, string> = {
-      "sec-info": "Identidade, origem, ocupação e marcas que situam a personagem no mundo.",
-      "sec-attr": "Atributos medem potenciais fundamentais e sustentam testes e derivados.",
-      "sec-pontos": "Recursos atuais e máximos da personagem, além da proteção em jogo.",
-      equilibrio: "Equilíbrio acompanha o estado interno e suas pressões atuais.",
-      exposicao: "Exposição registra o contato acumulado com forças e fenômenos relevantes.",
-      condicoes: "Condições registram estados ativos que alteram a situação da personagem.",
-      "sec-pericias": "Perícias expressam competências treinadas e seus graus atuais.",
-      "sec-armas": "Armas e proficiências disponíveis no momento.",
-      "sec-inv": "Inventário reúne objetos carregados, recipientes e recursos materiais.",
-      "sec-hab": "Habilidades já adquiridas e disponíveis para consulta.",
-      "tramas-fragmentos": "Fragmentos e manifestações vinculados à personagem.",
-      "sec-notas": "Notas de campo e registros livres da personagem.",
-    };
-    const apply = () => {
-      Object.entries(glossary).forEach(([id, text]) => {
-        const node = document.getElementById(id);
-        if (!node) return;
-        node.setAttribute("data-tadeon-context-help", text);
-        if (!node.getAttribute("title")) node.setAttribute("title", text);
-      });
-    };
-    apply();
-    const observer = new MutationObserver(apply);
-    observer.observe(document.body, { childList: true, subtree: true });
-    return () => observer.disconnect();
-  }, [sheetId]);
-
-  useEffect(() => {
-    if (!sheetId) return;
+    if (!sheetId || !dropTarget || !canEdit) return;
     const dragOver = (event: DragEvent) => {
       if (!event.dataTransfer?.types.includes(NEXUS_DRAG_MIME)) return;
       event.preventDefault();
@@ -294,6 +262,7 @@ export function SheetExperienceBridge() {
           p_node_id: payload.id,
           p_label: payload.label ?? "Página do Nexus",
         });
+        if (!active.current) return;
         if (result.error) {
           toast.error("Não foi possível ligar esta página do Nexus à ficha.");
           return;
@@ -302,83 +271,84 @@ export function SheetExperienceBridge() {
         await loadNexusLinks();
       })();
     };
-    document.addEventListener("dragover", dragOver);
-    document.addEventListener("dragleave", dragLeave);
-    document.addEventListener("drop", drop);
+    dropTarget.addEventListener("dragover", dragOver);
+    dropTarget.addEventListener("dragleave", dragLeave);
+    dropTarget.addEventListener("drop", drop);
     return () => {
-      document.removeEventListener("dragover", dragOver);
-      document.removeEventListener("dragleave", dragLeave);
-      document.removeEventListener("drop", drop);
+      dropTarget.removeEventListener("dragover", dragOver);
+      dropTarget.removeEventListener("dragleave", dragLeave);
+      dropTarget.removeEventListener("drop", drop);
       delete document.documentElement.dataset.tadeonNexusDrop;
     };
-  }, [loadNexusLinks, sheetId]);
+  }, [canEdit, dropTarget, loadNexusLinks, sheetId]);
 
-  if (!sheetId || embedded || !portalHost) return null;
+  if (!sheetId || embedded) return null;
 
   return (
     <>
-      {createPortal(
-        <>
-          <Button
-            size="sm"
-            variant={mode === "game" ? "default" : "outline"}
-            className="tadeon-sheet-game-button gap-1.5"
-            data-state={mode === "game" ? "active" : "inactive"}
-            aria-pressed={mode === "game"}
-            onClick={() => setMode((current) => (current === "game" ? "edit" : "game"))}
-            title={mode === "game" ? "Voltar à edição completa" : "Ativar versão de jogo"}
-          >
-            {mode === "game" ? <Pencil className="h-4 w-4" /> : <Gamepad2 className="h-4 w-4" />}
-            <span>{mode === "game" ? "Editar" : "Jogo"}</span>
-          </Button>
+      <div className="tadeon-sheet-experience-actions" data-sheet-experience-actions>
+        <Button
+          size="sm"
+          variant={mode === "game" ? "default" : "outline"}
+          className="tadeon-sheet-game-button gap-1.5"
+          data-state={mode === "game" ? "active" : "inactive"}
+          aria-pressed={mode === "game"}
+          onClick={() => setMode((current) => (current === "game" ? "edit" : "game"))}
+          title={mode === "game" ? "Voltar à edição completa" : "Ativar versão de jogo"}
+        >
+          {mode === "game" ? <Pencil className="h-4 w-4" /> : <Gamepad2 className="h-4 w-4" />}
+          <span>{mode === "game" ? "Editar" : "Jogo"}</span>
+        </Button>
+        <Button
+          size="icon"
+          variant="ghost"
+          onClick={() => {
+            setHistoryOpen(true);
+            void loadHistory();
+          }}
+          title="Ver mudanças registradas ao salvar sessões"
+          aria-label="Ver mudanças de sessão"
+        >
+          <History className="h-4 w-4" />
+        </Button>
+        <span
+          className="tadeon-sheet-presence"
+          title={`${onlineCount} pessoa(s) com esta ficha aberta`}
+        >
+          <Users aria-hidden="true" />
+          {onlineCount}
+        </span>
+        {!popout && (
           <Button
             size="icon"
             variant="ghost"
-            onClick={() => {
-              setHistoryOpen(true);
-              void loadHistory();
-            }}
-            title="Ver mudanças registradas ao salvar sessões"
-            aria-label="Ver mudanças de sessão"
+            className="tadeon-sheet-popout-button"
+            onClick={() =>
+              openPopout(
+                `/sheet/${sheetId}?mode=${mode === "game" ? "game" : "edit"}&popout=1`,
+                `tadeon-sheet-${sheetId}`,
+              )
+            }
+            title="Abrir ficha em janela dedicada"
+            aria-label="Abrir ficha em janela dedicada"
           >
-            <History className="h-4 w-4" />
+            <ExternalLink className="h-4 w-4" />
           </Button>
-          <span className="tadeon-sheet-presence" title={`${onlineCount} pessoa(s) com esta ficha aberta`}>
-            <Users aria-hidden="true" />
-            {onlineCount}
+        )}
+        {nexusLinks.length > 0 && (
+          <span className="tadeon-sheet-nexus-links" title="Páginas do Nexus ligadas à ficha">
+            <Link2 aria-hidden="true" /> {nexusLinks.length}
           </span>
-          {!popout && (
-            <Button
-              size="icon"
-              variant="ghost"
-              className="tadeon-sheet-popout-button"
-              onClick={() =>
-                openPopout(
-                  `/sheet/${sheetId}?mode=${mode === "game" ? "game" : "edit"}&popout=1`,
-                  `tadeon-sheet-${sheetId}`,
-                )
-              }
-              title="Abrir ficha em janela dedicada"
-              aria-label="Abrir ficha em janela dedicada"
-            >
-              <ExternalLink className="h-4 w-4" />
-            </Button>
-          )}
-          {nexusLinks.length > 0 && (
-            <span className="tadeon-sheet-nexus-links" title="Páginas do Nexus ligadas à ficha">
-              <Link2 aria-hidden="true" /> {nexusLinks.length}
-            </span>
-          )}
-        </>,
-        portalHost,
-      )}
+        )}
+      </div>
 
       <Dialog open={historyOpen} onOpenChange={setHistoryOpen}>
         <DialogContent className="max-h-[88dvh] max-w-3xl overflow-y-auto">
           <DialogHeader>
             <DialogTitle className="font-cinzel">Mudanças por sessão</DialogTitle>
             <DialogDescription>
-              Só aparecem alterações capturadas quando o mestre usa Salvar sessão. Este histórico é informativo e não restaura versões antigas.
+              Só aparecem alterações capturadas quando o mestre usa Salvar sessão. Este histórico é
+              informativo e não restaura versões antigas.
             </DialogDescription>
           </DialogHeader>
           {historyLoading ? (
@@ -392,7 +362,10 @@ export function SheetExperienceBridge() {
           ) : (
             <div className="space-y-3">
               {history.map((entry) => (
-                <article key={entry.id} className="rounded-xl border border-border/70 bg-card/60 p-4">
+                <article
+                  key={entry.id}
+                  className="rounded-xl border border-border/70 bg-card/60 p-4"
+                >
                   <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
                     <strong className="text-sm">{entry.sheet_name || "Ficha"}</strong>
                     <time className="text-xs text-muted-foreground">
@@ -447,7 +420,11 @@ export function WorkspacePopoutBridge() {
       return;
     }
     const count = typeof result.data === "number" ? result.data : Number(result.data ?? 0);
-    toast.success(count > 0 ? `${count} ficha(s) com mudanças registradas.` : "Sessão salva sem novas mudanças nas fichas.");
+    toast.success(
+      count > 0
+        ? `${count} ficha(s) com mudanças registradas.`
+        : "Sessão salva sem novas mudanças nas fichas.",
+    );
   };
 
   if (!eligible || !host) return null;
@@ -462,7 +439,11 @@ export function WorkspacePopoutBridge() {
           disabled={sessionSaving}
           title="Registrar o Diff das fichas neste ponto da sessão"
         >
-          {sessionSaving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
+          {sessionSaving ? (
+            <Loader2 className="h-4 w-4 animate-spin" />
+          ) : (
+            <Save className="h-4 w-4" />
+          )}
           <span>Salvar sessão</span>
         </Button>
       )}
@@ -506,7 +487,9 @@ export function NexusSheetDragBridge() {
   }, [nodeId, path]);
 
   if (path !== "/nexus" || !nodeId || !host) return null;
-  const label = document.querySelector<HTMLElement>("main h1, main h2")?.textContent?.trim() || "Página do Nexus";
+  const label =
+    document.querySelector<HTMLElement>("main h1, main h2")?.textContent?.trim() ||
+    "Página do Nexus";
 
   return createPortal(
     <button

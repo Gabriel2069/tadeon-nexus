@@ -1,0 +1,53 @@
+{
+  "task": "NEX-005",
+  "date": "2026-10-11",
+  "state": "in_validation",
+  "branch": "design/sheet-fabric-sections-2026-10-11",
+  "baseCommit": "c4ce6d1311d146467b7e3c260086dfdf344feac8",
+  "direction": "Véu & Trama / Fio-Mestre; continuidade da tipografia e do liquid fabric aprovados em NEX-013",
+  "implementation": {
+    "sections": [
+      "identidade",
+      "atributos",
+      "pontos e defesa",
+      "condições",
+      "perícias"
+    ],
+    "state": "Um estado persistido na rota; seções controladas, mesmos cálculos, orçamento, limites e payload.",
+    "ownership": [
+      "sheet-model: tipos e clamps existentes",
+      "sheet-ui: campos associados, recolhimento e MaterialSurface",
+      "sheet-premium: material, reflexo e métricas",
+      "route: leitura, derivados e autosave por personagem/usuário/cargo",
+      "sheet-experience: controles explícitos de modo/histórico/presença/vínculos",
+      "sheet-inventory-organizer: diálogo explícito, escrita apenas com canEdit"
+    ],
+    "async": "Leitura cancelada ao desmontar; respostas antigas ignoradas. Autosave serializado conserva falhas/retry; resultado tardio após desmontagem não agenda retry nem feedback. Escrita já iniciada no servidor não é desfeita.",
+    "bridges": "Três observers de montagem/glossário retirados das funções específicas da ficha. Outros exports e bridges de outras áreas permanecem. Drop do Nexus limitado ao host da ficha editável.",
+    "material": "Painéis opacos, sombra de contato, borda e reflexo local; controles com vidro escuro. Sem deslocamento de conteúdo. Radar estático; scroll respeita redução de movimento. Atributos usam grade responsiva única; animações genéricas de abas excluem o conteúdo da ficha."
+  },
+  "cleanup": {
+    "importantBefore": 5482,
+    "importantAfter": 5409,
+    "retiredSelectorPropertyBranches": 126,
+    "cssModules": 57,
+    "globalLinks": 12,
+    "newDependencies": 0,
+    "newGlobalObservers": 0,
+    "retiredGeometryDeclarations": 68
+  },
+  "verification": {
+    "check": "Lint, TypeScript e testes aprovados; build final e fixtures ampliadas aguardam conclusão.",
+    "suites": 126,
+    "tests": 557,
+    "audit": "0 vulnerabilities",
+    "browserScript": "scripts/verify-sheet-design.mjs",
+    "browser": "pending final expanded fixtures"
+  },
+  "limits": [
+    "Fixtures interceptam auth, REST, RPC e WebSockets; nenhuma alteração em contas ou dados reais.",
+    "Contas reais, RLS ponta a ponta, campanhas, VoiceOver, teclado virtual e performance de GPU não certificados.",
+    "Banco, migrações, flags, OAuth e backup não alterados.",
+    "Validação, merge e confirmação do SHA público são estados distintos; esta evidência ainda não afirma publicação."
+  ]
+}

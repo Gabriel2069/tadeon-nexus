@@ -15,7 +15,7 @@ Cada PR usa IDs desta fila e declara dependências. Trabalho sobre o mesmo propr
 | NEX-003 | Véu & Trama: referência aplicada ao shell e Dashboard | Integrado | 1 | shell | NEX-001, NEX-002 |
 | NEX-004 | Sidebar, navegação móvel e portais | Integrado | 2 | popup | NEX-003 |
 | NEX-013 | Liquid fabric: login, Dashboard e componentes compartilhados | Integrado | 2 | shell | NEX-003, NEX-004 |
-| NEX-005 | Ficha por seções e estados | Próximo | 3 | sheet | NEX-003, NEX-013 |
+| NEX-005 | Ficha por seções e estados | Em andamento | 3 | sheet | NEX-003, NEX-013 |
 | NEX-006 | Biblioteca, documento e grafo do Nexus | Planejado | 4 | knowledge | NEX-003, NEX-013 |
 | NEX-007 | Mesa: hierarquia de ferramentas e workspace | Planejado | 5 | tabletop | NEX-004, NEX-013 |
 | NEX-008 | Painel do Mestre e administração | Planejado | 6 | master | NEX-003, NEX-013 |
@@ -70,7 +70,7 @@ Evidências: [docs/shared-fabric-validation.json](../docs/shared-fabric-validati
 - Validar ficha povoada, somente leitura, salvamento, erro e transição de usuário.
 - Transferir vínculos/modificadores e inventário dos bridges antes de retirar suas funções.
 
-Evidências: pendentes; não declarar concluído.
+Evidências: [docs/sheet-design-validation.json](../docs/sheet-design-validation.json).
 
 ## NEX-006 — Biblioteca, documento e grafo do Nexus
 

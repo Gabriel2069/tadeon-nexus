@@ -19,6 +19,7 @@ export function useSerializedAutosave<T>({
   const [saveError, setSaveError] = useState<string | null>(null);
   const [lastSavedAt, setLastSavedAt] = useState<Date | null>(null);
 
+  const activeRef = useRef(true);
   const valueRef = useRef(value);
   const enabledRef = useRef(enabled);
   const saveRef = useRef(save);
@@ -35,7 +36,7 @@ export function useSerializedAutosave<T>({
   saveRef.current = save;
 
   const execute = useCallback(async (): Promise<boolean> => {
-    if (!enabledRef.current || !valueRef.current) return true;
+    if (!activeRef.current || !enabledRef.current || !valueRef.current) return true;
     pendingRef.current = true;
 
     if (runRef.current) return runRef.current;
@@ -51,6 +52,7 @@ export function useSerializedAutosave<T>({
 
         try {
           await saveRef.current(snapshot);
+          if (!activeRef.current) return false;
           setSaveError(null);
           setLastSavedAt(new Date());
           if (retryTimerRef.current) {
@@ -58,6 +60,7 @@ export function useSerializedAutosave<T>({
             retryTimerRef.current = null;
           }
         } catch (error) {
+          if (!activeRef.current) return false;
           succeeded = false;
           setDirty(true);
           setSaveError("Não foi possível salvar. Verifique sua conexão e tente novamente.");
@@ -111,13 +114,16 @@ export function useSerializedAutosave<T>({
     };
   }, [delay, enabled, value]);
 
-  useEffect(
-    () => () => {
+  useEffect(() => {
+    activeRef.current = true;
+    return () => {
+      activeRef.current = false;
+      pendingRef.current = false;
+      enabledRef.current = false;
       if (debounceTimerRef.current) clearTimeout(debounceTimerRef.current);
       if (retryTimerRef.current) clearTimeout(retryTimerRef.current);
-    },
-    [],
-  );
+    };
+  }, []);
 
   return { dirty, lastSavedAt, saveError, saveNow, saving };
 }

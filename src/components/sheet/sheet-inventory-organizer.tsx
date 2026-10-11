@@ -1,7 +1,3 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
-import { createPortal } from "react-dom";
-import { Boxes, Loader2, PackagePlus, Trash2 } from "lucide-react";
-import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -12,8 +8,9 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { supabase } from "@/integrations/supabase/client";
-
-const SHEET_PATH = /^\/sheet\/([^/]+)$/;
+import { Boxes, Loader2, PackagePlus, Trash2 } from "lucide-react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { toast } from "sonner";
 
 interface RpcResult<T> {
   data: T | null;
@@ -56,36 +53,26 @@ function normalizeOrganization(value: unknown): InventoryOrganization {
   const source = value && typeof value === "object" ? (value as Record<string, unknown>) : {};
   return {
     items: Array.isArray(source.items) ? (source.items as InventoryEntry[]) : [],
-    containers: Array.isArray(source.containers)
-      ? (source.containers as InventoryContainer[])
-      : [],
-    placements: Array.isArray(source.placements)
-      ? (source.placements as InventoryPlacement[])
-      : [],
+    containers: Array.isArray(source.containers) ? (source.containers as InventoryContainer[]) : [],
+    placements: Array.isArray(source.placements) ? (source.placements as InventoryPlacement[]) : [],
   };
 }
 
-function findInventoryAnchor() {
-  return document.querySelector<HTMLElement>("#sec-inv .tadeon-sheet-section__actions");
-}
-
-function ensureHost(anchor: HTMLElement) {
-  let host = document.getElementById("tadeon-inventory-organizer-host");
-  if (!host) {
-    host = document.createElement("span");
-    host.id = "tadeon-inventory-organizer-host";
-    host.className = "tadeon-inventory-organizer-host";
-  }
-  if (host.parentElement !== anchor) anchor.insertBefore(host, anchor.firstChild);
-  return host;
-}
-
-export function SheetInventoryOrganizer() {
-  const match = typeof window === "undefined" ? null : window.location.pathname.match(SHEET_PATH);
-  const sheetId = match?.[1] ?? null;
-  const embedded =
-    typeof window !== "undefined" && new URLSearchParams(window.location.search).get("embed") === "1";
-  const [host, setHost] = useState<HTMLElement | null>(null);
+export function SheetInventoryOrganizer({
+  sheetId,
+  canEdit,
+}: {
+  sheetId: string;
+  canEdit: boolean;
+}) {
+  const active = useRef(true);
+  const readVersion = useRef(0);
+  useEffect(() => {
+    active.current = true;
+    return () => {
+      active.current = false;
+    };
+  }, []);
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [organization, setOrganization] = useState<InventoryOrganization>({
@@ -96,25 +83,16 @@ export function SheetInventoryOrganizer() {
   const [newName, setNewName] = useState("");
   const [parentId, setParentId] = useState("");
 
-  useEffect(() => {
-    if (!sheetId || embedded) return;
-    const attach = () => {
-      const anchor = findInventoryAnchor();
-      if (anchor) setHost(ensureHost(anchor));
-    };
-    attach();
-    const observer = new MutationObserver(attach);
-    observer.observe(document.body, { childList: true, subtree: true });
-    return () => observer.disconnect();
-  }, [embedded, sheetId]);
-
   const load = useCallback(async () => {
     if (!sheetId) return;
+    const version = ++readVersion.current;
     setLoading(true);
     const result = await rpcClient().rpc("get_sheet_inventory_organization", {
       p_sheet_id: sheetId,
     });
+    if (!active.current || version !== readVersion.current) return;
     setLoading(false);
+    if (!active.current) return;
     if (result.error) {
       toast.error("Não foi possível carregar a organização do inventário.");
       return;
@@ -134,23 +112,25 @@ export function SheetInventoryOrganizer() {
       const parent = byId.get(container.parent_id);
       return parent ? `${resolve(parent, seen)} / ${container.name}` : container.name;
     };
-    return new Map(
-      organization.containers.map((container) => [container.id, resolve(container)]),
-    );
+    return new Map(organization.containers.map((container) => [container.id, resolve(container)]));
   }, [organization.containers]);
 
   const placementByItem = useMemo(
-    () => new Map(organization.placements.map((placement) => [placement.item_id, placement.container_id])),
+    () =>
+      new Map(
+        organization.placements.map((placement) => [placement.item_id, placement.container_id]),
+      ),
     [organization.placements],
   );
 
   const createContainer = async () => {
-    if (!sheetId || !newName.trim()) return;
+    if (!canEdit || !sheetId || !newName.trim()) return;
     const result = await rpcClient().rpc("create_sheet_inventory_container", {
       p_sheet_id: sheetId,
       p_name: newName.trim(),
       p_parent_id: parentId || null,
     });
+    if (!active.current) return;
     if (result.error) {
       toast.error("Não foi possível criar o recipiente.");
       return;
@@ -161,12 +141,13 @@ export function SheetInventoryOrganizer() {
   };
 
   const placeItem = async (itemId: string, containerId: string) => {
-    if (!sheetId) return;
+    if (!canEdit || !sheetId) return;
     const result = await rpcClient().rpc("place_sheet_inventory_item", {
       p_sheet_id: sheetId,
       p_item_id: itemId,
       p_container_id: containerId || null,
     });
+    if (!active.current) return;
     if (result.error) {
       toast.error("Não foi possível mover o item.");
       return;
@@ -181,9 +162,11 @@ export function SheetInventoryOrganizer() {
   };
 
   const deleteContainer = async (containerId: string) => {
+    if (!canEdit || !sheetId) return;
     const result = await rpcClient().rpc("delete_sheet_inventory_container", {
       p_container_id: containerId,
     });
+    if (!active.current) return;
     if (result.error) {
       toast.error("Não foi possível remover o recipiente.");
       return;
@@ -191,30 +174,29 @@ export function SheetInventoryOrganizer() {
     await load();
   };
 
-  if (!sheetId || embedded || !host) return null;
+  if (!sheetId) return null;
 
   return (
     <>
-      {createPortal(
-        <Button
-          size="sm"
-          variant="ghost"
-          className="tadeon-inventory-organize-button gap-1.5"
-          onClick={() => setOpen(true)}
-          title="Organizar itens em recipientes sem alterar os itens originais"
-        >
-          <Boxes className="h-3.5 w-3.5" />
-          <span>Organizar</span>
-        </Button>,
-        host,
-      )}
+      <Button
+        size="sm"
+        variant="ghost"
+        className="tadeon-inventory-organize-button gap-1.5"
+        aria-label="Organizar inventário"
+        onClick={() => setOpen(true)}
+        title="Organizar itens em recipientes sem alterar os itens originais"
+      >
+        <Boxes className="h-3.5 w-3.5" />
+        <span>Organizar</span>
+      </Button>
 
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent className="max-h-[88dvh] max-w-3xl overflow-y-auto">
           <DialogHeader>
             <DialogTitle className="font-cinzel">Organização do inventário</DialogTitle>
             <DialogDescription>
-              Recipientes organizam onde cada item está sem modificar peso, descrição ou qualquer dado original. Recipientes também podem ficar dentro de outros recipientes.
+              Recipientes organizam onde cada item está sem modificar peso, descrição ou qualquer
+              dado original. Recipientes também podem ficar dentro de outros recipientes.
             </DialogDescription>
           </DialogHeader>
 
@@ -224,37 +206,39 @@ export function SheetInventoryOrganizer() {
             </div>
           ) : (
             <div className="space-y-5">
-              <section className="rounded-xl border border-border/70 bg-card/50 p-4">
-                <div className="mb-3 flex items-center gap-2">
-                  <PackagePlus className="h-4 w-4 text-primary" />
-                  <strong className="text-sm">Novo recipiente</strong>
-                </div>
-                <div className="grid gap-2 sm:grid-cols-[1fr_1fr_auto]">
-                  <Input
-                    value={newName}
-                    onChange={(event) => setNewName(event.target.value)}
-                    placeholder="Mochila, caixa, bolso interno..."
-                    maxLength={120}
-                  />
-                  <select
-                    value={parentId}
-                    onChange={(event) => setParentId(event.target.value)}
-                    className="min-h-10 rounded-md border border-border bg-background px-3 text-sm"
-                    aria-label="Recipiente pai"
-                  >
-                    <option value="">Sem recipiente pai</option>
-                    {organization.containers.map((container) => (
-                      <option key={container.id} value={container.id}>
-                        {containerPaths.get(container.id) ?? container.name}
-                      </option>
-                    ))}
-                  </select>
-                  <Button onClick={() => void createContainer()} disabled={!newName.trim()}>
-                    Criar
-                  </Button>
-                </div>
-              </section>
-
+              {canEdit && (
+                <section className="rounded-xl border border-border/70 bg-card/50 p-4">
+                  <div className="mb-3 flex items-center gap-2">
+                    <PackagePlus className="h-4 w-4 text-primary" />
+                    <strong className="text-sm">Novo recipiente</strong>
+                  </div>
+                  <div className="grid gap-2 sm:grid-cols-[1fr_1fr_auto]">
+                    <Input
+                      value={newName}
+                      onChange={(event) => setNewName(event.target.value)}
+                      aria-label="Nome do recipiente"
+                      placeholder="Mochila, caixa, bolso interno..."
+                      maxLength={120}
+                    />
+                    <select
+                      value={parentId}
+                      onChange={(event) => setParentId(event.target.value)}
+                      className="min-h-11 rounded-md border border-border bg-background px-3 text-sm"
+                      aria-label="Recipiente pai"
+                    >
+                      <option value="">Sem recipiente pai</option>
+                      {organization.containers.map((container) => (
+                        <option key={container.id} value={container.id}>
+                          {containerPaths.get(container.id) ?? container.name}
+                        </option>
+                      ))}
+                    </select>
+                    <Button onClick={() => void createContainer()} disabled={!newName.trim()}>
+                      Criar
+                    </Button>
+                  </div>
+                </section>
+              )}
               {organization.containers.length > 0 && (
                 <section>
                   <h3 className="mb-2 text-xs font-bold uppercase tracking-wider text-muted-foreground">
@@ -267,6 +251,7 @@ export function SheetInventoryOrganizer() {
                         {containerPaths.get(container.id) ?? container.name}
                         <button
                           type="button"
+                          disabled={!canEdit}
                           onClick={() => void deleteContainer(container.id)}
                           aria-label={`Remover ${container.name}`}
                           title={`Remover ${container.name}; os itens permanecem no inventário`}
@@ -303,6 +288,7 @@ export function SheetInventoryOrganizer() {
                           <select
                             value={placementByItem.get(itemId) ?? ""}
                             onChange={(event) => void placeItem(itemId, event.target.value)}
+                            disabled={!canEdit}
                             aria-label={`Recipiente de ${item.nome || `Item ${index + 1}`}`}
                           >
                             <option value="">Sem recipiente</option>

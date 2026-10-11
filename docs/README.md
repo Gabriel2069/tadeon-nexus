@@ -47,3 +47,4 @@ Comece pelo [estado de continuidade](ai/00_ESTADO_ATUAL.md), [mapa do código](P
 | [dashboard-design-validation.json](dashboard-design-validation.json) | NEX-003: implementação, limpeza de sobreposições, testes de leitura e verificação visual com fixtures. |
 | [navigation-design-validation.json](navigation-design-validation.json) | NEX-004: tipografia, menu, foco/portais, dívida retirada e limites de fixtures. |
 | [shared-fabric-validation.json](shared-fabric-validation.json) | NEX-013: revisão tipográfica autorizada, materiais e movimento compartilhados, critérios e limites de runtime. |
+| [sheet-design-validation.json](sheet-design-validation.json) | NEX-005: seções, materiais, cancelamento de leituras, autosave e fixtures da ficha. |

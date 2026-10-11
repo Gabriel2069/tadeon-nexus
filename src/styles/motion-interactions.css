@@ -138,7 +138,7 @@
   animation: tadeon-visible-tab-marker 420ms var(--tadeon-visible-ease-in) both !important;
 }
 
-.tadeon-shell [data-slot="tabs-content"][data-state="active"] {
+.tadeon-shell [data-slot="tabs-content"]:not([data-sheet-content])[data-state="active"] {
   animation: tadeon-visible-tab-content 470ms var(--tadeon-visible-ease-in) both !important;
 }
 
@@ -501,7 +501,7 @@
 @media (prefers-reduced-motion: reduce) {
   .tadeon-route-stage,
   .tadeon-route-stage > .tadeon-page > *,
-  .tadeon-shell [data-slot="tabs-content"][data-state="active"],
+  .tadeon-shell [data-slot="tabs-content"]:not([data-sheet-content])[data-state="active"],
   .tadeon-shell [data-slot="accordion-content"],
   .tadeon-shell [data-slot="collapsible-content"],
   .tadeon-shell [data-slot="dialog-content"],
@@ -564,7 +564,7 @@
 .tadeon-shell [data-slot=tabs-trigger][data-state=active]::after{opacity:.9;transform:scaleX(1);filter:drop-shadow(0 0 9px currentColor)}
 .tadeon-shell [data-slot=tabs-trigger] :where(svg.lucide){transition:transform 360ms var(--tdv-spring)}
 .tadeon-shell [data-slot=tabs-trigger][data-state=active] :where(svg.lucide){transform:translateY(-2px) scale(1.08) rotate(-2deg)}
-.tadeon-shell [data-slot=tabs-content][data-state=active]{animation:tdv-tab-enter 520ms var(--tdv-in) both}
+.tadeon-shell [data-slot=tabs-content]:not([data-sheet-content])[data-state=active]{animation:tdv-tab-enter 520ms var(--tdv-in) both}
 @keyframes tdv-tab-enter{from{opacity:0;transform:translate3d(0,30px,0) scale(.965);filter:blur(10px)}55%{opacity:1;transform:translate3d(0,-5px,0) scale(1.008);filter:blur(0)}to{opacity:1;transform:none}}
 
 /* Inputs: focus behaves like inscription being lit. */
@@ -651,9 +651,6 @@
 /* DASHBOARD - composed, deliberate, signal-driven. */
 
 /* FICHA - cards feel like pages/records being handled. */
-.tadeon-shell[data-section="Ficha"] .tadeon-sheet-section[data-state="open"]{
-  animation:tp-sheet-open 440ms var(--tp-snap) both;
-}
 @keyframes tp-sheet-open{from{opacity:0;transform:translateY(28px) rotateX(-8deg) scale(.96)}65%{opacity:1;transform:translateY(-4px) rotateX(1deg) scale(1.012)}to{transform:none}}
 
 /* NEXUS - focus travels through the graph. */
@@ -807,8 +804,8 @@
 .tadeon-shell [data-slot="select-item"] svg{transition:transform 280ms var(--tui-spring)}
 
 /* Tabs content: direction is supplied by Tabs root. */
-.tadeon-shell [data-slot="tabs"][data-motion-direction="forward"] [data-slot="tabs-content"][data-state="active"]{animation-name:tui-tab-forward!important}
-.tadeon-shell [data-slot="tabs"][data-motion-direction="backward"] [data-slot="tabs-content"][data-state="active"]{animation-name:tui-tab-backward!important}
+.tadeon-shell [data-slot="tabs"][data-motion-direction="forward"] [data-slot="tabs-content"]:not([data-sheet-content])[data-state="active"]{animation-name:tui-tab-forward!important}
+.tadeon-shell [data-slot="tabs"][data-motion-direction="backward"] [data-slot="tabs-content"]:not([data-sheet-content])[data-state="active"]{animation-name:tui-tab-backward!important}
 @keyframes tui-tab-forward{from{opacity:0;transform:translateX(42px) scale(.97);filter:blur(8px)}58%{opacity:1;transform:translateX(-4px) scale(1.01);filter:blur(0)}to{opacity:1;transform:none}}
 @keyframes tui-tab-backward{from{opacity:0;transform:translateX(-42px) scale(.97);filter:blur(8px)}58%{opacity:1;transform:translateX(4px) scale(1.01);filter:blur(0)}to{opacity:1;transform:none}}
 

@@ -93,37 +93,9 @@
   overflow: clip;
   border: 1px solid rgb(var(--tadeon-sheet-accent) / 16%) !important;
   border-radius: 1.05rem .38rem 1.05rem .38rem !important;
-  background:
-    linear-gradient(135deg, rgb(var(--tadeon-sheet-accent) / 4%), transparent 24%),
-    radial-gradient(circle at 100% 0%, rgb(var(--tadeon-sheet-accent) / 6%), transparent 12rem),
-    linear-gradient(145deg, rgb(18 21 26 / 97%), rgb(9 12 16 / 95%)) !important;
-  box-shadow:
-    0 24px 58px -46px rgb(0 0 0 / 96%),
-    inset 0 1px rgb(255 255 255 / 3.5%) !important;
 }
 
 /* Replace the unwanted vertical stripe with the dossier-like corner arc. */
-.tadeon-sheet-page .tadeon-sheet-section::before {
-  position: absolute !important;
-  z-index: -1 !important;
-  top: -5.6rem !important;
-  right: -4.4rem !important;
-  bottom: auto !important;
-  left: auto !important;
-  width: 11.5rem !important;
-  height: 11.5rem !important;
-  border: 1px solid rgb(var(--tadeon-sheet-accent) / 20%) !important;
-  border-radius: 50% !important;
-  background:
-    conic-gradient(from 208deg, transparent 0 62%, rgb(var(--tadeon-sheet-accent) / 14%) 68% 76%, transparent 82% 100%) !important;
-  box-shadow:
-    0 0 0 1.65rem rgb(var(--tadeon-sheet-accent) / 1.6%),
-    0 0 28px -17px rgb(var(--tadeon-sheet-accent) / 42%) !important;
-  opacity: .9;
-  pointer-events: none;
-  content: "" !important;
-  animation: tadeon-sheet-corner-drift 12s ease-in-out infinite alternate;
-}
 
 .tadeon-sheet-page .tadeon-sheet-section :is(
   input,
@@ -364,13 +336,6 @@
     padding: .55rem;
   }
 
-  .tadeon-sheet-page .tadeon-sheet-section::before {
-    width: 8.5rem !important;
-    height: 8.5rem !important;
-    top: -4.5rem !important;
-    right: -3.5rem !important;
-  }
-
   [data-tadeon-condition-kind="morrendo"],
   [data-tadeon-condition-kind="colapsando"] {
     min-height: 5.5rem;
@@ -378,7 +343,6 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .tadeon-sheet-page .tadeon-sheet-section::before,
   .tadeon-conditions-panel .tadeon-condition-card::after,
   [data-tadeon-condition-kind="morrendo"]::before,
   [data-tadeon-condition-kind="colapsando"]::before,

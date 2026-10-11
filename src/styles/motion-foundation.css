@@ -148,9 +148,6 @@
 .tadeon-sheet-page .tadeon-sheet-commandbar {
   min-height: 4.7rem;
   border-bottom-width: 2px;
-  background:
-    linear-gradient(90deg, rgb(217 215 164 / 8%), transparent 30%),
-    rgb(9 12 16 / 96%) !important;
 }
 
 .tadeon-sheet-page .tadeon-sheet-overview {
@@ -161,9 +158,6 @@
 .tadeon-sheet-page .tadeon-sheet-section {
   border-width: 1px 1px 1px 3px !important;
   border-radius: .45rem 1rem .4rem 1rem !important;
-  box-shadow:
-    0 34px 80px -58px rgb(0 0 0 / 96%),
-    inset 0 1px rgb(255 255 255 / 4%);
 }
 
 .tadeon-sheet-page .tadeon-sheet-section__index {
@@ -822,18 +816,11 @@
     border-color 300ms ease;
 }
 
-.tadeon-sheet-page .tadeon-sheet-section {
-  animation: tadeon-document-settle 620ms var(--tadeon-motion-reveal, cubic-bezier(.22,1,.36,1)) both;
-}
-
 .tadeon-sheet-page .tadeon-sheet-section:nth-child(2) { animation-delay: 55ms; }
 .tadeon-sheet-page .tadeon-sheet-section:nth-child(3) { animation-delay: 100ms; }
 .tadeon-sheet-page .tadeon-sheet-section:nth-child(4) { animation-delay: 145ms; }
 
 @media (hover: hover) and (pointer: fine) {
-  .tadeon-sheet-page .tadeon-sheet-section[data-tadeon-interactive="true"]:hover {
-    transform: translateY(-1px);
-  }
 }
 
 /* Master - faster, more deliberate response: decision before action. */
@@ -914,7 +901,6 @@
 
 @media (prefers-reduced-motion: reduce) {
 
-  .tadeon-sheet-page .tadeon-sheet-section,
   .tadeon-master-workspace [data-tadeon-directed="true"] {
     animation: none !important;
   }
@@ -1611,17 +1597,17 @@
   animation: tadeon-relational-tab-focus 330ms var(--tadeon-relational-in) both;
 }
 
-.tadeon-shell [data-slot="tabs-content"][data-state="active"] {
+.tadeon-shell [data-slot="tabs-content"]:not([data-sheet-content])[data-state="active"] {
   transform-origin: 50% 0%;
 }
 
-.tadeon-shell [data-slot="tabs-content"][data-state="active"] > * {
+.tadeon-shell [data-slot="tabs-content"]:not([data-sheet-content])[data-state="active"] > * {
   animation: tadeon-relational-panel-rise 360ms var(--tadeon-relational-in) both;
 }
 
-.tadeon-shell [data-slot="tabs-content"][data-state="active"] > :nth-child(2) { animation-delay: 25ms; }
-.tadeon-shell [data-slot="tabs-content"][data-state="active"] > :nth-child(3) { animation-delay: 50ms; }
-.tadeon-shell [data-slot="tabs-content"][data-state="active"] > :nth-child(4) { animation-delay: 75ms; }
+.tadeon-shell [data-slot="tabs-content"]:not([data-sheet-content])[data-state="active"] > :nth-child(2) { animation-delay: 25ms; }
+.tadeon-shell [data-slot="tabs-content"]:not([data-sheet-content])[data-state="active"] > :nth-child(3) { animation-delay: 50ms; }
+.tadeon-shell [data-slot="tabs-content"]:not([data-sheet-content])[data-state="active"] > :nth-child(4) { animation-delay: 75ms; }
 
 /* --------------------------------------------------------------------------
    Sheets: content follows the direction of the physical panel.
@@ -1855,7 +1841,7 @@
 
 @media (prefers-reduced-motion: reduce) {
   .tadeon-shell [data-slot="tabs-list"] [data-slot="tabs-trigger"],
-  .tadeon-shell [data-slot="tabs-content"][data-state="active"] > *,
+  .tadeon-shell [data-slot="tabs-content"]:not([data-sheet-content])[data-state="active"] > *,
   .tadeon-shell [data-slot="sheet-content"],
   .tadeon-shell [data-slot="dropdown-menu-item"],
   .tadeon-shell [data-slot="dropdown-menu-sub-trigger"],

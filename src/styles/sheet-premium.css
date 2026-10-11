@@ -27,13 +27,6 @@
   margin: 0 calc(clamp(1rem, 3vw, 2rem) * -1) 1.25rem;
   padding: 0.75rem clamp(1rem, 3vw, 2rem);
   border-bottom: 1px solid color-mix(in srgb, var(--border) 82%, transparent);
-  background:
-    linear-gradient(110deg, rgb(8 10 14 / 94%), rgb(18 21 26 / 88%)),
-    radial-gradient(circle at 76% 0%, rgb(217 215 164 / 8%), transparent 44%);
-  box-shadow:
-    0 22px 60px -44px rgb(0 0 0 / 96%),
-    inset 0 -1px 0 rgb(255 255 255 / 2.5%);
-  backdrop-filter: blur(22px) saturate(125%);
 }
 
 .tadeon-sheet-commandbar__main {
@@ -228,10 +221,6 @@
   padding: 0.75rem;
   border: 0;
   border-radius: 0;
-  background:
-    linear-gradient(135deg, rgb(var(--metric-rgb) / 11%), transparent 54%), rgb(16 19 24 / 88%);
-  box-shadow: inset 0 1px 0 rgb(255 255 255 / 3%);
-  animation: tadeon-overview-enter 280ms both var(--ease-out);
   transition: box-shadow 180ms var(--ease-out);
 }
 
@@ -305,7 +294,6 @@
   margin-top: 0.05rem;
   overflow: hidden;
   color: var(--foreground);
-  font-family: var(--font-cinzel), serif;
   font-size: 1.15rem;
   line-height: 1.15;
   text-overflow: ellipsis;
@@ -325,15 +313,7 @@
   --section-rgb: 217 215 164;
   position: relative;
   overflow: clip;
-  border-color: rgb(var(--section-rgb) / 18%);
-  background:
-    radial-gradient(circle at 92% -8%, rgb(var(--section-rgb) / 9%), transparent 30%),
-    linear-gradient(145deg, rgb(18 21 26 / 97%), rgb(10 13 17 / 93%));
   border-radius: 1.2rem 0.45rem 1.2rem 0.45rem;
-  box-shadow:
-    0 30px 74px -56px rgb(0 0 0 / 98%),
-    inset 0 1px 0 rgb(255 255 255 / 4%),
-    inset 1px 0 0 rgb(var(--section-rgb) / 9%);
 }
 
 .tadeon-sheet-section[data-section="sec-attr"] {
@@ -371,20 +351,6 @@
 
 .tadeon-sheet-section[data-section="tramas-fragmentos"] {
   --section-rgb: 213 168 91;
-}
-
-.tadeon-sheet-section::after {
-  position: absolute;
-  inset: 0 auto 0 0;
-  width: 2px;
-  background: linear-gradient(
-    transparent 5%,
-    rgb(var(--section-rgb) / 68%) 42%,
-    rgb(var(--section-rgb) / 18%) 84%,
-    transparent
-  );
-  opacity: 0.72;
-  content: "";
 }
 
 .tadeon-sheet-section__heading {
@@ -506,12 +472,6 @@
   height: 1px;
   background: linear-gradient(90deg, rgb(217 215 164 / 28%), rgb(52 56 64 / 52%) 46%, transparent);
   content: "";
-}
-
-.tadeon-identity-section {
-  background:
-    linear-gradient(145deg, rgb(21 24 30 / 98%), rgb(11 14 18 / 94%)),
-    radial-gradient(circle at 8% 0%, rgb(217 215 164 / 9%), transparent 28%);
 }
 
 .tadeon-identity-lead {
@@ -727,8 +687,6 @@
   box-shadow: 0 0 0 3px rgb(217 215 164 / 8%);
 }
 
-.tadeon-attribute-tile,
-.tadeon-stat-block,
 .tadeon-defense-card,
 .tadeon-condition-card,
 .tadeon-sheet-row {
@@ -736,29 +694,21 @@
 }
 
 .tadeon-attribute-grid {
-  gap: 1px;
-  overflow: hidden;
-  padding: 1px;
   border: 1px solid rgb(168 85 247 / 16%);
   border-radius: 1rem 0.4rem 1rem 0.4rem;
   background: color-mix(in srgb, rgb(168 85 247) 14%, var(--border));
 }
 
 .tadeon-attribute-grid .tadeon-attribute-tile {
-  min-height: 6.4rem;
   border: 0;
   border-radius: 0;
-  background: linear-gradient(135deg, rgb(168 85 247 / 5%), transparent 58%), rgb(12 15 19 / 96%);
 }
 
 .tadeon-attribute-tile {
   position: relative;
-  display: grid;
   grid-template-rows: auto auto;
   place-items: center;
   align-content: center;
-  gap: 0.48rem;
-  overflow: hidden;
   text-align: center;
   transition:
     border-color 180ms ease,
@@ -779,17 +729,10 @@
 .tadeon-attribute-tile__controls {
   position: relative;
   z-index: 1;
-  display: grid;
-  grid-template-columns: 2.35rem 2.15rem 2.35rem;
   align-items: center;
-  justify-content: center;
-  gap: 0.18rem;
 }
 
 .tadeon-attribute-tile__value {
-  display: grid;
-  width: 2.15rem;
-  height: 2.15rem;
   place-items: center;
   border: 1px solid rgb(168 85 247 / 18%);
   border-radius: 0.7rem 0.24rem 0.7rem 0.24rem;
@@ -799,9 +742,7 @@
   box-shadow:
     inset 0 1px rgb(255 255 255 / 3%),
     0 10px 24px -20px rgb(168 85 247 / 72%);
-  font-family: var(--font-cinzel);
   font-size: 1.02rem;
-  font-weight: 760;
   line-height: 1;
 }
 
@@ -824,18 +765,6 @@
 
 .tadeon-core-panel {
   height: 100%;
-}
-
-.tadeon-attributes-panel {
-  background:
-    radial-gradient(circle at 50% 78%, rgb(168 85 247 / 7%), transparent 34%),
-    linear-gradient(145deg, rgb(18 21 26 / 96%), rgb(12 15 19 / 91%));
-}
-
-.tadeon-vitals-panel {
-  background:
-    radial-gradient(circle at 78% 20%, rgb(59 130 246 / 6%), transparent 32%),
-    linear-gradient(145deg, rgb(18 21 26 / 96%), rgb(12 15 19 / 91%));
 }
 
 .tadeon-stepper-button {
@@ -890,8 +819,6 @@
   margin-left: 0.2rem;
   color: var(--muted-foreground);
   font-size: 0.625rem;
-  font-weight: 600;
-  text-shadow: none;
 }
 
 .tadeon-stat-block__bar {
@@ -965,8 +892,6 @@
   place-items: center;
   color: rgb(191 219 254);
   font-size: 1.4rem;
-  font-weight: 800;
-  text-shadow: 0 0 7px rgb(59 130 246 / 72%);
 }
 
 .tadeon-defense-card__inputs {
@@ -1103,8 +1028,6 @@
 }
 
 @media (hover: hover) and (pointer: fine) {
-  .tadeon-attribute-tile:hover,
-  .tadeon-stat-block:hover,
   .tadeon-condition-card:hover,
   .tadeon-sheet-skill-tree .tadeon-skill-node:hover {
     transform: translateY(-2px);
@@ -1112,12 +1035,6 @@
     box-shadow:
       0 22px 46px -36px rgb(0 0 0 / 98%),
       inset 0 1px 0 rgb(255 255 255 / 5%);
-  }
-
-  .tadeon-overview-metric:hover {
-    background:
-      linear-gradient(135deg, rgb(var(--metric-rgb) / 15%), transparent 54%), rgb(18 21 26 / 94%);
-    box-shadow: inset 0 1px 0 rgb(255 255 255 / 5%);
   }
 
   .tadeon-attribute-tile:hover .tadeon-attribute-tile__value {
@@ -1233,9 +1150,6 @@
     margin-inline: -0.2rem;
     padding: 0.72rem;
     border-radius: 1rem 0.45rem 1rem 0.45rem;
-    box-shadow:
-      0 22px 52px -45px rgb(0 0 0 / 98%),
-      inset 0 1px 0 rgb(255 255 255 / 3%);
   }
 
   .tadeon-sheet-section__heading {
@@ -1527,12 +1441,6 @@
     padding: 0.42rem;
     border: 1px solid color-mix(in srgb, var(--primary) 22%, var(--border));
     border-radius: 1rem 0.45rem 1rem 0.45rem;
-    background:
-      linear-gradient(110deg, rgb(217 215 164 / 6%), transparent 42%), rgb(10 13 17 / 92%);
-    box-shadow:
-      0 24px 70px -30px rgb(0 0 0 / 100%),
-      inset 0 1px 0 rgb(255 255 255 / 5%);
-    backdrop-filter: blur(22px) saturate(135%);
   }
 
   .tadeon-sheet-mobile-dock__identity {
@@ -1595,34 +1503,12 @@
 }
 
 @media (min-width: 390px) and (max-width: 639px) {
-  .tadeon-attribute-grid {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-
-  .tadeon-attribute-tile {
-    padding-inline: 0.3rem;
-  }
-
-  .tadeon-attribute-grid .tadeon-attribute-tile {
-    min-height: 6rem;
-  }
-
-  .tadeon-attribute-tile__controls {
-    grid-template-columns: 2.05rem 1.82rem 2.05rem;
-    gap: 0.08rem;
-  }
 
   .tadeon-attribute-tile__value {
-    width: 1.82rem;
-    height: 1.92rem;
     font-size: 0.92rem;
   }
 
   .tadeon-attribute-tile .tadeon-stepper-button {
-    width: 2.05rem;
-    min-width: 2.05rem;
-    min-height: 2.05rem;
-    height: 2.05rem;
   }
 }
 
@@ -1731,8 +1617,6 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .tadeon-sheet-section,
-  .tadeon-overview-metric,
   .tadeon-sheet-section__body {
     animation: none;
   }
@@ -1959,25 +1843,9 @@
 /* Character-sheet refinement ~ balanced odd grids, authored motion and narrative tabs. */
 
 .tadeon-sheet-tabs [role="tabpanel"][data-state="active"] {
-  animation: tadeon-sheet-view-enter 320ms var(--ease-out) both;
 }
 
-.tadeon-attribute-grid {
-  display: flex !important;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 1px !important;
-}
-
-.tadeon-attribute-grid .tadeon-attribute-tile {
-  width: calc(33.333% - 1px);
-  min-width: 0;
-  flex: 0 1 calc(33.333% - 1px);
-}
-
-.tadeon-attribute-tile__label,
-.tadeon-attribute-tile__controls,
-.tadeon-attribute-tile__value {
+.tadeon-attribute-tile__label {
   justify-self: center;
 }
 
@@ -2667,10 +2535,6 @@
 }
 
 @media (max-width: 767px) {
-  .tadeon-attribute-grid .tadeon-attribute-tile {
-    width: calc(33.333% - 1px);
-    flex-basis: calc(33.333% - 1px);
-  }
 
   .tadeon-description-hero {
     align-items: flex-start;
@@ -2722,14 +2586,6 @@
 }
 
 @media (max-width: 389px) {
-  .tadeon-attribute-grid .tadeon-attribute-tile {
-    width: calc(50% - 1px);
-    flex-basis: calc(50% - 1px);
-  }
-
-  .tadeon-attribute-grid .tadeon-attribute-tile:last-child:nth-child(odd) {
-    margin-inline: calc(25% + 0.5px);
-  }
 
   .tadeon-skill-ledger__heading {
     align-items: flex-start;
@@ -2793,7 +2649,6 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .tadeon-sheet-tabs [role="tabpanel"][data-state="active"],
   .tadeon-description-card,
   .tadeon-skill-node,
   .tadeon-skill-tier__content,
@@ -2810,3 +2665,84 @@
     transform: none !important;
   }
 }
+/* NEX-005: one material owner for record surfaces. Content remains stationary. */
+.tadeon-sheet-section {
+  border: 1px solid rgb(233 227 213 / 15%);
+  background: linear-gradient(145deg, #181d25, #10141b 70%);
+  box-shadow: inset 0 1px 0 rgb(233 227 213 / 10%), 0 24px 52px -38px rgb(0 0 0 / 85%);
+  transition: border-color 180ms var(--ease-out), box-shadow 180ms var(--ease-out);
+}
+.tadeon-sheet-section::before {
+  position: absolute; inset: 0; border-radius: inherit; pointer-events: none; content: "";
+  background: radial-gradient(ellipse at var(--material-x, 80%) var(--material-y, 0%), rgb(233 227 213 / 8%), transparent 58%);
+  opacity: .55; transition: opacity 180ms var(--ease-out);
+}
+.tadeon-sheet-section > * { position: relative; }
+.tadeon-sheet-section::after {
+  position: absolute; inset: 20px auto 20px 0; width: 2px; pointer-events: none; content: "";
+  background: linear-gradient(transparent, rgb(var(--section-rgb) / 65%), transparent);
+}
+.tadeon-sheet-section:focus-within { border-color: rgb(233 227 213 / 34%); }
+.tadeon-stat-block, .tadeon-attribute-tile {
+  background: #10151c; box-shadow: inset 0 1px rgb(233 227 213 / 8%), 0 8px 16px -12px rgb(0 0 0 / 75%);
+}
+.tadeon-overview-metric {
+  background: linear-gradient(125deg, rgb(var(--metric-rgb) / 5%), transparent 65%), #12171e;
+  box-shadow: inset 0 1px rgb(233 227 213 / 8%);
+}
+.tadeon-overview-metric strong, .tadeon-stat-block__value, .tadeon-attribute-tile__value, .tadeon-defense-card__score span {
+  font-family: var(--font-inter); font-weight: 500; font-variant-numeric: lining-nums tabular-nums; text-shadow: none;
+}
+.tadeon-overview-metric strong { font-size: 1.5rem; }
+.tadeon-overview-metric span, .tadeon-overview-metric small { font-size: .75rem; line-height: 1.45; letter-spacing: .015em; white-space: normal; }
+.tadeon-sheet-commandbar, .tadeon-sheet-mobile-dock {
+  background: linear-gradient(145deg, rgb(233 227 213 / 5%), transparent 45%), rgb(17 21 28 / 94%);
+  border-color: rgb(233 227 213 / 17%); box-shadow: inset 0 1px rgb(233 227 213 / 9%), 0 16px 30px -24px rgb(0 0 0 / 85%);
+  backdrop-filter: blur(18px) saturate(115%); -webkit-backdrop-filter: blur(18px) saturate(115%);
+}
+.tadeon-sheet-experience-actions { display: flex; align-items: center; gap: .375rem; min-width: 0; flex-wrap: wrap; }
+.tadeon-sheet-section__toggle { width: 44px; height: 44px; }
+.tadeon-sheet-page .tadeon-stepper-button { min-width: 44px; min-height: 44px; }
+.tadeon-condition-option { min-height: 44px; }
+@media (hover: hover) and (pointer: fine) {
+ .tadeon-sheet-section:hover { border-color: rgb(233 227 213 / 26%); box-shadow: inset 0 1px rgb(233 227 213 / 16%), 0 26px 56px -38px rgb(0 0 0 / 90%); }
+ .tadeon-sheet-section:hover::before { opacity: 1; }
+}
+@media (max-width: 767px) {
+ .tadeon-sheet-commandbar__actions { flex-wrap: wrap; justify-content: flex-start; }
+ .tadeon-sheet-experience-actions { gap: .25rem; }
+ .tadeon-sheet-section { padding: 16px; }
+ .tadeon-vitals-grid { grid-template-columns: minmax(0, 1fr); }
+ .tadeon-defense-card { grid-column: 1 / -1; }
+}
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+ .tadeon-sheet-commandbar, .tadeon-sheet-mobile-dock { background: #151a22; }
+}
+@media (prefers-reduced-transparency: reduce) {
+ .tadeon-sheet-commandbar, .tadeon-sheet-mobile-dock { background: #151a22; backdrop-filter: none; -webkit-backdrop-filter: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+ .tadeon-sheet-section, .tadeon-sheet-section::before { transition: none; }
+}
+/* Attribute controls use one responsive instrument grid, including game mode. */
+.tadeon-attribute-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 9rem), 1fr));
+  gap: .6rem;
+  overflow: visible;
+  padding: 0;
+}
+.tadeon-attribute-grid .tadeon-attribute-tile {
+  width: auto;
+  min-width: 0;
+  padding: .75rem .5rem;
+}
+.tadeon-attribute-tile__controls {
+  display: grid;
+  grid-template-columns: 44px minmax(24px, 1fr) 44px;
+  gap: 0;
+  width: 100%;
+  padding: 0;
+  overflow: visible;
+}
+.tadeon-attribute-tile__value { display: grid; width: auto; min-width: 0; height: 44px; place-items: center; }

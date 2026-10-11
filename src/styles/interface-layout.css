@@ -668,8 +668,6 @@ body:has(.tadeon-tabletop-studio) {
 .tadeon-sheet-page .tadeon-sheet-commandbar {
   width:100%; max-width:none; min-height:5.2rem; margin-inline:0; padding-block:.7rem !important;
   border-radius:1rem;
-  background:radial-gradient(circle at 12% 0%,hsl(var(--primary)/.13),transparent 24rem),linear-gradient(180deg,hsl(var(--card)/.96),hsl(var(--card)/.82));
-  box-shadow:0 22px 52px -42px hsl(var(--primary)/.8),inset 0 1px hsl(0 0% 100%/.035);
 }
 .tadeon-sheet-commandbar__main { min-height:3.8rem; align-items:center; }
 .tadeon-sheet-page .tadeon-sheet-nav { margin-top:.45rem; border-radius:.85rem; box-shadow:0 16px 36px -34px rgb(0 0 0/92%); }
@@ -1345,28 +1343,7 @@ html[data-tadeon-tabletop-selection-active="true"] :is(
   position: relative;
   isolation: isolate;
   overflow: clip;
-  border-color: rgb(var(--tadeon-sheet-accent) / 14%) !important;
   border-radius: 1.05rem .38rem 1.05rem .38rem !important;
-  background:
-    radial-gradient(circle at 100% 0%, rgb(var(--tadeon-sheet-accent) / 7%), transparent 13rem),
-    linear-gradient(145deg, rgb(18 21 26 / 97%), rgb(9 12 16 / 95%)) !important;
-  box-shadow:
-    0 24px 58px -46px rgb(0 0 0 / 96%),
-    inset 0 1px rgb(255 255 255 / 3.5%) !important;
-}
-
-.tadeon-sheet-page .tadeon-sheet-section::before {
-  position: absolute;
-  z-index: -1;
-  top: .9rem;
-  bottom: .9rem;
-  left: 0;
-  width: 2px;
-  border-radius: 999px;
-  background: rgb(var(--tadeon-sheet-accent) / 42%);
-  box-shadow: 0 0 14px rgb(var(--tadeon-sheet-accent) / 20%);
-  pointer-events: none;
-  content: "";
 }
 
 .tadeon-sheet-section__heading {

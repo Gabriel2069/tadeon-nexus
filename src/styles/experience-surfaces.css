@@ -1557,9 +1557,6 @@ a:not([data-material-surface], .tadeon-material-button)[data-tadeon-directed="tr
 
 /* Character sheet ~ living document */
 .tadeon-sheet-page { --sheet-accent: var(--tadeon-knowledge); }
-.tadeon-sheet-commandbar {
-  box-shadow: 0 22px 60px -44px rgb(0 0 0 / 96%), inset 0 -1px 0 rgb(255 255 255 / 2.5%), 0 0 0 1px rgb(217 215 164 / 2%);
-}
 .tadeon-sheet-commandbar__identity { position: relative; }
 .tadeon-sheet-commandbar__identity::after {
   position: absolute;
@@ -1582,19 +1579,12 @@ a:not([data-material-surface], .tadeon-material-button)[data-tadeon-directed="tr
 @media (hover: hover) and (pointer: fine) {
   .tadeon-overview-metric:hover {
     z-index: 1;
-    transform: translateY(-2px);
-    box-shadow: inset 0 1px 0 rgb(255 255 255 / 4%), 0 18px 42px -34px rgb(var(--metric-rgb) / 48%);
   }
 }
 .tadeon-sheet-section {
   transition: transform 260ms var(--tadeon-ease-material, cubic-bezier(0.23, 1, 0.32, 1)), border-color 220ms ease, box-shadow 260ms var(--tadeon-ease-material, cubic-bezier(0.23, 1, 0.32, 1));
 }
 @media (hover: hover) and (pointer: fine) {
-  .tadeon-sheet-section:hover {
-    transform: translateY(-1px);
-    border-color: rgb(var(--section-rgb) / 26%);
-    box-shadow: 0 34px 82px -58px rgb(0 0 0 / 98%), inset 0 1px 0 rgb(255 255 255 / 4%), inset 2px 0 0 rgb(var(--section-rgb) / 11%);
-  }
 }
 .tadeon-sheet-section__index { transition: transform 200ms var(--tadeon-ease-material, cubic-bezier(0.23, 1, 0.32, 1)), box-shadow 200ms ease, background-color 200ms ease; }
 @media (hover: hover) and (pointer: fine) {
@@ -1668,7 +1658,6 @@ a:not([data-material-surface], .tadeon-material-button)[data-tadeon-directed="tr
 
   .tadeon-link-panel[data-tadeon-material="fragment"],
   .tadeon-state-panel[data-tadeon-material="state"] { border-radius: 0.75rem; }
-  .tadeon-sheet-section:hover { transform: none; }
 }
 
 @media (prefers-reduced-motion: reduce) {

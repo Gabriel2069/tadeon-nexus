@@ -137,3 +137,9 @@ useMaterialLight controla somente coordenadas locais de luz para mouse fino, com
 A evidência atual pertence a [shared-fabric-validation.json](shared-fabric-validation.json). NEX-013 é a prioridade autorizada antes de NEX-005; a fila continua exclusivamente no JSON canônico. Validação em fixture, integração e publicação exigem provas próprias.
 
 NEX-013 integrado pela [PR #263](https://github.com/Gabriel2069/tadeon-nexus/pull/263), merge `41c2c88`, após Quality 38166007425 no HEAD `eba345b`. [Produção 38166156073](https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38166156073) confirmou HTTP 200 e o SHA exato às 19:01:29Z de 11/10/2026. A evidência registra 49 vistas de fixture, seis portais e dois teclados simulados; contas reais, VoiceOver e GPU permanecem fora da certificação. A expansão segue NEX-005, usando os componentes atuais.
+
+## Ficha por seções — NEX-005
+
+A ficha estende o material aprovado sem introduzir outra família tipográfica. Identidade, atributos, recursos/defesa, condições e perícias recebem valores controlados da rota; nenhuma seção mantém uma cópia persistida. O recolhimento e os campos pertencem a `sheet-ui`, com nomes associados e gatilhos de 44px. Histórico e organização do inventário são renderizados na própria ficha; os RPCs e a presença conservam seus contratos. Modo de leitura conserva consulta, com escrita e drop bloqueados.
+
+`sheet-premium.css` é o responsável pelos materiais dos painéis e métricas: tinta opaca, reflexo local, sombra de contato e borda discreta, com as cores funcionais de cada seção. Vidro fica na barra e no dock; Cormorant Garamond conserva os títulos, e Inter usa números tabulares. Não se deslocam textos, campos ou painéis; o radar não anima dados. A evidência e o estado de integração pertencem a [sheet-design-validation.json](sheet-design-validation.json) e à fila canônica.
