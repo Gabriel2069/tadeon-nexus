@@ -299,7 +299,7 @@ html[data-tadeon-sheet-mode="game"] [class*="tadeon-sheet"] {
 
 html[data-tadeon-sheet-mode="game"] input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
 html[data-tadeon-sheet-mode="game"] select,
-html[data-tadeon-sheet-mode="game"] button[role="combobox"] {
+html[data-tadeon-sheet-mode="game"] button:not([data-material-surface], .tadeon-material-button)[role="combobox"] {
   min-height: var(--tadeon-game-field-height) !important;
   height: var(--tadeon-game-field-height) !important;
   padding-block: .15rem !important;
@@ -321,7 +321,7 @@ html[data-tadeon-sheet-mode="game"] textarea {
 
 html[data-tadeon-sheet-mode="game"] input:focus,
 html[data-tadeon-sheet-mode="game"] textarea:focus,
-html[data-tadeon-sheet-mode="game"] button[role="combobox"]:focus-visible {
+html[data-tadeon-sheet-mode="game"] button:not([data-material-surface], .tadeon-material-button)[role="combobox"]:focus-visible {
   border-color: color-mix(in srgb, var(--primary) 55%, var(--border)) !important;
   background: var(--background) !important;
   box-shadow: 0 0 0 2px color-mix(in srgb, var(--primary) 14%, transparent) !important;

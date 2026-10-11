@@ -107,15 +107,6 @@
   border: 1px solid transparent;
 }
 
-.tadeon-nav-item[data-tadeon-directed="true"]:hover,
-.tadeon-nav-item[data-tadeon-directed="true"][aria-current="page"] {
-  border-color: rgb(217 215 164 / 18%);
-  background:
-    linear-gradient(90deg, rgb(217 215 164 / 10%), transparent 72%),
-    rgb(255 255 255 / 2%);
-  box-shadow: 0 16px 30px -25px rgb(0 0 0 / 90%);
-}
-
 /* --------------------------------------------------------------------------
    Surface hierarchy: fewer generic rectangles
    -------------------------------------------------------------------------- */
@@ -275,39 +266,6 @@
   overflow-x: clip;
 }
 
-.tadeon-shell::before,
-.tadeon-shell::after {
-  position: fixed;
-  z-index: -2;
-  pointer-events: none;
-  content: "";
-}
-
-.tadeon-shell::before {
-  inset: -20vh -15vw;
-  background:
-    radial-gradient(circle at 16% 18%, rgb(var(--tadeon-atmo-gold) / 5%), transparent 28rem),
-    radial-gradient(circle at 82% 12%, rgb(var(--tadeon-atmo-olive) / 7%), transparent 32rem),
-    radial-gradient(circle at 74% 86%, rgb(113 107 123 / 5%), transparent 34rem),
-    linear-gradient(180deg, rgb(var(--tadeon-atmo-ink) / 22%), transparent 38%, rgb(0 0 0 / 18%));
-  filter: blur(12px);
-  animation: tadeon-atmo-breathe 18s ease-in-out infinite alternate;
-}
-
-.tadeon-shell::after {
-  inset: 0;
-  z-index: -1;
-  opacity: .45;
-  background-image:
-    radial-gradient(circle at 18% 22%, rgb(255 255 255 / 22%) 0 1px, transparent 1.5px),
-    radial-gradient(circle at 74% 44%, rgb(255 255 255 / 16%) 0 1px, transparent 1.5px),
-    radial-gradient(circle at 42% 78%, rgb(217 215 164 / 18%) 0 1px, transparent 1.4px),
-    radial-gradient(circle at 86% 88%, rgb(79 110 93 / 20%) 0 1px, transparent 1.4px);
-  background-size: 230px 260px, 310px 330px, 270px 300px, 360px 390px;
-  animation: tadeon-atmo-drift 34s linear infinite;
-  mask-image: linear-gradient(180deg, transparent, black 16%, black 82%, transparent);
-}
-
 .tadeon-route-stage {
   position: relative;
   transform: translateZ(0);
@@ -371,7 +329,7 @@
 /* Navigation indicator moves like a ribbon instead of flashing. */
 
 /* Buttons: physical press, then release. */
-.tadeon-shell button:not([data-no-tadeon-motion]):not(:disabled),
+.tadeon-shell button:not([data-material-surface], .tadeon-material-button):not([data-no-tadeon-motion]):not(:disabled),
 .tadeon-shell [role="button"]:not([data-no-tadeon-motion]) {
   transition:
     transform 180ms cubic-bezier(.23,1,.32,1),
@@ -382,12 +340,12 @@
 }
 
 @media (hover: hover) and (pointer: fine) {
-  .tadeon-shell button:not([data-no-tadeon-motion]):not(:disabled):hover,
+  .tadeon-shell button:not([data-material-surface], .tadeon-material-button):not([data-no-tadeon-motion]):not(:disabled):hover,
   .tadeon-shell [role="button"]:not([data-no-tadeon-motion]):hover {
     transform: translateY(-2px);
   }
 
-  .tadeon-shell button:not([data-no-tadeon-motion]):not(:disabled):active,
+  .tadeon-shell button:not([data-material-surface], .tadeon-material-button):not([data-no-tadeon-motion]):not(:disabled):active,
   .tadeon-shell [role="button"]:not([data-no-tadeon-motion]):active {
     transform: translateY(0) scale(.975);
   }
@@ -477,7 +435,6 @@
 }
 
 @media (max-width: 767px) {
-  .tadeon-shell::after { opacity: .28; }
   .tadeon-route-stage::after { inset: 16vh -8vw auto auto; width: 78vw; height: 56vh; }
 
   .tadeon-page-hero,
@@ -486,8 +443,6 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .tadeon-shell::before,
-  .tadeon-shell::after,
   .tadeon-route-stage::after,
   .tadeon-page-hero,
   .tadeon-master-commandbar,
@@ -679,7 +634,7 @@
    Touch surfaces remain calm and don't inherit desktop hover lifts
    -------------------------------------------------------------------------- */
 @media (hover: none), (max-width: 767px) {
-  .tadeon-shell button:not([data-no-tadeon-motion]):active,
+  .tadeon-shell button:not([data-material-surface], .tadeon-material-button):not([data-no-tadeon-motion]):active,
   .tadeon-shell [role="button"]:not([data-no-tadeon-motion]):active {
     transform: scale(.985);
   }
@@ -1090,10 +1045,10 @@
 /* Microinteractions: small details should feel authored rather than generic. */
 .tadeon-shell :where(svg.lucide, [data-icon]) { transition: transform 220ms cubic-bezier(.22,1,.36,1), opacity 180ms ease, filter 260ms ease; }
 @media (hover: hover) and (pointer: fine) {
-  .tadeon-shell button:hover :where(svg.lucide, [data-icon]),
+  .tadeon-shell button:not([data-material-surface], .tadeon-material-button):hover :where(svg.lucide, [data-icon]),
   .tadeon-shell [role="button"]:hover :where(svg.lucide, [data-icon]) { transform: translateY(-1px) scale(1.035); }
 }
-.tadeon-shell button:active :where(svg.lucide, [data-icon]),
+.tadeon-shell button:not([data-material-surface], .tadeon-material-button):active :where(svg.lucide, [data-icon]),
 .tadeon-shell [role="button"]:active :where(svg.lucide, [data-icon]) { transform: translateY(1px) scale(.96); }
 
 .tadeon-shell :where([data-slot="badge"], .tadeon-badge, .tadeon-chip, [data-tadeon-status]) { transition: transform 220ms cubic-bezier(.22,1,.36,1), filter 260ms ease, box-shadow 260ms ease; }
@@ -1108,7 +1063,7 @@
 .tadeon-shell :where([data-tadeon-number], .tadeon-stat-value, .tadeon-metric-value) { transition: transform 260ms cubic-bezier(.22,1,.36,1), filter 260ms ease; }
 .tadeon-shell :where([data-tadeon-number][data-changing="true"], .tadeon-stat-value[data-changing="true"], .tadeon-metric-value[data-changing="true"]) { animation: tadeon-number-settle 420ms cubic-bezier(.22,1,.36,1) both; }
 
-.tadeon-shell :where([data-tadeon-caret], [data-tadeon-chevron], button svg[data-slot="chevron"]) { transition: transform 240ms cubic-bezier(.22,1,.36,1); }
+.tadeon-shell :where([data-tadeon-caret], [data-tadeon-chevron], button:not([data-material-surface], .tadeon-material-button) svg[data-slot="chevron"]) { transition: transform 240ms cubic-bezier(.22,1,.36,1); }
 .tadeon-shell [data-state="open"] > :where([data-tadeon-caret], [data-tadeon-chevron], svg[data-slot="chevron"]) { transform: rotate(180deg); }
 
 .tadeon-shell :where([data-tadeon-dot], .tadeon-status-dot) { transition: transform 240ms cubic-bezier(.22,1,.36,1), opacity 220ms ease, box-shadow 300ms ease; }
@@ -1278,19 +1233,6 @@
 }
 
 /* Persistent shell: a faint top trace makes navigation feel continuous rather than rebuilt. */
-.tadeon-shell::before {
-  content: "";
-  position: fixed;
-  inset: 0 0 auto;
-  height: 1px;
-  z-index: 80;
-  pointer-events: none;
-  opacity: .55;
-  background: linear-gradient(90deg, transparent 0%, rgb(217 215 164 / 0) 16%, rgb(217 215 164 / 22%) 50%, rgb(217 215 164 / 0) 84%, transparent 100%);
-  transform: scaleX(.35);
-  transform-origin: center;
-  animation: tadeon-shell-trace 900ms var(--tadeon-motion-settle) both;
-}
 
 /* Navigation has a quiet directional gesture instead of a generic color flip. */
 .tadeon-primary-nav .tadeon-nav-item,
@@ -1480,7 +1422,6 @@
 
 @media (prefers-reduced-motion: reduce) {
   .tadeon-route-stage > .tadeon-page,
-  .tadeon-shell::before,
   .tadeon-shell :focus-visible,
   .tadeon-shell [data-tadeon-status][data-state="active"],
   .tadeon-shell [data-tadeon-condition][data-state="active"],

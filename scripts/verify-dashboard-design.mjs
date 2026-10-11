@@ -1,8 +1,9 @@
+import { installDesignFonts } from "./design-font-fixtures.mjs";
 /** NEX-003 browser fixtures. No credentials, live backend or persisted writes.
  * Uses the same externally supplied Playwright/Chromium as the header audit.
  * Run after `npm run check`; artifacts stay outside the repository by default.
  */
-import { mkdirSync, writeFileSync, readFileSync } from "node:fs";
+import { mkdirSync, writeFileSync } from "node:fs";
 import { spawn } from "node:child_process";
 import { resolve } from "node:path";
 const { chromium } = await import(process.env.NEXUS_BROWSER_MODULE || "playwright-core");
@@ -23,7 +24,7 @@ try {
     server.on("exit", code => fail(new Error("Vite exited: " + code)));
     setTimeout(() => fail(new Error("Vite timeout")), 30000).unref();
   });
-  for (const width of [320, 390, 820, 1440]) for (const state of ["empty", "loading", "error", "populated"]) {
+  for (const width of JSON.parse(process.env.NEXUS_AUDIT_WIDTHS || "[320,390,820,1440]")) for (const state of JSON.parse(process.env.NEXUS_AUDIT_STATES || '["empty","loading","error","populated"]')) {
     const context = await browser.newContext({ viewport: { width, height: 1000 }, hasTouch: width < 768, reducedMotion: "reduce" });
     const page = await context.newPage();
     const errors = [];
@@ -46,11 +47,7 @@ try {
       await route.fulfill({ status, contentType: "application/json", body: JSON.stringify(body) });
     });
     await page.route("**/_serverFn/**", r => r.fulfill({ status: 503, contentType: "application/json", body: '{}' }));
-    if (process.env.NEXUS_FONT_FIXTURES) {
-      const dir = process.env.NEXUS_FONT_FIXTURES;
-      const faces = [["Grenze",500,"grenze-500"],["Grenze",600,"grenze-600"],["Grenze",700,"grenze-700"],["Inter",400,2],["Inter",500,3],["Inter",600,4],["PT Mono",400,5]].map(([family,weight,index]) => `@font-face{font-family:"${family}";font-weight:${weight};src:url(data:font/ttf;base64,${readFileSync(`${dir}/${typeof index === "number" ? `font-${index}` : index}.ttf`).toString("base64")}) format("truetype");font-display:swap}`).join("\n");
-      await page.route("https://fonts.googleapis.com/**", r => r.fulfill({contentType:"text/css",body:faces}));
-    }
+    await installDesignFonts(page);
     await page.goto(`http://127.0.0.1:${port}/`, { waitUntil: "domcontentloaded" });
     await page.locator(".tadeon-continuity-hero").waitFor();
     if (state === "loading") await page.getByText("Reunindo os fios do arquivo…").waitFor();
@@ -58,14 +55,15 @@ try {
     else if (state === "empty") await page.getByText("O arquivo ainda está vazio.").waitFor();
     else await page.locator(".tadeon-character-card").first().waitFor();
     await page.evaluate(async () => {
-      await Promise.all(['500 16px "Grenze"','400 16px "Inter"','400 16px "PT Mono"'].map(f=>document.fonts.load(f)));
+      await Promise.all(['500 16px "Cormorant Garamond"','italic 500 16px "Cormorant Garamond"','400 16px "Inter"','500 16px "Inter"','400 16px "PT Mono"'].map(f=>document.fonts.load(f)));
       await document.fonts.ready;
     });
-    const metrics = await page.evaluate(() => ({ overflow: document.documentElement.scrollWidth > innerWidth, h1: document.querySelectorAll("h1").length, main: document.querySelectorAll("main").length, cards: document.querySelectorAll(".tadeon-character-card").length, facts: Array.from(document.querySelectorAll(".tadeon-continuity-facts dd:not(.tadeon-continuity-facts__detail)")).map(e => e.textContent), headingFont: getComputedStyle(document.querySelector("#continuity-title")).fontFamily, navAfter: (() => { const s=getComputedStyle(document.querySelector(".tadeon-nav-item[aria-current]"),"::after"); return {width:s.width,height:s.height,inset:s.inset,background:s.background,zIndex:s.zIndex}; })(), fontsLoaded: ['Grenze','Inter','PT Mono'].map(f => ({family:f,loaded:document.fonts.check(`${f === "Grenze" ? 500 : 400} 16px "${f}"`)})), navContrast: (()=>{const n=document.querySelector(".tadeon-nav-item[aria-current]");return {color:getComputedStyle(n).color,base:getComputedStyle(n).getPropertyValue("--sidebar-accent").trim()};})(), heroHeight: document.querySelector(".tadeon-continuity-hero").getBoundingClientRect().height }));
+    const metrics = await page.evaluate(() => ({ overflow: document.documentElement.scrollWidth > innerWidth, h1: document.querySelectorAll("h1").length, main: document.querySelectorAll("main").length, cards: document.querySelectorAll(".tadeon-character-card").length, facts: Array.from(document.querySelectorAll(".tadeon-continuity-facts dd:not(.tadeon-continuity-facts__detail)")).map(e => e.textContent), headingFont: getComputedStyle(document.querySelector("#continuity-title")).fontFamily, metricFont: getComputedStyle(document.querySelector(".tadeon-continuity-facts dd")).fontFamily, metricFigures: getComputedStyle(document.querySelector(".tadeon-continuity-facts dd")).fontVariantNumeric, dock: (() => { const n=document.querySelector(".tadeon-mobile-dock"); if(!n)return null;const s=getComputedStyle(n);return {shadow:s.boxShadow,border:s.border,bottomBorder:s.borderBottom,outline:s.outline,filter:s.filter,animation:s.animationName}; })(), navAfter: (() => { const s=getComputedStyle(document.querySelector(".tadeon-nav-item[aria-current]"),"::after"); return {width:s.width,height:s.height,inset:s.inset,background:s.background,zIndex:s.zIndex}; })(), fontsLoaded: ['Cormorant Garamond','Inter','PT Mono'].map(f => ({family:f,loaded:document.fonts.check(`${f === "Cormorant Garamond" ? 500 : 400} 16px "${f}"`)})), navContrast: (()=>{const n=document.querySelector(".tadeon-nav-item[aria-current]");return {color:getComputedStyle(n).color,base:getComputedStyle(n).getPropertyValue("--sidebar-accent").trim()};})(), heroHeight: document.querySelector(".tadeon-continuity-hero").getBoundingClientRect().height }));
     assert(!metrics.overflow && metrics.h1 === 1 && metrics.main === 1 && errors.length === 0, `${width}/${state}: structure or overflow failure`);
-    assert(metrics.headingFont.includes("Grenze"), "Editorial heading must preserve its approved family");
+    assert(metrics.metricFont.includes("Inter") && metrics.metricFigures.includes("tabular-nums"), "Dashboard metrics use readable aligned figures");
+    assert(metrics.headingFont.includes("Cormorant Garamond"), "Editorial heading must preserve its approved family");
     assert(metrics.navContrast.base === "#1c2026", "Navigation surface must not inherit its text accent");
-    if (process.env.NEXUS_FONT_FIXTURES) assert(metrics.fontsLoaded.every(f=>f.loaded), "Font fixtures must load");
+    if (process.env.NEXUS_FONT_FIXTURES) assert(metrics.fontsLoaded.every(f=>f.loaded), `Font fixtures must load: ${JSON.stringify(metrics.fontsLoaded)}`);
     if (state === "populated") assert(metrics.facts.join() === "05,05,20" && metrics.cards === 5, "Metrics must use query data");
     if (state === "error" || state === "loading") assert(metrics.facts.every(x => x === "--"), "Unknown counts must not appear as zero");
     await page.screenshot({ path: `${root}/${state}-${width}.png`, fullPage: true });
@@ -140,6 +138,20 @@ try {
       await page.emulateMedia({ reducedMotion: "no-preference" });
       await page.locator(".tadeon-continuity-hero a").hover();
       const moving = await page.locator(".tadeon-continuity-hero__weave").evaluate(e => getComputedStyle(e).transitionDuration);
+      if (width === 1440) {
+        const card = page.locator(".tadeon-character-card").first();
+        const before = await card.locator("h3").boundingBox();
+        await card.hover({ position: { x: 100, y: 90 } });
+        await page.waitForFunction(() => { const e=document.querySelector(".tadeon-character-card"); return e?.style.getPropertyValue("--material-x") && Number(getComputedStyle(e,"::before").opacity) >= .8; });
+        const light = await card.evaluate(e=>({x:e.style.getPropertyValue("--material-x"),opacity:getComputedStyle(e,"::before").opacity,hover:e.matches(":hover"),fine:matchMedia("(hover:hover) and (pointer:fine)").matches}));
+        const after = await card.locator("h3").boundingBox();
+        assert(light.x !== "" && Number(light.opacity) >= .8, `Card reflection must respond to the pointer: ${JSON.stringify(light)}`);
+        assert(Math.abs(before.x-after.x)<.1 && Math.abs(before.y-after.y)<.1, "Card content stays stable during reflection");
+        await page.screenshot({path:`${root}/interaction-1440.png`,fullPage:true});
+        const nav = await page.locator(".tadeon-nav-item[aria-current]").evaluate(e=>({before:getComputedStyle(e,"::before").content,background:getComputedStyle(e).backgroundImage}));
+        assert(nav.before === "none", "Navigation has no competing light plane");
+        metrics.material = {light, stableText:true, nav};
+      }
       await page.emulateMedia({ reducedMotion: "reduce" });
       await page.evaluate(() => new Promise(ok => requestAnimationFrame(() => requestAnimationFrame(ok))));
       const reduced = await page.locator(".tadeon-continuity-hero__weave").evaluate(e => ({ duration: getComputedStyle(e).transitionDuration, transform: getComputedStyle(e).transform }));

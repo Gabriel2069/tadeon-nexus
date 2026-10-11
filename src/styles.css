@@ -36,7 +36,7 @@
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
-  --font-cinzel: "Grenze", Georgia, serif;
+  --font-cinzel: "Cormorant Garamond", Georgia, serif;
   --font-inter: "Inter", system-ui, sans-serif;
   --font-mono: "PT Mono", ui-monospace, monospace;
 }
@@ -139,8 +139,8 @@
     text-wrap: balance;
   }
 
-  button,
-  a,
+  button:not([data-material-surface], .tadeon-material-button),
+  a:not([data-material-surface], .tadeon-material-button),
   input,
   textarea,
   select {
@@ -272,10 +272,6 @@
     background: var(--tadeon-flow);
   }
 
-  .tadeon-sidebar {
-    backdrop-filter: blur(22px);
-  }
-
   .tadeon-sidebar::after {
     content: "";
     position: absolute;
@@ -287,7 +283,6 @@
 
   .tadeon-mobile-header {
     padding-top: max(0.75rem, env(safe-area-inset-top));
-    box-shadow: 0 18px 50px -42px rgb(0 0 0 / 95%);
   }
 
   .tadeon-mobile-header::after {
@@ -502,10 +497,6 @@
 
 @media (hover: hover) and (pointer: fine) {
 
-  .tadeon-nav-item:hover {
-    border-color: color-mix(in srgb, var(--sidebar-primary) 11%, transparent);
-  }
-
   .tadeon-nav-item:hover .tadeon-nav-item__icon > svg {
     color: var(--sidebar-primary);
     filter: drop-shadow(0 0 8px rgb(217 215 164 / 28%));
@@ -640,8 +631,6 @@
 
 @media (prefers-reduced-transparency: reduce) {
   .tadeon-surface,
-  .tadeon-sidebar,
-  .tadeon-mobile-header,
   .tadeon-auth-shell {
     background-color: var(--background);
     backdrop-filter: none;
@@ -1306,11 +1295,11 @@ body
 }
 
 :where(
-    [data-slot="button"],
+    [data-slot="button"]:not([data-material-surface], .tadeon-material-button),
     [data-slot="toggle"],
     [data-slot="toggle-group-item"],
     [data-slot="collapsible-trigger"],
-    .tadeon-shell button:not([data-slot])
+    .tadeon-shell button:not([data-material-surface], .tadeon-material-button):not([data-slot])
   ):is(
     [aria-pressed="true"],
     [aria-selected="true"],
@@ -1324,7 +1313,7 @@ body
 
 @media (prefers-reduced-motion: reduce) {
   [data-slot="collapsible-content"],
-  :where(button, [role="button"]) > svg {
+  :where(button:not([data-material-surface], .tadeon-material-button), [role="button"]) > svg {
     animation: none !important;
   }
 
@@ -1542,7 +1531,7 @@ body
 }
 
 @media (hover: hover) and (pointer: fine) {
-  [data-slot="button"]:not(:disabled):hover > svg:not(.animate-spin):not(.animate-pulse),
+  [data-slot="button"]:not([data-material-surface], .tadeon-material-button):not(:disabled):hover > svg:not(.animate-spin):not(.animate-pulse),
   [data-slot="tabs-trigger"]:hover > svg {
     filter: drop-shadow(0 0 8px rgb(var(--tadeon-section-rgb) / 24%));
     transform: translateY(-1px) scale(1.045);
@@ -1680,23 +1669,6 @@ body {
   --tadeon-section-rgb: var(--section-accent-rgb, 217 215 164);
 }
 
-.tadeon-shell::before {
-  position: fixed;
-  z-index: 0;
-  top: 4.5rem;
-  right: 0;
-  width: min(34rem, 52vw);
-  height: 1px;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgb(var(--tadeon-section-rgb) / 16%),
-    transparent
-  );
-  pointer-events: none;
-  content: "";
-}
-
 .tadeon-ambient {
   animation: tadeon-ambient-drift 18s var(--ease-in-out) infinite;
   will-change: transform, opacity;
@@ -1779,7 +1751,7 @@ body {
   letter-spacing: -0.012em;
 }
 
-[data-slot="button"] {
+[data-slot="button"]:not([data-material-surface], .tadeon-material-button) {
   border-radius: 0.78rem 0.3rem 0.78rem 0.3rem;
   font-weight: 680;
   letter-spacing: -0.005em;
@@ -1789,8 +1761,8 @@ body {
   flex: 0 0 auto;
 }
 
-[data-slot="button"]:disabled,
-button:disabled,
+[data-slot="button"]:not([data-material-surface], .tadeon-material-button):disabled,
+button:not([data-material-surface], .tadeon-material-button):disabled,
 [aria-disabled="true"] {
   cursor: not-allowed;
   filter: saturate(0.72);
@@ -1820,7 +1792,6 @@ select:focus-visible {
     inset 0 1px rgb(255 255 255 / 3%);
 }
 
-[data-slot="alert-dialog-content"],
 [data-slot="popover-content"],
 [data-slot="dropdown-menu-content"],
 [data-slot="select-content"] {
@@ -2031,11 +2002,11 @@ select:focus-visible {
 }
 
 @media (hover: hover) and (pointer: fine) {
-  [data-slot="button"]:not(:disabled):hover {
+  [data-slot="button"]:not([data-material-surface], .tadeon-material-button):not(:disabled):hover {
     transform: translateY(-1px);
   }
 
-  [data-slot="button"]:not(:disabled):active {
+  [data-slot="button"]:not([data-material-surface], .tadeon-material-button):not(:disabled):active {
     transform: translateY(0) scale(0.985);
   }
 
@@ -2216,7 +2187,7 @@ select:focus-visible {
 }
 
 :where(
-    [data-slot="button"],
+    [data-slot="button"]:not([data-material-surface], .tadeon-material-button),
     [data-slot="toggle"],
     [data-slot="toggle-group-item"],
     [data-slot="tabs-trigger"],
@@ -2224,7 +2195,7 @@ select:focus-visible {
     [data-slot="navigation-menu-trigger"],
     [data-slot="menubar-trigger"],
     [data-slot="pagination-link"],
-    .tadeon-shell button:not([data-slot])
+    .tadeon-shell button:not([data-material-surface], .tadeon-material-button):not([data-slot])
   )
   > svg:not(.animate-spin):not(.animate-pulse) {
   flex: 0 0 auto;
@@ -2236,11 +2207,11 @@ select:focus-visible {
     transform var(--motion-fast) var(--ease-out);
 }
 
-[data-slot="button"] {
+[data-slot="button"]:not([data-material-surface], .tadeon-material-button) {
   overflow: visible;
 }
 
-[data-slot="button"]::before {
+[data-slot="button"]:not([data-material-surface], .tadeon-material-button)::before {
   position: absolute;
   z-index: 0;
   inset: 1px;
@@ -2253,7 +2224,7 @@ select:focus-visible {
   content: "";
 }
 
-[data-slot="button"][data-variant="default"] {
+[data-slot="button"]:not([data-material-surface], .tadeon-material-button)[data-variant="default"] {
   border-color: color-mix(in srgb, var(--tadeon-control-accent) 64%, var(--border));
   background: linear-gradient(150deg, rgb(255 255 255 / 16%), transparent 44%), var(--primary);
   box-shadow:
@@ -2261,31 +2232,31 @@ select:focus-visible {
     inset 0 1px rgb(255 255 255 / 34%);
 }
 
-[data-slot="button"][data-variant="outline"] {
+[data-slot="button"]:not([data-material-surface], .tadeon-material-button)[data-variant="outline"] {
   border-color: color-mix(in srgb, var(--tadeon-control-accent) 13%, var(--border));
   background:
     linear-gradient(145deg, rgb(255 255 255 / 3%), transparent 52%),
     color-mix(in srgb, var(--tadeon-surface-2) 88%, transparent);
 }
 
-[data-slot="button"][data-variant="secondary"] {
+[data-slot="button"]:not([data-material-surface], .tadeon-material-button)[data-variant="secondary"] {
   border-color: color-mix(in srgb, var(--tadeon-control-accent) 10%, var(--border));
   background: linear-gradient(145deg, rgb(255 255 255 / 3.5%), transparent 52%), var(--secondary);
 }
 
-[data-slot="button"][data-variant="destructive"] {
+[data-slot="button"]:not([data-material-surface], .tadeon-material-button)[data-variant="destructive"] {
   border: 1px solid color-mix(in srgb, var(--destructive) 68%, var(--border));
   background:
     linear-gradient(145deg, rgb(255 255 255 / 7%), transparent 48%),
     color-mix(in srgb, var(--destructive) 84%, var(--tadeon-surface-2));
 }
 
-[data-slot="button"][data-variant="ghost"] {
+[data-slot="button"]:not([data-material-surface], .tadeon-material-button)[data-variant="ghost"] {
   border: 1px solid transparent;
 }
 
 :where(
-  [data-slot="button"],
+  [data-slot="button"]:not([data-material-surface], .tadeon-material-button),
   [data-slot="toggle"],
   [data-slot="toggle-group-item"],
   [data-slot="tabs-trigger"],
@@ -2312,7 +2283,7 @@ select:focus-visible {
 }
 
 :where(
-    [data-slot="button"],
+    [data-slot="button"]:not([data-material-surface], .tadeon-material-button),
     [data-slot="toggle"],
     [data-slot="toggle-group-item"],
     [data-slot="tabs-trigger"],
@@ -2331,7 +2302,7 @@ select:focus-visible {
 }
 
 :where(
-    [data-slot="button"],
+    [data-slot="button"]:not([data-material-surface], .tadeon-material-button),
     [data-slot="toggle"],
     [data-slot="toggle-group-item"],
     [data-slot="tabs-trigger"],
@@ -2361,7 +2332,7 @@ select:focus-visible {
   cursor: progress;
 }
 
-[data-slot="button"][aria-busy="true"]::after {
+[data-slot="button"]:not([data-material-surface], .tadeon-material-button)[aria-busy="true"]::after {
   position: absolute;
   right: 0;
   bottom: 0;
@@ -3291,7 +3262,7 @@ legend {
 
 /* Raw route controls: the same feedback without forcing a shared geometry. */
 
-.tadeon-shell button:not([data-slot]):not(:disabled) {
+.tadeon-shell button:not([data-material-surface], .tadeon-material-button):not([data-slot]):not(:disabled) {
   transition:
     color var(--motion-fast) var(--ease-out),
     background-color var(--motion-fast) var(--ease-out),
@@ -3301,7 +3272,7 @@ legend {
     transform var(--motion-press) var(--ease-out);
 }
 
-:where(.tadeon-auth-page, .tadeon-consent-page) button:not([data-slot]) {
+:where(.tadeon-auth-page, .tadeon-consent-page) button:not([data-material-surface], .tadeon-material-button):not([data-slot]) {
   position: relative;
   border-radius: 0.35rem;
   transition:
@@ -3312,7 +3283,7 @@ legend {
     transform var(--motion-press) var(--ease-out);
 }
 
-:where(.tadeon-auth-page, .tadeon-consent-page) button:not([data-slot])::after {
+:where(.tadeon-auth-page, .tadeon-consent-page) button:not([data-material-surface], .tadeon-material-button):not([data-slot])::after {
   position: absolute;
   right: 10%;
   bottom: -0.12rem;
@@ -3416,26 +3387,26 @@ legend {
 }
 
 @media (hover: hover) and (pointer: fine) {
-  [data-slot="button"]:not(:disabled):hover::before {
+  [data-slot="button"]:not([data-material-surface], .tadeon-material-button):not(:disabled):hover::before {
     opacity: 1;
     animation: tadeon-control-sheen-contained 620ms var(--ease-out) both;
   }
 
   :where(.tadeon-auth-page, .tadeon-consent-page)
-    button:not([data-slot]):not(:disabled):hover::after {
+    button:not([data-material-surface], .tadeon-material-button):not([data-slot]):not(:disabled):hover::after {
     opacity: 0.72;
     transform: scaleX(1);
   }
 
   :where(
-      [data-slot="button"],
+      [data-slot="button"]:not([data-material-surface], .tadeon-material-button),
       [data-slot="toggle"],
       [data-slot="toggle-group-item"],
       [data-slot="tabs-trigger"],
       [data-slot="navigation-menu-trigger"],
       [data-slot="menubar-trigger"],
       [data-slot="pagination-link"],
-      .tadeon-shell button:not([data-slot])
+      .tadeon-shell button:not([data-material-surface], .tadeon-material-button):not([data-slot])
     ):not(:disabled):hover
     > svg:not(.animate-spin):not(.animate-pulse) {
     color: color-mix(in srgb, currentColor 74%, var(--tadeon-control-accent));
@@ -3443,14 +3414,14 @@ legend {
     transform: translateY(-1px) scale(1.055);
   }
 
-  [data-slot="button"]:not(:disabled):hover {
+  [data-slot="button"]:not([data-material-surface], .tadeon-material-button):not(:disabled):hover {
     border-color: color-mix(in srgb, var(--tadeon-control-accent) 30%, var(--border));
     box-shadow:
       0 18px 38px -30px var(--tadeon-control-accent),
       inset 0 1px rgb(255 255 255 / 5%);
   }
 
-  [data-slot="button"][data-variant="default"]:not(:disabled):hover {
+  [data-slot="button"]:not([data-material-surface], .tadeon-material-button)[data-variant="default"]:not(:disabled):hover {
     border-color: color-mix(in srgb, var(--primary) 78%, var(--border));
     box-shadow:
       0 20px 42px -27px var(--tadeon-control-accent),
@@ -3461,7 +3432,7 @@ legend {
     transform: rotate(90deg) scale(1.06);
   }
 
-  :where([data-slot="card"], [data-slot="alert"]):has(a, button, [role="button"]):hover {
+  :where([data-slot="card"], [data-slot="alert"]):has(a:not([data-material-surface], .tadeon-material-button), button:not([data-material-surface], .tadeon-material-button), [role="button"]):hover {
     border-color: color-mix(
       in srgb,
       var(--tadeon-section-accent, var(--primary)) 18%,
@@ -3474,7 +3445,7 @@ legend {
     transform: scale(1.035);
   }
 
-  [data-slot="badge"]:is(a, button):hover {
+  [data-slot="badge"]:is(a:not([data-material-surface], .tadeon-material-button), button:not([data-material-surface], .tadeon-material-button)):hover {
     transform: translateY(-1px);
   }
 
@@ -3837,7 +3808,7 @@ legend {
 
 @media (prefers-contrast: more) {
   :where(
-    [data-slot="button"],
+    [data-slot="button"]:not([data-material-surface], .tadeon-material-button),
     [data-slot="toggle"],
     [data-slot="toggle-group-item"],
     [data-slot="tabs-trigger"],
@@ -3862,14 +3833,14 @@ legend {
 
 @media (prefers-reduced-motion: reduce) {
   :where(
-    [data-slot="button"],
+    [data-slot="button"]:not([data-material-surface], .tadeon-material-button),
     [data-slot="toggle"],
     [data-slot="toggle-group-item"],
     [data-slot="tabs-trigger"],
     [data-slot="pagination-link"]
   )::before,
   :where(
-    [data-slot="button"],
+    [data-slot="button"]:not([data-material-surface], .tadeon-material-button),
     [data-slot="toggle"],
     [data-slot="toggle-group-item"],
     [data-slot="tabs-trigger"],
@@ -3880,7 +3851,7 @@ legend {
   [data-slot="collapsible-content"],
   [data-slot="progress-indicator"],
   [data-slot="skeleton"]::after,
-  .tadeon-shell button:not([data-slot]),
+  .tadeon-shell button:not([data-material-surface], .tadeon-material-button):not([data-slot]),
   :where(
     [data-slot="select-content"],
     [data-slot="dropdown-menu-content"],
@@ -3897,7 +3868,7 @@ legend {
     animation: none !important;
   }
 
-  :where(button, a, [role="button"]) > svg {
+  :where(button:not([data-material-surface], .tadeon-material-button), a:not([data-material-surface], .tadeon-material-button), [role="button"]) > svg {
     filter: none !important;
     transform: none !important;
   }

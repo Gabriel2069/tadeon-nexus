@@ -307,8 +307,8 @@
   content: "";
 }
 
-[data-tadeon-condition-kind="morrendo"] button,
-[data-tadeon-condition-kind="colapsando"] button {
+[data-tadeon-condition-kind="morrendo"] button:not([data-material-surface], .tadeon-material-button),
+[data-tadeon-condition-kind="colapsando"] button:not([data-material-surface], .tadeon-material-button) {
   position: relative;
   z-index: 1;
   border-color: rgb(var(--tadeon-danger-rgb) / 32%) !important;

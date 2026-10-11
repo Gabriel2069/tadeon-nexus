@@ -14,10 +14,11 @@ Cada PR usa IDs desta fila e declara dependências. Trabalho sobre o mesmo propr
 | NEX-002 | Mapa, continuidade e conciliação das PRs | Integrado | 0 | delivery | NEX-001 |
 | NEX-003 | Véu & Trama: referência aplicada ao shell e Dashboard | Integrado | 1 | shell | NEX-001, NEX-002 |
 | NEX-004 | Sidebar, navegação móvel e portais | Integrado | 2 | popup | NEX-003 |
-| NEX-005 | Ficha por seções e estados | Planejado | 3 | sheet | NEX-003 |
-| NEX-006 | Biblioteca, documento e grafo do Nexus | Planejado | 4 | knowledge | NEX-003 |
-| NEX-007 | Mesa: hierarquia de ferramentas e workspace | Planejado | 5 | tabletop | NEX-004 |
-| NEX-008 | Painel do Mestre e administração | Planejado | 6 | master | NEX-003 |
+| NEX-013 | Liquid fabric: login, Dashboard e componentes compartilhados | Validado na branch | 2 | shell | NEX-003, NEX-004 |
+| NEX-005 | Ficha por seções e estados | Planejado | 3 | sheet | NEX-003, NEX-013 |
+| NEX-006 | Biblioteca, documento e grafo do Nexus | Planejado | 4 | knowledge | NEX-003, NEX-013 |
+| NEX-007 | Mesa: hierarquia de ferramentas e workspace | Planejado | 5 | tabletop | NEX-004, NEX-013 |
+| NEX-008 | Painel do Mestre e administração | Planejado | 6 | master | NEX-003, NEX-013 |
 | NEX-009 | Desempenho e motion | Planejado | 7 | delivery | NEX-003, NEX-007 |
 | NEX-010 | Validação real de autorização e rollout | Planejado | 8 | session | NEX-001 |
 | NEX-011 | Backup e restauração verificável | Planejado | 8 | assets | NEX-010 |
@@ -53,6 +54,15 @@ Evidências: [docs/DESIGN.md](../docs/DESIGN.md), [docs/design/board.html](../do
 - Cada propriedade alterada mantém uma autoridade; reduzir dívida CSS em vez de adicionar remendo.
 
 Evidências: [docs/navigation-design-validation.json](../docs/navigation-design-validation.json), [scripts/verify-dashboard-design.mjs](../scripts/verify-dashboard-design.mjs), [scripts/verify-header-ownership.mjs](../scripts/verify-header-ownership.mjs), [src/components/mobile-more-menu.test.tsx](../src/components/mobile-more-menu.test.tsx), [src/components/ui/sheet.test.tsx](../src/components/ui/sheet.test.tsx), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/pull/261), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38162310175), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38162497219), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38162497262).
+
+## NEX-013 — Liquid fabric: login, Dashboard e componentes compartilhados
+
+- Substituir a tipografia editorial rejeitada e os números do Dashboard, preservando dados e três famílias.
+- Aplicar trama e profundidade coesas ao login, Dashboard, cabeçalhos, navegação, popups e botões compartilhados.
+- Um responsável por material e propriedade animada; retirar concorrentes e limpar frames ao sair/desmontar.
+- Verificar telas e estados em 320/390/820/1440px, toque, teclado, foco, redução de movimento e fallback de material.
+
+Evidências: [docs/shared-fabric-validation.json](../docs/shared-fabric-validation.json).
 
 ## NEX-005 — Ficha por seções e estados
 
@@ -127,4 +137,5 @@ Evidências: pendentes; não declarar concluído.
 | DEC-005 | Uma fila canônica e PRs de escopo verificável. | Planos históricos não reabrem tarefas sem confrontar a implementação atual. |
 | DEC-006 | Branch validada não significa main integrado ou produção publicada. | Merge em main pode acionar deploy; nenhum desses estados é presumido. |
 | DEC-007 | Explorar suspense mitológico, vidro dimensional e movimento de tecidos/fios a partir do Fio-Mestre. | Direção solicitada e aprovada por Tadeu em 11/10/2026. Véu & Trama foi aplicado ao shell/Dashboard na PR #259; expansão segue os responsáveis e dependências da fila canônica. |
-| DEC-008 | Tipografia editorial Grenze; menu Mais renderizado pelo shell e primitivo Radix. | Tadeu pediu fonte mais sofisticada e medieval e autorizou prosseguir em 11/10/2026. Retirar captura global e mutação de SVG preservando destinos e círculo. |
+| DEC-008 | Tipografia editorial Grenze; menu Mais renderizado pelo shell e primitivo Radix. | Tadeu pediu fonte mais sofisticada e medieval e autorizou prosseguir em 11/10/2026. Retirar captura global e mutação de SVG preservando destinos e círculo. Escolha de fonte superada por DEC-009; navegação consolidada permanece válida. |
+| DEC-009 | Tadeu rejeitou Grenze e os números monoespaçados; Cormorant Garamond 500/600/700 e itálico 500 assumem o editorial, Inter 500 com números tabulares assume métricas. PT Mono fica em metadados. Vidro nos controles e navegação, conteúdo opaco, tecido vetorial e reflexos locais; nenhuma simulação física ou loop global novo. | Nova instrução explícita de Tadeu em 11/10/2026: rever fonte, métricas e presença de fundo/motion antes da ficha. A parte tipográfica de DEC-008 passa a ser histórica, sem desfazer a navegação consolidada. |

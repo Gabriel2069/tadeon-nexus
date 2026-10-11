@@ -38,7 +38,12 @@ export function MobileMoreMenu({ path }: { path: string }) {
       }}
     >
       <Menu.Trigger asChild>
-        <button type="button" className="tadeon-mobile-dock__item" data-radial-active={active}>
+        <button
+          type="button"
+          data-material-surface="navigation"
+          className="tadeon-mobile-dock__item"
+          data-radial-active={active}
+        >
           <MoreHorizontal className="h-5 w-5" aria-hidden="true" />
           <span>Mais</span>
         </button>

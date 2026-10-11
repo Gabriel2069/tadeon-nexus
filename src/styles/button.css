@@ -111,11 +111,11 @@
 
 .tadeon-shell
   :where(
-    button,
-    a,
+    button:not([data-material-surface], .tadeon-material-button),
+    a:not([data-material-surface], .tadeon-material-button),
     [role="button"],
     [role="tab"],
-    [data-slot="button"],
+    [data-slot="button"]:not([data-material-surface], .tadeon-material-button),
     [data-slot="tabs-trigger"],
     [data-slot="toggle"],
     [data-slot="toggle-group-item"],
@@ -139,11 +139,11 @@
 
 /* Button sheen used to require overflow:hidden, which also clipped animated
  * icons near an edge. Keep icons free and constrain the sheen itself. */
-.tadeon-shell [data-slot="button"] {
+.tadeon-shell [data-slot="button"]:not([data-material-surface], .tadeon-material-button) {
   overflow: visible;
 }
 
-.tadeon-shell [data-slot="button"]::before {
+.tadeon-shell [data-slot="button"]:not([data-material-surface], .tadeon-material-button)::before {
   border-radius: inherit;
   clip-path: inset(0 round 0.7rem);
 }
@@ -151,11 +151,11 @@
 @media (prefers-reduced-motion: no-preference) {
   .tadeon-shell
     :where(
-      button,
-      a,
+      button:not([data-material-surface], .tadeon-material-button),
+      a:not([data-material-surface], .tadeon-material-button),
       [role="button"],
       [role="tab"],
-      [data-slot="button"],
+      [data-slot="button"]:not([data-material-surface], .tadeon-material-button),
       [data-slot="tabs-trigger"],
       [data-slot="toggle"],
       [data-slot="toggle-group-item"],
@@ -166,11 +166,11 @@
 
   .tadeon-shell
     :where(
-      button,
-      a,
+      button:not([data-material-surface], .tadeon-material-button),
+      a:not([data-material-surface], .tadeon-material-button),
       [role="button"],
       [role="tab"],
-      [data-slot="button"],
+      [data-slot="button"]:not([data-material-surface], .tadeon-material-button),
       [data-slot="tabs-trigger"],
       [data-slot="toggle"],
       [data-slot="toggle-group-item"],
@@ -183,11 +183,11 @@
 
   .tadeon-shell
     :where(
-      button,
-      a,
+      button:not([data-material-surface], .tadeon-material-button),
+      a:not([data-material-surface], .tadeon-material-button),
       [role="button"],
       [role="tab"],
-      [data-slot="button"],
+      [data-slot="button"]:not([data-material-surface], .tadeon-material-button),
       [data-slot="tabs-trigger"],
       [data-slot="toggle"],
       [data-slot="toggle-group-item"]
@@ -532,9 +532,6 @@
 
 .tadeon-nav-item {
   isolation: isolate;
-  border-color: transparent;
-  background: transparent;
-  box-shadow: none;
   transition:
     color var(--motion-fast) var(--ease-out),
     border-color var(--motion-fast) var(--ease-out),
@@ -558,25 +555,6 @@
     translate var(--tadeon-motion-micro) var(--tadeon-ease-spring-soft),
     scale var(--tadeon-motion-micro) var(--tadeon-ease-spring-soft),
     rotate var(--tadeon-motion-micro) var(--tadeon-ease-spring-soft);
-}
-
-.tadeon-nav-item[aria-current="page"] {
-  border-color: color-mix(
-    in srgb,
-    var(--section-accent, var(--primary)) 19%,
-    transparent
-  );
-  background:
-    linear-gradient(
-      90deg,
-      rgb(var(--section-accent-rgb, 217 215 164) / 12%),
-      rgb(var(--section-accent-rgb, 217 215 164) / 3%) 70%,
-      transparent
-    ),
-    color-mix(in srgb, var(--sidebar-accent) 92%, transparent);
-  box-shadow:
-    inset 2px 0 var(--section-accent, var(--sidebar-primary)),
-    0 14px 34px -30px var(--section-accent, var(--primary));
 }
 
 .tadeon-nav-item[aria-current="page"] .tadeon-nav-item__icon {
@@ -748,7 +726,7 @@
 
 @media (pointer: coarse) {
   .tadeon-shell
-    :where(button, a, [role="button"], [role="tab"]):active
+    :where(button:not([data-material-surface], .tadeon-material-button), a:not([data-material-surface], .tadeon-material-button), [role="button"], [role="tab"]):active
     svg:not(.animate-spin):not(.animate-pulse) {
     translate: 0 0.08rem;
     scale: 0.86;
@@ -771,11 +749,11 @@
     transition-duration: 0.01ms !important;
   }
 
-  .tadeon-shell :where(button, a, [role="button"], [role="tab"]) {
+  .tadeon-shell :where(button:not([data-material-surface], .tadeon-material-button), a:not([data-material-surface], .tadeon-material-button), [role="button"], [role="tab"]) {
     scale: 1 !important;
   }
 
-  .tadeon-shell :where(button, a, [role="button"], [role="tab"]) svg {
+  .tadeon-shell :where(button:not([data-material-surface], .tadeon-material-button), a:not([data-material-surface], .tadeon-material-button), [role="button"], [role="tab"]) svg {
     translate: 0 0 !important;
     scale: 1 !important;
     rotate: 0deg !important;
@@ -783,3 +761,35 @@
 }
 
 /* end-source: src/styles/interaction-polish.css */
+
+/* Shared React control material. Legacy controls keep their existing writers. */
+.tadeon-material-button {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  border-radius: .8rem .38rem .8rem .38rem;
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 13%), inset 0 -2px 2px rgb(0 0 0 / 18%), 0 7px 16px -12px rgb(0 0 0 / 80%);
+  transition: background-color 180ms var(--ease-out), border-color 180ms var(--ease-out), box-shadow 180ms var(--ease-out), translate 180ms var(--ease-out), scale 120ms var(--ease-out);
+}
+.tadeon-material-button::before {
+  content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none; border-radius: inherit;
+  background: radial-gradient(ellipse at var(--material-x, 28%) var(--material-y, 0%), rgb(255 255 255 / 22%), transparent 70%), linear-gradient(160deg, rgb(255 255 255 / 10%), transparent 45%);
+  opacity: .65; transition: opacity 180ms var(--ease-out);
+}
+.tadeon-material-button[data-variant="default"] { background-color: var(--primary); background-image: linear-gradient(155deg, color-mix(in srgb, var(--primary) 80%, white), var(--primary) 45%, color-mix(in srgb, var(--primary) 90%, black)); color: var(--primary-foreground); border-color: color-mix(in srgb, var(--primary) 70%, white); }
+.tadeon-material-button:is([data-variant="outline"], [data-variant="secondary"]) { background: #1c2028; border-color: rgb(233 227 213 / 22%); }
+.tadeon-material-button[data-variant="ghost"] { box-shadow: none; }
+.tadeon-material-button[data-variant="link"] { box-shadow: none; overflow: visible; }
+.tadeon-material-button[data-variant="link"]::before { content: none; }
+.tadeon-material-button:focus-visible { outline: 2px solid var(--foreground); outline-offset: 3px; }
+.tadeon-material-button:focus-visible::before { opacity: 1; }
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .tadeon-material-button:not(:disabled):not([aria-disabled="true"]):not([data-variant="link"]):not([data-variant="ghost"]):hover { translate: 0 -1px; box-shadow: inset 0 1px 0 rgb(255 255 255 / 25%), inset 0 -2px 2px rgb(0 0 0 / 22%), 0 12px 24px -14px rgb(0 0 0 / 90%); }
+  .tadeon-material-button:not(:disabled):hover::before { opacity: 1; }
+}
+.tadeon-material-button:not(:disabled):active { translate: 0 1px; scale: .98; }
+.tadeon-material-button:disabled { translate: none; scale: 1; }
+@media (prefers-reduced-motion: reduce) {
+  .tadeon-material-button, .tadeon-material-button::before { transition: none; }
+  .tadeon-material-button:not(:disabled):is(:hover, :active) { translate: none; scale: 1; }
+}

@@ -2859,13 +2859,13 @@ html body .tadeon-shell[data-section="Mesa Nexus"] #tadeon-main .tadeon-tabletop
 }
 
 /* Master / Backup: restrained icon response to reinforce section identity. */
-html body .tadeon-shell[data-section="Painel do Mestre"] #tadeon-main [data-slot="button"]:hover > svg,
-html body .tadeon-shell[data-section="Saúde do arquivo"] #tadeon-main [data-slot="button"]:hover > svg {
+html body .tadeon-shell[data-section="Painel do Mestre"] #tadeon-main [data-slot="button"]:not([data-material-surface], .tadeon-material-button):hover > svg,
+html body .tadeon-shell[data-section="Saúde do arquivo"] #tadeon-main [data-slot="button"]:not([data-material-surface], .tadeon-material-button):hover > svg {
   transform: translateY(-1px) rotate(-1.5deg);
 }
 
-html body .tadeon-shell[data-section="Painel do Mestre"] #tadeon-main [data-slot="button"]:active > svg,
-html body .tadeon-shell[data-section="Saúde do arquivo"] #tadeon-main [data-slot="button"]:active > svg {
+html body .tadeon-shell[data-section="Painel do Mestre"] #tadeon-main [data-slot="button"]:not([data-material-surface], .tadeon-material-button):active > svg,
+html body .tadeon-shell[data-section="Saúde do arquivo"] #tadeon-main [data-slot="button"]:not([data-material-surface], .tadeon-material-button):active > svg {
   transform: scale(.97);
 }
 
@@ -3093,18 +3093,6 @@ html body .tadeon-shell .tadeon-nav-item {
   --nav-authority-rgb: var(--tadeon-nav-authority-rgb, var(--section-accent-rgb));
 }
 
-html body .tadeon-shell .tadeon-nav-item[aria-current="page"] {
-  color: var(--nav-authority) !important;
-  border-color: rgb(var(--nav-authority-rgb) / 38%) !important;
-  background:
-    linear-gradient(90deg, rgb(var(--nav-authority-rgb) / 10%), transparent 78%),
-    color-mix(in srgb, var(--nav-authority) 5%, transparent) !important;
-  box-shadow:
-    inset 2px 0 var(--nav-authority),
-    inset 0 1px rgb(255 255 255 / 4%),
-    0 12px 30px -28px rgb(var(--nav-authority-rgb) / 70%) !important;
-}
-
 html body .tadeon-shell .tadeon-nav-item[aria-current="page"] .tadeon-nav-item__icon,
 html body .tadeon-shell .tadeon-nav-item[aria-current="page"] .tadeon-nav-item__icon > svg {
   color: var(--nav-authority) !important;
@@ -3251,8 +3239,8 @@ html body .tadeon-shell :is(.tadeon-page-hero, .tadeon-tabletop-studio__header, 
 }
 .tadeon-continuity-hero__copy { position: relative; z-index: 2; padding: clamp(1.5rem, 3.6vw, 3rem); }
 .tadeon-continuity-hero__greeting { margin: 0 0 1.5rem; font-size: .875rem; }
-.tadeon-continuity-hero h1 { margin: 0; font-family: var(--font-cinzel, "Grenze", Georgia, serif); font-size: clamp(2.6rem, 4.2vw, 4.3rem); font-weight: 500; line-height: 1.08; letter-spacing: -.015em; }
-.tadeon-continuity-hero h1 em { color: var(--primary); font-style: normal; }
+.tadeon-continuity-hero h1 { margin: 0; font-family: var(--font-cinzel, "Cormorant Garamond", Georgia, serif); font-size: clamp(2.8rem, 4.6vw, 4.6rem); font-weight: 600; line-height: 1.04; letter-spacing: -.025em; }
+.tadeon-continuity-hero h1 em { color: var(--primary); font-style: italic; }
 .tadeon-continuity-hero__description { max-width: 37ch; margin-top: 1.25rem; font-size: .9375rem; line-height: 1.65; }
 .tadeon-continuity-hero__actions { margin-top: 1.75rem; }
 .tadeon-continuity-hero__art { position: relative; grid-column: 2; grid-row: 1; display: grid; place-items: center; min-width: 0; pointer-events: none; }
@@ -3263,7 +3251,7 @@ html body .tadeon-shell :is(.tadeon-page-hero, .tadeon-tabletop-studio__header, 
 .tadeon-continuity-facts { position: relative; z-index: 2; grid-column: 1 / -1; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); margin: 0; }
 .tadeon-continuity-facts > div { min-width: 0; padding: 1.5rem 2rem; }
 .tadeon-continuity-facts dt { font-size: .75rem; }
-.tadeon-continuity-facts dd:not(.tadeon-continuity-facts__detail) { margin: .625rem 0 .25rem; font-family: var(--font-mono, "PT Mono", ui-monospace, monospace); font-size: 1.75rem; line-height: 1.2; }
+.tadeon-continuity-facts dd:not(.tadeon-continuity-facts__detail) { margin: .625rem 0 .25rem; font-family: var(--font-inter, "Inter", system-ui, sans-serif); font-size: 2rem; font-weight: 500; font-variant-numeric: lining-nums tabular-nums; letter-spacing: -.06em; line-height: 1.2; }
 .tadeon-continuity-facts .tadeon-continuity-facts__detail { display: block; margin: 0; font-size: .75rem; }
 @media (max-width: 1000px) {
   .tadeon-continuity-hero { grid-template-columns: minmax(0, 1fr) minmax(9rem, .55fr); }

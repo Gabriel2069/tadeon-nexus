@@ -1,3 +1,4 @@
+import { MaterialSurface } from "@/components/material-surface";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useAuth } from "@/lib/auth";
@@ -499,7 +500,7 @@ export function HomePage() {
         ) : (
           <div className="tadeon-character-gallery">
             {sheets.map((sheet, index) => (
-              <article key={sheet.id} className="tadeon-character-card">
+              <MaterialSurface as="article" key={sheet.id} className="tadeon-character-card">
                 <div className="mb-4 flex items-start justify-between gap-4 sm:mb-6">
                   <span className="tadeon-mono text-[10px] uppercase text-muted-foreground">
                     Fio {String(index + 1).padStart(2, "0")} · Exposição {sheet.exposure || 0}
@@ -536,7 +537,7 @@ export function HomePage() {
                   Abrir ficha
                   <ExternalLink className="h-3.5 w-3.5" />
                 </Link>
-              </article>
+              </MaterialSurface>
             ))}
           </div>
         )}

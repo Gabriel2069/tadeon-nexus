@@ -70,7 +70,7 @@ const DialogContent = React.forwardRef<
             }
           }}
           className={cn(
-            "z-50 grid max-h-[calc(100dvh_-_1rem)] w-[calc(100%_-_1rem)] max-w-lg gap-4 overflow-y-auto overscroll-contain rounded-[1.15rem_.45rem_1.15rem_.45rem] border border-border bg-popover p-5 shadow-[0_32px_90px_-28px_rgba(0,0,0,.96),inset_0_1px_0_rgba(255,255,255,.045)] duration-200 ease-[var(--ease-out)] sm:p-6",
+            "z-50 grid max-h-[calc(100dvh_-_1rem)] w-[calc(100%_-_1rem)] max-w-lg gap-4 overflow-y-auto overscroll-contain rounded-[1.15rem_.45rem_1.15rem_.45rem] border border-foreground/20 bg-popover p-5 shadow-[0_32px_90px_-28px_rgba(0,0,0,.96),inset_0_1px_0_rgba(255,255,255,.16),inset_0_-1px_0_rgba(255,255,255,.035)] duration-200 ease-[var(--ease-out)] sm:p-6",
             className,
           )}
           {...props}
@@ -94,7 +94,7 @@ const DialogHeader = ({ className, ...props }: React.HTMLAttributes<HTMLDivEleme
   <div
     data-slot="dialog-header"
     className={cn(
-      "flex flex-col space-y-1.5 border-b border-border pb-4 pr-10 text-left",
+      "relative flex flex-col space-y-1.5 border-b border-foreground/15 pb-4 pr-10 text-left",
       className,
     )}
     {...props}

@@ -91,13 +91,6 @@
     min-height: var(--tadeon-mobile-header-height);
     padding-top: max(0.25rem, env(safe-area-inset-top));
     border-bottom: 1px solid color-mix(in srgb, var(--section-accent) 13%, var(--border));
-    background:
-      linear-gradient(90deg, rgb(var(--section-accent-rgb) / 7%), transparent 48%),
-      rgb(8 10 14 / 88%);
-    box-shadow:
-      0 22px 62px -48px rgb(0 0 0 / 100%),
-      inset 0 -1px rgb(255 255 255 / 1.8%);
-    backdrop-filter: blur(24px) saturate(138%);
   }
 
   .tadeon-mobile-header::after {
@@ -138,11 +131,6 @@
 
   .tadeon-mobile-drawer {
     border-right-color: color-mix(in srgb, var(--section-accent) 17%, var(--sidebar-border));
-    background:
-      linear-gradient(180deg, rgb(255 255 255 / 3%), transparent 12rem),
-      radial-gradient(circle at 15% 3%, rgb(var(--section-accent-rgb) / 10%), transparent 18rem),
-      rgb(9 11 15 / 98%);
-    box-shadow: 32px 0 90px -50px rgb(0 0 0 / 100%);
   }
 
   .tadeon-mobile-drawer .tadeon-nav-group-label {
@@ -154,21 +142,6 @@
     letter-spacing: 0.18em;
     line-height: 1rem;
     text-transform: uppercase;
-  }
-
-  .tadeon-mobile-drawer .tadeon-nav-item[aria-current="page"] {
-    border-color: color-mix(in srgb, var(--section-accent) 17%, transparent);
-    background:
-      linear-gradient(
-        90deg,
-        rgb(var(--section-accent-rgb) / 14%),
-        rgb(var(--section-accent-rgb) / 3%) 72%,
-        transparent
-      ),
-      var(--sidebar-accent);
-    box-shadow:
-      inset 2px 0 var(--section-accent),
-      inset 0 1px rgb(255 255 255 / 3%);
   }
 
   .tadeon-mobile-drawer .tadeon-nav-item[aria-current="page"] .tadeon-nav-item__icon > svg {
@@ -190,13 +163,6 @@
     padding: 0.34rem;
     border: 1px solid color-mix(in srgb, var(--section-accent) 16%, var(--border));
     border-radius: 1.25rem 0.48rem 1.25rem 0.48rem;
-    background:
-      linear-gradient(145deg, rgb(var(--section-accent-rgb) / 7%), transparent 48%),
-      rgb(9 11 15 / 91%);
-    box-shadow:
-      0 28px 70px -30px rgb(0 0 0 / 100%),
-      inset 0 1px rgb(255 255 255 / 4%);
-    backdrop-filter: blur(26px) saturate(140%);
   }
 
   .tadeon-mobile-dock::before {
@@ -226,7 +192,6 @@
     padding: 0.3rem 0.18rem;
     border: 1px solid transparent;
     border-radius: 0.9rem 0.32rem 0.9rem 0.32rem;
-    color: color-mix(in srgb, var(--muted-foreground) 88%, transparent);
     font-family: var(--font-mono);
     font-size: 0.56rem;
     font-weight: 700;
@@ -240,19 +205,6 @@
       color var(--motion-fast) var(--ease-out),
       filter var(--motion-fast) var(--ease-out),
       transform var(--motion-fast) var(--ease-out);
-  }
-
-  .tadeon-mobile-dock__item[aria-current="page"] {
-    border-color: color-mix(in srgb, var(--section-accent) 17%, transparent);
-    color: color-mix(in srgb, var(--foreground) 84%, var(--section-accent));
-    background:
-      linear-gradient(
-        180deg,
-        rgb(var(--section-accent-rgb) / 13%),
-        rgb(var(--section-accent-rgb) / 4%)
-      ),
-      rgb(255 255 255 / 2%);
-    box-shadow: inset 0 1px rgb(255 255 255 / 3%);
   }
 
   .tadeon-mobile-dock__item[aria-current="page"]::after {
@@ -322,33 +274,6 @@
       max(0.75rem, env(safe-area-inset-bottom));
   }
 
-  .tadeon-auth-shell {
-    grid-template-columns: minmax(0, 1fr);
-    border-color: color-mix(in srgb, var(--tadeon-knowledge) 16%, var(--border));
-    border-radius: 1.25rem 0.42rem 1.25rem 0.42rem;
-    background: rgb(8 10 14 / 86%);
-    box-shadow:
-      0 38px 90px -48px rgb(0 0 0 / 100%),
-      inset 0 1px rgb(255 255 255 / 4%);
-  }
-
-  .tadeon-auth-manifesto {
-    min-height: 20rem;
-    align-items: flex-end;
-    padding: 5.25rem 1.2rem 1.35rem;
-    border-right: 0;
-    border-bottom: 1px solid color-mix(in srgb, var(--primary) 14%, var(--border));
-    background:
-      radial-gradient(circle at 16% 12%, rgb(217 215 164 / 11%), transparent 32%),
-      radial-gradient(circle at 90% 94%, rgb(45 73 62 / 28%), transparent 40%),
-      linear-gradient(145deg, rgb(18 21 26 / 96%), rgb(8 11 15 / 98%));
-  }
-
-  .tadeon-auth-manifesto::after {
-    inset: 0.7rem;
-    border-radius: 0.9rem 0.3rem 0.9rem 0.3rem;
-  }
-
   .tadeon-auth-manifesto__brand {
     top: 1.1rem;
     left: 1.2rem;
@@ -369,7 +294,7 @@
   .tadeon-auth-manifesto__copy > p:last-child {
     display: block;
     margin-top: 0.8rem;
-    font-size: 0.73rem;
+    font-size: 0.8125rem;
     line-height: 1.55;
   }
 
@@ -383,12 +308,6 @@
     min-height: 1.7rem;
     padding: 0.22rem 0.45rem;
     font-size: 0.6rem;
-  }
-
-  .tadeon-auth-card {
-    padding: 1.4rem 1.2rem 1.55rem;
-    background:
-      linear-gradient(155deg, rgb(255 255 255 / 3%), transparent 44%), rgb(13 16 21 / 96%);
   }
 
   .tadeon-page-hero {
@@ -667,8 +586,7 @@
 }
 
 @media (hover: none) and (pointer: coarse) and (max-width: 767px) {
-  .tadeon-mobile-header__control:active,
-  .tadeon-mobile-dock__item:active {
+  .tadeon-mobile-header__control:active {
     border-color: color-mix(in srgb, var(--section-accent) 28%, var(--border));
     background: rgb(var(--section-accent-rgb) / 11%);
   }
@@ -683,8 +601,6 @@
 }
 
 @media (prefers-reduced-transparency: reduce) and (max-width: 767px) {
-  .tadeon-mobile-header,
-  .tadeon-mobile-dock,
   .tadeon-page-hero,
   .tadeon-master-navigation {
     background-color: var(--background);
@@ -703,8 +619,6 @@
 }
 
 @media (prefers-contrast: more) and (max-width: 767px) {
-  .tadeon-mobile-header,
-  .tadeon-mobile-dock,
   .tadeon-page-hero,
   .tadeon-shell[data-mobile-dock="visible"] .tadeon-route-stage [data-slot="card"] {
     border-color: var(--border);
@@ -725,18 +639,8 @@
     --section-accent-rgb: 88 117 138;
   }
 
-  .tadeon-mobile-header,
-  .tadeon-mobile-dock,
-  .tadeon-mobile-drawer {
-    -webkit-backdrop-filter: blur(24px) saturate(128%);
-    backdrop-filter: blur(24px) saturate(128%);
-  }
-
   .tadeon-mobile-header {
     grid-template-columns: 4rem minmax(0, 1fr) 6.25rem;
-    background:
-      linear-gradient(90deg, rgb(var(--section-accent-rgb) / 7%), transparent 52%),
-      rgb(8 10 14 / 88%);
   }
 
   .tadeon-mobile-header__control {
@@ -786,27 +690,10 @@
       linear-gradient(145deg, rgb(255 255 255 / 2.2%), transparent 44%), var(--tadeon-surface-1);
   }
 
-  .tadeon-mobile-dock {
-    border-color: color-mix(in srgb, var(--section-accent) 18%, var(--border));
-    background:
-      linear-gradient(145deg, rgb(var(--section-accent-rgb) / 7%), transparent 50%),
-      rgb(9 11 15 / 92%);
-    box-shadow:
-      0 24px 70px -34px rgb(0 0 0 / 100%),
-      inset 0 1px rgb(255 255 255 / 4%);
-  }
-
   .tadeon-mobile-dock__item {
     position: relative;
     border: 1px solid transparent;
     border-radius: 0.85rem 0.3rem 0.85rem 0.3rem;
-  }
-
-  .tadeon-mobile-dock__item[aria-current="page"] {
-    border-color: rgb(var(--section-accent-rgb) / 13%);
-    background:
-      linear-gradient(155deg, rgb(var(--section-accent-rgb) / 12%), transparent),
-      rgb(255 255 255 / 2%);
   }
 
   .tadeon-mobile-dock__item[aria-current="page"]::after {

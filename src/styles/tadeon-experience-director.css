@@ -105,7 +105,6 @@
 .tadeon-shell .tadeon-primary-nav .tadeon-nav-item:active{transform:translateX(3px) scale(.965) !important}
 .tadeon-shell .tadeon-primary-nav .tadeon-nav-item[aria-current="page"]{
   animation:thn-nav-land 520ms var(--thn-spring) both;
-  box-shadow:inset 3px 0 rgb(180 92 98 / 80%),0 14px 30px -26px rgb(116 36 45 / 65%) !important;
 }
 @keyframes thn-nav-land{from{opacity:.62;transform:translateX(-14px) scale(.94)}62%{opacity:1;transform:translateX(4px) scale(1.025)}to{transform:none}}
 @keyframes thn-nav-rail{from{opacity:0;transform:scaleY(.2)}to{opacity:1;transform:scaleY(1)}}
