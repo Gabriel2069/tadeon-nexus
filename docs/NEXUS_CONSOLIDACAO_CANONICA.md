@@ -1,5 +1,7 @@
 # Nexus — inventário e consolidação canônica
 
+> Snapshot editorial de 24/08/2026; esta consolidação de pacotes não é a consolidação do código. Consulte [índice](README.md), [estado de continuidade](ai/00_ESTADO_ATUAL.md) e [fila atual](WORKPLAN.md).
+
 ## Estado da consolidação
 
 Em 24 de agosto de 2026, os sete downloads redundantes foram substituídos por

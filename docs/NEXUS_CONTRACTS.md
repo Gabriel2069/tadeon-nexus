@@ -1,5 +1,7 @@
 # Tadeon Nexus — Contratos centrais da expansão
 
+> Referência de contrato/procedimento. Afirmações de ambiente, flags, preços ou rollout descrevem seu checkpoint e exigem conferência atual. Consulte [índice](README.md) e [continuidade](ai/00_ESTADO_ATUAL.md).
+
 Este documento define os contratos estáveis da Fase 1. Eles não ativam O Nexus, Mesa Nexus,
 Realtime, iluminação, Nexus Assets ou R2.
 

@@ -1,5 +1,7 @@
 # Mesa Nexus — iluminação e névoa
 
+> Referência de contrato/procedimento. Afirmações de ambiente, flags, preços ou rollout descrevem seu checkpoint e exigem conferência atual. Consulte [índice](README.md) e [continuidade](ai/00_ESTADO_ATUAL.md).
+
 ## Escopo
 
 O módulo é controlado por `nexus_lighting_enabled`. Com a flag desligada, o

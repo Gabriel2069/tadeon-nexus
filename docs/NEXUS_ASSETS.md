@@ -1,5 +1,7 @@
 # Tadeon Nexus — Nexus Assets
 
+> Referência de contrato/procedimento. Afirmações de ambiente, flags, preços ou rollout descrevem seu checkpoint e exigem conferência atual. Consulte [índice](README.md) e [continuidade](ai/00_ESTADO_ATUAL.md).
+
 Nexus Assets é a camada unificada de arquivos do Tadeon Nexus. Ela separa o catálogo e as
 permissões do local físico em que o arquivo é armazenado.
 

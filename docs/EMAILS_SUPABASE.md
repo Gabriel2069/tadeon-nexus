@@ -1,5 +1,7 @@
 # E-mails do Tadeon Nexus
 
+> Referência de contrato/procedimento. Afirmações de ambiente, flags, preços ou rollout descrevem seu checkpoint e exigem conferência atual. Consulte [índice](README.md) e [continuidade](ai/00_ESTADO_ATUAL.md).
+
 Os modelos versionados em `supabase/templates` cobrem confirmação, convite, recuperação de senha
 e troca de e-mail. O `config.toml` os utiliza no desenvolvimento local.
 

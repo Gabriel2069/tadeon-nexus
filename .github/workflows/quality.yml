@@ -24,6 +24,8 @@ jobs:
         run: npm audit --audit-level=high
       - name: Verificar arquitetura de estilos
         run: npm run check:styles
+      - name: Verificar mapas e continuidade
+        run: npm run check:project
       - run: npm run lint
       - run: npm run typecheck
       - run: npm run test

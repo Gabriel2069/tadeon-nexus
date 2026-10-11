@@ -1,5 +1,7 @@
 # Revisão de design engineering — agosto de 2026
 
+> Revisão histórica de agosto de 2026: resultados precisam de nova evidência para certificar telas alteradas. Consulte [índice](README.md), [estado de continuidade](ai/00_ESTADO_ATUAL.md) e [fila atual](WORKPLAN.md).
+
 Esta revisão percorre as 12 rotas visuais, o shell autenticado e as superfícies compartilhadas do Tadeon Nexus. As decisões de movimento e interação seguem as orientações do repositório [emilkowalski/skills](https://github.com/emilkowalski/skills): resposta imediata no pressionar, movimento curto e interruptível, continuidade espacial, alvos de toque confortáveis e animação apenas quando esclarece uma mudança de estado.
 
 ## Antes, depois e motivo

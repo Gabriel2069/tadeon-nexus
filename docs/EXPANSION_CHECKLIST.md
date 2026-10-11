@@ -1,5 +1,7 @@
 # Tadeon Nexus — verificação consolidada da expansão
 
+> Checkpoint histórico de 08/08/2026: a sequência de trabalho atual pertence à fila canônica. Consulte [índice](README.md), [estado de continuidade](ai/00_ESTADO_ATUAL.md) e [fila atual](WORKPLAN.md).
+
 Estado revisado em 8 de agosto de 2026. Este documento complementa a auditoria histórica e
 registra o que já existe no código atual, o que está protegido por feature flag e o que ainda
 precisa ser concluído. “Implementado” significa que há código, contratos e testes no repositório;

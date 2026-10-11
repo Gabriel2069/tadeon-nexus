@@ -1,5 +1,7 @@
 # Tadeon Nexus — Cloudflare R2
 
+> Referência de contrato/procedimento. Afirmações de ambiente, flags, preços ou rollout descrevem seu checkpoint e exigem conferência atual. Consulte [índice](README.md) e [continuidade](ai/00_ESTADO_ATUAL.md).
+
 Esta integração acrescenta R2 como provedor opcional do Nexus Assets. Ela não substitui o
 Supabase Storage e permanece inativa enquanto `nexus_r2_enabled` estiver desligada.
 

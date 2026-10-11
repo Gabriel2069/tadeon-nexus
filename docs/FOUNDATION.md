@@ -34,7 +34,7 @@ Os módulos de layout e motion ainda contêm seções históricas. O próximo re
 
 `npm run check:styles` é parte de `npm run check` e verifica inventário aprovado, existência dos imports, ordem dos 12 links globais, ausência de imports locais aninhados e tetos de `!important` e `:root` por arquivo. Os tetos representam dívida existente, não metas aceitáveis. A aprovação de um módulo realmente novo deve explicitar seu proprietário e seu motivo. Aumentar tetos apenas para passar no gate não é uma correção.
 
-A validação completa roda arquitetura de estilos, ESLint, TypeScript, Vitest e builds cliente/SSR. `npm audit --omit=dev --audit-level=high` é obrigatório tanto no Quality quanto na publicação. Produção só é publicada de `main`; dispatch de outra referência é ignorado. PR não tem caminho de publicação em produção.
+A validação completa roda arquitetura de estilos, ESLint, TypeScript, Vitest e builds cliente/SSR. `npm audit --audit-level=high` é obrigatório tanto no Quality quanto na publicação. Produção só é publicada de `main`; dispatch de outra referência é ignorado. PR não tem caminho de publicação em produção.
 
 ## Correções de comportamento
 
@@ -54,17 +54,9 @@ Foram mantidos os testes de domínio e migração. 38 suítes textuais de contra
 
 Novos testes exercitam AuthProvider renderizado, cache com troca de usuário/cargo, logout, falhas de storage, ordenação assíncrona, acúmulo de frames e execução do service worker. Não foram alteradas tabelas, RLS, funções ou migrações do Supabase.
 
-## Próximos lotes de refinamento
+## Continuidade e próximos lotes
 
-1. Validar as sete seções com dados e contas de jogador/mestre, em 390, 820 e 1440 px. Registrar geometria, clipping, foco, overlays e movimento reduzido. Estabelecer referências visuais aprovadas.
-2. Consolidar o contrato de cabeçalhos, símbolos e cores por seção. Remover apenas depois de comparação as declarações e observers que reproduzem o mesmo papel.
-3. Resolver sidebar, busca e portais propriedade por propriedade, incluindo teclado e abertura/fechamento. Desvincular geometria de callbacks de apresentação.
-4. Fazer o mesmo para Mesa, fichas, Nexus e painel do mestre. Dividir arquivos TSX grandes por responsabilidade e estado compartilhado, não pelo tamanho em linhas.
-5. Revisar flags, carregamento por rota, chunk Pixi e custo de motion. A consolidação atual diminui arquivos/imports, mas não promete redução proporcional dos bytes CSS.
-6. Revisar isolamento entre tenants, RLS e migrações com dados de teste e ambiente adequado. Não reunir migrações aplicadas em uma migração única.
-7. Reavaliar requisitos úteis da PR antiga conflitante contra a base atual; não integrar seu diff antigo nem apagar branches sem verificar referências.
-
-A preparação estrutural é encerrada no terceiro lote abaixo. A consolidação visual completa ainda depende de testes com dados reais e da revisão da cascata por proprietário durante os próximos refinamentos.
+A fila atual pertence a [WORKPLAN.md](WORKPLAN.md), gerada de [project-continuity.json](project-continuity.json). O mapa de código está em [PROJECT_MAP.md](PROJECT_MAP.md). Este arquivo conserva fundamentos e evidências; não mantém uma segunda lista de prioridades. A preparação estrutural está validada na PR #258; integração e publicação são estados separados.
 
 ## Evidência do primeiro lote
 
