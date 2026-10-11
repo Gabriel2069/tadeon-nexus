@@ -46,7 +46,7 @@ import { toast } from "sonner";
 import { BrandMark } from "@/components/brand-mark";
 import { ContinuityHero } from "@/components/continuity-hero";
 import { createLatestRequestGate } from "@/lib/latest-request";
-import { cacheSheetSummaries } from "@/lib/offline-cache";
+import { cacheSheetSummaries, type OfflineCacheScope } from "@/lib/offline-cache";
 import { can, isApplicationAdministrator } from "@/lib/permissions";
 import { CANONICAL_RANK_TABLE } from "@/lib/sheet-types";
 
@@ -70,9 +70,7 @@ export const Route = createFileRoute("/")({
         content: "https://tadeon-nexus.gtadeusz.workers.dev/",
       },
     ],
-    links: [
-      { rel: "canonical", href: "https://tadeon-nexus.gtadeusz.workers.dev/" },
-    ],
+    links: [{ rel: "canonical", href: "https://tadeon-nexus.gtadeusz.workers.dev/" }],
   }),
   component: () => (
     <ProtectedShell>
@@ -99,6 +97,9 @@ interface OwnerOption {
 export function HomePage() {
   const { user, profile, role } = useAuth();
   const navigate = useNavigate();
+  const userId = user?.id;
+  const activeIdentity = useRef<OfflineCacheScope | null>(null);
+  const pendingWrite = useRef<OfflineCacheScope | null>(null);
   const [sheets, setSheets] = useState<SheetRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState(false);
@@ -109,6 +110,7 @@ export function HomePage() {
   const [ownerId, setOwnerId] = useState("");
   const [ownersLoading, setOwnersLoading] = useState(false);
   const [creating, setCreating] = useState(false);
+  const [deleting, setDeleting] = useState(false);
   const [startTutorial, setStartTutorial] = useState(true);
   const [toDelete, setToDelete] = useState<SheetRow | null>(null);
 
@@ -123,9 +125,9 @@ export function HomePage() {
     });
 
   const load = useCallback(async () => {
-    if (!user || !role) return;
+    const identity = activeIdentity.current;
+    if (!identity || identity.userId !== userId || identity.role !== role) return;
     const ticket = reads.current.begin();
-    const identity = { userId: user.id, role };
     setLoading(true);
     setLoadError(false);
     try {
@@ -133,7 +135,7 @@ export function HomePage() {
         .from("character_sheets")
         .select("id,name,occupation,owner_id,exposure")
         .order("created_at", { ascending: false });
-      const { data, error } = isMestre ? await query : await query.eq("owner_id", user.id);
+      const { data, error } = isMestre ? await query : await query.eq("owner_id", identity.userId);
       if (!reads.current.isCurrent(ticket)) return;
       if (error) throw error;
       const rows = (data ?? []) as SheetRow[];
@@ -145,7 +147,9 @@ export function HomePage() {
           .select("id,email,full_name")
           .in("id", ids);
         if (!reads.current.isCurrent(ticket)) return;
-        const names = new Map((profiles ?? []).map((item) => [item.id, item.full_name || item.email || ""]));
+        const names = new Map(
+          (profiles ?? []).map((item) => [item.id, item.full_name || item.email || ""]),
+        );
         labeled = rows.map((row) => ({ ...row, owner_label: names.get(row.owner_id) ?? null }));
       }
       setSheets(labeled);
@@ -155,15 +159,26 @@ export function HomePage() {
     } finally {
       if (reads.current.isCurrent(ticket)) setLoading(false);
     }
-  }, [user, role, isMestre]);
+  }, [userId, role, isMestre]);
 
   useEffect(() => {
     const gate = reads.current;
+    activeIdentity.current = userId && role ? { userId, role } : null;
+    pendingWrite.current = null;
+    setCreateOpen(false);
+    setName("");
+    setToDelete(null);
+    setCreating(false);
+    setDeleting(false);
     setSheets([]);
     setLoadError(false);
-    if (user && role) void load();
-    return () => gate.invalidate();
-  }, [load, user, role]);
+    if (userId && role) void load();
+    else setLoading(false);
+    return () => {
+      gate.invalidate();
+      activeIdentity.current = null;
+    };
+  }, [load, userId, role]);
 
   useEffect(() => {
     if (!user) return;
@@ -177,36 +192,46 @@ export function HomePage() {
     let cancelled = false;
     setOwners([]);
     setOwnersLoading(true);
-    void supabase
-      .from("profiles")
-      .select("id,email,full_name")
-      .order("full_name")
-      .then(({ data, error }) => {
+    void (async () => {
+      try {
+        const { data, error } = await supabase
+          .from("profiles")
+          .select("id,email,full_name")
+          .order("full_name");
         if (cancelled) return;
-        setOwnersLoading(false);
-        if (error) {
-          toast.error("Não foi possível carregar os donos disponíveis.");
-          return;
-        }
+        if (error) throw error;
         const options = (data ?? []).filter(
-          (row): row is OwnerOption =>
-            typeof row.email === "string" && row.email.length > 0,
+          (row): row is OwnerOption => typeof row.email === "string" && row.email.length > 0,
         );
         setOwners(options);
         setOwnerId((current) =>
           options.some((option) => option.id === current)
             ? current
-            : (options.find((option) => option.id === user.id)?.id ??
-              options[0]?.id ??
-              ""),
+            : (options.find((option) => option.id === user.id)?.id ?? options[0]?.id ?? ""),
         );
-      });
-    return () => { cancelled = true; };
+      } catch {
+        if (!cancelled) toast.error("Não foi possível carregar os donos disponíveis.");
+      } finally {
+        if (!cancelled) setOwnersLoading(false);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
   }, [isMestre, user]);
 
   const handleCreate = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!user) return;
+    const identity = activeIdentity.current;
+    if (
+      !user ||
+      !identity ||
+      identity.userId !== user.id ||
+      identity.role !== role ||
+      !canCreate ||
+      pendingWrite.current === identity
+    )
+      return;
     const selectedOwner = isMestre
       ? owners.find((owner) => owner.id === ownerId)
       : {
@@ -218,94 +243,158 @@ export function HomePage() {
       toast.error("Selecione um dono válido para a ficha.");
       return;
     }
+    pendingWrite.current = identity;
     setCreating(true);
-    const initialRank = CANONICAL_RANK_TABLE[0];
-    const { data, error } = await supabase
-      .from("character_sheets")
-      .insert({
-        owner_id: selectedOwner.id,
-        name: name.trim() || "Novo Personagem",
-        weapon_proficiency: "operador",
-        weapon_proficiency_family: "",
-        initial_skill_degrees: {},
-        stats: {
-          pv_current: initialRank.pv,
-          pv_mod: 0,
-          ps_current: initialRank.ps,
-          ps_mod: 0,
-          pe_current: initialRank.pe,
-          pe_mod: 0,
-          pa_current: initialRank.pa,
-          pa_mod: 0,
-          pm_current: initialRank.pm,
-          pm_mod: 0,
-          def_equip: 0,
-          def_mod: 0,
-        },
-      })
-      .select("id")
-      .single();
-    setCreating(false);
-    if (error) {
-      toast.error("Não foi possível criar a ficha.");
-      return;
+    try {
+      const initialRank = CANONICAL_RANK_TABLE[0];
+      const { data, error } = await supabase
+        .from("character_sheets")
+        .insert({
+          owner_id: selectedOwner.id,
+          name: name.trim() || "Novo Personagem",
+          weapon_proficiency: "operador",
+          weapon_proficiency_family: "",
+          initial_skill_degrees: {},
+          stats: {
+            pv_current: initialRank.pv,
+            pv_mod: 0,
+            ps_current: initialRank.ps,
+            ps_mod: 0,
+            pe_current: initialRank.pe,
+            pe_mod: 0,
+            pa_current: initialRank.pa,
+            pa_mod: 0,
+            pm_current: initialRank.pm,
+            pm_mod: 0,
+            def_equip: 0,
+            def_mod: 0,
+          },
+        })
+        .select("id")
+        .single();
+      if (activeIdentity.current !== identity) return;
+      if (error || !data?.id) throw error ?? new Error("Creation was not confirmed");
+      setCreateOpen(false);
+      setName("");
+      if (startTutorial && typeof window !== "undefined") {
+        try {
+          window.sessionStorage.setItem(`tadeon-sheet-tutorial:${data.id}`, "1");
+        } catch {
+          /* Optional tutorial storage must not turn a persisted creation into a failure. */
+        }
+      }
+      toast.success("Ficha criada!");
+      void navigate({ to: "/sheet/$id", params: { id: data.id } });
+    } catch {
+      if (activeIdentity.current === identity) toast.error("Não foi possível criar a ficha.");
+    } finally {
+      if (pendingWrite.current === identity) pendingWrite.current = null;
+      if (activeIdentity.current === identity) setCreating(false);
     }
-    setCreateOpen(false);
-    setName("");
-    if (startTutorial && typeof window !== "undefined") {
-      window.sessionStorage.setItem(`tadeon-sheet-tutorial:${data.id}`, "1");
-    }
-    toast.success("Ficha criada!");
-    void navigate({ to: "/sheet/$id", params: { id: data.id } });
   };
 
   const handleDelete = async () => {
-    if (!toDelete) return;
-    if (!canDeleteSheet(toDelete)) {
+    const target = toDelete;
+    const identity = activeIdentity.current;
+    if (
+      !target ||
+      !identity ||
+      identity.userId !== userId ||
+      identity.role !== role ||
+      pendingWrite.current === identity
+    )
+      return;
+    if (!canDeleteSheet(target)) {
       toast.error("Você não tem permissão para excluir esta ficha.");
       setToDelete(null);
       return;
     }
-    const { error } = await supabase
-      .from("character_sheets")
-      .delete()
-      .eq("id", toDelete.id);
-    if (error) toast.error("Não foi possível excluir a ficha.");
-    else {
+    pendingWrite.current = identity;
+    setDeleting(true);
+    try {
+      const { data, error } = await supabase
+        .from("character_sheets")
+        .delete()
+        .eq("id", target.id)
+        .select("id");
+      if (activeIdentity.current !== identity) return;
+      if (error || !data?.some((row) => row.id === target.id))
+        throw error ?? new Error("Deletion was not confirmed");
+      setToDelete(null);
       toast.success("Ficha excluída.");
-      setSheets((prev) => prev.filter((s) => s.id !== toDelete.id));
+      // A fresh read wins over requests begun before the deletion and refreshes the offline cache.
+      await load();
+    } catch {
+      if (activeIdentity.current === identity) toast.error("Não foi possível excluir a ficha.");
+    } finally {
+      if (pendingWrite.current === identity) pendingWrite.current = null;
+      if (activeIdentity.current === identity) setDeleting(false);
     }
-    setToDelete(null);
   };
 
   return (
     <div className="tadeon-page tadeon-dashboard tadeon-route-dashboard space-y-8">
       <ContinuityHero
         greeting={profile?.full_name ? `Olá, ${profile.full_name}.` : "Seu arquivo de continuidade"}
-        description={isMestre
-          ? "Personagens, encontros e vestígios. Reúna o que a campanha deixou e prepare o que ainda está por vir."
-          : role === "espectador"
-            ? "Acompanhe personagens e consulte os registros da campanha em modo de leitura."
-            : "Retome suas personagens, acompanhe a progressão e preserve o que mudou em cada fio."}
-        action={isMestre ? (
-          <Button asChild variant="outline" className="gap-2">
-            <Link to="/master-panel" search={{ tab: undefined }}>
-              <Lightbulb className="h-4 w-4" /> Painel do mestre <ArrowUpRight className="h-4 w-4" />
-            </Link>
-          </Button>
-        ) : (
-          <Button asChild variant="outline" className="gap-2">
-            <a href="#character-archive">Explorar suas fichas <ArrowUpRight className="h-4 w-4" /></a>
-          </Button>
-        )}
+        description={
+          isMestre
+            ? "Personagens, encontros e vestígios. Reúna o que a campanha deixou e prepare o que ainda está por vir."
+            : role === "espectador"
+              ? "Acompanhe personagens e consulte os registros da campanha em modo de leitura."
+              : "Retome suas personagens, acompanhe a progressão e preserve o que mudou em cada fio."
+        }
+        action={
+          isMestre ? (
+            <Button asChild variant="outline" className="gap-2">
+              <Link to="/master-panel" search={{ tab: undefined }}>
+                <Lightbulb className="h-4 w-4" /> Painel do mestre{" "}
+                <ArrowUpRight className="h-4 w-4" />
+              </Link>
+            </Button>
+          ) : (
+            <Button asChild variant="outline" className="gap-2">
+              <a href="#character-archive">
+                Explorar suas fichas <ArrowUpRight className="h-4 w-4" />
+              </a>
+            </Button>
+          )
+        }
         facts={[
-          { label: "Fichas disponíveis", value: loading || loadError ? "--" : String(sheets.length).padStart(2, "0"), detail: isMestre ? "Visíveis à sua conta mestre" : "Visíveis à sua conta" },
-          { label: "Seus personagens", value: loading || loadError ? "--" : String(sheets.filter((sheet) => sheet.owner_id === user?.id).length).padStart(2, "0"), detail: "Fichas que pertencem a você" },
-          { label: "Maior exposição", value: loading || loadError ? "--" : String(Math.max(0, ...sheets.map((sheet) => sheet.exposure || 0))).padStart(2, "0"), detail: "Entre as fichas disponíveis" },
+          {
+            label: "Fichas disponíveis",
+            value: loading || loadError ? "--" : String(sheets.length).padStart(2, "0"),
+            detail: isMestre ? "Visíveis à sua conta mestre" : "Visíveis à sua conta",
+          },
+          {
+            label: "Seus personagens",
+            value:
+              loading || loadError
+                ? "--"
+                : String(sheets.filter((sheet) => sheet.owner_id === user?.id).length).padStart(
+                    2,
+                    "0",
+                  ),
+            detail: "Fichas que pertencem a você",
+          },
+          {
+            label: "Maior exposição",
+            value:
+              loading || loadError
+                ? "--"
+                : String(Math.max(0, ...sheets.map((sheet) => sheet.exposure || 0))).padStart(
+                    2,
+                    "0",
+                  ),
+            detail: "Entre as fichas disponíveis",
+          },
         ]}
       />
 
-      <section id="character-archive" className="tadeon-character-archive" aria-labelledby="archive-title">
+      <section
+        id="character-archive"
+        className="tadeon-character-archive"
+        aria-labelledby="archive-title"
+      >
         <div className="tadeon-character-archive__heading mb-5 flex flex-wrap items-end justify-between gap-4">
           <div>
             <p className="tadeon-eyebrow">Personagens</p>
@@ -316,7 +405,7 @@ export function HomePage() {
           {canCreate && (
             <Dialog open={createOpen} onOpenChange={setCreateOpen}>
               <DialogTrigger asChild>
-                <Button className="min-h-11 w-full gap-2 sm:w-auto">
+                <Button disabled={creating || deleting} className="min-h-11 w-full gap-2 sm:w-auto">
                   <Plus className="w-4 h-4" />
                   Nova ficha
                 </Button>
@@ -339,17 +428,11 @@ export function HomePage() {
                   {isMestre && (
                     <div>
                       <Label htmlFor="owner-id">Dono da ficha</Label>
-                      <Select
-                        value={ownerId}
-                        onValueChange={setOwnerId}
-                        disabled={ownersLoading}
-                      >
+                      <Select value={ownerId} onValueChange={setOwnerId} disabled={ownersLoading}>
                         <SelectTrigger id="owner-id">
                           <SelectValue
                             placeholder={
-                              ownersLoading
-                                ? "Carregando usuários…"
-                                : "Selecione um usuário"
+                              ownersLoading ? "Carregando usuários…" : "Selecione um usuário"
                             }
                           />
                         </SelectTrigger>
@@ -370,28 +453,18 @@ export function HomePage() {
                     <Checkbox
                       id="start-sheet-tutorial"
                       checked={startTutorial}
-                      onCheckedChange={(checked) =>
-                        setStartTutorial(checked === true)
-                      }
+                      onCheckedChange={(checked) => setStartTutorial(checked === true)}
                     />
                     <span>
-                      <strong className="block text-sm">
-                        Abrir guia da primeira ficha
-                      </strong>
+                      <strong className="block text-sm">Abrir guia da primeira ficha</strong>
                       <span className="text-xs text-muted-foreground">
-                        Um roteiro curto e dispensável apresenta as áreas da
-                        ficha após a criação.
+                        Um roteiro curto e dispensável apresenta as áreas da ficha após a criação.
                       </span>
                     </span>
                   </label>
                   <DialogFooter>
-                    <Button
-                      type="submit"
-                      disabled={creating || (isMestre && !ownerId)}
-                    >
-                      {creating && (
-                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                      )}
+                    <Button type="submit" disabled={creating || deleting || (isMestre && !ownerId)}>
+                      {creating && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
                       Criar
                     </Button>
                   </DialogFooter>
@@ -420,27 +493,22 @@ export function HomePage() {
             <BrandMark className="mx-auto mb-4 h-12 w-12 text-muted-foreground" />
             <p className="font-cinzel text-xl">O arquivo ainda está vazio.</p>
             <p className="mt-1 text-sm text-muted-foreground">
-              {canCreate
-                ? "Crie uma ficha para iniciar este fio."
-                : "Nenhuma ficha disponível."}
+              {canCreate ? "Crie uma ficha para iniciar este fio." : "Nenhuma ficha disponível."}
             </p>
           </div>
         ) : (
           <div className="tadeon-character-gallery">
             {sheets.map((sheet, index) => (
-              <article
-                key={sheet.id}
-                className="tadeon-character-card"
-              >
+              <article key={sheet.id} className="tadeon-character-card">
                 <div className="mb-4 flex items-start justify-between gap-4 sm:mb-6">
                   <span className="tadeon-mono text-[10px] uppercase text-muted-foreground">
-                    Fio {String(index + 1).padStart(2, "0")} · Exposição{" "}
-                    {sheet.exposure || 0}
+                    Fio {String(index + 1).padStart(2, "0")} · Exposição {sheet.exposure || 0}
                   </span>
                   {canDeleteSheet(sheet) && (
                     <Button
                       variant="ghost"
                       size="sm"
+                      disabled={creating || deleting}
                       onClick={() => setToDelete(sheet)}
                       className="relative z-10 -mr-1 -mt-1 h-11 w-11 rounded-xl p-0 text-muted-foreground hover:bg-destructive/10 hover:text-destructive-foreground"
                       aria-label={`Excluir ficha ${sheet.name}`}
@@ -474,25 +542,25 @@ export function HomePage() {
         )}
       </section>
 
-      <AlertDialog
-        open={!!toDelete}
-        onOpenChange={(o) => !o && setToDelete(null)}
-      >
+      <AlertDialog open={!!toDelete} onOpenChange={(o) => !o && setToDelete(null)}>
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Confirmar Exclusão</AlertDialogTitle>
             <AlertDialogDescription>
-              Tem certeza que deseja excluir a ficha "{toDelete?.name}"? Esta
-              ação é irreversível.
+              Tem certeza que deseja excluir a ficha "{toDelete?.name}"? Esta ação é irreversível.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancelar</AlertDialogCancel>
             <AlertDialogAction
-              onClick={handleDelete}
+              disabled={deleting}
+              onClick={(event) => {
+                event.preventDefault();
+                void handleDelete();
+              }}
               className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
             >
-              Excluir
+              {deleting ? "Excluindo…" : "Excluir"}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

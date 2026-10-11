@@ -42,12 +42,13 @@
   "verification": {
     "dashboardScript": "scripts/verify-dashboard-design.mjs",
     "widths": [
+      320,
       390,
       820,
       1440
     ],
     "statesPerWidth": 4,
-    "dashboardViews": 12,
+    "dashboardViews": 16,
     "crossRouteViews": 21,
     "asyncReadTests": 3,
     "keyboard": [
@@ -59,13 +60,14 @@
     "fixturesOnly": true,
     "qualityCommand": "npm run check",
     "suites": 120,
-    "tests": 518,
+    "tests": 531,
     "dependencyAudit": {
       "command": "npm audit --audit-level=high",
       "vulnerabilities": 0
     },
     "fonts": "EB Garamond, Inter e PT Mono carregadas em fixtures locais do navegador. Em produção, continua a entrega atual via Google Fonts com fallbacks.",
-    "navigation": "Token de superfície escuro preservado; nenhuma camada pointer-sheen injetada nos links de navegação."
+    "navigation": "Token de superfície escuro preservado; nenhuma camada pointer-sheen injetada nos links de navegação.",
+    "asyncMutationTests": 13
   },
   "limits": [
     "Não integrado nem publicado este lote.",
@@ -74,5 +76,21 @@
     "Transparência usa fallback CSS, sem controle manual novo.",
     "A limpeza é delimitada: não declara saneamento de toda a cascata histórica."
   ],
-  "implementationCommit": "ef45672422378b963ad18ca8336ae3ba3ea19e47"
+  "implementationCommit": "ef45672422378b963ad18ca8336ae3ba3ea19e47",
+  "preMergeReview": {
+    "date": "2026-10-11",
+    "authorization": "Tadeu solicitou aprofundar, revisar e fazer o merge da PR #259.",
+    "baselineHead": "f321dc2771542391961af8693c5cfe6fea59baca",
+    "findingsFixed": [
+      "Criação/exclusão descartam efeitos de UI de uma identidade anterior, inclusive retorno à mesma conta.",
+      "Escritas duplicadas são bloqueadas enquanto pendentes; rejeição libera o controle para recuperação.",
+      "Exclusão verifica a linha retornada pela API antes de anunciar sucesso; leitura posterior atualiza indicadores e cache.",
+      "Falha do armazenamento opcional de tutorial não transforma criação confirmada em erro.",
+      "Descrições dos indicadores agora são dd semânticos junto ao respectivo dt."
+    ],
+    "limits": [
+      "Ignorar a resposta antiga protege a interface; não desfaz uma escrita já enviada ao servidor.",
+      "Regras RLS e autorização do banco não foram alteradas nem certificadas com contas reais."
+    ]
+  }
 }

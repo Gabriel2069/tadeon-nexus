@@ -23,7 +23,7 @@ try {
     server.on("exit", code => fail(new Error("Vite exited: " + code)));
     setTimeout(() => fail(new Error("Vite timeout")), 30000).unref();
   });
-  for (const width of [390, 820, 1440]) for (const state of ["empty", "loading", "error", "populated"]) {
+  for (const width of [320, 390, 820, 1440]) for (const state of ["empty", "loading", "error", "populated"]) {
     const context = await browser.newContext({ viewport: { width, height: 1000 }, reducedMotion: "reduce" });
     const page = await context.newPage();
     const errors = [];
@@ -61,7 +61,7 @@ try {
       await Promise.all(['500 16px "EB Garamond"','400 16px "Inter"','400 16px "PT Mono"'].map(f=>document.fonts.load(f)));
       await document.fonts.ready;
     });
-    const metrics = await page.evaluate(() => ({ overflow: document.documentElement.scrollWidth > innerWidth, h1: document.querySelectorAll("h1").length, main: document.querySelectorAll("main").length, cards: document.querySelectorAll(".tadeon-character-card").length, facts: Array.from(document.querySelectorAll(".tadeon-continuity-facts dd")).map(e => e.textContent), headingFont: getComputedStyle(document.querySelector("#continuity-title")).fontFamily, navAfter: (() => { const s=getComputedStyle(document.querySelector(".tadeon-nav-item[aria-current]"),"::after"); return {width:s.width,height:s.height,inset:s.inset,background:s.background,zIndex:s.zIndex}; })(), fontsLoaded: ['EB Garamond','Inter','PT Mono'].map(f => ({family:f,loaded:document.fonts.check(`${f === "EB Garamond" ? 500 : 400} 16px "${f}"`)})), navContrast: (()=>{const n=document.querySelector(".tadeon-nav-item[aria-current]");return {color:getComputedStyle(n).color,base:getComputedStyle(n).getPropertyValue("--sidebar-accent").trim()};})(), heroHeight: document.querySelector(".tadeon-continuity-hero").getBoundingClientRect().height }));
+    const metrics = await page.evaluate(() => ({ overflow: document.documentElement.scrollWidth > innerWidth, h1: document.querySelectorAll("h1").length, main: document.querySelectorAll("main").length, cards: document.querySelectorAll(".tadeon-character-card").length, facts: Array.from(document.querySelectorAll(".tadeon-continuity-facts dd:not(.tadeon-continuity-facts__detail)")).map(e => e.textContent), headingFont: getComputedStyle(document.querySelector("#continuity-title")).fontFamily, navAfter: (() => { const s=getComputedStyle(document.querySelector(".tadeon-nav-item[aria-current]"),"::after"); return {width:s.width,height:s.height,inset:s.inset,background:s.background,zIndex:s.zIndex}; })(), fontsLoaded: ['EB Garamond','Inter','PT Mono'].map(f => ({family:f,loaded:document.fonts.check(`${f === "EB Garamond" ? 500 : 400} 16px "${f}"`)})), navContrast: (()=>{const n=document.querySelector(".tadeon-nav-item[aria-current]");return {color:getComputedStyle(n).color,base:getComputedStyle(n).getPropertyValue("--sidebar-accent").trim()};})(), heroHeight: document.querySelector(".tadeon-continuity-hero").getBoundingClientRect().height }));
     assert(!metrics.overflow && metrics.h1 === 1 && metrics.main === 1 && errors.length === 0, `${width}/${state}: structure or overflow failure`);
     assert(metrics.headingFont.includes("EB Garamond"), "Editorial heading must preserve its approved family");
     assert(metrics.navContrast.base === "#1c2026", "Navigation surface must not inherit its text accent");

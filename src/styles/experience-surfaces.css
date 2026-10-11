@@ -2054,8 +2054,8 @@ a[data-tadeon-directed="true"]:focus-visible,
 .tadeon-continuity-hero__caption { color: #9a9793; }
 .tadeon-continuity-facts { background: #12151a; border-top: 1px solid var(--border); }
 .tadeon-continuity-facts > div + div { border-left: 1px solid var(--border); }
-.tadeon-continuity-facts dt, .tadeon-continuity-facts span { color: #9a9793; }
-.tadeon-continuity-facts dd { color: var(--foreground); }
+.tadeon-continuity-facts dt, .tadeon-continuity-facts .tadeon-continuity-facts__detail { color: #9a9793; }
+.tadeon-continuity-facts dd:not(.tadeon-continuity-facts__detail) { color: var(--foreground); }
 .tadeon-character-archive { scroll-margin-top: 6rem; }
 .tadeon-character-archive__heading { padding: .25rem 0 1rem; border-bottom: 1px solid var(--border); }
 .tadeon-character-gallery { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr)); gap: 1rem; }

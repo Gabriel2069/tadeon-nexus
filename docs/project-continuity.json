@@ -349,7 +349,7 @@
         "src/lib/dashboard-read.test.tsx",
         "https://github.com/Gabriel2069/tadeon-nexus/pull/259"
       ],
-      "checkpoint": "Direção aprovada por Tadeu em 11/10/2026. Primeiro lote implementado e validado na branch da PR #259; sem integração ou nova publicação em main. Dados existentes reconciliados, estados separados, leituras antigas invalidadas e sobreposições aposentadas. Expandir a linguagem a partir destes responsáveis."
+      "checkpoint": "Direção aprovada e merge autorizado por Tadeu. Revisão pré-merge fortalece criação/exclusão por identidade, confirma exclusão na API, corrige semântica dos indicadores e amplia a fixture a 320 px. Lote validado na PR #259; integração/publicação serão registradas após confirmação remota."
     },
     {
       "id": "NEX-004",
