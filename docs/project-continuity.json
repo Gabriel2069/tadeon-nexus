@@ -529,7 +529,7 @@
     {
       "id": "DEC-007",
       "decision": "Explorar suspense mitológico, vidro dimensional e movimento de tecidos/fios a partir do Fio-Mestre.",
-      "reason": "Direção explicitamente solicitada em 11/10/2026; prancheta Véu & Trama é proposta para revisão, antes da implementação e expansão."
+      "reason": "Direção solicitada e aprovada por Tadeu em 11/10/2026. Véu & Trama foi aplicado ao shell/Dashboard na PR #259; expansão segue os responsáveis e dependências da fila canônica."
     }
   ],
   "bridges": [

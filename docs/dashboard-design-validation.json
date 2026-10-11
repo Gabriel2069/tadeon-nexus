@@ -73,5 +73,6 @@
     "Sem teste de VoiceOver, teclado virtual físico, FPS ou bateria.",
     "Transparência usa fallback CSS, sem controle manual novo.",
     "A limpeza é delimitada: não declara saneamento de toda a cascata histórica."
-  ]
+  ],
+  "implementationCommit": "ef45672422378b963ad18ca8336ae3ba3ea19e47"
 }

@@ -126,4 +126,4 @@ Evidências: pendentes; não declarar concluído.
 | DEC-004 | Preservar migrations e corpus editorial separadamente. | Consolidação do código não autoriza reescrever SQL aplicado ou fontes narrativas. |
 | DEC-005 | Uma fila canônica e PRs de escopo verificável. | Planos históricos não reabrem tarefas sem confrontar a implementação atual. |
 | DEC-006 | Branch validada não significa main integrado ou produção publicada. | Merge em main pode acionar deploy; nenhum desses estados é presumido. |
-| DEC-007 | Explorar suspense mitológico, vidro dimensional e movimento de tecidos/fios a partir do Fio-Mestre. | Direção explicitamente solicitada em 11/10/2026; prancheta Véu & Trama é proposta para revisão, antes da implementação e expansão. |
+| DEC-007 | Explorar suspense mitológico, vidro dimensional e movimento de tecidos/fios a partir do Fio-Mestre. | Direção solicitada e aprovada por Tadeu em 11/10/2026. Véu & Trama foi aplicado ao shell/Dashboard na PR #259; expansão segue os responsáveis e dependências da fila canônica. |
