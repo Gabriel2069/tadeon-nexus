@@ -1,3 +1,7 @@
+import { useAuth } from "@/lib/auth";
+import { createKnowledgeDraftStore } from "@/lib/knowledge/knowledge-drafts";
+import { useReadingPreferences } from "@/lib/knowledge/use-reading-preferences";
+import { KnowledgeReadingPanes } from "@/components/knowledge/knowledge-reading-panes";
 import { createLatestRequestGate } from "@/lib/latest-request";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
@@ -86,7 +90,7 @@ import {
   type KnowledgeVisibility,
   type RelationType,
 } from "@/lib/nexus-contracts";
-import { KnowledgeServiceError, type KnowledgeErrorCode } from "@/lib/knowledge/knowledge-errors";
+import { KnowledgeServiceError } from "@/lib/knowledge/knowledge-errors";
 import {
   knowledgeService,
   type KnowledgeAssetLink,
@@ -219,10 +223,6 @@ function parseRelationProperties(value: string): Json {
   return parsed as Json;
 }
 
-function draftKey(nodeId: string) {
-  return `tadeon.nexus.draft.${nodeId}`;
-}
-
 function wordCount(value: string) {
   return value.trim() ? value.trim().split(/\s+/).length : 0;
 }
@@ -280,6 +280,16 @@ export function NexusWorkspace({
   graphEnabled: boolean;
   initialNodeId?: string;
 }) {
+  const { user, loading: authLoading } = useAuth();
+  const actorId = authLoading ? "" : (user?.id ?? "");
+  const automaticScope = useRef("");
+  const activePage = useRef<string | null>(null);
+  const closeFocusFrame = useRef<number | null>(null);
+  const readingRegion = useRef<HTMLElement>(null);
+  const pendingSaves = useRef(new Map<string, Promise<void>>());
+  const [closedNodes, setClosedNodes] = useState<string[]>([]);
+  const scopesRequests = useRef(createLatestRequestGate());
+  const nodesActor = useRef("");
   const nodeRequests = useRef(createLatestRequestGate());
   const readingRequests = useRef(createLatestRequestGate());
   const editorRef = useRef<HTMLTextAreaElement>(null);
@@ -328,11 +338,19 @@ export function NexusWorkspace({
   const [createVisibility, setCreateVisibility] = useState<KnowledgeVisibility>("author");
   const [creating, setCreating] = useState(false);
   const [commandOpen, setCommandOpen] = useState(false);
+  const [inlineGraphFocus, setInlineGraphFocus] = useState<string | null>(null);
   const [graphOpen, setGraphOpen] = useState(false);
   const [indexView, setIndexView] = useState<"tree" | "list">("tree");
-  const [readingView, setReadingView] = useState<"document" | "graph" | "split">("document");
+  const { preferences: readingPreferences, update: updateReadingPreferences } =
+    useReadingPreferences(actorId, `${workspaceId}:${campaignId}`);
+  const readingView = readingPreferences.view;
+  const setReadingView = (view: typeof readingView) => updateReadingPreferences({ view });
   const [libraryOpen, setLibraryOpen] = useState(false);
   const [portabilityOpen, setPortabilityOpen] = useState(false);
+  const [conflictReview, setConflictReview] = useState<{
+    scope: string;
+    node: KnowledgeNode;
+  } | null>(null);
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [commandSearch, setCommandSearch] = useState("");
@@ -361,8 +379,19 @@ export function NexusWorkspace({
 
   const campaignScope = campaignId === "workspace" ? null : campaignId || null;
   const currentCampaign = campaigns.find((campaign) => campaign.id === campaignScope);
+  const scopeKey = `${actorId}:${workspaceId}:${campaignId}`;
+  const currentScope = useRef(scopeKey);
+  currentScope.current = scopeKey;
+  const drafts = useMemo(
+    () => createKnowledgeDraftStore(actorId, workspaceId, () => window.localStorage),
+    [actorId, workspaceId],
+  );
+  const editorSnapshot = useRef({ scopeKey, selected, title: draftTitle, content: draftContent });
+  editorSnapshot.current = { scopeKey, selected, title: draftTitle, content: draftContent };
 
   const loadScopes = useCallback(async () => {
+    const ticket = scopesRequests.current.begin();
+    if (!actorId) return;
     setLoading(true);
     const [workspaceResult, campaignResult] = await Promise.all([
       supabase.from("workspaces").select("id,name").order("name"),
@@ -372,6 +401,7 @@ export function NexusWorkspace({
         .eq("status", "active")
         .order("name"),
     ]);
+    if (!scopesRequests.current.isCurrent(ticket)) return;
     if (workspaceResult.error || campaignResult.error) {
       toast.error("Não foi possível carregar os espaços de O Nexus.");
       setLoading(false);
@@ -392,7 +422,7 @@ export function NexusWorkspace({
         : current,
     );
     setLoading(false);
-  }, []);
+  }, [actorId]);
 
   useEffect(() => {
     const timer = window.setTimeout(() => {
@@ -429,6 +459,7 @@ export function NexusWorkspace({
         knowledgeService.listFavoriteNodes(40),
       ]);
       if (!nodeRequests.current.isCurrent(ticket)) return;
+      nodesActor.current = actorId;
       setNodes(result.hits.map((hit) => hit.node));
       setSearchCount(result.count);
       setSearchHasMore(result.hasMore);
@@ -451,6 +482,7 @@ export function NexusWorkspace({
       if (nodeRequests.current.isCurrent(ticket)) setNodeLoading(false);
     }
   }, [
+    actorId,
     campaignScope,
     debouncedSearch,
     onlyCanonical,
@@ -464,7 +496,9 @@ export function NexusWorkspace({
   ]);
 
   useEffect(() => {
+    const requests = scopesRequests.current;
     void loadScopes();
+    return () => requests.invalidate();
   }, [loadScopes]);
 
   useEffect(() => {
@@ -475,6 +509,9 @@ export function NexusWorkspace({
 
   useEffect(() => {
     readingRequests.current.invalidate();
+    activePage.current = null;
+    setClosedNodes([]);
+    setInlineGraphFocus(null);
     setSelected(null);
     setOpenNodes([]);
     setAliases([]);
@@ -484,7 +521,7 @@ export function NexusWorkspace({
     setVersions([]);
     setAssetLinks([]);
     setPreviews({});
-  }, [campaignId, workspaceId]);
+  }, [actorId, campaignId, workspaceId]);
 
   useEffect(() => {
     if (campaignScope && currentCampaign && currentCampaign.workspace_id !== workspaceId) {
@@ -538,14 +575,25 @@ export function NexusWorkspace({
 
   const openNode = useCallback(
     async (nodeOrId: KnowledgeNode | string, headingSlug?: string) => {
+      if (!actorId) return;
+      const id = typeof nodeOrId === "string" ? nodeOrId : nodeOrId.id;
+      if (
+        typeof nodeOrId !== "string" &&
+        activePage.current === id &&
+        editorSnapshot.current.selected?.id === id
+      )
+        return;
+      activePage.current = id;
+      automaticScope.current = scopeKey;
       const ticket = readingRequests.current.begin();
       try {
-        const node = typeof nodeOrId === "string" ? await knowledgeService.get(nodeOrId) : nodeOrId;
+        const node = await knowledgeService.get(id);
         if (!readingRequests.current.isCurrent(ticket)) return;
         setSelected(node);
         setOpenNodes((current) => {
-          const without = current.filter((item) => item.id !== node.id);
-          return [...without, node].slice(-6);
+          return current.some((item) => item.id === node.id)
+            ? current.map((item) => (item.id === node.id ? node : item))
+            : [...current, node];
         });
         setDraftTitle(node.title);
         setDraftContent(node.content_markdown);
@@ -553,27 +601,17 @@ export function NexusWorkspace({
         setLastSavedAt(new Date(node.updated_at));
         setEditMode(false);
         void knowledgeService.touchRecent(node.id).catch(() => undefined);
-        const recovered = window.localStorage.getItem(draftKey(node.id));
-        if (recovered) {
-          try {
-            const value = JSON.parse(recovered) as {
-              title?: string;
-              content?: string;
-            };
-            if (
-              typeof value.title === "string" &&
-              typeof value.content === "string" &&
-              (value.title !== node.title || value.content !== node.content_markdown)
-            ) {
-              setDraftTitle(value.title);
-              setDraftContent(value.content);
-              setSaveState("dirty");
-              setEditMode(true);
-              toast.info("Rascunho local recuperado.");
-            }
-          } catch {
-            window.localStorage.removeItem(draftKey(node.id));
-          }
+        const recovered = drafts.get(node.id);
+        if (
+          recovered &&
+          (recovered.title !== node.title || recovered.content !== node.content_markdown)
+        ) {
+          setSelected({ ...node, updated_at: recovered.updatedAt });
+          setDraftTitle(recovered.title);
+          setDraftContent(recovered.content);
+          setSaveState(recovered.updatedAt === node.updated_at ? "dirty" : "conflict");
+          setEditMode(true);
+          toast.info("Rascunho local recuperado.");
         }
         await refreshNodeDetails(node, ticket);
         if (headingSlug && readingRequests.current.isCurrent(ticket)) {
@@ -590,26 +628,45 @@ export function NexusWorkspace({
         if (readingRequests.current.isCurrent(ticket)) toast.error(errorMessage(error));
       }
     },
-    [refreshNodeDetails],
+    [actorId, drafts, refreshNodeDetails, scopeKey],
   );
 
   useEffect(() => {
     const requests = readingRequests.current;
-    return () => requests.invalidate();
+    return () => {
+      requests.invalidate();
+      if (closeFocusFrame.current !== null) cancelAnimationFrame(closeFocusFrame.current);
+    };
   }, []);
 
   const closeNode = useCallback(
     (nodeId: string) => {
+      automaticScope.current = scopeKey;
       const closedIndex = openNodes.findIndex((node) => node.id === nodeId);
       const remaining = openNodes.filter((node) => node.id !== nodeId);
-      setOpenNodes(remaining);
-
-      if (selected?.id !== nodeId) return;
       const fallback = remaining[Math.min(Math.max(closedIndex, 0), remaining.length - 1)];
-      setSelected(null);
-      if (fallback) void openNode(fallback);
+      setOpenNodes(remaining);
+      setClosedNodes((current) => [nodeId, ...current.filter((id) => id !== nodeId)].slice(0, 10));
+      if (activePage.current === nodeId) {
+        readingRequests.current.invalidate();
+        activePage.current = null;
+      }
+      if (selected?.id === nodeId) {
+        setSelected(null);
+        if (fallback) void openNode(fallback);
+      }
+      if (closeFocusFrame.current !== null) cancelAnimationFrame(closeFocusFrame.current);
+      closeFocusFrame.current = requestAnimationFrame(() => {
+        closeFocusFrame.current = null;
+        const target = [
+          ...(readingRegion.current?.querySelectorAll<HTMLElement>("[data-page-tab]") ?? []),
+        ].find((element) => element.dataset.pageTab === fallback?.id);
+        (
+          target ?? readingRegion.current?.querySelector<HTMLElement>("[data-reopen-page]")
+        )?.focus();
+      });
     },
-    [openNode, openNodes, selected?.id],
+    [openNode, openNodes, selected?.id, scopeKey],
   );
 
   useEffect(() => {
@@ -626,60 +683,113 @@ export function NexusWorkspace({
   }, [initialNodeId, openNode, loading, workspaceId]);
 
   useEffect(() => {
-    if (!initialNodeId && !selected && nodes[0]) void openNode(nodes[0]);
-  }, [initialNodeId, nodes, openNode, selected]);
+    const first = nodes.find(
+      (node) =>
+        node.workspace_id === workspaceId &&
+        (!campaignScope || node.campaign_id === null || node.campaign_id === campaignScope),
+    );
+    if (
+      !actorId ||
+      nodesActor.current !== actorId ||
+      loading ||
+      nodeLoading ||
+      initialNodeId ||
+      selected ||
+      !first ||
+      automaticScope.current === scopeKey
+    )
+      return;
+    automaticScope.current = scopeKey;
+    void openNode(first);
+  }, [
+    actorId,
+    campaignScope,
+    initialNodeId,
+    loading,
+    nodeLoading,
+    nodes,
+    openNode,
+    scopeKey,
+    selected,
+    workspaceId,
+  ]);
+
+  useEffect(() => {
+    if (readingView !== "document" && selected) setInlineGraphFocus(selected.id);
+  }, [readingView, selected?.id]);
 
   const markDirty = useCallback(
     (title: string, content: string) => {
-      if (!selected) return;
+      if (!selected || !actorId) return;
+      editorSnapshot.current = { scopeKey, selected, title, content };
+      drafts.put(selected.id, { title, content, updatedAt: selected.updated_at });
       setSaveState("dirty");
-      window.localStorage.setItem(
-        draftKey(selected.id),
-        JSON.stringify({
-          title,
-          content,
-          updatedAt: selected.updated_at,
-          storedAt: new Date().toISOString(),
-        }),
-      );
     },
-    [selected],
+    [actorId, drafts, scopeKey, selected],
   );
 
   const save = useCallback(async () => {
-    if (!selected || saveState === "saving") return;
-    if (draftTitle.trim() === selected.title && draftContent === selected.content_markdown) {
+    const snapshot = editorSnapshot.current;
+    const node = snapshot.selected;
+    if (!node || !actorId) return;
+    const saveKey = `${snapshot.scopeKey}:${node.id}`;
+    if (pendingSaves.current.has(saveKey)) return;
+    if (snapshot.title.trim() === node.title && snapshot.content === node.content_markdown) {
       setSaveState("saved");
-      window.localStorage.removeItem(draftKey(selected.id));
+      drafts.remove(node.id);
       return;
     }
+    const submitted = {
+      title: snapshot.title,
+      content: snapshot.content,
+      updatedAt: node.updated_at,
+    };
     setSaveState("saving");
-    try {
-      const result = await knowledgeService.saveContent(selected, draftTitle, draftContent);
-      setSelected(result.node);
-      setOpenNodes((current) =>
-        current.map((node) => (node.id === result.node.id ? result.node : node)),
-      );
-      setNodes((current) =>
-        current.map((node) => (node.id === result.node.id ? result.node : node)),
-      );
-      setSaveState("saved");
-      setLastSavedAt(new Date());
-      window.localStorage.removeItem(draftKey(selected.id));
-      await refreshNodeDetails(result.node);
-    } catch (error) {
-      const code: KnowledgeErrorCode | undefined =
-        error instanceof KnowledgeServiceError ? error.code : undefined;
-      setSaveState(code === "KNOWLEDGE_CONFLICT" ? "conflict" : "error");
-      toast.error(errorMessage(error));
-    }
-  }, [draftContent, draftTitle, refreshNodeDetails, saveState, selected]);
+    const operation = (async () => {
+      try {
+        const result = await knowledgeService.saveContent(node, submitted.title, submitted.content);
+        drafts.settle(node.id, submitted, result.node.updated_at);
+        if (currentScope.current !== snapshot.scopeKey) return;
+        setOpenNodes((current) =>
+          current.map((item) => (item.id === node.id ? result.node : item)),
+        );
+        setNodes((current) => current.map((item) => (item.id === node.id ? result.node : item)));
+        if (activePage.current !== node.id || editorSnapshot.current.selected?.id !== node.id)
+          return;
+        const newer = drafts.get(node.id);
+        setSelected(result.node);
+        setSaveState(newer ? "dirty" : "saved");
+        if (!newer) {
+          setDraftTitle(result.node.title);
+          setDraftContent(result.node.content_markdown);
+        }
+        setLastSavedAt(new Date());
+        // Detail loading cannot replace a newer navigation request.
+        void refreshNodeDetails(result.node).catch((error) => {
+          if (currentScope.current === snapshot.scopeKey && activePage.current === node.id)
+            toast.error(errorMessage(error));
+        });
+      } catch (error) {
+        if (currentScope.current !== snapshot.scopeKey || activePage.current !== node.id) return;
+        setSaveState(
+          error instanceof KnowledgeServiceError && error.code === "KNOWLEDGE_CONFLICT"
+            ? "conflict"
+            : "error",
+        );
+        toast.error(errorMessage(error));
+      } finally {
+        pendingSaves.current.delete(saveKey);
+      }
+    })();
+    pendingSaves.current.set(saveKey, operation);
+    await operation;
+  }, [actorId, drafts, refreshNodeDetails]);
 
   useEffect(() => {
     if (!editMode || saveState !== "dirty") return;
     const timer = window.setTimeout(() => void save(), 900);
     return () => window.clearTimeout(timer);
-  }, [draftContent, draftTitle, editMode, save, saveState]);
+  }, [draftContent, draftTitle, editMode, save, saveState, selected?.updated_at]);
 
   useEffect(() => {
     const handleKey = (event: KeyboardEvent) => {
@@ -745,19 +855,32 @@ export function NexusWorkspace({
       toast.error("Uma página do workspace não pode usar visibilidade de campanha.");
       return;
     }
+    const initiatingScope = scopeKey;
+    const initiatingNode = selected;
     setSaveState("saving");
     try {
-      const result = await knowledgeService.update(selected.id, patch, selected.updated_at);
-      setSelected(result.node);
+      const result = await knowledgeService.update(
+        initiatingNode.id,
+        patch,
+        initiatingNode.updated_at,
+      );
+      if (currentScope.current !== initiatingScope) return;
+      if (activePage.current === initiatingNode.id) setSelected(result.node);
       setOpenNodes((current) =>
         current.map((node) => (node.id === result.node.id ? result.node : node)),
       );
       setNodes((current) =>
         current.map((node) => (node.id === result.node.id ? result.node : node)),
       );
-      setSaveState("saved");
+      if (activePage.current !== initiatingNode.id) return;
+      const remainingDraft = drafts.get(initiatingNode.id);
+      if (remainingDraft)
+        drafts.put(initiatingNode.id, { ...remainingDraft, updatedAt: result.node.updated_at });
+      setSaveState(remainingDraft ? "dirty" : "saved");
       setLastSavedAt(new Date());
     } catch (error) {
+      if (currentScope.current !== initiatingScope || activePage.current !== initiatingNode.id)
+        return;
       setSaveState(
         error instanceof KnowledgeServiceError && error.code === "KNOWLEDGE_CONFLICT"
           ? "conflict"
@@ -1399,6 +1522,7 @@ export function NexusWorkspace({
         )}
 
         <section
+          ref={readingRegion}
           aria-label="Leitura das páginas"
           className={`${selected ? "order-1" : "order-2"} tadeon-nexus-document tadeon-nexus-reading min-w-0 overflow-hidden rounded-2xl border bg-card/55 lg:order-2`}
         >
@@ -1420,6 +1544,7 @@ export function NexusWorkspace({
                   <button
                     type="button"
                     role="tab"
+                    data-page-tab={node.id}
                     data-material-surface="tab"
                     data-state={selected?.id === node.id ? "active" : "inactive"}
                     tabIndex={selected?.id === node.id ? 0 : -1}
@@ -1461,6 +1586,23 @@ export function NexusWorkspace({
             </div>
           )}
 
+          {closedNodes.length > 0 && (
+            <div className="tadeon-nexus-reading__reopen">
+              <Button
+                variant="ghost"
+                size="sm"
+                data-reopen-page
+                onClick={() => {
+                  const id = closedNodes[0];
+                  setClosedNodes((current) => current.slice(1));
+                  void openNode(id);
+                }}
+              >
+                <RotateCcw className="h-4 w-4" />
+                Reabrir página fechada
+              </Button>
+            </div>
+          )}
           {graphEnabled && selected && (
             <div
               className="tadeon-nexus-reading__switch"
@@ -1484,306 +1626,365 @@ export function NexusWorkspace({
                   {label}
                 </Button>
               ))}
+              {readingView === "split" && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => updateReadingPreferences({ horizontal: 50, vertical: 50 })}
+                >
+                  Restaurar divisão
+                </Button>
+              )}
             </div>
           )}
-          <div
-            className={`tadeon-nexus-reading__panes tadeon-nexus-reading__panes--${readingView}`}
-          >
-            <div hidden={Boolean(selected && graphEnabled && readingView === "graph")}>
-              {selected ? (
-                <>
-                  <div className="flex flex-col gap-3 border-b px-4 py-3 md:flex-row md:items-center md:justify-between">
-                    <div className="min-w-0">
-                      <p className="truncate text-[11px] uppercase tracking-wide text-muted-foreground">
-                        {currentCampaign?.name ?? "Workspace"}{" "}
-                        <ChevronRight className="inline h-3 w-3" />{" "}
-                        {TYPE_LABELS[selected.node_type]}
-                      </p>
-                      <p
-                        className={`mt-1 flex items-center gap-1.5 text-xs ${
-                          saveState === "conflict" || saveState === "error"
-                            ? "text-destructive"
-                            : saveState === "saved"
-                              ? "text-[var(--tadeon-flow)]"
-                              : "text-muted-foreground"
-                        }`}
-                      >
-                        {saveState === "saving" ? (
-                          <Loader2 className="h-3.5 w-3.5 animate-spin" />
-                        ) : saveState === "saved" ? (
-                          <Check className="h-3.5 w-3.5" />
-                        ) : (
-                          <Save className="h-3.5 w-3.5" />
-                        )}
-                        {saveLabel}
-                      </p>
-                    </div>
-                    <div className="flex flex-wrap items-center gap-1.5">
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => void toggleFavorite()}
-                        aria-label="Alternar favorito"
-                      >
-                        <Star
-                          className={`h-4 w-4 ${
-                            favorites.some((node) => node.id === selected.id)
-                              ? "fill-primary text-primary"
-                              : ""
+          <KnowledgeReadingPanes
+            preferences={
+              selected && graphEnabled
+                ? readingPreferences
+                : { ...readingPreferences, view: "document" }
+            }
+            onChange={updateReadingPreferences}
+            document={
+              <>
+                {selected ? (
+                  <>
+                    <div className="flex flex-col gap-3 border-b px-4 py-3 md:flex-row md:items-center md:justify-between">
+                      <div className="min-w-0">
+                        <p className="truncate text-[11px] uppercase tracking-wide text-muted-foreground">
+                          {currentCampaign?.name ?? "Workspace"}{" "}
+                          <ChevronRight className="inline h-3 w-3" />{" "}
+                          {TYPE_LABELS[selected.node_type]}
+                        </p>
+                        <p
+                          className={`mt-1 flex items-center gap-1.5 text-xs ${
+                            saveState === "conflict" || saveState === "error"
+                              ? "text-destructive"
+                              : saveState === "saved"
+                                ? "text-[var(--tadeon-flow)]"
+                                : "text-muted-foreground"
                           }`}
-                        />
-                      </Button>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => setEditMode((current) => !current)}
-                      >
-                        {editMode ? (
-                          <BookOpen className="h-4 w-4" />
-                        ) : (
-                          <Pencil className="h-4 w-4" />
-                        )}
-                        {editMode ? "Leitura" : "Editar"}
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => setFocusMode((current) => !current)}
-                      >
-                        <Maximize2 className="h-4 w-4" />
-                        Foco
-                      </Button>
-                      {!focusMode && (
+                        >
+                          {saveState === "saving" ? (
+                            <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                          ) : saveState === "saved" ? (
+                            <Check className="h-3.5 w-3.5" />
+                          ) : (
+                            <Save className="h-3.5 w-3.5" />
+                          )}
+                          {saveLabel}
+                        </p>
+                      </div>
+                      <div className="flex flex-wrap items-center gap-1.5">
                         <Button
                           variant="ghost"
                           size="sm"
-                          onClick={() => setRightOpen((current) => !current)}
-                          className="xl:hidden"
+                          onClick={() => void toggleFavorite()}
+                          aria-label="Alternar favorito"
                         >
-                          <PanelRight className="h-4 w-4" />
+                          <Star
+                            className={`h-4 w-4 ${
+                              favorites.some((node) => node.id === selected.id)
+                                ? "fill-primary text-primary"
+                                : ""
+                            }`}
+                          />
                         </Button>
-                      )}
-                    </div>
-                  </div>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => setEditMode((current) => !current)}
+                        >
+                          {editMode ? (
+                            <BookOpen className="h-4 w-4" />
+                          ) : (
+                            <Pencil className="h-4 w-4" />
+                          )}
+                          {editMode ? "Leitura" : "Editar"}
+                        </Button>
+                        {editMode && (
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            disabled={saveState === "saving"}
+                            onClick={() => void save()}
+                          >
+                            <Save className="h-4 w-4" />
+                            Salvar agora
+                          </Button>
+                        )}
+                        {saveState === "conflict" && (
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={async () => {
+                              const scope = scopeKey;
+                              const id = selected.id;
+                              try {
+                                const node = await knowledgeService.get(id);
+                                if (currentScope.current === scope && activePage.current === id)
+                                  setConflictReview({ scope, node });
+                              } catch (error) {
+                                if (currentScope.current === scope)
+                                  toast.error(errorMessage(error));
+                              }
+                            }}
+                          >
+                            Revisar conflito
+                          </Button>
+                        )}
 
-                  <article className="min-h-[62vh] px-5 py-6 md:px-8 md:py-8">
-                    {editMode ? (
-                      <div>
-                        <Input
-                          value={draftTitle}
-                          onChange={(event) => {
-                            const value = event.target.value;
-                            setDraftTitle(value);
-                            markDirty(value, draftContent);
-                          }}
-                          className="h-auto border-0 bg-transparent px-0 font-cinzel text-3xl font-semibold shadow-none focus-visible:ring-0 md:text-4xl"
-                          aria-label="Título da página"
-                          maxLength={200}
-                        />
-                        <div className="tadeon-nexus-editor-toolbar my-4 flex flex-wrap gap-1 rounded-lg border bg-muted/20 p-1.5">
-                          <Button variant="ghost" size="sm" onClick={() => applyEditorSyntax("**")}>
-                            <strong>B</strong>
-                          </Button>
-                          <Button variant="ghost" size="sm" onClick={() => applyEditorSyntax("*")}>
-                            <em>I</em>
-                          </Button>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => setFocusMode((current) => !current)}
+                        >
+                          <Maximize2 className="h-4 w-4" />
+                          Foco
+                        </Button>
+                        {!focusMode && (
                           <Button
                             variant="ghost"
                             size="sm"
-                            onClick={() => applyEditorSyntax("[[", "]]")}
+                            onClick={() => setRightOpen((current) => !current)}
+                            className="xl:hidden"
                           >
-                            <Link2 className="h-4 w-4" />
-                            Ligação
+                            <PanelRight className="h-4 w-4" />
                           </Button>
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => applyEditorSyntax("> [!NOTE] ", "")}
-                          >
-                            <TextQuote className="h-4 w-4" />
-                            Destaque
-                          </Button>
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => applyEditorSyntax("- [ ] ", "")}
-                          >
-                            <Check className="h-4 w-4" />
-                            Checklist
-                          </Button>
-                          <details className="tadeon-nexus-editor-more">
-                            <summary>Mais</summary>
+                        )}
+                      </div>
+                    </div>
+
+                    <article className="min-h-[62vh] px-5 py-6 md:px-8 md:py-8">
+                      {editMode ? (
+                        <div>
+                          <Input
+                            value={draftTitle}
+                            onChange={(event) => {
+                              const value = event.target.value;
+                              setDraftTitle(value);
+                              markDirty(value, draftContent);
+                            }}
+                            className="h-auto border-0 bg-transparent px-0 font-cinzel text-3xl font-semibold shadow-none focus-visible:ring-0 md:text-4xl"
+                            aria-label="Título da página"
+                            maxLength={200}
+                          />
+                          <div className="tadeon-nexus-editor-toolbar my-4 flex flex-wrap gap-1 rounded-lg border bg-muted/20 p-1.5">
                             <Button
                               variant="ghost"
                               size="sm"
-                              onClick={() => applyEditorSyntax("```\n", "\n```")}
+                              onClick={() => applyEditorSyntax("**")}
                             >
-                              Bloco técnico
+                              <strong>B</strong>
                             </Button>
-                          </details>
-                        </div>
-                        <Textarea
-                          ref={editorRef}
-                          value={draftContent}
-                          onChange={(event) => {
-                            const value = event.target.value;
-                            setDraftContent(value);
-                            markDirty(draftTitle, value);
-                          }}
-                          className="tadeon-nexus-editor min-h-[48vh] resize-y border-0 bg-transparent px-0 text-sm leading-7 shadow-none focus-visible:ring-0"
-                          spellCheck
-                          aria-label="Conteúdo da página"
-                        />
-                        <div className="mt-3 flex flex-wrap items-center justify-between gap-2 border-t pt-3 text-[11px] uppercase tracking-wide text-muted-foreground">
-                          <span>
-                            {wordCount(draftContent)} palavras · {draftContent.length} caracteres
-                          </span>
-                          <span>Ctrl + S salva · Ctrl + E alterna o modo</span>
-                        </div>
-                      </div>
-                    ) : (
-                      <div>
-                        <h1 className="font-cinzel text-3xl font-semibold md:text-5xl">
-                          {draftTitle}
-                        </h1>
-                        {selected.summary && (
-                          <p className="mt-3 max-w-3xl text-base italic text-muted-foreground">
-                            {selected.summary}
-                          </p>
-                        )}
-                        <div className="tadeon-rule my-6" />
-                        <div className="tadeon-nexus-reading-copy">
-                          <SafeMarkdown
-                            markdown={draftContent}
-                            previews={previews}
-                            onOpenNode={(nodeId, headingSlug) => void openNode(nodeId, headingSlug)}
-                            onCreateMissing={(title) => void createNode(title)}
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => applyEditorSyntax("*")}
+                            >
+                              <em>I</em>
+                            </Button>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => applyEditorSyntax("[[", "]]")}
+                            >
+                              <Link2 className="h-4 w-4" />
+                              Ligação
+                            </Button>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => applyEditorSyntax("> [!NOTE] ", "")}
+                            >
+                              <TextQuote className="h-4 w-4" />
+                              Destaque
+                            </Button>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => applyEditorSyntax("- [ ] ", "")}
+                            >
+                              <Check className="h-4 w-4" />
+                              Checklist
+                            </Button>
+                            <details className="tadeon-nexus-editor-more">
+                              <summary>Mais</summary>
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => applyEditorSyntax("```\n", "\n```")}
+                              >
+                                Bloco técnico
+                              </Button>
+                            </details>
+                          </div>
+                          <Textarea
+                            ref={editorRef}
+                            value={draftContent}
+                            onChange={(event) => {
+                              const value = event.target.value;
+                              setDraftContent(value);
+                              markDirty(draftTitle, value);
+                            }}
+                            className="tadeon-nexus-editor min-h-[48vh] resize-y border-0 bg-transparent px-0 text-sm leading-7 shadow-none focus-visible:ring-0"
+                            spellCheck
+                            aria-label="Conteúdo da página"
                           />
+                          <div className="mt-3 flex flex-wrap items-center justify-between gap-2 border-t pt-3 text-[11px] uppercase tracking-wide text-muted-foreground">
+                            <span>
+                              {wordCount(draftContent)} palavras · {draftContent.length} caracteres
+                            </span>
+                            <span>Ctrl + S salva · Ctrl + E alterna o modo</span>
+                          </div>
                         </div>
+                      ) : (
+                        <div>
+                          <h1 className="font-cinzel text-3xl font-semibold md:text-5xl">
+                            {draftTitle}
+                          </h1>
+                          {selected.summary && (
+                            <p className="mt-3 max-w-3xl text-base italic text-muted-foreground">
+                              {selected.summary}
+                            </p>
+                          )}
+                          <div className="tadeon-rule my-6" />
+                          <div className="tadeon-nexus-reading-copy">
+                            <SafeMarkdown
+                              markdown={draftContent}
+                              previews={previews}
+                              onOpenNode={(nodeId, headingSlug) =>
+                                void openNode(nodeId, headingSlug)
+                              }
+                              onCreateMissing={(title) => void createNode(title)}
+                            />
+                          </div>
+                        </div>
+                      )}
+                    </article>
+                  </>
+                ) : (
+                  <div className="tadeon-nexus-home min-h-[65vh] p-5 md:p-8">
+                    <div className="tadeon-nexus-home__intro">
+                      <span className="tadeon-nexus-home__sigil">
+                        <Sparkles />
+                      </span>
+                      <div>
+                        <p className="tadeon-eyebrow">Entrada do acervo</p>
+                        <h2 className="mt-1 font-cinzel text-2xl font-semibold md:text-3xl">
+                          Onde a campanha se conecta
+                        </h2>
+                        <p className="mt-2 max-w-2xl text-sm text-muted-foreground">
+                          Encontre uma página pela busca, retome uma memória recente ou comece um
+                          novo fio narrativo.
+                        </p>
                       </div>
-                    )}
-                  </article>
-                </>
-              ) : (
-                <div className="tadeon-nexus-home min-h-[65vh] p-5 md:p-8">
-                  <div className="tadeon-nexus-home__intro">
-                    <span className="tadeon-nexus-home__sigil">
-                      <Sparkles />
-                    </span>
-                    <div>
-                      <p className="tadeon-eyebrow">Entrada do acervo</p>
-                      <h2 className="mt-1 font-cinzel text-2xl font-semibold md:text-3xl">
-                        Onde a campanha se conecta
-                      </h2>
-                      <p className="mt-2 max-w-2xl text-sm text-muted-foreground">
-                        Encontre uma página pela busca, retome uma memória recente ou comece um novo
-                        fio narrativo.
-                      </p>
                     </div>
-                  </div>
-                  <div className="tadeon-nexus-home__actions">
-                    <button type="button" onClick={() => setLibraryOpen(true)}>
-                      <BookMarked />
-                      <span>
-                        <strong>Explorar bibliotecas</strong>
-                        <small>Acervo por coleções e tipos</small>
-                      </span>
-                      <ChevronRight />
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setCreateVisibility(campaignScope ? "campaign" : "author");
-                        setCreateOpen(true);
-                      }}
-                    >
-                      <FilePlus2 />
-                      <span>
-                        <strong>Criar uma página</strong>
-                        <small>Registre uma ideia sem configurar códigos</small>
-                      </span>
-                      <ChevronRight />
-                    </button>
-                    {graphEnabled && (
-                      <button
-                        type="button"
-                        onClick={async () => {
-                          const seed = recent[0] ?? favorites[0] ?? nodes[0];
-                          if (!seed) {
-                            toast.info("Crie uma página para começar a teia do Nexus.");
-                            return;
-                          }
-                          await openNode(seed.id);
-                          setGraphOpen(true);
-                        }}
-                      >
-                        <ListTree />
+                    <div className="tadeon-nexus-home__actions">
+                      <button type="button" onClick={() => setLibraryOpen(true)}>
+                        <BookMarked />
                         <span>
-                          <strong>Ver organização</strong>
-                          <small>Explore a teia radial ou em árvore</small>
+                          <strong>Explorar bibliotecas</strong>
+                          <small>Acervo por coleções e tipos</small>
                         </span>
                         <ChevronRight />
                       </button>
-                    )}
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setCreateVisibility(campaignScope ? "campaign" : "author");
+                          setCreateOpen(true);
+                        }}
+                      >
+                        <FilePlus2 />
+                        <span>
+                          <strong>Criar uma página</strong>
+                          <small>Registre uma ideia sem configurar códigos</small>
+                        </span>
+                        <ChevronRight />
+                      </button>
+                      {graphEnabled && (
+                        <button
+                          type="button"
+                          onClick={async () => {
+                            const seed = recent[0] ?? favorites[0] ?? nodes[0];
+                            if (!seed) {
+                              toast.info("Crie uma página para começar a teia do Nexus.");
+                              return;
+                            }
+                            await openNode(seed.id);
+                            setGraphOpen(true);
+                          }}
+                        >
+                          <ListTree />
+                          <span>
+                            <strong>Ver organização</strong>
+                            <small>Explore a teia radial ou em árvore</small>
+                          </span>
+                          <ChevronRight />
+                        </button>
+                      )}
+                    </div>
+                    <div className="tadeon-nexus-home__shelves">
+                      <section>
+                        <p>
+                          <Clock3 /> Retome de onde parou
+                        </p>
+                        <div>
+                          {recent.slice(0, 4).map((node) => (
+                            <button
+                              type="button"
+                              key={node.id}
+                              onClick={() => void openNode(node.id)}
+                            >
+                              <span>{TYPE_LABELS[node.node_type]}</span>
+                              <strong>{node.title}</strong>
+                            </button>
+                          ))}
+                          {!recent.length && <small>Nenhuma página recente neste escopo.</small>}
+                        </div>
+                      </section>
+                      <section>
+                        <p>
+                          <Star /> Favoritos
+                        </p>
+                        <div>
+                          {favorites.slice(0, 4).map((node) => (
+                            <button
+                              type="button"
+                              key={node.id}
+                              onClick={() => void openNode(node.id)}
+                            >
+                              <span>{TYPE_LABELS[node.node_type]}</span>
+                              <strong>{node.title}</strong>
+                            </button>
+                          ))}
+                          {!favorites.length && (
+                            <small>Favorite páginas essenciais para vê-las aqui.</small>
+                          )}
+                        </div>
+                      </section>
+                    </div>
                   </div>
-                  <div className="tadeon-nexus-home__shelves">
-                    <section>
-                      <p>
-                        <Clock3 /> Retome de onde parou
-                      </p>
-                      <div>
-                        {recent.slice(0, 4).map((node) => (
-                          <button
-                            type="button"
-                            key={node.id}
-                            onClick={() => void openNode(node.id)}
-                          >
-                            <span>{TYPE_LABELS[node.node_type]}</span>
-                            <strong>{node.title}</strong>
-                          </button>
-                        ))}
-                        {!recent.length && <small>Nenhuma página recente neste escopo.</small>}
-                      </div>
-                    </section>
-                    <section>
-                      <p>
-                        <Star /> Favoritos
-                      </p>
-                      <div>
-                        {favorites.slice(0, 4).map((node) => (
-                          <button
-                            type="button"
-                            key={node.id}
-                            onClick={() => void openNode(node.id)}
-                          >
-                            <span>{TYPE_LABELS[node.node_type]}</span>
-                            <strong>{node.title}</strong>
-                          </button>
-                        ))}
-                        {!favorites.length && (
-                          <small>Favorite páginas essenciais para vê-las aqui.</small>
-                        )}
-                      </div>
-                    </section>
-                  </div>
-                </div>
-              )}
-            </div>
-            {graphEnabled && selected && readingView !== "document" && (
-              <section
-                className="tadeon-nexus-reading__graph"
-                aria-label="Grafo conectado ao documento"
-              >
-                <KnowledgeGraph
-                  key={`${workspaceId}:${campaignScope}`}
-                  workspaceId={workspaceId}
-                  campaignId={campaignScope}
-                  focusNodeId={selected.id}
-                  onOpenNode={(id) => void openNode(id)}
-                />
-              </section>
-            )}
-          </div>
+                )}
+              </>
+            }
+            graph={
+              graphEnabled && selected && inlineGraphFocus ? (
+                <section
+                  className="tadeon-nexus-reading__graph"
+                  aria-label="Grafo conectado ao documento"
+                >
+                  <KnowledgeGraph
+                    key={`${workspaceId}:${campaignScope}`}
+                    workspaceId={workspaceId}
+                    campaignId={campaignScope}
+                    focusNodeId={inlineGraphFocus}
+                    onOpenNode={(id) => void openNode(id)}
+                  />
+                </section>
+              ) : null
+            }
+          />
         </section>
 
         {!focusMode && rightOpen && selected && (
@@ -2735,6 +2936,72 @@ export function NexusWorkspace({
           }}
         />
       )}
+
+      <Dialog
+        open={Boolean(
+          conflictReview &&
+          conflictReview.scope === scopeKey &&
+          conflictReview.node.id === selected?.id,
+        )}
+        onOpenChange={(open) => {
+          if (!open) setConflictReview(null);
+        }}
+      >
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Revisar versões da página</DialogTitle>
+            <DialogDescription>
+              Outra versão foi salva. Compare o rascunho com o conteúdo atual antes de escolher o
+              que manter.
+            </DialogDescription>
+          </DialogHeader>
+          <Label htmlFor="nexus-local-version">Seu rascunho</Label>
+          <Textarea id="nexus-local-version" readOnly value={`${draftTitle}\n\n${draftContent}`} />
+          <Label htmlFor="nexus-server-version">Versão salva</Label>
+          <Textarea
+            id="nexus-server-version"
+            readOnly
+            value={
+              conflictReview
+                ? `${conflictReview.node.title}\n\n${conflictReview.node.content_markdown}`
+                : ""
+            }
+          />
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => {
+                if (!conflictReview) return;
+                const node = conflictReview.node;
+                drafts.remove(node.id);
+                setSelected(node);
+                setDraftTitle(node.title);
+                setDraftContent(node.content_markdown);
+                setSaveState("saved");
+                setConflictReview(null);
+              }}
+            >
+              Usar versão salva
+            </Button>
+            <Button
+              onClick={() => {
+                if (!conflictReview) return;
+                const node = conflictReview.node;
+                setSelected(node);
+                drafts.put(node.id, {
+                  title: draftTitle,
+                  content: draftContent,
+                  updatedAt: node.updated_at,
+                });
+                setSaveState("dirty");
+                setConflictReview(null);
+              }}
+            >
+              Aplicar meu rascunho à versão atual
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

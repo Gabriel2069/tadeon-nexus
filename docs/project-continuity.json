@@ -108,13 +108,17 @@
         "src/lib/knowledge/knowledge-graph-service.ts",
         "src/components/knowledge/knowledge-graph-second-brain.tsx",
         "src/components/knowledge/knowledge-tree.tsx",
-        "src/lib/knowledge/knowledge-tree.ts"
+        "src/lib/knowledge/knowledge-tree.ts",
+        "src/components/knowledge/nexus-workspace.tsx",
+        "src/components/knowledge/knowledge-reading-panes.tsx",
+        "src/lib/knowledge/knowledge-drafts.ts",
+        "src/lib/knowledge/use-reading-preferences.ts"
       ],
       "styles": [
         "src/styles/nexus-material.css",
         "src/styles/knowledge-graph-second-brain.css"
       ],
-      "boundary": "Serviços controlam acesso a dados; grafo controla presets e interação em React. Árvore usa parent_node_id; grafo visual não usa distância de relações como parentesco. Leitura combinada e controles preservam estado React e invalidam respostas antigas."
+      "boundary": "Serviços controlam acesso a dados; grafo controla presets e interação em React. Árvore usa parent_node_id; grafo visual não usa distância de relações como parentesco. Leitura combinada e controles preservam estado React e invalidam respostas antigas. NexusWorkspace mantém navegação/editor e respostas assíncronas; KnowledgeReadingPanes dimensiona a composição; rascunhos e preferências locais são separados por identidade e workspace. Não introduzir outro escritor desses estados."
     },
     {
       "id": "tabletop",
@@ -597,7 +601,7 @@
       "id": "NEX-015",
       "title": "Nexus: continuidade de abas e composição dos painéis",
       "domain": "knowledge",
-      "status": "planned",
+      "status": "active",
       "priority": 4,
       "dependsOn": [
         "NEX-006",
@@ -609,7 +613,7 @@
         "Ampliar cobertura de filtros, grupos, leitura longa e corpus real autorizado; preservar o limite de 500 candidatos e explicitar paginação."
       ],
       "evidence": [],
-      "checkpoint": "Refinamento posterior da experiência inspirada no Obsidian. NEX-006 entregou árvore real e leitura combinada; não reimplementar esses proprietários nem importar assets ou plugins do Obsidian."
+      "checkpoint": "Implementação na branch feat/nexus-reading-continuity-2026-10-14, sobre main 3173d27. Doze testes focados aprovados; verificação no navegador em andamento. Sem integração ou publicação desta etapa."
     }
   ],
   "decisions": [

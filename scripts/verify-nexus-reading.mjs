@@ -98,6 +98,7 @@ const memory = {
 const results = [];
 try {
   await new Promise((ok, fail) => {
+    server.stderr.on("data", (b) => console.log("Vite:", b.toString().slice(0, 1500)));
     server.stdout.on("data", (b) => {
       if (b.toString().includes("Local:")) ok();
     });
@@ -114,6 +115,7 @@ try {
     const errors = [],
       requests = [];
     page.on("pageerror", (e) => errors.push(e.message));
+    page.on("console", (message) => { if (message.type() === "error") console.log("Browser error:", message.text()); });
     await page.addInitScript(
       ({ user, token }) =>
         localStorage.setItem(
@@ -180,21 +182,23 @@ try {
     );
     await installDesignFonts(page);
     await page.goto(`http://127.0.0.1:${port}/nexus?node=${id(0)}`, {
-      waitUntil: "domcontentloaded",
+      waitUntil: "commit",
     });
+    console.log("Opened fixture", width);
     await page
       .getByRole("heading", { name: nodes[0].title, exact: true })
       .waitFor()
       .catch(async (error) => {
-        await page.screenshot({ path: `${output}/failure-${width}.png`, fullPage: true });
+        console.log("Reading failure:", error.message, "requests", JSON.stringify(requests), "errors", JSON.stringify(errors));
         console.log(
           JSON.stringify({
             url: page.url(),
-            body: (await page.locator("body").innerText()).slice(0, 6000),
+            body: await page.locator("body").innerText({ timeout: 5000 }).catch(() => "unresponsive"),
             errors,
             requests,
           }),
         );
+        await page.screenshot({ path: `${output}/failure-${width}.png`, fullPage: false, timeout: 10000 }).catch(() => {});
         throw error;
       });
     assert((await page.locator("main").count()) === 1, "One main landmark");

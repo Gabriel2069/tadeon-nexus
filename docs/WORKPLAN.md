@@ -24,7 +24,7 @@ Cada PR usa IDs desta fila e declara dependências. Trabalho sobre o mesmo propr
 | NEX-011 | Backup e restauração verificável | Planejado | 8 | assets | NEX-010 |
 | NEX-012 | Revisão editorial do corpus canônico | Adiado | 9 | knowledge | NEX-006 |
 | NEX-014 | Reconciliar movimento e aprofundar Véu & Trama | Integrado | 3 | shell | NEX-005, NEX-013 |
-| NEX-015 | Nexus: continuidade de abas e composição dos painéis | Planejado | 4 | knowledge | NEX-006, NEX-014 |
+| NEX-015 | Nexus: continuidade de abas e composição dos painéis | Em andamento | 4 | knowledge | NEX-006, NEX-014 |
 
 ## NEX-001 — Preparação estrutural
 

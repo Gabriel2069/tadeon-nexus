@@ -317,12 +317,15 @@ export function KnowledgeGraph({
     const canvas = canvasRef.current;
     if (!canvas) return;
     const observer = new ResizeObserver(([entry]) => {
-      const width = Math.max(1, Math.round(entry.contentRect.width));
+      if (entry.contentRect.width < 1 || entry.contentRect.height < 1) return;
+      const width = Math.round(entry.contentRect.width);
       const height = Math.max(420, Math.round(entry.contentRect.height));
       const ratio = Math.min(window.devicePixelRatio || 1, 2);
-      canvas.width = Math.round(width * ratio);
-      canvas.height = Math.round(height * ratio);
-      setViewport({ width, height });
+      if (canvas.width !== Math.round(width * ratio) || canvas.height !== Math.round(height * ratio)) {
+        canvas.width = Math.round(width * ratio);
+        canvas.height = Math.round(height * ratio);
+        setViewport({ width, height });
+      }
     });
     observer.observe(canvas);
     return () => observer.disconnect();
