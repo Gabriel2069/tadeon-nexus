@@ -23,9 +23,9 @@ describe("Nexus second-brain graph architecture", () => {
     expect(graph).toContain("semanticThreshold");
     expect(graph).toContain("minimumStrength");
     expect(graph).toContain("pinnedPositions");
-    expect(graph).toContain("linkDistance: 260");
-    expect(graph).toContain("repelStrength: 2.4");
-    expect(graph).toContain("Math.max(0.34");
+    expect(graph).toContain("knowledgeTreePositions");
+    expect(graph).toContain("colorGroups");
+    expect(graph).toContain("Math.max(0.001");
   });
 
   it("keeps relation evidence, backlinks, hierarchy and content affinity in the model", () => {

@@ -1,3 +1,4 @@
+import { FabricFilaments } from "@/components/fabric-filaments";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -104,6 +105,7 @@ export function Section({
   return (
     <MaterialSurface
       as="section"
+      style={{ "--material-rgb": "var(--section-rgb)" } as CSSProperties}
       id={id}
       data-section={presentationKey}
       data-tadeon-context-help={SECTION_HELP[presentationKey]}
@@ -111,6 +113,7 @@ export function Section({
       data-collapsed={collapsed ? "true" : "false"}
       className={`tadeon-sheet-section scroll-mt-44 p-4 transition-[border-color,box-shadow] duration-150 hover:border-primary/25 md:p-5 ${className}`}
     >
+      <FabricFilaments className="tadeon-sheet-fabric" />
       <Collapsible open={!collapsed} onOpenChange={(open) => setCollapsed(!open)}>
         <div className="tadeon-sheet-section__heading mb-4 flex flex-wrap items-center justify-between gap-2">
           <div className="tadeon-sheet-section__title-group">

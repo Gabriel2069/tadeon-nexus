@@ -1,10 +1,7 @@
 /* source: src/styles/popup-geometry-256.css */
 /* Pop-ups #256 - the route frame owns centering; modal animation never does. */
 
-:where(
-  [data-slot="dialog-positioner"],
-  [data-slot="alert-dialog-positioner"]
-) {
+:where([data-slot="dialog-positioner"], [data-slot="alert-dialog-positioner"]) {
   position: fixed;
   z-index: 120;
   top: var(--tadeon-popup-viewport-top, 0px);
@@ -16,11 +13,8 @@
   align-items: center;
   justify-items: center;
   overflow: hidden;
-  padding:
-    max(0.5rem, env(safe-area-inset-top))
-    max(0.5rem, env(safe-area-inset-right))
-    max(0.5rem, env(safe-area-inset-bottom))
-    max(0.5rem, env(safe-area-inset-left));
+  padding: max(0.5rem, env(safe-area-inset-top)) max(0.5rem, env(safe-area-inset-right))
+    max(0.5rem, env(safe-area-inset-bottom)) max(0.5rem, env(safe-area-inset-left));
   pointer-events: none;
 }
 
@@ -33,15 +27,11 @@
   z-index: 80 !important;
 }
 
-:where(
-  [data-slot="sheet-content"],
-  [data-slot="drawer-content"]
-) {
+:where([data-slot="sheet-content"], [data-slot="drawer-content"]) {
   z-index: 110 !important;
 }
 
-[data-slot="dialog-positioner"]
-  > [data-slot="dialog-content"][data-popup-contained="true"],
+[data-slot="dialog-positioner"] > [data-slot="dialog-content"][data-popup-contained="true"],
 [data-slot="alert-dialog-positioner"]
   > [data-slot="alert-dialog-content"][data-popup-contained="true"] {
   position: relative !important;
@@ -51,17 +41,14 @@
   max-height: 100% !important;
   margin: auto !important;
   --tadeon-popup-zero-translate: 0px;
-  translate:
-    var(--tadeon-popup-zero-translate)
-    var(--tadeon-popup-zero-translate) !important;
+  translate: var(--tadeon-popup-zero-translate) var(--tadeon-popup-zero-translate) !important;
   transform: none !important;
   pointer-events: auto;
 }
 
 /* Global command search is centered by the fixed positioner. It must not
    acquire a second visual-viewport offset of its own. */
-[data-slot="dialog-positioner"]
-  > [data-slot="dialog-content"].tadeon-global-search-dialog {
+[data-slot="dialog-positioner"] > [data-slot="dialog-content"].tadeon-global-search-dialog {
   position: relative !important;
   inset: auto !important;
   left: auto !important;
@@ -79,58 +66,89 @@
 }
 
 @keyframes tadeon-popup-contained-in {
-  from { opacity: 0; transform: translate3d(0, 0.9rem, 0) scale(0.965); }
-  to { opacity: 1; transform: translate3d(0, 0, 0) scale(1); }
+  from {
+    opacity: 0;
+    scale: 0.985;
+  }
+  to {
+    opacity: 1;
+    scale: 1;
+  }
 }
 
 @keyframes tadeon-popup-contained-out {
-  from { opacity: 1; transform: translate3d(0, 0, 0) scale(1); }
-  to { opacity: 0; transform: translate3d(0, 0.55rem, 0) scale(0.98); }
+  from {
+    opacity: 1;
+    scale: 1;
+  }
+  to {
+    opacity: 0;
+    scale: 0.99;
+  }
 }
 
 [data-slot="dialog-positioner"]
   > [data-slot="dialog-content"][data-popup-contained="true"][data-state="open"],
 [data-slot="alert-dialog-positioner"]
   > [data-slot="alert-dialog-content"][data-popup-contained="true"][data-state="open"] {
-  animation: tadeon-popup-contained-in 280ms var(--ease-drawer) both !important;
+  animation: tadeon-popup-contained-in 200ms var(--ease-out);
 }
 
 [data-slot="dialog-positioner"]
   > [data-slot="dialog-content"][data-popup-contained="true"][data-state="closed"],
 [data-slot="alert-dialog-positioner"]
   > [data-slot="alert-dialog-content"][data-popup-contained="true"][data-state="closed"] {
-  animation: tadeon-popup-contained-out 180ms var(--ease-in-out) both !important;
+  animation: tadeon-popup-contained-out 140ms var(--ease-out) both;
 }
 
 @media (max-width: 767px) {
-  :where(
-    [data-slot="dialog-positioner"],
-    [data-slot="alert-dialog-positioner"]
-  ) {
+  :where([data-slot="dialog-positioner"], [data-slot="alert-dialog-positioner"]) {
     padding-inline: max(0.5rem, env(safe-area-inset-left));
   }
 
-  [data-slot="dialog-positioner"]
-    > [data-slot="dialog-content"][data-popup-contained="true"],
+  [data-slot="dialog-positioner"] > [data-slot="dialog-content"][data-popup-contained="true"],
   [data-slot="alert-dialog-positioner"]
     > [data-slot="alert-dialog-content"][data-popup-contained="true"] {
     width: 100% !important;
   }
 
-  [data-slot="dialog-positioner"]
-    > [data-slot="dialog-content"].tadeon-global-search-dialog {
+  [data-slot="dialog-positioner"] > [data-slot="dialog-content"].tadeon-global-search-dialog {
     width: min(42rem, 92vw) !important;
     max-width: 92vw !important;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  [data-slot="dialog-positioner"]
-    > [data-slot="dialog-content"][data-popup-contained="true"],
+  [data-slot="dialog-positioner"] > [data-slot="dialog-content"][data-popup-contained="true"],
   [data-slot="alert-dialog-positioner"]
     > [data-slot="alert-dialog-content"][data-popup-contained="true"] {
-    animation-duration: 1ms !important;
+    animation: none;
   }
 }
 
 /* end-source: src/styles/popup-geometry-256.css */
+
+/* React primitives own interruption and presence. Positioning wrappers never animate. */
+[data-motion-surface="popup"]:not([data-popup-contained])[data-state="open"] {
+  animation: tadeon-popup-contained-in 160ms var(--ease-out);
+}
+[data-motion-surface="popup"]:not([data-popup-contained])[data-state="closed"] {
+  animation: tadeon-popup-contained-out 120ms var(--ease-out) both;
+}
+[data-motion-surface="tabpanel"][data-state="active"] {
+  animation: tadeon-reading-reveal 160ms var(--ease-out);
+}
+@keyframes tadeon-reading-reveal {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  [data-motion-surface="popup"],
+  [data-motion-surface="tabpanel"][data-state="active"] {
+    animation: none;
+  }
+}

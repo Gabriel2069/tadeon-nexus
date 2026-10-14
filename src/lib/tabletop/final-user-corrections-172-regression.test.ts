@@ -37,15 +37,14 @@ describe("final user corrections 172", () => {
     expect(popout).not.toContain('".tadeon-tabletop-reliability-strip"');
   });
 
-  it("restores Nexus ornament and substantially opens the force graph", () => {
+  it("retains Nexus ornament and manually controlled force layout", () => {
     const css = source("src/styles/create-sheet-search-viewport-163.css");
     const graph = source("src/components/knowledge/knowledge-graph-second-brain.tsx");
     expect(css).toContain(".tadeon-nexus-header::before");
     expect(css).toContain("conic-gradient(from 18deg");
-    expect(graph).toContain('linkDistance: 260');
-    expect(graph).toContain('repelStrength: 2.4');
-    expect(graph).toContain('centerStrength: 0.08');
-    expect(graph).toContain('clusterStrength: 0.12');
+    // NEX-006 intentionally revises density; behavior is covered by knowledge-graph-controls.
+    expect(graph).toContain('computeKnowledgeForceLayout');
+    expect(graph).toContain('pinnedPositions');
   });
 
   it("centers the lateral navigation and gives Panel/Backup concrete icon frames", () => {

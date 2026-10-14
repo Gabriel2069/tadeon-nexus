@@ -1,3 +1,6 @@
+import { createLatestRequestGate } from "@/lib/latest-request";
+import { FabricFilaments } from "@/components/fabric-filaments";
+import { MaterialSurface } from "@/components/material-surface";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   BookCopy,
@@ -202,6 +205,9 @@ export function KnowledgeLibrary({
   onChanged: () => void;
 }) {
   const mobilePreviewRef = useRef<HTMLElement>(null);
+  const previewTriggerRef = useRef<HTMLElement | null>(null);
+  const [mobilePreviewOpen, setMobilePreviewOpen] = useState(false);
+  const libraryRequests = useRef(createLatestRequestGate());
   const [nodes, setNodes] = useState<KnowledgeNode[]>([]);
   const [count, setCount] = useState(0);
   const [hasMore, setHasMore] = useState(false);
@@ -247,7 +253,7 @@ export function KnowledgeLibrary({
   }, [query]);
 
   useEffect(() => {
-    if (!preview || !window.matchMedia("(max-width: 1023px)").matches) return;
+    if (!preview || !mobilePreviewOpen || !window.matchMedia("(max-width: 1023px)").matches) return;
     const frame = window.requestAnimationFrame(() => {
       mobilePreviewRef.current?.scrollIntoView({
         behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth",
@@ -255,9 +261,10 @@ export function KnowledgeLibrary({
       });
     });
     return () => window.cancelAnimationFrame(frame);
-  }, [preview]);
+  }, [preview, mobilePreviewOpen]);
 
   const loadNodes = useCallback(async () => {
+    const ticket = libraryRequests.current.begin();
     if (!open || !workspaceId) return;
     setLoading(true);
     try {
@@ -274,6 +281,7 @@ export function KnowledgeLibrary({
         }),
         knowledgeService.listFavoriteNodes(100),
       ]);
+      if (!libraryRequests.current.isCurrent(ticket)) return;
       setNodes(result.hits.map((hit) => hit.node));
       setCount(result.count);
       setHasMore(result.hasMore);
@@ -289,12 +297,13 @@ export function KnowledgeLibrary({
         return new Set([...current].filter((id) => visible.has(id)));
       });
     } catch (error) {
+      if (!libraryRequests.current.isCurrent(ticket)) return;
       toast.error(messageFor(error));
       setNodes([]);
       setCount(0);
       setHasMore(false);
     } finally {
-      setLoading(false);
+      if (libraryRequests.current.isCurrent(ticket)) setLoading(false);
     }
   }, [campaignId, debouncedQuery, nodeType, open, order, page, workspaceId]);
 
@@ -314,7 +323,9 @@ export function KnowledgeLibrary({
   }, [open, workspaceId]);
 
   useEffect(() => {
+    const requests = libraryRequests.current;
     void loadNodes();
+    return () => requests.invalidate();
   }, [loadNodes]);
 
   useEffect(() => {
@@ -485,28 +496,40 @@ export function KnowledgeLibrary({
     }
   };
 
+  const showPreview = (node: KnowledgeNode, trigger: HTMLElement) => {
+    previewTriggerRef.current = trigger;
+    setPreview(node);
+    setMobilePreviewOpen(true);
+  };
+  useEffect(() => {
+    if (!open) setMobilePreviewOpen(false);
+  }, [open]);
+
   const nodeCard = (node: KnowledgeNode, compact = false, index = 0) => {
     const selected = selectedIds.has(node.id);
     return (
-      <Card
+      <MaterialSurface
+        as="article"
+        data-slot="card"
         key={node.id}
         data-node-type={node.node_type}
         data-selected={selected ? "true" : "false"}
         role="group"
         tabIndex={0}
         aria-label={`Visualizar ${node.title}`}
-        className={`tadeon-library-card tadeon-interactive-card group relative cursor-pointer p-3 ${
+        className={`tadeon-library-card group relative cursor-pointer border p-3 ${
           selected ? "is-selected" : ""
         }`}
-        onClick={() => setPreview(node)}
+        onClick={(event) => showPreview(node, event.currentTarget)}
         onKeyDown={(event) => {
           if (event.target !== event.currentTarget) return;
           if (event.key === "Enter" || event.key === " ") {
             event.preventDefault();
-            setPreview(node);
+            showPreview(node, event.currentTarget);
           }
         }}
       >
+        <FabricFilaments className="tadeon-library-card__fabric" />
         <span className="tadeon-library-card__folio" aria-hidden="true">
           {String(index + 1).padStart(2, "0")}
         </span>
@@ -521,17 +544,17 @@ export function KnowledgeLibrary({
           />
           <div className="min-w-0 flex-1">
             <div className="flex items-start justify-between gap-2">
-              <div className="flex min-w-0 items-start gap-2">
+              <div className="flex min-w-0 flex-1 items-start gap-2">
                 <span className="tadeon-library-card__mark tadeon-interactive-card__icon">
                   <BookOpenText aria-hidden="true" />
                 </span>
                 <div className="min-w-0">
                   <button
                     type="button"
-                    className="tadeon-library-card__title tadeon-interactive-card__title block w-full truncate text-left text-sm font-semibold"
+                    className="tadeon-library-card__title tadeon-interactive-card__title block w-full line-clamp-2 text-left font-cinzel text-lg font-semibold"
                     onClick={(event) => {
                       event.stopPropagation();
-                      setPreview(node);
+                      showPreview(node, event.currentTarget);
                     }}
                     aria-label={`Visualizar ${node.title}`}
                   >
@@ -572,7 +595,7 @@ export function KnowledgeLibrary({
             </p>
           </div>
         </div>
-      </Card>
+      </MaterialSurface>
     );
   };
 
@@ -834,11 +857,22 @@ export function KnowledgeLibrary({
                 </div>
               </div>
 
-              {preview && (
+              {preview && mobilePreviewOpen && (
                 <aside
                   ref={mobilePreviewRef}
                   className="tadeon-library-preview tadeon-library-preview--mobile lg:hidden"
                 >
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    aria-label="Fechar prévia"
+                    onClick={() => {
+                      setMobilePreviewOpen(false);
+                      previewTriggerRef.current?.focus({ preventScroll: true });
+                    }}
+                  >
+                    Voltar aos resultados <X className="h-4 w-4" />
+                  </Button>
                   {previewPanel("mobile")}
                 </aside>
               )}
@@ -867,7 +901,7 @@ export function KnowledgeLibrary({
                       {nodes.map((node) => (
                         <tr
                           key={node.id}
-                          onClick={() => setPreview(node)}
+                          onClick={(event) => showPreview(node, event.currentTarget)}
                           className="cursor-pointer border-t"
                         >
                           <td className="px-3 py-2">
@@ -908,8 +942,8 @@ export function KnowledgeLibrary({
                 <div
                   className={
                     view === "compact"
-                      ? "grid gap-2 sm:grid-cols-2 xl:grid-cols-3"
-                      : "grid gap-3 sm:grid-cols-2 xl:grid-cols-3"
+                      ? "tadeon-library-card-grid grid gap-2"
+                      : "tadeon-library-card-grid grid gap-3"
                   }
                 >
                   {nodes.map((node, index) => nodeCard(node, view === "compact", index))}

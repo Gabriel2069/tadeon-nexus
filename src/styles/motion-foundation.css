@@ -550,7 +550,7 @@
   overflow: hidden;
 }
 
-.tadeon-master-workspace .tadeon-master-navigation [data-slot="tabs-trigger"]::before {
+.tadeon-master-workspace .tadeon-master-navigation [data-slot="tabs-trigger"]:not([data-material-surface="tab"])::before {
   position: absolute;
   inset: 0;
   background: linear-gradient(100deg, transparent, rgb(217 215 164 / 7%), transparent);
@@ -560,7 +560,7 @@
   pointer-events: none;
 }
 
-.tadeon-master-workspace .tadeon-master-navigation [data-slot="tabs-trigger"][data-state="active"]::before {
+.tadeon-master-workspace .tadeon-master-navigation [data-slot="tabs-trigger"]:not([data-material-surface="tab"])[data-state="active"]::before {
   transform: translateX(110%);
 }
 
@@ -824,14 +824,14 @@
 }
 
 /* Master - faster, more deliberate response: decision before action. */
-.tadeon-master-workspace .tadeon-master-navigation [data-slot="tabs-trigger"],
+.tadeon-master-workspace .tadeon-master-navigation [data-slot="tabs-trigger"]:not([data-material-surface="tab"]),
 .tadeon-master-workspace .tadeon-surface,
 .tadeon-master-workspace button {
   transition-duration: 220ms;
   transition-timing-function: var(--tadeon-motion-material, cubic-bezier(.23,1,.32,1));
 }
 
-.tadeon-master-workspace .tadeon-master-navigation [data-slot="tabs-trigger"]::after {
+.tadeon-master-workspace .tadeon-master-navigation [data-slot="tabs-trigger"]:not([data-material-surface="tab"])::after {
   transition: transform 360ms var(--tadeon-motion-reveal, cubic-bezier(.22,1,.36,1)), opacity 220ms ease;
 }
 
@@ -932,11 +932,11 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .tadeon-shell [data-slot="dialog-content"],
+  .tadeon-shell [data-slot="dialog-content"]:not([data-motion-surface]),
   .tadeon-shell [data-slot="sheet-content"],
-  .tadeon-shell [data-slot="popover-content"],
-  .tadeon-shell [data-slot="dropdown-menu-content"],
-  .tadeon-shell [data-slot="dropdown-menu-sub-content"],
+  .tadeon-shell [data-slot="popover-content"]:not([data-motion-surface]),
+  .tadeon-shell [data-slot="dropdown-menu-content"]:not([data-motion-surface]),
+  .tadeon-shell [data-slot="dropdown-menu-sub-content"]:not([data-motion-surface]),
   .tadeon-shell [data-slot="tooltip-content"],
   .tadeon-shell [data-sonner-toast] {
     animation: none !important;
@@ -969,24 +969,24 @@
   .tadeon-tabletop-studio .tadeon-symbol-mark:hover { transform: scale(1.12) rotate(.6deg); filter: drop-shadow(0 8px 20px rgb(217 215 164 / 18%)); }
 }
 
-.tadeon-shell [data-slot="popover-content"],
-.tadeon-shell [data-slot="dropdown-menu-content"],
-.tadeon-shell [data-slot="dropdown-menu-sub-content"],
+.tadeon-shell [data-slot="popover-content"]:not([data-motion-surface]),
+.tadeon-shell [data-slot="dropdown-menu-content"]:not([data-motion-surface]),
+.tadeon-shell [data-slot="dropdown-menu-sub-content"]:not([data-motion-surface]),
 .tadeon-shell [data-slot="tooltip-content"] {
   animation: tadeon-popup-arrival 360ms cubic-bezier(.22,1,.36,1) both;
   transform-origin: var(--radix-popover-content-transform-origin, var(--radix-dropdown-menu-content-transform-origin, var(--radix-tooltip-content-transform-origin, 50% 20%)));
 }
-.tadeon-shell [data-slot="popover-content"][data-state="closed"],
-.tadeon-shell [data-slot="dropdown-menu-content"][data-state="closed"],
-.tadeon-shell [data-slot="dropdown-menu-sub-content"][data-state="closed"],
+.tadeon-shell [data-slot="popover-content"]:not([data-motion-surface])[data-state="closed"],
+.tadeon-shell [data-slot="dropdown-menu-content"]:not([data-motion-surface])[data-state="closed"],
+.tadeon-shell [data-slot="dropdown-menu-sub-content"]:not([data-motion-surface])[data-state="closed"],
 .tadeon-shell [data-slot="tooltip-content"][data-state="closed"] { animation: tadeon-popup-departure 150ms cubic-bezier(.4,0,.2,1) both; }
 .tadeon-shell [data-slot="dialog-overlay"], .tadeon-shell [data-slot="sheet-overlay"] { animation: tadeon-overlay-arrival 300ms ease both; }
-.tadeon-shell [data-slot="dialog-content"] { animation: tadeon-dialog-arrival 460ms cubic-bezier(.22,1,.36,1) both; transform-origin: 50% 46%; }
+.tadeon-shell [data-slot="dialog-content"]:not([data-motion-surface]) { animation: tadeon-dialog-arrival 460ms cubic-bezier(.22,1,.36,1) both; transform-origin: 50% 46%; }
 .tadeon-shell [data-slot="sheet-content"] { animation: tadeon-sheet-arrival 460ms cubic-bezier(.22,1,.36,1) both; }
-.tadeon-shell [data-slot="dialog-content"] > * { animation: tadeon-popup-content-cascade 420ms cubic-bezier(.22,1,.36,1) both; }
-.tadeon-shell [data-slot="dialog-content"] > *:nth-child(2) { animation-delay: 35ms; }
-.tadeon-shell [data-slot="dialog-content"] > *:nth-child(3) { animation-delay: 70ms; }
-.tadeon-shell [data-slot="dialog-content"] > *:nth-child(4) { animation-delay: 105ms; }
+.tadeon-shell [data-slot="dialog-content"]:not([data-motion-surface]) > * { animation: tadeon-popup-content-cascade 420ms cubic-bezier(.22,1,.36,1) both; }
+.tadeon-shell [data-slot="dialog-content"]:not([data-motion-surface]) > *:nth-child(2) { animation-delay: 35ms; }
+.tadeon-shell [data-slot="dialog-content"]:not([data-motion-surface]) > *:nth-child(3) { animation-delay: 70ms; }
+.tadeon-shell [data-slot="dialog-content"]:not([data-motion-surface]) > *:nth-child(4) { animation-delay: 105ms; }
 .tadeon-shell [data-slot="sheet-content"] > * { animation: tadeon-sheet-content-cascade 420ms cubic-bezier(.22,1,.36,1) both; }
 .tadeon-shell [data-slot="sheet-content"] > *:nth-child(2) { animation-delay: 40ms; }
 .tadeon-shell [data-slot="sheet-content"] > *:nth-child(3) { animation-delay: 80ms; }
@@ -1016,9 +1016,9 @@
 .tadeon-shell [data-slot="dropdown-menu-item"][data-highlighted]::after,
 .tadeon-shell [data-slot="dropdown-menu-sub-trigger"][data-state="open"]::after { height: 16px; opacity: .72; }
 
-.tadeon-shell [data-slot="tabs-trigger"], .tadeon-shell [data-slot="accordion-trigger"] { position: relative; transition: transform 180ms cubic-bezier(.23,1,.32,1), color 180ms ease, background-color 180ms ease; }
-.tadeon-shell [data-slot="tabs-trigger"]::after, .tadeon-shell [data-slot="accordion-trigger"]::after { content: ""; position: absolute; left: 12%; right: 12%; bottom: 2px; height: 1px; background: currentColor; opacity: 0; transform: scaleX(.2); transition: transform 300ms cubic-bezier(.22,1,.36,1), opacity 220ms ease; }
-.tadeon-shell [data-slot="tabs-trigger"][data-state="active"]::after, .tadeon-shell [data-slot="accordion-trigger"][data-state="open"]::after { opacity: .65; transform: scaleX(1); }
+.tadeon-shell [data-slot="tabs-trigger"]:not([data-material-surface="tab"]), .tadeon-shell [data-slot="accordion-trigger"] { position: relative; transition: transform 180ms cubic-bezier(.23,1,.32,1), color 180ms ease, background-color 180ms ease; }
+.tadeon-shell [data-slot="tabs-trigger"]:not([data-material-surface="tab"])::after, .tadeon-shell [data-slot="accordion-trigger"]::after { content: ""; position: absolute; left: 12%; right: 12%; bottom: 2px; height: 1px; background: currentColor; opacity: 0; transform: scaleX(.2); transition: transform 300ms cubic-bezier(.22,1,.36,1), opacity 220ms ease; }
+.tadeon-shell [data-slot="tabs-trigger"]:not([data-material-surface="tab"])[data-state="active"]::after, .tadeon-shell [data-slot="accordion-trigger"][data-state="open"]::after { opacity: .65; transform: scaleX(1); }
 .tadeon-shell [data-slot="accordion-content"] { overflow: hidden; animation: tadeon-accordion-open 360ms cubic-bezier(.22,1,.36,1) both; transform-origin: top; }
 
 .tadeon-shell [data-slot="select-trigger"], .tadeon-shell [data-slot="checkbox"], .tadeon-shell [data-slot="radio-group-item"] { transition: transform 160ms cubic-bezier(.23,1,.32,1), box-shadow 240ms cubic-bezier(.23,1,.32,1), border-color 180ms ease, background-color 180ms ease; }
@@ -1105,12 +1105,12 @@
 
 @media (prefers-reduced-motion: reduce) {
   .tadeon-tabletop-studio__header .tadeon-tabletop-symbol, .tadeon-tabletop-studio__header [data-tabletop-symbol], .tadeon-tabletop-studio .tadeon-symbol-mark,
-  .tadeon-shell [data-slot="popover-content"], .tadeon-shell [data-slot="dropdown-menu-content"], .tadeon-shell [data-slot="dropdown-menu-sub-content"], .tadeon-shell [data-slot="tooltip-content"],
-  .tadeon-shell [data-slot="dialog-overlay"], .tadeon-shell [data-slot="sheet-overlay"], .tadeon-shell [data-slot="dialog-content"], .tadeon-shell [data-slot="sheet-content"],
-  .tadeon-shell [data-slot="dialog-content"] > *, .tadeon-shell [data-slot="sheet-content"] > *, .tadeon-shell [data-slot="accordion-content"], .tadeon-shell [data-sonner-toaster] [data-sonner-toast], .tadeon-shell [aria-busy="true"]::before,
+  .tadeon-shell [data-slot="popover-content"]:not([data-motion-surface]), .tadeon-shell [data-slot="dropdown-menu-content"]:not([data-motion-surface]), .tadeon-shell [data-slot="dropdown-menu-sub-content"]:not([data-motion-surface]), .tadeon-shell [data-slot="tooltip-content"],
+  .tadeon-shell [data-slot="dialog-overlay"], .tadeon-shell [data-slot="sheet-overlay"], .tadeon-shell [data-slot="dialog-content"]:not([data-motion-surface]), .tadeon-shell [data-slot="sheet-content"],
+  .tadeon-shell [data-slot="dialog-content"]:not([data-motion-surface]) > *, .tadeon-shell [data-slot="sheet-content"] > *, .tadeon-shell [data-slot="accordion-content"], .tadeon-shell [data-sonner-toaster] [data-sonner-toast], .tadeon-shell [aria-busy="true"]::before,
   .tadeon-shell :where([data-tadeon-status][data-state="active"], [data-slot="badge"][data-state="active"]), .tadeon-shell :where([data-tadeon-dot][data-state="active"], .tadeon-status-dot[data-state="active"]),
   .tadeon-shell :where([data-tadeon-progress], .tadeon-progress-bar)::after, .tadeon-shell .tadeon-atmosphere, .tadeon-shell .tadeon-atmosphere-layer, .tadeon-shell [data-tadeon-atmosphere], .tadeon-shell .tadeon-orbit, .tadeon-shell [data-tadeon-orbit], .tadeon-shell .tadeon-grain, .tadeon-shell [data-tadeon-grain] { animation: none !important; }
-  .tadeon-shell [data-slot="tabs-trigger"], .tadeon-shell [data-slot="accordion-trigger"], .tadeon-shell [data-slot="dropdown-menu-item"], .tadeon-shell [data-slot="dropdown-menu-sub-trigger"], .tadeon-shell [data-slot="dropdown-menu-checkbox-item"], .tadeon-shell [data-slot="dropdown-menu-radio-item"] { transition: none !important; }
+  .tadeon-shell [data-slot="tabs-trigger"]:not([data-material-surface="tab"]), .tadeon-shell [data-slot="accordion-trigger"], .tadeon-shell [data-slot="dropdown-menu-item"], .tadeon-shell [data-slot="dropdown-menu-sub-trigger"], .tadeon-shell [data-slot="dropdown-menu-checkbox-item"], .tadeon-shell [data-slot="dropdown-menu-radio-item"] { transition: none !important; }
 }
 
 /* end-source: src/styles/tadeon-ui-detail-motion.css */
@@ -1593,7 +1593,7 @@
   transform-origin: center bottom;
 }
 
-.tadeon-shell [data-slot="tabs-list"] [data-slot="tabs-trigger"][data-state="active"] {
+.tadeon-shell [data-slot="tabs-list"] [data-slot="tabs-trigger"]:not([data-material-surface="tab"])[data-state="active"] {
   animation: tadeon-relational-tab-focus 330ms var(--tadeon-relational-in) both;
 }
 
@@ -1601,13 +1601,13 @@
   transform-origin: 50% 0%;
 }
 
-.tadeon-shell [data-slot="tabs-content"]:not([data-sheet-content])[data-state="active"] > * {
+.tadeon-shell [data-slot="tabs-content"]:not([data-motion-surface]):not([data-sheet-content])[data-state="active"] > * {
   animation: tadeon-relational-panel-rise 360ms var(--tadeon-relational-in) both;
 }
 
-.tadeon-shell [data-slot="tabs-content"]:not([data-sheet-content])[data-state="active"] > :nth-child(2) { animation-delay: 25ms; }
-.tadeon-shell [data-slot="tabs-content"]:not([data-sheet-content])[data-state="active"] > :nth-child(3) { animation-delay: 50ms; }
-.tadeon-shell [data-slot="tabs-content"]:not([data-sheet-content])[data-state="active"] > :nth-child(4) { animation-delay: 75ms; }
+.tadeon-shell [data-slot="tabs-content"]:not([data-motion-surface]):not([data-sheet-content])[data-state="active"] > :nth-child(2) { animation-delay: 25ms; }
+.tadeon-shell [data-slot="tabs-content"]:not([data-motion-surface]):not([data-sheet-content])[data-state="active"] > :nth-child(3) { animation-delay: 50ms; }
+.tadeon-shell [data-slot="tabs-content"]:not([data-motion-surface]):not([data-sheet-content])[data-state="active"] > :nth-child(4) { animation-delay: 75ms; }
 
 /* --------------------------------------------------------------------------
    Sheets: content follows the direction of the physical panel.
@@ -1840,8 +1840,8 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .tadeon-shell [data-slot="tabs-list"] [data-slot="tabs-trigger"],
-  .tadeon-shell [data-slot="tabs-content"]:not([data-sheet-content])[data-state="active"] > *,
+  .tadeon-shell [data-slot="tabs-list"] [data-slot="tabs-trigger"]:not([data-material-surface="tab"]),
+  .tadeon-shell [data-slot="tabs-content"]:not([data-motion-surface]):not([data-sheet-content])[data-state="active"] > *,
   .tadeon-shell [data-slot="sheet-content"],
   .tadeon-shell [data-slot="dropdown-menu-item"],
   .tadeon-shell [data-slot="dropdown-menu-sub-trigger"],

@@ -61,7 +61,7 @@ Acentos preservados: Dashboard #D9D7A4; Nexus #4F6E5D; Mesa #547B94; Mestre #742
 
 ## Componentes e dados
 
-Botão primário: uma ação dominante, hit area preferida 44×44 CSS px; secundário com contorno funcional. Hover localizado; press 0,98; foco visível 2px marfim afastado 3px. 44px é decisão do projeto; WCAG 2.2 AA estabelece 24×24 CSS px com exceções, não uma regra universal de 44px.
+Botão primário: uma ação dominante, hit area preferida 44×44 CSS px; secundário com contorno funcional. Hover localizado; pressão com deslocamento único de 1px (NEX-014); foco visível 2px marfim afastado 3px. 44px é decisão do projeto; WCAG 2.2 AA estabelece 24×24 CSS px com exceções, não uma regra universal de 44px.
 
 Campos têm rótulo persistente, ajuda associada e erro que indique a correção. Vínculos/seleção recebem texto, contorno e estado acessível. Sidebar indica localização por texto e forma. Busca e dialogs mantêm abertura por teclado, foco inicial, contenção, Escape e retorno; medidas continuam sob `VisualViewportPopupBridge`. Animação não atrasa foco, leitura ou submissão.
 
@@ -145,3 +145,13 @@ A ficha estende o material aprovado sem introduzir outra família tipográfica. 
 `sheet-premium.css` é o responsável pelos materiais dos painéis e métricas: tinta opaca, reflexo local, sombra de contato e borda discreta, com as cores funcionais de cada seção. Vidro fica na barra e no dock; Cormorant Garamond conserva os títulos, e Inter usa números tabulares. Não se deslocam textos, campos ou painéis; o radar não anima dados. A evidência e o estado de integração pertencem a [sheet-design-validation.json](sheet-design-validation.json) e à fila canônica.
 
 NEX-005 integrado pela [PR #265](https://github.com/Gabriel2069/tadeon-nexus/pull/265), merge `1d92120`, após Quality no HEAD `363dbb8`. [Produção](https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38182952991) confirmou HTTP 200 e SHA exato. A evidência conserva 126 suítes/557 testes, 16 casos de fixture e os limites; a próxima etapa é NEX-006.
+
+## Revisão de movimento e leitura — NEX-014 / NEX-006, 14/10/2026
+
+A revisão solicitada por Tadeu dá mais presença ao tecido e retira a disputa entre animações. Abas usam uma placa ativa local, sem indicador deslizante ou observer de medição; conteúdos têm uma revelação curta de opacidade. Dobras usam a altura do Radix e não deslocam ou comprimem os textos. Diálogos animam opacidade e a propriedade individual `scale`, enquanto o positioner conserva a centralização. Popovers mantêm a origem e as colisões do Radix. Movimento reduzido desativa esses efeitos. Botões pressionados usam apenas um deslocamento de 1px, e controles dentro da ficha recebem o RGB da seção; ação destrutiva conserva seu tom explícito.
+
+Os três indicadores do Dashboard são placas com luz de borda, sombra de contato e fios autorais. A trama da capa recebe uma máscara de desaparecimento nos extremos. Reflexos e inclinação afetam a decoração; texto e alvo de interação permanecem estáveis. `FabricFilaments` reutiliza os mesmos fios na ficha e na biblioteca, com um único hook local de ponteiro. Não há refração física ou simulação de tecido: são superfícies CSS e vetores originais.
+
+A referência de leitura é o comportamento documentado do Obsidian: [Graph view](https://obsidian.md/help/plugins/graph), [File explorer](https://obsidian.md/help/plugins/file-explorer) e [Tabs](https://obsidian.md/help/tabs), consultados em 14/10/2026. A tradução preserva o Fio-Mestre: árvore baseada em `parent_node_id`, teclado e expansão dos ancestrais da página ativa; abas de páginas; documento, grafo ou leitura combinada. O grafo inicia com nós pequenos, linhas finas e cores neutras; os grupos e afinidades de conteúdo são opções explícitas. Os controles ficam recolhidos, disponíveis na barra; zoom, arraste, filtros, forças e posições fixadas continuam sob estado React. Um clique abre a página; arraste e cancelamento não abrem. A árvore visual segue a hierarquia real, sem confundir distância de relações com parentesco.
+
+Não é uma reprodução completa do Obsidian: não inclui seu sistema de plugins, vault local, painéis arbitrariamente acopláveis ou uma física continuamente simulada. Os limites do corpus e a autorização continuam nos serviços existentes. Evidência e limites desta implementação: [material-reading-validation.json](material-reading-validation.json).

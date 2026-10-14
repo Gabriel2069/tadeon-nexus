@@ -64,6 +64,7 @@ const DropdownMenuSubContent = React.forwardRef<
     <DropdownMenuPrimitive.SubContent
       ref={ref}
       data-slot="dropdown-menu-sub-content"
+      data-motion-surface="popup"
       collisionPadding={collisionPadding}
       avoidCollisions={avoidCollisions}
       sticky={sticky}
@@ -98,6 +99,7 @@ const DropdownMenuContent = React.forwardRef<
       <DropdownMenuPrimitive.Content
         ref={ref}
         data-slot="dropdown-menu-content"
+        data-motion-surface="popup"
         sideOffset={sideOffset}
         collisionPadding={collisionPadding}
         avoidCollisions={avoidCollisions}

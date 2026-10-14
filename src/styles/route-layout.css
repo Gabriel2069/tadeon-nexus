@@ -325,7 +325,7 @@ html[data-tadeon-tabletop-selection-active="true"] [data-tadeon-selection-guarde
 }
 
 @media (max-width: 767px) {
-  [data-slot="dialog-content"]:has(#sheet-name) {
+  [data-slot="dialog-content"]:not([data-motion-surface]):has(#sheet-name) {
     top: max(.55rem, env(safe-area-inset-top)) !important;
     bottom: max(.55rem, env(safe-area-inset-bottom)) !important;
     width: calc(100vw - max(1rem, env(safe-area-inset-left)) - max(1rem, env(safe-area-inset-right))) !important;
@@ -1003,7 +1003,7 @@ html[data-tadeon-sheet-mode="game"] .tadeon-sheet-game-button svg {
       inset 0 1px rgb(255 255 255 / 3%) !important;
   }
 
-  .tadeon-route-stage .tadeon-page:not(.tadeon-sheet-page) [role="tab"][data-state="active"] {
+  .tadeon-route-stage .tadeon-page:not(.tadeon-sheet-page) [role="tab"]:not([data-material-surface="tab"])[data-state="active"] {
     border-color: rgb(var(--mobile-panel-rgb) / 24%) !important;
     color: color-mix(in srgb, var(--foreground) 86%, rgb(var(--mobile-panel-rgb))) !important;
     background: rgb(var(--mobile-panel-rgb) / 11%) !important;
@@ -1542,10 +1542,10 @@ html[data-tadeon-sheet-mode="game"] .tadeon-sheet-game-button svg {
     box-shadow: inset 0 1px rgb(255 255 255 / 3%) !important;
   }
 
-  .tadeon-route-master [role="tab"],
-  .tadeon-route-users [role="tab"],
-  .tadeon-route-tools [role="tab"],
-  .tadeon-route-offline [role="tab"] {
+  .tadeon-route-master [role="tab"]:not([data-material-surface="tab"]),
+  .tadeon-route-users [role="tab"]:not([data-material-surface="tab"]),
+  .tadeon-route-tools [role="tab"]:not([data-material-surface="tab"]),
+  .tadeon-route-offline [role="tab"]:not([data-material-surface="tab"]) {
     position: relative !important;
     transition:
       color 170ms ease,
@@ -1555,10 +1555,10 @@ html[data-tadeon-sheet-mode="game"] .tadeon-sheet-game-button svg {
       transform 170ms var(--ease-out) !important;
   }
 
-  .tadeon-route-master [role="tab"][data-state="active"],
-  .tadeon-route-users [role="tab"][data-state="active"],
-  .tadeon-route-tools [role="tab"][data-state="active"],
-  .tadeon-route-offline [role="tab"][data-state="active"] {
+  .tadeon-route-master [role="tab"]:not([data-material-surface="tab"])[data-state="active"],
+  .tadeon-route-users [role="tab"]:not([data-material-surface="tab"])[data-state="active"],
+  .tadeon-route-tools [role="tab"]:not([data-material-surface="tab"])[data-state="active"],
+  .tadeon-route-offline [role="tab"]:not([data-material-surface="tab"])[data-state="active"] {
     border-color: color-mix(in srgb, var(--section-accent) 35%, var(--border)) !important;
     color: color-mix(in srgb, var(--foreground) 88%, var(--section-accent)) !important;
     background:
@@ -1667,10 +1667,10 @@ html[data-tadeon-sheet-mode="game"] .tadeon-sheet-game-button svg {
 
 @media (prefers-reduced-motion: reduce) {
   .tadeon-condition-counter-dots::after,
-  .tadeon-route-master [role="tab"],
-  .tadeon-route-users [role="tab"],
-  .tadeon-route-tools [role="tab"],
-  .tadeon-route-offline [role="tab"] {
+  .tadeon-route-master [role="tab"]:not([data-material-surface="tab"]),
+  .tadeon-route-users [role="tab"]:not([data-material-surface="tab"]),
+  .tadeon-route-tools [role="tab"]:not([data-material-surface="tab"]),
+  .tadeon-route-offline [role="tab"]:not([data-material-surface="tab"]) {
     transition: none !important;
   }
 }
@@ -2176,8 +2176,8 @@ html[data-tadeon-sheet-mode="game"] .tadeon-sheet-game-button svg {
     border-radius: .72rem .24rem .72rem .24rem !important;
   }
 
-  .tadeon-route-tools [data-slot="tabs-trigger"][data-state="active"],
-  .tadeon-route-offline [data-slot="tabs-trigger"][data-state="active"] {
+  .tadeon-route-tools [data-slot="tabs-trigger"]:not([data-material-surface="tab"])[data-state="active"],
+  .tadeon-route-offline [data-slot="tabs-trigger"]:not([data-material-surface="tab"])[data-state="active"] {
     border-color: color-mix(in srgb, var(--section-accent) 30%, var(--border)) !important;
     color: color-mix(in srgb, var(--foreground) 84%, var(--section-accent)) !important;
     background:
@@ -2200,9 +2200,9 @@ html[data-tadeon-sheet-mode="game"] .tadeon-sheet-game-button svg {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .tadeon-master-navigation [data-slot="tabs-trigger"],
-  .tadeon-route-tools [data-slot="tabs-trigger"],
-  .tadeon-route-offline [data-slot="tabs-trigger"] {
+  .tadeon-master-navigation [data-slot="tabs-trigger"]:not([data-material-surface="tab"]),
+  .tadeon-route-tools [data-slot="tabs-trigger"]:not([data-material-surface="tab"]),
+  .tadeon-route-offline [data-slot="tabs-trigger"]:not([data-material-surface="tab"]) {
     transition: none !important;
   }
 }
@@ -2567,7 +2567,7 @@ html[data-tadeon-sheet-mode="game"] .tadeon-sheet-game-button svg {
     inset 0 1px rgb(255 255 255 / 3.5%) !important;
 }
 
-.tadeon-route-stage :is(.rounded-lg, .rounded-xl, .rounded-2xl).border:not(button):not(input):not(textarea):not(select):not([role="button"]):not([role="tab"]):not([data-slot="card"]):not(.tadeon-page-hero):not(.tadeon-tabletop-stage) {
+.tadeon-route-stage :is(.rounded-lg, .rounded-xl, .rounded-2xl).border:not(button):not(input):not(textarea):not(select):not([role="button"]):not([role="tab"]:not([data-material-surface="tab"])):not([data-slot="card"]):not(.tadeon-page-hero):not(.tadeon-tabletop-stage) {
   background-color: color-mix(in srgb, var(--card) 90%, transparent);
   background-image:
     radial-gradient(circle at 96% 0%, rgb(var(--section-accent-rgb, 217 215 164) / 5%), transparent 9rem),
@@ -2694,7 +2694,7 @@ html[data-tadeon-sheet-mode="game"] .tadeon-sheet-game-button svg {
   .tadeon-mobile-dock__item,
   .tadeon-mobile-header__control,
   .tadeon-mobile-drawer .tadeon-nav-item,
-  [data-slot="tabs-trigger"] {
+  [data-slot="tabs-trigger"]:not([data-material-surface="tab"]) {
     transition:
       color 220ms var(--ease-out),
       background-color 260ms var(--ease-out),
@@ -2707,7 +2707,7 @@ html[data-tadeon-sheet-mode="game"] .tadeon-sheet-game-button svg {
   .tadeon-mobile-dock__item:active,
   .tadeon-mobile-header__control:active,
   .tadeon-mobile-drawer .tadeon-nav-item:active,
-  [data-slot="tabs-trigger"]:active,
+  [data-slot="tabs-trigger"]:not([data-material-surface="tab"]):active,
   [data-slot="button"]:active {
     transform: scale(.955) !important;
   }
@@ -2723,15 +2723,15 @@ html[data-tadeon-sheet-mode="game"] .tadeon-sheet-game-button svg {
     animation: tadeon-mobile-active-pulse-157 420ms var(--ease-spring, var(--ease-out)) both;
   }
 
-  [data-slot="tabs-trigger"][data-state="active"] {
+  [data-slot="tabs-trigger"]:not([data-material-surface="tab"])[data-state="active"] {
     transform: translateY(-1px);
     box-shadow:
       0 12px 28px -22px rgb(var(--section-accent-rgb, 217 215 164) / 60%),
       inset 0 1px rgb(255 255 255 / 4%) !important;
   }
 
-  [data-slot="dialog-content"][data-state="open"],
-  [data-slot="alert-dialog-content"][data-state="open"] {
+  [data-slot="dialog-content"]:not([data-motion-surface])[data-state="open"],
+  [data-slot="alert-dialog-content"]:not([data-motion-surface])[data-state="open"] {
     animation: tadeon-mobile-popup-enter-157 340ms var(--ease-drawer) both !important;
   }
 
@@ -2780,8 +2780,8 @@ html[data-tadeon-sheet-mode="game"] .tadeon-sheet-game-button svg {
 @media (prefers-reduced-motion: reduce) {
   .tadeon-route-stage *,
   .tadeon-mobile-dock,
-  [data-slot="dialog-content"],
-  [data-slot="alert-dialog-content"],
+  [data-slot="dialog-content"]:not([data-motion-surface]),
+  [data-slot="alert-dialog-content"]:not([data-motion-surface]),
   [data-slot="sheet-content"],
   [data-slot="drawer-content"] {
     animation-duration: .001ms !important;
@@ -3277,7 +3277,7 @@ html[data-tadeon-sheet-mode="game"] .tadeon-sheet-game-button svg {
 }
 
 @media (max-width: 767px) {
-  :is([data-slot="dialog-content"], [data-slot="alert-dialog-content"]) {
+  :is([data-slot="dialog-content"]:not([data-motion-surface]), [data-slot="alert-dialog-content"]:not([data-motion-surface])) {
     --tadeon-popup-top: max(.6rem, env(safe-area-inset-top));
     --tadeon-popup-bottom: max(.6rem, env(safe-area-inset-bottom));
     top: var(--tadeon-popup-top) !important;
@@ -3300,11 +3300,11 @@ html[data-tadeon-sheet-mode="game"] .tadeon-sheet-game-button svg {
     transform-origin: center !important;
   }
 
-  :is([data-slot="dialog-content"], [data-slot="alert-dialog-content"])[data-state="open"] {
+  :is([data-slot="dialog-content"]:not([data-motion-surface]), [data-slot="alert-dialog-content"]:not([data-motion-surface]))[data-state="open"] {
     animation: tadeon-mobile-popup-safe-in-158 300ms var(--ease-drawer, var(--ease-out)) both !important;
   }
 
-  :is([data-slot="dialog-content"], [data-slot="alert-dialog-content"])[data-state="closed"] {
+  :is([data-slot="dialog-content"]:not([data-motion-surface]), [data-slot="alert-dialog-content"]:not([data-motion-surface]))[data-state="closed"] {
     animation: tadeon-mobile-popup-safe-out-158 180ms var(--ease-out) both !important;
   }
 
@@ -3422,7 +3422,7 @@ html[data-tadeon-sheet-mode="game"] .tadeon-sheet-game-button svg {
 
 @media (prefers-reduced-motion: reduce) {
   .tadeon-master-commandbar__active-icon,
-  :is([data-slot="dialog-content"], [data-slot="alert-dialog-content"]) {
+  :is([data-slot="dialog-content"]:not([data-motion-surface]), [data-slot="alert-dialog-content"]:not([data-motion-surface])) {
     animation-duration: .001ms !important;
     animation-delay: 0ms !important;
   }
@@ -3923,11 +3923,11 @@ html[data-tadeon-sheet-mode="game"] .tadeon-sheet-game-button svg {
   will-change: opacity, filter !important;
 }
 
-:is([data-slot="dialog-content"], [data-slot="alert-dialog-content"])[data-state="open"] {
+:is([data-slot="dialog-content"]:not([data-motion-surface]), [data-slot="alert-dialog-content"]:not([data-motion-surface]))[data-state="open"] {
   animation: tadeon-popup-stable-in-161 220ms var(--ease-out) both !important;
 }
 
-:is([data-slot="dialog-content"], [data-slot="alert-dialog-content"])[data-state="closed"] {
+:is([data-slot="dialog-content"]:not([data-motion-surface]), [data-slot="alert-dialog-content"]:not([data-motion-surface]))[data-state="closed"] {
   animation: tadeon-popup-stable-out-161 140ms var(--ease-out) both !important;
 }
 
@@ -3945,7 +3945,7 @@ html[data-tadeon-sheet-mode="game"] .tadeon-sheet-game-button svg {
 }
 
 @media (max-width: 767px) {
-  :is([data-slot="dialog-content"], [data-slot="alert-dialog-content"]) {
+  :is([data-slot="dialog-content"]:not([data-motion-surface]), [data-slot="alert-dialog-content"]:not([data-motion-surface])) {
     --tadeon-popup-inline-start: max(.72rem, env(safe-area-inset-left));
     --tadeon-popup-inline-end: max(.72rem, env(safe-area-inset-right));
     --tadeon-popup-block-gap: max(.72rem, env(safe-area-inset-top), env(safe-area-inset-bottom));
@@ -4241,7 +4241,7 @@ html[data-tadeon-sheet-mode="game"] .tadeon-sheet-game-button svg {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  :is([data-slot="dialog-content"], [data-slot="alert-dialog-content"]),
+  :is([data-slot="dialog-content"]:not([data-motion-surface]), [data-slot="alert-dialog-content"]:not([data-motion-surface])),
   #equilibrio .tadeon-sheet-section__body-inner > .relative.w-full.h-7::after,
   #equilibrio .tadeon-sheet-section__body-inner > .relative.w-full.h-7 > div:last-child,
   .tadeon-mobile-dock__item[href="/master-panel"]::before {
@@ -4675,7 +4675,7 @@ html[data-tadeon-sheet-mode="game"] .tadeon-sheet-game-button svg {
    Global search containment. It owns an explicit visual-viewport box; long
    rows/footer text may wrap internally but can never widen the dialog.
    -------------------------------------------------------------------------- */
-[data-slot="dialog-content"]:has(> [data-slot="command"]) {
+[data-slot="dialog-content"]:not([data-motion-surface]):has(> [data-slot="command"]) {
   --search-inline-start: max(.75rem, env(safe-area-inset-left));
   --search-inline-end: max(.75rem, env(safe-area-inset-right));
   --search-block-gap: max(.75rem, env(safe-area-inset-top), env(safe-area-inset-bottom));
@@ -4754,7 +4754,7 @@ html[data-tadeon-sheet-mode="game"] .tadeon-sheet-game-button svg {
 /* #163: deterministic viewport containment for high-traffic dialogs. */
 
 @media (max-width: 640px) {
-  [data-slot="dialog-content"] {
+  [data-slot="dialog-content"]:not([data-motion-surface]) {
     box-sizing: border-box;
     top: max(.65rem, env(safe-area-inset-top)) !important;
     right: max(.65rem, env(safe-area-inset-right)) !important;
@@ -4834,7 +4834,7 @@ html[data-tadeon-sheet-mode="game"] .tadeon-sheet-game-button svg {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  [data-slot="dialog-content"] {
+  [data-slot="dialog-content"]:not([data-motion-surface]) {
     animation: none !important;
     transition-duration: .001ms !important;
   }
@@ -4970,7 +4970,7 @@ html[data-tadeon-sheet-mode="game"] .tadeon-sheet-game-button svg {
 /* Search is a high-traffic popup on tablets too. Keep the command surface
    centered and bounded without forcing every tablet dialog into phone layout. */
 @media (min-width: 641px) and (max-width: 1180px) {
-  [data-slot="dialog-content"]:has(> [data-slot="command"]) {
+  [data-slot="dialog-content"]:not([data-motion-surface]):has(> [data-slot="command"]) {
     box-sizing: border-box !important;
     top: 50% !important;
     right: auto !important;

@@ -37,7 +37,6 @@ describe("Fio-Mestre control metadata", () => {
     for (const slot of [
       "tabs",
       "tabs-list",
-      "tabs-indicator",
       "tabs-trigger",
       "tabs-content",
       "toggle",
@@ -53,7 +52,8 @@ describe("Fio-Mestre control metadata", () => {
     expect(html).toContain('data-state="active"');
     expect(html).toContain('data-motion-direction="forward"');
     expect(html).toContain('data-tab-value="arquivo"');
-    expect(html).toContain('data-visible="false"');
+    expect(html).toContain('data-material-surface="tablist"');
+    expect(html).toContain('data-material-surface="tab"');
     expect(html).toContain('data-state="on"');
     expect(html).toContain('data-state="checked"');
   });

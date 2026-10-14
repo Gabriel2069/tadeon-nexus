@@ -1,23 +1,15 @@
 {
   "version": 1,
-  "checkedAt": "2026-10-11",
+  "checkedAt": "2026-10-14",
   "runtimeReference": "1d92120cf210e466889e8f3ba53c5a8f2a1dfa81",
   "integration": {
-    "pr": 265,
-    "branch": "design/sheet-fabric-sections-2026-10-11",
+    "pr": 267,
+    "branch": "design/fabric-motion-obsidian-2026-10-14",
     "base": "main",
-    "baseCommit": "c4ce6d1311d146467b7e3c260086dfdf344feac8",
-    "headCommit": "363dbb8307403169def9341175b7ccc4f3054f08",
-    "state": "integrated",
-    "mergeCommit": "1d92120cf210e466889e8f3ba53c5a8f2a1dfa81",
-    "qualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38171064466",
-    "mainQualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38182952969",
-    "production": "confirmed",
-    "productionEvidence": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38182952991",
-    "productionCommit": "1d92120cf210e466889e8f3ba53c5a8f2a1dfa81",
-    "productionVerifiedAt": "2026-10-11T23:07:42.0673391Z",
-    "productionHttpStatus": 200,
-    "workerVersion": "601dc6f9-538c-4d3a-833c-78075509d59f"
+    "baseCommit": "e7db3fb18d242b94772b8dc9a087617270d3ed90",
+    "headCommit": null,
+    "state": "validated",
+    "production": "pending"
   },
   "domains": [
     {
@@ -31,7 +23,8 @@
         "src/components/brand-mark.tsx",
         "src/components/material-surface.tsx",
         "src/lib/use-material-light.ts",
-        "src/components/ui/button.tsx"
+        "src/components/ui/button.tsx",
+        "src/components/fabric-filaments.tsx"
       ],
       "styles": [
         "src/styles/desktop-shell.css",
@@ -105,13 +98,15 @@
         "src/routes/nexus.tsx",
         "src/lib/knowledge/knowledge-service.ts",
         "src/lib/knowledge/knowledge-graph-service.ts",
-        "src/components/knowledge/knowledge-graph-second-brain.tsx"
+        "src/components/knowledge/knowledge-graph-second-brain.tsx",
+        "src/components/knowledge/knowledge-tree.tsx",
+        "src/lib/knowledge/knowledge-tree.ts"
       ],
       "styles": [
         "src/styles/nexus-material.css",
         "src/styles/knowledge-graph-second-brain.css"
       ],
-      "boundary": "Serviços controlam acesso a dados; grafo controla presets e interação em React."
+      "boundary": "Serviços controlam acesso a dados; grafo controla presets e interação em React. Árvore usa parent_node_id; grafo visual não usa distância de relações como parentesco. Leitura combinada e controles preservam estado React e invalidam respostas antigas."
     },
     {
       "id": "tabletop",
@@ -453,7 +448,7 @@
       "id": "NEX-006",
       "title": "Biblioteca, documento e grafo do Nexus",
       "domain": "knowledge",
-      "status": "ready",
+      "status": "validated",
       "priority": 4,
       "dependsOn": [
         "NEX-003",
@@ -464,8 +459,10 @@
         "Verificar corpus povoado, filtros e legibilidade da teia sem sobrescrever escolhas manuais.",
         "Preservar vínculos, importação/exportação e diferenças entre cânone e material derivado."
       ],
-      "evidence": [],
-      "checkpoint": "Próximo lote visual: biblioteca, documento e grafo; reutilizar os materiais e controles aprovados, preservando importação/exportação, vínculos e escolhas de visualização. NEX-005 integrado; não recriar montagem da ficha por DOM."
+      "evidence": [
+        "docs/material-reading-validation.json"
+      ],
+      "checkpoint": "Validado na branch da PR #267: npm run check, 128 suítes/561 testes, audit zero, 16 casos da ficha e do Dashboard, repetição final de quatro larguras no Dashboard e Nexus/biblioteca com 120 páginas. Produção pendente; não confundir fixture com RLS ou contas reais."
     },
     {
       "id": "NEX-007",
@@ -563,6 +560,26 @@
         "Preservar proveniência, aliases e relações ao revisar as sínteses."
       ],
       "evidence": []
+    },
+    {
+      "id": "NEX-014",
+      "title": "Reconciliar movimento e aprofundar Véu & Trama",
+      "domain": "shell",
+      "status": "validated",
+      "priority": 3,
+      "dependsOn": [
+        "NEX-005",
+        "NEX-013"
+      ],
+      "acceptance": [
+        "Abas com um proprietário, sem indicador deslizante concorrente.",
+        "Dobras e popups com presença interrompível, foco e movimento reduzido.",
+        "Métricas do Dashboard em placas com relevo, fios com desaparecimento gradual; cores locais na ficha."
+      ],
+      "evidence": [
+        "docs/material-reading-validation.json"
+      ],
+      "checkpoint": "Validado na branch da PR #267: npm run check, 128 suítes/561 testes, audit zero, 16 casos da ficha e do Dashboard, repetição final de quatro larguras no Dashboard e Nexus/biblioteca com 120 páginas. Produção pendente; não confundir fixture com RLS ou contas reais."
     }
   ],
   "decisions": [
@@ -857,6 +874,10 @@
     {
       "path": "docs/sheet-design-validation.json",
       "purpose": "NEX-005: seções, materiais, cancelamento de leituras, autosave e fixtures da ficha."
+    },
+    {
+      "path": "docs/material-reading-validation.json",
+      "purpose": "NEX-014/NEX-006: correção dos proprietários de movimento e leitura integrada com árvore/grafo; evidência e limites de fixture."
     }
   ],
   "integrationHistory": [
@@ -927,6 +948,23 @@
       "productionVerifiedAt": "2026-10-11T19:01:29Z",
       "productionHttpStatus": 200,
       "workerVersion": "d3cd6159-bce4-4895-a230-87da5dde9990"
+    },
+    {
+      "pr": 265,
+      "branch": "design/sheet-fabric-sections-2026-10-11",
+      "base": "main",
+      "baseCommit": "c4ce6d1311d146467b7e3c260086dfdf344feac8",
+      "headCommit": "363dbb8307403169def9341175b7ccc4f3054f08",
+      "state": "integrated",
+      "mergeCommit": "1d92120cf210e466889e8f3ba53c5a8f2a1dfa81",
+      "qualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38171064466",
+      "mainQualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38182952969",
+      "production": "confirmed",
+      "productionEvidence": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38182952991",
+      "productionCommit": "1d92120cf210e466889e8f3ba53c5a8f2a1dfa81",
+      "productionVerifiedAt": "2026-10-11T23:07:42.0673391Z",
+      "productionHttpStatus": 200,
+      "workerVersion": "601dc6f9-538c-4d3a-833c-78075509d59f"
     }
   ]
 }

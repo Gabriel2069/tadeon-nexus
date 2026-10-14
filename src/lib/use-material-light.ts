@@ -36,12 +36,16 @@ export function useMaterialLight<T extends HTMLElement>() {
         const y = Math.max(0, Math.min(100, ((clientY - rect.top) / rect.height) * 100));
         element.style.setProperty("--material-x", `${x.toFixed(1)}%`);
         element.style.setProperty("--material-y", `${y.toFixed(1)}%`);
+        element.style.setProperty("--material-tilt-x", `${((50 - y) * 0.06).toFixed(2)}deg`);
+        element.style.setProperty("--material-tilt-y", `${((x - 50) * 0.08).toFixed(2)}deg`);
       });
     },
     onPointerLeave() {
       cancel();
       target.current?.style.removeProperty("--material-x");
       target.current?.style.removeProperty("--material-y");
+      target.current?.style.removeProperty("--material-tilt-x");
+      target.current?.style.removeProperty("--material-tilt-y");
     },
   };
 }

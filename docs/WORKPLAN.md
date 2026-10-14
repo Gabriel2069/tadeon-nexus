@@ -2,7 +2,7 @@
 
 > Gerado de [project-continuity.json](project-continuity.json). Edite o registro e rode `npm run sync:project`; não mantenha uma cópia manual.
 
-Snapshot: 2026-10-11; referência de runtime: `1d92120cf210e466889e8f3ba53c5a8f2a1dfa81`. PR #265 em `design/sheet-fabric-sections-2026-10-11`; integração: `integrated`. Não é prova de deploy.
+Snapshot: 2026-10-14; referência de runtime: `1d92120cf210e466889e8f3ba53c5a8f2a1dfa81`. PR #267 em `design/fabric-motion-obsidian-2026-10-14`; integração: `validated`. Não é prova de deploy.
 
 Estados: planejado → próximo → em andamento → validado na branch → integrado. Publicação exige evidência própria do SHA; adiado conserva o requisito. Se um requisito mudar, preservar o ID e registrar a decisão/evidência.
 
@@ -16,13 +16,14 @@ Cada PR usa IDs desta fila e declara dependências. Trabalho sobre o mesmo propr
 | NEX-004 | Sidebar, navegação móvel e portais | Integrado | 2 | popup | NEX-003 |
 | NEX-013 | Liquid fabric: login, Dashboard e componentes compartilhados | Integrado | 2 | shell | NEX-003, NEX-004 |
 | NEX-005 | Ficha por seções e estados | Integrado | 3 | sheet | NEX-003, NEX-013 |
-| NEX-006 | Biblioteca, documento e grafo do Nexus | Próximo | 4 | knowledge | NEX-003, NEX-013 |
+| NEX-006 | Biblioteca, documento e grafo do Nexus | Validado na branch | 4 | knowledge | NEX-003, NEX-013 |
 | NEX-007 | Mesa: hierarquia de ferramentas e workspace | Planejado | 5 | tabletop | NEX-004, NEX-013 |
 | NEX-008 | Painel do Mestre e administração | Planejado | 6 | master | NEX-003, NEX-013 |
 | NEX-009 | Desempenho e motion | Planejado | 7 | delivery | NEX-003, NEX-007 |
 | NEX-010 | Validação real de autorização e rollout | Planejado | 8 | session | NEX-001 |
 | NEX-011 | Backup e restauração verificável | Planejado | 8 | assets | NEX-010 |
 | NEX-012 | Revisão editorial do corpus canônico | Adiado | 9 | knowledge | NEX-006 |
+| NEX-014 | Reconciliar movimento e aprofundar Véu & Trama | Validado na branch | 3 | shell | NEX-005, NEX-013 |
 
 ## NEX-001 — Preparação estrutural
 
@@ -78,7 +79,7 @@ Evidências: [docs/sheet-design-validation.json](../docs/sheet-design-validation
 - Verificar corpus povoado, filtros e legibilidade da teia sem sobrescrever escolhas manuais.
 - Preservar vínculos, importação/exportação e diferenças entre cânone e material derivado.
 
-Evidências: pendentes; não declarar concluído.
+Evidências: [docs/material-reading-validation.json](../docs/material-reading-validation.json).
 
 ## NEX-007 — Mesa: hierarquia de ferramentas e workspace
 
@@ -125,6 +126,14 @@ Evidências: pendentes; não declarar concluído.
 - Preservar proveniência, aliases e relações ao revisar as sínteses.
 
 Evidências: pendentes; não declarar concluído.
+
+## NEX-014 — Reconciliar movimento e aprofundar Véu & Trama
+
+- Abas com um proprietário, sem indicador deslizante concorrente.
+- Dobras e popups com presença interrompível, foco e movimento reduzido.
+- Métricas do Dashboard em placas com relevo, fios com desaparecimento gradual; cores locais na ficha.
+
+Evidências: [docs/material-reading-validation.json](../docs/material-reading-validation.json).
 
 ## Decisões vigentes
 

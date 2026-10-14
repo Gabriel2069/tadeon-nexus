@@ -42,7 +42,7 @@ html[data-tadeon-popup-viewport="true"] body [data-slot="alert-dialog-overlay"] 
 /* O modal continua sendo fixed, como o Radix espera. Só substituímos as
    coordenadas por aquelas da visualViewport e limitamos a altura ao espaço
    realmente visível. Largura/max-width autorais permanecem intactos. */
-html[data-tadeon-popup-viewport="true"] body [data-slot="dialog-content"] {
+html[data-tadeon-popup-viewport="true"] body [data-slot="dialog-content"]:not([data-motion-surface]) {
   position: fixed !important;
   z-index: 60 !important;
   top: var(--tadeon-vv-center-y) !important;
@@ -68,7 +68,7 @@ html[data-tadeon-popup-viewport="true"] body [data-slot="dialog-content"] {
   pointer-events: auto !important;
 }
 
-html[data-tadeon-popup-viewport="true"] body [data-slot="alert-dialog-content"] {
+html[data-tadeon-popup-viewport="true"] body [data-slot="alert-dialog-content"]:not([data-motion-surface]) {
   position: fixed !important;
   z-index: 90 !important;
   top: var(--tadeon-vv-center-y) !important;
@@ -123,15 +123,15 @@ html[data-tadeon-popup-viewport="true"] body [data-slot="alert-dialog-content"] 
 }
 
 html[data-tadeon-popup-viewport="true"] body :is(
-  [data-slot="dialog-content"],
-  [data-slot="alert-dialog-content"]
+  [data-slot="dialog-content"]:not([data-motion-surface]),
+  [data-slot="alert-dialog-content"]:not([data-motion-surface])
 )[data-state="open"] {
   animation: tadeon-popup-stable-in-251 170ms var(--ease-out, ease-out) both !important;
 }
 
 html[data-tadeon-popup-viewport="true"] body :is(
-  [data-slot="dialog-content"],
-  [data-slot="alert-dialog-content"]
+  [data-slot="dialog-content"]:not([data-motion-surface]),
+  [data-slot="alert-dialog-content"]:not([data-motion-surface])
 )[data-state="closed"] {
   animation: tadeon-popup-stable-out-251 120ms var(--ease-out, ease-out) both !important;
 }
@@ -227,8 +227,8 @@ html[data-tadeon-popup-viewport="true"] :where(
 
 @media (prefers-reduced-motion: reduce) {
   html[data-tadeon-popup-viewport="true"] body :is(
-    [data-slot="dialog-content"],
-    [data-slot="alert-dialog-content"]
+    [data-slot="dialog-content"]:not([data-motion-surface]),
+    [data-slot="alert-dialog-content"]:not([data-motion-surface])
   ) {
     animation-duration: .001ms !important;
     transition-duration: .001ms !important;

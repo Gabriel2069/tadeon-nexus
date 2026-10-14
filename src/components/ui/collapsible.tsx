@@ -20,7 +20,12 @@ const CollapsibleContent = React.forwardRef<
   React.ElementRef<typeof CollapsiblePrimitive.Content>,
   React.ComponentPropsWithoutRef<typeof CollapsiblePrimitive.Content>
 >((props, ref) => (
-  <CollapsiblePrimitive.Content ref={ref} data-slot="collapsible-content" {...props} />
+  <CollapsiblePrimitive.Content
+    ref={ref}
+    data-slot="collapsible-content"
+    data-motion-surface="fold"
+    {...props}
+  />
 ));
 CollapsibleContent.displayName = CollapsiblePrimitive.Content.displayName;
 

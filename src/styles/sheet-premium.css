@@ -2668,8 +2668,8 @@
 /* NEX-005: one material owner for record surfaces. Content remains stationary. */
 .tadeon-sheet-section {
   border: 1px solid rgb(233 227 213 / 15%);
-  background: linear-gradient(145deg, #181d25, #10141b 70%);
-  box-shadow: inset 0 1px 0 rgb(233 227 213 / 10%), 0 24px 52px -38px rgb(0 0 0 / 85%);
+  background: linear-gradient(145deg, #242c36, #131820 65%, #10141b);
+  box-shadow: inset 0 1px 0 rgb(233 227 213 / 18%), inset 0 -12px 26px rgb(0 0 0 / 14%), 0 24px 52px -38px rgb(0 0 0 / 85%);
   transition: border-color 180ms var(--ease-out), box-shadow 180ms var(--ease-out);
 }
 .tadeon-sheet-section::before {
@@ -2746,3 +2746,6 @@
   overflow: visible;
 }
 .tadeon-attribute-tile__value { display: grid; width: auto; min-width: 0; height: 44px; place-items: center; }
+
+.tadeon-sheet-section > .tadeon-sheet-fabric { position: absolute; top: 0; right: 0; width: min(60%, 24rem); height: 8rem; pointer-events: none; color: rgb(var(--section-rgb)); mask-image: linear-gradient(90deg, transparent, #000 25%, #000 80%, transparent); transform-origin: top right; }
+@media (hover:hover) and (pointer:fine) and (prefers-reduced-motion:no-preference) { .tadeon-sheet-fabric { transform: perspective(800px) rotateX(var(--material-tilt-x,0deg)) rotateY(var(--material-tilt-y,0deg)); transition: transform 220ms var(--ease-out); } }

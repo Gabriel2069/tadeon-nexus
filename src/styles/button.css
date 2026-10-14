@@ -114,9 +114,9 @@
     button:not([data-material-surface], .tadeon-material-button),
     a:not([data-material-surface], .tadeon-material-button),
     [role="button"],
-    [role="tab"],
+    [role="tab"]:not([data-material-surface="tab"]),
     [data-slot="button"]:not([data-material-surface], .tadeon-material-button),
-    [data-slot="tabs-trigger"],
+    [data-slot="tabs-trigger"]:not([data-material-surface="tab"]),
     [data-slot="toggle"],
     [data-slot="toggle-group-item"],
     [data-slot="select-trigger"],
@@ -154,9 +154,9 @@
       button:not([data-material-surface], .tadeon-material-button),
       a:not([data-material-surface], .tadeon-material-button),
       [role="button"],
-      [role="tab"],
+      [role="tab"]:not([data-material-surface="tab"]),
       [data-slot="button"]:not([data-material-surface], .tadeon-material-button),
-      [data-slot="tabs-trigger"],
+      [data-slot="tabs-trigger"]:not([data-material-surface="tab"]),
       [data-slot="toggle"],
       [data-slot="toggle-group-item"],
       [data-slot="select-trigger"]
@@ -169,9 +169,9 @@
       button:not([data-material-surface], .tadeon-material-button),
       a:not([data-material-surface], .tadeon-material-button),
       [role="button"],
-      [role="tab"],
+      [role="tab"]:not([data-material-surface="tab"]),
       [data-slot="button"]:not([data-material-surface], .tadeon-material-button),
-      [data-slot="tabs-trigger"],
+      [data-slot="tabs-trigger"]:not([data-material-surface="tab"]),
       [data-slot="toggle"],
       [data-slot="toggle-group-item"],
       [data-slot="select-trigger"]
@@ -186,9 +186,9 @@
       button:not([data-material-surface], .tadeon-material-button),
       a:not([data-material-surface], .tadeon-material-button),
       [role="button"],
-      [role="tab"],
+      [role="tab"]:not([data-material-surface="tab"]),
       [data-slot="button"]:not([data-material-surface], .tadeon-material-button),
-      [data-slot="tabs-trigger"],
+      [data-slot="tabs-trigger"]:not([data-material-surface="tab"]),
       [data-slot="toggle"],
       [data-slot="toggle-group-item"]
     ):is(
@@ -206,7 +206,7 @@
 
   /* Icons whose meaning benefits from a characteristic gesture. */
   .tadeon-shell
-    :where(button, a, [role="button"], [role="tab"]):hover
+    :where(button, a, [role="button"], [role="tab"]:not([data-material-surface="tab"])):hover
     :is(
       .lucide-settings,
       .lucide-cog,
@@ -219,7 +219,7 @@
   }
 
   .tadeon-shell
-    :where(button, a, [role="button"], [role="tab"]):active
+    :where(button, a, [role="button"], [role="tab"]:not([data-material-surface="tab"])):active
     :is(
       .lucide-settings,
       .lucide-cog,
@@ -232,7 +232,7 @@
   }
 
   .tadeon-shell
-    :where(button, a, [role="button"], [role="tab"]):is(
+    :where(button, a, [role="button"], [role="tab"]:not([data-material-surface="tab"])):is(
       [aria-current="page"],
       [aria-pressed="true"],
       [data-state="active"],
@@ -243,14 +243,14 @@
   }
 
   .tadeon-shell
-    :where(button, a, [role="button"], [role="tab"]):hover
+    :where(button, a, [role="button"], [role="tab"]:not([data-material-surface="tab"])):hover
     :is(.lucide-pin, .lucide-map-pin, .lucide-map-pinned, .lucide-bookmark) {
     translate: 0 -0.15rem;
     scale: 1.08;
   }
 
   .tadeon-shell
-    :where(button, a, [role="button"], [role="tab"]):is(
+    :where(button, a, [role="button"], [role="tab"]:not([data-material-surface="tab"])):is(
       [aria-current="page"],
       [aria-pressed="true"],
       [data-state="active"],
@@ -261,38 +261,38 @@
   }
 
   .tadeon-shell
-    :where(button, a, [role="button"], [role="tab"]):hover
+    :where(button, a, [role="button"], [role="tab"]:not([data-material-surface="tab"])):hover
     :is(.lucide-chevron-right, .lucide-arrow-right, .lucide-chevrons-right) {
     translate: 0.13rem 0;
   }
 
   .tadeon-shell
-    :where(button, a, [role="button"], [role="tab"]):hover
+    :where(button, a, [role="button"], [role="tab"]:not([data-material-surface="tab"])):hover
     :is(.lucide-chevron-left, .lucide-arrow-left, .lucide-chevrons-left) {
     translate: -0.13rem 0;
   }
 
   .tadeon-shell
-    :where(button, a, [role="button"], [role="tab"]):hover
+    :where(button, a, [role="button"], [role="tab"]:not([data-material-surface="tab"])):hover
     :is(.lucide-chevron-up, .lucide-arrow-up) {
     translate: 0 -0.13rem;
   }
 
   .tadeon-shell
-    :where(button, a, [role="button"], [role="tab"]):hover
+    :where(button, a, [role="button"], [role="tab"]:not([data-material-surface="tab"])):hover
     :is(.lucide-chevron-down, .lucide-arrow-down) {
     translate: 0 0.13rem;
   }
 
   .tadeon-shell
-    :where(button, a, [role="button"], [role="tab"]):hover
+    :where(button, a, [role="button"], [role="tab"]:not([data-material-surface="tab"])):hover
     :is(.lucide-plus, .lucide-x, .lucide-trash, .lucide-trash-2) {
     rotate: 8deg;
     scale: 1.07;
   }
 
   .tadeon-shell
-    :where(button, a, [role="button"], [role="tab"]):hover
+    :where(button, a, [role="button"], [role="tab"]:not([data-material-surface="tab"])):hover
     :is(
       .lucide-eye,
       .lucide-eye-off,
@@ -305,14 +305,14 @@
   }
 
   .tadeon-shell
-    :where(button, a, [role="button"], [role="tab"]):hover
+    :where(button, a, [role="button"], [role="tab"]:not([data-material-surface="tab"])):hover
     :is(.lucide-save, .lucide-download, .lucide-monitor-down) {
     translate: 0 0.1rem;
     scale: 1.04;
   }
 
   .tadeon-shell
-    :where(button, a, [role="button"], [role="tab"]):hover
+    :where(button, a, [role="button"], [role="tab"]:not([data-material-surface="tab"])):hover
     :is(.lucide-menu, .lucide-more-horizontal, .lucide-more-vertical) {
     scale: 1.12 1;
   }
@@ -394,26 +394,26 @@
   background: linear-gradient(90deg, var(--tadeon-tabs-accent), transparent);
 }
 
-.tadeon-shell [data-slot="tabs-trigger"] {
+.tadeon-shell [data-slot="tabs-trigger"]:not([data-material-surface="tab"]) {
   z-index: 1;
   background-color: transparent;
 }
 
 /* Remove per-trigger paint that visually hides the moving pill. */
-.tadeon-shell [data-slot="tabs-trigger"][data-state="active"] {
+.tadeon-shell [data-slot="tabs-trigger"]:not([data-material-surface="tab"])[data-state="active"] {
   background: transparent !important;
   box-shadow: none;
 }
 
 .tadeon-shell
   [data-slot="tabs"][data-motion-direction="forward"]
-  [data-slot="tabs-content"][data-state="active"] {
+  [data-slot="tabs-content"]:not([data-motion-surface])[data-state="active"] {
   animation: tadeon-interaction-tab-forward var(--motion-panel) var(--ease-out) both;
 }
 
 .tadeon-shell
   [data-slot="tabs"][data-motion-direction="backward"]
-  [data-slot="tabs-content"][data-state="active"] {
+  [data-slot="tabs-content"]:not([data-motion-surface])[data-state="active"] {
   animation: tadeon-interaction-tab-backward var(--motion-panel) var(--ease-out) both;
 }
 
@@ -726,7 +726,7 @@
 
 @media (pointer: coarse) {
   .tadeon-shell
-    :where(button:not([data-material-surface], .tadeon-material-button), a:not([data-material-surface], .tadeon-material-button), [role="button"], [role="tab"]):active
+    :where(button:not([data-material-surface], .tadeon-material-button), a:not([data-material-surface], .tadeon-material-button), [role="button"], [role="tab"]:not([data-material-surface="tab"])):active
     svg:not(.animate-spin):not(.animate-pulse) {
     translate: 0 0.08rem;
     scale: 0.86;
@@ -740,8 +740,8 @@
 
 @media (prefers-reduced-motion: reduce) {
   .tadeon-shell [data-slot="tabs-list"] > [data-slot="tabs-indicator"],
-  .tadeon-shell [data-slot="tabs-content"],
-  .tadeon-shell :where(button, a, [role="button"], [role="tab"]) svg,
+  .tadeon-shell [data-slot="tabs-content"]:not([data-motion-surface]),
+  .tadeon-shell :where(button, a, [role="button"], [role="tab"]:not([data-material-surface="tab"])) svg,
   .tadeon-nav-item,
   .tadeon-nav-item__icon,
   .tadeon-mobile-dock__item::before {
@@ -749,11 +749,11 @@
     transition-duration: 0.01ms !important;
   }
 
-  .tadeon-shell :where(button:not([data-material-surface], .tadeon-material-button), a:not([data-material-surface], .tadeon-material-button), [role="button"], [role="tab"]) {
+  .tadeon-shell :where(button:not([data-material-surface], .tadeon-material-button), a:not([data-material-surface], .tadeon-material-button), [role="button"], [role="tab"]:not([data-material-surface="tab"])) {
     scale: 1 !important;
   }
 
-  .tadeon-shell :where(button:not([data-material-surface], .tadeon-material-button), a:not([data-material-surface], .tadeon-material-button), [role="button"], [role="tab"]) svg {
+  .tadeon-shell :where(button:not([data-material-surface], .tadeon-material-button), a:not([data-material-surface], .tadeon-material-button), [role="button"], [role="tab"]:not([data-material-surface="tab"])) svg {
     translate: 0 0 !important;
     scale: 1 !important;
     rotate: 0deg !important;
@@ -764,6 +764,7 @@
 
 /* Shared React control material. Legacy controls keep their existing writers. */
 .tadeon-material-button {
+  --control-accent: rgb(var(--material-rgb, 217 215 164));
   position: relative;
   isolation: isolate;
   overflow: hidden;
@@ -776,7 +777,7 @@
   background: radial-gradient(ellipse at var(--material-x, 28%) var(--material-y, 0%), rgb(255 255 255 / 22%), transparent 70%), linear-gradient(160deg, rgb(255 255 255 / 10%), transparent 45%);
   opacity: .65; transition: opacity 180ms var(--ease-out);
 }
-.tadeon-material-button[data-variant="default"] { background-color: var(--primary); background-image: linear-gradient(155deg, color-mix(in srgb, var(--primary) 80%, white), var(--primary) 45%, color-mix(in srgb, var(--primary) 90%, black)); color: var(--primary-foreground); border-color: color-mix(in srgb, var(--primary) 70%, white); }
+.tadeon-material-button[data-variant="default"] { background-color: var(--control-accent); background-image: linear-gradient(155deg, color-mix(in srgb, var(--control-accent) 80%, white), var(--control-accent) 45%, color-mix(in srgb, var(--control-accent) 90%, black)); color: var(--primary-foreground); border-color: color-mix(in srgb, var(--control-accent) 70%, white); }
 .tadeon-material-button:is([data-variant="outline"], [data-variant="secondary"]) { background: #1c2028; border-color: rgb(233 227 213 / 22%); }
 .tadeon-material-button[data-variant="ghost"] { box-shadow: none; }
 .tadeon-material-button[data-variant="link"] { box-shadow: none; overflow: visible; }
@@ -787,9 +788,22 @@
   .tadeon-material-button:not(:disabled):not([aria-disabled="true"]):not([data-variant="link"]):not([data-variant="ghost"]):hover { translate: 0 -1px; box-shadow: inset 0 1px 0 rgb(255 255 255 / 25%), inset 0 -2px 2px rgb(0 0 0 / 22%), 0 12px 24px -14px rgb(0 0 0 / 90%); }
   .tadeon-material-button:not(:disabled):hover::before { opacity: 1; }
 }
-.tadeon-material-button:not(:disabled):active { translate: 0 1px; scale: .98; }
+.tadeon-material-button:not(:disabled):active { translate: 0 1px; }
 .tadeon-material-button:disabled { translate: none; scale: 1; }
 @media (prefers-reduced-motion: reduce) {
   .tadeon-material-button, .tadeon-material-button::before { transition: none; }
   .tadeon-material-button:not(:disabled):is(:hover, :active) { translate: none; scale: 1; }
 }
+/* NEX-014: owned controls/disclosure, interruptible state transitions. */
+.tadeon-material-tabs { background: rgb(16 20 26 / 80%); border: 1px solid rgb(233 227 213 / 14%); box-shadow: inset 0 1px rgb(255 255 255 / 9%), 0 12px 28px -20px #000; }
+[data-material-surface="tab"] { position: relative; min-height: 44px; color: var(--muted-foreground); background: transparent; transition: color 160ms ease, background-color 180ms ease, box-shadow 180ms ease; }
+[data-material-surface="tab"][data-state="active"] { color: var(--foreground); background: linear-gradient(145deg, rgb(var(--material-rgb, 217 215 164) / 17%), rgb(233 227 213 / 3%)); box-shadow: inset 0 1px rgb(255 255 255 / 12%), inset 0 -2px rgb(var(--material-rgb, 217 215 164) / 65%); }
+[data-material-surface="tab"]::before, [data-material-surface="tab"]::after { content: none; }
+[data-motion-surface="fold"] { overflow: hidden; }
+[data-motion-surface="fold"][data-state="open"] { animation: tadeon-fold-open 240ms cubic-bezier(.22,1,.36,1); }
+[data-motion-surface="fold"][data-state="closed"] { animation: tadeon-fold-close 180ms cubic-bezier(.4,0,.2,1); }
+@keyframes tadeon-fold-open { from { height: 0; opacity: 0; } to { height: var(--radix-collapsible-content-height); opacity: 1; } }
+@keyframes tadeon-fold-close { from { height: var(--radix-collapsible-content-height); opacity: 1; } to { height: 0; opacity: 0; } }
+.tadeon-material-button:is([data-variant="ghost"], [data-variant="outline"], [data-variant="secondary"]):is(:hover, [aria-pressed="true"]) { color: rgb(var(--material-rgb, 217 215 164)); background: rgb(var(--material-rgb, 217 215 164) / 12%); border-color: rgb(var(--material-rgb, 217 215 164) / 28%); }
+.tadeon-material-button[data-tone="destructive"] { --material-rgb: 239 94 94; }
+@media (prefers-reduced-motion: reduce) { [data-material-surface="tab"], [data-motion-surface="fold"] { animation: none; transition: none; } }

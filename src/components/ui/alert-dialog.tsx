@@ -45,6 +45,7 @@ const AlertDialogContent = React.forwardRef<
         <AlertDialogPrimitive.Content
           ref={ref}
           data-slot="alert-dialog-content"
+          data-motion-surface="popup"
           data-popup-contained="true"
           data-route-bounded={routeFrame.boundary ? "true" : undefined}
           style={style}

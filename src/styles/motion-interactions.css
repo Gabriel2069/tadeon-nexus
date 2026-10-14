@@ -112,7 +112,7 @@
 /* --------------------------------------------------------------------------
    TABS - the active marker visibly travels and content lifts in.
    -------------------------------------------------------------------------- */
-.tadeon-shell [data-slot="tabs-trigger"] {
+.tadeon-shell [data-slot="tabs-trigger"]:not([data-material-surface="tab"]) {
   transition:
     transform var(--tadeon-visible-fast) var(--tadeon-visible-ease-standard),
     color 180ms ease,
@@ -121,24 +121,24 @@
     box-shadow 260ms var(--tadeon-visible-ease-standard) !important;
 }
 
-.tadeon-shell [data-slot="tabs-trigger"][data-state="active"] {
+.tadeon-shell [data-slot="tabs-trigger"]:not([data-material-surface="tab"])[data-state="active"] {
   transform: translateY(-2px) !important;
   box-shadow: 0 14px 30px -26px rgb(217 215 164 / 44%) !important;
 }
 
-.tadeon-shell [data-slot="tabs-trigger"]::after {
+.tadeon-shell [data-slot="tabs-trigger"]:not([data-material-surface="tab"])::after {
   height: 2px !important;
   transform-origin: center !important;
   transition: transform 420ms var(--tadeon-visible-ease-in), opacity 220ms ease !important;
 }
 
-.tadeon-shell [data-slot="tabs-trigger"][data-state="active"]::after {
+.tadeon-shell [data-slot="tabs-trigger"]:not([data-material-surface="tab"])[data-state="active"]::after {
   transform: scaleX(1) !important;
   opacity: .9 !important;
   animation: tadeon-visible-tab-marker 420ms var(--tadeon-visible-ease-in) both !important;
 }
 
-.tadeon-shell [data-slot="tabs-content"]:not([data-sheet-content])[data-state="active"] {
+.tadeon-shell [data-slot="tabs-content"]:not([data-motion-surface]):not([data-sheet-content])[data-state="active"] {
   animation: tadeon-visible-tab-content 470ms var(--tadeon-visible-ease-in) both !important;
 }
 
@@ -146,12 +146,12 @@
    ACCORDION / COLLAPSIBLE - visible physical expansion.
    -------------------------------------------------------------------------- */
 .tadeon-shell [data-slot="accordion-content"][data-state="open"],
-.tadeon-shell [data-slot="collapsible-content"][data-state="open"] {
+.tadeon-shell [data-slot="collapsible-content"]:not([data-motion-surface="fold"])[data-state="open"] {
   animation: tadeon-visible-expand-in 420ms var(--tadeon-visible-ease-in) both !important;
 }
 
 .tadeon-shell [data-slot="accordion-content"][data-state="closed"],
-.tadeon-shell [data-slot="collapsible-content"][data-state="closed"] {
+.tadeon-shell [data-slot="collapsible-content"]:not([data-motion-surface="fold"])[data-state="closed"] {
   animation: tadeon-visible-expand-out 230ms var(--tadeon-visible-ease-out) both !important;
 }
 
@@ -175,23 +175,23 @@
     backdrop-filter 520ms var(--tadeon-visible-ease-in) !important;
 }
 
-.tadeon-shell [data-slot="dialog-content"][data-state="open"] {
+.tadeon-shell [data-slot="dialog-content"]:not([data-motion-surface])[data-state="open"] {
   animation: tadeon-visible-dialog-in 560ms var(--tadeon-visible-ease-in) both !important;
   transform-origin: 50% 45% !important;
 }
 
-.tadeon-shell [data-slot="dialog-content"][data-state="closed"] {
+.tadeon-shell [data-slot="dialog-content"]:not([data-motion-surface])[data-state="closed"] {
   animation: tadeon-visible-dialog-out 240ms var(--tadeon-visible-ease-out) both !important;
 }
 
-.tadeon-shell [data-slot="dialog-content"][data-state="open"] > * {
+.tadeon-shell [data-slot="dialog-content"]:not([data-motion-surface])[data-state="open"] > * {
   animation: tadeon-visible-dialog-child 420ms var(--tadeon-visible-ease-in) both !important;
 }
 
-.tadeon-shell [data-slot="dialog-content"][data-state="open"] > :nth-child(2) { animation-delay: 45ms !important; }
-.tadeon-shell [data-slot="dialog-content"][data-state="open"] > :nth-child(3) { animation-delay: 90ms !important; }
-.tadeon-shell [data-slot="dialog-content"][data-state="open"] > :nth-child(4) { animation-delay: 135ms !important; }
-.tadeon-shell [data-slot="dialog-content"][data-state="open"] > :nth-child(5) { animation-delay: 180ms !important; }
+.tadeon-shell [data-slot="dialog-content"]:not([data-motion-surface])[data-state="open"] > :nth-child(2) { animation-delay: 45ms !important; }
+.tadeon-shell [data-slot="dialog-content"]:not([data-motion-surface])[data-state="open"] > :nth-child(3) { animation-delay: 90ms !important; }
+.tadeon-shell [data-slot="dialog-content"]:not([data-motion-surface])[data-state="open"] > :nth-child(4) { animation-delay: 135ms !important; }
+.tadeon-shell [data-slot="dialog-content"]:not([data-motion-surface])[data-state="open"] > :nth-child(5) { animation-delay: 180ms !important; }
 
 /* --------------------------------------------------------------------------
    SHEETS - distinct physical motion by edge.
@@ -225,31 +225,31 @@
 /* --------------------------------------------------------------------------
    POPOVERS / MENUS - grow from trigger instead of simply fading.
    -------------------------------------------------------------------------- */
-.tadeon-shell [data-slot="popover-content"][data-state="open"],
-.tadeon-shell [data-slot="dropdown-menu-content"][data-state="open"],
-.tadeon-shell [data-slot="dropdown-menu-sub-content"][data-state="open"] {
+.tadeon-shell [data-slot="popover-content"]:not([data-motion-surface])[data-state="open"],
+.tadeon-shell [data-slot="dropdown-menu-content"]:not([data-motion-surface])[data-state="open"],
+.tadeon-shell [data-slot="dropdown-menu-sub-content"]:not([data-motion-surface])[data-state="open"] {
   animation: tadeon-visible-popover-in 300ms var(--tadeon-visible-ease-in) both !important;
   transform-origin: var(--radix-popover-content-transform-origin, var(--radix-dropdown-menu-content-transform-origin, 50% 0%)) !important;
 }
 
-.tadeon-shell [data-slot="popover-content"][data-state="closed"],
-.tadeon-shell [data-slot="dropdown-menu-content"][data-state="closed"],
-.tadeon-shell [data-slot="dropdown-menu-sub-content"][data-state="closed"] {
+.tadeon-shell [data-slot="popover-content"]:not([data-motion-surface])[data-state="closed"],
+.tadeon-shell [data-slot="dropdown-menu-content"]:not([data-motion-surface])[data-state="closed"],
+.tadeon-shell [data-slot="dropdown-menu-sub-content"]:not([data-motion-surface])[data-state="closed"] {
   animation: tadeon-visible-popover-out 170ms var(--tadeon-visible-ease-out) both !important;
 }
 
-.tadeon-shell [data-slot="dropdown-menu-content"][data-state="open"] > *,
-.tadeon-shell [data-slot="dropdown-menu-sub-content"][data-state="open"] > * {
+.tadeon-shell [data-slot="dropdown-menu-content"]:not([data-motion-surface])[data-state="open"] > *,
+.tadeon-shell [data-slot="dropdown-menu-sub-content"]:not([data-motion-surface])[data-state="open"] > * {
   animation: tadeon-visible-menu-item 240ms var(--tadeon-visible-ease-in) both !important;
 }
-.tadeon-shell [data-slot="dropdown-menu-content"][data-state="open"] > :nth-child(2),
-.tadeon-shell [data-slot="dropdown-menu-sub-content"][data-state="open"] > :nth-child(2) { animation-delay: 25ms !important; }
-.tadeon-shell [data-slot="dropdown-menu-content"][data-state="open"] > :nth-child(3),
-.tadeon-shell [data-slot="dropdown-menu-sub-content"][data-state="open"] > :nth-child(3) { animation-delay: 50ms !important; }
-.tadeon-shell [data-slot="dropdown-menu-content"][data-state="open"] > :nth-child(4),
-.tadeon-shell [data-slot="dropdown-menu-sub-content"][data-state="open"] > :nth-child(4) { animation-delay: 75ms !important; }
-.tadeon-shell [data-slot="dropdown-menu-content"][data-state="open"] > :nth-child(5),
-.tadeon-shell [data-slot="dropdown-menu-sub-content"][data-state="open"] > :nth-child(5) { animation-delay: 100ms !important; }
+.tadeon-shell [data-slot="dropdown-menu-content"]:not([data-motion-surface])[data-state="open"] > :nth-child(2),
+.tadeon-shell [data-slot="dropdown-menu-sub-content"]:not([data-motion-surface])[data-state="open"] > :nth-child(2) { animation-delay: 25ms !important; }
+.tadeon-shell [data-slot="dropdown-menu-content"]:not([data-motion-surface])[data-state="open"] > :nth-child(3),
+.tadeon-shell [data-slot="dropdown-menu-sub-content"]:not([data-motion-surface])[data-state="open"] > :nth-child(3) { animation-delay: 50ms !important; }
+.tadeon-shell [data-slot="dropdown-menu-content"]:not([data-motion-surface])[data-state="open"] > :nth-child(4),
+.tadeon-shell [data-slot="dropdown-menu-sub-content"]:not([data-motion-surface])[data-state="open"] > :nth-child(4) { animation-delay: 75ms !important; }
+.tadeon-shell [data-slot="dropdown-menu-content"]:not([data-motion-surface])[data-state="open"] > :nth-child(5),
+.tadeon-shell [data-slot="dropdown-menu-sub-content"]:not([data-motion-surface])[data-state="open"] > :nth-child(5) { animation-delay: 100ms !important; }
 
 /* --------------------------------------------------------------------------
    NAVIGATION - clear movement on active state.
@@ -501,18 +501,18 @@
 @media (prefers-reduced-motion: reduce) {
   .tadeon-route-stage,
   .tadeon-route-stage > .tadeon-page > *,
-  .tadeon-shell [data-slot="tabs-content"]:not([data-sheet-content])[data-state="active"],
+  .tadeon-shell [data-slot="tabs-content"]:not([data-motion-surface]):not([data-sheet-content])[data-state="active"],
   .tadeon-shell [data-slot="accordion-content"],
-  .tadeon-shell [data-slot="collapsible-content"],
-  .tadeon-shell [data-slot="dialog-content"],
-  .tadeon-shell [data-slot="dialog-content"] > *,
+  .tadeon-shell [data-slot="collapsible-content"]:not([data-motion-surface="fold"]),
+  .tadeon-shell [data-slot="dialog-content"]:not([data-motion-surface]),
+  .tadeon-shell [data-slot="dialog-content"]:not([data-motion-surface]) > *,
   .tadeon-shell [data-slot="sheet-content"],
   .tadeon-shell [data-slot="sheet-content"] > *,
-  .tadeon-shell [data-slot="popover-content"],
-  .tadeon-shell [data-slot="dropdown-menu-content"],
-  .tadeon-shell [data-slot="dropdown-menu-sub-content"],
-  .tadeon-shell [data-slot="dropdown-menu-content"] > *,
-  .tadeon-shell [data-slot="dropdown-menu-sub-content"] > *,
+  .tadeon-shell [data-slot="popover-content"]:not([data-motion-surface]),
+  .tadeon-shell [data-slot="dropdown-menu-content"]:not([data-motion-surface]),
+  .tadeon-shell [data-slot="dropdown-menu-sub-content"]:not([data-motion-surface]),
+  .tadeon-shell [data-slot="dropdown-menu-content"]:not([data-motion-surface]) > *,
+  .tadeon-shell [data-slot="dropdown-menu-sub-content"]:not([data-motion-surface]) > *,
   .tadeon-primary-nav .tadeon-nav-item[aria-current="page"],
   .tadeon-mobile-dock__item[aria-current="page"],
   .tadeon-shell [data-tadeon-node][data-selected="true"],
@@ -535,7 +535,7 @@
   .tadeon-shell .tadeon-surface,
   .tadeon-shell .tadeon-state-panel,
   .tadeon-shell .tadeon-link-panel,
-  .tadeon-shell [data-slot="tabs-trigger"] {
+  .tadeon-shell [data-slot="tabs-trigger"]:not([data-material-surface="tab"]) {
     transition: none !important;
   }
 }
@@ -557,13 +557,13 @@
 
 /* Tabs: underline travels; label and icon move independently. */
 .tadeon-shell [data-slot=tabs-list]{position:relative}
-.tadeon-shell [data-slot=tabs-trigger]{overflow:visible!important;transform-origin:center;transition:transform 220ms var(--tdv-spring),color 180ms ease,background-color 260ms ease,box-shadow 320ms var(--tdv-soft)}
-.tadeon-shell [data-slot=tabs-trigger]:hover{transform:translateY(-3px)}
-.tadeon-shell [data-slot=tabs-trigger]:active{transform:translateY(2px) scale(.95)}
-.tadeon-shell [data-slot=tabs-trigger]::after{content:"";position:absolute;left:10%;right:10%;bottom:-2px;height:2px;border-radius:999px;background:currentColor;transform:scaleX(.12);transform-origin:center;opacity:0;transition:transform 420ms var(--tdv-spring),opacity 220ms ease,filter 360ms ease}
-.tadeon-shell [data-slot=tabs-trigger][data-state=active]::after{opacity:.9;transform:scaleX(1);filter:drop-shadow(0 0 9px currentColor)}
-.tadeon-shell [data-slot=tabs-trigger] :where(svg.lucide){transition:transform 360ms var(--tdv-spring)}
-.tadeon-shell [data-slot=tabs-trigger][data-state=active] :where(svg.lucide){transform:translateY(-2px) scale(1.08) rotate(-2deg)}
+.tadeon-shell [data-slot=tabs-trigger]:not([data-material-surface="tab"]){overflow:visible!important;transform-origin:center;transition:transform 220ms var(--tdv-spring),color 180ms ease,background-color 260ms ease,box-shadow 320ms var(--tdv-soft)}
+.tadeon-shell [data-slot=tabs-trigger]:not([data-material-surface="tab"]):hover{transform:translateY(-3px)}
+.tadeon-shell [data-slot=tabs-trigger]:not([data-material-surface="tab"]):active{transform:translateY(2px) scale(.95)}
+.tadeon-shell [data-slot=tabs-trigger]:not([data-material-surface="tab"])::after{content:"";position:absolute;left:10%;right:10%;bottom:-2px;height:2px;border-radius:999px;background:currentColor;transform:scaleX(.12);transform-origin:center;opacity:0;transition:transform 420ms var(--tdv-spring),opacity 220ms ease,filter 360ms ease}
+.tadeon-shell [data-slot=tabs-trigger]:not([data-material-surface="tab"])[data-state=active]::after{opacity:.9;transform:scaleX(1);filter:drop-shadow(0 0 9px currentColor)}
+.tadeon-shell [data-slot=tabs-trigger]:not([data-material-surface="tab"]) :where(svg.lucide){transition:transform 360ms var(--tdv-spring)}
+.tadeon-shell [data-slot=tabs-trigger]:not([data-material-surface="tab"])[data-state=active] :where(svg.lucide){transform:translateY(-2px) scale(1.08) rotate(-2deg)}
 .tadeon-shell [data-slot=tabs-content]:not([data-sheet-content])[data-state=active]{animation:tdv-tab-enter 520ms var(--tdv-in) both}
 @keyframes tdv-tab-enter{from{opacity:0;transform:translate3d(0,30px,0) scale(.965);filter:blur(10px)}55%{opacity:1;transform:translate3d(0,-5px,0) scale(1.008);filter:blur(0)}to{opacity:1;transform:none}}
 
@@ -669,7 +669,7 @@
 .tadeon-shell[data-section="Painel do Mestre"] .tadeon-master-navigation [data-slot="tabs-trigger"]{
   overflow:hidden;
 }
-.tadeon-shell[data-section="Painel do Mestre"] .tadeon-master-navigation [data-slot="tabs-trigger"]::after{
+.tadeon-shell[data-section="Painel do Mestre"] .tadeon-master-navigation [data-slot="tabs-trigger"]:not([data-material-surface="tab"])::after{
   content:"";position:absolute;inset:0 auto 0 0;width:0;background:linear-gradient(90deg,rgb(180 92 98 / 0),rgb(180 92 98 / 18%));transition:width 420ms var(--tp-in)
 }
 .tadeon-shell[data-section="Painel do Mestre"] .tadeon-master-navigation [data-slot="tabs-trigger"][data-state="active"]::after{width:100%}
@@ -728,18 +728,18 @@
 .tadeon-shell [data-slot="tabs-indicator"]{position:absolute;z-index:-1;pointer-events:none;border-radius:.7rem;background:linear-gradient(145deg,rgb(217 215 164 / 16%),rgb(255 255 255 / 4%));box-shadow:0 12px 30px -20px rgb(217 215 164 / 42%),inset 0 1px rgb(255 255 255 / 8%);transition:transform 520ms var(--tui-spring),width 420ms var(--tui-spring),height 360ms var(--tui-soft),opacity 220ms ease;will-change:transform,width,height}
 .tadeon-shell [data-slot="tabs-indicator"][data-visible="false"]{opacity:0}
 .tadeon-shell [data-slot="tabs-trigger"][data-state="active"]{position:relative;z-index:1}
-.tadeon-shell [data-slot="tabs-trigger"][data-state="active"]:not(:focus-visible){animation:tui-tab-land 420ms var(--tui-spring) both}
+.tadeon-shell [data-slot="tabs-trigger"]:not([data-material-surface="tab"])[data-state="active"]:not(:focus-visible){animation:tui-tab-land 420ms var(--tui-spring) both}
 @keyframes tui-tab-land{0%{transform:translateY(4px) scale(.94)}58%{transform:translateY(-3px) scale(1.035)}100%{transform:none}}
 
 /* Actual Radix dialogs. */
 .tadeon-shell [data-slot="dialog-overlay"][data-state="open"],.tadeon-shell [data-slot="sheet-overlay"][data-state="open"]{opacity:1;backdrop-filter:blur(10px) saturate(78%)}
 .tadeon-shell [data-slot="dialog-overlay"][data-state="closed"],.tadeon-shell [data-slot="sheet-overlay"][data-state="closed"]{opacity:0;backdrop-filter:blur(0) saturate(100%)}
-.tadeon-shell [data-slot="dialog-content"][data-state="open"]{animation:tui-dialog-in 620ms var(--tui-in) both!important;transform-origin:50% 44%!important;will-change:transform,opacity,filter}
-.tadeon-shell [data-slot="dialog-content"][data-state="closed"]{animation:tui-dialog-out 230ms var(--tui-out) both!important}
+.tadeon-shell [data-slot="dialog-content"]:not([data-motion-surface])[data-state="open"]{animation:tui-dialog-in 620ms var(--tui-in) both!important;transform-origin:50% 44%!important;will-change:transform,opacity,filter}
+.tadeon-shell [data-slot="dialog-content"]:not([data-motion-surface])[data-state="closed"]{animation:tui-dialog-out 230ms var(--tui-out) both!important}
 @keyframes tui-dialog-in{0%{opacity:0;transform:translateY(72px) scale(.82) rotateX(-8deg);filter:blur(12px)}52%{opacity:1;transform:translateY(-8px) scale(1.035) rotateX(1deg);filter:blur(0)}78%{transform:translateY(2px) scale(.995)}100%{opacity:1;transform:none}}
 @keyframes tui-dialog-out{0%{opacity:1;transform:none;filter:blur(0)}100%{opacity:0;transform:translateY(34px) scale(.9) rotateX(4deg);filter:blur(7px)}}
-.tadeon-shell [data-slot="dialog-content"][data-state="open"]>[data-slot="dialog-header"]{animation:tui-dialog-child 420ms var(--tui-in) both}
-.tadeon-shell [data-slot="dialog-content"][data-state="open"]>[data-slot="dialog-footer"]{animation:tui-dialog-child 420ms var(--tui-in) 110ms both}
+.tadeon-shell [data-slot="dialog-content"]:not([data-motion-surface])[data-state="open"]>[data-slot="dialog-header"]{animation:tui-dialog-child 420ms var(--tui-in) both}
+.tadeon-shell [data-slot="dialog-content"]:not([data-motion-surface])[data-state="open"]>[data-slot="dialog-footer"]{animation:tui-dialog-child 420ms var(--tui-in) 110ms both}
 @keyframes tui-dialog-child{from{opacity:0;transform:translateY(18px) scale(.97)}to{opacity:1;transform:none}}
 
 /* Real sheets: Radix supplies data-side. */
@@ -759,19 +759,19 @@
 @keyframes tui-sheet-top-in{0%{transform:translateY(-100%) scale(.97);opacity:.2}58%{transform:translateY(18px) scale(1.012);opacity:1}100%{transform:none;opacity:1}}
 
 /* Real popover / dropdown / hover-card / select content. */
-.tadeon-shell [data-slot="popover-content"][data-state="open"],.tadeon-shell [data-slot="dropdown-menu-content"][data-state="open"],.tadeon-shell [data-slot="dropdown-menu-sub-content"][data-state="open"],.tadeon-shell [data-slot="hover-card-content"][data-state="open"],.tadeon-shell [data-slot="select-content"][data-state="open"]{animation:tui-float-in 340ms var(--tui-spring) both!important;transform-origin:var(--radix-popover-content-transform-origin,var(--radix-dropdown-menu-content-transform-origin,var(--radix-hover-card-content-transform-origin,var(--radix-select-content-transform-origin,50% 0%))))!important}
-.tadeon-shell [data-slot="popover-content"][data-state="closed"],.tadeon-shell [data-slot="dropdown-menu-content"][data-state="closed"],.tadeon-shell [data-slot="dropdown-menu-sub-content"][data-state="closed"],.tadeon-shell [data-slot="hover-card-content"][data-state="closed"],.tadeon-shell [data-slot="select-content"][data-state="closed"]{animation:tui-float-out 170ms var(--tui-out) both!important}
+.tadeon-shell [data-slot="popover-content"]:not([data-motion-surface])[data-state="open"],.tadeon-shell [data-slot="dropdown-menu-content"]:not([data-motion-surface])[data-state="open"],.tadeon-shell [data-slot="dropdown-menu-sub-content"]:not([data-motion-surface])[data-state="open"],.tadeon-shell [data-slot="hover-card-content"][data-state="open"],.tadeon-shell [data-slot="select-content"]:not([data-motion-surface])[data-state="open"]{animation:tui-float-in 340ms var(--tui-spring) both!important;transform-origin:var(--radix-popover-content-transform-origin,var(--radix-dropdown-menu-content-transform-origin,var(--radix-hover-card-content-transform-origin,var(--radix-select-content-transform-origin,50% 0%))))!important}
+.tadeon-shell [data-slot="popover-content"]:not([data-motion-surface])[data-state="closed"],.tadeon-shell [data-slot="dropdown-menu-content"]:not([data-motion-surface])[data-state="closed"],.tadeon-shell [data-slot="dropdown-menu-sub-content"]:not([data-motion-surface])[data-state="closed"],.tadeon-shell [data-slot="hover-card-content"][data-state="closed"],.tadeon-shell [data-slot="select-content"]:not([data-motion-surface])[data-state="closed"]{animation:tui-float-out 170ms var(--tui-out) both!important}
 @keyframes tui-float-in{0%{opacity:0;transform:translateY(15px) scale(.82) rotateX(-7deg);filter:blur(6px)}58%{opacity:1;transform:translateY(-3px) scale(1.035) rotateX(1deg);filter:blur(0)}100%{opacity:1;transform:none}}
 @keyframes tui-float-out{to{opacity:0;transform:translateY(10px) scale(.88);filter:blur(4px)}}
-.tadeon-shell [data-slot="dropdown-menu-content"][data-state="open"]>[data-slot="dropdown-menu-item"],.tadeon-shell [data-slot="dropdown-menu-content"][data-state="open"]>[data-slot="dropdown-menu-checkbox-item"],.tadeon-shell [data-slot="dropdown-menu-content"][data-state="open"]>[data-slot="dropdown-menu-radio-item"],.tadeon-shell [data-slot="dropdown-menu-sub-content"][data-state="open"]>*{animation:tui-menu-item 230ms var(--tui-in) both!important}
-.tadeon-shell [data-slot="dropdown-menu-content"][data-state="open"]>*:nth-child(2){animation-delay:24ms!important}.tadeon-shell [data-slot="dropdown-menu-content"][data-state="open"]>*:nth-child(3){animation-delay:48ms!important}.tadeon-shell [data-slot="dropdown-menu-content"][data-state="open"]>*:nth-child(4){animation-delay:72ms!important}.tadeon-shell [data-slot="dropdown-menu-content"][data-state="open"]>*:nth-child(5){animation-delay:96ms!important}
+.tadeon-shell [data-slot="dropdown-menu-content"]:not([data-motion-surface])[data-state="open"]>[data-slot="dropdown-menu-item"],.tadeon-shell [data-slot="dropdown-menu-content"]:not([data-motion-surface])[data-state="open"]>[data-slot="dropdown-menu-checkbox-item"],.tadeon-shell [data-slot="dropdown-menu-content"]:not([data-motion-surface])[data-state="open"]>[data-slot="dropdown-menu-radio-item"],.tadeon-shell [data-slot="dropdown-menu-sub-content"]:not([data-motion-surface])[data-state="open"]>*{animation:tui-menu-item 230ms var(--tui-in) both!important}
+.tadeon-shell [data-slot="dropdown-menu-content"]:not([data-motion-surface])[data-state="open"]>*:nth-child(2){animation-delay:24ms!important}.tadeon-shell [data-slot="dropdown-menu-content"]:not([data-motion-surface])[data-state="open"]>*:nth-child(3){animation-delay:48ms!important}.tadeon-shell [data-slot="dropdown-menu-content"]:not([data-motion-surface])[data-state="open"]>*:nth-child(4){animation-delay:72ms!important}.tadeon-shell [data-slot="dropdown-menu-content"]:not([data-motion-surface])[data-state="open"]>*:nth-child(5){animation-delay:96ms!important}
 @keyframes tui-menu-item{from{opacity:0;transform:translateX(-16px)}to{opacity:1;transform:none}}
 
 /* Real accordion/collapsible content and trigger. */
 .tadeon-shell [data-slot="accordion-trigger"],.tadeon-shell [data-slot="collapsible-trigger"]{transition:color 180ms ease,background-color 220ms ease,transform 260ms var(--tui-spring),box-shadow 300ms var(--tui-soft)}
 .tadeon-shell [data-slot="accordion-trigger"]:hover,.tadeon-shell [data-slot="collapsible-trigger"]:hover{transform:translateX(6px);color:var(--primary)}
-.tadeon-shell [data-slot="accordion-content"][data-state="open"],.tadeon-shell [data-slot="collapsible-content"][data-state="open"]{animation:tui-expand-in 430ms var(--tui-in) both!important}
-.tadeon-shell [data-slot="accordion-content"][data-state="closed"],.tadeon-shell [data-slot="collapsible-content"][data-state="closed"]{animation:tui-expand-out 220ms var(--tui-out) both!important}
+.tadeon-shell [data-slot="accordion-content"][data-state="open"],.tadeon-shell [data-slot="collapsible-content"]:not([data-motion-surface="fold"])[data-state="open"]{animation:tui-expand-in 430ms var(--tui-in) both!important}
+.tadeon-shell [data-slot="accordion-content"][data-state="closed"],.tadeon-shell [data-slot="collapsible-content"]:not([data-motion-surface="fold"])[data-state="closed"]{animation:tui-expand-out 220ms var(--tui-out) both!important}
 .tadeon-shell [data-slot="accordion-trigger"] svg,.tadeon-shell [data-slot="collapsible-trigger"] svg{transition:transform 360ms var(--tui-spring)}
 @keyframes tui-expand-in{from{opacity:0;transform:translateY(-10px) scaleY(.82);filter:blur(3px)}55%{opacity:1;transform:translateY(2px) scaleY(1.02);filter:blur(0)}to{transform:none}}
 @keyframes tui-expand-out{to{opacity:0;transform:translateY(-7px) scaleY(.9);filter:blur(2px)}}
@@ -804,8 +804,8 @@
 .tadeon-shell [data-slot="select-item"] svg{transition:transform 280ms var(--tui-spring)}
 
 /* Tabs content: direction is supplied by Tabs root. */
-.tadeon-shell [data-slot="tabs"][data-motion-direction="forward"] [data-slot="tabs-content"]:not([data-sheet-content])[data-state="active"]{animation-name:tui-tab-forward!important}
-.tadeon-shell [data-slot="tabs"][data-motion-direction="backward"] [data-slot="tabs-content"]:not([data-sheet-content])[data-state="active"]{animation-name:tui-tab-backward!important}
+.tadeon-shell [data-slot="tabs"][data-motion-direction="forward"] [data-slot="tabs-content"]:not([data-motion-surface]):not([data-sheet-content])[data-state="active"]{animation-name:tui-tab-forward!important}
+.tadeon-shell [data-slot="tabs"][data-motion-direction="backward"] [data-slot="tabs-content"]:not([data-motion-surface]):not([data-sheet-content])[data-state="active"]{animation-name:tui-tab-backward!important}
 @keyframes tui-tab-forward{from{opacity:0;transform:translateX(42px) scale(.97);filter:blur(8px)}58%{opacity:1;transform:translateX(-4px) scale(1.01);filter:blur(0)}to{opacity:1;transform:none}}
 @keyframes tui-tab-backward{from{opacity:0;transform:translateX(-42px) scale(.97);filter:blur(8px)}58%{opacity:1;transform:translateX(4px) scale(1.01);filter:blur(0)}to{opacity:1;transform:none}}
 
@@ -1376,13 +1376,13 @@
   perspective: 1200px;
 }
 
-[data-slot="dialog-content"][data-state="open"] {
+[data-slot="dialog-content"]:not([data-motion-surface])[data-state="open"] {
   animation: tadeon-portal-dialog-in 560ms var(--tadeon-portal-enter) both !important;
   transform-origin: 50% 46% !important;
   will-change: transform, opacity, filter;
 }
 
-[data-slot="dialog-content"][data-state="closed"] {
+[data-slot="dialog-content"]:not([data-motion-surface])[data-state="closed"] {
   animation: tadeon-portal-dialog-out 220ms var(--tadeon-portal-exit) both !important;
 }
 
@@ -1420,15 +1420,15 @@
   }
 }
 
-[data-slot="dialog-content"][data-state="open"] > [data-slot="dialog-header"] {
+[data-slot="dialog-content"]:not([data-motion-surface])[data-state="open"] > [data-slot="dialog-header"] {
   animation: tadeon-portal-content-in 360ms var(--tadeon-portal-enter) 35ms both;
 }
 
-[data-slot="dialog-content"][data-state="open"] > [data-slot="dialog-footer"] {
+[data-slot="dialog-content"]:not([data-motion-surface])[data-state="open"] > [data-slot="dialog-footer"] {
   animation: tadeon-portal-content-in 360ms var(--tadeon-portal-enter) 115ms both;
 }
 
-[data-slot="dialog-content"][data-state="open"] > :not([data-slot="dialog-header"]):not([data-slot="dialog-footer"]):not([data-slot="dialog-close"]) {
+[data-slot="dialog-content"]:not([data-motion-surface])[data-state="open"] > :not([data-slot="dialog-header"]):not([data-slot="dialog-footer"]):not([data-slot="dialog-close"]) {
   animation: tadeon-portal-content-in 360ms var(--tadeon-portal-enter) 70ms both;
 }
 
@@ -1510,21 +1510,21 @@
 }
 
 /* Floating surfaces: popovers, dropdowns, hover cards and selects. */
-[data-slot="popover-content"][data-state="open"],
-[data-slot="dropdown-menu-content"][data-state="open"],
-[data-slot="dropdown-menu-sub-content"][data-state="open"],
+[data-slot="popover-content"]:not([data-motion-surface])[data-state="open"],
+[data-slot="dropdown-menu-content"]:not([data-motion-surface])[data-state="open"],
+[data-slot="dropdown-menu-sub-content"]:not([data-motion-surface])[data-state="open"],
 [data-slot="hover-card-content"][data-state="open"],
-[data-slot="select-content"][data-state="open"] {
+[data-slot="select-content"]:not([data-motion-surface])[data-state="open"] {
   animation: tadeon-portal-float-in 300ms var(--tadeon-portal-spring) both !important;
   transform-origin: var(--radix-popover-content-transform-origin, var(--radix-dropdown-menu-content-transform-origin, var(--radix-hover-card-content-transform-origin, var(--radix-select-content-transform-origin, 50% 0%)))) !important;
   will-change: transform, opacity, filter;
 }
 
-[data-slot="popover-content"][data-state="closed"],
-[data-slot="dropdown-menu-content"][data-state="closed"],
-[data-slot="dropdown-menu-sub-content"][data-state="closed"],
+[data-slot="popover-content"]:not([data-motion-surface])[data-state="closed"],
+[data-slot="dropdown-menu-content"]:not([data-motion-surface])[data-state="closed"],
+[data-slot="dropdown-menu-sub-content"]:not([data-motion-surface])[data-state="closed"],
 [data-slot="hover-card-content"][data-state="closed"],
-[data-slot="select-content"][data-state="closed"] {
+[data-slot="select-content"]:not([data-motion-surface])[data-state="closed"] {
   animation: tadeon-portal-float-out 170ms var(--tadeon-portal-exit) both !important;
 }
 
@@ -1537,14 +1537,14 @@
   to { opacity: 0; transform: translate3d(0, 8px, 0) scale(.92); filter: blur(4px); }
 }
 
-[data-slot="dropdown-menu-content"][data-state="open"] > *,
-[data-slot="dropdown-menu-sub-content"][data-state="open"] > * {
+[data-slot="dropdown-menu-content"]:not([data-motion-surface])[data-state="open"] > *,
+[data-slot="dropdown-menu-sub-content"]:not([data-motion-surface])[data-state="open"] > * {
   animation: tadeon-portal-menu-item 210ms var(--tadeon-portal-enter) both;
 }
-[data-slot="dropdown-menu-content"][data-state="open"] > :nth-child(2) { animation-delay: 22ms; }
-[data-slot="dropdown-menu-content"][data-state="open"] > :nth-child(3) { animation-delay: 44ms; }
-[data-slot="dropdown-menu-content"][data-state="open"] > :nth-child(4) { animation-delay: 66ms; }
-[data-slot="dropdown-menu-content"][data-state="open"] > :nth-child(5) { animation-delay: 88ms; }
+[data-slot="dropdown-menu-content"]:not([data-motion-surface])[data-state="open"] > :nth-child(2) { animation-delay: 22ms; }
+[data-slot="dropdown-menu-content"]:not([data-motion-surface])[data-state="open"] > :nth-child(3) { animation-delay: 44ms; }
+[data-slot="dropdown-menu-content"]:not([data-motion-surface])[data-state="open"] > :nth-child(4) { animation-delay: 66ms; }
+[data-slot="dropdown-menu-content"]:not([data-motion-surface])[data-state="open"] > :nth-child(5) { animation-delay: 88ms; }
 @keyframes tadeon-portal-menu-item {
   from { opacity: 0; transform: translate3d(-10px, 0, 0) scale(.98); }
   to { opacity: 1; transform: none; }
@@ -1567,15 +1567,15 @@
 @media (prefers-reduced-motion: reduce) {
   [data-slot="dialog-overlay"],
   [data-slot="sheet-overlay"],
-  [data-slot="dialog-content"],
-  [data-slot="dialog-content"] > *,
+  [data-slot="dialog-content"]:not([data-motion-surface]),
+  [data-slot="dialog-content"]:not([data-motion-surface]) > *,
   [data-slot="sheet-content"],
   [data-slot="sheet-content"] > *,
-  [data-slot="popover-content"],
-  [data-slot="dropdown-menu-content"],
-  [data-slot="dropdown-menu-sub-content"],
+  [data-slot="popover-content"]:not([data-motion-surface]),
+  [data-slot="dropdown-menu-content"]:not([data-motion-surface]),
+  [data-slot="dropdown-menu-sub-content"]:not([data-motion-surface]),
   [data-slot="hover-card-content"],
-  [data-slot="select-content"] {
+  [data-slot="select-content"]:not([data-motion-surface]) {
     animation: none !important;
     transition: none !important;
   }
@@ -1585,13 +1585,13 @@
 /* Tadeon Popup Refinement - reduced overshoot, preserved presence. */
 :root{--tadeon-refine-in:cubic-bezier(.2,.82,.2,1);--tadeon-refine-spring:cubic-bezier(.2,.9,.3,1.05);--tadeon-refine-out:cubic-bezier(.65,0,.8,1)}
 
-[data-slot="dialog-content"][data-state="open"]{animation:tadeon-refine-dialog-in 520ms var(--tadeon-refine-in) both!important}
+[data-slot="dialog-content"]:not([data-motion-surface])[data-state="open"]{animation:tadeon-refine-dialog-in 520ms var(--tadeon-refine-in) both!important}
 @keyframes tadeon-refine-dialog-in{0%{opacity:0;transform:translate3d(0,34px,0) scale(.92) rotateX(-3deg);filter:blur(7px)}62%{opacity:1;transform:translate3d(0,-2px,0) scale(1.006) rotateX(.2deg);filter:blur(0)}100%{opacity:1;transform:none;filter:none}}
-[data-slot="dialog-content"][data-state="closed"]{animation:tadeon-refine-dialog-out 205ms var(--tadeon-refine-out) both!important}
+[data-slot="dialog-content"]:not([data-motion-surface])[data-state="closed"]{animation:tadeon-refine-dialog-out 205ms var(--tadeon-refine-out) both!important}
 @keyframes tadeon-refine-dialog-out{to{opacity:0;transform:translate3d(0,18px,0) scale(.965);filter:blur(4px)}}
 
-[data-slot="dialog-content"][data-state="open"]>[data-slot="dialog-header"]{animation:tadeon-refine-child 330ms var(--tadeon-refine-in) 35ms both!important}
-[data-slot="dialog-content"][data-state="open"]>[data-slot="dialog-footer"]{animation:tadeon-refine-child 330ms var(--tadeon-refine-in) 95ms both!important}
+[data-slot="dialog-content"]:not([data-motion-surface])[data-state="open"]>[data-slot="dialog-header"]{animation:tadeon-refine-child 330ms var(--tadeon-refine-in) 35ms both!important}
+[data-slot="dialog-content"]:not([data-motion-surface])[data-state="open"]>[data-slot="dialog-footer"]{animation:tadeon-refine-child 330ms var(--tadeon-refine-in) 95ms both!important}
 @keyframes tadeon-refine-child{from{opacity:0;transform:translate3d(0,8px,0) scale(.985)}to{opacity:1;transform:none}}
 
 [data-slot="sheet-content"][data-state="open"][data-side="right"]{animation:tadeon-refine-sheet-r 520ms var(--tadeon-refine-in) both!important}
@@ -1603,10 +1603,10 @@
 @keyframes tadeon-refine-sheet-b{0%{opacity:.25;transform:translateY(100%)}70%{opacity:1;transform:translateY(-4px)}100%{opacity:1;transform:none}}
 @keyframes tadeon-refine-sheet-t{0%{opacity:.25;transform:translateY(-100%)}70%{opacity:1;transform:translateY(4px)}100%{opacity:1;transform:none}}
 
-[data-slot="popover-content"][data-state="open"],[data-slot="dropdown-menu-content"][data-state="open"],[data-slot="dropdown-menu-sub-content"][data-state="open"],[data-slot="hover-card-content"][data-state="open"],[data-slot="select-content"][data-state="open"]{animation:tadeon-refine-float 270ms var(--tadeon-refine-spring) both!important}
+[data-slot="popover-content"]:not([data-motion-surface])[data-state="open"],[data-slot="dropdown-menu-content"]:not([data-motion-surface])[data-state="open"],[data-slot="dropdown-menu-sub-content"]:not([data-motion-surface])[data-state="open"],[data-slot="hover-card-content"][data-state="open"],[data-slot="select-content"]:not([data-motion-surface])[data-state="open"]{animation:tadeon-refine-float 270ms var(--tadeon-refine-spring) both!important}
 @keyframes tadeon-refine-float{0%{opacity:0;transform:translate3d(0,8px,0) scale(.92);filter:blur(4px)}68%{opacity:1;transform:translate3d(0,-1px,0) scale(1.006);filter:blur(0)}100%{opacity:1;transform:none;filter:none}}
 
-@media (prefers-reduced-motion:reduce){[data-slot="dialog-content"],[data-slot="sheet-content"],[data-slot="popover-content"],[data-slot="dropdown-menu-content"],[data-slot="dropdown-menu-sub-content"],[data-slot="hover-card-content"],[data-slot="select-content"]{animation:none!important}}
+@media (prefers-reduced-motion:reduce){[data-slot="dialog-content"]:not([data-motion-surface]),[data-slot="sheet-content"],[data-slot="popover-content"]:not([data-motion-surface]),[data-slot="dropdown-menu-content"]:not([data-motion-surface]),[data-slot="dropdown-menu-sub-content"]:not([data-motion-surface]),[data-slot="hover-card-content"],[data-slot="select-content"]:not([data-motion-surface]){animation:none!important}}
 
 /* Coverage pass: common UI primitives that still changed instantly. */
 .tadeon-shell [data-slot="card"]{transition:transform 360ms cubic-bezier(.22,1,.36,1),box-shadow 420ms cubic-bezier(.22,1,.36,1),border-color 260ms ease,background-color 300ms ease}
