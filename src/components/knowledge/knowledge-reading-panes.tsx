@@ -24,11 +24,21 @@ export function KnowledgeReadingPanes({
     if (host.current) observer.observe(host.current);
     return () => observer.disconnect();
   }, []);
+  const layout = {
+    document: view === "graph" ? 0 : view === "document" ? 100 : percentage,
+    graph: view === "graph" ? 100 : view === "document" ? 0 : 100 - percentage,
+  };
   useEffect(() => {
-    group.current?.setLayout({
-      document: view === "graph" ? 0 : view === "document" ? 100 : percentage,
-      graph: view === "graph" ? 100 : view === "document" ? 0 : 100 - percentage,
+    // Panel registration/constraint updates precede imperative mode changes.
+    const frame = requestAnimationFrame(() => {
+      const handle = group.current;
+      if (handle && Object.keys(handle.getLayout()).length === 2)
+        handle.setLayout({
+          document: view === "graph" ? 0 : view === "document" ? 100 : percentage,
+          graph: view === "graph" ? 100 : view === "document" ? 0 : 100 - percentage,
+        });
     });
+    return () => cancelAnimationFrame(frame);
   }, [percentage, view, vertical]);
   return (
     <div
@@ -39,6 +49,7 @@ export function KnowledgeReadingPanes({
     >
       <ResizablePanelGroup
         groupRef={group}
+        defaultLayout={layout}
         orientation={vertical ? "vertical" : "horizontal"}
         resizeTargetMinimumSize={{ coarse: 44, fine: 12 }}
         disabled={view !== "split"}

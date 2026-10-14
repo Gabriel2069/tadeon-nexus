@@ -714,9 +714,10 @@ export function NexusWorkspace({
     workspaceId,
   ]);
 
+  const selectedNodeId = selected?.id;
   useEffect(() => {
-    if (readingView !== "document" && selected) setInlineGraphFocus(selected.id);
-  }, [readingView, selected?.id]);
+    if (readingView !== "document" && selectedNodeId) setInlineGraphFocus(selectedNodeId);
+  }, [readingView, selectedNodeId]);
 
   const markDirty = useCallback(
     (title: string, content: string) => {

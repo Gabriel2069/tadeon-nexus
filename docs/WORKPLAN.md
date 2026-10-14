@@ -111,6 +111,7 @@ Evidências: pendentes; não declarar concluído.
 - Em ambiente adequado, testar mestre, jogador, espectador e acesso negado entre campanhas.
 - Conferir migrations aplicadas, flags e OAuth com evidência datada; não reutilizar status histórico como atual.
 - Não aplicar migrations, ativar flags ou mudar provedores durante refinamento visual.
+- Requisito de NEX-015 conciliado em DEC-010: verificar filtros, grupos, leitura longa, rascunhos e conflitos com corpus real autorizado, incluindo campanhas e o limite de 500 candidatos; fixtures não satisfazem essa autorização.
 
 Evidências: pendentes; não declarar concluído.
 
@@ -140,7 +141,7 @@ Evidências: [docs/material-reading-validation.json](../docs/material-reading-va
 
 - Refinar fechamento da última aba, reabertura e recuperação de rascunhos com testes de navegação.
 - Adicionar dimensionamento e preferências de painéis sem estado paralelo ou bridge de DOM.
-- Ampliar cobertura de filtros, grupos, leitura longa e corpus real autorizado; preservar o limite de 500 candidatos e explicitar paginação.
+- Ampliar cobertura de filtros, grupos e leitura longa com fixtures de 120/500 páginas; preservar o limite de 500 candidatos e explicitar paginação. Validação do corpus real autorizado pertence a NEX-010.
 
 Evidências: pendentes; não declarar concluído.
 
@@ -157,3 +158,4 @@ Evidências: pendentes; não declarar concluído.
 | DEC-007 | Explorar suspense mitológico, vidro dimensional e movimento de tecidos/fios a partir do Fio-Mestre. | Direção solicitada e aprovada por Tadeu em 11/10/2026. Véu & Trama foi aplicado ao shell/Dashboard na PR #259; expansão segue os responsáveis e dependências da fila canônica. |
 | DEC-008 | Tipografia editorial Grenze; menu Mais renderizado pelo shell e primitivo Radix. | Tadeu pediu fonte mais sofisticada e medieval e autorizou prosseguir em 11/10/2026. Retirar captura global e mutação de SVG preservando destinos e círculo. Escolha de fonte superada por DEC-009; navegação consolidada permanece válida. |
 | DEC-009 | Tadeu rejeitou Grenze e os números monoespaçados; Cormorant Garamond 500/600/700 e itálico 500 assumem o editorial, Inter 500 com números tabulares assume métricas. PT Mono fica em metadados. Vidro nos controles e navegação, conteúdo opaco, tecido vetorial e reflexos locais; nenhuma simulação física ou loop global novo. | Nova instrução explícita de Tadeu em 11/10/2026: rever fonte, métricas e presença de fundo/motion antes da ficha. A parte tipográfica de DEC-008 passa a ser histórica, sem desfazer a navegação consolidada. |
+| DEC-010 | NEX-015 implementa e valida continuidade/composição com fixtures; sua verificação com corpus real autorizado permanece em NEX-010. | A etapa não certifica contas reais, RLS ou rollout. Consolidar essa verificação no lote existente de autorização evita uma fila duplicada ou declarar validação fictícia como real. |

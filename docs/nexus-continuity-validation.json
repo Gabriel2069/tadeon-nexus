@@ -1,0 +1,77 @@
+{
+  "task": "NEX-015",
+  "date": "2026-10-14",
+  "state": "active",
+  "branch": "feat/nexus-reading-continuity-2026-10-14",
+  "baseCommit": "3173d2729d6b35701c0b28b68416b8e2ddd03dfd",
+  "implementation": {
+    "continuity": "Stable page order, no implicit six-tab eviction, explicit reopening and last-tab focus; editor remains mounted across reading modes.",
+    "panes": "Existing react-resizable-panels v4.6.5; keyboard/pointer separator; orientation by reading-area width; separate horizontal/vertical preferences by actor/workspace/campaign.",
+    "drafts": "Actor/workspace/page draft namespace. Accepted saves settle only submitted text; later edits retain an advanced base and resume autosave. Late responses cannot replace another page or actor editor.",
+    "conflicts": "Explicit local/server review; keep saved version or apply local draft against reviewed version. Existing atomic version check retained.",
+    "boundaries": "No schema, SQL migration, flag, service payload, dependency or font changes. No new CSS modules, global links, important declarations or global observers."
+  },
+  "localEvidence": {
+    "quality": "npm run check passed: style/project gates, lint without warnings, typecheck, 131 suites/574 tests, client and SSR production build.",
+    "audit": "npm audit --audit-level=high: zero vulnerabilities.",
+    "focusedTests": 13,
+    "initialBrowser": [
+      {
+        "width": 320,
+        "nodes": 120,
+        "treeRows": 30,
+        "overflow": false,
+        "errors": [],
+        "backendRequests": 43
+      },
+      {
+        "width": 390,
+        "nodes": 120,
+        "treeRows": 30,
+        "overflow": false,
+        "errors": [],
+        "backendRequests": 43
+      },
+      {
+        "width": 820,
+        "nodes": 120,
+        "treeRows": 30,
+        "overflow": false,
+        "errors": [],
+        "backendRequests": 43
+      },
+      {
+        "width": 1440,
+        "nodes": 120,
+        "treeRows": 30,
+        "overflow": false,
+        "errors": [],
+        "backendRequests": 43
+      }
+    ],
+    "extendedBrowser": "pending"
+  },
+  "limitations": [
+    "Backend requests and realtime are intercepted fixtures, not real-account or RLS evidence.",
+    "Real authorized corpus/roles/rollout follow NEX-010, reconciled in DEC-010; the original acceptance text is preserved.",
+    "Unowned legacy drafts are preserved in storage and not adopted by another account.",
+    "No cross-device preference sync, arbitrary pane docking, vault or Obsidian plugins.",
+    "No physical device, native screen-reader or GPU certification.",
+    "Sent requests are not revoked; scope guards protect local editor feedback rather than certify server authorization."
+  ],
+  "references": [
+    {
+      "url": "https://github.com/bvaughn/react-resizable-panels",
+      "version": "4.6.5",
+      "verifiedAt": "2026-10-14"
+    },
+    {
+      "url": "https://obsidian.md/help/tabs",
+      "verifiedAt": "2026-10-14"
+    }
+  ],
+  "integration": {
+    "state": "not_integrated",
+    "production": "not_published"
+  }
+}

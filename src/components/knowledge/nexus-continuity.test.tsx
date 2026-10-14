@@ -88,27 +88,27 @@ afterEach(() => {
 });
 async function setup() {
   const v = render(<NexusWorkspace assetsEnabled={false} graphEnabled={false} />);
-  await v.findByRole("tab", { name: "Alpha", exact: true });
+  await v.findByRole("tab", { name: "Alpha" });
   return v;
 }
 it("closes the last page and reopens it only on request, retaining tab order", async () => {
   const v = await setup();
   fireEvent.click(v.getByRole("treeitem", { name: "Beta" }));
-  await v.findByRole("heading", { name: "Beta", exact: true });
-  fireEvent.click(v.getByRole("tab", { name: "Alpha", exact: true }));
-  await v.findByRole("heading", { name: "Alpha", exact: true });
+  await v.findByRole("heading", { name: "Beta" });
+  fireEvent.click(v.getByRole("tab", { name: "Alpha" }));
+  await v.findByRole("heading", { name: "Alpha" });
   const tabs = v.getByRole("tablist", { name: "Páginas abertas" });
   expect([...tabs.querySelectorAll("[role=tab]")].map((e) => e.textContent)).toEqual([
     "Alpha",
     "Beta",
   ]);
   fireEvent.click(v.getByRole("button", { name: "Fechar Alpha" }));
-  await v.findByRole("heading", { name: "Beta", exact: true });
+  await v.findByRole("heading", { name: "Beta" });
   fireEvent.click(v.getByRole("button", { name: "Fechar Beta" }));
   await waitFor(() => expect(v.queryByRole("tablist", { name: "Páginas abertas" })).toBeNull());
   expect(v.getByText("Entrada do acervo")).toBeTruthy();
   fireEvent.click(v.getByRole("button", { name: "Reabrir página fechada" }));
-  await v.findByRole("heading", { name: "Beta", exact: true });
+  await v.findByRole("heading", { name: "Beta" });
 });
 it("does not let a late save replace another page or its draft", async () => {
   const v = await setup();
@@ -119,17 +119,17 @@ it("does not let a late save replace another page or its draft", async () => {
         release = resolve;
       }),
   );
-  fireEvent.click(v.getByRole("button", { name: "Editar", exact: true }));
+  fireEvent.click(v.getByRole("button", { name: "Editar" }));
   fireEvent.change(v.getByLabelText("Conteúdo da página"), { target: { value: "Rascunho Alpha" } });
   fireEvent.click(v.getByRole("button", { name: "Salvar agora" }));
   fireEvent.click(v.getByRole("treeitem", { name: "Beta" }));
-  await v.findByRole("heading", { name: "Beta", exact: true });
+  await v.findByRole("heading", { name: "Beta" });
   await act(async () =>
     release({
       node: { ...nodes[0], content_markdown: "Rascunho Alpha", updated_at: "2026-10-02" },
     }),
   );
-  expect(v.getByRole("heading", { name: "Beta", exact: true })).toBeTruthy();
+  expect(v.getByRole("heading", { name: "Beta" })).toBeTruthy();
   expect(v.queryByLabelText("Conteúdo da página")).toBeNull();
 });
 it("preserves edits typed during a save and clears only the accepted version", async () => {
@@ -141,7 +141,7 @@ it("preserves edits typed during a save and clears only the accepted version", a
         release = resolve;
       }),
   );
-  fireEvent.click(v.getByRole("button", { name: "Editar", exact: true }));
+  fireEvent.click(v.getByRole("button", { name: "Editar" }));
   const input = v.getByLabelText("Conteúdo da página");
   fireEvent.change(input, { target: { value: "Primeiro" } });
   fireEvent.click(v.getByRole("button", { name: "Salvar agora" }));
@@ -158,24 +158,40 @@ it("preserves edits typed during a save and clears only the accepted version", a
 it("resumes autosave after a slow accepted save instead of losing the queued edit", async () => {
   const v = await setup();
   let release!: (v: unknown) => void;
-  m.saveContent.mockImplementationOnce(() => new Promise((resolve) => { release = resolve; }));
-  m.saveContent.mockImplementationOnce(async (node, title, content) => ({ node: { ...node, title, content_markdown: content, updated_at: "2026-10-03" } }));
-  fireEvent.click(v.getByRole("button", { name: "Editar", exact: true }));
+  m.saveContent.mockImplementationOnce(
+    () =>
+      new Promise((resolve) => {
+        release = resolve;
+      }),
+  );
+  m.saveContent.mockImplementationOnce(async (node, title, content) => ({
+    node: { ...node, title, content_markdown: content, updated_at: "2026-10-03" },
+  }));
+  fireEvent.click(v.getByRole("button", { name: "Editar" }));
   const input = v.getByLabelText("Conteúdo da página");
   fireEvent.change(input, { target: { value: "Primeiro" } });
   fireEvent.click(v.getByRole("button", { name: "Salvar agora" }));
   fireEvent.change(input, { target: { value: "Posterior" } });
   // Let the new edit's autosave attempt reach the pending-save guard.
-  await act(async () => { await new Promise((resolve) => setTimeout(resolve, 1000)); });
+  await act(async () => {
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+  });
   expect(m.saveContent).toHaveBeenCalledTimes(1);
-  await act(async () => release({ node: { ...nodes[0], content_markdown: "Primeiro", updated_at: "2026-10-02" } }));
+  await act(async () =>
+    release({ node: { ...nodes[0], content_markdown: "Primeiro", updated_at: "2026-10-02" } }),
+  );
   await waitFor(() => expect(m.saveContent).toHaveBeenCalledTimes(2), { timeout: 2000 });
   expect(m.saveContent.mock.calls[1][0].updated_at).toBe("2026-10-02");
   expect(m.saveContent.mock.calls[1][2]).toBe("Posterior");
-  await waitFor(() => expect(localStorage.getItem("tadeon.nexus.draft.v2.actor.work.alpha")).toBeNull());
+  await waitFor(() =>
+    expect(localStorage.getItem("tadeon.nexus.draft.v2.actor.work.alpha")).toBeNull(),
+  );
 });
 it("requires a decision before applying a recovered draft to a newer server version", async () => {
-  localStorage.setItem("tadeon.nexus.draft.v2.actor.work.alpha", JSON.stringify({ title: "Alpha", content: "Meu texto", updatedAt: "2026-09-01" }));
+  localStorage.setItem(
+    "tadeon.nexus.draft.v2.actor.work.alpha",
+    JSON.stringify({ title: "Alpha", content: "Meu texto", updatedAt: "2026-09-01" }),
+  );
   const v = await setup();
   expect((v.getByLabelText("Conteúdo da página") as HTMLTextAreaElement).value).toBe("Meu texto");
   expect(m.saveContent).not.toHaveBeenCalled();
@@ -189,24 +205,58 @@ it("requires a decision before applying a recovered draft to a newer server vers
 it("keeps a rejected save as a recoverable conflict", async () => {
   const v = await setup();
   m.saveContent.mockRejectedValue(new KnowledgeServiceError("KNOWLEDGE_CONFLICT"));
-  fireEvent.click(v.getByRole("button", { name: "Editar", exact: true }));
+  fireEvent.click(v.getByRole("button", { name: "Editar" }));
   fireEvent.change(v.getByLabelText("Conteúdo da página"), { target: { value: "Meu texto" } });
   fireEvent.click(v.getByRole("button", { name: "Salvar agora" }));
   await v.findByRole("button", { name: "Revisar conflito" });
-  expect(JSON.parse(localStorage.getItem("tadeon.nexus.draft.v2.actor.work.alpha")!).content).toBe("Meu texto");
+  expect(JSON.parse(localStorage.getItem("tadeon.nexus.draft.v2.actor.work.alpha")!).content).toBe(
+    "Meu texto",
+  );
 });
 
 it("does not publish a former actor's save into the next actor's editor", async () => {
   const v = await setup();
   let release!: (v: unknown) => void;
-  m.saveContent.mockImplementation(() => new Promise((resolve) => { release = resolve; }));
-  fireEvent.click(v.getByRole("button", { name: "Editar", exact: true }));
-  fireEvent.change(v.getByLabelText("Conteúdo da página"), { target: { value: "Texto da conta anterior" } });
+  m.saveContent.mockImplementation(
+    () =>
+      new Promise((resolve) => {
+        release = resolve;
+      }),
+  );
+  fireEvent.click(v.getByRole("button", { name: "Editar" }));
+  fireEvent.change(v.getByLabelText("Conteúdo da página"), {
+    target: { value: "Texto da conta anterior" },
+  });
   fireEvent.click(v.getByRole("button", { name: "Salvar agora" }));
   m.actor = "next-actor";
   v.rerender(<NexusWorkspace assetsEnabled={false} graphEnabled={false} />);
-  await v.findByRole("heading", { name: "Alpha", exact: true });
-  await act(async () => release({ node: { ...nodes[0], content_markdown: "Texto da conta anterior", updated_at: "2026-10-02" } }));
+  await v.findByRole("heading", { name: "Alpha" });
+  await act(async () =>
+    release({
+      node: { ...nodes[0], content_markdown: "Texto da conta anterior", updated_at: "2026-10-02" },
+    }),
+  );
   expect(v.queryByText("Texto da conta anterior")).toBeNull();
   expect(localStorage.getItem("tadeon.nexus.draft.v2.next-actor.work.alpha")).toBeNull();
+});
+
+it("applies a recovered draft only after consent against the reviewed server version", async () => {
+  localStorage.setItem(
+    "tadeon.nexus.draft.v2.actor.work.alpha",
+    JSON.stringify({ title: "Alpha", content: "Meu texto", updatedAt: "2026-09-01" }),
+  );
+  const v = await setup();
+  m.saveContent.mockImplementationOnce(async (node, title, content) => ({
+    node: { ...node, title, content_markdown: content, updated_at: "2026-10-02" },
+  }));
+  fireEvent.click(v.getByRole("button", { name: "Revisar conflito" }));
+  await v.findByRole("heading", { name: "Revisar versões da página" });
+  expect(m.saveContent).not.toHaveBeenCalled();
+  fireEvent.click(v.getByRole("button", { name: "Aplicar meu rascunho à versão atual" }));
+  await waitFor(() => expect(m.saveContent).toHaveBeenCalledTimes(1), { timeout: 2000 });
+  expect(m.saveContent.mock.calls[0][0].updated_at).toBe("2026-10-01");
+  expect(m.saveContent.mock.calls[0][2]).toBe("Meu texto");
+  await waitFor(() =>
+    expect(localStorage.getItem("tadeon.nexus.draft.v2.actor.work.alpha")).toBeNull(),
+  );
 });
