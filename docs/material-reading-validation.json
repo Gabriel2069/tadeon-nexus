@@ -4,7 +4,7 @@
     "NEX-006"
   ],
   "date": "2026-10-14",
-  "state": "validated",
+  "state": "integrated",
   "branch": "design/fabric-motion-obsidian-2026-10-14",
   "baseCommit": "e7db3fb18d242b94772b8dc9a087617270d3ed90",
   "implementation": {
@@ -94,7 +94,19 @@
   ],
   "integration": {
     "pr": 267,
-    "state": "pending",
-    "production": "pending"
+    "branch": "design/fabric-motion-obsidian-2026-10-14",
+    "base": "main",
+    "baseCommit": "e7db3fb18d242b94772b8dc9a087617270d3ed90",
+    "headCommit": "9d24151d83c274fdb1398c9ddf428878112f4d3c",
+    "state": "integrated",
+    "mergeCommit": "d638567c511f547fd76be2899790ab6f8a01ea85",
+    "qualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38554284521",
+    "mainQualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38554552056",
+    "production": "confirmed",
+    "productionEvidence": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38554551969",
+    "productionCommit": "d638567c511f547fd76be2899790ab6f8a01ea85",
+    "productionVerifiedAt": "2026-10-14T11:11:25.9846412Z",
+    "productionHttpStatus": 200,
+    "workerVersion": "801b7e4b-3894-4f9e-8eeb-eb74bff5d884"
   }
 }

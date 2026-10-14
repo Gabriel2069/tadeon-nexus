@@ -1,6 +1,6 @@
 # Estado de continuidade do Tadeon Nexus
 
-Verificado em 11/10/2026. Entrada curta de retomada; o registro único de tarefas e responsáveis é [project-continuity.json](../project-continuity.json).
+Verificado em 14/10/2026. Entrada curta de retomada; o registro único de tarefas e responsáveis é [project-continuity.json](../project-continuity.json).
 
 ## Referências estruturais históricas
 
@@ -33,3 +33,13 @@ NEX-005 integrado pela [PR #265](https://github.com/Gabriel2069/tadeon-nexus/pul
 Fio-Mestre é a identidade deste projeto; NexOS é separado. A referência estrutural tem confirmação de publicação histórica. A integração visual e a correção de entrega têm Quality e publicação confirmados na referência indicada. NEX-004 é um lote posterior, com estado próprio. O workflow de main é a autoridade atual de publicação, sem equivaler a teste com contas reais. Banco, flags, rollout, OAuth, backup restaurável e contas reais não foram reconsultados nesta etapa. Não transformar claims do histórico em fatos atuais. Não há promessa de ausência absoluta de conflitos futuros.
 
 O registro anterior permanece em [history/continuity-2026-08.md](../history/continuity-2026-08.md), sem perda de texto. As prioridades históricas foram substituídas por IDs da fila atual; requisitos pertinentes continuam registrados.
+
+## NEX-014 / NEX-006 integrados em 14/10/2026
+
+A [PR #267](https://github.com/Gabriel2069/tadeon-nexus/pull/267) integrou a revisão de movimento, materiais e leitura, merge `d638567`. Abas têm uma placa ativa única; diálogos conservam a centralização durante a animação; botões seguem os tons locais da ficha. Dashboard recebeu indicadores com relevo e fios que desaparecem gradualmente. Biblioteca compartilha os filamentos, usa colunas pela largura disponível e abre a prévia móvel somente por seleção explícita.
+
+O Nexus recebeu árvore de parentesco real, teclado, abas de páginas e modos documento/grafo/combinado. Grafo com nós pequenos, linhas finas e grupos opcionais; um clique abre, arraste e cancelamento não abrem. Altura definida do canvas evita realimentação de resize; respostas atrasadas de páginas/buscas são invalidadas. Contratos de serviços, migrations, flags, autorização e cálculos RPG foram preservados.
+
+[Evidência](../material-reading-validation.json): 128 suítes/561 testes, audit zero, 16 casos da ficha e Dashboard; repetição final do Dashboard e Nexus/biblioteca em 320/390/820/1440px, corpus fictício de 120 páginas, foco e movimento reduzido. [Quality do HEAD](https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38554284521), [Quality de main](https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38554552056) e [publicação](https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38554551969) aprovados. O endpoint confirmou HTTP 200 e SHA exato `d638567c511f547fd76be2899790ab6f8a01ea85` às 11:11:25Z. O primeiro retorno antigo foi superado pelo segundo; não declarar publicação a partir de um HTTP 200 sem conferir o marcador.
+
+A fila canônica registra NEX-015 para continuidade de abas e painéis e conserva os demais lotes. Esta entrega aproxima a leitura da referência Obsidian; vault, plugins e acoplamento arbitrário de painéis não foram implementados. A validação continua restrita às fixtures e ao marcador público; contas reais, RLS e dispositivos físicos não foram certificados.
