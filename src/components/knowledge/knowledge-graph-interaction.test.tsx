@@ -115,6 +115,7 @@ it("opens a node on a single click, but preserves reading on drag or canceled ge
   expect(open).toHaveBeenCalledExactlyOnceWith("root");
   fireEvent(canvas, new MouseEvent("pointerdown", { ...click, bubbles: true }));
   fireEvent(canvas, new MouseEvent("pointercancel", { ...click, bubbles: true }));
+  fireEvent(canvas, new MouseEvent("pointerup", { ...click, bubbles: true }));
   expect(open).toHaveBeenCalledTimes(1);
   fireEvent(canvas, new MouseEvent("pointerdown", { ...click, bubbles: true }));
   fireEvent(

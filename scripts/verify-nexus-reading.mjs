@@ -250,6 +250,17 @@ try {
       fullPage: true,
       animations: "disabled",
     });
+    if (width < 1024) {
+      const card = library.locator(".tadeon-library-card").first();
+      await card.click();
+      const closePreview = library.getByRole("button", { name: "Fechar prévia" });
+      await closePreview.waitFor();
+      await closePreview.click();
+      assert(
+        await card.evaluate((element) => document.activeElement === element),
+        "Preview returns focus to its card",
+      );
+    }
     await page.keyboard.press("Escape");
     await library.waitFor({ state: "hidden" });
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth > innerWidth);

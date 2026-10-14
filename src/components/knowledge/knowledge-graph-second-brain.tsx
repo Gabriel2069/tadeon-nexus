@@ -618,8 +618,9 @@ export function KnowledgeGraph({
   };
   const pointerUp = (event: ReactPointerEvent<HTMLCanvasElement>) => {
     const state = dragRef.current;
+    const wasActive = state.active;
     dragRef.current.active = false;
-    if (!state.moved && state.nodeId) {
+    if (wasActive && !state.moved && state.nodeId) {
       setSelectedId(state.nodeId);
       onOpenNode(state.nodeId);
     }
@@ -855,357 +856,362 @@ export function KnowledgeGraph({
           </div>
         )}
       </div>
-      {!expanded && (
-        <aside
-          hidden={!inspectorOpen}
-          className="tadeon-brain-inspector overflow-y-auto rounded-xl border p-3"
-        >
-          <div className="tadeon-brain-heading">
-            <span>
-              <BrainCircuit />
-            </span>
-            <div>
-              <p className="tadeon-eyebrow">Segundo cérebro</p>
-              <strong>{mode === "local" ? "Vizinhança contextual" : "Memória global"}</strong>
-            </div>
+      <aside
+        hidden={!inspectorOpen}
+        className="tadeon-brain-inspector overflow-y-auto rounded-xl border p-3"
+      >
+        <div className="tadeon-brain-heading">
+          <span>
+            <BrainCircuit />
+          </span>
+          <div>
+            <p className="tadeon-eyebrow">Segundo cérebro</p>
+            <strong>{mode === "local" ? "Vizinhança contextual" : "Memória global"}</strong>
           </div>
-          <p id="nexus-graph-help" className="tadeon-brain-help">
-            Arraste o fundo para navegar. Arraste um nó para fixá-lo. A distância, espessura e
-            tamanho agora refletem importância e força da relação. Clique abre a página; Enter
-            também abre o nó selecionado.
-          </p>
-          <div className="tadeon-brain-signal-legend" aria-label="Fontes das conexões">
-            <span data-kind="explicit">
-              <i />
-              Relação
-            </span>
-            <span data-kind="mention">
-              <i />
-              Menção
-            </span>
-            <span data-kind="hierarchy">
-              <i />
-              Hierarquia
-            </span>
-            <span data-kind="semantic">
-              <i />
-              Conteúdo
-            </span>
-          </div>
-          <div className="relative mt-3">
-            <Search className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
-            <Input
-              value={query}
-              onChange={(event) => setQuery(event.target.value)}
-              placeholder="Buscar título, resumo ou tag…"
-              className="pl-9"
-            />
-          </div>
-          {matches.length > 0 && (
-            <div className="tadeon-brain-matches">
-              {matches.map((node) => (
-                <button
-                  key={node.id}
-                  type="button"
-                  onClick={() => {
-                    setSelectedId(node.id);
-                    setQuery("");
-                    const point = positions.get(node.id);
-                    if (point)
-                      setPan({
-                        x: viewport.width / 2 - point.x * zoom,
-                        y: viewport.height / 2 - point.y * zoom,
-                      });
-                  }}
-                >
-                  <span style={{ backgroundColor: nodeColor(node.nodeType) }} />
-                  <strong>{node.title}</strong>
-                  <small>{Math.round(node.importance * 100)}%</small>
-                </button>
-              ))}
-            </div>
-          )}
-          <div className="tadeon-brain-filters">
-            {mode === "local" && (
-              <Select value={String(depth)} onValueChange={(value) => setDepth(Number(value))}>
-                <SelectTrigger aria-label="Profundidade">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="1">1 salto</SelectItem>
-                  <SelectItem value="2">2 saltos</SelectItem>
-                  <SelectItem value="3">3 saltos</SelectItem>
-                  <SelectItem value="4">4 saltos</SelectItem>
-                </SelectContent>
-              </Select>
-            )}
-            <Select value={String(limit)} onValueChange={(value) => setLimit(Number(value))}>
-              <SelectTrigger aria-label="Limite de nós">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="120">120 nós</SelectItem>
-                <SelectItem value="220">220 nós</SelectItem>
-                <SelectItem value="400">400 nós</SelectItem>
-                <SelectItem value="500">500 nós</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-          <Select
-            value={nodeType}
-            onValueChange={(value) => setNodeType(value as KnowledgeNodeType | "all")}
-          >
-            <SelectTrigger aria-label="Filtrar tipo de nó">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">Todos os tipos</SelectItem>
-              {KNOWLEDGE_NODE_TYPES.map((type) => (
-                <SelectItem key={type} value={type}>
-                  {typeLabel(type)}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          <Select
-            value={relationType}
-            onValueChange={(value) => setRelationType(value as RelationType | "all")}
-          >
-            <SelectTrigger aria-label="Filtrar relação explícita">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">Todas as relações escritas</SelectItem>
-              {RELATION_TYPES.map((type) => (
-                <SelectItem key={type} value={type}>
-                  {type.replaceAll("_", " ")}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          <Select
-            value={visibility}
-            onValueChange={(value) => setVisibility(value as KnowledgeVisibility | "all")}
-          >
-            <SelectTrigger aria-label="Filtrar visibilidade">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">Toda visibilidade</SelectItem>
-              {KNOWLEDGE_VISIBILITIES.map((item) => (
-                <SelectItem key={item} value={item}>
-                  {item.replaceAll("_", " ")}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          <div className="tadeon-brain-sources">
-            {(
-              [
-                ["explicit", "Relações", includeExplicit, setIncludeExplicit],
-                ["mention", "Menções", includeMentions, setIncludeMentions],
-                ["hierarchy", "Hierarquia", includeHierarchy, setIncludeHierarchy],
-                ["semantic", "Conteúdo", includeSemantic, setIncludeSemantic],
-              ] as const
-            ).map(([kind, label, active, setter]) => (
-              <button key={kind} type="button" data-active={active} onClick={() => setter(!active)}>
-                {active ? <Check /> : <span />}
-                {label}
+        </div>
+        <p id="nexus-graph-help" className="tadeon-brain-help">
+          Arraste o fundo para navegar. Arraste um nó para fixá-lo. A distância, espessura e tamanho
+          agora refletem importância e força da relação. Clique abre a página; Enter também abre o
+          nó selecionado.
+        </p>
+        <div className="tadeon-brain-signal-legend" aria-label="Fontes das conexões">
+          <span data-kind="explicit">
+            <i />
+            Relação
+          </span>
+          <span data-kind="mention">
+            <i />
+            Menção
+          </span>
+          <span data-kind="hierarchy">
+            <i />
+            Hierarquia
+          </span>
+          <span data-kind="semantic">
+            <i />
+            Conteúdo
+          </span>
+        </div>
+        <div className="relative mt-3">
+          <Search className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
+          <Input
+            value={query}
+            onChange={(event) => setQuery(event.target.value)}
+            placeholder="Buscar título, resumo ou tag…"
+            className="pl-9"
+          />
+        </div>
+        {matches.length > 0 && (
+          <div className="tadeon-brain-matches">
+            {matches.map((node) => (
+              <button
+                key={node.id}
+                type="button"
+                onClick={() => {
+                  setSelectedId(node.id);
+                  setQuery("");
+                  const point = positions.get(node.id);
+                  if (point)
+                    setPan({
+                      x: viewport.width / 2 - point.x * zoom,
+                      y: viewport.height / 2 - point.y * zoom,
+                    });
+                }}
+              >
+                <span style={{ backgroundColor: nodeColor(node.nodeType) }} />
+                <strong>{node.title}</strong>
+                <small>{Math.round(node.importance * 100)}%</small>
               </button>
             ))}
           </div>
+        )}
+        <div className="tadeon-brain-filters">
+          {mode === "local" && (
+            <Select value={String(depth)} onValueChange={(value) => setDepth(Number(value))}>
+              <SelectTrigger aria-label="Profundidade">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="1">1 salto</SelectItem>
+                <SelectItem value="2">2 saltos</SelectItem>
+                <SelectItem value="3">3 saltos</SelectItem>
+                <SelectItem value="4">4 saltos</SelectItem>
+              </SelectContent>
+            </Select>
+          )}
+          <Select value={String(limit)} onValueChange={(value) => setLimit(Number(value))}>
+            <SelectTrigger aria-label="Limite de nós">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="120">120 nós</SelectItem>
+              <SelectItem value="220">220 nós</SelectItem>
+              <SelectItem value="400">400 nós</SelectItem>
+              <SelectItem value="500">500 nós</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+        <Select
+          value={nodeType}
+          onValueChange={(value) => setNodeType(value as KnowledgeNodeType | "all")}
+        >
+          <SelectTrigger aria-label="Filtrar tipo de nó">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">Todos os tipos</SelectItem>
+            {KNOWLEDGE_NODE_TYPES.map((type) => (
+              <SelectItem key={type} value={type}>
+                {typeLabel(type)}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+        <Select
+          value={relationType}
+          onValueChange={(value) => setRelationType(value as RelationType | "all")}
+        >
+          <SelectTrigger aria-label="Filtrar relação explícita">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">Todas as relações escritas</SelectItem>
+            {RELATION_TYPES.map((type) => (
+              <SelectItem key={type} value={type}>
+                {type.replaceAll("_", " ")}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+        <Select
+          value={visibility}
+          onValueChange={(value) => setVisibility(value as KnowledgeVisibility | "all")}
+        >
+          <SelectTrigger aria-label="Filtrar visibilidade">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">Toda visibilidade</SelectItem>
+            {KNOWLEDGE_VISIBILITIES.map((item) => (
+              <SelectItem key={item} value={item}>
+                {item.replaceAll("_", " ")}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+        <div className="tadeon-brain-sources">
+          {(
+            [
+              ["explicit", "Relações", includeExplicit, setIncludeExplicit],
+              ["mention", "Menções", includeMentions, setIncludeMentions],
+              ["hierarchy", "Hierarquia", includeHierarchy, setIncludeHierarchy],
+              ["semantic", "Conteúdo", includeSemantic, setIncludeSemantic],
+            ] as const
+          ).map(([kind, label, active, setter]) => (
+            <button
+              key={kind}
+              type="button"
+              aria-pressed={active}
+              data-active={active}
+              onClick={() => setter(!active)}
+            >
+              {active ? <Check /> : <span />}
+              {label}
+            </button>
+          ))}
+        </div>
+        <SliderRow
+          label="Força mínima visível"
+          value={minimumStrength}
+          min={0}
+          max={0.7}
+          step={0.02}
+          onChange={setMinimumStrength}
+          display={`${Math.round(minimumStrength * 100)}%`}
+        />
+        {includeSemantic && (
           <SliderRow
-            label="Força mínima visível"
-            value={minimumStrength}
-            min={0}
-            max={0.7}
+            label="Afinidade mínima"
+            value={semanticThreshold}
+            min={0.1}
+            max={0.62}
             step={0.02}
-            onChange={setMinimumStrength}
-            display={`${Math.round(minimumStrength * 100)}%`}
+            onChange={setSemanticThreshold}
+            display={`${Math.round(semanticThreshold * 100)}%`}
           />
-          {includeSemantic && (
+        )}
+        <button
+          type="button"
+          className="tadeon-brain-settings-toggle"
+          aria-expanded={settingsOpen}
+          onClick={() => setSettingsOpen((current) => !current)}
+        >
+          <Settings2 /> Física e leitura <span>{settingsOpen ? "−" : "+"}</span>
+        </button>
+        {settingsOpen && (
+          <div className="tadeon-brain-settings">
             <SliderRow
-              label="Afinidade mínima"
-              value={semanticThreshold}
-              min={0.1}
-              max={0.62}
-              step={0.02}
-              onChange={setSemanticThreshold}
-              display={`${Math.round(semanticThreshold * 100)}%`}
+              label="Força dos vínculos"
+              value={forceOptions.linkStrength}
+              min={0.25}
+              max={2}
+              step={0.05}
+              onChange={(value) =>
+                setForceOptions((current) => ({ ...current, linkStrength: value }))
+              }
             />
-          )}
-          <button
-            type="button"
-            className="tadeon-brain-settings-toggle"
-            aria-expanded={settingsOpen}
-            onClick={() => setSettingsOpen((current) => !current)}
-          >
-            <Settings2 /> Física e leitura <span>{settingsOpen ? "−" : "+"}</span>
-          </button>
-          {settingsOpen && (
-            <div className="tadeon-brain-settings">
-              <SliderRow
-                label="Força dos vínculos"
-                value={forceOptions.linkStrength}
-                min={0.25}
-                max={2}
-                step={0.05}
-                onChange={(value) =>
-                  setForceOptions((current) => ({ ...current, linkStrength: value }))
-                }
-              />
-              <SliderRow
-                label="Distância-base"
-                value={forceOptions.linkDistance}
-                min={120}
-                max={420}
-                step={10}
-                onChange={(value) =>
-                  setForceOptions((current) => ({ ...current, linkDistance: value }))
-                }
-                display={`${Math.round(forceOptions.linkDistance)} px`}
-              />
-              <SliderRow
-                label="Repulsão"
-                value={forceOptions.repelStrength}
-                min={0.35}
-                max={3.2}
-                step={0.05}
-                onChange={(value) =>
-                  setForceOptions((current) => ({ ...current, repelStrength: value }))
-                }
-              />
-              <SliderRow
-                label="Centro"
-                value={forceOptions.centerStrength}
-                min={0}
-                max={1.4}
-                step={0.05}
-                onChange={(value) =>
-                  setForceOptions((current) => ({ ...current, centerStrength: value }))
-                }
-              />
-              <SliderRow
-                label="Agrupamento por domínio"
-                value={forceOptions.clusterStrength}
-                min={0}
-                max={1}
-                step={0.05}
-                onChange={(value) =>
-                  setForceOptions((current) => ({ ...current, clusterStrength: value }))
-                }
-              />
-              <SliderRow
-                label="Aparecimento dos rótulos"
-                value={labelZoom}
-                min={0.28}
-                max={1.15}
-                step={0.03}
-                onChange={setLabelZoom}
-                display={`${labelZoom.toFixed(2)}×`}
-              />
-              <button
-                type="button"
-                className="tadeon-brain-check"
-                aria-pressed={colorGroups}
-                data-active={colorGroups}
-                onClick={() => setColorGroups((value) => !value)}
-              >
-                {colorGroups && <Check />} Cores por tipo de página
-              </button>
-              <button
-                type="button"
-                className="tadeon-brain-check"
-                data-active={showArrows}
-                onClick={() => setShowArrows((current) => !current)}
-              >
-                {showArrows && <Check />} Setas em relações direcionais
-              </button>
+            <SliderRow
+              label="Distância-base"
+              value={forceOptions.linkDistance}
+              min={120}
+              max={420}
+              step={10}
+              onChange={(value) =>
+                setForceOptions((current) => ({ ...current, linkDistance: value }))
+              }
+              display={`${Math.round(forceOptions.linkDistance)} px`}
+            />
+            <SliderRow
+              label="Repulsão"
+              value={forceOptions.repelStrength}
+              min={0.35}
+              max={3.2}
+              step={0.05}
+              onChange={(value) =>
+                setForceOptions((current) => ({ ...current, repelStrength: value }))
+              }
+            />
+            <SliderRow
+              label="Centro"
+              value={forceOptions.centerStrength}
+              min={0}
+              max={1.4}
+              step={0.05}
+              onChange={(value) =>
+                setForceOptions((current) => ({ ...current, centerStrength: value }))
+              }
+            />
+            <SliderRow
+              label="Agrupamento por domínio"
+              value={forceOptions.clusterStrength}
+              min={0}
+              max={1}
+              step={0.05}
+              onChange={(value) =>
+                setForceOptions((current) => ({ ...current, clusterStrength: value }))
+              }
+            />
+            <SliderRow
+              label="Aparecimento dos rótulos"
+              value={labelZoom}
+              min={0.28}
+              max={1.15}
+              step={0.03}
+              onChange={setLabelZoom}
+              display={`${labelZoom.toFixed(2)}×`}
+            />
+            <button
+              type="button"
+              className="tadeon-brain-check"
+              aria-pressed={colorGroups}
+              data-active={colorGroups}
+              onClick={() => setColorGroups((value) => !value)}
+            >
+              {colorGroups && <Check />} Cores por tipo de página
+            </button>
+            <button
+              type="button"
+              className="tadeon-brain-check"
+              aria-pressed={showArrows}
+              data-active={showArrows}
+              onClick={() => setShowArrows((current) => !current)}
+            >
+              {showArrows && <Check />} Setas em relações direcionais
+            </button>
+          </div>
+        )}
+        {selectedNode && (
+          <section className="tadeon-brain-selection">
+            <header>
+              <span style={{ backgroundColor: nodeColor(selectedNode.nodeType) }} />
+              <div>
+                <small>{typeLabel(selectedNode.nodeType)}</small>
+                <strong>{selectedNode.title}</strong>
+              </div>
+              <b>{Math.round(selectedNode.importance * 100)}%</b>
+            </header>
+            {selectedNode.summary && <p>{selectedNode.summary}</p>}
+            <div className="tadeon-brain-metrics">
+              <span>
+                <Link2 />
+                <strong>{selectedNode.explicitDegree}</strong>
+                <small>relações</small>
+              </span>
+              <span>
+                <Crosshair />
+                <strong>{selectedNode.incomingMentions}</strong>
+                <small>backlinks</small>
+              </span>
+              <span>
+                <Sparkles />
+                <strong>{selectedNode.weightedDegree.toFixed(1)}</strong>
+                <small>força</small>
+              </span>
+              <span>
+                <Tags />
+                <strong>{selectedNode.tags.length}</strong>
+                <small>tags</small>
+              </span>
             </div>
-          )}
-          {selectedNode && (
-            <section className="tadeon-brain-selection">
-              <header>
-                <span style={{ backgroundColor: nodeColor(selectedNode.nodeType) }} />
-                <div>
-                  <small>{typeLabel(selectedNode.nodeType)}</small>
-                  <strong>{selectedNode.title}</strong>
-                </div>
-                <b>{Math.round(selectedNode.importance * 100)}%</b>
-              </header>
-              {selectedNode.summary && <p>{selectedNode.summary}</p>}
-              <div className="tadeon-brain-metrics">
-                <span>
-                  <Link2 />
-                  <strong>{selectedNode.explicitDegree}</strong>
-                  <small>relações</small>
-                </span>
-                <span>
-                  <Crosshair />
-                  <strong>{selectedNode.incomingMentions}</strong>
-                  <small>backlinks</small>
-                </span>
-                <span>
-                  <Sparkles />
-                  <strong>{selectedNode.weightedDegree.toFixed(1)}</strong>
-                  <small>força</small>
-                </span>
-                <span>
-                  <Tags />
-                  <strong>{selectedNode.tags.length}</strong>
-                  <small>tags</small>
-                </span>
+            {selectedNode.tags.length > 0 && (
+              <div className="tadeon-brain-tags">
+                {selectedNode.tags.slice(0, 8).map((tag) => (
+                  <span key={tag}>#{tag}</span>
+                ))}
               </div>
-              {selectedNode.tags.length > 0 && (
-                <div className="tadeon-brain-tags">
-                  {selectedNode.tags.slice(0, 8).map((tag) => (
-                    <span key={tag}>#{tag}</span>
-                  ))}
-                </div>
-              )}
-              <div className="tadeon-brain-actions">
-                <Button
-                  size="sm"
-                  variant="outline"
-                  onClick={() => {
-                    setGraphFocusId(selectedNode.id);
-                    setMode("local");
-                    setSelectedId(selectedNode.id);
-                  }}
-                >
-                  <Focus className="h-3.5 w-3.5" />
-                  Focar
-                </Button>
-                <Button size="sm" onClick={() => onOpenNode(selectedNode.id)}>
-                  <Crosshair className="h-3.5 w-3.5" />
-                  Abrir
-                </Button>
+            )}
+            <div className="tadeon-brain-actions">
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={() => {
+                  setGraphFocusId(selectedNode.id);
+                  setMode("local");
+                  setSelectedId(selectedNode.id);
+                }}
+              >
+                <Focus className="h-3.5 w-3.5" />
+                Focar
+              </Button>
+              <Button size="sm" onClick={() => onOpenNode(selectedNode.id)}>
+                <Crosshair className="h-3.5 w-3.5" />
+                Abrir
+              </Button>
+            </div>
+            {selectedEdges.length > 0 && (
+              <div className="tadeon-brain-relations">
+                <h4>Relações mais fortes</h4>
+                {selectedEdges.map(({ edge, node }) => (
+                  <button key={edge.id} type="button" onClick={() => setSelectedId(node.id)}>
+                    <span
+                      className="tadeon-brain-relation-dot"
+                      style={{ backgroundColor: nodeColor(node.nodeType) }}
+                    />
+                    <div>
+                      <strong>{node.title}</strong>
+                      <small>
+                        {edge.kinds.map((kind) => SIGNAL_LABELS[kind]).join(" + ")} ·{" "}
+                        {strengthLabel(edge.strength)} · {Math.round(edge.strength * 100)}%
+                      </small>
+                      {edge.evidence[0] && <em>{edge.evidence[0]}</em>}
+                    </div>
+                  </button>
+                ))}
               </div>
-              {selectedEdges.length > 0 && (
-                <div className="tadeon-brain-relations">
-                  <h4>Relações mais fortes</h4>
-                  {selectedEdges.map(({ edge, node }) => (
-                    <button key={edge.id} type="button" onClick={() => setSelectedId(node.id)}>
-                      <span
-                        className="tadeon-brain-relation-dot"
-                        style={{ backgroundColor: nodeColor(node.nodeType) }}
-                      />
-                      <div>
-                        <strong>{node.title}</strong>
-                        <small>
-                          {edge.kinds.map((kind) => SIGNAL_LABELS[kind]).join(" + ")} ·{" "}
-                          {strengthLabel(edge.strength)} · {Math.round(edge.strength * 100)}%
-                        </small>
-                        {edge.evidence[0] && <em>{edge.evidence[0]}</em>}
-                      </div>
-                    </button>
-                  ))}
-                </div>
-              )}
-            </section>
-          )}
-        </aside>
-      )}
+            )}
+          </section>
+        )}
+      </aside>
     </div>
   );
 }

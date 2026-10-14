@@ -91,7 +91,7 @@
   > [data-slot="dialog-content"][data-popup-contained="true"][data-state="open"],
 [data-slot="alert-dialog-positioner"]
   > [data-slot="alert-dialog-content"][data-popup-contained="true"][data-state="open"] {
-  animation: tadeon-popup-contained-in 200ms var(--ease-out) both;
+  animation: tadeon-popup-contained-in 200ms var(--ease-out);
 }
 
 [data-slot="dialog-positioner"]
@@ -130,7 +130,7 @@
 
 /* React primitives own interruption and presence. Positioning wrappers never animate. */
 [data-motion-surface="popup"]:not([data-popup-contained])[data-state="open"] {
-  animation: tadeon-popup-contained-in 160ms var(--ease-out) both;
+  animation: tadeon-popup-contained-in 160ms var(--ease-out);
 }
 [data-motion-surface="popup"]:not([data-popup-contained])[data-state="closed"] {
   animation: tadeon-popup-contained-out 120ms var(--ease-out) both;

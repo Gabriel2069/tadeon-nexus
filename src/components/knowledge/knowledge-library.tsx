@@ -205,6 +205,8 @@ export function KnowledgeLibrary({
   onChanged: () => void;
 }) {
   const mobilePreviewRef = useRef<HTMLElement>(null);
+  const previewTriggerRef = useRef<HTMLElement | null>(null);
+  const [mobilePreviewOpen, setMobilePreviewOpen] = useState(false);
   const libraryRequests = useRef(createLatestRequestGate());
   const [nodes, setNodes] = useState<KnowledgeNode[]>([]);
   const [count, setCount] = useState(0);
@@ -251,7 +253,7 @@ export function KnowledgeLibrary({
   }, [query]);
 
   useEffect(() => {
-    if (!preview || !window.matchMedia("(max-width: 1023px)").matches) return;
+    if (!preview || !mobilePreviewOpen || !window.matchMedia("(max-width: 1023px)").matches) return;
     const frame = window.requestAnimationFrame(() => {
       mobilePreviewRef.current?.scrollIntoView({
         behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth",
@@ -259,7 +261,7 @@ export function KnowledgeLibrary({
       });
     });
     return () => window.cancelAnimationFrame(frame);
-  }, [preview]);
+  }, [preview, mobilePreviewOpen]);
 
   const loadNodes = useCallback(async () => {
     const ticket = libraryRequests.current.begin();
@@ -494,6 +496,15 @@ export function KnowledgeLibrary({
     }
   };
 
+  const showPreview = (node: KnowledgeNode, trigger: HTMLElement) => {
+    previewTriggerRef.current = trigger;
+    setPreview(node);
+    setMobilePreviewOpen(true);
+  };
+  useEffect(() => {
+    if (!open) setMobilePreviewOpen(false);
+  }, [open]);
+
   const nodeCard = (node: KnowledgeNode, compact = false, index = 0) => {
     const selected = selectedIds.has(node.id);
     return (
@@ -506,15 +517,15 @@ export function KnowledgeLibrary({
         role="group"
         tabIndex={0}
         aria-label={`Visualizar ${node.title}`}
-        className={`tadeon-library-card group relative cursor-pointer p-3 ${
+        className={`tadeon-library-card group relative cursor-pointer border p-3 ${
           selected ? "is-selected" : ""
         }`}
-        onClick={() => setPreview(node)}
+        onClick={(event) => showPreview(node, event.currentTarget)}
         onKeyDown={(event) => {
           if (event.target !== event.currentTarget) return;
           if (event.key === "Enter" || event.key === " ") {
             event.preventDefault();
-            setPreview(node);
+            showPreview(node, event.currentTarget);
           }
         }}
       >
@@ -543,7 +554,7 @@ export function KnowledgeLibrary({
                     className="tadeon-library-card__title tadeon-interactive-card__title block w-full line-clamp-2 text-left font-cinzel text-lg font-semibold"
                     onClick={(event) => {
                       event.stopPropagation();
-                      setPreview(node);
+                      showPreview(node, event.currentTarget);
                     }}
                     aria-label={`Visualizar ${node.title}`}
                   >
@@ -846,11 +857,22 @@ export function KnowledgeLibrary({
                 </div>
               </div>
 
-              {preview && (
+              {preview && mobilePreviewOpen && (
                 <aside
                   ref={mobilePreviewRef}
                   className="tadeon-library-preview tadeon-library-preview--mobile lg:hidden"
                 >
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    aria-label="Fechar prévia"
+                    onClick={() => {
+                      setMobilePreviewOpen(false);
+                      previewTriggerRef.current?.focus({ preventScroll: true });
+                    }}
+                  >
+                    Voltar aos resultados <X className="h-4 w-4" />
+                  </Button>
                   {previewPanel("mobile")}
                 </aside>
               )}
@@ -879,7 +901,7 @@ export function KnowledgeLibrary({
                       {nodes.map((node) => (
                         <tr
                           key={node.id}
-                          onClick={() => setPreview(node)}
+                          onClick={(event) => showPreview(node, event.currentTarget)}
                           className="cursor-pointer border-t"
                         >
                           <td className="px-3 py-2">

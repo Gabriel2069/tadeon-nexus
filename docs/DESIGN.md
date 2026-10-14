@@ -61,7 +61,7 @@ Acentos preservados: Dashboard #D9D7A4; Nexus #4F6E5D; Mesa #547B94; Mestre #742
 
 ## Componentes e dados
 
-Botão primário: uma ação dominante, hit area preferida 44×44 CSS px; secundário com contorno funcional. Hover localizado; press 0,98; foco visível 2px marfim afastado 3px. 44px é decisão do projeto; WCAG 2.2 AA estabelece 24×24 CSS px com exceções, não uma regra universal de 44px.
+Botão primário: uma ação dominante, hit area preferida 44×44 CSS px; secundário com contorno funcional. Hover localizado; pressão com deslocamento único de 1px (NEX-014); foco visível 2px marfim afastado 3px. 44px é decisão do projeto; WCAG 2.2 AA estabelece 24×24 CSS px com exceções, não uma regra universal de 44px.
 
 Campos têm rótulo persistente, ajuda associada e erro que indique a correção. Vínculos/seleção recebem texto, contorno e estado acessível. Sidebar indica localização por texto e forma. Busca e dialogs mantêm abertura por teclado, foco inicial, contenção, Escape e retorno; medidas continuam sob `VisualViewportPopupBridge`. Animação não atrasa foco, leitura ou submissão.
 

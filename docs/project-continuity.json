@@ -3,21 +3,13 @@
   "checkedAt": "2026-10-14",
   "runtimeReference": "1d92120cf210e466889e8f3ba53c5a8f2a1dfa81",
   "integration": {
-    "pr": 265,
-    "branch": "design/sheet-fabric-sections-2026-10-11",
+    "pr": 267,
+    "branch": "design/fabric-motion-obsidian-2026-10-14",
     "base": "main",
-    "baseCommit": "c4ce6d1311d146467b7e3c260086dfdf344feac8",
-    "headCommit": "363dbb8307403169def9341175b7ccc4f3054f08",
-    "state": "integrated",
-    "mergeCommit": "1d92120cf210e466889e8f3ba53c5a8f2a1dfa81",
-    "qualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38171064466",
-    "mainQualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38182952969",
-    "production": "confirmed",
-    "productionEvidence": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38182952991",
-    "productionCommit": "1d92120cf210e466889e8f3ba53c5a8f2a1dfa81",
-    "productionVerifiedAt": "2026-10-11T23:07:42.0673391Z",
-    "productionHttpStatus": 200,
-    "workerVersion": "601dc6f9-538c-4d3a-833c-78075509d59f"
+    "baseCommit": "e7db3fb18d242b94772b8dc9a087617270d3ed90",
+    "headCommit": null,
+    "state": "validated",
+    "production": "pending"
   },
   "domains": [
     {
@@ -456,7 +448,7 @@
       "id": "NEX-006",
       "title": "Biblioteca, documento e grafo do Nexus",
       "domain": "knowledge",
-      "status": "active",
+      "status": "validated",
       "priority": 4,
       "dependsOn": [
         "NEX-003",
@@ -470,7 +462,7 @@
       "evidence": [
         "docs/material-reading-validation.json"
       ],
-      "checkpoint": "Revisão em andamento na branch design/fabric-motion-obsidian-2026-10-14: árvore real, grafo integrado à leitura e correção de interação. Ainda não integrado nem publicado."
+      "checkpoint": "Validado na branch da PR #267: npm run check, 128 suítes/561 testes, audit zero, 16 casos da ficha e do Dashboard, repetição final de quatro larguras no Dashboard e Nexus/biblioteca com 120 páginas. Produção pendente; não confundir fixture com RLS ou contas reais."
     },
     {
       "id": "NEX-007",
@@ -573,7 +565,7 @@
       "id": "NEX-014",
       "title": "Reconciliar movimento e aprofundar Véu & Trama",
       "domain": "shell",
-      "status": "active",
+      "status": "validated",
       "priority": 3,
       "dependsOn": [
         "NEX-005",
@@ -587,7 +579,7 @@
       "evidence": [
         "docs/material-reading-validation.json"
       ],
-      "checkpoint": "Implementação em andamento; validar em runtime antes de integração. Não substituir os contratos de dados, RPG ou autorização."
+      "checkpoint": "Validado na branch da PR #267: npm run check, 128 suítes/561 testes, audit zero, 16 casos da ficha e do Dashboard, repetição final de quatro larguras no Dashboard e Nexus/biblioteca com 120 páginas. Produção pendente; não confundir fixture com RLS ou contas reais."
     }
   ],
   "decisions": [
@@ -956,6 +948,23 @@
       "productionVerifiedAt": "2026-10-11T19:01:29Z",
       "productionHttpStatus": 200,
       "workerVersion": "d3cd6159-bce4-4895-a230-87da5dde9990"
+    },
+    {
+      "pr": 265,
+      "branch": "design/sheet-fabric-sections-2026-10-11",
+      "base": "main",
+      "baseCommit": "c4ce6d1311d146467b7e3c260086dfdf344feac8",
+      "headCommit": "363dbb8307403169def9341175b7ccc4f3054f08",
+      "state": "integrated",
+      "mergeCommit": "1d92120cf210e466889e8f3ba53c5a8f2a1dfa81",
+      "qualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38171064466",
+      "mainQualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38182952969",
+      "production": "confirmed",
+      "productionEvidence": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38182952991",
+      "productionCommit": "1d92120cf210e466889e8f3ba53c5a8f2a1dfa81",
+      "productionVerifiedAt": "2026-10-11T23:07:42.0673391Z",
+      "productionHttpStatus": 200,
+      "workerVersion": "601dc6f9-538c-4d3a-833c-78075509d59f"
     }
   ]
 }

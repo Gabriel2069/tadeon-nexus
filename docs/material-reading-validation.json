@@ -4,14 +4,14 @@
     "NEX-006"
   ],
   "date": "2026-10-14",
-  "state": "in_review",
+  "state": "validated",
   "branch": "design/fabric-motion-obsidian-2026-10-14",
   "baseCommit": "e7db3fb18d242b94772b8dc9a087617270d3ed90",
   "implementation": {
     "sharedMotion": "One active tab plate; popup opacity/individual scale; folds use Radix height; local section tones; no new global observers or CSS modules.",
     "dashboard": "Raised fact plates, original vector filaments, fading SVG mask; decoration follows local pointer without moving text.",
     "knowledge": "Actual parent hierarchy, roving keyboard focus, reveal active ancestors, page tabs and document/graph/split; small neutral graph nodes, optional groups and semantics, single-click opening, canceled/dragged gestures do not open. Fixed canvas dimensions prevent ResizeObserver feedback.",
-    "library": "Shared local fabric, result-pane-driven columns, preview and existing filters; stale search results invalidated.",
+    "library": "Shared local fabric, result-pane-driven columns, preview and existing filters; stale search results invalidated. Mobile preview opens only on explicit card selection and returns focus when closed.",
     "boundaries": "No schema, migration, flag, authorization, RPG calculation or service payload changes."
   },
   "localEvidence": {
@@ -29,7 +29,12 @@
         1440
       ],
       "errors": 0,
-      "source": "scripts/verify-dashboard-design.mjs"
+      "source": "scripts/verify-dashboard-design.mjs",
+      "finalRerun": {
+        "cases": 4,
+        "state": "populated",
+        "scope": "Shared dialogs, navigation, focus/hand-off, hover reflection and reduced-motion after final source changes."
+      }
     },
     "nexus": {
       "widths": [
@@ -43,16 +48,28 @@
       "overflow": false,
       "errors": 0,
       "source": "scripts/verify-nexus-reading.mjs",
-      "latestLibraryGrid": "Revised after screenshot exposed insufficient card width; rerun pending."
+      "latestLibraryGrid": "Passed in all four widths with cards >=200px, explicit mobile preview and focus return; default, graph, tree and combined reading verified with 120 fixture pages."
     },
-    "sheet": "Full four-width rerun in progress.",
+    "sheet": {
+      "cases": 16,
+      "widths": [
+        320,
+        390,
+        820,
+        1440
+      ],
+      "source": "scripts/verify-sheet-design.mjs",
+      "scope": "Editable, read-only, loading and error/retry; folds, controls/limits, inventory, autosave/retry, dialogs/focus and reflection; all backend requests intercepted.",
+      "errors": 0
+    },
     "audit": "npm audit --audit-level=high: zero vulnerabilities.",
     "styles": {
       "modules": 57,
       "globalLinks": 12,
       "important": 5406,
       "removedImportant": 3
-    }
+    },
+    "quality": "npm run check passed on the final implementation: style/project gates, lint, typecheck, 128 suites/561 tests and production build."
   },
   "limitations": [
     "Fixtures intercept backend reads/writes and realtime; they do not certify real-account authorization or RLS.",
@@ -74,5 +91,10 @@
       "url": "https://obsidian.md/help/tabs",
       "verifiedAt": "2026-10-14"
     }
-  ]
+  ],
+  "integration": {
+    "pr": 267,
+    "state": "pending",
+    "production": "pending"
+  }
 }
