@@ -6508,7 +6508,7 @@ html body .tadeon-shell :is(
     transform: none !important;
   }
 
-  .tadeon-sheet-page .tadeon-sheet-tabs [role="tabpanel"][data-state="active"] {
+  .tadeon-sheet-page .tadeon-sheet-tabs [role="tabpanel"]:not([data-motion-surface="tabpanel"])[data-state="active"] {
     animation: none !important;
     transform: none !important;
   }
@@ -6632,7 +6632,7 @@ html body .tadeon-shell :is(
   .tadeon-sheet-page .tadeon-overview-metric,
   .tadeon-sheet-page .tadeon-description-card,
   .tadeon-sheet-page .tadeon-skill-node,
-  .tadeon-sheet-page .tadeon-sheet-tabs [role="tabpanel"][data-state="active"] {
+  .tadeon-sheet-page .tadeon-sheet-tabs [role="tabpanel"]:not([data-motion-surface="tabpanel"])[data-state="active"] {
     transition: none !important;
   }
   .tadeon-shell .tadeon-ficha,
@@ -6641,7 +6641,7 @@ html body .tadeon-shell :is(
   .tadeon-shell .tadeon-character-sheet,
   .tadeon-sheet-page .tadeon-description-card,
   .tadeon-sheet-page .tadeon-skill-node,
-  .tadeon-sheet-page .tadeon-sheet-tabs [role="tabpanel"][data-state="active"] {
+  .tadeon-sheet-page .tadeon-sheet-tabs [role="tabpanel"]:not([data-motion-surface="tabpanel"])[data-state="active"] {
     animation: none !important;
   }
 }

@@ -8,7 +8,7 @@ A estrutura existente é a base de trabalho. Não criar `features/` ou `services
 
 Cabeçalhos renderizam símbolos; geometria de Área em foco pertence a page-hero-parity.css. Gatilho Mais e símbolos pertencem ao render; Radix mantém foco/teclado/colisão, sem captura global. Reflexos pertencem a useMaterialLight e à superfície React; o diretor legado não injeta luz nessas superfícies. Material de navegação pertence a navigation-layout; fundos de trama pertencem a experience-surfaces.
 
-Código: [src/components/app-layout.tsx](../src/components/app-layout.tsx), [src/components/protected-shell.tsx](../src/components/protected-shell.tsx), [src/components/section-symbols.tsx](../src/components/section-symbols.tsx), [src/components/mobile-more-menu.tsx](../src/components/mobile-more-menu.tsx), [src/components/brand-mark.tsx](../src/components/brand-mark.tsx), [src/components/material-surface.tsx](../src/components/material-surface.tsx), [src/lib/use-material-light.ts](../src/lib/use-material-light.ts), [src/components/ui/button.tsx](../src/components/ui/button.tsx).
+Código: [src/components/app-layout.tsx](../src/components/app-layout.tsx), [src/components/protected-shell.tsx](../src/components/protected-shell.tsx), [src/components/section-symbols.tsx](../src/components/section-symbols.tsx), [src/components/mobile-more-menu.tsx](../src/components/mobile-more-menu.tsx), [src/components/brand-mark.tsx](../src/components/brand-mark.tsx), [src/components/material-surface.tsx](../src/components/material-surface.tsx), [src/lib/use-material-light.ts](../src/lib/use-material-light.ts), [src/components/ui/button.tsx](../src/components/ui/button.tsx), [src/components/fabric-filaments.tsx](../src/components/fabric-filaments.tsx).
 
 Estilos: [src/styles/desktop-shell.css](../src/styles/desktop-shell.css), [src/styles/navigation-layout.css](../src/styles/navigation-layout.css), [src/styles/page-hero-parity.css](../src/styles/page-hero-parity.css), [src/styles/mobile-more-radial.css](../src/styles/mobile-more-radial.css), [src/styles/button.css](../src/styles/button.css).
 
@@ -38,9 +38,9 @@ Estilos: [src/styles/sheet-layout.css](../src/styles/sheet-layout.css), [src/sty
 
 ## O Nexus e grafo
 
-Serviços controlam acesso a dados; grafo controla presets e interação em React.
+Serviços controlam acesso a dados; grafo controla presets e interação em React. Árvore usa parent_node_id; grafo visual não usa distância de relações como parentesco. Leitura combinada e controles preservam estado React e invalidam respostas antigas.
 
-Código: [src/routes/nexus.tsx](../src/routes/nexus.tsx), [src/lib/knowledge/knowledge-service.ts](../src/lib/knowledge/knowledge-service.ts), [src/lib/knowledge/knowledge-graph-service.ts](../src/lib/knowledge/knowledge-graph-service.ts), [src/components/knowledge/knowledge-graph-second-brain.tsx](../src/components/knowledge/knowledge-graph-second-brain.tsx).
+Código: [src/routes/nexus.tsx](../src/routes/nexus.tsx), [src/lib/knowledge/knowledge-service.ts](../src/lib/knowledge/knowledge-service.ts), [src/lib/knowledge/knowledge-graph-service.ts](../src/lib/knowledge/knowledge-graph-service.ts), [src/components/knowledge/knowledge-graph-second-brain.tsx](../src/components/knowledge/knowledge-graph-second-brain.tsx), [src/components/knowledge/knowledge-tree.tsx](../src/components/knowledge/knowledge-tree.tsx), [src/lib/knowledge/knowledge-tree.ts](../src/lib/knowledge/knowledge-tree.ts).
 
 Estilos: [src/styles/nexus-material.css](../src/styles/nexus-material.css), [src/styles/knowledge-graph-second-brain.css](../src/styles/knowledge-graph-second-brain.css).
 

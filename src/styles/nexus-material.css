@@ -164,3 +164,10 @@
 .tadeon-knowledge-tree button svg { width: 14px; height: 14px; }
 .tadeon-knowledge-tree__spacer { width: 28px; flex-shrink: 0; }
 @media(max-width:1100px) { .tadeon-nexus-reading__panes--split { grid-template-columns: minmax(0,1fr); } .tadeon-nexus-reading__graph { border-left: 0; border-top: 1px solid var(--border); } }
+
+.tadeon-nexus-reading__graph .tadeon-second-brain:not([data-expanded="true"]) .tadeon-graph-canvas { height: clamp(420px, 60vh, 570px); min-height: 420px; }
+.tadeon-nexus-reading__graph .tadeon-second-brain:not([data-expanded="true"]) canvas { height: 100%; min-height: 0; }
+
+.tadeon-brain-inspector[hidden] { display: none; }
+.tadeon-graph-count { position:absolute; right: 1rem; bottom: 1rem; z-index: 9; pointer-events: none; color: var(--muted-foreground); font: .65rem var(--font-mono); }
+.tadeon-nexus-reading__graph .tadeon-second-brain { min-height: 0; }

@@ -13,12 +13,10 @@ export async function installDesignFonts(page) {
     ["Inter", 600, "font-4"],
     ["PT Mono", 400, "font-5"],
   ]
-    .map(
-      ([family, weight, file, style = "normal"]) => {
-        const extension = existsSync(`${dir}/${file}.woff2`) ? "woff2" : "ttf";
-        return `@font-face{font-family:"${family}";font-weight:${weight};font-style:${style};src:url(data:font/${extension};base64,${readFileSync(`${dir}/${file}.${extension}`).toString("base64")}) format("${extension === "woff2" ? "woff2" : "truetype"}");font-display:swap}`;
-      },
-    )
+    .map(([family, weight, file, style = "normal"]) => {
+      const extension = existsSync(`${dir}/${file}.woff2`) ? "woff2" : "ttf";
+      return `@font-face{font-family:"${family}";font-weight:${weight};font-style:${style};src:url(data:font/${extension};base64,${readFileSync(`${dir}/${file}.${extension}`).toString("base64")}) format("${extension === "woff2" ? "woff2" : "truetype"}");font-display:swap}`;
+    })
     .join("\n");
   await page.route("https://fonts.googleapis.com/**", (route) =>
     route.fulfill({ contentType: "text/css", body: faces }),

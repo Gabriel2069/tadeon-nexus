@@ -281,6 +281,7 @@ export function NexusWorkspace({
   initialNodeId?: string;
 }) {
   const nodeRequests = useRef(createLatestRequestGate());
+  const readingRequests = useRef(createLatestRequestGate());
   const editorRef = useRef<HTMLTextAreaElement>(null);
   const initialNodeOpenedRef = useRef<string | null>(null);
   const [workspaces, setWorkspaces] = useState<WorkspaceOption[]>([]);
@@ -473,6 +474,7 @@ export function NexusWorkspace({
   }, [loadNodes]);
 
   useEffect(() => {
+    readingRequests.current.invalidate();
     setSelected(null);
     setOpenNodes([]);
     setAliases([]);
@@ -490,50 +492,56 @@ export function NexusWorkspace({
     }
   }, [campaignScope, currentCampaign, workspaceId]);
 
-  const refreshNodeDetails = useCallback(async (node: KnowledgeNode) => {
-    const [
-      nextAliases,
-      nextEdges,
-      nextBacklinks,
-      nextBrokenLinks,
-      nextVersions,
-      nextAssets,
-      resolved,
-    ] = await Promise.all([
-      knowledgeService.listAliases(node.id),
-      knowledgeService.listEdges(node.id),
-      knowledgeService.listBacklinks(node.id),
-      knowledgeService.listBrokenLinks(node.id),
-      knowledgeService.listVersions(node.id, 40),
-      knowledgeService.listNodeAssets(node.id),
-      knowledgeService.resolveWikilinks(node),
-    ]);
-    setAliases(nextAliases as Array<Record<string, unknown>>);
-    setEdges(nextEdges);
-    setBacklinks(nextBacklinks);
-    setBrokenLinks(nextBrokenLinks);
-    setVersions(nextVersions);
-    setAssetLinks(nextAssets);
-    const nextPreviews: Record<string, KnowledgeLinkPreview | null> = {};
-    for (const entry of resolved) {
-      const previewKey = `${entry.reference.normalizedTarget}#${entry.reference.normalizedSection ?? ""}`;
-      nextPreviews[previewKey] =
-        entry.node && !entry.broken
-          ? {
-              id: entry.node.id,
-              title: entry.node.title,
-              summary: entry.node.summary,
-              nodeType: TYPE_LABELS[entry.node.node_type],
-            }
-          : null;
-    }
-    setPreviews(nextPreviews);
-  }, []);
+  const refreshNodeDetails = useCallback(
+    async (node: KnowledgeNode, ticket = readingRequests.current.begin()) => {
+      const [
+        nextAliases,
+        nextEdges,
+        nextBacklinks,
+        nextBrokenLinks,
+        nextVersions,
+        nextAssets,
+        resolved,
+      ] = await Promise.all([
+        knowledgeService.listAliases(node.id),
+        knowledgeService.listEdges(node.id),
+        knowledgeService.listBacklinks(node.id),
+        knowledgeService.listBrokenLinks(node.id),
+        knowledgeService.listVersions(node.id, 40),
+        knowledgeService.listNodeAssets(node.id),
+        knowledgeService.resolveWikilinks(node),
+      ]);
+      if (!readingRequests.current.isCurrent(ticket)) return;
+      setAliases(nextAliases as Array<Record<string, unknown>>);
+      setEdges(nextEdges);
+      setBacklinks(nextBacklinks);
+      setBrokenLinks(nextBrokenLinks);
+      setVersions(nextVersions);
+      setAssetLinks(nextAssets);
+      const nextPreviews: Record<string, KnowledgeLinkPreview | null> = {};
+      for (const entry of resolved) {
+        const previewKey = `${entry.reference.normalizedTarget}#${entry.reference.normalizedSection ?? ""}`;
+        nextPreviews[previewKey] =
+          entry.node && !entry.broken
+            ? {
+                id: entry.node.id,
+                title: entry.node.title,
+                summary: entry.node.summary,
+                nodeType: TYPE_LABELS[entry.node.node_type],
+              }
+            : null;
+      }
+      setPreviews(nextPreviews);
+    },
+    [],
+  );
 
   const openNode = useCallback(
     async (nodeOrId: KnowledgeNode | string, headingSlug?: string) => {
+      const ticket = readingRequests.current.begin();
       try {
         const node = typeof nodeOrId === "string" ? await knowledgeService.get(nodeOrId) : nodeOrId;
+        if (!readingRequests.current.isCurrent(ticket)) return;
         setSelected(node);
         setOpenNodes((current) => {
           const without = current.filter((item) => item.id !== node.id);
@@ -567,8 +575,8 @@ export function NexusWorkspace({
             window.localStorage.removeItem(draftKey(node.id));
           }
         }
-        await refreshNodeDetails(node);
-        if (headingSlug) {
+        await refreshNodeDetails(node, ticket);
+        if (headingSlug && readingRequests.current.isCurrent(ticket)) {
           window.setTimeout(() => {
             document.getElementById(headingSlug)?.scrollIntoView({
               behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches
@@ -579,11 +587,16 @@ export function NexusWorkspace({
           }, 0);
         }
       } catch (error) {
-        toast.error(errorMessage(error));
+        if (readingRequests.current.isCurrent(ticket)) toast.error(errorMessage(error));
       }
     },
     [refreshNodeDetails],
   );
+
+  useEffect(() => {
+    const requests = readingRequests.current;
+    return () => requests.invalidate();
+  }, []);
 
   const closeNode = useCallback(
     (nodeId: string) => {
@@ -600,12 +613,17 @@ export function NexusWorkspace({
   );
 
   useEffect(() => {
-    if (!initialNodeId || initialNodeOpenedRef.current === initialNodeId) {
+    if (
+      loading ||
+      !workspaceId ||
+      !initialNodeId ||
+      initialNodeOpenedRef.current === initialNodeId
+    ) {
       return;
     }
     initialNodeOpenedRef.current = initialNodeId;
     void openNode(initialNodeId);
-  }, [initialNodeId, openNode]);
+  }, [initialNodeId, openNode, loading, workspaceId]);
 
   useEffect(() => {
     if (!initialNodeId && !selected && nodes[0]) void openNode(nodes[0]);
@@ -1634,12 +1652,14 @@ export function NexusWorkspace({
                           </p>
                         )}
                         <div className="tadeon-rule my-6" />
-                        <SafeMarkdown
-                          markdown={draftContent}
-                          previews={previews}
-                          onOpenNode={(nodeId, headingSlug) => void openNode(nodeId, headingSlug)}
-                          onCreateMissing={(title) => void createNode(title)}
-                        />
+                        <div className="tadeon-nexus-reading-copy">
+                          <SafeMarkdown
+                            markdown={draftContent}
+                            previews={previews}
+                            onOpenNode={(nodeId, headingSlug) => void openNode(nodeId, headingSlug)}
+                            onCreateMissing={(title) => void createNode(title)}
+                          />
+                        </div>
                       </div>
                     )}
                   </article>

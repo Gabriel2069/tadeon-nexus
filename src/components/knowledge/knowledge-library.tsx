@@ -1,3 +1,6 @@
+import { createLatestRequestGate } from "@/lib/latest-request";
+import { FabricFilaments } from "@/components/fabric-filaments";
+import { MaterialSurface } from "@/components/material-surface";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   BookCopy,
@@ -202,6 +205,7 @@ export function KnowledgeLibrary({
   onChanged: () => void;
 }) {
   const mobilePreviewRef = useRef<HTMLElement>(null);
+  const libraryRequests = useRef(createLatestRequestGate());
   const [nodes, setNodes] = useState<KnowledgeNode[]>([]);
   const [count, setCount] = useState(0);
   const [hasMore, setHasMore] = useState(false);
@@ -258,6 +262,7 @@ export function KnowledgeLibrary({
   }, [preview]);
 
   const loadNodes = useCallback(async () => {
+    const ticket = libraryRequests.current.begin();
     if (!open || !workspaceId) return;
     setLoading(true);
     try {
@@ -274,6 +279,7 @@ export function KnowledgeLibrary({
         }),
         knowledgeService.listFavoriteNodes(100),
       ]);
+      if (!libraryRequests.current.isCurrent(ticket)) return;
       setNodes(result.hits.map((hit) => hit.node));
       setCount(result.count);
       setHasMore(result.hasMore);
@@ -289,12 +295,13 @@ export function KnowledgeLibrary({
         return new Set([...current].filter((id) => visible.has(id)));
       });
     } catch (error) {
+      if (!libraryRequests.current.isCurrent(ticket)) return;
       toast.error(messageFor(error));
       setNodes([]);
       setCount(0);
       setHasMore(false);
     } finally {
-      setLoading(false);
+      if (libraryRequests.current.isCurrent(ticket)) setLoading(false);
     }
   }, [campaignId, debouncedQuery, nodeType, open, order, page, workspaceId]);
 
@@ -314,7 +321,9 @@ export function KnowledgeLibrary({
   }, [open, workspaceId]);
 
   useEffect(() => {
+    const requests = libraryRequests.current;
     void loadNodes();
+    return () => requests.invalidate();
   }, [loadNodes]);
 
   useEffect(() => {
@@ -488,14 +497,16 @@ export function KnowledgeLibrary({
   const nodeCard = (node: KnowledgeNode, compact = false, index = 0) => {
     const selected = selectedIds.has(node.id);
     return (
-      <Card
+      <MaterialSurface
+        as="article"
+        data-slot="card"
         key={node.id}
         data-node-type={node.node_type}
         data-selected={selected ? "true" : "false"}
         role="group"
         tabIndex={0}
         aria-label={`Visualizar ${node.title}`}
-        className={`tadeon-library-card tadeon-interactive-card group relative cursor-pointer p-3 ${
+        className={`tadeon-library-card group relative cursor-pointer p-3 ${
           selected ? "is-selected" : ""
         }`}
         onClick={() => setPreview(node)}
@@ -507,6 +518,7 @@ export function KnowledgeLibrary({
           }
         }}
       >
+        <FabricFilaments className="tadeon-library-card__fabric" />
         <span className="tadeon-library-card__folio" aria-hidden="true">
           {String(index + 1).padStart(2, "0")}
         </span>
@@ -521,14 +533,14 @@ export function KnowledgeLibrary({
           />
           <div className="min-w-0 flex-1">
             <div className="flex items-start justify-between gap-2">
-              <div className="flex min-w-0 items-start gap-2">
+              <div className="flex min-w-0 flex-1 items-start gap-2">
                 <span className="tadeon-library-card__mark tadeon-interactive-card__icon">
                   <BookOpenText aria-hidden="true" />
                 </span>
                 <div className="min-w-0">
                   <button
                     type="button"
-                    className="tadeon-library-card__title tadeon-interactive-card__title block w-full truncate text-left text-sm font-semibold"
+                    className="tadeon-library-card__title tadeon-interactive-card__title block w-full line-clamp-2 text-left font-cinzel text-lg font-semibold"
                     onClick={(event) => {
                       event.stopPropagation();
                       setPreview(node);
@@ -572,7 +584,7 @@ export function KnowledgeLibrary({
             </p>
           </div>
         </div>
-      </Card>
+      </MaterialSurface>
     );
   };
 
@@ -908,8 +920,8 @@ export function KnowledgeLibrary({
                 <div
                   className={
                     view === "compact"
-                      ? "grid gap-2 sm:grid-cols-2 xl:grid-cols-3"
-                      : "grid gap-3 sm:grid-cols-2 xl:grid-cols-3"
+                      ? "tadeon-library-card-grid grid gap-2"
+                      : "tadeon-library-card-grid grid gap-3"
                   }
                 >
                   {nodes.map((node, index) => nodeCard(node, view === "compact", index))}

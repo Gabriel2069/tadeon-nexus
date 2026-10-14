@@ -79,7 +79,7 @@ Evidências: [docs/sheet-design-validation.json](../docs/sheet-design-validation
 - Verificar corpus povoado, filtros e legibilidade da teia sem sobrescrever escolhas manuais.
 - Preservar vínculos, importação/exportação e diferenças entre cânone e material derivado.
 
-Evidências: pendentes; não declarar concluído.
+Evidências: [docs/material-reading-validation.json](../docs/material-reading-validation.json).
 
 ## NEX-007 — Mesa: hierarquia de ferramentas e workspace
 
@@ -133,7 +133,7 @@ Evidências: pendentes; não declarar concluído.
 - Dobras e popups com presença interrompível, foco e movimento reduzido.
 - Métricas do Dashboard em placas com relevo, fios com desaparecimento gradual; cores locais na ficha.
 
-Evidências: pendentes; não declarar concluído.
+Evidências: [docs/material-reading-validation.json](../docs/material-reading-validation.json).
 
 ## Decisões vigentes
 

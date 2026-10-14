@@ -237,6 +237,7 @@ export function KnowledgeGraph({
   const [zoom, setZoom] = useState(1);
   const [expanded, setExpanded] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
+  const [inspectorOpen, setInspectorOpen] = useState(false);
   const [includeExplicit, setIncludeExplicit] = useState(true);
   const [includeMentions, setIncludeMentions] = useState(true);
   const [includeHierarchy, setIncludeHierarchy] = useState(true);
@@ -398,7 +399,7 @@ export function KnowledgeGraph({
       height = Math.max(120, maxY - minY + 190);
     const nextZoom = Math.min(
       1.4,
-      Math.max(0.04, Math.min((viewport.width - 56) / width, (viewport.height - 56) / height)),
+      Math.max(0.001, Math.min((viewport.width - 56) / width, (viewport.height - 56) / height)),
     );
     setZoom(nextZoom);
     setPan({
@@ -631,7 +632,7 @@ export function KnowledgeGraph({
     const rect = event.currentTarget.getBoundingClientRect();
     const pointer = { x: event.clientX - rect.left, y: event.clientY - rect.top };
     const world = { x: (pointer.x - pan.x) / zoom, y: (pointer.y - pan.y) / zoom };
-    const nextZoom = Math.min(3, Math.max(0.04, zoom * Math.exp(-event.deltaY * 0.0012)));
+    const nextZoom = Math.min(3, Math.max(0.001, zoom * Math.exp(-event.deltaY * 0.0012)));
     setPan({ x: pointer.x - world.x * nextZoom, y: pointer.y - world.y * nextZoom });
     setZoom(nextZoom);
   };
@@ -666,7 +667,7 @@ export function KnowledgeGraph({
       setZoom((current) => Math.min(3, current * 1.2));
     } else if (event.key === "-" || event.key === "_") {
       event.preventDefault();
-      setZoom((current) => Math.max(0.04, current / 1.2));
+      setZoom((current) => Math.max(0.001, current / 1.2));
     } else if (event.key === "0") {
       event.preventDefault();
       fitGraph();
@@ -718,10 +719,11 @@ export function KnowledgeGraph({
   return (
     <div
       data-expanded={expanded ? "true" : "false"}
+      data-controls-open={inspectorOpen}
       className={
         expanded
           ? "tadeon-knowledge-graph tadeon-second-brain fixed inset-2 z-[220] min-h-0 overflow-hidden rounded-2xl border bg-background p-2 shadow-2xl sm:inset-4"
-          : "tadeon-knowledge-graph tadeon-second-brain grid min-h-[650px] gap-3 lg:grid-cols-[minmax(0,1fr)_330px]"
+          : `tadeon-knowledge-graph tadeon-second-brain grid min-h-[570px] gap-3 ${inspectorOpen ? "lg:grid-cols-[minmax(0,1fr)_330px]" : ""}`
       }
     >
       <div
@@ -731,12 +733,15 @@ export function KnowledgeGraph({
             : "tadeon-graph-canvas relative min-h-[570px] overflow-hidden rounded-xl border bg-[#070a0e]"
         }
       >
+        <span className="tadeon-graph-count" aria-live="polite">
+          {graph?.nodes.length ?? 0} nós · {graph?.edges.length ?? 0} conexões
+        </span>
         <canvas
           ref={canvasRef}
           className={
             expanded
               ? "h-full min-h-0 w-full cursor-grab touch-none active:cursor-grabbing"
-              : "h-full min-h-[570px] w-full cursor-grab touch-none active:cursor-grabbing"
+              : "h-[570px] w-full cursor-grab touch-none active:cursor-grabbing"
           }
           data-layout={layout}
           data-graph-density="obsidian"
@@ -759,6 +764,15 @@ export function KnowledgeGraph({
           tabIndex={0}
         />
         <div className="tadeon-brain-toolbar absolute left-3 top-3 flex max-w-[calc(100%-1.5rem)] flex-wrap gap-1 rounded-xl border p-1.5">
+          <Button
+            variant="ghost"
+            size="icon"
+            aria-label="Controles do grafo"
+            aria-expanded={inspectorOpen}
+            onClick={() => setInspectorOpen((value) => !value)}
+          >
+            <Settings2 className="h-4 w-4" />
+          </Button>
           <div className="tadeon-graph-layout-switch" role="group" aria-label="Organização visual">
             <Button
               size="sm"
@@ -789,7 +803,7 @@ export function KnowledgeGraph({
           <Button
             size="icon"
             variant="ghost"
-            onClick={() => setZoom((current) => Math.max(0.04, current / 1.2))}
+            onClick={() => setZoom((current) => Math.max(0.001, current / 1.2))}
             aria-label="Afastar"
           >
             <ZoomOut className="h-4 w-4" />
@@ -842,7 +856,10 @@ export function KnowledgeGraph({
         )}
       </div>
       {!expanded && (
-        <aside className="tadeon-brain-inspector overflow-y-auto rounded-xl border p-3">
+        <aside
+          hidden={!inspectorOpen}
+          className="tadeon-brain-inspector overflow-y-auto rounded-xl border p-3"
+        >
           <div className="tadeon-brain-heading">
             <span>
               <BrainCircuit />
@@ -850,9 +867,6 @@ export function KnowledgeGraph({
             <div>
               <p className="tadeon-eyebrow">Segundo cérebro</p>
               <strong>{mode === "local" ? "Vizinhança contextual" : "Memória global"}</strong>
-              <small>
-                {graph?.nodes.length ?? 0} nós · {graph?.edges.length ?? 0} conexões
-              </small>
             </div>
           </div>
           <p id="nexus-graph-help" className="tadeon-brain-help">

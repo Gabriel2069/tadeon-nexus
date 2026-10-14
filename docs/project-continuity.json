@@ -31,7 +31,8 @@
         "src/components/brand-mark.tsx",
         "src/components/material-surface.tsx",
         "src/lib/use-material-light.ts",
-        "src/components/ui/button.tsx"
+        "src/components/ui/button.tsx",
+        "src/components/fabric-filaments.tsx"
       ],
       "styles": [
         "src/styles/desktop-shell.css",
@@ -105,13 +106,15 @@
         "src/routes/nexus.tsx",
         "src/lib/knowledge/knowledge-service.ts",
         "src/lib/knowledge/knowledge-graph-service.ts",
-        "src/components/knowledge/knowledge-graph-second-brain.tsx"
+        "src/components/knowledge/knowledge-graph-second-brain.tsx",
+        "src/components/knowledge/knowledge-tree.tsx",
+        "src/lib/knowledge/knowledge-tree.ts"
       ],
       "styles": [
         "src/styles/nexus-material.css",
         "src/styles/knowledge-graph-second-brain.css"
       ],
-      "boundary": "Serviços controlam acesso a dados; grafo controla presets e interação em React."
+      "boundary": "Serviços controlam acesso a dados; grafo controla presets e interação em React. Árvore usa parent_node_id; grafo visual não usa distância de relações como parentesco. Leitura combinada e controles preservam estado React e invalidam respostas antigas."
     },
     {
       "id": "tabletop",
@@ -464,7 +467,9 @@
         "Verificar corpus povoado, filtros e legibilidade da teia sem sobrescrever escolhas manuais.",
         "Preservar vínculos, importação/exportação e diferenças entre cânone e material derivado."
       ],
-      "evidence": [],
+      "evidence": [
+        "docs/material-reading-validation.json"
+      ],
       "checkpoint": "Revisão em andamento na branch design/fabric-motion-obsidian-2026-10-14: árvore real, grafo integrado à leitura e correção de interação. Ainda não integrado nem publicado."
     },
     {
@@ -579,7 +584,9 @@
         "Dobras e popups com presença interrompível, foco e movimento reduzido.",
         "Métricas do Dashboard em placas com relevo, fios com desaparecimento gradual; cores locais na ficha."
       ],
-      "evidence": [],
+      "evidence": [
+        "docs/material-reading-validation.json"
+      ],
       "checkpoint": "Implementação em andamento; validar em runtime antes de integração. Não substituir os contratos de dados, RPG ou autorização."
     }
   ],
@@ -875,6 +882,10 @@
     {
       "path": "docs/sheet-design-validation.json",
       "purpose": "NEX-005: seções, materiais, cancelamento de leituras, autosave e fixtures da ficha."
+    },
+    {
+      "path": "docs/material-reading-validation.json",
+      "purpose": "NEX-014/NEX-006: correção dos proprietários de movimento e leitura integrada com árvore/grafo; evidência e limites de fixture."
     }
   ],
   "integrationHistory": [

@@ -11,7 +11,7 @@ afterEach(() => {
   cleanup();
   vi.unstubAllGlobals();
 });
-it("starts with the established open preset and preserves manual settings across render and panel changes", async () => {
+it("starts with the compact reading preset and preserves manual settings across render and panel changes", async () => {
   vi.stubGlobal(
     "ResizeObserver",
     class {
@@ -31,11 +31,12 @@ it("starts with the established open preset and preserves manual settings across
       view.getByText("Não foi possível carregar a memória conectada de O Nexus."),
     ).toBeTruthy(),
   );
+  fireEvent.click(view.getByRole("button", {name:"Controles do grafo"}));
   const toggle = view.container.querySelector(".tadeon-brain-settings-toggle")!;
   fireEvent.click(toggle);
   const distance = view.getByRole("slider", { name: /Distância-base/ }) as HTMLInputElement;
-  expect(distance.value).toBe("260");
-  expect((view.getByRole("slider", { name: /Repulsão/ }) as HTMLInputElement).value).toBe("2.4");
+  expect(distance.value).toBe("140");
+  expect((view.getByRole("slider", { name: /Repulsão/ }) as HTMLInputElement).value).toBe("1.4");
   fireEvent.change(distance, { target: { value: "320" } });
   view.rerender(<KnowledgeGraph {...props} />);
   fireEvent.click(toggle);
