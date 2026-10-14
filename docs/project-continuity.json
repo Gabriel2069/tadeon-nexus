@@ -1,15 +1,23 @@
 {
   "version": 1,
   "checkedAt": "2026-10-14",
-  "runtimeReference": "1d92120cf210e466889e8f3ba53c5a8f2a1dfa81",
+  "runtimeReference": "d638567c511f547fd76be2899790ab6f8a01ea85",
   "integration": {
     "pr": 267,
     "branch": "design/fabric-motion-obsidian-2026-10-14",
     "base": "main",
     "baseCommit": "e7db3fb18d242b94772b8dc9a087617270d3ed90",
-    "headCommit": null,
-    "state": "validated",
-    "production": "pending"
+    "headCommit": "9d24151d83c274fdb1398c9ddf428878112f4d3c",
+    "state": "integrated",
+    "mergeCommit": "d638567c511f547fd76be2899790ab6f8a01ea85",
+    "qualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38554284521",
+    "mainQualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38554552056",
+    "production": "confirmed",
+    "productionEvidence": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38554551969",
+    "productionCommit": "d638567c511f547fd76be2899790ab6f8a01ea85",
+    "productionVerifiedAt": "2026-10-14T11:11:25.9846412Z",
+    "productionHttpStatus": 200,
+    "workerVersion": "801b7e4b-3894-4f9e-8eeb-eb74bff5d884"
   },
   "domains": [
     {
@@ -448,7 +456,7 @@
       "id": "NEX-006",
       "title": "Biblioteca, documento e grafo do Nexus",
       "domain": "knowledge",
-      "status": "validated",
+      "status": "integrated",
       "priority": 4,
       "dependsOn": [
         "NEX-003",
@@ -460,9 +468,11 @@
         "Preservar vínculos, importação/exportação e diferenças entre cânone e material derivado."
       ],
       "evidence": [
-        "docs/material-reading-validation.json"
+        "docs/material-reading-validation.json",
+        "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38554284521",
+        "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38554551969"
       ],
-      "checkpoint": "Validado na branch da PR #267: npm run check, 128 suítes/561 testes, audit zero, 16 casos da ficha e do Dashboard, repetição final de quatro larguras no Dashboard e Nexus/biblioteca com 120 páginas. Produção pendente; não confundir fixture com RLS ou contas reais."
+      "checkpoint": "Integrado pela PR #267 em d638567 após Quality do HEAD 9d24151. 128 suítes/561 testes, audit zero, 16 casos da ficha e Dashboard, repetição final de quatro larguras do Dashboard e Nexus/biblioteca com 120 páginas. Produção confirmou HTTP 200 e SHA exato às 11:11:25Z. 57 módulos/12 links, 5.406 !important, três removidos. Fixtures não certificam RLS/contas reais/dispositivos físicos."
     },
     {
       "id": "NEX-007",
@@ -565,7 +575,7 @@
       "id": "NEX-014",
       "title": "Reconciliar movimento e aprofundar Véu & Trama",
       "domain": "shell",
-      "status": "validated",
+      "status": "integrated",
       "priority": 3,
       "dependsOn": [
         "NEX-005",
@@ -577,9 +587,29 @@
         "Métricas do Dashboard em placas com relevo, fios com desaparecimento gradual; cores locais na ficha."
       ],
       "evidence": [
-        "docs/material-reading-validation.json"
+        "docs/material-reading-validation.json",
+        "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38554284521",
+        "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38554551969"
       ],
-      "checkpoint": "Validado na branch da PR #267: npm run check, 128 suítes/561 testes, audit zero, 16 casos da ficha e do Dashboard, repetição final de quatro larguras no Dashboard e Nexus/biblioteca com 120 páginas. Produção pendente; não confundir fixture com RLS ou contas reais."
+      "checkpoint": "Integrado pela PR #267 em d638567 após Quality do HEAD 9d24151. 128 suítes/561 testes, audit zero, 16 casos da ficha e Dashboard, repetição final de quatro larguras do Dashboard e Nexus/biblioteca com 120 páginas. Produção confirmou HTTP 200 e SHA exato às 11:11:25Z. 57 módulos/12 links, 5.406 !important, três removidos. Fixtures não certificam RLS/contas reais/dispositivos físicos."
+    },
+    {
+      "id": "NEX-015",
+      "title": "Nexus: continuidade de abas e composição dos painéis",
+      "domain": "knowledge",
+      "status": "planned",
+      "priority": 4,
+      "dependsOn": [
+        "NEX-006",
+        "NEX-014"
+      ],
+      "acceptance": [
+        "Refinar fechamento da última aba, reabertura e recuperação de rascunhos com testes de navegação.",
+        "Adicionar dimensionamento e preferências de painéis sem estado paralelo ou bridge de DOM.",
+        "Ampliar cobertura de filtros, grupos, leitura longa e corpus real autorizado; preservar o limite de 500 candidatos e explicitar paginação."
+      ],
+      "evidence": [],
+      "checkpoint": "Refinamento posterior da experiência inspirada no Obsidian. NEX-006 entregou árvore real e leitura combinada; não reimplementar esses proprietários nem importar assets ou plugins do Obsidian."
     }
   ],
   "decisions": [

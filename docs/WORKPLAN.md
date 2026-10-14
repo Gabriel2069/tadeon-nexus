@@ -2,7 +2,7 @@
 
 > Gerado de [project-continuity.json](project-continuity.json). Edite o registro e rode `npm run sync:project`; não mantenha uma cópia manual.
 
-Snapshot: 2026-10-14; referência de runtime: `1d92120cf210e466889e8f3ba53c5a8f2a1dfa81`. PR #267 em `design/fabric-motion-obsidian-2026-10-14`; integração: `validated`. Não é prova de deploy.
+Snapshot: 2026-10-14; referência de runtime: `d638567c511f547fd76be2899790ab6f8a01ea85`. PR #267 em `design/fabric-motion-obsidian-2026-10-14`; integração: `integrated`. Não é prova de deploy.
 
 Estados: planejado → próximo → em andamento → validado na branch → integrado. Publicação exige evidência própria do SHA; adiado conserva o requisito. Se um requisito mudar, preservar o ID e registrar a decisão/evidência.
 
@@ -16,14 +16,15 @@ Cada PR usa IDs desta fila e declara dependências. Trabalho sobre o mesmo propr
 | NEX-004 | Sidebar, navegação móvel e portais | Integrado | 2 | popup | NEX-003 |
 | NEX-013 | Liquid fabric: login, Dashboard e componentes compartilhados | Integrado | 2 | shell | NEX-003, NEX-004 |
 | NEX-005 | Ficha por seções e estados | Integrado | 3 | sheet | NEX-003, NEX-013 |
-| NEX-006 | Biblioteca, documento e grafo do Nexus | Validado na branch | 4 | knowledge | NEX-003, NEX-013 |
+| NEX-006 | Biblioteca, documento e grafo do Nexus | Integrado | 4 | knowledge | NEX-003, NEX-013 |
 | NEX-007 | Mesa: hierarquia de ferramentas e workspace | Planejado | 5 | tabletop | NEX-004, NEX-013 |
 | NEX-008 | Painel do Mestre e administração | Planejado | 6 | master | NEX-003, NEX-013 |
 | NEX-009 | Desempenho e motion | Planejado | 7 | delivery | NEX-003, NEX-007 |
 | NEX-010 | Validação real de autorização e rollout | Planejado | 8 | session | NEX-001 |
 | NEX-011 | Backup e restauração verificável | Planejado | 8 | assets | NEX-010 |
 | NEX-012 | Revisão editorial do corpus canônico | Adiado | 9 | knowledge | NEX-006 |
-| NEX-014 | Reconciliar movimento e aprofundar Véu & Trama | Validado na branch | 3 | shell | NEX-005, NEX-013 |
+| NEX-014 | Reconciliar movimento e aprofundar Véu & Trama | Integrado | 3 | shell | NEX-005, NEX-013 |
+| NEX-015 | Nexus: continuidade de abas e composição dos painéis | Planejado | 4 | knowledge | NEX-006, NEX-014 |
 
 ## NEX-001 — Preparação estrutural
 
@@ -79,7 +80,7 @@ Evidências: [docs/sheet-design-validation.json](../docs/sheet-design-validation
 - Verificar corpus povoado, filtros e legibilidade da teia sem sobrescrever escolhas manuais.
 - Preservar vínculos, importação/exportação e diferenças entre cânone e material derivado.
 
-Evidências: [docs/material-reading-validation.json](../docs/material-reading-validation.json).
+Evidências: [docs/material-reading-validation.json](../docs/material-reading-validation.json), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38554284521), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38554551969).
 
 ## NEX-007 — Mesa: hierarquia de ferramentas e workspace
 
@@ -133,7 +134,15 @@ Evidências: pendentes; não declarar concluído.
 - Dobras e popups com presença interrompível, foco e movimento reduzido.
 - Métricas do Dashboard em placas com relevo, fios com desaparecimento gradual; cores locais na ficha.
 
-Evidências: [docs/material-reading-validation.json](../docs/material-reading-validation.json).
+Evidências: [docs/material-reading-validation.json](../docs/material-reading-validation.json), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38554284521), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38554551969).
+
+## NEX-015 — Nexus: continuidade de abas e composição dos painéis
+
+- Refinar fechamento da última aba, reabertura e recuperação de rascunhos com testes de navegação.
+- Adicionar dimensionamento e preferências de painéis sem estado paralelo ou bridge de DOM.
+- Ampliar cobertura de filtros, grupos, leitura longa e corpus real autorizado; preservar o limite de 500 candidatos e explicitar paginação.
+
+Evidências: pendentes; não declarar concluído.
 
 ## Decisões vigentes
 
