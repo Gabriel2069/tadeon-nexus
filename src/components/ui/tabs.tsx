@@ -14,9 +14,6 @@ function composeRefs<T>(...refs: Array<React.ForwardedRef<T>>) {
   };
 }
 
-const useIsomorphicLayoutEffect =
-  typeof window === "undefined" ? React.useEffect : React.useLayoutEffect;
-
 const Tabs = React.forwardRef<
   React.ElementRef<typeof TabsPrimitive.Root>,
   React.ComponentPropsWithoutRef<typeof TabsPrimitive.Root>
@@ -67,111 +64,20 @@ Tabs.displayName = TabsPrimitive.Root.displayName;
 const TabsList = React.forwardRef<
   React.ElementRef<typeof TabsPrimitive.List>,
   React.ComponentPropsWithoutRef<typeof TabsPrimitive.List>
->(({ className, children, ...props }, ref) => {
-  const listRef = React.useRef<React.ElementRef<typeof TabsPrimitive.List>>(null);
-  const [indicator, setIndicator] = React.useState({
-    left: 0,
-    top: 0,
-    width: 0,
-    height: 0,
-    visible: false,
-  });
-
-  const measureIndicator = React.useCallback(() => {
-    const list = listRef.current;
-    const active = list?.querySelector<HTMLElement>(
-      '[data-slot="tabs-trigger"][data-state="active"]',
-    );
-    if (!list || !active) {
-      setIndicator((current) => (current.visible ? { ...current, visible: false } : current));
-      return;
-    }
-
-    const listRect = list.getBoundingClientRect();
-    const activeRect = active.getBoundingClientRect();
-    const left = activeRect.left - listRect.left + list.scrollLeft;
-    const top = activeRect.top - listRect.top + list.scrollTop;
-
-    setIndicator({
-      left,
-      top,
-      width: activeRect.width,
-      height: activeRect.height,
-      visible: true,
-    });
-
-    const horizontalPadding = 12;
-    const outsideLeft = activeRect.left < listRect.left + horizontalPadding;
-    const outsideRight = activeRect.right > listRect.right - horizontalPadding;
-    if (outsideLeft || outsideRight) {
-      const targetLeft = Math.max(
-        0,
-        list.scrollLeft +
-          (activeRect.left - listRect.left) -
-          (list.clientWidth - activeRect.width) / 2,
-      );
-      const reducedMotion =
-        typeof window !== "undefined" &&
-        window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-      list.scrollTo({
-        left: targetLeft,
-        behavior: reducedMotion ? "auto" : "smooth",
-      });
-    }
-  }, []);
-
-  useIsomorphicLayoutEffect(() => {
-    const list = listRef.current;
-    if (!list) return;
-
-    measureIndicator();
-    const mutationObserver =
-      typeof MutationObserver === "undefined" ? null : new MutationObserver(measureIndicator);
-    mutationObserver?.observe(list, {
-      subtree: true,
-      attributes: true,
-      attributeFilter: ["data-state"],
-    });
-
-    const resizeObserver =
-      typeof ResizeObserver === "undefined" ? null : new ResizeObserver(measureIndicator);
-    resizeObserver?.observe(list);
-    list
-      .querySelectorAll<HTMLElement>('[data-slot="tabs-trigger"]')
-      .forEach((trigger) => resizeObserver?.observe(trigger));
-    list.addEventListener("scroll", measureIndicator, { passive: true });
-
-    return () => {
-      mutationObserver?.disconnect();
-      resizeObserver?.disconnect();
-      list.removeEventListener("scroll", measureIndicator);
-    };
-  }, [measureIndicator, children]);
-
-  return (
-    <TabsPrimitive.List
-      ref={composeRefs(listRef, ref)}
-      data-slot="tabs-list"
-      className={cn(
-        "relative isolate inline-flex min-h-11 items-center justify-center gap-1 rounded-[0.9rem] border border-border/60 bg-muted/78 p-1 text-muted-foreground shadow-[inset_0_1px_0_rgba(255,255,255,.035),0_16px_44px_-38px_rgba(0,0,0,.95)] backdrop-blur",
-        className,
-      )}
-      {...props}
-    >
-      <span
-        aria-hidden="true"
-        data-slot="tabs-indicator"
-        data-visible={indicator.visible ? "true" : "false"}
-        style={{
-          width: `${indicator.width}px`,
-          height: `${indicator.height}px`,
-          transform: `translate3d(${indicator.left}px, ${indicator.top}px, 0)`,
-        }}
-      />
-      {children}
-    </TabsPrimitive.List>
-  );
-});
+>(({ className, children, ...props }, ref) => (
+  <TabsPrimitive.List
+    ref={ref}
+    data-slot="tabs-list"
+    data-material-surface="tablist"
+    className={cn(
+      "tadeon-material-tabs inline-flex min-h-11 items-center gap-1 rounded-xl p-1",
+      className,
+    )}
+    {...props}
+  >
+    {children}
+  </TabsPrimitive.List>
+));
 TabsList.displayName = TabsPrimitive.List.displayName;
 
 const TabsTrigger = React.forwardRef<
@@ -181,6 +87,7 @@ const TabsTrigger = React.forwardRef<
   <TabsPrimitive.Trigger
     ref={ref}
     data-slot="tabs-trigger"
+    data-material-surface="tab"
     data-tab-value={value}
     value={value}
     className={cn(
@@ -199,6 +106,7 @@ const TabsContent = React.forwardRef<
   <TabsPrimitive.Content
     ref={ref}
     data-slot="tabs-content"
+    data-motion-surface="tabpanel"
     className={cn(
       "mt-2 ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
       className,

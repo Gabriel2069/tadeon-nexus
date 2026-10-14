@@ -1414,7 +1414,7 @@
 
 /* Master workspace v3: parity, readable density and deliberate motion ------- */
 
-.tadeon-master-workspace [data-slot="tabs-content"][data-state="active"] {
+.tadeon-master-workspace [data-slot="tabs-content"]:not([data-motion-surface])[data-state="active"] {
   animation: tadeon-master-panel-enter 420ms var(--ease-out) both;
 }
 
@@ -2180,7 +2180,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .tadeon-master-workspace [data-slot="tabs-content"][data-state="active"],
+  .tadeon-master-workspace [data-slot="tabs-content"]:not([data-motion-surface])[data-state="active"],
   .tadeon-master-note-card,
   .tadeon-encounter-member,
   .tadeon-encounter-npc,
@@ -2222,7 +2222,7 @@
   content: "";
 }
 
-.tadeon-master-navigation [data-slot="tabs-trigger"] {
+.tadeon-master-navigation [data-slot="tabs-trigger"]:not([data-material-surface="tab"]) {
   position: relative;
   overflow: hidden;
   transition:
@@ -2232,7 +2232,7 @@
     transform var(--motion-press) var(--ease-out);
 }
 
-.tadeon-master-navigation [data-slot="tabs-trigger"]::after {
+.tadeon-master-navigation [data-slot="tabs-trigger"]:not([data-material-surface="tab"])::after {
   position: absolute;
   right: 24%;
   bottom: 0.2rem;
@@ -2248,7 +2248,7 @@
   content: "";
 }
 
-.tadeon-master-navigation [data-slot="tabs-trigger"][data-state="active"]::after {
+.tadeon-master-navigation [data-slot="tabs-trigger"]:not([data-material-surface="tab"])[data-state="active"]::after {
   opacity: 0.72;
   transform: scaleX(1);
 }
@@ -2466,7 +2466,7 @@
 }
 
 @media (hover: hover) and (pointer: fine) {
-  .tadeon-master-navigation [data-slot="tabs-trigger"]:hover {
+  .tadeon-master-navigation [data-slot="tabs-trigger"]:not([data-material-surface="tab"]):hover {
     transform: translateY(-1px);
   }
 
@@ -2553,7 +2553,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .tadeon-master-navigation [data-slot="tabs-trigger"],
+  .tadeon-master-navigation [data-slot="tabs-trigger"]:not([data-material-surface="tab"]),
   .tadeon-master-metric svg,
   .tadeon-master-flow__item,
   .tadeon-master-flow__item > svg:last-child,

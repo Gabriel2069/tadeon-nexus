@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "checkedAt": "2026-10-11",
+  "checkedAt": "2026-10-14",
   "runtimeReference": "1d92120cf210e466889e8f3ba53c5a8f2a1dfa81",
   "integration": {
     "pr": 265,
@@ -453,7 +453,7 @@
       "id": "NEX-006",
       "title": "Biblioteca, documento e grafo do Nexus",
       "domain": "knowledge",
-      "status": "ready",
+      "status": "active",
       "priority": 4,
       "dependsOn": [
         "NEX-003",
@@ -465,7 +465,7 @@
         "Preservar vínculos, importação/exportação e diferenças entre cânone e material derivado."
       ],
       "evidence": [],
-      "checkpoint": "Próximo lote visual: biblioteca, documento e grafo; reutilizar os materiais e controles aprovados, preservando importação/exportação, vínculos e escolhas de visualização. NEX-005 integrado; não recriar montagem da ficha por DOM."
+      "checkpoint": "Revisão em andamento na branch design/fabric-motion-obsidian-2026-10-14: árvore real, grafo integrado à leitura e correção de interação. Ainda não integrado nem publicado."
     },
     {
       "id": "NEX-007",
@@ -563,6 +563,24 @@
         "Preservar proveniência, aliases e relações ao revisar as sínteses."
       ],
       "evidence": []
+    },
+    {
+      "id": "NEX-014",
+      "title": "Reconciliar movimento e aprofundar Véu & Trama",
+      "domain": "shell",
+      "status": "active",
+      "priority": 3,
+      "dependsOn": [
+        "NEX-005",
+        "NEX-013"
+      ],
+      "acceptance": [
+        "Abas com um proprietário, sem indicador deslizante concorrente.",
+        "Dobras e popups com presença interrompível, foco e movimento reduzido.",
+        "Métricas do Dashboard em placas com relevo, fios com desaparecimento gradual; cores locais na ficha."
+      ],
+      "evidence": [],
+      "checkpoint": "Implementação em andamento; validar em runtime antes de integração. Não substituir os contratos de dados, RPG ou autorização."
     }
   ],
   "decisions": [

@@ -15,6 +15,7 @@ export function ContinuityHero({
   facts: { label: string; value: string; detail: string }[];
 }) {
   const gradient = useId();
+  const fade = useId();
   return (
     <MaterialSurface
       as="section"
@@ -24,6 +25,22 @@ export function ContinuityHero({
       <div className="tadeon-continuity-hero__art" aria-hidden="true">
         <svg className="tadeon-continuity-hero__weave" viewBox="0 0 760 460" fill="none">
           <defs>
+            <linearGradient id={fade}>
+              <stop stopColor="white" stopOpacity="0" />
+              <stop offset=".18" stopColor="white" />
+              <stop offset=".8" stopColor="white" />
+              <stop offset="1" stopColor="white" stopOpacity="0" />
+            </linearGradient>
+            <mask
+              id={`${fade}-mask`}
+              maskUnits="userSpaceOnUse"
+              x="0"
+              y="0"
+              width="760"
+              height="460"
+            >
+              <rect width="760" height="460" fill={`url(#${fade})`} />
+            </mask>
             <linearGradient
               id={gradient}
               x1="20"
@@ -38,7 +55,7 @@ export function ContinuityHero({
               <stop offset="1" stopColor="#4f6e5d" />
             </linearGradient>
           </defs>
-          <g stroke={`url(#${gradient})`} strokeWidth=".8">
+          <g mask={`url(#${fade}-mask)`} stroke={`url(#${gradient})`} strokeWidth=".8">
             {Array.from({ length: 56 }, (_, i) => (
               <path
                 key={i}
@@ -49,6 +66,7 @@ export function ContinuityHero({
           </g>
           <path
             d="M-30 236C135 48 272 440 390 283S560 135 790 285"
+            mask={`url(#${fade}-mask)`}
             stroke="var(--primary)"
             strokeWidth="1.4"
             opacity=".8"
@@ -70,8 +88,23 @@ export function ContinuityHero({
         <div className="tadeon-continuity-hero__actions">{action}</div>
       </div>
       <dl className="tadeon-continuity-facts">
-        {facts.map((fact) => (
-          <div key={fact.label}>
+        {facts.map((fact, index) => (
+          <div key={fact.label} className="tadeon-continuity-fact">
+            <svg
+              className="tadeon-continuity-fact__thread"
+              width="44"
+              height="44"
+              viewBox="0 0 44 44"
+              fill="none"
+              aria-hidden="true"
+            >
+              <path
+                d={`M4 ${14 + index * 3}C16 2 20 42 40 ${26 - index * 3}M4 ${19 + index * 3}C16 7 20 37 40 ${21 - index * 3}M4 ${24 + index * 3}C16 12 20 32 40 ${16 - index * 3}`}
+                stroke="currentColor"
+                strokeWidth=".8"
+              />
+              <circle cx="22" cy="22" r="16" stroke="currentColor" opacity=".35" />
+            </svg>
             <dt>{fact.label}</dt>
             <dd>{fact.value}</dd>
             <dd className="tadeon-continuity-facts__detail">{fact.detail}</dd>

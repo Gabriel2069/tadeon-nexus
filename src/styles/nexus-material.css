@@ -148,3 +148,19 @@
 }
 
 /* end-source: src/styles/tadeon-nexus-material.css */
+/* NEX-006: linked document/graph workspace; chrome remains outside the reading measure. */
+.tadeon-nexus-reading__switch { display: flex; gap: .25rem; flex-wrap: wrap; padding: .65rem; border-bottom: 1px solid var(--border); }
+.tadeon-nexus-reading__panes { min-width: 0; }
+.tadeon-nexus-reading__panes > div { min-width: 0; }
+.tadeon-nexus-reading__panes--split { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1fr); }
+.tadeon-nexus-reading__graph { min-width: 0; border-left: 1px solid var(--border); padding: .65rem; background: #111318; }
+.tadeon-nexus-reading__graph .tadeon-second-brain { display: flex; flex-direction: column; }
+.tadeon-nexus-reading__graph .tadeon-brain-inspector { max-height: 25rem; }
+.tadeon-knowledge-tree [role="treeitem"] { display: flex; align-items: center; gap: .45rem; min-height: 44px; border-radius: .4rem; color: var(--muted-foreground); cursor: pointer; outline-offset: -2px; }
+.tadeon-knowledge-tree [aria-selected="true"] { color: var(--foreground); background: rgb(79 110 93 / 18%); box-shadow: inset 2px 0 #729d81; }
+.tadeon-knowledge-tree [role="treeitem"] > svg { width: 15px; height: 15px; flex-shrink: 0; }
+.tadeon-knowledge-tree [role="treeitem"] > span:last-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: .8125rem; }
+.tadeon-knowledge-tree button { display: grid; place-items: center; width: 28px; min-height: 44px; flex-shrink: 0; }
+.tadeon-knowledge-tree button svg { width: 14px; height: 14px; }
+.tadeon-knowledge-tree__spacer { width: 28px; flex-shrink: 0; }
+@media(max-width:1100px) { .tadeon-nexus-reading__panes--split { grid-template-columns: minmax(0,1fr); } .tadeon-nexus-reading__graph { border-left: 0; border-top: 1px solid var(--border); } }

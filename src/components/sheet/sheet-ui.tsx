@@ -104,6 +104,7 @@ export function Section({
   return (
     <MaterialSurface
       as="section"
+      style={{ "--material-rgb": "var(--section-rgb)" } as CSSProperties}
       id={id}
       data-section={presentationKey}
       data-tadeon-context-help={SECTION_HELP[presentationKey]}
@@ -111,6 +112,16 @@ export function Section({
       data-collapsed={collapsed ? "true" : "false"}
       className={`tadeon-sheet-section scroll-mt-44 p-4 transition-[border-color,box-shadow] duration-150 hover:border-primary/25 md:p-5 ${className}`}
     >
+      <svg className="tadeon-sheet-fabric" viewBox="0 0 300 100" fill="none" aria-hidden="true">
+        {Array.from({ length: 9 }, (_, i) => (
+          <path
+            key={i}
+            d={`M-20 ${20 + i * 4}C90 ${-60 + i * 7} 160 ${140 - i * 4} 320 ${12 + i * 5}`}
+            stroke="currentColor"
+            opacity={0.12 + i * 0.018}
+          />
+        ))}
+      </svg>
       <Collapsible open={!collapsed} onOpenChange={(open) => setCollapsed(!open)}>
         <div className="tadeon-sheet-section__heading mb-4 flex flex-wrap items-center justify-between gap-2">
           <div className="tadeon-sheet-section__title-group">

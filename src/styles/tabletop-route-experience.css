@@ -586,8 +586,8 @@ body:has(.tadeon-tabletop-studio) [data-slot="dialog-content"]:has([role="tabpan
     border-radius: 1.1rem 1.1rem .65rem .65rem;
     animation-name: tadeon-tabletop-sheet-in;
   }
-  body:has(.tadeon-tabletop-studio) [data-slot="dialog-content"],
-  body:has(.tadeon-tabletop-studio) [data-slot="alert-dialog-content"] {
+  body:has(.tadeon-tabletop-studio) [data-slot="dialog-content"]:not([data-motion-surface]),
+  body:has(.tadeon-tabletop-studio) [data-slot="alert-dialog-content"]:not([data-motion-surface]) {
     top: auto !important;
     bottom: max(.35rem, env(safe-area-inset-bottom));
     width: calc(100vw - .7rem) !important;

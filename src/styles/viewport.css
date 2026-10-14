@@ -264,8 +264,8 @@ body:has(.tadeon-tabletop-studio) :where(
      final anchor back to the viewport centre so route/local utility classes
      cannot leave a modal partially outside the visible area. `translate`
      owns centering; `transform` remains free for animation only. */
-  [data-slot="dialog-content"],
-  [data-slot="alert-dialog-content"] {
+  [data-slot="dialog-content"]:not([data-motion-surface]),
+  [data-slot="alert-dialog-content"]:not([data-motion-surface]) {
     top: 50% !important;
     right: auto !important;
     bottom: auto !important;

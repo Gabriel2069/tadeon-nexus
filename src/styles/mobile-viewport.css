@@ -72,7 +72,7 @@
 }
 
 @media (max-width: 1180px) {
-  [data-slot="dialog-content"]:has(#sheet-name) {
+  [data-slot="dialog-content"]:not([data-motion-surface]):has(#sheet-name) {
     box-sizing: border-box !important;
     top: calc(var(--tadeon-vv-top, 0px) + max(.65rem, env(safe-area-inset-top))) !important;
     right: auto !important;
@@ -104,7 +104,7 @@
   }
 }
 
-html[data-tadeon-keyboard-open="true"] [data-slot="dialog-content"] {
+html[data-tadeon-keyboard-open="true"] [data-slot="dialog-content"]:not([data-motion-surface]) {
   box-sizing: border-box !important;
   top: calc(var(--tadeon-vv-top, 0px) + max(.5rem, env(safe-area-inset-top))) !important;
   right: auto !important;
@@ -181,8 +181,8 @@ html[data-tadeon-keyboard-open="true"] :is(
     transform: none !important;
   }
 
-  [data-slot="dialog-content"]:has(#sheet-name),
-  html[data-tadeon-keyboard-open="true"] [data-slot="dialog-content"] {
+  [data-slot="dialog-content"]:not([data-motion-surface]):has(#sheet-name),
+  html[data-tadeon-keyboard-open="true"] [data-slot="dialog-content"]:not([data-motion-surface]) {
     animation: none !important;
     transition-duration: .01ms !important;
   }

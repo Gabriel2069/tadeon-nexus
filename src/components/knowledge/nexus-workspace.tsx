@@ -36,6 +36,7 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { AssetPickerDialog } from "@/components/assets/asset-picker-dialog";
+import { KnowledgeTree } from "@/components/knowledge/knowledge-tree";
 import { KnowledgeGraph } from "@/components/knowledge/knowledge-graph";
 import { KnowledgeLibrary } from "@/components/knowledge/knowledge-library";
 import { KnowledgePortabilityDialog } from "@/components/knowledge/knowledge-portability-dialog";
@@ -327,6 +328,8 @@ export function NexusWorkspace({
   const [creating, setCreating] = useState(false);
   const [commandOpen, setCommandOpen] = useState(false);
   const [graphOpen, setGraphOpen] = useState(false);
+  const [indexView, setIndexView] = useState<"tree" | "list">("tree");
+  const [readingView, setReadingView] = useState<"document" | "graph" | "split">("document");
   const [libraryOpen, setLibraryOpen] = useState(false);
   const [portabilityOpen, setPortabilityOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
@@ -988,13 +991,16 @@ export function NexusWorkspace({
     >
       <section className="tadeon-page-hero tadeon-nexus-header tadeon-nexus-commandbar mb-4 flex flex-col justify-between gap-4 rounded-2xl border bg-card/60 p-4 backdrop-blur min-[1180px]:flex-row min-[1180px]:items-center">
         <div className="tadeon-nexus-identity">
-          <span className="tadeon-nexus-identity__mark" aria-hidden><LibraryBig /></span>
+          <span className="tadeon-nexus-identity__mark" aria-hidden>
+            <LibraryBig />
+          </span>
           <div>
-          <p className="tadeon-eyebrow">Arquivo vivo de continuidade</p>
-          <h1 className="font-cinzel text-2xl font-semibold md:text-3xl">O Nexus</h1>
-          <p className="tadeon-nexus-identity__summary">
-            Histórias, personagens, lugares e relações em um acervo que pensa junto com a campanha.
-          </p>
+            <p className="tadeon-eyebrow">Arquivo vivo de continuidade</p>
+            <h1 className="font-cinzel text-2xl font-semibold md:text-3xl">O Nexus</h1>
+            <p className="tadeon-nexus-identity__summary">
+              Histórias, personagens, lugares e relações em um acervo que pensa junto com a
+              campanha.
+            </p>
           </div>
         </div>
         <div className="tadeon-nexus-actions w-full sm:w-auto">
@@ -1096,9 +1102,7 @@ export function NexusWorkspace({
 
       <div
         className={
-          focusMode
-            ? "mx-auto max-w-5xl p-3 md:p-6"
-            : "tadeon-nexus-shell grid min-h-[72vh] gap-3"
+          focusMode ? "mx-auto max-w-5xl p-3 md:p-6" : "tadeon-nexus-shell grid min-h-[72vh] gap-3"
         }
       >
         {!focusMode && (
@@ -1116,153 +1120,193 @@ export function NexusWorkspace({
             </div>
             <details className="tadeon-nexus-filters mt-2">
               <summary>
-                <span><SlidersHorizontal /> Refinar acervo</span>
-                <span>{activeFilterCount ? `${activeFilterCount} ativo${activeFilterCount > 1 ? "s" : ""}` : "Opcional"}</span>
+                <span>
+                  <SlidersHorizontal /> Refinar acervo
+                </span>
+                <span>
+                  {activeFilterCount
+                    ? `${activeFilterCount} ativo${activeFilterCount > 1 ? "s" : ""}`
+                    : "Opcional"}
+                </span>
               </summary>
               <div className="tadeon-nexus-filters__body">
-            <div className="grid grid-cols-2 gap-2">
-              <Select
-                value={typeFilter}
-                onValueChange={(value) => {
-                  setTypeFilter(value as KnowledgeNodeType | "all");
-                  setSearchPage(0);
-                }}
-              >
-                <SelectTrigger aria-label="Filtrar tipo">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">Todos os tipos</SelectItem>
-                  {KNOWLEDGE_NODE_TYPES.map((type) => (
-                    <SelectItem key={type} value={type}>
-                      {TYPE_LABELS[type]}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <Select
-                value={statusFilter}
-                onValueChange={(value) => {
-                  setStatusFilter(value as KnowledgeNodeStatus | "all");
-                  setSearchPage(0);
-                }}
-              >
-                <SelectTrigger aria-label="Filtrar status">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">Todos os status</SelectItem>
-                  {KNOWLEDGE_NODE_STATUSES.map((status) => (
-                    <SelectItem key={status} value={status}>
-                      {STATUS_LABELS[status]}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <Select
-                value={visibilityFilter}
-                onValueChange={(value) => {
-                  setVisibilityFilter(value as KnowledgeVisibility | "all");
-                  setSearchPage(0);
-                }}
-              >
-                <SelectTrigger aria-label="Filtrar visibilidade">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">Toda visibilidade</SelectItem>
-                  {KNOWLEDGE_VISIBILITIES.map((visibility) => (
-                    <SelectItem key={visibility} value={visibility}>
-                      {VISIBILITY_LABELS[visibility]}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <Select
-                value={searchRelationFilter}
-                onValueChange={(value) => {
-                  setSearchRelationFilter(value as RelationType | "all");
-                  setSearchPage(0);
-                }}
-              >
-                <SelectTrigger aria-label="Filtrar relação">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">Toda relação</SelectItem>
-                  {RELATION_TYPES.map((type) => (
-                    <SelectItem key={type} value={type}>
-                      {RELATION_LABELS[type]}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <Select
-                value={searchOrder}
-                onValueChange={(value) => {
-                  setSearchOrder(value as KnowledgeSearchOrder);
-                  setSearchPage(0);
-                }}
-              >
-                <SelectTrigger className="col-span-2" aria-label="Ordenar pesquisa">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="relevance">Mais relevantes</SelectItem>
-                  <SelectItem value="updated">Atualizados recentemente</SelectItem>
-                  <SelectItem value="title">Título</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <label className="mt-2 flex items-center gap-2 rounded-lg border px-3 py-2 text-xs">
-              <input
-                type="checkbox"
-                checked={onlyCanonical}
-                onChange={(event) => {
-                  setOnlyCanonical(event.target.checked);
-                  setSearchPage(0);
-                }}
-                className="accent-[var(--tadeon-flow)]"
-              />
-              Somente conteúdo canônico
-            </label>
-            {activeFilterCount > 0 && (
-              <Button type="button" size="sm" variant="ghost" className="mt-2 w-full" onClick={resetSearchFilters}>
-                Limpar filtros
-              </Button>
-            )}
+                <div className="grid grid-cols-2 gap-2">
+                  <Select
+                    value={typeFilter}
+                    onValueChange={(value) => {
+                      setTypeFilter(value as KnowledgeNodeType | "all");
+                      setSearchPage(0);
+                    }}
+                  >
+                    <SelectTrigger aria-label="Filtrar tipo">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">Todos os tipos</SelectItem>
+                      {KNOWLEDGE_NODE_TYPES.map((type) => (
+                        <SelectItem key={type} value={type}>
+                          {TYPE_LABELS[type]}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <Select
+                    value={statusFilter}
+                    onValueChange={(value) => {
+                      setStatusFilter(value as KnowledgeNodeStatus | "all");
+                      setSearchPage(0);
+                    }}
+                  >
+                    <SelectTrigger aria-label="Filtrar status">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">Todos os status</SelectItem>
+                      {KNOWLEDGE_NODE_STATUSES.map((status) => (
+                        <SelectItem key={status} value={status}>
+                          {STATUS_LABELS[status]}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <Select
+                    value={visibilityFilter}
+                    onValueChange={(value) => {
+                      setVisibilityFilter(value as KnowledgeVisibility | "all");
+                      setSearchPage(0);
+                    }}
+                  >
+                    <SelectTrigger aria-label="Filtrar visibilidade">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">Toda visibilidade</SelectItem>
+                      {KNOWLEDGE_VISIBILITIES.map((visibility) => (
+                        <SelectItem key={visibility} value={visibility}>
+                          {VISIBILITY_LABELS[visibility]}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <Select
+                    value={searchRelationFilter}
+                    onValueChange={(value) => {
+                      setSearchRelationFilter(value as RelationType | "all");
+                      setSearchPage(0);
+                    }}
+                  >
+                    <SelectTrigger aria-label="Filtrar relação">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">Toda relação</SelectItem>
+                      {RELATION_TYPES.map((type) => (
+                        <SelectItem key={type} value={type}>
+                          {RELATION_LABELS[type]}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <Select
+                    value={searchOrder}
+                    onValueChange={(value) => {
+                      setSearchOrder(value as KnowledgeSearchOrder);
+                      setSearchPage(0);
+                    }}
+                  >
+                    <SelectTrigger className="col-span-2" aria-label="Ordenar pesquisa">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="relevance">Mais relevantes</SelectItem>
+                      <SelectItem value="updated">Atualizados recentemente</SelectItem>
+                      <SelectItem value="title">Título</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <label className="mt-2 flex items-center gap-2 rounded-lg border px-3 py-2 text-xs">
+                  <input
+                    type="checkbox"
+                    checked={onlyCanonical}
+                    onChange={(event) => {
+                      setOnlyCanonical(event.target.checked);
+                      setSearchPage(0);
+                    }}
+                    className="accent-[var(--tadeon-flow)]"
+                  />
+                  Somente conteúdo canônico
+                </label>
+                {activeFilterCount > 0 && (
+                  <Button
+                    type="button"
+                    size="sm"
+                    variant="ghost"
+                    className="mt-2 w-full"
+                    onClick={resetSearchFilters}
+                  >
+                    Limpar filtros
+                  </Button>
+                )}
               </div>
             </details>
 
             <div className="mt-4 flex items-center justify-between">
               <p className="tadeon-eyebrow">Páginas</p>
-              <Badge variant="outline">{searchCount}</Badge>
+              <div className="flex gap-1 items-center">
+                <Button
+                  size="icon"
+                  variant="ghost"
+                  aria-label="Mostrar árvore de páginas"
+                  aria-pressed={indexView === "tree"}
+                  onClick={() => setIndexView("tree")}
+                >
+                  <ListTree />
+                </Button>
+                <Button
+                  size="icon"
+                  variant="ghost"
+                  aria-label="Mostrar lista de páginas"
+                  aria-pressed={indexView === "list"}
+                  onClick={() => setIndexView("list")}
+                >
+                  <Search />
+                </Button>
+                <Badge variant="outline">{searchCount}</Badge>
+              </div>
             </div>
             <div className="mt-2 max-h-[44vh] space-y-1 overflow-y-auto pr-1">
               {nodeLoading ? (
                 <Loader2 className="mx-auto my-8 h-5 w-5 animate-spin text-primary" />
               ) : nodes.length ? (
-                nodes.map((node) => (
-                  <button
-                    type="button"
-                    key={node.id}
-                    onClick={() => void openNode(node)}
-                    aria-current={selected?.id === node.id ? "page" : undefined}
-                    className={`tadeon-nexus-index__node w-full rounded-lg px-3 py-2.5 text-left ${
-                      selected?.id === node.id ? "is-active text-primary" : ""
-                    }`}
-                  >
-                    <span className="block truncate text-sm font-medium">{node.title}</span>
-                    <span className="mt-0.5 block truncate text-[11px] uppercase tracking-wide text-muted-foreground">
-                      {TYPE_LABELS[node.node_type]} · {STATUS_LABELS[node.status]}
-                    </span>
-                    {searchSnippets[node.id] && (
-                      <span className="mt-1 line-clamp-2 block text-xs text-muted-foreground">
-                        {renderSearchSnippet(searchSnippets[node.id])}
+                indexView === "tree" ? (
+                  <KnowledgeTree
+                    nodes={nodes}
+                    selectedId={selected?.id}
+                    onOpen={(id) => void openNode(id)}
+                  />
+                ) : (
+                  nodes.map((node) => (
+                    <button
+                      type="button"
+                      key={node.id}
+                      onClick={() => void openNode(node)}
+                      aria-current={selected?.id === node.id ? "page" : undefined}
+                      className={`tadeon-nexus-index__node w-full rounded-lg px-3 py-2.5 text-left ${
+                        selected?.id === node.id ? "is-active text-primary" : ""
+                      }`}
+                    >
+                      <span className="block truncate text-sm font-medium">{node.title}</span>
+                      <span className="mt-0.5 block truncate text-[11px] uppercase tracking-wide text-muted-foreground">
+                        {TYPE_LABELS[node.node_type]} · {STATUS_LABELS[node.status]}
                       </span>
-                    )}
-                  </button>
-                ))
+                      {searchSnippets[node.id] && (
+                        <span className="mt-1 line-clamp-2 block text-xs text-muted-foreground">
+                          {renderSearchSnippet(searchSnippets[node.id])}
+                        </span>
+                      )}
+                    </button>
+                  ))
+                )
               ) : (
                 <p className="rounded-lg border border-dashed p-5 text-center text-xs text-muted-foreground">
                   Nenhuma página neste escopo.
@@ -1336,11 +1380,16 @@ export function NexusWorkspace({
           </aside>
         )}
 
-        <main
-          className={`${selected ? "order-1" : "order-2"} tadeon-nexus-document min-w-0 overflow-hidden rounded-2xl border bg-card/55 lg:order-2`}
+        <section
+          aria-label="Leitura das páginas"
+          className={`${selected ? "order-1" : "order-2"} tadeon-nexus-document tadeon-nexus-reading min-w-0 overflow-hidden rounded-2xl border bg-card/55 lg:order-2`}
         >
           {openNodes.length > 0 && (
-            <div className="flex min-w-0 gap-1 overflow-x-auto border-b bg-muted/20 px-2 pt-2" role="tablist" aria-label="Páginas abertas">
+            <div
+              className="flex min-w-0 gap-1 overflow-x-auto border-b bg-muted/20 px-2 pt-2"
+              role="tablist"
+              aria-label="Páginas abertas"
+            >
               {openNodes.map((node) => (
                 <div
                   key={node.id}
@@ -1353,6 +1402,27 @@ export function NexusWorkspace({
                   <button
                     type="button"
                     role="tab"
+                    data-material-surface="tab"
+                    data-state={selected?.id === node.id ? "active" : "inactive"}
+                    tabIndex={selected?.id === node.id ? 0 : -1}
+                    onKeyDown={(event) => {
+                      const offset =
+                        event.key === "ArrowRight" ? 1 : event.key === "ArrowLeft" ? -1 : 0;
+                      if (!offset && event.key !== "Home" && event.key !== "End") return;
+                      event.preventDefault();
+                      const index = openNodes.findIndex((page) => page.id === node.id);
+                      const target =
+                        event.key === "Home"
+                          ? 0
+                          : event.key === "End"
+                            ? openNodes.length - 1
+                            : (index + offset + openNodes.length) % openNodes.length;
+                      event.currentTarget
+                        .closest("[role=tablist]")
+                        ?.querySelectorAll<HTMLElement>("[role=tab]")
+                        [target]?.focus();
+                      void openNode(openNodes[target]);
+                    }}
                     aria-selected={selected?.id === node.id}
                     onClick={() => void openNode(node)}
                     className="flex min-w-0 flex-1 items-center gap-2 px-3 py-2 text-left"
@@ -1373,238 +1443,336 @@ export function NexusWorkspace({
             </div>
           )}
 
-          {selected ? (
-            <>
-              <div className="flex flex-col gap-3 border-b px-4 py-3 md:flex-row md:items-center md:justify-between">
-                <div className="min-w-0">
-                  <p className="truncate text-[11px] uppercase tracking-wide text-muted-foreground">
-                    {currentCampaign?.name ?? "Workspace"}{" "}
-                    <ChevronRight className="inline h-3 w-3" /> {TYPE_LABELS[selected.node_type]}
-                  </p>
-                  <p
-                    className={`mt-1 flex items-center gap-1.5 text-xs ${
-                      saveState === "conflict" || saveState === "error"
-                        ? "text-destructive"
-                        : saveState === "saved"
-                          ? "text-[var(--tadeon-flow)]"
-                          : "text-muted-foreground"
-                    }`}
-                  >
-                    {saveState === "saving" ? (
-                      <Loader2 className="h-3.5 w-3.5 animate-spin" />
-                    ) : saveState === "saved" ? (
-                      <Check className="h-3.5 w-3.5" />
-                    ) : (
-                      <Save className="h-3.5 w-3.5" />
-                    )}
-                    {saveLabel}
-                  </p>
-                </div>
-                <div className="flex flex-wrap items-center gap-1.5">
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => void toggleFavorite()}
-                    aria-label="Alternar favorito"
-                  >
-                    <Star
-                      className={`h-4 w-4 ${
-                        favorites.some((node) => node.id === selected.id)
-                          ? "fill-primary text-primary"
-                          : ""
-                      }`}
-                    />
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => setEditMode((current) => !current)}
-                  >
-                    {editMode ? <BookOpen className="h-4 w-4" /> : <Pencil className="h-4 w-4" />}
-                    {editMode ? "Leitura" : "Editar"}
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => setFocusMode((current) => !current)}
-                  >
-                    <Maximize2 className="h-4 w-4" />
-                    Foco
-                  </Button>
-                  {!focusMode && (
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => setRightOpen((current) => !current)}
-                      className="xl:hidden"
-                    >
-                      <PanelRight className="h-4 w-4" />
-                    </Button>
-                  )}
-                </div>
-              </div>
-
-              <article className="min-h-[62vh] px-5 py-6 md:px-8 md:py-8">
-                {editMode ? (
-                  <div>
-                    <Input
-                      value={draftTitle}
-                      onChange={(event) => {
-                        const value = event.target.value;
-                        setDraftTitle(value);
-                        markDirty(value, draftContent);
-                      }}
-                      className="h-auto border-0 bg-transparent px-0 font-cinzel text-3xl font-semibold shadow-none focus-visible:ring-0 md:text-4xl"
-                      aria-label="Título da página"
-                      maxLength={200}
-                    />
-                    <div className="tadeon-nexus-editor-toolbar my-4 flex flex-wrap gap-1 rounded-lg border bg-muted/20 p-1.5">
-                      <Button variant="ghost" size="sm" onClick={() => applyEditorSyntax("**")}>
-                        <strong>B</strong>
+          {graphEnabled && selected && (
+            <div
+              className="tadeon-nexus-reading__switch"
+              role="group"
+              aria-label="Modo de leitura do Nexus"
+            >
+              {(
+                [
+                  ["document", "Documento"],
+                  ["graph", "Grafo"],
+                  ["split", "Documento e grafo"],
+                ] as const
+              ).map(([view, label]) => (
+                <Button
+                  key={view}
+                  variant="ghost"
+                  size="sm"
+                  aria-pressed={readingView === view}
+                  onClick={() => setReadingView(view)}
+                >
+                  {label}
+                </Button>
+              ))}
+            </div>
+          )}
+          <div
+            className={`tadeon-nexus-reading__panes tadeon-nexus-reading__panes--${readingView}`}
+          >
+            <div hidden={Boolean(selected && graphEnabled && readingView === "graph")}>
+              {selected ? (
+                <>
+                  <div className="flex flex-col gap-3 border-b px-4 py-3 md:flex-row md:items-center md:justify-between">
+                    <div className="min-w-0">
+                      <p className="truncate text-[11px] uppercase tracking-wide text-muted-foreground">
+                        {currentCampaign?.name ?? "Workspace"}{" "}
+                        <ChevronRight className="inline h-3 w-3" />{" "}
+                        {TYPE_LABELS[selected.node_type]}
+                      </p>
+                      <p
+                        className={`mt-1 flex items-center gap-1.5 text-xs ${
+                          saveState === "conflict" || saveState === "error"
+                            ? "text-destructive"
+                            : saveState === "saved"
+                              ? "text-[var(--tadeon-flow)]"
+                              : "text-muted-foreground"
+                        }`}
+                      >
+                        {saveState === "saving" ? (
+                          <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                        ) : saveState === "saved" ? (
+                          <Check className="h-3.5 w-3.5" />
+                        ) : (
+                          <Save className="h-3.5 w-3.5" />
+                        )}
+                        {saveLabel}
+                      </p>
+                    </div>
+                    <div className="flex flex-wrap items-center gap-1.5">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => void toggleFavorite()}
+                        aria-label="Alternar favorito"
+                      >
+                        <Star
+                          className={`h-4 w-4 ${
+                            favorites.some((node) => node.id === selected.id)
+                              ? "fill-primary text-primary"
+                              : ""
+                          }`}
+                        />
                       </Button>
-                      <Button variant="ghost" size="sm" onClick={() => applyEditorSyntax("*")}>
-                        <em>I</em>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setEditMode((current) => !current)}
+                      >
+                        {editMode ? (
+                          <BookOpen className="h-4 w-4" />
+                        ) : (
+                          <Pencil className="h-4 w-4" />
+                        )}
+                        {editMode ? "Leitura" : "Editar"}
                       </Button>
                       <Button
                         variant="ghost"
                         size="sm"
-                        onClick={() => applyEditorSyntax("[[", "]]")}
+                        onClick={() => setFocusMode((current) => !current)}
                       >
-                        <Link2 className="h-4 w-4" />
-                        Ligação
+                        <Maximize2 className="h-4 w-4" />
+                        Foco
                       </Button>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => applyEditorSyntax("> [!NOTE] ", "")}
-                      >
-                        <TextQuote className="h-4 w-4" />
-                        Destaque
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => applyEditorSyntax("- [ ] ", "")}
-                      >
-                        <Check className="h-4 w-4" />
-                        Checklist
-                      </Button>
-                      <details className="tadeon-nexus-editor-more">
-                        <summary>Mais</summary>
+                      {!focusMode && (
                         <Button
                           variant="ghost"
                           size="sm"
-                          onClick={() => applyEditorSyntax("```\n", "\n```")}
+                          onClick={() => setRightOpen((current) => !current)}
+                          className="xl:hidden"
                         >
-                          Bloco técnico
+                          <PanelRight className="h-4 w-4" />
                         </Button>
-                      </details>
-                    </div>
-                    <Textarea
-                      ref={editorRef}
-                      value={draftContent}
-                      onChange={(event) => {
-                        const value = event.target.value;
-                        setDraftContent(value);
-                        markDirty(draftTitle, value);
-                      }}
-                      className="tadeon-nexus-editor min-h-[48vh] resize-y border-0 bg-transparent px-0 text-sm leading-7 shadow-none focus-visible:ring-0"
-                      spellCheck
-                      aria-label="Conteúdo da página"
-                    />
-                    <div className="mt-3 flex flex-wrap items-center justify-between gap-2 border-t pt-3 text-[11px] uppercase tracking-wide text-muted-foreground">
-                      <span>
-                        {wordCount(draftContent)} palavras · {draftContent.length} caracteres
-                      </span>
-                      <span>Ctrl + S salva · Ctrl + E alterna o modo</span>
+                      )}
                     </div>
                   </div>
-                ) : (
-                  <div>
-                    <h1 className="font-cinzel text-3xl font-semibold md:text-5xl">{draftTitle}</h1>
-                    {selected.summary && (
-                      <p className="mt-3 max-w-3xl text-base italic text-muted-foreground">
-                        {selected.summary}
-                      </p>
+
+                  <article className="min-h-[62vh] px-5 py-6 md:px-8 md:py-8">
+                    {editMode ? (
+                      <div>
+                        <Input
+                          value={draftTitle}
+                          onChange={(event) => {
+                            const value = event.target.value;
+                            setDraftTitle(value);
+                            markDirty(value, draftContent);
+                          }}
+                          className="h-auto border-0 bg-transparent px-0 font-cinzel text-3xl font-semibold shadow-none focus-visible:ring-0 md:text-4xl"
+                          aria-label="Título da página"
+                          maxLength={200}
+                        />
+                        <div className="tadeon-nexus-editor-toolbar my-4 flex flex-wrap gap-1 rounded-lg border bg-muted/20 p-1.5">
+                          <Button variant="ghost" size="sm" onClick={() => applyEditorSyntax("**")}>
+                            <strong>B</strong>
+                          </Button>
+                          <Button variant="ghost" size="sm" onClick={() => applyEditorSyntax("*")}>
+                            <em>I</em>
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => applyEditorSyntax("[[", "]]")}
+                          >
+                            <Link2 className="h-4 w-4" />
+                            Ligação
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => applyEditorSyntax("> [!NOTE] ", "")}
+                          >
+                            <TextQuote className="h-4 w-4" />
+                            Destaque
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => applyEditorSyntax("- [ ] ", "")}
+                          >
+                            <Check className="h-4 w-4" />
+                            Checklist
+                          </Button>
+                          <details className="tadeon-nexus-editor-more">
+                            <summary>Mais</summary>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => applyEditorSyntax("```\n", "\n```")}
+                            >
+                              Bloco técnico
+                            </Button>
+                          </details>
+                        </div>
+                        <Textarea
+                          ref={editorRef}
+                          value={draftContent}
+                          onChange={(event) => {
+                            const value = event.target.value;
+                            setDraftContent(value);
+                            markDirty(draftTitle, value);
+                          }}
+                          className="tadeon-nexus-editor min-h-[48vh] resize-y border-0 bg-transparent px-0 text-sm leading-7 shadow-none focus-visible:ring-0"
+                          spellCheck
+                          aria-label="Conteúdo da página"
+                        />
+                        <div className="mt-3 flex flex-wrap items-center justify-between gap-2 border-t pt-3 text-[11px] uppercase tracking-wide text-muted-foreground">
+                          <span>
+                            {wordCount(draftContent)} palavras · {draftContent.length} caracteres
+                          </span>
+                          <span>Ctrl + S salva · Ctrl + E alterna o modo</span>
+                        </div>
+                      </div>
+                    ) : (
+                      <div>
+                        <h1 className="font-cinzel text-3xl font-semibold md:text-5xl">
+                          {draftTitle}
+                        </h1>
+                        {selected.summary && (
+                          <p className="mt-3 max-w-3xl text-base italic text-muted-foreground">
+                            {selected.summary}
+                          </p>
+                        )}
+                        <div className="tadeon-rule my-6" />
+                        <SafeMarkdown
+                          markdown={draftContent}
+                          previews={previews}
+                          onOpenNode={(nodeId, headingSlug) => void openNode(nodeId, headingSlug)}
+                          onCreateMissing={(title) => void createNode(title)}
+                        />
+                      </div>
                     )}
-                    <div className="tadeon-rule my-6" />
-                    <SafeMarkdown
-                      markdown={draftContent}
-                      previews={previews}
-                      onOpenNode={(nodeId, headingSlug) => void openNode(nodeId, headingSlug)}
-                      onCreateMissing={(title) => void createNode(title)}
-                    />
+                  </article>
+                </>
+              ) : (
+                <div className="tadeon-nexus-home min-h-[65vh] p-5 md:p-8">
+                  <div className="tadeon-nexus-home__intro">
+                    <span className="tadeon-nexus-home__sigil">
+                      <Sparkles />
+                    </span>
+                    <div>
+                      <p className="tadeon-eyebrow">Entrada do acervo</p>
+                      <h2 className="mt-1 font-cinzel text-2xl font-semibold md:text-3xl">
+                        Onde a campanha se conecta
+                      </h2>
+                      <p className="mt-2 max-w-2xl text-sm text-muted-foreground">
+                        Encontre uma página pela busca, retome uma memória recente ou comece um novo
+                        fio narrativo.
+                      </p>
+                    </div>
                   </div>
-                )}
-              </article>
-            </>
-          ) : (
-            <div className="tadeon-nexus-home min-h-[65vh] p-5 md:p-8">
-              <div className="tadeon-nexus-home__intro">
-                <span className="tadeon-nexus-home__sigil"><Sparkles /></span>
-                <div>
-                  <p className="tadeon-eyebrow">Entrada do acervo</p>
-                  <h2 className="mt-1 font-cinzel text-2xl font-semibold md:text-3xl">Onde a campanha se conecta</h2>
-                  <p className="mt-2 max-w-2xl text-sm text-muted-foreground">
-                    Encontre uma página pela busca, retome uma memória recente ou comece um novo fio narrativo.
-                  </p>
+                  <div className="tadeon-nexus-home__actions">
+                    <button type="button" onClick={() => setLibraryOpen(true)}>
+                      <BookMarked />
+                      <span>
+                        <strong>Explorar bibliotecas</strong>
+                        <small>Acervo por coleções e tipos</small>
+                      </span>
+                      <ChevronRight />
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setCreateVisibility(campaignScope ? "campaign" : "author");
+                        setCreateOpen(true);
+                      }}
+                    >
+                      <FilePlus2 />
+                      <span>
+                        <strong>Criar uma página</strong>
+                        <small>Registre uma ideia sem configurar códigos</small>
+                      </span>
+                      <ChevronRight />
+                    </button>
+                    {graphEnabled && (
+                      <button
+                        type="button"
+                        onClick={async () => {
+                          const seed = recent[0] ?? favorites[0] ?? nodes[0];
+                          if (!seed) {
+                            toast.info("Crie uma página para começar a teia do Nexus.");
+                            return;
+                          }
+                          await openNode(seed.id);
+                          setGraphOpen(true);
+                        }}
+                      >
+                        <ListTree />
+                        <span>
+                          <strong>Ver organização</strong>
+                          <small>Explore a teia radial ou em árvore</small>
+                        </span>
+                        <ChevronRight />
+                      </button>
+                    )}
+                  </div>
+                  <div className="tadeon-nexus-home__shelves">
+                    <section>
+                      <p>
+                        <Clock3 /> Retome de onde parou
+                      </p>
+                      <div>
+                        {recent.slice(0, 4).map((node) => (
+                          <button
+                            type="button"
+                            key={node.id}
+                            onClick={() => void openNode(node.id)}
+                          >
+                            <span>{TYPE_LABELS[node.node_type]}</span>
+                            <strong>{node.title}</strong>
+                          </button>
+                        ))}
+                        {!recent.length && <small>Nenhuma página recente neste escopo.</small>}
+                      </div>
+                    </section>
+                    <section>
+                      <p>
+                        <Star /> Favoritos
+                      </p>
+                      <div>
+                        {favorites.slice(0, 4).map((node) => (
+                          <button
+                            type="button"
+                            key={node.id}
+                            onClick={() => void openNode(node.id)}
+                          >
+                            <span>{TYPE_LABELS[node.node_type]}</span>
+                            <strong>{node.title}</strong>
+                          </button>
+                        ))}
+                        {!favorites.length && (
+                          <small>Favorite páginas essenciais para vê-las aqui.</small>
+                        )}
+                      </div>
+                    </section>
+                  </div>
                 </div>
-              </div>
-              <div className="tadeon-nexus-home__actions">
-                <button type="button" onClick={() => setLibraryOpen(true)}>
-                  <BookMarked /><span><strong>Explorar bibliotecas</strong><small>Acervo por coleções e tipos</small></span><ChevronRight />
-                </button>
-                <button type="button" onClick={() => { setCreateVisibility(campaignScope ? "campaign" : "author"); setCreateOpen(true); }}>
-                  <FilePlus2 /><span><strong>Criar uma página</strong><small>Registre uma ideia sem configurar códigos</small></span><ChevronRight />
-                </button>
-                {graphEnabled && (
-                  <button
-                    type="button"
-                    onClick={async () => {
-                      const seed = recent[0] ?? favorites[0] ?? nodes[0];
-                      if (!seed) {
-                        toast.info("Crie uma página para começar a teia do Nexus.");
-                        return;
-                      }
-                      await openNode(seed.id);
-                      setGraphOpen(true);
-                    }}
-                  >
-                    <ListTree /><span><strong>Ver organização</strong><small>Explore a teia radial ou em árvore</small></span><ChevronRight />
-                  </button>
-                )}
-              </div>
-              <div className="tadeon-nexus-home__shelves">
-                <section>
-                  <p><Clock3 /> Retome de onde parou</p>
-                  <div>
-                    {recent.slice(0, 4).map((node) => (
-                      <button type="button" key={node.id} onClick={() => void openNode(node.id)}>
-                        <span>{TYPE_LABELS[node.node_type]}</span><strong>{node.title}</strong>
-                      </button>
-                    ))}
-                    {!recent.length && <small>Nenhuma página recente neste escopo.</small>}
-                  </div>
-                </section>
-                <section>
-                  <p><Star /> Favoritos</p>
-                  <div>
-                    {favorites.slice(0, 4).map((node) => (
-                      <button type="button" key={node.id} onClick={() => void openNode(node.id)}>
-                        <span>{TYPE_LABELS[node.node_type]}</span><strong>{node.title}</strong>
-                      </button>
-                    ))}
-                    {!favorites.length && <small>Favorite páginas essenciais para vê-las aqui.</small>}
-                  </div>
-                </section>
-              </div>
+              )}
             </div>
-          )}
-        </main>
+            {graphEnabled && selected && readingView !== "document" && (
+              <section
+                className="tadeon-nexus-reading__graph"
+                aria-label="Grafo conectado ao documento"
+              >
+                <KnowledgeGraph
+                  key={`${workspaceId}:${campaignScope}`}
+                  workspaceId={workspaceId}
+                  campaignId={campaignScope}
+                  focusNodeId={selected.id}
+                  onOpenNode={(id) => void openNode(id)}
+                />
+              </section>
+            )}
+          </div>
+        </section>
 
         {!focusMode && rightOpen && selected && (
           <aside className="tadeon-nexus-context order-3 min-h-0 rounded-2xl border bg-card/55 p-3">
-            <div className="tadeon-nexus-context-tabs grid grid-cols-4 gap-1 rounded-lg bg-muted/30 p-1" role="tablist" aria-label="Detalhes da página">
+            <div
+              className="tadeon-nexus-context-tabs grid grid-cols-4 gap-1 rounded-lg bg-muted/30 p-1"
+              role="tablist"
+              aria-label="Detalhes da página"
+            >
               {(
                 [
                   ["properties", ListTree, "Página"],
@@ -2101,7 +2269,8 @@ export function NexusWorkspace({
           <AlertDialogHeader>
             <AlertDialogTitle>Excluir {selected?.title ?? "esta página"}?</AlertDialogTitle>
             <AlertDialogDescription>
-              A página sairá do Nexus ativo. Relações e histórico permanecem preservados para recuperação administrativa.
+              A página sairá do Nexus ativo. Relações e histórico permanecem preservados para
+              recuperação administrativa.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
@@ -2130,7 +2299,11 @@ export function NexusWorkspace({
                   .finally(() => setDeleting(false));
               }}
             >
-              {deleting ? <Loader2 className="h-4 w-4 animate-spin" /> : <Trash2 className="h-4 w-4" />}
+              {deleting ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                <Trash2 className="h-4 w-4" />
+              )}
               Excluir
             </AlertDialogAction>
           </AlertDialogFooter>

@@ -1,5 +1,5 @@
 /** Browser-only font fixtures. Font binaries are supplied outside the app. */
-import { readFileSync } from "node:fs";
+import { readFileSync, existsSync } from "node:fs";
 export async function installDesignFonts(page) {
   const dir = process.env.NEXUS_FONT_FIXTURES;
   if (!dir) return;
@@ -14,8 +14,10 @@ export async function installDesignFonts(page) {
     ["PT Mono", 400, "font-5"],
   ]
     .map(
-      ([family, weight, file, style = "normal"]) =>
-        `@font-face{font-family:"${family}";font-weight:${weight};font-style:${style};src:url(data:font/ttf;base64,${readFileSync(`${dir}/${file}.ttf`).toString("base64")}) format("truetype");font-display:swap}`,
+      ([family, weight, file, style = "normal"]) => {
+        const extension = existsSync(`${dir}/${file}.woff2`) ? "woff2" : "ttf";
+        return `@font-face{font-family:"${family}";font-weight:${weight};font-style:${style};src:url(data:font/${extension};base64,${readFileSync(`${dir}/${file}.${extension}`).toString("base64")}) format("${extension === "woff2" ? "woff2" : "truetype"}");font-display:swap}`;
+      },
     )
     .join("\n");
   await page.route("https://fonts.googleapis.com/**", (route) =>
