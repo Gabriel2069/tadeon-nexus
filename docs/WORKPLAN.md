@@ -2,7 +2,7 @@
 
 > Gerado de [project-continuity.json](project-continuity.json). Edite o registro e rode `npm run sync:project`; não mantenha uma cópia manual.
 
-Snapshot: 2026-10-14; referência de runtime: `d638567c511f547fd76be2899790ab6f8a01ea85`. PR #267 em `design/fabric-motion-obsidian-2026-10-14`; integração: `integrated`. Não é prova de deploy.
+Snapshot: 2026-10-14; referência de runtime: `778d4449b01adc9ae5eab498d27606d2d7c3b35f`. PR #269 em `feat/nexus-reading-continuity-2026-10-14`; integração: `integrated`. Não é prova de deploy.
 
 Estados: planejado → próximo → em andamento → validado na branch → integrado. Publicação exige evidência própria do SHA; adiado conserva o requisito. Se um requisito mudar, preservar o ID e registrar a decisão/evidência.
 
@@ -24,7 +24,7 @@ Cada PR usa IDs desta fila e declara dependências. Trabalho sobre o mesmo propr
 | NEX-011 | Backup e restauração verificável | Planejado | 8 | assets | NEX-010 |
 | NEX-012 | Revisão editorial do corpus canônico | Adiado | 9 | knowledge | NEX-006 |
 | NEX-014 | Reconciliar movimento e aprofundar Véu & Trama | Integrado | 3 | shell | NEX-005, NEX-013 |
-| NEX-015 | Nexus: continuidade de abas e composição dos painéis | Validado na branch | 4 | knowledge | NEX-006, NEX-014 |
+| NEX-015 | Nexus: continuidade de abas e composição dos painéis | Integrado | 4 | knowledge | NEX-006, NEX-014 |
 
 ## NEX-001 — Preparação estrutural
 
@@ -143,7 +143,7 @@ Evidências: [docs/material-reading-validation.json](../docs/material-reading-va
 - Adicionar dimensionamento e preferências de painéis sem estado paralelo ou bridge de DOM.
 - Ampliar cobertura de filtros, grupos e leitura longa com fixtures de 120/500 páginas; preservar o limite de 500 candidatos e explicitar paginação. Validação do corpus real autorizado pertence a NEX-010.
 
-Evidências: [docs/nexus-continuity-validation.json](../docs/nexus-continuity-validation.json).
+Evidências: [docs/nexus-continuity-validation.json](../docs/nexus-continuity-validation.json), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38669420714), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38669674635).
 
 ## Decisões vigentes
 
