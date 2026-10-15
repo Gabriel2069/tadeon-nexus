@@ -1,23 +1,23 @@
 {
   "version": 1,
   "checkedAt": "2026-10-15",
-  "runtimeReference": "3a0a44f495075508601414abd21ed63ec0f55767",
+  "runtimeReference": "6f954c40df4b5611ef130818e97e79c12badd1c9",
   "integration": {
-    "pr": 271,
-    "branch": "codex/nex-016-navigation-utilities",
+    "pr": 273,
+    "branch": "codex/nex-008-master-workspace",
     "base": "main",
-    "baseCommit": "41e70f9697e419c85f3ec544767029a97ab7a724",
-    "headCommit": "ffdb33127de4aa30e3b16221ebd7bf54a5f2998f",
+    "baseCommit": "6e1087c67cd68f35504d73d8efdb56f65f839c52",
+    "headCommit": "337b218ae40cf773a0dc51c894f4a9b7a0220a64",
     "state": "integrated",
-    "mergeCommit": "3a0a44f495075508601414abd21ed63ec0f55767",
-    "qualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38675134229",
-    "mainQualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38675372247",
-    "productionEvidence": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38675372253",
+    "mergeCommit": "6f954c40df4b5611ef130818e97e79c12badd1c9",
+    "qualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38721993131",
+    "mainQualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38722287524",
+    "productionEvidence": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38722287420",
     "production": "confirmed",
-    "productionCommit": "3a0a44f495075508601414abd21ed63ec0f55767",
-    "productionVerifiedAt": "2026-10-15T03:17:45.0915711Z",
+    "productionCommit": "6f954c40df4b5611ef130818e97e79c12badd1c9",
+    "productionVerifiedAt": "2026-10-15T10:45:57.4262468Z",
     "productionHttpStatus": 200,
-    "workerVersion": "28b948e6-6c0d-4c7d-8895-8ff8d83f5ec0"
+    "workerVersion": "585d6298-962d-462a-87a1-8bcb7bf9955a"
   },
   "domains": [
     {
@@ -505,7 +505,7 @@
       "id": "NEX-008",
       "title": "Painel do Mestre: visão geral, ferramentas e condução",
       "domain": "master",
-      "status": "validated",
+      "status": "integrated",
       "priority": 5,
       "dependsOn": [
         "NEX-003",
@@ -519,9 +519,13 @@
         "Salvar snapshots manualmente, preservar edições durante o envio, invalidar leituras ao desmontar e revisar saída com rascunho pendente."
       ],
       "evidence": [
-        "docs/master-workspace-validation.json"
+        "docs/master-workspace-validation.json",
+        "https://github.com/Gabriel2069/tadeon-nexus/pull/273",
+        "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38721993131",
+        "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38722287524",
+        "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38722287420"
       ],
-      "checkpoint": "Validado na branch codex/nex-008-master-workspace, fonte c22015b, a partir de main 6e1087c. 135 suítes/577 testes, audit zero; 80 estados em quatro larguras e 8 repetições finais de ícones. Integração e publicação pendentes; fixtures não certificam contas/RLS, dispositivos físicos ou edição entre mestres."
+      "checkpoint": "Integrado pela PR #273, merge 6f954c4, após Quality no HEAD 337b218. Main aprovado e produção HTTP 200/SHA exato em 2026-10-15T10:45:57.4262468Z. 135 suítes/577 testes; 80 estados e 8 repetições finais de ícones em quatro larguras. Fixtures não certificam contas/RLS, dispositivos físicos ou edição entre mestres. Próximo lote: NEX-007."
     },
     {
       "id": "NEX-009",
@@ -720,7 +724,7 @@
       "id": "NEX-020",
       "title": "Símbolos reais de Mestre e Backup na navegação",
       "domain": "shell",
-      "status": "validated",
+      "status": "integrated",
       "priority": 4,
       "dependsOn": [
         "NEX-016"
@@ -730,9 +734,13 @@
         "Verificar SVG real, dimensões, pseudo-elementos e estados ativo, normal, recolhido e drawer em 320/390/820/1440px."
       ],
       "evidence": [
-        "docs/master-workspace-validation.json"
+        "docs/master-workspace-validation.json",
+        "https://github.com/Gabriel2069/tadeon-nexus/pull/273",
+        "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38721993131",
+        "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38722287524",
+        "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38722287420"
       ],
-      "checkpoint": "Validado na branch codex/nex-008-master-workspace, fonte c22015b, a partir de main 6e1087c. 135 suítes/577 testes, audit zero; 80 estados em quatro larguras e 8 repetições finais de ícones. Integração e publicação pendentes; fixtures não certificam contas/RLS, dispositivos físicos ou edição entre mestres."
+      "checkpoint": "Integrado pela PR #273, merge 6f954c4, após Quality no HEAD 337b218. Main aprovado e produção HTTP 200/SHA exato em 2026-10-15T10:45:57.4262468Z. 135 suítes/577 testes; 80 estados e 8 repetições finais de ícones em quatro larguras. Fixtures não certificam contas/RLS, dispositivos físicos ou edição entre mestres. Próximo lote: NEX-007."
     }
   ],
   "decisions": [
@@ -1186,6 +1194,23 @@
       "productionVerifiedAt": "2026-10-15T02:13:38.7334855Z",
       "productionHttpStatus": 200,
       "workerVersion": "001281e4-1176-46fd-9af0-67934a5f97d0"
+    },
+    {
+      "pr": 271,
+      "branch": "codex/nex-016-navigation-utilities",
+      "base": "main",
+      "baseCommit": "41e70f9697e419c85f3ec544767029a97ab7a724",
+      "headCommit": "ffdb33127de4aa30e3b16221ebd7bf54a5f2998f",
+      "state": "integrated",
+      "mergeCommit": "3a0a44f495075508601414abd21ed63ec0f55767",
+      "qualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38675134229",
+      "mainQualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38675372247",
+      "productionEvidence": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38675372253",
+      "production": "confirmed",
+      "productionCommit": "3a0a44f495075508601414abd21ed63ec0f55767",
+      "productionVerifiedAt": "2026-10-15T03:17:45.0915711Z",
+      "productionHttpStatus": 200,
+      "workerVersion": "28b948e6-6c0d-4c7d-8895-8ff8d83f5ec0"
     }
   ]
 }
