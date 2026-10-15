@@ -999,9 +999,6 @@ body:has(.tadeon-tabletop-studio) {
 
 /* Dashboard: enhance only the opening board. Character cards remain untouched. */
 
-@media (hover: hover) and (pointer: fine) {
-}
-
 @media (max-width: 760px) {
   .tadeon-director-remote__preview-frame {
     min-height: clamp(11rem, 31dvh, 19rem) !important;
@@ -1014,9 +1011,6 @@ body:has(.tadeon-tabletop-studio) {
   .tadeon-auth-page {
     overflow-y: auto !important;
   }
-}
-
-@media (max-width: 419px) {
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -1317,20 +1311,6 @@ html[data-tadeon-tabletop-selection-active="true"] :is(
 /* --------------------------------------------------------------------------
    Master panel parity and navigation geometry.
    -------------------------------------------------------------------------- */
-@media (min-width: 768px) {
-  .tadeon-master-navigation {
-    width: 100% !important;
-    max-width: none !important;
-    margin-inline: 0 !important;
-    padding-inline: 0 !important;
-  }
-
-  .tadeon-master-navigation > [role="tablist"] {
-    width: 100% !important;
-    min-width: 100% !important;
-    box-sizing: border-box;
-  }
-}
 
 /* --------------------------------------------------------------------------
    Sheet: borrow the dossier's depth, hierarchy and active-state language.
@@ -1483,8 +1463,6 @@ html[data-tadeon-tabletop-selection-active="true"] :is(
 /* --------------------------------------------------------------------------
    Login + Dashboard: make the visual change legible, not microscopic.
    -------------------------------------------------------------------------- */
-@media (min-width: 768px) {
-}
 
 .tadeon-auth-manifesto__brand {
   padding: .55rem .7rem;
@@ -1498,9 +1476,6 @@ html[data-tadeon-tabletop-selection-active="true"] :is(
   min-height: 3rem !important;
   letter-spacing: .035em;
   box-shadow: 0 20px 42px -27px rgb(217 215 164 / 72%) !important;
-}
-
-@media (max-width: 767px) {
 }
 
 /* end-source: src/styles/urgent-user-reconciliation.css */

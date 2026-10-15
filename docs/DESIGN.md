@@ -170,3 +170,12 @@ Rascunhos legados sem identidade permanecem no storage e não são importados au
 Nomes visíveis vêm de `utility-areas.ts`: Consulta offline, Usuários e Backup e diagnóstico. As URLs permanecem estáveis. “Saúde do arquivo” continua apenas como identificador interno de apresentação para conservar o tema existente. O nome `mobile-more-radial.css` é mantido por compatibilidade de inventário; seu conteúdo agora pertence à lista Radix.
 
 `navigation-layout.css` concentra feedback e movimento direcional da navegação. Sheets com proprietário explícito de movimento recebem `data-motion-surface`; as regras legadas conservam geometria, mas deixam a animação para esse proprietário. A camada do drawer fechado é descartada sem manter bloqueio invisível após resize. As três utilidades compartilham um resumo de estado com números Inter e filamentos autorais; campos, leitura e confirmações permanecem estáveis. Escopo e limites de validação estão em [navigation-utilities-validation.json](navigation-utilities-validation.json), sem outra fila de tarefas.
+
+
+## Condução do Mestre (NEX-008/020)
+
+O vinho fica na borda, no plano selecionado e nos filamentos; o título conserva marfim legível. A visão geral reúne campanha/objetivo, entrada na sessão, indicadores acionáveis e personagens em perspectiva. Cormorant sustenta títulos e nomes; Inter tabular mantém recursos e métricas. Tecido aparece como luz vetorial localizada, sem atravessar os campos ou deformar os dados.
+
+A navegação organiza Condução, Elenco, Ritmo e Arquivo. O seletor compacto permite alcançar todas as ferramentas sem depender de arrastar a faixa; foco, abas e URL permanecem sob React/Router. Os alvos mantêm posição; o material dos botões vem do primitivo compartilhado. A revisão não acrescenta animação ambiente nem outra camada para vencer os estilos antigos.
+
+A prova visual e de interação deste lote pertence a [master-workspace-validation.json](master-workspace-validation.json); publicação depende do workflow de main e do SHA servido.

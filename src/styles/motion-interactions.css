@@ -245,9 +245,6 @@
    NAVIGATION - clear movement on active state.
    -------------------------------------------------------------------------- */
 
-@media (hover: hover) and (pointer: fine) {
-}
-
 /* --------------------------------------------------------------------------
    NEXUS / TABLETOP - selections become visually acquired.
    -------------------------------------------------------------------------- */
@@ -545,7 +542,6 @@
 @media (hover:hover) and (pointer:fine){.tadeon-shell .tadeon-surface:hover{transform:translateY(-8px) rotate(-.18deg) scale(1.012);filter:brightness(1.035)}.tadeon-shell .tadeon-user-row:hover{transform:translateX(8px) translateY(-2px);filter:brightness(1.025)}.tadeon-shell .tadeon-state-panel:hover{transform:translateY(-6px) scale(1.008)}}
 
 /* Navigation: active destination arrives with a directional sweep. */
-@media (hover:hover) and (pointer:fine){}
 
 /* Tooltips and floating notes: quick, sharp, directional. */
 .tadeon-shell [data-slot=tooltip-content][data-state=open]{animation:tdv-tooltip-in 260ms var(--tdv-spring) both}
@@ -626,13 +622,6 @@
 .tadeon-shell[data-section="O Nexus"] [data-tadeon-node][data-related="false"]{transition:opacity 460ms var(--tp-soft),filter 460ms var(--tp-soft);opacity:.22;filter:blur(1px)}
 
 /* MESTRE - command surface with directional snap. */
-.tadeon-shell[data-section="Painel do Mestre"] .tadeon-master-navigation [data-slot="tabs-trigger"]{
-  overflow:hidden;
-}
-.tadeon-shell[data-section="Painel do Mestre"] .tadeon-master-navigation [data-slot="tabs-trigger"]:not([data-material-surface="tab"])::after{
-  content:"";position:absolute;inset:0 auto 0 0;width:0;background:linear-gradient(90deg,rgb(180 92 98 / 0),rgb(180 92 98 / 18%));transition:width 420ms var(--tp-in)
-}
-.tadeon-shell[data-section="Painel do Mestre"] .tadeon-master-navigation [data-slot="tabs-trigger"][data-state="active"]::after{width:100%}
 .tadeon-shell[data-section="Painel do Mestre"] [data-tadeon-command]:active{animation:tp-command-press 300ms var(--tp-snap)}
 @keyframes tp-command-press{0%{transform:scale(1)}42%{transform:scale(.9) rotate(-1.2deg)}78%{transform:scale(1.04) rotate(.3deg)}100%{transform:scale(1)}}
 
@@ -1586,7 +1575,6 @@
 @keyframes tadeon-busy-breathe{0%,100%{opacity:.72}50%{opacity:1}}
 @keyframes tadeon-state-success{from{opacity:.5;transform:translateY(4px) scale(.97)}65%{opacity:1;transform:translateY(-2px) scale(1.02)}to{transform:none}}
 @keyframes tadeon-state-error{0%{opacity:.55;transform:translateX(0)}25%{transform:translateX(-3px)}50%{transform:translateX(3px)}75%{transform:translateX(-1px)}to{opacity:1;transform:none}}
-@media (hover:hover) and (pointer:fine){}
 
 @media (prefers-reduced-motion:reduce){.tadeon-shell [data-slot="card"],.tadeon-shell [data-slot="badge"],.tadeon-shell [data-slot="avatar"],.tadeon-shell [data-slot="avatar-image"],.tadeon-shell [data-slot="avatar-fallback"],.tadeon-shell [data-slot="calendar"],.tadeon-shell [data-slot="carousel-item"],.tadeon-shell [data-state="loading"],.tadeon-shell [aria-busy="true"],.tadeon-shell [data-state="success"],.tadeon-shell [data-state="error"],.tadeon-shell img:not([aria-hidden="true"]),.tadeon-shell table tbody tr{animation:none!important;transition:none!important}}
 
@@ -1692,23 +1680,11 @@
     --sidebar-item-accent: var(--tadeon-metal);
   }
 
-  #tadeon-desktop-sidebar .tadeon-nav-item[aria-current="page"] .tadeon-nav-item__icon {
-    color: var(--sidebar-item-accent) !important;
-  }
-
-  #tadeon-desktop-sidebar .tadeon-nav-item:not([aria-current="page"]):hover .tadeon-nav-item__icon,
-  #tadeon-desktop-sidebar .tadeon-nav-item:not([aria-current="page"]):focus-visible .tadeon-nav-item__icon {
-    color: color-mix(in srgb, currentColor 84%, var(--foreground));
-  }
-
   /* Collapse control gets the same spatial language as the rail itself. */
 
   @keyframes tadeon-sidebar-chevron-in {
     from { opacity: 0; transform: translateX(-4px) scale(.86); }
     to { opacity: 1; transform: none; }
   }
-}
-
-@media (prefers-reduced-motion: reduce) {
 }
 /* end-source: src/styles/tadeon-sidebar-real-repair.css */

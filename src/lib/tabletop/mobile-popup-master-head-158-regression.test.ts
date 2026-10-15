@@ -36,10 +36,8 @@ describe("mobile popup + master head 158", () => {
     expect(nav).toContain('value: "threats", label: "Ameaças", icon: ShieldAlert');
     expect(nav).toContain('value: "investigation", label: "Investigação", icon: BrainCircuit');
     expect(nav).toContain('value: "data", label: "Dados & Fórmulas", icon: Database');
-    expect(nav).toContain("createPortal");
-    expect(nav).toContain("tadeon-master-commandbar__glow");
     expect(nav).toContain("data-master-head-tab");
-    expect(nav).toContain("observer.observe(slot");
+    expect(nav).not.toContain("MutationObserver");
     expect(nav).not.toContain("observer.observe(document.body");
   });
 
@@ -51,7 +49,6 @@ describe("mobile popup + master head 158", () => {
     expect(css).toContain(".tadeon-master-commandbar__master-sigil");
     expect(css).toContain(".tadeon-master-commandbar__active-icon");
     expect(css).toContain(".tadeon-master-commandbar h1 > svg");
-    expect(css).toContain('.tadeon-nav-item[href="/master-panel"]');
   });
 
   it("brings utility heads back to the compact Nexus commandbar cadence", () => {

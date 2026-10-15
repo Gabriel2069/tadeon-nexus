@@ -6,7 +6,7 @@
       "roots": 4
     },
     "src/styles/button.css": {
-      "important": 19,
+      "important": 18,
       "roots": 1
     },
     "src/styles/desktop-shell.css": {
@@ -14,11 +14,11 @@
       "roots": 0
     },
     "src/styles/experience-surfaces.css": {
-      "important": 228,
+      "important": 227,
       "roots": 2
     },
     "src/styles/global-search.css": {
-      "important": 29,
+      "important": 28,
       "roots": 0
     },
     "src/styles/hero-backgrounds.css": {
@@ -26,7 +26,7 @@
       "roots": 0
     },
     "src/styles/interface-layout.css": {
-      "important": 387,
+      "important": 381,
       "roots": 1
     },
     "src/styles/knowledge-graph-second-brain.css": {
@@ -38,11 +38,11 @@
       "roots": 0
     },
     "src/styles/master-panel-navigation.css": {
-      "important": 46,
+      "important": 0,
       "roots": 0
     },
     "src/styles/master-toolbar-popout.css": {
-      "important": 68,
+      "important": 49,
       "roots": 0
     },
     "src/styles/mobile-more-radial.css": {
@@ -50,19 +50,19 @@
       "roots": 0
     },
     "src/styles/mobile-viewport.css": {
-      "important": 86,
+      "important": 42,
       "roots": 1
     },
     "src/styles/motion-composition.css": {
-      "important": 402,
+      "important": 349,
       "roots": 20
     },
     "src/styles/motion-foundation.css": {
-      "important": 76,
+      "important": 73,
       "roots": 6
     },
     "src/styles/motion-interactions.css": {
-      "important": 179,
+      "important": 178,
       "roots": 11
     },
     "src/styles/navigation-layout.css": {
@@ -78,7 +78,7 @@
       "roots": 0
     },
     "src/styles/page-hero-parity.css": {
-      "important": 872,
+      "important": 867,
       "roots": 1
     },
     "src/styles/realtime-status.css": {
@@ -90,7 +90,7 @@
       "roots": 0
     },
     "src/styles/route-layout.css": {
-      "important": 1512,
+      "important": 1245,
       "roots": 0
     },
     "src/styles/route-popup-frame.css": {

@@ -2,6 +2,8 @@
 
 Verificado em 15/10/2026. Entrada curta de retomada; o registro único de tarefas e responsáveis é [project-continuity.json](../project-continuity.json).
 
+Checkpoint atual: NEX-008/020 validados na branch `codex/nex-008-master-workspace`, fonte `c22015b`, a partir de main `6e1087c`. Mestre e Backup usam o SVG real; navegação, visão geral e persistência manual do painel foram reorganizadas. A fila canônica registra DEC-012 e a prioridade autorizada antes da Mesa. [Evidência](../master-workspace-validation.json); 135 suítes/577 testes e auditoria sem vulnerabilidades; 80 estados e 8 repetições dos ícones em quatro larguras. Integração/publicação deste lote ainda pendentes.
+
 ## Referências estruturais históricas
 
 - PR [#258](https://github.com/Gabriel2069/tadeon-nexus/pull/258), branch `refactor/nexus-foundation-2026-10-11`: preparação estrutural integrada a `main` em `c6c1ea6c5e3338b4ff111329a8b2b37841e8245d`, após Quality aprovado no HEAD `20ba787`.

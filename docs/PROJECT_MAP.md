@@ -54,11 +54,11 @@ Estilos: [src/styles/tabletop-workspace.css](../src/styles/tabletop-workspace.cs
 
 ## Painel e administração
 
-UI não substitui autorização do servidor; dados narrativos não entram em anotação visual.
+A rota é a única dona do rascunho, leitura e autorização via ProtectedShell. Overview recebe dados/callbacks; busca e paginação são locais. Navegação e identidade do cabeçalho recebem a mesma aba React; o router mantém URL. useMasterDraft salva snapshots manuais sem reconhecer edições posteriores. Master-panel-navigation.css é a única autoridade da navegação interna; workspace.css mantém os painéis.
 
-Código: [src/routes/master-panel.tsx](../src/routes/master-panel.tsx), [src/components/master/master-hub.tsx](../src/components/master/master-hub.tsx), [src/routes/manage-users.tsx](../src/routes/manage-users.tsx), [supabase/functions/admin-users/index.ts](../supabase/functions/admin-users/index.ts).
+Código: [src/routes/master-panel.tsx](../src/routes/master-panel.tsx), [src/components/master/master-hub.tsx](../src/components/master/master-hub.tsx), [src/routes/manage-users.tsx](../src/routes/manage-users.tsx), [supabase/functions/admin-users/index.ts](../supabase/functions/admin-users/index.ts), [src/components/master/master-overview.tsx](../src/components/master/master-overview.tsx), [src/components/master/master-panel-navigation.tsx](../src/components/master/master-panel-navigation.tsx), [src/components/master/use-master-draft.ts](../src/components/master/use-master-draft.ts).
 
-Estilos: [src/styles/master-panel-navigation.css](../src/styles/master-panel-navigation.css).
+Estilos: [src/styles/master-panel-navigation.css](../src/styles/master-panel-navigation.css), [src/styles/workspace.css](../src/styles/workspace.css).
 
 ## Sessão, offline e flags
 

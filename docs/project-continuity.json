@@ -144,12 +144,16 @@
         "src/routes/master-panel.tsx",
         "src/components/master/master-hub.tsx",
         "src/routes/manage-users.tsx",
-        "supabase/functions/admin-users/index.ts"
+        "supabase/functions/admin-users/index.ts",
+        "src/components/master/master-overview.tsx",
+        "src/components/master/master-panel-navigation.tsx",
+        "src/components/master/use-master-draft.ts"
       ],
       "styles": [
-        "src/styles/master-panel-navigation.css"
+        "src/styles/master-panel-navigation.css",
+        "src/styles/workspace.css"
       ],
-      "boundary": "UI não substitui autorização do servidor; dados narrativos não entram em anotação visual."
+      "boundary": "A rota é a única dona do rascunho, leitura e autorização via ProtectedShell. Overview recebe dados/callbacks; busca e paginação são locais. Navegação e identidade do cabeçalho recebem a mesma aba React; o router mantém URL. useMasterDraft salva snapshots manuais sem reconhecer edições posteriores. Master-panel-navigation.css é a única autoridade da navegação interna; workspace.css mantém os painéis."
     },
     {
       "id": "session",
@@ -485,7 +489,7 @@
       "title": "Mesa: hierarquia de ferramentas e workspace",
       "domain": "tabletop",
       "status": "planned",
-      "priority": 5,
+      "priority": 6,
       "dependsOn": [
         "NEX-004",
         "NEX-013"
@@ -499,20 +503,25 @@
     },
     {
       "id": "NEX-008",
-      "title": "Painel do Mestre e administração",
+      "title": "Painel do Mestre: visão geral, ferramentas e condução",
       "domain": "master",
-      "status": "planned",
-      "priority": 6,
+      "status": "validated",
+      "priority": 5,
       "dependsOn": [
         "NEX-003",
-        "NEX-013"
+        "NEX-013",
+        "NEX-020"
       ],
       "acceptance": [
         "Revisar densidade, tabs, editor e listas com dados longos.",
         "Separar seções do hub por responsabilidade sem duplicar autorização.",
-        "Estados vazio/erro/sucesso e usuário sem acesso preservados."
+        "Estados vazio/erro/sucesso e usuário sem acesso preservados.",
+        "Salvar snapshots manualmente, preservar edições durante o envio, invalidar leituras ao desmontar e revisar saída com rascunho pendente."
       ],
-      "evidence": []
+      "evidence": [
+        "docs/master-workspace-validation.json"
+      ],
+      "checkpoint": "Validado na branch codex/nex-008-master-workspace, fonte c22015b, a partir de main 6e1087c. 135 suítes/577 testes, audit zero; 80 estados em quatro larguras e 8 repetições finais de ícones. Integração e publicação pendentes; fixtures não certificam contas/RLS, dispositivos físicos ou edição entre mestres."
     },
     {
       "id": "NEX-009",
@@ -706,6 +715,24 @@
         "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38675372253"
       ],
       "checkpoint": "Integrado pela PR #271, merge 3a0a44f, após Quality no HEAD ffdb331. Main aprovado e produção HTTP 200/SHA exato em 2026-10-15T03:17:45.0915711Z. 133 suítes/587 testes; 32 estados de utilidades e repetição de navegação móvel. Fixtures não certificam contas/RLS ou restauração completa. Próximo lote: NEX-007."
+    },
+    {
+      "id": "NEX-020",
+      "title": "Símbolos reais de Mestre e Backup na navegação",
+      "domain": "shell",
+      "status": "validated",
+      "priority": 4,
+      "dependsOn": [
+        "NEX-016"
+      ],
+      "acceptance": [
+        "Retirar máscaras e regras que escondem os SVGs autorais na sidebar e no dock.",
+        "Verificar SVG real, dimensões, pseudo-elementos e estados ativo, normal, recolhido e drawer em 320/390/820/1440px."
+      ],
+      "evidence": [
+        "docs/master-workspace-validation.json"
+      ],
+      "checkpoint": "Validado na branch codex/nex-008-master-workspace, fonte c22015b, a partir de main 6e1087c. 135 suítes/577 testes, audit zero; 80 estados em quatro larguras e 8 repetições finais de ícones. Integração e publicação pendentes; fixtures não certificam contas/RLS, dispositivos físicos ou edição entre mestres."
     }
   ],
   "decisions": [
@@ -775,6 +802,14 @@
       "id": "DEC-011",
       "decision": "Priorizar menus, Consulta offline, Usuários e Backup e diagnóstico antes da Mesa, conforme novo pedido de Tadeu.",
       "reason": "NEX-016 a NEX-019 delimitam navegação e utilidades. URLs e identidade visual permanecem; a revisão não conclui o restante do Painel do Mestre, autorização real ou restauração completa de infraestrutura (NEX-008/010/011). Os nomes visíveis são Consulta offline, Usuários e Backup e diagnóstico."
+    },
+    {
+      "id": "DEC-012",
+      "decision": "Corrigir os símbolos de Mestre e Backup e priorizar o Painel do Mestre antes da Mesa, conforme pedido de Tadeu em 15/10/2026.",
+      "reason": "NEX-020 retira a sobreposição dos ícones; NEX-008 organiza visão geral, ferramentas e persistência manual. Não altera regras RPG, autorização/RLS, restauração de infraestrutura ou o motor da Mesa. A validação anterior só media o wrapper dos ícones e não provava a visibilidade do SVG real.",
+      "evidence": [
+        "docs/master-workspace-validation.json"
+      ]
     }
   ],
   "bridges": [
@@ -1026,6 +1061,10 @@
     {
       "path": "docs/navigation-utilities-validation.json",
       "purpose": "NEX-016 a NEX-019: menus, Consulta offline, Usuários e Backup e diagnóstico; validação de interface, funções e limites de fixtures."
+    },
+    {
+      "path": "docs/master-workspace-validation.json",
+      "purpose": "Evidências e limites do Painel do Mestre e dos ícones reais de navegação; NEX-008/020."
     }
   ],
   "integrationHistory": [

@@ -495,15 +495,6 @@
   }
 }
 
-@media (hover: hover) and (pointer: fine) {
-
-  .tadeon-nav-item:hover .tadeon-nav-item__icon > svg {
-    color: var(--sidebar-primary);
-    filter: drop-shadow(0 0 8px rgb(217 215 164 / 28%));
-    transform: translateX(1px);
-  }
-}
-
 @media (max-width: 639px) {
   .tadeon-page {
     padding-inline: 0.875rem;
@@ -568,9 +559,6 @@
   .tadeon-nexus-actions > button {
     width: 100%;
   }
-}
-
-@media (max-width: 419px) {
 }
 
 @media (pointer: coarse) {
@@ -3920,10 +3908,8 @@ legend {
 }
 
 .tadeon-nav-item[aria-current="page"] .tadeon-nav-item__icon {
-  color: var(--section-accent, var(--primary));
   background: rgb(var(--section-accent-rgb, 217 215 164) / 8%);
   box-shadow: 0 0 0 1px rgb(var(--section-accent-rgb, 217 215 164) / 10%);
-  animation: tadeon-control-icon-select 320ms var(--ease-spring) both;
 }
 
 /* One physical measure for every sidebar destination. Active Dashboard,
@@ -4052,9 +4038,7 @@ legend {
     [data-slot="tabs-trigger"],
     [data-slot="select-trigger"],
     [data-trigger-slot],
-    .tadeon-shell button:not([data-slot]),
-    .tadeon-nav-item,
-    .tadeon-mobile-dock__item
+    .tadeon-shell button:not([data-slot])
   )
   svg.lucide:not(.animate-spin):not(.animate-pulse) {
   overflow: visible;
@@ -4071,9 +4055,7 @@ legend {
 [data-slot="button"]:active svg.lucide:not(.animate-spin):not(.animate-pulse),
 [data-slot="tabs-trigger"]:active svg.lucide:not(.animate-spin):not(.animate-pulse),
 [data-slot="select-trigger"]:active svg.lucide:not(.animate-spin):not(.animate-pulse),
-.tadeon-shell button:not([data-slot]):active svg.lucide:not(.animate-spin):not(.animate-pulse),
-.tadeon-nav-item:active svg.lucide:not(.animate-spin):not(.animate-pulse),
-.tadeon-mobile-dock__item:active svg.lucide:not(.animate-spin):not(.animate-pulse) {
+.tadeon-shell button:not([data-slot]):active svg.lucide:not(.animate-spin):not(.animate-pulse) {
   transform: scale(0.84) rotate(-6deg);
 }
 
@@ -4082,9 +4064,7 @@ legend {
     [data-slot="tabs-trigger"],
     [data-slot="select-trigger"],
     [data-trigger-slot],
-    .tadeon-shell button:not([data-slot]),
-    .tadeon-nav-item,
-    .tadeon-mobile-dock__item
+    .tadeon-shell button:not([data-slot])
   ):is(
     [aria-pressed="true"],
     [aria-selected="true"],
@@ -4106,9 +4086,7 @@ legend {
   [data-trigger-slot]:not(:disabled):hover svg.lucide:not(.animate-spin):not(.animate-pulse),
   .tadeon-shell
     button:not([data-slot]):not(:disabled):hover
-    svg.lucide:not(.animate-spin):not(.animate-pulse),
-  .tadeon-nav-item:hover svg.lucide:not(.animate-spin):not(.animate-pulse),
-  .tadeon-mobile-dock__item:hover svg.lucide:not(.animate-spin):not(.animate-pulse) {
+    svg.lucide:not(.animate-spin):not(.animate-pulse) {
     color: color-mix(in srgb, currentColor 76%, var(--tadeon-control-accent, var(--primary)));
     filter: drop-shadow(
       0 0 8px color-mix(in srgb, var(--tadeon-control-accent, var(--primary)) 26%, transparent)
@@ -4178,9 +4156,7 @@ legend {
       [data-slot="tabs-trigger"],
       [data-slot="select-trigger"],
       [data-trigger-slot],
-      .tadeon-shell button:not([data-slot]),
-      .tadeon-nav-item,
-      .tadeon-mobile-dock__item
+      .tadeon-shell button:not([data-slot])
     )
     svg.lucide {
     animation: none !important;

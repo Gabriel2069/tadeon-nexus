@@ -574,9 +574,6 @@ html body [data-tadeon-page-hero="offline"] svg.text-primary {
 /* DASHBOARD - OS TRÊS QUADROS SEMPRE LADO A LADO                            */
 /* ========================================================================== */
 
-@media (max-width: 419px) {
-}
-
 /* end-source: src/styles/head-parity-final-214.css */
 /* source: src/styles/head-tab-parity-217.css */
 /* #217 - geometry only.
@@ -2150,9 +2147,6 @@ html body .tadeon-shell[data-section="Consulta offline"]
 /* source: src/styles/dashboard-signal-alignment-229.css */
 /* #229 - Dashboard: ícones dos três sinais centralizados no bloco textual. */
 
-@media (max-width: 639px) {
-}
-
 /* end-source: src/styles/dashboard-signal-alignment-229.css */
 
 
@@ -2355,44 +2349,6 @@ html body .tadeon-shell[data-section="Painel do Mestre"] {
 }
 
 /* Navegação: selecionado vermelho, texto/ícone com leitura marfim. */
-html body .tadeon-shell[data-section="Painel do Mestre"]
-  .tadeon-master-navigation [data-master-tab] {
-  border: 1px solid transparent;
-  transition:
-    color var(--motion-fast, 160ms) var(--ease-out, ease-out),
-    border-color var(--motion-fast, 160ms) var(--ease-out, ease-out),
-    background-color var(--motion-fast, 160ms) var(--ease-out, ease-out),
-    box-shadow var(--motion-fast, 160ms) var(--ease-out, ease-out),
-    transform var(--motion-press, 110ms) var(--ease-out, ease-out);
-}
-
-html body .tadeon-shell[data-section="Painel do Mestre"]
-  .tadeon-master-navigation [data-master-tab]:not([data-state="active"]):hover {
-  color: rgb(var(--tadeon-tab-gold-rgb));
-  border-color: rgb(var(--section-accent-rgb) / 22%);
-  background: rgb(var(--section-accent-rgb) / 7%);
-}
-
-html body .tadeon-shell[data-section="Painel do Mestre"]
-  .tadeon-master-navigation [data-master-tab][data-state="active"] {
-  color: rgb(var(--tadeon-tab-gold-rgb)) !important;
-  border-color: rgb(var(--section-accent-rgb) / 48%) !important;
-  background:
-    linear-gradient(135deg, rgb(var(--section-accent-rgb) / 22%), transparent 74%),
-    rgb(var(--section-accent-rgb) / 12%) !important;
-  box-shadow:
-    0 12px 28px -22px rgb(var(--section-accent-rgb) / 82%),
-    inset 0 1px rgb(var(--tadeon-tab-gold-rgb) / 7%) !important;
-}
-
-html body .tadeon-shell[data-section="Painel do Mestre"]
-  .tadeon-master-navigation__label {
-  color: color-mix(
-    in srgb,
-    rgb(var(--section-accent-rgb)) 62%,
-    rgb(var(--tadeon-tab-gold-rgb))
-  );
-}
 
 /* Cards: só uma assinatura periférica, sem pintar área de leitura. */
 html body .tadeon-shell[data-section="Painel do Mestre"] #tadeon-main [data-slot="card"] {
@@ -2941,8 +2897,6 @@ html body .tadeon-shell[data-section="Saúde do arquivo"] #tadeon-main [data-slo
 /* source: src/styles/dashboard-hero-motion-depth-232.css */
 /* Dashboard hero visual depth - static composition only.
    Motion is owned by tadeon-motion-heroes.css and tadeon-motion-microdetails.css. */
-@media (max-width: 767px) {
-}
 
 /* end-source: src/styles/dashboard-hero-motion-depth-232.css */
 /* source: src/styles/experimental-round-hero-symbols-233.css */
@@ -3091,7 +3045,6 @@ html body .tadeon-shell .tadeon-nav-item {
 
 html body .tadeon-shell .tadeon-nav-item[aria-current="page"] .tadeon-nav-item__icon,
 html body .tadeon-shell .tadeon-nav-item[aria-current="page"] .tadeon-nav-item__icon > svg {
-  color: var(--nav-authority) !important;
   border-color: rgb(var(--nav-authority-rgb) / 34%) !important;
 }
 

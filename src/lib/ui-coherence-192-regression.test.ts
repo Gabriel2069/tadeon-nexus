@@ -5,6 +5,7 @@ function source(path: string) {
   return readFileSync(path, "utf8");
 }
 
+// Superseded mask/frame assertions are covered by master-workspace behavior and browser checks.
 describe("ui coherence 192/193/194/195", () => {
   it("moves both Nexus and Master popouts to the desktop toolbar", () => {
     const bridge = source("src/components/master/master-toolbar-popout-bridge.tsx");
@@ -23,13 +24,6 @@ describe("ui coherence 192/193/194/195", () => {
     expect(css).toContain("margin-inline: 0 !important");
   });
 
-  it("removes the master navigation wrapper as a visual surface", () => {
-    const css = source("src/styles/ui-coherence-192.css");
-    expect(css).toContain(".tadeon-master-navigation {");
-    expect(css).toContain("display: contents !important");
-    expect(css).toContain(".tadeon-master-navigation__scroller");
-    expect(css).toContain("width: 100% !important");
-  });
 
   it("targets the inspected setup and collapse controls directly", () => {
     const css = source("src/styles/ui-coherence-192.css");

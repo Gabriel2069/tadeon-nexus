@@ -1,5 +1,4 @@
-import { createPortal } from "react-dom";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import {
   Activity,
   BedDouble,
@@ -74,149 +73,126 @@ const groups: Array<{ label: string; values: MasterTab[] }> = [
   { label: "Arquivo", values: ["catalog", "assets", "pinned", "notes", "data"] },
 ];
 
-function shellHeaderBottom() {
-  const header =
-    window.innerWidth < 768
-      ? document.querySelector<HTMLElement>(".tadeon-mobile-header")
-      : document.querySelector<HTMLElement>(".tadeon-desktop-toolbar");
-  return Math.max(0, Math.round(header?.getBoundingClientRect().bottom ?? 0));
+/** Active identity comes from the same controlled value as the panel. */
+export function MasterPanelIdentity({ activeTab }: { activeTab: MasterTab }) {
+  const Icon = MASTER_TAB_META.find((tab) => tab.value === activeTab)?.icon ?? Activity;
+  return (
+    <span
+      className="tadeon-master-commandbar__sigil-stack"
+      data-master-head-tab={activeTab}
+      aria-hidden="true"
+    >
+      <MasterSigil className="tadeon-master-commandbar__master-sigil" />
+      <Icon className="tadeon-master-commandbar__active-icon" />
+    </span>
+  );
 }
 
-interface HeroPortalState {
-  host: HTMLElement;
-  tab: MasterTab;
-  Icon: LucideIcon;
-}
-
-export function MasterPanelNavigation({ showAssets = false }: { showAssets?: boolean }) {
+export function MasterPanelNavigation({
+  showAssets = false,
+  activeTab,
+  onNavigate,
+}: {
+  showAssets?: boolean;
+  activeTab: MasterTab;
+  onNavigate: (tab: MasterTab) => void;
+}) {
   const slotRef = useRef<HTMLDivElement>(null);
-  const [fixed, setFixed] = useState(false);
-  const [heroPortal, setHeroPortal] = useState<HeroPortalState | null>(null);
-
+  const railRef = useRef<HTMLDivElement>(null);
+  const current = MASTER_TAB_META.find((tab) => tab.value === activeTab) ?? MASTER_TAB_META[0];
   useEffect(() => {
-    let frame = 0;
-    const sync = () => {
-      frame = 0;
-      const slot = slotRef.current;
-      if (!slot) return;
-      const top = shellHeaderBottom();
-      slot.style.setProperty("--tadeon-master-fixed-top", `${top}px`);
-      const nextFixed = slot.getBoundingClientRect().top <= top;
-      setFixed((current) => (current === nextFixed ? current : nextFixed));
-    };
-    const schedule = () => {
-      if (frame) return;
-      frame = window.requestAnimationFrame(sync);
-    };
-    sync();
-    window.addEventListener("scroll", schedule, { passive: true });
-    window.addEventListener("resize", schedule, { passive: true });
-    return () => {
-      if (frame) window.cancelAnimationFrame(frame);
-      window.removeEventListener("scroll", schedule);
-      window.removeEventListener("resize", schedule);
-    };
-  }, []);
-
-  useEffect(() => {
-    const slot = slotRef.current;
-    if (!slot) return;
-    let frame = 0;
-
-    const syncIdentity = () => {
-      frame = 0;
-      const active = slot.querySelector<HTMLElement>("[data-master-tab][data-state='active']");
-      const value = active?.dataset.masterTab as MasterTab | undefined;
-      const meta = MASTER_TAB_META.find((item) => item.value === value) ?? MASTER_TAB_META[0];
-      const host = document.querySelector<HTMLElement>(".tadeon-master-commandbar__glow");
-      if (!host) return;
-      setHeroPortal((current) =>
-        current?.host === host && current.tab === meta.value
-          ? current
-          : { host, tab: meta.value, Icon: meta.icon },
+    const measure = () => {
+      const header = document.querySelector<HTMLElement>(
+        window.innerWidth < 768 ? ".tadeon-mobile-header" : ".tadeon-desktop-toolbar",
+      );
+      slotRef.current?.style.setProperty(
+        "--tadeon-master-fixed-top",
+        `${Math.max(0, header?.getBoundingClientRect().bottom ?? 0) + 8}px`,
       );
     };
-
-    const scheduleIdentity = () => {
-      if (frame) return;
-      frame = window.requestAnimationFrame(syncIdentity);
-    };
-
-    const observer = new MutationObserver(scheduleIdentity);
-    observer.observe(slot, {
-      subtree: true,
-      attributes: true,
-      attributeFilter: ["data-state"],
-    });
-    scheduleIdentity();
-
+    measure();
+    const observer = new ResizeObserver(measure);
+    document
+      .querySelectorAll(".tadeon-mobile-header, .tadeon-desktop-toolbar")
+      .forEach((header) => observer.observe(header));
+    window.addEventListener("resize", measure, { passive: true });
     return () => {
-      observer.disconnect();
-      if (frame) window.cancelAnimationFrame(frame);
+      observer?.disconnect();
+      window.removeEventListener("resize", measure);
     };
-  }, [showAssets]);
-
+  }, []);
+  useEffect(() => {
+    const rail = railRef.current;
+    const trigger = rail?.querySelector<HTMLElement>(`[data-master-tab="${activeTab}"]`);
+    if (!rail || !trigger) return;
+    const bounds = rail.getBoundingClientRect(),
+      target = trigger.getBoundingClientRect();
+    // Move only the horizontal rail; never scroll the page or steal keyboard focus.
+    if (target.left < bounds.left || target.right > bounds.right)
+      rail.scrollLeft += target.left - bounds.left - (bounds.width - target.width) / 2;
+  }, [activeTab]);
   return (
-    <>
-      <div
-        ref={slotRef}
-        className="tadeon-master-navigation-slot"
-        aria-label="Navegação fixa do Painel do Mestre"
-      >
-        <div className="tadeon-master-navigation" data-fixed={fixed ? "true" : "false"}>
-          <div className="tadeon-master-navigation__scroller">
-            <div className="tadeon-master-navigation__rail overflow-x-auto overscroll-x-contain">
-              <TabsList
-                className="h-auto min-w-max justify-start gap-1 bg-card/60 p-1 lg:min-w-0 lg:flex-wrap"
-                aria-label="Áreas de condução do mestre"
-              >
-                {groups.map((group) => {
-                  const groupTabs = MASTER_TAB_META.filter(
+    <div ref={slotRef} className="tadeon-master-navigation-slot">
+      <div className="tadeon-master-navigation">
+        <div className="tadeon-master-navigation__scroller">
+          <label className="tadeon-master-navigation__jump">
+            <span>Ferramenta em foco</span>
+            <select
+              aria-label="Ir para uma ferramenta do mestre"
+              value={activeTab}
+              onChange={(event) => onNavigate(event.target.value as MasterTab)}
+            >
+              {groups.map((group) => (
+                <optgroup key={group.label} label={group.label}>
+                  {MASTER_TAB_META.filter(
                     (tab) =>
                       group.values.includes(tab.value) && (tab.feature !== "assets" || showAssets),
-                  );
-                  return (
-                    <div
-                      className="tadeon-master-navigation__group"
-                      key={group.label}
-                      role="presentation"
-                      data-master-group={group.label.toLocaleLowerCase("pt-BR")}
-                    >
-                      <span className="tadeon-master-navigation__label">{group.label}</span>
-                      <div className="flex gap-1" role="presentation">
-                        {groupTabs.map(({ value, label, icon: Icon }) => (
-                          <TabsTrigger
-                            key={value}
-                            value={value}
-                            data-master-tab={value}
-                            title={`${group.label} · ${label}`}
-                            className="gap-1.5 text-xs data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
-                          >
-                            <Icon className="h-3.5 w-3.5" />
-                            {label}
-                          </TabsTrigger>
-                        ))}
-                      </div>
-                    </div>
-                  );
-                })}
-              </TabsList>
-            </div>
+                  ).map((tab) => (
+                    <option key={tab.value} value={tab.value}>
+                      {tab.label}
+                    </option>
+                  ))}
+                </optgroup>
+              ))}
+            </select>
+          </label>
+          <div ref={railRef} className="tadeon-master-navigation__rail">
+            <TabsList aria-label="Ferramentas do mestre" className="tadeon-master-navigation__tabs">
+              {groups.map((group) => (
+                <div
+                  className="tadeon-master-navigation__group"
+                  key={group.label}
+                  role="presentation"
+                >
+                  <span className="tadeon-master-navigation__label">{group.label}</span>
+                  <div className="tadeon-master-navigation__items" role="presentation">
+                    {MASTER_TAB_META.filter(
+                      (tab) =>
+                        group.values.includes(tab.value) &&
+                        (tab.feature !== "assets" || showAssets),
+                    ).map(({ value, label, icon: Icon }) => (
+                      <TabsTrigger
+                        key={value}
+                        value={value}
+                        data-master-tab={value}
+                        title={`${group.label} · ${label}`}
+                      >
+                        <Icon className="h-4 w-4 shrink-0" aria-hidden="true" />
+                        {label}
+                      </TabsTrigger>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </TabsList>
           </div>
+          <p className="tadeon-master-navigation__context">
+            <current.icon className="h-4 w-4" aria-hidden="true" />
+            <span>{current.label}</span>
+            <span> · alterações reunidas no botão Salvar painel</span>
+          </p>
         </div>
       </div>
-      {heroPortal &&
-        createPortal(
-          <span
-            className="tadeon-master-commandbar__sigil-stack"
-            data-master-head-tab={heroPortal.tab}
-            aria-hidden="true"
-          >
-            <MasterSigil className="tadeon-master-commandbar__master-sigil" />
-            <heroPortal.Icon className="tadeon-master-commandbar__active-icon" />
-          </span>,
-          heroPortal.host,
-        )}
-    </>
+    </div>
   );
 }

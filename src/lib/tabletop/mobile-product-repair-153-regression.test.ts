@@ -68,8 +68,7 @@ describe("mobile product repair 153", () => {
 
   it("keeps master navigation sticky and extends the Nexus visual grammar by route", () => {
     const css = source("src/styles/mobile-product-repair-153.css");
-    expect(css).toContain(".tadeon-master-navigation");
-    expect(css).toContain("position: sticky !important");
+    expect(source("src/styles/master-panel-navigation.css")).toContain("position: sticky;");
     expect(css).toContain('[data-section="Painel do Mestre"]');
     expect(css).toContain('[data-section="Usuários"]');
     expect(css).toContain('[data-section="Saúde do arquivo"]');

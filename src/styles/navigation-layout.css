@@ -157,7 +157,7 @@
 :is(.tadeon-nav-item, .tadeon-mobile-dock__item, .tadeon-sidebar-collapse, .tadeon-mobile-header__control, .tadeon-desktop-toolbar__account) {
   transition: background-color 160ms var(--ease-out), border-color 160ms var(--ease-out), color 160ms var(--ease-out), box-shadow 160ms var(--ease-out);
 }
-.tadeon-nav-item__icon { display: grid; place-items: center; flex: 0 0 2rem; width: 2rem; height: 2rem; border-radius: .65rem; }
+.tadeon-nav-item__icon { color: color-mix(in srgb, var(--nav-accent, var(--primary)) 45%, var(--foreground)); display: grid; place-items: center; flex: 0 0 2rem; width: 2rem; height: 2rem; border-radius: .65rem; }
 .tadeon-nav-item[data-mini="true"] { padding-inline: .25rem; }
 .tadeon-nav-item[data-mini="true"] .tadeon-nav-item__icon { width: 2rem; }
 .tadeon-sidebar-collapse { border-color: var(--border); border-radius: 50%; background: #1c2026; }
