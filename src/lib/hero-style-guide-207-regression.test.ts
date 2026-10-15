@@ -20,9 +20,9 @@ describe("Tadeon motion and visual language guide", () => {
       "O Nexus",
       "Mesa Nexus",
       "Painel do Mestre",
-      "Gerenciar Usuários",
-      "Backup & Diagnóstico",
-      "Consulta Offline",
+      "Usuários",
+      "Backup e diagnóstico",
+      "Consulta offline",
     ]) expect(guide).toContain(name);
   });
 });

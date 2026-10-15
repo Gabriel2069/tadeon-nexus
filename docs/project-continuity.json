@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "checkedAt": "2026-10-14",
+  "checkedAt": "2026-10-15",
   "runtimeReference": "778d4449b01adc9ae5eab498d27606d2d7c3b35f",
   "integration": {
     "pr": 269,
@@ -32,7 +32,9 @@
         "src/components/material-surface.tsx",
         "src/lib/use-material-light.ts",
         "src/components/ui/button.tsx",
-        "src/components/fabric-filaments.tsx"
+        "src/components/fabric-filaments.tsx",
+        "src/components/utility-summary.tsx",
+        "src/lib/utility-areas.ts"
       ],
       "styles": [
         "src/styles/desktop-shell.css",
@@ -41,7 +43,7 @@
         "src/styles/mobile-more-radial.css",
         "src/styles/button.css"
       ],
-      "boundary": "Cabeçalhos renderizam símbolos; geometria de Área em foco pertence a page-hero-parity.css. Gatilho Mais e símbolos pertencem ao render; Radix mantém foco/teclado/colisão, sem captura global. Reflexos pertencem a useMaterialLight e à superfície React; o diretor legado não injeta luz nessas superfícies. Material de navegação pertence a navigation-layout; fundos de trama pertencem a experience-surfaces."
+      "boundary": "Cabeçalhos renderizam símbolos; geometria de Área em foco pertence a page-hero-parity.css. Gatilho Mais e símbolos pertencem ao render; Radix mantém foco/teclado/colisão, sem captura global. Reflexos pertencem a useMaterialLight e à superfície React; o diretor legado não injeta luz nessas superfícies. Material de navegação pertence a navigation-layout; fundos de trama pertencem a experience-surfaces. Movimento da navegação consolidado em navigation-layout; mobile-more-radial preserva apenas o nome do arquivo e agora organiza uma lista Radix, sem layout radial."
     },
     {
       "id": "popup",
@@ -171,7 +173,7 @@
         "src/lib/knowledge/knowledge-portability-service.ts"
       ],
       "styles": [],
-      "boundary": "URLs privadas não são identidade persistente. Rollout e provedores exigem evidência própria."
+      "boundary": "URLs privadas não são identidade persistente. Rollout e provedores exigem evidência própria. Histórico de backup parcial por identidade verificada; dados antigos sem escopo não são adotados automaticamente."
     },
     {
       "id": "delivery",
@@ -619,6 +621,83 @@
         "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38669674635"
       ],
       "checkpoint": "Integrado pela PR #269, merge 778d444, após Quality no HEAD bcb9ef7. Main aprovado e produção HTTP 200/SHA exato em 2026-10-15T02:13:38.7334855Z. 131 suítes/575 testes e quatro larguras com 500 páginas fictícias; contas reais/corpus autorizado permanecem em NEX-010. Próximo lote conforme fila canônica: NEX-007."
+    },
+    {
+      "id": "NEX-016",
+      "title": "Navegação: menus estáveis e organizados",
+      "domain": "shell",
+      "status": "validated",
+      "priority": 4,
+      "dependsOn": [
+        "NEX-014"
+      ],
+      "acceptance": [
+        "Menu Mais em lista, sidebar recolhida acessível e transição entre drawer e conta com foco consistente.",
+        "Eliminar movimentos concorrentes dos controles e manter abertura/fechamento direcional com redução de movimento."
+      ],
+      "evidence": [
+        "docs/navigation-utilities-validation.json",
+        "https://github.com/Gabriel2069/tadeon-nexus/pull/271"
+      ],
+      "checkpoint": "Validado na branch da PR #271: 133 suítes/587 testes, build completo, auditoria sem vulnerabilidades, 32 estados nas quatro larguras e repetição final de navegação móvel. Integração e publicação ainda pendentes."
+    },
+    {
+      "id": "NEX-017",
+      "title": "Consulta offline: conteúdo local e limites claros",
+      "domain": "session",
+      "status": "validated",
+      "priority": 4,
+      "dependsOn": [
+        "NEX-014"
+      ],
+      "acceptance": [
+        "Busca local, contagem de detalhes, atualização da leitura e limpeza confirmada da cópia desta conta.",
+        "Preservar separação por conta/cargo e distinguir cópia local, sessão verificada e backup."
+      ],
+      "evidence": [
+        "docs/navigation-utilities-validation.json",
+        "https://github.com/Gabriel2069/tadeon-nexus/pull/271"
+      ],
+      "checkpoint": "Validado na branch da PR #271: 133 suítes/587 testes, build completo, auditoria sem vulnerabilidades, 32 estados nas quatro larguras e repetição final de navegação móvel. Integração e publicação ainda pendentes."
+    },
+    {
+      "id": "NEX-018",
+      "title": "Usuários: papéis, busca e revisão de ações",
+      "domain": "master",
+      "status": "validated",
+      "priority": 4,
+      "dependsOn": [
+        "NEX-014"
+      ],
+      "acceptance": [
+        "Busca por nome/e-mail, filtro por papel, estados de erro e confirmação antes de alterar papéis ou excluir contas.",
+        "Isolar leituras e respostas por identidade; bloquear alterações simultâneas e preservar revisão após falha."
+      ],
+      "evidence": [
+        "docs/navigation-utilities-validation.json",
+        "https://github.com/Gabriel2069/tadeon-nexus/pull/271"
+      ],
+      "checkpoint": "Validado na branch da PR #271: 133 suítes/587 testes, build completo, auditoria sem vulnerabilidades, 32 estados nas quatro larguras e repetição final de navegação móvel. Integração e publicação ainda pendentes."
+    },
+    {
+      "id": "NEX-019",
+      "title": "Backup e diagnóstico: revisão e histórico por conta",
+      "domain": "assets",
+      "status": "validated",
+      "priority": 4,
+      "dependsOn": [
+        "NEX-014"
+      ],
+      "acceptance": [
+        "Histórico local por mestre verificado, validação de importação e revisão antes de mesclar registros.",
+        "Cópia prévia confirmada por transação local, falhas parciais explícitas e diagnóstico com invalidação de leituras.",
+        "Distinguir exportação parcial de fichas/configurações e restauração completa de DB/Storage/R2, que permanece em NEX-011."
+      ],
+      "evidence": [
+        "docs/navigation-utilities-validation.json",
+        "https://github.com/Gabriel2069/tadeon-nexus/pull/271"
+      ],
+      "checkpoint": "Validado na branch da PR #271: 133 suítes/587 testes, build completo, auditoria sem vulnerabilidades, 32 estados nas quatro larguras e repetição final de navegação móvel. Integração e publicação ainda pendentes."
     }
   ],
   "decisions": [
@@ -683,6 +762,11 @@
       "evidence": [
         "docs/nexus-continuity-validation.json"
       ]
+    },
+    {
+      "id": "DEC-011",
+      "decision": "Priorizar menus, Consulta offline, Usuários e Backup e diagnóstico antes da Mesa, conforme novo pedido de Tadeu.",
+      "reason": "NEX-016 a NEX-019 delimitam navegação e utilidades. URLs e identidade visual permanecem; a revisão não conclui o restante do Painel do Mestre, autorização real ou restauração completa de infraestrutura (NEX-008/010/011). Os nomes visíveis são Consulta offline, Usuários e Backup e diagnóstico."
     }
   ],
   "bridges": [
@@ -930,6 +1014,10 @@
     {
       "path": "docs/nexus-continuity-validation.json",
       "purpose": "NEX-015: composição ajustável, continuidade de abas, rascunhos por identidade, concorrência e revisão explícita de conflitos; fixtures e limites."
+    },
+    {
+      "path": "docs/navigation-utilities-validation.json",
+      "purpose": "NEX-016 a NEX-019: menus, Consulta offline, Usuários e Backup e diagnóstico; validação de interface, funções e limites de fixtures."
     }
   ],
   "integrationHistory": [

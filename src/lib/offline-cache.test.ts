@@ -1,6 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import {
   cacheMasterState,
+  clearOfflineCache,
   cacheSheet,
   cacheSheetSummaries,
   readOfflineCache,
@@ -99,4 +100,17 @@ describe("offline account boundary", () => {
     expect(cacheMasterState(settings, [], master)).toBe(false);
     expect(readOfflineCache().master).toBeUndefined();
   });
+});
+
+it("reports whether a scoped local copy was actually cleared", () => {
+  setOfflineCacheScope(player);
+  cacheSheet({ id: "a" }, player);
+  expect(clearOfflineCache()).toBe(true);
+  expect(readOfflineCache().sheets).toEqual({});
+  vi.stubGlobal("window", {
+    get localStorage() {
+      throw new Error("blocked");
+    },
+  });
+  expect(clearOfflineCache()).toBe(false);
 });

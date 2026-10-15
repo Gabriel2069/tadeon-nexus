@@ -1,3 +1,4 @@
+import { UTILITY_AREAS } from "@/lib/utility-areas";
 import { MobileMoreMenu } from "@/components/mobile-more-menu";
 import { CORE_SURFACES } from "@/lib/feature-flags";
 import { createLatestRequestGate } from "@/lib/latest-request";
@@ -5,7 +6,6 @@ import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
 import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
 import {
   Home,
-  Lightbulb,
   Users,
   LogOut,
   Menu,
@@ -19,7 +19,6 @@ import {
   Download,
   Mail,
   ShieldCheck,
-  Wrench,
   LibraryBig,
   MonitorDown,
   Share2,
@@ -106,7 +105,11 @@ export function AppLayout({ children }: { children: ReactNode }) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [collapsed, setCollapsed] = useState<boolean>(() => {
     if (typeof window === "undefined") return false;
-    return window.localStorage.getItem(COLLAPSE_KEY) === "1";
+    try {
+      return window.localStorage.getItem(COLLAPSE_KEY) === "1";
+    } catch {
+      return false;
+    }
   });
   const [accountOpen, setAccountOpen] = useState(false);
   const [installOpen, setInstallOpen] = useState(false);
@@ -131,13 +134,28 @@ export function AppLayout({ children }: { children: ReactNode }) {
       target.focus({ preventScroll: true });
     }
   };
+  useEffect(() => {
+    const desktop = window.matchMedia("(min-width: 768px)");
+    const closeDrawer = () => {
+      if (desktop.matches && mobileOpen) {
+        setMobileOpen(false);
+        document.getElementById("tadeon-main")?.focus({ preventScroll: true });
+      }
+    };
+    desktop.addEventListener("change", closeDrawer);
+    return () => desktop.removeEventListener("change", closeDrawer);
+  }, [mobileOpen]);
   const pwaInstall = usePwaInstall();
   const [navigationFlags, setNavigationFlags] = useState<NavigationFlags>(() =>
     readNavigationFlags(user?.id),
   );
 
   useEffect(() => {
-    window.localStorage.setItem(COLLAPSE_KEY, collapsed ? "1" : "0");
+    try {
+      window.localStorage.setItem(COLLAPSE_KEY, collapsed ? "1" : "0");
+    } catch {
+      /* Navigation works without preference storage. */
+    }
   }, [collapsed]);
 
   useEffect(() => {
@@ -251,7 +269,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
       <NavItem
         to="/offline"
         icon={<CloudOff className="w-4 h-4" />}
-        label="Consulta Offline"
+        label={UTILITY_AREAS.offline.label}
         active={path.startsWith("/offline")}
         mini={mini}
         onClick={() => setMobileOpen(false)}
@@ -261,7 +279,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
           <NavGroupLabel label="Condução" mini={mini} />
           <NavItem
             to="/master-panel"
-            icon={<Lightbulb className="w-4 h-4" />}
+            icon={<SectionSymbol section="master" className="w-4 h-4" />}
             label="Painel do Mestre"
             active={path.startsWith("/master-panel")}
             mini={mini}
@@ -271,15 +289,15 @@ export function AppLayout({ children }: { children: ReactNode }) {
           <NavItem
             to="/manage-users"
             icon={<Users className="w-4 h-4" />}
-            label="Gerenciar Usuários"
+            label={UTILITY_AREAS.users.label}
             active={path.startsWith("/manage-users")}
             mini={mini}
             onClick={() => setMobileOpen(false)}
           />
           <NavItem
             to="/nexus-tools"
-            icon={<Wrench className="w-4 h-4" />}
-            label="Backup & Diagnóstico"
+            icon={<SectionSymbol section="tools" className="w-4 h-4" />}
+            label={UTILITY_AREAS.backup.label}
             active={path.startsWith("/nexus-tools")}
             mini={mini}
             onClick={() => setMobileOpen(false)}
@@ -289,7 +307,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
     </nav>
   );
 
-  const SidebarContent = ({
+  const renderSidebar = ({
     mini,
     enableSearchShortcut = false,
   }: {
@@ -371,7 +389,9 @@ export function AppLayout({ children }: { children: ReactNode }) {
   return (
     <div
       className="tadeon-shell relative isolate flex min-h-screen overflow-x-clip"
-      data-section={currentSection}
+      data-section={
+        currentSection === "Saúde do arquivo" ? UTILITY_AREAS.backup.label : currentSection
+      }
       data-mobile-dock={showMobileDock ? "visible" : "hidden"}
     >
       <a className="tadeon-skip-link" href="#tadeon-main">
@@ -388,8 +408,9 @@ export function AppLayout({ children }: { children: ReactNode }) {
           collapsed ? "w-16" : "w-64"
         }`}
       >
-        <SidebarContent mini={collapsed} enableSearchShortcut />
+        {renderSidebar({ mini: collapsed, enableSearchShortcut: true })}
         <button
+          data-material-surface="navigation"
           type="button"
           onClick={() => setCollapsed((p) => !p)}
           aria-label={collapsed ? "Expandir menu" : "Recolher menu"}
@@ -397,7 +418,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
           aria-expanded={!collapsed}
           data-state={collapsed ? "collapsed" : "expanded"}
           title={collapsed ? "Expandir" : "Recolher"}
-          className="tadeon-sidebar-collapse absolute -right-5 top-6 z-30 flex h-10 w-10 items-center justify-center border text-muted-foreground transition-[color,background-color,border-color,box-shadow,transform] duration-150 ease-[var(--ease-out)] active:scale-[.97]"
+          className="tadeon-sidebar-collapse absolute -right-5 top-6 z-30 flex h-10 w-10 items-center justify-center border text-muted-foreground transition-[color,background-color,border-color,box-shadow,transform] duration-150 ease-[var(--ease-out)]"
         >
           {collapsed ? <ChevronsRight className="h-4 w-4" /> : <ChevronsLeft className="h-4 w-4" />}
         </button>
@@ -410,7 +431,9 @@ export function AppLayout({ children }: { children: ReactNode }) {
             <p className="tadeon-eyebrow">Área em foco</p>
             <div className="flex min-w-0 items-baseline gap-3">
               <h2 className="truncate font-cinzel text-xl font-semibold text-foreground">
-                {currentSection}
+                {currentSection === "Saúde do arquivo"
+                  ? UTILITY_AREAS.backup.label
+                  : currentSection}
               </h2>
               <p className="hidden truncate text-xs text-muted-foreground xl:block">
                 {currentSectionDescription[currentSection]}
@@ -437,6 +460,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
               </span>
             )}
             <button
+              data-material-surface="navigation"
               type="button"
               className="tadeon-desktop-toolbar__account"
               onClick={() => openAccount()}
@@ -460,9 +484,10 @@ export function AppLayout({ children }: { children: ReactNode }) {
         <header className="tadeon-mobile-header sticky top-0 z-30 grid min-h-16 grid-cols-[5.9rem_minmax(0,1fr)_5.9rem] items-center px-3 py-2 md:hidden">
           <span aria-hidden className="tadeon-mobile-header__thread" />
           <button
+            data-material-surface="navigation"
             type="button"
             onClick={() => setMobileOpen(true)}
-            className="tadeon-mobile-header__control flex h-11 w-11 items-center justify-center rounded-xl border transition-[color,background-color,border-color,transform] duration-150 ease-[var(--ease-out)] active:scale-[.96]"
+            className="tadeon-mobile-header__control flex h-11 w-11 items-center justify-center rounded-xl border transition-[color,background-color,border-color,transform] duration-150 ease-[var(--ease-out)]"
             ref={mobileMenuTriggerRef}
             aria-label="Abrir menu"
             aria-controls="tadeon-mobile-navigation"
@@ -476,8 +501,10 @@ export function AppLayout({ children }: { children: ReactNode }) {
               <p className="tadeon-mono truncate text-[9px] uppercase tracking-[0.14em] text-muted-foreground">
                 Área em foco
               </p>
-              <p className="truncate font-cinzel text-sm font-semibold leading-tight text-primary">
-                {currentSection}
+              <p className="line-clamp-2 font-cinzel text-sm font-semibold leading-tight text-primary">
+                {currentSection === "Saúde do arquivo"
+                  ? UTILITY_AREAS.backup.label
+                  : currentSection}
               </p>
             </div>
           </div>
@@ -488,9 +515,10 @@ export function AppLayout({ children }: { children: ReactNode }) {
               tabletopEnabled={tabletopEnabled}
             />
             <button
+              data-material-surface="navigation"
               type="button"
               onClick={() => openAccount()}
-              className="tadeon-mobile-header__control flex h-11 w-11 items-center justify-center rounded-xl border transition-[color,background-color,border-color,transform] duration-150 ease-[var(--ease-out)] active:scale-[.96]"
+              className="tadeon-mobile-header__control flex h-11 w-11 items-center justify-center rounded-xl border transition-[color,background-color,border-color,transform] duration-150 ease-[var(--ease-out)]"
               ref={mobileAccountTriggerRef}
               aria-label="Conta"
               aria-haspopup="dialog"
@@ -507,7 +535,9 @@ export function AppLayout({ children }: { children: ReactNode }) {
           key={path}
           tabIndex={-1}
           className="tadeon-route-stage min-w-0 flex-1"
-          data-section={currentSection}
+          data-section={
+            currentSection === "Saúde do arquivo" ? UTILITY_AREAS.backup.label : currentSection
+          }
         >
           {children}
         </main>
@@ -590,18 +620,24 @@ export function AppLayout({ children }: { children: ReactNode }) {
       {/* Mobile drawer: Radix preserves focus, Escape and symmetric exit motion. */}
       <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
         <SheetContent
+          overlayClassName="tadeon-navigation-overlay"
           id="tadeon-mobile-navigation"
           side="left"
           onCloseAutoFocus={(event) => {
             if (accountOpen || installOpen) event.preventDefault();
+            else if (window.matchMedia("(min-width: 768px)").matches) {
+              event.preventDefault();
+              document.getElementById("tadeon-main")?.focus({ preventScroll: true });
+            }
           }}
+          data-motion-surface="navigation"
           className="tadeon-mobile-drawer h-[100dvh] w-[min(19rem,88vw)] border-sidebar-border bg-sidebar p-0 text-sidebar-foreground sm:max-w-none md:hidden"
         >
           <SheetTitle className="sr-only">Navegação principal</SheetTitle>
           <SheetDescription className="sr-only">
             Acesse as áreas do Tadeon Nexus e as opções da sua conta.
           </SheetDescription>
-          <SidebarContent mini={false} />
+          {renderSidebar({ mini: false })}
         </SheetContent>
       </Sheet>
 
@@ -646,9 +682,10 @@ function NavItem({
       onClick={onClick}
       aria-current={active ? "page" : undefined}
       data-mini={mini ? "true" : "false"}
+      aria-label={mini ? label : undefined}
       title={mini ? label : undefined}
       data-material-surface="navigation"
-      className={`tadeon-nav-item group flex min-h-11 items-center gap-3 rounded-xl px-3 py-2.5 text-sm transition-[color,background-color,border-color,box-shadow,transform] duration-150 ease-[var(--ease-out)] active:scale-[.98] ${
+      className={`tadeon-nav-item group flex min-h-11 items-center gap-3 rounded-xl px-3 py-2.5 text-sm transition-[color,background-color,border-color,box-shadow,transform] duration-150 ease-[var(--ease-out)] ${
         mini ? "justify-center px-2" : ""
       } ${
         active
@@ -687,6 +724,7 @@ function SideAction({
       variant="ghost"
       onClick={onClick}
       title={mini ? label : undefined}
+      aria-label={mini ? label : undefined}
       className={`w-full gap-2 ${mini ? "justify-center px-2" : "justify-start"} ${
         danger
           ? "text-destructive hover:bg-destructive/10 hover:text-destructive"
@@ -973,7 +1011,7 @@ function AccountDialog({
             </p>
             <Button asChild type="button" variant="outline" className="mt-3 w-full">
               <Link to="/nexus-tools" onClick={() => onOpenChange(false)}>
-                Abrir Backup & Diagnóstico
+                Abrir Backup e diagnóstico
               </Link>
             </Button>
           </div>

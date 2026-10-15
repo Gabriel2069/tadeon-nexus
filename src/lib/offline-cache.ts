@@ -166,11 +166,12 @@ export function cacheMasterState(
   );
 }
 
-export function clearOfflineCache(): void {
-  if (typeof window === "undefined" || !activeScope) return;
+export function clearOfflineCache(): boolean {
+  if (typeof window === "undefined" || !activeScope) return false;
   try {
     window.localStorage.removeItem(scopeKey(activeScope));
+    return true;
   } catch {
-    /* Best effort. */
+    return false;
   }
 }

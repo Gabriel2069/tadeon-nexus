@@ -103,12 +103,12 @@ try {
         await page.keyboard.press("ArrowDown");
         assert(await menu.evaluate(e => e.contains(document.activeElement)), "Menu arrow focus must stay inside");
         const menuRect = await menu.boundingBox();
-        assert(menuRect.x >= 0 && menuRect.x + menuRect.width <= width && menuRect.y >= 0, "Radial must fit viewport");
+        assert(menuRect.x >= 0 && menuRect.x + menuRect.width <= width && menuRect.y >= 0, "More menu must fit viewport");
         const targets = await menu.getByRole("menuitem").evaluateAll(es => es.map(e => {const r=e.getBoundingClientRect();return {w:r.width,h:r.height};}));
-        assert(targets.every(t => t.w >= 44 && t.h >= 44), "Radial targets must be at least 44px");
-        await page.screenshot({path:`${root}/radial-${width}.png`,fullPage:true});
+        assert(targets.every(t => t.w >= 44 && t.h >= 44), "More menu targets must be at least 44px");
+        await page.screenshot({path:`${root}/more-${width}.png`,fullPage:true});
         await page.keyboard.press("Escape"); await menu.waitFor({state:"hidden"});
-        assert(await more.evaluate(e => document.activeElement === e), "Radial must return focus");
+        assert(await more.evaluate(e => document.activeElement === e), "More menu must return focus");
         await opener.tap(); await drawer.waitFor();
         await drawer.getByRole("button",{name:"Conta",exact:true}).click();
         const account = page.getByRole("dialog",{name:"Configurações da Conta"});
@@ -120,10 +120,10 @@ try {
         const accountTrigger = page.locator(".tadeon-mobile-header").getByRole("button",{name:"Conta",exact:true});
         assert(await accountTrigger.evaluate(e => document.activeElement === e), "Account handoff must return to persistent header control");
         await more.tap(); await menu.waitFor();
-        await menu.getByRole("menuitem",{name:"Offline",exact:true}).focus();
+        await menu.getByRole("menuitem",{name:"Consulta offline",exact:true}).focus();
         await page.keyboard.press("Enter"); await page.waitForURL("**/offline");
         await menu.waitFor({state:"hidden"});
-        await page.getByRole("heading",{name:"Arquivo local",exact:true}).waitFor();
+        await page.getByRole("heading",{name:"Consulta offline",exact:true}).waitFor();
         await page.waitForTimeout(250);
         assert(await page.locator("#tadeon-main").evaluate(e => document.activeElement === e), "Route selection must focus main, not retired menu");
         await page.getByRole("link",{name:"Início",exact:true}).tap();
@@ -131,9 +131,9 @@ try {
         await page.getByRole("button",{name:"Mais",exact:true}).tap(); await menu.waitFor();
         await page.setViewportSize({width:820,height:1000});
         await menu.waitFor({state:"hidden"});
-        assert(await page.locator("#tadeon-main").evaluate(e => document.activeElement === e), "Desktop transition must close radial and focus main");
+        assert(await page.locator("#tadeon-main").evaluate(e => document.activeElement === e), "Desktop transition must close more and focus main");
         await page.setViewportSize({width,height:1000});
-        metrics.navigation = { menuRect, targets, drawerFocus:true, radialReturn:true, accountHandoff:true, accountReturn:true, touchOpening:true, routeMainFocus:true, desktopTransition:true };
+        metrics.navigation = { menuRect, targets, drawerFocus:true, moreReturn:true, accountHandoff:true, accountReturn:true, touchOpening:true, routeMainFocus:true, desktopTransition:true };
       }
       await page.emulateMedia({ reducedMotion: "no-preference" });
       await page.locator(".tadeon-continuity-hero a").hover();

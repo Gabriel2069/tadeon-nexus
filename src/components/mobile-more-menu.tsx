@@ -1,3 +1,4 @@
+import { UTILITY_AREAS } from "@/lib/utility-areas";
 import { Link } from "@tanstack/react-router";
 import * as Menu from "@radix-ui/react-dropdown-menu";
 import { useEffect, useRef, useState } from "react";
@@ -7,9 +8,9 @@ import "@/styles/mobile-more-radial.css";
 import "@/styles/mobile-viewport.css";
 
 const destinations = [
-  { to: "/offline", label: "Offline", icon: CloudOff, position: "is-left" },
-  { to: "/manage-users", label: "Usuários", icon: Users, position: "is-top" },
-  { to: "/nexus-tools", label: "Backup", icon: BackupSigil, position: "is-right" },
+  { to: "/offline", label: UTILITY_AREAS.offline.label, icon: CloudOff },
+  { to: "/manage-users", label: UTILITY_AREAS.users.label, icon: Users },
+  { to: "/nexus-tools", label: UTILITY_AREAS.backup.label, icon: BackupSigil },
 ] as const;
 
 /** The shell owns the trigger; Radix owns anchoring, keyboard and dismissal. */
@@ -42,7 +43,7 @@ export function MobileMoreMenu({ path }: { path: string }) {
           type="button"
           data-material-surface="navigation"
           className="tadeon-mobile-dock__item"
-          data-radial-active={active}
+          data-more-active={active}
         >
           <MoreHorizontal className="h-5 w-5" aria-hidden="true" />
           <span>Mais</span>
@@ -50,7 +51,7 @@ export function MobileMoreMenu({ path }: { path: string }) {
       </Menu.Trigger>
       <Menu.Portal>
         <Menu.Content
-          className="tadeon-mobile-more-radial"
+          className="tadeon-mobile-more"
           aria-label="Outras áreas"
           aria-labelledby={undefined}
           side="top"
@@ -65,8 +66,8 @@ export function MobileMoreMenu({ path }: { path: string }) {
           }}
           loop
         >
-          <span aria-hidden="true" className="tadeon-mobile-more-radial__orbit" />
-          {destinations.map(({ to, label, icon: Icon, position }) => (
+          <Menu.Label className="tadeon-mobile-more__heading">Outras áreas</Menu.Label>
+          {destinations.map(({ to, label, icon: Icon }) => (
             <Menu.Item key={to} asChild textValue={label}>
               <Link
                 to={to}
@@ -84,20 +85,19 @@ export function MobileMoreMenu({ path }: { path: string }) {
                   setOpen(false);
                 }}
                 aria-current={path === to || path.startsWith(`${to}/`) ? "page" : undefined}
-                className={`tadeon-mobile-more-radial__item ${position}`}
+                className="tadeon-mobile-more__item"
               >
                 <Icon aria-hidden="true" />
                 <span>{label}</span>
               </Link>
             </Menu.Item>
           ))}
-          <div className="tadeon-mobile-more-radial__center">
+          <div className="tadeon-mobile-more__center">
             <Menu.Item asChild textValue="Fechar outras áreas" onSelect={() => setOpen(false)}>
               <button type="button" aria-label="Fechar outras áreas">
                 <X aria-hidden="true" />
               </button>
             </Menu.Item>
-            <strong aria-hidden="true">Mais</strong>
           </div>
         </Menu.Content>
       </Menu.Portal>

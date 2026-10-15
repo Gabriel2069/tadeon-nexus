@@ -39,3 +39,8 @@ Encerrar a proposta antiga não declara todos os requisitos visuais concluídos:
 - Antes de merge, comparar HEAD/base e resultados do CI no HEAD atual. Sucesso de commit anterior não aprova commit posterior.
 - Merge em `main` pode acionar publicação pelo workflow. Aprovação de organização, documentação ou refinamento na branch não é um registro de publicação executada.
 - Após merge, registrar commit integrado; após deploy, confirmar SHA publicado separadamente. Preservar a possibilidade de recuperação pelo Git.
+
+
+## Reorganização dos menus e utilidades — PR #271
+
+NEX-016 a NEX-019 substituem o menu Mais circular por lista Radix e padronizam Consulta offline, Usuários e Backup e diagnóstico, conforme DEC-011. O shell usa os símbolos autorais de `SectionSymbol`, inclusive Mestre e Backup. A nova revisão não restaura máscaras nem movimentos de navegação de PRs antigas; os testes históricos pertinentes foram conciliados com os alvos estáveis e os símbolos atuais. A evidência e o estado de entrega pertencem a [navigation-utilities-validation.json](navigation-utilities-validation.json) e à fila canônica; NEX-008/010/011 conservam o escopo ainda não certificado.

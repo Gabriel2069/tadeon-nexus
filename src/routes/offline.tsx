@@ -1,3 +1,19 @@
+import { UTILITY_AREAS } from "@/lib/utility-areas";
+import { UtilitySummary } from "@/components/utility-summary";
+import { Input } from "@/components/ui/input";
+import { toast } from "sonner";
+import { useAuth } from "@/lib/auth";
+import {
+  AlertDialog,
+  AlertDialogTrigger,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogCancel,
+  AlertDialogAction,
+} from "@/components/ui/alert-dialog";
 import { PageSectionMark } from "@/components/section-symbols";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
@@ -7,12 +23,12 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { readOfflineCache, type OfflineCache } from "@/lib/offline-cache";
+import { clearOfflineCache, readOfflineCache, type OfflineCache } from "@/lib/offline-cache";
 
 export const Route = createFileRoute("/offline")({
   head: () => ({
     meta: [
-      { title: "Consulta Offline · Tadeon Nexus" },
+      { title: `${UTILITY_AREAS.offline.label} · Tadeon Nexus` },
       {
         name: "description",
         content: "Consulta local e somente leitura das informações recentes do Tadeon Nexus.",
@@ -26,21 +42,34 @@ export const Route = createFileRoute("/offline")({
   ),
 });
 
-function OfflinePage() {
+export function OfflinePage() {
+  const { user, role } = useAuth();
+  return <OfflinePageContent key={`${user?.id ?? ""}:${role ?? ""}`} />;
+}
+
+function OfflinePageContent() {
+  const { user, role } = useAuth();
+  const [query, setQuery] = useState("");
   const [cache, setCache] = useState<OfflineCache>(() => readOfflineCache());
   const [online, setOnline] = useState(() =>
     typeof navigator === "undefined" ? true : navigator.onLine,
   );
 
   useEffect(() => {
+    setCache(readOfflineCache());
+    const refreshCache = () => setCache(readOfflineCache());
     const updateStatus = () => setOnline(navigator.onLine);
+    window.addEventListener("storage", refreshCache);
+    window.addEventListener("focus", refreshCache);
     window.addEventListener("online", updateStatus);
     window.addEventListener("offline", updateStatus);
     return () => {
+      window.removeEventListener("storage", refreshCache);
+      window.removeEventListener("focus", refreshCache);
       window.removeEventListener("online", updateStatus);
       window.removeEventListener("offline", updateStatus);
     };
-  }, []);
+  }, [user?.id, role]);
 
   const cachedSheets = useMemo(
     () =>
@@ -50,12 +79,21 @@ function OfflinePage() {
       })),
     [cache],
   );
+  const filteredSheets = cachedSheets.filter(({ summary }) =>
+    `${summary.name} ${summary.occupation ?? ""}`
+      .toLocaleLowerCase("pt-BR")
+      .includes(query.trim().toLocaleLowerCase("pt-BR")),
+  );
+  const detailedCount = cachedSheets.filter(({ data }) => Boolean(data)).length;
   const updated = new Date(cache.updatedAt);
   const hasCache = Number.isFinite(updated.getTime()) && updated.getTime() > 0;
 
   return (
     <div className="tadeon-page tadeon-route-offline max-w-6xl space-y-6">
-      <section data-tadeon-page-hero="offline" className="tadeon-page-hero tadeon-surface rounded-2xl px-5 py-6 md:px-8 md:py-8">
+      <section
+        data-tadeon-page-hero="offline"
+        className="tadeon-page-hero tadeon-surface rounded-2xl px-5 py-6 md:px-8 md:py-8"
+      >
         <PageSectionMark section="offline" />
         <div className="flex flex-col justify-between gap-5 md:flex-row md:items-end">
           <div>
@@ -73,7 +111,9 @@ function OfflinePage() {
                 {online ? "Conectado" : "Offline"}
               </Badge>
             </div>
-            <h1 className="font-cinzel text-3xl font-semibold md:text-4xl">Arquivo local</h1>
+            <h1 className="font-cinzel text-3xl font-semibold md:text-4xl">
+              {UTILITY_AREAS.offline.label}
+            </h1>
             <p className="mt-2 max-w-2xl text-sm text-muted-foreground">
               Consulte as informações abertas recentemente mesmo sem conexão. Alterações continuam
               bloqueadas para evitar conflitos com o banco principal.
@@ -82,17 +122,83 @@ function OfflinePage() {
           <div className="flex flex-col items-start gap-2 md:items-end">
             <p className="text-xs text-muted-foreground">
               {hasCache
-                ? `Sincronizado em ${updated.toLocaleString("pt-BR")}`
+                ? `Cópia atualizada em ${updated.toLocaleString("pt-BR")}`
                 : "Nenhuma cópia local disponível"}
             </p>
             <Button variant="outline" size="sm" onClick={() => setCache(readOfflineCache())}>
               <RefreshCw className="mr-2 h-4 w-4" />
-              Recarregar cópia
+              Ler cópia local
             </Button>
           </div>
         </div>
       </section>
 
+      <UtilitySummary
+        items={[
+          {
+            label: "Fichas locais",
+            value: cachedSheets.length,
+            detail: "Resumos salvos nesta conta e neste navegador",
+          },
+          {
+            label: "Com detalhes",
+            value: detailedCount,
+            detail: "Recursos e atributos disponíveis para leitura",
+          },
+          {
+            label: "Conexão",
+            value: online ? "Conectado" : "Sem conexão",
+            detail: "Esta área permanece somente para consulta",
+          },
+        ]}
+      />
+      <p className="tadeon-utility-note">
+        <strong>Cópia deste dispositivo.</strong> O conteúdo é preparado ao abrir as áreas
+        conectado. Ler novamente a cópia não busca dados no servidor. O acesso depende da sessão
+        verificada; este arquivo não substitui um backup.
+      </p>
+      {hasCache && (
+        <div className="tadeon-utility-toolbar">
+          <label>
+            Buscar fichas locais
+            <Input
+              value={query}
+              onChange={(event) => setQuery(event.target.value)}
+              placeholder="Nome ou ocupação"
+              type="search"
+            />
+          </label>
+          <AlertDialog>
+            <AlertDialogTrigger asChild>
+              <Button variant="outline">Limpar cópia local</Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Limpar a cópia desta conta?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  Os dados principais permanecem no servidor. Será necessário abrir as áreas
+                  conectado para preparar outra cópia neste navegador.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                <AlertDialogAction
+                  onClick={() => {
+                    const cleared = clearOfflineCache();
+                    const next = readOfflineCache();
+                    setCache(next);
+                    setQuery("");
+                    if (!cleared) toast.error("O navegador não permitiu limpar a cópia.");
+                    else toast.success("Cópia local removida.");
+                  }}
+                >
+                  Limpar cópia
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+        </div>
+      )}
       {!hasCache ? (
         <Card className="tadeon-surface rounded-2xl px-6 py-16 text-center">
           <CloudOff className="mx-auto h-10 w-10 text-muted-foreground" />
@@ -109,18 +215,20 @@ function OfflinePage() {
               <BookOpenText className="h-4 w-4" />
               Fichas
             </TabsTrigger>
-            <TabsTrigger value="master" className="gap-2">
-              <ShieldCheck className="h-4 w-4" />
-              Campanha
-            </TabsTrigger>
+            {role === "mestre" && (
+              <TabsTrigger value="master" className="gap-2">
+                <ShieldCheck className="h-4 w-4" />
+                Campanha
+              </TabsTrigger>
+            )}
           </TabsList>
 
           <TabsContent value="sheets">
-            {cachedSheets.length === 0 ? (
-              <EmptyCard text="Nenhuma ficha foi armazenada para consulta." />
+            {filteredSheets.length === 0 ? (
+              <EmptyCard text="Nenhuma ficha encontrada nesta cópia local." />
             ) : (
               <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-                {cachedSheets.map(({ summary, data }) => (
+                {filteredSheets.map(({ summary, data }) => (
                   <OfflineSheetCard
                     key={summary.id}
                     summary={summary}
@@ -161,7 +269,7 @@ function OfflineSheetCard({
   return (
     <Card className="tadeon-surface rounded-2xl p-5">
       <p className="tadeon-mono text-[10px] uppercase text-muted-foreground">
-        Rank {summary.exposure ?? 0}
+        Exposição {summary.exposure ?? 0}
       </p>
       <h2 className="mt-2 font-cinzel text-xl font-semibold">{summary.name}</h2>
       <p className="text-xs text-muted-foreground">
@@ -253,7 +361,7 @@ function OfflineMaster({ cache }: { cache: NonNullable<OfflineCache["master"]> }
           ["Dobras ativas", activeFolds.length],
         ].map(([label, value]) => (
           <Card key={String(label)} className="tadeon-surface rounded-2xl p-4">
-            <p className="font-cinzel text-2xl font-semibold">{value}</p>
+            <p className="font-sans text-2xl font-medium tabular-nums">{value}</p>
             <p className="mt-1 text-[10px] uppercase tracking-wider text-muted-foreground">
               {label}
             </p>

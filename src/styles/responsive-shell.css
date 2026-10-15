@@ -122,7 +122,6 @@
 
   .tadeon-mobile-header__identity > svg {
     color: var(--section-accent);
-    filter: drop-shadow(0 0 12px rgb(var(--section-accent-rgb) / 24%));
   }
 
   .tadeon-mobile-header__identity p:last-child {
@@ -146,7 +145,6 @@
 
   .tadeon-mobile-drawer .tadeon-nav-item[aria-current="page"] .tadeon-nav-item__icon > svg {
     color: var(--section-accent);
-    filter: drop-shadow(0 0 9px rgb(var(--section-accent-rgb) / 28%));
   }
 
   .tadeon-mobile-dock {
@@ -201,10 +199,6 @@
 
   .tadeon-mobile-dock__item > svg {
     flex: 0 0 auto;
-    transition:
-      color var(--motion-fast) var(--ease-out),
-      filter var(--motion-fast) var(--ease-out),
-      transform var(--motion-fast) var(--ease-out);
   }
 
   .tadeon-mobile-dock__item[aria-current="page"]::after {
@@ -220,8 +214,6 @@
 
   .tadeon-mobile-dock__item[aria-current="page"] > svg {
     color: var(--section-accent);
-    filter: drop-shadow(0 0 8px rgb(var(--section-accent-rgb) / 28%));
-    transform: translateY(-1px);
   }
 
   .tadeon-route-stage {
@@ -593,7 +585,6 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .tadeon-mobile-dock__item > svg,
   .tadeon-route-stage > * {
     animation: none;
     transition: none;
@@ -706,10 +697,6 @@
     background: var(--section-accent);
     box-shadow: 0 0 10px rgb(var(--section-accent-rgb) / 48%);
     content: "";
-  }
-
-  .tadeon-mobile-dock__item[aria-current="page"] > svg {
-    filter: drop-shadow(0 0 8px rgb(var(--section-accent-rgb) / 32%));
   }
 
   .tadeon-master-navigation {

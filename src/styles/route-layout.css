@@ -468,7 +468,7 @@ html[data-tadeon-tabletop-selection-active="true"] [data-tadeon-selection-guarde
   [data-section="Saúde do arquivo"],
   [data-section="Consulta offline"]
 ) .tadeon-mobile-header__identity p:last-child,
-.tadeon-shell:is(
+  .tadeon-shell:is(
   [data-section="Painel do Mestre"],
   [data-section="Usuários"],
   [data-section="Saúde do arquivo"],
@@ -564,7 +564,6 @@ html[data-tadeon-tabletop-selection-active="true"] [data-tadeon-selection-guarde
     ) !important;
     box-shadow: none !important;
     opacity: 1 !important;
-    transform: none !important;
     content: "" !important;
   }
 }
@@ -585,10 +584,6 @@ html[data-tadeon-tabletop-selection-active="true"] [data-tadeon-selection-guarde
   .tadeon-mobile-header__identity::after {
     display: none !important;
     content: none !important;
-  }
-
-  .tadeon-mobile-header__identity > svg {
-    filter: drop-shadow(0 0 12px rgb(var(--section-accent-rgb) / 24%)) !important;
   }
 }
 
@@ -1323,7 +1318,7 @@ html[data-tadeon-sheet-mode="game"] .tadeon-sheet-game-button svg {
   [data-section="Saúde do arquivo"],
   [data-section="Consulta offline"]
 ) .tadeon-desktop-toolbar::before,
-.tadeon-shell:is(
+  .tadeon-shell:is(
   [data-section="Painel do Mestre"],
   [data-section="Usuários"],
   [data-section="Saúde do arquivo"],
@@ -1345,7 +1340,7 @@ html[data-tadeon-sheet-mode="game"] .tadeon-sheet-game-button svg {
   [data-section="Saúde do arquivo"],
   [data-section="Consulta offline"]
 ) .tadeon-desktop-toolbar > .min-w-0,
-.tadeon-shell:is(
+  .tadeon-shell:is(
   [data-section="Painel do Mestre"],
   [data-section="Usuários"],
   [data-section="Saúde do arquivo"],
@@ -1363,7 +1358,7 @@ html[data-tadeon-sheet-mode="game"] .tadeon-sheet-game-button svg {
   [data-section="Saúde do arquivo"],
   [data-section="Consulta offline"]
 ) .tadeon-desktop-toolbar h2,
-.tadeon-shell:is(
+  .tadeon-shell:is(
   [data-section="Painel do Mestre"],
   [data-section="Usuários"],
   [data-section="Saúde do arquivo"],
@@ -1762,19 +1757,19 @@ html[data-tadeon-sheet-mode="game"] .tadeon-sheet-game-button svg {
     [data-section="Saúde do arquivo"],
     [data-section="Consulta offline"]
   ) .tadeon-mobile-header::before,
-  .tadeon-shell:is(
+    .tadeon-shell:is(
     [data-section="Painel do Mestre"],
     [data-section="Usuários"],
     [data-section="Saúde do arquivo"],
     [data-section="Consulta offline"]
   ) .tadeon-mobile-header::after,
-  .tadeon-shell:is(
+    .tadeon-shell:is(
     [data-section="Painel do Mestre"],
     [data-section="Usuários"],
     [data-section="Saúde do arquivo"],
     [data-section="Consulta offline"]
   ) .tadeon-mobile-header__identity::before,
-  .tadeon-shell:is(
+    .tadeon-shell:is(
     [data-section="Painel do Mestre"],
     [data-section="Usuários"],
     [data-section="Saúde do arquivo"],
@@ -2271,7 +2266,6 @@ html[data-tadeon-sheet-mode="game"] .tadeon-sheet-game-button svg {
     ) !important;
     box-shadow: none !important;
     opacity: 1 !important;
-    transform: none !important;
     content: "" !important;
   }
 
@@ -2345,19 +2339,19 @@ html[data-tadeon-sheet-mode="game"] .tadeon-sheet-game-button svg {
     [data-section="Saúde do arquivo"],
     [data-section="Consulta offline"]
   ) .tadeon-mobile-header::before,
-  .tadeon-shell:is(
+    .tadeon-shell:is(
     [data-section="Painel do Mestre"],
     [data-section="Usuários"],
     [data-section="Saúde do arquivo"],
     [data-section="Consulta offline"]
   ) .tadeon-mobile-header::after,
-  .tadeon-shell:is(
+    .tadeon-shell:is(
     [data-section="Painel do Mestre"],
     [data-section="Usuários"],
     [data-section="Saúde do arquivo"],
     [data-section="Consulta offline"]
   ) .tadeon-mobile-header__identity::before,
-  .tadeon-shell:is(
+    .tadeon-shell:is(
     [data-section="Painel do Mestre"],
     [data-section="Usuários"],
     [data-section="Saúde do arquivo"],
@@ -2391,7 +2385,6 @@ html[data-tadeon-sheet-mode="game"] .tadeon-sheet-game-button svg {
     gap: .625rem !important;
     padding: 0 !important;
     border: 0 !important;
-    transform: none !important;
   }
 }
 
@@ -2678,8 +2671,7 @@ html[data-tadeon-sheet-mode="game"] .tadeon-sheet-game-button svg {
     animation: tadeon-mobile-hero-enter-157 430ms var(--ease-spring, var(--ease-out)) both !important;
   }
 
-  .tadeon-route-stage > .tadeon-page > :is([data-slot="card"], .tadeon-surface),
-  .tadeon-route-stage > .tadeon-page > :is(.grid, .space-y-4, .space-y-5, .space-y-6) > [data-slot="card"] {
+  .tadeon-route-stage > .tadeon-page > :is([data-slot="card"], .tadeon-surface), .tadeon-route-stage > .tadeon-page > :is(.grid, .space-y-4, .space-y-5, .space-y-6) > [data-slot="card"] {
     animation: tadeon-mobile-surface-enter-157 390ms var(--ease-out) both;
   }
 
@@ -2691,9 +2683,6 @@ html[data-tadeon-sheet-mode="game"] .tadeon-sheet-game-button svg {
     animation: tadeon-mobile-dock-enter-157 430ms var(--ease-drawer) both;
   }
 
-  .tadeon-mobile-dock__item,
-  .tadeon-mobile-header__control,
-  .tadeon-mobile-drawer .tadeon-nav-item,
   [data-slot="tabs-trigger"]:not([data-material-surface="tab"]) {
     transition:
       color 220ms var(--ease-out),
@@ -2704,23 +2693,9 @@ html[data-tadeon-sheet-mode="game"] .tadeon-sheet-game-button svg {
       filter 220ms var(--ease-out) !important;
   }
 
-  .tadeon-mobile-dock__item:active,
-  .tadeon-mobile-header__control:active,
-  .tadeon-mobile-drawer .tadeon-nav-item:active,
   [data-slot="tabs-trigger"]:not([data-material-surface="tab"]):active,
   [data-slot="button"]:active {
     transform: scale(.955) !important;
-  }
-
-  .tadeon-mobile-dock__item[aria-current="page"] > svg,
-  .tadeon-mobile-drawer .tadeon-nav-item[aria-current="page"] svg {
-    transform: translateY(-2px) scale(1.08) !important;
-    filter: drop-shadow(0 0 10px rgb(var(--section-accent-rgb) / 42%)) !important;
-  }
-
-  .tadeon-mobile-dock__item[aria-current="page"]::after {
-    transform-origin: center;
-    animation: tadeon-mobile-active-pulse-157 420ms var(--ease-spring, var(--ease-out)) both;
   }
 
   [data-slot="tabs-trigger"]:not([data-material-surface="tab"])[data-state="active"] {
@@ -2735,7 +2710,7 @@ html[data-tadeon-sheet-mode="game"] .tadeon-sheet-game-button svg {
     animation: tadeon-mobile-popup-enter-157 340ms var(--ease-drawer) both !important;
   }
 
-  [data-slot="sheet-content"][data-state="open"],
+  [data-slot="sheet-content"]:not([data-motion-surface])[data-state="open"],
   [data-slot="drawer-content"][data-state="open"] {
     transition-duration: 360ms !important;
     transition-timing-function: var(--ease-drawer) !important;
@@ -2784,10 +2759,17 @@ html[data-tadeon-sheet-mode="game"] .tadeon-sheet-game-button svg {
   [data-slot="alert-dialog-content"]:not([data-motion-surface]),
   [data-slot="sheet-content"],
   [data-slot="drawer-content"] {
+    scroll-behavior: auto !important;
+  }
+  .tadeon-route-stage *,
+  .tadeon-mobile-dock,
+  [data-slot="dialog-content"]:not([data-motion-surface]),
+  [data-slot="alert-dialog-content"]:not([data-motion-surface]),
+  [data-slot="sheet-content"]:not([data-motion-surface]),
+  [data-slot="drawer-content"] {
     animation-duration: .001ms !important;
     animation-delay: 0ms !important;
     transition-duration: .001ms !important;
-    scroll-behavior: auto !important;
   }
 }
 
@@ -3222,17 +3204,11 @@ html[data-tadeon-sheet-mode="game"] .tadeon-sheet-game-button svg {
   background: center / contain no-repeat url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23d9d7a4' stroke-width='1.55' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='8.25' stroke-dasharray='9 3.4 2.2 4.3' opacity='.46'/%3E%3Cpath d='M12 2.8v4.1M12 17.1v4.1M2.8 12h4.1M17.1 12h4.1' opacity='.62'/%3E%3Cpath d='m8.55 12 3.45-3.45L15.45 12 12 15.45 8.55 12Z'/%3E%3Cpath d='M6.05 6.35 9.6 9.6M17.95 6.35 14.4 9.6M6.05 17.65l3.55-3.25M17.95 17.65l-3.55-3.25' opacity='.72'/%3E%3Ccircle cx='6.05' cy='6.35' r='.85'/%3E%3Ccircle cx='17.95' cy='6.35' r='.85'/%3E%3Ccircle cx='6.05' cy='17.65' r='.85'/%3E%3Ccircle cx='17.95' cy='17.65' r='.85'/%3E%3Ccircle cx='12' cy='12' r='1.15' fill='%23d9d7a4' stroke='none'/%3E%3C/svg%3E");
   opacity: .78;
   content: "";
-  transition:
-    transform 220ms var(--ease-spring, var(--ease-out)),
-    filter 220ms var(--ease-out),
-    opacity 180ms var(--ease-out);
 }
 
 .tadeon-nav-item[href="/master-panel"][aria-current="page"] .tadeon-nav-item__icon::before,
 .tadeon-mobile-dock__item[href="/master-panel"][aria-current="page"]::before {
   opacity: 1;
-  filter: drop-shadow(0 0 9px rgb(116 36 45 / 52%));
-  transform: translateY(-1px) scale(1.08);
 }
 
 .tadeon-master-navigation [data-master-tab] svg {
@@ -3469,7 +3445,6 @@ html[data-tadeon-sheet-mode="game"] .tadeon-sheet-game-button svg {
     background: none !important;
     box-shadow: none !important;
     opacity: 0 !important;
-    transform: none !important;
     content: none !important;
   }
 
@@ -3491,7 +3466,6 @@ html[data-tadeon-sheet-mode="game"] .tadeon-sheet-game-button svg {
     ) !important;
     box-shadow: none !important;
     opacity: 1 !important;
-    transform: none !important;
     pointer-events: none !important;
     content: "" !important;
   }
@@ -3503,7 +3477,6 @@ html[data-tadeon-sheet-mode="game"] .tadeon-sheet-game-button svg {
     flex: 1 1 auto !important;
     border: 0 !important;
     isolation: auto !important;
-    transform: none !important;
   }
 
   .tadeon-shell .tadeon-desktop-toolbar > .ml-auto {
@@ -3529,7 +3502,6 @@ html[data-tadeon-sheet-mode="game"] .tadeon-sheet-game-button svg {
     letter-spacing: normal !important;
     line-height: 1.1 !important;
     text-shadow: none !important;
-    transform: none !important;
   }
 }
 
@@ -3570,7 +3542,6 @@ html[data-tadeon-sheet-mode="game"] .tadeon-sheet-game-button svg {
     background: none !important;
     box-shadow: none !important;
     opacity: 0 !important;
-    transform: none !important;
     content: none !important;
   }
 
@@ -3611,7 +3582,6 @@ html[data-tadeon-sheet-mode="game"] .tadeon-sheet-game-button svg {
     overflow: visible !important;
     isolation: auto !important;
     border: 0 !important;
-    transform: none !important;
   }
 
   .tadeon-shell .tadeon-mobile-header__identity > svg {
@@ -3620,8 +3590,6 @@ html[data-tadeon-sheet-mode="game"] .tadeon-sheet-game-button svg {
     height: 2rem !important;
     flex: 0 0 auto !important;
     color: var(--section-accent) !important;
-    filter: drop-shadow(0 0 12px rgb(var(--section-accent-rgb) / 24%)) !important;
-    transform: none !important;
   }
 
   .tadeon-shell .tadeon-mobile-header__identity > div {
@@ -3655,20 +3623,12 @@ html[data-tadeon-sheet-mode="game"] .tadeon-sheet-game-button svg {
   background-color: currentColor !important;
   background-image: none !important;
   opacity: 1 !important;
-  transform: none !important;
-  filter: none !important;
   content: "" !important;
-  transition:
-    background-color 180ms var(--ease-out),
-    filter 180ms var(--ease-out),
-    transform 180ms var(--ease-out) !important;
 }
 
 .tadeon-nav-item[href="/master-panel"][aria-current="page"] .tadeon-nav-item__icon::before,
 .tadeon-nav-item[href="/nexus-tools"][aria-current="page"] .tadeon-nav-item__icon::before {
   background-color: var(--section-accent) !important;
-  filter: drop-shadow(0 0 9px rgb(var(--section-accent-rgb) / 25%)) !important;
-  transform: none !important;
 }
 
 /* Bottom dock: the Master symbol now occupies the same 20px SVG slot and uses
@@ -3684,28 +3644,14 @@ html[data-tadeon-sheet-mode="game"] .tadeon-sheet-game-button svg {
   -webkit-mask: center / contain no-repeat url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.55' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='8.25' stroke-dasharray='9 3.4 2.2 4.3' opacity='.72'/%3E%3Cpath d='M12 2.8v4.1M12 17.1v4.1M2.8 12h4.1M17.1 12h4.1'/%3E%3Cpath d='m8.55 12 3.45-3.45L15.45 12 12 15.45 8.55 12Z'/%3E%3Cpath d='M6.05 6.35 9.6 9.6M17.95 6.35 14.4 9.6M6.05 17.65l3.55-3.25M17.95 17.65l-3.55-3.25'/%3E%3Ccircle cx='6.05' cy='6.35' r='.85'/%3E%3Ccircle cx='17.95' cy='6.35' r='.85'/%3E%3Ccircle cx='6.05' cy='17.65' r='.85'/%3E%3Ccircle cx='17.95' cy='17.65' r='.85'/%3E%3Ccircle cx='12' cy='12' r='1.15' fill='black' stroke='none'/%3E%3C/svg%3E") !important;
   mask: center / contain no-repeat url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.55' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='8.25' stroke-dasharray='9 3.4 2.2 4.3' opacity='.72'/%3E%3Cpath d='M12 2.8v4.1M12 17.1v4.1M2.8 12h4.1M17.1 12h4.1'/%3E%3Cpath d='m8.55 12 3.45-3.45L15.45 12 12 15.45 8.55 12Z'/%3E%3Cpath d='M6.05 6.35 9.6 9.6M17.95 6.35 14.4 9.6M6.05 17.65l3.55-3.25M17.95 17.65l-3.55-3.25'/%3E%3Ccircle cx='6.05' cy='6.35' r='.85'/%3E%3Ccircle cx='17.95' cy='6.35' r='.85'/%3E%3Ccircle cx='6.05' cy='17.65' r='.85'/%3E%3Ccircle cx='17.95' cy='17.65' r='.85'/%3E%3Ccircle cx='12' cy='12' r='1.15' fill='black' stroke='none'/%3E%3C/svg%3E") !important;
   opacity: 1 !important;
-  filter: none !important;
-  transform: none !important;
   content: "" !important;
-  transition:
-    background-color var(--motion-fast) var(--ease-out),
-    filter var(--motion-fast) var(--ease-out),
-    transform var(--motion-fast) var(--ease-out) !important;
 }
 
 .tadeon-mobile-dock__item[href="/master-panel"][aria-current="page"]::before {
   background-color: var(--section-accent) !important;
-  filter: drop-shadow(0 0 8px rgb(var(--section-accent-rgb) / 28%)) !important;
-  transform: translateY(-1px) !important;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .tadeon-nav-item[href="/master-panel"] .tadeon-nav-item__icon::before,
-  .tadeon-nav-item[href="/nexus-tools"] .tadeon-nav-item__icon::before,
-  .tadeon-mobile-dock__item[href="/master-panel"]::before {
-    transition: none !important;
-    transform: none !important;
-  }
 }
 
 /* end-source: src/styles/focus-header-nav-parity-159.css */
@@ -3744,8 +3690,6 @@ html[data-tadeon-sheet-mode="game"] .tadeon-sheet-game-button svg {
   -webkit-mask: none !important;
   mask: none !important;
   opacity: 0 !important;
-  filter: none !important;
-  transform: none !important;
   content: none !important;
 }
 
@@ -3757,12 +3701,6 @@ html[data-tadeon-sheet-mode="game"] .tadeon-sheet-game-button svg {
   flex: 0 0 auto !important;
   color: currentColor !important;
   opacity: 1 !important;
-  filter: none !important;
-  transform: none !important;
-  transition:
-    color 180ms var(--ease-out),
-    filter 180ms var(--ease-out),
-    transform 180ms var(--ease-out) !important;
 }
 
 .tadeon-nav-item[href="/master-panel"][aria-current="page"] .tadeon-nav-item__icon > svg,
@@ -3770,8 +3708,6 @@ html[data-tadeon-sheet-mode="game"] .tadeon-sheet-game-button svg {
   display: block !important;
   color: var(--section-accent) !important;
   opacity: 1 !important;
-  filter: drop-shadow(0 0 9px rgb(var(--section-accent-rgb) / 25%)) !important;
-  transform: none !important;
 }
 
 .tadeon-mobile-dock__item[href="/master-panel"] > svg {
@@ -3782,29 +3718,15 @@ html[data-tadeon-sheet-mode="game"] .tadeon-sheet-game-button svg {
   margin: 0 !important;
   color: currentColor !important;
   opacity: 1 !important;
-  filter: none !important;
-  transform: none !important;
-  transition:
-    color var(--motion-fast) var(--ease-out),
-    filter var(--motion-fast) var(--ease-out),
-    transform var(--motion-fast) var(--ease-out) !important;
 }
 
 .tadeon-mobile-dock__item[href="/master-panel"][aria-current="page"] > svg {
   display: block !important;
   color: var(--section-accent) !important;
   opacity: 1 !important;
-  filter: drop-shadow(0 0 8px rgb(var(--section-accent-rgb) / 28%)) !important;
-  transform: translateY(-1px) !important;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .tadeon-nav-item[href="/master-panel"] .tadeon-nav-item__icon > svg,
-  .tadeon-nav-item[href="/nexus-tools"] .tadeon-nav-item__icon > svg,
-  .tadeon-mobile-dock__item[href="/master-panel"] > svg {
-    transition: none !important;
-    transform: none !important;
-  }
 }
 
 /* end-source: src/styles/navigation-real-svg-parity-160.css */
@@ -3845,10 +3767,7 @@ html[data-tadeon-sheet-mode="game"] .tadeon-sheet-game-button svg {
   height: auto !important;
   background: currentColor !important;
   opacity: .92 !important;
-  filter: none !important;
-  transform: none !important;
   content: "" !important;
-  transition: opacity var(--motion-fast) var(--ease-out), filter var(--motion-fast) var(--ease-out) !important;
 }
 
 .tadeon-nav-item[href="/master-panel"] .tadeon-nav-item__icon::before {
@@ -3864,7 +3783,6 @@ html[data-tadeon-sheet-mode="game"] .tadeon-sheet-game-button svg {
 .tadeon-nav-item:is([href="/master-panel"], [href="/nexus-tools"])[aria-current="page"] .tadeon-nav-item__icon::before {
   background: currentColor !important;
   opacity: 1 !important;
-  filter: drop-shadow(0 0 7px currentColor) !important;
 }
 
 /* The dock keeps the real 20px SVG in layout, so Mestre occupies the exact
@@ -3886,20 +3804,15 @@ html[data-tadeon-sheet-mode="game"] .tadeon-sheet-game-button svg {
   margin: 0 !important;
   background: currentColor !important;
   opacity: .92 !important;
-  filter: none !important;
-  transform: translateX(-50%) !important;
   -webkit-mask: center / contain no-repeat url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.55' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='8.25' stroke-dasharray='9 3.4 2.2 4.3' opacity='.72'/%3E%3Cpath d='M12 2.8v4.1M12 17.1v4.1M2.8 12h4.1M17.1 12h4.1'/%3E%3Cpath d='m8.55 12 3.45-3.45L15.45 12 12 15.45 8.55 12Z'/%3E%3Cpath d='M6.05 6.35 9.6 9.6M17.95 6.35 14.4 9.6M6.05 17.65l3.55-3.25M17.95 17.65l-3.55-3.25'/%3E%3Ccircle cx='6.05' cy='6.35' r='.85'/%3E%3Ccircle cx='17.95' cy='6.35' r='.85'/%3E%3Ccircle cx='6.05' cy='17.65' r='.85'/%3E%3Ccircle cx='17.95' cy='17.65' r='.85'/%3E%3Ccircle cx='12' cy='12' r='1.15' fill='black' stroke='none'/%3E%3C/svg%3E") !important;
   mask: center / contain no-repeat url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.55' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='8.25' stroke-dasharray='9 3.4 2.2 4.3' opacity='.72'/%3E%3Cpath d='M12 2.8v4.1M12 17.1v4.1M2.8 12h4.1M17.1 12h4.1'/%3E%3Cpath d='m8.55 12 3.45-3.45L15.45 12 12 15.45 8.55 12Z'/%3E%3Cpath d='M6.05 6.35 9.6 9.6M17.95 6.35 14.4 9.6M6.05 17.65l3.55-3.25M17.95 17.65l-3.55-3.25'/%3E%3Ccircle cx='6.05' cy='6.35' r='.85'/%3E%3Ccircle cx='17.95' cy='6.35' r='.85'/%3E%3Ccircle cx='6.05' cy='17.65' r='.85'/%3E%3Ccircle cx='17.95' cy='17.65' r='.85'/%3E%3Ccircle cx='12' cy='12' r='1.15' fill='black' stroke='none'/%3E%3C/svg%3E") !important;
   content: "" !important;
   pointer-events: none !important;
-  transition: opacity var(--motion-fast) var(--ease-out), filter var(--motion-fast) var(--ease-out), transform var(--motion-fast) var(--ease-out) !important;
 }
 
 .tadeon-mobile-dock__item[href="/master-panel"][aria-current="page"]::before {
   background: currentColor !important;
   opacity: 1 !important;
-  filter: drop-shadow(0 0 8px currentColor) !important;
-  transform: translate(-50%, -1px) !important;
 }
 
 /* --------------------------------------------------------------------------
@@ -4241,10 +4154,7 @@ html[data-tadeon-sheet-mode="game"] .tadeon-sheet-game-button svg {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  :is([data-slot="dialog-content"]:not([data-motion-surface]), [data-slot="alert-dialog-content"]:not([data-motion-surface])),
-  #equilibrio .tadeon-sheet-section__body-inner > .relative.w-full.h-7::after,
-  #equilibrio .tadeon-sheet-section__body-inner > .relative.w-full.h-7 > div:last-child,
-  .tadeon-mobile-dock__item[href="/master-panel"]::before {
+  :is([data-slot="dialog-content"]:not([data-motion-surface]), [data-slot="alert-dialog-content"]:not([data-motion-surface])), #equilibrio .tadeon-sheet-section__body-inner > .relative.w-full.h-7::after, #equilibrio .tadeon-sheet-section__body-inner > .relative.w-full.h-7 > div:last-child {
     animation: none !important;
     transition-duration: .001ms !important;
   }
@@ -4318,7 +4228,6 @@ html[data-tadeon-sheet-mode="game"] .tadeon-sheet-game-button svg {
   [href="/offline"]
 ) .tadeon-nav-item__icon {
   color: color-mix(in srgb, var(--nav-accent) 54%, var(--sidebar-foreground));
-  transition: color 180ms var(--ease-out), transform 180ms var(--ease-out), filter 180ms var(--ease-out);
 }
 
 .tadeon-nav-item:is(
@@ -4331,8 +4240,6 @@ html[data-tadeon-sheet-mode="game"] .tadeon-sheet-game-button svg {
   [href="/offline"]
 ):hover .tadeon-nav-item__icon {
   color: color-mix(in srgb, var(--nav-accent) 82%, var(--foreground));
-  transform: translateY(-1px) scale(1.06);
-  filter: drop-shadow(0 0 7px rgb(var(--nav-accent-rgb) / 22%));
 }
 
 .tadeon-nav-item:is(
@@ -4345,8 +4252,6 @@ html[data-tadeon-sheet-mode="game"] .tadeon-sheet-game-button svg {
   [href="/offline"]
 )[aria-current="page"] .tadeon-nav-item__icon {
   color: var(--nav-accent) !important;
-  transform: translateY(-1px) scale(1.05);
-  filter: drop-shadow(0 0 9px rgb(var(--nav-accent-rgb) / 34%));
 }
 
 /* Master/Backup authored marks: one visible layer only. The hidden Lucide SVG
@@ -4355,8 +4260,6 @@ html[data-tadeon-sheet-mode="game"] .tadeon-sheet-game-button svg {
   visibility: hidden !important;
   color: transparent !important;
   opacity: 0 !important;
-  filter: none !important;
-  transform: none !important;
 }
 
 .tadeon-nav-item:is([href="/master-panel"], [href="/nexus-tools"]) .tadeon-nav-item__icon::after {
@@ -4373,26 +4276,15 @@ html[data-tadeon-sheet-mode="game"] .tadeon-sheet-game-button svg {
 .tadeon-nav-item:is([href="/master-panel"], [href="/nexus-tools"]) .tadeon-nav-item__icon::before {
   background-color: currentColor !important;
   opacity: .92 !important;
-  filter: none !important;
-  transform: none !important;
-  transition:
-    background-color 180ms var(--ease-out),
-    opacity 180ms var(--ease-out),
-    filter 180ms var(--ease-out),
-    transform 180ms var(--ease-out) !important;
 }
 
 .tadeon-nav-item:is([href="/master-panel"], [href="/nexus-tools"]):hover .tadeon-nav-item__icon::before {
   opacity: 1 !important;
-  transform: translateY(-1px) scale(1.08) rotate(-2deg) !important;
-  filter: drop-shadow(0 0 7px rgb(var(--nav-accent-rgb) / 24%)) !important;
 }
 
 .tadeon-nav-item:is([href="/master-panel"], [href="/nexus-tools"])[aria-current="page"] .tadeon-nav-item__icon::before {
   background-color: var(--nav-accent) !important;
   opacity: 1 !important;
-  transform: translateY(-1px) scale(1.06) !important;
-  filter: drop-shadow(0 0 9px rgb(var(--nav-accent-rgb) / 38%)) !important;
 }
 
 .tadeon-mobile-dock__item[href="/nexus"] { --nav-accent: rgb(79 110 93); --nav-accent-rgb: 79 110 93; }
@@ -4413,15 +4305,12 @@ html[data-tadeon-sheet-mode="game"] .tadeon-sheet-game-button svg {
 .tadeon-mobile-dock__item[href="/master-panel"]::before {
   background-color: currentColor !important;
   opacity: .92 !important;
-  transition: background-color var(--motion-fast) var(--ease-out), filter var(--motion-fast) var(--ease-out), transform var(--motion-fast) var(--ease-out) !important;
 }
 
 .tadeon-mobile-dock__item[href="/master-panel"]:hover::before,
 .tadeon-mobile-dock__item[href="/master-panel"][aria-current="page"]::before {
   background-color: var(--nav-accent) !important;
   opacity: 1 !important;
-  filter: drop-shadow(0 0 8px rgb(var(--nav-accent-rgb) / 34%)) !important;
-  transform: translate(-50%, -2px) scale(1.06) !important;
 }
 
 /* --------------------------------------------------------------------------
@@ -4739,9 +4628,6 @@ html[data-tadeon-sheet-mode="game"] .tadeon-sheet-game-button svg {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .tadeon-nav-item .tadeon-nav-item__icon,
-  .tadeon-nav-item:is([href="/master-panel"], [href="/nexus-tools"]) .tadeon-nav-item__icon::before,
-  .tadeon-mobile-dock__item[href="/master-panel"]::before,
   #exposicao .tadeon-sheet-section__body-inner > .relative.w-full.h-4 > div:first-child::before,
   .tadeon-sheet-page::after {
     animation: none !important;
@@ -4861,7 +4747,6 @@ html[data-tadeon-sheet-mode="game"] .tadeon-sheet-game-button svg {
   box-shadow:
     inset 0 1px rgb(255 255 255 / 4%),
     0 12px 26px -23px rgb(var(--nav-accent-rgb) / 48%) !important;
-  transform-origin: center !important;
 }
 
 .tadeon-nav-item:is([href="/master-panel"], [href="/nexus-tools"]) .tadeon-nav-item__icon > svg {
@@ -4886,14 +4771,7 @@ html[data-tadeon-sheet-mode="game"] .tadeon-sheet-game-button svg {
   margin: 0 !important;
   background: currentColor !important;
   opacity: .94 !important;
-  filter: none !important;
-  transform: translate(-50%, -50%) !important;
-  transform-origin: center !important;
   content: "" !important;
-  transition:
-    background-color 180ms var(--ease-out),
-    opacity 180ms var(--ease-out),
-    filter 180ms var(--ease-out) !important;
 }
 
 .tadeon-nav-item[href="/master-panel"] .tadeon-nav-item__icon::before {
@@ -4906,19 +4784,15 @@ html[data-tadeon-sheet-mode="game"] .tadeon-sheet-game-button svg {
   mask: center / contain no-repeat url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M21 8a2 2 0 0 0-2-2h-2V4a2 2 0 0 0-2-2H9a2 2 0 0 0-2 2v2H5a2 2 0 0 0-2 2v11a3 3 0 0 0 3 3h12a3 3 0 0 0 3-3Z'/%3E%3Cpath d='M9 6h6M8 12h8M8 16h5'/%3E%3C/svg%3E") !important;
 }
 
-.tadeon-nav-item:is([href="/master-panel"], [href="/nexus-tools"]):hover .tadeon-nav-item__icon,
-.tadeon-nav-item:is([href="/master-panel"], [href="/nexus-tools"])[aria-current="page"] .tadeon-nav-item__icon {
+.tadeon-nav-item:is([href="/master-panel"], [href="/nexus-tools"]):hover .tadeon-nav-item__icon, .tadeon-nav-item:is([href="/master-panel"], [href="/nexus-tools"])[aria-current="page"] .tadeon-nav-item__icon {
   border-color: rgb(var(--nav-accent-rgb) / 25%) !important;
   background:
     linear-gradient(145deg, rgb(var(--nav-accent-rgb) / 15%), rgb(255 255 255 / 2%)) !important;
 }
 
-.tadeon-nav-item:is([href="/master-panel"], [href="/nexus-tools"]):hover .tadeon-nav-item__icon::before,
-.tadeon-nav-item:is([href="/master-panel"], [href="/nexus-tools"])[aria-current="page"] .tadeon-nav-item__icon::before {
+.tadeon-nav-item:is([href="/master-panel"], [href="/nexus-tools"]):hover .tadeon-nav-item__icon::before, .tadeon-nav-item:is([href="/master-panel"], [href="/nexus-tools"])[aria-current="page"] .tadeon-nav-item__icon::before {
   background: currentColor !important;
   opacity: 1 !important;
-  filter: drop-shadow(0 0 5px rgb(var(--nav-accent-rgb) / 22%)) !important;
-  transform: translate(-50%, -50%) !important;
 }
 
 /* Restore the canonical mobile dock contract: real SVG, no route-specific
@@ -4932,8 +4806,6 @@ html[data-tadeon-sheet-mode="game"] .tadeon-sheet-game-button svg {
   margin: 0 !important;
   color: currentColor !important;
   opacity: 1 !important;
-  filter: none !important;
-  transform: none !important;
 }
 
 .tadeon-mobile-dock__item[href="/master-panel"]::before,
@@ -4945,24 +4817,15 @@ html[data-tadeon-sheet-mode="game"] .tadeon-sheet-game-button svg {
   -webkit-mask: none !important;
   mask: none !important;
   opacity: 0 !important;
-  filter: none !important;
-  transform: none !important;
   content: none !important;
 }
 
 .tadeon-mobile-dock__item[href="/master-panel"][aria-current="page"] > svg {
   color: var(--nav-accent) !important;
   opacity: 1 !important;
-  filter: drop-shadow(0 0 8px rgb(var(--nav-accent-rgb) / 28%)) !important;
-  transform: translateY(-1px) scale(1.04) !important;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .tadeon-nav-item:is([href="/master-panel"], [href="/nexus-tools"]) .tadeon-nav-item__icon,
-  .tadeon-mobile-dock__item[href="/master-panel"] > svg {
-    transition: none !important;
-    transform: none !important;
-  }
 }
 
 /* #172: final navigation/tabletop/Nexus reconciliation. ----------------- */
@@ -5034,13 +4897,6 @@ html[data-tadeon-sheet-mode="game"] .tadeon-sheet-game-button svg {
   color: currentColor;
   background: linear-gradient(145deg, rgb(var(--nav-accent-rgb) / 8%), rgb(255 255 255 / 1.5%));
   box-shadow: inset 0 1px rgb(255 255 255 / 4%), 0 12px 26px -23px rgb(var(--nav-accent-rgb) / 48%);
-  transform-origin: center;
-  transition:
-    border-color 180ms var(--ease-out),
-    color 180ms var(--ease-out),
-    background-color 180ms var(--ease-out),
-    box-shadow 180ms var(--ease-out),
-    transform 190ms var(--ease-out);
 }
 
 .tadeon-primary-nav .tadeon-nav-item__icon > svg {
@@ -5054,7 +4910,6 @@ html[data-tadeon-sheet-mode="game"] .tadeon-sheet-game-button svg {
   border-color: rgb(var(--nav-accent-rgb) / 25%);
   background: linear-gradient(145deg, rgb(var(--nav-accent-rgb) / 15%), rgb(255 255 255 / 2%));
   box-shadow: inset 0 1px rgb(255 255 255 / 5%), 0 13px 28px -22px rgb(var(--nav-accent-rgb) / 52%);
-  transform: translateY(-1px);
 }
 
 /* #176: the authored Master mark keeps its identity, but the mobile dock item
@@ -5081,20 +4936,11 @@ html[data-tadeon-sheet-mode="game"] .tadeon-sheet-game-button svg {
   -webkit-mask: center / contain no-repeat url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.55' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='8.25' stroke-dasharray='9 3.4 2.2 4.3' opacity='.72'/%3E%3Cpath d='M12 2.8v4.1M12 17.1v4.1M2.8 12h4.1M17.1 12h4.1'/%3E%3Cpath d='m8.55 12 3.45-3.45L15.45 12 12 15.45 8.55 12Z'/%3E%3Cpath d='M6.05 6.35 9.6 9.6M17.95 6.35 14.4 9.6M6.05 17.65l3.55-3.25M17.95 17.65l-3.55-3.25'/%3E%3Ccircle cx='6.05' cy='6.35' r='.85'/%3E%3Ccircle cx='17.95' cy='6.35' r='.85'/%3E%3Ccircle cx='6.05' cy='17.65' r='.85'/%3E%3Ccircle cx='17.95' cy='17.65' r='.85'/%3E%3Ccircle cx='12' cy='12' r='1.15' fill='black' stroke='none'/%3E%3C/svg%3E") !important;
   mask: center / contain no-repeat url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.55' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='8.25' stroke-dasharray='9 3.4 2.2 4.3' opacity='.72'/%3E%3Cpath d='M12 2.8v4.1M12 17.1v4.1M2.8 12h4.1M17.1 12h4.1'/%3E%3Cpath d='m8.55 12 3.45-3.45L15.45 12 12 15.45 8.55 12Z'/%3E%3Cpath d='M6.05 6.35 9.6 9.6M17.95 6.35 14.4 9.6M6.05 17.65l3.55-3.25M17.95 17.65l-3.55-3.25'/%3E%3Ccircle cx='6.05' cy='6.35' r='.85'/%3E%3Ccircle cx='17.95' cy='6.35' r='.85'/%3E%3Ccircle cx='6.05' cy='17.65' r='.85'/%3E%3Ccircle cx='17.95' cy='17.65' r='.85'/%3E%3Ccircle cx='12' cy='12' r='1.15' fill='black' stroke='none'/%3E%3C/svg%3E") !important;
   opacity: 1 !important;
-  filter: none !important;
-  transform: none !important;
-  transform-origin: center !important;
   content: "" !important;
-  transition:
-    color var(--motion-fast) var(--ease-out),
-    filter var(--motion-fast) var(--ease-out),
-    transform var(--motion-fast) var(--ease-out) !important;
 }
 
 .tadeon-mobile-dock__item[href="/master-panel"][aria-current="page"]::before {
   color: var(--section-accent) !important;
-  filter: drop-shadow(0 0 8px rgb(var(--section-accent-rgb) / 28%)) !important;
-  transform: translateY(-1px) !important;
 }
 
 .tadeon-mobile-dock__item[href="/master-panel"][aria-current="page"]::after {
@@ -5107,7 +4953,6 @@ html[data-tadeon-sheet-mode="game"] .tadeon-sheet-game-button svg {
   background: var(--section-accent) !important;
   box-shadow: 0 0 10px rgb(var(--section-accent-rgb) / 45%) !important;
   opacity: 1 !important;
-  transform: none !important;
   content: "" !important;
 }
 
@@ -5123,7 +4968,6 @@ html[data-tadeon-sheet-mode="game"] .tadeon-sheet-game-button svg {
   border-color: rgb(var(--nav-accent-rgb) / 11%) !important;
   background: linear-gradient(145deg, rgb(var(--nav-accent-rgb) / 8%), rgb(255 255 255 / 1.5%)) !important;
   box-shadow: inset 0 1px rgb(255 255 255 / 4%), 0 12px 26px -23px rgb(var(--nav-accent-rgb) / 48%) !important;
-  transform: none !important;
 }
 
 @media (max-width: 767px) {
@@ -5135,8 +4979,6 @@ html[data-tadeon-sheet-mode="game"] .tadeon-sheet-game-button svg {
 
   .tadeon-shell[data-section="Saúde do arquivo"] .tadeon-mobile-dock__item[href="/nexus"][aria-current="page"] > svg {
     color: currentColor !important;
-    filter: none !important;
-    transform: none !important;
   }
 }
 
@@ -5272,11 +5114,6 @@ html[data-tadeon-tabletop-reliability] .tadeon-tabletop-toolbar {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .tadeon-primary-nav .tadeon-nav-item__icon,
-  .tadeon-mobile-dock__item[href="/master-panel"]::before {
-    transition: none !important;
-    transform: none !important;
-  }
 }
 /* end-source: src/styles/create-sheet-search-viewport-163.css */
 /* source: src/styles/desktop-hero-parity-202.css */

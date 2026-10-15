@@ -24,9 +24,9 @@ Paleta canônica atual:
 - O Nexus: verde / véu — identidade própria já consolidada;
 - Mesa Nexus: azul frio — `84 123 148`, com apoio verde acinzentado `79 110 93`;
 - Painel do Mestre: vermelho profundo — `116 36 45`;
-- Gerenciar Usuários: laranja / cobre — `183 129 77`;
-- Backup & Diagnóstico: metálico / aço — `122 129 135`;
-- Consulta Offline: roxo acinzentado — `113 107 123`.
+- Usuários: laranja / cobre — `183 129 77`;
+- Backup e diagnóstico: metálico / aço — `122 129 135`;
+- Consulta offline: roxo acinzentado — `113 107 123`.
 
 A regra essencial é: **o mesmo estado visual deve usar a cor da própria seção**. Um hover da Mesa não deve ficar dourado; um hover de Usuários não deve ficar azul.
 

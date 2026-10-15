@@ -69,9 +69,7 @@
 /* --------------------------------------------------------------------------
    BUTTONS / LINKS - obvious physical press and return.
    -------------------------------------------------------------------------- */
-.tadeon-shell button:not([data-material-surface], .tadeon-material-button):not(:disabled),
-.tadeon-shell [role="button"],
-.tadeon-shell a:not([data-material-surface], .tadeon-material-button)[href] {
+.tadeon-shell button:not([data-material-surface], .tadeon-material-button):not(:disabled), .tadeon-shell [role="button"], .tadeon-shell a:not([data-material-surface], .tadeon-material-button)[href] {
   transition:
     transform var(--tadeon-visible-fast) var(--tadeon-visible-ease-standard),
     box-shadow 220ms var(--tadeon-visible-ease-standard),
@@ -81,29 +79,21 @@
 }
 
 @media (hover: hover) and (pointer: fine) {
-  .tadeon-shell button:not([data-material-surface], .tadeon-material-button):not(:disabled):hover,
-  .tadeon-shell [role="button"]:hover,
-  .tadeon-shell a:not([data-material-surface], .tadeon-material-button)[href]:hover {
+  .tadeon-shell button:not([data-material-surface], .tadeon-material-button):not(:disabled):hover, .tadeon-shell [role="button"]:hover, .tadeon-shell a:not([data-material-surface], .tadeon-material-button)[href]:hover {
     transform: translate3d(0, -3px, 0) scale(1.015) !important;
   }
 }
 
-.tadeon-shell button:not([data-material-surface], .tadeon-material-button):not(:disabled):active,
-.tadeon-shell [role="button"]:active,
-.tadeon-shell a:not([data-material-surface], .tadeon-material-button)[href]:active {
+.tadeon-shell button:not([data-material-surface], .tadeon-material-button):not(:disabled):active, .tadeon-shell [role="button"]:active, .tadeon-shell a:not([data-material-surface], .tadeon-material-button)[href]:active {
   animation: tadeon-visible-press 180ms var(--tadeon-visible-ease-standard) both !important;
 }
 
-.tadeon-shell button:not([data-material-surface], .tadeon-material-button) :where(svg.lucide),
-.tadeon-shell [role="button"] :where(svg.lucide),
-.tadeon-shell a:not([data-material-surface], .tadeon-material-button)[href] :where(svg.lucide) {
+.tadeon-shell button:not([data-material-surface], .tadeon-material-button) :where(svg.lucide), .tadeon-shell [role="button"] :where(svg.lucide), .tadeon-shell a:not([data-material-surface], .tadeon-material-button)[href] :where(svg.lucide) {
   transition: transform 260ms var(--tadeon-visible-ease-in), filter 260ms ease !important;
 }
 
 @media (hover: hover) and (pointer: fine) {
-  .tadeon-shell button:not([data-material-surface], .tadeon-material-button):hover :where(svg.lucide),
-  .tadeon-shell [role="button"]:hover :where(svg.lucide),
-  .tadeon-shell a:not([data-material-surface], .tadeon-material-button)[href]:hover :where(svg.lucide) {
+  .tadeon-shell button:not([data-material-surface], .tadeon-material-button):hover :where(svg.lucide), .tadeon-shell [role="button"]:hover :where(svg.lucide), .tadeon-shell a:not([data-material-surface], .tadeon-material-button)[href]:hover :where(svg.lucide) {
     transform: translate3d(0, -2px, 0) scale(1.09) rotate(-2deg) !important;
     filter: drop-shadow(0 7px 16px rgb(217 215 164 / 22%)) !important;
   }
@@ -196,31 +186,31 @@
 /* --------------------------------------------------------------------------
    SHEETS - distinct physical motion by edge.
    -------------------------------------------------------------------------- */
-.tadeon-shell [data-slot="sheet-content"][data-state="open"][data-side="right"] {
+.tadeon-shell [data-slot="sheet-content"]:not([data-motion-surface])[data-state="open"][data-side="right"] {
   animation: tadeon-visible-sheet-right-in 560ms var(--tadeon-visible-ease-in) both !important;
 }
-.tadeon-shell [data-slot="sheet-content"][data-state="closed"][data-side="right"] {
+.tadeon-shell [data-slot="sheet-content"]:not([data-motion-surface])[data-state="closed"][data-side="right"] {
   animation: tadeon-visible-sheet-right-out 260ms var(--tadeon-visible-ease-out) both !important;
 }
-.tadeon-shell [data-slot="sheet-content"][data-state="open"][data-side="left"] {
+.tadeon-shell [data-slot="sheet-content"]:not([data-motion-surface])[data-state="open"][data-side="left"] {
   animation: tadeon-visible-sheet-left-in 560ms var(--tadeon-visible-ease-in) both !important;
 }
-.tadeon-shell [data-slot="sheet-content"][data-state="closed"][data-side="left"] {
+.tadeon-shell [data-slot="sheet-content"]:not([data-motion-surface])[data-state="closed"][data-side="left"] {
   animation: tadeon-visible-sheet-left-out 260ms var(--tadeon-visible-ease-out) both !important;
 }
-.tadeon-shell [data-slot="sheet-content"][data-state="open"][data-side="bottom"] {
+.tadeon-shell [data-slot="sheet-content"]:not([data-motion-surface])[data-state="open"][data-side="bottom"] {
   animation: tadeon-visible-sheet-bottom-in 540ms var(--tadeon-visible-ease-in) both !important;
 }
-.tadeon-shell [data-slot="sheet-content"][data-state="closed"][data-side="bottom"] {
+.tadeon-shell [data-slot="sheet-content"]:not([data-motion-surface])[data-state="closed"][data-side="bottom"] {
   animation: tadeon-visible-sheet-bottom-out 260ms var(--tadeon-visible-ease-out) both !important;
 }
 
-.tadeon-shell [data-slot="sheet-content"][data-state="open"] > * {
+.tadeon-shell [data-slot="sheet-content"]:not([data-motion-surface])[data-state="open"] > * {
   animation: tadeon-visible-sheet-child 420ms var(--tadeon-visible-ease-in) both !important;
 }
-.tadeon-shell [data-slot="sheet-content"][data-state="open"] > :nth-child(2) { animation-delay: 45ms !important; }
-.tadeon-shell [data-slot="sheet-content"][data-state="open"] > :nth-child(3) { animation-delay: 90ms !important; }
-.tadeon-shell [data-slot="sheet-content"][data-state="open"] > :nth-child(4) { animation-delay: 135ms !important; }
+.tadeon-shell [data-slot="sheet-content"]:not([data-motion-surface])[data-state="open"] > :nth-child(2) { animation-delay: 45ms !important; }
+.tadeon-shell [data-slot="sheet-content"]:not([data-motion-surface])[data-state="open"] > :nth-child(3) { animation-delay: 90ms !important; }
+.tadeon-shell [data-slot="sheet-content"]:not([data-motion-surface])[data-state="open"] > :nth-child(4) { animation-delay: 135ms !important; }
 
 /* --------------------------------------------------------------------------
    POPOVERS / MENUS - grow from trigger instead of simply fading.
@@ -254,33 +244,8 @@
 /* --------------------------------------------------------------------------
    NAVIGATION - clear movement on active state.
    -------------------------------------------------------------------------- */
-.tadeon-primary-nav .tadeon-nav-item,
-.tadeon-mobile-dock__item,
-.tadeon-mobile-header__control {
-  transition:
-    transform 200ms var(--tadeon-visible-ease-standard),
-    color 180ms ease,
-    background-color 220ms ease,
-    border-color 220ms ease,
-    box-shadow 280ms var(--tadeon-visible-ease-standard) !important;
-}
-
-.tadeon-primary-nav .tadeon-nav-item[aria-current="page"],
-.tadeon-mobile-dock__item[aria-current="page"] {
-  animation: tadeon-visible-nav-arrive 430ms var(--tadeon-visible-ease-in) both !important;
-}
-
-
-.tadeon-mobile-dock__item[aria-current="page"]::after {
-  animation: tadeon-visible-nav-marker 500ms var(--tadeon-visible-ease-in) both !important;
-}
 
 @media (hover: hover) and (pointer: fine) {
-  .tadeon-primary-nav .tadeon-nav-item:hover,
-  .tadeon-mobile-dock__item:hover,
-  .tadeon-mobile-header__control:hover {
-    transform: translate3d(0, -3px, 0) scale(1.02) !important;
-  }
 }
 
 /* --------------------------------------------------------------------------
@@ -506,15 +471,13 @@
   .tadeon-shell [data-slot="collapsible-content"]:not([data-motion-surface="fold"]),
   .tadeon-shell [data-slot="dialog-content"]:not([data-motion-surface]),
   .tadeon-shell [data-slot="dialog-content"]:not([data-motion-surface]) > *,
-  .tadeon-shell [data-slot="sheet-content"],
-  .tadeon-shell [data-slot="sheet-content"] > *,
+  .tadeon-shell [data-slot="sheet-content"]:not([data-motion-surface]),
+  .tadeon-shell [data-slot="sheet-content"]:not([data-motion-surface]) > *,
   .tadeon-shell [data-slot="popover-content"]:not([data-motion-surface]),
   .tadeon-shell [data-slot="dropdown-menu-content"]:not([data-motion-surface]),
   .tadeon-shell [data-slot="dropdown-menu-sub-content"]:not([data-motion-surface]),
   .tadeon-shell [data-slot="dropdown-menu-content"]:not([data-motion-surface]) > *,
   .tadeon-shell [data-slot="dropdown-menu-sub-content"]:not([data-motion-surface]) > *,
-  .tadeon-primary-nav .tadeon-nav-item[aria-current="page"],
-  .tadeon-mobile-dock__item[aria-current="page"],
   .tadeon-shell [data-tadeon-node][data-selected="true"],
   .tadeon-shell [data-tadeon-map-element][data-selected="true"],
   .tadeon-shell .tadeon-atmosphere,
@@ -546,14 +509,14 @@
 :root{--tdv-in:cubic-bezier(.16,1,.3,1);--tdv-spring:cubic-bezier(.175,.885,.32,1.275);--tdv-soft:cubic-bezier(.22,1,.36,1);--tdv-out:cubic-bezier(.7,0,.84,0);--tdv-fast:180ms;--tdv-ui:280ms;--tdv-panel:520ms}
 
 /* Buttons: press, release and icon response are deliberately visible. */
-.tadeon-shell button:not([data-material-surface], .tadeon-material-button):not(:disabled),.tadeon-shell [role=button],.tadeon-shell a:not([data-material-surface], .tadeon-material-button)[href]{transform-origin:center;transition:transform var(--tdv-fast) var(--tdv-spring),box-shadow var(--tdv-ui) var(--tdv-soft),border-color var(--tdv-fast) ease,background-color var(--tdv-fast) ease,filter var(--tdv-ui) ease}
-.tadeon-shell button:not([data-material-surface], .tadeon-material-button):not(:disabled):hover,.tadeon-shell [role=button]:hover,.tadeon-shell a:not([data-material-surface], .tadeon-material-button)[href]:hover{transform:translateY(-3px) scale(1.015);filter:brightness(1.06)}
-.tadeon-shell button:not([data-material-surface], .tadeon-material-button):not(:disabled):active,.tadeon-shell [role=button]:active,.tadeon-shell a:not([data-material-surface], .tadeon-material-button)[href]:active{transform:translateY(2px) scale(.93);filter:brightness(.96);transition-duration:90ms}
-.tadeon-shell button:not([data-material-surface], .tadeon-material-button):not(:disabled)::before,.tadeon-shell [role=button]::before,.tadeon-shell a:not([data-material-surface], .tadeon-material-button)[href]::before{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;opacity:0;transform:scale(.72);background:radial-gradient(circle at 50% 50%,currentColor 0,transparent 62%);transition:opacity 260ms ease,transform 360ms var(--tdv-spring)}
-.tadeon-shell button:not([data-material-surface], .tadeon-material-button):not(:disabled):active::before,.tadeon-shell [role=button]:active::before,.tadeon-shell a:not([data-material-surface], .tadeon-material-button)[href]:active::before{opacity:.08;transform:scale(1.3)}
-.tadeon-shell button:not([data-material-surface], .tadeon-material-button) :where(svg.lucide),.tadeon-shell [role=button] :where(svg.lucide),.tadeon-shell a:not([data-material-surface], .tadeon-material-button)[href] :where(svg.lucide){transition:transform 300ms var(--tdv-spring),filter 280ms ease}
-.tadeon-shell button:not([data-material-surface], .tadeon-material-button):hover :where(svg.lucide),.tadeon-shell [role=button]:hover :where(svg.lucide),.tadeon-shell a:not([data-material-surface], .tadeon-material-button)[href]:hover :where(svg.lucide){transform:translateY(-2px) scale(1.1) rotate(-3deg);filter:drop-shadow(0 7px 14px rgb(217 215 164 / 22%))}
-.tadeon-shell button:not([data-material-surface], .tadeon-material-button):active :where(svg.lucide),.tadeon-shell [role=button]:active :where(svg.lucide),.tadeon-shell a:not([data-material-surface], .tadeon-material-button)[href]:active :where(svg.lucide){transform:translateY(2px) scale(.88) rotate(4deg)}
+.tadeon-shell button:not([data-material-surface], .tadeon-material-button):not(:disabled), .tadeon-shell [role=button], .tadeon-shell a:not([data-material-surface], .tadeon-material-button)[href]{transform-origin:center;transition:transform var(--tdv-fast) var(--tdv-spring),box-shadow var(--tdv-ui) var(--tdv-soft),border-color var(--tdv-fast) ease,background-color var(--tdv-fast) ease,filter var(--tdv-ui) ease}
+.tadeon-shell button:not([data-material-surface], .tadeon-material-button):not(:disabled):hover, .tadeon-shell [role=button]:hover, .tadeon-shell a:not([data-material-surface], .tadeon-material-button)[href]:hover{transform:translateY(-3px) scale(1.015);filter:brightness(1.06)}
+.tadeon-shell button:not([data-material-surface], .tadeon-material-button):not(:disabled):active, .tadeon-shell [role=button]:active, .tadeon-shell a:not([data-material-surface], .tadeon-material-button)[href]:active{transform:translateY(2px) scale(.93);filter:brightness(.96);transition-duration:90ms}
+.tadeon-shell button:not([data-material-surface], .tadeon-material-button):not(:disabled)::before, .tadeon-shell [role=button]::before, .tadeon-shell a:not([data-material-surface], .tadeon-material-button)[href]::before{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;opacity:0;transform:scale(.72);background:radial-gradient(circle at 50% 50%,currentColor 0,transparent 62%);transition:opacity 260ms ease,transform 360ms var(--tdv-spring)}
+.tadeon-shell button:not([data-material-surface], .tadeon-material-button):not(:disabled):active::before, .tadeon-shell [role=button]:active::before, .tadeon-shell a:not([data-material-surface], .tadeon-material-button)[href]:active::before{opacity:.08;transform:scale(1.3)}
+.tadeon-shell button:not([data-material-surface], .tadeon-material-button) :where(svg.lucide), .tadeon-shell [role=button] :where(svg.lucide), .tadeon-shell a:not([data-material-surface], .tadeon-material-button)[href] :where(svg.lucide){transition:transform 300ms var(--tdv-spring),filter 280ms ease}
+.tadeon-shell button:not([data-material-surface], .tadeon-material-button):hover :where(svg.lucide), .tadeon-shell [role=button]:hover :where(svg.lucide), .tadeon-shell a:not([data-material-surface], .tadeon-material-button)[href]:hover :where(svg.lucide){transform:translateY(-2px) scale(1.1) rotate(-3deg);filter:drop-shadow(0 7px 14px rgb(217 215 164 / 22%))}
+.tadeon-shell button:not([data-material-surface], .tadeon-material-button):active :where(svg.lucide), .tadeon-shell [role=button]:active :where(svg.lucide), .tadeon-shell a:not([data-material-surface], .tadeon-material-button)[href]:active :where(svg.lucide){transform:translateY(2px) scale(.88) rotate(4deg)}
 
 /* Tabs: underline travels; label and icon move independently. */
 .tadeon-shell [data-slot=tabs-list]{position:relative}
@@ -582,10 +545,7 @@
 @media (hover:hover) and (pointer:fine){.tadeon-shell .tadeon-surface:hover{transform:translateY(-8px) rotate(-.18deg) scale(1.012);filter:brightness(1.035)}.tadeon-shell .tadeon-user-row:hover{transform:translateX(8px) translateY(-2px);filter:brightness(1.025)}.tadeon-shell .tadeon-state-panel:hover{transform:translateY(-6px) scale(1.008)}}
 
 /* Navigation: active destination arrives with a directional sweep. */
-.tadeon-primary-nav .tadeon-nav-item,.tadeon-mobile-dock__item{transition:transform 320ms var(--tdv-spring),color 220ms ease,background-color 320ms ease,box-shadow 420ms var(--tdv-soft)}
-@media (hover:hover) and (pointer:fine){.tadeon-primary-nav .tadeon-nav-item:hover,.tadeon-mobile-dock__item:hover{transform:translateX(7px) translateY(-2px)}}
-.tadeon-primary-nav .tadeon-nav-item[aria-current=page],.tadeon-mobile-dock__item[aria-current=page]{animation:tdv-nav-land 560ms var(--tdv-spring) both}
-@keyframes tdv-nav-land{0%{opacity:.65;transform:translateX(-13px) scale(.92)}55%{opacity:1;transform:translateX(4px) scale(1.045)}100%{opacity:1;transform:none}}
+@media (hover:hover) and (pointer:fine){}
 
 /* Tooltips and floating notes: quick, sharp, directional. */
 .tadeon-shell [data-slot=tooltip-content][data-state=open]{animation:tdv-tooltip-in 260ms var(--tdv-spring) both}
@@ -609,7 +569,7 @@
 .tadeon-shell [data-slot=dialog-content][data-state=closed]{animation:tdv-dialog-out 220ms var(--tdv-out) both}
 @keyframes tdv-dialog-in{from{opacity:0;transform:translateY(72px) scale(.82) rotateX(-7deg);filter:blur(14px)}58%{opacity:1;transform:translateY(-7px) scale(1.035) rotateX(1deg);filter:blur(0)}to{opacity:1;transform:none}}
 @keyframes tdv-dialog-out{from{opacity:1;transform:none}to{opacity:0;transform:translateY(38px) scale(.9) rotateX(4deg);filter:blur(7px)}}
-.tadeon-shell [data-slot=sheet-content][data-state=open][data-side=right]{animation:tdv-sheet-r-in 620ms var(--tdv-in) both}.tadeon-shell [data-slot=sheet-content][data-state=closed][data-side=right]{animation:tdv-sheet-r-out 220ms var(--tdv-out) both}.tadeon-shell [data-slot=sheet-content][data-state=open][data-side=left]{animation:tdv-sheet-l-in 620ms var(--tdv-in) both}.tadeon-shell [data-slot=sheet-content][data-state=closed][data-side=left]{animation:tdv-sheet-l-out 220ms var(--tdv-out) both}.tadeon-shell [data-slot=sheet-content][data-state=open][data-side=bottom]{animation:tdv-sheet-b-in 620ms var(--tdv-in) both}.tadeon-shell [data-slot=sheet-content][data-state=closed][data-side=bottom]{animation:tdv-sheet-b-out 220ms var(--tdv-out) both}
+.tadeon-shell [data-slot="sheet-content"]:not([data-motion-surface])[data-state=open][data-side=right]{animation:tdv-sheet-r-in 620ms var(--tdv-in) both}.tadeon-shell [data-slot="sheet-content"]:not([data-motion-surface])[data-state=closed][data-side=right]{animation:tdv-sheet-r-out 220ms var(--tdv-out) both}.tadeon-shell [data-slot="sheet-content"]:not([data-motion-surface])[data-state=open][data-side=left]{animation:tdv-sheet-l-in 620ms var(--tdv-in) both}.tadeon-shell [data-slot="sheet-content"]:not([data-motion-surface])[data-state=closed][data-side=left]{animation:tdv-sheet-l-out 220ms var(--tdv-out) both}.tadeon-shell [data-slot="sheet-content"]:not([data-motion-surface])[data-state=open][data-side=bottom]{animation:tdv-sheet-b-in 620ms var(--tdv-in) both}.tadeon-shell [data-slot="sheet-content"]:not([data-motion-surface])[data-state=closed][data-side=bottom]{animation:tdv-sheet-b-out 220ms var(--tdv-out) both}
 @keyframes tdv-sheet-r-in{from{transform:translateX(100%) scale(.96);opacity:.3}60%{transform:translateX(-18px) scale(1.012);opacity:1}to{transform:none;opacity:1}}@keyframes tdv-sheet-r-out{to{transform:translateX(100%) scale(.98);opacity:0}}@keyframes tdv-sheet-l-in{from{transform:translateX(-100%) scale(.96);opacity:.3}60%{transform:translateX(18px) scale(1.012);opacity:1}to{transform:none;opacity:1}}@keyframes tdv-sheet-l-out{to{transform:translateX(-100%) scale(.98);opacity:0}}@keyframes tdv-sheet-b-in{from{transform:translateY(100%) scale(.96);opacity:.2}60%{transform:translateY(-18px) scale(1.012);opacity:1}to{transform:none;opacity:1}}@keyframes tdv-sheet-b-out{to{transform:translateY(100%) scale(.98);opacity:0}}
 
 /* Background objects: slow, layered drift with different periods. */
@@ -743,13 +703,13 @@
 @keyframes tui-dialog-child{from{opacity:0;transform:translateY(18px) scale(.97)}to{opacity:1;transform:none}}
 
 /* Real sheets: Radix supplies data-side. */
-.tadeon-shell [data-slot="sheet-content"][data-state="open"][data-side="right"]{animation:tui-sheet-right-in 620ms var(--tui-in) both!important}
-.tadeon-shell [data-slot="sheet-content"][data-state="closed"][data-side="right"]{animation:tui-sheet-right-out 240ms var(--tui-out) both!important}
-.tadeon-shell [data-slot="sheet-content"][data-state="open"][data-side="left"]{animation:tui-sheet-left-in 620ms var(--tui-in) both!important}
-.tadeon-shell [data-slot="sheet-content"][data-state="closed"][data-side="left"]{animation:tui-sheet-left-out 240ms var(--tui-out) both!important}
-.tadeon-shell [data-slot="sheet-content"][data-state="open"][data-side="bottom"]{animation:tui-sheet-bottom-in 620ms var(--tui-in) both!important}
-.tadeon-shell [data-slot="sheet-content"][data-state="closed"][data-side="bottom"]{animation:tui-sheet-bottom-out 240ms var(--tui-out) both!important}
-.tadeon-shell [data-slot="sheet-content"][data-state="open"][data-side="top"]{animation:tui-sheet-top-in 620ms var(--tui-in) both!important}
+.tadeon-shell [data-slot="sheet-content"]:not([data-motion-surface])[data-state="open"][data-side="right"]{animation:tui-sheet-right-in 620ms var(--tui-in) both!important}
+.tadeon-shell [data-slot="sheet-content"]:not([data-motion-surface])[data-state="closed"][data-side="right"]{animation:tui-sheet-right-out 240ms var(--tui-out) both!important}
+.tadeon-shell [data-slot="sheet-content"]:not([data-motion-surface])[data-state="open"][data-side="left"]{animation:tui-sheet-left-in 620ms var(--tui-in) both!important}
+.tadeon-shell [data-slot="sheet-content"]:not([data-motion-surface])[data-state="closed"][data-side="left"]{animation:tui-sheet-left-out 240ms var(--tui-out) both!important}
+.tadeon-shell [data-slot="sheet-content"]:not([data-motion-surface])[data-state="open"][data-side="bottom"]{animation:tui-sheet-bottom-in 620ms var(--tui-in) both!important}
+.tadeon-shell [data-slot="sheet-content"]:not([data-motion-surface])[data-state="closed"][data-side="bottom"]{animation:tui-sheet-bottom-out 240ms var(--tui-out) both!important}
+.tadeon-shell [data-slot="sheet-content"]:not([data-motion-surface])[data-state="open"][data-side="top"]{animation:tui-sheet-top-in 620ms var(--tui-in) both!important}
 @keyframes tui-sheet-right-in{0%{transform:translateX(100%) rotateY(-7deg);opacity:.25}58%{transform:translateX(-18px) rotateY(1deg);opacity:1}100%{transform:none;opacity:1}}
 @keyframes tui-sheet-right-out{to{transform:translateX(100%) rotateY(-3deg);opacity:0}}
 @keyframes tui-sheet-left-in{0%{transform:translateX(-100%) rotateY(7deg);opacity:.25}58%{transform:translateX(18px) rotateY(-1deg);opacity:1}100%{transform:none;opacity:1}}
@@ -1005,26 +965,18 @@
 @keyframes tci-empty-in{from{opacity:0;transform:translateY(22px) scale(.965);filter:blur(8px)}65%{opacity:1;transform:translateY(-3px) scale(1.006);filter:blur(0)}to{transform:none}}
 
 /* ICON BUTTONS - every action category gets a different micro-gesture. */
-.tadeon-shell button:not([data-material-surface], .tadeon-material-button)[aria-label*="Fechar"]:hover svg,
-.tadeon-shell button:not([data-material-surface], .tadeon-material-button)[title*="Fechar"]:hover svg{transform:rotate(90deg) scale(1.08)}
-.tadeon-shell button:not([data-material-surface], .tadeon-material-button)[aria-label*="Adicionar"]:hover svg,
-.tadeon-shell button:not([data-material-surface], .tadeon-material-button)[title*="Adicionar"]:hover svg{transform:rotate(90deg) scale(1.1)}
-.tadeon-shell button:not([data-material-surface], .tadeon-material-button)[aria-label*="Voltar"]:hover svg,
-.tadeon-shell button:not([data-material-surface], .tadeon-material-button)[title*="Voltar"]:hover svg{transform:translateX(-3px)}
-.tadeon-shell button:not([data-material-surface], .tadeon-material-button)[aria-label*="Avançar"]:hover svg,
-.tadeon-shell button:not([data-material-surface], .tadeon-material-button)[title*="Avançar"]:hover svg{transform:translateX(3px)}
-.tadeon-shell button:not([data-material-surface], .tadeon-material-button)[aria-label*="Pesquisar"]:hover svg,
-.tadeon-shell button:not([data-material-surface], .tadeon-material-button)[title*="Pesquisar"]:hover svg{transform:scale(1.1) rotate(-8deg)}
-.tadeon-shell button:not([data-material-surface], .tadeon-material-button)[aria-label*="Atualizar"]:hover svg,
-.tadeon-shell button:not([data-material-surface], .tadeon-material-button)[title*="Atualizar"]:hover svg{transform:rotate(180deg)}
+.tadeon-shell button:not([data-material-surface], .tadeon-material-button)[aria-label*="Fechar"]:hover svg, .tadeon-shell button:not([data-material-surface], .tadeon-material-button)[title*="Fechar"]:hover svg{transform:rotate(90deg) scale(1.08)}
+.tadeon-shell button:not([data-material-surface], .tadeon-material-button)[aria-label*="Adicionar"]:hover svg, .tadeon-shell button:not([data-material-surface], .tadeon-material-button)[title*="Adicionar"]:hover svg{transform:rotate(90deg) scale(1.1)}
+.tadeon-shell button:not([data-material-surface], .tadeon-material-button)[aria-label*="Voltar"]:hover svg, .tadeon-shell button:not([data-material-surface], .tadeon-material-button)[title*="Voltar"]:hover svg{transform:translateX(-3px)}
+.tadeon-shell button:not([data-material-surface], .tadeon-material-button)[aria-label*="Avançar"]:hover svg, .tadeon-shell button:not([data-material-surface], .tadeon-material-button)[title*="Avançar"]:hover svg{transform:translateX(3px)}
+.tadeon-shell button:not([data-material-surface], .tadeon-material-button)[aria-label*="Pesquisar"]:hover svg, .tadeon-shell button:not([data-material-surface], .tadeon-material-button)[title*="Pesquisar"]:hover svg{transform:scale(1.1) rotate(-8deg)}
+.tadeon-shell button:not([data-material-surface], .tadeon-material-button)[aria-label*="Atualizar"]:hover svg, .tadeon-shell button:not([data-material-surface], .tadeon-material-button)[title*="Atualizar"]:hover svg{transform:rotate(180deg)}
 
 /* BREADCRUMBS - focus advances along the path. */
-.tadeon-shell nav[aria-label*="breadcrumb"] a:not([data-material-surface], .tadeon-material-button),
-.tadeon-shell nav[aria-label*="Breadcrumb"] a:not([data-material-surface], .tadeon-material-button){
+.tadeon-shell nav[aria-label*="breadcrumb"] a:not([data-material-surface], .tadeon-material-button), .tadeon-shell nav[aria-label*="Breadcrumb"] a:not([data-material-surface], .tadeon-material-button){
   transition:transform 220ms var(--tci-soft),color 180ms ease,opacity 180ms ease;
 }
-.tadeon-shell nav[aria-label*="breadcrumb"] a:not([data-material-surface], .tadeon-material-button):hover,
-.tadeon-shell nav[aria-label*="Breadcrumb"] a:not([data-material-surface], .tadeon-material-button):hover{transform:translateX(3px)}
+.tadeon-shell nav[aria-label*="breadcrumb"] a:not([data-material-surface], .tadeon-material-button):hover, .tadeon-shell nav[aria-label*="Breadcrumb"] a:not([data-material-surface], .tadeon-material-button):hover{transform:translateX(3px)}
 
 /* SEPARATORS / ORNAMENTS - decorative lines are drawn into place. */
 .tadeon-shell hr,
@@ -1036,20 +988,7 @@
 @keyframes tci-toast-action{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
 
 /* DESKTOP SIDEBAR - only after the structural correction, refine item motion. */
-.tadeon-sidebar .tadeon-nav-item{
-  transform-origin:left center;
-  transition:transform 280ms var(--tci-soft),color 200ms ease,background-color 240ms ease,box-shadow 280ms var(--tci-soft);
-}
-.tadeon-sidebar .tadeon-nav-item:hover{transform:translateX(4px)}
-.tadeon-sidebar .tadeon-nav-item[aria-current="page"]{animation:tci-nav-land 360ms var(--tci-spring) both}
 @keyframes tci-nav-land{from{opacity:.65;transform:translateX(-8px) scale(.97)}70%{opacity:1;transform:translateX(2px) scale(1.008)}to{transform:none}}
-.tadeon-sidebar .tadeon-nav-item svg{transition:transform 280ms var(--tci-spring),filter 260ms ease}
-.tadeon-sidebar .tadeon-nav-item:hover svg{transform:translateX(2px) scale(1.08)}
-.tadeon-sidebar-collapse{transition:transform 340ms var(--tci-spring),background-color 240ms ease,border-color 240ms ease,box-shadow 300ms var(--tci-soft)!important}
-.tadeon-sidebar-collapse:hover{transform:translateY(-2px) scale(1.05) rotate(-2deg)!important}
-.tadeon-sidebar-collapse svg{transition:transform 420ms var(--tci-spring)}
-.tadeon-sidebar-collapse[data-state="collapsed"] svg{transform:translateX(1px)}
-.tadeon-sidebar-collapse[data-state="expanded"] svg{transform:translateX(-1px)}
 
 /* GLOBAL SCROLL-REVEAL HOOK - elements marked by the experience director gain direction. */
 .tadeon-shell [data-tadeon-directed="true"]{--tci-stagger:calc(var(--tadeon-index,0) * 24ms)}
@@ -1061,8 +1000,7 @@
 @media (max-width:767px){
   .tadeon-shell table tbody tr:hover,
   .tadeon-shell ul > li:hover,
-  .tadeon-shell ol > li:hover,
-  .tadeon-sidebar .tadeon-nav-item:hover{transform:none}
+  .tadeon-shell ol > li:hover{transform:none}
 }
 
 @media (prefers-reduced-motion:reduce){
@@ -1118,10 +1056,8 @@
 @keyframes tdi-list-item{from{opacity:0;transform:translateY(18px) scale(.97);filter:blur(4px)}58%{opacity:1;transform:translateY(-3px) scale(1.01);filter:blur(0)}to{opacity:1;transform:none}}
 
 /* Breadcrumbs / trail of context. */
-.tadeon-shell nav[aria-label*="breadcrumb" i] a:not([data-material-surface], .tadeon-material-button),
-.tadeon-shell [aria-label*="breadcrumb" i] a:not([data-material-surface], .tadeon-material-button){transition:transform 240ms var(--tdi-spring),color 180ms ease,opacity 180ms ease}
-.tadeon-shell nav[aria-label*="breadcrumb" i] a:not([data-material-surface], .tadeon-material-button):hover,
-.tadeon-shell [aria-label*="breadcrumb" i] a:not([data-material-surface], .tadeon-material-button):hover{transform:translateX(3px)}
+.tadeon-shell nav[aria-label*="breadcrumb" i] a:not([data-material-surface], .tadeon-material-button), .tadeon-shell [aria-label*="breadcrumb" i] a:not([data-material-surface], .tadeon-material-button){transition:transform 240ms var(--tdi-spring),color 180ms ease,opacity 180ms ease}
+.tadeon-shell nav[aria-label*="breadcrumb" i] a:not([data-material-surface], .tadeon-material-button):hover, .tadeon-shell [aria-label*="breadcrumb" i] a:not([data-material-surface], .tadeon-material-button):hover{transform:translateX(3px)}
 
 /* Headings / section labels - re-enter when their section changes. */
 .tadeon-shell .tadeon-page h1,
@@ -1137,8 +1073,7 @@
 @keyframes tdi-progress-sheen{to{transform:translateX(120%)}}
 
 /* Toast actions and notifications. */
-.tadeon-shell [data-sonner-toast] button:not([data-material-surface], .tadeon-material-button),
-.tadeon-shell [data-sonner-toast] [role="button"]{animation:tdi-toast-action 320ms var(--tdi-spring) 120ms both}
+.tadeon-shell [data-sonner-toast] button:not([data-material-surface], .tadeon-material-button), .tadeon-shell [data-sonner-toast] [role="button"]{animation:tdi-toast-action 320ms var(--tdi-spring) 120ms both}
 @keyframes tdi-toast-action{from{opacity:0;transform:translateX(8px) scale(.94)}to{opacity:1;transform:none}}
 
 /* Empty states and page states. */
@@ -1167,13 +1102,9 @@
 .tadeon-shell [aria-label*="pesquisar" i]:hover svg{transform:scale(1.12) rotate(-8deg)}
 
 /* Sidebar orchestration - icon remains stable while label glides in/out. */
-.tadeon-shell .tadeon-sidebar{transition:width 440ms var(--tdi-in),box-shadow 440ms var(--tdi-soft),background-color 260ms ease}
-.tadeon-shell .tadeon-sidebar .tadeon-nav-item{transition:transform 280ms var(--tdi-spring),padding 420ms var(--tdi-in),gap 300ms var(--tdi-soft),color 180ms ease,background-color 220ms ease}
 .tadeon-shell .tadeon-sidebar[data-collapsed="true"] .tadeon-nav-item{justify-content:center;gap:0;padding-left:0;padding-right:0}
 .tadeon-shell .tadeon-sidebar[data-collapsed="true"] .tadeon-nav-item>span,
-.tadeon-shell .tadeon-sidebar[data-collapsed="true"] .tadeon-nav-item .nav-label{opacity:0;transform:translateX(-10px) scale(.94);max-width:0;overflow:hidden;transition:opacity 150ms ease,transform 280ms var(--tdi-in),max-width 420ms ease}
-.tadeon-shell .tadeon-sidebar:not([data-collapsed="true"]) .tadeon-nav-item>span,
-.tadeon-shell .tadeon-sidebar:not([data-collapsed="true"]) .tadeon-nav-item .nav-label{animation:tdi-side-label-in 360ms var(--tdi-in) both}
+.tadeon-shell .tadeon-sidebar[data-collapsed="true"] .tadeon-nav-item .nav-label{opacity:0;max-width:0;overflow:hidden}
 @keyframes tdi-side-label-in{from{opacity:0;transform:translateX(-8px)}to{opacity:1;transform:none}}
 
 @media (prefers-reduced-motion:reduce){
@@ -1245,7 +1176,7 @@
 @keyframes tsm-swap-out{to{opacity:0;transform:translateY(-8px) scale(.985);filter:blur(3px)}}
 
 @media (prefers-reduced-motion:reduce){
-  .tadeon-shell [data-slot="table-row"],.tadeon-shell [data-tadeon-search-results]>* ,.tadeon-shell [data-tadeon-filter],.tadeon-shell [data-tadeon-field],.tadeon-shell [data-tadeon-section-change="true"],.tadeon-shell [data-tadeon-detail],.tadeon-shell [data-tadeon-reference],.tadeon-shell [data-tadeon-value],.tadeon-shell [data-tadeon-swap]{animation:none!important;transition:none!important}
+  .tadeon-shell [data-slot="table-row"],.tadeon-shell [data-tadeon-search-results]>*,.tadeon-shell [data-tadeon-filter],.tadeon-shell [data-tadeon-field],.tadeon-shell [data-tadeon-section-change="true"],.tadeon-shell [data-tadeon-detail],.tadeon-shell [data-tadeon-reference],.tadeon-shell [data-tadeon-value],.tadeon-shell [data-tadeon-swap]{animation:none!important;transition:none!important}
 }
 
 /* end-source: src/styles/tadeon-semantic-motion.css */
@@ -1294,7 +1225,7 @@
 /* Pagination and segmented navigation: active page lands, neighbours respond. */
 .tadeon-shell [aria-current="page"],
 .tadeon-shell [data-active="true"]{transform-origin:center;}
-.tadeon-shell [aria-current="page"]{animation:tctx-active-land 380ms var(--tctx-spring) both}
+.tadeon-shell [aria-current="page"]:not([data-material-surface="navigation"]){animation:tctx-active-land 380ms var(--tctx-spring) both}
 @keyframes tctx-active-land{from{opacity:.72;transform:translateY(3px) scale(.95)}60%{opacity:1;transform:translateY(-2px) scale(1.03)}to{transform:none}}
 
 /* Sheet/Ficha sections - opened content reads like a page being revealed. */
@@ -1439,29 +1370,29 @@
 
 /* Sheets: real physical travel from their actual edge, with a restrained
    overshoot instead of a generic fade. */
-[data-slot="sheet-content"][data-state="open"][data-side="right"] {
+[data-slot="sheet-content"]:not([data-motion-surface])[data-state="open"][data-side="right"] {
   animation: tadeon-portal-sheet-right-in 560ms var(--tadeon-portal-enter) both !important;
   will-change: transform, opacity;
 }
-[data-slot="sheet-content"][data-state="closed"][data-side="right"] {
+[data-slot="sheet-content"]:not([data-motion-surface])[data-state="closed"][data-side="right"] {
   animation: tadeon-portal-sheet-right-out 220ms var(--tadeon-portal-exit) both !important;
 }
-[data-slot="sheet-content"][data-state="open"][data-side="left"] {
+[data-slot="sheet-content"]:not([data-motion-surface])[data-state="open"][data-side="left"] {
   animation: tadeon-portal-sheet-left-in 560ms var(--tadeon-portal-enter) both !important;
 }
-[data-slot="sheet-content"][data-state="closed"][data-side="left"] {
+[data-slot="sheet-content"]:not([data-motion-surface])[data-state="closed"][data-side="left"] {
   animation: tadeon-portal-sheet-left-out 220ms var(--tadeon-portal-exit) both !important;
 }
-[data-slot="sheet-content"][data-state="open"][data-side="bottom"] {
+[data-slot="sheet-content"]:not([data-motion-surface])[data-state="open"][data-side="bottom"] {
   animation: tadeon-portal-sheet-bottom-in 520ms var(--tadeon-portal-enter) both !important;
 }
-[data-slot="sheet-content"][data-state="closed"][data-side="bottom"] {
+[data-slot="sheet-content"]:not([data-motion-surface])[data-state="closed"][data-side="bottom"] {
   animation: tadeon-portal-sheet-bottom-out 220ms var(--tadeon-portal-exit) both !important;
 }
-[data-slot="sheet-content"][data-state="open"][data-side="top"] {
+[data-slot="sheet-content"]:not([data-motion-surface])[data-state="open"][data-side="top"] {
   animation: tadeon-portal-sheet-top-in 520ms var(--tadeon-portal-enter) both !important;
 }
-[data-slot="sheet-content"][data-state="closed"][data-side="top"] {
+[data-slot="sheet-content"]:not([data-motion-surface])[data-state="closed"][data-side="top"] {
   animation: tadeon-portal-sheet-top-out 220ms var(--tadeon-portal-exit) both !important;
 }
 
@@ -1498,12 +1429,12 @@
   to { opacity: 0; transform: translate3d(0, -100%, 0) scale(.985); }
 }
 
-[data-slot="sheet-content"][data-state="open"] > *:not([data-slot="sheet-close"]) {
+[data-slot="sheet-content"]:not([data-motion-surface])[data-state="open"] > *:not([data-slot="sheet-close"]) {
   animation: tadeon-portal-sheet-child 360ms var(--tadeon-portal-enter) 55ms both;
 }
-[data-slot="sheet-content"][data-state="open"] > :nth-child(2) { animation-delay: 95ms; }
-[data-slot="sheet-content"][data-state="open"] > :nth-child(3) { animation-delay: 135ms; }
-[data-slot="sheet-content"][data-state="open"] > :nth-child(4) { animation-delay: 175ms; }
+[data-slot="sheet-content"]:not([data-motion-surface])[data-state="open"] > :nth-child(2) { animation-delay: 95ms; }
+[data-slot="sheet-content"]:not([data-motion-surface])[data-state="open"] > :nth-child(3) { animation-delay: 135ms; }
+[data-slot="sheet-content"]:not([data-motion-surface])[data-state="open"] > :nth-child(4) { animation-delay: 175ms; }
 @keyframes tadeon-portal-sheet-child {
   from { opacity: 0; transform: translate3d(0, 10px, 0) scale(.98); }
   to { opacity: 1; transform: none; }
@@ -1569,8 +1500,8 @@
   [data-slot="sheet-overlay"],
   [data-slot="dialog-content"]:not([data-motion-surface]),
   [data-slot="dialog-content"]:not([data-motion-surface]) > *,
-  [data-slot="sheet-content"],
-  [data-slot="sheet-content"] > *,
+  [data-slot="sheet-content"]:not([data-motion-surface]),
+  [data-slot="sheet-content"]:not([data-motion-surface]) > *,
   [data-slot="popover-content"]:not([data-motion-surface]),
   [data-slot="dropdown-menu-content"]:not([data-motion-surface]),
   [data-slot="dropdown-menu-sub-content"]:not([data-motion-surface]),
@@ -1594,10 +1525,10 @@
 [data-slot="dialog-content"]:not([data-motion-surface])[data-state="open"]>[data-slot="dialog-footer"]{animation:tadeon-refine-child 330ms var(--tadeon-refine-in) 95ms both!important}
 @keyframes tadeon-refine-child{from{opacity:0;transform:translate3d(0,8px,0) scale(.985)}to{opacity:1;transform:none}}
 
-[data-slot="sheet-content"][data-state="open"][data-side="right"]{animation:tadeon-refine-sheet-r 520ms var(--tadeon-refine-in) both!important}
-[data-slot="sheet-content"][data-state="open"][data-side="left"]{animation:tadeon-refine-sheet-l 520ms var(--tadeon-refine-in) both!important}
-[data-slot="sheet-content"][data-state="open"][data-side="bottom"]{animation:tadeon-refine-sheet-b 500ms var(--tadeon-refine-in) both!important}
-[data-slot="sheet-content"][data-state="open"][data-side="top"]{animation:tadeon-refine-sheet-t 500ms var(--tadeon-refine-in) both!important}
+[data-slot="sheet-content"]:not([data-motion-surface])[data-state="open"][data-side="right"]{animation:tadeon-refine-sheet-r 520ms var(--tadeon-refine-in) both!important}
+[data-slot="sheet-content"]:not([data-motion-surface])[data-state="open"][data-side="left"]{animation:tadeon-refine-sheet-l 520ms var(--tadeon-refine-in) both!important}
+[data-slot="sheet-content"]:not([data-motion-surface])[data-state="open"][data-side="bottom"]{animation:tadeon-refine-sheet-b 500ms var(--tadeon-refine-in) both!important}
+[data-slot="sheet-content"]:not([data-motion-surface])[data-state="open"][data-side="top"]{animation:tadeon-refine-sheet-t 500ms var(--tadeon-refine-in) both!important}
 @keyframes tadeon-refine-sheet-r{0%{opacity:.25;transform:translateX(100%)}68%{opacity:1;transform:translateX(-4px)}100%{opacity:1;transform:none}}
 @keyframes tadeon-refine-sheet-l{0%{opacity:.25;transform:translateX(-100%)}68%{opacity:1;transform:translateX(4px)}100%{opacity:1;transform:none}}
 @keyframes tadeon-refine-sheet-b{0%{opacity:.25;transform:translateY(100%)}70%{opacity:1;transform:translateY(-4px)}100%{opacity:1;transform:none}}
@@ -1606,7 +1537,7 @@
 [data-slot="popover-content"]:not([data-motion-surface])[data-state="open"],[data-slot="dropdown-menu-content"]:not([data-motion-surface])[data-state="open"],[data-slot="dropdown-menu-sub-content"]:not([data-motion-surface])[data-state="open"],[data-slot="hover-card-content"][data-state="open"],[data-slot="select-content"]:not([data-motion-surface])[data-state="open"]{animation:tadeon-refine-float 270ms var(--tadeon-refine-spring) both!important}
 @keyframes tadeon-refine-float{0%{opacity:0;transform:translate3d(0,8px,0) scale(.92);filter:blur(4px)}68%{opacity:1;transform:translate3d(0,-1px,0) scale(1.006);filter:blur(0)}100%{opacity:1;transform:none;filter:none}}
 
-@media (prefers-reduced-motion:reduce){[data-slot="dialog-content"]:not([data-motion-surface]),[data-slot="sheet-content"],[data-slot="popover-content"]:not([data-motion-surface]),[data-slot="dropdown-menu-content"]:not([data-motion-surface]),[data-slot="dropdown-menu-sub-content"]:not([data-motion-surface]),[data-slot="hover-card-content"],[data-slot="select-content"]:not([data-motion-surface]){animation:none!important}}
+@media (prefers-reduced-motion:reduce){[data-slot="dialog-content"]:not([data-motion-surface]),[data-slot="sheet-content"]:not([data-motion-surface]),[data-slot="popover-content"]:not([data-motion-surface]),[data-slot="dropdown-menu-content"]:not([data-motion-surface]),[data-slot="dropdown-menu-sub-content"]:not([data-motion-surface]),[data-slot="hover-card-content"],[data-slot="select-content"]:not([data-motion-surface]){animation:none!important}}
 
 /* Coverage pass: common UI primitives that still changed instantly. */
 .tadeon-shell [data-slot="card"]{transition:transform 360ms cubic-bezier(.22,1,.36,1),box-shadow 420ms cubic-bezier(.22,1,.36,1),border-color 260ms ease,background-color 300ms ease}
@@ -1655,10 +1586,7 @@
 @keyframes tadeon-busy-breathe{0%,100%{opacity:.72}50%{opacity:1}}
 @keyframes tadeon-state-success{from{opacity:.5;transform:translateY(4px) scale(.97)}65%{opacity:1;transform:translateY(-2px) scale(1.02)}to{transform:none}}
 @keyframes tadeon-state-error{0%{opacity:.55;transform:translateX(0)}25%{transform:translateX(-3px)}50%{transform:translateX(3px)}75%{transform:translateX(-1px)}to{opacity:1;transform:none}}
-
-.tadeon-shell .tadeon-desktop-toolbar__account{transform-origin:center;transition:transform 220ms cubic-bezier(.22,1,.36,1),background-color 220ms ease,border-color 220ms ease,box-shadow 260ms cubic-bezier(.22,1,.36,1)}
-@media (hover:hover) and (pointer:fine){.tadeon-shell .tadeon-desktop-toolbar__account:hover{transform:translateY(-2px)}}
-.tadeon-shell .tadeon-desktop-toolbar__account:active{transform:scale(.975)}
+@media (hover:hover) and (pointer:fine){}
 
 @media (prefers-reduced-motion:reduce){.tadeon-shell [data-slot="card"],.tadeon-shell [data-slot="badge"],.tadeon-shell [data-slot="avatar"],.tadeon-shell [data-slot="avatar-image"],.tadeon-shell [data-slot="avatar-fallback"],.tadeon-shell [data-slot="calendar"],.tadeon-shell [data-slot="carousel-item"],.tadeon-shell [data-state="loading"],.tadeon-shell [aria-busy="true"],.tadeon-shell [data-state="success"],.tadeon-shell [data-state="error"],.tadeon-shell img:not([aria-hidden="true"]),.tadeon-shell table tbody tr{animation:none!important;transition:none!important}}
 
@@ -1670,11 +1598,6 @@
    flyout instead of allowing the icon/details to disappear into the collapse. */
 
 @media (min-width: 768px) {
-  #tadeon-desktop-sidebar {
-    transition: width 420ms cubic-bezier(.22,1,.36,1),
-      border-color 260ms ease,
-      box-shadow 420ms cubic-bezier(.22,1,.36,1) !important;
-  }
 
   #tadeon-desktop-sidebar .tadeon-primary-nav {
     overflow: visible;
@@ -1685,14 +1608,6 @@
     position: relative;
     flex-shrink: 0;
     min-width: 0;
-    transition: width 360ms cubic-bezier(.22,1,.36,1),
-      padding 360ms cubic-bezier(.22,1,.36,1),
-      gap 220ms ease,
-      color 220ms ease,
-      background-color 260ms ease,
-      border-color 260ms ease,
-      box-shadow 300ms cubic-bezier(.22,1,.36,1),
-      transform 180ms cubic-bezier(.22,1,.36,1) !important;
   }
 
   #tadeon-desktop-sidebar .tadeon-nav-item__icon {
@@ -1708,8 +1623,6 @@
     justify-content: center;
     opacity: 1 !important;
     visibility: visible !important;
-    transform: translateZ(0);
-    transition: color 240ms ease, filter 260ms ease, transform 300ms cubic-bezier(.22,1,.36,1);
   }
 
   #tadeon-desktop-sidebar .tadeon-nav-item__icon > svg {
@@ -1731,15 +1644,6 @@
     gap: 0 !important;
     padding: .625rem !important;
     border-radius: .78rem;
-  }
-
-  #tadeon-desktop-sidebar[data-collapsed="true"] .tadeon-nav-item__icon {
-    transform: translateZ(0) scale(1);
-  }
-
-  #tadeon-desktop-sidebar[data-collapsed="true"] .tadeon-nav-item:hover .tadeon-nav-item__icon,
-  #tadeon-desktop-sidebar[data-collapsed="true"] .tadeon-nav-item:focus-visible .tadeon-nav-item__icon {
-    transform: translateZ(0) scale(1.08);
   }
 
   /* Identity flyout uses the real NavItem title, so every item remains identifiable
@@ -1790,7 +1694,6 @@
 
   #tadeon-desktop-sidebar .tadeon-nav-item[aria-current="page"] .tadeon-nav-item__icon {
     color: var(--sidebar-item-accent) !important;
-    filter: drop-shadow(0 0 8px rgb(var(--sidebar-item-rgb) / 28%));
   }
 
   #tadeon-desktop-sidebar .tadeon-nav-item:not([aria-current="page"]):hover .tadeon-nav-item__icon,
@@ -1799,22 +1702,6 @@
   }
 
   /* Collapse control gets the same spatial language as the rail itself. */
-  #tadeon-desktop-sidebar + * .tadeon-sidebar-collapse,
-  .tadeon-sidebar-collapse {
-    transition: transform 280ms cubic-bezier(.22,1,.36,1),
-      color 180ms ease,
-      background-color 220ms ease,
-      border-color 220ms ease,
-      box-shadow 280ms cubic-bezier(.22,1,.36,1) !important;
-  }
-
-  .tadeon-sidebar-collapse[data-state="collapsed"] svg {
-    animation: tadeon-sidebar-chevron-in 280ms cubic-bezier(.22,1,.36,1) both;
-  }
-
-  .tadeon-sidebar-collapse[data-state="expanded"] svg {
-    animation: tadeon-sidebar-chevron-in 280ms cubic-bezier(.22,1,.36,1) both;
-  }
 
   @keyframes tadeon-sidebar-chevron-in {
     from { opacity: 0; transform: translateX(-4px) scale(.86); }
@@ -1823,11 +1710,5 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  #tadeon-desktop-sidebar,
-  #tadeon-desktop-sidebar .tadeon-nav-item,
-  #tadeon-desktop-sidebar .tadeon-nav-item__icon,
-  .tadeon-sidebar-collapse { transition: none !important; }
-  .tadeon-sidebar-collapse[data-state="collapsed"] svg,
-  .tadeon-sidebar-collapse[data-state="expanded"] svg { animation: none !important; }
 }
 /* end-source: src/styles/tadeon-sidebar-real-repair.css */

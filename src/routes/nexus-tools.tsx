@@ -1,3 +1,7 @@
+import { UTILITY_AREAS } from "@/lib/utility-areas";
+import { UtilitySummary } from "@/components/utility-summary";
+import { useAuth } from "@/lib/auth";
+import { createLatestRequestGate } from "@/lib/latest-request";
 import { PageSectionMark } from "@/components/section-symbols";
 import { createFileRoute } from "@tanstack/react-router";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -57,7 +61,7 @@ import type { Json } from "@/integrations/supabase/types";
 export const Route = createFileRoute("/nexus-tools")({
   head: () => ({
     meta: [
-      { title: "Integridade & Backup · Tadeon Nexus" },
+      { title: `${UTILITY_AREAS.backup.label} · Tadeon Nexus` },
       {
         name: "description",
         content: "Diagnóstico, cópias de segurança e restauração do Tadeon Nexus.",
@@ -97,7 +101,30 @@ function errorContext(value: Json): Record<string, Json | undefined> {
     : {};
 }
 
-function NexusToolsPage() {
+export function NexusToolsPage() {
+  const { user, role } = useAuth();
+  return <NexusToolsPageContent key={`${user?.id ?? ""}:${role ?? ""}`} />;
+}
+
+function NexusToolsPageContent() {
+  const { user, role } = useAuth();
+  const scope = { userId: user?.id ?? "", role: role ?? "espectador" };
+  const identity = `${scope.userId}:${scope.role}`;
+  const actorRef = useRef(identity);
+  actorRef.current = identity;
+  const alive = useRef(false);
+  const operationRef = useRef(false);
+  const diagnosticsGate = useRef(createLatestRequestGate());
+  const historyGate = useRef(createLatestRequestGate());
+  const [historyError, setHistoryError] = useState(false);
+  const [historyLoading, setHistoryLoading] = useState(true);
+  const [pendingDelete, setPendingDelete] = useState<SnapshotSummary | null>(null);
+  useEffect(() => {
+    alive.current = true;
+    return () => {
+      alive.current = false;
+    };
+  }, []);
   const [working, setWorking] = useState(false);
   const [snapshotLabel, setSnapshotLabel] = useState("");
   const [snapshots, setSnapshots] = useState<SnapshotSummary[]>([]);
@@ -109,40 +136,70 @@ function NexusToolsPage() {
   const fileRef = useRef<HTMLInputElement>(null);
 
   const refreshSnapshots = useCallback(async () => {
+    const ticket = historyGate.current.begin();
+    setHistoryLoading(true);
+    setHistoryError(false);
     try {
-      setSnapshots(await listSnapshots());
+      const next = await listSnapshots({ userId: user?.id ?? "", role: role ?? "espectador" });
+      if (alive.current && historyGate.current.isCurrent(ticket)) setSnapshots(next);
     } catch {
-      setSnapshots([]);
+      if (alive.current && historyGate.current.isCurrent(ticket)) {
+        setHistoryError(true);
+        setSnapshots([]);
+      }
+    } finally {
+      if (alive.current && historyGate.current.isCurrent(ticket)) setHistoryLoading(false);
     }
-  }, []);
+  }, [user?.id, role]);
 
   useEffect(() => {
+    setPendingRestore(null);
+    setSnapshots([]);
     void refreshSnapshots();
+    const gate = historyGate.current;
+    return () => gate.invalidate();
   }, [refreshSnapshots]);
 
   const collectBackup = async (): Promise<NexusBackup> => {
-    const [{ data: sheets, error: sheetsError }, { data: settings, error: settingsError }] =
-      await Promise.all([
-        supabase.from("character_sheets").select("*").order("created_at"),
-        supabase.from("game_settings").select("*").order("updated_at"),
-      ]);
-    if (sheetsError || settingsError) throw new Error("backup");
-    return createNexusBackup(
-      (sheets ?? []) as unknown as Record<string, unknown>[],
-      (settings ?? []) as unknown as Record<string, unknown>[],
-    );
+    const actor = identity;
+    const readTable = async (table: "character_sheets" | "game_settings") => {
+      const rows: Record<string, unknown>[] = [];
+      for (let offset = 0; offset < 100_000; offset += 500) {
+        if (!alive.current || actorRef.current !== actor) throw new Error("identity-changed");
+        const { data, error } = await supabase
+          .from(table)
+          .select("*")
+          .order("id")
+          .range(offset, offset + 499);
+        if (error) throw error;
+        const page = (data ?? []) as unknown as Record<string, unknown>[];
+        rows.push(...page);
+        if (page.length < 500) return rows;
+      }
+      throw new Error("O arquivo excede o limite desta exportação.");
+    };
+    const [sheets, settings] = await Promise.all([
+      readTable("character_sheets"),
+      readTable("game_settings"),
+    ]);
+    return createNexusBackup(sheets, settings);
   };
 
   const createSnapshot = async (download: boolean) => {
+    if (operationRef.current) return;
+    const actor = identity;
+    operationRef.current = true;
     setWorking(true);
     try {
       const backup = await collectBackup();
+      if (!alive.current || actorRef.current !== actor) return;
       let storedLocally = true;
       try {
-        await saveSnapshot(backup, snapshotLabel || "Antes da sessão");
+        await saveSnapshot(backup, snapshotLabel || "Antes da sessão", scope);
       } catch {
         storedLocally = false;
       }
+      if (!alive.current || actorRef.current !== actor) return;
       if (download) downloadNexusBackup(backup);
       if (!storedLocally && !download) throw new Error("local-history");
       setSnapshotLabel("");
@@ -155,24 +212,33 @@ function NexusToolsPage() {
         );
       }
     } catch {
-      toast.error("Não foi possível criar a cópia de segurança.");
+      if (alive.current && actorRef.current === actor)
+        toast.error("Não foi possível criar a cópia de segurança.");
     } finally {
-      setWorking(false);
+      operationRef.current = false;
+      if (alive.current && actorRef.current === actor) setWorking(false);
     }
   };
 
   const restoreBackup = async () => {
-    if (!pendingRestore) return;
+    if (!pendingRestore || operationRef.current) return;
+    const actor = identity;
+    const current = () => alive.current && actorRef.current === actor;
+    operationRef.current = true;
     setWorking(true);
     try {
       const safetyCopy = await collectBackup();
-      await saveSnapshot(safetyCopy, "Cópia automática antes da restauração");
+      if (!current()) return;
+      await saveSnapshot(safetyCopy, "Cópia automática antes da restauração", scope);
 
+      if (!current()) return;
       const sheetResult = pendingRestore.characterSheets.length
         ? await supabase
             .from("character_sheets")
             .upsert(pendingRestore.characterSheets as never, { onConflict: "id" })
         : { error: null };
+      if (sheetResult.error) throw new Error("restore-sheets");
+      if (!current()) return;
       const settingsResult = pendingRestore.gameSettings.length
         ? await supabase
             .from("game_settings")
@@ -180,64 +246,82 @@ function NexusToolsPage() {
         : { error: null };
       if (sheetResult.error || settingsResult.error) throw new Error("restore");
 
+      if (!current()) return;
       toast.success("Backup mesclado com sucesso. Nenhum registro ausente foi excluído.");
       setPendingRestore(null);
       setPendingLabel("");
       await refreshSnapshots();
     } catch {
-      toast.error(
-        "A restauração foi interrompida. A cópia automática anterior permanece no histórico local.",
-      );
+      if (current())
+        toast.error(
+          "A mesclagem falhou e pode ter sido aplicada parcialmente. Se a cópia de segurança foi criada, ela permanece no histórico. Revise os dados antes de tentar novamente.",
+        );
     } finally {
-      setWorking(false);
+      operationRef.current = false;
+      if (alive.current && actorRef.current === actor) setWorking(false);
     }
   };
 
   const importFile = async (file: File | undefined) => {
-    if (!file) return;
+    if (!file || operationRef.current) return;
+    const actor = identity;
     try {
+      if (file.size > 25 * 1024 * 1024) throw new Error("O arquivo excede o limite de 25 MB.");
       const parsed = parseNexusBackup(JSON.parse(await file.text()) as unknown);
+      if (!alive.current || actorRef.current !== actor) return;
       setPendingRestore(parsed);
       setPendingLabel(file.name);
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : "Arquivo de backup inválido.");
+      if (alive.current && actorRef.current === actor)
+        toast.error(error instanceof Error ? error.message : "Arquivo de backup inválido.");
     } finally {
       if (fileRef.current) fileRef.current.value = "";
     }
   };
 
   const loadStoredSnapshot = async (id: string) => {
+    const actor = identity;
     try {
-      const snapshot = await getSnapshot(id);
+      const snapshot = await getSnapshot(id, scope);
+      if (!alive.current || actorRef.current !== actor) return;
       if (!snapshot) throw new Error("missing");
-      setPendingRestore(snapshot.backup);
+      setPendingRestore(parseNexusBackup(snapshot.backup));
       setPendingLabel(snapshot.label);
     } catch {
-      toast.error("Não foi possível abrir esse ponto de restauração.");
+      if (alive.current && actorRef.current === actor)
+        toast.error("Não foi possível abrir esse ponto de restauração.");
     }
   };
 
   const downloadStoredSnapshot = async (id: string) => {
+    const actor = identity;
     try {
-      const snapshot = await getSnapshot(id);
+      const snapshot = await getSnapshot(id, scope);
+      if (!alive.current || actorRef.current !== actor) return;
       if (!snapshot) throw new Error("missing");
       downloadNexusBackup(snapshot.backup);
     } catch {
-      toast.error("Não foi possível baixar esse ponto de restauração.");
+      if (alive.current && actorRef.current === actor)
+        toast.error("Não foi possível baixar esse ponto de restauração.");
     }
   };
 
   const removeStoredSnapshot = async (id: string) => {
+    const actor = identity;
     try {
-      await deleteSnapshot(id);
+      await deleteSnapshot(id, scope);
+      if (!alive.current || actorRef.current !== actor) return;
       await refreshSnapshots();
       toast.success("Ponto removido do histórico local.");
     } catch {
-      toast.error("Não foi possível remover o ponto.");
+      if (alive.current && actorRef.current === actor)
+        toast.error("Não foi possível remover o ponto.");
     }
   };
 
   const runDiagnostics = useCallback(async () => {
+    const ticket = diagnosticsGate.current.begin();
+    const current = () => alive.current && diagnosticsGate.current.isCurrent(ticket);
     setChecking(true);
     const results: DiagnosticResult[] = [];
     const online = typeof navigator === "undefined" ? true : navigator.onLine;
@@ -316,14 +400,13 @@ function NexusToolsPage() {
     try {
       const { data, count, error } = await supabase
         .from("app_error_logs")
-        .select(
-          "id,fingerprint,message,route,source,severity,context,created_at",
-          { count: "exact" },
-        )
+        .select("id,fingerprint,message,route,source,severity,context,created_at", {
+          count: "exact",
+        })
         .is("resolved_at", null)
         .order("created_at", { ascending: false })
         .limit(20);
-      setErrorLogs(error ? [] : ((data ?? []) as ErrorLogEntry[]));
+      if (current()) setErrorLogs(error ? [] : ((data ?? []) as ErrorLogEntry[]));
       results.push({
         id: "errors",
         label: "Monitoramento de erros",
@@ -335,7 +418,7 @@ function NexusToolsPage() {
         level: error ? "warning" : count ? "warning" : "healthy",
       });
     } catch {
-      setErrorLogs([]);
+      if (current()) setErrorLogs([]);
       results.push({
         id: "errors",
         label: "Monitoramento de erros",
@@ -368,7 +451,7 @@ function NexusToolsPage() {
     const cacheValid = Number.isFinite(cacheDate.getTime()) && cacheDate.getTime() > 0;
     results.push({
       id: "offline",
-      label: "Consulta offline",
+      label: UTILITY_AREAS.offline.label,
       detail: cacheValid
         ? `Última cópia local: ${cacheDate.toLocaleString("pt-BR")}.`
         : "A cópia offline será criada após abrir uma ficha ou o painel.",
@@ -406,12 +489,16 @@ function NexusToolsPage() {
       });
     }
 
-    setDiagnostics(results);
-    setChecking(false);
+    if (current()) {
+      setDiagnostics(results);
+      setChecking(false);
+    }
   }, []);
 
   useEffect(() => {
     void runDiagnostics();
+    const gate = diagnosticsGate.current;
+    return () => gate.invalidate();
   }, [runDiagnostics]);
 
   const healthyCount = diagnostics.filter((item) => item.level === "healthy").length;
@@ -430,33 +517,46 @@ function NexusToolsPage() {
     ]
       .filter(Boolean)
       .join("\n");
-    await navigator.clipboard.writeText(report);
-    toast.success("Diagnóstico copiado.");
+    try {
+      await navigator.clipboard.writeText(report);
+      toast.success("Diagnóstico copiado.");
+    } catch {
+      toast.error("O navegador não permitiu copiar o diagnóstico.");
+    }
   };
 
   const resolveError = async (entry: ErrorLogEntry) => {
-    const { data } = await supabase.auth.getUser();
-    if (!data.user) return;
-    const { error } = await supabase
-      .from("app_error_logs")
-      .update({ resolved_at: new Date().toISOString(), resolved_by: data.user.id })
-      .eq("id", entry.id);
-    if (error) {
-      toast.error("Não foi possível marcar a ocorrência como resolvida.");
-      return;
+    const actor = identity;
+    const current = () => alive.current && actorRef.current === actor;
+    try {
+      const { data } = await supabase.auth.getUser();
+      if (!current() || data.user?.id !== scope.userId || scope.role !== "mestre") return;
+      const { error } = await supabase
+        .from("app_error_logs")
+        .update({ resolved_at: new Date().toISOString(), resolved_by: data.user.id })
+        .eq("id", entry.id);
+      if (!current()) return;
+      if (error) throw error;
+      toast.success("Ocorrência marcada como resolvida.");
+      await runDiagnostics();
+    } catch {
+      if (current()) toast.error("Não foi possível marcar a ocorrência como resolvida.");
     }
-    toast.success("Ocorrência marcada como resolvida.");
-    await runDiagnostics();
   };
 
   return (
     <div className="tadeon-page tadeon-route-tools max-w-6xl space-y-6">
-      <section data-tadeon-page-hero="tools" className="tadeon-page-hero tadeon-surface rounded-2xl px-5 py-6 md:px-8 md:py-8">
+      <section
+        data-tadeon-page-hero="tools"
+        className="tadeon-page-hero tadeon-surface rounded-2xl px-5 py-6 md:px-8 md:py-8"
+      >
         <PageSectionMark section="tools" />
         <div className="flex flex-col justify-between gap-5 md:flex-row md:items-end">
           <div>
             <p className="tadeon-eyebrow">Integridade do arquivo</p>
-            <h1 className="font-cinzel text-3xl font-semibold md:text-4xl">Backup & Diagnóstico</h1>
+            <h1 className="font-cinzel text-3xl font-semibold md:text-4xl">
+              {UTILITY_AREAS.backup.label}
+            </h1>
             <p className="mt-2 max-w-2xl text-sm text-muted-foreground">
               Proteja fichas e dados do mestre, consulte versões locais e identifique falhas sem
               exibir mensagens internas do banco.
@@ -469,6 +569,26 @@ function NexusToolsPage() {
         </div>
       </section>
 
+      <UtilitySummary
+        items={[
+          {
+            label: "Pontos locais",
+            value: historyLoading || historyError ? "--" : snapshots.length,
+            detail: "Até dez cópias por conta de mestre neste navegador",
+          },
+          { label: "Formato", value: "JSON", detail: "Fichas e configurações acessíveis à conta" },
+          {
+            label: "Diagnóstico",
+            value: checking ? "Verificando…" : `${healthyCount}/${diagnostics.length}`,
+            detail: "Verificações atuais; consulte os avisos na aba Diagnóstico",
+          },
+        ]}
+      />
+      <p className="tadeon-utility-note">
+        <strong>O que esta cópia protege.</strong> Exporta fichas e configurações acessíveis à sua
+        conta. Não inclui contas, senhas, documentos do Nexus nem arquivos de mídia. Não substitui a
+        restauração completa do banco e do armazenamento.
+      </p>
       <Tabs defaultValue="backup" className="space-y-4">
         <TabsList className="grid h-auto w-full grid-cols-2 rounded-xl bg-card/60 p-1 md:w-fit">
           <TabsTrigger value="backup" className="gap-2">
@@ -477,7 +597,7 @@ function NexusToolsPage() {
           </TabsTrigger>
           <TabsTrigger value="diagnostics" className="gap-2">
             <Wrench className="h-4 w-4" />
-            Saúde & diagnóstico
+            Diagnóstico
           </TabsTrigger>
         </TabsList>
 
@@ -495,7 +615,8 @@ function NexusToolsPage() {
                   maxLength={80}
                 />
                 <p className="mt-2 text-xs text-muted-foreground">
-                  O histórico mantém os dez pontos mais recentes apenas neste navegador.
+                  O histórico mantém dez pontos desta conta de mestre neste navegador. Baixe uma
+                  cópia para guardá-la fora do dispositivo.
                 </p>
               </div>
               <div className="flex flex-col gap-2 sm:flex-row">
@@ -533,7 +654,22 @@ function NexusToolsPage() {
                 </div>
                 <HardDrive className="h-5 w-5 text-primary" />
               </div>
-              {snapshots.length === 0 ? (
+              {historyLoading ? (
+                <p role="status" className="py-8 text-sm text-muted-foreground">
+                  Lendo histórico local…
+                </p>
+              ) : historyError ? (
+                <div className="py-6 text-sm">
+                  <p>O histórico local está indisponível neste navegador.</p>
+                  <Button
+                    className="mt-3"
+                    variant="outline"
+                    onClick={() => void refreshSnapshots()}
+                  >
+                    Tentar ler histórico
+                  </Button>
+                </div>
+              ) : snapshots.length === 0 ? (
                 <div className="rounded-xl border border-dashed border-border px-4 py-10 text-center text-sm text-muted-foreground">
                   Nenhum ponto de restauração criado neste navegador.
                 </div>
@@ -551,13 +687,13 @@ function NexusToolsPage() {
                           {snapshot.sheetCount} ficha(s)
                         </p>
                       </div>
-                      <div className="flex gap-1">
+                      <div className="tadeon-backup-history__actions">
                         <Button
                           size="sm"
                           variant="outline"
                           onClick={() => void loadStoredSnapshot(snapshot.id)}
                         >
-                          Restaurar
+                          Revisar cópia
                         </Button>
                         <Button
                           size="icon"
@@ -572,7 +708,7 @@ function NexusToolsPage() {
                           variant="ghost"
                           aria-label="Excluir ponto"
                           className="text-muted-foreground hover:text-destructive"
-                          onClick={() => void removeStoredSnapshot(snapshot.id)}
+                          onClick={() => setPendingDelete(snapshot)}
                         >
                           <Trash2 className="h-4 w-4" />
                         </Button>
@@ -600,6 +736,7 @@ function NexusToolsPage() {
               <Button
                 variant="outline"
                 className="mt-5 w-full gap-2"
+                disabled={working}
                 onClick={() => fileRef.current?.click()}
               >
                 <FileUp className="h-4 w-4" />
@@ -718,7 +855,6 @@ function NexusToolsPage() {
               </div>
             </Card>
           )}
-
         </TabsContent>
       </Tabs>
 
@@ -733,18 +869,68 @@ function NexusToolsPage() {
       >
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Restaurar “{pendingLabel}”?</AlertDialogTitle>
+            <AlertDialogTitle>Revisar “{pendingLabel}”</AlertDialogTitle>
             <AlertDialogDescription>
               Registros com o mesmo identificador serão atualizados. Antes disso, o Nexus criará
               automaticamente uma cópia dos dados atuais. Registros que não existam no backup não
               serão excluídos.
             </AlertDialogDescription>
           </AlertDialogHeader>
+          {pendingRestore && (
+            <div className="tadeon-utility-note">
+              <strong>
+                {pendingRestore.characterSheets.length} fichas ·{" "}
+                {pendingRestore.gameSettings.length} configurações
+              </strong>
+              <p>Exportado em {new Date(pendingRestore.exportedAt).toLocaleString("pt-BR")}.</p>
+              <p>
+                A mesclagem não é uma transação única. Uma falha pode aplicar parte dos registros. A
+                cópia automática precisa ser salva antes de qualquer escrita.
+              </p>
+            </div>
+          )}
           <AlertDialogFooter>
             <AlertDialogCancel disabled={working}>Cancelar</AlertDialogCancel>
-            <AlertDialogAction onClick={() => void restoreBackup()} disabled={working}>
+            <AlertDialogAction
+              onClick={(event) => {
+                event.preventDefault();
+                void restoreBackup();
+              }}
+              disabled={
+                working ||
+                !pendingRestore ||
+                pendingRestore.characterSheets.length + pendingRestore.gameSettings.length === 0
+              }
+            >
               {working && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-              Confirmar restauração
+              Confirmar mesclagem
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+      <AlertDialog
+        open={Boolean(pendingDelete)}
+        onOpenChange={(open) => {
+          if (!open) setPendingDelete(null);
+        }}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Excluir ponto local?</AlertDialogTitle>
+            <AlertDialogDescription>
+              O ponto “{pendingDelete?.label}” será removido deste navegador. Os dados do servidor
+              permanecem intactos.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancelar</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => {
+                if (pendingDelete) void removeStoredSnapshot(pendingDelete.id);
+                setPendingDelete(null);
+              }}
+            >
+              Excluir ponto
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

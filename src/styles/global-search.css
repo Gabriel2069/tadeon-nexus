@@ -7,7 +7,6 @@
 /* Menu lateral: hover local no SVG, herdando a identidade cromática da rota. */
 .tadeon-nav-item:hover .tadeon-nav-item__icon > svg {
   color: var(--nav-accent, currentColor);
-  filter: drop-shadow(0 0 9px rgb(var(--nav-accent-rgb, 217 215 164) / 25%));
 }
 
 /* Busca global: no desktop o DialogContent mantém o centramento nativo por

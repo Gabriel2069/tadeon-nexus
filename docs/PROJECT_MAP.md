@@ -6,9 +6,9 @@ A estrutura existente é a base de trabalho. Não criar `features/` ou `services
 
 ## Shell, navegação e cabeçalhos
 
-Cabeçalhos renderizam símbolos; geometria de Área em foco pertence a page-hero-parity.css. Gatilho Mais e símbolos pertencem ao render; Radix mantém foco/teclado/colisão, sem captura global. Reflexos pertencem a useMaterialLight e à superfície React; o diretor legado não injeta luz nessas superfícies. Material de navegação pertence a navigation-layout; fundos de trama pertencem a experience-surfaces.
+Cabeçalhos renderizam símbolos; geometria de Área em foco pertence a page-hero-parity.css. Gatilho Mais e símbolos pertencem ao render; Radix mantém foco/teclado/colisão, sem captura global. Reflexos pertencem a useMaterialLight e à superfície React; o diretor legado não injeta luz nessas superfícies. Material de navegação pertence a navigation-layout; fundos de trama pertencem a experience-surfaces. Movimento da navegação consolidado em navigation-layout; mobile-more-radial preserva apenas o nome do arquivo e agora organiza uma lista Radix, sem layout radial.
 
-Código: [src/components/app-layout.tsx](../src/components/app-layout.tsx), [src/components/protected-shell.tsx](../src/components/protected-shell.tsx), [src/components/section-symbols.tsx](../src/components/section-symbols.tsx), [src/components/mobile-more-menu.tsx](../src/components/mobile-more-menu.tsx), [src/components/brand-mark.tsx](../src/components/brand-mark.tsx), [src/components/material-surface.tsx](../src/components/material-surface.tsx), [src/lib/use-material-light.ts](../src/lib/use-material-light.ts), [src/components/ui/button.tsx](../src/components/ui/button.tsx), [src/components/fabric-filaments.tsx](../src/components/fabric-filaments.tsx).
+Código: [src/components/app-layout.tsx](../src/components/app-layout.tsx), [src/components/protected-shell.tsx](../src/components/protected-shell.tsx), [src/components/section-symbols.tsx](../src/components/section-symbols.tsx), [src/components/mobile-more-menu.tsx](../src/components/mobile-more-menu.tsx), [src/components/brand-mark.tsx](../src/components/brand-mark.tsx), [src/components/material-surface.tsx](../src/components/material-surface.tsx), [src/lib/use-material-light.ts](../src/lib/use-material-light.ts), [src/components/ui/button.tsx](../src/components/ui/button.tsx), [src/components/fabric-filaments.tsx](../src/components/fabric-filaments.tsx), [src/components/utility-summary.tsx](../src/components/utility-summary.tsx), [src/lib/utility-areas.ts](../src/lib/utility-areas.ts).
 
 Estilos: [src/styles/desktop-shell.css](../src/styles/desktop-shell.css), [src/styles/navigation-layout.css](../src/styles/navigation-layout.css), [src/styles/page-hero-parity.css](../src/styles/page-hero-parity.css), [src/styles/mobile-more-radial.css](../src/styles/mobile-more-radial.css), [src/styles/button.css](../src/styles/button.css).
 
@@ -70,7 +70,7 @@ Estilos: [src/styles/page-hero-parity.css](../src/styles/page-hero-parity.css).
 
 ## Assets e portabilidade
 
-URLs privadas não são identidade persistente. Rollout e provedores exigem evidência própria.
+URLs privadas não são identidade persistente. Rollout e provedores exigem evidência própria. Histórico de backup parcial por identidade verificada; dados antigos sem escopo não são adotados automaticamente.
 
 Código: [src/lib/assets/asset-service.ts](../src/lib/assets/asset-service.ts), [src/lib/knowledge/knowledge-portability-service.ts](../src/lib/knowledge/knowledge-portability-service.ts).
 

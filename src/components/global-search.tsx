@@ -1,3 +1,4 @@
+import { UTILITY_AREAS } from "@/lib/utility-areas";
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import {
@@ -29,14 +30,7 @@ import { isApplicationAdministrator } from "@/lib/permissions";
 import "@/styles/global-search.css";
 type SearchGroup = "Áreas" | "Fichas" | "Campanha";
 type SearchIconName =
-  | "dashboard"
-  | "sheet"
-  | "master"
-  | "tools"
-  | "offline"
-  | "knowledge"
-  | "tabletop"
-  | "users";
+  "dashboard" | "sheet" | "master" | "tools" | "offline" | "knowledge" | "tabletop" | "users";
 
 interface SearchItem {
   id: string;
@@ -46,20 +40,8 @@ interface SearchItem {
   icon: SearchIconName;
   sheetId?: string;
   masterTab?:
-    | "session"
-    | "scenes"
-    | "npcs-v2"
-    | "investigation"
-    | "threats"
-    | "interludes"
-    | "folds";
-  route?:
-    | "/"
-    | "/nexus"
-    | "/tabletop"
-    | "/nexus-tools"
-    | "/manage-users"
-    | "/offline";
+    "session" | "scenes" | "npcs-v2" | "investigation" | "threats" | "interludes" | "folds";
+  route?: "/" | "/nexus" | "/tabletop" | "/nexus-tools" | "/manage-users" | "/offline";
 }
 
 const masterCollections = [
@@ -122,7 +104,7 @@ export function GlobalSearch({
         },
         {
           id: "offline",
-          label: "Consulta offline",
+          label: UTILITY_AREAS.offline.label,
           detail: "Cópia local protegida para leitura",
           group: "Áreas",
           icon: "offline",
@@ -172,7 +154,7 @@ export function GlobalSearch({
           },
           {
             id: "tools",
-            label: "Backup & Diagnóstico",
+            label: UTILITY_AREAS.backup.label,
             detail: "Integridade, versões e restauração",
             group: "Áreas",
             icon: "tools",
@@ -190,16 +172,11 @@ export function GlobalSearch({
         const settingsRequest = isMestre
           ? supabase
               .from("game_settings")
-              .select(
-                "scenes_detailed,master_npcs,investigation_clues,threats,interludes,folds",
-              )
+              .select("scenes_detailed,master_npcs,investigation_clues,threats,interludes,folds")
               .eq("key", "global")
               .maybeSingle()
           : Promise.resolve({ data: null, error: null });
-        const [sheetResult, settingsResult] = await Promise.all([
-          sheetRequest,
-          settingsRequest,
-        ]);
+        const [sheetResult, settingsResult] = await Promise.all([sheetRequest, settingsRequest]);
 
         if (sheetResult.error) {
           failures.push("fichas");
@@ -219,21 +196,14 @@ export function GlobalSearch({
         if (settingsResult.error) {
           failures.push("campanha");
         } else if (isMestre) {
-          const source = (settingsResult.data ?? {}) as unknown as Record<
-            string,
-            unknown
-          >;
+          const source = (settingsResult.data ?? {}) as unknown as Record<string, unknown>;
           for (const [field, tab, type] of masterCollections) {
             const records = Array.isArray(source[field])
               ? (source[field] as Array<Record<string, unknown>>)
               : [];
             for (const record of records) {
-              const name = String(
-                record.name ?? record.title ?? `${type} sem nome`,
-              );
-              const status = String(
-                record.status ?? record.stage ?? record.classification ?? "",
-              );
+              const name = String(record.name ?? record.title ?? `${type} sem nome`);
+              const status = String(record.status ?? record.stage ?? record.classification ?? "");
               nextItems.push({
                 id: `${field}:${String(record.id ?? name)}`,
                 label: name,
@@ -352,9 +322,7 @@ export function GlobalSearch({
                               {item.detail}
                             </p>
                           </div>
-                          <CommandShortcut>
-                            {item.masterTab ? "Painel" : "Abrir"}
-                          </CommandShortcut>
+                          <CommandShortcut>{item.masterTab ? "Painel" : "Abrir"}</CommandShortcut>
                         </CommandItem>
                       ))}
                     </CommandGroup>
@@ -381,17 +349,12 @@ export function GlobalSearch({
 
 function SearchIcon({ type }: { type: SearchIconName }) {
   const className = "h-4 w-4 text-primary";
-  if (type === "master")
-    return <ShieldCheck aria-hidden className={className} />;
-  if (type === "tools")
-    return <ArchiveRestore aria-hidden className={className} />;
+  if (type === "master") return <ShieldCheck aria-hidden className={className} />;
+  if (type === "tools") return <ArchiveRestore aria-hidden className={className} />;
   if (type === "offline") return <CloudOff aria-hidden className={className} />;
-  if (type === "sheet")
-    return <BookOpenText aria-hidden className={className} />;
-  if (type === "knowledge")
-    return <LibraryBig aria-hidden className={className} />;
-  if (type === "tabletop")
-    return <MapPinned aria-hidden className={className} />;
+  if (type === "sheet") return <BookOpenText aria-hidden className={className} />;
+  if (type === "knowledge") return <LibraryBig aria-hidden className={className} />;
+  if (type === "tabletop") return <MapPinned aria-hidden className={className} />;
   if (type === "users") return <Users aria-hidden className={className} />;
   return <LayoutDashboard aria-hidden className={className} />;
 }

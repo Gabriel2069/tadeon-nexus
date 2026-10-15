@@ -14,7 +14,7 @@
       "roots": 0
     },
     "src/styles/experience-surfaces.css": {
-      "important": 229,
+      "important": 228,
       "roots": 2
     },
     "src/styles/global-search.css": {
@@ -50,11 +50,11 @@
       "roots": 0
     },
     "src/styles/mobile-viewport.css": {
-      "important": 96,
+      "important": 86,
       "roots": 1
     },
     "src/styles/motion-composition.css": {
-      "important": 440,
+      "important": 402,
       "roots": 20
     },
     "src/styles/motion-foundation.css": {
@@ -62,7 +62,7 @@
       "roots": 6
     },
     "src/styles/motion-interactions.css": {
-      "important": 190,
+      "important": 179,
       "roots": 11
     },
     "src/styles/navigation-layout.css": {
@@ -78,7 +78,7 @@
       "roots": 0
     },
     "src/styles/page-hero-parity.css": {
-      "important": 876,
+      "important": 872,
       "roots": 1
     },
     "src/styles/realtime-status.css": {
@@ -90,7 +90,7 @@
       "roots": 0
     },
     "src/styles/route-layout.css": {
-      "important": 1600,
+      "important": 1512,
       "roots": 0
     },
     "src/styles/route-popup-frame.css": {
@@ -214,7 +214,7 @@
       "roots": 0
     },
     "src/styles/tadeon-experience-director.css": {
-      "important": 17,
+      "important": 3,
       "roots": 1
     },
     "src/styles/viewport.css": {

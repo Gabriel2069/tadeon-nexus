@@ -1,6 +1,10 @@
+import { UTILITY_AREAS } from "@/lib/utility-areas";
+import { UtilitySummary } from "@/components/utility-summary";
+import { Input } from "@/components/ui/input";
+import { createLatestRequestGate } from "@/lib/latest-request";
 import { PageSectionMark } from "@/components/section-symbols";
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { ProtectedShell } from "@/components/protected-shell";
 import { useAuth } from "@/lib/auth";
 import { Card } from "@/components/ui/card";
@@ -21,35 +25,22 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-  AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import {
-  Loader2,
-  Crown,
-  Swords,
-  Eye,
-  Trash2,
-  RefreshCw,
-  Users,
-} from "lucide-react";
+import { Loader2, Crown, Swords, Eye, Trash2, RefreshCw, Users } from "lucide-react";
 import { toast } from "sonner";
 import type { AppRole } from "@/lib/auth";
-import {
-  changeUserRoleFn,
-  deleteUserFn,
-  listUsersFn,
-} from "@/lib/admin-users.functions";
+import { changeUserRoleFn, deleteUserFn, listUsersFn } from "@/lib/admin-users.functions";
 
 export const Route = createFileRoute("/manage-users")({
   head: () => ({
     meta: [
-      { title: "Gerenciar Usuários · Tadeon Nexus" },
+      { title: `${UTILITY_AREAS.users.label} · Tadeon Nexus` },
       {
         name: "description",
         content:
           "Painel do mestre para gerenciar contas, papéis e permissões dos jogadores do Tadeon Nexus.",
       },
-      { property: "og:title", content: "Gerenciar Usuários · Tadeon Nexus" },
+      { property: "og:title", content: `${UTILITY_AREAS.users.label} · Tadeon Nexus` },
       {
         property: "og:description",
         content:
@@ -81,217 +72,317 @@ interface UserRow {
   role: AppRole;
 }
 
-function ManageUsersPage() {
-  const { user } = useAuth();
+export function ManageUsersPage() {
+  const { user, role } = useAuth();
+  return <ManageUsersPageContent key={`${user?.id ?? ""}:${role ?? ""}`} />;
+}
+
+function ManageUsersPageContent() {
+  const { user, role: actorRole } = useAuth();
   const [rows, setRows] = useState<UserRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState(false);
-  const [deletingId, setDeletingId] = useState<string | null>(null);
-  const [changingId, setChangingId] = useState<string | null>(null);
+  const [busyId, setBusyId] = useState<string | null>(null);
+  const [query, setQuery] = useState("");
+  const [roleFilter, setRoleFilter] = useState("all");
+  const [pending, setPending] = useState<{ user: UserRow; role?: AppRole } | null>(null);
+  const requests = useRef(createLatestRequestGate());
+  const actor = `${user?.id ?? ""}:${actorRole ?? ""}`;
+  const actorRef = useRef(actor);
+  actorRef.current = actor;
+  const alive = useRef(false);
+  const mutationRef = useRef(false);
 
-  const load = async () => {
+  const load = useCallback(async () => {
+    const ticket = requests.current.begin();
+    const currentActor = actor;
+    const current = () =>
+      alive.current && actorRef.current === currentActor && requests.current.isCurrent(ticket);
     setLoading(true);
     setLoadError(false);
     try {
       const { users } = await listUsersFn();
-      setRows(users as UserRow[]);
+      if (current()) setRows(users as UserRow[]);
     } catch {
-      setLoadError(true);
-      toast.error("Não foi possível carregar os usuários.");
+      if (current()) setLoadError(true);
     } finally {
-      setLoading(false);
+      if (current()) setLoading(false);
     }
-  };
+  }, [actor]);
 
   useEffect(() => {
+    alive.current = true;
+    setRows([]);
+    setPending(null);
+    setBusyId(null);
     void load();
-  }, []);
+    const gate = requests.current;
+    return () => {
+      alive.current = false;
+      gate.invalidate();
+    };
+  }, [load]);
 
-  const changeRole = async (userId: string, role: AppRole) => {
-    setChangingId(userId);
+  const applyChange = async () => {
+    if (!pending || mutationRef.current || pending.user.id === user?.id) return;
+    const operation = pending;
+    const currentActor = actor;
+    const current = () => alive.current && actorRef.current === currentActor;
+    mutationRef.current = true;
+    requests.current.invalidate();
+    setBusyId(operation.user.id);
     try {
-      await changeUserRoleFn({ data: { userId, role } });
-      toast.success("Cargo atualizado!");
-      setRows((p) => p.map((r) => (r.id === userId ? { ...r, role } : r)));
+      if (operation.role)
+        await changeUserRoleFn({ data: { userId: operation.user.id, role: operation.role } });
+      else await deleteUserFn({ data: { userId: operation.user.id } });
+      if (!current()) return;
+      setPending(null);
+      toast.success(operation.role ? "Papel atualizado." : "Conta excluída.");
+      await load();
     } catch {
-      toast.error("Não foi possível atualizar o cargo.");
+      if (current())
+        toast.error(
+          operation.role
+            ? "Não foi possível atualizar o papel. Tente novamente."
+            : "Não foi possível excluir a conta. Tente novamente.",
+        );
     } finally {
-      setChangingId(null);
+      mutationRef.current = false;
+      if (current()) setBusyId(null);
     }
   };
-
-  const removeUser = async (userId: string) => {
-    setDeletingId(userId);
-    try {
-      await deleteUserFn({ data: { userId } });
-      toast.success("Usuário e fichas removidos.");
-      setRows((p) => p.filter((r) => r.id !== userId));
-    } catch {
-      toast.error("Não foi possível excluir o usuário.");
-    } finally {
-      setDeletingId(null);
-    }
+  const labels: Record<AppRole, string> = {
+    mestre: "Mestre",
+    jogador: "Jogador",
+    espectador: "Espectador",
   };
-
-  const roleStyles: Record<AppRole, { icon: typeof Crown; color: string }> = {
-    mestre: { icon: Crown, color: "text-yellow-500" },
-    jogador: { icon: Swords, color: "text-blue-500" },
-    espectador: { icon: Eye, color: "text-gray-500" },
-  };
-
+  const icons: Record<AppRole, typeof Crown> = { mestre: Crown, jogador: Swords, espectador: Eye };
+  const filtered = rows.filter(
+    (row) =>
+      (roleFilter === "all" || row.role === roleFilter) &&
+      `${row.full_name ?? ""} ${row.email ?? ""}`
+        .toLocaleLowerCase("pt-BR")
+        .includes(query.trim().toLocaleLowerCase("pt-BR")),
+  );
+  const count = (role: AppRole) =>
+    loading || loadError ? "--" : rows.filter((row) => row.role === role).length;
   return (
-    <div className="tadeon-page tadeon-route-users max-w-5xl">
-      <header data-tadeon-page-hero="users" className="tadeon-page-hero mb-6 flex flex-col gap-4 border-b border-border/60 pb-5 sm:flex-row sm:items-end sm:justify-between">
+    <div className="tadeon-page tadeon-route-users max-w-6xl space-y-6">
+      <header
+        data-tadeon-page-hero="users"
+        className="tadeon-page-hero tadeon-surface rounded-2xl p-6 md:p-8"
+      >
         <PageSectionMark section="users" />
-        <div className="max-w-2xl">
+        <div className="min-w-0 max-w-2xl">
           <p className="tadeon-eyebrow">Administração do arquivo</p>
-          <h1 className="mt-1 font-cinzel text-2xl font-semibold md:text-3xl">
-            Gerenciar usuários
+          <h1 className="mt-1 font-cinzel text-3xl font-semibold md:text-4xl">
+            {UTILITY_AREAS.users.label}
           </h1>
-          <p className="mt-2 text-sm leading-6 text-muted-foreground">
-            Ajuste papéis e remova contas. A exclusão também remove as fichas e
-            o acesso da pessoa ao Nexus.
+          <p className="mt-2 max-w-2xl text-sm leading-6 text-muted-foreground">
+            Encontre pessoas, revise seus papéis e controle o acesso ao Nexus. Cada alteração é
+            confirmada antes de ser aplicada.
           </p>
         </div>
-        {!loading && !loadError && (
-          <div className="flex min-h-11 items-center gap-2 self-start rounded-xl border border-border/70 bg-card/55 px-3 text-sm sm:self-auto">
-            <Users className="h-4 w-4 text-primary" />
-            <strong>{rows.length}</strong>
-            <span className="text-muted-foreground">
-              {rows.length === 1 ? "usuário" : "usuários"}
-            </span>
-          </div>
-        )}
       </header>
-
+      <UtilitySummary
+        items={[
+          {
+            label: "Mestres",
+            value: count("mestre"),
+            detail: "Administração e condução da campanha",
+          },
+          {
+            label: "Jogadores",
+            value: count("jogador"),
+            detail: "Participação e fichas da personagem",
+          },
+          {
+            label: "Espectadores",
+            value: count("espectador"),
+            detail: "Consulta conforme as permissões disponíveis",
+          },
+        ]}
+      />
+      <div className="tadeon-utility-toolbar">
+        <label>
+          Buscar pessoas
+          <Input
+            type="search"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="Nome ou e-mail"
+          />
+        </label>
+        <Select value={roleFilter} onValueChange={setRoleFilter}>
+          <SelectTrigger className="w-full sm:w-44" aria-label="Filtrar por papel">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">Todos os papéis</SelectItem>
+            {Object.entries(labels).map(([value, label]) => (
+              <SelectItem key={value} value={value}>
+                {label}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+        <Button variant="outline" disabled={loading || Boolean(busyId)} onClick={() => void load()}>
+          <RefreshCw className={loading ? "animate-spin" : ""} />
+          Atualizar lista
+        </Button>
+      </div>
+      <p role="status" className="text-sm text-muted-foreground">
+        {loading
+          ? "Carregando usuários…"
+          : loadError
+            ? "Lista indisponível"
+            : `${filtered.length} de ${rows.length} pessoas`}
+      </p>
       {loading ? (
-        <div className="tadeon-surface flex min-h-56 items-center justify-center rounded-2xl">
-          <Loader2 className="h-8 w-8 animate-spin text-primary" />
-          <span className="sr-only">Carregando usuários</span>
-        </div>
+        <Card className="grid min-h-48 place-items-center">
+          <Loader2 className="h-7 w-7 animate-spin" aria-label="Carregando" />
+        </Card>
       ) : loadError ? (
-        <Card className="border-destructive/30 bg-destructive/5 p-6 text-center">
-          <p className="text-sm font-medium">
-            Não foi possível carregar os usuários.
-          </p>
-          <p className="mt-1 text-xs text-muted-foreground">
+        <Card className="p-8 text-center">
+          <h2 className="font-medium">Não foi possível carregar os usuários.</h2>
+          <p className="mt-2 text-sm text-muted-foreground">
             Verifique sua conexão e tente novamente.
           </p>
-          <Button
-            variant="outline"
-            className="mt-4"
-            onClick={() => void load()}
-          >
-            <RefreshCw className="mr-2 h-4 w-4" />
+          <Button variant="outline" className="mt-4" onClick={() => void load()}>
             Tentar novamente
           </Button>
         </Card>
-      ) : rows.length === 0 ? (
-        <Card className="p-8 text-center sm:p-10">
+      ) : filtered.length === 0 ? (
+        <Card className="p-10 text-center">
           <Users className="mx-auto h-8 w-8 text-muted-foreground" />
-          <p className="mt-3 text-sm font-medium">Nenhum usuário cadastrado.</p>
+          <h2 className="mt-4 font-medium">
+            {rows.length ? "Nenhuma pessoa encontrada" : "Nenhum usuário cadastrado"}
+          </h2>
+          {rows.length > 0 && (
+            <Button
+              variant="outline"
+              className="mt-4"
+              onClick={() => {
+                setQuery("");
+                setRoleFilter("all");
+              }}
+            >
+              Limpar filtros
+            </Button>
+          )}
         </Card>
       ) : (
         <div className="tadeon-users-list space-y-3">
-          {rows.map((u) => {
-            const Icon = roleStyles[u.role].icon;
-            const isSelf = u.id === user?.id;
+          {filtered.map((row) => {
+            const isSelf = row.id === user?.id;
+            const Icon = icons[row.role];
             return (
               <Card
-                key={u.id}
-                className="tadeon-user-row grid gap-4 border-border/70 bg-card/65 p-4 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center sm:p-5"
+                key={row.id}
+                className="tadeon-user-row grid gap-4 border-border/70 bg-card/65 p-5 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center"
               >
                 <div className="flex min-w-0 items-center gap-3">
                   <span className="tadeon-user-row__sigil" aria-hidden>
-                    {(u.full_name || u.email || "?")
-                      .trim()
-                      .charAt(0)
-                      .toUpperCase()}
+                    {(row.full_name || row.email || "?").trim().charAt(0).toUpperCase()}
                   </span>
                   <div className="min-w-0">
-                    <div className="truncate font-medium">
-                      {u.full_name || "Sem nome"}
-                      {isSelf && (
-                        <span className="ml-2 text-[11px] font-semibold text-primary">
-                          Você
-                        </span>
-                      )}
-                    </div>
-                    <div className="mt-1 truncate text-xs text-muted-foreground">
-                      {u.email}
-                    </div>
+                    <p className="break-words font-medium">
+                      {row.full_name || "Sem nome"}
+                      {isSelf && <span className="ml-2 text-xs text-primary">Você</span>}
+                    </p>
+                    <p className="mt-1 break-all text-xs text-muted-foreground">
+                      {row.email || "E-mail indisponível"}
+                    </p>
+                    {isSelf && (
+                      <p className="mt-2 text-xs text-muted-foreground">
+                        Seu próprio papel e sua conta estão protegidos aqui.
+                      </p>
+                    )}
                   </div>
                 </div>
-                <div className="grid grid-cols-[minmax(0,1fr)_2.75rem] items-center gap-2 sm:flex">
-                  <div className="flex min-w-0 items-center gap-2">
-                    <Icon
-                      className={`h-4 w-4 shrink-0 ${roleStyles[u.role].color}`}
-                      aria-hidden
-                    />
-                    <Select
-                      value={u.role}
-                      disabled={isSelf || changingId === u.id}
-                      onValueChange={(v) => void changeRole(u.id, v as AppRole)}
+                <div className="flex items-center gap-2">
+                  <Icon className="h-4 w-4 shrink-0 text-muted-foreground" aria-hidden />
+                  <Select
+                    value={row.role}
+                    disabled={isSelf || Boolean(busyId)}
+                    onValueChange={(next) => {
+                      if (next !== row.role) setPending({ user: row, role: next as AppRole });
+                    }}
+                  >
+                    <SelectTrigger
+                      className="min-w-0 flex-1 sm:w-36"
+                      aria-label={`Papel de ${row.full_name || row.email || "usuário"}`}
                     >
-                      <SelectTrigger
-                        className="w-full sm:w-36"
-                        aria-label={`Papel de ${u.full_name || u.email || "usuário"}`}
-                      >
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="mestre">Mestre</SelectItem>
-                        <SelectItem value="jogador">Jogador</SelectItem>
-                        <SelectItem value="espectador">Espectador</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <AlertDialog>
-                    <AlertDialogTrigger asChild>
-                      <Button
-                        size="icon"
-                        variant="ghost"
-                        disabled={isSelf || deletingId === u.id}
-                        title={
-                          isSelf
-                            ? "Você não pode excluir sua própria conta aqui"
-                            : "Excluir usuário"
-                        }
-                        className="h-11 w-11 text-destructive hover:bg-destructive/15 disabled:opacity-40"
-                      >
-                        {deletingId === u.id ? (
-                          <Loader2 className="w-4 h-4 animate-spin" />
-                        ) : (
-                          <Trash2 className="w-4 h-4" />
-                        )}
-                      </Button>
-                    </AlertDialogTrigger>
-                    <AlertDialogContent>
-                      <AlertDialogHeader>
-                        <AlertDialogTitle>Excluir usuário?</AlertDialogTitle>
-                        <AlertDialogDescription>
-                          Esta ação remove permanentemente{" "}
-                          <b>{u.full_name || u.email}</b>, todas as fichas e o
-                          acesso à plataforma. Não pode ser desfeita.
-                        </AlertDialogDescription>
-                      </AlertDialogHeader>
-                      <AlertDialogFooter>
-                        <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                        <AlertDialogAction
-                          onClick={() => void removeUser(u.id)}
-                          className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-                        >
-                          Excluir
-                        </AlertDialogAction>
-                      </AlertDialogFooter>
-                    </AlertDialogContent>
-                  </AlertDialog>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {Object.entries(labels).map(([value, label]) => (
+                        <SelectItem key={value} value={value}>
+                          {label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <Button
+                    size="icon"
+                    variant="ghost"
+                    disabled={isSelf || Boolean(busyId)}
+                    aria-label={`Excluir ${row.full_name || row.email || "usuário"}`}
+                    onClick={() => setPending({ user: row })}
+                    className="shrink-0 text-destructive"
+                  >
+                    <Trash2 />
+                  </Button>
                 </div>
               </Card>
             );
           })}
         </div>
       )}
+      <AlertDialog
+        open={Boolean(pending)}
+        onOpenChange={(open) => {
+          if (!open && !busyId) setPending(null);
+        }}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>
+              {pending?.role ? "Alterar papel de acesso?" : "Excluir conta permanentemente?"}
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              {pending?.role ? (
+                <>
+                  O papel de <strong>{pending.user.full_name || pending.user.email}</strong> passará
+                  de {labels[pending.user.role]} para <strong>{labels[pending.role]}</strong>.{" "}
+                  {pending.role === "mestre"
+                    ? "Mestres podem administrar usuários e dados da campanha."
+                    : "O acesso seguirá as permissões desse papel."}
+                </>
+              ) : (
+                <>
+                  A conta de <strong>{pending?.user.full_name || pending?.user.email}</strong> e
+                  suas fichas serão removidas. Esta ação não pode ser desfeita.
+                </>
+              )}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={Boolean(busyId)}>Cancelar</AlertDialogCancel>
+            <AlertDialogAction
+              disabled={Boolean(busyId)}
+              onClick={(event) => {
+                event.preventDefault();
+                void applyChange();
+              }}
+              className={pending?.role ? undefined : "bg-destructive text-destructive-foreground"}
+            >
+              {busyId && <Loader2 className="animate-spin" />}
+              {pending?.role ? "Confirmar alteração" : "Excluir conta"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }

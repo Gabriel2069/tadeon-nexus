@@ -48,7 +48,7 @@ async function open(path = "/") {
 describe("mobile More menu", () => {
   it("dismisses a router link that prevents default and hands focus to main", async () => {
     const { screen } = await open();
-    fireEvent.click(screen.getByRole("menuitem", { name: "Backup" }));
+    fireEvent.click(screen.getByRole("menuitem", { name: "Backup e diagnóstico" }));
     await waitFor(() => expect(screen.queryByRole("menu")).toBeNull());
     await waitFor(() => expect(document.activeElement).toBe(screen.getByRole("main")));
   });
@@ -56,13 +56,17 @@ describe("mobile More menu", () => {
     const { screen, trigger } = await open();
     expect(trigger.getAttribute("aria-expanded")).toBe("true");
     await waitFor(() =>
-      expect(document.activeElement).toBe(screen.getByRole("menuitem", { name: "Offline" })),
+      expect(document.activeElement).toBe(
+        screen.getByRole("menuitem", { name: "Consulta offline" }),
+      ),
     );
   });
   it("supports arrow navigation and typeahead", async () => {
     const { screen } = await open();
     await waitFor(() =>
-      expect(document.activeElement).toBe(screen.getByRole("menuitem", { name: "Offline" })),
+      expect(document.activeElement).toBe(
+        screen.getByRole("menuitem", { name: "Consulta offline" }),
+      ),
     );
     fireEvent.keyDown(document.activeElement!, { key: "ArrowDown" });
     await waitFor(() =>
@@ -70,7 +74,9 @@ describe("mobile More menu", () => {
     );
     fireEvent.keyDown(document.activeElement!, { key: "b" });
     await waitFor(() =>
-      expect(document.activeElement).toBe(screen.getByRole("menuitem", { name: "Backup" })),
+      expect(document.activeElement).toBe(
+        screen.getByRole("menuitem", { name: "Backup e diagnóstico" }),
+      ),
     );
   });
   it("Escape closes and returns focus to the rendered trigger", async () => {
@@ -82,12 +88,15 @@ describe("mobile More menu", () => {
   it("renders all destinations and the canonical Backup vector", async () => {
     const { screen } = await open();
     expect(
-      ["Offline", "Usuários", "Backup"].map((name) =>
+      ["Consulta offline", "Usuários", "Backup e diagnóstico"].map((name) =>
         screen.getByRole("menuitem", { name }).getAttribute("href"),
       ),
     ).toEqual(["/offline", "/manage-users", "/nexus-tools"]);
     expect(
-      screen.getByRole("menuitem", { name: "Backup" }).querySelector("svg path")?.getAttribute("d"),
+      screen
+        .getByRole("menuitem", { name: "Backup e diagnóstico" })
+        .querySelector("svg path")
+        ?.getAttribute("d"),
     ).toContain("M21 8");
   });
   it("marks the current destination and the More trigger", async () => {
@@ -95,7 +104,7 @@ describe("mobile More menu", () => {
     expect(screen.getByRole("menuitem", { name: "Usuários" }).getAttribute("aria-current")).toBe(
       "page",
     );
-    expect(trigger.getAttribute("data-radial-active")).toBe("true");
+    expect(trigger.getAttribute("data-more-active")).toBe("true");
   });
   it("the close action dismisses and restores focus", async () => {
     const { screen, trigger } = await open();
