@@ -602,7 +602,7 @@
       "id": "NEX-015",
       "title": "Nexus: continuidade de abas e composição dos painéis",
       "domain": "knowledge",
-      "status": "active",
+      "status": "validated",
       "priority": 4,
       "dependsOn": [
         "NEX-006",
@@ -613,8 +613,10 @@
         "Adicionar dimensionamento e preferências de painéis sem estado paralelo ou bridge de DOM.",
         "Ampliar cobertura de filtros, grupos e leitura longa com fixtures de 120/500 páginas; preservar o limite de 500 candidatos e explicitar paginação. Validação do corpus real autorizado pertence a NEX-010."
       ],
-      "evidence": [],
-      "checkpoint": "Implementação na branch feat/nexus-reading-continuity-2026-10-14, sobre main 3173d27. Doze testes focados aprovados; verificação no navegador em andamento. Sem integração ou publicação desta etapa."
+      "evidence": [
+        "docs/nexus-continuity-validation.json"
+      ],
+      "checkpoint": "Validado na branch: check completo com 131 suítes/575 testes, audit zero; browser em 320/390/820/1440px com 500 páginas fictícias e leitura longa. Fechamento/reabertura, divisão por teclado/arraste, persistência, filtros/grupos e revisão de conflito aprovados. Integração, CI e SHA público ainda não confirmados."
     }
   ],
   "decisions": [

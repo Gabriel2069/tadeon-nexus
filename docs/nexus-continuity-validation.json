@@ -1,7 +1,7 @@
 {
   "task": "NEX-015",
   "date": "2026-10-14",
-  "state": "active",
+  "state": "validated",
   "branch": "feat/nexus-reading-continuity-2026-10-14",
   "baseCommit": "3173d2729d6b35701c0b28b68416b8e2ddd03dfd",
   "implementation": {
@@ -12,9 +12,9 @@
     "boundaries": "No schema, SQL migration, flag, service payload, dependency or font changes. No new CSS modules, global links, important declarations or global observers."
   },
   "localEvidence": {
-    "quality": "npm run check passed: style/project gates, lint without warnings, typecheck, 131 suites/574 tests, client and SSR production build.",
-    "audit": "npm audit --audit-level=high: zero vulnerabilities.",
-    "focusedTests": 13,
+    "quality": "Final npm run check passed: styles/project, lint without warnings, typecheck, 131 suites/575 tests, client and SSR production build.",
+    "audit": "Final npm audit --audit-level=high: zero vulnerabilities.",
+    "focusedTests": 14,
     "initialBrowser": [
       {
         "width": 320,
@@ -49,7 +49,102 @@
         "backendRequests": 43
       }
     ],
-    "extendedBrowser": "pending"
+    "extendedBrowser": {
+      "corpus": 500,
+      "indexPageSize": 30,
+      "libraryPageSize": 48,
+      "extraLongReadingParagraphs": 100,
+      "source": "scripts/verify-nexus-reading.mjs",
+      "execution": "Two intercepted fixture runs: 320/390 and 820/1440; results written after each viewport. Desktop filters and optional groups exercised at 1440.",
+      "results": [
+        {
+          "width": 320,
+          "nodes": 500,
+          "longReading": true,
+          "conflictReview": true,
+          "axis": "vertical",
+          "rememberedSize": 52.98,
+          "continuity": {
+            "stableEditor": true,
+            "lastTabClosed": true,
+            "explicitReopen": true,
+            "keyboardResize": true,
+            "pointerResize": true,
+            "modeAndSizeRestored": true
+          },
+          "treeRows": 30,
+          "overflow": false,
+          "errors": [],
+          "backendRequests": 100
+        },
+        {
+          "width": 390,
+          "nodes": 500,
+          "longReading": true,
+          "conflictReview": true,
+          "axis": "vertical",
+          "rememberedSize": 52.98,
+          "continuity": {
+            "stableEditor": true,
+            "lastTabClosed": true,
+            "explicitReopen": true,
+            "keyboardResize": true,
+            "pointerResize": true,
+            "modeAndSizeRestored": true
+          },
+          "treeRows": 30,
+          "overflow": false,
+          "errors": [],
+          "backendRequests": 100
+        },
+        {
+          "width": 820,
+          "nodes": 500,
+          "longReading": true,
+          "conflictReview": true,
+          "axis": "vertical",
+          "rememberedSize": 52.98,
+          "continuity": {
+            "stableEditor": true,
+            "lastTabClosed": true,
+            "explicitReopen": true,
+            "keyboardResize": true,
+            "pointerResize": true,
+            "modeAndSizeRestored": true
+          },
+          "treeRows": 30,
+          "overflow": false,
+          "errors": [],
+          "backendRequests": 100
+        },
+        {
+          "width": 1440,
+          "nodes": 500,
+          "longReading": true,
+          "conflictReview": true,
+          "axis": "horizontal",
+          "rememberedSize": 51.85,
+          "continuity": {
+            "stableEditor": true,
+            "lastTabClosed": true,
+            "explicitReopen": true,
+            "keyboardResize": true,
+            "pointerResize": true,
+            "modeAndSizeRestored": true
+          },
+          "treeRows": 30,
+          "overflow": false,
+          "errors": [],
+          "backendRequests": 102
+        }
+      ]
+    },
+    "visualReview": "Screenshots with installed Cormorant Garamond, Inter and PT Mono fixtures: initial full pages at four widths; final document/graph/tree/library crops at 320/390/820. Final functional rerun uses 500-page fixtures at all four widths. Native devices and GPUs were not certified.",
+    "tests": {
+      "suites": 131,
+      "tests": 575,
+      "focusedTests": 14
+    }
   },
   "limitations": [
     "Backend requests and realtime are intercepted fixtures, not real-account or RLS evidence.",
@@ -73,5 +168,6 @@
   "integration": {
     "state": "not_integrated",
     "production": "not_published"
-  }
+  },
+  "implementationCommit": "96366866e9e33d5ad1c90aefe058361287b0a865"
 }

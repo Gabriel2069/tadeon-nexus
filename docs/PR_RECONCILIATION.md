@@ -1,6 +1,6 @@
 # Conciliação das PRs
 
-Conferência de 11/10/2026. Estados de GitHub são um snapshot: reconferir antes de integrar.
+Conferência de 14/10/2026. Estados de GitHub são um snapshot: reconferir antes de integrar.
 
 | PR | Papel | Destino |
 | --- | --- | --- |
@@ -9,6 +9,9 @@ Conferência de 11/10/2026. Estados de GitHub são um snapshot: reconferir antes
 | [#261](https://github.com/Gabriel2069/tadeon-nexus/pull/261) | NEX-004 integrado — Grenze, navegação e portais | Merge `2b36716`, Quality 38162310175 aprovado. Produção confirmada no [workflow 38162497262](https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38162497262): HTTP 200 e SHA exato `2b36716`. |
 | [#262](https://github.com/Gabriel2069/tadeon-nexus/pull/262) | Consolidação documental de NEX-004 | Histórico e prova de entrega organizados; base posterior `4736913`. |
 | [#263](https://github.com/Gabriel2069/tadeon-nexus/pull/263) | NEX-013 integrado — Cormorant, métricas e liquid fabric comum | Merge `41c2c88`, Quality 38166007425 aprovado no HEAD `eba345b`; produção HTTP 200/SHA exato em [38166156073](https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38166156073). |
+| [#264](https://github.com/Gabriel2069/tadeon-nexus/pull/264) | Registro de entrega de NEX-013 | Tipografia e liquid fabric consolidados; decisões em DEC-009 e evidências próprias. |
+| [#265](https://github.com/Gabriel2069/tadeon-nexus/pull/265) / [#266](https://github.com/Gabriel2069/tadeon-nexus/pull/266) | NEX-005 e registro de publicação | Ficha por seções integrada em `1d92120`; continuidade consolidada em main. |
+| [#267](https://github.com/Gabriel2069/tadeon-nexus/pull/267) / [#268](https://github.com/Gabriel2069/tadeon-nexus/pull/268) | NEX-014/NEX-006 e registro de publicação | Movimento, Dashboard, biblioteca e leitura integrados em `d638567`; consolidação `3173d27`, base de NEX-015. |
 | [#216](https://github.com/Gabriel2069/tadeon-nexus/pull/216) | Patch histórico conflitante | Encerrado como proposta de integração; branch `agent/final-visual-publish-217` e commits preservados. Requisitos conciliados abaixo. |
 
 A #216 tem HEAD `15e93ebe778ff55ecfebfaaf67b61b45469a86ac` e compara nove commits com a base `7df1734964804d2d9bdd0bdbb4114127af4b3625`. Além de símbolos, CSS e teste visual, altera quatro workflows. Integrar esse patch para recuperar um requisito visual misturaria decisões antigas de publicação, backup e qualidade com a base atual. Não fazer merge nem cherry-pick em bloco.
@@ -29,7 +32,7 @@ Encerrar a proposta antiga não declara todos os requisitos visuais concluídos:
 
 ## Fluxo das próximas PRs
 
-- Criar a partir de main integrado. #259 encerrou NEX-003; #261 integrou NEX-004. #263 integrou NEX-013. Prioridade atual: NEX-005, a partir do main atual, com critérios da fila canônica e sem reutilizar branches integradas. Reconferir diff e responsáveis antes de expandir.
+- Criar a partir de main integrado e selecionar o próximo ID em [WORKPLAN.md](WORKPLAN.md), gerado da fila canônica. Este arquivo registra o destino das PRs; não mantém uma segunda lista de prioridades. Reconferir diff, dependências e responsáveis antes de expandir. Não reutilizar branches integradas para reabrir requisitos antigos.
 - Cada PR cita IDs existentes da fila, responsáveis tocados, critérios de aceitação e evidências. Não duplicar a tarefa em outra lista.
 - Trabalhos simultâneos que alteram os mesmos proprietários devem ser sequenciais ou declarar dependência explícita. Não abrir duas implementações concorrentes para a mesma tarefa.
 - Antes de merge, comparar HEAD/base e resultados do CI no HEAD atual. Sucesso de commit anterior não aprova commit posterior.

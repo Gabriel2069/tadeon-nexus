@@ -24,7 +24,7 @@ Cada PR usa IDs desta fila e declara dependências. Trabalho sobre o mesmo propr
 | NEX-011 | Backup e restauração verificável | Planejado | 8 | assets | NEX-010 |
 | NEX-012 | Revisão editorial do corpus canônico | Adiado | 9 | knowledge | NEX-006 |
 | NEX-014 | Reconciliar movimento e aprofundar Véu & Trama | Integrado | 3 | shell | NEX-005, NEX-013 |
-| NEX-015 | Nexus: continuidade de abas e composição dos painéis | Em andamento | 4 | knowledge | NEX-006, NEX-014 |
+| NEX-015 | Nexus: continuidade de abas e composição dos painéis | Validado na branch | 4 | knowledge | NEX-006, NEX-014 |
 
 ## NEX-001 — Preparação estrutural
 
@@ -143,7 +143,7 @@ Evidências: [docs/material-reading-validation.json](../docs/material-reading-va
 - Adicionar dimensionamento e preferências de painéis sem estado paralelo ou bridge de DOM.
 - Ampliar cobertura de filtros, grupos e leitura longa com fixtures de 120/500 páginas; preservar o limite de 500 candidatos e explicitar paginação. Validação do corpus real autorizado pertence a NEX-010.
 
-Evidências: pendentes; não declarar concluído.
+Evidências: [docs/nexus-continuity-validation.json](../docs/nexus-continuity-validation.json).
 
 ## Decisões vigentes
 
