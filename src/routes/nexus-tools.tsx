@@ -272,7 +272,8 @@ function NexusToolsPageContent() {
       setPendingRestore(parsed);
       setPendingLabel(file.name);
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : "Arquivo de backup inválido.");
+      if (alive.current && actorRef.current === actor)
+        toast.error(error instanceof Error ? error.message : "Arquivo de backup inválido.");
     } finally {
       if (fileRef.current) fileRef.current.value = "";
     }
@@ -287,7 +288,8 @@ function NexusToolsPageContent() {
       setPendingRestore(parseNexusBackup(snapshot.backup));
       setPendingLabel(snapshot.label);
     } catch {
-      toast.error("Não foi possível abrir esse ponto de restauração.");
+      if (alive.current && actorRef.current === actor)
+        toast.error("Não foi possível abrir esse ponto de restauração.");
     }
   };
 
@@ -299,7 +301,8 @@ function NexusToolsPageContent() {
       if (!snapshot) throw new Error("missing");
       downloadNexusBackup(snapshot.backup);
     } catch {
-      toast.error("Não foi possível baixar esse ponto de restauração.");
+      if (alive.current && actorRef.current === actor)
+        toast.error("Não foi possível baixar esse ponto de restauração.");
     }
   };
 
@@ -311,7 +314,8 @@ function NexusToolsPageContent() {
       await refreshSnapshots();
       toast.success("Ponto removido do histórico local.");
     } catch {
-      toast.error("Não foi possível remover o ponto.");
+      if (alive.current && actorRef.current === actor)
+        toast.error("Não foi possível remover o ponto.");
     }
   };
 
@@ -522,18 +526,22 @@ function NexusToolsPageContent() {
   };
 
   const resolveError = async (entry: ErrorLogEntry) => {
-    const { data } = await supabase.auth.getUser();
-    if (!data.user) return;
-    const { error } = await supabase
-      .from("app_error_logs")
-      .update({ resolved_at: new Date().toISOString(), resolved_by: data.user.id })
-      .eq("id", entry.id);
-    if (error) {
-      toast.error("Não foi possível marcar a ocorrência como resolvida.");
-      return;
+    const actor = identity;
+    const current = () => alive.current && actorRef.current === actor;
+    try {
+      const { data } = await supabase.auth.getUser();
+      if (!current() || data.user?.id !== scope.userId || scope.role !== "mestre") return;
+      const { error } = await supabase
+        .from("app_error_logs")
+        .update({ resolved_at: new Date().toISOString(), resolved_by: data.user.id })
+        .eq("id", entry.id);
+      if (!current()) return;
+      if (error) throw error;
+      toast.success("Ocorrência marcada como resolvida.");
+      await runDiagnostics();
+    } catch {
+      if (current()) toast.error("Não foi possível marcar a ocorrência como resolvida.");
     }
-    toast.success("Ocorrência marcada como resolvida.");
-    await runDiagnostics();
   };
 
   return (
