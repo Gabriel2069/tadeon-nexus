@@ -1225,7 +1225,7 @@
 /* Pagination and segmented navigation: active page lands, neighbours respond. */
 .tadeon-shell [aria-current="page"],
 .tadeon-shell [data-active="true"]{transform-origin:center;}
-.tadeon-shell [aria-current="page"]{animation:tctx-active-land 380ms var(--tctx-spring) both}
+.tadeon-shell [aria-current="page"]:not([data-material-surface="navigation"]){animation:tctx-active-land 380ms var(--tctx-spring) both}
 @keyframes tctx-active-land{from{opacity:.72;transform:translateY(3px) scale(.95)}60%{opacity:1;transform:translateY(-2px) scale(1.03)}to{transform:none}}
 
 /* Sheet/Ficha sections - opened content reads like a page being revealed. */
@@ -1598,11 +1598,6 @@
    flyout instead of allowing the icon/details to disappear into the collapse. */
 
 @media (min-width: 768px) {
-  #tadeon-desktop-sidebar {
-    transition: width 420ms cubic-bezier(.22,1,.36,1),
-      border-color 260ms ease,
-      box-shadow 420ms cubic-bezier(.22,1,.36,1) !important;
-  }
 
   #tadeon-desktop-sidebar .tadeon-primary-nav {
     overflow: visible;
@@ -1715,6 +1710,5 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  #tadeon-desktop-sidebar { transition: none !important; }
 }
 /* end-source: src/styles/tadeon-sidebar-real-repair.css */

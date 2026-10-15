@@ -374,9 +374,6 @@
 /* Final sidebar implementation pass - loaded by AppLayout after desktop-studio.css. */
 
 @media (min-width: 768px) {
-  #tadeon-desktop-sidebar {
-    transition: width 460ms cubic-bezier(.22,1,.36,1), border-color 320ms ease, box-shadow 460ms cubic-bezier(.22,1,.36,1) !important;
-  }
 
   #tadeon-desktop-sidebar .tadeon-nav-item {
     position: relative !important;
@@ -450,8 +447,6 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  #tadeon-desktop-sidebar,
-  #tadeon-desktop-sidebar .tadeon-nav-group-label { transition: none !important; animation: none !important; }
 }
 
 /* end-source: src/styles/tadeon-sidebar-final.css */

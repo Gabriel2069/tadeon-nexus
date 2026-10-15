@@ -54,7 +54,7 @@
       "roots": 1
     },
     "src/styles/motion-composition.css": {
-      "important": 405,
+      "important": 402,
       "roots": 20
     },
     "src/styles/motion-foundation.css": {
@@ -62,7 +62,7 @@
       "roots": 6
     },
     "src/styles/motion-interactions.css": {
-      "important": 181,
+      "important": 179,
       "roots": 11
     },
     "src/styles/navigation-layout.css": {
