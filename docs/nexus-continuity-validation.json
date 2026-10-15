@@ -1,7 +1,7 @@
 {
   "task": "NEX-015",
   "date": "2026-10-14",
-  "state": "validated",
+  "state": "integrated",
   "branch": "feat/nexus-reading-continuity-2026-10-14",
   "baseCommit": "3173d2729d6b35701c0b28b68416b8e2ddd03dfd",
   "implementation": {
@@ -166,8 +166,21 @@
     }
   ],
   "integration": {
-    "state": "not_integrated",
-    "production": "not_published"
+    "pr": 269,
+    "branch": "feat/nexus-reading-continuity-2026-10-14",
+    "base": "main",
+    "baseCommit": "3173d2729d6b35701c0b28b68416b8e2ddd03dfd",
+    "headCommit": "bcb9ef7dd78b409f0747ea59156dbb8860e2f065",
+    "state": "integrated",
+    "mergeCommit": "778d4449b01adc9ae5eab498d27606d2d7c3b35f",
+    "qualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38669420714",
+    "mainQualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38669674673",
+    "productionEvidence": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38669674635",
+    "production": "confirmed",
+    "productionCommit": "778d4449b01adc9ae5eab498d27606d2d7c3b35f",
+    "productionVerifiedAt": "2026-10-15T02:13:38.7334855Z",
+    "productionHttpStatus": 200,
+    "workerVersion": "001281e4-1176-46fd-9af0-67934a5f97d0"
   },
   "implementationCommit": "96366866e9e33d5ad1c90aefe058361287b0a865"
 }

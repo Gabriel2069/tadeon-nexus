@@ -1,23 +1,23 @@
 {
   "version": 1,
   "checkedAt": "2026-10-14",
-  "runtimeReference": "d638567c511f547fd76be2899790ab6f8a01ea85",
+  "runtimeReference": "778d4449b01adc9ae5eab498d27606d2d7c3b35f",
   "integration": {
-    "pr": 267,
-    "branch": "design/fabric-motion-obsidian-2026-10-14",
+    "pr": 269,
+    "branch": "feat/nexus-reading-continuity-2026-10-14",
     "base": "main",
-    "baseCommit": "e7db3fb18d242b94772b8dc9a087617270d3ed90",
-    "headCommit": "9d24151d83c274fdb1398c9ddf428878112f4d3c",
+    "baseCommit": "3173d2729d6b35701c0b28b68416b8e2ddd03dfd",
+    "headCommit": "bcb9ef7dd78b409f0747ea59156dbb8860e2f065",
     "state": "integrated",
-    "mergeCommit": "d638567c511f547fd76be2899790ab6f8a01ea85",
-    "qualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38554284521",
-    "mainQualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38554552056",
+    "mergeCommit": "778d4449b01adc9ae5eab498d27606d2d7c3b35f",
+    "qualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38669420714",
+    "mainQualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38669674673",
+    "productionEvidence": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38669674635",
     "production": "confirmed",
-    "productionEvidence": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38554551969",
-    "productionCommit": "d638567c511f547fd76be2899790ab6f8a01ea85",
-    "productionVerifiedAt": "2026-10-14T11:11:25.9846412Z",
+    "productionCommit": "778d4449b01adc9ae5eab498d27606d2d7c3b35f",
+    "productionVerifiedAt": "2026-10-15T02:13:38.7334855Z",
     "productionHttpStatus": 200,
-    "workerVersion": "801b7e4b-3894-4f9e-8eeb-eb74bff5d884"
+    "workerVersion": "001281e4-1176-46fd-9af0-67934a5f97d0"
   },
   "domains": [
     {
@@ -602,7 +602,7 @@
       "id": "NEX-015",
       "title": "Nexus: continuidade de abas e composição dos painéis",
       "domain": "knowledge",
-      "status": "validated",
+      "status": "integrated",
       "priority": 4,
       "dependsOn": [
         "NEX-006",
@@ -614,9 +614,11 @@
         "Ampliar cobertura de filtros, grupos e leitura longa com fixtures de 120/500 páginas; preservar o limite de 500 candidatos e explicitar paginação. Validação do corpus real autorizado pertence a NEX-010."
       ],
       "evidence": [
-        "docs/nexus-continuity-validation.json"
+        "docs/nexus-continuity-validation.json",
+        "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38669420714",
+        "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38669674635"
       ],
-      "checkpoint": "Validado na branch: check completo com 131 suítes/575 testes, audit zero; browser em 320/390/820/1440px com 500 páginas fictícias e leitura longa. Fechamento/reabertura, divisão por teclado/arraste, persistência, filtros/grupos e revisão de conflito aprovados. Integração, CI e SHA público ainda não confirmados."
+      "checkpoint": "Integrado pela PR #269, merge 778d444, após Quality no HEAD bcb9ef7. Main aprovado e produção HTTP 200/SHA exato em 2026-10-15T02:13:38.7334855Z. 131 suítes/575 testes e quatro larguras com 500 páginas fictícias; contas reais/corpus autorizado permanecem em NEX-010. Próximo lote conforme fila canônica: NEX-007."
     }
   ],
   "decisions": [
@@ -1015,6 +1017,23 @@
       "productionVerifiedAt": "2026-10-11T23:07:42.0673391Z",
       "productionHttpStatus": 200,
       "workerVersion": "601dc6f9-538c-4d3a-833c-78075509d59f"
+    },
+    {
+      "pr": 267,
+      "branch": "design/fabric-motion-obsidian-2026-10-14",
+      "base": "main",
+      "baseCommit": "e7db3fb18d242b94772b8dc9a087617270d3ed90",
+      "headCommit": "9d24151d83c274fdb1398c9ddf428878112f4d3c",
+      "state": "integrated",
+      "mergeCommit": "d638567c511f547fd76be2899790ab6f8a01ea85",
+      "qualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38554284521",
+      "mainQualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38554552056",
+      "production": "confirmed",
+      "productionEvidence": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38554551969",
+      "productionCommit": "d638567c511f547fd76be2899790ab6f8a01ea85",
+      "productionVerifiedAt": "2026-10-14T11:11:25.9846412Z",
+      "productionHttpStatus": 200,
+      "workerVersion": "801b7e4b-3894-4f9e-8eeb-eb74bff5d884"
     }
   ]
 }
