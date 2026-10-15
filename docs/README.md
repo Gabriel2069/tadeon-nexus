@@ -50,3 +50,4 @@ Comece pelo [estado de continuidade](ai/00_ESTADO_ATUAL.md), [mapa do código](P
 | [sheet-design-validation.json](sheet-design-validation.json) | NEX-005: seções, materiais, cancelamento de leituras, autosave e fixtures da ficha. |
 | [material-reading-validation.json](material-reading-validation.json) | NEX-014/NEX-006: correção dos proprietários de movimento e leitura integrada com árvore/grafo; evidência e limites de fixture. |
 | [nexus-continuity-validation.json](nexus-continuity-validation.json) | NEX-015: composição ajustável, continuidade de abas, rascunhos por identidade, concorrência e revisão explícita de conflitos; fixtures e limites. |
+| [navigation-utilities-validation.json](navigation-utilities-validation.json) | NEX-016 a NEX-019: menus, Consulta offline, Usuários e Backup e diagnóstico; validação de interface, funções e limites de fixtures. |

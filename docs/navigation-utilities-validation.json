@@ -1,0 +1,428 @@
+{
+  "version": 1,
+  "checkedAt": "2026-10-15",
+  "taskIds": [
+    "NEX-016",
+    "NEX-017",
+    "NEX-018",
+    "NEX-019"
+  ],
+  "state": "validated-in-branch",
+  "branch": "codex/nex-016-navigation-utilities",
+  "baseCommit": "41e70f9697e419c85f3ec544767029a97ab7a724",
+  "interfaceSourceCommit": "9eca77759aa21c4ef67709d6a036b25e8f6751c6",
+  "pr": 271,
+  "names": {
+    "/offline": "Consulta offline",
+    "/manage-users": "Usuários",
+    "/nexus-tools": "Backup e diagnóstico"
+  },
+  "changes": {
+    "navigation": [
+      "Menu Mais em lista Radix, rótulos compartilhados e alvos de 44/52px.",
+      "Conteúdo da sidebar com identidade React estável; ícones e nomes acessíveis no modo recolhido.",
+      "Foco entre drawer, conta e conteúdo; fechamento ao trocar para desktop.",
+      "Backdrop fechado deixa de interceptar interação; movimento direcional com preferência de redução.",
+      "Propriedades de movimento retiradas dos seletores legados; geometria e materiais preservados."
+    ],
+    "offline": [
+      "Busca por nome/ocupação, métricas de resumos/detalhes e estado de conexão.",
+      "Leitura local sem alegar sincronização; limpeza confirmada e falha de armazenamento explícita.",
+      "Conta/cargo verificados preservados e conteúdo remontado por identidade."
+    ],
+    "users": [
+      "Busca por nome/e-mail e filtro por papel.",
+      "Confirmação de mudança de papel e exclusão; bloqueio de ações simultâneas e de autogestão.",
+      "Revisão permanece aberta na falha; resposta antiga não preenche outra conta."
+    ],
+    "backup": [
+      "Histórico IndexedDB separado por conta de mestre; cópias antigas sem identificação não são adotadas nem excluídas automaticamente.",
+      "Confirmação da transação local antes de aceitar a cópia de segurança; mesclagem continua condicionada à cópia prévia.",
+      "Importação valida formato, data, objetos, IDs únicos por tabela e limite de arquivo de 25 MB.",
+      "Leitura paginada em lotes de 500 evita truncamento silencioso por limite padrão de consulta; acima de 100 mil registros por tabela a exportação falha explicitamente.",
+      "Prévia com contagens, data e risco de aplicação parcial; interrupção da primeira tabela impede a segunda.",
+      "Diagnóstico descarta leituras antigas; falha de clipboard tem recuperação informada.",
+      "Marcação de ocorrência exige a mesma conta verificada após getUser; erros tardios de importação/histórico são descartados."
+    ]
+  },
+  "checks": {
+    "completeCheck": "passed: npm run check (styles, continuity, lint, typecheck, 133 suites / 587 tests, client + SSR + Cloudflare build)",
+    "testSuites": 133,
+    "tests": 587,
+    "auditVulnerabilities": 0,
+    "styles": {
+      "modules": 57,
+      "globalLinks": 12,
+      "importantCeilingBefore": 5406,
+      "importantCeilingAfter": 5240,
+      "newStylesheets": 0
+    },
+    "completeCheckLogSha256": "6525a2731aa85f064ae43184165a9087b0dd0d2c5b0fa9b7bfd91e216a8f7ee7"
+  },
+  "browser": {
+    "mode": "authenticated fixtures; HTTP and server-function transport intercepted; no production backend mutations",
+    "widths": [
+      320,
+      390,
+      820,
+      1440
+    ],
+    "utilityStates": 32,
+    "states": [
+      {
+        "width": 320,
+        "label": "offline",
+        "headingWidth": 183.734375,
+        "overflow": false,
+        "h1": 1,
+        "boundary": false,
+        "errors": []
+      },
+      {
+        "width": 320,
+        "label": "offline-empty",
+        "headingWidth": 183.734375,
+        "overflow": false,
+        "h1": 1,
+        "boundary": false,
+        "errors": []
+      },
+      {
+        "width": 320,
+        "label": "users",
+        "headingWidth": 148.4375,
+        "overflow": false,
+        "h1": 1,
+        "boundary": false,
+        "errors": []
+      },
+      {
+        "width": 320,
+        "label": "users-role-review",
+        "headingWidth": 148.4375,
+        "overflow": false,
+        "h1": 1,
+        "boundary": false,
+        "errors": []
+      },
+      {
+        "width": 320,
+        "label": "users-error",
+        "headingWidth": 148.4375,
+        "overflow": false,
+        "h1": 1,
+        "boundary": false,
+        "errors": []
+      },
+      {
+        "width": 320,
+        "label": "backup-empty",
+        "headingWidth": 183.734375,
+        "overflow": false,
+        "h1": 1,
+        "boundary": false,
+        "errors": []
+      },
+      {
+        "width": 320,
+        "label": "backup-review",
+        "headingWidth": 183.734375,
+        "overflow": false,
+        "h1": 1,
+        "boundary": false,
+        "errors": []
+      },
+      {
+        "width": 320,
+        "label": "diagnostics",
+        "headingWidth": 183.734375,
+        "overflow": false,
+        "h1": 1,
+        "boundary": false,
+        "errors": []
+      },
+      {
+        "width": 390,
+        "label": "offline",
+        "headingWidth": 187.5,
+        "overflow": false,
+        "h1": 1,
+        "boundary": false,
+        "errors": []
+      },
+      {
+        "width": 390,
+        "label": "offline-empty",
+        "headingWidth": 187.5,
+        "overflow": false,
+        "h1": 1,
+        "boundary": false,
+        "errors": []
+      },
+      {
+        "width": 390,
+        "label": "users",
+        "headingWidth": 209.4375,
+        "overflow": false,
+        "h1": 1,
+        "boundary": false,
+        "errors": []
+      },
+      {
+        "width": 390,
+        "label": "users-role-review",
+        "headingWidth": 209.4375,
+        "overflow": false,
+        "h1": 1,
+        "boundary": false,
+        "errors": []
+      },
+      {
+        "width": 390,
+        "label": "users-error",
+        "headingWidth": 209.4375,
+        "overflow": false,
+        "h1": 1,
+        "boundary": false,
+        "errors": []
+      },
+      {
+        "width": 390,
+        "label": "backup-empty",
+        "headingWidth": 187.5,
+        "overflow": false,
+        "h1": 1,
+        "boundary": false,
+        "errors": []
+      },
+      {
+        "width": 390,
+        "label": "backup-review",
+        "headingWidth": 187.5,
+        "overflow": false,
+        "h1": 1,
+        "boundary": false,
+        "errors": []
+      },
+      {
+        "width": 390,
+        "label": "diagnostics",
+        "headingWidth": 187.5,
+        "overflow": false,
+        "h1": 1,
+        "boundary": false,
+        "errors": []
+      },
+      {
+        "width": 820,
+        "label": "offline",
+        "headingWidth": 294.453125,
+        "overflow": false,
+        "h1": 1,
+        "boundary": false,
+        "errors": []
+      },
+      {
+        "width": 820,
+        "label": "offline-empty",
+        "headingWidth": 317.078125,
+        "overflow": false,
+        "h1": 1,
+        "boundary": false,
+        "errors": []
+      },
+      {
+        "width": 820,
+        "label": "users",
+        "headingWidth": 347.8125,
+        "overflow": false,
+        "h1": 1,
+        "boundary": false,
+        "errors": []
+      },
+      {
+        "width": 820,
+        "label": "users-role-review",
+        "headingWidth": 347.8125,
+        "overflow": false,
+        "h1": 1,
+        "boundary": false,
+        "errors": []
+      },
+      {
+        "width": 820,
+        "label": "users-error",
+        "headingWidth": 347.8125,
+        "overflow": false,
+        "h1": 1,
+        "boundary": false,
+        "errors": []
+      },
+      {
+        "width": 820,
+        "label": "backup-empty",
+        "headingWidth": 294.1875,
+        "overflow": false,
+        "h1": 1,
+        "boundary": false,
+        "errors": []
+      },
+      {
+        "width": 820,
+        "label": "backup-review",
+        "headingWidth": 294.1875,
+        "overflow": false,
+        "h1": 1,
+        "boundary": false,
+        "errors": []
+      },
+      {
+        "width": 820,
+        "label": "diagnostics",
+        "headingWidth": 294.1875,
+        "overflow": false,
+        "h1": 1,
+        "boundary": false,
+        "errors": []
+      },
+      {
+        "width": 1440,
+        "label": "offline",
+        "headingWidth": 303.296875,
+        "overflow": false,
+        "h1": 1,
+        "boundary": false,
+        "errors": []
+      },
+      {
+        "width": 1440,
+        "label": "offline-empty",
+        "headingWidth": 303.296875,
+        "overflow": false,
+        "h1": 1,
+        "boundary": false,
+        "errors": []
+      },
+      {
+        "width": 1440,
+        "label": "users",
+        "headingWidth": 303.296875,
+        "overflow": false,
+        "h1": 1,
+        "boundary": false,
+        "errors": []
+      },
+      {
+        "width": 1440,
+        "label": "users-role-review",
+        "headingWidth": 303.296875,
+        "overflow": false,
+        "h1": 1,
+        "boundary": false,
+        "errors": []
+      },
+      {
+        "width": 1440,
+        "label": "users-error",
+        "headingWidth": 303.296875,
+        "overflow": false,
+        "h1": 1,
+        "boundary": false,
+        "errors": []
+      },
+      {
+        "width": 1440,
+        "label": "backup-empty",
+        "headingWidth": 303.296875,
+        "overflow": false,
+        "h1": 1,
+        "boundary": false,
+        "errors": []
+      },
+      {
+        "width": 1440,
+        "label": "backup-review",
+        "headingWidth": 303.296875,
+        "overflow": false,
+        "h1": 1,
+        "boundary": false,
+        "errors": []
+      },
+      {
+        "width": 1440,
+        "label": "diagnostics",
+        "headingWidth": 303.296875,
+        "overflow": false,
+        "h1": 1,
+        "boundary": false,
+        "errors": []
+      }
+    ],
+    "navigation": [
+      "Teclado, Escape, foco de abertura e retorno, drawer → conta.",
+      "Troca para desktop fecha drawer sem camada invisível que impeça novo dialog.",
+      "Mais cabe no viewport; alvos e nomes acessíveis.",
+      "Ícones recolhidos visíveis e alvo estável ao hover após a sidebar concluir sua expansão."
+    ],
+    "flows": [
+      "Busca local e cancelamento/limpeza da cópia offline.",
+      "Busca de pessoas, resultados vazios, revisão/cancelamento de papel e recuperação de falha.",
+      "Criação de ponto local, prévia de mesclagem, download JSON, rejeição de arquivo inválido e cancelamento da exclusão.",
+      "Diagnóstico e estados atuais sem overflow ou erro JavaScript."
+    ],
+    "navigationFinalReplay": {
+      "status": "passed",
+      "cases": [
+        {
+          "width": 320,
+          "label": "offline",
+          "headingWidth": 183.734375,
+          "overflow": false,
+          "h1": 1,
+          "boundary": false,
+          "errors": []
+        },
+        {
+          "width": 320,
+          "label": "navigation",
+          "headingWidth": 183.734375,
+          "overflow": false,
+          "h1": 1,
+          "boundary": false,
+          "errors": []
+        },
+        {
+          "width": 390,
+          "label": "offline",
+          "headingWidth": 187.5,
+          "overflow": false,
+          "h1": 1,
+          "boundary": false,
+          "errors": []
+        },
+        {
+          "width": 390,
+          "label": "navigation",
+          "headingWidth": 187.5,
+          "overflow": false,
+          "h1": 1,
+          "boundary": false,
+          "errors": []
+        }
+      ],
+      "source": "same navigation and CSS as 9eca77759aa21c4ef67709d6a036b25e8f6751c6; diagnostic async guards subsequently tested separately"
+    }
+  },
+  "limits": [
+    "Fixtures não certificam contas reais ou RLS; NEX-010 permanece aberto.",
+    "Nenhuma exclusão de conta, alteração de papel ou mesclagem no backend de produção foi executada.",
+    "NEX-011 permanece aberto: esta exportação não contém contas, documentos Nexus ou mídia; DB/Storage/R2 exigem restauração isolada própria.",
+    "Sessão fria sem rede, teclado virtual físico e desempenho em hardware representativo não foram certificados.",
+    "Há dívida CSS legada fora das propriedades saneadas; não há promessa de ausência absoluta de conflitos futuros."
+  ],
+  "publication": {
+    "state": "not-integrated",
+    "productionCommit": null
+  },
+  "sourceCommit": "bc5202a6570d8defd6ab42475b4338972c2f6ed7"
+}

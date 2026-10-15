@@ -626,7 +626,7 @@
       "id": "NEX-016",
       "title": "Navegação: menus estáveis e organizados",
       "domain": "shell",
-      "status": "active",
+      "status": "validated",
       "priority": 4,
       "dependsOn": [
         "NEX-014"
@@ -635,13 +635,17 @@
         "Menu Mais em lista, sidebar recolhida acessível e transição entre drawer e conta com foco consistente.",
         "Eliminar movimentos concorrentes dos controles e manter abertura/fechamento direcional com redução de movimento."
       ],
-      "evidence": []
+      "evidence": [
+        "docs/navigation-utilities-validation.json",
+        "https://github.com/Gabriel2069/tadeon-nexus/pull/271"
+      ],
+      "checkpoint": "Validado na branch da PR #271: 133 suítes/587 testes, build completo, auditoria sem vulnerabilidades, 32 estados nas quatro larguras e repetição final de navegação móvel. Integração e publicação ainda pendentes."
     },
     {
       "id": "NEX-017",
       "title": "Consulta offline: conteúdo local e limites claros",
       "domain": "session",
-      "status": "active",
+      "status": "validated",
       "priority": 4,
       "dependsOn": [
         "NEX-014"
@@ -650,13 +654,17 @@
         "Busca local, contagem de detalhes, atualização da leitura e limpeza confirmada da cópia desta conta.",
         "Preservar separação por conta/cargo e distinguir cópia local, sessão verificada e backup."
       ],
-      "evidence": []
+      "evidence": [
+        "docs/navigation-utilities-validation.json",
+        "https://github.com/Gabriel2069/tadeon-nexus/pull/271"
+      ],
+      "checkpoint": "Validado na branch da PR #271: 133 suítes/587 testes, build completo, auditoria sem vulnerabilidades, 32 estados nas quatro larguras e repetição final de navegação móvel. Integração e publicação ainda pendentes."
     },
     {
       "id": "NEX-018",
       "title": "Usuários: papéis, busca e revisão de ações",
       "domain": "master",
-      "status": "active",
+      "status": "validated",
       "priority": 4,
       "dependsOn": [
         "NEX-014"
@@ -665,13 +673,17 @@
         "Busca por nome/e-mail, filtro por papel, estados de erro e confirmação antes de alterar papéis ou excluir contas.",
         "Isolar leituras e respostas por identidade; bloquear alterações simultâneas e preservar revisão após falha."
       ],
-      "evidence": []
+      "evidence": [
+        "docs/navigation-utilities-validation.json",
+        "https://github.com/Gabriel2069/tadeon-nexus/pull/271"
+      ],
+      "checkpoint": "Validado na branch da PR #271: 133 suítes/587 testes, build completo, auditoria sem vulnerabilidades, 32 estados nas quatro larguras e repetição final de navegação móvel. Integração e publicação ainda pendentes."
     },
     {
       "id": "NEX-019",
       "title": "Backup e diagnóstico: revisão e histórico por conta",
       "domain": "assets",
-      "status": "active",
+      "status": "validated",
       "priority": 4,
       "dependsOn": [
         "NEX-014"
@@ -681,7 +693,11 @@
         "Cópia prévia confirmada por transação local, falhas parciais explícitas e diagnóstico com invalidação de leituras.",
         "Distinguir exportação parcial de fichas/configurações e restauração completa de DB/Storage/R2, que permanece em NEX-011."
       ],
-      "evidence": []
+      "evidence": [
+        "docs/navigation-utilities-validation.json",
+        "https://github.com/Gabriel2069/tadeon-nexus/pull/271"
+      ],
+      "checkpoint": "Validado na branch da PR #271: 133 suítes/587 testes, build completo, auditoria sem vulnerabilidades, 32 estados nas quatro larguras e repetição final de navegação móvel. Integração e publicação ainda pendentes."
     }
   ],
   "decisions": [
@@ -998,6 +1014,10 @@
     {
       "path": "docs/nexus-continuity-validation.json",
       "purpose": "NEX-015: composição ajustável, continuidade de abas, rascunhos por identidade, concorrência e revisão explícita de conflitos; fixtures e limites."
+    },
+    {
+      "path": "docs/navigation-utilities-validation.json",
+      "purpose": "NEX-016 a NEX-019: menus, Consulta offline, Usuários e Backup e diagnóstico; validação de interface, funções e limites de fixtures."
     }
   ],
   "integrationHistory": [

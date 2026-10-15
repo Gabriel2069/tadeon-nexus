@@ -1,6 +1,6 @@
 # Estado de continuidade do Tadeon Nexus
 
-Verificado em 14/10/2026. Entrada curta de retomada; o registro único de tarefas e responsáveis é [project-continuity.json](../project-continuity.json).
+Verificado em 15/10/2026. Entrada curta de retomada; o registro único de tarefas e responsáveis é [project-continuity.json](../project-continuity.json).
 
 ## Referências estruturais históricas
 
@@ -49,3 +49,8 @@ A fila canônica registra NEX-015 para continuidade de abas e painéis e conserv
 NEX-015 integrado pela [PR #269](https://github.com/Gabriel2069/tadeon-nexus/pull/269), merge `778d444`, sobre main `3173d27`. Abas conservam sua ordem; fechar a última mostra a entrada do acervo e permite reabertura explícita. Editor permanece montado entre modos. Painéis ajustam a orientação à largura disponível, com proporções independentes, teclado/arraste e preferências por usuário/workspace/campanha. Rascunhos são identificados por usuário/workspace/página; texto digitado durante uma gravação continua na fila. Respostas antigas não trocam a página ou o editor de outra conta. Conflitos têm revisão explícita; o RPC conserva a versão esperada.
 
 [Evidência](../nexus-continuity-validation.json): `npm run check` aprovado, 131 suítes/575 testes, audit zero; fixtures de 500 páginas e documento longo em 320/390/820/1440px, sem overflow ou erros. Navegação, divisor, persistência, filtros/grupos e portal/foco verificados. Serviços, migrations, flags e identidade visual preservados; 57 módulos CSS e 12 links, sem crescimento dos tetos. A validação do corpus real autorizado pertence a NEX-010 por DEC-010, com o requisito original preservado. [Quality do HEAD](https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38669420714), [Quality de main](https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38669674673) e [publicação](https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38669674635) aprovados. O endpoint confirmou HTTP 200 e SHA exato `778d4449b01adc9ae5eab498d27606d2d7c3b35f` em 2026-10-15T02:13:38.7334855Z. Próximo lote conforme fila canônica: NEX-007. Este registro preserva a entrega da implementação; a consolidação documental tem sua própria PR e prova pública.
+
+
+## Menus e utilidades — NEX-016 a NEX-019
+
+A PR [#271](https://github.com/Gabriel2069/tadeon-nexus/pull/271) responde à nova prioridade de Tadeu (DEC-011): menus, Consulta offline, Usuários e Backup e diagnóstico. Implementação e evidência em [navigation-utilities-validation.json](../navigation-utilities-validation.json). O histórico local de backup agora é separado por conta de mestre; dados antigos sem identificação ficam preservados, sem adoção automática. Cópia parcial não equivale à restauração completa prevista em NEX-011. NEX-008 e NEX-010 conservam seus limites. Validado na branch: `npm run check`, 133 suítes/587 testes, auditoria sem vulnerabilidades, 32 cenários em 320/390/820/1440px e repetição final da navegação móvel. Integração/publicação ainda pendentes neste checkpoint. Depois deste lote, a prioridade seguinte continua NEX-007 na fila canônica.
