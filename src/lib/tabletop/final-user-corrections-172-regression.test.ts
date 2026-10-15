@@ -58,10 +58,6 @@ describe("final user corrections 172", () => {
     expect(nav).toContain("--nav-accent-rgb: var(--section-accent-rgb, 217 215 164)");
     expect(nav).toContain("--nav-accent-rgb: 116 36 45");
     expect(nav).toContain("--nav-accent-rgb: 122 129 135");
-    expect(css).toContain(".tadeon-master-navigation__scroller");
-    expect(css).toContain("width: fit-content;");
-    expect(css).toContain('> [data-slot="tabs-list"]');
-    expect(css).toContain("width: max-content;");
   });
 
   it("contains the global search popup across the tablet range", () => {

@@ -548,9 +548,6 @@
 }
 
 @media (hover: hover) and (pointer: fine) {
-  .tadeon-nav-item:not([aria-current="page"]):hover {
-    color: var(--sidebar-accent-foreground);
-  }
 
   .tadeon-nav-item:hover .tadeon-nav-item__icon {
     border-color: color-mix(
@@ -631,32 +628,6 @@
   max-width: 100%;
 }
 
-.tadeon-master-navigation,
-.tadeon-master-navigation > [role="tablist"] {
-  max-width: 100%;
-}
-
-@media (max-width: 1180px) {
-  .tadeon-master-navigation > [role="tablist"] {
-    flex-wrap: nowrap !important;
-    justify-content: flex-start;
-    overflow-x: auto;
-    overflow-y: hidden;
-    overscroll-behavior-inline: contain;
-    scroll-snap-type: x proximity;
-    scrollbar-width: none;
-  }
-
-  .tadeon-master-navigation > [role="tablist"]::-webkit-scrollbar {
-    display: none;
-  }
-
-  .tadeon-master-navigation__group {
-    flex: 0 0 auto;
-    scroll-snap-align: start;
-  }
-}
-
 @media (max-width: 767px) {
   .tadeon-primary-nav::before {
     left: 1.5rem;
@@ -668,16 +639,6 @@
 
   .tadeon-mobile-drawer > .relative.flex.h-full {
     padding-bottom: max(0.75rem, env(safe-area-inset-bottom));
-  }
-
-  .tadeon-master-navigation {
-    margin-inline: -0.75rem;
-    padding-inline: 0.75rem;
-  }
-
-  .tadeon-master-navigation [data-slot="tabs-trigger"] {
-    min-height: 2.6rem;
-    max-width: min(78dvw, 14rem);
   }
 
   .tadeon-mobile-dock__item > span {

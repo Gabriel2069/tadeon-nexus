@@ -13,19 +13,12 @@ const graph = readFileSync(
   "utf8",
 );
 
+// Superseded mask/frame assertions are covered by master-workspace behavior and browser checks.
 describe("sheet popup graph polish 161", () => {
   it("mantém a ordem das regras na cascata consolidada", () => {
     expect(isStyleLoadedAfter("src/routes/__root.tsx", "src/styles/navigation-real-svg-parity-160.css", "src/styles/sheet-popup-graph-polish-161.css")).toBe(true);
   });
 
-  it("keeps authored Master and Backup marks while preserving real SVG geometry", () => {
-    expect(css).toContain('.tadeon-nav-item[href="/master-panel"] .tadeon-nav-item__icon > svg');
-    expect(css).toContain('.tadeon-nav-item[href="/nexus-tools"] .tadeon-nav-item__icon > svg');
-    expect(css).toContain("opacity: 0 !important");
-    expect(css).toContain("background: currentColor !important");
-    expect(css).toContain('.tadeon-mobile-dock__item[href="/master-panel"] > svg');
-    expect(css).toContain("width: 1.25rem !important");
-  });
 
   it("locks mobile dialogs to safe inline edges without animated scaling", () => {
     expect(css).toContain(':has(#sheet-name)');

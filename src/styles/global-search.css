@@ -1,13 +1,7 @@
 /* source: src/styles/final-nav-search-polish-196.css */
 /* Respiro entre o menu do Mestre e o conteúdo. */
-.tadeon-master-navigation-slot {
-  margin-bottom: clamp(.6rem, 1.1vw, .9rem) !important;
-}
 
 /* Menu lateral: hover local no SVG, herdando a identidade cromática da rota. */
-.tadeon-nav-item:hover .tadeon-nav-item__icon > svg {
-  color: var(--nav-accent, currentColor);
-}
 
 /* Busca global: no desktop o DialogContent mantém o centramento nativo por
    left/top 50% + translate. VisualViewport só corrige teclado e chrome móvel. */

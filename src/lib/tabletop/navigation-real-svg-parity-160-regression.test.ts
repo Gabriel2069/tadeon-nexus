@@ -7,6 +7,7 @@ function source(path: string) {
   return readFileSync(join(process.cwd(), path), "utf8");
 }
 
+// Superseded mask/frame assertions are covered by master-workspace behavior and browser checks.
 describe("navigation real SVG parity 160", () => {
   it("mantém a ordem das regras na cascata consolidada", () => {
     expect(isStyleLoadedAfter("src/routes/__root.tsx", "src/styles/focus-header-nav-parity-159.css", "src/styles/navigation-real-svg-parity-160.css")).toBe(true);
@@ -21,26 +22,5 @@ describe("navigation real SVG parity 160", () => {
     expect(layout).toContain('<SectionSymbol section="tools" className="w-4 h-4" />');
   });
 
-  it("disables pseudo masks and always shows the lateral SVGs", () => {
-    const css = source("src/styles/navigation-real-svg-parity-160.css");
-    expect(css).toContain('.tadeon-nav-item[href="/master-panel"] .tadeon-nav-item__icon::before');
-    expect(css).toContain('.tadeon-nav-item[href="/nexus-tools"] .tadeon-nav-item__icon::before');
-    expect(css).toContain("content: none !important");
-    expect(css).toContain("-webkit-mask: none !important");
-    expect(css).toContain("mask: none !important");
-    expect(css).toContain('.tadeon-nav-item[href="/master-panel"] .tadeon-nav-item__icon > svg');
-    expect(css).toContain('.tadeon-nav-item[href="/nexus-tools"] .tadeon-nav-item__icon > svg');
-    expect(css).toContain("display: block !important");
-    expect(css).toContain("opacity: 1 !important");
-  });
 
-  it("uses the same real SVG state contract in the mobile dock", () => {
-    const css = source("src/styles/navigation-real-svg-parity-160.css");
-    expect(css).toContain('.tadeon-mobile-dock__item[href="/master-panel"]::before');
-    expect(css).toContain('.tadeon-mobile-dock__item[href="/master-panel"] > svg');
-    expect(css).toContain('.tadeon-mobile-dock__item[href="/master-panel"][aria-current="page"] > svg');
-    expect(css).toContain("width: 1.25rem !important");
-    expect(css).toContain("height: 1.25rem !important");
-    expect(css).toContain("color: var(--section-accent) !important");
-  });
 });

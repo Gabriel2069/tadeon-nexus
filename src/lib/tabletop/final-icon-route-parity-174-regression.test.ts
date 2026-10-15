@@ -5,6 +5,7 @@ function source(path: string) {
   return readFileSync(path, "utf8");
 }
 
+// Superseded mask/frame assertions are covered by master-workspace behavior and browser checks.
 describe("final icon and route parity 174/176", () => {
   it("keeps the authored Mesa favicon and navigation symbol", () => {
     const layout = source("src/components/app-layout.tsx");
@@ -17,40 +18,8 @@ describe("final icon and route parity 174/176", () => {
     expect(favicon).toContain("M18 28 38 20l20 8 20-8v48l-20 8-20-8-20 8Z");
   });
 
-  it("pins authored Panel and Backup glyphs to the geometric center of the shared square", () => {
-    const css = source("src/styles/create-sheet-search-viewport-163.css");
-    expect(css).toContain('href="/master-panel"], [href="/nexus-tools"]');
-    expect(css).toContain("top: 50% !important");
-    expect(css).toContain("left: 50% !important");
-    expect(css).toContain("width: 1.22rem !important");
-    expect(css).toContain("height: 1.22rem !important");
-    expect(css).toContain("transform: translate(-50%, -50%) !important");
-  });
 
-  it("returns the mobile Master button to the exact dock geometry of its siblings", () => {
-    const css = source("src/styles/create-sheet-search-viewport-163.css");
-    expect(css).toContain("/* #176:");
-    expect(css).toContain('.tadeon-mobile-dock__item[href="/master-panel"] {');
-    expect(css).toContain("gap: .24rem !important");
-    expect(css).toContain("width: 1.25rem !important");
-    expect(css).toContain("height: 1.25rem !important");
-    expect(css).toContain("flex: 0 0 auto !important");
-    expect(css).toContain("margin: 0 !important");
-    expect(css).not.toContain("gap: .31rem !important");
-    expect(css).not.toContain("width: 1.44rem !important");
-    expect(css).not.toContain("height: 1.44rem !important");
-  });
 
-  it("restores the same active underline and motion contract to the mobile Master button", () => {
-    const css = source("src/styles/create-sheet-search-viewport-163.css");
-    expect(css).toContain('.tadeon-mobile-dock__item[href="/master-panel"][aria-current="page"]::before');
-    expect(css).not.toContain("transform: translateY(-1px) !important");
-    expect(css).toContain('.tadeon-mobile-dock__item[href="/master-panel"][aria-current="page"]::after');
-    expect(css).toContain("bottom: .2rem !important");
-    expect(css).toContain("width: 1rem !important");
-    expect(css).toContain("height: 2px !important");
-    expect(css).toContain("background: var(--section-accent) !important");
-  });
 
   it("does not treat Backup as a Nexus child route in either navigation surface", () => {
     const layout = source("src/components/app-layout.tsx");

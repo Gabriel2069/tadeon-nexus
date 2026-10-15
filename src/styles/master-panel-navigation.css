@@ -1,257 +1,146 @@
-/* source: src/styles/master-panel-navigation-fit-185.css */
-/* #185/#186: Master Panel navigation keeps the frame fitted to the workspace.
-   On touch viewports only the inner rail moves; the outer panel never slides. */
-
+/* Master navigation owns its frame, layout and finite state feedback. */
 .tadeon-master-navigation-slot {
-  width: 100%;
+  position: sticky;
+  z-index: 25;
+  top: var(--tadeon-master-fixed-top, 5rem);
   min-width: 0;
-  padding-inline: clamp(.4rem, 1.25vw, 1rem);
+  margin-block: 0.5rem 1.25rem;
 }
-
-.tadeon-master-navigation {
-  width: min(100%, 96rem);
-  min-width: 0;
-  margin-inline: auto;
-  overflow: visible;
-}
-
+.tadeon-master-navigation,
 .tadeon-master-navigation__scroller {
-  position: relative;
-  box-sizing: border-box;
-  width: 100% !important;
-  max-width: 100% !important;
   min-width: 0;
-  margin-inline: auto !important;
-  padding: .35rem .4rem .55rem;
-  overflow: hidden !important;
-  border: 1px solid rgb(var(--section-accent-rgb) / 12%);
-  border-radius: 1rem .38rem 1rem .38rem;
-  background:
-    linear-gradient(105deg, rgb(var(--section-accent-rgb) / 5%), transparent 42%),
-    color-mix(in srgb, var(--card) 91%, transparent);
-  box-shadow:
-    0 18px 44px -34px rgb(0 0 0 / 90%),
-    inset 0 1px rgb(255 255 255 / 3%);
-  transition:
-    border-color 220ms var(--ease-out),
-    box-shadow 260ms var(--ease-out),
-    background-color 260ms var(--ease-out);
-}
-
-.tadeon-master-navigation__scroller::before,
-.tadeon-master-navigation__scroller::after {
-  position: absolute;
-  z-index: 3;
-  top: 0;
-  bottom: 0;
-  width: 1.35rem;
-  pointer-events: none;
-  content: "";
-  opacity: 0;
-  transition: opacity 180ms var(--ease-out);
-}
-
-.tadeon-master-navigation__scroller::before {
-  left: 0;
-  background: linear-gradient(90deg, color-mix(in srgb, var(--card) 96%, transparent), transparent);
-}
-
-.tadeon-master-navigation__scroller::after {
-  right: 0;
-  background: linear-gradient(270deg, color-mix(in srgb, var(--card) 96%, transparent), transparent);
-}
-
-.tadeon-master-navigation__rail {
-  box-sizing: border-box;
   width: 100%;
-  min-width: 0;
-  overflow-x: auto !important;
-  overflow-y: hidden !important;
-  overscroll-behavior-x: contain;
-  scroll-padding-inline: .8rem;
-  scrollbar-width: thin;
-  scrollbar-color: rgb(var(--section-accent-rgb) / 22%) transparent;
-  -webkit-overflow-scrolling: touch;
 }
-
-.tadeon-master-navigation__rail::-webkit-scrollbar {
-  height: 5px;
-}
-
-.tadeon-master-navigation__rail::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.tadeon-master-navigation__rail::-webkit-scrollbar-thumb {
-  border-radius: 999px;
-  background: rgb(var(--section-accent-rgb) / 20%);
-}
-
-.tadeon-master-navigation__rail > [data-slot="tabs-list"] {
-  box-sizing: border-box;
-  width: max-content !important;
-  min-width: max-content !important;
-  max-width: none !important;
-  margin-inline: auto !important;
-  align-items: stretch;
-  overflow: visible !important;
-  border: 0 !important;
-  border-radius: 0 !important;
-  background: transparent !important;
-  box-shadow: none !important;
-}
-
-.tadeon-master-navigation__group {
-  min-width: max-content;
-  flex: 0 0 auto;
-  padding-inline: .18rem;
-}
-
-.tadeon-master-navigation__group:first-child {
-  padding-left: .08rem;
-}
-
-.tadeon-master-navigation__group:last-child {
-  padding-right: .08rem;
-}
-
-.tadeon-master-navigation [data-slot="tabs-trigger"] {
-  min-height: 2.35rem;
-  white-space: nowrap;
-}
-
-@media (min-width: 1024px) {
-  .tadeon-master-navigation__scroller {
-    overflow: visible !important;
-    padding-inline: 0;
-    border-color: transparent;
-    background: transparent;
-    box-shadow: none;
-  }
-
-  .tadeon-master-navigation__rail {
-    overflow-x: visible !important;
-  }
-
-  .tadeon-master-navigation__rail > [data-slot="tabs-list"] {
-    width: fit-content !important;
-    min-width: 0 !important;
-    max-width: 100% !important;
-    flex-wrap: wrap !important;
-    justify-content: center !important;
-    row-gap: .35rem;
-    border: 1px solid rgb(var(--section-accent-rgb) / 12%) !important;
-    border-radius: 1rem .38rem 1rem .38rem !important;
-    background:
-      linear-gradient(105deg, rgb(var(--section-accent-rgb) / 5%), transparent 42%),
-      color-mix(in srgb, var(--card) 91%, transparent) !important;
-    box-shadow:
-      0 18px 44px -34px rgb(0 0 0 / 90%),
-      inset 0 1px rgb(255 255 255 / 3%) !important;
-  }
-}
-
-@media (max-width: 1023px) {
-  .tadeon-master-navigation-slot {
-    padding-inline: max(.2rem, env(safe-area-inset-left));
-  }
-
-  .tadeon-master-navigation__scroller {
-    margin-inline: 0 !important;
-    padding: .35rem 0 .48rem;
-  }
-
-  .tadeon-master-navigation__scroller::before,
-  .tadeon-master-navigation__scroller::after {
-    opacity: .82;
-  }
-
-  .tadeon-master-navigation__rail {
-    padding-right: max(.8rem, env(safe-area-inset-right));
-    padding-left: max(.8rem, env(safe-area-inset-left));
-    scroll-behavior: smooth;
-    animation: tadeon-master-nav-rail-settle 240ms var(--ease-out) both;
-  }
-
-  .tadeon-master-navigation__rail > [data-slot="tabs-list"] {
-    margin-inline: 0 !important;
-    flex-wrap: nowrap !important;
-  }
-
-  .tadeon-master-navigation__group {
-    scroll-snap-align: start;
-  }
-
-  .tadeon-master-navigation[data-fixed="true"] .tadeon-master-navigation__scroller {
-    border-color: rgb(var(--section-accent-rgb) / 18%);
-    box-shadow:
-      0 20px 48px -35px rgb(0 0 0 / 96%),
-      inset 0 1px rgb(255 255 255 / 4%);
-  }
-}
-
-.tadeon-master-navigation[data-fixed="true"] {
-  box-sizing: border-box;
-  max-width: 100%;
-}
-
-.tadeon-master-navigation[data-fixed="true"] .tadeon-master-navigation__scroller {
-  padding-top: .42rem;
-  padding-bottom: .5rem;
-}
-
-@keyframes tadeon-master-nav-rail-settle {
-  from {
-    opacity: .78;
-    transform: translateX(.35rem);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .tadeon-master-navigation__rail {
-    scroll-behavior: auto;
-    animation: none !important;
-  }
-
-  .tadeon-master-navigation__scroller,
-  .tadeon-master-navigation__scroller::before,
-  .tadeon-master-navigation__scroller::after {
-    transition: none !important;
-  }
-}
-
-/* #194: the wrapper is layout-only. The scroller is the one and only visible frame. */
-.tadeon-master-navigation {
-  display: contents !important;
-}
-
-.tadeon-master-navigation__scroller,
-.tadeon-master-navigation[data-fixed="true"] .tadeon-master-navigation__scroller {
-  box-sizing: border-box !important;
-  width: 100% !important;
-  max-width: none !important;
-  margin: 0 !important;
-  padding: .4rem !important;
-  overflow: hidden !important;
-  border: 1px solid rgb(var(--section-accent-rgb) / 14%) !important;
-  border-radius: 1rem .38rem 1rem .38rem !important;
-  background:
-    linear-gradient(105deg, rgb(var(--section-accent-rgb) / 5%), transparent 42%),
-    color-mix(in srgb, var(--card) 91%, transparent) !important;
+.tadeon-master-navigation__scroller {
+  overflow: hidden;
+  border: 1px solid rgb(185 112 122 / 28%);
+  border-radius: 1rem;
+  background: linear-gradient(120deg, rgb(116 36 45 / 10%), transparent 50%), rgb(18 21 26 / 97%);
   box-shadow:
-    0 18px 44px -34px rgb(0 0 0 / 90%),
-    inset 0 1px rgb(255 255 255 / 3%) !important;
+    0 16px 32px -26px #000,
+    inset 0 1px rgb(255 255 255 / 7%);
 }
-
-.tadeon-master-navigation__rail > [data-slot="tabs-list"] {
-  border: 0 !important;
-  border-radius: 0 !important;
-  background: transparent !important;
-  box-shadow: none !important;
+.tadeon-master-navigation__rail {
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scrollbar-width: thin;
+  scrollbar-color: #805761 transparent;
+  scroll-padding-inline: 0.75rem;
 }
-
-/* end-source: src/styles/master-panel-navigation-fit-185.css */
+.tadeon-master-navigation .tadeon-master-navigation__tabs {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  align-items: stretch;
+  gap: 0;
+  width: 100%;
+  padding: 0.5rem;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+.tadeon-master-navigation__group {
+  min-width: 0;
+  padding: 0.5rem;
+}
+.tadeon-master-navigation__group + .tadeon-master-navigation__group {
+  border-left: 1px solid rgb(185 112 122 / 15%);
+}
+.tadeon-master-navigation__label {
+  display: block;
+  margin: 0.15rem 0.5rem 0.6rem;
+  color: #bd969e;
+  font: 0.6875rem/1.4 var(--font-mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.tadeon-master-navigation__items {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.2rem;
+}
+.tadeon-master-navigation [data-master-tab] {
+  justify-content: flex-start;
+  gap: 0.5rem;
+  min-height: 2.75rem;
+  padding: 0.6rem 0.65rem;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: #c3bbbe;
+  white-space: nowrap;
+  border: 1px solid transparent;
+  border-radius: 0.6rem;
+  background: transparent;
+  box-shadow: none;
+  transition:
+    color 140ms var(--ease-out),
+    background-color 140ms var(--ease-out),
+    border-color 140ms var(--ease-out);
+}
+.tadeon-master-navigation [data-master-tab]:hover {
+  color: #f2e5e6;
+  background: rgb(116 36 45 / 16%);
+}
+.tadeon-master-navigation [data-master-tab][data-state="active"] {
+  color: #fae3e8;
+  border-color: #9e626f;
+  background: linear-gradient(130deg, rgb(116 36 45 / 45%), rgb(116 36 45 / 18%));
+  box-shadow: inset 0 1px rgb(255 255 255 / 8%);
+}
+.tadeon-master-navigation__context {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin: 0;
+  padding: 0.6rem 1rem;
+  border-top: 1px solid rgb(185 112 122 / 16%);
+  color: #b8b1b3;
+  font-size: 0.75rem;
+}
+.tadeon-master-navigation__context > span:first-of-type {
+  color: #eedade;
+}
+.tadeon-master-navigation__jump {
+  display: none;
+}
+@media (max-width: 1099px) {
+  .tadeon-master-navigation__jump {
+    display: grid;
+    gap: 0.35rem;
+    padding: 0.75rem 0.85rem 0.3rem;
+    color: #bd969e;
+    font: 0.6875rem/1.4 var(--font-mono);
+  }
+  .tadeon-master-navigation__jump select {
+    width: 100%;
+    min-height: 2.75rem;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid #805761;
+    border-radius: 0.6rem;
+    color: #f2e5e6;
+    background: #18171d;
+    font: 500 0.875rem/1.4 var(--font-inter);
+  }
+  .tadeon-master-navigation .tadeon-master-navigation__tabs {
+    display: flex;
+    width: max-content;
+    min-width: 100%;
+  }
+  .tadeon-master-navigation__group {
+    flex: 0 0 auto;
+  }
+  .tadeon-master-navigation__items {
+    flex-wrap: nowrap;
+  }
+  .tadeon-master-navigation__label {
+    display: none;
+  }
+  .tadeon-master-navigation__context {
+    display: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .tadeon-master-navigation [data-master-tab] {
+    transition: none;
+  }
+}

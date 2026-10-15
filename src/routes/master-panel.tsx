@@ -1,6 +1,6 @@
 import { useAuth } from "@/lib/auth";
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useEffect, useMemo, useState } from "react";
+import { createFileRoute, useBlocker, useNavigate } from "@tanstack/react-router";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { ProtectedShell } from "@/components/protected-shell";
 import { supabase } from "@/integrations/supabase/client";
 import { Card } from "@/components/ui/card";
@@ -38,6 +38,15 @@ import {
   BookKey,
   Database,
 } from "lucide-react";
+import {
+  AlertDialog,
+  AlertDialogContent,
+  AlertDialogCancel,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogDescription,
+  AlertDialogFooter,
+} from "@/components/ui/alert-dialog";
 import { toast } from "sonner";
 import type {
   RankRow,
@@ -71,7 +80,6 @@ import {
   type MasterThreat,
 } from "@/lib/master-data";
 import {
-  DashboardHub,
   EncounterHub,
   FoldHub,
   InterludeHub,
@@ -79,6 +87,9 @@ import {
   NpcHub,
   ThreatHub,
 } from "@/components/master/master-hub";
+import { DashboardHub } from "@/components/master/master-overview";
+import { useMasterDraft } from "@/components/master/use-master-draft";
+import { MasterPanelIdentity } from "@/components/master/master-panel-navigation";
 import { SessionWorkspace } from "@/components/master/session-workspace";
 import { MasterCatalog } from "@/components/master/master-catalog";
 import { SaveStatus } from "@/components/save-status";
@@ -94,6 +105,7 @@ import { AssetLibraryPanel } from "@/components/assets/asset-library-panel";
 
 export const Route = createFileRoute("/master-panel")({
   validateSearch: (search: Record<string, unknown>) => ({
+    ...(search.popout === "1" ? { popout: "1" as const } : {}),
     tab: MASTER_TAB_VALUES.includes(search.tab as MasterTab)
       ? (search.tab as MasterTab)
       : undefined,
@@ -294,25 +306,46 @@ function normalizeScene(value: Partial<Scene>): Scene {
 
 function MasterPanel() {
   const { user, role } = useAuth();
+  return <MasterWorkspace key={`${user?.id ?? "anonymous"}:${role ?? "none"}`} />;
+}
+
+function MasterWorkspace() {
+  const { user, role } = useAuth();
   const search = Route.useSearch();
   const navigate = useNavigate();
-  const [s, setS] = useState<SettingsRow | null>(null);
+  const leaveReturnFocusRef = useRef<HTMLElement | null>(null);
+  const draft = useMasterDraft<SettingsRow>(async (snapshot, signal) => {
+    const { id, ...payload } = snapshot;
+    const { data, error } = await supabase
+      .from("game_settings")
+      .update(payload as never)
+      .eq("id", id)
+      .select("id")
+      .abortSignal(signal)
+      .maybeSingle();
+    if (error || !data) {
+      const failure = error ?? new Error("Nenhuma configuração foi atualizada.");
+      if (!signal.aborted) void reportClientError(failure, "save");
+      throw failure;
+    }
+  });
+  const {
+    value: s,
+    dirty,
+    saving,
+    error: saveError,
+    savedAt: lastSavedAt,
+    update: upd,
+    save,
+  } = draft;
+  const loadDraft = draft.load;
   const [sheets, setSheets] = useState<SheetSummary[]>([]);
   const [loading, setLoading] = useState(true);
-  const [saving, setSaving] = useState(false);
-  const [dirty, setDirty] = useState(false);
-  const [lastSavedAt, setLastSavedAt] = useState<Date | null>(null);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [reloadKey, setReloadKey] = useState(0);
   const [assetsEnabled, setAssetsEnabled] = useState(false);
-  const [activeTab, setActiveTab] = useState<MasterTab>(() => {
-    if (search.tab) return search.tab;
-    if (typeof window === "undefined") return "dashboard";
-    const stored = window.sessionStorage.getItem("tadeon-master-active-tab");
-    return MASTER_TAB_VALUES.includes(stored as MasterTab)
-      ? (stored as MasterTab)
-      : "dashboard";
-  });
+  const activeTab: MasterTab =
+    search.tab === "assets" && !assetsEnabled ? "dashboard" : (search.tab ?? "dashboard");
 
   useEffect(() => {
     let active = true;
@@ -325,158 +358,156 @@ function MasterPanel() {
   }, []);
 
   useEffect(() => {
+    let active = true;
+    const controller = new AbortController();
     void (async () => {
-      setLoading(true);
-      setLoadError(null);
-      setS(null);
-      const [{ data: gs, error: settingsError }, { data: ch, error: sheetsError }] =
-        await Promise.all([
-          supabase.from("game_settings").select("*").eq("key", "global").maybeSingle(),
-          supabase
-            .from("character_sheets")
-            .select("id,name,owner_id,exposure,stats,attributes,equilibrium,power_form_enabled"),
-        ]);
-      if (settingsError || sheetsError || !gs) {
-        setLoadError(
-          !gs && !settingsError
-            ? "As configurações globais da mesa não foram encontradas."
-            : "Não foi possível carregar o Painel do Mestre.",
-        );
-        setLoading(false);
-        return;
-      }
+      try {
+        setLoading(true);
+        setLoadError(null);
+        const [{ data: gs, error: settingsError }, { data: ch, error: sheetsError }] =
+          await Promise.all([
+            supabase
+              .from("game_settings")
+              .select("*")
+              .eq("key", "global")
+              .abortSignal(controller.signal)
+              .maybeSingle(),
+            supabase
+              .from("character_sheets")
+              .select("id,name,owner_id,exposure,stats,attributes,equilibrium,power_form_enabled")
+              .abortSignal(controller.signal),
+          ]);
+        if (!active) return;
+        if (settingsError || sheetsError || !gs) {
+          setLoadError(
+            !gs && !settingsError
+              ? "As configurações globais da mesa não foram encontradas."
+              : "Não foi possível carregar o Painel do Mestre.",
+          );
+          setLoading(false);
+          return;
+        }
 
-      const g = gs as unknown as Record<string, unknown>;
-      const rulesVersion = Number(g.rules_version ?? 1);
-      const storedRankTable = (g.rank_table as RankRow[] | undefined) ?? [];
-      const storedSkillBranches = (g.skill_branches as SkillBranch[] | undefined) ?? [];
-      const usesFinalRules =
-        storedRankTable.some((row) => row.rank === 100 && row.pm === 170 && row.def === 14) &&
-        storedSkillBranches.length === 4 &&
-        storedSkillBranches.every((branch) => branch.nodes.length === 24);
-      const legacyNpcs = (g.npcs as NPC[] | undefined) ?? [];
-      const legacyClues = (g.clues as Clue[] | undefined) ?? [];
-      const legacyMonsters = (g.monsters as Monster[] | undefined) ?? [];
-      const masterNpcs = ((g.master_npcs as MasterNpc[] | undefined) ?? legacyNpcs).map(
-        normalizeNpc,
-      );
-      const investigationClues = (
-        (g.investigation_clues as MasterClue[] | undefined) ?? legacyClues
-      ).map(normalizeClue);
-      const threats = ((g.threats as MasterThreat[] | undefined) ?? legacyMonsters).map(
-        normalizeThreat,
-      );
-      setS({
-        ...(gs as unknown as SettingsRow),
-        npcs: (g.npcs as NPC[]) ?? [],
-        monsters: (g.monsters as Monster[]) ?? [],
-        clues: (g.clues as Clue[]) ?? [],
-        scenes_detailed: ((g.scenes_detailed as Scene[]) ?? []).map(normalizeScene),
-        initiative_order: (g.initiative_order as InitEntry[]) ?? [],
-        pinned_sheet_ids: (g.pinned_sheet_ids as string[]) ?? [],
-        rank_table: usesFinalRules ? storedRankTable : CANONICAL_RANK_TABLE,
-        skill_branches: usesFinalRules ? storedSkillBranches : CANONICAL_SKILL_BRANCHES,
-        upgrade_costs: usesFinalRules
-          ? ((g.upgrade_costs as UpgradeCosts) ?? DEFAULT_UPGRADE_COSTS)
-          : DEFAULT_UPGRADE_COSTS,
-        condition_options: usesFinalRules
-          ? ((g.condition_options as ConditionOptionsMap) ?? DEFAULT_CONDITION_OPTIONS)
-          : DEFAULT_CONDITION_OPTIONS,
-        skill_groups: usesFinalRules
-          ? ((g.skill_groups as SettingsRow["skill_groups"]) ?? SKILL_GROUPS)
-          : SKILL_GROUPS,
-        skill_training_costs: (usesFinalRules &&
-        (g.skill_training_costs as number[] | undefined)?.length === 3
-          ? [
-              (g.skill_training_costs as number[])[0],
-              (g.skill_training_costs as number[])[1],
-              (g.skill_training_costs as number[])[2],
-            ]
-          : DEFAULT_TRAINING_COSTS) as [number, number, number],
-        campaign_title: String(g.campaign_title ?? "Tessitura do Vazio"),
-        campaign_phase: String(g.campaign_phase ?? ""),
-        master_npcs: masterNpcs,
-        investigation_clues: investigationClues,
-        threats,
-        interludes: ((g.interludes as MasterInterlude[] | undefined) ?? []).map((value) => ({
-          ...createEmptyInterlude(),
-          ...value,
-          id: value.id || genId(),
-          activities: value.activities ?? [],
-        })),
-        folds: ((g.folds as MasterFold[] | undefined) ?? []).map((value) => ({
-          ...createEmptyFold(),
-          ...value,
-          id: value.id || genId(),
-          stitchPoints: value.stitchPoints ?? [],
-        })),
-        rules_version: Math.max(3, rulesVersion),
-      });
-      const rawSheets = (ch as unknown as Omit<SheetSummary, "owner_email">[] | null) ?? [];
-      const ownerIds = [...new Set(rawSheets.map((sheet) => sheet.owner_id).filter(Boolean))];
-      let ownerLabels = new Map<string, string>();
-      if (ownerIds.length) {
-        const { data: profiles } = await supabase
-          .from("profiles")
-          .select("id,email,full_name")
-          .in("id", ownerIds);
-        ownerLabels = new Map(
-          (profiles ?? []).map((profile) => [
-            profile.id,
-            profile.full_name?.trim() || profile.email || "Jogador",
-          ]),
+        const g = gs as unknown as Record<string, unknown>;
+        const rulesVersion = Number(g.rules_version ?? 1);
+        const storedRankTable = (g.rank_table as RankRow[] | undefined) ?? [];
+        const storedSkillBranches = (g.skill_branches as SkillBranch[] | undefined) ?? [];
+        const usesFinalRules =
+          storedRankTable.some((row) => row.rank === 100 && row.pm === 170 && row.def === 14) &&
+          storedSkillBranches.length === 4 &&
+          storedSkillBranches.every((branch) => branch.nodes.length === 24);
+        const legacyNpcs = (g.npcs as NPC[] | undefined) ?? [];
+        const legacyClues = (g.clues as Clue[] | undefined) ?? [];
+        const legacyMonsters = (g.monsters as Monster[] | undefined) ?? [];
+        const masterNpcs = ((g.master_npcs as MasterNpc[] | undefined) ?? legacyNpcs).map(
+          normalizeNpc,
         );
+        const investigationClues = (
+          (g.investigation_clues as MasterClue[] | undefined) ?? legacyClues
+        ).map(normalizeClue);
+        const threats = ((g.threats as MasterThreat[] | undefined) ?? legacyMonsters).map(
+          normalizeThreat,
+        );
+        const settings: SettingsRow = {
+          ...(gs as unknown as SettingsRow),
+          npcs: (g.npcs as NPC[]) ?? [],
+          monsters: (g.monsters as Monster[]) ?? [],
+          clues: (g.clues as Clue[]) ?? [],
+          scenes_detailed: ((g.scenes_detailed as Scene[]) ?? []).map(normalizeScene),
+          initiative_order: (g.initiative_order as InitEntry[]) ?? [],
+          pinned_sheet_ids: (g.pinned_sheet_ids as string[]) ?? [],
+          rank_table: usesFinalRules ? storedRankTable : CANONICAL_RANK_TABLE,
+          skill_branches: usesFinalRules ? storedSkillBranches : CANONICAL_SKILL_BRANCHES,
+          upgrade_costs: usesFinalRules
+            ? ((g.upgrade_costs as UpgradeCosts) ?? DEFAULT_UPGRADE_COSTS)
+            : DEFAULT_UPGRADE_COSTS,
+          condition_options: usesFinalRules
+            ? ((g.condition_options as ConditionOptionsMap) ?? DEFAULT_CONDITION_OPTIONS)
+            : DEFAULT_CONDITION_OPTIONS,
+          skill_groups: usesFinalRules
+            ? ((g.skill_groups as SettingsRow["skill_groups"]) ?? SKILL_GROUPS)
+            : SKILL_GROUPS,
+          skill_training_costs: (usesFinalRules &&
+          (g.skill_training_costs as number[] | undefined)?.length === 3
+            ? [
+                (g.skill_training_costs as number[])[0],
+                (g.skill_training_costs as number[])[1],
+                (g.skill_training_costs as number[])[2],
+              ]
+            : DEFAULT_TRAINING_COSTS) as [number, number, number],
+          campaign_title: String(g.campaign_title ?? "Tessitura do Vazio"),
+          campaign_phase: String(g.campaign_phase ?? ""),
+          master_npcs: masterNpcs,
+          investigation_clues: investigationClues,
+          threats,
+          interludes: ((g.interludes as MasterInterlude[] | undefined) ?? []).map((value) => ({
+            ...createEmptyInterlude(),
+            ...value,
+            id: value.id || genId(),
+            activities: value.activities ?? [],
+          })),
+          folds: ((g.folds as MasterFold[] | undefined) ?? []).map((value) => ({
+            ...createEmptyFold(),
+            ...value,
+            id: value.id || genId(),
+            stitchPoints: value.stitchPoints ?? [],
+          })),
+          rules_version: Math.max(3, rulesVersion),
+        };
+        const rawSheets = (ch as unknown as Omit<SheetSummary, "owner_email">[] | null) ?? [];
+        const ownerIds = [...new Set(rawSheets.map((sheet) => sheet.owner_id).filter(Boolean))];
+        let ownerLabels = new Map<string, string>();
+        if (ownerIds.length) {
+          const { data: profiles } = await supabase
+            .from("profiles")
+            .select("id,email,full_name")
+            .in("id", ownerIds)
+            .abortSignal(controller.signal);
+          if (!active) return;
+          ownerLabels = new Map(
+            (profiles ?? []).map((profile) => [
+              profile.id,
+              profile.full_name?.trim() || profile.email || "Jogador",
+            ]),
+          );
+        }
+        if (!active) return;
+        loadDraft(settings);
+        setSheets(
+          rawSheets.map((sheet) => ({
+            ...sheet,
+            owner_email: ownerLabels.get(sheet.owner_id) ?? "Jogador",
+          })),
+        );
+      } catch (error) {
+        if (active) {
+          setLoadError("Não foi possível carregar o Painel do Mestre.");
+          void reportClientError(error, "network");
+        }
+      } finally {
+        if (active) setLoading(false);
       }
-      setSheets(
-        rawSheets.map((sheet) => ({
-          ...sheet,
-          owner_email: ownerLabels.get(sheet.owner_id) ?? "Jogador",
-        })),
-      );
-      setLoading(false);
     })();
-  }, [reloadKey]);
-
-  const save = async () => {
-    if (!s || saving) return false;
-    setSaving(true);
-    const { id, ...payload } = s;
-    const { error } = await supabase
-      .from("game_settings")
-      .update(payload as never)
-      .eq("id", id);
-    setSaving(false);
-    if (error) {
-      void reportClientError(error, "save");
-      toast.error("Não foi possível salvar o painel do mestre.");
-      return false;
-    } else {
-      setDirty(false);
-      setLastSavedAt(new Date());
-      toast.success("Painel salvo!");
-      return true;
-    }
-  };
-
-  const upd = <K extends keyof SettingsRow>(k: K, v: SettingsRow[K]) =>
-    setS((p) => {
-      setDirty(true);
-      return p ? { ...p, [k]: v } : p;
-    });
+    return () => {
+      active = false;
+      controller.abort();
+    };
+  }, [reloadKey, loadDraft]);
 
   const selectMasterTab = (tab: MasterTab) => {
-    setActiveTab(tab);
-    if (typeof window === "undefined") return;
-    window.sessionStorage.setItem("tadeon-master-active-tab", tab);
-    const url = new URL(window.location.href);
-    if (tab === "dashboard") url.searchParams.delete("tab");
-    else url.searchParams.set("tab", tab);
-    window.history.replaceState(
-      window.history.state,
-      "",
-      `${url.pathname}${url.search}${url.hash}`,
-    );
+    void navigate({
+      to: "/master-panel",
+      search: (previous) => ({ ...previous, tab: tab === "dashboard" ? undefined : tab }),
+      replace: true,
+      resetScroll: false,
+    });
   };
+
+  const blocker = useBlocker({
+    shouldBlockFn: ({ current, next }) => (dirty || saving) && current.pathname !== next.pathname,
+    enableBeforeUnload: dirty || saving,
+    withResolver: true,
+  });
 
   const openMasterTab = (tab: MasterTab) => selectMasterTab(tab);
 
@@ -484,10 +515,15 @@ function MasterPanel() {
     if (!s) return;
     cacheMasterState(s, sheets, user && role ? { userId: user.id, role } : null);
     void (async () => {
-      if (dirty) {
+      if (dirty || saving) {
         toast.info("Salvando a condução antes de abrir a ficha…");
         const saved = await save();
-        if (!saved) return;
+        if (!saved) {
+          toast.info(
+            "O painel continua aberto para você revisar e salvar as alterações pendentes.",
+          );
+          return;
+        }
       }
       await navigate({ to: "/sheet/$id", params: { id: sheetId } });
     })();
@@ -503,8 +539,12 @@ function MasterPanel() {
 
   if (loading) {
     return (
-      <div className="flex justify-center py-16">
-        <Loader2 className="w-8 h-8 animate-spin text-primary" />
+      <div className="mx-auto max-w-7xl p-6" role="status" aria-busy="true">
+        <h1 className="font-cinzel text-2xl">Painel do Mestre</h1>
+        <div className="mt-6 flex items-center gap-3 rounded-xl border p-6">
+          <Loader2 className="h-5 w-5 animate-spin" aria-hidden="true" />
+          Carregando a campanha e os personagens…
+        </div>
       </div>
     );
   }
@@ -527,8 +567,64 @@ function MasterPanel() {
 
   return (
     <div className="tadeon-master-workspace tadeon-route-master mx-auto max-w-7xl p-3 pb-24 md:p-6">
+      <AlertDialog
+        open={blocker.status === "blocked"}
+        onOpenChange={(open) => {
+          if (!open) blocker.reset?.();
+        }}
+      >
+        <AlertDialogContent
+          onOpenAutoFocus={() => {
+            leaveReturnFocusRef.current =
+              document.activeElement instanceof HTMLElement ? document.activeElement : null;
+          }}
+          onCloseAutoFocus={(event) => {
+            event.preventDefault();
+            if (
+              window.location.pathname === "/master-panel" &&
+              leaveReturnFocusRef.current?.isConnected
+            )
+              leaveReturnFocusRef.current.focus({ preventScroll: true });
+          }}
+        >
+          <AlertDialogHeader>
+            <AlertDialogTitle>Salvar a condução antes de sair?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Há alterações no painel. Salve para levá-las à campanha ou continue aqui para revisar.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          {saveError && (
+            <p role="alert" className="text-sm text-destructive">
+              {saveError}
+            </p>
+          )}
+          <AlertDialogFooter className="flex-wrap gap-2">
+            <AlertDialogCancel asChild>
+              <Button variant="outline" disabled={saving}>
+                Continuar no painel
+              </Button>
+            </AlertDialogCancel>
+            <Button variant="ghost" onClick={() => blocker.proceed?.()} disabled={saving}>
+              Sair sem salvar
+            </Button>
+            <Button
+              onClick={() => {
+                void save().then((clean) => {
+                  if (clean) blocker.proceed?.();
+                });
+              }}
+              disabled={saving}
+            >
+              {saving ? "Salvando…" : "Salvar e sair"}
+            </Button>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
       <section className="tadeon-page-hero tadeon-master-commandbar relative mb-5 overflow-hidden rounded-xl border border-border/70 bg-card/70 p-4">
-        <div aria-hidden className="tadeon-master-commandbar__glow" />
+        <div aria-hidden className="tadeon-master-commandbar__glow">
+          <MasterPanelIdentity activeTab={activeTab} />
+        </div>
         <div className="relative flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div className="min-w-0">
             <p className="tadeon-eyebrow">Condução da campanha</p>
@@ -542,24 +638,42 @@ function MasterPanel() {
           </div>
           <div className="flex shrink-0 items-center justify-between gap-2 sm:justify-end">
             <SaveStatus
-              state={saving ? "saving" : dirty ? "pending" : "saved"}
+              state={saving ? "saving" : saveError ? "error" : dirty ? "pending" : "saved"}
               savedAt={lastSavedAt}
-              compact
             />
-            <Button onClick={save} disabled={saving || !dirty} size="sm" className="gap-1.5">
+            <Button
+              onClick={() => void save()}
+              disabled={saving || !dirty}
+              size="sm"
+              className="gap-1.5"
+              aria-label="Salvar painel"
+              variant="outline"
+            >
               {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
-              <span className="hidden sm:inline">Salvar</span>
+              <span>Salvar painel</span>
             </Button>
           </div>
         </div>
       </section>
 
+      {saveError && (
+        <p
+          role="alert"
+          className="mb-4 rounded-xl border border-destructive/40 bg-card p-4 text-sm"
+        >
+          {saveError}
+        </p>
+      )}
       <Tabs
-        value={activeTab === "assets" && !assetsEnabled ? "dashboard" : activeTab}
+        value={activeTab}
         onValueChange={(value) => selectMasterTab(value as MasterTab)}
         className="space-y-4"
       >
-        <MasterPanelNavigation showAssets={assetsEnabled} />
+        <MasterPanelNavigation
+          showAssets={assetsEnabled}
+          activeTab={activeTab}
+          onNavigate={selectMasterTab}
+        />
 
         <TabsContent value="dashboard" className="mt-0">
           <DashboardHub
@@ -662,6 +776,9 @@ interface PanelProps {
 /* ============ Scenes ============ */
 function ScenesPanel({ s, upd }: PanelProps) {
   const [expandedId, setExpandedId] = useState<string | null>(null);
+  const [confirmDelete, setConfirmDelete] = useState(false);
+  const launcherRef = useRef<HTMLButtonElement>(null);
+  const returnFocusRef = useRef<HTMLElement | null>(null);
   const expanded = s.scenes_detailed.find((sc) => sc.id === expandedId);
 
   const add = () => {
@@ -703,7 +820,16 @@ function ScenesPanel({ s, upd }: PanelProps) {
         <p className="text-xs text-muted-foreground">
           Mapa mental de cenas: visão geral e detalhes expansíveis.
         </p>
-        <Button size="sm" onClick={add} className="gap-1.5">
+        <Button
+          ref={launcherRef}
+          size="sm"
+          onClick={(event) => {
+            returnFocusRef.current = event.currentTarget;
+            setConfirmDelete(false);
+            add();
+          }}
+          className="gap-1.5"
+        >
           <Plus className="w-3.5 h-3.5" /> Nova Cena
         </Button>
       </div>
@@ -713,7 +839,7 @@ function ScenesPanel({ s, upd }: PanelProps) {
           Nenhuma cena criada.
         </Card>
       ) : (
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
           {s.scenes_detailed.map((sc) => {
             const statusColor =
               sc.status === "Em curso"
@@ -728,25 +854,31 @@ function ScenesPanel({ s, upd }: PanelProps) {
                 role="button"
                 tabIndex={0}
                 aria-label={`Abrir cena ${sc.title}`}
-                onClick={() => setExpandedId(sc.id)}
+                onClick={(event) => {
+                  returnFocusRef.current = event.currentTarget;
+                  setConfirmDelete(false);
+                  setExpandedId(sc.id);
+                }}
                 onKeyDown={(event) => {
                   if (event.key === "Enter" || event.key === " ") {
                     event.preventDefault();
+                    returnFocusRef.current = event.currentTarget;
+                    setConfirmDelete(false);
                     setExpandedId(sc.id);
                   }
                 }}
               >
                 <div className="flex items-start justify-between gap-1">
-                  <h4 className="font-cinzel text-sm font-bold line-clamp-2">{sc.title}</h4>
+                  <h4 className="font-cinzel text-lg font-semibold line-clamp-2">{sc.title}</h4>
                   <Maximize2 className="w-3.5 h-3.5 text-muted-foreground group-hover:text-primary shrink-0 mt-0.5" />
                 </div>
-                <div className="text-[10px] text-muted-foreground mt-1">{sc.type}</div>
+                <div className="text-xs text-muted-foreground mt-1">{sc.type}</div>
                 <span
-                  className={`inline-block mt-2 text-[10px] px-1.5 py-0.5 rounded-full border ${statusColor}`}
+                  className={`inline-block mt-2 text-xs px-1.5 py-0.5 rounded-full border ${statusColor}`}
                 >
                   {sc.status}
                 </span>
-                <div className="flex gap-2 mt-2 text-[10px] text-muted-foreground">
+                <div className="flex gap-2 mt-2 text-xs text-muted-foreground">
                   {sc.npcIds.length > 0 && <span>👤 {sc.npcIds.length}</span>}
                   {sc.threatIds.length > 0 && <span>💀 {sc.threatIds.length}</span>}
                   {sc.clueIds.length > 0 && <span>🔍 {sc.clueIds.length}</span>}
@@ -759,29 +891,47 @@ function ScenesPanel({ s, upd }: PanelProps) {
 
       {expanded && (
         <Dialog open={!!expandedId} onOpenChange={(o) => !o && setExpandedId(null)}>
-          <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+          <DialogContent
+            className="max-w-3xl max-h-[90vh] overflow-y-auto"
+            onCloseAutoFocus={(event) => {
+              event.preventDefault();
+              (returnFocusRef.current?.isConnected
+                ? returnFocusRef.current
+                : launcherRef.current
+              )?.focus();
+            }}
+          >
             <DialogHeader>
               <DialogTitle className="font-cinzel">{expanded.title}</DialogTitle>
             </DialogHeader>
             <div className="space-y-3">
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
                 <div className="sm:col-span-2">
-                  <Label className="text-xs">Título</Label>
+                  <Label htmlFor="master-scene-title" className="text-sm">
+                    Título
+                  </Label>
                   <Input
+                    id="master-scene-title"
                     value={expanded.title}
                     onChange={(e) => update(expanded.id, { title: e.target.value })}
                   />
                 </div>
                 <div>
-                  <Label className="text-xs">Tipo</Label>
+                  <Label htmlFor="master-scene-type" className="text-sm">
+                    Tipo
+                  </Label>
                   <Input
+                    id="master-scene-type"
                     value={expanded.type}
                     onChange={(e) => update(expanded.id, { type: e.target.value })}
                   />
                 </div>
                 <div className="sm:col-span-3">
-                  <Label className="text-xs">Status</Label>
+                  <Label htmlFor="master-scene-status" className="text-sm">
+                    Status
+                  </Label>
                   <select
+                    id="master-scene-status"
                     value={expanded.status}
                     onChange={(e) =>
                       update(expanded.id, {
@@ -797,8 +947,11 @@ function ScenesPanel({ s, upd }: PanelProps) {
                 </div>
               </div>
               <div>
-                <Label className="text-xs">Texto Narrativo</Label>
+                <Label htmlFor="master-scene-narrative" className="text-sm">
+                  Texto Narrativo
+                </Label>
                 <Textarea
+                  id="master-scene-narrative"
                   rows={4}
                   value={expanded.narrative}
                   onChange={(e) => update(expanded.id, { narrative: e.target.value })}
@@ -806,8 +959,11 @@ function ScenesPanel({ s, upd }: PanelProps) {
                 />
               </div>
               <div>
-                <Label className="text-xs">Descrição / Notas</Label>
+                <Label htmlFor="master-scene-description" className="text-sm">
+                  Descrição / Notas
+                </Label>
                 <Textarea
+                  id="master-scene-description"
                   rows={3}
                   value={expanded.description}
                   onChange={(e) => update(expanded.id, { description: e.target.value })}
@@ -815,24 +971,33 @@ function ScenesPanel({ s, upd }: PanelProps) {
               </div>
               <div className="grid gap-2 sm:grid-cols-3">
                 <div>
-                  <Label className="text-xs">Camada superficial</Label>
+                  <Label htmlFor="master-scene-superficialLayer" className="text-sm">
+                    Camada superficial
+                  </Label>
                   <Textarea
+                    id="master-scene-superficialLayer"
                     rows={3}
                     value={expanded.superficialLayer}
                     onChange={(e) => update(expanded.id, { superficialLayer: e.target.value })}
                   />
                 </div>
                 <div>
-                  <Label className="text-xs">Camada atenta</Label>
+                  <Label htmlFor="master-scene-attentiveLayer" className="text-sm">
+                    Camada atenta
+                  </Label>
                   <Textarea
+                    id="master-scene-attentiveLayer"
                     rows={3}
                     value={expanded.attentiveLayer}
                     onChange={(e) => update(expanded.id, { attentiveLayer: e.target.value })}
                   />
                 </div>
                 <div>
-                  <Label className="text-xs">Camada profunda</Label>
+                  <Label htmlFor="master-scene-deepLayer" className="text-sm">
+                    Camada profunda
+                  </Label>
                   <Textarea
+                    id="master-scene-deepLayer"
                     rows={3}
                     value={expanded.deepLayer}
                     onChange={(e) => update(expanded.id, { deepLayer: e.target.value })}
@@ -840,8 +1005,11 @@ function ScenesPanel({ s, upd }: PanelProps) {
                 </div>
               </div>
               <div>
-                <Label className="text-xs">Próximo passo provável</Label>
+                <Label htmlFor="master-scene-nextStep" className="text-sm">
+                  Próximo passo provável
+                </Label>
                 <Input
+                  id="master-scene-nextStep"
                   value={expanded.nextStep}
                   onChange={(e) => update(expanded.id, { nextStep: e.target.value })}
                 />
@@ -872,11 +1040,36 @@ function ScenesPanel({ s, upd }: PanelProps) {
                 onChange={(ids) => update(expanded.id, { clueIds: ids })}
               />
 
+              {confirmDelete && (
+                <div
+                  role="alert"
+                  className="rounded-xl border border-destructive/40 bg-card p-4 space-y-3"
+                >
+                  <p className="text-sm">
+                    Excluir a cena “{expanded.title}” do rascunho? A mudança só será enviada ao
+                    salvar o painel.
+                  </p>
+                  <div className="flex flex-wrap gap-2">
+                    <Button variant="outline" onClick={() => setConfirmDelete(false)}>
+                      Manter cena
+                    </Button>
+                    <Button
+                      variant="destructive"
+                      onClick={() => {
+                        remove(expanded.id);
+                        setConfirmDelete(false);
+                      }}
+                    >
+                      Confirmar exclusão da cena
+                    </Button>
+                  </div>
+                </div>
+              )}
               <div className="flex justify-between pt-3 border-t border-border">
                 <Button
                   variant="destructive"
                   size="sm"
-                  onClick={() => remove(expanded.id)}
+                  onClick={() => setConfirmDelete(true)}
                   className="gap-1.5"
                 >
                   <Trash className="w-3.5 h-3.5" /> Excluir
@@ -1559,67 +1752,107 @@ function NotesPanel({ s, upd }: PanelProps) {
       </Card>
 
       <div className="tadeon-master-notes__grid">
-      <Card className="tadeon-master-note-card p-4" style={{ "--note-index": 0 } as React.CSSProperties}>
-        <div className="tadeon-master-note-card__heading">
-          <span><ListChecks /></span>
-          <div>
-            <p className="tadeon-eyebrow">Ordem e reação</p>
-            <h3 className="font-cinzel font-bold">Notas de iniciativa</h3>
+        <Card
+          className="tadeon-master-note-card p-4"
+          style={{ "--note-index": 0 } as React.CSSProperties}
+        >
+          <div className="tadeon-master-note-card__heading">
+            <span>
+              <ListChecks />
+            </span>
+            <div>
+              <p className="tadeon-eyebrow">Ordem e reação</p>
+              <h3 className="font-cinzel font-bold">Notas de iniciativa</h3>
+            </div>
+            <Button
+              type="button"
+              size="icon"
+              variant="ghost"
+              onClick={() => void copyNote("Notas de iniciativa", s.initiative_notes)}
+              aria-label="Copiar notas de iniciativa"
+            >
+              <ClipboardCopy />
+            </Button>
           </div>
-          <Button type="button" size="icon" variant="ghost" onClick={() => void copyNote("Notas de iniciativa", s.initiative_notes)} aria-label="Copiar notas de iniciativa">
-            <ClipboardCopy />
-          </Button>
-        </div>
-        <Textarea
-          rows={6}
-          value={s.initiative_notes}
-          onChange={(e) => upd("initiative_notes", e.target.value)}
-          placeholder="Reações preparadas, mudanças de ordem, efeitos por rodada…"
-        />
-      </Card>
-      <Card className="tadeon-master-note-card p-4" style={{ "--note-index": 1 } as React.CSSProperties}>
-        <div className="tadeon-master-note-card__heading">
-          <span><StickyNote /></span>
-          <div>
-            <p className="tadeon-eyebrow">Antes de encerrar</p>
-            <h3 className="font-cinzel font-bold">Lembretes</h3>
+          <Textarea
+            rows={6}
+            value={s.initiative_notes}
+            onChange={(e) => upd("initiative_notes", e.target.value)}
+            placeholder="Reações preparadas, mudanças de ordem, efeitos por rodada…"
+          />
+        </Card>
+        <Card
+          className="tadeon-master-note-card p-4"
+          style={{ "--note-index": 1 } as React.CSSProperties}
+        >
+          <div className="tadeon-master-note-card__heading">
+            <span>
+              <StickyNote />
+            </span>
+            <div>
+              <p className="tadeon-eyebrow">Antes de encerrar</p>
+              <h3 className="font-cinzel font-bold">Lembretes</h3>
+            </div>
+            <Button
+              type="button"
+              size="icon"
+              variant="ghost"
+              onClick={() => void copyNote("Lembretes", s.reminders)}
+              aria-label="Copiar lembretes"
+            >
+              <ClipboardCopy />
+            </Button>
           </div>
-          <Button type="button" size="icon" variant="ghost" onClick={() => void copyNote("Lembretes", s.reminders)} aria-label="Copiar lembretes">
-            <ClipboardCopy />
-          </Button>
-        </div>
-        <Textarea rows={6} value={s.reminders} onChange={(e) => upd("reminders", e.target.value)} placeholder="Ganchos pendentes, retornos, recompensas, consequências…" />
-      </Card>
-      <Card className="tadeon-master-note-card tadeon-master-note-card--reference p-4" style={{ "--note-index": 2 } as React.CSSProperties}>
-        <div className="tadeon-master-note-card__heading">
-          <span><BookKey /></span>
-          <div>
-            <p className="tadeon-eyebrow">Consulta durante a sessão</p>
-            <h3 className="font-cinzel font-bold">Referências rápidas</h3>
+          <Textarea
+            rows={6}
+            value={s.reminders}
+            onChange={(e) => upd("reminders", e.target.value)}
+            placeholder="Ganchos pendentes, retornos, recompensas, consequências…"
+          />
+        </Card>
+        <Card
+          className="tadeon-master-note-card tadeon-master-note-card--reference p-4"
+          style={{ "--note-index": 2 } as React.CSSProperties}
+        >
+          <div className="tadeon-master-note-card__heading">
+            <span>
+              <BookKey />
+            </span>
+            <div>
+              <p className="tadeon-eyebrow">Consulta durante a sessão</p>
+              <h3 className="font-cinzel font-bold">Referências rápidas</h3>
+            </div>
+            <Button
+              type="button"
+              size="icon"
+              variant="ghost"
+              onClick={() => void copyNote("Referências rápidas", s.quick_refs)}
+              aria-label="Copiar referências rápidas"
+            >
+              <ClipboardCopy />
+            </Button>
           </div>
-          <Button type="button" size="icon" variant="ghost" onClick={() => void copyNote("Referências rápidas", s.quick_refs)} aria-label="Copiar referências rápidas">
-            <ClipboardCopy />
-          </Button>
-        </div>
-        <div className="tadeon-master-reference-layout">
-          <div>
-        <Textarea
-          rows={6}
-          value={s.quick_refs}
-          onChange={(e) => upd("quick_refs", e.target.value)}
-          placeholder="Cole regras, links (https://...), atalhos. Links aparecem clicáveis no preview abaixo."
-        />
+          <div className="tadeon-master-reference-layout">
+            <div>
+              <Textarea
+                rows={6}
+                value={s.quick_refs}
+                onChange={(e) => upd("quick_refs", e.target.value)}
+                placeholder="Cole regras, links (https://...), atalhos. Links aparecem clicáveis no preview abaixo."
+              />
+            </div>
+            <div className="tadeon-master-reference-preview text-sm leading-relaxed whitespace-pre-wrap break-words">
+              <p className="tadeon-eyebrow mb-2">Leitura de mesa</p>
+              {s.quick_refs?.trim() ? (
+                <LinkifiedText text={s.quick_refs} />
+              ) : (
+                <p className="text-xs text-muted-foreground">
+                  A prévia limpa e os links clicáveis aparecerão aqui.
+                </p>
+              )}
+            </div>
           </div>
-          <div className="tadeon-master-reference-preview text-sm leading-relaxed whitespace-pre-wrap break-words">
-            <p className="tadeon-eyebrow mb-2">Leitura de mesa</p>
-            {s.quick_refs?.trim() ? (
-              <LinkifiedText text={s.quick_refs} />
-            ) : (
-              <p className="text-xs text-muted-foreground">A prévia limpa e os links clicáveis aparecerão aqui.</p>
-            )}
-          </div>
-        </div>
-      </Card>
+        </Card>
       </div>
     </div>
   );
@@ -1728,9 +1961,23 @@ function DataPanel({ s, upd }: PanelProps) {
           </p>
         </div>
         <div className="tadeon-master-data__summary">
-          <span><Database /><strong>{s.rank_table.length}</strong><small>Ranks</small></span>
-          <span><Sparkles /><strong>{s.skill_branches.reduce((sum, branch) => sum + branch.nodes.length, 0)}</strong><small>Habilidades</small></span>
-          <span><ListChecks /><strong>{s.skill_groups.reduce((sum, group) => sum + group.skills.length, 0)}</strong><small>Perícias</small></span>
+          <span>
+            <Database />
+            <strong>{s.rank_table.length}</strong>
+            <small>Ranks</small>
+          </span>
+          <span>
+            <Sparkles />
+            <strong>
+              {s.skill_branches.reduce((sum, branch) => sum + branch.nodes.length, 0)}
+            </strong>
+            <small>Habilidades</small>
+          </span>
+          <span>
+            <ListChecks />
+            <strong>{s.skill_groups.reduce((sum, group) => sum + group.skills.length, 0)}</strong>
+            <small>Perícias</small>
+          </span>
         </div>
         <Button size="sm" variant="outline" onClick={restoreCanonicalRules} className="shrink-0">
           Restaurar regras do livro

@@ -346,24 +346,6 @@ html[data-tadeon-tabletop-selection-active="true"] [data-tadeon-selection-guarde
 /* --------------------------------------------------------------------------
    MASTER NAVIGATION: sticky inside the route, below the app header on mobile.
    -------------------------------------------------------------------------- */
-.tadeon-master-navigation {
-  position: sticky !important;
-  z-index: 38 !important;
-  top: .55rem;
-  padding-top: .35rem;
-  padding-bottom: .45rem !important;
-  background: linear-gradient(180deg, rgb(8 10 14 / 97%) 76%, transparent) !important;
-  backdrop-filter: blur(18px) saturate(120%);
-  -webkit-backdrop-filter: blur(18px) saturate(120%);
-}
-
-@media (max-width: 767px) {
-  .tadeon-master-navigation {
-    top: calc(var(--tadeon-mobile-header-height, 4rem) + .25rem) !important;
-    margin-inline: -.55rem !important;
-    padding-inline: .55rem !important;
-  }
-}
 
 /* --------------------------------------------------------------------------
    PAGE LANGUAGE: extend the Nexus header grammar to Master / Offline /
@@ -510,8 +492,7 @@ html[data-tadeon-tabletop-selection-active="true"] [data-tadeon-selection-guarde
 @media (prefers-reduced-motion: reduce) {
   .tadeon-tabletop-progressive-dock,
   .tadeon-tabletop-toolbar,
-  .tadeon-sheet-commandbar,
-  .tadeon-master-navigation {
+  .tadeon-sheet-commandbar {
     scroll-behavior: auto !important;
   }
 }
@@ -765,16 +746,6 @@ html[data-tadeon-tabletop-selection-active="true"] [data-tadeon-selection-guarde
 }
 
 /* Master navigation remains available while the conductor scrolls the page. */
-.tadeon-shell[data-section="Painel do Mestre"] .tadeon-master-navigation {
-  position: sticky !important;
-  z-index: 28 !important;
-  top: calc(4.65rem + .55rem) !important;
-  margin-top: .2rem !important;
-  background: color-mix(in srgb, var(--background) 92%, transparent) !important;
-  box-shadow: 0 18px 44px -34px rgb(0 0 0 / 96%) !important;
-  backdrop-filter: blur(22px) saturate(128%) !important;
-  -webkit-backdrop-filter: blur(22px) saturate(128%) !important;
-}
 
 /* --------------------------------------------------------------------------
    Sheet header: every action stays on one line on phones. The rail may scroll
@@ -986,9 +957,7 @@ html[data-tadeon-sheet-mode="game"] .tadeon-sheet-game-button svg {
   }
 
   .tadeon-route-stage .tadeon-page:not(.tadeon-sheet-page) :is(
-    [role="tablist"],
-    .tadeon-master-navigation
-  ) {
+    [role="tablist"]) {
     border-color: rgb(var(--mobile-panel-rgb) / 16%) !important;
     background:
       linear-gradient(135deg, rgb(var(--mobile-panel-rgb) / 7%), transparent 55%),
@@ -1071,11 +1040,6 @@ html[data-tadeon-sheet-mode="game"] .tadeon-sheet-game-button svg {
     top: -8rem;
     right: -6rem;
     width: 14rem;
-  }
-
-  .tadeon-shell[data-section="Painel do Mestre"] .tadeon-master-navigation {
-    top: calc(var(--tadeon-mobile-header-height) + .45rem) !important;
-    z-index: 29 !important;
   }
 }
 
@@ -1377,27 +1341,6 @@ html[data-tadeon-sheet-mode="game"] .tadeon-sheet-game-button svg {
   overflow: visible !important;
 }
 
-.tadeon-master-navigation {
-  position: sticky !important;
-  z-index: 45 !important;
-  top: calc(4.65rem + .45rem) !important;
-  overflow: visible !important;
-  padding-top: .35rem !important;
-  padding-bottom: .35rem !important;
-  background: linear-gradient(180deg, rgb(8 10 14 / 96%), rgb(8 10 14 / 86%)) !important;
-  box-shadow: 0 18px 38px -30px rgb(0 0 0 / 100%) !important;
-  backdrop-filter: blur(22px) saturate(128%) !important;
-  -webkit-backdrop-filter: blur(22px) saturate(128%) !important;
-}
-
-.tadeon-master-navigation__scroller {
-  width: 100% !important;
-  max-width: 100% !important;
-  overflow-x: auto !important;
-  overflow-y: hidden !important;
-  scrollbar-width: thin;
-}
-
 /* --------------------------------------------------------------------------
    Dying/collapsing are actual horizontal instruments. The track spans exactly
    from the first dot edge to the last dot edge and the active amount overlays it.
@@ -1580,19 +1523,6 @@ html[data-tadeon-sheet-mode="game"] .tadeon-sheet-game-button svg {
   .tadeon-page-hero[data-tadeon-page-hero="offline"] > div:not(.tadeon-page-hero-mark-host) > .min-w-0,
   .tadeon-page-hero[data-tadeon-page-hero="master"] .tadeon-master-commandbar__glow + div > .min-w-0 {
     padding-left: 3.65rem !important;
-  }
-
-  .tadeon-master-navigation {
-    top: calc(var(--tadeon-mobile-header-height, 4rem) + max(.2rem, env(safe-area-inset-top))) !important;
-    margin-top: .2rem !important;
-    padding-top: .25rem !important;
-    padding-bottom: .3rem !important;
-  }
-
-  .tadeon-master-navigation__scroller {
-    margin-inline: -.1rem;
-    padding-inline: .1rem;
-    scrollbar-width: none;
   }
 
   .tadeon-sheet-commandbar__actions > button:first-child {
@@ -1906,9 +1836,17 @@ html[data-tadeon-sheet-mode="game"] .tadeon-sheet-game-button svg {
 
 .tadeon-route-users > .tadeon-page-hero h1,
 .tadeon-route-tools > .tadeon-page-hero h1,
-.tadeon-route-offline > .tadeon-page-hero h1,
-.tadeon-master-commandbar h1 {
+.tadeon-route-offline > .tadeon-page-hero h1 {
   color: color-mix(in srgb, var(--foreground) 92%, rgb(var(--utility-secondary-rgb))) !important;
+  font-size: clamp(2rem, 4vw, 3.55rem) !important;
+  font-weight: 610 !important;
+  letter-spacing: -.035em !important;
+  line-height: 1 !important;
+  text-wrap: balance;
+  text-shadow: 0 8px 34px rgb(var(--utility-hero-rgb) / 16%) !important;
+}
+
+.tadeon-master-commandbar h1 {
   font-size: clamp(2rem, 4vw, 3.55rem) !important;
   font-weight: 610 !important;
   letter-spacing: -.035em !important;
@@ -1953,78 +1891,6 @@ html[data-tadeon-sheet-mode="game"] .tadeon-sheet-game-button svg {
 }
 
 /* Keep the menu in flow until its slot reaches the shell header. */
-.tadeon-master-navigation-slot {
-  display: block !important;
-  width: 100% !important;
-  min-height: 5.35rem !important;
-  margin: 0 !important;
-  padding: 0 !important;
-}
-
-.tadeon-shell[data-section="Painel do Mestre"] .tadeon-master-navigation {
-  position: relative !important;
-  z-index: 20 !important;
-  top: auto !important;
-  right: auto !important;
-  left: auto !important;
-  width: 100% !important;
-  max-width: none !important;
-  margin: 0 !important;
-  padding: .38rem clamp(.75rem, 1.8vw, 1.5rem) .44rem !important;
-  overflow: visible !important;
-  border-top: 1px solid rgb(255 255 255 / 2%) !important;
-  border-bottom: 1px solid color-mix(in srgb, var(--section-accent) 14%, var(--border)) !important;
-  background:
-    linear-gradient(90deg, rgb(var(--section-accent-rgb) / 8%), transparent 36%),
-    rgb(8 10 14 / 96%) !important;
-  box-shadow: 0 18px 44px -34px rgb(0 0 0 / 98%) !important;
-  backdrop-filter: blur(22px) saturate(128%) !important;
-  -webkit-backdrop-filter: blur(22px) saturate(128%) !important;
-}
-
-.tadeon-shell[data-section="Painel do Mestre"] .tadeon-master-navigation[data-fixed="true"] {
-  position: fixed !important;
-  z-index: 46 !important;
-  top: var(--tadeon-master-fixed-top, 4.65rem) !important;
-  right: 0 !important;
-  left: 16rem !important;
-  width: auto !important;
-}
-
-.tadeon-shell[data-section="Painel do Mestre"]:has(#tadeon-desktop-sidebar .tadeon-nav-item[data-mini="true"]) .tadeon-master-navigation[data-fixed="true"] {
-  left: 5.5rem !important;
-}
-
-.tadeon-master-navigation__scroller {
-  width: min(100%, 94rem) !important;
-  max-width: 100% !important;
-  margin-inline: auto !important;
-  overflow-x: auto !important;
-  overflow-y: visible !important;
-  padding: .08rem .05rem .14rem !important;
-  overscroll-behavior-x: contain;
-  scrollbar-width: thin;
-}
-
-.tadeon-master-navigation__scroller > [role="tablist"] {
-  display: flex !important;
-  width: max-content !important;
-  min-width: max-content !important;
-  max-width: none !important;
-  height: auto !important;
-  flex-wrap: nowrap !important;
-  align-items: stretch !important;
-  overflow: visible !important;
-  border: 1px solid color-mix(in srgb, var(--section-accent) 11%, var(--border)) !important;
-  background:
-    linear-gradient(135deg, rgb(var(--section-accent-rgb) / 5%), transparent 48%),
-    rgb(12 15 20 / 93%) !important;
-  box-shadow: inset 0 1px rgb(255 255 255 / 3%) !important;
-}
-
-.tadeon-master-navigation__group {
-  flex: 0 0 auto !important;
-}
 
 /* Restore the richer mobile spatial field and utility surfaces. */
 @media (max-width: 767px) {
@@ -2088,25 +1954,6 @@ html[data-tadeon-sheet-mode="game"] .tadeon-sheet-game-button svg {
   .tadeon-route-offline > .tadeon-page-hero h1,
   .tadeon-master-commandbar h1 {
     font-size: clamp(1.65rem, 7.6vw, 2.35rem) !important;
-  }
-
-  .tadeon-master-navigation-slot {
-    min-height: 4.9rem !important;
-  }
-
-  .tadeon-shell[data-section="Painel do Mestre"] .tadeon-master-navigation[data-fixed="true"],
-  .tadeon-shell[data-section="Painel do Mestre"]:has(#tadeon-desktop-sidebar .tadeon-nav-item[data-mini="true"]) .tadeon-master-navigation[data-fixed="true"] {
-    right: 0 !important;
-    left: 0 !important;
-    padding: .3rem .45rem .36rem !important;
-  }
-
-  .tadeon-master-navigation__scroller {
-    scrollbar-width: none;
-  }
-
-  .tadeon-master-navigation__scroller::-webkit-scrollbar {
-    display: none;
   }
 
   .tadeon-route-users [data-slot="card"],
@@ -2184,18 +2031,7 @@ html[data-tadeon-sheet-mode="game"] .tadeon-sheet-game-button svg {
   }
 }
 
-@media (min-width: 768px) and (max-width: 1180px) {
-  .tadeon-shell[data-section="Painel do Mestre"] .tadeon-master-navigation[data-fixed="true"] {
-    left: 15.5rem !important;
-  }
-
-  .tadeon-shell[data-section="Painel do Mestre"]:has(#tadeon-desktop-sidebar .tadeon-nav-item[data-mini="true"]) .tadeon-master-navigation[data-fixed="true"] {
-    left: 5.5rem !important;
-  }
-}
-
 @media (prefers-reduced-motion: reduce) {
-  .tadeon-master-navigation [data-slot="tabs-trigger"]:not([data-material-surface="tab"]),
   .tadeon-route-tools [data-slot="tabs-trigger"]:not([data-material-surface="tab"]),
   .tadeon-route-offline [data-slot="tabs-trigger"]:not([data-material-surface="tab"]) {
     transition: none !important;
@@ -2510,10 +2346,18 @@ html[data-tadeon-sheet-mode="game"] .tadeon-sheet-game-button svg {
 
 .tadeon-route-users > .tadeon-page-hero h1,
 .tadeon-route-tools > .tadeon-page-hero h1,
-.tadeon-route-offline > .tadeon-page-hero h1,
-.tadeon-master-commandbar h1 {
+.tadeon-route-offline > .tadeon-page-hero h1 {
   margin-top: .18rem !important;
   color: var(--foreground) !important;
+  font-size: clamp(1.55rem, 2.6vw, 2.2rem) !important;
+  font-weight: 620 !important;
+  letter-spacing: -.024em !important;
+  line-height: 1.06 !important;
+  text-shadow: 0 8px 28px rgb(var(--archive-hero-rgb) / 13%) !important;
+}
+
+.tadeon-master-commandbar h1 {
+  margin-top: .18rem !important;
   font-size: clamp(1.55rem, 2.6vw, 2.2rem) !important;
   font-weight: 620 !important;
   letter-spacing: -.024em !important;
@@ -2995,18 +2839,6 @@ html[data-tadeon-sheet-mode="game"] .tadeon-sheet-game-button svg {
 }
 
 /* The archive icon in the app navigation now matches the archive head. */
-.tadeon-nav-item[href="/nexus-tools"] .tadeon-nav-item__icon > svg {
-  display: none !important;
-}
-
-.tadeon-nav-item[href="/nexus-tools"] .tadeon-nav-item__icon::before {
-  display: block;
-  width: 1rem;
-  height: 1rem;
-  background: center / contain no-repeat url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23d9d7a4' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M21 8a2 2 0 0 0-2-2h-2V4a2 2 0 0 0-2-2H9a2 2 0 0 0-2 2v2H5a2 2 0 0 0-2 2v11a3 3 0 0 0 3 3h12a3 3 0 0 0 3-3Z'/%3E%3Cpath d='M9 6h6M8 12h8M8 16h5'/%3E%3C/svg%3E");
-  opacity: .78;
-  content: "";
-}
 
 /* --------------------------------------------------------------------------
    Painel do Mestre: persistent director sigil + the exact active-tab icon.
@@ -3172,7 +3004,6 @@ html[data-tadeon-sheet-mode="game"] .tadeon-sheet-game-button svg {
 
 .tadeon-master-commandbar h1 {
   gap: 0 !important;
-  color: color-mix(in srgb, var(--foreground) 92%, rgb(217 215 164)) !important;
   font-size: clamp(1.6rem, 2.6vw, 2.35rem) !important;
   letter-spacing: -.025em !important;
   line-height: 1 !important;
@@ -3190,39 +3021,6 @@ html[data-tadeon-sheet-mode="game"] .tadeon-sheet-game-button svg {
 }
 
 /* Main navigation uses the same authored master sigil as the head. */
-.tadeon-nav-item[href="/master-panel"] .tadeon-nav-item__icon > svg,
-.tadeon-mobile-dock__item[href="/master-panel"] > svg {
-  display: none !important;
-}
-
-.tadeon-nav-item[href="/master-panel"] .tadeon-nav-item__icon::before,
-.tadeon-mobile-dock__item[href="/master-panel"]::before {
-  display: block;
-  width: 1.12rem;
-  height: 1.12rem;
-  flex: 0 0 auto;
-  background: center / contain no-repeat url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23d9d7a4' stroke-width='1.55' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='8.25' stroke-dasharray='9 3.4 2.2 4.3' opacity='.46'/%3E%3Cpath d='M12 2.8v4.1M12 17.1v4.1M2.8 12h4.1M17.1 12h4.1' opacity='.62'/%3E%3Cpath d='m8.55 12 3.45-3.45L15.45 12 12 15.45 8.55 12Z'/%3E%3Cpath d='M6.05 6.35 9.6 9.6M17.95 6.35 14.4 9.6M6.05 17.65l3.55-3.25M17.95 17.65l-3.55-3.25' opacity='.72'/%3E%3Ccircle cx='6.05' cy='6.35' r='.85'/%3E%3Ccircle cx='17.95' cy='6.35' r='.85'/%3E%3Ccircle cx='6.05' cy='17.65' r='.85'/%3E%3Ccircle cx='17.95' cy='17.65' r='.85'/%3E%3Ccircle cx='12' cy='12' r='1.15' fill='%23d9d7a4' stroke='none'/%3E%3C/svg%3E");
-  opacity: .78;
-  content: "";
-}
-
-.tadeon-nav-item[href="/master-panel"][aria-current="page"] .tadeon-nav-item__icon::before,
-.tadeon-mobile-dock__item[href="/master-panel"][aria-current="page"]::before {
-  opacity: 1;
-}
-
-.tadeon-master-navigation [data-master-tab] svg {
-  transform-origin: center;
-  transition:
-    color 180ms var(--ease-out),
-    filter 180ms var(--ease-out),
-    transform 220ms var(--ease-spring, var(--ease-out));
-}
-
-.tadeon-master-navigation [data-master-tab][data-state="active"] svg {
-  filter: drop-shadow(0 0 8px rgb(116 36 45 / 34%));
-  transform: translateY(-1px) scale(1.08);
-}
 
 /* --------------------------------------------------------------------------
    Mobile popup containment. Centered translateY(-50%) is intentionally removed
@@ -3608,51 +3406,9 @@ html[data-tadeon-sheet-mode="game"] .tadeon-sheet-game-button svg {
    same color and dimensions as every other navigation SVG.
    The old #158 data-URI strokes were permanently gold, causing the mismatch.
    -------------------------------------------------------------------------- */
-.tadeon-nav-item[href="/master-panel"] .tadeon-nav-item__icon > svg,
-.tadeon-nav-item[href="/nexus-tools"] .tadeon-nav-item__icon > svg,
-.tadeon-mobile-dock__item[href="/master-panel"] > svg {
-  display: none !important;
-}
-
-.tadeon-nav-item[href="/master-panel"] .tadeon-nav-item__icon::before,
-.tadeon-nav-item[href="/nexus-tools"] .tadeon-nav-item__icon::before {
-  display: block !important;
-  width: 1rem !important;
-  height: 1rem !important;
-  flex: 0 0 auto !important;
-  background-color: currentColor !important;
-  background-image: none !important;
-  opacity: 1 !important;
-  content: "" !important;
-}
-
-.tadeon-nav-item[href="/master-panel"][aria-current="page"] .tadeon-nav-item__icon::before,
-.tadeon-nav-item[href="/nexus-tools"][aria-current="page"] .tadeon-nav-item__icon::before {
-  background-color: var(--section-accent) !important;
-}
 
 /* Bottom dock: the Master symbol now occupies the same 20px SVG slot and uses
    the same active/inactive color + motion contract as Home/Nexus/Mesa/More. */
-.tadeon-mobile-dock__item[href="/master-panel"]::before {
-  display: block !important;
-  width: 1.25rem !important;
-  height: 1.25rem !important;
-  flex: 0 0 auto !important;
-  margin: 0 !important;
-  background-color: currentColor !important;
-  background-image: none !important;
-  -webkit-mask: center / contain no-repeat url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.55' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='8.25' stroke-dasharray='9 3.4 2.2 4.3' opacity='.72'/%3E%3Cpath d='M12 2.8v4.1M12 17.1v4.1M2.8 12h4.1M17.1 12h4.1'/%3E%3Cpath d='m8.55 12 3.45-3.45L15.45 12 12 15.45 8.55 12Z'/%3E%3Cpath d='M6.05 6.35 9.6 9.6M17.95 6.35 14.4 9.6M6.05 17.65l3.55-3.25M17.95 17.65l-3.55-3.25'/%3E%3Ccircle cx='6.05' cy='6.35' r='.85'/%3E%3Ccircle cx='17.95' cy='6.35' r='.85'/%3E%3Ccircle cx='6.05' cy='17.65' r='.85'/%3E%3Ccircle cx='17.95' cy='17.65' r='.85'/%3E%3Ccircle cx='12' cy='12' r='1.15' fill='black' stroke='none'/%3E%3C/svg%3E") !important;
-  mask: center / contain no-repeat url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.55' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='8.25' stroke-dasharray='9 3.4 2.2 4.3' opacity='.72'/%3E%3Cpath d='M12 2.8v4.1M12 17.1v4.1M2.8 12h4.1M17.1 12h4.1'/%3E%3Cpath d='m8.55 12 3.45-3.45L15.45 12 12 15.45 8.55 12Z'/%3E%3Cpath d='M6.05 6.35 9.6 9.6M17.95 6.35 14.4 9.6M6.05 17.65l3.55-3.25M17.95 17.65l-3.55-3.25'/%3E%3Ccircle cx='6.05' cy='6.35' r='.85'/%3E%3Ccircle cx='17.95' cy='6.35' r='.85'/%3E%3Ccircle cx='6.05' cy='17.65' r='.85'/%3E%3Ccircle cx='17.95' cy='17.65' r='.85'/%3E%3Ccircle cx='12' cy='12' r='1.15' fill='black' stroke='none'/%3E%3C/svg%3E") !important;
-  opacity: 1 !important;
-  content: "" !important;
-}
-
-.tadeon-mobile-dock__item[href="/master-panel"][aria-current="page"]::before {
-  background-color: var(--section-accent) !important;
-}
-
-@media (prefers-reduced-motion: reduce) {
-}
 
 /* end-source: src/styles/focus-header-nav-parity-159.css */
 /* source: src/styles/navigation-real-svg-parity-160.css */
@@ -3680,55 +3436,6 @@ html[data-tadeon-sheet-mode="game"] .tadeon-sheet-game-button svg {
   --nav-accent-rgb: 122 129 135;
 }
 
-.tadeon-nav-item[href="/master-panel"] .tadeon-nav-item__icon::before,
-.tadeon-nav-item[href="/nexus-tools"] .tadeon-nav-item__icon::before,
-.tadeon-mobile-dock__item[href="/master-panel"]::before {
-  display: none !important;
-  width: 0 !important;
-  height: 0 !important;
-  background: none !important;
-  -webkit-mask: none !important;
-  mask: none !important;
-  opacity: 0 !important;
-  content: none !important;
-}
-
-.tadeon-nav-item[href="/master-panel"] .tadeon-nav-item__icon > svg,
-.tadeon-nav-item[href="/nexus-tools"] .tadeon-nav-item__icon > svg {
-  display: block !important;
-  width: 1rem !important;
-  height: 1rem !important;
-  flex: 0 0 auto !important;
-  color: currentColor !important;
-  opacity: 1 !important;
-}
-
-.tadeon-nav-item[href="/master-panel"][aria-current="page"] .tadeon-nav-item__icon > svg,
-.tadeon-nav-item[href="/nexus-tools"][aria-current="page"] .tadeon-nav-item__icon > svg {
-  display: block !important;
-  color: var(--section-accent) !important;
-  opacity: 1 !important;
-}
-
-.tadeon-mobile-dock__item[href="/master-panel"] > svg {
-  display: block !important;
-  width: 1.25rem !important;
-  height: 1.25rem !important;
-  flex: 0 0 auto !important;
-  margin: 0 !important;
-  color: currentColor !important;
-  opacity: 1 !important;
-}
-
-.tadeon-mobile-dock__item[href="/master-panel"][aria-current="page"] > svg {
-  display: block !important;
-  color: var(--section-accent) !important;
-  opacity: 1 !important;
-}
-
-@media (prefers-reduced-motion: reduce) {
-}
-
 /* end-source: src/styles/navigation-real-svg-parity-160.css */
 /* source: src/styles/sheet-popup-graph-polish-161.css */
 /* #161: stable overlays, authored navigation marks, sheet refinement and graph surface polish. */
@@ -3739,81 +3446,9 @@ html[data-tadeon-sheet-mode="game"] .tadeon-sheet-game-button svg {
    This preserves the exact sizing/state contract of every other navigation
    item without returning to the #158/#159 layout replacement.
    -------------------------------------------------------------------------- */
-.tadeon-nav-item[href="/master-panel"] .tadeon-nav-item__icon,
-.tadeon-nav-item[href="/nexus-tools"] .tadeon-nav-item__icon {
-  position: relative;
-  display: inline-grid;
-  width: 1rem;
-  height: 1rem;
-  flex: 0 0 1rem;
-  place-items: center;
-  color: inherit;
-}
-
-.tadeon-nav-item[href="/master-panel"] .tadeon-nav-item__icon > svg,
-.tadeon-nav-item[href="/nexus-tools"] .tadeon-nav-item__icon > svg {
-  display: block !important;
-  width: 1rem !important;
-  height: 1rem !important;
-  opacity: 0 !important;
-}
-
-.tadeon-nav-item[href="/master-panel"] .tadeon-nav-item__icon::before,
-.tadeon-nav-item[href="/nexus-tools"] .tadeon-nav-item__icon::before {
-  position: absolute;
-  inset: 0;
-  display: block !important;
-  width: auto !important;
-  height: auto !important;
-  background: currentColor !important;
-  opacity: .92 !important;
-  content: "" !important;
-}
-
-.tadeon-nav-item[href="/master-panel"] .tadeon-nav-item__icon::before {
-  -webkit-mask: center / contain no-repeat url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.55' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='8.25' stroke-dasharray='9 3.4 2.2 4.3' opacity='.72'/%3E%3Cpath d='M12 2.8v4.1M12 17.1v4.1M2.8 12h4.1M17.1 12h4.1'/%3E%3Cpath d='m8.55 12 3.45-3.45L15.45 12 12 15.45 8.55 12Z'/%3E%3Cpath d='M6.05 6.35 9.6 9.6M17.95 6.35 14.4 9.6M6.05 17.65l3.55-3.25M17.95 17.65l-3.55-3.25'/%3E%3Ccircle cx='6.05' cy='6.35' r='.85'/%3E%3Ccircle cx='17.95' cy='6.35' r='.85'/%3E%3Ccircle cx='6.05' cy='17.65' r='.85'/%3E%3Ccircle cx='17.95' cy='17.65' r='.85'/%3E%3Ccircle cx='12' cy='12' r='1.15' fill='black' stroke='none'/%3E%3C/svg%3E");
-  mask: center / contain no-repeat url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.55' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='8.25' stroke-dasharray='9 3.4 2.2 4.3' opacity='.72'/%3E%3Cpath d='M12 2.8v4.1M12 17.1v4.1M2.8 12h4.1M17.1 12h4.1'/%3E%3Cpath d='m8.55 12 3.45-3.45L15.45 12 12 15.45 8.55 12Z'/%3E%3Cpath d='M6.05 6.35 9.6 9.6M17.95 6.35 14.4 9.6M6.05 17.65l3.55-3.25M17.95 17.65l-3.55-3.25'/%3E%3Ccircle cx='6.05' cy='6.35' r='.85'/%3E%3Ccircle cx='17.95' cy='6.35' r='.85'/%3E%3Ccircle cx='6.05' cy='17.65' r='.85'/%3E%3Ccircle cx='17.95' cy='17.65' r='.85'/%3E%3Ccircle cx='12' cy='12' r='1.15' fill='black' stroke='none'/%3E%3C/svg%3E");
-}
-
-.tadeon-nav-item[href="/nexus-tools"] .tadeon-nav-item__icon::before {
-  -webkit-mask: center / contain no-repeat url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M21 8a2 2 0 0 0-2-2h-2V4a2 2 0 0 0-2-2H9a2 2 0 0 0-2 2v2H5a2 2 0 0 0-2 2v11a3 3 0 0 0 3 3h12a3 3 0 0 0 3-3Z'/%3E%3Cpath d='M9 6h6M8 12h8M8 16h5'/%3E%3C/svg%3E");
-  mask: center / contain no-repeat url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M21 8a2 2 0 0 0-2-2h-2V4a2 2 0 0 0-2-2H9a2 2 0 0 0-2 2v2H5a2 2 0 0 0-2 2v11a3 3 0 0 0 3 3h12a3 3 0 0 0 3-3Z'/%3E%3Cpath d='M9 6h6M8 12h8M8 16h5'/%3E%3C/svg%3E");
-}
-
-.tadeon-nav-item:is([href="/master-panel"], [href="/nexus-tools"])[aria-current="page"] .tadeon-nav-item__icon::before {
-  background: currentColor !important;
-  opacity: 1 !important;
-}
 
 /* The dock keeps the real 20px SVG in layout, so Mestre occupies the exact
    same box as Início/Nexus/Mesa. The authored sigil is only a visual overlay. */
-.tadeon-mobile-dock__item[href="/master-panel"] > svg {
-  display: block !important;
-  width: 1.25rem !important;
-  height: 1.25rem !important;
-  opacity: 0 !important;
-}
-
-.tadeon-mobile-dock__item[href="/master-panel"]::before {
-  position: absolute !important;
-  top: .82rem !important;
-  left: 50% !important;
-  display: block !important;
-  width: 1.25rem !important;
-  height: 1.25rem !important;
-  margin: 0 !important;
-  background: currentColor !important;
-  opacity: .92 !important;
-  -webkit-mask: center / contain no-repeat url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.55' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='8.25' stroke-dasharray='9 3.4 2.2 4.3' opacity='.72'/%3E%3Cpath d='M12 2.8v4.1M12 17.1v4.1M2.8 12h4.1M17.1 12h4.1'/%3E%3Cpath d='m8.55 12 3.45-3.45L15.45 12 12 15.45 8.55 12Z'/%3E%3Cpath d='M6.05 6.35 9.6 9.6M17.95 6.35 14.4 9.6M6.05 17.65l3.55-3.25M17.95 17.65l-3.55-3.25'/%3E%3Ccircle cx='6.05' cy='6.35' r='.85'/%3E%3Ccircle cx='17.95' cy='6.35' r='.85'/%3E%3Ccircle cx='6.05' cy='17.65' r='.85'/%3E%3Ccircle cx='17.95' cy='17.65' r='.85'/%3E%3Ccircle cx='12' cy='12' r='1.15' fill='black' stroke='none'/%3E%3C/svg%3E") !important;
-  mask: center / contain no-repeat url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.55' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='8.25' stroke-dasharray='9 3.4 2.2 4.3' opacity='.72'/%3E%3Cpath d='M12 2.8v4.1M12 17.1v4.1M2.8 12h4.1M17.1 12h4.1'/%3E%3Cpath d='m8.55 12 3.45-3.45L15.45 12 12 15.45 8.55 12Z'/%3E%3Cpath d='M6.05 6.35 9.6 9.6M17.95 6.35 14.4 9.6M6.05 17.65l3.55-3.25M17.95 17.65l-3.55-3.25'/%3E%3Ccircle cx='6.05' cy='6.35' r='.85'/%3E%3Ccircle cx='17.95' cy='6.35' r='.85'/%3E%3Ccircle cx='6.05' cy='17.65' r='.85'/%3E%3Ccircle cx='17.95' cy='17.65' r='.85'/%3E%3Ccircle cx='12' cy='12' r='1.15' fill='black' stroke='none'/%3E%3C/svg%3E") !important;
-  content: "" !important;
-  pointer-events: none !important;
-}
-
-.tadeon-mobile-dock__item[href="/master-panel"][aria-current="page"]::before {
-  background: currentColor !important;
-  opacity: 1 !important;
-}
 
 /* --------------------------------------------------------------------------
    Stable dialogs. Position never participates in the open/close animation.
@@ -4218,100 +3853,13 @@ html[data-tadeon-sheet-mode="game"] .tadeon-sheet-game-button svg {
 .tadeon-nav-item[href="/nexus-tools"] { --nav-accent: rgb(122 129 135); --nav-accent-rgb: 122 129 135; }
 .tadeon-nav-item[href="/offline"] { --nav-accent: rgb(113 107 123); --nav-accent-rgb: 113 107 123; }
 
-.tadeon-nav-item:is(
-  [href="/"],
-  [href="/nexus"],
-  [href="/tabletop"],
-  [href="/master-panel"],
-  [href="/manage-users"],
-  [href="/nexus-tools"],
-  [href="/offline"]
-) .tadeon-nav-item__icon {
-  color: color-mix(in srgb, var(--nav-accent) 54%, var(--sidebar-foreground));
-}
-
-.tadeon-nav-item:is(
-  [href="/"],
-  [href="/nexus"],
-  [href="/tabletop"],
-  [href="/master-panel"],
-  [href="/manage-users"],
-  [href="/nexus-tools"],
-  [href="/offline"]
-):hover .tadeon-nav-item__icon {
-  color: color-mix(in srgb, var(--nav-accent) 82%, var(--foreground));
-}
-
-.tadeon-nav-item:is(
-  [href="/"],
-  [href="/nexus"],
-  [href="/tabletop"],
-  [href="/master-panel"],
-  [href="/manage-users"],
-  [href="/nexus-tools"],
-  [href="/offline"]
-)[aria-current="page"] .tadeon-nav-item__icon {
-  color: var(--nav-accent) !important;
-}
-
 /* Master/Backup authored marks: one visible layer only. The hidden Lucide SVG
    remains solely as a layout anchor; all historical pseudo ghost layers die. */
-.tadeon-nav-item:is([href="/master-panel"], [href="/nexus-tools"]) .tadeon-nav-item__icon > svg {
-  visibility: hidden !important;
-  color: transparent !important;
-  opacity: 0 !important;
-}
-
-.tadeon-nav-item:is([href="/master-panel"], [href="/nexus-tools"]) .tadeon-nav-item__icon::after {
-  display: none !important;
-  width: 0 !important;
-  height: 0 !important;
-  background: none !important;
-  -webkit-mask: none !important;
-  mask: none !important;
-  opacity: 0 !important;
-  content: none !important;
-}
-
-.tadeon-nav-item:is([href="/master-panel"], [href="/nexus-tools"]) .tadeon-nav-item__icon::before {
-  background-color: currentColor !important;
-  opacity: .92 !important;
-}
-
-.tadeon-nav-item:is([href="/master-panel"], [href="/nexus-tools"]):hover .tadeon-nav-item__icon::before {
-  opacity: 1 !important;
-}
-
-.tadeon-nav-item:is([href="/master-panel"], [href="/nexus-tools"])[aria-current="page"] .tadeon-nav-item__icon::before {
-  background-color: var(--nav-accent) !important;
-  opacity: 1 !important;
-}
 
 .tadeon-mobile-dock__item[href="/nexus"] { --nav-accent: rgb(79 110 93); --nav-accent-rgb: 79 110 93; }
 .tadeon-mobile-dock__item[href="/tabletop"] { --nav-accent: rgb(84 123 148); --nav-accent-rgb: 84 123 148; }
 .tadeon-mobile-dock__item[href="/master-panel"] { --nav-accent: rgb(116 36 45); --nav-accent-rgb: 116 36 45; }
 .tadeon-mobile-dock__item[href="/offline"] { --nav-accent: rgb(113 107 123); --nav-accent-rgb: 113 107 123; }
-
-.tadeon-mobile-dock__item[href="/master-panel"] > svg {
-  visibility: hidden !important;
-  opacity: 0 !important;
-}
-
-.tadeon-mobile-dock__item[href="/master-panel"]::after {
-  display: none !important;
-  content: none !important;
-}
-
-.tadeon-mobile-dock__item[href="/master-panel"]::before {
-  background-color: currentColor !important;
-  opacity: .92 !important;
-}
-
-.tadeon-mobile-dock__item[href="/master-panel"]:hover::before,
-.tadeon-mobile-dock__item[href="/master-panel"][aria-current="page"]::before {
-  background-color: var(--nav-accent) !important;
-  opacity: 1 !important;
-}
 
 /* --------------------------------------------------------------------------
    Attribute numbers. Treat +/-/value as one instrument rather than three
@@ -4729,104 +4277,9 @@ html[data-tadeon-sheet-mode="game"] .tadeon-sheet-game-button svg {
 /* #166/#170/#174: authored Master/Backup marks live only inside the sidebar
    icon slot. Their visible artwork is optically scaled and pinned to the true
    center of the same frame used by every other navigation item. */
-.tadeon-nav-item:is([href="/master-panel"], [href="/nexus-tools"]) .tadeon-nav-item__icon {
-  position: relative !important;
-  display: grid !important;
-  width: 2rem !important;
-  height: 2rem !important;
-  min-width: 2rem !important;
-  flex: 0 0 2rem !important;
-  place-items: center !important;
-  margin: 0 !important;
-  padding: 0 !important;
-  overflow: visible !important;
-  border: 1px solid rgb(var(--nav-accent-rgb) / 11%) !important;
-  border-radius: .66rem .22rem .66rem .22rem !important;
-  background:
-    linear-gradient(145deg, rgb(var(--nav-accent-rgb) / 8%), rgb(255 255 255 / 1.5%)) !important;
-  box-shadow:
-    inset 0 1px rgb(255 255 255 / 4%),
-    0 12px 26px -23px rgb(var(--nav-accent-rgb) / 48%) !important;
-}
-
-.tadeon-nav-item:is([href="/master-panel"], [href="/nexus-tools"]) .tadeon-nav-item__icon > svg {
-  display: none !important;
-  visibility: hidden !important;
-  opacity: 0 !important;
-}
-
-.tadeon-nav-item:is([href="/master-panel"], [href="/nexus-tools"]) .tadeon-nav-item__icon::after {
-  display: none !important;
-  content: none !important;
-}
-
-.tadeon-nav-item:is([href="/master-panel"], [href="/nexus-tools"]) .tadeon-nav-item__icon::before {
-  position: absolute !important;
-  top: 50% !important;
-  left: 50% !important;
-  display: block !important;
-  width: 1.22rem !important;
-  height: 1.22rem !important;
-  flex: 0 0 auto !important;
-  margin: 0 !important;
-  background: currentColor !important;
-  opacity: .94 !important;
-  content: "" !important;
-}
-
-.tadeon-nav-item[href="/master-panel"] .tadeon-nav-item__icon::before {
-  -webkit-mask: center / contain no-repeat url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.55' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='8.25' stroke-dasharray='9 3.4 2.2 4.3' opacity='.72'/%3E%3Cpath d='M12 2.8v4.1M12 17.1v4.1M2.8 12h4.1M17.1 12h4.1'/%3E%3Cpath d='m8.55 12 3.45-3.45L15.45 12 12 15.45 8.55 12Z'/%3E%3Cpath d='M6.05 6.35 9.6 9.6M17.95 6.35 14.4 9.6M6.05 17.65l3.55-3.25M17.95 17.65l-3.55-3.25'/%3E%3Ccircle cx='6.05' cy='6.35' r='.85'/%3E%3Ccircle cx='17.95' cy='6.35' r='.85'/%3E%3Ccircle cx='6.05' cy='17.65' r='.85'/%3E%3Ccircle cx='17.95' cy='17.65' r='.85'/%3E%3Ccircle cx='12' cy='12' r='1.15' fill='black' stroke='none'/%3E%3C/svg%3E") !important;
-  mask: center / contain no-repeat url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.55' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='8.25' stroke-dasharray='9 3.4 2.2 4.3' opacity='.72'/%3E%3Cpath d='M12 2.8v4.1M12 17.1v4.1M2.8 12h4.1M17.1 12h4.1'/%3E%3Cpath d='m8.55 12 3.45-3.45L15.45 12 12 15.45 8.55 12Z'/%3E%3Cpath d='M6.05 6.35 9.6 9.6M17.95 6.35 14.4 9.6M6.05 17.65l3.55-3.25M17.95 17.65l-3.55-3.25'/%3E%3Ccircle cx='6.05' cy='6.35' r='.85'/%3E%3Ccircle cx='17.95' cy='6.35' r='.85'/%3E%3Ccircle cx='6.05' cy='17.65' r='.85'/%3E%3Ccircle cx='17.95' cy='17.65' r='.85'/%3E%3Ccircle cx='12' cy='12' r='1.15' fill='black' stroke='none'/%3E%3C/svg%3E") !important;
-}
-
-.tadeon-nav-item[href="/nexus-tools"] .tadeon-nav-item__icon::before {
-  -webkit-mask: center / contain no-repeat url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M21 8a2 2 0 0 0-2-2h-2V4a2 2 0 0 0-2-2H9a2 2 0 0 0-2 2v2H5a2 2 0 0 0-2 2v11a3 3 0 0 0 3 3h12a3 3 0 0 0 3-3Z'/%3E%3Cpath d='M9 6h6M8 12h8M8 16h5'/%3E%3C/svg%3E") !important;
-  mask: center / contain no-repeat url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M21 8a2 2 0 0 0-2-2h-2V4a2 2 0 0 0-2-2H9a2 2 0 0 0-2 2v2H5a2 2 0 0 0-2 2v11a3 3 0 0 0 3 3h12a3 3 0 0 0 3-3Z'/%3E%3Cpath d='M9 6h6M8 12h8M8 16h5'/%3E%3C/svg%3E") !important;
-}
-
-.tadeon-nav-item:is([href="/master-panel"], [href="/nexus-tools"]):hover .tadeon-nav-item__icon, .tadeon-nav-item:is([href="/master-panel"], [href="/nexus-tools"])[aria-current="page"] .tadeon-nav-item__icon {
-  border-color: rgb(var(--nav-accent-rgb) / 25%) !important;
-  background:
-    linear-gradient(145deg, rgb(var(--nav-accent-rgb) / 15%), rgb(255 255 255 / 2%)) !important;
-}
-
-.tadeon-nav-item:is([href="/master-panel"], [href="/nexus-tools"]):hover .tadeon-nav-item__icon::before, .tadeon-nav-item:is([href="/master-panel"], [href="/nexus-tools"])[aria-current="page"] .tadeon-nav-item__icon::before {
-  background: currentColor !important;
-  opacity: 1 !important;
-}
 
 /* Restore the canonical mobile dock contract: real SVG, no route-specific
    pseudo-element geometry. */
-.tadeon-mobile-dock__item[href="/master-panel"] > svg {
-  display: block !important;
-  visibility: visible !important;
-  width: 1.25rem !important;
-  height: 1.25rem !important;
-  flex: 0 0 auto !important;
-  margin: 0 !important;
-  color: currentColor !important;
-  opacity: 1 !important;
-}
-
-.tadeon-mobile-dock__item[href="/master-panel"]::before,
-.tadeon-mobile-dock__item[href="/master-panel"]::after {
-  display: none !important;
-  width: 0 !important;
-  height: 0 !important;
-  background: none !important;
-  -webkit-mask: none !important;
-  mask: none !important;
-  opacity: 0 !important;
-  content: none !important;
-}
-
-.tadeon-mobile-dock__item[href="/master-panel"][aria-current="page"] > svg {
-  color: var(--nav-accent) !important;
-  opacity: 1 !important;
-}
-
-@media (prefers-reduced-motion: reduce) {
-}
 
 /* #172: final navigation/tabletop/Nexus reconciliation. ----------------- */
 
@@ -4894,7 +4347,6 @@ html[data-tadeon-sheet-mode="game"] .tadeon-sheet-game-button svg {
   padding: 0;
   border: 1px solid rgb(var(--nav-accent-rgb) / 11%);
   border-radius: .66rem .22rem .66rem .22rem;
-  color: currentColor;
   background: linear-gradient(145deg, rgb(var(--nav-accent-rgb) / 8%), rgb(255 255 255 / 1.5%));
   box-shadow: inset 0 1px rgb(255 255 255 / 4%), 0 12px 26px -23px rgb(var(--nav-accent-rgb) / 48%);
 }
@@ -4917,43 +4369,6 @@ html[data-tadeon-sheet-mode="game"] .tadeon-sheet-game-button svg {
    other dock siblings instead of carrying a private layout. */
 .tadeon-mobile-dock__item[href="/master-panel"] {
   gap: .24rem !important;
-}
-
-.tadeon-mobile-dock__item[href="/master-panel"] > svg {
-  display: none !important;
-  visibility: hidden !important;
-  opacity: 0 !important;
-}
-
-.tadeon-mobile-dock__item[href="/master-panel"]::before {
-  display: block !important;
-  width: 1.25rem !important;
-  height: 1.25rem !important;
-  flex: 0 0 auto !important;
-  align-self: center !important;
-  margin: 0 !important;
-  background: currentColor !important;
-  -webkit-mask: center / contain no-repeat url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.55' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='8.25' stroke-dasharray='9 3.4 2.2 4.3' opacity='.72'/%3E%3Cpath d='M12 2.8v4.1M12 17.1v4.1M2.8 12h4.1M17.1 12h4.1'/%3E%3Cpath d='m8.55 12 3.45-3.45L15.45 12 12 15.45 8.55 12Z'/%3E%3Cpath d='M6.05 6.35 9.6 9.6M17.95 6.35 14.4 9.6M6.05 17.65l3.55-3.25M17.95 17.65l-3.55-3.25'/%3E%3Ccircle cx='6.05' cy='6.35' r='.85'/%3E%3Ccircle cx='17.95' cy='6.35' r='.85'/%3E%3Ccircle cx='6.05' cy='17.65' r='.85'/%3E%3Ccircle cx='17.95' cy='17.65' r='.85'/%3E%3Ccircle cx='12' cy='12' r='1.15' fill='black' stroke='none'/%3E%3C/svg%3E") !important;
-  mask: center / contain no-repeat url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.55' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='8.25' stroke-dasharray='9 3.4 2.2 4.3' opacity='.72'/%3E%3Cpath d='M12 2.8v4.1M12 17.1v4.1M2.8 12h4.1M17.1 12h4.1'/%3E%3Cpath d='m8.55 12 3.45-3.45L15.45 12 12 15.45 8.55 12Z'/%3E%3Cpath d='M6.05 6.35 9.6 9.6M17.95 6.35 14.4 9.6M6.05 17.65l3.55-3.25M17.95 17.65l-3.55-3.25'/%3E%3Ccircle cx='6.05' cy='6.35' r='.85'/%3E%3Ccircle cx='17.95' cy='6.35' r='.85'/%3E%3Ccircle cx='6.05' cy='17.65' r='.85'/%3E%3Ccircle cx='17.95' cy='17.65' r='.85'/%3E%3Ccircle cx='12' cy='12' r='1.15' fill='black' stroke='none'/%3E%3C/svg%3E") !important;
-  opacity: 1 !important;
-  content: "" !important;
-}
-
-.tadeon-mobile-dock__item[href="/master-panel"][aria-current="page"]::before {
-  color: var(--section-accent) !important;
-}
-
-.tadeon-mobile-dock__item[href="/master-panel"][aria-current="page"]::after {
-  position: absolute !important;
-  bottom: .2rem !important;
-  display: block !important;
-  width: 1rem !important;
-  height: 2px !important;
-  border-radius: 99px !important;
-  background: var(--section-accent) !important;
-  box-shadow: 0 0 10px rgb(var(--section-accent-rgb) / 45%) !important;
-  opacity: 1 !important;
-  content: "" !important;
 }
 
 /* /nexus-tools is a sibling system route, not a child of the Nexus library.
@@ -5084,37 +4499,6 @@ html[data-tadeon-tabletop-reliability] .tadeon-tabletop-toolbar {
 
 /* The master navigation keeps a full-width sticky host, but the actual menu
    hugs its content and stays centered rather than leaving arbitrary side air. */
-.tadeon-master-navigation__scroller {
-  width: fit-content;
-  max-width: 100%;
-  margin-inline: auto;
-}
-
-.tadeon-master-navigation__scroller > [data-slot="tabs-list"] {
-  width: max-content;
-  max-width: 100%;
-  margin-inline: auto;
-  justify-content: center !important;
-}
-
-@media (max-width: 1179px) {
-  .tadeon-master-navigation__scroller {
-    width: 100%;
-    overflow-x: auto;
-    scrollbar-width: none;
-  }
-
-  .tadeon-master-navigation__scroller::-webkit-scrollbar {
-    display: none;
-  }
-
-  .tadeon-master-navigation__scroller > [data-slot="tabs-list"] {
-    justify-content: flex-start !important;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-}
 /* end-source: src/styles/create-sheet-search-viewport-163.css */
 /* source: src/styles/desktop-hero-parity-202.css */
 /* Desktop Hero parity.

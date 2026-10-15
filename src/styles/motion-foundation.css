@@ -184,22 +184,6 @@
     rgb(12 16 17 / 96%) !important;
 }
 
-.tadeon-master-workspace .tadeon-master-navigation {
-  margin-top: -1px;
-  margin-bottom: .85rem;
-}
-
-.tadeon-master-workspace .tadeon-master-navigation__scroller {
-  border-width: 1px 1px 2px !important;
-  border-color: rgb(79 110 93 / 30%) !important;
-  border-radius: .85rem .28rem .85rem .28rem !important;
-}
-
-.tadeon-master-workspace .tadeon-master-navigation [data-slot="tabs-trigger"] {
-  min-height: 2.65rem;
-  padding-inline: .95rem;
-}
-
 /* --------------------------------------------------------------------------
    Tabletop: stronger stage framing without hiding the canvas
    -------------------------------------------------------------------------- */
@@ -486,7 +470,6 @@
    -------------------------------------------------------------------------- */
 .tadeon-shell .tadeon-brain-toolbar,
 .tadeon-shell .tadeon-brain-mode,
-.tadeon-shell .tadeon-master-navigation,
 .tadeon-shell .tadeon-master-commandbar,
 .tadeon-shell .tadeon-tabletop-toolbar,
 .tadeon-shell .tadeon-tabletop-floating-toolbar,
@@ -496,7 +479,6 @@
 
 .tadeon-shell .tadeon-brain-toolbar::after,
 .tadeon-shell .tadeon-brain-mode::after,
-.tadeon-shell .tadeon-master-navigation::after,
 .tadeon-shell .tadeon-tabletop-toolbar::after,
 .tadeon-shell .tadeon-tabletop-floating-toolbar::after,
 .tadeon-shell .tadeon-tabletop-controls::after {
@@ -537,24 +519,6 @@
 /* --------------------------------------------------------------------------
    Master: active tab should feel like a marked page
    -------------------------------------------------------------------------- */
-.tadeon-master-workspace .tadeon-master-navigation [data-slot="tabs-trigger"] {
-  position: relative;
-  overflow: hidden;
-}
-
-.tadeon-master-workspace .tadeon-master-navigation [data-slot="tabs-trigger"]:not([data-material-surface="tab"])::before {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(100deg, transparent, rgb(217 215 164 / 7%), transparent);
-  content: "";
-  transform: translateX(-110%);
-  transition: transform 480ms cubic-bezier(.23,1,.32,1);
-  pointer-events: none;
-}
-
-.tadeon-master-workspace .tadeon-master-navigation [data-slot="tabs-trigger"]:not([data-material-surface="tab"])[data-state="active"]::before {
-  transform: translateX(110%);
-}
 
 /* --------------------------------------------------------------------------
    Sheet: numbers and statuses get intentional rhythm
@@ -787,17 +751,11 @@
   /* Intentionally empty: declarations are owned by the new motion authority. */
 }
 
-@media (prefers-reduced-motion: reduce) {
-}
-
 /* end-source: src/styles/tadeon-motion-system.css */
 /* source: src/styles/tadeon-contextual-motion.css */
 /* Tadeon Contextual Motion - each area has its own rhythm without changing composition. */
 
 /* Dashboard - archival reveal: calm, sequential, slightly wider breathing room. */
-
-@media (hover: hover) and (pointer: fine) {
-}
 
 /* Character sheet - document rhythm: tabs and sections feel like layers of a living record. */
 .tadeon-sheet-page .tadeon-sheet-section,
@@ -811,19 +769,11 @@
 .tadeon-sheet-page .tadeon-sheet-section:nth-child(3) { animation-delay: 100ms; }
 .tadeon-sheet-page .tadeon-sheet-section:nth-child(4) { animation-delay: 145ms; }
 
-@media (hover: hover) and (pointer: fine) {
-}
-
 /* Master - faster, more deliberate response: decision before action. */
-.tadeon-master-workspace .tadeon-master-navigation [data-slot="tabs-trigger"]:not([data-material-surface="tab"]),
 .tadeon-master-workspace .tadeon-surface,
 .tadeon-master-workspace button {
   transition-duration: 220ms;
   transition-timing-function: var(--tadeon-motion-material, cubic-bezier(.23,1,.32,1));
-}
-
-.tadeon-master-workspace .tadeon-master-navigation [data-slot="tabs-trigger"]:not([data-material-surface="tab"])::after {
-  transition: transform 360ms var(--tadeon-motion-reveal, cubic-bezier(.22,1,.36,1)), opacity 220ms ease;
 }
 
 .tadeon-master-workspace [data-tadeon-directed="true"] {
@@ -1205,9 +1155,6 @@
 /* Persistent shell: a faint top trace makes navigation feel continuous rather than rebuilt. */
 
 /* Navigation has a quiet directional gesture instead of a generic color flip. */
-
-@media (hover: hover) and (pointer: fine) {
-}
 
 
 .tadeon-mobile-dock__item[aria-current="page"]::before {

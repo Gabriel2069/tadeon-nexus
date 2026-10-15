@@ -22,11 +22,11 @@ describe("fechamento de UI, Mesa e exclusão", () => {
     expect(bridge).toContain('import "@/styles/sheet-experience.css";');
   });
 
-  it("mantém a aba do mestre sem navegar e remontar a rota", () => {
+  it("mantém a aba do mestre na URL sem resetar o scroll", () => {
     const panel = source("src/routes/master-panel.tsx");
 
-    expect(panel).toContain('window.sessionStorage.setItem("tadeon-master-active-tab", tab);');
-    expect(panel).toContain("window.history.replaceState(");
+    expect(panel).not.toContain("window.history.replaceState(");
+    expect(panel).toContain("resetScroll: false");
     expect(panel).toContain("onValueChange={(value) => selectMasterTab(value as MasterTab)}");
   });
 

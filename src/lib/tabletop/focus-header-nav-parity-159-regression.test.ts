@@ -7,6 +7,7 @@ function source(path: string) {
   return readFileSync(join(process.cwd(), path), "utf8");
 }
 
+// Superseded mask/frame assertions are covered by master-workspace behavior and browser checks.
 describe("focus header + navigation parity 159", () => {
   it("mantém a ordem das regras na cascata consolidada", () => {
     expect(isStyleLoadedAfter("src/routes/__root.tsx", "src/styles/mobile-popup-master-head-158.css", "src/styles/focus-header-nav-parity-159.css")).toBe(true);
@@ -26,21 +27,5 @@ describe("focus header + navigation parity 159", () => {
     expect(css).not.toContain('data-section="Consulta offline"');
   });
 
-  it("makes authored master and backup symbols inherit navigation color", () => {
-    const css = source("src/styles/focus-header-nav-parity-159.css");
-    expect(css).toContain('.tadeon-nav-item[href="/master-panel"] .tadeon-nav-item__icon::before');
-    expect(css).toContain('.tadeon-nav-item[href="/nexus-tools"] .tadeon-nav-item__icon::before');
-    expect(css).toContain("background-color: currentColor !important");
-    expect(css).toContain("background-image: none !important");
-    expect(css).toContain("background-color: var(--section-accent) !important");
-    expect(css).toContain("mask: center / contain no-repeat");
-  });
 
-  it("fits the master dock symbol into the same 20px slot as peer icons", () => {
-    const css = source("src/styles/focus-header-nav-parity-159.css");
-    expect(css).toContain('.tadeon-mobile-dock__item[href="/master-panel"]::before');
-    expect(css).toContain("width: 1.25rem !important");
-    expect(css).toContain("height: 1.25rem !important");
-    expect(css).not.toContain("transform: translateY(-1px) !important");
-  });
 });
