@@ -2,7 +2,7 @@
 
 > Gerado de [project-continuity.json](project-continuity.json). Edite o registro e rode `npm run sync:project`; não mantenha uma cópia manual.
 
-Snapshot: 2026-10-15; referência de runtime: `778d4449b01adc9ae5eab498d27606d2d7c3b35f`. PR #269 em `feat/nexus-reading-continuity-2026-10-14`; integração: `integrated`. Não é prova de deploy.
+Snapshot: 2026-10-15; referência de runtime: `3a0a44f495075508601414abd21ed63ec0f55767`. PR #271 em `codex/nex-016-navigation-utilities`; integração: `integrated`. Não é prova de deploy.
 
 Estados: planejado → próximo → em andamento → validado na branch → integrado. Publicação exige evidência própria do SHA; adiado conserva o requisito. Se um requisito mudar, preservar o ID e registrar a decisão/evidência.
 
@@ -25,10 +25,10 @@ Cada PR usa IDs desta fila e declara dependências. Trabalho sobre o mesmo propr
 | NEX-012 | Revisão editorial do corpus canônico | Adiado | 9 | knowledge | NEX-006 |
 | NEX-014 | Reconciliar movimento e aprofundar Véu & Trama | Integrado | 3 | shell | NEX-005, NEX-013 |
 | NEX-015 | Nexus: continuidade de abas e composição dos painéis | Integrado | 4 | knowledge | NEX-006, NEX-014 |
-| NEX-016 | Navegação: menus estáveis e organizados | Validado na branch | 4 | shell | NEX-014 |
-| NEX-017 | Consulta offline: conteúdo local e limites claros | Validado na branch | 4 | session | NEX-014 |
-| NEX-018 | Usuários: papéis, busca e revisão de ações | Validado na branch | 4 | master | NEX-014 |
-| NEX-019 | Backup e diagnóstico: revisão e histórico por conta | Validado na branch | 4 | assets | NEX-014 |
+| NEX-016 | Navegação: menus estáveis e organizados | Integrado | 4 | shell | NEX-014 |
+| NEX-017 | Consulta offline: conteúdo local e limites claros | Integrado | 4 | session | NEX-014 |
+| NEX-018 | Usuários: papéis, busca e revisão de ações | Integrado | 4 | master | NEX-014 |
+| NEX-019 | Backup e diagnóstico: revisão e histórico por conta | Integrado | 4 | assets | NEX-014 |
 
 ## NEX-001 — Preparação estrutural
 
@@ -154,21 +154,21 @@ Evidências: [docs/nexus-continuity-validation.json](../docs/nexus-continuity-va
 - Menu Mais em lista, sidebar recolhida acessível e transição entre drawer e conta com foco consistente.
 - Eliminar movimentos concorrentes dos controles e manter abertura/fechamento direcional com redução de movimento.
 
-Evidências: [docs/navigation-utilities-validation.json](../docs/navigation-utilities-validation.json), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/pull/271).
+Evidências: [docs/navigation-utilities-validation.json](../docs/navigation-utilities-validation.json), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/pull/271), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38675134229), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38675372253).
 
 ## NEX-017 — Consulta offline: conteúdo local e limites claros
 
 - Busca local, contagem de detalhes, atualização da leitura e limpeza confirmada da cópia desta conta.
 - Preservar separação por conta/cargo e distinguir cópia local, sessão verificada e backup.
 
-Evidências: [docs/navigation-utilities-validation.json](../docs/navigation-utilities-validation.json), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/pull/271).
+Evidências: [docs/navigation-utilities-validation.json](../docs/navigation-utilities-validation.json), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/pull/271), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38675134229), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38675372253).
 
 ## NEX-018 — Usuários: papéis, busca e revisão de ações
 
 - Busca por nome/e-mail, filtro por papel, estados de erro e confirmação antes de alterar papéis ou excluir contas.
 - Isolar leituras e respostas por identidade; bloquear alterações simultâneas e preservar revisão após falha.
 
-Evidências: [docs/navigation-utilities-validation.json](../docs/navigation-utilities-validation.json), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/pull/271).
+Evidências: [docs/navigation-utilities-validation.json](../docs/navigation-utilities-validation.json), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/pull/271), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38675134229), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38675372253).
 
 ## NEX-019 — Backup e diagnóstico: revisão e histórico por conta
 
@@ -176,7 +176,7 @@ Evidências: [docs/navigation-utilities-validation.json](../docs/navigation-util
 - Cópia prévia confirmada por transação local, falhas parciais explícitas e diagnóstico com invalidação de leituras.
 - Distinguir exportação parcial de fichas/configurações e restauração completa de DB/Storage/R2, que permanece em NEX-011.
 
-Evidências: [docs/navigation-utilities-validation.json](../docs/navigation-utilities-validation.json), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/pull/271).
+Evidências: [docs/navigation-utilities-validation.json](../docs/navigation-utilities-validation.json), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/pull/271), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38675134229), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38675372253).
 
 ## Decisões vigentes
 

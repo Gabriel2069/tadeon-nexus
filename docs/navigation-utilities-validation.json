@@ -7,7 +7,7 @@
     "NEX-018",
     "NEX-019"
   ],
-  "state": "validated-in-branch",
+  "state": "integrated-and-published",
   "branch": "codex/nex-016-navigation-utilities",
   "baseCommit": "41e70f9697e419c85f3ec544767029a97ab7a724",
   "interfaceSourceCommit": "9eca77759aa21c4ef67709d6a036b25e8f6751c6",
@@ -57,7 +57,8 @@
       "importantCeilingAfter": 5240,
       "newStylesheets": 0
     },
-    "completeCheckLogSha256": "6525a2731aa85f064ae43184165a9087b0dd0d2c5b0fa9b7bfd91e216a8f7ee7"
+    "completeCheckLogSha256": "6525a2731aa85f064ae43184165a9087b0dd0d2c5b0fa9b7bfd91e216a8f7ee7",
+    "qualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38675134229"
   },
   "browser": {
     "mode": "authenticated fixtures; HTTP and server-function transport intercepted; no production backend mutations",
@@ -421,8 +422,16 @@
     "Há dívida CSS legada fora das propriedades saneadas; não há promessa de ausência absoluta de conflitos futuros."
   ],
   "publication": {
-    "state": "not-integrated",
-    "productionCommit": null
+    "state": "confirmed",
+    "pr": 271,
+    "mergeCommit": "3a0a44f495075508601414abd21ed63ec0f55767",
+    "mainQualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38675372247",
+    "workflow": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38675372253",
+    "productionCommit": "3a0a44f495075508601414abd21ed63ec0f55767",
+    "verifiedAt": "2026-10-15T03:17:45.0915711Z",
+    "httpStatus": 200,
+    "workerVersion": "28b948e6-6c0d-4c7d-8895-8ff8d83f5ec0"
   },
-  "sourceCommit": "bc5202a6570d8defd6ab42475b4338972c2f6ed7"
+  "sourceCommit": "bc5202a6570d8defd6ab42475b4338972c2f6ed7",
+  "qualityHead": "ffdb33127de4aa30e3b16221ebd7bf54a5f2998f"
 }

@@ -1,23 +1,23 @@
 {
   "version": 1,
   "checkedAt": "2026-10-15",
-  "runtimeReference": "778d4449b01adc9ae5eab498d27606d2d7c3b35f",
+  "runtimeReference": "3a0a44f495075508601414abd21ed63ec0f55767",
   "integration": {
-    "pr": 269,
-    "branch": "feat/nexus-reading-continuity-2026-10-14",
+    "pr": 271,
+    "branch": "codex/nex-016-navigation-utilities",
     "base": "main",
-    "baseCommit": "3173d2729d6b35701c0b28b68416b8e2ddd03dfd",
-    "headCommit": "bcb9ef7dd78b409f0747ea59156dbb8860e2f065",
+    "baseCommit": "41e70f9697e419c85f3ec544767029a97ab7a724",
+    "headCommit": "ffdb33127de4aa30e3b16221ebd7bf54a5f2998f",
     "state": "integrated",
-    "mergeCommit": "778d4449b01adc9ae5eab498d27606d2d7c3b35f",
-    "qualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38669420714",
-    "mainQualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38669674673",
-    "productionEvidence": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38669674635",
+    "mergeCommit": "3a0a44f495075508601414abd21ed63ec0f55767",
+    "qualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38675134229",
+    "mainQualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38675372247",
+    "productionEvidence": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38675372253",
     "production": "confirmed",
-    "productionCommit": "778d4449b01adc9ae5eab498d27606d2d7c3b35f",
-    "productionVerifiedAt": "2026-10-15T02:13:38.7334855Z",
+    "productionCommit": "3a0a44f495075508601414abd21ed63ec0f55767",
+    "productionVerifiedAt": "2026-10-15T03:17:45.0915711Z",
     "productionHttpStatus": 200,
-    "workerVersion": "001281e4-1176-46fd-9af0-67934a5f97d0"
+    "workerVersion": "28b948e6-6c0d-4c7d-8895-8ff8d83f5ec0"
   },
   "domains": [
     {
@@ -626,7 +626,7 @@
       "id": "NEX-016",
       "title": "Navegação: menus estáveis e organizados",
       "domain": "shell",
-      "status": "validated",
+      "status": "integrated",
       "priority": 4,
       "dependsOn": [
         "NEX-014"
@@ -637,15 +637,17 @@
       ],
       "evidence": [
         "docs/navigation-utilities-validation.json",
-        "https://github.com/Gabriel2069/tadeon-nexus/pull/271"
+        "https://github.com/Gabriel2069/tadeon-nexus/pull/271",
+        "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38675134229",
+        "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38675372253"
       ],
-      "checkpoint": "Validado na branch da PR #271: 133 suítes/587 testes, build completo, auditoria sem vulnerabilidades, 32 estados nas quatro larguras e repetição final de navegação móvel. Integração e publicação ainda pendentes."
+      "checkpoint": "Integrado pela PR #271, merge 3a0a44f, após Quality no HEAD ffdb331. Main aprovado e produção HTTP 200/SHA exato em 2026-10-15T03:17:45.0915711Z. 133 suítes/587 testes; 32 estados de utilidades e repetição de navegação móvel. Fixtures não certificam contas/RLS ou restauração completa. Próximo lote: NEX-007."
     },
     {
       "id": "NEX-017",
       "title": "Consulta offline: conteúdo local e limites claros",
       "domain": "session",
-      "status": "validated",
+      "status": "integrated",
       "priority": 4,
       "dependsOn": [
         "NEX-014"
@@ -656,15 +658,17 @@
       ],
       "evidence": [
         "docs/navigation-utilities-validation.json",
-        "https://github.com/Gabriel2069/tadeon-nexus/pull/271"
+        "https://github.com/Gabriel2069/tadeon-nexus/pull/271",
+        "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38675134229",
+        "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38675372253"
       ],
-      "checkpoint": "Validado na branch da PR #271: 133 suítes/587 testes, build completo, auditoria sem vulnerabilidades, 32 estados nas quatro larguras e repetição final de navegação móvel. Integração e publicação ainda pendentes."
+      "checkpoint": "Integrado pela PR #271, merge 3a0a44f, após Quality no HEAD ffdb331. Main aprovado e produção HTTP 200/SHA exato em 2026-10-15T03:17:45.0915711Z. 133 suítes/587 testes; 32 estados de utilidades e repetição de navegação móvel. Fixtures não certificam contas/RLS ou restauração completa. Próximo lote: NEX-007."
     },
     {
       "id": "NEX-018",
       "title": "Usuários: papéis, busca e revisão de ações",
       "domain": "master",
-      "status": "validated",
+      "status": "integrated",
       "priority": 4,
       "dependsOn": [
         "NEX-014"
@@ -675,15 +679,17 @@
       ],
       "evidence": [
         "docs/navigation-utilities-validation.json",
-        "https://github.com/Gabriel2069/tadeon-nexus/pull/271"
+        "https://github.com/Gabriel2069/tadeon-nexus/pull/271",
+        "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38675134229",
+        "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38675372253"
       ],
-      "checkpoint": "Validado na branch da PR #271: 133 suítes/587 testes, build completo, auditoria sem vulnerabilidades, 32 estados nas quatro larguras e repetição final de navegação móvel. Integração e publicação ainda pendentes."
+      "checkpoint": "Integrado pela PR #271, merge 3a0a44f, após Quality no HEAD ffdb331. Main aprovado e produção HTTP 200/SHA exato em 2026-10-15T03:17:45.0915711Z. 133 suítes/587 testes; 32 estados de utilidades e repetição de navegação móvel. Fixtures não certificam contas/RLS ou restauração completa. Próximo lote: NEX-007."
     },
     {
       "id": "NEX-019",
       "title": "Backup e diagnóstico: revisão e histórico por conta",
       "domain": "assets",
-      "status": "validated",
+      "status": "integrated",
       "priority": 4,
       "dependsOn": [
         "NEX-014"
@@ -695,9 +701,11 @@
       ],
       "evidence": [
         "docs/navigation-utilities-validation.json",
-        "https://github.com/Gabriel2069/tadeon-nexus/pull/271"
+        "https://github.com/Gabriel2069/tadeon-nexus/pull/271",
+        "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38675134229",
+        "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38675372253"
       ],
-      "checkpoint": "Validado na branch da PR #271: 133 suítes/587 testes, build completo, auditoria sem vulnerabilidades, 32 estados nas quatro larguras e repetição final de navegação móvel. Integração e publicação ainda pendentes."
+      "checkpoint": "Integrado pela PR #271, merge 3a0a44f, após Quality no HEAD ffdb331. Main aprovado e produção HTTP 200/SHA exato em 2026-10-15T03:17:45.0915711Z. 133 suítes/587 testes; 32 estados de utilidades e repetição de navegação móvel. Fixtures não certificam contas/RLS ou restauração completa. Próximo lote: NEX-007."
     }
   ],
   "decisions": [
@@ -1122,6 +1130,23 @@
       "productionVerifiedAt": "2026-10-14T11:11:25.9846412Z",
       "productionHttpStatus": 200,
       "workerVersion": "801b7e4b-3894-4f9e-8eeb-eb74bff5d884"
+    },
+    {
+      "pr": 269,
+      "branch": "feat/nexus-reading-continuity-2026-10-14",
+      "base": "main",
+      "baseCommit": "3173d2729d6b35701c0b28b68416b8e2ddd03dfd",
+      "headCommit": "bcb9ef7dd78b409f0747ea59156dbb8860e2f065",
+      "state": "integrated",
+      "mergeCommit": "778d4449b01adc9ae5eab498d27606d2d7c3b35f",
+      "qualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38669420714",
+      "mainQualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38669674673",
+      "productionEvidence": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38669674635",
+      "production": "confirmed",
+      "productionCommit": "778d4449b01adc9ae5eab498d27606d2d7c3b35f",
+      "productionVerifiedAt": "2026-10-15T02:13:38.7334855Z",
+      "productionHttpStatus": 200,
+      "workerVersion": "001281e4-1176-46fd-9af0-67934a5f97d0"
     }
   ]
 }
