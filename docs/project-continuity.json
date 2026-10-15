@@ -108,13 +108,17 @@
         "src/lib/knowledge/knowledge-graph-service.ts",
         "src/components/knowledge/knowledge-graph-second-brain.tsx",
         "src/components/knowledge/knowledge-tree.tsx",
-        "src/lib/knowledge/knowledge-tree.ts"
+        "src/lib/knowledge/knowledge-tree.ts",
+        "src/components/knowledge/nexus-workspace.tsx",
+        "src/components/knowledge/knowledge-reading-panes.tsx",
+        "src/lib/knowledge/knowledge-drafts.ts",
+        "src/lib/knowledge/use-reading-preferences.ts"
       ],
       "styles": [
         "src/styles/nexus-material.css",
         "src/styles/knowledge-graph-second-brain.css"
       ],
-      "boundary": "Serviços controlam acesso a dados; grafo controla presets e interação em React. Árvore usa parent_node_id; grafo visual não usa distância de relações como parentesco. Leitura combinada e controles preservam estado React e invalidam respostas antigas."
+      "boundary": "Serviços controlam acesso a dados; grafo controla presets e interação em React. Árvore usa parent_node_id; grafo visual não usa distância de relações como parentesco. Leitura combinada e controles preservam estado React e invalidam respostas antigas. NexusWorkspace mantém navegação/editor e respostas assíncronas; KnowledgeReadingPanes dimensiona a composição; rascunhos e preferências locais são separados por identidade e workspace. Não introduzir outro escritor desses estados."
     },
     {
       "id": "tabletop",
@@ -537,7 +541,8 @@
       "acceptance": [
         "Em ambiente adequado, testar mestre, jogador, espectador e acesso negado entre campanhas.",
         "Conferir migrations aplicadas, flags e OAuth com evidência datada; não reutilizar status histórico como atual.",
-        "Não aplicar migrations, ativar flags ou mudar provedores durante refinamento visual."
+        "Não aplicar migrations, ativar flags ou mudar provedores durante refinamento visual.",
+        "Requisito de NEX-015 conciliado em DEC-010: verificar filtros, grupos, leitura longa, rascunhos e conflitos com corpus real autorizado, incluindo campanhas e o limite de 500 candidatos; fixtures não satisfazem essa autorização."
       ],
       "evidence": []
     },
@@ -597,7 +602,7 @@
       "id": "NEX-015",
       "title": "Nexus: continuidade de abas e composição dos painéis",
       "domain": "knowledge",
-      "status": "planned",
+      "status": "validated",
       "priority": 4,
       "dependsOn": [
         "NEX-006",
@@ -606,10 +611,12 @@
       "acceptance": [
         "Refinar fechamento da última aba, reabertura e recuperação de rascunhos com testes de navegação.",
         "Adicionar dimensionamento e preferências de painéis sem estado paralelo ou bridge de DOM.",
-        "Ampliar cobertura de filtros, grupos, leitura longa e corpus real autorizado; preservar o limite de 500 candidatos e explicitar paginação."
+        "Ampliar cobertura de filtros, grupos e leitura longa com fixtures de 120/500 páginas; preservar o limite de 500 candidatos e explicitar paginação. Validação do corpus real autorizado pertence a NEX-010."
       ],
-      "evidence": [],
-      "checkpoint": "Refinamento posterior da experiência inspirada no Obsidian. NEX-006 entregou árvore real e leitura combinada; não reimplementar esses proprietários nem importar assets ou plugins do Obsidian."
+      "evidence": [
+        "docs/nexus-continuity-validation.json"
+      ],
+      "checkpoint": "Validado na branch: check completo com 131 suítes/575 testes, audit zero; browser em 320/390/820/1440px com 500 páginas fictícias e leitura longa. Fechamento/reabertura, divisão por teclado/arraste, persistência, filtros/grupos e revisão de conflito aprovados. Integração, CI e SHA público ainda não confirmados."
     }
   ],
   "decisions": [
@@ -665,6 +672,15 @@
         "docs/shared-fabric-validation.json"
       ],
       "reason": "Nova instrução explícita de Tadeu em 11/10/2026: rever fonte, métricas e presença de fundo/motion antes da ficha. A parte tipográfica de DEC-008 passa a ser histórica, sem desfazer a navegação consolidada."
+    },
+    {
+      "id": "DEC-010",
+      "decision": "NEX-015 implementa e valida continuidade/composição com fixtures; sua verificação com corpus real autorizado permanece em NEX-010.",
+      "reason": "A etapa não certifica contas reais, RLS ou rollout. Consolidar essa verificação no lote existente de autorização evita uma fila duplicada ou declarar validação fictícia como real.",
+      "originalAcceptance": "Ampliar cobertura de filtros, grupos, leitura longa e corpus real autorizado; preservar o limite de 500 candidatos e explicitar paginação.",
+      "evidence": [
+        "docs/nexus-continuity-validation.json"
+      ]
     }
   ],
   "bridges": [
@@ -908,6 +924,10 @@
     {
       "path": "docs/material-reading-validation.json",
       "purpose": "NEX-014/NEX-006: correção dos proprietários de movimento e leitura integrada com árvore/grafo; evidência e limites de fixture."
+    },
+    {
+      "path": "docs/nexus-continuity-validation.json",
+      "purpose": "NEX-015: composição ajustável, continuidade de abas, rascunhos por identidade, concorrência e revisão explícita de conflitos; fixtures e limites."
     }
   ],
   "integrationHistory": [

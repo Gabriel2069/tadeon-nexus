@@ -1,4 +1,4 @@
-/** NEX-006/NEX-014: intercepted fixture corpus; never forwards backend requests. */
+/** NEX-006/NEX-014/NEX-015: intercepted fixture corpus; never forwards backend requests. */
 import { mkdirSync, writeFileSync } from "node:fs";
 import { spawn } from "node:child_process";
 import { installDesignFonts } from "./design-font-fixtures.mjs";
@@ -39,7 +39,9 @@ const token = [
 ]
   .map((v) => (typeof v === "string" ? v : Buffer.from(JSON.stringify(v)).toString("base64url")))
   .join(".");
-const nodes = Array.from({ length: 120 }, (_, i) => ({
+const corpus = Number(process.env.NEXUS_CORPUS || 120);
+assert(Number.isInteger(corpus) && corpus >= 30 && corpus <= 500, "Bounded fixture corpus");
+const nodes = Array.from({ length: corpus }, (_, i) => ({
   id: id(i),
   workspace_id: wid,
   campaign_id: null,
@@ -61,6 +63,14 @@ const nodes = Array.from({ length: 120 }, (_, i) => ({
   created_at: "2026-10-01T00:00:00Z",
   updated_at: "2026-10-01T00:00:00Z",
 }));
+if (process.env.NEXUS_LONG_READING === "true")
+  nodes[0].content_markdown +=
+    "\n\n" +
+    Array.from(
+      { length: 100 },
+      (_, i) =>
+        `Vestígio de leitura ${i + 1}. O fio atravessa o arquivo e preserva o contexto da memória. A leitura continua no painel sem deslocar as ferramentas.`,
+    ).join("\n\n");
 const memory = {
   focusNodeId: id(0),
   candidateLimit: 500,
@@ -98,22 +108,28 @@ const memory = {
 const results = [];
 try {
   await new Promise((ok, fail) => {
+    server.stderr.on("data", (b) => console.log("Vite:", b.toString().slice(0, 1500)));
     server.stdout.on("data", (b) => {
       if (b.toString().includes("Local:")) ok();
     });
     server.on("exit", (c) => fail(new Error(`Vite ${c}`)));
     setTimeout(() => fail(new Error("Vite timeout")), 30000).unref();
   });
-  for (const width of [320, 390, 820, 1440]) {
+  for (const width of (process.env.NEXUS_WIDTHS || "320,390,820,1440").split(",").map(Number)) {
     const context = await browser.newContext({
       viewport: { width, height: 1000 },
       hasTouch: width < 768,
       reducedMotion: width === 1440 ? "no-preference" : "reduce",
     });
     const page = await context.newPage();
+    page.setDefaultTimeout(45000);
     const errors = [],
       requests = [];
     page.on("pageerror", (e) => errors.push(e.message));
+    page.on("console", (message) => {
+      if (message.type() === "error" && !message.text().startsWith("[vite]"))
+        console.log("Browser error:", message.text());
+    });
     await page.addInitScript(
       ({ user, token }) =>
         localStorage.setItem(
@@ -148,6 +164,9 @@ try {
         body = [{ id: wid, name: "Arquivo de exemplo" }];
       else if (url.pathname.includes("/rpc/search_knowledge_nodes")) {
         const args = req.postDataJSON();
+        assert([30, 48].includes(args.p_limit) && args.p_offset >= 0, "Paginated index contract");
+        requests[requests.length - 1].limit = args.p_limit;
+        requests[requests.length - 1].offset = args.p_offset;
         const matches = nodes.filter(
           (n) => !args.p_query || n.title.toLowerCase().includes(args.p_query.toLowerCase()),
         );
@@ -157,8 +176,21 @@ try {
           snippet: node_data.summary,
           total_count: matches.length,
         }));
-      } else if (url.pathname.includes("/rpc/get_knowledge_graph_memory")) body = memory;
-      else if (url.pathname.includes("/knowledge_nodes")) {
+      } else if (url.pathname.includes("/rpc/get_knowledge_graph_memory")) {
+        const args = req.postDataJSON();
+        assert(args.p_candidate_limit <= 500, "Graph candidate cap");
+        const filtered = memory.nodes.filter(
+          (node) => !args.p_node_types || args.p_node_types.includes(node.nodeType),
+        );
+        const visible = new Set(filtered.map((node) => node.id));
+        body = {
+          ...memory,
+          nodes: filtered,
+          signals: memory.signals.filter(
+            (edge) => visible.has(edge.sourceNodeId) && visible.has(edge.targetNodeId),
+          ),
+        };
+      } else if (url.pathname.includes("/knowledge_nodes")) {
         const filter = url.searchParams.get("id");
         body = filter?.startsWith("eq.") ? nodes.filter((n) => n.id === filter.slice(3)) : nodes;
       } else if (
@@ -180,41 +212,165 @@ try {
     );
     await installDesignFonts(page);
     await page.goto(`http://127.0.0.1:${port}/nexus?node=${id(0)}`, {
-      waitUntil: "domcontentloaded",
+      waitUntil: "commit",
     });
+    console.log("Opened fixture", width);
     await page
       .getByRole("heading", { name: nodes[0].title, exact: true })
-      .waitFor()
+      .waitFor({ timeout: 180000 })
       .catch(async (error) => {
-        await page.screenshot({ path: `${output}/failure-${width}.png`, fullPage: true });
+        console.log(
+          "Reading failure:",
+          error.message,
+          "requests",
+          JSON.stringify(requests),
+          "errors",
+          JSON.stringify(errors),
+        );
         console.log(
           JSON.stringify({
             url: page.url(),
-            body: (await page.locator("body").innerText()).slice(0, 6000),
+            body: await page
+              .locator("body")
+              .innerText({ timeout: 5000 })
+              .catch(() => "unresponsive"),
             errors,
             requests,
           }),
         );
+        await page
+          .screenshot({ path: `${output}/failure-${width}.png`, fullPage: false, timeout: 10000 })
+          .catch(() => {});
         throw error;
       });
     assert((await page.locator("main").count()) === 1, "One main landmark");
+    console.log("Page ready", width);
+    const initialDocument = page.locator(
+      '.tadeon-nexus-reading__panes [data-panel][id="document"]',
+    );
+    const initialGroup = page.locator(".tadeon-nexus-reading__panes [data-group]");
+    assert(
+      Math.abs(
+        (await initialDocument.boundingBox()).width - (await initialGroup.boundingBox()).width,
+      ) < 2,
+      "Document owns the whole initial reading area",
+    );
     const tree = page.getByRole("tree");
     await tree.waitFor();
+    await page.getByRole("button", { name: "Próxima página", exact: true }).click();
+    await page.getByText(`2 de ${Math.ceil(corpus / 30)}`, { exact: true }).waitFor();
+    await page.getByRole("button", { name: "Página anterior", exact: true }).click();
+    await page.getByText(`1 de ${Math.ceil(corpus / 30)}`, { exact: true }).waitFor();
     const count = await tree.getByRole("treeitem").count();
     assert(count > 1, "Populated hierarchy");
     await page.getByRole("button", { name: `Recolher ${nodes[0].title}`, exact: true }).click();
     assert((await tree.getByRole("treeitem").count()) < count, "Collapse descendants");
     await page.getByRole("button", { name: `Expandir ${nodes[0].title}`, exact: true }).click();
+    assert(
+      (await page.locator("canvas[data-graph-density]").count()) === 0,
+      "Document view loads no graph before first request",
+    );
     await page.getByRole("button", { name: "Documento e grafo", exact: true }).click();
     const canvas = page.locator("canvas[data-graph-density]");
     await canvas.waitFor();
     assert((await canvas.boundingBox()).height < 800, "Canvas height remains bounded");
-    await page.getByText("120 nós ·", { exact: false }).waitFor();
-    await page.screenshot({
-      path: `${output}/split-${width}.png`,
-      fullPage: true,
-      animations: "disabled",
+    await page.getByText(`${Math.min(corpus, 220)} nós ·`, { exact: false }).waitFor();
+    console.log("Graph ready", width);
+    const panes = page.locator(".tadeon-nexus-reading__panes");
+    if (process.env.NEXUS_LONG_READING === "true") {
+      const documentScroll = panes.locator('[data-panel][id="document"] > div');
+      assert(
+        await documentScroll.evaluate((element) => {
+          element.scrollTop = element.scrollHeight;
+          return element.scrollTop > 0 && element.scrollHeight > element.clientHeight;
+        }),
+        "Long reading scrolls inside its panel",
+      );
+      await documentScroll.evaluate((element) => {
+        element.scrollTop = 0;
+      });
+    }
+    const separator = page.getByRole("separator", {
+      name: "Ajustar espaço entre documento e grafo",
     });
+    await separator.waitFor();
+    const axis = await panes.getAttribute("data-reading-axis");
+    const priorSize = Number(await separator.getAttribute("aria-valuenow"));
+    await separator.focus();
+    await page.keyboard.press(axis === "vertical" ? "ArrowDown" : "ArrowRight");
+    await page.waitForFunction(
+      (prior) =>
+        Number(document.querySelector("[role=separator]")?.getAttribute("aria-valuenow")) !== prior,
+      priorSize,
+    );
+    const beforePointer = Number(await separator.getAttribute("aria-valuenow"));
+    await separator.scrollIntoViewIfNeeded();
+    const bounds = await separator.boundingBox();
+    await page.mouse.move(bounds.x + bounds.width / 2, bounds.y + bounds.height / 2);
+    await page.mouse.down();
+    await page.mouse.move(
+      bounds.x + bounds.width / 2 - (axis === "horizontal" ? 24 : 0),
+      bounds.y + bounds.height / 2 - (axis === "vertical" ? 24 : 0),
+      { steps: 4 },
+    );
+    await page.mouse.up();
+    await page.waitForFunction(
+      (prior) =>
+        Number(document.querySelector("[role=separator]")?.getAttribute("aria-valuenow")) !== prior,
+      beforePointer,
+    );
+    const preferenceKey = `tadeon.nexus.reading.v1.${uid}.${wid}:workspace`;
+    const dimension = axis === "vertical" ? "vertical" : "horizontal";
+    await page.waitForFunction(
+      ({ key, dimension }) => JSON.parse(localStorage.getItem(key) || "{}")[dimension] !== 50,
+      { key: preferenceKey, dimension },
+    );
+    console.log("Resized", width, axis);
+    const rememberedSize = await page.evaluate(
+      ({ key, dimension }) => JSON.parse(localStorage.getItem(key))[dimension],
+      { key: preferenceKey, dimension },
+    );
+    assert(rememberedSize >= 30 && rememberedSize <= 70, "Pane preference remains bounded");
+    // Repeatedly switching view does not recreate the editor.
+    await page.getByRole("button", { name: "Documento", exact: true }).click();
+    await page.getByRole("button", { name: "Editar", exact: true }).click();
+    const editor = page.getByLabel("Conteúdo da página");
+    await editor.evaluate((element) => {
+      window.__fixtureEditor = element;
+    });
+    await page.getByRole("button", { name: "Grafo", exact: true }).click();
+    await page.getByRole("button", { name: "Documento e grafo", exact: true }).click();
+    assert(
+      await editor.evaluate((element) => element === window.__fixtureEditor),
+      "Stable editor DOM across modes",
+    );
+    await page.getByRole("button", { name: "Leitura", exact: true }).click();
+    if (width === 1440) {
+      await page.getByRole("button", { name: "Controles do grafo", exact: true }).click();
+      if (corpus > 120) {
+        await page.getByRole("combobox", { name: "Limite de nós" }).click();
+        await page.getByRole("option", { name: "500 nós", exact: true }).click();
+        await page.getByText(`${corpus} nós ·`, { exact: false }).waitFor();
+      }
+      await page.getByRole("combobox", { name: "Filtrar tipo de nó" }).click();
+      await page.getByRole("option", { name: "Documento", exact: true }).click();
+      await page.getByText(`${Math.ceil(corpus / 3)} nós ·`, { exact: false }).waitFor();
+      await page.getByRole("combobox", { name: "Filtrar tipo de nó" }).click();
+      await page.getByRole("option", { name: "Todos os tipos", exact: true }).click();
+      await page.getByText(`${corpus} nós ·`, { exact: false }).waitFor();
+      await page.getByRole("button", { name: /Física e leitura/ }).click();
+      const groups = page.getByRole("button", { name: /Cores por tipo de página/ });
+      await groups.click();
+      assert((await groups.getAttribute("aria-pressed")) === "true", "Optional graph groups");
+      await groups.click();
+      await page.getByRole("button", { name: "Controles do grafo", exact: true }).click();
+    }
+
+    if (!process.env.NEXUS_SKIP_SCREENSHOTS)
+      await panes.screenshot({
+        path: `${output}/split-${width}.png`,
+        animations: "disabled",
+      });
     await page.getByRole("button", { name: "Grafo", exact: true }).click();
     assert(
       !(await page.getByRole("heading", { name: nodes[0].title, exact: true }).isVisible()),
@@ -226,11 +382,11 @@ try {
       .first()
       .click();
     assert((await canvas.getAttribute("data-layout")) === "tree", "Tree view");
-    await page.screenshot({
-      path: `${output}/tree-${width}.png`,
-      fullPage: true,
-      animations: "disabled",
-    });
+    if (!process.env.NEXUS_SKIP_SCREENSHOTS)
+      await panes.screenshot({
+        path: `${output}/tree-${width}.png`,
+        animations: "disabled",
+      });
     await canvas.focus();
     await page.keyboard.press("Enter");
     await page.getByRole("button", { name: "Documento", exact: true }).click();
@@ -245,11 +401,11 @@ try {
       .first()
       .evaluate((element) => element.getBoundingClientRect().width);
     assert(cardWidth >= 200, "Library cards retain readable width in the result pane");
-    await page.screenshot({
-      path: `${output}/library-${width}.png`,
-      fullPage: true,
-      animations: "disabled",
-    });
+    if (!process.env.NEXUS_SKIP_SCREENSHOTS)
+      await library.screenshot({
+        path: `${output}/library-${width}.png`,
+        animations: "disabled",
+      });
     if (width < 1024) {
       const card = library.locator(".tadeon-library-card").first();
       await card.click();
@@ -263,17 +419,100 @@ try {
     }
     await page.keyboard.press("Escape");
     await library.waitFor({ state: "hidden" });
+    await page.getByRole("button", { name: "Documento e grafo", exact: true }).click();
+    console.log("Restoring preferences", width);
+    await page.reload({ waitUntil: "commit" });
+    await page.getByRole("heading", { name: nodes[0].title, exact: true }).waitFor();
+    await separator.waitFor();
+    assert(
+      (await panes.getAttribute("data-reading-view")) === "split",
+      "Reading mode survives reload",
+    );
+    await page.waitForFunction(
+      ({ key, dimension, expected }) =>
+        JSON.parse(localStorage.getItem(key) || "{}")[dimension] === expected,
+      { key: preferenceKey, dimension, expected: rememberedSize },
+    );
+    await page.waitForFunction(
+      (expected) =>
+        Math.abs(
+          Number(document.querySelector('[role="separator"]')?.getAttribute("aria-valuenow")) -
+            expected,
+        ) < 1,
+      rememberedSize,
+    );
+
+    await page.getByRole("button", { name: "Fechar " + nodes[0].title, exact: true }).click();
+    await page.getByText("Entrada do acervo", { exact: true }).waitFor();
+    const reopen = page.getByRole("button", { name: "Reabrir página fechada" });
+    await page.waitForFunction(() => document.activeElement?.hasAttribute("data-reopen-page"));
+    await reopen.click();
+    await page.getByRole("heading", { name: nodes[0].title, exact: true }).waitFor();
+    // Recover a conflicting local draft and exercise the actual portal/focus path.
+    const draftKey = `tadeon.nexus.draft.v2.${uid}.${wid}.${id(0)}`;
+    await page.evaluate(
+      ({ key, title }) =>
+        localStorage.setItem(
+          key,
+          JSON.stringify({
+            title,
+            content: "Rascunho de revisão",
+            updatedAt: "2026-09-01T00:00:00Z",
+          }),
+        ),
+      { key: draftKey, title: nodes[0].title },
+    );
+    await page.getByRole("button", { name: "Fechar " + nodes[0].title, exact: true }).click();
+    await reopen.click();
+    await page.getByRole("button", { name: "Revisar conflito", exact: true }).click();
+    const conflict = page.getByRole("dialog", { name: "Revisar versões da página" });
+    await conflict.waitFor();
+    assert(
+      await conflict.evaluate((element) => element.contains(document.activeElement)),
+      "Conflict portal receives focus",
+    );
+    await page.keyboard.press("Escape");
+    await conflict.waitFor({ state: "hidden" });
+    assert(
+      (await page.evaluate((key) => JSON.parse(localStorage.getItem(key)).content, draftKey)) ===
+        "Rascunho de revisão",
+      "Canceling review retains the draft",
+    );
+    await page.getByRole("button", { name: "Revisar conflito", exact: true }).click();
+    await conflict.getByRole("button", { name: "Usar versão salva", exact: true }).click();
+    assert(
+      (await page.evaluate((key) => localStorage.getItem(key), draftKey)) === null,
+      "Reviewed discard removes only the local draft",
+    );
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth > innerWidth);
     assert(!overflow, "No viewport overflow");
     assert(errors.length === 0, JSON.stringify(errors));
+    assert(
+      requests.some((request) => request.limit === 30 && request.offset === 30),
+      "Index moves through actual paginated requests",
+    );
     results.push({
       width,
-      nodes: 120,
+      nodes: corpus,
+      longReading: process.env.NEXUS_LONG_READING === "true",
+      conflictReview: true,
+      axis,
+      rememberedSize,
+      continuity: {
+        stableEditor: true,
+        lastTabClosed: true,
+        explicitReopen: true,
+        keyboardResize: true,
+        pointerResize: true,
+        modeAndSizeRestored: true,
+      },
       treeRows: count,
       overflow,
       errors,
       backendRequests: requests.length,
     });
+    writeFileSync(`${output}/results.json`, JSON.stringify(results, null, 2));
+    console.log(`Viewport verified: ${width}`);
     await context.close();
   }
   writeFileSync(`${output}/results.json`, JSON.stringify(results, null, 2));
