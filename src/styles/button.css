@@ -89,17 +89,6 @@
   }
 }
 
-@keyframes tadeon-sidebar-label-arrive {
-  from {
-    opacity: 0;
-    translate: -0.45rem 0;
-  }
-  to {
-    opacity: 1;
-    translate: 0 0;
-  }
-}
-
 /* ---------------------------------------------------------------------
  * Shared clickable language
  * ------------------------------------------------------------------ */
@@ -532,13 +521,6 @@
 
 .tadeon-nav-item {
   isolation: isolate;
-  transition:
-    color var(--motion-fast) var(--ease-out),
-    border-color var(--motion-fast) var(--ease-out),
-    background-color var(--motion-fast) var(--ease-out),
-    box-shadow var(--motion-fast) var(--ease-out),
-    translate var(--tadeon-motion-micro) var(--tadeon-ease-spring-soft),
-    scale var(--tadeon-motion-micro) var(--tadeon-ease-spring-soft);
 }
 
 .tadeon-nav-item__icon {
@@ -547,18 +529,9 @@
   border: 1px solid transparent;
   background: rgb(255 255 255 / 1.6%);
   box-shadow: inset 0 1px rgb(255 255 255 / 2.5%);
-  transition:
-    color var(--motion-fast) var(--ease-out),
-    border-color var(--motion-fast) var(--ease-out),
-    background-color var(--motion-fast) var(--ease-out),
-    box-shadow var(--motion-fast) var(--ease-out),
-    translate var(--tadeon-motion-micro) var(--tadeon-ease-spring-soft),
-    scale var(--tadeon-motion-micro) var(--tadeon-ease-spring-soft),
-    rotate var(--tadeon-motion-micro) var(--tadeon-ease-spring-soft);
 }
 
 .tadeon-nav-item[aria-current="page"] .tadeon-nav-item__icon {
-  translate: 0.06rem 0;
   border-color: color-mix(
     in srgb,
     var(--section-accent, var(--primary)) 18%,
@@ -572,18 +545,14 @@
 
 .tadeon-nav-item:not([data-mini="true"]) > span:last-child {
   min-width: 0;
-  animation: tadeon-sidebar-label-arrive 230ms var(--ease-out) both;
 }
 
 @media (hover: hover) and (pointer: fine) {
   .tadeon-nav-item:not([aria-current="page"]):hover {
     color: var(--sidebar-accent-foreground);
-    translate: 0.08rem 0;
   }
 
   .tadeon-nav-item:hover .tadeon-nav-item__icon {
-    translate: 0 -0.07rem;
-    scale: 1.045;
     border-color: color-mix(
       in srgb,
       var(--section-accent, var(--primary)) 16%,
@@ -622,17 +591,12 @@
   border-radius: 0.7rem 0.25rem 0.7rem 0.25rem;
   opacity: 0;
   background: rgb(var(--section-accent-rgb, 217 215 164) / 8%);
-  transform: scale(0.82);
-  transition:
-    opacity var(--motion-fast) var(--ease-out),
-    transform var(--motion-fast) var(--tadeon-ease-spring-soft);
   content: "";
 }
 
 .tadeon-mobile-dock__item[aria-current="page"]::before,
 .tadeon-mobile-dock__item[aria-expanded="true"]::before {
   opacity: 1;
-  transform: scale(1);
 }
 
 /* ---------------------------------------------------------------------
@@ -741,10 +705,7 @@
 @media (prefers-reduced-motion: reduce) {
   .tadeon-shell [data-slot="tabs-list"] > [data-slot="tabs-indicator"],
   .tadeon-shell [data-slot="tabs-content"]:not([data-motion-surface]),
-  .tadeon-shell :where(button, a, [role="button"], [role="tab"]:not([data-material-surface="tab"])) svg,
-  .tadeon-nav-item,
-  .tadeon-nav-item__icon,
-  .tadeon-mobile-dock__item::before {
+  .tadeon-shell :where(button, a, [role="button"], [role="tab"]:not([data-material-surface="tab"])) svg {
     animation: none !important;
     transition-duration: 0.01ms !important;
   }

@@ -1,3 +1,5 @@
+import type { OfflineCacheScope } from "@/lib/offline-cache";
+
 export const NEXUS_BACKUP_VERSION = 1;
 
 export interface NexusBackup {
@@ -46,14 +48,28 @@ export function parseNexusBackup(value: unknown): NexusBackup {
     candidate.app !== "Tadeon Nexus" ||
     candidate.formatVersion !== NEXUS_BACKUP_VERSION ||
     typeof candidate.exportedAt !== "string" ||
+    !Number.isFinite(Date.parse(candidate.exportedAt)) ||
     !Array.isArray(candidate.characterSheets) ||
     !Array.isArray(candidate.gameSettings)
   ) {
     throw new Error("Este arquivo não é um backup compatível do Tadeon Nexus.");
   }
-  const validRows = [...candidate.characterSheets, ...candidate.gameSettings].every(
-    (row) => row && typeof row === "object" && !Array.isArray(row),
-  );
+  const validRows = [candidate.characterSheets, candidate.gameSettings].every((rows) => {
+    const identifiers = new Set<string>();
+    return rows.every((row) => {
+      if (
+        !row ||
+        typeof row !== "object" ||
+        Array.isArray(row) ||
+        typeof row.id !== "string" ||
+        !row.id.trim() ||
+        identifiers.has(row.id)
+      )
+        return false;
+      identifiers.add(row.id);
+      return true;
+    });
+  });
   if (!validRows) throw new Error("O backup contém registros inválidos.");
   return candidate as NexusBackup;
 }
@@ -73,13 +89,19 @@ export function downloadNexusBackup(backup: NexusBackup, filename?: string): voi
   URL.revokeObjectURL(url);
 }
 
-function openDatabase(): Promise<IDBDatabase> {
+export function snapshotDatabaseName(scope: OfflineCacheScope): string {
+  if (!scope.userId || scope.role !== "mestre")
+    throw new Error("Histórico restrito à conta de mestre verificada.");
+  return `${DATABASE_NAME}.v2.${encodeURIComponent(scope.userId)}.${scope.role}`;
+}
+
+function openDatabase(scope: OfflineCacheScope): Promise<IDBDatabase> {
   return new Promise((resolve, reject) => {
     if (typeof indexedDB === "undefined") {
       reject(new Error("Histórico local indisponível neste navegador."));
       return;
     }
-    const request = indexedDB.open(DATABASE_NAME, 1);
+    const request = indexedDB.open(snapshotDatabaseName(scope), 1);
     request.onupgradeneeded = () => {
       const database = request.result;
       if (!database.objectStoreNames.contains(STORE_NAME)) {
@@ -98,8 +120,8 @@ function requestResult<T>(request: IDBRequest<T>): Promise<T> {
   });
 }
 
-export async function listSnapshots(): Promise<SnapshotSummary[]> {
-  const database = await openDatabase();
+export async function listSnapshots(scope: OfflineCacheScope): Promise<SnapshotSummary[]> {
+  const database = await openDatabase(scope);
   try {
     const transaction = database.transaction(STORE_NAME, "readonly");
     const rows = await requestResult(
@@ -118,8 +140,11 @@ export async function listSnapshots(): Promise<SnapshotSummary[]> {
   }
 }
 
-export async function getSnapshot(id: string): Promise<StoredSnapshot | null> {
-  const database = await openDatabase();
+export async function getSnapshot(
+  id: string,
+  scope: OfflineCacheScope,
+): Promise<StoredSnapshot | null> {
+  const database = await openDatabase(scope);
   try {
     const transaction = database.transaction(STORE_NAME, "readonly");
     const result = await requestResult(
@@ -131,8 +156,12 @@ export async function getSnapshot(id: string): Promise<StoredSnapshot | null> {
   }
 }
 
-export async function saveSnapshot(backup: NexusBackup, label: string): Promise<StoredSnapshot> {
-  const database = await openDatabase();
+export async function saveSnapshot(
+  backup: NexusBackup,
+  label: string,
+  scope: OfflineCacheScope,
+): Promise<StoredSnapshot> {
+  const database = await openDatabase(scope);
   const snapshot: StoredSnapshot = {
     id: crypto.randomUUID(),
     label: label.trim() || "Ponto de restauração",
@@ -141,22 +170,31 @@ export async function saveSnapshot(backup: NexusBackup, label: string): Promise<
   };
   try {
     const transaction = database.transaction(STORE_NAME, "readwrite");
-    await requestResult(transaction.objectStore(STORE_NAME).put(snapshot));
+    await transactionWrite(transaction, () => transaction.objectStore(STORE_NAME).put(snapshot));
   } finally {
     database.close();
   }
 
-  const snapshots = await listSnapshots();
-  await Promise.all(snapshots.slice(MAX_SNAPSHOTS).map((item) => deleteSnapshot(item.id)));
+  const snapshots = await listSnapshots(scope);
+  await Promise.all(snapshots.slice(MAX_SNAPSHOTS).map((item) => deleteSnapshot(item.id, scope)));
   return snapshot;
 }
 
-export async function deleteSnapshot(id: string): Promise<void> {
-  const database = await openDatabase();
+export async function deleteSnapshot(id: string, scope: OfflineCacheScope): Promise<void> {
+  const database = await openDatabase(scope);
   try {
     const transaction = database.transaction(STORE_NAME, "readwrite");
-    await requestResult(transaction.objectStore(STORE_NAME).delete(id));
+    await transactionWrite(transaction, () => transaction.objectStore(STORE_NAME).delete(id));
   } finally {
     database.close();
   }
+}
+
+function transactionWrite(transaction: IDBTransaction, write: () => IDBRequest): Promise<void> {
+  return new Promise((resolve, reject) => {
+    transaction.oncomplete = () => resolve();
+    transaction.onabort = () => reject(new Error("O histórico local não pôde ser gravado."));
+    transaction.onerror = () => reject(new Error("O histórico local não pôde ser gravado."));
+    write();
+  });
 }

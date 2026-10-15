@@ -44,7 +44,7 @@ describe("final icon and route parity 174/176", () => {
   it("restores the same active underline and motion contract to the mobile Master button", () => {
     const css = source("src/styles/create-sheet-search-viewport-163.css");
     expect(css).toContain('.tadeon-mobile-dock__item[href="/master-panel"][aria-current="page"]::before');
-    expect(css).toContain("transform: translateY(-1px) !important");
+    expect(css).not.toContain("transform: translateY(-1px) !important");
     expect(css).toContain('.tadeon-mobile-dock__item[href="/master-panel"][aria-current="page"]::after');
     expect(css).toContain("bottom: .2rem !important");
     expect(css).toContain("width: 1rem !important");

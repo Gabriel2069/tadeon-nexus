@@ -410,11 +410,6 @@ html body .tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-focus-brand-
    Navigation as a page marker
    ================================================================ */
 
-.tadeon-nav-item,
-.tadeon-mobile-dock__item,
-.tadeon-sidebar-collapse,
-.tadeon-mobile-header__control,
-.tadeon-desktop-toolbar__account,
 .tadeon-link-collapse {
   transition:
     color var(--tadeon-motion-hover) var(--tadeon-ease-material),
@@ -422,16 +417,6 @@ html body .tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-focus-brand-
     border-color var(--tadeon-motion-hover) var(--tadeon-ease-material),
     box-shadow var(--tadeon-motion-hover) var(--tadeon-ease-material),
     transform var(--tadeon-motion-press) var(--tadeon-ease-material);
-}
-
-.tadeon-nav-item:hover {
-  transform: translateX(3px);
-}
-
-.tadeon-nav-item:hover .tadeon-nav-item__icon > svg,
-.tadeon-mobile-dock__item:hover > svg {
-  transform: translateY(-1px);
-  filter: drop-shadow(0 0 8px rgb(217 215 164 / 16%));
 }
 
 .tadeon-sidebar-collapse:hover,
@@ -460,11 +445,6 @@ html body .tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-focus-brand-
   opacity: 0.8;
 }
 
-.tadeon-desktop-toolbar h2,
-.tadeon-mobile-header__identity p:last-child {
-  animation: tadeon-title-settle 460ms var(--tadeon-ease-reveal) both;
-}
-
 @keyframes tadeon-title-settle {
   from {
     opacity: 0;
@@ -474,14 +454,6 @@ html body .tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-focus-brand-
     opacity: 1;
     transform: translateY(0);
   }
-}
-
-.tadeon-mobile-header__identity .overflow-visible {
-  transition: transform var(--tadeon-motion-hover) var(--tadeon-ease-material), filter var(--tadeon-motion-hover) ease;
-}
-
-.tadeon-mobile-header__identity:active .overflow-visible {
-  transform: scale(0.94);
 }
 
 /* ================================================================
@@ -705,10 +677,6 @@ html body .tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-focus-brand-
     transform: none;
   }
 
-  .tadeon-mobile-dock__item[aria-current="page"] {
-    transform: translateY(-1px);
-  }
-
   .tadeon-shell[data-section] .tadeon-route-stage::before {
     width: 24rem;
     height: 20rem;
@@ -772,8 +740,7 @@ button:not([data-material-surface], .tadeon-material-button):disabled {
   box-shadow: none;
 }
 
-button:not([data-material-surface], .tadeon-material-button)[aria-busy="true"] > svg,
-[role="button"][aria-busy="true"] > svg {
+button:not([data-material-surface], .tadeon-material-button)[aria-busy="true"] > svg, [role="button"][aria-busy="true"] > svg {
   animation: tadeon-state-pulse 1.15s ease-in-out infinite;
 }
 
@@ -783,10 +750,7 @@ button:not([data-material-surface], .tadeon-material-button)[aria-busy="true"] >
 }
 
 /* Make focus feel like an archival mark rather than a browser outline. */
-.tadeon-route-stage :where(button, a, input, textarea, select):focus-visible,
-.tadeon-sidebar :where(button, a, input, textarea, select):focus-visible,
-.tadeon-mobile-header :where(button, a, input, textarea, select):focus-visible,
-.tadeon-mobile-dock :where(button, a):focus-visible {
+.tadeon-route-stage :where(button, a, input, textarea, select):focus-visible, .tadeon-sidebar :where(button, a, input, textarea, select):focus-visible, .tadeon-mobile-header :where(button, a, input, textarea, select):focus-visible, .tadeon-mobile-dock :where(button, a):focus-visible {
   outline: 1px solid color-mix(in srgb, var(--tadeon-knowledge) 78%, transparent);
   outline-offset: 3px;
   box-shadow: 0 0 0 4px rgb(217 215 164 / 5%);
@@ -799,24 +763,17 @@ button:not([data-material-surface], .tadeon-material-button)[aria-busy="true"] >
 @media (hover: none), (pointer: coarse) {
   .tadeon-surface:hover,
   .tadeon-state-panel:hover,
-  .tadeon-nav-item:hover,
   .tadeon-sheet-condition-chip:hover {
     transform: none;
     filter: none;
   }
 
-  .tadeon-nav-item:hover .tadeon-nav-item__icon > svg,
-  .tadeon-mobile-dock__item:hover > svg,
   .tadeon-surface:hover::before,
   .tadeon-state-panel:hover::before {
     transform: none;
     filter: none;
   }
 
-  .tadeon-nav-item:active,
-  .tadeon-mobile-dock__item:active,
-  .tadeon-mobile-header__control:active,
-  .tadeon-sidebar-collapse:active,
   .tadeon-link-collapse:active {
     transform: scale(0.985);
   }
@@ -826,11 +783,6 @@ button:not([data-material-surface], .tadeon-material-button)[aria-busy="true"] >
    Press feedback for important controls
    --------------------------------------------------------------- */
 
-.tadeon-nav-item:active,
-.tadeon-mobile-dock__item:active,
-.tadeon-mobile-header__control:active,
-.tadeon-sidebar-collapse:active,
-.tadeon-desktop-toolbar__account:active,
 .tadeon-link-collapse:active,
 .tadeon-skill-modifier-tabs button:active {
   transform: scale(0.985);
@@ -961,8 +913,6 @@ button:not([data-material-surface], .tadeon-material-button)[aria-busy="true"] >
   .tadeon-skill-modifier-panel,
   .tadeon-link-panel,
   .tadeon-link-collapse,
-  .tadeon-desktop-toolbar h2,
-  .tadeon-mobile-header__identity p:last-child,
   [aria-busy="true"] > svg {
     animation: none !important;
   }
@@ -973,8 +923,7 @@ button:not([data-material-surface], .tadeon-material-button)[aria-busy="true"] >
   }
 
   .tadeon-surface,
-  .tadeon-state-panel,
-  .tadeon-nav-item {
+  .tadeon-state-panel {
     transition-duration: 1ms !important;
   }
 }
@@ -1110,9 +1059,7 @@ button:not([data-material-surface], .tadeon-material-button)[aria-busy="true"] >
    Navigation / actions
    -------------------------------------------------------------------------- */
 
-button:not([data-material-surface], .tadeon-material-button)[data-tadeon-directed="true"],
-a:not([data-material-surface], .tadeon-material-button)[data-tadeon-directed="true"],
-[role="button"][data-tadeon-directed="true"] {
+button:not([data-material-surface], .tadeon-material-button)[data-tadeon-directed="true"], a:not([data-material-surface], .tadeon-material-button)[data-tadeon-directed="true"], [role="button"][data-tadeon-directed="true"] {
   transition:
     color var(--tadeon-runtime-interaction) ease,
     background-color var(--tadeon-runtime-interaction) ease,
@@ -1121,24 +1068,18 @@ a:not([data-material-surface], .tadeon-material-button)[data-tadeon-directed="tr
     transform 150ms var(--tadeon-runtime-material);
 }
 
-button:not([data-material-surface], .tadeon-material-button)[data-tadeon-directed="true"]:active,
-a:not([data-material-surface], .tadeon-material-button)[data-tadeon-directed="true"]:active,
-[role="button"][data-tadeon-directed="true"]:active {
+button:not([data-material-surface], .tadeon-material-button)[data-tadeon-directed="true"]:active, a:not([data-material-surface], .tadeon-material-button)[data-tadeon-directed="true"]:active, [role="button"][data-tadeon-directed="true"]:active {
   transform: scale(0.975);
 }
 
 @media (hover: hover) and (pointer: fine) {
-  button:not([data-material-surface], .tadeon-material-button)[data-tadeon-directed="true"]:hover svg,
-  a:not([data-material-surface], .tadeon-material-button)[data-tadeon-directed="true"]:hover svg,
-  [role="button"][data-tadeon-directed="true"]:hover svg {
+  button:not([data-material-surface], .tadeon-material-button)[data-tadeon-directed="true"]:hover svg, a:not([data-material-surface], .tadeon-material-button)[data-tadeon-directed="true"]:hover svg, [role="button"][data-tadeon-directed="true"]:hover svg {
     transform: translateY(-1px) scale(1.035);
     filter: drop-shadow(0 0 8px rgb(217 215 164 / 18%));
   }
 }
 
-button:not([data-material-surface], .tadeon-material-button)[data-tadeon-directed="true"] svg,
-a:not([data-material-surface], .tadeon-material-button)[data-tadeon-directed="true"] svg,
-[role="button"][data-tadeon-directed="true"] svg {
+button:not([data-material-surface], .tadeon-material-button)[data-tadeon-directed="true"] svg, a:not([data-material-surface], .tadeon-material-button)[data-tadeon-directed="true"] svg, [role="button"][data-tadeon-directed="true"] svg {
   transition:
     transform var(--tadeon-runtime-interaction) var(--tadeon-runtime-material),
     filter var(--tadeon-runtime-interaction) ease;
@@ -1226,9 +1167,7 @@ a:not([data-material-surface], .tadeon-material-button)[data-tadeon-directed="tr
    Focus clarity
    -------------------------------------------------------------------------- */
 
-button:not([data-material-surface], .tadeon-material-button)[data-tadeon-directed="true"]:focus-visible,
-a:not([data-material-surface], .tadeon-material-button)[data-tadeon-directed="true"]:focus-visible,
-[role="button"][data-tadeon-directed="true"]:focus-visible {
+button:not([data-material-surface], .tadeon-material-button)[data-tadeon-directed="true"]:focus-visible, a:not([data-material-surface], .tadeon-material-button)[data-tadeon-directed="true"]:focus-visible, [role="button"][data-tadeon-directed="true"]:focus-visible {
   outline: 2px solid color-mix(in srgb, var(--tadeon-knowledge) 84%, transparent);
   outline-offset: 3px;
   box-shadow: 0 0 0 5px rgb(217 215 164 / 7%);
@@ -1518,10 +1457,6 @@ a:not([data-material-surface], .tadeon-material-button)[data-tadeon-directed="tr
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .tadeon-mobile-dock__item,
-  .tadeon-mobile-header__control {
-    transition-duration: 1ms !important;
-  }
 }
 
 /* end-source: src/styles/tadeon-mobile-excellence.css */

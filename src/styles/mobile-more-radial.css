@@ -1,177 +1,46 @@
-/* source: src/styles/mobile-more-radial.css */
-/* NEX-004: Radix owns the circular menu's anchor and accessibility.
-   This module owns its single material and finite motion. */
-.tadeon-mobile-drawer [data-slot="sheet-close"] {
-  z-index: 96;
-  isolation: isolate;
-}
-.tadeon-mobile-dock > button[aria-haspopup="menu"] > svg {
-  transition: rotate 180ms var(--ease-out);
-}
-.tadeon-mobile-dock > button[aria-haspopup="menu"][aria-expanded="true"] > svg {
-  rotate: 90deg;
-}
-.tadeon-mobile-dock__item[data-radial-active="true"]::after {
-  opacity: 1;
-}
-
-.tadeon-mobile-more-radial {
-  position: relative;
+/* The filename is retained for import compatibility. Radix owns the compact menu. */
+.tadeon-mobile-drawer [data-slot="sheet-close"] { z-index: 96; }
+.tadeon-mobile-dock__item[data-more-active="true"]::after { opacity: 1; }
+.tadeon-mobile-more {
   z-index: 94;
-  width: 12rem;
-  height: 12rem;
-  border: 1px solid #7a8187;
-  border-radius: 50%;
-  background: linear-gradient(145deg, rgb(233 227 213 / 7%), transparent 45%), rgb(21 24 30 / 94%);
+  width: min(19rem, calc(100vw - 2rem));
+  max-height: min(28rem, var(--radix-dropdown-menu-content-available-height));
+  overflow-y: auto;
+  padding: .65rem;
+  border: 1px solid rgb(233 227 213 / 25%);
+  border-radius: 1.15rem;
+  color: var(--foreground);
+  background: linear-gradient(145deg, rgb(233 227 213 / 7%), transparent 45%), #15181ef5;
   backdrop-filter: blur(16px);
-  box-shadow:
-    0 24px 48px rgb(0 0 0 / 38%),
-    inset 0 1px 0 rgb(233 227 213 / 16%);
+  box-shadow: 0 20px 48px rgb(0 0 0 / 45%), inset 0 1px rgb(233 227 213 / 14%);
+  outline: none;
   transform-origin: var(--radix-dropdown-menu-content-transform-origin);
-  outline: none;
 }
-.tadeon-mobile-more-radial[data-state="open"] {
-  animation: tadeon-mobile-more-radial-open 210ms var(--ease-out) both;
-}
-.tadeon-mobile-more-radial[data-state="closed"] {
-  animation: tadeon-mobile-more-radial-close 140ms var(--ease-out) both;
-}
-.tadeon-mobile-more-radial__orbit {
-  position: absolute;
-  inset: 1.15rem;
-  border: 1px dashed rgb(233 227 213 / 18%);
-  border-radius: 50%;
-  pointer-events: none;
-}
-.tadeon-mobile-more-radial__item {
-  position: absolute;
-  z-index: 2;
-  display: grid;
-  width: 3.9rem;
-  min-height: 3.5rem;
-  place-items: center;
-  gap: 0.25rem;
-  padding: 0.4rem 0.15rem;
-  border: 1px solid var(--border);
-  border-radius: 1rem 0.45rem 1rem 0.45rem;
+.tadeon-mobile-more[data-state="open"] { animation: tadeon-more-open 180ms var(--ease-out) both; }
+.tadeon-mobile-more[data-state="closed"] { animation: tadeon-more-close 120ms var(--ease-out) both; }
+.tadeon-mobile-more__heading { padding: .4rem .6rem .65rem; font: .75rem var(--font-mono); color: var(--muted-foreground); }
+.tadeon-mobile-more__item {
+  display: flex;
+  min-height: 3.25rem;
+  align-items: center;
+  gap: .8rem;
+  padding: .7rem;
+  border: 1px solid transparent;
+  border-radius: .7rem;
+  font-size: .875rem;
   color: var(--foreground);
-  background: #15181e;
-  box-shadow:
-    0 6px 14px rgb(0 0 0 / 24%),
-    inset 0 1px 0 rgb(233 227 213 / 6%);
   outline: none;
-  transition:
-    border-color 180ms var(--ease-out),
-    background-color 180ms var(--ease-out);
+  transition: background-color 150ms ease, border-color 150ms ease;
 }
-.tadeon-mobile-more-radial__item[href="/offline"] {
-  --radial-accent: #bba4ca;
-}
-.tadeon-mobile-more-radial__item[href="/manage-users"] {
-  --radial-accent: #dfa774;
-}
-.tadeon-mobile-more-radial__item[href="/nexus-tools"] {
-  --radial-accent: #c4c8cd;
-}
-.tadeon-mobile-more-radial__item svg {
-  width: 1.1rem;
-  height: 1.1rem;
-  color: var(--radial-accent);
-}
-.tadeon-mobile-more-radial__item span {
-  font-size: 0.75rem;
-  line-height: 1.2;
-}
-.tadeon-mobile-more-radial__item:is([data-highlighted], [aria-current="page"]) {
-  border-color: var(--radial-accent);
-  background: #22262d;
-}
-.tadeon-mobile-more-radial__item[aria-current="page"] {
-  box-shadow: inset 0 0 0 1px var(--radial-accent);
-}
-.tadeon-mobile-more-radial__item.is-left {
-  top: 3.3rem;
-  left: 0.25rem;
-}
-.tadeon-mobile-more-radial__item.is-top {
-  top: 0.2rem;
-  left: 50%;
-  translate: -50% 0;
-}
-.tadeon-mobile-more-radial__item.is-right {
-  top: 3.3rem;
-  right: 0.25rem;
-}
-.tadeon-mobile-more-radial__center {
-  position: absolute;
-  inset: auto 0 0.7rem;
-  display: grid;
-  justify-items: center;
-  gap: 0.25rem;
-}
-.tadeon-mobile-more-radial__center button {
-  display: grid;
-  width: 2.75rem;
-  height: 2.75rem;
-  place-items: center;
-  border: 1px solid var(--border);
-  border-radius: 50%;
-  color: var(--foreground);
-  background: #15181e;
-  outline: none;
-}
-.tadeon-mobile-more-radial__center button[data-highlighted],
-.tadeon-mobile-more-radial__item:focus-visible {
-  outline: 2px solid var(--primary);
-  outline-offset: 2px;
-}
-.tadeon-mobile-more-radial__center button svg {
-  width: 1rem;
-  height: 1rem;
-}
-.tadeon-mobile-more-radial__center strong {
-  color: var(--muted-foreground);
-  font: 0.65rem var(--font-mono);
-}
-@keyframes tadeon-mobile-more-radial-open {
-  from {
-    opacity: 0;
-    transform: translateY(6px) scale(0.97);
-  }
-  to {
-    opacity: 1;
-    transform: none;
-  }
-}
-@keyframes tadeon-mobile-more-radial-close {
-  to {
-    opacity: 0;
-    transform: translateY(4px);
-  }
-}
-@supports not (backdrop-filter: blur(1px)) {
-  .tadeon-mobile-more-radial {
-    background: #15181e;
-  }
-}
-@media (prefers-reduced-transparency: reduce) {
-  .tadeon-mobile-more-radial {
-    background: #15181e;
-    backdrop-filter: none;
-  }
-}
-@media (max-width: 380px) {
-  .tadeon-mobile-more-radial {
-    max-width: calc(100vw - 2rem);
-  }
-}
-@media (prefers-reduced-motion: reduce) {
-  .tadeon-mobile-more-radial {
-    animation: none;
-  }
-  .tadeon-mobile-more-radial__item,
-  .tadeon-mobile-dock > button[aria-haspopup="menu"] > svg {
-    transition: none;
-  }
-}
-/* end-source: src/styles/mobile-more-radial.css */
+.tadeon-mobile-more__item svg { width: 1.25rem; height: 1.25rem; flex-shrink: 0; color: var(--muted-foreground); }
+.tadeon-mobile-more__item:is([data-highlighted], [aria-current="page"]) { background: #282c34; border-color: #7a8187; }
+.tadeon-mobile-more__item[aria-current="page"]::after { content: "Atual"; margin-left: auto; font-size: .7rem; color: var(--muted-foreground); }
+.tadeon-mobile-more__center { display: flex; justify-content: flex-end; border-top: 1px solid var(--border); margin-top: .4rem; padding-top: .4rem; }
+.tadeon-mobile-more__center button { display: grid; width: 2.75rem; height: 2.75rem; place-items: center; border-radius: .6rem; }
+.tadeon-mobile-more__center button svg { width: 1rem; height: 1rem; }
+.tadeon-mobile-more__center button[data-highlighted] { outline: 2px solid var(--foreground); outline-offset: -2px; }
+@keyframes tadeon-more-open { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+@keyframes tadeon-more-close { to { opacity: 0; transform: translateY(4px); } }
+@media (prefers-reduced-motion: reduce) { .tadeon-mobile-more { animation: none; } .tadeon-mobile-more__item { transition: none; } }
+@supports not (backdrop-filter: blur(1px)) { .tadeon-mobile-more { background: #15181e; } }
+@media (prefers-reduced-transparency: reduce) { .tadeon-mobile-more { background: #15181e; backdrop-filter: none; } }

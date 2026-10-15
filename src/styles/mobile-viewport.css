@@ -23,9 +23,6 @@
   margin: 0 !important;
   color: currentColor !important;
   opacity: 1 !important;
-  filter: none !important;
-  transform: none !important;
-  transform-origin: center !important;
 }
 
 .tadeon-mobile-dock .tadeon-mobile-dock__item[href="/master-panel"]::before {
@@ -36,8 +33,6 @@
   -webkit-mask: none !important;
   mask: none !important;
   opacity: 0 !important;
-  filter: none !important;
-  transform: none !important;
   content: none !important;
 }
 
@@ -48,8 +43,6 @@
 
 .tadeon-mobile-dock .tadeon-mobile-dock__item[href="/master-panel"][aria-current="page"] > svg {
   color: var(--section-accent) !important;
-  filter: drop-shadow(0 0 8px rgb(var(--section-accent-rgb) / 28%)) !important;
-  transform: translateY(-1px) !important;
 }
 
 .tadeon-mobile-dock .tadeon-mobile-dock__item[href="/master-panel"]:not([aria-current="page"])::after {
@@ -67,7 +60,6 @@
   background: var(--section-accent) !important;
   box-shadow: 0 0 10px rgb(var(--section-accent-rgb) / 45%) !important;
   opacity: 1 !important;
-  transform: none !important;
   content: "" !important;
 }
 
@@ -171,15 +163,9 @@ html[data-tadeon-keyboard-open="true"] :is(
 
 .tadeon-mobile-dock .tadeon-mobile-dock__item[href="/master-panel"][aria-current="page"]::before {
   color: var(--section-accent, var(--tdv-master)) !important;
-  filter: drop-shadow(0 0 8px rgb(var(--section-accent-rgb, 168 68 72) / 28%));
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .tadeon-mobile-dock .tadeon-mobile-dock__item[href="/master-panel"] > svg,
-  .tadeon-mobile-dock .tadeon-mobile-dock__item[href="/master-panel"]::before {
-    transition: none !important;
-    transform: none !important;
-  }
 
   [data-slot="dialog-content"]:not([data-motion-surface]):has(#sheet-name),
   html[data-tadeon-keyboard-open="true"] [data-slot="dialog-content"]:not([data-motion-surface]) {

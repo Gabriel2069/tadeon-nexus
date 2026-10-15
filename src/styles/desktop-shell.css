@@ -83,9 +83,6 @@
       var(--section-accent) 13%,
       var(--sidebar-border)
     );
-    transition:
-      width var(--motion-panel) var(--ease-out),
-      border-color var(--motion-panel) var(--ease-out);
   }
 
   .tadeon-sidebar::before {
@@ -128,7 +125,6 @@
 
   .tadeon-nav-item[aria-current="page"] .tadeon-nav-item__icon > svg {
     color: var(--section-accent);
-    filter: drop-shadow(0 0 9px rgb(var(--section-accent-rgb) / 25%));
   }
 
   .tadeon-desktop-toolbar {

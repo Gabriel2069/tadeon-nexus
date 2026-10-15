@@ -89,7 +89,6 @@ html body .tadeon-focus-section-mark-icon {
     row-gap: .08rem !important;
     align-items: center !important;
     padding: 0 !important;
-    transform: none !important;
   }
 
   html body .tadeon-shell .tadeon-desktop-toolbar > .min-w-0 > .tadeon-focus-section-mark-host {
@@ -130,7 +129,6 @@ html body .tadeon-focus-section-mark-icon {
     justify-content: center !important;
     column-gap: .625rem !important;
     padding: 0 !important;
-    transform: none !important;
   }
 
   /* AppLayout ainda contém o SVG legado; o BrandMark real do bridge é o único
@@ -744,7 +742,7 @@ html body .tadeon-shell:is(
   [data-section="Saúde do arquivo"],
   [data-section="Consulta offline"]
 ) .tadeon-page-hero[data-tadeon-page-hero] > .tadeon-page-hero-mark-host,
-html body .tadeon-shell[data-section="Painel do Mestre"] .tadeon-master-commandbar__glow {
+  html body .tadeon-shell[data-section="Painel do Mestre"] .tadeon-master-commandbar__glow {
   color: var(--section-accent) !important;
   border-color: rgb(var(--section-accent-rgb) / 48%) !important;
   background:
@@ -779,8 +777,8 @@ html body .tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-studio__head
   h2,
   .font-cinzel
 ),
-html body .tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-studio__brand > .tadeon-tabletop-brand-mark-host,
-html body .tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-brand-mark-icon {
+  html body .tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-studio__brand > .tadeon-tabletop-brand-mark-host,
+  html body .tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-brand-mark-icon {
   color: var(--section-accent) !important;
 }
 
@@ -2178,7 +2176,7 @@ html body :is(
   .tadeon-master-commandbar,
   .tadeon-page-hero[data-tadeon-page-hero]
 )::before,
-html body :is(
+  html body :is(
   .tadeon-tabletop-studio__header,
   .tadeon-master-commandbar,
   .tadeon-page-hero[data-tadeon-page-hero]
@@ -2328,12 +2326,12 @@ html body .tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-studio__bran
     .tadeon-master-commandbar,
     .tadeon-page-hero[data-tadeon-page-hero]
   ),
-  html body :is(
+    html body :is(
     .tadeon-tabletop-studio__header,
     .tadeon-master-commandbar,
     .tadeon-page-hero[data-tadeon-page-hero]
   )::before,
-  html body :is(
+    html body :is(
     .tadeon-tabletop-studio__header,
     .tadeon-master-commandbar,
     .tadeon-page-hero[data-tadeon-page-hero]
@@ -2859,13 +2857,11 @@ html body .tadeon-shell[data-section="Mesa Nexus"] #tadeon-main .tadeon-tabletop
 }
 
 /* Master / Backup: restrained icon response to reinforce section identity. */
-html body .tadeon-shell[data-section="Painel do Mestre"] #tadeon-main [data-slot="button"]:not([data-material-surface], .tadeon-material-button):hover > svg,
-html body .tadeon-shell[data-section="Saúde do arquivo"] #tadeon-main [data-slot="button"]:not([data-material-surface], .tadeon-material-button):hover > svg {
+html body .tadeon-shell[data-section="Painel do Mestre"] #tadeon-main [data-slot="button"]:not([data-material-surface], .tadeon-material-button):hover > svg, html body .tadeon-shell[data-section="Saúde do arquivo"] #tadeon-main [data-slot="button"]:not([data-material-surface], .tadeon-material-button):hover > svg {
   transform: translateY(-1px) rotate(-1.5deg);
 }
 
-html body .tadeon-shell[data-section="Painel do Mestre"] #tadeon-main [data-slot="button"]:not([data-material-surface], .tadeon-material-button):active > svg,
-html body .tadeon-shell[data-section="Saúde do arquivo"] #tadeon-main [data-slot="button"]:not([data-material-surface], .tadeon-material-button):active > svg {
+html body .tadeon-shell[data-section="Painel do Mestre"] #tadeon-main [data-slot="button"]:not([data-material-surface], .tadeon-material-button):active > svg, html body .tadeon-shell[data-section="Saúde do arquivo"] #tadeon-main [data-slot="button"]:not([data-material-surface], .tadeon-material-button):active > svg {
   transform: scale(.97);
 }
 
@@ -3108,12 +3104,6 @@ html body .tadeon-shell .tadeon-nav-item__icon > svg {
   min-width: 1.25rem !important;
   height: 1.25rem !important;
   min-height: 1.25rem !important;
-  transform: none !important;
-}
-
-html body .tadeon-shell [data-mini="true"] .tadeon-nav-item__icon,
-html body .tadeon-shell [data-mini="true"] .tadeon-nav-item__icon > svg {
-  transform: none !important;
 }
 
 /* -------------------------------------------------------------------------- */
@@ -3216,8 +3206,7 @@ html body .tadeon-shell :is(.tadeon-page-hero, .tadeon-tabletop-studio__header, 
 }
 
 @media (prefers-reduced-motion: reduce) {
-  html body .tadeon-shell :is(.tadeon-page-hero, .tadeon-tabletop-studio__header, .tadeon-master-commandbar),
-  html body .tadeon-shell :is(.tadeon-page-hero::before, .tadeon-page-hero::after, .tadeon-tabletop-studio__header::before, .tadeon-tabletop-studio__header::after, .tadeon-master-commandbar::before, .tadeon-master-commandbar::after) {
+  html body .tadeon-shell :is(.tadeon-page-hero, .tadeon-tabletop-studio__header, .tadeon-master-commandbar), html body .tadeon-shell :is(.tadeon-page-hero::before, .tadeon-page-hero::after, .tadeon-tabletop-studio__header::before, .tadeon-tabletop-studio__header::after, .tadeon-master-commandbar::before, .tadeon-master-commandbar::after) {
     animation: none !important;
     will-change: auto !important;
   }

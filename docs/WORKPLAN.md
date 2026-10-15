@@ -2,7 +2,7 @@
 
 > Gerado de [project-continuity.json](project-continuity.json). Edite o registro e rode `npm run sync:project`; não mantenha uma cópia manual.
 
-Snapshot: 2026-10-14; referência de runtime: `778d4449b01adc9ae5eab498d27606d2d7c3b35f`. PR #269 em `feat/nexus-reading-continuity-2026-10-14`; integração: `integrated`. Não é prova de deploy.
+Snapshot: 2026-10-15; referência de runtime: `778d4449b01adc9ae5eab498d27606d2d7c3b35f`. PR #269 em `feat/nexus-reading-continuity-2026-10-14`; integração: `integrated`. Não é prova de deploy.
 
 Estados: planejado → próximo → em andamento → validado na branch → integrado. Publicação exige evidência própria do SHA; adiado conserva o requisito. Se um requisito mudar, preservar o ID e registrar a decisão/evidência.
 
@@ -25,6 +25,10 @@ Cada PR usa IDs desta fila e declara dependências. Trabalho sobre o mesmo propr
 | NEX-012 | Revisão editorial do corpus canônico | Adiado | 9 | knowledge | NEX-006 |
 | NEX-014 | Reconciliar movimento e aprofundar Véu & Trama | Integrado | 3 | shell | NEX-005, NEX-013 |
 | NEX-015 | Nexus: continuidade de abas e composição dos painéis | Integrado | 4 | knowledge | NEX-006, NEX-014 |
+| NEX-016 | Navegação: menus estáveis e organizados | Em andamento | 4 | shell | NEX-014 |
+| NEX-017 | Consulta offline: conteúdo local e limites claros | Em andamento | 4 | session | NEX-014 |
+| NEX-018 | Usuários: papéis, busca e revisão de ações | Em andamento | 4 | master | NEX-014 |
+| NEX-019 | Backup e diagnóstico: revisão e histórico por conta | Em andamento | 4 | assets | NEX-014 |
 
 ## NEX-001 — Preparação estrutural
 
@@ -145,6 +149,35 @@ Evidências: [docs/material-reading-validation.json](../docs/material-reading-va
 
 Evidências: [docs/nexus-continuity-validation.json](../docs/nexus-continuity-validation.json), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38669420714), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38669674635).
 
+## NEX-016 — Navegação: menus estáveis e organizados
+
+- Menu Mais em lista, sidebar recolhida acessível e transição entre drawer e conta com foco consistente.
+- Eliminar movimentos concorrentes dos controles e manter abertura/fechamento direcional com redução de movimento.
+
+Evidências: pendentes; não declarar concluído.
+
+## NEX-017 — Consulta offline: conteúdo local e limites claros
+
+- Busca local, contagem de detalhes, atualização da leitura e limpeza confirmada da cópia desta conta.
+- Preservar separação por conta/cargo e distinguir cópia local, sessão verificada e backup.
+
+Evidências: pendentes; não declarar concluído.
+
+## NEX-018 — Usuários: papéis, busca e revisão de ações
+
+- Busca por nome/e-mail, filtro por papel, estados de erro e confirmação antes de alterar papéis ou excluir contas.
+- Isolar leituras e respostas por identidade; bloquear alterações simultâneas e preservar revisão após falha.
+
+Evidências: pendentes; não declarar concluído.
+
+## NEX-019 — Backup e diagnóstico: revisão e histórico por conta
+
+- Histórico local por mestre verificado, validação de importação e revisão antes de mesclar registros.
+- Cópia prévia confirmada por transação local, falhas parciais explícitas e diagnóstico com invalidação de leituras.
+- Distinguir exportação parcial de fichas/configurações e restauração completa de DB/Storage/R2, que permanece em NEX-011.
+
+Evidências: pendentes; não declarar concluído.
+
 ## Decisões vigentes
 
 | ID | Decisão | Motivo |
@@ -159,3 +192,4 @@ Evidências: [docs/nexus-continuity-validation.json](../docs/nexus-continuity-va
 | DEC-008 | Tipografia editorial Grenze; menu Mais renderizado pelo shell e primitivo Radix. | Tadeu pediu fonte mais sofisticada e medieval e autorizou prosseguir em 11/10/2026. Retirar captura global e mutação de SVG preservando destinos e círculo. Escolha de fonte superada por DEC-009; navegação consolidada permanece válida. |
 | DEC-009 | Tadeu rejeitou Grenze e os números monoespaçados; Cormorant Garamond 500/600/700 e itálico 500 assumem o editorial, Inter 500 com números tabulares assume métricas. PT Mono fica em metadados. Vidro nos controles e navegação, conteúdo opaco, tecido vetorial e reflexos locais; nenhuma simulação física ou loop global novo. | Nova instrução explícita de Tadeu em 11/10/2026: rever fonte, métricas e presença de fundo/motion antes da ficha. A parte tipográfica de DEC-008 passa a ser histórica, sem desfazer a navegação consolidada. |
 | DEC-010 | NEX-015 implementa e valida continuidade/composição com fixtures; sua verificação com corpus real autorizado permanece em NEX-010. | A etapa não certifica contas reais, RLS ou rollout. Consolidar essa verificação no lote existente de autorização evita uma fila duplicada ou declarar validação fictícia como real. |
+| DEC-011 | Priorizar menus, Consulta offline, Usuários e Backup e diagnóstico antes da Mesa, conforme novo pedido de Tadeu. | NEX-016 a NEX-019 delimitam navegação e utilidades. URLs e identidade visual permanecem; a revisão não conclui o restante do Painel do Mestre, autorização real ou restauração completa de infraestrutura (NEX-008/010/011). Os nomes visíveis são Consulta offline, Usuários e Backup e diagnóstico. |

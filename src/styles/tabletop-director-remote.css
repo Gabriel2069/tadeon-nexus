@@ -175,13 +175,11 @@
 /* end-source: src/styles/tabletop-director-preview-final.css */
 /* source: src/styles/interface-stability.css */
 /* Cross-workspace interaction stability ---------------------------------- */
-.tadeon-shell :is([data-slot="button"], button, a[role="button"], .tadeon-nav-item) > svg,
-.tadeon-shell .tadeon-nav-item__icon,
-.tadeon-shell .tadeon-nav-item__icon > svg,
-.tadeon-mobile-dock a > svg,
-.tadeon-mobile-dock button > svg {
+.tadeon-shell :is([data-slot="button"], button, a[role="button"], .tadeon-nav-item) > svg, .tadeon-shell .tadeon-nav-item__icon, .tadeon-shell .tadeon-nav-item__icon > svg, .tadeon-mobile-dock a > svg, .tadeon-mobile-dock button > svg {
   flex: 0 0 auto;
   overflow: visible;
+}
+.tadeon-mobile-dock a > svg, .tadeon-mobile-dock button > svg {
   transform-origin: center;
 }
 
@@ -193,8 +191,6 @@
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  .tadeon-shell :is([data-slot="button"], button, a[role="button"], .tadeon-nav-item) > svg:not(.animate-spin),
-  .tadeon-shell .tadeon-nav-item__icon > svg:not(.animate-spin),
   .tadeon-mobile-dock :is(a, button) > svg:not(.animate-spin) {
     transition:
       translate 180ms var(--ease-out, ease-out),
@@ -203,15 +199,11 @@
       opacity 180ms var(--ease-out, ease-out);
   }
 
-  .tadeon-shell :is([data-slot="button"], button, a[role="button"], .tadeon-nav-item):hover > svg:not(.animate-spin),
-  .tadeon-shell .tadeon-nav-item:hover .tadeon-nav-item__icon > svg:not(.animate-spin),
   .tadeon-mobile-dock :is(a, button):hover > svg:not(.animate-spin) {
     translate: 0 -1px;
     scale: 1.07;
   }
 
-  .tadeon-shell :is([data-slot="button"], button, a[role="button"], .tadeon-nav-item):active > svg:not(.animate-spin),
-  .tadeon-shell .tadeon-nav-item:active .tadeon-nav-item__icon > svg:not(.animate-spin),
   .tadeon-mobile-dock :is(a, button):active > svg:not(.animate-spin) {
     translate: 0 0;
     scale: 0.9;

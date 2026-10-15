@@ -41,6 +41,6 @@ describe("focus header + navigation parity 159", () => {
     expect(css).toContain('.tadeon-mobile-dock__item[href="/master-panel"]::before');
     expect(css).toContain("width: 1.25rem !important");
     expect(css).toContain("height: 1.25rem !important");
-    expect(css).toContain("transform: translateY(-1px) !important");
+    expect(css).not.toContain("transform: translateY(-1px) !important");
   });
 });

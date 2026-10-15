@@ -40,8 +40,6 @@
   opacity: 0.62;
   pointer-events: none;
   content: "";
-  transform: translate3d(-4%, 0, 0) rotate(-1deg);
-  animation: tadeon-head-ambient-drift 13s ease-in-out infinite alternate;
 }
 
 :where(
@@ -51,7 +49,6 @@
   .tadeon-mobile-header::after
 ) {
   background-size: 220% 100%;
-  animation: tadeon-head-thread-travel 8s ease-in-out infinite;
 }
 
 .tadeon-nexus-commandbar::after {
@@ -139,26 +136,12 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  :where(
-    .tadeon-page-hero,
-    .tadeon-nexus-commandbar,
-    .tadeon-master-commandbar,
-    .tadeon-tabletop-studio__header,
-    .tadeon-library-header,
-    .tadeon-mobile-header
-  )::before,
-  :where(
-    .tadeon-page-hero::after,
-    .tadeon-tabletop-studio__header::after,
-    .tadeon-library-header::after,
-    .tadeon-mobile-header::after
-  ),
   .tadeon-nexus-commandbar::after,
-  .tadeon-master-commandbar__glow,
-  .tadeon-tabletop-studio__brand > svg,
-  .tadeon-nexus-identity__mark,
-  .tadeon-nexus-home__sigil,
-  .tadeon-description-hero__mark {
+    .tadeon-master-commandbar__glow,
+    .tadeon-tabletop-studio__brand > svg,
+    .tadeon-nexus-identity__mark,
+    .tadeon-nexus-home__sigil,
+    .tadeon-description-hero__mark {
     animation: none !important;
   }
 }
