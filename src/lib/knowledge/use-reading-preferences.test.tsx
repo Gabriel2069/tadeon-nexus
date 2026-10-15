@@ -17,9 +17,13 @@ it("restores preferences for one user/scope without writing defaults into anothe
   await waitFor(() => expect(r.result.current.preferences.horizontal).toBe(61));
   act(() => r.result.current.update({ vertical: 57 }));
   expect(JSON.parse(localStorage.getItem("tadeon.nexus.reading.v1.a.work")!).horizontal).toBe(61);
+  const oldUpdate = r.result.current.update;
   r.rerender({ actor: "b", scope: "work" });
   await waitFor(() => expect(r.result.current.preferences.view).toBe("document"));
+  act(() => oldUpdate({ view: "graph", vertical: 69 }));
+  expect(r.result.current.preferences.view).toBe("document");
   expect(localStorage.getItem("tadeon.nexus.reading.v1.b.work")).toBeNull();
+  expect(JSON.parse(localStorage.getItem("tadeon.nexus.reading.v1.a.work")!).vertical).toBe(57);
   r.rerender({ actor: "a", scope: "work" });
   await waitFor(() => expect(r.result.current.preferences.vertical).toBe(57));
 });

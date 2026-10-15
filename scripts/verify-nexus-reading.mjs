@@ -304,6 +304,7 @@ try {
       priorSize,
     );
     const beforePointer = Number(await separator.getAttribute("aria-valuenow"));
+    await separator.scrollIntoViewIfNeeded();
     const bounds = await separator.boundingBox();
     await page.mouse.move(bounds.x + bounds.width / 2, bounds.y + bounds.height / 2);
     await page.mouse.down();
@@ -432,10 +433,15 @@ try {
         JSON.parse(localStorage.getItem(key) || "{}")[dimension] === expected,
       { key: preferenceKey, dimension, expected: rememberedSize },
     );
-    assert(
-      Math.abs(Number(await separator.getAttribute("aria-valuenow")) - rememberedSize) < 1,
-      "Pane size restored into layout",
+    await page.waitForFunction(
+      (expected) =>
+        Math.abs(
+          Number(document.querySelector('[role="separator"]')?.getAttribute("aria-valuenow")) -
+            expected,
+        ) < 1,
+      rememberedSize,
     );
+
     await page.getByRole("button", { name: "Fechar " + nodes[0].title, exact: true }).click();
     await page.getByText("Entrada do acervo", { exact: true }).waitFor();
     const reopen = page.getByRole("button", { name: "Reabrir página fechada" });
@@ -505,6 +511,8 @@ try {
       errors,
       backendRequests: requests.length,
     });
+    writeFileSync(`${output}/results.json`, JSON.stringify(results, null, 2));
+    console.log(`Viewport verified: ${width}`);
     await context.close();
   }
   writeFileSync(`${output}/results.json`, JSON.stringify(results, null, 2));

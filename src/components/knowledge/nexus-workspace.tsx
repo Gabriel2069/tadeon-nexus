@@ -282,9 +282,12 @@ export function NexusWorkspace({
 }) {
   const { user, loading: authLoading } = useAuth();
   const actorId = authLoading ? "" : (user?.id ?? "");
+  const currentActor = useRef(actorId);
+  currentActor.current = actorId;
   const automaticScope = useRef("");
   const activePage = useRef<string | null>(null);
   const closeFocusFrame = useRef<number | null>(null);
+  const headingFrame = useRef<number | null>(null);
   const readingRegion = useRef<HTMLElement>(null);
   const pendingSaves = useRef(new Map<string, Promise<void>>());
   const [closedNodes, setClosedNodes] = useState<string[]>([]);
@@ -401,7 +404,7 @@ export function NexusWorkspace({
         .eq("status", "active")
         .order("name"),
     ]);
-    if (!scopesRequests.current.isCurrent(ticket)) return;
+    if (!scopesRequests.current.isCurrent(ticket) || currentActor.current !== actorId) return;
     if (workspaceResult.error || campaignResult.error) {
       toast.error("Não foi possível carregar os espaços de O Nexus.");
       setLoading(false);
@@ -434,7 +437,7 @@ export function NexusWorkspace({
 
   const loadNodes = useCallback(async () => {
     const ticket = nodeRequests.current.begin();
-    if (!workspaceId) {
+    if (!actorId || !workspaceId) {
       setNodeLoading(false);
       return;
     }
@@ -458,7 +461,7 @@ export function NexusWorkspace({
         knowledgeService.listRecentNodes(40),
         knowledgeService.listFavoriteNodes(40),
       ]);
-      if (!nodeRequests.current.isCurrent(ticket)) return;
+      if (!nodeRequests.current.isCurrent(ticket) || currentScope.current !== scopeKey) return;
       nodesActor.current = actorId;
       setNodes(result.hits.map((hit) => hit.node));
       setSearchCount(result.count);
@@ -472,17 +475,19 @@ export function NexusWorkspace({
       setRecent(nextRecent.filter(belongsToScope).slice(0, 12));
       setFavorites(nextFavorites.filter(belongsToScope).slice(0, 12));
     } catch (error) {
-      if (!nodeRequests.current.isCurrent(ticket)) return;
+      if (!nodeRequests.current.isCurrent(ticket) || currentScope.current !== scopeKey) return;
       toast.error(errorMessage(error));
       setNodes([]);
       setSearchCount(0);
       setSearchHasMore(false);
       setSearchSnippets({});
     } finally {
-      if (nodeRequests.current.isCurrent(ticket)) setNodeLoading(false);
+      if (nodeRequests.current.isCurrent(ticket) && currentScope.current === scopeKey)
+        setNodeLoading(false);
     }
   }, [
     actorId,
+    scopeKey,
     campaignScope,
     debouncedSearch,
     onlyCanonical,
@@ -548,7 +553,7 @@ export function NexusWorkspace({
         knowledgeService.listNodeAssets(node.id),
         knowledgeService.resolveWikilinks(node),
       ]);
-      if (!readingRequests.current.isCurrent(ticket)) return;
+      if (!readingRequests.current.isCurrent(ticket) || currentScope.current !== scopeKey) return;
       setAliases(nextAliases as Array<Record<string, unknown>>);
       setEdges(nextEdges);
       setBacklinks(nextBacklinks);
@@ -570,7 +575,7 @@ export function NexusWorkspace({
       }
       setPreviews(nextPreviews);
     },
-    [],
+    [scopeKey],
   );
 
   const openNode = useCallback(
@@ -588,7 +593,7 @@ export function NexusWorkspace({
       const ticket = readingRequests.current.begin();
       try {
         const node = await knowledgeService.get(id);
-        if (!readingRequests.current.isCurrent(ticket)) return;
+        if (!readingRequests.current.isCurrent(ticket) || currentScope.current !== scopeKey) return;
         setSelected(node);
         setOpenNodes((current) => {
           return current.some((item) => item.id === node.id)
@@ -615,17 +620,22 @@ export function NexusWorkspace({
         }
         await refreshNodeDetails(node, ticket);
         if (headingSlug && readingRequests.current.isCurrent(ticket)) {
-          window.setTimeout(() => {
+          if (headingFrame.current !== null) cancelAnimationFrame(headingFrame.current);
+          headingFrame.current = requestAnimationFrame(() => {
+            headingFrame.current = null;
+            if (!readingRequests.current.isCurrent(ticket) || currentScope.current !== scopeKey)
+              return;
             document.getElementById(headingSlug)?.scrollIntoView({
               behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches
                 ? "auto"
                 : "smooth",
               block: "start",
             });
-          }, 0);
+          });
         }
       } catch (error) {
-        if (readingRequests.current.isCurrent(ticket)) toast.error(errorMessage(error));
+        if (readingRequests.current.isCurrent(ticket) && currentScope.current === scopeKey)
+          toast.error(errorMessage(error));
       }
     },
     [actorId, drafts, refreshNodeDetails, scopeKey],
@@ -636,6 +646,7 @@ export function NexusWorkspace({
     return () => {
       requests.invalidate();
       if (closeFocusFrame.current !== null) cancelAnimationFrame(closeFocusFrame.current);
+      if (headingFrame.current !== null) cancelAnimationFrame(headingFrame.current);
     };
   }, []);
 
@@ -658,6 +669,7 @@ export function NexusWorkspace({
       if (closeFocusFrame.current !== null) cancelAnimationFrame(closeFocusFrame.current);
       closeFocusFrame.current = requestAnimationFrame(() => {
         closeFocusFrame.current = null;
+        if (currentScope.current !== scopeKey) return;
         const target = [
           ...(readingRegion.current?.querySelectorAll<HTMLElement>("[data-page-tab]") ?? []),
         ].find((element) => element.dataset.pageTab === fallback?.id);
@@ -673,14 +685,15 @@ export function NexusWorkspace({
     if (
       loading ||
       !workspaceId ||
+      !actorId ||
       !initialNodeId ||
-      initialNodeOpenedRef.current === initialNodeId
+      initialNodeOpenedRef.current === `${actorId}:${initialNodeId}`
     ) {
       return;
     }
-    initialNodeOpenedRef.current = initialNodeId;
+    initialNodeOpenedRef.current = `${actorId}:${initialNodeId}`;
     void openNode(initialNodeId);
-  }, [initialNodeId, openNode, loading, workspaceId]);
+  }, [actorId, initialNodeId, openNode, loading, workspaceId]);
 
   useEffect(() => {
     const first = nodes.find(

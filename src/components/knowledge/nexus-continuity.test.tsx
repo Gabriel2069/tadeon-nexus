@@ -260,3 +260,13 @@ it("applies a recovered draft only after consent against the reviewed server ver
     expect(localStorage.getItem("tadeon.nexus.draft.v2.actor.work.alpha")).toBeNull(),
   );
 });
+
+it("reloads an initial page for a new actor instead of reusing the previous actor's navigation stamp", async () => {
+  const v = render(<NexusWorkspace assetsEnabled={false} graphEnabled={false} initialNodeId="alpha" />);
+  await v.findByRole("heading", { name: "Alpha" });
+  m.get.mockClear();
+  m.actor = "next-actor";
+  v.rerender(<NexusWorkspace assetsEnabled={false} graphEnabled={false} initialNodeId="alpha" />);
+  await waitFor(() => expect(m.get).toHaveBeenCalledWith("alpha"));
+  await v.findByRole("heading", { name: "Alpha" });
+});

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
 import type { GroupImperativeHandle } from "react-resizable-panels";
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable";
 import type { ReadingPreferences } from "@/lib/knowledge/use-reading-preferences";
@@ -28,18 +28,24 @@ export function KnowledgeReadingPanes({
     document: view === "graph" ? 0 : view === "document" ? 100 : percentage,
     graph: view === "graph" ? 100 : view === "document" ? 0 : 100 - percentage,
   };
-  useEffect(() => {
-    // Panel registration/constraint updates precede imperative mode changes.
-    const frame = requestAnimationFrame(() => {
+  const desiredLayout = useRef(layout);
+  desiredLayout.current = layout;
+  const layoutFrame = useRef<number | null>(null);
+  const synchronizeLayout = useCallback(() => {
+    if (layoutFrame.current !== null) cancelAnimationFrame(layoutFrame.current);
+    layoutFrame.current = requestAnimationFrame(() => {
+      layoutFrame.current = null;
       const handle = group.current;
       if (handle && Object.keys(handle.getLayout()).length === 2)
-        handle.setLayout({
-          document: view === "graph" ? 0 : view === "document" ? 100 : percentage,
-          graph: view === "graph" ? 100 : view === "document" ? 0 : 100 - percentage,
-        });
+        handle.setLayout(desiredLayout.current);
     });
-    return () => cancelAnimationFrame(frame);
-  }, [percentage, view, vertical]);
+  }, []);
+  useEffect(() => {
+    synchronizeLayout();
+    return () => {
+      if (layoutFrame.current !== null) cancelAnimationFrame(layoutFrame.current);
+    };
+  }, [percentage, view, vertical, synchronizeLayout]);
   return (
     <div
       ref={host}
@@ -56,6 +62,7 @@ export function KnowledgeReadingPanes({
         onLayoutChanged={(layout, meta) => {
           if (meta.isUserInteraction && view === "split")
             onChange(vertical ? { vertical: layout.document } : { horizontal: layout.document });
+          else if (!meta.isUserInteraction) synchronizeLayout();
         }}
       >
         <ResizablePanel
