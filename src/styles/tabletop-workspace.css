@@ -1,5 +1,6 @@
 /* source: src/styles/tabletop-editor.css */
 .tadeon-tabletop-studio {
+  --material-rgb: 146 181 202;
   --studio-panel: rgb(12 15 20 / 94%);
   --studio-line: rgb(217 215 164 / 12%);
   --studio-brass: 217 215 164;
@@ -91,32 +92,6 @@
   background: rgb(255 255 255 / 2.5%);
   font-size: 0.6875rem;
   font-weight: 700;
-}
-
-.tadeon-tabletop-toolbar {
-  scrollbar-width: thin;
-}
-
-.tadeon-tabletop-toolbar__group {
-  position: relative;
-  display: flex;
-  align-items: center;
-  gap: 0.3rem;
-  padding: 0.3rem;
-  border: 1px solid rgb(255 255 255 / 5%);
-  border-radius: 0.9rem 0.35rem 0.9rem 0.35rem;
-  background:
-    linear-gradient(135deg, rgb(217 215 164 / 3.5%), transparent 50%), rgb(255 255 255 / 2%);
-  box-shadow: inset 0 1px 0 rgb(255 255 255 / 3%);
-}
-
-.tadeon-tabletop-toolbar__label {
-  padding-inline: 0.35rem 0.2rem;
-  color: var(--muted-foreground);
-  font-family: var(--font-mono);
-  font-size: 0.625rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
 }
 
 .tadeon-tabletop-stage {
@@ -428,63 +403,7 @@
   font-size: 0.6875rem;
 }
 
-.tadeon-tabletop-panel {
-  position: relative;
-  background:
-    radial-gradient(circle at 100% 0%, rgb(79 110 93 / 9%), transparent 18rem),
-    linear-gradient(180deg, rgb(217 215 164 / 4%), transparent 12rem), var(--studio-panel);
-  box-shadow:
-    -28px 0 78px -56px rgb(0 0 0 / 100%),
-    inset 1px 0 0 rgb(255 255 255 / 2.5%);
-}
-
-.tadeon-tabletop-panel__expand {
-  display: none;
-}
-
 @media (min-width: 1180px) {
-  .tadeon-tabletop-panel[data-collapsed="true"] {
-    overflow: hidden;
-    padding: 0.6rem;
-  }
-
-  .tadeon-tabletop-panel[data-collapsed="true"] > :not(.tadeon-tabletop-panel__expand) {
-    display: none !important;
-  }
-
-  .tadeon-tabletop-panel[data-collapsed="true"] > .tadeon-tabletop-panel__expand {
-    display: flex;
-    width: 100%;
-    min-height: 12rem;
-    align-items: center;
-    justify-content: flex-start;
-    gap: 0.7rem;
-    padding-block: 0.7rem;
-    color: var(--primary);
-    writing-mode: vertical-rl;
-  }
-
-  .tadeon-tabletop-panel__expand span {
-    font-family: var(--font-mono);
-    font-size: 0.625rem;
-    font-weight: 750;
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
-  }
-}
-
-.tadeon-tabletop-panel__tabs {
-  position: sticky;
-  z-index: 4;
-  top: -1rem;
-  display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
-  gap: 0.25rem;
-  margin: -1rem -1rem 1rem;
-  padding: 0.65rem;
-  border-bottom: 1px solid var(--studio-line);
-  background: rgb(10 13 17 / 94%);
-  backdrop-filter: blur(18px);
 }
 
 .tadeon-tabletop-space-intro {
@@ -530,56 +449,6 @@
     linear-gradient(180deg, rgb(31 54 68 / 9%), transparent 48%);
   pointer-events: none;
   content: "";
-}
-
-.tadeon-tabletop-panel__tab {
-  position: relative;
-  display: grid;
-  min-height: 3.35rem;
-  place-items: center;
-  align-content: center;
-  gap: 0.28rem;
-  border: 1px solid transparent;
-  border-radius: 0.75rem 0.28rem 0.75rem 0.28rem;
-  color: var(--muted-foreground);
-  font-size: 0.6875rem;
-  font-weight: 750;
-}
-
-.tadeon-tabletop-panel__tab[aria-selected="true"] {
-  border-color: rgb(217 215 164 / 18%);
-  color: var(--primary);
-  background: rgb(217 215 164 / 8%);
-  box-shadow: inset 0 1px 0 rgb(255 255 255 / 5%);
-}
-
-.tadeon-tabletop-panel__tab[aria-selected="true"]::after {
-  position: absolute;
-  bottom: 0.35rem;
-  left: 50%;
-  width: 1.2rem;
-  height: 1px;
-  background: var(--primary);
-  box-shadow: 0 0 10px rgb(217 215 164 / 48%);
-  content: "";
-  transform: translateX(-50%);
-}
-
-.tadeon-tabletop-panel__section {
-  animation: tadeon-tabletop-panel-enter 180ms var(--ease-out) both;
-}
-
-.tadeon-tabletop-panel__tab > svg {
-  color: currentColor;
-  filter: drop-shadow(0 0 8px rgb(217 215 164 / 12%));
-}
-
-.tadeon-tabletop-panel__tab > span {
-  max-width: 100%;
-  overflow: hidden;
-  font-size: 0.61rem;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 }
 
 .tadeon-tabletop-radius-presets {
@@ -667,7 +536,6 @@
   color: #f2b36f;
 }
 
-.tadeon-tabletop-toolbar button,
 .tadeon-tabletop-canvas-rail button,
 .tadeon-tabletop-stage-status button {
   transition:
@@ -678,7 +546,6 @@
 }
 
 @media (hover: hover) and (pointer: fine) {
-  .tadeon-tabletop-toolbar button:not(:disabled):hover,
   .tadeon-tabletop-canvas-rail button:not(:disabled):hover,
   .tadeon-tabletop-stage-status button:not(:disabled):hover {
     transform: translateY(-1px);
@@ -703,10 +570,6 @@
     0 32px 88px -44px rgb(0 0 0 / 100%),
     inset 0 1px 0 rgb(255 255 255 / 5%);
   backdrop-filter: blur(22px) saturate(118%);
-}
-
-.tadeon-tabletop-workbench {
-  background: linear-gradient(90deg, transparent, rgb(217 215 164 / 2.5%)), #07090d;
 }
 
 .tadeon-tabletop-asset {
@@ -737,28 +600,6 @@
 }
 
 @media (max-width: 1179px) {
-  .tadeon-tabletop-panel-backdrop {
-    position: fixed;
-    z-index: 38;
-    inset: 0;
-    background: rgb(0 0 0 / 62%);
-    backdrop-filter: blur(2px);
-  }
-
-  .tadeon-tabletop-panel {
-    position: fixed;
-    z-index: 39;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    max-height: min(82dvh, 52rem);
-    padding: 1rem;
-    border: 1px solid rgb(217 215 164 / 16%);
-    border-bottom: 0;
-    border-radius: 1.35rem 0.45rem 0 0;
-    box-shadow: 0 -30px 90px -34px rgb(0 0 0 / 100%);
-  }
-
   .tadeon-tabletop-stage-status {
     overflow-x: auto;
     padding-right: 0.4rem;
@@ -770,8 +611,7 @@
     min-width: 0;
   }
 
-  .tadeon-tabletop-studio__brand::after,
-  .tadeon-tabletop-toolbar__label {
+  .tadeon-tabletop-studio__brand::after {
     display: none;
   }
 
@@ -857,15 +697,6 @@
     left: 0.55rem;
   }
 
-  .tadeon-tabletop-panel__tab {
-    min-height: 3.05rem;
-    font-size: 0.6rem;
-  }
-
-  .tadeon-tabletop-panel__tab > span {
-    font-size: 0.54rem;
-  }
-
   .tadeon-tabletop-camera-presets {
     grid-template-columns: 1fr;
   }
@@ -876,9 +707,6 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .tadeon-tabletop-panel__section {
-    animation: none;
-  }
 }
 
 /* Stage-safe chrome and contextual editor -------------------------------- */
@@ -928,105 +756,6 @@
   display: none;
 }
 
-.tadeon-tabletop-panel__header {
-  display: flex;
-  min-width: 0;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.75rem;
-  margin-bottom: 0.85rem;
-  padding-bottom: 0.75rem;
-  border-bottom: 1px solid rgb(var(--studio-cyan) / 9%);
-}
-
-.tadeon-tabletop-panel__identity,
-.tadeon-tabletop-panel__header-actions {
-  display: flex;
-  min-width: 0;
-  align-items: center;
-  gap: 0.6rem;
-}
-
-.tadeon-tabletop-panel__identity-icon {
-  display: grid;
-  width: 2.25rem;
-  height: 2.25rem;
-  flex: 0 0 auto;
-  place-items: center;
-  border: 1px solid rgb(var(--studio-cyan) / 18%);
-  border-radius: 0.72rem 0.24rem 0.72rem 0.24rem;
-  color: rgb(170 235 223);
-  background: rgb(var(--studio-cyan) / 8%);
-}
-
-.tadeon-tabletop-panel__title {
-  overflow: hidden;
-  color: var(--foreground);
-  font-family: var(--font-cinzel);
-  font-size: 1rem;
-  font-weight: 680;
-  line-height: 1.2;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.tadeon-tabletop-panel__tabs {
-  top: -1rem;
-  grid-template-columns: repeat(5, minmax(3.75rem, 1fr));
-  overflow-x: auto;
-  overscroll-behavior-inline: contain;
-  scroll-snap-type: x proximity;
-  scrollbar-width: none;
-}
-
-.tadeon-tabletop-panel__tabs::-webkit-scrollbar {
-  display: none;
-}
-
-.tadeon-tabletop-panel__tab {
-  min-width: 0;
-  scroll-snap-align: center;
-  transition:
-    color 180ms var(--ease-out),
-    border-color 180ms var(--ease-out),
-    background-color 180ms var(--ease-out),
-    box-shadow 180ms var(--ease-out),
-    transform 160ms var(--ease-out);
-}
-
-.tadeon-tabletop-panel__tab > span {
-  overflow: visible;
-  max-width: 100%;
-  text-overflow: clip;
-  white-space: nowrap;
-}
-
-.tadeon-tabletop-panel__tab-badge {
-  position: absolute;
-  top: 0.28rem;
-  right: 0.28rem;
-  display: grid;
-  min-width: 1rem;
-  height: 1rem;
-  place-items: center;
-  padding-inline: 0.2rem;
-  border: 1px solid rgb(var(--studio-gold) / 22%);
-  border-radius: 999px;
-  color: rgb(239 234 199);
-  background: rgb(8 12 16 / 88%);
-  font-family: var(--font-mono);
-  font-size: 0.48rem;
-  line-height: 1;
-}
-
-.tadeon-tabletop-panel__tab[aria-selected="true"] > svg {
-  animation: tadeon-tabletop-tab-icon-in 340ms var(--ease-spring) both;
-}
-
-.tadeon-tabletop-panel__section {
-  animation: tadeon-tabletop-section-slide-in 260ms var(--ease-out) both;
-}
-
 @keyframes tadeon-tabletop-tab-icon-in {
   0% {
     opacity: 0.45;
@@ -1057,27 +786,6 @@
 }
 
 @media (max-width: 1179px) {
-  .tadeon-tabletop-panel-backdrop {
-    display: block;
-    opacity: 0;
-    visibility: hidden;
-    pointer-events: none;
-    transition:
-      opacity 220ms var(--ease-out),
-      visibility 0s linear 280ms;
-  }
-
-  .tadeon-tabletop-panel {
-    display: block;
-    opacity: 0;
-    visibility: hidden;
-    pointer-events: none;
-    transform: translate3d(0, calc(100% + 1.5rem), 0);
-    transition:
-      opacity 220ms var(--ease-out),
-      transform 340ms var(--ease-drawer),
-      visibility 0s linear 340ms;
-  }
 }
 
 /* Short desktop and tablet viewports cannot fit the full authoring rail in a
@@ -1141,34 +849,10 @@
     .tadeon-tabletop-canvas-host {
     top: 8rem;
   }
-
-  .tadeon-tabletop-panel__header {
-    position: sticky;
-    z-index: 5;
-    top: -1rem;
-    margin: -1rem -1rem 0.7rem;
-    padding: 0.75rem 1rem;
-    background: rgb(10 14 18 / 96%);
-    backdrop-filter: blur(18px);
-  }
-
-  .tadeon-tabletop-panel__tabs {
-    top: 3.75rem;
-    margin-top: 0;
-    grid-template-columns: repeat(5, minmax(3.65rem, 1fr));
-  }
-
-  .tadeon-tabletop-panel__tab {
-    min-height: 3.15rem;
-  }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .tadeon-tabletop-canvas-host,
-  .tadeon-tabletop-panel,
-  .tadeon-tabletop-panel-backdrop,
-  .tadeon-tabletop-panel__section,
-  .tadeon-tabletop-panel__tab > svg {
+  .tadeon-tabletop-canvas-host {
     animation: none !important;
     transition-duration: 1ms !important;
   }
@@ -1236,11 +920,6 @@
 }
 
 @media (max-width: 1179px) {
-  .tadeon-tabletop-panel {
-    width: min(100%, 48rem);
-    margin-inline: auto;
-  }
-
   .tadeon-tabletop-stage[data-tool="select"]::after {
     bottom: 4.6rem;
     max-width: calc(100% - 1.5rem);
@@ -1273,7 +952,6 @@
   .tadeon-tabletop-tool-options,
   .tadeon-tabletop-selection-dock,
   .tadeon-tabletop-stage-status,
-  .tadeon-tabletop-panel__tabs,
   .tadeon-tabletop-empty-state {
     background: var(--background);
     backdrop-filter: none;
@@ -1317,75 +995,6 @@
   background: rgb(var(--studio-cyan));
   box-shadow: 0 0 10px rgb(var(--studio-cyan) / 58%);
   content: "";
-}
-
-.tadeon-tabletop-command-spaces {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 0.22rem;
-  min-width: 19rem;
-  padding: 0.24rem;
-  border: 1px solid rgb(255 255 255 / 6%);
-  border-radius: 0.85rem;
-  background: rgb(255 255 255 / 2%);
-  box-shadow: inset 0 1px 0 rgb(255 255 255 / 3%);
-}
-
-.tadeon-tabletop-command-spaces button {
-  display: flex;
-  min-width: 0;
-  min-height: 2.2rem;
-  align-items: center;
-  justify-content: center;
-  gap: 0.32rem;
-  border: 1px solid transparent;
-  border-radius: 0.62rem;
-  color: var(--muted-foreground);
-  font-family: var(--font-mono);
-  font-size: 0.59rem;
-  font-weight: 720;
-  letter-spacing: 0.035em;
-  transition:
-    transform 150ms ease,
-    border-color 150ms ease,
-    background-color 150ms ease,
-    color 150ms ease;
-}
-
-.tadeon-tabletop-command-spaces button:hover {
-  border-color: rgb(255 255 255 / 8%);
-  background: rgb(255 255 255 / 3.5%);
-  color: var(--foreground);
-  transform: translateY(-1px);
-}
-
-.tadeon-tabletop-command-spaces button[aria-pressed="true"] {
-  border-color: rgb(var(--studio-cyan) / 22%);
-  background:
-    linear-gradient(145deg, rgb(var(--studio-cyan) / 13%), transparent), rgb(255 255 255 / 2%);
-  color: rgb(143 232 216);
-  box-shadow:
-    inset 0 1px 0 rgb(255 255 255 / 4%),
-    0 8px 18px rgb(var(--studio-cyan) / 5%);
-}
-
-.tadeon-tabletop-command-spaces svg {
-  width: 0.82rem;
-  height: 0.82rem;
-}
-
-.tadeon-tabletop-toolbar {
-  flex-wrap: nowrap;
-  gap: 0.5rem;
-  padding-top: 0.65rem;
-}
-
-.tadeon-tabletop-toolbar__group {
-  flex: 0 0 auto;
-  border-radius: 0.85rem;
-  background:
-    linear-gradient(140deg, rgb(var(--studio-cyan) / 3.5%), transparent 52%),
-    rgb(255 255 255 / 1.8%);
 }
 
 .tadeon-tabletop-stage {
@@ -1616,33 +1225,6 @@
   color: rgb(183 242 231);
 }
 
-.tadeon-tabletop-panel {
-  background:
-    radial-gradient(circle at 100% 0%, rgb(var(--studio-cyan) / 7%), transparent 24rem),
-    linear-gradient(180deg, rgb(13 17 22 / 98%), rgb(8 11 15 / 98%));
-  box-shadow:
-    -24px 0 70px -54px rgb(0 0 0 / 100%),
-    inset 1px 0 0 rgb(255 255 255 / 2%);
-}
-
-.tadeon-tabletop-panel__tabs {
-  gap: 0.25rem;
-  border-color: rgb(var(--studio-cyan) / 10%);
-  border-radius: 0.95rem;
-  background: rgb(255 255 255 / 1.8%);
-}
-
-.tadeon-tabletop-panel__tab {
-  border-radius: 0.66rem;
-}
-
-.tadeon-tabletop-panel__tab[aria-selected="true"] {
-  border-color: rgb(var(--studio-cyan) / 22%);
-  background:
-    linear-gradient(145deg, rgb(var(--studio-cyan) / 13%), transparent), rgb(255 255 255 / 2%);
-  color: rgb(170 235 223);
-}
-
 .tadeon-tabletop-stage-status {
   border-color: rgb(var(--studio-cyan) / 12%);
   border-radius: 0.88rem;
@@ -1650,57 +1232,15 @@
 }
 
 @media (max-width: 1370px) {
-  .tadeon-tabletop-command-spaces {
-    order: 8;
-    width: min(100%, 31rem);
-    min-width: 18rem;
-  }
 }
 
 @media (max-width: 1179px) {
   .tadeon-tabletop-studio__header {
     padding-bottom: 0.6rem;
   }
-
-  .tadeon-tabletop-command-spaces {
-    order: 8;
-    width: 100%;
-    min-width: 0;
-  }
-
-  .tadeon-tabletop-command-spaces button {
-    min-height: 2.55rem;
-  }
-
-  .tadeon-tabletop-panel {
-    border-radius: 1.4rem 1.4rem 0 0;
-    background:
-      radial-gradient(circle at 50% 0%, rgb(var(--studio-cyan) / 9%), transparent 24rem),
-      rgb(9 13 17 / 98%);
-  }
 }
 
 @media (max-width: 639px) {
-  .tadeon-tabletop-toolbar[data-mobile-open="false"] {
-    display: none;
-  }
-
-  .tadeon-tabletop-command-spaces {
-    overflow-x: auto;
-    grid-template-columns: repeat(4, minmax(4.65rem, 1fr));
-    scrollbar-width: none;
-  }
-
-  .tadeon-tabletop-command-spaces button {
-    min-height: 2.7rem;
-  }
-
-  .tadeon-tabletop-toolbar {
-    overflow-x: auto;
-    flex-wrap: nowrap;
-    padding-bottom: 0.2rem;
-    scrollbar-width: none;
-  }
 
   .tadeon-tabletop-canvas-rail {
     top: auto;
@@ -1796,21 +1336,6 @@
   white-space: nowrap;
 }
 
-.tadeon-tabletop-command-spaces button span {
-  min-width: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.tadeon-tabletop-toolbar > div:last-child {
-  flex: 0 0 auto;
-}
-
-.tadeon-tabletop-workbench {
-  transition: grid-template-columns var(--motion-panel) var(--ease-out);
-}
-
 .tadeon-tabletop-stage {
   container-type: inline-size;
 }
@@ -1847,8 +1372,7 @@
 
 .tadeon-tabletop-stage-status::-webkit-scrollbar,
 .tadeon-tabletop-selection-dock::-webkit-scrollbar,
-.tadeon-tabletop-tool-options::-webkit-scrollbar,
-.tadeon-tabletop-toolbar::-webkit-scrollbar {
+.tadeon-tabletop-tool-options::-webkit-scrollbar {
   display: none;
 }
 
@@ -1857,17 +1381,7 @@
   flex: 0 0 auto;
 }
 
-.tadeon-tabletop-panel[data-collapsed="false"] {
-  animation: tadeon-tabletop-panel-unfold 240ms var(--ease-out) both;
-}
-
-.tadeon-tabletop-panel[data-collapsed="true"] > .tadeon-tabletop-panel__expand {
-  animation: tadeon-tabletop-panel-reveal 220ms var(--ease-out) both;
-}
-
-.tadeon-tabletop-panel__tab > svg,
-.tadeon-tabletop-canvas-tool > svg,
-.tadeon-tabletop-command-spaces button > svg {
+.tadeon-tabletop-canvas-tool>svg {
   transition:
     color var(--motion-fast) var(--ease-out),
     filter var(--motion-fast) var(--ease-out),
@@ -1899,11 +1413,6 @@
 }
 
 @media (hover: hover) and (pointer: fine) {
-  .tadeon-tabletop-panel__tab:hover > svg,
-  .tadeon-tabletop-command-spaces button:hover > svg {
-    filter: drop-shadow(0 0 9px rgb(var(--studio-cyan) / 30%));
-    transform: translateY(-1px) scale(1.05);
-  }
 
   .tadeon-tabletop-canvas-tool:not(:disabled):hover > svg {
     filter: drop-shadow(0 0 9px rgb(var(--studio-cyan) / 32%));
@@ -1922,22 +1431,9 @@
   .tadeon-tabletop-studio__header > .relative.z-10 {
     align-items: stretch;
   }
-
-  .tadeon-tabletop-command-spaces {
-    max-width: none;
-  }
-
-  .tadeon-tabletop-toolbar {
-    margin-right: -0.25rem;
-    padding-right: 0.25rem;
-  }
 }
 
 @media (max-width: 1179px) {
-  .tadeon-tabletop-panel[data-collapsed="false"] {
-    animation: tadeon-tabletop-mobile-drawer-in 260ms var(--ease-drawer) both;
-  }
-
   @keyframes tadeon-tabletop-mobile-drawer-in {
     from {
       opacity: 0;
@@ -1973,10 +1469,6 @@
     letter-spacing: 0.12em;
   }
 
-  .tadeon-tabletop-stage {
-    min-height: max(68svh, 34rem);
-  }
-
   .tadeon-tabletop-stage:has(.tadeon-tabletop-tool-options) .tadeon-tabletop-selection-dock {
     top: 4.4rem;
   }
@@ -2008,32 +1500,11 @@
   .tadeon-tabletop-stage-status__metric span {
     font-size: 0.58rem;
   }
-
-  .tadeon-tabletop-panel__tabs {
-    grid-template-columns: repeat(5, minmax(3.35rem, 1fr));
-    overflow-x: auto;
-    scrollbar-width: none;
-  }
-
-  .tadeon-tabletop-panel__tab {
-    min-width: 0;
-    padding-inline: 0.18rem;
-  }
 }
 
 @media (max-width: 419px) {
   .tadeon-tabletop-studio__status {
     display: none;
-  }
-
-  .tadeon-tabletop-command-spaces {
-    grid-template-columns: repeat(4, minmax(4.2rem, 1fr));
-  }
-
-  .tadeon-tabletop-command-spaces button {
-    gap: 0.2rem;
-    padding-inline: 0.25rem;
-    font-size: 0.54rem;
   }
 
   .tadeon-tabletop-stage-status__metric:nth-of-type(4),
@@ -2043,12 +1514,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .tadeon-tabletop-workbench,
-  .tadeon-tabletop-panel,
-  .tadeon-tabletop-panel__expand,
-  .tadeon-tabletop-panel__tab > svg,
-  .tadeon-tabletop-canvas-tool > svg,
-  .tadeon-tabletop-command-spaces button > svg {
+  .tadeon-tabletop-canvas-tool>svg {
     animation: none !important;
     transition-duration: 1ms !important;
     transform: none !important;
@@ -2063,43 +1529,6 @@
 }
 
 @media (max-width: 1179px) {
-  .tadeon-tabletop-panel {
-    display: block !important;
-    opacity: 0;
-    visibility: hidden;
-    pointer-events: none;
-    transform: translate3d(0, calc(100% + 1.5rem), 0);
-    animation: none !important;
-    transition:
-      opacity 220ms var(--ease-out),
-      transform 340ms var(--ease-drawer),
-      visibility 0s linear 340ms;
-  }
-
-  .tadeon-tabletop-panel[data-mobile-open="true"] {
-    opacity: 1;
-    visibility: visible;
-    pointer-events: auto;
-    transform: translate3d(0, 0, 0);
-    transition-delay: 0s;
-  }
-
-  .tadeon-tabletop-panel-backdrop {
-    display: block !important;
-    opacity: 0;
-    visibility: hidden;
-    pointer-events: none;
-    transition:
-      opacity 220ms var(--ease-out),
-      visibility 0s linear 280ms;
-  }
-
-  .tadeon-tabletop-panel-backdrop[data-open="true"] {
-    opacity: 1;
-    visibility: visible;
-    pointer-events: auto;
-    transition-delay: 0s;
-  }
 }
 
 @media (max-width: 639px) {
@@ -2107,10 +1536,6 @@
     max-height: none;
     overflow-x: auto;
     overflow-y: hidden;
-  }
-
-  .tadeon-tabletop-panel__tabs {
-    grid-template-columns: repeat(5, minmax(3.65rem, 1fr));
   }
 }
 
@@ -2169,29 +1594,15 @@
 /* The studio header always owns the scene toolbar on tablet/desktop.
    Progressive work modes may simplify the canvas, but must not remove this row. */
 @media (min-width: 640px) {
-  html[data-tadeon-tabletop-interface] .tadeon-tabletop-studio .tadeon-tabletop-toolbar {
-    display: flex;
-  }
 }
 
 @media (max-width: 639px) {
-  html[data-tadeon-tabletop-interface]
-    .tadeon-tabletop-studio
-    .tadeon-tabletop-toolbar[data-mobile-open="false"] {
-    display: none;
-  }
-
-  html[data-tadeon-tabletop-interface]
-    .tadeon-tabletop-studio
-    .tadeon-tabletop-toolbar[data-mobile-open="true"] {
-    display: flex;
-  }
 }
 .tadeon-tabletop-token-color {
   min-width: 0;
   border: 1px solid color-mix(in srgb, var(--border) 65%, transparent);
-  border-radius: .75rem;
-  padding: .65rem;
+  border-radius: 0.75rem;
+  padding: 0.65rem;
   background: color-mix(in srgb, var(--secondary) 18%, transparent);
 }
 
@@ -2199,15 +1610,15 @@
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
   align-items: center;
-  gap: .65rem;
-  margin-top: .45rem;
+  gap: 0.65rem;
+  margin-top: 0.45rem;
 }
 
 .tadeon-tabletop-token-color__swatches {
   display: flex;
   min-width: 0;
   flex-wrap: wrap;
-  gap: .38rem;
+  gap: 0.38rem;
 }
 
 .tadeon-tabletop-token-color__swatches > button {
@@ -2217,7 +1628,9 @@
   border: 2px solid rgb(255 255 255 / 15%);
   border-radius: 50%;
   box-shadow: 0 0 0 1px rgb(0 0 0 / 48%);
-  transition: transform .16s var(--ease-out), box-shadow .16s var(--ease-out);
+  transition:
+    transform 0.16s var(--ease-out),
+    box-shadow 0.16s var(--ease-out);
 }
 
 .tadeon-tabletop-token-color__swatches > button:hover {
@@ -2225,16 +1638,18 @@
 }
 
 .tadeon-tabletop-token-color__swatches > button[aria-pressed="true"] {
-  box-shadow: 0 0 0 2px var(--background), 0 0 0 4px var(--primary);
+  box-shadow:
+    0 0 0 2px var(--background),
+    0 0 0 4px var(--primary);
   transform: scale(1.08);
 }
 
 .tadeon-tabletop-token-color__custom {
   display: grid;
   justify-items: center;
-  gap: .2rem;
+  gap: 0.2rem;
   color: var(--muted-foreground);
-  font-size: .58rem;
+  font-size: 0.58rem;
 }
 
 .tadeon-tabletop-token-color__custom input {
@@ -2242,14 +1657,14 @@
   height: 2rem;
   cursor: pointer;
   border: 1px solid var(--border);
-  border-radius: .55rem;
-  padding: .15rem;
+  border-radius: 0.55rem;
+  padding: 0.15rem;
   background: var(--background);
 }
 
 .tadeon-tabletop-token-color > p {
-  margin-top: .55rem;
-  font-size: .625rem;
+  margin-top: 0.55rem;
+  font-size: 0.625rem;
   line-height: 1.45;
   color: var(--muted-foreground);
 }
@@ -2270,6 +1685,286 @@
   .tadeon-tabletop-token-color__swatches > button {
     transition: none;
   }
+}
+
+/* NEX-007: command groups and editor geometry have one owner. Map coordinates stay in the engine. */
+.tadeon-tabletop-toolbar {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+  margin-top: 0.75rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid rgb(84 123 148 / 20%);
+}
+.tadeon-tabletop-command-trigger {
+  min-height: 44px;
+  gap: 0.7rem;
+}
+.tadeon-tabletop-command-label {
+  display: none;
+}
+.tadeon-tabletop-command-group {
+  --material-rgb: 146 181 202;
+  width: min(22rem, calc(100vw - 2rem));
+  padding: 1rem;
+  background: #121820;
+  border-color: rgb(146 181 202 / 34%);
+  box-shadow:
+    0 22px 60px rgb(0 0 0 / 50%),
+    inset 0 1px rgb(255 255 255 / 12%);
+}
+.tadeon-tabletop-command-group__actions {
+  display: grid;
+  gap: 0.45rem;
+  margin-top: 0.75rem;
+}
+.tadeon-tabletop-command-group__actions > button {
+  justify-content: start;
+  width: 100%;
+  height: auto;
+  min-height: 44px;
+  padding: 0.65rem 0.75rem;
+  gap: 0.75rem;
+}
+.tadeon-tabletop-command-group .tadeon-tabletop-command-label {
+  display: inline;
+  font-size: 0.8rem;
+  text-align: left;
+  white-space: normal;
+}
+.tadeon-tabletop-command-group :is(input, select) {
+  min-height: 44px;
+  width: 100%;
+  font-size: 0.875rem;
+}
+.tadeon-tabletop-command-group label {
+  font-size: 0.8rem;
+}
+.tadeon-tabletop-workbench {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  flex: 1;
+  min-height: 0;
+  gap: 0.75rem;
+  padding: 0.75rem;
+}
+.tadeon-tabletop-panel {
+  --material-rgb: 146 181 202;
+  min-width: 0;
+  padding: 1rem;
+  border: 1px solid rgb(146 181 202 / 22%);
+  border-radius: 1rem 0.4rem 1rem 0.4rem;
+  background: linear-gradient(145deg, rgb(84 123 148 / 7%), transparent 25rem), #10151b;
+  color: var(--foreground);
+  box-shadow:
+    inset 0 1px rgb(255 255 255 / 6%),
+    0 16px 44px rgb(0 0 0 / 20%);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+}
+.tadeon-tabletop-panel__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+.tadeon-tabletop-panel__identity {
+  display: flex;
+  min-width: 0;
+  gap: 0.65rem;
+  align-items: center;
+}
+.tadeon-tabletop-panel__identity-icon {
+  display: grid;
+  place-items: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border: 1px solid rgb(146 181 202 / 25%);
+  border-radius: 0.8rem 0.3rem;
+  color: #a7c8dc;
+  background: rgb(84 123 148 / 10%);
+}
+.tadeon-tabletop-panel__title {
+  font-family: var(--font-cinzel);
+  font-size: 1.7rem;
+  line-height: 1.1;
+  color: var(--foreground);
+}
+.tadeon-tabletop-panel__header-actions {
+  display: flex;
+  align-items: center;
+}
+.tadeon-tabletop-panel__tabs {
+  display: flex;
+  gap: 0.3rem;
+  overflow-x: auto;
+  padding-bottom: 0.6rem;
+  border-bottom: 1px solid rgb(146 181 202 / 15%);
+  scrollbar-width: thin;
+}
+.tadeon-tabletop-panel__tab {
+  display: flex;
+  flex: 1 0 auto;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.3rem;
+  min-height: 52px;
+  padding: 0.55rem;
+  position: relative;
+  border: 1px solid transparent;
+  border-radius: 0.7rem;
+  font-size: 0.75rem;
+  color: var(--muted-foreground);
+  transition:
+    background-color 160ms ease,
+    border-color 160ms ease,
+    color 160ms ease;
+}
+.tadeon-tabletop-panel__tab[aria-selected="true"] {
+  color: #dcebf3;
+  border-color: rgb(146 181 202 / 38%);
+  background: linear-gradient(140deg, rgb(84 123 148 / 25%), rgb(84 123 148 / 8%));
+  box-shadow: inset 0 1px rgb(255 255 255 / 8%);
+}
+.tadeon-tabletop-panel__tab-badge {
+  position: absolute;
+  right: 0.25rem;
+  top: 0.15rem;
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+}
+.tadeon-tabletop-panel__section {
+  padding-top: 0.6rem;
+}
+.tadeon-tabletop-panel__section :is(p, label, h2, h3) {
+  font-size: 0.8125rem;
+  line-height: 1.5;
+}
+.tadeon-tabletop-panel__section
+  :is(input:not([type="checkbox"]):not([type="range"]):not([type="color"]), select, textarea) {
+  font-size: 0.875rem;
+  min-height: 44px;
+}
+.tadeon-tabletop-panel__section small {
+  font-size: 0.75rem;
+}
+.tadeon-tabletop-panel__section button {
+  min-height: 40px;
+}
+.tadeon-tabletop-panel__expand {
+  display: none;
+}
+.tadeon-tabletop-panel__collapse {
+  display: none;
+}
+.tadeon-tabletop-panel__close {
+  display: none;
+}
+.tadeon-tabletop-mobile-panel-toggle {
+  display: inline-flex;
+}
+.tadeon-tabletop-mobile-tools-toggle {
+  display: inline-flex;
+}
+html[data-tadeon-tabletop-interface="play"] .tadeon-tabletop-toolbar,
+html[data-tadeon-tabletop-clean="true"] .tadeon-tabletop-toolbar {
+  display: none;
+}
+@media (max-width: 639px) {
+  .tadeon-tabletop-toolbar[data-mobile-open="false"] {
+    display: none;
+  }
+}
+@media (min-width: 640px) {
+  .tadeon-tabletop-mobile-tools-toggle {
+    display: none;
+  }
+}
+@media (max-width: 1199px) {
+  [data-slot="dialog-content"].tadeon-tabletop-panel {
+    width: min(38rem, calc(100vw - 1rem));
+    max-width: 38rem;
+    max-height: calc(var(--tadeon-vv-height, 100dvh) - 2rem);
+  }
+  .tadeon-tabletop-panel__header {
+    padding-right: 2.75rem;
+  }
+}
+@media (min-width: 1200px) {
+  .tadeon-tabletop-workbench {
+    grid-template-columns: minmax(0, 1fr) minmax(20rem, 23rem);
+    align-items: stretch;
+  }
+  .tadeon-tabletop-workbench[data-panel-collapsed="true"] {
+    grid-template-columns: minmax(0, 1fr) 3.75rem;
+  }
+  .tadeon-tabletop-panel {
+    max-height: 76dvh;
+  }
+  .tadeon-tabletop-panel__collapse {
+    display: inline-flex;
+  }
+  .tadeon-tabletop-mobile-panel-toggle {
+    display: none;
+  }
+  .tadeon-tabletop-panel[data-collapsed="true"] {
+    padding: 0.4rem;
+    overflow: hidden;
+  }
+  .tadeon-tabletop-panel[data-collapsed="true"] > :not(.tadeon-tabletop-panel__expand) {
+    display: none;
+  }
+  .tadeon-tabletop-panel[data-collapsed="true"] > .tadeon-tabletop-panel__expand {
+    display: flex;
+    min-height: 80px;
+    width: 100%;
+    align-items: center;
+    gap: 0.7rem;
+    padding: 0.75rem 0;
+    writing-mode: vertical-rl;
+  }
+  html[data-tadeon-tabletop-interface="play"] .tadeon-tabletop-workbench,
+  html[data-tadeon-tabletop-clean="true"] .tadeon-tabletop-workbench {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  html[data-tadeon-tabletop-interface="play"] .tadeon-tabletop-panel,
+  html[data-tadeon-tabletop-clean="true"] .tadeon-tabletop-panel {
+    display: none;
+  }
+}
+
+
+.tadeon-tabletop-command-spaces { display: flex; flex-wrap: wrap; align-items: stretch; gap: .4rem; min-width: 0; padding: .35rem; border: 1px solid rgb(146 181 202 / 18%); border-radius: .9rem; background: rgb(9 15 20 / 70%); box-shadow: inset 0 1px rgb(255 255 255 / 5%); }
+.tadeon-tabletop-command-spaces button { display: flex; flex: 1 0 auto; min-height: 44px; align-items: center; justify-content: center; gap: .5rem; padding: .5rem .7rem; border: 1px solid transparent; border-radius: .6rem; color: #b6bcc2; font-size: .8rem; transition: background-color 160ms ease, border-color 160ms ease, color 160ms ease; }
+.tadeon-tabletop-command-spaces svg { width: 1rem; height: 1rem; }
+.tadeon-tabletop-command-spaces button[aria-pressed="true"] { border-color: rgb(146 181 202 / 35%); color: #dcebf3; background: rgb(84 123 148 / 18%); box-shadow: inset 0 1px rgb(255 255 255 / 8%); }
+.tadeon-tabletop-command-spaces button:focus-visible { outline: 2px solid #e9e3d5; outline-offset: 2px; }
+html[data-tadeon-tabletop-interface="play"] .tadeon-tabletop-command-spaces { display: none; }
+@media (prefers-reduced-motion: reduce) { .tadeon-tabletop-command-spaces button { transition: none; } }
+
+.tadeon-tabletop-panel__chooser { display: none; }
+.tadeon-tabletop-media-upload { display: flex; min-height: 44px; margin-top: .5rem; align-items: center; justify-content: center; gap: .5rem; padding: .65rem; border: 1px dashed rgb(146 181 202 / 40%); border-radius: .65rem; color: #a7c8dc; background: rgb(84 123 148 / 8%); cursor: pointer; font-size: .8125rem; }
+.tadeon-tabletop-media-upload:hover { background: rgb(84 123 148 / 15%); }
+.tadeon-tabletop-media-upload:has(input:disabled) { opacity: .5; cursor: default; }
+@media (max-width: 1199px) {
+  .tadeon-tabletop-panel__chooser { display: grid; gap: .4rem; margin-bottom: .75rem; font-size: .8rem; color: var(--muted-foreground); }
+  .tadeon-tabletop-panel__chooser select { min-height: 44px; width: 100%; padding: .6rem; border: 1px solid rgb(146 181 202 / 30%); border-radius: .6rem; background: #121820; color: var(--foreground); font-size: .875rem; }
+  .tadeon-tabletop-panel__tabs { display: none; }
+}
+
+
+/* Compact editing reaches areas through the editor chooser; keep the map in view. */
+@media (max-width: 1199px) { .tadeon-tabletop-command-spaces { display: none; } }
+@media (max-width: 639px) {
+  .tadeon-tabletop-toolbar { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .tadeon-tabletop-command-trigger { min-width: 0; padding-inline: .35rem; font-size: .75rem; }
+  .tadeon-tabletop-command-trigger > svg { display: none; }
 }
 
 /* end-source: src/styles/tabletop-editor.css */

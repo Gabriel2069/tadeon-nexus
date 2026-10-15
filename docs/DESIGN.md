@@ -179,3 +179,10 @@ O vinho fica na borda, no plano selecionado e nos filamentos; o título conserva
 A navegação organiza Condução, Elenco, Ritmo e Arquivo. O seletor compacto permite alcançar todas as ferramentas sem depender de arrastar a faixa; foco, abas e URL permanecem sob React/Router. Os alvos mantêm posição; o material dos botões vem do primitivo compartilhado. A revisão não acrescenta animação ambiente nem outra camada para vencer os estilos antigos.
 
 A prova visual e de interação deste lote pertence a [master-workspace-validation.json](master-workspace-validation.json); publicação depende do workflow de main e do SHA servido.
+
+
+## Mesa: instrumentos em torno da cena — NEX-007/021
+
+O mapa recebe espaço contínuo e altura delimitada; controles de navegação ficam no dock, enquanto a criação aparece no modo de edição. Grupos nomeados substituem ações sem legenda. Azul da Mesa conduz bordas e seleção, marfim mantém leitura, e vidro escuro distingue instrumentos do conteúdo. A biblioteca criativa começa fechada. Campos e números permanecem estáveis durante as transições.
+
+A largura disponível decide entre editor lateral e diálogo. No compacto, um seletor alcança montagem, ambiente, bastidores, cena e inspeção. Os comandos usam busca por texto, navegação por teclado e disponibilidade real; o foco volta ao controle de origem. O contexto da Mesa fica dentro da leitura do Nexus, sem uma notificação fixa sobre o editor. A prova executada e seus limites pertencem a [tabletop-workspace-validation.json](tabletop-workspace-validation.json).

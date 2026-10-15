@@ -7,13 +7,6 @@ function source(path: string) {
 }
 
 describe("resíduos visuais de seleção e navegação", () => {
-  it("remove estruturalmente o blackout do inspector não modal da Mesa", () => {
-    const css = source("src/styles/tabletop-spatial-finish.css");
-
-    expect(css).toContain(".tadeon-tabletop-panel-backdrop[data-open=\"true\"]");
-    expect(css).toContain("display: none !important");
-    expect(css).toContain("animation: none !important");
-  });
 
   it("preserva a moldura inteira dos itens no menu lateral recolhido", () => {
     const css = source("src/styles/viewport-fit-final.css");

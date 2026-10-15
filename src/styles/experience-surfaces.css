@@ -1777,9 +1777,7 @@ button:not([data-material-surface], .tadeon-material-button)[data-tadeon-directe
   isolation: isolate;
 }
 
-.tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-toolbar,
-.tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-floating-toolbar,
-.tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-controls {
+.tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-floating-toolbar,.tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-controls {
   border: 1px solid rgb(126 91 47 / 18%);
   border-radius: .9rem .28rem .9rem .28rem;
   background:
@@ -1791,9 +1789,7 @@ button:not([data-material-surface], .tadeon-material-button)[data-tadeon-directe
   backdrop-filter: blur(16px) saturate(120%);
 }
 
-.tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-toolbar button,
-.tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-floating-toolbar button,
-.tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-controls button {
+.tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-floating-toolbar button,.tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-controls button {
   border-radius: .55rem .18rem .55rem .18rem;
   transition:
     color 180ms ease,
@@ -1803,9 +1799,7 @@ button:not([data-material-surface], .tadeon-material-button)[data-tadeon-directe
     box-shadow 220ms var(--ease-out);
 }
 
-.tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-toolbar button:hover,
-.tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-floating-toolbar button:hover,
-.tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-controls button:hover {
+.tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-floating-toolbar button:hover,.tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-controls button:hover {
   transform: translateY(-1px);
   box-shadow: 0 12px 28px -24px rgb(126 91 47 / 42%);
 }

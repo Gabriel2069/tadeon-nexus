@@ -185,6 +185,8 @@ describe("tabletop persistence mapping", () => {
     const payload = buildTabletopSavePayload(original, {
       ...original,
       backgroundAssetId: "map-asset",
+      gridOffsetX: 16,
+      gridOffsetY: -8,
       layers: [{ ...original.layers[0], visible: false }],
       entities: [
         {
@@ -219,6 +221,8 @@ describe("tabletop persistence mapping", () => {
       name: "Porto",
       status: "active",
       background_asset_id: "map-asset",
+      grid_offset_x: 16,
+      grid_offset_y: -8,
       levels: [expect.objectContaining({ id: "ground", version: 1 })],
     });
   });
@@ -338,14 +342,9 @@ describe("TabletopPersistenceService conflicts", () => {
     const update = vi.fn(() => ({ eq: eqId }));
     const from = vi.fn(() => ({ update }));
     const auth = {
-      getSession: vi
-        .fn()
-        .mockResolvedValue({ data: { session: { user: { id: "owner" } } } }),
+      getSession: vi.fn().mockResolvedValue({ data: { session: { user: { id: "owner" } } } }),
     };
-    const service = new TabletopPersistenceService(
-      { from } as never,
-      auth as never,
-    );
+    const service = new TabletopPersistenceService({ from } as never, auth as never);
     await expect(
       service.saveScene({
         id: "scene",

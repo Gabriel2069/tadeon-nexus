@@ -1,12 +1,4 @@
-import {
-  tabletopPersistenceService,
-  type PersistedTabletopScene,
-} from "@/lib/tabletop/tabletop-persistence-service";
 import type { TabletopScene } from "@/lib/tabletop/types";
-
-type SerializableTabletopScene = TabletopScene & {
-  toJSON?: () => unknown;
-};
 
 function canonicalScene(scene: TabletopScene) {
   return {
@@ -22,9 +14,6 @@ function canonicalScene(scene: TabletopScene) {
     snap: scene.snap,
     ...(scene.backgroundAssetId !== undefined
       ? { backgroundAssetId: scene.backgroundAssetId }
-      : {}),
-    ...(scene.backgroundAssetUrl !== undefined
-      ? { backgroundAssetUrl: scene.backgroundAssetUrl }
       : {}),
     ...(scene.levels
       ? {
@@ -61,7 +50,6 @@ function canonicalScene(scene: TabletopScene) {
       hidden: entity.hidden,
       locked: entity.locked,
       color: entity.color,
-      ...(entity.assetUrl !== undefined ? { assetUrl: entity.assetUrl } : {}),
       ...(entity.elevation !== undefined ? { elevation: entity.elevation } : {}),
       ...(entity.levelId !== undefined ? { levelId: entity.levelId } : {}),
       ...(entity.assetId !== undefined ? { assetId: entity.assetId } : {}),
@@ -75,39 +63,7 @@ function canonicalScene(scene: TabletopScene) {
   };
 }
 
-export function attachTabletopSceneFingerprint(scene: PersistedTabletopScene) {
-  const target = scene as SerializableTabletopScene;
-  Object.defineProperty(target, "toJSON", {
-    configurable: true,
-    enumerable: true,
-    value() {
-      return canonicalScene(target);
-    },
-  });
-  return scene;
+/** Compare content directly; never attach a serializer captured by scene clones. */
+export function tabletopSceneFingerprint(scene: TabletopScene) {
+  return JSON.stringify(canonicalScene(scene));
 }
-
-let installed = false;
-
-export function installTabletopSceneFingerprintGuard() {
-  if (installed) return;
-  installed = true;
-
-  const loadScene = tabletopPersistenceService.loadScene.bind(tabletopPersistenceService);
-  tabletopPersistenceService.loadScene = async (...args: Parameters<typeof loadScene>) =>
-    attachTabletopSceneFingerprint(await loadScene(...args));
-
-  const createScene = tabletopPersistenceService.createScene.bind(tabletopPersistenceService);
-  tabletopPersistenceService.createScene = async (...args: Parameters<typeof createScene>) =>
-    attachTabletopSceneFingerprint(await createScene(...args));
-
-  const duplicateScene = tabletopPersistenceService.duplicateScene.bind(tabletopPersistenceService);
-  tabletopPersistenceService.duplicateScene = async (...args: Parameters<typeof duplicateScene>) =>
-    attachTabletopSceneFingerprint(await duplicateScene(...args));
-
-  const saveWorkspace = tabletopPersistenceService.saveWorkspace.bind(tabletopPersistenceService);
-  tabletopPersistenceService.saveWorkspace = async (...args: Parameters<typeof saveWorkspace>) =>
-    attachTabletopSceneFingerprint(await saveWorkspace(...args));
-}
-
-installTabletopSceneFingerprintGuard();

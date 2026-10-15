@@ -1,0 +1,55 @@
+{
+  "schemaVersion": 1,
+  "tasks": [
+    "NEX-007",
+    "NEX-021"
+  ],
+  "status": "in_progress",
+  "base": "66acb8efc0cbf3d5d68b98a7984b0c04d4ff60b2",
+  "validation": {
+    "state": "pending"
+  },
+  "limits": [
+    "Fixtures não certificam contas/RLS, reconexão real, dispositivos físicos ou todas as combinações de recursos avançados."
+  ],
+  "replacedHistoricalAssertions": {
+    "cases": {
+      "src/styles/tabletop-scene-tools.test.ts": [
+        "keeps the upper toolbar visible outside the collapsed mobile state"
+      ],
+      "src/styles/tabletop-stage-geometry.test.ts": [
+        "keeps header, stage and contextual panel as three sibling zones",
+        "does not hard-lock Mesa chrome to viewport coordinates"
+      ],
+      "src/lib/tabletop/final-user-corrections-172-regression.test.ts": [
+        "makes the corner control minimize only reliability chrome"
+      ],
+      "src/lib/tabletop/mobile-product-repair-153-regression.test.ts": [
+        "restores Mesa label and keeps tabletop mobile controls centered and clickable"
+      ],
+      "src/lib/tabletop/selection-director-entry-regression.test.ts": [
+        "mantém o frame da seleção transparente mesmo durante transições antigas"
+      ],
+      "src/lib/tabletop/tabletop-functional-audit-regression.test.ts": [
+        "mantém autosave ligado à versão mais recente da cena"
+      ],
+      "src/lib/tabletop/tabletop-interface-reconciliation-regression.test.ts": [
+        "selecionar não transforma o canvas em uma superfície modal"
+      ],
+      "src/lib/tabletop/tabletop-overlay-stack-regression.test.ts": [
+        "coordena todo o chrome fixo da Mesa, não apenas os docks centrais"
+      ],
+      "src/lib/tabletop/tabletop-selection-sidebar-sheen-regression.test.ts": [
+        "remove estruturalmente o blackout do inspector não modal da Mesa"
+      ],
+      "src/lib/tabletop/tabletop-spatial-finish-regression.test.ts": [
+        "mantém o inspetor responsivo não modal e recupera a telemetria inferior"
+      ]
+    },
+    "reason": "Asserções textuais exigiam classes removidas, painel compacto não modal, geometria aos 768px ou autosave que limpa dirty sem reconhecer edições posteriores. Substituídas por testes de comportamento de diálogo/foco/comandos/portal/fingerprint e verificação de navegador dos grupos, seleção, estados e gravação. Os demais casos dos arquivos permanecem.",
+    "additional": [
+      "Retirada a asserção que exigia monkeypatch global/toJSON do serviço; a comparação pura é testada em clones e metadados.",
+      "A asserção do launcher sem implementação agora verifica a ausência da montagem duplicada; o launcher real permanece."
+    ]
+  }
+}

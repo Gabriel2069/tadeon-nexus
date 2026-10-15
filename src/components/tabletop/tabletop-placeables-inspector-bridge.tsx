@@ -185,7 +185,7 @@ export function TabletopPlaceablesInspectorBridge() {
         className="tadeon-placeables__handle"
         aria-expanded={open}
         onClick={() => setOpen((value) => !value)}
-        title="Objetos e placeables da cena"
+        title="Itens e estruturas da cena"
       >
         <Layers3 aria-hidden="true" />
         <span>{snapshot.scene.entities.length + walls.length + lights.length + fog.length}</span>
@@ -200,7 +200,7 @@ export function TabletopPlaceablesInspectorBridge() {
         <header>
           <span className="tadeon-placeables__mark"><Shapes aria-hidden="true" /></span>
           <div>
-            <small>Placeables Inspector</small>
+            <small>Itens da cena</small>
             <strong>{snapshot.scene.name}</strong>
           </div>
           <Button size="icon" variant="ghost" aria-label="Fechar inspetor" onClick={() => setOpen(false)}>

@@ -28,6 +28,7 @@ Comece pelo [estado de continuidade](ai/00_ESTADO_ATUAL.md), [mapa do código](P
 | [history/continuity-2026-08.md](history/continuity-2026-08.md) | historical | Registro anterior integral preservado; não comprova ambiente atual. |
 | [PR_RECONCILIATION.md](PR_RECONCILIATION.md) | active | Destino de cada requisito da PR antiga e limites da integração. |
 | [DESIGN.md](DESIGN.md) | active | Direção Véu & Trama aprovada; contrato visual e referência única de execução, sem novo backlog. |
+| [tabletop-workspace-map.md](tabletop-workspace-map.md) | active | NEX-007/021: controles, estado e destino dos bridges da Mesa; integração de contexto da página do Nexus. |
 
 ## Contratos e evidências
 
@@ -52,3 +53,4 @@ Comece pelo [estado de continuidade](ai/00_ESTADO_ATUAL.md), [mapa do código](P
 | [nexus-continuity-validation.json](nexus-continuity-validation.json) | NEX-015: composição ajustável, continuidade de abas, rascunhos por identidade, concorrência e revisão explícita de conflitos; fixtures e limites. |
 | [navigation-utilities-validation.json](navigation-utilities-validation.json) | NEX-016 a NEX-019: menus, Consulta offline, Usuários e Backup e diagnóstico; validação de interface, funções e limites de fixtures. |
 | [master-workspace-validation.json](master-workspace-validation.json) | Evidências e limites do Painel do Mestre e dos ícones reais de navegação; NEX-008/020. |
+| [tabletop-workspace-validation.json](tabletop-workspace-validation.json) | NEX-007/021: evidências e limites da reorganização da Mesa e do contexto Nexus → Mesa. |

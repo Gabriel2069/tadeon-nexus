@@ -132,7 +132,7 @@ function percent(value: number) {
 
 export function TabletopCreativeDockBridge() {
   const [snapshot, setSnapshot] = useState<TabletopSnapshot | null>(null);
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = useState(false);
   const [mode, setMode] = useState<DockMode>("library");
   const [query, setQuery] = useState("");
 
@@ -271,7 +271,7 @@ export function TabletopCreativeDockBridge() {
               <small>Biblioteca operacional</small>
               <strong>{snapshot.scene.name}</strong>
             </div>
-            <Button size="icon" variant="ghost" aria-label="Fechar Dock" onClick={() => setOpen(false)}>
+            <Button size="icon" variant="ghost" aria-label="Fechar biblioteca criativa" onClick={() => setOpen(false)}>
               <X aria-hidden="true" />
             </Button>
           </header>

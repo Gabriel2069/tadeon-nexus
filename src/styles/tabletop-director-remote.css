@@ -303,10 +303,7 @@
   backdrop-filter: blur(16px) saturate(125%);
 }
 
-.tadeon-tabletop-panel__tab > span,
-.tadeon-tabletop-command-spaces button > span,
-.tadeon-tabletop-selection-dock button > span,
-.tadeon-tabletop-tool-options button > span {
+.tadeon-tabletop-selection-dock button>span,.tadeon-tabletop-tool-options button>span {
   min-width: 0;
   max-width: 100%;
   overflow: hidden !important;

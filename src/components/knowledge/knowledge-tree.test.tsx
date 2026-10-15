@@ -35,7 +35,8 @@ describe("knowledge reading tree", () => {
   it("navigates, collapses and opens through the keyboard without opening on disclosure", () => {
     const open = vi.fn();
     const view = render(<KnowledgeTree nodes={nodes} selectedId="root" onOpen={open} />);
-    const root = view.getAllByRole("treeitem")[0];
+    const root = view.getByRole("treeitem", { name: "Arquivo" });
+    expect(view.getByRole("treeitem", { name: "Memória" })).toBeTruthy();
     root.focus();
     fireEvent.keyDown(root, { key: "ArrowRight" });
     expect(document.activeElement?.textContent).toContain("Memória");

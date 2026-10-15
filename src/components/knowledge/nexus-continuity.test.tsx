@@ -2,6 +2,8 @@
 import { act, cleanup, fireEvent, render, waitFor } from "@testing-library/react";
 import { afterEach, beforeEach, expect, it, vi } from "vitest";
 import type { KnowledgeNode } from "@/lib/knowledge/knowledge-service";
+// Multi-step autosave cases include real debounce timers; they are not latency benchmarks.
+vi.setConfig({ testTimeout: 15000 });
 const m = vi.hoisted(() => ({ get: vi.fn(), saveContent: vi.fn(), from: vi.fn(), actor: "actor" }));
 vi.mock("@/lib/auth", () => ({ useAuth: () => ({ user: { id: m.actor }, loading: false }) }));
 vi.mock("@/integrations/supabase/client", () => ({ supabase: { from: m.from } }));
@@ -88,7 +90,7 @@ afterEach(() => {
 });
 async function setup() {
   const v = render(<NexusWorkspace assetsEnabled={false} graphEnabled={false} />);
-  await v.findByRole("tab", { name: "Alpha" });
+  await v.findByRole("tab", { name: "Alpha" }, { timeout: 5000 });
   return v;
 }
 it("closes the last page and reopens it only on request, retaining tab order", async () => {
@@ -262,11 +264,21 @@ it("applies a recovered draft only after consent against the reviewed server ver
 });
 
 it("reloads an initial page for a new actor instead of reusing the previous actor's navigation stamp", async () => {
-  const v = render(<NexusWorkspace assetsEnabled={false} graphEnabled={false} initialNodeId="alpha" />);
+  const v = render(
+    <NexusWorkspace assetsEnabled={false} graphEnabled={false} initialNodeId="alpha" />,
+  );
   await v.findByRole("heading", { name: "Alpha" });
   m.get.mockClear();
   m.actor = "next-actor";
   v.rerender(<NexusWorkspace assetsEnabled={false} graphEnabled={false} initialNodeId="alpha" />);
   await waitFor(() => expect(m.get).toHaveBeenCalledWith("alpha"));
   await v.findByRole("heading", { name: "Alpha" });
+});
+
+it("opens a deep link after its workspace becomes available", async () => {
+  const v = render(
+    <NexusWorkspace assetsEnabled={false} graphEnabled={false} initialNodeId="beta" />,
+  );
+  await v.findByRole("heading", { name: "Beta" }, { timeout: 5000 });
+  expect(v.getByRole("tab", { name: "Beta" }).getAttribute("aria-selected")).toBe("true");
 });

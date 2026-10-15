@@ -3342,30 +3342,11 @@ legend {
 /* Editing controls sit on opaque ink so map and portrait images never erase
  * labels. Their containers stay still; only icons and halos move. */
 
-:where(
-    .tadeon-tabletop-toolbar,
-    .tadeon-tabletop-canvas-rail,
-    .tadeon-tabletop-stage-status,
-    .tadeon-tabletop-selection-dock,
-    .tadeon-tabletop-tool-options,
-    .tadeon-tabletop-orbit-controls,
-    .tadeon-visibility__studios,
-    .tadeon-visibility__quick-grid
-  )
-  button {
+:where(.tadeon-tabletop-canvas-rail,.tadeon-tabletop-stage-status,.tadeon-tabletop-selection-dock,.tadeon-tabletop-tool-options,.tadeon-tabletop-orbit-controls,.tadeon-visibility__studios,.tadeon-visibility__quick-grid) button {
   text-shadow: 0 1px 2px rgb(0 0 0 / 72%);
 }
 
-:where(
-    .tadeon-tabletop-toolbar,
-    .tadeon-tabletop-canvas-rail,
-    .tadeon-tabletop-stage-status,
-    .tadeon-tabletop-selection-dock,
-    .tadeon-tabletop-tool-options,
-    .tadeon-tabletop-orbit-controls,
-    .tadeon-visibility
-  )
-  :where(button, [data-slot="button"]) {
+:where(.tadeon-tabletop-canvas-rail,.tadeon-tabletop-stage-status,.tadeon-tabletop-selection-dock,.tadeon-tabletop-tool-options,.tadeon-tabletop-orbit-controls,.tadeon-visibility) :where(button,[data-slot="button"]) {
   backdrop-filter: blur(18px) saturate(116%);
 }
 
@@ -3447,16 +3428,7 @@ legend {
     content: "";
   }
 
-  :where(
-      .tadeon-tabletop-toolbar,
-      .tadeon-tabletop-canvas-rail,
-      .tadeon-tabletop-stage-status,
-      .tadeon-tabletop-selection-dock,
-      .tadeon-tabletop-tool-options,
-      .tadeon-tabletop-orbit-controls,
-      .tadeon-visibility
-    )
-    :where(button, [data-slot="button"]):not(:disabled):hover {
+  :where(.tadeon-tabletop-canvas-rail,.tadeon-tabletop-stage-status,.tadeon-tabletop-selection-dock,.tadeon-tabletop-tool-options,.tadeon-tabletop-orbit-controls,.tadeon-visibility) :where(button,[data-slot="button"]):not(:disabled):hover {
     transform: none;
   }
 }

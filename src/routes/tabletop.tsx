@@ -65,9 +65,7 @@ function TabletopRoute() {
       ? search.session
       : undefined;
   const requestedScene =
-    typeof search.scene === "string" && UUID_PATTERN.test(search.scene)
-      ? search.scene
-      : undefined;
+    typeof search.scene === "string" && UUID_PATTERN.test(search.scene) ? search.scene : undefined;
   const requestedEntity =
     typeof search.locate === "string" && UUID_PATTERN.test(search.locate)
       ? search.locate
@@ -75,6 +73,7 @@ function TabletopRoute() {
 
   return (
     <TabletopRouteExperience
+      key={`${user?.id ?? ""}:${role ?? ""}`}
       role={role}
       flags={flags}
       initialSceneId={requestedScene}

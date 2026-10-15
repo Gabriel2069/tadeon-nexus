@@ -8,10 +8,11 @@
   min-height: calc(100dvh - 4rem);
   place-items: center;
   overflow: hidden;
-  padding: max(1rem, env(safe-area-inset-top)) max(1rem, env(safe-area-inset-right)) max(1rem, env(safe-area-inset-bottom)) max(1rem, env(safe-area-inset-left));
+  padding: max(1rem, env(safe-area-inset-top)) max(1rem, env(safe-area-inset-right))
+    max(1rem, env(safe-area-inset-bottom)) max(1rem, env(safe-area-inset-left));
   background:
-    radial-gradient(circle at 50% 34%, hsl(var(--primary) / .13), transparent 28rem),
-    linear-gradient(180deg, hsl(var(--background)), hsl(var(--background) / .96));
+    radial-gradient(circle at 50% 34%, hsl(var(--primary) / 0.13), transparent 28rem),
+    linear-gradient(180deg, hsl(var(--background)), hsl(var(--background) / 0.96));
 }
 
 .tadeon-tabletop-boot__halo {
@@ -19,7 +20,7 @@
   width: min(62vw, 34rem);
   aspect-ratio: 1;
   border-radius: 999px;
-  background: radial-gradient(circle, hsl(var(--primary) / .12), transparent 66%);
+  background: radial-gradient(circle, hsl(var(--primary) / 0.12), transparent 66%);
   filter: blur(20px);
   animation: tadeon-tabletop-breathe 3.8s ease-in-out infinite alternate;
 }
@@ -28,53 +29,54 @@
   position: relative;
   z-index: 1;
   width: min(100%, 31rem);
-  border: 1px solid hsl(var(--border) / .72);
+  border: 1px solid hsl(var(--border) / 0.72);
   border-radius: 1.35rem;
   padding: clamp(1.35rem, 4vw, 2.15rem);
   background:
-    linear-gradient(145deg, hsl(var(--card) / .97), hsl(var(--card) / .88)),
-    hsl(var(--card));
-  box-shadow: 0 34px 90px -48px hsl(220 55% 2% / .96), inset 0 1px 0 hsl(0 0% 100% / .04);
+    linear-gradient(145deg, hsl(var(--card) / 0.97), hsl(var(--card) / 0.88)), hsl(var(--card));
+  box-shadow:
+    0 34px 90px -48px hsl(220 55% 2% / 0.96),
+    inset 0 1px 0 hsl(0 0% 100% / 0.04);
   text-align: center;
-  animation: tadeon-tabletop-rise 280ms cubic-bezier(.2,.8,.2,1) both;
+  animation: tadeon-tabletop-rise 280ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
 }
 
 .tadeon-tabletop-boot__mark {
   display: grid;
   width: 2.75rem;
   height: 2.75rem;
-  margin: 0 auto .9rem;
+  margin: 0 auto 0.9rem;
   place-items: center;
-  border: 1px solid hsl(var(--primary) / .3);
-  border-radius: .9rem;
-  background: hsl(var(--primary) / .09);
+  border: 1px solid hsl(var(--primary) / 0.3);
+  border-radius: 0.9rem;
+  background: hsl(var(--primary) / 0.09);
   color: hsl(var(--primary));
-  box-shadow: 0 12px 36px -24px hsl(var(--primary) / .8);
+  box-shadow: 0 12px 36px -24px hsl(var(--primary) / 0.8);
 }
 
 .tadeon-tabletop-boot h1 {
-  margin-top: .3rem;
+  margin-top: 0.3rem;
   font-family: var(--font-cinzel, serif);
   font-size: clamp(1.4rem, 4vw, 2rem);
   font-weight: 700;
-  letter-spacing: -.025em;
+  letter-spacing: -0.025em;
 }
 
 .tadeon-tabletop-boot__copy {
-  margin: .65rem auto 0;
+  margin: 0.65rem auto 0;
   max-width: 30rem;
   color: hsl(var(--muted-foreground));
-  font-size: .86rem;
+  font-size: 0.86rem;
   line-height: 1.6;
 }
 
 .tadeon-tabletop-boot__progress {
   width: min(100%, 19rem);
-  height: .22rem;
-  margin: 1.35rem auto .9rem;
+  height: 0.22rem;
+  margin: 1.35rem auto 0.9rem;
   overflow: hidden;
   border-radius: 999px;
-  background: hsl(var(--border) / .6);
+  background: hsl(var(--border) / 0.6);
 }
 
 .tadeon-tabletop-boot__progress > span {
@@ -82,25 +84,29 @@
   width: 32%;
   height: 100%;
   border-radius: inherit;
-  background: linear-gradient(90deg, hsl(var(--primary) / .52), hsl(var(--primary)));
-  transition: width 520ms cubic-bezier(.2,.8,.2,1);
+  background: linear-gradient(90deg, hsl(var(--primary) / 0.52), hsl(var(--primary)));
+  transition: width 520ms cubic-bezier(0.2, 0.8, 0.2, 1);
 }
-.tadeon-tabletop-boot__progress > span[data-stage="1"] { width: 66%; }
-.tadeon-tabletop-boot__progress > span[data-stage="2"] { width: 92%; }
+.tadeon-tabletop-boot__progress > span[data-stage="1"] {
+  width: 66%;
+}
+.tadeon-tabletop-boot__progress > span[data-stage="2"] {
+  width: 92%;
+}
 
 .tadeon-tabletop-boot__meta {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: .45rem;
+  gap: 0.45rem;
   color: hsl(var(--muted-foreground));
-  font-size: .68rem;
-  letter-spacing: .02em;
+  font-size: 0.68rem;
+  letter-spacing: 0.02em;
 }
 
 .tadeon-tabletop-boot--error .tadeon-tabletop-boot__mark {
-  border-color: hsl(var(--destructive) / .35);
-  background: hsl(var(--destructive) / .08);
+  border-color: hsl(var(--destructive) / 0.35);
+  background: hsl(var(--destructive) / 0.08);
   color: hsl(var(--destructive));
 }
 
@@ -109,7 +115,7 @@
   --tabletop-rail-size: 3.1rem;
   isolation: isolate;
   background:
-    radial-gradient(circle at 18% 0%, hsl(var(--primary) / .055), transparent 34rem),
+    radial-gradient(circle at 18% 0%, hsl(var(--primary) / 0.055), transparent 34rem),
     hsl(var(--background));
 }
 
@@ -117,22 +123,16 @@
   position: sticky;
   top: 0;
   z-index: 35;
-  background: linear-gradient(180deg, hsl(var(--background) / .96), hsl(var(--background) / .86));
-  box-shadow: 0 16px 44px -40px hsl(220 50% 2% / .9);
-}
-
-.tadeon-tabletop-workbench {
-  gap: .55rem;
-  padding: .55rem;
-  min-width: 0;
+  background: linear-gradient(180deg, hsl(var(--background) / 0.96), hsl(var(--background) / 0.86));
+  box-shadow: 0 16px 44px -40px hsl(220 50% 2% / 0.9);
 }
 
 .tadeon-tabletop-stage {
   min-width: 0;
-  border: 1px solid hsl(var(--border) / .62);
+  border: 1px solid hsl(var(--border) / 0.62);
   border-radius: 1rem;
   background: hsl(220 28% 5%);
-  box-shadow: 0 30px 70px -52px hsl(220 50% 2% / .95);
+  box-shadow: 0 30px 70px -52px hsl(220 50% 2% / 0.95);
   contain: layout paint;
 }
 
@@ -148,629 +148,427 @@
 .tadeon-tabletop-canvas-rail,
 .tadeon-tabletop-tool-options,
 .tadeon-tabletop-context-menu,
-.tadeon-tabletop-panel,
 .tadeon-tabletop-reliability-strip,
 .tadeon-tabletop-precision-editor {
   transition:
     opacity 180ms ease,
-    transform 220ms cubic-bezier(.2,.8,.2,1),
+    transform 220ms cubic-bezier(0.2, 0.8, 0.2, 1),
     border-color 180ms ease,
     box-shadow 220ms ease;
 }
 
 .tadeon-tabletop-canvas-rail {
-  border-color: hsl(var(--border) / .68) !important;
-  background: hsl(var(--card) / .9) !important;
-  box-shadow: 0 22px 55px -36px hsl(220 50% 2% / .96);
+  border-color: hsl(var(--border) / 0.68) !important;
+  background: hsl(var(--card) / 0.9) !important;
+  box-shadow: 0 22px 55px -36px hsl(220 50% 2% / 0.96);
   backdrop-filter: blur(15px) saturate(1.08);
 }
 
-.tadeon-tabletop-canvas-rail button,
-.tadeon-tabletop-panel button,
-.tadeon-tabletop-toolbar button {
+.tadeon-tabletop-canvas-rail button {
   transform-origin: center;
 }
 
-.tadeon-tabletop-canvas-rail button:hover,
-.tadeon-tabletop-panel__tab:hover {
+.tadeon-tabletop-canvas-rail button:hover {
   transform: translateY(-1px);
 }
 
-.tadeon-tabletop-canvas-rail button:active,
-.tadeon-tabletop-panel__tab:active {
-  transform: scale(.965);
-}
-
-.tadeon-tabletop-panel {
-  min-width: 0;
-  border: 1px solid hsl(var(--border) / .58) !important;
-  border-radius: 1rem;
-  background:
-    linear-gradient(180deg, hsl(var(--card) / .92), hsl(var(--card) / .82)),
-    hsl(var(--card));
-  box-shadow: 0 26px 64px -50px hsl(220 50% 2% / .92);
-}
-
-.tadeon-tabletop-panel__tabs {
-  position: sticky;
-  top: 0;
-  z-index: 2;
-  padding-block: .35rem;
-  background: linear-gradient(180deg, hsl(var(--card) / .98) 75%, transparent);
-}
-
-.tadeon-tabletop-panel__tab {
-  min-width: 0;
-  transition: background-color 160ms ease, color 160ms ease, transform 160ms ease, border-color 160ms ease;
-}
-
-.tadeon-tabletop-panel__section {
-  animation: tadeon-tabletop-panel-in 200ms cubic-bezier(.2,.8,.2,1) both;
+.tadeon-tabletop-canvas-rail button:active {
+  transform: scale(0.965);
 }
 
 .tadeon-tabletop-context-menu[data-state="open"] {
-  animation: tadeon-tabletop-pop 150ms cubic-bezier(.2,.8,.2,1) both;
+  animation: tadeon-tabletop-pop 150ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
 }
 .tadeon-tabletop-context-menu[data-state="closed"] {
   opacity: 0;
-  transform: scale(.97) translateY(-4px);
+  transform: scale(0.97) translateY(-4px);
   pointer-events: none;
 }
 
 /* Interface progressiva */
-.tadeon-tabletop-progressive-dock {
-  position: fixed;
-  z-index: 96;
-  left: 50%;
-  bottom: max(.8rem, env(safe-area-inset-bottom));
-  display: flex;
-  max-width: calc(100vw - 1rem);
-  align-items: center;
-  gap: .28rem;
-  padding: .34rem;
-  border: 1px solid hsl(var(--border) / .72);
-  border-radius: 1rem;
-  background: hsl(var(--card) / .9);
-  box-shadow: 0 24px 58px -34px hsl(220 50% 2% / .98), inset 0 1px 0 hsl(0 0% 100% / .04);
-  backdrop-filter: blur(18px) saturate(1.1);
-  transform: translateX(-50%);
-  animation: tadeon-tabletop-dock-in 240ms cubic-bezier(.2,.8,.2,1) both;
-}
 
-.tadeon-tabletop-progressive-dock button,
-.tadeon-tabletop-selection-actions button,
-.tadeon-tabletop-clean-exit,
-.tadeon-tabletop-command-palette button {
+.tadeon-tabletop-clean-exit {
   -webkit-tap-highlight-color: transparent;
   touch-action: manipulation;
 }
 
-.tadeon-tabletop-progressive-dock__button,
-.tadeon-tabletop-progressive-dock__command,
-.tadeon-tabletop-progressive-dock__modes > button {
-  display: inline-flex;
-  min-height: 2.3rem;
-  align-items: center;
-  justify-content: center;
-  gap: .34rem;
-  border: 1px solid transparent;
-  border-radius: .72rem;
-  padding: .38rem .58rem;
-  color: hsl(var(--muted-foreground));
-  font-size: .66rem;
-  font-weight: 720;
-  white-space: nowrap;
-  transition: color 150ms ease, background-color 150ms ease, border-color 150ms ease, transform 150ms ease;
-}
-
-.tadeon-tabletop-progressive-dock svg {
-  width: .86rem;
-  height: .86rem;
-}
-
-.tadeon-tabletop-progressive-dock__button:hover,
-.tadeon-tabletop-progressive-dock__command:hover,
-.tadeon-tabletop-progressive-dock__modes > button:hover,
-.tadeon-tabletop-progressive-dock__modes > button[aria-pressed="true"] {
-  border-color: hsl(var(--primary) / .2);
-  background: hsl(var(--primary) / .08);
-  color: hsl(var(--foreground));
-  transform: translateY(-1px);
-}
-
-.tadeon-tabletop-progressive-dock__modes {
-  display: flex;
-  gap: .18rem;
-  padding-inline: .2rem;
-  border-inline: 1px solid hsl(var(--border) / .52);
-}
-
-.tadeon-tabletop-progressive-dock__command kbd,
-.tadeon-tabletop-command-palette kbd {
-  border: 1px solid hsl(var(--border) / .7);
-  border-radius: .38rem;
-  padding: .12rem .3rem;
-  background: hsl(var(--secondary) / .48);
-  color: hsl(var(--muted-foreground));
-  font-family: inherit;
-  font-size: .56rem;
-  font-weight: 700;
-}
-
-.tadeon-tabletop-selection-actions {
-  position: fixed;
-  z-index: 95;
-  left: 50%;
-  bottom: calc(max(.8rem, env(safe-area-inset-bottom)) + 3.65rem);
-  display: flex;
-  align-items: center;
-  gap: .2rem;
-  padding: .3rem;
-  border: 1px solid hsl(var(--primary) / .25);
-  border-radius: .86rem;
-  background: hsl(var(--card) / .92);
-  box-shadow: 0 22px 48px -34px hsl(var(--primary) / .48), 0 22px 58px -38px hsl(220 50% 2% / .98);
-  backdrop-filter: blur(16px);
-  transform: translateX(-50%);
-  animation: tadeon-tabletop-selection-in 180ms cubic-bezier(.2,.8,.2,1) both;
-}
-
-.tadeon-tabletop-selection-actions__identity {
-  display: flex;
-  max-width: min(14rem, 38vw);
-  align-items: center;
-  gap: .34rem;
-  padding: .25rem .5rem;
-  color: hsl(var(--foreground));
-  font-size: .65rem;
-  font-weight: 760;
-}
-
-.tadeon-tabletop-selection-actions__identity span {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.tadeon-tabletop-selection-actions svg { width: .8rem; height: .8rem; }
-.tadeon-tabletop-selection-actions > button {
-  display: grid;
-  width: 2.05rem;
-  height: 2.05rem;
-  place-items: center;
-  border-radius: .62rem;
-  color: hsl(var(--muted-foreground));
-  transition: color 140ms ease, background-color 140ms ease, transform 140ms ease;
-}
-.tadeon-tabletop-selection-actions > button:hover {
-  background: hsl(var(--secondary) / .6);
-  color: hsl(var(--foreground));
-  transform: translateY(-1px);
-}
-.tadeon-tabletop-selection-actions > button.is-danger:hover {
-  background: hsl(var(--destructive) / .1);
-  color: hsl(var(--destructive));
-}
-
 /* Paleta de comandos: modal curto e pesquisável; não sequestra a tela inteira. */
-.tadeon-tabletop-command-layer {
-  position: fixed;
-  z-index: 180;
-  inset: 0;
-  display: grid;
-  place-items: start center;
-  padding: min(12vh, 7rem) .75rem 1rem;
-  background: hsl(220 30% 3% / .58);
-  animation: tadeon-tabletop-fade-in 120ms ease-out both;
-}
-
-.tadeon-tabletop-command-palette {
-  width: min(100%, 36rem);
-  max-height: min(70dvh, 38rem);
-  overflow: hidden;
-  border: 1px solid hsl(var(--border) / .8);
-  border-radius: 1.05rem;
-  background: hsl(var(--popover) / .98);
-  box-shadow: 0 36px 100px -34px hsl(220 55% 1% / .98);
-  animation: tadeon-tabletop-command-in 170ms cubic-bezier(.2,.8,.2,1) both;
-}
-
-.tadeon-tabletop-command-palette > header {
-  display: grid;
-  grid-template-columns: 1.1rem minmax(0, 1fr) 2rem;
-  gap: .65rem;
-  align-items: center;
-  padding: .72rem .8rem;
-  border-bottom: 1px solid hsl(var(--border) / .58);
-}
-
-.tadeon-tabletop-command-palette > header > svg {
-  width: 1rem;
-  height: 1rem;
-  color: hsl(var(--primary));
-}
-
-.tadeon-tabletop-command-palette input {
-  min-width: 0;
-  border: 0;
-  outline: 0;
-  background: transparent;
-  color: hsl(var(--foreground));
-  font-size: .9rem;
-}
-
-.tadeon-tabletop-command-palette > header button {
-  display: grid;
-  width: 2rem;
-  height: 2rem;
-  place-items: center;
-  border-radius: .6rem;
-  color: hsl(var(--muted-foreground));
-}
-
-.tadeon-tabletop-command-palette > header button:hover {
-  background: hsl(var(--secondary) / .6);
-  color: hsl(var(--foreground));
-}
-
-.tadeon-tabletop-command-palette__list {
-  max-height: min(52dvh, 29rem);
-  overflow-y: auto;
-  overscroll-behavior: contain;
-  padding: .45rem;
-}
-
-.tadeon-tabletop-command-palette__list > button {
-  display: flex;
-  width: 100%;
-  min-height: 2.55rem;
-  align-items: center;
-  justify-content: space-between;
-  gap: .75rem;
-  border-radius: .68rem;
-  padding: .48rem .62rem;
-  color: hsl(var(--foreground));
-  font-size: .76rem;
-  text-align: left;
-  transition: background-color 130ms ease, transform 130ms ease;
-}
-
-.tadeon-tabletop-command-palette__list > button:hover,
-.tadeon-tabletop-command-palette__list > button:focus-visible {
-  background: hsl(var(--secondary) / .58);
-  outline: none;
-  transform: translateX(2px);
-}
-
-.tadeon-tabletop-command-palette__list > button.is-danger { color: hsl(var(--destructive)); }
-.tadeon-tabletop-command-palette__list > p {
-  padding: 2rem 1rem;
-  color: hsl(var(--muted-foreground));
-  font-size: .75rem;
-  text-align: center;
-}
-
-.tadeon-tabletop-command-palette > footer {
-  display: flex;
-  flex-wrap: wrap;
-  gap: .65rem;
-  padding: .55rem .75rem;
-  border-top: 1px solid hsl(var(--border) / .5);
-  color: hsl(var(--muted-foreground));
-  font-size: .58rem;
-}
-.tadeon-tabletop-command-palette > footer span { display: inline-flex; align-items: center; gap: .25rem; }
-.tadeon-tabletop-command-palette > footer svg { width: .68rem; height: .68rem; }
 
 .tadeon-tabletop-clean-exit {
   position: fixed;
   z-index: 200;
-  top: max(.65rem, env(safe-area-inset-top));
-  right: max(.65rem, env(safe-area-inset-right));
+  top: max(0.65rem, env(safe-area-inset-top));
+  right: max(0.65rem, env(safe-area-inset-right));
   display: inline-flex;
   min-height: 2.3rem;
   align-items: center;
-  gap: .4rem;
-  border: 1px solid hsl(var(--border) / .62);
-  border-radius: .72rem;
-  padding: .36rem .58rem;
-  background: hsl(var(--card) / .78);
+  gap: 0.4rem;
+  border: 1px solid hsl(var(--border) / 0.62);
+  border-radius: 0.72rem;
+  padding: 0.36rem 0.58rem;
+  background: hsl(var(--card) / 0.78);
   color: hsl(var(--foreground));
-  font-size: .65rem;
+  font-size: 0.65rem;
   backdrop-filter: blur(12px);
 }
-.tadeon-tabletop-clean-exit svg { width: .8rem; height: .8rem; }
+.tadeon-tabletop-clean-exit svg {
+  width: 0.8rem;
+  height: 0.8rem;
+}
 
 /* Essencial: o canvas domina; autoria volta quando pedida. */
-html[data-tadeon-tabletop-interface="play"] .tadeon-tabletop-studio .tadeon-tabletop-toolbar,
-html[data-tadeon-tabletop-interface="play"] .tadeon-tabletop-studio .tadeon-tabletop-command-spaces,
-html[data-tadeon-tabletop-interface="play"] .tadeon-tabletop-studio .tadeon-tabletop-panel {
-  display: none !important;
-}
-
-html[data-tadeon-tabletop-interface="play"] .tadeon-tabletop-studio .tadeon-tabletop-workbench {
-  grid-template-columns: minmax(0, 1fr) !important;
-}
-
-html[data-tadeon-tabletop-interface="play"] .tadeon-tabletop-studio .tadeon-tabletop-stage {
-  min-height: calc(100dvh - 8.5rem);
-}
-
-html[data-tadeon-tabletop-interface="build"] .tadeon-tabletop-studio .tadeon-tabletop-toolbar,
-html[data-tadeon-tabletop-interface="direct"] .tadeon-tabletop-studio .tadeon-tabletop-toolbar {
-  display: none;
-}
-
-html[data-tadeon-tabletop-interface="advanced"] .tadeon-tabletop-studio .tadeon-tabletop-toolbar {
-  animation: tadeon-tabletop-panel-in 190ms cubic-bezier(.2,.8,.2,1) both;
-}
 
 /* Tela limpa: preview visual sem desmontar o motor. */
 html[data-tadeon-tabletop-clean="true"] .tadeon-tabletop-studio__header,
-html[data-tadeon-tabletop-clean="true"] .tadeon-tabletop-studio .tadeon-tabletop-panel,
 html[data-tadeon-tabletop-clean="true"] .tadeon-tabletop-studio .tadeon-tabletop-canvas-rail,
 html[data-tadeon-tabletop-clean="true"] .tadeon-tabletop-studio .tadeon-tabletop-tool-options,
 html[data-tadeon-tabletop-clean="true"] .tadeon-tabletop-reliability-strip,
 html[data-tadeon-tabletop-clean="true"] .tadeon-tabletop-precision-editor {
   display: none !important;
 }
-html[data-tadeon-tabletop-clean="true"] .tadeon-tabletop-workbench {
-  grid-template-columns: minmax(0, 1fr) !important;
-  gap: 0;
-  padding: 0;
-}
 html[data-tadeon-tabletop-clean="true"] .tadeon-tabletop-stage {
-  min-height: calc(100dvh - 4rem) !important;
   border: 0;
   border-radius: 0;
 }
-html[data-tadeon-tabletop-clean="true"] .tadeon-tabletop-canvas-host canvas { border-radius: 0; }
+html[data-tadeon-tabletop-clean="true"] .tadeon-tabletop-canvas-host canvas {
+  border-radius: 0;
+}
 
 /* Variações de modal dentro da Mesa: confirmação compacta, edição rolável e mobile sheet. */
-body:has(.tadeon-tabletop-studio) [data-slot="dialog-content"] {
-  width: min(44rem, calc(100vw - 1.25rem));
-  max-width: 44rem;
-  max-height: min(86dvh, 46rem);
-  overscroll-behavior: contain;
-}
 body:has(.tadeon-tabletop-studio) [data-slot="alert-dialog-content"] {
   width: min(30rem, calc(100vw - 1.25rem));
   max-width: 30rem;
 }
-body:has(.tadeon-tabletop-studio) [data-slot="dialog-content"]:has(textarea),
-body:has(.tadeon-tabletop-studio) [data-slot="dialog-content"]:has([role="tabpanel"]) {
-  width: min(58rem, calc(100vw - 1.25rem));
-  max-width: 58rem;
-}
 
 /* Touch: alvos maiores, menos chrome simultâneo e gestos preservados no canvas. */
 @media (pointer: coarse), (max-width: 800px) {
-  .tadeon-tabletop-workbench { padding: .35rem; gap: .35rem; }
-  .tadeon-tabletop-stage { border-radius: .85rem; }
-  .tadeon-tabletop-progressive-dock {
-    right: .5rem;
-    bottom: max(.5rem, env(safe-area-inset-bottom));
-    left: .5rem;
-    max-width: none;
-    justify-content: space-between;
-    overflow-x: auto;
-    transform: none;
-    scrollbar-width: none;
-  }
-  .tadeon-tabletop-progressive-dock::-webkit-scrollbar { display: none; }
-  .tadeon-tabletop-progressive-dock__button,
-  .tadeon-tabletop-progressive-dock__command,
-  .tadeon-tabletop-progressive-dock__modes > button {
-    min-width: 3rem;
-    min-height: 2.85rem;
-    padding: .45rem .58rem;
-    flex-direction: column;
-    gap: .18rem;
-    font-size: .58rem;
-  }
-  .tadeon-tabletop-progressive-dock svg { width: 1rem; height: 1rem; }
-  .tadeon-tabletop-progressive-dock__command kbd { display: none; }
-  .tadeon-tabletop-selection-actions {
-    bottom: calc(max(.5rem, env(safe-area-inset-bottom)) + 3.7rem);
-    max-width: calc(100vw - 1rem);
-  }
-  .tadeon-tabletop-selection-actions > button {
-    width: 2.55rem;
-    height: 2.55rem;
-  }
-  .tadeon-tabletop-selection-actions__identity { max-width: 42vw; }
-  .tadeon-tabletop-command-layer { place-items: end center; padding: 1rem .5rem max(.5rem, env(safe-area-inset-bottom)); }
-  .tadeon-tabletop-command-palette {
-    width: 100%;
-    max-height: min(78dvh, 42rem);
-    border-radius: 1.1rem 1.1rem .65rem .65rem;
-    animation-name: tadeon-tabletop-sheet-in;
-  }
-  body:has(.tadeon-tabletop-studio) [data-slot="dialog-content"]:not([data-motion-surface]),
-  body:has(.tadeon-tabletop-studio) [data-slot="alert-dialog-content"]:not([data-motion-surface]) {
-    top: auto !important;
-    bottom: max(.35rem, env(safe-area-inset-bottom));
-    width: calc(100vw - .7rem) !important;
-    max-width: none !important;
-    max-height: min(82dvh, 48rem);
-    border-radius: 1.15rem 1.15rem .75rem .75rem;
-    transform: translateX(-50%) !important;
-  }
-  html[data-tadeon-tabletop-interface="play"] .tadeon-tabletop-studio .tadeon-tabletop-stage {
-    min-height: calc(100dvh - 7rem);
+  .tadeon-tabletop-stage {
+    border-radius: 0.85rem;
   }
 }
 
 @media (max-width: 540px) {
-  .tadeon-tabletop-progressive-dock__modes > button span,
-  .tadeon-tabletop-progressive-dock__command span { display: none; }
-  .tadeon-tabletop-progressive-dock__modes > button,
-  .tadeon-tabletop-progressive-dock__command { min-width: 2.85rem; }
-  .tadeon-tabletop-selection-actions__identity { max-width: 34vw; }
 }
 
 @keyframes tadeon-tabletop-rise {
-  from { opacity: 0; transform: translateY(10px) scale(.985); }
-  to { opacity: 1; transform: translateY(0) scale(1); }
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
 @keyframes tadeon-tabletop-breathe {
-  from { transform: scale(.92); opacity: .72; }
-  to { transform: scale(1.08); opacity: 1; }
+  from {
+    transform: scale(0.92);
+    opacity: 0.72;
+  }
+  to {
+    transform: scale(1.08);
+    opacity: 1;
+  }
 }
 @keyframes tadeon-tabletop-dock-in {
-  from { opacity: 0; transform: translate(-50%, 10px) scale(.985); }
-  to { opacity: 1; transform: translate(-50%, 0) scale(1); }
+  from {
+    opacity: 0;
+    transform: translate(-50%, 10px) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0) scale(1);
+  }
 }
 @keyframes tadeon-tabletop-selection-in {
-  from { opacity: 0; transform: translate(-50%, 8px) scale(.97); }
-  to { opacity: 1; transform: translate(-50%, 0) scale(1); }
+  from {
+    opacity: 0;
+    transform: translate(-50%, 8px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0) scale(1);
+  }
 }
 @keyframes tadeon-tabletop-panel-in {
-  from { opacity: 0; transform: translateY(5px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 @keyframes tadeon-tabletop-pop {
-  from { opacity: 0; transform: scale(.97) translateY(-4px); }
-  to { opacity: 1; transform: scale(1) translateY(0); }
+  from {
+    opacity: 0;
+    transform: scale(0.97) translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
 }
 @keyframes tadeon-tabletop-command-in {
-  from { opacity: 0; transform: translateY(-8px) scale(.985); }
-  to { opacity: 1; transform: translateY(0) scale(1); }
+  from {
+    opacity: 0;
+    transform: translateY(-8px) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
 @keyframes tadeon-tabletop-sheet-in {
-  from { opacity: 0; transform: translateY(18px) scale(.99); }
-  to { opacity: 1; transform: translateY(0) scale(1); }
+  from {
+    opacity: 0;
+    transform: translateY(18px) scale(0.99);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
-@keyframes tadeon-tabletop-fade-in { from { opacity: 0; } to { opacity: 1; } }
+@keyframes tadeon-tabletop-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
 
 @media (prefers-reduced-motion: reduce) {
-  .tadeon-tabletop-boot__halo,
-  .tadeon-tabletop-boot__card,
-  .tadeon-tabletop-progressive-dock,
-  .tadeon-tabletop-selection-actions,
-  .tadeon-tabletop-command-layer,
-  .tadeon-tabletop-command-palette,
-  .tadeon-tabletop-panel__section,
-  .tadeon-tabletop-context-menu,
-  .tadeon-tabletop-canvas-rail,
-  .tadeon-tabletop-panel,
-  .tadeon-tabletop-toolbar button,
-  .tadeon-tabletop-panel button {
+  .tadeon-tabletop-boot__halo,.tadeon-tabletop-boot__card,.tadeon-tabletop-context-menu,.tadeon-tabletop-canvas-rail {
     animation: none !important;
     transition: none !important;
   }
 }
+
+/* NEX-007: stage-local navigation; no viewport positioning or icon transforms. */
+.tadeon-tabletop-progressive-dock {
+  position: absolute;
+  z-index: 102;
+  left: 0.5rem;
+  right: 0.5rem;
+  bottom: 0.5rem;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  align-items: stretch;
+  gap: 0.35rem;
+  padding: 0.4rem;
+  width: fit-content;
+  max-width: calc(100% - 1rem);
+  margin-inline: auto;
+  border: 1px solid rgb(146 181 202 / 30%);
+  border-radius: 1rem 0.4rem 1rem 0.4rem;
+  background: linear-gradient(130deg, rgb(84 123 148 / 16%), transparent 65%), rgb(12 18 24 / 94%);
+  box-shadow:
+    0 12px 35px rgb(0 0 0 / 50%),
+    inset 0 1px rgb(255 255 255 / 12%);
+  backdrop-filter: blur(14px);
+  pointer-events: auto;
+}
+.tadeon-tabletop-progressive-dock :is(button, .tadeon-tabletop-progressive-dock__modes) {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+}
+.tadeon-tabletop-progressive-dock button {
+  min-height: 44px;
+  min-width: 44px;
+  border: 1px solid transparent;
+  border-radius: 0.7rem;
+  padding: 0.5rem 0.65rem;
+  color: #b6bcc2;
+  font-size: 0.75rem;
+  touch-action: manipulation;
+  transition:
+    background-color 160ms ease,
+    color 160ms ease,
+    border-color 160ms ease;
+}
+.tadeon-tabletop-progressive-dock button:hover,
+.tadeon-tabletop-progressive-dock button[aria-pressed="true"] {
+  color: #e4eef4;
+  background: rgb(84 123 148 / 20%);
+  border-color: rgb(146 181 202 / 38%);
+  box-shadow: inset 0 1px rgb(255 255 255 / 8%);
+}
+.tadeon-tabletop-progressive-dock svg {
+  width: 1rem;
+  height: 1rem;
+  flex-shrink: 0;
+}
+.tadeon-tabletop-progressive-dock kbd {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  opacity: 0.7;
+}
+.tadeon-tabletop-progressive-dock__modes {
+  border-inline-start: 1px solid rgb(146 181 202 / 20%);
+  padding-inline-start: 0.35rem;
+}
+.tadeon-tabletop-progressive-dock button:focus-visible,
+.tadeon-tabletop-panel :is(button, [role="tabpanel"]):focus-visible {
+  outline: 2px solid #e9e3d5;
+  outline-offset: 2px;
+}
+[data-slot="dialog-content"].tadeon-tabletop-command-palette {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  width: min(38rem, calc(100vw - 1rem));
+  padding: 1.25rem;
+  border-color: rgb(146 181 202 / 32%);
+  background: #111820;
+}
+.tadeon-tabletop-command-palette > h2 {
+  padding-right: 2.5rem;
+  font-size: 1.8rem;
+}
+.tadeon-tabletop-command-palette > p {
+  max-width: 32rem;
+  font-size: 0.8rem;
+}
+.tadeon-tabletop-command-palette [cmdk-root] {
+  min-height: 0;
+  background: transparent;
+}
+.tadeon-tabletop-command-palette__list {
+  max-height: min(48dvh, 26rem);
+}
+.tadeon-tabletop-command-palette [cmdk-item] {
+  min-height: 44px;
+  justify-content: space-between;
+  font-size: 0.875rem;
+  gap: 1rem;
+}
+.tadeon-tabletop-command-palette [cmdk-item].is-danger {
+  color: #ef9a9a;
+}
+.tadeon-tabletop-command-palette kbd {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+}
+.tadeon-tabletop-command-palette > footer {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+  color: var(--muted-foreground);
+  border-top: 1px solid var(--border);
+  padding-top: 0.75rem;
+  font-size: 0.75rem;
+}
+.tadeon-tabletop-command-palette footer span {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+.tadeon-tabletop-command-palette footer svg {
+  width: 0.8rem;
+  height: 0.8rem;
+}
+@container (max-width: 680px) {
+  .tadeon-tabletop-progressive-dock {
+    gap: 0.2rem;
+  }
+  .tadeon-tabletop-progressive-dock__button span,
+  .tadeon-tabletop-progressive-dock__command kbd {
+    display: none;
+  }
+}
+@container (max-width: 680px) {
+  .tadeon-tabletop-progressive-dock {
+    display: grid;
+    grid-template-columns: repeat(3, 44px) minmax(0, 1fr);
+    width: calc(100% - 1rem);
+  }
+  .tadeon-tabletop-progressive-dock__modes {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    border-inline-start: 0;
+    border-top: 1px solid rgb(146 181 202 / 20%);
+    padding: 0.25rem 0 0;
+  }
+  .tadeon-tabletop-progressive-dock__modes > button {
+    flex: 1;
+    flex-direction: column;
+    gap: 0.3rem;
+    padding-inline: 0.3rem;
+  }
+  .tadeon-tabletop-progressive-dock__command {
+    grid-column: 4;
+    grid-row: 1;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .tadeon-tabletop-progressive-dock button,
+  .tadeon-tabletop-panel__tab {
+    transition: none;
+  }
+}
+
+.tadeon-tabletop-selection-actions { position: absolute; z-index: 103; bottom: calc(var(--tadeon-tabletop-progressive-h, 7rem) + 1rem); left: .5rem; right: .5rem; display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: .3rem; width: fit-content; max-width: calc(100% - 1rem); margin-inline: auto; padding: .45rem; border: 1px solid rgb(146 181 202 / 30%); border-radius: .85rem; color: #dcebf3; background: #111b24; box-shadow: 0 12px 32px rgb(0 0 0 / 45%), inset 0 1px rgb(255 255 255 / 10%); pointer-events: auto; }
+.tadeon-tabletop-selection-actions__identity { display: flex; align-items: center; gap: .5rem; max-width: 12rem; font-size: .8rem; }
+.tadeon-tabletop-selection-actions__identity span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.tadeon-tabletop-selection-actions svg { width: 1rem; height: 1rem; flex-shrink: 0; }
+.tadeon-tabletop-selection-actions button { display: grid; place-items: center; width: 44px; height: 44px; border: 1px solid transparent; border-radius: .65rem; transition: background-color 160ms ease, border-color 160ms ease; }
+.tadeon-tabletop-selection-actions button:hover { background: rgb(84 123 148 / 20%); border-color: rgb(146 181 202 / 38%); }
+.tadeon-tabletop-selection-actions button:focus-visible { outline: 2px solid #e9e3d5; outline-offset: 2px; }
+.tadeon-tabletop-selection-actions button.is-danger { color: #ef9a9a; }
+.tadeon-tabletop-progressive-dock span { white-space: nowrap; }
+@container (max-width: 360px) { .tadeon-tabletop-selection-actions__identity { width: 100%; max-width: 100%; justify-content: center; } }
+@media (prefers-reduced-motion: reduce) { .tadeon-tabletop-selection-actions button { transition: none; } }
 
 /* end-source: src/styles/tabletop-progressive-ui.css */
 /* source: src/styles/tabletop-motion-final.css */
 /* Mesa Nexus · microinterações finais
    Movimento comunica estado sem atrasar o canvas nem competir com o mapa. */
 
-.tadeon-tabletop-studio button,
-.tadeon-tabletop-progressive-dock button,
-.tadeon-tabletop-selection-actions button,
-.tadeon-tabletop-command-palette button,
 .tadeon-tabletop-clean-exit {
   transform-origin: center;
 }
 
-.tadeon-tabletop-studio button svg,
-.tadeon-tabletop-progressive-dock button svg,
-.tadeon-tabletop-selection-actions button svg,
-.tadeon-tabletop-command-palette button svg,
 .tadeon-tabletop-clean-exit svg {
   transform-origin: center;
   transition:
-    transform 170ms cubic-bezier(.2,.8,.2,1),
+    transform 170ms cubic-bezier(0.2, 0.8, 0.2, 1),
     opacity 150ms ease,
     filter 180ms ease;
 }
 
 @media (hover: hover) {
-  .tadeon-tabletop-studio button:not(:disabled):hover > svg,
-  .tadeon-tabletop-progressive-dock button:not(:disabled):hover > svg,
-  .tadeon-tabletop-selection-actions button:not(:disabled):hover > svg,
-  .tadeon-tabletop-command-palette button:not(:disabled):hover > svg,
-  .tadeon-tabletop-clean-exit:hover > svg {
+  .tadeon-tabletop-clean-exit:hover>svg {
     transform: translateY(-1px) scale(1.08);
   }
-
-  .tadeon-tabletop-studio button:not(:disabled):active > svg,
-  .tadeon-tabletop-progressive-dock button:not(:disabled):active > svg,
-  .tadeon-tabletop-selection-actions button:not(:disabled):active > svg,
-  .tadeon-tabletop-command-palette button:not(:disabled):active > svg {
-    transform: translateY(0) scale(.92);
-  }
 }
 
-.tadeon-tabletop-studio button[aria-pressed="true"] > svg,
-.tadeon-tabletop-studio button[aria-selected="true"] > svg,
-.tadeon-tabletop-progressive-dock button[aria-pressed="true"] > svg {
-  color: hsl(var(--primary));
-  filter: drop-shadow(0 0 .45rem hsl(var(--primary) / .24));
-  animation: tadeon-tabletop-icon-select 220ms cubic-bezier(.2,.8,.2,1) both;
-}
-
-.tadeon-tabletop-panel__tab {
-  position: relative;
-  overflow: hidden;
-}
-
-.tadeon-tabletop-panel__tab::after {
-  content: "";
-  position: absolute;
-  right: .48rem;
-  bottom: .12rem;
-  left: .48rem;
-  height: 1.5px;
-  border-radius: 999px;
-  background: hsl(var(--primary));
-  opacity: 0;
-  transform: scaleX(.3);
-  transform-origin: center;
-  transition: opacity 160ms ease, transform 210ms cubic-bezier(.2,.8,.2,1);
-}
-
-.tadeon-tabletop-panel__tab[aria-selected="true"]::after {
-  opacity: .88;
-  transform: scaleX(1);
-}
-
-.tadeon-tabletop-panel__tab[aria-selected="true"] .tadeon-tabletop-panel__tab-badge {
-  animation: tadeon-tabletop-badge-settle 230ms cubic-bezier(.2,.8,.2,1) both;
-}
-
-.tadeon-tabletop-command-spaces button,
-.tadeon-tabletop-toolbar button,
 .tadeon-tabletop-canvas-rail button {
   transition:
     background-color 150ms ease,
     border-color 150ms ease,
     color 150ms ease,
     box-shadow 170ms ease,
-    transform 150ms cubic-bezier(.2,.8,.2,1),
+    transform 150ms cubic-bezier(0.2, 0.8, 0.2, 1),
     opacity 150ms ease;
 }
 
 @media (hover: hover) {
-  .tadeon-tabletop-command-spaces button:not(:disabled):hover,
-  .tadeon-tabletop-toolbar button:not(:disabled):hover,
   .tadeon-tabletop-canvas-rail button:not(:disabled):hover {
-    box-shadow: 0 10px 24px -20px hsl(var(--primary) / .7);
+    box-shadow: 0 10px 24px -20px hsl(var(--primary) / 0.7);
   }
 }
 
-.tadeon-tabletop-command-spaces button[aria-pressed="true"],
-.tadeon-tabletop-toolbar button[aria-pressed="true"],
 .tadeon-tabletop-canvas-rail button[aria-pressed="true"] {
   box-shadow:
-    inset 0 0 0 1px hsl(var(--primary) / .17),
-    0 10px 28px -22px hsl(var(--primary) / .65);
+    inset 0 0 0 1px hsl(var(--primary) / 0.17),
+    0 10px 28px -22px hsl(var(--primary) / 0.65);
 }
 
-.tadeon-tabletop-panel input,
-.tadeon-tabletop-panel textarea,
-.tadeon-tabletop-panel select,
 .tadeon-tabletop-tool-options input,
 .tadeon-tabletop-tool-options select {
   transition:
@@ -780,12 +578,9 @@ body:has(.tadeon-tabletop-studio) [data-slot="dialog-content"]:has([role="tabpan
     transform 150ms ease;
 }
 
-.tadeon-tabletop-panel input:focus,
-.tadeon-tabletop-panel textarea:focus,
-.tadeon-tabletop-panel select:focus,
 .tadeon-tabletop-tool-options input:focus,
 .tadeon-tabletop-tool-options select:focus {
-  box-shadow: 0 0 0 3px hsl(var(--primary) / .1);
+  box-shadow: 0 0 0 3px hsl(var(--primary) / 0.1);
 }
 
 .tadeon-tabletop-context-menu > button,
@@ -793,21 +588,21 @@ body:has(.tadeon-tabletop-studio) [data-slot="dialog-content"]:has([role="tabpan
   transition:
     color 130ms ease,
     background-color 130ms ease,
-    padding-left 160ms cubic-bezier(.2,.8,.2,1);
+    padding-left 160ms cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
 @media (hover: hover) {
   .tadeon-tabletop-context-menu > button:hover,
   .tadeon-tabletop-context-menu [role="menuitem"]:hover {
-    padding-left: .9rem;
+    padding-left: 0.9rem;
   }
 }
 
 .tadeon-tabletop-stage:focus-within {
-  border-color: hsl(var(--primary) / .24);
+  border-color: hsl(var(--primary) / 0.24);
   box-shadow:
-    0 30px 70px -52px hsl(220 50% 2% / .95),
-    0 0 0 1px hsl(var(--primary) / .045);
+    0 30px 70px -52px hsl(220 50% 2% / 0.95),
+    0 0 0 1px hsl(var(--primary) / 0.045);
 }
 
 .tadeon-tabletop-canvas-host,
@@ -824,31 +619,10 @@ body:has(.tadeon-tabletop-studio) [data-slot="dialog-content"]:has([role="tabpan
 
 /* Feedback tátil visual sem depender de hover em tablet/celular. */
 @media (pointer: coarse) {
-  .tadeon-tabletop-studio button,
-  .tadeon-tabletop-progressive-dock button,
-  .tadeon-tabletop-selection-actions button {
-    min-height: 2.75rem;
-  }
-
-  .tadeon-tabletop-panel__tab {
-    min-height: 2.75rem;
-  }
 
   .tadeon-tabletop-context-menu > button,
   .tadeon-tabletop-context-menu [role="menuitem"] {
     min-height: 2.8rem;
-  }
-
-  .tadeon-tabletop-studio button:not(:disabled):active > svg,
-  .tadeon-tabletop-progressive-dock button:not(:disabled):active > svg,
-  .tadeon-tabletop-selection-actions button:not(:disabled):active > svg {
-    transform: scale(.9);
-  }
-
-  .tadeon-tabletop-studio button:not(:disabled):active,
-  .tadeon-tabletop-progressive-dock button:not(:disabled):active,
-  .tadeon-tabletop-selection-actions button:not(:disabled):active {
-    transform: scale(.97);
   }
 }
 
@@ -861,44 +635,64 @@ body:has(.tadeon-tabletop-studio) [data-slot="dialog-content"]:has([role="tabpan
 }
 
 .tadeon-tabletop-tool-options {
-  animation: tadeon-tabletop-tool-options-in 190ms cubic-bezier(.2,.8,.2,1) both;
+  animation: tadeon-tabletop-tool-options-in 190ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
 }
 
 .tadeon-tabletop-reliability-strip {
-  animation: tadeon-tabletop-status-in 210ms cubic-bezier(.2,.8,.2,1) both;
+  animation: tadeon-tabletop-status-in 210ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
 }
 
 @keyframes tadeon-tabletop-icon-select {
-  0% { transform: scale(.88); opacity: .72; }
-  65% { transform: scale(1.1); opacity: 1; }
-  100% { transform: scale(1); opacity: 1; }
+  0% {
+    transform: scale(0.88);
+    opacity: 0.72;
+  }
+  65% {
+    transform: scale(1.1);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
 }
 
 @keyframes tadeon-tabletop-badge-settle {
-  from { transform: translateY(-2px) scale(.9); opacity: .5; }
-  to { transform: translateY(0) scale(1); opacity: 1; }
+  from {
+    transform: translateY(-2px) scale(0.9);
+    opacity: 0.5;
+  }
+  to {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
 }
 
 @keyframes tadeon-tabletop-tool-options-in {
-  from { opacity: 0; transform: translateY(-5px) scale(.985); }
-  to { opacity: 1; transform: translateY(0) scale(1); }
+  from {
+    opacity: 0;
+    transform: translateY(-5px) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
 
 @keyframes tadeon-tabletop-status-in {
-  from { opacity: 0; transform: translate(-50%, -5px) scale(.985); }
-  to { opacity: 1; transform: translate(-50%, 0) scale(1); }
+  from {
+    opacity: 0;
+    transform: translate(-50%, -5px) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0) scale(1);
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .tadeon-tabletop-studio button,
-  .tadeon-tabletop-studio button svg,
-  .tadeon-tabletop-progressive-dock button,
-  .tadeon-tabletop-progressive-dock button svg,
-  .tadeon-tabletop-selection-actions button,
-  .tadeon-tabletop-selection-actions button svg,
-  .tadeon-tabletop-panel__tab::after,
   .tadeon-tabletop-tool-options,
-  .tadeon-tabletop-reliability-strip {
+.tadeon-tabletop-reliability-strip {
     animation: none !important;
     transition: none !important;
   }
@@ -912,39 +706,34 @@ body:has(.tadeon-tabletop-studio) [data-slot="dialog-content"]:has([role="tabpan
    final para ocupação da viewport e prioridade visual da Mesa. */
 
 body:has(.tadeon-tabletop-studio) {
-  --tadeon-tabletop-bottom-edge: max(.8rem, env(safe-area-inset-bottom));
+  --tadeon-tabletop-bottom-edge: max(0.8rem, env(safe-area-inset-bottom));
   --tadeon-tabletop-bottom-row-height: 3.2rem;
-  --tadeon-tabletop-bottom-row-gap: .55rem;
+  --tadeon-tabletop-bottom-row-gap: 0.55rem;
   --tadeon-tabletop-bottom-row-1: calc(
-    var(--tadeon-tabletop-bottom-edge) +
-    var(--tadeon-tabletop-bottom-row-height) +
-    var(--tadeon-tabletop-bottom-row-gap)
+    var(--tadeon-tabletop-bottom-edge) + var(--tadeon-tabletop-bottom-row-height) +
+      var(--tadeon-tabletop-bottom-row-gap)
   );
   --tadeon-tabletop-bottom-row-2: calc(
-    var(--tadeon-tabletop-bottom-row-1) +
-    var(--tadeon-tabletop-bottom-row-height) +
-    var(--tadeon-tabletop-bottom-row-gap)
+    var(--tadeon-tabletop-bottom-row-1) + var(--tadeon-tabletop-bottom-row-height) +
+      var(--tadeon-tabletop-bottom-row-gap)
   );
   --tadeon-tabletop-bottom-row-3: calc(
-    var(--tadeon-tabletop-bottom-row-2) +
-    var(--tadeon-tabletop-bottom-row-height) +
-    var(--tadeon-tabletop-bottom-row-gap)
+    var(--tadeon-tabletop-bottom-row-2) + var(--tadeon-tabletop-bottom-row-height) +
+      var(--tadeon-tabletop-bottom-row-gap)
   );
   --tadeon-tabletop-shell-top: 4.5rem;
   --tadeon-tabletop-top-edge: calc(
-    var(--tadeon-tabletop-shell-top) + max(.65rem, env(safe-area-inset-top))
+    var(--tadeon-tabletop-shell-top) + max(0.65rem, env(safe-area-inset-top))
   );
   --tadeon-tabletop-top-row-height: 2.55rem;
-  --tadeon-tabletop-top-row-gap: .45rem;
+  --tadeon-tabletop-top-row-gap: 0.45rem;
   --tadeon-tabletop-top-row-1: calc(
-    var(--tadeon-tabletop-top-edge) +
-    var(--tadeon-tabletop-top-row-height) +
-    var(--tadeon-tabletop-top-row-gap)
+    var(--tadeon-tabletop-top-edge) + var(--tadeon-tabletop-top-row-height) +
+      var(--tadeon-tabletop-top-row-gap)
   );
   --tadeon-tabletop-top-row-2: calc(
-    var(--tadeon-tabletop-top-row-1) +
-    var(--tadeon-tabletop-top-row-height) +
-    var(--tadeon-tabletop-top-row-gap)
+    var(--tadeon-tabletop-top-row-1) + var(--tadeon-tabletop-top-row-height) +
+      var(--tadeon-tabletop-top-row-gap)
   );
 }
 
@@ -955,19 +744,7 @@ body:has(.tadeon-dedicated-shell .tadeon-tabletop-studio) {
 
 /* Fixed chrome gets one consistent fade contract. Never animate transform here:
    centered docks already own transform for their geometry/motion. */
-:where(
-  .tadeon-tabletop-progressive-dock,
-  .tadeon-tactical-dock,
-  .tadeon-tabletop-selection-actions,
-  .tadeon-creative-dock,
-  .tadeon-placeables,
-  .tadeon-tabletop-now,
-  .tadeon-semantic-transform,
-  .tadeon-nexus-tabletop-locator,
-  .tadeon-tabletop-reliability-strip,
-  .tadeon-director-enhancement-bar,
-  .tadeon-tabletop-precision-editor
-) {
+:where(.tadeon-tactical-dock,.tadeon-creative-dock,.tadeon-placeables,.tadeon-tabletop-now,.tadeon-semantic-transform,.tadeon-tabletop-reliability-strip,.tadeon-director-enhancement-bar,.tadeon-tabletop-precision-editor) {
   transition:
     opacity 160ms ease,
     visibility 0s linear 0s;
@@ -979,20 +756,6 @@ body:has(.tadeon-dedicated-shell .tadeon-tabletop-studio) {
   }
 
   /* Centro, linha 0: navegação essencial. */
-  .tadeon-tabletop-progressive-dock {
-    bottom: var(--tadeon-tabletop-bottom-edge) !important;
-    max-width: min(
-      56rem,
-      calc(100vw - var(--tadeon-tabletop-side-reserve) - var(--tadeon-tabletop-side-reserve) - 2rem)
-    ) !important;
-    overflow-x: auto;
-    overscroll-behavior-inline: contain;
-    scrollbar-width: none;
-  }
-
-  .tadeon-tabletop-progressive-dock::-webkit-scrollbar {
-    display: none;
-  }
 
   /* Centro, linha 1: planejamento tático. */
   .tadeon-tactical-dock {
@@ -1011,40 +774,33 @@ body:has(.tadeon-dedicated-shell .tadeon-tabletop-studio) {
   }
 
   /* Centro, linha 2: ações efêmeras da seleção. */
-  .tadeon-tabletop-selection-actions {
-    bottom: var(--tadeon-tabletop-bottom-row-2) !important;
-    max-width: min(
-      42rem,
-      calc(100vw - var(--tadeon-tabletop-side-reserve) - var(--tadeon-tabletop-side-reserve) - 2rem)
-    ) !important;
-  }
 
   /* Laterais: utilidades persistentes ganham slots próprios. */
   .tadeon-tabletop-now {
-    left: max(.8rem, env(safe-area-inset-left)) !important;
+    left: max(0.8rem, env(safe-area-inset-left)) !important;
     bottom: var(--tadeon-tabletop-bottom-edge) !important;
   }
 
   .tadeon-placeables {
-    right: max(.8rem, env(safe-area-inset-right)) !important;
+    right: max(0.8rem, env(safe-area-inset-right)) !important;
     bottom: var(--tadeon-tabletop-bottom-edge) !important;
   }
 
   .tadeon-semantic-transform {
-    right: max(.8rem, env(safe-area-inset-right)) !important;
+    right: max(0.8rem, env(safe-area-inset-right)) !important;
     bottom: var(--tadeon-tabletop-bottom-row-1) !important;
   }
 
   /* Localizador cross-surface é contextual e recebe a terceira faixa direita. */
   .tadeon-nexus-tabletop-locator {
-    right: max(.8rem, env(safe-area-inset-right)) !important;
+    right: max(0.8rem, env(safe-area-inset-right)) !important;
     bottom: var(--tadeon-tabletop-bottom-row-2) !important;
     width: min(26rem, calc(100vw - 2rem));
   }
 
   /* Biblioteca/autoria ocupa a quarta linha para não disputar a seleção. */
   .tadeon-creative-dock {
-    right: max(.8rem, env(safe-area-inset-right)) !important;
+    right: max(0.8rem, env(safe-area-inset-right)) !important;
     bottom: var(--tadeon-tabletop-bottom-row-3) !important;
     width: min(21rem, calc(100vw - 2rem));
   }
@@ -1066,7 +822,7 @@ body:has(.tadeon-dedicated-shell .tadeon-tabletop-studio) {
 
   .tadeon-tabletop-precision-editor {
     top: var(--tadeon-tabletop-top-row-1) !important;
-    right: max(.8rem, env(safe-area-inset-right)) !important;
+    right: max(0.8rem, env(safe-area-inset-right)) !important;
     max-height: calc(
       100dvh - var(--tadeon-tabletop-top-row-1) - var(--tadeon-tabletop-bottom-row-3) - 4.2rem
     ) !important;
@@ -1092,16 +848,11 @@ body:has(.tadeon-dedicated-shell .tadeon-tabletop-studio) {
   html[data-tadeon-tabletop-interface="play"] .tadeon-tabletop-canvas-host,
   html[data-tadeon-tabletop-interface="build"] .tadeon-tabletop-canvas-host,
   html[data-tadeon-tabletop-interface="direct"] .tadeon-tabletop-canvas-host {
-    bottom: .65rem !important;
+    bottom: 0.65rem !important;
   }
 
   /* Custom panels also respect the same viewport contract as Radix portals. */
-  .tadeon-placeables__panel,
-  .tadeon-tabletop-now__panel,
-  .tadeon-creative-dock__panel,
-  .tadeon-tabletop-precision-editor,
-  .tadeon-tactical-dock__power-list,
-  .tadeon-nexus-tabletop-locator {
+  .tadeon-placeables__panel,.tadeon-tabletop-now__panel,.tadeon-creative-dock__panel,.tadeon-tabletop-precision-editor,.tadeon-tactical-dock__power-list {
     box-sizing: border-box;
     max-width: calc(100vw - 2rem) !important;
     max-height: calc(100dvh - var(--tadeon-tabletop-top-edge) - 2rem) !important;
@@ -1116,34 +867,7 @@ body:has(.tadeon-dedicated-shell .tadeon-tabletop-studio) {
 /* An open utility is a temporary working surface. Suppress chrome that would
    physically sit behind it instead of relying on z-index and showing two UIs
    through each other. The handle of the active utility remains available. */
-body:has(.tadeon-tabletop-now[data-open="true"]) :where(
-  .tadeon-tabletop-progressive-dock,
-  .tadeon-tactical-dock,
-  .tadeon-tabletop-selection-actions,
-  .tadeon-nexus-tabletop-locator
-),
-body:has(.tadeon-placeables[data-open="true"]) :where(
-  .tadeon-tabletop-progressive-dock,
-  .tadeon-tactical-dock,
-  .tadeon-tabletop-selection-actions,
-  .tadeon-creative-dock,
-  .tadeon-semantic-transform,
-  .tadeon-nexus-tabletop-locator
-),
-body:has(.tadeon-creative-dock[data-open="true"]) :where(
-  .tadeon-tabletop-progressive-dock,
-  .tadeon-tactical-dock,
-  .tadeon-tabletop-selection-actions,
-  .tadeon-placeables,
-  .tadeon-semantic-transform,
-  .tadeon-nexus-tabletop-locator
-),
-body:has(.tadeon-tabletop-precision-editor) :where(
-  .tadeon-creative-dock,
-  .tadeon-placeables,
-  .tadeon-semantic-transform,
-  .tadeon-nexus-tabletop-locator
-) {
+body:has(.tadeon-tabletop-now[data-open="true"]) :where(.tadeon-tactical-dock),body:has(.tadeon-placeables[data-open="true"]) :where(.tadeon-tactical-dock,.tadeon-creative-dock,.tadeon-semantic-transform),body:has(.tadeon-creative-dock[data-open="true"]) :where(.tadeon-tactical-dock,.tadeon-placeables,.tadeon-semantic-transform),body:has(.tadeon-tabletop-precision-editor) :where(.tadeon-creative-dock,.tadeon-placeables,.tadeon-semantic-transform) {
   opacity: 0 !important;
   visibility: hidden !important;
   pointer-events: none !important;
@@ -1153,19 +877,7 @@ body:has(.tadeon-tabletop-precision-editor) :where(
 /* The responsive inspector is itself a modal sheet. Nothing fixed should float
    above it while it is open. */
 @media (max-width: 1179px) {
-  body:has(.tadeon-tabletop-panel[data-mobile-open="true"]) :where(
-    .tadeon-tabletop-progressive-dock,
-    .tadeon-tactical-dock,
-    .tadeon-tabletop-selection-actions,
-    .tadeon-creative-dock,
-    .tadeon-placeables,
-    .tadeon-tabletop-now,
-    .tadeon-semantic-transform,
-    .tadeon-nexus-tabletop-locator,
-    .tadeon-tabletop-reliability-strip,
-    .tadeon-director-enhancement-bar,
-    .tadeon-tabletop-precision-editor
-  ) {
+  body:has(.tadeon-tabletop-panel[data-mobile-open="true"]) :where(.tadeon-tactical-dock,.tadeon-creative-dock,.tadeon-placeables,.tadeon-tabletop-now,.tadeon-semantic-transform,.tadeon-tabletop-reliability-strip,.tadeon-director-enhancement-bar,.tadeon-tabletop-precision-editor) {
     opacity: 0 !important;
     visibility: hidden !important;
     pointer-events: none !important;
@@ -1187,9 +899,9 @@ body:has(.tadeon-tabletop-precision-editor) :where(
 @media (min-width: 801px) and (max-height: 720px) {
   body:has(.tadeon-tabletop-studio) {
     --tadeon-tabletop-bottom-row-height: 2.9rem;
-    --tadeon-tabletop-bottom-row-gap: .35rem;
+    --tadeon-tabletop-bottom-row-gap: 0.35rem;
     --tadeon-tabletop-top-row-height: 2.35rem;
-    --tadeon-tabletop-top-row-gap: .3rem;
+    --tadeon-tabletop-top-row-gap: 0.3rem;
   }
 }
 
@@ -1197,33 +909,25 @@ body:has(.tadeon-tabletop-precision-editor) :where(
    Keep the tactical dock and selection actions on independent rows. */
 @media (max-width: 800px) {
   body:has(.tadeon-tabletop-studio) {
-    --tadeon-tabletop-bottom-edge: max(.5rem, env(safe-area-inset-bottom));
+    --tadeon-tabletop-bottom-edge: max(0.5rem, env(safe-area-inset-bottom));
     --tadeon-tabletop-bottom-row-height: 3.7rem;
-    --tadeon-tabletop-bottom-row-gap: .4rem;
-  }
-
-  .tadeon-tabletop-progressive-dock {
-    bottom: var(--tadeon-tabletop-bottom-edge) !important;
+    --tadeon-tabletop-bottom-row-gap: 0.4rem;
   }
 
   .tadeon-tactical-dock {
     bottom: var(--tadeon-tabletop-bottom-row-1) !important;
   }
 
-  .tadeon-tabletop-selection-actions {
-    bottom: var(--tadeon-tabletop-bottom-row-2) !important;
-  }
-
   .tadeon-nexus-tabletop-locator {
-    right: .5rem !important;
+    right: 0.5rem !important;
     bottom: var(--tadeon-tabletop-bottom-row-3) !important;
-    left: .5rem !important;
+    left: 0.5rem !important;
     width: auto !important;
     max-width: none !important;
   }
 
   .tadeon-tabletop-reliability-strip {
-    top: max(.5rem, env(safe-area-inset-top)) !important;
+    top: max(0.5rem, env(safe-area-inset-top)) !important;
     bottom: auto !important;
   }
 
@@ -1244,37 +948,12 @@ body:has(.tadeon-tabletop-precision-editor) :where(
 
 /* Clean/projection mode must actually be clean. Deferred bridges used to remain
    mounted over the projected scene even after the main progressive dock hid. */
-html[data-tadeon-tabletop-clean="true"] :where(
-  .tadeon-tactical-dock,
-  .tadeon-tabletop-selection-actions,
-  .tadeon-creative-dock,
-  .tadeon-placeables,
-  .tadeon-tabletop-now,
-  .tadeon-semantic-transform,
-  .tadeon-nexus-tabletop-locator,
-  .tadeon-tabletop-reliability-strip,
-  .tadeon-director-enhancement-bar,
-  .tadeon-tabletop-precision-editor,
-  .tadeon-tabletop-stage-status,
-  .tadeon-tabletop-radial-menu
-) {
+html[data-tadeon-tabletop-clean="true"] :where(.tadeon-tactical-dock,.tadeon-creative-dock,.tadeon-placeables,.tadeon-tabletop-now,.tadeon-semantic-transform,.tadeon-tabletop-reliability-strip,.tadeon-director-enhancement-bar,.tadeon-tabletop-precision-editor,.tadeon-tabletop-stage-status,.tadeon-tabletop-radial-menu) {
   display: none !important;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  :where(
-    .tadeon-tabletop-progressive-dock,
-    .tadeon-tactical-dock,
-    .tadeon-tabletop-selection-actions,
-    .tadeon-creative-dock,
-    .tadeon-placeables,
-    .tadeon-tabletop-now,
-    .tadeon-semantic-transform,
-    .tadeon-nexus-tabletop-locator,
-    .tadeon-tabletop-reliability-strip,
-    .tadeon-director-enhancement-bar,
-    .tadeon-tabletop-precision-editor
-  ) {
+  :where(.tadeon-tactical-dock,.tadeon-creative-dock,.tadeon-placeables,.tadeon-tabletop-now,.tadeon-semantic-transform,.tadeon-tabletop-reliability-strip,.tadeon-director-enhancement-bar,.tadeon-tabletop-precision-editor) {
     transition: none !important;
   }
 }
@@ -1290,24 +969,7 @@ html[data-tadeon-tabletop-clean="true"] :where(
    already contain complete colors (hex/oklch values), so wrapping them in
    hsl() makes the declaration invalid and the browser falls back to a fully
    transparent surface. Keep every working surface genuinely opaque here. */
-:where(
-  .tadeon-tabletop-progressive-dock,
-  .tadeon-tactical-dock,
-  .tadeon-tabletop-selection-actions,
-  .tadeon-tabletop-stage-status,
-  .tadeon-semantic-transform,
-  .tadeon-tabletop-context-menu,
-  .tadeon-tabletop-tool-options,
-  .tadeon-tabletop-selection-dock,
-  .tadeon-tactical-dock__power-list,
-  .tadeon-tabletop-command-palette,
-  .tadeon-tabletop-precision-editor,
-  .tadeon-tabletop-reliability-strip,
-  .tadeon-placeables__panel,
-  .tadeon-tabletop-now__panel,
-  .tadeon-creative-dock__panel,
-  .tadeon-nexus-tabletop-locator
-) {
+:where(.tadeon-tactical-dock,.tadeon-tabletop-stage-status,.tadeon-semantic-transform,.tadeon-tabletop-context-menu,.tadeon-tabletop-tool-options,.tadeon-tabletop-selection-dock,.tadeon-tactical-dock__power-list,.tadeon-tabletop-precision-editor,.tadeon-tabletop-reliability-strip,.tadeon-placeables__panel,.tadeon-tabletop-now__panel,.tadeon-creative-dock__panel) {
   background: linear-gradient(
     180deg,
     var(--card),
@@ -1316,11 +978,9 @@ html[data-tadeon-tabletop-clean="true"] :where(
   backdrop-filter: none !important;
 }
 
-.tadeon-tabletop-progressive-dock,
-.tadeon-tactical-dock,
-.tadeon-tabletop-selection-actions {
+.tadeon-tactical-dock {
   box-shadow:
-    0 22px 54px -34px hsl(220 50% 2% / .98),
+    0 22px 54px -34px hsl(220 50% 2% / 0.98),
     inset 0 1px 0 color-mix(in srgb, var(--foreground) 5.5%, transparent) !important;
 }
 
@@ -1335,11 +995,7 @@ body:has(.tadeon-tabletop-selection-actions)
 /* A contextual entity menu owns the interaction while it is open. Do not leave
    persistent docks underneath/through it; they return as soon as the menu is
    dismissed. */
-body:has(.tadeon-tabletop-context-menu) :where(
-  .tadeon-tabletop-progressive-dock,
-  .tadeon-tactical-dock,
-  .tadeon-tabletop-selection-actions
-) {
+body:has(.tadeon-tabletop-context-menu) :where(.tadeon-tactical-dock) {
   opacity: 0 !important;
   visibility: hidden !important;
   pointer-events: none !important;
@@ -1363,16 +1019,6 @@ body:has(.tadeon-tabletop-context-menu) :where(
    still present in the workspace markup for compatibility, but it must never
    paint, animate or intercept the scene. `display:none` removes the blackout
    structurally instead of relying on an opacity race with older CSS. */
-.tadeon-tabletop-panel-backdrop,
-.tadeon-tabletop-panel-backdrop[data-open="true"] {
-  display: none !important;
-  opacity: 0 !important;
-  visibility: hidden !important;
-  pointer-events: none !important;
-  background: transparent !important;
-  backdrop-filter: none !important;
-  animation: none !important;
-}
 
 /* Restore the scene telemetry rail that the previous collision fix hid. It
    reserves physical canvas space rather than sitting over tokens. */
@@ -1394,61 +1040,33 @@ html[data-tadeon-tabletop-interface="advanced"] .tadeon-tabletop-canvas-host {
   z-index: 15 !important;
   border-color: color-mix(in srgb, var(--border) 82%, transparent) !important;
   background: var(--card) !important;
-  box-shadow: 0 14px 38px -30px hsl(220 48% 2% / .96) !important;
+  box-shadow: 0 14px 38px -30px hsl(220 48% 2% / 0.96) !important;
 }
 
 /* Fixed chrome is anchored to the measured stage rectangle, not to guessed
    viewport offsets. The stage geometry follows the real app sidebar, the
    contextual inspector and every responsive collapse/expand state. */
 @media (min-width: 801px) {
-  :where(
-    .tadeon-tabletop-progressive-dock,
-    .tadeon-tactical-dock,
-    .tadeon-tabletop-selection-actions,
-    .tadeon-tabletop-reliability-strip
-  ) {
+  :where(.tadeon-tactical-dock,.tadeon-tabletop-reliability-strip) {
     left: var(--tadeon-tabletop-stage-center, 50%) !important;
-    max-width: min(
-      56rem,
-      calc(var(--tadeon-tabletop-stage-width, 100vw) - 1rem)
-    ) !important;
-  }
-
-  .tadeon-tabletop-selection-actions {
-    max-width: min(
-      42rem,
-      calc(var(--tadeon-tabletop-stage-width, 100vw) - 1rem)
-    ) !important;
+    max-width: min(56rem, calc(var(--tadeon-tabletop-stage-width, 100vw) - 1rem)) !important;
   }
 
   .tadeon-tabletop-now {
     left: max(
-      calc(var(--tadeon-tabletop-stage-left, 0px) + .8rem),
+      calc(var(--tadeon-tabletop-stage-left, 0px) + 0.8rem),
       env(safe-area-inset-left)
     ) !important;
   }
 
-  :where(
-    .tadeon-placeables,
-    .tadeon-semantic-transform,
-    .tadeon-nexus-tabletop-locator,
-    .tadeon-creative-dock,
-    .tadeon-tabletop-precision-editor
-  ) {
+  :where(.tadeon-placeables,.tadeon-semantic-transform,.tadeon-creative-dock,.tadeon-tabletop-precision-editor) {
     right: max(
-      calc(var(--tadeon-tabletop-stage-right, 0px) + .8rem),
+      calc(var(--tadeon-tabletop-stage-right, 0px) + 0.8rem),
       env(safe-area-inset-right)
     ) !important;
   }
 
-  :where(
-    .tadeon-placeables__panel,
-    .tadeon-tabletop-now__panel,
-    .tadeon-creative-dock__panel,
-    .tadeon-tabletop-precision-editor,
-    .tadeon-tactical-dock__power-list,
-    .tadeon-nexus-tabletop-locator
-  ) {
+  :where(.tadeon-placeables__panel,.tadeon-tabletop-now__panel,.tadeon-creative-dock__panel,.tadeon-tabletop-precision-editor,.tadeon-tactical-dock__power-list) {
     max-width: min(
       calc(var(--tadeon-tabletop-stage-width, 100vw) - 1rem),
       calc(100vw - 1rem)
@@ -1459,24 +1077,7 @@ html[data-tadeon-tabletop-interface="advanced"] .tadeon-tabletop-canvas-host {
 /* Tablet/notebook inspector: editing a selected token is not a modal blackout,
    but the inspector itself owns its physical lane while open. */
 @media (max-width: 1179px) {
-  .tadeon-tabletop-panel[data-mobile-open="true"] {
-    z-index: 124 !important;
-    border-color: color-mix(in srgb, var(--border) 86%, transparent) !important;
-    background: var(--card) !important;
-    box-shadow: 0 26px 70px -34px hsl(220 52% 1% / .98) !important;
-    backdrop-filter: none !important;
-  }
-
-  body:has(.tadeon-tabletop-panel[data-mobile-open="true"]) :where(
-    .tadeon-tabletop-progressive-dock,
-    .tadeon-tactical-dock,
-    .tadeon-tabletop-selection-actions,
-    .tadeon-creative-dock,
-    .tadeon-placeables,
-    .tadeon-tabletop-now,
-    .tadeon-semantic-transform,
-    .tadeon-nexus-tabletop-locator
-  ) {
+  body:has(.tadeon-tabletop-panel[data-mobile-open="true"]) :where(.tadeon-tactical-dock,.tadeon-creative-dock,.tadeon-placeables,.tadeon-tabletop-now,.tadeon-semantic-transform) {
     opacity: 0 !important;
     visibility: hidden !important;
     pointer-events: none !important;
@@ -1484,30 +1085,13 @@ html[data-tadeon-tabletop-interface="advanced"] .tadeon-tabletop-canvas-host {
 }
 
 @media (min-width: 801px) and (max-width: 1179px) {
-  .tadeon-tabletop-panel[data-mobile-open="true"] {
-    position: fixed !important;
-    top: max(4.75rem, calc(env(safe-area-inset-top) + .75rem)) !important;
-    right: max(.75rem, env(safe-area-inset-right)) !important;
-    bottom: max(.75rem, env(safe-area-inset-bottom)) !important;
-    left: auto !important;
-    width: min(28rem, calc(100vw - 2rem)) !important;
-    max-height: none !important;
-    border: 1px solid color-mix(in srgb, var(--border) 86%, transparent) !important;
-    border-radius: 1rem !important;
-    overflow-y: auto !important;
-    transform: translate3d(0, 0, 0) !important;
-  }
 }
 
 @media (max-width: 800px) {
-  .tadeon-tabletop-panel[data-mobile-open="true"] {
-    background: var(--card) !important;
-  }
-
   .tadeon-tabletop-stage-status {
-    left: .55rem !important;
-    right: .55rem !important;
-    bottom: .55rem !important;
+    left: 0.55rem !important;
+    right: 0.55rem !important;
+    bottom: 0.55rem !important;
     max-width: calc(100% - 1.1rem) !important;
     overflow-x: auto !important;
     scrollbar-width: none;
@@ -1521,25 +1105,24 @@ html[data-tadeon-tabletop-interface="advanced"] .tadeon-tabletop-canvas-host {
 /* Fog authoring bridge: shape first, operation second. The legacy two brush
    buttons remain in the DOM for backwards compatibility but disappear once the
    geometry-aware controls are mounted. */
-.tadeon-visibility__fog-operations:has(.tadeon-fog-geometry-tool)
-  > [data-slot="button"] {
+.tadeon-visibility__fog-operations:has(.tadeon-fog-geometry-tool) > [data-slot="button"] {
   display: none !important;
 }
 
 .tadeon-fog-geometry-tool {
   display: grid;
   width: 100%;
-  gap: .5rem;
-  padding: .55rem;
+  gap: 0.5rem;
+  padding: 0.55rem;
   border: 1px solid color-mix(in srgb, var(--border) 70%, transparent);
-  border-radius: .85rem;
+  border-radius: 0.85rem;
   background: color-mix(in srgb, var(--background) 88%, var(--card));
 }
 
 .tadeon-fog-geometry-tool__shapes,
 .tadeon-fog-geometry-tool__operations {
   display: grid;
-  gap: .35rem;
+  gap: 0.35rem;
 }
 
 .tadeon-fog-geometry-tool__shapes {
@@ -1555,13 +1138,13 @@ html[data-tadeon-tabletop-interface="advanced"] .tadeon-tabletop-canvas-host {
   min-height: 2.45rem;
   align-items: center;
   justify-content: center;
-  gap: .35rem;
-  padding: .4rem .5rem;
+  gap: 0.35rem;
+  padding: 0.4rem 0.5rem;
   border: 1px solid color-mix(in srgb, var(--border) 62%, transparent);
-  border-radius: .65rem;
+  border-radius: 0.65rem;
   background: color-mix(in srgb, var(--secondary) 82%, var(--background));
   color: var(--muted-foreground);
-  font-size: .64rem;
+  font-size: 0.64rem;
   font-weight: 720;
   transition:
     transform 150ms ease,
@@ -1585,21 +1168,21 @@ html[data-tadeon-tabletop-interface="advanced"] .tadeon-tabletop-canvas-host {
 }
 
 .tadeon-fog-geometry-tool__operations button:first-child {
-  border-color: hsl(145 52% 58% / .34);
+  border-color: hsl(145 52% 58% / 0.34);
 }
 
 .tadeon-fog-geometry-tool__operations button:last-child {
-  border-color: hsl(4 62% 60% / .34);
+  border-color: hsl(4 62% 60% / 0.34);
 }
 
 .tadeon-fog-geometry-tool svg {
-  width: .88rem;
-  height: .88rem;
+  width: 0.88rem;
+  height: 0.88rem;
 }
 
 .tadeon-fog-geometry-tool small {
   color: var(--muted-foreground);
-  font-size: .56rem;
+  font-size: 0.56rem;
   line-height: 1.35;
 }
 
@@ -1622,21 +1205,7 @@ html:has(.tadeon-tabletop-studio) {
   --tadeon-tabletop-reliability-h: 0px;
 }
 
-html:has(.tadeon-tabletop-studio) :is(
-  .tadeon-tabletop-canvas-rail,
-  .tadeon-tabletop-tool-options,
-  .tadeon-tabletop-reliability-strip,
-  .tadeon-tabletop-progressive-dock,
-  .tadeon-tactical-dock,
-  .tadeon-tabletop-selection-actions,
-  .tadeon-tabletop-now,
-  .tadeon-placeables,
-  .tadeon-semantic-transform,
-  .tadeon-nexus-tabletop-locator,
-  .tadeon-creative-dock,
-  .tadeon-tabletop-precision-editor,
-  .tadeon-director-enhancement-bar
-) {
+html:has(.tadeon-tabletop-studio) :is(.tadeon-tabletop-canvas-rail,.tadeon-tabletop-tool-options,.tadeon-tabletop-reliability-strip,.tadeon-tactical-dock,.tadeon-tabletop-now,.tadeon-placeables,.tadeon-semantic-transform,.tadeon-creative-dock,.tadeon-tabletop-precision-editor,.tadeon-director-enhancement-bar) {
   position: fixed !important;
   box-sizing: border-box !important;
 }
@@ -1650,10 +1219,8 @@ html:has(.tadeon-tabletop-studio) .tadeon-tabletop-reliability-strip {
   left: var(--tadeon-tabletop-stage-fixed-center) !important;
   width: max-content !important;
   max-width: calc(
-    var(--tadeon-tabletop-stage-fixed-width) -
-    var(--tadeon-tabletop-zone-rail-w) -
-    5.25rem -
-    (var(--tadeon-tabletop-zone-gap) * 4)
+    var(--tadeon-tabletop-stage-fixed-width) - var(--tadeon-tabletop-zone-rail-w) - 5.25rem -
+      (var(--tadeon-tabletop-zone-gap) * 4)
   ) !important;
   transform: translateX(-50%) !important;
   transform-origin: center !important;
@@ -1677,10 +1244,8 @@ html:has(.tadeon-tabletop-studio) .tadeon-tabletop-canvas-rail {
   width: var(--tadeon-tabletop-zone-rail-w) !important;
   max-width: var(--tadeon-tabletop-zone-rail-w) !important;
   max-height: calc(
-    var(--tadeon-tabletop-stage-fixed-height) -
-    var(--tadeon-tabletop-progressive-h, 3.3rem) -
-    var(--tadeon-tabletop-tactical-h, 0px) -
-    (var(--tadeon-tabletop-zone-gap) * 4)
+    var(--tadeon-tabletop-stage-fixed-height) - var(--tadeon-tabletop-progressive-h, 3.3rem) -
+      var(--tadeon-tabletop-tactical-h, 0px) - (var(--tadeon-tabletop-zone-gap) * 4)
   ) !important;
   flex-direction: column !important;
   overflow-x: hidden !important;
@@ -1697,13 +1262,18 @@ html:has(.tadeon-tabletop-studio) .tadeon-tabletop-canvas-rail::-webkit-scrollba
 html:has(.tadeon-tabletop-studio) .tadeon-tabletop-tool-options {
   z-index: 99 !important;
   top: calc(var(--tadeon-tabletop-stage-fixed-top) + var(--tadeon-tabletop-zone-gap)) !important;
-  right: calc(var(--tadeon-tabletop-stage-fixed-right) + var(--tadeon-tabletop-zone-gap)) !important;
+  right: calc(
+    var(--tadeon-tabletop-stage-fixed-right) + var(--tadeon-tabletop-zone-gap)
+  ) !important;
   bottom: auto !important;
   left: auto !important;
   width: max-content !important;
   max-width: min(
     34rem,
-    calc(var(--tadeon-tabletop-stage-fixed-width) - var(--tadeon-tabletop-zone-rail-w) - (var(--tadeon-tabletop-zone-gap) * 4))
+    calc(
+      var(--tadeon-tabletop-stage-fixed-width) - var(--tadeon-tabletop-zone-rail-w) -
+        (var(--tadeon-tabletop-zone-gap) * 4)
+    )
   ) !important;
   max-height: min(46dvh, calc(var(--tadeon-tabletop-stage-fixed-height) - 1rem)) !important;
   overflow: auto !important;
@@ -1712,43 +1282,22 @@ html:has(.tadeon-tabletop-studio) .tadeon-tabletop-tool-options {
 }
 
 /* BASE: Dock é a âncora; tático/seleção ficam sempre imediatamente acima. */
-html:has(.tadeon-tabletop-studio) .tadeon-tabletop-progressive-dock {
-  z-index: 102 !important;
-  top: auto !important;
-  right: auto !important;
-  bottom: calc(var(--tadeon-tabletop-stage-fixed-bottom) + var(--tadeon-tabletop-zone-gap)) !important;
-  left: var(--tadeon-tabletop-stage-fixed-center) !important;
-  display: flex !important;
-  width: max-content !important;
-  max-width: calc(var(--tadeon-tabletop-stage-fixed-width) - (var(--tadeon-tabletop-zone-gap) * 2)) !important;
-  align-items: stretch !important;
-  justify-content: center !important;
-  gap: .2rem !important;
-  overflow-x: auto !important;
-  overflow-y: hidden !important;
-  overscroll-behavior-inline: contain;
-  transform: translateX(-50%) !important;
-  transform-origin: center !important;
-  scrollbar-width: none;
-}
-
-html:has(.tadeon-tabletop-studio) .tadeon-tabletop-progressive-dock::-webkit-scrollbar {
-  display: none;
-}
 
 html:has(.tadeon-tabletop-studio) .tadeon-tactical-dock {
   z-index: 101 !important;
   top: auto !important;
   right: auto !important;
   bottom: calc(
-    var(--tadeon-tabletop-stage-fixed-bottom) +
-    var(--tadeon-tabletop-progressive-h, 3.3rem) +
-    (var(--tadeon-tabletop-zone-gap) * 2)
+    var(--tadeon-tabletop-stage-fixed-bottom) + var(--tadeon-tabletop-progressive-h, 3.3rem) +
+      (var(--tadeon-tabletop-zone-gap) * 2)
   ) !important;
   left: calc(var(--tadeon-tabletop-stage-fixed-left) + var(--tadeon-tabletop-zone-gap)) !important;
   width: max-content !important;
-  max-width: min(24rem, calc(var(--tadeon-tabletop-stage-fixed-width) - (var(--tadeon-tabletop-zone-gap) * 2))) !important;
-  max-height: min(38dvh, calc(var(--tadeon-tabletop-stage-fixed-height) * .42)) !important;
+  max-width: min(
+    24rem,
+    calc(var(--tadeon-tabletop-stage-fixed-width) - (var(--tadeon-tabletop-zone-gap) * 2))
+  ) !important;
+  max-height: min(38dvh, calc(var(--tadeon-tabletop-stage-fixed-height) * 0.42)) !important;
   min-height: 0 !important;
   overflow: auto !important;
   overscroll-behavior: contain;
@@ -1764,17 +1313,17 @@ html:has(.tadeon-tabletop-studio) .tadeon-tactical-dock :is(button, [role="butto
   min-width: 1.9rem !important;
   min-height: 1.9rem !important;
   height: 1.9rem !important;
-  gap: .22rem !important;
-  padding: .24rem .38rem !important;
-  border-radius: .52rem !important;
-  font-size: .58rem !important;
+  gap: 0.22rem !important;
+  padding: 0.24rem 0.38rem !important;
+  border-radius: 0.52rem !important;
+  font-size: 0.58rem !important;
   line-height: 1 !important;
 }
 
 html:has(.tadeon-tabletop-studio) .tadeon-tactical-dock :is(button, [role="button"]) svg {
-  width: .72rem !important;
-  height: .72rem !important;
-  flex: 0 0 .72rem !important;
+  width: 0.72rem !important;
+  height: 0.72rem !important;
+  flex: 0 0 0.72rem !important;
 }
 
 html:has(.tadeon-tabletop-studio) .tadeon-tactical-dock__power-list {
@@ -1786,37 +1335,15 @@ html:has(.tadeon-tabletop-studio) .tadeon-tactical-dock__power-list {
   overscroll-behavior: contain;
 }
 
-html:has(.tadeon-tabletop-studio) .tadeon-tabletop-selection-actions {
-  z-index: 101 !important;
-  top: auto !important;
-  right: calc(var(--tadeon-tabletop-stage-fixed-right) + var(--tadeon-tabletop-zone-gap)) !important;
-  bottom: calc(
-    var(--tadeon-tabletop-stage-fixed-bottom) +
-    var(--tadeon-tabletop-progressive-h, 3.3rem) +
-    (var(--tadeon-tabletop-zone-gap) * 2)
-  ) !important;
-  left: auto !important;
-  width: max-content !important;
-  max-width: min(28rem, calc(var(--tadeon-tabletop-stage-fixed-width) - (var(--tadeon-tabletop-zone-gap) * 2))) !important;
-  overflow: auto !important;
-  overscroll-behavior: contain;
-  transform: none !important;
-}
-
 /* Utilidades inferiores nunca descem por baixo do Dock. */
-html:has(.tadeon-tabletop-studio) :is(
-  .tadeon-tabletop-now,
-  .tadeon-placeables,
-  .tadeon-semantic-transform,
-  .tadeon-nexus-tabletop-locator,
-  .tadeon-creative-dock:not([data-open="true"][data-tadeon-dock-dragged="true"])
-) {
+html:has(.tadeon-tabletop-studio) :is(.tadeon-tabletop-now,.tadeon-placeables,.tadeon-semantic-transform,.tadeon-creative-dock:not([data-open="true"][data-tadeon-dock-dragged="true"])) {
   bottom: calc(
-    var(--tadeon-tabletop-stage-fixed-bottom) +
-    var(--tadeon-tabletop-progressive-h, 3.3rem) +
-    (var(--tadeon-tabletop-zone-gap) * 2)
+    var(--tadeon-tabletop-stage-fixed-bottom) + var(--tadeon-tabletop-progressive-h, 3.3rem) +
+      (var(--tadeon-tabletop-zone-gap) * 2)
   ) !important;
-  max-width: calc(var(--tadeon-tabletop-stage-fixed-width) - (var(--tadeon-tabletop-zone-gap) * 2)) !important;
+  max-width: calc(
+    var(--tadeon-tabletop-stage-fixed-width) - (var(--tadeon-tabletop-zone-gap) * 2)
+  ) !important;
 }
 
 html:has(.tadeon-tabletop-studio) .tadeon-tabletop-now {
@@ -1824,18 +1351,26 @@ html:has(.tadeon-tabletop-studio) .tadeon-tabletop-now {
   right: auto !important;
 }
 
-html:has(.tadeon-tabletop-studio) :is(.tadeon-placeables, .tadeon-semantic-transform, .tadeon-nexus-tabletop-locator) {
-  right: calc(var(--tadeon-tabletop-stage-fixed-right) + var(--tadeon-tabletop-zone-gap)) !important;
+html:has(.tadeon-tabletop-studio) :is(.tadeon-placeables,.tadeon-semantic-transform) {
+  right: calc(
+    var(--tadeon-tabletop-stage-fixed-right) + var(--tadeon-tabletop-zone-gap)
+  ) !important;
   left: auto !important;
 }
 
-html:has(.tadeon-tabletop-studio) .tadeon-creative-dock:not([data-open="true"][data-tadeon-dock-dragged="true"]) {
-  right: calc(var(--tadeon-tabletop-stage-fixed-right) + var(--tadeon-tabletop-zone-gap)) !important;
+html:has(.tadeon-tabletop-studio)
+  .tadeon-creative-dock:not([data-open="true"][data-tadeon-dock-dragged="true"]) {
+  right: calc(
+    var(--tadeon-tabletop-stage-fixed-right) + var(--tadeon-tabletop-zone-gap)
+  ) !important;
   left: auto !important;
 }
 
-html:has(.tadeon-tabletop-studio) :is(.tadeon-tabletop-precision-editor, .tadeon-director-enhancement-bar) {
-  right: calc(var(--tadeon-tabletop-stage-fixed-right) + var(--tadeon-tabletop-zone-gap)) !important;
+html:has(.tadeon-tabletop-studio)
+  :is(.tadeon-tabletop-precision-editor, .tadeon-director-enhancement-bar) {
+  right: calc(
+    var(--tadeon-tabletop-stage-fixed-right) + var(--tadeon-tabletop-zone-gap)
+  ) !important;
   left: auto !important;
   max-width: min(30rem, calc(var(--tadeon-tabletop-stage-fixed-width) - 1rem)) !important;
   max-height: calc(var(--tadeon-tabletop-stage-fixed-height) - 1rem) !important;
@@ -1844,24 +1379,6 @@ html:has(.tadeon-tabletop-studio) :is(.tadeon-tabletop-precision-editor, .tadeon
 }
 
 /* TABLET */
-html[data-tadeon-tabletop-tablet="true"] .tadeon-tabletop-progressive-dock {
-  width: min(43rem, calc(var(--tadeon-tabletop-stage-fixed-width) - (var(--tadeon-tabletop-zone-gap) * 2))) !important;
-  justify-content: stretch !important;
-}
-
-html[data-tadeon-tabletop-tablet="true"] .tadeon-tabletop-progressive-dock__modes {
-  display: contents !important;
-}
-
-html[data-tadeon-tabletop-tablet="true"] :is(
-  .tadeon-tabletop-progressive-dock__button,
-  .tadeon-tabletop-progressive-dock__command,
-  .tadeon-tabletop-progressive-dock__modes > button
-) {
-  min-width: 0 !important;
-  flex: 1 1 0 !important;
-  justify-content: center !important;
-}
 
 /* CELULAR: rail vertical completo, tático acima do Dock e Dock equidistante. */
 @media (max-width: 700px) {
@@ -1872,28 +1389,23 @@ html[data-tadeon-tabletop-tablet="true"] :is(
 
   html:has(.tadeon-tabletop-studio) .tadeon-tabletop-reliability-strip {
     max-width: calc(
-      var(--tadeon-tabletop-stage-fixed-width) -
-      var(--tadeon-tabletop-zone-rail-w) -
-      3.5rem -
-      (var(--tadeon-tabletop-zone-gap) * 4)
+      var(--tadeon-tabletop-stage-fixed-width) - var(--tadeon-tabletop-zone-rail-w) - 3.5rem -
+        (var(--tadeon-tabletop-zone-gap) * 4)
     ) !important;
   }
 
   html:has(.tadeon-tabletop-studio) .tadeon-tabletop-canvas-rail {
     top: calc(
-      var(--tadeon-tabletop-stage-fixed-top) +
-      var(--tadeon-tabletop-reliability-h, 0px) +
-      (var(--tadeon-tabletop-zone-gap) * 2)
+      var(--tadeon-tabletop-stage-fixed-top) + var(--tadeon-tabletop-reliability-h, 0px) +
+        (var(--tadeon-tabletop-zone-gap) * 2)
     ) !important;
     max-height: calc(
-      var(--tadeon-tabletop-stage-fixed-height) -
-      var(--tadeon-tabletop-reliability-h, 0px) -
-      var(--tadeon-tabletop-progressive-h, 3.5rem) -
-      var(--tadeon-tabletop-tactical-h, 0px) -
-      (var(--tadeon-tabletop-zone-gap) * 6)
+      var(--tadeon-tabletop-stage-fixed-height) - var(--tadeon-tabletop-reliability-h, 0px) -
+        var(--tadeon-tabletop-progressive-h, 3.5rem) - var(--tadeon-tabletop-tactical-h, 0px) -
+        (var(--tadeon-tabletop-zone-gap) * 6)
     ) !important;
-    padding: .28rem !important;
-    gap: .22rem !important;
+    padding: 0.28rem !important;
+    gap: 0.22rem !important;
   }
 
   html:has(.tadeon-tabletop-studio) .tadeon-tabletop-canvas-rail__group-label {
@@ -1913,73 +1425,30 @@ html[data-tadeon-tabletop-tablet="true"] :is(
     flex: 0 0 auto !important;
     align-items: center !important;
     justify-content: center !important;
-    padding-inline: .18rem !important;
-  }
-
-  html:has(.tadeon-tabletop-studio) .tadeon-tabletop-progressive-dock {
-    right: auto !important;
-    left: calc(var(--tadeon-tabletop-stage-fixed-left) + var(--tadeon-tabletop-zone-gap)) !important;
-    width: calc(var(--tadeon-tabletop-stage-fixed-width) - (var(--tadeon-tabletop-zone-gap) * 2)) !important;
-    max-width: none !important;
-    justify-content: stretch !important;
-    gap: .08rem !important;
-    transform: none !important;
-  }
-
-  html:has(.tadeon-tabletop-studio) .tadeon-tabletop-progressive-dock__modes {
-    display: contents !important;
-  }
-
-  html:has(.tadeon-tabletop-studio) :is(
-    .tadeon-tabletop-progressive-dock__button,
-    .tadeon-tabletop-progressive-dock__command,
-    .tadeon-tabletop-progressive-dock__modes > button
-  ) {
-    min-width: 0 !important;
-    flex: 1 1 0 !important;
-    justify-content: center !important;
-    gap: .18rem !important;
-    padding: .34rem .12rem !important;
-  }
-
-  html:has(.tadeon-tabletop-studio) :is(
-    .tadeon-tabletop-progressive-dock__button,
-    .tadeon-tabletop-progressive-dock__command,
-    .tadeon-tabletop-progressive-dock__modes > button
-  ) span {
-    max-width: 100% !important;
-    overflow: hidden !important;
-    font-size: .61rem !important;
-    text-overflow: ellipsis !important;
-    white-space: nowrap !important;
+    padding-inline: 0.18rem !important;
   }
 
   html:has(.tadeon-tabletop-studio) .tadeon-tactical-dock {
     right: auto !important;
-    left: calc(var(--tadeon-tabletop-stage-fixed-left) + var(--tadeon-tabletop-zone-gap)) !important;
-    width: min(20rem, calc(var(--tadeon-tabletop-stage-fixed-width) - (var(--tadeon-tabletop-zone-gap) * 2))) !important;
-    max-width: calc(var(--tadeon-tabletop-stage-fixed-width) - (var(--tadeon-tabletop-zone-gap) * 2)) !important;
-  }
-
-  html:has(.tadeon-tabletop-studio) .tadeon-tabletop-selection-actions {
-    right: calc(var(--tadeon-tabletop-stage-fixed-right) + var(--tadeon-tabletop-zone-gap)) !important;
-    max-width: min(12rem, calc(var(--tadeon-tabletop-stage-fixed-width) * .44)) !important;
+    left: calc(
+      var(--tadeon-tabletop-stage-fixed-left) + var(--tadeon-tabletop-zone-gap)
+    ) !important;
+    width: min(
+      20rem,
+      calc(var(--tadeon-tabletop-stage-fixed-width) - (var(--tadeon-tabletop-zone-gap) * 2))
+    ) !important;
+    max-width: calc(
+      var(--tadeon-tabletop-stage-fixed-width) - (var(--tadeon-tabletop-zone-gap) * 2)
+    ) !important;
   }
 
   html:has(.tadeon-tabletop-studio) .tadeon-tabletop-tool-options {
-    max-width: min(10rem, calc(var(--tadeon-tabletop-stage-fixed-width) * .34)) !important;
+    max-width: min(10rem, calc(var(--tadeon-tabletop-stage-fixed-width) * 0.34)) !important;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  html:has(.tadeon-tabletop-studio) :is(
-    .tadeon-tabletop-canvas-rail,
-    .tadeon-tabletop-tool-options,
-    .tadeon-tabletop-reliability-strip,
-    .tadeon-tabletop-progressive-dock,
-    .tadeon-tactical-dock,
-    .tadeon-tabletop-selection-actions
-  ) {
+  html:has(.tadeon-tabletop-studio) :is(.tadeon-tabletop-canvas-rail,.tadeon-tabletop-tool-options,.tadeon-tabletop-reliability-strip,.tadeon-tactical-dock) {
     transition: none !important;
   }
 }
@@ -2013,24 +1482,27 @@ html:has(.tadeon-tabletop-studio) {
 }
 
 .tadeon-tabletop-studio__primary,
-.tadeon-tabletop-toolbar,
 .tadeon-tabletop-studio__header > .tadeon-live-session {
   width: 100%;
 }
 
-.tadeon-tabletop-workbench {
-  min-width: 0;
-  overflow: hidden;
-  transition: grid-template-columns var(--motion-panel) var(--ease-out);
-}
-
 .tadeon-tabletop-stage {
+  height: clamp(30rem, 72svh, 60rem);
+  min-height: 0;
   position: relative !important;
   min-width: 0;
   isolation: isolate;
   overflow: hidden !important;
   contain: layout paint;
   container-type: size;
+}
+
+@media (max-width: 639px) {
+  .tadeon-tabletop-stage { height: clamp(26rem, 58svh, 44rem); }
+}
+html[data-tadeon-tabletop-interface="play"] .tadeon-tabletop-stage {
+  --tadeon-tabletop-map-left: var(--tadeon-tabletop-zone-gap);
+  --tadeon-tabletop-map-top: var(--tadeon-tabletop-zone-gap);
 }
 
 /* O canvas ocupa somente a faixa interativa: à direita do rail e acima do status. */
@@ -2078,9 +1550,7 @@ html:has(.tadeon-tabletop-studio) {
 }
 
 /* Rail oeste: uma única coluna vertical, inteira e rolável quando a altura encurta. */
-html:has(.tadeon-tabletop-studio)
-  .tadeon-tabletop-stage
-  > .tadeon-tabletop-canvas-rail {
+html:has(.tadeon-tabletop-studio) .tadeon-tabletop-stage > .tadeon-tabletop-canvas-rail {
   position: absolute !important;
   z-index: 84 !important;
   top: var(--tadeon-tabletop-map-top) !important;
@@ -2110,9 +1580,7 @@ html:has(.tadeon-tabletop-studio)
   display: none;
 }
 
-html:has(.tadeon-tabletop-studio)
-  .tadeon-tabletop-stage
-  > .tadeon-tabletop-canvas-rail__divider {
+html:has(.tadeon-tabletop-studio) .tadeon-tabletop-stage > .tadeon-tabletop-canvas-rail__divider {
   width: 82% !important;
   height: 1px !important;
   flex: 0 0 1px !important;
@@ -2121,9 +1589,7 @@ html:has(.tadeon-tabletop-studio)
 }
 
 /* Status é a base fixa da caixa do mapa. */
-html:has(.tadeon-tabletop-studio)
-  .tadeon-tabletop-stage
-  > .tadeon-tabletop-stage-status {
+html:has(.tadeon-tabletop-studio) .tadeon-tabletop-stage > .tadeon-tabletop-stage-status {
   position: absolute !important;
   z-index: 86 !important;
   top: auto !important;
@@ -2144,23 +1610,7 @@ html:has(.tadeon-tabletop-studio)
 }
 
 /* Regra comum: nenhum dock da cena volta a se ancorar na viewport. */
-html:has(.tadeon-tabletop-studio)
-  .tadeon-tabletop-stage
-  :is(
-    .tadeon-tabletop-reliability-strip,
-    .tadeon-tabletop-toprail-controls,
-    .tadeon-tabletop-progressive-dock,
-    .tadeon-tactical-dock,
-    .tadeon-tabletop-selection-actions,
-    .tadeon-tabletop-now,
-    .tadeon-placeables,
-    .tadeon-semantic-transform,
-    .tadeon-nexus-tabletop-locator,
-    .tadeon-creative-dock,
-    .tadeon-tabletop-precision-editor,
-    .tadeon-smart-setup,
-    .tadeon-smart-setup__launcher
-  ) {
+html:has(.tadeon-tabletop-studio) .tadeon-tabletop-stage :is(.tadeon-tabletop-reliability-strip,.tadeon-tabletop-toprail-controls,.tadeon-tactical-dock,.tadeon-tabletop-now,.tadeon-placeables,.tadeon-semantic-transform,.tadeon-creative-dock,.tadeon-tabletop-precision-editor,.tadeon-smart-setup,.tadeon-smart-setup__launcher) {
   position: absolute !important;
   box-sizing: border-box !important;
 }
@@ -2252,23 +1702,6 @@ html:has(.tadeon-tabletop-studio)
 }
 
 /* Base do quadro interativo: cantos e centro usam o mesmo baseline. */
-html:has(.tadeon-tabletop-studio)
-  .tadeon-tabletop-stage
-  > .tadeon-tabletop-overlay-layer
-  > .tadeon-tabletop-progressive-dock {
-  z-index: 100 !important;
-  top: auto !important;
-  right: auto !important;
-  bottom: 0.15rem !important;
-  left: 50% !important;
-  display: flex !important;
-  width: max-content !important;
-  max-width: calc(100% - 1rem) !important;
-  overflow-x: auto !important;
-  overflow-y: hidden !important;
-  transform: translateX(-50%) !important;
-  scrollbar-width: none;
-}
 
 html:has(.tadeon-tabletop-studio)
   .tadeon-tabletop-stage
@@ -2319,8 +1752,7 @@ html:has(.tadeon-tabletop-studio)
   top: auto !important;
   right: auto !important;
   bottom: calc(
-    var(--tadeon-tabletop-progressive-h, 3.4rem) +
-      var(--tadeon-tabletop-zone-gap) * 2
+    var(--tadeon-tabletop-progressive-h, 3.4rem) + var(--tadeon-tabletop-zone-gap) * 2
   ) !important;
   left: 50% !important;
   width: min(44rem, calc(100% - 1rem)) !important;
@@ -2379,15 +1811,6 @@ html:has(.tadeon-tabletop-studio)
   transform: none !important;
 }
 
-body:has(.tadeon-creative-dock[data-open="true"])
-  .tadeon-tabletop-progressive-dock {
-  display: flex !important;
-  opacity: 1 !important;
-  visibility: visible !important;
-  pointer-events: auto !important;
-  transform: translateX(-50%) !important;
-}
-
 /* Docks contextuais auxiliares também ficam confinados ao mapa. */
 html:has(.tadeon-tabletop-studio)
   .tadeon-tabletop-stage
@@ -2403,23 +1826,7 @@ html:has(.tadeon-tabletop-studio)
   transform: none !important;
 }
 
-html:has(.tadeon-tabletop-studio)
-  .tadeon-tabletop-stage
-  > .tadeon-tabletop-overlay-layer
-  > .tadeon-tabletop-selection-actions {
-  z-index: 97 !important;
-  top: auto !important;
-  right: 0.15rem !important;
-  bottom: calc(var(--tadeon-tabletop-progressive-h, 3.4rem) + 1rem) !important;
-  left: auto !important;
-  max-width: min(28rem, calc(100% - 1rem)) !important;
-  transform: none !important;
-}
-
-html:has(.tadeon-tabletop-studio)
-  .tadeon-tabletop-stage
-  > .tadeon-tabletop-overlay-layer
-  > :is(.tadeon-semantic-transform, .tadeon-nexus-tabletop-locator) {
+html:has(.tadeon-tabletop-studio) .tadeon-tabletop-stage>.tadeon-tabletop-overlay-layer>:is(.tadeon-semantic-transform) {
   z-index: 96 !important;
   top: auto !important;
   right: 0.15rem !important;
@@ -2440,9 +1847,7 @@ html:has(.tadeon-tabletop-studio)
   left: auto !important;
   width: min(30rem, calc(100% - 1rem)) !important;
   max-width: none !important;
-  max-height: calc(
-    100% - var(--tadeon-tabletop-reliability-h, 2.8rem) - 2rem
-  ) !important;
+  max-height: calc(100% - var(--tadeon-tabletop-reliability-h, 2.8rem) - 2rem) !important;
   overflow: auto !important;
   transform: none !important;
 }
@@ -2464,23 +1869,16 @@ html:has(.tadeon-tabletop-studio)
   .tadeon-tabletop-stage
   > .tadeon-tabletop-selection-dock--structure {
   top: calc(
-    var(--tadeon-tabletop-map-top) +
-      var(--tadeon-tabletop-reliability-h, 2.8rem) + 0.55rem
+    var(--tadeon-tabletop-map-top) + var(--tadeon-tabletop-reliability-h, 2.8rem) + 0.55rem
   ) !important;
   right: auto !important;
   left: calc(
     var(--tadeon-tabletop-map-left) +
-      (
-          100% - var(--tadeon-tabletop-map-left) -
-            var(--tadeon-tabletop-map-right)
-        ) / 2
+      (100% - var(--tadeon-tabletop-map-left) - var(--tadeon-tabletop-map-right)) / 2
   ) !important;
   max-width: min(
     52rem,
-    calc(
-      100% - var(--tadeon-tabletop-map-left) -
-        var(--tadeon-tabletop-map-right) - 1rem
-    )
+    calc(100% - var(--tadeon-tabletop-map-left) - var(--tadeon-tabletop-map-right) - 1rem)
   ) !important;
   transform: translateX(-50%) !important;
 }
@@ -2493,24 +1891,17 @@ html:has(.tadeon-tabletop-studio)
   .tadeon-tabletop-stage
   > :is(.tadeon-tabletop-tool-options, .tadeon-tabletop-selection-dock) {
   top: calc(
-    var(--tadeon-tabletop-map-top) +
-      var(--tadeon-tabletop-reliability-h, 2.8rem) + 0.55rem
+    var(--tadeon-tabletop-map-top) + var(--tadeon-tabletop-reliability-h, 2.8rem) + 0.55rem
   ) !important;
   right: auto !important;
   left: calc(
     var(--tadeon-tabletop-map-left) +
-      (
-          100% - var(--tadeon-tabletop-map-left) -
-            var(--tadeon-tabletop-map-right)
-        ) / 2
+      (100% - var(--tadeon-tabletop-map-left) - var(--tadeon-tabletop-map-right)) / 2
   ) !important;
   width: max-content;
   max-width: min(
     54rem,
-    calc(
-      100% - var(--tadeon-tabletop-map-left) -
-        var(--tadeon-tabletop-map-right) - 1rem
-    )
+    calc(100% - var(--tadeon-tabletop-map-left) - var(--tadeon-tabletop-map-right) - 1rem)
   ) !important;
   transform: translateX(-50%) !important;
 }
@@ -2519,8 +1910,7 @@ html:has(.tadeon-tabletop-studio)
   .tadeon-tabletop-stage:has(> .tadeon-tabletop-tool-options)
   > .tadeon-tabletop-selection-dock {
   top: calc(
-    var(--tadeon-tabletop-map-top) +
-      var(--tadeon-tabletop-reliability-h, 2.8rem) + 4.35rem
+    var(--tadeon-tabletop-map-top) + var(--tadeon-tabletop-reliability-h, 2.8rem) + 4.35rem
   ) !important;
 }
 
@@ -2534,82 +1924,9 @@ html:has(.tadeon-tabletop-studio)
     width: min(25rem, 34vw);
     flex: 1 1 17rem;
   }
-
-  .tadeon-tabletop-studio__primary .tadeon-tabletop-command-spaces {
-    flex: 0 1 auto;
-  }
-
-  .tadeon-tabletop-studio__header > .tadeon-tabletop-toolbar {
-    position: relative !important;
-    inset: auto !important;
-    display: flex !important;
-    min-height: 3rem;
-    margin-top: 0.75rem !important;
-    transform: none !important;
-  }
-
-  .tadeon-tabletop-workbench {
-    grid-template-rows: minmax(0, 1fr);
-  }
-
-  .tadeon-tabletop-workbench:has(
-    .tadeon-tabletop-panel[data-collapsed="true"]
-  ) {
-    grid-template-columns: minmax(0, 1fr) 3.75rem !important;
-  }
-
-  .tadeon-tabletop-panel-backdrop {
-    display: none !important;
-  }
-
-  .tadeon-tabletop-panel {
-    position: relative !important;
-    z-index: 3 !important;
-    inset: auto !important;
-    display: block !important;
-    width: auto !important;
-    max-height: none !important;
-    overflow-y: auto !important;
-    border-top: 0 !important;
-    border-left: 1px solid rgb(217 215 164 / 16%) !important;
-    border-radius: 0 !important;
-    opacity: 1 !important;
-    visibility: visible !important;
-    pointer-events: auto !important;
-    transform: none !important;
-    animation: none !important;
-  }
-
-  .tadeon-tabletop-panel[data-collapsed="true"] {
-    overflow: hidden !important;
-    padding: 0.6rem !important;
-  }
-
-  .tadeon-tabletop-panel[data-collapsed="true"]
-    > :not(.tadeon-tabletop-panel__expand) {
-    display: none !important;
-  }
-
-  .tadeon-tabletop-panel[data-collapsed="true"]
-    > .tadeon-tabletop-panel__expand {
-    display: flex !important;
-    width: 100%;
-    min-height: 12rem;
-    align-items: center;
-    justify-content: flex-start;
-    gap: 0.7rem;
-    padding-block: 0.7rem;
-    color: var(--primary);
-    writing-mode: vertical-rl;
-  }
 }
 
 @media (min-width: 768px) and (max-width: 1179px) {
-  .tadeon-tabletop-workbench:has(
-    .tadeon-tabletop-panel[data-collapsed="false"]
-  ) {
-    grid-template-columns: minmax(0, 1fr) min(20rem, 40vw) !important;
-  }
 }
 
 @media (min-width: 768px) and (max-width: 920px) {
@@ -2625,15 +1942,6 @@ html:has(.tadeon-tabletop-studio)
     width: auto;
     min-width: 12rem;
   }
-
-  .tadeon-tabletop-command-spaces button {
-    min-width: 2.45rem;
-    padding-inline: 0.55rem;
-  }
-
-  .tadeon-tabletop-command-spaces button > span {
-    display: none;
-  }
 }
 
 /* Celular: chrome in separate shelves, leaving one unobstructed map frame. */
@@ -2643,8 +1951,7 @@ html:has(.tadeon-tabletop-studio)
     --tadeon-tabletop-status-h: 3.3rem;
     --tadeon-tabletop-map-left: var(--tadeon-tabletop-zone-gap);
     --tadeon-tabletop-map-top: calc(
-      var(--tadeon-tabletop-mobile-rail-h) +
-        var(--tadeon-tabletop-zone-gap) * 2
+      var(--tadeon-tabletop-mobile-rail-h) + var(--tadeon-tabletop-zone-gap) * 2
     );
     --tadeon-tabletop-map-right: var(--tadeon-tabletop-zone-gap);
     --tadeon-tabletop-map-bottom: calc(
@@ -2671,25 +1978,6 @@ html:has(.tadeon-tabletop-studio)
     width: 100%;
   }
 
-  .tadeon-tabletop-command-spaces {
-    grid-column: 1 / -1;
-    display: grid !important;
-    width: 100%;
-    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
-    overflow: hidden !important;
-  }
-
-  .tadeon-tabletop-command-spaces button {
-    min-width: 0 !important;
-    min-height: 2.8rem;
-    padding-inline: 0.38rem !important;
-  }
-
-  .tadeon-tabletop-command-spaces button > span {
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
   .tadeon-tabletop-mobile-save {
     grid-column: 3;
     grid-row: 1;
@@ -2697,46 +1985,12 @@ html:has(.tadeon-tabletop-studio)
     padding-inline: 0.65rem !important;
   }
 
-  .tadeon-tabletop-mobile-tools-toggle {
-    grid-column: 1 / 3;
-    justify-self: start;
-  }
-
-  .tadeon-tabletop-mobile-panel-toggle {
-    grid-column: 3;
-    justify-self: end;
-  }
-
-  .tadeon-tabletop-studio__header > .tadeon-tabletop-toolbar {
-    display: none !important;
-    width: 100%;
-    flex-wrap: nowrap !important;
-    overflow-x: auto !important;
-    overflow-y: hidden !important;
-    padding-bottom: 0.25rem;
-    scrollbar-width: none;
-  }
-
-  .tadeon-tabletop-studio__header > .tadeon-tabletop-toolbar[data-mobile-open="true"] {
-    display: flex !important;
-  }
-
-  .tadeon-tabletop-toolbar__group {
-    flex: 0 0 auto;
-  }
-
-  .tadeon-tabletop-stage {
-    min-height: max(72svh, 36rem) !important;
-  }
-
   .tadeon-tabletop-stage > .tadeon-tabletop-canvas-host,
   .tadeon-tabletop-stage > .tadeon-tabletop-overlay-layer {
     left: var(--tadeon-tabletop-zone-gap) !important;
   }
 
-  html:has(.tadeon-tabletop-studio)
-    .tadeon-tabletop-stage
-    > .tadeon-tabletop-canvas-rail {
+  html:has(.tadeon-tabletop-studio) .tadeon-tabletop-stage > .tadeon-tabletop-canvas-rail {
     top: var(--tadeon-tabletop-zone-gap) !important;
     right: var(--tadeon-tabletop-zone-gap) !important;
     bottom: auto !important;
@@ -2787,8 +2041,7 @@ html:has(.tadeon-tabletop-studio)
     .tadeon-tabletop-stage
     > .tadeon-tabletop-selection-dock--structure {
     top: calc(
-      var(--tadeon-tabletop-map-top) +
-        var(--tadeon-tabletop-reliability-h, 2.8rem) + 0.45rem
+      var(--tadeon-tabletop-map-top) + var(--tadeon-tabletop-reliability-h, 2.8rem) + 0.45rem
     ) !important;
     left: 50% !important;
     width: calc(100% - var(--tadeon-tabletop-zone-gap) * 4) !important;
@@ -2808,35 +2061,6 @@ html:has(.tadeon-tabletop-studio)
   html:has(.tadeon-tabletop-studio)
     .tadeon-tabletop-stage
     > .tadeon-tabletop-overlay-layer
-    > .tadeon-tabletop-progressive-dock {
-    right: var(--tadeon-tabletop-zone-gap) !important;
-    left: var(--tadeon-tabletop-zone-gap) !important;
-    width: auto !important;
-    max-width: none !important;
-    transform: none !important;
-  }
-
-  html:has(.tadeon-tabletop-studio)
-    .tadeon-tabletop-stage
-    > .tadeon-tabletop-overlay-layer
-    > .tadeon-tabletop-progressive-dock
-    :is(.tadeon-tabletop-progressive-dock__button, .tadeon-tabletop-progressive-dock__command),
-  html:has(.tadeon-tabletop-studio)
-    .tadeon-tabletop-stage
-    > .tadeon-tabletop-overlay-layer
-    > .tadeon-tabletop-progressive-dock
-    .tadeon-tabletop-progressive-dock__modes
-    > button {
-    min-width: 2.8rem;
-    min-height: 2.7rem;
-    flex-direction: column;
-    gap: 0.12rem;
-    padding: 0.35rem 0.45rem;
-  }
-
-  html:has(.tadeon-tabletop-studio)
-    .tadeon-tabletop-stage
-    > .tadeon-tabletop-overlay-layer
     > :is(.tadeon-tabletop-now, .tadeon-placeables) {
     bottom: calc(var(--tadeon-tabletop-progressive-h, 3.4rem) + 0.55rem) !important;
   }
@@ -2847,50 +2071,10 @@ html:has(.tadeon-tabletop-studio)
     max-height: calc(100cqb - var(--tadeon-tabletop-progressive-h, 3.4rem) - 2rem) !important;
     overflow-y: auto !important;
   }
-
-  .tadeon-tabletop-panel-backdrop {
-    position: absolute !important;
-    inset: 0 !important;
-  }
-
-  .tadeon-tabletop-panel {
-    position: absolute !important;
-    z-index: 120 !important;
-    inset: auto 0 0 !important;
-    width: 100% !important;
-    max-height: min(78svh, 44rem) !important;
-    overflow-y: auto !important;
-    border-top: 1px solid rgb(217 215 164 / 16%) !important;
-    border-left: 0 !important;
-    border-radius: 1.15rem 1.15rem 0 0 !important;
-    padding-bottom: max(1rem, env(safe-area-inset-bottom)) !important;
-  }
-
-  .tadeon-tabletop-panel__tabs {
-    position: sticky;
-    z-index: 3;
-    top: 0;
-    display: grid !important;
-    grid-template-columns: repeat(5, minmax(3.4rem, 1fr)) !important;
-    overflow-x: auto;
-    background: rgb(9 13 17 / 96%);
-    backdrop-filter: blur(16px);
-  }
-
-  .tadeon-tabletop-panel__tab {
-    min-width: 0 !important;
-  }
-
-  .tadeon-tabletop-panel__tab span {
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
 }
 
 /* #255 - acabamento do rail oeste sem alterar sua geometria aprovada. */
-html:has(.tadeon-tabletop-studio)
-  .tadeon-tabletop-stage
-  > .tadeon-tabletop-canvas-rail {
+html:has(.tadeon-tabletop-studio) .tadeon-tabletop-stage > .tadeon-tabletop-canvas-rail {
   border: 0 !important;
   border-radius: 1rem 0.34rem 1rem 0.34rem !important;
   background:
@@ -2946,9 +2130,7 @@ html:has(.tadeon-tabletop-studio)
   filter: drop-shadow(0 0 0.34rem rgb(var(--studio-cyan) / 48%));
 }
 
-html:has(.tadeon-tabletop-studio)
-  .tadeon-tabletop-stage
-  > .tadeon-tabletop-canvas-rail__divider {
+html:has(.tadeon-tabletop-studio) .tadeon-tabletop-stage > .tadeon-tabletop-canvas-rail__divider {
   background: linear-gradient(
     90deg,
     transparent,
@@ -2959,7 +2141,6 @@ html:has(.tadeon-tabletop-studio)
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .tadeon-tabletop-workbench,
   .tadeon-smart-setup {
     transition-duration: 1ms !important;
   }

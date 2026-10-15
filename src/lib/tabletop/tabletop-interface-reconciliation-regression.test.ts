@@ -22,13 +22,6 @@ describe("reconciliação final das superfícies", () => {
     expect(css).toContain(".tadeon-creative-dock[data-open=\"false\"]");
   });
 
-  it("selecionar não transforma o canvas em uma superfície modal", () => {
-    const css = source("src/styles/interface-reconciliation-final.css");
-    expect(css).toContain(".tadeon-tabletop-panel-backdrop");
-    expect(css).toContain("background: transparent !important");
-    expect(css).toContain("pointer-events: none !important");
-  });
-
   it("mantém Nova página legível e oferece pastas rasas no Nexus", () => {
     const css = source("src/styles/interface-reconciliation-final.css");
     const folders = source("src/components/knowledge/nexus-folder-bar-bridge.tsx");

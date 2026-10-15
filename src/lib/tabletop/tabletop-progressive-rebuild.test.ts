@@ -13,7 +13,9 @@ describe("Mesa Nexus progressiva", () => {
 
     expect(route).toContain("TabletopRouteExperience");
     expect(route).not.toContain('from "@/components/tabletop/tabletop-workspace"');
-    expect(route).not.toContain('from "@/components/tabletop/tabletop-placeables-inspector-bridge"');
+    expect(route).not.toContain(
+      'from "@/components/tabletop/tabletop-placeables-inspector-bridge"',
+    );
     expect(experience).toContain("lazy(() => import");
     expect(experience).toContain("TabletopBootScreen");
   });
@@ -57,7 +59,9 @@ describe("Mesa Nexus progressiva", () => {
     expect(bridge).toContain('aria-label="Editar Mesa"');
     expect(bridge).toContain('setProgressiveMode("advanced")');
     expect(selection).toContain('matchMedia("(pointer: coarse)")');
-    expect(css).toContain('data-tadeon-tabletop-interface="play"');
+    expect(source("src/styles/tabletop-workspace.css")).toContain(
+      'data-tadeon-tabletop-interface="play"',
+    );
     expect(css).toContain("@media (pointer: coarse)");
     expect(css).toContain('[data-slot="dialog-content"]');
   });

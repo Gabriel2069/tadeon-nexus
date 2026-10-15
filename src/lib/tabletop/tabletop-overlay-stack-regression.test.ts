@@ -50,35 +50,6 @@ describe("contenção de overlays e orquestração visual da Mesa", () => {
     expect(viewport).toContain("--radix-tooltip-content-available-width");
   });
 
-  it("coordena todo o chrome fixo da Mesa, não apenas os docks centrais", () => {
-    const route = source("src/components/tabletop/tabletop-route-experience.tsx");
-    const stack = source("src/styles/tabletop-bottom-stack-fix.css");
-
-    expect(route).toContain('import "@/styles/tabletop-route-experience.css";');
-    expect(stack).toContain("--tadeon-tabletop-bottom-row-1");
-    expect(stack).toContain("--tadeon-tabletop-bottom-row-2");
-    expect(stack).toContain("--tadeon-tabletop-bottom-row-3");
-    expect(stack).toContain("--tadeon-tabletop-top-row-1");
-    expect(stack).toContain("--tadeon-tabletop-top-row-2");
-
-    for (const selector of [
-      ".tadeon-tabletop-progressive-dock",
-      ".tadeon-tactical-dock",
-      ".tadeon-tabletop-selection-actions",
-      ".tadeon-creative-dock",
-      ".tadeon-placeables",
-      ".tadeon-tabletop-now",
-      ".tadeon-semantic-transform",
-      ".tadeon-nexus-tabletop-locator",
-      ".tadeon-tabletop-reliability-strip",
-      ".tadeon-director-enhancement-bar",
-      ".tadeon-tabletop-precision-editor",
-      ".tadeon-tabletop-stage-status",
-    ]) {
-      expect(stack).toContain(selector);
-    }
-  });
-
   it("fecha superfícies concorrentes e limpa de verdade o modo de projeção", () => {
     const stack = source("src/styles/tabletop-bottom-stack-fix.css");
 

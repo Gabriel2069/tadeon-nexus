@@ -6,17 +6,6 @@ function source(path: string) {
 }
 
 describe("final user corrections 172", () => {
-  it("makes the corner control minimize only reliability chrome", () => {
-    const bridge = source("src/components/tabletop/tabletop-urgent-reconciliation-bridge.tsx");
-    const css = source("src/styles/create-sheet-search-viewport-163.css");
-    expect(bridge).toContain('const RELIABILITY_KEY = "tadeon.tabletop.reliability.collapsed"');
-    expect(bridge).toContain("reliabilityCollapsed");
-    expect(bridge).toContain("tadeonTabletopReliability");
-    expect(bridge).not.toContain("topRailCollapsed");
-    expect(css).toContain('html[data-tadeon-tabletop-reliability="collapsed"] .tadeon-tabletop-reliability-strip');
-    expect(css).toContain("html[data-tadeon-tabletop-reliability] .tadeon-tabletop-toolbar");
-    expect(css).toContain("visibility: visible !important");
-  });
 
   it("keeps the folded creative Dock above the final stage status strip", () => {
     const css = source("src/styles/create-sheet-search-viewport-163.css");

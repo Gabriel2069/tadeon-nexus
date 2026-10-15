@@ -85,6 +85,7 @@ export function KnowledgeTree({
         <div
           key={node.id}
           role="treeitem"
+          aria-label={node.title}
           aria-level={depth + 1}
           aria-expanded={hasChildren ? !collapsed.has(node.id) : undefined}
           aria-selected={selectedId === node.id}

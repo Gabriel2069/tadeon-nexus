@@ -114,7 +114,8 @@
         "src/components/knowledge/nexus-workspace.tsx",
         "src/components/knowledge/knowledge-reading-panes.tsx",
         "src/lib/knowledge/knowledge-drafts.ts",
-        "src/lib/knowledge/use-reading-preferences.ts"
+        "src/lib/knowledge/use-reading-preferences.ts",
+        "src/components/knowledge/nexus-tabletop-locator.tsx"
       ],
       "styles": [
         "src/styles/nexus-material.css",
@@ -129,13 +130,20 @@
         "src/components/tabletop/tabletop-workspace.tsx",
         "src/lib/tabletop/tabletop-engine.ts",
         "src/lib/tabletop/tabletop-persistence-service.ts",
-        "src/lib/tabletop/tabletop-player-runtime.ts"
+        "src/lib/tabletop/tabletop-player-runtime.ts",
+        "src/components/tabletop/tabletop-editor-panel.tsx",
+        "src/components/tabletop/tabletop-progressive-interface-bridge.tsx",
+        "src/components/tabletop/tabletop-stage-portal.tsx",
+        "src/components/tabletop/tabletop-participant-workspace.tsx",
+        "src/lib/tabletop/tabletop-visibility-service.ts",
+        "src/lib/tabletop/tabletop-view-preference-service.ts",
+        "src/lib/tabletop/tabletop-scene-fingerprint-guard.ts"
       ],
       "styles": [
         "src/styles/tabletop-workspace.css",
         "src/styles/tabletop-route-experience.css"
       ],
-      "boundary": "Motor mantém coordenadas; persistência mantém versões; interfaces não devem criar câmera ou fonte de dados paralela."
+      "boundary": "Motor mantém coordenadas; persistência mantém versões; interfaces não devem criar câmera ou fonte de dados paralela. Editor lateral/compacto pertence a TabletopEditorPanel; ações agrupadas ao workspace; comandos à interface progressiva. Callbacks substituem a busca de botões por texto; mapa dos bridges em tabletop-workspace-map.md. Comparação de cena é pura, sem toJSON capturado ou monkeypatch do serviço. Escritas de mapa, ambiente e câmera recebem a identidade de origem. StagePortal usa eventos de runtime; jogador aplica estado somente após init."
     },
     {
       "id": "master",
@@ -317,6 +325,11 @@
       "path": "docs/DESIGN.md",
       "status": "active",
       "purpose": "Direção Véu & Trama aprovada; contrato visual e referência única de execução, sem novo backlog."
+    },
+    {
+      "path": "docs/tabletop-workspace-map.md",
+      "status": "active",
+      "purpose": "NEX-007/021: controles, estado e destino dos bridges da Mesa; integração de contexto da página do Nexus."
     }
   ],
   "tasks": [
@@ -488,7 +501,7 @@
       "id": "NEX-007",
       "title": "Mesa: hierarquia de ferramentas e workspace",
       "domain": "tabletop",
-      "status": "planned",
+      "status": "active",
       "priority": 6,
       "dependsOn": [
         "NEX-004",
@@ -499,7 +512,10 @@
         "Separar estado persistente, estado ao vivo e estado local; conservar coordenadas mundo/tela.",
         "Verificar overlays, seleção, inspector, câmera, jogador/mestre e reconexão em cenas de teste."
       ],
-      "evidence": []
+      "evidence": [
+        "docs/tabletop-workspace-map.md",
+        "docs/tabletop-workspace-validation.json"
+      ]
     },
     {
       "id": "NEX-008",
@@ -741,6 +757,24 @@
         "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38722287420"
       ],
       "checkpoint": "Integrado pela PR #273, merge 6f954c4, após Quality no HEAD 337b218. Main aprovado e produção HTTP 200/SHA exato em 2026-10-15T10:45:57.4262468Z. 135 suítes/577 testes; 80 estados e 8 repetições finais de ícones em quatro larguras. Fixtures não certificam contas/RLS, dispositivos físicos ou edição entre mestres. Próximo lote: NEX-007."
+    },
+    {
+      "id": "NEX-021",
+      "title": "Nexus: contexto da página e passagem para a Mesa",
+      "domain": "knowledge",
+      "status": "active",
+      "priority": 5,
+      "dependsOn": [
+        "NEX-015"
+      ],
+      "acceptance": [
+        "A localização na Mesa acompanha a página realmente selecionada e permite escolher os destinos retornados.",
+        "A localização participa do layout sem cobrir a leitura; abas ativas permanecem visíveis no trilho sem rolar a página.",
+        "Respostas de páginas anteriores não reaparecem na leitura atual."
+      ],
+      "evidence": [
+        "docs/tabletop-workspace-validation.json"
+      ]
     }
   ],
   "decisions": [
@@ -817,6 +851,15 @@
       "reason": "NEX-020 retira a sobreposição dos ícones; NEX-008 organiza visão geral, ferramentas e persistência manual. Não altera regras RPG, autorização/RLS, restauração de infraestrutura ou o motor da Mesa. A validação anterior só media o wrapper dos ícones e não provava a visibilidade do SVG real.",
       "evidence": [
         "docs/master-workspace-validation.json"
+      ]
+    },
+    {
+      "id": "DEC-013",
+      "decision": "Concluir o contexto de leitura do Nexus e iniciar a revisão abrangente dos controles da Mesa, conforme pedido de Tadeu.",
+      "reason": "NEX-021 fecha a passagem entre página selecionada e entidade. NEX-007 organiza controles, painel e gravação sem trocar o motor, coordenadas, serviços/RPCs ou audiência. NEX-009/010 conservam desempenho medido e validação real.",
+      "evidence": [
+        "docs/tabletop-workspace-map.md",
+        "docs/tabletop-workspace-validation.json"
       ]
     }
   ],
@@ -962,11 +1005,6 @@
       "status": "review_before_transfer"
     },
     {
-      "path": "src/components/tabletop/tabletop-smart-setup-launcher-dock-bridge.tsx",
-      "domain": "tabletop",
-      "status": "review_before_transfer"
-    },
-    {
       "path": "src/components/tabletop/tabletop-spatial-audio-bridge.tsx",
       "domain": "tabletop",
       "status": "review_before_transfer"
@@ -1073,6 +1111,10 @@
     {
       "path": "docs/master-workspace-validation.json",
       "purpose": "Evidências e limites do Painel do Mestre e dos ícones reais de navegação; NEX-008/020."
+    },
+    {
+      "path": "docs/tabletop-workspace-validation.json",
+      "purpose": "NEX-007/021: evidências e limites da reorganização da Mesa e do contexto Nexus → Mesa."
     }
   ],
   "integrationHistory": [

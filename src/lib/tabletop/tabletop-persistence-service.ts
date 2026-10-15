@@ -230,11 +230,7 @@ function numeric(value: number | string) {
   return Number.isFinite(parsed) ? parsed : 0;
 }
 
-export function fitTabletopAssetSize(
-  width: number | null,
-  height: number | null,
-  maxSize = 256,
-) {
+export function fitTabletopAssetSize(width: number | null, height: number | null, maxSize = 256) {
   const sourceWidth = width && width > 0 ? width : 128;
   const sourceHeight = height && height > 0 ? height : 96;
   const scale = Math.min(1, maxSize / Math.max(sourceWidth, sourceHeight));
@@ -273,20 +269,11 @@ export function buildTabletopSavePayload(
   current: TabletopScene,
   overrides: TabletopSaveOverrides = {},
 ): TabletopSavePayload {
-  const originalLayers = new Map(
-    original.layers.map((layer) => [layer.id, layer]),
-  );
-  const originalLevels = new Map(
-    original.levels.map((level) => [level.id, level]),
-  );
-  const originalEntities = new Map(
-    original.entities.map((entity) => [entity.id, entity]),
-  );
+  const originalLayers = new Map(original.layers.map((layer) => [layer.id, layer]));
+  const originalLevels = new Map(original.levels.map((level) => [level.id, level]));
+  const originalEntities = new Map(original.entities.map((entity) => [entity.id, entity]));
   const currentEntityIds = new Set(current.entities.map((entity) => entity.id));
-  const hasBackgroundAsset = Object.prototype.hasOwnProperty.call(
-    current,
-    "backgroundAssetId",
-  );
+  const hasBackgroundAsset = Object.prototype.hasOwnProperty.call(current, "backgroundAssetId");
 
   const layerDocuments = current.layers.map((layer) => {
     const persisted = originalLayers.get(layer.id);
@@ -318,17 +305,13 @@ export function buildTabletopSavePayload(
       linked_knowledge_node_id: has("linkedKnowledgeNodeId")
         ? (runtime.linkedKnowledgeNodeId ?? null)
         : (persisted?.linkedKnowledgeNodeId ?? null),
-      asset_id: has("assetId")
-        ? (runtime.assetId ?? null)
-        : (persisted?.assetId ?? null),
+      asset_id: has("assetId") ? (runtime.assetId ?? null) : (persisted?.assetId ?? null),
       x: entity.x,
       y: entity.y,
       width: entity.width,
       height: entity.height,
       rotation: entity.rotation,
-      elevation: has("elevation")
-        ? (runtime.elevation ?? 0)
-        : (persisted?.elevation ?? 0),
+      elevation: has("elevation") ? (runtime.elevation ?? 0) : (persisted?.elevation ?? 0),
       level_id: has("levelId")
         ? (runtime.levelId ?? original.levels[0]?.id)
         : (persisted?.levelId ?? original.levels[0]?.id),
@@ -355,8 +338,12 @@ export function buildTabletopSavePayload(
       height: current.height,
       grid_type: current.gridMode,
       grid_size: current.gridSize,
-      grid_offset_x: original.gridOffsetX,
-      grid_offset_y: original.gridOffsetY,
+      grid_offset_x: Number.isFinite(current.gridOffsetX)
+        ? Number(current.gridOffsetX)
+        : original.gridOffsetX,
+      grid_offset_y: Number.isFinite(current.gridOffsetY)
+        ? Number(current.gridOffsetY)
+        : original.gridOffsetY,
       grid_scale: current.gridScale,
       snap_enabled: current.snap,
       global_illumination: original.globalIllumination,
@@ -462,8 +449,7 @@ export class TabletopPersistenceService {
 
   private async userId() {
     const { data } = await this.auth.getSession();
-    if (!data.session?.user.id)
-      throw new TabletopServiceError("TABLETOP_AUTH_REQUIRED");
+    if (!data.session?.user.id) throw new TabletopServiceError("TABLETOP_AUTH_REQUIRED");
     return data.session.user.id;
   }
 
@@ -518,10 +504,7 @@ export class TabletopPersistenceService {
     };
   }
 
-  async listPaletteAssets(
-    workspaceId: string,
-    campaignId: string,
-  ): Promise<TabletopAssetTarget[]> {
+  async listPaletteAssets(workspaceId: string, campaignId: string): Promise<TabletopAssetTarget[]> {
     const { data, error } = await this.database
       .from("assets")
       .select("*")
@@ -569,10 +552,7 @@ export class TabletopPersistenceService {
     }));
   }
 
-  async reorderScenes(
-    campaignId: string,
-    orderedScenes: TabletopSceneSummary[],
-  ) {
+  async reorderScenes(campaignId: string, orderedScenes: TabletopSceneSummary[]) {
     await this.userId();
     const { error } = await this.database.rpc("reorder_tabletop_scenes", {
       target_campaign_id: campaignId,
@@ -587,41 +567,22 @@ export class TabletopPersistenceService {
   }
 
   async loadScene(sceneId: string) {
-    const [{ data: scene, error }, levelsResult, layersResult, entitiesResult] =
-      await Promise.all([
-        this.database
-          .from("tabletop_scenes")
-          .select("*")
-          .eq("id", sceneId)
-          .maybeSingle(),
-        this.database
-          .from("tabletop_levels")
-          .select("*")
-          .eq("scene_id", sceneId)
-          .order("order_index"),
-        this.database
-          .from("tabletop_layers")
-          .select("*")
-          .eq("scene_id", sceneId)
-          .order("order_index"),
-        this.database
-          .from("tabletop_entities")
-          .select("*")
-          .eq("scene_id", sceneId)
-          .order("z_index"),
-      ]);
-    if (
-      error ||
-      levelsResult.error ||
-      layersResult.error ||
-      entitiesResult.error
-    )
-      throw serviceError(
-        error ??
-          levelsResult.error ??
-          layersResult.error ??
-          entitiesResult.error,
-      );
+    const [{ data: scene, error }, levelsResult, layersResult, entitiesResult] = await Promise.all([
+      this.database.from("tabletop_scenes").select("*").eq("id", sceneId).maybeSingle(),
+      this.database
+        .from("tabletop_levels")
+        .select("*")
+        .eq("scene_id", sceneId)
+        .order("order_index"),
+      this.database
+        .from("tabletop_layers")
+        .select("*")
+        .eq("scene_id", sceneId)
+        .order("order_index"),
+      this.database.from("tabletop_entities").select("*").eq("scene_id", sceneId).order("z_index"),
+    ]);
+    if (error || levelsResult.error || layersResult.error || entitiesResult.error)
+      throw serviceError(error ?? levelsResult.error ?? layersResult.error ?? entitiesResult.error);
     if (!scene) throw new TabletopServiceError("TABLETOP_NOT_FOUND");
     const mapped = mapTabletopScene(
       scene as SceneRow,
@@ -635,10 +596,9 @@ export class TabletopPersistenceService {
   private async withTemporaryAssetUrls(scene: PersistedTabletopScene) {
     const assetIds = [
       ...new Set(
-        [
-          scene.backgroundAssetId,
-          ...scene.entities.map((entity) => entity.assetId),
-        ].filter((id): id is string => Boolean(id)),
+        [scene.backgroundAssetId, ...scene.entities.map((entity) => entity.assetId)].filter(
+          (id): id is string => Boolean(id),
+        ),
       ),
     ];
     if (assetIds.length === 0) return scene;
@@ -655,9 +615,7 @@ export class TabletopPersistenceService {
       (
         await Promise.all(
           ((data ?? []) as NexusAsset[]).map(async (asset) => {
-            const url = await assetService
-              .createTemporaryAccess(asset, 300)
-              .catch(() => undefined);
+            const url = await assetService.createTemporaryAccess(asset, 300).catch(() => undefined);
             return url ? ([asset.id, url] as const) : null;
           }),
         )
@@ -665,9 +623,7 @@ export class TabletopPersistenceService {
     );
     return {
       ...scene,
-      backgroundAssetUrl: scene.backgroundAssetId
-        ? urls.get(scene.backgroundAssetId)
-        : undefined,
+      backgroundAssetUrl: scene.backgroundAssetId ? urls.get(scene.backgroundAssetId) : undefined,
       entities: scene.entities.map((entity) => ({
         ...entity,
         assetUrl: entity.assetId ? urls.get(entity.assetId) : undefined,
@@ -736,8 +692,11 @@ export class TabletopPersistenceService {
     original: PersistedTabletopScene,
     current: TabletopScene,
     overrides: TabletopSaveOverrides = {},
+    actorId?: string,
   ) {
-    await this.userId();
+    const currentUserId = await this.userId();
+    if (actorId && currentUserId !== actorId)
+      throw new TabletopServiceError("TABLETOP_AUTH_REQUIRED");
     const payload = buildTabletopSavePayload(original, current, overrides);
     const { error } = await this.database.rpc("save_tabletop_scene_state", {
       target_scene_id: original.id,
@@ -828,20 +787,15 @@ export class TabletopPersistenceService {
   }
 
   async createSnapshot(sceneId: string, name: string) {
-    const { data, error } = await this.database.rpc(
-      "create_tabletop_scene_snapshot",
-      {
-        target_scene_id: sceneId,
-        snapshot_name: requireName(name),
-      },
-    );
+    const { data, error } = await this.database.rpc("create_tabletop_scene_snapshot", {
+      target_scene_id: sceneId,
+      snapshot_name: requireName(name),
+    });
     if (error) throw serviceError(error);
     return String(data);
   }
 
-  async listSnapshots(
-    sceneId: string,
-  ): Promise<TabletopSceneSnapshotSummary[]> {
+  async listSnapshots(sceneId: string): Promise<TabletopSceneSnapshotSummary[]> {
     const { data, error } = await this.database
       .from("tabletop_scene_snapshots")
       .select("id,scene_id,name,scene_version,created_at")
@@ -859,25 +813,19 @@ export class TabletopPersistenceService {
   }
 
   async restoreSnapshot(snapshotId: string, expectedVersion: number) {
-    const { data, error } = await this.database.rpc(
-      "restore_tabletop_scene_snapshot",
-      {
-        target_snapshot_id: snapshotId,
-        expected_scene_version: expectedVersion,
-      },
-    );
+    const { data, error } = await this.database.rpc("restore_tabletop_scene_snapshot", {
+      target_snapshot_id: snapshotId,
+      expected_scene_version: expectedVersion,
+    });
     if (error) throw serviceError(error);
     return Number(data);
   }
 
   async duplicateScene(sceneId: string, name?: string) {
-    const { data, error } = await this.database.rpc(
-      "duplicate_tabletop_scene",
-      {
-        source_scene_id: sceneId,
-        duplicate_name: name?.trim() || null,
-      },
-    );
+    const { data, error } = await this.database.rpc("duplicate_tabletop_scene", {
+      source_scene_id: sceneId,
+      duplicate_name: name?.trim() || null,
+    });
     if (error) throw serviceError(error);
     return this.loadScene(String(data));
   }

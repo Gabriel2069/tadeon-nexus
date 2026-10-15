@@ -3,7 +3,6 @@ import "@/lib/tabletop/tabletop-advanced-grid-runtime";
 import { TabletopWorkspace } from "@/components/tabletop/tabletop-workspace";
 import { TabletopDeferredEnhancements } from "@/components/tabletop/tabletop-deferred-enhancements";
 import { TabletopDeepLinkLocatorBridge } from "@/components/tabletop/tabletop-deep-link-locator-bridge";
-import { TabletopProgressiveInterfaceBridge } from "@/components/tabletop/tabletop-progressive-interface-bridge";
 import { TabletopUrgentReconciliationBridge } from "@/components/tabletop/tabletop-urgent-reconciliation-bridge";
 
 export default function TabletopMasterEntry({
@@ -25,7 +24,6 @@ export default function TabletopMasterEntry({
         lightingEnabled={lightingEnabled}
       />
       <TabletopDeepLinkLocatorBridge entityId={locateEntityId} />
-      <TabletopProgressiveInterfaceBridge role="mestre" />
       <TabletopUrgentReconciliationBridge />
       <TabletopDeferredEnhancements master />
     </>

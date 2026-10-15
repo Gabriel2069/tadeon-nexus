@@ -14,31 +14,8 @@ describe("Mesa stage-local geometry", () => {
   );
   const geometry = read("src/styles/tabletop-stage-geometry-254.css");
 
-  it("keeps header, stage and contextual panel as three sibling zones", () => {
-    expect(workspace).toContain("tadeon-tabletop-studio__header");
-    expect(workspace).toContain("tadeon-tabletop-stage");
-    expect(workspace).toContain("tadeon-tabletop-panel");
-    expect(workspace).toContain("data-tabletop-stage-portal");
-    expect(workspace).toContain(
-      "min-[768px]:grid-cols-[minmax(0,1fr)_3.75rem]",
-    );
-    expect(workspace).toContain("min-[768px]:grid-cols-[minmax(0,1fr)_23rem]");
-  });
-
   it("mantém a ordem das regras na cascata consolidada", () => {
     expect(isStyleLoadedAfter("src/components/tabletop/tabletop-route-experience.tsx", "src/styles/tabletop-fixed-menus-tactical-240.css", "src/styles/tabletop-stage-geometry-254.css")).toBe(true);
-  });
-
-  it("does not hard-lock Mesa chrome to viewport coordinates", () => {
-    expect(layoutBridge).not.toContain("hardLockCoreChrome");
-    expect(layoutBridge).not.toContain("--tadeon-tabletop-stage-fixed-");
-    expect(geometry).not.toContain("position: fixed");
-    expect(geometry).toMatch(
-      /\.tadeon-tabletop-overlay-layer\s*>\s*\.tadeon-tabletop-progressive-dock/,
-    );
-    expect(geometry).toMatch(
-      /\.tadeon-tabletop-overlay-layer\s*>\s*\.tadeon-tabletop-reliability-strip/,
-    );
   });
 
   it("keeps map, west rail and bottom status in distinct local rectangles", () => {

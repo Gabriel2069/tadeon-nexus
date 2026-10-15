@@ -26,7 +26,7 @@
       "roots": 0
     },
     "src/styles/interface-layout.css": {
-      "important": 381,
+      "important": 316,
       "roots": 1
     },
     "src/styles/knowledge-graph-second-brain.css": {
@@ -90,7 +90,7 @@
       "roots": 0
     },
     "src/styles/route-layout.css": {
-      "important": 1245,
+      "important": 1231,
       "roots": 0
     },
     "src/styles/route-popup-frame.css": {
@@ -118,7 +118,7 @@
       "roots": 0
     },
     "src/styles/tabletop-chrome.css": {
-      "important": 86,
+      "important": 58,
       "roots": 0
     },
     "src/styles/tabletop-creative-dock.css": {
@@ -146,7 +146,7 @@
       "roots": 0
     },
     "src/styles/tabletop-floating-layout.css": {
-      "important": 100,
+      "important": 80,
       "roots": 0
     },
     "src/styles/tabletop-fog-geometry.css": {
@@ -186,11 +186,11 @@
       "roots": 0
     },
     "src/styles/tabletop-reliability-editor.css": {
-      "important": 28,
+      "important": 17,
       "roots": 0
     },
     "src/styles/tabletop-route-experience.css": {
-      "important": 585,
+      "important": 414,
       "roots": 0
     },
     "src/styles/tabletop-semantic-transform.css": {
@@ -210,7 +210,7 @@
       "roots": 0
     },
     "src/styles/tabletop-workspace.css": {
-      "important": 11,
+      "important": 7,
       "roots": 0
     },
     "src/styles/tadeon-experience-director.css": {

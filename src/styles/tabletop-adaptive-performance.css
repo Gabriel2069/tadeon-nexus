@@ -2,7 +2,7 @@
 .tadeon-tabletop-canvas-host[data-quality-tier="balanced"] :is(.tadeon-tabletop-ambient-particles,.tadeon-tabletop-atmosphere-particles) { opacity:.55; }
 .tadeon-tabletop-canvas-host[data-quality-tier="economy"] :is(.tadeon-tabletop-ambient-particles,.tadeon-tabletop-atmosphere-particles,.tadeon-tabletop-decorative-glow) { display:none !important; }
 .tadeon-tabletop-canvas-host[data-quality-tier="economy"] { --tadeon-tabletop-blur: 0px; }
-.tadeon-tabletop-canvas-host[data-quality-tier="economy"] :is(.tadeon-placeables__panel,.tadeon-creative-dock__panel,.tadeon-tabletop-panel) { backdrop-filter:none !important; }
+.tadeon-tabletop-canvas-host[data-quality-tier="economy"] :is(.tadeon-placeables__panel,.tadeon-creative-dock__panel) { backdrop-filter:none !important; }
 .tadeon-tabletop-canvas-host[data-quality-tier="high"] { --tadeon-tabletop-motion-scale:.9; }
 .tadeon-tabletop-canvas-host[data-quality-tier="balanced"] { --tadeon-tabletop-motion-scale:.75; }
 .tadeon-tabletop-canvas-host[data-quality-tier="economy"] { --tadeon-tabletop-motion-scale:.55; }

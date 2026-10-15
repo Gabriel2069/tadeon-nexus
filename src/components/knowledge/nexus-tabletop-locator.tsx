@@ -16,10 +16,12 @@ interface TabletopLocation {
 export function NexusTabletopLocator({ nodeId }: { nodeId?: string }) {
   const [locations, setLocations] = useState<TabletopLocation[]>([]);
   const [dismissed, setDismissed] = useState(false);
+  const [locationId, setLocationId] = useState("");
 
   useEffect(() => {
     setDismissed(false);
     setLocations([]);
+    setLocationId("");
     if (!nodeId || !/^[0-9a-f-]{36}$/i.test(nodeId)) return;
     let active = true;
     void (async () => {
@@ -36,7 +38,9 @@ export function NexusTabletopLocator({ nodeId }: { nodeId?: string }) {
         .select("id,name")
         .in("id", sceneIds);
       if (!active) return;
-      const sceneNames = new Map((scenes ?? []).map((scene) => [String(scene.id), String(scene.name)]));
+      const sceneNames = new Map(
+        (scenes ?? []).map((scene) => [String(scene.id), String(scene.name)]),
+      );
       setLocations(
         entities.map((entity) => ({
           id: String(entity.id),
@@ -53,14 +57,35 @@ export function NexusTabletopLocator({ nodeId }: { nodeId?: string }) {
 
   if (dismissed || locations.length === 0) return null;
 
-  const primary = locations[0];
+  const primary = locations.find((location) => location.id === locationId) ?? locations[0];
   return (
-    <aside className="tadeon-nexus-tabletop-locator" aria-label="Presença desta página na Mesa Nexus">
-      <span><MapPinned aria-hidden="true" /></span>
+    <aside
+      className="tadeon-nexus-tabletop-locator"
+      aria-label="Presença desta página na Mesa Nexus"
+    >
+      <span>
+        <MapPinned aria-hidden="true" />
+      </span>
       <div>
         <small>Presente na Mesa</small>
-        <strong>{primary.sceneName}</strong>
-        <span>{primary.name}{locations.length > 1 ? ` +${locations.length - 1}` : ""}</span>
+        {locations.length > 1 ? (
+          <select
+            aria-label="Localizações desta página na Mesa"
+            value={primary.id}
+            onChange={(event) => setLocationId(event.target.value)}
+          >
+            {locations.map((location) => (
+              <option key={location.id} value={location.id}>
+                {location.sceneName} · {location.name}
+              </option>
+            ))}
+          </select>
+        ) : (
+          <>
+            <strong>{primary.sceneName}</strong>
+            <span>{primary.name}</span>
+          </>
+        )}
       </div>
       <Button
         size="sm"
