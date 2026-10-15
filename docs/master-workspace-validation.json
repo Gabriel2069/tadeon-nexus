@@ -5,7 +5,7 @@
     "NEX-020",
     "NEX-008"
   ],
-  "state": "branch-validated",
+  "state": "integrated-and-published",
   "branch": "codex/nex-008-master-workspace",
   "baseCommit": "6e1087c67cd68f35504d73d8efdb56f65f839c52",
   "changes": {
@@ -788,5 +788,23 @@
     }
   },
   "interfaceSourceCommit": "c22015b9ad1a24ff245d735ec604610e0c419384",
-  "functionalApplicationCommit": "7885073002783602c98e15d56c2f63bdbc271068"
+  "functionalApplicationCommit": "7885073002783602c98e15d56c2f63bdbc271068",
+  "pr": 273,
+  "delivery": {
+    "pr": 273,
+    "branch": "codex/nex-008-master-workspace",
+    "base": "main",
+    "baseCommit": "6e1087c67cd68f35504d73d8efdb56f65f839c52",
+    "headCommit": "337b218ae40cf773a0dc51c894f4a9b7a0220a64",
+    "state": "integrated",
+    "mergeCommit": "6f954c40df4b5611ef130818e97e79c12badd1c9",
+    "qualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38721993131",
+    "mainQualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38722287524",
+    "productionEvidence": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38722287420",
+    "production": "confirmed",
+    "productionCommit": "6f954c40df4b5611ef130818e97e79c12badd1c9",
+    "productionVerifiedAt": "2026-10-15T10:45:57.4262468Z",
+    "productionHttpStatus": 200,
+    "workerVersion": "585d6298-962d-462a-87a1-8bcb7bf9955a"
+  }
 }
