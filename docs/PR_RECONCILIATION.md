@@ -44,3 +44,10 @@ Encerrar a proposta antiga não declara todos os requisitos visuais concluídos:
 ## Reorganização dos menus e utilidades — PR #271
 
 NEX-016 a NEX-019 substituem o menu Mais circular por lista Radix e padronizam Consulta offline, Usuários e Backup e diagnóstico, conforme DEC-011. O shell usa os símbolos autorais de `SectionSymbol`, inclusive Mestre e Backup. A nova revisão não restaura máscaras nem movimentos de navegação de PRs antigas; os testes históricos pertinentes foram conciliados com os alvos estáveis e os símbolos atuais. A evidência e o estado de entrega pertencem a [navigation-utilities-validation.json](navigation-utilities-validation.json) e à fila canônica; NEX-008/010/011 conservam o escopo ainda não certificado.
+
+
+## Símbolos e Painel do Mestre (NEX-020/008)
+
+DEC-012 prioriza a correção de Mestre/Backup e o painel, a partir de main `6e1087c`. A verificação de #271 provava apenas o wrapper dos ícones; seletores antigos ainda escondiam o SVG real. O lote atual remove as máscaras da sidebar e do dock, sem restaurar patches históricos. A verificação passa a medir SVG, pseudo-elemento, dimensões e estado nos próprios destinos.
+
+Navegação interna, visão geral e rascunho possuem responsáveis explícitos na fila canônica. Os testes textuais que exigiam máscaras/ocultação foram conciliados com a nova guarda arquitetural e as interações em navegador. Controles da Mesa, autorização real e restauração completa conservam seus IDs e limites. A fonte final `c22015b` foi validada na branch; integração e publicação continuam estados separados, registrados na [evidência](master-workspace-validation.json).

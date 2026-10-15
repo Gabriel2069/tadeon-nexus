@@ -1,0 +1,792 @@
+{
+  "version": 1,
+  "checkedAt": "2026-10-15",
+  "taskIds": [
+    "NEX-020",
+    "NEX-008"
+  ],
+  "state": "branch-validated",
+  "branch": "codex/nex-008-master-workspace",
+  "baseCommit": "6e1087c67cd68f35504d73d8efdb56f65f839c52",
+  "changes": {
+    "symbols": "SVG autoral único; retiradas máscaras e declarações que escondiam os ícones. Cores legíveis pertencem a navigation-layout.",
+    "workspace": [
+      "Visão geral extraída para master-overview; campanha, métricas acionáveis, elenco buscável e paginação explícita.",
+      "Navegação agrupada com seletor compacto; URL e identidade do cabeçalho derivam do mesmo estado React, sem MutationObserver/portal para descobrir aba.",
+      "Leituras abortáveis e invalidadas; workspace remontado por conta/cargo.",
+      "Persistência manual por snapshot; falha preserva texto, edição durante envio permanece pendente, saída revisada.",
+      "Cenas com rótulos associados, revisão antes de excluir do rascunho e retorno ao controle de origem.",
+      "Resposta de salvamento só é reconhecida quando retorna a configuração atualizada; ausência de linha não vira sucesso."
+    ]
+  },
+  "limits": [
+    "Fixtures não certificam contas reais, RLS, campanhas de produção, leitores de tela, dispositivos físicos ou desempenho de GPU.",
+    "Não altera esquema/migrations, regras RPG ou contratos de restauração completa.",
+    "Concorrência de edição entre mestres distintos não foi certificada; a proteção verificada cobre snapshots e identidade do workspace local."
+  ],
+  "verification": {
+    "status": "passed",
+    "commands": {
+      "npm run check": "passed: estilos, continuidade, lint, TypeScript, 135 suítes/577 testes, client/SSR/Cloudflare build",
+      "npm audit --audit-level=high": "passed: 0 vulnerabilidades"
+    },
+    "browser": {
+      "runner": "scripts/verify-master-workspace.mjs",
+      "widths": [
+        320,
+        390,
+        820,
+        1440
+      ],
+      "fixture": {
+        "sheets": 14,
+        "scenes": 2,
+        "longNames": true,
+        "liveBackend": false,
+        "featureAssets": "disabled in browser; enabled/disabled navigation covered by component test"
+      },
+      "fullRun": {
+        "cases": 80,
+        "captures": 44,
+        "checks": [
+          "14 ferramentas, URL e símbolo ativo coerentes; sem overflow nem erros de página.",
+          "Busca/paginação, falha de escrita, edição durante envio, repetição com snapshot recente e saída salva.",
+          "Cenas: editar, cancelar exclusão, fechar e retornar foco.",
+          "Revisão de saída: foco inicial, cancelar e retornar à origem; salvar e sair.",
+          "Janela dedicada mantém popout=1; erro de carregamento e recuperação.",
+          "Movimento reduzido e normal; requisições Supabase interceptadas, sem escrita no backend real."
+        ],
+        "results": [
+          {
+            "width": 320,
+            "label": "master-overview",
+            "captured": true,
+            "overflow": false,
+            "h1": 1,
+            "boundary": false
+          },
+          {
+            "width": 320,
+            "label": "master-roster",
+            "captured": true,
+            "overflow": false,
+            "h1": 1,
+            "boundary": false
+          },
+          {
+            "width": 320,
+            "label": "master-save-error",
+            "captured": true,
+            "overflow": false,
+            "h1": 1,
+            "boundary": false
+          },
+          {
+            "width": 320,
+            "label": "master-session",
+            "captured": true,
+            "overflow": false,
+            "h1": 1,
+            "boundary": false
+          },
+          {
+            "width": 320,
+            "label": "master-scenes",
+            "captured": true,
+            "overflow": false,
+            "h1": 1,
+            "boundary": false
+          },
+          {
+            "width": 320,
+            "label": "master-initiative",
+            "captured": false,
+            "overflow": false,
+            "h1": 1,
+            "boundary": false
+          },
+          {
+            "width": 320,
+            "label": "master-npcs-v2",
+            "captured": false,
+            "overflow": false,
+            "h1": 1,
+            "boundary": false
+          },
+          {
+            "width": 320,
+            "label": "master-threats",
+            "captured": false,
+            "overflow": false,
+            "h1": 1,
+            "boundary": false
+          },
+          {
+            "width": 320,
+            "label": "master-investigation",
+            "captured": false,
+            "overflow": false,
+            "h1": 1,
+            "boundary": false
+          },
+          {
+            "width": 320,
+            "label": "master-interludes",
+            "captured": false,
+            "overflow": false,
+            "h1": 1,
+            "boundary": false
+          },
+          {
+            "width": 320,
+            "label": "master-folds",
+            "captured": false,
+            "overflow": false,
+            "h1": 1,
+            "boundary": false
+          },
+          {
+            "width": 320,
+            "label": "master-balance",
+            "captured": false,
+            "overflow": false,
+            "h1": 1,
+            "boundary": false
+          },
+          {
+            "width": 320,
+            "label": "master-catalog",
+            "captured": false,
+            "overflow": false,
+            "h1": 1,
+            "boundary": false
+          },
+          {
+            "width": 320,
+            "label": "master-pinned",
+            "captured": false,
+            "overflow": false,
+            "h1": 1,
+            "boundary": false
+          },
+          {
+            "width": 320,
+            "label": "master-notes",
+            "captured": true,
+            "overflow": false,
+            "h1": 1,
+            "boundary": false
+          },
+          {
+            "width": 320,
+            "label": "master-data",
+            "captured": true,
+            "overflow": false,
+            "h1": 1,
+            "boundary": false
+          },
+          {
+            "width": 320,
+            "label": "master-scene-editor",
+            "captured": true,
+            "overflow": false,
+            "h1": 1,
+            "boundary": false
+          },
+          {
+            "width": 320,
+            "label": "master-leave-review",
+            "captured": true,
+            "overflow": false,
+            "h1": 1,
+            "boundary": false
+          },
+          {
+            "width": 320,
+            "label": "backup-active",
+            "captured": true,
+            "overflow": false,
+            "h1": 1,
+            "boundary": false
+          },
+          {
+            "width": 320,
+            "label": "master-load-error",
+            "captured": true,
+            "overflow": false,
+            "h1": 1,
+            "boundary": false
+          },
+          {
+            "width": 320,
+            "label": "master-recovered",
+            "captured": true,
+            "overflow": false,
+            "h1": 1,
+            "boundary": false
+          },
+          {
+            "width": 390,
+            "label": "master-overview",
+            "captured": true,
+            "overflow": false,
+            "h1": 1,
+            "boundary": false
+          },
+          {
+            "width": 390,
+            "label": "master-session",
+            "captured": true,
+            "overflow": false,
+            "h1": 1,
+            "boundary": false
+          },
+          {
+            "width": 390,
+            "label": "master-scenes",
+            "captured": true,
+            "overflow": false,
+            "h1": 1,
+            "boundary": false
+          },
+          {
+            "width": 390,
+            "label": "master-initiative",
+            "captured": false,
+            "overflow": false,
+            "h1": 1,
+            "boundary": false
+          },
+          {
+            "width": 390,
+            "label": "master-npcs-v2",
+            "captured": false,
+            "overflow": false,
+            "h1": 1,
+            "boundary": false
+          },
+          {
+            "width": 390,
+            "label": "master-threats",
+            "captured": false,
+            "overflow": false,
+            "h1": 1,
+            "boundary": false
+          },
+          {
+            "width": 390,
+            "label": "master-investigation",
+            "captured": false,
+            "overflow": false,
+            "h1": 1,
+            "boundary": false
+          },
+          {
+            "width": 390,
+            "label": "master-interludes",
+            "captured": false,
+            "overflow": false,
+            "h1": 1,
+            "boundary": false
+          },
+          {
+            "width": 390,
+            "label": "master-folds",
+            "captured": false,
+            "overflow": false,
+            "h1": 1,
+            "boundary": false
+          },
+          {
+            "width": 390,
+            "label": "master-balance",
+            "captured": false,
+            "overflow": false,
+            "h1": 1,
+            "boundary": false
+          },
+          {
+            "width": 390,
+            "label": "master-catalog",
+            "captured": false,
+            "overflow": false,
+            "h1": 1,
+            "boundary": false
+          },
+          {
+            "width": 390,
+            "label": "master-pinned",
+            "captured": false,
+            "overflow": false,
+            "h1": 1,
+            "boundary": false
+          },
+          {
+            "width": 390,
+            "label": "master-notes",
+            "captured": true,
+            "overflow": false,
+            "h1": 1,
+            "boundary": false
+          },
+          {
+            "width": 390,
+            "label": "master-data",
+            "captured": true,
+            "overflow": false,
+            "h1": 1,
+            "boundary": false
+          },
+          {
+            "width": 390,
+            "label": "master-scene-editor",
+            "captured": true,
+            "overflow": false,
+            "h1": 1,
+            "boundary": false
+          },
+          {
+            "width": 390,
+            "label": "master-leave-review",
+            "captured": true,
+            "overflow": false,
+            "h1": 1,
+            "boundary": false
+          },
+          {
+            "width": 390,
+            "label": "backup-active",
+            "captured": true,
+            "overflow": false,
+            "h1": 1,
+            "boundary": false
+          },
+          {
+            "width": 390,
+            "label": "master-load-error",
+            "captured": true,
+            "overflow": false,
+            "h1": 1,
+            "boundary": false
+          },
+          {
+            "width": 390,
+            "label": "master-recovered",
+            "captured": true,
+            "overflow": false,
+            "h1": 1,
+            "boundary": false
+          },
+          {
+            "width": 820,
+            "label": "master-overview",
+            "captured": true,
+            "overflow": false,
+            "h1": 1,
+            "boundary": false
+          },
+          {
+            "width": 820,
+            "label": "master-session",
+            "captured": true,
+            "overflow": false,
+            "h1": 1,
+            "boundary": false
+          },
+          {
+            "width": 820,
+            "label": "master-scenes",
+            "captured": true,
+            "overflow": false,
+            "h1": 1,
+            "boundary": false
+          },
+          {
+            "width": 820,
+            "label": "master-initiative",
+            "captured": false,
+            "overflow": false,
+            "h1": 1,
+            "boundary": false
+          },
+          {
+            "width": 820,
+            "label": "master-npcs-v2",
+            "captured": false,
+            "overflow": false,
+            "h1": 1,
+            "boundary": false
+          },
+          {
+            "width": 820,
+            "label": "master-threats",
+            "captured": false,
+            "overflow": false,
+            "h1": 1,
+            "boundary": false
+          },
+          {
+            "width": 820,
+            "label": "master-investigation",
+            "captured": false,
+            "overflow": false,
+            "h1": 1,
+            "boundary": false
+          },
+          {
+            "width": 820,
+            "label": "master-interludes",
+            "captured": false,
+            "overflow": false,
+            "h1": 1,
+            "boundary": false
+          },
+          {
+            "width": 820,
+            "label": "master-folds",
+            "captured": false,
+            "overflow": false,
+            "h1": 1,
+            "boundary": false
+          },
+          {
+            "width": 820,
+            "label": "master-balance",
+            "captured": false,
+            "overflow": false,
+            "h1": 1,
+            "boundary": false
+          },
+          {
+            "width": 820,
+            "label": "master-catalog",
+            "captured": false,
+            "overflow": false,
+            "h1": 1,
+            "boundary": false
+          },
+          {
+            "width": 820,
+            "label": "master-pinned",
+            "captured": false,
+            "overflow": false,
+            "h1": 1,
+            "boundary": false
+          },
+          {
+            "width": 820,
+            "label": "master-notes",
+            "captured": true,
+            "overflow": false,
+            "h1": 1,
+            "boundary": false
+          },
+          {
+            "width": 820,
+            "label": "master-data",
+            "captured": true,
+            "overflow": false,
+            "h1": 1,
+            "boundary": false
+          },
+          {
+            "width": 820,
+            "label": "master-scene-editor",
+            "captured": true,
+            "overflow": false,
+            "h1": 1,
+            "boundary": false
+          },
+          {
+            "width": 820,
+            "label": "master-leave-review",
+            "captured": true,
+            "overflow": false,
+            "h1": 1,
+            "boundary": false
+          },
+          {
+            "width": 820,
+            "label": "backup-active",
+            "captured": true,
+            "overflow": false,
+            "h1": 1,
+            "boundary": false
+          },
+          {
+            "width": 820,
+            "label": "master-load-error",
+            "captured": true,
+            "overflow": false,
+            "h1": 1,
+            "boundary": false
+          },
+          {
+            "width": 820,
+            "label": "master-recovered",
+            "captured": true,
+            "overflow": false,
+            "h1": 1,
+            "boundary": false
+          },
+          {
+            "width": 1440,
+            "label": "master-overview",
+            "captured": true,
+            "overflow": false,
+            "h1": 1,
+            "boundary": false
+          },
+          {
+            "width": 1440,
+            "label": "master-roster",
+            "captured": true,
+            "overflow": false,
+            "h1": 1,
+            "boundary": false
+          },
+          {
+            "width": 1440,
+            "label": "master-save-error",
+            "captured": true,
+            "overflow": false,
+            "h1": 1,
+            "boundary": false
+          },
+          {
+            "width": 1440,
+            "label": "master-session",
+            "captured": true,
+            "overflow": false,
+            "h1": 1,
+            "boundary": false
+          },
+          {
+            "width": 1440,
+            "label": "master-scenes",
+            "captured": true,
+            "overflow": false,
+            "h1": 1,
+            "boundary": false
+          },
+          {
+            "width": 1440,
+            "label": "master-initiative",
+            "captured": false,
+            "overflow": false,
+            "h1": 1,
+            "boundary": false
+          },
+          {
+            "width": 1440,
+            "label": "master-npcs-v2",
+            "captured": false,
+            "overflow": false,
+            "h1": 1,
+            "boundary": false
+          },
+          {
+            "width": 1440,
+            "label": "master-threats",
+            "captured": false,
+            "overflow": false,
+            "h1": 1,
+            "boundary": false
+          },
+          {
+            "width": 1440,
+            "label": "master-investigation",
+            "captured": false,
+            "overflow": false,
+            "h1": 1,
+            "boundary": false
+          },
+          {
+            "width": 1440,
+            "label": "master-interludes",
+            "captured": false,
+            "overflow": false,
+            "h1": 1,
+            "boundary": false
+          },
+          {
+            "width": 1440,
+            "label": "master-folds",
+            "captured": false,
+            "overflow": false,
+            "h1": 1,
+            "boundary": false
+          },
+          {
+            "width": 1440,
+            "label": "master-balance",
+            "captured": false,
+            "overflow": false,
+            "h1": 1,
+            "boundary": false
+          },
+          {
+            "width": 1440,
+            "label": "master-catalog",
+            "captured": false,
+            "overflow": false,
+            "h1": 1,
+            "boundary": false
+          },
+          {
+            "width": 1440,
+            "label": "master-pinned",
+            "captured": false,
+            "overflow": false,
+            "h1": 1,
+            "boundary": false
+          },
+          {
+            "width": 1440,
+            "label": "master-notes",
+            "captured": true,
+            "overflow": false,
+            "h1": 1,
+            "boundary": false
+          },
+          {
+            "width": 1440,
+            "label": "master-data",
+            "captured": true,
+            "overflow": false,
+            "h1": 1,
+            "boundary": false
+          },
+          {
+            "width": 1440,
+            "label": "master-scene-editor",
+            "captured": true,
+            "overflow": false,
+            "h1": 1,
+            "boundary": false
+          },
+          {
+            "width": 1440,
+            "label": "master-leave-review",
+            "captured": true,
+            "overflow": false,
+            "h1": 1,
+            "boundary": false
+          },
+          {
+            "width": 1440,
+            "label": "backup-active",
+            "captured": true,
+            "overflow": false,
+            "h1": 1,
+            "boundary": false
+          },
+          {
+            "width": 1440,
+            "label": "master-load-error",
+            "captured": true,
+            "overflow": false,
+            "h1": 1,
+            "boundary": false
+          },
+          {
+            "width": 1440,
+            "label": "master-recovered",
+            "captured": true,
+            "overflow": false,
+            "h1": 1,
+            "boundary": false
+          }
+        ]
+      },
+      "finalSymbolsReplay": {
+        "cases": 8,
+        "captures": 8,
+        "source": "c22015b9ad1a24ff245d735ec604610e0c419384",
+        "checks": [
+          "SVG real com dimensões e visibilidade; sem máscara/pseudo antes, inclusive em modo recolhido.",
+          "Mestre/Backup normal e ativo em sidebar/drawer; dock usa o SVG real.",
+          "Cor do SVG tem luminância superior a 0,18 após retirar concorrente do CSS raiz; não equivale a auditoria WCAG completa sobre fundos compostos."
+        ],
+        "results": [
+          {
+            "width": 320,
+            "label": "master-overview",
+            "captured": true,
+            "overflow": false,
+            "h1": 1,
+            "boundary": false
+          },
+          {
+            "width": 320,
+            "label": "icons-backup-active",
+            "captured": true,
+            "overflow": false,
+            "h1": 1,
+            "boundary": false
+          },
+          {
+            "width": 390,
+            "label": "master-overview",
+            "captured": true,
+            "overflow": false,
+            "h1": 1,
+            "boundary": false
+          },
+          {
+            "width": 390,
+            "label": "icons-backup-active",
+            "captured": true,
+            "overflow": false,
+            "h1": 1,
+            "boundary": false
+          },
+          {
+            "width": 820,
+            "label": "master-overview",
+            "captured": true,
+            "overflow": false,
+            "h1": 1,
+            "boundary": false
+          },
+          {
+            "width": 820,
+            "label": "icons-backup-active",
+            "captured": true,
+            "overflow": false,
+            "h1": 1,
+            "boundary": false
+          },
+          {
+            "width": 1440,
+            "label": "master-overview",
+            "captured": true,
+            "overflow": false,
+            "h1": 1,
+            "boundary": false
+          },
+          {
+            "width": 1440,
+            "label": "icons-backup-active",
+            "captured": true,
+            "overflow": false,
+            "h1": 1,
+            "boundary": false
+          }
+        ]
+      },
+      "sourceBoundary": "O código de aplicação TS/TSX é idêntico entre o checkpoint funcional 7885073 e c22015b; a revisão posterior altera CSS de navegação, formatação CSS e a guarda de ícones."
+    },
+    "architecture": {
+      "styles": 57,
+      "globalLinks": 12,
+      "importantBefore": 5240,
+      "importantAfter": 4793,
+      "newImportant": 0,
+      "newCssModules": 0,
+      "retiredAssertions": "Asserções históricas que exigiam máscara ou ocultação de SVG foram substituídas por guarda de fonte e prova do elemento real no navegador."
+    }
+  },
+  "interfaceSourceCommit": "c22015b9ad1a24ff245d735ec604610e0c419384",
+  "functionalApplicationCommit": "7885073002783602c98e15d56c2f63bdbc271068"
+}

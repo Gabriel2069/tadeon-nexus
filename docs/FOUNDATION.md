@@ -134,3 +134,14 @@ NEX-005 integrado pela [PR #265](https://github.com/Gabriel2069/tadeon-nexus/pul
 `NexusWorkspace` é o escritor da navegação e do editor. `knowledge-drafts.ts` conserva recuperação local por usuário/workspace/página e só elimina o texto correspondente à gravação aceita. `use-reading-preferences.ts` mantém modo/proporções por usuário/workspace/campanha; não grava defaults durante hidratação nem aceita callbacks de outra identidade. `KnowledgeReadingPanes` usa os painéis existentes e um ResizeObserver local para orientar a divisão pela largura disponível. O canvas ignora medições de área oculta e só redefine seu bitmap quando as dimensões mudam.
 
 Conteúdo enviado ao servidor continua sujeito ao contrato atômico e à versão esperada. Respostas antigas não atualizam o editor de outra página/identidade. Texto digitado durante uma gravação lenta recebe a nova versão-base e volta ao autosave; detalhes carregados depois não seguram a fila de gravação. Isso não revoga uma requisição já enviada nem certifica autorização real. Rascunhos antigos sem identificação não são adotados; contratos, limites e validação ficam em [nexus-continuity-validation.json](nexus-continuity-validation.json) e DEC-010.
+
+
+## Painel do Mestre e símbolos de navegação (NEX-008/020)
+
+A revisão parte de main `6e1087c`. Os SVGs autorais já existiam em React, mas seletores históricos ainda os escondiam e desenhavam máscaras concorrentes. Essas substituições foram removidas da sidebar e do dock; os testes passam a conferir o SVG real e seus pseudo-elementos. As regras de cor dos links foram conciliadas em `navigation-layout.css`, preservando os acentos de seção com texto legível.
+
+`master-panel-navigation.css` concentra a geometria, material e estados da navegação interna. Os seletores antigos foram retirados dos outros proprietários; não há novo módulo CSS nem `!important`; o total caiu de 5.240 para 4.793. O cabeçalho e as abas recebem o mesmo valor React. Um ResizeObserver restrito aos cabeçalhos mede somente o offset da navegação sticky; não descobre estado por varredura de atributos.
+
+A visão geral foi extraída para `master-overview.tsx`, usando os dados/callbacks da rota. O elenco tem busca e revelação progressiva explícita; métricas abrem ferramentas. `useMasterDraft` mantém persistência manual: conclusão de um snapshot não reconhece edições posteriores. Leituras são abortadas/invalidadas ao sair; a identidade remonta o workspace. A saída com rascunho pede uma escolha, e Cenas mantém rótulos associados, revisão de exclusão e retorno de foco. As regras RPG e o esquema de dados permanecem sob os contratos atuais.
+
+Evidência, limites e estado de entrega: [master-workspace-validation.json](master-workspace-validation.json). A fila continua exclusivamente em `project-continuity.json`; autorização real, concorrência entre mestres e operação em dispositivos físicos não são certificados por fixtures.

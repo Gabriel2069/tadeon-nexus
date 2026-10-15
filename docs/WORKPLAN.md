@@ -17,8 +17,8 @@ Cada PR usa IDs desta fila e declara dependências. Trabalho sobre o mesmo propr
 | NEX-013 | Liquid fabric: login, Dashboard e componentes compartilhados | Integrado | 2 | shell | NEX-003, NEX-004 |
 | NEX-005 | Ficha por seções e estados | Integrado | 3 | sheet | NEX-003, NEX-013 |
 | NEX-006 | Biblioteca, documento e grafo do Nexus | Integrado | 4 | knowledge | NEX-003, NEX-013 |
-| NEX-007 | Mesa: hierarquia de ferramentas e workspace | Planejado | 5 | tabletop | NEX-004, NEX-013 |
-| NEX-008 | Painel do Mestre e administração | Planejado | 6 | master | NEX-003, NEX-013 |
+| NEX-007 | Mesa: hierarquia de ferramentas e workspace | Planejado | 6 | tabletop | NEX-004, NEX-013 |
+| NEX-008 | Painel do Mestre: visão geral, ferramentas e condução | Validado na branch | 5 | master | NEX-003, NEX-013, NEX-020 |
 | NEX-009 | Desempenho e motion | Planejado | 7 | delivery | NEX-003, NEX-007 |
 | NEX-010 | Validação real de autorização e rollout | Planejado | 8 | session | NEX-001 |
 | NEX-011 | Backup e restauração verificável | Planejado | 8 | assets | NEX-010 |
@@ -29,6 +29,7 @@ Cada PR usa IDs desta fila e declara dependências. Trabalho sobre o mesmo propr
 | NEX-017 | Consulta offline: conteúdo local e limites claros | Integrado | 4 | session | NEX-014 |
 | NEX-018 | Usuários: papéis, busca e revisão de ações | Integrado | 4 | master | NEX-014 |
 | NEX-019 | Backup e diagnóstico: revisão e histórico por conta | Integrado | 4 | assets | NEX-014 |
+| NEX-020 | Símbolos reais de Mestre e Backup na navegação | Validado na branch | 4 | shell | NEX-016 |
 
 ## NEX-001 — Preparação estrutural
 
@@ -94,13 +95,14 @@ Evidências: [docs/material-reading-validation.json](../docs/material-reading-va
 
 Evidências: pendentes; não declarar concluído.
 
-## NEX-008 — Painel do Mestre e administração
+## NEX-008 — Painel do Mestre: visão geral, ferramentas e condução
 
 - Revisar densidade, tabs, editor e listas com dados longos.
 - Separar seções do hub por responsabilidade sem duplicar autorização.
 - Estados vazio/erro/sucesso e usuário sem acesso preservados.
+- Salvar snapshots manualmente, preservar edições durante o envio, invalidar leituras ao desmontar e revisar saída com rascunho pendente.
 
-Evidências: pendentes; não declarar concluído.
+Evidências: [docs/master-workspace-validation.json](../docs/master-workspace-validation.json).
 
 ## NEX-009 — Desempenho e motion
 
@@ -178,6 +180,13 @@ Evidências: [docs/navigation-utilities-validation.json](../docs/navigation-util
 
 Evidências: [docs/navigation-utilities-validation.json](../docs/navigation-utilities-validation.json), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/pull/271), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38675134229), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38675372253).
 
+## NEX-020 — Símbolos reais de Mestre e Backup na navegação
+
+- Retirar máscaras e regras que escondem os SVGs autorais na sidebar e no dock.
+- Verificar SVG real, dimensões, pseudo-elementos e estados ativo, normal, recolhido e drawer em 320/390/820/1440px.
+
+Evidências: [docs/master-workspace-validation.json](../docs/master-workspace-validation.json).
+
 ## Decisões vigentes
 
 | ID | Decisão | Motivo |
@@ -193,3 +202,4 @@ Evidências: [docs/navigation-utilities-validation.json](../docs/navigation-util
 | DEC-009 | Tadeu rejeitou Grenze e os números monoespaçados; Cormorant Garamond 500/600/700 e itálico 500 assumem o editorial, Inter 500 com números tabulares assume métricas. PT Mono fica em metadados. Vidro nos controles e navegação, conteúdo opaco, tecido vetorial e reflexos locais; nenhuma simulação física ou loop global novo. | Nova instrução explícita de Tadeu em 11/10/2026: rever fonte, métricas e presença de fundo/motion antes da ficha. A parte tipográfica de DEC-008 passa a ser histórica, sem desfazer a navegação consolidada. |
 | DEC-010 | NEX-015 implementa e valida continuidade/composição com fixtures; sua verificação com corpus real autorizado permanece em NEX-010. | A etapa não certifica contas reais, RLS ou rollout. Consolidar essa verificação no lote existente de autorização evita uma fila duplicada ou declarar validação fictícia como real. |
 | DEC-011 | Priorizar menus, Consulta offline, Usuários e Backup e diagnóstico antes da Mesa, conforme novo pedido de Tadeu. | NEX-016 a NEX-019 delimitam navegação e utilidades. URLs e identidade visual permanecem; a revisão não conclui o restante do Painel do Mestre, autorização real ou restauração completa de infraestrutura (NEX-008/010/011). Os nomes visíveis são Consulta offline, Usuários e Backup e diagnóstico. |
+| DEC-012 | Corrigir os símbolos de Mestre e Backup e priorizar o Painel do Mestre antes da Mesa, conforme pedido de Tadeu em 15/10/2026. | NEX-020 retira a sobreposição dos ícones; NEX-008 organiza visão geral, ferramentas e persistência manual. Não altera regras RPG, autorização/RLS, restauração de infraestrutura ou o motor da Mesa. A validação anterior só media o wrapper dos ícones e não provava a visibilidade do SVG real. |
