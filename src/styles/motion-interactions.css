@@ -53,6 +53,11 @@
   .tadeon-shell .tadeon-link-panel:hover {
     transform: translate3d(0, -7px, 0) scale(1.012) !important;
     filter: saturate(1.06) brightness(1.025) !important;
+  }
+
+  .tadeon-shell .tadeon-surface:not([data-material-surface="card"])[data-tadeon-interactive="true"]:hover,
+.tadeon-shell .tadeon-state-panel:hover,
+.tadeon-shell .tadeon-link-panel:hover {
     box-shadow:
       0 34px 90px -44px rgb(0 0 0 / 98%),
       0 10px 34px -28px rgb(217 215 164 / 20%),
@@ -794,6 +799,11 @@
   .tadeon-shell .tadeon-skill-modifier-panel:hover{
     transform:translate3d(0,-4px,0) scale(1.008) !important;
     filter:saturate(1.035) brightness(1.015) !important;
+  }
+  .tadeon-shell .tadeon-surface:not([data-material-surface="card"])[data-tadeon-interactive="true"]:hover,
+.tadeon-shell .tadeon-state-panel:hover,
+.tadeon-shell .tadeon-link-panel:hover,
+.tadeon-shell .tadeon-skill-modifier-panel:hover{
     box-shadow:
       0 26px 70px -42px rgb(0 0 0 / 94%),
       0 8px 28px -24px rgb(217 215 164 / 16%),

@@ -3317,12 +3317,14 @@ html body .tadeon-shell .tadeon-master-commandbar p:not(.tadeon-eyebrow) {
   position: absolute;
   inset: 0;
   pointer-events: none;
+  opacity: .65;
+  mask-image: linear-gradient(135deg, #000, transparent 62%);
+}
+.tadeon-shell :is([data-slot="card"]:not([data-material-surface]), .tadeon-surface:not([data-material-surface="card"]), .tadeon-panel, .tadeon-route-card)::after {
   border-radius: inherit;
   background:
     linear-gradient(132deg, transparent 0 31%, rgb(var(--td-section-rgb, 217 215 164) / 3.5%) 31.06% 31.14%, transparent 31.28% 100%),
     linear-gradient(48deg, transparent 0 76%, rgb(var(--td-section-rgb, 217 215 164) / 2.5%) 76.05% 76.12%, transparent 76.24% 100%);
-  opacity: .65;
-  mask-image: linear-gradient(135deg, #000, transparent 62%);
 }
 
 /* Section-specific density. */
@@ -4306,9 +4308,14 @@ html body .tadeon-shell .tadeon-route-offline > main {
 .tadeon-shell [data-tadeon-card]::after,
 .tadeon-shell .tadeon-surface::after,
 .tadeon-shell [data-slot="card"]:not([data-material-surface])::after{
-  content:"";position:absolute;inset:0;pointer-events:none;border-radius:inherit;
+  content:"";position:absolute;inset:0;pointer-events:none;background-position:-140% 0;opacity:0;
+}
+.tadeon-shell .tadeon-card::after,
+.tadeon-shell [data-tadeon-card]::after,
+.tadeon-shell .tadeon-surface:not([data-material-surface="card"])::after,
+.tadeon-shell [data-slot="card"]:not([data-material-surface])::after{border-radius:inherit;
   background:linear-gradient(105deg,transparent 20%,color-mix(in srgb,var(--section-accent,var(--tdv-lumen,white)) 11%,transparent) 48%,transparent 66%);
-  background-size:240% 100%;background-position:-140% 0;opacity:0;
+  background-size:240% 100%;
 }
 .tadeon-shell .tadeon-card:hover::after,
 .tadeon-shell [data-tadeon-card]:hover::after,

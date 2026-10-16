@@ -377,6 +377,9 @@ html body .tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-focus-brand-
 
 .tadeon-surface:hover {
   transform: translateY(-2px);
+}
+
+.tadeon-surface:not([data-material-surface="card"]):hover {
   border-color: color-mix(in srgb, var(--tadeon-metal) 42%, transparent);
   box-shadow:
     0 28px 82px -52px rgb(0 0 0 / 96%),
@@ -790,8 +793,8 @@ button:not([data-material-surface], .tadeon-material-button)[aria-busy="true"] >
    --------------------------------------------------------------- */
 
 @supports not ((backdrop-filter: blur(1px))) {
-  .tadeon-surface,
-  .tadeon-loading-mark {
+  .tadeon-surface:not([data-material-surface="card"]),
+.tadeon-loading-mark {
     background-color: rgb(12 15 20 / 96%);
   }
 }
@@ -1041,6 +1044,9 @@ button:not([data-material-surface], .tadeon-material-button)[aria-busy="true"] >
 
   .tadeon-surface[data-tadeon-directed="true"]:hover {
     transform: translateY(-3px);
+  }
+
+  .tadeon-surface:not([data-material-surface="card"])[data-tadeon-directed="true"]:hover {
     box-shadow:
       0 30px 90px -54px rgb(0 0 0 / 96%),
       inset 0 1px 0 rgb(255 255 255 / 4%),
@@ -1216,8 +1222,8 @@ button:not([data-material-surface], .tadeon-material-button)[data-tadeon-directe
 }
 
 @supports not (backdrop-filter: blur(1px)) {
-  .tadeon-surface,
-  .tadeon-state-panel {
+  .tadeon-surface:not([data-material-surface="card"]),
+.tadeon-state-panel {
     background-color: var(--card);
     background-image: none;
   }
@@ -1458,7 +1464,7 @@ button:not([data-material-surface], .tadeon-material-button)[data-tadeon-directe
 /* Tadeon experience details ~ hero, navigation, graph, master, sheet and states */
 
 /* Material hierarchy */
-.tadeon-surface[data-tadeon-material="archive"] { border-radius: 0.75rem 0.35rem 0.85rem 0.45rem; }
+.tadeon-surface:not([data-material-surface="card"])[data-tadeon-material="archive"] { border-radius: 0.75rem 0.35rem 0.85rem 0.45rem; }
 .tadeon-link-panel[data-tadeon-material="fragment"] {
   border-left-color: color-mix(in srgb, var(--tadeon-veil) 50%, transparent);
   border-radius: 0.25rem 0.8rem 0.35rem 0.9rem;
@@ -1545,8 +1551,8 @@ button:not([data-material-surface], .tadeon-material-button)[data-tadeon-directe
 }
 
 /* Master / tabletop */
-.tadeon-shell[data-section="Painel do Mestre"] .tadeon-surface[data-tadeon-directed="true"],
-.tadeon-shell[data-section="Mesa Nexus"] .tadeon-surface[data-tadeon-directed="true"] { border-color: color-mix(in srgb, var(--tadeon-section-accent, var(--tadeon-metal)) 22%, var(--border)); }
+.tadeon-shell[data-section="Painel do Mestre"] .tadeon-surface:not([data-material-surface="card"])[data-tadeon-directed="true"],
+.tadeon-shell[data-section="Mesa Nexus"] .tadeon-surface:not([data-material-surface="card"])[data-tadeon-directed="true"] { border-color: color-mix(in srgb, var(--tadeon-section-accent, var(--tadeon-metal)) 22%, var(--border)); }
 
 /* Empty/error/offline states */
 .tadeon-state-panel[data-tadeon-material="state"] { min-height: 10rem; }
@@ -1670,7 +1676,7 @@ button:not([data-material-surface], .tadeon-material-button)[data-tadeon-directe
   filter: drop-shadow(0 0 10px rgb(217 215 164 / 22%));
 }
 
-.tadeon-shell[data-section="Painel do Mestre"] .tadeon-surface[data-tadeon-material="archive"] {
+.tadeon-shell[data-section="Painel do Mestre"] .tadeon-surface:not([data-material-surface="card"])[data-tadeon-material="archive"] {
   border-radius: .9rem .35rem 1rem .4rem;
 }
 

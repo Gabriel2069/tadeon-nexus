@@ -631,8 +631,10 @@ body:has(.tadeon-tabletop-studio) {
   box-shadow:0 0 0 1px color-mix(in srgb, var(--primary) 16%, transparent),0 0 24px -11px color-mix(in srgb, var(--primary) 72%, transparent),inset 0 1px hsl(0 0% 100%/.04) !important;
 }
 .tadeon-sheet-page :is(.tadeon-surface,[data-slot="card"]:not([data-material-surface])) {
-  background-image:radial-gradient(circle at 100% 0%,color-mix(in srgb, var(--primary) 5.5%, transparent),transparent 13rem),linear-gradient(145deg,hsl(0 0% 100%/.015),transparent 48%);
   background-blend-mode:screen,normal;
+}
+.tadeon-sheet-page :is(.tadeon-surface:not([data-material-surface="card"]),[data-slot="card"]:not([data-material-surface])) {
+  background-image:radial-gradient(circle at 100% 0%,color-mix(in srgb, var(--primary) 5.5%, transparent),transparent 13rem),linear-gradient(145deg,hsl(0 0% 100%/.015),transparent 48%);
 }
 
 /* Conditions: layered glow instead of a clipped outline, with readable severity progression. */

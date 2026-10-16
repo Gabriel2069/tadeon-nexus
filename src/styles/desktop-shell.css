@@ -292,7 +292,7 @@
     letter-spacing: -0.01em;
   }
 
-  .tadeon-route-stage .tadeon-surface {
+  .tadeon-route-stage .tadeon-surface:not([data-material-surface="card"]) {
     border-color: color-mix(in srgb, var(--section-accent) 15%, var(--border));
   }
 

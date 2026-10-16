@@ -196,12 +196,6 @@
     isolation: isolate;
     overflow: hidden;
     border: 1px solid color-mix(in srgb, var(--tadeon-metal) 28%, transparent);
-    background:
-      linear-gradient(135deg, rgb(255 255 255 / 3.5%), transparent 48%),
-      color-mix(in srgb, var(--card) 94%, transparent);
-    box-shadow:
-      0 24px 70px -44px rgb(0 0 0 / 90%),
-      inset 0 1px 0 rgb(255 255 255 / 3%);
     backdrop-filter: blur(12px) saturate(112%);
     transition:
       border-color var(--motion-fast) var(--ease-out),
@@ -209,15 +203,27 @@
       background-color var(--motion-fast) var(--ease-out);
   }
 
+  .tadeon-surface:not([data-material-surface="card"]) {
+    background:
+      linear-gradient(135deg, rgb(255 255 255 / 3.5%), transparent 48%),
+      color-mix(in srgb, var(--card) 94%, transparent);
+    box-shadow:
+      0 24px 70px -44px rgb(0 0 0 / 90%),
+      inset 0 1px 0 rgb(255 255 255 / 3%);
+  }
+
   .tadeon-surface::before {
     content: "";
     position: absolute;
     inset: 0;
     z-index: 0;
+    pointer-events: none;
+  }
+
+  .tadeon-surface:not([data-material-surface="card"])::before {
     background:
       linear-gradient(110deg, rgb(242 238 200 / 2.8%), transparent 28%),
       radial-gradient(circle at 88% 0%, rgb(113 107 123 / 4.5%), transparent 34%);
-    pointer-events: none;
   }
 
   .tadeon-surface::after {
@@ -225,8 +231,11 @@
     position: absolute;
     inset: auto 1rem 0 1rem;
     height: 1px;
-    background: linear-gradient(90deg, transparent, rgb(217 215 164 / 20%), transparent);
     pointer-events: none;
+  }
+
+  .tadeon-surface:not([data-material-surface="card"])::after {
+    background: linear-gradient(90deg, transparent, rgb(217 215 164 / 20%), transparent);
   }
 
   .tadeon-section-title {
@@ -509,7 +518,7 @@
     padding-inline: 0.875rem;
   }
 
-  .tadeon-surface {
+  .tadeon-surface:not([data-material-surface="card"]) {
     border-radius: 0.875rem;
   }
 
@@ -629,8 +638,11 @@
 @media (prefers-reduced-transparency: reduce) {
   .tadeon-surface,
   .tadeon-auth-shell {
-    background-color: var(--background);
     backdrop-filter: none;
+  }
+  .tadeon-surface:not([data-material-surface="card"]),
+.tadeon-auth-shell {
+    background-color: var(--background);
   }
 }
 
@@ -1595,7 +1607,7 @@ body
     --muted-foreground: #bbb8b1;
   }
 
-  .tadeon-surface {
+  .tadeon-surface:not([data-material-surface="card"]) {
     border-color: var(--border);
   }
 }
@@ -1704,6 +1716,10 @@ body {
 }
 
 .tadeon-surface {
+  backdrop-filter: none;
+}
+
+.tadeon-surface:not([data-material-surface="card"]) {
   border-color: color-mix(in srgb, var(--tadeon-section-accent) 12%, var(--border));
   background:
     linear-gradient(138deg, rgb(255 255 255 / 3%), transparent 42%),
@@ -1712,7 +1728,6 @@ body {
   box-shadow:
     var(--tadeon-shadow-soft),
     inset 0 1px rgb(255 255 255 / 3%);
-  backdrop-filter: none;
 }
 
 .tadeon-page-hero,

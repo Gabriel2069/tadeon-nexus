@@ -111,7 +111,7 @@
    Surface hierarchy: fewer generic rectangles
    -------------------------------------------------------------------------- */
 
-.tadeon-surface[data-tadeon-material="archive"] {
+.tadeon-surface:not([data-material-surface="card"])[data-tadeon-material="archive"] {
   border-radius: .95rem .28rem 1rem .38rem !important;
   border-color: rgb(122 129 135 / 30%) !important;
   background:
