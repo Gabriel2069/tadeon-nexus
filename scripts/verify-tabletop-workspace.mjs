@@ -563,6 +563,11 @@ try {
           .evaluate((el) => el.scrollWidth <= el.clientWidth + 1),
         "Connection status label is readable",
       );
+      const support = page.getByRole("button", { name: "Áudio", exact: true });
+      assert(
+        await support.evaluate((el) => !!el.closest("header")),
+        "Audio stays in the participant header",
+      );
       await capture("player-view");
       await page.getByRole("button", { name: "Abrir comandos", exact: true }).click();
       const dialog = page.getByRole("dialog", { name: "Comandos da Mesa", exact: true });
@@ -592,6 +597,22 @@ try {
       await retry.waitFor({ state: "visible", timeout: 20000 });
       await retry.click();
       await capture("player-reconnect-attempt");
+      await page.evaluate(
+        (entityId) => window.__tadeonTabletopRuntime.engine.select(entityId, false),
+        id(50),
+      );
+      const tactics = page.locator(".tadeon-participant-view__tactics");
+      await tactics.waitFor();
+      assert(
+        await tactics.evaluate((el) => !!el.closest("header")),
+        "Player tactical tools share the header flow",
+      );
+      const tb = await tactics.boundingBox();
+      assert(tb.x >= 0 && tb.x + tb.width <= width + 1, "Player tactical tools fit");
+      await tactics.getByRole("button", { name: "Planejar", exact: true }).click();
+      await tactics.getByRole("button", { name: "Encerrar prévia tática", exact: true }).click();
+      await capture("player-tactics");
+
       await context.close();
       continue;
     }

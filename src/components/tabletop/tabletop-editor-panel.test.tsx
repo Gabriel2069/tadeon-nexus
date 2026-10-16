@@ -68,3 +68,16 @@ it("moves a stage portal only when the runtime publishes a new surface", () => {
   expect(first.querySelector("button")).toBeNull();
   expect(next.querySelector("button")?.textContent).toBe("Controle do mapa");
 });
+
+it("places auxiliary controls in the workspace slot supplied by its owner", () => {
+  const host = document.createElement("div");
+  host.setAttribute("data-tabletop-player-tools-host", "");
+  document.body.append(host);
+  render(
+    <TabletopStagePortal selector="[data-tabletop-player-tools-host]">
+      <button>Áudio da sala</button>
+    </TabletopStagePortal>,
+  );
+  expect(host.querySelector("button")?.textContent).toBe("Áudio da sala");
+  host.remove();
+});

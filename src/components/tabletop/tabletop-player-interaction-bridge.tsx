@@ -1,13 +1,6 @@
+import { useAuth } from "@/lib/auth";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import {
-  Crosshair,
-  Footprints,
-  Loader2,
-  Route,
-  Sparkles,
-  Target,
-  X,
-} from "lucide-react";
+import { Crosshair, Footprints, Loader2, Route, Sparkles, Target, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { snapPointToGrid } from "@/lib/tabletop/grid-renderer";
@@ -36,19 +29,21 @@ function plotSources(value: unknown): TabletopPowerSource[] {
     const source = entry as Record<string, unknown>;
     const name = typeof source.nome === "string" ? source.nome.trim() : "";
     if (!name) return [];
-    return [{
-      id: typeof source.id === "string" && source.id ? source.id : `plot-${index}`,
-      name,
-      reach: typeof source.alcance === "string" ? source.alcance : "",
-      effect: typeof source.efeito === "string" ? source.efeito : undefined,
-      damage: typeof source.dano === "string" ? source.dano : undefined,
-    }];
+    return [
+      {
+        id: typeof source.id === "string" && source.id ? source.id : `plot-${index}`,
+        name,
+        reach: typeof source.alcance === "string" ? source.alcance : "",
+        effect: typeof source.efeito === "string" ? source.efeito : undefined,
+        damage: typeof source.dano === "string" ? source.dano : undefined,
+      },
+    ];
   });
 }
 
 function selectedEntity(snapshot: TabletopSnapshot | null) {
   const id = snapshot?.selectedIds[0];
-  return id ? snapshot?.scene.entities.find((entity) => entity.id === id) ?? null : null;
+  return id ? (snapshot?.scene.entities.find((entity) => entity.id === id) ?? null) : null;
 }
 
 function centerOf(entity: NonNullable<ReturnType<typeof selectedEntity>>): Point {
@@ -60,10 +55,12 @@ function screenPoint(point: Point) {
 }
 
 function svgPoints(points: Point[]) {
-  return points.map((point) => {
-    const client = screenPoint(point);
-    return `${client.x},${client.y}`;
-  }).join(" ");
+  return points
+    .map((point) => {
+      const client = screenPoint(point);
+      return `${client.x},${client.y}`;
+    })
+    .join(" ");
 }
 
 function pointInsideEntity(point: Point, entity: TabletopEntity) {
@@ -78,15 +75,17 @@ function pointInsideEntity(point: Point, entity: TabletopEntity) {
 
 function topTargetAtPoint(snapshot: TabletopSnapshot, point: Point, sourceId?: string) {
   const source = sourceId ? snapshot.scene.entities.find((entity) => entity.id === sourceId) : null;
-  return [...snapshot.scene.entities]
-    .filter(
-      (entity) =>
-        entity.id !== sourceId &&
-        !entity.hidden &&
-        (!source?.levelId || !entity.levelId || entity.levelId === source.levelId) &&
-        pointInsideEntity(point, entity),
-    )
-    .sort((left, right) => right.zIndex - left.zIndex)[0] ?? null;
+  return (
+    [...snapshot.scene.entities]
+      .filter(
+        (entity) =>
+          entity.id !== sourceId &&
+          !entity.hidden &&
+          (!source?.levelId || !entity.levelId || entity.levelId === source.levelId) &&
+          pointInsideEntity(point, entity),
+      )
+      .sort((left, right) => right.zIndex - left.zIndex)[0] ?? null
+  );
 }
 
 function pointInsidePolygon(point: Point, polygon: Point[]) {
@@ -95,7 +94,7 @@ function pointInsidePolygon(point: Point, polygon: Point[]) {
     const a = polygon[index];
     const b = polygon[previous];
     const intersects =
-      (a.y > point.y) !== (b.y > point.y) &&
+      a.y > point.y !== b.y > point.y &&
       point.x < ((b.x - a.x) * (point.y - a.y)) / (b.y - a.y || Number.EPSILON) + a.x;
     if (intersects) inside = !inside;
   }
@@ -107,14 +106,14 @@ function distanceToSegment(point: Point, start: Point, end: Point) {
   const dy = end.y - start.y;
   const lengthSquared = dx * dx + dy * dy;
   if (lengthSquared <= Number.EPSILON) return Math.hypot(point.x - start.x, point.y - start.y);
-  const t = Math.max(0, Math.min(1, ((point.x - start.x) * dx + (point.y - start.y) * dy) / lengthSquared));
+  const t = Math.max(
+    0,
+    Math.min(1, ((point.x - start.x) * dx + (point.y - start.y) * dy) / lengthSquared),
+  );
   return Math.hypot(point.x - (start.x + dx * t), point.y - (start.y + dy * t));
 }
 
-function geometryContainsPoint(
-  geometry: ReturnType<typeof templatePath>,
-  point: Point,
-) {
+function geometryContainsPoint(geometry: ReturnType<typeof templatePath>, point: Point) {
   if (geometry.kind === "circle")
     return Math.hypot(point.x - geometry.center.x, point.y - geometry.center.y) <= geometry.radius;
   if (geometry.kind === "segment")
@@ -152,6 +151,7 @@ function pathForTemplate(template: TabletopPowerTemplate, origin: Point, target:
 }
 
 export function TabletopPlayerInteractionBridge() {
+  const { role } = useAuth();
   const [snapshot, setSnapshot] = useState<TabletopSnapshot | null>(null);
   const [mode, setMode] = useState<TacticalMode>("idle");
   const [movementPoints, setMovementPoints] = useState<Point[]>([]);
@@ -192,8 +192,9 @@ export function TabletopPlayerInteractionBridge() {
   const entity = selectedEntity(snapshot);
   const linkedSheetId =
     entity?.linkedSheetId ??
-    ((entity as (TabletopEntity & { sheetSummary?: { sheetId?: string } }) | null)
-      ?.sheetSummary?.sheetId ?? null);
+    (entity as (TabletopEntity & { sheetSummary?: { sheetId?: string } }) | null)?.sheetSummary
+      ?.sheetId ??
+    null;
 
   useEffect(() => {
     const request = ++sheetRequestRef.current;
@@ -243,28 +244,30 @@ export function TabletopPlayerInteractionBridge() {
     return cursorWorld ? [...base, cursorWorld] : base;
   }, [cursorWorld, mode, movementPoints, origin]);
   const movementPlan = useMemo(
-    () => snapshot && plannedPoints.length >= 2
-      ? buildMovementPlan(snapshot.scene, plannedPoints)
-      : null,
+    () =>
+      snapshot && plannedPoints.length >= 2
+        ? buildMovementPlan(snapshot.scene, plannedPoints)
+        : null,
     [plannedPoints, snapshot],
   );
   const powerWorldGeometry = useMemo(
-    () => activePower && origin && cursorWorld
-      ? templatePath(activePower, origin, cursorWorld)
-      : null,
+    () =>
+      activePower && origin && cursorWorld ? templatePath(activePower, origin, cursorWorld) : null,
     [activePower, cursorWorld, origin],
   );
   const powerGeometry = useMemo(
-    () => activePower && origin && cursorWorld
-      ? pathForTemplate(activePower, origin, cursorWorld)
-      : null,
+    () =>
+      activePower && origin && cursorWorld
+        ? pathForTemplate(activePower, origin, cursorWorld)
+        : null,
     [activePower, cursorWorld, origin],
   );
   const affectedEntities = useMemo(() => {
     if (!snapshot || mode !== "power" || !powerWorldGeometry) return [];
     return snapshot.scene.entities.filter((candidate) => {
       if (candidate.id === entity?.id || candidate.hidden) return false;
-      if (entity?.levelId && candidate.levelId && candidate.levelId !== entity.levelId) return false;
+      if (entity?.levelId && candidate.levelId && candidate.levelId !== entity.levelId)
+        return false;
       return geometryContainsPoint(powerWorldGeometry, centerOf(candidate));
     });
   }, [entity?.id, entity?.levelId, mode, powerWorldGeometry, snapshot]);
@@ -325,7 +328,8 @@ export function TabletopPlayerInteractionBridge() {
     };
   }, [entity?.id, mode, origin]);
 
-  if (!snapshot || new URLSearchParams(window.location.search).get("view") === "director") return null;
+  if (!snapshot || new URLSearchParams(window.location.search).get("view") === "director")
+    return null;
 
   const templates = powerSources.map((source) =>
     powerTemplateFromSource(source, snapshot.scene.gridSize * snapshot.scene.gridScale),
@@ -347,12 +351,23 @@ export function TabletopPlayerInteractionBridge() {
               points={moveScreenPoints.map((point) => `${point.x},${point.y}`).join(" ")}
             />
             {moveScreenPoints.map((point, index) => (
-              <circle key={`${point.x}-${point.y}-${index}`} cx={point.x} cy={point.y} r={index === 0 ? 6 : 4} className="tadeon-tactical-overlay__node" />
+              <circle
+                key={`${point.x}-${point.y}-${index}`}
+                cx={point.x}
+                cy={point.y}
+                r={index === 0 ? 6 : 4}
+                className="tadeon-tactical-overlay__node"
+              />
             ))}
           </>
         )}
         {mode === "power" && powerGeometry?.kind === "circle" && (
-          <circle cx={powerGeometry.cx} cy={powerGeometry.cy} r={powerGeometry.radius} className="tadeon-tactical-overlay__power" />
+          <circle
+            cx={powerGeometry.cx}
+            cy={powerGeometry.cy}
+            r={powerGeometry.radius}
+            className="tadeon-tactical-overlay__power"
+          />
         )}
         {mode === "power" && powerGeometry?.kind === "polygon" && (
           <polygon points={powerGeometry.points} className="tadeon-tactical-overlay__power" />
@@ -367,168 +382,216 @@ export function TabletopPlayerInteractionBridge() {
             className="tadeon-tactical-overlay__power-line"
           />
         )}
-        {mode === "power" && affectedEntities.map((candidate) => {
-          const point = screenPoint(centerOf(candidate));
-          const marked = targetIds.has(candidate.id);
-          return (
-            <g key={`affected-${candidate.id}`} className={marked ? "tadeon-tactical-target is-marked" : "tadeon-tactical-target is-affected"}>
-              <circle cx={point.x} cy={point.y} r={marked ? 17 : 12} />
-              {marked && <><line x1={point.x - 23} y1={point.y} x2={point.x - 10} y2={point.y} /><line x1={point.x + 10} y1={point.y} x2={point.x + 23} y2={point.y} /><line x1={point.x} y1={point.y - 23} x2={point.x} y2={point.y - 10} /><line x1={point.x} y1={point.y + 10} x2={point.x} y2={point.y + 23} /></>}
-            </g>
-          );
-        })}
-        {mode === "power" && [...targetIds]
-          .filter((id) => !affectedEntities.some((candidate) => candidate.id === id))
-          .map((id) => snapshot.scene.entities.find((candidate) => candidate.id === id))
-          .filter((candidate): candidate is TabletopEntity => Boolean(candidate))
-          .map((candidate) => {
+        {mode === "power" &&
+          affectedEntities.map((candidate) => {
             const point = screenPoint(centerOf(candidate));
+            const marked = targetIds.has(candidate.id);
             return (
-              <g key={`target-${candidate.id}`} className="tadeon-tactical-target is-marked is-outside">
-                <circle cx={point.x} cy={point.y} r={17} />
-                <line x1={point.x - 23} y1={point.y} x2={point.x - 10} y2={point.y} />
-                <line x1={point.x + 10} y1={point.y} x2={point.x + 23} y2={point.y} />
-                <line x1={point.x} y1={point.y - 23} x2={point.x} y2={point.y - 10} />
-                <line x1={point.x} y1={point.y + 10} x2={point.x} y2={point.y + 23} />
+              <g
+                key={`affected-${candidate.id}`}
+                className={
+                  marked ? "tadeon-tactical-target is-marked" : "tadeon-tactical-target is-affected"
+                }
+              >
+                <circle cx={point.x} cy={point.y} r={marked ? 17 : 12} />
+                {marked && (
+                  <>
+                    <line x1={point.x - 23} y1={point.y} x2={point.x - 10} y2={point.y} />
+                    <line x1={point.x + 10} y1={point.y} x2={point.x + 23} y2={point.y} />
+                    <line x1={point.x} y1={point.y - 23} x2={point.x} y2={point.y - 10} />
+                    <line x1={point.x} y1={point.y + 10} x2={point.x} y2={point.y + 23} />
+                  </>
+                )}
               </g>
             );
           })}
+        {mode === "power" &&
+          [...targetIds]
+            .filter((id) => !affectedEntities.some((candidate) => candidate.id === id))
+            .map((id) => snapshot.scene.entities.find((candidate) => candidate.id === id))
+            .filter((candidate): candidate is TabletopEntity => Boolean(candidate))
+            .map((candidate) => {
+              const point = screenPoint(centerOf(candidate));
+              return (
+                <g
+                  key={`target-${candidate.id}`}
+                  className="tadeon-tactical-target is-marked is-outside"
+                >
+                  <circle cx={point.x} cy={point.y} r={17} />
+                  <line x1={point.x - 23} y1={point.y} x2={point.x - 10} y2={point.y} />
+                  <line x1={point.x + 10} y1={point.y} x2={point.x + 23} y2={point.y} />
+                  <line x1={point.x} y1={point.y - 23} x2={point.x} y2={point.y - 10} />
+                  <line x1={point.x} y1={point.y + 10} x2={point.x} y2={point.y + 23} />
+                </g>
+              );
+            })}
       </svg>
 
-      <TabletopStagePortal>
-      <aside className="tadeon-tactical-dock" data-mode={mode}>
-        <div className="tadeon-tactical-dock__identity">
-          <span><Target aria-hidden="true" /></span>
-          <div>
-            <small>Controle tático</small>
-            <strong>{selectedLabel}</strong>
-          </div>
-        </div>
-        <div className="tadeon-tactical-dock__actions">
-          <Button
-            size="sm"
-            variant={mode === "movement" ? "default" : "ghost"}
-            disabled={!entity}
-            onClick={() => {
-              setMode((current) => current === "movement" ? "idle" : "movement");
-              setMovementPoints(origin ? [origin] : []);
-              setActivePower(null);
-              setTargetIds(new Set());
-              setCursorWorld(null);
-            }}
+      <TabletopStagePortal
+        selector={role === "jogador" ? "[data-tabletop-player-tools-host]" : undefined}
+      >
+        {(role === "mestre" || entity) && (
+          <aside
+            className={
+              role === "jogador" ? "tadeon-participant-view__tactics" : "tadeon-tactical-dock"
+            }
+            data-mode={mode}
           >
-            <Footprints aria-hidden="true" /> Planejar
-          </Button>
-          <div
-            className="tadeon-tactical-dock__power-menu"
-            data-open={powerMenuOpen ? "true" : "false"}
-          >
-            <Button
-              size="sm"
-              variant={mode === "power" ? "default" : "ghost"}
-              disabled={!entity || loadingPowers || templates.length === 0}
-              aria-haspopup="menu"
-              aria-expanded={powerMenuOpen}
-              onClick={() => setPowerMenuOpen((current) => !current)}
-              title={
-                !linkedSheetId
-                  ? "Vincule uma ficha ao token para usar suas Tramas reais como templates"
-                  : templates.length === 0
-                    ? "A ficha vinculada ainda não possui Tramas visualizáveis"
-                    : "Visualizar alcance e forma das Tramas da ficha"
-              }
-            >
-              {loadingPowers ? <Loader2 className="animate-spin" aria-hidden="true" /> : <Sparkles aria-hidden="true" />}
-              Poderes
-            </Button>
-            {templates.length > 0 && (
-              <div className="tadeon-tactical-dock__power-list" role="menu">
-                {templates.map((template) => (
-                  <button
-                    key={template.id}
-                    type="button"
-                    aria-pressed={activePower?.id === template.id}
-                    role="menuitem"
-                    onClick={() => {
-                      setPowerMenuOpen(false);
-                      setActivePower(template);
-                      setTargetIds(new Set());
-                      setMode("power");
-                      setMovementPoints([]);
-                      setCursorWorld(origin);
-                    }}
-                  >
-                    <span><Crosshair aria-hidden="true" /></span>
-                    <span>
-                      <strong>{template.name}</strong>
-                      <small>{template.source.reach || "alcance contextual"} · {template.shape}</small>
-                    </span>
-                  </button>
-                ))}
+            <div className="tadeon-tactical-dock__identity">
+              <span>
+                <Target aria-hidden="true" />
+              </span>
+              <div>
+                <small>Controle tático</small>
+                <strong>{selectedLabel}</strong>
               </div>
-            )}
-          </div>
-          {mode !== "idle" && (
-            <Button
-              size="icon"
-              variant="ghost"
-              aria-label="Encerrar prévia tática"
-              onClick={() => {
-                setMode("idle");
-                setMovementPoints([]);
-                setCursorWorld(null);
-                setActivePower(null);
-                setTargetIds(new Set());
-              }}
-            >
-              <X aria-hidden="true" />
-            </Button>
-          )}
-        </div>
-        {mode === "movement" && movementPlan && (
-          <div className="tadeon-tactical-dock__readout">
-            <Route aria-hidden="true" />
-            <span>
-              <strong>{movementPlan.weightedCells.toFixed(1)} cél.</strong>
-              <small>
-                {movementPlan.weightedCells > movementPlan.cells + 0.05
-                  ? `${movementPlan.cells.toFixed(1)} base + terreno`
-                  : `${movementPlan.cells.toFixed(1)} base`}
-              </small>
-            </span>
-            <button type="button" onClick={() => setMovementPoints(origin ? [origin] : [])}>Limpar rota</button>
-            {Boolean((entity as (typeof entity & { controllable?: boolean }) | null)?.controllable) && movementPoints.length >= 2 && (
-              <button
-                type="button"
-                className="tadeon-tactical-dock__confirm"
+            </div>
+            <div className="tadeon-tactical-dock__actions">
+              <Button
+                size="sm"
+                variant={mode === "movement" ? "default" : "ghost"}
+                disabled={!entity}
                 onClick={() => {
-                  if (!entity) return;
-                  window.dispatchEvent(
-                    new CustomEvent("tadeon-tabletop-move-request", {
-                      detail: { entityId: entity.id, points: movementPoints },
-                    }),
-                  );
-                  setMode("idle");
+                  setMode((current) => (current === "movement" ? "idle" : "movement"));
+                  setMovementPoints(origin ? [origin] : []);
+                  setActivePower(null);
+                  setTargetIds(new Set());
                   setCursorWorld(null);
                 }}
               >
-                Mover
-              </button>
+                <Footprints aria-hidden="true" /> Planejar
+              </Button>
+              <div
+                className="tadeon-tactical-dock__power-menu"
+                data-open={powerMenuOpen ? "true" : "false"}
+              >
+                <Button
+                  size="sm"
+                  variant={mode === "power" ? "default" : "ghost"}
+                  disabled={!entity || loadingPowers || templates.length === 0}
+                  aria-haspopup="menu"
+                  aria-expanded={powerMenuOpen}
+                  onClick={() => setPowerMenuOpen((current) => !current)}
+                  title={
+                    !linkedSheetId
+                      ? "Vincule uma ficha ao token para usar suas Tramas reais como templates"
+                      : templates.length === 0
+                        ? "A ficha vinculada ainda não possui Tramas visualizáveis"
+                        : "Visualizar alcance e forma das Tramas da ficha"
+                  }
+                >
+                  {loadingPowers ? (
+                    <Loader2 className="animate-spin" aria-hidden="true" />
+                  ) : (
+                    <Sparkles aria-hidden="true" />
+                  )}
+                  Poderes
+                </Button>
+                {templates.length > 0 && (
+                  <div className="tadeon-tactical-dock__power-list" role="menu">
+                    {templates.map((template) => (
+                      <button
+                        key={template.id}
+                        type="button"
+                        aria-pressed={activePower?.id === template.id}
+                        role="menuitem"
+                        onClick={() => {
+                          setPowerMenuOpen(false);
+                          setActivePower(template);
+                          setTargetIds(new Set());
+                          setMode("power");
+                          setMovementPoints([]);
+                          setCursorWorld(origin);
+                        }}
+                      >
+                        <span>
+                          <Crosshair aria-hidden="true" />
+                        </span>
+                        <span>
+                          <strong>{template.name}</strong>
+                          <small>
+                            {template.source.reach || "alcance contextual"} · {template.shape}
+                          </small>
+                        </span>
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+              {mode !== "idle" && (
+                <Button
+                  size="icon"
+                  variant="ghost"
+                  aria-label="Encerrar prévia tática"
+                  onClick={() => {
+                    setMode("idle");
+                    setMovementPoints([]);
+                    setCursorWorld(null);
+                    setActivePower(null);
+                    setTargetIds(new Set());
+                  }}
+                >
+                  <X aria-hidden="true" />
+                </Button>
+              )}
+            </div>
+            {mode === "movement" && movementPlan && (
+              <div className="tadeon-tactical-dock__readout">
+                <Route aria-hidden="true" />
+                <span>
+                  <strong>{movementPlan.weightedCells.toFixed(1)} cél.</strong>
+                  <small>
+                    {movementPlan.weightedCells > movementPlan.cells + 0.05
+                      ? `${movementPlan.cells.toFixed(1)} base + terreno`
+                      : `${movementPlan.cells.toFixed(1)} base`}
+                  </small>
+                </span>
+                <button type="button" onClick={() => setMovementPoints(origin ? [origin] : [])}>
+                  Limpar rota
+                </button>
+                {Boolean(
+                  (entity as (typeof entity & { controllable?: boolean }) | null)?.controllable,
+                ) &&
+                  movementPoints.length >= 2 && (
+                    <button
+                      type="button"
+                      className="tadeon-tactical-dock__confirm"
+                      onClick={() => {
+                        if (!entity) return;
+                        window.dispatchEvent(
+                          new CustomEvent("tadeon-tabletop-move-request", {
+                            detail: { entityId: entity.id, points: movementPoints },
+                          }),
+                        );
+                        setMode("idle");
+                        setCursorWorld(null);
+                      }}
+                    >
+                      Mover
+                    </button>
+                  )}
+              </div>
             )}
-          </div>
+            {mode === "power" && activePower && (
+              <div className="tadeon-tactical-dock__readout is-power">
+                <Sparkles aria-hidden="true" />
+                <span>
+                  <strong>{activePower.name}</strong>
+                  <small
+                    title={
+                      activePower.source.damage ||
+                      activePower.source.effect ||
+                      "Prévia visual da Trama"
+                    }
+                  >
+                    {affectedEntities.length} na área · {targetIds.size} marcado
+                    {targetIds.size === 1 ? "" : "s"}
+                  </small>
+                </span>
+              </div>
+            )}
+          </aside>
         )}
-        {mode === "power" && activePower && (
-          <div className="tadeon-tactical-dock__readout is-power">
-            <Sparkles aria-hidden="true" />
-            <span>
-              <strong>{activePower.name}</strong>
-              <small title={activePower.source.damage || activePower.source.effect || "Prévia visual da Trama"}>
-                {affectedEntities.length} na área · {targetIds.size} marcado{targetIds.size === 1 ? "" : "s"}
-              </small>
-            </span>
-          </div>
-        )}
-      </aside>
       </TabletopStagePortal>
     </>
   );

@@ -101,11 +101,7 @@ function audioConfig(entity: TabletopEntity, gridSize: number): AudioSourceConfi
   };
 }
 
-function soundTransmissionBetween(
-  source: Point,
-  listener: Point,
-  walls: WallSoundRow[],
-) {
+function soundTransmissionBetween(source: Point, listener: Point, walls: WallSoundRow[]) {
   let transmission = 1;
   for (const wall of walls) {
     const start = { x: numeric(wall.x1, 0), y: numeric(wall.y1, 0) };
@@ -146,7 +142,13 @@ function useThrottledAutosave(enabled: boolean) {
     setState("idle");
     const onState = (event: Event) => {
       const next = (event as CustomEvent<{ state?: AutosaveState }>).detail?.state;
-      if (next === "idle" || next === "pending" || next === "saving" || next === "saved" || next === "paused") {
+      if (
+        next === "idle" ||
+        next === "pending" ||
+        next === "saving" ||
+        next === "saved" ||
+        next === "paused"
+      ) {
         setState(next);
       }
     };
@@ -163,7 +165,8 @@ function useScenePreloader(snapshot: TabletopSnapshot | null) {
 
   useEffect(() => {
     if (!snapshot) return;
-    const connection = (navigator as Navigator & { connection?: { saveData?: boolean } }).connection;
+    const connection = (navigator as Navigator & { connection?: { saveData?: boolean } })
+      .connection;
     if (connection?.saveData) return;
     const activeLevelId =
       snapshot.activeLevelId ?? snapshot.scene.levels?.find((level) => level.visible)?.id;
@@ -176,7 +179,9 @@ function useScenePreloader(snapshot: TabletopSnapshot | null) {
     ]
       .map(safeAssetUrl)
       .filter((value): value is string => Boolean(value));
-    const queue = [...new Set(prioritized)].filter((url) => !warmedUrls.current.has(url)).slice(0, 18);
+    const queue = [...new Set(prioritized)]
+      .filter((url) => !warmedUrls.current.has(url))
+      .slice(0, 18);
     if (!queue.length) return;
     let cancelled = false;
     const warm = async () => {
@@ -258,7 +263,9 @@ function useSpatialAudio(snapshot: TabletopSnapshot | null, muted: boolean) {
     const sources = snapshot.scene.entities
       .filter((entity) => !activeLevelId || !entity.levelId || entity.levelId === activeLevelId)
       .map((entity) => ({ entity, config: audioConfig(entity, snapshot.scene.gridSize) }))
-      .filter((entry): entry is { entity: TabletopEntity; config: AudioSourceConfig } => Boolean(entry.config));
+      .filter((entry): entry is { entity: TabletopEntity; config: AudioSourceConfig } =>
+        Boolean(entry.config),
+      );
     const live = new Set(sources.map(({ entity }) => entity.id));
     for (const [id, element] of audio.current) {
       if (live.has(id)) continue;
@@ -296,9 +303,10 @@ function useSpatialAudio(snapshot: TabletopSnapshot | null, muted: boolean) {
         0,
         0.92,
       );
-      const volume = muted || !config.enabled
-        ? 0
-        : clamp(config.volume * distanceGain * wallGain * (1 - regionAbsorption), 0, 1);
+      const volume =
+        muted || !config.enabled
+          ? 0
+          : clamp(config.volume * distanceGain * wallGain * (1 - regionAbsorption), 0, 1);
       element.volume = volume;
       if (volume > 0.002 && unlocked.current && element.paused) {
         void element.play().catch(() => undefined);
@@ -386,150 +394,297 @@ export function TabletopReliabilityEditorBridge() {
   if (!snapshot) return null;
 
   return (
-    <TabletopStagePortal>
+    <TabletopStagePortal
+      selector={role === "jogador" ? "[data-tabletop-player-tools-host]" : undefined}
+    >
       <>
-      <div className="tadeon-tabletop-reliability-strip" aria-label="Estado de confiabilidade da Mesa">
-        {role === "mestre" && (
-          <span data-state={autosave} title="Autosave desacelera gravações e usa os mesmos salvamentos manuais da Mesa">
-            {autosave === "saving" ? <Loader2 className="animate-spin" aria-hidden="true" /> : autosave === "saved" ? <Check aria-hidden="true" /> : <CloudDownload aria-hidden="true" />}
-            {autosave === "pending" ? "Autosave pendente" : autosave === "saving" ? "Salvando" : autosave === "saved" ? "Salvo" : "Autosave"}
-          </span>
-        )}
-        <span title="Assets visíveis preparados gradualmente sem bloquear a Mesa">
-          <CloudDownload aria-hidden="true" /> {warmed} prontos
-        </span>
-        <button
-          type="button"
-          aria-pressed={audioMuted}
-          onClick={() => setAudioMuted((value) => !value)}
-          title={audioMuted ? "Reativar áudio espacial" : "Silenciar áudio espacial"}
+        <div
+          className={
+            role === "jogador"
+              ? "tadeon-participant-view__support"
+              : "tadeon-tabletop-reliability-strip"
+          }
+          aria-label={
+            role === "jogador" ? "Áudio e mídias da sala" : "Estado de confiabilidade da Mesa"
+          }
         >
-          {audioMuted ? <VolumeX aria-hidden="true" /> : <Volume2 aria-hidden="true" />}
-          Áudio
-        </button>
-        {role === "mestre" && (
+          {role === "mestre" && (
+            <span
+              data-state={autosave}
+              title="Autosave desacelera gravações e usa os mesmos salvamentos manuais da Mesa"
+            >
+              {autosave === "saving" ? (
+                <Loader2 className="animate-spin" aria-hidden="true" />
+              ) : autosave === "saved" ? (
+                <Check aria-hidden="true" />
+              ) : (
+                <CloudDownload aria-hidden="true" />
+              )}
+              {autosave === "pending"
+                ? "Autosave pendente"
+                : autosave === "saving"
+                  ? "Salvando"
+                  : autosave === "saved"
+                    ? "Salvo"
+                    : "Autosave"}
+            </span>
+          )}
+          {(role === "mestre" || warmed > 0) && (
+            <span title="Mídias visíveis preparadas sem bloquear a Mesa">
+              <CloudDownload aria-hidden="true" /> {warmed} prontos
+            </span>
+          )}
           <button
             type="button"
-            aria-pressed={editorOpen}
-            onClick={() => setEditorOpen((value) => !value)}
-            title="Transformação precisa, conta-gotas visual e áudio do placeable"
+            aria-pressed={audioMuted}
+            onClick={() => setAudioMuted((value) => !value)}
+            title={audioMuted ? "Reativar áudio espacial" : "Silenciar áudio espacial"}
           >
-            <SlidersHorizontal aria-hidden="true" /> Editor
+            {audioMuted ? <VolumeX aria-hidden="true" /> : <Volume2 aria-hidden="true" />}
+            Áudio
           </button>
-        )}
-      </div>
-
-      {role === "mestre" && editorOpen && (
-        <aside className="tadeon-tabletop-precision-editor">
-          <header>
-            <span><SlidersHorizontal aria-hidden="true" /></span>
-            <div>
-              <small>Editor preciso</small>
-              <strong>{entity?.label ?? "Selecione um placeable"}</strong>
-            </div>
-            <Button size="icon" variant="ghost" aria-label="Fechar editor preciso" onClick={() => setEditorOpen(false)}>
-              <X aria-hidden="true" />
-            </Button>
-          </header>
-
-          {!entity ? (
-            <div className="tadeon-tabletop-precision-editor__empty">
-              Selecione exatamente um objeto, token, região ou elemento da cena.
-            </div>
-          ) : (
-            <>
-              <section>
-                <div className="tadeon-tabletop-precision-editor__section-title">
-                  <RotateCw aria-hidden="true" /> Transformar
-                </div>
-                <div className="tadeon-tabletop-precision-editor__grid">
-                  <label><span>X</span><Input type="number" value={Math.round(entity.x)} onChange={(event) => updateEntity({ x: numeric(event.target.value, entity.x) })} /></label>
-                  <label><span>Y</span><Input type="number" value={Math.round(entity.y)} onChange={(event) => updateEntity({ y: numeric(event.target.value, entity.y) })} /></label>
-                  <label><span>Larg.</span><Input type="number" min={8} value={Math.round(entity.width)} onChange={(event) => updateEntity({ width: Math.max(8, numeric(event.target.value, entity.width)) })} /></label>
-                  <label><span>Alt.</span><Input type="number" min={8} value={Math.round(entity.height)} onChange={(event) => updateEntity({ height: Math.max(8, numeric(event.target.value, entity.height)) })} /></label>
-                  <label><span>Rotação</span><Input type="number" value={Math.round(entity.rotation)} onChange={(event) => updateEntity({ rotation: numeric(event.target.value, entity.rotation) })} /></label>
-                  <label><span>Elevação</span><Input type="number" value={Math.round(entity.elevation ?? 0)} onChange={(event) => updateEntity({ elevation: numeric(event.target.value, entity.elevation ?? 0) })} /></label>
-                </div>
-                <div className="tadeon-tabletop-precision-editor__quick">
-                  <button type="button" onClick={() => updateEntity({ rotation: entity.rotation - 15 })}>-15°</button>
-                  <button type="button" onClick={() => updateEntity({ rotation: entity.rotation + 15 })}>+15°</button>
-                  <button type="button" onClick={() => updateEntity({ rotation: entity.rotation + 90 })}>+90°</button>
-                </div>
-              </section>
-
-              <section>
-                <div className="tadeon-tabletop-precision-editor__section-title">
-                  <Droplets aria-hidden="true" /> Conta-gotas visual
-                </div>
-                <div className="tadeon-tabletop-precision-editor__color">
-                  <input
-                    type="color"
-                    value={colorHex(entity.color)}
-                    onChange={(event) => updateEntity({ color: colorNumber(event.target.value, entity.color) })}
-                    aria-label="Cor do placeable"
-                  />
-                  <Button size="sm" variant="outline" onClick={() => setSample(copyVisualSample(entity))}>
-                    <WandSparkles aria-hidden="true" /> Capturar
-                  </Button>
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    disabled={!sample}
-                    onClick={() => {
-                      if (!sample) return;
-                      updateEntity({ color: sample.color });
-                      updateProperties(sample.properties);
-                    }}
-                  >
-                    <Copy aria-hidden="true" /> Aplicar
-                  </Button>
-                </div>
-                <p>O conta-gotas copia material visual, aura e billboard. Vínculos, dono, ficha e conteúdo nunca são copiados.</p>
-              </section>
-
-              <section>
-                <div className="tadeon-tabletop-precision-editor__section-title">
-                  <Volume2 aria-hidden="true" /> Fonte de áudio
-                </div>
-                <label className="tadeon-tabletop-precision-editor__wide">
-                  <span>URL de áudio</span>
-                  <Input
-                    value={typeof properties.audio_url === "string" ? properties.audio_url : ""}
-                    placeholder="https://.../ambiente.ogg"
-                    onChange={(event) => updateProperties({ audio_url: event.target.value })}
-                  />
-                </label>
-                <div className="tadeon-tabletop-precision-editor__grid">
-                  <label>
-                    <span>Volume %</span>
-                    <Input
-                      type="number"
-                      min={0}
-                      max={100}
-                      value={Math.round((audioSource?.volume ?? 0.72) * 100)}
-                      onChange={(event) => updateProperties({ audio_volume: clamp(numeric(event.target.value, 72) / 100, 0, 1) })}
-                    />
-                  </label>
-                  <label>
-                    <span>Raio</span>
-                    <Input
-                      type="number"
-                      min={snapshot.scene.gridSize}
-                      value={Math.round(audioSource?.radius ?? snapshot.scene.gridSize * 8)}
-                      onChange={(event) => updateProperties({ audio_radius: Math.max(snapshot.scene.gridSize, numeric(event.target.value, snapshot.scene.gridSize * 8)) })}
-                    />
-                  </label>
-                </div>
-                <div className="tadeon-tabletop-precision-editor__switches">
-                  <label><span>Ativa</span><Switch checked={properties.audio_enabled !== false} onCheckedChange={(value) => updateProperties({ audio_enabled: value })} /></label>
-                  <label><span>Loop</span><Switch checked={properties.audio_loop !== false} onCheckedChange={(value) => updateProperties({ audio_loop: value })} /></label>
-                </div>
-                <p>O volume cai com distância, regiões absorventes e o canal de som das paredes atravessadas.</p>
-              </section>
-            </>
+          {role === "mestre" && (
+            <button
+              type="button"
+              aria-pressed={editorOpen}
+              onClick={() => setEditorOpen((value) => !value)}
+              title="Transformação precisa, conta-gotas visual e áudio do placeable"
+            >
+              <SlidersHorizontal aria-hidden="true" /> Editor
+            </button>
           )}
-        </aside>
-      )}
+        </div>
+
+        {role === "mestre" && editorOpen && (
+          <aside className="tadeon-tabletop-precision-editor">
+            <header>
+              <span>
+                <SlidersHorizontal aria-hidden="true" />
+              </span>
+              <div>
+                <small>Editor preciso</small>
+                <strong>{entity?.label ?? "Selecione um placeable"}</strong>
+              </div>
+              <Button
+                size="icon"
+                variant="ghost"
+                aria-label="Fechar editor preciso"
+                onClick={() => setEditorOpen(false)}
+              >
+                <X aria-hidden="true" />
+              </Button>
+            </header>
+
+            {!entity ? (
+              <div className="tadeon-tabletop-precision-editor__empty">
+                Selecione exatamente um objeto, token, região ou elemento da cena.
+              </div>
+            ) : (
+              <>
+                <section>
+                  <div className="tadeon-tabletop-precision-editor__section-title">
+                    <RotateCw aria-hidden="true" /> Transformar
+                  </div>
+                  <div className="tadeon-tabletop-precision-editor__grid">
+                    <label>
+                      <span>X</span>
+                      <Input
+                        type="number"
+                        value={Math.round(entity.x)}
+                        onChange={(event) =>
+                          updateEntity({ x: numeric(event.target.value, entity.x) })
+                        }
+                      />
+                    </label>
+                    <label>
+                      <span>Y</span>
+                      <Input
+                        type="number"
+                        value={Math.round(entity.y)}
+                        onChange={(event) =>
+                          updateEntity({ y: numeric(event.target.value, entity.y) })
+                        }
+                      />
+                    </label>
+                    <label>
+                      <span>Larg.</span>
+                      <Input
+                        type="number"
+                        min={8}
+                        value={Math.round(entity.width)}
+                        onChange={(event) =>
+                          updateEntity({
+                            width: Math.max(8, numeric(event.target.value, entity.width)),
+                          })
+                        }
+                      />
+                    </label>
+                    <label>
+                      <span>Alt.</span>
+                      <Input
+                        type="number"
+                        min={8}
+                        value={Math.round(entity.height)}
+                        onChange={(event) =>
+                          updateEntity({
+                            height: Math.max(8, numeric(event.target.value, entity.height)),
+                          })
+                        }
+                      />
+                    </label>
+                    <label>
+                      <span>Rotação</span>
+                      <Input
+                        type="number"
+                        value={Math.round(entity.rotation)}
+                        onChange={(event) =>
+                          updateEntity({ rotation: numeric(event.target.value, entity.rotation) })
+                        }
+                      />
+                    </label>
+                    <label>
+                      <span>Elevação</span>
+                      <Input
+                        type="number"
+                        value={Math.round(entity.elevation ?? 0)}
+                        onChange={(event) =>
+                          updateEntity({
+                            elevation: numeric(event.target.value, entity.elevation ?? 0),
+                          })
+                        }
+                      />
+                    </label>
+                  </div>
+                  <div className="tadeon-tabletop-precision-editor__quick">
+                    <button
+                      type="button"
+                      onClick={() => updateEntity({ rotation: entity.rotation - 15 })}
+                    >
+                      -15°
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => updateEntity({ rotation: entity.rotation + 15 })}
+                    >
+                      +15°
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => updateEntity({ rotation: entity.rotation + 90 })}
+                    >
+                      +90°
+                    </button>
+                  </div>
+                </section>
+
+                <section>
+                  <div className="tadeon-tabletop-precision-editor__section-title">
+                    <Droplets aria-hidden="true" /> Conta-gotas visual
+                  </div>
+                  <div className="tadeon-tabletop-precision-editor__color">
+                    <input
+                      type="color"
+                      value={colorHex(entity.color)}
+                      onChange={(event) =>
+                        updateEntity({ color: colorNumber(event.target.value, entity.color) })
+                      }
+                      aria-label="Cor do placeable"
+                    />
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => setSample(copyVisualSample(entity))}
+                    >
+                      <WandSparkles aria-hidden="true" /> Capturar
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      disabled={!sample}
+                      onClick={() => {
+                        if (!sample) return;
+                        updateEntity({ color: sample.color });
+                        updateProperties(sample.properties);
+                      }}
+                    >
+                      <Copy aria-hidden="true" /> Aplicar
+                    </Button>
+                  </div>
+                  <p>
+                    O conta-gotas copia material visual, aura e billboard. Vínculos, dono, ficha e
+                    conteúdo nunca são copiados.
+                  </p>
+                </section>
+
+                <section>
+                  <div className="tadeon-tabletop-precision-editor__section-title">
+                    <Volume2 aria-hidden="true" /> Fonte de áudio
+                  </div>
+                  <label className="tadeon-tabletop-precision-editor__wide">
+                    <span>URL de áudio</span>
+                    <Input
+                      value={typeof properties.audio_url === "string" ? properties.audio_url : ""}
+                      placeholder="https://.../ambiente.ogg"
+                      onChange={(event) => updateProperties({ audio_url: event.target.value })}
+                    />
+                  </label>
+                  <div className="tadeon-tabletop-precision-editor__grid">
+                    <label>
+                      <span>Volume %</span>
+                      <Input
+                        type="number"
+                        min={0}
+                        max={100}
+                        value={Math.round((audioSource?.volume ?? 0.72) * 100)}
+                        onChange={(event) =>
+                          updateProperties({
+                            audio_volume: clamp(numeric(event.target.value, 72) / 100, 0, 1),
+                          })
+                        }
+                      />
+                    </label>
+                    <label>
+                      <span>Raio</span>
+                      <Input
+                        type="number"
+                        min={snapshot.scene.gridSize}
+                        value={Math.round(audioSource?.radius ?? snapshot.scene.gridSize * 8)}
+                        onChange={(event) =>
+                          updateProperties({
+                            audio_radius: Math.max(
+                              snapshot.scene.gridSize,
+                              numeric(event.target.value, snapshot.scene.gridSize * 8),
+                            ),
+                          })
+                        }
+                      />
+                    </label>
+                  </div>
+                  <div className="tadeon-tabletop-precision-editor__switches">
+                    <label>
+                      <span>Ativa</span>
+                      <Switch
+                        checked={properties.audio_enabled !== false}
+                        onCheckedChange={(value) => updateProperties({ audio_enabled: value })}
+                      />
+                    </label>
+                    <label>
+                      <span>Loop</span>
+                      <Switch
+                        checked={properties.audio_loop !== false}
+                        onCheckedChange={(value) => updateProperties({ audio_loop: value })}
+                      />
+                    </label>
+                  </div>
+                  <p>
+                    O volume cai com distância, regiões absorventes e o canal de som das paredes
+                    atravessadas.
+                  </p>
+                </section>
+              </>
+            )}
+          </aside>
+        )}
       </>
     </TabletopStagePortal>
   );

@@ -400,6 +400,9 @@ export function TabletopParticipantWorkspace({ realtimeEnabled }: { realtimeEnab
             Atualizar
           </Button>
         </div>
+        {joined && view?.scene && (
+          <div className="tadeon-participant-view__tools" data-tabletop-player-tools-host />
+        )}
       </header>
 
       <section className="tadeon-participant-view__stage" aria-busy={loading}>
