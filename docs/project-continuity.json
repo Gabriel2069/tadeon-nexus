@@ -1,25 +1,25 @@
 {
   "version": 1,
   "checkedAt": "2026-10-16",
-  "runtimeReference": "40ed153599318798859fb5c8b0e9762e27fb35c5",
+  "runtimeReference": "e5ba2df38ce01cc76cb3c66cf5cfe44249ce9fda",
   "integration": {
-    "pr": 277,
-    "branch": "codex/nex-022-visual-system",
+    "pr": 279,
+    "branch": "design/nex-024-archive-composition",
     "base": "main",
-    "baseCommit": "f726d0b2e0c3a49aeb981c9e0a5f4a467a8228b9",
-    "sourceCommit": "4f485074011e4a1ea451150a7611a08a2245b038",
+    "baseCommit": "0a758662b10bbc492474d63ce60db222264f617a",
+    "sourceCommit": "7ce823b22d00db296a1f16dff66529b9ed0ebbeb",
+    "headCommit": "959224000c9dbe7e01c46a019f2861664ffd9990",
     "state": "integrated",
-    "sourceQualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38883830326",
+    "mergeCommit": "e5ba2df38ce01cc76cb3c66cf5cfe44249ce9fda",
+    "sourceQualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38948581282",
+    "qualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38950723190",
+    "mainQualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38951095689",
     "production": "confirmed",
-    "headCommit": "5623ad7d18882cb562a4c86b0a3c4296eee749b7",
-    "mergeCommit": "40ed153599318798859fb5c8b0e9762e27fb35c5",
-    "qualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38885297456",
-    "mainQualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38885591940",
-    "productionEvidence": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38885591995",
-    "productionCommit": "40ed153599318798859fb5c8b0e9762e27fb35c5",
-    "productionVerifiedAt": "2026-10-16T10:14:17.2990084Z",
+    "productionEvidence": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38951095753",
+    "productionCommit": "e5ba2df38ce01cc76cb3c66cf5cfe44249ce9fda",
+    "productionVerifiedAt": "2026-10-16T18:58:24.8406512Z",
     "productionHttpStatus": 200,
-    "workerVersion": "91077d6f-4663-47e8-bb08-5c387fb12bff"
+    "workerVersion": "80e53291-f3f7-4f1c-9cf9-51d709cca6c1"
   },
   "domains": [
     {
@@ -841,7 +841,7 @@
       "id": "NEX-024",
       "title": "Dashboard editorial, acervo navegável e acabamento dos menus",
       "domain": "shell",
-      "status": "validated",
+      "status": "integrated",
       "priority": 7,
       "dependsOn": [
         "NEX-023"
@@ -857,14 +857,17 @@
         "docs/FOUNDATION.md",
         "docs/archive-composition-validation.json",
         "https://github.com/Gabriel2069/tadeon-nexus/pull/279",
-        "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38948581282"
+        "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38948581282",
+        "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38950723190",
+        "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38951095689",
+        "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38951095753"
       ]
     },
     {
       "id": "NEX-025",
       "title": "Ficha: hierarquia, superfícies e condução visual",
       "domain": "sheet",
-      "status": "planned",
+      "status": "ready",
       "priority": 7,
       "dependsOn": [
         "NEX-024"
@@ -880,7 +883,7 @@
       "id": "NEX-026",
       "title": "Nexus e biblioteca: composição da leitura e exploração",
       "domain": "knowledge",
-      "status": "planned",
+      "status": "ready",
       "priority": 7,
       "dependsOn": [
         "NEX-024"
@@ -1426,6 +1429,25 @@
       "productionVerifiedAt": "2026-10-16T02:37:13.8743476Z",
       "productionHttpStatus": 200,
       "workerVersion": "31c82f06-c793-40c2-b5a0-cdf1e852ce72"
+    },
+    {
+      "pr": 277,
+      "branch": "codex/nex-022-visual-system",
+      "base": "main",
+      "baseCommit": "f726d0b2e0c3a49aeb981c9e0a5f4a467a8228b9",
+      "sourceCommit": "4f485074011e4a1ea451150a7611a08a2245b038",
+      "state": "integrated",
+      "sourceQualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38883830326",
+      "production": "confirmed",
+      "headCommit": "5623ad7d18882cb562a4c86b0a3c4296eee749b7",
+      "mergeCommit": "40ed153599318798859fb5c8b0e9762e27fb35c5",
+      "qualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38885297456",
+      "mainQualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38885591940",
+      "productionEvidence": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38885591995",
+      "productionCommit": "40ed153599318798859fb5c8b0e9762e27fb35c5",
+      "productionVerifiedAt": "2026-10-16T10:14:17.2990084Z",
+      "productionHttpStatus": 200,
+      "workerVersion": "91077d6f-4663-47e8-bb08-5c387fb12bff"
     }
   ]
 }
