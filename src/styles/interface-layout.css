@@ -142,7 +142,7 @@ body:has(.tadeon-tabletop-studio) :where(
 
 .tadeon-toast__action {
   border: 1px solid color-mix(in srgb, var(--primary) 30%, transparent) !important;
-  background: color-mix(in srgb, var(--primary) 14.000000000000002%, transparent) !important;
+  background: color-mix(in srgb, var(--primary) 14%, transparent) !important;
   color: var(--foreground) !important;
 }
 

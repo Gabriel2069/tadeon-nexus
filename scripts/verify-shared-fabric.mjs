@@ -99,6 +99,11 @@ try {
     await page.getByRole("button", { name: "Entrar", exact: true }).click();
 
     await page.locator('[role="alert"]').first().waitFor();
+    const toast = page.locator('[data-sonner-toast]').filter({ visible: true }).first();
+    await toast.waitFor();
+    metrics.toastMaterial = await toast.evaluate(e => ({ color: getComputedStyle(e).color, background: getComputedStyle(e).backgroundColor, zIndex: getComputedStyle(e.closest('[data-sonner-toaster]')).zIndex }));
+    assert(metrics.toastMaterial.color === "rgb(233, 227, 213)" && metrics.toastMaterial.background !== "rgba(0, 0, 0, 0)" && Number(metrics.toastMaterial.zIndex) >= 120, "Toast is legible above modal planes");
+
     assert(
       (await page.getByLabel("E-mail", { exact: true }).inputValue()) === "fixture@nexus.test",
       "Failed sign-in preserves input",

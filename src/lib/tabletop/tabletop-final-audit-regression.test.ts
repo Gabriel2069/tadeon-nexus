@@ -91,7 +91,7 @@ describe("auditoria final de runtime e viewport", () => {
     const css = source("src/styles/interface-audit-final.css");
     expect(css).toContain("--tadeon-z-toast: 320");
     expect(css).toContain(".tadeon-toast__title");
-    // Hex-token toast legibility is measured in verify-tabletop-workspace.mjs;
+    // Hex-token toast legibility is measured in verify-shared-fabric.mjs;
     // the former HSL-wrapper assertion required an invalid computed color.
 
   });

@@ -186,6 +186,10 @@ try {
           if (!metrics.cardResponse.lightX || metrics.cardResponse.transform !== 'none' || Math.abs(before.x - after.x) > .1 || Math.abs(before.y - after.y) > .1) errors.push('Card light moved the content plane');
         }
       }
+      if (captureScreenshots) {
+        await page.mouse.move(0, 0);
+        await page.evaluate(() => window.scrollTo({ top: 0, behavior: "instant" }));
+      }
       const name = route.slice(1) || "dashboard";
       if (captureScreenshots) await page.screenshot({ path: `${root}/${phase}-${name}-${width}.png`, fullPage: false, timeout: 20000 });
       const interactions = [];
