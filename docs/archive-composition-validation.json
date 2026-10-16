@@ -1,6 +1,6 @@
 {
   "task": "NEX-024",
-  "status": "validated",
+  "status": "integrated",
   "base": "0a758662b10bbc492474d63ce60db222264f617a",
   "sourceCommit": "7ce823b22d00db296a1f16dff66529b9ed0ebbeb",
   "pullRequest": "https://github.com/Gabriel2069/tadeon-nexus/pull/279",
@@ -1962,6 +1962,11 @@
           ]
         }
       ]
+    },
+    "headQuality": {
+      "status": "passed",
+      "head": "959224000c9dbe7e01c46a019f2861664ffd9990",
+      "run": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38950723190"
     }
   },
   "styles": {
@@ -2450,9 +2455,36 @@
     "Tecido vetorial e materiais CSS não equivalem ao Liquid Glass nativo."
   ],
   "deployment": {
-    "worker": "pending integration",
+    "worker": {
+      "status": "confirmed",
+      "commit": "e5ba2df38ce01cc76cb3c66cf5cfe44249ce9fda",
+      "verifiedAt": "2026-10-16T18:58:24.8406512Z",
+      "httpStatus": 200,
+      "version": "80e53291-f3f7-4f1c-9cf9-51d709cca6c1",
+      "qualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38951095689",
+      "publicationRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38951095753"
+    },
     "schemaChanges": false,
     "featureFlagChanges": false,
     "backendChanges": false
+  },
+  "integration": {
+    "pr": 279,
+    "branch": "design/nex-024-archive-composition",
+    "base": "main",
+    "baseCommit": "0a758662b10bbc492474d63ce60db222264f617a",
+    "sourceCommit": "7ce823b22d00db296a1f16dff66529b9ed0ebbeb",
+    "headCommit": "959224000c9dbe7e01c46a019f2861664ffd9990",
+    "state": "integrated",
+    "mergeCommit": "e5ba2df38ce01cc76cb3c66cf5cfe44249ce9fda",
+    "sourceQualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38948581282",
+    "qualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38950723190",
+    "mainQualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38951095689",
+    "production": "confirmed",
+    "productionEvidence": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38951095753",
+    "productionCommit": "e5ba2df38ce01cc76cb3c66cf5cfe44249ce9fda",
+    "productionVerifiedAt": "2026-10-16T18:58:24.8406512Z",
+    "productionHttpStatus": 200,
+    "workerVersion": "80e53291-f3f7-4f1c-9cf9-51d709cca6c1"
   }
 }
