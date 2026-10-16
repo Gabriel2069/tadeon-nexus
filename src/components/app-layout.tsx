@@ -333,7 +333,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
     mini: boolean;
     enableSearchShortcut?: boolean;
   }) => (
-    <div className="relative flex h-full min-h-0 flex-col overflow-hidden p-3 pb-[max(0.75rem,env(safe-area-inset-bottom))]">
+    <div className="tadeon-sidebar__body relative flex h-full w-full min-h-0 min-w-0 flex-col overflow-hidden p-3 pb-[max(0.75rem,env(safe-area-inset-bottom))]">
       <ThreadField className="text-sidebar-primary opacity-40" />
       <div className={`relative z-10 mb-4 shrink-0 ${mini ? "text-center" : ""}`}>
         {mini ? (

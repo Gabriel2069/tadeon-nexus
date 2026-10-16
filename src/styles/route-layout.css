@@ -864,13 +864,6 @@ html[data-tadeon-sheet-mode="game"] .tadeon-sheet-game-button svg {
     padding-right: .65rem !important;
     padding-left: .65rem !important;
   }
-
-  #tadeon-desktop-sidebar > button[aria-controls="tadeon-desktop-sidebar"] {
-    right: -.9rem !important;
-    width: 2.35rem !important;
-    height: 2.35rem !important;
-    z-index: 40 !important;
-  }
 }
 
 /* --------------------------------------------------------------------------
@@ -1536,13 +1529,6 @@ html[data-tadeon-sheet-mode="game"] .tadeon-sheet-game-button svg {
     max-width: 100% !important;
     padding-right: .65rem !important;
     padding-left: .65rem !important;
-  }
-
-  #tadeon-desktop-sidebar > button[aria-controls="tadeon-desktop-sidebar"] {
-    right: -.8rem !important;
-    width: 2.3rem !important;
-    height: 2.3rem !important;
-    z-index: 40 !important;
   }
 }
 

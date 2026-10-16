@@ -1,22 +1,7 @@
 /* source: src/styles/ui-coherence-192.css */
 /* #192/#193/#194/#195: coerência visual residual de navegação, Mestre e Mesa. */
 
-.tadeon-primary-nav {
-  box-sizing: border-box;
-  width: 100% !important;
-  min-width: 0 !important;
-}
 
-.tadeon-primary-nav > .tadeon-nav-item,
-.tadeon-primary-nav .tadeon-nav-item {
-  box-sizing: border-box !important;
-  inline-size: 100% !important;
-  width: 100% !important;
-  min-width: 100% !important;
-  max-width: 100% !important;
-  margin-inline: 0 !important;
-  justify-self: stretch !important;
-}
 
 .tadeon-shell:is([data-section="Painel do Mestre"], [data-section="O Nexus"])
   .tadeon-workspace-popout-host

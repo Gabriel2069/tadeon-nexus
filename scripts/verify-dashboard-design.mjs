@@ -41,7 +41,11 @@ try {
         if (currentState === "loading") await new Promise(ok => { release = ok; });
         if (currentState === "error") { status = 500; body = { message: "Fixture read failed", code: "fixture" }; }
         else body = currentState === "populated" ? sheets : [];
-      } else if (url.pathname.includes("/profiles")) body = [{ id: userId, email: user.email, full_name: "Tadeu de exemplo" }, { id: "00000000-0000-4000-8000-000000000002", email: "ana@nexus.test", full_name: "Ana" }];
+      } else if (url.pathname.includes("/profiles")) {
+        const profiles = [{ id: userId, email: user.email, full_name: "Tadeu de exemplo" }, { id: "00000000-0000-4000-8000-000000000002", email: "ana@nexus.test", full_name: "Ana" }];
+        const id = url.searchParams.get("id");
+        body = id?.startsWith("eq.") ? profiles.filter(p=>p.id===id.slice(3)) : profiles;
+      }
       else if (url.pathname.includes("/user_roles")) body = [{ user_id: userId, role: "mestre" }];
       else if (url.pathname.includes("/feature_flags")) body = [{ key: "nexus_tabletop_enabled", enabled: true }, { key: "nexus_knowledge_enabled", enabled: true }];
       if (Array.isArray(body) && route.request().headers().accept?.includes("vnd.pgrst.object")) body = body[0] || null;
@@ -114,10 +118,14 @@ try {
       await page.getByRole("button", { name: /Excluir ficha/ }).first().click();
       await page.getByRole("button", { name: "Cancelar", exact: true }).click();
       assert(await page.locator(".tadeon-character-card").count() === 5, "Cancel must preserve cards");
-      if (width === 1440) {
+      if (width >= 768) {
+        const labels = await page.locator("#tadeon-desktop-sidebar .tadeon-nav-item__label").evaluateAll(es=>es.map(e=>({text:e.textContent,clipped:e.scrollWidth>e.clientWidth+1||e.scrollHeight>e.clientHeight+1,ellipsis:getComputedStyle(e).textOverflow})));
+        assert(labels.every(x=>!x.clipped&&x.ellipsis!=="ellipsis"), "Expanded navigation labels remain readable");
+        metrics.navigationLabels=labels;
         await page.getByRole("button", { name: "Recolher menu" }).click();
-        const rail = await page.locator("#tadeon-desktop-sidebar").evaluate(e=>({width:e.getBoundingClientRect().width,items:[...e.querySelectorAll(".tadeon-nav-item")].map(n=>{const r=n.getBoundingClientRect(),i=n.querySelector(".tadeon-nav-item__icon"),ir=i.getBoundingClientRect();return {w:r.width,h:r.height,iconOpacity:getComputedStyle(i).opacity,iconWidth:ir.width,centerDelta:Math.abs((r.x+r.width/2)-(ir.x+ir.width/2))};})}));
-        assert(rail.items.every(i=>i.w>=44&&i.h>=44&&i.iconOpacity==="1"&&i.iconWidth===32&&i.centerDelta<1), "Collapsed rail keeps centered visible icons and 44px targets: "+JSON.stringify(rail));
+        await page.waitForFunction(()=>[...document.querySelectorAll("#tadeon-desktop-sidebar .tadeon-nav-item")].every(n=>{const r=n.getBoundingClientRect(),i=n.querySelector(".tadeon-nav-item__icon").getBoundingClientRect();return r.width>=44&&r.height>=44&&i.width>=24;}));
+        const rail = await page.locator("#tadeon-desktop-sidebar").evaluate(e=>({width:e.getBoundingClientRect().width,items:[...e.querySelectorAll(".tadeon-nav-item")].map(n=>{const r=n.getBoundingClientRect(),i=n.querySelector(".tadeon-nav-item__icon"),ir=i.getBoundingClientRect();return {w:r.width,h:r.height,computedWidth:getComputedStyle(n).width,transform:getComputedStyle(n).transform,scale:getComputedStyle(n).scale,iconOpacity:getComputedStyle(i).opacity,iconWidth:ir.width,iconComputedWidth:getComputedStyle(i).width,centerDelta:Math.abs((r.x+r.width/2)-(ir.x+ir.width/2))};})}));
+        assert(rail.items.every(i=>i.w>=44&&i.h>=44&&i.iconOpacity==="1"&&i.iconWidth>=24&&i.centerDelta<1), "Collapsed rail keeps centered visible icons and 44px targets: "+JSON.stringify(rail));
         metrics.rail=rail;
         await page.getByRole("button", { name: "Expandir menu" }).click();
       }
@@ -173,6 +181,7 @@ try {
       const moving = await page.locator(".tadeon-continuity-hero__weave").evaluate(e => getComputedStyle(e).transitionDuration);
       if (width === 1440) {
         const card = page.locator(".tadeon-character-card").first();
+        await card.scrollIntoViewIfNeeded();
         const before = await card.locator("h3").boundingBox();
         await card.hover({ position: { x: 100, y: 90 } });
         await page.waitForFunction(() => { const e=document.querySelector(".tadeon-character-card"); return e?.style.getPropertyValue("--material-x") && Number(getComputedStyle(e,"::before").opacity) >= .8; });

@@ -419,7 +419,6 @@ html body .tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-focus-brand-
     transform var(--tadeon-motion-press) var(--tadeon-ease-material);
 }
 
-.tadeon-sidebar-collapse:hover,
 .tadeon-mobile-header__control:hover,
 .tadeon-desktop-toolbar__account:hover,
 .tadeon-link-collapse:hover {
@@ -723,7 +722,6 @@ html body .tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-focus-brand-
 .tadeon-nav-item,
 .tadeon-mobile-dock__item,
 .tadeon-mobile-header__control,
-.tadeon-sidebar-collapse,
 .tadeon-desktop-toolbar__account,
 .tadeon-link-collapse {
   -webkit-tap-highlight-color: transparent;

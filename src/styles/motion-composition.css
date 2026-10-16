@@ -1312,13 +1312,6 @@
   background: linear-gradient(90deg, transparent, var(--sidebar-accent), transparent);
 }
 
-.tadeon-sidebar-collapse {
-  border-color: rgb(var(--sidebar-accent-rgb) / 22%);
-  background: color-mix(in srgb, var(--sidebar) 94%, var(--sidebar-accent) 6%);
-  box-shadow: 0 12px 30px -22px rgb(var(--sidebar-accent-rgb) / 55%);
-}
-.tadeon-sidebar-collapse:hover { color: var(--sidebar-accent); box-shadow: 0 14px 32px -22px rgb(var(--sidebar-accent-rgb) / 62%); }
-
 /* end-source: src/styles/tadeon-sidebar-definitive.css */
 
 /* source: src/styles/tadeon-interaction-final.css */
@@ -3689,8 +3682,11 @@ html body .tadeon-shell .tadeon-master-commandbar p:not(.tadeon-eyebrow) {
 .tadeon-shell .tadeon-mobile-dock__item,
 .tadeon-shell button:not([data-radix-collection-item]),
 .tadeon-shell [role="button"] {
-  position: relative;
   isolation: isolate;
+}
+
+.tadeon-shell .tadeon-nav-item, .tadeon-shell .tadeon-mobile-dock__item, .tadeon-shell button:not([data-radix-collection-item]):not([data-material-surface="navigation"]), .tadeon-shell [role="button"] {
+  position: relative;
 }
 
 .tadeon-shell button:not([data-radix-collection-item]),
@@ -4236,7 +4232,9 @@ html body .tadeon-shell .tadeon-route-offline > main {
 .tadeon-shell button,
 .tadeon-shell [role="button"],
 .tadeon-shell .tadeon-nav-item{
-  isolation:isolate;overflow:hidden;position:relative;
+  isolation:isolate;overflow:hidden;
+}
+.tadeon-shell button:not([data-material-surface="navigation"]), .tadeon-shell [role="button"], .tadeon-shell .tadeon-nav-item {position:relative;
 }
 .tadeon-shell button:not([data-material-surface], .tadeon-material-button)::after, .tadeon-shell [role="button"]::after{
   content:"";position:absolute;inset:auto -35% 0;height:1px;pointer-events:none;
