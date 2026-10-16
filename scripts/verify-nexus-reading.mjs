@@ -10,10 +10,13 @@ const assert = (v, m) => {
   if (!v) throw new Error(m);
 };
 console.log("Launching browser");
-const browser = await chromium.launch({
-  executablePath: process.env.NEXUS_CHROMIUM_PATH,
-  args: JSON.parse(process.env.NEXUS_CHROMIUM_ARGS || "[]"),
-});
+// A fresh browser per viewport keeps software GPU contexts isolated.
+let browser;
+const launchBrowser = () =>
+  chromium.launch({
+    executablePath: process.env.NEXUS_CHROMIUM_PATH,
+    args: JSON.parse(process.env.NEXUS_CHROMIUM_ARGS || "[]"),
+  });
 console.log("Browser ready; starting installed Vite");
 const server = spawn(
   "npm",
@@ -116,6 +119,8 @@ try {
     setTimeout(() => fail(new Error("Vite timeout")), 30000).unref();
   });
   for (const width of (process.env.NEXUS_WIDTHS || "320,390,820,1440").split(",").map(Number)) {
+    if (browser) await browser.close();
+    browser = await launchBrowser();
     const context = await browser.newContext({
       viewport: { width, height: 1000 },
       hasTouch: width < 768,
@@ -268,7 +273,8 @@ try {
     );
     await locations.selectOption(id(1001));
     assert((await locations.inputValue()) === id(1001), "Every returned location is selectable");
-    if (!process.env.NEXUS_SKIP_SCREENSHOTS) await page.screenshot({ path: `${output}/current-page-context-${width}.png` });
+    if (!process.env.NEXUS_SKIP_SCREENSHOTS)
+      await page.screenshot({ path: `${output}/current-page-context-${width}.png` });
 
     const initialDocument = page.locator(
       '.tadeon-nexus-reading__panes [data-panel][id="document"]',
@@ -569,7 +575,7 @@ try {
   writeFileSync(`${output}/results.json`, JSON.stringify(results, null, 2));
   console.log(`Nexus reading verified: ${results.length} viewports`);
 } finally {
-  await browser.close();
+  await browser?.close();
   try {
     process.kill(-server.pid, "SIGTERM");
   } catch {}

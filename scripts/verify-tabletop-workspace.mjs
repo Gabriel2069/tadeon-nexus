@@ -64,10 +64,13 @@ const entities = [0, 1, 2].map((n) => ({
   linked_knowledge_node_id: null,
   version: 1,
 }));
-const browser = await chromium.launch({
-  executablePath: process.env.NEXUS_CHROMIUM_PATH,
-  args: JSON.parse(process.env.NEXUS_CHROMIUM_ARGS || "[]"),
-});
+// A fresh browser per viewport keeps software GPU contexts isolated.
+let browser;
+const launchBrowser = () =>
+  chromium.launch({
+    executablePath: process.env.NEXUS_CHROMIUM_PATH,
+    args: JSON.parse(process.env.NEXUS_CHROMIUM_ARGS || "[]"),
+  });
 const port = 6135,
   server = spawn(
     "npm",
@@ -87,6 +90,8 @@ try {
     setTimeout(() => fail(Error("Vite timeout")), 30000).unref();
   });
   for (const width of JSON.parse(process.env.NEXUS_AUDIT_WIDTHS || "[390,1440]")) {
+    if (browser) await browser.close();
+    browser = await launchBrowser();
     const context = await browser.newContext({
       viewport: { width, height: 1000 },
       reducedMotion: width === 1440 ? "no-preference" : "reduce",
@@ -452,8 +457,35 @@ try {
       "Logical renderer matches the visible canvas",
     );
 
+    async function verifyPointerSelection() {
+      await page
+        .locator('.tadeon-tabletop-canvas-host canvas[aria-label="Canvas da Mesa Nexus"]')
+        .scrollIntoViewIfNeeded();
+      const tokenPoint = await page.evaluate((entityId) => {
+        const rt = window.__tadeonTabletopRuntime;
+        rt.engine.setToolMode("select");
+        rt.engine.clearSelection();
+        rt.engine.select(entityId, false);
+        rt.engine.focusSelection();
+        rt.engine.clearSelection();
+        const entity = rt.snapshot().scene.entities.find((e) => e.id === entityId);
+        return rt.worldToClient({
+          x: entity.x + entity.width / 2,
+          y: entity.y + entity.height / 2,
+        });
+      }, id(50));
+      await page.mouse.click(tokenPoint.x, tokenPoint.y);
+      await page.waitForFunction(
+        (entityId) => window.__tadeonTabletopRuntime.snapshot().selectedIds.includes(entityId),
+        id(50),
+        { timeout: 15000 },
+      );
+    }
+
     async function capture(state) {
       const metrics = await page.evaluate(() => ({
+        viewportWidth: innerWidth,
+        viewportHeight: innerHeight,
         overflow: document.documentElement.scrollWidth > innerWidth + 1,
         stage: (() => {
           const r = document
@@ -472,7 +504,11 @@ try {
             disabled: e.disabled,
           })),
       }));
-      if (!process.env.NEXUS_SKIP_SCREENSHOTS)
+      const screenshotStates = process.env.NEXUS_AUDIT_SCREENSHOT_STATES?.split(",");
+      if (
+        !process.env.NEXUS_SKIP_SCREENSHOTS &&
+        (!screenshotStates || screenshotStates.includes(state))
+      )
         await page.screenshot({
           path: `${output}/${width}-${state}.png`,
           animations: "disabled",
@@ -490,6 +526,10 @@ try {
       writeFileSync(`${output}/results.json`, JSON.stringify(results, null, 2));
       console.log(width, state, JSON.stringify(metrics.stage));
       assert(!metrics.overflow, "Page overflow");
+      assert(
+        metrics.stage.x >= -1 && metrics.stage.x + metrics.stage.width <= metrics.viewportWidth + 1,
+        "Stage fits the visible viewport",
+      );
       assert(!errors.length, errors.join("; "));
       assert(!writes.length, writes.join("; "));
     }
@@ -510,6 +550,19 @@ try {
         ),
         "Player fixture contains visible entities only",
       );
+      const pan = page.getByRole("button", { name: "Mover câmera", exact: true });
+      await pan.click();
+      assert(
+        (await pan.getAttribute("aria-pressed")) === "true",
+        "Player tool follows engine callback",
+      );
+      await page.getByRole("button", { name: "Selecionar", exact: true }).click();
+      assert(
+        await page
+          .locator(".tadeon-tabletop-realtime__status strong")
+          .evaluate((el) => el.scrollWidth <= el.clientWidth + 1),
+        "Connection status label is readable",
+      );
       await capture("player-view");
       await page.getByRole("button", { name: "Abrir comandos", exact: true }).click();
       const dialog = page.getByRole("dialog", { name: "Comandos da Mesa", exact: true });
@@ -518,7 +571,7 @@ try {
       assert(!(await dialog.getByRole("option").count()), "No master commands");
       await capture("player-commands");
       await page.keyboard.press("Escape");
-      await dialog.waitFor({ state: "hidden" });
+      await dialog.waitFor({ state: "detached" });
       const reads = operations.filter((o) => o.kind === "participant-read").length;
       await Promise.all([
         page.waitForResponse(
@@ -543,6 +596,40 @@ try {
       continue;
     }
     await capture("play");
+    if (process.env.NEXUS_AUDIT_SCOPE === "geometry") {
+      await verifyPointerSelection();
+      await capture("pointer-selection");
+      const delta = await page.evaluate(() => {
+        const rt = window.__tadeonTabletopRuntime;
+        rt.engine.setProjectionMode("isometric");
+        const p = { x: 800, y: 650 },
+          w = rt.clientToWorld(rt.worldToClient(p));
+        return Math.hypot(p.x - w.x, p.y - w.y);
+      });
+      assert(delta < 0.01, "High-density projection round trip");
+      await capture("projection");
+      if (width === 1440) {
+        await page.getByRole("button", { name: "Editar Mesa", exact: true }).click();
+        await page.setViewportSize({ width: 820, height: 1000 });
+        const editor = page.getByRole("dialog", { name: "Editor da Mesa", exact: true });
+        await editor.waitFor();
+        await page.waitForFunction(() =>
+          document
+            .querySelector('.tadeon-tabletop-panel[role="dialog"]')
+            ?.contains(document.activeElement),
+        );
+        await capture("resize-compact-editor");
+        await page.keyboard.press("Escape");
+        await editor.waitFor({ state: "hidden" });
+        await page.setViewportSize({ width: 1440, height: 1000 });
+        await page.getByRole("complementary", { name: "Painel de edição da Mesa Nexus" }).waitFor();
+        await capture("resize-wide-editor");
+      }
+
+      await context.close();
+      continue;
+    }
+
     await page.getByRole("button", { name: "Editar Mesa", exact: true }).click();
     await page.waitForTimeout(450);
     await capture("edit");
@@ -577,7 +664,7 @@ try {
       const dialog = page.getByRole("dialog", { name: "Editor da Mesa", exact: true });
       if (await dialog.isVisible()) {
         await page.keyboard.press("Escape");
-        await dialog.waitFor({ state: "hidden" });
+        await dialog.waitFor({ state: "detached" });
       }
     }
     await closeEditor();
@@ -645,19 +732,7 @@ try {
         0.01,
       "World/screen round trip",
     );
-    await page.locator('.tadeon-tabletop-canvas-host canvas[aria-label="Canvas da Mesa Nexus"]').scrollIntoViewIfNeeded();
-    const tokenPoint = await page.evaluate((entityId) => {
-      const rt = window.__tadeonTabletopRuntime;
-      rt.engine.setToolMode("select");
-      rt.engine.clearSelection();
-      rt.engine.select(entityId, false);
-      rt.engine.focusSelection();
-      rt.engine.clearSelection();
-      const entity = rt.snapshot().scene.entities.find((e) => e.id === entityId);
-      return rt.worldToClient({ x: entity.x + entity.width / 2, y: entity.y + entity.height / 2 });
-    }, id(50));
-    await page.mouse.click(tokenPoint.x, tokenPoint.y);
-    await page.waitForFunction((entityId) => window.__tadeonTabletopRuntime.snapshot().selectedIds.includes(entityId), id(50), { timeout: 15000 });
+    await verifyPointerSelection();
     await capture("pointer-selection");
     await page
       .locator(".tadeon-tabletop-mobile-save")
@@ -727,9 +802,17 @@ try {
       const c = document
         .querySelector(".tadeon-tabletop-canvas-host canvas[aria-label='Canvas da Mesa Nexus']")
         .getBoundingClientRect();
-      return { x: c.x + c.width * 0.55, y: c.y + c.height * 0.35 };
+      const canvas = document.querySelector(
+        ".tadeon-tabletop-canvas-host canvas[aria-label='Canvas da Mesa Nexus']",
+      );
+      for (const y of [0.68, 0.55, 0.8, 0.4])
+        for (const x of [0.55, 0.8, 0.3]) {
+          const p = { x: c.x + c.width * x, y: c.y + c.height * y };
+          if (document.elementFromPoint(p.x, p.y) === canvas) return p;
+        }
+      throw new Error("No exposed canvas point for the light tool");
     });
-    console.log("Light pointer", point, await page.evaluate((p) => ({hit:document.elementFromPoint(p.x,p.y)?.outerHTML.slice(0,250),tool:window.__tadeonTabletopRuntime.engine.diagnostics().tool}),point));
+    console.log("Light pointer", point);
     await page.mouse.click(point.x, point.y);
     await page.waitForFunction(() =>
       document.querySelector(".tadeon-tabletop-mobile-save")?.textContent?.includes("Salvar"),
@@ -775,7 +858,7 @@ try {
     await context.close();
   }
 } finally {
-  await browser.close();
+  await browser?.close();
   try {
     process.kill(-server.pid, "SIGTERM");
   } catch {

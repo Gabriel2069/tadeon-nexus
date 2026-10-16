@@ -1763,7 +1763,7 @@ export class TabletopEngine {
   }
 
   private render(notify = true) {
-    if (this.destroyed || !this.host) return;
+    if (!this.initialized || this.destroyed || !this.host) return;
     const activeLevel = activeTabletopLevel(this.scenes.scene, this.activeLevelId);
     this.grid.view.visible = this.gridVisible;
     const floorOffset =
