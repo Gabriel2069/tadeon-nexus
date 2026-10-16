@@ -1,3 +1,4 @@
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
   Check,
@@ -349,6 +350,7 @@ export function TabletopReliabilityEditorBridge() {
   const { role } = useAuth();
   const [snapshot, setSnapshot] = useState<TabletopSnapshot | null>(null);
   const [editorOpen, setEditorOpen] = useState(false);
+  const [supportMenuOpen, setSupportMenuOpen] = useState(false);
   const [sample, setSample] = useState<VisualSample | null>(null);
   const [audioMuted, setAudioMuted] = useState(false);
   useEffect(() => {
@@ -393,6 +395,59 @@ export function TabletopReliabilityEditorBridge() {
 
   if (!snapshot) return null;
 
+  const supportControls = (
+    <>
+      {role === "mestre" && (
+        <span
+          data-state={autosave}
+          title="Autosave desacelera gravações e usa os mesmos salvamentos manuais da Mesa"
+        >
+          {autosave === "saving" ? (
+            <Loader2 className="animate-spin" aria-hidden="true" />
+          ) : autosave === "saved" ? (
+            <Check aria-hidden="true" />
+          ) : (
+            <CloudDownload aria-hidden="true" />
+          )}
+          {autosave === "pending"
+            ? "Autosave pendente"
+            : autosave === "saving"
+              ? "Salvando"
+              : autosave === "saved"
+                ? "Salvo"
+                : "Autosave"}
+        </span>
+      )}
+      {(role === "mestre" || warmed > 0) && (
+        <span title="Mídias visíveis preparadas sem bloquear a Mesa">
+          <CloudDownload aria-hidden="true" /> {warmed} prontos
+        </span>
+      )}
+      <button
+        type="button"
+        aria-pressed={audioMuted}
+        onClick={() => setAudioMuted((value) => !value)}
+        title={audioMuted ? "Reativar áudio espacial" : "Silenciar áudio espacial"}
+      >
+        {audioMuted ? <VolumeX aria-hidden="true" /> : <Volume2 aria-hidden="true" />}
+        Áudio
+      </button>
+      {role === "mestre" && (
+        <button
+          type="button"
+          aria-pressed={editorOpen}
+          onClick={() => {
+            setSupportMenuOpen(false);
+            setEditorOpen((value) => !value);
+          }}
+          title="Transformação precisa, conta-gotas visual e áudio do placeable"
+        >
+          <SlidersHorizontal aria-hidden="true" /> Precisão
+        </button>
+      )}
+    </>
+  );
+
   return (
     <TabletopStagePortal
       selector={role === "jogador" ? "[data-tabletop-player-tools-host]" : undefined}
@@ -408,50 +463,23 @@ export function TabletopReliabilityEditorBridge() {
             role === "jogador" ? "Áudio e mídias da sala" : "Estado de confiabilidade da Mesa"
           }
         >
-          {role === "mestre" && (
-            <span
-              data-state={autosave}
-              title="Autosave desacelera gravações e usa os mesmos salvamentos manuais da Mesa"
-            >
-              {autosave === "saving" ? (
-                <Loader2 className="animate-spin" aria-hidden="true" />
-              ) : autosave === "saved" ? (
-                <Check aria-hidden="true" />
-              ) : (
-                <CloudDownload aria-hidden="true" />
-              )}
-              {autosave === "pending"
-                ? "Autosave pendente"
-                : autosave === "saving"
-                  ? "Salvando"
-                  : autosave === "saved"
-                    ? "Salvo"
-                    : "Autosave"}
-            </span>
-          )}
-          {(role === "mestre" || warmed > 0) && (
-            <span title="Mídias visíveis preparadas sem bloquear a Mesa">
-              <CloudDownload aria-hidden="true" /> {warmed} prontos
-            </span>
-          )}
-          <button
-            type="button"
-            aria-pressed={audioMuted}
-            onClick={() => setAudioMuted((value) => !value)}
-            title={audioMuted ? "Reativar áudio espacial" : "Silenciar áudio espacial"}
-          >
-            {audioMuted ? <VolumeX aria-hidden="true" /> : <Volume2 aria-hidden="true" />}
-            Áudio
-          </button>
-          {role === "mestre" && (
-            <button
-              type="button"
-              aria-pressed={editorOpen}
-              onClick={() => setEditorOpen((value) => !value)}
-              title="Transformação precisa, conta-gotas visual e áudio do placeable"
-            >
-              <SlidersHorizontal aria-hidden="true" /> Editor
-            </button>
+          {role === "mestre" ? (
+            <Popover open={supportMenuOpen} onOpenChange={setSupportMenuOpen}>
+              <PopoverTrigger asChild>
+                <Button variant="ghost" aria-label="Recursos da cena">
+                  <SlidersHorizontal aria-hidden="true" />
+                  Recursos
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent
+                className="tadeon-tabletop-support-menu"
+                aria-label="Recursos da cena"
+              >
+                {supportControls}
+              </PopoverContent>
+            </Popover>
+          ) : (
+            supportControls
           )}
         </div>
 

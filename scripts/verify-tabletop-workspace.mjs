@@ -619,6 +619,23 @@ try {
       continue;
     }
     await capture("play");
+    const resources = page.getByRole("button", { name: "Recursos da cena", exact: true });
+    await resources.click();
+    const supportMenu = page.locator(".tadeon-tabletop-support-menu");
+    await supportMenu.waitFor();
+    await supportMenu.getByRole("button", { name: "Áudio", exact: true }).click();
+    assert(
+      (await supportMenu
+        .getByRole("button", { name: "Áudio", exact: true })
+        .getAttribute("aria-pressed")) === "true",
+      "Audio control responds in the resource menu",
+    );
+    await page.keyboard.press("Escape");
+    await supportMenu.waitFor({ state: "detached" });
+    await page.waitForFunction(
+      () => document.activeElement?.getAttribute("aria-label") === "Recursos da cena",
+    );
+
     if (process.env.NEXUS_AUDIT_SCOPE === "geometry") {
       await verifyPointerSelection();
       await capture("pointer-selection");

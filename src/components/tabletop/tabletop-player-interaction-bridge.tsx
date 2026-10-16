@@ -430,7 +430,7 @@ export function TabletopPlayerInteractionBridge() {
       <TabletopStagePortal
         selector={role === "jogador" ? "[data-tabletop-player-tools-host]" : undefined}
       >
-        {(role === "mestre" || entity) && (
+        {entity && (
           <aside
             className={
               role === "jogador" ? "tadeon-participant-view__tactics" : "tadeon-tactical-dock"

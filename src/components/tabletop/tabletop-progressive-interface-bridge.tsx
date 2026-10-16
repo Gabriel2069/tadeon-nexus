@@ -566,7 +566,7 @@ export function TabletopProgressiveInterfaceBridge({
               title="Comandos da Mesa · Ctrl/Cmd + Shift + K"
             >
               <Command />
-              <span>Comandos</span>
+              <span>Ações</span>
               <kbd>⇧⌘K</kbd>
             </button>
           </div>
