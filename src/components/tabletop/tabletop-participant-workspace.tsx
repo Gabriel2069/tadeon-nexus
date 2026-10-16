@@ -1,3 +1,7 @@
+import { TabletopProgressiveInterfaceBridge } from "@/components/tabletop/tabletop-progressive-interface-bridge";
+import type { TabletopToolMode } from "@/lib/tabletop/interaction-controller";
+import { createLatestRequestGate } from "@/lib/latest-request";
+import { EMPTY_TABLETOP_SCENE } from "@/lib/tabletop/types";
 import {
   BookOpenText,
   Box,
@@ -53,31 +57,37 @@ function participantErrorMessage(error: unknown) {
   }
 }
 
-export function TabletopParticipantWorkspace({
-  realtimeEnabled,
-}: {
-  realtimeEnabled: boolean;
-}) {
+export function TabletopParticipantWorkspace({ realtimeEnabled }: { realtimeEnabled: boolean }) {
   const { user, profile } = useAuth();
+  const roomRequests = useMemo(createLatestRequestGate, []);
+  const viewRequests = useMemo(createLatestRequestGate, []);
+  const [engineReady, setEngineReady] = useState(false);
+  const [toolMode, setToolMode] = useState<TabletopToolMode>("select");
+  useEffect(
+    () => () => {
+      roomRequests.invalidate();
+      viewRequests.invalidate();
+    },
+    [roomRequests, viewRequests],
+  );
   const hostRef = useRef<HTMLDivElement>(null);
   const engineRef = useRef<TabletopEngine | null>(null);
   const [campaigns, setCampaigns] = useState<TabletopCampaignSummary[]>([]);
   const [campaignId, setCampaignId] = useState("");
+  const campaignRef = useRef(campaignId);
+  campaignRef.current = campaignId;
   const [session, setSession] = useState<TabletopSession | null>(null);
   const [view, setView] = useState<TabletopParticipantView | null>(null);
   const [joined, setJoined] = useState(false);
   const [loading, setLoading] = useState(true);
   const [joining, setJoining] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [selectedHandout, setSelectedHandout] =
-    useState<TabletopParticipantHandout | null>(null);
+  const [selectedHandout, setSelectedHandout] = useState<TabletopParticipantHandout | null>(null);
   const [selectedEntity, setSelectedEntity] = useState<
     TabletopParticipantScene["entities"][number] | null
   >(null);
   const sessionRef = useRef<TabletopSession | null>(null);
-  const loadViewRef = useRef<
-    ((targetSession: TabletopSession) => Promise<void>) | null
-  >(null);
+  const loadViewRef = useRef<((targetSession: TabletopSession) => Promise<void>) | null>(null);
   const broadcastStructureStateRef = useRef<
     | ((payload: {
         wallId: string;
@@ -91,10 +101,10 @@ export function TabletopParticipantWorkspace({
     const host = hostRef.current;
     if (!host) return;
     const engine = new TabletopEngine({
+      onToolModeChange: setToolMode,
       onAssetError: (message) => toast.error(message),
       onActivateEntity: (entity) => {
-        const participantEntity =
-          entity as TabletopParticipantScene["entities"][number];
+        const participantEntity = entity as TabletopParticipantScene["entities"][number];
         if (participantEntity.handout) {
           setSelectedHandout(participantEntity.handout);
         } else {
@@ -123,11 +133,20 @@ export function TabletopParticipantWorkspace({
     });
     engineRef.current = engine;
     let active = true;
-    void engine.init(host).then(() => {
-      if (!active) return;
-      engine.setReadOnly(true);
-      engine.fitToScreen();
-    });
+    void engine
+      .init(host)
+      .then(() => {
+        if (!active) return;
+        engine.setReadOnly(true);
+        engine.fitToScreen();
+        setEngineReady(true);
+      })
+      .catch(() => {
+        if (active)
+          setErrorMessage(
+            "Não foi possível iniciar o mapa. Atualize a página para tentar novamente.",
+          );
+      });
     return () => {
       active = false;
       engineRef.current = null;
@@ -136,14 +155,16 @@ export function TabletopParticipantWorkspace({
   }, []);
 
   useEffect(() => {
-    if (!view?.scene || !engineRef.current) return;
+    if (!engineReady || !engineRef.current) return;
     const engine = engineRef.current;
+    if (!view?.scene) {
+      engine.loadScene(EMPTY_TABLETOP_SCENE);
+      engine.setReadOnly(true);
+      return;
+    }
     engine.loadScene(view.scene);
     engine.setActiveLevel(view.scene.activeLevelId);
-    engine.setVisibility(
-      view.visibility ?? createEmptyVisibilityState(),
-      false,
-    );
+    engine.setVisibility(view.visibility ?? createEmptyVisibilityState(), false);
     engine.setInteractiveStructures(
       view.participant.canInteract
         ? (view.visibility?.walls ?? [])
@@ -160,22 +181,31 @@ export function TabletopParticipantWorkspace({
       : view.scene.activeLevelId;
     engine.applyDirectorCamera({ ...camera, levelId });
   }, [
+    engineReady,
     view?.participant.canInteract,
     view?.scene,
     view?.session.directorState,
     view?.visibility,
   ]);
 
-  const loadView = useCallback(async (targetSession: TabletopSession) => {
-    try {
-      const nextView = await tabletopParticipantService.load(targetSession.id);
-      setView(nextView);
-      setErrorMessage(null);
-    } catch (error) {
-      setView(null);
-      setErrorMessage(participantErrorMessage(error));
-    }
-  }, []);
+  const loadView = useCallback(
+    async (targetSession: TabletopSession) => {
+      const ticket = viewRequests.begin();
+      try {
+        const nextView = await tabletopParticipantService.load(targetSession.id);
+        if (!viewRequests.isCurrent(ticket) || campaignRef.current !== targetSession.campaignId)
+          return;
+        setView(nextView);
+        setErrorMessage(null);
+      } catch (error) {
+        if (!viewRequests.isCurrent(ticket) || campaignRef.current !== targetSession.campaignId)
+          return;
+        setView(null);
+        setErrorMessage(participantErrorMessage(error));
+      }
+    },
+    [viewRequests],
+  );
 
   useEffect(() => {
     loadViewRef.current = loadView;
@@ -187,10 +217,12 @@ export function TabletopParticipantWorkspace({
 
   const refreshRoom = useCallback(async () => {
     if (!campaignId || !user) return;
+    const ticket = roomRequests.begin();
+    viewRequests.invalidate();
     setLoading(true);
     try {
-      const openSession =
-        await tabletopSessionService.findOpenSession(campaignId);
+      const openSession = await tabletopSessionService.findOpenSession(campaignId);
+      if (!roomRequests.isCurrent(ticket)) return;
       setSession(openSession);
       setView(null);
       if (!openSession) {
@@ -198,25 +230,24 @@ export function TabletopParticipantWorkspace({
         setErrorMessage(null);
         return;
       }
-      const participants = await tabletopSessionService.listParticipants(
-        openSession.id,
-      );
+      const participants = await tabletopSessionService.listParticipants(openSession.id);
+      if (!roomRequests.isCurrent(ticket)) return;
       const active = participants.some(
-        (participant) =>
-          participant.userId === user.id && participant.state === "active",
+        (participant) => participant.userId === user.id && participant.state === "active",
       );
       setJoined(active);
       if (active) await loadView(openSession);
       else setErrorMessage(null);
     } catch {
+      if (!roomRequests.isCurrent(ticket)) return;
       setSession(null);
       setView(null);
       setJoined(false);
       setErrorMessage("Não foi possível consultar a sala desta campanha.");
     } finally {
-      setLoading(false);
+      if (roomRequests.isCurrent(ticket)) setLoading(false);
     }
-  }, [campaignId, loadView, user]);
+  }, [campaignId, loadView, user, roomRequests, viewRequests]);
 
   useEffect(() => {
     let active = true;
@@ -229,8 +260,7 @@ export function TabletopParticipantWorkspace({
         setCampaignId((current) => current || items[0]?.id || "");
       })
       .catch(() => {
-        if (active)
-          setErrorMessage("Não foi possível carregar suas campanhas.");
+        if (active) setErrorMessage("Não foi possível carregar suas campanhas.");
       })
       .finally(() => {
         if (active) setLoading(false);
@@ -242,7 +272,11 @@ export function TabletopParticipantWorkspace({
 
   useEffect(() => {
     if (campaignId) void refreshRoom();
-  }, [campaignId, refreshRoom]);
+    return () => {
+      roomRequests.invalidate();
+      viewRequests.invalidate();
+    };
+  }, [campaignId, refreshRoom, roomRequests, viewRequests]);
 
   const handleJoin = async () => {
     if (!session) return;
@@ -253,9 +287,7 @@ export function TabletopParticipantWorkspace({
       await loadView(session);
       toast.success("Você entrou na sala ao vivo.");
     } catch {
-      toast.error(
-        "Não foi possível entrar. A sala pode estar bloqueada ou encerrada.",
-      );
+      toast.error("Não foi possível entrar. A sala pode estar bloqueada ou encerrada.");
       await refreshRoom();
     } finally {
       setJoining(false);
@@ -278,8 +310,7 @@ export function TabletopParticipantWorkspace({
       }
       if (event.type !== "token.drag-preview") return;
       setView((current) => {
-        if (!current?.scene || current.scene.id !== event.sceneId)
-          return current;
+        if (!current?.scene || current.scene.id !== event.sceneId) return current;
         return {
           ...current,
           scene: {
@@ -299,9 +330,7 @@ export function TabletopParticipantWorkspace({
   const handouts = useMemo(() => {
     const unique = new Map(
       (view?.scene?.entities ?? []).flatMap((entity) =>
-        entity.handout
-          ? [[entity.handout.nodeId, entity.handout] as const]
-          : [],
+        entity.handout ? [[entity.handout.nodeId, entity.handout] as const] : [],
       ),
     );
     return [...unique.values()];
@@ -313,9 +342,7 @@ export function TabletopParticipantWorkspace({
         ? {
             userId: user.id,
             displayName:
-              profile?.full_name?.trim() ||
-              profile?.email?.split("@")[0] ||
-              "Participante",
+              profile?.full_name?.trim() || profile?.email?.split("@")[0] || "Participante",
             role: view.participant.role,
             sceneId: view.scene.id,
             controlledTokenId: null,
@@ -324,13 +351,7 @@ export function TabletopParticipantWorkspace({
             updatedAt: Date.now(),
           }
         : null,
-    [
-      profile?.email,
-      profile?.full_name,
-      user,
-      view?.participant.role,
-      view?.scene,
-    ],
+    [profile?.email, profile?.full_name, user, view?.participant.role, view?.scene],
   );
   const realtime = useTabletopRealtime({
     enabled: realtimeEnabled && joined,
@@ -375,17 +396,20 @@ export function TabletopParticipantWorkspace({
             onClick={() => void refreshRoom()}
             disabled={!campaignId || loading}
           >
-            <RefreshCw
-              className={loading ? "animate-spin" : ""}
-              aria-hidden="true"
-            />
+            <RefreshCw className={loading ? "animate-spin" : ""} aria-hidden="true" />
             Atualizar
           </Button>
         </div>
+        {joined && view?.scene && (
+          <div className="tadeon-participant-view__tools" data-tabletop-player-tools-host />
+        )}
       </header>
 
       <section className="tadeon-participant-view__stage" aria-busy={loading}>
         <div ref={hostRef} className="tadeon-participant-view__canvas" />
+        {joined && view?.scene && (
+          <div className="tadeon-participant-view__overlay" data-tabletop-stage-portal />
+        )}
         {loading && (
           <div className="tadeon-participant-view__empty" role="status">
             <Loader2 className="animate-spin" aria-hidden="true" />
@@ -403,9 +427,7 @@ export function TabletopParticipantWorkspace({
           <div className="tadeon-participant-view__empty">
             <ShieldCheck aria-hidden="true" />
             <strong>Nenhuma sala aberta</strong>
-            <span>
-              Este painel será liberado quando o mestre iniciar uma sessão.
-            </span>
+            <span>Este painel será liberado quando o mestre iniciar uma sessão.</span>
           </div>
         )}
         {!loading && session && !joined && (
@@ -436,11 +458,7 @@ export function TabletopParticipantWorkspace({
             <ShieldCheck aria-hidden="true" />
             <strong>Visão protegida indisponível</strong>
             <span>{errorMessage}</span>
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => void refreshRoom()}
-            >
+            <Button type="button" variant="outline" onClick={() => void refreshRoom()}>
               Tentar novamente
             </Button>
           </div>
@@ -457,26 +475,17 @@ export function TabletopParticipantWorkspace({
             <div>
               <small>{session?.name}</small>
               <strong>{view.scene.name}</strong>
-              <span>
-                {view.participant.role === "observer"
-                  ? "Observador"
-                  : "Jogador"}
-              </span>
+              <span>{view.participant.role === "observer" ? "Observador" : "Jogador"}</span>
               <span className="tadeon-participant-view__projection">
                 <Box aria-hidden="true" />
                 {view.session.directorState.camera.projection === "isometric"
                   ? `Visão 3D · ${Math.round(view.session.directorState.camera.yaw)}°`
                   : "Visão tática 2D"}
               </span>
-              {view.participant.canInteract &&
-                (view.visibility?.walls.length ?? 0) > 0 && (
-                  <span>
-                    Duplo clique ou toque nas portas destacadas para acionar
-                  </span>
-                )}
-              <span>
-                Duplo clique em tokens e objetos para abrir o cartão rápido
-              </span>
+              {view.participant.canInteract && (view.visibility?.walls.length ?? 0) > 0 && (
+                <span>Duplo clique ou toque nas portas destacadas para acionar</span>
+              )}
+              <span>Duplo clique em tokens e objetos para abrir o cartão rápido</span>
             </div>
             <TabletopRealtimeStatus
               enabled={realtimeEnabled}
@@ -498,16 +507,12 @@ export function TabletopParticipantWorkspace({
                 <strong>Handouts do Nexus</strong>
                 <small>{handouts.length} compartilhado(s) pelo mestre</small>
               </span>
-              <span className="tadeon-participant-view__handout-count">
-                {handouts.length}
-              </span>
+              <span className="tadeon-participant-view__handout-count">{handouts.length}</span>
             </summary>
             <div className="tadeon-participant-view__handout-list">
               {handouts.map((handout) => (
                 <article key={handout.nodeId}>
-                  {handout.coverUrl && (
-                    <img src={handout.coverUrl} alt="" loading="lazy" />
-                  )}
+                  {handout.coverUrl && <img src={handout.coverUrl} alt="" loading="lazy" />}
                   <div>
                     <small>{handout.nodeType}</small>
                     <strong>{handout.title}</strong>
@@ -532,6 +537,7 @@ export function TabletopParticipantWorkspace({
           </details>
         )}
       </section>
+      <TabletopProgressiveInterfaceBridge role="jogador" toolMode={toolMode} />
       <TabletopHandoutViewer
         handout={selectedHandout}
         open={selectedHandout !== null}

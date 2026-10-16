@@ -17,7 +17,7 @@ describe("integração e ferramentas inteligentes da Mesa Nexus", () => {
     expect(tabletopRoute).not.toContain('from "@/components/tabletop/tabletop-integration-tools-bridge"');
     expect(deferred).toContain("<IntegrationToolsBridge />");
     expect(deferred).toContain("<LocateBridge />");
-    expect(nexusRoute).toContain("<NexusTabletopLocator nodeId={node} />");
+    expect(nexusRoute).toContain("tabletopEnabled={flags.nexus_tabletop_enabled}");
     expect(bridge).toContain("knowledgeService.create");
     expect(bridge).toContain("linkedKnowledgeNodeId");
     expect(bridge).toContain("setNodeAccess");

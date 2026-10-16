@@ -12,7 +12,6 @@
   top: auto !important;
   left: auto !important;
   width: max-content !important;
-  height: auto !important;
   max-width: min(25rem, calc(100% - 1.5rem)) !important;
   min-width: 0 !important;
   border-radius: .6rem .2rem .6rem .2rem !important;
@@ -224,40 +223,10 @@ html[data-tadeon-tabletop-selection-active="true"] [data-tadeon-selection-guarde
     touch-action: manipulation;
   }
 
-  .tadeon-tabletop-toolbar {
-    display: flex !important;
-    width: 100% !important;
-    max-width: 100% !important;
-    justify-content: center !important;
-    margin-inline: auto !important;
-    padding-inline: .2rem !important;
-    scroll-padding-inline: 1rem;
-  }
-
-  .tadeon-tabletop-toolbar__group {
-    flex: 0 0 auto;
-  }
-
   .tadeon-tabletop-reliability-strip {
     left: var(--tadeon-tabletop-stage-center, 50%) !important;
     justify-content: center !important;
     transform: translate3d(-50%, 0, 0) !important;
-  }
-
-  .tadeon-tabletop-progressive-dock,
-  .tadeon-tabletop-selection-actions {
-    left: var(--tadeon-tabletop-stage-center, 50%) !important;
-  }
-
-  .tadeon-tabletop-progressive-dock {
-    justify-content: center;
-    max-width: min(calc(var(--tadeon-tabletop-stage-width, 100vw) - 1rem), calc(100vw - 1rem)) !important;
-    overflow-x: auto;
-    scrollbar-width: none;
-  }
-
-  .tadeon-tabletop-progressive-dock::-webkit-scrollbar {
-    display: none;
   }
 
   .tadeon-tabletop-toprail-controls {
@@ -490,8 +459,6 @@ html[data-tadeon-tabletop-selection-active="true"] [data-tadeon-selection-guarde
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .tadeon-tabletop-progressive-dock,
-  .tadeon-tabletop-toolbar,
   .tadeon-sheet-commandbar {
     scroll-behavior: auto !important;
   }
@@ -4440,14 +4407,6 @@ html[data-tadeon-tabletop-reliability="collapsed"] .tadeon-tabletop-reliability-
     opacity 170ms ease,
     transform 230ms var(--ease-drawer),
     visibility 0s linear 230ms !important;
-}
-
-html[data-tadeon-tabletop-reliability] .tadeon-tabletop-toolbar {
-  display: flex !important;
-  opacity: 1 !important;
-  visibility: visible !important;
-  pointer-events: auto !important;
-  transform: none !important;
 }
 
 /* When the Creative Dock is folded, its handle clears the final in-stage

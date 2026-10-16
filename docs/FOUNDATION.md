@@ -145,3 +145,16 @@ A revisão parte de main `6e1087c`. Os SVGs autorais já existiam em React, mas 
 A visão geral foi extraída para `master-overview.tsx`, usando os dados/callbacks da rota. O elenco tem busca e revelação progressiva explícita; métricas abrem ferramentas. `useMasterDraft` mantém persistência manual: conclusão de um snapshot não reconhece edições posteriores. Leituras são abortadas/invalidadas ao sair; a identidade remonta o workspace. A saída com rascunho pede uma escolha, e Cenas mantém rótulos associados, revisão de exclusão e retorno de foco. As regras RPG e o esquema de dados permanecem sob os contratos atuais.
 
 Evidência, limites e estado de entrega: [master-workspace-validation.json](master-workspace-validation.json). A fila continua exclusivamente em `project-continuity.json`; autorização real, concorrência entre mestres e operação em dispositivos físicos não são certificados por fixtures.
+
+
+## Mesa e passagem do Nexus — NEX-007/021
+
+O mapa detalhado de controles, estados e bridges está em [tabletop-workspace-map.md](tabletop-workspace-map.md). O workspace controla modo, seleção exibida e painel; a interface progressiva recebe valor e callbacks. O painel lateral se torna um diálogo abaixo de 1200px, com um seletor que alcança todas as áreas. Cena, edição, visão e grade usam grupos com rótulos; os primitivos Radix mantêm foco e fechamento.
+
+Geometria do workbench e editor, campos e grupos pertencem a `tabletop-workspace.css`. Dock, seleção e comandos pertencem a `tabletop-route-experience.css`; declarações concorrentes foram retiradas dos módulos anteriores. StagePortal usa eventos do runtime em vez de um observer de body por instância. O launcher que retornava null foi retirado; preparação real e ferramentas avançadas conservam seus módulos.
+
+A comparação de conteúdo é pura. O serializador capturado por clones e o wrapper global de save da origem da grade foram retirados. O payload canônico mantém deslocamentos da grade; gravações principais recebem a identidade de origem. O recebimento de uma versão salva não elimina edições feitas durante o envio. Ambiente conta no estado de gravação e na confirmação de descarte; sua versão é atualizada sem apagar um preview posterior. As leituras de cena, sala e marcos invalidam respostas anteriores, incluindo erro e loading no fluxo que os controla.
+
+O localizador do Nexus acompanha a página selecionada e participa do layout de leitura. Destinos retornados podem ser escolhidos; a consulta continua limitada a oito. O atalho de comandos da Mesa usa Ctrl/Cmd+Shift+K, preservando Ctrl/Cmd+K para busca global. [Evidência do lote](tabletop-workspace-validation.json); integração e publicação exigem seus próprios registros. Validação de fixtures não equivale a autorização/RLS, rede ou dispositivos reais.
+
+Na Mesa, o Popover de recursos é renderizado pelo ReliabilityEditorBridge e estilizado em tabletop-reliability-editor.css. PlayerWorkspace fornece o slot de cabeçalho para áudio e ações táticas; StagePortal recebe o seletor do proprietário e conserva o alvo padrão do mestre. Não posicionar esses controles do jogador com as variáveis fixas do studio.

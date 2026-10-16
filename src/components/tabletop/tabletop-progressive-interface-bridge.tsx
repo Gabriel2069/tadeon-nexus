@@ -1,4 +1,6 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import type { TabletopToolMode } from "@/lib/tabletop/interaction-controller";
+import { toast } from "sonner";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   Command,
   CopyPlus,
@@ -14,7 +16,6 @@ import {
   MousePointer2,
   Redo2,
   Ruler,
-  Search,
   Sparkles,
   Trash2,
   Undo2,
@@ -24,9 +25,17 @@ import {
 } from "lucide-react";
 import { currentTabletopRuntime } from "@/lib/tabletop/tabletop-player-runtime";
 import type { TabletopSnapshot } from "@/lib/tabletop/types";
+import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import {
+  Command as CommandListRoot,
+  CommandInput,
+  CommandList,
+  CommandItem,
+  CommandEmpty,
+} from "@/components/ui/command";
 import { TabletopStagePortal } from "@/components/tabletop/tabletop-stage-portal";
 
-type InterfaceMode = "play" | "build" | "direct" | "advanced";
+export type InterfaceMode = "play" | "build" | "direct" | "advanced";
 
 type CommandAction = {
   id: string;
@@ -35,6 +44,7 @@ type CommandAction = {
   keywords: string;
   masterOnly?: boolean;
   destructive?: boolean;
+  disabled?: boolean;
   run: () => void;
 };
 
@@ -45,13 +55,6 @@ function typingTarget(target: EventTarget | null) {
     target instanceof HTMLSelectElement ||
     (target instanceof HTMLElement && target.isContentEditable)
   );
-}
-
-function clickWorkspaceFlow(label: string) {
-  const buttons = Array.from(
-    document.querySelectorAll<HTMLButtonElement>(".tadeon-tabletop-command-spaces button"),
-  );
-  buttons.find((button) => button.textContent?.includes(label))?.click();
 }
 
 function openCreativeDock() {
@@ -68,19 +71,25 @@ function focusCanvas() {
 
 export function TabletopProgressiveInterfaceBridge({
   role,
+  onOpenPanel,
+  editable = false,
+  lightingAvailable = false,
+  mode = "play",
+  onModeChange,
+  toolMode = "select",
 }: {
   role: "mestre" | "jogador";
+  onOpenPanel?: (tab: "library" | "master") => void;
+  editable?: boolean;
+  lightingAvailable?: boolean;
+  mode?: InterfaceMode;
+  onModeChange?: (mode: InterfaceMode) => void;
+  toolMode?: TabletopToolMode;
 }) {
   const [snapshot, setSnapshot] = useState<TabletopSnapshot | null>(null);
   const [commandOpen, setCommandOpen] = useState(false);
   const [commandSearch, setCommandSearch] = useState("");
   const [cleanPreview, setCleanPreview] = useState(false);
-  const [mode, setMode] = useState<InterfaceMode>(() => {
-    if (typeof window === "undefined" || role !== "mestre") return "play";
-    const stored = window.localStorage.getItem("tadeon-tabletop-interface-mode");
-    return stored === "build" || stored === "direct" || stored === "advanced" ? stored : "play";
-  });
-  const searchRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     const refresh = () => {
@@ -99,7 +108,6 @@ export function TabletopProgressiveInterfaceBridge({
   useEffect(() => {
     const html = document.documentElement;
     html.dataset.tadeonTabletopInterface = role === "mestre" ? mode : "play";
-    if (role === "mestre") window.localStorage.setItem("tadeon-tabletop-interface-mode", mode);
     return () => {
       delete html.dataset.tadeonTabletopInterface;
     };
@@ -113,12 +121,6 @@ export function TabletopProgressiveInterfaceBridge({
       delete html.dataset.tadeonTabletopClean;
     };
   }, [cleanPreview]);
-
-  useEffect(() => {
-    if (!commandOpen) return;
-    const frame = window.requestAnimationFrame(() => searchRef.current?.focus());
-    return () => window.cancelAnimationFrame(frame);
-  }, [commandOpen]);
 
   useEffect(() => {
     const html = document.documentElement;
@@ -172,11 +174,14 @@ export function TabletopProgressiveInterfaceBridge({
     focusCanvas();
   };
 
-  const setProgressiveMode = (next: InterfaceMode) => {
-    setMode(next);
-    if (next === "build") clickWorkspaceFlow("Montar");
-    if (next === "direct") clickWorkspaceFlow("Dirigir");
-  };
+  const setProgressiveMode = useCallback(
+    (next: InterfaceMode) => {
+      onModeChange?.(next);
+      if (next === "build") onOpenPanel?.("library");
+      if (next === "direct") onOpenPanel?.("master");
+    },
+    [onModeChange, onOpenPanel],
+  );
 
   const anyVisible = selected.some((entity) => !entity.hidden);
   const anyUnlocked = selected.some((entity) => !entity.locked);
@@ -371,26 +376,76 @@ export function TabletopProgressiveInterfaceBridge({
       hint: "",
       keywords: "fullscreen tela cheia projetar",
       run: () => {
-        if (!document.fullscreenElement) void document.documentElement.requestFullscreen?.();
-        else void document.exitFullscreen?.();
+        const action = document.fullscreenElement
+          ? document.exitFullscreen?.()
+          : document.documentElement.requestFullscreen?.();
+        if (!action) {
+          toast.info("Tela cheia não está disponível neste navegador.");
+          return;
+        }
+        void action.catch(() => toast.error("Não foi possível alternar a tela cheia."));
       },
     },
   ];
 
-  const query = commandSearch.trim().toLocaleLowerCase("pt-BR");
+  const normalize = (value: string) =>
+    value
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .toLocaleLowerCase("pt-BR");
+  const query = normalize(commandSearch.trim());
+  const selectionCommands = new Set([
+    "focus",
+    "reset-rotation",
+    "visibility",
+    "lock",
+    "duplicate",
+    "delete",
+  ]);
+  const editingCommands = new Set([
+    "draw",
+    "structure",
+    "light",
+    "fog-reveal",
+    "fog-hide",
+    "reset-rotation",
+    "visibility",
+    "lock",
+    "undo",
+    "redo",
+    "duplicate",
+    "delete",
+  ]);
+  for (const command of commands) {
+    command.disabled =
+      (!snapshot &&
+        !["essential", "build", "direct", "advanced", "clean", "fullscreen"].includes(
+          command.id,
+        )) ||
+      (selectionCommands.has(command.id) && selected.length === 0) ||
+      (editingCommands.has(command.id) && !editable) ||
+      (["structure", "light", "fog-reveal", "fog-hide"].includes(command.id) &&
+        !lightingAvailable) ||
+      (command.id === "undo" && !snapshot?.canUndo) ||
+      (command.id === "redo" && !snapshot?.canRedo);
+  }
   const visibleCommands = commands.filter((command) => {
     if (command.masterOnly && role !== "mestre") return false;
     if (!query) return true;
-    return `${command.label} ${command.keywords}`.toLocaleLowerCase("pt-BR").includes(query);
+    return normalize(`${command.label} ${command.keywords}`).includes(query);
   });
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
       if (typingTarget(event.target)) return;
       const modifier = event.metaKey || event.ctrlKey;
-      if (modifier && event.key.toLowerCase() === "k") {
+      if (modifier && event.shiftKey && event.key.toLowerCase() === "k") {
         event.preventDefault();
         setCommandOpen((current) => !current);
+        return;
+      }
+      if (event.key === "Escape" && cleanPreview) {
+        setCleanPreview(false);
         return;
       }
       if (event.key === "Escape" && commandOpen) {
@@ -405,7 +460,7 @@ export function TabletopProgressiveInterfaceBridge({
     };
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
-  }, [commandOpen, mode, role]);
+  }, [commandOpen, cleanPreview, mode, role, setProgressiveMode]);
 
   const selectionLabel =
     selected.length === 1 ? selected[0]?.label || "1 item" : `${selected.length} itens`;
@@ -413,233 +468,238 @@ export function TabletopProgressiveInterfaceBridge({
   return (
     <>
       <TabletopStagePortal>
-      {!cleanPreview && (
-        <div className="tadeon-tabletop-progressive-dock" aria-label="Controles rápidos da Mesa">
-          <button
-            type="button"
-            className="tadeon-tabletop-progressive-dock__button"
-            onClick={() => runEngine((engine) => engine.setToolMode("select"))}
-            aria-label="Selecionar"
-            title="Selecionar e manipular · V"
-          >
-            <MousePointer2 />
-            <span>Selecionar</span>
-          </button>
-          <button
-            type="button"
-            className="tadeon-tabletop-progressive-dock__button"
-            onClick={() => runEngine((engine) => engine.setToolMode("pan"))}
-            aria-label="Mover câmera"
-            title="Mover câmera · H"
-          >
-            <Hand />
-            <span>Mover</span>
-          </button>
-          <button
-            type="button"
-            className="tadeon-tabletop-progressive-dock__button"
-            onClick={() => runEngine((engine) => engine.setToolMode("measure"))}
-            aria-label="Medir"
-            title="Medir · R"
-          >
-            <Ruler />
-            <span>Medir</span>
-          </button>
+        {!cleanPreview && (
+          <div className="tadeon-tabletop-progressive-dock" aria-label="Controles rápidos da Mesa">
+            <button
+              type="button"
+              className="tadeon-tabletop-progressive-dock__button"
+              onClick={() => runEngine((engine) => engine.setToolMode("select"))}
+              aria-label="Selecionar"
+              aria-pressed={toolMode === "select"}
+              title="Selecionar e manipular · V"
+            >
+              <MousePointer2 />
+              <span>Selecionar</span>
+            </button>
+            <button
+              type="button"
+              className="tadeon-tabletop-progressive-dock__button"
+              onClick={() => runEngine((engine) => engine.setToolMode("pan"))}
+              aria-label="Mover câmera"
+              aria-pressed={toolMode === "pan"}
+              title="Mover câmera · H"
+            >
+              <Hand />
+              <span>Mover</span>
+            </button>
+            <button
+              type="button"
+              className="tadeon-tabletop-progressive-dock__button"
+              onClick={() => runEngine((engine) => engine.setToolMode("measure"))}
+              aria-label="Medir"
+              aria-pressed={toolMode === "measure"}
+              title="Medir · R"
+            >
+              <Ruler />
+              <span>Medir</span>
+            </button>
 
-          {role === "mestre" && (
-            <div className="tadeon-tabletop-progressive-dock__modes" aria-label="Modos de trabalho">
-              <button
-                type="button"
-                aria-pressed={mode === "play"}
-                onClick={() => setProgressiveMode("play")}
-                title="Interface essencial"
+            {role === "mestre" && (
+              <div
+                className="tadeon-tabletop-progressive-dock__modes"
+                aria-label="Modos de trabalho"
               >
-                <Sparkles />
-                <span>Jogar</span>
-              </button>
-              <button
-                type="button"
-                aria-pressed={mode === "build"}
-                onClick={() => setProgressiveMode("build")}
-                title="Ferramentas de montagem"
-              >
-                <Layers3 />
-                <span>Montar</span>
-              </button>
-              <button
-                type="button"
-                aria-pressed={mode === "direct"}
-                onClick={() => setProgressiveMode("direct")}
-                title="Ferramentas do mestre"
-              >
-                <Eye />
-                <span>Dirigir</span>
-              </button>
-              <button
-                type="button"
-                aria-pressed={mode === "advanced"}
-                onClick={() => setProgressiveMode("advanced")}
-                title="Reabrir todas as ferramentas e o painel de edição"
-                aria-label="Editar Mesa"
-              >
-                <Wrench />
-                <span>Editar</span>
-              </button>
-              <button
-                type="button"
-                onClick={() => window.requestAnimationFrame(openCreativeDock)}
-                title="Abrir Dock criativo"
-                aria-label="Abrir Dock criativo"
-              >
-                <LibraryBig />
-                <span>Dock</span>
-              </button>
-            </div>
-          )}
+                <button
+                  type="button"
+                  aria-pressed={mode === "play"}
+                  onClick={() => setProgressiveMode("play")}
+                  title="Interface essencial"
+                >
+                  <Sparkles />
+                  <span>Jogar</span>
+                </button>
+                <button
+                  type="button"
+                  aria-pressed={mode === "build"}
+                  onClick={() => setProgressiveMode("build")}
+                  title="Ferramentas de montagem"
+                >
+                  <Layers3 />
+                  <span>Montar</span>
+                </button>
+                <button
+                  type="button"
+                  aria-pressed={mode === "direct"}
+                  onClick={() => setProgressiveMode("direct")}
+                  title="Ferramentas do mestre"
+                >
+                  <Eye />
+                  <span>Dirigir</span>
+                </button>
+                <button
+                  type="button"
+                  aria-pressed={mode === "advanced"}
+                  onClick={() => setProgressiveMode("advanced")}
+                  title="Reabrir todas as ferramentas e o painel de edição"
+                  aria-label="Editar Mesa"
+                >
+                  <Wrench />
+                  <span>Editar</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => window.requestAnimationFrame(openCreativeDock)}
+                  title="Modelos e regiões"
+                  aria-label="Abrir biblioteca criativa"
+                >
+                  <LibraryBig />
+                  <span>Criar</span>
+                </button>
+              </div>
+            )}
 
-          <button
-            type="button"
-            className="tadeon-tabletop-progressive-dock__command"
-            onClick={() => setCommandOpen(true)}
-            aria-label="Abrir comandos"
-            title="Comandos · Ctrl/Cmd + K"
-          >
-            <Command />
-            <span>Comandos</span>
-            <kbd>⌘K</kbd>
-          </button>
-        </div>
-      )}
-
-      {!cleanPreview && selected.length > 0 && (
-        <div className="tadeon-tabletop-selection-actions" aria-label="Ações da seleção">
-          <div className="tadeon-tabletop-selection-actions__identity">
-            <Crosshair />
-            <span>{selectionLabel}</span>
+            <button
+              type="button"
+              className="tadeon-tabletop-progressive-dock__command"
+              onClick={() => setCommandOpen(true)}
+              aria-label="Abrir comandos"
+              title="Comandos da Mesa · Ctrl/Cmd + Shift + K"
+            >
+              <Command />
+              <span>Ações</span>
+              <kbd>⇧⌘K</kbd>
+            </button>
           </div>
+        )}
+
+        {!cleanPreview && selected.length > 0 && (
+          <div className="tadeon-tabletop-selection-actions" aria-label="Ações da seleção">
+            <div className="tadeon-tabletop-selection-actions__identity">
+              <Crosshair />
+              <span>{selectionLabel}</span>
+            </div>
+            <button
+              type="button"
+              onClick={() => runEngine((engine) => engine.focusSelection())}
+              title="Focar seleção"
+            >
+              <Focus />
+            </button>
+            {role === "mestre" && editable && (
+              <>
+                <button
+                  type="button"
+                  onClick={() =>
+                    runEngine((engine) =>
+                      engine.updateSelected(
+                        { hidden: anyVisible },
+                        anyVisible ? "Ocultar seleção" : "Revelar seleção",
+                      ),
+                    )
+                  }
+                  title={anyVisible ? "Ocultar dos jogadores" : "Revelar aos jogadores"}
+                >
+                  {anyVisible ? <EyeOff /> : <Eye />}
+                </button>
+                <button
+                  type="button"
+                  onClick={() =>
+                    runEngine((engine) =>
+                      engine.updateSelected(
+                        { locked: anyUnlocked },
+                        anyUnlocked ? "Travar seleção" : "Destravar seleção",
+                      ),
+                    )
+                  }
+                  title={anyUnlocked ? "Travar seleção" : "Destravar seleção"}
+                >
+                  {anyUnlocked ? <Lock /> : <Unlock />}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => runEngine((engine) => engine.duplicateSelected())}
+                  title="Duplicar seleção"
+                >
+                  <CopyPlus />
+                </button>
+                <button
+                  type="button"
+                  className="is-danger"
+                  onClick={() => runEngine((engine) => engine.deleteSelected())}
+                  title="Excluir seleção"
+                >
+                  <Trash2 />
+                </button>
+              </>
+            )}
+          </div>
+        )}
+
+        {cleanPreview && (
           <button
             type="button"
-            onClick={() => runEngine((engine) => engine.focusSelection())}
-            title="Focar seleção"
+            className="tadeon-tabletop-clean-exit"
+            onClick={() => setCleanPreview(false)}
           >
-            <Focus />
+            <X />
+            Sair da tela limpa
           </button>
-          {role === "mestre" && (
-            <>
-              <button
-                type="button"
-                onClick={() =>
-                  runEngine((engine) =>
-                    engine.updateSelected(
-                      { hidden: anyVisible },
-                      anyVisible ? "Ocultar seleção" : "Revelar seleção",
-                    ),
-                  )
-                }
-                title={anyVisible ? "Ocultar dos jogadores" : "Revelar aos jogadores"}
-              >
-                {anyVisible ? <EyeOff /> : <Eye />}
-              </button>
-              <button
-                type="button"
-                onClick={() =>
-                  runEngine((engine) =>
-                    engine.updateSelected(
-                      { locked: anyUnlocked },
-                      anyUnlocked ? "Travar seleção" : "Destravar seleção",
-                    ),
-                  )
-                }
-                title={anyUnlocked ? "Travar seleção" : "Destravar seleção"}
-              >
-                {anyUnlocked ? <Lock /> : <Unlock />}
-              </button>
-              <button
-                type="button"
-                onClick={() => runEngine((engine) => engine.duplicateSelected())}
-                title="Duplicar seleção"
-              >
-                <CopyPlus />
-              </button>
-              <button
-                type="button"
-                className="is-danger"
-                onClick={() => runEngine((engine) => engine.deleteSelected())}
-                title="Excluir seleção"
-              >
-                <Trash2 />
-              </button>
-            </>
-          )}
-        </div>
-      )}
-
-      {cleanPreview && (
-        <button
-          type="button"
-          className="tadeon-tabletop-clean-exit"
-          onClick={() => setCleanPreview(false)}
-        >
-          <X />
-          Sair da tela limpa
-        </button>
-      )}
-
+        )}
       </TabletopStagePortal>
 
-      {commandOpen && (
-        <div
-          className="tadeon-tabletop-command-layer"
-          role="presentation"
-          onMouseDown={(event) => {
-            if (event.target === event.currentTarget) setCommandOpen(false);
-          }}
-        >
-          <section
-            className="tadeon-tabletop-command-palette"
-            role="dialog"
-            aria-modal="true"
-            aria-label="Comandos da Mesa"
-          >
-            <header>
-              <Search />
-              <input
-                ref={searchRef}
-                value={commandSearch}
-                onChange={(event) => setCommandSearch(event.target.value)}
-                placeholder="Buscar ação, ferramenta ou modo…"
-                aria-label="Buscar comando"
-              />
-              <button type="button" onClick={() => setCommandOpen(false)} aria-label="Fechar comandos">
-                <X />
-              </button>
-            </header>
-            <div className="tadeon-tabletop-command-palette__list">
+      <Dialog
+        open={commandOpen}
+        onOpenChange={(open) => {
+          setCommandOpen(open);
+          if (!open) setCommandSearch("");
+        }}
+      >
+        <DialogContent className="tadeon-tabletop-command-palette">
+          <DialogTitle>Comandos da Mesa</DialogTitle>
+          <DialogDescription>
+            Busque uma ferramenta ou ação. Use as setas para escolher e Enter para executar.
+          </DialogDescription>
+          <CommandListRoot label="Buscar comando" shouldFilter={false} loop>
+            <CommandInput
+              value={commandSearch}
+              onValueChange={setCommandSearch}
+              placeholder="Buscar ação, ferramenta ou modo…"
+              aria-label="Buscar comando"
+            />
+            <CommandList className="tadeon-tabletop-command-palette__list">
+              <CommandEmpty>Nenhum comando corresponde à busca.</CommandEmpty>
               {visibleCommands.map((command) => (
-                <button
+                <CommandItem
                   key={command.id}
-                  type="button"
+                  value={command.id}
+                  aria-label={command.label}
+                  disabled={command.disabled}
                   className={command.destructive ? "is-danger" : undefined}
-                  onClick={() => {
+                  onSelect={() => {
                     command.run();
                     setCommandOpen(false);
                     setCommandSearch("");
                   }}
                 >
                   <span>{command.label}</span>
-                  {command.hint && <kbd>{command.hint}</kbd>}
-                </button>
+                  {command.hint && <kbd aria-hidden="true">{command.hint}</kbd>}
+                </CommandItem>
               ))}
-              {visibleCommands.length === 0 && <p>Nenhum comando corresponde à busca.</p>}
-            </div>
-            <footer>
-              <span><Undo2 /> Desfazer</span>
-              <span><Redo2 /> Refazer</span>
-              <span><Maximize2 /> Enquadrar</span>
-            </footer>
-          </section>
-        </div>
-      )}
+            </CommandList>
+          </CommandListRoot>
+          <footer>
+            <span>
+              <Undo2 /> Histórico
+            </span>
+            <span>
+              <Redo2 /> Edição
+            </span>
+            <span>
+              <Maximize2 /> Câmera
+            </span>
+          </footer>
+        </DialogContent>
+      </Dialog>
     </>
   );
 }

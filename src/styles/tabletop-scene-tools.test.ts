@@ -8,18 +8,6 @@ describe("tabletop scene tools", () => {
   const workspace = read("src/components/tabletop/tabletop-workspace.tsx");
   const styles = read("src/styles/tabletop-editor.css");
 
-  it("keeps the upper toolbar visible outside the collapsed mobile state", () => {
-    expect(workspace).toContain(
-      'tadeon-tabletop-toolbar relative z-10 mt-3 max-w-full',
-    );
-    expect(workspace).toContain('mobileToolsOpen ? "flex" : "hidden"');
-    expect(workspace).toContain("sm:!flex");
-    expect(styles).toContain('.tadeon-tabletop-toolbar[data-mobile-open="false"]');
-    expect(styles).toContain(
-      "html[data-tadeon-tabletop-interface] .tadeon-tabletop-studio .tadeon-tabletop-toolbar",
-    );
-  });
-
   it("exposes a protected action for deleting the current scene", () => {
     expect(workspace).toContain('label="Excluir cena atual"');
     expect(workspace).toContain("setDeleteSceneDialogOpen(true)");

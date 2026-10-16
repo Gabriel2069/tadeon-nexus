@@ -2,17 +2,17 @@
 .tadeon-tabletop-reliability-strip {
   position: fixed;
   z-index: 84;
-  top: max(.65rem, env(safe-area-inset-top));
+  top: max(0.65rem, env(safe-area-inset-top));
   left: 50%;
   display: flex;
   max-width: min(92vw, 760px);
   align-items: center;
-  gap: .28rem;
-  padding: .28rem;
-  border: 1px solid hsl(var(--border) / .55);
-  border-radius: .8rem;
-  background: hsl(var(--card) / .84);
-  box-shadow: 0 14px 34px -26px hsl(220 40% 2% / .92);
+  gap: 0.28rem;
+  padding: 0.28rem;
+  border: 1px solid hsl(var(--border) / 0.55);
+  border-radius: 0.8rem;
+  background: hsl(var(--card) / 0.84);
+  box-shadow: 0 14px 34px -26px hsl(220 40% 2% / 0.92);
   backdrop-filter: blur(14px) saturate(1.12);
   transform: translateX(-50%);
 }
@@ -22,29 +22,32 @@
   display: inline-flex;
   min-height: 1.9rem;
   align-items: center;
-  gap: .3rem;
-  border-radius: .58rem;
-  padding: .25rem .46rem;
+  gap: 0.3rem;
+  border-radius: 0.58rem;
+  padding: 0.25rem 0.46rem;
   color: hsl(var(--muted-foreground));
-  font-size: .61rem;
+  font-size: 0.61rem;
   font-weight: 650;
   white-space: nowrap;
 }
 
 .tadeon-tabletop-reliability-strip > button {
-  transition: color 150ms ease, background-color 150ms ease, transform 150ms ease;
+  transition:
+    color 150ms ease,
+    background-color 150ms ease,
+    transform 150ms ease;
 }
 
 .tadeon-tabletop-reliability-strip > button:hover,
 .tadeon-tabletop-reliability-strip > button[aria-pressed="true"] {
-  background: hsl(var(--secondary) / .42);
+  background: hsl(var(--secondary) / 0.42);
   color: hsl(var(--foreground));
   transform: translateY(-1px);
 }
 
 .tadeon-tabletop-reliability-strip svg {
-  width: .78rem;
-  height: .78rem;
+  width: 0.78rem;
+  height: 0.78rem;
 }
 
 .tadeon-tabletop-reliability-strip span[data-state="saving"] {
@@ -59,23 +62,29 @@
   position: fixed;
   z-index: 92;
   top: 4.2rem;
-  right: max(.75rem, env(safe-area-inset-right));
+  right: max(0.75rem, env(safe-area-inset-right));
   width: min(21rem, calc(100vw - 1.5rem));
   max-height: calc(100dvh - 5.4rem);
   overflow: auto;
-  border: 1px solid hsl(var(--border) / .7);
+  border: 1px solid hsl(var(--border) / 0.7);
   border-radius: 1rem;
   background:
-    radial-gradient(circle at 100% 0%, hsl(42 66% 52% / .08), transparent 16rem),
-    hsl(var(--card) / .97);
-  box-shadow: 0 24px 60px -34px hsl(220 45% 2% / .96);
+    radial-gradient(circle at 100% 0%, hsl(42 66% 52% / 0.08), transparent 16rem),
+    hsl(var(--card) / 0.97);
+  box-shadow: 0 24px 60px -34px hsl(220 45% 2% / 0.96);
   backdrop-filter: blur(18px);
   animation: tadeon-precision-enter 180ms ease-out both;
 }
 
 @keyframes tadeon-precision-enter {
-  from { opacity: 0; transform: translateX(10px) scale(.985); }
-  to { opacity: 1; transform: translateX(0) scale(1); }
+  from {
+    opacity: 0;
+    transform: translateX(10px) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
 }
 
 .tadeon-tabletop-precision-editor > header {
@@ -84,11 +93,11 @@
   top: 0;
   display: grid;
   grid-template-columns: 2rem minmax(0, 1fr) 2rem;
-  gap: .5rem;
+  gap: 0.5rem;
   align-items: center;
-  padding: .6rem;
-  border-bottom: 1px solid hsl(var(--border) / .55);
-  background: hsl(var(--card) / .94);
+  padding: 0.6rem;
+  border-bottom: 1px solid hsl(var(--border) / 0.55);
+  background: hsl(var(--card) / 0.94);
   backdrop-filter: blur(16px);
 }
 
@@ -97,14 +106,14 @@
   width: 2rem;
   height: 2rem;
   place-items: center;
-  border-radius: .65rem;
-  background: hsl(42 68% 52% / .1);
+  border-radius: 0.65rem;
+  background: hsl(42 68% 52% / 0.1);
   color: hsl(42 82% 70%);
 }
 
 .tadeon-tabletop-precision-editor > header svg {
-  width: .9rem;
-  height: .9rem;
+  width: 0.9rem;
+  height: 0.9rem;
 }
 
 .tadeon-tabletop-precision-editor > header small,
@@ -117,22 +126,22 @@
 
 .tadeon-tabletop-precision-editor > header small {
   color: hsl(var(--muted-foreground));
-  font-size: .56rem;
+  font-size: 0.56rem;
   text-transform: uppercase;
-  letter-spacing: .08em;
+  letter-spacing: 0.08em;
 }
 
 .tadeon-tabletop-precision-editor > header strong {
-  margin-top: .08rem;
+  margin-top: 0.08rem;
   font-family: var(--font-cinzel, serif);
-  font-size: .78rem;
+  font-size: 0.78rem;
 }
 
 .tadeon-tabletop-precision-editor > section {
   display: grid;
-  gap: .62rem;
-  padding: .78rem;
-  border-bottom: 1px solid hsl(var(--border) / .4);
+  gap: 0.62rem;
+  padding: 0.78rem;
+  border-bottom: 1px solid hsl(var(--border) / 0.4);
 }
 
 .tadeon-tabletop-precision-editor > section:last-child {
@@ -142,49 +151,49 @@
 .tadeon-tabletop-precision-editor__section-title {
   display: flex;
   align-items: center;
-  gap: .38rem;
+  gap: 0.38rem;
   color: hsl(var(--foreground));
-  font-size: .7rem;
+  font-size: 0.7rem;
   font-weight: 760;
 }
 
 .tadeon-tabletop-precision-editor__section-title svg {
-  width: .8rem;
-  height: .8rem;
+  width: 0.8rem;
+  height: 0.8rem;
   color: hsl(42 78% 68%);
 }
 
 .tadeon-tabletop-precision-editor__grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: .38rem;
+  gap: 0.38rem;
 }
 
 .tadeon-tabletop-precision-editor__grid label,
 .tadeon-tabletop-precision-editor__wide {
   display: grid;
-  gap: .18rem;
+  gap: 0.18rem;
   min-width: 0;
 }
 
 .tadeon-tabletop-precision-editor__grid label > span,
 .tadeon-tabletop-precision-editor__wide > span {
   color: hsl(var(--muted-foreground));
-  font-size: .57rem;
+  font-size: 0.57rem;
   font-weight: 650;
 }
 
 .tadeon-tabletop-precision-editor__grid input {
   min-width: 0;
   height: 1.95rem;
-  padding-inline: .42rem;
-  font-size: .7rem;
+  padding-inline: 0.42rem;
+  font-size: 0.7rem;
   font-variant-numeric: tabular-nums;
 }
 
 .tadeon-tabletop-precision-editor__wide input {
   height: 2.05rem;
-  font-size: .68rem;
+  font-size: 0.68rem;
 }
 
 .tadeon-tabletop-precision-editor__quick,
@@ -193,20 +202,20 @@
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: .35rem;
+  gap: 0.35rem;
 }
 
 .tadeon-tabletop-precision-editor__quick button {
   min-height: 1.75rem;
-  border: 1px solid hsl(var(--border) / .55);
-  border-radius: .52rem;
-  padding: .2rem .48rem;
+  border: 1px solid hsl(var(--border) / 0.55);
+  border-radius: 0.52rem;
+  padding: 0.2rem 0.48rem;
   color: hsl(var(--muted-foreground));
-  font-size: .61rem;
+  font-size: 0.61rem;
 }
 
 .tadeon-tabletop-precision-editor__quick button:hover {
-  border-color: hsl(42 70% 62% / .42);
+  border-color: hsl(42 70% 62% / 0.42);
   color: hsl(var(--foreground));
 }
 
@@ -214,9 +223,9 @@
   width: 2.25rem;
   height: 2.1rem;
   overflow: hidden;
-  border: 1px solid hsl(var(--border) / .6);
-  border-radius: .6rem;
-  padding: .16rem;
+  border: 1px solid hsl(var(--border) / 0.6);
+  border-radius: 0.6rem;
+  padding: 0.16rem;
   background: transparent;
 }
 
@@ -226,24 +235,24 @@
   min-height: 2.25rem;
   align-items: center;
   justify-content: space-between;
-  gap: .5rem;
-  border: 1px solid hsl(var(--border) / .45);
-  border-radius: .65rem;
-  padding: .38rem .5rem;
-  font-size: .64rem;
+  gap: 0.5rem;
+  border: 1px solid hsl(var(--border) / 0.45);
+  border-radius: 0.65rem;
+  padding: 0.38rem 0.5rem;
+  font-size: 0.64rem;
 }
 
 .tadeon-tabletop-precision-editor section > p {
   margin: 0;
   color: hsl(var(--muted-foreground));
-  font-size: .6rem;
+  font-size: 0.6rem;
   line-height: 1.45;
 }
 
 .tadeon-tabletop-precision-editor__empty {
   padding: 2.2rem 1.1rem;
   color: hsl(var(--muted-foreground));
-  font-size: .7rem;
+  font-size: 0.7rem;
   line-height: 1.5;
   text-align: center;
 }
@@ -255,9 +264,9 @@ html[data-tadeon-tabletop-drop="ready"] body::after {
   inset: 1rem;
   display: grid;
   place-items: center;
-  border: 2px dashed hsl(42 76% 62% / .64);
+  border: 2px dashed hsl(42 76% 62% / 0.64);
   border-radius: 1.2rem;
-  background: hsl(220 26% 5% / .72);
+  background: hsl(220 26% 5% / 0.72);
   color: hsl(42 82% 72%);
   font-family: var(--font-cinzel, serif);
   font-size: clamp(1rem, 2vw, 1.35rem);
@@ -270,25 +279,33 @@ html[data-tadeon-tabletop-drop="ready"] body::after {
   display: inline-flex;
   min-height: 2rem;
   align-items: center;
-  gap: .3rem;
-  border: 1px dashed hsl(42 72% 62% / .36);
+  gap: 0.3rem;
+  border: 1px dashed hsl(42 72% 62% / 0.36);
   border-radius: 999px;
-  padding: .3rem .58rem;
+  padding: 0.3rem 0.58rem;
   color: hsl(var(--muted-foreground));
-  font-size: .62rem;
+  font-size: 0.62rem;
   font-weight: 680;
   cursor: grab;
-  transition: border-color 150ms ease, color 150ms ease, transform 150ms ease;
+  transition:
+    border-color 150ms ease,
+    color 150ms ease,
+    transform 150ms ease;
 }
 
 .tadeon-sheet-tabletop-drag:hover {
-  border-color: hsl(42 72% 62% / .72);
+  border-color: hsl(42 72% 62% / 0.72);
   color: hsl(42 82% 72%);
   transform: translateY(-1px);
 }
 
-.tadeon-sheet-tabletop-drag:active { cursor: grabbing; }
-.tadeon-sheet-tabletop-drag svg { width: .75rem; height: .75rem; }
+.tadeon-sheet-tabletop-drag:active {
+  cursor: grabbing;
+}
+.tadeon-sheet-tabletop-drag svg {
+  width: 0.75rem;
+  height: 0.75rem;
+}
 
 @media (max-width: 800px) {
   .tadeon-tabletop-reliability-strip {
@@ -300,9 +317,9 @@ html[data-tadeon-tabletop-drop="ready"] body::after {
 
   .tadeon-tabletop-precision-editor {
     top: auto;
-    right: .5rem;
+    right: 0.5rem;
     bottom: calc(max(8rem, env(safe-area-inset-bottom) + 7.5rem));
-    left: .5rem;
+    left: 0.5rem;
     width: auto;
     max-height: 52dvh;
   }
@@ -321,7 +338,7 @@ html[data-tadeon-tabletop-drop="ready"] body::after {
 .tadeon-tabletop-toprail-controls {
   display: flex !important;
   align-items: center !important;
-  gap: .42rem !important;
+  gap: 0.42rem !important;
 }
 
 .tadeon-tabletop-toprail-setup,
@@ -349,32 +366,40 @@ html[data-tadeon-tabletop-drop="ready"] body::after {
 }
 
 /* The view toggle must be visually identical to the outline siblings beside it. */
-.tadeon-tabletop-toolbar__group button:is(
-  [aria-label="Ativar projeção espacial 3D"],
-  [aria-label="Voltar à planta 2D"]
-) {
-  border: 1px solid hsl(var(--input)) !important;
-  color: hsl(var(--foreground)) !important;
-  background: hsl(var(--background) / .70) !important;
-  box-shadow: inset 0 1px 0 rgba(255,255,255,.035) !important;
-}
-
-.tadeon-tabletop-toolbar__group button:is(
-  [aria-label="Ativar projeção espacial 3D"],
-  [aria-label="Voltar à planta 2D"]
-):hover {
-  border-color: hsl(var(--primary) / .35) !important;
-  color: hsl(var(--accent-foreground)) !important;
-  background: hsl(var(--accent)) !important;
-}
-
-.tadeon-tabletop-toolbar__group button[aria-label="Voltar à planta 2D"][aria-pressed="true"] {
-  border-color: hsl(var(--primary) / .55) !important;
-  color: hsl(var(--foreground)) !important;
-  background: hsl(var(--background) / .70) !important;
-  box-shadow:
-    inset 0 1px 0 rgba(255,255,255,.035),
-    0 0 0 1px hsl(var(--primary) / .12) !important;
-}
 
 /* end-source: src/styles/tabletop-reliability-editor.css */
+
+/* The resource list uses a bounded portal; it never grows the map's top rail. */
+.tadeon-tabletop-support-menu {
+  --material-rgb: 146 181 202;
+  display: grid;
+  gap: 0.5rem;
+  width: min(20rem, calc(100vw - 1.5rem));
+}
+.tadeon-tabletop-support-menu > span,
+.tadeon-tabletop-support-menu > button {
+  display: flex;
+  min-height: 44px;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.6rem 0.75rem;
+  border: 1px solid rgb(146 181 202 / 20%);
+  border-radius: 0.7rem;
+  font-size: 0.8125rem;
+}
+.tadeon-tabletop-support-menu > button {
+  cursor: pointer;
+  background: rgb(146 181 202 / 6%);
+}
+.tadeon-tabletop-support-menu > button[aria-pressed="true"] {
+  background: rgb(146 181 202 / 14%);
+  border-color: rgb(146 181 202 / 40%);
+}
+.tadeon-tabletop-support-menu > button:focus-visible {
+  outline: 2px solid var(--foreground);
+  outline-offset: 2px;
+}
+.tadeon-tabletop-support-menu svg {
+  width: 1rem;
+  height: 1rem;
+}

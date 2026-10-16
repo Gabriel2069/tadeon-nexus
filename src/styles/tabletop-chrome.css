@@ -5,39 +5,6 @@
 /* Cena / Editar / Visão vira um trilho fixo DENTRO da cena. Usamos left/right
    em vez de translate para continuar compatível com as camadas finais que
    garantem transform:none nessa barra. */
-.tadeon-tabletop-toolbar,
-.tadeon-tabletop-toolbar[data-tadeon-top-rail] {
-  position: fixed !important;
-  z-index: 96 !important;
-  top: var(--tadeon-tabletop-stage-fixed-top, .75rem) !important;
-  right: calc(var(--tadeon-tabletop-stage-fixed-right, .75rem) + 3.55rem) !important;
-  bottom: auto !important;
-  left: calc(var(--tadeon-tabletop-stage-fixed-left, .75rem) + 3.55rem) !important;
-  display: flex !important;
-  width: auto !important;
-  max-width: none !important;
-  max-height: min(4rem, var(--tadeon-tabletop-stage-fixed-height, 100dvh)) !important;
-  align-items: center !important;
-  justify-content: center !important;
-  margin: 0 !important;
-  padding: 0 !important;
-  overflow-x: auto !important;
-  overflow-y: hidden !important;
-  border: 0 !important;
-  border-radius: 0 !important;
-  background: transparent !important;
-  box-shadow: none !important;
-  backdrop-filter: none !important;
-  -webkit-backdrop-filter: none !important;
-  opacity: 1 !important;
-  visibility: visible !important;
-  pointer-events: auto !important;
-  transform: none !important;
-  overscroll-behavior-inline: contain;
-  scrollbar-width: none;
-}
-
-.tadeon-tabletop-toolbar::-webkit-scrollbar { display: none; }
 
 /* Autosave / ready / áudio / editor fica na segunda linha superior, também fixa
    e limitada à largura útil do mapa. */
@@ -167,20 +134,13 @@ html[data-tadeon-creative-dock="collapsed"] .tadeon-smart-setup__launcher {
 }
 
 /* Selecting something must never change the visual exposure of the map. */
-html[data-tadeon-tabletop-selection-active="true"] :is(
-  .tadeon-tabletop-studio,
-  .tadeon-tabletop-workbench,
-  .tadeon-tabletop-stage,
-  .tadeon-tabletop-canvas-host,
-  .tadeon-tabletop-canvas-host canvas
-) {
+html[data-tadeon-tabletop-selection-active="true"] :is(.tadeon-tabletop-studio,.tadeon-tabletop-stage,.tadeon-tabletop-canvas-host,.tadeon-tabletop-canvas-host canvas) {
   opacity: 1 !important;
   filter: none !important;
   backdrop-filter: none !important;
   -webkit-backdrop-filter: none !important;
 }
 
-html[data-tadeon-tabletop-selection-active="true"] .tadeon-tabletop-panel-backdrop,
 html[data-tadeon-tabletop-selection-active="true"] [data-tadeon-selection-guarded="true"] {
   display: none !important;
   opacity: 0 !important;
@@ -202,11 +162,6 @@ html[data-tadeon-tabletop-selection-active="true"] [data-tadeon-selection-guarde
 }
 
 @media (max-width: 800px) {
-  .tadeon-tabletop-toolbar,
-  .tadeon-tabletop-toolbar[data-tadeon-top-rail] {
-    right: calc(var(--tadeon-tabletop-stage-fixed-right, .5rem) + 3.2rem) !important;
-    left: calc(var(--tadeon-tabletop-stage-fixed-left, .5rem) + 3.2rem) !important;
-  }
 
   .tadeon-tabletop-reliability-strip {
     top: calc(

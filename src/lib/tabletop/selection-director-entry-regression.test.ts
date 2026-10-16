@@ -37,13 +37,6 @@ describe("seleção, projeção e superfícies de entrada", () => {
     expect(bridge).toContain('event.key.toLocaleLowerCase("pt-BR") === "v"');
   });
 
-  it("mantém o frame da seleção transparente mesmo durante transições antigas", () => {
-    const css = source("src/styles/selection-director-entry-polish.css");
-    expect(css).toContain(".tadeon-tabletop-panel-frame");
-    expect(css).toContain("background: transparent !important");
-    expect(css).toContain("display: none !important");
-  });
-
   it("amplia a prévia da câmera e organiza os toggles do Diretor", () => {
     const css = source("src/styles/selection-director-entry-polish.css");
     expect(css).toContain(".tadeon-director-remote__preview-frame");

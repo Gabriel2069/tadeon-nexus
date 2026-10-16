@@ -21,17 +21,6 @@ function fog(operation: "reveal" | "hide", sequenceIndex: number): TabletopFogSt
 }
 
 describe("acabamento espacial da Mesa Nexus", () => {
-  it("mantém o inspetor responsivo não modal e recupera a telemetria inferior", () => {
-    const route = source("src/components/tabletop/tabletop-route-experience.tsx");
-    const css = source("src/styles/tabletop-spatial-finish.css");
-
-    expect(route).toContain('import "@/styles/tabletop-route-experience.css";');
-    expect(css).toContain(".tadeon-tabletop-panel-backdrop[data-open=\"true\"]");
-    expect(css).toContain("pointer-events: none !important;");
-    expect(css).toContain(".tadeon-tabletop-stage-status");
-    expect(css).toContain("display: flex !important;");
-    expect(css).toContain("bottom: 4.65rem !important;");
-  });
 
   it("remove o chrome duplicado que flutuava sobre seleção e painel do mestre", () => {
     const deferred = source("src/components/tabletop/tabletop-deferred-enhancements.tsx");

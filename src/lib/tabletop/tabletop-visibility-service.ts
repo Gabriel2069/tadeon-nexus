@@ -58,9 +58,7 @@ export interface TabletopLight {
 export type TabletopFogShape = "brush" | "rectangle" | "ellipse" | "polygon";
 
 export type TabletopFogAudience =
-  | { scope: "global" }
-  | { scope: "users"; userIds: string[] }
-  | { scope: "roles"; roles: string[] };
+  { scope: "global" } | { scope: "users"; userIds: string[] } | { scope: "roles"; roles: string[] };
 
 export function isTabletopFogShape(value: unknown): value is TabletopFogShape {
   return value === "brush" || value === "rectangle" || value === "ellipse" || value === "polygon";
@@ -70,13 +68,17 @@ export function normalizeTabletopFogAudience(value: unknown): TabletopFogAudienc
   const source = objectValue(value);
   if (source.scope === "users") {
     const userIds = Array.isArray(source.userIds)
-      ? source.userIds.filter((item): item is string => typeof item === "string" && item.length > 0).slice(0, 128)
+      ? source.userIds
+          .filter((item): item is string => typeof item === "string" && item.length > 0)
+          .slice(0, 128)
       : [];
     return userIds.length > 0 ? { scope: "users", userIds } : { scope: "global" };
   }
   if (source.scope === "roles") {
     const roles = Array.isArray(source.roles)
-      ? source.roles.filter((item): item is string => typeof item === "string" && item.length > 0).slice(0, 16)
+      ? source.roles
+          .filter((item): item is string => typeof item === "string" && item.length > 0)
+          .slice(0, 16)
       : [];
     return roles.length > 0 ? { scope: "roles", roles } : { scope: "global" };
   }
@@ -150,7 +152,10 @@ function lightProperties(value: unknown): TabletopLightProperties {
       ? source.shape
       : "radial";
   const particles =
-    source.particles === "dust" || source.particles === "embers" || source.particles === "mist" || source.particles === "sparks"
+    source.particles === "dust" ||
+    source.particles === "embers" ||
+    source.particles === "mist" ||
+    source.particles === "sparks"
       ? source.particles
       : "none";
   return {
@@ -218,7 +223,10 @@ export function clampVisibilityState(state: TabletopVisibilityState): TabletopVi
 }
 
 export class TabletopVisibilityService {
-  constructor(private readonly database: SupabaseClient = visibilityDatabase) {}
+  constructor(
+    private readonly database: SupabaseClient = visibilityDatabase,
+    private readonly auth = supabase.auth,
+  ) {}
 
   async load(sceneId: string): Promise<TabletopVisibilityState> {
     const [sceneResult, wallResult, lightResult, fogResult] = await Promise.all([
@@ -229,12 +237,16 @@ export class TabletopVisibilityService {
         .single(),
       this.database
         .from("tabletop_walls")
-        .select("id,level_id,x1,y1,x2,y2,wall_type,blocks_vision,blocks_movement,base_elevation,height,thickness,player_operable,properties,version")
+        .select(
+          "id,level_id,x1,y1,x2,y2,wall_type,blocks_vision,blocks_movement,base_elevation,height,thickness,player_operable,properties,version",
+        )
         .eq("scene_id", sceneId)
         .order("created_at"),
       this.database
         .from("tabletop_lights")
-        .select("id,level_id,entity_id,x,y,elevation,radius,intensity,color,enabled,casts_shadows,properties")
+        .select(
+          "id,level_id,entity_id,x,y,elevation,radius,intensity,color,enabled,casts_shadows,properties",
+        )
         .eq("scene_id", sceneId)
         .order("created_at"),
       this.database
@@ -288,7 +300,10 @@ export class TabletopVisibilityService {
         operation: stroke.operation,
         shape: isTabletopFogShape(stroke.geometry) ? stroke.geometry : "brush",
         points: Array.isArray(stroke.points)
-          ? stroke.points.map((point: { x?: unknown; y?: unknown }) => ({ x: finite(point.x), y: finite(point.y) }))
+          ? stroke.points.map((point: { x?: unknown; y?: unknown }) => ({
+              x: finite(point.x),
+              y: finite(point.y),
+            }))
           : [],
         radius: finite(stroke.radius, 160),
         sequenceIndex: stroke.sequence_index,
@@ -297,7 +312,12 @@ export class TabletopVisibilityService {
     });
   }
 
-  async save(sceneId: string, state: TabletopVisibilityState) {
+  async save(sceneId: string, state: TabletopVisibilityState, actorId?: string) {
+    if (actorId) {
+      const { data } = await this.auth.getSession();
+      if (data.session?.user.id !== actorId)
+        throw new TabletopVisibilityError("TABLETOP_VISIBILITY_FORBIDDEN");
+    }
     const normalized = clampVisibilityState(state);
     const { data, error } = await this.database.rpc("save_tabletop_visibility_state", {
       target_scene_id: sceneId,

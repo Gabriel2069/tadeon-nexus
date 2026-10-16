@@ -188,9 +188,7 @@
    Tabletop: stronger stage framing without hiding the canvas
    -------------------------------------------------------------------------- */
 
-.tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-toolbar,
-.tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-floating-toolbar,
-.tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-controls {
+.tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-floating-toolbar,.tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-controls {
   border-width: 1px 1px 2px !important;
   border-color: rgb(126 91 47 / 38%) !important;
   border-radius: .8rem .22rem .8rem .22rem !important;
@@ -468,20 +466,11 @@
 /* --------------------------------------------------------------------------
    Toolbar groups feel attached to the surface they control
    -------------------------------------------------------------------------- */
-.tadeon-shell .tadeon-brain-toolbar,
-.tadeon-shell .tadeon-brain-mode,
-.tadeon-shell .tadeon-master-commandbar,
-.tadeon-shell .tadeon-tabletop-toolbar,
-.tadeon-shell .tadeon-tabletop-floating-toolbar,
-.tadeon-shell .tadeon-tabletop-controls {
+.tadeon-shell .tadeon-brain-toolbar,.tadeon-shell .tadeon-brain-mode,.tadeon-shell .tadeon-master-commandbar,.tadeon-shell .tadeon-tabletop-floating-toolbar,.tadeon-shell .tadeon-tabletop-controls {
   isolation: isolate;
 }
 
-.tadeon-shell .tadeon-brain-toolbar::after,
-.tadeon-shell .tadeon-brain-mode::after,
-.tadeon-shell .tadeon-tabletop-toolbar::after,
-.tadeon-shell .tadeon-tabletop-floating-toolbar::after,
-.tadeon-shell .tadeon-tabletop-controls::after {
+.tadeon-shell .tadeon-brain-toolbar::after,.tadeon-shell .tadeon-brain-mode::after,.tadeon-shell .tadeon-tabletop-floating-toolbar::after,.tadeon-shell .tadeon-tabletop-controls::after {
   position: absolute;
   inset: 0;
   z-index: -1;
@@ -494,9 +483,7 @@
 /* --------------------------------------------------------------------------
    Tabletop: make contextual tools read as layers above the scene
    -------------------------------------------------------------------------- */
-.tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-toolbar,
-.tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-floating-toolbar,
-.tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-controls {
+.tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-floating-toolbar,.tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-controls {
   transition:
     transform 220ms cubic-bezier(.23,1,.32,1),
     border-color 180ms ease,
@@ -505,9 +492,7 @@
 }
 
 @media (hover: hover) and (pointer: fine) {
-  .tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-toolbar:hover,
-  .tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-floating-toolbar:hover,
-  .tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-controls:hover {
+  .tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-floating-toolbar:hover,.tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-controls:hover {
     transform: translateY(-2px);
     border-color: rgb(126 91 47 / 48%);
     box-shadow:
@@ -793,11 +778,7 @@
 }
 
 /* Tabletop - studio physicality, short response and deeper press. */
-.tadeon-tabletop-studio__header,
-.tadeon-tabletop-toolbar,
-.tadeon-tabletop-floating-toolbar,
-.tadeon-tabletop-controls,
-.tadeon-tabletop-studio [data-tabletop-stage] {
+.tadeon-tabletop-studio__header,.tadeon-tabletop-floating-toolbar,.tadeon-tabletop-controls,.tadeon-tabletop-studio [data-tabletop-stage] {
   transition: box-shadow 360ms var(--tadeon-motion-material, cubic-bezier(.23,1,.32,1)),
     border-color 300ms ease,
     opacity 280ms ease;

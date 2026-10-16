@@ -10,10 +10,13 @@ const assert = (v, m) => {
   if (!v) throw new Error(m);
 };
 console.log("Launching browser");
-const browser = await chromium.launch({
-  executablePath: process.env.NEXUS_CHROMIUM_PATH,
-  args: JSON.parse(process.env.NEXUS_CHROMIUM_ARGS || "[]"),
-});
+// A fresh browser per viewport keeps software GPU contexts isolated.
+let browser;
+const launchBrowser = () =>
+  chromium.launch({
+    executablePath: process.env.NEXUS_CHROMIUM_PATH,
+    args: JSON.parse(process.env.NEXUS_CHROMIUM_ARGS || "[]"),
+  });
 console.log("Browser ready; starting installed Vite");
 const server = spawn(
   "npm",
@@ -116,6 +119,8 @@ try {
     setTimeout(() => fail(new Error("Vite timeout")), 30000).unref();
   });
   for (const width of (process.env.NEXUS_WIDTHS || "320,390,820,1440").split(",").map(Number)) {
+    if (browser) await browser.close();
+    browser = await launchBrowser();
     const context = await browser.newContext({
       viewport: { width, height: 1000 },
       hasTouch: width < 768,
@@ -156,10 +161,12 @@ try {
         body = [{ id: uid, full_name: "Leitor de exemplo" }];
       else if (url.pathname.includes("/user_roles")) body = [{ user_id: uid, role: "mestre" }];
       else if (url.pathname.includes("/feature_flags"))
-        body = ["nexus_knowledge_enabled", "nexus_graph_enabled"].map((key) => ({
-          key,
-          enabled: true,
-        }));
+        body = ["nexus_knowledge_enabled", "nexus_graph_enabled", "nexus_tabletop_enabled"].map(
+          (key) => ({
+            key,
+            enabled: true,
+          }),
+        );
       else if (url.pathname.includes("/workspaces"))
         body = [{ id: wid, name: "Arquivo de exemplo" }];
       else if (url.pathname.includes("/rpc/search_knowledge_nodes")) {
@@ -190,6 +197,19 @@ try {
             (edge) => visible.has(edge.sourceNodeId) && visible.has(edge.targetNodeId),
           ),
         };
+      } else if (url.pathname.includes("/tabletop_entities")) {
+        const selectedId = url.searchParams.get("linked_knowledge_node_id")?.slice(3);
+        body = selectedId
+          ? [
+              { id: id(1000), scene_id: id(2000), name: `Fio ${selectedId}` },
+              { id: id(1001), scene_id: id(2001), name: `Vínculo ${selectedId}` },
+            ]
+          : [];
+      } else if (url.pathname.includes("/tabletop_scenes")) {
+        body = [
+          { id: id(2000), name: "Salão dos fios" },
+          { id: id(2001), name: "Jardim encoberto" },
+        ];
       } else if (url.pathname.includes("/knowledge_nodes")) {
         const filter = url.searchParams.get("id");
         body = filter?.startsWith("eq.") ? nodes.filter((n) => n.id === filter.slice(3)) : nodes;
@@ -245,6 +265,17 @@ try {
       });
     assert((await page.locator("main").count()) === 1, "One main landmark");
     console.log("Page ready", width);
+    const locations = page.getByRole("combobox", { name: "Localizações desta página na Mesa" });
+    await locations.waitFor();
+    assert(
+      (await locations.locator("option").first().textContent()).includes(id(0)),
+      "Locator follows current reading page",
+    );
+    await locations.selectOption(id(1001));
+    assert((await locations.inputValue()) === id(1001), "Every returned location is selectable");
+    if (!process.env.NEXUS_SKIP_SCREENSHOTS)
+      await page.screenshot({ path: `${output}/current-page-context-${width}.png` });
+
     const initialDocument = page.locator(
       '.tadeon-nexus-reading__panes [data-panel][id="document"]',
     );
@@ -257,6 +288,29 @@ try {
     );
     const tree = page.getByRole("tree");
     await tree.waitFor();
+    await tree.getByRole("treeitem", { name: nodes[1].title, exact: true }).click();
+    await page.getByRole("heading", { name: nodes[1].title, exact: true }).waitFor();
+    await page.waitForFunction(
+      (expected) =>
+        document
+          .querySelector(".tadeon-nexus-tabletop-locator select option")
+          ?.textContent?.includes(expected),
+      id(1),
+    );
+    assert(
+      new URL(page.url()).searchParams.get("node") === id(0),
+      "The fixture route stays on its original deep link",
+    );
+    await page.getByRole("button", { name: `Fechar ${nodes[1].title}`, exact: true }).click();
+    await page.getByRole("heading", { name: nodes[0].title, exact: true }).waitFor();
+    await page.waitForFunction(
+      (expected) =>
+        document
+          .querySelector(".tadeon-nexus-tabletop-locator select option")
+          ?.textContent?.includes(expected),
+      id(0),
+    );
+
     await page.getByRole("button", { name: "Próxima página", exact: true }).click();
     await page.getByText(`2 de ${Math.ceil(corpus / 30)}`, { exact: true }).waitFor();
     await page.getByRole("button", { name: "Página anterior", exact: true }).click();
@@ -367,9 +421,10 @@ try {
     }
 
     if (!process.env.NEXUS_SKIP_SCREENSHOTS)
-      await panes.screenshot({
+      await page.screenshot({
         path: `${output}/split-${width}.png`,
         animations: "disabled",
+        timeout: 20000,
       });
     await page.getByRole("button", { name: "Grafo", exact: true }).click();
     assert(
@@ -383,9 +438,10 @@ try {
       .click();
     assert((await canvas.getAttribute("data-layout")) === "tree", "Tree view");
     if (!process.env.NEXUS_SKIP_SCREENSHOTS)
-      await panes.screenshot({
+      await page.screenshot({
         path: `${output}/tree-${width}.png`,
         animations: "disabled",
+        timeout: 20000,
       });
     await canvas.focus();
     await page.keyboard.press("Enter");
@@ -402,9 +458,10 @@ try {
       .evaluate((element) => element.getBoundingClientRect().width);
     assert(cardWidth >= 200, "Library cards retain readable width in the result pane");
     if (!process.env.NEXUS_SKIP_SCREENSHOTS)
-      await library.screenshot({
+      await page.screenshot({
         path: `${output}/library-${width}.png`,
         animations: "disabled",
+        timeout: 20000,
       });
     if (width < 1024) {
       const card = library.locator(".tadeon-library-card").first();
@@ -518,7 +575,7 @@ try {
   writeFileSync(`${output}/results.json`, JSON.stringify(results, null, 2));
   console.log(`Nexus reading verified: ${results.length} viewports`);
 } finally {
-  await browser.close();
+  await browser?.close();
   try {
     process.kill(-server.pid, "SIGTERM");
   } catch {}

@@ -1,10 +1,6 @@
 import { readFoundationSource as readFileSync } from "@/test/read-foundation-source";
 import { describe, expect, it } from "vitest";
 
-const setup = readFileSync(
-  "src/components/tabletop/tabletop-smart-setup-launcher-dock-bridge.tsx",
-  "utf8",
-);
 const canonicalSetup = readFileSync(
   "src/components/tabletop/tabletop-smart-setup-bridge.tsx",
   "utf8",
@@ -15,15 +11,10 @@ const deferred = readFileSync(
   "utf8",
 );
 const grid = readFileSync("src/lib/tabletop/grid-renderer.ts", "utf8");
-const fingerprint = readFileSync(
-  "src/lib/tabletop/tabletop-scene-fingerprint-guard.ts",
-  "utf8",
-);
 
 describe("tabletop setup, grid and autosave repair 197/198/200", () => {
   it("keeps the duplicate Setup launcher inert and the canonical launcher fixed at the top", () => {
-    expect(setup).toContain("return null");
-    expect(setup).not.toContain("WandSparkles");
+    expect(deferred).not.toContain("SmartSetupLauncherDockBridge");
     expect(canonicalSetup).toContain('className="tadeon-smart-setup__launcher"');
     expect(setupCss).toContain(".tadeon-smart-setup__launcher {");
     expect(setupCss).toContain("position: fixed");
@@ -40,12 +31,4 @@ describe("tabletop setup, grid and autosave repair 197/198/200", () => {
     expect(grid).not.toContain("new Container");
   });
 
-  it("compares scene content without persistence-only metadata", () => {
-    expect(deferred).toContain('import "@/lib/tabletop/tabletop-scene-fingerprint-guard"');
-    expect(fingerprint).toContain("function canonicalScene(scene: TabletopScene)");
-    expect(fingerprint).toContain('Object.defineProperty(target, "toJSON"');
-    expect(fingerprint).toContain("tabletopPersistenceService.saveWorkspace = async");
-    expect(fingerprint).not.toContain("campaignId: scene.campaignId");
-    expect(fingerprint).not.toContain("version: entity.version");
-  });
 });

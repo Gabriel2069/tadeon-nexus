@@ -287,13 +287,7 @@ body:has(.tadeon-tabletop-command-layer) :where(
 
 /* Em altura baixa, nenhuma utilidade deve atravessar a área de gestos do SO. */
 @media (max-height: 620px) {
-  :where(
-    .tadeon-placeables__panel,
-    .tadeon-tabletop-now__panel,
-    .tadeon-creative-dock__panel,
-    .tadeon-tabletop-precision-editor,
-    .tadeon-nexus-tabletop-locator
-  ) {
+  :where(.tadeon-placeables__panel,.tadeon-tabletop-now__panel,.tadeon-creative-dock__panel,.tadeon-tabletop-precision-editor) {
     max-height: calc(100dvh - var(--tadeon-safe-top) - var(--tadeon-safe-bottom) - 5.25rem) !important;
     overflow-y: auto !important;
     overscroll-behavior: contain;
@@ -412,24 +406,14 @@ body:has(.tadeon-tabletop-studio) {
   .tadeon-semantic-transform { bottom: var(--tadeon-tabletop-bottom-row-1) !important; }
   .tadeon-smart-setup__launcher { top: var(--tadeon-tabletop-top-row-2) !important; }
   .tadeon-smart-setup { right: var(--tadeon-stage-right-safe) !important; width: min(28rem, calc(var(--tadeon-tabletop-stage-width, 100vw) - 1.4rem)) !important; }
-  .tadeon-tabletop-progressive-dock,
-  .tadeon-tactical-dock,
-  .tadeon-tabletop-selection-actions { left: var(--tadeon-tabletop-stage-center, 50%) !important; max-width: calc(var(--tadeon-tabletop-stage-width, 100vw) - 2rem) !important; }
-  html[data-tadeon-tabletop-interface="advanced"] .tadeon-tabletop-progressive-dock { bottom: calc(var(--tadeon-tabletop-bottom-edge) + 3.15rem) !important; }
+  .tadeon-tactical-dock { left: var(--tadeon-tabletop-stage-center, 50%) !important; max-width: calc(var(--tadeon-tabletop-stage-width, 100vw) - 2rem) !important; }
   html[data-tadeon-tabletop-interface="advanced"] .tadeon-tactical-dock { bottom: calc(var(--tadeon-tabletop-bottom-row-1) + 3.15rem) !important; }
-  html[data-tadeon-tabletop-interface="advanced"] .tadeon-tabletop-selection-actions { bottom: calc(var(--tadeon-tabletop-bottom-row-2) + 3.15rem) !important; }
   html[data-tadeon-tabletop-interface="advanced"] .tadeon-creative-dock[data-open="false"] { bottom: calc(var(--tadeon-tabletop-bottom-row-1) + 3.15rem) !important; }
 }
-
-.tadeon-tabletop-panel-backdrop { background: transparent !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }
-.tadeon-tabletop-panel-backdrop[data-open="false"] { opacity: 0 !important; visibility: hidden !important; pointer-events: none !important; }
-@media (min-width: 801px) { .tadeon-tabletop-panel-backdrop[data-open="true"] { opacity: 0 !important; pointer-events: none !important; } }
+@media (min-width: 801px) { }
 
 @media (min-width: 1180px) {
-  body:has(.tadeon-creative-dock[data-open="true"]) .tadeon-tabletop-selection-actions,
-  body:has(.tadeon-smart-setup[data-open="true"]) .tadeon-creative-dock,
-  body:has(.tadeon-smart-setup[data-open="true"]) .tadeon-placeables,
-  body:has(.tadeon-smart-setup[data-open="true"]) .tadeon-semantic-transform { opacity: 0 !important; visibility: hidden !important; pointer-events: none !important; }
+  body:has(.tadeon-smart-setup[data-open="true"]) .tadeon-creative-dock,body:has(.tadeon-smart-setup[data-open="true"]) .tadeon-placeables,body:has(.tadeon-smart-setup[data-open="true"]) .tadeon-semantic-transform { opacity: 0 !important; visibility: hidden !important; pointer-events: none !important; }
 }
 
 @media (max-width: 1179px) {
@@ -479,15 +463,6 @@ body:has(.tadeon-tabletop-studio) {
 /* Final user-facing authority. Loaded after every previous stylesheet. */
 
 /* Mesa: selection is contextual, never a modal screen. */
-.tadeon-tabletop-panel-backdrop {
-  display:none !important;
-  opacity:0 !important;
-  visibility:hidden !important;
-  pointer-events:none !important;
-  background:transparent !important;
-  backdrop-filter:none !important;
-  -webkit-backdrop-filter:none !important;
-}
 
 /* Mesa: use the actual stage geometry and make heavyweight work surfaces exclusive. */
 @media (min-width:1180px) {
@@ -519,47 +494,12 @@ body:has(.tadeon-tabletop-studio) {
   .tadeon-creative-dock__panel {
     right:calc(var(--tadeon-tabletop-stage-right,0px) + .75rem) !important;
   }
-  .tadeon-tabletop-progressive-dock,
-  .tadeon-tactical-dock,
-  .tadeon-tabletop-selection-actions {
+  .tadeon-tactical-dock {
     left:var(--tadeon-tabletop-stage-center,50%) !important;
     max-width:calc(var(--tadeon-tabletop-stage-width,100vw) - 2rem) !important;
   }
-  .tadeon-tabletop-selection-actions { bottom:var(--tadeon-tabletop-bottom-row-2) !important; }
 
-  body:has(.tadeon-creative-dock[data-open="true"]) :is(
-    .tadeon-tabletop-progressive-dock,.tadeon-tactical-dock,.tadeon-tabletop-selection-actions,
-    .tadeon-placeables,.tadeon-semantic-transform,.tadeon-smart-setup__launcher,.tadeon-nexus-tabletop-locator
-  ),
-  body:has(.tadeon-placeables[data-open="true"]) :is(
-    .tadeon-tabletop-progressive-dock,.tadeon-tactical-dock,.tadeon-tabletop-selection-actions,
-    .tadeon-creative-dock,.tadeon-semantic-transform,.tadeon-smart-setup__launcher,.tadeon-nexus-tabletop-locator
-  ),
-  body:has(.tadeon-smart-setup[data-open="true"]) :is(
-    .tadeon-tabletop-progressive-dock,.tadeon-tactical-dock,.tadeon-tabletop-selection-actions,
-    .tadeon-creative-dock,.tadeon-placeables,.tadeon-semantic-transform,.tadeon-nexus-tabletop-locator
-  ),
-  body:has(.tadeon-tabletop-precision-editor) :is(
-    .tadeon-tabletop-progressive-dock,.tadeon-tactical-dock,.tadeon-tabletop-selection-actions,
-    .tadeon-creative-dock,.tadeon-placeables,.tadeon-semantic-transform,
-    .tadeon-smart-setup__launcher,.tadeon-nexus-tabletop-locator
-  ),
-  body:has(.tadeon-tactical-dock__power-list) :is(
-    .tadeon-tabletop-selection-actions,.tadeon-creative-dock,.tadeon-placeables,
-    .tadeon-semantic-transform,.tadeon-smart-setup__launcher,.tadeon-nexus-tabletop-locator
-  ),
-  body:has(.tadeon-director-remote) :is(
-    .tadeon-tabletop-selection-actions,.tadeon-creative-dock,.tadeon-placeables,
-    .tadeon-semantic-transform,.tadeon-smart-setup__launcher,.tadeon-nexus-tabletop-locator
-  ),
-  body:has(.tadeon-region-automation) :is(
-    .tadeon-tabletop-progressive-dock,.tadeon-tactical-dock,.tadeon-tabletop-selection-actions,
-    .tadeon-creative-dock,.tadeon-placeables,.tadeon-semantic-transform,.tadeon-smart-setup__launcher
-  ),
-  body:has(.tadeon-tabletop-visibility-inspector[data-open="true"]) :is(
-    .tadeon-tabletop-selection-actions,.tadeon-creative-dock,.tadeon-placeables,
-    .tadeon-semantic-transform,.tadeon-smart-setup__launcher,.tadeon-nexus-tabletop-locator
-  ) {
+  body:has(.tadeon-creative-dock[data-open="true"]) :is(.tadeon-tactical-dock,.tadeon-placeables,.tadeon-semantic-transform,.tadeon-smart-setup__launcher),body:has(.tadeon-placeables[data-open="true"]) :is(.tadeon-tactical-dock,.tadeon-creative-dock,.tadeon-semantic-transform,.tadeon-smart-setup__launcher),body:has(.tadeon-smart-setup[data-open="true"]) :is(.tadeon-tactical-dock,.tadeon-creative-dock,.tadeon-placeables,.tadeon-semantic-transform),body:has(.tadeon-tabletop-precision-editor) :is(.tadeon-tactical-dock,.tadeon-creative-dock,.tadeon-placeables,.tadeon-semantic-transform,.tadeon-smart-setup__launcher),body:has(.tadeon-tactical-dock__power-list) :is(.tadeon-creative-dock,.tadeon-placeables,.tadeon-semantic-transform,.tadeon-smart-setup__launcher),body:has(.tadeon-director-remote) :is(.tadeon-creative-dock,.tadeon-placeables,.tadeon-semantic-transform,.tadeon-smart-setup__launcher),body:has(.tadeon-region-automation) :is(.tadeon-tactical-dock,.tadeon-creative-dock,.tadeon-placeables,.tadeon-semantic-transform,.tadeon-smart-setup__launcher),body:has(.tadeon-tabletop-visibility-inspector[data-open="true"]) :is(.tadeon-creative-dock,.tadeon-placeables,.tadeon-semantic-transform,.tadeon-smart-setup__launcher) {
     opacity:0 !important;
     visibility:hidden !important;
     pointer-events:none !important;
@@ -567,13 +507,7 @@ body:has(.tadeon-tabletop-studio) {
 }
 
 @media (max-width:1179px) {
-  body:has(.tadeon-tabletop-panel[data-mobile-open="true"]) :is(
-    .tadeon-creative-dock,.tadeon-placeables,.tadeon-smart-setup__launcher,
-    .tadeon-semantic-transform,.tadeon-tabletop-selection-actions,.tadeon-tactical-dock,
-    .tadeon-tabletop-progressive-dock,.tadeon-nexus-tabletop-locator,
-    .tadeon-tabletop-reliability-strip,.tadeon-director-enhancement-bar,
-    .tadeon-tabletop-precision-editor
-  ) { opacity:0 !important; visibility:hidden !important; pointer-events:none !important; }
+  body:has(.tadeon-tabletop-panel[data-mobile-open="true"]) :is(.tadeon-creative-dock,.tadeon-placeables,.tadeon-smart-setup__launcher,.tadeon-semantic-transform,.tadeon-tactical-dock,.tadeon-tabletop-reliability-strip,.tadeon-director-enhancement-bar,.tadeon-tabletop-precision-editor) { opacity:0 !important; visibility:hidden !important; pointer-events:none !important; }
 
   :is(
     .tadeon-smart-setup,.tadeon-placeables__panel,.tadeon-creative-dock__panel,
@@ -805,21 +739,8 @@ body:has(.tadeon-tabletop-studio) {
 /* Selecting is a canvas interaction, never a blackout/modal state. The state
    bridge closes a stale mobile inspector; these guards ensure its fullscreen
    frame/backdrop cannot paint a dark layer during the transition. */
-.tadeon-tabletop-panel-frame,
-.tadeon-tabletop-panel-backdrop,
-.tadeon-tabletop-panel-backdrop[data-open="true"] {
+.tadeon-tabletop-panel-frame {
   background: transparent !important;
-}
-
-.tadeon-tabletop-panel-backdrop,
-.tadeon-tabletop-panel-backdrop[data-open="true"] {
-  display: none !important;
-  opacity: 0 !important;
-  visibility: hidden !important;
-  pointer-events: none !important;
-  animation: none !important;
-  backdrop-filter: none !important;
-  -webkit-backdrop-filter: none !important;
 }
 
 @media (max-width: 1179px) {
@@ -1060,10 +981,7 @@ body:has(.tadeon-tabletop-studio) {
 /* --------------------------------------------------------------------------
    Mesa: selection can never become a viewport effect.
    -------------------------------------------------------------------------- */
-html[data-tadeon-tabletop-selection-active="true"] :is(
-  .tadeon-tabletop-panel-backdrop,
-  [data-tadeon-selection-surface="neutral"]
-) {
+html[data-tadeon-tabletop-selection-active="true"] :is([data-tadeon-selection-surface="neutral"]) {
   display: none !important;
   opacity: 0 !important;
   visibility: hidden !important;
@@ -1098,12 +1016,7 @@ html[data-tadeon-tabletop-selection-active="true"] .tadeon-tabletop-panel-frame 
   pointer-events: auto !important;
 }
 
-html[data-tadeon-tabletop-selection-active="true"] :is(
-  .tadeon-tabletop-studio,
-  .tadeon-tabletop-workbench,
-  .tadeon-tabletop-stage,
-  .tadeon-tabletop-canvas-host
-) {
+html[data-tadeon-tabletop-selection-active="true"] :is(.tadeon-tabletop-studio,.tadeon-tabletop-stage,.tadeon-tabletop-canvas-host) {
   filter: none !important;
   backdrop-filter: none !important;
   -webkit-backdrop-filter: none !important;
@@ -1111,86 +1024,13 @@ html[data-tadeon-tabletop-selection-active="true"] :is(
 
 /* The map owns the vertical contract; the contextual inspector conforms to it. */
 @media (min-width: 1180px) {
-  .tadeon-tabletop-workbench {
-    --tadeon-tabletop-frame-height: clamp(38rem, calc(100dvh - 9.25rem), 62rem);
-    height: var(--tadeon-tabletop-frame-height) !important;
-    min-height: var(--tadeon-tabletop-frame-height) !important;
-    max-height: var(--tadeon-tabletop-frame-height) !important;
-    flex: 0 0 var(--tadeon-tabletop-frame-height) !important;
-    align-items: stretch !important;
-  }
-
-  .tadeon-tabletop-stage {
-    height: 100% !important;
-    min-height: 0 !important;
-    max-height: 100% !important;
-  }
-
-  .tadeon-tabletop-panel {
-    height: 100% !important;
-    min-height: 0 !important;
-    max-height: 100% !important;
-    overflow-x: hidden !important;
-    overflow-y: auto !important;
-    overscroll-behavior: contain;
-    scrollbar-gutter: stable;
-  }
 }
 
 @media (min-width: 801px) and (max-width: 1179px) {
-  .tadeon-tabletop-stage {
-    height: clamp(34rem, 70dvh, 50rem) !important;
-    min-height: 0 !important;
-  }
-
-  .tadeon-tabletop-panel[data-mobile-open="true"] {
-    max-height: clamp(34rem, 70dvh, 50rem) !important;
-    overflow-y: auto !important;
-    overscroll-behavior: contain;
-  }
 }
 
 /* Main operational toolbar: fixed to the top edge of the map, not the page header. */
 @media (min-width: 640px) {
-  .tadeon-tabletop-toolbar {
-    position: fixed !important;
-    z-index: 93 !important;
-    top: calc(var(--tadeon-tabletop-stage-top, 5rem) + .7rem) !important;
-    left: var(--tadeon-tabletop-stage-center, 50%) !important;
-    display: flex !important;
-    width: min(64rem, calc(var(--tadeon-tabletop-stage-width, 100vw) - 8rem)) !important;
-    max-width: calc(100vw - 2rem) !important;
-    max-height: 7.25rem;
-    margin: 0 !important;
-    padding: .38rem !important;
-    flex-wrap: nowrap !important;
-    gap: .35rem !important;
-    overflow-x: auto !important;
-    overflow-y: hidden !important;
-    border: 1px solid color-mix(in srgb, var(--primary) 18%, var(--border)) !important;
-    border-radius: .95rem .35rem .95rem .35rem !important;
-    background:
-      linear-gradient(135deg, rgb(217 215 164 / 5%), transparent 45%),
-      rgb(9 12 16 / 96%) !important;
-    box-shadow:
-      0 22px 52px -34px rgb(0 0 0 / 100%),
-      inset 0 1px rgb(255 255 255 / 4%) !important;
-    backdrop-filter: none !important;
-    transform: translate3d(-50%, 0, 0);
-    transform-origin: 100% 50%;
-    transition:
-      opacity 190ms var(--ease-out),
-      transform 260ms var(--ease-drawer),
-      visibility 190ms linear !important;
-    scrollbar-width: thin;
-  }
-
-  html[data-tadeon-tabletop-toprail="collapsed"] .tadeon-tabletop-toolbar {
-    opacity: 0 !important;
-    visibility: hidden !important;
-    pointer-events: none !important;
-    transform: translate3d(28%, 0, 0) scale(.96) !important;
-  }
 
   .tadeon-tabletop-toprail-toggle {
     position: fixed;

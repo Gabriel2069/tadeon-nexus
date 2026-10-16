@@ -2,7 +2,7 @@
 
 > Gerado de [project-continuity.json](project-continuity.json). Edite o registro e rode `npm run sync:project`; não mantenha uma cópia manual.
 
-Snapshot: 2026-10-15; referência de runtime: `6f954c40df4b5611ef130818e97e79c12badd1c9`. PR #273 em `codex/nex-008-master-workspace`; integração: `integrated`. Não é prova de deploy.
+Snapshot: 2026-10-16; referência de runtime: `6f954c40df4b5611ef130818e97e79c12badd1c9`. PR #275 em `codex/nex-007-tabletop-workspace`; integração: `validated`. Não é prova de deploy.
 
 Estados: planejado → próximo → em andamento → validado na branch → integrado. Publicação exige evidência própria do SHA; adiado conserva o requisito. Se um requisito mudar, preservar o ID e registrar a decisão/evidência.
 
@@ -17,7 +17,7 @@ Cada PR usa IDs desta fila e declara dependências. Trabalho sobre o mesmo propr
 | NEX-013 | Liquid fabric: login, Dashboard e componentes compartilhados | Integrado | 2 | shell | NEX-003, NEX-004 |
 | NEX-005 | Ficha por seções e estados | Integrado | 3 | sheet | NEX-003, NEX-013 |
 | NEX-006 | Biblioteca, documento e grafo do Nexus | Integrado | 4 | knowledge | NEX-003, NEX-013 |
-| NEX-007 | Mesa: hierarquia de ferramentas e workspace | Planejado | 6 | tabletop | NEX-004, NEX-013 |
+| NEX-007 | Mesa: hierarquia de ferramentas e workspace | Validado na branch | 6 | tabletop | NEX-004, NEX-013 |
 | NEX-008 | Painel do Mestre: visão geral, ferramentas e condução | Integrado | 5 | master | NEX-003, NEX-013, NEX-020 |
 | NEX-009 | Desempenho e motion | Planejado | 7 | delivery | NEX-003, NEX-007 |
 | NEX-010 | Validação real de autorização e rollout | Planejado | 8 | session | NEX-001 |
@@ -30,6 +30,8 @@ Cada PR usa IDs desta fila e declara dependências. Trabalho sobre o mesmo propr
 | NEX-018 | Usuários: papéis, busca e revisão de ações | Integrado | 4 | master | NEX-014 |
 | NEX-019 | Backup e diagnóstico: revisão e histórico por conta | Integrado | 4 | assets | NEX-014 |
 | NEX-020 | Símbolos reais de Mestre e Backup na navegação | Integrado | 4 | shell | NEX-016 |
+| NEX-021 | Nexus: contexto da página e passagem para a Mesa | Validado na branch | 5 | knowledge | NEX-015 |
+| NEX-022 | Mesa: persistência e projeção da cor-base personalizada | Planejado | 7 | tabletop | NEX-007 |
 
 ## NEX-001 — Preparação estrutural
 
@@ -93,7 +95,7 @@ Evidências: [docs/material-reading-validation.json](../docs/material-reading-va
 - Separar estado persistente, estado ao vivo e estado local; conservar coordenadas mundo/tela.
 - Verificar overlays, seleção, inspector, câmera, jogador/mestre e reconexão em cenas de teste.
 
-Evidências: pendentes; não declarar concluído.
+Evidências: [docs/tabletop-workspace-map.md](../docs/tabletop-workspace-map.md), [docs/tabletop-workspace-validation.json](../docs/tabletop-workspace-validation.json).
 
 ## NEX-008 — Painel do Mestre: visão geral, ferramentas e condução
 
@@ -187,6 +189,22 @@ Evidências: [docs/navigation-utilities-validation.json](../docs/navigation-util
 
 Evidências: [docs/master-workspace-validation.json](../docs/master-workspace-validation.json), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/pull/273), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38721993131), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38722287524), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38722287420).
 
+## NEX-021 — Nexus: contexto da página e passagem para a Mesa
+
+- A localização na Mesa acompanha a página realmente selecionada e permite escolher os destinos retornados.
+- A localização participa do layout sem cobrir a leitura; abas ativas permanecem visíveis no trilho sem rolar a página.
+- Respostas de páginas anteriores não reaparecem na leitura atual.
+
+Evidências: [docs/tabletop-workspace-validation.json](../docs/tabletop-workspace-validation.json).
+
+## NEX-022 — Mesa: persistência e projeção da cor-base personalizada
+
+- Conferir o contrato de cor-base entre editor, payload, recarga e visão protegida do jogador.
+- Preservar a cor-base escolhida após salvar/reabrir sem criar divergência entre propriedades, fingerprint e renderização.
+- Verificar round trip e compatibilidade das cenas antigas; conservar autorização da visão compartilhada.
+
+Evidências: [docs/tabletop-workspace-map.md](../docs/tabletop-workspace-map.md).
+
 ## Decisões vigentes
 
 | ID | Decisão | Motivo |
@@ -203,3 +221,4 @@ Evidências: [docs/master-workspace-validation.json](../docs/master-workspace-va
 | DEC-010 | NEX-015 implementa e valida continuidade/composição com fixtures; sua verificação com corpus real autorizado permanece em NEX-010. | A etapa não certifica contas reais, RLS ou rollout. Consolidar essa verificação no lote existente de autorização evita uma fila duplicada ou declarar validação fictícia como real. |
 | DEC-011 | Priorizar menus, Consulta offline, Usuários e Backup e diagnóstico antes da Mesa, conforme novo pedido de Tadeu. | NEX-016 a NEX-019 delimitam navegação e utilidades. URLs e identidade visual permanecem; a revisão não conclui o restante do Painel do Mestre, autorização real ou restauração completa de infraestrutura (NEX-008/010/011). Os nomes visíveis são Consulta offline, Usuários e Backup e diagnóstico. |
 | DEC-012 | Corrigir os símbolos de Mestre e Backup e priorizar o Painel do Mestre antes da Mesa, conforme pedido de Tadeu em 15/10/2026. | NEX-020 retira a sobreposição dos ícones; NEX-008 organiza visão geral, ferramentas e persistência manual. Não altera regras RPG, autorização/RLS, restauração de infraestrutura ou o motor da Mesa. A validação anterior só media o wrapper dos ícones e não provava a visibilidade do SVG real. |
+| DEC-013 | Concluir o contexto de leitura do Nexus e iniciar a revisão abrangente dos controles da Mesa, conforme pedido de Tadeu. | NEX-021 fecha a passagem entre página selecionada e entidade. NEX-007 organiza controles, painel e gravação sem trocar o motor, coordenadas, serviços/RPCs ou audiência. NEX-009/010 conservam desempenho medido e validação real. |

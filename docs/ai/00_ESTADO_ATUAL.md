@@ -1,8 +1,10 @@
 # Estado de continuidade do Tadeon Nexus
 
-Verificado em 15/10/2026. Entrada curta de retomada; o registro único de tarefas e responsáveis é [project-continuity.json](../project-continuity.json).
+Verificado em 16/10/2026 (UTC). Entrada curta de retomada; o registro único de tarefas e responsáveis é [project-continuity.json](../project-continuity.json).
 
-Checkpoint atual: NEX-008/020 integrados pela [PR #273](https://github.com/Gabriel2069/tadeon-nexus/pull/273), merge `6f954c4`, fonte `c22015b`. Quality de HEAD/main e [produção](https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38722287420) aprovados; HTTP 200/SHA exato em 2026-10-15T10:45:57.4262468Z. 135 suítes/577 testes, auditoria sem vulnerabilidades; 80 estados e 8 repetições de ícones em quatro larguras. [Evidência](../master-workspace-validation.json). Continuar pela fila canônica em NEX-007; preservados os limites de contas reais e edição entre mestres.
+Checkpoint atual: NEX-007/021 validados na branch da [PR #275](https://github.com/Gabriel2069/tadeon-nexus/pull/275), fonte `5893bd7`. `npm run check` aprovado, 141 suítes/581 testes; auditoria sem vulnerabilidades. Mesa e Nexus verificados em quatro larguras, com jogador, foco, comandos, salvamento concorrente e câmera 2×. [Mapa](../tabletop-workspace-map.md) e [evidência](../tabletop-workspace-validation.json). Merge/publicação ainda pendentes. NEX-022 preserva a pendência de cor-base personalizada; NEX-009/010 mantêm os limites de performance física e autorização real.
+
+Referência anterior:  NEX-008/020 integrados pela [PR #273](https://github.com/Gabriel2069/tadeon-nexus/pull/273), merge `6f954c4`, fonte `c22015b`. Quality de HEAD/main e [produção](https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38722287420) aprovados; HTTP 200/SHA exato em 2026-10-15T10:45:57.4262468Z. 135 suítes/577 testes, auditoria sem vulnerabilidades; 80 estados e 8 repetições de ícones em quatro larguras. [Evidência](../master-workspace-validation.json). Continuar pela fila canônica em NEX-007; preservados os limites de contas reais e edição entre mestres.
 
 ## Referências estruturais históricas
 

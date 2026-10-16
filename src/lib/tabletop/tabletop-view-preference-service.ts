@@ -1,9 +1,6 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
-import {
-  normalizeTabletopViewState,
-  type TabletopViewState,
-} from "./tabletop-projection";
+import { normalizeTabletopViewState, type TabletopViewState } from "./tabletop-projection";
 
 const tabletopViewDatabase = supabase as unknown as SupabaseClient;
 
@@ -27,9 +24,7 @@ export class TabletopViewPreferenceError extends Error {
   }
 }
 
-export function mapTabletopViewPreference(
-  row: TabletopViewPreferenceRow,
-): TabletopViewState {
+export function mapTabletopViewPreference(row: TabletopViewPreferenceRow): TabletopViewState {
   return normalizeTabletopViewState({
     projection: row.projection === "isometric" ? "isometric" : "plan",
     x: Number(row.camera_x),
@@ -57,37 +52,32 @@ export class TabletopViewPreferenceService {
       .eq("scene_id", sceneId)
       .maybeSingle();
     if (error) throw new TabletopViewPreferenceError();
-    return data
-      ? mapTabletopViewPreference(data as TabletopViewPreferenceRow)
-      : null;
+    return data ? mapTabletopViewPreference(data as TabletopViewPreferenceRow) : null;
   }
 
-  async save(sceneId: string, state: TabletopViewState) {
+  async save(sceneId: string, state: TabletopViewState, actorId?: string) {
     const { data } = await this.auth.getSession();
     const userId = data.session?.user.id;
-    if (!userId) throw new TabletopViewPreferenceError();
+    if (!userId || (actorId && actorId !== userId)) throw new TabletopViewPreferenceError();
     const normalized = normalizeTabletopViewState(state);
-    const { error } = await this.database
-      .from("tabletop_view_preferences")
-      .upsert(
-        {
-          scene_id: sceneId,
-          user_id: userId,
-          projection: normalized.projection,
-          camera_x: normalized.x,
-          camera_y: normalized.y,
-          zoom: normalized.zoom,
-          yaw: normalized.yaw,
-          tilt: normalized.tilt,
-          elevation_scale: normalized.elevationScale,
-          active_level_id: normalized.levelId,
-          updated_at: new Date().toISOString(),
-        },
-        { onConflict: "scene_id,user_id" },
-      );
+    const { error } = await this.database.from("tabletop_view_preferences").upsert(
+      {
+        scene_id: sceneId,
+        user_id: userId,
+        projection: normalized.projection,
+        camera_x: normalized.x,
+        camera_y: normalized.y,
+        zoom: normalized.zoom,
+        yaw: normalized.yaw,
+        tilt: normalized.tilt,
+        elevation_scale: normalized.elevationScale,
+        active_level_id: normalized.levelId,
+        updated_at: new Date().toISOString(),
+      },
+      { onConflict: "scene_id,user_id" },
+    );
     if (error) throw new TabletopViewPreferenceError();
   }
 }
 
-export const tabletopViewPreferenceService =
-  new TabletopViewPreferenceService();
+export const tabletopViewPreferenceService = new TabletopViewPreferenceService();

@@ -7,15 +7,6 @@ function source(path: string) {
 }
 
 describe("auditoria funcional transversal", () => {
-  it("mantém autosave ligado à versão mais recente da cena", () => {
-    const workspace = source("src/components/tabletop/tabletop-workspace.tsx");
-    expect(workspace).toContain("const saveCurrent = useCallback(async (");
-    expect(workspace).toContain("[editable, loadSnapshots, refreshScenes, snapshot.scene]");
-    expect(workspace).toContain(
-      "[conflict, dirty, editable, saveCurrent, saveVisibilityCurrent, saving, visibilityDirty]",
-    );
-    expect(workspace).toContain("}, 2200)");
-  });
 
   it("não lê graph redundante no effect de auto-fit", () => {
     const graph = source("src/components/knowledge/knowledge-graph-second-brain.tsx");

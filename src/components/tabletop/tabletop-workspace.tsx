@@ -1,3 +1,13 @@
+import { useAuth } from "@/lib/auth";
+import { tabletopSceneFingerprint as sceneFingerprint } from "@/lib/tabletop/tabletop-scene-fingerprint-guard";
+import { useBlocker } from "@tanstack/react-router";
+import { TabletopEditorPanel } from "@/components/tabletop/tabletop-editor-panel";
+import {
+  TabletopProgressiveInterfaceBridge,
+  type InterfaceMode,
+} from "@/components/tabletop/tabletop-progressive-interface-bridge";
+import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
+import { createLatestRequestGate } from "@/lib/latest-request";
 import { useCallback, useEffect, useMemo, useRef, useState, type DragEvent } from "react";
 import {
   Archive,
@@ -174,7 +184,8 @@ type PaletteDragPayload =
   | { kind: "knowledge"; id: string };
 
 type TabletopPanelTab = "library" | "space" | "master" | "scene" | "inspector";
-type PendingNavigation = { kind: "scene"; id: string } | { kind: "campaign"; id: string };
+type PendingNavigation =
+  { kind: "scene" | "reload"; id: string } | { kind: "campaign"; id: string };
 
 const TOOL_LABELS: Record<TabletopToolMode, string> = {
   select: "Seleção",
@@ -199,14 +210,7 @@ const TOOL_HINTS: Record<TabletopToolMode, string> = {
 };
 
 const DRAW_COLORS = ["#d9d7a4", "#74242d", "#4f6e5d", "#e9e3d5", "#1f3644"];
-const TOKEN_BASE_COLORS = [
-  "#8d3152",
-  "#547b94",
-  "#4f6e5d",
-  "#b7814d",
-  "#716b7b",
-  "#d9d7a4",
-];
+const TOKEN_BASE_COLORS = ["#8d3152", "#547b94", "#4f6e5d", "#b7814d", "#716b7b", "#d9d7a4"];
 
 const CAMERA_PRESETS = [
   {
@@ -275,10 +279,6 @@ function entityProperties(value: unknown): Record<string, unknown> {
     : {};
 }
 
-function sceneFingerprint(scene: TabletopSnapshot["scene"]) {
-  return JSON.stringify(scene);
-}
-
 function clampContextMenu(position: Point) {
   if (typeof window === "undefined") return position;
   return {
@@ -315,7 +315,37 @@ export function TabletopWorkspace({
   realtimeEnabled?: boolean;
   lightingEnabled?: boolean;
 }) {
+  const { user } = useAuth();
+  const preferenceKey = `tadeon-tabletop-interface-mode:${user?.id ?? "anonymous"}:mestre`;
+  const [interfaceMode, setInterfaceMode] = useState<InterfaceMode>(() => {
+    try {
+      const stored = typeof window === "undefined" ? null : localStorage.getItem(preferenceKey);
+      return stored === "build" || stored === "direct" || stored === "advanced" ? stored : "play";
+    } catch {
+      return "play";
+    }
+  });
+  useEffect(() => {
+    try {
+      localStorage.setItem(preferenceKey, interfaceMode);
+    } catch {
+      /* Optional preference. */
+    }
+  }, [interfaceMode, preferenceKey]);
   const hostRef = useRef<HTMLDivElement>(null);
+  const sceneRequests = useMemo(createLatestRequestGate, []);
+  const snapshotRequests = useMemo(createLatestRequestGate, []);
+  const aliveRef = useRef(true);
+  const savePending = useRef(false);
+  const visibilitySavePending = useRef(false);
+  useEffect(() => {
+    aliveRef.current = true;
+    return () => {
+      aliveRef.current = false;
+      sceneRequests.invalidate();
+      snapshotRequests.invalidate();
+    };
+  }, [sceneRequests, snapshotRequests]);
   const engineRef = useRef<TabletopEngine | null>(null);
   const engineReadyRef = useRef(false);
   const persistedSceneRef = useRef<PersistedTabletopScene | null>(null);
@@ -334,6 +364,8 @@ export function TabletopWorkspace({
   const [visibilityAvailable, setVisibilityAvailable] = useState(true);
   const [campaigns, setCampaigns] = useState<TabletopCampaignSummary[]>([]);
   const [campaignId, setCampaignId] = useState("");
+  const campaignRef = useRef(campaignId);
+  campaignRef.current = campaignId;
   const [scenes, setScenes] = useState<TabletopSceneSummary[]>([]);
   const [persistedScene, setPersistedScene] = useState<PersistedTabletopScene | null>(null);
   const [snapshots, setSnapshots] = useState<TabletopSceneSnapshotSummary[]>([]);
@@ -357,6 +389,8 @@ export function TabletopWorkspace({
   const [paletteSearch, setPaletteSearch] = useState("");
   const [masterSearch, setMasterSearch] = useState("");
   const [toolMode, setToolMode] = useState<TabletopToolMode>("select");
+  const toolModeRef = useRef(toolMode);
+  toolModeRef.current = toolMode;
   const [projectionMode, setProjectionMode] = useState<TabletopProjectionMode>("plan");
   const [viewOrientation, setViewOrientation] = useState<TabletopViewOrientation>(
     DEFAULT_TABLETOP_VIEW_ORIENTATION,
@@ -382,6 +416,10 @@ export function TabletopWorkspace({
   const [restoreDialogOpen, setRestoreDialogOpen] = useState(false);
   const [pendingNavigation, setPendingNavigation] = useState<PendingNavigation | null>(null);
   const [loading, setLoading] = useState(true);
+  const [loadingSceneId, setLoadingSceneId] = useState<string | null>(null);
+  const [sceneLoadError, setSceneLoadError] = useState<{ id: string; message: string } | null>(
+    null,
+  );
   const [saving, setSaving] = useState(false);
   const [dirty, setDirty] = useState(false);
   const [conflict, setConflict] = useState(false);
@@ -401,7 +439,13 @@ export function TabletopWorkspace({
     return () => window.clearTimeout(timeout);
   }, [contextMenu, presentedContextMenu]);
 
-  const editable = Boolean(persistedScene && persistedScene.status !== "archived");
+  const editable = Boolean(persistedScene && persistedScene.status !== "archived" && !loading);
+  const unsaved = dirty || visibilityDirty;
+  const exitBlocker = useBlocker({
+    shouldBlockFn: () => unsaved,
+    withResolver: true,
+    enableBeforeUnload: unsaved,
+  });
   const selected = useMemo(
     () => snapshot.scene.entities.filter((entity) => snapshot.selectedIds.includes(entity.id)),
     [snapshot],
@@ -460,6 +504,18 @@ export function TabletopWorkspace({
         node.nodeType.toLocaleLowerCase("pt-BR").includes(normalizedPaletteSearch),
     )
     .slice(0, 36);
+  const openWorkPanel = useCallback((tab: "library" | "master") => {
+    setPanelTab(tab);
+    setPanelCollapsed(false);
+    setMobilePanelOpen(true);
+  }, []);
+  const changeInterfaceMode = useCallback((next: InterfaceMode) => {
+    setInterfaceMode(next);
+    if (next !== "play") {
+      setPanelCollapsed(false);
+      setMobilePanelOpen(true);
+    }
+  }, []);
   const currentSceneIndex = scenes.findIndex((scene) => scene.id === persistedScene?.id);
   const primaryProperties = entityProperties(primary?.properties);
   const primaryMimeType =
@@ -477,9 +533,10 @@ export function TabletopWorkspace({
   const barCurrent = Number(primaryProperties.bar_current) || 0;
   const barMax = Number(primaryProperties.bar_max) || 0;
 
+  const selectionKey = snapshot.selectedIds.join(":");
   useEffect(() => {
-    if (snapshot.selectedIds.length > 0) setPanelTab("inspector");
-  }, [snapshot.selectedIds.length]);
+    if (selectionKey) setPanelTab("inspector");
+  }, [selectionKey]);
 
   useEffect(() => {
     engineRef.current?.setToolMode(toolMode);
@@ -507,11 +564,11 @@ export function TabletopWorkspace({
   }, [structureType]);
 
   useEffect(() => {
-    engineRef.current?.setProjectionMode(projectionMode);
+    if (engineReadyRef.current) engineRef.current?.setProjectionMode(projectionMode);
   }, [projectionMode]);
 
   useEffect(() => {
-    engineRef.current?.setProjectionOrientation(viewOrientation);
+    if (engineReadyRef.current) engineRef.current?.setProjectionOrientation(viewOrientation);
   }, [viewOrientation]);
 
   useEffect(() => {
@@ -535,17 +592,15 @@ export function TabletopWorkspace({
           normalizeTabletopViewOrientation({ ...current, ...detail }),
         );
       }
-      if (detail.fit)
-        window.requestAnimationFrame(() => engineRef.current?.fitToScreen());
+      if (detail.fit) window.requestAnimationFrame(() => engineRef.current?.fitToScreen());
     };
     window.addEventListener("tadeon-tabletop-spatial-view", applySpatialView);
-    return () =>
-      window.removeEventListener("tadeon-tabletop-spatial-view", applySpatialView);
+    return () => window.removeEventListener("tadeon-tabletop-spatial-view", applySpatialView);
   }, []);
 
   useEffect(() => {
     activeLevelIdRef.current = activeLevelId;
-    engineRef.current?.setActiveLevel(activeLevelId);
+    if (engineReadyRef.current) engineRef.current?.setActiveLevel(activeLevelId);
   }, [activeLevelId]);
 
   useEffect(() => {
@@ -580,7 +635,7 @@ export function TabletopWorkspace({
       setVisibility(next);
       setVisibilityDirty(false);
       setVisibilityAvailable(true);
-      engineRef.current?.setVisibility(next, lightingEnabled);
+      if (engineReadyRef.current) engineRef.current?.setVisibility(next, lightingEnabled);
       if (typeof sceneVersion === "number" && persistedSceneRef.current) {
         const stored = {
           ...persistedSceneRef.current,
@@ -599,7 +654,7 @@ export function TabletopWorkspace({
       visibilityRef.current = next;
       setVisibility(next);
       setVisibilityDirty(true);
-      engineRef.current?.setVisibility(next, lightingEnabled);
+      if (engineReadyRef.current) engineRef.current?.setVisibility(next, lightingEnabled);
     },
     [lightingEnabled],
   );
@@ -649,6 +704,10 @@ export function TabletopWorkspace({
   );
 
   const clearScene = useCallback(() => {
+    sceneRequests.invalidate();
+    snapshotRequests.invalidate();
+    setLoadingSceneId(null);
+    setLoading(false);
     viewPreferenceSceneRef.current = null;
     restoredViewRef.current = null;
     pendingViewRef.current = null;
@@ -672,25 +731,49 @@ export function TabletopWorkspace({
       engineRef.current?.setVisibility(emptyVisibility, false);
       engineRef.current?.setReadOnly(true);
     }
-  }, []);
+  }, [sceneRequests, snapshotRequests]);
 
-  const loadSnapshots = useCallback(async (sceneId: string) => {
-    const next = await tabletopPersistenceService.listSnapshots(sceneId);
-    setSnapshots(next);
-    setSnapshotId((current) =>
-      next.some((item) => item.id === current) ? current : (next[0]?.id ?? ""),
-    );
-  }, []);
+  const loadSnapshots = useCallback(
+    async (sceneId: string) => {
+      const ticket = snapshotRequests.begin();
+      try {
+        const next = await tabletopPersistenceService.listSnapshots(sceneId);
+        if (
+          !snapshotRequests.isCurrent(ticket) ||
+          !aliveRef.current ||
+          persistedSceneRef.current?.id !== sceneId
+        )
+          return;
+        setSnapshots(next);
+        setSnapshotId((current) =>
+          next.some((item) => item.id === current) ? current : (next[0]?.id ?? ""),
+        );
+      } catch (error) {
+        if (
+          snapshotRequests.isCurrent(ticket) &&
+          aliveRef.current &&
+          persistedSceneRef.current?.id === sceneId
+        )
+          throw error;
+      }
+    },
+    [snapshotRequests],
+  );
 
   const loadScene = useCallback(
     async (sceneId: string) => {
+      const ticket = sceneRequests.begin();
+      setLoadingSceneId(sceneId);
+      setSceneLoadError(null);
       setLoading(true);
+      if (engineReadyRef.current) engineRef.current?.setReadOnly(true);
       viewPreferenceSceneRef.current = null;
       try {
         const [scene, restoredView] = await Promise.all([
           tabletopPersistenceService.loadScene(sceneId),
           tabletopViewPreferenceService.load(sceneId).catch(() => null),
         ]);
+        if (!sceneRequests.isCurrent(ticket)) return;
         const nextView = restoredView
           ? {
               ...restoredView,
@@ -707,44 +790,61 @@ export function TabletopWorkspace({
           setProjectionMode(nextView.projection);
           setViewOrientation(nextView);
           setActiveLevelId(nextView.levelId);
-          engineRef.current?.applyViewState(nextView);
+          if (engineReadyRef.current) engineRef.current?.applyViewState(nextView);
         } else {
           setProjectionMode("plan");
           setViewOrientation(DEFAULT_TABLETOP_VIEW_ORIENTATION);
-          engineRef.current?.setProjectionOrientation(DEFAULT_TABLETOP_VIEW_ORIENTATION);
-          engineRef.current?.setProjectionMode("plan");
-          engineRef.current?.fitToScreen();
+          if (engineReadyRef.current) {
+            engineRef.current?.setProjectionOrientation(DEFAULT_TABLETOP_VIEW_ORIENTATION);
+            engineRef.current?.setProjectionMode("plan");
+            engineRef.current?.fitToScreen();
+          }
         }
         viewPreferenceSceneRef.current = scene.id;
         if (lightingEnabled) {
           try {
-            installVisibility(await tabletopVisibilityService.load(scene.id));
+            const nextVisibility = await tabletopVisibilityService.load(scene.id);
+            if (!sceneRequests.isCurrent(ticket)) return;
+            installVisibility(nextVisibility);
           } catch {
+            if (!sceneRequests.isCurrent(ticket)) return;
             const fallback = createEmptyVisibilityState();
             visibilityRef.current = fallback;
             setVisibility(fallback);
             setVisibilityDirty(false);
             setVisibilityAvailable(false);
-            engineRef.current?.setVisibility(fallback, false);
+            if (engineReadyRef.current) engineRef.current?.setVisibility(fallback, false);
             toast.error("A cena abriu, mas a iluminação não pôde ser carregada com segurança.");
           }
         } else {
           installVisibility(createEmptyVisibilityState());
         }
-        await loadSnapshots(scene.id);
+        if (!sceneRequests.isCurrent(ticket)) return;
+        await loadSnapshots(scene.id).catch(() => {
+          if (sceneRequests.isCurrent(ticket)) {
+            setSnapshots([]);
+            toast.error("A cena abriu, mas os marcos de recuperação não puderam ser carregados.");
+          }
+        });
       } catch (error) {
-        toast.error(errorMessage(error));
+        if (!sceneRequests.isCurrent(ticket)) return;
         clearScene();
+        setSceneLoadError({ id: sceneId, message: errorMessage(error) });
       } finally {
-        setLoading(false);
+        if (sceneRequests.isCurrent(ticket)) {
+          setLoading(false);
+          setLoadingSceneId(null);
+          if (engineReadyRef.current)
+            engineRef.current?.setReadOnly(persistedSceneRef.current?.status === "archived");
+        }
       }
     },
-    [clearScene, installScene, installVisibility, lightingEnabled, loadSnapshots],
+    [clearScene, installScene, installVisibility, lightingEnabled, loadSnapshots, sceneRequests],
   );
 
   const refreshScenes = useCallback(async (nextCampaignId: string) => {
     const next = await tabletopPersistenceService.listScenes(nextCampaignId);
-    setScenes(next);
+    if (aliveRef.current && campaignRef.current === nextCampaignId) setScenes(next);
     return next;
   }, []);
 
@@ -803,9 +903,9 @@ export function TabletopWorkspace({
     const pending = pendingViewRef.current;
     const targetSceneId = viewPreferenceSceneRef.current;
     pendingViewRef.current = null;
-    if (!pending || !targetSceneId) return;
-    void tabletopViewPreferenceService.save(targetSceneId, pending).catch(() => undefined);
-  }, []);
+    if (!pending || !targetSceneId || !user?.id) return;
+    void tabletopViewPreferenceService.save(targetSceneId, pending, user.id).catch(() => undefined);
+  }, [user?.id]);
 
   const queueViewPreference = useCallback(
     (view: TabletopViewState) => {
@@ -1016,6 +1116,7 @@ export function TabletopWorkspace({
         if (cancelled) return;
         engineReadyRef.current = true;
         engine.setStructureType(structureTypeRef.current);
+        engine.setToolMode(toolModeRef.current);
         engine.setVisibilityToolRadius("light", 320);
         engine.setVisibilityToolRadius("fog", 160);
         const stored = persistedSceneRef.current;
@@ -1032,7 +1133,9 @@ export function TabletopWorkspace({
           engine.setReadOnly(true);
         }
       })
-      .catch((error) => toast.error(errorMessage(error)));
+      .catch((error) => {
+        if (!cancelled) toast.error(errorMessage(error));
+      });
     return () => {
       cancelled = true;
       engineReadyRef.current = false;
@@ -1071,10 +1174,7 @@ export function TabletopWorkspace({
         if (requestedSceneId) {
           try {
             const requestedScene = await tabletopPersistenceService.loadScene(requestedSceneId);
-            if (
-              active &&
-              next.some((campaign) => campaign.id === requestedScene.campaignId)
-            ) {
+            if (active && next.some((campaign) => campaign.id === requestedScene.campaignId)) {
               setCampaignId(requestedScene.campaignId);
               return;
             }
@@ -1167,60 +1267,113 @@ export function TabletopWorkspace({
     };
   }, [campaignId, campaigns]);
 
-  const saveCurrent = useCallback(async (
-    overrides: TabletopSaveOverrides = {},
-    options: { silent?: boolean } = {},
-  ) => {
-    const stored = persistedSceneRef.current;
-    if (!stored || !editable) return null;
-    setSaving(true);
-    try {
-      const saved = await tabletopPersistenceService.saveWorkspace(
-        stored,
-        snapshot.scene,
-        overrides,
-      );
-      persistedSceneRef.current = saved;
-      setPersistedScene(saved);
-      setDirty(false);
-      setConflict(false);
-      engineRef.current?.setReadOnly(saved.status === "archived");
-      if (!options.silent)
-        await Promise.all([refreshScenes(saved.campaignId), loadSnapshots(saved.id)]);
-      if (!options.silent)
-        toast.success(overrides.status === "archived" ? "Cena arquivada." : "Cena salva.");
-      return saved;
-    } catch (error) {
-      if (error instanceof TabletopServiceError && error.code === "TABLETOP_CONFLICT")
-        setConflict(true);
-      if (!options.silent) toast.error(errorMessage(error));
-      return null;
-    } finally {
-      setSaving(false);
-    }
-  }, [editable, loadSnapshots, refreshScenes, snapshot.scene]);
+  const saveCurrent = useCallback(
+    async (overrides: TabletopSaveOverrides = {}, options: { silent?: boolean } = {}) => {
+      const stored = persistedSceneRef.current;
+      if (!stored || !editable || !user?.id || savePending.current) return null;
+      savePending.current = true;
+      const sent = engineRef.current?.snapshot.scene ?? snapshot.scene;
+      const currentTicket = sceneRequests.begin();
+      setSaving(true);
+      try {
+        const saved = await tabletopPersistenceService.saveWorkspace(
+          stored,
+          sent,
+          overrides,
+          user.id,
+        );
+        if (
+          !aliveRef.current ||
+          !sceneRequests.isCurrent(currentTicket) ||
+          persistedSceneRef.current?.id !== stored.id
+        )
+          return null;
+        persistedSceneRef.current = saved;
+        setPersistedScene(saved);
+        setDirty(
+          sceneFingerprint(engineRef.current?.snapshot.scene ?? sent) !== sceneFingerprint(sent),
+        );
+        setConflict(false);
+        engineRef.current?.setReadOnly(saved.status === "archived");
+        if (!options.silent)
+          await Promise.all([refreshScenes(saved.campaignId), loadSnapshots(saved.id)]);
+        if (!options.silent)
+          toast.success(overrides.status === "archived" ? "Cena arquivada." : "Cena salva.");
+        return saved;
+      } catch (error) {
+        if (!aliveRef.current || !sceneRequests.isCurrent(currentTicket)) return null;
+        if (error instanceof TabletopServiceError && error.code === "TABLETOP_CONFLICT")
+          setConflict(true);
+        if (!options.silent) toast.error(errorMessage(error));
+        return null;
+      } finally {
+        savePending.current = false;
+        if (aliveRef.current) setSaving(false);
+      }
+    },
+    [editable, loadSnapshots, refreshScenes, snapshot.scene, sceneRequests, user?.id],
+  );
 
   const saveVisibilityCurrent = useCallback(
     async (silent = false) => {
       const stored = persistedSceneRef.current;
       if (!stored || !editable || !lightingEnabled || !visibilityAvailable) return true;
+      if (!user?.id || visibilitySavePending.current) return false;
+      visibilitySavePending.current = true;
+      setSaving(true);
+      const sent = visibilityRef.current;
       try {
-        const saved = await tabletopVisibilityService.save(stored.id, visibilityRef.current);
-        installVisibility(saved.visibility, saved.sceneVersion);
+        const saved = await tabletopVisibilityService.save(stored.id, sent, user.id);
+        if (!aliveRef.current || persistedSceneRef.current?.id !== stored.id) return false;
+        if (visibilityRef.current === sent) installVisibility(saved.visibility, saved.sceneVersion);
+        else {
+          const rebased = { ...visibilityRef.current, version: saved.visibility.version };
+          visibilityRef.current = rebased;
+          setVisibility(rebased);
+          setVisibilityDirty(true);
+          const current = { ...persistedSceneRef.current, version: saved.sceneVersion };
+          persistedSceneRef.current = current;
+          setPersistedScene(current);
+        }
         if (!silent) toast.success("Ambiente, arquitetura, luzes e névoa salvos.");
         return true;
       } catch {
-        if (!silent) toast.error("Não foi possível salvar o ambiente desta cena.");
+        if (aliveRef.current && persistedSceneRef.current?.id === stored.id && !silent)
+          toast.error("Não foi possível salvar o ambiente desta cena.");
         return false;
+      } finally {
+        visibilitySavePending.current = false;
+        if (aliveRef.current) setSaving(false);
       }
     },
-    [editable, installVisibility, lightingEnabled, visibilityAvailable],
+    [editable, installVisibility, lightingEnabled, visibilityAvailable, user?.id],
   );
 
+  const saveAll = async () => {
+    let ok = true;
+    if (dirty) ok = Boolean(await saveCurrent());
+    if (ok && visibilityDirty) ok = await saveVisibilityCurrent();
+    return ok;
+  };
+
   useEffect(() => {
-    if (!editable || conflict || saving || (!dirty && !visibilityDirty)) return;
+    if (
+      !editable ||
+      conflict ||
+      saving ||
+      pendingNavigation ||
+      exitBlocker.status === "blocked" ||
+      archiveDialogOpen ||
+      deleteSceneDialogOpen ||
+      restoreDialogOpen ||
+      (!dirty && !visibilityDirty)
+    )
+      return;
+    const autosaveSceneId = persistedSceneRef.current?.id;
     const dispatch = (state: "pending" | "saving" | "saved" | "idle" | "paused") =>
-      window.dispatchEvent(new CustomEvent("tadeon-tabletop-autosave-state", { detail: { state } }));
+      window.dispatchEvent(
+        new CustomEvent("tadeon-tabletop-autosave-state", { detail: { state } }),
+      );
     dispatch("pending");
     const timer = window.setTimeout(() => {
       void (async () => {
@@ -1229,15 +1382,32 @@ export function TabletopWorkspace({
         let ok = true;
         if (dirty) ok = Boolean(await saveCurrent({}, { silent: true }));
         if (ok && visibilityDirty) ok = await saveVisibilityCurrent(true);
-        dispatch(ok ? "saved" : "paused");
-        if (ok) window.setTimeout(() => dispatch("idle"), 1600);
+        if (aliveRef.current && persistedSceneRef.current?.id === autosaveSceneId)
+          dispatch(ok ? "saved" : "paused");
       })();
     }, 2200);
     return () => window.clearTimeout(timer);
-  }, [conflict, dirty, editable, saveCurrent, saveVisibilityCurrent, saving, visibilityDirty]);
+  }, [
+    conflict,
+    dirty,
+    editable,
+    saveCurrent,
+    saveVisibilityCurrent,
+    saving,
+    visibilityDirty,
+    pendingNavigation,
+    exitBlocker.status,
+    archiveDialogOpen,
+    deleteSceneDialogOpen,
+    restoreDialogOpen,
+  ]);
 
   const createScene = async () => {
-    if (!campaignId) return;
+    if (!campaignId || saving) return;
+    if (unsaved) {
+      toast.error("Salve o mapa e o ambiente antes de criar outra cena.");
+      return;
+    }
     const name = sceneName.trim();
     if (!name) {
       toast.error("Dê um nome à nova cena.");
@@ -1263,8 +1433,8 @@ export function TabletopWorkspace({
   const duplicateScene = async () => {
     const stored = persistedSceneRef.current;
     if (!stored) return;
-    if (dirty) {
-      toast.error("Salve ou recarregue a cena antes de duplicá-la.");
+    if (unsaved) {
+      toast.error("Salve o mapa e o ambiente antes de duplicar a cena.");
       return;
     }
     setSaving(true);
@@ -1285,6 +1455,7 @@ export function TabletopWorkspace({
   const archiveScene = async () => {
     const stored = persistedSceneRef.current;
     if (!stored || stored.status === "archived") return;
+    if (visibilityDirty && !(await saveVisibilityCurrent())) return;
     const saved = await saveCurrent({ status: "archived" });
     if (!saved) return;
     setArchiveDialogOpen(false);
@@ -1319,8 +1490,8 @@ export function TabletopWorkspace({
 
   const moveCurrentScene = async (direction: -1 | 1) => {
     const stored = persistedSceneRef.current;
-    if (!stored || dirty) {
-      if (dirty) toast.error("Salve ou recarregue antes de reordenar cenas.");
+    if (!stored || unsaved) {
+      if (unsaved) toast.error("Salve ou recarregue antes de reordenar cenas.");
       return;
     }
     const reordered = moveTabletopScene(scenes, stored.id, direction);
@@ -1343,10 +1514,13 @@ export function TabletopWorkspace({
   const createSnapshot = async () => {
     let stored = persistedSceneRef.current;
     if (!stored) return;
+    if (visibilityDirty && !(await saveVisibilityCurrent())) return;
     if (dirty) {
       stored = await saveCurrent();
       if (!stored) return;
     }
+    stored = persistedSceneRef.current;
+    if (!stored) return;
     const name = snapshotName.trim();
     if (!name) {
       toast.error("Dê um nome ao snapshot.");
@@ -1386,8 +1560,14 @@ export function TabletopWorkspace({
   };
 
   const requestSceneChange = (sceneId: string) => {
-    if (sceneId === persistedSceneRef.current?.id) return;
-    if (dirty) {
+    if (
+      saving ||
+      savePending.current ||
+      visibilitySavePending.current ||
+      (!loading && sceneId === persistedSceneRef.current?.id)
+    )
+      return;
+    if (unsaved) {
       setPendingNavigation({ kind: "scene", id: sceneId });
       return;
     }
@@ -1395,10 +1575,15 @@ export function TabletopWorkspace({
   };
 
   const requestCampaignChange = (nextCampaignId: string) => {
-    if (dirty) {
+    if (saving || savePending.current || visibilitySavePending.current) return;
+    if (unsaved) {
       setPendingNavigation({ kind: "campaign", id: nextCampaignId });
       return;
     }
+    sceneRequests.invalidate();
+    clearScene();
+    setScenes([]);
+    setSceneLoadError(null);
     setCampaignId(nextCampaignId);
   };
 
@@ -1406,8 +1591,14 @@ export function TabletopWorkspace({
     const pending = pendingNavigation;
     setPendingNavigation(null);
     if (!pending) return;
-    if (pending.kind === "scene") void loadScene(pending.id);
-    else setCampaignId(pending.id);
+    if (pending.kind === "scene" || pending.kind === "reload") void loadScene(pending.id);
+    else {
+      sceneRequests.invalidate();
+      clearScene();
+      setScenes([]);
+      setSceneLoadError(null);
+      setCampaignId(pending.id);
+    }
   };
 
   const updateNumber = (key: "x" | "y" | "width" | "height" | "rotation", value: string) => {
@@ -1543,7 +1734,7 @@ export function TabletopWorkspace({
       toast.error(
         error instanceof AssetServiceError
           ? error.message
-          : "Não foi possível enviar esta mídia ao Nexus Assets.",
+          : "Não foi possível enviar esta mídia ao Biblioteca de mídias.",
       );
     } finally {
       setAssetUploading(false);
@@ -1635,6 +1826,28 @@ export function TabletopWorkspace({
     engine?.addEntityAt(seed, engine.clientToWorld({ x: event.clientX, y: event.clientY }));
   };
 
+  const panelTabs = [
+    ["library", "Montar", null, "Biblioteca e montagem"],
+    [
+      "space",
+      "Ambiente",
+      visibilityDirty ? "!" : null,
+      visibilityDirty ? "Ambiente ~ alterações não salvas" : "Ambiente",
+    ],
+    [
+      "master",
+      "Mestre",
+      masterEntities.length || null,
+      `Mestre ~ ${masterEntities.length} itens reservados`,
+    ],
+    ["scene", "Cena", null, "Configuração da cena"],
+    [
+      "inspector",
+      "Editar",
+      selected.length || null,
+      `Editar ~ ${selected.length} itens selecionados`,
+    ],
+  ] as const;
   const closeContext = () => setContextMenu(null);
 
   return (
@@ -1664,6 +1877,7 @@ export function TabletopWorkspace({
             <select
               aria-label="Campanha da Mesa Nexus"
               value={campaignId}
+              disabled={saving}
               onChange={(event) => requestCampaignChange(event.target.value)}
               className="h-10 min-w-0 rounded-md border border-input bg-background px-2 text-xs sm:h-9"
             >
@@ -1676,12 +1890,18 @@ export function TabletopWorkspace({
             </select>
             <select
               aria-label="Cena da Mesa Nexus"
-              value={persistedScene?.id ?? ""}
+              value={loadingSceneId ?? persistedScene?.id ?? ""}
               onChange={(event) => requestSceneChange(event.target.value)}
-              disabled={!campaignId || scenes.length === 0}
+              disabled={saving || !campaignId || scenes.length === 0}
               className="h-10 min-w-0 rounded-md border border-input bg-background px-2 text-xs sm:h-9"
             >
-              {scenes.length === 0 && <option value="">Nenhuma cena</option>}
+              {scenes.length === 0 ? (
+                <option value="">Nenhuma cena</option>
+              ) : !persistedScene && !loadingSceneId ? (
+                <option value="" disabled>
+                  Escolha uma cena
+                </option>
+              ) : null}
               {scenes.map((scene) => (
                 <option key={scene.id} value={scene.id}>
                   {scene.status === "archived" ? "Arquivada · " : ""}
@@ -1716,55 +1936,67 @@ export function TabletopWorkspace({
           </nav>
           <Button
             size="sm"
-            variant={dirty ? "default" : "outline"}
+            variant={unsaved ? "default" : "outline"}
             className="tadeon-tabletop-mobile-save min-w-24 gap-2 sm:ml-auto"
-            disabled={!editable || !dirty || saving || conflict}
-            onClick={() => void saveCurrent()}
+            disabled={!editable || !unsaved || saving || conflict}
+            onClick={() => void saveAll()}
           >
-            {saving ? (
+            {saving || loading ? (
               <Loader2 className="h-4 w-4 animate-spin" />
-            ) : dirty ? (
+            ) : unsaved ? (
               <Save className="h-4 w-4" />
             ) : (
               <CheckCircle2 className="h-4 w-4 text-emerald-400" />
             )}
-            {saving ? "Salvando" : dirty ? "Salvar" : "Salvo"}
+            {saving
+              ? "Salvando"
+              : loading
+                ? "Carregando"
+                : unsaved
+                  ? "Salvar"
+                  : persistedScene
+                    ? "Salvo"
+                    : "Sem cena"}
           </Button>
-          <Button
-            type="button"
-            size="sm"
-            variant="outline"
-            className="tadeon-tabletop-mobile-tools-toggle gap-2 sm:hidden"
-            aria-expanded={mobileToolsOpen}
-            onClick={() => setMobileToolsOpen((value) => !value)}
-          >
-            <SlidersHorizontal className="h-4 w-4" />
-            Ferramentas
-          </Button>
-          <Button
-            type="button"
-            size="icon"
-            variant="outline"
-            className="tadeon-tabletop-mobile-panel-toggle min-[768px]:hidden"
-            aria-label={mobilePanelOpen ? "Fechar painel" : "Abrir painel"}
-            aria-expanded={mobilePanelOpen}
-            onClick={() => {
-              if (!mobilePanelOpen) setPanelCollapsed(false);
-              setMobilePanelOpen((value) => !value);
-            }}
-          >
-            <PanelRightOpen className="h-4 w-4" />
-          </Button>
+          {interfaceMode !== "play" && (
+            <Button
+              type="button"
+              size="sm"
+              variant="outline"
+              className="tadeon-tabletop-mobile-tools-toggle gap-2 sm:hidden"
+              aria-expanded={mobileToolsOpen}
+              onClick={() => setMobileToolsOpen((value) => !value)}
+            >
+              <SlidersHorizontal className="h-4 w-4" />
+              Ferramentas
+            </Button>
+          )}
+          {interfaceMode !== "play" && (
+            <Button
+              type="button"
+              size="icon"
+              variant="outline"
+              className="tadeon-tabletop-mobile-panel-toggle"
+              aria-label={mobilePanelOpen ? "Fechar painel" : "Abrir painel"}
+              aria-expanded={mobilePanelOpen}
+              onClick={() => {
+                if (!mobilePanelOpen) setPanelCollapsed(false);
+                setMobilePanelOpen((value) => !value);
+              }}
+            >
+              <PanelRightOpen className="h-4 w-4" />
+            </Button>
+          )}
         </div>
 
         <div
           data-mobile-open={mobileToolsOpen ? "true" : "false"}
-          className={`${mobileToolsOpen ? "flex" : "hidden"} tadeon-tabletop-toolbar relative z-10 mt-3 max-w-full flex-wrap items-center gap-2 overflow-x-auto border-t border-border/50 pt-3 sm:!flex`}
+          className="tadeon-tabletop-toolbar"
         >
           <ToolbarGroup label="Cena">
             <ToolbarButton
               label="Mover cena para cima"
-              disabled={!persistedScene || saving || dirty || currentSceneIndex <= 0}
+              disabled={!persistedScene || saving || unsaved || currentSceneIndex <= 0}
               onClick={() => void moveCurrentScene(-1)}
             >
               <ChevronUp className="h-4 w-4" />
@@ -1774,7 +2006,7 @@ export function TabletopWorkspace({
               disabled={
                 !persistedScene ||
                 saving ||
-                dirty ||
+                unsaved ||
                 currentSceneIndex < 0 ||
                 currentSceneIndex >= scenes.length - 1
               }
@@ -1791,7 +2023,7 @@ export function TabletopWorkspace({
             </ToolbarButton>
             <ToolbarButton
               label="Duplicar cena"
-              disabled={!persistedScene || saving || dirty}
+              disabled={!persistedScene || saving || unsaved}
               onClick={() => void duplicateScene()}
             >
               <Copy className="h-4 w-4" />
@@ -1813,7 +2045,11 @@ export function TabletopWorkspace({
             <ToolbarButton
               label={conflict ? "Recarregar após conflito" : "Recarregar cena"}
               disabled={!persistedScene || saving}
-              onClick={() => persistedScene && void loadScene(persistedScene.id)}
+              onClick={() => {
+                if (!persistedScene) return;
+                if (unsaved) setPendingNavigation({ kind: "reload", id: persistedScene.id });
+                else void loadScene(persistedScene.id);
+              }}
             >
               <RefreshCw className={`h-4 w-4 ${conflict ? "text-destructive" : ""}`} />
             </ToolbarButton>
@@ -1890,7 +2126,7 @@ export function TabletopWorkspace({
             </ToolbarButton>
           </ToolbarGroup>
 
-          <div className="ml-auto flex min-w-0 flex-wrap items-center justify-end gap-2 rounded-xl border border-white/5 bg-white/[0.025] p-1.5">
+          <ToolbarGroup label="Grade">
             <Grid2X2 className="h-4 w-4 text-muted-foreground" />
             <select
               aria-label="Modo de grade"
@@ -1930,7 +2166,7 @@ export function TabletopWorkspace({
             <ToolbarButton label="Diagnóstico" onClick={() => setDiagnostics((value) => !value)}>
               <Bug className="h-4 w-4" />
             </ToolbarButton>
-          </div>
+          </ToolbarGroup>
         </div>
         <TabletopLiveSession
           enabled={realtimeEnabled}
@@ -1960,6 +2196,21 @@ export function TabletopWorkspace({
         />
       </header>
 
+      {sceneLoadError && (
+        <div
+          role="alert"
+          className="flex flex-wrap items-center justify-between gap-3 border-b border-destructive/30 bg-destructive/10 px-4 py-3 text-sm"
+        >
+          <p>{sceneLoadError.message}</p>
+          <Button
+            variant="outline"
+            disabled={loading}
+            onClick={() => void loadScene(sceneLoadError.id)}
+          >
+            Tentar novamente
+          </Button>
+        </div>
+      )}
       {conflict && (
         <div
           role="alert"
@@ -1975,15 +2226,9 @@ export function TabletopWorkspace({
         </div>
       )}
 
-      <div
-        className={`tadeon-tabletop-workbench grid min-h-0 flex-1 grid-cols-1 ${
-          panelCollapsed
-            ? "min-[768px]:grid-cols-[minmax(0,1fr)_3.75rem]"
-            : "min-[768px]:grid-cols-[minmax(0,1fr)_23rem] 2xl:grid-cols-[minmax(0,1fr)_25rem]"
-        }`}
-      >
+      <div className="tadeon-tabletop-workbench" data-panel-collapsed={panelCollapsed}>
         <section
-          className="tadeon-tabletop-stage relative min-h-[64svh] overflow-hidden sm:min-h-[70vh] min-[768px]:min-h-0"
+          className="tadeon-tabletop-stage"
           data-projection={projectionMode}
           data-tool={toolMode}
           onClick={closeContext}
@@ -1997,114 +2242,93 @@ export function TabletopWorkspace({
         >
           <div ref={hostRef} className="tadeon-tabletop-canvas-host" />
           <div className="tadeon-tabletop-overlay-layer" data-tabletop-stage-portal />
-          <div className="tadeon-tabletop-canvas-rail" aria-label="Ferramentas do canvas">
-            <span className="tadeon-tabletop-canvas-rail__group-label">Navegar</span>
-            <CanvasToolButton
-              label="Ferramenta de seleção"
-              caption="Selecionar"
-              active={toolMode === "select"}
-              onClick={() => setToolMode("select")}
-            >
-              <MousePointer2 className="h-4 w-4" />
-            </CanvasToolButton>
-            <CanvasToolButton
-              label="Ferramenta mão para mover a cena"
-              caption="Mover"
-              active={toolMode === "pan"}
-              onClick={() => setToolMode("pan")}
-            >
-              <Hand className="h-4 w-4" />
-            </CanvasToolButton>
-            <CanvasToolButton
-              label="Régua para medir distâncias (R)"
-              caption="Medir"
-              active={toolMode === "measure"}
-              onClick={() => setToolMode("measure")}
-            >
-              <Ruler className="h-4 w-4" />
-            </CanvasToolButton>
-            <span className="tadeon-tabletop-canvas-rail__group-label">Criar</span>
-            <CanvasToolButton
-              label="Desenho livre persistente (D)"
-              caption="Desenhar"
-              active={toolMode === "draw"}
-              disabled={!editable}
-              onClick={() => setToolMode("draw")}
-            >
-              <PencilLine className="h-4 w-4" />
-            </CanvasToolButton>
-            <CanvasToolButton
-              label="Construir paredes e aberturas (B)"
-              caption="Construir"
-              active={toolMode === "structure"}
-              disabled={!editable || !lightingEnabled || !visibilityAvailable}
-              onClick={() => setToolMode("structure")}
-            >
-              <BrickWall className="h-4 w-4" />
-            </CanvasToolButton>
-            <CanvasToolButton
-              label="Posicionar luz e arrastar o alcance (L)"
-              caption="Iluminar"
-              active={toolMode === "light"}
-              disabled={!editable || !lightingEnabled || !visibilityAvailable}
-              onClick={() => setToolMode("light")}
-            >
-              <Lightbulb className="h-4 w-4" />
-            </CanvasToolButton>
-            <CanvasToolButton
-              label="Pincel para revelar névoa (F)"
-              caption="Revelar"
-              active={toolMode === "fog_reveal"}
-              disabled={!editable || !lightingEnabled || !visibilityAvailable}
-              onClick={() => setToolMode("fog_reveal")}
-            >
-              <CloudFog className="h-4 w-4" />
-            </CanvasToolButton>
-            <CanvasToolButton
-              label="Pincel para cobrir novamente com névoa"
-              caption="Cobrir"
-              active={toolMode === "fog_hide"}
-              disabled={!editable || !lightingEnabled || !visibilityAvailable}
-              onClick={() => setToolMode("fog_hide")}
-            >
-              <Eraser className="h-4 w-4" />
-            </CanvasToolButton>
-            <span className="tadeon-tabletop-canvas-rail__divider" />
-            <ToolbarButton
-              label="Selecionar todas as entidades editáveis"
-              disabled={!editable || snapshot.scene.entities.length === 0}
-              onClick={() => engineRef.current?.selectAll()}
-            >
-              <Scan className="h-4 w-4" />
-            </ToolbarButton>
-            <ToolbarButton
-              label="Adicionar token"
-              disabled={!editable}
-              onClick={() => engineRef.current?.addEntity("token")}
-            >
-              <UserRound className="h-4 w-4" />
-            </ToolbarButton>
-            <ToolbarButton
-              label="Adicionar objeto"
-              disabled={!editable}
-              onClick={() => engineRef.current?.addEntity("object")}
-            >
-              <Box className="h-4 w-4" />
-            </ToolbarButton>
-            <ToolbarButton
-              label="Abrir biblioteca"
-              disabled={!persistedScene}
-              onClick={() => {
-                setPanelTab("library");
-                setMobilePanelOpen(true);
-              }}
-            >
-              <Image className="h-4 w-4" />
-            </ToolbarButton>
-            <ToolbarButton label="Ajustar à tela" onClick={() => engineRef.current?.fitToScreen()}>
-              <Maximize2 className="h-4 w-4" />
-            </ToolbarButton>
-          </div>
+          {interfaceMode !== "play" && (
+            <div className="tadeon-tabletop-canvas-rail" aria-label="Ferramentas de criação">
+              <CanvasToolButton
+                label="Desenho livre persistente (D)"
+                caption="Desenhar"
+                active={toolMode === "draw"}
+                disabled={!editable}
+                onClick={() => setToolMode("draw")}
+              >
+                <PencilLine className="h-4 w-4" />
+              </CanvasToolButton>
+              <CanvasToolButton
+                label="Construir paredes e aberturas (B)"
+                caption="Construir"
+                active={toolMode === "structure"}
+                disabled={!editable || !lightingEnabled || !visibilityAvailable}
+                onClick={() => setToolMode("structure")}
+              >
+                <BrickWall className="h-4 w-4" />
+              </CanvasToolButton>
+              <CanvasToolButton
+                label="Posicionar luz e arrastar o alcance (L)"
+                caption="Iluminar"
+                active={toolMode === "light"}
+                disabled={!editable || !lightingEnabled || !visibilityAvailable}
+                onClick={() => setToolMode("light")}
+              >
+                <Lightbulb className="h-4 w-4" />
+              </CanvasToolButton>
+              <CanvasToolButton
+                label="Pincel para revelar névoa (F)"
+                caption="Revelar"
+                active={toolMode === "fog_reveal"}
+                disabled={!editable || !lightingEnabled || !visibilityAvailable}
+                onClick={() => setToolMode("fog_reveal")}
+              >
+                <CloudFog className="h-4 w-4" />
+              </CanvasToolButton>
+              <CanvasToolButton
+                label="Pincel para cobrir novamente com névoa"
+                caption="Cobrir"
+                active={toolMode === "fog_hide"}
+                disabled={!editable || !lightingEnabled || !visibilityAvailable}
+                onClick={() => setToolMode("fog_hide")}
+              >
+                <Eraser className="h-4 w-4" />
+              </CanvasToolButton>
+              <span className="tadeon-tabletop-canvas-rail__divider" />
+              <ToolbarButton
+                label="Selecionar todas as entidades editáveis"
+                disabled={!editable || snapshot.scene.entities.length === 0}
+                onClick={() => engineRef.current?.selectAll()}
+              >
+                <Scan className="h-4 w-4" />
+              </ToolbarButton>
+              <ToolbarButton
+                label="Adicionar token"
+                disabled={!editable}
+                onClick={() => engineRef.current?.addEntity("token")}
+              >
+                <UserRound className="h-4 w-4" />
+              </ToolbarButton>
+              <ToolbarButton
+                label="Adicionar objeto"
+                disabled={!editable}
+                onClick={() => engineRef.current?.addEntity("object")}
+              >
+                <Box className="h-4 w-4" />
+              </ToolbarButton>
+              <ToolbarButton
+                label="Abrir biblioteca"
+                disabled={!persistedScene}
+                onClick={() => {
+                  setPanelTab("library");
+                  setMobilePanelOpen(true);
+                }}
+              >
+                <Image className="h-4 w-4" />
+              </ToolbarButton>
+              <ToolbarButton
+                label="Ajustar à tela"
+                onClick={() => engineRef.current?.fitToScreen()}
+              >
+                <Maximize2 className="h-4 w-4" />
+              </ToolbarButton>
+            </div>
+          )}
           {toolMode === "draw" && (
             <div className="tadeon-tabletop-tool-options" aria-label="Opções do desenho">
               <div className="tadeon-tabletop-tool-options__heading">
@@ -2753,21 +2977,10 @@ export function TabletopWorkspace({
           )}
         </section>
 
-        <button
-          type="button"
-          className="tadeon-tabletop-panel-backdrop min-[768px]:hidden"
-          data-open={mobilePanelOpen ? "true" : "false"}
-          tabIndex={mobilePanelOpen ? 0 : -1}
-          onClick={() => setMobilePanelOpen(false)}
-          aria-label="Fechar painel da Mesa"
-          aria-hidden={!mobilePanelOpen}
-        />
-
-        <aside
-          className="tadeon-tabletop-panel max-h-[72svh] overflow-y-auto border-t border-border/70 p-4 min-[768px]:block min-[768px]:max-h-none min-[768px]:border-l min-[768px]:border-t-0"
-          data-collapsed={panelCollapsed ? "true" : "false"}
-          data-mobile-open={mobilePanelOpen ? "true" : "false"}
-          aria-label="Painel de edição da Mesa Nexus"
+        <TabletopEditorPanel
+          open={mobilePanelOpen}
+          onOpenChange={setMobilePanelOpen}
+          collapsed={panelCollapsed}
         >
           <button
             type="button"
@@ -2805,7 +3018,7 @@ export function TabletopWorkspace({
                 type="button"
                 size="icon"
                 variant="ghost"
-                className="hidden min-[768px]:inline-flex"
+                className="tadeon-tabletop-panel__collapse"
                 onClick={() => setPanelCollapsed(true)}
                 aria-label="Recolher painel contextual"
                 title="Recolher painel"
@@ -2816,42 +3029,56 @@ export function TabletopWorkspace({
                 type="button"
                 size="sm"
                 variant="ghost"
-                className="min-[768px]:hidden"
+                className="tadeon-tabletop-panel__close"
                 onClick={() => setMobilePanelOpen(false)}
               >
                 Fechar
               </Button>
             </div>
           </div>
+          <label className="tadeon-tabletop-panel__chooser" htmlFor="tabletop-editor-area">
+            Área do editor
+            <select
+              id="tabletop-editor-area"
+              value={panelTab}
+              onChange={(event) => {
+                const tab = panelTabs.find(([id]) => id === event.target.value)?.[0];
+                if (tab) setPanelTab(tab);
+              }}
+            >
+              {panelTabs.map(([tab, label, badge]) => (
+                <option key={tab} value={tab}>
+                  {label}
+                  {badge ? ` · ${badge}` : ""}
+                </option>
+              ))}
+            </select>
+          </label>
           <div className="tadeon-tabletop-panel__tabs" role="tablist" aria-label="Áreas do editor">
-            {(
-              [
-                ["library", "Montar", null, "Biblioteca e montagem"],
-                [
-                  "space",
-                  "Ambiente",
-                  visibilityDirty ? "!" : null,
-                  visibilityDirty ? "Ambiente ~ alterações não salvas" : "Ambiente",
-                ],
-                [
-                  "master",
-                  "Mestre",
-                  masterEntities.length || null,
-                  `Mestre ~ ${masterEntities.length} itens reservados`,
-                ],
-                ["scene", "Cena", null, "Configuração da cena"],
-                [
-                  "inspector",
-                  "Editar",
-                  selected.length || null,
-                  `Editar ~ ${selected.length} itens selecionados`,
-                ],
-              ] as const
-            ).map(([tab, label, badge, accessibleLabel]) => (
+            {panelTabs.map(([tab, label, badge, accessibleLabel]) => (
               <button
                 key={tab}
                 type="button"
                 role="tab"
+                id={`tabletop-tab-${tab}`}
+                aria-controls={`tabletop-panel-${tab}`}
+                tabIndex={panelTab === tab ? 0 : -1}
+                onKeyDown={(event) => {
+                  const tabs = ["library", "space", "master", "scene", "inspector"] as const;
+                  const offset =
+                    event.key === "ArrowRight" ? 1 : event.key === "ArrowLeft" ? -1 : 0;
+                  if (!offset && event.key !== "Home" && event.key !== "End") return;
+                  event.preventDefault();
+                  const index = tabs.indexOf(tab);
+                  const target =
+                    event.key === "Home"
+                      ? 0
+                      : event.key === "End"
+                        ? tabs.length - 1
+                        : (index + offset + tabs.length) % tabs.length;
+                  setPanelTab(tabs[target]);
+                  document.getElementById(`tabletop-tab-${tabs[target]}`)?.focus();
+                }}
                 aria-selected={panelTab === tab}
                 aria-label={accessibleLabel}
                 className="tadeon-tabletop-panel__tab"
@@ -2879,7 +3106,13 @@ export function TabletopWorkspace({
           </div>
 
           {panelTab === "library" && (
-            <div className="tadeon-tabletop-panel__section" role="tabpanel">
+            <div
+              className="tadeon-tabletop-panel__section"
+              role="tabpanel"
+              id="tabletop-panel-library"
+              aria-labelledby="tabletop-tab-library"
+              tabIndex={0}
+            >
               <p className="mt-1 text-[11px] text-muted-foreground">
                 Arraste no computador ou toque para inserir no centro do mapa. Fichas já entram
                 vinculadas ao personagem e ao jogador.
@@ -2891,12 +3124,12 @@ export function TabletopWorkspace({
                   value={paletteSearch}
                   onChange={(event) => setPaletteSearch(event.target.value)}
                   className="pl-9"
-                  placeholder="Buscar asset, ficha ou página…"
+                  placeholder="Buscar mídia, ficha ou página…"
                 />
               </div>
               <div className="mt-3">
                 <Label htmlFor="asset-drop-type" className="text-[10px] uppercase">
-                  Asset entra como
+                  Inserir mídia como
                 </Label>
                 <select
                   id="asset-drop-type"
@@ -2934,7 +3167,7 @@ export function TabletopWorkspace({
                 <p className="mt-1 text-[10px] text-muted-foreground">
                   Usa um asset privado autorizado para preencher a camada Mapa.
                 </p>
-                <label className="mt-2 flex min-h-10 cursor-pointer items-center justify-center gap-2 rounded-md border border-dashed border-primary/35 bg-primary/5 px-3 text-xs font-medium text-primary hover:bg-primary/10">
+                <label className="tadeon-tabletop-media-upload">
                   {assetUploading ? (
                     <Loader2 className="h-4 w-4 animate-spin" />
                   ) : (
@@ -2966,8 +3199,8 @@ export function TabletopWorkspace({
                 {!paletteLoading && visiblePaletteAssets.length === 0 && (
                   <p className="col-span-2 rounded-md border border-dashed border-border/60 p-3 text-center text-[11px] text-muted-foreground">
                     {paletteAssets.length === 0
-                      ? "Nenhuma mídia visual pronta no Nexus Assets."
-                      : "Nenhum asset corresponde à busca."}
+                      ? "Nenhuma mídia visual pronta no Biblioteca de mídias."
+                      : "Nenhuma mídia corresponde à busca."}
                   </p>
                 )}
                 {visiblePaletteAssets.map((asset) => (
@@ -3093,7 +3326,13 @@ export function TabletopWorkspace({
           )}
 
           {panelTab === "space" && (
-            <div className="tadeon-tabletop-panel__section" role="tabpanel">
+            <div
+              className="tadeon-tabletop-panel__section"
+              role="tabpanel"
+              id="tabletop-panel-space"
+              aria-labelledby="tabletop-tab-space"
+              tabIndex={0}
+            >
               <div className="tadeon-tabletop-space-intro">
                 <div>
                   <Axis3d className="h-5 w-5" />
@@ -3364,7 +3603,13 @@ export function TabletopWorkspace({
           )}
 
           {panelTab === "master" && (
-            <div className="tadeon-tabletop-panel__section" role="tabpanel">
+            <div
+              className="tadeon-tabletop-panel__section"
+              role="tabpanel"
+              id="tabletop-panel-master"
+              aria-labelledby="tabletop-tab-master"
+              tabIndex={0}
+            >
               <div className="rounded-xl border border-primary/25 bg-primary/5 p-3">
                 <div className="flex items-start gap-2">
                   <EyeOff className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
@@ -3511,7 +3756,13 @@ export function TabletopWorkspace({
           )}
 
           {panelTab === "scene" && (
-            <div className="tadeon-tabletop-panel__section" role="tabpanel">
+            <div
+              className="tadeon-tabletop-panel__section"
+              role="tabpanel"
+              id="tabletop-panel-scene"
+              aria-labelledby="tabletop-tab-scene"
+              tabIndex={0}
+            >
               <div className="mt-6 flex items-center gap-2">
                 <Layers3 className="h-4 w-4 text-primary" />
                 <p className="tadeon-eyebrow">Camadas</p>
@@ -3593,7 +3844,7 @@ export function TabletopWorkspace({
                 </ToolbarButton>
                 <ToolbarButton
                   label="Restaurar snapshot"
-                  disabled={!editable || !snapshotId || saving || dirty}
+                  disabled={!editable || !snapshotId || saving || unsaved}
                   onClick={() => setRestoreDialogOpen(true)}
                 >
                   <History className="h-4 w-4" />
@@ -3603,7 +3854,13 @@ export function TabletopWorkspace({
           )}
 
           {panelTab === "inspector" && (
-            <div className="tadeon-tabletop-panel__section" role="tabpanel">
+            <div
+              className="tadeon-tabletop-panel__section"
+              role="tabpanel"
+              id="tabletop-panel-inspector"
+              aria-labelledby="tabletop-tab-inspector"
+              tabIndex={0}
+            >
               <p className="tadeon-eyebrow">Inspetor de entidades</p>
               {!primary ? (
                 <div className="tadeon-tabletop-inspector-card mt-4 text-center text-sm text-muted-foreground">
@@ -3787,7 +4044,8 @@ export function TabletopWorkspace({
                       </div>
                       {primary.assetUrl && (
                         <p>
-                          A cor continua disponível para base 3D, aura e estados, sem cobrir a imagem no modo 2D.
+                          A cor continua disponível para base 3D, aura e estados, sem cobrir a
+                          imagem no modo 2D.
                         </p>
                       )}
                     </fieldset>
@@ -4334,7 +4592,7 @@ export function TabletopWorkspace({
               )}
             </div>
           )}
-        </aside>
+        </TabletopEditorPanel>
       </div>
 
       <Dialog open={sceneDialogOpen} onOpenChange={setSceneDialogOpen}>
@@ -4453,10 +4711,7 @@ export function TabletopWorkspace({
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel
-              disabled={saving}
-              onClick={() => setDeleteSceneDialogOpen(false)}
-            >
+            <AlertDialogCancel disabled={saving} onClick={() => setDeleteSceneDialogOpen(false)}>
               Manter cena
             </AlertDialogCancel>
             <AlertDialogAction
@@ -4505,9 +4760,8 @@ export function TabletopWorkspace({
           <AlertDialogHeader>
             <AlertDialogTitle>Descartar alterações locais?</AlertDialogTitle>
             <AlertDialogDescription>
-              Há mudanças ainda não salvas nesta cena. Ao continuar para outra
-              {pendingNavigation?.kind === "campaign" ? " campanha" : " cena"}, essa montagem local
-              será perdida.
+              Há alterações no mapa ou no ambiente ainda não salvas. Ao continuar, essas mudanças
+              serão descartadas.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
@@ -4522,6 +4776,41 @@ export function TabletopWorkspace({
         </AlertDialogContent>
       </AlertDialog>
 
+      <AlertDialog
+        open={exitBlocker.status === "blocked"}
+        onOpenChange={(open) => {
+          if (!open && exitBlocker.status === "blocked") exitBlocker.reset();
+        }}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Sair da Mesa com alterações pendentes?</AlertDialogTitle>
+            <AlertDialogDescription>
+              O mapa ou o ambiente ainda tem mudanças locais. Volte à cena e salve para mantê-las,
+              ou saia descartando o que ainda não foi enviado.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Continuar na Mesa</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => {
+                if (exitBlocker.status === "blocked") exitBlocker.proceed();
+              }}
+            >
+              Descartar e sair
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+      <TabletopProgressiveInterfaceBridge
+        role="mestre"
+        mode={interfaceMode}
+        toolMode={toolMode}
+        onModeChange={changeInterfaceMode}
+        editable={editable && !loading && !saving && !conflict}
+        lightingAvailable={lightingEnabled && visibilityAvailable}
+        onOpenPanel={openWorkPanel}
+      />
       <TabletopHandoutViewer
         handout={selectedHandout}
         open={selectedHandout !== null}
@@ -4792,6 +5081,7 @@ function ToolbarButton({
       onClick={onClick}
     >
       {children}
+      <span className="tadeon-tabletop-command-label">{label}</span>
     </Button>
   );
 }
@@ -4824,16 +5114,32 @@ function CanvasToolButton({
       onClick={onClick}
     >
       {children}
-      {caption && <span>{caption}</span>}
+      {caption ? (
+        <span>{caption}</span>
+      ) : (
+        <span className="tadeon-tabletop-command-label">{label}</span>
+      )}
     </Button>
   );
 }
 
 function ToolbarGroup({ label, children }: { label: string; children: React.ReactNode }) {
   return (
-    <div className="tadeon-tabletop-toolbar__group">
-      <span className="tadeon-tabletop-toolbar__label">{label}</span>
-      {children}
-    </div>
+    <Popover modal>
+      <PopoverTrigger asChild>
+        <Button variant="outline" className="tadeon-tabletop-command-trigger">
+          {label}
+          <ChevronDown aria-hidden="true" className="h-3.5 w-3.5" />
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent
+        align="start"
+        className="tadeon-tabletop-command-group"
+        aria-label={`Ferramentas de ${label.toLocaleLowerCase("pt-BR")}`}
+      >
+        <p className="tadeon-eyebrow">{label}</p>
+        <div className="tadeon-tabletop-command-group__actions">{children}</div>
+      </PopoverContent>
+    </Popover>
   );
 }

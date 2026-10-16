@@ -1,3 +1,4 @@
+import { NexusTabletopLocator } from "@/components/knowledge/nexus-tabletop-locator";
 import { useAuth } from "@/lib/auth";
 import { createKnowledgeDraftStore } from "@/lib/knowledge/knowledge-drafts";
 import { useReadingPreferences } from "@/lib/knowledge/use-reading-preferences";
@@ -275,12 +276,14 @@ export function NexusWorkspace({
   assetsEnabled,
   graphEnabled,
   initialNodeId,
+  tabletopEnabled = false,
 }: {
   assetsEnabled: boolean;
   graphEnabled: boolean;
   initialNodeId?: string;
+  tabletopEnabled?: boolean;
 }) {
-  const { user, loading: authLoading } = useAuth();
+  const { user, role, loading: authLoading } = useAuth();
   const actorId = authLoading ? "" : (user?.id ?? "");
   const currentActor = useRef(actorId);
   currentActor.current = actorId;
@@ -687,13 +690,13 @@ export function NexusWorkspace({
       !workspaceId ||
       !actorId ||
       !initialNodeId ||
-      initialNodeOpenedRef.current === `${actorId}:${initialNodeId}`
+      initialNodeOpenedRef.current === `${scopeKey}:${initialNodeId}`
     ) {
       return;
     }
-    initialNodeOpenedRef.current = `${actorId}:${initialNodeId}`;
+    initialNodeOpenedRef.current = `${scopeKey}:${initialNodeId}`;
     void openNode(initialNodeId);
-  }, [actorId, initialNodeId, openNode, loading, workspaceId]);
+  }, [actorId, initialNodeId, openNode, loading, workspaceId, scopeKey]);
 
   useEffect(() => {
     const first = nodes.find(
@@ -728,6 +731,19 @@ export function NexusWorkspace({
   ]);
 
   const selectedNodeId = selected?.id;
+  useEffect(() => {
+    if (!selectedNodeId) return;
+    const tab = [
+      ...(readingRegion.current?.querySelectorAll<HTMLElement>("[data-page-tab]") ?? []),
+    ].find((element) => element.dataset.pageTab === selectedNodeId);
+    const rail = tab?.closest<HTMLElement>("[role=tablist]");
+    if (!tab || !rail) return;
+    const target = (tab.parentElement ?? tab).getBoundingClientRect(),
+      bounds = rail.getBoundingClientRect();
+    if (target.left < bounds.left) rail.scrollLeft -= bounds.left - target.left;
+    else if (target.right > bounds.right) rail.scrollLeft += target.right - bounds.right;
+  }, [selectedNodeId]);
+
   useEffect(() => {
     if (readingView !== "document" && selectedNodeId) setInlineGraphFocus(selectedNodeId);
   }, [readingView, selectedNodeId]);
@@ -1540,6 +1556,9 @@ export function NexusWorkspace({
           aria-label="Leitura das páginas"
           className={`${selected ? "order-1" : "order-2"} tadeon-nexus-document tadeon-nexus-reading min-w-0 overflow-hidden rounded-2xl border bg-card/55 lg:order-2`}
         >
+          {tabletopEnabled && role === "mestre" && (
+            <NexusTabletopLocator key={`${actorId}:${selected?.id ?? ""}`} nodeId={selected?.id} />
+          )}
           {openNodes.length > 0 && (
             <div
               className="flex min-w-0 gap-1 overflow-x-auto border-b bg-muted/20 px-2 pt-2"

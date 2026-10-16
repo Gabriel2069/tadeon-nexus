@@ -45,18 +45,6 @@ describe("mobile product repair 153", () => {
     expect(css).toContain("justify-content: center !important");
   });
 
-  it("restores Mesa label and keeps tabletop mobile controls centered and clickable", () => {
-    const css = source("src/styles/mobile-product-repair-153.css");
-    const layout = source("src/components/app-layout.tsx");
-    expect(layout).toContain("<span>Mesa</span>");
-    expect(css).toContain('.tadeon-mobile-dock__item[href="/tabletop"] > span');
-    expect(css).toContain(".tadeon-tabletop-studio__header");
-    expect(css).toContain("pointer-events: auto !important");
-    expect(css).toContain(".tadeon-tabletop-toolbar");
-    expect(css).toContain("justify-content: center !important");
-    expect(css).toContain("--tadeon-tabletop-stage-center");
-  });
-
   it("bounds search and create-sheet dialogs to the mobile viewport", () => {
     const css = source("src/styles/mobile-product-repair-153.css");
     expect(css).toContain(':has([data-slot="command"])');

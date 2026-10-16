@@ -2,14 +2,19 @@
 .tadeon-participant-view {
   --studio-panel: rgb(8 17 27 / 95%);
   --studio-line: rgb(89 189 235 / 14%);
-  --studio-brass: 89 189 235;
-  --studio-highlight: 220 246 255;
-  --studio-forest: 34 91 126;
-  --studio-wine: 42 76 128;
-  --studio-blue: 24 112 169;
-  --studio-cyan: 89 189 235;
+  --studio-brass: 146 181 202;
+  --material-rgb: 146 181 202;
+  --studio-highlight: 225 232 238;
+  --studio-forest: 42 57 70;
+  --studio-wine: 53 76 92;
+  --studio-blue: 84 123 148;
+  --studio-cyan: 146 181 202;
   position: relative;
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  min-width: 0;
+  width: 100%;
+  container-type: inline-size;
   min-height: calc(100dvh - 4rem);
   isolation: isolate;
   gap: 1rem;
@@ -38,6 +43,8 @@
   display: flex;
   align-items: end;
   justify-content: space-between;
+  flex-wrap: wrap;
+  min-width: 0;
   gap: 1rem;
   padding: clamp(1rem, 2.4vw, 1.6rem);
   border: 1px solid color-mix(in srgb, var(--border) 72%, rgb(var(--studio-brass)) 28%);
@@ -49,6 +56,11 @@
   box-shadow:
     0 24px 70px rgb(0 0 0 / 0.25),
     inset 0 1px rgb(255 255 255 / 0.035);
+}
+
+.tadeon-participant-view__header > div:first-child {
+  min-width: 0;
+  flex: 1 1 22rem;
 }
 
 .tadeon-participant-view__eyebrow {
@@ -68,7 +80,7 @@
 }
 .tadeon-participant-view__header h1 {
   margin-top: 0.35rem;
-  font-family: Cinzel, serif;
+  font-family: var(--font-cinzel, "Cormorant Garamond", Georgia, serif);
   font-size: clamp(1.55rem, 3vw, 2.35rem);
 }
 .tadeon-participant-view__header p {
@@ -79,6 +91,8 @@
 }
 
 .tadeon-participant-view__controls {
+  min-width: 0;
+  flex: 1 1 24rem;
   display: flex;
   align-items: end;
   gap: 0.65rem;
@@ -86,7 +100,8 @@
 .tadeon-participant-view__controls label {
   display: grid;
   gap: 0.3rem;
-  min-width: min(19rem, 42vw);
+  min-width: 0;
+  flex: 1;
 }
 .tadeon-participant-view__controls label > span {
   color: var(--muted-foreground);
@@ -96,12 +111,81 @@
   text-transform: uppercase;
 }
 .tadeon-participant-view__controls select {
+  width: 100%;
   min-height: 2.5rem;
   border: 1px solid var(--border);
   border-radius: 0.75rem;
   padding: 0 2.25rem 0 0.8rem;
   color: var(--foreground);
   background: rgb(8 11 17 / 0.9);
+}
+
+.tadeon-participant-view__tools {
+  flex: 1 0 100%;
+  min-width: 0;
+  width: 100%;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  justify-items: end;
+  align-items: start;
+  gap: 0.5rem;
+}
+.tadeon-participant-view__support {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+.tadeon-participant-view__support > span,
+.tadeon-participant-view__support > button {
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid rgb(var(--studio-brass) / 24%);
+  border-radius: 0.7rem;
+  background: rgb(8 11 17 / 78%);
+  color: rgb(var(--studio-highlight));
+  font-size: 0.8rem;
+}
+.tadeon-participant-view__support svg {
+  width: 1rem;
+  height: 1rem;
+}
+.tadeon-participant-view__support > button[aria-pressed="true"] {
+  border-color: rgb(var(--studio-brass) / 55%);
+  background: rgb(var(--studio-brass) / 12%);
+}
+.tadeon-participant-view__support > button:focus-visible {
+  outline: 2px solid var(--foreground);
+  outline-offset: 2px;
+}
+.tadeon-participant-view__tactics {
+  width: 100%;
+  max-width: 100%;
+  position: relative;
+  display: flex;
+  flex: 1 0 100%;
+  min-width: 0;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+  align-items: center;
+  padding: 0.65rem;
+  border: 1px solid rgb(var(--studio-brass) / 24%);
+  border-radius: 0.8rem;
+  background: rgb(8 11 17 / 78%);
+}
+.tadeon-participant-view__tactics .tadeon-tactical-dock__identity {
+  min-width: 0;
+  flex: 1 1 10rem;
+}
+.tadeon-participant-view__tactics .tadeon-tactical-dock__actions {
+  min-width: 0;
+  flex-wrap: wrap;
+}
+.tadeon-participant-view__tactics button {
+  min-height: 44px;
 }
 
 .tadeon-participant-view__stage {
@@ -111,8 +195,7 @@
   border: 1px solid color-mix(in srgb, var(--border) 78%, rgb(var(--studio-brass)) 22%);
   border-radius: 1.4rem;
   background:
-    radial-gradient(circle at 50% 50%, rgb(var(--studio-brass) / 3%), transparent 38rem),
-    #06080c;
+    radial-gradient(circle at 50% 50%, rgb(var(--studio-brass) / 3%), transparent 38rem), #06080c;
   box-shadow:
     0 28px 90px rgb(0 0 0 / 0.38),
     inset 0 0 0 1px rgb(255 255 255 / 0.025);
@@ -134,8 +217,18 @@
 .tadeon-participant-view__canvas {
   position: absolute;
   inset: 0;
-  min-width: 320px;
-  min-height: 320px;
+  min-width: 0;
+  min-height: 0;
+}
+.tadeon-participant-view__overlay {
+  position: absolute;
+  z-index: 3;
+  inset: 0;
+  pointer-events: none;
+  container-type: size;
+}
+.tadeon-participant-view__overlay > * {
+  pointer-events: auto;
 }
 .tadeon-participant-view__empty {
   position: absolute;
@@ -160,7 +253,7 @@
   color: rgb(var(--studio-brass));
 }
 .tadeon-participant-view__empty strong {
-  font-family: Cinzel, serif;
+  font-family: var(--font-cinzel, "Cormorant Garamond", Georgia, serif);
   font-size: 1.05rem;
 }
 .tadeon-participant-view__empty span {
@@ -178,9 +271,9 @@
   top: 0.8rem;
   left: 0.8rem;
   right: 0.8rem;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: start;
   gap: 0.75rem;
   pointer-events: none;
 }
@@ -224,6 +317,19 @@
 }
 .tadeon-participant-view__hud .tadeon-tabletop-realtime {
   pointer-events: auto;
+  justify-self: end;
+}
+.tadeon-participant-view__hud .tadeon-tabletop-realtime__retry {
+  min-width: 44px;
+  min-height: 44px;
+}
+@container (max-width: 40rem) {
+  .tadeon-participant-view__hud {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .tadeon-participant-view__hud .tadeon-tabletop-realtime {
+    justify-self: start;
+  }
 }
 
 .tadeon-participant-view__handouts {
@@ -235,11 +341,7 @@
   border: 1px solid rgb(var(--studio-brass) / 24%);
   border-radius: 1rem;
   color: var(--foreground);
-  background: linear-gradient(
-    145deg,
-    rgb(15 20 29 / 0.94),
-    rgb(7 10 16 / 0.96)
-  );
+  background: linear-gradient(145deg, rgb(15 20 29 / 0.94), rgb(7 10 16 / 0.96));
   box-shadow: 0 20px 55px rgb(0 0 0 / 0.4);
   backdrop-filter: blur(18px);
 }
@@ -389,7 +491,7 @@
   padding-right: 2.25rem;
 }
 .tadeon-handout-viewer__header h2 {
-  font-family: Cinzel, serif;
+  font-family: var(--font-cinzel, "Cormorant Garamond", Georgia, serif);
   font-size: clamp(1.1rem, 2vw, 1.55rem);
 }
 .tadeon-handout-viewer__header p {
@@ -431,8 +533,7 @@
   border-radius: 1rem;
   background:
     linear-gradient(45deg, rgb(255 255 255 / 0.018) 25%, transparent 25%),
-    linear-gradient(-45deg, rgb(255 255 255 / 0.018) 25%, transparent 25%),
-    #080b11;
+    linear-gradient(-45deg, rgb(255 255 255 / 0.018) 25%, transparent 25%), #080b11;
   background-size: 22px 22px;
 }
 .tadeon-handout-viewer__preview:fullscreen {
@@ -698,8 +799,14 @@
   .tadeon-participant-view__header {
     align-items: stretch;
     flex-direction: column;
+    flex-wrap: nowrap;
     border-radius: 1rem;
     padding: 0.9rem;
+  }
+  .tadeon-participant-view__header > div:first-child,
+  .tadeon-participant-view__controls,
+  .tadeon-participant-view__tools {
+    flex-basis: auto;
   }
   .tadeon-participant-view__header p {
     font-size: 0.78rem;
@@ -725,7 +832,6 @@
     align-items: start;
   }
   .tadeon-participant-view__hud > div:first-child {
-    max-width: calc(100% - 3.4rem);
     padding: 0.5rem 0.65rem;
   }
   .tadeon-participant-view__handouts {
