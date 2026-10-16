@@ -95,7 +95,7 @@ function OfflinePageContent() {
         className="tadeon-page-hero tadeon-surface rounded-2xl px-5 py-6 md:px-8 md:py-8"
       >
         <PageSectionMark section="offline" />
-        <div className="flex flex-col justify-between gap-5 md:flex-row md:items-end">
+        <div className="tadeon-utility-hero__body">
           <div>
             <div className="mb-3 flex items-center gap-2">
               <Badge variant="outline" className="gap-1.5">
@@ -119,7 +119,7 @@ function OfflinePageContent() {
               bloqueadas para evitar conflitos com o banco principal.
             </p>
           </div>
-          <div className="flex flex-col items-start gap-2 md:items-end">
+          <div className="flex flex-col items-start gap-2">
             <p className="text-xs text-muted-foreground">
               {hasCache
                 ? `Cópia atualizada em ${updated.toLocaleString("pt-BR")}`

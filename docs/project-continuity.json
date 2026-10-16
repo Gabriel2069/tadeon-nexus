@@ -36,7 +36,10 @@
         "src/components/ui/button.tsx",
         "src/components/fabric-filaments.tsx",
         "src/components/utility-summary.tsx",
-        "src/lib/utility-areas.ts"
+        "src/lib/utility-areas.ts",
+        "src/components/ui/card.tsx",
+        "src/components/ui/input.tsx",
+        "src/components/ui/textarea.tsx"
       ],
       "styles": [
         "src/styles/desktop-shell.css",
@@ -45,7 +48,7 @@
         "src/styles/mobile-more-radial.css",
         "src/styles/button.css"
       ],
-      "boundary": "Cabeçalhos renderizam símbolos; geometria de Área em foco pertence a page-hero-parity.css. Gatilho Mais e símbolos pertencem ao render; Radix mantém foco/teclado/colisão, sem captura global. Reflexos pertencem a useMaterialLight e à superfície React; o diretor legado não injeta luz nessas superfícies. Material de navegação pertence a navigation-layout; fundos de trama pertencem a experience-surfaces. Movimento da navegação consolidado em navigation-layout; mobile-more-radial preserva apenas o nome do arquivo e agora organiza uma lista Radix, sem layout radial."
+      "boundary": "Cabeçalhos renderizam símbolos; geometria de Área em foco pertence a page-hero-parity.css. Gatilho Mais e símbolos pertencem ao render; Radix mantém foco/teclado/colisão, sem captura global. Reflexos pertencem a useMaterialLight e à superfície React; o diretor legado não injeta luz nessas superfícies. Material de navegação pertence a navigation-layout; fundos de trama pertencem a experience-surfaces. Movimento da navegação consolidado em navigation-layout; mobile-more-radial preserva apenas o nome do arquivo e agora organiza uma lista Radix, sem layout radial. Card é dono da reflexão local; campos usam um plano rebaixado sem escritores legados. Tokens de relevo/flutuação pertencem a styles.css; AppLayout fornece o tom por contexto React (MaterialToneContext em use-material-light), preservado nos portais."
     },
     {
       "id": "popup",
@@ -139,13 +142,15 @@
         "src/components/tabletop/tabletop-participant-workspace.tsx",
         "src/lib/tabletop/tabletop-visibility-service.ts",
         "src/lib/tabletop/tabletop-view-preference-service.ts",
-        "src/lib/tabletop/tabletop-scene-fingerprint-guard.ts"
+        "src/lib/tabletop/tabletop-scene-fingerprint-guard.ts",
+        "supabase/functions/_shared/tabletop-entity-color.ts",
+        "supabase/functions/tabletop-view/index.ts"
       ],
       "styles": [
         "src/styles/tabletop-workspace.css",
         "src/styles/tabletop-route-experience.css"
       ],
-      "boundary": "Motor mantém coordenadas; persistência mantém versões; interfaces não devem criar câmera ou fonte de dados paralela. Editor lateral/compacto pertence a TabletopEditorPanel; ações agrupadas ao workspace; comandos à interface progressiva. Callbacks substituem a busca de botões por texto; mapa dos bridges em tabletop-workspace-map.md. Comparação de cena é pura, sem toJSON capturado ou monkeypatch do serviço. Escritas de mapa, ambiente e câmera recebem a identidade de origem. StagePortal usa eventos de runtime; jogador aplica estado somente após init."
+      "boundary": "Motor mantém coordenadas; persistência mantém versões; interfaces não devem criar câmera ou fonte de dados paralela. Editor lateral/compacto pertence a TabletopEditorPanel; ações agrupadas ao workspace; comandos à interface progressiva. Callbacks substituem a busca de botões por texto; mapa dos bridges em tabletop-workspace-map.md. Comparação de cena é pura, sem toJSON capturado ou monkeypatch do serviço. Escritas de mapa, ambiente e câmera recebem a identidade de origem. StagePortal usa eventos de runtime; jogador aplica estado somente após init. Cor-base é um escalar compartilhado entre persistência e projeção protegida; fingerprint normaliza a representação e a ordem jsonb."
     },
     {
       "id": "master",
@@ -553,7 +558,8 @@
       "priority": 7,
       "dependsOn": [
         "NEX-003",
-        "NEX-007"
+        "NEX-007",
+        "NEX-023"
       ],
       "acceptance": [
         "Medir carregamento por rota, chunk Pixi, frames e custos de efeitos antes de otimizar.",
@@ -782,7 +788,7 @@
       "id": "NEX-022",
       "title": "Mesa: persistência e projeção da cor-base personalizada",
       "domain": "tabletop",
-      "status": "ready",
+      "status": "validated",
       "priority": 7,
       "dependsOn": [
         "NEX-007"
@@ -793,7 +799,30 @@
         "Verificar round trip e compatibilidade das cenas antigas; conservar autorização da visão compartilhada."
       ],
       "evidence": [
-        "docs/tabletop-workspace-map.md"
+        "docs/tabletop-workspace-map.md",
+        "docs/visual-system-validation.json"
+      ]
+    },
+    {
+      "id": "NEX-023",
+      "title": "Véu & Trama: materiais e interação de todo o sistema",
+      "domain": "shell",
+      "status": "validated",
+      "priority": 7,
+      "dependsOn": [
+        "NEX-022",
+        "NEX-016"
+      ],
+      "acceptance": [
+        "Pesquisar fontes oficiais de Apple, Linear, Raycast e Obsidian e registrar o que será traduzido para a identidade TdV.",
+        "Aplicar profundidade, tecido, campos, botões, navegação e presença de popups nos proprietários compartilhados, retirando concorrentes.",
+        "Verificar telas representativas em 320/390/820/1440px, foco/retorno, interação e preferências de movimento e transparência.",
+        "Consolidar fontes, critérios, limites e integração sem criar outra fila ou camada CSS."
+      ],
+      "evidence": [
+        "docs/DESIGN.md",
+        "docs/design/board.html",
+        "docs/visual-system-validation.json"
       ]
     }
   ],
@@ -881,6 +910,11 @@
         "docs/tabletop-workspace-map.md",
         "docs/tabletop-workspace-validation.json"
       ]
+    },
+    {
+      "id": "DEC-014",
+      "decision": "Aprofundar Véu & Trama como sistema de materiais e interações após a Mesa, com pesquisa primária sobretudo Apple; preservar identidade, símbolos e tipografia aprovados.",
+      "reason": "Pedido de Tadeu em 16/10/2026: elevar organização, cards, motion, transições, botões, hover, profundidade e fundos em todo o sistema. NEX-023 concentra a evolução compartilhada; NEX-009/010 conservam performance física e autorização real."
     }
   ],
   "bridges": [
@@ -1135,6 +1169,10 @@
     {
       "path": "docs/tabletop-workspace-validation.json",
       "purpose": "NEX-007/021: evidências e limites da reorganização da Mesa e do contexto Nexus → Mesa."
+    },
+    {
+      "path": "docs/visual-system-validation.json",
+      "purpose": "NEX-022/023: cor-base da Mesa, pesquisa, primitivos materiais e cobertura real da evolução visual."
     }
   ],
   "integrationHistory": [

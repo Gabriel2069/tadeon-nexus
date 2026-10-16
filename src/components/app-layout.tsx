@@ -1,9 +1,17 @@
+import { MaterialToneContext } from "@/lib/use-material-light";
 import { UTILITY_AREAS } from "@/lib/utility-areas";
 import { MobileMoreMenu } from "@/components/mobile-more-menu";
 import { CORE_SURFACES } from "@/lib/feature-flags";
 import { createLatestRequestGate } from "@/lib/latest-request";
 import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
-import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
+import {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  type ReactNode,
+  type CSSProperties,
+} from "react";
 import {
   Home,
   Users,
@@ -208,6 +216,17 @@ export function AppLayout({ children }: { children: ReactNode }) {
               : path.startsWith("/offline")
                 ? "Consulta offline"
                 : "Dashboard";
+  const materialTone =
+    (
+      {
+        "O Nexus": "146 179 155",
+        "Mesa Nexus": "146 181 202",
+        "Painel do Mestre": "194 139 145",
+        Usuários: "207 168 125",
+        "Consulta offline": "176 166 190",
+        "Saúde do arquivo": "175 183 192",
+      } as Record<string, string>
+    )[currentSection] ?? "217 215 164";
   const currentSectionDescription: Record<string, string> = {
     Dashboard: "Visão geral do arquivo e personagens",
     "O Nexus": "Conhecimento, continuidade e referências",
@@ -387,277 +406,284 @@ export function AppLayout({ children }: { children: ReactNode }) {
   );
 
   return (
-    <div
-      className="tadeon-shell relative isolate flex min-h-screen overflow-x-clip"
-      data-section={
-        currentSection === "Saúde do arquivo" ? UTILITY_AREAS.backup.label : currentSection
-      }
-      data-mobile-dock={showMobileDock ? "visible" : "hidden"}
-    >
-      <a className="tadeon-skip-link" href="#tadeon-main">
-        Pular para o conteúdo principal
-      </a>
-      <div aria-hidden className="tadeon-ambient tadeon-ambient--veil" />
-      <div aria-hidden className="tadeon-ambient tadeon-ambient--flow" />
-      {/* Desktop sidebar */}
-      <ThreadField variant="backdrop" className="tadeon-fabric-backdrop" />
-      <aside
-        id="tadeon-desktop-sidebar"
-        data-collapsed={collapsed ? "true" : "false"}
-        className={`tadeon-sidebar relative z-20 hidden shrink-0 border-r border-sidebar-border bg-sidebar/95 text-sidebar-foreground shadow-[24px_0_80px_-50px_rgba(0,0,0,.95)] md:flex ${
-          collapsed ? "w-16" : "w-64"
-        }`}
+    <MaterialToneContext.Provider value={materialTone}>
+      <div
+        style={{ "--material-rgb": materialTone } as CSSProperties}
+        className="tadeon-shell relative isolate flex min-h-screen overflow-x-clip"
+        data-section={
+          currentSection === "Saúde do arquivo" ? UTILITY_AREAS.backup.label : currentSection
+        }
+        data-mobile-dock={showMobileDock ? "visible" : "hidden"}
       >
-        {renderSidebar({ mini: collapsed, enableSearchShortcut: true })}
-        <button
-          data-material-surface="navigation"
-          type="button"
-          onClick={() => setCollapsed((p) => !p)}
-          aria-label={collapsed ? "Expandir menu" : "Recolher menu"}
-          aria-controls="tadeon-desktop-sidebar"
-          aria-expanded={!collapsed}
-          data-state={collapsed ? "collapsed" : "expanded"}
-          title={collapsed ? "Expandir" : "Recolher"}
-          className="tadeon-sidebar-collapse absolute -right-5 top-6 z-30 flex h-10 w-10 items-center justify-center border text-muted-foreground transition-[color,background-color,border-color,box-shadow,transform] duration-150 ease-[var(--ease-out)]"
+        <a className="tadeon-skip-link" href="#tadeon-main">
+          Pular para o conteúdo principal
+        </a>
+        <div aria-hidden className="tadeon-ambient tadeon-ambient--veil" />
+        <div aria-hidden className="tadeon-ambient tadeon-ambient--flow" />
+        {/* Desktop sidebar */}
+        <ThreadField variant="backdrop" className="tadeon-fabric-backdrop" />
+        <aside
+          id="tadeon-desktop-sidebar"
+          data-collapsed={collapsed ? "true" : "false"}
+          className={`tadeon-sidebar relative z-20 hidden shrink-0 border-r border-sidebar-border bg-sidebar/95 text-sidebar-foreground shadow-[24px_0_80px_-50px_rgba(0,0,0,.95)] md:flex ${
+            collapsed ? "w-16" : "w-64"
+          }`}
         >
-          {collapsed ? <ChevronsRight className="h-4 w-4" /> : <ChevronsLeft className="h-4 w-4" />}
-        </button>
-      </aside>
-
-      <div className="relative z-10 flex min-w-0 flex-1 flex-col">
-        <header className="tadeon-desktop-toolbar hidden md:flex">
-          <div className="min-w-0">
-            <FocusBrandMark />
-            <p className="tadeon-eyebrow">Área em foco</p>
-            <div className="flex min-w-0 items-baseline gap-3">
-              <h2 className="truncate font-cinzel text-xl font-semibold text-foreground">
-                {currentSection === "Saúde do arquivo"
-                  ? UTILITY_AREAS.backup.label
-                  : currentSection}
-              </h2>
-              <p className="hidden truncate text-xs text-muted-foreground xl:block">
-                {currentSectionDescription[currentSection]}
-              </p>
-            </div>
-          </div>
-          <div className="ml-auto flex items-center gap-2">
-            {!pwaInstall.installed && (
-              <Button
-                type="button"
-                size="sm"
-                variant="outline"
-                className="hidden gap-2 lg:inline-flex"
-                onClick={() => openInstall()}
-              >
-                <MonitorDown className="h-3.5 w-3.5" />
-                Instalar app
-              </Button>
-            )}
-            {role && (
-              <span className="tadeon-desktop-toolbar__role">
-                <RoleIcon className="h-3.5 w-3.5" />
-                <span className="capitalize">{role}</span>
-              </span>
-            )}
-            <button
-              data-material-surface="navigation"
-              type="button"
-              className="tadeon-desktop-toolbar__account"
-              onClick={() => openAccount()}
-              aria-label="Abrir configurações da conta"
-              aria-haspopup="dialog"
-              aria-expanded={accountOpen}
-            >
-              <span className="min-w-0 text-right">
-                <strong className="block truncate text-xs font-semibold text-foreground">
-                  {profile?.full_name || "Conta"}
-                </strong>
-                <small className="block truncate text-[10px] text-muted-foreground">
-                  {user?.email}
-                </small>
-              </span>
-              <Settings className="h-4 w-4 text-primary" />
-            </button>
-          </div>
-        </header>
-        {/* Mobile header */}
-        <header className="tadeon-mobile-header sticky top-0 z-30 grid min-h-16 grid-cols-[5.9rem_minmax(0,1fr)_5.9rem] items-center px-3 py-2 md:hidden">
-          <span aria-hidden className="tadeon-mobile-header__thread" />
+          {renderSidebar({ mini: collapsed, enableSearchShortcut: true })}
           <button
             data-material-surface="navigation"
             type="button"
-            onClick={() => setMobileOpen(true)}
-            className="tadeon-mobile-header__control flex h-11 w-11 items-center justify-center rounded-xl border transition-[color,background-color,border-color,transform] duration-150 ease-[var(--ease-out)]"
-            ref={mobileMenuTriggerRef}
-            aria-label="Abrir menu"
-            aria-controls="tadeon-mobile-navigation"
-            aria-expanded={mobileOpen}
+            onClick={() => setCollapsed((p) => !p)}
+            aria-label={collapsed ? "Expandir menu" : "Recolher menu"}
+            aria-controls="tadeon-desktop-sidebar"
+            aria-expanded={!collapsed}
+            data-state={collapsed ? "collapsed" : "expanded"}
+            title={collapsed ? "Expandir" : "Recolher"}
+            className="tadeon-sidebar-collapse absolute -right-5 top-6 z-30 flex h-10 w-10 items-center justify-center border text-muted-foreground transition-[color,background-color,border-color,box-shadow,transform] duration-150 ease-[var(--ease-out)]"
           >
-            <Menu className="w-5 h-5" />
+            {collapsed ? (
+              <ChevronsRight className="h-4 w-4" />
+            ) : (
+              <ChevronsLeft className="h-4 w-4" />
+            )}
           </button>
-          <div className="tadeon-mobile-header__identity flex min-w-0 items-center justify-center gap-2.5">
-            <FocusBrandMark />
-            <div className="min-w-0 text-left">
-              <p className="tadeon-mono truncate text-[9px] uppercase tracking-[0.14em] text-muted-foreground">
-                Área em foco
-              </p>
-              <p className="line-clamp-2 font-cinzel text-sm font-semibold leading-tight text-primary">
-                {currentSection === "Saúde do arquivo"
-                  ? UTILITY_AREAS.backup.label
-                  : currentSection}
-              </p>
+        </aside>
+
+        <div className="relative z-10 flex min-w-0 flex-1 flex-col">
+          <header className="tadeon-desktop-toolbar hidden md:flex">
+            <div className="min-w-0">
+              <FocusBrandMark />
+              <p className="tadeon-eyebrow">Área em foco</p>
+              <div className="flex min-w-0 items-baseline gap-3">
+                <h2 className="truncate font-cinzel text-xl font-semibold text-foreground">
+                  {currentSection === "Saúde do arquivo"
+                    ? UTILITY_AREAS.backup.label
+                    : currentSection}
+                </h2>
+                <p className="hidden truncate text-xs text-muted-foreground xl:block">
+                  {currentSectionDescription[currentSection]}
+                </p>
+              </div>
             </div>
-          </div>
-          <div className="flex items-center justify-end gap-1">
-            <GlobalSearch
-              mobile
-              knowledgeEnabled={knowledgeEnabled}
-              tabletopEnabled={tabletopEnabled}
-            />
+            <div className="ml-auto flex items-center gap-2">
+              {!pwaInstall.installed && (
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="outline"
+                  className="hidden gap-2 lg:inline-flex"
+                  onClick={() => openInstall()}
+                >
+                  <MonitorDown className="h-3.5 w-3.5" />
+                  Instalar app
+                </Button>
+              )}
+              {role && (
+                <span className="tadeon-desktop-toolbar__role">
+                  <RoleIcon className="h-3.5 w-3.5" />
+                  <span className="capitalize">{role}</span>
+                </span>
+              )}
+              <button
+                data-material-surface="navigation"
+                type="button"
+                className="tadeon-desktop-toolbar__account"
+                onClick={() => openAccount()}
+                aria-label="Abrir configurações da conta"
+                aria-haspopup="dialog"
+                aria-expanded={accountOpen}
+              >
+                <span className="min-w-0 text-right">
+                  <strong className="block truncate text-xs font-semibold text-foreground">
+                    {profile?.full_name || "Conta"}
+                  </strong>
+                  <small className="block truncate text-[10px] text-muted-foreground">
+                    {user?.email}
+                  </small>
+                </span>
+                <Settings className="h-4 w-4 text-primary" />
+              </button>
+            </div>
+          </header>
+          {/* Mobile header */}
+          <header className="tadeon-mobile-header sticky top-0 z-30 grid min-h-16 grid-cols-[5.9rem_minmax(0,1fr)_5.9rem] items-center px-3 py-2 md:hidden">
+            <span aria-hidden className="tadeon-mobile-header__thread" />
             <button
               data-material-surface="navigation"
               type="button"
-              onClick={() => openAccount()}
-              className="tadeon-mobile-header__control flex h-11 w-11 items-center justify-center rounded-xl border transition-[color,background-color,border-color,transform] duration-150 ease-[var(--ease-out)]"
-              ref={mobileAccountTriggerRef}
-              aria-label="Conta"
-              aria-haspopup="dialog"
-              aria-expanded={accountOpen}
-            >
-              <Settings className="w-5 h-5" />
-            </button>
-          </div>
-        </header>
-
-        <main
-          id="tadeon-main"
-          ref={focusRouteMain}
-          key={path}
-          tabIndex={-1}
-          className="tadeon-route-stage min-w-0 flex-1"
-          data-section={
-            currentSection === "Saúde do arquivo" ? UTILITY_AREAS.backup.label : currentSection
-          }
-        >
-          {children}
-        </main>
-      </div>
-
-      {showMobileDock && (
-        <nav className="tadeon-mobile-dock md:hidden" aria-label="Atalhos principais">
-          <Link
-            to="/"
-            aria-current={path === "/" ? "page" : undefined}
-            data-material-surface="navigation"
-            className="tadeon-mobile-dock__item"
-          >
-            <Home className="h-5 w-5" />
-            <span>Início</span>
-          </Link>
-          {knowledgeEnabled && (
-            <Link
-              to="/nexus"
-              search={{ node: undefined }}
-              aria-current={isNexusRoute ? "page" : undefined}
-              data-material-surface="navigation"
-              className="tadeon-mobile-dock__item"
-            >
-              <LibraryBig className="h-5 w-5" />
-              <span>Nexus</span>
-            </Link>
-          )}
-          {tabletopEnabled && (
-            <Link
-              to="/tabletop"
-              aria-current={path.startsWith("/tabletop") ? "page" : undefined}
-              data-material-surface="navigation"
-              className="tadeon-mobile-dock__item"
-            >
-              <SectionSymbol section="tabletop" className="h-5 w-5" />
-              <span>Mesa</span>
-            </Link>
-          )}
-          {isMestre ? (
-            <Link
-              to="/master-panel"
-              search={{ tab: undefined }}
-              aria-current={path.startsWith("/master-panel") ? "page" : undefined}
-              data-material-surface="navigation"
-              className="tadeon-mobile-dock__item"
-            >
-              <SectionSymbol section="master" className="h-5 w-5" />
-              <span>Mestre</span>
-            </Link>
-          ) : (
-            <Link
-              to="/offline"
-              aria-current={path.startsWith("/offline") ? "page" : undefined}
-              data-material-surface="navigation"
-              className="tadeon-mobile-dock__item"
-            >
-              <CloudOff className="h-5 w-5" />
-              <span>Offline</span>
-            </Link>
-          )}
-          {isMestre ? (
-            <MobileMoreMenu key={path} path={path} />
-          ) : (
-            <button
-              type="button"
-              data-material-surface="navigation"
-              className="tadeon-mobile-dock__item"
               onClick={() => setMobileOpen(true)}
+              className="tadeon-mobile-header__control flex h-11 w-11 items-center justify-center rounded-xl border transition-[color,background-color,border-color,transform] duration-150 ease-[var(--ease-out)]"
+              ref={mobileMenuTriggerRef}
+              aria-label="Abrir menu"
               aria-controls="tadeon-mobile-navigation"
               aria-expanded={mobileOpen}
             >
-              <MoreHorizontal className="h-5 w-5" />
-              <span>Mais</span>
+              <Menu className="w-5 h-5" />
             </button>
-          )}
-        </nav>
-      )}
+            <div className="tadeon-mobile-header__identity flex min-w-0 items-center justify-center gap-2.5">
+              <FocusBrandMark />
+              <div className="min-w-0 text-left">
+                <p className="tadeon-mono truncate text-[9px] uppercase tracking-[0.14em] text-muted-foreground">
+                  Área em foco
+                </p>
+                <p className="line-clamp-2 font-cinzel text-sm font-semibold leading-tight text-primary">
+                  {currentSection === "Saúde do arquivo"
+                    ? UTILITY_AREAS.backup.label
+                    : currentSection}
+                </p>
+              </div>
+            </div>
+            <div className="flex items-center justify-end gap-1">
+              <GlobalSearch
+                mobile
+                knowledgeEnabled={knowledgeEnabled}
+                tabletopEnabled={tabletopEnabled}
+              />
+              <button
+                data-material-surface="navigation"
+                type="button"
+                onClick={() => openAccount()}
+                className="tadeon-mobile-header__control flex h-11 w-11 items-center justify-center rounded-xl border transition-[color,background-color,border-color,transform] duration-150 ease-[var(--ease-out)]"
+                ref={mobileAccountTriggerRef}
+                aria-label="Conta"
+                aria-haspopup="dialog"
+                aria-expanded={accountOpen}
+              >
+                <Settings className="w-5 h-5" />
+              </button>
+            </div>
+          </header>
 
-      {/* Mobile drawer: Radix preserves focus, Escape and symmetric exit motion. */}
-      <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
-        <SheetContent
-          overlayClassName="tadeon-navigation-overlay"
-          id="tadeon-mobile-navigation"
-          side="left"
-          onCloseAutoFocus={(event) => {
-            if (accountOpen || installOpen) event.preventDefault();
-            else if (window.matchMedia("(min-width: 768px)").matches) {
-              event.preventDefault();
-              document.getElementById("tadeon-main")?.focus({ preventScroll: true });
+          <main
+            id="tadeon-main"
+            ref={focusRouteMain}
+            key={path}
+            tabIndex={-1}
+            className="tadeon-route-stage min-w-0 flex-1"
+            data-section={
+              currentSection === "Saúde do arquivo" ? UTILITY_AREAS.backup.label : currentSection
             }
-          }}
-          data-motion-surface="navigation"
-          className="tadeon-mobile-drawer h-[100dvh] w-[min(19rem,88vw)] border-sidebar-border bg-sidebar p-0 text-sidebar-foreground sm:max-w-none md:hidden"
-        >
-          <SheetTitle className="sr-only">Navegação principal</SheetTitle>
-          <SheetDescription className="sr-only">
-            Acesse as áreas do Tadeon Nexus e as opções da sua conta.
-          </SheetDescription>
-          {renderSidebar({ mini: false })}
-        </SheetContent>
-      </Sheet>
+          >
+            {children}
+          </main>
+        </div>
 
-      <AccountDialog
-        open={accountOpen}
-        onOpenChange={setAccountOpen}
-        onCloseAutoFocus={restorePortalFocus}
-        initialName={profile?.full_name || ""}
-        email={user?.email || ""}
-        onSaved={() => refresh()}
-      />
-      <PwaInstallDialog
-        open={installOpen}
-        onOpenChange={setInstallOpen}
-        onCloseAutoFocus={restorePortalFocus}
-        status={pwaInstall.status}
-        platform={pwaInstall.platform}
-        install={pwaInstall.install}
-      />
-    </div>
+        {showMobileDock && (
+          <nav className="tadeon-mobile-dock md:hidden" aria-label="Atalhos principais">
+            <Link
+              to="/"
+              aria-current={path === "/" ? "page" : undefined}
+              data-material-surface="navigation"
+              className="tadeon-mobile-dock__item"
+            >
+              <Home className="h-5 w-5" />
+              <span>Início</span>
+            </Link>
+            {knowledgeEnabled && (
+              <Link
+                to="/nexus"
+                search={{ node: undefined }}
+                aria-current={isNexusRoute ? "page" : undefined}
+                data-material-surface="navigation"
+                className="tadeon-mobile-dock__item"
+              >
+                <LibraryBig className="h-5 w-5" />
+                <span>Nexus</span>
+              </Link>
+            )}
+            {tabletopEnabled && (
+              <Link
+                to="/tabletop"
+                aria-current={path.startsWith("/tabletop") ? "page" : undefined}
+                data-material-surface="navigation"
+                className="tadeon-mobile-dock__item"
+              >
+                <SectionSymbol section="tabletop" className="h-5 w-5" />
+                <span>Mesa</span>
+              </Link>
+            )}
+            {isMestre ? (
+              <Link
+                to="/master-panel"
+                search={{ tab: undefined }}
+                aria-current={path.startsWith("/master-panel") ? "page" : undefined}
+                data-material-surface="navigation"
+                className="tadeon-mobile-dock__item"
+              >
+                <SectionSymbol section="master" className="h-5 w-5" />
+                <span>Mestre</span>
+              </Link>
+            ) : (
+              <Link
+                to="/offline"
+                aria-current={path.startsWith("/offline") ? "page" : undefined}
+                data-material-surface="navigation"
+                className="tadeon-mobile-dock__item"
+              >
+                <CloudOff className="h-5 w-5" />
+                <span>Offline</span>
+              </Link>
+            )}
+            {isMestre ? (
+              <MobileMoreMenu key={path} path={path} />
+            ) : (
+              <button
+                type="button"
+                data-material-surface="navigation"
+                className="tadeon-mobile-dock__item"
+                onClick={() => setMobileOpen(true)}
+                aria-controls="tadeon-mobile-navigation"
+                aria-expanded={mobileOpen}
+              >
+                <MoreHorizontal className="h-5 w-5" />
+                <span>Mais</span>
+              </button>
+            )}
+          </nav>
+        )}
+
+        {/* Mobile drawer: Radix preserves focus, Escape and symmetric exit motion. */}
+        <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
+          <SheetContent
+            overlayClassName="tadeon-navigation-overlay"
+            id="tadeon-mobile-navigation"
+            side="left"
+            onCloseAutoFocus={(event) => {
+              if (accountOpen || installOpen) event.preventDefault();
+              else if (window.matchMedia("(min-width: 768px)").matches) {
+                event.preventDefault();
+                document.getElementById("tadeon-main")?.focus({ preventScroll: true });
+              }
+            }}
+            data-motion-surface="navigation"
+            className="tadeon-mobile-drawer h-[100dvh] w-[min(19rem,88vw)] border-sidebar-border bg-sidebar p-0 text-sidebar-foreground sm:max-w-none md:hidden"
+          >
+            <SheetTitle className="sr-only">Navegação principal</SheetTitle>
+            <SheetDescription className="sr-only">
+              Acesse as áreas do Tadeon Nexus e as opções da sua conta.
+            </SheetDescription>
+            {renderSidebar({ mini: false })}
+          </SheetContent>
+        </Sheet>
+
+        <AccountDialog
+          open={accountOpen}
+          onOpenChange={setAccountOpen}
+          onCloseAutoFocus={restorePortalFocus}
+          initialName={profile?.full_name || ""}
+          email={user?.email || ""}
+          onSaved={() => refresh()}
+        />
+        <PwaInstallDialog
+          open={installOpen}
+          onOpenChange={setInstallOpen}
+          onCloseAutoFocus={restorePortalFocus}
+          status={pwaInstall.status}
+          platform={pwaInstall.platform}
+          install={pwaInstall.install}
+        />
+      </div>
+    </MaterialToneContext.Provider>
   );
 }
 

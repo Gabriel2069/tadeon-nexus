@@ -65,9 +65,9 @@ A origem da grade passa diretamente pelo payload canônico de persistência. A p
 
 O renderer usa pixels lógicos (`app.screen`) para câmera e enquadramento, inclusive em densidade 2×; o buffer físico não define coordenadas. O canvas respeita a largura real do host, sem mínimo de 320px. A ferramenta ativa chega à interface por callback do motor, sem depender de um evento de renderização.
 
-## Pendência de contrato — NEX-022
+## Origem do contrato — NEX-022
 
-A leitura do mapper mostrou que a cor-base das entidades ainda é derivada de `ENTITY_COLORS` por tipo; o payload atual não possui campo de cor dedicado. A aparência personalizada exige conciliar propriedades, fingerprint, recarga e a projeção protegida do jogador. Essa alteração não foi misturada à composição da Mesa: está registrada em NEX-022 na fila canônica, com round trip e compatibilidade como critérios. A existência dos controles de cor não certifica sua persistência.
+Na conclusão de NEX-007, o mapper reconstruía a cor por tipo e o payload não conservava a escolha do editor. NEX-022 foi separado para conciliar propriedades, fingerprint, recarga e projeção protegida, com round trip e compatibilidade. O contrato implementado está descrito abaixo; sua integração/publicação têm estado próprio na fila e na evidência visual-system-validation.json.
 
 ## Visão compartilhada e controles auxiliares
 
@@ -76,3 +76,10 @@ O workspace do jogador define uma coluna sem mínimo intrínseco e quebra o cabe
 Chamadas de ferramenta durante a inicialização não renderizam antes de o renderer estar pronto. O teste de ciclo de vida pausa a inicialização e verifica a escolha de ferramenta pela API pública.
 
 O mestre reúne áudio, preparo de mídias e precisão no Popover “Recursos”. O wrapper continua medido no mapa, mas a lista não altera sua altura. O alvo padrão e a posição do stage pertencem ao workspace/portal; o menu e seu material pertencem a `tabletop-reliability-editor.css`. O bloco tático só aparece com seleção. “Ações” abre a busca de comandos, mantendo Ctrl/Cmd+Shift+K.
+
+
+## Cor-base personalizada — NEX-022
+
+`properties.base_color` guarda um inteiro RGB de 24 bits. `tabletop-entity-color.ts`, compartilhado pelo serviço e pela função protegida, valida o escalar e conserva os padrões por tipo para cenas antigas/valores inválidos. O payload de cena e a gravação individual normalizam a cor atual; propriedades privadas não são expandidas na visão do jogador.
+
+A comparação normaliza o mesmo campo e ordena chaves de objetos recursivamente, pois o retorno jsonb pode mudar a ordem das chaves. Isso não ignora alterações de propriedades ou arrays. O editor continua dono da cor em runtime, e salvar uma cena não altera o motor por efeito colateral. O deploy da função protegida possui evidência separada do Worker.

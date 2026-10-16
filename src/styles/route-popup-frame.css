@@ -91,14 +91,14 @@
   > [data-slot="dialog-content"][data-popup-contained="true"][data-state="open"],
 [data-slot="alert-dialog-positioner"]
   > [data-slot="alert-dialog-content"][data-popup-contained="true"][data-state="open"] {
-  animation: tadeon-popup-contained-in 200ms var(--ease-out);
+  animation: tadeon-popup-contained-in var(--motion-panel) var(--ease-out);
 }
 
 [data-slot="dialog-positioner"]
   > [data-slot="dialog-content"][data-popup-contained="true"][data-state="closed"],
 [data-slot="alert-dialog-positioner"]
   > [data-slot="alert-dialog-content"][data-popup-contained="true"][data-state="closed"] {
-  animation: tadeon-popup-contained-out 140ms var(--ease-out) both;
+  animation: tadeon-popup-contained-out var(--motion-exit) var(--ease-out) both;
 }
 
 @media (max-width: 767px) {
@@ -128,12 +128,58 @@
 
 /* end-source: src/styles/popup-geometry-256.css */
 
+/* Presence includes the backdrop; a retired overlay never intercepts the next action. */
+[data-motion-surface="backdrop"][data-state="open"] { opacity: 1; animation: tadeon-backdrop-in var(--motion-fast) ease-out; }
+[data-motion-surface="backdrop"][data-state="closed"] { opacity: 0; visibility: hidden; pointer-events: none; animation: tadeon-backdrop-out var(--motion-exit) ease-in both; }
+@keyframes tadeon-backdrop-in { from { opacity: 0; } to { opacity: 1; } }
+@keyframes tadeon-backdrop-out { from { opacity: 1; visibility: visible; } to { opacity: 0; visibility: hidden; } }
+@media (prefers-reduced-motion: reduce) { [data-motion-surface="backdrop"] { animation: none; } }
+
+/* Optical frame: opaque reading planes; glass only in transient instruments. */
+[data-motion-surface="popup"] {
+  border: 1px solid var(--material-edge);
+  border-radius: var(--radius-panel);
+  background: radial-gradient(ellipse at 10% 0%, rgb(233 227 213 / 7%), transparent 70%), var(--popover);
+  box-shadow: var(--shadow-float);
+  color: var(--popover-foreground);
+}
+[data-motion-surface="popup"]:not([data-popup-contained]) {
+  --popup-x: 0px;
+  --popup-y: 0px;
+  border-radius: 1rem;
+  background: linear-gradient(155deg, rgb(233 227 213 / 6%), transparent 60%), rgb(21 25 32 / 96%);
+  backdrop-filter: blur(16px) saturate(120%);
+  -webkit-backdrop-filter: blur(16px) saturate(120%);
+  transform-origin: var(--radix-popover-content-transform-origin, var(--radix-dropdown-menu-content-transform-origin, var(--radix-select-content-transform-origin, center)));
+}
+[data-motion-surface="popup"][data-side="bottom"] { --popup-y: -6px; }
+[data-motion-surface="popup"][data-side="top"] { --popup-y: 6px; }
+[data-motion-surface="popup"][data-side="left"] { --popup-x: 6px; }
+[data-motion-surface="popup"][data-side="right"] { --popup-x: -6px; }
+@keyframes tadeon-popup-anchored-in { from { opacity: 0; scale: .975; translate: var(--popup-x) var(--popup-y); } to { opacity: 1; scale: 1; translate: 0 0; } }
+@keyframes tadeon-popup-anchored-out { from { opacity: 1; scale: 1; } to { opacity: 0; scale: .985; } }
+:where([data-slot="dropdown-menu-item"], [data-slot="dropdown-menu-checkbox-item"], [data-slot="dropdown-menu-radio-item"], [data-slot="select-item"])[data-highlighted] {
+  color: var(--foreground);
+  background: rgb(var(--material-rgb, 217 215 164) / 14%);
+  box-shadow: inset 0 1px rgb(233 227 213 / 10%);
+}
+[data-slot="dialog-close"] { border-radius: var(--radius-control); }
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  [data-motion-surface="popup"]:not([data-popup-contained]) { background: var(--popover); }
+}
+@media (prefers-reduced-transparency: reduce) {
+  [data-motion-surface="popup"]:not([data-popup-contained]) { background: var(--popover); backdrop-filter: none; -webkit-backdrop-filter: none; }
+}
+@media (prefers-contrast: more) {
+  [data-motion-surface="popup"] { border-color: var(--tadeon-metal); background: var(--popover); }
+}
+
 /* React primitives own interruption and presence. Positioning wrappers never animate. */
 [data-motion-surface="popup"]:not([data-popup-contained])[data-state="open"] {
-  animation: tadeon-popup-contained-in 160ms var(--ease-out);
+  animation: tadeon-popup-anchored-in var(--motion-panel) var(--ease-out);
 }
 [data-motion-surface="popup"]:not([data-popup-contained])[data-state="closed"] {
-  animation: tadeon-popup-contained-out 120ms var(--ease-out) both;
+  animation: tadeon-popup-anchored-out var(--motion-exit) var(--ease-out) both;
 }
 [data-motion-surface="tabpanel"][data-state="active"] {
   animation: tadeon-reading-reveal 160ms var(--ease-out);

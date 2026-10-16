@@ -1456,7 +1456,7 @@
 
 /* Cards: presence through edge/light, never elevation or translation. */
 .tadeon-shell :is([data-slot="card"],[data-motion-card],[data-motion-surface]) { transition:border-color 250ms var(--tm-surface-seam),box-shadow 310ms var(--tm-surface-seam),background-color 250ms var(--tm-surface-seam); }
-.tadeon-shell :is([data-slot="card"],[data-motion-card],[data-motion-surface]):hover { transform:none !important; border-color:color-mix(in srgb,var(--section-accent,var(--tadeon-knowledge)) 30%,var(--border)); box-shadow:0 20px 54px -46px color-mix(in srgb,var(--section-accent,var(--tadeon-knowledge)) 58%,transparent),inset 0 1px rgb(255 255 255 / 3%); }
+.tadeon-shell :is([data-slot="card"]:not([data-material-surface]),[data-motion-card],[data-motion-surface]):hover { transform:none !important; border-color:color-mix(in srgb,var(--section-accent,var(--tadeon-knowledge)) 30%,var(--border)); box-shadow:0 20px 54px -46px color-mix(in srgb,var(--section-accent,var(--tadeon-knowledge)) 58%,transparent),inset 0 1px rgb(255 255 255 / 3%); }
 
 /* Menu rows: a thread traces the edge rather than moving the row. */
 :is([data-slot="dropdown-menu-content"]:not([data-motion-surface]),[data-slot="dropdown-menu-sub-content"]:not([data-motion-surface]),[data-slot="select-content"]:not([data-motion-surface]),[data-slot="popover-content"]:not([data-motion-surface]),[data-slot="context-menu-content"],[data-slot="command-list"]) :is([role="menuitem"],[role="option"]) { transition:color 160ms var(--tm-surface-seam),background-color 170ms var(--tm-surface-seam),box-shadow 200ms var(--tm-surface-seam); }
@@ -2889,9 +2889,9 @@
   }
 
   /* Cards: a barely perceptible deepening, never elevation. */
-  .tadeon-shell [data-slot="card"]:hover,
-  .tadeon-shell [data-motion-card]:hover,
-  .tadeon-shell [data-motion-surface]:hover {
+  .tadeon-shell [data-slot="card"]:not([data-material-surface]):hover,
+.tadeon-shell [data-motion-card]:hover,
+.tadeon-shell [data-motion-surface]:hover {
     border-color: color-mix(in srgb, var(--td-section-accent, var(--section-accent)) 30%, var(--border)) !important;
     box-shadow:
       inset 0 0 0 1px rgb(var(--td-section-rgb, var(--section-accent-rgb, 217 215 164)) / 6%),
@@ -3312,17 +3312,19 @@ html body .tadeon-shell .tadeon-master-commandbar p:not(.tadeon-eyebrow) {
 }
 
 /* Surface corners receive very faint thread traces. */
-.tadeon-shell :is([data-slot="card"], .tadeon-surface, .tadeon-panel, .tadeon-route-card)::after {
+.tadeon-shell :is([data-slot="card"]:not([data-material-surface]), .tadeon-surface, .tadeon-panel, .tadeon-route-card)::after {
   content: "";
   position: absolute;
   inset: 0;
   pointer-events: none;
+  opacity: .65;
+  mask-image: linear-gradient(135deg, #000, transparent 62%);
+}
+.tadeon-shell :is([data-slot="card"]:not([data-material-surface]), .tadeon-surface:not([data-material-surface="card"]), .tadeon-panel, .tadeon-route-card)::after {
   border-radius: inherit;
   background:
     linear-gradient(132deg, transparent 0 31%, rgb(var(--td-section-rgb, 217 215 164) / 3.5%) 31.06% 31.14%, transparent 31.28% 100%),
     linear-gradient(48deg, transparent 0 76%, rgb(var(--td-section-rgb, 217 215 164) / 2.5%) 76.05% 76.12%, transparent 76.24% 100%);
-  opacity: .65;
-  mask-image: linear-gradient(135deg, #000, transparent 62%);
 }
 
 /* Section-specific density. */
@@ -4305,10 +4307,15 @@ html body .tadeon-shell .tadeon-route-offline > main {
 .tadeon-shell .tadeon-card::after,
 .tadeon-shell [data-tadeon-card]::after,
 .tadeon-shell .tadeon-surface::after,
-.tadeon-shell [data-slot="card"]::after{
-  content:"";position:absolute;inset:0;pointer-events:none;border-radius:inherit;
+.tadeon-shell [data-slot="card"]:not([data-material-surface])::after{
+  content:"";position:absolute;inset:0;pointer-events:none;background-position:-140% 0;opacity:0;
+}
+.tadeon-shell .tadeon-card::after,
+.tadeon-shell [data-tadeon-card]::after,
+.tadeon-shell .tadeon-surface:not([data-material-surface="card"])::after,
+.tadeon-shell [data-slot="card"]:not([data-material-surface])::after{border-radius:inherit;
   background:linear-gradient(105deg,transparent 20%,color-mix(in srgb,var(--section-accent,var(--tdv-lumen,white)) 11%,transparent) 48%,transparent 66%);
-  background-size:240% 100%;background-position:-140% 0;opacity:0;
+  background-size:240% 100%;
 }
 .tadeon-shell .tadeon-card:hover::after,
 .tadeon-shell [data-tadeon-card]:hover::after,
@@ -4424,28 +4431,28 @@ html body .tadeon-shell .tadeon-route-offline > main {
 
 /* Nexus - connected threads and living nodes. */
 .tadeon-shell[data-section="Nexus"] main{background-image:repeating-linear-gradient(118deg,transparent 0 8rem,rgb(79 160 116 / 3%) 8.05rem 8.08rem,transparent 8.12rem 16rem)}
-.tadeon-shell[data-section="Nexus"] [data-slot="card"]:hover{box-shadow:inset 0 0 0 1px rgb(79 160 116 / 18%),0 18px 44px -38px rgb(79 160 116 / 72%)}
+.tadeon-shell[data-section="Nexus"] [data-slot="card"]:not([data-material-surface]):hover{box-shadow:inset 0 0 0 1px rgb(79 160 116 / 18%),0 18px 44px -38px rgb(79 160 116 / 72%)}
 
 /* Mesa - folded/cartographic material. */
 .tadeon-shell[data-section="Mesa"] main{background-image:repeating-linear-gradient(90deg,transparent 0 7rem,rgb(73 116 177 / 3%) 7.04rem 7.08rem,transparent 7.12rem 14rem),repeating-linear-gradient(0deg,transparent 0 9rem,rgb(73 116 177 / 2.5%) 9.04rem 9.08rem,transparent 9.12rem 18rem)}
-.tadeon-shell[data-section="Mesa"] [data-slot="card"]:hover{box-shadow:inset 0 0 0 1px rgb(73 116 177 / 18%),0 18px 44px -38px rgb(73 116 177 / 62%)}
+.tadeon-shell[data-section="Mesa"] [data-slot="card"]:not([data-material-surface]):hover{box-shadow:inset 0 0 0 1px rgb(73 116 177 / 18%),0 18px 44px -38px rgb(73 116 177 / 62%)}
 
 /* Offline - residue, memory and interrupted signal. */
 .tadeon-shell[data-section="Offline"] main{background-image:radial-gradient(circle at 24% 34%,rgb(132 92 157 / 5%),transparent 20rem),repeating-linear-gradient(104deg,transparent 0 11rem,rgb(132 92 157 / 2.8%) 11.04rem 11.08rem,transparent 11.12rem 22rem)}
-.tadeon-shell[data-section="Offline"] [data-slot="card"]{box-shadow:inset 0 1px rgb(255 255 255 / 2%)}
-.tadeon-shell[data-section="Offline"] [data-slot="card"]:hover{box-shadow:inset 0 0 0 1px rgb(132 92 157 / 18%),0 18px 44px -40px rgb(132 92 157 / 64%)}
+.tadeon-shell[data-section="Offline"] [data-slot="card"]:not([data-material-surface]){box-shadow:inset 0 1px rgb(255 255 255 / 2%)}
+.tadeon-shell[data-section="Offline"] [data-slot="card"]:not([data-material-surface]):hover{box-shadow:inset 0 0 0 1px rgb(132 92 157 / 18%),0 18px 44px -40px rgb(132 92 157 / 64%)}
 
 /* Gerenciar - links, knots and controlled orange tension. */
 .tadeon-shell[data-section="Gerenciar"] main{background-image:repeating-linear-gradient(116deg,transparent 0 8rem,rgb(211 124 57 / 3%) 8.04rem 8.08rem,transparent 8.12rem 16rem)}
-.tadeon-shell[data-section="Gerenciar"] [data-slot="card"]:hover{box-shadow:inset 0 0 0 1px rgb(211 124 57 / 20%),0 18px 44px -38px rgb(211 124 57 / 68%)}
+.tadeon-shell[data-section="Gerenciar"] [data-slot="card"]:not([data-material-surface]):hover{box-shadow:inset 0 0 0 1px rgb(211 124 57 / 20%),0 18px 44px -38px rgb(211 124 57 / 68%)}
 
 /* Backup - monochrome diagnostic weave. */
 .tadeon-shell[data-section="Backup"] main{background-image:repeating-linear-gradient(90deg,transparent 0 6rem,rgb(165 169 174 / 3%) 6.03rem 6.06rem,transparent 6.1rem 12rem)}
-.tadeon-shell[data-section="Backup"] [data-slot="card"]:hover{box-shadow:inset 0 0 0 1px rgb(165 169 174 / 16%),0 18px 44px -40px rgb(165 169 174 / 52%)}
+.tadeon-shell[data-section="Backup"] [data-slot="card"]:not([data-material-surface]):hover{box-shadow:inset 0 0 0 1px rgb(165 169 174 / 16%),0 18px 44px -40px rgb(165 169 174 / 52%)}
 
 /* Mestre - the most supernatural field: delayed red threads and a deep lumen. */
 .tadeon-shell[data-section="Mestre"] main{background-image:radial-gradient(circle at 76% 24%,rgb(168 68 72 / 6%),transparent 22rem),radial-gradient(circle at 20% 76%,rgb(168 68 72 / 4%),transparent 18rem),repeating-linear-gradient(112deg,transparent 0 10rem,rgb(168 68 72 / 2.8%) 10.05rem 10.09rem,transparent 10.14rem 20rem);background-size:140% 140%,160% 160%,220% 220%;animation:tdv-field-drift 42s linear infinite}
-.tadeon-shell[data-section="Mestre"] [data-slot="card"]:hover{box-shadow:inset 0 0 0 1px rgb(168 68 72 / 22%),0 20px 50px -38px rgb(168 68 72 / 76%)}
+.tadeon-shell[data-section="Mestre"] [data-slot="card"]:not([data-material-surface]):hover{box-shadow:inset 0 0 0 1px rgb(168 68 72 / 22%),0 20px 50px -38px rgb(168 68 72 / 76%)}
 
 /* Shared hover response: light arrives at the surface instead of moving it. */
 .tadeon-shell[data-section] [data-slot="card"]{transition:box-shadow 420ms cubic-bezier(.22,.72,.2,1),border-color 320ms ease,background-color 320ms ease}
@@ -4459,19 +4466,19 @@ html body .tadeon-shell .tadeon-route-offline > main {
 /* Section-specific interaction motifs. No pseudo-elements, transforms, or layout motion. */
 @keyframes tdv-motif-breathe{0%,100%{filter:saturate(1);opacity:.92}50%{filter:saturate(1.08);opacity:1}}
 
-.tadeon-shell[data-section="Dashboard"] [data-slot="card"]:hover{background-color:color-mix(in srgb,var(--card) 94%,rgb(217 215 164 / 12%));box-shadow:inset 0 0 0 1px rgb(217 215 164 / 28%),inset 0 -18px 34px -32px rgb(217 215 164 / 90%),0 18px 48px -38px rgb(217 215 164 / 72%)}
-.tadeon-shell[data-section="Nexus"] [data-slot="card"]:hover{background-color:color-mix(in srgb,var(--card) 94%,rgb(79 160 116 / 12%));box-shadow:inset 0 0 0 1px rgb(79 160 116 / 30%),inset 12px 0 34px -32px rgb(79 160 116 / 90%),0 18px 48px -38px rgb(79 160 116 / 72%)}
-.tadeon-shell[data-section="Mesa"] [data-slot="card"]:hover{background-color:color-mix(in srgb,var(--card) 94%,rgb(73 116 177 / 12%));box-shadow:inset 0 0 0 1px rgb(73 116 177 / 30%),inset 0 -14px 34px -30px rgb(73 116 177 / 90%),0 18px 48px -38px rgb(73 116 177 / 68%)}
-.tadeon-shell[data-section="Offline"] [data-slot="card"]:hover{background-color:color-mix(in srgb,var(--card) 93%,rgb(132 92 157 / 11%));box-shadow:inset 0 0 0 1px rgb(132 92 157 / 28%),inset -12px 0 34px -30px rgb(132 92 157 / 88%),0 18px 48px -40px rgb(132 92 157 / 64%)}
-.tadeon-shell[data-section="Gerenciar"] [data-slot="card"]:hover{background-color:color-mix(in srgb,var(--card) 94%,rgb(211 124 57 / 12%));box-shadow:inset 0 0 0 1px rgb(211 124 57 / 31%),inset 0 -12px 34px -30px rgb(211 124 57 / 92%),0 18px 48px -38px rgb(211 124 57 / 72%)}
-.tadeon-shell[data-section="Backup"] [data-slot="card"]:hover{background-color:color-mix(in srgb,var(--card) 94%,rgb(165 169 174 / 10%));box-shadow:inset 0 0 0 1px rgb(165 169 174 / 24%),inset 0 0 30px -28px rgb(165 169 174 / 76%),0 18px 46px -40px rgb(165 169 174 / 56%)}
-.tadeon-shell[data-section="Mestre"] [data-slot="card"]:hover{background-color:color-mix(in srgb,var(--card) 92%,rgb(168 68 72 / 14%));box-shadow:inset 0 0 0 1px rgb(168 68 72 / 34%),inset 0 0 42px -30px rgb(168 68 72 / 92%),0 20px 54px -38px rgb(168 68 72 / 80%);animation:tdv-motif-breathe 2.8s ease-in-out infinite}
+.tadeon-shell[data-section="Dashboard"] [data-slot="card"]:not([data-material-surface]):hover{background-color:color-mix(in srgb,var(--card) 94%,rgb(217 215 164 / 12%));box-shadow:inset 0 0 0 1px rgb(217 215 164 / 28%),inset 0 -18px 34px -32px rgb(217 215 164 / 90%),0 18px 48px -38px rgb(217 215 164 / 72%)}
+.tadeon-shell[data-section="Nexus"] [data-slot="card"]:not([data-material-surface]):hover{background-color:color-mix(in srgb,var(--card) 94%,rgb(79 160 116 / 12%));box-shadow:inset 0 0 0 1px rgb(79 160 116 / 30%),inset 12px 0 34px -32px rgb(79 160 116 / 90%),0 18px 48px -38px rgb(79 160 116 / 72%)}
+.tadeon-shell[data-section="Mesa"] [data-slot="card"]:not([data-material-surface]):hover{background-color:color-mix(in srgb,var(--card) 94%,rgb(73 116 177 / 12%));box-shadow:inset 0 0 0 1px rgb(73 116 177 / 30%),inset 0 -14px 34px -30px rgb(73 116 177 / 90%),0 18px 48px -38px rgb(73 116 177 / 68%)}
+.tadeon-shell[data-section="Offline"] [data-slot="card"]:not([data-material-surface]):hover{background-color:color-mix(in srgb,var(--card) 93%,rgb(132 92 157 / 11%));box-shadow:inset 0 0 0 1px rgb(132 92 157 / 28%),inset -12px 0 34px -30px rgb(132 92 157 / 88%),0 18px 48px -40px rgb(132 92 157 / 64%)}
+.tadeon-shell[data-section="Gerenciar"] [data-slot="card"]:not([data-material-surface]):hover{background-color:color-mix(in srgb,var(--card) 94%,rgb(211 124 57 / 12%));box-shadow:inset 0 0 0 1px rgb(211 124 57 / 31%),inset 0 -12px 34px -30px rgb(211 124 57 / 92%),0 18px 48px -38px rgb(211 124 57 / 72%)}
+.tadeon-shell[data-section="Backup"] [data-slot="card"]:not([data-material-surface]):hover{background-color:color-mix(in srgb,var(--card) 94%,rgb(165 169 174 / 10%));box-shadow:inset 0 0 0 1px rgb(165 169 174 / 24%),inset 0 0 30px -28px rgb(165 169 174 / 76%),0 18px 46px -40px rgb(165 169 174 / 56%)}
+.tadeon-shell[data-section="Mestre"] [data-slot="card"]:not([data-material-surface]):hover{background-color:color-mix(in srgb,var(--card) 92%,rgb(168 68 72 / 14%));box-shadow:inset 0 0 0 1px rgb(168 68 72 / 34%),inset 0 0 42px -30px rgb(168 68 72 / 92%),0 20px 54px -38px rgb(168 68 72 / 80%);animation:tdv-motif-breathe 2.8s ease-in-out infinite}
 
 /* Pressed controls feel like tension released in the weave, not a bounce. */
 .tadeon-shell[data-section] button:not([data-material-surface], .tadeon-material-button):active, .tadeon-shell[data-section] [role="button"]:active{transform:none;box-shadow:inset 0 2px 10px -8px currentColor,0 0 0 1px color-mix(in srgb,var(--section-accent) 20%,transparent)}
 
 /* Active section controls inherit their page's material instead of a neutral beige. */
-.tadeon-shell[data-section] [aria-current="page"],.tadeon-shell[data-section] [data-nav-active="true"]{color:color-mix(in srgb,var(--section-accent) 82%,white);background-color:color-mix(in srgb,var(--section-accent) 8%,transparent);box-shadow:inset 2px 0 color-mix(in srgb,var(--section-accent) 74%,transparent),inset 0 0 24px -22px color-mix(in srgb,var(--section-accent) 90%,transparent)}
+.tadeon-shell[data-section] [aria-current="page"]:not([data-material-surface="navigation"]),.tadeon-shell[data-section] [data-nav-active="true"]:not([data-material-surface="navigation"]){color:color-mix(in srgb,var(--section-accent) 82%,white);background-color:color-mix(in srgb,var(--section-accent) 8%,transparent);box-shadow:inset 2px 0 color-mix(in srgb,var(--section-accent) 74%,transparent),inset 0 0 24px -22px color-mix(in srgb,var(--section-accent) 90%,transparent)}
 
 @media(prefers-reduced-motion:reduce){.tadeon-shell[data-section="Mestre"] [data-slot="card"]:hover{animation:none!important}}
 
@@ -4619,7 +4626,7 @@ html body .tadeon-shell .tadeon-route-offline > main {
 @keyframes tdv-detail-ghost{0%,100%{opacity:.82;filter:blur(.25px)}45%{opacity:1;filter:none}60%{opacity:.9;filter:blur(.15px)}}
 @keyframes tdv-detail-node{0%,100%{box-shadow:0 0 0 currentColor}50%{box-shadow:0 0 12px -8px currentColor}}
 
-.tadeon-shell :is([data-slot="card"],[data-motion-card],[data-motion-surface],[data-tadeon-card]){background-image:linear-gradient(135deg,transparent 0 48%,color-mix(in srgb,var(--section-accent,var(--tadeon-knowledge)) 3%,transparent) 50%,transparent 52%);background-size:220% 220%;transition:background-position 900ms var(--tm-surface-thread),background-color 260ms var(--tm-surface-seam),border-color 260ms var(--tm-surface-seam),box-shadow 320ms var(--tm-surface-seam)}
+.tadeon-shell :is([data-slot="card"]:not([data-material-surface]),[data-motion-card],[data-motion-surface],[data-tadeon-card]){background-image:linear-gradient(135deg,transparent 0 48%,color-mix(in srgb,var(--section-accent,var(--tadeon-knowledge)) 3%,transparent) 50%,transparent 52%);background-size:220% 220%;transition:background-position 900ms var(--tm-surface-thread),background-color 260ms var(--tm-surface-seam),border-color 260ms var(--tm-surface-seam),box-shadow 320ms var(--tm-surface-seam)}
 .tadeon-shell :is([data-slot="card"],[data-motion-card],[data-motion-surface],[data-tadeon-card]):hover{background-position:100% 100%}
 .tadeon-shell :is([data-slot="card-title"],[data-card-title]){transition:text-shadow 280ms var(--tm-surface-seam),color 220ms var(--tm-surface-seam)}
 .tadeon-shell :is([data-slot="card"],[data-motion-card],[data-motion-surface]):hover :is([data-slot="card-title"],[data-card-title]){text-shadow:0 0 22px color-mix(in srgb,var(--section-accent,var(--tadeon-knowledge)) 16%,transparent)}
@@ -5107,7 +5114,7 @@ html body .tadeon-shell .tadeon-route-offline > main {
 /* Hero ornaments, cards, tables and notifications use the same accent automatically. */
 .tadeon-shell[data-section] :is([data-hero-thread],[data-hero-ring],[data-hero-marker],[data-hero-particle],[data-dot],[data-node],[data-marker]){color:var(--section-accent)}
 .tadeon-shell[data-section] :is([data-slot="card"],[data-motion-card],[data-motion-surface],[data-tadeon-card]){border-color:color-mix(in srgb,var(--section-accent) 13%,var(--border))}
-.tadeon-shell[data-section] :is([data-slot="card"],[data-motion-card],[data-motion-surface],[data-tadeon-card]):hover{border-color:color-mix(in srgb,var(--section-accent) 28%,var(--border));box-shadow:inset 0 0 0 1px rgb(var(--section-accent-rgb) / 9%),0 18px 46px -40px rgb(var(--section-accent-rgb) / 48%)}
+.tadeon-shell[data-section] :is([data-slot="card"]:not([data-material-surface]),[data-motion-card],[data-motion-surface],[data-tadeon-card]):hover{border-color:color-mix(in srgb,var(--section-accent) 28%,var(--border));box-shadow:inset 0 0 0 1px rgb(var(--section-accent-rgb) / 9%),0 18px 46px -40px rgb(var(--section-accent-rgb) / 48%)}
 
 /* Semantic status remains distinct from page identity; decorative glow still follows the page. */
 .tadeon-shell[data-section] :is([data-status="online"],[data-status="ready"],[data-status="connected"]){--tdv-status-color:var(--section-accent)}
@@ -5736,7 +5743,7 @@ html body .tadeon-shell :is(
 /* Suspense: overlays breathe into existence instead of fading flatly.       */
 /* -------------------------------------------------------------------------- */
 
-[data-state="open"][data-slot="dialog-overlay"],
+[data-state="open"][data-slot="dialog-overlay"]:not([data-motion-surface]),
 [data-state="open"][data-slot="sheet-overlay"] {
   animation: tadeon-suspense-overlay 360ms var(--t-ease-suspense) both;
 }

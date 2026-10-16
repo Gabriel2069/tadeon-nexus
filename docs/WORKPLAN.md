@@ -19,7 +19,7 @@ Cada PR usa IDs desta fila e declara dependências. Trabalho sobre o mesmo propr
 | NEX-006 | Biblioteca, documento e grafo do Nexus | Integrado | 4 | knowledge | NEX-003, NEX-013 |
 | NEX-007 | Mesa: hierarquia de ferramentas e workspace | Integrado | 6 | tabletop | NEX-004, NEX-013 |
 | NEX-008 | Painel do Mestre: visão geral, ferramentas e condução | Integrado | 5 | master | NEX-003, NEX-013, NEX-020 |
-| NEX-009 | Desempenho e motion | Planejado | 7 | delivery | NEX-003, NEX-007 |
+| NEX-009 | Desempenho e motion | Planejado | 7 | delivery | NEX-003, NEX-007, NEX-023 |
 | NEX-010 | Validação real de autorização e rollout | Planejado | 8 | session | NEX-001 |
 | NEX-011 | Backup e restauração verificável | Planejado | 8 | assets | NEX-010 |
 | NEX-012 | Revisão editorial do corpus canônico | Adiado | 9 | knowledge | NEX-006 |
@@ -31,7 +31,8 @@ Cada PR usa IDs desta fila e declara dependências. Trabalho sobre o mesmo propr
 | NEX-019 | Backup e diagnóstico: revisão e histórico por conta | Integrado | 4 | assets | NEX-014 |
 | NEX-020 | Símbolos reais de Mestre e Backup na navegação | Integrado | 4 | shell | NEX-016 |
 | NEX-021 | Nexus: contexto da página e passagem para a Mesa | Integrado | 5 | knowledge | NEX-015 |
-| NEX-022 | Mesa: persistência e projeção da cor-base personalizada | Próximo | 7 | tabletop | NEX-007 |
+| NEX-022 | Mesa: persistência e projeção da cor-base personalizada | Validado na branch | 7 | tabletop | NEX-007 |
+| NEX-023 | Véu & Trama: materiais e interação de todo o sistema | Validado na branch | 7 | shell | NEX-022, NEX-016 |
 
 ## NEX-001 — Preparação estrutural
 
@@ -203,7 +204,16 @@ Evidências: [docs/tabletop-workspace-validation.json](../docs/tabletop-workspac
 - Preservar a cor-base escolhida após salvar/reabrir sem criar divergência entre propriedades, fingerprint e renderização.
 - Verificar round trip e compatibilidade das cenas antigas; conservar autorização da visão compartilhada.
 
-Evidências: [docs/tabletop-workspace-map.md](../docs/tabletop-workspace-map.md).
+Evidências: [docs/tabletop-workspace-map.md](../docs/tabletop-workspace-map.md), [docs/visual-system-validation.json](../docs/visual-system-validation.json).
+
+## NEX-023 — Véu & Trama: materiais e interação de todo o sistema
+
+- Pesquisar fontes oficiais de Apple, Linear, Raycast e Obsidian e registrar o que será traduzido para a identidade TdV.
+- Aplicar profundidade, tecido, campos, botões, navegação e presença de popups nos proprietários compartilhados, retirando concorrentes.
+- Verificar telas representativas em 320/390/820/1440px, foco/retorno, interação e preferências de movimento e transparência.
+- Consolidar fontes, critérios, limites e integração sem criar outra fila ou camada CSS.
+
+Evidências: [docs/DESIGN.md](../docs/DESIGN.md), [docs/design/board.html](../docs/design/board.html), [docs/visual-system-validation.json](../docs/visual-system-validation.json).
 
 ## Decisões vigentes
 
@@ -222,3 +232,4 @@ Evidências: [docs/tabletop-workspace-map.md](../docs/tabletop-workspace-map.md)
 | DEC-011 | Priorizar menus, Consulta offline, Usuários e Backup e diagnóstico antes da Mesa, conforme novo pedido de Tadeu. | NEX-016 a NEX-019 delimitam navegação e utilidades. URLs e identidade visual permanecem; a revisão não conclui o restante do Painel do Mestre, autorização real ou restauração completa de infraestrutura (NEX-008/010/011). Os nomes visíveis são Consulta offline, Usuários e Backup e diagnóstico. |
 | DEC-012 | Corrigir os símbolos de Mestre e Backup e priorizar o Painel do Mestre antes da Mesa, conforme pedido de Tadeu em 15/10/2026. | NEX-020 retira a sobreposição dos ícones; NEX-008 organiza visão geral, ferramentas e persistência manual. Não altera regras RPG, autorização/RLS, restauração de infraestrutura ou o motor da Mesa. A validação anterior só media o wrapper dos ícones e não provava a visibilidade do SVG real. |
 | DEC-013 | Concluir o contexto de leitura do Nexus e iniciar a revisão abrangente dos controles da Mesa, conforme pedido de Tadeu. | NEX-021 fecha a passagem entre página selecionada e entidade. NEX-007 organiza controles, painel e gravação sem trocar o motor, coordenadas, serviços/RPCs ou audiência. NEX-009/010 conservam desempenho medido e validação real. |
+| DEC-014 | Aprofundar Véu & Trama como sistema de materiais e interações após a Mesa, com pesquisa primária sobretudo Apple; preservar identidade, símbolos e tipografia aprovados. | Pedido de Tadeu em 16/10/2026: elevar organização, cards, motion, transições, botões, hover, profundidade e fundos em todo o sistema. NEX-023 concentra a evolução compartilhada; NEX-009/010 conservam performance física e autorização real. |

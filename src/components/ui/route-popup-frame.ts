@@ -1,4 +1,5 @@
 import * as React from "react";
+import { useMaterialToneStyle } from "@/lib/use-material-light";
 
 import "@/styles/route-popup-frame.css";
 const ROUTE_FRAME_SELECTOR = [
@@ -13,6 +14,7 @@ const ROUTE_FRAME_SELECTOR = [
 ].join(",");
 
 type PopupFrameStyle = React.CSSProperties & {
+  "--material-rgb"?: string;
   "--tadeon-popup-frame-left"?: string;
   "--tadeon-popup-frame-width"?: string;
   "--tadeon-popup-viewport-top"?: string;
@@ -26,6 +28,7 @@ function activeRouteFrame(): HTMLElement | null {
 }
 
 export function useRoutePopupFrame() {
+  const materialStyle = useMaterialToneStyle();
   const [boundary, setBoundary] = React.useState<HTMLElement | null>(null);
   const [style, setStyle] = React.useState<PopupFrameStyle>({});
 
@@ -80,5 +83,5 @@ export function useRoutePopupFrame() {
     };
   }, []);
 
-  return { boundary, style };
+  return { boundary, style: { ...materialStyle, ...style } };
 }

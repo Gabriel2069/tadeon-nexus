@@ -1,3 +1,4 @@
+import { tabletopColorProperties } from "../../../supabase/functions/_shared/tabletop-entity-color";
 import type { TabletopScene } from "@/lib/tabletop/types";
 
 function canonicalScene(scene: TabletopScene) {
@@ -58,12 +59,21 @@ function canonicalScene(scene: TabletopScene) {
         ? { linkedKnowledgeNodeId: entity.linkedKnowledgeNodeId }
         : {}),
       ...(entity.ownerUserId !== undefined ? { ownerUserId: entity.ownerUserId } : {}),
-      ...(entity.properties !== undefined ? { properties: entity.properties } : {}),
+      properties: tabletopColorProperties(entity.type, entity.color, entity.properties),
     })),
   };
 }
 
 /** Compare content directly; never attach a serializer captured by scene clones. */
 export function tabletopSceneFingerprint(scene: TabletopScene) {
-  return JSON.stringify(canonicalScene(scene));
+  // jsonb can return object keys in a different order after a round trip.
+  return JSON.stringify(canonicalScene(scene), (_key, value) =>
+    value && typeof value === "object" && !Array.isArray(value)
+      ? Object.fromEntries(
+          Object.keys(value)
+            .sort()
+            .map((key) => [key, value[key]]),
+        )
+      : value,
+  );
 }

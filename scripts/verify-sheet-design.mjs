@@ -205,13 +205,13 @@ try {
       });
       if (readPaused) {
         await page.getByRole("status", { name: "Carregando ficha" }).waitFor();
-        await page.screenshot({ path: `${output}/loading-${width}.png` });
+        if (process.env.NEXUS_SKIP_SCREENSHOTS !== "1") await page.screenshot({ path: `${output}/loading-${width}.png` });
         readPaused = false;
         releaseRead();
       }
       if (readError) {
         await page.getByText("A ficha não pôde ser aberta").waitFor();
-        await page.screenshot({ path: `${output}/${state}-${width}.png`, fullPage: true });
+        if (process.env.NEXUS_SKIP_SCREENSHOTS !== "1") await page.screenshot({ path: `${output}/${state}-${width}.png`, fullPage: true });
         readError = false;
         await page.getByRole("button", { name: "Tentar novamente", exact: true }).click();
       }
@@ -277,11 +277,11 @@ try {
         ),
         "Attribute controls stay visible inside their instrument",
       );
-      await page.screenshot({ path: `${output}/top-${state}-${width}.png` });
+      if (process.env.NEXUS_SKIP_SCREENSHOTS !== "1") await page.screenshot({ path: `${output}/top-${state}-${width}.png` });
       await page.locator("#sec-attr").scrollIntoViewIfNeeded();
-      await page.screenshot({ path: `${output}/attributes-${state}-${width}.png` });
+      if (process.env.NEXUS_SKIP_SCREENSHOTS !== "1") await page.screenshot({ path: `${output}/attributes-${state}-${width}.png` });
       if (state === "editable")
-        await page.screenshot({ path: `${output}/sheet-${state}-${width}.png`, fullPage: true });
+        if (process.env.NEXUS_SKIP_SCREENSHOTS !== "1") await page.screenshot({ path: `${output}/sheet-${state}-${width}.png`, fullPage: true });
       const toggle = page.getByRole("button", { name: "Recolher seção Informações", exact: true });
       const collapse = (await toggle.count())
         ? toggle
@@ -315,7 +315,7 @@ try {
           "Read-only container removal",
         );
       }
-      await page.screenshot({ path: `${output}/inventory-${state}-${width}.png` });
+      if (process.env.NEXUS_SKIP_SCREENSHOTS !== "1") await page.screenshot({ path: `${output}/inventory-${state}-${width}.png` });
       await page.keyboard.press("Escape");
       assert(
         await organize.evaluate((e) => document.activeElement === e),

@@ -55,6 +55,12 @@ export function ContinuityHero({
               <stop offset="1" stopColor="#4f6e5d" />
             </linearGradient>
           </defs>
+          <path
+            d="M-30 40C130-70 220 420 390 260S570 60 790 125L790 318C570 220 560 430 390 298S130 255-30 359Z"
+            fill={`url(#${gradient})`}
+            opacity=".065"
+            mask={`url(#${fade}-mask)`}
+          />
           <g mask={`url(#${fade}-mask)`} stroke={`url(#${gradient})`} strokeWidth=".8">
             {Array.from({ length: 56 }, (_, i) => (
               <path

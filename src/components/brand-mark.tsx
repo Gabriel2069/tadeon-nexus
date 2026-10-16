@@ -73,6 +73,25 @@ export function ThreadField({
           <stop offset="1" stopColor="#4f6e5d" />
         </linearGradient>
       </defs>
+      <g aria-hidden="true" opacity={variant === "backdrop" ? ".36" : ".56"}>
+        <path
+          d="M-100 172C240-85 380 420 610 340S940 190 1300 448L1300 524C940 280 840 370 610 414S240 56-100 260Z"
+          fill={`url(#${id})`}
+          opacity=".14"
+        />
+        <path
+          d="M248-90C510 130 368 472 982 890L1074 890C456 444 630 108 336-90Z"
+          fill={`url(#${id})`}
+          opacity=".1"
+        />
+        <path
+          d="M-100 172C240-85 380 420 610 340S940 190 1300 448"
+          fill="none"
+          stroke={`url(#${id})`}
+          strokeWidth="1.5"
+          opacity=".5"
+        />
+      </g>
       <g fill="none" stroke={`url(#${id})`} strokeWidth={variant === "backdrop" ? ".65" : ".9"}>
         {Array.from({ length: 32 }, (_, i) => (
           <path

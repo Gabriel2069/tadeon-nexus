@@ -551,7 +551,7 @@ function NexusToolsPageContent() {
         className="tadeon-page-hero tadeon-surface rounded-2xl px-5 py-6 md:px-8 md:py-8"
       >
         <PageSectionMark section="tools" />
-        <div className="flex flex-col justify-between gap-5 md:flex-row md:items-end">
+        <div className="tadeon-utility-hero__body">
           <div>
             <p className="tadeon-eyebrow">Integridade do arquivo</p>
             <h1 className="font-cinzel text-3xl font-semibold md:text-4xl">
@@ -562,7 +562,7 @@ function NexusToolsPageContent() {
               exibir mensagens internas do banco.
             </p>
           </div>
-          <Badge variant="outline" className="w-fit gap-1.5 px-3 py-1.5">
+          <Badge variant="outline" className="w-fit max-w-full gap-1.5 whitespace-normal px-3 py-1.5">
             <ShieldCheck className="h-3.5 w-3.5 text-primary" />
             Credenciais não são exportadas
           </Badge>

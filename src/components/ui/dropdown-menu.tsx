@@ -4,6 +4,7 @@ import * as React from "react";
 import * as DropdownMenuPrimitive from "@radix-ui/react-dropdown-menu";
 import { Check, ChevronRight, Circle } from "lucide-react";
 
+import { useMaterialToneStyle } from "@/lib/use-material-light";
 import { cn } from "@/lib/utils";
 
 const DropdownMenu = DropdownMenuPrimitive.Root;
@@ -57,25 +58,30 @@ const DropdownMenuSubContent = React.forwardRef<
       avoidCollisions = true,
       sticky = "always",
       hideWhenDetached = true,
+      style,
       ...props
     },
     ref,
-  ) => (
-    <DropdownMenuPrimitive.SubContent
-      ref={ref}
-      data-slot="dropdown-menu-sub-content"
-      data-motion-surface="popup"
-      collisionPadding={collisionPadding}
-      avoidCollisions={avoidCollisions}
-      sticky={sticky}
-      hideWhenDetached={hideWhenDetached}
-      className={cn(
-        "z-50 max-h-[min(36rem,var(--radix-dropdown-menu-content-available-height))] max-w-[calc(100vw-1.5rem)] min-w-[10rem] overflow-y-auto overflow-x-hidden overscroll-contain rounded-xl rounded-br-sm border border-border/80 bg-popover/95 p-1.5 text-popover-foreground shadow-[0_24px_70px_-30px_rgba(0,0,0,.95)] backdrop-blur-xl outline-none duration-[160ms] ease-[var(--ease-out)] data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:duration-[120ms] data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 origin-(--radix-dropdown-menu-content-transform-origin)",
-        className,
-      )}
-      {...props}
-    />
-  ),
+  ) => {
+    const materialStyle = useMaterialToneStyle();
+    return (
+      <DropdownMenuPrimitive.SubContent
+        ref={ref}
+        data-slot="dropdown-menu-sub-content"
+        data-motion-surface="popup"
+        style={{ ...materialStyle, ...style }}
+        collisionPadding={collisionPadding}
+        avoidCollisions={avoidCollisions}
+        sticky={sticky}
+        hideWhenDetached={hideWhenDetached}
+        className={cn(
+          "z-50 max-h-[min(36rem,var(--radix-dropdown-menu-content-available-height))] max-w-[calc(100vw-1.5rem)] min-w-[10rem] overflow-y-auto overflow-x-hidden overscroll-contain  p-1.5 text-popover-foreground backdrop-blur-xl outline-none duration-[160ms] ease-[var(--ease-out)] origin-(--radix-dropdown-menu-content-transform-origin)",
+          className,
+        )}
+        {...props}
+      />
+    );
+  },
 );
 DropdownMenuSubContent.displayName = DropdownMenuPrimitive.SubContent.displayName;
 
@@ -91,29 +97,34 @@ const DropdownMenuContent = React.forwardRef<
       avoidCollisions = true,
       sticky = "always",
       hideWhenDetached = true,
+      style,
       ...props
     },
     ref,
-  ) => (
-    <DropdownMenuPrimitive.Portal>
-      <DropdownMenuPrimitive.Content
-        ref={ref}
-        data-slot="dropdown-menu-content"
-        data-motion-surface="popup"
-        sideOffset={sideOffset}
-        collisionPadding={collisionPadding}
-        avoidCollisions={avoidCollisions}
-        sticky={sticky}
-        hideWhenDetached={hideWhenDetached}
-        className={cn(
-          "z-50 max-h-[min(36rem,var(--radix-dropdown-menu-content-available-height))] max-w-[calc(100vw-1.5rem)] min-w-[10rem] overflow-y-auto overflow-x-hidden overscroll-contain rounded-xl rounded-br-sm border border-border/80 bg-popover/95 p-1.5 text-popover-foreground shadow-[0_24px_70px_-30px_rgba(0,0,0,.95)] backdrop-blur-xl outline-none",
-          "duration-[160ms] ease-[var(--ease-out)] data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:duration-[120ms] data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 origin-(--radix-dropdown-menu-content-transform-origin)",
-          className,
-        )}
-        {...props}
-      />
-    </DropdownMenuPrimitive.Portal>
-  ),
+  ) => {
+    const materialStyle = useMaterialToneStyle();
+    return (
+      <DropdownMenuPrimitive.Portal>
+        <DropdownMenuPrimitive.Content
+          ref={ref}
+          data-slot="dropdown-menu-content"
+          data-motion-surface="popup"
+          style={{ ...materialStyle, ...style }}
+          sideOffset={sideOffset}
+          collisionPadding={collisionPadding}
+          avoidCollisions={avoidCollisions}
+          sticky={sticky}
+          hideWhenDetached={hideWhenDetached}
+          className={cn(
+            "z-50 max-h-[min(36rem,var(--radix-dropdown-menu-content-available-height))] max-w-[calc(100vw-1.5rem)] min-w-[10rem] overflow-y-auto overflow-x-hidden overscroll-contain  p-1.5 text-popover-foreground backdrop-blur-xl outline-none",
+            "duration-[160ms] ease-[var(--ease-out)] origin-(--radix-dropdown-menu-content-transform-origin)",
+            className,
+          )}
+          {...props}
+        />
+      </DropdownMenuPrimitive.Portal>
+    );
+  },
 );
 DropdownMenuContent.displayName = DropdownMenuPrimitive.Content.displayName;
 

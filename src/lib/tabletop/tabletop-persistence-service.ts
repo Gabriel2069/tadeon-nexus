@@ -1,3 +1,7 @@
+import {
+  tabletopEntityColor,
+  tabletopColorProperties,
+} from "../../../supabase/functions/_shared/tabletop-entity-color";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
 import type { Json } from "@/integrations/supabase/types";
@@ -209,22 +213,6 @@ export function moveTabletopScene(
   return reordered.map((scene, orderIndex) => ({ ...scene, orderIndex }));
 }
 
-const ENTITY_COLORS: Record<string, number> = {
-  token: 0x8d3152,
-  character: 0x8d3152,
-  npc: 0x7b4058,
-  creature: 0x70333b,
-  object: 0x345d6f,
-  tile: 0x345d6f,
-  drawing: 0x6a5d3e,
-  text: 0x5a5368,
-  marker: 0x765c2f,
-  note: 0x765c2f,
-  area: 0x4b5d47,
-  light: 0x8a7538,
-  handout_pin: 0x5d4770,
-};
-
 function numeric(value: number | string) {
   const parsed = Number(value);
   return Number.isFinite(parsed) ? parsed : 0;
@@ -321,9 +309,11 @@ export function buildTabletopSavePayload(
       owner_user_id: has("ownerUserId")
         ? (runtime.ownerUserId ?? null)
         : (persisted?.ownerUserId ?? null),
-      properties: has("properties")
-        ? ((runtime.properties ?? {}) as Json)
-        : (persisted?.properties ?? {}),
+      properties: tabletopColorProperties(
+        entity.type,
+        entity.color,
+        has("properties") ? runtime.properties : persisted?.properties,
+      ) as Json,
       version: persisted?.version ?? 0,
     } as Json;
   });
@@ -430,7 +420,7 @@ export function mapTabletopScene(
       zIndex: entity.z_index,
       hidden: entity.hidden,
       locked: entity.locked,
-      color: ENTITY_COLORS[entity.entity_type] ?? 0x4f5560,
+      color: tabletopEntityColor(entity.entity_type, entity.properties),
       version: entity.version,
       assetId: entity.asset_id,
       linkedSheetId: entity.linked_sheet_id,
@@ -731,7 +721,7 @@ export class TabletopPersistenceService {
       hidden: entity.hidden,
       locked: entity.locked,
       owner_user_id: entity.ownerUserId,
-      properties: entity.properties,
+      properties: tabletopColorProperties(entity.type, entity.color, entity.properties) as Json,
       updated_by: userId,
     };
     const query =

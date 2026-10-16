@@ -23,10 +23,8 @@ const AlertDialogOverlay = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <AlertDialogPrimitive.Overlay
     data-slot="alert-dialog-overlay"
-    className={cn(
-      "fixed inset-0 z-50 bg-black/78 duration-[180ms] data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
-      className,
-    )}
+    data-motion-surface="backdrop"
+    className={cn("fixed inset-0 z-50 bg-black/78", className)}
     {...props}
     ref={ref}
   />
@@ -50,7 +48,7 @@ const AlertDialogContent = React.forwardRef<
           data-route-bounded={routeFrame.boundary ? "true" : undefined}
           style={style}
           className={cn(
-            "z-50 grid max-h-[calc(100dvh_-_1rem)] w-[calc(100%_-_1rem)] max-w-lg gap-4 overflow-y-auto overscroll-contain rounded-[1.15rem_.45rem_1.15rem_.45rem] border border-foreground/20 bg-popover p-5 shadow-[0_32px_90px_-28px_rgba(0,0,0,.96),inset_0_1px_0_rgba(255,255,255,.16),inset_0_-1px_0_rgba(255,255,255,.035)] duration-200 ease-[var(--ease-out)] sm:p-6",
+            "z-50 grid max-h-[calc(100dvh_-_1rem)] w-[calc(100%_-_1rem)] max-w-lg gap-4 overflow-y-auto overscroll-contain  p-5 duration-200 ease-[var(--ease-out)] sm:p-6",
             className,
           )}
           {...props}

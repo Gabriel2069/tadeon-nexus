@@ -1,3 +1,4 @@
+import { tabletopEntityColor } from "../_shared/tabletop-entity-color.ts";
 import { createClient } from "npm:@supabase/supabase-js@2.110.3";
 
 const corsHeaders = {
@@ -17,21 +18,7 @@ const jsonHeaders = {
 const UUID_PATTERN =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 const PUBLIC_LAYER_TYPES = new Set(["map", "objects", "tokens", "drawings"]);
-const ENTITY_COLORS: Record<string, number> = {
-  token: 0x8d3152,
-  character: 0x8d3152,
-  npc: 0x7b4058,
-  creature: 0x70333b,
-  object: 0x345d6f,
-  tile: 0x345d6f,
-  drawing: 0x6a5d3e,
-  text: 0x5a5368,
-  marker: 0x765c2f,
-  note: 0x765c2f,
-  area: 0x4b5d47,
-  light: 0x8a7538,
-  handout_pin: 0x5d4770,
-};
+
 
 function respond(body: unknown, status = 200) {
   return new Response(JSON.stringify(body), { status, headers: jsonHeaders });
@@ -1018,7 +1005,7 @@ Deno.serve(async (request) => {
           zIndex: entity.z_index,
           hidden: false,
           locked: entity.locked || participant.role === "observer",
-          color: ENTITY_COLORS[entity.entity_type] ?? 0x4f5560,
+          color: tabletopEntityColor(entity.entity_type, entity.properties),
           ...(signedAsset ? { assetUrl: signedAsset.url } : {}),
           controllable:
             participant.role === "player" &&

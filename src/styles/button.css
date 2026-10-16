@@ -684,48 +684,81 @@
 
 /* end-source: src/styles/interaction-polish.css */
 
-/* Shared React control material. Legacy controls keep their existing writers. */
+/* Shared control material: one optical response; text and target stay still. */
 .tadeon-material-button {
-  --control-accent: rgb(var(--material-rgb, 217 215 164));
+  --control-rgb: var(--material-rgb, var(--section-accent-rgb, 217 215 164));
+  --control-accent: color-mix(in srgb, rgb(var(--control-rgb)) 42%, var(--foreground));
   position: relative;
   isolation: isolate;
   overflow: hidden;
-  border-radius: .8rem .38rem .8rem .38rem;
-  box-shadow: inset 0 1px 0 rgb(255 255 255 / 13%), inset 0 -2px 2px rgb(0 0 0 / 18%), 0 7px 16px -12px rgb(0 0 0 / 80%);
-  transition: background-color 180ms var(--ease-out), border-color 180ms var(--ease-out), box-shadow 180ms var(--ease-out), translate 180ms var(--ease-out), scale 120ms var(--ease-out);
+  border-radius: var(--radius-control);
+  box-shadow: inset 0 1px 0 var(--material-crest), inset 0 -2px 2px rgb(0 0 0 / 22%), 0 2px 3px rgb(0 0 0 / 20%), 0 8px 18px -12px rgb(0 0 0 / 80%);
+  transition: background-color var(--motion-fast) var(--ease-out), border-color var(--motion-fast) var(--ease-out), color var(--motion-fast) var(--ease-out), box-shadow var(--motion-panel) var(--ease-out), translate var(--motion-press) var(--ease-out);
 }
 .tadeon-material-button::before {
-  content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none; border-radius: inherit;
-  background: radial-gradient(ellipse at var(--material-x, 28%) var(--material-y, 0%), rgb(255 255 255 / 22%), transparent 70%), linear-gradient(160deg, rgb(255 255 255 / 10%), transparent 45%);
-  opacity: .65; transition: opacity 180ms var(--ease-out);
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  border-radius: inherit;
+  background: radial-gradient(ellipse at var(--material-x, 22%) var(--material-y, 0%), rgb(255 249 232 / 26%), transparent 68%), linear-gradient(172deg, rgb(255 255 255 / 9%), transparent 48%);
+  opacity: .5;
+  transition: opacity var(--motion-fast) var(--ease-out);
 }
-.tadeon-material-button[data-variant="default"] { background-color: var(--control-accent); background-image: linear-gradient(155deg, color-mix(in srgb, var(--control-accent) 80%, white), var(--control-accent) 45%, color-mix(in srgb, var(--control-accent) 90%, black)); color: var(--primary-foreground); border-color: color-mix(in srgb, var(--control-accent) 70%, white); }
-.tadeon-material-button:is([data-variant="outline"], [data-variant="secondary"]) { background: #1c2028; border-color: rgb(233 227 213 / 22%); }
-.tadeon-material-button[data-variant="ghost"] { box-shadow: none; }
-.tadeon-material-button[data-variant="link"] { box-shadow: none; overflow: visible; }
+.tadeon-material-button[data-variant="default"] {
+  background: linear-gradient(168deg, color-mix(in srgb, var(--control-accent) 90%, white), var(--control-accent) 48%, color-mix(in srgb, var(--control-accent) 84%, black));
+  color: var(--primary-foreground);
+  border: 1px solid color-mix(in srgb, var(--control-accent) 76%, white);
+}
+.tadeon-material-button:is([data-variant="outline"], [data-variant="secondary"]) {
+  background: linear-gradient(170deg, rgb(255 249 232 / 5%), transparent 62%), var(--surface-raised);
+  border: 1px solid var(--material-edge);
+  color: var(--foreground);
+}
+.tadeon-material-button[data-variant="destructive"] { background: var(--destructive); color: var(--destructive-foreground); border: 1px solid rgb(239 94 94 / 40%); }
+.tadeon-material-button[data-variant="link"] { color: var(--control-accent); overflow: visible; }
 .tadeon-material-button[data-variant="link"]::before { content: none; }
 .tadeon-material-button:focus-visible { outline: 2px solid var(--foreground); outline-offset: 3px; }
 .tadeon-material-button:focus-visible::before { opacity: 1; }
-@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
-  .tadeon-material-button:not(:disabled):not([aria-disabled="true"]):not([data-variant="link"]):not([data-variant="ghost"]):hover { translate: 0 -1px; box-shadow: inset 0 1px 0 rgb(255 255 255 / 25%), inset 0 -2px 2px rgb(0 0 0 / 22%), 0 12px 24px -14px rgb(0 0 0 / 90%); }
-  .tadeon-material-button:not(:disabled):hover::before { opacity: 1; }
-}
-.tadeon-material-button:not(:disabled):active { translate: 0 1px; }
-.tadeon-material-button:disabled { translate: none; scale: 1; }
+.tadeon-material-button[aria-pressed="true"] { border-color: var(--control-accent); background-color: rgb(var(--control-rgb) / 18%); box-shadow: inset 0 0 0 1px rgb(var(--control-rgb) / 32%), inset 0 1px rgb(255 255 255 / 15%); }
+@media (hover: hover) and (pointer: fine) {
+  .tadeon-material-button:not(:disabled):not([aria-disabled="true"]):not([data-variant="link"]):not([data-variant="ghost"]):hover { border-color: var(--control-accent); box-shadow: inset 0 1px 0 rgb(255 249 232 / 38%), inset 0 -2px 2px rgb(0 0 0 / 25%), 0 3px 5px rgb(0 0 0 / 25%), 0 12px 26px -16px rgb(0 0 0 / 90%); }
+  .tadeon-material-button:not(:disabled):not([aria-disabled="true"]):hover::before { opacity: 1; }
+  }
+.tadeon-material-button:not(:disabled):not([aria-disabled="true"]):active { translate: 0 1px; box-shadow: inset 0 2px 5px rgb(0 0 0 / 28%), inset 0 -1px rgb(255 249 232 / 12%); }
+.tadeon-material-button:is(:disabled, [aria-disabled="true"]) { translate: none; }
+.tadeon-material-button:is(:disabled, [aria-disabled="true"])::before { opacity: .15; }
+.tadeon-material-button[data-tone="destructive"] { --material-rgb: 239 94 94; }
 @media (prefers-reduced-motion: reduce) {
   .tadeon-material-button, .tadeon-material-button::before { transition: none; }
-  .tadeon-material-button:not(:disabled):is(:hover, :active) { translate: none; scale: 1; }
+  .tadeon-material-button:not(:disabled):is(:hover, :active) { translate: none; }
 }
+/* Recessed fields: stable text plane, light catches the rim on focus. */
+.tadeon-material-field {
+  border: 1px solid var(--input);
+  border-radius: var(--radius-control);
+  background: #0d1117;
+  box-shadow: inset 0 2px 5px rgb(0 0 0 / 30%), 0 1px 0 rgb(233 227 213 / 5%);
+  transition: border-color var(--motion-fast) var(--ease-out), box-shadow var(--motion-fast) var(--ease-out);
+}
+.tadeon-material-field:focus-visible, .tadeon-material-field[data-state="open"] {
+  border-color: rgb(233 227 213 / 65%);
+  outline: 2px solid rgb(233 227 213 / 22%);
+  outline-offset: 2px;
+  box-shadow: inset 0 2px 5px rgb(0 0 0 / 30%), 0 0 0 1px rgb(var(--material-rgb, 217 215 164) / 10%);
+}
+@media (prefers-reduced-motion: reduce) { .tadeon-material-field { transition: none; } }
+
 /* NEX-014: owned controls/disclosure, interruptible state transitions. */
-.tadeon-material-tabs { background: rgb(16 20 26 / 80%); border: 1px solid rgb(233 227 213 / 14%); box-shadow: inset 0 1px rgb(255 255 255 / 9%), 0 12px 28px -20px #000; }
+.tadeon-material-tabs { background: rgb(12 16 22 / 92%); border: 1px solid var(--material-edge); border-radius: 1rem; box-shadow: inset 0 2px 5px rgb(0 0 0 / 24%), inset 0 -1px rgb(233 227 213 / 5%); }
 [data-material-surface="tab"] { position: relative; min-height: 44px; color: var(--muted-foreground); background: transparent; transition: color 160ms ease, background-color 180ms ease, box-shadow 180ms ease; }
-[data-material-surface="tab"][data-state="active"] { color: var(--foreground); background: linear-gradient(145deg, rgb(var(--material-rgb, 217 215 164) / 17%), rgb(233 227 213 / 3%)); box-shadow: inset 0 1px rgb(255 255 255 / 12%), inset 0 -2px rgb(var(--material-rgb, 217 215 164) / 65%); }
+[data-material-surface="tab"][data-state="active"] { color: var(--foreground); background: linear-gradient(165deg, rgb(var(--material-rgb, 217 215 164) / 19%), rgb(233 227 213 / 4%)); box-shadow: inset 0 1px rgb(255 249 232 / 22%), inset 0 -1px rgb(var(--material-rgb, 217 215 164) / 30%), 0 3px 9px -4px #000; }
 [data-material-surface="tab"]::before, [data-material-surface="tab"]::after { content: none; }
 [data-motion-surface="fold"] { overflow: hidden; }
 [data-motion-surface="fold"][data-state="open"] { animation: tadeon-fold-open 240ms cubic-bezier(.22,1,.36,1); }
 [data-motion-surface="fold"][data-state="closed"] { animation: tadeon-fold-close 180ms cubic-bezier(.4,0,.2,1); }
 @keyframes tadeon-fold-open { from { height: 0; opacity: 0; } to { height: var(--radix-collapsible-content-height); opacity: 1; } }
 @keyframes tadeon-fold-close { from { height: var(--radix-collapsible-content-height); opacity: 1; } to { height: 0; opacity: 0; } }
-.tadeon-material-button:is([data-variant="ghost"], [data-variant="outline"], [data-variant="secondary"]):is(:hover, [aria-pressed="true"]) { color: rgb(var(--material-rgb, 217 215 164)); background: rgb(var(--material-rgb, 217 215 164) / 12%); border-color: rgb(var(--material-rgb, 217 215 164) / 28%); }
-.tadeon-material-button[data-tone="destructive"] { --material-rgb: 239 94 94; }
+
 @media (prefers-reduced-motion: reduce) { [data-material-surface="tab"], [data-motion-surface="fold"] { animation: none; transition: none; } }

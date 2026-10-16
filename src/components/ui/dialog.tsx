@@ -32,10 +32,8 @@ const DialogOverlay = React.forwardRef<
   <DialogPrimitive.Overlay
     ref={ref}
     data-slot="dialog-overlay"
-    className={cn(
-      "fixed inset-0 z-50 bg-black/78 duration-[180ms] data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
-      className,
-    )}
+    data-motion-surface="backdrop"
+    className={cn("fixed inset-0 z-50 bg-black/78", className)}
     {...props}
   />
 ));
@@ -71,7 +69,7 @@ const DialogContent = React.forwardRef<
             }
           }}
           className={cn(
-            "z-50 grid max-h-[calc(100dvh_-_1rem)] w-[calc(100%_-_1rem)] max-w-lg gap-4 overflow-y-auto overscroll-contain rounded-[1.15rem_.45rem_1.15rem_.45rem] border border-foreground/20 bg-popover p-5 shadow-[0_32px_90px_-28px_rgba(0,0,0,.96),inset_0_1px_0_rgba(255,255,255,.16),inset_0_-1px_0_rgba(255,255,255,.035)] duration-200 ease-[var(--ease-out)] sm:p-6",
+            "z-50 grid max-h-[calc(100dvh_-_1rem)] w-[calc(100%_-_1rem)] max-w-lg gap-4 overflow-y-auto overscroll-contain  p-5 duration-200 ease-[var(--ease-out)] sm:p-6",
             className,
           )}
           {...props}
@@ -79,7 +77,7 @@ const DialogContent = React.forwardRef<
           {children}
           <DialogPrimitive.Close
             data-slot="dialog-close"
-            className="absolute right-3 top-3 grid h-10 w-10 cursor-pointer place-items-center rounded-[0.7rem] border border-transparent text-muted-foreground transition-[color,background-color,border-color,transform] duration-150 ease-[var(--ease-out)] hover:border-border hover:bg-accent hover:text-foreground active:scale-[.97] focus:outline-none focus:ring-2 focus:ring-ring/60 focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent sm:right-4 sm:top-4"
+            className="absolute right-3 top-3 grid h-10 w-10 cursor-pointer place-items-center rounded-[0.7rem] border border-transparent text-muted-foreground transition-[color,background-color,border-color,transform] duration-150 ease-[var(--ease-out)] hover:border-border hover:bg-foreground/10 hover:text-foreground focus:outline-none focus:ring-2 focus:ring-ring/60 focus:ring-offset-2 disabled:pointer-events-none sm:right-4 sm:top-4"
           >
             <X className="h-4 w-4" />
             <span className="sr-only">Fechar</span>
