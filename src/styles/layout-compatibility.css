@@ -60,7 +60,7 @@
 
 .tadeon-dedicated-shell[data-dedicated-presentation="master-panel"] :is(
   .tadeon-surface,
-  [data-slot="card"]) {
+  [data-slot="card"]:not([data-material-surface])) {
   border-color: color-mix(in srgb, var(--tadeon-knowledge) 18%, var(--border)) !important;
   box-shadow:
     0 24px 64px -46px rgb(0 0 0 / 96%),

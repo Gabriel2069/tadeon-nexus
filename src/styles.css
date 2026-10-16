@@ -1734,7 +1734,7 @@ body {
   text-wrap: pretty;
 }
 
-[data-slot="card"] {
+[data-slot="card"]:not([data-material-surface]) {
   border-color: color-mix(in srgb, var(--tadeon-section-accent) 8%, var(--border));
   background:
     linear-gradient(145deg, rgb(255 255 255 / 2.3%), transparent 45%), var(--tadeon-surface-1);
@@ -3992,7 +3992,7 @@ legend {
   }
 
   .tadeon-route-stage
-    [data-slot="card"]:not(:has(input:focus, textarea:focus, select:focus)):hover {
+    [data-slot="card"]:not([data-material-surface]):not(:has(input:focus, textarea:focus, select:focus)):hover {
     border-color: color-mix(in srgb, var(--section-accent, var(--primary)) 18%, var(--border));
     box-shadow:
       0 28px 76px -56px rgb(0 0 0 / 100%),

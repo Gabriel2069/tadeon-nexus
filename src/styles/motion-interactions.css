@@ -158,7 +158,7 @@
 /* --------------------------------------------------------------------------
    DIALOGS - larger travel, scale, blur, and content cascade.
    -------------------------------------------------------------------------- */
-.tadeon-shell [data-slot="dialog-overlay"],
+.tadeon-shell [data-slot="dialog-overlay"]:not([data-motion-surface]),
 .tadeon-shell [data-slot="sheet-overlay"] {
   transition:
     opacity 420ms var(--tadeon-visible-ease-in),
@@ -1271,7 +1271,7 @@
 }
 
 /* Overlays: the room dims and gains depth with the surface. */
-[data-slot="dialog-overlay"],
+[data-slot="dialog-overlay"]:not([data-motion-surface]),
 [data-slot="sheet-overlay"] {
   animation-duration: 420ms !important;
   animation-timing-function: var(--tadeon-portal-enter) !important;
@@ -1485,7 +1485,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  [data-slot="dialog-overlay"],
+  [data-slot="dialog-overlay"]:not([data-motion-surface]),
   [data-slot="sheet-overlay"],
   [data-slot="dialog-content"]:not([data-motion-surface]),
   [data-slot="dialog-content"]:not([data-motion-surface]) > *,
@@ -1530,7 +1530,7 @@
 
 /* Coverage pass: common UI primitives that still changed instantly. */
 .tadeon-shell [data-slot="card"]{transition:transform 360ms cubic-bezier(.22,1,.36,1),box-shadow 420ms cubic-bezier(.22,1,.36,1),border-color 260ms ease,background-color 300ms ease}
-@media (hover:hover) and (pointer:fine){.tadeon-shell [data-slot="card"]:hover{transform:translateY(-2px);box-shadow:0 28px 70px -46px rgb(0 0 0 / 88%),0 8px 28px -26px rgb(217 215 164 / 18%),inset 0 1px rgb(255 255 255 / 5%)}}
+@media (hover:hover) and (pointer:fine){.tadeon-shell [data-slot="card"]:not([data-material-surface]):hover{transform:translateY(-2px);box-shadow:0 28px 70px -46px rgb(0 0 0 / 88%),0 8px 28px -26px rgb(217 215 164 / 18%),inset 0 1px rgb(255 255 255 / 5%)}}
 .tadeon-shell [data-slot="card"]:active{transform:translateY(1px) scale(.995)}
 
 .tadeon-shell [data-slot="badge"]{transform-origin:center;transition:transform 220ms cubic-bezier(.22,1,.36,1),filter 260ms ease,box-shadow 260ms ease,background-color 220ms ease,border-color 220ms ease}

@@ -435,14 +435,14 @@ html[data-tadeon-tabletop-selection-active="true"] [data-tadeon-selection-guarde
   [data-section="Usuários"],
   [data-section="Saúde do arquivo"],
   [data-section="Consulta offline"]
-) .tadeon-route-stage :is([data-slot="card"], .tadeon-surface) {
+) .tadeon-route-stage :is([data-slot="card"]:not([data-material-surface]), .tadeon-surface) {
   border-color: color-mix(in srgb, rgb(var(--section-accent-rgb)) var(--section-card-force, 14%), var(--border)) !important;
   box-shadow:
     0 22px 58px -48px rgb(0 0 0 / 94%),
     inset 0 1px rgb(255 255 255 / 3.5%);
 }
 
-.tadeon-shell[data-section="Painel do Mestre"] .tadeon-route-stage :is([data-slot="card"], .tadeon-surface) {
+.tadeon-shell[data-section="Painel do Mestre"] .tadeon-route-stage :is([data-slot="card"]:not([data-material-surface]), .tadeon-surface) {
   background-image: radial-gradient(circle at 96% -8%, rgb(var(--section-accent-rgb) / 6%), transparent 12rem);
 }
 
@@ -899,7 +899,7 @@ html[data-tadeon-sheet-mode="game"] .tadeon-sheet-game-button svg {
   }
 
   .tadeon-route-stage .tadeon-page:not(.tadeon-sheet-page) :is(
-    [data-slot="card"],
+    [data-slot="card"]:not([data-material-surface]),
     .tadeon-surface
   ) {
     border-color: rgb(var(--mobile-panel-rgb) / 15%) !important;
@@ -1419,10 +1419,10 @@ html[data-tadeon-sheet-mode="game"] .tadeon-sheet-game-button svg {
     isolation: isolate !important;
   }
 
-  .tadeon-route-master [data-slot="card"],
-  .tadeon-route-users [data-slot="card"],
-  .tadeon-route-tools [data-slot="card"],
-  .tadeon-route-offline [data-slot="card"] {
+  .tadeon-route-master [data-slot="card"]:not([data-material-surface]),
+.tadeon-route-users [data-slot="card"]:not([data-material-surface]),
+.tadeon-route-tools [data-slot="card"]:not([data-material-surface]),
+.tadeon-route-offline [data-slot="card"]:not([data-material-surface]) {
     position: relative !important;
     overflow: clip !important;
     border-color: color-mix(in srgb, var(--section-accent) 14%, var(--border)) !important;
@@ -1921,9 +1921,9 @@ html[data-tadeon-sheet-mode="game"] .tadeon-sheet-game-button svg {
     font-size: clamp(1.65rem, 7.6vw, 2.35rem) !important;
   }
 
-  .tadeon-route-users [data-slot="card"],
-  .tadeon-route-tools [data-slot="card"],
-  .tadeon-route-offline [data-slot="card"] {
+  .tadeon-route-users [data-slot="card"]:not([data-material-surface]),
+.tadeon-route-tools [data-slot="card"]:not([data-material-surface]),
+.tadeon-route-offline [data-slot="card"]:not([data-material-surface]) {
     position: relative !important;
     isolation: isolate !important;
     overflow: clip !important;
@@ -1939,9 +1939,9 @@ html[data-tadeon-sheet-mode="game"] .tadeon-sheet-game-button svg {
       inset 0 1px rgb(255 255 255 / 3.8%) !important;
   }
 
-  .tadeon-route-users [data-slot="card"]::before,
-  .tadeon-route-tools [data-slot="card"]::before,
-  .tadeon-route-offline [data-slot="card"]::before {
+  .tadeon-route-users [data-slot="card"]:not([data-material-surface])::before,
+.tadeon-route-tools [data-slot="card"]:not([data-material-surface])::before,
+.tadeon-route-offline [data-slot="card"]:not([data-material-surface])::before {
     position: absolute !important;
     z-index: 0 !important;
     top: -4.9rem !important;
@@ -2368,7 +2368,7 @@ html[data-tadeon-sheet-mode="game"] .tadeon-sheet-game-button svg {
     inset 0 1px rgb(255 255 255 / 3.5%) !important;
 }
 
-.tadeon-route-stage :is(.rounded-lg, .rounded-xl, .rounded-2xl).border:not(button):not(input):not(textarea):not(select):not([role="button"]):not([role="tab"]:not([data-material-surface="tab"])):not([data-slot="card"]):not(.tadeon-page-hero):not(.tadeon-tabletop-stage) {
+.tadeon-route-stage :is(.rounded-lg, .rounded-xl, .rounded-2xl).border:not(button):not(input):not(textarea):not(select):not([role="button"]):not([role="tab"]:not([data-material-surface="tab"])):not([data-slot="card"]:not([data-material-surface])):not(.tadeon-page-hero):not(.tadeon-tabletop-stage) {
   background-color: color-mix(in srgb, var(--card) 90%, transparent);
   background-image:
     radial-gradient(circle at 96% 0%, rgb(var(--section-accent-rgb, 217 215 164) / 5%), transparent 9rem),

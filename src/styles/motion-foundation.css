@@ -902,7 +902,7 @@
 .tadeon-shell [data-slot="dropdown-menu-content"]:not([data-motion-surface])[data-state="closed"],
 .tadeon-shell [data-slot="dropdown-menu-sub-content"]:not([data-motion-surface])[data-state="closed"],
 .tadeon-shell [data-slot="tooltip-content"][data-state="closed"] { animation: tadeon-popup-departure 150ms cubic-bezier(.4,0,.2,1) both; }
-.tadeon-shell [data-slot="dialog-overlay"], .tadeon-shell [data-slot="sheet-overlay"] { animation: tadeon-overlay-arrival 300ms ease both; }
+.tadeon-shell [data-slot="dialog-overlay"]:not([data-motion-surface]), .tadeon-shell [data-slot="sheet-overlay"] { animation: tadeon-overlay-arrival 300ms ease both; }
 .tadeon-shell [data-slot="dialog-content"]:not([data-motion-surface]) { animation: tadeon-dialog-arrival 460ms cubic-bezier(.22,1,.36,1) both; transform-origin: 50% 46%; }
 .tadeon-shell [data-slot="sheet-content"]:not([data-motion-surface]) { animation: tadeon-sheet-arrival 460ms cubic-bezier(.22,1,.36,1) both; }
 .tadeon-shell [data-slot="dialog-content"]:not([data-motion-surface]) > * { animation: tadeon-popup-content-cascade 420ms cubic-bezier(.22,1,.36,1) both; }
@@ -1024,7 +1024,7 @@
 @keyframes tadeon-progress-glint { 0%,40% { transform: translateX(-140%); } 70%,100% { transform: translateX(460%); } }
 
 @media (prefers-reduced-motion: reduce) {
-  .tadeon-tabletop-studio__header .tadeon-tabletop-symbol, .tadeon-tabletop-studio__header [data-tabletop-symbol], .tadeon-tabletop-studio .tadeon-symbol-mark, .tadeon-shell [data-slot="popover-content"]:not([data-motion-surface]), .tadeon-shell [data-slot="dropdown-menu-content"]:not([data-motion-surface]), .tadeon-shell [data-slot="dropdown-menu-sub-content"]:not([data-motion-surface]), .tadeon-shell [data-slot="tooltip-content"], .tadeon-shell [data-slot="dialog-overlay"], .tadeon-shell [data-slot="sheet-overlay"], .tadeon-shell [data-slot="dialog-content"]:not([data-motion-surface]), .tadeon-shell [data-slot="sheet-content"]:not([data-motion-surface]), .tadeon-shell [data-slot="dialog-content"]:not([data-motion-surface]) > *, .tadeon-shell [data-slot="sheet-content"]:not([data-motion-surface]) > *, .tadeon-shell [data-slot="accordion-content"], .tadeon-shell [data-sonner-toaster] [data-sonner-toast], .tadeon-shell [aria-busy="true"]::before, .tadeon-shell :where([data-tadeon-status][data-state="active"], [data-slot="badge"][data-state="active"]), .tadeon-shell :where([data-tadeon-dot][data-state="active"], .tadeon-status-dot[data-state="active"]), .tadeon-shell :where([data-tadeon-progress], .tadeon-progress-bar)::after, .tadeon-shell .tadeon-atmosphere, .tadeon-shell .tadeon-atmosphere-layer, .tadeon-shell [data-tadeon-atmosphere], .tadeon-shell .tadeon-orbit, .tadeon-shell [data-tadeon-orbit], .tadeon-shell .tadeon-grain, .tadeon-shell [data-tadeon-grain] { animation: none !important; }
+  .tadeon-tabletop-studio__header .tadeon-tabletop-symbol, .tadeon-tabletop-studio__header [data-tabletop-symbol], .tadeon-tabletop-studio .tadeon-symbol-mark, .tadeon-shell [data-slot="popover-content"]:not([data-motion-surface]), .tadeon-shell [data-slot="dropdown-menu-content"]:not([data-motion-surface]), .tadeon-shell [data-slot="dropdown-menu-sub-content"]:not([data-motion-surface]), .tadeon-shell [data-slot="tooltip-content"], .tadeon-shell [data-slot="dialog-overlay"]:not([data-motion-surface]), .tadeon-shell [data-slot="sheet-overlay"], .tadeon-shell [data-slot="dialog-content"]:not([data-motion-surface]), .tadeon-shell [data-slot="sheet-content"]:not([data-motion-surface]), .tadeon-shell [data-slot="dialog-content"]:not([data-motion-surface]) > *, .tadeon-shell [data-slot="sheet-content"]:not([data-motion-surface]) > *, .tadeon-shell [data-slot="accordion-content"], .tadeon-shell [data-sonner-toaster] [data-sonner-toast], .tadeon-shell [aria-busy="true"]::before, .tadeon-shell :where([data-tadeon-status][data-state="active"], [data-slot="badge"][data-state="active"]), .tadeon-shell :where([data-tadeon-dot][data-state="active"], .tadeon-status-dot[data-state="active"]), .tadeon-shell :where([data-tadeon-progress], .tadeon-progress-bar)::after, .tadeon-shell .tadeon-atmosphere, .tadeon-shell .tadeon-atmosphere-layer, .tadeon-shell [data-tadeon-atmosphere], .tadeon-shell .tadeon-orbit, .tadeon-shell [data-tadeon-orbit], .tadeon-shell .tadeon-grain, .tadeon-shell [data-tadeon-grain] { animation: none !important; }
   .tadeon-shell [data-slot="tabs-trigger"]:not([data-material-surface="tab"]), .tadeon-shell [data-slot="accordion-trigger"], .tadeon-shell [data-slot="dropdown-menu-item"], .tadeon-shell [data-slot="dropdown-menu-sub-trigger"], .tadeon-shell [data-slot="dropdown-menu-checkbox-item"], .tadeon-shell [data-slot="dropdown-menu-radio-item"] { transition: none !important; }
 }
 
@@ -1411,7 +1411,7 @@
 /* --------------------------------------------------------------------------
    Dialog depth: backdrop, frame, header and actions settle in sequence.
    -------------------------------------------------------------------------- */
-.tadeon-shell [data-slot="dialog-overlay"],
+.tadeon-shell [data-slot="dialog-overlay"]:not([data-motion-surface]),
 .tadeon-shell [data-slot="sheet-overlay"] {
   will-change: opacity, backdrop-filter;
 }

@@ -716,6 +716,12 @@ try {
       await activateSave();
       await page.waitForFunction(() => document.querySelector(".tadeon-tabletop-mobile-save")?.textContent?.includes("Salvo"));
       assert(entityRows.find(e => e.id === id(50)).properties.base_color === 0x123456, "Custom color persisted with jsonb key ordering");
+      const toast = page.locator('[data-sonner-toast]').filter({ visible: true }).first();
+      await toast.waitFor();
+      const toastMaterial = await toast.evaluate(e => ({ color: getComputedStyle(e).color, background: getComputedStyle(e).backgroundColor, zIndex: getComputedStyle(e.closest('[data-sonner-toaster]')).zIndex }));
+      assert(toastMaterial.color === "rgb(233, 227, 213)" && toastMaterial.background !== "rgba(0, 0, 0, 0)" && Number(toastMaterial.zIndex) >= 120, "Toast is legible above the modal planes");
+      operations.push({ kind: "toast-material", ...toastMaterial });
+
       if (width < 640) await page.getByRole("button", { name: "Ferramentas", exact: true }).click();
       await page.locator(".tadeon-tabletop-toolbar").getByRole("button", { name: "Cena", exact: true }).click();
       await page.getByRole("button", { name: "Recarregar cena", exact: true }).click();

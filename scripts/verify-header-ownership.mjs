@@ -177,6 +177,7 @@ try {
       if (process.env.NEXUS_MATERIAL_AUDIT === "1" && width >= 820) {
         const card = page.locator('.tadeon-material-card').filter({ visible: true }).first();
         if (await card.count()) {
+          await card.scrollIntoViewIfNeeded();
           const before = await card.boundingBox();
           await card.hover({ position: { x: 28, y: 20 } });
           await page.waitForTimeout(300);
@@ -305,6 +306,7 @@ try {
         await cdp.detach();
       }
       results.push({ route, width, errors, interactions, ...metrics });
+      console.log(JSON.stringify({ route, width, errors, preferences: metrics.preferences }));
       await context.close();
     }
   writeFileSync(`${root}/${phase}.json`, JSON.stringify(results, null, 2));
