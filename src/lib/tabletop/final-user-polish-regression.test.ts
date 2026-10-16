@@ -7,12 +7,8 @@ function source(path: string) {
 }
 
 describe("acabamento transversal solicitado", () => {
-  it("faz o menu recolhido crescer para a direita sem cortar os ícones", () => {
-    const css = source("src/styles/interface-final-user-polish.css");
-    expect(css).toContain("width:4.15rem !important");
-    expect(css).toContain("justify-content:flex-start !important");
-    expect(css).toContain("padding-left:1.02rem !important");
-  });
+  // NEX-024: collapsed rail geometry is exercised in verify-dashboard-design.mjs.
+
 
   it("normaliza a largura de Backup, Usuários e Consulta offline", () => {
     const css = source("src/styles/interface-final-user-polish.css");

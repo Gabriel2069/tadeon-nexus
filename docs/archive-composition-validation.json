@@ -1,0 +1,2458 @@
+{
+  "task": "NEX-024",
+  "status": "validated",
+  "base": "0a758662b10bbc492474d63ce60db222264f617a",
+  "sourceCommit": "7ce823b22d00db296a1f16dff66529b9ed0ebbeb",
+  "pullRequest": "https://github.com/Gabriel2069/tadeon-nexus/pull/279",
+  "checkedAt": "2026-10-16",
+  "validation": {
+    "localCheck": {
+      "status": "passed",
+      "command": "npm run check",
+      "suites": 142,
+      "tests": 587,
+      "sourceCommit": "7ce823b22d00db296a1f16dff66529b9ed0ebbeb"
+    },
+    "sourceQuality": {
+      "status": "passed",
+      "head": "7ce823b22d00db296a1f16dff66529b9ed0ebbeb",
+      "run": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38948581282"
+    },
+    "audit": {
+      "status": "passed",
+      "command": "npm audit --audit-level=high",
+      "vulnerabilities": 0,
+      "dependencyChanges": false
+    },
+    "dashboard": {
+      "status": "passed",
+      "script": "scripts/verify-dashboard-design.mjs",
+      "fixtureOnly": true,
+      "cases": [
+        {
+          "width": 320,
+          "state": "empty",
+          "overflow": false,
+          "h1": 1,
+          "main": 1,
+          "cards": 0,
+          "facts": [
+            "00",
+            "00",
+            "00"
+          ],
+          "headingFont": "\"Cormorant Garamond\", Georgia, serif",
+          "metricFont": "Inter, system-ui, sans-serif",
+          "metricFigures": "lining-nums tabular-nums",
+          "dock": {
+            "shadow": "rgba(255, 249, 232, 0.24) 0px 1px 0px 0px inset, rgba(255, 255, 255, 0.04) 0px -1px 0px 0px inset, rgba(0, 0, 0, 0.35) 0px 1px 3px 0px, rgba(0, 0, 0, 0.85) 0px 24px 70px -22px",
+            "border": "1px solid rgba(233, 227, 213, 0.18)",
+            "bottomBorder": "1px solid rgba(233, 227, 213, 0.18)",
+            "outline": "rgb(233, 227, 213) none 3px",
+            "filter": "none",
+            "animation": "tadeon-mobile-dock-enter-157"
+          },
+          "navAfter": {
+            "width": "auto",
+            "height": "auto",
+            "inset": "auto",
+            "background": "rgba(0, 0, 0, 0) none repeat scroll 0% 0% / auto padding-box border-box",
+            "zIndex": "auto"
+          },
+          "fontsLoaded": [
+            {
+              "family": "Cormorant Garamond",
+              "loaded": true
+            },
+            {
+              "family": "Inter",
+              "loaded": true
+            },
+            {
+              "family": "PT Mono",
+              "loaded": true
+            }
+          ],
+          "navContrast": {
+            "color": "rgb(233, 227, 213)",
+            "base": "#1c2026"
+          },
+          "heroHeight": 643.140625,
+          "errors": []
+        },
+        {
+          "width": 320,
+          "state": "loading",
+          "overflow": false,
+          "h1": 1,
+          "main": 1,
+          "cards": 0,
+          "facts": [
+            "--",
+            "--",
+            "--"
+          ],
+          "headingFont": "\"Cormorant Garamond\", Georgia, serif",
+          "metricFont": "Inter, system-ui, sans-serif",
+          "metricFigures": "lining-nums tabular-nums",
+          "dock": {
+            "shadow": "rgba(255, 249, 232, 0.24) 0px 1px 0px 0px inset, rgba(255, 255, 255, 0.04) 0px -1px 0px 0px inset, rgba(0, 0, 0, 0.35) 0px 1px 3px 0px, rgba(0, 0, 0, 0.85) 0px 24px 70px -22px",
+            "border": "1px solid rgba(233, 227, 213, 0.18)",
+            "bottomBorder": "1px solid rgba(233, 227, 213, 0.18)",
+            "outline": "rgb(233, 227, 213) none 3px",
+            "filter": "none",
+            "animation": "tadeon-mobile-dock-enter-157"
+          },
+          "navAfter": {
+            "width": "auto",
+            "height": "auto",
+            "inset": "auto",
+            "background": "rgba(0, 0, 0, 0) none repeat scroll 0% 0% / auto padding-box border-box",
+            "zIndex": "auto"
+          },
+          "fontsLoaded": [
+            {
+              "family": "Cormorant Garamond",
+              "loaded": true
+            },
+            {
+              "family": "Inter",
+              "loaded": true
+            },
+            {
+              "family": "PT Mono",
+              "loaded": true
+            }
+          ],
+          "navContrast": {
+            "color": "rgb(233, 227, 213)",
+            "base": "#1c2026"
+          },
+          "heroHeight": 643.140625,
+          "errors": []
+        },
+        {
+          "width": 320,
+          "state": "error",
+          "overflow": false,
+          "h1": 1,
+          "main": 1,
+          "cards": 0,
+          "facts": [
+            "--",
+            "--",
+            "--"
+          ],
+          "headingFont": "\"Cormorant Garamond\", Georgia, serif",
+          "metricFont": "Inter, system-ui, sans-serif",
+          "metricFigures": "lining-nums tabular-nums",
+          "dock": {
+            "shadow": "rgba(255, 249, 232, 0.24) 0px 1px 0px 0px inset, rgba(255, 255, 255, 0.04) 0px -1px 0px 0px inset, rgba(0, 0, 0, 0.35) 0px 1px 3px 0px, rgba(0, 0, 0, 0.85) 0px 24px 70px -22px",
+            "border": "1px solid rgba(233, 227, 213, 0.18)",
+            "bottomBorder": "1px solid rgba(233, 227, 213, 0.18)",
+            "outline": "rgb(233, 227, 213) none 3px",
+            "filter": "none",
+            "animation": "tadeon-mobile-dock-enter-157"
+          },
+          "navAfter": {
+            "width": "auto",
+            "height": "auto",
+            "inset": "auto",
+            "background": "rgba(0, 0, 0, 0) none repeat scroll 0% 0% / auto padding-box border-box",
+            "zIndex": "auto"
+          },
+          "fontsLoaded": [
+            {
+              "family": "Cormorant Garamond",
+              "loaded": true
+            },
+            {
+              "family": "Inter",
+              "loaded": true
+            },
+            {
+              "family": "PT Mono",
+              "loaded": true
+            }
+          ],
+          "navContrast": {
+            "color": "rgb(233, 227, 213)",
+            "base": "#1c2026"
+          },
+          "heroHeight": 643.140625,
+          "errors": []
+        },
+        {
+          "width": 320,
+          "state": "populated",
+          "overflow": false,
+          "h1": 1,
+          "main": 1,
+          "cards": 5,
+          "facts": [
+            "05",
+            "03",
+            "20"
+          ],
+          "headingFont": "\"Cormorant Garamond\", Georgia, serif",
+          "metricFont": "Inter, system-ui, sans-serif",
+          "metricFigures": "lining-nums tabular-nums",
+          "dock": {
+            "shadow": "rgba(255, 249, 232, 0.24) 0px 1px 0px 0px inset, rgba(255, 255, 255, 0.04) 0px -1px 0px 0px inset, rgba(0, 0, 0, 0.35) 0px 1px 3px 0px, rgba(0, 0, 0, 0.85) 0px 24px 70px -22px",
+            "border": "1px solid rgba(233, 227, 213, 0.18)",
+            "bottomBorder": "1px solid rgba(233, 227, 213, 0.18)",
+            "outline": "rgb(233, 227, 213) none 3px",
+            "filter": "none",
+            "animation": "tadeon-mobile-dock-enter-157"
+          },
+          "navAfter": {
+            "width": "auto",
+            "height": "auto",
+            "inset": "auto",
+            "background": "rgba(0, 0, 0, 0) none repeat scroll 0% 0% / auto padding-box border-box",
+            "zIndex": "auto"
+          },
+          "fontsLoaded": [
+            {
+              "family": "Cormorant Garamond",
+              "loaded": true
+            },
+            {
+              "family": "Inter",
+              "loaded": true
+            },
+            {
+              "family": "PT Mono",
+              "loaded": true
+            }
+          ],
+          "navContrast": {
+            "color": "rgb(233, 227, 213)",
+            "base": "#1c2026"
+          },
+          "heroHeight": 643.140625,
+          "archive": {
+            "accentSearch": true,
+            "occupationSearch": true,
+            "ownerSearch": true,
+            "ownership": true,
+            "sort": true,
+            "resetFocus": true,
+            "extraReads": 0
+          },
+          "navigation": {
+            "menuRect": {
+              "x": 16,
+              "y": 645,
+              "width": 288,
+              "height": 267.34375
+            },
+            "targets": [
+              {
+                "w": 265.21875,
+                "h": 52
+              },
+              {
+                "w": 265.21875,
+                "h": 52
+              },
+              {
+                "w": 265.21875,
+                "h": 52
+              },
+              {
+                "w": 44,
+                "h": 44
+              }
+            ],
+            "drawerFocus": true,
+            "moreReturn": true,
+            "accountHandoff": true,
+            "accountReturn": true,
+            "touchOpening": true,
+            "routeMainFocus": true,
+            "desktopTransition": true
+          },
+          "motion": {
+            "moving": "0.24s, 0.18s",
+            "reduced": {
+              "duration": "1e-05s",
+              "transform": "none"
+            }
+          },
+          "errors": []
+        },
+        {
+          "width": 390,
+          "state": "empty",
+          "overflow": false,
+          "h1": 1,
+          "main": 1,
+          "cards": 0,
+          "facts": [
+            "00",
+            "00",
+            "00"
+          ],
+          "headingFont": "\"Cormorant Garamond\", Georgia, serif",
+          "metricFont": "Inter, system-ui, sans-serif",
+          "metricFigures": "lining-nums tabular-nums",
+          "dock": {
+            "shadow": "rgba(255, 249, 232, 0.24) 0px 1px 0px 0px inset, rgba(255, 255, 255, 0.04) 0px -1px 0px 0px inset, rgba(0, 0, 0, 0.35) 0px 1px 3px 0px, rgba(0, 0, 0, 0.85) 0px 24px 70px -22px",
+            "border": "1px solid rgba(233, 227, 213, 0.18)",
+            "bottomBorder": "1px solid rgba(233, 227, 213, 0.18)",
+            "outline": "rgb(233, 227, 213) none 3px",
+            "filter": "none",
+            "animation": "tadeon-mobile-dock-enter-157"
+          },
+          "navAfter": {
+            "width": "auto",
+            "height": "auto",
+            "inset": "auto",
+            "background": "rgba(0, 0, 0, 0) none repeat scroll 0% 0% / auto padding-box border-box",
+            "zIndex": "auto"
+          },
+          "fontsLoaded": [
+            {
+              "family": "Cormorant Garamond",
+              "loaded": true
+            },
+            {
+              "family": "Inter",
+              "loaded": true
+            },
+            {
+              "family": "PT Mono",
+              "loaded": true
+            }
+          ],
+          "navContrast": {
+            "color": "rgb(233, 227, 213)",
+            "base": "#1c2026"
+          },
+          "heroHeight": 603.390625,
+          "errors": []
+        },
+        {
+          "width": 390,
+          "state": "loading",
+          "overflow": false,
+          "h1": 1,
+          "main": 1,
+          "cards": 0,
+          "facts": [
+            "--",
+            "--",
+            "--"
+          ],
+          "headingFont": "\"Cormorant Garamond\", Georgia, serif",
+          "metricFont": "Inter, system-ui, sans-serif",
+          "metricFigures": "lining-nums tabular-nums",
+          "dock": {
+            "shadow": "rgba(255, 249, 232, 0.24) 0px 1px 0px 0px inset, rgba(255, 255, 255, 0.04) 0px -1px 0px 0px inset, rgba(0, 0, 0, 0.35) 0px 1px 3px 0px, rgba(0, 0, 0, 0.85) 0px 24px 70px -22px",
+            "border": "1px solid rgba(233, 227, 213, 0.18)",
+            "bottomBorder": "1px solid rgba(233, 227, 213, 0.18)",
+            "outline": "rgb(233, 227, 213) none 3px",
+            "filter": "none",
+            "animation": "tadeon-mobile-dock-enter-157"
+          },
+          "navAfter": {
+            "width": "auto",
+            "height": "auto",
+            "inset": "auto",
+            "background": "rgba(0, 0, 0, 0) none repeat scroll 0% 0% / auto padding-box border-box",
+            "zIndex": "auto"
+          },
+          "fontsLoaded": [
+            {
+              "family": "Cormorant Garamond",
+              "loaded": true
+            },
+            {
+              "family": "Inter",
+              "loaded": true
+            },
+            {
+              "family": "PT Mono",
+              "loaded": true
+            }
+          ],
+          "navContrast": {
+            "color": "rgb(233, 227, 213)",
+            "base": "#1c2026"
+          },
+          "heroHeight": 603.390625,
+          "errors": []
+        },
+        {
+          "width": 390,
+          "state": "error",
+          "overflow": false,
+          "h1": 1,
+          "main": 1,
+          "cards": 0,
+          "facts": [
+            "--",
+            "--",
+            "--"
+          ],
+          "headingFont": "\"Cormorant Garamond\", Georgia, serif",
+          "metricFont": "Inter, system-ui, sans-serif",
+          "metricFigures": "lining-nums tabular-nums",
+          "dock": {
+            "shadow": "rgba(255, 249, 232, 0.24) 0px 1px 0px 0px inset, rgba(255, 255, 255, 0.04) 0px -1px 0px 0px inset, rgba(0, 0, 0, 0.35) 0px 1px 3px 0px, rgba(0, 0, 0, 0.85) 0px 24px 70px -22px",
+            "border": "1px solid rgba(233, 227, 213, 0.18)",
+            "bottomBorder": "1px solid rgba(233, 227, 213, 0.18)",
+            "outline": "rgb(233, 227, 213) none 3px",
+            "filter": "none",
+            "animation": "tadeon-mobile-dock-enter-157"
+          },
+          "navAfter": {
+            "width": "auto",
+            "height": "auto",
+            "inset": "auto",
+            "background": "rgba(0, 0, 0, 0) none repeat scroll 0% 0% / auto padding-box border-box",
+            "zIndex": "auto"
+          },
+          "fontsLoaded": [
+            {
+              "family": "Cormorant Garamond",
+              "loaded": true
+            },
+            {
+              "family": "Inter",
+              "loaded": true
+            },
+            {
+              "family": "PT Mono",
+              "loaded": true
+            }
+          ],
+          "navContrast": {
+            "color": "rgb(233, 227, 213)",
+            "base": "#1c2026"
+          },
+          "heroHeight": 603.390625,
+          "errors": []
+        },
+        {
+          "width": 390,
+          "state": "populated",
+          "overflow": false,
+          "h1": 1,
+          "main": 1,
+          "cards": 5,
+          "facts": [
+            "05",
+            "03",
+            "20"
+          ],
+          "headingFont": "\"Cormorant Garamond\", Georgia, serif",
+          "metricFont": "Inter, system-ui, sans-serif",
+          "metricFigures": "lining-nums tabular-nums",
+          "dock": {
+            "shadow": "rgba(255, 249, 232, 0.24) 0px 1px 0px 0px inset, rgba(255, 255, 255, 0.04) 0px -1px 0px 0px inset, rgba(0, 0, 0, 0.35) 0px 1px 3px 0px, rgba(0, 0, 0, 0.85) 0px 24px 70px -22px",
+            "border": "1px solid rgba(233, 227, 213, 0.18)",
+            "bottomBorder": "1px solid rgba(233, 227, 213, 0.18)",
+            "outline": "rgb(233, 227, 213) none 3px",
+            "filter": "none",
+            "animation": "tadeon-mobile-dock-enter-157"
+          },
+          "navAfter": {
+            "width": "auto",
+            "height": "auto",
+            "inset": "auto",
+            "background": "rgba(0, 0, 0, 0) none repeat scroll 0% 0% / auto padding-box border-box",
+            "zIndex": "auto"
+          },
+          "fontsLoaded": [
+            {
+              "family": "Cormorant Garamond",
+              "loaded": true
+            },
+            {
+              "family": "Inter",
+              "loaded": true
+            },
+            {
+              "family": "PT Mono",
+              "loaded": true
+            }
+          ],
+          "navContrast": {
+            "color": "rgb(233, 227, 213)",
+            "base": "#1c2026"
+          },
+          "heroHeight": 603.390625,
+          "archive": {
+            "accentSearch": true,
+            "occupationSearch": true,
+            "ownerSearch": true,
+            "ownership": true,
+            "sort": true,
+            "resetFocus": true,
+            "extraReads": 0
+          },
+          "navigation": {
+            "menuRect": {
+              "x": 58,
+              "y": 644,
+              "width": 304,
+              "height": 267.34375
+            },
+            "targets": [
+              {
+                "w": 281.21875,
+                "h": 52
+              },
+              {
+                "w": 281.21875,
+                "h": 52
+              },
+              {
+                "w": 281.21875,
+                "h": 52
+              },
+              {
+                "w": 44,
+                "h": 44
+              }
+            ],
+            "drawerFocus": true,
+            "moreReturn": true,
+            "accountHandoff": true,
+            "accountReturn": true,
+            "touchOpening": true,
+            "routeMainFocus": true,
+            "desktopTransition": true
+          },
+          "motion": {
+            "moving": "0.24s, 0.18s",
+            "reduced": {
+              "duration": "1e-05s",
+              "transform": "none"
+            }
+          },
+          "errors": []
+        },
+        {
+          "width": 820,
+          "state": "empty",
+          "overflow": false,
+          "h1": 1,
+          "main": 1,
+          "cards": 0,
+          "facts": [
+            "00",
+            "00",
+            "00"
+          ],
+          "headingFont": "\"Cormorant Garamond\", Georgia, serif",
+          "metricFont": "Inter, system-ui, sans-serif",
+          "metricFigures": "lining-nums tabular-nums",
+          "dock": {
+            "shadow": "rgba(255, 249, 232, 0.24) 0px 1px 0px 0px inset, rgba(255, 255, 255, 0.04) 0px -1px 0px 0px inset, rgba(0, 0, 0, 0.35) 0px 1px 3px 0px, rgba(0, 0, 0, 0.85) 0px 24px 70px -22px",
+            "border": "0px solid rgba(233, 227, 213, 0.18)",
+            "bottomBorder": "0px solid rgba(233, 227, 213, 0.18)",
+            "outline": "rgb(233, 227, 213) none 3px",
+            "filter": "none",
+            "animation": "none"
+          },
+          "navAfter": {
+            "width": "auto",
+            "height": "auto",
+            "inset": "auto",
+            "background": "rgba(0, 0, 0, 0) none repeat scroll 0% 0% / auto padding-box border-box",
+            "zIndex": "auto"
+          },
+          "fontsLoaded": [
+            {
+              "family": "Cormorant Garamond",
+              "loaded": true
+            },
+            {
+              "family": "Inter",
+              "loaded": true
+            },
+            {
+              "family": "PT Mono",
+              "loaded": true
+            }
+          ],
+          "navContrast": {
+            "color": "rgb(233, 227, 213)",
+            "base": "#1c2026"
+          },
+          "heroHeight": 491.5625,
+          "errors": []
+        },
+        {
+          "width": 820,
+          "state": "loading",
+          "overflow": false,
+          "h1": 1,
+          "main": 1,
+          "cards": 0,
+          "facts": [
+            "--",
+            "--",
+            "--"
+          ],
+          "headingFont": "\"Cormorant Garamond\", Georgia, serif",
+          "metricFont": "Inter, system-ui, sans-serif",
+          "metricFigures": "lining-nums tabular-nums",
+          "dock": {
+            "shadow": "rgba(255, 249, 232, 0.24) 0px 1px 0px 0px inset, rgba(255, 255, 255, 0.04) 0px -1px 0px 0px inset, rgba(0, 0, 0, 0.35) 0px 1px 3px 0px, rgba(0, 0, 0, 0.85) 0px 24px 70px -22px",
+            "border": "0px solid rgba(233, 227, 213, 0.18)",
+            "bottomBorder": "0px solid rgba(233, 227, 213, 0.18)",
+            "outline": "rgb(233, 227, 213) none 3px",
+            "filter": "none",
+            "animation": "none"
+          },
+          "navAfter": {
+            "width": "auto",
+            "height": "auto",
+            "inset": "auto",
+            "background": "rgba(0, 0, 0, 0) none repeat scroll 0% 0% / auto padding-box border-box",
+            "zIndex": "auto"
+          },
+          "fontsLoaded": [
+            {
+              "family": "Cormorant Garamond",
+              "loaded": true
+            },
+            {
+              "family": "Inter",
+              "loaded": true
+            },
+            {
+              "family": "PT Mono",
+              "loaded": true
+            }
+          ],
+          "navContrast": {
+            "color": "rgb(233, 227, 213)",
+            "base": "#1c2026"
+          },
+          "heroHeight": 491.5625,
+          "errors": []
+        },
+        {
+          "width": 820,
+          "state": "error",
+          "overflow": false,
+          "h1": 1,
+          "main": 1,
+          "cards": 0,
+          "facts": [
+            "--",
+            "--",
+            "--"
+          ],
+          "headingFont": "\"Cormorant Garamond\", Georgia, serif",
+          "metricFont": "Inter, system-ui, sans-serif",
+          "metricFigures": "lining-nums tabular-nums",
+          "dock": {
+            "shadow": "rgba(255, 249, 232, 0.24) 0px 1px 0px 0px inset, rgba(255, 255, 255, 0.04) 0px -1px 0px 0px inset, rgba(0, 0, 0, 0.35) 0px 1px 3px 0px, rgba(0, 0, 0, 0.85) 0px 24px 70px -22px",
+            "border": "0px solid rgba(233, 227, 213, 0.18)",
+            "bottomBorder": "0px solid rgba(233, 227, 213, 0.18)",
+            "outline": "rgb(233, 227, 213) none 3px",
+            "filter": "none",
+            "animation": "none"
+          },
+          "navAfter": {
+            "width": "auto",
+            "height": "auto",
+            "inset": "auto",
+            "background": "rgba(0, 0, 0, 0) none repeat scroll 0% 0% / auto padding-box border-box",
+            "zIndex": "auto"
+          },
+          "fontsLoaded": [
+            {
+              "family": "Cormorant Garamond",
+              "loaded": true
+            },
+            {
+              "family": "Inter",
+              "loaded": true
+            },
+            {
+              "family": "PT Mono",
+              "loaded": true
+            }
+          ],
+          "navContrast": {
+            "color": "rgb(233, 227, 213)",
+            "base": "#1c2026"
+          },
+          "heroHeight": 491.5625,
+          "errors": []
+        },
+        {
+          "width": 820,
+          "state": "populated",
+          "overflow": false,
+          "h1": 1,
+          "main": 1,
+          "cards": 5,
+          "facts": [
+            "05",
+            "03",
+            "20"
+          ],
+          "headingFont": "\"Cormorant Garamond\", Georgia, serif",
+          "metricFont": "Inter, system-ui, sans-serif",
+          "metricFigures": "lining-nums tabular-nums",
+          "dock": {
+            "shadow": "rgba(255, 249, 232, 0.24) 0px 1px 0px 0px inset, rgba(255, 255, 255, 0.04) 0px -1px 0px 0px inset, rgba(0, 0, 0, 0.35) 0px 1px 3px 0px, rgba(0, 0, 0, 0.85) 0px 24px 70px -22px",
+            "border": "0px solid rgba(233, 227, 213, 0.18)",
+            "bottomBorder": "0px solid rgba(233, 227, 213, 0.18)",
+            "outline": "rgb(233, 227, 213) none 3px",
+            "filter": "none",
+            "animation": "none"
+          },
+          "navAfter": {
+            "width": "auto",
+            "height": "auto",
+            "inset": "auto",
+            "background": "rgba(0, 0, 0, 0) none repeat scroll 0% 0% / auto padding-box border-box",
+            "zIndex": "auto"
+          },
+          "fontsLoaded": [
+            {
+              "family": "Cormorant Garamond",
+              "loaded": true
+            },
+            {
+              "family": "Inter",
+              "loaded": true
+            },
+            {
+              "family": "PT Mono",
+              "loaded": true
+            }
+          ],
+          "navContrast": {
+            "color": "rgb(233, 227, 213)",
+            "base": "#1c2026"
+          },
+          "heroHeight": 491.5625,
+          "archive": {
+            "accentSearch": true,
+            "occupationSearch": true,
+            "ownerSearch": true,
+            "ownership": true,
+            "sort": true,
+            "resetFocus": true,
+            "extraReads": 0
+          },
+          "navigationLabels": [
+            {
+              "text": "Dashboard",
+              "clipped": false,
+              "ellipsis": "clip"
+            },
+            {
+              "text": "O Nexus",
+              "clipped": false,
+              "ellipsis": "clip"
+            },
+            {
+              "text": "Mesa Nexus",
+              "clipped": false,
+              "ellipsis": "clip"
+            },
+            {
+              "text": "Consulta offline",
+              "clipped": false,
+              "ellipsis": "clip"
+            },
+            {
+              "text": "Painel do Mestre",
+              "clipped": false,
+              "ellipsis": "clip"
+            },
+            {
+              "text": "Usuários",
+              "clipped": false,
+              "ellipsis": "clip"
+            },
+            {
+              "text": "Backup e diagnóstico",
+              "clipped": false,
+              "ellipsis": "clip"
+            }
+          ],
+          "rail": {
+            "width": 80,
+            "items": [
+              {
+                "w": 44,
+                "h": 45.1875,
+                "computedWidth": "44px",
+                "transform": "none",
+                "scale": "none",
+                "iconOpacity": "1",
+                "iconWidth": 30.8125,
+                "iconComputedWidth": "30.8125px",
+                "centerDelta": 0
+              },
+              {
+                "w": 44,
+                "h": 45.1875,
+                "computedWidth": "44px",
+                "transform": "none",
+                "scale": "none",
+                "iconOpacity": "1",
+                "iconWidth": 30.8125,
+                "iconComputedWidth": "30.8125px",
+                "centerDelta": 0
+              },
+              {
+                "w": 44,
+                "h": 45.1875,
+                "computedWidth": "44px",
+                "transform": "none",
+                "scale": "none",
+                "iconOpacity": "1",
+                "iconWidth": 30.8125,
+                "iconComputedWidth": "30.8125px",
+                "centerDelta": 0
+              },
+              {
+                "w": 44,
+                "h": 45.1875,
+                "computedWidth": "44px",
+                "transform": "none",
+                "scale": "none",
+                "iconOpacity": "1",
+                "iconWidth": 30.8125,
+                "iconComputedWidth": "30.8125px",
+                "centerDelta": 0
+              },
+              {
+                "w": 44,
+                "h": 45.1875,
+                "computedWidth": "44px",
+                "transform": "none",
+                "scale": "none",
+                "iconOpacity": "1",
+                "iconWidth": 30.8125,
+                "iconComputedWidth": "30.8125px",
+                "centerDelta": 0
+              },
+              {
+                "w": 44,
+                "h": 45.1875,
+                "computedWidth": "44px",
+                "transform": "none",
+                "scale": "none",
+                "iconOpacity": "1",
+                "iconWidth": 30.8125,
+                "iconComputedWidth": "30.8125px",
+                "centerDelta": 0
+              },
+              {
+                "w": 44,
+                "h": 45.1875,
+                "computedWidth": "44px",
+                "transform": "none",
+                "scale": "none",
+                "iconOpacity": "1",
+                "iconWidth": 30.8125,
+                "iconComputedWidth": "30.8125px",
+                "centerDelta": 0
+              }
+            ]
+          },
+          "motion": {
+            "moving": "0.24s, 0.18s",
+            "reduced": {
+              "duration": "1e-05s",
+              "transform": "none"
+            }
+          },
+          "errors": []
+        },
+        {
+          "width": 1440,
+          "state": "empty",
+          "overflow": false,
+          "h1": 1,
+          "main": 1,
+          "cards": 0,
+          "facts": [
+            "00",
+            "00",
+            "00"
+          ],
+          "headingFont": "\"Cormorant Garamond\", Georgia, serif",
+          "metricFont": "Inter, system-ui, sans-serif",
+          "metricFigures": "lining-nums tabular-nums",
+          "dock": {
+            "shadow": "rgba(255, 249, 232, 0.24) 0px 1px 0px 0px inset, rgba(255, 255, 255, 0.04) 0px -1px 0px 0px inset, rgba(0, 0, 0, 0.35) 0px 1px 3px 0px, rgba(0, 0, 0, 0.85) 0px 24px 70px -22px",
+            "border": "0px solid rgba(233, 227, 213, 0.18)",
+            "bottomBorder": "0px solid rgba(233, 227, 213, 0.18)",
+            "outline": "rgb(233, 227, 213) none 3px",
+            "filter": "none",
+            "animation": "none"
+          },
+          "navAfter": {
+            "width": "auto",
+            "height": "auto",
+            "inset": "auto",
+            "background": "rgba(0, 0, 0, 0) none repeat scroll 0% 0% / auto padding-box border-box",
+            "zIndex": "auto"
+          },
+          "fontsLoaded": [
+            {
+              "family": "Cormorant Garamond",
+              "loaded": true
+            },
+            {
+              "family": "Inter",
+              "loaded": true
+            },
+            {
+              "family": "PT Mono",
+              "loaded": true
+            }
+          ],
+          "navContrast": {
+            "color": "rgb(233, 227, 213)",
+            "base": "#1c2026"
+          },
+          "heroHeight": 499.96875,
+          "errors": []
+        },
+        {
+          "width": 1440,
+          "state": "loading",
+          "overflow": false,
+          "h1": 1,
+          "main": 1,
+          "cards": 0,
+          "facts": [
+            "--",
+            "--",
+            "--"
+          ],
+          "headingFont": "\"Cormorant Garamond\", Georgia, serif",
+          "metricFont": "Inter, system-ui, sans-serif",
+          "metricFigures": "lining-nums tabular-nums",
+          "dock": {
+            "shadow": "rgba(255, 249, 232, 0.24) 0px 1px 0px 0px inset, rgba(255, 255, 255, 0.04) 0px -1px 0px 0px inset, rgba(0, 0, 0, 0.35) 0px 1px 3px 0px, rgba(0, 0, 0, 0.85) 0px 24px 70px -22px",
+            "border": "0px solid rgba(233, 227, 213, 0.18)",
+            "bottomBorder": "0px solid rgba(233, 227, 213, 0.18)",
+            "outline": "rgb(233, 227, 213) none 3px",
+            "filter": "none",
+            "animation": "none"
+          },
+          "navAfter": {
+            "width": "auto",
+            "height": "auto",
+            "inset": "auto",
+            "background": "rgba(0, 0, 0, 0) none repeat scroll 0% 0% / auto padding-box border-box",
+            "zIndex": "auto"
+          },
+          "fontsLoaded": [
+            {
+              "family": "Cormorant Garamond",
+              "loaded": true
+            },
+            {
+              "family": "Inter",
+              "loaded": true
+            },
+            {
+              "family": "PT Mono",
+              "loaded": true
+            }
+          ],
+          "navContrast": {
+            "color": "rgb(233, 227, 213)",
+            "base": "#1c2026"
+          },
+          "heroHeight": 499.96875,
+          "errors": []
+        },
+        {
+          "width": 1440,
+          "state": "error",
+          "overflow": false,
+          "h1": 1,
+          "main": 1,
+          "cards": 0,
+          "facts": [
+            "--",
+            "--",
+            "--"
+          ],
+          "headingFont": "\"Cormorant Garamond\", Georgia, serif",
+          "metricFont": "Inter, system-ui, sans-serif",
+          "metricFigures": "lining-nums tabular-nums",
+          "dock": {
+            "shadow": "rgba(255, 249, 232, 0.24) 0px 1px 0px 0px inset, rgba(255, 255, 255, 0.04) 0px -1px 0px 0px inset, rgba(0, 0, 0, 0.35) 0px 1px 3px 0px, rgba(0, 0, 0, 0.85) 0px 24px 70px -22px",
+            "border": "0px solid rgba(233, 227, 213, 0.18)",
+            "bottomBorder": "0px solid rgba(233, 227, 213, 0.18)",
+            "outline": "rgb(233, 227, 213) none 3px",
+            "filter": "none",
+            "animation": "none"
+          },
+          "navAfter": {
+            "width": "auto",
+            "height": "auto",
+            "inset": "auto",
+            "background": "rgba(0, 0, 0, 0) none repeat scroll 0% 0% / auto padding-box border-box",
+            "zIndex": "auto"
+          },
+          "fontsLoaded": [
+            {
+              "family": "Cormorant Garamond",
+              "loaded": true
+            },
+            {
+              "family": "Inter",
+              "loaded": true
+            },
+            {
+              "family": "PT Mono",
+              "loaded": true
+            }
+          ],
+          "navContrast": {
+            "color": "rgb(233, 227, 213)",
+            "base": "#1c2026"
+          },
+          "heroHeight": 499.96875,
+          "errors": []
+        },
+        {
+          "width": 1440,
+          "state": "populated",
+          "overflow": false,
+          "h1": 1,
+          "main": 1,
+          "cards": 5,
+          "facts": [
+            "05",
+            "03",
+            "20"
+          ],
+          "headingFont": "\"Cormorant Garamond\", Georgia, serif",
+          "metricFont": "Inter, system-ui, sans-serif",
+          "metricFigures": "lining-nums tabular-nums",
+          "dock": {
+            "shadow": "rgba(255, 249, 232, 0.24) 0px 1px 0px 0px inset, rgba(255, 255, 255, 0.04) 0px -1px 0px 0px inset, rgba(0, 0, 0, 0.35) 0px 1px 3px 0px, rgba(0, 0, 0, 0.85) 0px 24px 70px -22px",
+            "border": "0px solid rgba(233, 227, 213, 0.18)",
+            "bottomBorder": "0px solid rgba(233, 227, 213, 0.18)",
+            "outline": "rgb(233, 227, 213) none 3px",
+            "filter": "none",
+            "animation": "none"
+          },
+          "navAfter": {
+            "width": "auto",
+            "height": "auto",
+            "inset": "auto",
+            "background": "rgba(0, 0, 0, 0) none repeat scroll 0% 0% / auto padding-box border-box",
+            "zIndex": "auto"
+          },
+          "fontsLoaded": [
+            {
+              "family": "Cormorant Garamond",
+              "loaded": true
+            },
+            {
+              "family": "Inter",
+              "loaded": true
+            },
+            {
+              "family": "PT Mono",
+              "loaded": true
+            }
+          ],
+          "navContrast": {
+            "color": "rgb(233, 227, 213)",
+            "base": "#1c2026"
+          },
+          "heroHeight": 499.96875,
+          "archive": {
+            "accentSearch": true,
+            "occupationSearch": true,
+            "ownerSearch": true,
+            "ownership": true,
+            "sort": true,
+            "resetFocus": true,
+            "extraReads": 0
+          },
+          "navigationLabels": [
+            {
+              "text": "Dashboard",
+              "clipped": false,
+              "ellipsis": "clip"
+            },
+            {
+              "text": "O Nexus",
+              "clipped": false,
+              "ellipsis": "clip"
+            },
+            {
+              "text": "Mesa Nexus",
+              "clipped": false,
+              "ellipsis": "clip"
+            },
+            {
+              "text": "Consulta offline",
+              "clipped": false,
+              "ellipsis": "clip"
+            },
+            {
+              "text": "Painel do Mestre",
+              "clipped": false,
+              "ellipsis": "clip"
+            },
+            {
+              "text": "Usuários",
+              "clipped": false,
+              "ellipsis": "clip"
+            },
+            {
+              "text": "Backup e diagnóstico",
+              "clipped": false,
+              "ellipsis": "clip"
+            }
+          ],
+          "rail": {
+            "width": 80,
+            "items": [
+              {
+                "w": 44,
+                "h": 45.1875,
+                "computedWidth": "44px",
+                "transform": "none",
+                "scale": "none",
+                "iconOpacity": "1",
+                "iconWidth": 30.8125,
+                "iconComputedWidth": "30.8125px",
+                "centerDelta": 0
+              },
+              {
+                "w": 44,
+                "h": 45.1875,
+                "computedWidth": "44px",
+                "transform": "none",
+                "scale": "none",
+                "iconOpacity": "1",
+                "iconWidth": 30.8125,
+                "iconComputedWidth": "30.8125px",
+                "centerDelta": 0
+              },
+              {
+                "w": 44,
+                "h": 45.1875,
+                "computedWidth": "44px",
+                "transform": "none",
+                "scale": "none",
+                "iconOpacity": "1",
+                "iconWidth": 30.8125,
+                "iconComputedWidth": "30.8125px",
+                "centerDelta": 0
+              },
+              {
+                "w": 44,
+                "h": 45.1875,
+                "computedWidth": "44px",
+                "transform": "none",
+                "scale": "none",
+                "iconOpacity": "1",
+                "iconWidth": 30.8125,
+                "iconComputedWidth": "30.8125px",
+                "centerDelta": 0
+              },
+              {
+                "w": 44,
+                "h": 45.1875,
+                "computedWidth": "44px",
+                "transform": "none",
+                "scale": "none",
+                "iconOpacity": "1",
+                "iconWidth": 30.8125,
+                "iconComputedWidth": "30.8125px",
+                "centerDelta": 0
+              },
+              {
+                "w": 44,
+                "h": 45.1875,
+                "computedWidth": "44px",
+                "transform": "none",
+                "scale": "none",
+                "iconOpacity": "1",
+                "iconWidth": 30.8125,
+                "iconComputedWidth": "30.8125px",
+                "centerDelta": 0
+              },
+              {
+                "w": 44,
+                "h": 45.1875,
+                "computedWidth": "44px",
+                "transform": "none",
+                "scale": "none",
+                "iconOpacity": "1",
+                "iconWidth": 30.8125,
+                "iconComputedWidth": "30.8125px",
+                "centerDelta": 0
+              }
+            ]
+          },
+          "material": {
+            "light": {
+              "x": "29.7%",
+              "opacity": "1",
+              "hover": true,
+              "fine": true
+            },
+            "stableText": true,
+            "nav": {
+              "before": "none",
+              "background": "linear-gradient(125deg, rgba(233, 227, 213, 0.09), rgba(0, 0, 0, 0) 80%), none"
+            }
+          },
+          "motion": {
+            "moving": "0.24s, 0.18s",
+            "reduced": {
+              "duration": "1e-05s",
+              "transform": "none"
+            }
+          },
+          "errors": []
+        }
+      ],
+      "errors": 0,
+      "overflow": 0,
+      "scope": "16 estados vazio/carregando/erro/povoado, 320/390/820/1440px. Foco de criação aguarda o desmontar real do diálogo. Descoberta e ordenação não fazem leituras extras.",
+      "heroGeometry": [
+        {
+          "width": 320,
+          "before": 835.15625,
+          "after": 643.140625,
+          "reductionPercent": 22.99
+        },
+        {
+          "width": 390,
+          "before": 810.40625,
+          "after": 603.390625,
+          "reductionPercent": 25.54
+        },
+        {
+          "width": 820,
+          "before": 534.828125,
+          "after": 491.5625,
+          "reductionPercent": 8.09
+        },
+        {
+          "width": 1440,
+          "before": 606.390625,
+          "after": 499.96875,
+          "reductionPercent": 17.55
+        }
+      ],
+      "geometryLimit": "Mede altura do mesmo hero nas fixtures e fontes carregadas; não é métrica de desempenho."
+    },
+    "sharedRoutes": {
+      "status": "passed",
+      "sourceCommit": "7ce823b22d00db296a1f16dff66529b9ed0ebbeb",
+      "script": "scripts/verify-header-ownership.mjs",
+      "configuration": {
+        "NEXUS_MATERIAL_AUDIT": "1",
+        "NEXUS_SKIP_SCREENSHOTS": "1"
+      },
+      "fixtureOnly": true,
+      "surfaces": 28,
+      "errors": 0,
+      "overflow": 0,
+      "portals": 8,
+      "keyboardViewportSimulations": 3,
+      "preferenceCases": 4,
+      "cases": [
+        {
+          "route": "/",
+          "width": 320,
+          "errors": [],
+          "interactions": [],
+          "overflow": false,
+          "mainCount": 1,
+          "titleColor": "rgb(233, 227, 213)",
+          "activeNavigation": [
+            {
+              "label": "Início",
+              "color": "rgb(233, 227, 213)"
+            }
+          ]
+        },
+        {
+          "route": "/nexus",
+          "width": 320,
+          "errors": [],
+          "interactions": [],
+          "overflow": false,
+          "mainCount": 1,
+          "titleColor": "rgb(233, 227, 213)",
+          "activeNavigation": [
+            {
+              "label": "Nexus",
+              "color": "rgb(233, 227, 213)"
+            }
+          ]
+        },
+        {
+          "route": "/master-panel",
+          "width": 320,
+          "errors": [],
+          "interactions": [],
+          "overflow": false,
+          "mainCount": 1,
+          "titleColor": "rgb(233, 227, 213)",
+          "activeNavigation": [
+            {
+              "label": "Mestre",
+              "color": "rgb(233, 227, 213)"
+            }
+          ]
+        },
+        {
+          "route": "/offline",
+          "width": 320,
+          "errors": [],
+          "interactions": [
+            {
+              "label": "Abrir busca global",
+              "rect": {
+                "x": 12.796875,
+                "y": 196,
+                "width": 294.390625,
+                "height": 607.984375
+              },
+              "contained": true,
+              "focusInside": true,
+              "tabInside": true,
+              "returned": true,
+              "keyboardFixture": {
+                "keyboardRect": {
+                  "x": 12.796875,
+                  "y": 8,
+                  "width": 294.390625,
+                  "height": 589.390625
+                },
+                "contract": {
+                  "open": "true",
+                  "rootHeight": "600px",
+                  "searchHeight": "600px"
+                },
+                "contained": true
+              },
+              "material": {
+                "animation": "tadeon-popup-contained-in",
+                "duration": "0.21s",
+                "scale": "none",
+                "origin": "147.195px 303.984px",
+                "shadow": "rgba(255, 249, 232, 0.24) 0px 1px 0px 0px inset, rgba(255, 255, 255, 0.04) 0px -1px 0px 0px inset, rgba(0, 0, 0, 0.35) 0px 1px 3px 0px, rgba(0, 0, 0, 0.85) 0px 24px 70px -22px",
+                "radius": "16px 5.6px",
+                "tone": "176 166 190"
+              }
+            },
+            {
+              "label": "Conta",
+              "rect": {
+                "x": 10.40625,
+                "y": 14.296875,
+                "width": 299.1875,
+                "height": 971.390625
+              },
+              "contained": true,
+              "focusInside": true,
+              "tabInside": true,
+              "returned": true,
+              "keyboardFixture": null,
+              "material": {
+                "animation": "tadeon-popup-contained-in",
+                "duration": "0.21s",
+                "scale": "none",
+                "origin": "149.594px 485.695px",
+                "shadow": "rgba(255, 249, 232, 0.24) 0px 1px 0px 0px inset, rgba(255, 255, 255, 0.04) 0px -1px 0px 0px inset, rgba(0, 0, 0, 0.35) 0px 1px 3px 0px, rgba(0, 0, 0, 0.85) 0px 24px 70px -22px",
+                "radius": "21.6px",
+                "tone": "176 166 190"
+              }
+            }
+          ],
+          "overflow": false,
+          "mainCount": 1,
+          "titleColor": "rgb(233, 227, 213)",
+          "activeNavigation": [],
+          "preferences": {
+            "motion": true,
+            "transparency": true,
+            "contrast": true,
+            "filter": "none",
+            "popup": {
+              "animation": "none",
+              "border": "rgb(122, 129, 135)"
+            }
+          }
+        },
+        {
+          "route": "/nexus-tools",
+          "width": 320,
+          "errors": [],
+          "interactions": [],
+          "overflow": false,
+          "mainCount": 1,
+          "titleColor": "rgb(233, 227, 213)",
+          "activeNavigation": []
+        },
+        {
+          "route": "/manage-users",
+          "width": 320,
+          "errors": [],
+          "interactions": [],
+          "overflow": false,
+          "mainCount": 1,
+          "titleColor": "rgb(233, 227, 213)",
+          "activeNavigation": []
+        },
+        {
+          "route": "/tabletop",
+          "width": 320,
+          "errors": [],
+          "interactions": [],
+          "overflow": false,
+          "mainCount": 1,
+          "titleColor": "rgb(233, 227, 213)",
+          "activeNavigation": []
+        },
+        {
+          "route": "/",
+          "width": 390,
+          "errors": [],
+          "interactions": [],
+          "overflow": false,
+          "mainCount": 1,
+          "titleColor": "rgb(233, 227, 213)",
+          "activeNavigation": [
+            {
+              "label": "Início",
+              "color": "rgb(233, 227, 213)"
+            }
+          ]
+        },
+        {
+          "route": "/nexus",
+          "width": 390,
+          "errors": [],
+          "interactions": [],
+          "overflow": false,
+          "mainCount": 1,
+          "titleColor": "rgb(233, 227, 213)",
+          "activeNavigation": [
+            {
+              "label": "Nexus",
+              "color": "rgb(233, 227, 213)"
+            }
+          ]
+        },
+        {
+          "route": "/master-panel",
+          "width": 390,
+          "errors": [],
+          "interactions": [],
+          "overflow": false,
+          "mainCount": 1,
+          "titleColor": "rgb(233, 227, 213)",
+          "activeNavigation": [
+            {
+              "label": "Mestre",
+              "color": "rgb(233, 227, 213)"
+            }
+          ]
+        },
+        {
+          "route": "/offline",
+          "width": 390,
+          "errors": [],
+          "interactions": [
+            {
+              "label": "Abrir busca global",
+              "rect": {
+                "x": 11.09375,
+                "y": 207.796875,
+                "width": 358.796875,
+                "height": 584.390625
+              },
+              "contained": true,
+              "focusInside": true,
+              "tabInside": true,
+              "returned": true,
+              "keyboardFixture": {
+                "keyboardRect": {
+                  "x": 11.09375,
+                  "y": 8,
+                  "width": 358.796875,
+                  "height": 586.953125
+                },
+                "contract": {
+                  "open": "true",
+                  "rootHeight": "600px",
+                  "searchHeight": "600px"
+                },
+                "contained": true
+              },
+              "material": {
+                "animation": "tadeon-popup-contained-in",
+                "duration": "0.21s",
+                "scale": "none",
+                "origin": "179.398px 292.195px",
+                "shadow": "rgba(255, 249, 232, 0.24) 0px 1px 0px 0px inset, rgba(255, 255, 255, 0.04) 0px -1px 0px 0px inset, rgba(0, 0, 0, 0.35) 0px 1px 3px 0px, rgba(0, 0, 0, 0.85) 0px 24px 70px -22px",
+                "radius": "16px 5.6px",
+                "tone": "176 166 190"
+              }
+            },
+            {
+              "label": "Conta",
+              "rect": {
+                "x": 8,
+                "y": 22.296875,
+                "width": 365,
+                "height": 955.390625
+              },
+              "contained": true,
+              "focusInside": true,
+              "tabInside": true,
+              "returned": true,
+              "keyboardFixture": null,
+              "material": {
+                "animation": "tadeon-popup-contained-in",
+                "duration": "0.21s",
+                "scale": "none",
+                "origin": "182.5px 477.695px",
+                "shadow": "rgba(255, 249, 232, 0.24) 0px 1px 0px 0px inset, rgba(255, 255, 255, 0.04) 0px -1px 0px 0px inset, rgba(0, 0, 0, 0.35) 0px 1px 3px 0px, rgba(0, 0, 0, 0.85) 0px 24px 70px -22px",
+                "radius": "21.6px",
+                "tone": "176 166 190"
+              }
+            }
+          ],
+          "overflow": false,
+          "mainCount": 1,
+          "titleColor": "rgb(233, 227, 213)",
+          "activeNavigation": [],
+          "preferences": {
+            "motion": true,
+            "transparency": true,
+            "contrast": true,
+            "filter": "none",
+            "popup": {
+              "animation": "none",
+              "border": "rgb(122, 129, 135)"
+            }
+          }
+        },
+        {
+          "route": "/nexus-tools",
+          "width": 390,
+          "errors": [],
+          "interactions": [],
+          "overflow": false,
+          "mainCount": 1,
+          "titleColor": "rgb(233, 227, 213)",
+          "activeNavigation": []
+        },
+        {
+          "route": "/manage-users",
+          "width": 390,
+          "errors": [],
+          "interactions": [],
+          "overflow": false,
+          "mainCount": 1,
+          "titleColor": "rgb(233, 227, 213)",
+          "activeNavigation": []
+        },
+        {
+          "route": "/tabletop",
+          "width": 390,
+          "errors": [],
+          "interactions": [],
+          "overflow": false,
+          "mainCount": 1,
+          "titleColor": "rgb(233, 227, 213)",
+          "activeNavigation": []
+        },
+        {
+          "route": "/",
+          "width": 820,
+          "errors": [],
+          "interactions": [],
+          "overflow": false,
+          "mainCount": 1,
+          "titleColor": "rgb(233, 227, 213)",
+          "activeNavigation": [
+            {
+              "label": "Dashboard",
+              "color": "rgb(233, 227, 213)"
+            }
+          ]
+        },
+        {
+          "route": "/nexus",
+          "width": 820,
+          "errors": [],
+          "interactions": [],
+          "overflow": false,
+          "mainCount": 1,
+          "titleColor": "rgb(233, 227, 213)",
+          "activeNavigation": [
+            {
+              "label": "O Nexus",
+              "color": "rgb(233, 227, 213)"
+            }
+          ],
+          "cardResponse": {
+            "lightX": "5.7%",
+            "transform": "none"
+          }
+        },
+        {
+          "route": "/master-panel",
+          "width": 820,
+          "errors": [],
+          "interactions": [],
+          "overflow": false,
+          "mainCount": 1,
+          "titleColor": "rgb(233, 227, 213)",
+          "activeNavigation": [
+            {
+              "label": "Painel do Mestre",
+              "color": "rgb(233, 227, 213)"
+            }
+          ],
+          "cardResponse": {
+            "lightX": "5.9%",
+            "transform": "none"
+          }
+        },
+        {
+          "route": "/offline",
+          "width": 820,
+          "errors": [],
+          "interactions": [
+            {
+              "label": "Abrir busca global",
+              "rect": {
+                "x": 264,
+                "y": 12,
+                "width": 539,
+                "height": 576
+              },
+              "contained": true,
+              "focusInside": true,
+              "tabInside": true,
+              "returned": true,
+              "keyboardFixture": {
+                "keyboardRect": {
+                  "x": 264,
+                  "y": 12,
+                  "width": 539,
+                  "height": 576
+                },
+                "contract": {
+                  "open": "true",
+                  "rootHeight": "600px",
+                  "searchHeight": "600px"
+                },
+                "contained": true
+              },
+              "material": {
+                "animation": "tadeon-popup-contained-in",
+                "duration": "0.26s",
+                "scale": "none",
+                "origin": "269.5px 288px",
+                "shadow": "rgba(255, 249, 232, 0.24) 0px 1px 0px 0px inset, rgba(255, 255, 255, 0.04) 0px -1px 0px 0px inset, rgba(0, 0, 0, 0.35) 0px 1px 3px 0px, rgba(0, 0, 0, 0.85) 0px 24px 70px -22px",
+                "radius": "21.6px",
+                "tone": "176 166 190"
+              }
+            },
+            {
+              "label": "Abrir configurações da conta",
+              "rect": {
+                "x": 272,
+                "y": 72.5,
+                "width": 523,
+                "height": 855
+              },
+              "contained": true,
+              "focusInside": true,
+              "tabInside": true,
+              "returned": true,
+              "keyboardFixture": null,
+              "material": {
+                "animation": "tadeon-popup-contained-in",
+                "duration": "0.26s",
+                "scale": "none",
+                "origin": "261.5px 427.5px",
+                "shadow": "rgba(255, 249, 232, 0.24) 0px 1px 0px 0px inset, rgba(255, 255, 255, 0.04) 0px -1px 0px 0px inset, rgba(0, 0, 0, 0.35) 0px 1px 3px 0px, rgba(0, 0, 0, 0.85) 0px 24px 70px -22px",
+                "radius": "21.6px",
+                "tone": "176 166 190"
+              }
+            }
+          ],
+          "overflow": false,
+          "mainCount": 1,
+          "titleColor": "rgb(233, 227, 213)",
+          "activeNavigation": [
+            {
+              "label": "Consulta offline",
+              "color": "rgb(233, 227, 213)"
+            }
+          ],
+          "cardResponse": {
+            "lightX": "5.7%",
+            "transform": "none"
+          },
+          "preferences": {
+            "motion": true,
+            "transparency": true,
+            "contrast": true,
+            "filter": "none",
+            "popup": {
+              "animation": "none",
+              "border": "rgb(122, 129, 135)"
+            }
+          }
+        },
+        {
+          "route": "/nexus-tools",
+          "width": 820,
+          "errors": [],
+          "interactions": [],
+          "overflow": false,
+          "mainCount": 1,
+          "titleColor": "rgb(233, 227, 213)",
+          "activeNavigation": [
+            {
+              "label": "Backup e diagnóstico",
+              "color": "rgb(233, 227, 213)"
+            }
+          ],
+          "cardResponse": {
+            "lightX": "5.7%",
+            "transform": "none"
+          }
+        },
+        {
+          "route": "/manage-users",
+          "width": 820,
+          "errors": [],
+          "interactions": [],
+          "overflow": false,
+          "mainCount": 1,
+          "titleColor": "rgb(233, 227, 213)",
+          "activeNavigation": [
+            {
+              "label": "Usuários",
+              "color": "rgb(233, 227, 213)"
+            }
+          ],
+          "cardResponse": {
+            "lightX": "5.7%",
+            "transform": "none"
+          }
+        },
+        {
+          "route": "/tabletop",
+          "width": 820,
+          "errors": [],
+          "interactions": [],
+          "overflow": false,
+          "mainCount": 1,
+          "titleColor": "rgb(233, 227, 213)",
+          "activeNavigation": [
+            {
+              "label": "Mesa Nexus",
+              "color": "rgb(233, 227, 213)"
+            }
+          ]
+        },
+        {
+          "route": "/",
+          "width": 1440,
+          "errors": [],
+          "interactions": [],
+          "overflow": false,
+          "mainCount": 1,
+          "titleColor": "rgb(233, 227, 213)",
+          "activeNavigation": [
+            {
+              "label": "Dashboard",
+              "color": "rgb(233, 227, 213)"
+            }
+          ]
+        },
+        {
+          "route": "/nexus",
+          "width": 1440,
+          "errors": [],
+          "interactions": [],
+          "overflow": false,
+          "mainCount": 1,
+          "titleColor": "rgb(233, 227, 213)",
+          "activeNavigation": [
+            {
+              "label": "O Nexus",
+              "color": "rgb(233, 227, 213)"
+            }
+          ],
+          "cardResponse": {
+            "lightX": "2.7%",
+            "transform": "none"
+          }
+        },
+        {
+          "route": "/master-panel",
+          "width": 1440,
+          "errors": [],
+          "interactions": [],
+          "overflow": false,
+          "mainCount": 1,
+          "titleColor": "rgb(233, 227, 213)",
+          "activeNavigation": [
+            {
+              "label": "Painel do Mestre",
+              "color": "rgb(233, 227, 213)"
+            }
+          ],
+          "cardResponse": {
+            "lightX": "5.7%",
+            "transform": "none"
+          }
+        },
+        {
+          "route": "/offline",
+          "width": 1440,
+          "errors": [],
+          "interactions": [
+            {
+              "label": "Abrir busca global",
+              "rect": {
+                "x": 507.484375,
+                "y": 196,
+                "width": 672,
+                "height": 608
+              },
+              "contained": true,
+              "focusInside": true,
+              "tabInside": true,
+              "returned": true,
+              "keyboardFixture": null,
+              "material": {
+                "animation": "tadeon-popup-contained-in",
+                "duration": "0.26s",
+                "scale": "none",
+                "origin": "336px 304px",
+                "shadow": "rgba(255, 249, 232, 0.24) 0px 1px 0px 0px inset, rgba(255, 255, 255, 0.04) 0px -1px 0px 0px inset, rgba(0, 0, 0, 0.35) 0px 1px 3px 0px, rgba(0, 0, 0, 0.85) 0px 24px 70px -22px",
+                "radius": "21.6px",
+                "tone": "176 166 190"
+              }
+            },
+            {
+              "label": "Abrir configurações da conta",
+              "rect": {
+                "x": 331.484375,
+                "y": 72.5,
+                "width": 1024,
+                "height": 855
+              },
+              "contained": true,
+              "focusInside": true,
+              "tabInside": true,
+              "returned": true,
+              "keyboardFixture": null,
+              "material": {
+                "animation": "tadeon-popup-contained-in",
+                "duration": "0.26s",
+                "scale": "none",
+                "origin": "512px 427.5px",
+                "shadow": "rgba(255, 249, 232, 0.24) 0px 1px 0px 0px inset, rgba(255, 255, 255, 0.04) 0px -1px 0px 0px inset, rgba(0, 0, 0, 0.35) 0px 1px 3px 0px, rgba(0, 0, 0, 0.85) 0px 24px 70px -22px",
+                "radius": "21.6px",
+                "tone": "176 166 190"
+              }
+            }
+          ],
+          "overflow": false,
+          "mainCount": 1,
+          "titleColor": "rgb(233, 227, 213)",
+          "activeNavigation": [
+            {
+              "label": "Consulta offline",
+              "color": "rgb(233, 227, 213)"
+            }
+          ],
+          "cardResponse": {
+            "lightX": "2.7%",
+            "transform": "none"
+          },
+          "preferences": {
+            "motion": true,
+            "transparency": true,
+            "contrast": true,
+            "filter": "none",
+            "popup": {
+              "animation": "none",
+              "border": "rgb(122, 129, 135)"
+            }
+          }
+        },
+        {
+          "route": "/nexus-tools",
+          "width": 1440,
+          "errors": [],
+          "interactions": [],
+          "overflow": false,
+          "mainCount": 1,
+          "titleColor": "rgb(233, 227, 213)",
+          "activeNavigation": [
+            {
+              "label": "Backup e diagnóstico",
+              "color": "rgb(233, 227, 213)"
+            }
+          ],
+          "cardResponse": {
+            "lightX": "2.7%",
+            "transform": "none"
+          }
+        },
+        {
+          "route": "/manage-users",
+          "width": 1440,
+          "errors": [],
+          "interactions": [],
+          "overflow": false,
+          "mainCount": 1,
+          "titleColor": "rgb(233, 227, 213)",
+          "activeNavigation": [
+            {
+              "label": "Usuários",
+              "color": "rgb(233, 227, 213)"
+            }
+          ],
+          "cardResponse": {
+            "lightX": "2.7%",
+            "transform": "none"
+          }
+        },
+        {
+          "route": "/tabletop",
+          "width": 1440,
+          "errors": [],
+          "interactions": [],
+          "overflow": false,
+          "mainCount": 1,
+          "titleColor": "rgb(233, 227, 213)",
+          "activeNavigation": [
+            {
+              "label": "Mesa Nexus",
+              "color": "rgb(233, 227, 213)"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "styles": {
+    "modules": 57,
+    "globalLinks": 12,
+    "importantBefore": 4470,
+    "importantAfter": 4353,
+    "newDependencies": 0,
+    "newGlobalObservers": 0,
+    "retiredSelectorBranches": 77,
+    "retiredOwners": [
+      {
+        "file": "src/styles/button.css",
+        "selectors": [
+          ".tadeon-nav-item__icon"
+        ]
+      },
+      {
+        "file": "src/styles/button.css",
+        "selectors": [
+          ".tadeon-nav-item[aria-current=\"page\"] .tadeon-nav-item__icon"
+        ]
+      },
+      {
+        "file": "src/styles/button.css",
+        "selectors": [
+          ".tadeon-nav-item:not([data-mini=\"true\"]) > span:last-child"
+        ]
+      },
+      {
+        "file": "src/styles/button.css",
+        "selectors": [
+          ".tadeon-nav-item:hover .tadeon-nav-item__icon"
+        ]
+      },
+      {
+        "file": "src/styles/experience-surfaces.css",
+        "selectors": [
+          ".tadeon-nav-item[data-tadeon-directed=\"true\"] .tadeon-nav-item__icon"
+        ]
+      },
+      {
+        "file": "src/styles/interface-layout.css",
+        "selectors": [
+          "#tadeon-desktop-sidebar:has(.tadeon-nav-item[data-mini=\"true\"])"
+        ]
+      },
+      {
+        "file": "src/styles/interface-layout.css",
+        "selectors": [
+          "#tadeon-desktop-sidebar .tadeon-nav-item[data-mini=\"true\"]"
+        ]
+      },
+      {
+        "file": "src/styles/interface-layout.css",
+        "selectors": [
+          "#tadeon-desktop-sidebar .tadeon-nav-item[data-mini=\"true\"] .tadeon-nav-item__icon"
+        ]
+      },
+      {
+        "file": "src/styles/interface-layout.css",
+        "selectors": [
+          "#tadeon-desktop-sidebar .tadeon-nav-item[data-mini=\"true\"] .tadeon-nav-item__icon svg"
+        ]
+      },
+      {
+        "file": "src/styles/interface-layout.css",
+        "selectors": [
+          "#tadeon-desktop-sidebar:has(.tadeon-nav-item[data-mini=\"true\"])"
+        ]
+      },
+      {
+        "file": "src/styles/interface-layout.css",
+        "selectors": [
+          "#tadeon-desktop-sidebar .tadeon-nav-item[data-mini=\"true\"]"
+        ]
+      },
+      {
+        "file": "src/styles/interface-layout.css",
+        "selectors": [
+          "#tadeon-desktop-sidebar .tadeon-nav-item[data-mini=\"true\"] .tadeon-nav-item__icon"
+        ]
+      },
+      {
+        "file": "src/styles/interface-layout.css",
+        "selectors": [
+          "#tadeon-desktop-sidebar .tadeon-nav-item[data-mini=\"true\"] .tadeon-nav-item__icon svg"
+        ]
+      },
+      {
+        "file": "src/styles/motion-composition.css",
+        "selectors": [
+          "#tadeon-desktop-sidebar .tadeon-nav-item__icon"
+        ]
+      },
+      {
+        "file": "src/styles/motion-composition.css",
+        "selectors": [
+          "#tadeon-desktop-sidebar .tadeon-nav-item__icon > svg"
+        ]
+      },
+      {
+        "file": "src/styles/motion-composition.css",
+        "selectors": [
+          "#tadeon-desktop-sidebar[data-collapsed=\"true\"] .tadeon-nav-item"
+        ]
+      },
+      {
+        "file": "src/styles/motion-composition.css",
+        "selectors": [
+          ".tadeon-sidebar .tadeon-nav-item__icon"
+        ]
+      },
+      {
+        "file": "src/styles/motion-composition.css",
+        "selectors": [
+          ".tadeon-sidebar .tadeon-nav-item__icon > svg"
+        ]
+      },
+      {
+        "file": "src/styles/motion-composition.css",
+        "selectors": [
+          ".tadeon-sidebar[data-collapsed=\"true\"] .tadeon-nav-item"
+        ]
+      },
+      {
+        "file": "src/styles/motion-composition.css",
+        "selectors": [
+          ".tadeon-sidebar[data-collapsed=\"true\"] .tadeon-nav-item__icon"
+        ]
+      },
+      {
+        "file": "src/styles/motion-composition.css",
+        "selectors": [
+          ".tadeon-sidebar[data-collapsed=\"true\"] .tadeon-nav-item > span:last-child"
+        ]
+      },
+      {
+        "file": "src/styles/motion-composition.css",
+        "selectors": [
+          ".tadeon-shell .tadeon-nav-item__icon"
+        ]
+      },
+      {
+        "file": "src/styles/motion-composition.css",
+        "selectors": [
+          ".tadeon-shell .tadeon-nav-item__icon > svg"
+        ]
+      },
+      {
+        "file": "src/styles/motion-composition.css",
+        "selectors": [
+          ".tadeon-shell .tadeon-nav-item[data-mini=\"true\"]"
+        ]
+      },
+      {
+        "file": "src/styles/motion-composition.css",
+        "selectors": [
+          ".tadeon-shell .tadeon-nav-item[data-mini=\"true\"] .tadeon-nav-item__icon"
+        ]
+      },
+      {
+        "file": "src/styles/motion-composition.css",
+        "selectors": [
+          ".tadeon-shell .tadeon-nav-item[data-mini=\"true\"] .tadeon-nav-item__icon"
+        ]
+      },
+      {
+        "file": "src/styles/motion-composition.css",
+        "selectors": [
+          ".tadeon-shell .tadeon-nav-item[data-mini=\"true\"] .tadeon-nav-item__label",
+          ".tadeon-shell .tadeon-nav-item[data-mini=\"true\"] [data-nav-label]"
+        ]
+      },
+      {
+        "file": "src/styles/motion-interactions.css",
+        "selectors": [
+          ".tadeon-shell .tadeon-sidebar[data-collapsed=\"true\"] .tadeon-nav-item"
+        ]
+      },
+      {
+        "file": "src/styles/motion-interactions.css",
+        "selectors": [
+          ".tadeon-shell .tadeon-sidebar[data-collapsed=\"true\"] .tadeon-nav-item>span",
+          ".tadeon-shell .tadeon-sidebar[data-collapsed=\"true\"] .tadeon-nav-item .nav-label"
+        ]
+      },
+      {
+        "file": "src/styles/motion-interactions.css",
+        "selectors": [
+          "#tadeon-desktop-sidebar .tadeon-nav-item__icon"
+        ]
+      },
+      {
+        "file": "src/styles/motion-interactions.css",
+        "selectors": [
+          "#tadeon-desktop-sidebar .tadeon-nav-item__icon > svg"
+        ]
+      },
+      {
+        "file": "src/styles/motion-interactions.css",
+        "selectors": [
+          "#tadeon-desktop-sidebar[data-collapsed=\"true\"] .tadeon-nav-item"
+        ]
+      },
+      {
+        "file": "src/styles/page-hero-parity.css",
+        "selectors": [
+          "html body .tadeon-shell .tadeon-nav-item[aria-current=\"page\"] .tadeon-nav-item__icon",
+          "html body .tadeon-shell .tadeon-nav-item[aria-current=\"page\"] .tadeon-nav-item__icon > svg"
+        ]
+      },
+      {
+        "file": "src/styles/page-hero-parity.css",
+        "selectors": [
+          "html body .tadeon-shell .tadeon-nav-item__icon",
+          "html body .tadeon-shell .tadeon-nav-item__icon > svg"
+        ]
+      },
+      {
+        "file": "src/styles/route-layout.css",
+        "selectors": [
+          "#tadeon-desktop-sidebar:not(:has(.tadeon-nav-item[data-mini=\"true\"]))"
+        ]
+      },
+      {
+        "file": "src/styles/route-layout.css",
+        "selectors": [
+          "#tadeon-desktop-sidebar .tadeon-nav-item:not([data-mini=\"true\"])"
+        ]
+      },
+      {
+        "file": "src/styles/route-layout.css",
+        "selectors": [
+          "#tadeon-desktop-sidebar:not(:has(.tadeon-nav-item[data-mini=\"true\"]))"
+        ]
+      },
+      {
+        "file": "src/styles/route-layout.css",
+        "selectors": [
+          "#tadeon-desktop-sidebar .tadeon-nav-item:not([data-mini=\"true\"])"
+        ]
+      },
+      {
+        "file": "src/styles/route-layout.css",
+        "selectors": [
+          ".tadeon-primary-nav .tadeon-nav-item[data-mini=\"true\"]"
+        ]
+      },
+      {
+        "file": "src/styles/route-layout.css",
+        "selectors": [
+          ".tadeon-primary-nav .tadeon-nav-item__icon"
+        ]
+      },
+      {
+        "file": "src/styles/route-layout.css",
+        "selectors": [
+          ".tadeon-primary-nav .tadeon-nav-item__icon > svg"
+        ]
+      },
+      {
+        "file": "src/styles/route-layout.css",
+        "selectors": [
+          ".tadeon-primary-nav .tadeon-nav-item:hover .tadeon-nav-item__icon",
+          ".tadeon-primary-nav .tadeon-nav-item[aria-current=\"page\"] .tadeon-nav-item__icon"
+        ]
+      },
+      {
+        "file": "src/styles/route-layout.css",
+        "selectors": [
+          ".tadeon-shell[data-section=\"Saúde do arquivo\"] .tadeon-nav-item[href=\"/nexus\"][aria-current=\"page\"] .tadeon-nav-item__icon"
+        ]
+      },
+      {
+        "file": "src/styles/tabletop-director-remote.css",
+        "selectors": [
+          ".tadeon-shell .tadeon-nav-item__icon",
+          ".tadeon-shell .tadeon-nav-item__icon > svg"
+        ]
+      },
+      {
+        "file": "src/styles/tabletop-director-remote.css",
+        "selectors": [
+          ".tadeon-shell .tadeon-nav-item__icon"
+        ]
+      },
+      {
+        "file": "src/styles/tadeon-experience-director.css",
+        "selectors": [
+          ".tadeon-shell > #tadeon-desktop-sidebar[data-collapsed=\"true\"] .tadeon-nav-item"
+        ]
+      },
+      {
+        "file": "src/styles/viewport.css",
+        "selectors": [
+          "#tadeon-desktop-sidebar:has(.tadeon-nav-item[data-mini=\"true\"]) > div:first-of-type"
+        ]
+      },
+      {
+        "file": "src/styles/viewport.css",
+        "selectors": [
+          "#tadeon-desktop-sidebar .tadeon-nav-item[data-mini=\"true\"]"
+        ]
+      },
+      {
+        "file": "src/styles.css",
+        "selectors": [
+          ".tadeon-nav-item__icon > svg"
+        ]
+      },
+      {
+        "file": "src/styles.css",
+        "selectors": [
+          ".tadeon-nav-item__icon"
+        ]
+      },
+      {
+        "file": "src/styles.css",
+        "selectors": [
+          ".tadeon-nav-item__icon > svg"
+        ]
+      },
+      {
+        "file": "src/styles.css",
+        "selectors": [
+          ".tadeon-nav-item[data-mini=\"true\"]"
+        ]
+      },
+      {
+        "file": "src/styles.css",
+        "selectors": [
+          ".tadeon-nav-item[data-mini=\"true\"] .tadeon-nav-item__icon"
+        ]
+      },
+      {
+        "file": "src/styles.css",
+        "selectors": [
+          ".tadeon-nav-item[aria-current=\"page\"] .tadeon-nav-item__icon"
+        ]
+      },
+      {
+        "file": "src/styles/master-toolbar-popout.css",
+        "selectors": [
+          ".tadeon-primary-nav > .tadeon-nav-item",
+          ".tadeon-primary-nav .tadeon-nav-item"
+        ]
+      },
+      {
+        "file": "src/styles.css",
+        "selectors": [
+          ".tadeon-sidebar-collapse"
+        ]
+      },
+      {
+        "file": "src/styles.css",
+        "selectors": [
+          ".tadeon-sidebar-collapse::before"
+        ]
+      },
+      {
+        "file": "src/styles.css",
+        "selectors": [
+          ".tadeon-sidebar-collapse > svg"
+        ]
+      },
+      {
+        "file": "src/styles.css",
+        "selectors": [
+          ".tadeon-sidebar-collapse[data-state=\"collapsed\"] > svg"
+        ]
+      },
+      {
+        "file": "src/styles.css",
+        "selectors": [
+          ".tadeon-sidebar-collapse:hover"
+        ]
+      },
+      {
+        "file": "src/styles.css",
+        "selectors": [
+          ".tadeon-sidebar-collapse:hover::before"
+        ]
+      },
+      {
+        "file": "src/styles.css",
+        "selectors": [
+          ".tadeon-sidebar-collapse:hover > svg"
+        ]
+      },
+      {
+        "file": "src/styles.css",
+        "selectors": [
+          ".tadeon-sidebar-collapse::before",
+          ".tadeon-sidebar-collapse > svg"
+        ]
+      },
+      {
+        "file": "src/styles/experience-surfaces.css",
+        "selectors": [
+          ".tadeon-sidebar-collapse:hover"
+        ]
+      },
+      {
+        "file": "src/styles/experience-surfaces.css",
+        "selectors": [
+          ".tadeon-sidebar-collapse"
+        ]
+      },
+      {
+        "file": "src/styles/motion-composition.css",
+        "selectors": [
+          ".tadeon-sidebar-collapse"
+        ]
+      },
+      {
+        "file": "src/styles/motion-composition.css",
+        "selectors": [
+          ".tadeon-sidebar-collapse:hover"
+        ]
+      },
+      {
+        "file": "src/styles/route-layout.css",
+        "selectors": [
+          "#tadeon-desktop-sidebar > button[aria-controls=\"tadeon-desktop-sidebar\"]"
+        ]
+      },
+      {
+        "file": "src/styles/route-layout.css",
+        "selectors": [
+          "#tadeon-desktop-sidebar > button[aria-controls=\"tadeon-desktop-sidebar\"]"
+        ]
+      }
+    ],
+    "geometryOwner": "src/styles/navigation-layout.css",
+    "collapsedWidthOwner": "src/styles/desktop-shell.css",
+    "negativeGate": {
+      "exitCode": 1,
+      "rejectedCompetingOwner": true
+    },
+    "genericPositionWritersRetired": 2
+  },
+  "historicalAssertions": [
+    {
+      "file": "src/lib/tabletop/final-user-polish-regression.test.ts",
+      "retired": "Caso que exigia largura 4.15rem, alinhamento à esquerda e padding 1.02rem com !important.",
+      "replacement": "Navegador mede alvos >=44px, ícones visíveis e centralizados no trilho."
+    },
+    {
+      "file": "src/lib/tabletop/tabletop-selection-sidebar-sheen-regression.test.ts",
+      "retired": "Caso que exigia padding .5rem e min-width zero em viewport-fit-final.",
+      "replacement": "Mesma medição do trilho; regra de sheen do outro caso preservada."
+    },
+    {
+      "file": "src/lib/navigation-users-uniformity-191-regression.test.ts",
+      "retired": "Caso que exigia width/min-width/max-width com !important em um módulo legado.",
+      "replacement": "Rótulos sem corte em modo expandido e alvos/ícones no modo recolhido."
+    },
+    {
+      "file": "src/lib/ui-coherence-192-regression.test.ts",
+      "retired": "Caso que exigia inline-size e min-width 100% com !important.",
+      "replacement": "Medição real nas duas larguras desktop; gate recusa escritores de geometria fora do proprietário."
+    },
+    {
+      "file": "src/lib/tabletop/final-user-corrections-172-regression.test.ts",
+      "retired": "Dois asserts sobre a localização do frame e place-items no módulo histórico.",
+      "preserved": "Acentos de Mestre/Backup, mini labels e outros requisitos do arquivo.",
+      "replacement": "Medição no navegador e gate de propriedade."
+    }
+  ],
+  "iterations": [
+    {
+      "source": "f00613685132a0e05c4f5c2dc6f8af5f45dc104b",
+      "quality": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38946659684",
+      "result": "failed",
+      "reason": "Um assert histórico ainda exigia width:100% !important. Conciliado explicitamente, sem restaurar a regra concorrente."
+    },
+    {
+      "scope": "Browser development",
+      "reason": "Fixture de perfis passou a respeitar eq(id); medição inicial detectou botão de recolhimento participando do flex. Corrigidos corpo, escritores genéricos e proprietário explícito. Reflexo mede o card após scrollIntoView; fechamento aguarda desmontagem/foco, sem forçar foco na aplicação."
+    }
+  ],
+  "limits": [
+    "Fixtures não provam contas, autorização entre campanhas ou RLS reais.",
+    "Não foi medido hardware físico, leitor de tela nativo ou desempenho comparativo.",
+    "Tecido vetorial e materiais CSS não equivalem ao Liquid Glass nativo."
+  ],
+  "deployment": {
+    "worker": "pending integration",
+    "schemaChanges": false,
+    "featureFlagChanges": false,
+    "backendChanges": false
+  }
+}

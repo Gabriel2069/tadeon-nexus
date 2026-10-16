@@ -15,7 +15,7 @@ const server = spawn("npm", ["run", "dev", "--", "--host", "127.0.0.1", "--stric
 const userId = "00000000-0000-4000-8000-000000000001";
 const user = { id: userId, aud: "authenticated", role: "authenticated", email: "fixture@nexus.test", app_metadata: { provider: "email", providers: ["email"] }, user_metadata: {}, created_at: "2026-01-01T00:00:00Z" };
 const token = [{ alg: "HS256", typ: "JWT" }, { sub: userId, aud: "authenticated", role: "authenticated", exp: 2000000000 }, "fixture"].map(x => typeof x === "string" ? x : Buffer.from(JSON.stringify(x)).toString("base64url")).join(".");
-const sheets = Array.from({ length: 5 }, (_, i) => ({ id: `00000000-0000-4000-8000-${String(i + 10).padStart(12, "0")}`, owner_id: userId, name: i === 0 ? "A guardiã dos vestígios que permaneceram além do último limiar" : `Personagem de exemplo ${i + 1}`, occupation: "Leitora de vestígios", exposure: i * 5 }));
+const sheets = Array.from({ length: 5 }, (_, i) => ({ id: `00000000-0000-4000-8000-${String(i + 10).padStart(12, "0")}`, owner_id: i % 2 ? "00000000-0000-4000-8000-000000000002" : userId, name: i === 0 ? "A guardiã dos vestígios que permaneceram além do último limiar" : `Personagem de exemplo ${i + 1}`, occupation: i === 1 ? "Cartógrafo" : "Leitora de vestígios", exposure: i * 5 }));
 const results = [];
 const assert = (condition, message) => { if (!condition) throw new Error(message); };
 try {
@@ -29,7 +29,7 @@ try {
     const page = await context.newPage();
     const errors = [];
     page.on("pageerror", e => errors.push(e.message));
-    let currentState = state, release;
+    let currentState = state, release, sheetReads = 0;
     await page.addInitScript(({ user, token }) => localStorage.setItem("sb-nkxpstyfrzufsnowjrdi-auth-token", JSON.stringify({ access_token: token, refresh_token: "fixture", token_type: "bearer", expires_in: 86400, expires_at: 2000000000, user })), { user, token });
     await page.route("**/*.supabase.co/**", async route => {
       const url = new URL(route.request().url());
@@ -37,10 +37,15 @@ try {
       if (url.pathname.endsWith("/user")) body = user;
       else if (url.pathname.includes("/character_sheets")) {
         assert(route.request().method() === "GET", "Fixture must not persist mutations");
+        sheetReads++;
         if (currentState === "loading") await new Promise(ok => { release = ok; });
         if (currentState === "error") { status = 500; body = { message: "Fixture read failed", code: "fixture" }; }
         else body = currentState === "populated" ? sheets : [];
-      } else if (url.pathname.includes("/profiles")) body = [{ id: userId, email: user.email, full_name: "Tadeu de exemplo" }];
+      } else if (url.pathname.includes("/profiles")) {
+        const profiles = [{ id: userId, email: user.email, full_name: "Tadeu de exemplo" }, { id: "00000000-0000-4000-8000-000000000002", email: "ana@nexus.test", full_name: "Ana" }];
+        const id = url.searchParams.get("id");
+        body = id?.startsWith("eq.") ? profiles.filter(p=>p.id===id.slice(3)) : profiles;
+      }
       else if (url.pathname.includes("/user_roles")) body = [{ user_id: userId, role: "mestre" }];
       else if (url.pathname.includes("/feature_flags")) body = [{ key: "nexus_tabletop_enabled", enabled: true }, { key: "nexus_knowledge_enabled", enabled: true }];
       if (Array.isArray(body) && route.request().headers().accept?.includes("vnd.pgrst.object")) body = body[0] || null;
@@ -65,7 +70,7 @@ try {
     assert(metrics.navContrast.color === "rgb(233, 227, 213)", "Navigation label stays ivory while the symbol carries the section color");
     assert(metrics.navContrast.base === "#1c2026", "Navigation surface must not inherit its text accent");
     if (process.env.NEXUS_FONT_FIXTURES) assert(metrics.fontsLoaded.every(f=>f.loaded), `Font fixtures must load: ${JSON.stringify(metrics.fontsLoaded)}`);
-    if (state === "populated") assert(metrics.facts.join() === "05,05,20" && metrics.cards === 5, "Metrics must use query data");
+    if (state === "populated") assert(metrics.facts.join() === "05,03,20" && metrics.cards === 5, "Metrics must use query data");
     if (state === "error" || state === "loading") assert(metrics.facts.every(x => x === "--"), "Unknown counts must not appear as zero");
     await page.screenshot({ path: `${root}/${state}-${width}.png`, fullPage: true });
     if (state === "error") {
@@ -77,16 +82,53 @@ try {
     if (state === "loading") { currentState = "empty"; release(); }
     if (state === "populated") {
       assert(await page.locator(".tadeon-nav-item > .tadeon-pointer-sheen").count() === 0, "Navigation must own its light layer");
+      const readsBefore = sheetReads;
+      const search = page.getByRole("searchbox", {name:"Buscar fichas"});
+      const mine = page.getByRole("button", {name:"Minhas fichas",exact:true});
+      const order = page.getByRole("combobox", {name:"Ordenar fichas"});
+      await search.fill("guardia");
+      assert(await page.locator(".tadeon-character-card").count() === 1, "Accent-insensitive name search");
+      await search.fill("cartografo");
+      assert(await page.locator(".tadeon-character-card").count() === 1, "Occupation search");
+      await search.fill("ana");
+      assert(await page.locator(".tadeon-character-card").count() === 2, "Owner search");
+      await mine.click();
+      await page.getByText("Nenhum fio nesta busca.").waitFor();
+      await page.getByRole("button",{name:"Limpar filtros",exact:true}).click();
+      assert(await search.evaluate(e=>e===document.activeElement), "Filter reset returns focus to search");
+      await mine.click();
+      assert(await page.locator(".tadeon-character-card").count() === 3, "Ownership filter uses authorized rows");
+      await mine.click();
+      await order.click(); await page.getByRole("option",{name:"Maior exposição",exact:true}).click();
+      assert(await page.locator(".tadeon-character-card h3").first().textContent() === "Personagem de exemplo 5", "Exposure order");
+      await order.click(); await page.getByRole("option",{name:"Nome: A–Z",exact:true}).click();
+      assert((await page.locator(".tadeon-character-card h3").first().textContent()).startsWith("A guardiã"), "Name order");
+      await order.click(); await page.getByRole("option",{name:"Mais recentes",exact:true}).click();
+      await search.fill("sem resultado");
+      await page.getByRole("button",{name:"Limpar busca de fichas",exact:true}).click();
+      assert(await search.evaluate(e=>e===document.activeElement), "Clear search keeps focus");
+      assert(await page.locator(".tadeon-character-card").count() === 5 && sheetReads === readsBefore, "Discovery neither fetches nor mutates the source rows");
+      metrics.archive = {accentSearch:true,occupationSearch:true,ownerSearch:true,ownership:true,sort:true,resetFocus:true,extraReads:sheetReads-readsBefore};
+
       const trigger = page.getByRole("button", { name: "Nova ficha" });
       await trigger.focus(); await page.keyboard.press("Enter");
       await page.getByLabel("Nome da personagem").waitFor();
       await page.keyboard.press("Escape");
+      await page.getByRole("dialog",{name:"Criar ficha",exact:true}).waitFor({state:"detached"});
+      await page.waitForFunction(e=>document.activeElement===e,await trigger.elementHandle());
       assert(await trigger.evaluate(e => document.activeElement === e), "Create dialog must return focus");
       await page.getByRole("button", { name: /Excluir ficha/ }).first().click();
       await page.getByRole("button", { name: "Cancelar", exact: true }).click();
       assert(await page.locator(".tadeon-character-card").count() === 5, "Cancel must preserve cards");
-      if (width === 1440) {
+      if (width >= 768) {
+        const labels = await page.locator("#tadeon-desktop-sidebar .tadeon-nav-item__label").evaluateAll(es=>es.map(e=>({text:e.textContent,clipped:e.scrollWidth>e.clientWidth+1||e.scrollHeight>e.clientHeight+1,ellipsis:getComputedStyle(e).textOverflow})));
+        assert(labels.every(x=>!x.clipped&&x.ellipsis!=="ellipsis"), "Expanded navigation labels remain readable");
+        metrics.navigationLabels=labels;
         await page.getByRole("button", { name: "Recolher menu" }).click();
+        await page.waitForFunction(()=>[...document.querySelectorAll("#tadeon-desktop-sidebar .tadeon-nav-item")].every(n=>{const r=n.getBoundingClientRect(),i=n.querySelector(".tadeon-nav-item__icon").getBoundingClientRect();return r.width>=44&&r.height>=44&&i.width>=24;}));
+        const rail = await page.locator("#tadeon-desktop-sidebar").evaluate(e=>({width:e.getBoundingClientRect().width,items:[...e.querySelectorAll(".tadeon-nav-item")].map(n=>{const r=n.getBoundingClientRect(),i=n.querySelector(".tadeon-nav-item__icon"),ir=i.getBoundingClientRect();return {w:r.width,h:r.height,computedWidth:getComputedStyle(n).width,transform:getComputedStyle(n).transform,scale:getComputedStyle(n).scale,iconOpacity:getComputedStyle(i).opacity,iconWidth:ir.width,iconComputedWidth:getComputedStyle(i).width,centerDelta:Math.abs((r.x+r.width/2)-(ir.x+ir.width/2))};})}));
+        assert(rail.items.every(i=>i.w>=44&&i.h>=44&&i.iconOpacity==="1"&&i.iconWidth>=24&&i.centerDelta<1), "Collapsed rail keeps centered visible icons and 44px targets: "+JSON.stringify(rail));
+        metrics.rail=rail;
         await page.getByRole("button", { name: "Expandir menu" }).click();
       }
       if (width < 768) {
@@ -141,6 +183,7 @@ try {
       const moving = await page.locator(".tadeon-continuity-hero__weave").evaluate(e => getComputedStyle(e).transitionDuration);
       if (width === 1440) {
         const card = page.locator(".tadeon-character-card").first();
+        await card.scrollIntoViewIfNeeded();
         const before = await card.locator("h3").boundingBox();
         await card.hover({ position: { x: 100, y: 90 } });
         await page.waitForFunction(() => { const e=document.querySelector(".tadeon-character-card"); return e?.style.getPropertyValue("--material-x") && Number(getComputedStyle(e,"::before").opacity) >= .8; });

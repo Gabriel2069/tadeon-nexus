@@ -16,13 +16,8 @@ describe("ui coherence 192/193/194/195", () => {
     expect(css).toContain('[data-section="Painel do Mestre"]');
   });
 
-  it("forces all primary nav guides to the exact same inline width", () => {
-    const css = source("src/styles/ui-coherence-192.css");
-    expect(css).toContain("inline-size: 100% !important");
-    expect(css).toContain("min-width: 100% !important");
-    expect(css).toContain("max-width: 100% !important");
-    expect(css).toContain("margin-inline: 0 !important");
-  });
+  // NEX-024: real width and clipping replace the former full-width !important prescription.
+
 
 
   it("targets the inspected setup and collapse controls directly", () => {

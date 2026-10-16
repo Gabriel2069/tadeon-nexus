@@ -3046,21 +3046,7 @@ html body .tadeon-shell .tadeon-nav-item {
   --nav-authority-rgb: var(--tadeon-nav-authority-rgb, var(--section-accent-rgb));
 }
 
-html body .tadeon-shell .tadeon-nav-item[aria-current="page"] .tadeon-nav-item__icon,
-html body .tadeon-shell .tadeon-nav-item[aria-current="page"] .tadeon-nav-item__icon > svg {
-  border-color: rgb(var(--nav-authority-rgb) / 34%) !important;
-}
-
 /* Never let generic motion transforms move the sidebar symbol itself. */
-html body .tadeon-shell .tadeon-nav-item__icon,
-html body .tadeon-shell .tadeon-nav-item__icon > svg {
-  position: relative !important;
-  flex: 0 0 auto !important;
-  width: 1.25rem !important;
-  min-width: 1.25rem !important;
-  height: 1.25rem !important;
-  min-height: 1.25rem !important;
-}
 
 /* -------------------------------------------------------------------------- */
 /* DIALOGS - keep every surface inside the actual viewport                     */
@@ -3162,48 +3148,44 @@ html body .tadeon-shell :is(.tadeon-page-hero, .tadeon-tabletop-studio__header, 
 
 /* end-source: src/styles/tadeon-final-responsive-weave.css */
 
-/* NEX-003: ContinuityHero owns its geometry; the retired dashboard selectors
-   have been removed from all importers instead of overridden here. */
+/* ContinuityHero: copy, art and a single engraved ledger. */
 .tadeon-continuity-hero {
-  position: relative;
-  isolation: isolate;
-  display: grid;
+  position: relative; isolation: isolate; display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(14rem, .85fr);
-  overflow: hidden;
-  min-height: 25rem;
-  border: 1px solid var(--border);
-  border-radius: 1.5rem;
+  overflow: hidden; min-height: 23rem; border: 1px solid var(--border); border-radius: 1.5rem;
 }
-.tadeon-continuity-hero__copy { position: relative; z-index: 2; padding: clamp(1.5rem, 3.6vw, 3rem); }
-.tadeon-continuity-hero__greeting { margin: 0 0 1.5rem; font-size: .875rem; }
+.tadeon-continuity-hero__copy { position: relative; z-index: 2; padding: clamp(1.5rem, 3vw, 2.5rem); }
+.tadeon-continuity-hero__greeting { margin: 0 0 1rem; font-size: .875rem; }
 .tadeon-continuity-hero h1 { margin: 0; font-family: var(--font-cinzel, "Cormorant Garamond", Georgia, serif); font-size: clamp(2.8rem, 4.6vw, 4.6rem); font-weight: 600; line-height: 1.04; letter-spacing: -.025em; }
 .tadeon-continuity-hero h1 em { color: var(--primary); font-style: italic; }
 .tadeon-continuity-hero__description { max-width: 37ch; margin-top: 1.25rem; font-size: .9375rem; line-height: 1.65; }
-.tadeon-continuity-hero__actions { margin-top: 1.75rem; }
+.tadeon-continuity-hero__actions { margin-top: 1.25rem; }
 .tadeon-continuity-hero__art { position: relative; grid-column: 2; grid-row: 1; display: grid; place-items: center; min-width: 0; pointer-events: none; }
 .tadeon-continuity-hero__weave { overflow: visible; position: absolute; width: 165%; max-width: none; height: 100%; left: -28%; top: 0; }
 .tadeon-continuity-hero__seal { position: relative; display: grid; place-items: center; width: clamp(8rem, 13vw, 12rem); aspect-ratio: 1; border-radius: 50%; }
-.tadeon-continuity-hero__seal svg { width: 70%; height: 70%; }
+.tadeon-continuity-hero__seal > svg:not(.tadeon-continuity-hero__armature) { width: 70%; height: 70%; }
+.tadeon-continuity-hero__armature { position: absolute; inset: -25%; width: 150%; height: 150%; }
 .tadeon-continuity-hero__caption { position: absolute; right: 1.5rem; bottom: 1.5rem; font-family: var(--font-mono, "PT Mono", ui-monospace, monospace); font-size: .625rem; letter-spacing: .1em; text-transform: uppercase; }
 .tadeon-continuity-facts { position: relative; z-index: 2; grid-column: 1 / -1; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); margin: 0; }
-.tadeon-continuity-facts > div { min-width: 0; padding: 1.5rem 2rem; }
-.tadeon-continuity-facts dt { font-size: .75rem; }
-.tadeon-continuity-facts dd:not(.tadeon-continuity-facts__detail) { margin: .625rem 0 .25rem; font-family: var(--font-inter, "Inter", system-ui, sans-serif); font-size: 2rem; font-weight: 500; font-variant-numeric: lining-nums tabular-nums; letter-spacing: -.06em; line-height: 1.2; }
-.tadeon-continuity-facts .tadeon-continuity-facts__detail { display: block; margin: 0; font-size: .75rem; }
+.tadeon-continuity-facts > div { min-width: 0; padding: 1.4rem 1.75rem; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: .4rem 1rem; align-content: center; }
+.tadeon-continuity-facts dt { align-self: end; font-size: .75rem; }
+.tadeon-continuity-facts dd:not(.tadeon-continuity-facts__detail) { grid-column: 2; grid-row: 1 / 3; align-self: center; margin: 0; font-family: var(--font-inter, "Inter", system-ui, sans-serif); font-size: 2.25rem; font-weight: 400; font-variant-numeric: lining-nums tabular-nums; letter-spacing: -.06em; line-height: 1.2; }
+.tadeon-continuity-facts .tadeon-continuity-facts__detail { display: block; margin: 0; font-size: .6875rem; line-height: 1.5; }
 @media (max-width: 1000px) {
   .tadeon-continuity-hero { grid-template-columns: minmax(0, 1fr) minmax(9rem, .55fr); }
-  .tadeon-continuity-facts > div { padding: 1.25rem; }
+  .tadeon-continuity-facts > div { padding: 1.25rem; grid-template-columns: 1fr; }
+  .tadeon-continuity-facts dd:not(.tadeon-continuity-facts__detail) { grid-column: 1; grid-row: auto; margin: .25rem 0; }
 }
 @media (max-width: 600px) {
   .tadeon-continuity-hero { grid-template-columns: 1fr; border-radius: 1.25rem; }
-  .tadeon-continuity-hero__copy { padding: 1.5rem; }
+  .tadeon-continuity-hero__copy { padding: 1.5rem 1.5rem 1rem; }
   .tadeon-continuity-hero h1 { font-size: 2.8rem; }
-  .tadeon-continuity-hero__art { grid-column: 1; grid-row: 2; min-height: 11rem; }
+  .tadeon-continuity-hero__art { grid-column: 1; grid-row: 2; min-height: 8rem; }
   .tadeon-continuity-hero__weave { width: 130%; left: -15%; }
-  .tadeon-continuity-hero__seal { width: 7rem; }
-  .tadeon-continuity-hero__caption { right: 1rem; bottom: .5rem; font-size: .5625rem; }
-  .tadeon-continuity-facts { grid-template-columns: 1fr; }
-  .tadeon-continuity-facts > div { display: grid; grid-template-columns: 1fr auto; align-items: baseline; gap: .125rem 1rem; padding: .875rem 1.5rem; }
-  .tadeon-continuity-facts dd:not(.tadeon-continuity-facts__detail) { grid-column: 2; grid-row: 1 / 3; margin: 0; font-size: 1.5rem; }
-  .tadeon-continuity-fact__thread { display: none; }
+  .tadeon-continuity-hero__seal { width: 5rem; margin-bottom: 1.25rem; }
+  .tadeon-continuity-hero__caption { right: 1rem; bottom: .5rem; font-size: .5rem; }
+  .tadeon-continuity-facts > div { padding: 1rem .75rem; gap: .3rem; }
+  .tadeon-continuity-facts dt { font-size: .6875rem; line-height: 1.4; min-height: 2.8em; }
+  .tadeon-continuity-facts dd:not(.tadeon-continuity-facts__detail) { font-size: 1.75rem; }
+  .tadeon-continuity-facts .tadeon-continuity-facts__detail { font-size: .625rem; }
 }

@@ -8,17 +8,8 @@ function source(path: string) {
 
 describe("resíduos visuais de seleção e navegação", () => {
 
-  it("preserva a moldura inteira dos itens no menu lateral recolhido", () => {
-    const css = source("src/styles/viewport-fit-final.css");
+  // NEX-024: collapsed rail geometry is exercised in verify-dashboard-design.mjs.
 
-    expect(css).toContain(
-      '#tadeon-desktop-sidebar:has(.tadeon-nav-item[data-mini="true"]) > div:first-of-type',
-    );
-    expect(css).toContain("padding-right: .5rem !important");
-    expect(css).toContain("padding-left: .5rem !important");
-    expect(css).toContain('#tadeon-desktop-sidebar .tadeon-nav-item[data-mini="true"]');
-    expect(css).toContain("min-width: 0 !important");
-  });
 
   it("mantém o brilho diagonal dentro da caixa física do botão", () => {
     const css = source("src/styles/viewport-fit-final.css");

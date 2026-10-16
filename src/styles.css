@@ -335,14 +335,6 @@
     border: 1px solid transparent;
   }
 
-  .tadeon-nav-item__icon > svg {
-    flex: 0 0 auto;
-    transition:
-      color 180ms ease,
-      filter 180ms ease,
-      transform 180ms ease;
-  }
-
   .tadeon-loading-mark {
     display: grid;
     width: 4.5rem;
@@ -3867,47 +3859,6 @@ legend {
 
 /* Final specificity guardrails ----------------------------------------- */
 
-.tadeon-nav-item__icon {
-  position: relative;
-  z-index: 3;
-  display: grid;
-  width: 1.9rem;
-  height: 1.9rem;
-  flex: 0 0 1.9rem;
-  place-items: center;
-  overflow: visible;
-  border-radius: 0.6rem;
-  transition:
-    color var(--motion-fast) var(--ease-out),
-    background-color var(--motion-fast) var(--ease-out),
-    filter var(--motion-fast) var(--ease-out),
-    transform var(--motion-fast) var(--ease-out);
-}
-
-.tadeon-nav-item__icon > svg {
-  width: 1rem;
-  height: 1rem;
-  overflow: visible;
-}
-
-.tadeon-nav-item[data-mini="true"] {
-  box-sizing: border-box;
-  width: 100%;
-  min-width: 2.5rem;
-  padding-inline: 0.3rem;
-}
-
-.tadeon-nav-item[data-mini="true"] .tadeon-nav-item__icon {
-  width: 2.1rem;
-  height: 2.1rem;
-  flex-basis: 2.1rem;
-}
-
-.tadeon-nav-item[aria-current="page"] .tadeon-nav-item__icon {
-  background: rgb(var(--section-accent-rgb, 217 215 164) / 8%);
-  box-shadow: 0 0 0 1px rgb(var(--section-accent-rgb, 217 215 164) / 10%);
-}
-
 /* One physical measure for every sidebar destination. Active Dashboard,
  * Nexus and Master entries now align with Users, Offline and Backup. */
 .tadeon-primary-nav .tadeon-nav-item,
@@ -3943,68 +3894,7 @@ legend {
   display: none;
 }
 
-.tadeon-sidebar-collapse {
-  isolation: isolate;
-  overflow: visible;
-  border-color: color-mix(in srgb, var(--section-accent) 24%, var(--border));
-  border-radius: 0.82rem 0.28rem 0.82rem 0.28rem;
-  color: color-mix(in srgb, var(--foreground) 68%, var(--section-accent));
-  background:
-    radial-gradient(circle at 28% 18%, rgb(255 255 255 / 10%), transparent 42%),
-    color-mix(in srgb, var(--tadeon-surface-raised) 92%, var(--section-accent) 8%);
-  box-shadow:
-    0 18px 42px -24px rgb(0 0 0 / 100%),
-    0 0 0 1px rgb(var(--section-accent-rgb, 217 215 164) / 4%),
-    inset 0 1px rgb(255 255 255 / 7%);
-}
-
-.tadeon-sidebar-collapse::before {
-  position: absolute;
-  z-index: -1;
-  inset: -0.35rem;
-  border: 1px solid rgb(var(--section-accent-rgb, 217 215 164) / 8%);
-  border-radius: 1rem 0.38rem 1rem 0.38rem;
-  opacity: 0;
-  transform: scale(0.82);
-  transition:
-    opacity var(--motion-fast) var(--ease-out),
-    transform var(--motion-panel) var(--ease-spring);
-  pointer-events: none;
-  content: "";
-}
-
-.tadeon-sidebar-collapse > svg {
-  position: relative;
-  z-index: 2;
-  filter: drop-shadow(0 0 7px rgb(var(--section-accent-rgb, 217 215 164) / 20%));
-}
-
-.tadeon-sidebar-collapse[data-state="collapsed"] > svg {
-  animation: tadeon-control-icon-select 320ms var(--ease-spring) both;
-}
-
 @media (hover: hover) and (pointer: fine) {
-  .tadeon-sidebar-collapse:hover {
-    border-color: color-mix(in srgb, var(--section-accent) 50%, var(--border));
-    color: var(--section-accent);
-    background:
-      radial-gradient(circle at 28% 18%, rgb(255 255 255 / 12%), transparent 42%),
-      color-mix(in srgb, var(--tadeon-surface-raised) 86%, var(--section-accent) 14%);
-    box-shadow:
-      0 20px 48px -24px rgb(0 0 0 / 100%),
-      0 0 24px -14px var(--section-accent),
-      inset 0 1px rgb(255 255 255 / 8%);
-    transform: translateY(-1px);
-  }
-
-  .tadeon-sidebar-collapse:hover::before {
-    opacity: 1;
-    transform: scale(1);
-  }
-
-  .tadeon-sidebar-collapse:hover > svg {
-    transform: scale(1.08) rotate(-6deg);
-  }
 
   .tadeon-route-stage
     [data-slot="card"]:not([data-material-surface]):not(:has(input:focus, textarea:focus, select:focus)):hover {
@@ -4135,8 +4025,6 @@ legend {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .tadeon-sidebar-collapse::before,
-  .tadeon-sidebar-collapse > svg,
   .tadeon-route-stage
     [data-slot="card"]
     :where([data-slot="card-header"], [data-slot="card-title"])

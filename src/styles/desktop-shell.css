@@ -85,6 +85,9 @@
     );
   }
 
+  .tadeon-sidebar[data-collapsed="true"] { width: 5rem; }
+  .tadeon-sidebar[data-collapsed="true"] .tadeon-sidebar__body { padding-inline: .375rem; }
+
   .tadeon-sidebar::before {
     position: absolute;
     top: 1rem;

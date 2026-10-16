@@ -79,6 +79,31 @@ export function ContinuityHero({
           />
         </svg>
         <span className="tadeon-continuity-hero__seal">
+          <svg className="tadeon-continuity-hero__armature" viewBox="0 0 260 260" fill="none">
+            <ellipse
+              cx="130"
+              cy="130"
+              rx="119"
+              ry="80"
+              transform="rotate(-32 130 130)"
+              stroke="currentColor"
+              opacity=".3"
+              strokeWidth=".65"
+            />
+            <ellipse
+              cx="130"
+              cy="130"
+              rx="109"
+              ry="119"
+              transform="rotate(-32 130 130)"
+              stroke="currentColor"
+              opacity=".15"
+              strokeWidth=".65"
+              strokeDasharray="2 7"
+            />
+            <circle cx="29" cy="166" r="2.5" fill="currentColor" opacity=".7" />
+            <circle cx="224" cy="88" r="1.5" fill="currentColor" opacity=".8" />
+          </svg>
           <BrandMark />
         </span>
         <span className="tadeon-continuity-hero__caption">Memória · vínculo · continuidade</span>

@@ -1,4 +1,4 @@
-import { MaterialSurface } from "@/components/material-surface";
+import { CharacterArchive, type ArchiveSheet } from "@/components/character-archive";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useAuth } from "@/lib/auth";
@@ -33,16 +33,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import {
-  Plus,
-  Trash,
-  ExternalLink,
-  Loader2,
-  Lightbulb,
-  AlertCircle,
-  RefreshCw,
-  ArrowUpRight,
-} from "lucide-react";
+import { Plus, Loader2, Lightbulb, AlertCircle, RefreshCw, ArrowUpRight } from "lucide-react";
 import { toast } from "sonner";
 import { BrandMark } from "@/components/brand-mark";
 import { ContinuityHero } from "@/components/continuity-hero";
@@ -80,14 +71,7 @@ export const Route = createFileRoute("/")({
   ),
 });
 
-interface SheetRow {
-  id: string;
-  name: string;
-  occupation: string | null;
-  owner_id: string;
-  owner_label?: string | null;
-  exposure: number;
-}
+type SheetRow = ArchiveSheet;
 
 interface OwnerOption {
   id: string;
@@ -498,48 +482,14 @@ export function HomePage() {
             </p>
           </div>
         ) : (
-          <div className="tadeon-character-gallery">
-            {sheets.map((sheet, index) => (
-              <MaterialSurface as="article" key={sheet.id} className="tadeon-character-card">
-                <div className="mb-4 flex items-start justify-between gap-4 sm:mb-6">
-                  <span className="tadeon-mono text-[10px] uppercase text-muted-foreground">
-                    Fio {String(index + 1).padStart(2, "0")} · Exposição {sheet.exposure || 0}
-                  </span>
-                  {canDeleteSheet(sheet) && (
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      disabled={creating || deleting}
-                      onClick={() => setToDelete(sheet)}
-                      className="relative z-10 -mr-1 -mt-1 h-11 w-11 rounded-xl p-0 text-muted-foreground hover:bg-destructive/10 hover:text-destructive-foreground"
-                      aria-label={`Excluir ficha ${sheet.name}`}
-                    >
-                      <Trash className="w-3.5 h-3.5" />
-                    </Button>
-                  )}
-                </div>
-                <h3 className="font-cinzel text-xl font-semibold leading-tight sm:text-2xl">
-                  {sheet.name}
-                </h3>
-                <p className="mt-1 min-h-5 text-sm text-muted-foreground">
-                  {sheet.occupation || "Ocupação ainda não definida"}
-                </p>
-                {sheet.owner_label && (
-                  <p className="mt-3 truncate text-[10px] uppercase tracking-wider text-muted-foreground">
-                    {sheet.owner_label}
-                  </p>
-                )}
-                <Link
-                  to="/sheet/$id"
-                  params={{ id: sheet.id }}
-                  className="tadeon-character-card__open mt-auto inline-flex min-h-11 w-full items-center justify-between gap-2 rounded-xl border border-primary/20 bg-primary/5 px-3 py-2.5 text-xs font-semibold text-primary transition-[color,background-color,border-color,box-shadow,transform] duration-150 ease-[var(--ease-out)] hover:border-primary/45 hover:bg-primary/10 active:scale-[.985]"
-                >
-                  Abrir ficha
-                  <ExternalLink className="h-3.5 w-3.5" />
-                </Link>
-              </MaterialSurface>
-            ))}
-          </div>
+          <CharacterArchive
+            key={`${userId}:${role}`}
+            sheets={sheets}
+            userId={userId}
+            busy={creating || deleting}
+            canDelete={canDeleteSheet}
+            onDelete={setToDelete}
+          />
         )}
       </section>
 

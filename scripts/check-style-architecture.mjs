@@ -54,6 +54,39 @@ for (const file of cssFiles) {
       errors.push(
         `${file}:${rule.source.start.line}: focus geometry belongs to page-hero-parity.css.`,
       );
+    const ownsNavigationGeometry =
+      rule.selectors.some(
+        (selector) =>
+          selector.includes(".tadeon-nav-item__icon") ||
+          (selector.includes(".tadeon-sidebar-collapse") &&
+            !selector.includes(":not(.tadeon-sidebar-collapse)")),
+      ) &&
+      rule.nodes.some(
+        (node) =>
+          node.type === "decl" &&
+          [
+            "position",
+            "display",
+            "width",
+            "height",
+            "min-width",
+            "max-width",
+            "min-height",
+            "max-height",
+            "inline-size",
+            "block-size",
+            "flex",
+            "flex-basis",
+            "padding",
+            "padding-inline",
+            "margin",
+            "margin-inline",
+          ].includes(node.prop),
+      );
+    if (ownsNavigationGeometry && file !== "src/styles/navigation-layout.css")
+      errors.push(
+        `${file}:${rule.source.start.line}: navigation icon/control geometry belongs to navigation-layout.css.`,
+      );
   });
   ast.walkAtRules("import", (rule) => {
     if (file !== "src/styles.css")

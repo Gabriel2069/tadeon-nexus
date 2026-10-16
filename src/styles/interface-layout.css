@@ -522,28 +522,6 @@ body:has(.tadeon-tabletop-studio) {
 }
 
 /* Collapsed desktop sidebar: boxes deliberately extend to the right of their glyph. */
-#tadeon-desktop-sidebar:has(.tadeon-nav-item[data-mini="true"]) { width:5.5rem !important; }
-#tadeon-desktop-sidebar .tadeon-nav-item[data-mini="true"] {
-  width:4.15rem !important;
-  min-width:4.15rem !important;
-  min-height:3.2rem;
-  margin-left:.2rem !important;
-  margin-right:auto !important;
-  justify-content:flex-start !important;
-  padding-left:1.02rem !important;
-  padding-right:.78rem !important;
-}
-#tadeon-desktop-sidebar .tadeon-nav-item[data-mini="true"] .tadeon-nav-item__icon {
-  display:grid;
-  width:1.9rem;
-  height:1.9rem;
-  place-items:center;
-  flex:0 0 1.9rem;
-}
-#tadeon-desktop-sidebar .tadeon-nav-item[data-mini="true"] .tadeon-nav-item__icon svg {
-  width:1rem;
-  height:1rem;
-}
 
 /* Secondary routes use the same workspace width contract as the principal areas. */
 .tadeon-route-stage > :is(.tadeon-route-tools,.tadeon-route-users,.tadeon-route-offline) {
@@ -953,11 +931,7 @@ body:has(.tadeon-tabletop-studio) {
 /* --------------------------------------------------------------------------
    Sidebar: restore the centered, symmetric collapsed state from before #149.
    -------------------------------------------------------------------------- */
-#tadeon-desktop-sidebar:has(.tadeon-nav-item[data-mini="true"]) {
-  width: 5rem !important;
-}
 
-#tadeon-desktop-sidebar .tadeon-nav-item[data-mini="true"],
 #tadeon-desktop-sidebar button[data-mini="true"] {
   width: 3.35rem !important;
   min-width: 3.35rem !important;
@@ -965,19 +939,6 @@ body:has(.tadeon-tabletop-studio) {
   margin-inline: auto !important;
   justify-content: center !important;
   padding-inline: .7rem !important;
-}
-
-#tadeon-desktop-sidebar .tadeon-nav-item[data-mini="true"] .tadeon-nav-item__icon {
-  display: grid !important;
-  width: 1.8rem !important;
-  height: 1.8rem !important;
-  flex: 0 0 1.8rem !important;
-  place-items: center !important;
-}
-
-#tadeon-desktop-sidebar .tadeon-nav-item[data-mini="true"] .tadeon-nav-item__icon svg {
-  width: 1rem !important;
-  height: 1rem !important;
 }
 
 /* --------------------------------------------------------------------------

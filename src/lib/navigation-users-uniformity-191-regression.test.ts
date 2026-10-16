@@ -22,13 +22,8 @@ describe("navigation and users uniformity 191", () => {
     expect(css).toContain('button[title="Abrir este painel em janela dedicada"]');
   });
 
-  it("forces every primary navigation destination to follow the available sidebar width", () => {
-    const css = source("src/styles/navigation-users-uniformity-191.css");
-    expect(css).toContain(".tadeon-primary-nav .tadeon-nav-item");
-    expect(css).toContain("width: 100% !important");
-    expect(css).toContain("min-width: 0 !important");
-    expect(css).toContain("max-width: 100% !important");
-  });
+  // NEX-024: available width and 44px collapsed targets are measured in the browser.
+
 
   it("gives user cards shared grid-track height on desktop and mobile", () => {
     const css = source("src/styles/navigation-users-uniformity-191.css");
