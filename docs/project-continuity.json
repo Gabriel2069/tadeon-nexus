@@ -1,23 +1,16 @@
 {
   "version": 1,
-  "checkedAt": "2026-10-15",
+  "checkedAt": "2026-10-16",
   "runtimeReference": "6f954c40df4b5611ef130818e97e79c12badd1c9",
   "integration": {
-    "pr": 273,
-    "branch": "codex/nex-008-master-workspace",
+    "pr": 275,
+    "branch": "codex/nex-007-tabletop-workspace",
     "base": "main",
-    "baseCommit": "6e1087c67cd68f35504d73d8efdb56f65f839c52",
-    "headCommit": "337b218ae40cf773a0dc51c894f4a9b7a0220a64",
-    "state": "integrated",
-    "mergeCommit": "6f954c40df4b5611ef130818e97e79c12badd1c9",
-    "qualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38721993131",
-    "mainQualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38722287524",
-    "productionEvidence": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38722287420",
-    "production": "confirmed",
-    "productionCommit": "6f954c40df4b5611ef130818e97e79c12badd1c9",
-    "productionVerifiedAt": "2026-10-15T10:45:57.4262468Z",
-    "productionHttpStatus": 200,
-    "workerVersion": "585d6298-962d-462a-87a1-8bcb7bf9955a"
+    "baseCommit": "66acb8efc0cbf3d5d68b98a7984b0c04d4ff60b2",
+    "sourceCommit": "5893bd75b78c69ecf58d2df7ebe4c8142bff391c",
+    "state": "validated",
+    "sourceQualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38840403462",
+    "production": "pending"
   },
   "domains": [
     {
@@ -501,7 +494,7 @@
       "id": "NEX-007",
       "title": "Mesa: hierarquia de ferramentas e workspace",
       "domain": "tabletop",
-      "status": "active",
+      "status": "validated",
       "priority": 6,
       "dependsOn": [
         "NEX-004",
@@ -762,7 +755,7 @@
       "id": "NEX-021",
       "title": "Nexus: contexto da página e passagem para a Mesa",
       "domain": "knowledge",
-      "status": "active",
+      "status": "validated",
       "priority": 5,
       "dependsOn": [
         "NEX-015"
@@ -774,6 +767,24 @@
       ],
       "evidence": [
         "docs/tabletop-workspace-validation.json"
+      ]
+    },
+    {
+      "id": "NEX-022",
+      "title": "Mesa: persistência e projeção da cor-base personalizada",
+      "domain": "tabletop",
+      "status": "planned",
+      "priority": 7,
+      "dependsOn": [
+        "NEX-007"
+      ],
+      "acceptance": [
+        "Conferir o contrato de cor-base entre editor, payload, recarga e visão protegida do jogador.",
+        "Preservar a cor-base escolhida após salvar/reabrir sem criar divergência entre propriedades, fingerprint e renderização.",
+        "Verificar round trip e compatibilidade das cenas antigas; conservar autorização da visão compartilhada."
+      ],
+      "evidence": [
+        "docs/tabletop-workspace-map.md"
       ]
     }
   ],
@@ -1253,6 +1264,23 @@
       "productionVerifiedAt": "2026-10-15T03:17:45.0915711Z",
       "productionHttpStatus": 200,
       "workerVersion": "28b948e6-6c0d-4c7d-8895-8ff8d83f5ec0"
+    },
+    {
+      "pr": 273,
+      "branch": "codex/nex-008-master-workspace",
+      "base": "main",
+      "baseCommit": "6e1087c67cd68f35504d73d8efdb56f65f839c52",
+      "headCommit": "337b218ae40cf773a0dc51c894f4a9b7a0220a64",
+      "state": "integrated",
+      "mergeCommit": "6f954c40df4b5611ef130818e97e79c12badd1c9",
+      "qualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38721993131",
+      "mainQualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38722287524",
+      "productionEvidence": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38722287420",
+      "production": "confirmed",
+      "productionCommit": "6f954c40df4b5611ef130818e97e79c12badd1c9",
+      "productionVerifiedAt": "2026-10-15T10:45:57.4262468Z",
+      "productionHttpStatus": 200,
+      "workerVersion": "585d6298-962d-462a-87a1-8bcb7bf9955a"
     }
   ]
 }

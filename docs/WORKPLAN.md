@@ -2,7 +2,7 @@
 
 > Gerado de [project-continuity.json](project-continuity.json). Edite o registro e rode `npm run sync:project`; não mantenha uma cópia manual.
 
-Snapshot: 2026-10-15; referência de runtime: `6f954c40df4b5611ef130818e97e79c12badd1c9`. PR #273 em `codex/nex-008-master-workspace`; integração: `integrated`. Não é prova de deploy.
+Snapshot: 2026-10-16; referência de runtime: `6f954c40df4b5611ef130818e97e79c12badd1c9`. PR #275 em `codex/nex-007-tabletop-workspace`; integração: `validated`. Não é prova de deploy.
 
 Estados: planejado → próximo → em andamento → validado na branch → integrado. Publicação exige evidência própria do SHA; adiado conserva o requisito. Se um requisito mudar, preservar o ID e registrar a decisão/evidência.
 
@@ -17,7 +17,7 @@ Cada PR usa IDs desta fila e declara dependências. Trabalho sobre o mesmo propr
 | NEX-013 | Liquid fabric: login, Dashboard e componentes compartilhados | Integrado | 2 | shell | NEX-003, NEX-004 |
 | NEX-005 | Ficha por seções e estados | Integrado | 3 | sheet | NEX-003, NEX-013 |
 | NEX-006 | Biblioteca, documento e grafo do Nexus | Integrado | 4 | knowledge | NEX-003, NEX-013 |
-| NEX-007 | Mesa: hierarquia de ferramentas e workspace | Em andamento | 6 | tabletop | NEX-004, NEX-013 |
+| NEX-007 | Mesa: hierarquia de ferramentas e workspace | Validado na branch | 6 | tabletop | NEX-004, NEX-013 |
 | NEX-008 | Painel do Mestre: visão geral, ferramentas e condução | Integrado | 5 | master | NEX-003, NEX-013, NEX-020 |
 | NEX-009 | Desempenho e motion | Planejado | 7 | delivery | NEX-003, NEX-007 |
 | NEX-010 | Validação real de autorização e rollout | Planejado | 8 | session | NEX-001 |
@@ -30,7 +30,8 @@ Cada PR usa IDs desta fila e declara dependências. Trabalho sobre o mesmo propr
 | NEX-018 | Usuários: papéis, busca e revisão de ações | Integrado | 4 | master | NEX-014 |
 | NEX-019 | Backup e diagnóstico: revisão e histórico por conta | Integrado | 4 | assets | NEX-014 |
 | NEX-020 | Símbolos reais de Mestre e Backup na navegação | Integrado | 4 | shell | NEX-016 |
-| NEX-021 | Nexus: contexto da página e passagem para a Mesa | Em andamento | 5 | knowledge | NEX-015 |
+| NEX-021 | Nexus: contexto da página e passagem para a Mesa | Validado na branch | 5 | knowledge | NEX-015 |
+| NEX-022 | Mesa: persistência e projeção da cor-base personalizada | Planejado | 7 | tabletop | NEX-007 |
 
 ## NEX-001 — Preparação estrutural
 
@@ -195,6 +196,14 @@ Evidências: [docs/master-workspace-validation.json](../docs/master-workspace-va
 - Respostas de páginas anteriores não reaparecem na leitura atual.
 
 Evidências: [docs/tabletop-workspace-validation.json](../docs/tabletop-workspace-validation.json).
+
+## NEX-022 — Mesa: persistência e projeção da cor-base personalizada
+
+- Conferir o contrato de cor-base entre editor, payload, recarga e visão protegida do jogador.
+- Preservar a cor-base escolhida após salvar/reabrir sem criar divergência entre propriedades, fingerprint e renderização.
+- Verificar round trip e compatibilidade das cenas antigas; conservar autorização da visão compartilhada.
+
+Evidências: [docs/tabletop-workspace-map.md](../docs/tabletop-workspace-map.md).
 
 ## Decisões vigentes
 

@@ -1,16 +1,31 @@
 {
   "schemaVersion": 1,
-  "tasks": [
-    "NEX-007",
-    "NEX-021"
-  ],
-  "status": "in_progress",
+  "tasks": ["NEX-007", "NEX-021"],
+  "status": "validated",
   "base": "66acb8efc0cbf3d5d68b98a7984b0c04d4ff60b2",
   "validation": {
-    "state": "pending"
+    "state": "passed",
+    "typecheck": "passed",
+    "remoteQuality": {
+      "commit": "5893bd75b78c69ecf58d2df7ebe4c8142bff391c",
+      "run": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38840403462",
+      "state": "success",
+      "suites": 141,
+      "tests": 581,
+      "auditVulnerabilities": 0
+    },
+    "localCheck": "npm run check: passed",
+    "browser": "passed",
+    "suites": 141,
+    "tests": 581,
+    "audit": {
+      "command": "npm audit --audit-level=high",
+      "vulnerabilities": 0
+    }
   },
   "limits": [
-    "Fixtures não certificam contas/RLS, reconexão real, dispositivos físicos ou todas as combinações de recursos avançados."
+    "Fixtures não certificam contas/RLS, reconexão real, dispositivos físicos ou todas as combinações de recursos avançados.",
+    "Cor-base personalizada continua registrada em NEX-022; este lote não declara seu round trip concluído."
   ],
   "replacedHistoricalAssertions": {
     "cases": {
@@ -49,7 +64,1462 @@
     "reason": "Asserções textuais exigiam classes removidas, painel compacto não modal, geometria aos 768px ou autosave que limpa dirty sem reconhecer edições posteriores. Substituídas por testes de comportamento de diálogo/foco/comandos/portal/fingerprint e verificação de navegador dos grupos, seleção, estados e gravação. Os demais casos dos arquivos permanecem.",
     "additional": [
       "Retirada a asserção que exigia monkeypatch global/toJSON do serviço; a comparação pura é testada em clones e metadados.",
-      "A asserção do launcher sem implementação agora verifica a ausência da montagem duplicada; o launcher real permanece."
+      "A asserção do launcher sem implementação agora verifica a ausência da montagem duplicada; o launcher real permanece.",
+      "A paleta histórica de ciano foi conciliada com o azul compartilhado da Mesa (146 181 202 / 84 123 148), mantendo o teste contra retorno ao dourado independente."
     ]
-  }
+  },
+  "implementationCommit": "5893bd75b78c69ecf58d2df7ebe4c8142bff391c",
+  "pullRequest": "https://github.com/Gabriel2069/tadeon-nexus/pull/275",
+  "coverage": {
+    "unit": [
+      "Nexus: seleção de destinos e resposta tardia",
+      "Diálogo do editor: foco, Escape e retorno",
+      "Comandos: atalhos, busca e ações indisponíveis",
+      "Stage portal: troca de superfície por evento",
+      "Fingerprint: clones, metadados e identidade dos assets",
+      "Identidade iniciadora: cena, ambiente e câmera",
+      "Persistência: origem da grade",
+      "Nexus: deep link após disponibilidade do workspace",
+      "Inicialização: escolha de ferramenta com renderer pendente",
+      "Portal auxiliar: slot explícito do workspace"
+    ],
+    "browserScripts": ["scripts/verify-tabletop-workspace.mjs", "scripts/verify-nexus-reading.mjs"],
+    "fixtureIsolation": "HTTP do backend interceptado; WebSockets fechados de propósito. Nenhuma campanha real foi alterada.",
+    "saveActivation": "Primeiro save usa o debounce real; a aceitação da edição posterior pode ocorrer por autosave ou ativação DOM síncrona do botão, precedida de hit-test. O payload e a versão recebidos são conferidos.",
+    "pixelCoordinates": "Tamanho CSS comparado ao renderer lógico; seleção por clique real usando conversão mundo/tela; 2D/3D conferidos pelo runtime."
+  },
+  "style": {
+    "modules": 57,
+    "rootLinks": 12,
+    "importantBefore": 4793,
+    "importantAfter": 4480,
+    "addedImportant": 0
+  },
+  "browser": {
+    "masterCore": {
+      "commit": "1beca17a1caa099a64628b663445a70247c76c49",
+      "states": 68,
+      "outcome": "passed",
+      "captures": [
+        {
+          "width": 320,
+          "state": "play",
+          "stage": {
+            "x": 20.796875,
+            "y": 278.25,
+            "width": 278.40625,
+            "height": 580
+          }
+        },
+        {
+          "width": 320,
+          "state": "edit",
+          "stage": {
+            "x": 20.796875,
+            "y": 332.25,
+            "width": 278.40625,
+            "height": 580
+          }
+        },
+        {
+          "width": 320,
+          "state": "editor-library",
+          "stage": {
+            "x": 20.796875,
+            "y": 332.25,
+            "width": 278.40625,
+            "height": 580
+          }
+        },
+        {
+          "width": 320,
+          "state": "editor-space",
+          "stage": {
+            "x": 20.796875,
+            "y": 332.25,
+            "width": 278.40625,
+            "height": 580
+          }
+        },
+        {
+          "width": 320,
+          "state": "editor-master",
+          "stage": {
+            "x": 20.796875,
+            "y": 332.25,
+            "width": 278.40625,
+            "height": 580
+          }
+        },
+        {
+          "width": 320,
+          "state": "editor-scene",
+          "stage": {
+            "x": 20.796875,
+            "y": 332.25,
+            "width": 278.40625,
+            "height": 580
+          }
+        },
+        {
+          "width": 320,
+          "state": "editor-inspector",
+          "stage": {
+            "x": 20.796875,
+            "y": 332.25,
+            "width": 278.40625,
+            "height": 580
+          }
+        },
+        {
+          "width": 320,
+          "state": "group-Cena",
+          "stage": {
+            "x": 20.796875,
+            "y": 401.25,
+            "width": 278.40625,
+            "height": 580
+          }
+        },
+        {
+          "width": 320,
+          "state": "group-Editar",
+          "stage": {
+            "x": 20.796875,
+            "y": 401.25,
+            "width": 278.40625,
+            "height": 580
+          }
+        },
+        {
+          "width": 320,
+          "state": "group-Visão",
+          "stage": {
+            "x": 20.796875,
+            "y": 401.25,
+            "width": 278.40625,
+            "height": 580
+          }
+        },
+        {
+          "width": 320,
+          "state": "group-Grade",
+          "stage": {
+            "x": 20.796875,
+            "y": 401.25,
+            "width": 278.40625,
+            "height": 580
+          }
+        },
+        {
+          "width": 320,
+          "state": "commands",
+          "stage": {
+            "x": 20.796875,
+            "y": 401.25,
+            "width": 278.40625,
+            "height": 580
+          }
+        },
+        {
+          "width": 320,
+          "state": "pointer-selection",
+          "stage": {
+            "x": 20.796875,
+            "y": 401.25,
+            "width": 278.40625,
+            "height": 580
+          }
+        },
+        {
+          "width": 320,
+          "state": "pending-edit-after-save",
+          "stage": {
+            "x": 20.796875,
+            "y": 401.25,
+            "width": 278.40625,
+            "height": 580
+          }
+        },
+        {
+          "width": 320,
+          "state": "projection",
+          "stage": {
+            "x": 20.796875,
+            "y": 401.25,
+            "width": 278.40625,
+            "height": 580
+          }
+        },
+        {
+          "width": 320,
+          "state": "environment-navigation-review",
+          "stage": {
+            "x": 20.796875,
+            "y": 401.25,
+            "width": 278.40625,
+            "height": 580
+          }
+        },
+        {
+          "width": 320,
+          "state": "archived-commands",
+          "stage": {
+            "x": 20.796875,
+            "y": 458.25,
+            "width": 278.40625,
+            "height": 580
+          }
+        },
+        {
+          "width": 390,
+          "state": "play",
+          "stage": {
+            "x": 20.796875,
+            "y": 278.25,
+            "width": 339.40625,
+            "height": 580
+          }
+        },
+        {
+          "width": 390,
+          "state": "edit",
+          "stage": {
+            "x": 20.796875,
+            "y": 332.25,
+            "width": 339.40625,
+            "height": 580
+          }
+        },
+        {
+          "width": 390,
+          "state": "editor-library",
+          "stage": {
+            "x": 20.796875,
+            "y": 332.25,
+            "width": 339.40625,
+            "height": 580
+          }
+        },
+        {
+          "width": 390,
+          "state": "editor-space",
+          "stage": {
+            "x": 20.796875,
+            "y": 332.25,
+            "width": 339.40625,
+            "height": 580
+          }
+        },
+        {
+          "width": 390,
+          "state": "editor-master",
+          "stage": {
+            "x": 20.796875,
+            "y": 332.25,
+            "width": 339.40625,
+            "height": 580
+          }
+        },
+        {
+          "width": 390,
+          "state": "editor-scene",
+          "stage": {
+            "x": 20.796875,
+            "y": 332.25,
+            "width": 339.40625,
+            "height": 580
+          }
+        },
+        {
+          "width": 390,
+          "state": "editor-inspector",
+          "stage": {
+            "x": 20.796875,
+            "y": 332.25,
+            "width": 339.40625,
+            "height": 580
+          }
+        },
+        {
+          "width": 390,
+          "state": "group-Cena",
+          "stage": {
+            "x": 20.796875,
+            "y": 401.25,
+            "width": 339.40625,
+            "height": 580
+          }
+        },
+        {
+          "width": 390,
+          "state": "group-Editar",
+          "stage": {
+            "x": 20.796875,
+            "y": 401.25,
+            "width": 339.40625,
+            "height": 580
+          }
+        },
+        {
+          "width": 390,
+          "state": "group-Visão",
+          "stage": {
+            "x": 20.796875,
+            "y": 401.25,
+            "width": 339.40625,
+            "height": 580
+          }
+        },
+        {
+          "width": 390,
+          "state": "group-Grade",
+          "stage": {
+            "x": 20.796875,
+            "y": 401.25,
+            "width": 339.40625,
+            "height": 580
+          }
+        },
+        {
+          "width": 390,
+          "state": "commands",
+          "stage": {
+            "x": 20.796875,
+            "y": 401.25,
+            "width": 339.40625,
+            "height": 580
+          }
+        },
+        {
+          "width": 390,
+          "state": "pointer-selection",
+          "stage": {
+            "x": 20.796875,
+            "y": 401.25,
+            "width": 339.40625,
+            "height": 580
+          }
+        },
+        {
+          "width": 390,
+          "state": "pending-edit-after-save",
+          "stage": {
+            "x": 20.796875,
+            "y": 401.25,
+            "width": 339.40625,
+            "height": 580
+          }
+        },
+        {
+          "width": 390,
+          "state": "projection",
+          "stage": {
+            "x": 20.796875,
+            "y": 401.25,
+            "width": 339.40625,
+            "height": 580
+          }
+        },
+        {
+          "width": 390,
+          "state": "environment-navigation-review",
+          "stage": {
+            "x": 20.796875,
+            "y": 401.25,
+            "width": 339.40625,
+            "height": 580
+          }
+        },
+        {
+          "width": 390,
+          "state": "archived-commands",
+          "stage": {
+            "x": 20.796875,
+            "y": 458.25,
+            "width": 339.40625,
+            "height": 580
+          }
+        },
+        {
+          "width": 820,
+          "state": "play",
+          "stage": {
+            "x": 240.796875,
+            "y": 234.640625,
+            "width": 549.40625,
+            "height": 720
+          }
+        },
+        {
+          "width": 820,
+          "state": "edit",
+          "stage": {
+            "x": 240.796875,
+            "y": 319.640625,
+            "width": 549.40625,
+            "height": 720
+          }
+        },
+        {
+          "width": 820,
+          "state": "editor-library",
+          "stage": {
+            "x": 240.796875,
+            "y": 319.640625,
+            "width": 549.40625,
+            "height": 720
+          }
+        },
+        {
+          "width": 820,
+          "state": "editor-space",
+          "stage": {
+            "x": 240.796875,
+            "y": 319.640625,
+            "width": 549.40625,
+            "height": 720
+          }
+        },
+        {
+          "width": 820,
+          "state": "editor-master",
+          "stage": {
+            "x": 240.796875,
+            "y": 319.640625,
+            "width": 549.40625,
+            "height": 720
+          }
+        },
+        {
+          "width": 820,
+          "state": "editor-scene",
+          "stage": {
+            "x": 240.796875,
+            "y": 319.640625,
+            "width": 549.40625,
+            "height": 720
+          }
+        },
+        {
+          "width": 820,
+          "state": "editor-inspector",
+          "stage": {
+            "x": 240.796875,
+            "y": 319.640625,
+            "width": 549.40625,
+            "height": 720
+          }
+        },
+        {
+          "width": 820,
+          "state": "group-Cena",
+          "stage": {
+            "x": 240.796875,
+            "y": 319.640625,
+            "width": 549.40625,
+            "height": 720
+          }
+        },
+        {
+          "width": 820,
+          "state": "group-Editar",
+          "stage": {
+            "x": 240.796875,
+            "y": 319.640625,
+            "width": 549.40625,
+            "height": 720
+          }
+        },
+        {
+          "width": 820,
+          "state": "group-Visão",
+          "stage": {
+            "x": 240.796875,
+            "y": 319.640625,
+            "width": 549.40625,
+            "height": 720
+          }
+        },
+        {
+          "width": 820,
+          "state": "group-Grade",
+          "stage": {
+            "x": 240.796875,
+            "y": 319.640625,
+            "width": 549.40625,
+            "height": 720
+          }
+        },
+        {
+          "width": 820,
+          "state": "commands",
+          "stage": {
+            "x": 240.796875,
+            "y": 319.640625,
+            "width": 549.40625,
+            "height": 720
+          }
+        },
+        {
+          "width": 820,
+          "state": "pointer-selection",
+          "stage": {
+            "x": 240.796875,
+            "y": 319.640625,
+            "width": 549.40625,
+            "height": 720
+          }
+        },
+        {
+          "width": 820,
+          "state": "pending-edit-after-save",
+          "stage": {
+            "x": 240.796875,
+            "y": 319.640625,
+            "width": 549.40625,
+            "height": 720
+          }
+        },
+        {
+          "width": 820,
+          "state": "projection",
+          "stage": {
+            "x": 240.796875,
+            "y": 319.640625,
+            "width": 549.40625,
+            "height": 720
+          }
+        },
+        {
+          "width": 820,
+          "state": "environment-navigation-review",
+          "stage": {
+            "x": 240.796875,
+            "y": 319.640625,
+            "width": 549.40625,
+            "height": 720
+          }
+        },
+        {
+          "width": 820,
+          "state": "archived-commands",
+          "stage": {
+            "x": 240.796875,
+            "y": 340.640625,
+            "width": 549.40625,
+            "height": 720
+          }
+        },
+        {
+          "width": 1440,
+          "state": "play",
+          "stage": {
+            "x": 276.796875,
+            "y": 234.640625,
+            "width": 1133.40625,
+            "height": 720
+          }
+        },
+        {
+          "width": 1440,
+          "state": "edit",
+          "stage": {
+            "x": 276.796875,
+            "y": 316.828125,
+            "width": 753.40625,
+            "height": 720
+          }
+        },
+        {
+          "width": 1440,
+          "state": "editor-library",
+          "stage": {
+            "x": 276.796875,
+            "y": 316.828125,
+            "width": 753.40625,
+            "height": 720
+          }
+        },
+        {
+          "width": 1440,
+          "state": "editor-space",
+          "stage": {
+            "x": 276.796875,
+            "y": 316.828125,
+            "width": 753.40625,
+            "height": 720
+          }
+        },
+        {
+          "width": 1440,
+          "state": "editor-master",
+          "stage": {
+            "x": 276.796875,
+            "y": 316.828125,
+            "width": 753.40625,
+            "height": 720
+          }
+        },
+        {
+          "width": 1440,
+          "state": "editor-scene",
+          "stage": {
+            "x": 276.796875,
+            "y": 316.828125,
+            "width": 753.40625,
+            "height": 720
+          }
+        },
+        {
+          "width": 1440,
+          "state": "editor-inspector",
+          "stage": {
+            "x": 276.796875,
+            "y": 316.828125,
+            "width": 753.40625,
+            "height": 720
+          }
+        },
+        {
+          "width": 1440,
+          "state": "group-Cena",
+          "stage": {
+            "x": 276.796875,
+            "y": 316.828125,
+            "width": 753.40625,
+            "height": 720
+          }
+        },
+        {
+          "width": 1440,
+          "state": "group-Editar",
+          "stage": {
+            "x": 276.796875,
+            "y": 316.828125,
+            "width": 753.40625,
+            "height": 720
+          }
+        },
+        {
+          "width": 1440,
+          "state": "group-Visão",
+          "stage": {
+            "x": 276.796875,
+            "y": 316.828125,
+            "width": 753.40625,
+            "height": 720
+          }
+        },
+        {
+          "width": 1440,
+          "state": "group-Grade",
+          "stage": {
+            "x": 276.796875,
+            "y": 316.828125,
+            "width": 753.40625,
+            "height": 720
+          }
+        },
+        {
+          "width": 1440,
+          "state": "commands",
+          "stage": {
+            "x": 276.796875,
+            "y": 316.828125,
+            "width": 753.40625,
+            "height": 720
+          }
+        },
+        {
+          "width": 1440,
+          "state": "pointer-selection",
+          "stage": {
+            "x": 276.796875,
+            "y": 316.828125,
+            "width": 753.40625,
+            "height": 720
+          }
+        },
+        {
+          "width": 1440,
+          "state": "pending-edit-after-save",
+          "stage": {
+            "x": 276.796875,
+            "y": 316.828125,
+            "width": 753.40625,
+            "height": 720
+          }
+        },
+        {
+          "width": 1440,
+          "state": "projection",
+          "stage": {
+            "x": 276.796875,
+            "y": 316.828125,
+            "width": 753.40625,
+            "height": 720
+          }
+        },
+        {
+          "width": 1440,
+          "state": "environment-navigation-review",
+          "stage": {
+            "x": 276.796875,
+            "y": 316.828125,
+            "width": 753.40625,
+            "height": 720
+          }
+        },
+        {
+          "width": 1440,
+          "state": "archived-commands",
+          "stage": {
+            "x": 276.796875,
+            "y": 353.828125,
+            "width": 753.40625,
+            "height": 720
+          }
+        }
+      ],
+      "captureProvenance": "Retained completed-state logs consolidated into this artifact. Temporary raw save receipts were not retained; payload/version assertions completed before the archived-scene state."
+    },
+    "participant": {
+      "commit": "1555c9b5f806bf11bd7d9c44d191212adaa3c0c6",
+      "states": 20,
+      "outcome": "passed",
+      "captures": [
+        {
+          "width": 320,
+          "state": "player-view",
+          "stage": {
+            "x": 8,
+            "y": 356.890625,
+            "width": 304,
+            "height": 660
+          },
+          "pixelMetrics": {
+            "cssWidth": 302,
+            "cssHeight": 658,
+            "logicalWidth": 302,
+            "logicalHeight": 658,
+            "dpr": 1
+          }
+        },
+        {
+          "width": 320,
+          "state": "player-commands",
+          "stage": {
+            "x": 8,
+            "y": 356.890625,
+            "width": 304,
+            "height": 660
+          },
+          "pixelMetrics": {
+            "cssWidth": 302,
+            "cssHeight": 658,
+            "logicalWidth": 302,
+            "logicalHeight": 658,
+            "dpr": 1
+          }
+        },
+        {
+          "width": 320,
+          "state": "player-reconnect-attempt",
+          "stage": {
+            "x": 8,
+            "y": 356.890625,
+            "width": 304,
+            "height": 660
+          },
+          "pixelMetrics": {
+            "cssWidth": 302,
+            "cssHeight": 658,
+            "logicalWidth": 302,
+            "logicalHeight": 658,
+            "dpr": 1
+          }
+        },
+        {
+          "width": 320,
+          "state": "player-tactics",
+          "stage": {
+            "x": 8,
+            "y": 474.546875,
+            "width": 304,
+            "height": 660
+          },
+          "pixelMetrics": {
+            "cssWidth": 302,
+            "cssHeight": 658,
+            "logicalWidth": 302,
+            "logicalHeight": 658,
+            "dpr": 1
+          }
+        },
+        {
+          "width": 320,
+          "state": "player-tactics-idle",
+          "stage": {
+            "x": 8,
+            "y": 474.546875,
+            "width": 304,
+            "height": 660
+          },
+          "pixelMetrics": {
+            "cssWidth": 302,
+            "cssHeight": 658,
+            "logicalWidth": 302,
+            "logicalHeight": 658,
+            "dpr": 1
+          }
+        },
+        {
+          "width": 390,
+          "state": "player-view",
+          "stage": {
+            "x": 8,
+            "y": 356.890625,
+            "width": 365,
+            "height": 660
+          },
+          "pixelMetrics": {
+            "cssWidth": 363,
+            "cssHeight": 658,
+            "logicalWidth": 363,
+            "logicalHeight": 658,
+            "dpr": 1
+          }
+        },
+        {
+          "width": 390,
+          "state": "player-commands",
+          "stage": {
+            "x": 8,
+            "y": 356.890625,
+            "width": 365,
+            "height": 660
+          },
+          "pixelMetrics": {
+            "cssWidth": 363,
+            "cssHeight": 658,
+            "logicalWidth": 363,
+            "logicalHeight": 658,
+            "dpr": 1
+          }
+        },
+        {
+          "width": 390,
+          "state": "player-reconnect-attempt",
+          "stage": {
+            "x": 8,
+            "y": 356.890625,
+            "width": 365,
+            "height": 660
+          },
+          "pixelMetrics": {
+            "cssWidth": 363,
+            "cssHeight": 658,
+            "logicalWidth": 363,
+            "logicalHeight": 658,
+            "dpr": 1
+          }
+        },
+        {
+          "width": 390,
+          "state": "player-tactics",
+          "stage": {
+            "x": 8,
+            "y": 474.546875,
+            "width": 365,
+            "height": 660
+          },
+          "pixelMetrics": {
+            "cssWidth": 363,
+            "cssHeight": 658,
+            "logicalWidth": 363,
+            "logicalHeight": 658,
+            "dpr": 1
+          }
+        },
+        {
+          "width": 390,
+          "state": "player-tactics-idle",
+          "stage": {
+            "x": 8,
+            "y": 474.546875,
+            "width": 365,
+            "height": 660
+          },
+          "pixelMetrics": {
+            "cssWidth": 363,
+            "cssHeight": 658,
+            "logicalWidth": 363,
+            "logicalHeight": 658,
+            "dpr": 1
+          }
+        },
+        {
+          "width": 820,
+          "state": "player-view",
+          "stage": {
+            "x": 236.390625,
+            "y": 263.84375,
+            "width": 558.21875,
+            "height": 720
+          },
+          "pixelMetrics": {
+            "cssWidth": 556,
+            "cssHeight": 718,
+            "logicalWidth": 556,
+            "logicalHeight": 718,
+            "dpr": 1
+          }
+        },
+        {
+          "width": 820,
+          "state": "player-commands",
+          "stage": {
+            "x": 236.390625,
+            "y": 263.84375,
+            "width": 558.21875,
+            "height": 720
+          },
+          "pixelMetrics": {
+            "cssWidth": 556,
+            "cssHeight": 718,
+            "logicalWidth": 556,
+            "logicalHeight": 718,
+            "dpr": 1
+          }
+        },
+        {
+          "width": 820,
+          "state": "player-reconnect-attempt",
+          "stage": {
+            "x": 236.390625,
+            "y": 263.84375,
+            "width": 558.21875,
+            "height": 720
+          },
+          "pixelMetrics": {
+            "cssWidth": 556,
+            "cssHeight": 718,
+            "logicalWidth": 556,
+            "logicalHeight": 718,
+            "dpr": 1
+          }
+        },
+        {
+          "width": 820,
+          "state": "player-tactics",
+          "stage": {
+            "x": 236.390625,
+            "y": 338.625,
+            "width": 558.21875,
+            "height": 720
+          },
+          "pixelMetrics": {
+            "cssWidth": 556,
+            "cssHeight": 718,
+            "logicalWidth": 556,
+            "logicalHeight": 718,
+            "dpr": 1
+          }
+        },
+        {
+          "width": 820,
+          "state": "player-tactics-idle",
+          "stage": {
+            "x": 236.390625,
+            "y": 338.625,
+            "width": 558.21875,
+            "height": 720
+          },
+          "pixelMetrics": {
+            "cssWidth": 556,
+            "cssHeight": 718,
+            "logicalWidth": 556,
+            "logicalHeight": 718,
+            "dpr": 1
+          }
+        },
+        {
+          "width": 1440,
+          "state": "player-view",
+          "stage": {
+            "x": 280,
+            "y": 297.390625,
+            "width": 1127,
+            "height": 720
+          },
+          "pixelMetrics": {
+            "cssWidth": 1125,
+            "cssHeight": 718,
+            "logicalWidth": 1125,
+            "logicalHeight": 718,
+            "dpr": 1
+          }
+        },
+        {
+          "width": 1440,
+          "state": "player-commands",
+          "stage": {
+            "x": 280,
+            "y": 297.390625,
+            "width": 1127,
+            "height": 720
+          },
+          "pixelMetrics": {
+            "cssWidth": 1125,
+            "cssHeight": 718,
+            "logicalWidth": 1125,
+            "logicalHeight": 718,
+            "dpr": 1
+          }
+        },
+        {
+          "width": 1440,
+          "state": "player-reconnect-attempt",
+          "stage": {
+            "x": 280,
+            "y": 297.390625,
+            "width": 1127,
+            "height": 720
+          },
+          "pixelMetrics": {
+            "cssWidth": 1125,
+            "cssHeight": 718,
+            "logicalWidth": 1125,
+            "logicalHeight": 718,
+            "dpr": 1
+          }
+        },
+        {
+          "width": 1440,
+          "state": "player-tactics",
+          "stage": {
+            "x": 280,
+            "y": 364.171875,
+            "width": 1127,
+            "height": 720
+          },
+          "pixelMetrics": {
+            "cssWidth": 1125,
+            "cssHeight": 718,
+            "logicalWidth": 1125,
+            "logicalHeight": 718,
+            "dpr": 1
+          }
+        },
+        {
+          "width": 1440,
+          "state": "player-tactics-idle",
+          "stage": {
+            "x": 280,
+            "y": 364.171875,
+            "width": 1127,
+            "height": 720
+          },
+          "pixelMetrics": {
+            "cssWidth": 1125,
+            "cssHeight": 718,
+            "logicalWidth": 1125,
+            "logicalHeight": 718,
+            "dpr": 1
+          }
+        }
+      ]
+    },
+    "highDensityAndResize": {
+      "commit": "1555c9b5f806bf11bd7d9c44d191212adaa3c0c6",
+      "states": 8,
+      "outcome": "passed",
+      "captures": [
+        {
+          "width": 320,
+          "state": "play",
+          "stage": {
+            "x": 20.796875,
+            "y": 278.25,
+            "width": 278.40625,
+            "height": 580
+          },
+          "pixelMetrics": {
+            "cssWidth": 260.03125,
+            "cssHeight": 494.421875,
+            "logicalWidth": 260,
+            "logicalHeight": 494,
+            "dpr": 2
+          }
+        },
+        {
+          "width": 320,
+          "state": "pointer-selection",
+          "stage": {
+            "x": 20.796875,
+            "y": 278.25,
+            "width": 278.40625,
+            "height": 580
+          },
+          "pixelMetrics": {
+            "cssWidth": 260.03125,
+            "cssHeight": 494.421875,
+            "logicalWidth": 260,
+            "logicalHeight": 494,
+            "dpr": 2
+          }
+        },
+        {
+          "width": 320,
+          "state": "projection",
+          "stage": {
+            "x": 20.796875,
+            "y": 278.25,
+            "width": 278.40625,
+            "height": 580
+          },
+          "pixelMetrics": {
+            "cssWidth": 260.03125,
+            "cssHeight": 494.421875,
+            "logicalWidth": 260,
+            "logicalHeight": 494,
+            "dpr": 2
+          }
+        },
+        {
+          "width": 1440,
+          "state": "play",
+          "stage": {
+            "x": 276.796875,
+            "y": 234.640625,
+            "width": 1133.40625,
+            "height": 720
+          },
+          "pixelMetrics": {
+            "cssWidth": 1107.8125,
+            "cssHeight": 630.8125,
+            "logicalWidth": 1108,
+            "logicalHeight": 631,
+            "dpr": 2
+          }
+        },
+        {
+          "width": 1440,
+          "state": "pointer-selection",
+          "stage": {
+            "x": 276.796875,
+            "y": 234.640625,
+            "width": 1133.40625,
+            "height": 720
+          },
+          "pixelMetrics": {
+            "cssWidth": 1107.8125,
+            "cssHeight": 630.8125,
+            "logicalWidth": 1108,
+            "logicalHeight": 631,
+            "dpr": 2
+          }
+        },
+        {
+          "width": 1440,
+          "state": "projection",
+          "stage": {
+            "x": 276.796875,
+            "y": 234.640625,
+            "width": 1133.40625,
+            "height": 720
+          },
+          "pixelMetrics": {
+            "cssWidth": 1107.8125,
+            "cssHeight": 630.8125,
+            "logicalWidth": 1108,
+            "logicalHeight": 631,
+            "dpr": 2
+          }
+        },
+        {
+          "width": 1440,
+          "state": "resize-compact-editor",
+          "stage": {
+            "x": 240.796875,
+            "y": 319.640625,
+            "width": 549.40625,
+            "height": 720
+          },
+          "pixelMetrics": {
+            "cssWidth": 1107.8125,
+            "cssHeight": 630.8125,
+            "logicalWidth": 1108,
+            "logicalHeight": 631,
+            "dpr": 2
+          }
+        },
+        {
+          "width": 1440,
+          "state": "resize-wide-editor",
+          "stage": {
+            "x": 276.796875,
+            "y": 316.828125,
+            "width": 753.40625,
+            "height": 720
+          },
+          "pixelMetrics": {
+            "cssWidth": 1107.8125,
+            "cssHeight": 630.8125,
+            "logicalWidth": 1108,
+            "logicalHeight": 631,
+            "dpr": 2
+          }
+        }
+      ]
+    },
+    "nexus": {
+      "commit": "1555c9b5f806bf11bd7d9c44d191212adaa3c0c6",
+      "viewports": [
+        {
+          "width": 320,
+          "nodes": 120,
+          "longReading": false,
+          "conflictReview": true,
+          "axis": "vertical",
+          "rememberedSize": 52.98,
+          "continuity": {
+            "stableEditor": true,
+            "lastTabClosed": true,
+            "explicitReopen": true,
+            "keyboardResize": true,
+            "pointerResize": true,
+            "modeAndSizeRestored": true
+          },
+          "treeRows": 30,
+          "overflow": false,
+          "errors": [],
+          "backendRequests": 134
+        },
+        {
+          "width": 390,
+          "nodes": 120,
+          "longReading": false,
+          "conflictReview": true,
+          "axis": "vertical",
+          "rememberedSize": 52.98,
+          "continuity": {
+            "stableEditor": true,
+            "lastTabClosed": true,
+            "explicitReopen": true,
+            "keyboardResize": true,
+            "pointerResize": true,
+            "modeAndSizeRestored": true
+          },
+          "treeRows": 30,
+          "overflow": false,
+          "errors": [],
+          "backendRequests": 134
+        },
+        {
+          "width": 820,
+          "nodes": 120,
+          "longReading": false,
+          "conflictReview": true,
+          "axis": "vertical",
+          "rememberedSize": 52.98,
+          "continuity": {
+            "stableEditor": true,
+            "lastTabClosed": true,
+            "explicitReopen": true,
+            "keyboardResize": true,
+            "pointerResize": true,
+            "modeAndSizeRestored": true
+          },
+          "treeRows": 30,
+          "overflow": false,
+          "errors": [],
+          "backendRequests": 134
+        },
+        {
+          "width": 1440,
+          "nodes": 120,
+          "longReading": false,
+          "conflictReview": true,
+          "axis": "horizontal",
+          "rememberedSize": 51.85,
+          "continuity": {
+            "stableEditor": true,
+            "lastTabClosed": true,
+            "explicitReopen": true,
+            "keyboardResize": true,
+            "pointerResize": true,
+            "modeAndSizeRestored": true
+          },
+          "treeRows": 30,
+          "overflow": false,
+          "errors": [],
+          "backendRequests": 136
+        }
+      ],
+      "outcome": "passed"
+    },
+    "finalMasterComposition": {
+      "commit": "5893bd75b78c69ecf58d2df7ebe4c8142bff391c",
+      "states": 8,
+      "outcome": "passed",
+      "captures": [
+        {
+          "width": 320,
+          "state": "play",
+          "stage": {
+            "x": 20.796875,
+            "y": 278.25,
+            "width": 278.40625,
+            "height": 580
+          },
+          "pixelMetrics": {
+            "cssWidth": 260.03125,
+            "cssHeight": 494.421875,
+            "logicalWidth": 260,
+            "logicalHeight": 494,
+            "dpr": 1
+          }
+        },
+        {
+          "width": 320,
+          "state": "edit",
+          "stage": {
+            "x": 20.796875,
+            "y": 332.25,
+            "width": 278.40625,
+            "height": 580
+          },
+          "pixelMetrics": {
+            "cssWidth": 260.03125,
+            "cssHeight": 494.421875,
+            "logicalWidth": 260,
+            "logicalHeight": 494,
+            "dpr": 1
+          }
+        },
+        {
+          "width": 390,
+          "state": "play",
+          "stage": {
+            "x": 20.796875,
+            "y": 278.25,
+            "width": 339.40625,
+            "height": 580
+          },
+          "pixelMetrics": {
+            "cssWidth": 321.03125,
+            "cssHeight": 494.421875,
+            "logicalWidth": 321,
+            "logicalHeight": 494,
+            "dpr": 1
+          }
+        },
+        {
+          "width": 390,
+          "state": "edit",
+          "stage": {
+            "x": 20.796875,
+            "y": 332.25,
+            "width": 339.40625,
+            "height": 580
+          },
+          "pixelMetrics": {
+            "cssWidth": 321.03125,
+            "cssHeight": 494.421875,
+            "logicalWidth": 321,
+            "logicalHeight": 494,
+            "dpr": 1
+          }
+        },
+        {
+          "width": 820,
+          "state": "play",
+          "stage": {
+            "x": 240.796875,
+            "y": 234.640625,
+            "width": 549.40625,
+            "height": 720
+          },
+          "pixelMetrics": {
+            "cssWidth": 531.03125,
+            "cssHeight": 634.421875,
+            "logicalWidth": 531,
+            "logicalHeight": 634,
+            "dpr": 1
+          }
+        },
+        {
+          "width": 820,
+          "state": "edit",
+          "stage": {
+            "x": 240.796875,
+            "y": 319.640625,
+            "width": 549.40625,
+            "height": 720
+          },
+          "pixelMetrics": {
+            "cssWidth": 531.03125,
+            "cssHeight": 634.421875,
+            "logicalWidth": 531,
+            "logicalHeight": 634,
+            "dpr": 1
+          }
+        },
+        {
+          "width": 1440,
+          "state": "play",
+          "stage": {
+            "x": 276.796875,
+            "y": 234.640625,
+            "width": 1133.40625,
+            "height": 720
+          },
+          "pixelMetrics": {
+            "cssWidth": 1107.8125,
+            "cssHeight": 630.8125,
+            "logicalWidth": 1108,
+            "logicalHeight": 631,
+            "dpr": 1
+          }
+        },
+        {
+          "width": 1440,
+          "state": "edit",
+          "stage": {
+            "x": 276.796875,
+            "y": 316.828125,
+            "width": 753.40625,
+            "height": 720
+          },
+          "pixelMetrics": {
+            "cssWidth": 1107.8125,
+            "cssHeight": 630.8125,
+            "logicalWidth": 1108,
+            "logicalHeight": 631,
+            "dpr": 1
+          }
+        }
+      ],
+      "resourceMenu": {
+        "audioToggle": true,
+        "escape": true,
+        "focusReturn": true,
+        "widths": [320, 390, 820, 1440]
+      }
+    },
+    "reconciliation": "Os 68 estados completos do mestre precedem as correções posteriores de apresentação do jogador e a guarda de inicialização. A composição do mestre e os caminhos de câmera/resize foram repetidos na fonte final; os testes do portal mantêm o alvo padrão e o novo slot auxiliar. A revisão final também reúne recursos do mestre em Popover e retira o bloco tático sem seleção. O jogador mantém a composição e contratos verificados em 1555c9b.",
+    "environment": "Chromium headless com SwiftShader, fontes reais de fixture; cada viewport usa uma nova instância. Redução de movimento em 320/390/820px e preferência normal em 1440px.",
+    "captureLimits": "Timeouts de screenshot não foram contados como êxito funcional. A etapa funcional foi repetida sem capturas quando necessário; imagens foram inspecionadas separadamente. PixelMetrics registra o canvas inicial de cada viewport; as mudanças de tamanho e a seleção são verificadas pelo fluxo."
+  },
+  "verifiedAt": "2026-10-16T02:31:35.526220+00:00",
+  "integration": {
+    "state": "pending",
+    "pullRequest": "https://github.com/Gabriel2069/tadeon-nexus/pull/275"
+  },
+  "visualReview": [
+    "Mesa: 320px Jogar, 390px editor, 1440px Jogar/editor; repetição final em quatro larguras.",
+    "Jogador: conexão e ações táticas em 320/820px, desktop e comandos; imagens separadas da conclusão funcional."
+  ]
 }
