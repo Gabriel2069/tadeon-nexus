@@ -1,7 +1,10 @@
 {
   "schemaVersion": 1,
-  "tasks": ["NEX-007", "NEX-021"],
-  "status": "validated",
+  "tasks": [
+    "NEX-007",
+    "NEX-021"
+  ],
+  "status": "integrated",
   "base": "66acb8efc0cbf3d5d68b98a7984b0c04d4ff60b2",
   "validation": {
     "state": "passed",
@@ -83,7 +86,10 @@
       "Inicialização: escolha de ferramenta com renderer pendente",
       "Portal auxiliar: slot explícito do workspace"
     ],
-    "browserScripts": ["scripts/verify-tabletop-workspace.mjs", "scripts/verify-nexus-reading.mjs"],
+    "browserScripts": [
+      "scripts/verify-tabletop-workspace.mjs",
+      "scripts/verify-nexus-reading.mjs"
+    ],
     "fixtureIsolation": "HTTP do backend interceptado; WebSockets fechados de propósito. Nenhuma campanha real foi alterada.",
     "saveActivation": "Primeiro save usa o debounce real; a aceitação da edição posterior pode ocorrer por autosave ou ativação DOM síncrona do botão, precedida de hit-test. O payload e a versão recebidos são conferidos.",
     "pixelCoordinates": "Tamanho CSS comparado ao renderer lógico; seleção por clique real usando conversão mundo/tela; 2D/3D conferidos pelo runtime."
@@ -1506,7 +1512,12 @@
         "audioToggle": true,
         "escape": true,
         "focusReturn": true,
-        "widths": [320, 390, 820, 1440]
+        "widths": [
+          320,
+          390,
+          820,
+          1440
+        ]
       }
     },
     "reconciliation": "Os 68 estados completos do mestre precedem as correções posteriores de apresentação do jogador e a guarda de inicialização. A composição do mestre e os caminhos de câmera/resize foram repetidos na fonte final; os testes do portal mantêm o alvo padrão e o novo slot auxiliar. A revisão final também reúne recursos do mestre em Popover e retira o bloco tático sem seleção. O jogador mantém a composição e contratos verificados em 1555c9b.",
@@ -1515,11 +1526,28 @@
   },
   "verifiedAt": "2026-10-16T02:31:35.526220+00:00",
   "integration": {
-    "state": "pending",
+    "pr": 275,
+    "branch": "codex/nex-007-tabletop-workspace",
+    "base": "main",
+    "baseCommit": "66acb8efc0cbf3d5d68b98a7984b0c04d4ff60b2",
+    "sourceCommit": "5893bd75b78c69ecf58d2df7ebe4c8142bff391c",
+    "state": "integrated",
+    "sourceQualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38840403462",
+    "production": "confirmed",
+    "headCommit": "9304720bee3b3130a2c697815f496de53b46df3c",
+    "mergeCommit": "269e408cf2886153e24a7c59d9e96f1b910fd053",
+    "qualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38840950329",
+    "mainQualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38841186355",
+    "productionEvidence": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38841186367",
+    "productionCommit": "269e408cf2886153e24a7c59d9e96f1b910fd053",
+    "productionVerifiedAt": "2026-10-16T02:37:13.8743476Z",
+    "productionHttpStatus": 200,
+    "workerVersion": "31c82f06-c793-40c2-b5a0-cdf1e852ce72",
     "pullRequest": "https://github.com/Gabriel2069/tadeon-nexus/pull/275"
   },
   "visualReview": [
     "Mesa: 320px Jogar, 390px editor, 1440px Jogar/editor; repetição final em quatro larguras.",
     "Jogador: conexão e ações táticas em 320/820px, desktop e comandos; imagens separadas da conclusão funcional."
-  ]
+  ],
+  "documentationClosure": "A prova da consolidação documental fica no corpo da respectiva PR, sem exigir um commit que registre a própria publicação."
 }

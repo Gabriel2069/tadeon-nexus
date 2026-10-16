@@ -1,16 +1,25 @@
 {
   "version": 1,
   "checkedAt": "2026-10-16",
-  "runtimeReference": "6f954c40df4b5611ef130818e97e79c12badd1c9",
+  "runtimeReference": "269e408cf2886153e24a7c59d9e96f1b910fd053",
   "integration": {
     "pr": 275,
     "branch": "codex/nex-007-tabletop-workspace",
     "base": "main",
     "baseCommit": "66acb8efc0cbf3d5d68b98a7984b0c04d4ff60b2",
     "sourceCommit": "5893bd75b78c69ecf58d2df7ebe4c8142bff391c",
-    "state": "validated",
+    "state": "integrated",
     "sourceQualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38840403462",
-    "production": "pending"
+    "production": "confirmed",
+    "headCommit": "9304720bee3b3130a2c697815f496de53b46df3c",
+    "mergeCommit": "269e408cf2886153e24a7c59d9e96f1b910fd053",
+    "qualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38840950329",
+    "mainQualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38841186355",
+    "productionEvidence": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38841186367",
+    "productionCommit": "269e408cf2886153e24a7c59d9e96f1b910fd053",
+    "productionVerifiedAt": "2026-10-16T02:37:13.8743476Z",
+    "productionHttpStatus": 200,
+    "workerVersion": "31c82f06-c793-40c2-b5a0-cdf1e852ce72"
   },
   "domains": [
     {
@@ -494,7 +503,7 @@
       "id": "NEX-007",
       "title": "Mesa: hierarquia de ferramentas e workspace",
       "domain": "tabletop",
-      "status": "validated",
+      "status": "integrated",
       "priority": 6,
       "dependsOn": [
         "NEX-004",
@@ -755,7 +764,7 @@
       "id": "NEX-021",
       "title": "Nexus: contexto da página e passagem para a Mesa",
       "domain": "knowledge",
-      "status": "validated",
+      "status": "integrated",
       "priority": 5,
       "dependsOn": [
         "NEX-015"
@@ -773,7 +782,7 @@
       "id": "NEX-022",
       "title": "Mesa: persistência e projeção da cor-base personalizada",
       "domain": "tabletop",
-      "status": "planned",
+      "status": "ready",
       "priority": 7,
       "dependsOn": [
         "NEX-007"
