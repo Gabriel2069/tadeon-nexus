@@ -120,41 +120,41 @@ body:has(.tadeon-tabletop-studio) :where(
 }
 
 .tadeon-toaster [data-sonner-toast].tadeon-toast {
-  border: 1px solid hsl(var(--border) / .92) !important;
-  background: hsl(var(--popover) / .985) !important;
-  color: hsl(var(--popover-foreground)) !important;
+  border: 1px solid color-mix(in srgb, var(--border) 92%, transparent) !important;
+  background: color-mix(in srgb, var(--popover) 98.5%, transparent) !important;
+  color: var(--popover-foreground) !important;
   box-shadow: 0 24px 72px -28px rgb(0 0 0 / .88) !important;
   backdrop-filter: blur(18px) saturate(1.08);
 }
 
 .tadeon-toast__title {
-  color: hsl(var(--popover-foreground)) !important;
+  color: var(--popover-foreground) !important;
 }
 
 .tadeon-toast__description {
-  color: color-mix(in srgb, hsl(var(--popover-foreground)) 72%, transparent) !important;
+  color: color-mix(in srgb, var(--popover-foreground) 72%, transparent) !important;
 }
 
 .tadeon-toast__icon,
 .tadeon-toast__close {
-  color: hsl(var(--foreground)) !important;
+  color: var(--foreground) !important;
 }
 
 .tadeon-toast__action {
-  border: 1px solid hsl(var(--primary) / .3) !important;
-  background: hsl(var(--primary) / .14) !important;
-  color: hsl(var(--foreground)) !important;
+  border: 1px solid color-mix(in srgb, var(--primary) 30%, transparent) !important;
+  background: color-mix(in srgb, var(--primary) 14.000000000000002%, transparent) !important;
+  color: var(--foreground) !important;
 }
 
 .tadeon-toast__cancel {
-  color: hsl(var(--foreground)) !important;
-  background: hsl(var(--secondary) / .72) !important;
+  color: var(--foreground) !important;
+  background: color-mix(in srgb, var(--secondary) 72%, transparent) !important;
 }
 
 .tadeon-toast--success .tadeon-toast__icon { color: hsl(145 62% 58%) !important; }
 .tadeon-toast--warning .tadeon-toast__icon { color: hsl(42 88% 62%) !important; }
-.tadeon-toast--error .tadeon-toast__icon { color: hsl(var(--destructive)) !important; }
-.tadeon-toast--info .tadeon-toast__icon { color: hsl(var(--primary)) !important; }
+.tadeon-toast--error .tadeon-toast__icon { color: var(--destructive) !important; }
+.tadeon-toast--info .tadeon-toast__icon { color: var(--primary) !important; }
 
 /* Motion mínimo compartilhado para ícones que não têm coreografia própria.
    Usa propriedades independentes para não disputar `transform` de Radix ou
@@ -430,11 +430,11 @@ body:has(.tadeon-tabletop-studio) {
 .tadeon-route-nexus .tadeon-nexus-tools > button:last-child svg,
 .tadeon-route-nexus .tadeon-nexus-tools > button:last-child span { opacity: 1 !important; visibility: visible !important; }
 
-.tadeon-nexus-folderbar { display: flex; gap: .35rem; margin-top: .65rem; padding: .35rem; overflow-x: auto; border: 1px solid hsl(var(--border) / .55); border-radius: .75rem; background: hsl(var(--background) / .18); scrollbar-width: none; }
+.tadeon-nexus-folderbar { display: flex; gap: .35rem; margin-top: .65rem; padding: .35rem; overflow-x: auto; border: 1px solid color-mix(in srgb, var(--border) 55.00000000000001%, transparent); border-radius: .75rem; background: hsl(var(--background) / .18); scrollbar-width: none; }
 .tadeon-nexus-folderbar::-webkit-scrollbar { display: none; }
 .tadeon-nexus-folderbar button { display: inline-flex; flex: 0 0 auto; min-height: 1.9rem; align-items: center; gap: .3rem; border-radius: .55rem; padding: .3rem .55rem; color: hsl(var(--muted-foreground)); font-size: .64rem; font-weight: 700; transition: transform 150ms ease, color 150ms ease, background-color 150ms ease; }
-.tadeon-nexus-folderbar button:hover { transform: translateY(-1px); color: hsl(var(--foreground)); }
-.tadeon-nexus-folderbar button[aria-pressed="true"] { background: hsl(var(--primary) / .12); color: hsl(var(--foreground)); box-shadow: inset 0 0 0 1px hsl(var(--primary) / .24); }
+.tadeon-nexus-folderbar button:hover { transform: translateY(-1px); color: var(--foreground); }
+.tadeon-nexus-folderbar button[aria-pressed="true"] { background: color-mix(in srgb, var(--primary) 12%, transparent); color: var(--foreground); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--primary) 24%, transparent); }
 .tadeon-nexus-folderbar button small { opacity: .62; font-size: .58rem; }
 .tadeon-nexus-index__node[data-folder-hidden="true"] { display: none !important; }
 .tadeon-brain-canvas,
@@ -570,16 +570,16 @@ body:has(.tadeon-tabletop-studio) {
 .tadeon-rename-popover {
   position:absolute; z-index:12; top:calc(100% + .5rem); right:0; display:grid;
   width:min(21rem,calc(100vw - 2rem)); gap:.55rem; padding:.7rem;
-  border:1px solid hsl(var(--border)/.78); border-radius:.85rem;
-  background:hsl(var(--popover)/.98); box-shadow:0 28px 70px -35px rgb(0 0 0/95%);
+  border:1px solid color-mix(in srgb, var(--border) 78%, transparent); border-radius:.85rem;
+  background:color-mix(in srgb, var(--popover) 98%, transparent); box-shadow:0 28px 70px -35px rgb(0 0 0/95%);
   backdrop-filter:blur(18px) saturate(1.08); animation:tadeon-final-pop-in 170ms cubic-bezier(.2,.8,.2,1) both;
 }
 .tadeon-rename-popover header { display:grid; grid-template-columns:1.6rem minmax(0,1fr) 2rem; align-items:center; gap:.45rem; }
-.tadeon-rename-popover header>svg { width:1rem; height:1rem; color:hsl(var(--primary)); }
+.tadeon-rename-popover header>svg { width:1rem; height:1rem; color:var(--primary); }
 .tadeon-rename-popover header :is(small,strong) { display:block; }
 .tadeon-rename-popover header small { color:hsl(var(--muted-foreground)); font-size:.56rem; text-transform:uppercase; letter-spacing:.08em; }
 .tadeon-rename-popover header strong { font-family:var(--font-cinzel); font-size:.82rem; }
-.tadeon-rename-popover select { width:100%; min-height:2.25rem; border:1px solid hsl(var(--border)); border-radius:.55rem; padding:.35rem .55rem; color:hsl(var(--foreground)); background:hsl(var(--background)); font-size:.68rem; }
+.tadeon-rename-popover select { width:100%; min-height:2.25rem; border:1px solid var(--border); border-radius:.55rem; padding:.35rem .55rem; color:var(--foreground); background:hsl(var(--background)); font-size:.68rem; }
 
 /* Radial trigger stays screen-space sized and pinned above its subject. */
 .tadeon-radial-trigger {
@@ -588,7 +588,7 @@ body:has(.tadeon-tabletop-studio) {
   translate:-50% calc(-100% - .7rem) !important;
   transform:none !important;
   transform-origin:50% 100% !important;
-  box-shadow:0 10px 32px -16px hsl(var(--primary)/.75),0 0 0 1px hsl(var(--border)/.7) !important;
+  box-shadow:0 10px 32px -16px color-mix(in srgb, var(--primary) 75%, transparent),0 0 0 1px color-mix(in srgb, var(--border) 70%, transparent) !important;
 }
 .tadeon-radial-trigger svg { width:.92rem !important; height:.92rem !important; }
 
@@ -620,18 +620,18 @@ body:has(.tadeon-tabletop-studio) {
 
 /* Bring the luminous Mesa dossier language back to the principal sheet. */
 .tadeon-sheet-page :is(input,textarea,[role="combobox"],[data-slot="select-trigger"]) {
-  border-color:hsl(var(--border)/.78);
+  border-color:color-mix(in srgb, var(--border) 78%, transparent);
   background:linear-gradient(180deg,hsl(var(--background)/.86),hsl(var(--background)/.7));
-  box-shadow:inset 0 1px hsl(0 0% 100%/.025),0 10px 26px -24px hsl(var(--primary)/.55);
+  box-shadow:inset 0 1px hsl(0 0% 100%/.025),0 10px 26px -24px color-mix(in srgb, var(--primary) 55.00000000000001%, transparent);
   transition:border-color 180ms ease,box-shadow 180ms ease,background-color 180ms ease,transform 180ms ease;
 }
 .tadeon-sheet-page :is(input,textarea,[role="combobox"],[data-slot="select-trigger"]):focus,
 .tadeon-sheet-page :is(input,textarea,[role="combobox"],[data-slot="select-trigger"]):focus-visible {
-  border-color:hsl(var(--primary)/.48) !important;
-  box-shadow:0 0 0 1px hsl(var(--primary)/.16),0 0 24px -11px hsl(var(--primary)/.72),inset 0 1px hsl(0 0% 100%/.04) !important;
+  border-color:color-mix(in srgb, var(--primary) 48%, transparent) !important;
+  box-shadow:0 0 0 1px color-mix(in srgb, var(--primary) 16%, transparent),0 0 24px -11px color-mix(in srgb, var(--primary) 72%, transparent),inset 0 1px hsl(0 0% 100%/.04) !important;
 }
 .tadeon-sheet-page :is(.tadeon-surface,[data-slot="card"]) {
-  background-image:radial-gradient(circle at 100% 0%,hsl(var(--primary)/.055),transparent 13rem),linear-gradient(145deg,hsl(0 0% 100%/.015),transparent 48%);
+  background-image:radial-gradient(circle at 100% 0%,color-mix(in srgb, var(--primary) 5.5%, transparent),transparent 13rem),linear-gradient(145deg,hsl(0 0% 100%/.015),transparent 48%);
   background-blend-mode:screen,normal;
 }
 
@@ -675,21 +675,21 @@ body:has(.tadeon-tabletop-studio) {
 
 /* Exposição and Equilíbrio get deeper, more readable bars. */
 #equilibrio,#exposicao {
-  overflow:visible; border-color:hsl(var(--primary)/.18);
-  background:radial-gradient(circle at 94% 5%,hsl(var(--primary)/.11),transparent 12rem),linear-gradient(145deg,hsl(var(--card)/.78),hsl(var(--card)/.64));
-  box-shadow:0 20px 52px -46px hsl(var(--primary)/.72),inset 0 1px hsl(0 0% 100%/.025);
+  overflow:visible; border-color:color-mix(in srgb, var(--primary) 18%, transparent);
+  background:radial-gradient(circle at 94% 5%,color-mix(in srgb, var(--primary) 11%, transparent),transparent 12rem),linear-gradient(145deg,hsl(var(--card)/.78),hsl(var(--card)/.64));
+  box-shadow:0 20px 52px -46px color-mix(in srgb, var(--primary) 72%, transparent),inset 0 1px hsl(0 0% 100%/.025);
 }
 #equilibrio :is([role="progressbar"],div[class*="rounded-full"][class*="overflow-hidden"]),
 #exposicao :is([role="progressbar"],div[class*="rounded-full"][class*="overflow-hidden"]) {
   position:relative;
   min-height:.72rem;
-  border:1px solid hsl(var(--border)/.5);
+  border:1px solid color-mix(in srgb, var(--border) 50%, transparent);
   background:hsl(var(--background)/.72);
-  box-shadow:inset 0 2px 5px rgb(0 0 0/52%),0 0 20px -8px hsl(var(--primary)/.76);
+  box-shadow:inset 0 2px 5px rgb(0 0 0/52%),0 0 20px -8px color-mix(in srgb, var(--primary) 76%, transparent);
 }
 #equilibrio :is([role="progressbar"],div[class*="rounded-full"][class*="overflow-hidden"]) > *,
 #exposicao :is([role="progressbar"],div[class*="rounded-full"][class*="overflow-hidden"]) > * {
-  box-shadow:0 0 18px -5px hsl(var(--primary)/.82),inset 0 1px hsl(0 0% 100%/.16);
+  box-shadow:0 0 18px -5px color-mix(in srgb, var(--primary) 82%, transparent),inset 0 1px hsl(0 0% 100%/.16);
   transition:width 420ms cubic-bezier(.2,.8,.2,1),transform 180ms ease,filter 180ms ease;
 }
 
@@ -700,21 +700,21 @@ body:has(.tadeon-tabletop-studio) {
 
 /* Training popover: actual two-tab experience; modifier view replaces training body. */
 .tadeon-skill-modifier-bridge { margin:-.75rem -.75rem .65rem; }
-.tadeon-skill-modifier-tabs { display:grid; grid-template-columns:1fr 1fr; gap:.2rem; padding:.3rem; border-bottom:1px solid hsl(var(--border)/.62); background:hsl(var(--secondary)/.28); }
+.tadeon-skill-modifier-tabs { display:grid; grid-template-columns:1fr 1fr; gap:.2rem; padding:.3rem; border-bottom:1px solid color-mix(in srgb, var(--border) 62%, transparent); background:color-mix(in srgb, var(--secondary) 28.000000000000004%, transparent); }
 .tadeon-skill-modifier-tabs button { display:inline-flex; min-height:2rem; align-items:center; justify-content:center; gap:.32rem; border-radius:.5rem; color:hsl(var(--muted-foreground)); font-size:.66rem; font-weight:700; transition:color 160ms ease,background-color 160ms ease,box-shadow 160ms ease,transform 160ms ease; }
 .tadeon-skill-modifier-tabs button:hover { transform:translateY(-1px); }
-.tadeon-skill-modifier-tabs button[aria-selected="true"] { color:hsl(var(--foreground)); background:hsl(var(--primary)/.1); box-shadow:inset 0 0 0 1px hsl(var(--primary)/.24),0 10px 22px -18px hsl(var(--primary)/.72); }
+.tadeon-skill-modifier-tabs button[aria-selected="true"] { color:var(--foreground); background:color-mix(in srgb, var(--primary) 10%, transparent); box-shadow:inset 0 0 0 1px color-mix(in srgb, var(--primary) 24%, transparent),0 10px 22px -18px color-mix(in srgb, var(--primary) 72%, transparent); }
 .tadeon-skill-modifier-tabs svg { width:.75rem; height:.75rem; }
 [data-slot="popover-content"][data-modifier-tab="modifiers"]>:not([data-tadeon-skill-modifier-host]) { display:none !important; }
 .tadeon-skill-modifier-panel { padding:.8rem .8rem .2rem; }
 .tadeon-skill-modifier-panel header { display:flex; align-items:center; gap:.55rem; margin-bottom:.75rem; }
-.tadeon-skill-modifier-panel header>svg { width:1rem; height:1rem; color:hsl(var(--primary)); }
+.tadeon-skill-modifier-panel header>svg { width:1rem; height:1rem; color:var(--primary); }
 .tadeon-skill-modifier-panel header :is(strong,small) { display:block; }
 .tadeon-skill-modifier-panel :is(header small,label small,.tadeon-skill-modifier-passive small) { color:hsl(var(--muted-foreground)); font-size:.61rem; line-height:1.4; }
 .tadeon-skill-modifier-panel label>span,.tadeon-skill-modifier-passive>span { display:block; margin-bottom:.3rem; font-size:.62rem; font-weight:700; }
-.tadeon-skill-modifier-passive { margin-top:.65rem; padding:.65rem; border:1px solid hsl(var(--border)/.6); border-radius:.65rem; background:hsl(var(--secondary)/.28); }
-.tadeon-skill-modifier-passive strong { float:right; color:hsl(var(--primary)); }
-.tadeon-skill-modifier-panel footer { margin-top:.7rem; padding-top:.55rem; border-top:1px solid hsl(var(--border)/.55); font-size:.66rem; }
+.tadeon-skill-modifier-passive { margin-top:.65rem; padding:.65rem; border:1px solid color-mix(in srgb, var(--border) 60%, transparent); border-radius:.65rem; background:color-mix(in srgb, var(--secondary) 28.000000000000004%, transparent); }
+.tadeon-skill-modifier-passive strong { float:right; color:var(--primary); }
+.tadeon-skill-modifier-panel footer { margin-top:.7rem; padding-top:.55rem; border-top:1px solid color-mix(in srgb, var(--border) 55.00000000000001%, transparent); font-size:.66rem; }
 
 @keyframes tadeon-final-pop-in { from{opacity:0;transform:translateY(-5px) scale(.98)} to{opacity:1;transform:none} }
 @keyframes tadeon-condition-breathe { from{opacity:.26;transform:scale(.998)} to{opacity:.58;transform:scale(1.002)} }

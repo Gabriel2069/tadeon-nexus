@@ -1,0 +1,27 @@
+{
+  "tasks": [
+    "NEX-022",
+    "NEX-023"
+  ],
+  "status": "in_progress",
+  "base": "f726d0b2e0c3a49aeb981c9e0a5f4a467a8228b9",
+  "checkedAt": "2026-10-16",
+  "research": "docs/DESIGN.md#evolução-de-sistema--nex-023-16102026",
+  "validation": {
+    "localCheck": {
+      "status": "passed",
+      "suites": 141,
+      "tests": 588,
+      "note": "Antes da adição do teste de ordem jsonb; repetição final pendente."
+    },
+    "audit": {
+      "status": "passed",
+      "vulnerabilities": 0
+    }
+  },
+  "limits": [
+    "Fixtures não são contas reais ou prova de RLS.",
+    "Renderização CSS/vetor não equivale ao Liquid Glass nativo ou simulação física de tecido.",
+    "Nenhum ensaio de hardware físico ou leitor de tela nativo nesta etapa."
+  ]
+}

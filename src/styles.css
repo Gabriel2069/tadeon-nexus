@@ -48,7 +48,16 @@
   --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
   --motion-press: 140ms;
   --motion-fast: 180ms;
-  --motion-panel: 240ms;
+  --motion-panel: 260ms;
+  --motion-exit: 150ms;
+  --radius-panel: 1.35rem;
+  --radius-control: .85rem;
+  --surface-ink: #13171d;
+  --surface-raised: #20262e;
+  --material-edge: rgb(233 227 213 / 18%);
+  --material-crest: rgb(255 249 232 / 22%);
+  --shadow-relief: inset 0 1px 0 rgb(255 249 232 / 14%), inset 0 -1px 0 rgb(0 0 0 / 55%), 0 2px 3px rgb(0 0 0 / 22%), 0 20px 44px -28px rgb(0 0 0 / 80%);
+  --shadow-float: inset 0 1px 0 rgb(255 249 232 / 24%), inset 0 -1px 0 rgb(255 255 255 / 4%), 0 1px 3px rgb(0 0 0 / 35%), 0 24px 70px -22px rgb(0 0 0 / 85%);
 
   /* Fio-Mestre identity: Vazio, Reflexo, Tinta, Véu and neutral Metal. */
   --background: #080a0e;

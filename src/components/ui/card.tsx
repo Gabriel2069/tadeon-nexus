@@ -1,25 +1,40 @@
 import * as React from "react";
 
+import { useMaterialLight } from "@/lib/use-material-light";
 import { cn } from "@/lib/utils";
 
 const Card = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
-  ({ className, ...props }, ref) => (
-    <div
-      ref={ref}
-      data-slot="card"
-      className={cn(
-        "rounded-xl border border-border/80 bg-card/90 text-card-foreground shadow-[0_20px_60px_-48px_rgba(0,0,0,.95),inset_0_1px_0_rgba(255,255,255,.025)]",
-        className,
-      )}
-      {...props}
-    />
-  ),
+  ({ className, onPointerMove, onPointerLeave, ...props }, ref) => {
+    const light = useMaterialLight<HTMLDivElement>();
+    return (
+      <div
+        ref={ref}
+        data-slot="card"
+        data-material-surface="card"
+        onPointerMove={(event) => {
+          onPointerMove?.(event);
+          if (!event.defaultPrevented) light.onPointerMove(event);
+        }}
+        onPointerLeave={(event) => {
+          onPointerLeave?.(event);
+          light.onPointerLeave();
+        }}
+        className={cn("tadeon-material-card text-card-foreground", className)}
+        {...props}
+      />
+    );
+  },
 );
 Card.displayName = "Card";
 
 const CardHeader = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
   ({ className, ...props }, ref) => (
-    <div ref={ref} data-slot="card-header" className={cn("flex flex-col space-y-1.5 p-6", className)} {...props} />
+    <div
+      ref={ref}
+      data-slot="card-header"
+      className={cn("flex flex-col space-y-1.5 p-6", className)}
+      {...props}
+    />
   ),
 );
 CardHeader.displayName = "CardHeader";
@@ -38,7 +53,12 @@ CardTitle.displayName = "CardTitle";
 
 const CardDescription = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
   ({ className, ...props }, ref) => (
-    <div ref={ref} data-slot="card-description" className={cn("text-sm text-muted-foreground", className)} {...props} />
+    <div
+      ref={ref}
+      data-slot="card-description"
+      className={cn("text-sm text-muted-foreground", className)}
+      {...props}
+    />
   ),
 );
 CardDescription.displayName = "CardDescription";
@@ -52,7 +72,12 @@ CardContent.displayName = "CardContent";
 
 const CardFooter = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
   ({ className, ...props }, ref) => (
-    <div ref={ref} data-slot="card-footer" className={cn("flex items-center p-6 pt-0", className)} {...props} />
+    <div
+      ref={ref}
+      data-slot="card-footer"
+      className={cn("flex items-center p-6 pt-0", className)}
+      {...props}
+    />
   ),
 );
 CardFooter.displayName = "CardFooter";

@@ -7,18 +7,15 @@ import { cn } from "@/lib/utils";
 import "@/styles/button.css";
 import "@/styles/viewport.css";
 const buttonVariants = cva(
-  "tadeon-material-button inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-[0.7rem] text-sm font-semibold cursor-pointer transition-[color,background-color,border-color,box-shadow,transform] duration-150 ease-[var(--ease-out)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/70 focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:pointer-events-none disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
+  "tadeon-material-button inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-[0.7rem] text-sm font-semibold cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/70 focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:pointer-events-none disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
   {
     variants: {
       variant: {
-        default:
-          "border border-primary/70 bg-primary text-primary-foreground shadow-[0_10px_28px_-18px_var(--primary),inset_0_1px_0_rgba(255,255,255,.35)] hover:bg-primary/90 hover:shadow-[0_14px_32px_-20px_var(--primary),inset_0_1px_0_rgba(255,255,255,.4)]",
-        destructive: "bg-destructive text-destructive-foreground shadow-sm hover:bg-destructive/90",
-        outline:
-          "border border-input bg-background/70 shadow-[inset_0_1px_0_rgba(255,255,255,.035)] hover:border-primary/35 hover:bg-accent hover:text-accent-foreground",
-        secondary:
-          "border border-border/70 bg-secondary text-secondary-foreground shadow-sm hover:border-primary/20 hover:bg-secondary/80",
-        ghost: "hover:bg-accent hover:text-accent-foreground",
+        default: "border",
+        destructive: "border",
+        outline: "border",
+        secondary: "border",
+        ghost: "border border-transparent",
         link: "text-primary underline-offset-4 hover:underline",
       },
       size: {

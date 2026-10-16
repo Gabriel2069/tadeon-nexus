@@ -1,4 +1,11 @@
-import { useEffect, useRef, type PointerEvent } from "react";
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useRef,
+  type CSSProperties,
+  type PointerEvent,
+} from "react";
 
 /** A local light coordinate, never a transform or a global animation loop. */
 export function useMaterialLight<T extends HTMLElement>() {
@@ -48,4 +55,10 @@ export function useMaterialLight<T extends HTMLElement>() {
       target.current?.style.removeProperty("--material-tilt-y");
     },
   };
+}
+
+/** React portals retain their route's material tone without observing the DOM. */
+export const MaterialToneContext = createContext("217 215 164");
+export function useMaterialToneStyle(): CSSProperties {
+  return { "--material-rgb": useContext(MaterialToneContext) } as CSSProperties;
 }

@@ -39,9 +39,9 @@
   justify-content: space-between;
   gap: .75rem;
   padding: .7rem .9rem max(.7rem, env(safe-area-inset-bottom));
-  border-top: 1px solid hsl(var(--border) / .72);
-  background: color-mix(in srgb, hsl(var(--popover)) 94%, transparent);
-  color: hsl(var(--muted-foreground));
+  border-top: 1px solid color-mix(in srgb, var(--border) 72%, transparent);
+  background: color-mix(in srgb, var(--popover) 94%, transparent);
+  color: var(--muted-foreground);
   font-size: .68rem;
   line-height: 1.25;
 }
@@ -68,8 +68,8 @@
   .tadeon-global-search-dialog {
     width: min(42rem, calc(100vw - 1.5rem)) !important;
     max-width: 42rem !important;
-    height: min(38rem, calc(100dvh - 1.5rem)) !important;
-    max-height: calc(100dvh - 1.5rem) !important;
+    height: min(38rem, calc(var(--tadeon-search-vv-height, 100dvh) - 1.5rem)) !important;
+    max-height: calc(var(--tadeon-search-vv-height, 100dvh) - 1.5rem) !important;
   }
 }
 

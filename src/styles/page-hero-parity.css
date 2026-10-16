@@ -306,7 +306,7 @@ html body .tadeon-tabletop-brand-mark-icon {
   transform: none !important;
 }
 
-html body .tadeon-tabletop-studio__header :is(.tadeon-eyebrow, h1, h2, .font-cinzel) {
+html body .tadeon-tabletop-studio__header .tadeon-eyebrow {
   color: rgb(84 123 148) !important;
 }
 
@@ -420,9 +420,17 @@ html body [data-tadeon-page-hero="offline"] > div:first-of-type {
   padding-left: 0 !important;
 }
 
-html body .tadeon-page-hero[data-tadeon-page-hero] :is(.tadeon-eyebrow, h1, h2, .font-cinzel) {
+html body .tadeon-page-hero[data-tadeon-page-hero] .tadeon-eyebrow {
   color: rgb(var(--hero-rgb)) !important;
 }
+
+.tadeon-page-hero[data-tadeon-page-hero] :is(h1, h2, .font-cinzel),
+.tadeon-nexus-identity h1,
+.tadeon-tabletop-studio__header :is(h1, h2, .font-cinzel) { color: var(--foreground); }
+
+.tadeon-utility-hero__body { display: flex; flex-wrap: wrap; align-items: center; gap: 1.25rem; }
+.tadeon-utility-hero__body > :first-child { flex: 1 1 20rem; min-width: 0; }
+.tadeon-utility-hero__body > :last-child { flex: 0 1 auto; min-width: 0; max-width: 100%; }
 
 html body .tadeon-page-hero[data-tadeon-page-hero] h1 {
   margin-top: .12rem !important;
@@ -768,12 +776,7 @@ html body .tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-studio__head
     inset 0 1px rgb(255 255 255 / 3.5%) !important;
 }
 
-html body .tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-studio__header :is(
-  .tadeon-eyebrow,
-  h1,
-  h2,
-  .font-cinzel
-),
+html body .tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-studio__header .tadeon-eyebrow,
   html body .tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-studio__brand > .tadeon-tabletop-brand-mark-host,
   html body .tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-brand-mark-icon {
   color: var(--section-accent) !important;
@@ -3062,10 +3065,10 @@ html body .tadeon-shell .tadeon-nav-item__icon > svg {
 /* -------------------------------------------------------------------------- */
 /* DIALOGS - keep every surface inside the actual viewport                     */
 /* -------------------------------------------------------------------------- */
-html body [data-slot="dialog-content"],
-html body [data-radix-dialog-content],
-html body [data-slot="alert-dialog-content"],
-html body [data-radix-alert-dialog-content] {
+html body [data-slot="dialog-content"]:not([data-motion-surface]),
+  html body [data-radix-dialog-content]:not([data-motion-surface]),
+  html body [data-slot="alert-dialog-content"]:not([data-motion-surface]),
+  html body [data-radix-alert-dialog-content]:not([data-motion-surface]) {
   box-sizing: border-box !important;
   max-height: calc(100dvh - 1rem) !important;
   max-height: calc(100svh - 1rem) !important;
@@ -3074,10 +3077,10 @@ html body [data-radix-alert-dialog-content] {
 }
 
 @media (min-width: 640px) and (max-width: 1023px) {
-  html body [data-slot="dialog-content"],
-  html body [data-radix-dialog-content],
-  html body [data-slot="alert-dialog-content"],
-  html body [data-radix-alert-dialog-content] {
+  html body [data-slot="dialog-content"]:not([data-motion-surface]),
+  html body [data-radix-dialog-content]:not([data-motion-surface]),
+  html body [data-slot="alert-dialog-content"]:not([data-motion-surface]),
+  html body [data-radix-alert-dialog-content]:not([data-motion-surface]) {
     width: min(34rem, calc(100vw - 1.5rem)) !important;
     max-width: calc(100vw - 1.5rem) !important;
     max-height: calc(100dvh - 1.25rem) !important;
@@ -3088,10 +3091,10 @@ html body [data-radix-alert-dialog-content] {
 }
 
 @media (max-width: 639px) {
-  html body [data-slot="dialog-content"],
-  html body [data-radix-dialog-content],
-  html body [data-slot="alert-dialog-content"],
-  html body [data-radix-alert-dialog-content] {
+  html body [data-slot="dialog-content"]:not([data-motion-surface]),
+  html body [data-radix-dialog-content]:not([data-motion-surface]),
+  html body [data-slot="alert-dialog-content"]:not([data-motion-surface]),
+  html body [data-radix-alert-dialog-content]:not([data-motion-surface]) {
     width: min(34rem, calc(100vw - 1rem)) !important;
     max-width: calc(100vw - 1rem) !important;
     max-height: calc(100svh - 1rem) !important;
@@ -3102,14 +3105,6 @@ html body [data-radix-alert-dialog-content] {
 
   /* Search is already measured against VisualViewport; keep it inside that
      rectangle even when an older stylesheet supplies a fixed 38rem height. */
-  html body .tadeon-global-search-dialog {
-    width: min(42rem, calc(var(--tadeon-search-vv-width, 100vw) - 1rem)) !important;
-    max-width: calc(var(--tadeon-search-vv-width, 100vw) - 1rem) !important;
-    height: min(38rem, calc(var(--tadeon-search-vv-height, 100dvh) - 1rem)) !important;
-    max-height: calc(var(--tadeon-search-vv-height, 100dvh) - 1rem) !important;
-    top: max(.5rem, var(--tadeon-search-vv-top, 0px)) !important;
-    left: calc(var(--tadeon-search-vv-left, 0px) + .5rem) !important;
-  }
 }
 
 /* -------------------------------------------------------------------------- */

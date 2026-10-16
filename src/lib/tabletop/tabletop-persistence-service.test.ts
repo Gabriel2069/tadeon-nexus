@@ -1,3 +1,8 @@
+import { tabletopSceneFingerprint } from "./tabletop-scene-fingerprint-guard";
+import {
+  tabletopEntityColor,
+  tabletopColorProperties,
+} from "../../../supabase/functions/_shared/tabletop-entity-color";
 import { describe, expect, it, vi } from "vitest";
 import {
   buildTabletopSavePayload,
@@ -50,76 +55,114 @@ describe("tabletop persistence mapping", () => {
     });
   });
 
-  it("maps numeric Postgres fields and keeps explicit links", () => {
-    const scene = mapTabletopScene(
-      {
-        id: "scene",
-        campaign_id: "campaign",
-        name: "Porto",
-        background_asset_id: null,
-        width: 2400,
-        height: 1600,
-        grid_type: "square",
-        grid_size: 64,
-        grid_offset_x: "4",
-        grid_offset_y: "8",
-        grid_scale: "1.5",
-        snap_enabled: true,
-        global_illumination: "0.75",
-        status: "active",
-        order_index: 2,
-        version: 3,
-        created_at: "a",
-        updated_at: "b",
-      },
-      [
+  it.each([undefined, 0, 0xffffff, 0x547b94, -1, 0x1000000, 1.5, "#ffffff"])(
+    "round trips entity color %s with links and a stable fingerprint",
+    (baseColor) => {
+      const scene = mapTabletopScene(
         {
-          id: "tokens",
-          scene_id: "scene",
-          name: "Tokens",
-          layer_type: "tokens",
+          id: "scene",
+          campaign_id: "campaign",
+          name: "Porto",
+          background_asset_id: null,
+          width: 2400,
+          height: 1600,
+          grid_type: "square",
+          grid_size: 64,
+          grid_offset_x: "4",
+          grid_offset_y: "8",
+          grid_scale: "1.5",
+          snap_enabled: true,
+          global_illumination: "0.75",
+          status: "active",
           order_index: 2,
-          visible: true,
-          locked: false,
-          version: 1,
+          version: 3,
+          created_at: "a",
+          updated_at: "b",
         },
-      ],
-      [
-        {
-          id: "token",
-          scene_id: "scene",
-          layer_id: "tokens",
-          level_id: "ground",
-          entity_type: "token",
-          name: "Myrova",
-          linked_sheet_id: "sheet",
-          linked_knowledge_node_id: "page",
-          asset_id: "asset",
-          x: "64",
-          y: "128",
-          width: "64",
-          height: "64",
-          rotation: "15",
-          elevation: "2",
-          z_index: 1,
-          hidden: false,
-          locked: false,
-          owner_user_id: "owner",
-          properties: { conditions: ["Marcado"] },
-          version: 4,
-        },
-      ],
-      [groundLevel],
-    );
-    expect(scene.gridScale).toBe(1.5);
-    expect(scene.entities[0]).toMatchObject({
-      x: 64,
-      linkedSheetId: "sheet",
-      linkedKnowledgeNodeId: "page",
-      levelId: "ground",
-      version: 4,
-    });
-  });
+        [
+          {
+            id: "tokens",
+            scene_id: "scene",
+            name: "Tokens",
+            layer_type: "tokens",
+            order_index: 2,
+            visible: true,
+            locked: false,
+            version: 1,
+          },
+        ],
+        [
+          {
+            id: "token",
+            scene_id: "scene",
+            layer_id: "tokens",
+            level_id: "ground",
+            entity_type: "token",
+            name: "Myrova",
+            linked_sheet_id: "sheet",
+            linked_knowledge_node_id: "page",
+            asset_id: "asset",
+            x: "64",
+            y: "128",
+            width: "64",
+            height: "64",
+            rotation: "15",
+            elevation: "2",
+            z_index: 1,
+            hidden: false,
+            locked: false,
+            owner_user_id: "owner",
+            properties: {
+              conditions: ["Marcado"],
+              ...(baseColor !== undefined ? { base_color: baseColor } : {}),
+            },
+            version: 4,
+          },
+        ],
+        [groundLevel],
+      );
+      const expectedColor =
+        typeof baseColor === "number" &&
+        Number.isInteger(baseColor) &&
+        baseColor >= 0 &&
+        baseColor <= 0xffffff
+          ? baseColor
+          : 0x8d3152;
+      expect(scene.entities[0].color).toBe(expectedColor);
+      const current = { ...scene, entities: [{ ...scene.entities[0], color: 0x123456 }] };
+      const payload = buildTabletopSavePayload(scene, current);
+      const row = payload.entityDocuments[0] as { properties: Record<string, unknown> };
+      expect(row.properties).toEqual({ conditions: ["Marcado"], base_color: 0x123456 });
+      const reloaded = {
+        ...current,
+        entities: [
+          {
+            ...current.entities[0],
+            color: tabletopEntityColor("token", row.properties),
+            properties: {
+              base_color: row.properties.base_color,
+              conditions: row.properties.conditions,
+            },
+          },
+        ],
+      };
+      expect(tabletopSceneFingerprint(reloaded)).toBe(tabletopSceneFingerprint(current));
+      expect(tabletopSceneFingerprint(reloaded)).not.toBe(tabletopSceneFingerprint(scene));
+      // Shared protected projection returns a bounded visual scalar, never the source properties.
+      expect(tabletopEntityColor("token", { ...row.properties, private_note: "secret" })).toBe(
+        0x123456,
+      );
+      expect(tabletopColorProperties("object", NaN, null)).toEqual({ base_color: 0x345d6f });
+      expect(scene.gridScale).toBe(1.5);
+      expect(scene.entities[0]).toMatchObject({
+        x: 64,
+        linkedSheetId: "sheet",
+        linkedKnowledgeNodeId: "page",
+        levelId: "ground",
+        version: 4,
+      });
+    },
+  );
 
   it("builds one optimistic payload for layers, new entities and deletions", () => {
     const original = mapTabletopScene(

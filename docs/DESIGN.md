@@ -186,3 +186,59 @@ A prova visual e de interação deste lote pertence a [master-workspace-validati
 O mapa recebe espaço contínuo e altura delimitada; controles de navegação ficam no dock, enquanto a criação aparece no modo de edição. Grupos nomeados substituem ações sem legenda. Azul da Mesa conduz bordas e seleção, marfim mantém leitura, e vidro escuro distingue instrumentos do conteúdo. A biblioteca criativa começa fechada. Campos e números permanecem estáveis durante as transições.
 
 A largura disponível decide entre editor lateral e diálogo. No compacto, um seletor alcança montagem, ambiente, bastidores, cena e inspeção. Os comandos usam busca por texto, navegação por teclado e disponibilidade real; o foco volta ao controle de origem. O contexto da Mesa fica dentro da leitura do Nexus, sem uma notificação fixa sobre o editor. A prova executada e seus limites pertencem a [tabletop-workspace-validation.json](tabletop-workspace-validation.json).
+
+
+## Evolução de sistema — NEX-023, 16/10/2026
+
+Tadeu solicitou elevar todo o sistema após a Mesa, com pesquisa de grandes aplicativos e sistemas operacionais, sobretudo Apple. A tese permanece Véu & Trama: um arquivo de memórias e vínculos, com tecido tensionado, instrumentos de vidro escuro e conteúdo em tinta. A evolução reforça a materialidade e a continuidade entre estados. Símbolos, tipografia, paleta e cânone permanecem autorais.
+
+### Pesquisa e tradução
+
+Fontes primárias consultadas em 16/10/2026. As interpretações na última coluna são decisões do projeto, não prescrições das marcas.
+
+| Referência / superfície | Evidência consultada | Tradução para TdV |
+| --- | --- | --- |
+| Apple — camadas do sistema | [Materials / Liquid Glass](https://developer.apple.com/design/human-interface-guidelines/materials), seção Liquid Glass; [WWDC25, Meet Liquid Glass](https://developer.apple.com/videos/play/wwdc2025/219/), transcrição | Instrumentos flutuam acima da leitura. Moldura com borda luminosa, sombra de contato e material mais espesso ao abrir. Não espalhar transparência por documentos ou campos. |
+| Apple — organização | [Layout](https://developer.apple.com/design/human-interface-guidelines/layout), Visual hierarchy | Agrupamento por tarefa e densidade por espaço disponível; alvos e rótulos não se deformam com o material. |
+| Apple — movimento | [Motion](https://developer.apple.com/design/human-interface-guidelines/motion), Providing feedback, recuperado como Markdown oficial | Abertura preserva relação com a origem; saída mais curta. Sem espera para executar ações. Movimento reduzido chega diretamente ao estado final. |
+| Apple — legibilidade | [Sufficient Contrast](https://developer.apple.com/help/app-store-connect/manage-app-accessibility/sufficient-contrast-evaluation-criteria), [Typography](https://developer.apple.com/design/human-interface-guidelines/typography), [Color](https://developer.apple.com/design/human-interface-guidelines/color) | Texto estável sobre tinta; contrastes medidos nos pares concretos. Manter o trio aprovado, sem importar SF Pro ou estética literal do iOS. |
+| Windows / Fluent — materiais | [Materials used in Windows apps](https://learn.microsoft.com/en-us/windows/apps/design/signature-experiences/materials), Acrylic e Mica | Distinguir superfície de base e ferramenta transitória. A tradução web usa tokens próprios; não promete acesso ao compositor ou wallpaper do sistema. |
+| macOS — trabalho em janelas | [Designing for macOS](https://developer.apple.com/design/human-interface-guidelines/designing-for-macos/), Best practices | Aproveitar espaço regular para painéis e precisão; comandos e atalhos sem empilhar modais. Preservar leitura e composição adaptáveis já construídas. |
+| Linear — interface de trabalho | [A calmer interface for a product in motion](https://linear.app/now/behind-the-latest-design-refresh), 12/03/2026, hierarquia e estrutura | Conteúdo recebe prioridade. Material não exige multiplicar molduras, etiquetas ou ícones; proprietários compartilhados evitam deriva entre rotas. |
+| Raycast — ação contextual | [A fresh look and feel](https://www.raycast.com/blog/a-fresh-look-and-feel), barra de ações e foco compacto | Ações próximas do contexto, busca legível e atalhos descobríveis; aproveitar comandos e agrupamentos já implementados, sem criar menu concorrente. |
+| Obsidian — conhecimento espacial | [Graph view](https://obsidian.md/help/plugins/graph), interação e filtros | Vínculos e leitura continuam protagonistas. A linguagem material envolve o workspace, sem cobrir nós/arestas nem mudar sua semântica. |
+
+As páginas HIG em HTML retornaram o invólucro dependente de JavaScript. Motion, Typography e Color foram recuperadas pelo endereço `.md` oficial; Materials, Layout e Accessibility também tiveram conteúdo no índice de busca. Não foi feita inspeção de sessões autenticadas desses aplicativos, nem uma comparação de desempenho com eles.
+
+### Vocabulário implementado
+
+| Papel | Propriedade / mecanismo | Proprietário |
+| --- | --- | --- |
+| Tinta com relevo | `--surface-ink`, `--shadow-relief`, borda iluminada; Card recebe reflexão local | `styles.css`, Card, `experience-surfaces.css` |
+| Instrumento elevado | `--shadow-float`, vidro escuro, borda de 1px; conteúdo de diálogo opaco | `navigation-layout.css`, `route-popup-frame.css` |
+| Tecido | Faixas vetoriais com brilho e fios finos, sem bitmap ou física contínua | ThreadField, FabricFilaments, ContinuityHero |
+| Campo rebaixado | Fundo #0D1117, sombra interna, aro de foco; sem deslocar cursor | Input, Textarea, SelectTrigger; `button.css` |
+| Botão | Raio .85rem, luz local, 1px de pressão; hover modifica borda/reflexo, sem mover o alvo | Button e `button.css` |
+| Painel / popup | Raio 1.35rem; popup ancorado 1rem; curvas internas menores que a moldura | Tokens e primitivos; exceções de geometria continuam nos módulos de seção |
+| Seleção | Placa local com luz superior e sombra de contato; sem indicador global viajante | Tabs e `button.css` |
+| Abrir / fechar | Painel 260ms, saída 150ms; menu parte até 6px da origem Radix; diálogo conserva o positioner | `route-popup-frame.css` |
+| Atmosfera | Faixas estáticas no fundo; cabeçalhos respondem por opacidade à interação/foco | `experience-surfaces.css`, `hero-backgrounds.css` |
+
+O shell define o tom iluminado dos controles e o distribui por contexto React; dialogs, popovers, dropdowns, submenus e Select preservam esse tom nos portais, sem observação do DOM. O hook de frame continua responsável somente pela geometria. Isso evita que a saída do DOM do shell faça controles transitórios voltarem ao tom de outra área. Styles explícitos do consumidor ainda têm precedência. A geometria de viewport permanece com os proprietários anteriores.
+
+### Aplicação por família
+
+| Família | Composição e limite |
+| --- | --- |
+| Login / Dashboard | Tecido com volume e faixas largas; selo autoral preservado. Indicadores mantêm Inter tabular e ganham relevo. Cartas de personagens mantêm identidade editorial. |
+| Ficha / documentos / biblioteca | Leitura opaca, campos rebaixados, ações com luz local. Filamentos desvanecem nas extremidades; nenhuma animação sobre parágrafos ou números. |
+| Nexus | Painéis e instrumentos aderem à gramática compartilhada; árvore, abas, editor e grafo conservam seus estados e coordenadas. |
+| Mesa | Ferramentas usam os primitivos comuns. Cena, miniaturas, iluminação e projeção continuam no motor; não aplicar textura animada ao mapa. |
+| Mestre / utilidades | Material compartilhado e cor local em controles. Densidade, rascunhos, confirmações e audiência continuam nos módulos existentes. |
+| Navegação / popups | Vidro funcional, foco e retorno; abertura e saída têm um único dono. Não adicionar glass dentro de glass ou deformação de texto. |
+
+### Acessibilidade, custos e continuidade
+
+A aparência escura é a única aparência suportada pelo produto nesta etapa; não foi criado modo claro incompleto. Fallback de material opaco, redução de transparência e contraste aumentado têm regras explícitas. As combinações e estados efetivamente medidos pertencem à evidência, sem certificação geral de WCAG/HIG.
+
+A revisão retira os defaults concorrentes de Card no desktop e as classes de animação duplicadas nos primitivos ancorados. O cabeçalho deixa de iniciar loops próprios de brilho/órbita. Os títulos das utilidades usam marfim; três declarações de cor concorrentes foram retiradas, preservando cor de seção nos símbolos e no eyebrow. Não há dependência, observer global ou arquivo CSS novo. A prancheta demonstra decisões; runtime, fixtures e produção mantêm provas distintas. Performance física e autorização real continuam em NEX-009/010; a fila exclusiva permanece em project-continuity.json.

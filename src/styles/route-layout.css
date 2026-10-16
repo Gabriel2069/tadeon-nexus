@@ -1219,7 +1219,6 @@ html[data-tadeon-sheet-mode="game"] .tadeon-sheet-game-button svg {
 
 .tadeon-page-hero[data-tadeon-page-hero] .tadeon-display-title,
 .tadeon-page-hero[data-tadeon-page-hero] h1 {
-  color: color-mix(in srgb, var(--foreground) 92%, rgb(var(--hero-secondary-rgb))) !important;
   text-shadow: 0 8px 34px rgb(var(--hero-rgb) / 16%) !important;
 }
 
@@ -1804,7 +1803,6 @@ html[data-tadeon-sheet-mode="game"] .tadeon-sheet-game-button svg {
 .tadeon-route-users > .tadeon-page-hero h1,
 .tadeon-route-tools > .tadeon-page-hero h1,
 .tadeon-route-offline > .tadeon-page-hero h1 {
-  color: color-mix(in srgb, var(--foreground) 92%, rgb(var(--utility-secondary-rgb))) !important;
   font-size: clamp(2rem, 4vw, 3.55rem) !important;
   font-weight: 610 !important;
   letter-spacing: -.035em !important;
@@ -2315,7 +2313,6 @@ html[data-tadeon-sheet-mode="game"] .tadeon-sheet-game-button svg {
 .tadeon-route-tools > .tadeon-page-hero h1,
 .tadeon-route-offline > .tadeon-page-hero h1 {
   margin-top: .18rem !important;
-  color: var(--foreground) !important;
   font-size: clamp(1.55rem, 2.6vw, 2.2rem) !important;
   font-weight: 620 !important;
   letter-spacing: -.024em !important;
@@ -2358,7 +2355,7 @@ html[data-tadeon-sheet-mode="game"] .tadeon-sheet-game-button svg {
   [data-slot="select-content"],
   [data-slot="command"],
   [data-slot="tabs-list"]
-) {
+):not([data-motion-surface]):not([data-material-surface]) {
   background-color: color-mix(in srgb, var(--card) 94%, var(--background)) !important;
   background-image:
     radial-gradient(circle at 100% 0%, rgb(var(--section-accent-rgb, 217 215 164) / 7%), transparent 12rem),

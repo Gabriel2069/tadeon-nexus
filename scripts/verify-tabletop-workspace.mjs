@@ -295,6 +295,7 @@ try {
             ...e,
             scene_id: scene.id,
             version: e.version + 1,
+            properties: Object.fromEntries(Object.entries(e.properties ?? {}).sort(([a], [b]) => a.localeCompare(b))),
           })),
         );
         return route.fulfill({ status: 200, contentType: "application/json", body: "null" });
@@ -707,6 +708,24 @@ try {
         await dialog.waitFor({ state: "detached" });
       }
     }
+    if (process.env.NEXUS_AUDIT_SCOPE === "color") {
+      await page.evaluate(entityId => window.__tadeonTabletopRuntime.engine.select(entityId, false), id(50));
+      const color = page.getByLabel("Personalizada", { exact: true });
+      await color.fill("#123456");
+      await closeEditor();
+      await activateSave();
+      await page.waitForFunction(() => document.querySelector(".tadeon-tabletop-mobile-save")?.textContent?.includes("Salvo"));
+      assert(entityRows.find(e => e.id === id(50)).properties.base_color === 0x123456, "Custom color persisted with jsonb key ordering");
+      if (width < 640) await page.getByRole("button", { name: "Ferramentas", exact: true }).click();
+      await page.locator(".tadeon-tabletop-toolbar").getByRole("button", { name: "Cena", exact: true }).click();
+      await page.getByRole("button", { name: "Recarregar cena", exact: true }).click();
+      await page.keyboard.press("Escape");
+      await page.waitForFunction(() => window.__tadeonTabletopRuntime?.snapshot().scene.entities[0]?.color === 0x123456);
+      await page.waitForFunction(() => document.querySelector(".tadeon-tabletop-mobile-save")?.textContent?.includes("Salvo"));
+      await capture("color-round-trip");
+      await context.close();
+      continue;
+    }
     await closeEditor();
     if (width < 640) await page.getByRole("button", { name: "Ferramentas", exact: true }).click();
     for (const group of ["Cena", "Editar", "Visão", "Grade"]) {
@@ -781,7 +800,7 @@ try {
     await page.evaluate((entityId) => {
       const e = window.__tadeonTabletopRuntime.engine;
       e.select(entityId, false);
-      e.updateSelected({ label: "Ariadne · rascunho" }, "Renomear");
+      e.updateSelected({ label: "Ariadne · rascunho", color: 0x123456 }, "Renomear e escolher cor-base");
     }, id(50));
     await page.waitForFunction(() =>
       document.querySelector(".tadeon-tabletop-mobile-save")?.textContent?.includes("Salvar"),
@@ -814,6 +833,13 @@ try {
       entityRows.find((e) => e.id === id(50)).name === "Ariadne · edição posterior",
       "Second save retains latest edit",
     );
+    assert(entityRows.find((e) => e.id === id(50)).properties.base_color === 0x123456, "Chosen base color reaches the save payload");
+    await page.locator(".tadeon-tabletop-toolbar").getByRole("button", { name: "Cena", exact: true }).click();
+    await page.getByRole("button", { name: "Recarregar cena", exact: true }).click();
+    await page.keyboard.press("Escape");
+    await page.waitForFunction(() => window.__tadeonTabletopRuntime?.snapshot().scene.entities[0]?.color === 0x123456);
+    await page.waitForFunction(() => document.querySelector(".tadeon-tabletop-mobile-save")?.textContent?.includes("Salvo"));
+    await capture("color-round-trip");
     await page
       .locator(".tadeon-tabletop-toolbar")
       .getByRole("button", { name: "Visão", exact: true })

@@ -28,7 +28,7 @@ try {
     server.on("exit", (code) => fail(new Error(`Vite ${code}`)));
     setTimeout(() => fail(new Error("Vite timeout")), 30000).unref();
   });
-  for (const width of [320, 390, 820, 1440]) {
+  for (const width of JSON.parse(process.env.NEXUS_AUDIT_WIDTHS || "[320,390,820,1440]")) {
     const context = await browser.newContext({
       viewport: { width, height: 1000 },
       hasTouch: width < 768,
@@ -93,7 +93,7 @@ try {
       metrics.font.includes("Cormorant Garamond") && metrics.submitHeight >= 44,
       `${width}: type or target`,
     );
-    await page.screenshot({ path: `${root}/login-${width}.png`, fullPage: true });
+    if (process.env.NEXUS_SKIP_SCREENSHOTS !== "1") await page.screenshot({ path: `${root}/login-${width}.png`, fullPage: true });
     await page.getByLabel("E-mail", { exact: true }).fill("fixture@nexus.test");
     await page.getByLabel("Senha", { exact: true }).fill("fixture-invalid");
     await page.getByRole("button", { name: "Entrar", exact: true }).click();
@@ -103,7 +103,7 @@ try {
       (await page.getByLabel("E-mail", { exact: true }).inputValue()) === "fixture@nexus.test",
       "Failed sign-in preserves input",
     );
-    await page.screenshot({ path: `${root}/error-${width}.png`, fullPage: true });
+    if (process.env.NEXUS_SKIP_SCREENSHOTS !== "1") await page.screenshot({ path: `${root}/error-${width}.png`, fullPage: true });
     await page.getByRole("button", { name: "Esqueceu a senha?" }).click();
     await page.getByText("Se este e-mail estiver cadastrado", { exact: false }).first().waitFor();
     await page.getByRole("button", { name: "Não tem conta? Cadastre-se" }).click();
@@ -117,7 +117,7 @@ try {
       visible: document.querySelector("#name").getBoundingClientRect().width > 0,
     }));
     assert(!signup.overflow && signup.visible, `${width}: signup render`);
-    await page.screenshot({ path: `${root}/signup-${width}.png`, fullPage: true });
+    if (process.env.NEXUS_SKIP_SCREENSHOTS !== "1") await page.screenshot({ path: `${root}/signup-${width}.png`, fullPage: true });
     await page.getByRole("button", { name: "Já tem conta? Entrar" }).click();
     const button = page.getByRole("button", { name: "Entrar", exact: true });
     await button.focus();

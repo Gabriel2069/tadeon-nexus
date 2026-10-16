@@ -52,3 +52,43 @@ it("detects entity edits after cloning while excluding entity versions", () => {
   const renewed = { ...original, entities: [{ ...original.entities[0], version: 2 }] };
   expect(fingerprint(renewed)).toBe(fingerprint(original));
 });
+
+it("treats jsonb key order as equivalent while detecting nested property edits", () => {
+  const scene = {
+    ...cloneScene(EMPTY_TABLETOP_SCENE),
+    entities: [
+      {
+        id: "token",
+        layerId: "tokens",
+        type: "token" as const,
+        label: "Ariadne",
+        x: 0,
+        y: 0,
+        width: 64,
+        height: 64,
+        rotation: 0,
+        zIndex: 1,
+        hidden: false,
+        locked: false,
+        color: 0x123456,
+        properties: { status: "ready", base_color: 0x123456, config: { z: 2, a: 1 } },
+      },
+    ],
+  };
+  const reloaded = {
+    ...scene,
+    entities: [
+      {
+        ...scene.entities[0],
+        properties: {
+          config: { a: 1, z: 2 },
+          base_color: 0x123456,
+          status: "ready",
+        },
+      },
+    ],
+  };
+  expect(fingerprint(scene)).toBe(fingerprint(reloaded));
+  reloaded.entities[0].properties.config.z = 3;
+  expect(fingerprint(scene)).not.toBe(fingerprint(reloaded));
+});

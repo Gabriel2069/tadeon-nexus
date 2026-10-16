@@ -22,7 +22,7 @@
       "roots": 0
     },
     "src/styles/hero-backgrounds.css": {
-      "important": 1,
+      "important": 0,
       "roots": 0
     },
     "src/styles/interface-layout.css": {
@@ -78,7 +78,7 @@
       "roots": 0
     },
     "src/styles/page-hero-parity.css": {
-      "important": 867,
+      "important": 861,
       "roots": 1
     },
     "src/styles/realtime-status.css": {
@@ -90,7 +90,7 @@
       "roots": 0
     },
     "src/styles/route-layout.css": {
-      "important": 1231,
+      "important": 1228,
       "roots": 0
     },
     "src/styles/route-popup-frame.css": {

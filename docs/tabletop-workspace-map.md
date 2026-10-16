@@ -76,3 +76,10 @@ O workspace do jogador define uma coluna sem mínimo intrínseco e quebra o cabe
 Chamadas de ferramenta durante a inicialização não renderizam antes de o renderer estar pronto. O teste de ciclo de vida pausa a inicialização e verifica a escolha de ferramenta pela API pública.
 
 O mestre reúne áudio, preparo de mídias e precisão no Popover “Recursos”. O wrapper continua medido no mapa, mas a lista não altera sua altura. O alvo padrão e a posição do stage pertencem ao workspace/portal; o menu e seu material pertencem a `tabletop-reliability-editor.css`. O bloco tático só aparece com seleção. “Ações” abre a busca de comandos, mantendo Ctrl/Cmd+Shift+K.
+
+
+## Cor-base personalizada — NEX-022
+
+`properties.base_color` guarda um inteiro RGB de 24 bits. `tabletop-entity-color.ts`, compartilhado pelo serviço e pela função protegida, valida o escalar e conserva os padrões por tipo para cenas antigas/valores inválidos. O payload de cena e a gravação individual normalizam a cor atual; propriedades privadas não são expandidas na visão do jogador.
+
+A comparação normaliza o mesmo campo e ordena chaves de objetos recursivamente, pois o retorno jsonb pode mudar a ordem das chaves. Isso não ignora alterações de propriedades ou arrays. O editor continua dono da cor em runtime, e salvar uma cena não altera o motor por efeito colateral. O deploy da função protegida possui evidência separada do Worker.

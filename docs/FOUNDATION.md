@@ -158,3 +158,12 @@ A comparação de conteúdo é pura. O serializador capturado por clones e o wra
 O localizador do Nexus acompanha a página selecionada e participa do layout de leitura. Destinos retornados podem ser escolhidos; a consulta continua limitada a oito. O atalho de comandos da Mesa usa Ctrl/Cmd+Shift+K, preservando Ctrl/Cmd+K para busca global. [Evidência do lote](tabletop-workspace-validation.json); integração e publicação exigem seus próprios registros. Validação de fixtures não equivale a autorização/RLS, rede ou dispositivos reais.
 
 Na Mesa, o Popover de recursos é renderizado pelo ReliabilityEditorBridge e estilizado em tabletop-reliability-editor.css. PlayerWorkspace fornece o slot de cabeçalho para áudio e ações táticas; StagePortal recebe o seletor do proprietário e conserva o alvo padrão do mestre. Não posicionar esses controles do jogador com as variáveis fixas do studio.
+
+
+## Materiais compartilhados e cor-base — NEX-022/023
+
+Card recebe reflexão local do hook já existente; não depende da classificação posterior do diretor. AppLayout mantém um contexto de tom material, preservado por portais React. Button, campos, abas e presença dos popups têm regras nos proprietários existentes; utilidades conservam títulos em marfim e acentos em símbolos. Defaults de Card no desktop e classes de presença concorrentes nos menus foram retirados. O mapa não cria outra família de componentes ou folha de acabamento.
+
+A cor-base da Mesa usa um escalar RGB validado em properties; o helper é compartilhado pelo mapeamento e a projeção protegida. Fingerprints normalizam a mesma representação e a ordem de chaves JSON, sem ignorar alterações aninhadas. Banco, migrations e regras de acesso permanecem sob seus contratos.
+
+A pesquisa e a tradução para TdV pertencem a DESIGN.md; a prancheta foi estendida com materiais e estados. A prova de execução e seus limites pertencem a visual-system-validation.json. Status de integração e publicação continuam separados da validação local.

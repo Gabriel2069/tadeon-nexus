@@ -48,8 +48,8 @@ try {
     .map((x) => (typeof x === "string" ? x : Buffer.from(JSON.stringify(x)).toString("base64url")))
     .join(".");
   const results = [];
-  for (const width of [390, 820, 1440])
-    for (const route of [
+  for (const width of JSON.parse(process.env.NEXUS_AUDIT_WIDTHS || "[320,390,820,1440]"))
+    for (const route of JSON.parse(process.env.NEXUS_AUDIT_ROUTES || JSON.stringify([
       "/",
       "/nexus",
       "/master-panel",
@@ -57,10 +57,13 @@ try {
       "/nexus-tools",
       "/manage-users",
       "/tabletop",
-    ]) {
+    ]))) {
+      const captureScreenshots = process.env.NEXUS_SKIP_SCREENSHOTS !== "1"
+        && (!process.env.NEXUS_AUDIT_SCREENSHOT_WIDTHS || JSON.parse(process.env.NEXUS_AUDIT_SCREENSHOT_WIDTHS).includes(width))
+        && (!process.env.NEXUS_AUDIT_SCREENSHOT_ROUTES || JSON.parse(process.env.NEXUS_AUDIT_SCREENSHOT_ROUTES).includes(route));
       const context = await browser.newContext({
         viewport: { width, height: 1000 },
-        reducedMotion: "reduce",
+        reducedMotion: process.env.NEXUS_MATERIAL_AUDIT === "1" ? "no-preference" : "reduce",
       });
       const page = await context.newPage();
       const errors = [];
@@ -121,7 +124,7 @@ try {
           .locator('canvas[aria-label="Canvas da Mesa Nexus"]')
           .waitFor({ state: "attached", timeout: 20000 })
           .catch((e) => errors.push("Canvas readiness: " + e.message));
-      await page.addStyleTag({
+      if (process.env.NEXUS_MATERIAL_AUDIT !== "1") await page.addStyleTag({
         content:
           "*,*::before,*::after { animation:none!important; transition:none!important; caret-color:transparent!important; }",
       });
@@ -133,6 +136,11 @@ try {
       const metrics = await page.evaluate(() => ({
         overflow: document.documentElement.scrollWidth > innerWidth,
         mainCount: document.querySelectorAll("main").length,
+        titleColor: document.querySelector("h1") ? getComputedStyle(document.querySelector("h1")).color : null,
+        material: Array.from(document.querySelectorAll('.tadeon-material-card,.tadeon-material-button')).slice(0, 8).map(element => {
+          const style = getComputedStyle(element);
+          return { slot: element.dataset.slot, background: style.backgroundColor, shadow: style.boxShadow, radius: style.borderRadius, transform: style.transform, translate: style.translate };
+        }),
         hosts: [
           ...document.querySelectorAll(
             ".tadeon-focus-section-mark-host,.tadeon-page-hero-mark-host,.tadeon-tabletop-brand-mark-host",
@@ -166,8 +174,19 @@ try {
           return [s.display, s.gridTemplateColumns, s.columnGap];
         })(),
       }));
+      if (process.env.NEXUS_MATERIAL_AUDIT === "1" && width >= 820) {
+        const card = page.locator('.tadeon-material-card').filter({ visible: true }).first();
+        if (await card.count()) {
+          const before = await card.boundingBox();
+          await card.hover({ position: { x: 28, y: 20 } });
+          await page.waitForTimeout(300);
+          const after = await card.boundingBox();
+          metrics.cardResponse = await card.evaluate(e => ({ lightX: e.style.getPropertyValue('--material-x'), transform: getComputedStyle(e).transform }));
+          if (!metrics.cardResponse.lightX || metrics.cardResponse.transform !== 'none' || Math.abs(before.x - after.x) > .1 || Math.abs(before.y - after.y) > .1) errors.push('Card light moved the content plane');
+        }
+      }
       const name = route.slice(1) || "dashboard";
-      await page.screenshot({ path: `${root}/${phase}-${name}-${width}.png`, fullPage: true });
+      if (captureScreenshots) await page.screenshot({ path: `${root}/${phase}-${name}-${width}.png`, fullPage: false, timeout: 20000 });
       const interactions = [];
       if (route === "/offline") {
         for (const label of [
@@ -185,7 +204,7 @@ try {
               ? page.getByRole("dialog", { name: "Busca global", exact: true })
               : page.getByRole("dialog").last();
           await dialog.waitFor({ state: "visible" });
-          await page.waitForTimeout(250);
+          await dialog.evaluate(element => Promise.all(element.getAnimations().filter(animation => animation.effect?.getTiming().iterations !== Infinity).map(animation => animation.finished.catch(() => {}))));
           let keyboardFixture = null;
           if (label === "Abrir busca global" && width <= 820) {
             await dialog.locator("input").first().focus();
@@ -196,7 +215,8 @@ try {
               });
               window.dispatchEvent(new Event("resize"));
             });
-            await page.waitForTimeout(150);
+            await page.waitForFunction(() => document.documentElement.style.getPropertyValue("--tadeon-vv-height") === "600px" && document.documentElement.dataset.tadeonKeyboardOpen === "true");
+            await page.waitForFunction(() => { const dialog = document.querySelector('.tadeon-global-search-dialog'); const rect = dialog.getBoundingClientRect(); return rect.y >= -1 && rect.bottom <= 601; });
             const keyboardRect = await dialog.boundingBox();
             const contract = await dialog.evaluate((element) => ({
               open: document.documentElement.dataset.tadeonKeyboardOpen,
@@ -221,6 +241,10 @@ try {
             });
             await page.waitForTimeout(150);
           }
+          const material = await dialog.evaluate(element => {
+            const style = getComputedStyle(element);
+            return { animation: style.animationName, duration: style.animationDuration, scale: style.scale, origin: style.transformOrigin, shadow: style.boxShadow, radius: style.borderRadius, tone: style.getPropertyValue("--material-rgb").trim() };
+          });
           const rect = await dialog.boundingBox();
           const contained =
             !!rect &&
@@ -228,7 +252,7 @@ try {
             rect.y >= -1 &&
             rect.x + rect.width <= width + 1 &&
             rect.y + rect.height <= 1001;
-          await page.screenshot({
+          if (captureScreenshots) await page.screenshot({
             path: `${root}/${phase}-portal-${label === "Abrir busca global" ? "search" : "account"}-${width}.png`,
             fullPage: true,
           });
@@ -240,8 +264,8 @@ try {
             () => !!document.activeElement?.closest('[role="dialog"]'),
           );
           await page.keyboard.press("Escape");
-          await dialog.waitFor({ state: "hidden" });
-          await page.waitForTimeout(100);
+          await dialog.waitFor({ state: "detached" });
+          await page.waitForFunction(element => document.activeElement === element, await trigger.elementHandle());
           const returned = await trigger.evaluate((e) => document.activeElement === e);
           interactions.push({
             label,
@@ -251,10 +275,34 @@ try {
             tabInside,
             returned,
             keyboardFixture,
+            material,
           });
           if (![contained, focusInside, tabInside, returned].every(Boolean))
             errors.push("Portal/focus failed: " + JSON.stringify(interactions.at(-1)));
         }
+      }
+      if (route === "/offline" && process.env.NEXUS_MATERIAL_AUDIT === "1") {
+        const cdp = await context.newCDPSession(page);
+        await cdp.send("Emulation.setEmulatedMedia", { features: [
+          { name: "prefers-reduced-motion", value: "reduce" },
+          { name: "prefers-reduced-transparency", value: "reduce" },
+          { name: "prefers-contrast", value: "more" },
+        ] });
+        const preferences = await page.evaluate(() => {
+          const nav = document.querySelector(innerWidth < 768 ? ".tadeon-mobile-header" : ".tadeon-desktop-toolbar");
+          return { motion: matchMedia("(prefers-reduced-motion: reduce)").matches, transparency: matchMedia("(prefers-reduced-transparency: reduce)").matches, contrast: matchMedia("(prefers-contrast: more)").matches, filter: getComputedStyle(nav).backdropFilter };
+        });
+        if (!preferences.motion || !preferences.transparency || !preferences.contrast || preferences.filter !== "none") errors.push("Material preferences failed: " + JSON.stringify(preferences));
+        const trigger = page.getByRole("button", { name: width < 768 ? "Conta" : "Abrir configurações da conta", exact: true }).filter({ visible: true }).first();
+        await trigger.click();
+        const dialog = page.getByRole("dialog").last();
+        await dialog.waitFor();
+        preferences.popup = await dialog.evaluate(e => ({ animation: getComputedStyle(e).animationName, border: getComputedStyle(e).borderColor }));
+        if (preferences.popup.animation !== "none") errors.push("Reduced popup retained animation");
+        await page.keyboard.press("Escape");
+        await dialog.waitFor({ state: "detached" });
+        metrics.preferences = preferences;
+        await cdp.detach();
       }
       results.push({ route, width, errors, interactions, ...metrics });
       await context.close();
