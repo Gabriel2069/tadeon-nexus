@@ -280,11 +280,20 @@ try {
       '.tadeon-nexus-reading__panes [data-panel][id="document"]',
     );
     const initialGroup = page.locator(".tadeon-nexus-reading__panes [data-group]");
+    const initialLayout = await page.evaluate(() => {
+      const documentPanel = document.querySelector('.tadeon-nexus-reading__panes [data-panel][id="document"]');
+      const group = document.querySelector('.tadeon-nexus-reading__panes [data-group]');
+      return { document: documentPanel?.getBoundingClientRect().width, group: group?.getBoundingClientRect().width };
+    });
+    console.log("Initial reading layout", JSON.stringify(initialLayout));
+    await page.waitForFunction(() => {
+      const panel = document.querySelector('.tadeon-nexus-reading__panes [data-panel][id="document"]');
+      const group = document.querySelector('.tadeon-nexus-reading__panes [data-group]');
+      return panel && group && group.getBoundingClientRect().width > 0 && Math.abs(panel.getBoundingClientRect().width - group.getBoundingClientRect().width) < 2;
+    });
     assert(
-      Math.abs(
-        (await initialDocument.boundingBox()).width - (await initialGroup.boundingBox()).width,
-      ) < 2,
-      "Document owns the whole initial reading area",
+      Math.abs((await initialDocument.boundingBox()).width - (await initialGroup.boundingBox()).width) < 2,
+      "Document owns the whole initial reading area after preference hydration: " + JSON.stringify(initialLayout),
     );
     const tree = page.getByRole("tree");
     await tree.waitFor();

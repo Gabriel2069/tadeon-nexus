@@ -19,7 +19,7 @@ Cada PR usa IDs desta fila e declara dependências. Trabalho sobre o mesmo propr
 | NEX-006 | Biblioteca, documento e grafo do Nexus | Integrado | 4 | knowledge | NEX-003, NEX-013 |
 | NEX-007 | Mesa: hierarquia de ferramentas e workspace | Integrado | 6 | tabletop | NEX-004, NEX-013 |
 | NEX-008 | Painel do Mestre: visão geral, ferramentas e condução | Integrado | 5 | master | NEX-003, NEX-013, NEX-020 |
-| NEX-009 | Desempenho e motion | Planejado | 7 | delivery | NEX-003, NEX-007 |
+| NEX-009 | Desempenho e motion | Planejado | 7 | delivery | NEX-003, NEX-007, NEX-023 |
 | NEX-010 | Validação real de autorização e rollout | Planejado | 8 | session | NEX-001 |
 | NEX-011 | Backup e restauração verificável | Planejado | 8 | assets | NEX-010 |
 | NEX-012 | Revisão editorial do corpus canônico | Adiado | 9 | knowledge | NEX-006 |
@@ -31,8 +31,8 @@ Cada PR usa IDs desta fila e declara dependências. Trabalho sobre o mesmo propr
 | NEX-019 | Backup e diagnóstico: revisão e histórico por conta | Integrado | 4 | assets | NEX-014 |
 | NEX-020 | Símbolos reais de Mestre e Backup na navegação | Integrado | 4 | shell | NEX-016 |
 | NEX-021 | Nexus: contexto da página e passagem para a Mesa | Integrado | 5 | knowledge | NEX-015 |
-| NEX-022 | Mesa: persistência e projeção da cor-base personalizada | Em andamento | 7 | tabletop | NEX-007 |
-| NEX-023 | Véu & Trama: materiais e interação de todo o sistema | Em andamento | 7 | shell | NEX-022, NEX-016 |
+| NEX-022 | Mesa: persistência e projeção da cor-base personalizada | Validado na branch | 7 | tabletop | NEX-007 |
+| NEX-023 | Véu & Trama: materiais e interação de todo o sistema | Validado na branch | 7 | shell | NEX-022, NEX-016 |
 
 ## NEX-001 — Preparação estrutural
 

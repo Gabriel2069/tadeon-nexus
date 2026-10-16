@@ -65,9 +65,9 @@ A origem da grade passa diretamente pelo payload canônico de persistência. A p
 
 O renderer usa pixels lógicos (`app.screen`) para câmera e enquadramento, inclusive em densidade 2×; o buffer físico não define coordenadas. O canvas respeita a largura real do host, sem mínimo de 320px. A ferramenta ativa chega à interface por callback do motor, sem depender de um evento de renderização.
 
-## Pendência de contrato — NEX-022
+## Origem do contrato — NEX-022
 
-A leitura do mapper mostrou que a cor-base das entidades ainda é derivada de `ENTITY_COLORS` por tipo; o payload atual não possui campo de cor dedicado. A aparência personalizada exige conciliar propriedades, fingerprint, recarga e a projeção protegida do jogador. Essa alteração não foi misturada à composição da Mesa: está registrada em NEX-022 na fila canônica, com round trip e compatibilidade como critérios. A existência dos controles de cor não certifica sua persistência.
+Na conclusão de NEX-007, o mapper reconstruía a cor por tipo e o payload não conservava a escolha do editor. NEX-022 foi separado para conciliar propriedades, fingerprint, recarga e projeção protegida, com round trip e compatibilidade. O contrato implementado está descrito abaixo; sua integração/publicação têm estado próprio na fila e na evidência visual-system-validation.json.
 
 ## Visão compartilhada e controles auxiliares
 

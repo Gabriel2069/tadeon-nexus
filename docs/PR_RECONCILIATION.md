@@ -55,3 +55,10 @@ Navegação interna, visão geral e rascunho possuem responsáveis explícitos n
 ## NEX-007 / NEX-021 — PR #275
 
 [PR #275](https://github.com/Gabriel2069/tadeon-nexus/pull/275), base main `66acb8e`, fonte `5893bd7`: organização da Mesa, consistência de salvamento/câmera e contexto de leitura do Nexus. Validada na branch por check completo, 141 suítes/581 testes, audit zero e matriz de navegador documentada. Integrada em `269e408`, após [Quality do HEAD](https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38840950329) aprovado. Quality de main e [produção](https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38841186367) aprovados; HTTP 200/SHA exato em 2026-10-16T02:37:13.8743476Z. A consolidação documental registra sua própria verificação no corpo da PR. NEX-022 registra a cor-base personalizada; NEX-009/010 preservam performance/autorização reais.
+
+
+## NEX-022 / NEX-023 — PR #277
+
+[PR #277](https://github.com/Gabriel2069/tadeon-nexus/pull/277), base main `f726d0b`, fonte `4f48507`: cor-base persistente da Mesa e evolução de materiais/interações do sistema. A pesquisa primária e a tradução para TdV ficam em DESIGN.md; a prancheta isolada conserva seus limites. Card, campos, controles e presença têm proprietários explícitos; as regras genéricas concorrentes deixam de escrever nas superfícies controladas.
+
+[Quality da fonte](https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38883830326) aprovado. A validação de fixtures, a revisão de asserts históricos e a procedência por fonte pertencem a [visual-system-validation.json](visual-system-validation.json). Integração, Worker servido e versão da função protegida possuem confirmações separadas; não inferir esses estados da validação na branch. A fila canônica preserva NEX-009/010/011 e seus limites.

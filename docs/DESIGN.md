@@ -221,7 +221,7 @@ As páginas HIG em HTML retornaram o invólucro dependente de JavaScript. Motion
 | Botão | Raio .85rem, luz local, 1px de pressão; hover modifica borda/reflexo, sem mover o alvo | Button e `button.css` |
 | Painel / popup | Raio 1.35rem; popup ancorado 1rem; curvas internas menores que a moldura | Tokens e primitivos; exceções de geometria continuam nos módulos de seção |
 | Seleção | Placa local com luz superior e sombra de contato; sem indicador global viajante | Tabs e `button.css` |
-| Abrir / fechar | Painel 260ms, saída 150ms; menu parte até 6px da origem Radix; diálogo conserva o positioner | `route-popup-frame.css` |
+| Abrir / fechar | Painel 260ms (210ms no compacto pelo token existente), saída 150ms; menu parte até 6px da origem Radix; diálogo conserva o positioner | `route-popup-frame.css` |
 | Atmosfera | Faixas estáticas no fundo; cabeçalhos respondem por opacidade à interação/foco | `experience-surfaces.css`, `hero-backgrounds.css` |
 
 O shell define o tom iluminado dos controles e o distribui por contexto React; dialogs, popovers, dropdowns, submenus e Select preservam esse tom nos portais, sem observação do DOM. O hook de frame continua responsável somente pela geometria. Isso evita que a saída do DOM do shell faça controles transitórios voltarem ao tom de outra área. Styles explícitos do consumidor ainda têm precedência. A geometria de viewport permanece com os proprietários anteriores.

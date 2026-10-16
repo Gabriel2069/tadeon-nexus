@@ -142,13 +142,15 @@
         "src/components/tabletop/tabletop-participant-workspace.tsx",
         "src/lib/tabletop/tabletop-visibility-service.ts",
         "src/lib/tabletop/tabletop-view-preference-service.ts",
-        "src/lib/tabletop/tabletop-scene-fingerprint-guard.ts"
+        "src/lib/tabletop/tabletop-scene-fingerprint-guard.ts",
+        "supabase/functions/_shared/tabletop-entity-color.ts",
+        "supabase/functions/tabletop-view/index.ts"
       ],
       "styles": [
         "src/styles/tabletop-workspace.css",
         "src/styles/tabletop-route-experience.css"
       ],
-      "boundary": "Motor mantém coordenadas; persistência mantém versões; interfaces não devem criar câmera ou fonte de dados paralela. Editor lateral/compacto pertence a TabletopEditorPanel; ações agrupadas ao workspace; comandos à interface progressiva. Callbacks substituem a busca de botões por texto; mapa dos bridges em tabletop-workspace-map.md. Comparação de cena é pura, sem toJSON capturado ou monkeypatch do serviço. Escritas de mapa, ambiente e câmera recebem a identidade de origem. StagePortal usa eventos de runtime; jogador aplica estado somente após init."
+      "boundary": "Motor mantém coordenadas; persistência mantém versões; interfaces não devem criar câmera ou fonte de dados paralela. Editor lateral/compacto pertence a TabletopEditorPanel; ações agrupadas ao workspace; comandos à interface progressiva. Callbacks substituem a busca de botões por texto; mapa dos bridges em tabletop-workspace-map.md. Comparação de cena é pura, sem toJSON capturado ou monkeypatch do serviço. Escritas de mapa, ambiente e câmera recebem a identidade de origem. StagePortal usa eventos de runtime; jogador aplica estado somente após init. Cor-base é um escalar compartilhado entre persistência e projeção protegida; fingerprint normaliza a representação e a ordem jsonb."
     },
     {
       "id": "master",
@@ -556,7 +558,8 @@
       "priority": 7,
       "dependsOn": [
         "NEX-003",
-        "NEX-007"
+        "NEX-007",
+        "NEX-023"
       ],
       "acceptance": [
         "Medir carregamento por rota, chunk Pixi, frames e custos de efeitos antes de otimizar.",
@@ -785,7 +788,7 @@
       "id": "NEX-022",
       "title": "Mesa: persistência e projeção da cor-base personalizada",
       "domain": "tabletop",
-      "status": "active",
+      "status": "validated",
       "priority": 7,
       "dependsOn": [
         "NEX-007"
@@ -804,7 +807,7 @@
       "id": "NEX-023",
       "title": "Véu & Trama: materiais e interação de todo o sistema",
       "domain": "shell",
-      "status": "active",
+      "status": "validated",
       "priority": 7,
       "dependsOn": [
         "NEX-022",
