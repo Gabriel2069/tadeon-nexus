@@ -8,10 +8,10 @@ describe("tabletop participant palette parity", () => {
   const css = read("src/styles/tabletop-participant.css");
   const workspace = read("src/components/tabletop/tabletop-participant-workspace.tsx");
 
-  it("uses the blue Fio-Mestre palette reserved for the player tabletop", () => {
-    expect(css).toContain("--studio-brass: 89 189 235");
-    expect(css).toContain("--studio-cyan: 89 189 235");
-    expect(css).toContain("--studio-blue: 24 112 169");
+  it("uses the shared blue Mesa palette for participant surfaces", () => {
+    expect(css).toContain("--studio-brass: 146 181 202");
+    expect(css).toContain("--studio-cyan: 146 181 202");
+    expect(css).toContain("--studio-blue: 84 123 148");
     expect(css).toContain("linear-gradient(145deg, #07111b");
   });
 

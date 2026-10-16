@@ -123,9 +123,11 @@
 .tadeon-participant-view__tools {
   flex: 1 0 100%;
   min-width: 0;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: flex-end;
+  width: 100%;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  justify-items: end;
+  align-items: start;
   gap: 0.5rem;
 }
 .tadeon-participant-view__support {
@@ -160,6 +162,8 @@
   outline-offset: 2px;
 }
 .tadeon-participant-view__tactics {
+  width: 100%;
+  max-width: 100%;
   position: relative;
   display: flex;
   flex: 1 0 100%;
@@ -795,11 +799,13 @@
   .tadeon-participant-view__header {
     align-items: stretch;
     flex-direction: column;
+    flex-wrap: nowrap;
     border-radius: 1rem;
     padding: 0.9rem;
   }
   .tadeon-participant-view__header > div:first-child,
-  .tadeon-participant-view__controls {
+  .tadeon-participant-view__controls,
+  .tadeon-participant-view__tools {
     flex-basis: auto;
   }
   .tadeon-participant-view__header p {

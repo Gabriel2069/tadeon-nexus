@@ -608,10 +608,12 @@ try {
         "Player tactical tools share the header flow",
       );
       const tb = await tactics.boundingBox();
+      console.log("Tactical bounds", JSON.stringify(tb));
+      await capture("player-tactics");
       assert(tb.x >= 0 && tb.x + tb.width <= width + 1, "Player tactical tools fit");
       await tactics.getByRole("button", { name: "Planejar", exact: true }).click();
       await tactics.getByRole("button", { name: "Encerrar prévia tática", exact: true }).click();
-      await capture("player-tactics");
+      await capture("player-tactics-idle");
 
       await context.close();
       continue;
