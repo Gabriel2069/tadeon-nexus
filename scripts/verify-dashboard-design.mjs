@@ -114,6 +114,8 @@ try {
       await trigger.focus(); await page.keyboard.press("Enter");
       await page.getByLabel("Nome da personagem").waitFor();
       await page.keyboard.press("Escape");
+      await page.getByRole("dialog",{name:"Criar ficha",exact:true}).waitFor({state:"detached"});
+      await page.waitForFunction(e=>document.activeElement===e,await trigger.elementHandle());
       assert(await trigger.evaluate(e => document.activeElement === e), "Create dialog must return focus");
       await page.getByRole("button", { name: /Excluir ficha/ }).first().click();
       await page.getByRole("button", { name: "Cancelar", exact: true }).click();

@@ -562,7 +562,8 @@
       "dependsOn": [
         "NEX-003",
         "NEX-007",
-        "NEX-023"
+        "NEX-023",
+        "NEX-024"
       ],
       "acceptance": [
         "Medir carregamento por rota, chunk Pixi, frames e custos de efeitos antes de otimizar.",
@@ -840,7 +841,7 @@
       "id": "NEX-024",
       "title": "Dashboard editorial, acervo navegável e acabamento dos menus",
       "domain": "shell",
-      "status": "active",
+      "status": "validated",
       "priority": 7,
       "dependsOn": [
         "NEX-023"
@@ -850,6 +851,44 @@
         "Organizar o acervo com busca por nome, ocupação ou responsável, filtro de propriedade e ordenação sem novas consultas ou alteração de permissões.",
         "Refinar os fólios de personagens e a navegação, sem cortar rótulos, mover alvos ou criar camadas CSS concorrentes.",
         "Validar estados vazio/erro/povoado, filtros, foco, quatro larguras e movimento reduzido."
+      ],
+      "evidence": [
+        "docs/DESIGN.md",
+        "docs/FOUNDATION.md",
+        "docs/archive-composition-validation.json",
+        "https://github.com/Gabriel2069/tadeon-nexus/pull/279",
+        "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38948581282"
+      ]
+    },
+    {
+      "id": "NEX-025",
+      "title": "Ficha: hierarquia, superfícies e condução visual",
+      "domain": "sheet",
+      "status": "planned",
+      "priority": 7,
+      "dependsOn": [
+        "NEX-024"
+      ],
+      "acceptance": [
+        "Revisar a composição e a leitura de valores em cada seção, preservando regras, edição e autosave.",
+        "Aprofundar a identidade de dossiê com materiais e respostas locais, sem repetir molduras ou cobrir texto.",
+        "Verificar condições, inventário e abertura/fechamento por teclado/toque nas quatro larguras e com movimento reduzido."
+      ],
+      "evidence": []
+    },
+    {
+      "id": "NEX-026",
+      "title": "Nexus e biblioteca: composição da leitura e exploração",
+      "domain": "knowledge",
+      "status": "planned",
+      "priority": 7,
+      "dependsOn": [
+        "NEX-024"
+      ],
+      "acceptance": [
+        "Revisar a hierarquia do acervo, árvore, abas, contexto e leitura combinada sem duplicar seus estados.",
+        "Aprofundar a materialidade dos instrumentos e das prévias, preservando conteúdo opaco e a referência Obsidian.",
+        "Verificar navegação, divisores, filtros e retorno de foco em quatro larguras; conservar rascunhos, conflitos e limites de autorização."
       ],
       "evidence": []
     }
@@ -950,7 +989,7 @@
       "evidence": [
         "https://github.com/Gabriel2069/tadeon-nexus/pull/277"
       ],
-      "reason": "Pedido de Tadeu em 16/10/2026 após a publicação da PR #277: ainda há muito a melhorar. A composição e a descoberta do acervo precedem a medição em dispositivos físicos."
+      "reason": "Pedido de Tadeu em 16/10/2026 após a publicação da PR #277: ainda há muito a melhorar. A composição e a descoberta do acervo precedem a medição em dispositivos físicos. NEX-025/026 preservam a continuidade visual por tela; NEX-009 deve medir a base resultante de NEX-024."
     }
   ],
   "bridges": [
@@ -1209,6 +1248,10 @@
     {
       "path": "docs/visual-system-validation.json",
       "purpose": "NEX-022/023: cor-base da Mesa, pesquisa, primitivos materiais e cobertura real da evolução visual."
+    },
+    {
+      "path": "docs/archive-composition-validation.json",
+      "purpose": "NEX-024: descoberta do acervo, composição, navegação e gate de propriedade; evidência e limites."
     }
   ],
   "integrationHistory": [

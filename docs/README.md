@@ -55,3 +55,4 @@ Comece pelo [estado de continuidade](ai/00_ESTADO_ATUAL.md), [mapa do código](P
 | [master-workspace-validation.json](master-workspace-validation.json) | Evidências e limites do Painel do Mestre e dos ícones reais de navegação; NEX-008/020. |
 | [tabletop-workspace-validation.json](tabletop-workspace-validation.json) | NEX-007/021: evidências e limites da reorganização da Mesa e do contexto Nexus → Mesa. |
 | [visual-system-validation.json](visual-system-validation.json) | NEX-022/023: cor-base da Mesa, pesquisa, primitivos materiais e cobertura real da evolução visual. |
+| [archive-composition-validation.json](archive-composition-validation.json) | NEX-024: descoberta do acervo, composição, navegação e gate de propriedade; evidência e limites. |
