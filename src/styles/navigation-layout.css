@@ -82,9 +82,9 @@
 /* Uniformidade final da navegação principal e da administração de usuários. */
 
 .tadeon-primary-nav .tadeon-nav-item {
-  width: 100% !important;
-  min-width: 0 !important;
-  max-width: 100% !important;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
 }
 
 .tadeon-shell[data-section="Painel do Mestre"]
@@ -157,9 +157,11 @@
 :is(.tadeon-nav-item, .tadeon-mobile-dock__item, .tadeon-sidebar-collapse, .tadeon-mobile-header__control, .tadeon-desktop-toolbar__account) {
   transition: background-color 160ms var(--ease-out), border-color 160ms var(--ease-out), color 160ms var(--ease-out), box-shadow 160ms var(--ease-out);
 }
-.tadeon-nav-item__icon { color: color-mix(in srgb, var(--nav-accent, var(--primary)) 45%, var(--foreground)); display: grid; place-items: center; flex: 0 0 2rem; width: 2rem; height: 2rem; border-radius: .65rem; }
-.tadeon-nav-item[data-mini="true"] { padding-inline: .25rem; }
-.tadeon-nav-item[data-mini="true"] .tadeon-nav-item__icon { width: 2rem; }
+.tadeon-nav-item__icon { position: relative; color: color-mix(in srgb, var(--nav-accent, var(--primary)) 45%, var(--foreground)); display: grid; place-items: center; flex: 0 0 2rem; width: 2rem; height: 2rem; border: 1px solid rgb(233 227 213 / 7%); border-radius: .7rem; background: linear-gradient(145deg, rgb(233 227 213 / 5%), transparent); box-shadow: inset 0 1px rgb(233 227 213 / 6%); }
+.tadeon-nav-item__icon > svg { display: block; width: 1rem; height: 1rem; flex: none; }
+.tadeon-nav-item__label { min-width: 0; overflow-wrap: anywhere; font-size: .8125rem; line-height: 1.4; }
+.tadeon-nav-item[aria-current="page"] .tadeon-nav-item__icon { border-color: rgb(233 227 213 / 20%); background-color: rgb(233 227 213 / 5%); }
+.tadeon-nav-item[data-mini="true"] { width: 2.75rem; min-width: 2.75rem; margin-inline: auto; justify-content: center; gap: 0; padding: .35rem; }
 .tadeon-sidebar-collapse { border-color: var(--border); border-radius: 50%; background: #1c2026; }
 :is(.tadeon-nav-item, .tadeon-mobile-dock__item, .tadeon-sidebar-collapse, .tadeon-mobile-header__control, .tadeon-desktop-toolbar__account):focus-visible { outline: 2px solid var(--foreground); outline-offset: 3px; }
 @media (hover: hover) and (pointer: fine) {

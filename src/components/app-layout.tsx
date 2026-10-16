@@ -711,18 +711,14 @@ function NavItem({
       aria-label={mini ? label : undefined}
       title={mini ? label : undefined}
       data-material-surface="navigation"
-      className={`tadeon-nav-item group flex min-h-11 items-center gap-3 rounded-xl px-3 py-2.5 text-sm transition-[color,background-color,border-color,box-shadow,transform] duration-150 ease-[var(--ease-out)] ${
+      className={`tadeon-nav-item group flex min-h-11 items-center gap-2 rounded-xl px-2 py-2 text-sm ${
         mini ? "justify-center px-2" : ""
-      } ${
-        active
-          ? "bg-sidebar-accent text-sidebar-accent-foreground font-medium shadow-[inset_2px_0_0_var(--sidebar-primary)]"
-          : "text-sidebar-foreground/70 hover:bg-sidebar-accent/70 hover:text-sidebar-accent-foreground"
-      }`}
+      } ${active ? "font-medium" : ""}`}
     >
       <span className="tadeon-nav-item__icon" aria-hidden="true">
         {icon}
       </span>
-      {!mini && <span className="truncate">{label}</span>}
+      {!mini && <span className="tadeon-nav-item__label">{label}</span>}
     </Link>
   );
 }

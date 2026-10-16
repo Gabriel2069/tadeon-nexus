@@ -175,19 +175,12 @@
 /* end-source: src/styles/tabletop-director-preview-final.css */
 /* source: src/styles/interface-stability.css */
 /* Cross-workspace interaction stability ---------------------------------- */
-.tadeon-shell :is([data-slot="button"], button, a[role="button"], .tadeon-nav-item) > svg, .tadeon-shell .tadeon-nav-item__icon, .tadeon-shell .tadeon-nav-item__icon > svg, .tadeon-mobile-dock a > svg, .tadeon-mobile-dock button > svg {
+.tadeon-shell :is([data-slot="button"], button, a[role="button"], .tadeon-nav-item) > svg, .tadeon-mobile-dock a > svg, .tadeon-mobile-dock button > svg {
   flex: 0 0 auto;
   overflow: visible;
 }
 .tadeon-mobile-dock a > svg, .tadeon-mobile-dock button > svg {
   transform-origin: center;
-}
-
-.tadeon-shell .tadeon-nav-item__icon {
-  display: inline-grid;
-  width: 1.5rem;
-  height: 1.5rem;
-  place-items: center;
 }
 
 @media (prefers-reduced-motion: no-preference) {

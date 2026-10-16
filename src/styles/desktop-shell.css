@@ -85,6 +85,8 @@
     );
   }
 
+  .tadeon-sidebar[data-collapsed="true"] { width: 5rem; }
+
   .tadeon-sidebar::before {
     position: absolute;
     top: 1rem;

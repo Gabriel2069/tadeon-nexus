@@ -39,7 +39,10 @@
         "src/lib/utility-areas.ts",
         "src/components/ui/card.tsx",
         "src/components/ui/input.tsx",
-        "src/components/ui/textarea.tsx"
+        "src/components/ui/textarea.tsx",
+        "src/routes/index.tsx",
+        "src/components/continuity-hero.tsx",
+        "src/components/character-archive.tsx"
       ],
       "styles": [
         "src/styles/desktop-shell.css",
@@ -832,6 +835,23 @@
         "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38885591940",
         "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38885591995"
       ]
+    },
+    {
+      "id": "NEX-024",
+      "title": "Dashboard editorial, acervo navegável e acabamento dos menus",
+      "domain": "shell",
+      "status": "active",
+      "priority": 7,
+      "dependsOn": [
+        "NEX-023"
+      ],
+      "acceptance": [
+        "Recompor o hero e seus indicadores com relevo e leitura compacta, preservando a arte e os dados reais.",
+        "Organizar o acervo com busca por nome, ocupação ou responsável, filtro de propriedade e ordenação sem novas consultas ou alteração de permissões.",
+        "Refinar os fólios de personagens e a navegação, sem cortar rótulos, mover alvos ou criar camadas CSS concorrentes.",
+        "Validar estados vazio/erro/povoado, filtros, foco, quatro larguras e movimento reduzido."
+      ],
+      "evidence": []
     }
   ],
   "decisions": [
@@ -923,6 +943,14 @@
       "id": "DEC-014",
       "decision": "Aprofundar Véu & Trama como sistema de materiais e interações após a Mesa, com pesquisa primária sobretudo Apple; preservar identidade, símbolos e tipografia aprovados.",
       "reason": "Pedido de Tadeu em 16/10/2026: elevar organização, cards, motion, transições, botões, hover, profundidade e fundos em todo o sistema. NEX-023 concentra a evolução compartilhada; NEX-009/010 conservam performance física e autorização real."
+    },
+    {
+      "id": "DEC-015",
+      "decision": "Tadeu considera que o sistema ainda precisa de maior elaboração após NEX-023. Priorizar composição do Dashboard, organização do acervo e acabamento da navegação em NEX-024; NEX-009 mantém a medição em hardware físico.",
+      "evidence": [
+        "https://github.com/Gabriel2069/tadeon-nexus/pull/277"
+      ],
+      "reason": "Pedido de Tadeu em 16/10/2026 após a publicação da PR #277: ainda há muito a melhorar. A composição e a descoberta do acervo precedem a medição em dispositivos físicos."
     }
   ],
   "bridges": [

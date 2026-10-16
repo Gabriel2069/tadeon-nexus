@@ -36,12 +36,10 @@ describe("final user corrections 172", () => {
     expect(graph).toContain('pinnedPositions');
   });
 
-  it("centers the lateral navigation and gives Panel/Backup concrete icon frames", () => {
-    const css = source("src/styles/create-sheet-search-viewport-163.css");
+  it("preserves Panel/Backup icon accents and mini labels", () => {
     const nav = source("src/styles/navigation-real-svg-parity-160.css");
     const layout = source("src/components/app-layout.tsx");
-    expect(css).toContain(".tadeon-primary-nav .tadeon-nav-item__icon");
-    expect(css).toContain("place-items: center;");
+    // NEX-024: real centering/visibility/targets are measured by the browser verifier.
     expect(layout).toContain('data-mini={mini ? "true" : "false"}');
     expect(layout).toContain('mini ? "justify-center px-2" : ""');
     expect(nav).toContain("--nav-accent-rgb: var(--section-accent-rgb, 217 215 164)");

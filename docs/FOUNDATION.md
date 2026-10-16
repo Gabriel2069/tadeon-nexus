@@ -169,3 +169,10 @@ A cor-base da Mesa usa um escalar RGB validado em properties; o helper é compar
 A pesquisa e a tradução para TdV pertencem a DESIGN.md; a prancheta foi estendida com materiais e estados. A prova de execução e seus limites pertencem a visual-system-validation.json. Status de integração e publicação continuam separados da validação local.
 
 Validação da fonte `4f48507`: check completo aprovado, 141 suítes/589 testes e auditoria zero. 57 módulos CSS/12 links e 4.470 declarações !important, sem novos módulos, dependências ou observers globais. Status de entrega e procedência por caso em visual-system-validation.json.
+
+
+## Acervo e trilho de navegação — NEX-024
+
+CharacterArchive recebe somente fichas já autorizadas, identidade, permissão de exclusão e callback do Dashboard. Mantém busca, filtro e ordenação locais; a chave de usuário/cargo remonta o componente. HomePage conserva leitura, cache, criação e exclusão confirmada. A limpeza da busca/filtros retorna foco ao campo. O componente não persiste preferências nem chama serviços.
+
+A geometria de ícones e itens pertence a navigation-layout.css; largura do trilho recolhido pertence a desktop-shell.css, e rótulos são renderizados por NavItem. Foram retiradas 54 ramificações de seletores legados em dez módulos, inclusive regras que escondiam todo span e depois obrigavam sua reaparição com !important. Os tetos foram reduzidos. Os dois asserts antigos que exigiam o trilho assimétrico e os paddings opostos foram aposentados; a geometria, visibilidade, alvos e centro dos ícones passam a ser medidos por verify-dashboard-design.mjs. Os demais requisitos dos testes históricos continuam ativos.

@@ -207,16 +207,6 @@ body:has(.tadeon-tabletop-studio) :where(
    plus the scroll rail's pr-1 left only 36px for a 40px mini item, so the last
    pixels of its frame were physically clipped. Preserve the same shell width
    and reclaim just enough internal breathing room for the complete card. */
-#tadeon-desktop-sidebar:has(.tadeon-nav-item[data-mini="true"]) > div:first-of-type {
-  padding-right: .5rem !important;
-  padding-left: .5rem !important;
-}
-
-#tadeon-desktop-sidebar .tadeon-nav-item[data-mini="true"] {
-  min-width: 0 !important;
-  padding-right: .2rem !important;
-  padding-left: .2rem !important;
-}
 
 /* The old hover sheen was a skewed blade 170% of the button height
    (top/bottom:-35%). Even when clipped, compositing made it read beyond the

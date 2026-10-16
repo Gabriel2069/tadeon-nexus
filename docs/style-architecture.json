@@ -26,7 +26,7 @@
       "roots": 0
     },
     "src/styles/interface-layout.css": {
-      "important": 316,
+      "important": 300,
       "roots": 1
     },
     "src/styles/knowledge-graph-second-brain.css": {
@@ -54,7 +54,7 @@
       "roots": 1
     },
     "src/styles/motion-composition.css": {
-      "important": 349,
+      "important": 303,
       "roots": 20
     },
     "src/styles/motion-foundation.css": {
@@ -62,11 +62,11 @@
       "roots": 6
     },
     "src/styles/motion-interactions.css": {
-      "important": 178,
+      "important": 162,
       "roots": 11
     },
     "src/styles/navigation-layout.css": {
-      "important": 11,
+      "important": 8,
       "roots": 0
     },
     "src/styles/nexus-material.css": {
@@ -78,7 +78,7 @@
       "roots": 0
     },
     "src/styles/page-hero-parity.css": {
-      "important": 861,
+      "important": 854,
       "roots": 1
     },
     "src/styles/realtime-status.css": {
@@ -90,7 +90,7 @@
       "roots": 0
     },
     "src/styles/route-layout.css": {
-      "important": 1228,
+      "important": 1221,
       "roots": 0
     },
     "src/styles/route-popup-frame.css": {
@@ -218,7 +218,7 @@
       "roots": 1
     },
     "src/styles/viewport.css": {
-      "important": 46,
+      "important": 41,
       "roots": 2
     },
     "src/styles/visual-viewport-popup.css": {
