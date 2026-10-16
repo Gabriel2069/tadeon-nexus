@@ -62,6 +62,7 @@ try {
     assert(!metrics.overflow && metrics.h1 === 1 && metrics.main === 1 && errors.length === 0, `${width}/${state}: structure or overflow failure`);
     assert(metrics.metricFont.includes("Inter") && metrics.metricFigures.includes("tabular-nums"), "Dashboard metrics use readable aligned figures");
     assert(metrics.headingFont.includes("Cormorant Garamond"), "Editorial heading must preserve its approved family");
+    assert(metrics.navContrast.color === "rgb(233, 227, 213)", "Navigation label stays ivory while the symbol carries the section color");
     assert(metrics.navContrast.base === "#1c2026", "Navigation surface must not inherit its text accent");
     if (process.env.NEXUS_FONT_FIXTURES) assert(metrics.fontsLoaded.every(f=>f.loaded), `Font fixtures must load: ${JSON.stringify(metrics.fontsLoaded)}`);
     if (state === "populated") assert(metrics.facts.join() === "05,05,20" && metrics.cards === 5, "Metrics must use query data");

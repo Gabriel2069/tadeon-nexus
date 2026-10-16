@@ -137,6 +137,7 @@ try {
         overflow: document.documentElement.scrollWidth > innerWidth,
         mainCount: document.querySelectorAll("main").length,
         titleColor: document.querySelector("h1") ? getComputedStyle(document.querySelector("h1")).color : null,
+        activeNavigation: Array.from(document.querySelectorAll('.tadeon-nav-item[aria-current="page"],.tadeon-mobile-dock__item[aria-current="page"]')).filter(e => e.getBoundingClientRect().width > 0).map(e => ({ label: e.textContent.trim(), color: getComputedStyle(e).color })),
         material: Array.from(document.querySelectorAll('.tadeon-material-card,.tadeon-material-button')).slice(0, 8).map(element => {
           const style = getComputedStyle(element);
           return { slot: element.dataset.slot, background: style.backgroundColor, shadow: style.boxShadow, radius: style.borderRadius, transform: style.transform, translate: style.translate };
@@ -190,6 +191,7 @@ try {
         await page.mouse.move(0, 0);
         await page.evaluate(() => window.scrollTo({ top: 0, behavior: "instant" }));
       }
+      if (metrics.activeNavigation.some(item => item.color !== "rgb(233, 227, 213)")) errors.push("Active navigation label lost its ivory contrast");
       const name = route.slice(1) || "dashboard";
       if (captureScreenshots) await page.screenshot({ path: `${root}/${phase}-${name}-${width}.png`, fullPage: false, timeout: 20000 });
       const interactions = [];

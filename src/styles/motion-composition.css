@@ -4478,7 +4478,7 @@ html body .tadeon-shell .tadeon-route-offline > main {
 .tadeon-shell[data-section] button:not([data-material-surface], .tadeon-material-button):active, .tadeon-shell[data-section] [role="button"]:active{transform:none;box-shadow:inset 0 2px 10px -8px currentColor,0 0 0 1px color-mix(in srgb,var(--section-accent) 20%,transparent)}
 
 /* Active section controls inherit their page's material instead of a neutral beige. */
-.tadeon-shell[data-section] [aria-current="page"],.tadeon-shell[data-section] [data-nav-active="true"]{color:color-mix(in srgb,var(--section-accent) 82%,white);background-color:color-mix(in srgb,var(--section-accent) 8%,transparent);box-shadow:inset 2px 0 color-mix(in srgb,var(--section-accent) 74%,transparent),inset 0 0 24px -22px color-mix(in srgb,var(--section-accent) 90%,transparent)}
+.tadeon-shell[data-section] [aria-current="page"]:not([data-material-surface="navigation"]),.tadeon-shell[data-section] [data-nav-active="true"]:not([data-material-surface="navigation"]){color:color-mix(in srgb,var(--section-accent) 82%,white);background-color:color-mix(in srgb,var(--section-accent) 8%,transparent);box-shadow:inset 2px 0 color-mix(in srgb,var(--section-accent) 74%,transparent),inset 0 0 24px -22px color-mix(in srgb,var(--section-accent) 90%,transparent)}
 
 @media(prefers-reduced-motion:reduce){.tadeon-shell[data-section="Mestre"] [data-slot="card"]:hover{animation:none!important}}
 
