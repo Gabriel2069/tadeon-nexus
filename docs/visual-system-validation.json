@@ -3,7 +3,7 @@
     "NEX-022",
     "NEX-023"
   ],
-  "status": "validated",
+  "status": "integrated",
   "base": "f726d0b2e0c3a49aeb981c9e0a5f4a467a8228b9",
   "checkedAt": "2026-10-16",
   "research": "docs/DESIGN.md#evolução-de-sistema--nex-023-16102026",
@@ -8661,6 +8661,11 @@
         }
       ],
       "note": "Repetição estável da fonte final. O teste aguarda o layout medido após hidratar preferências; não altera o modo da aplicação para passar a asserção."
+    },
+    "headQuality": {
+      "status": "passed",
+      "head": "5623ad7d18882cb562a4c86b0a3c4296eee749b7",
+      "run": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38885297456"
     }
   },
   "limits": [
@@ -8679,9 +8684,62 @@
     }
   ],
   "deployment": {
-    "worker": "pending integration",
-    "protectedProjection": "pending deployment after main gates",
+    "worker": {
+      "status": "confirmed",
+      "commit": "40ed153599318798859fb5c8b0e9762e27fb35c5",
+      "qualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38885591940",
+      "publicationRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38885591995",
+      "verifiedAt": "2026-10-16T10:14:17.2990084Z",
+      "httpStatus": 200,
+      "version": "91077d6f-4663-47e8-bb08-5c387fb12bff"
+    },
+    "protectedProjection": {
+      "status": "confirmed",
+      "project": "nkxpstyfrzufsnowjrdi",
+      "function": "tabletop-view",
+      "version": 12,
+      "functionStatus": "ACTIVE",
+      "verifyJwt": true,
+      "updatedAt": "2026-10-16T10:17:39.179Z",
+      "sourceCommit": "40ed153599318798859fb5c8b0e9762e27fb35c5",
+      "sourceMatchesMain": true,
+      "sourceVerifiedAt": "2026-10-16T13:47:53.461Z",
+      "files": [
+        {
+          "path": "supabase/functions/tabletop-view/index.ts",
+          "sha256": "dfc975d823330f86066a7def5d925546c9593bd95123a16bfad8f7c9a459436e"
+        },
+        {
+          "path": "supabase/functions/_shared/tabletop-entity-color.ts",
+          "sha256": "7b1e80aec97cf92c7ed5334069df8e00aac228625e32df9bbac07af72a82fa54"
+        }
+      ],
+      "anonymousProbe": {
+        "httpStatus": 401,
+        "code": "UNAUTHORIZED_NO_AUTH_HEADER",
+        "scope": "Sem credenciais: confirma recusa de requisição anônima, não a autorização entre participantes ou RLS."
+      }
+    },
     "schemaChanges": false,
     "featureFlagChanges": false
+  },
+  "integration": {
+    "pr": 277,
+    "branch": "codex/nex-022-visual-system",
+    "base": "main",
+    "baseCommit": "f726d0b2e0c3a49aeb981c9e0a5f4a467a8228b9",
+    "sourceCommit": "4f485074011e4a1ea451150a7611a08a2245b038",
+    "state": "integrated",
+    "sourceQualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38883830326",
+    "production": "confirmed",
+    "headCommit": "5623ad7d18882cb562a4c86b0a3c4296eee749b7",
+    "mergeCommit": "40ed153599318798859fb5c8b0e9762e27fb35c5",
+    "qualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38885297456",
+    "mainQualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38885591940",
+    "productionEvidence": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38885591995",
+    "productionCommit": "40ed153599318798859fb5c8b0e9762e27fb35c5",
+    "productionVerifiedAt": "2026-10-16T10:14:17.2990084Z",
+    "productionHttpStatus": 200,
+    "workerVersion": "91077d6f-4663-47e8-bb08-5c387fb12bff"
   }
 }
