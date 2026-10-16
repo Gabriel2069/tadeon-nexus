@@ -1,25 +1,25 @@
 {
   "version": 1,
   "checkedAt": "2026-10-16",
-  "runtimeReference": "269e408cf2886153e24a7c59d9e96f1b910fd053",
+  "runtimeReference": "40ed153599318798859fb5c8b0e9762e27fb35c5",
   "integration": {
-    "pr": 275,
-    "branch": "codex/nex-007-tabletop-workspace",
+    "pr": 277,
+    "branch": "codex/nex-022-visual-system",
     "base": "main",
-    "baseCommit": "66acb8efc0cbf3d5d68b98a7984b0c04d4ff60b2",
-    "sourceCommit": "5893bd75b78c69ecf58d2df7ebe4c8142bff391c",
+    "baseCommit": "f726d0b2e0c3a49aeb981c9e0a5f4a467a8228b9",
+    "sourceCommit": "4f485074011e4a1ea451150a7611a08a2245b038",
     "state": "integrated",
-    "sourceQualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38840403462",
+    "sourceQualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38883830326",
     "production": "confirmed",
-    "headCommit": "9304720bee3b3130a2c697815f496de53b46df3c",
-    "mergeCommit": "269e408cf2886153e24a7c59d9e96f1b910fd053",
-    "qualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38840950329",
-    "mainQualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38841186355",
-    "productionEvidence": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38841186367",
-    "productionCommit": "269e408cf2886153e24a7c59d9e96f1b910fd053",
-    "productionVerifiedAt": "2026-10-16T02:37:13.8743476Z",
+    "headCommit": "5623ad7d18882cb562a4c86b0a3c4296eee749b7",
+    "mergeCommit": "40ed153599318798859fb5c8b0e9762e27fb35c5",
+    "qualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38885297456",
+    "mainQualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38885591940",
+    "productionEvidence": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38885591995",
+    "productionCommit": "40ed153599318798859fb5c8b0e9762e27fb35c5",
+    "productionVerifiedAt": "2026-10-16T10:14:17.2990084Z",
     "productionHttpStatus": 200,
-    "workerVersion": "31c82f06-c793-40c2-b5a0-cdf1e852ce72"
+    "workerVersion": "91077d6f-4663-47e8-bb08-5c387fb12bff"
   },
   "domains": [
     {
@@ -788,7 +788,7 @@
       "id": "NEX-022",
       "title": "Mesa: persistência e projeção da cor-base personalizada",
       "domain": "tabletop",
-      "status": "validated",
+      "status": "integrated",
       "priority": 7,
       "dependsOn": [
         "NEX-007"
@@ -800,14 +800,18 @@
       ],
       "evidence": [
         "docs/tabletop-workspace-map.md",
-        "docs/visual-system-validation.json"
+        "docs/visual-system-validation.json",
+        "https://github.com/Gabriel2069/tadeon-nexus/pull/277",
+        "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38885297456",
+        "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38885591940",
+        "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38885591995"
       ]
     },
     {
       "id": "NEX-023",
       "title": "Véu & Trama: materiais e interação de todo o sistema",
       "domain": "shell",
-      "status": "validated",
+      "status": "integrated",
       "priority": 7,
       "dependsOn": [
         "NEX-022",
@@ -822,7 +826,11 @@
       "evidence": [
         "docs/DESIGN.md",
         "docs/design/board.html",
-        "docs/visual-system-validation.json"
+        "docs/visual-system-validation.json",
+        "https://github.com/Gabriel2069/tadeon-nexus/pull/277",
+        "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38885297456",
+        "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38885591940",
+        "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38885591995"
       ]
     }
   ],
@@ -1328,6 +1336,25 @@
       "productionVerifiedAt": "2026-10-15T10:45:57.4262468Z",
       "productionHttpStatus": 200,
       "workerVersion": "585d6298-962d-462a-87a1-8bcb7bf9955a"
+    },
+    {
+      "pr": 275,
+      "branch": "codex/nex-007-tabletop-workspace",
+      "base": "main",
+      "baseCommit": "66acb8efc0cbf3d5d68b98a7984b0c04d4ff60b2",
+      "sourceCommit": "5893bd75b78c69ecf58d2df7ebe4c8142bff391c",
+      "state": "integrated",
+      "sourceQualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38840403462",
+      "production": "confirmed",
+      "headCommit": "9304720bee3b3130a2c697815f496de53b46df3c",
+      "mergeCommit": "269e408cf2886153e24a7c59d9e96f1b910fd053",
+      "qualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38840950329",
+      "mainQualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38841186355",
+      "productionEvidence": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38841186367",
+      "productionCommit": "269e408cf2886153e24a7c59d9e96f1b910fd053",
+      "productionVerifiedAt": "2026-10-16T02:37:13.8743476Z",
+      "productionHttpStatus": 200,
+      "workerVersion": "31c82f06-c793-40c2-b5a0-cdf1e852ce72"
     }
   ]
 }

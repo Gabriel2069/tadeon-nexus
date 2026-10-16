@@ -2,7 +2,7 @@
 
 > Gerado de [project-continuity.json](project-continuity.json). Edite o registro e rode `npm run sync:project`; não mantenha uma cópia manual.
 
-Snapshot: 2026-10-16; referência de runtime: `269e408cf2886153e24a7c59d9e96f1b910fd053`. PR #275 em `codex/nex-007-tabletop-workspace`; integração: `integrated`. Não é prova de deploy.
+Snapshot: 2026-10-16; referência de runtime: `40ed153599318798859fb5c8b0e9762e27fb35c5`. PR #277 em `codex/nex-022-visual-system`; integração: `integrated`. Não é prova de deploy.
 
 Estados: planejado → próximo → em andamento → validado na branch → integrado. Publicação exige evidência própria do SHA; adiado conserva o requisito. Se um requisito mudar, preservar o ID e registrar a decisão/evidência.
 
@@ -31,8 +31,8 @@ Cada PR usa IDs desta fila e declara dependências. Trabalho sobre o mesmo propr
 | NEX-019 | Backup e diagnóstico: revisão e histórico por conta | Integrado | 4 | assets | NEX-014 |
 | NEX-020 | Símbolos reais de Mestre e Backup na navegação | Integrado | 4 | shell | NEX-016 |
 | NEX-021 | Nexus: contexto da página e passagem para a Mesa | Integrado | 5 | knowledge | NEX-015 |
-| NEX-022 | Mesa: persistência e projeção da cor-base personalizada | Validado na branch | 7 | tabletop | NEX-007 |
-| NEX-023 | Véu & Trama: materiais e interação de todo o sistema | Validado na branch | 7 | shell | NEX-022, NEX-016 |
+| NEX-022 | Mesa: persistência e projeção da cor-base personalizada | Integrado | 7 | tabletop | NEX-007 |
+| NEX-023 | Véu & Trama: materiais e interação de todo o sistema | Integrado | 7 | shell | NEX-022, NEX-016 |
 
 ## NEX-001 — Preparação estrutural
 
@@ -204,7 +204,7 @@ Evidências: [docs/tabletop-workspace-validation.json](../docs/tabletop-workspac
 - Preservar a cor-base escolhida após salvar/reabrir sem criar divergência entre propriedades, fingerprint e renderização.
 - Verificar round trip e compatibilidade das cenas antigas; conservar autorização da visão compartilhada.
 
-Evidências: [docs/tabletop-workspace-map.md](../docs/tabletop-workspace-map.md), [docs/visual-system-validation.json](../docs/visual-system-validation.json).
+Evidências: [docs/tabletop-workspace-map.md](../docs/tabletop-workspace-map.md), [docs/visual-system-validation.json](../docs/visual-system-validation.json), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/pull/277), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38885297456), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38885591940), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38885591995).
 
 ## NEX-023 — Véu & Trama: materiais e interação de todo o sistema
 
@@ -213,7 +213,7 @@ Evidências: [docs/tabletop-workspace-map.md](../docs/tabletop-workspace-map.md)
 - Verificar telas representativas em 320/390/820/1440px, foco/retorno, interação e preferências de movimento e transparência.
 - Consolidar fontes, critérios, limites e integração sem criar outra fila ou camada CSS.
 
-Evidências: [docs/DESIGN.md](../docs/DESIGN.md), [docs/design/board.html](../docs/design/board.html), [docs/visual-system-validation.json](../docs/visual-system-validation.json).
+Evidências: [docs/DESIGN.md](../docs/DESIGN.md), [docs/design/board.html](../docs/design/board.html), [docs/visual-system-validation.json](../docs/visual-system-validation.json), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/pull/277), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38885297456), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38885591940), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38885591995).
 
 ## Decisões vigentes
 
