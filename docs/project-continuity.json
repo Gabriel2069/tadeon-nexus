@@ -1,25 +1,25 @@
 {
   "version": 1,
   "checkedAt": "2026-10-19",
-  "runtimeReference": "e5ba2df38ce01cc76cb3c66cf5cfe44249ce9fda",
+  "runtimeReference": "41f909874f46dd7360afe5c00734a37a6f1edeb4",
   "integration": {
-    "pr": 279,
-    "branch": "design/nex-024-archive-composition",
+    "pr": 281,
+    "branch": "design/nex-025-sheet-dossier",
     "base": "main",
-    "baseCommit": "0a758662b10bbc492474d63ce60db222264f617a",
-    "sourceCommit": "7ce823b22d00db296a1f16dff66529b9ed0ebbeb",
-    "headCommit": "959224000c9dbe7e01c46a019f2861664ffd9990",
+    "baseCommit": "88943c17baca0096cdb26a9c5522d3756cd0c02b",
+    "sourceCommit": "0a4239f5f7922b7be9ab94af1009510771957ff8",
+    "headCommit": "c5f0b52685e42fec185feb6f3c45cc310f1bdcc7",
     "state": "integrated",
-    "mergeCommit": "e5ba2df38ce01cc76cb3c66cf5cfe44249ce9fda",
-    "sourceQualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38948581282",
-    "qualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38950723190",
-    "mainQualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38951095689",
+    "mergeCommit": "41f909874f46dd7360afe5c00734a37a6f1edeb4",
+    "sourceQualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39303671143",
+    "qualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39304286379",
+    "mainQualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39304572774",
     "production": "confirmed",
-    "productionEvidence": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38951095753",
-    "productionCommit": "e5ba2df38ce01cc76cb3c66cf5cfe44249ce9fda",
-    "productionVerifiedAt": "2026-10-16T18:58:24.8406512Z",
+    "productionEvidence": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39304572872",
+    "productionCommit": "41f909874f46dd7360afe5c00734a37a6f1edeb4",
+    "productionVerifiedAt": "2026-10-19T18:43:29.7693797Z",
     "productionHttpStatus": 200,
-    "workerVersion": "80e53291-f3f7-4f1c-9cf9-51d709cca6c1"
+    "workerVersion": "e0edabcb-3592-4214-b2f1-48695d5e9da9"
   },
   "domains": [
     {
@@ -868,7 +868,7 @@
       "id": "NEX-025",
       "title": "Ficha: hierarquia, superfícies e condução visual",
       "domain": "sheet",
-      "status": "validated",
+      "status": "integrated",
       "priority": 7,
       "dependsOn": [
         "NEX-024"
@@ -883,7 +883,10 @@
         "docs/FOUNDATION.md",
         "docs/sheet-design-validation.json",
         "https://github.com/Gabriel2069/tadeon-nexus/pull/281",
-        "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39303671143"
+        "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39303671143",
+        "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39304286379",
+        "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39304572774",
+        "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39304572872"
       ]
     },
     {
@@ -1456,6 +1459,25 @@
       "productionVerifiedAt": "2026-10-16T10:14:17.2990084Z",
       "productionHttpStatus": 200,
       "workerVersion": "91077d6f-4663-47e8-bb08-5c387fb12bff"
+    },
+    {
+      "pr": 279,
+      "branch": "design/nex-024-archive-composition",
+      "base": "main",
+      "baseCommit": "0a758662b10bbc492474d63ce60db222264f617a",
+      "sourceCommit": "7ce823b22d00db296a1f16dff66529b9ed0ebbeb",
+      "headCommit": "959224000c9dbe7e01c46a019f2861664ffd9990",
+      "state": "integrated",
+      "mergeCommit": "e5ba2df38ce01cc76cb3c66cf5cfe44249ce9fda",
+      "sourceQualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38948581282",
+      "qualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38950723190",
+      "mainQualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38951095689",
+      "production": "confirmed",
+      "productionEvidence": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38951095753",
+      "productionCommit": "e5ba2df38ce01cc76cb3c66cf5cfe44249ce9fda",
+      "productionVerifiedAt": "2026-10-16T18:58:24.8406512Z",
+      "productionHttpStatus": 200,
+      "workerVersion": "80e53291-f3f7-4f1c-9cf9-51d709cca6c1"
     }
   ]
 }

@@ -111,7 +111,7 @@
   "dossierRevision": {
     "task": "NEX-025",
     "date": "2026-10-19",
-    "state": "validated",
+    "state": "integrated",
     "branch": "design/nex-025-sheet-dossier",
     "baseCommit": "88943c17baca0096cdb26a9c5522d3756cd0c02b",
     "sourceCommit": "0a4239f5f7922b7be9ab94af1009510771957ff8",
@@ -844,8 +844,27 @@
       "Fixtures não comprovam autorização/RLS, contas ou campanhas reais.",
       "Sem VoiceOver, teclado virtual físico, pinch zoom ou medição de GPU/dispositivos físicos.",
       "CSS e vetores traduzem o material; não implementam Liquid Glass nativo ou refração física.",
-      "Outros writers legados e o bridge de modificadores de perícia permanecem fora do escopo.",
-      "Integração e publicação aguardam gates de main e comprovação do SHA público."
-    ]
+      "Outros writers legados e o bridge de modificadores de perícia permanecem fora do escopo."
+    ],
+    "integration": {
+      "pr": 281,
+      "branch": "design/nex-025-sheet-dossier",
+      "base": "main",
+      "baseCommit": "88943c17baca0096cdb26a9c5522d3756cd0c02b",
+      "sourceCommit": "0a4239f5f7922b7be9ab94af1009510771957ff8",
+      "headCommit": "c5f0b52685e42fec185feb6f3c45cc310f1bdcc7",
+      "state": "integrated",
+      "mergeCommit": "41f909874f46dd7360afe5c00734a37a6f1edeb4",
+      "sourceQualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39303671143",
+      "qualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39304286379",
+      "mainQualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39304572774",
+      "production": "confirmed",
+      "productionEvidence": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39304572872",
+      "productionCommit": "41f909874f46dd7360afe5c00734a37a6f1edeb4",
+      "productionVerifiedAt": "2026-10-19T18:43:29.7693797Z",
+      "productionHttpStatus": 200,
+      "workerVersion": "e0edabcb-3592-4214-b2f1-48695d5e9da9"
+    },
+    "delivery": "Código integrado pela PR #281, Quality do HEAD/main aprovados e SHA exato confirmado em produção. O fechamento documental registra sua própria prova no corpo da PR correspondente."
   }
 }
