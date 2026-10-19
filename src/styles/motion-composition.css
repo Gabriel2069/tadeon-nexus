@@ -1080,7 +1080,7 @@
 }
 
 /* Menus: each option is a stitch in the same cloth. */
-:is([data-radix-menu-content],[data-radix-dropdown-menu-content],[data-radix-context-menu-content],[data-radix-select-content],[role="menu"]) [role="menuitem"],:is([data-radix-menu-content],[data-radix-dropdown-menu-content],[data-radix-context-menu-content],[data-radix-select-content]) [role="option"] {
+:is([data-radix-menu-content],[data-radix-dropdown-menu-content],[data-radix-context-menu-content],[data-radix-select-content],[role="menu"]):not([data-motion-surface]) [role="menuitem"],:is([data-radix-menu-content],[data-radix-dropdown-menu-content],[data-radix-context-menu-content],[data-radix-select-content]) [role="option"] {
   transition:
     background-color var(--tw-fast) var(--tw-stitch),
     color var(--tw-fast) var(--tw-stitch),
@@ -1092,13 +1092,13 @@
 }
 
 /* Popover/menu rows reveal in a short thread. */
-[data-state="open"] :is([role="menuitem"],[role="option"]) {
+[data-state="open"]:not([data-motion-surface]) :is([role="menuitem"],[role="option"]) {
   animation: tadeon-menu-stitch 260ms var(--tw-thread) both;
 }
-[data-state="open"] :is([role="menuitem"],[role="option"]):nth-child(2) { animation-delay: 18ms; }
-[data-state="open"] :is([role="menuitem"],[role="option"]):nth-child(3) { animation-delay: 34ms; }
-[data-state="open"] :is([role="menuitem"],[role="option"]):nth-child(4) { animation-delay: 50ms; }
-[data-state="open"] :is([role="menuitem"],[role="option"]):nth-child(n+5) { animation-delay: 66ms; }
+[data-state="open"]:not([data-motion-surface]) :is([role="menuitem"],[role="option"]):nth-child(2) { animation-delay: 18ms; }
+[data-state="open"]:not([data-motion-surface]) :is([role="menuitem"],[role="option"]):nth-child(3) { animation-delay: 34ms; }
+[data-state="open"]:not([data-motion-surface]) :is([role="menuitem"],[role="option"]):nth-child(4) { animation-delay: 50ms; }
+[data-state="open"]:not([data-motion-surface]) :is([role="menuitem"],[role="option"]):nth-child(n+5) { animation-delay: 66ms; }
 @keyframes tadeon-menu-stitch {
   from { opacity: 0; transform: translateX(-4px); }
   to { opacity: 1; transform: translateX(0); }
@@ -2358,13 +2358,13 @@
   }
 
   /* Menu rows: selection is a thread on the edge, never a slide. */
-  :is([data-radix-menu-content],[data-radix-dropdown-menu-content],[data-radix-context-menu-content],[data-radix-select-content],[role="menu"]) [role="menuitem"],:is([data-radix-menu-content],[data-radix-dropdown-menu-content],[data-radix-context-menu-content],[data-radix-select-content]) [role="option"] {
+  :is([data-radix-menu-content],[data-radix-dropdown-menu-content],[data-radix-context-menu-content],[data-radix-select-content],[role="menu"]):not([data-motion-surface]) [role="menuitem"],:is([data-radix-menu-content],[data-radix-dropdown-menu-content],[data-radix-context-menu-content],[data-radix-select-content]) [role="option"] {
     transform: none !important;
     padding-left: revert !important;
     transition: color var(--td-hover-quiet), background-color var(--td-hover-quiet), box-shadow var(--td-hover-weave) !important;
   }
 
-  :is([data-radix-menu-content],[data-radix-dropdown-menu-content],[data-radix-context-menu-content],[data-radix-select-content],[role="menu"]) [role="menuitem"]:hover,:is([data-radix-menu-content],[data-radix-dropdown-menu-content],[data-radix-context-menu-content],[data-radix-select-content]) [role="option"]:hover {
+  :is([data-radix-menu-content],[data-radix-dropdown-menu-content],[data-radix-context-menu-content],[data-radix-select-content],[role="menu"]):not([data-motion-surface]) [role="menuitem"]:hover,:is([data-radix-menu-content],[data-radix-dropdown-menu-content],[data-radix-context-menu-content],[data-radix-select-content]) [role="option"]:hover {
     box-shadow: inset 1px 0 color-mix(in srgb, var(--td-section-accent, var(--section-accent)) 72%, transparent) !important;
   }
 

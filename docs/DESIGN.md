@@ -278,3 +278,9 @@ No Nexus, Bibliotecas e Nova página têm acesso direto; Ferramentas reúne impo
 Nova janela e Salvar sessão passam a ser renderizados nos slots das rotas. A ligação por arrasto recebe ID e título da página realmente selecionada. Nenhuma ação descobre ou altera títulos por um observer. A biblioteca compartilha o cabeçalho, distingue falha de consulta de resultado vazio e permite tentar novamente; a prévia da tabela funciona no compacto e devolve foco ao controle que a abriu. Os status têm rótulos em português.
 
 A prova desta revisão fica em `compositionRevision` de `nexus-continuity-validation.json`. Fixtures, integração e publicação têm registros distintos; dispositivos físicos, contas reais e corpus autorizado permanecem em NEX-009/010.
+
+### NEX-026 — roda do Mais e continuidade autoral (DEC-017)
+
+Tadeu pediu explicitamente o retorno da roda, substituindo a lista adotada em NEX-016. O Mais abre um plano circular: três destinos orbitais, fios de ligação e fechamento central. Os rótulos permanecem horizontais, as áreas de toque são imóveis e o material recebe o tom da rota pelo contexto React, inclusive no portal. A entrada e a saída são curtas e finitas, sem girar textos, sem deslocar alvos no hover e com redução de movimento. A geometria pertence somente a `mobile-more-radial.css`; foco, colisão e dispensa continuam no Radix, sem captura global de eventos.
+
+Continuidade não elimina os gestos autorais: a roda, os símbolos e os instrumentos de cada área coexistem com o mesmo envelope de página, anatomia de cabeçalho, tipografia, luz e disciplina de movimento. Nenhuma alteração neste lote troca a identidade Fio-Mestre ou promete Liquid Glass nativo.

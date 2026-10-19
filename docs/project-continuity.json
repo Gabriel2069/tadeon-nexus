@@ -53,7 +53,7 @@
         "src/styles/mobile-more-radial.css",
         "src/styles/button.css"
       ],
-      "boundary": "Cabeçalhos renderizam símbolos; geometria de Área em foco pertence a page-hero-parity.css. Gatilho Mais e símbolos pertencem ao render; Radix mantém foco/teclado/colisão, sem captura global. Reflexos pertencem a useMaterialLight e à superfície React; o diretor legado não injeta luz nessas superfícies. Material de navegação pertence a navigation-layout; fundos de trama pertencem a experience-surfaces. Movimento da navegação consolidado em navigation-layout; mobile-more-radial preserva apenas o nome do arquivo e agora organiza uma lista Radix, sem layout radial. Card é dono da reflexão local; campos usam um plano rebaixado sem escritores legados. Tokens de relevo/flutuação pertencem a styles.css; AppLayout fornece o tom por contexto React (MaterialToneContext em use-material-light), preservado nos portais. NEX-026: PageHeader é o render único da anatomia de cabeçalhos principais e do acervo. Geometria em page-hero-parity, material em hero-backgrounds; envelope data-page-layout em desktop-shell. A barra da Ficha conserva somente sua extensão sticky no módulo da ficha. WorkspaceActions concentra Nova janela e Salvar sessão, renderizados nos slots das rotas; nenhum portal descobre títulos ou injeta ações nos cabeçalhos."
+      "boundary": "Cabeçalhos renderizam símbolos; geometria de Área em foco pertence a page-hero-parity.css. Gatilho Mais e símbolos pertencem ao render; Radix mantém foco/teclado/colisão, sem captura global. Reflexos pertencem a useMaterialLight e à superfície React; o diretor legado não injeta luz nessas superfícies. Material de navegação pertence a navigation-layout; fundos de trama pertencem a experience-surfaces. Movimento da navegação consolidado em navigation-layout; mobile-more-radial é o proprietário da roda de opções do Mais: três destinos orbitais e fechamento central, sem rotação contínua; Radix mantém foco, colisão e dispensa. DEC-017 substitui a apresentação em lista de NEX-016 por pedido explícito de Tadeu. Card é dono da reflexão local; campos usam um plano rebaixado sem escritores legados. Tokens de relevo/flutuação pertencem a styles.css; AppLayout fornece o tom por contexto React (MaterialToneContext em use-material-light), preservado nos portais. NEX-026: PageHeader é o render único da anatomia de cabeçalhos principais e do acervo. Geometria em page-hero-parity, material em hero-backgrounds; envelope data-page-layout em desktop-shell. A barra da Ficha conserva somente sua extensão sticky no módulo da ficha. WorkspaceActions concentra Nova janela e Salvar sessão, renderizados nos slots das rotas; nenhum portal descobre títulos ou injeta ações nos cabeçalhos."
     },
     {
       "id": "popup",
@@ -898,7 +898,7 @@
     },
     {
       "id": "NEX-026",
-      "title": "Continuidade entre páginas e composição do Nexus/Biblioteca",
+      "title": "Continuidade entre páginas, Nexus/Biblioteca e roda do Mais",
       "domain": "knowledge",
       "status": "active",
       "priority": 7,
@@ -910,7 +910,8 @@
         "Unificar cabeçalhos e envelope de layout do Dashboard, Ficha, Nexus, Mesa, Mestre e utilidades, com a mesma anatomia, alinhamento e hierarquia; preservar os instrumentos de cada tarefa.",
         "Revisar a hierarquia do acervo, árvore, abas, contexto e leitura combinada sem duplicar seus estados.",
         "Aprofundar a materialidade dos instrumentos e das prévias, preservando conteúdo opaco e a referência Obsidian.",
-        "Verificar navegação, divisores, filtros e retorno de foco em quatro larguras; conservar rascunhos, conflitos e limites de autorização."
+        "Verificar navegação, divisores, filtros e retorno de foco em quatro larguras; conservar rascunhos, conflitos e limites de autorização.",
+        "Restaurar o Mais como roda autoral de opções, com fios e material do tom da rota; validar rótulos, alvos sem sobreposição, teclado, Escape, navegação e mudança de breakpoint sem captura global."
       ],
       "evidence": []
     }
@@ -1018,6 +1019,14 @@
       "decision": "Um contrato de layout e cabeçalho para as páginas principais; mudar a área altera símbolo, tom e contexto, sem inventar outro padrão de head.",
       "reason": "Pedido de Tadeu em 19/10/2026 ao iniciar NEX-026. PageHeader compartilha identidade, ações e contexto; o envelope comum respeita a mesma margem. Conteúdo e instrumentos conservam suas funções e densidades.",
       "evidence": []
+    },
+    {
+      "id": "DEC-017",
+      "decision": "Restaurar a roda de opções do Mais no dock inferior; personalidade e continuidade devem coexistir entre páginas.",
+      "reason": "Pedido explícito de Tadeu ao fechar NEX-026, em 19/10/2026. Substitui a apresentação em lista de NEX-016, preservando o componente React/Radix, os destinos estáveis e a dispensa acessível. Cabeçalhos, margens, materiais e movimentos compartilham regras; símbolos e instrumentos mantêm sua autoria.",
+      "evidence": [
+        "https://github.com/Gabriel2069/tadeon-nexus/pull/283"
+      ]
     }
   ],
   "bridges": [
