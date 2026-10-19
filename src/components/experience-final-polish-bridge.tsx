@@ -1,6 +1,6 @@
 import { createPortal } from "react-dom";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { ChevronDown, ChevronUp, SlidersHorizontal, WandSparkles } from "lucide-react";
+import { SlidersHorizontal, WandSparkles } from "lucide-react";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -39,9 +39,7 @@ function passiveModifier(skill: string, abilities: Ability[]) {
     if (!normalized.includes(normalizedSkill)) return total;
     if (!/(per[ií]cia|teste|skill|passiv|treino|b[oô]nus|modificador)/i.test(source)) return total;
     const escaped = skill.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-    const nearSkill = source.match(
-      new RegExp(`${escaped}[^+\\-\\d]{0,36}([+-]\\s*\\d+)`, "i"),
-    );
+    const nearSkill = source.match(new RegExp(`${escaped}[^+\\-\\d]{0,36}([+-]\\s*\\d+)`, "i"));
     const generic = source.match(/([+-]\s*\d+)/);
     const value = Number((nearSkill?.[1] ?? generic?.[1] ?? "0").replace(/\s/g, ""));
     return total + (Number.isFinite(value) ? value : 0);
@@ -55,8 +53,6 @@ function sheetIdFromLocation() {
 
 export function ExperienceFinalPolishBridge() {
   const { role } = useAuth();
-  const [linkHost, setLinkHost] = useState<HTMLElement | null>(null);
-  const [linksCollapsed, setLinksCollapsed] = useState(false);
   const [skillHost, setSkillHost] = useState<HTMLElement | null>(null);
   const [skillPopover, setSkillPopover] = useState<HTMLElement | null>(null);
   const [skillName, setSkillName] = useState("");
@@ -71,24 +67,12 @@ export function ExperienceFinalPolishBridge() {
     const scan = () => {
       if (window.location.pathname.startsWith("/sheet/")) {
         tuneSheetChrome();
-        const panel = document.querySelector<HTMLElement>(".tadeon-link-panel");
-        const heading = panel?.querySelector<HTMLElement>(".tadeon-link-panel__heading");
-        if (panel && heading) {
-          let host = heading.querySelector<HTMLElement>("[data-tadeon-link-toggle-host]");
-          if (!host) {
-            host = document.createElement("div");
-            host.dataset.tadeonLinkToggleHost = "true";
-            heading.append(host);
-          }
-          setLinkHost((current) => (current === host ? current : host));
-          panel.dataset.collapsed = linksCollapsed ? "true" : "false";
-        }
-
         const popovers = Array.from(
           document.querySelectorAll<HTMLElement>('[data-slot="popover-content"], [role="dialog"]'),
         );
         const skill = popovers.find((popover) => {
-          const title = popover.querySelector<HTMLElement>(".font-cinzel")?.textContent?.trim() ?? "";
+          const title =
+            popover.querySelector<HTMLElement>(".font-cinzel")?.textContent?.trim() ?? "";
           return Boolean(title && /Treino atual/i.test(popover.textContent ?? ""));
         });
         if (skill) {
@@ -110,7 +94,6 @@ export function ExperienceFinalPolishBridge() {
           setModifierTab("training");
         }
       } else {
-        setLinkHost(null);
         setSkillHost(null);
         setSkillPopover(null);
       }
@@ -118,7 +101,7 @@ export function ExperienceFinalPolishBridge() {
     };
     scan();
     return () => window.clearTimeout(timer);
-  }, [linksCollapsed, modifierTab]);
+  }, [modifierTab]);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -160,8 +143,10 @@ export function ExperienceFinalPolishBridge() {
         });
         if (error) throw error;
         const nextPowerForm = (data ?? {}) as PowerFormData;
-        const nextModifiers =
-          nextPowerForm.skill_modifiers ?? { ...manualModifiers, [skillName]: nextValue };
+        const nextModifiers = nextPowerForm.skill_modifiers ?? {
+          ...manualModifiers,
+          [skillName]: nextValue,
+        };
         setManualModifiers(nextModifiers);
         window.dispatchEvent(
           new CustomEvent("tadeon-sheet-skill-modifier", {
@@ -177,21 +162,6 @@ export function ExperienceFinalPolishBridge() {
 
   return (
     <>
-      {linkHost &&
-        createPortal(
-          <Button
-            type="button"
-            size="sm"
-            variant="ghost"
-            className="tadeon-link-collapse"
-            aria-expanded={!linksCollapsed}
-            onClick={() => setLinksCollapsed((value) => !value)}
-          >
-            {linksCollapsed ? <ChevronDown /> : <ChevronUp />}
-            {linksCollapsed ? "Mostrar" : "Recolher"}
-          </Button>,
-          linkHost,
-        )}
       {skillHost &&
         skillPopover &&
         createPortal(
@@ -265,7 +235,11 @@ export function ExperienceFinalPolishBridge() {
                   </small>
                 </div>
                 <footer>
-                  Total adicional: <strong>{manual + passive >= 0 ? "+" : ""}{manual + passive}</strong>
+                  Total adicional:{" "}
+                  <strong>
+                    {manual + passive >= 0 ? "+" : ""}
+                    {manual + passive}
+                  </strong>
                 </footer>
               </section>
             )}

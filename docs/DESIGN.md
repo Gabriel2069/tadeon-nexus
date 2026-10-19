@@ -251,3 +251,16 @@ Após NEX-023, Tadeu pediu maior elaboração. O Dashboard passa de caixas unifo
 O hero preserva a arte e o símbolo aprovados, com uma armadura de fios finos que responde de forma finita à interação. Os indicadores formam um único registro gravado, com divisórias e figuras tabulares, sem uma caixa de vidro dentro de outra. No celular, a arte ocupa menos altura e o registro conserva os três valores e seus detalhes em colunas.
 
 Rótulos da navegação podem quebrar a linha em vez de serem cortados. O render controla a presença dos rótulos; navigation-layout.css controla ícones e dimensões dos itens, e desktop-shell.css a largura do trilho. Os remendos anteriores de ícone/recolhimento foram retirados dos demais módulos. Reflexos não movem textos nem alvos; armadura e ações assentam diretamente com movimento reduzido. Evidências de execução e limites acompanham o lote na fila canônica.
+
+
+## Ficha como dossiê — NEX-025, 19/10/2026
+
+A identidade ganha um campo de nome editorial com quebra de linha, selo autoral e registros narrativos separados por espaço e linhas discretas. Cabeçalhos mantêm o índice real das seções, com título maior e rótulos em Inter; PT Mono fica nos índices e siglas. O resumo usa um único registro de quatro valores, com os acentos funcionais preservados. Leitura desabilitada mantém contraste, em vez de esmaecer o conteúdo da personagem.
+
+Recursos usam instrumentos com arco proporcional ao valor atual/máximo, ambos explícitos em texto. O arco é vetorial e decorativo; valor, campo e alvo não inclinam. Os controles herdam o RGB do próprio recurso, com 44px e modificador separado. Tecido responde somente na decoração; a fonte do nome e os demais símbolos continuam os aprovados.
+
+O índice oferece as doze seções, com seletor nativo no compacto e links de ação no regular. A escolha foca o título e revela uma seção recolhida sem editar valores. Vínculos têm Collapsible controlado pelo componente; Novo vínculo revela a lista antes de acrescentar o registro pelo callback existente. Maestria e História são rótulos reais dos Tabs, sem substituir texto por pseudo-elementos CSS.
+
+A dobra pertence a `button.css`, pelo contrato `data-motion-surface="fold"`; não anima transform dos glifos. Gatilhos da Ficha recebem uma fronteira explícita contra os escritores legados. Uma camada própria da seta representa o estado, inclusive com movimento reduzido, sem disputar a rotação do SVG com regras genéricas. Materiais e geometria do dossiê pertencem a `sheet-premium.css`; `sheet-layout.css` conserva as exceções de densidade do modo Jogo.
+
+Reconsultadas em 19/10/2026: [Apple Materials](https://developer.apple.com/design/human-interface-guidelines/materials), Liquid Glass; [Motion](https://developer.apple.com/design/human-interface-guidelines/motion), Providing feedback; [Layout](https://developer.apple.com/design/human-interface-guidelines/layout), Visual hierarchy. O conteúdo oficial foi recuperado no índice de busca; HTML retornou invólucro JavaScript e o Markdown não foi aceito pelo mecanismo de abertura. A tradução para web mantém vidro nos instrumentos, conteúdo estável e resposta breve/cancelável. Não é renderização Liquid Glass nativa. Evidência e limites desta revisão ficam em `dossierRevision` de [sheet-design-validation.json](sheet-design-validation.json), preservando a procedência de NEX-005.

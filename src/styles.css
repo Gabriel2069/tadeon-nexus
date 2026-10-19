@@ -1282,16 +1282,16 @@ body
   }
 }
 
-[data-slot="collapsible-content"] {
+[data-slot="collapsible-content"]:not([data-motion-surface="fold"]) {
   overflow: hidden;
   will-change: height, opacity, transform;
 }
 
-[data-slot="collapsible-content"][data-state="open"] {
+[data-slot="collapsible-content"]:not([data-motion-surface="fold"])[data-state="open"] {
   animation: tadeon-collapsible-down 300ms var(--ease-drawer) both !important;
 }
 
-[data-slot="collapsible-content"][data-state="closed"] {
+[data-slot="collapsible-content"]:not([data-motion-surface="fold"])[data-state="closed"] {
   animation: tadeon-collapsible-up 220ms var(--ease-in-out) both !important;
 }
 
@@ -1299,7 +1299,7 @@ body
     [data-slot="button"]:not([data-material-surface], .tadeon-material-button),
     [data-slot="toggle"],
     [data-slot="toggle-group-item"],
-    [data-slot="collapsible-trigger"],
+    [data-slot="collapsible-trigger"]:not([data-sheet-fold-trigger]),
     .tadeon-shell button:not([data-material-surface], .tadeon-material-button):not([data-slot])
   ):is(
     [aria-pressed="true"],
@@ -1313,7 +1313,7 @@ body
 }
 
 @media (prefers-reduced-motion: reduce) {
-  [data-slot="collapsible-content"],
+  [data-slot="collapsible-content"]:not([data-motion-surface="fold"]),
   :where(button:not([data-material-surface], .tadeon-material-button), [role="button"]) > svg {
     animation: none !important;
   }
@@ -1338,7 +1338,7 @@ body
     [data-slot="popover-content"],
     [data-slot="hover-card-content"],
     [data-slot="tooltip-content"],
-    [data-slot="collapsible-content"]
+    [data-slot="collapsible-content"]:not([data-motion-surface="fold"])
   ):is(
     [data-state="active"],
     [data-state="open"],
@@ -2749,7 +2749,7 @@ select:focus-visible {
   filter: drop-shadow(0 0 7px rgb(217 215 164 / 28%));
 }
 
-:where([data-slot="accordion-content"], [data-slot="collapsible-content"])[data-state="open"] {
+:where([data-slot="accordion-content"], [data-slot="collapsible-content"]:not([data-motion-surface="fold"]))[data-state="open"] {
   transform-origin: top;
   animation: tadeon-panel-reveal var(--motion-panel) var(--ease-out) both;
 }
@@ -3815,7 +3815,7 @@ legend {
     [data-slot="toggle-group-item"],
     [data-slot="tabs-trigger"],
     [data-slot="pagination-link"]
-  )::after, [data-slot="tabs-content"], [data-slot="accordion-content"], [data-slot="collapsible-content"], [data-slot="progress-indicator"], [data-slot="skeleton"]::after, .tadeon-shell button:not([data-material-surface], .tadeon-material-button):not([data-slot]), :where(
+  )::after, [data-slot="tabs-content"], [data-slot="accordion-content"], [data-slot="collapsible-content"]:not([data-motion-surface="fold"]), [data-slot="progress-indicator"], [data-slot="skeleton"]::after, .tadeon-shell button:not([data-material-surface], .tadeon-material-button):not([data-slot]), :where(
     [data-slot="select-content"],
     [data-slot="dropdown-menu-content"],
     [data-slot="dropdown-menu-sub-content"],

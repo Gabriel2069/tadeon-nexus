@@ -27,34 +27,6 @@
   background: radial-gradient(circle at 92% -8%, rgb(var(--section-rgb) / 9%), transparent 30%), linear-gradient(145deg, rgb(18 21 26 / 97%), rgb(10 13 17 / 93%)) !important;
 }
 
-.tadeon-sheet-page :is(.tadeon-equilibrium-panel, .tadeon-exposure-panel) .tadeon-sheet-section__heading {
-  background: transparent !important;
-  box-shadow: none !important;
-  backdrop-filter: none !important;
-}
-
-.tadeon-sheet-page .tadeon-sheet-tabs-list [data-tab-value="arvore"] > span,
-.tadeon-sheet-page .tadeon-sheet-tabs-list [data-tab-value="descricao"] > span {
-  font-size: 0 !important;
-}
-
-.tadeon-sheet-page .tadeon-sheet-tabs-list [data-tab-value="arvore"] > span::after,
-.tadeon-sheet-page .tadeon-sheet-tabs-list [data-tab-value="descricao"] > span::after {
-  font-family: inherit;
-  font-size: 0.875rem;
-  font-weight: inherit;
-  letter-spacing: inherit;
-  line-height: 1;
-}
-
-.tadeon-sheet-page .tadeon-sheet-tabs-list [data-tab-value="arvore"] > span::after {
-  content: "Maestria";
-}
-
-.tadeon-sheet-page .tadeon-sheet-tabs-list [data-tab-value="descricao"] > span::after {
-  content: "História";
-}
-
 @media (max-width: 767px) {
   .tadeon-sheet-page .tadeon-sheet-tabs-list {
     position: relative !important;
@@ -62,10 +34,6 @@
     top: auto !important;
     margin-bottom: 0.65rem !important;
     box-shadow: 0 14px 36px -28px rgb(0 0 0 / 98%), inset 0 1px rgb(255 255 255 / 4%) !important;
-  }
-
-  .tadeon-sheet-page .tadeon-sheet-section {
-    scroll-margin-top: calc(var(--sheet-mobile-header-height) + 0.75rem);
   }
 }
 
@@ -95,57 +63,30 @@
     min-width: 0;
     padding-inline: 0.55rem;
   }
-
-  .tadeon-sheet-page .tadeon-sheet-tabs-list :is([data-tab-value="arvore"], [data-tab-value="descricao"]) > span::after {
-    font-size: 0.78rem;
-  }
 }
 /* end-source: src/styles/sheet-requested-polish.css */
 /* source: src/styles/sheet-density-final.css */
 /* Final sheet density pass: editing chrome yields space to essential reading. */
-.tadeon-sheet-page .tadeon-sheet-field,
-.tadeon-sheet-page .tadeon-sheet-row__field,
-.tadeon-sheet-page .tadeon-stat-block__mod { gap: 0.18rem; }
+.tadeon-sheet-page .tadeon-sheet-row__field { gap: 0.18rem; }
 
-.tadeon-sheet-page .tadeon-sheet-field > label,
-.tadeon-sheet-page .tadeon-sheet-row__field > span,
-.tadeon-sheet-page .tadeon-stat-block__mod > span {
+.tadeon-sheet-page .tadeon-sheet-row__field > span {
   font-size: 0.58rem;
   line-height: 1.05;
 }
 
-.tadeon-sheet-page .tadeon-sheet-field > input,
 .tadeon-sheet-page .tadeon-sheet-row__field > input,
-.tadeon-sheet-page .tadeon-sheet-row__field > select,
-.tadeon-sheet-page .tadeon-stat-block__mod input {
+.tadeon-sheet-page .tadeon-sheet-row__field > select {
   min-height: 2.15rem;
   height: 2.15rem;
   padding-block: 0.28rem;
 }
 
-.tadeon-sheet-page .tadeon-identity-question-panel textarea {
-  min-height: 3.1rem;
-  height: 3.1rem;
-}
-
 .tadeon-sheet-page .tadeon-sheet-row { padding-block: 0.5rem; }
-
-.tadeon-sheet-page .tadeon-identity-field--name > input {
-  min-height: 2.65rem;
-  height: 2.65rem;
-  font-size: clamp(1.05rem, 1.8vw, 1.3rem);
-  letter-spacing: 0.015em;
-}
 
 .tadeon-sheet-page .tadeon-attribute-tile__label { font-size: 0.78rem; }
 .tadeon-sheet-page .tadeon-attribute-tile__value {
   font-size: 1.28rem;
 }
-
-.tadeon-sheet-page .tadeon-stat-block__value {
-  font-size: clamp(1.55rem, 2.2vw, 1.9rem);
-}
-.tadeon-sheet-page .tadeon-stat-block__value small { font-size: 0.68rem; }
 
 .tadeon-sheet-page .tadeon-defense-card__score,
 .tadeon-sheet-page .tadeon-defense-card__score svg {
@@ -156,24 +97,16 @@
   font-size: 1.65rem;
 }
 
-.tadeon-sheet-page :is(.tadeon-stat-block__head, .tadeon-defense-card__summary) .font-cinzel {
+.tadeon-sheet-page :is(.tadeon-defense-card__summary) .font-cinzel {
   font-size: 0.92rem;
 }
 
 @media (max-width: 767px) {
-  .tadeon-sheet-page .tadeon-sheet-field > input,
   .tadeon-sheet-page .tadeon-sheet-row__field > input,
-  .tadeon-sheet-page .tadeon-sheet-row__field > select,
-  .tadeon-sheet-page .tadeon-stat-block__mod input {
+  .tadeon-sheet-page .tadeon-sheet-row__field > select {
     min-height: 2.4rem !important;
     height: 2.4rem;
   }
-  .tadeon-sheet-page .tadeon-identity-field--name > input {
-    min-height: 2.7rem !important;
-    height: 2.7rem;
-    font-size: 1.12rem;
-  }
-  .tadeon-sheet-page .tadeon-stat-block__value { font-size: 1.48rem !important; }
   .tadeon-sheet-page .tadeon-defense-card__score,
   .tadeon-sheet-page .tadeon-defense-card__score svg {
     width: 3.75rem !important;

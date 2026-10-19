@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "checkedAt": "2026-10-16",
+  "checkedAt": "2026-10-19",
   "runtimeReference": "e5ba2df38ce01cc76cb3c66cf5cfe44249ce9fda",
   "integration": {
     "pr": 279,
@@ -107,7 +107,7 @@
         "src/styles/sheet-premium.css",
         "src/styles/sheet-experience.css"
       ],
-      "boundary": "Rota mantém estado, regras derivadas, leitura cancelável e autosave por personagem/usuário/cargo. Seções recebem valores/callbacks; não criam estado persistido paralelo. Sheet UI mantém rótulos, recolhimento e material; sheet-premium é dono do material. Histórico/inventário montados explicitamente na ficha, sem observer de montagem; o arquivo de experiência ainda conserva bridges de outras áreas."
+      "boundary": "Rota mantém estado, regras derivadas, leitura cancelável e autosave por personagem/usuário/cargo. Seções recebem valores/callbacks; não criam estado persistido paralelo. Sheet UI mantém rótulos, recolhimento e material; sheet-premium é dono do material. Histórico/inventário montados explicitamente na ficha, sem observer de montagem; o arquivo de experiência ainda conserva bridges de outras áreas. NEX-025: vínculos recolhem no componente; títulos recebem foco para revelar seções. Dossiê em sheet-premium, densidade do modo Jogo em sheet-layout; índice sem captura global."
     },
     {
       "id": "knowledge",
@@ -867,7 +867,7 @@
       "id": "NEX-025",
       "title": "Ficha: hierarquia, superfícies e condução visual",
       "domain": "sheet",
-      "status": "ready",
+      "status": "active",
       "priority": 7,
       "dependsOn": [
         "NEX-024"
@@ -1226,7 +1226,7 @@
     },
     {
       "path": "docs/sheet-design-validation.json",
-      "purpose": "NEX-005: seções, materiais, cancelamento de leituras, autosave e fixtures da ficha."
+      "purpose": "NEX-005/025: seções e dossiê, materiais, leituras, autosave e verificações da ficha; revisões com procedência própria."
     },
     {
       "path": "docs/material-reading-validation.json",

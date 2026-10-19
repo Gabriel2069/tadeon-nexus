@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import type { CSSProperties } from "react";
 import { useEffect, useId, useState } from "react";
 
@@ -111,18 +112,20 @@ export function Section({
       data-tadeon-context-help={SECTION_HELP[presentationKey]}
       title={SECTION_HELP[presentationKey]}
       data-collapsed={collapsed ? "true" : "false"}
-      className={`tadeon-sheet-section scroll-mt-44 p-4 transition-[border-color,box-shadow] duration-150 hover:border-primary/25 md:p-5 ${className}`}
+      className={`tadeon-sheet-section scroll-mt-44 ${className}`}
     >
       <FabricFilaments className="tadeon-sheet-fabric" />
       <Collapsible open={!collapsed} onOpenChange={(open) => setCollapsed(!open)}>
-        <div className="tadeon-sheet-section__heading mb-4 flex flex-wrap items-center justify-between gap-2">
+        <div className="tadeon-sheet-section__heading">
           <div className="tadeon-sheet-section__title-group">
             <span className="tadeon-sheet-section__index" aria-hidden="true">
               {presentation.index}
             </span>
             <span className="min-w-0">
               <small>{presentation.kicker}</small>
-              <h2 className="font-cinzel text-lg font-semibold text-primary">{title}</h2>
+              <h2 tabIndex={-1} onFocus={() => setCollapsed(false)}>
+                {title}
+              </h2>
             </span>
           </div>
           <div className="tadeon-sheet-section__actions">
@@ -130,12 +133,16 @@ export function Section({
             <CollapsibleTrigger asChild>
               <button
                 type="button"
+                data-sheet-fold-trigger=""
+                data-material-surface="control"
                 className="tadeon-sheet-section__toggle"
                 aria-controls={bodyId}
                 aria-label={`${collapsed ? "Expandir" : "Recolher"} seção ${title}`}
                 title={`${collapsed ? "Expandir" : "Recolher"} ${title}`}
               >
-                <ChevronDown aria-hidden="true" />
+                <span className="tadeon-sheet-fold-chevron">
+                  <ChevronDown aria-hidden="true" />
+                </span>
               </button>
             </CollapsibleTrigger>
           </div>
@@ -153,12 +160,14 @@ export function Field({
   onChange,
   disabled,
   className = "",
+  multiline = false,
 }: {
   label: string;
   value: string;
   onChange: (v: string) => void;
   disabled?: boolean;
   className?: string;
+  multiline?: boolean;
 }) {
   const fieldId = useId();
   return (
@@ -166,13 +175,23 @@ export function Field({
       <Label htmlFor={fieldId} className="text-xs">
         {label}
       </Label>
-      <Input
-        id={fieldId}
-        value={value || ""}
-        onChange={(e) => onChange(e.target.value)}
-        disabled={disabled}
-        className="h-9"
-      />
+      {multiline ? (
+        <Textarea
+          id={fieldId}
+          value={value || ""}
+          onChange={(e) => onChange(e.target.value)}
+          disabled={disabled}
+          rows={2}
+        />
+      ) : (
+        <Input
+          id={fieldId}
+          value={value || ""}
+          onChange={(e) => onChange(e.target.value)}
+          disabled={disabled}
+          className="h-9"
+        />
+      )}
     </div>
   );
 }
@@ -180,7 +199,6 @@ export function StatBlock({
   label,
   full,
   color,
-  barColor,
   glowRgb,
   current,
   mod,
@@ -192,7 +210,6 @@ export function StatBlock({
   label: string;
   full: string;
   color: string;
-  barColor: string;
   glowRgb: string;
   current: number;
   mod: number;
@@ -201,29 +218,30 @@ export function StatBlock({
   onCurrent: (v: number) => void;
   onMod: (v: number) => void;
 }) {
-  const borderStyle: CSSProperties & { "--resource-rgb": string } = {
-    borderColor: `rgba(${glowRgb}, 0.35)`,
+  const borderStyle: CSSProperties = {
     "--resource-rgb": glowRgb.split(",").join(" "),
-  };
+    "--material-rgb": "var(--resource-rgb)",
+    "--resource-used": clamp(current / Math.max(1, max), 0, 1),
+  } as CSSProperties;
   return (
-    <Card className="tadeon-stat-block border bg-card/60 p-2.5" style={borderStyle}>
+    <Card className="tadeon-stat-block" style={borderStyle}>
       <div className="tadeon-stat-block__head">
         <div>
-          <div className={`font-cinzel text-sm font-bold ${color}`}>{label}</div>
-          <span className="text-[10px] text-muted-foreground">{full}</span>
+          <span className="tadeon-stat-block__symbol">{label}</span>
+          <h3>{full}</h3>
+          <span className="tadeon-stat-block__caption">Atual / máximo</span>
         </div>
-        <strong className={`tadeon-stat-block__value ${color}`}>
-          {current}
-          <small>/ {max}</small>
-        </strong>
-      </div>
-      <div className="tadeon-stat-block__bar mb-2 h-1.5 w-full overflow-hidden rounded-full bg-secondary">
-        <div
-          className={`h-full rounded-full bg-gradient-to-r ${barColor}`}
-          style={{
-            width: `${clamp((current / Math.max(1, max)) * 100, 0, 100)}%`,
-          }}
-        />
+        <div className="tadeon-stat-block__dial">
+          <svg viewBox="0 0 80 80" aria-hidden="true" focusable="false">
+            <circle className="tadeon-stat-block__track" cx="40" cy="40" r="35" />
+            <circle className="tadeon-stat-block__fill" cx="40" cy="40" r="35" pathLength="1" />
+            <circle className="tadeon-stat-block__rim" cx="40" cy="40" r="29" />
+          </svg>
+          <strong className={`tadeon-stat-block__value ${color}`}>
+            {current}
+            <small>/ {max}</small>
+          </strong>
+        </div>
       </div>
       <div className="tadeon-stat-block__controls">
         <div className="tadeon-stat-block__stepper">
@@ -259,7 +277,7 @@ export function StatBlock({
           </Button>
         </div>
         <label className="tadeon-stat-block__mod">
-          <span>Mod</span>
+          <span>Mod.</span>
           <Input
             type="number"
             disabled={disabled}

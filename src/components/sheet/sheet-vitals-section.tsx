@@ -50,7 +50,6 @@ export function SheetVitalsSection({
           label="PV"
           full="Vitalidade"
           color="text-red-400"
-          barColor="from-red-600 to-red-400"
           glowRgb="239,68,68"
           current={sheet.stats.pv_current}
           mod={sheet.stats.pv_mod}
@@ -68,7 +67,6 @@ export function SheetVitalsSection({
           label="PE"
           full="Energia"
           color="text-emerald-400"
-          barColor="from-emerald-600 to-emerald-400"
           glowRgb="16,185,129"
           current={sheet.stats.pe_current}
           mod={sheet.stats.pe_mod}
@@ -86,7 +84,6 @@ export function SheetVitalsSection({
           label="PS"
           full="Sanidade"
           color="text-purple-400"
-          barColor="from-purple-600 to-purple-400"
           glowRgb="168,85,247"
           current={sheet.stats.ps_current}
           mod={sheet.stats.ps_mod}
@@ -104,7 +101,6 @@ export function SheetVitalsSection({
           label="PA"
           full="Ancoragem"
           color="text-amber-300"
-          barColor="from-amber-600 to-yellow-300"
           glowRgb="245,158,11"
           current={sheet.stats.pa_current}
           mod={sheet.stats.pa_mod}

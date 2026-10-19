@@ -180,3 +180,14 @@ A geometria de ícones e itens pertence a navigation-layout.css; largura do tril
 O botão de recolhimento é absoluto no proprietário navigation-layout.css. Dois escritores genéricos de position em motion-composition.css deixam de atuar nos controles com superfície de navegação explícita. Isso impede que o botão consuma largura no flex do aside. O corpo da barra ocupa a largura disponível, e o trilho compacto tem padding próprio.
 
 O gate de estilos agora rejeita geometria explícita de ícones e do controle de recolhimento fora de navigation-layout.css. Uma violação deliberada de width em outro módulo foi ensaiada e removida; o gate recusou o novo escritor. Isso protege esse contrato específico, sem afirmar que toda a cascata foi saneada.
+
+
+## Responsáveis do dossiê — NEX-025
+
+A rota conserva dados, regras, identidade e autosave. `Field` associa Nome a um Textarea controlado; os demais campos continuam sob seus callbacks. A navegação interna foca o h2 da seção, que revela seu conteúdo; não usa captura global, observer ou outro armazenamento. `SheetIdentitySection` mantém apenas a abertura local de vínculos. O host/portal e o escritor de dataset dessa lista foram retirados de `ExperienceFinalPolishBridge`; a função de modificadores de perícia desse bridge permanece.
+
+A recomposição retirou ou reduziu 279 ramificações de seletores em dez módulos, 154 no próprio proprietário antigo e 125 fora dele. Cinco regras que renomeavam abas por CSS foram aposentadas separadamente. Tetos de !important: 4.353 → 4.283, sem módulos ou links novos. `sheet-premium.css` é responsável por apresentação de seções, métricas, identidade, vínculos, campos e recursos. As exceções de densidade de Jogo permanecem em `sheet-layout.css`; esse limite é explícito no gate de arquitetura.
+
+As regras globais de Collapsible no root deixam de impor animation/transform/will-change às dobras com proprietário explícito. `button.css` mantém a animação por altura/opacidade. Regras históricas de gatilhos não atuam nos controles `data-sheet-fold-trigger`; a seta tem sua camada decorativa. O repertório de CSS legado fora do escopo continua existente, sem promessa de uma cascata inteiramente saneada.
+
+Quatro asserções textuais antigas sobre localização/aparência da identidade, título de Exposição e ocultação de vínculos foram conciliadas em três suítes; as demais asserções permanecem. Cobertura substituta: testes renderizados de vínculo/leitura e foco para revelar uma seção, além do verificador da ficha para layout, filtros de permissão, controles, teclado e movimento. A procedência efetivamente executada é registrada na revisão de evidência da ficha.

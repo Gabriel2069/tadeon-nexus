@@ -48,7 +48,7 @@ Comece pelo [estado de continuidade](ai/00_ESTADO_ATUAL.md), [mapa do código](P
 | [dashboard-design-validation.json](dashboard-design-validation.json) | NEX-003: implementação, limpeza de sobreposições, testes de leitura e verificação visual com fixtures. |
 | [navigation-design-validation.json](navigation-design-validation.json) | NEX-004: tipografia, menu, foco/portais, dívida retirada e limites de fixtures. |
 | [shared-fabric-validation.json](shared-fabric-validation.json) | NEX-013: revisão tipográfica autorizada, materiais e movimento compartilhados, critérios e limites de runtime. |
-| [sheet-design-validation.json](sheet-design-validation.json) | NEX-005: seções, materiais, cancelamento de leituras, autosave e fixtures da ficha. |
+| [sheet-design-validation.json](sheet-design-validation.json) | NEX-005/025: seções e dossiê, materiais, leituras, autosave e verificações da ficha; revisões com procedência própria. |
 | [material-reading-validation.json](material-reading-validation.json) | NEX-014/NEX-006: correção dos proprietários de movimento e leitura integrada com árvore/grafo; evidência e limites de fixture. |
 | [nexus-continuity-validation.json](nexus-continuity-validation.json) | NEX-015: composição ajustável, continuidade de abas, rascunhos por identidade, concorrência e revisão explícita de conflitos; fixtures e limites. |
 | [navigation-utilities-validation.json](navigation-utilities-validation.json) | NEX-016 a NEX-019: menus, Consulta offline, Usuários e Backup e diagnóstico; validação de interface, funções e limites de fixtures. |

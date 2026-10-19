@@ -119,11 +119,6 @@
     rgb(17 20 25 / 94%) !important;
 }
 
-.tadeon-link-panel[data-tadeon-material="fragment"] {
-  border-width: 1px 2px 1px 0 !important;
-  border-radius: .2rem .8rem .3rem 1rem !important;
-}
-
 .tadeon-state-panel[data-tadeon-material="state"] {
   border-width: 1px 1px 3px !important;
   border-radius: .3rem .85rem .3rem 1rem !important;
@@ -131,13 +126,11 @@
 
 @media (hover: hover) and (pointer: fine) {
   .tadeon-surface[data-tadeon-material],
-  .tadeon-link-panel[data-tadeon-material],
   .tadeon-state-panel[data-tadeon-material] {
     transition: transform 220ms cubic-bezier(.23,1,.32,1), box-shadow 220ms cubic-bezier(.23,1,.32,1), border-color 180ms ease !important;
   }
 
   .tadeon-surface[data-tadeon-material]:hover { transform: translateY(-5px) !important; }
-  .tadeon-link-panel[data-tadeon-material="fragment"]:hover { transform: translateX(5px) !important; }
   .tadeon-state-panel[data-tadeon-material="state"]:hover { transform: translateY(-3px) !important; }
 }
 
@@ -148,26 +141,6 @@
 .tadeon-sheet-page .tadeon-sheet-commandbar {
   min-height: 4.7rem;
   border-bottom-width: 2px;
-}
-
-.tadeon-sheet-page .tadeon-sheet-overview {
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  border-radius: 1.2rem .35rem 1.2rem .35rem;
-}
-
-.tadeon-sheet-page .tadeon-sheet-section {
-  border-width: 1px 1px 1px 3px !important;
-  border-radius: .45rem 1rem .4rem 1rem !important;
-}
-
-.tadeon-sheet-page .tadeon-sheet-section__index {
-  width: 2.4rem;
-  height: 2.4rem;
-  border-radius: .72rem .2rem .72rem .2rem;
-}
-
-.tadeon-sheet-page .tadeon-sheet-section__title-group h2 {
-  font-size: clamp(1.05rem, 1.6vw, 1.45rem);
 }
 
 /* --------------------------------------------------------------------------
@@ -218,13 +191,10 @@
 
   .tadeon-page-hero { border-radius: 1rem .3rem 1rem .3rem !important; }
   .tadeon-master-workspace .tadeon-master-commandbar { min-height: 7rem; }
-  .tadeon-sheet-page .tadeon-sheet-overview { grid-template-columns: repeat(2, minmax(0,1fr)); }
-  .tadeon-sheet-page .tadeon-sheet-section { border-radius: .35rem .8rem .35rem .8rem !important; }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .tadeon-surface[data-tadeon-material],
-  .tadeon-link-panel[data-tadeon-material],
   .tadeon-state-panel[data-tadeon-material] { transition: none !important; }
 }
 
@@ -281,7 +251,6 @@
 }
 
 .tadeon-surface[data-tadeon-directed="true"],
-.tadeon-link-panel[data-tadeon-directed="true"],
 .tadeon-state-panel[data-tadeon-directed="true"] {
   position: relative;
   will-change: transform;
@@ -451,15 +420,8 @@
    -------------------------------------------------------------------------- */
 @media (hover: hover) and (pointer: fine) {
   .tadeon-shell .tadeon-surface[data-tadeon-directed="true"]:hover,
-  .tadeon-shell .tadeon-link-panel[data-tadeon-directed="true"]:hover,
   .tadeon-shell .tadeon-state-panel[data-tadeon-directed="true"]:hover {
     z-index: 2;
-  }
-
-  .tadeon-shell .tadeon-link-panel[data-tadeon-directed="true"]:hover {
-    box-shadow:
-      0 28px 72px -54px rgb(0 0 0 / 96%),
-      inset 0 0 0 1px rgb(143 122 160 / 13%);
   }
 }
 
@@ -743,16 +705,6 @@
 /* Dashboard - archival reveal: calm, sequential, slightly wider breathing room. */
 
 /* Character sheet - document rhythm: tabs and sections feel like layers of a living record. */
-.tadeon-sheet-page .tadeon-sheet-section,
-.tadeon-sheet-page .tadeon-sheet-overview > * {
-  transition: transform 360ms var(--tadeon-motion-material, cubic-bezier(.23,1,.32,1)),
-    box-shadow 360ms var(--tadeon-motion-material, cubic-bezier(.23,1,.32,1)),
-    border-color 300ms ease;
-}
-
-.tadeon-sheet-page .tadeon-sheet-section:nth-child(2) { animation-delay: 55ms; }
-.tadeon-sheet-page .tadeon-sheet-section:nth-child(3) { animation-delay: 100ms; }
-.tadeon-sheet-page .tadeon-sheet-section:nth-child(4) { animation-delay: 145ms; }
 
 /* Master - faster, more deliberate response: decision before action. */
 .tadeon-master-workspace .tadeon-surface,
@@ -1337,7 +1289,6 @@
 .tadeon-shell .tadeon-surface,
 .tadeon-shell .tadeon-state-panel,
 .tadeon-shell .tadeon-user-row,
-.tadeon-shell .tadeon-link-panel,
 .tadeon-shell .tadeon-skill-modifier-panel,
 .tadeon-shell button,
 .tadeon-shell [role="button"],

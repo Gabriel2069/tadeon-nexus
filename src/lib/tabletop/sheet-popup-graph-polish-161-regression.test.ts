@@ -33,10 +33,9 @@ describe("sheet popup graph polish 161", () => {
   });
 
   it("covers the reported sheet visual regressions", () => {
-    expect(css).toContain("#sec-info .tadeon-identity-lead");
+    // NEX-025: identity/title presentation is measured by verify-sheet-design.mjs.
     expect(css).toContain(".tadeon-attributes-panel .tadeon-attribute-radar");
     expect(css).toContain("@keyframes tadeon-equilibrium-sheen-161");
-    expect(css).toContain("#exposicao .tadeon-sheet-section__title-group");
     expect(css).toContain(".tadeon-conditions-panel .tadeon-condition-card::after");
   });
 

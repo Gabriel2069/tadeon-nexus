@@ -32,6 +32,10 @@ it("renders actions inside their section and collapses without changing the cont
   expect(localStorage.getItem("tadeon.sheet.section:sec-inv")).toBe("collapsed");
   fireEvent.click(screen.getByRole("button", { name: "Expandir seção Inventário" }));
   expect(screen.getByText("Corda de linho")).toBeTruthy();
+  fireEvent.click(toggle);
+  fireEvent.focus(screen.getByRole("heading", { name: "Inventário" }));
+  expect(toggle.getAttribute("aria-expanded")).toBe("true");
+  expect(screen.getByText("Corda de linho")).toBeTruthy();
 });
 it("keeps sections usable when browser storage is unavailable", () => {
   vi.spyOn(Storage.prototype, "getItem").mockImplementation(() => {

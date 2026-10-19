@@ -598,14 +598,19 @@ function SheetPage() {
     { id: "sec-info", label: "Identidade" },
     { id: "sec-attr", label: "Atributos" },
     { id: "sec-pontos", label: "Pontos" },
+    { id: "equilibrio", label: "Equilíbrio" },
+    { id: "exposicao", label: "Exposição" },
+    { id: "condicoes", label: "Condições" },
     { id: "sec-pericias", label: "Perícias" },
     { id: "sec-inv", label: "Inventário" },
     { id: "sec-armas", label: "Armas" },
     { id: "sec-hab", label: "Habilidades" },
+    { id: "tramas-fragmentos", label: "Tramas e fragmentos" },
     { id: "sec-notas", label: "Anotações" },
   ];
   const jumpTo = (id: string) => {
     const el = document.getElementById(id);
+    el?.querySelector("h2")?.focus({ preventScroll: true });
     if (el)
       el.scrollIntoView({
         behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches
@@ -794,27 +799,44 @@ function SheetPage() {
             </TabsTrigger>
             <TabsTrigger value="arvore" className="flex-1 gap-2 md:flex-initial">
               <GitBranch className="h-4 w-4" aria-hidden="true" />
-              <span>Árvore</span>
+              <span>Maestria</span>
             </TabsTrigger>
             <TabsTrigger value="descricao" className="flex-1 gap-2 md:flex-initial">
               <ScrollText className="h-4 w-4" aria-hidden="true" />
-              <span>Descrição</span>
+              <span>História</span>
             </TabsTrigger>
           </TabsList>
 
           <TabsContent data-sheet-content value="ficha" className="mt-0 space-y-4">
             {/* Quick jump shortcuts */}
             <nav className="tadeon-sheet-jumpbar" aria-label="Ir para uma seção da ficha">
-              {sectionAnchors.map((a) => (
-                <button
-                  key={a.id}
-                  type="button"
-                  onClick={() => jumpTo(a.id)}
-                  className="tadeon-sheet-jump"
-                >
-                  {a.label}
-                </button>
-              ))}
+              <span className="tadeon-sheet-jumpbar__label">Neste dossiê</span>
+              <select
+                aria-label="Localizar seção da ficha"
+                value=""
+                onChange={(event) => jumpTo(event.target.value)}
+              >
+                <option value="" disabled>
+                  Localizar seção…
+                </option>
+                {sectionAnchors.map((a) => (
+                  <option key={a.id} value={a.id}>
+                    {a.label}
+                  </option>
+                ))}
+              </select>
+              <div className="tadeon-sheet-jumpbar__links">
+                {sectionAnchors.map((a) => (
+                  <button
+                    key={a.id}
+                    type="button"
+                    onClick={() => jumpTo(a.id)}
+                    className="tadeon-sheet-jump"
+                  >
+                    {a.label}
+                  </button>
+                ))}
+              </div>
             </nav>
             <div className="tadeon-sheet-overview" aria-label="Resumo da ficha">
               <OverviewMetric
@@ -1626,7 +1648,11 @@ function SheetPage() {
             />
           </TabsContent>
 
-          <TabsContent data-sheet-content value="descricao" className="tadeon-description-tab mt-0 space-y-4">
+          <TabsContent
+            data-sheet-content
+            value="descricao"
+            className="tadeon-description-tab mt-0 space-y-4"
+          >
             <Card className="tadeon-description-hero">
               <div className="tadeon-description-hero__mark" aria-hidden="true">
                 <ScrollText />
