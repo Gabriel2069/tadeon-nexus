@@ -4793,12 +4793,6 @@ html body .tadeon-shell .tadeon-route-offline > main {
     max-width: 92vw !important;
   }
 
-  .tadeon-shell > header,
-  .tadeon-shell header:first-of-type {
-    margin-top: 0 !important;
-    top: 0 !important;
-  }
-
   .tadeon-mobile-header {
     position: relative;
     isolation: isolate;

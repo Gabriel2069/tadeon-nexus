@@ -2,7 +2,6 @@
   --sheet-mobile-header-height: 4rem;
   position: relative;
   isolation: isolate;
-  max-width: 96rem;
 }
 
 .tadeon-sheet-page::before {
@@ -21,7 +20,7 @@
 }
 
 .tadeon-sheet-commandbar {
-  position: sticky;
+  --page-header-position: sticky;
   z-index: 25;
   top: var(--sheet-sticky-top, 0rem);
 }
@@ -470,10 +469,6 @@
 }
 
 @media (max-width: 767px) {
-  .tadeon-sheet-page {
-    padding-inline: 0.75rem;
-  }
-
   .tadeon-sheet-page::before {
     inset: 5rem -40% auto auto;
     width: 36rem;
@@ -481,7 +476,7 @@
   }
 
   .tadeon-sheet-commandbar {
-    position: relative;
+    --page-header-position: relative;
     top: auto;
     z-index: 1;
   }

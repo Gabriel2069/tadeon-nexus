@@ -1289,7 +1289,7 @@ html body [data-slot="dialog-content"]:not([data-motion-surface]),
 
 /* Shared route anatomy (NEX-026). Identity and actions have one geometry owner. */
 .tadeon-page-header {
-  position: relative;
+  position: var(--page-header-position, relative);
   isolation: isolate;
   min-width: 0;
   margin-bottom: 1.5rem;

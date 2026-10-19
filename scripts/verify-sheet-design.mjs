@@ -206,7 +206,7 @@ try {
           waitUntil: "domcontentloaded",
         },
       );
-      if (process.env.NEXUS_POWER_HEADER === "1") {
+      if (process.env.NEXUS_POWER_HEADER === "1" || process.env.NEXUS_HEADER_ONLY === "1") {
         await page.locator("[data-page-header=sheet]").waitFor({ timeout: 60000 });
         const header = await page.locator("[data-page-header=sheet]").evaluate((e) => {
           const r = e.getBoundingClientRect(),
@@ -215,10 +215,33 @@ try {
           return {
             rect: [r.x, r.y, r.width, r.height],
             font: [style.fontFamily, style.fontSize, style.fontWeight],
+            titleFont: [style.fontFamily, style.fontSize, style.fontWeight, style.lineHeight],
+            padding: (() => {
+              const s = getComputedStyle(e.querySelector(".tadeon-page-header__main"));
+              return [s.paddingTop, s.paddingRight, s.paddingBottom, s.paddingLeft];
+            })(),
+            markWidth: e.querySelector(".tadeon-page-header__mark").getBoundingClientRect().width,
+            position: getComputedStyle(e).position,
+            hostStyle: e.closest("[data-page-layout]").getAttribute("style"),
+            headerStyle: e.getAttribute("style"),
+            offsetValue: getComputedStyle(e).getPropertyValue("--sheet-sticky-top"),
+            shellHeaders: [
+              ...e
+                .closest(".tadeon-shell")
+                .querySelectorAll(".tadeon-desktop-toolbar,.tadeon-mobile-header"),
+            ].map((h) => [h.className, h.getBoundingClientRect().height]),
+            top: getComputedStyle(e).top,
             headingCount: document.querySelectorAll("h1").length,
             overflow: document.documentElement.scrollWidth > innerWidth,
           };
         });
+        if (process.env.NEXUS_HEADER_ONLY === "1" && width >= 768)
+          assert(
+            header.position === "sticky" &&
+              Math.abs(parseFloat(header.top) - Math.max(...header.shellHeaders.map((h) => h[1]))) <
+                1,
+            "Sheet header keeps the measured shell offset",
+          );
         assert(
           header.headingCount === 1 && !header.overflow,
           "Power header follows the shared route envelope",
@@ -235,13 +258,13 @@ try {
         results.push({
           width,
           state,
-          variant: "power-header",
+          variant: process.env.NEXUS_POWER_HEADER === "1" ? "power-header" : "sheet-header",
           header,
           errors,
           writes: writes.length,
         });
         writeFileSync(`${output}/results.json`, JSON.stringify(results, null, 2));
-        console.log(`Power header verified ${width}`);
+        console.log(`Shared sheet/power header verified ${width}`);
         await context.close();
         continue;
       }
@@ -648,6 +671,10 @@ try {
         retry: state !== "readonly",
         errors,
       });
+      writeFileSync(
+        `${output}/results.json`,
+        JSON.stringify({ fixtureOnly: true, results }, null, 2),
+      );
       await context.close();
       console.log(JSON.stringify({ width, state, passed: true }));
     }
