@@ -16,7 +16,10 @@ export function useSheetChrome(host: HTMLElement | null) {
         0,
         ...headers.map((header) => header.getBoundingClientRect().height),
       );
-      const toolbarHeight = toolbar.getBoundingClientRect().height;
+      const toolbarHeight =
+        getComputedStyle(toolbar).position === "sticky"
+          ? toolbar.getBoundingClientRect().height
+          : 0;
       host.style.setProperty("--sheet-sticky-top", `${shellHeight}px`);
       host.style.setProperty("--sheet-toolbar-height", `${toolbarHeight}px`);
     };
