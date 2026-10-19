@@ -564,7 +564,8 @@ try {
           assert(
             sticky.commandTop >= sticky.shellBottom - 1 &&
               sticky.titleTop >= sticky.commandBottom - 1,
-            "Sticky toolbar and section targets remain below the shell header",
+            "Sticky toolbar and section targets remain below the shell header: " +
+              JSON.stringify(sticky),
           );
         }
         if (process.env.NEXUS_GAME_SCREENSHOTS === "1") {

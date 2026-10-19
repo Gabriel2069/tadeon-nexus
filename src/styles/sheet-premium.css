@@ -5,11 +5,6 @@
   max-width: 96rem;
 }
 
-@media (min-width: 768px) {
-  /* Match the shell's canonical 4.65rem toolbar; dedicated popouts have no offset. */
-  .tadeon-shell .tadeon-sheet-page { --sheet-sticky-top: 4.65rem; }
-}
-
 .tadeon-sheet-page::before {
   position: fixed;
   z-index: -1;

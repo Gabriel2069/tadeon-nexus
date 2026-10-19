@@ -14,6 +14,7 @@ import {
 } from "@/components/sheet/sheet-model";
 import { SheetSkillsSection } from "@/components/sheet/sheet-skills-section";
 import { OverviewMetric, RowTable, Section } from "@/components/sheet/sheet-ui";
+import { useSheetChrome } from "@/components/sheet/use-sheet-chrome";
 import { SheetVitalsSection } from "@/components/sheet/sheet-vitals-section";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -198,6 +199,7 @@ function SheetPage() {
   const { user, role } = useAuth();
   const navigate = useNavigate();
   const [sheetHost, setSheetHost] = useState<HTMLDivElement | null>(null);
+  useSheetChrome(sheetHost);
   const [sheet, setSheet] = useState<SheetData | null>(null);
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
