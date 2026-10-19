@@ -868,7 +868,7 @@
       "id": "NEX-025",
       "title": "Ficha: hierarquia, superfícies e condução visual",
       "domain": "sheet",
-      "status": "active",
+      "status": "validated",
       "priority": 7,
       "dependsOn": [
         "NEX-024"
@@ -878,7 +878,13 @@
         "Aprofundar a identidade de dossiê com materiais e respostas locais, sem repetir molduras ou cobrir texto.",
         "Verificar condições, inventário e abertura/fechamento por teclado/toque nas quatro larguras e com movimento reduzido."
       ],
-      "evidence": []
+      "evidence": [
+        "docs/DESIGN.md",
+        "docs/FOUNDATION.md",
+        "docs/sheet-design-validation.json",
+        "https://github.com/Gabriel2069/tadeon-nexus/pull/281",
+        "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39303671143"
+      ]
     },
     {
       "id": "NEX-026",
@@ -887,7 +893,8 @@
       "status": "ready",
       "priority": 7,
       "dependsOn": [
-        "NEX-024"
+        "NEX-024",
+        "NEX-025"
       ],
       "acceptance": [
         "Revisar a hierarquia do acervo, árvore, abas, contexto e leitura combinada sem duplicar seus estados.",

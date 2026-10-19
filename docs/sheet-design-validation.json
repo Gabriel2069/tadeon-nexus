@@ -107,5 +107,745 @@
     "2026-10-11T23:07:42.0672037Z Attempt 2/12: HTTP 200, build 1d92120cf210e466889e8f3ba53c5a8f2a1dfa81.",
     "2026-10-11T23:07:42.0673391Z Production confirmed at SHA 1d92120cf210e466889e8f3ba53c5a8f2a1dfa81."
   ],
-  "delivery": "Código visual integrado e SHA público confirmado pela PR #265. A consolidação documental conserva esta referência; o workflow de main e a PR documental registram a publicação de seu próprio commit."
+  "delivery": "Código visual integrado e SHA público confirmado pela PR #265. A consolidação documental conserva esta referência; o workflow de main e a PR documental registram a publicação de seu próprio commit.",
+  "dossierRevision": {
+    "task": "NEX-025",
+    "date": "2026-10-19",
+    "state": "validated",
+    "branch": "design/nex-025-sheet-dossier",
+    "baseCommit": "88943c17baca0096cdb26a9c5522d3756cd0c02b",
+    "sourceCommit": "0a4239f5f7922b7be9ab94af1009510771957ff8",
+    "sourceTree": "271f233de789f857211ca34db080689397558d98",
+    "pullRequest": 281,
+    "implementation": {
+      "composition": "Dossiê com Nome editorial controlado e multilinha, selo autoral, títulos Cormorant e rótulos Inter; registro de quatro métricas com seus tons.",
+      "resources": "Arcos vetoriais proporcionais e decorativos; valores explícitos e controles de 44px com RGB do próprio recurso; sem inclinar texto/campo.",
+      "navigation": "Doze destinos. Seletor nativo compacto e ações regulares; foco no h2 revela uma seção recolhida.",
+      "links": "Collapsible local em React; Novo vínculo revela a lista e chama o update existente. Host/portal/dataset de vínculos retirados do bridge; modificadores de perícia conservados.",
+      "tabs": "Maestria e História são textos do render, sem renomeação por CSS.",
+      "game": "Campos/rótulos do dossiê, recursos e índice excluem os escritores genéricos de densidade; steppers mantêm geometria.",
+      "chrome": "useSheetChrome observa somente os cabeçalhos conhecidos e a barra local; limpa observer/listener/propriedades ao sair. Mede altura real; barra relativa no celular não reserva altura no destino. Sem reescrever viewport."
+    },
+    "cleanup": {
+      "selectorBranchesRetiredOrReduced": 279,
+      "formerOwnerBranches": 154,
+      "externalBranches": 125,
+      "cssModulesTouchedByRetirement": 10,
+      "tabRenameRulesRetired": 5,
+      "importantBefore": 4353,
+      "importantAfter": 4283,
+      "cssModules": 57,
+      "globalLinks": 12,
+      "newDependencies": 0,
+      "newGlobalObservers": 0,
+      "newLocalResizeObservers": 1,
+      "negativeOwnerGate": {
+        "isolated": true,
+        "positiveExitCode": 0,
+        "negativeExitCode": 1,
+        "rejectedCompetingOwner": true
+      },
+      "gameBoundary": "Exceções de densidade de Jogo continuam em sheet-layout; apresentação do dossiê em sheet-premium."
+    },
+    "checks": {
+      "local": {
+        "command": "npm run check",
+        "result": "passed",
+        "sourceBeforeMobileClearanceRefinement": "d881edee5eede80c13b281e48e841a242ecee1e5",
+        "suites": 143,
+        "tests": 589,
+        "builds": [
+          "client",
+          "SSR",
+          "Worker"
+        ]
+      },
+      "audit": {
+        "command": "npm audit --audit-level=high --json",
+        "vulnerabilities": {
+          "info": 0,
+          "low": 0,
+          "moderate": 0,
+          "high": 0,
+          "critical": 0,
+          "total": 0
+        }
+      },
+      "sourceQuality": {
+        "url": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39303671143",
+        "head": "0a4239f5f7922b7be9ab94af1009510771957ff8",
+        "result": "passed"
+      }
+    },
+    "browser": {
+      "fixtureOnly": true,
+      "script": "scripts/verify-sheet-design.mjs",
+      "widths": [
+        320,
+        390,
+        820,
+        1440
+      ],
+      "matrix": {
+        "cases": 16,
+        "states": [
+          "editable",
+          "readonly",
+          "error",
+          "loading"
+        ],
+        "provenance": "Matriz durante a recomposição; limites finais de Jogo e encaixe receberam repetições específicas após esta matriz.",
+        "results": [
+          {
+            "width": 320,
+            "state": "editable",
+            "overflow": false,
+            "sections": 12,
+            "materialSections": 12,
+            "headingFont": "\"Cormorant Garamond\", Georgia, serif",
+            "labelFont": "Inter, system-ui, sans-serif",
+            "metricFont": "Inter, system-ui, sans-serif",
+            "metricFigures": "lining-nums tabular-nums",
+            "sectionTransform": "none",
+            "metricTones": [
+              "168 85 247",
+              "59 130 246",
+              "245 158 11",
+              "239 68 68"
+            ],
+            "resourceTonesMatch": true,
+            "resourceButtonsFit": true,
+            "resourceButtonMinimum": {
+              "width": 44,
+              "height": 44
+            },
+            "sectionTargetsMinimum": {
+              "width": 44,
+              "height": 44
+            },
+            "historyFocus": true,
+            "inventoryFocus": true,
+            "retry": true,
+            "writes": 4,
+            "errors": []
+          },
+          {
+            "width": 320,
+            "state": "readonly",
+            "overflow": false,
+            "sections": 12,
+            "materialSections": 12,
+            "headingFont": "\"Cormorant Garamond\", Georgia, serif",
+            "labelFont": "Inter, system-ui, sans-serif",
+            "metricFont": "Inter, system-ui, sans-serif",
+            "metricFigures": "lining-nums tabular-nums",
+            "sectionTransform": "none",
+            "metricTones": [
+              "168 85 247",
+              "59 130 246",
+              "245 158 11",
+              "239 68 68"
+            ],
+            "resourceTonesMatch": true,
+            "resourceButtonsFit": true,
+            "resourceButtonMinimum": {
+              "width": 44,
+              "height": 44
+            },
+            "sectionTargetsMinimum": {
+              "width": 44,
+              "height": 44
+            },
+            "historyFocus": true,
+            "inventoryFocus": true,
+            "retry": false,
+            "writes": 0,
+            "errors": []
+          },
+          {
+            "width": 320,
+            "state": "error",
+            "overflow": false,
+            "sections": 12,
+            "materialSections": 12,
+            "headingFont": "\"Cormorant Garamond\", Georgia, serif",
+            "labelFont": "Inter, system-ui, sans-serif",
+            "metricFont": "Inter, system-ui, sans-serif",
+            "metricFigures": "lining-nums tabular-nums",
+            "sectionTransform": "none",
+            "metricTones": [
+              "168 85 247",
+              "59 130 246",
+              "245 158 11",
+              "239 68 68"
+            ],
+            "resourceTonesMatch": true,
+            "resourceButtonsFit": true,
+            "resourceButtonMinimum": {
+              "width": 44,
+              "height": 44
+            },
+            "sectionTargetsMinimum": {
+              "width": 44,
+              "height": 44
+            },
+            "historyFocus": true,
+            "inventoryFocus": true,
+            "retry": true,
+            "writes": 4,
+            "errors": []
+          },
+          {
+            "width": 320,
+            "state": "loading",
+            "overflow": false,
+            "sections": 12,
+            "materialSections": 12,
+            "headingFont": "\"Cormorant Garamond\", Georgia, serif",
+            "labelFont": "Inter, system-ui, sans-serif",
+            "metricFont": "Inter, system-ui, sans-serif",
+            "metricFigures": "lining-nums tabular-nums",
+            "sectionTransform": "none",
+            "metricTones": [
+              "168 85 247",
+              "59 130 246",
+              "245 158 11",
+              "239 68 68"
+            ],
+            "resourceTonesMatch": true,
+            "resourceButtonsFit": true,
+            "resourceButtonMinimum": {
+              "width": 44,
+              "height": 44
+            },
+            "sectionTargetsMinimum": {
+              "width": 44,
+              "height": 44
+            },
+            "historyFocus": true,
+            "inventoryFocus": true,
+            "retry": true,
+            "writes": 4,
+            "errors": []
+          },
+          {
+            "width": 390,
+            "state": "editable",
+            "overflow": false,
+            "sections": 12,
+            "materialSections": 12,
+            "headingFont": "\"Cormorant Garamond\", Georgia, serif",
+            "labelFont": "Inter, system-ui, sans-serif",
+            "metricFont": "Inter, system-ui, sans-serif",
+            "metricFigures": "lining-nums tabular-nums",
+            "sectionTransform": "none",
+            "metricTones": [
+              "168 85 247",
+              "59 130 246",
+              "245 158 11",
+              "239 68 68"
+            ],
+            "resourceTonesMatch": true,
+            "resourceButtonsFit": true,
+            "resourceButtonMinimum": {
+              "width": 44,
+              "height": 44
+            },
+            "sectionTargetsMinimum": {
+              "width": 44,
+              "height": 44
+            },
+            "historyFocus": true,
+            "inventoryFocus": true,
+            "retry": true,
+            "writes": 4,
+            "errors": []
+          },
+          {
+            "width": 390,
+            "state": "readonly",
+            "overflow": false,
+            "sections": 12,
+            "materialSections": 12,
+            "headingFont": "\"Cormorant Garamond\", Georgia, serif",
+            "labelFont": "Inter, system-ui, sans-serif",
+            "metricFont": "Inter, system-ui, sans-serif",
+            "metricFigures": "lining-nums tabular-nums",
+            "sectionTransform": "none",
+            "metricTones": [
+              "168 85 247",
+              "59 130 246",
+              "245 158 11",
+              "239 68 68"
+            ],
+            "resourceTonesMatch": true,
+            "resourceButtonsFit": true,
+            "resourceButtonMinimum": {
+              "width": 44,
+              "height": 44
+            },
+            "sectionTargetsMinimum": {
+              "width": 44,
+              "height": 44
+            },
+            "historyFocus": true,
+            "inventoryFocus": true,
+            "retry": false,
+            "writes": 0,
+            "errors": []
+          },
+          {
+            "width": 390,
+            "state": "error",
+            "overflow": false,
+            "sections": 12,
+            "materialSections": 12,
+            "headingFont": "\"Cormorant Garamond\", Georgia, serif",
+            "labelFont": "Inter, system-ui, sans-serif",
+            "metricFont": "Inter, system-ui, sans-serif",
+            "metricFigures": "lining-nums tabular-nums",
+            "sectionTransform": "none",
+            "metricTones": [
+              "168 85 247",
+              "59 130 246",
+              "245 158 11",
+              "239 68 68"
+            ],
+            "resourceTonesMatch": true,
+            "resourceButtonsFit": true,
+            "resourceButtonMinimum": {
+              "width": 44,
+              "height": 44
+            },
+            "sectionTargetsMinimum": {
+              "width": 44,
+              "height": 44
+            },
+            "historyFocus": true,
+            "inventoryFocus": true,
+            "retry": true,
+            "writes": 4,
+            "errors": []
+          },
+          {
+            "width": 390,
+            "state": "loading",
+            "overflow": false,
+            "sections": 12,
+            "materialSections": 12,
+            "headingFont": "\"Cormorant Garamond\", Georgia, serif",
+            "labelFont": "Inter, system-ui, sans-serif",
+            "metricFont": "Inter, system-ui, sans-serif",
+            "metricFigures": "lining-nums tabular-nums",
+            "sectionTransform": "none",
+            "metricTones": [
+              "168 85 247",
+              "59 130 246",
+              "245 158 11",
+              "239 68 68"
+            ],
+            "resourceTonesMatch": true,
+            "resourceButtonsFit": true,
+            "resourceButtonMinimum": {
+              "width": 44,
+              "height": 44
+            },
+            "sectionTargetsMinimum": {
+              "width": 44,
+              "height": 44
+            },
+            "historyFocus": true,
+            "inventoryFocus": true,
+            "retry": true,
+            "writes": 4,
+            "errors": []
+          },
+          {
+            "width": 820,
+            "state": "editable",
+            "overflow": false,
+            "sections": 12,
+            "materialSections": 12,
+            "headingFont": "\"Cormorant Garamond\", Georgia, serif",
+            "labelFont": "Inter, system-ui, sans-serif",
+            "metricFont": "Inter, system-ui, sans-serif",
+            "metricFigures": "lining-nums tabular-nums",
+            "sectionTransform": "none",
+            "metricTones": [
+              "168 85 247",
+              "59 130 246",
+              "245 158 11",
+              "239 68 68"
+            ],
+            "resourceTonesMatch": true,
+            "resourceButtonsFit": true,
+            "resourceButtonMinimum": {
+              "width": 44,
+              "height": 44
+            },
+            "sectionTargetsMinimum": {
+              "width": 44,
+              "height": 44
+            },
+            "historyFocus": true,
+            "inventoryFocus": true,
+            "retry": true,
+            "writes": 4,
+            "errors": []
+          },
+          {
+            "width": 820,
+            "state": "readonly",
+            "overflow": false,
+            "sections": 12,
+            "materialSections": 12,
+            "headingFont": "\"Cormorant Garamond\", Georgia, serif",
+            "labelFont": "Inter, system-ui, sans-serif",
+            "metricFont": "Inter, system-ui, sans-serif",
+            "metricFigures": "lining-nums tabular-nums",
+            "sectionTransform": "none",
+            "metricTones": [
+              "168 85 247",
+              "59 130 246",
+              "245 158 11",
+              "239 68 68"
+            ],
+            "resourceTonesMatch": true,
+            "resourceButtonsFit": true,
+            "resourceButtonMinimum": {
+              "width": 44,
+              "height": 44
+            },
+            "sectionTargetsMinimum": {
+              "width": 44,
+              "height": 44
+            },
+            "historyFocus": true,
+            "inventoryFocus": true,
+            "retry": false,
+            "writes": 0,
+            "errors": []
+          },
+          {
+            "width": 820,
+            "state": "error",
+            "overflow": false,
+            "sections": 12,
+            "materialSections": 12,
+            "headingFont": "\"Cormorant Garamond\", Georgia, serif",
+            "labelFont": "Inter, system-ui, sans-serif",
+            "metricFont": "Inter, system-ui, sans-serif",
+            "metricFigures": "lining-nums tabular-nums",
+            "sectionTransform": "none",
+            "metricTones": [
+              "168 85 247",
+              "59 130 246",
+              "245 158 11",
+              "239 68 68"
+            ],
+            "resourceTonesMatch": true,
+            "resourceButtonsFit": true,
+            "resourceButtonMinimum": {
+              "width": 44,
+              "height": 44
+            },
+            "sectionTargetsMinimum": {
+              "width": 44,
+              "height": 44
+            },
+            "historyFocus": true,
+            "inventoryFocus": true,
+            "retry": true,
+            "writes": 4,
+            "errors": []
+          },
+          {
+            "width": 820,
+            "state": "loading",
+            "overflow": false,
+            "sections": 12,
+            "materialSections": 12,
+            "headingFont": "\"Cormorant Garamond\", Georgia, serif",
+            "labelFont": "Inter, system-ui, sans-serif",
+            "metricFont": "Inter, system-ui, sans-serif",
+            "metricFigures": "lining-nums tabular-nums",
+            "sectionTransform": "none",
+            "metricTones": [
+              "168 85 247",
+              "59 130 246",
+              "245 158 11",
+              "239 68 68"
+            ],
+            "resourceTonesMatch": true,
+            "resourceButtonsFit": true,
+            "resourceButtonMinimum": {
+              "width": 44,
+              "height": 44
+            },
+            "sectionTargetsMinimum": {
+              "width": 44,
+              "height": 44
+            },
+            "historyFocus": true,
+            "inventoryFocus": true,
+            "retry": true,
+            "writes": 4,
+            "errors": []
+          },
+          {
+            "width": 1440,
+            "state": "editable",
+            "overflow": false,
+            "sections": 12,
+            "materialSections": 12,
+            "headingFont": "\"Cormorant Garamond\", Georgia, serif",
+            "labelFont": "Inter, system-ui, sans-serif",
+            "metricFont": "Inter, system-ui, sans-serif",
+            "metricFigures": "lining-nums tabular-nums",
+            "sectionTransform": "none",
+            "metricTones": [
+              "168 85 247",
+              "59 130 246",
+              "245 158 11",
+              "239 68 68"
+            ],
+            "resourceTonesMatch": true,
+            "resourceButtonsFit": true,
+            "resourceButtonMinimum": {
+              "width": 44,
+              "height": 44
+            },
+            "sectionTargetsMinimum": {
+              "width": 44,
+              "height": 44
+            },
+            "historyFocus": true,
+            "inventoryFocus": true,
+            "retry": true,
+            "writes": 9,
+            "errors": []
+          },
+          {
+            "width": 1440,
+            "state": "readonly",
+            "overflow": false,
+            "sections": 12,
+            "materialSections": 12,
+            "headingFont": "\"Cormorant Garamond\", Georgia, serif",
+            "labelFont": "Inter, system-ui, sans-serif",
+            "metricFont": "Inter, system-ui, sans-serif",
+            "metricFigures": "lining-nums tabular-nums",
+            "sectionTransform": "none",
+            "metricTones": [
+              "168 85 247",
+              "59 130 246",
+              "245 158 11",
+              "239 68 68"
+            ],
+            "resourceTonesMatch": true,
+            "resourceButtonsFit": true,
+            "resourceButtonMinimum": {
+              "width": 44,
+              "height": 44
+            },
+            "sectionTargetsMinimum": {
+              "width": 44,
+              "height": 44
+            },
+            "historyFocus": true,
+            "inventoryFocus": true,
+            "retry": false,
+            "writes": 0,
+            "errors": []
+          },
+          {
+            "width": 1440,
+            "state": "error",
+            "overflow": false,
+            "sections": 12,
+            "materialSections": 12,
+            "headingFont": "\"Cormorant Garamond\", Georgia, serif",
+            "labelFont": "Inter, system-ui, sans-serif",
+            "metricFont": "Inter, system-ui, sans-serif",
+            "metricFigures": "lining-nums tabular-nums",
+            "sectionTransform": "none",
+            "metricTones": [
+              "168 85 247",
+              "59 130 246",
+              "245 158 11",
+              "239 68 68"
+            ],
+            "resourceTonesMatch": true,
+            "resourceButtonsFit": true,
+            "resourceButtonMinimum": {
+              "width": 44,
+              "height": 44
+            },
+            "sectionTargetsMinimum": {
+              "width": 44,
+              "height": 44
+            },
+            "historyFocus": true,
+            "inventoryFocus": true,
+            "retry": true,
+            "writes": 4,
+            "errors": []
+          },
+          {
+            "width": 1440,
+            "state": "loading",
+            "overflow": false,
+            "sections": 12,
+            "materialSections": 12,
+            "headingFont": "\"Cormorant Garamond\", Georgia, serif",
+            "labelFont": "Inter, system-ui, sans-serif",
+            "metricFont": "Inter, system-ui, sans-serif",
+            "metricFigures": "lining-nums tabular-nums",
+            "sectionTransform": "none",
+            "metricTones": [
+              "168 85 247",
+              "59 130 246",
+              "245 158 11",
+              "239 68 68"
+            ],
+            "resourceTonesMatch": true,
+            "resourceButtonsFit": true,
+            "resourceButtonMinimum": {
+              "width": 44,
+              "height": 44
+            },
+            "sectionTargetsMinimum": {
+              "width": 44,
+              "height": 44
+            },
+            "historyFocus": true,
+            "inventoryFocus": true,
+            "retry": true,
+            "writes": 4,
+            "errors": []
+          }
+        ]
+      },
+      "gameRepeat": {
+        "cases": 4,
+        "source": "1817f381526df0ce8d4f47ce1f6203be377e954c",
+        "widths": [
+          320,
+          390,
+          820,
+          1440
+        ],
+        "result": "passed"
+      },
+      "measuredChromeRepeat": {
+        "cases": 2,
+        "sourceBeforeMobileOnlyRefinement": "d881edee5eede80c13b281e48e841a242ecee1e5",
+        "widths": [
+          820,
+          1440
+        ],
+        "checks": [
+          "barra abaixo do shell",
+          "título abaixo da barra",
+          "condição ativa no desktop",
+          "Jogo e recursos preservados"
+        ],
+        "result": "passed"
+      },
+      "finalMobileRepeat": {
+        "cases": 2,
+        "source": "0a4239f5f7922b7be9ab94af1009510771957ff8",
+        "widths": [
+          320,
+          390
+        ],
+        "checks": [
+          "atalho nativo",
+          "título abaixo do cabeçalho e até 100px depois dele",
+          "barra em fluxo não reserva altura",
+          "Jogo, recursos, histórico, inventário e retry"
+        ],
+        "result": "passed"
+      },
+      "controlledBehavior": [
+        "Nome e vínculos preservados ao recolher",
+        "atalho revela seção e transfere foco",
+        "vínculos abrem/fecham por Space com foco preservado",
+        "fold interrompido converge ao estado final",
+        "fold não transforma glifos",
+        "movimento reduzido desativa fold/reflexo",
+        "somente leitura não grava",
+        "gravação/retry preserva personagem e edição",
+        "clamps, limite de atributo zero e treino conservados"
+      ]
+    },
+    "shared": {
+      "script": "scripts/verify-header-ownership.mjs",
+      "cases": 28,
+      "routes": [
+        "/",
+        "/manage-users",
+        "/master-panel",
+        "/nexus",
+        "/nexus-tools",
+        "/offline",
+        "/tabletop"
+      ],
+      "widths": [
+        320,
+        390,
+        820,
+        1440
+      ],
+      "overflowCases": 0,
+      "portals": 8,
+      "simulatedKeyboardCases": 3,
+      "preferenceCases": 4,
+      "firstAttemptFailures": [
+        {
+          "route": "/tabletop",
+          "width": 1440,
+          "errors": [
+            "Canvas readiness: locator.waitFor: Timeout 20000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('canvas[aria-label=\"Canvas da Mesa Nexus\"]')\u001b[22m\n"
+          ]
+        }
+      ],
+      "isolatedRepeat": {
+        "route": "/tabletop",
+        "width": 1440,
+        "errors": [],
+        "overflow": false,
+        "result": "passed"
+      },
+      "interpretation": "A Mesa excedeu 20s de readiness no primeiro ensaio concorrente. Repetição isolada passou. A causa não foi provada por profiler; não equivale a medição de desempenho físico. Os demais 27 casos passaram na matriz."
+    },
+    "historicalAssertions": {
+      "retiredAssertions": 4,
+      "files": [
+        "src/lib/tabletop/sheet-popup-graph-polish-161-regression.test.ts",
+        "src/lib/tabletop/mobile-product-repair-153-regression.test.ts",
+        "src/lib/tabletop/final-user-polish-regression.test.ts"
+      ],
+      "scope": "Localização da identidade, título de Exposição e display:none de vínculos substituídos pelos proprietários atuais. Demais asserções preservadas.",
+      "replacement": [
+        "sheet-identity-section.test.tsx: dois casos de edição/recolhimento e somente leitura",
+        "sheet-ui.test.tsx: foco revela uma seção sem mudar dados",
+        "verificador de navegador: geometria, tons, modos e interações"
+      ]
+    },
+    "probes": {
+      "fixedOffset": {
+        "source": "07982117a6e53f3421b8761754b883d0b31c6bb1",
+        "result": "failed at 820",
+        "resolution": "Substituído por medição local e repetições aprovadas."
+      }
+    },
+    "limits": [
+      "Fixtures não comprovam autorização/RLS, contas ou campanhas reais.",
+      "Sem VoiceOver, teclado virtual físico, pinch zoom ou medição de GPU/dispositivos físicos.",
+      "CSS e vetores traduzem o material; não implementam Liquid Glass nativo ou refração física.",
+      "Outros writers legados e o bridge de modificadores de perícia permanecem fora do escopo.",
+      "Integração e publicação aguardam gates de main e comprovação do SHA público."
+    ]
+  }
 }

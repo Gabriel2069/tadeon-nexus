@@ -543,7 +543,20 @@ try {
         await page.waitForFunction(
           () => !document.querySelector('[data-sonner-toast][data-type="error"]'),
         );
-        if (width >= 768) {
+        if (width < 768) {
+          await page.getByLabel("Localizar seção da ficha").selectOption("sec-info");
+          const compact = await page.evaluate(() => ({
+            headerBottom: document.querySelector(".tadeon-mobile-header").getBoundingClientRect()
+              .bottom,
+            titleTop: document.querySelector("#sec-info h2").getBoundingClientRect().top,
+          }));
+          assert(
+            compact.titleTop >= compact.headerBottom &&
+              compact.titleTop <= compact.headerBottom + 100,
+            "Compact anchors clear the shell without reserving a scrolled-away toolbar: " +
+              JSON.stringify(compact),
+          );
+        } else {
           await page
             .locator(".tadeon-sheet-jumpbar")
             .getByRole("button", { name: "Identidade", exact: true })

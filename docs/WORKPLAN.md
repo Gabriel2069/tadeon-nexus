@@ -34,8 +34,8 @@ Cada PR usa IDs desta fila e declara dependências. Trabalho sobre o mesmo propr
 | NEX-022 | Mesa: persistência e projeção da cor-base personalizada | Integrado | 7 | tabletop | NEX-007 |
 | NEX-023 | Véu & Trama: materiais e interação de todo o sistema | Integrado | 7 | shell | NEX-022, NEX-016 |
 | NEX-024 | Dashboard editorial, acervo navegável e acabamento dos menus | Integrado | 7 | shell | NEX-023 |
-| NEX-025 | Ficha: hierarquia, superfícies e condução visual | Em andamento | 7 | sheet | NEX-024 |
-| NEX-026 | Nexus e biblioteca: composição da leitura e exploração | Próximo | 7 | knowledge | NEX-024 |
+| NEX-025 | Ficha: hierarquia, superfícies e condução visual | Validado na branch | 7 | sheet | NEX-024 |
+| NEX-026 | Nexus e biblioteca: composição da leitura e exploração | Próximo | 7 | knowledge | NEX-024, NEX-025 |
 
 ## NEX-001 — Preparação estrutural
 
@@ -233,7 +233,7 @@ Evidências: [docs/DESIGN.md](../docs/DESIGN.md), [docs/FOUNDATION.md](../docs/F
 - Aprofundar a identidade de dossiê com materiais e respostas locais, sem repetir molduras ou cobrir texto.
 - Verificar condições, inventário e abertura/fechamento por teclado/toque nas quatro larguras e com movimento reduzido.
 
-Evidências: pendentes; não declarar concluído.
+Evidências: [docs/DESIGN.md](../docs/DESIGN.md), [docs/FOUNDATION.md](../docs/FOUNDATION.md), [docs/sheet-design-validation.json](../docs/sheet-design-validation.json), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/pull/281), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39303671143).
 
 ## NEX-026 — Nexus e biblioteca: composição da leitura e exploração
 
