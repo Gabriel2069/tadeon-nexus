@@ -316,10 +316,10 @@ it("filters loaded categories in tree and list without refetching or closing the
 
 it("returns from a tool dialog to the persistent tools trigger", async () => {
   const view = await setup();
-  const trigger = view.getByRole("button", { name: "Ferramentas", exact: true });
+  const trigger = view.getByRole("button", { name: "Ferramentas" });
   trigger.focus();
   fireEvent.keyDown(trigger, { key: "Enter" });
-  fireEvent.click(await view.findByRole("menuitem", { name: "Comandos", exact: true }));
+  fireEvent.click(await view.findByRole("menuitem", { name: "Comandos" }));
   const dialog = await view.findByRole("dialog", { name: "Paleta de comandos" });
   fireEvent.keyDown(dialog, { key: "Escape" });
   await waitFor(() => expect(view.queryByRole("dialog")).toBeNull());

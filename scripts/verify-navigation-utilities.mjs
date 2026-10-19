@@ -77,6 +77,7 @@ try {
     });
     writeFileSync(`${root}/wheel-${width}-${height}.json`,JSON.stringify(radial,null,2));
     if(process.env.NEXUS_SKIP_SCREENSHOTS!=="1")await page.screenshot({path:`${root}/menu-${width}-${height}.png`});
+    assert(radial.animation==="tadeon-more-open","Wheel owns its finite opening motion");
     assert(radial.layout==="radial"&&Math.abs(radial.frame.width-radial.frame.height)<1,"More is a wheel");
     assert(radial.frame.x>=0&&radial.frame.right<=width&&radial.frame.y>=0&&radial.frame.bottom<=height,"Wheel stays in viewport");
     for(const a of radial.targets){assert(a.width>=44&&a.height>=44,"Wheel touch target");for(const b of radial.targets){if(a===b)continue;assert(a.right<=b.x||b.right<=a.x||a.bottom<=b.y||b.bottom<=a.y,"Wheel targets do not overlap");}}
