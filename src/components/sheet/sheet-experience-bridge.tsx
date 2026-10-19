@@ -9,21 +9,10 @@ import {
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
 import "@/styles/sheet-experience.css";
-import {
-  ExternalLink,
-  Gamepad2,
-  GripVertical,
-  History,
-  Link2,
-  Loader2,
-  Pencil,
-  Save,
-  Users,
-} from "lucide-react";
+import { ExternalLink, Gamepad2, History, Link2, Loader2, Pencil, Save, Users } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { createPortal } from "react-dom";
 import { toast } from "sonner";
-const NEXUS_DRAG_MIME = "application/x-tadeon-nexus-node";
+import { NEXUS_DRAG_MIME } from "@/lib/knowledge/knowledge-transfer";
 
 interface RpcResult<T> {
   data: T | null;
@@ -95,26 +84,6 @@ function queryFlag(name: string) {
 function queryMode() {
   if (typeof window === "undefined") return null;
   return new URLSearchParams(window.location.search).get("mode");
-}
-
-function withDedicatedPopout(pathname: string, search: string) {
-  const params = new URLSearchParams(search);
-  params.set("popout", "1");
-  return `${pathname}?${params.toString()}`;
-}
-
-function ensurePortalHost(
-  anchor: HTMLElement,
-  id: string,
-  className = "tadeon-sheet-experience-host",
-) {
-  let host = document.getElementById(id);
-  if (host) return host;
-  host = document.createElement("span");
-  host.id = id;
-  host.className = className;
-  anchor.insertAdjacentElement("afterend", host);
-  return host;
 }
 
 function openPopout(url: string, name: string) {
@@ -388,125 +357,5 @@ export function SheetExperienceBridge({
         </DialogContent>
       </Dialog>
     </>
-  );
-}
-
-export function WorkspacePopoutBridge() {
-  const [host, setHost] = useState<HTMLElement | null>(null);
-  const [sessionSaving, setSessionSaving] = useState(false);
-  const path = typeof window === "undefined" ? "" : window.location.pathname;
-  const eligible = (path === "/master-panel" || path === "/nexus") && !queryFlag("popout");
-
-  useEffect(() => {
-    if (!eligible) return;
-    const attach = () => {
-      const anchor = document.querySelector<HTMLElement>("main h1, main h2, [data-page-title]");
-      if (!anchor) return;
-      setHost(ensurePortalHost(anchor, "tadeon-workspace-popout", "tadeon-workspace-popout-host"));
-    };
-    attach();
-    const observer = new MutationObserver(attach);
-    observer.observe(document.body, { childList: true, subtree: true });
-    return () => observer.disconnect();
-  }, [eligible]);
-
-  const saveSession = async () => {
-    if (sessionSaving) return;
-    setSessionSaving(true);
-    const result = await rpcClient().rpc("save_session_sheet_changes");
-    setSessionSaving(false);
-    if (result.error) {
-      toast.error("Não foi possível registrar as mudanças desta sessão.");
-      return;
-    }
-    const count = typeof result.data === "number" ? result.data : Number(result.data ?? 0);
-    toast.success(
-      count > 0
-        ? `${count} ficha(s) com mudanças registradas.`
-        : "Sessão salva sem novas mudanças nas fichas.",
-    );
-  };
-
-  if (!eligible || !host) return null;
-  return createPortal(
-    <>
-      {path === "/master-panel" && (
-        <Button
-          size="sm"
-          variant="outline"
-          className="gap-1.5"
-          onClick={() => void saveSession()}
-          disabled={sessionSaving}
-          title="Registrar o Diff das fichas neste ponto da sessão"
-        >
-          {sessionSaving ? (
-            <Loader2 className="h-4 w-4 animate-spin" />
-          ) : (
-            <Save className="h-4 w-4" />
-          )}
-          <span>Salvar sessão</span>
-        </Button>
-      )}
-      <Button
-        size="sm"
-        variant="ghost"
-        className="gap-1.5"
-        onClick={() =>
-          openPopout(
-            withDedicatedPopout(window.location.pathname, window.location.search),
-            `tadeon-workspace-${path.slice(1)}`,
-          )
-        }
-        title="Abrir este painel em janela dedicada"
-      >
-        <ExternalLink className="h-4 w-4" />
-        <span className="hidden lg:inline">Nova janela</span>
-      </Button>
-    </>,
-    host,
-  );
-}
-
-export function NexusSheetDragBridge() {
-  const [host, setHost] = useState<HTMLElement | null>(null);
-  const path = typeof window === "undefined" ? "" : window.location.pathname;
-  const nodeId =
-    typeof window === "undefined" ? null : new URLSearchParams(window.location.search).get("node");
-
-  useEffect(() => {
-    if (path !== "/nexus" || !nodeId) return;
-    const attach = () => {
-      const anchor = document.querySelector<HTMLElement>("main h1, main h2, [data-page-title]");
-      if (!anchor) return;
-      setHost(ensurePortalHost(anchor, "tadeon-nexus-sheet-drag", "tadeon-nexus-sheet-drag-host"));
-    };
-    attach();
-    const observer = new MutationObserver(attach);
-    observer.observe(document.body, { childList: true, subtree: true });
-    return () => observer.disconnect();
-  }, [nodeId, path]);
-
-  if (path !== "/nexus" || !nodeId || !host) return null;
-  const label =
-    document.querySelector<HTMLElement>("main h1, main h2")?.textContent?.trim() ||
-    "Página do Nexus";
-
-  return createPortal(
-    <button
-      type="button"
-      draggable
-      className="tadeon-nexus-drag-chip"
-      title="Arraste para uma ficha aberta para criar um vínculo persistente"
-      onDragStart={(event) => {
-        const payload = JSON.stringify({ id: nodeId, label });
-        event.dataTransfer.setData(NEXUS_DRAG_MIME, payload);
-        event.dataTransfer.setData("text/plain", `${label} ~ /nexus?node=${nodeId}`);
-        event.dataTransfer.effectAllowed = "link";
-      }}
-    >
-      <GripVertical aria-hidden="true" />
-      Arrastar para ficha
-    </button>,
-    host,
   );
 }

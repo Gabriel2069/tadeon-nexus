@@ -171,411 +171,25 @@ html body .tadeon-focus-section-mark-icon {
 /* MESA - SÓ O MAP PINNED AZUL; SUPERFÍCIE E TEXTO NA MESMA PALETA           */
 /* ========================================================================== */
 
-html body .tadeon-tabletop-studio__header {
-  --archive-hero-rgb: 84 123 148;
-  --archive-hero-secondary-rgb: 79 110 93;
-  position: relative !important;
-  isolation: isolate !important;
-  overflow: clip !important;
-  min-height: 0 !important;
-  height: auto !important;
-  padding-block: .75rem !important;
-  border-color: rgb(84 123 148 / 24%) !important;
-  background:
-    radial-gradient(circle at 81% -38%, rgb(84 123 148 / 8%) 0 2.7rem, transparent 2.85rem 6.4rem, rgb(84 123 148 / 4%) 6.5rem 6.62rem, transparent 6.75rem),
-    radial-gradient(circle at 96% 120%, transparent 0 4rem, rgb(79 110 93 / 7%) 4.1rem 4.24rem, transparent 4.38rem 7.5rem),
-    radial-gradient(circle at 9% 8%, rgb(84 123 148 / 7%), transparent 11rem),
-    linear-gradient(138deg, rgb(255 255 255 / 2.8%), transparent 42%),
-    linear-gradient(145deg, rgb(16 20 24 / 96%), rgb(8 11 15 / 96%)) !important;
-  box-shadow:
-    0 24px 58px -52px rgb(0 0 0 / 100%),
-    0 15px 44px -42px rgb(84 123 148 / 26%),
-    inset 0 1px rgb(255 255 255 / 3.5%) !important;
-}
-
 /* Pseudo-elementos da Mesa são exclusivamente ornamentos de fundo. Nenhum
    deles pode voltar a desenhar o antigo símbolo bege. */
-html body .tadeon-tabletop-studio__header::before {
-  position: absolute !important;
-  z-index: 0 !important;
-  top: -9.7rem !important;
-  right: 14% !important;
-  bottom: auto !important;
-  left: auto !important;
-  display: block !important;
-  width: 18rem !important;
-  height: 18rem !important;
-  border: 1px solid rgb(84 123 148 / 18%) !important;
-  border-radius: 50% !important;
-  background:
-    radial-gradient(circle at center, transparent 47%, rgb(84 123 148 / 2.6%) 48% 50%, transparent 51%) !important;
-  background-image: radial-gradient(circle at center, transparent 47%, rgb(84 123 148 / 2.6%) 48% 50%, transparent 51%) !important;
-  background-size: auto !important;
-  box-shadow:
-    0 0 0 1.8rem rgb(84 123 148 / 2.5%),
-    0 0 0 4rem rgb(79 110 93 / 1.7%),
-    0 0 54px -38px rgb(84 123 148 / 32%) !important;
-  opacity: .78 !important;
-  transform: none !important;
-  pointer-events: none !important;
-  content: "" !important;
-}
-
-html body .tadeon-tabletop-studio__header::after {
-  position: absolute !important;
-  z-index: 0 !important;
-  right: -4.6rem !important;
-  bottom: -7.2rem !important;
-  left: auto !important;
-  display: block !important;
-  width: 12rem !important;
-  height: 12rem !important;
-  border: 1px solid rgb(79 110 93 / 13%) !important;
-  border-radius: 50% !important;
-  background: none !important;
-  box-shadow:
-    0 0 0 1.5rem rgb(79 110 93 / 2.5%),
-    0 0 0 3.5rem rgb(84 123 148 / 1.6%) !important;
-  opacity: .72 !important;
-  transform: none !important;
-  pointer-events: none !important;
-  content: "" !important;
-}
-
-html body .tadeon-tabletop-studio__header > .relative.z-10 {
-  position: relative !important;
-  z-index: 2 !important;
-  min-height: 0 !important;
-  align-items: center !important;
-  gap: .625rem !important;
-  padding-left: 0 !important;
-}
-
-html body .tadeon-tabletop-studio__brand {
-  display: flex !important;
-  min-width: 0 !important;
-  align-items: center !important;
-  gap: .65rem !important;
-  margin-right: .5rem !important;
-  padding-left: 0 !important;
-}
 
 /* BrandMark bege authored no JSX: removido por completo, sem reservar espaço. */
-html body .tadeon-tabletop-studio__brand > svg,
-html body .tadeon-tabletop-studio__brand > svg.overflow-visible {
-  display: none !important;
-  visibility: hidden !important;
-  width: 0 !important;
-  height: 0 !important;
-  min-width: 0 !important;
-  flex: 0 0 0 !important;
-  margin: 0 !important;
-  padding: 0 !important;
-  border: 0 !important;
-  background: none !important;
-  box-shadow: none !important;
-  opacity: 0 !important;
-}
-
-html body .tadeon-tabletop-studio__brand > .tadeon-tabletop-brand-mark-host {
-  display: grid !important;
-  width: 2.5rem !important;
-  height: 2.5rem !important;
-  flex: 0 0 2.5rem !important;
-  place-items: center !important;
-  margin: 0 !important;
-  border: 1px solid rgb(84 123 148 / 48%) !important;
-  border-radius: 50% !important;
-  color: rgb(84 123 148) !important;
-  background:
-    radial-gradient(circle at 34% 28%, rgb(255 255 255 / 7%), transparent 36%),
-    rgb(84 123 148 / 9%) !important;
-  box-shadow:
-    0 0 0 .38rem rgb(84 123 148 / 4%),
-    0 14px 34px -23px rgb(84 123 148 / 66%),
-    inset 0 1px rgb(255 255 255 / 8%) !important;
-  transform: none !important;
-}
-
-html body .tadeon-tabletop-brand-mark-icon {
-  display: block !important;
-  width: 1.2rem !important;
-  height: 1.2rem !important;
-  color: currentColor !important;
-  stroke: currentColor !important;
-  transform: none !important;
-}
-
-html body .tadeon-tabletop-studio__header .tadeon-eyebrow {
-  color: rgb(84 123 148) !important;
-}
-
-html body .tadeon-tabletop-studio__header .tadeon-tabletop-studio__status {
-  border-color: rgb(84 123 148 / 24%) !important;
-}
 
 /* ========================================================================== */
 /* USUÁRIOS / BACKUP / OFFLINE - TEXTO PRÓXIMO + ASSINATURAS RESTAURADAS     */
 /* ========================================================================== */
 
-html body [data-tadeon-page-hero="users"] {
-  --hero-rgb: 183 129 77;
-  --hero-secondary-rgb: 217 215 164;
-}
-
-html body [data-tadeon-page-hero="tools"] {
-  --hero-rgb: 122 129 135;
-  --hero-secondary-rgb: 84 123 148;
-}
-
-html body [data-tadeon-page-hero="offline"] {
-  --hero-rgb: 113 107 123;
-  --hero-secondary-rgb: 79 110 93;
-}
-
-html body .tadeon-page-hero[data-tadeon-page-hero="users"],
-html body .tadeon-page-hero[data-tadeon-page-hero="tools"],
-html body .tadeon-page-hero[data-tadeon-page-hero="offline"] {
-  position: relative !important;
-  isolation: isolate !important;
-  display: grid !important;
-  min-height: 5.75rem !important;
-  grid-template-columns: 2.55rem minmax(0, 1fr) auto !important;
-  grid-template-rows: auto !important;
-  align-items: center !important;
-  gap: .65rem .7rem !important;
-  padding: .9rem 1rem !important;
-  overflow: clip !important;
-  border: 1px solid rgb(var(--hero-rgb) / 30%) !important;
-  border-radius: 1.2rem .4rem 1.2rem .4rem !important;
-  background:
-    radial-gradient(circle at 78% -24%, rgb(var(--hero-rgb) / 15%) 0 3.1rem, transparent 3.25rem 7rem, rgb(var(--hero-rgb) / 7%) 7.12rem 7.3rem, transparent 7.45rem),
-    radial-gradient(circle at 94% 116%, transparent 0 4.15rem, rgb(var(--hero-secondary-rgb) / 11%) 4.28rem 4.45rem, transparent 4.6rem 7.6rem, rgb(var(--hero-rgb) / 4%) 7.72rem 7.9rem, transparent 8.05rem),
-    radial-gradient(circle at 10% 4%, rgb(var(--hero-rgb) / 10%), transparent 13rem),
-    linear-gradient(138deg, rgb(255 255 255 / 4.5%), transparent 43%),
-    linear-gradient(145deg, rgb(18 21 26 / 97%), rgb(8 11 15 / 97%)) !important;
-  background-size: auto !important;
-  box-shadow:
-    0 30px 76px -58px rgb(0 0 0 / 100%),
-    0 20px 54px -46px rgb(var(--hero-rgb) / 42%),
-    inset 0 1px rgb(255 255 255 / 5%) !important;
-}
-
-html body .tadeon-page-hero[data-tadeon-page-hero] > * {
-  position: relative !important;
-  z-index: 2 !important;
-  min-width: 0 !important;
-}
-
-html body .tadeon-page-hero[data-tadeon-page-hero] > .tadeon-page-hero-mark-host {
-  grid-column: 1 !important;
-  grid-row: 1 !important;
-  align-self: center !important;
-  justify-self: center !important;
-  display: grid !important;
-  width: 2.55rem !important;
-  height: 2.55rem !important;
-  place-items: center !important;
-  margin: 0 !important;
-  border: 1px solid rgb(var(--hero-rgb) / 48%) !important;
-  border-radius: .9rem .3rem .9rem .3rem !important;
-  color: rgb(var(--hero-rgb)) !important;
-  background:
-    radial-gradient(circle at 34% 28%, rgb(255 255 255 / 7%), transparent 36%),
-    rgb(var(--hero-rgb) / 10%) !important;
-  box-shadow:
-    0 0 0 .34rem rgb(var(--hero-rgb) / 4%),
-    0 14px 34px -25px rgb(var(--hero-rgb) / 72%),
-    inset 0 1px rgb(255 255 255 / 8%) !important;
-  filter: none !important;
-  transform: none !important;
-}
-
-html body .tadeon-page-hero[data-tadeon-page-hero] > .tadeon-page-hero-mark-host > svg {
-  display: block !important;
-  width: 1.14rem !important;
-  height: 1.14rem !important;
-  margin: 0 !important;
-  color: currentColor !important;
-  stroke: currentColor !important;
-  transform: none !important;
-}
-
 /* Conteúdo encosta no símbolo pelo grid; nenhum padding-left artificial. */
-html body [data-tadeon-page-hero="users"] > div:first-of-type {
-  grid-column: 2 !important;
-  grid-row: 1 !important;
-  align-self: center !important;
-  margin: 0 !important;
-  padding-left: 0 !important;
-}
-
-html body [data-tadeon-page-hero="tools"] > div:first-of-type,
-html body [data-tadeon-page-hero="offline"] > div:first-of-type {
-  grid-column: 2 / -1 !important;
-  grid-row: 1 !important;
-  width: 100% !important;
-  align-self: center !important;
-  margin: 0 !important;
-  padding-left: 0 !important;
-}
-
-html body .tadeon-page-hero[data-tadeon-page-hero] .tadeon-eyebrow {
-  color: rgb(var(--hero-rgb)) !important;
-}
-
-.tadeon-page-hero[data-tadeon-page-hero] :is(h1, h2, .font-cinzel),
-.tadeon-nexus-identity h1,
-.tadeon-tabletop-studio__header :is(h1, h2, .font-cinzel) { color: var(--foreground); }
-
-.tadeon-utility-hero__body { display: flex; flex-wrap: wrap; align-items: center; gap: 1.25rem; }
-.tadeon-utility-hero__body > :first-child { flex: 1 1 20rem; min-width: 0; }
-.tadeon-utility-hero__body > :last-child { flex: 0 1 auto; min-width: 0; max-width: 100%; }
-
-html body .tadeon-page-hero[data-tadeon-page-hero] h1 {
-  margin-top: .12rem !important;
-  font-size: clamp(1.55rem, 2.6vw, 2.2rem) !important;
-  line-height: 1.02 !important;
-  letter-spacing: -.024em !important;
-}
 
 /* Grande campo orbital histórico, com posição própria por seção. */
-html body .tadeon-page-hero[data-tadeon-page-hero]::after {
-  position: absolute !important;
-  z-index: 0 !important;
-  display: block !important;
-  border: 1px solid rgb(var(--hero-rgb) / 30%) !important;
-  border-radius: 50% !important;
-  background:
-    radial-gradient(circle at center, transparent 46%, rgb(var(--hero-rgb) / 3.5%) 47% 50%, transparent 51%) !important;
-  box-shadow:
-    0 0 0 2.3rem rgb(var(--hero-rgb) / 3.5%),
-    0 0 0 5rem rgb(var(--hero-secondary-rgb) / 2.5%),
-    0 0 72px -34px rgb(var(--hero-rgb) / 48%) !important;
-  opacity: .96 !important;
-  transform: none !important;
-  pointer-events: none !important;
-  content: "" !important;
-}
-
-html body [data-tadeon-page-hero="users"]::after {
-  top: -10.9rem !important;
-  right: 12% !important;
-  bottom: auto !important;
-  left: auto !important;
-  width: 21rem !important;
-  height: 21rem !important;
-  border-radius: 45% 55% 49% 51% !important;
-}
-
-html body [data-tadeon-page-hero="tools"]::after {
-  top: -7.5rem !important;
-  right: -4rem !important;
-  bottom: auto !important;
-  left: auto !important;
-  width: 17.5rem !important;
-  height: 17.5rem !important;
-  border-radius: 43% 57% 47% 53% !important;
-  border-style: solid !important;
-}
-
-html body [data-tadeon-page-hero="offline"]::after {
-  top: -11.9rem !important;
-  right: 17% !important;
-  bottom: auto !important;
-  left: auto !important;
-  width: 21.5rem !important;
-  height: 21.5rem !important;
-  border-style: dashed !important;
-  border-color: rgb(113 107 123 / 34%) !important;
-  box-shadow:
-    0 0 0 2.3rem rgb(113 107 123 / 3.5%),
-    0 0 0 5rem rgb(79 110 93 / 2.5%),
-    0 0 72px -34px rgb(113 107 123 / 48%) !important;
-}
 
 /* Segundo detalhe de fundo, discreto, para recuperar profundidade sem ocupar
    o slot do símbolo real. */
-html body .tadeon-page-hero[data-tadeon-page-hero]::before {
-  position: absolute !important;
-  z-index: 0 !important;
-  bottom: -5.2rem !important;
-  left: 18% !important;
-  top: auto !important;
-  right: auto !important;
-  display: block !important;
-  width: 9rem !important;
-  height: 9rem !important;
-  border: 1px solid rgb(var(--hero-secondary-rgb) / 14%) !important;
-  border-radius: 50% !important;
-  background: none !important;
-  box-shadow: 0 0 0 1.5rem rgb(var(--hero-rgb) / 1.7%) !important;
-  opacity: .78 !important;
-  transform: none !important;
-  pointer-events: none !important;
-  content: "" !important;
-}
-
-html body [data-tadeon-page-hero="tools"]::before {
-  left: 34% !important;
-  border-color: rgb(84 123 148 / 16%) !important;
-}
-
-html body [data-tadeon-page-hero="offline"]::before {
-  left: 7% !important;
-  border-style: dashed !important;
-  border-color: rgb(79 110 93 / 16%) !important;
-}
 
 /* Ícones/controles dentro do Head acompanham a identidade da rota. */
-html body [data-tadeon-page-hero="users"] svg.text-primary {
-  color: rgb(183 129 77) !important;
-}
-
-html body [data-tadeon-page-hero="tools"] svg.text-primary {
-  color: rgb(84 123 148) !important;
-}
-
-html body [data-tadeon-page-hero="offline"] svg.text-primary {
-  color: rgb(113 107 123) !important;
-}
 
 @media (max-width: 639px) {
-  html body .tadeon-page-hero[data-tadeon-page-hero="users"],
-  html body .tadeon-page-hero[data-tadeon-page-hero="tools"],
-  html body .tadeon-page-hero[data-tadeon-page-hero="offline"] {
-    min-height: 5.3rem !important;
-    grid-template-columns: 2.35rem minmax(0, 1fr) !important;
-    gap: .55rem !important;
-    padding: .78rem .82rem !important;
-  }
-
-  html body .tadeon-page-hero[data-tadeon-page-hero] > .tadeon-page-hero-mark-host {
-    grid-column: 1 !important;
-    grid-row: 1 !important;
-    width: 2.35rem !important;
-    height: 2.35rem !important;
-  }
-
-  html body [data-tadeon-page-hero="users"] > div:first-of-type,
-  html body [data-tadeon-page-hero="tools"] > div:first-of-type,
-  html body [data-tadeon-page-hero="offline"] > div:first-of-type {
-    grid-column: 2 !important;
-    grid-row: 1 !important;
-  }
-
-  html body .tadeon-page-hero[data-tadeon-page-hero]::after {
-    top: -7rem !important;
-    right: -4.2rem !important;
-    width: 14rem !important;
-    height: 14rem !important;
-  }
-
-  html body .tadeon-page-hero[data-tadeon-page-hero]::before {
-    width: 7rem !important;
-    height: 7rem !important;
-    bottom: -4.4rem !important;
-  }
 }
 
 /* ========================================================================== */
@@ -590,138 +204,11 @@ html body [data-tadeon-page-hero="offline"] svg.text-primary {
    A identidade visual continua vindo da camada canônica anterior (#214). */
 
 /* Painel / Usuários / Backup / Offline: mesma grade e mesmo centro do símbolo. */
-html body .tadeon-master-commandbar,
-html body .tadeon-page-hero[data-tadeon-page-hero="users"],
-html body .tadeon-page-hero[data-tadeon-page-hero="tools"],
-html body .tadeon-page-hero[data-tadeon-page-hero="offline"] {
-  position: relative !important;
-  isolation: isolate !important;
-  display: grid !important;
-  min-height: 7rem !important;
-  grid-template-columns: 3rem minmax(0, 1fr) auto !important;
-  grid-template-rows: auto !important;
-  align-items: center !important;
-  column-gap: 1.25rem !important;
-  row-gap: .75rem !important;
-  padding: 1rem 1.25rem !important;
-  overflow: clip !important;
-}
-
-html body .tadeon-master-commandbar > .tadeon-master-commandbar__glow,
-html body .tadeon-page-hero[data-tadeon-page-hero] > .tadeon-page-hero-mark-host {
-  position: relative !important;
-  inset: auto !important;
-  top: auto !important;
-  right: auto !important;
-  bottom: auto !important;
-  left: auto !important;
-  grid-column: 1 !important;
-  grid-row: 1 !important;
-  align-self: center !important;
-  justify-self: center !important;
-  display: grid !important;
-  width: 3rem !important;
-  height: 3rem !important;
-  min-width: 3rem !important;
-  min-height: 3rem !important;
-  place-items: center !important;
-  margin: 0 !important;
-  padding: 0 !important;
-  transform: none !important;
-  translate: none !important;
-}
-
-html body .tadeon-master-commandbar > .relative.flex {
-  grid-column: 2 / -1 !important;
-  grid-row: 1 !important;
-  width: 100% !important;
-  align-self: center !important;
-  margin: 0 !important;
-  padding: 0 !important;
-}
-
-html body [data-tadeon-page-hero="users"] > div:first-of-type {
-  grid-column: 2 !important;
-  grid-row: 1 !important;
-  align-self: center !important;
-  margin: 0 !important;
-  padding: 0 !important;
-}
-
-html body [data-tadeon-page-hero="users"] > div:nth-of-type(2) {
-  grid-column: 3 !important;
-  grid-row: 1 !important;
-  align-self: center !important;
-  justify-self: end !important;
-  margin: 0 !important;
-}
-
-html body [data-tadeon-page-hero="tools"] > div:first-of-type,
-html body [data-tadeon-page-hero="offline"] > div:first-of-type {
-  grid-column: 2 / -1 !important;
-  grid-row: 1 !important;
-  width: 100% !important;
-  align-self: center !important;
-  margin: 0 !important;
-  padding: 0 !important;
-}
 
 /* Ícone da guia ativa permanece centralizado no sigilo do Mestre. */
-html body .tadeon-master-commandbar__sigil-stack {
-  position: relative !important;
-  inset: auto !important;
-  display: grid !important;
-  width: 100% !important;
-  height: 100% !important;
-  place-items: center !important;
-  transform: none !important;
-}
-
-html body .tadeon-master-commandbar__active-icon {
-  position: absolute !important;
-  top: 50% !important;
-  left: 50% !important;
-  margin: 0 !important;
-  transform: translate(-50%, -50%) !important;
-}
 
 /* Phone: os quatro Heads reduzem juntos, sem alterar identidade visual. */
 @media (max-width: 639px) {
-  html body .tadeon-master-commandbar,
-  html body .tadeon-page-hero[data-tadeon-page-hero="users"],
-  html body .tadeon-page-hero[data-tadeon-page-hero="tools"],
-  html body .tadeon-page-hero[data-tadeon-page-hero="offline"] {
-    min-height: 5.5rem !important;
-    grid-template-columns: 2.65rem minmax(0, 1fr) !important;
-    grid-template-rows: auto !important;
-    column-gap: .75rem !important;
-    row-gap: .55rem !important;
-    padding: .85rem .9rem !important;
-  }
-
-  html body .tadeon-master-commandbar > .tadeon-master-commandbar__glow,
-  html body .tadeon-page-hero[data-tadeon-page-hero] > .tadeon-page-hero-mark-host {
-    grid-column: 1 !important;
-    grid-row: 1 !important;
-    width: 2.65rem !important;
-    height: 2.65rem !important;
-    min-width: 2.65rem !important;
-    min-height: 2.65rem !important;
-  }
-
-  html body .tadeon-master-commandbar > .relative.flex,
-  html body [data-tadeon-page-hero="users"] > div:first-of-type,
-  html body [data-tadeon-page-hero="tools"] > div:first-of-type,
-  html body [data-tadeon-page-hero="offline"] > div:first-of-type {
-    grid-column: 2 !important;
-    grid-row: 1 !important;
-  }
-
-  html body [data-tadeon-page-hero="users"] > div:nth-of-type(2) {
-    grid-column: 2 !important;
-    grid-row: 2 !important;
-    justify-self: start !important;
-  }
 }
 
 /* end-source: src/styles/head-tab-parity-217.css */
@@ -733,82 +220,18 @@ html body .tadeon-master-commandbar__active-icon {
 /* Utilitários e Mestre: a cor primária do Head vem da mesma variável que pinta
    o item ativo do menu lateral. As cores secundárias continuam pertencendo às
    assinaturas visuais de cada página. */
-html body .tadeon-shell[data-section="Usuários"] [data-tadeon-page-hero="users"],
-html body .tadeon-shell[data-section="Saúde do arquivo"] [data-tadeon-page-hero="tools"],
-html body .tadeon-shell[data-section="Consulta offline"] [data-tadeon-page-hero="offline"],
-html body .tadeon-shell[data-section="Painel do Mestre"] .tadeon-master-commandbar {
-  --hero-rgb: var(--section-accent-rgb) !important;
-}
 
 /* O símbolo, títulos, borda, brilho e fundos dos Heads que usam --hero-rgb
    passam, portanto, a acompanhar automaticamente a cor do menu. */
-html body .tadeon-shell:is(
-  [data-section="Usuários"],
-  [data-section="Saúde do arquivo"],
-  [data-section="Consulta offline"]
-) .tadeon-page-hero[data-tadeon-page-hero] > .tadeon-page-hero-mark-host,
-  html body .tadeon-shell[data-section="Painel do Mestre"] .tadeon-master-commandbar__glow {
-  color: var(--section-accent) !important;
-  border-color: rgb(var(--section-accent-rgb) / 48%) !important;
-  background:
-    radial-gradient(circle at 34% 28%, rgb(255 255 255 / 7%), transparent 36%),
-    rgb(var(--section-accent-rgb) / 10%) !important;
-  box-shadow:
-    0 0 0 .34rem rgb(var(--section-accent-rgb) / 4%),
-    0 14px 34px -25px rgb(var(--section-accent-rgb) / 72%),
-    inset 0 1px rgb(255 255 255 / 8%) !important;
-}
 
 /* Mesa: TODO o Head interno consome o azul do item Mesa do menu por
    --section-accent/--section-accent-rgb. Nenhuma paleta paralela. */
-html body .tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-studio__header {
-  --archive-hero-rgb: var(--section-accent-rgb) !important;
-  border-color: rgb(var(--section-accent-rgb) / 24%) !important;
-  background:
-    radial-gradient(circle at 81% -38%, rgb(var(--section-accent-rgb) / 8%) 0 2.7rem, transparent 2.85rem 6.4rem, rgb(var(--section-accent-rgb) / 4%) 6.5rem 6.62rem, transparent 6.75rem),
-    radial-gradient(circle at 96% 120%, transparent 0 4rem, rgb(79 110 93 / 7%) 4.1rem 4.24rem, transparent 4.38rem 7.5rem),
-    radial-gradient(circle at 9% 8%, rgb(var(--section-accent-rgb) / 7%), transparent 11rem),
-    linear-gradient(138deg, rgb(255 255 255 / 2.8%), transparent 42%),
-    linear-gradient(145deg, rgb(16 20 24 / 96%), rgb(8 11 15 / 96%)) !important;
-  box-shadow:
-    0 24px 58px -52px rgb(0 0 0 / 100%),
-    0 15px 44px -42px rgb(var(--section-accent-rgb) / 26%),
-    inset 0 1px rgb(255 255 255 / 3.5%) !important;
-}
-
-html body .tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-studio__header .tadeon-eyebrow,
-  html body .tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-studio__brand > .tadeon-tabletop-brand-mark-host,
-  html body .tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-brand-mark-icon {
-  color: var(--section-accent) !important;
-}
-
-html body .tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-studio__brand > .tadeon-tabletop-brand-mark-host {
-  border-color: rgb(var(--section-accent-rgb) / 48%) !important;
-  background:
-    radial-gradient(circle at 34% 28%, rgb(255 255 255 / 7%), transparent 36%),
-    rgb(var(--section-accent-rgb) / 9%) !important;
-  box-shadow:
-    0 0 0 .38rem rgb(var(--section-accent-rgb) / 4%),
-    0 14px 34px -23px rgb(var(--section-accent-rgb) / 66%),
-    inset 0 1px rgb(255 255 255 / 8%) !important;
-}
-
-html body .tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-studio__header::before {
-  border-color: rgb(var(--section-accent-rgb) / 18%) !important;
-  background: radial-gradient(circle at center, transparent 47%, rgb(var(--section-accent-rgb) / 2.6%) 48% 50%, transparent 51%) !important;
-  background-image: radial-gradient(circle at center, transparent 47%, rgb(var(--section-accent-rgb) / 2.6%) 48% 50%, transparent 51%) !important;
-  box-shadow:
-    0 0 0 1.8rem rgb(var(--section-accent-rgb) / 2.5%),
-    0 0 0 4rem rgb(79 110 93 / 1.7%),
-    0 0 54px -38px rgb(var(--section-accent-rgb) / 32%) !important;
-}
 
 /* Mesa: uma única fonte de símbolo em cada Head.
    - Área em foco: só o BrandMark injetado pelo bridge.
    - Estúdio: só o MapPinned injetado pelo bridge.
    O SVG authored/legado é removido visualmente sem reservar qualquer espaço. */
-html body .tadeon-shell[data-section="Mesa Nexus"] .tadeon-mobile-header__identity > svg,
-html body .tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-studio__brand > svg {
+html body .tadeon-shell[data-section="Mesa Nexus"] .tadeon-mobile-header__identity > svg {
   display: none !important;
   visibility: hidden !important;
   width: 0 !important;
@@ -823,14 +246,7 @@ html body .tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-studio__bran
   pointer-events: none !important;
 }
 
-html body .tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-studio__brand::before,
-html body .tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-studio__brand::after {
-  display: none !important;
-  content: none !important;
-}
-
 /* Se algum legado deixou mais de um host injetado, só o primeiro pode render. */
-html body .tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-studio__brand > .tadeon-tabletop-brand-mark-host ~ .tadeon-tabletop-brand-mark-host,
 html body .tadeon-shell[data-section="Mesa Nexus"] .tadeon-mobile-header__identity > .tadeon-focus-section-mark-host ~ .tadeon-focus-section-mark-host,
 html body .tadeon-shell[data-section="Mesa Nexus"] .tadeon-desktop-toolbar > .min-w-0 > .tadeon-focus-section-mark-host ~ .tadeon-focus-section-mark-host {
   display: none !important;
@@ -840,85 +256,14 @@ html body .tadeon-shell[data-section="Mesa Nexus"] .tadeon-desktop-toolbar > .mi
    Dashboard e Mesa ficam deliberadamente fora deste contrato. */
 
 /* Uma só escala tipográfica para Mestre / Usuários / Backup / Offline. */
-html body .tadeon-master-commandbar h1,
-html body .tadeon-page-hero[data-tadeon-page-hero="users"] h1,
-html body .tadeon-page-hero[data-tadeon-page-hero="tools"] h1,
-html body .tadeon-page-hero[data-tadeon-page-hero="offline"] h1 {
-  margin-top: .14rem !important;
-  font-size: clamp(1.65rem, 2.2vw, 2rem) !important;
-  font-weight: 600 !important;
-  line-height: 1.04 !important;
-  letter-spacing: -.022em !important;
-}
-
-html body .tadeon-master-commandbar .tadeon-eyebrow,
-html body .tadeon-page-hero[data-tadeon-page-hero="users"] .tadeon-eyebrow,
-html body .tadeon-page-hero[data-tadeon-page-hero="tools"] .tadeon-eyebrow,
-html body .tadeon-page-hero[data-tadeon-page-hero="offline"] .tadeon-eyebrow {
-  font-size: .625rem !important;
-  font-weight: 700 !important;
-  line-height: 1rem !important;
-  letter-spacing: .16em !important;
-}
-
-html body [data-tadeon-page-hero="users"] > div:first-of-type > p:not(.tadeon-eyebrow),
-html body [data-tadeon-page-hero="tools"] > div:first-of-type > div:first-child > p:not(.tadeon-eyebrow),
-html body [data-tadeon-page-hero="offline"] > div:first-of-type > div:first-child > p,
-html body .tadeon-master-commandbar > .relative.flex > div:first-child > p:not(.tadeon-eyebrow) {
-  margin-top: .38rem !important;
-  font-size: .76rem !important;
-  line-height: 1.46 !important;
-}
 
 /* O meta-row do Offline deixa de empurrar o título para baixo em relação aos
    demais Heads: os badges ocupam a mesma faixa visual de um eyebrow. */
-html body [data-tadeon-page-hero="offline"] > div:first-of-type > div:first-child {
-  position: relative !important;
-  padding-top: 1.15rem !important;
-}
-
-html body [data-tadeon-page-hero="offline"] > div:first-of-type > div:first-child > .mb-3 {
-  position: absolute !important;
-  top: 0 !important;
-  left: 0 !important;
-  margin: 0 !important;
-  gap: .4rem !important;
-}
-
-html body [data-tadeon-page-hero="offline"] > div:first-of-type > div:first-child > .mb-3 [data-slot="badge"] {
-  font-size: .66rem !important;
-  line-height: 1rem !important;
-}
 
 /* O centro do símbolo sobe da metade do bloco para a faixa do h1. Como os
    quatro Heads agora usam a mesma escala, o eixo fica visualmente equivalente. */
-html body .tadeon-master-commandbar > .tadeon-master-commandbar__glow,
-html body .tadeon-page-hero[data-tadeon-page-hero="users"] > .tadeon-page-hero-mark-host,
-html body .tadeon-page-hero[data-tadeon-page-hero="tools"] > .tadeon-page-hero-mark-host,
-html body .tadeon-page-hero[data-tadeon-page-hero="offline"] > .tadeon-page-hero-mark-host {
-  align-self: start !important;
-  margin-top: .6rem !important;
-}
 
 @media (max-width: 639px) {
-  html body .tadeon-master-commandbar h1,
-  html body .tadeon-page-hero[data-tadeon-page-hero="users"] h1,
-  html body .tadeon-page-hero[data-tadeon-page-hero="tools"] h1,
-  html body .tadeon-page-hero[data-tadeon-page-hero="offline"] h1 {
-    font-size: clamp(1.45rem, 6vw, 1.7rem) !important;
-    line-height: 1.05 !important;
-  }
-
-  html body .tadeon-master-commandbar > .tadeon-master-commandbar__glow,
-  html body .tadeon-page-hero[data-tadeon-page-hero="users"] > .tadeon-page-hero-mark-host,
-  html body .tadeon-page-hero[data-tadeon-page-hero="tools"] > .tadeon-page-hero-mark-host,
-  html body .tadeon-page-hero[data-tadeon-page-hero="offline"] > .tadeon-page-hero-mark-host {
-    margin-top: .64rem !important;
-  }
-
-  html body [data-tadeon-page-hero="offline"] > div:first-of-type > div:first-child {
-    padding-top: 1.05rem !important;
-  }
 }
 
 /* end-source: src/styles/menu-color-source-219.css */
@@ -930,196 +275,19 @@ html body .tadeon-page-hero[data-tadeon-page-hero="offline"] > .tadeon-page-hero
 /* BACKUP - ARQUIVO TÉCNICO / MATRIZ DE DIAGNÓSTICO                          */
 /* ========================================================================== */
 
-html body .tadeon-shell[data-section="Saúde do arquivo"]
-  .tadeon-page-hero[data-tadeon-page-hero="tools"] {
-  background:
-    linear-gradient(90deg, rgb(var(--section-accent-rgb) / 7%), transparent 34%),
-    repeating-linear-gradient(
-      90deg,
-      transparent 0 1.85rem,
-      rgb(var(--section-accent-rgb) / 3.2%) 1.85rem 1.9rem
-    ),
-    repeating-linear-gradient(
-      0deg,
-      transparent 0 1.25rem,
-      rgb(var(--section-accent-rgb) / 2.4%) 1.25rem 1.3rem
-    ),
-    radial-gradient(circle at 92% 8%, rgb(var(--section-accent-rgb) / 12%), transparent 12rem),
-    linear-gradient(145deg, rgb(18 21 26 / 98%), rgb(8 11 15 / 98%)) !important;
-  background-size: auto, auto, auto, auto, auto !important;
-}
-
 /* Quadro de leitura/arquivo: retangular, modular e deliberadamente não orbital. */
-html body .tadeon-shell[data-section="Saúde do arquivo"]
-  .tadeon-page-hero[data-tadeon-page-hero="tools"]::after {
-  top: .42rem !important;
-  right: -3.7rem !important;
-  bottom: auto !important;
-  left: auto !important;
-  width: 18.5rem !important;
-  height: 6.35rem !important;
-  border: 1px solid rgb(var(--section-accent-rgb) / 21%) !important;
-  border-radius: .45rem 2.35rem .45rem 1.15rem !important;
-  background:
-    linear-gradient(90deg, rgb(var(--section-accent-rgb) / 7%), transparent 72%),
-    linear-gradient(
-      180deg,
-      transparent 0 31%,
-      rgb(var(--section-accent-rgb) / 10%) 31.5% 32.5%,
-      transparent 33% 67%,
-      rgb(var(--section-accent-rgb) / 7%) 67.5% 68.5%,
-      transparent 69%
-    ),
-    repeating-linear-gradient(
-      90deg,
-      rgb(var(--section-accent-rgb) / 13%) 0 .08rem,
-      transparent .08rem 1.05rem
-    ) !important;
-  box-shadow:
-    inset 1.15rem 0 rgb(var(--section-accent-rgb) / 2.8%),
-    inset -4.25rem 0 rgb(84 123 148 / 2.2%),
-    0 0 0 .55rem rgb(var(--section-accent-rgb) / 1.7%),
-    0 18px 52px -40px rgb(var(--section-accent-rgb) / 42%) !important;
-  opacity: .92 !important;
-  transform: rotate(-1.2deg) !important;
-}
 
 /* Faixa de checksum/telemetria na base. */
-html body .tadeon-shell[data-section="Saúde do arquivo"]
-  .tadeon-page-hero[data-tadeon-page-hero="tools"]::before {
-  top: auto !important;
-  right: 2.1rem !important;
-  bottom: .62rem !important;
-  left: auto !important;
-  width: 10.6rem !important;
-  height: 1.45rem !important;
-  border: 0 !important;
-  border-top: 1px solid rgb(var(--section-accent-rgb) / 18%) !important;
-  border-bottom: 1px solid rgb(84 123 148 / 12%) !important;
-  border-radius: .16rem !important;
-  background:
-    repeating-linear-gradient(
-      90deg,
-      rgb(var(--section-accent-rgb) / 17%) 0 .34rem,
-      transparent .34rem .72rem,
-      rgb(84 123 148 / 11%) .72rem .9rem,
-      transparent .9rem 1.28rem
-    ),
-    linear-gradient(90deg, transparent, rgb(var(--section-accent-rgb) / 5%), transparent) !important;
-  box-shadow: none !important;
-  opacity: .78 !important;
-  transform: none !important;
-}
 
 /* ========================================================================== */
 /* OFFLINE - SINAL INTERROMPIDO / ONDAS QUEBRADAS / INTERFERÊNCIA            */
 /* ========================================================================== */
 
-html body .tadeon-shell[data-section="Consulta offline"]
-  .tadeon-page-hero[data-tadeon-page-hero="offline"] {
-  background:
-    radial-gradient(ellipse at 84% 18%, rgb(var(--section-accent-rgb) / 13%), transparent 13rem),
-    radial-gradient(ellipse at 18% 112%, rgb(79 110 93 / 7%), transparent 15rem),
-    repeating-linear-gradient(
-      128deg,
-      transparent 0 1.2rem,
-      rgb(var(--section-accent-rgb) / 2.8%) 1.2rem 1.27rem,
-      transparent 1.27rem 2.8rem
-    ),
-    linear-gradient(145deg, rgb(17 19 25 / 98%), rgb(8 10 15 / 98%)) !important;
-  background-size: auto !important;
-}
-
 /* Campo de ondas: três arcos deslocados, sem grade e sem moldura de arquivo. */
-html body .tadeon-shell[data-section="Consulta offline"]
-  .tadeon-page-hero[data-tadeon-page-hero="offline"]::after {
-  top: -2.6rem !important;
-  right: -1.4rem !important;
-  bottom: auto !important;
-  left: auto !important;
-  width: 18rem !important;
-  height: 11.5rem !important;
-  border: 0 !important;
-  border-radius: 0 !important;
-  background:
-    radial-gradient(
-      ellipse at 0 50%,
-      transparent 0 31%,
-      rgb(var(--section-accent-rgb) / 25%) 31.5% 32.4%,
-      transparent 33% 45%,
-      rgb(var(--section-accent-rgb) / 17%) 45.5% 46.3%,
-      transparent 47% 60%,
-      rgb(79 110 93 / 12%) 60.5% 61.2%,
-      transparent 62%
-    ),
-    linear-gradient(108deg, transparent 36%, rgb(var(--section-accent-rgb) / 5%) 36.5% 37%, transparent 37.5%) !important;
-  box-shadow: none !important;
-  opacity: .9 !important;
-  transform: rotate(-5deg) !important;
-}
 
 /* Interferência inferior: barras quebradas em ritmos irregulares. */
-html body .tadeon-shell[data-section="Consulta offline"]
-  .tadeon-page-hero[data-tadeon-page-hero="offline"]::before {
-  top: auto !important;
-  right: .9rem !important;
-  bottom: -.18rem !important;
-  left: auto !important;
-  width: 12.8rem !important;
-  height: 3.6rem !important;
-  border: 0 !important;
-  border-radius: 0 !important;
-  background:
-    repeating-linear-gradient(
-      0deg,
-      transparent 0 .34rem,
-      rgb(79 110 93 / 12%) .34rem .4rem,
-      transparent .4rem .72rem,
-      rgb(var(--section-accent-rgb) / 10%) .72rem .78rem,
-      transparent .78rem 1.16rem
-    ),
-    linear-gradient(90deg, transparent 0 8%, rgb(var(--section-accent-rgb) / 9%) 28%, transparent 76%) !important;
-  box-shadow: none !important;
-  opacity: .72 !important;
-  transform: skewX(-13deg) rotate(-2deg) !important;
-}
 
 @media (max-width: 639px) {
-  html body .tadeon-shell[data-section="Saúde do arquivo"]
-    .tadeon-page-hero[data-tadeon-page-hero="tools"]::after {
-    top: .35rem !important;
-    right: -7.2rem !important;
-    width: 15rem !important;
-    height: 5.4rem !important;
-    opacity: .68 !important;
-  }
-
-  html body .tadeon-shell[data-section="Saúde do arquivo"]
-    .tadeon-page-hero[data-tadeon-page-hero="tools"]::before {
-    right: .65rem !important;
-    bottom: .42rem !important;
-    width: 7.4rem !important;
-    height: 1.1rem !important;
-    opacity: .56 !important;
-  }
-
-  html body .tadeon-shell[data-section="Consulta offline"]
-    .tadeon-page-hero[data-tadeon-page-hero="offline"]::after {
-    top: -1.8rem !important;
-    right: -6rem !important;
-    width: 14.5rem !important;
-    height: 9rem !important;
-    opacity: .66 !important;
-  }
-
-  html body .tadeon-shell[data-section="Consulta offline"]
-    .tadeon-page-hero[data-tadeon-page-hero="offline"]::before {
-    right: .35rem !important;
-    bottom: -.08rem !important;
-    width: 8rem !important;
-    height: 2.7rem !important;
-    opacity: .48 !important;
-  }
 }
 
 /* end-source: src/styles/head-background-signatures-221.css */
@@ -1138,438 +306,36 @@ html body .tadeon-shell[data-section="Consulta offline"]
 /* BACKUP - ARQUIVO TÉCNICO VIVO                                             */
 /* ========================================================================== */
 
-html body .tadeon-shell[data-section="Saúde do arquivo"]
-  .tadeon-page-hero[data-tadeon-page-hero="tools"] {
-  background:
-    /* glow de índice no canto */
-    radial-gradient(circle at 88% 8%, rgb(var(--section-accent-rgb) / 16%), transparent 10.5rem),
-    radial-gradient(circle at 68% 138%, color-mix(in srgb, var(--section-secondary) 9%, transparent), transparent 13rem),
-    /* trilhos horizontais de prontuário */
-    repeating-linear-gradient(
-      0deg,
-      transparent 0 1.18rem,
-      rgb(var(--section-accent-rgb) / 2.6%) 1.18rem 1.22rem,
-      transparent 1.22rem 2.35rem
-    ),
-    /* matriz vertical de arquivo */
-    repeating-linear-gradient(
-      90deg,
-      transparent 0 2.8rem,
-      rgb(var(--section-accent-rgb) / 3.2%) 2.8rem 2.84rem
-    ),
-    /* eixo diagonal de leitura */
-    linear-gradient(
-      116deg,
-      transparent 0 63%,
-      rgb(var(--section-accent-rgb) / 5%) 63.2% 63.5%,
-      transparent 63.7%
-    ),
-    linear-gradient(145deg, rgb(18 21 26 / 98%), rgb(8 11 15 / 98%)) !important;
-  background-size: auto !important;
-  box-shadow:
-    0 28px 72px -56px rgb(0 0 0 / 100%),
-    0 18px 52px -44px rgb(var(--section-accent-rgb) / 38%),
-    inset 0 1px rgb(255 255 255 / 5%) !important;
-}
-
 /* Mapa de indexação: módulos, guias e setores; deliberadamente ortogonal. */
-html body .tadeon-shell[data-section="Saúde do arquivo"]
-  .tadeon-page-hero[data-tadeon-page-hero="tools"]::after {
-  top: .38rem !important;
-  right: -2.85rem !important;
-  bottom: auto !important;
-  left: auto !important;
-  width: 20.4rem !important;
-  height: 6.55rem !important;
-  border: 1px solid rgb(var(--section-accent-rgb) / 23%) !important;
-  border-radius: .42rem 2.6rem .42rem 1.1rem !important;
-  background:
-    /* nós de índice */
-    radial-gradient(circle at 12% 24%, rgb(var(--section-accent-rgb) / 45%) 0 .11rem, transparent .13rem),
-    radial-gradient(circle at 31% 67%, color-mix(in srgb, var(--section-secondary) 42%, transparent) 0 .1rem, transparent .12rem),
-    radial-gradient(circle at 53% 33%, rgb(var(--section-accent-rgb) / 34%) 0 .1rem, transparent .12rem),
-    radial-gradient(circle at 76% 70%, rgb(var(--section-accent-rgb) / 26%) 0 .09rem, transparent .11rem),
-    /* coluna de registro */
-    linear-gradient(90deg, rgb(var(--section-accent-rgb) / 7%) 0 9%, transparent 9.3% 100%),
-    /* duas linhas de separação */
-    linear-gradient(
-      180deg,
-      transparent 0 28%,
-      rgb(var(--section-accent-rgb) / 13%) 28.4% 29.4%,
-      transparent 29.8% 66%,
-      color-mix(in srgb, var(--section-secondary) 12%, transparent) 66.4% 67.4%,
-      transparent 67.8%
-    ),
-    /* ticks de arquivo */
-    repeating-linear-gradient(
-      90deg,
-      rgb(var(--section-accent-rgb) / 15%) 0 .075rem,
-      transparent .075rem .98rem
-    ),
-    linear-gradient(108deg, rgb(255 255 255 / 2.5%), transparent 58%) !important;
-  box-shadow:
-    inset 1.2rem 0 rgb(var(--section-accent-rgb) / 2.8%),
-    inset -4.6rem 0 color-mix(in srgb, var(--section-secondary) 2.8%, transparent),
-    0 0 0 .52rem rgb(var(--section-accent-rgb) / 1.7%),
-    0 18px 52px -40px rgb(var(--section-accent-rgb) / 45%) !important;
-  opacity: .96 !important;
-  transform: rotate(-1deg) !important;
-}
 
 /* Régua de integridade: checksum + pequenos pulsos indexados. */
-html body .tadeon-shell[data-section="Saúde do arquivo"]
-  .tadeon-page-hero[data-tadeon-page-hero="tools"]::before {
-  top: auto !important;
-  right: 1.65rem !important;
-  bottom: .45rem !important;
-  left: auto !important;
-  width: 13.8rem !important;
-  height: 1.65rem !important;
-  border: 0 !important;
-  border-top: 1px solid rgb(var(--section-accent-rgb) / 19%) !important;
-  border-bottom: 1px solid color-mix(in srgb, var(--section-secondary) 14%, transparent) !important;
-  border-radius: .18rem !important;
-  background:
-    radial-gradient(circle at 7% 50%, rgb(var(--section-accent-rgb) / 48%) 0 .1rem, transparent .12rem),
-    radial-gradient(circle at 41% 50%, color-mix(in srgb, var(--section-secondary) 38%, transparent) 0 .09rem, transparent .11rem),
-    radial-gradient(circle at 79% 50%, rgb(var(--section-accent-rgb) / 34%) 0 .09rem, transparent .11rem),
-    repeating-linear-gradient(
-      90deg,
-      rgb(var(--section-accent-rgb) / 18%) 0 .34rem,
-      transparent .34rem .7rem,
-      color-mix(in srgb, var(--section-secondary) 12%, transparent) .7rem .86rem,
-      transparent .86rem 1.22rem
-    ),
-    linear-gradient(90deg, transparent, rgb(var(--section-accent-rgb) / 6%), transparent) !important;
-  box-shadow:
-    0 -8px 24px -22px rgb(var(--section-accent-rgb) / 70%),
-    inset 0 1px rgb(255 255 255 / 3%) !important;
-  opacity: .82 !important;
-  transform: none !important;
-}
 
 /* ========================================================================== */
 /* OFFLINE - REDE FRAGMENTADA / ECO DE SINAL                                 */
 /* ========================================================================== */
 
-html body .tadeon-shell[data-section="Consulta offline"]
-  .tadeon-page-hero[data-tadeon-page-hero="offline"] {
-  background:
-    /* dois campos de eco, com centros deslocados */
-    radial-gradient(ellipse at 87% 14%, rgb(var(--section-accent-rgb) / 16%), transparent 12rem),
-    radial-gradient(ellipse at 16% 120%, color-mix(in srgb, var(--section-secondary) 9%, transparent), transparent 14rem),
-    /* pacotes fantasmas */
-    radial-gradient(circle at 73% 28%, rgb(var(--section-accent-rgb) / 17%) 0 .08rem, transparent .11rem),
-    radial-gradient(circle at 81% 54%, rgb(var(--section-accent-rgb) / 12%) 0 .07rem, transparent .1rem),
-    radial-gradient(circle at 61% 72%, color-mix(in srgb, var(--section-secondary) 16%, transparent) 0 .08rem, transparent .11rem),
-    /* ruído diagonal quebrado */
-    repeating-linear-gradient(
-      128deg,
-      transparent 0 1.12rem,
-      rgb(var(--section-accent-rgb) / 3%) 1.12rem 1.18rem,
-      transparent 1.18rem 2.55rem
-    ),
-    /* linha de perda de conexão */
-    linear-gradient(
-      102deg,
-      transparent 0 49%,
-      rgb(var(--section-accent-rgb) / 5.5%) 49.2% 49.5%,
-      transparent 49.8%
-    ),
-    linear-gradient(145deg, rgb(17 19 25 / 98%), rgb(8 10 15 / 98%)) !important;
-  background-size: auto !important;
-  box-shadow:
-    0 28px 72px -58px rgb(0 0 0 / 100%),
-    0 20px 54px -46px rgb(var(--section-accent-rgb) / 38%),
-    inset 0 1px rgb(255 255 255 / 4.5%) !important;
-}
-
 /* Matriz de sinal quebrado: anéis, setores ausentes e vetores desencontrados. */
-html body .tadeon-shell[data-section="Consulta offline"]
-  .tadeon-page-hero[data-tadeon-page-hero="offline"]::after {
-  top: -4.4rem !important;
-  right: -1.9rem !important;
-  bottom: auto !important;
-  left: auto !important;
-  width: 19.2rem !important;
-  height: 15rem !important;
-  border: 0 !important;
-  border-radius: 50% !important;
-  background:
-    /* setor interrompido */
-    conic-gradient(
-      from 214deg at 18% 52%,
-      transparent 0 7deg,
-      rgb(var(--section-accent-rgb) / 24%) 7deg 9deg,
-      transparent 9deg 31deg,
-      rgb(var(--section-accent-rgb) / 15%) 31deg 33deg,
-      transparent 33deg 68deg,
-      color-mix(in srgb, var(--section-secondary) 15%, transparent) 68deg 70deg,
-      transparent 70deg 360deg
-    ),
-    /* três ecos concêntricos */
-    radial-gradient(
-      ellipse at 18% 52%,
-      transparent 0 28%,
-      rgb(var(--section-accent-rgb) / 27%) 28.4% 29.2%,
-      transparent 29.6% 41%,
-      rgb(var(--section-accent-rgb) / 18%) 41.4% 42.1%,
-      transparent 42.5% 54%,
-      color-mix(in srgb, var(--section-secondary) 14%, transparent) 54.4% 55.1%,
-      transparent 55.5%
-    ),
-    /* cortes de fase */
-    linear-gradient(106deg, transparent 0 42%, rgb(var(--section-accent-rgb) / 6%) 42.4% 42.8%, transparent 43.2%),
-    linear-gradient(78deg, transparent 0 56%, color-mix(in srgb, var(--section-secondary) 5%, transparent) 56.3% 56.7%, transparent 57%) !important;
-  box-shadow:
-    0 0 68px -42px rgb(var(--section-accent-rgb) / 62%) !important;
-  opacity: .94 !important;
-  transform: rotate(-6deg) !important;
-}
 
 /* Trilho inferior de pacotes: ritmos irregulares, gaps e pequenas colisões. */
-html body .tadeon-shell[data-section="Consulta offline"]
-  .tadeon-page-hero[data-tadeon-page-hero="offline"]::before {
-  top: auto !important;
-  right: .72rem !important;
-  bottom: -.35rem !important;
-  left: auto !important;
-  width: 14.6rem !important;
-  height: 4.25rem !important;
-  border: 0 !important;
-  border-radius: 0 !important;
-  background:
-    radial-gradient(circle at 9% 33%, rgb(var(--section-accent-rgb) / 25%) 0 .08rem, transparent .11rem),
-    radial-gradient(circle at 44% 66%, color-mix(in srgb, var(--section-secondary) 23%, transparent) 0 .075rem, transparent .105rem),
-    radial-gradient(circle at 86% 28%, rgb(var(--section-accent-rgb) / 17%) 0 .075rem, transparent .105rem),
-    repeating-linear-gradient(
-      0deg,
-      transparent 0 .31rem,
-      color-mix(in srgb, var(--section-secondary) 11%, transparent) .31rem .36rem,
-      transparent .36rem .68rem,
-      rgb(var(--section-accent-rgb) / 12%) .68rem .74rem,
-      transparent .74rem 1.08rem
-    ),
-    repeating-linear-gradient(
-      90deg,
-      transparent 0 .78rem,
-      rgb(var(--section-accent-rgb) / 7%) .78rem .91rem,
-      transparent .91rem 1.72rem
-    ),
-    linear-gradient(90deg, transparent 0 6%, rgb(var(--section-accent-rgb) / 8%) 29%, transparent 78%) !important;
-  box-shadow: none !important;
-  opacity: .78 !important;
-  transform: skewX(-12deg) rotate(-2deg) !important;
-}
 
 /* ========================================================================== */
 /* PAINEL DO MESTRE - ASTROLÁBIO DE CONDUÇÃO / SIGILO DIRETOR                */
 /* ========================================================================== */
 
-html body .tadeon-shell[data-section="Painel do Mestre"] .tadeon-master-commandbar {
-  --master-gold: 217 215 164;
-  background:
-    /* campo vermelho próximo do sigilo */
-    radial-gradient(circle at 8% 14%, rgb(var(--section-accent-rgb) / 21%), transparent 12.5rem),
-    /* brilho de comando no quadrante superior */
-    radial-gradient(circle at 82% -34%, rgb(var(--section-accent-rgb) / 15%), transparent 15rem),
-    radial-gradient(circle at 92% 118%, rgb(var(--master-gold) / 6%), transparent 13rem),
-    /* vetores finos */
-    linear-gradient(118deg, transparent 0 58%, rgb(var(--section-accent-rgb) / 7%) 58.2% 58.5%, transparent 58.8%),
-    linear-gradient(72deg, transparent 0 73%, rgb(var(--master-gold) / 3.8%) 73.2% 73.45%, transparent 73.7%),
-    /* grade ritual muito discreta */
-    linear-gradient(90deg, rgb(var(--section-accent-rgb) / 1.8%) 1px, transparent 1px),
-    linear-gradient(rgb(var(--master-gold) / 1.35%) 1px, transparent 1px),
-    linear-gradient(145deg, rgb(20 14 17 / 98%), rgb(8 10 14 / 98%)) !important;
-  background-size: auto, auto, auto, auto, auto, 42px 42px, 42px 42px, auto !important;
-  border-color: rgb(var(--section-accent-rgb) / 36%) !important;
-  box-shadow:
-    0 32px 80px -60px rgb(var(--section-accent-rgb) / 88%),
-    0 28px 74px -56px rgb(0 0 0 / 100%),
-    inset 0 1px rgb(255 255 255 / 5%) !important;
-}
-
 /* Astrolábio: vários anéis, setores, raios e marcas cardeais. */
-html body .tadeon-shell[data-section="Painel do Mestre"] .tadeon-master-commandbar::before {
-  top: -8.6rem !important;
-  right: -1.35rem !important;
-  bottom: auto !important;
-  left: auto !important;
-  width: 19.5rem !important;
-  height: 19.5rem !important;
-  border: 1px solid rgb(var(--section-accent-rgb) / 21%) !important;
-  border-radius: 50% !important;
-  background:
-    /* marcas cardeais */
-    linear-gradient(90deg, transparent 49.65%, rgb(var(--master-gold) / 12%) 49.8% 50.2%, transparent 50.35%),
-    linear-gradient(0deg, transparent 49.65%, rgb(var(--section-accent-rgb) / 16%) 49.8% 50.2%, transparent 50.35%),
-    /* raios diagonais */
-    linear-gradient(45deg, transparent 49.72%, rgb(var(--section-accent-rgb) / 7%) 49.86% 50.14%, transparent 50.28%),
-    linear-gradient(-45deg, transparent 49.72%, rgb(var(--master-gold) / 6%) 49.86% 50.14%, transparent 50.28%),
-    /* setores do astrolábio */
-    conic-gradient(
-      from 18deg,
-      transparent 0 16deg,
-      rgb(var(--section-accent-rgb) / 14%) 16deg 18deg,
-      transparent 18deg 61deg,
-      rgb(var(--master-gold) / 8%) 61deg 63deg,
-      transparent 63deg 118deg,
-      rgb(var(--section-accent-rgb) / 11%) 118deg 120deg,
-      transparent 120deg 184deg,
-      rgb(var(--master-gold) / 6%) 184deg 186deg,
-      transparent 186deg 268deg,
-      rgb(var(--section-accent-rgb) / 10%) 268deg 270deg,
-      transparent 270deg 360deg
-    ),
-    /* anéis */
-    radial-gradient(circle,
-      transparent 0 21%,
-      rgb(var(--master-gold) / 9%) 21.4% 22.1%,
-      transparent 22.5% 37%,
-      rgb(var(--section-accent-rgb) / 18%) 37.4% 38.2%,
-      transparent 38.6% 53%,
-      rgb(var(--master-gold) / 6%) 53.4% 54%,
-      transparent 54.4% 68%,
-      rgb(var(--section-accent-rgb) / 11%) 68.4% 69.1%,
-      transparent 69.5%
-    ) !important;
-  box-shadow:
-    0 0 0 2.2rem rgb(var(--section-accent-rgb) / 2.2%),
-    0 0 0 4.7rem rgb(var(--master-gold) / 1.3%),
-    0 0 74px -38px rgb(var(--section-accent-rgb) / 60%) !important;
-  opacity: .96 !important;
-  transform: rotate(-7deg) !important;
-}
 
 /* Trajetória de comando inferior: ticks, nós e duas rotas cruzadas. */
-html body .tadeon-shell[data-section="Painel do Mestre"] .tadeon-master-commandbar::after {
-  top: auto !important;
-  right: 1.05rem !important;
-  bottom: .28rem !important;
-  left: auto !important;
-  width: 15.8rem !important;
-  height: 2.55rem !important;
-  border: 0 !important;
-  border-top: 1px solid rgb(var(--section-accent-rgb) / 21%) !important;
-  border-bottom: 1px solid rgb(var(--master-gold) / 10%) !important;
-  border-radius: .2rem !important;
-  background:
-    radial-gradient(circle at 8% 50%, rgb(var(--section-accent-rgb) / 55%) 0 .1rem, transparent .125rem),
-    radial-gradient(circle at 37% 50%, rgb(var(--master-gold) / 37%) 0 .09rem, transparent .115rem),
-    radial-gradient(circle at 68% 50%, rgb(var(--section-accent-rgb) / 34%) 0 .09rem, transparent .115rem),
-    radial-gradient(circle at 92% 50%, rgb(var(--master-gold) / 25%) 0 .08rem, transparent .11rem),
-    repeating-linear-gradient(
-      90deg,
-      rgb(var(--section-accent-rgb) / 18%) 0 .07rem,
-      transparent .07rem .82rem
-    ),
-    linear-gradient(10deg, transparent 0 47%, rgb(var(--section-accent-rgb) / 9%) 47.4% 48.2%, transparent 48.6%),
-    linear-gradient(-8deg, transparent 0 58%, rgb(var(--master-gold) / 6.5%) 58.4% 59.1%, transparent 59.5%),
-    linear-gradient(90deg, transparent, rgb(var(--section-accent-rgb) / 8%), transparent) !important;
-  box-shadow:
-    0 -10px 28px -24px rgb(var(--section-accent-rgb) / 80%),
-    inset 0 1px rgb(255 255 255 / 3%) !important;
-  opacity: .88 !important;
-  transform: none !important;
-}
 
 /* O próprio selo do Mestre recebe mais profundidade, ainda sem mudar tamanho/alinhamento. */
-html body .tadeon-shell[data-section="Painel do Mestre"]
-  .tadeon-master-commandbar__glow {
-  border-color: rgb(var(--section-accent-rgb) / 56%) !important;
-  background:
-    radial-gradient(circle at 34% 28%, rgb(255 255 255 / 9%), transparent 34%),
-    radial-gradient(circle, rgb(var(--section-accent-rgb) / 15%), rgb(13 10 13 / 92%) 72%) !important;
-  box-shadow:
-    0 0 0 .34rem rgb(var(--section-accent-rgb) / 5%),
-    0 0 0 .72rem rgb(var(--master-gold) / 2.2%),
-    0 16px 38px -25px rgb(var(--section-accent-rgb) / 78%),
-    inset 0 1px rgb(255 255 255 / 9%) !important;
-}
-
-html body .tadeon-shell[data-section="Painel do Mestre"]
-  .tadeon-master-commandbar__glow::before {
-  border-color: rgb(var(--master-gold) / 16%) !important;
-  border-top-color: transparent !important;
-  border-left-color: rgb(var(--section-accent-rgb) / 20%) !important;
-}
-
-html body .tadeon-shell[data-section="Painel do Mestre"]
-  .tadeon-master-commandbar__glow::after {
-  border-color: rgb(var(--section-accent-rgb) / 14%) !important;
-  border-right-color: transparent !important;
-  box-shadow: 0 0 18px -10px rgb(var(--section-accent-rgb) / 70%) !important;
-}
 
 /* ========================================================================== */
 /* RESPONSIVIDADE - mesma riqueza, menor presença visual                     */
 /* ========================================================================== */
 
 @media (max-width: 639px) {
-  html body .tadeon-shell[data-section="Saúde do arquivo"]
-    .tadeon-page-hero[data-tadeon-page-hero="tools"]::after {
-    top: .3rem !important;
-    right: -8.1rem !important;
-    width: 16.6rem !important;
-    height: 5.35rem !important;
-    opacity: .66 !important;
-  }
-
-  html body .tadeon-shell[data-section="Saúde do arquivo"]
-    .tadeon-page-hero[data-tadeon-page-hero="tools"]::before {
-    right: .5rem !important;
-    bottom: .28rem !important;
-    width: 8.4rem !important;
-    height: 1.05rem !important;
-    opacity: .52 !important;
-  }
-
-  html body .tadeon-shell[data-section="Consulta offline"]
-    .tadeon-page-hero[data-tadeon-page-hero="offline"]::after {
-    top: -2.4rem !important;
-    right: -7rem !important;
-    width: 15.5rem !important;
-    height: 10.4rem !important;
-    opacity: .62 !important;
-  }
-
-  html body .tadeon-shell[data-section="Consulta offline"]
-    .tadeon-page-hero[data-tadeon-page-hero="offline"]::before {
-    right: .2rem !important;
-    bottom: -.14rem !important;
-    width: 8.7rem !important;
-    height: 2.7rem !important;
-    opacity: .46 !important;
-  }
-
-  html body .tadeon-shell[data-section="Painel do Mestre"]
-    .tadeon-master-commandbar::before {
-    top: -6.4rem !important;
-    right: -8.4rem !important;
-    width: 14.8rem !important;
-    height: 14.8rem !important;
-    opacity: .62 !important;
-  }
-
-  html body .tadeon-shell[data-section="Painel do Mestre"]
-    .tadeon-master-commandbar::after {
-    right: .35rem !important;
-    bottom: .18rem !important;
-    width: 8.8rem !important;
-    height: 1.75rem !important;
-    opacity: .52 !important;
-  }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  html body .tadeon-shell[data-section="Saúde do arquivo"]
-    .tadeon-page-hero[data-tadeon-page-hero="tools"]::after,
-  html body .tadeon-shell[data-section="Consulta offline"]
-    .tadeon-page-hero[data-tadeon-page-hero="offline"]::after,
-  html body .tadeon-shell[data-section="Painel do Mestre"]
-    .tadeon-master-commandbar::before {
-    transition: none !important;
-  }
 }
 
 /* end-source: src/styles/head-rich-signatures-223.css */
@@ -1617,14 +383,6 @@ html body .tadeon-shell[data-section="Painel do Mestre"]
 
 /* Entrada comum: mesma qualidade de transição sem homogeneizar a identidade. */
 
-html body .tadeon-tabletop-studio__header,
-html body .tadeon-master-commandbar,
-html body .tadeon-page-hero[data-tadeon-page-hero="users"],
-html body .tadeon-page-hero[data-tadeon-page-hero="tools"],
-html body .tadeon-page-hero[data-tadeon-page-hero="offline"] {
-  animation: tadeon-head-enter-224 320ms var(--ease-out, ease-out) both;
-}
-
 /* ========================================================================== */
 /* DASHBOARD - mantém caráter de capa, mas sem inflar o mobile               */
 /* ========================================================================== */
@@ -1636,215 +394,37 @@ html body .tadeon-page-hero[data-tadeon-page-hero="offline"] {
 /* MESA - CARTOGRAFIA ESPACIAL / COORDENADAS / CAMPO TÁTICO                 */
 /* ========================================================================== */
 
-html body .tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-studio__header {
-  background:
-    radial-gradient(circle at 70% 24%, rgb(var(--section-accent-rgb) / 25%) 0 .085rem, transparent .115rem),
-    radial-gradient(circle at 86% 61%, color-mix(in srgb, var(--section-secondary) 25%, transparent) 0 .08rem, transparent .11rem),
-    radial-gradient(circle at 61% 78%, rgb(var(--section-accent-rgb) / 16%) 0 .075rem, transparent .105rem),
-    linear-gradient(117deg, transparent 0 67%, rgb(var(--section-accent-rgb) / 5%) 67.2% 67.5%, transparent 67.8%),
-    repeating-linear-gradient(90deg, transparent 0 2.2rem, rgb(var(--section-accent-rgb) / 2.6%) 2.2rem 2.24rem),
-    repeating-linear-gradient(0deg, transparent 0 1.65rem, color-mix(in srgb, var(--section-secondary) 2.8%, transparent) 1.65rem 1.69rem),
-    radial-gradient(circle at 81% -38%, rgb(var(--section-accent-rgb) / 9%) 0 2.7rem, transparent 2.85rem 6.4rem, rgb(var(--section-accent-rgb) / 4.5%) 6.5rem 6.62rem, transparent 6.75rem),
-    radial-gradient(circle at 96% 120%, transparent 0 4rem, color-mix(in srgb, var(--section-secondary) 8%, transparent) 4.1rem 4.24rem, transparent 4.38rem 7.5rem),
-    radial-gradient(circle at 9% 8%, rgb(var(--section-accent-rgb) / 8%), transparent 11rem),
-    linear-gradient(138deg, rgb(255 255 255 / 3%), transparent 42%),
-    linear-gradient(145deg, rgb(16 20 24 / 96%), rgb(8 11 15 / 96%)) !important;
-  background-size: auto !important;
-  box-shadow:
-    0 28px 68px -56px rgb(0 0 0 / 100%),
-    0 18px 50px -44px rgb(var(--section-accent-rgb) / 36%),
-    inset 0 1px rgb(255 255 255 / 4%) !important;
-}
-
 /* Órbita principal da Mesa passa a funcionar como rosa de coordenadas. */
-html body .tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-studio__header::before {
-  background:
-    linear-gradient(90deg, transparent 49.7%, rgb(var(--section-accent-rgb) / 10%) 49.85% 50.15%, transparent 50.3%),
-    linear-gradient(0deg, transparent 49.7%, color-mix(in srgb, var(--section-secondary) 8%, transparent) 49.85% 50.15%, transparent 50.3%),
-    conic-gradient(
-      from 12deg,
-      transparent 0 19deg,
-      rgb(var(--section-accent-rgb) / 16%) 19deg 21deg,
-      transparent 21deg 66deg,
-      color-mix(in srgb, var(--section-secondary) 10%, transparent) 66deg 68deg,
-      transparent 68deg 131deg,
-      rgb(var(--section-accent-rgb) / 12%) 131deg 133deg,
-      transparent 133deg 214deg,
-      color-mix(in srgb, var(--section-secondary) 8%, transparent) 214deg 216deg,
-      transparent 216deg 302deg,
-      rgb(var(--section-accent-rgb) / 11%) 302deg 304deg,
-      transparent 304deg 360deg
-    ),
-    radial-gradient(circle at center,
-      transparent 0 25%,
-      rgb(var(--section-accent-rgb) / 7%) 25.4% 26%,
-      transparent 26.4% 47%,
-      rgb(var(--section-accent-rgb) / 4%) 47.4% 49.6%,
-      transparent 50% 67%,
-      color-mix(in srgb, var(--section-secondary) 5%, transparent) 67.4% 68.1%,
-      transparent 68.5%) !important;
-  filter: drop-shadow(0 0 20px rgb(var(--section-accent-rgb) / 12%));
-  animation: tadeon-head-ring-224 34s linear infinite;
-}
 
 /* Segundo campo espacial: range gate e pontos de referência. */
-html body .tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-studio__header::after {
-  background:
-    radial-gradient(circle at 50% 50%, transparent 0 23%, color-mix(in srgb, var(--section-secondary) 8%, transparent) 23.5% 24.2%, transparent 24.6% 48%, rgb(var(--section-accent-rgb) / 6%) 48.5% 49.2%, transparent 49.6%),
-    radial-gradient(circle at 28% 36%, rgb(var(--section-accent-rgb) / 20%) 0 .09rem, transparent .12rem),
-    radial-gradient(circle at 72% 64%, color-mix(in srgb, var(--section-secondary) 22%, transparent) 0 .085rem, transparent .115rem),
-    linear-gradient(45deg, transparent 49.7%, rgb(var(--section-accent-rgb) / 5%) 49.85% 50.15%, transparent 50.3%) !important;
-  filter: drop-shadow(0 0 18px color-mix(in srgb, var(--section-secondary) 18%, transparent));
-  animation: tadeon-head-ring-224 44s linear infinite reverse;
-}
 
 /* ========================================================================== */
 /* USUÁRIOS - referência mantida, apenas acabamento de leitura               */
 /* ========================================================================== */
 
-html body .tadeon-shell[data-section="Usuários"]
-  .tadeon-page-hero[data-tadeon-page-hero="users"] > div:nth-of-type(2) {
-  border-color: rgb(var(--section-accent-rgb) / 26%) !important;
-  background:
-    linear-gradient(145deg, rgb(var(--section-accent-rgb) / 8%), transparent 62%),
-    rgb(9 12 16 / 68%) !important;
-  box-shadow:
-    0 14px 34px -29px rgb(var(--section-accent-rgb) / 55%),
-    inset 0 1px rgb(255 255 255 / 4%) !important;
-  backdrop-filter: blur(10px);
-}
-
-html body .tadeon-shell[data-section="Usuários"]
-  .tadeon-page-hero[data-tadeon-page-hero="users"]::after {
-  animation: tadeon-head-detail-breathe-224 11s ease-in-out infinite;
-}
-
 /* ========================================================================== */
 /* BACKUP - acabamento de leitura e movimento de telemetria                  */
 /* ========================================================================== */
-
-html body .tadeon-shell[data-section="Saúde do arquivo"]
-  .tadeon-page-hero[data-tadeon-page-hero="tools"] > div:first-of-type > [data-slot="badge"] {
-  border-color: rgb(var(--section-accent-rgb) / 26%) !important;
-  background:
-    linear-gradient(145deg, rgb(var(--section-accent-rgb) / 7%), transparent 62%),
-    rgb(9 12 16 / 70%) !important;
-  box-shadow: inset 0 1px rgb(255 255 255 / 4%) !important;
-  backdrop-filter: blur(10px);
-}
-
-html body .tadeon-shell[data-section="Saúde do arquivo"]
-  .tadeon-page-hero[data-tadeon-page-hero="tools"]::after {
-  animation: tadeon-head-detail-breathe-224 8.6s ease-in-out infinite;
-}
-
-html body .tadeon-shell[data-section="Saúde do arquivo"]
-  .tadeon-page-hero[data-tadeon-page-hero="tools"]::before {
-  filter: drop-shadow(0 0 14px rgb(var(--section-accent-rgb) / 12%));
-}
 
 /* ========================================================================== */
 /* OFFLINE - contraste de estado + pulsos de conexão fragmentada             */
 /* ========================================================================== */
 
-html body .tadeon-shell[data-section="Consulta offline"]
-  .tadeon-page-hero[data-tadeon-page-hero="offline"] > div:first-of-type > div:first-child > .mb-3 [data-slot="badge"] {
-  border-color: rgb(var(--section-accent-rgb) / 24%) !important;
-  background:
-    linear-gradient(145deg, rgb(var(--section-accent-rgb) / 7%), transparent 64%),
-    rgb(9 11 16 / 72%) !important;
-  box-shadow: inset 0 1px rgb(255 255 255 / 4%) !important;
-  backdrop-filter: blur(10px);
-}
-
-html body .tadeon-shell[data-section="Consulta offline"]
-  .tadeon-page-hero[data-tadeon-page-hero="offline"]::after {
-  animation: tadeon-offline-phase-224 7.4s steps(1, end) infinite;
-}
-
-html body .tadeon-shell[data-section="Consulta offline"]
-  .tadeon-page-hero[data-tadeon-page-hero="offline"]::before {
-  filter: drop-shadow(0 0 14px rgb(var(--section-accent-rgb) / 10%));
-}
-
 /* ========================================================================== */
 /* PAINEL - astrolábio final + selos vivos                                   */
 /* ========================================================================== */
-
-html body .tadeon-shell[data-section="Painel do Mestre"]
-  .tadeon-master-commandbar::before {
-  animation: tadeon-head-detail-breathe-224 10.8s ease-in-out infinite;
-}
-
-html body .tadeon-shell[data-section="Painel do Mestre"]
-  .tadeon-master-commandbar__glow::before {
-  animation: tadeon-head-ring-224 18s linear infinite;
-}
-
-html body .tadeon-shell[data-section="Painel do Mestre"]
-  .tadeon-master-commandbar__glow::after {
-  animation: tadeon-head-ring-224 25s linear infinite reverse;
-}
 
 /* ========================================================================== */
 /* TABLET / MOBILE - preservar riqueza sem disputar espaço com conteúdo       */
 /* ========================================================================== */
 
 @media (min-width: 640px) and (max-width: 1023px) {
-  html body .tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-studio__header::before {
-    right: -3rem !important;
-    opacity: .66 !important;
-  }
-
-  html body .tadeon-shell[data-section="Saúde do arquivo"]
-    .tadeon-page-hero[data-tadeon-page-hero="tools"]::after {
-    right: -5.5rem !important;
-    opacity: .78 !important;
-  }
-
-  html body .tadeon-shell[data-section="Consulta offline"]
-    .tadeon-page-hero[data-tadeon-page-hero="offline"]::after {
-    right: -4.8rem !important;
-    opacity: .74 !important;
-  }
-
-  html body .tadeon-shell[data-section="Painel do Mestre"] .tadeon-master-commandbar::before {
-    right: -5.6rem !important;
-    opacity: .76 !important;
-  }
 }
 
 @media (max-width: 639px) {
-
-  html body .tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-studio__header::before {
-    right: -7.5rem !important;
-    opacity: .52 !important;
-  }
-
-  html body .tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-studio__header::after {
-    right: -6.4rem !important;
-    bottom: -7.6rem !important;
-    opacity: .44 !important;
-  }
 }
 
 @media (prefers-reduced-motion: reduce) {
-
-  html body .tadeon-tabletop-studio__header,
-  html body .tadeon-master-commandbar,
-  html body .tadeon-page-hero[data-tadeon-page-hero="users"],
-  html body .tadeon-page-hero[data-tadeon-page-hero="tools"],
-  html body .tadeon-page-hero[data-tadeon-page-hero="offline"],
-  html body .tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-studio__header::before,
-  html body .tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-studio__header::after,
-  html body .tadeon-shell[data-section="Usuários"] .tadeon-page-hero[data-tadeon-page-hero="users"]::after,
-  html body .tadeon-shell[data-section="Saúde do arquivo"] .tadeon-page-hero[data-tadeon-page-hero="tools"]::after,
-  html body .tadeon-shell[data-section="Consulta offline"] .tadeon-page-hero[data-tadeon-page-hero="offline"]::after,
-  html body .tadeon-shell[data-section="Painel do Mestre"] .tadeon-master-commandbar::before,
-  html body .tadeon-shell[data-section="Painel do Mestre"] .tadeon-master-commandbar__glow::before,
-  html body .tadeon-shell[data-section="Painel do Mestre"] .tadeon-master-commandbar__glow::after {
-    animation: none !important;
-  }
 }
 
 /* end-source: src/styles/head-system-audit-224.css */
@@ -1856,293 +436,34 @@ html body .tadeon-shell[data-section="Painel do Mestre"]
 /* -------------------------------------------------------------------------- */
 /* MESA - cartografia passa a atravessar praticamente todo o hero             */
 /* -------------------------------------------------------------------------- */
-html body .tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-studio__header {
-  background:
-    radial-gradient(circle at 12% 74%, rgb(var(--section-accent-rgb) / 9%) 0 .08rem, transparent .11rem),
-    radial-gradient(circle at 33% 22%, color-mix(in srgb, var(--section-secondary) 12%, transparent) 0 .07rem, transparent .1rem),
-    radial-gradient(circle at 52% 67%, rgb(var(--section-accent-rgb) / 11%) 0 .075rem, transparent .105rem),
-    radial-gradient(circle at 71% 24%, rgb(var(--section-accent-rgb) / 25%) 0 .085rem, transparent .115rem),
-    radial-gradient(circle at 87% 63%, color-mix(in srgb, var(--section-secondary) 25%, transparent) 0 .08rem, transparent .11rem),
-    linear-gradient(117deg, transparent 0 31%, rgb(var(--section-accent-rgb) / 3.8%) 31.15% 31.45%, transparent 31.7% 67%, rgb(var(--section-accent-rgb) / 5%) 67.2% 67.5%, transparent 67.8%),
-    repeating-linear-gradient(90deg, transparent 0 2.05rem, rgb(var(--section-accent-rgb) / 3%) 2.05rem 2.09rem),
-    repeating-linear-gradient(0deg, transparent 0 1.55rem, color-mix(in srgb, var(--section-secondary) 3.2%, transparent) 1.55rem 1.59rem),
-    radial-gradient(ellipse at 22% 12%, rgb(var(--section-accent-rgb) / 8%), transparent 16rem),
-    radial-gradient(ellipse at 78% 30%, rgb(var(--section-accent-rgb) / 10%), transparent 15rem),
-    radial-gradient(ellipse at 92% 118%, color-mix(in srgb, var(--section-secondary) 8%, transparent), transparent 14rem),
-    linear-gradient(138deg, rgb(255 255 255 / 3%), transparent 42%),
-    linear-gradient(145deg, rgb(16 20 24 / 96%), rgb(8 11 15 / 96%)) !important;
-  background-size: auto !important;
-}
-
-html body .tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-studio__header::before {
-  top: -10.8rem !important;
-  right: 1.5% !important;
-  width: 24rem !important;
-  height: 24rem !important;
-  opacity: .88 !important;
-}
-
-html body .tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-studio__header::after {
-  right: 20% !important;
-  bottom: -9.5rem !important;
-  width: 17rem !important;
-  height: 17rem !important;
-  opacity: .75 !important;
-}
 
 /* -------------------------------------------------------------------------- */
 /* BACKUP - blueprint ocupa largura total em vez de ficar concentrado à direita */
 /* -------------------------------------------------------------------------- */
-html body .tadeon-shell[data-section="Saúde do arquivo"]
-  .tadeon-page-hero[data-tadeon-page-hero="tools"] {
-  background:
-    radial-gradient(circle at 9% 18%, rgb(var(--section-accent-rgb) / 9%), transparent 12rem),
-    radial-gradient(circle at 46% 118%, color-mix(in srgb, var(--section-secondary) 6%, transparent), transparent 14rem),
-    radial-gradient(circle at 87% 7%, rgb(var(--section-accent-rgb) / 17%), transparent 11rem),
-    repeating-linear-gradient(0deg, transparent 0 1.08rem, rgb(var(--section-accent-rgb) / 3.2%) 1.08rem 1.12rem, transparent 1.12rem 2.18rem),
-    repeating-linear-gradient(90deg, transparent 0 2.35rem, rgb(var(--section-accent-rgb) / 3.7%) 2.35rem 2.39rem),
-    linear-gradient(90deg, transparent 0 16%, rgb(var(--section-accent-rgb) / 4%) 16.15% 16.35%, transparent 16.55% 51%, color-mix(in srgb, var(--section-secondary) 3.5%, transparent) 51.15% 51.35%, transparent 51.55%),
-    linear-gradient(116deg, transparent 0 62%, rgb(var(--section-accent-rgb) / 5.5%) 62.2% 62.5%, transparent 62.8%),
-    linear-gradient(145deg, rgb(18 21 26 / 98%), rgb(8 11 15 / 98%)) !important;
-}
-
-html body .tadeon-shell[data-section="Saúde do arquivo"]
-  .tadeon-page-hero[data-tadeon-page-hero="tools"]::after {
-  top: .3rem !important;
-  right: -1.2rem !important;
-  width: 25rem !important;
-  height: 6.9rem !important;
-  opacity: .92 !important;
-}
-
-html body .tadeon-shell[data-section="Saúde do arquivo"]
-  .tadeon-page-hero[data-tadeon-page-hero="tools"]::before {
-  right: 3% !important;
-  bottom: .28rem !important;
-  width: 20rem !important;
-  height: 1.7rem !important;
-  opacity: .78 !important;
-}
 
 /* -------------------------------------------------------------------------- */
 /* OFFLINE - ecos e interferência atravessam o hero em vários quadrantes      */
 /* -------------------------------------------------------------------------- */
-html body .tadeon-shell[data-section="Consulta offline"]
-  .tadeon-page-hero[data-tadeon-page-hero="offline"] {
-  background:
-    radial-gradient(ellipse at 10% 10%, rgb(var(--section-accent-rgb) / 8%), transparent 12rem),
-    radial-gradient(ellipse at 42% 120%, color-mix(in srgb, var(--section-secondary) 6%, transparent), transparent 13rem),
-    radial-gradient(ellipse at 86% 14%, rgb(var(--section-accent-rgb) / 17%), transparent 12rem),
-    radial-gradient(circle at 24% 32%, rgb(var(--section-accent-rgb) / 10%) 0 .065rem, transparent .095rem),
-    radial-gradient(circle at 48% 72%, color-mix(in srgb, var(--section-secondary) 12%, transparent) 0 .07rem, transparent .1rem),
-    radial-gradient(circle at 72% 28%, rgb(var(--section-accent-rgb) / 18%) 0 .08rem, transparent .11rem),
-    radial-gradient(circle at 82% 56%, rgb(var(--section-accent-rgb) / 13%) 0 .07rem, transparent .1rem),
-    repeating-linear-gradient(128deg, transparent 0 1.02rem, rgb(var(--section-accent-rgb) / 3.4%) 1.02rem 1.08rem, transparent 1.08rem 2.34rem),
-    repeating-linear-gradient(90deg, transparent 0 3.6rem, color-mix(in srgb, var(--section-secondary) 2.4%, transparent) 3.6rem 3.65rem),
-    linear-gradient(102deg, transparent 0 27%, rgb(var(--section-accent-rgb) / 4.2%) 27.2% 27.5%, transparent 27.8% 49%, rgb(var(--section-accent-rgb) / 5.5%) 49.2% 49.5%, transparent 49.8%),
-    linear-gradient(145deg, rgb(17 19 25 / 98%), rgb(8 10 15 / 98%)) !important;
-}
-
-html body .tadeon-shell[data-section="Consulta offline"]
-  .tadeon-page-hero[data-tadeon-page-hero="offline"]::after {
-  top: -6.8rem !important;
-  right: -2.2rem !important;
-  width: 27rem !important;
-  height: 19rem !important;
-  opacity: .88 !important;
-}
-
-html body .tadeon-shell[data-section="Consulta offline"]
-  .tadeon-page-hero[data-tadeon-page-hero="offline"]::before {
-  right: -1.4rem !important;
-  bottom: -.5rem !important;
-  width: 22rem !important;
-  height: 4.6rem !important;
-  opacity: .72 !important;
-}
 
 /* -------------------------------------------------------------------------- */
 /* PAINEL - astrolábio cruza o head inteiro e ganha segundo campo de direção  */
 /* -------------------------------------------------------------------------- */
-html body .tadeon-shell[data-section="Painel do Mestre"] .tadeon-master-commandbar {
-  background:
-    radial-gradient(circle at 7% 18%, rgb(var(--section-accent-rgb) / 20%), transparent 12rem),
-    radial-gradient(circle at 44% 120%, rgb(217 215 164 / 4.5%), transparent 14rem),
-    radial-gradient(circle at 81% -28%, rgb(var(--section-accent-rgb) / 17%), transparent 17rem),
-    radial-gradient(circle at 94% 112%, rgb(217 215 164 / 6.5%), transparent 14rem),
-    linear-gradient(118deg, transparent 0 29%, rgb(var(--section-accent-rgb) / 4.5%) 29.15% 29.4%, transparent 29.7% 58%, rgb(var(--section-accent-rgb) / 7%) 58.2% 58.5%, transparent 58.8%),
-    linear-gradient(72deg, transparent 0 48%, rgb(217 215 164 / 3.2%) 48.15% 48.4%, transparent 48.7% 73%, rgb(217 215 164 / 4%) 73.2% 73.45%, transparent 73.7%),
-    linear-gradient(90deg, rgb(var(--section-accent-rgb) / 2.15%) 1px, transparent 1px),
-    linear-gradient(rgb(217 215 164 / 1.55%) 1px, transparent 1px),
-    linear-gradient(145deg, rgb(20 14 17 / 98%), rgb(8 10 14 / 98%)) !important;
-  background-size: auto, auto, auto, auto, auto, auto, 38px 38px, 38px 38px, auto !important;
-}
-
-html body .tadeon-shell[data-section="Painel do Mestre"] .tadeon-master-commandbar::before {
-  top: -11.6rem !important;
-  right: -2.8rem !important;
-  width: 27rem !important;
-  height: 27rem !important;
-  opacity: .9 !important;
-}
-
-html body .tadeon-shell[data-section="Painel do Mestre"] .tadeon-master-commandbar::after {
-  right: .8rem !important;
-  bottom: .18rem !important;
-  width: 23rem !important;
-  height: 2.8rem !important;
-  opacity: .82 !important;
-}
 
 /* -------------------------------------------------------------------------- */
 /* Tablet: continua preenchido, mas desloca o centro visual para fora do texto */
 /* -------------------------------------------------------------------------- */
 @media (min-width: 640px) and (max-width: 1023px) {
-  html body .tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-studio__header::before {
-    right: -7rem !important;
-    width: 22rem !important;
-    height: 22rem !important;
-    opacity: .68 !important;
-  }
-
-  html body .tadeon-shell[data-section="Saúde do arquivo"]
-    .tadeon-page-hero[data-tadeon-page-hero="tools"]::after {
-    right: -9rem !important;
-    width: 23rem !important;
-    opacity: .68 !important;
-  }
-
-  html body .tadeon-shell[data-section="Consulta offline"]
-    .tadeon-page-hero[data-tadeon-page-hero="offline"]::after {
-    right: -10rem !important;
-    width: 24rem !important;
-    opacity: .64 !important;
-  }
-
-  html body .tadeon-shell[data-section="Painel do Mestre"] .tadeon-master-commandbar::before {
-    right: -10rem !important;
-    width: 24rem !important;
-    height: 24rem !important;
-    opacity: .66 !important;
-  }
 }
 
 /* Mobile: fundo ainda ocupa área perceptível, mas fica atrás do conteúdo. */
 @media (max-width: 639px) {
-  html body .tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-studio__header::before {
-    right: -9rem !important;
-    width: 19rem !important;
-    height: 19rem !important;
-    opacity: .5 !important;
-  }
-
-  html body .tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-studio__header::after {
-    right: 2rem !important;
-    bottom: -8rem !important;
-    width: 13rem !important;
-    height: 13rem !important;
-    opacity: .46 !important;
-  }
-
-  html body .tadeon-shell[data-section="Saúde do arquivo"]
-    .tadeon-page-hero[data-tadeon-page-hero="tools"]::after {
-    right: -11rem !important;
-    width: 20rem !important;
-    height: 5.4rem !important;
-    opacity: .48 !important;
-  }
-
-  html body .tadeon-shell[data-section="Saúde do arquivo"]
-    .tadeon-page-hero[data-tadeon-page-hero="tools"]::before {
-    right: -3rem !important;
-    width: 12rem !important;
-    opacity: .42 !important;
-  }
-
-  html body .tadeon-shell[data-section="Consulta offline"]
-    .tadeon-page-hero[data-tadeon-page-hero="offline"]::after {
-    right: -11rem !important;
-    width: 20rem !important;
-    height: 13rem !important;
-    opacity: .46 !important;
-  }
-
-  html body .tadeon-shell[data-section="Consulta offline"]
-    .tadeon-page-hero[data-tadeon-page-hero="offline"]::before {
-    right: -4rem !important;
-    width: 13rem !important;
-    opacity: .4 !important;
-  }
-
-  html body .tadeon-shell[data-section="Painel do Mestre"] .tadeon-master-commandbar::before {
-    right: -11rem !important;
-    width: 20rem !important;
-    height: 20rem !important;
-    opacity: .48 !important;
-  }
-
-  html body .tadeon-shell[data-section="Painel do Mestre"] .tadeon-master-commandbar::after {
-    right: -4rem !important;
-    width: 13rem !important;
-    opacity: .42 !important;
-  }
 }
 
 /* end-source: src/styles/head-background-coverage-225.css */
 /* source: src/styles/offline-meta-row-226.css */
 /* #226 - Offline: badges como subtítulo compacto acima do título. */
-html body .tadeon-shell[data-section="Consulta offline"]
-  .tadeon-page-hero[data-tadeon-page-hero="offline"] > div:first-of-type > div:first-child {
-  padding-top: 1rem !important;
-}
-
-html body .tadeon-shell[data-section="Consulta offline"]
-  .tadeon-page-hero[data-tadeon-page-hero="offline"] > div:first-of-type > div:first-child > .mb-3 {
-  top: .06rem !important;
-  gap: .32rem !important;
-}
-
-html body .tadeon-shell[data-section="Consulta offline"]
-  .tadeon-page-hero[data-tadeon-page-hero="offline"] > div:first-of-type > div:first-child > .mb-3 [data-slot="badge"] {
-  min-height: 1.2rem !important;
-  padding: .08rem .34rem !important;
-  border-radius: .38rem !important;
-  font-size: .585rem !important;
-  font-weight: 650 !important;
-  line-height: .9rem !important;
-  letter-spacing: .035em !important;
-}
-
-html body .tadeon-shell[data-section="Consulta offline"]
-  .tadeon-page-hero[data-tadeon-page-hero="offline"] > div:first-of-type > div:first-child > .mb-3 [data-slot="badge"] svg {
-  width: .72rem !important;
-  height: .72rem !important;
-  margin-right: .2rem !important;
-}
-
-html body .tadeon-shell[data-section="Consulta offline"]
-  .tadeon-page-hero[data-tadeon-page-hero="offline"] h1 {
-  margin-top: .2rem !important;
-}
 
 @media (max-width: 639px) {
-  html body .tadeon-shell[data-section="Consulta offline"]
-    .tadeon-page-hero[data-tadeon-page-hero="offline"] > div:first-of-type > div:first-child {
-    padding-top: .92rem !important;
-  }
-
-  html body .tadeon-shell[data-section="Consulta offline"]
-    .tadeon-page-hero[data-tadeon-page-hero="offline"] > div:first-of-type > div:first-child > .mb-3 {
-    top: .02rem !important;
-    gap: .28rem !important;
-  }
-
-  html body .tadeon-shell[data-section="Consulta offline"]
-    .tadeon-page-hero[data-tadeon-page-hero="offline"] > div:first-of-type > div:first-child > .mb-3 [data-slot="badge"] {
-    padding: .04rem .28rem !important;
-    font-size: .54rem !important;
-    line-height: .84rem !important;
-  }
 }
 
 /* end-source: src/styles/offline-meta-row-226.css */
@@ -2159,182 +480,26 @@ html body .tadeon-shell[data-section="Consulta offline"]
    suas anatomias próprias. */
 
 /* Conteúdo funcional sempre acima dos campos decorativos. */
-html body :is(
-  .tadeon-tabletop-studio__header,
-  .tadeon-master-commandbar,
-  .tadeon-page-hero[data-tadeon-page-hero]
-) > :not(.tadeon-page-hero-mark-host) {
-  position: relative;
-  z-index: 2;
-}
-
-html body :is(
-  .tadeon-tabletop-studio__header,
-  .tadeon-master-commandbar,
-  .tadeon-page-hero[data-tadeon-page-hero]
-)::before,
-  html body :is(
-  .tadeon-tabletop-studio__header,
-  .tadeon-master-commandbar,
-  .tadeon-page-hero[data-tadeon-page-hero]
-)::after {
-  pointer-events: none !important;
-}
 
 /* Utilitários: mesmo ritmo de leitura sem homogeneizar os desenhos. */
-html body .tadeon-page-hero[data-tadeon-page-hero="users"],
-html body .tadeon-page-hero[data-tadeon-page-hero="tools"],
-html body .tadeon-page-hero[data-tadeon-page-hero="offline"] {
-  min-height: clamp(8.25rem, 11vw, 10.25rem) !important;
-}
-
-html body .tadeon-page-hero[data-tadeon-page-hero="users"] h1,
-html body .tadeon-page-hero[data-tadeon-page-hero="tools"] h1,
-html body .tadeon-page-hero[data-tadeon-page-hero="offline"] h1,
-html body .tadeon-master-commandbar h1 {
-  text-wrap: balance;
-}
 
 /* Offline: os estados funcionam definitivamente como eyebrow de status. */
-html body .tadeon-shell[data-section="Consulta offline"]
-  .tadeon-page-hero[data-tadeon-page-hero="offline"] > div:first-of-type > div:first-child {
-  padding-top: 1.14rem !important;
-}
-
-html body .tadeon-shell[data-section="Consulta offline"]
-  .tadeon-page-hero[data-tadeon-page-hero="offline"] > div:first-of-type > div:first-child > .mb-3 {
-  top: .02rem !important;
-  align-items: center !important;
-  gap: .28rem !important;
-}
-
-html body .tadeon-shell[data-section="Consulta offline"]
-  .tadeon-page-hero[data-tadeon-page-hero="offline"] > div:first-of-type > div:first-child > .mb-3 [data-slot="badge"] {
-  min-height: 1.08rem !important;
-  padding: .035rem .29rem !important;
-  border-radius: .34rem !important;
-  font-size: .55rem !important;
-  font-weight: 650 !important;
-  line-height: .82rem !important;
-  letter-spacing: .045em !important;
-}
-
-html body .tadeon-shell[data-section="Consulta offline"]
-  .tadeon-page-hero[data-tadeon-page-hero="offline"] > div:first-of-type > div:first-child > .mb-3 [data-slot="badge"] svg {
-  width: .66rem !important;
-  height: .66rem !important;
-  margin-right: .16rem !important;
-}
 
 /* Backup/Offline: microdetalhes permanecem perceptíveis, mas não competem com o título. */
-html body .tadeon-shell[data-section="Saúde do arquivo"]
-  .tadeon-page-hero[data-tadeon-page-hero="tools"]::after,
-html body .tadeon-shell[data-section="Consulta offline"]
-  .tadeon-page-hero[data-tadeon-page-hero="offline"]::after {
-  mix-blend-mode: screen;
-}
 
 /* Painel: mantém o campo rico sem deixar o astrolábio dominar o texto. */
-html body .tadeon-shell[data-section="Painel do Mestre"] .tadeon-master-commandbar {
-  isolation: isolate !important;
-}
-
-html body .tadeon-shell[data-section="Painel do Mestre"] .tadeon-master-commandbar::before,
-html body .tadeon-shell[data-section="Painel do Mestre"] .tadeon-master-commandbar::after {
-  z-index: 0 !important;
-}
-
-html body .tadeon-shell[data-section="Painel do Mestre"] .tadeon-master-commandbar__glow {
-  z-index: 3 !important;
-}
 
 /* Mesa: grade rica, mas leitura das ações permanece prioritária. */
-html body .tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-studio__header {
-  isolation: isolate !important;
-}
-
-html body .tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-studio__header::before,
-html body .tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-studio__header::after {
-  z-index: 0 !important;
-}
-
-html body .tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-studio__brand {
-  position: relative;
-  z-index: 3;
-}
 
 /* Tablet: reduz apenas contraste/alcance dos ornamentos, não sua identidade. */
 @media (min-width: 640px) and (max-width: 1023px) {
-  html body .tadeon-page-hero[data-tadeon-page-hero="users"],
-  html body .tadeon-page-hero[data-tadeon-page-hero="tools"],
-  html body .tadeon-page-hero[data-tadeon-page-hero="offline"] {
-    min-height: 8.35rem !important;
-  }
-
-  html body .tadeon-shell[data-section="Saúde do arquivo"]
-    .tadeon-page-hero[data-tadeon-page-hero="tools"]::after,
-  html body .tadeon-shell[data-section="Consulta offline"]
-    .tadeon-page-hero[data-tadeon-page-hero="offline"]::after,
-  html body .tadeon-shell[data-section="Painel do Mestre"] .tadeon-master-commandbar::before {
-    filter: saturate(.92) brightness(.96) !important;
-  }
 }
 
 /* Mobile: compacta o ritmo vertical e preserva uma zona limpa ao redor do texto. */
 @media (max-width: 639px) {
-  html body .tadeon-page-hero[data-tadeon-page-hero="users"],
-  html body .tadeon-page-hero[data-tadeon-page-hero="tools"],
-  html body .tadeon-page-hero[data-tadeon-page-hero="offline"] {
-    min-height: 0 !important;
-  }
-
-  html body .tadeon-shell[data-section="Consulta offline"]
-    .tadeon-page-hero[data-tadeon-page-hero="offline"] > div:first-of-type > div:first-child {
-    padding-top: 1.05rem !important;
-  }
-
-  html body .tadeon-shell[data-section="Consulta offline"]
-    .tadeon-page-hero[data-tadeon-page-hero="offline"] > div:first-of-type > div:first-child > .mb-3 [data-slot="badge"] {
-    min-height: 1rem !important;
-    padding: .02rem .25rem !important;
-    font-size: .515rem !important;
-    line-height: .78rem !important;
-  }
-
-  html body .tadeon-shell[data-section="Consulta offline"]
-    .tadeon-page-hero[data-tadeon-page-hero="offline"] > div:first-of-type > div:first-child > .mb-3 [data-slot="badge"] svg {
-    width: .61rem !important;
-    height: .61rem !important;
-  }
-
-  html body .tadeon-shell[data-section="Saúde do arquivo"]
-    .tadeon-page-hero[data-tadeon-page-hero="tools"]::after,
-  html body .tadeon-shell[data-section="Consulta offline"]
-    .tadeon-page-hero[data-tadeon-page-hero="offline"]::after,
-  html body .tadeon-shell[data-section="Painel do Mestre"] .tadeon-master-commandbar::before,
-  html body .tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-studio__header::before {
-    mix-blend-mode: normal;
-  }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  html body :is(
-    .tadeon-tabletop-studio__header,
-    .tadeon-master-commandbar,
-    .tadeon-page-hero[data-tadeon-page-hero]
-  ),
-    html body :is(
-    .tadeon-tabletop-studio__header,
-    .tadeon-master-commandbar,
-    .tadeon-page-hero[data-tadeon-page-hero]
-  )::before,
-    html body :is(
-    .tadeon-tabletop-studio__header,
-    .tadeon-master-commandbar,
-    .tadeon-page-hero[data-tadeon-page-hero]
-  )::after {
-    animation: none !important;
-  }
 }
 
 /* end-source: src/styles/head-final-polish-227.css */
@@ -2907,14 +1072,6 @@ html body .tadeon-shell[data-section="Saúde do arquivo"] #tadeon-main [data-slo
    Apenas Usuários, Backup e Offline passam a usar host circular para o símbolo.
    Não altera grid, posição, tamanho, cor, ícone, tipografia ou fundo do Hero. */
 
-html body .tadeon-page-hero[data-tadeon-page-hero="users"] > .tadeon-page-hero-mark-host,
-html body .tadeon-page-hero[data-tadeon-page-hero="tools"] > .tadeon-page-hero-mark-host,
-html body .tadeon-page-hero[data-tadeon-page-hero="offline"] > .tadeon-page-hero-mark-host {
-  border-radius: 999px !important;
-  aspect-ratio: 1 / 1 !important;
-  overflow: hidden !important;
-}
-
 /* end-source: src/styles/experimental-round-hero-symbols-233.css */
 /* source: src/styles/final-pre-detail-audit-235.css */
 /* #235 - auditoria final antes do próximo detalhe delicado.
@@ -2965,45 +1122,13 @@ html body .tadeon-shell #tadeon-main :is(
 }
 
 /* Compactação de segurança: ornamentos nunca podem ampliar a caixa de rolagem. */
-html body :is(
-  .tadeon-tabletop-studio__header,
-  .tadeon-master-commandbar,
-  .tadeon-page-hero[data-tadeon-page-hero]
-) {
-  overflow: clip;
-}
 
 /* Preserva o recorte circular experimental dos símbolos sem permitir que um SVG
    interno force dimensão diferente em navegadores mais antigos. */
-html body .tadeon-page-hero[data-tadeon-page-hero="users"] > .tadeon-page-hero-mark-host,
-html body .tadeon-page-hero[data-tadeon-page-hero="tools"] > .tadeon-page-hero-mark-host,
-html body .tadeon-page-hero[data-tadeon-page-hero="offline"] > .tadeon-page-hero-mark-host {
-  flex-shrink: 0 !important;
-  border-radius: 50% !important;
-}
-
-html body .tadeon-page-hero[data-tadeon-page-hero] > .tadeon-page-hero-mark-host > svg,
-html body .tadeon-master-commandbar__glow svg,
-html body .tadeon-tabletop-brand-mark-host > svg {
-  display: block;
-  max-width: 100%;
-  max-height: 100%;
-}
 
 /* Em telas muito estreitas, evita que título + ações disputem espaço horizontal
    sem alterar a anatomia aprovada dos Heads. */
 @media (max-width: 419px) {
-  html body .tadeon-page-hero[data-tadeon-page-hero="users"] > div:nth-of-type(2),
-  html body .tadeon-page-hero[data-tadeon-page-hero="tools"] > div:first-of-type,
-  html body .tadeon-page-hero[data-tadeon-page-hero="offline"] > div:first-of-type,
-  html body .tadeon-master-commandbar > .relative.flex {
-    min-width: 0 !important;
-  }
-
-  html body .tadeon-page-hero[data-tadeon-page-hero] h1,
-  html body .tadeon-master-commandbar h1 {
-    overflow-wrap: anywhere;
-  }
 }
 
 /* Acessibilidade de movimento: cobre também transições adicionadas pelas camadas
@@ -3096,27 +1221,6 @@ html body [data-slot="dialog-content"]:not([data-motion-surface]),
 /* -------------------------------------------------------------------------- */
 /* HERO BACKGROUND - the material itself moves, not the content                */
 /* -------------------------------------------------------------------------- */
-html body .tadeon-shell :is(
-  .tadeon-page-hero,
-  .tadeon-tabletop-studio__header,
-  .tadeon-master-commandbar
-) {
-  animation: tadeon-hero-breath 16s var(--tadeon-weave-seam) infinite alternate;
-  will-change: background-position;
-}
-
-html body .tadeon-shell :is(
-  .tadeon-page-hero::before,
-  .tadeon-page-hero::after,
-  .tadeon-tabletop-studio__header::before,
-  .tadeon-tabletop-studio__header::after,
-  .tadeon-master-commandbar::before,
-  .tadeon-master-commandbar::after
-) {
-  animation: tadeon-hero-layer 11s var(--tadeon-weave-seam) infinite alternate;
-  transform-origin: center;
-  will-change: transform, opacity;
-}
 
 @keyframes tadeon-hero-breath {
   from { background-position: 0% 0%; }
@@ -3135,15 +1239,8 @@ html body .tadeon-shell :is(
 }
 
 /* Decorative hero details respond gently to hover/focus without moving text. */
-html body .tadeon-shell :is(.tadeon-page-hero, .tadeon-tabletop-studio__header, .tadeon-master-commandbar):is(:hover, :focus-within) {
-  animation-duration: 11s;
-}
 
 @media (prefers-reduced-motion: reduce) {
-  html body .tadeon-shell :is(.tadeon-page-hero, .tadeon-tabletop-studio__header, .tadeon-master-commandbar), html body .tadeon-shell :is(.tadeon-page-hero::before, .tadeon-page-hero::after, .tadeon-tabletop-studio__header::before, .tadeon-tabletop-studio__header::after, .tadeon-master-commandbar::before, .tadeon-master-commandbar::after) {
-    animation: none !important;
-    will-change: auto !important;
-  }
 }
 
 /* end-source: src/styles/tadeon-final-responsive-weave.css */
@@ -3156,8 +1253,8 @@ html body .tadeon-shell :is(.tadeon-page-hero, .tadeon-tabletop-studio__header, 
 }
 .tadeon-continuity-hero__copy { position: relative; z-index: 2; padding: clamp(1.5rem, 3vw, 2.5rem); }
 .tadeon-continuity-hero__greeting { margin: 0 0 1rem; font-size: .875rem; }
-.tadeon-continuity-hero h1 { margin: 0; font-family: var(--font-cinzel, "Cormorant Garamond", Georgia, serif); font-size: clamp(2.8rem, 4.6vw, 4.6rem); font-weight: 600; line-height: 1.04; letter-spacing: -.025em; }
-.tadeon-continuity-hero h1 em { color: var(--primary); font-style: italic; }
+.tadeon-continuity-hero h2 { margin: 0; font-family: var(--font-cinzel, "Cormorant Garamond", Georgia, serif); font-size: clamp(2.8rem, 4.6vw, 4.6rem); font-weight: 600; line-height: 1.04; letter-spacing: -.025em; }
+.tadeon-continuity-hero h2 em { color: var(--primary); font-style: italic; }
 .tadeon-continuity-hero__description { max-width: 37ch; margin-top: 1.25rem; font-size: .9375rem; line-height: 1.65; }
 .tadeon-continuity-hero__actions { margin-top: 1.25rem; }
 .tadeon-continuity-hero__art { position: relative; grid-column: 2; grid-row: 1; display: grid; place-items: center; min-width: 0; pointer-events: none; }
@@ -3179,7 +1276,7 @@ html body .tadeon-shell :is(.tadeon-page-hero, .tadeon-tabletop-studio__header, 
 @media (max-width: 600px) {
   .tadeon-continuity-hero { grid-template-columns: 1fr; border-radius: 1.25rem; }
   .tadeon-continuity-hero__copy { padding: 1.5rem 1.5rem 1rem; }
-  .tadeon-continuity-hero h1 { font-size: 2.8rem; }
+  .tadeon-continuity-hero h2 { font-size: 2.8rem; }
   .tadeon-continuity-hero__art { grid-column: 1; grid-row: 2; min-height: 8rem; }
   .tadeon-continuity-hero__weave { width: 130%; left: -15%; }
   .tadeon-continuity-hero__seal { width: 5rem; margin-bottom: 1.25rem; }
@@ -3189,3 +1286,107 @@ html body .tadeon-shell :is(.tadeon-page-hero, .tadeon-tabletop-studio__header, 
   .tadeon-continuity-facts dd:not(.tadeon-continuity-facts__detail) { font-size: 1.75rem; }
   .tadeon-continuity-facts .tadeon-continuity-facts__detail { font-size: .625rem; }
 }
+
+/* Shared route anatomy (NEX-026). Identity and actions have one geometry owner. */
+.tadeon-page-header {
+  position: relative;
+  isolation: isolate;
+  min-width: 0;
+  margin-bottom: 1.5rem;
+  overflow: clip;
+  border: 1px solid rgb(var(--header-rgb) / 27%);
+  border-radius: 1.25rem;
+}
+.tadeon-page-header__main {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: 3.5rem minmax(0, 1fr);
+  gap: 1rem;
+  align-items: center;
+  padding: 1.5rem;
+}
+.tadeon-page-header__identity { min-width: 0; }
+.tadeon-page-header__mark {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 3.5rem;
+  height: 3.5rem;
+  flex-shrink: 0;
+  border: 1px solid rgb(var(--header-rgb) / 32%);
+  border-radius: 1rem;
+  color: rgb(var(--header-light-rgb));
+  background: linear-gradient(135deg, rgb(var(--header-rgb) / 18%), rgb(255 255 255 / 2%));
+  box-shadow: var(--shadow-relief), inset 0 1px rgb(255 255 255 / 12%);
+}
+.tadeon-page-header__mark > svg { width: 1.85rem; height: 1.85rem; }
+.tadeon-page-header__eyebrow {
+  margin: 0 0 .35rem;
+  color: rgb(var(--header-light-rgb));
+  font-family: var(--font-inter);
+  font-size: .6875rem;
+  font-weight: 500;
+  letter-spacing: .13em;
+  line-height: 1.5;
+  text-transform: uppercase;
+}
+.tadeon-page-header__title {
+  margin: 0;
+  color: var(--foreground);
+  font-family: var(--font-cinzel);
+  font-size: clamp(2rem, 2.65vw, 2.65rem);
+  font-weight: 600;
+  letter-spacing: -.018em;
+  line-height: 1.08;
+  overflow-wrap: anywhere;
+}
+.tadeon-page-header__description {
+  max-width: 65ch;
+  margin-top: .65rem;
+  color: var(--muted-foreground);
+  font-family: var(--font-inter);
+  font-size: .8125rem;
+  line-height: 1.65;
+}
+.tadeon-page-header__description p { margin: 0; }
+.tadeon-page-header__actions {
+  display: flex;
+  grid-column: 1 / -1;
+  min-width: 0;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: .5rem;
+}
+.tadeon-page-header__actions > [data-slot="button"] { min-height: 44px; white-space: normal; }
+.tadeon-page-header__context {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  min-width: 0;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: .625rem 1rem;
+  padding: .875rem 1.5rem;
+  border-top: 1px solid rgb(var(--header-rgb) / 18%);
+  background: rgb(8 10 14 / 45%);
+}
+.tadeon-page-header__sigil { display: block; position: relative; width: 2rem; height: 2rem; }
+.tadeon-page-header__master-sigil { width: 100%; height: 100%; }
+.tadeon-page-header__active-icon { position: absolute; right: -.35rem; bottom: -.35rem; width: .875rem; height: .875rem; padding: .125rem; border-radius: .25rem; background: #14171c; }
+@media (min-width: 1200px) {
+  .tadeon-page-header__main { grid-template-columns: 3.5rem minmax(0, 1fr) minmax(0, auto); }
+  .tadeon-page-header__actions { grid-column: 3; max-width: 30rem; justify-content: flex-end; }
+}
+@media (max-width: 479px) {
+  .tadeon-page-header__main { grid-template-columns: 2.75rem minmax(0, 1fr); gap: .875rem; padding: 1.125rem; }
+  .tadeon-page-header__mark { width: 2.75rem; height: 2.75rem; border-radius: .8rem; }
+  .tadeon-page-header__mark > svg { width: 1.55rem; height: 1.55rem; }
+  .tadeon-page-header__title { font-size: 1.875rem; }
+  .tadeon-page-header__eyebrow { font-size: .625rem; letter-spacing: .1em; }
+  .tadeon-page-header__description { font-size: .8125rem; }
+  .tadeon-page-header__context { padding: .875rem 1.125rem; }
+}
+/* A dialog reserves space for its close control without a second header anatomy. */
+.tadeon-library-dialog .tadeon-page-header { margin-bottom: 0; border: 0; border-bottom: 1px solid var(--border); border-radius: 0; }
+.tadeon-library-dialog .tadeon-page-header__main { padding-right: 3.5rem; }

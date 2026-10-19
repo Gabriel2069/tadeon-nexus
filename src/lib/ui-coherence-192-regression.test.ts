@@ -7,14 +7,8 @@ function source(path: string) {
 
 // Superseded mask/frame assertions are covered by master-workspace behavior and browser checks.
 describe("ui coherence 192/193/194/195", () => {
-  it("moves both Nexus and Master popouts to the desktop toolbar", () => {
-    const bridge = source("src/components/master/master-toolbar-popout-bridge.tsx");
-    const css = source("src/styles/ui-coherence-192.css");
-    expect(bridge).toContain('path === "/master-panel" || path === "/nexus"');
-    expect(bridge).toContain("actions.insertBefore(portalHost, actions.firstChild)");
-    expect(css).toContain('[data-section="O Nexus"]');
-    expect(css).toContain('[data-section="Painel do Mestre"]');
-  });
+  // NEX-026: explicit WorkspaceActions behavior replaces DOM-injection assertions.
+
 
   // NEX-024: real width and clipping replace the former full-width !important prescription.
 
@@ -37,18 +31,6 @@ describe("ui coherence 192/193/194/195", () => {
     expect(button).toContain("buttonVariants({ variant: effectiveVariant, size, className })");
   });
 
-  it("mounts Salvar sessão immediately above the active-session metrics", () => {
-    const bridge = source("src/components/master/master-toolbar-popout-bridge.tsx");
-    const css = source("src/styles/ui-coherence-192.css");
-    expect(bridge).toContain("MasterSessionSavePortal");
-    expect(bridge).toContain('text.includes("Pistas")');
-    expect(bridge).toContain('text.includes("Dobras")');
-    expect(bridge).toContain('text.includes("Iniciativa")');
-    expect(bridge).toContain("parent.insertBefore(portalHost, metrics)");
-    expect(bridge).toContain('rpc("save_session_sheet_changes")');
-    expect(css).toContain("grid-column: 2;");
-    expect(css).toContain("grid-row: 1;");
-    expect(css).toContain(".tadeon-master-session-save-host + .grid.grid-cols-3.gap-2");
-    expect(css).toContain("grid-row: 2 !important;");
-  });
+  // NEX-026: explicit WorkspaceActions behavior replaces DOM-injection assertions.
+
 });

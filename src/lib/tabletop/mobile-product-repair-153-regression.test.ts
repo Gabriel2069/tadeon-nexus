@@ -28,9 +28,6 @@ describe("mobile product repair 153", () => {
 
   it("recomposes the sheet commandbar on mobile and prevents active card clipping", () => {
     const css = source("src/styles/mobile-product-repair-153.css");
-    expect(css).toContain(".tadeon-sheet-commandbar__main");
-    expect(css).toContain("grid-template-columns: 2.6rem minmax(0, 1fr) auto !important");
-    expect(css).toContain(".tadeon-sheet-commandbar__actions");
     expect(css).toContain("#condicoes .tadeon-condition-grid");
     // NEX-025: identity reflow belongs to sheet-premium and the rendered verifier.
     expect(css).toContain('.tadeon-condition-card[data-tadeon-condition-active="true"]');

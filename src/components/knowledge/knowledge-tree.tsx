@@ -1,4 +1,11 @@
-import { useEffect, useMemo, useRef, useState, type KeyboardEvent } from "react";
+import {
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type CSSProperties,
+  type KeyboardEvent,
+} from "react";
 import { ChevronDown, ChevronRight, FileText, FolderOpen } from "lucide-react";
 
 import { knowledgeTreeRows, type TreeNode } from "@/lib/knowledge/knowledge-tree";
@@ -93,7 +100,12 @@ export function KnowledgeTree({
           onFocus={() => setFocused(node.id)}
           onKeyDown={(e) => key(e, index)}
           onClick={() => onOpen(node.id)}
-          style={{ paddingLeft: `${8 + Math.min(depth, 12) * 14}px` }}
+          style={
+            {
+              "--tree-depth": Math.min(depth, 12),
+              paddingLeft: `${8 + Math.min(depth, 12) * 14}px`,
+            } as CSSProperties
+          }
         >
           {hasChildren ? (
             <button
@@ -112,7 +124,7 @@ export function KnowledgeTree({
             <span className="tadeon-knowledge-tree__spacer" />
           )}
           {hasChildren ? <FolderOpen aria-hidden="true" /> : <FileText aria-hidden="true" />}
-          <span>{node.title}</span>
+          <span title={node.title}>{node.title}</span>
         </div>
       ))}
     </div>

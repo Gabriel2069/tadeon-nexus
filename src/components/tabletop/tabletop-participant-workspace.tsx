@@ -1,3 +1,5 @@
+import { WorkspaceActions } from "@/components/workspace-actions";
+import { PageHeader } from "@/components/page-header";
 import { TabletopProgressiveInterfaceBridge } from "@/components/tabletop/tabletop-progressive-interface-bridge";
 import type { TabletopToolMode } from "@/lib/tabletop/interaction-controller";
 import { createLatestRequestGate } from "@/lib/latest-request";
@@ -366,44 +368,45 @@ export function TabletopParticipantWorkspace({ realtimeEnabled }: { realtimeEnab
   }, [realtime.broadcastStructureState]);
 
   return (
-    <main className="tadeon-participant-view">
-      <header className="tadeon-participant-view__header">
-        <div>
-          <span className="tadeon-participant-view__eyebrow">
-            <Eye aria-hidden="true" /> Visão compartilhada
-          </span>
-          <h1>Mesa Nexus</h1>
-          <p>Você recebe somente o que o mestre tornou visível nesta sala.</p>
-        </div>
-        <div className="tadeon-participant-view__controls">
-          <label>
-            <span>Campanha</span>
-            <select
-              value={campaignId}
-              onChange={(event) => setCampaignId(event.target.value)}
-              disabled={loading || campaigns.length === 0}
+    <div data-page-layout className="tadeon-page tadeon-participant-view">
+      <PageHeader
+        section="tabletop"
+        eyebrow="Visão compartilhada"
+        title="Mesa Nexus"
+        description="Você recebe somente o que o mestre tornou visível nesta sala."
+        actions={
+          <div className="tadeon-participant-view__controls">
+            <WorkspaceActions workspace="/tabletop" />
+            <label>
+              <span>Campanha</span>
+              <select
+                value={campaignId}
+                onChange={(event) => setCampaignId(event.target.value)}
+                disabled={loading || campaigns.length === 0}
+              >
+                {campaigns.map((campaign) => (
+                  <option key={campaign.id} value={campaign.id}>
+                    {campaign.name}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => void refreshRoom()}
+              disabled={!campaignId || loading}
             >
-              {campaigns.map((campaign) => (
-                <option key={campaign.id} value={campaign.id}>
-                  {campaign.name}
-                </option>
-              ))}
-            </select>
-          </label>
-          <Button
-            type="button"
-            variant="outline"
-            onClick={() => void refreshRoom()}
-            disabled={!campaignId || loading}
-          >
-            <RefreshCw className={loading ? "animate-spin" : ""} aria-hidden="true" />
-            Atualizar
-          </Button>
-        </div>
+              <RefreshCw className={loading ? "animate-spin" : ""} aria-hidden="true" />
+              Atualizar
+            </Button>
+          </div>
+        }
+      >
         {joined && view?.scene && (
           <div className="tadeon-participant-view__tools" data-tabletop-player-tools-host />
         )}
-      </header>
+      </PageHeader>
 
       <section className="tadeon-participant-view__stage" aria-busy={loading}>
         <div ref={hostRef} className="tadeon-participant-view__canvas" />
@@ -558,6 +561,6 @@ export function TabletopParticipantWorkspace({ realtimeEnabled }: { realtimeEnab
           setSelectedHandout(handout);
         }}
       />
-    </main>
+    </div>
   );
 }

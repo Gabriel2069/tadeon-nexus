@@ -15,22 +15,9 @@ describe("final user corrections 172", () => {
     expect(css).toContain("z-index: 52 !important");
   });
 
-  it("puts Mesa identity and its popout action in the correct headers", () => {
-    const css = source("src/styles/create-sheet-search-viewport-163.css");
-    const popout = source("src/components/tabletop/tabletop-workspace-popout-bridge.tsx");
-    expect(css).toContain('.tadeon-shell[data-section="Mesa Nexus"] .tadeon-mobile-header__identity > svg');
-    expect(css).toContain(".tadeon-tabletop-studio__brand::before");
-    expect(css).toContain("mask: center / 1.28rem 1.28rem no-repeat url");
-    expect(popout).toContain('".tadeon-desktop-toolbar > div:last-child"');
-    expect(popout).toContain("Nova janela");
-    expect(popout).not.toContain('".tadeon-tabletop-reliability-strip"');
-  });
 
   it("retains Nexus ornament and manually controlled force layout", () => {
-    const css = source("src/styles/create-sheet-search-viewport-163.css");
     const graph = source("src/components/knowledge/knowledge-graph-second-brain.tsx");
-    expect(css).toContain(".tadeon-nexus-header::before");
-    expect(css).toContain("conic-gradient(from 18deg");
     // NEX-006 intentionally revises density; behavior is covered by knowledge-graph-controls.
     expect(graph).toContain('computeKnowledgeForceLayout');
     expect(graph).toContain('pinnedPositions');

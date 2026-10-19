@@ -35,7 +35,7 @@ Cada PR usa IDs desta fila e declara dependências. Trabalho sobre o mesmo propr
 | NEX-023 | Véu & Trama: materiais e interação de todo o sistema | Integrado | 7 | shell | NEX-022, NEX-016 |
 | NEX-024 | Dashboard editorial, acervo navegável e acabamento dos menus | Integrado | 7 | shell | NEX-023 |
 | NEX-025 | Ficha: hierarquia, superfícies e condução visual | Integrado | 7 | sheet | NEX-024 |
-| NEX-026 | Nexus e biblioteca: composição da leitura e exploração | Próximo | 7 | knowledge | NEX-024, NEX-025 |
+| NEX-026 | Continuidade entre páginas e composição do Nexus/Biblioteca | Em andamento | 7 | knowledge | NEX-024, NEX-025 |
 
 ## NEX-001 — Preparação estrutural
 
@@ -235,8 +235,9 @@ Evidências: [docs/DESIGN.md](../docs/DESIGN.md), [docs/FOUNDATION.md](../docs/F
 
 Evidências: [docs/DESIGN.md](../docs/DESIGN.md), [docs/FOUNDATION.md](../docs/FOUNDATION.md), [docs/sheet-design-validation.json](../docs/sheet-design-validation.json), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/pull/281), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39303671143), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39304286379), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39304572774), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39304572872).
 
-## NEX-026 — Nexus e biblioteca: composição da leitura e exploração
+## NEX-026 — Continuidade entre páginas e composição do Nexus/Biblioteca
 
+- Unificar cabeçalhos e envelope de layout do Dashboard, Ficha, Nexus, Mesa, Mestre e utilidades, com a mesma anatomia, alinhamento e hierarquia; preservar os instrumentos de cada tarefa.
 - Revisar a hierarquia do acervo, árvore, abas, contexto e leitura combinada sem duplicar seus estados.
 - Aprofundar a materialidade dos instrumentos e das prévias, preservando conteúdo opaco e a referência Obsidian.
 - Verificar navegação, divisores, filtros e retorno de foco em quatro larguras; conservar rascunhos, conflitos e limites de autorização.
@@ -262,3 +263,4 @@ Evidências: pendentes; não declarar concluído.
 | DEC-013 | Concluir o contexto de leitura do Nexus e iniciar a revisão abrangente dos controles da Mesa, conforme pedido de Tadeu. | NEX-021 fecha a passagem entre página selecionada e entidade. NEX-007 organiza controles, painel e gravação sem trocar o motor, coordenadas, serviços/RPCs ou audiência. NEX-009/010 conservam desempenho medido e validação real. |
 | DEC-014 | Aprofundar Véu & Trama como sistema de materiais e interações após a Mesa, com pesquisa primária sobretudo Apple; preservar identidade, símbolos e tipografia aprovados. | Pedido de Tadeu em 16/10/2026: elevar organização, cards, motion, transições, botões, hover, profundidade e fundos em todo o sistema. NEX-023 concentra a evolução compartilhada; NEX-009/010 conservam performance física e autorização real. |
 | DEC-015 | Tadeu considera que o sistema ainda precisa de maior elaboração após NEX-023. Priorizar composição do Dashboard, organização do acervo e acabamento da navegação em NEX-024; NEX-009 mantém a medição em hardware físico. | Pedido de Tadeu em 16/10/2026 após a publicação da PR #277: ainda há muito a melhorar. A composição e a descoberta do acervo precedem a medição em dispositivos físicos. NEX-025/026 preservam a continuidade visual por tela; NEX-009 deve medir a base resultante de NEX-024. |
+| DEC-016 | Um contrato de layout e cabeçalho para as páginas principais; mudar a área altera símbolo, tom e contexto, sem inventar outro padrão de head. | Pedido de Tadeu em 19/10/2026 ao iniciar NEX-026. PageHeader compartilha identidade, ações e contexto; o envelope comum respeita a mesma margem. Conteúdo e instrumentos conservam suas funções e densidades. |

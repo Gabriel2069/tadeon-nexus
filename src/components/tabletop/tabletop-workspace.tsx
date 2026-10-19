@@ -1,3 +1,5 @@
+import { WorkspaceActions } from "@/components/workspace-actions";
+import { PageHeader } from "@/components/page-header";
 import { useAuth } from "@/lib/auth";
 import { tabletopSceneFingerprint as sceneFingerprint } from "@/lib/tabletop/tabletop-scene-fingerprint-guard";
 import { useBlocker } from "@tanstack/react-router";
@@ -65,8 +67,6 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
-import { ThreadField } from "@/components/brand-mark";
-import { SectionSymbol } from "@/components/section-symbols";
 import { TabletopLiveSession } from "@/components/tabletop/tabletop-live-session";
 import { TabletopHandoutViewer } from "@/components/tabletop/tabletop-handout-viewer";
 import { TabletopEntityDossier } from "@/components/tabletop/tabletop-entity-dossier";
@@ -1851,28 +1851,30 @@ export function TabletopWorkspace({
   const closeContext = () => setContextMenu(null);
 
   return (
-    <div className="tadeon-tabletop-studio flex min-h-[calc(100dvh-4rem)] flex-col text-foreground">
-      <header className="tadeon-tabletop-studio__header relative z-20 border-b border-border/70 px-3 py-3 backdrop-blur-xl sm:px-4">
-        <ThreadField className="text-primary opacity-20" />
-        <div className="tadeon-tabletop-studio__primary relative z-10 flex flex-wrap items-center gap-2.5">
-          <div className="tadeon-tabletop-studio__brand mr-2">
-            <span className="tadeon-tabletop-brand-mark-host" aria-hidden="true">
-              <SectionSymbol section="tabletop" className="tadeon-tabletop-brand-mark-icon" />
+    <div
+      data-page-layout
+      className="tadeon-page tadeon-tabletop-studio flex min-h-[calc(100dvh-4rem)] flex-col text-foreground"
+    >
+      <PageHeader
+        section="tabletop"
+        eyebrow="Estúdio de cena"
+        title="Mesa Nexus"
+        description="Componha a cena e conduza os fios da sessão."
+        actions={
+          <>
+            <WorkspaceActions workspace="/tabletop" />
+            <span className="tadeon-tabletop-studio__status">
+              {persistedScene?.status === "archived"
+                ? "Consulta"
+                : editable
+                  ? "Edição"
+                  : "Sem cena"}
             </span>
-            <div className="min-w-0">
-              <p className="tadeon-eyebrow">Estúdio de cena</p>
-              <div className="flex min-w-0 items-center gap-2">
-                <h1 className="truncate font-cinzel text-lg font-semibold">Mesa Nexus</h1>
-                <span className="tadeon-tabletop-studio__status">
-                  {persistedScene?.status === "archived"
-                    ? "Consulta"
-                    : editable
-                      ? "Edição"
-                      : "Sem cena"}
-                </span>
-              </div>
-            </div>
-          </div>
+          </>
+        }
+      />
+      <div className="tadeon-tabletop-tools">
+        <div className="tadeon-tabletop-studio__primary relative z-10 flex flex-wrap items-center gap-2.5">
           <div className="grid min-w-0 flex-1 grid-cols-1 gap-2 min-[480px]:grid-cols-2 sm:max-w-[28rem]">
             <select
               aria-label="Campanha da Mesa Nexus"
@@ -2194,7 +2196,7 @@ export function TabletopWorkspace({
             engineRef.current?.applyRemoteEntityPatch(entityId, { x, y });
           }}
         />
-      </header>
+      </div>
 
       {sceneLoadError && (
         <div

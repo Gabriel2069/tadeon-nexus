@@ -2,10 +2,6 @@ import { readFoundationSource as readFileSync } from "@/test/read-foundation-sou
 import { describe, expect, it } from "vitest";
 
 const shell = readFileSync("src/components/protected-shell.tsx", "utf8");
-const tabletopBridge = readFileSync(
-  "src/components/tabletop/tabletop-workspace-popout-bridge.tsx",
-  "utf8",
-);
 const css = readFileSync("src/styles/dedicated-workspace-parity-168.css", "utf8");
 
 describe("dedicated workspace parity 168", () => {
@@ -26,18 +22,10 @@ describe("dedicated workspace parity 168", () => {
 
   it("does not redefine page textures or animation in the dedicated authority", () => {
     expect(css).toContain("never a different theme");
-    expect(css).toContain("border-color: color-mix");
     expect(css).not.toMatch(/\.tadeon-dedicated-shell\[data-dedicated-presentation="popout"\]\s*\{[^}]*background\s*:/s);
     expect(css).not.toMatch(/\.tadeon-dedicated-shell\[data-dedicated-presentation="popout"\]\s*\{[^}]*animation\s*:/s);
   });
 
-  it("offers the regular Mesa as a dedicated popout without confusing it with Director", () => {
-    expect(shell).toContain("<TabletopWorkspacePopoutBridge />");
-    expect(tabletopBridge).toContain('window.location.pathname === "/tabletop"');
-    expect(tabletopBridge).toContain('params.set("popout", "1")');
-    expect(tabletopBridge).toContain('params.delete("view")');
-    expect(tabletopBridge).toContain('".tadeon-desktop-toolbar > div:last-child"');
-    expect(tabletopBridge).not.toContain('".tadeon-tabletop-reliability-strip"');
-    expect(tabletopBridge).toContain("Abrir Mesa em janela independente");
-  });
+  // NEX-026: workspace-actions behavior covers dedicated Mesa URLs.
+
 });

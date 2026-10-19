@@ -282,3 +282,34 @@ it("opens a deep link after its workspace becomes available", async () => {
   await v.findByRole("heading", { name: "Beta" }, { timeout: 5000 });
   expect(v.getByRole("tab", { name: "Beta" }).getAttribute("aria-selected")).toBe("true");
 });
+
+it("filters loaded categories in tree and list without refetching or closing the reading page", async () => {
+  vi.mocked(knowledgeService.search).mockResolvedValue({
+    hits: nodes.map((node, i) => ({
+      node: { ...node, node_type: i ? "location" : "document" },
+      relevance: 1,
+      snippet: "",
+    })),
+    count: 2,
+    page: 0,
+    pageSize: 30,
+    hasMore: false,
+  });
+  const view = render(
+    <NexusWorkspace assetsEnabled={false} graphEnabled={false} initialNodeId="alpha" />,
+  );
+  await view.findByRole("heading", { name: "Alpha" });
+  await waitFor(() => expect(view.getAllByRole("treeitem")).toHaveLength(2));
+  const reads = vi.mocked(knowledgeService.search).mock.calls.length;
+  fireEvent.click(view.getByText("Categorias neste resultado"));
+  fireEvent.click(view.getByRole("button", { name: /Mundo/ }));
+  expect(view.getAllByRole("treeitem")).toHaveLength(1);
+  expect(view.getByRole("treeitem", { name: "Beta" })).toBeTruthy();
+  fireEvent.click(view.getByRole("button", { name: "Mostrar lista de páginas" }));
+  expect(view.queryByRole("tree")).toBeNull();
+  expect(view.getByRole("heading", { name: "Alpha" })).toBeTruthy();
+  expect(view.getByRole("button", { name: /Beta.*Local/ })).toBeTruthy();
+  expect(vi.mocked(knowledgeService.search).mock.calls.length).toBe(reads);
+  fireEvent.click(view.getByRole("button", { name: /Tudo/ }));
+  expect(view.getByText("2 de 2 páginas carregadas · 2 resultados")).toBeTruthy();
+});

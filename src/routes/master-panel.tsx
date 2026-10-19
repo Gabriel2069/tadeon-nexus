@@ -1,3 +1,5 @@
+import { WorkspaceActions } from "@/components/workspace-actions";
+import { PageHeader } from "@/components/page-header";
 import { useAuth } from "@/lib/auth";
 import { createFileRoute, useBlocker, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -539,8 +541,8 @@ function MasterWorkspace() {
 
   if (loading) {
     return (
-      <div className="mx-auto max-w-7xl p-6" role="status" aria-busy="true">
-        <h1 className="font-cinzel text-2xl">Painel do Mestre</h1>
+      <div data-page-layout className="tadeon-page tadeon-route-master" aria-busy="true">
+        <PageHeader section="master" eyebrow="Condução da campanha" title="Painel do Mestre" />
         <div className="mt-6 flex items-center gap-3 rounded-xl border p-6">
           <Loader2 className="h-5 w-5 animate-spin" aria-hidden="true" />
           Carregando a campanha e os personagens…
@@ -551,9 +553,10 @@ function MasterWorkspace() {
 
   if (loadError || !s) {
     return (
-      <div className="max-w-xl mx-auto p-4 md:p-8">
+      <div data-page-layout className="tadeon-page tadeon-route-master">
+        <PageHeader section="master" eyebrow="Condução da campanha" title="Painel do Mestre" />
         <Card className="p-6 text-center">
-          <h1 className="font-cinzel text-xl font-bold">Painel indisponível</h1>
+          <h2 className="font-cinzel text-xl font-bold">Painel indisponível</h2>
           <p className="text-sm text-muted-foreground mt-2">
             {loadError ?? "Não foi possível carregar as configurações da mesa."}
           </p>
@@ -566,7 +569,7 @@ function MasterWorkspace() {
   }
 
   return (
-    <div className="tadeon-master-workspace tadeon-route-master mx-auto max-w-7xl p-3 pb-24 md:p-6">
+    <div data-page-layout className="tadeon-page tadeon-master-workspace tadeon-route-master">
       <AlertDialog
         open={blocker.status === "blocked"}
         onOpenChange={(open) => {
@@ -621,22 +624,15 @@ function MasterWorkspace() {
         </AlertDialogContent>
       </AlertDialog>
 
-      <section className="tadeon-page-hero tadeon-master-commandbar relative mb-5 overflow-hidden rounded-xl border border-border/70 bg-card/70 p-4">
-        <div aria-hidden className="tadeon-master-commandbar__glow">
-          <MasterPanelIdentity activeTab={activeTab} />
-        </div>
-        <div className="relative flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <div className="min-w-0">
-            <p className="tadeon-eyebrow">Condução da campanha</p>
-            <h1 className="mt-1 flex items-center gap-2 font-cinzel text-xl font-bold md:text-2xl">
-              <Sparkles className="h-5 w-5 shrink-0 text-primary" />
-              <span className="truncate">Painel do Mestre</span>
-            </h1>
-            <p className="mt-1 truncate text-xs text-muted-foreground">
-              {s.campaign_title || "Campanha sem título"} · comando, ritmo e continuidade
-            </p>
-          </div>
-          <div className="flex shrink-0 items-center justify-between gap-2 sm:justify-end">
+      <PageHeader
+        section="master"
+        eyebrow="Condução da campanha"
+        title="Painel do Mestre"
+        description={`${s.campaign_title || "Campanha sem título"} · comando, ritmo e continuidade`}
+        mark={<MasterPanelIdentity activeTab={activeTab} />}
+        actions={
+          <>
+            <WorkspaceActions workspace="/master-panel" />
             <SaveStatus
               state={saving ? "saving" : saveError ? "error" : dirty ? "pending" : "saved"}
               savedAt={lastSavedAt}
@@ -652,9 +648,9 @@ function MasterWorkspace() {
               {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
               <span>Salvar painel</span>
             </Button>
-          </div>
-        </div>
-      </section>
+          </>
+        }
+      />
 
       {saveError && (
         <p

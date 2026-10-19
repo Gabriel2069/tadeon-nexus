@@ -22,15 +22,8 @@ describe("reconciliação final das superfícies", () => {
     expect(css).toContain(".tadeon-creative-dock[data-open=\"false\"]");
   });
 
-  it("mantém Nova página legível e oferece pastas rasas no Nexus", () => {
-    const css = source("src/styles/interface-reconciliation-final.css");
-    const folders = source("src/components/knowledge/nexus-folder-bar-bridge.tsx");
-    expect(css).toContain("min-width: 7.8rem !important");
-    expect(css).toContain(".tadeon-nexus-folderbar");
-    expect(folders).toContain('label: "Pessoas"');
-    expect(folders).toContain('label: "Mundo"');
-    expect(folders).not.toContain("parentFolder");
-  });
+  // NEX-026: shared PageHeader/explicit action behavior is verified at runtime.
+
 
   it("organiza a teia em aros sem permitir interseção entre esferas", () => {
     const focus: KnowledgeGraphNode = {

@@ -24,26 +24,6 @@ html[data-tadeon-sheet-mode] .tadeon-sheet-frame section[id] {
 }
 
 @media (min-width: 1024px) {
-  html[data-tadeon-sheet-mode] .tadeon-sheet-page {
-    inline-size: min(100%, 96rem);
-    padding-inline: clamp(1.1rem, 2vw, 2rem);
-  }
-
-  html[data-tadeon-sheet-mode] .tadeon-sheet-commandbar__main {
-    grid-template-columns: 2.75rem minmax(12rem, 0.8fr) minmax(16rem, 1.2fr) auto;
-    column-gap: 0.75rem;
-  }
-
-  html[data-tadeon-sheet-mode] .tadeon-sheet-commandbar__identity {
-    overflow: hidden;
-  }
-
-  html[data-tadeon-sheet-mode] .tadeon-sheet-commandbar__actions {
-    max-inline-size: min(100%, 36rem);
-    flex-wrap: wrap;
-    row-gap: 0.4rem;
-  }
-
   html[data-tadeon-sheet-mode] .tadeon-sheet-tabs-list {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -81,16 +61,9 @@ html[data-tadeon-sheet-mode] .tadeon-sheet-frame section[id] {
   html[data-tadeon-sheet-mode] #sec-hab .grid {
     align-items: start;
   }
-
-  html[data-tadeon-sheet-mode="game"] .tadeon-sheet-commandbar {
-    margin-bottom: 0.9rem;
-  }
 }
 
 @media (min-width: 1024px) and (max-width: 1240px) {
-  html[data-tadeon-sheet-mode] .tadeon-sheet-commandbar__main {
-    grid-template-columns: 2.75rem minmax(10rem, 0.72fr) minmax(12rem, 1fr) auto;
-  }
 }
 
 /* end-source: src/styles/sheet-individual-fit-final.css */

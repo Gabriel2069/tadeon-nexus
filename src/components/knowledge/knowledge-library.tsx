@@ -1,3 +1,4 @@
+import { PageHeader } from "@/components/page-header";
 import { createLatestRequestGate } from "@/lib/latest-request";
 import { FabricFilaments } from "@/components/fabric-filaments";
 import { MaterialSurface } from "@/components/material-surface";
@@ -13,7 +14,6 @@ import {
   ExternalLink,
   Grid2X2,
   Filter,
-  LibraryBig,
   List,
   Loader2,
   Pencil,
@@ -127,6 +127,14 @@ const TYPE_LABELS: Record<KnowledgeNodeType, string> = {
   free_note: "Nota livre",
 };
 
+const STATUS_LABELS = {
+  draft: "Rascunho",
+  review: "Em revisão",
+  canonical: "Canônico",
+  deprecated: "Descontinuado",
+  archived: "Arquivado",
+};
+
 const SLOT_LABELS: Record<KnowledgeSheetSlot, string> = {
   reference: "Referência",
   plot: "Trama",
@@ -212,6 +220,7 @@ export function KnowledgeLibrary({
   const [count, setCount] = useState(0);
   const [hasMore, setHasMore] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [loadError, setLoadError] = useState<string | null>(null);
   const [query, setQuery] = useState("");
   const [debouncedQuery, setDebouncedQuery] = useState("");
   const [nodeType, setNodeType] = useState<(typeof LIBRARY_TYPES)[number] | "all">("all");
@@ -255,6 +264,7 @@ export function KnowledgeLibrary({
   useEffect(() => {
     if (!preview || !mobilePreviewOpen || !window.matchMedia("(max-width: 1023px)").matches) return;
     const frame = window.requestAnimationFrame(() => {
+      mobilePreviewRef.current?.querySelector<HTMLElement>("h3")?.focus({ preventScroll: true });
       mobilePreviewRef.current?.scrollIntoView({
         behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth",
         block: "nearest",
@@ -267,6 +277,7 @@ export function KnowledgeLibrary({
     const ticket = libraryRequests.current.begin();
     if (!open || !workspaceId) return;
     setLoading(true);
+    setLoadError(null);
     try {
       const [result, favorites] = await Promise.all([
         knowledgeService.search({
@@ -298,7 +309,10 @@ export function KnowledgeLibrary({
       });
     } catch (error) {
       if (!libraryRequests.current.isCurrent(ticket)) return;
-      toast.error(messageFor(error));
+      setLoadError(messageFor(error));
+      setSelectedIds(new Set());
+      setPreview(null);
+      setMobilePreviewOpen(false);
       setNodes([]);
       setCount(0);
       setHasMore(false);
@@ -505,6 +519,11 @@ export function KnowledgeLibrary({
     if (!open) setMobilePreviewOpen(false);
   }, [open]);
 
+  const closeMobilePreview = () => {
+    setMobilePreviewOpen(false);
+    previewTriggerRef.current?.focus({ preventScroll: true });
+  };
+
   const nodeCard = (node: KnowledgeNode, compact = false, index = 0) => {
     const selected = selectedIds.has(node.id);
     return (
@@ -531,7 +550,7 @@ export function KnowledgeLibrary({
       >
         <FabricFilaments className="tadeon-library-card__fabric" />
         <span className="tadeon-library-card__folio" aria-hidden="true">
-          {String(index + 1).padStart(2, "0")}
+          {String(page * 48 + index + 1).padStart(2, "0")}
         </span>
         <div className="tadeon-library-card__body flex items-start gap-2">
           <input
@@ -563,7 +582,7 @@ export function KnowledgeLibrary({
                   <p className="tadeon-library-card__meta mt-0.5 text-[10px] uppercase tracking-wide text-muted-foreground">
                     {TYPE_LABELS[node.node_type]}
                     <span aria-hidden="true">·</span>
-                    <span data-status={node.status}>{node.status}</span>
+                    <span data-status={node.status}>{STATUS_LABELS[node.status]}</span>
                   </p>
                 </div>
               </div>
@@ -600,19 +619,20 @@ export function KnowledgeLibrary({
   };
 
   const previewPanel = (variant: "desktop" | "mobile") => (
-    <div
-      className={`tadeon-library-preview__inner ${preview ? "has-preview" : "is-empty"}`}
-      aria-live="polite"
-    >
+    <div className={`tadeon-library-preview__inner ${preview ? "has-preview" : "is-empty"}`}>
       {preview ? (
         <>
           <div className="tadeon-library-preview__heading flex items-start justify-between gap-3">
             <div className="min-w-0">
               <div className="flex flex-wrap items-center gap-2">
                 <Badge variant="outline">{TYPE_LABELS[preview.node_type]}</Badge>
-                <span className="tadeon-library-preview__status">{preview.status}</span>
+                <span className="tadeon-library-preview__status">
+                  {STATUS_LABELS[preview.status]}
+                </span>
               </div>
-              <h3 className="mt-3 font-cinzel text-xl font-semibold">{preview.title}</h3>
+              <h3 tabIndex={-1} className="mt-3 font-cinzel text-xl font-semibold">
+                {preview.title}
+              </h3>
               <p className="mt-2 flex items-center gap-1.5 text-[10px] text-muted-foreground">
                 <CalendarClock className="h-3 w-3" aria-hidden="true" />
                 Atualizado {formatUpdated(preview.updated_at)}
@@ -626,7 +646,7 @@ export function KnowledgeLibrary({
                 <Button
                   variant="ghost"
                   size="icon"
-                  onClick={() => setPreview(null)}
+                  onClick={closeMobilePreview}
                   aria-label="Fechar visualização"
                 >
                   <X className="h-4 w-4" />
@@ -672,21 +692,28 @@ export function KnowledgeLibrary({
     <>
       <Dialog open={open} onOpenChange={onOpenChange}>
         <DialogContent className="tadeon-library-dialog h-[94vh] max-w-[96vw] overflow-hidden p-0">
-          <DialogHeader className="tadeon-library-header border-b px-5 py-4">
-            <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
-              <div className="tadeon-library-header__identity">
-                <p className="tadeon-eyebrow">Acervo estruturado</p>
-                <DialogTitle className="flex items-center gap-2 font-cinzel">
-                  <span className="tadeon-library-header__mark">
-                    <LibraryBig className="h-5 w-5" />
-                  </span>
-                  Bibliotecas de O Nexus
-                </DialogTitle>
-                <DialogDescription>
-                  Visões estruturadas sobre as mesmas páginas, sem duplicar a fonte canônica.
-                </DialogDescription>
-              </div>
-              <div className="tadeon-library-header__actions flex flex-wrap gap-2">
+          <PageHeader
+            section="nexus"
+            eyebrow="Acervo estruturado"
+            headingLevel={2}
+            title={
+              <DialogTitle
+                asChild
+                className="[font-size:inherit] [line-height:inherit] [letter-spacing:inherit]"
+              >
+                <span>Bibliotecas de O Nexus</span>
+              </DialogTitle>
+            }
+            description={
+              <DialogDescription asChild className="[font-size:inherit] [line-height:inherit]">
+                <span>
+                  Explore as páginas por tipo, compare prévias e reúna referências da campanha.
+                </span>
+              </DialogDescription>
+            }
+            actions={
+              <>
+                {" "}
                 <Button variant="outline" size="sm" onClick={() => setTemplatesOpen(true)}>
                   <BookCopy className="h-4 w-4" />
                   Templates
@@ -724,9 +751,9 @@ export function KnowledgeLibrary({
                     <Rows3 className="h-4 w-4" />
                   </Button>
                 </div>
-              </div>
-            </div>
-          </DialogHeader>
+              </>
+            }
+          />
 
           <div className="tadeon-library-layout grid min-h-0 flex-1 lg:grid-cols-[240px_minmax(0,1fr)_340px]">
             <aside className="tadeon-library-filters min-h-0 overflow-y-auto border-r p-3">
@@ -740,6 +767,7 @@ export function KnowledgeLibrary({
                   value={query}
                   onChange={(event) => setQuery(event.target.value)}
                   placeholder="Buscar na biblioteca…"
+                  aria-label="Buscar na biblioteca"
                   className="pl-9"
                 />
               </div>
@@ -797,6 +825,7 @@ export function KnowledgeLibrary({
             <section
               className="tadeon-library-results min-h-0 overflow-y-auto p-4"
               data-view={view}
+              aria-busy={loading}
             >
               <div className="tadeon-library-results__bar mb-3 flex flex-wrap items-center justify-between gap-2">
                 <div className="flex items-center gap-2">
@@ -811,7 +840,9 @@ export function KnowledgeLibrary({
                     className="accent-[var(--tadeon-flow)]"
                     aria-label="Selecionar página atual"
                   />
-                  <Badge variant="outline">{count} item(ns)</Badge>
+                  <span role="status" className="tadeon-library-results__count">
+                    {loading ? "Consultando acervo…" : `${count} itens encontrados`}
+                  </span>
                   {selectedIds.size > 0 && <Badge>{selectedIds.size} selecionado(s)</Badge>}
                 </div>
                 <div className="flex flex-wrap gap-1.5">
@@ -866,10 +897,7 @@ export function KnowledgeLibrary({
                     variant="ghost"
                     size="sm"
                     aria-label="Fechar prévia"
-                    onClick={() => {
-                      setMobilePreviewOpen(false);
-                      previewTriggerRef.current?.focus({ preventScroll: true });
-                    }}
+                    onClick={closeMobilePreview}
                   >
                     Voltar aos resultados <X className="h-4 w-4" />
                   </Button>
@@ -880,6 +908,13 @@ export function KnowledgeLibrary({
               {loading ? (
                 <div className="flex min-h-72 items-center justify-center">
                   <Loader2 className="h-7 w-7 animate-spin text-primary" />
+                </div>
+              ) : loadError ? (
+                <div role="alert" className="tadeon-library-load-error">
+                  <p>{loadError}</p>
+                  <Button variant="outline" onClick={() => void loadNodes()}>
+                    Tentar novamente
+                  </Button>
                 </div>
               ) : !nodes.length ? (
                 <div className="flex min-h-72 items-center justify-center rounded-xl border border-dashed text-sm text-muted-foreground">
@@ -912,6 +947,7 @@ export function KnowledgeLibrary({
                                 setSelectedIds((current) => toggleId(current, node.id))
                               }
                               onClick={(event) => event.stopPropagation()}
+                              aria-label={`Selecionar ${node.title}`}
                               className="accent-[var(--tadeon-flow)]"
                             />
                           </td>
@@ -921,7 +957,7 @@ export function KnowledgeLibrary({
                               className="block max-w-80 truncate text-left hover:text-primary"
                               onClick={(event) => {
                                 event.stopPropagation();
-                                setPreview(node);
+                                showPreview(node, event.currentTarget);
                               }}
                               aria-label={`Visualizar ${node.title}`}
                             >
@@ -929,7 +965,7 @@ export function KnowledgeLibrary({
                             </button>
                           </td>
                           <td className="px-3 py-2">{TYPE_LABELS[node.node_type]}</td>
-                          <td className="px-3 py-2">{node.status}</td>
+                          <td className="px-3 py-2">{STATUS_LABELS[node.status]}</td>
                           <td className="whitespace-nowrap px-3 py-2 text-muted-foreground">
                             {new Date(node.updated_at).toLocaleDateString("pt-BR")}
                           </td>

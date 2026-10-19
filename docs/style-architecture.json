@@ -14,7 +14,7 @@
       "roots": 0
     },
     "src/styles/experience-surfaces.css": {
-      "important": 226,
+      "important": 35,
       "roots": 2
     },
     "src/styles/global-search.css": {
@@ -26,7 +26,7 @@
       "roots": 0
     },
     "src/styles/interface-layout.css": {
-      "important": 286,
+      "important": 279,
       "roots": 1
     },
     "src/styles/knowledge-graph-second-brain.css": {
@@ -42,7 +42,7 @@
       "roots": 0
     },
     "src/styles/master-toolbar-popout.css": {
-      "important": 40,
+      "important": 24,
       "roots": 0
     },
     "src/styles/mobile-more-radial.css": {
@@ -54,11 +54,11 @@
       "roots": 1
     },
     "src/styles/motion-composition.css": {
-      "important": 303,
+      "important": 227,
       "roots": 20
     },
     "src/styles/motion-foundation.css": {
-      "important": 67,
+      "important": 57,
       "roots": 6
     },
     "src/styles/motion-interactions.css": {
@@ -66,7 +66,7 @@
       "roots": 11
     },
     "src/styles/navigation-layout.css": {
-      "important": 8,
+      "important": 7,
       "roots": 0
     },
     "src/styles/nexus-material.css": {
@@ -78,7 +78,7 @@
       "roots": 0
     },
     "src/styles/page-hero-parity.css": {
-      "important": 854,
+      "important": 126,
       "roots": 1
     },
     "src/styles/realtime-status.css": {
@@ -90,7 +90,7 @@
       "roots": 0
     },
     "src/styles/route-layout.css": {
-      "important": 1177,
+      "important": 801,
       "roots": 0
     },
     "src/styles/route-popup-frame.css": {
@@ -190,7 +190,7 @@
       "roots": 0
     },
     "src/styles/tabletop-route-experience.css": {
-      "important": 414,
+      "important": 411,
       "roots": 0
     },
     "src/styles/tabletop-semantic-transform.css": {

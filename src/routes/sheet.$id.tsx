@@ -1,3 +1,4 @@
+import { PageHeader } from "@/components/page-header";
 import { PageState } from "@/components/page-state";
 import { ProtectedShell } from "@/components/protected-shell";
 import { SheetAttributesSection } from "@/components/sheet/sheet-attributes-section";
@@ -630,29 +631,27 @@ function SheetPage() {
   return (
     <div
       ref={setSheetHost}
+      data-page-layout
       data-sheet-presentation="fabric"
       className="tadeon-page tadeon-sheet-page pb-28"
     >
-      {/* Sticky Header */}
-      <div className="tadeon-sheet-commandbar">
-        <div className="tadeon-sheet-commandbar__main">
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => navigate({ to: "/" })}
-            aria-label="Voltar ao painel"
-            className="tadeon-sheet-commandbar__back"
-          >
-            <ArrowLeft className="w-5 h-5" />
-          </Button>
-          <BrandMark className="hidden h-9 w-9 shrink-0 text-primary sm:block" />
-          <div className="tadeon-sheet-commandbar__identity">
-            <p className="tadeon-eyebrow hidden sm:block">Ficha de continuidade</p>
-            <h1 className="truncate font-cinzel text-lg font-semibold leading-tight md:text-2xl">
-              {sheet.name || "Ficha"}
-            </h1>
-          </div>
+      <PageHeader
+        section="sheet"
+        eyebrow="Ficha de continuidade"
+        title={sheet.name || "Ficha"}
+        className="tadeon-sheet-commandbar"
+        actions={
           <div className="tadeon-sheet-commandbar__actions">
+            {" "}
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => navigate({ to: "/" })}
+              aria-label="Voltar ao painel"
+              className="tadeon-sheet-commandbar__back"
+            >
+              <ArrowLeft className="w-5 h-5" />
+            </Button>
             <SheetExperienceBridge sheetId={id} dropTarget={sheetHost} canEdit={canEdit} />
             {!canEdit && (
               <span className="text-[10px] px-2 py-0.5 rounded-full bg-muted text-muted-foreground">
@@ -701,7 +700,9 @@ function SheetPage() {
               </>
             )}
           </div>
-        </div>
+        }
+      >
+        {" "}
         {activeConditions.length > 0 && (
           <div className="tadeon-sheet-condition-rail" aria-label="Condições ativas">
             {activeConditions.map((key) => {
@@ -736,7 +737,7 @@ function SheetPage() {
             })}
           </div>
         )}
-      </div>
+      </PageHeader>
 
       {tutorial && (
         <Card

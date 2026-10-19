@@ -31,55 +31,6 @@
   content: "";
 }
 
-.tadeon-tabletop-studio__header {
-  position: relative;
-  background:
-    linear-gradient(105deg, rgb(217 215 164 / 6%), transparent 30%),
-    linear-gradient(180deg, rgb(14 18 23 / 97%), rgb(9 12 16 / 95%));
-  box-shadow:
-    0 22px 64px -48px rgb(0 0 0 / 100%),
-    inset 0 -1px 0 rgb(217 215 164 / 5%);
-}
-
-.tadeon-tabletop-studio__header::after {
-  position: absolute;
-  right: 1rem;
-  bottom: -1px;
-  left: 1rem;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, rgb(217 215 164 / 24%), transparent);
-  pointer-events: none;
-  content: "";
-}
-
-.tadeon-tabletop-studio__brand {
-  position: relative;
-  display: flex;
-  min-width: 10.5rem;
-  align-items: center;
-  gap: 0.65rem;
-}
-
-.tadeon-tabletop-studio__brand::after {
-  position: absolute;
-  inset: 0.2rem -0.8rem 0.2rem auto;
-  width: 1px;
-  background: linear-gradient(transparent, var(--studio-line), transparent);
-  content: "";
-}
-
-.tadeon-tabletop-studio__brand > svg {
-  padding: 0.42rem;
-  border: 1px solid rgb(217 215 164 / 18%);
-  border-radius: 1rem 0.35rem 1rem 0.35rem;
-  background:
-    radial-gradient(circle at 35% 25%, rgb(217 215 164 / 14%), transparent 58%),
-    rgb(255 255 255 / 2.5%);
-  box-shadow:
-    0 12px 34px -22px rgb(0 0 0 / 100%),
-    inset 0 1px 0 rgb(255 255 255 / 5%);
-}
-
 .tadeon-tabletop-studio__status {
   display: inline-flex;
   min-height: 1.6rem;
@@ -607,13 +558,6 @@
 }
 
 @media (max-width: 639px) {
-  .tadeon-tabletop-studio__brand {
-    min-width: 0;
-  }
-
-  .tadeon-tabletop-studio__brand::after {
-    display: none;
-  }
 
   .tadeon-tabletop-canvas-rail {
     top: 0.55rem;
@@ -970,24 +914,6 @@
     linear-gradient(145deg, #080c11 0%, #05070a 52%, #09090e 100%);
 }
 
-.tadeon-tabletop-studio__header {
-  padding-block: 0.72rem;
-  background:
-    radial-gradient(circle at 6% 0%, rgb(var(--studio-cyan) / 8%), transparent 24rem),
-    linear-gradient(180deg, rgb(14 19 24 / 98%), rgb(8 11 15 / 97%));
-  box-shadow:
-    0 24px 56px -46px rgb(0 0 0 / 100%),
-    inset 0 -1px 0 rgb(var(--studio-cyan) / 7%);
-}
-
-.tadeon-tabletop-studio__brand > svg {
-  border-color: rgb(var(--studio-cyan) / 24%);
-  background:
-    radial-gradient(circle at 35% 25%, rgb(var(--studio-cyan) / 15%), transparent 58%),
-    rgb(255 255 255 / 2.5%);
-  color: rgb(var(--studio-gold));
-}
-
 .tadeon-tabletop-studio__status::before {
   width: 0.38rem;
   height: 0.38rem;
@@ -1235,9 +1161,6 @@
 }
 
 @media (max-width: 1179px) {
-  .tadeon-tabletop-studio__header {
-    padding-bottom: 0.6rem;
-  }
 }
 
 @media (max-width: 639px) {
@@ -1319,21 +1242,6 @@
   --studio-cyan: 79 110 93;
   --studio-gold: 217 215 164;
   --studio-danger: 116 36 45;
-}
-
-.tadeon-tabletop-studio__header > .relative.z-10 {
-  min-width: 0;
-  row-gap: 0.65rem;
-}
-
-.tadeon-tabletop-studio__header > .relative.z-10 > * {
-  min-width: 0;
-}
-
-.tadeon-tabletop-studio__header select {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 }
 
 .tadeon-tabletop-stage {
@@ -1428,9 +1336,6 @@
 }
 
 @media (max-width: 1370px) and (min-width: 1180px) {
-  .tadeon-tabletop-studio__header > .relative.z-10 {
-    align-items: stretch;
-  }
 }
 
 @media (max-width: 1179px) {
@@ -1448,26 +1353,6 @@
 }
 
 @media (max-width: 639px) {
-  .tadeon-tabletop-studio__header {
-    padding-inline: 0.65rem;
-  }
-
-  .tadeon-tabletop-studio__header > .relative.z-10 {
-    gap: 0.45rem;
-  }
-
-  .tadeon-tabletop-studio__brand {
-    flex: 1 1 calc(100% - 8rem);
-  }
-
-  .tadeon-tabletop-studio__brand h1 {
-    font-size: 1rem;
-  }
-
-  .tadeon-tabletop-studio__brand .tadeon-eyebrow {
-    font-size: 0.55rem;
-    letter-spacing: 0.12em;
-  }
 
   .tadeon-tabletop-stage:has(.tadeon-tabletop-tool-options) .tadeon-tabletop-selection-dock {
     top: 4.4rem;
@@ -1968,3 +1853,15 @@ html[data-tadeon-tabletop-interface="play"] .tadeon-tabletop-command-spaces { di
 }
 
 /* end-source: src/styles/tabletop-editor.css */
+
+/* Route identity is PageHeader; these are the separate scene instruments. */
+.tadeon-tabletop-tools {
+  position: relative;
+  z-index: 20;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  border: 1px solid var(--studio-line);
+  border-radius: 1rem;
+  background: var(--studio-panel);
+  box-shadow: var(--shadow-relief);
+}

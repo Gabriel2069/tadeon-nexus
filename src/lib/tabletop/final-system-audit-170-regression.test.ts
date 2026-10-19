@@ -12,9 +12,6 @@ describe("final system audit 170", () => {
     const shell = source("src/components/protected-shell.tsx");
     for (const bridge of [
       "TabletopCrossSurfaceBridge",
-      "WorkspacePopoutBridge",
-      "TabletopWorkspacePopoutBridge",
-      "NexusSheetDragBridge",
     ]) {
       expect(shell).toContain(bridge);
     }

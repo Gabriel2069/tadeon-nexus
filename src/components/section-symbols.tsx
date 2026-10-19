@@ -1,20 +1,9 @@
 import type { SVGProps } from "react";
 import { BrandMark } from "@/components/brand-mark";
-import {
-  CloudOff,
-  Home,
-  LibraryBig,
-  Users,
-} from "lucide-react";
+import { CloudOff, Home, LibraryBig, Users } from "lucide-react";
 
 export type AppSectionSymbol =
-  | "dashboard"
-  | "nexus"
-  | "tabletop"
-  | "master"
-  | "users"
-  | "tools"
-  | "offline";
+  "dashboard" | "nexus" | "tabletop" | "master" | "users" | "tools" | "offline";
 
 export function MasterSigil({ className, ...props }: SVGProps<SVGSVGElement>) {
   return (
@@ -31,7 +20,10 @@ export function MasterSigil({ className, ...props }: SVGProps<SVGSVGElement>) {
       <circle cx="12" cy="12" r="8.25" strokeDasharray="9 3.4 2.2 4.3" opacity="0.46" />
       <path d="M12 2.8v4.1M12 17.1v4.1M2.8 12h4.1M17.1 12h4.1" opacity="0.62" />
       <path d="m8.55 12 3.45-3.45L15.45 12 12 15.45 8.55 12Z" />
-      <path d="M6.05 6.35 9.6 9.6M17.95 6.35 14.4 9.6M6.05 17.65l3.55-3.25M17.95 17.65l-3.55-3.25" opacity="0.72" />
+      <path
+        d="M6.05 6.35 9.6 9.6M17.95 6.35 14.4 9.6M6.05 17.65l3.55-3.25M17.95 17.65l-3.55-3.25"
+        opacity="0.72"
+      />
       <circle cx="6.05" cy="6.35" r="0.85" />
       <circle cx="17.95" cy="6.35" r="0.85" />
       <circle cx="6.05" cy="17.65" r="0.85" />
@@ -109,14 +101,6 @@ export function FocusBrandMark() {
   return (
     <span className="tadeon-focus-section-mark-host" aria-hidden="true">
       <BrandMark className="tadeon-focus-section-mark-icon" />
-    </span>
-  );
-}
-
-export function PageSectionMark({ section }: { section: "users" | "tools" | "offline" }) {
-  return (
-    <span className="tadeon-page-hero-mark-host" aria-hidden="true">
-      <SectionSymbol section={section} className="tadeon-page-hero-mark-icon" />
     </span>
   );
 }

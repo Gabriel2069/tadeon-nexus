@@ -1,3 +1,4 @@
+import { PageHeader } from "@/components/page-header";
 import { useCallback, useEffect, useRef, useState } from "react";
 import {
   AlertTriangle,
@@ -45,8 +46,10 @@ const PAGES = [
   ["Popups", "/visual-audit?gallery=1"],
 ] as const;
 
-const INTERACTIVE_SELECTOR = "button, a, input, select, textarea, [role='button'], [role='tab'], [role='menuitem'], [role='option'], [role='switch']";
-const TEXT_SELECTOR = "button, a, label, p, span, small, strong, h1, h2, h3, h4, [data-slot='card-title']";
+const INTERACTIVE_SELECTOR =
+  "button, a, input, select, textarea, [role='button'], [role='tab'], [role='menuitem'], [role='option'], [role='switch']";
+const TEXT_SELECTOR =
+  "button, a, label, p, span, small, strong, h1, h2, h3, h4, [data-slot='card-title']";
 
 function parseDurations(value: string) {
   return value
@@ -78,9 +81,15 @@ export function ResponsiveAuditLab() {
     const html = element as HTMLElement;
     const slot = html.dataset.slot ? `[${html.dataset.slot}]` : "";
     const id = html.id ? `#${html.id}` : "";
-    const classes = typeof html.className === "string"
-      ? html.className.split(/\s+/).filter(Boolean).slice(0, 2).map((item) => `.${item}`).join("")
-      : "";
+    const classes =
+      typeof html.className === "string"
+        ? html.className
+            .split(/\s+/)
+            .filter(Boolean)
+            .slice(0, 2)
+            .map((item) => `.${item}`)
+            .join("")
+        : "";
     return `${element.tagName.toLowerCase()}${id}${slot}${classes}`;
   };
 
@@ -96,17 +105,32 @@ export function ResponsiveAuditLab() {
       const findings: AuditIssue[] = [];
       const elements = Array.from(doc.body?.querySelectorAll<HTMLElement>("*") ?? []);
       const visibleInteractive: HTMLElement[] = [];
-      const dialogOpen = Boolean(doc.querySelector('[data-slot="dialog-content"][data-state="open"], [data-slot="alert-dialog-content"][data-state="open"], [data-slot="sheet-content"][data-state="open"]'));
+      const dialogOpen = Boolean(
+        doc.querySelector(
+          '[data-slot="dialog-content"][data-state="open"], [data-slot="alert-dialog-content"][data-state="open"], [data-slot="sheet-content"][data-state="open"]',
+        ),
+      );
       const reducedMotion = win.matchMedia?.("(prefers-reduced-motion: reduce)").matches ?? false;
 
       for (const element of elements) {
         const style = win.getComputedStyle(element);
-        if (style.display === "none" || style.visibility === "hidden" || Number(style.opacity) === 0) continue;
+        if (
+          style.display === "none" ||
+          style.visibility === "hidden" ||
+          Number(style.opacity) === 0
+        )
+          continue;
         const rect = element.getBoundingClientRect();
         if (rect.width < 1 || rect.height < 1) continue;
 
-        const ignoredCanvas = element.matches("canvas, .tadeon-tabletop-stage, .tadeon-graph-canvas");
-        if (!ignoredCanvas && rect.width <= viewportWidth * 1.8 && (rect.left < -2 || rect.right > viewportWidth + 2)) {
+        const ignoredCanvas = element.matches(
+          "canvas, .tadeon-tabletop-stage, .tadeon-graph-canvas",
+        );
+        if (
+          !ignoredCanvas &&
+          rect.width <= viewportWidth * 1.8 &&
+          (rect.left < -2 || rect.right > viewportWidth + 2)
+        ) {
           findings.push({
             kind: "overflow",
             label: describe(element),
@@ -115,7 +139,11 @@ export function ResponsiveAuditLab() {
         }
 
         const interactive = element.matches(INTERACTIVE_SELECTOR);
-        if (interactive && !element.hasAttribute("disabled") && element.getAttribute("aria-disabled") !== "true") {
+        if (
+          interactive &&
+          !element.hasAttribute("disabled") &&
+          element.getAttribute("aria-disabled") !== "true"
+        ) {
           visibleInteractive.push(element);
           const minTarget = viewportWidth <= 1024 ? 42 : 36;
           if (rect.width < minTarget || rect.height < minTarget) {
@@ -126,11 +154,18 @@ export function ResponsiveAuditLab() {
             });
           }
 
-          if (!reducedMotion && element.matches("button, a, [role='button'], [role='tab'], [role='switch']")) {
+          if (
+            !reducedMotion &&
+            element.matches("button, a, [role='button'], [role='tab'], [role='switch']")
+          ) {
             const transition = parseDurations(style.transitionDuration);
             const animation = parseDurations(style.animationDuration);
-            const hasMotion = transition.some((duration) => duration >= 80) || animation.some((duration) => duration >= 80);
-            const motionExempt = element.matches("[data-motion-exempt], .sr-only") || style.position === "static" && element.closest("[data-slot='command-list']");
+            const hasMotion =
+              transition.some((duration) => duration >= 80) ||
+              animation.some((duration) => duration >= 80);
+            const motionExempt =
+              element.matches("[data-motion-exempt], .sr-only") ||
+              (style.position === "static" && element.closest("[data-slot='command-list']"));
             if (!hasMotion && !motionExempt) {
               findings.push({
                 kind: "motion",
@@ -141,11 +176,20 @@ export function ResponsiveAuditLab() {
           }
         }
 
-        if (element.matches(TEXT_SELECTOR) && element.textContent?.trim() && !element.classList.contains("truncate")) {
+        if (
+          element.matches(TEXT_SELECTOR) &&
+          element.textContent?.trim() &&
+          !element.classList.contains("truncate")
+        ) {
           const clipsX = element.scrollWidth > element.clientWidth + 2;
           const clipsY = element.scrollHeight > element.clientHeight + 2;
-          const hidesOverflow = ["hidden", "clip"].includes(style.overflow) || ["hidden", "clip"].includes(style.overflowX) || ["hidden", "clip"].includes(style.overflowY);
-          const intentional = element.hasAttribute("title") || element.getAttribute("aria-label") === element.textContent?.trim();
+          const hidesOverflow =
+            ["hidden", "clip"].includes(style.overflow) ||
+            ["hidden", "clip"].includes(style.overflowX) ||
+            ["hidden", "clip"].includes(style.overflowY);
+          const intentional =
+            element.hasAttribute("title") ||
+            element.getAttribute("aria-label") === element.textContent?.trim();
           if (hidesOverflow && (clipsX || clipsY) && !intentional) {
             findings.push({
               kind: "clipping",
@@ -155,7 +199,9 @@ export function ResponsiveAuditLab() {
           }
         }
 
-        const scrollable = ["auto", "scroll"].includes(style.overflowY) && element.scrollHeight > element.clientHeight + 8;
+        const scrollable =
+          ["auto", "scroll"].includes(style.overflowY) &&
+          element.scrollHeight > element.clientHeight + 8;
         if (scrollable && element.clientHeight > 0 && element.clientHeight < 72) {
           findings.push({
             kind: "scroll",
@@ -198,11 +244,19 @@ export function ResponsiveAuditLab() {
 
       const rootWidth = Math.max(doc.documentElement.scrollWidth, doc.body?.scrollWidth ?? 0);
       if (rootWidth > viewportWidth + 2) {
-        findings.unshift({ kind: "overflow", label: "documento", detail: `largura ${rootWidth}px em viewport ${viewportWidth}px` });
+        findings.unshift({
+          kind: "overflow",
+          label: "documento",
+          detail: `largura ${rootWidth}px em viewport ${viewportWidth}px`,
+        });
       }
       const rootHeight = Math.max(doc.documentElement.scrollHeight, doc.body?.scrollHeight ?? 0);
-      if (rootHeight < viewportHeight * .7) {
-        findings.unshift({ kind: "scroll", label: "documento", detail: `conteúdo ocupa apenas ${Math.round(rootHeight / viewportHeight * 100)}% da altura do viewport` });
+      if (rootHeight < viewportHeight * 0.7) {
+        findings.unshift({
+          kind: "scroll",
+          label: "documento",
+          detail: `conteúdo ocupa apenas ${Math.round((rootHeight / viewportHeight) * 100)}% da altura do viewport`,
+        });
       }
 
       setIssues(findings);
@@ -227,34 +281,62 @@ export function ResponsiveAuditLab() {
   };
 
   return (
-    <div className="tadeon-visual-audit">
-      <section className="tadeon-page-hero tadeon-surface mb-4 rounded-2xl px-5 py-5 md:px-7">
-        <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-          <div className="flex min-w-0 items-center gap-3">
-            <span className="grid h-12 w-12 shrink-0 place-items-center rounded-[1rem_.32rem_1rem_.32rem] border border-primary/20 bg-primary/5 text-primary"><Ruler className="h-5 w-5" /></span>
-            <div className="min-w-0">
-              <p className="tadeon-eyebrow">Controle de qualidade visual</p>
-              <h1 className="mt-1 font-cinzel text-2xl font-semibold md:text-3xl">Auditoria responsiva</h1>
-              <p className="mt-1 max-w-3xl text-xs leading-5 text-muted-foreground md:text-sm">Revisa encaixe, colisões, texto cortado, alvos de toque, scroll, camadas bloqueadoras e motion em cada viewport.</p>
-            </div>
-          </div>
-          <Badge variant="outline" className="w-fit gap-1.5"><ShieldCheck className="h-3.5 w-3.5 text-primary" />Somente mestre</Badge>
-        </div>
-      </section>
+    <div data-page-layout className="tadeon-page tadeon-visual-audit">
+      <PageHeader
+        section="tools"
+        eyebrow="Controle de qualidade visual"
+        title="Auditoria responsiva"
+        description="Revisa encaixe, colisões, texto cortado, alvos de toque, scroll, camadas bloqueadoras e motion em cada viewport."
+        mark={<Ruler />}
+        actions={
+          <Badge variant="outline" className="gap-1.5">
+            <ShieldCheck className="h-3.5 w-3.5" />
+            Somente mestre
+          </Badge>
+        }
+      />
 
       <Card className="mb-4 p-4 md:p-5">
         <div className="tadeon-visual-audit__controls">
           <div className="min-w-0">
             <Label htmlFor="audit-path">Página em revisão</Label>
             <div className="mt-2 flex min-w-0 gap-2">
-              <Input id="audit-path" value={pathInput} onChange={(event) => setPathInput(event.target.value)} onKeyDown={(event) => { if (event.key === "Enter") navigatePreview(pathInput); }} />
-              <Button variant="outline" onClick={() => navigatePreview(pathInput)}><ExternalLink className="h-4 w-4" />Abrir</Button>
+              <Input
+                id="audit-path"
+                value={pathInput}
+                onChange={(event) => setPathInput(event.target.value)}
+                onKeyDown={(event) => {
+                  if (event.key === "Enter") navigatePreview(pathInput);
+                }}
+              />
+              <Button variant="outline" onClick={() => navigatePreview(pathInput)}>
+                <ExternalLink className="h-4 w-4" />
+                Abrir
+              </Button>
             </div>
           </div>
           <div className="flex flex-wrap gap-2">
-            <Button variant="outline" onClick={() => { setWidth(height); setHeight(width); }}><RefreshCw className="h-4 w-4" />Girar</Button>
-            <Button variant={guides ? "default" : "outline"} onClick={() => setGuides((value) => !value)}><Columns3 className="h-4 w-4" />Guias</Button>
-            <Button onClick={auditFrame}><Eye className="h-4 w-4" />Analisar</Button>
+            <Button
+              variant="outline"
+              onClick={() => {
+                setWidth(height);
+                setHeight(width);
+              }}
+            >
+              <RefreshCw className="h-4 w-4" />
+              Girar
+            </Button>
+            <Button
+              variant={guides ? "default" : "outline"}
+              onClick={() => setGuides((value) => !value)}
+            >
+              <Columns3 className="h-4 w-4" />
+              Guias
+            </Button>
+            <Button onClick={auditFrame}>
+              <Eye className="h-4 w-4" />
+              Analisar
+            </Button>
           </div>
         </div>
 
@@ -263,38 +345,111 @@ export function ResponsiveAuditLab() {
             {PRESETS.map((preset) => {
               const Icon = preset.icon;
               const active = preset.width === width && preset.height === height;
-              return <Button key={preset.label} size="sm" variant={active ? "default" : "outline"} onClick={() => { setWidth(preset.width); setHeight(preset.height); }} className="shrink-0 gap-1.5"><Icon className="h-3.5 w-3.5" />{preset.label}<span className="opacity-60">{preset.width}x{preset.height}</span></Button>;
+              return (
+                <Button
+                  key={preset.label}
+                  size="sm"
+                  variant={active ? "default" : "outline"}
+                  onClick={() => {
+                    setWidth(preset.width);
+                    setHeight(preset.height);
+                  }}
+                  className="shrink-0 gap-1.5"
+                >
+                  <Icon className="h-3.5 w-3.5" />
+                  {preset.label}
+                  <span className="opacity-60">
+                    {preset.width}x{preset.height}
+                  </span>
+                </Button>
+              );
             })}
           </div>
-          <div className="flex items-center gap-2 text-xs text-muted-foreground"><Frame className="h-4 w-4 text-primary" /><strong className="text-foreground">{width} x {height}</strong></div>
+          <div className="flex items-center gap-2 text-xs text-muted-foreground">
+            <Frame className="h-4 w-4 text-primary" />
+            <strong className="text-foreground">
+              {width} x {height}
+            </strong>
+          </div>
         </div>
 
         <div className="mt-3 flex flex-wrap gap-1.5">
-          {PAGES.map(([label, href]) => <Button key={href} size="sm" variant={path === href ? "secondary" : "ghost"} onClick={() => navigatePreview(href)}>{label}</Button>)}
+          {PAGES.map(([label, href]) => (
+            <Button
+              key={href}
+              size="sm"
+              variant={path === href ? "secondary" : "ghost"}
+              onClick={() => navigatePreview(href)}
+            >
+              {label}
+            </Button>
+          ))}
         </div>
       </Card>
 
       <div className="grid gap-4 2xl:grid-cols-[minmax(0,1fr)_22rem]">
         <div className="tadeon-visual-audit__stage">
-          <div className="tadeon-visual-audit__viewport" style={{ width: `${width}px`, height: `${height}px` }}>
-            {guides && <><span className="tadeon-visual-audit__guide tadeon-visual-audit__guide--x" /><span className="tadeon-visual-audit__guide tadeon-visual-audit__guide--y" /></>}
-            <iframe ref={frameRef} title={`Auditoria de ${path}`} src={path} onLoad={() => window.setTimeout(auditFrame, 450)} />
+          <div
+            className="tadeon-visual-audit__viewport"
+            style={{ width: `${width}px`, height: `${height}px` }}
+          >
+            {guides && (
+              <>
+                <span className="tadeon-visual-audit__guide tadeon-visual-audit__guide--x" />
+                <span className="tadeon-visual-audit__guide tadeon-visual-audit__guide--y" />
+              </>
+            )}
+            <iframe
+              ref={frameRef}
+              title={`Auditoria de ${path}`}
+              src={path}
+              onLoad={() => window.setTimeout(auditFrame, 450)}
+            />
           </div>
         </div>
 
         <Card className="h-fit p-4">
           <div className="flex items-center justify-between gap-2">
-            <div><p className="tadeon-eyebrow">Diagnóstico</p><h2 className="mt-1 font-cinzel text-lg font-semibold">Encaixe e interação</h2></div>
-            {auditState === "ready" && issues.length === 0 ? <CheckCircle2 className="h-5 w-5 text-emerald-400" /> : <AlertTriangle className="h-5 w-5 text-amber-400" />}
+            <div>
+              <p className="tadeon-eyebrow">Diagnóstico</p>
+              <h2 className="mt-1 font-cinzel text-lg font-semibold">Encaixe e interação</h2>
+            </div>
+            {auditState === "ready" && issues.length === 0 ? (
+              <CheckCircle2 className="h-5 w-5 text-emerald-400" />
+            ) : (
+              <AlertTriangle className="h-5 w-5 text-amber-400" />
+            )}
           </div>
-          <p className="mt-2 text-xs leading-5 text-muted-foreground">Sinaliza problemas estruturais sem penalizar canvas, truncamentos declarados ou reduced motion.</p>
+          <p className="mt-2 text-xs leading-5 text-muted-foreground">
+            Sinaliza problemas estruturais sem penalizar canvas, truncamentos declarados ou reduced
+            motion.
+          </p>
           <div className="tadeon-visual-audit__results mt-4 space-y-2">
-            {auditState === "blocked" ? <p className="rounded-xl border border-amber-400/20 p-3 text-xs text-amber-200">O navegador bloqueou a leitura do frame; a revisão visual manual continua disponível.</p> : issues.length ? issues.map((issue, index) => (
-              <div key={`${issue.kind}-${issue.label}-${index}`} className="rounded-xl border border-border/70 p-3">
-                <div className="flex items-center gap-2"><Badge variant="outline">{issue.kind}</Badge><code className="min-w-0 truncate text-[10px] text-primary">{issue.label}</code></div>
-                <p className="mt-1 text-[11px] text-muted-foreground">{issue.detail}</p>
+            {auditState === "blocked" ? (
+              <p className="rounded-xl border border-amber-400/20 p-3 text-xs text-amber-200">
+                O navegador bloqueou a leitura do frame; a revisão visual manual continua
+                disponível.
+              </p>
+            ) : issues.length ? (
+              issues.map((issue, index) => (
+                <div
+                  key={`${issue.kind}-${issue.label}-${index}`}
+                  className="rounded-xl border border-border/70 p-3"
+                >
+                  <div className="flex items-center gap-2">
+                    <Badge variant="outline">{issue.kind}</Badge>
+                    <code className="min-w-0 truncate text-[10px] text-primary">{issue.label}</code>
+                  </div>
+                  <p className="mt-1 text-[11px] text-muted-foreground">{issue.detail}</p>
+                </div>
+              ))
+            ) : (
+              <div className="rounded-xl border border-emerald-400/15 bg-emerald-400/5 p-4 text-xs text-muted-foreground">
+                {auditState === "running"
+                  ? "Analisando o frame..."
+                  : "Nenhum problema estrutural detectado neste estado."}
               </div>
-            )) : <div className="rounded-xl border border-emerald-400/15 bg-emerald-400/5 p-4 text-xs text-muted-foreground">{auditState === "running" ? "Analisando o frame..." : "Nenhum problema estrutural detectado neste estado."}</div>}
+            )}
           </div>
         </Card>
       </div>

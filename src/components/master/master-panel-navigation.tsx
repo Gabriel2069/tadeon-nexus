@@ -77,13 +77,9 @@ const groups: Array<{ label: string; values: MasterTab[] }> = [
 export function MasterPanelIdentity({ activeTab }: { activeTab: MasterTab }) {
   const Icon = MASTER_TAB_META.find((tab) => tab.value === activeTab)?.icon ?? Activity;
   return (
-    <span
-      className="tadeon-master-commandbar__sigil-stack"
-      data-master-head-tab={activeTab}
-      aria-hidden="true"
-    >
-      <MasterSigil className="tadeon-master-commandbar__master-sigil" />
-      <Icon className="tadeon-master-commandbar__active-icon" />
+    <span className="tadeon-page-header__sigil" data-master-head-tab={activeTab} aria-hidden="true">
+      <MasterSigil className="tadeon-page-header__master-sigil" />
+      <Icon className="tadeon-page-header__active-icon" />
     </span>
   );
 }

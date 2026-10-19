@@ -561,14 +561,6 @@
   .tadeon-auth-card {
     padding: 1.35rem 1.2rem 1.5rem;
   }
-
-  .tadeon-nexus-actions > * {
-    min-width: 0;
-  }
-
-  .tadeon-nexus-actions > button {
-    width: 100%;
-  }
 }
 
 @media (pointer: coarse) {
@@ -1722,14 +1714,8 @@ body {
     inset 0 1px rgb(255 255 255 / 3%);
 }
 
-.tadeon-page-hero,
 .tadeon-state-panel {
   border-color: color-mix(in srgb, var(--tadeon-section-accent) 18%, var(--border));
-}
-
-.tadeon-page-hero > * {
-  position: relative;
-  z-index: 1;
 }
 
 .tadeon-eyebrow {
@@ -3465,17 +3451,8 @@ legend {
     display: none;
   }
 
-  :where(
-    .tadeon-page-hero,
-    .tadeon-library-header__actions,
-    .tadeon-nexus-actions,
-    .tadeon-master-navigation
-  ) {
+  :where(.tadeon-master-navigation) {
     min-width: 0;
-  }
-
-  :where(.tadeon-library-header__actions, .tadeon-nexus-actions, .tadeon-master-navigation) {
-    flex-wrap: wrap;
   }
 
   [data-slot="dialog-content"] {
@@ -3638,10 +3615,6 @@ legend {
   [data-slot="card-footer"] > :where(button, a, [data-slot="button"]) {
     flex: 1 1 10rem;
   }
-
-  .tadeon-shell :where(.tadeon-page-hero) :where(.flex, .grid) {
-    min-width: 0;
-  }
 }
 
 @media (max-width: 479px) {
@@ -3692,7 +3665,6 @@ legend {
     grid-template-columns: minmax(0, 1fr) !important;
   }
 
-  .tadeon-master-commandbar > div,
   .tadeon-master-sheets-command > div:first-child {
     align-items: stretch;
     flex-wrap: wrap;
@@ -3709,11 +3681,6 @@ legend {
   .tadeon-route-tools .grid[class*="lg:grid-cols-["],
   .tadeon-route-offline .grid[class*="lg:grid-cols-["] {
     grid-template-columns: minmax(0, 1fr) !important;
-  }
-
-  .tadeon-library-header__actions,
-  .tadeon-nexus-actions {
-    flex-wrap: wrap;
   }
 }
 

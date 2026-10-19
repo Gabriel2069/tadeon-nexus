@@ -87,7 +87,7 @@ const sheet = {
   },
   weapon_proficiency: "operador",
   weapon_proficiency_family: "",
-  power_form_enabled: false,
+  power_form_enabled: process.env.NEXUS_POWER_HEADER === "1",
   power_form_data: {},
 };
 const results = [];
@@ -200,9 +200,51 @@ try {
         r.fulfill({ status: 503, contentType: "application/json", body: "{}" }),
       );
       await installDesignFonts(page);
-      await page.goto(`http://127.0.0.1:${port}/sheet/${sheetId}?mode=edit`, {
-        waitUntil: "domcontentloaded",
-      });
+      await page.goto(
+        `http://127.0.0.1:${port}/sheet/${sheetId}${process.env.NEXUS_POWER_HEADER === "1" ? "/power" : ""}?mode=edit`,
+        {
+          waitUntil: "domcontentloaded",
+        },
+      );
+      if (process.env.NEXUS_POWER_HEADER === "1") {
+        await page.locator("[data-page-header=sheet]").waitFor({ timeout: 60000 });
+        const header = await page.locator("[data-page-header=sheet]").evaluate((e) => {
+          const r = e.getBoundingClientRect(),
+            title = e.querySelector(".tadeon-page-header__title"),
+            style = getComputedStyle(title);
+          return {
+            rect: [r.x, r.y, r.width, r.height],
+            font: [style.fontFamily, style.fontSize, style.fontWeight],
+            headingCount: document.querySelectorAll("h1").length,
+            overflow: document.documentElement.scrollWidth > innerWidth,
+          };
+        });
+        assert(
+          header.headingCount === 1 && !header.overflow,
+          "Power header follows the shared route envelope",
+        );
+        assert(
+          header.font[1] === (width < 480 ? "30px" : width === 820 ? "32px" : "38.16px") ||
+            parseFloat(header.font[1]) >= 30,
+          "Power title is not shrunk by legacy header rules",
+        );
+        assert(writes.length === 0, "Read-only power header never writes");
+        assert(errors.length === 0, JSON.stringify(errors));
+        if (process.env.NEXUS_SKIP_SCREENSHOTS !== "1")
+          await page.screenshot({ path: `${output}/power-header-${width}.png`, timeout: 20000 });
+        results.push({
+          width,
+          state,
+          variant: "power-header",
+          header,
+          errors,
+          writes: writes.length,
+        });
+        writeFileSync(`${output}/results.json`, JSON.stringify(results, null, 2));
+        console.log(`Power header verified ${width}`);
+        await context.close();
+        continue;
+      }
       if (readPaused) {
         await page.getByRole("status", { name: "Carregando ficha" }).waitFor();
         if (process.env.NEXUS_SKIP_SCREENSHOTS !== "1")

@@ -15,9 +15,6 @@ describe("ui polish 193/194/200", () => {
     expect(css).toContain("position: fixed");
   });
 
-  it("places session save as a sibling immediately above the metrics strip", () => {
-    const bridge = read("src/components/master/master-toolbar-popout-bridge.tsx");
-    expect(bridge).toContain("parent.insertBefore(portalHost, metrics)");
-    expect(bridge).toContain('rpc("save_session_sheet_changes")');
-  });
+  // NEX-026: WorkspaceActions tests verify the single manual session command.
+
 });

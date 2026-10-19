@@ -1,11 +1,11 @@
 /* source: src/styles/head-background-motion-256.css */
 /* Fio-Mestre headers: a woven light plane. Content and authored marks stay still. */
-:where(.tadeon-page-hero, .tadeon-nexus-commandbar, .tadeon-master-commandbar, .tadeon-tabletop-studio__header, .tadeon-library-header, .tadeon-mobile-header) {
+:where(.tadeon-mobile-header) {
   position: relative;
   isolation: isolate;
   overflow: clip;
 }
-:where(.tadeon-page-hero, .tadeon-nexus-commandbar, .tadeon-master-commandbar, .tadeon-tabletop-studio__header, .tadeon-library-header, .tadeon-mobile-header)::before {
+:where(.tadeon-mobile-header)::before {
   position: absolute;
   z-index: 0;
   inset: -45% -18%;
@@ -18,11 +18,44 @@
   content: "";
   transition: opacity 320ms var(--ease-out);
 }
-:where(.tadeon-page-hero, .tadeon-nexus-commandbar, .tadeon-master-commandbar, .tadeon-tabletop-studio__header, .tadeon-library-header):focus-within::before { opacity: 1; }
 @media (hover: hover) and (pointer: fine) {
-  :where(.tadeon-page-hero, .tadeon-nexus-commandbar, .tadeon-master-commandbar, .tadeon-tabletop-studio__header, .tadeon-library-header):hover::before { opacity: 1; }
 }
 @media (prefers-reduced-motion: reduce) {
-  :where(.tadeon-page-hero, .tadeon-nexus-commandbar, .tadeon-master-commandbar, .tadeon-tabletop-studio__header, .tadeon-library-header, .tadeon-mobile-header)::before { transition: none; }
+  :where(.tadeon-mobile-header)::before { transition: none; }
 }
 /* end-source: src/styles/head-background-motion-256.css */
+
+/* Shared material: section changes the light, never the header anatomy. */
+.tadeon-page-header {
+  --header-rgb: 217 215 164;
+  --header-light-rgb: 217 215 164;
+  background:
+    radial-gradient(ellipse at var(--material-x, 80%) var(--material-y, 10%), rgb(var(--header-rgb) / 12%), transparent 65%),
+    linear-gradient(145deg, #191e23, #10141a 75%);
+  box-shadow: var(--shadow-relief), inset 0 1px rgb(255 255 255 / 5%);
+}
+.tadeon-page-header[data-page-header="nexus"] { --header-rgb: 79 110 93; --header-light-rgb: 144 185 157; }
+.tadeon-page-header[data-page-header="tabletop"] { --header-rgb: 84 123 148; --header-light-rgb: 146 181 202; }
+.tadeon-page-header[data-page-header="master"] { --header-rgb: 116 36 45; --header-light-rgb: 204 153 160; }
+.tadeon-page-header[data-page-header="users"] { --header-rgb: 183 129 77; --header-light-rgb: 214 177 140; }
+.tadeon-page-header[data-page-header="tools"] { --header-rgb: 122 129 135; --header-light-rgb: 180 189 197; }
+.tadeon-page-header[data-page-header="offline"] { --header-rgb: 113 107 123; --header-light-rgb: 185 176 200; }
+.tadeon-page-header__fabric {
+  position: absolute;
+  z-index: 0;
+  right: -8%;
+  top: -2.5rem;
+  width: min(65%, 34rem);
+  height: calc(100% + 5rem);
+  color: rgb(var(--header-light-rgb));
+  opacity: .25;
+  pointer-events: none;
+  mask-image: linear-gradient(90deg, transparent, black 25%, black 75%, transparent);
+  transition: opacity 220ms var(--ease-out);
+}
+.tadeon-page-header:is(:hover, :focus-within) .tadeon-page-header__fabric { opacity: .45; }
+@media (prefers-reduced-motion: no-preference) and (hover: hover) and (pointer: fine) {
+  .tadeon-page-header__fabric { transform: perspective(800px) rotateX(var(--material-tilt-x, 0deg)) rotateY(var(--material-tilt-y, 0deg)); transition: opacity 220ms var(--ease-out), transform 220ms var(--ease-out); }
+}
+@media (prefers-reduced-motion: reduce) { .tadeon-page-header__fabric { transition: none; } }
+@media (prefers-contrast: more) { .tadeon-page-header { border-color: var(--foreground); } .tadeon-page-header__fabric { opacity: .12; } }

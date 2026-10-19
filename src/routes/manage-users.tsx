@@ -1,8 +1,8 @@
+import { PageHeader } from "@/components/page-header";
 import { UTILITY_AREAS } from "@/lib/utility-areas";
 import { UtilitySummary } from "@/components/utility-summary";
 import { Input } from "@/components/ui/input";
 import { createLatestRequestGate } from "@/lib/latest-request";
-import { PageSectionMark } from "@/components/section-symbols";
 import { createFileRoute } from "@tanstack/react-router";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { ProtectedShell } from "@/components/protected-shell";
@@ -167,23 +167,13 @@ function ManageUsersPageContent() {
   const count = (role: AppRole) =>
     loading || loadError ? "--" : rows.filter((row) => row.role === role).length;
   return (
-    <div className="tadeon-page tadeon-route-users max-w-6xl space-y-6">
-      <header
-        data-tadeon-page-hero="users"
-        className="tadeon-page-hero tadeon-surface rounded-2xl p-6 md:p-8"
-      >
-        <PageSectionMark section="users" />
-        <div className="min-w-0 max-w-2xl">
-          <p className="tadeon-eyebrow">Administração do arquivo</p>
-          <h1 className="mt-1 font-cinzel text-3xl font-semibold md:text-4xl">
-            {UTILITY_AREAS.users.label}
-          </h1>
-          <p className="mt-2 max-w-2xl text-sm leading-6 text-muted-foreground">
-            Encontre pessoas, revise seus papéis e controle o acesso ao Nexus. Cada alteração é
-            confirmada antes de ser aplicada.
-          </p>
-        </div>
-      </header>
+    <div data-page-layout className="tadeon-page tadeon-route-users space-y-6">
+      <PageHeader
+        section="users"
+        eyebrow="Administração do arquivo"
+        title={UTILITY_AREAS.users.label}
+        description="Encontre pessoas, revise seus papéis e controle o acesso ao Nexus. Cada alteração é confirmada antes de ser aplicada."
+      />
       <UtilitySummary
         items={[
           {

@@ -2,7 +2,6 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { Loader2 } from "lucide-react";
 import { NexusWorkspace } from "@/components/knowledge/nexus-workspace";
-import { NexusFolderBarBridge } from "@/components/knowledge/nexus-folder-bar-bridge";
 import { ProtectedShell } from "@/components/protected-shell";
 import { loadFeatureFlags } from "@/lib/feature-flag-repository";
 import type { FeatureFlags } from "@/lib/feature-flags";
@@ -68,7 +67,6 @@ function NexusRoute() {
         initialNodeId={node}
         tabletopEnabled={flags.nexus_tabletop_enabled}
       />
-      <NexusFolderBarBridge />
     </>
   );
 }

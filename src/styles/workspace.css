@@ -24,57 +24,6 @@
   min-height: 0;
 }
 
-.tadeon-library-header {
-  position: relative;
-  z-index: 3;
-  padding-right: 4.5rem;
-  border-color: rgb(var(--library-accent-rgb) / 12%);
-  background:
-    linear-gradient(105deg, rgb(var(--library-accent-rgb) / 6%), transparent 42%),
-    rgb(10 13 17 / 88%);
-}
-
-.tadeon-library-header::after {
-  position: absolute;
-  right: 1.25rem;
-  bottom: -1px;
-  left: 1.25rem;
-  height: 1px;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgb(var(--library-accent-rgb) / 32%),
-    transparent
-  );
-  pointer-events: none;
-  content: "";
-}
-
-.tadeon-library-header__identity [data-slot="dialog-title"] {
-  margin-top: 0.25rem;
-  font-size: clamp(1.25rem, 2vw, 1.65rem);
-}
-
-.tadeon-library-header__mark {
-  display: grid;
-  width: 2.55rem;
-  height: 2.55rem;
-  flex: 0 0 auto;
-  place-items: center;
-  border: 1px solid rgb(var(--library-accent-rgb) / 20%);
-  border-radius: 0.82rem 0.28rem 0.82rem 0.28rem;
-  color: var(--primary);
-  background: rgb(var(--library-accent-rgb) / 6%);
-  box-shadow:
-    0 16px 34px -24px rgb(0 0 0 / 100%),
-    inset 0 1px rgb(255 255 255 / 4%);
-}
-
-.tadeon-library-header__actions {
-  align-items: center;
-  justify-content: flex-end;
-}
-
 .tadeon-library-view-switch {
   display: flex;
   gap: 0.18rem;
@@ -626,19 +575,6 @@
     border-radius: 1.15rem 0.4rem 1.15rem 0.4rem;
   }
 
-  .tadeon-library-header {
-    padding: 0.9rem;
-    padding-right: 3.75rem;
-  }
-
-  .tadeon-library-header__actions {
-    justify-content: space-between;
-  }
-
-  .tadeon-library-header__actions > [data-slot="button"]:first-child {
-    flex: 1 1 auto;
-  }
-
   .tadeon-library-filters {
     max-height: 10.5rem;
     padding: 0.7rem;
@@ -787,7 +723,6 @@
 
 /* Nexus workspace v3: a library first, implementation details second ------ */
 
-.tadeon-nexus-commandbar,
 .tadeon-route-nexus .tadeon-nexus-index,
 .tadeon-route-nexus .tadeon-nexus-document,
 .tadeon-route-nexus .tadeon-nexus-context {
@@ -801,43 +736,6 @@
     color-mix(in srgb, var(--card) 96%, var(--background));
 }
 
-.tadeon-nexus-commandbar {
-  position: relative;
-  overflow: hidden;
-  border-color: color-mix(in srgb, var(--primary) 20%, var(--border));
-  box-shadow:
-    0 28px 70px -58px color-mix(in srgb, var(--primary) 70%, transparent),
-    inset 0 1px color-mix(in srgb, var(--foreground) 6%, transparent);
-}
-
-.tadeon-nexus-commandbar::after {
-  position: absolute;
-  top: -5rem;
-  left: 22%;
-  width: 11rem;
-  height: 11rem;
-  border: 1px solid color-mix(in srgb, var(--primary) 10%, transparent);
-  border-radius: 50%;
-  box-shadow:
-    0 0 0 2.5rem color-mix(in srgb, var(--primary) 2.5%, transparent),
-    0 0 0 5rem color-mix(in srgb, var(--primary) 1.5%, transparent);
-  pointer-events: none;
-  content: "";
-}
-
-.tadeon-nexus-commandbar > * {
-  position: relative;
-  z-index: 1;
-}
-
-.tadeon-nexus-identity {
-  display: flex;
-  min-width: 0;
-  align-items: center;
-  gap: 0.9rem;
-}
-
-.tadeon-nexus-identity__mark,
 .tadeon-nexus-home__sigil {
   display: grid;
   width: 3rem;
@@ -857,7 +755,6 @@
     inset 0 1px color-mix(in srgb, var(--foreground) 7%, transparent);
 }
 
-.tadeon-nexus-identity__mark svg,
 .tadeon-nexus-home__sigil svg {
   width: 1.2rem;
   height: 1.2rem;
@@ -866,15 +763,6 @@
     filter 220ms var(--ease-out);
 }
 
-.tadeon-nexus-identity__summary {
-  max-width: 35rem;
-  margin-top: 0.3rem;
-  color: var(--muted-foreground);
-  font-size: 0.72rem;
-  line-height: 1.45;
-}
-
-.tadeon-nexus-actions [data-slot="select-trigger"],
 .tadeon-nexus-filters [data-slot="select-trigger"],
 .tadeon-nexus-context [data-slot="select-trigger"] {
   color: var(--foreground);
@@ -1268,7 +1156,6 @@
 }
 
 @media (hover: hover) {
-  .tadeon-nexus-commandbar:hover .tadeon-nexus-identity__mark svg,
   .tadeon-nexus-home:hover .tadeon-nexus-home__sigil svg {
     filter: drop-shadow(0 0 8px color-mix(in srgb, var(--primary) 42%, transparent));
     transform: rotate(-5deg) scale(1.08);
@@ -1334,9 +1221,6 @@
 }
 
 @media (max-width: 1179px) {
-  .tadeon-nexus-actions {
-    width: 100%;
-  }
 
   .tadeon-nexus-shell .tadeon-nexus-index,
   .tadeon-nexus-shell .tadeon-nexus-document,
@@ -1346,18 +1230,6 @@
 }
 
 @media (max-width: 767px) {
-  .tadeon-nexus-identity {
-    align-items: flex-start;
-  }
-
-  .tadeon-nexus-identity__mark {
-    width: 2.65rem;
-    height: 2.65rem;
-  }
-
-  .tadeon-nexus-identity__summary {
-    display: none;
-  }
 
   .tadeon-nexus-home__intro {
     align-items: flex-start;
@@ -2750,3 +2622,9 @@
     transition: none;
   }
 }
+
+/* Library reading and recovery, under the existing library owner. */
+.tadeon-library-results__count { font-size: .75rem; color: var(--muted-foreground); font-variant-numeric: tabular-nums; }
+.tadeon-library-load-error { display: grid; justify-items: start; gap: 1rem; padding: 1.5rem; border: 1px solid rgb(204 153 160 / 35%); border-radius: 1rem; background: #1c151b; font-size: .875rem; }
+.tadeon-library-preview__heading h3 { font-size: 1.75rem; line-height: 1.12; overflow-wrap: anywhere; outline-offset: .25rem; }
+.tadeon-library-preview__content { line-height: 1.75; }

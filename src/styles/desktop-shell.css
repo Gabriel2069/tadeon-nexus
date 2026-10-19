@@ -248,41 +248,6 @@
     padding-left: clamp(1.5rem, 3vw, 3rem);
   }
 
-  .tadeon-page-hero {
-    position: relative;
-    isolation: isolate;
-    overflow: clip;
-    border-color: color-mix(in srgb, var(--section-accent) 20%, var(--border));
-    border-radius: 1.5rem 0.48rem 1.5rem 0.48rem;
-    background:
-      linear-gradient(132deg, rgb(255 255 255 / 4%), transparent 42%),
-      radial-gradient(
-        circle at 86% 5%,
-        rgb(var(--section-accent-rgb) / 12%),
-        transparent 28rem
-      ),
-      color-mix(in srgb, var(--card) 92%, var(--background));
-    box-shadow:
-      0 34px 90px -62px rgb(0 0 0 / 100%),
-      inset 0 1px rgb(255 255 255 / 4%);
-  }
-
-  .tadeon-page-hero::after {
-    position: absolute;
-    right: clamp(1rem, 3vw, 2.25rem);
-    bottom: 0;
-    left: clamp(1rem, 3vw, 2.25rem);
-    height: 1px;
-    background: linear-gradient(
-      90deg,
-      transparent,
-      color-mix(in srgb, var(--section-accent) 45%, transparent),
-      transparent
-    );
-    pointer-events: none;
-    content: "";
-  }
-
 
   .tadeon-route-stage [data-slot="card-header"] {
     border-bottom: 1px solid
@@ -299,30 +264,8 @@
     border-color: color-mix(in srgb, var(--section-accent) 15%, var(--border));
   }
 
-  .tadeon-nexus-commandbar {
-    min-height: 6.5rem;
-    padding: 1.25rem 1.4rem;
-  }
-
-  .tadeon-nexus-commandbar > div:first-child {
-    min-width: 12rem;
-  }
-
-  .tadeon-nexus-actions {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 0.5rem;
-    justify-content: flex-end;
-  }
-
-  .tadeon-nexus-scope,
-  .tadeon-nexus-tools {
+  .tadeon-nexus-scope {
     margin-top: 0;
-  }
-
-  .tadeon-nexus-actions > [data-slot="select-trigger"] {
-    background: rgb(6 8 12 / 58%);
   }
 
   .tadeon-route-nexus > div:not([role="dialog"]) > aside {
@@ -340,46 +283,6 @@
 
   .tadeon-master-workspace {
     padding-top: clamp(1.5rem, 2.6vw, 2.5rem);
-  }
-
-  .tadeon-master-commandbar {
-    margin-bottom: 1.25rem;
-    padding: 1.2rem 1.35rem;
-    border: 1px solid
-      color-mix(in srgb, var(--section-accent) 18%, var(--border));
-    border-radius: 1.35rem 0.45rem 1.35rem 0.45rem;
-    background:
-      linear-gradient(
-        118deg,
-        rgb(var(--section-accent-rgb) / 10%),
-        transparent 44%
-      ),
-      rgb(10 12 16 / 78%);
-    box-shadow:
-      inset 0 1px rgb(255 255 255 / 3%),
-      0 22px 70px -55px rgb(var(--section-accent-rgb) / 75%);
-  }
-
-  .tadeon-master-commandbar__glow {
-    position: absolute;
-    top: -4.5rem;
-    right: -2.5rem;
-    width: 14rem;
-    height: 14rem;
-    border: 1px solid rgb(var(--section-accent-rgb) / 11%);
-    border-radius: 999px;
-    box-shadow:
-      0 0 0 2.8rem rgb(var(--section-accent-rgb) / 2.5%),
-      0 0 0 5.7rem rgb(var(--section-accent-rgb) / 1.5%);
-    pointer-events: none;
-  }
-
-  .tadeon-route-users > .tadeon-page-hero {
-    min-height: 10rem;
-    align-items: center;
-    padding: 1.6rem 1.8rem;
-    border: 1px solid
-      color-mix(in srgb, var(--section-accent) 17%, var(--border));
   }
 
   .tadeon-users-list {
@@ -414,12 +317,6 @@
     font-size: 1.05rem;
     font-weight: 700;
   }
-
-  .tadeon-route-tools > .tadeon-page-hero,
-  .tadeon-route-offline > .tadeon-page-hero {
-    min-height: 13rem;
-    padding: clamp(2rem, 3.5vw, 3rem);
-  }
 }
 
 @media (min-width: 768px) and (max-width: 1023px) {
@@ -442,11 +339,6 @@
   .tadeon-route-stage .tadeon-page {
     padding-right: clamp(2.5rem, 4vw, 4.75rem);
     padding-left: clamp(2.5rem, 4vw, 4.75rem);
-  }
-
-  .tadeon-nexus-commandbar {
-    display: grid;
-    grid-template-columns: minmax(12rem, 0.32fr) minmax(0, 1fr);
   }
 }
 
@@ -473,7 +365,6 @@
 
 
 @media (prefers-contrast: more) and (min-width: 768px) {
-  .tadeon-page-hero { border-color: var(--border); }
 }
 
 /* Desktop Living Archive: quieter chrome, stronger working canvas. */
@@ -558,17 +449,6 @@
     animation-duration: var(--motion-route);
   }
 
-  .tadeon-page-hero {
-    background:
-      linear-gradient(132deg, rgb(255 255 255 / 3.5%), transparent 40%),
-      radial-gradient(
-        ellipse 27rem 19rem at 88% 0%,
-        rgb(var(--section-accent-rgb) / 10%),
-        transparent 74%
-      ),
-      var(--tadeon-surface-1);
-  }
-
 
   .tadeon-route-stage table {
     border-collapse: separate;
@@ -623,4 +503,18 @@
 
 /* Material fallback follows its normal owner, preserving dimensions and focus. */
 @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+}
+
+/* Shared envelope. Full workspaces and reading routes start on the same rails. */
+.tadeon-route-stage [data-page-layout] {
+  --page-gutter: clamp(.875rem, 2.4vw, 2.5rem);
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 104rem;
+  min-width: 0;
+  margin-inline: auto;
+  padding: 1.5rem max(var(--page-gutter), env(safe-area-inset-right)) max(6rem, env(safe-area-inset-bottom)) max(var(--page-gutter), env(safe-area-inset-left));
+}
+@media (max-width: 767px) {
+  .tadeon-route-stage [data-page-layout] { padding-top: 1rem; }
 }
