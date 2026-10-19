@@ -812,6 +812,7 @@ function SheetPage() {
             <nav className="tadeon-sheet-jumpbar" aria-label="Ir para uma seção da ficha">
               <span className="tadeon-sheet-jumpbar__label">Neste dossiê</span>
               <select
+                className="tadeon-sheet-index-select"
                 aria-label="Localizar seção da ficha"
                 value=""
                 onChange={(event) => jumpTo(event.target.value)}

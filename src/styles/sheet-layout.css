@@ -212,8 +212,8 @@ html[data-tadeon-sheet-mode="game"] [class*="tadeon-sheet"] {
   --tadeon-game-field-height: 2rem;
 }
 
-html[data-tadeon-sheet-mode="game"] input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
-html[data-tadeon-sheet-mode="game"] select,
+html[data-tadeon-sheet-mode="game"] input:not(.tadeon-dossier-field, .tadeon-resource-field, .tadeon-sheet-index-select, .tadeon-dossier-label):not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+html[data-tadeon-sheet-mode="game"] select:not(.tadeon-dossier-field, .tadeon-resource-field, .tadeon-sheet-index-select, .tadeon-dossier-label),
 html[data-tadeon-sheet-mode="game"] button:not([data-material-surface], .tadeon-material-button)[role="combobox"] {
   min-height: var(--tadeon-game-field-height) !important;
   height: var(--tadeon-game-field-height) !important;
@@ -224,7 +224,7 @@ html[data-tadeon-sheet-mode="game"] button:not([data-material-surface], .tadeon-
   font-weight: 650;
 }
 
-html[data-tadeon-sheet-mode="game"] textarea {
+html[data-tadeon-sheet-mode="game"] textarea:not(.tadeon-dossier-field, .tadeon-resource-field, .tadeon-sheet-index-select, .tadeon-dossier-label) {
   min-height: 2.6rem !important;
   max-height: 5.6rem;
   resize: vertical;
@@ -234,15 +234,15 @@ html[data-tadeon-sheet-mode="game"] textarea {
   line-height: 1.35;
 }
 
-html[data-tadeon-sheet-mode="game"] input:focus,
-html[data-tadeon-sheet-mode="game"] textarea:focus,
+html[data-tadeon-sheet-mode="game"] input:not(.tadeon-dossier-field, .tadeon-resource-field, .tadeon-sheet-index-select, .tadeon-dossier-label):focus,
+html[data-tadeon-sheet-mode="game"] textarea:not(.tadeon-dossier-field, .tadeon-resource-field, .tadeon-sheet-index-select, .tadeon-dossier-label):focus,
 html[data-tadeon-sheet-mode="game"] button:not([data-material-surface], .tadeon-material-button)[role="combobox"]:focus-visible {
   border-color: color-mix(in srgb, var(--primary) 55%, var(--border)) !important;
   background: var(--background) !important;
   box-shadow: 0 0 0 2px color-mix(in srgb, var(--primary) 14%, transparent) !important;
 }
 
-html[data-tadeon-sheet-mode="game"] label {
+html[data-tadeon-sheet-mode="game"] label:not(.tadeon-dossier-field, .tadeon-resource-field, .tadeon-sheet-index-select, .tadeon-dossier-label) {
   font-size: .66rem;
   letter-spacing: .035em;
   color: color-mix(in srgb, var(--muted-foreground) 82%, transparent);
@@ -264,8 +264,8 @@ html[data-tadeon-sheet-mode="game"] .tadeon-defense-card__score {
   font-variant-numeric: tabular-nums;
 }
 
-html[data-tadeon-sheet-mode="game"] #sec-info input:first-of-type,
-html[data-tadeon-sheet-mode="game"] input[name="name"] {
+html[data-tadeon-sheet-mode="game"] #sec-info input:not(.tadeon-dossier-field, .tadeon-resource-field, .tadeon-sheet-index-select, .tadeon-dossier-label):first-of-type,
+html[data-tadeon-sheet-mode="game"] input:not(.tadeon-dossier-field, .tadeon-resource-field, .tadeon-sheet-index-select, .tadeon-dossier-label)[name="name"] {
   font-size: clamp(1.05rem, 1.6vw, 1.35rem) !important;
   font-weight: 760 !important;
 }
@@ -352,7 +352,7 @@ html[data-tadeon-sheet-embed="tabletop"] .tadeon-sheet-page {
   .tadeon-sheet-presence,
   .tadeon-sheet-nexus-links { font-size: .62rem; }
 
-  html[data-tadeon-sheet-mode="game"] textarea { max-height: 7rem; }
+  html[data-tadeon-sheet-mode="game"] textarea:not(.tadeon-dossier-field, .tadeon-resource-field, .tadeon-sheet-index-select, .tadeon-dossier-label) { max-height: 7rem; }
 
   .tadeon-sheet-diff-row {
     grid-template-columns: 1fr;
@@ -425,7 +425,7 @@ html[data-tadeon-sheet-mode="game"] .tadeon-sheet-page section[id] + section[id]
   margin-top: var(--game-section-gap) !important;
 }
 
-html[data-tadeon-sheet-mode="game"] .tadeon-sheet-page label,
+html[data-tadeon-sheet-mode="game"] .tadeon-sheet-page label:not(.tadeon-dossier-field, .tadeon-resource-field, .tadeon-sheet-index-select, .tadeon-dossier-label),
 html[data-tadeon-sheet-mode="game"] .tadeon-sheet-page .tadeon-eyebrow {
   opacity: .58;
   font-size: .61rem !important;
@@ -433,9 +433,9 @@ html[data-tadeon-sheet-mode="game"] .tadeon-sheet-page .tadeon-eyebrow {
   letter-spacing: .055em !important;
 }
 
-html[data-tadeon-sheet-mode="game"] .tadeon-sheet-page input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
-html[data-tadeon-sheet-mode="game"] .tadeon-sheet-page textarea,
-html[data-tadeon-sheet-mode="game"] .tadeon-sheet-page select,
+html[data-tadeon-sheet-mode="game"] .tadeon-sheet-page input:not(.tadeon-dossier-field, .tadeon-resource-field, .tadeon-sheet-index-select, .tadeon-dossier-label):not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+html[data-tadeon-sheet-mode="game"] .tadeon-sheet-page textarea:not(.tadeon-dossier-field, .tadeon-resource-field, .tadeon-sheet-index-select, .tadeon-dossier-label),
+html[data-tadeon-sheet-mode="game"] .tadeon-sheet-page select:not(.tadeon-dossier-field, .tadeon-resource-field, .tadeon-sheet-index-select, .tadeon-dossier-label),
 html[data-tadeon-sheet-mode="game"] .tadeon-sheet-page button[role="combobox"] {
   min-height: var(--game-control-height) !important;
   height: var(--game-control-height) !important;
@@ -458,7 +458,7 @@ html[data-tadeon-sheet-mode="game"] .tadeon-sheet-page button[role="combobox"] {
     opacity 160ms ease !important;
 }
 
-html[data-tadeon-sheet-mode="game"] .tadeon-sheet-page textarea {
+html[data-tadeon-sheet-mode="game"] .tadeon-sheet-page textarea:not(.tadeon-dossier-field, .tadeon-resource-field, .tadeon-sheet-index-select, .tadeon-dossier-label) {
   height: 2.5rem !important;
   min-height: 2.5rem !important;
   max-height: 2.5rem !important;
@@ -467,21 +467,21 @@ html[data-tadeon-sheet-mode="game"] .tadeon-sheet-page textarea {
   line-height: 1.3 !important;
 }
 
-html[data-tadeon-sheet-mode="game"] .tadeon-sheet-page input:hover,
-html[data-tadeon-sheet-mode="game"] .tadeon-sheet-page textarea:hover,
+html[data-tadeon-sheet-mode="game"] .tadeon-sheet-page input:not(.tadeon-dossier-field, .tadeon-resource-field, .tadeon-sheet-index-select, .tadeon-dossier-label):hover,
+html[data-tadeon-sheet-mode="game"] .tadeon-sheet-page textarea:not(.tadeon-dossier-field, .tadeon-resource-field, .tadeon-sheet-index-select, .tadeon-dossier-label):hover,
 html[data-tadeon-sheet-mode="game"] .tadeon-sheet-page button[role="combobox"]:hover {
   background: color-mix(in srgb, var(--card) 76%, transparent) !important;
 }
 
-html[data-tadeon-sheet-mode="game"] .tadeon-sheet-page input:focus,
-html[data-tadeon-sheet-mode="game"] .tadeon-sheet-page textarea:focus,
+html[data-tadeon-sheet-mode="game"] .tadeon-sheet-page input:not(.tadeon-dossier-field, .tadeon-resource-field, .tadeon-sheet-index-select, .tadeon-dossier-label):focus,
+html[data-tadeon-sheet-mode="game"] .tadeon-sheet-page textarea:not(.tadeon-dossier-field, .tadeon-resource-field, .tadeon-sheet-index-select, .tadeon-dossier-label):focus,
 html[data-tadeon-sheet-mode="game"] .tadeon-sheet-page button[role="combobox"]:focus-visible {
   border-color: color-mix(in srgb, var(--primary) 55%, var(--border)) !important;
   background: var(--background) !important;
   box-shadow: 0 0 0 2px color-mix(in srgb, var(--primary) 13%, transparent) !important;
 }
 
-html[data-tadeon-sheet-mode="game"] .tadeon-sheet-page textarea:focus {
+html[data-tadeon-sheet-mode="game"] .tadeon-sheet-page textarea:not(.tadeon-dossier-field, .tadeon-resource-field, .tadeon-sheet-index-select, .tadeon-dossier-label):focus {
   height: 8rem !important;
   min-height: 5.5rem !important;
   max-height: 14rem !important;
@@ -491,34 +491,31 @@ html[data-tadeon-sheet-mode="game"] .tadeon-sheet-page textarea:focus {
 }
 
 /* Controles de manutenção recuam e voltam quando a seção é usada. */
-html[data-tadeon-sheet-mode="game"] .tadeon-sheet-page .tadeon-stepper-button,
-html[data-tadeon-sheet-mode="game"] .tadeon-sheet-page button[aria-label*="Adicionar"],
-html[data-tadeon-sheet-mode="game"] .tadeon-sheet-page button[aria-label*="Remover"],
-html[data-tadeon-sheet-mode="game"] .tadeon-sheet-page button[title*="Adicionar"],
-html[data-tadeon-sheet-mode="game"] .tadeon-sheet-page button[title*="Remover"] {
+html[data-tadeon-sheet-mode="game"] .tadeon-sheet-page button:not([data-material-surface])[aria-label*="Adicionar"],
+html[data-tadeon-sheet-mode="game"] .tadeon-sheet-page button:not([data-material-surface])[aria-label*="Remover"],
+html[data-tadeon-sheet-mode="game"] .tadeon-sheet-page button:not([data-material-surface])[title*="Adicionar"],
+html[data-tadeon-sheet-mode="game"] .tadeon-sheet-page button:not([data-material-surface])[title*="Remover"] {
   opacity: .22;
   transform: scale(.88);
   transition: opacity 150ms ease, transform 150ms ease !important;
 }
 
-html[data-tadeon-sheet-mode="game"] .tadeon-sheet-page section:hover .tadeon-stepper-button,
-html[data-tadeon-sheet-mode="game"] .tadeon-sheet-page section:focus-within .tadeon-stepper-button,
-html[data-tadeon-sheet-mode="game"] .tadeon-sheet-page section:hover button[aria-label*="Adicionar"],
-html[data-tadeon-sheet-mode="game"] .tadeon-sheet-page section:focus-within button[aria-label*="Adicionar"],
-html[data-tadeon-sheet-mode="game"] .tadeon-sheet-page section:hover button[aria-label*="Remover"],
-html[data-tadeon-sheet-mode="game"] .tadeon-sheet-page section:focus-within button[aria-label*="Remover"],
-html[data-tadeon-sheet-mode="game"] .tadeon-sheet-page section:hover button[title*="Adicionar"],
-html[data-tadeon-sheet-mode="game"] .tadeon-sheet-page section:focus-within button[title*="Adicionar"],
-html[data-tadeon-sheet-mode="game"] .tadeon-sheet-page section:hover button[title*="Remover"],
-html[data-tadeon-sheet-mode="game"] .tadeon-sheet-page section:focus-within button[title*="Remover"] {
+html[data-tadeon-sheet-mode="game"] .tadeon-sheet-page section:hover button:not([data-material-surface])[aria-label*="Adicionar"],
+html[data-tadeon-sheet-mode="game"] .tadeon-sheet-page section:focus-within button:not([data-material-surface])[aria-label*="Adicionar"],
+html[data-tadeon-sheet-mode="game"] .tadeon-sheet-page section:hover button:not([data-material-surface])[aria-label*="Remover"],
+html[data-tadeon-sheet-mode="game"] .tadeon-sheet-page section:focus-within button:not([data-material-surface])[aria-label*="Remover"],
+html[data-tadeon-sheet-mode="game"] .tadeon-sheet-page section:hover button:not([data-material-surface])[title*="Adicionar"],
+html[data-tadeon-sheet-mode="game"] .tadeon-sheet-page section:focus-within button:not([data-material-surface])[title*="Adicionar"],
+html[data-tadeon-sheet-mode="game"] .tadeon-sheet-page section:hover button:not([data-material-surface])[title*="Remover"],
+html[data-tadeon-sheet-mode="game"] .tadeon-sheet-page section:focus-within button:not([data-material-surface])[title*="Remover"] {
   opacity: 1;
   transform: scale(1);
 }
 
 /* Informação operacional ganha escala e contraste. */
 html[data-tadeon-sheet-mode="game"] .tadeon-identity-foundation .tadeon-sheet-title,
-html[data-tadeon-sheet-mode="game"] .tadeon-sheet-page #sec-info input:first-of-type,
-html[data-tadeon-sheet-mode="game"] .tadeon-sheet-page input[name="name"] {
+html[data-tadeon-sheet-mode="game"] .tadeon-sheet-page #sec-info input:not(.tadeon-dossier-field, .tadeon-resource-field, .tadeon-sheet-index-select, .tadeon-dossier-label):first-of-type,
+html[data-tadeon-sheet-mode="game"] .tadeon-sheet-page input:not(.tadeon-dossier-field, .tadeon-resource-field, .tadeon-sheet-index-select, .tadeon-dossier-label)[name="name"] {
   min-height: 2.35rem !important;
   height: 2.35rem !important;
   padding-inline: .18rem !important;
@@ -548,11 +545,11 @@ html[data-tadeon-sheet-mode="game"] .tadeon-defense-card {
 }
 
 /* Tabelas de armas, inventário, perícias e habilidades: leitura densa, edição só quando tocada. */
-html[data-tadeon-sheet-mode="game"] #sec-armas input,
-html[data-tadeon-sheet-mode="game"] #sec-inv input,
-html[data-tadeon-sheet-mode="game"] #sec-hab input,
-html[data-tadeon-sheet-mode="game"] #sec-pericias input,
-html[data-tadeon-sheet-mode="game"] #tramas-fragmentos input {
+html[data-tadeon-sheet-mode="game"] #sec-armas input:not(.tadeon-dossier-field, .tadeon-resource-field, .tadeon-sheet-index-select, .tadeon-dossier-label),
+html[data-tadeon-sheet-mode="game"] #sec-inv input:not(.tadeon-dossier-field, .tadeon-resource-field, .tadeon-sheet-index-select, .tadeon-dossier-label),
+html[data-tadeon-sheet-mode="game"] #sec-hab input:not(.tadeon-dossier-field, .tadeon-resource-field, .tadeon-sheet-index-select, .tadeon-dossier-label),
+html[data-tadeon-sheet-mode="game"] #sec-pericias input:not(.tadeon-dossier-field, .tadeon-resource-field, .tadeon-sheet-index-select, .tadeon-dossier-label),
+html[data-tadeon-sheet-mode="game"] #tramas-fragmentos input:not(.tadeon-dossier-field, .tadeon-resource-field, .tadeon-sheet-index-select, .tadeon-dossier-label) {
   min-height: 1.62rem !important;
   height: 1.62rem !important;
   padding-inline: .25rem !important;
@@ -594,21 +591,21 @@ html[data-tadeon-sheet-mode="game"] section[id]:focus-within .text-muted-foregro
     --game-control-height: 2.05rem;
   }
 
-  html[data-tadeon-sheet-mode="game"] .tadeon-sheet-page textarea {
+  html[data-tadeon-sheet-mode="game"] .tadeon-sheet-page textarea:not(.tadeon-dossier-field, .tadeon-resource-field, .tadeon-sheet-index-select, .tadeon-dossier-label) {
     height: 2.8rem !important;
     min-height: 2.8rem !important;
     max-height: 2.8rem !important;
   }
 
-  html[data-tadeon-sheet-mode="game"] .tadeon-sheet-page textarea:focus {
+  html[data-tadeon-sheet-mode="game"] .tadeon-sheet-page textarea:not(.tadeon-dossier-field, .tadeon-resource-field, .tadeon-sheet-index-select, .tadeon-dossier-label):focus {
     height: 9rem !important;
     max-height: 16rem !important;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  html[data-tadeon-sheet-mode="game"] .tadeon-sheet-page input,
-  html[data-tadeon-sheet-mode="game"] .tadeon-sheet-page textarea,
+  html[data-tadeon-sheet-mode="game"] .tadeon-sheet-page input:not(.tadeon-dossier-field, .tadeon-resource-field, .tadeon-sheet-index-select, .tadeon-dossier-label),
+  html[data-tadeon-sheet-mode="game"] .tadeon-sheet-page textarea:not(.tadeon-dossier-field, .tadeon-resource-field, .tadeon-sheet-index-select, .tadeon-dossier-label),
   html[data-tadeon-sheet-mode="game"] .tadeon-sheet-page button {
     transition: none !important;
   }

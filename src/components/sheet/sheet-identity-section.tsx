@@ -229,7 +229,7 @@ export function SheetIdentitySection({
                     {String(index + 1).padStart(2, "0")}
                   </span>
                   <Input
-                    className="tadeon-link-row__name"
+                    className="tadeon-link-row__name tadeon-dossier-field"
                     disabled={!canEdit}
                     value={link.name}
                     placeholder={`Vínculo ${index + 1}`}
@@ -247,7 +247,7 @@ export function SheetIdentitySection({
                     }}
                   />
                   <Input
-                    className="tadeon-link-row__relation"
+                    className="tadeon-link-row__relation tadeon-dossier-field"
                     disabled={!canEdit}
                     value={link.relation}
                     placeholder="Natureza da relação"

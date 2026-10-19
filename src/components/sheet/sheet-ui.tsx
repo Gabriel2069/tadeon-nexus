@@ -172,11 +172,12 @@ export function Field({
   const fieldId = useId();
   return (
     <div className={`tadeon-sheet-field ${className}`}>
-      <Label htmlFor={fieldId} className="text-xs">
+      <Label htmlFor={fieldId} className="tadeon-dossier-label text-xs">
         {label}
       </Label>
       {multiline ? (
         <Textarea
+          className="tadeon-dossier-field"
           id={fieldId}
           value={value || ""}
           onChange={(e) => onChange(e.target.value)}
@@ -189,7 +190,7 @@ export function Field({
           value={value || ""}
           onChange={(e) => onChange(e.target.value)}
           disabled={disabled}
-          className="h-9"
+          className="tadeon-dossier-field h-9"
         />
       )}
     </div>
@@ -263,7 +264,7 @@ export function StatBlock({
             value={current}
             aria-label={`${full} atual`}
             onChange={(e) => onCurrent(Number(e.target.value))}
-            className="h-9 min-w-0 text-center text-sm font-semibold"
+            className="tadeon-resource-field h-9 min-w-0 text-center text-sm font-semibold"
           />
           <Button
             size="sm"
@@ -284,7 +285,7 @@ export function StatBlock({
             value={mod}
             aria-label={`Modificador de ${full}`}
             onChange={(e) => onMod(Number(e.target.value))}
-            className="h-8 text-center text-xs"
+            className="tadeon-resource-field h-8 text-center text-xs"
           />
         </label>
       </div>

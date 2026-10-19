@@ -374,12 +374,10 @@ try {
           (await collapse.getAttribute("aria-expanded")) === "true",
           "Interrupted folds settle to the latest open state",
         );
-        const fold = await page
-          .locator("#sec-info .tadeon-sheet-section__body")
-          .evaluate((e) => ({
-            animation: getComputedStyle(e).animationName,
-            transform: getComputedStyle(e).transform,
-          }));
+        const fold = await page.locator("#sec-info .tadeon-sheet-section__body").evaluate((e) => ({
+          animation: getComputedStyle(e).animationName,
+          transform: getComputedStyle(e).transform,
+        }));
         assert(
           fold.animation === "tadeon-fold-open" && fold.transform === "none",
           "The shared fold owns motion without transforming text",
@@ -512,6 +510,42 @@ try {
           (await page.locator("html").getAttribute("data-tadeon-sheet-mode")) === "game",
           "Game mode",
         );
+        const game = await page.evaluate(() => ({
+          nameHeight: document
+            .querySelector(".tadeon-identity-field--name textarea")
+            .getBoundingClientRect().height,
+          nameFont: getComputedStyle(
+            document.querySelector(".tadeon-identity-field--name textarea"),
+          ).fontFamily,
+          overflow: document.documentElement.scrollWidth > innerWidth,
+          controls: [
+            ...document.querySelectorAll(".tadeon-stat-block button, .tadeon-stat-block input"),
+          ].map((e) => {
+            const r = e.getBoundingClientRect(),
+              host = e.closest(".tadeon-stat-block").getBoundingClientRect();
+            return {
+              w: r.width,
+              h: r.height,
+              fits: r.x >= host.x && r.right <= host.right,
+              transform: getComputedStyle(e).transform,
+              opacity: getComputedStyle(e).opacity,
+            };
+          }),
+        }));
+        assert(
+          !game.overflow && game.nameHeight >= 80 && game.nameFont.includes("Cormorant Garamond"),
+          "Game mode preserves the dossier name and reflow",
+        );
+        assert(
+          game.controls.every((e) => e.h >= 44 && e.fits && e.transform === "none"),
+          "Game mode retains full resource controls without scale or clipping",
+        );
+        if (process.env.NEXUS_GAME_SCREENSHOTS === "1") {
+          await page.locator("#sec-info").scrollIntoViewIfNeeded();
+          await page.screenshot({ path: `${output}/game-identity-${width}.png` });
+          await page.locator("#sec-pontos").scrollIntoViewIfNeeded();
+          await page.screenshot({ path: `${output}/game-resources-${width}.png` });
+        }
         await page.getByRole("button", { name: "Editar", exact: true }).click();
       } else assert(writes.length === 0, "Read-only never writes");
       assert(
@@ -532,6 +566,7 @@ try {
         errors,
       });
       await context.close();
+      console.log(JSON.stringify({ width, state, passed: true }));
     }
   writeFileSync(`${output}/results.json`, JSON.stringify({ fixtureOnly: true, results }, null, 2));
   console.log(JSON.stringify({ views: results.length, output, passed: true }));
