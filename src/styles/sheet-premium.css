@@ -5,6 +5,11 @@
   max-width: 96rem;
 }
 
+@media (min-width: 768px) {
+  /* Match the shell's canonical 4.65rem toolbar; dedicated popouts have no offset. */
+  .tadeon-shell .tadeon-sheet-page { --sheet-sticky-top: 4.65rem; }
+}
+
 .tadeon-sheet-page::before {
   position: fixed;
   z-index: -1;
@@ -23,7 +28,7 @@
 .tadeon-sheet-commandbar {
   position: sticky;
   z-index: 25;
-  top: 0;
+  top: var(--sheet-sticky-top, 0rem);
   margin: 0 calc(clamp(1rem, 3vw, 2rem) * -1) 1.25rem;
   padding: 0.75rem clamp(1rem, 3vw, 2rem);
   border-bottom: 1px solid color-mix(in srgb, var(--border) 82%, transparent);

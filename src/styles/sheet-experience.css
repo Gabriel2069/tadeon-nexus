@@ -20,7 +20,7 @@ html[data-tadeon-sheet-mode] .tadeon-sheet-frame [role="combobox"] {
 }
 
 html[data-tadeon-sheet-mode] .tadeon-sheet-frame section[id] {
-  scroll-margin-top: 8.5rem;
+  scroll-margin-top: calc(var(--sheet-sticky-top, 0rem) + 8.5rem);
 }
 
 @media (min-width: 1024px) {

@@ -540,6 +540,33 @@ try {
           game.controls.every((e) => e.h >= 44 && e.fits && e.transform === "none"),
           "Game mode retains full resource controls without scale or clipping",
         );
+        await page.waitForFunction(
+          () => !document.querySelector('[data-sonner-toast][data-type="error"]'),
+        );
+        if (width >= 768) {
+          await page
+            .locator(".tadeon-sheet-jumpbar")
+            .getByRole("button", { name: "Identidade", exact: true })
+            .click();
+          const sticky = await page.evaluate(() => {
+            const shell = document.querySelector(".tadeon-desktop-toolbar").getBoundingClientRect();
+            const command = document
+              .querySelector(".tadeon-sheet-commandbar")
+              .getBoundingClientRect();
+            const title = document.querySelector("#sec-info h2").getBoundingClientRect();
+            return {
+              shellBottom: shell.bottom,
+              commandTop: command.top,
+              commandBottom: command.bottom,
+              titleTop: title.top,
+            };
+          });
+          assert(
+            sticky.commandTop >= sticky.shellBottom - 1 &&
+              sticky.titleTop >= sticky.commandBottom - 1,
+            "Sticky toolbar and section targets remain below the shell header",
+          );
+        }
         if (process.env.NEXUS_GAME_SCREENSHOTS === "1") {
           await page.locator("#sec-info").scrollIntoViewIfNeeded();
           await page.screenshot({ path: `${output}/game-identity-${width}.png` });
