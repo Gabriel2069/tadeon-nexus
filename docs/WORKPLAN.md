@@ -2,7 +2,7 @@
 
 > Gerado de [project-continuity.json](project-continuity.json). Edite o registro e rode `npm run sync:project`; não mantenha uma cópia manual.
 
-Snapshot: 2026-10-19; referência de runtime: `e5ba2df38ce01cc76cb3c66cf5cfe44249ce9fda`. PR #279 em `design/nex-024-archive-composition`; integração: `integrated`. Não é prova de deploy.
+Snapshot: 2026-10-19; referência de runtime: `41f909874f46dd7360afe5c00734a37a6f1edeb4`. PR #281 em `design/nex-025-sheet-dossier`; integração: `integrated`. Não é prova de deploy.
 
 Estados: planejado → próximo → em andamento → validado na branch → integrado. Publicação exige evidência própria do SHA; adiado conserva o requisito. Se um requisito mudar, preservar o ID e registrar a decisão/evidência.
 
@@ -34,7 +34,7 @@ Cada PR usa IDs desta fila e declara dependências. Trabalho sobre o mesmo propr
 | NEX-022 | Mesa: persistência e projeção da cor-base personalizada | Integrado | 7 | tabletop | NEX-007 |
 | NEX-023 | Véu & Trama: materiais e interação de todo o sistema | Integrado | 7 | shell | NEX-022, NEX-016 |
 | NEX-024 | Dashboard editorial, acervo navegável e acabamento dos menus | Integrado | 7 | shell | NEX-023 |
-| NEX-025 | Ficha: hierarquia, superfícies e condução visual | Validado na branch | 7 | sheet | NEX-024 |
+| NEX-025 | Ficha: hierarquia, superfícies e condução visual | Integrado | 7 | sheet | NEX-024 |
 | NEX-026 | Nexus e biblioteca: composição da leitura e exploração | Próximo | 7 | knowledge | NEX-024, NEX-025 |
 
 ## NEX-001 — Preparação estrutural
@@ -233,7 +233,7 @@ Evidências: [docs/DESIGN.md](../docs/DESIGN.md), [docs/FOUNDATION.md](../docs/F
 - Aprofundar a identidade de dossiê com materiais e respostas locais, sem repetir molduras ou cobrir texto.
 - Verificar condições, inventário e abertura/fechamento por teclado/toque nas quatro larguras e com movimento reduzido.
 
-Evidências: [docs/DESIGN.md](../docs/DESIGN.md), [docs/FOUNDATION.md](../docs/FOUNDATION.md), [docs/sheet-design-validation.json](../docs/sheet-design-validation.json), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/pull/281), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39303671143).
+Evidências: [docs/DESIGN.md](../docs/DESIGN.md), [docs/FOUNDATION.md](../docs/FOUNDATION.md), [docs/sheet-design-validation.json](../docs/sheet-design-validation.json), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/pull/281), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39303671143), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39304286379), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39304572774), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39304572872).
 
 ## NEX-026 — Nexus e biblioteca: composição da leitura e exploração
 
