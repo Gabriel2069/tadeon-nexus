@@ -308,6 +308,7 @@ export function NexusWorkspace({
   const readingRegion = useRef<HTMLElement>(null);
   const indexRegion = useRef<HTMLElement>(null);
   const toolsTrigger = useRef<HTMLButtonElement>(null);
+  const toolsDialogOrigin = useRef<"portability" | "graph" | "commands" | null>(null);
   const pendingSaves = useRef(new Map<string, Promise<void>>());
   const [closedNodes, setClosedNodes] = useState<string[]>([]);
   const scopesRequests = useRef(createLatestRequestGate());
@@ -1190,6 +1191,14 @@ export function NexusWorkspace({
     onlyCanonical,
   ].filter(Boolean).length;
 
+  // A menu item disappears before its dialog closes. Restore the persistent opener explicitly.
+  const restoreToolsFocus = (origin: "portability" | "graph" | "commands", event: Event) => {
+    if (toolsDialogOrigin.current !== origin) return;
+    toolsDialogOrigin.current = null;
+    event.preventDefault();
+    if (!createOpen) toolsTrigger.current?.focus({ preventScroll: true });
+  };
+
   const resetSearchFilters = () => {
     setCollection("all");
     setTypeFilter("all");
@@ -1240,7 +1249,7 @@ export function NexusWorkspace({
               <DropdownMenuContent align="end">
                 <DropdownMenuItem
                   onSelect={() => {
-                    toolsTrigger.current?.focus({ preventScroll: true });
+                    toolsDialogOrigin.current = "portability";
                     setPortabilityOpen(true);
                   }}
                 >
@@ -1251,7 +1260,7 @@ export function NexusWorkspace({
                   <DropdownMenuItem
                     disabled={!selected}
                     onSelect={() => {
-                      toolsTrigger.current?.focus({ preventScroll: true });
+                      toolsDialogOrigin.current = "graph";
                       setGraphOpen(true);
                     }}
                   >
@@ -1261,7 +1270,7 @@ export function NexusWorkspace({
                 )}
                 <DropdownMenuItem
                   onSelect={() => {
-                    toolsTrigger.current?.focus({ preventScroll: true });
+                    toolsDialogOrigin.current = "commands";
                     setCommandOpen(true);
                   }}
                 >
@@ -2673,7 +2682,10 @@ export function NexusWorkspace({
       </AlertDialog>
 
       <Dialog open={graphOpen} onOpenChange={setGraphOpen}>
-        <DialogContent className="tadeon-graph-dialog h-[92vh] max-h-[92vh] overflow-hidden p-4 sm:max-w-[96vw]">
+        <DialogContent
+          onCloseAutoFocus={(event) => restoreToolsFocus("graph", event)}
+          className="tadeon-graph-dialog h-[92vh] max-h-[92vh] overflow-hidden p-4 sm:max-w-[96vw]"
+        >
           <DialogHeader className="shrink-0 pr-12">
             <DialogTitle className="font-cinzel">Teia local de O Nexus</DialogTitle>
             <DialogDescription>
@@ -2687,6 +2699,7 @@ export function NexusWorkspace({
                 campaignId={campaignScope}
                 focusNodeId={selected.id}
                 onOpenNode={(nodeId) => {
+                  toolsDialogOrigin.current = null;
                   setGraphOpen(false);
                   void openNode(nodeId);
                 }}
@@ -2773,7 +2786,10 @@ export function NexusWorkspace({
       </Dialog>
 
       <Dialog open={commandOpen} onOpenChange={setCommandOpen}>
-        <DialogContent className="gap-0 overflow-hidden p-0 sm:max-w-2xl">
+        <DialogContent
+          onCloseAutoFocus={(event) => restoreToolsFocus("commands", event)}
+          className="gap-0 overflow-hidden p-0 sm:max-w-2xl"
+        >
           <DialogHeader className="border-b p-4">
             <DialogTitle className="font-cinzel">Paleta de comandos</DialogTitle>
             <DialogDescription>Ctrl + Shift + P</DialogDescription>
@@ -2818,6 +2834,7 @@ export function NexusWorkspace({
                 type="button"
                 key={node.id}
                 onClick={() => {
+                  toolsDialogOrigin.current = null;
                   setCommandOpen(false);
                   void openNode(node);
                 }}
@@ -3053,6 +3070,7 @@ export function NexusWorkspace({
       <KnowledgePortabilityDialog
         open={portabilityOpen}
         onOpenChange={setPortabilityOpen}
+        onCloseAutoFocus={(event) => restoreToolsFocus("portability", event)}
         workspaceId={workspaceId}
         campaignId={campaignScope}
         assetsEnabled={assetsEnabled}

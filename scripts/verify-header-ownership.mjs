@@ -326,8 +326,21 @@ try {
         );
         await page.keyboard.press("Escape");
         await dialog.waitFor({ state: "detached" });
-        if (!(await tools.evaluate((e) => document.activeElement === e)))
-          errors.push("Nexus tools dialog did not return focus to its trigger");
+        await page
+          .waitForFunction(
+            () => document.activeElement?.textContent?.trim() === "Ferramentas",
+            undefined,
+            { timeout: 5000 },
+          )
+          .catch(async () => {
+            errors.push("Nexus tools dialog did not return focus to its trigger");
+            metrics.toolsFocusFailure = await page.evaluate(() => ({
+              tag: document.activeElement?.tagName,
+              id: document.activeElement?.id,
+              role: document.activeElement?.getAttribute("role"),
+              text: document.activeElement?.textContent?.slice(0, 160),
+            }));
+          });
         const explore = page.getByRole("button", { name: "Explorar", exact: true });
         if (await explore.isVisible()) {
           await explore.click();
