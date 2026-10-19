@@ -20,7 +20,7 @@ html[data-tadeon-sheet-mode] .tadeon-sheet-frame [role="combobox"] {
 }
 
 html[data-tadeon-sheet-mode] .tadeon-sheet-frame section[id] {
-  scroll-margin-top: 8.5rem;
+  scroll-margin-top: calc(var(--sheet-sticky-top, 0px) + var(--sheet-toolbar-height, 7rem) + 1rem);
 }
 
 @media (min-width: 1024px) {
@@ -58,16 +58,6 @@ html[data-tadeon-sheet-mode] .tadeon-sheet-frame section[id] {
     padding-inline: 0.85rem;
   }
 
-  html[data-tadeon-sheet-mode] .tadeon-sheet-overview {
-    grid-template-columns: repeat(4, minmax(10rem, 1fr));
-    align-items: stretch;
-  }
-
-  html[data-tadeon-sheet-mode] .tadeon-overview-metric {
-    min-inline-size: 0;
-    min-block-size: 5.35rem;
-  }
-
   html[data-tadeon-sheet-mode] #sec-attr .tadeon-attribute-grid {
     align-items: stretch;
     justify-items: stretch;
@@ -100,10 +90,6 @@ html[data-tadeon-sheet-mode] .tadeon-sheet-frame section[id] {
 @media (min-width: 1024px) and (max-width: 1240px) {
   html[data-tadeon-sheet-mode] .tadeon-sheet-commandbar__main {
     grid-template-columns: 2.75rem minmax(10rem, 0.72fr) minmax(12rem, 1fr) auto;
-  }
-
-  html[data-tadeon-sheet-mode] .tadeon-sheet-overview {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 

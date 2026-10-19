@@ -2,6 +2,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { BrandMark } from "@/components/brand-mark";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { useId, useState } from "react";
 
 import {
   Select,
@@ -11,7 +14,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { type LifeCycleTrait, type LinkState, genId } from "@/lib/sheet-types";
-import { IdCard, Link2, Plus, Trash } from "lucide-react";
+import { ChevronDown, Link2, Plus, Trash } from "lucide-react";
 
 import { type SheetData, type SheetUpdate } from "./sheet-model";
 import { Field, Section } from "./sheet-ui";
@@ -35,17 +38,18 @@ export function SheetIdentitySection({
   canEdit: boolean;
   update: SheetUpdate;
 }) {
+  const [linksOpen, setLinksOpen] = useState(true);
+  const linksId = useId();
   return (
     <Section id="sec-info" title="Identidade" className="tadeon-identity-section">
       <div className="tadeon-identity-lead">
         <div className="tadeon-identity-sigil" aria-hidden="true">
-          <IdCard />
+          <BrandMark />
         </div>
         <div className="min-w-0 flex-1">
           <p className="tadeon-eyebrow">Dossiê de continuidade</p>
-          <p className="mt-1 max-w-3xl text-xs leading-relaxed text-muted-foreground">
-            Origem situa, Ocupação mostra prática, Convicção sustenta, Limite interrompe, Ferida
-            pressiona e Marca registra o que já mudou.
+          <p className="tadeon-identity-lead__detail">
+            Origem, marcas e relações que dão forma à personagem.
           </p>
         </div>
         <div className="tadeon-identity-link-count">
@@ -58,6 +62,7 @@ export function SheetIdentitySection({
       <div className="tadeon-identity-foundation">
         <Field
           className="tadeon-identity-field--name"
+          multiline
           label="Nome"
           value={sheet.name}
           onChange={(v) => update("name", v)}
@@ -165,7 +170,7 @@ export function SheetIdentitySection({
             />
           </div>
         </div>
-        <div className="tadeon-link-panel">
+        <Collapsible open={linksOpen} onOpenChange={setLinksOpen} className="tadeon-link-panel">
           <div className="tadeon-link-panel__heading">
             <div>
               <p className="tadeon-eyebrow">Vínculos</p>
@@ -173,124 +178,143 @@ export function SheetIdentitySection({
                 Relações que sustentam, tensionam ou transformam a personagem.
               </p>
             </div>
-            {canEdit && (
-              <Button
-                type="button"
-                size="sm"
-                variant="outline"
-                className="tadeon-link-add gap-1.5"
-                onClick={() =>
-                  update("identity_data", {
-                    ...sheet.identity_data,
-                    links: [
-                      ...sheet.identity_data.links,
-                      {
-                        id: genId(),
-                        name: "",
-                        relation: "",
-                        state: "Presente",
-                      },
-                    ],
-                  })
-                }
-              >
-                <Plus className="h-3.5 w-3.5" />
-                Novo vínculo
-              </Button>
-            )}
-          </div>
-          <div className="tadeon-link-list">
-            {sheet.identity_data.links.map((link, index) => (
-              <div key={link.id} className="tadeon-link-row">
-                <span className="tadeon-link-row__number" aria-hidden="true">
-                  {String(index + 1).padStart(2, "0")}
-                </span>
-                <Input
-                  className="tadeon-link-row__name"
-                  disabled={!canEdit}
-                  value={link.name}
-                  placeholder={`Vínculo ${index + 1}`}
-                  aria-label={`Nome do vínculo ${index + 1}`}
-                  onChange={(event) => {
-                    const links = [...sheet.identity_data.links];
-                    links[index] = {
-                      ...link,
-                      name: event.target.value,
-                    };
+            <div className="tadeon-link-panel__actions">
+              {canEdit && (
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="outline"
+                  className="tadeon-link-add gap-1.5"
+                  onClick={() => {
+                    setLinksOpen(true);
                     update("identity_data", {
                       ...sheet.identity_data,
-                      links,
-                    });
-                  }}
-                />
-                <Input
-                  className="tadeon-link-row__relation"
-                  disabled={!canEdit}
-                  value={link.relation}
-                  placeholder="Natureza da relação"
-                  aria-label={`Relação do vínculo ${index + 1}`}
-                  onChange={(event) => {
-                    const links = [...sheet.identity_data.links];
-                    links[index] = {
-                      ...link,
-                      relation: event.target.value,
-                    };
-                    update("identity_data", {
-                      ...sheet.identity_data,
-                      links,
-                    });
-                  }}
-                />
-                <Select
-                  value={link.state}
-                  disabled={!canEdit}
-                  onValueChange={(value) => {
-                    const links = [...sheet.identity_data.links];
-                    links[index] = {
-                      ...link,
-                      state: value as LinkState,
-                    };
-                    update("identity_data", {
-                      ...sheet.identity_data,
-                      links,
+                      links: [
+                        ...sheet.identity_data.links,
+                        {
+                          id: genId(),
+                          name: "",
+                          relation: "",
+                          state: "Presente",
+                        },
+                      ],
                     });
                   }}
                 >
-                  <SelectTrigger
-                    className="tadeon-link-row__state"
-                    aria-label={`Estado do vínculo ${index + 1}`}
-                  >
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {LINK_STATES.map((state) => (
-                      <SelectItem key={state} value={state}>
-                        {state}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                {canEdit && sheet.identity_data.links.length > 2 && (
-                  <Button
-                    type="button"
-                    size="icon"
-                    variant="ghost"
-                    className="tadeon-link-row__remove text-muted-foreground hover:text-destructive"
-                    aria-label={`Remover vínculo ${index + 1}`}
-                    onClick={() =>
+                  <Plus className="h-3.5 w-3.5" />
+                  Novo vínculo
+                </Button>
+              )}
+              <CollapsibleTrigger asChild>
+                <Button
+                  type="button"
+                  size="icon"
+                  variant="ghost"
+                  data-sheet-fold-trigger=""
+                  aria-label={`${linksOpen ? "Recolher" : "Expandir"} vínculos`}
+                  aria-controls={linksId}
+                >
+                  <span className="tadeon-sheet-fold-chevron">
+                    <ChevronDown aria-hidden="true" />
+                  </span>
+                </Button>
+              </CollapsibleTrigger>
+            </div>
+          </div>
+          <CollapsibleContent id={linksId}>
+            <div className="tadeon-link-list">
+              {sheet.identity_data.links.map((link, index) => (
+                <div key={link.id} className="tadeon-link-row">
+                  <span className="tadeon-link-row__number" aria-hidden="true">
+                    {String(index + 1).padStart(2, "0")}
+                  </span>
+                  <Input
+                    className="tadeon-link-row__name tadeon-dossier-field"
+                    disabled={!canEdit}
+                    value={link.name}
+                    placeholder={`Vínculo ${index + 1}`}
+                    aria-label={`Nome do vínculo ${index + 1}`}
+                    onChange={(event) => {
+                      const links = [...sheet.identity_data.links];
+                      links[index] = {
+                        ...link,
+                        name: event.target.value,
+                      };
                       update("identity_data", {
                         ...sheet.identity_data,
-                        links: sheet.identity_data.links.filter((item) => item.id !== link.id),
-                      })
-                    }
+                        links,
+                      });
+                    }}
+                  />
+                  <Input
+                    className="tadeon-link-row__relation tadeon-dossier-field"
+                    disabled={!canEdit}
+                    value={link.relation}
+                    placeholder="Natureza da relação"
+                    aria-label={`Relação do vínculo ${index + 1}`}
+                    onChange={(event) => {
+                      const links = [...sheet.identity_data.links];
+                      links[index] = {
+                        ...link,
+                        relation: event.target.value,
+                      };
+                      update("identity_data", {
+                        ...sheet.identity_data,
+                        links,
+                      });
+                    }}
+                  />
+                  <Select
+                    value={link.state}
+                    disabled={!canEdit}
+                    onValueChange={(value) => {
+                      const links = [...sheet.identity_data.links];
+                      links[index] = {
+                        ...link,
+                        state: value as LinkState,
+                      };
+                      update("identity_data", {
+                        ...sheet.identity_data,
+                        links,
+                      });
+                    }}
                   >
-                    <Trash className="h-4 w-4" />
-                  </Button>
-                )}
-              </div>
-            ))}
-          </div>
-        </div>
+                    <SelectTrigger
+                      className="tadeon-link-row__state"
+                      aria-label={`Estado do vínculo ${index + 1}`}
+                    >
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {LINK_STATES.map((state) => (
+                        <SelectItem key={state} value={state}>
+                          {state}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  {canEdit && sheet.identity_data.links.length > 2 && (
+                    <Button
+                      type="button"
+                      size="icon"
+                      variant="ghost"
+                      className="tadeon-link-row__remove text-muted-foreground hover:text-destructive"
+                      aria-label={`Remover vínculo ${index + 1}`}
+                      onClick={() =>
+                        update("identity_data", {
+                          ...sheet.identity_data,
+                          links: sheet.identity_data.links.filter((item) => item.id !== link.id),
+                        })
+                      }
+                    >
+                      <Trash className="h-4 w-4" />
+                    </Button>
+                  )}
+                </div>
+              ))}
+            </div>
+          </CollapsibleContent>
+        </Collapsible>
       </div>
     </Section>
   );

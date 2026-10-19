@@ -39,8 +39,7 @@
    -------------------------------------------------------------------------- */
 @media (hover: hover) and (pointer: fine) {
   .tadeon-shell .tadeon-surface[data-tadeon-interactive="true"],
-  .tadeon-shell .tadeon-state-panel,
-  .tadeon-shell .tadeon-link-panel {
+  .tadeon-shell .tadeon-state-panel {
     transition:
       transform var(--tadeon-visible-ui) var(--tadeon-visible-ease-standard),
       border-color var(--tadeon-visible-ui) ease,
@@ -49,15 +48,13 @@
   }
 
   .tadeon-shell .tadeon-surface[data-tadeon-interactive="true"]:hover,
-  .tadeon-shell .tadeon-state-panel:hover,
-  .tadeon-shell .tadeon-link-panel:hover {
+  .tadeon-shell .tadeon-state-panel:hover {
     transform: translate3d(0, -7px, 0) scale(1.012) !important;
     filter: saturate(1.06) brightness(1.025) !important;
   }
 
   .tadeon-shell .tadeon-surface:not([data-material-surface="card"])[data-tadeon-interactive="true"]:hover,
-.tadeon-shell .tadeon-state-panel:hover,
-.tadeon-shell .tadeon-link-panel:hover {
+.tadeon-shell .tadeon-state-panel:hover {
     box-shadow:
       0 34px 90px -44px rgb(0 0 0 / 98%),
       0 10px 34px -28px rgb(217 215 164 / 20%),
@@ -65,8 +62,7 @@
   }
 
   .tadeon-shell .tadeon-surface[data-tadeon-interactive="true"]:active,
-  .tadeon-shell .tadeon-state-panel:active,
-  .tadeon-shell .tadeon-link-panel:active {
+  .tadeon-shell .tadeon-state-panel:active {
     transform: translate3d(0, 2px, 0) scale(.978) !important;
   }
 }
@@ -151,12 +147,12 @@
 }
 
 .tadeon-shell [data-slot="accordion-trigger"] :where(svg.lucide),
-.tadeon-shell [data-slot="collapsible-trigger"] :where(svg.lucide) {
+.tadeon-shell [data-slot="collapsible-trigger"]:not([data-sheet-fold-trigger]) :where(svg.lucide) {
   transition: transform 320ms var(--tadeon-visible-ease-in) !important;
 }
 
 .tadeon-shell [data-state="open"] > [data-slot="accordion-trigger"] :where(svg.lucide),
-.tadeon-shell [data-state="open"] > [data-slot="collapsible-trigger"] :where(svg.lucide) {
+.tadeon-shell [data-state="open"] > [data-slot="collapsible-trigger"]:not([data-sheet-fold-trigger]) :where(svg.lucide) {
   transform: rotate(180deg) scale(1.12) !important;
 }
 
@@ -499,7 +495,6 @@
   .tadeon-shell a[href],
   .tadeon-shell .tadeon-surface,
   .tadeon-shell .tadeon-state-panel,
-  .tadeon-shell .tadeon-link-panel,
   .tadeon-shell [data-slot="tabs-trigger"]:not([data-material-surface="tab"]) {
     transition: none !important;
   }
@@ -583,7 +578,7 @@
 @keyframes tdv-saving{0%,100%{box-shadow:0 0 0 0 rgb(217 215 164 / 0%)}50%{box-shadow:0 0 34px -14px rgb(217 215 164 / 48%)}}@keyframes tdv-success{0%{opacity:.55;transform:scale(.88)}45%{opacity:1;transform:scale(1.1)}75%{transform:scale(.97)}100%{transform:scale(1)}}@keyframes tdv-error{0%,100%{transform:translateX(0)}20%{transform:translateX(-8px) rotate(-.4deg)}40%{transform:translateX(7px) rotate(.4deg)}60%{transform:translateX(-4px)}80%{transform:translateX(2px)}}
 
 /* Tables / lists: rows arrive as a visible procession. */
-.tadeon-shell .tadeon-users-list > *, .tadeon-shell .tadeon-inventory-list > *, .tadeon-shell .tadeon-skill-list > *, .tadeon-shell .tadeon-sheet-overview > *{animation:tdv-row-in 560ms var(--tdv-in) both}.tadeon-shell .tadeon-users-list > :nth-child(2),.tadeon-shell .tadeon-inventory-list > :nth-child(2),.tadeon-shell .tadeon-skill-list > :nth-child(2){animation-delay:50ms}.tadeon-shell .tadeon-users-list > :nth-child(3),.tadeon-shell .tadeon-inventory-list > :nth-child(3),.tadeon-shell .tadeon-skill-list > :nth-child(3){animation-delay:100ms}.tadeon-shell .tadeon-users-list > :nth-child(4),.tadeon-shell .tadeon-inventory-list > :nth-child(4),.tadeon-shell .tadeon-skill-list > :nth-child(4){animation-delay:150ms}@keyframes tdv-row-in{from{opacity:0;transform:translateX(-28px) translateY(14px) scale(.97);filter:blur(5px)}65%{opacity:1;transform:translateX(4px) translateY(-2px) scale(1.01);filter:blur(0)}to{transform:none}}
+.tadeon-shell .tadeon-users-list > *, .tadeon-shell .tadeon-inventory-list > *, .tadeon-shell .tadeon-skill-list > *{animation:tdv-row-in 560ms var(--tdv-in) both}.tadeon-shell .tadeon-users-list > :nth-child(2),.tadeon-shell .tadeon-inventory-list > :nth-child(2),.tadeon-shell .tadeon-skill-list > :nth-child(2){animation-delay:50ms}.tadeon-shell .tadeon-users-list > :nth-child(3),.tadeon-shell .tadeon-inventory-list > :nth-child(3),.tadeon-shell .tadeon-skill-list > :nth-child(3){animation-delay:100ms}.tadeon-shell .tadeon-users-list > :nth-child(4),.tadeon-shell .tadeon-inventory-list > :nth-child(4),.tadeon-shell .tadeon-skill-list > :nth-child(4){animation-delay:150ms}@keyframes tdv-row-in{from{opacity:0;transform:translateX(-28px) translateY(14px) scale(.97);filter:blur(5px)}65%{opacity:1;transform:translateX(4px) translateY(-2px) scale(1.01);filter:blur(0)}to{transform:none}}
 
 /* Nexus: selection becomes a focal event. */
 .tadeon-shell [data-tadeon-node][data-selected=true],.tadeon-shell [data-tadeon-map-element][data-selected=true]{animation:tdv-node-focus 700ms var(--tdv-spring) both;transform-origin:center;filter:drop-shadow(0 18px 32px rgb(217 215 164 / 28%))}.tadeon-shell [data-tadeon-node][data-related=true],.tadeon-shell [data-tadeon-map-element][data-related=true]{transition:opacity 420ms var(--tdv-soft),filter 520ms var(--tdv-soft),transform 500ms var(--tdv-spring)}@keyframes tdv-node-focus{0%{opacity:.55;transform:scale(.72);filter:drop-shadow(0 0 0 rgb(217 215 164 / 0%))}55%{opacity:1;transform:scale(1.15);filter:drop-shadow(0 20px 36px rgb(217 215 164 / 34%))}100%{transform:scale(1)}}
@@ -722,11 +717,11 @@
 @keyframes tui-menu-item{from{opacity:0;transform:translateX(-16px)}to{opacity:1;transform:none}}
 
 /* Real accordion/collapsible content and trigger. */
-.tadeon-shell [data-slot="accordion-trigger"],.tadeon-shell [data-slot="collapsible-trigger"]{transition:color 180ms ease,background-color 220ms ease,transform 260ms var(--tui-spring),box-shadow 300ms var(--tui-soft)}
-.tadeon-shell [data-slot="accordion-trigger"]:hover,.tadeon-shell [data-slot="collapsible-trigger"]:hover{transform:translateX(6px);color:var(--primary)}
+.tadeon-shell [data-slot="accordion-trigger"],.tadeon-shell [data-slot="collapsible-trigger"]:not([data-sheet-fold-trigger]){transition:color 180ms ease,background-color 220ms ease,transform 260ms var(--tui-spring),box-shadow 300ms var(--tui-soft)}
+.tadeon-shell [data-slot="accordion-trigger"]:hover,.tadeon-shell [data-slot="collapsible-trigger"]:not([data-sheet-fold-trigger]):hover{transform:translateX(6px);color:var(--primary)}
 .tadeon-shell [data-slot="accordion-content"][data-state="open"],.tadeon-shell [data-slot="collapsible-content"]:not([data-motion-surface="fold"])[data-state="open"]{animation:tui-expand-in 430ms var(--tui-in) both!important}
 .tadeon-shell [data-slot="accordion-content"][data-state="closed"],.tadeon-shell [data-slot="collapsible-content"]:not([data-motion-surface="fold"])[data-state="closed"]{animation:tui-expand-out 220ms var(--tui-out) both!important}
-.tadeon-shell [data-slot="accordion-trigger"] svg,.tadeon-shell [data-slot="collapsible-trigger"] svg{transition:transform 360ms var(--tui-spring)}
+.tadeon-shell [data-slot="accordion-trigger"] svg,.tadeon-shell [data-slot="collapsible-trigger"]:not([data-sheet-fold-trigger]) svg{transition:transform 360ms var(--tui-spring)}
 @keyframes tui-expand-in{from{opacity:0;transform:translateY(-10px) scaleY(.82);filter:blur(3px)}55%{opacity:1;transform:translateY(2px) scaleY(1.02);filter:blur(0)}to{transform:none}}
 @keyframes tui-expand-out{to{opacity:0;transform:translateY(-7px) scaleY(.9);filter:blur(2px)}}
 
@@ -783,7 +778,6 @@
 
 .tadeon-shell .tadeon-surface[data-tadeon-interactive="true"],
 .tadeon-shell .tadeon-state-panel,
-.tadeon-shell .tadeon-link-panel,
 .tadeon-shell .tadeon-skill-modifier-panel{
   transition:
     transform 340ms var(--tadeon-frame-ease),
@@ -795,14 +789,12 @@
 @media (hover:hover) and (pointer:fine){
   .tadeon-shell .tadeon-surface[data-tadeon-interactive="true"]:hover,
   .tadeon-shell .tadeon-state-panel:hover,
-  .tadeon-shell .tadeon-link-panel:hover,
   .tadeon-shell .tadeon-skill-modifier-panel:hover{
     transform:translate3d(0,-4px,0) scale(1.008) !important;
     filter:saturate(1.035) brightness(1.015) !important;
   }
   .tadeon-shell .tadeon-surface:not([data-material-surface="card"])[data-tadeon-interactive="true"]:hover,
 .tadeon-shell .tadeon-state-panel:hover,
-.tadeon-shell .tadeon-link-panel:hover,
 .tadeon-shell .tadeon-skill-modifier-panel:hover{
     box-shadow:
       0 26px 70px -42px rgb(0 0 0 / 94%),
@@ -813,7 +805,6 @@
 
 .tadeon-shell .tadeon-surface[data-tadeon-interactive="true"]:active,
 .tadeon-shell .tadeon-state-panel:active,
-.tadeon-shell .tadeon-link-panel:active,
 .tadeon-shell .tadeon-skill-modifier-panel:active{
   transform:translate3d(0,1px,0) scale(.986) !important;
 }
@@ -821,7 +812,6 @@
 @media (prefers-reduced-motion:reduce){
   .tadeon-shell .tadeon-surface[data-tadeon-interactive="true"],
   .tadeon-shell .tadeon-state-panel,
-  .tadeon-shell .tadeon-link-panel,
   .tadeon-shell .tadeon-skill-modifier-panel{
     transition:none !important;
   }

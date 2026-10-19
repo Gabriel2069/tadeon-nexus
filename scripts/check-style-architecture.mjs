@@ -87,6 +87,17 @@ for (const file of cssFiles) {
       errors.push(
         `${file}:${rule.source.start.line}: navigation icon/control geometry belongs to navigation-layout.css.`,
       );
+    const ownsDossier = rule.selectors.some((selector) => {
+      if (/data-tadeon-sheet-mode\s*=\s*["']game/.test(selector)) return false;
+      const positive = selector.replace(/:not\([^)]*\)/g, "");
+      return /\.tadeon-(?:sheet-section(?:__[\w-]+)?|overview-metric(?:[\w-]+)?|sheet-overview|identity-[\w-]+|link-(?:panel(?:__[\w-]+)?|list|row(?:__[\w-]+)?|add)|sheet-field|stat-block(?:__[\w-]+)?)(?![\w-])/.test(
+        positive,
+      );
+    });
+    if (ownsDossier && file !== "src/styles/sheet-premium.css")
+      errors.push(
+        `${file}:${rule.source.start.line}: dossier presentation belongs to sheet-premium.css; game density remains in sheet-layout.css.`,
+      );
   });
   ast.walkAtRules("import", (rule) => {
     if (file !== "src/styles.css")

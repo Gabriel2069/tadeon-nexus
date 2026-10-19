@@ -14,7 +14,7 @@
       "roots": 0
     },
     "src/styles/experience-surfaces.css": {
-      "important": 227,
+      "important": 226,
       "roots": 2
     },
     "src/styles/global-search.css": {
@@ -26,7 +26,7 @@
       "roots": 0
     },
     "src/styles/interface-layout.css": {
-      "important": 300,
+      "important": 286,
       "roots": 1
     },
     "src/styles/knowledge-graph-second-brain.css": {
@@ -34,7 +34,7 @@
       "roots": 0
     },
     "src/styles/layout-compatibility.css": {
-      "important": 56,
+      "important": 49,
       "roots": 0
     },
     "src/styles/master-panel-navigation.css": {
@@ -58,7 +58,7 @@
       "roots": 20
     },
     "src/styles/motion-foundation.css": {
-      "important": 73,
+      "important": 67,
       "roots": 6
     },
     "src/styles/motion-interactions.css": {
@@ -90,7 +90,7 @@
       "roots": 0
     },
     "src/styles/route-layout.css": {
-      "important": 1213,
+      "important": 1177,
       "roots": 0
     },
     "src/styles/route-popup-frame.css": {
@@ -102,7 +102,7 @@
       "roots": 0
     },
     "src/styles/sheet-layout.css": {
-      "important": 121,
+      "important": 115,
       "roots": 0
     },
     "src/styles/sheet-premium.css": {

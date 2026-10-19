@@ -85,49 +85,7 @@
 .tadeon-sheet-page #tramas-fragmentos { --tadeon-sheet-accent: 113 107 123; }
 .tadeon-sheet-page #sec-notas { --tadeon-sheet-accent: 31 54 68; }
 
-.tadeon-sheet-page .tadeon-sheet-section {
-  position: relative;
-  isolation: isolate;
-  overflow: clip;
-  border: 1px solid rgb(var(--tadeon-sheet-accent) / 16%) !important;
-  border-radius: 1.05rem .38rem 1.05rem .38rem !important;
-}
-
 /* Replace the unwanted vertical stripe with the dossier-like corner arc. */
-
-.tadeon-sheet-page .tadeon-sheet-section :is(
-  input,
-  textarea,
-  [role="combobox"],
-  [data-slot="select-trigger"]
-) {
-  border-color: rgb(var(--tadeon-sheet-accent) / 20%) !important;
-  background:
-    linear-gradient(135deg, rgb(var(--tadeon-sheet-accent) / 5%), transparent 38%),
-    rgb(5 8 12 / 72%) !important;
-  box-shadow:
-    inset 0 1px rgb(255 255 255 / 3%),
-    0 12px 30px -27px rgb(var(--tadeon-sheet-accent) / 58%) !important;
-}
-
-.tadeon-sheet-page .tadeon-sheet-section :is(
-  input,
-  textarea,
-  [role="combobox"],
-  [data-slot="select-trigger"]
-):focus,
-.tadeon-sheet-page .tadeon-sheet-section :is(
-  input,
-  textarea,
-  [role="combobox"],
-  [data-slot="select-trigger"]
-):focus-visible {
-  border-color: rgb(var(--tadeon-sheet-accent) / 52%) !important;
-  box-shadow:
-    0 0 0 1px rgb(var(--tadeon-sheet-accent) / 14%),
-    0 0 25px -12px rgb(var(--tadeon-sheet-accent) / 72%),
-    inset 0 1px rgb(255 255 255 / 4%) !important;
-}
 
 .tadeon-sheet-page :is(#equilibrio, #exposicao) {
   border-left-width: 1px !important;

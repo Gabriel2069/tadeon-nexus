@@ -41,7 +41,7 @@ describe("acabamento transversal solicitado", () => {
     expect(css).toContain('[data-condition-severity="critical"]');
     expect(css).toContain("--condition-glow-opacity");
     expect(css).toContain("#equilibrio,#exposicao");
-    expect(css).toContain('.tadeon-link-panel[data-collapsed="true"]');
+    // NEX-025: link disclosure is controlled/tested in SheetIdentitySection.
     expect(source("src/routes/sheet.$id.tsx")).toContain("conditionChipPresentation");
     expect(bridge).toContain("Modificadores não consomem PE.");
   });

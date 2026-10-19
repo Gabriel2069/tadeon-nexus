@@ -410,18 +410,8 @@ html body .tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-focus-brand-
    Navigation as a page marker
    ================================================================ */
 
-.tadeon-link-collapse {
-  transition:
-    color var(--tadeon-motion-hover) var(--tadeon-ease-material),
-    background-color var(--tadeon-motion-hover) var(--tadeon-ease-material),
-    border-color var(--tadeon-motion-hover) var(--tadeon-ease-material),
-    box-shadow var(--tadeon-motion-hover) var(--tadeon-ease-material),
-    transform var(--tadeon-motion-press) var(--tadeon-ease-material);
-}
-
 .tadeon-mobile-header__control:hover,
-.tadeon-desktop-toolbar__account:hover,
-.tadeon-link-collapse:hover {
+.tadeon-desktop-toolbar__account:hover {
   box-shadow: 0 14px 30px -24px rgb(217 215 164 / 48%);
 }
 
@@ -580,9 +570,7 @@ html body .tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-focus-brand-
    ================================================================ */
 
 .tadeon-skill-modifier-bridge,
-.tadeon-skill-modifier-panel,
-.tadeon-link-panel,
-.tadeon-link-collapse {
+.tadeon-skill-modifier-panel {
   animation: tadeon-soft-fold var(--tadeon-motion-fold) var(--tadeon-ease-fold) both;
   transform-origin: 50% 0;
 }
@@ -693,9 +681,7 @@ html body .tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-focus-brand-
   .tadeon-loading-mark,
   .tadeon-sheet-condition-chip[data-condition-severity="critical"],
   .tadeon-skill-modifier-bridge,
-  .tadeon-skill-modifier-panel,
-  .tadeon-link-panel,
-  .tadeon-link-collapse {
+  .tadeon-skill-modifier-panel {
     animation: none !important;
     transition-duration: 1ms !important;
   }
@@ -722,8 +708,7 @@ html body .tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-focus-brand-
 .tadeon-nav-item,
 .tadeon-mobile-dock__item,
 .tadeon-mobile-header__control,
-.tadeon-desktop-toolbar__account,
-.tadeon-link-collapse {
+.tadeon-desktop-toolbar__account {
   -webkit-tap-highlight-color: transparent;
 }
 
@@ -771,17 +756,12 @@ button:not([data-material-surface], .tadeon-material-button)[aria-busy="true"] >
     transform: none;
     filter: none;
   }
-
-  .tadeon-link-collapse:active {
-    transform: scale(0.985);
-  }
 }
 
 /* ---------------------------------------------------------------
    Press feedback for important controls
    --------------------------------------------------------------- */
 
-.tadeon-link-collapse:active,
 .tadeon-skill-modifier-tabs button:active {
   transform: scale(0.985);
 }
@@ -909,8 +889,6 @@ button:not([data-material-surface], .tadeon-material-button)[aria-busy="true"] >
   .tadeon-sheet-condition-chip[data-condition-severity="critical"],
   .tadeon-skill-modifier-bridge,
   .tadeon-skill-modifier-panel,
-  .tadeon-link-panel,
-  .tadeon-link-collapse,
   [aria-busy="true"] > svg {
     animation: none !important;
   }
@@ -991,7 +969,6 @@ button:not([data-material-surface], .tadeon-material-button)[aria-busy="true"] >
 .tadeon-surface[data-tadeon-directed="true"],
 .tadeon-state-panel[data-tadeon-directed="true"],
 .tadeon-auth-shell[data-tadeon-directed="true"],
-.tadeon-link-panel[data-tadeon-directed="true"],
 .tadeon-skill-modifier-panel[data-tadeon-directed="true"] {
   position: relative;
   isolation: isolate;
@@ -1025,7 +1002,6 @@ button:not([data-material-surface], .tadeon-material-button)[aria-busy="true"] >
 .tadeon-surface[data-tadeon-directed="true"]::before,
 .tadeon-state-panel[data-tadeon-directed="true"]::before,
 .tadeon-auth-shell[data-tadeon-directed="true"]::before,
-.tadeon-link-panel[data-tadeon-directed="true"]::before,
 .tadeon-skill-modifier-panel[data-tadeon-directed="true"]::before {
   transition:
     opacity var(--tadeon-runtime-interaction) var(--tadeon-runtime-material),
@@ -1418,8 +1394,7 @@ button:not([data-material-surface], .tadeon-material-button)[data-tadeon-directe
   }
 
   .tadeon-sheet-condition-chip,
-  .tadeon-skill-modifier-tabs button,
-  .tadeon-link-collapse {
+  .tadeon-skill-modifier-tabs button {
     min-height: 40px;
     touch-action: manipulation;
   }
@@ -1463,11 +1438,6 @@ button:not([data-material-surface], .tadeon-material-button)[data-tadeon-directe
 
 /* Material hierarchy */
 .tadeon-surface:not([data-material-surface="card"])[data-tadeon-material="archive"] { border-radius: 0.75rem 0.35rem 0.85rem 0.45rem; }
-.tadeon-link-panel[data-tadeon-material="fragment"] {
-  border-left-color: color-mix(in srgb, var(--tadeon-veil) 50%, transparent);
-  border-radius: 0.25rem 0.8rem 0.35rem 0.9rem;
-  background-image: linear-gradient(102deg, rgb(113 107 123 / 4%), transparent 42%);
-}
 .tadeon-skill-modifier-panel[data-tadeon-material="record"] {
   border-top-color: color-mix(in srgb, var(--tadeon-knowledge) 20%, transparent);
   border-bottom-color: color-mix(in srgb, var(--tadeon-knowledge) 18%, transparent);
@@ -1496,38 +1466,6 @@ button:not([data-material-surface], .tadeon-material-button)[data-tadeon-directe
   background: linear-gradient(90deg, rgb(217 215 164 / 28%), transparent 76%);
   content: "";
   opacity: 0.8;
-}
-.tadeon-sheet-overview {
-  position: relative;
-  isolation: isolate;
-  box-shadow: 0 22px 60px -46px rgb(0 0 0 / 96%), inset 0 1px 0 rgb(255 255 255 / 3%), 0 0 0 1px rgb(217 215 164 / 2%);
-}
-.tadeon-overview-metric {
-  transition: transform 220ms var(--tadeon-ease-material, cubic-bezier(0.23, 1, 0.32, 1)), box-shadow 220ms var(--tadeon-ease-material, cubic-bezier(0.23, 1, 0.32, 1)), background-color 220ms ease;
-}
-@media (hover: hover) and (pointer: fine) {
-  .tadeon-overview-metric:hover {
-    z-index: 1;
-  }
-}
-.tadeon-sheet-section {
-  transition: transform 260ms var(--tadeon-ease-material, cubic-bezier(0.23, 1, 0.32, 1)), border-color 220ms ease, box-shadow 260ms var(--tadeon-ease-material, cubic-bezier(0.23, 1, 0.32, 1));
-}
-.tadeon-sheet-section__index { transition: transform 200ms var(--tadeon-ease-material, cubic-bezier(0.23, 1, 0.32, 1)), box-shadow 200ms ease, background-color 200ms ease; }
-@media (hover: hover) and (pointer: fine) {
-  .tadeon-sheet-section:hover .tadeon-sheet-section__index { transform: translateY(-1px) rotate(-1deg); box-shadow: 0 10px 26px -22px rgb(var(--section-rgb) / 55%); }
-}
-.tadeon-sheet-section input:not([type="range"]),
-.tadeon-sheet-section textarea,
-.tadeon-sheet-section [data-slot="select-trigger"] {
-  border-color: color-mix(in srgb, rgb(var(--section-rgb)) 14%, var(--border));
-  background-color: color-mix(in srgb, var(--card) 90%, transparent);
-}
-.tadeon-sheet-section input:not([type="range"]):focus,
-.tadeon-sheet-section textarea:focus,
-.tadeon-sheet-section [data-slot="select-trigger"]:focus-visible {
-  border-color: color-mix(in srgb, rgb(var(--section-rgb)) 48%, var(--border));
-  box-shadow: 0 0 0 3px rgb(var(--section-rgb) / 8%);
 }
 .tadeon-sheet-condition-chip[data-tadeon-state="saving"],
 .tadeon-sheet-condition-chip[data-tadeon-state="pending"] { box-shadow: 0 10px 28px -24px rgb(217 215 164 / 55%); }
@@ -1583,15 +1521,7 @@ button:not([data-material-surface], .tadeon-material-button)[data-tadeon-directe
   .tadeon-knowledge-graph[data-tadeon-directed="true"]::after,
   .tadeon-brain-shell[data-tadeon-directed="true"]::after { inset: 0.65rem; }
 
-  .tadeon-link-panel[data-tadeon-material="fragment"],
   .tadeon-state-panel[data-tadeon-material="state"] { border-radius: 0.75rem; }
-}
-
-@media (prefers-reduced-motion: reduce) {
-
-
-  .tadeon-sheet-section,
-  .tadeon-overview-metric { transition-duration: 1ms !important; }
 }
 
 /* end-source: src/styles/tadeon-experience-details.css */

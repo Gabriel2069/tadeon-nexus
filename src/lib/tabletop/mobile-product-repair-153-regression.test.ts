@@ -32,7 +32,7 @@ describe("mobile product repair 153", () => {
     expect(css).toContain("grid-template-columns: 2.6rem minmax(0, 1fr) auto !important");
     expect(css).toContain(".tadeon-sheet-commandbar__actions");
     expect(css).toContain("#condicoes .tadeon-condition-grid");
-    expect(css).toContain("#sec-info .tadeon-identity-foundation");
+    // NEX-025: identity reflow belongs to sheet-premium and the rendered verifier.
     expect(css).toContain('.tadeon-condition-card[data-tadeon-condition-active="true"]');
     expect(css).toContain("transform: none !important");
   });

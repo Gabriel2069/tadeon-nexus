@@ -1,4 +1,4 @@
-/** NEX-005: isolated browser fixtures; all backend reads/writes and realtime are intercepted. */
+/** NEX-005/025: isolated fixtures; backend reads/writes and realtime are intercepted. */
 import { installDesignFonts } from "./design-font-fixtures.mjs";
 import { mkdirSync, writeFileSync } from "node:fs";
 import { spawn } from "node:child_process";
@@ -205,13 +205,15 @@ try {
       });
       if (readPaused) {
         await page.getByRole("status", { name: "Carregando ficha" }).waitFor();
-        if (process.env.NEXUS_SKIP_SCREENSHOTS !== "1") await page.screenshot({ path: `${output}/loading-${width}.png` });
+        if (process.env.NEXUS_SKIP_SCREENSHOTS !== "1")
+          await page.screenshot({ path: `${output}/loading-${width}.png` });
         readPaused = false;
         releaseRead();
       }
       if (readError) {
         await page.getByText("A ficha não pôde ser aberta").waitFor();
-        if (process.env.NEXUS_SKIP_SCREENSHOTS !== "1") await page.screenshot({ path: `${output}/${state}-${width}.png`, fullPage: true });
+        if (process.env.NEXUS_SKIP_SCREENSHOTS !== "1")
+          await page.screenshot({ path: `${output}/${state}-${width}.png`, fullPage: true });
         readError = false;
         await page.getByRole("button", { name: "Tentar novamente", exact: true }).click();
       }
@@ -255,6 +257,24 @@ try {
           const r = e.getBoundingClientRect();
           return { w: r.width, h: r.height };
         }),
+        resources: [...document.querySelectorAll(".tadeon-stat-block")].map((e) => {
+          const bounds = e.getBoundingClientRect();
+          const styles = getComputedStyle(e);
+          return {
+            tone: styles.getPropertyValue("--resource-rgb").trim(),
+            controlTone: getComputedStyle(e.querySelector("button"))
+              .getPropertyValue("--control-rgb")
+              .trim(),
+            buttons: [...e.querySelectorAll("button")].map((button) => {
+              const b = button.getBoundingClientRect();
+              return { w: b.width, h: b.height, fits: b.x >= bounds.x && b.right <= bounds.right };
+            }),
+          };
+        }),
+        labelFont: getComputedStyle(document.querySelector(".tadeon-sheet-field label")).fontFamily,
+        metricTones: [...document.querySelectorAll(".tadeon-overview-metric")].map((e) =>
+          getComputedStyle(e).getPropertyValue("--metric-rgb").trim(),
+        ),
       }));
       assert(!metrics.overflow, `Overflow ${width}/${state}`);
       assert(
@@ -277,11 +297,28 @@ try {
         ),
         "Attribute controls stay visible inside their instrument",
       );
-      if (process.env.NEXUS_SKIP_SCREENSHOTS !== "1") await page.screenshot({ path: `${output}/top-${state}-${width}.png` });
+      assert(metrics.labelFont.includes("Inter"), "Field labels use interface typography");
+      assert(new Set(metrics.metricTones).size === 4, "Overview preserves its four semantic tones");
+      assert(
+        metrics.resources.length === 4 &&
+          metrics.resources.every(
+            (resource) =>
+              resource.tone === resource.controlTone &&
+              resource.buttons.every((b) => b.w >= 44 && b.h >= 44 && b.fits),
+          ),
+        "Resource controls fit and inherit their own resource tone",
+      );
+      if (process.env.NEXUS_SKIP_SCREENSHOTS !== "1")
+        await page.screenshot({ path: `${output}/top-${state}-${width}.png` });
       await page.locator("#sec-attr").scrollIntoViewIfNeeded();
-      if (process.env.NEXUS_SKIP_SCREENSHOTS !== "1") await page.screenshot({ path: `${output}/attributes-${state}-${width}.png` });
+      if (process.env.NEXUS_SKIP_SCREENSHOTS !== "1")
+        await page.screenshot({ path: `${output}/attributes-${state}-${width}.png` });
+      await page.locator("#sec-pontos").scrollIntoViewIfNeeded();
+      if (process.env.NEXUS_SKIP_SCREENSHOTS !== "1")
+        await page.screenshot({ path: `${output}/resources-${state}-${width}.png` });
       if (state === "editable")
-        if (process.env.NEXUS_SKIP_SCREENSHOTS !== "1") await page.screenshot({ path: `${output}/sheet-${state}-${width}.png`, fullPage: true });
+        if (process.env.NEXUS_SKIP_SCREENSHOTS !== "1")
+          await page.screenshot({ path: `${output}/sheet-${state}-${width}.png`, fullPage: true });
       const toggle = page.getByRole("button", { name: "Recolher seção Informações", exact: true });
       const collapse = (await toggle.count())
         ? toggle
@@ -290,12 +327,78 @@ try {
       assert((await collapse.getAttribute("aria-expanded")) === "false", "Collapse state");
       await collapse.click();
       assert((await name.inputValue()) === sheet.name, "Collapse preserves data");
+      await collapse.click();
+      if (width < 768) await page.getByLabel("Localizar seção da ficha").selectOption("sec-info");
+      else
+        await page
+          .locator(".tadeon-sheet-jumpbar")
+          .getByRole("button", { name: "Identidade", exact: true })
+          .click();
+      await page.waitForFunction(
+        () =>
+          document.querySelector("#sec-info h2") === document.activeElement &&
+          document
+            .querySelector("#sec-info .tadeon-sheet-section__toggle")
+            .getAttribute("aria-expanded") === "true",
+      );
+      assert(
+        (await name.inputValue()) === sheet.name,
+        "The section index reveals a folded section and transfers focus without changing data",
+      );
+      const linkToggle = page.getByRole("button", { name: "Recolher vínculos", exact: true });
+      await linkToggle.focus();
+      await page.keyboard.press("Space");
+      await page.getByLabel("Nome do vínculo 1", { exact: true }).waitFor({ state: "hidden" });
+      await page.keyboard.press("Space");
+      assert(
+        (await page.getByLabel("Nome do vínculo 1", { exact: true }).inputValue()) ===
+          "A sentinela",
+        "Link disclosure preserves controlled data by keyboard",
+      );
+      assert(
+        await linkToggle.evaluate((e) => document.activeElement === e),
+        "Link disclosure keeps trigger focus",
+      );
+      if (width === 1440 && state === "editable") {
+        await page.emulateMedia({ reducedMotion: "no-preference" });
+        for (let i = 0; i < 4; i++) {
+          await collapse.evaluate((e) => e.click());
+          await page.waitForTimeout(35);
+        }
+        await page.waitForFunction(
+          () =>
+            document.querySelector("#sec-info .tadeon-sheet-section__body")?.getBoundingClientRect()
+              .height > 100,
+        );
+        assert(
+          (await collapse.getAttribute("aria-expanded")) === "true",
+          "Interrupted folds settle to the latest open state",
+        );
+        const fold = await page.locator("#sec-info .tadeon-sheet-section__body").evaluate((e) => ({
+          animation: getComputedStyle(e).animationName,
+          transform: getComputedStyle(e).transform,
+        }));
+        assert(
+          fold.animation === "tadeon-fold-open" && fold.transform === "none",
+          "The shared fold owns motion without transforming text",
+        );
+        await page.emulateMedia({ reducedMotion: "reduce" });
+        assert(
+          (await page
+            .locator("#sec-info .tadeon-sheet-section__body")
+            .evaluate((e) => getComputedStyle(e).animationName)) === "none",
+          "Reduced motion removes fold animation",
+        );
+      }
       const history = page.getByRole("button", { name: "Ver mudanças de sessão" });
       await history.focus();
       await page.keyboard.press("Enter");
       await page.getByRole("dialog").waitFor();
       await page.keyboard.press("Escape");
-      await page.getByRole("dialog").waitFor({ state: "hidden" });
+      await page.getByRole("dialog").waitFor({ state: "detached" });
+      await page.waitForFunction(
+        () => document.activeElement?.getAttribute("aria-label") === "Ver mudanças de sessão",
+      );
       assert(await history.evaluate((e) => document.activeElement === e), "History returns focus");
       const organize = page.getByRole("button", { name: "Organizar inventário", exact: true });
       await organize.click();
@@ -315,8 +418,15 @@ try {
           "Read-only container removal",
         );
       }
-      if (process.env.NEXUS_SKIP_SCREENSHOTS !== "1") await page.screenshot({ path: `${output}/inventory-${state}-${width}.png` });
+      if (process.env.NEXUS_SKIP_SCREENSHOTS !== "1")
+        await page.screenshot({ path: `${output}/inventory-${state}-${width}.png` });
       await page.keyboard.press("Escape");
+      await page.getByRole("dialog").waitFor({ state: "detached" });
+      await page.waitForFunction(
+        () =>
+          document.activeElement?.getAttribute("aria-label") === "Organizar inventário" ||
+          document.activeElement?.textContent?.includes("Organizar inventário"),
+      );
       assert(
         await organize.evaluate((e) => document.activeElement === e),
         "Inventory returns focus",
@@ -400,6 +510,83 @@ try {
           (await page.locator("html").getAttribute("data-tadeon-sheet-mode")) === "game",
           "Game mode",
         );
+        const game = await page.evaluate(() => ({
+          nameHeight: document
+            .querySelector(".tadeon-identity-field--name textarea")
+            .getBoundingClientRect().height,
+          nameFont: getComputedStyle(
+            document.querySelector(".tadeon-identity-field--name textarea"),
+          ).fontFamily,
+          overflow: document.documentElement.scrollWidth > innerWidth,
+          controls: [
+            ...document.querySelectorAll(".tadeon-stat-block button, .tadeon-stat-block input"),
+          ].map((e) => {
+            const r = e.getBoundingClientRect(),
+              host = e.closest(".tadeon-stat-block").getBoundingClientRect();
+            return {
+              w: r.width,
+              h: r.height,
+              fits: r.x >= host.x && r.right <= host.right,
+              transform: getComputedStyle(e).transform,
+              opacity: getComputedStyle(e).opacity,
+            };
+          }),
+        }));
+        assert(
+          !game.overflow && game.nameHeight >= 80 && game.nameFont.includes("Cormorant Garamond"),
+          "Game mode preserves the dossier name and reflow",
+        );
+        assert(
+          game.controls.every((e) => e.h >= 44 && e.fits && e.transform === "none"),
+          "Game mode retains full resource controls without scale or clipping",
+        );
+        await page.waitForFunction(
+          () => !document.querySelector('[data-sonner-toast][data-type="error"]'),
+        );
+        if (width < 768) {
+          await page.getByLabel("Localizar seção da ficha").selectOption("sec-info");
+          const compact = await page.evaluate(() => ({
+            headerBottom: document.querySelector(".tadeon-mobile-header").getBoundingClientRect()
+              .bottom,
+            titleTop: document.querySelector("#sec-info h2").getBoundingClientRect().top,
+          }));
+          assert(
+            compact.titleTop >= compact.headerBottom &&
+              compact.titleTop <= compact.headerBottom + 100,
+            "Compact anchors clear the shell without reserving a scrolled-away toolbar: " +
+              JSON.stringify(compact),
+          );
+        } else {
+          await page
+            .locator(".tadeon-sheet-jumpbar")
+            .getByRole("button", { name: "Identidade", exact: true })
+            .click();
+          const sticky = await page.evaluate(() => {
+            const shell = document.querySelector(".tadeon-desktop-toolbar").getBoundingClientRect();
+            const command = document
+              .querySelector(".tadeon-sheet-commandbar")
+              .getBoundingClientRect();
+            const title = document.querySelector("#sec-info h2").getBoundingClientRect();
+            return {
+              shellBottom: shell.bottom,
+              commandTop: command.top,
+              commandBottom: command.bottom,
+              titleTop: title.top,
+            };
+          });
+          assert(
+            sticky.commandTop >= sticky.shellBottom - 1 &&
+              sticky.titleTop >= sticky.commandBottom - 1,
+            "Sticky toolbar and section targets remain below the shell header: " +
+              JSON.stringify(sticky),
+          );
+        }
+        if (process.env.NEXUS_GAME_SCREENSHOTS === "1") {
+          await page.locator("#sec-info").scrollIntoViewIfNeeded();
+          await page.screenshot({ path: `${output}/game-identity-${width}.png` });
+          await page.locator("#sec-pontos").scrollIntoViewIfNeeded();
+          await page.screenshot({ path: `${output}/game-resources-${width}.png` });
+        }
         await page.getByRole("button", { name: "Editar", exact: true }).click();
       } else assert(writes.length === 0, "Read-only never writes");
       assert(
@@ -420,6 +607,7 @@ try {
         errors,
       });
       await context.close();
+      console.log(JSON.stringify({ width, state, passed: true }));
     }
   writeFileSync(`${output}/results.json`, JSON.stringify({ fixtureOnly: true, results }, null, 2));
   console.log(JSON.stringify({ views: results.length, output, passed: true }));
