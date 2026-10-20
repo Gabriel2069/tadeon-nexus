@@ -979,6 +979,26 @@
         "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39488053260"
       ],
       "checkpoint": "Integrado pela PR #287, HEAD 31b8c3b e merge 681d38a. Quality do HEAD e de main aprovados: 146 suítes/596 testes, auditoria sem vulnerabilidades. Produção confirmou HTTP 200 e SHA exato em 2026-10-20T20:01:14.9654571Z. Comparação de quatro vistas Dashboard/Mestre em 390/1440: loops decorativos 5/7 → zero, fundo 55 → 32 caminhos; seis vistas Nexus/offline/Mesa em 320/820, Ficha em 320/820 e login em 320/1440; densidade da Ficha em 320 com cinco ações primárias de 44px numa linha. 57 módulos CSS/12 links e 2.854 !important (18 retirados). Na retomada, diff e logs de CI conferidos; navegador anterior não repetido por indisponibilidade do ambiente local. Fixtures não certificam hardware, contas reais ou restauração; NEX-009/010/011 mantidos."
+    },
+    {
+      "id": "NEX-029",
+      "title": "Fólios compactos, material do shell e reflexão local exclusiva",
+      "domain": "shell",
+      "status": "active",
+      "priority": 7,
+      "dependsOn": [
+        "NEX-028"
+      ],
+      "acceptance": [
+        "Compactar o acervo sem truncar nomes, preservar busca/filtros/ordem/permissões e alvos de ação.",
+        "Reforçar lombada, identificação de propriedade e hierarquia editorial nos módulos existentes.",
+        "Limitar a reflexão à superfície material mais próxima e retirar o blur do plano opaco lateral; preservar movimento/transparência reduzidos.",
+        "Comparar baseline e implementação em navegador, validar celular/tablet/desktop, foco e portais; não declarar desempenho físico a partir de fixtures."
+      ],
+      "evidence": [
+        "docs/visual-system-validation.json",
+        "docs/DESIGN.md"
+      ]
     }
   ],
   "decisions": [

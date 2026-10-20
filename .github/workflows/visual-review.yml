@@ -1,0 +1,76 @@
+name: Visual review
+
+on:
+  pull_request:
+    paths:
+      - "src/**"
+      - "scripts/**"
+      - "docs/DESIGN.md"
+      - ".github/workflows/visual-review.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  browser:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      NEXUS_BROWSER_MODULE: file:///tmp/tadeon-browser/node_modules/playwright/index.mjs
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - name: Preparar dependências do projeto e navegador isolado
+        run: |
+          npm install --global npm@11.9.0
+          npm ci
+          npm install --prefix /tmp/tadeon-browser --no-audit --no-fund playwright@1.56.1
+          /tmp/tadeon-browser/node_modules/.bin/playwright install --with-deps chromium
+      - name: Comparar referência do acervo
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          NEXUS_AUDIT_OUTPUT: /tmp/tadeon-visual/baseline
+          NEXUS_AUDIT_WIDTHS: "[390,1440]"
+          NEXUS_AUDIT_STATES: '["populated"]'
+        run: |
+          git worktree add --detach /tmp/tadeon-baseline "$BASE_SHA"
+          cd /tmp/tadeon-baseline
+          npm ci
+          node "$GITHUB_WORKSPACE/scripts/verify-dashboard-design.mjs"
+      - name: Validar acervo, navegação, foco e movimento
+        env:
+          NEXUS_AUDIT_OUTPUT: /tmp/tadeon-visual/current
+          NEXUS_EXPECT_ISOLATED_LIGHT: "1"
+        run: node scripts/verify-dashboard-design.mjs
+      - name: Validar superfícies compartilhadas e portais
+        env:
+          NEXUS_AUDIT_OUTPUT: /tmp/tadeon-visual/shared
+          NEXUS_AUDIT_WIDTHS: "[320,820]"
+          NEXUS_AUDIT_ROUTES: '["/offline","/nexus"]'
+          NEXUS_MATERIAL_AUDIT: "1"
+          NEXUS_LAYOUT_AUDIT: "1"
+        run: node scripts/verify-header-ownership.mjs current
+      - name: Publicar métricas de comparação no log
+        if: always()
+        run: |
+          node --input-type=module <<'JS'
+          import { readFileSync, existsSync } from "node:fs";
+          for (const phase of ["baseline", "current"]) {
+            const path = "/tmp/tadeon-visual/" + phase + "/results.json";
+            if (existsSync(path)) {
+              const rows = JSON.parse(readFileSync(path, "utf8")).filter(r => r.state === "populated");
+              console.log(JSON.stringify({ phase, rows: rows.map(r => ({ width: r.width, folios: r.folios, normalSidebarFilter: r.material?.sidebarFilter, nestedLight: r.nestedLight, overflow: r.overflow, errors: r.errors })) }));
+            }
+          }
+          JS
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: visual-review
+          path: /tmp/tadeon-visual
+          retention-days: 7

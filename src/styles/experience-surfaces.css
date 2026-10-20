@@ -1427,7 +1427,7 @@ button:not([data-material-surface], .tadeon-material-button)[data-tadeon-directe
 .tadeon-continuity-facts dd:not(.tadeon-continuity-facts__detail) { color: var(--foreground); }
 .tadeon-character-archive { scroll-margin-top: 6rem; }
 .tadeon-character-archive__heading { padding: .25rem 0 1rem; border-bottom: 1px solid var(--border); }
-.tadeon-character-gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 18rem), 1fr)); gap: 1.25rem; }
+.tadeon-character-gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 17rem), 1fr)); align-items: start; gap: 1rem; }
 
 
 .tadeon-archive-state { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: .75rem; min-height: 15rem; padding: 2.5rem 1.5rem; border: 1px solid var(--border); border-radius: 1rem; background: #12151a; text-align: center; }
@@ -1498,26 +1498,31 @@ button:not([data-material-surface], .tadeon-material-button)[data-tadeon-directe
   box-shadow: inset 0 1px 0 rgb(233 227 213 / 15%), inset 0 -1px 0 rgb(233 227 213 / 5%), 0 24px 60px -35px rgb(0 0 0 / 60%);
 }
 .tadeon-continuity-hero__art { background: radial-gradient(ellipse at 50% 45%, rgb(183 129 77 / 18%), transparent 70%); }
-.tadeon-character-card { position: relative; display: flex; flex-direction: column; min-width: 0; min-height: 20rem; padding: 1.25rem 1.5rem 1rem 1.75rem; border: 1px solid var(--border); border-radius: .4rem 1.35rem 1.35rem .4rem;
-  background: linear-gradient(120deg, #202730, #10151c 58%); isolation: isolate; overflow: hidden;
+.tadeon-character-card { position: relative; display: flex; flex-direction: column; min-width: 0; min-height: 15rem; padding: 1rem 1.25rem .75rem 1.75rem; border: 1px solid var(--border); border-radius: .3rem 1rem 1rem .3rem;
+  background: linear-gradient(112deg, #252c33, #131920 38%, #0e141a); isolation: isolate; overflow: hidden;
   box-shadow: inset 3px 0 0 rgb(233 227 213 / 8%), inset 5px 0 0 rgb(0 0 0 / 50%), inset 0 1px 0 rgb(233 227 213 / 12%), 0 18px 30px -24px rgb(0 0 0 / 95%);
 }
 .tadeon-character-card::before { content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none; background: radial-gradient(ellipse at var(--material-x, 35%) var(--material-y, 0%), rgb(233 227 213 / 12%), transparent 65%), repeating-linear-gradient(118deg, transparent 0 36px, rgb(233 227 213 / 1.8%) 36px 37px, transparent 37px 74px); opacity: .45; }
 .tadeon-character-card::after { content: ""; position: absolute; width: 12rem; height: 12rem; right: -6rem; bottom: -7rem; border: 1px solid rgb(233 227 213 / 12%); border-radius: 50%; box-shadow: 0 0 0 12px rgb(233 227 213 / 2%), 0 0 0 24px rgb(233 227 213 / 1.5%); pointer-events: none; z-index: -1; }
-.tadeon-character-card__spine { position: absolute; top: 1.5rem; left: .4rem; bottom: 1.5rem; width: .4rem; border-right: 1px solid rgb(233 227 213 / 9%); pointer-events: none; }
+.tadeon-character-card__spine { position: absolute; top: 1rem; left: .45rem; bottom: 1rem; width: .4rem; border-right: 1px solid rgb(233 227 213 / 18%); pointer-events: none; }
+.tadeon-character-card__spine::before { content: ""; position: absolute; top: 0; right: -.2rem; width: .35rem; height: .35rem; border: 1px solid rgb(233 227 213 / 38%); background: #151b21; transform: rotate(45deg); }
 .tadeon-character-card__spine span { position: absolute; bottom: 0; left: -.05rem; color: rgb(233 227 213 / 30%); font: .5rem var(--font-mono); writing-mode: vertical-rl; }
-.tadeon-character-card__header { display: flex; min-height: 2.75rem; align-items: center; justify-content: space-between; margin-bottom: 1rem; gap: .75rem; }
-.tadeon-character-card__header > span { color: var(--primary); font-size: .625rem; letter-spacing: .16em; text-transform: uppercase; }
-.tadeon-character-card__delete { min-width: 2.75rem; min-height: 2.75rem; margin-right: -.5rem; color: var(--muted-foreground); }
-.tadeon-character-card__identity { margin-bottom: 1.5rem; }
-.tadeon-character-card h3 { max-width: 24ch; overflow-wrap: anywhere; color: var(--foreground); font: 500 1.75rem/1.1 var(--font-cinzel); letter-spacing: -.015em; }
-.tadeon-character-card__identity p { margin-top: .6rem; color: var(--muted-foreground); font-size: .8125rem; line-height: 1.5; }
+.tadeon-character-card__header { display: flex; min-height: 2.75rem; align-items: center; margin-bottom: .5rem; gap: .6rem; }
+.tadeon-character-card__header > .tadeon-mono { color: var(--primary); font-size: .625rem; letter-spacing: .16em; text-transform: uppercase; }
+.tadeon-character-card__ownership { color: var(--muted-foreground); font-size: .75rem; font-style: italic; }
+.tadeon-character-card__delete { margin-left: auto; min-width: 2.75rem; min-height: 2.75rem; margin-right: -.5rem; color: var(--muted-foreground); }
+.tadeon-character-card__identity { margin-bottom: 1rem; }
+.tadeon-character-card h3 { max-width: 24ch; overflow-wrap: anywhere; color: var(--foreground); font: 500 clamp(1.6rem, 1.35rem + .5vw, 1.9rem)/1.1 var(--font-cinzel); letter-spacing: -.015em; }
+.tadeon-character-card__identity p { margin-top: .4rem; color: var(--muted-foreground); font-size: .8125rem; line-height: 1.5; }
 .tadeon-character-card__record { display: flex; flex-wrap: wrap; gap: .5rem 1rem; justify-content: space-between; align-items: baseline; margin-top: auto; padding-bottom: .85rem; color: var(--muted-foreground); }
 .tadeon-character-card__record p { max-width: 100%; overflow-wrap: anywhere; font: .625rem/1.5 var(--font-mono); }
 .tadeon-character-card__record > span { font-size: .625rem; white-space: nowrap; }
 .tadeon-character-card__record strong { margin-left: .25rem; color: var(--foreground); font: 500 .875rem var(--font-inter); font-variant-numeric: tabular-nums; }
 .tadeon-character-card__open { position: relative; display: flex; gap: .75rem; justify-content: space-between; align-items: center; min-height: 2.75rem; border-top: 1px solid rgb(233 227 213 / 16%); border-radius: .2rem; color: var(--primary); font-size: .75rem; font-weight: 500; }
-.tadeon-character-card__open > svg { border-radius: 50%; box-sizing: content-box; padding: .35rem; border: 1px solid rgb(233 227 213 / 14%); background: rgb(233 227 213 / 3%); }
+.tadeon-character-card__open > svg { transition: translate 180ms var(--ease-out); border-radius: 50%; box-sizing: content-box; padding: .35rem; border: 1px solid rgb(233 227 213 / 14%); background: rgb(233 227 213 / 3%); }
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .tadeon-character-card__open:hover > svg { translate: .1rem -.1rem; }
+}
 .tadeon-character-card__open:focus-visible { outline: 2px solid var(--foreground); outline-offset: 3px; }
 .tadeon-continuity-facts { background: linear-gradient(180deg, rgb(233 227 213 / 3%), transparent); border-top: 1px solid var(--border); }
 .tadeon-continuity-facts > div { position: relative; isolation: isolate; overflow: hidden; }
@@ -1530,11 +1535,12 @@ button:not([data-material-surface], .tadeon-material-button)[data-tadeon-directe
 .tadeon-archive-search > button { position: absolute; right: 0; top: 0; min-width: 2.75rem; min-height: 2.75rem; }
 .tadeon-archive-order { min-width: 0; width: 100%; min-height: 2.75rem; gap: .5rem; font-size: .75rem; }
 .tadeon-archive-mine { min-height: 2.75rem; font-size: .75rem; }
-.tadeon-archive-count { grid-column: 1 / -1; color: var(--muted-foreground); font: .625rem var(--font-mono); letter-spacing: .04em; }
+.tadeon-archive-count { grid-column: 1 / -1; display: flex; align-items: center; gap: .75rem; color: var(--muted-foreground); font: .625rem var(--font-mono); letter-spacing: .04em; }
+.tadeon-archive-count::after { content: ""; flex: 1; height: 1px; background: linear-gradient(90deg, var(--material-edge), transparent); }
 @media (max-width: 1000px) { .tadeon-archive-tools { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } .tadeon-archive-search { grid-column: 1 / -1; } }
 @media (max-width: 767px) {
-  .tadeon-character-gallery { gap: .75rem; }
-  .tadeon-character-card { display: grid; grid-template-columns: minmax(0, 1fr) auto; min-height: 0; gap: .6rem 1rem; padding: .75rem 1rem .75rem 1.5rem; }
+  .tadeon-character-gallery { grid-template-columns: repeat(auto-fill, minmax(min(100%, 14rem), 1fr)); gap: .75rem; }
+  .tadeon-character-card { display: grid; grid-template-columns: minmax(0, 1fr) auto; min-height: 0; gap: .4rem .75rem; padding: .75rem 1rem .75rem 1.5rem; }
   .tadeon-character-card__header { grid-column: 1 / -1; margin-bottom: 0; }
   .tadeon-character-card__identity { grid-column: 1 / -1; margin-bottom: .25rem; }
   .tadeon-character-card h3 { font-size: 1.6rem; }

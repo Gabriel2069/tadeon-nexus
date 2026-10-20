@@ -19,11 +19,22 @@ const sheets = Array.from({ length: 5 }, (_, i) => ({ id: `00000000-0000-4000-80
 const results = [];
 const assert = (condition, message) => { if (!condition) throw new Error(message); };
 try {
-  await new Promise((ok, fail) => {
-    server.stdout.on("data", b => { if (b.toString().includes("Local:")) ok(); });
-    server.on("exit", code => fail(new Error("Vite exited: " + code)));
-    setTimeout(() => fail(new Error("Vite timeout")), 30000).unref();
-  });
+  let serverLog = "";
+  let serverExit = null;
+  const capture = chunk => { serverLog = (serverLog + chunk.toString()).slice(-12000); };
+  server.stdout.on("data", capture);
+  server.stderr.on("data", capture);
+  server.on("exit", code => { serverExit = code ?? -1; });
+  const deadline = Date.now() + 120000;
+  let ready = false;
+  while (Date.now() < deadline && serverExit === null) {
+    try {
+      const response = await fetch(`http://127.0.0.1:${port}/`, { signal: AbortSignal.timeout(5000) });
+      if (response.status < 500) { ready = true; break; }
+    } catch { /* Startup and initial dependency optimization are still in progress. */ }
+    await new Promise(resolve => setTimeout(resolve, 300));
+  }
+  if (!ready) throw new Error("Vite did not become ready. Exit: " + serverExit + "\n" + serverLog);
   for (const width of JSON.parse(process.env.NEXUS_AUDIT_WIDTHS || "[320,390,820,1440]")) for (const state of JSON.parse(process.env.NEXUS_AUDIT_STATES || '["empty","loading","error","populated"]')) {
     const context = await browser.newContext({ viewport: { width, height: 1000 }, hasTouch: width < 768, reducedMotion: "reduce" });
     const page = await context.newPage();
@@ -109,6 +120,15 @@ try {
       assert(await search.evaluate(e=>e===document.activeElement), "Clear search keeps focus");
       assert(await page.locator(".tadeon-character-card").count() === 5 && sheetReads === readsBefore, "Discovery neither fetches nor mutates the source rows");
       metrics.archive = {accentSearch:true,occupationSearch:true,ownerSearch:true,ownership:true,sort:true,resetFocus:true,extraReads:sheetReads-readsBefore};
+      metrics.folios = await page.locator(".tadeon-character-gallery").evaluate(e => ({
+        columns: getComputedStyle(e).gridTemplateColumns,
+        cards: [...e.children].map(card => {
+          const r = card.getBoundingClientRect(), title = card.querySelector("h3");
+          return { width: r.width, height: r.height, titleClipped: title.scrollWidth > title.clientWidth + 1 };
+        }),
+        sidebarFilter: getComputedStyle(document.querySelector(".tadeon-sidebar")).backdropFilter,
+      }));
+      assert(metrics.folios.cards.every(c => !c.titleClipped), "Folio names must remain readable");
 
       const trigger = page.getByRole("button", { name: "Nova ficha" });
       await trigger.focus(); await page.keyboard.press("Enter");
@@ -194,7 +214,27 @@ try {
         await page.screenshot({path:`${root}/interaction-1440.png`,fullPage:true});
         const nav = await page.locator(".tadeon-nav-item[aria-current]").evaluate(e=>({before:getComputedStyle(e,"::before").content,background:getComputedStyle(e).backgroundImage}));
         assert(nav.before === "none", "Navigation has no competing light plane");
-        metrics.material = {light, stableText:true, nav};
+        metrics.material = {light, stableText:true, nav, sidebarFilter: await page.locator(".tadeon-sidebar").evaluate(e => getComputedStyle(e).backdropFilter)};
+        metrics.nestedLight = await card.evaluate(async e => {
+          const control = e.querySelector('button[data-material-surface]');
+          const original = e.getBoundingClientRect.bind(e);
+          let parentReads = 0;
+          e.getBoundingClientRect = () => { parentReads++; return original(); };
+          try {
+            const r = control.getBoundingClientRect();
+            for (let i = 0; i < 120; i++)
+              control.dispatchEvent(new PointerEvent("pointermove", {
+                bubbles: true, pointerType: "mouse", clientX: r.x + 10, clientY: r.y + 10,
+              }));
+            await new Promise(ok => requestAnimationFrame(() => requestAnimationFrame(ok)));
+            return { events: 120, parentReads, childLight: control.style.getPropertyValue("--material-x") };
+          } finally { e.getBoundingClientRect = original; }
+        });
+        if (process.env.NEXUS_EXPECT_ISOLATED_LIGHT === "1") {
+          assert(metrics.nestedLight.parentReads === 0 && metrics.nestedLight.childLight !== "",
+            "Nested control must own reflection without measuring the containing card");
+          assert(metrics.material.sidebarFilter === "none", "Opaque sidebar must not retain a backdrop blur");
+        }
       }
       await page.emulateMedia({ reducedMotion: "reduce" });
       await page.evaluate(() => new Promise(ok => requestAnimationFrame(() => requestAnimationFrame(ok))));

@@ -305,3 +305,12 @@ A nova rodada aprofunda a identidade aprovada sem mudar paleta, símbolos, fonte
 A presença vem de composição e resposta local: luz acompanha a atenção no desktop, foco mantém o contorno e toque mantém os alvos. Loops decorativos contínuos do shell, fios e cabeçalho são retirados dos escritores históricos; carregamento e feedback funcional preservam seus próprios estados. O vetor de fundo usa menos caminhos e não acrescenta filtros de distorção, canvas, dependências ou imagens grandes. A barra compacta da Ficha separa ações primárias de presença/estado; o salvamento conserva rótulo legível.
 
 A evidência pertence a `craftRevision` de visual-system-validation.json. A contagem de animações e caminhos é evidência de trabalho retirado, sem transformar em alegação de FPS, INP ou ganho percentual em celulares físicos.
+
+
+## Fólios de consulta e luz exclusiva — NEX-029
+
+O acervo ganha um ritmo mais compacto: menos altura vazia, largura mínima menor, lombada com ponto de costura e identificação discreta dos fios da própria conta. Nome e ocupação conservam leitura integral; nenhuma miniatura, truncamento ou recorte substitui informação. A busca, filtros e ordenação continuam locais sobre os registros autorizados. No celular, os registros dividem metadados e ação; duas colunas surgem apenas quando a largura permite.
+
+A barra lateral é um plano opaco de tinta, com luz de contato e gradiente estático; o vidro permanece nos instrumentos flutuantes. Em ponteiro grosso, a moldura móvel usa blur menor. Preferências de transparência e contraste conservam precedência. A reflexão de um controle deixa de medir e atualizar seus painéis ancestrais: somente a superfície material mais próxima responde ao evento. Conteúdo comum continua iluminando seu card.
+
+O workflow Visual review compara o acervo com a base da PR e verifica a implementação em quatro larguras, incluindo foco, portais, navegação e movimento reduzido. Medidas de altura, colunas e leituras de geometria são evidência de composição e trabalho retirado; não são FPS, INP ou autonomia em dispositivo físico. Procedência e estado ficam em visual-system-validation.json.

@@ -25,6 +25,15 @@ export function useMaterialLight<T extends HTMLElement>() {
   return {
     onPointerMove(event: PointerEvent<T>) {
       if (event.pointerType !== "mouse" || document.hidden) return;
+      // A nested control owns its light. Do not repaint every containing panel.
+      const owner =
+        event.target instanceof Element
+          ? event.target.closest("[data-material-surface]")
+          : null;
+      if (owner && owner !== event.currentTarget) {
+        cancel();
+        return;
+      }
       target.current = event.currentTarget;
       point.current = { x: event.clientX, y: event.clientY };
       if (frame.current !== null) return;
