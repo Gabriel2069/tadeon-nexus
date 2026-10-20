@@ -102,7 +102,7 @@
 
 .tadeon-director-output__intermission h1 {
   max-width: 900px;
-  font-family: Cinzel, serif;
+  font-family: var(--font-cinzel);
   font-size: clamp(2rem, 6vw, 5.5rem);
   line-height: 1.02;
   text-wrap: balance;
@@ -139,7 +139,7 @@
 }
 
 .tadeon-director-output__hud strong {
-  font-family: Cinzel, serif;
+  font-family: var(--font-cinzel);
   font-size: clamp(1.25rem, 3vw, 2.4rem);
 }
 
@@ -195,7 +195,7 @@
   min-width: 0;
   margin-right: auto;
   color: #d9d7a4;
-  font-family: Cinzel, serif;
+  font-family: var(--font-cinzel);
   font-size: clamp(0.78rem, 1.3vw, 1rem);
   font-weight: 600;
   letter-spacing: 0.035em;

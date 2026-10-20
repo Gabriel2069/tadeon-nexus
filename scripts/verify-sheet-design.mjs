@@ -100,6 +100,77 @@ const server = spawn(
   ["run", "dev", "--", "--host", "127.0.0.1", "--strictPort", "--port", String(port)],
   { detached: true, stdio: ["ignore", "pipe", "pipe"] },
 );
+async function auditSelection(page) {
+  await page.emulateMedia({ reducedMotion: "no-preference" });
+  const list = page.locator(".tadeon-sheet-tabs-list");
+  await list.scrollIntoViewIfNeeded();
+  await list.locator('[data-tab-value="descricao"]').click();
+  await page.waitForTimeout(60);
+  await list.locator('[data-tab-value="arvore"]').click();
+  await page.waitForTimeout(60);
+  await list.locator('[data-tab-value="ficha"]').click();
+  await page
+    .waitForFunction(
+      () => {
+        const list = document.querySelector(".tadeon-sheet-tabs-list"),
+          active = list.querySelector('[data-state="active"]'),
+          plate = list.querySelector(".tadeon-selection-plate");
+        if (!active || !plate) return false;
+        const a = active.getBoundingClientRect(),
+          p = plate.getBoundingClientRect();
+        return (
+          active.dataset.tabValue === "ficha" &&
+          Math.abs(a.x - p.x) < 1 &&
+          Math.abs(a.width - p.width) < 1
+        );
+      },
+      undefined,
+      { timeout: 5000 },
+    )
+    .catch(async (error) => {
+      const detail = await list.evaluate((e) =>
+        [e, ...e.children].map((n) => {
+          const r = n.getBoundingClientRect(),
+            s = getComputedStyle(n);
+          return {
+            tag: n.tagName,
+            class: n.className,
+            state: n.dataset.state,
+            rect: [r.x, r.y, r.width, r.height],
+            transform: s.transform,
+            position: s.position,
+            left: s.left,
+            top: s.top,
+            margin: s.margin,
+            style: n.getAttribute("style"),
+          };
+        }),
+      );
+      writeFileSync(`${output}/selection-failure.json`, JSON.stringify(detail, null, 2));
+      throw error;
+    });
+  const result = await list.evaluate((e) => ({
+    count: e.querySelectorAll(".tadeon-selection-plate").length,
+    transition: getComputedStyle(e.querySelector(".tadeon-selection-plate")).transitionDuration,
+  }));
+  assert(
+    result.count === 1 && result.transition !== "0s",
+    "One interruptible traveling selection plate",
+  );
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await page.waitForFunction(
+    () =>
+      matchMedia("(prefers-reduced-motion: reduce)").matches &&
+      getComputedStyle(document.querySelector(".tadeon-sheet-tabs-list .tadeon-selection-plate"))
+        .transitionDuration.split(",")
+        .every((t) => parseFloat(t) <= 0.001),
+  );
+  result.reducedMotion = await list
+    .locator(".tadeon-selection-plate")
+    .evaluate((e) => getComputedStyle(e).transitionDuration);
+
+  return result;
+}
 try {
   await new Promise((ok, fail) => {
     server.stdout.on("data", (b) => {
@@ -247,8 +318,8 @@ try {
           "Power header follows the shared route envelope",
         );
         assert(
-          header.font[1] === (width < 480 ? "30px" : width === 820 ? "32px" : "38.16px") ||
-            parseFloat(header.font[1]) >= 30,
+          header.font[1] === (width < 768 ? "27.2px" : width === 820 ? "32px" : "38.16px") ||
+            parseFloat(header.font[1]) >= 27,
           "Power title is not shrunk by legacy header rules",
         );
         assert(writes.length === 0, "Read-only power header never writes");
@@ -291,12 +362,72 @@ try {
       );
       await page.evaluate(async () => {
         await Promise.all(
-          ['500 16px "Cormorant Garamond"', '500 16px "Inter"', '400 16px "PT Mono"'].map((f) =>
-            document.fonts.load(f),
+          ['500 16px "Cormorant Garamond"', '500 16px "Alegreya Sans"', '400 16px "PT Mono"'].map(
+            (f) => document.fonts.load(f),
           ),
         );
         await document.fonts.ready;
       });
+      if (process.env.NEXUS_SELECTION_ONLY === "1") {
+        const selection = await auditSelection(page);
+        results.push({ width, state, selection, errors });
+        writeFileSync(
+          `${output}/results.json`,
+          JSON.stringify({ fixtureOnly: true, results }, null, 2),
+        );
+        await context.close();
+        continue;
+      }
+      if (process.env.NEXUS_DENSITY_ONLY === "1") {
+        const density = await page.evaluate(async () => {
+          const rect = (s) => {
+            const e = document.querySelector(s);
+            if (!e) return null;
+            const r = e.getBoundingClientRect();
+            return { x: r.x, y: r.y, width: r.width, height: r.height };
+          };
+          const samples = [];
+          const start = performance.now();
+          await new Promise((resolve) => {
+            let last,
+              n = 0;
+            const frame = (now) => {
+              if (last !== undefined) samples.push(now - last);
+              last = now;
+              window.scrollBy(0, 36);
+              if (++n < 60) requestAnimationFrame(frame);
+              else resolve();
+            };
+            requestAnimationFrame(frame);
+          });
+          window.scrollTo(0, 0);
+          return {
+            height: document.documentElement.scrollHeight,
+            identity: rect("#sec-info"),
+            vitals: rect("#sec-pontos"),
+            attributes: rect("#sec-attr"),
+            overview: rect(".tadeon-sheet-overview"),
+            resource: rect(".tadeon-stat-block"),
+            elements: document.querySelectorAll("*").length,
+            permanentFilters: [...document.querySelectorAll("*")].filter((e) => {
+              const s = getComputedStyle(e);
+              return s.filter !== "none" || s.backdropFilter !== "none";
+            }).length,
+            scrollSamples: samples,
+            elapsed: performance.now() - start,
+          };
+        });
+        if (process.env.NEXUS_SKIP_SCREENSHOTS !== "1")
+          await page.screenshot({ path: `${output}/density-${width}.png` });
+        results.push({ width, state, density, errors });
+        writeFileSync(
+          `${output}/results.json`,
+          JSON.stringify({ fixtureOnly: true, results }, null, 2),
+        );
+        console.log("density", width, JSON.stringify(density));
+        await context.close();
+        continue;
+      }
       const metrics = await page.evaluate(() => ({
         overflow: document.documentElement.scrollWidth > innerWidth,
         sections: document.querySelectorAll(".tadeon-sheet-section").length,
@@ -347,7 +478,8 @@ try {
         "Every record section owns its material",
       );
       assert(
-        metrics.metricFont.includes("Inter") && metrics.metricFigures.includes("tabular-nums"),
+        metrics.metricFont.includes(width < 768 ? "Cormorant Garamond" : "Alegreya Sans") &&
+          metrics.metricFigures.includes("tabular-nums"),
         "Aligned metric typography",
       );
       assert(metrics.headingFont.includes("Cormorant Garamond"), "Approved editorial typography");
@@ -360,9 +492,9 @@ try {
         metrics.attributeControls.every(
           (c) => c.fits && c.targets.every((t) => t.w >= 44 && t.h >= 44 && t.fits),
         ),
-        "Attribute controls stay visible inside their instrument",
+        `Attribute controls stay visible inside their instrument: ${JSON.stringify(metrics.attributeControls.filter((c) => !c.fits || c.targets.some((t) => t.w < 44 || t.h < 44 || !t.fits)))}`,
       );
-      assert(metrics.labelFont.includes("Inter"), "Field labels use interface typography");
+      assert(metrics.labelFont.includes("Alegreya Sans"), "Field labels use interface typography");
       assert(new Set(metrics.metricTones).size === 4, "Overview preserves its four semantic tones");
       assert(
         metrics.resources.length === 4 &&
@@ -410,6 +542,12 @@ try {
         (await name.inputValue()) === sheet.name,
         "The section index reveals a folded section and transfers focus without changing data",
       );
+      const narrative = page.getByRole("button", { name: /Convicções, pergunta e vínculos/ });
+      const defaultNarrative = await narrative.getAttribute("aria-expanded");
+      if (width < 768)
+        assert(defaultNarrative === "false", "Mobile narrative starts folded, with a named entry");
+      if (defaultNarrative === "false") await narrative.click();
+      await page.getByLabel("Nome do vínculo 1", { exact: true }).waitFor();
       const linkToggle = page.getByRole("button", { name: "Recolher vínculos", exact: true });
       await linkToggle.focus();
       await page.keyboard.press("Space");
@@ -437,7 +575,7 @@ try {
         );
         assert(
           (await collapse.getAttribute("aria-expanded")) === "true",
-          "Interrupted folds settle to the latest open state",
+          "Alegreya Sansrupted folds settle to the latest open state",
         );
         const fold = await page.locator("#sec-info .tadeon-sheet-section__body").evaluate((e) => ({
           animation: getComputedStyle(e).animationName,
@@ -660,6 +798,7 @@ try {
           .every((x) => x.args.p_sheet_id === sheetId),
         "Explicit controls carry record identity",
       );
+      if (state === "editable") metrics.selectionPlate = await auditSelection(page);
       assert(errors.length === 0, errors.join("\n"));
       results.push({
         width,

@@ -190,12 +190,16 @@ try {
             '500 16px "Cormorant Garamond"',
             '600 16px "Cormorant Garamond"',
             '700 16px "Cormorant Garamond"',
+            '400 16px "Alegreya Sans"',
           ].map((font) => document.fonts.load(font)),
         );
         await document.fonts.ready;
       });
       await page.waitForTimeout(250);
       const metrics = await page.evaluate(() => ({
+        interfaceFont: getComputedStyle(document.body).fontFamily,
+        interfaceFaceLoaded: [...document.fonts].some(f=>f.family.includes("Alegreya Sans") && f.status==="loaded"),
+        summary: (()=>{const e=document.querySelector('.tadeon-utility-summary');return e ? {height:e.getBoundingClientRect().height,columns:getComputedStyle(e.querySelector('dl')).gridTemplateColumns}:null;})(),
         pageHeader: (() => {
           const header = document.querySelector("[data-page-header]");
           const frame = header?.closest("[data-page-layout]");
@@ -367,7 +371,10 @@ try {
       }
       if (layoutAudit) {
         const header = metrics.pageHeader;
-        if (!header) errors.push("Missing common page header/envelope");
+        if (!header && route !== "/") errors.push("Missing common page header/envelope");
+        else if (route === "/") {
+          if (header || await page.locator("h1").count() !== 1) errors.push("Dashboard has a duplicate route opening");
+        }
         else {
           const reference = results.find(
             (item) => item.width === width && item.pageHeader,
@@ -393,6 +400,7 @@ try {
             errors.push("Legacy header injection returned");
         }
       }
+      if (!metrics.interfaceFont.includes("Alegreya Sans") || !metrics.interfaceFaceLoaded) errors.push("The hosted interface font did not load");
       if (metrics.activeNavigation.some((item) => item.color !== "rgb(233, 227, 213)"))
         errors.push("Active navigation label lost its ivory contrast");
       const name = route.slice(1) || "dashboard";

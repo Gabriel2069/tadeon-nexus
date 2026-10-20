@@ -110,11 +110,11 @@ export function ContinuityHero({
       </div>
       <div className="tadeon-continuity-hero__copy">
         <p className="tadeon-continuity-hero__greeting">{greeting}</p>
-        <h2 id="continuity-title" className="font-cinzel">
+        <h1 id="continuity-title" className="font-cinzel">
           Os fios da sua
           <br />
           <em>jornada.</em>
-        </h2>
+        </h1>
         <p className="tadeon-continuity-hero__description">{description}</p>
         <div className="tadeon-continuity-hero__actions">{action}</div>
       </div>

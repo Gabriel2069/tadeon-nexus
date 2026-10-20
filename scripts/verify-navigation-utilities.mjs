@@ -52,7 +52,7 @@ try {
   });
   await installDesignFonts(page);
   const geometry=async label=>{
-   const result=await page.evaluate(()=>({headingWidth:document.querySelector("h1")?.getBoundingClientRect().width,overflow:document.documentElement.scrollWidth>innerWidth,h1:document.querySelectorAll("h1").length,boundary:document.body.textContent.includes("Something went wrong")}));
+   const result=await page.evaluate(()=>({rows:[...document.querySelectorAll('.tadeon-user-row')].map(e=>{const r=e.getBoundingClientRect();return {width:r.width,height:r.height,inside:r.x>=0&&r.right<=innerWidth};}),headingWidth:document.querySelector("h1")?.getBoundingClientRect().width,overflow:document.documentElement.scrollWidth>innerWidth,h1:document.querySelectorAll("h1").length,boundary:document.body.textContent.includes("Something went wrong")}));
    assert(result.headingWidth>100&&!result.overflow&&result.h1===1&&!result.boundary,`${label}/${width}: structure ${JSON.stringify(result)}`);assert(!errors.length,errors.join("\n"));
    if(process.env.NEXUS_SKIP_SCREENSHOTS!=="1")await page.screenshot({path:`${root}/${label}-${width}.png`,fullPage:true});
    results.push({width,label,...result,errors:[...errors]});writeFileSync(`${root}/results.json`,JSON.stringify(results,null,2));console.log(`${width}: ${label}`);
@@ -103,8 +103,23 @@ try {
   await page.getByRole("searchbox").fill("");assert(await page.getByText("A guardiã local",{exact:true}).isVisible(),"Cancel must retain offline cache");
   await page.getByRole("button",{name:"Limpar cópia local",exact:true}).click();await page.getByRole("button",{name:"Limpar cópia",exact:true}).click();await page.getByText("Arquivo local ainda vazio",{exact:true}).waitFor();
   await geometry("offline-empty");
-  await page.goto(`http://127.0.0.1:${port}/manage-users`);await page.getByText("Cronista",{exact:true}).waitFor();
+  await page.emulateMedia({reducedMotion:"no-preference"});
+  const navSelector=width<768?'.tadeon-mobile-dock':'#tadeon-desktop-sidebar .tadeon-primary-nav';
+  const settledPlate=async()=>{
+   await page.waitForFunction(selector=>{
+    const group=document.querySelector(selector),active=group?.querySelector('[aria-current="page"],[data-more-active="true"]'),plate=group?.querySelector('.tadeon-selection-plate');
+    if(!active||!plate)return false;const a=active.getBoundingClientRect(),p=plate.getBoundingClientRect();return Math.abs(a.x-p.x)<1&&Math.abs(a.y-p.y)<1&&Math.abs(a.width-p.width)<1;
+   },navSelector);
+  };
+  await page.locator(navSelector).getByRole("link",{name:width<768?"Início":"Dashboard",exact:true}).click();
+  await page.locator('#character-archive').waitFor();await settledPlate();
+  if(width<768){await page.getByRole("button",{name:"Mais",exact:true}).click();await page.getByRole("menuitem",{name:"Usuários",exact:true}).click();}
+  else await page.locator(navSelector).getByRole("link",{name:"Usuários",exact:true}).click();
+  await page.getByText("Cronista",{exact:true}).waitFor();await settledPlate();
+  await geometry("navigation-travel");await page.emulateMedia({reducedMotion:"reduce"});
+await page.getByText("Cronista",{exact:true}).waitFor();
   assert(listCount>0,"Users must come from mocked server-function transport");await geometry("users");
+  assert(results.at(-1).rows.every(r=>r.inside && (width>=768 || r.height<220)),"Compact user rows stay readable without forced giant heights");
   await page.getByRole("searchbox").fill("cronista@");assert(!(await page.getByText(people[1].full_name,{exact:true}).count()),"User search filters name/email");
   await page.getByRole("searchbox").fill("none");await page.getByRole("button",{name:"Limpar filtros"}).click();
   const playerRole=page.getByRole("combobox",{name:`Papel de ${people[1].full_name}`});await playerRole.click();await page.getByRole("option",{name:"Mestre",exact:true}).click();await page.getByRole("alertdialog").waitFor();await geometry("users-role-review");await page.getByRole("button",{name:"Cancelar",exact:true}).click();

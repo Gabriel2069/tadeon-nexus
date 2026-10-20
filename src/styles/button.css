@@ -689,7 +689,7 @@
 .tadeon-material-button[data-variant="link"]::before { content: none; }
 .tadeon-material-button:focus-visible { outline: 2px solid var(--foreground); outline-offset: 3px; }
 .tadeon-material-button:focus-visible::before { opacity: 1; }
-.tadeon-material-button[aria-pressed="true"] { border-color: var(--control-accent); background-color: rgb(var(--control-rgb) / 18%); box-shadow: inset 0 0 0 1px rgb(var(--control-rgb) / 32%), inset 0 1px rgb(255 255 255 / 15%); }
+.tadeon-material-button[aria-pressed="true"]:not([data-selection-rail] button) { border-color: var(--control-accent); background-color: rgb(var(--control-rgb) / 18%); box-shadow: inset 0 0 0 1px rgb(var(--control-rgb) / 32%), inset 0 1px rgb(255 255 255 / 15%); }
 @media (hover: hover) and (pointer: fine) {
   .tadeon-material-button:not(:disabled):not([aria-disabled="true"]):not([data-variant="link"]):not([data-variant="ghost"]):hover { border-color: var(--control-accent); box-shadow: inset 0 1px 0 rgb(255 249 232 / 38%), inset 0 -2px 2px rgb(0 0 0 / 25%), 0 3px 5px rgb(0 0 0 / 25%), 0 12px 26px -16px rgb(0 0 0 / 90%); }
   .tadeon-material-button:not(:disabled):not([aria-disabled="true"]):hover::before { opacity: 1; }
@@ -719,9 +719,9 @@
 @media (prefers-reduced-motion: reduce) { .tadeon-material-field { transition: none; } }
 
 /* NEX-014: owned controls/disclosure, interruptible state transitions. */
-.tadeon-material-tabs { background: rgb(12 16 22 / 92%); border: 1px solid var(--material-edge); border-radius: 1rem; box-shadow: inset 0 2px 5px rgb(0 0 0 / 24%), inset 0 -1px rgb(233 227 213 / 5%); }
+.tadeon-material-tabs { position: relative; isolation: isolate; background: rgb(12 16 22 / 92%); border: 1px solid var(--material-edge); border-radius: 1rem; box-shadow: inset 0 2px 5px rgb(0 0 0 / 24%), inset 0 -1px rgb(233 227 213 / 5%); }
 [data-material-surface="tab"] { position: relative; min-height: 44px; color: var(--muted-foreground); background: transparent; transition: color 160ms ease, background-color 180ms ease, box-shadow 180ms ease; }
-[data-material-surface="tab"][data-state="active"] { color: var(--foreground); background: linear-gradient(165deg, rgb(var(--material-rgb, 217 215 164) / 19%), rgb(233 227 213 / 4%)); box-shadow: inset 0 1px rgb(255 249 232 / 22%), inset 0 -1px rgb(var(--material-rgb, 217 215 164) / 30%), 0 3px 9px -4px #000; }
+[data-material-surface="tab"][data-state="active"] { color: var(--foreground); border-color: transparent; background: transparent; box-shadow: none; }
 [data-material-surface="tab"]::before, [data-material-surface="tab"]::after { content: none; }
 [data-motion-surface="fold"] { overflow: hidden; }
 [data-motion-surface="fold"][data-state="open"] { animation: tadeon-fold-open 240ms cubic-bezier(.22,1,.36,1); }
@@ -730,3 +730,19 @@
 @keyframes tadeon-fold-close { from { height: var(--radix-collapsible-content-height); opacity: 1; } to { height: 0; opacity: 0; } }
 
 @media (prefers-reduced-motion: reduce) { [data-material-surface="tab"], [data-motion-surface="fold"] { animation: none; transition: none; } }
+
+/* A single contact-lit plate travels between stable controls in tabs and navigation. */
+[data-selection-rail] { position: relative; isolation: isolate; }
+.tadeon-selection-plate {
+  position: absolute; left: 0; top: 0; z-index: -1; pointer-events: none;
+  margin: 0; opacity: 0; border: 1px solid rgb(var(--material-rgb, 217 215 164) / 27%);
+  border-radius: .75rem;
+  background: radial-gradient(ellipse at 28% 0%, rgb(255 249 232 / 14%), transparent 70%), linear-gradient(155deg, rgb(var(--material-rgb, 217 215 164) / 18%), rgb(233 227 213 / 3%));
+  box-shadow: inset 0 1px rgb(255 249 232 / 20%), inset 0 -1px rgb(var(--material-rgb, 217 215 164) / 22%), 0 4px 12px -7px #000;
+  transition: transform 320ms cubic-bezier(.22,.8,.2,1), width 280ms var(--ease-out), height 280ms var(--ease-out), opacity 160ms ease;
+}
+.tadeon-selection-plate[data-ready="true"] { opacity: 1; }
+@media (prefers-reduced-motion: reduce) { .tadeon-selection-plate { transition: none; } }
+
+[data-selection-rail] .tadeon-material-button { border-color: transparent; background: transparent; box-shadow: none; }
+[data-selection-rail] .tadeon-material-button::before { content: none; }

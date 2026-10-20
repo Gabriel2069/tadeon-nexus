@@ -77,7 +77,6 @@ html body .tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-focus-brand-
 .tadeon-route-stage {
   animation: tadeon-page-reveal var(--tadeon-motion-reveal) var(--tadeon-ease-reveal) both;
   transform-origin: 50% 1.5rem;
-  will-change: opacity, transform, filter;
 }
 
 @keyframes tadeon-page-reveal {
@@ -88,8 +87,8 @@ html body .tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-focus-brand-
   }
   to {
     opacity: 1;
-    transform: translate3d(0, 0, 0);
-    filter: blur(0);
+    transform: none;
+    filter: none;
   }
 }
 
@@ -1467,7 +1466,7 @@ button:not([data-material-surface], .tadeon-material-button)[data-tadeon-directe
   isolation: isolate;
   border: 1px solid var(--material-edge);
   border-radius: var(--radius-panel);
-  background: radial-gradient(ellipse at var(--material-x, 12%) var(--material-y, 0%), rgb(233 227 213 / 5%), transparent 65%), var(--surface-ink);
+  background: radial-gradient(ellipse at var(--material-x, 12%) var(--material-y, 0%), rgb(233 227 213 / 7%), transparent 65%), repeating-linear-gradient(112deg, transparent 0 11px, rgb(233 227 213 / 1.8%) 11px 12px, transparent 12px 19px), var(--surface-ink);
   box-shadow: var(--shadow-relief);
   transition: border-color var(--motion-fast) var(--ease-out), box-shadow var(--motion-panel) var(--ease-out);
 }
@@ -1547,7 +1546,19 @@ button:not([data-material-surface], .tadeon-material-button)[data-tadeon-directe
 .tadeon-archive-mine { min-height: 2.75rem; font-size: .75rem; }
 .tadeon-archive-count { grid-column: 1 / -1; color: var(--muted-foreground); font: .625rem var(--font-mono); letter-spacing: .04em; }
 @media (max-width: 1000px) { .tadeon-archive-tools { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } .tadeon-archive-search { grid-column: 1 / -1; } }
-@media (max-width: 600px) { .tadeon-character-card { min-height: 18rem; } }
+@media (max-width: 767px) {
+  .tadeon-character-gallery { gap: .75rem; }
+  .tadeon-character-card { display: grid; grid-template-columns: minmax(0, 1fr) auto; min-height: 0; gap: .6rem 1rem; padding: .75rem 1rem .75rem 1.5rem; }
+  .tadeon-character-card__header { grid-column: 1 / -1; margin-bottom: 0; }
+  .tadeon-character-card__identity { grid-column: 1 / -1; margin-bottom: .25rem; }
+  .tadeon-character-card h3 { font-size: 1.6rem; }
+  .tadeon-character-card__record { grid-column: 1; display: grid; gap: .25rem; margin: 0; padding: 0; }
+  .tadeon-character-card__open { align-self: end; border-top: 0; font-size: .875rem; }
+  .tadeon-character-card__open > svg { display: none; }
+}
+@media (max-width: 767px), (hover: none) {
+  .tadeon-ambient { animation: none; will-change: auto; }
+}
 .tadeon-auth-manifesto__copy h2 { font-weight: 600; line-height: 1.06; letter-spacing: -.025em; }
-@media (max-width: 767px) { .tadeon-auth-manifesto::after { inset: .75rem; } .tadeon-fabric-backdrop { opacity: .4; } }
+@media (max-width: 767px) { .tadeon-auth-manifesto::after { inset: .75rem; } .tadeon-fabric-backdrop { opacity: .72; } }
 @media (prefers-reduced-transparency: reduce) { .tadeon-fabric-backdrop { opacity: .25; } }

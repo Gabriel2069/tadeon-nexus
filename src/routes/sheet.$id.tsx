@@ -694,7 +694,7 @@ function SheetPage() {
                     <Sparkles className="w-4 h-4" /> VP
                   </Button>
                 )}
-                <Button size="sm" onClick={doSave} className="tadeon-sheet-save-button gap-1.5">
+                <Button size="sm" aria-label="Salvar" onClick={doSave} className="tadeon-sheet-save-button gap-1.5">
                   <Save className="w-4 h-4" /> <span className="hidden sm:inline">Salvar</span>
                 </Button>
               </>
@@ -702,7 +702,6 @@ function SheetPage() {
           </div>
         }
       >
-        {" "}
         {activeConditions.length > 0 && (
           <div className="tadeon-sheet-condition-rail" aria-label="Condições ativas">
             {activeConditions.map((key) => {

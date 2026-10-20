@@ -978,7 +978,6 @@ html[data-tadeon-sheet-mode="game"] section[id]:focus-within .text-muted-foregro
     translate 180ms var(--ease-out);
 }
 
-.tadeon-library-view-switch [data-slot="button"],
 .tadeon-graph-layout-switch [data-slot="button"],
 .tadeon-graph-toolbar [data-slot="button"] {
   overflow: visible;
@@ -992,7 +991,6 @@ html[data-tadeon-sheet-mode="game"] section[id]:focus-within .text-muted-foregro
     scale 180ms var(--ease-out);
 }
 
-.tadeon-library-view-switch [data-slot="button"][aria-pressed="true"],
 .tadeon-graph-layout-switch [data-slot="button"][aria-pressed="true"] {
   border-color: rgb(217 215 164 / 18%);
   color: var(--primary);
@@ -1004,7 +1002,6 @@ html[data-tadeon-sheet-mode="game"] section[id]:focus-within .text-muted-foregro
     inset 0 1px rgb(255 255 255 / 4%);
 }
 
-.tadeon-library-view-switch [data-slot="button"][aria-pressed="true"] svg,
 .tadeon-graph-layout-switch [data-slot="button"][aria-pressed="true"] svg {
   animation: tadeon-nexus-icon-bloom 320ms var(--ease-out) both;
 }
@@ -1083,7 +1080,6 @@ html[data-tadeon-sheet-mode="game"] section[id]:focus-within .text-muted-foregro
     translate: 0.18rem 0;
   }
 
-  .tadeon-library-view-switch [data-slot="button"]:not(:disabled):hover,
   .tadeon-graph-layout-switch [data-slot="button"]:not(:disabled):hover,
   .tadeon-graph-toolbar [data-slot="button"]:not(:disabled):hover {
     border-color: rgb(217 215 164 / 16%);
@@ -1099,7 +1095,6 @@ html[data-tadeon-sheet-mode="game"] section[id]:focus-within .text-muted-foregro
 }
 
 @media (pointer: coarse) {
-  .tadeon-library-view-switch [data-slot="button"]:not(:disabled):active,
       .tadeon-graph-layout-switch [data-slot="button"]:not(:disabled):active,
       .tadeon-route-nexus
     :where(.tadeon-nexus-editor-toolbar, .tadeon-nexus-context-tabs, .tadeon-nexus-home__actions, .tadeon-nexus-home__shelves)
@@ -1130,8 +1125,6 @@ html[data-tadeon-sheet-mode="game"] section[id]:focus-within .text-muted-foregro
 @media (prefers-reduced-motion: reduce) {
   .tadeon-route-nexus :where(button, [role="button"], [data-slot="button"]),
   .tadeon-route-nexus :where(button, [role="button"], [data-slot="button"]) svg,
-  .tadeon-library-view-switch [data-slot="button"],
-  .tadeon-library-view-switch [data-slot="button"] svg,
   .tadeon-graph-layout-switch [data-slot="button"],
   .tadeon-graph-layout-switch [data-slot="button"] svg {
     animation: none !important;

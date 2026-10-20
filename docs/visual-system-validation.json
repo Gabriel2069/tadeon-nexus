@@ -8741,5 +8741,88 @@
     "productionVerifiedAt": "2026-10-16T10:14:17.2990084Z",
     "productionHttpStatus": 200,
     "workerVersion": "91077d6f-4663-47e8-bb08-5c387fb12bff"
+  },
+  "mobileRevision": {
+    "task": "NEX-027",
+    "status": "in_progress",
+    "base": "857f136d53dce5d80efa6a4266b36b6e5fa2d66b",
+    "checkedAt": "2026-10-20",
+    "scope": [
+      "Dashboard sem abertura duplicada",
+      "Alegreya Sans na interface e escala compacta",
+      "Ficha: narrativa em dobra, recursos em pares, recursos antes dos atributos no celular",
+      "Composição compacta no acervo, Mestre e utilidades",
+      "Placa contínua em abas, navegação, leitura e biblioteca",
+      "Rolagem manual não chama scrollIntoView por atualização da visualViewport",
+      "Trama vetorial mais presente e brilho finito"
+    ],
+    "baseline": {
+      "fixtureOnly": true,
+      "width": 390,
+      "documentHeight": 10329,
+      "identityHeight": 1341.09375,
+      "vitalsTop": 2868.5
+    },
+    "validation": {
+      "audit": {
+        "status": "passed",
+        "command": "npm audit --audit-level=high",
+        "vulnerabilities": 0
+      },
+      "sheetMobile": {
+        "status": "passed",
+        "fixtureOnly": true,
+        "widths": [
+          320,
+          390
+        ],
+        "states": [
+          "editable"
+        ],
+        "covers": [
+          "controlled values",
+          "folds and section index",
+          "narrative discovery",
+          "resource targets and tone",
+          "inventory and history focus",
+          "retry and game mode",
+          "rapid selection and reduced motion"
+        ],
+        "note": "Validated before the attribute grid minimum changed from 7 to 8rem; the two-column phone composition remains subject to the final density retake."
+      },
+      "regressions": {
+        "status": "passed",
+        "covers": [
+          "host refs after commit",
+          "selection follows controls and route remount",
+          "manual viewport scrolling does not recapture focus",
+          "compact narrative preserves edits"
+        ]
+      }
+    },
+    "limits": [
+      "Fixtures interceptam os dados; nenhum teste autoriza leitura ou escrita real.",
+      "A amostra de scroll em Chromium com GPU por software e movimento reduzido não certifica fluidez em telefone físico.",
+      "NEX-009 mantém medição em dispositivos físicos; NEX-010 mantém autenticação e corpus real."
+    ],
+    "localCheck": {
+      "status": "passed_before_final_selection_scope",
+      "command": "npm run check",
+      "suites": 144,
+      "tests": 590,
+      "log": "Source gate to be repeated by CI at the final head."
+    },
+    "fonts": {
+      "family": "Alegreya Sans",
+      "weights": [
+        400,
+        500,
+        700
+      ],
+      "delivery": "same-origin WOFF, Latin/extended Latin subset",
+      "license": "public/fonts/alegreya-sans-OFL.txt",
+      "source": "https://github.com/google/fonts/tree/main/ofl/alegreyasans",
+      "bytes": 102324
+    }
   }
 }

@@ -9,7 +9,8 @@ const EDITABLE_SELECTOR = [
 ].join(", ");
 
 function setPx(root: HTMLElement, name: string, value: number) {
-  root.style.setProperty(name, `${Math.max(0, Math.round(value))}px`);
+  const next = `${Math.max(0, Math.round(value))}px`;
+  if (root.style.getPropertyValue(name) !== next) root.style.setProperty(name, next);
 }
 
 function activeEditable() {
@@ -62,6 +63,8 @@ export function VisualViewportPopupBridge() {
     const root = document.documentElement;
     let frame = 0;
     let scrollFrame = 0;
+    let revealFocus = false;
+    let userScrolling = false;
     const settleTimers: number[] = [];
 
     const clearTimers = () => {
@@ -129,7 +132,8 @@ export function VisualViewportPopupBridge() {
 
       // Mede depois de o browser aplicar as novas custom properties; assim a
       // rolagem interna usa a geometria final do modal, não a do frame anterior.
-      if (focusedEditable) scheduleFocusedScroll();
+      if (focusedEditable && revealFocus && !userScrolling) scheduleFocusedScroll();
+      revealFocus = false;
     };
 
     const scheduleFocusedScroll = () => {
@@ -149,9 +153,23 @@ export function VisualViewportPopupBridge() {
       frame = window.requestAnimationFrame(sync);
     };
 
+    const resize = () => {
+      revealFocus = true;
+      schedule();
+    };
+
+    const respectScrollIntent = () => {
+      userScrolling = true;
+      revealFocus = false;
+      clearTimers();
+      if (scrollFrame) window.cancelAnimationFrame(scrollFrame);
+      scrollFrame = 0;
+    };
+
     const settleAfterFocusChange = () => {
       clearTimers();
-      schedule();
+      userScrolling = false;
+      resize();
 
       // WebKit pode entregar visualViewport.height/offsetTop em etapas enquanto
       // o teclado anima. Reamostramos por uma janela curta e finita.
@@ -159,35 +177,39 @@ export function VisualViewportPopupBridge() {
         settleTimers.push(
           window.setTimeout(() => {
             schedule();
-            scheduleFocusedScroll();
+            if (!userScrolling) scheduleFocusedScroll();
           }, delay),
         );
       }
     };
 
     root.dataset.tadeonPopupViewport = "true";
-    window.addEventListener("resize", schedule, { passive: true });
+    window.addEventListener("resize", resize, { passive: true });
     window.addEventListener("orientationchange", settleAfterFocusChange, { passive: true });
     window.addEventListener("pageshow", schedule, { passive: true });
     document.addEventListener("focusin", settleAfterFocusChange, { passive: true });
     document.addEventListener("focusout", settleAfterFocusChange, { passive: true });
-    window.visualViewport?.addEventListener("resize", schedule, { passive: true });
+    window.visualViewport?.addEventListener("resize", resize, { passive: true });
     window.visualViewport?.addEventListener("scroll", schedule, { passive: true });
     window.visualViewport?.addEventListener("scrollend", schedule, { passive: true });
+    document.addEventListener("touchmove", respectScrollIntent, { passive: true });
+    document.addEventListener("wheel", respectScrollIntent, { passive: true });
     schedule();
 
     return () => {
       if (frame) window.cancelAnimationFrame(frame);
       if (scrollFrame) window.cancelAnimationFrame(scrollFrame);
       clearTimers();
-      window.removeEventListener("resize", schedule);
+      window.removeEventListener("resize", resize);
       window.removeEventListener("orientationchange", settleAfterFocusChange);
       window.removeEventListener("pageshow", schedule);
       document.removeEventListener("focusin", settleAfterFocusChange);
       document.removeEventListener("focusout", settleAfterFocusChange);
-      window.visualViewport?.removeEventListener("resize", schedule);
+      window.visualViewport?.removeEventListener("resize", resize);
       window.visualViewport?.removeEventListener("scroll", schedule);
       window.visualViewport?.removeEventListener("scrollend", schedule);
+      document.removeEventListener("touchmove", respectScrollIntent);
+      document.removeEventListener("wheel", respectScrollIntent);
       clear();
     };
   }, []);

@@ -66,7 +66,7 @@ try {
     );
     await page.evaluate(async () => {
       await Promise.all(
-        ['600 16px "Cormorant Garamond"', '500 16px "Inter"'].map((font) =>
+        ['600 16px "Cormorant Garamond"', '500 16px "Alegreya Sans"'].map((font) =>
           document.fonts.load(font),
         ),
       );

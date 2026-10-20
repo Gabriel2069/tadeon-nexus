@@ -14,7 +14,7 @@
   background:
     radial-gradient(circle at 34% 45%, rgb(217 215 164 / 7%), transparent 38%),
     radial-gradient(circle at 66% 36%, rgb(113 107 123 / 10%), transparent 42%);
-  filter: blur(52px);
+
   pointer-events: none;
   content: "";
 }
@@ -1938,7 +1938,7 @@
   .tadeon-identity-sigil { display: none; }
   .tadeon-identity-lead__detail { font-size: .75rem; }
   .tadeon-identity-foundation { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .tadeon-identity-foundation > :last-child { grid-column: 1 / -1; }
+  .tadeon-identity-foundation > :last-child { grid-column: auto; }
   .tadeon-identity-axis, .tadeon-identity-details { grid-template-columns: minmax(0, 1fr); }
   .tadeon-link-panel { padding: 1.25rem 0 0; border-left: 0; border-top: 1px solid rgb(233 227 213 / 12%); }
   .tadeon-link-row { grid-template-columns: 1.5rem minmax(0, 1fr) 44px; }
@@ -1965,9 +1965,47 @@
 .tadeon-sheet-page .tadeon-stepper-button { min-width: 44px; min-height: 44px; }
 .tadeon-condition-option { min-height: 44px; }
 @media (max-width: 767px) {
- .tadeon-sheet-commandbar__actions { flex-wrap: wrap; justify-content: flex-start; }
- .tadeon-sheet-experience-actions { gap: .25rem; }
- .tadeon-vitals-grid { grid-template-columns: minmax(0, 1fr); }
+ .tadeon-sheet-commandbar__actions { display: flex; flex-wrap: wrap; justify-content: flex-start; gap: .25rem; }
+ .tadeon-sheet-commandbar__actions > .tadeon-sheet-commandbar__back { width: 44px; }
+ .tadeon-sheet-presence, .tadeon-sheet-nexus-links { flex: 0 0 auto; }
+ .tadeon-sheet-commandbar__actions .tadeon-sheet-game-button { padding-inline: .6rem; }
+ .tadeon-sheet-commandbar__actions .tadeon-sheet-game-button span { display: none; }
+ .tadeon-sheet-commandbar__actions :is(button, a) { min-height: 44px; min-width: 44px; }
+ .tadeon-sheet-commandbar__actions .tadeon-save-status { margin-left: auto; }
+ .tadeon-sheet-core-grid { display: flex; flex-direction: column; }
+ .tadeon-vitals-panel { order: -1; }
+
+ .tadeon-sheet-experience-actions { display: contents; }
+ .tadeon-vitals-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .5rem; }
+ .tadeon-stat-block { padding: .5rem; border-radius: .85rem; }
+ .tadeon-stat-block__head { display: grid; grid-template-columns: minmax(0, 1fr); gap: .25rem; margin-bottom: .4rem; }
+ .tadeon-stat-block__head > div:first-child { display: flex; flex-wrap: wrap; align-items: baseline; gap: .2rem .35rem; }
+ .tadeon-stat-block__head h3 { margin: 0; font-size: 1.15rem; overflow-wrap: anywhere; }
+ .tadeon-stat-block__caption { width: 100%; margin: 0; font-size: .7rem; }
+ .tadeon-stat-block__dial { width: 3.75rem; height: 3.75rem; justify-self: center; }
+ .tadeon-stat-block__value { font: 600 1.7rem/1 var(--font-cinzel); }
+ .tadeon-stat-block input { font-size: 1rem; }
+ .tadeon-stat-block__controls { grid-template-columns: minmax(0, 1fr); gap: .35rem; padding-top: .35rem; }
+ .tadeon-stat-block__stepper { grid-template-columns: 44px minmax(18px, 1fr) 44px; }
+ .tadeon-stat-block__mod { grid-template-columns: auto minmax(0, 1fr); align-items: center; gap: .3rem; }
+ .tadeon-sheet-section { padding: .75rem; border-radius: 1rem; }
+ .tadeon-sheet-section__heading { gap: .5rem; margin-bottom: .75rem; padding-bottom: .6rem; }
+ .tadeon-sheet-section__title-group small { font-size: .625rem; letter-spacing: .05em; }
+ .tadeon-sheet-section__title-group h2 { font-size: 1.5rem; }
+ .tadeon-sheet-overview { gap: 0; }
+ .tadeon-overview-metric { padding: .6rem .75rem; }
+ .tadeon-overview-metric strong { display: inline-block; font: 600 1.7rem/1.1 var(--font-cinzel); font-variant-numeric: tabular-nums lining-nums; margin: .2rem .4rem 0 0; }
+ .tadeon-overview-metric small { display: inline; font-size: .75rem; }
+ .tadeon-overview-metric__icon { right: .6rem; top: .65rem; }
+ .tadeon-identity-lead { margin-bottom: .75rem; }
+ .tadeon-identity-lead__detail { display: none; }
+ .tadeon-identity-foundation { gap: .6rem; }
+ .tadeon-identity-field--name > textarea { min-height: 5rem; height: 5rem; font-size: 1.5rem; }
+ .tadeon-identity-axis { gap: .65rem; margin-top: .65rem; padding-block: .65rem; }
+ .tadeon-link-panel { padding-top: .75rem; }
+ .tadeon-sheet-core-grid { gap: .75rem; }
+ .tadeon-attribute-radar { max-width: 15rem; }
+
  .tadeon-defense-card { grid-column: 1 / -1; }
 }
 @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
@@ -1979,7 +2017,7 @@
 /* Attribute controls use one responsive instrument grid, including game mode. */
 .tadeon-attribute-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 9rem), 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 8rem), 1fr));
   gap: .6rem;
   overflow: visible;
   padding: 0;
@@ -1991,7 +2029,7 @@
 }
 .tadeon-attribute-tile__controls {
   display: grid;
-  grid-template-columns: 44px minmax(24px, 1fr) 44px;
+  grid-template-columns: 44px minmax(16px, 1fr) 44px;
   gap: 0;
   width: 100%;
   padding: 0;
@@ -1999,3 +2037,6 @@
 }
 .tadeon-attribute-tile__value { display: grid; width: auto; min-width: 0; height: 44px; place-items: center; }
 @media (hover:hover) and (pointer:fine) and (prefers-reduced-motion:no-preference) { .tadeon-sheet-fabric { transform: perspective(800px) rotateX(var(--material-tilt-x,0deg)) rotateY(var(--material-tilt-y,0deg)); transition: transform 220ms var(--ease-out); } }
+
+.tadeon-identity-narrative__trigger { display: flex; width: 100%; min-height: 44px; margin-top: .75rem; justify-content: space-between; gap: .5rem; text-align: left; white-space: normal; font-size: .875rem; }
+.tadeon-identity-narrative__trigger small { display: block; color: var(--muted-foreground); font-size: .75rem; font-weight: 400; }

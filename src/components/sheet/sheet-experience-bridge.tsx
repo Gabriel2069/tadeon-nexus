@@ -261,6 +261,7 @@ export function SheetExperienceBridge({
           variant={mode === "game" ? "default" : "outline"}
           className="tadeon-sheet-game-button gap-1.5"
           data-state={mode === "game" ? "active" : "inactive"}
+          aria-label={mode === "game" ? "Editar" : "Jogo"}
           aria-pressed={mode === "game"}
           onClick={() => setMode((current) => (current === "game" ? "edit" : "game"))}
           title={mode === "game" ? "Voltar à edição completa" : "Ativar versão de jogo"}

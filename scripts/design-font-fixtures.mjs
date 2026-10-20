@@ -8,9 +8,6 @@ export async function installDesignFonts(page) {
     ["Cormorant Garamond", 600, "cormorant-600"],
     ["Cormorant Garamond", 700, "cormorant-700"],
     ["Cormorant Garamond", 500, "cormorant-italic-500", "italic"],
-    ["Inter", 400, "font-2"],
-    ["Inter", 500, "font-3"],
-    ["Inter", 600, "font-4"],
     ["PT Mono", 400, "font-5"],
   ]
     .map(([family, weight, file, style = "normal"]) => {

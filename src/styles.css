@@ -4,6 +4,11 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/* Alegreya Sans: OFL-1.1, Latin/extended Latin subset served locally. */
+@font-face { font-family: "Alegreya Sans"; font-style: normal; font-weight: 400; font-display: swap; src: url("/fonts/alegreya-sans-latin-400.woff") format("woff"); }
+@font-face { font-family: "Alegreya Sans"; font-style: normal; font-weight: 500; font-display: swap; src: url("/fonts/alegreya-sans-latin-500.woff") format("woff"); }
+@font-face { font-family: "Alegreya Sans"; font-style: normal; font-weight: 700; font-display: swap; src: url("/fonts/alegreya-sans-latin-700.woff") format("woff"); }
+
 @theme inline {
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
@@ -37,7 +42,8 @@
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
   --font-cinzel: "Cormorant Garamond", Georgia, serif;
-  --font-inter: "Inter", system-ui, sans-serif;
+  --font-sans: "Alegreya Sans", "Trebuchet MS", sans-serif;
+  --font-inter: "Alegreya Sans", "Trebuchet MS", sans-serif;
   --font-mono: "PT Mono", ui-monospace, monospace;
 }
 
@@ -133,7 +139,7 @@
       auto,
       72px 72px,
       72px 72px;
-    background-attachment: fixed;
+    background-attachment: scroll;
   }
 
   ::selection {
@@ -273,7 +279,7 @@
     width: min(42rem, 72vw);
     aspect-ratio: 1;
     border-radius: 999px;
-    filter: blur(80px);
+    background: radial-gradient(ellipse, rgb(113 107 123 / 22%), transparent 70%);
     opacity: 0.12;
     pointer-events: none;
   }
@@ -281,13 +287,13 @@
   .tadeon-ambient--veil {
     top: -25rem;
     right: -18rem;
-    background: var(--tadeon-veil);
+    background: radial-gradient(ellipse, var(--tadeon-veil), transparent 70%);
   }
 
   .tadeon-ambient--flow {
     bottom: -30rem;
     left: -22rem;
-    background: var(--tadeon-flow);
+    background: radial-gradient(ellipse, var(--tadeon-flow), transparent 70%);
   }
 
   .tadeon-sidebar::after {
@@ -600,7 +606,7 @@
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--tadeon-veil);
+  background: radial-gradient(ellipse, var(--tadeon-veil), transparent 70%);
 }
 
 @media (prefers-reduced-motion: reduce) {

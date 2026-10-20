@@ -643,6 +643,13 @@
         "loads the desktop hero parity authority after the prior visual layers",
         "keeps Nexus orbital presence visible on desktop and varies other page heads by identity"
       ]
+    },
+    {
+      "file": "src/lib/navigation-users-uniformity-191-regression.test.ts",
+      "requirements": [
+        "Uniform row height and large minimum heights for user cards on mobile/desktop."
+      ],
+      "supersededBy": "DEC-018/NEX-027: compact natural-height rows, verified in scripts/verify-navigation-utilities.mjs."
     }
   ],
   "migrationContentSha256": {
@@ -709,7 +716,6 @@
     "src/lib/mobile-navigation-177-regression.test.ts",
     "src/lib/ui-coherence-192-regression.test.ts",
     "src/lib/ui-polish-193-regression.test.ts",
-    "src/lib/navigation-users-uniformity-191-regression.test.ts",
     "src/styles/tabletop-participant-palette.test.ts",
     "src/styles/tabletop-scene-tools.test.ts",
     "src/styles/layout-geometry.test.ts",

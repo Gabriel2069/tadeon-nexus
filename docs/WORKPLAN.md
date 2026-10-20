@@ -36,6 +36,7 @@ Cada PR usa IDs desta fila e declara dependências. Trabalho sobre o mesmo propr
 | NEX-024 | Dashboard editorial, acervo navegável e acabamento dos menus | Integrado | 7 | shell | NEX-023 |
 | NEX-025 | Ficha: hierarquia, superfícies e condução visual | Integrado | 7 | sheet | NEX-024 |
 | NEX-026 | Continuidade entre páginas, Nexus/Biblioteca e roda do Mais | Integrado | 7 | knowledge | NEX-024, NEX-025 |
+| NEX-027 | Composição móvel, tipografia e seleção contínua de tecido | Em andamento | 7 | shell | NEX-025, NEX-026 |
 
 ## NEX-001 — Preparação estrutural
 
@@ -245,6 +246,17 @@ Evidências: [docs/DESIGN.md](../docs/DESIGN.md), [docs/FOUNDATION.md](../docs/F
 
 Evidências: [docs/nexus-continuity-validation.json](../docs/nexus-continuity-validation.json), [docs/DESIGN.md](../docs/DESIGN.md), [docs/FOUNDATION.md](../docs/FOUNDATION.md), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/pull/283), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39344053512), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39345104014), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39345104015).
 
+## NEX-027 — Composição móvel, tipografia e seleção contínua de tecido
+
+- Retirar a abertura extra do Dashboard, preservando a seção artística aprovada e um único h1.
+- Substituir a interface genérica por uma família humanista com personalidade, com escala legível e números editoriais adequados ao celular.
+- Recompor Ficha, acervo, Mestre e utilidades para larguras compactas: campos em pares, recursos em dois instrumentos, registros menos altos e contexto narrativo acessível por dobra explícita.
+- Corrigir a disputa entre rolagem manual, foco e teclado; manter posicionamento e foco dos portais.
+- Usar uma placa de seleção móvel compartilhada, finita e interrompível, em abas, navegação e modos de leitura; conservar a roda do Mais.
+- Ampliar tramas vetoriais e luz de contato, evitando efeitos permanentes sobre a página longa; validar desktop, tablet, celular e movimento reduzido.
+
+Evidências: [docs/visual-system-validation.json](../docs/visual-system-validation.json), [docs/DESIGN.md](../docs/DESIGN.md).
+
 ## Decisões vigentes
 
 | ID | Decisão | Motivo |
@@ -266,3 +278,4 @@ Evidências: [docs/nexus-continuity-validation.json](../docs/nexus-continuity-va
 | DEC-015 | Tadeu considera que o sistema ainda precisa de maior elaboração após NEX-023. Priorizar composição do Dashboard, organização do acervo e acabamento da navegação em NEX-024; NEX-009 mantém a medição em hardware físico. | Pedido de Tadeu em 16/10/2026 após a publicação da PR #277: ainda há muito a melhorar. A composição e a descoberta do acervo precedem a medição em dispositivos físicos. NEX-025/026 preservam a continuidade visual por tela; NEX-009 deve medir a base resultante de NEX-024. |
 | DEC-016 | Um contrato de layout e cabeçalho para as páginas principais; mudar a área altera símbolo, tom e contexto, sem inventar outro padrão de head. | Pedido de Tadeu em 19/10/2026 ao iniciar NEX-026. PageHeader compartilha identidade, ações e contexto; o envelope comum respeita a mesma margem. Conteúdo e instrumentos conservam suas funções e densidades. |
 | DEC-017 | Restaurar a roda de opções do Mais no dock inferior; personalidade e continuidade devem coexistir entre páginas. | Pedido explícito de Tadeu ao fechar NEX-026, em 19/10/2026. Substitui a apresentação em lista de NEX-016, preservando o componente React/Radix, os destinos estáveis e a dispensa acessível. Cabeçalhos, margens, materiais e movimentos compartilham regras; símbolos e instrumentos mantêm sua autoria. |
+| DEC-018 | Recompor o celular por função; retirar o cabeçalho adicional do Dashboard e adotar Alegreya Sans na interface, mantendo Cormorant Garamond editorial e PT Mono documental. | Pedido explícito de Tadeu em 19/10/2026: reduzir cards e rolagem, evitar aparência Arial/ABNT, seleção viajante e atmosfera de tecido. Dashboard é uma exceção deliberada à aplicação universal de PageHeader em DEC-016; a arte aprovada continua sendo sua abertura. Os nomes --font-inter e --font-cinzel são aliases compatíveis, não fontes adicionais. |
