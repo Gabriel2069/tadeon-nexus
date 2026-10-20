@@ -39,8 +39,8 @@ jobs:
           NEXUS_AUDIT_STATES: '["populated"]'
         run: |
           git worktree add --detach /tmp/tadeon-baseline "$BASE_SHA"
-          ln -s "$GITHUB_WORKSPACE/node_modules" /tmp/tadeon-baseline/node_modules
           cd /tmp/tadeon-baseline
+          npm ci
           node "$GITHUB_WORKSPACE/scripts/verify-dashboard-design.mjs"
       - name: Validar acervo, navegação, foco e movimento
         env:

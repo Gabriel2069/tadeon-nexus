@@ -27,13 +27,22 @@ const server = spawn(
   },
 );
 try {
-  await new Promise((ok, fail) => {
-    server.stdout.on("data", (b) => {
-      if (b.toString().includes("Local:")) ok();
-    });
-    server.on("exit", (code) => fail(new Error("Vite exited: " + code)));
-    setTimeout(() => fail(new Error("Vite startup timeout")), 30000).unref();
-  });
+  let serverLog = "";
+  let serverExit = null;
+  const capture = chunk => { serverLog = (serverLog + chunk.toString()).slice(-12000); };
+  server.stdout.on("data", capture);
+  server.stderr.on("data", capture);
+  server.on("exit", code => { serverExit = code ?? -1; });
+  const deadline = Date.now() + 120000;
+  let ready = false;
+  while (Date.now() < deadline && serverExit === null) {
+    try {
+      const response = await fetch(`http://127.0.0.1:${port}/`, { signal: AbortSignal.timeout(5000) });
+      if (response.status < 500) { ready = true; break; }
+    } catch { /* Startup and initial dependency optimization are still in progress. */ }
+    await new Promise(resolve => setTimeout(resolve, 300));
+  }
+  if (!ready) throw new Error("Vite did not become ready. Exit: " + serverExit + "\n" + serverLog);
   const id = "00000000-0000-4000-8000-000000000001";
   const user = {
     id,
