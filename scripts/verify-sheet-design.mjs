@@ -407,6 +407,9 @@ try {
             overflow:document.documentElement.scrollWidth>innerWidth,
             resourceColumns:getComputedStyle(document.querySelector(".tadeon-vitals-grid")).gridTemplateColumns,
             attributeColumns:getComputedStyle(document.querySelector(".tadeon-attribute-grid")).gridTemplateColumns,
+            headerActions: [...document.querySelectorAll('.tadeon-sheet-commandbar__actions button')].map(e=>{const r=e.getBoundingClientRect();return {name:e.getAttribute("aria-label")??e.textContent.trim(),y:r.y,width:r.width,height:r.height};}),
+            tabLabels:[...document.querySelectorAll('.tadeon-sheet-tabs-list [role="tab"] span')].map(e=>({label:e.textContent,width:e.clientWidth,scroll:e.scrollWidth,font:getComputedStyle(e).fontFamily})),
+            tabLabelsFit:[...document.querySelectorAll('.tadeon-sheet-tabs-list [role="tab"] span')].every(e=>e.scrollWidth<=e.clientWidth+1),
             attributeTargetsFit:[...document.querySelectorAll(".tadeon-attribute-tile button")].every(e=>{const r=e.getBoundingClientRect(),p=e.closest(".tadeon-attribute-tile").getBoundingClientRect();return r.x>=p.x && r.right<=p.right && r.width>=44 && r.height>=44;}),
             identity: rect("#sec-info"),
             vitals: rect("#sec-pontos"),
@@ -423,6 +426,11 @@ try {
           };
         });
         assert(!density.overflow && density.attributeTargetsFit, "Compact composition keeps controls inside the viewport");
+        if (width<768) {
+          assert(density.headerActions.every(a=>a.width>=44 && a.height>=44), "Compact toolbar keeps 44px actions");
+          assert(new Set(density.headerActions.map(a=>Math.round(a.y))).size===1, "Primary sheet actions share one row in the compact fixture");
+          assert(density.tabLabelsFit, `All three sheet tab labels fit without clipping: ${JSON.stringify(density.tabLabels)}`);
+        }
         assert(errors.length===0, `Density probe has no render errors: ${JSON.stringify(errors)}`);
         assert(writes.length<=1 && writes.every(w=>w.body.name===sheet.name), "Density probe permits only the existing mount normalization in the intercepted fixture");
         if (process.env.NEXUS_SKIP_SCREENSHOTS !== "1") {

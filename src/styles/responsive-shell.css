@@ -73,7 +73,6 @@
 
   .tadeon-ambient {
     width: 24rem;
-    filter: blur(70px);
     opacity: 0.1;
   }
 

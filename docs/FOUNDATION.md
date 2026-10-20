@@ -224,3 +224,5 @@ O Dashboard tem a exceção de DEC-018; os demais cabeçalhos mantêm os proprie
 `useMaterialLight` conserva os contratos de toque, foco, movimento reduzido e desmontagem, atualizando o último ponto sem cancelar e reagendar repetidamente o mesmo quadro. `SelectionPlate` escuta o término de uma entrada que contém o grupo e reconcilia sua geometria; não existe polling por frame nem novo observador global. Os efeitos decorativos de ThreadField deixam os escritores genéricos; geometria vetorial pertence a brand-mark/fabric-filaments e material aos módulos existentes.
 
 O lote não retira o polling de modificadores do ExperienceFinalPolishBridge nem certifica que toda a dívida de apresentação terminou. NEX-009 conserva medições físicas e revisão de trabalho residual; as provas deste lote ficam em craftRevision da evidência visual.
+
+A barra móvel da Ficha pertence a sheet-premium.css; o bloco antigo em route-layout.css foi retirado. Ações primárias preservam alvos de 44 px na mesma linha a 320 px, com presença e salvamento em linha secundária. Abas compactas mantêm seus nomes completos. O lote retira 18 !important (2.872 → 2.854), sem criar módulo ou link global.

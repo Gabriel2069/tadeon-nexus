@@ -9011,12 +9011,124 @@
           "legacy bindings are released",
           "selection reconciles after an ancestor entrance"
         ]
+      },
+      "runtimeComparison": {
+        "status": "passed",
+        "fixtureOnly": true,
+        "routes": [
+          "/",
+          "/master-panel"
+        ],
+        "widths": [
+          390,
+          1440
+        ],
+        "height": 1000,
+        "reducedMotion": false,
+        "cases": 4,
+        "perpetualDecorativeAnimations": 0,
+        "backdropPaths": 32,
+        "overflow": false,
+        "covers": [
+          "font-loaded geometry",
+          "unique active destination",
+          "selected plane alignment",
+          "local card reflection and stable targets"
+        ]
+      },
+      "shared": {
+        "status": "passed",
+        "fixtureOnly": true,
+        "routes": [
+          "/nexus",
+          "/offline",
+          "/tabletop"
+        ],
+        "widths": [
+          320,
+          820
+        ],
+        "cases": 6,
+        "overflow": false,
+        "covers": [
+          "reduced motion",
+          "shared header",
+          "canvas readiness",
+          "portal and focus flows"
+        ]
+      },
+      "sheet": {
+        "status": "passed",
+        "fixtureOnly": true,
+        "widths": [
+          320,
+          820
+        ],
+        "states": [
+          "editable"
+        ],
+        "cases": 2,
+        "covers": [
+          "resource controls",
+          "narrative and jump navigation",
+          "inventory and history focus",
+          "retry and game mode",
+          "rapid selection and reduced motion"
+        ],
+        "note": "Requests intercepted by fixture; no real backend writes."
+      },
+      "fullLocalCheck": {
+        "status": "passed",
+        "suites": 146,
+        "tests": 596,
+        "includes": [
+          "style and continuity gates",
+          "lint",
+          "types",
+          "tests",
+          "client, SSR and Worker build"
+        ]
+      },
+      "login": {
+        "status": "passed",
+        "fixtureOnly": true,
+        "widths": [
+          320,
+          1440
+        ],
+        "overflow": false,
+        "covers": [
+          "48px submit",
+          "signup/recovery flow",
+          "intercepted invalid sign-in",
+          "local reflection and reduced motion"
+        ]
+      },
+      "sheetDensity": {
+        "status": "passed",
+        "fixtureOnly": true,
+        "width": 320,
+        "primaryActions": 5,
+        "primaryTarget": [
+          44,
+          44
+        ],
+        "oneRow": true,
+        "allTabLabelsFit": true,
+        "overflow": false
       }
     },
     "limits": [
       "Fixtures interceptam dados e não certificam contas reais.",
       "Contagem de loops, caminhos e agendamentos não equivale a INP, FPS, latência ou autonomia medidos em hardware físico.",
       "NEX-009 mantém as medições físicas; NEX-010/011 preservam autorização/corpus e restauração reais."
-    ]
+    ],
+    "retiredStyleDebt": {
+      "importantBefore": 2872,
+      "importantAfter": 2854,
+      "removed": 18,
+      "cssModules": 57,
+      "globalLinks": 12
+    }
   }
 }
