@@ -141,7 +141,6 @@
 /* ================================================================
    MOBILE HEADER / DOCK - stronger but still compact.
    ================================================================ */
-.tadeon-shell .tadeon-mobile-header__thread{animation:thn-mobile-thread 9s ease-in-out infinite alternate}
 @keyframes thn-mobile-thread{from{transform:translateX(-8%);opacity:.3}to{transform:translateX(9%);opacity:.72}}
 .tadeon-shell .tadeon-mobile-header__control:hover{box-shadow:0 14px 30px -24px rgb(116 36 45 / 70%)}
 @keyframes thn-mobile-identity{from{opacity:0;transform:translateY(10px) scale(.94)}60%{opacity:1;transform:translateY(-2px) scale(1.02)}to{transform:none}}

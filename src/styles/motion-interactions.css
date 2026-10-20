@@ -300,7 +300,6 @@
   animation: tadeon-visible-grain 6s steps(3,end) infinite !important;
 }
 
-.tadeon-shell .tadeon-thread-field,
 .tadeon-shell [data-tadeon-atmosphere-line] {
   animation: tadeon-visible-thread 7s ease-in-out infinite alternate !important;
 }
@@ -485,7 +484,6 @@
   .tadeon-shell [data-tadeon-orbit],
   .tadeon-shell .tadeon-grain,
   .tadeon-shell [data-tadeon-grain],
-  .tadeon-shell .tadeon-thread-field,
   .tadeon-shell [data-tadeon-atmosphere-line] {
     animation: none !important;
   }
@@ -569,7 +567,7 @@
 @keyframes tdv-sheet-r-in{from{transform:translateX(100%) scale(.96);opacity:.3}60%{transform:translateX(-18px) scale(1.012);opacity:1}to{transform:none;opacity:1}}@keyframes tdv-sheet-r-out{to{transform:translateX(100%) scale(.98);opacity:0}}@keyframes tdv-sheet-l-in{from{transform:translateX(-100%) scale(.96);opacity:.3}60%{transform:translateX(18px) scale(1.012);opacity:1}to{transform:none;opacity:1}}@keyframes tdv-sheet-l-out{to{transform:translateX(-100%) scale(.98);opacity:0}}@keyframes tdv-sheet-b-in{from{transform:translateY(100%) scale(.96);opacity:.2}60%{transform:translateY(-18px) scale(1.012);opacity:1}to{transform:none;opacity:1}}@keyframes tdv-sheet-b-out{to{transform:translateY(100%) scale(.98);opacity:0}}
 
 /* Background objects: slow, layered drift with different periods. */
-.tadeon-shell .tadeon-atmosphere,.tadeon-shell [data-tadeon-atmosphere]{animation:tdv-atmo-a 19s ease-in-out infinite alternate}.tadeon-shell .tadeon-atmosphere-layer{animation:tdv-atmo-b 27s ease-in-out infinite alternate}.tadeon-shell .tadeon-orbit,[data-tadeon-orbit]{animation:tdv-orbit 31s linear infinite}.tadeon-shell .tadeon-grain,[data-tadeon-grain]{animation:tdv-grain 7s steps(2,end) infinite}.tadeon-shell .tadeon-thread-field{animation:tdv-thread 13s ease-in-out infinite alternate}
+.tadeon-shell .tadeon-atmosphere,.tadeon-shell [data-tadeon-atmosphere]{animation:tdv-atmo-a 19s ease-in-out infinite alternate}.tadeon-shell .tadeon-atmosphere-layer{animation:tdv-atmo-b 27s ease-in-out infinite alternate}.tadeon-shell .tadeon-orbit,[data-tadeon-orbit]{animation:tdv-orbit 31s linear infinite}.tadeon-shell .tadeon-grain,[data-tadeon-grain]{animation:tdv-grain 7s steps(2,end) infinite}
 @keyframes tdv-atmo-a{from{transform:translate3d(-2%,-1%,0) scale(.97) rotate(-.4deg)}to{transform:translate3d(3%,2%,0) scale(1.06) rotate(.5deg)}}@keyframes tdv-atmo-b{from{transform:translate3d(2%,-2%,0) scale(1.02)}to{transform:translate3d(-3%,3%,0) scale(.96)}}@keyframes tdv-orbit{from{transform:rotate(-8deg) translate3d(0,0,0)}to{transform:rotate(12deg) translate3d(-24px,14px,0)}}@keyframes tdv-grain{0%{opacity:.25;transform:translate(0,0)}50%{opacity:.5;transform:translate(9px,-6px)}100%{opacity:.3;transform:translate(-6px,7px)}}@keyframes tdv-thread{from{transform:translate3d(-2%,-1%,0);opacity:.45}to{transform:translate3d(3%,2%,0);opacity:.95}}
 
 /* Loading and save states have an authored pulse, not a spinner. */

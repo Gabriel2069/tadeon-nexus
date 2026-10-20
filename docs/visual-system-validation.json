@@ -8964,5 +8964,59 @@
       "productionHttpStatus": 200,
       "workerVersion": "258a0661-f091-490a-ad49-9cd4c58c7b0f"
     }
+  },
+  "craftRevision": {
+    "task": "NEX-028",
+    "status": "in_progress",
+    "base": "3983831ec62ad4dc4300c7685cf5c40ac2ec10cd",
+    "checkedAt": "2026-10-20",
+    "scope": [
+      "Dobras vetoriais e luz de contato no fundo, cards e cabeçalhos compartilhados.",
+      "Barra da Ficha: ações primárias compactas e estado/presença em registro secundário.",
+      "Retirada de loops decorativos e de escritores globais concorrentes de ThreadField.",
+      "Diretor: uma consulta por subárvore, raízes de mutação sem repetição e descarte explícito de listeners/frames.",
+      "Reflexo local com um agendamento por quadro; seleção se reconcilia ao terminar uma entrada ancestral."
+    ],
+    "baseline": {
+      "sourceCommit": "3983831ec62ad4dc4300c7685cf5c40ac2ec10cd",
+      "fixtureOnly": true,
+      "routes": [
+        "/",
+        "/master-panel"
+      ],
+      "widths": [
+        390,
+        1440
+      ],
+      "height": 1000,
+      "reducedMotion": false,
+      "perpetualDecorativeAnimations": {
+        "390": 5,
+        "1440": 7
+      },
+      "backdropPaths": 55,
+      "overflow": false
+    },
+    "validation": {
+      "regressions": {
+        "status": "passed",
+        "suites": 3,
+        "tests": 11,
+        "covers": [
+          "existing material-light contracts retained",
+          "one scheduled frame for a burst",
+          "touch/reduced motion/leave/unmount",
+          "new material owners are untouched",
+          "scene geometry coalesces",
+          "legacy bindings are released",
+          "selection reconciles after an ancestor entrance"
+        ]
+      }
+    },
+    "limits": [
+      "Fixtures interceptam dados e não certificam contas reais.",
+      "Contagem de loops, caminhos e agendamentos não equivale a INP, FPS, latência ou autonomia medidos em hardware físico.",
+      "NEX-009 mantém as medições físicas; NEX-010/011 preservam autorização/corpus e restauração reais."
+    ]
   }
 }

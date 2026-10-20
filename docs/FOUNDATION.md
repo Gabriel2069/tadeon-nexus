@@ -215,3 +215,12 @@ A validação NEX-026 está consolidada em `compositionRevision` de `nexus-conti
 `SelectionPlate`/`SelectionGroup` compartilham o plano móvel de seleção. A medição é local, com limpeza de frames, observadores e resize; uma memória limitada a 16 destinos lógicos dá continuidade à seleção ao remontar o shell, com chave de conta e sem armazenar dados da aplicação ou coordenadas antigas; o material pertence a `button.css`, e cada grupo conserva sua geometria. `tabs.tsx` transmite a seleção controlada ou interna, sem duplicar o estado do conteúdo. Navegação e modos do acervo usam o mesmo componente. A declaração injetada pelo Experience Director para abas do Mestre foi retirada.
 
 O Dashboard tem a exceção de DEC-018; os demais cabeçalhos mantêm os proprietários já definidos. A narrativa da Ficha pertence a `SheetIdentitySection`, sem remoção dos campos ou reinterpretação dos valores. A organização compacta fica nos módulos existentes de Ficha, acervo e navegação. A visualViewport distingue atualização de coordenadas de pedido de revelação de foco, e a intenção manual de rolar cancela correções pendentes.
+
+
+## Materiais e observação com trabalho limitado — NEX-028
+
+`TadeonExperienceDirector` conserva um observador existente, agrupa raízes de mutação e processa cada subárvore por uma única consulta de candidatos. Superfícies com `data-material-surface` preservam seus componentes. Brilhos legados só ligam eventos em ponteiro fino, com frames agrupados e limpeza quando a superfície sai ou o diretor desmonta. O parallax do stage só é ligado quando há uma atmosfera consumidora; sua leitura de geometria acontece no frame, nunca em cada evento. A anotação de entrada de um único frame foi retirada; CSS já possui a entrada da rota.
+
+`useMaterialLight` conserva os contratos de toque, foco, movimento reduzido e desmontagem, atualizando o último ponto sem cancelar e reagendar repetidamente o mesmo quadro. `SelectionPlate` escuta o término de uma entrada que contém o grupo e reconcilia sua geometria; não existe polling por frame nem novo observador global. Os efeitos decorativos de ThreadField deixam os escritores genéricos; geometria vetorial pertence a brand-mark/fabric-filaments e material aos módulos existentes.
+
+O lote não retira o polling de modificadores do ExperienceFinalPolishBridge nem certifica que toda a dívida de apresentação terminou. NEX-009 conserva medições físicas e revisão de trabalho residual; as provas deste lote ficam em craftRevision da evidência visual.

@@ -73,6 +73,13 @@ export function SelectionPlate({
       element.getBoundingClientRect();
       frame = requestAnimationFrame(measure);
     } else measure();
+    // ResizeObserver does not report an ancestor's animated transform. Reconcile
+    // when a containing entrance settles, including one started after this effect.
+    const entranceHost = group.closest(".tadeon-shell") ?? group.parentElement ?? group;
+    const settleEntrance = (event: Event) => {
+      if (event.target instanceof Element && event.target.contains(group)) schedule();
+    };
+    entranceHost.addEventListener("animationend", settleEntrance);
     mounted.current = true;
     const nextKey = selected && controlKey(selected);
     if (motionId && nextKey) {
@@ -90,6 +97,7 @@ export function SelectionPlate({
     });
     return () => {
       disposed = true;
+      entranceHost.removeEventListener("animationend", settleEntrance);
       observer?.disconnect();
       cancelAnimationFrame(frame);
       window.removeEventListener("resize", schedule);

@@ -296,3 +296,12 @@ Na Ficha, nome, ocupação, origem e marca permanecem à vista; convicções, pe
 `SelectionPlate` desenha um único plano de seleção entre controles imóveis. A transição converge à última escolha e respeita movimento reduzido; a navegação mede o destino anterior no shell novo, conservando o deslocamento entre páginas sem reutilizar coordenadas de outro viewport; ResizeObserver mede somente o grupo local e seus controles. Abas mantêm as semânticas Radix, e modos explícitos mantêm `aria-pressed`. A roda do Mais continua preservada. Tramas vetoriais e cruzamentos reforçam o tecido sem um loop de renderização. O brilho dos medidores é finito e a página longa termina a entrada sem filtro ou promoção permanente.
 
 A visualViewport continua tendo um único proprietário. Sua rolagem atualiza a posição dos portais sem recapturar o campo focado; gesto de rolagem cancela as correções pendentes do teclado. A evidência atual e seus limites ficam em `mobileRevision` de `visual-system-validation.json`.
+
+
+## Véu tensionado e custo de presença — NEX-028
+
+A nova rodada aprofunda a identidade aprovada sem mudar paleta, símbolos, fontes ou a exceção do Dashboard. O tecido ganha relevo por faixas de luz e sombra, cruzamentos e desaparecimento nas extremidades; os filamentos finos convivem com dobras largas. O fundo deixa de depender do deslocamento permanente de gradientes. Cards recebem luz de contato no topo/lateral e sombra interna, enquanto o conteúdo continua num plano estável e legível. Cabeçalhos conservam a mesma anatomia e a cor de cada seção.
+
+A presença vem de composição e resposta local: luz acompanha a atenção no desktop, foco mantém o contorno e toque mantém os alvos. Loops decorativos contínuos do shell, fios e cabeçalho são retirados dos escritores históricos; carregamento e feedback funcional preservam seus próprios estados. O vetor de fundo usa menos caminhos e não acrescenta filtros de distorção, canvas, dependências ou imagens grandes. A barra compacta da Ficha separa ações primárias de presença/estado; o salvamento conserva rótulo legível.
+
+A evidência pertence a `craftRevision` de visual-system-validation.json. A contagem de animações e caminhos é evidência de trabalho retirado, sem transformar em alegação de FPS, INP ou ganho percentual em celulares físicos.

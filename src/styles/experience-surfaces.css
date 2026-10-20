@@ -102,15 +102,6 @@ html body .tadeon-shell[data-section="Mesa Nexus"] .tadeon-tabletop-focus-brand-
    Ambient drift ~ subtle enough to feel material, not decorative
    ================================================================ */
 
-.tadeon-ambient {
-  animation: tadeon-ambient-drift var(--tadeon-motion-drift) ease-in-out infinite alternate;
-  will-change: transform;
-}
-
-.tadeon-ambient--flow {
-  animation-delay: -4.5s;
-}
-
 @keyframes tadeon-ambient-drift {
   from {
     transform: translate3d(-1%, -1.5%, 0) scale(0.985);
@@ -691,14 +682,6 @@ button:not([data-material-surface], .tadeon-material-button)[aria-busy="true"] >
    Route choreography
    -------------------------------------------------------------------------- */
 
-.tadeon-route-stage[data-tadeon-route-state="entering"] {
-  opacity: 0.98;
-}
-
-.tadeon-route-stage[data-tadeon-route-state="settled"] {
-  opacity: 1;
-}
-
 [data-tadeon-directed="true"] {
   --tadeon-stagger-delay: calc(var(--tadeon-index, 0) * var(--tadeon-runtime-stagger));
 }
@@ -1160,7 +1143,6 @@ button:not([data-material-surface], .tadeon-material-button)[data-tadeon-directe
   /* Prevent fixed ambient layers from becoming giant opaque slabs on phones. */
   .tadeon-ambient {
     width: 24rem;
-    filter: blur(58px);
     opacity: 0.08;
   }
 
@@ -1466,8 +1448,12 @@ button:not([data-material-surface], .tadeon-material-button)[data-tadeon-directe
   isolation: isolate;
   border: 1px solid var(--material-edge);
   border-radius: var(--radius-panel);
-  background: radial-gradient(ellipse at var(--material-x, 12%) var(--material-y, 0%), rgb(233 227 213 / 7%), transparent 65%), repeating-linear-gradient(112deg, transparent 0 11px, rgb(233 227 213 / 1.8%) 11px 12px, transparent 12px 19px), var(--surface-ink);
-  box-shadow: var(--shadow-relief);
+  background:
+    radial-gradient(ellipse at var(--material-x, 12%) var(--material-y, 0%), rgb(var(--material-rgb, 217 215 164) / 10%), transparent 62%),
+    linear-gradient(154deg, rgb(255 249 232 / 5%), transparent 28%, rgb(0 0 0 / 16%) 54%, transparent 76%),
+    repeating-linear-gradient(112deg, transparent 0 20px, rgb(233 227 213 / 1.4%) 20px 21px, transparent 21px 34px),
+    var(--surface-ink);
+  box-shadow: inset 0 1px rgb(255 249 232 / 10%), inset 1px 0 rgb(255 249 232 / 3%), inset 0 -1px rgb(0 0 0 / 45%), var(--shadow-relief);
   transition: border-color var(--motion-fast) var(--ease-out), box-shadow var(--motion-panel) var(--ease-out);
 }
 .tadeon-material-card:focus-within { border-color: rgb(233 227 213 / 42%); }
@@ -1480,12 +1466,12 @@ button:not([data-material-surface], .tadeon-material-button)[data-tadeon-directe
 /* Fio-Mestre: woven atmosphere and contact-lit planes, one material owner. */
 .tadeon-fabric-backdrop {
   position: fixed; z-index: -1; inset: 0; width: 100vw; height: 100dvh;
-  opacity: .72; color: var(--primary); pointer-events: none;
+  opacity: .88; color: var(--primary); pointer-events: none;
   mask-image: linear-gradient(90deg, black, rgb(0 0 0 / 35%) 48%, black);
 }
 .tadeon-shell::before {
   position: fixed; inset: 0; z-index: -2; content: ""; pointer-events: none;
-  background: radial-gradient(ellipse at 8% 12%, rgb(113 107 123 / 23%), transparent 45%), radial-gradient(ellipse at 86% 72%, rgb(79 110 93 / 18%), transparent 48%), #080a0e;
+  background: radial-gradient(ellipse at 88% 0%, rgb(183 129 77 / 10%), transparent 38%), radial-gradient(ellipse at 8% 12%, rgb(113 107 123 / 23%), transparent 45%), radial-gradient(ellipse at 86% 72%, rgb(79 110 93 / 18%), transparent 48%), #080a0e;
 }
 .tadeon-auth-page { isolation: isolate; }
 .tadeon-auth-shell {
@@ -1557,7 +1543,6 @@ button:not([data-material-surface], .tadeon-material-button)[data-tadeon-directe
   .tadeon-character-card__open > svg { display: none; }
 }
 @media (max-width: 767px), (hover: none) {
-  .tadeon-ambient { animation: none; will-change: auto; }
 }
 .tadeon-auth-manifesto__copy h2 { font-weight: 600; line-height: 1.06; letter-spacing: -.025em; }
 @media (max-width: 767px) { .tadeon-auth-manifesto::after { inset: .75rem; } .tadeon-fabric-backdrop { opacity: .72; } }

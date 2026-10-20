@@ -172,7 +172,7 @@ try {
         waitUntil: "networkidle",
         timeout: 60000,
       });
-      await page.locator("#tadeon-main").waitFor({ timeout: 15000 });
+      await page.locator("#tadeon-main").waitFor({ timeout: 180000 });
       if (route === "/tabletop")
         await page
           .locator('canvas[aria-label="Canvas da Mesa Nexus"]')
@@ -197,6 +197,17 @@ try {
         await document.fonts.ready;
       });
       await page.waitForTimeout(250);
+      const craft = process.env.NEXUS_CRAFT_AUDIT === "1" ? await page.evaluate(async () => {
+        await new Promise(resolve=>setTimeout(resolve,1000));
+        const stage=document.querySelector(".tadeon-route-stage");
+        const original=stage.getBoundingClientRect.bind(stage);let reads=0;
+        stage.getBoundingClientRect=()=>{reads++;return original();};
+        for(let i=0;i<120;i++)stage.dispatchEvent(new PointerEvent("pointermove",{pointerType:"mouse",clientX:350+i%30,clientY:350+i%20}));
+        await new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)));
+        stage.getBoundingClientRect=original;
+        const animations=document.getAnimations().filter(a=>a.playState==="running" && a.effect?.getTiming().iterations===Infinity);
+        return {pointerBurst:120,stageBoundsReads:reads,perpetualAnimations:animations.length,animationOwners:animations.map(a=>({name:a.animationName,target:a.effect.target?.className?.baseVal??a.effect.target?.className,pseudo:a.effect.pseudoElement})),pointerSheens:document.querySelectorAll(".tadeon-pointer-sheen").length,backdropPaths:document.querySelectorAll(".tadeon-fabric-backdrop path").length};
+      }) : null;
       const selectionGeometry = await page.evaluate(()=>[...document.querySelectorAll('[data-selection-rail]')].filter(e=>e.getBoundingClientRect().width>0&&e.getBoundingClientRect().height>0).map(e=>{
         const active=e.querySelector('[role="tab"][data-state="active"],[aria-current="page"],[aria-pressed="true"],[data-more-active="true"]'),plate=e.querySelector('.tadeon-selection-plate');
         if(!active||!plate)return null;const a=active.getBoundingClientRect(),p=plate.getBoundingClientRect();return {host:e.className,position:getComputedStyle(e).position,active:[a.x,a.y,a.width,a.height],plate:[p.x,p.y,p.width,p.height],plateStyle:plate.getAttribute('style'),scroll:[e.scrollLeft,e.scrollTop],aligned:Math.abs(a.x-p.x)<1&&Math.abs(a.y-p.y)<1&&Math.abs(a.width-p.width)<1&&Math.abs(a.height-p.height)<1};
@@ -593,7 +604,7 @@ try {
         metrics.preferences = preferences;
         await cdp.detach();
       }
-      results.push({ route, width, errors, interactions, selectionGeometry, ...metrics });
+      results.push({ route, width, errors, interactions, selectionGeometry, craft, ...metrics });
       console.log(JSON.stringify({ route, width, errors, preferences: metrics.preferences }));
       await context.close();
     }

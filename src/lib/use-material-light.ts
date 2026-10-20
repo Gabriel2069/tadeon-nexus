@@ -11,6 +11,7 @@ import {
 export function useMaterialLight<T extends HTMLElement>() {
   const frame = useRef<number | null>(null);
   const target = useRef<T | null>(null);
+  const point = useRef({ x: 0, y: 0 });
   const cancel = () => {
     if (frame.current !== null) cancelAnimationFrame(frame.current);
     frame.current = null;
@@ -23,20 +24,26 @@ export function useMaterialLight<T extends HTMLElement>() {
   );
   return {
     onPointerMove(event: PointerEvent<T>) {
+      if (event.pointerType !== "mouse" || document.hidden) return;
+      target.current = event.currentTarget;
+      point.current = { x: event.clientX, y: event.clientY };
+      if (frame.current !== null) return;
       if (
-        event.pointerType !== "mouse" ||
-        document.hidden ||
         !window.matchMedia("(hover: hover) and (pointer: fine)").matches ||
         window.matchMedia("(prefers-reduced-motion: reduce)").matches
       )
         return;
-      const element = event.currentTarget;
-      const { clientX, clientY } = event;
-      target.current = element;
-      cancel();
       frame.current = requestAnimationFrame(() => {
         frame.current = null;
-        if (!element.isConnected) return;
+        const element = target.current;
+        if (
+          !element?.isConnected ||
+          document.hidden ||
+          !window.matchMedia("(hover: hover) and (pointer: fine)").matches ||
+          window.matchMedia("(prefers-reduced-motion: reduce)").matches
+        )
+          return;
+        const { x: clientX, y: clientY } = point.current;
         const rect = element.getBoundingClientRect();
         if (!rect.width || !rect.height) return;
         const x = Math.max(0, Math.min(100, ((clientX - rect.left) / rect.width) * 100));

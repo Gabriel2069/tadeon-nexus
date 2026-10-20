@@ -90,3 +90,14 @@ describe("local material light", () => {
     expect(frames.size).toBe(0);
   });
 });
+
+it("schedules one frame for a burst and reads geometry only at the latest point", () => {
+  const scheduled = vi.spyOn(globalThis, "requestAnimationFrame");
+  const { node } = setup();
+  for (let i = 0; i < 120; i++) fireEvent.pointerMove(node, { clientX: 50 + i, clientY: 60 });
+  expect(scheduled).toHaveBeenCalledTimes(1);
+  expect(node.getBoundingClientRect).not.toHaveBeenCalled();
+  flush();
+  expect(node.getBoundingClientRect).toHaveBeenCalledTimes(1);
+  expect(node.style.getPropertyValue("--material-x")).toBe("79.5%");
+});
