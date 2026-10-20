@@ -8967,7 +8967,7 @@
   },
   "craftRevision": {
     "task": "NEX-028",
-    "status": "in_progress",
+    "status": "integrated",
     "base": "3983831ec62ad4dc4300c7685cf5c40ac2ec10cd",
     "checkedAt": "2026-10-20",
     "scope": [
@@ -9116,6 +9116,14 @@
         "oneRow": true,
         "allTabLabelsFit": true,
         "overflow": false
+      },
+      "remoteQuality": {
+        "status": "passed",
+        "suites": 146,
+        "tests": 596,
+        "auditVulnerabilities": 0,
+        "head": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39443164733",
+        "main": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39488053106"
       }
     },
     "limits": [
@@ -9129,6 +9137,27 @@
       "removed": 18,
       "cssModules": 57,
       "globalLinks": 12
+    },
+    "integration": {
+      "pr": 287,
+      "branch": "feat/nex-028-material-craft",
+      "base": "main",
+      "baseCommit": "3983831ec62ad4dc4300c7685cf5c40ac2ec10cd",
+      "sourceCommit": "31b8c3b4abe096ba04d5fdb7fd2f2730c8a81b75",
+      "headCommit": "31b8c3b4abe096ba04d5fdb7fd2f2730c8a81b75",
+      "state": "integrated",
+      "mergeCommit": "681d38a3808798f400eb9681734c5509894a2ba5",
+      "sourceQualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39443164733",
+      "mainQualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39488053106",
+      "production": "confirmed",
+      "productionEvidence": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39488053260",
+      "productionCommit": "681d38a3808798f400eb9681734c5509894a2ba5",
+      "productionVerifiedAt": "2026-10-20T20:01:14.9654571Z",
+      "productionHttpStatus": 200,
+      "workerVersion": "ea3eb205-2493-4edf-a6fa-ce0797016bf3"
+    },
+    "resumption": {
+      "note": "Diff e logs de CI conferidos nesta retomada. Evidências de navegador recuperadas do trabalho anterior; sem ambiente local disponível para repetição."
     }
   }
 }

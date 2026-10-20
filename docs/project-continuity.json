@@ -3,22 +3,22 @@
   "checkedAt": "2026-10-20",
   "runtimeReference": "74ce21dfb3346e3bd8722a1175f5225d21ced7d8",
   "integration": {
-    "pr": 285,
-    "branch": "feat/nex-027-mobile-weave",
+    "pr": 287,
+    "branch": "feat/nex-028-material-craft",
     "base": "main",
-    "baseCommit": "857f136d53dce5d80efa6a4266b36b6e5fa2d66b",
-    "sourceCommit": "cd34e6d8ea26c9285a140e346cb25e5ed303031c",
-    "headCommit": "cd34e6d8ea26c9285a140e346cb25e5ed303031c",
+    "baseCommit": "3983831ec62ad4dc4300c7685cf5c40ac2ec10cd",
+    "sourceCommit": "31b8c3b4abe096ba04d5fdb7fd2f2730c8a81b75",
+    "headCommit": "31b8c3b4abe096ba04d5fdb7fd2f2730c8a81b75",
     "state": "integrated",
-    "mergeCommit": "74ce21dfb3346e3bd8722a1175f5225d21ced7d8",
-    "sourceQualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39404389981",
-    "mainQualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39404719667",
+    "mergeCommit": "681d38a3808798f400eb9681734c5509894a2ba5",
+    "sourceQualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39443164733",
+    "mainQualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39488053106",
     "production": "confirmed",
-    "productionEvidence": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39404719684",
-    "productionCommit": "74ce21dfb3346e3bd8722a1175f5225d21ced7d8",
-    "productionVerifiedAt": "2026-10-20T10:01:55.8408969Z",
+    "productionEvidence": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39488053260",
+    "productionCommit": "681d38a3808798f400eb9681734c5509894a2ba5",
+    "productionVerifiedAt": "2026-10-20T20:01:14.9654571Z",
     "productionHttpStatus": 200,
-    "workerVersion": "258a0661-f091-490a-ad49-9cd4c58c7b0f"
+    "workerVersion": "ea3eb205-2493-4edf-a6fa-ce0797016bf3"
   },
   "domains": [
     {
@@ -959,7 +959,7 @@
       "id": "NEX-028",
       "title": "Tecido esculpido, instrumentos compactos e efeitos com custo limitado",
       "domain": "shell",
-      "status": "active",
+      "status": "integrated",
       "priority": 7,
       "dependsOn": [
         "NEX-027"
@@ -972,8 +972,13 @@
       ],
       "evidence": [
         "docs/visual-system-validation.json",
-        "docs/DESIGN.md"
-      ]
+        "docs/DESIGN.md",
+        "https://github.com/Gabriel2069/tadeon-nexus/pull/287",
+        "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39443164733",
+        "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39488053106",
+        "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39488053260"
+      ],
+      "checkpoint": "Integrado pela PR #287, HEAD 31b8c3b e merge 681d38a. Quality do HEAD e de main aprovados: 146 suítes/596 testes, auditoria sem vulnerabilidades. Produção confirmou HTTP 200 e SHA exato em 2026-10-20T20:01:14.9654571Z. Comparação de quatro vistas Dashboard/Mestre em 390/1440: loops decorativos 5/7 → zero, fundo 55 → 32 caminhos; seis vistas Nexus/offline/Mesa em 320/820, Ficha em 320/820 e login em 320/1440; densidade da Ficha em 320 com cinco ações primárias de 44px numa linha. 57 módulos CSS/12 links e 2.854 !important (18 retirados). Na retomada, diff e logs de CI conferidos; navegador anterior não repetido por indisponibilidade do ambiente local. Fixtures não certificam hardware, contas reais ou restauração; NEX-009/010/011 mantidos."
     }
   ],
   "decisions": [
@@ -1596,6 +1601,24 @@
       "productionVerifiedAt": "2026-10-20T00:03:11.8286090Z",
       "productionHttpStatus": 200,
       "workerVersion": "696dca89-2cd6-4918-b39e-f8cee2e5a694"
+    },
+    {
+      "pr": 285,
+      "branch": "feat/nex-027-mobile-weave",
+      "base": "main",
+      "baseCommit": "857f136d53dce5d80efa6a4266b36b6e5fa2d66b",
+      "sourceCommit": "cd34e6d8ea26c9285a140e346cb25e5ed303031c",
+      "headCommit": "cd34e6d8ea26c9285a140e346cb25e5ed303031c",
+      "state": "integrated",
+      "mergeCommit": "74ce21dfb3346e3bd8722a1175f5225d21ced7d8",
+      "sourceQualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39404389981",
+      "mainQualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39404719667",
+      "production": "confirmed",
+      "productionEvidence": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39404719684",
+      "productionCommit": "74ce21dfb3346e3bd8722a1175f5225d21ced7d8",
+      "productionVerifiedAt": "2026-10-20T10:01:55.8408969Z",
+      "productionHttpStatus": 200,
+      "workerVersion": "258a0661-f091-490a-ad49-9cd4c58c7b0f"
     }
   ]
 }
