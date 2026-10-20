@@ -50,8 +50,8 @@ Comece pelo [estado de continuidade](ai/00_ESTADO_ATUAL.md), [mapa do código](P
 | [shared-fabric-validation.json](shared-fabric-validation.json) | NEX-013: revisão tipográfica autorizada, materiais e movimento compartilhados, critérios e limites de runtime. |
 | [sheet-design-validation.json](sheet-design-validation.json) | NEX-005/025: seções e dossiê, materiais, leituras, autosave e verificações da ficha; revisões com procedência própria. |
 | [material-reading-validation.json](material-reading-validation.json) | NEX-014/NEX-006: correção dos proprietários de movimento e leitura integrada com árvore/grafo; evidência e limites de fixture. |
-| [nexus-continuity-validation.json](nexus-continuity-validation.json) | NEX-015: composição ajustável, continuidade de abas, rascunhos por identidade, concorrência e revisão explícita de conflitos; fixtures e limites. |
-| [navigation-utilities-validation.json](navigation-utilities-validation.json) | NEX-016 a NEX-019: menus, Consulta offline, Usuários e Backup e diagnóstico; validação de interface, funções e limites de fixtures. |
+| [nexus-continuity-validation.json](nexus-continuity-validation.json) | Histórico NEX-015 preservado e compositionRevision NEX-026: layout contínuo, Nexus/Biblioteca, roda do Mais, testes, publicação e limites. |
+| [navigation-utilities-validation.json](navigation-utilities-validation.json) | Histórico NEX-016 a NEX-019: menus, Consulta offline, Usuários e Backup e diagnóstico. A roda atual do Mais é DEC-017/NEX-026, em compositionRevision de nexus-continuity-validation.json. |
 | [master-workspace-validation.json](master-workspace-validation.json) | Evidências e limites do Painel do Mestre e dos ícones reais de navegação; NEX-008/020. |
 | [tabletop-workspace-validation.json](tabletop-workspace-validation.json) | NEX-007/021: evidências e limites da reorganização da Mesa e do contexto Nexus → Mesa. |
 | [visual-system-validation.json](visual-system-validation.json) | NEX-022/023: cor-base da Mesa, pesquisa, primitivos materiais e cobertura real da evolução visual. |
