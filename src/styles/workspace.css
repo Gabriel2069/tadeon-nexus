@@ -25,6 +25,7 @@
 }
 
 .tadeon-library-view-switch {
+  position: relative;
   display: flex;
   gap: 0.18rem;
   padding: 0.2rem;

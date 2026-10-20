@@ -184,7 +184,7 @@ try {
       process.env.NEXUS_AUDIT_STATES || '["editable","readonly","error","loading"]',
     )) {
       const context = await browser.newContext({
-        viewport: { width, height: 1000 },
+        viewport: { width, height: Number(process.env.NEXUS_AUDIT_HEIGHT || 1000) },
         hasTouch: width < 768,
         reducedMotion: "reduce",
       });
@@ -403,6 +403,11 @@ try {
           window.scrollTo(0, 0);
           return {
             height: document.documentElement.scrollHeight,
+            viewportHeight:innerHeight,
+            overflow:document.documentElement.scrollWidth>innerWidth,
+            resourceColumns:getComputedStyle(document.querySelector(".tadeon-vitals-grid")).gridTemplateColumns,
+            attributeColumns:getComputedStyle(document.querySelector(".tadeon-attribute-grid")).gridTemplateColumns,
+            attributeTargetsFit:[...document.querySelectorAll(".tadeon-attribute-tile button")].every(e=>{const r=e.getBoundingClientRect(),p=e.closest(".tadeon-attribute-tile").getBoundingClientRect();return r.x>=p.x && r.right<=p.right && r.width>=44 && r.height>=44;}),
             identity: rect("#sec-info"),
             vitals: rect("#sec-pontos"),
             attributes: rect("#sec-attr"),
@@ -417,8 +422,13 @@ try {
             elapsed: performance.now() - start,
           };
         });
-        if (process.env.NEXUS_SKIP_SCREENSHOTS !== "1")
+        assert(!density.overflow && density.attributeTargetsFit, "Compact composition keeps controls inside the viewport");
+        assert(writes.length===0 && errors.length===0, "Density probe is read-only and has no render errors");
+        if (process.env.NEXUS_SKIP_SCREENSHOTS !== "1") {
           await page.screenshot({ path: `${output}/density-${width}.png` });
+          await page.locator('#sec-pontos').scrollIntoViewIfNeeded();
+          await page.screenshot({path:`${output}/resources-${width}.png`});
+        }
         results.push({ width, state, density, errors });
         writeFileSync(
           `${output}/results.json`,

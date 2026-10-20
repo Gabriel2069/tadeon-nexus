@@ -161,6 +161,7 @@
 /* end-source: src/styles/tadeon-nexus-material.css */
 /* NEX-006: linked document/graph workspace; chrome remains outside the reading measure. */
 .tadeon-nexus-reading__switch {
+  position: relative;
   display: flex;
   gap: 0.25rem;
   flex-wrap: wrap;

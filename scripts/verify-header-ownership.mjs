@@ -178,7 +178,8 @@ try {
           .locator('canvas[aria-label="Canvas da Mesa Nexus"]')
           .waitFor({ state: "attached", timeout: 20000 })
           .catch((e) => errors.push("Canvas readiness: " + e.message));
-      if (layoutAudit) await page.locator("[data-page-header]").first().waitFor();
+      if (layoutAudit && route !== "/") await page.locator("[data-page-header]").first().waitFor();
+      if (layoutAudit && route === "/") await page.locator(".tadeon-continuity-hero").waitFor();
       if (process.env.NEXUS_MATERIAL_AUDIT !== "1")
         await page.addStyleTag({
           content:
@@ -197,6 +198,8 @@ try {
       });
       await page.waitForTimeout(250);
       const metrics = await page.evaluate(() => ({
+        frameWidth:document.querySelector('[data-page-layout]')?.getBoundingClientRect().width,
+        dockPosition:document.querySelector('.tadeon-mobile-dock') ? getComputedStyle(document.querySelector('.tadeon-mobile-dock')).position : null,
         interfaceFont: getComputedStyle(document.body).fontFamily,
         interfaceFaceLoaded: [...document.fonts].some(f=>f.family.includes("Alegreya Sans") && f.status==="loaded"),
         summary: (()=>{const e=document.querySelector('.tadeon-utility-summary');return e ? {height:e.getBoundingClientRect().height,columns:getComputedStyle(e.querySelector('dl')).gridTemplateColumns}:null;})(),
@@ -347,7 +350,11 @@ try {
           });
         const explore = page.getByRole("button", { name: "Explorar", exact: true });
         if (await explore.isVisible()) {
-          await explore.click();
+          await explore.click({timeout:5000}).catch(async error=>{
+            const detail=await explore.evaluate(e=>{const r=e.getBoundingClientRect();return {rect:[r.x,r.y,r.width,r.height],hit:document.elementFromPoint(r.x+r.width/2,r.y+r.height/2)?.outerHTML.slice(0,400),ancestors:[e,...(()=>{let p=e.parentElement,a=[];while(p){a.push(p);p=p.parentElement;}return a;})()].map(n=>{const s=getComputedStyle(n),r=n.getBoundingClientRect();return {tag:n.tagName,class:n.className,rect:[r.x,r.y,r.width,r.height],position:s.position,overflow:s.overflow,zIndex:s.zIndex,pointerEvents:s.pointerEvents,clipPath:s.clipPath,transform:s.transform};})};});
+            writeFileSync(`${root}/explore-failure-${width}.json`,JSON.stringify(detail,null,2));
+            await page.screenshot({path:`${root}/explore-failure-${width}.png`});throw error;
+          });
           if (
             !(await page
               .getByRole("textbox", { name: "Buscar no Nexus", exact: true })
@@ -400,6 +407,7 @@ try {
             errors.push("Legacy header injection returned");
         }
       }
+      if (width < 768 && (metrics.frameWidth < width-40 || metrics.dockPosition !== "fixed")) errors.push("Compact shell lost its frame width or fixed dock");
       if (!metrics.interfaceFont.includes("Alegreya Sans") || !metrics.interfaceFaceLoaded) errors.push("The hosted interface font did not load");
       if (metrics.activeNavigation.some((item) => item.color !== "rgb(233, 227, 213)"))
         errors.push("Active navigation label lost its ivory contrast");

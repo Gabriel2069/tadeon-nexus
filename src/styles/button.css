@@ -732,7 +732,7 @@
 @media (prefers-reduced-motion: reduce) { [data-material-surface="tab"], [data-motion-surface="fold"] { animation: none; transition: none; } }
 
 /* A single contact-lit plate travels between stable controls in tabs and navigation. */
-[data-selection-rail] { position: relative; isolation: isolate; }
+[data-selection-rail] { isolation: isolate; }
 .tadeon-selection-plate {
   position: absolute; left: 0; top: 0; z-index: -1; pointer-events: none;
   margin: 0; opacity: 0; border: 1px solid rgb(var(--material-rgb, 217 215 164) / 27%);

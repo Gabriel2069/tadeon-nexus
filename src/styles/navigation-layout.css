@@ -41,7 +41,7 @@
 /* source: src/styles/navigation-users-uniformity-191.css */
 /* Uniformidade final da navegação principal e da administração de usuários. */
 
-.tadeon-primary-nav { width: 100%; min-width: 0; box-sizing: border-box; }
+.tadeon-primary-nav { position: relative; width: 100%; min-width: 0; box-sizing: border-box; }
 .tadeon-primary-nav .tadeon-nav-item {
   width: 100%;
   min-width: 0;
