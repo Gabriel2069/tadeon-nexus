@@ -149,7 +149,6 @@
     0 0 0 2.4rem rgb(var(--tadeon-atmo-gold) / 1.3%),
     0 0 0 6rem rgb(var(--tadeon-atmo-olive) / 1%);
   transform: rotate(-8deg);
-  animation: tadeon-orbit-drift 28s ease-in-out infinite alternate;
   pointer-events: none;
 }
 

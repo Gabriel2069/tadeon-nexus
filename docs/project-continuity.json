@@ -954,6 +954,26 @@
         "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39404719684"
       ],
       "checkpoint": "Integrado pela PR #285, fonte cd34e6d e merge 74ce21d, após Quality 39404389981. 145 suítes/591 testes, audit zero; Ficha editável em quatro larguras por fases, densidade final em 320/390, 28 combinações compartilhadas e repetições finais de seleção/Mesa; roda e foco em 320, 18 vistas de utilidades em 390/1440. Produção confirmou HTTP 200 e SHA exato em 2026-10-20T10:01:55.8408969Z. 57 módulos CSS/12 links, 2.872 !important. NEX-009/010/011 preservam hardware, autorização/corpus e restauração reais. Fixtures e GPU por software não certificam fluidez em telefone físico."
+    },
+    {
+      "id": "NEX-028",
+      "title": "Tecido esculpido, instrumentos compactos e efeitos com custo limitado",
+      "domain": "shell",
+      "status": "active",
+      "priority": 7,
+      "dependsOn": [
+        "NEX-027"
+      ],
+      "acceptance": [
+        "Refinar a trama de fundo, dobras e luz dos materiais compartilhados, mantendo os símbolos e a tipografia aprovados.",
+        "Recompor a barra compacta da Ficha sem alterar dados ou remover acesso às ações.",
+        "Reduzir varreduras repetidas, leituras de geometria e loops decorativos; preservar estados, limpeza e movimento reduzido.",
+        "Comparar a mesma fixture antes/depois, validar celular/desktop, foco, portais e seleção; não declarar desempenho físico a partir de emulação."
+      ],
+      "evidence": [
+        "docs/visual-system-validation.json",
+        "docs/DESIGN.md"
+      ]
     }
   ],
   "decisions": [

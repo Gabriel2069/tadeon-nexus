@@ -505,7 +505,10 @@
 
   .tadeon-sheet-tabs-list [role="tab"] {
     min-width: 0;
-    padding-inline: 0.5rem;
+    padding-inline: 0.25rem;
+    gap: 0.25rem;
+    font-family: var(--font-sans);
+    letter-spacing: normal;
   }
 
   .tadeon-sheet-core-grid {
@@ -1969,11 +1972,13 @@
 @media (max-width: 767px) {
  .tadeon-sheet-commandbar__actions { display: flex; flex-wrap: wrap; justify-content: flex-start; gap: .25rem; }
  .tadeon-sheet-commandbar__actions > .tadeon-sheet-commandbar__back { width: 44px; }
- .tadeon-sheet-presence, .tadeon-sheet-nexus-links { flex: 0 0 auto; }
- .tadeon-sheet-commandbar__actions .tadeon-sheet-game-button { padding-inline: .6rem; }
+ .tadeon-sheet-presence { order: 1; flex: 1 0 calc(40% - .25rem); justify-content: flex-start; border: 0; padding: 0; height: 24px; background: transparent; }
+ .tadeon-sheet-nexus-links { order: 1; flex: 0 0 auto; }
+ .tadeon-sheet-save-state { order: 1; display: flex; flex: 1 0 calc(40% - .25rem); justify-content: flex-end; }
+ .tadeon-sheet-commandbar__actions .tadeon-sheet-game-button { width: 44px; min-width: 44px; padding-inline: 0; }
  .tadeon-sheet-commandbar__actions .tadeon-sheet-game-button span { display: none; }
  .tadeon-sheet-commandbar__actions :is(button, a) { min-height: 44px; min-width: 44px; }
- .tadeon-sheet-commandbar__actions .tadeon-save-status { margin-left: auto; }
+ .tadeon-sheet-commandbar__actions > button { flex: 0 0 auto; }
  .tadeon-sheet-core-grid { display: flex; flex-direction: column; }
  .tadeon-vitals-panel { order: -1; }
 

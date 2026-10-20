@@ -1667,15 +1667,6 @@ body {
   --tadeon-section-rgb: var(--section-accent-rgb, 217 215 164);
 }
 
-.tadeon-ambient {
-  animation: tadeon-ambient-drift 18s var(--ease-in-out) infinite;
-  will-change: transform, opacity;
-}
-
-.tadeon-ambient--flow {
-  animation-delay: -9s;
-}
-
 .tadeon-route-stage:focus {
   outline: none;
 }

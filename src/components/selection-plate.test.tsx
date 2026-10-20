@@ -77,3 +77,49 @@ it("measures the committed host, follows the selected control and releases its o
   vi.mocked(requestAnimationFrame).mock.calls.at(-1)![0](0);
   expect(nextPlate.style.transform).toBe("translate3d(10px, 0px, 0)");
 });
+
+it("remeasures after a containing entrance finishes without a resize", () => {
+  vi.stubGlobal(
+    "ResizeObserver",
+    class {
+      observe() {}
+      disconnect() {}
+    },
+  );
+  vi.stubGlobal(
+    "requestAnimationFrame",
+    vi.fn(() => 1),
+  );
+  vi.stubGlobal("cancelAnimationFrame", vi.fn());
+  let width = 70;
+  vi.spyOn(HTMLElement.prototype, "getClientRects").mockImplementation(function (
+    this: HTMLElement,
+  ) {
+    return [this.getBoundingClientRect()] as unknown as DOMRectList;
+  });
+  vi.spyOn(HTMLElement.prototype, "getBoundingClientRect").mockImplementation(function (
+    this: HTMLElement,
+  ) {
+    return {
+      left: 0,
+      top: 0,
+      width: this.tagName === "BUTTON" ? width : 200,
+      height: 44,
+    } as DOMRect;
+  });
+  const view = render(
+    <div className="tadeon-shell">
+      <SelectionGroup activeKey="a" selector='[aria-pressed="true"]'>
+        <button aria-pressed="true">Documento</button>
+      </SelectionGroup>
+    </div>,
+  );
+  const plate = view.container.querySelector<HTMLElement>(".tadeon-selection-plate")!;
+  expect(plate.style.width).toBe("70px");
+  width = 120;
+  view.container
+    .querySelector(".tadeon-shell")!
+    .dispatchEvent(new Event("animationend", { bubbles: true }));
+  vi.mocked(requestAnimationFrame).mock.calls.at(-1)![0](0);
+  expect(plate.style.width).toBe("120px");
+});

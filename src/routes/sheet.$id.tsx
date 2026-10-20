@@ -660,22 +660,23 @@ function SheetPage() {
             )}
             {canEdit && (
               <>
-                <SaveStatus
-                  state={
-                    typeof navigator !== "undefined" && !navigator.onLine
-                      ? "offline"
-                      : saving
-                        ? "saving"
-                        : saveError
-                          ? "error"
-                          : dirty
-                            ? "pending"
-                            : "saved"
-                  }
-                  savedAt={lastSavedAt}
-                  onRetry={() => void doSave()}
-                  compact={typeof window !== "undefined" && window.innerWidth < 640}
-                />
+                <span className="tadeon-sheet-save-state">
+                  <SaveStatus
+                    state={
+                      typeof navigator !== "undefined" && !navigator.onLine
+                        ? "offline"
+                        : saving
+                          ? "saving"
+                          : saveError
+                            ? "error"
+                            : dirty
+                              ? "pending"
+                              : "saved"
+                    }
+                    savedAt={lastSavedAt}
+                    onRetry={() => void doSave()}
+                  />
+                </span>
                 {sheet.power_form_enabled && (
                   <Button
                     size="sm"
@@ -694,7 +695,12 @@ function SheetPage() {
                     <Sparkles className="w-4 h-4" /> VP
                   </Button>
                 )}
-                <Button size="sm" aria-label="Salvar" onClick={doSave} className="tadeon-sheet-save-button gap-1.5">
+                <Button
+                  size="sm"
+                  aria-label="Salvar"
+                  onClick={doSave}
+                  className="tadeon-sheet-save-button gap-1.5"
+                >
                   <Save className="w-4 h-4" /> <span className="hidden sm:inline">Salvar</span>
                 </Button>
               </>

@@ -37,6 +37,7 @@ Cada PR usa IDs desta fila e declara dependências. Trabalho sobre o mesmo propr
 | NEX-025 | Ficha: hierarquia, superfícies e condução visual | Integrado | 7 | sheet | NEX-024 |
 | NEX-026 | Continuidade entre páginas, Nexus/Biblioteca e roda do Mais | Integrado | 7 | knowledge | NEX-024, NEX-025 |
 | NEX-027 | Composição móvel, tipografia e seleção contínua de tecido | Integrado | 7 | shell | NEX-025, NEX-026 |
+| NEX-028 | Tecido esculpido, instrumentos compactos e efeitos com custo limitado | Em andamento | 7 | shell | NEX-027 |
 
 ## NEX-001 — Preparação estrutural
 
@@ -256,6 +257,15 @@ Evidências: [docs/nexus-continuity-validation.json](../docs/nexus-continuity-va
 - Ampliar tramas vetoriais e luz de contato, evitando efeitos permanentes sobre a página longa; validar desktop, tablet, celular e movimento reduzido.
 
 Evidências: [docs/visual-system-validation.json](../docs/visual-system-validation.json), [docs/DESIGN.md](../docs/DESIGN.md), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/pull/285), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39404389981), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39404719667), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39404719684).
+
+## NEX-028 — Tecido esculpido, instrumentos compactos e efeitos com custo limitado
+
+- Refinar a trama de fundo, dobras e luz dos materiais compartilhados, mantendo os símbolos e a tipografia aprovados.
+- Recompor a barra compacta da Ficha sem alterar dados ou remover acesso às ações.
+- Reduzir varreduras repetidas, leituras de geometria e loops decorativos; preservar estados, limpeza e movimento reduzido.
+- Comparar a mesma fixture antes/depois, validar celular/desktop, foco, portais e seleção; não declarar desempenho físico a partir de emulação.
+
+Evidências: [docs/visual-system-validation.json](../docs/visual-system-validation.json), [docs/DESIGN.md](../docs/DESIGN.md).
 
 ## Decisões vigentes
 

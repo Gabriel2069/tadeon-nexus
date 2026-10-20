@@ -434,46 +434,7 @@ html[data-tadeon-tabletop-selection-active="true"] [data-tadeon-selection-guarde
 
 /* Master navigation remains available while the conductor scrolls the page. */
 
-/* --------------------------------------------------------------------------
-   Sheet header: every action stays on one line on phones. The rail may scroll
-   horizontally on very narrow devices, but it never wraps into another row.
-   -------------------------------------------------------------------------- */
-@media (max-width: 767px) {
-
-  .tadeon-sheet-save-button,
-  .tadeon-sheet-power-button,
-  .tadeon-sheet-popout-button {
-    width: 2.45rem !important;
-    min-width: 2.45rem !important;
-    max-width: 2.45rem !important;
-    height: 2.45rem !important;
-    min-height: 2.45rem !important;
-    padding: 0 !important;
-  }
-
-  #tadeon-sheet-experience-actions {
-    display: inline-flex !important;
-    min-width: max-content !important;
-    flex: 0 0 auto !important;
-    flex-wrap: nowrap !important;
-    align-items: center !important;
-    gap: .3rem !important;
-  }
-
-  .tadeon-sheet-game-button {
-    min-width: 4.85rem !important;
-    height: 2.45rem !important;
-    min-height: 2.45rem !important;
-    padding-inline: .65rem !important;
-    white-space: nowrap;
-  }
-
-  .tadeon-sheet-presence,
-  .tadeon-sheet-nexus-links {
-    min-height: 2.45rem !important;
-    white-space: nowrap;
-  }
-}
+/* Sheet toolbar geometry belongs to sheet-premium.css. */
 
 /* Game/Edit control needs explicit contrast in its active Game state. */
 .tadeon-sheet-game-button[data-state="active"],
