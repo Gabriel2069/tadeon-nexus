@@ -43,7 +43,8 @@
         "src/components/continuity-hero.tsx",
         "src/components/character-archive.tsx",
         "src/components/page-header.tsx",
-        "src/components/workspace-actions.tsx"
+        "src/components/workspace-actions.tsx",
+        "src/components/selection-plate.tsx"
       ],
       "styles": [
         "src/styles/desktop-shell.css",
@@ -925,6 +926,29 @@
         "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39345104014",
         "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39345104015"
       ]
+    },
+    {
+      "id": "NEX-027",
+      "title": "Composição móvel, tipografia e seleção contínua de tecido",
+      "domain": "shell",
+      "status": "active",
+      "priority": 7,
+      "dependsOn": [
+        "NEX-025",
+        "NEX-026"
+      ],
+      "acceptance": [
+        "Retirar a abertura extra do Dashboard, preservando a seção artística aprovada e um único h1.",
+        "Substituir a interface genérica por uma família humanista com personalidade, com escala legível e números editoriais adequados ao celular.",
+        "Recompor Ficha, acervo, Mestre e utilidades para larguras compactas: campos em pares, recursos em dois instrumentos, registros menos altos e contexto narrativo acessível por dobra explícita.",
+        "Corrigir a disputa entre rolagem manual, foco e teclado; manter posicionamento e foco dos portais.",
+        "Usar uma placa de seleção móvel compartilhada, finita e interrompível, em abas, navegação e modos de leitura; conservar a roda do Mais.",
+        "Ampliar tramas vetoriais e luz de contato, evitando efeitos permanentes sobre a página longa; validar desktop, tablet, celular e movimento reduzido."
+      ],
+      "evidence": [
+        "docs/visual-system-validation.json",
+        "docs/DESIGN.md"
+      ]
     }
   ],
   "decisions": [
@@ -1041,6 +1065,15 @@
       "evidence": [
         "docs/nexus-continuity-validation.json",
         "https://github.com/Gabriel2069/tadeon-nexus/pull/283"
+      ]
+    },
+    {
+      "id": "DEC-018",
+      "decision": "Recompor o celular por função; retirar o cabeçalho adicional do Dashboard e adotar Alegreya Sans na interface, mantendo Cormorant Garamond editorial e PT Mono documental.",
+      "reason": "Pedido explícito de Tadeu em 19/10/2026: reduzir cards e rolagem, evitar aparência Arial/ABNT, seleção viajante e atmosfera de tecido. Dashboard é uma exceção deliberada à aplicação universal de PageHeader em DEC-016; a arte aprovada continua sendo sua abertura. Os nomes --font-inter e --font-cinzel são aliases compatíveis, não fontes adicionais.",
+      "evidence": [
+        "docs/visual-system-validation.json",
+        "docs/DESIGN.md"
       ]
     }
   ],

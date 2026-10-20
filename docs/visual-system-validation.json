@@ -8741,5 +8741,186 @@
     "productionVerifiedAt": "2026-10-16T10:14:17.2990084Z",
     "productionHttpStatus": 200,
     "workerVersion": "91077d6f-4663-47e8-bb08-5c387fb12bff"
+  },
+  "mobileRevision": {
+    "task": "NEX-027",
+    "status": "in_progress",
+    "base": "857f136d53dce5d80efa6a4266b36b6e5fa2d66b",
+    "checkedAt": "2026-10-20",
+    "scope": [
+      "Dashboard sem abertura duplicada",
+      "Alegreya Sans na interface e escala compacta",
+      "Ficha: narrativa em dobra, recursos em pares, recursos antes dos atributos no celular",
+      "Composição compacta no acervo, Mestre e utilidades",
+      "Placa contínua em abas, navegação, leitura e biblioteca",
+      "Rolagem manual não chama scrollIntoView por atualização da visualViewport",
+      "Trama vetorial mais presente e brilho finito"
+    ],
+    "baseline": {
+      "fixtureOnly": true,
+      "width": 390,
+      "documentHeight": 10329,
+      "identityHeight": 1341.09375,
+      "vitalsTop": 2868.5
+    },
+    "validation": {
+      "audit": {
+        "status": "passed",
+        "command": "npm audit --audit-level=high",
+        "vulnerabilities": 0
+      },
+      "sheetMobile": {
+        "status": "passed",
+        "fixtureOnly": true,
+        "widths": [
+          320,
+          390
+        ],
+        "states": [
+          "editable"
+        ],
+        "covers": [
+          "controlled values",
+          "folds and section index",
+          "narrative discovery",
+          "resource targets and tone",
+          "inventory and history focus",
+          "retry and game mode",
+          "rapid selection and reduced motion"
+        ]
+      },
+      "regressions": {
+        "status": "passed",
+        "covers": [
+          "host refs after commit",
+          "selection follows controls and route remount",
+          "manual viewport scrolling does not recapture focus",
+          "compact narrative preserves edits"
+        ]
+      },
+      "sheetWide": {
+        "status": "passed",
+        "fixtureOnly": true,
+        "widths": [
+          820,
+          1440
+        ],
+        "covers": [
+          "controlled values",
+          "folds and jump navigation",
+          "resource controls",
+          "inventory/history",
+          "retry/game mode",
+          "rapid selection and reduced motion"
+        ],
+        "note": "Editable scenarios after final 8rem attribute minimum; saves are intercepted fixture requests, never real backend writes."
+      },
+      "layout": {
+        "status": "passed_with_final_retake",
+        "fixtureOnly": true,
+        "widths": [
+          320,
+          390,
+          820,
+          1440
+        ],
+        "cases": 28,
+        "portalFlows": 8,
+        "overflow": false,
+        "note": "Initial matrix flagged absent mobile Mesa dock, intentional in that workspace. Six-case retake accepted Mesa geometry; final master-panel retake at 390/1440 confirmed selection x/y/width/height after reduced-motion reset retirement and exact root destination."
+      },
+      "selection": {
+        "status": "passed",
+        "widths": [
+          390,
+          1440
+        ],
+        "covers": [
+          "one active destination",
+          "plate x/y/width/height matches control",
+          "reduced motion preserves position",
+          "dock stays fixed"
+        ],
+        "note": "Final root matching and reduced-motion positioning retakes passed; route-travel retake at 390/1440 passed after retiring legacy active-link scale and dock entrance scale. The shared plane remains the sole moving selection."
+      },
+      "density": {
+        "status": "passed",
+        "fixtureOnly": true,
+        "widths": [
+          320,
+          390
+        ],
+        "viewportHeight": 844,
+        "attributeTargetsFit": true,
+        "overflow": false,
+        "resourceColumns": 2,
+        "attributeColumns": 2,
+        "identityHeight": 454.921875,
+        "vitalsTop390": 1080.96875,
+        "documentHeight390": 8336,
+        "fixtureWritesPerCase": 1,
+        "note": "Existing mount normalization is intercepted. No render errors; scroll samples under software GPU/reduced motion are diagnostic, not physical performance evidence."
+      },
+      "wheel": {
+        "status": "passed",
+        "fixtureOnly": true,
+        "width": 320,
+        "heights": [
+          1000,
+          520,
+          360
+        ],
+        "covers": [
+          "radial bounds",
+          "44px targets without overlap",
+          "keyboard roving and focus return",
+          "same-route dismissal",
+          "desktop resize dismissal",
+          "outside touch dismissal with reduced motion"
+        ],
+        "note": "Touch emulation, not a physical-device accessibility certification."
+      },
+      "utilities": {
+        "status": "in_final_retake",
+        "fixtureOnly": true,
+        "widths": [
+          390,
+          1440
+        ],
+        "covers": [
+          "offline search/clear/cancel",
+          "real link route travel and unique selection",
+          "user search, role cancellation and retry",
+          "backup create/review/cancel/download/invalid import/delete cancellation",
+          "diagnostics"
+        ],
+        "note": "Final result will be reconciled at integration; no real backend writes."
+      }
+    },
+    "limits": [
+      "Fixtures interceptam os dados; nenhum teste autoriza leitura ou escrita real.",
+      "A amostra de scroll em Chromium com GPU por software e movimento reduzido não certifica fluidez em telefone físico.",
+      "NEX-009 mantém medição em dispositivos físicos; NEX-010 mantém autenticação e corpus real."
+    ],
+    "localCheck": {
+      "status": "passed_before_final_selection_scope",
+      "command": "npm run check",
+      "suites": 144,
+      "tests": 590,
+      "log": "Source gate to be repeated by CI at the final head.",
+      "note": "Earlier full local check; remote Quality at final source head is required before merge."
+    },
+    "fonts": {
+      "family": "Alegreya Sans",
+      "weights": [
+        400,
+        500,
+        700
+      ],
+      "delivery": "same-origin WOFF, Latin/extended Latin subset",
+      "license": "public/fonts/alegreya-sans-OFL.txt",
+      "source": "https://github.com/google/fonts/tree/main/ofl/alegreyasans",
+      "bytes": 102324
+    }
   }
 }

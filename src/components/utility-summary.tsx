@@ -13,7 +13,11 @@ export function UtilitySummary({
         {items.map(({ label, value, detail }) => (
           <div key={label}>
             <dt>{label}</dt>
-            <dd>
+            <dd
+              data-value-kind={
+                typeof value === "number" || /^[\d.%+−-]+$/.test(value) ? "number" : "text"
+              }
+            >
               <span>{value}</span>
               <p>{detail}</p>
             </dd>

@@ -35,6 +35,8 @@ for (const file of cssFiles) {
   });
   ast.walkRules((rule) => {
     if (rule.selector === ":root") roots += 1;
+    if (rule.selectors.includes("[data-selection-rail]") && rule.nodes.some(node => node.type === "decl" && ["position", "inset", "top", "left", "right", "bottom"].includes(node.prop)))
+      errors.push(`${file}:${rule.source.start.line}: selection material cannot position its host; preserve the navigation/tab layout owner.`);
     const ownsFocusGeometry =
       rule.selectors.some((selector) => selector.endsWith(".tadeon-desktop-toolbar > .min-w-0")) &&
       rule.nodes.some(

@@ -609,12 +609,12 @@ function NexusToolsPageContent() {
                   cópia para guardá-la fora do dispositivo.
                 </p>
               </div>
-              <div className="flex flex-col gap-2 sm:flex-row">
+              <div className="grid grid-cols-2 gap-2 sm:flex">
                 <Button
                   variant="outline"
                   onClick={() => void createSnapshot(false)}
                   disabled={working}
-                  className="gap-2"
+                  className="h-auto min-h-11 gap-2 whitespace-normal px-2"
                 >
                   <FileClock className="h-4 w-4" />
                   Criar ponto
@@ -622,7 +622,7 @@ function NexusToolsPageContent() {
                 <Button
                   onClick={() => void createSnapshot(true)}
                   disabled={working}
-                  className="gap-2"
+                  className="h-auto min-h-11 gap-2 whitespace-normal px-2"
                 >
                   {working ? (
                     <Loader2 className="h-4 w-4 animate-spin" />

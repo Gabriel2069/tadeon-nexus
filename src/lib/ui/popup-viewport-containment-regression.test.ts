@@ -37,19 +37,5 @@ describe("popup viewport containment", () => {
     expect(css).not.toContain('position: relative !important');
   });
 
-  it("acompanha teclado/visualViewport e mantém o campo focado no scroller interno", () => {
-    const bridge = source("src/components/visual-viewport-popup-bridge.tsx");
-
-    expect(bridge).toContain('root.dataset.tadeonPopupViewport = "true"');
-    expect(bridge).toContain("activeEditable");
-    expect(bridge).toContain("scrollContainerFor");
-    expect(bridge).toContain("keepFocusedFieldVisible");
-    expect(bridge).toContain("followVisualOffsets");
-    expect(bridge).toContain("rawTop > 1");
-    expect(bridge).toContain("for (const delay of [60, 140, 260, 420, 650, 900])");
-    expect(bridge).toContain('window.visualViewport?.addEventListener("resize", schedule');
-    expect(bridge).toContain('window.visualViewport?.addEventListener("scrollend", schedule');
-    expect(bridge).toContain('document.addEventListener("focusin", settleAfterFocusChange');
-    expect(bridge).not.toContain("isTabletViewport");
-  });
+  // Keyboard/focus/scroll behavior is exercised by VisualViewportPopupBridge component tests.
 });

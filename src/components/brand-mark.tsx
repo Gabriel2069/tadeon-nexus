@@ -73,7 +73,7 @@ export function ThreadField({
           <stop offset="1" stopColor="#4f6e5d" />
         </linearGradient>
       </defs>
-      <g aria-hidden="true" opacity={variant === "backdrop" ? ".36" : ".56"}>
+      <g aria-hidden="true" opacity={variant === "backdrop" ? ".65" : ".56"}>
         <path
           d="M-100 172C240-85 380 420 610 340S940 190 1300 448L1300 524C940 280 840 370 610 414S240 56-100 260Z"
           fill={`url(#${id})`}
@@ -96,14 +96,14 @@ export function ThreadField({
         {Array.from({ length: 32 }, (_, i) => (
           <path
             key={i}
-            opacity={0.12 + (i % 7) * 0.026}
+            opacity={0.20 + (i % 7) * 0.04}
             d={`M-100 ${110 + i * 5}C240 ${-180 + i * 9} 380 ${540 - i * 5} 610 ${260 + i * 4}S940 ${90 + i * 5} 1300 ${350 + i * 7}`}
           />
         ))}
         {Array.from({ length: 20 }, (_, i) => (
           <path
             key={`weft-${i}`}
-            opacity=".12"
+            opacity=".20"
             d={`M${60 + i * 18} -90C${560 + i * 9} 110 ${190 + i * 14} 460 ${880 + i * 11} 890`}
           />
         ))}

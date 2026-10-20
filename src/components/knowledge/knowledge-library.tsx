@@ -1,3 +1,4 @@
+import { SelectionGroup } from "@/components/selection-plate";
 import { PageHeader } from "@/components/page-header";
 import { createLatestRequestGate } from "@/lib/latest-request";
 import { FabricFilaments } from "@/components/fabric-filaments";
@@ -718,8 +719,10 @@ export function KnowledgeLibrary({
                   <BookCopy className="h-4 w-4" />
                   Templates
                 </Button>
-                <div
+                <SelectionGroup
                   className="tadeon-library-view-switch"
+                  activeKey={view}
+                  selector='[aria-pressed="true"]'
                   role="group"
                   aria-label="Modo de visualização"
                 >
@@ -750,7 +753,7 @@ export function KnowledgeLibrary({
                   >
                     <Rows3 className="h-4 w-4" />
                   </Button>
-                </div>
+                </SelectionGroup>
               </>
             }
           />

@@ -11,6 +11,7 @@ import {
   matchesKnowledgeCollection,
   type KnowledgeCollection,
 } from "@/lib/knowledge/knowledge-collections";
+import { SelectionGroup } from "@/components/selection-plate";
 import { PageHeader } from "@/components/page-header";
 import { NexusTabletopLocator } from "@/components/knowledge/nexus-tabletop-locator";
 import { useAuth } from "@/lib/auth";
@@ -1746,8 +1747,10 @@ export function NexusWorkspace({
             </div>
           )}
           {graphEnabled && selected && (
-            <div
+            <SelectionGroup
               className="tadeon-nexus-reading__switch"
+              activeKey={readingView}
+              selector='[aria-pressed="true"]'
               role="group"
               aria-label="Modo de leitura do Nexus"
             >
@@ -1777,7 +1780,7 @@ export function NexusWorkspace({
                   Restaurar divisão
                 </Button>
               )}
-            </div>
+            </SelectionGroup>
           )}
           <KnowledgeReadingPanes
             preferences={

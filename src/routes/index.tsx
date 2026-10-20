@@ -1,4 +1,3 @@
-import { PageHeader } from "@/components/page-header";
 import { CharacterArchive, type ArchiveSheet } from "@/components/character-archive";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -320,12 +319,6 @@ export function HomePage() {
 
   return (
     <div data-page-layout className="tadeon-page tadeon-dashboard tadeon-route-dashboard space-y-6">
-      <PageHeader
-        section="dashboard"
-        eyebrow="Arquivo de continuidade"
-        title="Dashboard"
-        description="Seus personagens, memórias e caminhos de volta à campanha."
-      />
       <ContinuityHero
         greeting={profile?.full_name ? `Olá, ${profile.full_name}.` : "Seu arquivo de continuidade"}
         description={

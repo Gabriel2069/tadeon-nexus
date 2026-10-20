@@ -2,6 +2,9 @@ import * as React from "react";
 import * as TabsPrimitive from "@radix-ui/react-tabs";
 
 import { cn } from "@/lib/utils";
+import { SelectionPlate } from "@/components/selection-plate";
+
+const SelectionContext = React.createContext<string | undefined>(undefined);
 
 type TabsMotionDirection = "forward" | "backward";
 
@@ -20,6 +23,7 @@ const Tabs = React.forwardRef<
 >(({ className, onValueChange, value, defaultValue, ...props }, ref) => {
   const rootRef = React.useRef<React.ElementRef<typeof TabsPrimitive.Root>>(null);
   const currentValueRef = React.useRef(value ?? defaultValue);
+  const [internalValue, setInternalValue] = React.useState(defaultValue);
   const [motionDirection, setMotionDirection] = React.useState<TabsMotionDirection>("forward");
 
   React.useEffect(() => {
@@ -41,22 +45,25 @@ const Tabs = React.forwardRef<
       }
 
       currentValueRef.current = nextValue;
+      if (value === undefined) setInternalValue(nextValue);
       onValueChange?.(nextValue);
     },
-    [onValueChange],
+    [onValueChange, value],
   );
 
   return (
-    <TabsPrimitive.Root
-      ref={composeRefs(rootRef, ref)}
-      data-slot="tabs"
-      data-motion-direction={motionDirection}
-      className={cn("min-w-0", className)}
-      value={value}
-      defaultValue={defaultValue}
-      onValueChange={handleValueChange}
-      {...props}
-    />
+    <SelectionContext.Provider value={value ?? internalValue}>
+      <TabsPrimitive.Root
+        ref={composeRefs(rootRef, ref)}
+        data-slot="tabs"
+        data-motion-direction={motionDirection}
+        className={cn("min-w-0", className)}
+        value={value}
+        defaultValue={defaultValue}
+        onValueChange={handleValueChange}
+        {...props}
+      />
+    </SelectionContext.Provider>
   );
 });
 Tabs.displayName = TabsPrimitive.Root.displayName;
@@ -64,20 +71,30 @@ Tabs.displayName = TabsPrimitive.Root.displayName;
 const TabsList = React.forwardRef<
   React.ElementRef<typeof TabsPrimitive.List>,
   React.ComponentPropsWithoutRef<typeof TabsPrimitive.List>
->(({ className, children, ...props }, ref) => (
-  <TabsPrimitive.List
-    ref={ref}
-    data-slot="tabs-list"
-    data-material-surface="tablist"
-    className={cn(
-      "tadeon-material-tabs inline-flex min-h-11 items-center gap-1 rounded-xl p-1",
-      className,
-    )}
-    {...props}
-  >
-    {children}
-  </TabsPrimitive.List>
-));
+>(({ className, children, ...props }, ref) => {
+  const host = React.useRef<React.ElementRef<typeof TabsPrimitive.List>>(null);
+  const activeKey = React.useContext(SelectionContext);
+  return (
+    <TabsPrimitive.List
+      ref={composeRefs(host, ref)}
+      data-slot="tabs-list"
+      data-selection-rail=""
+      data-material-surface="tablist"
+      className={cn(
+        "tadeon-material-tabs inline-flex min-h-11 items-center gap-1 rounded-xl p-1",
+        className,
+      )}
+      {...props}
+    >
+      <SelectionPlate
+        host={host}
+        activeKey={activeKey}
+        selector='[role="tab"][data-state="active"]'
+      />
+      {children}
+    </TabsPrimitive.List>
+  );
+});
 TabsList.displayName = TabsPrimitive.List.displayName;
 
 const TabsTrigger = React.forwardRef<
@@ -91,7 +108,7 @@ const TabsTrigger = React.forwardRef<
     data-tab-value={value}
     value={value}
     className={cn(
-      "inline-flex min-h-9 items-center justify-center whitespace-nowrap rounded-[0.65rem] border border-transparent px-3 py-1.5 text-sm font-semibold ring-offset-background cursor-pointer transition-[color,background-color,border-color,box-shadow,transform] duration-150 ease-[var(--ease-out)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/60 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 disabled:cursor-not-allowed data-[state=active]:border-primary/20 data-[state=active]:bg-[linear-gradient(145deg,rgba(217,215,164,.14),rgba(255,255,255,.035))] data-[state=active]:text-primary data-[state=active]:shadow-[0_10px_28px_-20px_var(--primary),inset_0_1px_0_rgba(255,255,255,.08)]",
+      "inline-flex min-h-9 items-center justify-center whitespace-nowrap rounded-[0.65rem] border border-transparent px-3 py-1.5 text-sm font-semibold ring-offset-background cursor-pointer transition-[color,background-color,border-color,box-shadow,transform] duration-150 ease-[var(--ease-out)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/60 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 disabled:cursor-not-allowed data-[state=active]:text-foreground",
       className,
     )}
     {...props}

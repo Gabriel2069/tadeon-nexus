@@ -161,6 +161,7 @@
 /* end-source: src/styles/tadeon-nexus-material.css */
 /* NEX-006: linked document/graph workspace; chrome remains outside the reading measure. */
 .tadeon-nexus-reading__switch {
+  position: relative;
   display: flex;
   gap: 0.25rem;
   flex-wrap: wrap;
@@ -336,6 +337,6 @@
 .tadeon-nexus-document__toolbar { background: #141a20; box-shadow: inset 0 -1px rgb(233 227 213 / 3%); }
 .tadeon-nexus-manuscript { background: #11161c; }
 .tadeon-nexus-manuscript > .prose { max-width: 70ch; margin-inline: auto; }
-@media (max-width: 479px) { .tadeon-nexus-scope { grid-template-columns: minmax(0, 1fr); } }
+@media (max-width: 767px) { .tadeon-nexus-scope { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .5rem; } }
 .tadeon-nexus-manuscript-title { outline-offset: .4rem; }
 @media (min-width: 1180px) { .tadeon-nexus-explore-trigger { display: none; } }

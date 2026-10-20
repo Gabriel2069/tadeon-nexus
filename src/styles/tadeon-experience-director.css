@@ -31,7 +31,6 @@
 /* ================================================================
    PRIMARY NAV - each destination has a traceable arrival/response.
    ================================================================ */
-.tadeon-shell .tadeon-primary-nav{position:relative}
 .tadeon-shell .tadeon-primary-nav .tadeon-nav-item{
   position:relative;
   isolation:isolate;
@@ -103,7 +102,7 @@
   inset:0;
   background:linear-gradient(105deg,transparent 32%,rgb(255 255 255 / 12%) 50%,transparent 68%);
   transform:translateX(-120%);
-  animation:thn-bar-sheen 2.2s ease-in-out infinite;
+  animation:thn-bar-sheen 850ms ease-out 1;
   pointer-events:none;
 }
 @keyframes thn-bar-sheen{52%,100%{transform:translateX(120%)}}

@@ -1,5 +1,6 @@
 import { MaterialToneContext } from "@/lib/use-material-light";
 import { UTILITY_AREAS } from "@/lib/utility-areas";
+import { SelectionGroup } from "@/components/selection-plate";
 import { MobileMoreMenu } from "@/components/mobile-more-menu";
 import { CORE_SURFACES } from "@/lib/feature-flags";
 import { createLatestRequestGate } from "@/lib/latest-request";
@@ -249,7 +250,13 @@ export function AppLayout({ children }: { children: ReactNode }) {
   };
 
   const renderNav = (mini: boolean, enableSearchShortcut: boolean) => (
-    <nav className="tadeon-primary-nav space-y-1" aria-label="Navegação principal">
+    <SelectionGroup
+      motionId={`primary:${user?.id}:${mini}:${enableSearchShortcut}`}
+      activeKey={`${path}:${mini}:${knowledgeEnabled}:${tabletopEnabled}`}
+      selector='.tadeon-nav-item[aria-current="page"]'
+      className="tadeon-primary-nav space-y-1"
+      aria-label="Navegação principal"
+    >
       <GlobalSearch
         compact={mini}
         enableShortcut={enableSearchShortcut}
@@ -323,7 +330,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
           />
         </>
       )}
-    </nav>
+    </SelectionGroup>
   );
 
   const renderSidebar = ({
@@ -569,9 +576,16 @@ export function AppLayout({ children }: { children: ReactNode }) {
         </div>
 
         {showMobileDock && (
-          <nav className="tadeon-mobile-dock md:hidden" aria-label="Atalhos principais">
+          <SelectionGroup
+            motionId={`dock:${user?.id}`}
+            activeKey={`${path}:${knowledgeEnabled}:${tabletopEnabled}`}
+            selector='.tadeon-mobile-dock__item[aria-current="page"],.tadeon-mobile-dock__item[data-more-active="true"]'
+            className="tadeon-mobile-dock md:hidden"
+            aria-label="Atalhos principais"
+          >
             <Link
               to="/"
+              activeOptions={{ exact: true }}
               aria-current={path === "/" ? "page" : undefined}
               data-material-surface="navigation"
               className="tadeon-mobile-dock__item"
@@ -639,7 +653,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
                 <span>Mais</span>
               </button>
             )}
-          </nav>
+          </SelectionGroup>
         )}
 
         {/* Mobile drawer: Radix preserves focus, Escape and symmetric exit motion. */}
@@ -705,6 +719,7 @@ function NavItem({
   return (
     <Link
       to={to}
+      activeOptions={{ exact: to === "/" }}
       onClick={onClick}
       aria-current={active ? "page" : undefined}
       data-mini={mini ? "true" : "false"}
