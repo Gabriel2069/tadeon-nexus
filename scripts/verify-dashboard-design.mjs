@@ -109,6 +109,15 @@ try {
       assert(await search.evaluate(e=>e===document.activeElement), "Clear search keeps focus");
       assert(await page.locator(".tadeon-character-card").count() === 5 && sheetReads === readsBefore, "Discovery neither fetches nor mutates the source rows");
       metrics.archive = {accentSearch:true,occupationSearch:true,ownerSearch:true,ownership:true,sort:true,resetFocus:true,extraReads:sheetReads-readsBefore};
+      metrics.folios = await page.locator(".tadeon-character-gallery").evaluate(e => ({
+        columns: getComputedStyle(e).gridTemplateColumns,
+        cards: [...e.children].map(card => {
+          const r = card.getBoundingClientRect(), title = card.querySelector("h3");
+          return { width: r.width, height: r.height, titleClipped: title.scrollWidth > title.clientWidth + 1 };
+        }),
+        sidebarFilter: getComputedStyle(document.querySelector(".tadeon-sidebar")).backdropFilter,
+      }));
+      assert(metrics.folios.cards.every(c => !c.titleClipped), "Folio names must remain readable");
 
       const trigger = page.getByRole("button", { name: "Nova ficha" });
       await trigger.focus(); await page.keyboard.press("Enter");
@@ -195,6 +204,26 @@ try {
         const nav = await page.locator(".tadeon-nav-item[aria-current]").evaluate(e=>({before:getComputedStyle(e,"::before").content,background:getComputedStyle(e).backgroundImage}));
         assert(nav.before === "none", "Navigation has no competing light plane");
         metrics.material = {light, stableText:true, nav};
+        metrics.nestedLight = await card.evaluate(async e => {
+          const control = e.querySelector('button[data-material-surface]');
+          const original = e.getBoundingClientRect.bind(e);
+          let parentReads = 0;
+          e.getBoundingClientRect = () => { parentReads++; return original(); };
+          try {
+            const r = control.getBoundingClientRect();
+            for (let i = 0; i < 120; i++)
+              control.dispatchEvent(new PointerEvent("pointermove", {
+                bubbles: true, pointerType: "mouse", clientX: r.x + 10, clientY: r.y + 10,
+              }));
+            await new Promise(ok => requestAnimationFrame(() => requestAnimationFrame(ok)));
+            return { events: 120, parentReads, childLight: control.style.getPropertyValue("--material-x") };
+          } finally { e.getBoundingClientRect = original; }
+        });
+        if (process.env.NEXUS_EXPECT_ISOLATED_LIGHT === "1") {
+          assert(metrics.nestedLight.parentReads === 0 && metrics.nestedLight.childLight !== "",
+            "Nested control must own reflection without measuring the containing card");
+          assert(metrics.folios.sidebarFilter === "none", "Opaque sidebar must not retain a backdrop blur");
+        }
       }
       await page.emulateMedia({ reducedMotion: "reduce" });
       await page.evaluate(() => new Promise(ok => requestAnimationFrame(() => requestAnimationFrame(ok))));

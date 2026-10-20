@@ -38,6 +38,7 @@ Cada PR usa IDs desta fila e declara dependências. Trabalho sobre o mesmo propr
 | NEX-026 | Continuidade entre páginas, Nexus/Biblioteca e roda do Mais | Integrado | 7 | knowledge | NEX-024, NEX-025 |
 | NEX-027 | Composição móvel, tipografia e seleção contínua de tecido | Integrado | 7 | shell | NEX-025, NEX-026 |
 | NEX-028 | Tecido esculpido, instrumentos compactos e efeitos com custo limitado | Integrado | 7 | shell | NEX-027 |
+| NEX-029 | Fólios compactos, material do shell e reflexão local exclusiva | Em andamento | 7 | shell | NEX-028 |
 
 ## NEX-001 — Preparação estrutural
 
@@ -266,6 +267,15 @@ Evidências: [docs/visual-system-validation.json](../docs/visual-system-validati
 - Comparar a mesma fixture antes/depois, validar celular/desktop, foco, portais e seleção; não declarar desempenho físico a partir de emulação.
 
 Evidências: [docs/visual-system-validation.json](../docs/visual-system-validation.json), [docs/DESIGN.md](../docs/DESIGN.md), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/pull/287), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39443164733), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39488053106), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39488053260).
+
+## NEX-029 — Fólios compactos, material do shell e reflexão local exclusiva
+
+- Compactar o acervo sem truncar nomes, preservar busca/filtros/ordem/permissões e alvos de ação.
+- Reforçar lombada, identificação de propriedade e hierarquia editorial nos módulos existentes.
+- Limitar a reflexão à superfície material mais próxima e retirar o blur do plano opaco lateral; preservar movimento/transparência reduzidos.
+- Comparar baseline e implementação em navegador, validar celular/tablet/desktop, foco e portais; não declarar desempenho físico a partir de fixtures.
+
+Evidências: [docs/visual-system-validation.json](../docs/visual-system-validation.json), [docs/DESIGN.md](../docs/DESIGN.md).
 
 ## Decisões vigentes
 

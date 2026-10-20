@@ -226,3 +226,12 @@ O Dashboard tem a exceção de DEC-018; os demais cabeçalhos mantêm os proprie
 O lote não retira o polling de modificadores do ExperienceFinalPolishBridge nem certifica que toda a dívida de apresentação terminou. NEX-009 conserva medições físicas e revisão de trabalho residual; as provas deste lote ficam em craftRevision da evidência visual.
 
 A barra móvel da Ficha pertence a sheet-premium.css; o bloco antigo em route-layout.css foi retirado. Ações primárias preservam alvos de 44 px na mesma linha a 320 px, com presença e salvamento em linha secundária. Abas compactas mantêm seus nomes completos. O lote retira 18 !important (2.872 → 2.854), sem criar módulo ou link global.
+
+
+## Reflexão exclusiva e acervo — NEX-029
+
+useMaterialLight reconhece o ancestral data-material-surface mais próximo do alvo do evento. Quando o controle interno tem material próprio, o painel cancela seu frame pendente e não lê sua geometria; o evento continua propagando normalmente para os callbacks da aplicação. Sem listener global, observer ou novo estado persistido.
+
+CharacterArchive conserva os dados autorizados recebidos pela rota e suas operações locais. A identificação Seu fio deriva da mesma identidade já usada pelo filtro. Geometria e material dos fólios permanecem em experience-surfaces.css. Material do shell permanece em navigation-layout.css: a lateral opaca dispensa backdrop-filter; a redução de transparência continua sendo a última autoridade.
+
+Visual review roda as fixtures existentes no GitHub Actions com Playwright isolado das dependências da aplicação. Baseline usa a base da PR e o mesmo verificador da implementação; screenshots e resultados têm retenção de sete dias. Quality continua responsável por auditoria, estilos, mapas, lint, tipos, testes e build. Os artefatos não certificam contas ou hardware reais.

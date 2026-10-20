@@ -74,7 +74,19 @@
   background: radial-gradient(ellipse at 12% 0%, rgb(233 227 213 / 8%), transparent 62%), linear-gradient(160deg, rgb(35 41 48 / 92%), rgb(14 18 24 / 94%));
   border-color: var(--material-edge);
   box-shadow: var(--shadow-float);
+}
+/* The full-height sidebar is an opaque ink plane; glass belongs to floating chrome. */
+.tadeon-sidebar {
+  background: radial-gradient(ellipse at 0% 0%, rgb(233 227 213 / 7%), transparent 55%), linear-gradient(165deg, #20262e, #10151c 70%);
+  backdrop-filter: none; -webkit-backdrop-filter: none;
+}
+:is(.tadeon-desktop-toolbar, .tadeon-mobile-header, .tadeon-mobile-dock, .tadeon-mobile-drawer) {
   backdrop-filter: blur(18px) saturate(120%); -webkit-backdrop-filter: blur(18px) saturate(120%);
+}
+@media (hover: none) and (pointer: coarse) {
+  :is(.tadeon-mobile-header, .tadeon-mobile-dock, .tadeon-mobile-drawer) {
+    backdrop-filter: blur(10px) saturate(110%); -webkit-backdrop-filter: blur(10px) saturate(110%);
+  }
 }
 .tadeon-nav-item { background: transparent; border-color: transparent; box-shadow: none; }
 .tadeon-nav-item[aria-current="page"], .tadeon-mobile-dock__item[aria-current="page"] { background: transparent; border-color: transparent; box-shadow: none; }

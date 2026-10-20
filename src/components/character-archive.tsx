@@ -126,6 +126,9 @@ export function CharacterArchive({
               </div>
               <div className="tadeon-character-card__header">
                 <span className="tadeon-mono">Fio {String(number).padStart(2, "0")}</span>
+                {sheet.owner_id === userId && (
+                  <span className="tadeon-character-card__ownership">Seu fio</span>
+                )}
                 {canDelete(sheet) && (
                   <Button
                     variant="ghost"

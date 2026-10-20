@@ -101,3 +101,31 @@ it("schedules one frame for a burst and reads geometry only at the latest point"
   expect(node.getBoundingClientRect).toHaveBeenCalledTimes(1);
   expect(node.style.getPropertyValue("--material-x")).toBe("79.5%");
 });
+
+it("lights only the nearest material and cancels a containing surface's pending frame", () => {
+  const view = render(
+    <MaterialSurface data-testid="outer">
+      <MaterialSurface data-testid="inner">
+        <span>Local control</span>
+      </MaterialSurface>
+      <span>Plain content</span>
+    </MaterialSurface>,
+  );
+  const outer = view.getByTestId("outer");
+  const inner = view.getByTestId("inner");
+  const rect = { left: 0, top: 0, width: 200, height: 100 } as DOMRect;
+  const outerBounds = vi.spyOn(outer, "getBoundingClientRect").mockReturnValue(rect);
+  const innerBounds = vi.spyOn(inner, "getBoundingClientRect").mockReturnValue(rect);
+  fireEvent.pointerMove(view.getByText("Plain content"), { clientX: 60, clientY: 40 });
+  expect(frames.size).toBe(1);
+  fireEvent.pointerMove(view.getByText("Local control"), { clientX: 80, clientY: 40 });
+  expect(frames.size).toBe(1);
+  flush();
+  expect(outerBounds).not.toHaveBeenCalled();
+  expect(innerBounds).toHaveBeenCalledTimes(1);
+  expect(inner.style.getPropertyValue("--material-x")).toBe("40.0%");
+  expect(outer.style.getPropertyValue("--material-x")).toBe("");
+  fireEvent.pointerMove(view.getByText("Plain content"), { clientX: 60, clientY: 40 });
+  flush();
+  expect(outerBounds).toHaveBeenCalledTimes(1);
+});
