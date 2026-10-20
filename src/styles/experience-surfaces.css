@@ -1427,7 +1427,7 @@ button:not([data-material-surface], .tadeon-material-button)[data-tadeon-directe
 .tadeon-continuity-facts dd:not(.tadeon-continuity-facts__detail) { color: var(--foreground); }
 .tadeon-character-archive { scroll-margin-top: 6rem; }
 .tadeon-character-archive__heading { padding: .25rem 0 1rem; border-bottom: 1px solid var(--border); }
-.tadeon-character-gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 15rem), 1fr)); gap: 1rem; }
+.tadeon-character-gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 17rem), 1fr)); align-items: start; gap: 1rem; }
 
 
 .tadeon-archive-state { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: .75rem; min-height: 15rem; padding: 2.5rem 1.5rem; border: 1px solid var(--border); border-radius: 1rem; background: #12151a; text-align: center; }
