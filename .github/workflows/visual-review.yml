@@ -64,7 +64,7 @@ jobs:
             const path = "/tmp/tadeon-visual/" + phase + "/results.json";
             if (existsSync(path)) {
               const rows = JSON.parse(readFileSync(path, "utf8")).filter(r => r.state === "populated");
-              console.log(JSON.stringify({ phase, rows: rows.map(r => ({ width: r.width, folios: r.folios, nestedLight: r.nestedLight, overflow: r.overflow, errors: r.errors })) }));
+              console.log(JSON.stringify({ phase, rows: rows.map(r => ({ width: r.width, folios: r.folios, normalSidebarFilter: r.material?.sidebarFilter, nestedLight: r.nestedLight, overflow: r.overflow, errors: r.errors })) }));
             }
           }
           JS

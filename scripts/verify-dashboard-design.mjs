@@ -214,7 +214,7 @@ try {
         await page.screenshot({path:`${root}/interaction-1440.png`,fullPage:true});
         const nav = await page.locator(".tadeon-nav-item[aria-current]").evaluate(e=>({before:getComputedStyle(e,"::before").content,background:getComputedStyle(e).backgroundImage}));
         assert(nav.before === "none", "Navigation has no competing light plane");
-        metrics.material = {light, stableText:true, nav};
+        metrics.material = {light, stableText:true, nav, sidebarFilter: await page.locator(".tadeon-sidebar").evaluate(e => getComputedStyle(e).backdropFilter)};
         metrics.nestedLight = await card.evaluate(async e => {
           const control = e.querySelector('button[data-material-surface]');
           const original = e.getBoundingClientRect.bind(e);
@@ -233,7 +233,7 @@ try {
         if (process.env.NEXUS_EXPECT_ISOLATED_LIGHT === "1") {
           assert(metrics.nestedLight.parentReads === 0 && metrics.nestedLight.childLight !== "",
             "Nested control must own reflection without measuring the containing card");
-          assert(metrics.folios.sidebarFilter === "none", "Opaque sidebar must not retain a backdrop blur");
+          assert(metrics.material.sidebarFilter === "none", "Opaque sidebar must not retain a backdrop blur");
         }
       }
       await page.emulateMedia({ reducedMotion: "reduce" });
