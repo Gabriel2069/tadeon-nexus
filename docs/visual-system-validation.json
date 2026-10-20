@@ -9159,5 +9159,374 @@
     "resumption": {
       "note": "Diff e logs de CI conferidos nesta retomada. Evidências de navegador recuperadas do trabalho anterior; sem ambiente local disponível para repetição."
     }
+  },
+  "folioRevision": {
+    "task": "NEX-029",
+    "status": "integrated",
+    "base": "9ca2b3f080376fa35e67c3b37a45734de46216f5",
+    "sourceCommit": "13b10c58fecf4df2557ed4b56b6de3e360d0068d",
+    "mergeCommit": "2bc2ae56ec76060f44db5359c7480c7da0cb97c2",
+    "checkedAt": "2026-10-20",
+    "scope": [
+      "Fólios compactos com nome completo, largura de leitura e altura individual.",
+      "Lombada com ponto de costura e identificação de fios da própria conta.",
+      "Reflexão exclusiva da superfície material mais próxima, cancelando frame ancestral pendente.",
+      "Material lateral opaco explícito e blur menor no chrome com ponteiro grosso."
+    ],
+    "validation": {
+      "quality": {
+        "status": "passed",
+        "url": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39494025169",
+        "suites": 146,
+        "tests": 597,
+        "styleModules": 57,
+        "globalStyleLinks": 12,
+        "overrideBudgetGrowth": 0,
+        "includes": [
+          "styles",
+          "continuity",
+          "lint",
+          "types",
+          "tests",
+          "client SSR Worker builds"
+        ]
+      },
+      "audit": {
+        "gate": "npm audit --audit-level=high",
+        "status": "passed",
+        "moderate": 2,
+        "high": 0,
+        "packages": [
+          "launch-editor",
+          "vite"
+        ],
+        "advisory": "https://github.com/advisories/GHSA-698v-4r3x-3vcv",
+        "note": "Sem alteração de dependências neste lote; avisos moderados preservados como pendência."
+      },
+      "browser": {
+        "status": "passed",
+        "url": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39494025229",
+        "fixtureOnly": true,
+        "runner": "GitHub Actions / Playwright 1.56.1",
+        "baseline": {
+          "widths": [
+            390,
+            1440
+          ],
+          "states": [
+            "populated"
+          ]
+        },
+        "current": {
+          "widths": [
+            320,
+            390,
+            820,
+            1440
+          ],
+          "states": [
+            "empty",
+            "loading",
+            "error",
+            "populated"
+          ],
+          "cases": 16
+        },
+        "shared": {
+          "routes": [
+            "/offline",
+            "/nexus"
+          ],
+          "widths": [
+            320,
+            820
+          ],
+          "cases": 4
+        },
+        "overflow": false,
+        "errors": [],
+        "covers": [
+          "long names without clipping",
+          "discovery with no extra reads",
+          "ownership and sorting",
+          "navigation and 44px targets",
+          "portal and return focus",
+          "reduced motion transparency and increased contrast",
+          "local light with stable text"
+        ],
+        "artifactRetentionDays": 7,
+        "manualScreenshotInspection": false
+      },
+      "comparison": [
+        {
+          "phase": "baseline",
+          "rows": [
+            {
+              "width": 390,
+              "folios": {
+                "columns": "353px",
+                "cards": [
+                  {
+                    "width": 353,
+                    "height": 250.703125,
+                    "titleClipped": false
+                  },
+                  {
+                    "width": 353,
+                    "height": 194.421875,
+                    "titleClipped": false
+                  },
+                  {
+                    "width": 353,
+                    "height": 194.421875,
+                    "titleClipped": false
+                  },
+                  {
+                    "width": 353,
+                    "height": 194.421875,
+                    "titleClipped": false
+                  },
+                  {
+                    "width": 353,
+                    "height": 194.421875,
+                    "titleClipped": false
+                  }
+                ],
+                "sidebarFilter": "none"
+              },
+              "overflow": false,
+              "errors": []
+            },
+            {
+              "width": 1440,
+              "folios": {
+                "columns": "355.297px 355.297px 355.312px",
+                "cards": [
+                  {
+                    "width": 355.296875,
+                    "height": 320,
+                    "titleClipped": false
+                  },
+                  {
+                    "width": 355.296875,
+                    "height": 320,
+                    "titleClipped": false
+                  },
+                  {
+                    "width": 355.3125,
+                    "height": 320,
+                    "titleClipped": false
+                  },
+                  {
+                    "width": 355.296875,
+                    "height": 320,
+                    "titleClipped": false
+                  },
+                  {
+                    "width": 355.296875,
+                    "height": 320,
+                    "titleClipped": false
+                  }
+                ],
+                "sidebarFilter": "none"
+              },
+              "normalSidebarFilter": "none",
+              "nestedLight": {
+                "events": 120,
+                "parentReads": 1,
+                "childLight": "25.0%"
+              },
+              "overflow": false,
+              "errors": []
+            }
+          ]
+        },
+        {
+          "phase": "current",
+          "rows": [
+            {
+              "width": 320,
+              "folios": {
+                "columns": "242px",
+                "cards": [
+                  {
+                    "width": 242,
+                    "height": 269.234375,
+                    "titleClipped": false
+                  },
+                  {
+                    "width": 242,
+                    "height": 212.953125,
+                    "titleClipped": false
+                  },
+                  {
+                    "width": 242,
+                    "height": 212.953125,
+                    "titleClipped": false
+                  },
+                  {
+                    "width": 242,
+                    "height": 212.953125,
+                    "titleClipped": false
+                  },
+                  {
+                    "width": 242,
+                    "height": 212.953125,
+                    "titleClipped": false
+                  }
+                ],
+                "sidebarFilter": "none"
+              },
+              "overflow": false,
+              "errors": []
+            },
+            {
+              "width": 390,
+              "folios": {
+                "columns": "353px",
+                "cards": [
+                  {
+                    "width": 353,
+                    "height": 241.09375,
+                    "titleClipped": false
+                  },
+                  {
+                    "width": 353,
+                    "height": 184.8125,
+                    "titleClipped": false
+                  },
+                  {
+                    "width": 353,
+                    "height": 184.8125,
+                    "titleClipped": false
+                  },
+                  {
+                    "width": 353,
+                    "height": 184.8125,
+                    "titleClipped": false
+                  },
+                  {
+                    "width": 353,
+                    "height": 184.8125,
+                    "titleClipped": false
+                  }
+                ],
+                "sidebarFilter": "none"
+              },
+              "overflow": false,
+              "errors": []
+            },
+            {
+              "width": 820,
+              "folios": {
+                "columns": "515.656px",
+                "cards": [
+                  {
+                    "width": 515.65625,
+                    "height": 283.28125,
+                    "titleClipped": false
+                  },
+                  {
+                    "width": 515.65625,
+                    "height": 240,
+                    "titleClipped": false
+                  },
+                  {
+                    "width": 515.65625,
+                    "height": 240,
+                    "titleClipped": false
+                  },
+                  {
+                    "width": 515.65625,
+                    "height": 240,
+                    "titleClipped": false
+                  },
+                  {
+                    "width": 515.65625,
+                    "height": 240,
+                    "titleClipped": false
+                  }
+                ],
+                "sidebarFilter": "none"
+              },
+              "overflow": false,
+              "errors": []
+            },
+            {
+              "width": 1440,
+              "folios": {
+                "columns": "357.969px 357.969px 357.969px",
+                "cards": [
+                  {
+                    "width": 357.96875,
+                    "height": 293.5,
+                    "titleClipped": false
+                  },
+                  {
+                    "width": 357.96875,
+                    "height": 240,
+                    "titleClipped": false
+                  },
+                  {
+                    "width": 357.96875,
+                    "height": 240,
+                    "titleClipped": false
+                  },
+                  {
+                    "width": 357.96875,
+                    "height": 240,
+                    "titleClipped": false
+                  },
+                  {
+                    "width": 357.96875,
+                    "height": 240,
+                    "titleClipped": false
+                  }
+                ],
+                "sidebarFilter": "none"
+              },
+              "normalSidebarFilter": "none",
+              "nestedLight": {
+                "events": 120,
+                "parentReads": 0,
+                "childLight": "25.0%"
+              },
+              "overflow": false,
+              "errors": []
+            }
+          ]
+        }
+      ]
+    },
+    "conclusions": [
+      "Em 1440px, quatro fólios comuns de 320 para 240px; fólio com nome longo de 320 para 293,5px. Nomes completos e três colunas.",
+      "Em 390px, cada registro cerca de 9,6px mais baixo na mesma fixture.",
+      "Rajada de 120 eventos no controle interno: leituras do card ancestral de 1 para zero; luz do controle preservada.",
+      "Sidebar já aparecia com backdrop-filter none no baseline e no atual, inclusive com movimento normal. Nenhum ganho medido de blur lateral é alegado."
+    ],
+    "limits": [
+      "Navegador executado no Actions por indisponibilidade do ambiente local; screenshots capturadas, sem inspeção manual nesta sessão.",
+      "Dimensões e leituras de geometria não medem FPS, INP ou autonomia em hardware físico.",
+      "NEX-009/010/011 preservam hardware, contas/corpus e restauração reais.",
+      "Polling de modificadores da Ficha e demais dívidas históricas não foram retirados neste lote."
+    ],
+    "integration": {
+      "pr": 289,
+      "branch": "feat/nex-029-compact-folios",
+      "base": "main",
+      "baseCommit": "9ca2b3f080376fa35e67c3b37a45734de46216f5",
+      "sourceCommit": "13b10c58fecf4df2557ed4b56b6de3e360d0068d",
+      "headCommit": "13b10c58fecf4df2557ed4b56b6de3e360d0068d",
+      "state": "integrated",
+      "mergeCommit": "2bc2ae56ec76060f44db5359c7480c7da0cb97c2",
+      "sourceQualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39494025169",
+      "mainQualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39494974487",
+      "production": "confirmed",
+      "productionEvidence": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39494974499",
+      "productionCommit": "2bc2ae56ec76060f44db5359c7480c7da0cb97c2",
+      "productionVerifiedAt": "2026-10-20T20:50:08.3535778Z",
+      "productionHttpStatus": 200,
+      "workerVersion": "1af29026-95b0-4a34-9578-96e4af72723a"
+    }
   }
 }

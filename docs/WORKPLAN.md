@@ -2,7 +2,7 @@
 
 > Gerado de [project-continuity.json](project-continuity.json). Edite o registro e rode `npm run sync:project`; não mantenha uma cópia manual.
 
-Snapshot: 2026-10-20; referência de runtime: `74ce21dfb3346e3bd8722a1175f5225d21ced7d8`. PR #287 em `feat/nex-028-material-craft`; integração: `integrated`. Não é prova de deploy.
+Snapshot: 2026-10-20; referência de runtime: `2bc2ae56ec76060f44db5359c7480c7da0cb97c2`. PR #289 em `feat/nex-029-compact-folios`; integração: `integrated`. Não é prova de deploy.
 
 Estados: planejado → próximo → em andamento → validado na branch → integrado. Publicação exige evidência própria do SHA; adiado conserva o requisito. Se um requisito mudar, preservar o ID e registrar a decisão/evidência.
 
@@ -38,7 +38,7 @@ Cada PR usa IDs desta fila e declara dependências. Trabalho sobre o mesmo propr
 | NEX-026 | Continuidade entre páginas, Nexus/Biblioteca e roda do Mais | Integrado | 7 | knowledge | NEX-024, NEX-025 |
 | NEX-027 | Composição móvel, tipografia e seleção contínua de tecido | Integrado | 7 | shell | NEX-025, NEX-026 |
 | NEX-028 | Tecido esculpido, instrumentos compactos e efeitos com custo limitado | Integrado | 7 | shell | NEX-027 |
-| NEX-029 | Fólios compactos, material do shell e reflexão local exclusiva | Em andamento | 7 | shell | NEX-028 |
+| NEX-029 | Fólios compactos, material do shell e reflexão local exclusiva | Integrado | 7 | shell | NEX-028 |
 
 ## NEX-001 — Preparação estrutural
 
@@ -275,7 +275,7 @@ Evidências: [docs/visual-system-validation.json](../docs/visual-system-validati
 - Limitar a reflexão à superfície material mais próxima e retirar o blur do plano opaco lateral; preservar movimento/transparência reduzidos.
 - Comparar baseline e implementação em navegador, validar celular/tablet/desktop, foco e portais; não declarar desempenho físico a partir de fixtures.
 
-Evidências: [docs/visual-system-validation.json](../docs/visual-system-validation.json), [docs/DESIGN.md](../docs/DESIGN.md).
+Evidências: [docs/visual-system-validation.json](../docs/visual-system-validation.json), [docs/DESIGN.md](../docs/DESIGN.md), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/pull/289), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39494025169), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39494025229), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39494974487), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39494974499).
 
 ## Decisões vigentes
 

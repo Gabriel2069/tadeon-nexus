@@ -1,24 +1,24 @@
 {
   "version": 1,
   "checkedAt": "2026-10-20",
-  "runtimeReference": "74ce21dfb3346e3bd8722a1175f5225d21ced7d8",
+  "runtimeReference": "2bc2ae56ec76060f44db5359c7480c7da0cb97c2",
   "integration": {
-    "pr": 287,
-    "branch": "feat/nex-028-material-craft",
+    "pr": 289,
+    "branch": "feat/nex-029-compact-folios",
     "base": "main",
-    "baseCommit": "3983831ec62ad4dc4300c7685cf5c40ac2ec10cd",
-    "sourceCommit": "31b8c3b4abe096ba04d5fdb7fd2f2730c8a81b75",
-    "headCommit": "31b8c3b4abe096ba04d5fdb7fd2f2730c8a81b75",
+    "baseCommit": "9ca2b3f080376fa35e67c3b37a45734de46216f5",
+    "sourceCommit": "13b10c58fecf4df2557ed4b56b6de3e360d0068d",
+    "headCommit": "13b10c58fecf4df2557ed4b56b6de3e360d0068d",
     "state": "integrated",
-    "mergeCommit": "681d38a3808798f400eb9681734c5509894a2ba5",
-    "sourceQualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39443164733",
-    "mainQualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39488053106",
+    "mergeCommit": "2bc2ae56ec76060f44db5359c7480c7da0cb97c2",
+    "sourceQualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39494025169",
+    "mainQualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39494974487",
     "production": "confirmed",
-    "productionEvidence": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39488053260",
-    "productionCommit": "681d38a3808798f400eb9681734c5509894a2ba5",
-    "productionVerifiedAt": "2026-10-20T20:01:14.9654571Z",
+    "productionEvidence": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39494974499",
+    "productionCommit": "2bc2ae56ec76060f44db5359c7480c7da0cb97c2",
+    "productionVerifiedAt": "2026-10-20T20:50:08.3535778Z",
     "productionHttpStatus": 200,
-    "workerVersion": "ea3eb205-2493-4edf-a6fa-ce0797016bf3"
+    "workerVersion": "1af29026-95b0-4a34-9578-96e4af72723a"
   },
   "domains": [
     {
@@ -582,7 +582,8 @@
         "Movimento reduzido, cancelamento e ausência de loops redundantes verificados.",
         "Registrar ganhos medidos; não inferir redução de bytes da redução de arquivos."
       ],
-      "evidence": []
+      "evidence": [],
+      "checkpoint": "Retomada NEX-029: audit --audit-level=high aprovado, com dois avisos moderados em launch-editor/vite (GHSA-698v-4r3x-3vcv), sem alteração de dependências. Não declarar auditoria zero. Persistem medições físicas e polling histórico de modificadores da Ficha."
     },
     {
       "id": "NEX-010",
@@ -984,7 +985,7 @@
       "id": "NEX-029",
       "title": "Fólios compactos, material do shell e reflexão local exclusiva",
       "domain": "shell",
-      "status": "active",
+      "status": "integrated",
       "priority": 7,
       "dependsOn": [
         "NEX-028"
@@ -997,8 +998,14 @@
       ],
       "evidence": [
         "docs/visual-system-validation.json",
-        "docs/DESIGN.md"
-      ]
+        "docs/DESIGN.md",
+        "https://github.com/Gabriel2069/tadeon-nexus/pull/289",
+        "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39494025169",
+        "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39494025229",
+        "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39494974487",
+        "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39494974499"
+      ],
+      "checkpoint": "Integrado pela PR #289, HEAD 13b10c5, merge 2bc2ae5. Quality aprovado: 146 suítes/597 testes. Visual review: baseline 390/1440, 16 estados atuais em quatro larguras e quatro vistas Nexus/offline, foco/portais/preferências; sem overflow ou erros. Em 1440, fólios comuns 320 → 240px e nome longo 320 → 293,5px; em 390, cerca de 9,6px retirados por registro. Reflexão do controle preservada, leitura do card ancestral 1 → zero na rajada de 120 eventos. Sidebar já sem blur no baseline: sem alegação de ganho medido nesse ponto. HTTP 200/SHA exato em 2026-10-20T20:50:08.3535778Z. Auditoria: dois avisos moderados launch-editor/vite, nenhum alto. NEX-009/010/011 preservam hardware, contas reais e restauração."
     }
   ],
   "decisions": [
@@ -1639,6 +1646,24 @@
       "productionVerifiedAt": "2026-10-20T10:01:55.8408969Z",
       "productionHttpStatus": 200,
       "workerVersion": "258a0661-f091-490a-ad49-9cd4c58c7b0f"
+    },
+    {
+      "pr": 287,
+      "branch": "feat/nex-028-material-craft",
+      "base": "main",
+      "baseCommit": "3983831ec62ad4dc4300c7685cf5c40ac2ec10cd",
+      "sourceCommit": "31b8c3b4abe096ba04d5fdb7fd2f2730c8a81b75",
+      "headCommit": "31b8c3b4abe096ba04d5fdb7fd2f2730c8a81b75",
+      "state": "integrated",
+      "mergeCommit": "681d38a3808798f400eb9681734c5509894a2ba5",
+      "sourceQualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39443164733",
+      "mainQualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39488053106",
+      "production": "confirmed",
+      "productionEvidence": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39488053260",
+      "productionCommit": "681d38a3808798f400eb9681734c5509894a2ba5",
+      "productionVerifiedAt": "2026-10-20T20:01:14.9654571Z",
+      "productionHttpStatus": 200,
+      "workerVersion": "ea3eb205-2493-4edf-a6fa-ce0797016bf3"
     }
   ]
 }
