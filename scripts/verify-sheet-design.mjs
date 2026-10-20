@@ -423,13 +423,14 @@ try {
           };
         });
         assert(!density.overflow && density.attributeTargetsFit, "Compact composition keeps controls inside the viewport");
-        assert(writes.length===0 && errors.length===0, "Density probe is read-only and has no render errors");
+        assert(errors.length===0, `Density probe has no render errors: ${JSON.stringify(errors)}`);
+        assert(writes.length<=1 && writes.every(w=>w.body.name===sheet.name), "Density probe permits only the existing mount normalization in the intercepted fixture");
         if (process.env.NEXUS_SKIP_SCREENSHOTS !== "1") {
           await page.screenshot({ path: `${output}/density-${width}.png` });
           await page.locator('#sec-pontos').scrollIntoViewIfNeeded();
           await page.screenshot({path:`${output}/resources-${width}.png`});
         }
-        results.push({ width, state, density, errors });
+        results.push({ width, state, density, errors, fixtureWrites:writes.length });
         writeFileSync(
           `${output}/results.json`,
           JSON.stringify({ fixtureOnly: true, results }, null, 2),

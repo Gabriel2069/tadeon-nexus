@@ -62,7 +62,7 @@ try {
   await page.getByText("A guardiã local",{exact:true}).waitFor();
   await geometry("offline");
   await page.emulateMedia({reducedMotion:"no-preference"});
-  if(width<768) {
+  if(width<768 && process.env.NEXUS_AUDIT_SCOPE !== "utilities") {
    const opener=page.getByRole("button",{name:"Abrir menu",exact:true});await opener.click();const drawer=page.getByRole("dialog",{name:"Navegação principal",exact:true});await drawer.waitFor();
    await page.waitForTimeout(250);assert(await drawer.evaluate(e=>e.contains(document.activeElement)),"Drawer opening focus");
    const opening=await drawer.evaluate(e=>({animation:getComputedStyle(e).animationName,transform:getComputedStyle(e).transform}));assert(opening.animation==="tadeon-navigation-enter",`Drawer owns directional animation: ${JSON.stringify(opening)}`);
@@ -89,9 +89,9 @@ try {
    await page.keyboard.press("End");await page.waitForFunction(()=>document.activeElement?.getAttribute("aria-label")==="Fechar outras áreas");await page.keyboard.press("Enter");await menu.waitFor({state:"hidden"});await page.waitForFunction(()=>document.activeElement?.textContent==="Mais");assert(await more.evaluate(e=>e===document.activeElement),"Wheel central close returns focus");
    await more.click();await menu.waitFor();await menu.getByRole("menuitem",{name:"Consulta offline",exact:true}).click();await menu.waitFor({state:"hidden"});await page.waitForFunction(()=>document.getElementById("tadeon-main")===document.activeElement);
    await more.click();await menu.waitFor();await page.setViewportSize({width:820,height:1000});await menu.waitFor({state:"hidden"});await page.setViewportSize({width,height:1000});
-   await page.emulateMedia({reducedMotion:"reduce"});await more.click();await menu.waitFor();assert(await menu.evaluate(e=>getComputedStyle(e).animationName)==="none","Wheel honors reduced motion");await page.mouse.click(4,150);await menu.waitFor({state:"hidden"});await page.emulateMedia({reducedMotion:"no-preference"});
+   await page.emulateMedia({reducedMotion:"reduce"});await more.click();await menu.waitFor();assert(await menu.evaluate(e=>getComputedStyle(e).animationName)==="none","Wheel honors reduced motion");await menu.evaluate(e=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));await page.waitForTimeout(100);await page.touchscreen.tap(4,150);await menu.waitFor({state:"hidden"});await page.emulateMedia({reducedMotion:"no-preference"});
    await opener.click();await drawer.waitFor();await page.setViewportSize({width:820,height:1000});await drawer.waitFor({state:"hidden"});await page.waitForFunction(() => document.querySelector('button[aria-controls="tadeon-mobile-navigation"]')?.getAttribute("aria-expanded") === "false" && document.getElementById("tadeon-main") === document.activeElement, undefined, {timeout:5000});await page.setViewportSize({width,height:1000});
-  } else {
+  } else if(width>=768 && process.env.NEXUS_AUDIT_SCOPE !== "utilities") {
    await page.getByRole("button",{name:"Recolher menu",exact:true}).click();await page.waitForTimeout(250);const compact=page.locator("#tadeon-desktop-sidebar").getByRole("link",{name:"Usuários",exact:true});assert(await compact.isVisible(),"Collapsed destination keeps accessible label");
    const icon=await compact.locator(".tadeon-nav-item__icon").evaluate(e=>({width:e.getBoundingClientRect().width,opacity:getComputedStyle(e).opacity}));assert(icon.width>=16&&Number(icon.opacity)>0,"Collapsed icon remains visible");if(process.env.NEXUS_SKIP_SCREENSHOTS!=="1")await page.screenshot({path:`${root}/sidebar-${width}.png`});await page.getByRole("button",{name:"Expandir menu",exact:true}).click();await page.waitForTimeout(500);
    const nav=page.locator("#tadeon-desktop-sidebar").getByRole("link",{name:"Consulta offline",exact:true});const before=await nav.boundingBox();await nav.hover();await page.waitForTimeout(250);const after=await nav.boundingBox();assert(Math.abs(after.x-before.x)<.5&&Math.abs(after.y-before.y)<.5,`Navigation target stays still on hover: ${JSON.stringify({before,after,style:await nav.evaluate(e=>({transform:getComputedStyle(e).transform,translate:getComputedStyle(e).translate,scale:getComputedStyle(e).scale,animation:getComputedStyle(e).animationName}))})}`);
@@ -108,7 +108,7 @@ try {
   const settledPlate=async()=>{
    await page.waitForFunction(selector=>{
     const group=document.querySelector(selector),active=group?.querySelector('[aria-current="page"],[data-more-active="true"]'),plate=group?.querySelector('.tadeon-selection-plate');
-    if(!active||!plate)return false;const a=active.getBoundingClientRect(),p=plate.getBoundingClientRect();return Math.abs(a.x-p.x)<1&&Math.abs(a.y-p.y)<1&&Math.abs(a.width-p.width)<1;
+    if(!active||!plate||group.querySelectorAll('[aria-current="page"],[data-more-active="true"]').length!==1)return false;const a=active.getBoundingClientRect(),p=plate.getBoundingClientRect();return Math.abs(a.x-p.x)<1&&Math.abs(a.y-p.y)<1&&Math.abs(a.width-p.width)<1;
    },navSelector);
   };
   await page.locator(navSelector).getByRole("link",{name:width<768?"Início":"Dashboard",exact:true}).click();

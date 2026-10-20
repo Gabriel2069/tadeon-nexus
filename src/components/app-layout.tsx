@@ -585,6 +585,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
           >
             <Link
               to="/"
+              activeOptions={{ exact: true }}
               aria-current={path === "/" ? "page" : undefined}
               data-material-surface="navigation"
               className="tadeon-mobile-dock__item"
@@ -718,6 +719,7 @@ function NavItem({
   return (
     <Link
       to={to}
+      activeOptions={{ exact: to === "/" }}
       onClick={onClick}
       aria-current={active ? "page" : undefined}
       data-mini={mini ? "true" : "false"}

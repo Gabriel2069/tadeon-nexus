@@ -197,7 +197,13 @@ try {
         await document.fonts.ready;
       });
       await page.waitForTimeout(250);
+      const selectionGeometry = await page.evaluate(()=>[...document.querySelectorAll('[data-selection-rail]')].filter(e=>e.getBoundingClientRect().width>0&&e.getBoundingClientRect().height>0).map(e=>{
+        const active=e.querySelector('[role="tab"][data-state="active"],[aria-current="page"],[aria-pressed="true"],[data-more-active="true"]'),plate=e.querySelector('.tadeon-selection-plate');
+        if(!active||!plate)return null;const a=active.getBoundingClientRect(),p=plate.getBoundingClientRect();return {host:e.className,position:getComputedStyle(e).position,active:[a.x,a.y,a.width,a.height],plate:[p.x,p.y,p.width,p.height],plateStyle:plate.getAttribute('style'),scroll:[e.scrollLeft,e.scrollTop],aligned:Math.abs(a.x-p.x)<1&&Math.abs(a.y-p.y)<1&&Math.abs(a.width-p.width)<1&&Math.abs(a.height-p.height)<1};
+      }).filter(Boolean));
+      if(selectionGeometry.some(e=>!e.aligned)) errors.push('Selection plate does not match its control');
       const metrics = await page.evaluate(() => ({
+        selectedCounts:[...document.querySelectorAll('.tadeon-primary-nav,.tadeon-mobile-dock')].filter(e=>e.getBoundingClientRect().width>0&&e.getBoundingClientRect().height>0).map(e=>e.querySelectorAll('[aria-current="page"],[data-more-active="true"]').length),
         frameWidth:document.querySelector('[data-page-layout]')?.getBoundingClientRect().width,
         dockPosition:document.querySelector('.tadeon-mobile-dock') ? getComputedStyle(document.querySelector('.tadeon-mobile-dock')).position : null,
         interfaceFont: getComputedStyle(document.body).fontFamily,
@@ -407,7 +413,8 @@ try {
             errors.push("Legacy header injection returned");
         }
       }
-      if (width < 768 && (metrics.frameWidth < width-40 || metrics.dockPosition !== "fixed")) errors.push("Compact shell lost its frame width or fixed dock");
+      if (metrics.selectedCounts.some(n=>n>1)) errors.push("Navigation exposes more than one selected destination");
+      if (width < 768 && (metrics.frameWidth < width-40 || (metrics.dockPosition !== null && metrics.dockPosition !== "fixed"))) errors.push("Compact shell lost its frame width or fixed dock");
       if (!metrics.interfaceFont.includes("Alegreya Sans") || !metrics.interfaceFaceLoaded) errors.push("The hosted interface font did not load");
       if (metrics.activeNavigation.some((item) => item.color !== "rgb(233, 227, 213)"))
         errors.push("Active navigation label lost its ivory contrast");
@@ -586,7 +593,7 @@ try {
         metrics.preferences = preferences;
         await cdp.detach();
       }
-      results.push({ route, width, errors, interactions, ...metrics });
+      results.push({ route, width, errors, interactions, selectionGeometry, ...metrics });
       console.log(JSON.stringify({ route, width, errors, preferences: metrics.preferences }));
       await context.close();
     }

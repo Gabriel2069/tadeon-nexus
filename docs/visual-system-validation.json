@@ -8798,6 +8798,51 @@
           "manual viewport scrolling does not recapture focus",
           "compact narrative preserves edits"
         ]
+      },
+      "sheetWide": {
+        "status": "passed",
+        "fixtureOnly": true,
+        "widths": [
+          820,
+          1440
+        ],
+        "covers": [
+          "controlled values",
+          "folds and jump navigation",
+          "resource controls",
+          "inventory/history",
+          "retry/game mode",
+          "rapid selection and reduced motion"
+        ],
+        "note": "Editable scenarios after final 8rem attribute minimum; no backend writes."
+      },
+      "layout": {
+        "status": "passed_with_final_retake",
+        "fixtureOnly": true,
+        "widths": [
+          320,
+          390,
+          820,
+          1440
+        ],
+        "cases": 28,
+        "portalFlows": 8,
+        "overflow": false,
+        "note": "Initial matrix flagged absent mobile Mesa dock, intentional in that workspace. Six-case retake accepted Mesa geometry; final master-panel retake at 390/1440 confirmed selection x/y/width/height after reduced-motion reset retirement and exact root destination."
+      },
+      "selection": {
+        "status": "passed",
+        "widths": [
+          390,
+          1440
+        ],
+        "covers": [
+          "one active destination",
+          "plate x/y/width/height matches control",
+          "reduced motion preserves position",
+          "dock stays fixed"
+        ],
+        "note": "Final source retake on master-panel includes nested tabs and primary navigation/dock."
       }
     },
     "limits": [
@@ -8810,7 +8855,8 @@
       "command": "npm run check",
       "suites": 144,
       "tests": 590,
-      "log": "Source gate to be repeated by CI at the final head."
+      "log": "Source gate to be repeated by CI at the final head.",
+      "note": "Earlier full local check; remote Quality at final source head is required before merge."
     },
     "fonts": {
       "family": "Alegreya Sans",

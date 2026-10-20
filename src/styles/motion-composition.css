@@ -1431,7 +1431,7 @@
 @keyframes tm-tooltip { from{opacity:0;transform:translateY(2px);filter:blur(.8px)} to{opacity:1;transform:none;filter:none} }
 
 @media(prefers-reduced-motion:reduce){
- .tadeon-shell *, .tadeon-shell *::before, .tadeon-shell *::after, [data-slot="dialog-content"]:not([data-motion-surface]), [data-slot="sheet-content"]:not([data-motion-surface]), [data-slot="drawer-content"], [data-slot="popover-content"]:not([data-motion-surface]), [data-slot="dropdown-menu-content"]:not([data-motion-surface]), [data-slot="select-content"]:not([data-motion-surface]), [data-slot="context-menu-content"], [data-slot="tooltip-content"] { animation-duration:1ms!important;animation-iteration-count:1!important;transition-duration:1ms!important;transform:none!important; }
+ .tadeon-shell *:not(.tadeon-selection-plate), .tadeon-shell *::before, .tadeon-shell *::after, [data-slot="dialog-content"]:not([data-motion-surface]), [data-slot="sheet-content"]:not([data-motion-surface]), [data-slot="drawer-content"], [data-slot="popover-content"]:not([data-motion-surface]), [data-slot="dropdown-menu-content"]:not([data-motion-surface]), [data-slot="select-content"]:not([data-motion-surface]), [data-slot="context-menu-content"], [data-slot="tooltip-content"] { animation-duration:1ms!important;animation-iteration-count:1!important;transition-duration:1ms!important;transform:none!important; }
 }
 
 /* end-source: src/styles/tadeon-motion-surfaces.css */
@@ -2510,7 +2510,7 @@
 /* Master panel - keep text fully visible, never ellipsized. */
 
 @media (prefers-reduced-motion: reduce) {
-  .tadeon-shell *,
+  .tadeon-shell *:not(.tadeon-selection-plate),
   .tadeon-shell *::before,
   .tadeon-shell *::after {
     transition-duration: 1ms !important;
@@ -4719,7 +4719,7 @@ html body .tadeon-shell .tadeon-route-offline > main {
 /* -------------------------------------------------------------------------- */
 
 @media (prefers-reduced-motion: reduce) {
-  .tadeon-shell *,
+  .tadeon-shell *:not(.tadeon-selection-plate),
   .tadeon-shell *::before,
   .tadeon-shell *::after,
   [data-page-transition],
