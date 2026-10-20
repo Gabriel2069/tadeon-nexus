@@ -1,25 +1,24 @@
 {
   "version": 1,
-  "checkedAt": "2026-10-19",
-  "runtimeReference": "41f909874f46dd7360afe5c00734a37a6f1edeb4",
+  "checkedAt": "2026-10-20",
+  "runtimeReference": "1b3649917c271eeea26238b174548234836c7581",
   "integration": {
-    "pr": 281,
-    "branch": "design/nex-025-sheet-dossier",
+    "pr": 283,
+    "branch": "design/nex-026-continuous-workspace",
     "base": "main",
-    "baseCommit": "88943c17baca0096cdb26a9c5522d3756cd0c02b",
-    "sourceCommit": "0a4239f5f7922b7be9ab94af1009510771957ff8",
-    "headCommit": "c5f0b52685e42fec185feb6f3c45cc310f1bdcc7",
+    "baseCommit": "6fdcf5fc04502526855159389e20f0d971c0e15b",
+    "sourceCommit": "9eb418b5c7ec1fa6cc6d2828f59ec15246946189",
+    "headCommit": "9eb418b5c7ec1fa6cc6d2828f59ec15246946189",
     "state": "integrated",
-    "mergeCommit": "41f909874f46dd7360afe5c00734a37a6f1edeb4",
-    "sourceQualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39303671143",
-    "qualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39304286379",
-    "mainQualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39304572774",
+    "mergeCommit": "1b3649917c271eeea26238b174548234836c7581",
+    "sourceQualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39344053512",
+    "mainQualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39345104014",
     "production": "confirmed",
-    "productionEvidence": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39304572872",
-    "productionCommit": "41f909874f46dd7360afe5c00734a37a6f1edeb4",
-    "productionVerifiedAt": "2026-10-19T18:43:29.7693797Z",
+    "productionEvidence": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39345104015",
+    "productionCommit": "1b3649917c271eeea26238b174548234836c7581",
+    "productionVerifiedAt": "2026-10-20T00:03:11.8286090Z",
     "productionHttpStatus": 200,
-    "workerVersion": "e0edabcb-3592-4214-b2f1-48695d5e9da9"
+    "workerVersion": "696dca89-2cd6-4918-b39e-f8cee2e5a694"
   },
   "domains": [
     {
@@ -51,7 +50,8 @@
         "src/styles/navigation-layout.css",
         "src/styles/page-hero-parity.css",
         "src/styles/mobile-more-radial.css",
-        "src/styles/button.css"
+        "src/styles/button.css",
+        "src/styles/hero-backgrounds.css"
       ],
       "boundary": "Cabeçalhos renderizam símbolos; geometria de Área em foco pertence a page-hero-parity.css. Gatilho Mais e símbolos pertencem ao render; Radix mantém foco/teclado/colisão, sem captura global. Reflexos pertencem a useMaterialLight e à superfície React; o diretor legado não injeta luz nessas superfícies. Material de navegação pertence a navigation-layout; fundos de trama pertencem a experience-surfaces. Movimento da navegação consolidado em navigation-layout; mobile-more-radial é o proprietário da roda de opções do Mais: três destinos orbitais e fechamento central, sem rotação contínua; Radix mantém foco, colisão e dispensa. DEC-017 substitui a apresentação em lista de NEX-016 por pedido explícito de Tadeu. Card é dono da reflexão local; campos usam um plano rebaixado sem escritores legados. Tokens de relevo/flutuação pertencem a styles.css; AppLayout fornece o tom por contexto React (MaterialToneContext em use-material-light), preservado nos portais. NEX-026: PageHeader é o render único da anatomia de cabeçalhos principais e do acervo. Geometria em page-hero-parity, material em hero-backgrounds; envelope data-page-layout em desktop-shell. A barra da Ficha conserva somente sua extensão sticky no módulo da ficha. WorkspaceActions concentra Nova janela e Salvar sessão, renderizados nos slots das rotas; nenhum portal descobre títulos ou injeta ações nos cabeçalhos."
     },
@@ -131,7 +131,8 @@
         "src/lib/knowledge/knowledge-collections.ts",
         "src/components/knowledge/knowledge-library.tsx",
         "src/components/knowledge/knowledge-sheet-link.tsx",
-        "src/lib/knowledge/knowledge-transfer.ts"
+        "src/lib/knowledge/knowledge-transfer.ts",
+        "src/components/knowledge/knowledge-portability-dialog.tsx"
       ],
       "styles": [
         "src/styles/nexus-material.css",
@@ -571,7 +572,9 @@
         "NEX-003",
         "NEX-007",
         "NEX-023",
-        "NEX-024"
+        "NEX-024",
+        "NEX-025",
+        "NEX-026"
       ],
       "acceptance": [
         "Medir carregamento por rota, chunk Pixi, frames e custos de efeitos antes de otimizar.",
@@ -900,7 +903,7 @@
       "id": "NEX-026",
       "title": "Continuidade entre páginas, Nexus/Biblioteca e roda do Mais",
       "domain": "knowledge",
-      "status": "active",
+      "status": "integrated",
       "priority": 7,
       "dependsOn": [
         "NEX-024",
@@ -913,7 +916,15 @@
         "Verificar navegação, divisores, filtros e retorno de foco em quatro larguras; conservar rascunhos, conflitos e limites de autorização.",
         "Restaurar o Mais como roda autoral de opções, com fios e material do tom da rota; validar rótulos, alvos sem sobreposição, teclado, Escape, navegação e mudança de breakpoint sem captura global."
       ],
-      "evidence": []
+      "evidence": [
+        "docs/nexus-continuity-validation.json",
+        "docs/DESIGN.md",
+        "docs/FOUNDATION.md",
+        "https://github.com/Gabriel2069/tadeon-nexus/pull/283",
+        "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39344053512",
+        "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39345104014",
+        "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39345104015"
+      ]
     }
   ],
   "decisions": [
@@ -1018,13 +1029,17 @@
       "id": "DEC-016",
       "decision": "Um contrato de layout e cabeçalho para as páginas principais; mudar a área altera símbolo, tom e contexto, sem inventar outro padrão de head.",
       "reason": "Pedido de Tadeu em 19/10/2026 ao iniciar NEX-026. PageHeader compartilha identidade, ações e contexto; o envelope comum respeita a mesma margem. Conteúdo e instrumentos conservam suas funções e densidades.",
-      "evidence": []
+      "evidence": [
+        "docs/nexus-continuity-validation.json",
+        "https://github.com/Gabriel2069/tadeon-nexus/pull/283"
+      ]
     },
     {
       "id": "DEC-017",
       "decision": "Restaurar a roda de opções do Mais no dock inferior; personalidade e continuidade devem coexistir entre páginas.",
       "reason": "Pedido explícito de Tadeu ao fechar NEX-026, em 19/10/2026. Substitui a apresentação em lista de NEX-016, preservando o componente React/Radix, os destinos estáveis e a dispensa acessível. Cabeçalhos, margens, materiais e movimentos compartilham regras; símbolos e instrumentos mantêm sua autoria.",
       "evidence": [
+        "docs/nexus-continuity-validation.json",
         "https://github.com/Gabriel2069/tadeon-nexus/pull/283"
       ]
     }
@@ -1253,11 +1268,11 @@
     },
     {
       "path": "docs/nexus-continuity-validation.json",
-      "purpose": "NEX-015: composição ajustável, continuidade de abas, rascunhos por identidade, concorrência e revisão explícita de conflitos; fixtures e limites."
+      "purpose": "Histórico NEX-015 preservado e compositionRevision NEX-026: layout contínuo, Nexus/Biblioteca, roda do Mais, testes, publicação e limites."
     },
     {
       "path": "docs/navigation-utilities-validation.json",
-      "purpose": "NEX-016 a NEX-019: menus, Consulta offline, Usuários e Backup e diagnóstico; validação de interface, funções e limites de fixtures."
+      "purpose": "Histórico NEX-016 a NEX-019: menus, Consulta offline, Usuários e Backup e diagnóstico. A roda atual do Mais é DEC-017/NEX-026, em compositionRevision de nexus-continuity-validation.json."
     },
     {
       "path": "docs/master-workspace-validation.json",
@@ -1486,6 +1501,25 @@
       "productionVerifiedAt": "2026-10-16T18:58:24.8406512Z",
       "productionHttpStatus": 200,
       "workerVersion": "80e53291-f3f7-4f1c-9cf9-51d709cca6c1"
+    },
+    {
+      "pr": 281,
+      "branch": "design/nex-025-sheet-dossier",
+      "base": "main",
+      "baseCommit": "88943c17baca0096cdb26a9c5522d3756cd0c02b",
+      "sourceCommit": "0a4239f5f7922b7be9ab94af1009510771957ff8",
+      "headCommit": "c5f0b52685e42fec185feb6f3c45cc310f1bdcc7",
+      "state": "integrated",
+      "mergeCommit": "41f909874f46dd7360afe5c00734a37a6f1edeb4",
+      "sourceQualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39303671143",
+      "qualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39304286379",
+      "mainQualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39304572774",
+      "production": "confirmed",
+      "productionEvidence": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39304572872",
+      "productionCommit": "41f909874f46dd7360afe5c00734a37a6f1edeb4",
+      "productionVerifiedAt": "2026-10-19T18:43:29.7693797Z",
+      "productionHttpStatus": 200,
+      "workerVersion": "e0edabcb-3592-4214-b2f1-48695d5e9da9"
     }
   ]
 }

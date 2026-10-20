@@ -1,6 +1,6 @@
 # Conciliação das PRs
 
-Conferência de 14/10/2026. Estados de GitHub são um snapshot: reconferir antes de integrar.
+Atualizado em 20/10/2026; as conferências anteriores preservam sua data. Estados de GitHub são um snapshot: reconferir antes de integrar.
 
 | PR | Papel | Destino |
 | --- | --- | --- |
@@ -76,3 +76,7 @@ Navegação interna, visão geral e rascunho possuem responsáveis explícitos n
 Fonte `0a4239f5f7922b7be9ab94af1009510771957ff8`, sobre `88943c1`. Apresentação em sheet-premium, densidade de Jogo em sheet-layout e medição local em use-sheet-chrome. Vínculos deixam o host/portal/dataset do bridge; modificadores de perícia permanecem. Textos reais das abas, índice com foco e abertura, recursos com controles e RGB próprios. Sem alteração de dados, regras, serviços ou migrations.
 
 Retiradas/reduzidas 279 ramificações de seletores em dez módulos e cinco regras de renomeação; !important 4.353 → 4.283. Quatro asserções históricas conciliadas em três arquivos; substituição por testes renderizados e navegador, preservando os demais requisitos. Check: 143 suítes/589 testes e audit zero. Matriz de ficha em quatro larguras e repetições de Jogo/encaixe; 28 combinações compartilhadas com uma repetição isolada da Mesa após timeout. Fonte, procedência e limites em dossierRevision de sheet-design-validation.json. Integrado em `41f909874f46dd7360afe5c00734a37a6f1edeb4` pela PR #281 após [Quality do HEAD](https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39304286379) aprovado. [Quality de main](https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39304572774) e [publicação](https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39304572872) aprovados; HTTP 200 e SHA exato em 2026-10-19T18:43:29.7693797Z, Worker `e0edabcb-3592-4214-b2f1-48695d5e9da9`. O fechamento documental registra sua própria prova no corpo da PR correspondente.
+
+## NEX-026 — continuidade e roda do Mais
+
+A [PR #283](https://github.com/Gabriel2069/tadeon-nexus/pull/283) integrou PageHeader, envelope comum, ações explícitas dos workspaces, composição do Nexus/Biblioteca e o retorno da roda do Mais em `1b36499`. DEC-017 substitui a lista de NEX-016 por pedido expresso de Tadeu; não restaurar o bridge radial com captura global. Prova de Quality, matrizes e publicação em `compositionRevision` da [evidência do Nexus](nexus-continuity-validation.json). O histórico NEX-015 permanece intacto. O fechamento documental registra seu próprio HEAD/CI/publicação no corpo de sua PR, evitando referência recursiva no código.

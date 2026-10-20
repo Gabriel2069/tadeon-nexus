@@ -182,5 +182,696 @@
     "productionHttpStatus": 200,
     "workerVersion": "001281e4-1176-46fd-9af0-67934a5f97d0"
   },
-  "implementationCommit": "96366866e9e33d5ad1c90aefe058361287b0a865"
+  "implementationCommit": "96366866e9e33d5ad1c90aefe058361287b0a865",
+  "compositionRevision": {
+    "task": "NEX-026",
+    "date": "2026-10-20",
+    "state": "integrated",
+    "branch": "design/nex-026-continuous-workspace",
+    "baseCommit": "6fdcf5fc04502526855159389e20f0d971c0e15b",
+    "implementationCommit": "9eb418b5c7ec1fa6cc6d2828f59ec15246946189",
+    "compositionCommit": "eda0738d4efeeaf3f98ab8f25ca7f9444ce21df8",
+    "radialCommit": "a7278c3f4222bf0c9178f3c4e3f32a5832b1ebdd",
+    "focusFixCommit": "7ff3b3468bbd67616f9fa8c3c8cdcdd67d2b36db",
+    "stickyFixCommit": "9eb418b5c7ec1fa6cc6d2828f59ec15246946189",
+    "pullRequest": "https://github.com/Gabriel2069/tadeon-nexus/pull/283",
+    "implementation": {
+      "layout": "PageHeader compartilha anatomia, hierarquia e ações; desktop-shell é dono do envelope, page-hero-parity da geometria e hero-backgrounds dos materiais. Ficha mantém somente a extensão sticky medida.",
+      "actions": "WorkspaceActions e KnowledgeSheetLink substituem injeção por título/DOM. Três bridges removidos; RPC de sessão existente preservado, sem alterações de schema ou autorização.",
+      "nexus": "Categorias por tipos dos resultados carregados, árvore e lista sobre a mesma coleção, salto de exploração e retorno à leitura, ferramentas agrupadas. Portabilidade, comandos e grafo retornam ao gatilho persistente quando abertos pelo menu; navegação e abertura de outro diálogo mantêm seu próprio foco.",
+      "library": "Prévia funciona por cartão e tabela; erro não equivale a vazio, há recuperação e seleção inválida é limpa. Prévia móvel retorna ao abridor.",
+      "radial": "DEC-017 restaura a roda do Mais: três destinos orbitais, fios vetoriais e fechamento central; tom por contexto no portal, entrada/saída finitas e alvos imóveis. React/Radix mantém teclado, colisão e dispensa, sem captura global."
+    },
+    "cleanup": {
+      "cssFiles": 57,
+      "globalLinks": 12,
+      "importantBefore": 4283,
+      "importantAfter": 2873,
+      "importantRemoved": 1410,
+      "retiredOrReducedSelectorBranchesAtCompositionCommit": 1223,
+      "preservedMixedSelectorBranches": 11,
+      "removedBridgeFiles": [
+        "src/components/knowledge/nexus-folder-bar-bridge.tsx",
+        "src/components/master/master-toolbar-popout-bridge.tsx",
+        "src/components/tabletop/tabletop-workspace-popout-bridge.tsx"
+      ],
+      "newGlobalObservers": 0,
+      "retirementModulesAtCompositionCommit": 19
+    },
+    "checks": {
+      "local": "npm run check aprovado no a7278c3: 145 suítes/590 testes, lint/tipos/gates e builds. Regressão de foco adicional passou isolada após a correção; o Quality do código final cobre 145 suítes/591 testes.",
+      "audit": "npm audit --audit-level=high: zero vulnerabilidades.",
+      "sourceQuality": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39344053512",
+      "sourceHead": "9eb418b5c7ec1fa6cc6d2828f59ec15246946189",
+      "architectureGate": {
+        "positive": 0,
+        "negative": [
+          {
+            "rule": ".tadeon-page-header__title { font-size: 19px; }",
+            "rejected": true,
+            "status": 1
+          },
+          {
+            "rule": "[data-page-layout] { padding: 99px; }",
+            "rejected": true,
+            "status": 1
+          }
+        ],
+        "source": "{\"files\": 73, \"chunks\": 82, \"tree\": \"ffef78475b1571e7e3ed5046e8f2e8cc22422b27\"}"
+      }
+    },
+    "browser": {
+      "fixturesOnly": true,
+      "widths": [
+        320,
+        390,
+        820,
+        1440
+      ],
+      "shared": {
+        "cases": 36,
+        "routes": [
+          "/",
+          "/manage-users",
+          "/master-panel",
+          "/nexus",
+          "/nexus-tools",
+          "/offline",
+          "/tabletop"
+        ],
+        "portalCases": 8,
+        "overflow": false,
+        "errors": [],
+        "geometry": "Mesmo x/largura, padding, tipografia e largura do símbolo em cada viewport. Ações de página com pelo menos 44px.",
+        "focusRevision": "Matriz inicial identificou foco no body ao fechar ferramentas; correção explícita e repetição do Nexus aprovadas nas quatro larguras."
+      },
+      "reading": [
+        {
+          "width": 320,
+          "nodes": 500,
+          "longReading": true,
+          "conflictReview": true,
+          "axis": "vertical",
+          "rememberedSize": 52.98,
+          "continuity": {
+            "stableEditor": true,
+            "lastTabClosed": true,
+            "explicitReopen": true,
+            "keyboardResize": true,
+            "pointerResize": true,
+            "modeAndSizeRestored": true
+          },
+          "treeRows": 30,
+          "overflow": false,
+          "errors": [],
+          "backendRequests": 134
+        },
+        {
+          "width": 390,
+          "nodes": 500,
+          "longReading": true,
+          "conflictReview": true,
+          "axis": "vertical",
+          "rememberedSize": 47.98,
+          "continuity": {
+            "stableEditor": true,
+            "lastTabClosed": true,
+            "explicitReopen": true,
+            "keyboardResize": true,
+            "pointerResize": true,
+            "modeAndSizeRestored": true
+          },
+          "treeRows": 30,
+          "overflow": false,
+          "errors": [],
+          "backendRequests": 134
+        },
+        {
+          "width": 820,
+          "nodes": 500,
+          "longReading": true,
+          "conflictReview": true,
+          "axis": "vertical",
+          "rememberedSize": 52.98,
+          "continuity": {
+            "stableEditor": true,
+            "lastTabClosed": true,
+            "explicitReopen": true,
+            "keyboardResize": true,
+            "pointerResize": true,
+            "modeAndSizeRestored": true
+          },
+          "treeRows": 30,
+          "overflow": false,
+          "errors": [],
+          "backendRequests": 134
+        },
+        {
+          "width": 1440,
+          "nodes": 500,
+          "longReading": true,
+          "conflictReview": true,
+          "axis": "horizontal",
+          "rememberedSize": 52.03,
+          "continuity": {
+            "stableEditor": true,
+            "lastTabClosed": true,
+            "explicitReopen": true,
+            "keyboardResize": true,
+            "pointerResize": true,
+            "modeAndSizeRestored": true
+          },
+          "treeRows": 30,
+          "overflow": false,
+          "errors": [],
+          "backendRequests": 136
+        }
+      ],
+      "sheet": {
+        "cases": 16,
+        "phases": {
+          "mobileBeforeStickyCorrection": {
+            "sourceCommit": "d5ac8fa206777321f1fe0b7fc5f9934d1b304175",
+            "records": [
+              {
+                "width": 320,
+                "state": "editable",
+                "passed": true
+              },
+              {
+                "width": 320,
+                "state": "readonly",
+                "passed": true
+              },
+              {
+                "width": 320,
+                "state": "error",
+                "passed": true
+              },
+              {
+                "width": 320,
+                "state": "loading",
+                "passed": true
+              },
+              {
+                "width": 390,
+                "state": "editable",
+                "passed": true
+              },
+              {
+                "width": 390,
+                "state": "readonly",
+                "passed": true
+              },
+              {
+                "width": 390,
+                "state": "error",
+                "passed": true
+              },
+              {
+                "width": 390,
+                "state": "loading",
+                "passed": true
+              }
+            ]
+          },
+          "tabletAndDesktopAfterStickyCorrection": {
+            "sourceCommit": "9eb418b5c7ec1fa6cc6d2828f59ec15246946189",
+            "cases": 8
+          },
+          "finalHeadersAllWidths": [
+            {
+              "width": 320,
+              "state": "readonly",
+              "variant": "sheet-header",
+              "header": {
+                "rect": [
+                  14,
+                  84,
+                  292,
+                  291.375
+                ],
+                "font": [
+                  "\"Cormorant Garamond\", Georgia, serif",
+                  "30px",
+                  "600"
+                ],
+                "titleFont": [
+                  "\"Cormorant Garamond\", Georgia, serif",
+                  "30px",
+                  "600",
+                  "32.4px"
+                ],
+                "padding": [
+                  "18px",
+                  "18px",
+                  "18px",
+                  "18px"
+                ],
+                "markWidth": 44,
+                "position": "relative",
+                "hostStyle": "--tadeon-index: 0; --sheet-sticky-top: 68px; --sheet-toolbar-height: 0px;",
+                "headerStyle": null,
+                "offsetValue": "68px",
+                "shellHeaders": [
+                  [
+                    "tadeon-desktop-toolbar hidden md:flex",
+                    0
+                  ],
+                  [
+                    "tadeon-mobile-header sticky top-0 z-30 grid min-h-16 grid-cols-[5.9rem_minmax(0,1fr)_5.9rem] items-center px-3 py-2 md:hidden",
+                    68
+                  ]
+                ],
+                "top": "0px",
+                "headingCount": 1,
+                "overflow": false
+              },
+              "errors": [],
+              "writes": 0
+            },
+            {
+              "width": 390,
+              "state": "readonly",
+              "variant": "sheet-header",
+              "header": {
+                "rect": [
+                  14,
+                  84,
+                  353,
+                  239.375
+                ],
+                "font": [
+                  "\"Cormorant Garamond\", Georgia, serif",
+                  "30px",
+                  "600"
+                ],
+                "titleFont": [
+                  "\"Cormorant Garamond\", Georgia, serif",
+                  "30px",
+                  "600",
+                  "32.4px"
+                ],
+                "padding": [
+                  "18px",
+                  "18px",
+                  "18px",
+                  "18px"
+                ],
+                "markWidth": 44,
+                "position": "relative",
+                "hostStyle": "--tadeon-index: 0; --sheet-sticky-top: 68px; --sheet-toolbar-height: 0px;",
+                "headerStyle": null,
+                "offsetValue": "68px",
+                "shellHeaders": [
+                  [
+                    "tadeon-desktop-toolbar hidden md:flex",
+                    0
+                  ],
+                  [
+                    "tadeon-mobile-header sticky top-0 z-30 grid min-h-16 grid-cols-[5.9rem_minmax(0,1fr)_5.9rem] items-center px-3 py-2 md:hidden",
+                    68
+                  ]
+                ],
+                "top": "0px",
+                "headingCount": 1,
+                "overflow": false
+              },
+              "errors": [],
+              "writes": 0
+            },
+            {
+              "width": 820,
+              "state": "readonly",
+              "variant": "sheet-header",
+              "header": {
+                "rect": [
+                  275.671875,
+                  98.390625,
+                  515.65625,
+                  195.640625
+                ],
+                "font": [
+                  "\"Cormorant Garamond\", Georgia, serif",
+                  "32px",
+                  "600"
+                ],
+                "titleFont": [
+                  "\"Cormorant Garamond\", Georgia, serif",
+                  "32px",
+                  "600",
+                  "34.56px"
+                ],
+                "padding": [
+                  "24px",
+                  "24px",
+                  "24px",
+                  "24px"
+                ],
+                "markWidth": 56,
+                "position": "sticky",
+                "hostStyle": "--tadeon-index: 0; --sheet-sticky-top: 74.390625px; --sheet-toolbar-height: 195.640625px;",
+                "headerStyle": null,
+                "offsetValue": "74.390625px",
+                "shellHeaders": [
+                  [
+                    "tadeon-desktop-toolbar hidden md:flex",
+                    74.390625
+                  ],
+                  [
+                    "tadeon-mobile-header sticky top-0 z-30 grid min-h-16 grid-cols-[5.9rem_minmax(0,1fr)_5.9rem] items-center px-3 py-2 md:hidden",
+                    0
+                  ]
+                ],
+                "top": "74.3906px",
+                "headingCount": 1,
+                "overflow": false
+              },
+              "errors": [],
+              "writes": 0
+            },
+            {
+              "width": 1440,
+              "state": "readonly",
+              "variant": "sheet-header",
+              "header": {
+                "rect": [
+                  290.546875,
+                  98.390625,
+                  1105.90625,
+                  142.296875
+                ],
+                "font": [
+                  "\"Cormorant Garamond\", Georgia, serif",
+                  "38.16px",
+                  "600"
+                ],
+                "titleFont": [
+                  "\"Cormorant Garamond\", Georgia, serif",
+                  "38.16px",
+                  "600",
+                  "41.2128px"
+                ],
+                "padding": [
+                  "24px",
+                  "24px",
+                  "24px",
+                  "24px"
+                ],
+                "markWidth": 56,
+                "position": "sticky",
+                "hostStyle": "--tadeon-index: 0; --sheet-sticky-top: 74.390625px; --sheet-toolbar-height: 142.296875px;",
+                "headerStyle": null,
+                "offsetValue": "74.390625px",
+                "shellHeaders": [
+                  [
+                    "tadeon-desktop-toolbar hidden md:flex",
+                    74.390625
+                  ],
+                  [
+                    "tadeon-mobile-header sticky top-0 z-30 grid min-h-16 grid-cols-[5.9rem_minmax(0,1fr)_5.9rem] items-center px-3 py-2 md:hidden",
+                    0
+                  ]
+                ],
+                "top": "74.3906px",
+                "headingCount": 1,
+                "overflow": false
+              },
+              "errors": [],
+              "writes": 0
+            }
+          ]
+        },
+        "states": [
+          "editable",
+          "error",
+          "loading",
+          "readonly"
+        ],
+        "errors": [],
+        "historyAndInventoryFocus": true,
+        "readOnlyWrites": 0
+      },
+      "power": [
+        {
+          "width": 320,
+          "state": "readonly",
+          "variant": "power-header",
+          "header": {
+            "rect": [
+              14,
+              84,
+              292,
+              181.375
+            ],
+            "font": [
+              "\"Cormorant Garamond\", Georgia, serif",
+              "30px",
+              "600"
+            ],
+            "titleFont": [
+              "\"Cormorant Garamond\", Georgia, serif",
+              "30px",
+              "600",
+              "32.4px"
+            ],
+            "padding": [
+              "18px",
+              "18px",
+              "18px",
+              "18px"
+            ],
+            "markWidth": 44,
+            "position": "relative",
+            "hostStyle": null,
+            "headerStyle": null,
+            "offsetValue": "",
+            "shellHeaders": [
+              [
+                "tadeon-desktop-toolbar hidden md:flex",
+                0
+              ],
+              [
+                "tadeon-mobile-header sticky top-0 z-30 grid min-h-16 grid-cols-[5.9rem_minmax(0,1fr)_5.9rem] items-center px-3 py-2 md:hidden",
+                68
+              ]
+            ],
+            "top": "0px",
+            "headingCount": 1,
+            "overflow": false
+          },
+          "errors": [],
+          "writes": 0
+        },
+        {
+          "width": 390,
+          "state": "readonly",
+          "variant": "power-header",
+          "header": {
+            "rect": [
+              14,
+              84,
+              353,
+              181.375
+            ],
+            "font": [
+              "\"Cormorant Garamond\", Georgia, serif",
+              "30px",
+              "600"
+            ],
+            "titleFont": [
+              "\"Cormorant Garamond\", Georgia, serif",
+              "30px",
+              "600",
+              "32.4px"
+            ],
+            "padding": [
+              "18px",
+              "18px",
+              "18px",
+              "18px"
+            ],
+            "markWidth": 44,
+            "position": "relative",
+            "hostStyle": null,
+            "headerStyle": null,
+            "offsetValue": "",
+            "shellHeaders": [
+              [
+                "tadeon-desktop-toolbar hidden md:flex",
+                0
+              ],
+              [
+                "tadeon-mobile-header sticky top-0 z-30 grid min-h-16 grid-cols-[5.9rem_minmax(0,1fr)_5.9rem] items-center px-3 py-2 md:hidden",
+                68
+              ]
+            ],
+            "top": "0px",
+            "headingCount": 1,
+            "overflow": false
+          },
+          "errors": [],
+          "writes": 0
+        },
+        {
+          "width": 820,
+          "state": "readonly",
+          "variant": "power-header",
+          "header": {
+            "rect": [
+              275.671875,
+              98.390625,
+              515.65625,
+              166.640625
+            ],
+            "font": [
+              "\"Cormorant Garamond\", Georgia, serif",
+              "32px",
+              "600"
+            ],
+            "titleFont": [
+              "\"Cormorant Garamond\", Georgia, serif",
+              "32px",
+              "600",
+              "34.56px"
+            ],
+            "padding": [
+              "24px",
+              "24px",
+              "24px",
+              "24px"
+            ],
+            "markWidth": 56,
+            "position": "relative",
+            "hostStyle": null,
+            "headerStyle": null,
+            "offsetValue": "",
+            "shellHeaders": [
+              [
+                "tadeon-desktop-toolbar hidden md:flex",
+                74.390625
+              ],
+              [
+                "tadeon-mobile-header sticky top-0 z-30 grid min-h-16 grid-cols-[5.9rem_minmax(0,1fr)_5.9rem] items-center px-3 py-2 md:hidden",
+                0
+              ]
+            ],
+            "top": "0px",
+            "headingCount": 1,
+            "overflow": false
+          },
+          "errors": [],
+          "writes": 0
+        },
+        {
+          "width": 1440,
+          "state": "readonly",
+          "variant": "power-header",
+          "header": {
+            "rect": [
+              290.546875,
+              98.390625,
+              1105.90625,
+              113.296875
+            ],
+            "font": [
+              "\"Cormorant Garamond\", Georgia, serif",
+              "38.16px",
+              "600"
+            ],
+            "titleFont": [
+              "\"Cormorant Garamond\", Georgia, serif",
+              "38.16px",
+              "600",
+              "41.2128px"
+            ],
+            "padding": [
+              "24px",
+              "24px",
+              "24px",
+              "24px"
+            ],
+            "markWidth": 56,
+            "position": "relative",
+            "hostStyle": null,
+            "headerStyle": null,
+            "offsetValue": "",
+            "shellHeaders": [
+              [
+                "tadeon-desktop-toolbar hidden md:flex",
+                74.390625
+              ],
+              [
+                "tadeon-mobile-header sticky top-0 z-30 grid min-h-16 grid-cols-[5.9rem_minmax(0,1fr)_5.9rem] items-center px-3 py-2 md:hidden",
+                0
+              ]
+            ],
+            "top": "0px",
+            "headingCount": 1,
+            "overflow": false
+          },
+          "errors": [],
+          "writes": 0
+        }
+      ],
+      "tabletop": {
+        "scope": "baseline; preserva comandos/editor/recursos existentes, não repete a certificação integral do motor",
+        "masterCases": 4,
+        "playerCases": 10,
+        "masterStates": [
+          "edit",
+          "play"
+        ],
+        "playerStates": [
+          "player-commands",
+          "player-reconnect-attempt",
+          "player-tactics",
+          "player-tactics-idle",
+          "player-view"
+        ],
+        "overflow": false,
+        "errors": []
+      },
+      "radial": {
+        "cases": 6,
+        "widths": [
+          320,
+          390
+        ],
+        "heights": [
+          360,
+          520,
+          1000
+        ],
+        "targetsAtLeast44px": true,
+        "overlappingTargets": false,
+        "viewportContainment": true,
+        "keyboardEscapeCentralCloseOutsideDismissBreakpointAndReducedMotion": true,
+        "openingAnimation": "tadeon-more-open"
+      }
+    },
+    "reconciledAssertions": "Dez testes textuais obsoletos retirados e partes históricas atualizadas; comportamentos remanescentes preservados. Cobertura renderizada de PageHeader/símbolos, WorkspaceActions, categorias, prévia e retorno de foco substitui posições/hosts legados.",
+    "verificationHistory": [
+      "A Ficha passou em oito casos móveis e detectou a regra legada header:first-of-type com top:0 no tablet. A regra foi retirada, a posição usa o contrato --page-header-position e o offset medido foi repetido nos oito casos de tablet/desktop; quatro cabeçalhos finais em todas as larguras conferem a mesma anatomia.",
+      "Primeira repetição da leitura em 820px expirou após reload. Repetição isolada em código estável passou; não foi atribuída uma causa não demonstrada nem declarado desempenho físico.",
+      "Quality 39342870706 detectou a opção exact, exclusiva do Playwright, em duas consultas do teste Testing Library. Corrigida no d5ac8fa; não houve publicação desse HEAD reprovado."
+    ],
+    "limitations": [
+      "Fixtures interceptam os serviços; não certificam contas reais, RLS, corpus canônico ou restauração de infraestrutura.",
+      "Chromium usa GPU por software; não certifica fluidez ou autonomia em hardware físico.",
+      "A cascata histórica fora dos responsáveis tocados conserva dívida; os tetos CSS foram reduzidos, não declarados eliminados.",
+      "NEX-009/010/011 permanecem com suas verificações operacionais próprias."
+    ],
+    "integration": {
+      "mergeCommit": "1b3649917c271eeea26238b174548234836c7581",
+      "headCommit": "9eb418b5c7ec1fa6cc6d2828f59ec15246946189",
+      "sourceQuality": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39344053512",
+      "mainQuality": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39345104014",
+      "publishRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39345104015",
+      "verifiedAt": "2026-10-20T00:03:11.8286090Z",
+      "workerVersion": "696dca89-2cd6-4918-b39e-f8cee2e5a694",
+      "httpStatus": 200
+    },
+    "deliveryRecord": "O fechamento documental e seu próprio HEAD/Quality/publicação são registrados no corpo da PR de entrega, vinculada pela PR #283; evita atualização recursiva de SHA no código."
+  }
 }

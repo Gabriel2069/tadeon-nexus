@@ -2,7 +2,7 @@
 
 > Gerado de [project-continuity.json](project-continuity.json). Edite o registro e rode `npm run sync:project`; não mantenha uma cópia manual.
 
-Snapshot: 2026-10-19; referência de runtime: `41f909874f46dd7360afe5c00734a37a6f1edeb4`. PR #281 em `design/nex-025-sheet-dossier`; integração: `integrated`. Não é prova de deploy.
+Snapshot: 2026-10-20; referência de runtime: `1b3649917c271eeea26238b174548234836c7581`. PR #283 em `design/nex-026-continuous-workspace`; integração: `integrated`. Não é prova de deploy.
 
 Estados: planejado → próximo → em andamento → validado na branch → integrado. Publicação exige evidência própria do SHA; adiado conserva o requisito. Se um requisito mudar, preservar o ID e registrar a decisão/evidência.
 
@@ -19,7 +19,7 @@ Cada PR usa IDs desta fila e declara dependências. Trabalho sobre o mesmo propr
 | NEX-006 | Biblioteca, documento e grafo do Nexus | Integrado | 4 | knowledge | NEX-003, NEX-013 |
 | NEX-007 | Mesa: hierarquia de ferramentas e workspace | Integrado | 6 | tabletop | NEX-004, NEX-013 |
 | NEX-008 | Painel do Mestre: visão geral, ferramentas e condução | Integrado | 5 | master | NEX-003, NEX-013, NEX-020 |
-| NEX-009 | Desempenho e motion | Planejado | 7 | delivery | NEX-003, NEX-007, NEX-023, NEX-024 |
+| NEX-009 | Desempenho e motion | Planejado | 7 | delivery | NEX-003, NEX-007, NEX-023, NEX-024, NEX-025, NEX-026 |
 | NEX-010 | Validação real de autorização e rollout | Planejado | 8 | session | NEX-001 |
 | NEX-011 | Backup e restauração verificável | Planejado | 8 | assets | NEX-010 |
 | NEX-012 | Revisão editorial do corpus canônico | Adiado | 9 | knowledge | NEX-006 |
@@ -35,7 +35,7 @@ Cada PR usa IDs desta fila e declara dependências. Trabalho sobre o mesmo propr
 | NEX-023 | Véu & Trama: materiais e interação de todo o sistema | Integrado | 7 | shell | NEX-022, NEX-016 |
 | NEX-024 | Dashboard editorial, acervo navegável e acabamento dos menus | Integrado | 7 | shell | NEX-023 |
 | NEX-025 | Ficha: hierarquia, superfícies e condução visual | Integrado | 7 | sheet | NEX-024 |
-| NEX-026 | Continuidade entre páginas, Nexus/Biblioteca e roda do Mais | Em andamento | 7 | knowledge | NEX-024, NEX-025 |
+| NEX-026 | Continuidade entre páginas, Nexus/Biblioteca e roda do Mais | Integrado | 7 | knowledge | NEX-024, NEX-025 |
 
 ## NEX-001 — Preparação estrutural
 
@@ -243,7 +243,7 @@ Evidências: [docs/DESIGN.md](../docs/DESIGN.md), [docs/FOUNDATION.md](../docs/F
 - Verificar navegação, divisores, filtros e retorno de foco em quatro larguras; conservar rascunhos, conflitos e limites de autorização.
 - Restaurar o Mais como roda autoral de opções, com fios e material do tom da rota; validar rótulos, alvos sem sobreposição, teclado, Escape, navegação e mudança de breakpoint sem captura global.
 
-Evidências: pendentes; não declarar concluído.
+Evidências: [docs/nexus-continuity-validation.json](../docs/nexus-continuity-validation.json), [docs/DESIGN.md](../docs/DESIGN.md), [docs/FOUNDATION.md](../docs/FOUNDATION.md), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/pull/283), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39344053512), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39345104014), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39345104015).
 
 ## Decisões vigentes
 
