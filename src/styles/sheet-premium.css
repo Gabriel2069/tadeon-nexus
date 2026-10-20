@@ -1908,7 +1908,9 @@
 .tadeon-stat-block__value small { color: var(--muted-foreground); font: 400 .65rem/1.6 var(--font-inter); }
 .tadeon-stat-block__controls { display: grid; grid-template-columns: minmax(0, 1fr) 3.5rem; align-items: end; gap: .5rem; padding-top: .6rem; border-top: 1px solid rgb(var(--resource-rgb) / 14%); }
 .tadeon-stat-block__stepper { display: grid; grid-template-columns: 44px minmax(1.5rem, 1fr) 44px; align-items: center; min-width: 0; }
-.tadeon-stat-block__stepper input { padding-inline: .1rem; min-height: 44px; }
+.tadeon-stat-block__stepper input { padding-inline: 0; min-height: 44px; appearance: textfield; }
+.tadeon-stat-block__stepper input::-webkit-inner-spin-button,
+.tadeon-stat-block__stepper input::-webkit-outer-spin-button { appearance: none; margin: 0; }
 .tadeon-stat-block__mod { display: grid; gap: .3rem; min-width: 0; }
 .tadeon-stat-block__mod > span { color: var(--muted-foreground); font: 400 .65rem/1.2 var(--font-inter); text-align: center; }
 .tadeon-stat-block__mod input { min-height: 44px; padding-inline: .25rem; }

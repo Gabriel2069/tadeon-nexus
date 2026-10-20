@@ -1021,7 +1021,7 @@
 @keyframes tdi-field-focus{0%{box-shadow:0 0 0 0 rgb(217 215 164 / 0%);transform:translateY(0)}55%{box-shadow:0 0 0 4px rgb(217 215 164 / 10%),0 18px 42px -28px rgb(217 215 164 / 44%);transform:translateY(-2px)}100%{box-shadow:0 0 0 2px rgb(217 215 164 / 6%);transform:none}}
 
 /* Pagination / sortable controls. */
-.tadeon-shell [aria-current="page"]{animation:tdi-page-arrive 360ms var(--tdi-spring) both}
+.tadeon-shell [aria-current="page"]:not([data-material-surface="navigation"]){animation:tdi-page-arrive 360ms var(--tdi-spring) both}
 .tadeon-shell th[aria-sort],
 .tadeon-shell [aria-sort]{transition:color 180ms ease,background-color 240ms ease,transform 260ms var(--tdi-soft)}
 .tadeon-shell th[aria-sort]:hover,

@@ -108,8 +108,8 @@ try {
   const settledPlate=async()=>{
    await page.waitForFunction(selector=>{
     const group=document.querySelector(selector),active=group?.querySelector('[aria-current="page"],[data-more-active="true"]'),plate=group?.querySelector('.tadeon-selection-plate');
-    if(!active||!plate||group.querySelectorAll('[aria-current="page"],[data-more-active="true"]').length!==1)return false;const a=active.getBoundingClientRect(),p=plate.getBoundingClientRect();return Math.abs(a.x-p.x)<1&&Math.abs(a.y-p.y)<1&&Math.abs(a.width-p.width)<1;
-   },navSelector);
+    if(!active||!plate||group.querySelectorAll('[aria-current="page"],[data-more-active="true"]').length!==1)return false;const a=active.getBoundingClientRect(),p=plate.getBoundingClientRect();return Math.abs(a.x-p.x)<1&&Math.abs(a.y-p.y)<1&&Math.abs(a.width-p.width)<1&&Math.abs(a.height-p.height)<1;
+   },navSelector,{timeout:10000});
   };
   await page.locator(navSelector).getByRole("link",{name:width<768?"Início":"Dashboard",exact:true}).click();
   await page.locator('#character-archive').waitFor();await settledPlate();

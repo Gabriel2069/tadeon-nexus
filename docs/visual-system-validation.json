@@ -8787,8 +8787,7 @@
           "inventory and history focus",
           "retry and game mode",
           "rapid selection and reduced motion"
-        ],
-        "note": "Validated before the attribute grid minimum changed from 7 to 8rem; the two-column phone composition remains subject to the final density retake."
+        ]
       },
       "regressions": {
         "status": "passed",
@@ -8814,7 +8813,7 @@
           "retry/game mode",
           "rapid selection and reduced motion"
         ],
-        "note": "Editable scenarios after final 8rem attribute minimum; no backend writes."
+        "note": "Editable scenarios after final 8rem attribute minimum; saves are intercepted fixture requests, never real backend writes."
       },
       "layout": {
         "status": "passed_with_final_retake",
@@ -8842,7 +8841,60 @@
           "reduced motion preserves position",
           "dock stays fixed"
         ],
-        "note": "Final source retake on master-panel includes nested tabs and primary navigation/dock."
+        "note": "Final root matching and reduced-motion positioning retakes passed; route-travel retake at 390/1440 passed after retiring legacy active-link scale and dock entrance scale. The shared plane remains the sole moving selection."
+      },
+      "density": {
+        "status": "passed",
+        "fixtureOnly": true,
+        "widths": [
+          320,
+          390
+        ],
+        "viewportHeight": 844,
+        "attributeTargetsFit": true,
+        "overflow": false,
+        "resourceColumns": 2,
+        "attributeColumns": 2,
+        "identityHeight": 454.921875,
+        "vitalsTop390": 1080.96875,
+        "documentHeight390": 8336,
+        "fixtureWritesPerCase": 1,
+        "note": "Existing mount normalization is intercepted. No render errors; scroll samples under software GPU/reduced motion are diagnostic, not physical performance evidence."
+      },
+      "wheel": {
+        "status": "passed",
+        "fixtureOnly": true,
+        "width": 320,
+        "heights": [
+          1000,
+          520,
+          360
+        ],
+        "covers": [
+          "radial bounds",
+          "44px targets without overlap",
+          "keyboard roving and focus return",
+          "same-route dismissal",
+          "desktop resize dismissal",
+          "outside touch dismissal with reduced motion"
+        ],
+        "note": "Touch emulation, not a physical-device accessibility certification."
+      },
+      "utilities": {
+        "status": "in_final_retake",
+        "fixtureOnly": true,
+        "widths": [
+          390,
+          1440
+        ],
+        "covers": [
+          "offline search/clear/cancel",
+          "real link route travel and unique selection",
+          "user search, role cancellation and retry",
+          "backup create/review/cancel/download/invalid import/delete cancellation",
+          "diagnostics"
+        ],
+        "note": "Final result will be reconciled at integration; no real backend writes."
       }
     },
     "limits": [
