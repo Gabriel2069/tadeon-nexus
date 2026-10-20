@@ -1,24 +1,24 @@
 {
   "version": 1,
   "checkedAt": "2026-10-20",
-  "runtimeReference": "1b3649917c271eeea26238b174548234836c7581",
+  "runtimeReference": "74ce21dfb3346e3bd8722a1175f5225d21ced7d8",
   "integration": {
-    "pr": 283,
-    "branch": "design/nex-026-continuous-workspace",
+    "pr": 285,
+    "branch": "feat/nex-027-mobile-weave",
     "base": "main",
-    "baseCommit": "6fdcf5fc04502526855159389e20f0d971c0e15b",
-    "sourceCommit": "9eb418b5c7ec1fa6cc6d2828f59ec15246946189",
-    "headCommit": "9eb418b5c7ec1fa6cc6d2828f59ec15246946189",
+    "baseCommit": "857f136d53dce5d80efa6a4266b36b6e5fa2d66b",
+    "sourceCommit": "cd34e6d8ea26c9285a140e346cb25e5ed303031c",
+    "headCommit": "cd34e6d8ea26c9285a140e346cb25e5ed303031c",
     "state": "integrated",
-    "mergeCommit": "1b3649917c271eeea26238b174548234836c7581",
-    "sourceQualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39344053512",
-    "mainQualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39345104014",
+    "mergeCommit": "74ce21dfb3346e3bd8722a1175f5225d21ced7d8",
+    "sourceQualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39404389981",
+    "mainQualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39404719667",
     "production": "confirmed",
-    "productionEvidence": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39345104015",
-    "productionCommit": "1b3649917c271eeea26238b174548234836c7581",
-    "productionVerifiedAt": "2026-10-20T00:03:11.8286090Z",
+    "productionEvidence": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39404719684",
+    "productionCommit": "74ce21dfb3346e3bd8722a1175f5225d21ced7d8",
+    "productionVerifiedAt": "2026-10-20T10:01:55.8408969Z",
     "productionHttpStatus": 200,
-    "workerVersion": "696dca89-2cd6-4918-b39e-f8cee2e5a694"
+    "workerVersion": "258a0661-f091-490a-ad49-9cd4c58c7b0f"
   },
   "domains": [
     {
@@ -931,7 +931,7 @@
       "id": "NEX-027",
       "title": "Composição móvel, tipografia e seleção contínua de tecido",
       "domain": "shell",
-      "status": "active",
+      "status": "integrated",
       "priority": 7,
       "dependsOn": [
         "NEX-025",
@@ -947,8 +947,13 @@
       ],
       "evidence": [
         "docs/visual-system-validation.json",
-        "docs/DESIGN.md"
-      ]
+        "docs/DESIGN.md",
+        "https://github.com/Gabriel2069/tadeon-nexus/pull/285",
+        "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39404389981",
+        "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39404719667",
+        "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39404719684"
+      ],
+      "checkpoint": "Integrado pela PR #285, fonte cd34e6d e merge 74ce21d, após Quality 39404389981. 145 suítes/591 testes, audit zero; Ficha editável em quatro larguras por fases, densidade final em 320/390, 28 combinações compartilhadas e repetições finais de seleção/Mesa; roda e foco em 320, 18 vistas de utilidades em 390/1440. Produção confirmou HTTP 200 e SHA exato em 2026-10-20T10:01:55.8408969Z. 57 módulos CSS/12 links, 2.872 !important. NEX-009/010/011 preservam hardware, autorização/corpus e restauração reais. Fixtures e GPU por software não certificam fluidez em telefone físico."
     }
   ],
   "decisions": [
@@ -1553,6 +1558,24 @@
       "productionVerifiedAt": "2026-10-19T18:43:29.7693797Z",
       "productionHttpStatus": 200,
       "workerVersion": "e0edabcb-3592-4214-b2f1-48695d5e9da9"
+    },
+    {
+      "pr": 283,
+      "branch": "design/nex-026-continuous-workspace",
+      "base": "main",
+      "baseCommit": "6fdcf5fc04502526855159389e20f0d971c0e15b",
+      "sourceCommit": "9eb418b5c7ec1fa6cc6d2828f59ec15246946189",
+      "headCommit": "9eb418b5c7ec1fa6cc6d2828f59ec15246946189",
+      "state": "integrated",
+      "mergeCommit": "1b3649917c271eeea26238b174548234836c7581",
+      "sourceQualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39344053512",
+      "mainQualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39345104014",
+      "production": "confirmed",
+      "productionEvidence": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39345104015",
+      "productionCommit": "1b3649917c271eeea26238b174548234836c7581",
+      "productionVerifiedAt": "2026-10-20T00:03:11.8286090Z",
+      "productionHttpStatus": 200,
+      "workerVersion": "696dca89-2cd6-4918-b39e-f8cee2e5a694"
     }
   ]
 }

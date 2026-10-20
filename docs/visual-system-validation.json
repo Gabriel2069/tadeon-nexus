@@ -8744,7 +8744,7 @@
   },
   "mobileRevision": {
     "task": "NEX-027",
-    "status": "in_progress",
+    "status": "integrated",
     "base": "857f136d53dce5d80efa6a4266b36b6e5fa2d66b",
     "checkedAt": "2026-10-20",
     "scope": [
@@ -8841,7 +8841,7 @@
           "reduced motion preserves position",
           "dock stays fixed"
         ],
-        "note": "Final root matching and reduced-motion positioning retakes passed; route-travel retake at 390/1440 passed after retiring legacy active-link scale and dock entrance scale. The shared plane remains the sole moving selection."
+        "note": "Route travel at 390/1440 passed after retiring legacy active-link scale and dock entrance scale; reduced-motion positioning separately passed at 390/1440. The shared plane remains the sole moving selection."
       },
       "density": {
         "status": "passed",
@@ -8859,7 +8859,12 @@
         "vitalsTop390": 1080.96875,
         "documentHeight390": 8336,
         "fixtureWritesPerCase": 1,
-        "note": "Existing mount normalization is intercepted. No render errors; scroll samples under software GPU/reduced motion are diagnostic, not physical performance evidence."
+        "note": "Existing mount normalization is intercepted. No render errors; scroll samples under software GPU/reduced motion are diagnostic, not physical performance evidence.",
+        "numberRetake": {
+          "status": "passed",
+          "width": 320,
+          "note": "Screenshot inspected after removing redundant native spin controls; two resource/attribute columns remain inside the viewport."
+        }
       },
       "wheel": {
         "status": "passed",
@@ -8881,7 +8886,7 @@
         "note": "Touch emulation, not a physical-device accessibility certification."
       },
       "utilities": {
-        "status": "in_final_retake",
+        "status": "passed",
         "fixtureOnly": true,
         "widths": [
           390,
@@ -8894,7 +8899,24 @@
           "backup create/review/cancel/download/invalid import/delete cancellation",
           "diagnostics"
         ],
-        "note": "Final result will be reconciled at integration; no real backend writes."
+        "note": "Final source: no overflow or render errors in 18 views; requests intercepted, zero real backend writes. Dashboard→Users confirms unique selection and plate x/y/width/height.",
+        "cases": 18
+      },
+      "sourceQuality": {
+        "status": "passed",
+        "sourceCommit": "cd34e6d8ea26c9285a140e346cb25e5ed303031c",
+        "run": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39404389981",
+        "suites": 145,
+        "tests": 591,
+        "vulnerabilities": 0,
+        "covers": [
+          "styles",
+          "continuity",
+          "lint",
+          "typecheck",
+          "tests",
+          "client/SSR/Worker build"
+        ]
       }
     },
     "limits": [
@@ -8908,7 +8930,7 @@
       "suites": 144,
       "tests": 590,
       "log": "Source gate to be repeated by CI at the final head.",
-      "note": "Earlier full local check; remote Quality at final source head is required before merge."
+      "note": "Earlier local check retained as provenance; sourceQuality records the authoritative final-source gate."
     },
     "fonts": {
       "family": "Alegreya Sans",
@@ -8921,6 +8943,26 @@
       "license": "public/fonts/alegreya-sans-OFL.txt",
       "source": "https://github.com/google/fonts/tree/main/ofl/alegreyasans",
       "bytes": 102324
+    },
+    "sourceCommit": "cd34e6d8ea26c9285a140e346cb25e5ed303031c",
+    "pullRequest": "https://github.com/Gabriel2069/tadeon-nexus/pull/285",
+    "integration": {
+      "pr": 285,
+      "branch": "feat/nex-027-mobile-weave",
+      "base": "main",
+      "baseCommit": "857f136d53dce5d80efa6a4266b36b6e5fa2d66b",
+      "sourceCommit": "cd34e6d8ea26c9285a140e346cb25e5ed303031c",
+      "headCommit": "cd34e6d8ea26c9285a140e346cb25e5ed303031c",
+      "state": "integrated",
+      "mergeCommit": "74ce21dfb3346e3bd8722a1175f5225d21ced7d8",
+      "sourceQualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39404389981",
+      "mainQualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39404719667",
+      "production": "confirmed",
+      "productionEvidence": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39404719684",
+      "productionCommit": "74ce21dfb3346e3bd8722a1175f5225d21ced7d8",
+      "productionVerifiedAt": "2026-10-20T10:01:55.8408969Z",
+      "productionHttpStatus": 200,
+      "workerVersion": "258a0661-f091-490a-ad49-9cd4c58c7b0f"
     }
   }
 }
