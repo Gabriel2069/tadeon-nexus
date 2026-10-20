@@ -1,3 +1,4 @@
+import { PageHeader } from "@/components/page-header";
 import { UTILITY_AREAS } from "@/lib/utility-areas";
 import { UtilitySummary } from "@/components/utility-summary";
 import { Input } from "@/components/ui/input";
@@ -14,7 +15,6 @@ import {
   AlertDialogCancel,
   AlertDialogAction,
 } from "@/components/ui/alert-dialog";
-import { PageSectionMark } from "@/components/section-symbols";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { BookOpenText, CloudOff, Eye, FileText, RefreshCw, ShieldCheck, Wifi } from "lucide-react";
@@ -89,49 +89,37 @@ function OfflinePageContent() {
   const hasCache = Number.isFinite(updated.getTime()) && updated.getTime() > 0;
 
   return (
-    <div className="tadeon-page tadeon-route-offline max-w-6xl space-y-6">
-      <section
-        data-tadeon-page-hero="offline"
-        className="tadeon-page-hero tadeon-surface rounded-2xl px-5 py-6 md:px-8 md:py-8"
+    <div data-page-layout className="tadeon-page tadeon-route-offline space-y-6">
+      <PageHeader
+        section="offline"
+        eyebrow="Memória neste navegador"
+        title={UTILITY_AREAS.offline.label}
+        description="Consulte as informações abertas recentemente mesmo sem conexão. Alterações continuam bloqueadas para evitar conflitos com o banco principal."
+        actions={
+          <Button variant="outline" size="sm" onClick={() => setCache(readOfflineCache())}>
+            <RefreshCw className="h-4 w-4" />
+            Ler cópia local
+          </Button>
+        }
       >
-        <PageSectionMark section="offline" />
-        <div className="tadeon-utility-hero__body">
-          <div>
-            <div className="mb-3 flex items-center gap-2">
-              <Badge variant="outline" className="gap-1.5">
-                <Eye className="h-3.5 w-3.5" />
-                Somente leitura
-              </Badge>
-              <Badge variant="outline" className={online ? "text-emerald-400" : "text-amber-400"}>
-                {online ? (
-                  <Wifi className="mr-1 h-3.5 w-3.5" />
-                ) : (
-                  <CloudOff className="mr-1 h-3.5 w-3.5" />
-                )}
-                {online ? "Conectado" : "Offline"}
-              </Badge>
-            </div>
-            <h1 className="font-cinzel text-3xl font-semibold md:text-4xl">
-              {UTILITY_AREAS.offline.label}
-            </h1>
-            <p className="mt-2 max-w-2xl text-sm text-muted-foreground">
-              Consulte as informações abertas recentemente mesmo sem conexão. Alterações continuam
-              bloqueadas para evitar conflitos com o banco principal.
-            </p>
-          </div>
-          <div className="flex flex-col items-start gap-2">
-            <p className="text-xs text-muted-foreground">
-              {hasCache
-                ? `Cópia atualizada em ${updated.toLocaleString("pt-BR")}`
-                : "Nenhuma cópia local disponível"}
-            </p>
-            <Button variant="outline" size="sm" onClick={() => setCache(readOfflineCache())}>
-              <RefreshCw className="mr-2 h-4 w-4" />
-              Ler cópia local
-            </Button>
-          </div>
-        </div>
-      </section>
+        <Badge variant="outline" className="gap-1.5">
+          <Eye className="h-3.5 w-3.5" />
+          Somente leitura
+        </Badge>
+        <Badge variant="outline" className={online ? "text-emerald-400" : "text-amber-400"}>
+          {online ? (
+            <Wifi className="mr-1 h-3.5 w-3.5" />
+          ) : (
+            <CloudOff className="mr-1 h-3.5 w-3.5" />
+          )}
+          {online ? "Conectado" : "Offline"}
+        </Badge>
+        <p className="text-xs text-muted-foreground">
+          {hasCache
+            ? `Cópia atualizada em ${updated.toLocaleString("pt-BR")}`
+            : "Nenhuma cópia local disponível"}
+        </p>
+      </PageHeader>
 
       <UtilitySummary
         items={[

@@ -281,19 +281,34 @@ try {
     );
     const initialGroup = page.locator(".tadeon-nexus-reading__panes [data-group]");
     const initialLayout = await page.evaluate(() => {
-      const documentPanel = document.querySelector('.tadeon-nexus-reading__panes [data-panel][id="document"]');
-      const group = document.querySelector('.tadeon-nexus-reading__panes [data-group]');
-      return { document: documentPanel?.getBoundingClientRect().width, group: group?.getBoundingClientRect().width };
+      const documentPanel = document.querySelector(
+        '.tadeon-nexus-reading__panes [data-panel][id="document"]',
+      );
+      const group = document.querySelector(".tadeon-nexus-reading__panes [data-group]");
+      return {
+        document: documentPanel?.getBoundingClientRect().width,
+        group: group?.getBoundingClientRect().width,
+      };
     });
     console.log("Initial reading layout", JSON.stringify(initialLayout));
     await page.waitForFunction(() => {
-      const panel = document.querySelector('.tadeon-nexus-reading__panes [data-panel][id="document"]');
-      const group = document.querySelector('.tadeon-nexus-reading__panes [data-group]');
-      return panel && group && group.getBoundingClientRect().width > 0 && Math.abs(panel.getBoundingClientRect().width - group.getBoundingClientRect().width) < 2;
+      const panel = document.querySelector(
+        '.tadeon-nexus-reading__panes [data-panel][id="document"]',
+      );
+      const group = document.querySelector(".tadeon-nexus-reading__panes [data-group]");
+      return (
+        panel &&
+        group &&
+        group.getBoundingClientRect().width > 0 &&
+        Math.abs(panel.getBoundingClientRect().width - group.getBoundingClientRect().width) < 2
+      );
     });
     assert(
-      Math.abs((await initialDocument.boundingBox()).width - (await initialGroup.boundingBox()).width) < 2,
-      "Document owns the whole initial reading area after preference hydration: " + JSON.stringify(initialLayout),
+      Math.abs(
+        (await initialDocument.boundingBox()).width - (await initialGroup.boundingBox()).width,
+      ) < 2,
+      "Document owns the whole initial reading area after preference hydration: " +
+        JSON.stringify(initialLayout),
     );
     const tree = page.getByRole("tree");
     await tree.waitFor();
@@ -488,7 +503,40 @@ try {
     await page.getByRole("button", { name: "Documento e grafo", exact: true }).click();
     console.log("Restoring preferences", width);
     await page.reload({ waitUntil: "commit" });
-    await page.getByRole("heading", { name: nodes[0].title, exact: true }).waitFor();
+    await page
+      .getByRole("heading", { name: nodes[0].title, exact: true })
+      .waitFor()
+      .catch(async (error) => {
+        writeFileSync(
+          `${output}/reload-failure-${width}.json`,
+          JSON.stringify(
+            {
+              errors,
+              requests,
+              url: page.url(),
+              body: await page
+                .locator("body")
+                .innerText()
+                .catch(() => "unresponsive"),
+              panes: await page
+                .locator(".tadeon-nexus-reading__panes")
+                .evaluateAll((elements) =>
+                  elements.map((e) => ({
+                    view: e.dataset.readingView,
+                    axis: e.dataset.readingAxis,
+                    rect: e.getBoundingClientRect().toJSON(),
+                  })),
+                ),
+            },
+            null,
+            2,
+          ),
+        );
+        await page
+          .screenshot({ path: `${output}/reload-failure-${width}.png`, timeout: 10000 })
+          .catch(() => {});
+        throw error;
+      });
     await separator.waitFor();
     assert(
       (await panes.getAttribute("data-reading-view")) === "split",

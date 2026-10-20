@@ -42,7 +42,9 @@
         "src/components/ui/textarea.tsx",
         "src/routes/index.tsx",
         "src/components/continuity-hero.tsx",
-        "src/components/character-archive.tsx"
+        "src/components/character-archive.tsx",
+        "src/components/page-header.tsx",
+        "src/components/workspace-actions.tsx"
       ],
       "styles": [
         "src/styles/desktop-shell.css",
@@ -51,7 +53,7 @@
         "src/styles/mobile-more-radial.css",
         "src/styles/button.css"
       ],
-      "boundary": "Cabeçalhos renderizam símbolos; geometria de Área em foco pertence a page-hero-parity.css. Gatilho Mais e símbolos pertencem ao render; Radix mantém foco/teclado/colisão, sem captura global. Reflexos pertencem a useMaterialLight e à superfície React; o diretor legado não injeta luz nessas superfícies. Material de navegação pertence a navigation-layout; fundos de trama pertencem a experience-surfaces. Movimento da navegação consolidado em navigation-layout; mobile-more-radial preserva apenas o nome do arquivo e agora organiza uma lista Radix, sem layout radial. Card é dono da reflexão local; campos usam um plano rebaixado sem escritores legados. Tokens de relevo/flutuação pertencem a styles.css; AppLayout fornece o tom por contexto React (MaterialToneContext em use-material-light), preservado nos portais."
+      "boundary": "Cabeçalhos renderizam símbolos; geometria de Área em foco pertence a page-hero-parity.css. Gatilho Mais e símbolos pertencem ao render; Radix mantém foco/teclado/colisão, sem captura global. Reflexos pertencem a useMaterialLight e à superfície React; o diretor legado não injeta luz nessas superfícies. Material de navegação pertence a navigation-layout; fundos de trama pertencem a experience-surfaces. Movimento da navegação consolidado em navigation-layout; mobile-more-radial é o proprietário da roda de opções do Mais: três destinos orbitais e fechamento central, sem rotação contínua; Radix mantém foco, colisão e dispensa. DEC-017 substitui a apresentação em lista de NEX-016 por pedido explícito de Tadeu. Card é dono da reflexão local; campos usam um plano rebaixado sem escritores legados. Tokens de relevo/flutuação pertencem a styles.css; AppLayout fornece o tom por contexto React (MaterialToneContext em use-material-light), preservado nos portais. NEX-026: PageHeader é o render único da anatomia de cabeçalhos principais e do acervo. Geometria em page-hero-parity, material em hero-backgrounds; envelope data-page-layout em desktop-shell. A barra da Ficha conserva somente sua extensão sticky no módulo da ficha. WorkspaceActions concentra Nova janela e Salvar sessão, renderizados nos slots das rotas; nenhum portal descobre títulos ou injeta ações nos cabeçalhos."
     },
     {
       "id": "popup",
@@ -124,13 +126,18 @@
         "src/components/knowledge/knowledge-reading-panes.tsx",
         "src/lib/knowledge/knowledge-drafts.ts",
         "src/lib/knowledge/use-reading-preferences.ts",
-        "src/components/knowledge/nexus-tabletop-locator.tsx"
+        "src/components/knowledge/nexus-tabletop-locator.tsx",
+        "src/components/knowledge/knowledge-collection-filter.tsx",
+        "src/lib/knowledge/knowledge-collections.ts",
+        "src/components/knowledge/knowledge-library.tsx",
+        "src/components/knowledge/knowledge-sheet-link.tsx",
+        "src/lib/knowledge/knowledge-transfer.ts"
       ],
       "styles": [
         "src/styles/nexus-material.css",
         "src/styles/knowledge-graph-second-brain.css"
       ],
-      "boundary": "Serviços controlam acesso a dados; grafo controla presets e interação em React. Árvore usa parent_node_id; grafo visual não usa distância de relações como parentesco. Leitura combinada e controles preservam estado React e invalidam respostas antigas. NexusWorkspace mantém navegação/editor e respostas assíncronas; KnowledgeReadingPanes dimensiona a composição; rascunhos e preferências locais são separados por identidade e workspace. Não introduzir outro escritor desses estados."
+      "boundary": "Serviços controlam acesso a dados; grafo controla presets e interação em React. Árvore usa parent_node_id; grafo visual não usa distância de relações como parentesco. Leitura combinada e controles preservam estado React e invalidam respostas antigas. NexusWorkspace mantém navegação/editor e respostas assíncronas; KnowledgeReadingPanes dimensiona a composição; rascunhos e preferências locais são separados por identidade e workspace. Não introduzir outro escritor desses estados. NEX-026: categorias derivam de tipos dos resultados carregados em React, com limite explícito. NexusFolderBarBridge, portal, polling e mutação de visibilidade foram retirados; árvore e lista recebem a mesma coleção derivada. KnowledgeSheetLink recebe a página ativa do workspace; o MIME de arrasto é compartilhado com a ficha, sem ler título ou URL do DOM."
     },
     {
       "id": "tabletop",
@@ -891,18 +898,20 @@
     },
     {
       "id": "NEX-026",
-      "title": "Nexus e biblioteca: composição da leitura e exploração",
+      "title": "Continuidade entre páginas, Nexus/Biblioteca e roda do Mais",
       "domain": "knowledge",
-      "status": "ready",
+      "status": "active",
       "priority": 7,
       "dependsOn": [
         "NEX-024",
         "NEX-025"
       ],
       "acceptance": [
+        "Unificar cabeçalhos e envelope de layout do Dashboard, Ficha, Nexus, Mesa, Mestre e utilidades, com a mesma anatomia, alinhamento e hierarquia; preservar os instrumentos de cada tarefa.",
         "Revisar a hierarquia do acervo, árvore, abas, contexto e leitura combinada sem duplicar seus estados.",
         "Aprofundar a materialidade dos instrumentos e das prévias, preservando conteúdo opaco e a referência Obsidian.",
-        "Verificar navegação, divisores, filtros e retorno de foco em quatro larguras; conservar rascunhos, conflitos e limites de autorização."
+        "Verificar navegação, divisores, filtros e retorno de foco em quatro larguras; conservar rascunhos, conflitos e limites de autorização.",
+        "Restaurar o Mais como roda autoral de opções, com fios e material do tom da rota; validar rótulos, alvos sem sobreposição, teclado, Escape, navegação e mudança de breakpoint sem captura global."
       ],
       "evidence": []
     }
@@ -1004,22 +1013,26 @@
         "https://github.com/Gabriel2069/tadeon-nexus/pull/277"
       ],
       "reason": "Pedido de Tadeu em 16/10/2026 após a publicação da PR #277: ainda há muito a melhorar. A composição e a descoberta do acervo precedem a medição em dispositivos físicos. NEX-025/026 preservam a continuidade visual por tela; NEX-009 deve medir a base resultante de NEX-024."
+    },
+    {
+      "id": "DEC-016",
+      "decision": "Um contrato de layout e cabeçalho para as páginas principais; mudar a área altera símbolo, tom e contexto, sem inventar outro padrão de head.",
+      "reason": "Pedido de Tadeu em 19/10/2026 ao iniciar NEX-026. PageHeader compartilha identidade, ações e contexto; o envelope comum respeita a mesma margem. Conteúdo e instrumentos conservam suas funções e densidades.",
+      "evidence": []
+    },
+    {
+      "id": "DEC-017",
+      "decision": "Restaurar a roda de opções do Mais no dock inferior; personalidade e continuidade devem coexistir entre páginas.",
+      "reason": "Pedido explícito de Tadeu ao fechar NEX-026, em 19/10/2026. Substitui a apresentação em lista de NEX-016, preservando o componente React/Radix, os destinos estáveis e a dispensa acessível. Cabeçalhos, margens, materiais e movimentos compartilham regras; símbolos e instrumentos mantêm sua autoria.",
+      "evidence": [
+        "https://github.com/Gabriel2069/tadeon-nexus/pull/283"
+      ]
     }
   ],
   "bridges": [
     {
       "path": "src/components/experience-final-polish-bridge.tsx",
       "domain": "sheet",
-      "status": "review_before_transfer"
-    },
-    {
-      "path": "src/components/knowledge/nexus-folder-bar-bridge.tsx",
-      "domain": "knowledge",
-      "status": "review_before_transfer"
-    },
-    {
-      "path": "src/components/master/master-toolbar-popout-bridge.tsx",
-      "domain": "master",
       "status": "review_before_transfer"
     },
     {
@@ -1164,11 +1177,6 @@
     },
     {
       "path": "src/components/tabletop/tabletop-urgent-reconciliation-bridge.tsx",
-      "domain": "tabletop",
-      "status": "review_before_transfer"
-    },
-    {
-      "path": "src/components/tabletop/tabletop-workspace-popout-bridge.tsx",
       "domain": "tabletop",
       "status": "review_before_transfer"
     },

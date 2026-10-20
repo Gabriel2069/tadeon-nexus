@@ -425,18 +425,6 @@ body:has(.tadeon-tabletop-studio) {
 }
 
 /* ---------------- O Nexus: clarity, folders and resilient primary CTA -------- */
-.tadeon-route-nexus .tadeon-nexus-tools > button:last-child,
-.tadeon-route-nexus .tadeon-nexus-tools > [data-slot="button"]:last-child { min-width: 7.8rem !important; opacity: 1 !important; color: hsl(var(--primary-foreground)) !important; }
-.tadeon-route-nexus .tadeon-nexus-tools > button:last-child svg,
-.tadeon-route-nexus .tadeon-nexus-tools > button:last-child span { opacity: 1 !important; visibility: visible !important; }
-
-.tadeon-nexus-folderbar { display: flex; gap: .35rem; margin-top: .65rem; padding: .35rem; overflow-x: auto; border: 1px solid color-mix(in srgb, var(--border) 55.00000000000001%, transparent); border-radius: .75rem; background: hsl(var(--background) / .18); scrollbar-width: none; }
-.tadeon-nexus-folderbar::-webkit-scrollbar { display: none; }
-.tadeon-nexus-folderbar button { display: inline-flex; flex: 0 0 auto; min-height: 1.9rem; align-items: center; gap: .3rem; border-radius: .55rem; padding: .3rem .55rem; color: hsl(var(--muted-foreground)); font-size: .64rem; font-weight: 700; transition: transform 150ms ease, color 150ms ease, background-color 150ms ease; }
-.tadeon-nexus-folderbar button:hover { transform: translateY(-1px); color: var(--foreground); }
-.tadeon-nexus-folderbar button[aria-pressed="true"] { background: color-mix(in srgb, var(--primary) 12%, transparent); color: var(--foreground); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--primary) 24%, transparent); }
-.tadeon-nexus-folderbar button small { opacity: .62; font-size: .58rem; }
-.tadeon-nexus-index__node[data-folder-hidden="true"] { display: none !important; }
 .tadeon-brain-canvas,
 .tadeon-brain-viewport,
 [class*="tadeon-brain"][class*="canvas"] { min-height: 34rem; }
@@ -454,7 +442,6 @@ body:has(.tadeon-tabletop-studio) {
 @keyframes tadeon-director-cue-cut { 0%, 45% { opacity: .18; } 46%, 100% { opacity: 1; } }
 
 @media (prefers-reduced-motion: reduce) {
-  .tadeon-nexus-folderbar button,
   .tadeon-director-output.is-transitioning :is(.tadeon-director-output__canvas, .tadeon-director-output__intermission, .tadeon-director-output__hud) { animation: none !important; transition: none !important; }
 }
 
@@ -577,11 +564,6 @@ body:has(.tadeon-tabletop-studio) {
 }
 
 /* Sheet header is visually coupled to the top rail. */
-.tadeon-sheet-page .tadeon-sheet-commandbar {
-  width:100%; max-width:none; min-height:5.2rem; margin-inline:0; padding-block:.7rem !important;
-  border-radius:1rem;
-}
-.tadeon-sheet-commandbar__main { min-height:3.8rem; align-items:center; }
 .tadeon-sheet-page .tadeon-sheet-nav { margin-top:.45rem; border-radius:.85rem; box-shadow:0 16px 36px -34px rgb(0 0 0/92%); }
 [data-tadeon-sheet-tabletop-action="true"] {
   width:2.5rem !important;
@@ -701,7 +683,6 @@ body:has(.tadeon-tabletop-studio) {
 
 @media (max-width:800px) {
   .tadeon-route-stage > :is(.tadeon-route-tools,.tadeon-route-users,.tadeon-route-offline) { max-width:100% !important; }
-  .tadeon-sheet-page .tadeon-sheet-commandbar { min-height:auto; border-radius:.78rem; }
   #equilibrio,#exposicao { border-radius:.85rem; }
 }
 

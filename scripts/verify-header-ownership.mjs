@@ -17,11 +17,15 @@ const browser = await chromium.launch({
   executablePath: process.env.NEXUS_CHROMIUM_PATH || undefined,
   args: JSON.parse(process.env.NEXUS_CHROMIUM_ARGS || "[]"),
 });
-const server = spawn("npm", ["run", "dev", "--", "--host", "127.0.0.1", "--strictPort", "--port", String(port)], {
-  cwd: repo,
-  detached: true,
-  stdio: ["ignore", "pipe", "pipe"],
-});
+const server = spawn(
+  "npm",
+  ["run", "dev", "--", "--host", "127.0.0.1", "--strictPort", "--port", String(port)],
+  {
+    cwd: repo,
+    detached: true,
+    stdio: ["ignore", "pipe", "pipe"],
+  },
+);
 try {
   await new Promise((ok, fail) => {
     server.stdout.on("data", (b) => {
@@ -48,19 +52,47 @@ try {
     .map((x) => (typeof x === "string" ? x : Buffer.from(JSON.stringify(x)).toString("base64url")))
     .join(".");
   const results = [];
+  const layoutAudit = process.env.NEXUS_LAYOUT_AUDIT === "1";
+  const workspaceId = "00000000-0000-4000-8000-000000000002";
+  const layoutNode = {
+    id: "00000000-0000-4000-8000-000000000100",
+    workspace_id: workspaceId,
+    campaign_id: null,
+    author_id: id,
+    owner_id: id,
+    node_type: "document",
+    title: "O arquivo dos fios esquecidos",
+    slug: "arquivo",
+    summary: "Memórias e vínculos da campanha.",
+    content_markdown: "## O primeiro fio\n\nA memória atravessa o arquivo.",
+    plain_text: "Memórias",
+    properties: {},
+    status: "draft",
+    visibility: "workspace",
+    parent_node_id: null,
+    created_at: "2026-10-01",
+    updated_at: "2026-10-01",
+  };
+
   for (const width of JSON.parse(process.env.NEXUS_AUDIT_WIDTHS || "[320,390,820,1440]"))
-    for (const route of JSON.parse(process.env.NEXUS_AUDIT_ROUTES || JSON.stringify([
-      "/",
-      "/nexus",
-      "/master-panel",
-      "/offline",
-      "/nexus-tools",
-      "/manage-users",
-      "/tabletop",
-    ]))) {
-      const captureScreenshots = process.env.NEXUS_SKIP_SCREENSHOTS !== "1"
-        && (!process.env.NEXUS_AUDIT_SCREENSHOT_WIDTHS || JSON.parse(process.env.NEXUS_AUDIT_SCREENSHOT_WIDTHS).includes(width))
-        && (!process.env.NEXUS_AUDIT_SCREENSHOT_ROUTES || JSON.parse(process.env.NEXUS_AUDIT_SCREENSHOT_ROUTES).includes(route));
+    for (const route of JSON.parse(
+      process.env.NEXUS_AUDIT_ROUTES ||
+        JSON.stringify([
+          "/",
+          "/nexus",
+          "/master-panel",
+          "/offline",
+          "/nexus-tools",
+          "/manage-users",
+          "/tabletop",
+        ]),
+    )) {
+      const captureScreenshots =
+        process.env.NEXUS_SKIP_SCREENSHOTS !== "1" &&
+        (!process.env.NEXUS_AUDIT_SCREENSHOT_WIDTHS ||
+          JSON.parse(process.env.NEXUS_AUDIT_SCREENSHOT_WIDTHS).includes(width)) &&
+        (!process.env.NEXUS_AUDIT_SCREENSHOT_ROUTES ||
+          JSON.parse(process.env.NEXUS_AUDIT_SCREENSHOT_ROUTES).includes(route));
       const context = await browser.newContext({
         viewport: { width, height: 1000 },
         reducedMotion: process.env.NEXUS_MATERIAL_AUDIT === "1" ? "no-preference" : "reduce",
@@ -98,6 +130,28 @@ try {
             }),
           );
         else if (url.pathname.includes("/functions/v1/admin-users")) body = { users: [] };
+        else if (layoutAudit && url.pathname.includes("/workspaces"))
+          body = [{ id: workspaceId, name: "Arquivo de exemplo" }];
+        else if (layoutAudit && url.pathname.includes("/game_settings"))
+          body = [
+            {
+              id: "00000000-0000-4000-8000-000000000099",
+              key: "global",
+              campaign_title: "O arquivo dos fios esquecidos",
+              campaign_phase: "Localizar a Âncora",
+              scenes_detailed: [],
+              master_npcs: [],
+              investigation_clues: [],
+              threats: [],
+              folds: [],
+              interludes: [],
+            },
+          ];
+        else if (layoutAudit && url.pathname.includes("/rpc/search_knowledge_nodes"))
+          body = [
+            { node_data: layoutNode, relevance: 1, snippet: layoutNode.summary, total_count: 1 },
+          ];
+        else if (layoutAudit && url.pathname.includes("/knowledge_nodes")) body = [layoutNode];
         if (Array.isArray(body) && req.request().headers().accept?.includes("vnd.pgrst.object"))
           body = body[0] || null;
         await req.fulfill({
@@ -124,24 +178,81 @@ try {
           .locator('canvas[aria-label="Canvas da Mesa Nexus"]')
           .waitFor({ state: "attached", timeout: 20000 })
           .catch((e) => errors.push("Canvas readiness: " + e.message));
-      if (process.env.NEXUS_MATERIAL_AUDIT !== "1") await page.addStyleTag({
-        content:
-          "*,*::before,*::after { animation:none!important; transition:none!important; caret-color:transparent!important; }",
-      });
+      if (layoutAudit) await page.locator("[data-page-header]").first().waitFor();
+      if (process.env.NEXUS_MATERIAL_AUDIT !== "1")
+        await page.addStyleTag({
+          content:
+            "*,*::before,*::after { animation:none!important; transition:none!important; caret-color:transparent!important; }",
+        });
       await page.evaluate(async () => {
-        await Promise.all(['500 16px "Cormorant Garamond"', '600 16px "Cormorant Garamond"', '700 16px "Cormorant Garamond"'].map(font => document.fonts.load(font)));
+        await Promise.all(
+          [
+            '500 16px "Cormorant Garamond"',
+            '600 16px "Cormorant Garamond"',
+            '700 16px "Cormorant Garamond"',
+          ].map((font) => document.fonts.load(font)),
+        );
         await document.fonts.ready;
       });
       await page.waitForTimeout(250);
       const metrics = await page.evaluate(() => ({
+        pageHeader: (() => {
+          const header = document.querySelector("[data-page-header]");
+          const frame = header?.closest("[data-page-layout]");
+          if (!header || !frame) return null;
+          const main = header.querySelector(".tadeon-page-header__main"),
+            mark = header.querySelector(".tadeon-page-header__mark"),
+            title = header.querySelector(".tadeon-page-header__title");
+          const s = getComputedStyle(main),
+            t = getComputedStyle(title),
+            f = getComputedStyle(frame);
+          const rect = (e) => {
+            const r = e.getBoundingClientRect();
+            return [r.x, r.y, r.width, r.height];
+          };
+          return {
+            section: header.dataset.pageHeader,
+            rect: rect(header),
+            frame: rect(frame),
+            padding: [s.paddingTop, s.paddingRight, s.paddingBottom, s.paddingLeft],
+            framePadding: [f.paddingTop, f.paddingRight, f.paddingBottom, f.paddingLeft],
+            mark: rect(mark),
+            title: rect(title),
+            titleFont: [t.fontFamily, t.fontSize, t.fontWeight, t.lineHeight],
+            grid: s.gridTemplateColumns,
+            actions: [...header.querySelectorAll(".tadeon-page-header__actions button")].map(
+              (e) => ({ name: e.textContent.trim(), rect: rect(e) }),
+            ),
+            directChildren: header.children.length,
+          };
+        })(),
         overflow: document.documentElement.scrollWidth > innerWidth,
         mainCount: document.querySelectorAll("main").length,
-        titleColor: document.querySelector("h1") ? getComputedStyle(document.querySelector("h1")).color : null,
-        activeNavigation: Array.from(document.querySelectorAll('.tadeon-nav-item[aria-current="page"],.tadeon-mobile-dock__item[aria-current="page"]')).filter(e => e.getBoundingClientRect().width > 0).map(e => ({ label: e.textContent.trim(), color: getComputedStyle(e).color })),
-        material: Array.from(document.querySelectorAll('.tadeon-material-card,.tadeon-material-button')).slice(0, 8).map(element => {
-          const style = getComputedStyle(element);
-          return { slot: element.dataset.slot, background: style.backgroundColor, shadow: style.boxShadow, radius: style.borderRadius, transform: style.transform, translate: style.translate };
-        }),
+        titleColor: document.querySelector("h1")
+          ? getComputedStyle(document.querySelector("h1")).color
+          : null,
+        activeNavigation: Array.from(
+          document.querySelectorAll(
+            '.tadeon-nav-item[aria-current="page"],.tadeon-mobile-dock__item[aria-current="page"]',
+          ),
+        )
+          .filter((e) => e.getBoundingClientRect().width > 0)
+          .map((e) => ({ label: e.textContent.trim(), color: getComputedStyle(e).color })),
+        material: Array.from(
+          document.querySelectorAll(".tadeon-material-card,.tadeon-material-button"),
+        )
+          .slice(0, 8)
+          .map((element) => {
+            const style = getComputedStyle(element);
+            return {
+              slot: element.dataset.slot,
+              background: style.backgroundColor,
+              shadow: style.boxShadow,
+              radius: style.borderRadius,
+              transform: style.transform,
+              translate: style.translate,
+            };
+          }),
         hosts: [
           ...document.querySelectorAll(
             ".tadeon-focus-section-mark-host,.tadeon-page-hero-mark-host,.tadeon-tabletop-brand-mark-host",
@@ -176,24 +287,121 @@ try {
         })(),
       }));
       if (process.env.NEXUS_MATERIAL_AUDIT === "1" && width >= 820) {
-        const card = page.locator('.tadeon-material-card').filter({ visible: true }).first();
+        const card = page.locator(".tadeon-material-card").filter({ visible: true }).first();
         if (await card.count()) {
           await card.scrollIntoViewIfNeeded();
           const before = await card.boundingBox();
           await card.hover({ position: { x: 28, y: 20 } });
           await page.waitForTimeout(300);
           const after = await card.boundingBox();
-          metrics.cardResponse = await card.evaluate(e => ({ lightX: e.style.getPropertyValue('--material-x'), transform: getComputedStyle(e).transform }));
-          if (!metrics.cardResponse.lightX || metrics.cardResponse.transform !== 'none' || Math.abs(before.x - after.x) > .1 || Math.abs(before.y - after.y) > .1) errors.push('Card light moved the content plane');
+          metrics.cardResponse = await card.evaluate((e) => ({
+            lightX: e.style.getPropertyValue("--material-x"),
+            transform: getComputedStyle(e).transform,
+          }));
+          if (
+            !metrics.cardResponse.lightX ||
+            metrics.cardResponse.transform !== "none" ||
+            Math.abs(before.x - after.x) > 0.1 ||
+            Math.abs(before.y - after.y) > 0.1
+          )
+            errors.push("Card light moved the content plane");
         }
+      }
+      if (layoutAudit && route === "/nexus") {
+        const tools = page.getByRole("button", { name: "Ferramentas", exact: true });
+        await tools.focus();
+        await page.keyboard.press("Enter");
+        const item = page.getByRole("menuitem", { name: "Importar / exportar", exact: true });
+        await item.waitFor();
+        await item.click();
+        const dialog = page.getByRole("dialog");
+        await dialog.waitFor();
+        await dialog.evaluate((element) =>
+          Promise.all(
+            element
+              .getAnimations()
+              .filter((a) => a.effect?.getTiming().iterations !== Infinity)
+              .map((a) => a.finished.catch(() => {})),
+          ),
+        );
+        await page.keyboard.press("Escape");
+        await dialog.waitFor({ state: "detached" });
+        await page
+          .waitForFunction(
+            () => document.activeElement?.textContent?.trim() === "Ferramentas",
+            undefined,
+            { timeout: 5000 },
+          )
+          .catch(async () => {
+            errors.push("Nexus tools dialog did not return focus to its trigger");
+            metrics.toolsFocusFailure = await page.evaluate(() => ({
+              tag: document.activeElement?.tagName,
+              id: document.activeElement?.id,
+              role: document.activeElement?.getAttribute("role"),
+              text: document.activeElement?.textContent?.slice(0, 160),
+            }));
+          });
+        const explore = page.getByRole("button", { name: "Explorar", exact: true });
+        if (await explore.isVisible()) {
+          await explore.click();
+          if (
+            !(await page
+              .getByRole("textbox", { name: "Buscar no Nexus", exact: true })
+              .evaluate((e) => document.activeElement === e))
+          )
+            errors.push("Explorer jump did not focus search");
+          await page.getByRole("button", { name: "Voltar à leitura", exact: true }).click();
+          if (
+            !(await page
+              .locator(".tadeon-nexus-manuscript-title")
+              .evaluate((e) => document.activeElement === e))
+          )
+            errors.push("Return to reading lost focus");
+        }
+        metrics.knowledgeNavigation = { toolsDialogFocus: true, compactExplorer: width < 1180 };
+        await page.evaluate(() => window.scrollTo({ top: 0, behavior: "instant" }));
       }
       if (captureScreenshots) {
         await page.mouse.move(0, 0);
         await page.evaluate(() => window.scrollTo({ top: 0, behavior: "instant" }));
       }
-      if (metrics.activeNavigation.some(item => item.color !== "rgb(233, 227, 213)")) errors.push("Active navigation label lost its ivory contrast");
+      if (layoutAudit) {
+        const header = metrics.pageHeader;
+        if (!header) errors.push("Missing common page header/envelope");
+        else {
+          const reference = results.find(
+            (item) => item.width === width && item.pageHeader,
+          )?.pageHeader;
+          if (
+            reference &&
+            (Math.abs(reference.rect[0] - header.rect[0]) > 0.6 ||
+              Math.abs(reference.rect[2] - header.rect[2]) > 0.6 ||
+              JSON.stringify(reference.padding) !== JSON.stringify(header.padding) ||
+              JSON.stringify(reference.titleFont) !== JSON.stringify(header.titleFont) ||
+              Math.abs(reference.mark[2] - header.mark[2]) > 0.1)
+          )
+            errors.push("Page header anatomy diverges from the shared envelope");
+          if (header.actions.some((action) => action.rect[3] > 0 && action.rect[3] < 43.9))
+            errors.push("Page action under 44px");
+          if (
+            await page
+              .locator(
+                ".tadeon-workspace-popout-host,.tadeon-nexus-sheet-drag-host,.tadeon-master-toolbar-popout-host",
+              )
+              .count()
+          )
+            errors.push("Legacy header injection returned");
+        }
+      }
+      if (metrics.activeNavigation.some((item) => item.color !== "rgb(233, 227, 213)"))
+        errors.push("Active navigation label lost its ivory contrast");
       const name = route.slice(1) || "dashboard";
-      if (captureScreenshots) await page.screenshot({ path: `${root}/${phase}-${name}-${width}.png`, fullPage: false, timeout: 20000 });
+      if (captureScreenshots)
+        await page.screenshot({
+          path: `${root}/${phase}-${name}-${width}.png`,
+          fullPage: false,
+          timeout: 20000,
+        });
       const interactions = [];
       if (route === "/offline") {
         for (const label of [
@@ -211,7 +419,14 @@ try {
               ? page.getByRole("dialog", { name: "Busca global", exact: true })
               : page.getByRole("dialog").last();
           await dialog.waitFor({ state: "visible" });
-          await dialog.evaluate(element => Promise.all(element.getAnimations().filter(animation => animation.effect?.getTiming().iterations !== Infinity).map(animation => animation.finished.catch(() => {}))));
+          await dialog.evaluate((element) =>
+            Promise.all(
+              element
+                .getAnimations()
+                .filter((animation) => animation.effect?.getTiming().iterations !== Infinity)
+                .map((animation) => animation.finished.catch(() => {})),
+            ),
+          );
           let keyboardFixture = null;
           if (label === "Abrir busca global" && width <= 820) {
             await dialog.locator("input").first().focus();
@@ -222,8 +437,16 @@ try {
               });
               window.dispatchEvent(new Event("resize"));
             });
-            await page.waitForFunction(() => document.documentElement.style.getPropertyValue("--tadeon-vv-height") === "600px" && document.documentElement.dataset.tadeonKeyboardOpen === "true");
-            await page.waitForFunction(() => { const dialog = document.querySelector('.tadeon-global-search-dialog'); const rect = dialog.getBoundingClientRect(); return rect.y >= -1 && rect.bottom <= 601; });
+            await page.waitForFunction(
+              () =>
+                document.documentElement.style.getPropertyValue("--tadeon-vv-height") === "600px" &&
+                document.documentElement.dataset.tadeonKeyboardOpen === "true",
+            );
+            await page.waitForFunction(() => {
+              const dialog = document.querySelector(".tadeon-global-search-dialog");
+              const rect = dialog.getBoundingClientRect();
+              return rect.y >= -1 && rect.bottom <= 601;
+            });
             const keyboardRect = await dialog.boundingBox();
             const contract = await dialog.evaluate((element) => ({
               open: document.documentElement.dataset.tadeonKeyboardOpen,
@@ -248,9 +471,17 @@ try {
             });
             await page.waitForTimeout(150);
           }
-          const material = await dialog.evaluate(element => {
+          const material = await dialog.evaluate((element) => {
             const style = getComputedStyle(element);
-            return { animation: style.animationName, duration: style.animationDuration, scale: style.scale, origin: style.transformOrigin, shadow: style.boxShadow, radius: style.borderRadius, tone: style.getPropertyValue("--material-rgb").trim() };
+            return {
+              animation: style.animationName,
+              duration: style.animationDuration,
+              scale: style.scale,
+              origin: style.transformOrigin,
+              shadow: style.boxShadow,
+              radius: style.borderRadius,
+              tone: style.getPropertyValue("--material-rgb").trim(),
+            };
           });
           const rect = await dialog.boundingBox();
           const contained =
@@ -259,10 +490,11 @@ try {
             rect.y >= -1 &&
             rect.x + rect.width <= width + 1 &&
             rect.y + rect.height <= 1001;
-          if (captureScreenshots) await page.screenshot({
-            path: `${root}/${phase}-portal-${label === "Abrir busca global" ? "search" : "account"}-${width}.png`,
-            fullPage: true,
-          });
+          if (captureScreenshots)
+            await page.screenshot({
+              path: `${root}/${phase}-portal-${label === "Abrir busca global" ? "search" : "account"}-${width}.png`,
+              fullPage: true,
+            });
           const focusInside = await page.evaluate(
             () => !!document.activeElement?.closest('[role="dialog"]'),
           );
@@ -272,7 +504,10 @@ try {
           );
           await page.keyboard.press("Escape");
           await dialog.waitFor({ state: "detached" });
-          await page.waitForFunction(element => document.activeElement === element, await trigger.elementHandle());
+          await page.waitForFunction(
+            (element) => document.activeElement === element,
+            await trigger.elementHandle(),
+          );
           const returned = await trigger.evaluate((e) => document.activeElement === e);
           interactions.push({
             label,
@@ -290,21 +525,45 @@ try {
       }
       if (route === "/offline" && process.env.NEXUS_MATERIAL_AUDIT === "1") {
         const cdp = await context.newCDPSession(page);
-        await cdp.send("Emulation.setEmulatedMedia", { features: [
-          { name: "prefers-reduced-motion", value: "reduce" },
-          { name: "prefers-reduced-transparency", value: "reduce" },
-          { name: "prefers-contrast", value: "more" },
-        ] });
-        const preferences = await page.evaluate(() => {
-          const nav = document.querySelector(innerWidth < 768 ? ".tadeon-mobile-header" : ".tadeon-desktop-toolbar");
-          return { motion: matchMedia("(prefers-reduced-motion: reduce)").matches, transparency: matchMedia("(prefers-reduced-transparency: reduce)").matches, contrast: matchMedia("(prefers-contrast: more)").matches, filter: getComputedStyle(nav).backdropFilter };
+        await cdp.send("Emulation.setEmulatedMedia", {
+          features: [
+            { name: "prefers-reduced-motion", value: "reduce" },
+            { name: "prefers-reduced-transparency", value: "reduce" },
+            { name: "prefers-contrast", value: "more" },
+          ],
         });
-        if (!preferences.motion || !preferences.transparency || !preferences.contrast || preferences.filter !== "none") errors.push("Material preferences failed: " + JSON.stringify(preferences));
-        const trigger = page.getByRole("button", { name: width < 768 ? "Conta" : "Abrir configurações da conta", exact: true }).filter({ visible: true }).first();
+        const preferences = await page.evaluate(() => {
+          const nav = document.querySelector(
+            innerWidth < 768 ? ".tadeon-mobile-header" : ".tadeon-desktop-toolbar",
+          );
+          return {
+            motion: matchMedia("(prefers-reduced-motion: reduce)").matches,
+            transparency: matchMedia("(prefers-reduced-transparency: reduce)").matches,
+            contrast: matchMedia("(prefers-contrast: more)").matches,
+            filter: getComputedStyle(nav).backdropFilter,
+          };
+        });
+        if (
+          !preferences.motion ||
+          !preferences.transparency ||
+          !preferences.contrast ||
+          preferences.filter !== "none"
+        )
+          errors.push("Material preferences failed: " + JSON.stringify(preferences));
+        const trigger = page
+          .getByRole("button", {
+            name: width < 768 ? "Conta" : "Abrir configurações da conta",
+            exact: true,
+          })
+          .filter({ visible: true })
+          .first();
         await trigger.click();
         const dialog = page.getByRole("dialog").last();
         await dialog.waitFor();
-        preferences.popup = await dialog.evaluate(e => ({ animation: getComputedStyle(e).animationName, border: getComputedStyle(e).borderColor }));
+        preferences.popup = await dialog.evaluate((e) => ({
+          animation: getComputedStyle(e).animationName,
+          border: getComputedStyle(e).borderColor,
+        }));
         if (preferences.popup.animation !== "none") errors.push("Reduced popup retained animation");
         await page.keyboard.press("Escape");
         await dialog.waitFor({ state: "detached" });

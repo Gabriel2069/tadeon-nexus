@@ -1,73 +1,9 @@
 /* source: src/styles/ui-coherence-192.css */
 /* #192/#193/#194/#195: coerência visual residual de navegação, Mestre e Mesa. */
 
-
-
-.tadeon-shell:is([data-section="Painel do Mestre"], [data-section="O Nexus"])
-  .tadeon-workspace-popout-host
-  > button[title="Abrir este painel em janela dedicada"],
-.tadeon-shell[data-section="Painel do Mestre"]
-  .tadeon-workspace-popout-host
-  > button[title="Registrar o Diff das fichas neste ponto da sessão"] {
-  display: none !important;
-}
-
-.tadeon-master-toolbar-popout-host {
-  display: inline-flex;
-  flex: 0 0 auto;
-  align-items: center;
-}
-
-.tadeon-master-toolbar-popout-host > button {
-  min-width: max-content;
-}
-
 /* A ação de salvar ocupa a coluna direita, numa linha própria acima das métricas. */
-.tadeon-master-session-save-host {
-  display: flex;
-  min-width: 0;
-  justify-content: flex-end;
-  padding-bottom: .2rem;
-  grid-column: 2;
-  grid-row: 1;
-  align-self: end;
-}
-
-.tadeon-master-session-save-host > button {
-  min-width: max-content;
-}
-
-*:has(> .tadeon-master-session-save-host) {
-  display: grid !important;
-  grid-template-columns: minmax(0, 1fr) auto !important;
-  grid-template-rows: auto auto !important;
-  align-items: end !important;
-  column-gap: 1.25rem !important;
-  row-gap: .35rem !important;
-}
-
-*:has(> .tadeon-master-session-save-host) > :first-child {
-  grid-column: 1 !important;
-  grid-row: 1 / span 2 !important;
-}
-
-.tadeon-master-session-save-host + .grid.grid-cols-3.gap-2 {
-  grid-column: 2 !important;
-  grid-row: 2 !important;
-}
 
 @media (max-width: 1023px) {
-  *:has(> .tadeon-master-session-save-host) {
-    grid-template-columns: 1fr !important;
-  }
-  *:has(> .tadeon-master-session-save-host) > :first-child,
-  .tadeon-master-session-save-host,
-  .tadeon-master-session-save-host + .grid.grid-cols-3.gap-2 {
-    grid-column: 1 !important;
-  }
-  *:has(> .tadeon-master-session-save-host) > :first-child { grid-row: 1 !important; }
-  .tadeon-master-session-save-host { grid-row: 2 !important; justify-content: flex-start; }
-  .tadeon-master-session-save-host + .grid.grid-cols-3.gap-2 { grid-row: 3 !important; }
 }
 
 .tadeon-tabletop-toprail-setup {

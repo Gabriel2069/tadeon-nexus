@@ -266,3 +266,21 @@ A dobra pertence a `button.css`, pelo contrato `data-motion-surface="fold"`; nã
 Reconsultadas em 19/10/2026: [Apple Materials](https://developer.apple.com/design/human-interface-guidelines/materials), Liquid Glass; [Motion](https://developer.apple.com/design/human-interface-guidelines/motion), Providing feedback; [Layout](https://developer.apple.com/design/human-interface-guidelines/layout), Visual hierarchy. O conteúdo oficial foi recuperado no índice de busca; HTML retornou invólucro JavaScript e o Markdown não foi aceito pelo mecanismo de abertura. A tradução para web mantém vidro nos instrumentos, conteúdo estável e resposta breve/cancelável. Não é renderização Liquid Glass nativa. Evidência e limites desta revisão ficam em `dossierRevision` de [sheet-design-validation.json](sheet-design-validation.json), preservando a procedência de NEX-005.
 
 A barra da Ficha conserva acesso durante a leitura no regular. Seu encaixe e o respiro dos atalhos acompanham as alturas reais dos cabeçalhos; popouts sem shell têm deslocamento zero. A medição é local, sem deformação ou observador global.
+
+## Continuidade entre páginas e instrumentos do acervo — NEX-026
+
+Decisão explícita de Tadeu: o layout geral deve continuar entre páginas, com o mesmo padrão de cabeçalho. `PageHeader` organiza símbolo, localização, título editorial, descrição, ações e contexto adicional. A cor e o símbolo identificam a área; tipografia, margens, proporções e alinhamento seguem o mesmo contrato. Dashboard, Ficha, Forma de Poder, Nexus, Mestre, Mesa de mestre/jogador, utilidades e laboratórios usam essa anatomia. A arte aprovada do Dashboard continua como uma seção editorial abaixo da identidade da rota.
+
+O envelope `data-page-layout` mantém largura e margens comuns. Conteúdo e ferramentas conservam a densidade apropriada: leitura em tinta opaca, instrumentos de vidro escuro, filamentos com desaparecimento nas bordas e reflexão local. O cabeçalho da Ficha conserva sua extensão sticky e medição local. As barras de edição da Mesa ficam abaixo da identidade, preservando espaço e contexto da cena. Autenticação e consentimento mantêm a composição de entrada; popouts e embeds conservam seus limites de apresentação.
+
+No Nexus, Bibliotecas e Nova página têm acesso direto; Ferramentas reúne importação/exportação, grafo local, comandos e janela dedicada. Explorar alcança a busca do acervo no compacto, com retorno à leitura por foco. Categorias derivam dos tipos das páginas carregadas e deixam esse limite explícito; não representam pastas reais, nem as 500 candidatas possíveis do grafo. A árvore continua seguindo `parent_node_id`, com guias de profundidade e seleção estável. Abas, editor, preferências e divisores conservam seus proprietários.
+
+Nova janela e Salvar sessão passam a ser renderizados nos slots das rotas. A ligação por arrasto recebe ID e título da página realmente selecionada. Nenhuma ação descobre ou altera títulos por um observer. A biblioteca compartilha o cabeçalho, distingue falha de consulta de resultado vazio e permite tentar novamente; a prévia da tabela funciona no compacto e devolve foco ao controle que a abriu. Os status têm rótulos em português.
+
+A prova desta revisão fica em `compositionRevision` de `nexus-continuity-validation.json`. Fixtures, integração e publicação têm registros distintos; dispositivos físicos, contas reais e corpus autorizado permanecem em NEX-009/010.
+
+### NEX-026 — roda do Mais e continuidade autoral (DEC-017)
+
+Tadeu pediu explicitamente o retorno da roda, substituindo a lista adotada em NEX-016. O Mais abre um plano circular: três destinos orbitais, fios de ligação e fechamento central. Os rótulos permanecem horizontais, as áreas de toque são imóveis e o material recebe o tom da rota pelo contexto React, inclusive no portal. A entrada e a saída são curtas e finitas, sem girar textos, sem deslocar alvos no hover e com redução de movimento. A geometria pertence somente a `mobile-more-radial.css`; foco, colisão e dispensa continuam no Radix, sem captura global de eventos.
+
+Continuidade não elimina os gestos autorais: a roda, os símbolos e os instrumentos de cada área coexistem com o mesmo envelope de página, anatomia de cabeçalho, tipografia, luz e disciplina de movimento. Nenhuma alteração neste lote troca a identidade Fio-Mestre ou promete Liquid Glass nativo.

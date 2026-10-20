@@ -113,6 +113,7 @@ export function KnowledgePortabilityDialog({
   campaignId,
   assetsEnabled,
   onImported,
+  onCloseAutoFocus,
 }: {
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -120,6 +121,7 @@ export function KnowledgePortabilityDialog({
   campaignId: string | null;
   assetsEnabled: boolean;
   onImported: () => void | Promise<void>;
+  onCloseAutoFocus?: (event: Event) => void;
 }) {
   const [mode, setMode] = useState<"import" | "export">("import");
   const [file, setFile] = useState<File | null>(null);
@@ -298,7 +300,10 @@ export function KnowledgePortabilityDialog({
 
   return (
     <Dialog open={open} onOpenChange={busy ? undefined : onOpenChange}>
-      <DialogContent className="max-h-[90vh] max-w-4xl overflow-y-auto">
+      <DialogContent
+        onCloseAutoFocus={onCloseAutoFocus}
+        className="max-h-[90vh] max-w-4xl overflow-y-auto"
+      >
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <ArchiveRestore className="h-5 w-5 text-primary" />

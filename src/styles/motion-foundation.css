@@ -37,66 +37,6 @@
    Heroes: clearly become chapter openings
    -------------------------------------------------------------------------- */
 
-
-.tadeon-page-hero {
-  position: relative;
-  overflow: hidden;
-  border-radius: 1.4rem 0.38rem 1.4rem 0.38rem !important;
-  border-width: 1px !important;
-  background:
-    linear-gradient(122deg, rgb(217 215 164 / 9%), transparent 32%),
-    linear-gradient(145deg, rgb(18 21 26 / 98%), rgb(8 11 15 / 94%)) !important;
-  box-shadow:
-    0 42px 110px -72px rgb(0 0 0 / 98%),
-    inset 0 1px rgb(255 255 255 / 6%),
-    inset 2px 0 rgb(217 215 164 / 4%);
-}
-
-
-.tadeon-page-hero::before {
-  content: "";
-  position: absolute;
-  top: -7rem;
-  right: -5rem;
-  width: 21rem;
-  height: 21rem;
-  border: 1px solid rgb(217 215 164 / 17%);
-  border-radius: 50%;
-  box-shadow:
-    0 0 0 1.8rem rgb(217 215 164 / 2%),
-    0 0 0 4.5rem rgb(79 110 93 / 2%);
-  pointer-events: none;
-  transform: rotate(10deg);
-}
-
-
-.tadeon-page-hero::after {
-  content: "";
-  position: absolute;
-  inset: auto 0 0;
-  height: 4px;
-  background: linear-gradient(90deg, transparent, var(--tadeon-visible-gold), rgb(79 110 93 / 70%), transparent);
-  opacity: .72;
-  pointer-events: none;
-}
-
-
-.tadeon-page-hero h1 {
-  position: relative;
-  z-index: 2;
-  max-width: 15ch;
-  font-size: clamp(2rem, 4.5vw, 4.6rem) !important;
-  line-height: .94 !important;
-  letter-spacing: -.035em;
-}
-
-
-.tadeon-page-hero .tadeon-eyebrow {
-  position: relative;
-  z-index: 2;
-  letter-spacing: .22em;
-}
-
 /* --------------------------------------------------------------------------
    Navigation: visibly turns into a marked volume
    -------------------------------------------------------------------------- */
@@ -138,24 +78,9 @@
    Character sheet: unmistakably document-like
    -------------------------------------------------------------------------- */
 
-.tadeon-sheet-page .tadeon-sheet-commandbar {
-  min-height: 4.7rem;
-  border-bottom-width: 2px;
-}
-
 /* --------------------------------------------------------------------------
    Master panel: command center becomes visibly distinct
    -------------------------------------------------------------------------- */
-
-.tadeon-master-workspace .tadeon-master-commandbar {
-  min-height: 8rem;
-  border-radius: 1.35rem .38rem 1.35rem .38rem !important;
-  border-color: rgb(79 110 93 / 32%) !important;
-  background:
-    radial-gradient(circle at 84% 10%, rgb(217 215 164 / 9%), transparent 20rem),
-    linear-gradient(125deg, rgb(79 110 93 / 12%), transparent 42%),
-    rgb(12 16 17 / 96%) !important;
-}
 
 /* --------------------------------------------------------------------------
    Tabletop: stronger stage framing without hiding the canvas
@@ -186,11 +111,6 @@
    -------------------------------------------------------------------------- */
 
 @media (max-width: 767px) {
-
-  .tadeon-page-hero h1 { font-size: clamp(1.85rem, 10vw, 2.8rem) !important; }
-
-  .tadeon-page-hero { border-radius: 1rem .3rem 1rem .3rem !important; }
-  .tadeon-master-workspace .tadeon-master-commandbar { min-height: 7rem; }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -235,8 +155,6 @@
 
 /* Hero breathes very slowly; the content itself remains stable. */
 
-.tadeon-page-hero,
-.tadeon-master-commandbar,
 .tadeon-tabletop-boot__card {
   animation: tadeon-surface-breathe 11s ease-in-out infinite alternate;
 }
@@ -374,15 +292,11 @@
 @media (max-width: 767px) {
   .tadeon-route-stage::after { inset: 16vh -8vw auto auto; width: 78vw; height: 56vh; }
 
-  .tadeon-page-hero,
-  .tadeon-master-commandbar,
   .tadeon-tabletop-boot__card { animation-duration: 14s; }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .tadeon-route-stage::after,
-  .tadeon-page-hero,
-  .tadeon-master-commandbar,
   .tadeon-tabletop-boot__card,
   .tadeon-page > *,
   .tadeon-state-panel[data-tadeon-state] {
@@ -428,7 +342,7 @@
 /* --------------------------------------------------------------------------
    Toolbar groups feel attached to the surface they control
    -------------------------------------------------------------------------- */
-.tadeon-shell .tadeon-brain-toolbar,.tadeon-shell .tadeon-brain-mode,.tadeon-shell .tadeon-master-commandbar,.tadeon-shell .tadeon-tabletop-floating-toolbar,.tadeon-shell .tadeon-tabletop-controls {
+.tadeon-shell .tadeon-brain-toolbar,.tadeon-shell .tadeon-brain-mode,.tadeon-shell .tadeon-tabletop-floating-toolbar,.tadeon-shell .tadeon-tabletop-controls {
   isolation: isolate;
 }
 
@@ -556,73 +470,42 @@
 /* source: src/styles/tadeon-head-microanimations.css */
 /* Tadeon Head Microanimations - motion only. No layout, sizing or positioning rules. */
 
-.tadeon-page-hero,
-.tadeon-master-commandbar,
-.tadeon-tabletop-studio__header,
 .tadeon-auth-hero {
   --tadeon-head-motion-ease: cubic-bezier(.23,1,.32,1);
 }
 
 /* Heads reveal themselves without changing their authored composition. */
-.tadeon-page-hero,
-.tadeon-master-commandbar,
-.tadeon-tabletop-studio__header,
 .tadeon-auth-hero {
   animation: tadeon-head-arrive 620ms var(--tadeon-head-motion-ease) both;
 }
 
-.tadeon-page-hero > *,
-.tadeon-master-commandbar > *,
-.tadeon-tabletop-studio__header > *,
 .tadeon-auth-hero > * {
   animation: tadeon-head-content-arrive 560ms var(--tadeon-head-motion-ease) both;
 }
 
-.tadeon-page-hero > *:nth-child(2),
-.tadeon-master-commandbar > *:nth-child(2),
-.tadeon-tabletop-studio__header > *:nth-child(2),
 .tadeon-auth-hero > *:nth-child(2) {
   animation-delay: 70ms;
 }
 
-.tadeon-page-hero > *:nth-child(3),
-.tadeon-master-commandbar > *:nth-child(3),
-.tadeon-tabletop-studio__header > *:nth-child(3),
 .tadeon-auth-hero > *:nth-child(3) {
   animation-delay: 120ms;
 }
 
 /* Marks get a restrained material pulse, never a glow-heavy effect. */
-.tadeon-page-hero-mark-host,
-.tadeon-focus-section-mark-host,
-.tadeon-tabletop-brand-mark-host {
+.tadeon-focus-section-mark-host {
   transition: transform 260ms var(--tadeon-head-motion-ease), box-shadow 260ms ease, border-color 260ms ease;
 }
 
 @media (hover: hover) and (pointer: fine) {
-  .tadeon-page-hero-mark-host:hover,
-  .tadeon-focus-section-mark-host:hover,
-  .tadeon-tabletop-brand-mark-host:hover {
+  .tadeon-focus-section-mark-host:hover {
     transform: translateY(-1px) scale(1.025);
   }
 
-  .tadeon-page-hero button,
-  .tadeon-page-hero a,
-  .tadeon-master-commandbar button,
-  .tadeon-master-commandbar a,
-  .tadeon-tabletop-studio__header button,
-  .tadeon-tabletop-studio__header a,
   .tadeon-auth-hero button,
   .tadeon-auth-hero a {
     transition: transform 220ms var(--tadeon-head-motion-ease), box-shadow 220ms ease, opacity 180ms ease;
   }
 
-  .tadeon-page-hero button:hover,
-  .tadeon-page-hero a:hover,
-  .tadeon-master-commandbar button:hover,
-  .tadeon-master-commandbar a:hover,
-  .tadeon-tabletop-studio__header button:hover,
-  .tadeon-tabletop-studio__header a:hover,
   .tadeon-auth-hero button:hover,
   .tadeon-auth-hero a:hover {
     transform: translateY(-1px);
@@ -640,29 +523,15 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .tadeon-page-hero,
-  .tadeon-master-commandbar,
-  .tadeon-tabletop-studio__header,
   .tadeon-auth-hero,
-  .tadeon-page-hero > *,
-  .tadeon-master-commandbar > *,
-  .tadeon-tabletop-studio__header > *,
   .tadeon-auth-hero > * {
     animation: none !important;
     transform: none !important;
   }
 
-  .tadeon-page-hero button,
-  .tadeon-page-hero a,
-  .tadeon-master-commandbar button,
-  .tadeon-master-commandbar a,
-  .tadeon-tabletop-studio__header button,
-  .tadeon-tabletop-studio__header a,
   .tadeon-auth-hero button,
   .tadeon-auth-hero a,
-  .tadeon-page-hero-mark-host,
-  .tadeon-focus-section-mark-host,
-  .tadeon-tabletop-brand-mark-host {
+  .tadeon-focus-section-mark-host {
     transition: none !important;
   }
 }
@@ -680,9 +549,6 @@
 }
 
 /* Preserve legacy hooks without imposing old motion behavior. */
-.tadeon-page-hero,
-.tadeon-master-commandbar,
-.tadeon-tabletop-studio__header,
 .tadeon-auth-hero,
 .tadeon-surface,
 .tadeon-state-panel,
@@ -730,7 +596,7 @@
 }
 
 /* Tabletop - studio physicality, short response and deeper press. */
-.tadeon-tabletop-studio__header,.tadeon-tabletop-floating-toolbar,.tadeon-tabletop-controls,.tadeon-tabletop-studio [data-tabletop-stage] {
+.tadeon-tabletop-floating-toolbar,.tadeon-tabletop-controls,.tadeon-tabletop-studio [data-tabletop-stage] {
   transition: box-shadow 360ms var(--tadeon-motion-material, cubic-bezier(.23,1,.32,1)),
     border-color 300ms ease,
     opacity 280ms ease;
@@ -829,8 +695,6 @@
   box-shadow: 0 0 18px rgb(116 36 45 / 24%);
 }
 
-.tadeon-tabletop-studio__header .tadeon-tabletop-symbol,
-.tadeon-tabletop-studio__header [data-tabletop-symbol],
 .tadeon-tabletop-studio .tadeon-symbol-mark {
   transform: scale(1.08);
   transform-origin: center;
@@ -838,8 +702,6 @@
 }
 
 @media (hover: hover) and (pointer: fine) {
-  .tadeon-tabletop-studio__header .tadeon-tabletop-symbol:hover,
-  .tadeon-tabletop-studio__header [data-tabletop-symbol]:hover,
   .tadeon-tabletop-studio .tadeon-symbol-mark:hover { transform: scale(1.12) rotate(.6deg); filter: drop-shadow(0 8px 20px rgb(217 215 164 / 18%)); }
 }
 
@@ -976,7 +838,7 @@
 @keyframes tadeon-progress-glint { 0%,40% { transform: translateX(-140%); } 70%,100% { transform: translateX(460%); } }
 
 @media (prefers-reduced-motion: reduce) {
-  .tadeon-tabletop-studio__header .tadeon-tabletop-symbol, .tadeon-tabletop-studio__header [data-tabletop-symbol], .tadeon-tabletop-studio .tadeon-symbol-mark, .tadeon-shell [data-slot="popover-content"]:not([data-motion-surface]), .tadeon-shell [data-slot="dropdown-menu-content"]:not([data-motion-surface]), .tadeon-shell [data-slot="dropdown-menu-sub-content"]:not([data-motion-surface]), .tadeon-shell [data-slot="tooltip-content"], .tadeon-shell [data-slot="dialog-overlay"]:not([data-motion-surface]), .tadeon-shell [data-slot="sheet-overlay"], .tadeon-shell [data-slot="dialog-content"]:not([data-motion-surface]), .tadeon-shell [data-slot="sheet-content"]:not([data-motion-surface]), .tadeon-shell [data-slot="dialog-content"]:not([data-motion-surface]) > *, .tadeon-shell [data-slot="sheet-content"]:not([data-motion-surface]) > *, .tadeon-shell [data-slot="accordion-content"], .tadeon-shell [data-sonner-toaster] [data-sonner-toast], .tadeon-shell [aria-busy="true"]::before, .tadeon-shell :where([data-tadeon-status][data-state="active"], [data-slot="badge"][data-state="active"]), .tadeon-shell :where([data-tadeon-dot][data-state="active"], .tadeon-status-dot[data-state="active"]), .tadeon-shell :where([data-tadeon-progress], .tadeon-progress-bar)::after, .tadeon-shell .tadeon-atmosphere, .tadeon-shell .tadeon-atmosphere-layer, .tadeon-shell [data-tadeon-atmosphere], .tadeon-shell .tadeon-orbit, .tadeon-shell [data-tadeon-orbit], .tadeon-shell .tadeon-grain, .tadeon-shell [data-tadeon-grain] { animation: none !important; }
+  .tadeon-tabletop-studio .tadeon-symbol-mark, .tadeon-shell [data-slot="popover-content"]:not([data-motion-surface]), .tadeon-shell [data-slot="dropdown-menu-content"]:not([data-motion-surface]), .tadeon-shell [data-slot="dropdown-menu-sub-content"]:not([data-motion-surface]), .tadeon-shell [data-slot="tooltip-content"], .tadeon-shell [data-slot="dialog-overlay"]:not([data-motion-surface]), .tadeon-shell [data-slot="sheet-overlay"], .tadeon-shell [data-slot="dialog-content"]:not([data-motion-surface]), .tadeon-shell [data-slot="sheet-content"]:not([data-motion-surface]), .tadeon-shell [data-slot="dialog-content"]:not([data-motion-surface]) > *, .tadeon-shell [data-slot="sheet-content"]:not([data-motion-surface]) > *, .tadeon-shell [data-slot="accordion-content"], .tadeon-shell [data-sonner-toaster] [data-sonner-toast], .tadeon-shell [aria-busy="true"]::before, .tadeon-shell :where([data-tadeon-status][data-state="active"], [data-slot="badge"][data-state="active"]), .tadeon-shell :where([data-tadeon-dot][data-state="active"], .tadeon-status-dot[data-state="active"]), .tadeon-shell :where([data-tadeon-progress], .tadeon-progress-bar)::after, .tadeon-shell .tadeon-atmosphere, .tadeon-shell .tadeon-atmosphere-layer, .tadeon-shell [data-tadeon-atmosphere], .tadeon-shell .tadeon-orbit, .tadeon-shell [data-tadeon-orbit], .tadeon-shell .tadeon-grain, .tadeon-shell [data-tadeon-grain] { animation: none !important; }
   .tadeon-shell [data-slot="tabs-trigger"]:not([data-material-surface="tab"]), .tadeon-shell [data-slot="accordion-trigger"], .tadeon-shell [data-slot="dropdown-menu-item"], .tadeon-shell [data-slot="dropdown-menu-sub-trigger"], .tadeon-shell [data-slot="dropdown-menu-checkbox-item"], .tadeon-shell [data-slot="dropdown-menu-radio-item"] { transition: none !important; }
 }
 
@@ -1078,9 +940,6 @@
   will-change: opacity, transform, filter;
 }
 
-.tadeon-route-stage > .tadeon-page > .tadeon-page-hero,
-.tadeon-route-stage > .tadeon-page > .tadeon-master-commandbar,
-.tadeon-route-stage > .tadeon-page > .tadeon-tabletop-studio__header,
 .tadeon-route-stage > .tadeon-page > .tadeon-auth-hero {
   animation-delay: 55ms;
 }

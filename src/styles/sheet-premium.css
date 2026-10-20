@@ -2,7 +2,6 @@
   --sheet-mobile-header-height: 4rem;
   position: relative;
   isolation: isolate;
-  max-width: 96rem;
 }
 
 .tadeon-sheet-page::before {
@@ -21,24 +20,9 @@
 }
 
 .tadeon-sheet-commandbar {
-  position: sticky;
+  --page-header-position: sticky;
   z-index: 25;
   top: var(--sheet-sticky-top, 0rem);
-  margin: 0 calc(clamp(1rem, 3vw, 2rem) * -1) 1.25rem;
-  padding: 0.75rem clamp(1rem, 3vw, 2rem);
-  border-bottom: 1px solid color-mix(in srgb, var(--border) 82%, transparent);
-}
-
-.tadeon-sheet-commandbar__main {
-  display: grid;
-  grid-template-columns: auto auto minmax(0, 1fr) auto;
-  align-items: center;
-  gap: 0.625rem;
-  min-height: 2.75rem;
-}
-
-.tadeon-sheet-commandbar__identity {
-  min-width: 0;
 }
 
 .tadeon-sheet-commandbar__back {
@@ -46,19 +30,11 @@
   height: 2.75rem;
   border: 1px solid transparent;
   border-radius: 0.875rem;
-  transition:
-    border-color 180ms ease,
-    background-color 180ms ease,
-    transform var(--motion-press) var(--ease-out);
+
 }
 
-.tadeon-sheet-commandbar__back:hover {
-  border-color: color-mix(in srgb, var(--primary) 22%, var(--border));
-  background: color-mix(in srgb, var(--secondary) 76%, transparent);
-}
 
-.tadeon-sheet-commandbar__back:active,
-.tadeon-sheet-commandbar__actions button:active,
+
 .tadeon-stepper-button:active {
   transform: scale(0.96);
 }
@@ -425,18 +401,6 @@
   overflow-x: clip;
 }
 
-.tadeon-vp-container {
-  width: min(100%, 90rem);
-}
-
-.tadeon-vp-commandbar {
-  top: 0;
-  border-radius: 0 0 1rem 1rem;
-  background:
-    linear-gradient(110deg, rgb(32 7 18 / 88%), rgb(10 2 16 / 82%)),
-    radial-gradient(circle at 70% 0%, rgb(251 146 60 / 13%), transparent 45%);
-  backdrop-filter: blur(24px) saturate(135%);
-}
 
 .tadeon-vp-tabs-list {
   min-height: 3rem;
@@ -505,10 +469,6 @@
 }
 
 @media (max-width: 767px) {
-  .tadeon-sheet-page {
-    padding-inline: 0.75rem;
-  }
-
   .tadeon-sheet-page::before {
     inset: 5rem -40% auto auto;
     width: 36rem;
@@ -516,21 +476,9 @@
   }
 
   .tadeon-sheet-commandbar {
-    position: relative;
+    --page-header-position: relative;
     top: auto;
     z-index: 1;
-    margin: 0 -0.75rem 1rem;
-    padding: 0.625rem 0.75rem 0.75rem;
-    border-radius: 0 0 1rem 1rem;
-  }
-
-  .tadeon-sheet-commandbar__main {
-    grid-template-columns: auto minmax(0, 1fr) auto;
-    gap: 0.5rem;
-  }
-
-  .tadeon-sheet-commandbar__identity {
-    grid-column: 2;
   }
 
   .tadeon-sheet-commandbar__actions {
@@ -694,11 +642,6 @@
 
   .tadeon-sheet-skill-tree .tadeon-skill-node {
     min-height: 0;
-  }
-
-  .tadeon-vp-commandbar {
-    top: var(--sheet-mobile-header-height);
-    margin-bottom: 0.75rem;
   }
 
   .tadeon-vp-tabs-list {
@@ -874,44 +817,6 @@
     radial-gradient(circle at 80% 62%, rgb(113 107 123 / 9%), transparent 42%) !important;
 }
 
-.tadeon-vp-commandbar {
-  border-color: color-mix(in srgb, var(--vp-accent) 34%, var(--border));
-  border-radius: 0 0 1.2rem 0.42rem;
-  background:
-    linear-gradient(110deg, rgb(28 13 18 / 93%), rgb(10 11 15 / 89%)),
-    radial-gradient(circle at 72% 0%, rgb(116 36 45 / 15%), transparent 48%);
-  box-shadow:
-    0 20px 58px -40px rgb(116 36 45 / 78%),
-    inset 0 -1px rgb(217 215 164 / 4%);
-  backdrop-filter: blur(24px) saturate(118%);
-}
-
-.tadeon-vp-commandbar h1 {
-  background-image: linear-gradient(
-    90deg,
-    var(--tadeon-ice),
-    color-mix(in srgb, var(--tadeon-knowledge) 72%, var(--vp-accent)),
-    color-mix(in srgb, var(--tadeon-veil) 68%, var(--foreground))
-  );
-  filter: none;
-}
-
-.tadeon-vp-commandbar > div > svg,
-.tadeon-vp-commandbar .text-orange-300 {
-  color: color-mix(in srgb, var(--vp-accent) 78%, var(--tadeon-ice));
-}
-
-.tadeon-vp-commandbar [class*="from-orange-500"] {
-  border: 1px solid color-mix(in srgb, var(--tadeon-knowledge) 24%, var(--vp-accent));
-  color: var(--tadeon-ice);
-  background-image: linear-gradient(
-    110deg,
-    var(--tadeon-fear),
-    color-mix(in srgb, var(--tadeon-fear) 58%, var(--tadeon-veil))
-  );
-  box-shadow: 0 16px 38px -24px rgb(116 36 45 / 88%);
-}
-
 .tadeon-vp-tabs-list {
   border-color: color-mix(in srgb, var(--vp-accent) 26%, var(--border));
   background: rgb(12 13 18 / 82%);
@@ -1014,7 +919,6 @@
 }
 
 @media (prefers-reduced-transparency: reduce) {
-  .tadeon-vp-commandbar,
   .tadeon-vp-tabs-list {
     background: var(--background);
     backdrop-filter: none;
@@ -2054,10 +1958,8 @@
 .tadeon-attribute-tile__value, .tadeon-defense-card__score span {
   font-family: var(--font-inter); font-weight: 500; font-variant-numeric: lining-nums tabular-nums; text-shadow: none;
 }
-.tadeon-sheet-commandbar, .tadeon-sheet-mobile-dock {
-  background: linear-gradient(145deg, rgb(233 227 213 / 5%), transparent 45%), rgb(17 21 28 / 94%);
-  border-color: rgb(233 227 213 / 17%); box-shadow: inset 0 1px rgb(233 227 213 / 9%), 0 16px 30px -24px rgb(0 0 0 / 85%);
-  backdrop-filter: blur(18px) saturate(115%); -webkit-backdrop-filter: blur(18px) saturate(115%);
+.tadeon-sheet-mobile-dock {
+  border-color: rgb(233 227 213 / 17%); -webkit-backdrop-filter: blur(18px) saturate(115%);
 }
 .tadeon-sheet-experience-actions { display: flex; align-items: center; gap: .375rem; min-width: 0; flex-wrap: wrap; }
 .tadeon-sheet-page .tadeon-stepper-button { min-width: 44px; min-height: 44px; }
@@ -2069,10 +1971,10 @@
  .tadeon-defense-card { grid-column: 1 / -1; }
 }
 @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
- .tadeon-sheet-commandbar, .tadeon-sheet-mobile-dock { background: #151a22; }
+ .tadeon-sheet-mobile-dock { }
 }
 @media (prefers-reduced-transparency: reduce) {
- .tadeon-sheet-commandbar, .tadeon-sheet-mobile-dock { background: #151a22; backdrop-filter: none; -webkit-backdrop-filter: none; }
+ .tadeon-sheet-mobile-dock { -webkit-backdrop-filter: none; }
 }
 /* Attribute controls use one responsive instrument grid, including game mode. */
 .tadeon-attribute-grid {

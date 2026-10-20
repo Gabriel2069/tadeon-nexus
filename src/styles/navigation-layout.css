@@ -30,51 +30,11 @@
 }
 
 /* Standalone is intentionally a touch more present, never a different theme. */
-.tadeon-dedicated-shell[data-dedicated-presentation="popout"]:is(
-  [data-section="O Nexus"],
-  [data-section="Painel do Mestre"],
-  [data-section="Mesa Nexus"]
-) :is(
-  [data-slot="card"],
-  .tadeon-nexus-hero,
-  .tadeon-nexus-commandbar,
-  .tadeon-master-commandbar,
-  .tadeon-tabletop-studio
-) {
+.tadeon-dedicated-shell[data-dedicated-presentation="popout"]:is([data-section="O Nexus"], [data-section="Painel do Mestre"], [data-section="Mesa Nexus"]) :is([data-slot="card"], .tadeon-nexus-hero, .tadeon-tabletop-studio) {
   border-color: color-mix(in srgb, var(--border) 68%, var(--section-accent) 32%) !important;
 }
 
-.tadeon-tabletop-popout-host {
-  display: inline-flex;
-  flex: 0 0 auto;
-  align-items: center;
-}
-
-.tadeon-tabletop-popout-button {
-  flex: 0 0 auto;
-  color: inherit;
-  transition:
-    color var(--motion-fast, 160ms) var(--ease-out),
-    border-color var(--motion-fast, 160ms) var(--ease-out),
-    background-color var(--motion-fast, 160ms) var(--ease-out),
-    filter var(--motion-fast, 160ms) var(--ease-out),
-    transform var(--motion-fast, 160ms) var(--ease-out);
-}
-
-.tadeon-tabletop-popout-button:hover {
-  color: var(--section-accent);
-  filter: drop-shadow(0 0 8px rgb(var(--section-accent-rgb) / 28%));
-  transform: translateY(-1px);
-}
-
 @media (prefers-reduced-motion: reduce) {
-  .tadeon-tabletop-popout-button {
-    transition: none;
-  }
-
-  .tadeon-tabletop-popout-button:hover {
-    transform: none;
-  }
 }
 
 /* end-source: src/styles/dedicated-workspace-parity-168.css */
@@ -86,21 +46,6 @@
   width: 100%;
   min-width: 0;
   max-width: 100%;
-}
-
-.tadeon-shell[data-section="Painel do Mestre"]
-  .tadeon-workspace-popout-host
-  > button[title="Abrir este painel em janela dedicada"] {
-  display: none !important;
-}
-
-.tadeon-master-toolbar-popout-host {
-  flex: 0 0 auto;
-  align-items: center;
-}
-
-.tadeon-master-toolbar-popout-host > button {
-  min-width: max-content;
 }
 
 .tadeon-users-list {

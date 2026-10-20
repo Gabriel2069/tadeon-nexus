@@ -155,40 +155,6 @@
   height: .8rem;
 }
 
-.tadeon-workspace-popout-host,
-.tadeon-nexus-sheet-drag-host {
-  display: inline-flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: .35rem;
-  margin-top: .55rem;
-}
-
-.tadeon-nexus-drag-chip {
-  display: inline-flex;
-  align-items: center;
-  gap: .35rem;
-  min-height: 2rem;
-  border: 1px dashed color-mix(in srgb, var(--primary) 48%, var(--border));
-  border-radius: 999px;
-  padding: .28rem .68rem;
-  background: color-mix(in srgb, var(--primary) 7%, var(--card));
-  color: var(--foreground);
-  font-size: .72rem;
-  font-weight: 650;
-  cursor: grab;
-  transition: transform 160ms ease, border-color 160ms ease, background 160ms ease;
-}
-
-.tadeon-nexus-drag-chip:hover {
-  transform: translateY(-1px);
-  border-color: color-mix(in srgb, var(--primary) 72%, var(--border));
-  background: color-mix(in srgb, var(--primary) 12%, var(--card));
-}
-
-.tadeon-nexus-drag-chip:active { cursor: grabbing; }
-.tadeon-nexus-drag-chip svg { width: .85rem; height: .85rem; }
-
 html[data-tadeon-nexus-drop="ready"] .tadeon-sheet-page::before {
   content: "Solte para ligar esta página do Nexus à ficha";
   position: fixed;
@@ -364,9 +330,7 @@ html[data-tadeon-sheet-embed="tabletop"] .tadeon-sheet-page {
 
 @media (prefers-reduced-motion: reduce) {
   .tadeon-sheet-game-button,
-  .tadeon-sheet-popout-button,
-  .tadeon-workspace-popout-host button,
-  .tadeon-nexus-drag-chip {
+  .tadeon-sheet-popout-button {
     transition: none !important;
     animation: none !important;
   }
@@ -799,26 +763,13 @@ html[data-tadeon-sheet-mode="game"] section[id]:focus-within .text-muted-foregro
 }
 
 .tadeon-route-nexus
-  :where(
-    .tadeon-nexus-tools,
-    .tadeon-nexus-editor-toolbar,
-    .tadeon-nexus-context-tabs,
-    .tadeon-nexus-index,
-    .tadeon-nexus-document
-  )
+  :where(.tadeon-nexus-editor-toolbar, .tadeon-nexus-context-tabs, .tadeon-nexus-index, .tadeon-nexus-document)
   :where(button, [role="button"], [data-slot="button"]) {
   -webkit-tap-highlight-color: transparent;
 }
 
 .tadeon-route-nexus
-  :where(
-    .tadeon-nexus-tools,
-    .tadeon-nexus-editor-toolbar,
-    .tadeon-nexus-context-tabs,
-    .tadeon-nexus-index,
-    .tadeon-nexus-document,
-    .tadeon-nexus-home
-  )
+  :where(.tadeon-nexus-editor-toolbar, .tadeon-nexus-context-tabs, .tadeon-nexus-index, .tadeon-nexus-document, .tadeon-nexus-home)
   :where(button, [role="button"], [data-slot="button"])
   svg:not(.animate-spin):not(.animate-pulse) {
   overflow: visible;
@@ -832,18 +783,6 @@ html[data-tadeon-sheet-mode="game"] section[id]:focus-within .text-muted-foregro
     rotate 210ms var(--ease-out);
 }
 
-.tadeon-route-nexus .tadeon-nexus-tools [data-slot="button"] {
-  min-height: 2.4rem;
-  border-color: color-mix(in srgb, var(--primary) 15%, var(--border));
-  background:
-    linear-gradient(145deg, rgb(255 255 255 / 3%), transparent 50%),
-    color-mix(in srgb, var(--card) 88%, var(--background));
-  box-shadow:
-    inset 0 1px rgb(255 255 255 / 3%),
-    0 12px 30px -26px rgb(0 0 0 / 100%);
-}
-
-.tadeon-route-nexus .tadeon-nexus-tools [data-slot="button"]::after,
 .tadeon-route-nexus .tadeon-nexus-context-tabs button::after,
 .tadeon-route-nexus .tadeon-nexus-index__node::after,
 .tadeon-route-nexus .tadeon-nexus-document__tab::after {
@@ -1082,7 +1021,6 @@ html[data-tadeon-sheet-mode="game"] section[id]:focus-within .text-muted-foregro
 }
 
 @media (hover: hover) and (pointer: fine) {
-  .tadeon-route-nexus .tadeon-nexus-tools [data-slot="button"]:not(:disabled):hover,
   .tadeon-route-nexus .tadeon-nexus-editor-toolbar [data-slot="button"]:not(:disabled):hover,
   .tadeon-route-nexus .tadeon-nexus-context-tabs button:not(:disabled):hover {
     border-color: color-mix(in srgb, var(--primary) 30%, var(--border));
@@ -1095,7 +1033,7 @@ html[data-tadeon-sheet-mode="game"] section[id]:focus-within .text-muted-foregro
   }
 
   .tadeon-route-nexus
-    :where(.tadeon-nexus-tools, .tadeon-nexus-editor-toolbar, .tadeon-nexus-context-tabs)
+    :where(.tadeon-nexus-editor-toolbar, .tadeon-nexus-context-tabs)
     :where(button, [data-slot="button"]):not(:disabled):hover
     svg:not(.animate-spin):not(.animate-pulse) {
     color: var(--primary);
@@ -1161,28 +1099,16 @@ html[data-tadeon-sheet-mode="game"] section[id]:focus-within .text-muted-foregro
 }
 
 @media (pointer: coarse) {
-  .tadeon-route-nexus
-    :where(
-      .tadeon-nexus-tools,
-      .tadeon-nexus-editor-toolbar,
-      .tadeon-nexus-context-tabs,
-      .tadeon-nexus-home__actions,
-      .tadeon-nexus-home__shelves
-    )
-    :where(button, [data-slot="button"]):not(:disabled):active,
   .tadeon-library-view-switch [data-slot="button"]:not(:disabled):active,
-  .tadeon-graph-layout-switch [data-slot="button"]:not(:disabled):active {
+      .tadeon-graph-layout-switch [data-slot="button"]:not(:disabled):active,
+      .tadeon-route-nexus
+    :where(.tadeon-nexus-editor-toolbar, .tadeon-nexus-context-tabs, .tadeon-nexus-home__actions, .tadeon-nexus-home__shelves)
+    :where(button, [data-slot="button"]):not(:disabled):active {
     scale: 0.97;
   }
 
   .tadeon-route-nexus
-    :where(
-      .tadeon-nexus-tools,
-      .tadeon-nexus-editor-toolbar,
-      .tadeon-nexus-context-tabs,
-      .tadeon-nexus-home__actions,
-      .tadeon-nexus-home__shelves
-    )
+    :where(.tadeon-nexus-editor-toolbar, .tadeon-nexus-context-tabs, .tadeon-nexus-home__actions, .tadeon-nexus-home__shelves)
     :where(button, [data-slot="button"]):not(:disabled):active
     svg:not(.animate-spin):not(.animate-pulse) {
     scale: 0.88;
@@ -1191,13 +1117,6 @@ html[data-tadeon-sheet-mode="game"] section[id]:focus-within .text-muted-foregro
 }
 
 @media (max-width: 767px) {
-  .tadeon-route-nexus .tadeon-nexus-tools {
-    scroll-padding-inline: 0.4rem;
-  }
-
-  .tadeon-route-nexus .tadeon-nexus-tools [data-slot="button"] {
-    flex: 0 0 auto;
-  }
 
   .tadeon-route-nexus .tadeon-nexus-document__tab {
     max-width: min(72vw, 14rem);

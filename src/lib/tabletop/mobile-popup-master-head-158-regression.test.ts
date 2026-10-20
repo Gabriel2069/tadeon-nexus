@@ -41,23 +41,9 @@ describe("mobile popup + master head 158", () => {
     expect(nav).not.toContain("observer.observe(document.body");
   });
 
-  it("gives the master a permanent sigil and removes the old generic head glyph", () => {
-    const symbols = source("src/components/section-symbols.tsx");
-    const css = source("src/styles/mobile-popup-master-head-158.css");
-    expect(symbols).toContain("export function MasterSigil");
-    expect(symbols).toContain('data-section-symbol={section}');
-    expect(css).toContain(".tadeon-master-commandbar__master-sigil");
-    expect(css).toContain(".tadeon-master-commandbar__active-icon");
-    expect(css).toContain(".tadeon-master-commandbar h1 > svg");
-  });
+  // NEX-026: shared PageHeader/explicit action behavior is verified at runtime.
 
-  it("brings utility heads back to the compact Nexus commandbar cadence", () => {
-    const css = source("src/styles/mobile-popup-master-head-158.css");
-    expect(css).toContain("min-height: 5.75rem !important");
-    expect(css).toContain("padding: 1rem 1.1rem 1rem 5.1rem !important");
-    expect(css).toContain("width: 3rem !important");
-    expect(css).toContain("height: 3rem !important");
-    expect(css).toContain("font-size: clamp(1.55rem, 2.6vw, 2.2rem) !important");
-    expect(css).toContain("max-height: none !important");
-  });
+
+  // NEX-026: shared PageHeader/explicit action behavior is verified at runtime.
+
 });

@@ -218,20 +218,32 @@
   max-height: 25rem;
 }
 .tadeon-knowledge-tree [role="treeitem"] {
+  position: relative;
   display: flex;
   align-items: center;
   gap: 0.45rem;
   min-height: 44px;
-  border-radius: 0.4rem;
+  border: 1px solid transparent;
+  border-radius: .55rem;
   color: var(--muted-foreground);
   cursor: pointer;
   outline-offset: -2px;
 }
 .tadeon-knowledge-tree [aria-selected="true"] {
   color: var(--foreground);
-  background: rgb(79 110 93 / 18%);
-  box-shadow: inset 2px 0 #729d81;
+  border-color: rgb(144 185 157 / 20%);
+  background: linear-gradient(90deg, #26372e, #18241e);
+  box-shadow: inset 2px 0 #90b99d, inset 0 1px rgb(255 255 255 / 4%);
 }
+.tadeon-knowledge-tree [role="treeitem"]::before {
+  position: absolute; top: -.25rem; bottom: -.25rem; left: 1.125rem;
+  width: calc(var(--tree-depth, 0) * 14px);
+  background: repeating-linear-gradient(90deg, rgb(144 185 157 / 12%) 0 1px, transparent 1px 14px);
+  content: ""; pointer-events: none;
+}
+.tadeon-knowledge-tree [role="treeitem"]:hover { color: var(--foreground); border-color: rgb(144 185 157 / 16%); }
+.tadeon-knowledge-tree [role="treeitem"]:focus-visible { outline: 2px solid #b3d1bd; }
+
 .tadeon-knowledge-tree [role="treeitem"] > svg {
   width: 15px;
   height: 15px;
@@ -301,3 +313,29 @@
   background: #15191f;
   box-shadow: 0 16px 40px rgb(0 0 0 / 45%);
 }
+
+/* Explorer: index, loaded-result facets and manuscript instruments. */
+.tadeon-nexus-scope { display: grid; width: 100%; grid-template-columns: repeat(2, minmax(0, 16rem)); gap: .625rem; }
+.tadeon-nexus-scope [data-slot="select-trigger"] { width: 100%; min-height: 44px; }
+.tadeon-nexus-index__heading { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin: .25rem .25rem 1rem; }
+.tadeon-nexus-index__heading p { margin: 0; font-family: var(--font-cinzel); font-size: 1.55rem; font-weight: 600; color: var(--foreground); line-height: 1.15; }
+.tadeon-nexus-index__heading span { display: block; margin-top: .3rem; font-size: .6875rem; color: var(--muted-foreground); }
+.tadeon-nexus-index__heading > svg { width: 1.4rem; height: 1.4rem; color: #90b99d; opacity: .65; }
+.tadeon-nexus-collections { border-bottom: 1px solid var(--border); padding-block: .5rem; }
+.tadeon-nexus-collections > summary { display: flex; align-items: center; gap: .5rem; min-height: 44px; cursor: pointer; font-size: .75rem; color: var(--muted-foreground); }
+.tadeon-nexus-collections > summary svg { width: 1rem; height: 1rem; color: #90b99d; }
+.tadeon-nexus-collections__items { display: grid; grid-template-columns: 1fr 1fr; gap: .25rem; padding-bottom: .5rem; }
+.tadeon-nexus-collections__items > button { justify-content: start; min-width: 0; min-height: 44px; padding: .5rem; font-size: .6875rem; white-space: normal; }
+.tadeon-nexus-collections__items > button > svg { width: .9rem; height: .9rem; }
+.tadeon-nexus-collections__items > button[aria-pressed="true"] { border-color: rgb(144 185 157 / 35%); background: #26372e; color: var(--foreground); }
+.tadeon-nexus-collections__count { margin-left: auto; font-variant-numeric: tabular-nums; color: var(--muted-foreground); }
+.tadeon-nexus-collections > p { margin: 0 0 .5rem; font-size: .6875rem; color: var(--muted-foreground); line-height: 1.6; }
+.tadeon-nexus-index__results { max-height: 44vh; min-width: 0; overflow-y: auto; margin-top: .5rem; padding-right: .25rem; scrollbar-gutter: stable; }
+.tadeon-nexus-index__scope { font-size: .6875rem; line-height: 1.6; margin: .75rem .25rem .25rem; color: var(--muted-foreground); }
+.tadeon-nexus-document__tabs { scrollbar-width: thin; }
+.tadeon-nexus-document__toolbar { background: #141a20; box-shadow: inset 0 -1px rgb(233 227 213 / 3%); }
+.tadeon-nexus-manuscript { background: #11161c; }
+.tadeon-nexus-manuscript > .prose { max-width: 70ch; margin-inline: auto; }
+@media (max-width: 479px) { .tadeon-nexus-scope { grid-template-columns: minmax(0, 1fr); } }
+.tadeon-nexus-manuscript-title { outline-offset: .4rem; }
+@media (min-width: 1180px) { .tadeon-nexus-explore-trigger { display: none; } }

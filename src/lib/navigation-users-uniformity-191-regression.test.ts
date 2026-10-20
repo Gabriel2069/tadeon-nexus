@@ -6,21 +6,8 @@ function source(path: string) {
 }
 
 describe("navigation and users uniformity 191", () => {
-  it("mounts workspace popouts beside desktop toolbar actions", () => {
-    const bridge = source("src/components/master/master-toolbar-popout-bridge.tsx");
-    const shell = source("src/components/protected-shell.tsx");
-    const css = source("src/styles/navigation-users-uniformity-191.css");
+  // NEX-026: explicit WorkspaceActions behavior replaces DOM-injection assertions.
 
-    expect(bridge).toContain('path === "/master-panel"');
-    expect(bridge).toContain('path === "/nexus"');
-    expect(bridge).toContain('.tadeon-desktop-toolbar > div:last-child');
-    expect(bridge).toContain('actions.insertBefore(portalHost, actions.firstChild)');
-    expect(bridge).toContain('variant="ghost"');
-    expect(bridge).toContain("Nova janela");
-    expect(shell).toContain("<MasterToolbarPopoutBridge />");
-    expect(css).toContain('[data-section="Painel do Mestre"]');
-    expect(css).toContain('button[title="Abrir este painel em janela dedicada"]');
-  });
 
   // NEX-024: available width and 44px collapsed targets are measured in the browser.
 

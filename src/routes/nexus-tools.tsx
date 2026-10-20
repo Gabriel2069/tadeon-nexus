@@ -1,8 +1,8 @@
+import { PageHeader } from "@/components/page-header";
 import { UTILITY_AREAS } from "@/lib/utility-areas";
 import { UtilitySummary } from "@/components/utility-summary";
 import { useAuth } from "@/lib/auth";
 import { createLatestRequestGate } from "@/lib/latest-request";
-import { PageSectionMark } from "@/components/section-symbols";
 import { createFileRoute } from "@tanstack/react-router";
 import { useCallback, useEffect, useRef, useState } from "react";
 import {
@@ -545,29 +545,19 @@ function NexusToolsPageContent() {
   };
 
   return (
-    <div className="tadeon-page tadeon-route-tools max-w-6xl space-y-6">
-      <section
-        data-tadeon-page-hero="tools"
-        className="tadeon-page-hero tadeon-surface rounded-2xl px-5 py-6 md:px-8 md:py-8"
-      >
-        <PageSectionMark section="tools" />
-        <div className="tadeon-utility-hero__body">
-          <div>
-            <p className="tadeon-eyebrow">Integridade do arquivo</p>
-            <h1 className="font-cinzel text-3xl font-semibold md:text-4xl">
-              {UTILITY_AREAS.backup.label}
-            </h1>
-            <p className="mt-2 max-w-2xl text-sm text-muted-foreground">
-              Proteja fichas e dados do mestre, consulte versões locais e identifique falhas sem
-              exibir mensagens internas do banco.
-            </p>
-          </div>
-          <Badge variant="outline" className="w-fit max-w-full gap-1.5 whitespace-normal px-3 py-1.5">
-            <ShieldCheck className="h-3.5 w-3.5 text-primary" />
+    <div data-page-layout className="tadeon-page tadeon-route-tools space-y-6">
+      <PageHeader
+        section="tools"
+        eyebrow="Integridade do arquivo"
+        title={UTILITY_AREAS.backup.label}
+        description="Proteja fichas e dados do mestre, consulte versões locais e identifique falhas sem exibir mensagens internas do banco."
+        actions={
+          <Badge variant="outline" className="max-w-full gap-1.5 whitespace-normal px-3 py-1.5">
+            <ShieldCheck className="h-3.5 w-3.5" />
             Credenciais não são exportadas
           </Badge>
-        </div>
-      </section>
+        }
+      />
 
       <UtilitySummary
         items={[

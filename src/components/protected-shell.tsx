@@ -1,12 +1,7 @@
 import { AppLayout } from "@/components/app-layout";
-import { MasterToolbarPopoutBridge } from "@/components/master/master-toolbar-popout-bridge";
+import "@/styles/master-toolbar-popout.css";
 import { PageState } from "@/components/page-state";
-import {
-  NexusSheetDragBridge,
-  WorkspacePopoutBridge,
-} from "@/components/sheet/sheet-experience-bridge";
 import { TabletopCrossSurfaceBridge } from "@/components/tabletop/tabletop-cross-surface-bridge";
-import { TabletopWorkspacePopoutBridge } from "@/components/tabletop/tabletop-workspace-popout-bridge";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/lib/auth";
 import { can } from "@/lib/permissions";
@@ -149,14 +144,6 @@ export function ProtectedShell({ children, requireRole }: Props) {
   const content = (
     <>
       <TabletopCrossSurfaceBridge />
-      {!dedicated && (
-        <>
-          <WorkspacePopoutBridge />
-          <MasterToolbarPopoutBridge />
-          <TabletopWorkspacePopoutBridge />
-        </>
-      )}
-      <NexusSheetDragBridge />
       {children}
     </>
   );

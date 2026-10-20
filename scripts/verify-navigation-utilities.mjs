@@ -54,7 +54,7 @@ try {
   const geometry=async label=>{
    const result=await page.evaluate(()=>({headingWidth:document.querySelector("h1")?.getBoundingClientRect().width,overflow:document.documentElement.scrollWidth>innerWidth,h1:document.querySelectorAll("h1").length,boundary:document.body.textContent.includes("Something went wrong")}));
    assert(result.headingWidth>100&&!result.overflow&&result.h1===1&&!result.boundary,`${label}/${width}: structure ${JSON.stringify(result)}`);assert(!errors.length,errors.join("\n"));
-   await page.screenshot({path:`${root}/${label}-${width}.png`,fullPage:true});
+   if(process.env.NEXUS_SKIP_SCREENSHOTS!=="1")await page.screenshot({path:`${root}/${label}-${width}.png`,fullPage:true});
    results.push({width,label,...result,errors:[...errors]});writeFileSync(`${root}/results.json`,JSON.stringify(results,null,2));console.log(`${width}: ${label}`);
   };
   await page.goto(`http://127.0.0.1:${port}/offline`,{waitUntil:"domcontentloaded"});
@@ -67,11 +67,33 @@ try {
    await page.waitForTimeout(250);assert(await drawer.evaluate(e=>e.contains(document.activeElement)),"Drawer opening focus");
    const opening=await drawer.evaluate(e=>({animation:getComputedStyle(e).animationName,transform:getComputedStyle(e).transform}));assert(opening.animation==="tadeon-navigation-enter",`Drawer owns directional animation: ${JSON.stringify(opening)}`);
    await drawer.getByRole("button",{name:"Conta",exact:true}).click();const account=page.getByRole("dialog",{name:"Configurações da Conta",exact:true});await account.waitFor();await drawer.waitFor({state:"hidden"});await page.waitForTimeout(250);assert(await account.evaluate(e=>e.contains(document.activeElement)),"Account handoff focus");await page.keyboard.press("Escape");await account.waitFor({state:"hidden"});
-   const more=page.getByRole("button",{name:"Mais",exact:true});await more.click();const menu=page.getByRole("menu",{name:"Outras áreas"});await menu.waitFor();await page.screenshot({path:`${root}/menu-${width}.png`});await page.keyboard.press("Escape");await menu.waitFor({state:"hidden"});assert(await more.evaluate(e=>e===document.activeElement),"More dismissal focus");
+   const more=page.getByRole("button",{name:"Mais",exact:true});
+   const menu=page.getByRole("menu",{name:"Outras áreas"});
+   const auditWheel=async height=>{
+    await page.setViewportSize({width,height});await more.click();await menu.waitFor();await menu.evaluate(e=>Promise.all(e.getAnimations().filter(a=>a.effect?.getTiming().iterations!==Infinity).map(a=>a.finished.catch(()=>{}))));
+    const radial=await menu.evaluate(e=>{
+     const rect=r=>({x:r.x,y:r.y,width:r.width,height:r.height,right:r.right,bottom:r.bottom});
+     return {layout:e.dataset.layout,frame:rect(e.getBoundingClientRect()),targets:[...e.querySelectorAll('[role="menuitem"]')].map(n=>({name:n.textContent||n.getAttribute("aria-label"),...rect(n.getBoundingClientRect())})),animation:getComputedStyle(e).animationName};
+    });
+    writeFileSync(`${root}/wheel-${width}-${height}.json`,JSON.stringify(radial,null,2));
+    if(process.env.NEXUS_SKIP_SCREENSHOTS!=="1")await page.screenshot({path:`${root}/menu-${width}-${height}.png`});
+    assert(radial.animation==="tadeon-more-open","Wheel owns its finite opening motion");
+    assert(radial.layout==="radial"&&Math.abs(radial.frame.width-radial.frame.height)<1,"More is a wheel");
+    assert(radial.frame.x>=0&&radial.frame.right<=width&&radial.frame.y>=0&&radial.frame.bottom<=height,"Wheel stays in viewport");
+    for(const a of radial.targets){assert(a.width>=44&&a.height>=44,"Wheel touch target");for(const b of radial.targets){if(a===b)continue;assert(a.right<=b.x||b.right<=a.x||a.bottom<=b.y||b.bottom<=a.y,"Wheel targets do not overlap");}}
+    await page.keyboard.press("Escape");await menu.waitFor({state:"hidden"});assert(await more.evaluate(e=>e===document.activeElement),"More dismissal focus");
+    results.push({width,height,label:"radial-wheel",...radial});
+   };
+   await auditWheel(1000);await auditWheel(520);await auditWheel(360);await page.setViewportSize({width,height:1000});
+   await more.focus();await page.keyboard.press("ArrowDown");await menu.waitFor();await page.waitForFunction(()=>document.activeElement?.getAttribute("role")==="menuitem");await page.keyboard.press("ArrowDown");await page.waitForFunction(()=>document.activeElement?.textContent==="Usuários");assert(await menu.getByRole("menuitem",{name:"Usuários",exact:true}).evaluate(e=>e===document.activeElement),"Wheel roving keyboard focus");
+   await page.keyboard.press("End");await page.waitForFunction(()=>document.activeElement?.getAttribute("aria-label")==="Fechar outras áreas");await page.keyboard.press("Enter");await menu.waitFor({state:"hidden"});await page.waitForFunction(()=>document.activeElement?.textContent==="Mais");assert(await more.evaluate(e=>e===document.activeElement),"Wheel central close returns focus");
+   await more.click();await menu.waitFor();await menu.getByRole("menuitem",{name:"Consulta offline",exact:true}).click();await menu.waitFor({state:"hidden"});await page.waitForFunction(()=>document.getElementById("tadeon-main")===document.activeElement);
+   await more.click();await menu.waitFor();await page.setViewportSize({width:820,height:1000});await menu.waitFor({state:"hidden"});await page.setViewportSize({width,height:1000});
+   await page.emulateMedia({reducedMotion:"reduce"});await more.click();await menu.waitFor();assert(await menu.evaluate(e=>getComputedStyle(e).animationName)==="none","Wheel honors reduced motion");await page.mouse.click(4,150);await menu.waitFor({state:"hidden"});await page.emulateMedia({reducedMotion:"no-preference"});
    await opener.click();await drawer.waitFor();await page.setViewportSize({width:820,height:1000});await drawer.waitFor({state:"hidden"});await page.waitForFunction(() => document.querySelector('button[aria-controls="tadeon-mobile-navigation"]')?.getAttribute("aria-expanded") === "false" && document.getElementById("tadeon-main") === document.activeElement, undefined, {timeout:5000});await page.setViewportSize({width,height:1000});
   } else {
    await page.getByRole("button",{name:"Recolher menu",exact:true}).click();await page.waitForTimeout(250);const compact=page.locator("#tadeon-desktop-sidebar").getByRole("link",{name:"Usuários",exact:true});assert(await compact.isVisible(),"Collapsed destination keeps accessible label");
-   const icon=await compact.locator(".tadeon-nav-item__icon").evaluate(e=>({width:e.getBoundingClientRect().width,opacity:getComputedStyle(e).opacity}));assert(icon.width>=16&&Number(icon.opacity)>0,"Collapsed icon remains visible");await page.screenshot({path:`${root}/sidebar-${width}.png`});await page.getByRole("button",{name:"Expandir menu",exact:true}).click();await page.waitForTimeout(500);
+   const icon=await compact.locator(".tadeon-nav-item__icon").evaluate(e=>({width:e.getBoundingClientRect().width,opacity:getComputedStyle(e).opacity}));assert(icon.width>=16&&Number(icon.opacity)>0,"Collapsed icon remains visible");if(process.env.NEXUS_SKIP_SCREENSHOTS!=="1")await page.screenshot({path:`${root}/sidebar-${width}.png`});await page.getByRole("button",{name:"Expandir menu",exact:true}).click();await page.waitForTimeout(500);
    const nav=page.locator("#tadeon-desktop-sidebar").getByRole("link",{name:"Consulta offline",exact:true});const before=await nav.boundingBox();await nav.hover();await page.waitForTimeout(250);const after=await nav.boundingBox();assert(Math.abs(after.x-before.x)<.5&&Math.abs(after.y-before.y)<.5,`Navigation target stays still on hover: ${JSON.stringify({before,after,style:await nav.evaluate(e=>({transform:getComputedStyle(e).transform,translate:getComputedStyle(e).translate,scale:getComputedStyle(e).scale,animation:getComputedStyle(e).animationName}))})}`);
   }
   await page.emulateMedia({reducedMotion:"reduce"});

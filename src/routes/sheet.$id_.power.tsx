@@ -1,3 +1,4 @@
+import { PageHeader } from "@/components/page-header";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { lazy, Suspense, useEffect, useMemo, useState } from "react";
 import { ProtectedShell } from "@/components/protected-shell";
@@ -65,9 +66,7 @@ export const Route = createFileRoute("/sheet/$id_/power")({
           "Versão de poder (VP) da ficha no Tadeon Nexus: cópia vibrante com atributos, modificadores e habilidades independentes da ficha base.",
       },
     ],
-    links: [
-      { rel: "canonical", href: "https://tadeon-nexus.gtadeusz.workers.dev/" },
-    ],
+    links: [{ rel: "canonical", href: "https://tadeon-nexus.gtadeusz.workers.dev/" }],
   }),
   component: () => (
     <ProtectedShell>
@@ -101,10 +100,7 @@ interface VPData {
   equilibrium?: number;
   attributes?: Attributes;
   stat_mods?: Partial<
-    Pick<
-      Stats,
-      "pv_mod" | "ps_mod" | "pe_mod" | "pa_mod" | "def_mod" | "def_equip"
-    >
+    Pick<Stats, "pv_mod" | "ps_mod" | "pe_mod" | "pa_mod" | "def_mod" | "def_equip">
   >;
   conditions?: Conditions;
   weapons?: Weapon[];
@@ -233,9 +229,7 @@ function syncFromBase(base: BaseRow, prev: VPData): VPData {
     vpList: T[] | undefined,
   ): T[] => {
     const seen = new Set(synced[key]);
-    const additions = baseList
-      .filter((b) => !seen.has(b.id))
-      .map((b) => ({ ...b }));
+    const additions = baseList.filter((b) => !seen.has(b.id)).map((b) => ({ ...b }));
     additions.forEach((a) => synced[key].push(a.id));
     return [...(vpList ?? []), ...additions];
   };
@@ -248,11 +242,7 @@ function syncFromBase(base: BaseRow, prev: VPData): VPData {
     base.fragments_items ?? [],
     next.fragments_items,
   );
-  next.defense_items = mergeList(
-    "defense_items",
-    base.defense_items ?? [],
-    next.defense_items,
-  );
+  next.defense_items = mergeList("defense_items", base.defense_items ?? [], next.defense_items);
   next.__synced_ids = synced;
   // VP exposure mirrors base (independent edits removed from UI)
   next.exposure = base.exposure;
@@ -280,9 +270,7 @@ function PowerFormPage() {
     pa: 0,
   });
   const [rankTable, setRankTable] = useState<RankRow[]>([]);
-  const [_upgradeCosts, setUpgradeCosts] = useState<UpgradeCosts>(
-    DEFAULT_UPGRADE_COSTS,
-  );
+  const [_upgradeCosts, setUpgradeCosts] = useState<UpgradeCosts>(DEFAULT_UPGRADE_COSTS);
   const [skillGroups, setSkillGroups] = useState<typeof SKILL_GROUPS>([]);
   const [loading, setLoading] = useState(true);
   const [defEquipOpen, setDefEquipOpen] = useState(false);
@@ -296,11 +284,7 @@ function PowerFormPage() {
   useEffect(() => {
     void (async () => {
       const [{ data, error }, { data: settingsJson }] = await Promise.all([
-        supabase
-          .from("character_sheets")
-          .select("*")
-          .eq("id", id)
-          .maybeSingle(),
+        supabase.from("character_sheets").select("*").eq("id", id).maybeSingle(),
         supabase.rpc("get_public_game_settings"),
       ]);
       if (error || !data) {
@@ -349,8 +333,7 @@ function PowerFormPage() {
       };
       setBase(baseRow);
       const synced = syncFromBase(baseRow, baseRow.power_form_data);
-      const syncChanged =
-        JSON.stringify(synced) !== JSON.stringify(baseRow.power_form_data);
+      const syncChanged = JSON.stringify(synced) !== JSON.stringify(baseRow.power_form_data);
       setVp(synced);
       setCurrents({
         pv: Number((baseRow.stats as Stats).pv_current ?? 0),
@@ -360,9 +343,7 @@ function PowerFormPage() {
       });
       const g = (settingsJson as Record<string, unknown> | null) ?? {};
       setRankTable((g.rank_table as RankRow[] | undefined) ?? []);
-      setUpgradeCosts(
-        (g.upgrade_costs as UpgradeCosts | undefined) ?? DEFAULT_UPGRADE_COSTS,
-      );
+      setUpgradeCosts((g.upgrade_costs as UpgradeCosts | undefined) ?? DEFAULT_UPGRADE_COSTS);
       setSkillGroups((g.skill_groups as typeof SKILL_GROUPS | undefined) ?? []);
       setLoading(false);
       const mayEdit = can("character:edit", {
@@ -375,15 +356,13 @@ function PowerFormPage() {
           .from("character_sheets")
           .update({ power_form_data: synced as never })
           .eq("id", baseRow.id);
-        if (syncError)
-          toast.error("Não foi possível sincronizar a Forma de Poder.");
+        if (syncError) toast.error("Não foi possível sincronizar a Forma de Poder.");
       }
     })();
   }, [id, navigate, role, user?.id]);
 
   const powerDraft = useMemo(
-    () =>
-      base ? { baseId: base.id, baseStats: base.stats, currents, vp } : null,
+    () => (base ? { baseId: base.id, baseStats: base.stats, currents, vp } : null),
     [base, currents, vp],
   );
   const {
@@ -445,10 +424,7 @@ function PowerFormPage() {
   const exposure = vp.exposure ?? base.exposure;
   const rank = getRankBase(exposure, rankTable);
   const vpDefItems = vp.defense_items ?? [];
-  const vpArmor = Math.min(
-    3,
-    Math.max(0, ...vpDefItems.map((item) => Number(item.bonus) || 0)),
-  );
+  const vpArmor = Math.min(3, Math.max(0, ...vpDefItems.map((item) => Number(item.bonus) || 0)));
   const derivedStats: Stats = {
     ...base.stats,
     ...mods,
@@ -461,21 +437,12 @@ function PowerFormPage() {
     rank,
     armor: vpArmor,
   });
-  const {
-    pv: pvMax,
-    ps: psMax,
-    pe: peMax,
-    pa: paMax,
-    def: defTotal,
-  } = maximums;
+  const { pv: pvMax, ps: psMax, pe: peMax, pa: paMax, def: defTotal } = maximums;
   const invCapacity = 5 + 2 * attrs.COR;
   const invUsed =
     (vp.weapons ?? []).reduce((s, w) => s + (Number(w.peso) || 0), 0) +
     (vp.inventory ?? []).reduce((s, i) => s + (Number(i.espaco) || 0), 0) +
-    (vp.fragments_items ?? []).reduce(
-      (s, i) => s + (Number(i.espaco) || 0),
-      0,
-    ) +
+    (vp.fragments_items ?? []).reduce((s, i) => s + (Number(i.espaco) || 0), 0) +
     vpDefItems.reduce((s, d) => s + (Number(d.peso) || 0), 0);
 
   const pvCap = Math.floor(pvMax * 1.5);
@@ -497,54 +464,38 @@ function PowerFormPage() {
   return (
     <div className="tadeon-vp-page relative min-h-screen pb-24">
       <div className="pointer-events-none fixed inset-0 z-0 vp-pulse" />
-      <div className="tadeon-vp-container relative z-10 mx-auto max-w-7xl p-3 md:p-6">
-        {/* Header */}
-        <div className="tadeon-vp-commandbar sticky z-20 -mx-3 mb-4 border-b border-orange-500/50 bg-background/40 px-3 py-3 shadow-[0_4px_30px_rgba(255,100,50,0.35)] backdrop-blur-xl md:-mx-6 md:px-6">
-          <div className="flex items-center gap-2">
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() =>
-                navigate({ to: "/sheet/$id", params: { id: base.id } })
-              }
-              title="Voltar à ficha base"
-              aria-label="Voltar à ficha base"
-            >
-              <ArrowLeft className="w-5 h-5" />
-            </Button>
-            <Sparkles className="w-5 h-5 text-orange-300" />
-            <h1 className="font-cinzel text-lg md:text-2xl font-bold flex-1 truncate bg-gradient-to-r from-orange-300 via-pink-300 to-purple-300 bg-clip-text text-transparent drop-shadow-[0_0_10px_rgba(255,150,80,0.6)]">
-              {vp.name ?? base.name} · VP
-            </h1>
-            {canEdit && (
-              <>
-                <SaveStatus
-                  state={
-                    saving
-                      ? "saving"
-                      : saveError
-                        ? "error"
-                        : dirty
-                          ? "pending"
-                          : "saved"
-                  }
-                  onRetry={() => void doSave()}
-                  compact={
-                    typeof window !== "undefined" && window.innerWidth < 640
-                  }
-                />
-                <Button
-                  size="sm"
-                  onClick={doSave}
-                  className="gap-1.5 bg-gradient-to-r from-orange-500 to-pink-500 hover:from-orange-400 hover:to-pink-400 text-white shadow-[0_0_20px_rgba(255,120,60,0.6)]"
-                >
-                  <Save className="w-4 h-4" />{" "}
-                  <span className="hidden sm:inline">Salvar</span>
-                </Button>
-              </>
-            )}
-          </div>
-        </div>
+      <div data-page-layout className="tadeon-page tadeon-vp-container relative z-10">
+        <PageHeader
+          section="sheet"
+          eyebrow="Ficha · Forma de Poder"
+          title={`${vp.name ?? base.name} · VP`}
+          actions={
+            <>
+              {" "}
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => navigate({ to: "/sheet/$id", params: { id: base.id } })}
+                title="Voltar à ficha base"
+                aria-label="Voltar à ficha base"
+              >
+                <ArrowLeft className="w-5 h-5" />
+              </Button>
+              {canEdit && (
+                <>
+                  <SaveStatus
+                    state={saving ? "saving" : saveError ? "error" : dirty ? "pending" : "saved"}
+                    onRetry={() => void doSave()}
+                    compact={typeof window !== "undefined" && window.innerWidth < 640}
+                  />
+                  <Button size="sm" onClick={doSave} className="gap-1.5">
+                    <Save className="w-4 h-4" /> <span className="hidden sm:inline">Salvar</span>
+                  </Button>
+                </>
+              )}
+            </>
+          }
+        />
 
         <Tabs defaultValue="ficha" className="w-full">
           <TabsList className="tadeon-vp-tabs-list w-full border border-orange-500/30 bg-card/40 sm:w-auto">
@@ -580,15 +531,11 @@ function PowerFormPage() {
                   ] as const
                 ).map(([k, label]) => (
                   <div key={k}>
-                    <Label className="text-orange-200/80 text-[11px]">
-                      {label}
-                    </Label>
+                    <Label className="text-orange-200/80 text-[11px]">{label}</Label>
                     <Input
                       disabled={!canEdit}
                       value={(vp[k] ?? "") as string}
-                      onChange={(e) =>
-                        patch({ [k]: e.target.value } as Partial<VPData>)
-                      }
+                      onChange={(e) => patch({ [k]: e.target.value } as Partial<VPData>)}
                       className="bg-card/40 border-orange-500/30 focus-visible:ring-orange-400"
                     />
                   </div>
@@ -644,9 +591,7 @@ function PowerFormPage() {
                   step={1}
                   disabled={!canEdit}
                   value={vp.equilibrium ?? 0}
-                  onChange={(e) =>
-                    patch({ equilibrium: Number(e.target.value) })
-                  }
+                  onChange={(e) => patch({ equilibrium: Number(e.target.value) })}
                   className="flex-1"
                 />
               </div>
@@ -661,9 +606,7 @@ function PowerFormPage() {
                       key={k}
                       className="rounded-lg p-2 text-center md:text-left md:flex md:items-center md:justify-between border border-orange-500/40 bg-orange-500/10 shadow-[0_0_15px_-6px_rgba(255,140,60,0.6)]"
                     >
-                      <div className="font-cinzel text-xs text-orange-200">
-                        {k}
-                      </div>
+                      <div className="font-cinzel text-xs text-orange-200">{k}</div>
                       <div className="flex items-center justify-center gap-1 mt-1 md:mt-0">
                         <Button
                           size="sm"
@@ -732,9 +675,7 @@ function PowerFormPage() {
                   current={currents.pv}
                   disabled={!canEdit}
                   color="from-red-500 to-rose-400"
-                  onChange={(v) =>
-                    setCurrents((p) => ({ ...p, pv: clamp(v, pvMin, pvCap) }))
-                  }
+                  onChange={(v) => setCurrents((p) => ({ ...p, pv: clamp(v, pvMin, pvCap) }))}
                 />
                 <PointBlock
                   label="PS"
@@ -742,9 +683,7 @@ function PowerFormPage() {
                   current={currents.ps}
                   disabled={!canEdit}
                   color="from-purple-500 to-fuchsia-400"
-                  onChange={(v) =>
-                    setCurrents((p) => ({ ...p, ps: clamp(v, psMin, psCap) }))
-                  }
+                  onChange={(v) => setCurrents((p) => ({ ...p, ps: clamp(v, psMin, psCap) }))}
                 />
                 <PointBlock
                   label="PE"
@@ -752,9 +691,7 @@ function PowerFormPage() {
                   current={currents.pe}
                   disabled={!canEdit}
                   color="from-emerald-500 to-teal-400"
-                  onChange={(v) =>
-                    setCurrents((p) => ({ ...p, pe: clamp(v, peMin, peCap) }))
-                  }
+                  onChange={(v) => setCurrents((p) => ({ ...p, pe: clamp(v, peMin, peCap) }))}
                 />
                 <PointBlock
                   label="PA"
@@ -762,9 +699,7 @@ function PowerFormPage() {
                   current={currents.pa}
                   disabled={!canEdit}
                   color="from-amber-500 to-yellow-300"
-                  onChange={(v) =>
-                    setCurrents((p) => ({ ...p, pa: clamp(v, paMin, paCap) }))
-                  }
+                  onChange={(v) => setCurrents((p) => ({ ...p, pa: clamp(v, paMin, paCap) }))}
                 />
               </div>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-2 mt-3 text-xs">
@@ -828,11 +763,7 @@ function PowerFormPage() {
                 <Stat label="Instinto" value={attrs.INS} />
                 <Stat label="Equip" value={vpArmor} />
                 <Stat label="Modificador" value={mods.def_mod ?? 0} />
-                <Stat
-                  label="Total"
-                  value={defTotal}
-                  accent="text-sky-300 font-bold"
-                />
+                <Stat label="Total" value={defTotal} accent="text-sky-300 font-bold" />
               </div>
               <div className="mt-3 pt-2 border-t border-orange-300/30">
                 <button
@@ -979,10 +910,7 @@ function PowerFormPage() {
                     ]}
                     onAdd={(it) =>
                       patch({
-                        inventory: [
-                          ...(vp.inventory ?? []),
-                          { ...it, id: genId() },
-                        ],
+                        inventory: [...(vp.inventory ?? []), { ...it, id: genId() }],
                       })
                     }
                   />
@@ -1071,10 +999,7 @@ function PowerFormPage() {
                     ]}
                     onAdd={(a) =>
                       patch({
-                        abilities: [
-                          ...(vp.abilities ?? []),
-                          { ...a, id: genId() },
-                        ],
+                        abilities: [...(vp.abilities ?? []), { ...a, id: genId() }],
                       })
                     }
                   />
@@ -1134,10 +1059,7 @@ function PowerFormPage() {
                           ]}
                           onAdd={(it) =>
                             patch({
-                              fragments_items: [
-                                ...vpFragments,
-                                { ...it, id: genId() },
-                              ],
+                              fragments_items: [...vpFragments, { ...it, id: genId() }],
                             })
                           }
                         />
@@ -1191,48 +1113,30 @@ function PowerFormPage() {
                   <div className="mb-3 p-2.5 rounded-lg bg-gradient-to-r from-orange-500/20 to-transparent border border-orange-400/40 flex flex-wrap items-center gap-3 text-xs animate-in fade-in-0 slide-in-from-top-1 duration-200">
                     <Gem className="w-4 h-4 text-orange-300" />
                     <span>
-                      <b className="text-orange-200">Fragmentos acumulados:</b>{" "}
-                      {vpFragments.length}
+                      <b className="text-orange-200">Fragmentos acumulados:</b> {vpFragments.length}
                     </span>
                     <span className="text-orange-200/60">·</span>
                     <span>
                       Peso somado ao inventário:{" "}
-                      <b>
-                        {vpFragments.reduce(
-                          (s, i) => s + (Number(i.espaco) || 0),
-                          0,
-                        )}
-                      </b>
+                      <b>{vpFragments.reduce((s, i) => s + (Number(i.espaco) || 0), 0)}</b>
                     </span>
                   </div>
                   <ItemRows
                     rows={vpFragments}
                     canEdit={canEdit}
                     fields={["nome", "descricao", "espaco"]}
-                    onChange={(v) =>
-                      patch({ fragments_items: v as InventoryItem[] })
-                    }
+                    onChange={(v) => patch({ fragments_items: v as InventoryItem[] })}
                   />
                 </>
               ) : (
                 <>
                   <div className="mb-4">
-                    <ResistanceDtCalculator
-                      initialAttribute={attrs.MEN}
-                      compact
-                    />
+                    <ResistanceDtCalculator initialAttribute={attrs.MEN} compact />
                   </div>
                   <ItemRows
                     rows={vpPlots}
                     canEdit={canEdit}
-                    fields={[
-                      "nome",
-                      "uso",
-                      "alcance",
-                      "dano",
-                      "efeito",
-                      "dt_descricao",
-                    ]}
+                    fields={["nome", "uso", "alcance", "dano", "efeito", "dt_descricao"]}
                     onChange={(v) => patch({ plots: v as Plot[] })}
                   />
                 </>
@@ -1255,9 +1159,7 @@ function PowerFormPage() {
             value="desc"
             className="mt-3 space-y-4 animate-in fade-in-0 slide-in-from-bottom-1 duration-200"
           >
-            {(
-              ["historia", "personalidade", "objetivos", "observacoes"] as const
-            ).map((k) => (
+            {(["historia", "personalidade", "objetivos", "observacoes"] as const).map((k) => (
               <VPCard
                 key={k}
                 title={
@@ -1295,9 +1197,7 @@ function PowerFormPage() {
           </TabsContent>
         </Tabs>
 
-        <p className="text-center text-[10px] text-orange-200/60 py-6">
-          VP · Tadeon Nexus
-        </p>
+        <p className="text-center text-[10px] text-orange-200/60 py-6">VP · Tadeon Nexus</p>
       </div>
     </div>
   );
@@ -1315,9 +1215,7 @@ function VPCard({
   return (
     <Card className="tadeon-vp-card border-orange-500/30 bg-card/30 p-4 shadow-[0_0_25px_-10px_rgba(255,120,60,0.55)] backdrop-blur-md transition-[background-color,border-color,box-shadow] duration-150 hover:border-orange-400/60">
       <div className="flex items-center justify-between flex-wrap gap-2 mb-3">
-        <h2 className="font-cinzel text-sm font-bold text-orange-200 tracking-wide">
-          {title}
-        </h2>
+        <h2 className="font-cinzel text-sm font-bold text-orange-200 tracking-wide">{title}</h2>
         {extra}
       </div>
       {children}
@@ -1336,12 +1234,8 @@ function Stat({
 }) {
   return (
     <div className="rounded-md border border-orange-500/25 bg-orange-500/5 p-2">
-      <div className="text-[10px] uppercase tracking-wider text-orange-200/70">
-        {label}
-      </div>
-      <div className={`text-lg font-bold ${accent || "text-orange-50"}`}>
-        {value}
-      </div>
+      <div className="text-[10px] uppercase tracking-wider text-orange-200/70">{label}</div>
+      <div className={`text-lg font-bold ${accent || "text-orange-50"}`}>{value}</div>
     </div>
   );
 }
@@ -1359,9 +1253,7 @@ function ModField({
 }) {
   return (
     <div>
-      <Label className="text-[10px] uppercase tracking-wider text-orange-200/70">
-        {label}
-      </Label>
+      <Label className="text-[10px] uppercase tracking-wider text-orange-200/70">{label}</Label>
       <Input
         type="number"
         disabled={disabled}
@@ -1404,10 +1296,7 @@ function PointBlock({
         <span className="text-[11px] text-orange-200/70">/ {max}</span>
       </div>
       <div className="h-2 rounded-full bg-black/40 overflow-hidden mb-2">
-        <div
-          className={`h-full bg-gradient-to-r ${color}`}
-          style={{ width: `${pct}%` }}
-        />
+        <div className={`h-full bg-gradient-to-r ${color}`} style={{ width: `${pct}%` }} />
       </div>
       <div className="flex items-center justify-center gap-1">
         <Button

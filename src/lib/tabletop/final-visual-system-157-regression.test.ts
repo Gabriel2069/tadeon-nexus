@@ -22,16 +22,8 @@ describe("final visual system 157", () => {
     expect(css).toContain("content: none !important");
   });
 
-  it("gives every utility hero the Nexus visual grammar", () => {
-    const css = source("src/styles/final-visual-system-157.css");
-    expect(css).toContain(".tadeon-route-users > .tadeon-page-hero");
-    expect(css).toContain(".tadeon-route-tools > .tadeon-page-hero");
-    expect(css).toContain(".tadeon-route-offline > .tadeon-page-hero");
-    expect(css).toContain(".tadeon-master-commandbar");
-    expect(css).toContain("border-radius: 1rem .32rem 1rem .32rem !important");
-    expect(css).toContain("font-size: clamp(1.55rem, 2.6vw, 2.2rem) !important");
-    expect(css).toContain("background-size: auto, auto, 48px 48px, 48px 48px, auto !important");
-  });
+  // NEX-026: shared PageHeader/explicit action behavior is verified at runtime.
+
 
   it("textures shared cards, popup primitives and ad-hoc bordered panels", () => {
     const css = source("src/styles/final-visual-system-157.css");

@@ -54,6 +54,53 @@ for (const file of cssFiles) {
       errors.push(
         `${file}:${rule.source.start.line}: focus geometry belongs to page-hero-parity.css.`,
       );
+    const headerGeometry = [
+      "display",
+      "position",
+      "width",
+      "height",
+      "min-width",
+      "max-width",
+      "min-height",
+      "max-height",
+      "padding",
+      "padding-inline",
+      "padding-right",
+      "padding-left",
+      "padding-block",
+      "margin",
+      "margin-bottom",
+      "gap",
+      "grid-template-columns",
+      "grid-template-rows",
+      "align-items",
+      "font-family",
+      "font-size",
+      "line-height",
+      "letter-spacing",
+    ];
+    const explicitHeader = rule.selectors.some((selector) => {
+      const positive = selector.replace(/:not\([^)]*\)/g, "");
+      return /\.tadeon-page-header(?:__(?:main|identity|title|description|eyebrow|mark|actions|context|sigil|master-sigil|active-icon))?(?![\w-])/.test(
+        positive,
+      );
+    });
+    if (
+      explicitHeader &&
+      rule.nodes.some((node) => node.type === "decl" && headerGeometry.includes(node.prop)) &&
+      file !== "src/styles/page-hero-parity.css"
+    )
+      errors.push(
+        `${file}:${rule.source.start.line}: page header geometry and typography belong to page-hero-parity.css.`,
+      );
+    if (
+      rule.selectors.some((selector) => selector.includes("[data-page-layout]")) &&
+      rule.nodes.some((node) => node.type === "decl" && headerGeometry.includes(node.prop)) &&
+      file !== "src/styles/desktop-shell.css"
+    )
+      errors.push(
+        `${file}:${rule.source.start.line}: page envelope geometry belongs to desktop-shell.css.`,
+      );
     const ownsNavigationGeometry =
       rule.selectors.some(
         (selector) =>

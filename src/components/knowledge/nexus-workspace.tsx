@@ -1,3 +1,17 @@
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { WorkspaceActions } from "@/components/workspace-actions";
+import { KnowledgeSheetLink } from "@/components/knowledge/knowledge-sheet-link";
+import { KnowledgeCollectionFilter } from "@/components/knowledge/knowledge-collection-filter";
+import {
+  matchesKnowledgeCollection,
+  type KnowledgeCollection,
+} from "@/lib/knowledge/knowledge-collections";
+import { PageHeader } from "@/components/page-header";
 import { NexusTabletopLocator } from "@/components/knowledge/nexus-tabletop-locator";
 import { useAuth } from "@/lib/auth";
 import { createKnowledgeDraftStore } from "@/lib/knowledge/knowledge-drafts";
@@ -21,9 +35,9 @@ import {
   ImagePlus,
   Link2,
   ListTree,
-  LibraryBig,
   Loader2,
   Maximize2,
+  MoreHorizontal,
   PanelRight,
   Pencil,
   Plus,
@@ -292,6 +306,9 @@ export function NexusWorkspace({
   const closeFocusFrame = useRef<number | null>(null);
   const headingFrame = useRef<number | null>(null);
   const readingRegion = useRef<HTMLElement>(null);
+  const indexRegion = useRef<HTMLElement>(null);
+  const toolsTrigger = useRef<HTMLButtonElement>(null);
+  const toolsDialogOrigin = useRef<"portability" | "graph" | "commands" | null>(null);
   const pendingSaves = useRef(new Map<string, Promise<void>>());
   const [closedNodes, setClosedNodes] = useState<string[]>([]);
   const scopesRequests = useRef(createLatestRequestGate());
@@ -305,6 +322,11 @@ export function NexusWorkspace({
   const [workspaceId, setWorkspaceId] = useState("");
   const [campaignId, setCampaignId] = useState<string>("workspace");
   const [nodes, setNodes] = useState<KnowledgeNode[]>([]);
+  const [collection, setCollection] = useState<KnowledgeCollection>("all");
+  const collectionNodes = useMemo(
+    () => nodes.filter((node) => matchesKnowledgeCollection(node.node_type, collection)),
+    [nodes, collection],
+  );
   const [recent, setRecent] = useState<KnowledgeNode[]>([]);
   const [favorites, setFavorites] = useState<KnowledgeNode[]>([]);
   const [openNodes, setOpenNodes] = useState<KnowledgeNode[]>([]);
@@ -1100,20 +1122,47 @@ export function NexusWorkspace({
     });
   };
 
+  const focusRegion = (region: HTMLElement | null, selector: string) => {
+    const target = region?.querySelector<HTMLElement>(selector);
+    target?.focus({ preventScroll: true });
+    target?.scrollIntoView({
+      block: "center",
+      behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth",
+    });
+  };
+
   if (loading) {
     return (
-      <div className="flex min-h-[70vh] items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      <div data-page-layout className="tadeon-page tadeon-route-nexus">
+        <PageHeader
+          section="nexus"
+          eyebrow="Arquivo vivo de continuidade"
+          title="O Nexus"
+          description="Histórias, personagens, lugares e relações em um acervo que pensa junto com a campanha."
+        />
+        <div
+          role="status"
+          aria-label="Carregando o acervo"
+          className="flex min-h-72 items-center justify-center"
+        >
+          <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        </div>
       </div>
     );
   }
 
   if (!workspaces.length) {
     return (
-      <div className="tadeon-page">
+      <div data-page-layout className="tadeon-page tadeon-route-nexus">
+        <PageHeader
+          section="nexus"
+          eyebrow="Arquivo vivo de continuidade"
+          title="O Nexus"
+          description="Histórias, personagens, lugares e relações em um acervo que pensa junto com a campanha."
+        />
         <Card className="p-10 text-center">
           <BookOpen className="mx-auto h-10 w-10 text-primary" />
-          <h1 className="mt-4 font-cinzel text-2xl font-semibold">Nenhum workspace acessível</h1>
+          <h2 className="mt-4 font-cinzel text-2xl font-semibold">Nenhum workspace acessível</h2>
           <p className="mt-2 text-sm text-muted-foreground">
             O Nexus aparecerá quando você for associado a um workspace.
           </p>
@@ -1142,7 +1191,16 @@ export function NexusWorkspace({
     onlyCanonical,
   ].filter(Boolean).length;
 
+  // A menu item disappears before its dialog closes. Restore the persistent opener explicitly.
+  const restoreToolsFocus = (origin: "portability" | "graph" | "commands", event: Event) => {
+    if (toolsDialogOrigin.current !== origin) return;
+    toolsDialogOrigin.current = null;
+    event.preventDefault();
+    if (!createOpen) toolsTrigger.current?.focus({ preventScroll: true });
+  };
+
   const resetSearchFilters = () => {
+    setCollection("all");
     setTypeFilter("all");
     setStatusFilter("all");
     setVisibilityFilter("all");
@@ -1154,109 +1212,74 @@ export function NexusWorkspace({
 
   return (
     <div
+      data-page-layout
       className={
-        focusMode
-          ? "min-h-[calc(100dvh-4rem)] bg-background"
-          : "tadeon-page tadeon-route-nexus max-w-[112rem]"
+        focusMode ? "min-h-[calc(100dvh-4rem)] bg-background" : "tadeon-page tadeon-route-nexus"
       }
     >
-      <section className="tadeon-page-hero tadeon-nexus-header tadeon-nexus-commandbar mb-4 flex flex-col justify-between gap-4 rounded-2xl border bg-card/60 p-4 backdrop-blur min-[1180px]:flex-row min-[1180px]:items-center">
-        <div className="tadeon-nexus-identity">
-          <span className="tadeon-nexus-identity__mark" aria-hidden>
-            <LibraryBig />
-          </span>
-          <div>
-            <p className="tadeon-eyebrow">Arquivo vivo de continuidade</p>
-            <h1 className="font-cinzel text-2xl font-semibold md:text-3xl">O Nexus</h1>
-            <p className="tadeon-nexus-identity__summary">
-              Histórias, personagens, lugares e relações em um acervo que pensa junto com a
-              campanha.
-            </p>
-          </div>
-        </div>
-        <div className="tadeon-nexus-actions w-full sm:w-auto">
-          <div className="tadeon-nexus-scope grid grid-cols-2 gap-2 sm:flex">
-            <Select
-              value={workspaceId}
-              onValueChange={(value) => {
-                setWorkspaceId(value);
-                setCampaignId("workspace");
-                setSearchPage(0);
-              }}
-            >
-              <SelectTrigger
-                className="col-span-2 w-full sm:col-span-1 sm:w-[190px]"
-                aria-label="Workspace"
+      <PageHeader
+        section="nexus"
+        eyebrow="Arquivo vivo de continuidade"
+        title="O Nexus"
+        description="Histórias, personagens, lugares e relações em um acervo que pensa junto com a campanha."
+        actions={
+          <>
+            {!focusMode && (
+              <Button
+                className="tadeon-nexus-explore-trigger"
+                variant="outline"
+                size="sm"
+                onClick={() => focusRegion(indexRegion.current, "input")}
               >
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {workspaces.map((workspace) => (
-                  <SelectItem key={workspace.id} value={workspace.id}>
-                    {workspace.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            <Select
-              value={campaignId}
-              onValueChange={(value) => {
-                setCampaignId(value);
-                setSearchPage(0);
-              }}
-            >
-              <SelectTrigger
-                className="col-span-2 w-full sm:col-span-1 sm:w-[190px]"
-                aria-label="Campanha"
-              >
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="workspace">Todo o workspace</SelectItem>
-                {campaigns
-                  .filter((campaign) => campaign.workspace_id === workspaceId)
-                  .map((campaign) => (
-                    <SelectItem key={campaign.id} value={campaign.id}>
-                      {campaign.name}
-                    </SelectItem>
-                  ))}
-              </SelectContent>
-            </Select>
-          </div>
-          <div className="tadeon-nexus-tools mt-2 flex items-center gap-2 overflow-x-auto pb-1 sm:mt-0 sm:flex-wrap sm:justify-end sm:overflow-visible sm:pb-0">
+                <ListTree className="h-4 w-4" />
+                Explorar
+              </Button>
+            )}
             <Button variant="outline" size="sm" onClick={() => setLibraryOpen(true)}>
               <BookMarked className="h-4 w-4" />
               Bibliotecas
             </Button>
-            <Button variant="outline" size="sm" onClick={() => setPortabilityOpen(true)}>
-              <Archive className="h-4 w-4" />
-              Importar / exportar
-            </Button>
-            {graphEnabled && (
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setGraphOpen(true)}
-                disabled={!selected}
-                title={
-                  selected
-                    ? "Abrir grafo local desta página"
-                    : "Abra uma página para iniciar o grafo"
-                }
-              >
-                <GitBranch className="h-4 w-4" />
-                Grafo local
-              </Button>
-            )}
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setCommandOpen(true)}
-              title="Ctrl + Shift + P"
-            >
-              <Command className="h-4 w-4" />
-              Comandos
-            </Button>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button ref={toolsTrigger} variant="outline" size="sm">
+                  <MoreHorizontal className="h-4 w-4" />
+                  Ferramentas
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem
+                  onSelect={() => {
+                    toolsDialogOrigin.current = "portability";
+                    setPortabilityOpen(true);
+                  }}
+                >
+                  <Archive className="h-4 w-4" />
+                  Importar / exportar
+                </DropdownMenuItem>
+                {graphEnabled && (
+                  <DropdownMenuItem
+                    disabled={!selected}
+                    onSelect={() => {
+                      toolsDialogOrigin.current = "graph";
+                      setGraphOpen(true);
+                    }}
+                  >
+                    <GitBranch className="h-4 w-4" />
+                    Grafo local
+                  </DropdownMenuItem>
+                )}
+                <DropdownMenuItem
+                  onSelect={() => {
+                    toolsDialogOrigin.current = "commands";
+                    setCommandOpen(true);
+                  }}
+                >
+                  <Command className="h-4 w-4" />
+                  Comandos
+                </DropdownMenuItem>
+                <WorkspaceActions workspace="/nexus" nodeId={selected?.id} menuItem />
+              </DropdownMenuContent>
+            </DropdownMenu>
             <Button
               size="sm"
               onClick={() => {
@@ -1267,9 +1290,52 @@ export function NexusWorkspace({
               <Plus className="h-4 w-4" />
               Nova página
             </Button>
-          </div>
+          </>
+        }
+      >
+        <div className="tadeon-nexus-scope">
+          <Select
+            value={workspaceId}
+            onValueChange={(value) => {
+              setWorkspaceId(value);
+              setCampaignId("workspace");
+              setSearchPage(0);
+            }}
+          >
+            <SelectTrigger className="w-full" aria-label="Workspace">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {workspaces.map((workspace) => (
+                <SelectItem key={workspace.id} value={workspace.id}>
+                  {workspace.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          <Select
+            value={campaignId}
+            onValueChange={(value) => {
+              setCampaignId(value);
+              setSearchPage(0);
+            }}
+          >
+            <SelectTrigger className="w-full" aria-label="Campanha">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="workspace">Todo o workspace</SelectItem>
+              {campaigns
+                .filter((campaign) => campaign.workspace_id === workspaceId)
+                .map((campaign) => (
+                  <SelectItem key={campaign.id} value={campaign.id}>
+                    {campaign.name}
+                  </SelectItem>
+                ))}
+            </SelectContent>
+          </Select>
         </div>
-      </section>
+      </PageHeader>
 
       <div
         className={
@@ -1278,14 +1344,40 @@ export function NexusWorkspace({
       >
         {!focusMode && (
           <aside
+            ref={indexRegion}
+            aria-label="Explorador do acervo"
             className={`${selected ? "order-2" : "order-1"} tadeon-nexus-index min-h-0 rounded-2xl border bg-card/55 p-3 lg:order-1`}
           >
+            <div className="tadeon-nexus-index__heading">
+              <div>
+                <p>Explorar o arquivo</p>
+                <span>Árvore, páginas e vínculos</span>
+              </div>
+              {selected ? (
+                <Button
+                  className="tadeon-nexus-explore-trigger"
+                  variant="ghost"
+                  size="sm"
+                  onClick={() =>
+                    focusRegion(
+                      readingRegion.current,
+                      ".tadeon-nexus-manuscript-title, input[aria-label='Título da página']",
+                    )
+                  }
+                >
+                  Voltar à leitura
+                </Button>
+              ) : (
+                <BookOpen aria-hidden="true" />
+              )}
+            </div>
             <div className="relative">
               <Search className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
               <Input
                 value={search}
                 onChange={(event) => setSearch(event.target.value)}
                 placeholder="Buscar no Nexus…"
+                aria-label="Buscar no Nexus"
                 className="pl-9"
               />
             </div>
@@ -1421,6 +1513,7 @@ export function NexusWorkspace({
               </div>
             </details>
 
+            <KnowledgeCollectionFilter nodes={nodes} value={collection} onChange={setCollection} />
             <div className="mt-4 flex items-center justify-between">
               <p className="tadeon-eyebrow">Páginas</p>
               <div className="flex gap-1 items-center">
@@ -1445,18 +1538,18 @@ export function NexusWorkspace({
                 <Badge variant="outline">{searchCount}</Badge>
               </div>
             </div>
-            <div className="mt-2 max-h-[44vh] space-y-1 overflow-y-auto pr-1">
+            <div className="tadeon-nexus-index__results" aria-busy={nodeLoading}>
               {nodeLoading ? (
                 <Loader2 className="mx-auto my-8 h-5 w-5 animate-spin text-primary" />
-              ) : nodes.length ? (
+              ) : collectionNodes.length ? (
                 indexView === "tree" ? (
                   <KnowledgeTree
-                    nodes={nodes}
+                    nodes={collectionNodes}
                     selectedId={selected?.id}
                     onOpen={(id) => void openNode(id)}
                   />
                 ) : (
-                  nodes.map((node) => (
+                  collectionNodes.map((node) => (
                     <button
                       type="button"
                       key={node.id}
@@ -1480,10 +1573,26 @@ export function NexusWorkspace({
                 )
               ) : (
                 <p className="rounded-lg border border-dashed p-5 text-center text-xs text-muted-foreground">
-                  Nenhuma página neste escopo.
+                  {collection === "all"
+                    ? "Nenhuma página neste escopo."
+                    : "Nenhuma página desta categoria neste resultado."}
+                  {collection !== "all" && (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="mt-2"
+                      onClick={() => setCollection("all")}
+                    >
+                      Ver todas as categorias
+                    </Button>
+                  )}
                 </p>
               )}
             </div>
+            <p className="tadeon-nexus-index__scope">
+              {collectionNodes.length} de {nodes.length} páginas carregadas · {searchCount}{" "}
+              resultados
+            </p>
             {searchCount > 0 && (
               <div className="mt-2 flex items-center justify-between gap-2 border-t pt-2">
                 <Button
@@ -1561,7 +1670,7 @@ export function NexusWorkspace({
           )}
           {openNodes.length > 0 && (
             <div
-              className="flex min-w-0 gap-1 overflow-x-auto border-b bg-muted/20 px-2 pt-2"
+              className="tadeon-nexus-document__tabs flex min-w-0 gap-1 overflow-x-auto border-b bg-muted/20 px-2 pt-2"
               role="tablist"
               aria-label="Páginas abertas"
             >
@@ -1681,7 +1790,7 @@ export function NexusWorkspace({
               <>
                 {selected ? (
                   <>
-                    <div className="flex flex-col gap-3 border-b px-4 py-3 md:flex-row md:items-center md:justify-between">
+                    <div className="tadeon-nexus-document__toolbar flex flex-col gap-3 border-b px-4 py-3 md:flex-row md:items-center md:justify-between">
                       <div className="min-w-0">
                         <p className="truncate text-[11px] uppercase tracking-wide text-muted-foreground">
                           {currentCampaign?.name ?? "Workspace"}{" "}
@@ -1708,11 +1817,13 @@ export function NexusWorkspace({
                         </p>
                       </div>
                       <div className="flex flex-wrap items-center gap-1.5">
+                        <KnowledgeSheetLink nodeId={selected.id} title={selected.title} />
                         <Button
                           variant="ghost"
                           size="sm"
                           onClick={() => void toggleFavorite()}
                           aria-label="Alternar favorito"
+                          aria-pressed={favorites.some((node) => node.id === selected.id)}
                         >
                           <Star
                             className={`h-4 w-4 ${
@@ -1779,15 +1890,18 @@ export function NexusWorkspace({
                             variant="ghost"
                             size="sm"
                             onClick={() => setRightOpen((current) => !current)}
+                            aria-label="Alternar contexto da página"
+                            aria-expanded={rightOpen}
                             className="xl:hidden"
                           >
                             <PanelRight className="h-4 w-4" />
+                            <span>Contexto</span>
                           </Button>
                         )}
                       </div>
                     </div>
 
-                    <article className="min-h-[62vh] px-5 py-6 md:px-8 md:py-8">
+                    <article className="tadeon-nexus-manuscript min-h-[62vh] px-5 py-6 md:px-8 md:py-8">
                       {editMode ? (
                         <div>
                           <Input
@@ -1872,9 +1986,12 @@ export function NexusWorkspace({
                         </div>
                       ) : (
                         <div>
-                          <h1 className="font-cinzel text-3xl font-semibold md:text-5xl">
+                          <h2
+                            tabIndex={-1}
+                            className="tadeon-nexus-manuscript-title font-cinzel text-3xl font-semibold md:text-5xl"
+                          >
                             {draftTitle}
-                          </h1>
+                          </h2>
                           {selected.summary && (
                             <p className="mt-3 max-w-3xl text-base italic text-muted-foreground">
                               {selected.summary}
@@ -2565,7 +2682,10 @@ export function NexusWorkspace({
       </AlertDialog>
 
       <Dialog open={graphOpen} onOpenChange={setGraphOpen}>
-        <DialogContent className="tadeon-graph-dialog h-[92vh] max-h-[92vh] overflow-hidden p-4 sm:max-w-[96vw]">
+        <DialogContent
+          onCloseAutoFocus={(event) => restoreToolsFocus("graph", event)}
+          className="tadeon-graph-dialog h-[92vh] max-h-[92vh] overflow-hidden p-4 sm:max-w-[96vw]"
+        >
           <DialogHeader className="shrink-0 pr-12">
             <DialogTitle className="font-cinzel">Teia local de O Nexus</DialogTitle>
             <DialogDescription>
@@ -2579,6 +2699,7 @@ export function NexusWorkspace({
                 campaignId={campaignScope}
                 focusNodeId={selected.id}
                 onOpenNode={(nodeId) => {
+                  toolsDialogOrigin.current = null;
                   setGraphOpen(false);
                   void openNode(nodeId);
                 }}
@@ -2665,7 +2786,10 @@ export function NexusWorkspace({
       </Dialog>
 
       <Dialog open={commandOpen} onOpenChange={setCommandOpen}>
-        <DialogContent className="gap-0 overflow-hidden p-0 sm:max-w-2xl">
+        <DialogContent
+          onCloseAutoFocus={(event) => restoreToolsFocus("commands", event)}
+          className="gap-0 overflow-hidden p-0 sm:max-w-2xl"
+        >
           <DialogHeader className="border-b p-4">
             <DialogTitle className="font-cinzel">Paleta de comandos</DialogTitle>
             <DialogDescription>Ctrl + Shift + P</DialogDescription>
@@ -2710,6 +2834,7 @@ export function NexusWorkspace({
                 type="button"
                 key={node.id}
                 onClick={() => {
+                  toolsDialogOrigin.current = null;
                   setCommandOpen(false);
                   void openNode(node);
                 }}
@@ -2945,6 +3070,7 @@ export function NexusWorkspace({
       <KnowledgePortabilityDialog
         open={portabilityOpen}
         onOpenChange={setPortabilityOpen}
+        onCloseAutoFocus={(event) => restoreToolsFocus("portability", event)}
         workspaceId={workspaceId}
         campaignId={campaignScope}
         assetsEnabled={assetsEnabled}

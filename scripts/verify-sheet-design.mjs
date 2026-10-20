@@ -87,7 +87,7 @@ const sheet = {
   },
   weapon_proficiency: "operador",
   weapon_proficiency_family: "",
-  power_form_enabled: false,
+  power_form_enabled: process.env.NEXUS_POWER_HEADER === "1",
   power_form_data: {},
 };
 const results = [];
@@ -200,9 +200,74 @@ try {
         r.fulfill({ status: 503, contentType: "application/json", body: "{}" }),
       );
       await installDesignFonts(page);
-      await page.goto(`http://127.0.0.1:${port}/sheet/${sheetId}?mode=edit`, {
-        waitUntil: "domcontentloaded",
-      });
+      await page.goto(
+        `http://127.0.0.1:${port}/sheet/${sheetId}${process.env.NEXUS_POWER_HEADER === "1" ? "/power" : ""}?mode=edit`,
+        {
+          waitUntil: "domcontentloaded",
+        },
+      );
+      if (process.env.NEXUS_POWER_HEADER === "1" || process.env.NEXUS_HEADER_ONLY === "1") {
+        await page.locator("[data-page-header=sheet]").waitFor({ timeout: 60000 });
+        const header = await page.locator("[data-page-header=sheet]").evaluate((e) => {
+          const r = e.getBoundingClientRect(),
+            title = e.querySelector(".tadeon-page-header__title"),
+            style = getComputedStyle(title);
+          return {
+            rect: [r.x, r.y, r.width, r.height],
+            font: [style.fontFamily, style.fontSize, style.fontWeight],
+            titleFont: [style.fontFamily, style.fontSize, style.fontWeight, style.lineHeight],
+            padding: (() => {
+              const s = getComputedStyle(e.querySelector(".tadeon-page-header__main"));
+              return [s.paddingTop, s.paddingRight, s.paddingBottom, s.paddingLeft];
+            })(),
+            markWidth: e.querySelector(".tadeon-page-header__mark").getBoundingClientRect().width,
+            position: getComputedStyle(e).position,
+            hostStyle: e.closest("[data-page-layout]").getAttribute("style"),
+            headerStyle: e.getAttribute("style"),
+            offsetValue: getComputedStyle(e).getPropertyValue("--sheet-sticky-top"),
+            shellHeaders: [
+              ...e
+                .closest(".tadeon-shell")
+                .querySelectorAll(".tadeon-desktop-toolbar,.tadeon-mobile-header"),
+            ].map((h) => [h.className, h.getBoundingClientRect().height]),
+            top: getComputedStyle(e).top,
+            headingCount: document.querySelectorAll("h1").length,
+            overflow: document.documentElement.scrollWidth > innerWidth,
+          };
+        });
+        if (process.env.NEXUS_HEADER_ONLY === "1" && width >= 768)
+          assert(
+            header.position === "sticky" &&
+              Math.abs(parseFloat(header.top) - Math.max(...header.shellHeaders.map((h) => h[1]))) <
+                1,
+            "Sheet header keeps the measured shell offset",
+          );
+        assert(
+          header.headingCount === 1 && !header.overflow,
+          "Power header follows the shared route envelope",
+        );
+        assert(
+          header.font[1] === (width < 480 ? "30px" : width === 820 ? "32px" : "38.16px") ||
+            parseFloat(header.font[1]) >= 30,
+          "Power title is not shrunk by legacy header rules",
+        );
+        assert(writes.length === 0, "Read-only power header never writes");
+        assert(errors.length === 0, JSON.stringify(errors));
+        if (process.env.NEXUS_SKIP_SCREENSHOTS !== "1")
+          await page.screenshot({ path: `${output}/power-header-${width}.png`, timeout: 20000 });
+        results.push({
+          width,
+          state,
+          variant: process.env.NEXUS_POWER_HEADER === "1" ? "power-header" : "sheet-header",
+          header,
+          errors,
+          writes: writes.length,
+        });
+        writeFileSync(`${output}/results.json`, JSON.stringify(results, null, 2));
+        console.log(`Shared sheet/power header verified ${width}`);
+        await context.close();
+        continue;
+      }
       if (readPaused) {
         await page.getByRole("status", { name: "Carregando ficha" }).waitFor();
         if (process.env.NEXUS_SKIP_SCREENSHOTS !== "1")
@@ -606,6 +671,10 @@ try {
         retry: state !== "readonly",
         errors,
       });
+      writeFileSync(
+        `${output}/results.json`,
+        JSON.stringify({ fixtureOnly: true, results }, null, 2),
+      );
       await context.close();
       console.log(JSON.stringify({ width, state, passed: true }));
     }
