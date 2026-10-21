@@ -1,22 +1,23 @@
 {
   "version": 1,
   "checkedAt": "2026-10-21",
-  "runtimeReference": "d050946adb0580cf1335db1499cda050e8fc49d7",
+  "runtimeReference": "0318936b38c8a1e3a24b1f858cd95c60048cc976",
   "integration": {
-    "pr": 291,
-    "branch": "feat/nex-030-material-motion-radials",
+    "pr": 292,
+    "branch": "feat/nex-031-tabletop-composition",
     "base": "main",
-    "baseCommit": "f6ec7f7ed942dc0ce7c44e83c48446065fdc76ea",
-    "sourceCommit": "b3a239976ab77ec2945a0bd27fa099b586ee2a4d",
-    "headCommit": "b3a239976ab77ec2945a0bd27fa099b586ee2a4d",
+    "baseCommit": "d050946adb0580cf1335db1499cda050e8fc49d7",
+    "sourceCommit": "242a9e3abc1967f0934f52f560d89056fd3d6563",
+    "headCommit": "242a9e3abc1967f0934f52f560d89056fd3d6563",
     "state": "integrated",
-    "mergeCommit": "d050946adb0580cf1335db1499cda050e8fc49d7",
-    "sourceQualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39526551047",
-    "mainQualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39575515524",
+    "mergeCommit": "0318936b38c8a1e3a24b1f858cd95c60048cc976",
+    "sourceQualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39670991294",
+    "sourceVisualRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39670991307",
+    "mainQualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39672882831",
     "production": "confirmed",
-    "productionEvidence": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39575515416",
-    "productionCommit": "d050946adb0580cf1335db1499cda050e8fc49d7",
-    "productionVerifiedAt": "2026-10-21T09:17:51.8018329Z",
+    "productionEvidence": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39672882787",
+    "productionCommit": "0318936b38c8a1e3a24b1f858cd95c60048cc976",
+    "productionVerifiedAt": "2026-10-21T20:47:01.2142326Z",
     "productionHttpStatus": 200
   },
   "domains": [
@@ -1041,7 +1042,7 @@
       "id": "NEX-031",
       "title": "Mesa espacial: composição, conjuntos e edição 3D",
       "domain": "tabletop",
-      "status": "active",
+      "status": "integrated",
       "priority": 7,
       "dependsOn": [
         "NEX-030"
@@ -1057,9 +1058,12 @@
       "evidence": [
         "docs/visual-system-validation.json",
         "docs/DESIGN.md",
-        "scripts/verify-tabletop-workspace.mjs"
+        "scripts/verify-tabletop-workspace.mjs",
+        "https://github.com/Gabriel2069/tadeon-nexus/pull/292",
+        "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39670991307",
+        "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39672882787"
       ],
-      "checkpoint": "Implementação local concluída; npm run check aprovado (152 suítes/619 testes), audit zero. Navegação/atalhos/ponteiro em 26 estados e resize/editor em cinco estados aprovados. Última rodada visual aprovou base anterior e roda em quatro larguras, mas detectou redesenho nativo redundante durante notificações de persistência. A assinatura visual do quadro corrige essa invalidação; matriz final em revalidação. CI final, integração e publicação pendentes. Produção permanece em d050946 de NEX-030."
+      "checkpoint": "Integrado pela PR #292, fonte 242a9e3 e merge 0318936. Quality do código e de main aprovados: 152 suítes/619 testes, audit zero. Visual final: 25 estados de composição em 320/390/820/1440, roda, formações, cópias, modelos visíveis, editor e tela inteira; amostra nativa estática de 400 ms sem desenhos nas quatro larguras. Navegação local em 26 estados, resize em cinco e jogador em dez. Capturas finais desktop/tablet/mobile inspecionadas. Produção confirmou HTTP 200 e SHA exato em 2026-10-21T20:47:01.2142326Z. Fixtures não certificam hardware/contas reais; NEX-009/010/011 preservados. Fechamento documental registra sua própria integração/publicação na PR correspondente."
     }
   ],
   "decisions": [
@@ -1723,6 +1727,23 @@
       "productionVerifiedAt": "2026-10-20T20:01:14.9654571Z",
       "productionHttpStatus": 200,
       "workerVersion": "ea3eb205-2493-4edf-a6fa-ce0797016bf3"
+    },
+    {
+      "pr": 291,
+      "branch": "feat/nex-030-material-motion-radials",
+      "base": "main",
+      "baseCommit": "f6ec7f7ed942dc0ce7c44e83c48446065fdc76ea",
+      "sourceCommit": "b3a239976ab77ec2945a0bd27fa099b586ee2a4d",
+      "headCommit": "b3a239976ab77ec2945a0bd27fa099b586ee2a4d",
+      "state": "integrated",
+      "mergeCommit": "d050946adb0580cf1335db1499cda050e8fc49d7",
+      "sourceQualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39526551047",
+      "mainQualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39575515524",
+      "production": "confirmed",
+      "productionEvidence": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39575515416",
+      "productionCommit": "d050946adb0580cf1335db1499cda050e8fc49d7",
+      "productionVerifiedAt": "2026-10-21T09:17:51.8018329Z",
+      "productionHttpStatus": 200
     }
   ]
 }
