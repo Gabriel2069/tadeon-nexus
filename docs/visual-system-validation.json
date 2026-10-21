@@ -9619,7 +9619,7 @@
   },
   "spatialWorkbenchRevision": {
     "task": "NEX-031",
-    "status": "local_validation_in_progress",
+    "status": "published",
     "base": "d050946adb0580cf1335db1499cda050e8fc49d7",
     "validation": {
       "unit": {
@@ -9633,14 +9633,16 @@
           "build",
           "styles",
           "project continuity"
-        ]
+        ],
+        "sourceRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39670991294",
+        "mainRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39672882831"
       },
       "audit": {
         "command": "npm audit --audit-level=high",
         "vulnerabilities": 0
       },
       "browser": {
-        "status": "final_matrix_in_progress",
+        "status": "passed",
         "script": "scripts/verify-tabletop-workspace.mjs",
         "scope": "composition",
         "widths": [
@@ -9704,6 +9706,32 @@
               "Ferramentas táticas e encerramento da prévia"
             ]
           }
+        },
+        "states": 25,
+        "run": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39670991307",
+        "artifact": {
+          "id": 12379208750,
+          "sha256": "627a2dc3dcd06f18fde2c4ec9eb884b8d21c1da9b1a7829abb4e55a30c10627e",
+          "createdAt": "2026-10-21T20:43:03Z",
+          "expiresAt": "2026-10-28T20:43:03Z"
+        },
+        "checks": [
+          "Formações em fileira, coluna, grade e círculo",
+          "Encaixe explícito e repetição com giro/elevação; desfazer/refazer atômico",
+          "Modelo GLB visível, pixels não transparentes e erro WebGL zero",
+          "Preservação de escala, giro, altura e cor nas peças reutilizáveis",
+          "Roda da seleção única sem trilhos duplicados; trilho coletivo preservado",
+          "Portais, editor e foco dentro da tela inteira; Escape e movimento reduzido"
+        ],
+        "manualInspection": {
+          "status": "passed",
+          "views": [
+            "320-model-copies",
+            "320-fullscreen",
+            "1440-model-copies",
+            "820-model-editor"
+          ],
+          "scope": "Composição, visibilidade dos modelos, roda e inspector; capturas do código final."
         }
       }
     },
@@ -9753,10 +9781,44 @@
       "staticIdleDrawsVerified": {
         "320": 0,
         "390": 0,
-        "820": 0
+        "820": 0,
+        "1440": 0
       },
       "proof": "Pixels não transparentes e erro WebGL zero no primeiro desenho; camada deve permanecer visível após adaptação de qualidade; giro de câmera deve redesenhar.",
       "physicalHardware": "not_verified"
+    },
+    "sourceCommit": "242a9e3abc1967f0934f52f560d89056fd3d6563",
+    "mergeCommit": "0318936b38c8a1e3a24b1f858cd95c60048cc976",
+    "layoutComparison": {
+      "source": "Baseline e código final do mesmo Visual review; fixtures, altura de viewport 1000 px. Valores em CSS px.",
+      "390": {
+        "before": {
+          "stageTop": 500.234375,
+          "stageWidth": 311.40625
+        },
+        "after": {
+          "stageTop": 414.546875,
+          "stageWidth": 335.40625
+        }
+      },
+      "1440": {
+        "before": {
+          "stageTop": 444.765625,
+          "stageWidth": 1064.3125
+        },
+        "after": {
+          "stageTop": 379.015625,
+          "stageWidth": 1088.3125
+        }
+      }
+    },
+    "production": {
+      "status": "confirmed",
+      "commit": "0318936b38c8a1e3a24b1f858cd95c60048cc976",
+      "run": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39672882787",
+      "httpStatus": 200,
+      "verifiedAt": "2026-10-21T20:47:01.2142326Z",
+      "proof": "verify-production-build.mjs confirmou o marcador controlado tadeon-build-sha no HTML publicado."
     }
   }
 }

@@ -2,7 +2,7 @@
 
 > Gerado de [project-continuity.json](project-continuity.json). Edite o registro e rode `npm run sync:project`; não mantenha uma cópia manual.
 
-Snapshot: 2026-10-21; referência de runtime: `d050946adb0580cf1335db1499cda050e8fc49d7`. PR #291 em `feat/nex-030-material-motion-radials`; integração: `integrated`. Não é prova de deploy.
+Snapshot: 2026-10-21; referência de runtime: `0318936b38c8a1e3a24b1f858cd95c60048cc976`. PR #292 em `feat/nex-031-tabletop-composition`; integração: `integrated`. Não é prova de deploy.
 
 Estados: planejado → próximo → em andamento → validado na branch → integrado. Publicação exige evidência própria do SHA; adiado conserva o requisito. Se um requisito mudar, preservar o ID e registrar a decisão/evidência.
 
@@ -40,7 +40,7 @@ Cada PR usa IDs desta fila e declara dependências. Trabalho sobre o mesmo propr
 | NEX-028 | Tecido esculpido, instrumentos compactos e efeitos com custo limitado | Integrado | 7 | shell | NEX-027 |
 | NEX-029 | Fólios compactos, material do shell e reflexão local exclusiva | Integrado | 7 | shell | NEX-028 |
 | NEX-030 | Mesa circular e profundidade contida dos materiais | Integrado | 7 | tabletop | NEX-029 |
-| NEX-031 | Mesa espacial: composição, conjuntos e edição 3D | Em andamento | 7 | tabletop | NEX-030 |
+| NEX-031 | Mesa espacial: composição, conjuntos e edição 3D | Integrado | 7 | tabletop | NEX-030 |
 
 ## NEX-001 — Preparação estrutural
 
@@ -297,7 +297,7 @@ Evidências: [docs/visual-system-validation.json](../docs/visual-system-validati
 - Manter editor, roda e popups operáveis na tela inteira; validar foco, toque, movimento reduzido e quatro larguras com o motor real em fixtures.
 - Registrar referências oficiais Owlbear, Foundry e TaleSpire e distinguir medição local, CI, produção e hardware real.
 
-Evidências: [docs/visual-system-validation.json](../docs/visual-system-validation.json), [docs/DESIGN.md](../docs/DESIGN.md), [scripts/verify-tabletop-workspace.mjs](../scripts/verify-tabletop-workspace.mjs).
+Evidências: [docs/visual-system-validation.json](../docs/visual-system-validation.json), [docs/DESIGN.md](../docs/DESIGN.md), [scripts/verify-tabletop-workspace.mjs](../scripts/verify-tabletop-workspace.mjs), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/pull/292), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39670991307), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39672882787).
 
 ## Decisões vigentes
 
