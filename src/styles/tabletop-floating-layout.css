@@ -243,7 +243,6 @@ html[data-tadeon-tabletop-utility="now"] :where(.tadeon-creative-dock,.tadeon-pl
 
 .tadeon-tabletop-context-menu,
 .tadeon-tabletop-radial-menu,
-.tadeon-radial-actions,
 .tadeon-rename-popover,
 .tadeon-tactical-dock__power-list {
   max-width: calc(100vw - max(1rem, var(--tadeon-tabletop-safe-left)) - max(1rem, var(--tadeon-tabletop-safe-right))) !important;

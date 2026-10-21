@@ -1,4 +1,6 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useId, useMemo, useRef, useState } from "react";
+import { createPortal } from "react-dom";
+import { useMaterialToneStyle } from "@/lib/use-material-light";
 import {
   BookOpen,
   Clock3,
@@ -32,14 +34,26 @@ function entityCenter(entity: TabletopEntity) {
   return { x: entity.x + entity.width / 2, y: entity.y + entity.height / 2 };
 }
 
-function safeAnchor(entity: TabletopEntity) {
+function safeAnchor(entity: TabletopEntity, expanded = false) {
   const runtime = currentTabletopRuntime();
   if (!runtime) return null;
-  const point = runtime.worldToClient(entityCenter(entity));
+  const point = runtime.worldToClient(
+    expanded
+      ? entityCenter(entity)
+      : {
+          x: entity.x + entity.width / 2,
+          y: entity.y,
+        },
+  );
   const host = runtime.host.getBoundingClientRect();
+  const padding = expanded ? 134 : 26;
+  const left = Math.max(host.left, 0) + padding;
+  const right = Math.min(host.right, window.innerWidth) - padding;
+  const top = Math.max(host.top, 0) + padding;
+  const bottom = Math.min(host.bottom, window.innerHeight) - padding;
   return {
-    x: Math.max(host.left + 44, Math.min(host.right - 44, point.x)),
-    y: Math.max(host.top + 54, Math.min(host.bottom - 44, point.y)),
+    x: right >= left ? clamp(point.x, left, right) : (left + right) / 2,
+    y: bottom >= top ? clamp(point.y - (expanded ? 0 : 16), top, bottom) : (top + bottom) / 2,
   };
 }
 
@@ -58,13 +72,14 @@ function clamp(value: number, minimum: number, maximum: number) {
   return Math.max(minimum, Math.min(maximum, value));
 }
 
-type NexusCaptureAction =
-  | "register-nexus"
-  | "capture-note"
-  | "capture-clue"
-  | "capture-event";
+type NexusCaptureAction = "register-nexus" | "capture-note" | "capture-clue" | "capture-event";
 
 export function TabletopRadialActionsBridge() {
+  const materialStyle = useMaterialToneStyle();
+  const menuId = useId();
+  const menuRef = useRef<HTMLDivElement>(null);
+  const triggerRef = useRef<HTMLButtonElement>(null);
+  const wasOpen = useRef(false);
   const [snapshot, setSnapshot] = useState<TabletopSnapshot | null>(null);
   const [open, setOpen] = useState(false);
   const [memoryOpen, setMemoryOpen] = useState(false);
@@ -72,17 +87,7 @@ export function TabletopRadialActionsBridge() {
   const selected = useMemo(() => selectedEntity(snapshot), [snapshot]);
 
   useEffect(() => {
-    let frame = 0;
-    let attempts = 0;
-    const bootstrap = () => {
-      const runtime = currentTabletopRuntime();
-      if (runtime) {
-        setSnapshot(runtime.snapshot());
-        return;
-      }
-      if (attempts++ < 90) frame = window.requestAnimationFrame(bootstrap);
-    };
-    bootstrap();
+    setSnapshot(currentTabletopRuntime()?.snapshot() ?? null);
     const onRender = (event: Event) => {
       const detail = (event as CustomEvent<TabletopSnapshot>).detail;
       setSnapshot(detail ?? currentTabletopRuntime()?.snapshot() ?? null);
@@ -95,47 +100,73 @@ export function TabletopRadialActionsBridge() {
     window.addEventListener("tadeon-tabletop-render", onRender);
     window.addEventListener("tadeon-tabletop-runtime-destroyed", onDestroyed);
     return () => {
-      window.cancelAnimationFrame(frame);
       window.removeEventListener("tadeon-tabletop-render", onRender);
       window.removeEventListener("tadeon-tabletop-runtime-destroyed", onDestroyed);
     };
   }, []);
 
+  const selectedId = selected?.id;
   useEffect(() => {
     setMemoryOpen(false);
-    if (!selected) {
+    if (!selectedId) {
       setOpen(false);
       setAnchor(null);
       return;
     }
-    setAnchor(safeAnchor(selected));
-  }, [selected]);
+  }, [selectedId]);
 
-  // Camera pan/zoom is intentionally not a semantic tabletop render. Follow the
-  // selected world point in screen space so the launcher remains visually glued
-  // above the token/object while keeping a constant CSS size.
+  // View-only renders move the anchor without cloning semantic scene state.
   useEffect(() => {
     if (!selected) return;
-    let frame = 0;
+    let frame: number | null = null;
     const follow = () => {
-      const next = safeAnchor(selected);
-      if (next) {
-        setAnchor((current) => {
-          if (current && Math.abs(current.x - next.x) < 0.35 && Math.abs(current.y - next.y) < 0.35) return current;
-          return next;
-        });
-      }
-      frame = window.requestAnimationFrame(follow);
+      frame = null;
+      const next = safeAnchor(selected, open);
+      if (next)
+        setAnchor((current) =>
+          current && Math.abs(current.x - next.x) < 0.35 && Math.abs(current.y - next.y) < 0.35
+            ? current
+            : next,
+        );
     };
-    frame = window.requestAnimationFrame(follow);
-    return () => window.cancelAnimationFrame(frame);
-  }, [selected]);
+    const schedule = () => {
+      if (frame === null) frame = window.requestAnimationFrame(follow);
+    };
+    follow();
+    window.addEventListener("tadeon-tabletop-view", schedule);
+    window.addEventListener("resize", schedule);
+    window.addEventListener("scroll", schedule, true);
+    return () => {
+      if (frame !== null) window.cancelAnimationFrame(frame);
+      window.removeEventListener("tadeon-tabletop-view", schedule);
+      window.removeEventListener("resize", schedule);
+      window.removeEventListener("scroll", schedule, true);
+    };
+  }, [selected, open]);
+
+  useEffect(() => {
+    if (open)
+      menuRef.current
+        ?.querySelector<HTMLButtonElement>('[role="menuitem"]')
+        ?.focus({ preventScroll: true });
+    else if (wasOpen.current) triggerRef.current?.focus({ preventScroll: true });
+    wasOpen.current = open;
+    if (!open) return;
+    const dismiss = (event: PointerEvent) => {
+      if (event.target instanceof Node && !menuRef.current?.contains(event.target)) {
+        setOpen(false);
+        setMemoryOpen(false);
+      }
+    };
+    document.addEventListener("pointerdown", dismiss);
+    return () => document.removeEventListener("pointerdown", dismiss);
+  }, [open]);
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
       if (!selected || event.repeat) return;
-      const target = event.target as HTMLElement | null;
-      if (target?.matches("input,textarea,select,[contenteditable='true']")) return;
+      const target = event.target;
+      if (target instanceof Element && target.closest("input,textarea,select,[contenteditable='true']")) return;
       if (event.key.toLowerCase() === "q") {
         event.preventDefault();
         setAnchor(safeAnchor(selected));
@@ -159,7 +190,8 @@ export function TabletopRadialActionsBridge() {
     typeof window === "undefined" ||
     window.location.pathname !== "/tabletop" ||
     new URLSearchParams(window.location.search).get("view") === "director"
-  ) return null;
+  )
+    return null;
 
   const engine = currentTabletopRuntime()?.engine;
   const properties = objectValue(selected.properties);
@@ -178,10 +210,7 @@ export function TabletopRadialActionsBridge() {
     close();
   };
   const patchModel = (changes: Record<string, unknown>, label: string) => {
-    engine?.updateSelected(
-      { properties: { ...properties, ...changes } },
-      label,
-    );
+    engine?.updateSelected({ properties: { ...properties, ...changes } }, label);
   };
   const capture = (action: NexusCaptureAction) => {
     if (action === "register-nexus" && selected.linkedKnowledgeNodeId) {
@@ -201,13 +230,18 @@ export function TabletopRadialActionsBridge() {
     close();
   };
 
-  return (
+  return createPortal(
     <>
       {!open && (
         <button
+          ref={triggerRef}
           type="button"
+          data-material-surface="radial-control"
+          aria-haspopup="menu"
+          aria-controls={menuId}
+          aria-expanded={open}
           className="tadeon-radial-trigger"
-          style={{ left: anchor.x, top: anchor.y }}
+          style={{ ...materialStyle, left: anchor.x, top: anchor.y }}
           onClick={() => {
             setAnchor(safeAnchor(selected));
             setMemoryOpen(false);
@@ -220,9 +254,31 @@ export function TabletopRadialActionsBridge() {
         </button>
       )}
       <div
+        ref={menuRef}
+        id={menuId}
+        data-material-surface="radial"
+        onKeyDown={(event) => {
+          const keys = ["ArrowDown", "ArrowRight", "ArrowUp", "ArrowLeft", "Home", "End"];
+          if (!keys.includes(event.key)) return;
+          event.preventDefault();
+          const buttons = Array.from(
+            event.currentTarget.querySelectorAll<HTMLButtonElement>("button:not(:disabled)"),
+          );
+          const index = buttons.indexOf(document.activeElement as HTMLButtonElement);
+          const next =
+            event.key === "Home"
+              ? 0
+              : event.key === "End"
+                ? buttons.length - 1
+                : (index +
+                    (event.key === "ArrowUp" || event.key === "ArrowLeft" ? -1 : 1) +
+                    buttons.length) %
+                  buttons.length;
+          buttons[next]?.focus();
+        }}
         className="tadeon-radial-actions"
         data-state={open ? "open" : "closed"}
-        style={{ left: anchor.x, top: anchor.y }}
+        style={{ ...materialStyle, left: anchor.x, top: anchor.y }}
         role="menu"
         aria-hidden={!open}
         aria-label={`Ações rápidas de ${selected.label}`}
@@ -235,8 +291,16 @@ export function TabletopRadialActionsBridge() {
               <button
                 type="button"
                 tabIndex={open ? 0 : -1}
-                title={selected.linkedKnowledgeNodeId ? "Abrir página vinculada" : "Registrar como página"}
-                aria-label={selected.linkedKnowledgeNodeId ? "Abrir página vinculada" : "Registrar como página"}
+                title={
+                  selected.linkedKnowledgeNodeId
+                    ? "Abrir página vinculada"
+                    : "Registrar como página"
+                }
+                aria-label={
+                  selected.linkedKnowledgeNodeId
+                    ? "Abrir página vinculada"
+                    : "Registrar como página"
+                }
                 onClick={() => capture("register-nexus")}
               >
                 <BookOpen aria-hidden="true" />
@@ -282,7 +346,10 @@ export function TabletopRadialActionsBridge() {
               </button>
               <strong>{selected.label}</strong>
               {isNativeModel && (
-                <div className="tadeon-radial-actions__model-controls" aria-label="Ajustes do modelo 3D">
+                <div
+                  className="tadeon-radial-actions__model-controls"
+                  aria-label="Ajustes do modelo 3D"
+                >
                   <button
                     type="button"
                     tabIndex={open ? 0 : -1}
@@ -344,18 +411,41 @@ export function TabletopRadialActionsBridge() {
             </>
           )}
         </div>
-        <button type="button" tabIndex={open ? 0 : -1} className="is-north" role="menuitem" onClick={() => run(() => engine?.focusSelection())} title="Enquadrar">
-          <Focus aria-hidden="true" /><span>Foco</span>
+        <button
+          type="button"
+          tabIndex={open ? 0 : -1}
+          className="is-north"
+          role="menuitem"
+          onClick={() => run(() => engine?.focusSelection())}
+          title="Enquadrar"
+        >
+          <Focus aria-hidden="true" />
+          <span>Foco</span>
         </button>
-        <button type="button" tabIndex={open ? 0 : -1} className="is-north-east" role="menuitem" onClick={() => run(() => engine?.duplicateSelected())} title="Duplicar">
-          <Copy aria-hidden="true" /><span>Duplicar</span>
+        <button
+          type="button"
+          tabIndex={open ? 0 : -1}
+          className="is-north-east"
+          role="menuitem"
+          onClick={() => run(() => engine?.duplicateSelected())}
+          title="Duplicar"
+        >
+          <Copy aria-hidden="true" />
+          <span>Duplicar</span>
         </button>
         <button
           type="button"
           tabIndex={open ? 0 : -1}
           className="is-south-east"
           role="menuitem"
-          onClick={() => run(() => engine?.updateSelected({ locked: !selected.locked }, selected.locked ? "Desbloquear entidade" : "Bloquear entidade"))}
+          onClick={() =>
+            run(() =>
+              engine?.updateSelected(
+                { locked: !selected.locked },
+                selected.locked ? "Desbloquear entidade" : "Bloquear entidade",
+              ),
+            )
+          }
           title={selected.locked ? "Desbloquear" : "Bloquear"}
         >
           {selected.locked ? <LockOpen aria-hidden="true" /> : <Lock aria-hidden="true" />}
@@ -366,19 +456,44 @@ export function TabletopRadialActionsBridge() {
           tabIndex={open ? 0 : -1}
           className="is-south"
           role="menuitem"
-          onClick={() => run(() => engine?.updateSelected({ hidden: !selected.hidden }, selected.hidden ? "Mostrar entidade" : "Ocultar entidade"))}
+          onClick={() =>
+            run(() =>
+              engine?.updateSelected(
+                { hidden: !selected.hidden },
+                selected.hidden ? "Mostrar entidade" : "Ocultar entidade",
+              ),
+            )
+          }
           title={selected.hidden ? "Mostrar" : "Ocultar"}
         >
           {selected.hidden ? <Eye aria-hidden="true" /> : <EyeOff aria-hidden="true" />}
           <span>{selected.hidden ? "Mostrar" : "Ocultar"}</span>
         </button>
-        <button type="button" tabIndex={open ? 0 : -1} className="is-south-west" role="menuitem" onClick={() => setMemoryOpen((value) => !value)} title="Memória do Nexus" aria-expanded={memoryOpen}>
-          <BookOpen aria-hidden="true" /><span>Memória</span>
+        <button
+          type="button"
+          tabIndex={open ? 0 : -1}
+          className="is-south-west"
+          role="menuitem"
+          onClick={() => setMemoryOpen((value) => !value)}
+          title="Memória do Nexus"
+          aria-expanded={memoryOpen}
+        >
+          <BookOpen aria-hidden="true" />
+          <span>Memória</span>
         </button>
-        <button type="button" tabIndex={open ? 0 : -1} className="is-north-west is-danger" role="menuitem" onClick={() => run(() => engine?.deleteSelected())} title="Excluir">
-          <Trash2 aria-hidden="true" /><span>Excluir</span>
+        <button
+          type="button"
+          tabIndex={open ? 0 : -1}
+          className="is-north-west is-danger"
+          role="menuitem"
+          onClick={() => run(() => engine?.deleteSelected())}
+          title="Excluir"
+        >
+          <Trash2 aria-hidden="true" />
+          <span>Excluir</span>
         </button>
       </div>
-    </>
+    </>,
+    document.body,
   );
 }

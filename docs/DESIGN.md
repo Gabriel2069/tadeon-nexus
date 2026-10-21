@@ -314,3 +314,12 @@ O acervo ganha um ritmo mais compacto: menos altura vazia, largura mínima menor
 A barra lateral é um plano opaco de tinta, com luz de contato e gradiente estático; o vidro permanece nos instrumentos flutuantes. Em ponteiro grosso, a moldura móvel usa blur menor. Preferências de transparência e contraste conservam precedência. A reflexão de um controle deixa de medir e atualizar seus painéis ancestrais: somente a superfície material mais próxima responde ao evento. Conteúdo comum continua iluminando seu card.
 
 O workflow Visual review compara o acervo com a base da PR e verifica a implementação em quatro larguras, incluindo foco, portais, navegação e movimento reduzido. Medidas de altura, colunas e leituras de geometria são evidência de composição e trabalho retirado; não são FPS, INP ou autonomia em dispositivo físico. Procedência e estado ficam em visual-system-validation.json.
+
+
+## Relevo óptico e Mesa circular — NEX-030
+
+Pedido de Tadeu: refinar botões/menus e a profundidade de cards/caixas sem exagero, preservando o material aprovado dos botões; restaurar os menus circulares flutuantes da Mesa. Os cards ganham uma aresta luminosa interna e sombra de contato em camadas; o texto, os campos e os alvos permanecem imóveis. O antigo pressionamento do card inteiro deixa os materiais explícitos. Menus ancorados abrem a partir do gatilho com dobradiça óptica de 1,5 grau e resolvem em 210 ms; saída em 140 ms. Movimento reduzido dispensa a animação.
+
+O menu da entidade conserva seis ações orbitais e o núcleo de fechamento/memória/modelo. Rótulos não giram; os alvos têm pelo menos 44 px. A moldura circular se resolve por escala curta e opacidade, sem overshoot. O portal vai ao body para que coordenadas de viewport não dependam de contenção/transformação da rota. A geometria pertence ao radial, que acompanha câmera, scroll e resize por eventos; o bridge final deixa de reescrevê-la. O modo limpo e utilidades concorrentes conservam seus limites explícitos.
+
+Provas e limites ficam em materialMotionRevision de visual-system-validation.json. Fixtures interceptam dados: não certificam permissões ou dispositivos reais.

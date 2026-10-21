@@ -87,3 +87,17 @@ describe("Tabletop runtime lifecycle", () => {
     expect(currentTabletopRuntime()?.engine).toBe(next.engine);
   });
 });
+
+ it("announces view-only renders without publishing semantic scene snapshots", async () => {
+  const { engine, finish } = engineFixture();
+  const init = engine.init(document.createElement("div")); finish(); await init;
+  const view = vi.fn(), scene = vi.fn();
+  window.addEventListener("tadeon-tabletop-view", view);
+  window.addEventListener("tadeon-tabletop-render", scene);
+  (engine as unknown as { render: (notify: boolean) => void }).render(false);
+  expect(view).toHaveBeenCalledTimes(1);
+  expect(scene).not.toHaveBeenCalled();
+  window.removeEventListener("tadeon-tabletop-view", view);
+  window.removeEventListener("tadeon-tabletop-render", scene);
+  await engine.destroy();
+});

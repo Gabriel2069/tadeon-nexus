@@ -25,15 +25,6 @@ describe("acabamento transversal solicitado", () => {
     expect(css).toContain("max-height:calc(100dvh");
   });
 
-  it("cola o acionador radial à entidade em screen-space durante câmera e zoom", () => {
-    const radial = source("src/components/tabletop/tabletop-radial-actions-bridge.tsx");
-    const css = source("src/styles/interface-final-user-polish.css");
-    expect(radial).toContain("const follow = () =>");
-    expect(radial).toContain("window.requestAnimationFrame(follow)");
-    expect(radial).toContain("runtime.worldToClient(entityCenter(entity))");
-    expect(css).toContain("translate:-50% calc(-100% - .7rem) !important");
-  });
-
   it("refina condições, barras, botão Mesa e vínculos da ficha", () => {
     const css = source("src/styles/interface-final-user-polish.css");
     const bridge = source("src/components/experience-final-polish-bridge.tsx");

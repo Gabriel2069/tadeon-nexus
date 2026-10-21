@@ -7,46 +7,10 @@ import { Input } from "@/components/ui/input";
 import { useAuth } from "@/lib/auth";
 import { supabase } from "@/integrations/supabase/client";
 import { currentTabletopRuntime } from "@/lib/tabletop/tabletop-player-runtime";
-import type { TabletopEntity } from "@/lib/tabletop/types";
 
 const db = supabase as unknown as SupabaseClient;
 type RenameKind = "entity" | "wall" | "light" | "fog";
 type RenameItem = { id: string; kind: RenameKind; label: string };
-
-function cssPixels(name: string) {
-  const value = window.getComputedStyle(document.documentElement).getPropertyValue(name);
-  const parsed = Number.parseFloat(value);
-  return Number.isFinite(parsed) ? parsed : 0;
-}
-
-function safeCanvasBounds(host: DOMRect, padding: number) {
-  const safeLeft = cssPixels("--tadeon-tabletop-safe-left");
-  const safeRight = cssPixels("--tadeon-tabletop-safe-right");
-  const safeTop = cssPixels("--tadeon-tabletop-safe-top");
-  const safeBottom = cssPixels("--tadeon-tabletop-safe-bottom");
-  const left = Math.max(host.left + padding, safeLeft + padding);
-  const right = Math.min(host.right - padding, window.innerWidth - safeRight - padding);
-  const top = Math.max(host.top + padding, safeTop + padding);
-  const bottom = Math.min(host.bottom - padding, window.innerHeight - safeBottom - padding);
-  return {
-    left: right > left ? left : host.left + padding,
-    right: right > left ? right : host.right - padding,
-    top: bottom > top ? top : host.top + padding,
-    bottom: bottom > top ? bottom : host.bottom - padding,
-  };
-}
-
-function radialAnchor(entity: TabletopEntity) {
-  const runtime = currentTabletopRuntime();
-  if (!runtime) return null;
-  const point = runtime.worldToClient({ x: entity.x + entity.width / 2, y: entity.y });
-  const host = runtime.host.getBoundingClientRect();
-  const bounds = safeCanvasBounds(host, 34);
-  return {
-    x: Math.max(bounds.left, Math.min(bounds.right, point.x)),
-    y: Math.max(bounds.top, Math.min(bounds.bottom, point.y - 30)),
-  };
-}
 
 function closeTransientTabletopPanel() {
   const backdrop = document.querySelector<HTMLButtonElement>(
@@ -116,30 +80,6 @@ export function TabletopFinalInteractionBridge() {
     if (typeof window === "undefined" || window.location.pathname !== "/tabletop") return;
     let frame = 0;
     const tick = () => {
-      const runtime = currentTabletopRuntime();
-      const snapshot = runtime?.snapshot() ?? null;
-      const entity = snapshot?.selectedIds.length === 1 ? snapshot.scene.entities.find((candidate) => candidate.id === snapshot.selectedIds[0]) ?? null : null;
-      const trigger = document.querySelector<HTMLElement>(".tadeon-radial-trigger");
-      if (entity && trigger) {
-        const anchor = radialAnchor(entity);
-        if (anchor) {
-          trigger.style.position = "fixed";
-          trigger.style.left = `${anchor.x}px`;
-          trigger.style.top = `${anchor.y}px`;
-          trigger.style.transform = "translate(-50%, -100%)";
-        }
-      }
-      const radial = document.querySelector<HTMLElement>('.tadeon-radial-actions[data-state="open"]');
-      if (entity && radial) {
-        const center = runtime?.worldToClient({ x: entity.x + entity.width / 2, y: entity.y + entity.height / 2 });
-        const host = runtime?.host.getBoundingClientRect();
-        if (center && host) {
-          const bounds = safeCanvasBounds(host, 92);
-          radial.style.position = "fixed";
-          radial.style.left = `${Math.max(bounds.left, Math.min(bounds.right, center.x))}px`;
-          radial.style.top = `${Math.max(bounds.top, Math.min(bounds.bottom, center.y))}px`;
-        }
-      }
       const header = document.querySelector<HTMLElement>(".tadeon-placeables__panel > header");
       if (header) {
         let host = header.querySelector<HTMLElement>("[data-tadeon-rename-host]");

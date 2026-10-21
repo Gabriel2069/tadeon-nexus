@@ -3,10 +3,7 @@ import "./tabletop-advanced-grid-runtime";
 import type { CameraController } from "./camera-controller";
 import { TabletopEngine } from "./tabletop-engine";
 import type { Point, TabletopSnapshot } from "./types";
-import type {
-  TabletopProjectionMode,
-  TabletopViewOrientation,
-} from "./tabletop-projection";
+import type { TabletopProjectionMode, TabletopViewOrientation } from "./tabletop-projection";
 
 export interface TabletopRuntimeView {
   projection: TabletopProjectionMode;
@@ -96,14 +93,13 @@ if (!runtimeState.__tadeonPlayerRuntimePatched) {
   prototype.render = function renderWithRuntime(this: TabletopEngine, notify = true) {
     originalRender.call(this, notify);
     if (notify) dispatchRuntimeRender(this);
+    else if (typeof window !== "undefined" && window.__tadeonTabletopRuntime?.engine === this)
+      window.dispatchEvent(new CustomEvent("tadeon-tabletop-view"));
   };
 
   prototype.destroy = async function destroyWithRuntime(this: TabletopEngine) {
     destroyedEngines.add(this);
-    if (
-      typeof window !== "undefined" &&
-      window.__tadeonTabletopRuntime?.engine === this
-    ) {
+    if (typeof window !== "undefined" && window.__tadeonTabletopRuntime?.engine === this) {
       delete window.__tadeonTabletopRuntime;
       window.dispatchEvent(new CustomEvent("tadeon-tabletop-runtime-destroyed"));
     }

@@ -9528,5 +9528,30 @@
       "productionHttpStatus": 200,
       "workerVersion": "1af29026-95b0-4a34-9578-96e4af72723a"
     }
+  },
+  "materialMotionRevision": {
+    "task": "NEX-030",
+    "status": "in_progress",
+    "base": "f6ec7f7ed942dc0ce7c44e83c48446065fdc76ea",
+    "validation": {
+      "targeted": {
+        "status": "passed",
+        "suites": 4,
+        "tests": 26
+      },
+      "browser": {
+        "status": "pending",
+        "expectedWidths": [
+          320,
+          390,
+          820,
+          1440
+        ]
+      }
+    },
+    "limits": [
+      "Fixtures não certificam contas reais ou hardware físico.",
+      "Loop restante de renomeação no bridge final não foi retirado."
+    ]
   }
 }

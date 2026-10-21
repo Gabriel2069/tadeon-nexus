@@ -217,6 +217,59 @@ try {
         const animations=document.getAnimations().filter(a=>a.playState==="running" && a.effect?.getTiming().iterations===Infinity);
         return {pointerBurst:120,stageBoundsReads:reads,perpetualAnimations:animations.length,animationOwners:animations.map(a=>({name:a.animationName,target:a.effect.target?.className?.baseVal??a.effect.target?.className,pseudo:a.effect.pseudoElement})),pointerSheens:document.querySelectorAll(".tadeon-pointer-sheen").length,backdropPaths:document.querySelectorAll(".tadeon-fabric-backdrop path").length};
       }) : null;
+      let radialAudit = null;
+      if (route === "/tabletop" && process.env.NEXUS_RADIAL_AUDIT === "1") {
+        await page.waitForFunction(() => !!window.__tadeonTabletopRuntime);
+        await page.evaluate(() => {
+          // The empty server fixture has no persisted scene and is intentionally read-only.
+          // Enable only this isolated local engine to exercise its real object commands.
+          window.__tadeonTabletopRuntime.engine.setReadOnly(false);
+          window.__tadeonTabletopRuntime.engine.addEntityToViewport({ type: "token", label: "Sentinela de teste" });
+        });
+        const launcher = page.getByRole("button", { name: "Abrir ações rápidas de Sentinela de teste" });
+        await launcher.waitFor({ state: "visible", timeout: 15000 }).catch(async error => {
+          await page.screenshot({ path: `${root}/${phase}-radial-failure-${width}.png` });
+          console.log("Radial setup", await page.evaluate(() => ({ snapshot: window.__tadeonTabletopRuntime?.snapshot(), triggers: [...document.querySelectorAll(".tadeon-radial-trigger")].map(e=>({style:e.getAttribute("style"),visibility:getComputedStyle(e).visibility})), clean: document.documentElement.dataset.tadeonTabletopClean })));
+          throw error;
+        });
+        await launcher.click();
+        const menu = page.getByRole("menu", { name: "Ações rápidas de Sentinela de teste" });
+        await menu.waitFor();
+        await menu.evaluate(async e => {
+          await Promise.all(e.getAnimations({ subtree: true })
+            .filter(a => a.effect?.getTiming().iterations !== Infinity)
+            .map(a => a.finished.catch(() => {})));
+        });
+        radialAudit = await menu.evaluate(e => {
+          const r = e.getBoundingClientRect();
+          return { portal: e.parentElement === document.body, rect: [r.x,r.y,r.width,r.height],
+            circular: Math.abs(r.width-r.height) < 1,
+            inside: r.x >= 0 && r.right <= innerWidth && r.y >= 0 && r.bottom <= innerHeight,
+            focus: e.contains(document.activeElement),
+            targets: [...e.querySelectorAll('[role="menuitem"]')].map(b=>{const r=b.getBoundingClientRect();return [r.width,r.height];}) };
+        });
+        if (!radialAudit.circular || !radialAudit.portal || !radialAudit.inside || !radialAudit.focus || radialAudit.targets.some(r => r[0] < 44 || r[1] < 44)) errors.push("Radial geometry/focus failed: " + JSON.stringify(radialAudit));
+        await page.screenshot({ path: `${root}/${phase}-radial-${width}.png` });
+        await menu.getByRole("menuitem", { name: "Memória", exact: true }).click();
+        radialAudit.memoryTargets = await menu.locator(".is-memory button").evaluateAll(buttons => buttons.map(b => { const r=b.getBoundingClientRect(); return [r.width,r.height]; }));
+        if (radialAudit.memoryTargets.length !== 4 || radialAudit.memoryTargets.some(r=>r[0]<44 || r[1]<44)) errors.push("Radial memory targets failed");
+        await page.keyboard.press("Escape");
+        await page.emulateMedia({ reducedMotion: "reduce" });
+        radialAudit.reducedTransition = await menu.evaluate(e => getComputedStyle(e).transitionDuration);
+        if (radialAudit.reducedTransition.split(",").some(v=>parseFloat(v)>0.001)) errors.push("Radial reduced motion failed");
+        await page.keyboard.press("Escape");
+        await launcher.waitFor({state:"visible"});
+        if (!await launcher.evaluate(e=>e===document.activeElement)) errors.push("Radial return focus failed");
+        const before = await launcher.boundingBox();
+        await page.evaluate(() => window.__tadeonTabletopRuntime.engine.zoomBy(1.15));
+        await page.waitForTimeout(100);
+        const after = await launcher.boundingBox();
+        radialAudit.follow = { before, after };
+        await launcher.click();
+        await menu.getByRole("menuitem",{name:"Duplicar",exact:true}).click();
+        radialAudit.entities = await page.evaluate(()=>window.__tadeonTabletopRuntime.snapshot().scene.entities.length);
+        if (radialAudit.entities !== 2) errors.push("Radial duplication did not delegate to scene engine");
+      }
       const selectionGeometry = await page.evaluate(()=>[...document.querySelectorAll('[data-selection-rail]')].filter(e=>e.getBoundingClientRect().width>0&&e.getBoundingClientRect().height>0).map(e=>{
         const active=e.querySelector('[role="tab"][data-state="active"],[aria-current="page"],[aria-pressed="true"],[data-more-active="true"]'),plate=e.querySelector('.tadeon-selection-plate');
         if(!active||!plate)return null;const a=active.getBoundingClientRect(),p=plate.getBoundingClientRect();return {host:e.className,position:getComputedStyle(e).position,active:[a.x,a.y,a.width,a.height],plate:[p.x,p.y,p.width,p.height],plateStyle:plate.getAttribute('style'),scroll:[e.scrollLeft,e.scrollTop],aligned:Math.abs(a.x-p.x)<1&&Math.abs(a.y-p.y)<1&&Math.abs(a.width-p.width)<1&&Math.abs(a.height-p.height)<1};
@@ -613,7 +666,7 @@ try {
         metrics.preferences = preferences;
         await cdp.detach();
       }
-      results.push({ route, width, errors, interactions, selectionGeometry, craft, ...metrics });
+      results.push({ route, width, errors, interactions, selectionGeometry, craft, radialAudit, ...metrics });
       console.log(JSON.stringify({ route, width, errors, preferences: metrics.preferences }));
       await context.close();
     }

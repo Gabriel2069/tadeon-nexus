@@ -146,6 +146,7 @@
 [data-motion-surface="popup"]:not([data-popup-contained]) {
   --popup-x: 0px;
   --popup-y: 0px;
+  --popup-hinge: -1.5deg;
   border-radius: 1rem;
   background: linear-gradient(155deg, rgb(233 227 213 / 6%), transparent 60%), rgb(21 25 32 / 96%);
   backdrop-filter: blur(16px) saturate(120%);
@@ -156,8 +157,8 @@
 [data-motion-surface="popup"][data-side="top"] { --popup-y: 6px; }
 [data-motion-surface="popup"][data-side="left"] { --popup-x: 6px; }
 [data-motion-surface="popup"][data-side="right"] { --popup-x: -6px; }
-@keyframes tadeon-popup-anchored-in { from { opacity: 0; scale: .975; translate: var(--popup-x) var(--popup-y); } to { opacity: 1; scale: 1; translate: 0 0; } }
-@keyframes tadeon-popup-anchored-out { from { opacity: 1; scale: 1; } to { opacity: 0; scale: .985; } }
+@keyframes tadeon-popup-anchored-in { from { opacity: 0; scale: .985; translate: var(--popup-x) var(--popup-y); transform: perspective(1000px) rotateX(var(--popup-hinge)); } to { opacity: 1; scale: 1; translate: 0 0; transform: none; } }
+@keyframes tadeon-popup-anchored-out { from { opacity: 1; scale: 1; } to { opacity: 0; scale: .99; translate: calc(var(--popup-x) / 2) calc(var(--popup-y) / 2); } }
 :where([data-slot="dropdown-menu-item"], [data-slot="dropdown-menu-checkbox-item"], [data-slot="dropdown-menu-radio-item"], [data-slot="select-item"])[data-highlighted] {
   color: var(--foreground);
   background: rgb(var(--material-rgb, 217 215 164) / 14%);
@@ -176,10 +177,10 @@
 
 /* React primitives own interruption and presence. Positioning wrappers never animate. */
 [data-motion-surface="popup"]:not([data-popup-contained])[data-state="open"] {
-  animation: tadeon-popup-anchored-in var(--motion-panel) var(--ease-out);
+  animation: tadeon-popup-anchored-in 210ms cubic-bezier(.22,1,.36,1);
 }
 [data-motion-surface="popup"]:not([data-popup-contained])[data-state="closed"] {
-  animation: tadeon-popup-anchored-out var(--motion-exit) var(--ease-out) both;
+  animation: tadeon-popup-anchored-out 140ms cubic-bezier(.4,0,1,1) both;
 }
 [data-motion-surface="tabpanel"][data-state="active"] {
   animation: tadeon-reading-reveal 160ms var(--ease-out);

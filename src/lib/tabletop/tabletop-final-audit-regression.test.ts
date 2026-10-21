@@ -43,7 +43,7 @@ describe("auditoria final de runtime e viewport", () => {
 
   it("mantém o radial montado para animar fechamento e oferece ajuste nativo 3D", () => {
     const bridge = source("src/components/tabletop/tabletop-radial-actions-bridge.tsx");
-    const presence = source("src/styles/radial-presence-final.css");
+    const presence = source("src/styles/tabletop-radial-actions.css");
     expect(bridge).toContain('data-state={open ? "open" : "closed"}');
     expect(bridge).toContain("model_animation_paused");
     expect(bridge).toContain("model_scale");

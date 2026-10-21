@@ -26,7 +26,7 @@
       "roots": 0
     },
     "src/styles/interface-layout.css": {
-      "important": 279,
+      "important": 269,
       "roots": 1
     },
     "src/styles/knowledge-graph-second-brain.css": {
@@ -178,7 +178,7 @@
       "roots": 0
     },
     "src/styles/tabletop-radial-actions.css": {
-      "important": 2,
+      "important": 0,
       "roots": 0
     },
     "src/styles/tabletop-region-automation.css": {

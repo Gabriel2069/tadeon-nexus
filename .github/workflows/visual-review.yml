@@ -55,6 +55,15 @@ jobs:
           NEXUS_MATERIAL_AUDIT: "1"
           NEXUS_LAYOUT_AUDIT: "1"
         run: node scripts/verify-header-ownership.mjs current
+      - name: Conferir ações circulares da Mesa
+        env:
+          NEXUS_AUDIT_OUTPUT: /tmp/tadeon-visual/tabletop
+          NEXUS_AUDIT_WIDTHS: "[320,390,820,1440]"
+          NEXUS_AUDIT_ROUTES: '["/tabletop"]'
+          NEXUS_MATERIAL_AUDIT: "1"
+          NEXUS_LAYOUT_AUDIT: "1"
+          NEXUS_RADIAL_AUDIT: "1"
+        run: node scripts/verify-header-ownership.mjs current
       - name: Publicar métricas de comparação no log
         if: always()
         run: |
