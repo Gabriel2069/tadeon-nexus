@@ -2693,11 +2693,11 @@ export function TabletopWorkspace({
               </ToolbarButton>
             </div>
           )}
-          {selected.length > 0 && toolMode !== "draw" && toolMode !== "structure" && (
+          {selected.length > 1 && toolMode !== "draw" && toolMode !== "structure" && (
             <div className="tadeon-tabletop-selection-dock" aria-label="Ações rápidas da seleção">
               <div className="min-w-0 px-2">
                 <strong className="block truncate text-xs text-foreground">
-                  {selected.length === 1 ? primary?.label : `${selected.length} entidades`}
+                  {`${selected.length} entidades`}
                 </strong>
                 <span className="block text-[10px] text-muted-foreground">Seleção ativa</span>
               </div>
@@ -2708,14 +2708,6 @@ export function TabletopWorkspace({
               >
                 <Focus className="h-4 w-4" />
               </ToolbarButton>
-              {selected.length === 1 && primary && (
-                <ToolbarButton
-                  label="Abrir cartão, ficha ou arquivo"
-                  onClick={() => openEntityDossier(primary)}
-                >
-                  <FileSearch className="h-4 w-4" />
-                </ToolbarButton>
-              )}
               <ToolbarButton
                 label="Duplicar seleção"
                 disabled={!editable}

@@ -978,6 +978,7 @@ try {
       );
       await capture("composition");
       if (width < 1200) await page.keyboard.press("Escape");
+      assert(await page.locator(".tadeon-tabletop-selection-actions").isVisible(), "Collective selection retains its action rail");
       await bar.getByRole("button", { name: "Desfazer edição da cena", exact: true }).click();
       assert(
         (await page.evaluate(
@@ -1111,6 +1112,8 @@ try {
       );
       await page.getByRole("button", { name: "Fechar biblioteca criativa", exact: true }).click();
       await page.evaluate(() => window.__tadeonTabletopRuntime.engine.focusSelection());
+      assert(await page.locator(".tadeon-tabletop-selection-actions,.tadeon-tabletop-selection-dock[aria-label='Ações rápidas da seleção']").count() === 0, "Single master selection uses the radial without duplicated rails over the model");
+      assert(await page.locator(".tadeon-radial-trigger").isVisible(), "Single selection retains its circular actions");
       await capture("model-copies");
       operations.push({
         kind: "composition",

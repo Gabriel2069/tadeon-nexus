@@ -975,9 +975,9 @@ html[data-tadeon-tabletop-clean="true"] :where(.tadeon-tactical-dock,.tadeon-cre
     inset 0 1px 0 color-mix(in srgb, var(--foreground) 5.5%, transparent) !important;
 }
 
-/* The progressive selection rail is the canonical quick-action surface for
-   normal entities. Keep the specialized structure/light/fog editors because
-   they expose controls that do not exist in the global rail. */
+/* The progressive rail owns collective quick actions; a single master piece
+   uses the radial. Keep specialized structure/light/fog editors because they
+   expose controls that do not exist in the collective rail. */
 body:has(.tadeon-tabletop-selection-actions)
   .tadeon-tabletop-selection-dock[aria-label="Ações rápidas da seleção"] {
   display: none !important;

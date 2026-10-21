@@ -572,7 +572,7 @@ export function TabletopProgressiveInterfaceBridge({
           </div>
         )}
 
-        {!cleanPreview && selected.length > 0 && (
+        {!cleanPreview && selected.length > 0 && (role === "jogador" || selected.length > 1) && (
           <div className="tadeon-tabletop-selection-actions" aria-label="Ações da seleção">
             <div className="tadeon-tabletop-selection-actions__identity">
               <Crosshair />
