@@ -235,7 +235,11 @@ try {
         await launcher.click();
         const menu = page.getByRole("menu", { name: "Ações rápidas de Sentinela de teste" });
         await menu.waitFor();
-        await page.waitForTimeout(250);
+        await menu.evaluate(async e => {
+          await Promise.all(e.getAnimations({ subtree: true })
+            .filter(a => a.effect?.getTiming().iterations !== Infinity)
+            .map(a => a.finished.catch(() => {})));
+        });
         radialAudit = await menu.evaluate(e => {
           const r = e.getBoundingClientRect();
           return { portal: e.parentElement === document.body, rect: [r.x,r.y,r.width,r.height],
