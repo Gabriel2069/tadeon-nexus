@@ -61,7 +61,7 @@ describe("Mesa stage-local geometry", () => {
     expect(geometry).toContain("--tadeon-tabletop-mobile-rail-h");
     expect(geometry).toContain("--tadeon-tabletop-map-top: calc(");
     expect(geometry).toContain("scroll-snap-type: x proximity");
-    expect(workspace).toContain("tadeon-tabletop-mobile-tools-toggle");
-    expect(workspace).toContain('data-mobile-open={mobileToolsOpen ? "true" : "false"}');
+    // NEX-031 exercises the native command disclosure in the rendered workspace audit.
+    // The map shelf geometry above remains the responsibility of this legacy source check.
   });
 });

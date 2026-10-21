@@ -15,7 +15,7 @@ import {
 import { CommandHistory } from "./command-history";
 import { EntityRenderer } from "./entity-renderer";
 import {
-  boundsFromEntities,
+  tabletopSelectionFrame,
   entityIntersectsBounds,
   clampEntityToScene,
   pointInRotatedRect,
@@ -45,6 +45,10 @@ import { structureCollision, type TabletopStructureType } from "./tabletop-spati
 import { hitTestTabletopStructure, nextTabletopStructureState } from "./tabletop-structure-editor";
 import {
   alignTabletopEntities,
+  formTabletopEntities,
+  repeatTabletopEntities,
+  type TabletopFormation,
+  type TabletopRepeatOptions,
   distributeTabletopEntities,
   moveTabletopEntitiesToEdge,
   type TabletopAlignment,
@@ -683,11 +687,12 @@ export class TabletopEngine {
       y: Math.max(0, Math.min(origin.y, this.scenes.scene.height - height)),
       width,
       height,
-      rotation: 0,
+      rotation: Number.isFinite(seed.rotation) ? seed.rotation! : 0,
       zIndex: count,
       hidden: false,
       locked: false,
-      color: isToken ? 0x8d3152 : 0x345d6f,
+      color: Number.isInteger(seed.color) && seed.color! >= 0 && seed.color! <= 0xffffff
+        ? seed.color! : isToken ? 0x8d3152 : 0x345d6f,
       assetId: seed.assetId ?? null,
       assetUrl: seed.assetUrl,
       linkedSheetId: seed.linkedSheetId ?? null,
@@ -695,7 +700,7 @@ export class TabletopEngine {
       ownerUserId: seed.ownerUserId ?? null,
       properties: seed.properties ?? {},
       levelId: seed.levelId ?? this.activeLevelId,
-      elevation: 0,
+      elevation: Number.isFinite(seed.elevation) ? Math.max(-4096, Math.min(4096, seed.elevation!)) : 0,
     });
     this.executeMutation("Adicionar entidade", (entities) => [...entities, entity]);
     this.selection.replace([entity.id]);
@@ -997,9 +1002,10 @@ export class TabletopEngine {
       this.render(false);
       return;
     }
-    const bounds = boundsFromEntities(this.selectedEntities);
+    const { bounds, elevationRange } = tabletopSelectionFrame(this.selectedEntities);
     if (!bounds) return;
-    this.camera.fitBounds(bounds, this.app.screen.width, this.app.screen.height, 92, 2.25);
+    const padding = Math.min(92, this.app.screen.width * 0.12, this.app.screen.height * 0.12);
+    this.camera.fitBounds(bounds, this.app.screen.width, this.app.screen.height, padding, 2.25, elevationRange);
     this.render(false);
   }
 
@@ -1049,6 +1055,43 @@ export class TabletopEngine {
         selected.has(entity.id) ? this.clampEntity(entity) : entity,
       ),
     );
+  }
+
+  formSelected(formation: TabletopFormation, gap = 0, columns = 3) {
+    if (this.readOnly) return false;
+    const ids = new Set(this.editableSelection().map(entity => entity.id));
+    const next = formTabletopEntities(this.scenes.scene.entities, ids, formation, gap, columns,
+      this.scenes.scene.width, this.scenes.scene.height);
+    if (!next) return false;
+    this.executeMutation("Organizar formação", () => next);
+    return true;
+  }
+
+  repeatSelected(options: TabletopRepeatOptions) {
+    if (this.readOnly) return 0;
+    const source = this.editableSelection();
+    const copies = repeatTabletopEntities(source, options, this.scenes.scene.width,
+      this.scenes.scene.height, () => crypto.randomUUID());
+    if (!copies) return 0;
+    const front = Math.max(0, ...this.scenes.scene.entities.map(e => e.zIndex));
+    const ordered = copies.map((entity, i) => ({ ...entity, zIndex: front + i + 1 }));
+    this.executeMutation("Repetir conjunto", entities => [...entities, ...ordered]);
+    this.selection.replace(ordered.map(e => e.id));
+    this.render();
+    return ordered.length;
+  }
+
+  snapSelectedToGrid() {
+    if (this.readOnly || this.scenes.scene.gridMode === "none") return;
+    const ids = new Set(this.editableSelection().map(e => e.id));
+    if (!ids.size) return;
+    this.executeMutation("Encaixar seleção na grade", entities => entities.map(entity => {
+      if (!ids.has(entity.id)) return entity;
+      const scene = this.scenes.scene;
+      const point = snapPointToGrid({ x: entity.x, y: entity.y }, scene.gridMode,
+        Math.max(8, scene.gridSize * scene.gridScale), scene.gridOffsetX ?? 0, scene.gridOffsetY ?? 0);
+      return this.clampEntity({ ...entity, ...point });
+    }));
   }
 
   resetSelectedTransform() {

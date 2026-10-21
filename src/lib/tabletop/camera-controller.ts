@@ -49,11 +49,7 @@ export class CameraController {
   }
 
   private projected(point: Point): Point {
-    const projected = projectTabletopPoint(
-      point,
-      this.projectionMode,
-      this.viewOrientation,
-    );
+    const projected = projectTabletopPoint(point, this.projectionMode, this.viewOrientation);
     return this.projectionMode === "isometric"
       ? {
           x: projected.x,
@@ -88,11 +84,7 @@ export class CameraController {
     };
     if (this.projectionMode === "isometric")
       projected.y += this.elevation * this.viewOrientation.elevationScale;
-    return unprojectTabletopPoint(
-      projected,
-      this.projectionMode,
-      this.viewOrientation,
-    );
+    return unprojectTabletopPoint(projected, this.projectionMode, this.viewOrientation);
   }
 
   worldToScreen(point: Point): Point {
@@ -110,12 +102,7 @@ export class CameraController {
     this.placeWorldAtScreen(worldPoint, screenPoint);
   }
 
-  setView(
-    worldCenter: Point,
-    zoom: number,
-    screenWidth: number,
-    screenHeight: number,
-  ) {
+  setView(worldCenter: Point, zoom: number, screenWidth: number, screenHeight: number) {
     const boundedZoom = Math.min(
       this.maxZoom,
       Math.max(this.minZoom, Number.isFinite(zoom) ? zoom : 1),
@@ -127,24 +114,14 @@ export class CameraController {
     });
   }
 
-  center(
-    sceneWidth: number,
-    sceneHeight: number,
-    screenWidth: number,
-    screenHeight: number,
-  ) {
+  center(sceneWidth: number, sceneHeight: number, screenWidth: number, screenHeight: number) {
     this.placeWorldAtScreen(
       { x: sceneWidth / 2, y: sceneHeight / 2 },
       { x: screenWidth / 2, y: screenHeight / 2 },
     );
   }
 
-  fit(
-    sceneWidth: number,
-    sceneHeight: number,
-    screenWidth: number,
-    screenHeight: number,
-  ) {
+  fit(sceneWidth: number, sceneHeight: number, screenWidth: number, screenHeight: number) {
     this.fitBounds(
       { x: 0, y: 0, width: sceneWidth, height: sceneHeight },
       screenWidth,
@@ -160,22 +137,28 @@ export class CameraController {
     screenHeight: number,
     padding = 72,
     maxZoom = 2,
+    elevationRange?: { min: number; max: number },
   ) {
     const corners = [
       { x: bounds.x, y: bounds.y },
       { x: bounds.x + bounds.width, y: bounds.y },
       { x: bounds.x + bounds.width, y: bounds.y + bounds.height },
       { x: bounds.x, y: bounds.y + bounds.height },
-    ].map((point) => this.projected(point));
+    ].flatMap((point) => {
+      const ground = this.projected(point);
+      if (this.projectionMode !== "isometric" || !elevationRange) return [ground];
+      return [elevationRange.min, elevationRange.max].map((elevation) => ({
+        x: ground.x,
+        y: ground.y - elevation * this.viewOrientation.elevationScale,
+      }));
+    });
     const projectedBounds = {
       x: Math.min(...corners.map((point) => point.x)),
       y: Math.min(...corners.map((point) => point.y)),
       width:
-        Math.max(...corners.map((point) => point.x)) -
-        Math.min(...corners.map((point) => point.x)),
+        Math.max(...corners.map((point) => point.x)) - Math.min(...corners.map((point) => point.x)),
       height:
-        Math.max(...corners.map((point) => point.y)) -
-        Math.min(...corners.map((point) => point.y)),
+        Math.max(...corners.map((point) => point.y)) - Math.min(...corners.map((point) => point.y)),
     };
     const availableWidth = Math.max(1, screenWidth - padding * 2);
     const availableHeight = Math.max(1, screenHeight - padding * 2);
@@ -184,14 +167,10 @@ export class CameraController {
       availableHeight / Math.max(projectedBounds.height, 1),
       maxZoom,
     );
-    this.viewport.scale.set(
-      Math.min(this.maxZoom, Math.max(this.minZoom, zoom)),
-    );
+    this.viewport.scale.set(Math.min(this.maxZoom, Math.max(this.minZoom, zoom)));
     this.viewport.position.set(
-      screenWidth / 2 -
-        (projectedBounds.x + projectedBounds.width / 2) * this.zoom,
-      screenHeight / 2 -
-        (projectedBounds.y + projectedBounds.height / 2) * this.zoom,
+      screenWidth / 2 - (projectedBounds.x + projectedBounds.width / 2) * this.zoom,
+      screenHeight / 2 - (projectedBounds.y + projectedBounds.height / 2) * this.zoom,
     );
   }
 }

@@ -47,7 +47,7 @@
 
 .tadeon-tabletop-stage {
   isolation: isolate;
-  margin: 0.65rem;
+  margin: 0;
   border: 1px solid rgb(217 215 164 / 12%);
   border-radius: 1.2rem 0.45rem 1.2rem 0.45rem;
   background: radial-gradient(circle at 50% 50%, rgb(217 215 164 / 3%), transparent 38rem), #06080c;
@@ -1631,12 +1631,14 @@
 .tadeon-tabletop-workbench {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: auto minmax(0, 1fr);
   flex: 1;
   min-height: 0;
-  gap: 0.75rem;
-  padding: 0.75rem;
+  gap: 0.5rem;
+  padding: 0;
 }
 .tadeon-tabletop-panel {
+  grid-row: 2;
   --material-rgb: 146 181 202;
   min-width: 0;
   padding: 1rem;
@@ -1786,6 +1788,7 @@ html[data-tadeon-tabletop-clean="true"] .tadeon-tabletop-toolbar {
     grid-template-columns: minmax(0, 1fr) minmax(20rem, 23rem);
     align-items: stretch;
   }
+  .tadeon-tabletop-workbench > .tadeon-tabletop-panel { grid-column: 2; }
   .tadeon-tabletop-workbench[data-panel-collapsed="true"] {
     grid-template-columns: minmax(0, 1fr) 3.75rem;
   }
@@ -1825,13 +1828,6 @@ html[data-tadeon-tabletop-clean="true"] .tadeon-tabletop-toolbar {
 }
 
 
-.tadeon-tabletop-command-spaces { display: flex; flex-wrap: wrap; align-items: stretch; gap: .4rem; min-width: 0; padding: .35rem; border: 1px solid rgb(146 181 202 / 18%); border-radius: .9rem; background: rgb(9 15 20 / 70%); box-shadow: inset 0 1px rgb(255 255 255 / 5%); }
-.tadeon-tabletop-command-spaces button { display: flex; flex: 1 0 auto; min-height: 44px; align-items: center; justify-content: center; gap: .5rem; padding: .5rem .7rem; border: 1px solid transparent; border-radius: .6rem; color: #b6bcc2; font-size: .8rem; transition: background-color 160ms ease, border-color 160ms ease, color 160ms ease; }
-.tadeon-tabletop-command-spaces svg { width: 1rem; height: 1rem; }
-.tadeon-tabletop-command-spaces button[aria-pressed="true"] { border-color: rgb(146 181 202 / 35%); color: #dcebf3; background: rgb(84 123 148 / 18%); box-shadow: inset 0 1px rgb(255 255 255 / 8%); }
-.tadeon-tabletop-command-spaces button:focus-visible { outline: 2px solid #e9e3d5; outline-offset: 2px; }
-html[data-tadeon-tabletop-interface="play"] .tadeon-tabletop-command-spaces { display: none; }
-@media (prefers-reduced-motion: reduce) { .tadeon-tabletop-command-spaces button { transition: none; } }
 
 .tadeon-tabletop-panel__chooser { display: none; }
 .tadeon-tabletop-media-upload { display: flex; min-height: 44px; margin-top: .5rem; align-items: center; justify-content: center; gap: .5rem; padding: .65rem; border: 1px dashed rgb(146 181 202 / 40%); border-radius: .65rem; color: #a7c8dc; background: rgb(84 123 148 / 8%); cursor: pointer; font-size: .8125rem; }
@@ -1844,8 +1840,6 @@ html[data-tadeon-tabletop-interface="play"] .tadeon-tabletop-command-spaces { di
 }
 
 
-/* Compact editing reaches areas through the editor chooser; keep the map in view. */
-@media (max-width: 1199px) { .tadeon-tabletop-command-spaces { display: none; } }
 @media (max-width: 639px) {
   .tadeon-tabletop-toolbar { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); }
   .tadeon-tabletop-command-trigger { min-width: 0; padding-inline: .35rem; font-size: .75rem; }
@@ -1858,10 +1852,64 @@ html[data-tadeon-tabletop-interface="play"] .tadeon-tabletop-command-spaces { di
 .tadeon-tabletop-tools {
   position: relative;
   z-index: 20;
-  padding: 1rem;
-  margin-bottom: 1rem;
+  padding: .65rem;
+  margin-bottom: .5rem;
   border: 1px solid var(--studio-line);
   border-radius: 1rem;
   background: var(--studio-panel);
   box-shadow: var(--shadow-relief);
 }
+
+/* Scene workbench: operational controls above the map, composition in the existing editor. */
+.tadeon-tabletop-viewbar {
+  grid-column: 1 / -1; grid-row: 1; display: flex; flex-wrap: wrap; align-items: center; gap: .35rem;
+  min-width: 0; padding: .4rem; border: 1px solid rgb(146 181 202 / 22%); border-radius: .85rem .35rem;
+  background: radial-gradient(ellipse at 20% 0%, rgb(146 181 202 / 10%), transparent 65%), #10151b;
+  box-shadow: inset 0 1px rgb(255 255 255 / 9%), 0 8px 22px -16px #000;
+}
+.tadeon-tabletop-viewbar :is(button,select) { min-height: 44px; font-size: .8125rem; }
+.tadeon-tabletop-viewbar__projection { position: relative; display: flex; gap: 2px; padding: 2px; border: 1px solid rgb(146 181 202 / 18%); border-radius: .7rem; background: #080d12; }
+.tadeon-tabletop-viewbar__projection button { display: flex; align-items: center; justify-content: center; gap: .3rem; min-width: 44px; padding: .35rem .55rem; border-radius: .5rem; color: var(--muted-foreground); transition: background-color 160ms ease, color 160ms ease; }
+.tadeon-tabletop-viewbar__projection button[aria-pressed="true"] { color: #dcebf3; }
+.tadeon-tabletop-viewbar svg { width: 16px; height: 16px; }
+.tadeon-tabletop-viewbar__preset { min-width: 0; }
+.tadeon-tabletop-viewbar__preset select { width: 8.5rem; max-width: 100%; border: 1px solid var(--border); border-radius: .6rem; padding: .4rem; background: #10171f; }
+.tadeon-tabletop-viewbar__history { display: flex; margin-left: auto; border-left: 1px solid var(--border); padding-left: .35rem; }
+.tadeon-tabletop-viewbar button:focus-visible { outline: 2px solid #b1d2e6; outline-offset: 2px; }
+.tadeon-tabletop-scene-commands, .tadeon-tabletop-session-disclosure { margin-top: .5rem; border-top: 1px solid var(--studio-line); }
+:is(.tadeon-tabletop-scene-commands,.tadeon-tabletop-session-disclosure) > summary { min-height: 44px; align-content: center; cursor: pointer; color: var(--muted-foreground); font-size: .8125rem; }
+.tadeon-tabletop-scene-commands summary small { margin-left: .5rem; font-size: .75rem; }
+.tadeon-tabletop-workbench:fullscreen { width: 100%; height: 100%; padding: max(.5rem,env(safe-area-inset-top)) .5rem max(.5rem,env(safe-area-inset-bottom)); background: #080c11; }
+.tadeon-tabletop-workbench:fullscreen .tadeon-tabletop-stage { height: 100%; }
+.tadeon-tabletop-workbench:fullscreen .tadeon-tabletop-panel { max-height: 100%; }
+.tadeon-composition { min-width: 0; border: 1px solid rgb(146 181 202 / 25%); border-radius: .9rem .35rem; padding: .75rem; background: linear-gradient(145deg, rgb(146 181 202 / 8%), transparent 75%), #101821; }
+.tadeon-composition > header { display: flex; align-items: center; gap: .6rem; margin-bottom: .75rem; }
+.tadeon-composition > header svg { width: 22px; color: #a7c8dc; }
+.tadeon-composition strong { font: 600 1.25rem/1.1 var(--font-cinzel); }
+.tadeon-composition small { display: block; margin-top: .2rem; color: var(--muted-foreground); font-size: .75rem; }
+.tadeon-composition fieldset:disabled { opacity: .5; }
+.tadeon-composition__quick { display: flex; flex-wrap: wrap; gap: .35rem; }
+.tadeon-composition__quick > button { flex: 1 1 auto; min-height: 44px; padding: .4rem; }
+.tadeon-composition details { margin-top: .65rem; border-top: 1px solid var(--border); padding-top: .35rem; }
+.tadeon-composition summary { cursor: pointer; min-height: 44px; font-size: .875rem; align-content: center; }
+.tadeon-composition__fields { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: .6rem; margin-block: .65rem; }
+.tadeon-composition__fields label { display: grid; gap: .3rem; min-width: 0; }
+.tadeon-composition__fields label > span { color: var(--muted-foreground); font-size: .75rem; }
+.tadeon-composition__fields input { width: 100%; min-width: 0; min-height: 44px; border: 1px solid var(--border); border-radius: .5rem; padding: .5rem; background: #080f16; color: var(--foreground); font: 400 .875rem var(--font-mono); }
+.tadeon-composition__formations { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: .3rem; }
+.tadeon-composition__formations button { display: grid; justify-items: center; gap: .3rem; min-height: 56px; padding: .4rem .2rem; border: 1px solid rgb(146 181 202 / 25%); border-radius: .7rem .25rem; background: #1b2832; box-shadow: inset 0 1px #fff2, 0 4px 10px -7px #000; }
+.tadeon-composition__formations button:disabled { opacity: .4; }
+.tadeon-composition__formations button svg { width: 18px; height: 18px; color: #a7c8dc; }
+.tadeon-composition__formations button span { font-size: .75rem; }
+.tadeon-composition__model { margin-top: .75rem; padding-top: .65rem; border-top: 1px solid var(--border); }
+.tadeon-composition__model h3 { display: flex; align-items: center; gap: .4rem; }
+.tadeon-composition p { margin-block: .65rem; color: var(--muted-foreground); }
+@media (max-width: 639px) {
+  .tadeon-tabletop-viewbar { gap: .25rem; padding: .35rem; }
+  .tadeon-tabletop-viewbar__preset { flex: 1; min-width: 6.5rem; }
+  .tadeon-tabletop-viewbar__preset select { width: 100%; }
+  .tadeon-tabletop-viewbar__history { margin-left: 0; }
+  .tadeon-tabletop-viewbar__snap span { display: none; }
+  .tadeon-tabletop-scene-commands summary small { display: none; }
+}
+@media (prefers-reduced-motion: reduce) { .tadeon-tabletop-viewbar__projection button { transition: none; } }

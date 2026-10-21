@@ -2,7 +2,7 @@
 
 > Gerado de [project-continuity.json](project-continuity.json). Edite o registro e rode `npm run sync:project`; não mantenha uma cópia manual.
 
-Snapshot: 2026-10-20; referência de runtime: `2bc2ae56ec76060f44db5359c7480c7da0cb97c2`. PR #289 em `feat/nex-029-compact-folios`; integração: `integrated`. Não é prova de deploy.
+Snapshot: 2026-10-21; referência de runtime: `d050946adb0580cf1335db1499cda050e8fc49d7`. PR #291 em `feat/nex-030-material-motion-radials`; integração: `integrated`. Não é prova de deploy.
 
 Estados: planejado → próximo → em andamento → validado na branch → integrado. Publicação exige evidência própria do SHA; adiado conserva o requisito. Se um requisito mudar, preservar o ID e registrar a decisão/evidência.
 
@@ -39,7 +39,8 @@ Cada PR usa IDs desta fila e declara dependências. Trabalho sobre o mesmo propr
 | NEX-027 | Composição móvel, tipografia e seleção contínua de tecido | Integrado | 7 | shell | NEX-025, NEX-026 |
 | NEX-028 | Tecido esculpido, instrumentos compactos e efeitos com custo limitado | Integrado | 7 | shell | NEX-027 |
 | NEX-029 | Fólios compactos, material do shell e reflexão local exclusiva | Integrado | 7 | shell | NEX-028 |
-| NEX-030 | Mesa circular e profundidade contida dos materiais | Em andamento | 7 | tabletop | NEX-029 |
+| NEX-030 | Mesa circular e profundidade contida dos materiais | Integrado | 7 | tabletop | NEX-029 |
+| NEX-031 | Mesa espacial: composição, conjuntos e edição 3D | Em andamento | 7 | tabletop | NEX-030 |
 
 ## NEX-001 — Preparação estrutural
 
@@ -285,7 +286,18 @@ Evidências: [docs/visual-system-validation.json](../docs/visual-system-validati
 - Aprofundar relevo óptico de cards e transições de menus sem inclinar texto ou alterar o material aprovado dos botões.
 - Validar ações reais do motor em fixtures, quatro larguras, foco/retorno e redução de movimento; preservar limites de hardware e contas reais.
 
-Evidências: [docs/visual-system-validation.json](../docs/visual-system-validation.json), [docs/DESIGN.md](../docs/DESIGN.md).
+Evidências: [docs/visual-system-validation.json](../docs/visual-system-validation.json), [docs/DESIGN.md](../docs/DESIGN.md), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/pull/291), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39526551047), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39526550963), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39575515524), [CI/referência](https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39575515416).
+
+## NEX-031 — Mesa espacial: composição, conjuntos e edição 3D
+
+- Recompor a Mesa com cabeçalho operacional compacto, instrumentos junto ao mapa e editor contextual, preservando as funções existentes.
+- Oferecer formações e repetição de conjuntos com intervalo, giro e elevação, respeitando limites, peças bloqueadas e desfazer atômico.
+- Preservar escala, orientação, altura, animação e cor de peças reutilizáveis 3D; nunca tratar GLB como miniatura de imagem.
+- Desenhar modelos estáticos e pausados por demanda; manter animações reais, acompanhar câmera e suspender a aba oculta.
+- Manter editor, roda e popups operáveis na tela inteira; validar foco, toque, movimento reduzido e quatro larguras com o motor real em fixtures.
+- Registrar referências oficiais Owlbear, Foundry e TaleSpire e distinguir medição local, CI, produção e hardware real.
+
+Evidências: [docs/visual-system-validation.json](../docs/visual-system-validation.json), [docs/DESIGN.md](../docs/DESIGN.md), [scripts/verify-tabletop-workspace.mjs](../scripts/verify-tabletop-workspace.mjs).
 
 ## Decisões vigentes
 
@@ -309,3 +321,4 @@ Evidências: [docs/visual-system-validation.json](../docs/visual-system-validati
 | DEC-016 | Um contrato de layout e cabeçalho para as páginas principais; mudar a área altera símbolo, tom e contexto, sem inventar outro padrão de head. | Pedido de Tadeu em 19/10/2026 ao iniciar NEX-026. PageHeader compartilha identidade, ações e contexto; o envelope comum respeita a mesma margem. Conteúdo e instrumentos conservam suas funções e densidades. |
 | DEC-017 | Restaurar a roda de opções do Mais no dock inferior; personalidade e continuidade devem coexistir entre páginas. | Pedido explícito de Tadeu ao fechar NEX-026, em 19/10/2026. Substitui a apresentação em lista de NEX-016, preservando o componente React/Radix, os destinos estáveis e a dispensa acessível. Cabeçalhos, margens, materiais e movimentos compartilham regras; símbolos e instrumentos mantêm sua autoria. |
 | DEC-018 | Recompor o celular por função; retirar o cabeçalho adicional do Dashboard e adotar Alegreya Sans na interface, mantendo Cormorant Garamond editorial e PT Mono documental. | Pedido explícito de Tadeu em 19/10/2026: reduzir cards e rolagem, evitar aparência Arial/ABNT, seleção viajante e atmosfera de tecido. Dashboard é uma exceção deliberada à aplicação universal de PageHeader em DEC-016; a arte aprovada continua sendo sua abertura. Os nomes --font-inter e --font-cinzel são aliases compatíveis, não fontes adicionais. |
+| DEC-019 | A Mesa usa PageHeader em faixa operacional compacta e uma barra de visão junto ao tabuleiro. | Pedido explícito de aprimoramento da Mesa: reduzir a abertura, dar espaço ao mapa e tornar câmera, encaixe e composição acessíveis. A anatomia e as fontes continuam compartilhadas; a geometria do cabeçalho permanece em page-hero-parity.css. |

@@ -1,3 +1,5 @@
+import { TabletopCompositionPanel } from "@/components/tabletop/tabletop-composition-panel";
+import { TabletopViewBar } from "@/components/tabletop/tabletop-view-bar";
 import { WorkspaceActions } from "@/components/workspace-actions";
 import { PageHeader } from "@/components/page-header";
 import { useAuth } from "@/lib/auth";
@@ -102,6 +104,7 @@ import { AssetServiceError } from "@/lib/assets/asset-errors";
 import type { TabletopToolMode } from "@/lib/tabletop/interaction-controller";
 import type { TabletopProjectionMode } from "@/lib/tabletop/camera-controller";
 import {
+  TABLETOP_CAMERA_PRESETS as CAMERA_PRESETS,
   DEFAULT_TABLETOP_VIEW_ORIENTATION,
   normalizeTabletopViewOrientation,
   type TabletopViewOrientation,
@@ -212,27 +215,6 @@ const TOOL_HINTS: Record<TabletopToolMode, string> = {
 const DRAW_COLORS = ["#d9d7a4", "#74242d", "#4f6e5d", "#e9e3d5", "#1f3644"];
 const TOKEN_BASE_COLORS = ["#8d3152", "#547b94", "#4f6e5d", "#b7814d", "#716b7b", "#d9d7a4"];
 
-const CAMERA_PRESETS = [
-  {
-    id: "tactical",
-    label: "Tático",
-    description: "Leitura clara de grade e alturas",
-    orientation: { yaw: 315, tilt: 0.58, elevationScale: 1 },
-  },
-  {
-    id: "cinematic",
-    label: "Cinemático",
-    description: "Ângulo baixo para projeção",
-    orientation: { yaw: 330, tilt: 0.34, elevationScale: 1.35 },
-  },
-  {
-    id: "overview",
-    label: "Visão geral",
-    description: "Mais mapa, menos distorção",
-    orientation: { yaw: 0, tilt: 0.78, elevationScale: 0.72 },
-  },
-] as const;
-
 function colorToNumber(value: string) {
   const parsed = Number.parseInt(value.replace("#", ""), 16);
   return Number.isFinite(parsed) ? parsed : 0xd9d7a4;
@@ -333,6 +315,21 @@ export function TabletopWorkspace({
     }
   }, [interfaceMode, preferenceKey]);
   const hostRef = useRef<HTMLDivElement>(null);
+  const workbenchRef = useRef<HTMLDivElement>(null);
+  const [fullscreen, setFullscreen] = useState(false);
+  const [canFullscreen, setCanFullscreen] = useState(false);
+  useEffect(() => {
+    setCanFullscreen(document.fullscreenEnabled && typeof document.documentElement.requestFullscreen === "function");
+    const sync = () => setFullscreen(document.fullscreenElement === workbenchRef.current);
+    document.addEventListener("fullscreenchange", sync);
+    return () => document.removeEventListener("fullscreenchange", sync);
+  }, []);
+  const toggleFullscreen = async () => {
+    try {
+      if (document.fullscreenElement) await document.exitFullscreen();
+      else await workbenchRef.current?.requestFullscreen();
+    } catch { toast.error("O navegador não permitiu abrir o tabuleiro em tela inteira."); }
+  };
   const sceneRequests = useMemo(createLatestRequestGate, []);
   const snapshotRequests = useMemo(createLatestRequestGate, []);
   const aliveRef = useRef(true);
@@ -384,7 +381,7 @@ export function TabletopWorkspace({
   const [diagnostics, setDiagnostics] = useState(false);
   const [mobileToolsOpen, setMobileToolsOpen] = useState(false);
   const [mobilePanelOpen, setMobilePanelOpen] = useState(false);
-  const [panelCollapsed, setPanelCollapsed] = useState(false);
+  const [panelCollapsed, setPanelCollapsed] = useState(true);
   const [panelTab, setPanelTab] = useState<TabletopPanelTab>("library");
   const [paletteSearch, setPaletteSearch] = useState("");
   const [masterSearch, setMasterSearch] = useState("");
@@ -1857,19 +1854,12 @@ export function TabletopWorkspace({
     >
       <PageHeader
         section="tabletop"
+        className="tadeon-page-header--studio"
         eyebrow="Estúdio de cena"
         title="Mesa Nexus"
-        description="Componha a cena e conduza os fios da sessão."
         actions={
           <>
-            <WorkspaceActions workspace="/tabletop" />
-            <span className="tadeon-tabletop-studio__status">
-              {persistedScene?.status === "archived"
-                ? "Consulta"
-                : editable
-                  ? "Edição"
-                  : "Sem cena"}
-            </span>
+            <WorkspaceActions workspace="/tabletop" compact />
           </>
         }
       />
@@ -1912,30 +1902,6 @@ export function TabletopWorkspace({
               ))}
             </select>
           </div>
-          <nav className="tadeon-tabletop-command-spaces" aria-label="Fluxos do estúdio">
-            {(
-              [
-                ["library", "Montar", Image],
-                ["space", "Ambiente", CloudFog],
-                ["master", "Dirigir", EyeOff],
-                ["scene", "Cena", Layers3],
-              ] as const
-            ).map(([tab, label, Icon]) => (
-              <button
-                key={tab}
-                type="button"
-                aria-pressed={panelTab === tab || (tab === "library" && panelTab === "inspector")}
-                onClick={() => {
-                  setPanelTab(tab);
-                  setPanelCollapsed(false);
-                  setMobilePanelOpen(true);
-                }}
-              >
-                <Icon aria-hidden="true" />
-                <span>{label}</span>
-              </button>
-            ))}
-          </nav>
           <Button
             size="sm"
             variant={unsaved ? "default" : "outline"}
@@ -1960,41 +1926,12 @@ export function TabletopWorkspace({
                     ? "Salvo"
                     : "Sem cena"}
           </Button>
-          {interfaceMode !== "play" && (
-            <Button
-              type="button"
-              size="sm"
-              variant="outline"
-              className="tadeon-tabletop-mobile-tools-toggle gap-2 sm:hidden"
-              aria-expanded={mobileToolsOpen}
-              onClick={() => setMobileToolsOpen((value) => !value)}
-            >
-              <SlidersHorizontal className="h-4 w-4" />
-              Ferramentas
-            </Button>
-          )}
-          {interfaceMode !== "play" && (
-            <Button
-              type="button"
-              size="icon"
-              variant="outline"
-              className="tadeon-tabletop-mobile-panel-toggle"
-              aria-label={mobilePanelOpen ? "Fechar painel" : "Abrir painel"}
-              aria-expanded={mobilePanelOpen}
-              onClick={() => {
-                if (!mobilePanelOpen) setPanelCollapsed(false);
-                setMobilePanelOpen((value) => !value);
-              }}
-            >
-              <PanelRightOpen className="h-4 w-4" />
-            </Button>
-          )}
+
         </div>
 
-        <div
-          data-mobile-open={mobileToolsOpen ? "true" : "false"}
-          className="tadeon-tabletop-toolbar"
-        >
+        {interfaceMode !== "play" && <details className="tadeon-tabletop-scene-commands" open={mobileToolsOpen} onToggle={event => setMobileToolsOpen(event.currentTarget.open)}>
+          <summary>Ferramentas da cena <small>criar, editar e configurar grade</small></summary>
+          <div data-mobile-open="true" className="tadeon-tabletop-toolbar">
           <ToolbarGroup label="Cena">
             <ToolbarButton
               label="Mover cena para cima"
@@ -2169,7 +2106,8 @@ export function TabletopWorkspace({
               <Bug className="h-4 w-4" />
             </ToolbarButton>
           </ToolbarGroup>
-        </div>
+        </div></details>}
+        <details className="tadeon-tabletop-session-disclosure"><summary>Sincronização e jogadores</summary>
         <TabletopLiveSession
           enabled={realtimeEnabled}
           campaignId={campaignId || null}
@@ -2196,6 +2134,7 @@ export function TabletopWorkspace({
             engineRef.current?.applyRemoteEntityPatch(entityId, { x, y });
           }}
         />
+        </details>
       </div>
 
       {sceneLoadError && (
@@ -2228,7 +2167,13 @@ export function TabletopWorkspace({
         </div>
       )}
 
-      <div className="tadeon-tabletop-workbench" data-panel-collapsed={panelCollapsed}>
+      <div ref={workbenchRef} className="tadeon-tabletop-workbench" data-panel-collapsed={panelCollapsed}>
+        <TabletopViewBar snapshot={snapshot} projection={projectionMode} orientation={viewOrientation}
+          editable={editable} fullscreen={fullscreen} canFullscreen={canFullscreen}
+          onFullscreen={() => void toggleFullscreen()} engine={() => engineRef.current}
+          onProjection={setProjectionMode} onOrientation={setViewOrientation}
+          onEdit={() => { setInterfaceMode("advanced"); setPanelTab(selected.length ? "inspector" : "library");
+            setPanelCollapsed(false); setMobilePanelOpen(true); }} />
         <section
           className="tadeon-tabletop-stage"
           data-projection={projectionMode}
@@ -2748,11 +2693,11 @@ export function TabletopWorkspace({
               </ToolbarButton>
             </div>
           )}
-          {selected.length > 0 && toolMode !== "draw" && toolMode !== "structure" && (
+          {selected.length > 1 && toolMode !== "draw" && toolMode !== "structure" && (
             <div className="tadeon-tabletop-selection-dock" aria-label="Ações rápidas da seleção">
               <div className="min-w-0 px-2">
                 <strong className="block truncate text-xs text-foreground">
-                  {selected.length === 1 ? primary?.label : `${selected.length} entidades`}
+                  {`${selected.length} entidades`}
                 </strong>
                 <span className="block text-[10px] text-muted-foreground">Seleção ativa</span>
               </div>
@@ -2763,14 +2708,6 @@ export function TabletopWorkspace({
               >
                 <Focus className="h-4 w-4" />
               </ToolbarButton>
-              {selected.length === 1 && primary && (
-                <ToolbarButton
-                  label="Abrir cartão, ficha ou arquivo"
-                  onClick={() => openEntityDossier(primary)}
-                >
-                  <FileSearch className="h-4 w-4" />
-                </ToolbarButton>
-              )}
               <ToolbarButton
                 label="Duplicar seleção"
                 disabled={!editable}
@@ -2910,66 +2847,6 @@ export function TabletopWorkspace({
               <span className="ml-auto hidden text-[11px] text-muted-foreground xl:block">
                 {TOOL_HINTS[toolMode]}
               </span>
-              {projectionMode === "isometric" && (
-                <div
-                  className="tadeon-tabletop-orbit-controls"
-                  aria-label="Órbita rápida da câmera 3D"
-                >
-                  <ToolbarButton
-                    label="Girar câmera 45 graus à esquerda"
-                    onClick={() =>
-                      setViewOrientation((current) =>
-                        normalizeTabletopViewOrientation({ ...current, yaw: current.yaw - 45 }),
-                      )
-                    }
-                  >
-                    <RotateCcw className="h-4 w-4" />
-                  </ToolbarButton>
-                  <ToolbarButton
-                    label="Girar câmera 45 graus à direita"
-                    onClick={() =>
-                      setViewOrientation((current) =>
-                        normalizeTabletopViewOrientation({ ...current, yaw: current.yaw + 45 }),
-                      )
-                    }
-                  >
-                    <RotateCw className="h-4 w-4" />
-                  </ToolbarButton>
-                </div>
-              )}
-              <ToolbarButton
-                label={
-                  projectionMode === "isometric" ? "Voltar à planta 2D" : "Abrir visão espacial 3D"
-                }
-                onClick={() =>
-                  setProjectionMode((mode) => (mode === "plan" ? "isometric" : "plan"))
-                }
-              >
-                <Axis3d className="h-4 w-4" />
-              </ToolbarButton>
-              <ToolbarButton
-                label="Abrir controles de espaço, luz e névoa"
-                onClick={() => {
-                  setPanelTab("space");
-                  setPanelCollapsed(false);
-                  setMobilePanelOpen(true);
-                }}
-              >
-                <SlidersHorizontal className="h-4 w-4" />
-              </ToolbarButton>
-              <ToolbarButton
-                label="Enquadrar seleção"
-                disabled={selected.length === 0}
-                onClick={() => engineRef.current?.focusSelection()}
-              >
-                <Focus className="h-4 w-4" />
-              </ToolbarButton>
-              <ToolbarButton label="Reduzir zoom" onClick={() => engineRef.current?.zoomBy(0.82)}>
-                <ZoomOut className="h-4 w-4" />
-              </ToolbarButton>
-              <ToolbarButton label="Ampliar zoom" onClick={() => engineRef.current?.zoomBy(1.22)}>
-                <ZoomIn className="h-4 w-4" />
-              </ToolbarButton>
             </div>
           )}
           {diagnostics && (
@@ -3883,6 +3760,7 @@ export function TabletopWorkspace({
                 </div>
               ) : (
                 <div className="mt-4 space-y-4">
+                  <TabletopCompositionPanel snapshot={snapshot} editable={editable} engine={() => engineRef.current} />
                   <div className="tadeon-tabletop-inspector-card">
                     <p className="font-cinzel text-lg font-semibold">{primary.label}</p>
                     <p className="text-xs text-muted-foreground">

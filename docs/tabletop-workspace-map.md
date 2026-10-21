@@ -83,3 +83,8 @@ O mestre reúne áudio, preparo de mídias e precisão no Popover “Recursos”
 `properties.base_color` guarda um inteiro RGB de 24 bits. `tabletop-entity-color.ts`, compartilhado pelo serviço e pela função protegida, valida o escalar e conserva os padrões por tipo para cenas antigas/valores inválidos. O payload de cena e a gravação individual normalizam a cor atual; propriedades privadas não são expandidas na visão do jogador.
 
 A comparação normaliza o mesmo campo e ordena chaves de objetos recursivamente, pois o retorno jsonb pode mudar a ordem das chaves. Isso não ignora alterações de propriedades ou arrays. O editor continua dono da cor em runtime, e salvar uma cena não altera o motor por efeito colateral. O deploy da função protegida possui evidência separada do Worker.
+
+
+## Composição e modelos 3D — NEX-031
+
+A barra de visão e o painel de composição são componentes do workspace, não novos bridges. Câmera e orientação continuam no estado controlado; formações, encaixe e repetição chamam TabletopEngine. O histórico registra cada lote inteiro. A biblioteca reutiliza tabletop-visual-preset, com uma lista explícita de propriedades visuais e sem vínculos privados. O bridge nativo distingue render por demanda de animação real carregada. Portais usam o elemento fullscreen quando presente. As novas funções são locais até o salvamento canônico da cena; schema, RLS e contratos de persistência não mudam.

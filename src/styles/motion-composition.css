@@ -2896,16 +2896,16 @@
 
 .tadeon-shell .tadeon-nav-item,
 .tadeon-shell .tadeon-mobile-dock__item,
-.tadeon-shell button:not([data-radix-collection-item]),
+.tadeon-shell button:not([data-radix-collection-item]):not([data-material-surface="radial-control"], [data-material-surface="radial"] button),
 .tadeon-shell [role="button"] {
   isolation: isolate;
 }
 
-.tadeon-shell .tadeon-nav-item, .tadeon-shell .tadeon-mobile-dock__item, .tadeon-shell button:not([data-radix-collection-item]):not([data-material-surface="navigation"]), .tadeon-shell [role="button"] {
+.tadeon-shell .tadeon-nav-item, .tadeon-shell .tadeon-mobile-dock__item, .tadeon-shell button:not([data-radix-collection-item]):not([data-material-surface="radial-control"], [data-material-surface="radial"] button):not([data-material-surface="navigation"]), .tadeon-shell [role="button"] {
   position: relative;
 }
 
-.tadeon-shell button:not([data-radix-collection-item]),
+.tadeon-shell button:not([data-radix-collection-item]):not([data-material-surface="radial-control"], [data-material-surface="radial"] button),
 .tadeon-shell [role="button"] {
   transition:
     color 180ms var(--tdv-calm),
@@ -2915,7 +2915,7 @@
 }
 
 /* Never translate the control on hover. The reaction happens inside the skin. */
-.tadeon-shell button:not([data-radix-collection-item]):hover,
+.tadeon-shell button:not([data-radix-collection-item]):not([data-material-surface="radial-control"], [data-material-surface="radial"] button):hover,
 .tadeon-shell [role="button"]:hover {
   transform: none !important;
   box-shadow:
@@ -2927,7 +2927,7 @@
 /* Flowing highlight: a light thread passes through the surface, then disappears. */
 
 .tadeon-shell .tadeon-mobile-dock__item::before,
-.tadeon-shell button:not([data-radix-collection-item])::before,
+.tadeon-shell button:not([data-radix-collection-item]):not([data-material-surface="radial-control"], [data-material-surface="radial"] button)::before,
 .tadeon-shell [role="button"]::before {
   content: "";
   position: absolute;
@@ -2943,19 +2943,19 @@
 
 
 .tadeon-shell .tadeon-mobile-dock__item:hover::before,
-.tadeon-shell button:not([data-radix-collection-item]):hover::before,
+.tadeon-shell button:not([data-radix-collection-item]):not([data-material-surface="radial-control"], [data-material-surface="radial"] button):hover::before,
 .tadeon-shell [role="button"]:hover::before {
   opacity: 1;
 }
 
 
-.tadeon-shell button:not([data-radix-collection-item]):hover::before,
+.tadeon-shell button:not([data-radix-collection-item]):not([data-material-surface="radial-control"], [data-material-surface="radial"] button):hover::before,
 .tadeon-shell [role="button"]:hover::before {
   animation: tdv-surface-flow 1.65s var(--tdv-calm) both;
 }
 
 /* Press feels like a seam being pulled tight - deliberately tiny. */
-.tadeon-shell button:not([data-radix-collection-item]):active,
+.tadeon-shell button:not([data-radix-collection-item]):not([data-material-surface="radial-control"], [data-material-surface="radial"] button):active,
 .tadeon-shell [role="button"]:active {
   transform: scale(.985) !important;
   box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--tdv-lumen) 18%, transparent), inset 0 2px 10px color-mix(in srgb, var(--tdv-lumen) 5%, transparent);
@@ -3288,7 +3288,7 @@ html body .tadeon-shell .tadeon-route-offline > main {
 .tadeon-shell .tadeon-nav-item{
   isolation:isolate;overflow:hidden;
 }
-.tadeon-shell button:not([data-material-surface="navigation"]), .tadeon-shell [role="button"], .tadeon-shell .tadeon-nav-item {position:relative;
+.tadeon-shell button:not([data-material-surface="navigation"]):not([data-material-surface="radial-control"], [data-material-surface="radial"] button), .tadeon-shell [role="button"], .tadeon-shell .tadeon-nav-item {position:relative;
 }
 .tadeon-shell button:not([data-material-surface], .tadeon-material-button)::after, .tadeon-shell [role="button"]::after{
   content:"";position:absolute;inset:auto -35% 0;height:1px;pointer-events:none;

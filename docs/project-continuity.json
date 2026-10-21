@@ -1,24 +1,23 @@
 {
   "version": 1,
-  "checkedAt": "2026-10-20",
-  "runtimeReference": "2bc2ae56ec76060f44db5359c7480c7da0cb97c2",
+  "checkedAt": "2026-10-21",
+  "runtimeReference": "d050946adb0580cf1335db1499cda050e8fc49d7",
   "integration": {
-    "pr": 289,
-    "branch": "feat/nex-029-compact-folios",
+    "pr": 291,
+    "branch": "feat/nex-030-material-motion-radials",
     "base": "main",
-    "baseCommit": "9ca2b3f080376fa35e67c3b37a45734de46216f5",
-    "sourceCommit": "13b10c58fecf4df2557ed4b56b6de3e360d0068d",
-    "headCommit": "13b10c58fecf4df2557ed4b56b6de3e360d0068d",
+    "baseCommit": "f6ec7f7ed942dc0ce7c44e83c48446065fdc76ea",
+    "sourceCommit": "b3a239976ab77ec2945a0bd27fa099b586ee2a4d",
+    "headCommit": "b3a239976ab77ec2945a0bd27fa099b586ee2a4d",
     "state": "integrated",
-    "mergeCommit": "2bc2ae56ec76060f44db5359c7480c7da0cb97c2",
-    "sourceQualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39494025169",
-    "mainQualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39494974487",
+    "mergeCommit": "d050946adb0580cf1335db1499cda050e8fc49d7",
+    "sourceQualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39526551047",
+    "mainQualityRun": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39575515524",
     "production": "confirmed",
-    "productionEvidence": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39494974499",
-    "productionCommit": "2bc2ae56ec76060f44db5359c7480c7da0cb97c2",
-    "productionVerifiedAt": "2026-10-20T20:50:08.3535778Z",
-    "productionHttpStatus": 200,
-    "workerVersion": "1af29026-95b0-4a34-9578-96e4af72723a"
+    "productionEvidence": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39575515416",
+    "productionCommit": "d050946adb0580cf1335db1499cda050e8fc49d7",
+    "productionVerifiedAt": "2026-10-21T09:17:51.8018329Z",
+    "productionHttpStatus": 200
   },
   "domains": [
     {
@@ -158,13 +157,17 @@
         "src/lib/tabletop/tabletop-scene-fingerprint-guard.ts",
         "supabase/functions/_shared/tabletop-entity-color.ts",
         "supabase/functions/tabletop-view/index.ts",
-        "src/components/tabletop/tabletop-radial-actions-bridge.tsx"
+        "src/components/tabletop/tabletop-radial-actions-bridge.tsx",
+        "src/components/tabletop/tabletop-view-bar.tsx",
+        "src/components/tabletop/tabletop-composition-panel.tsx",
+        "src/lib/tabletop/tabletop-arrangement.ts",
+        "src/lib/tabletop/tabletop-visual-preset.ts"
       ],
       "styles": [
         "src/styles/tabletop-workspace.css",
         "src/styles/tabletop-route-experience.css"
       ],
-      "boundary": "Motor mantém coordenadas; persistência mantém versões; interfaces não devem criar câmera ou fonte de dados paralela. Editor lateral/compacto pertence a TabletopEditorPanel; ações agrupadas ao workspace; comandos à interface progressiva. Callbacks substituem a busca de botões por texto; mapa dos bridges em tabletop-workspace-map.md. Comparação de cena é pura, sem toJSON capturado ou monkeypatch do serviço. Escritas de mapa, ambiente e câmera recebem a identidade de origem. StagePortal usa eventos de runtime; jogador aplica estado somente após init. Cor-base é um escalar compartilhado entre persistência e projeção protegida; fingerprint normaliza a representação e a ordem jsonb. NEX-030: radial é um portal de viewport com coordenadas próprias; o bridge final não as reescreve. Eventos view-only atualizam o ponto sem publicar snapshot semântico."
+      "boundary": "Motor mantém coordenadas; persistência mantém versões; interfaces não devem criar câmera ou fonte de dados paralela. Editor lateral/compacto pertence a TabletopEditorPanel; ações agrupadas ao workspace; comandos à interface progressiva. Callbacks substituem a busca de botões por texto; mapa dos bridges em tabletop-workspace-map.md. Comparação de cena é pura, sem toJSON capturado ou monkeypatch do serviço. Escritas de mapa, ambiente e câmera recebem a identidade de origem. StagePortal usa eventos de runtime; jogador aplica estado somente após init. Cor-base é um escalar compartilhado entre persistência e projeção protegida; fingerprint normaliza a representação e a ordem jsonb. NEX-030: radial é um portal de viewport com coordenadas próprias; o bridge final não as reescreve. Eventos view-only atualizam o ponto sem publicar snapshot semântico. NEX-031: câmera e formação pertencem ao motor; ViewBar controla o estado do workspace e CompositionPanel usa seus comandos. Renderer informa presença de animação; bridge nativo agenda por demanda e por mudanças de vista. A seleção única do mestre usa a roda; o trilho progressivo conserva ações coletivas e as ações do jogador. O dock legado do workspace não renderiza para uma só peça."
     },
     {
       "id": "master",
@@ -1012,7 +1015,7 @@
       "id": "NEX-030",
       "title": "Mesa circular e profundidade contida dos materiais",
       "domain": "tabletop",
-      "status": "active",
+      "status": "integrated",
       "priority": 7,
       "dependsOn": [
         "NEX-029"
@@ -1025,8 +1028,38 @@
       ],
       "evidence": [
         "docs/visual-system-validation.json",
-        "docs/DESIGN.md"
-      ]
+        "docs/DESIGN.md",
+        "https://github.com/Gabriel2069/tadeon-nexus/pull/291",
+        "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39526551047",
+        "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39526550963",
+        "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39575515524",
+        "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/39575515416"
+      ],
+      "checkpoint": "Integrado pela PR #291, HEAD b3a2399, merge d050946. Quality: 147 suítes/600 testes, auditoria sem vulnerabilidades. Visual review final: 16 estados do acervo, quatro vistas Nexus/offline e roda em 320/390/820/1440, proporção circular, foco/retorno, memória, duplicação e movimento reduzido. Capturas de acervo, conta e roda inspecionadas manualmente. Produção confirmou HTTP 200/SHA exato em 2026-10-21T09:17:51.8018329Z. Modelo de botões aprovado preservado; acompanhamento do radial por eventos. Fixtures não certificam hardware ou contas reais; o loop legado de renomeação permanece fora do lote."
+    },
+    {
+      "id": "NEX-031",
+      "title": "Mesa espacial: composição, conjuntos e edição 3D",
+      "domain": "tabletop",
+      "status": "active",
+      "priority": 7,
+      "dependsOn": [
+        "NEX-030"
+      ],
+      "acceptance": [
+        "Recompor a Mesa com cabeçalho operacional compacto, instrumentos junto ao mapa e editor contextual, preservando as funções existentes.",
+        "Oferecer formações e repetição de conjuntos com intervalo, giro e elevação, respeitando limites, peças bloqueadas e desfazer atômico.",
+        "Preservar escala, orientação, altura, animação e cor de peças reutilizáveis 3D; nunca tratar GLB como miniatura de imagem.",
+        "Desenhar modelos estáticos e pausados por demanda; manter animações reais, acompanhar câmera e suspender a aba oculta.",
+        "Manter editor, roda e popups operáveis na tela inteira; validar foco, toque, movimento reduzido e quatro larguras com o motor real em fixtures.",
+        "Registrar referências oficiais Owlbear, Foundry e TaleSpire e distinguir medição local, CI, produção e hardware real."
+      ],
+      "evidence": [
+        "docs/visual-system-validation.json",
+        "docs/DESIGN.md",
+        "scripts/verify-tabletop-workspace.mjs"
+      ],
+      "checkpoint": "Implementação local concluída; npm run check aprovado (152 suítes/619 testes), audit zero. Navegação/atalhos/ponteiro em 26 estados e resize/editor em cinco estados aprovados. Última rodada visual aprovou base anterior e roda em quatro larguras, mas detectou redesenho nativo redundante durante notificações de persistência. A assinatura visual do quadro corrige essa invalidação; matriz final em revalidação. CI final, integração e publicação pendentes. Produção permanece em d050946 de NEX-030."
     }
   ],
   "decisions": [
@@ -1153,6 +1186,11 @@
         "docs/visual-system-validation.json",
         "docs/DESIGN.md"
       ]
+    },
+    {
+      "id": "DEC-019",
+      "decision": "A Mesa usa PageHeader em faixa operacional compacta e uma barra de visão junto ao tabuleiro.",
+      "reason": "Pedido explícito de aprimoramento da Mesa: reduzir a abertura, dar espaço ao mapa e tornar câmera, encaixe e composição acessíveis. A anatomia e as fontes continuam compartilhadas; a geometria do cabeçalho permanece em page-hero-parity.css."
     }
   ],
   "bridges": [

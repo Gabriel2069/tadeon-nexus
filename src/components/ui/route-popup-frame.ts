@@ -23,11 +23,26 @@ type PopupFrameStyle = React.CSSProperties & {
 
 function activeRouteFrame(): HTMLElement | null {
   if (typeof document === "undefined") return null;
+  if (document.fullscreenElement instanceof HTMLElement) return document.fullscreenElement;
   const main = document.getElementById("tadeon-main");
   return main?.querySelector<HTMLElement>(ROUTE_FRAME_SELECTOR) ?? null;
 }
 
+const subscribeFullscreen = (notify: () => void) => {
+  document.addEventListener("fullscreenchange", notify);
+  return () => document.removeEventListener("fullscreenchange", notify);
+};
+const fullscreenContainer = () =>
+  document.fullscreenElement instanceof HTMLElement ? document.fullscreenElement : undefined;
+const noFullscreen = () => undefined;
+
+/** Browser fullscreen displays only its subtree, including any popup portals. */
+export function usePopupPortalContainer() {
+  return React.useSyncExternalStore(subscribeFullscreen, fullscreenContainer, noFullscreen);
+}
+
 export function useRoutePopupFrame() {
+  const portalContainer = usePopupPortalContainer();
   const materialStyle = useMaterialToneStyle();
   const [boundary, setBoundary] = React.useState<HTMLElement | null>(null);
   const [style, setStyle] = React.useState<PopupFrameStyle>({});
@@ -81,7 +96,7 @@ export function useRoutePopupFrame() {
       window.visualViewport?.removeEventListener("resize", scheduleMeasure);
       window.visualViewport?.removeEventListener("scroll", scheduleMeasure);
     };
-  }, []);
+  }, [portalContainer]);
 
-  return { boundary, style: { ...materialStyle, ...style } };
+  return { boundary, portalContainer, style: { ...materialStyle, ...style } };
 }

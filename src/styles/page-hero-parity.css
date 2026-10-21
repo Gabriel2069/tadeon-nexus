@@ -1394,3 +1394,13 @@ html body [data-slot="dialog-content"]:not([data-motion-surface]),
 /* A dialog reserves space for its close control without a second header anatomy. */
 .tadeon-library-dialog .tadeon-page-header { margin-bottom: 0; border: 0; border-bottom: 1px solid var(--border); border-radius: 0; }
 .tadeon-library-dialog .tadeon-page-header__main { padding-right: 3.5rem; }
+
+/* The operational studio keeps the shared header anatomy in a compact band. */
+.tadeon-page-header--studio { margin-bottom: .5rem; border-radius: .85rem; }
+.tadeon-page-header--studio .tadeon-page-header__main { grid-template-columns: 2.25rem minmax(0,1fr) auto; padding: .65rem .8rem; gap: .65rem; }
+.tadeon-page-header--studio .tadeon-page-header__mark { width: 2.25rem; height: 2.25rem; border-radius: .65rem; }
+.tadeon-page-header--studio .tadeon-page-header__mark > svg { width: 1.5rem; height: 1.5rem; }
+.tadeon-page-header--studio .tadeon-page-header__title { font-size: clamp(1.4rem,2vw,1.8rem); }
+.tadeon-page-header--studio .tadeon-page-header__eyebrow { margin-bottom: .15rem; font-size: .625rem; }
+.tadeon-page-header--studio .tadeon-page-header__actions { grid-column: 3; flex-wrap: nowrap; width: auto; }
+.tadeon-page-header--studio .tadeon-page-header__actions > [data-slot="button"] { flex: none; }

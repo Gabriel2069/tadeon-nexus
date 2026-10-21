@@ -141,3 +141,9 @@ export function elevateTabletopPoint(
   const offset = tabletopElevationOffset(elevation, orientation);
   return { x: point.x + offset.x, y: point.y + offset.y };
 }
+
+export const TABLETOP_CAMERA_PRESETS = [
+  { id: "tactical", label: "Tático", description: "Leitura clara de grade e alturas", orientation: { yaw: 315, tilt: 0.58, elevationScale: 1 } },
+  { id: "cinematic", label: "Cinemático", description: "Ângulo baixo para projeção", orientation: { yaw: 330, tilt: 0.34, elevationScale: 1.35 } },
+  { id: "overview", label: "Visão geral", description: "Mais mapa, menos distorção", orientation: { yaw: 0, tilt: 0.78, elevationScale: 0.72 } },
+] as const;

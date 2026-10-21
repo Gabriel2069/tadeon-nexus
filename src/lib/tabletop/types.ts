@@ -67,6 +67,9 @@ export interface TabletopEntitySeed {
   label: string;
   width?: number;
   height?: number;
+  color?: number;
+  rotation?: number;
+  elevation?: number;
   levelId?: string | null;
   assetId?: string | null;
   assetUrl?: string;

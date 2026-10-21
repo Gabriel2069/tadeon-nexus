@@ -52,8 +52,8 @@ function applyProfile(profile: TabletopQualityProfile, snapshot: TabletopSnapsho
     try {
       renderer.resolution = targetResolution;
       renderer.resize?.(
-        Math.max(320, runtime.host.clientWidth),
-        Math.max(320, runtime.host.clientHeight),
+        Math.max(1, runtime.host.clientWidth),
+        Math.max(1, runtime.host.clientHeight),
         targetResolution,
       );
     } catch {

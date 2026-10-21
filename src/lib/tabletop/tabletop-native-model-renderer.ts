@@ -10,7 +10,7 @@ import {
   type TabletopGltfPrimitive,
   type TabletopMat4,
 } from "./tabletop-gltf";
-import { tabletopMediaKind } from "./tabletop-media";
+import { TABLETOP_MODEL_HEIGHT_FOOTPRINT, tabletopMediaKind, tabletopModelAnimationTime } from "./tabletop-media";
 import type { TabletopBrowserRuntime } from "./tabletop-player-runtime";
 import type { TabletopEntity, TabletopSnapshot } from "./types";
 
@@ -271,7 +271,7 @@ function entityRootMatrix(entity: TabletopEntity, model: TabletopGltfModel) {
   const width = Math.max(0.001, maxX - minX);
   const height = Math.max(0.001, maxY - minY);
   const depth = Math.max(0.001, maxZ - minZ);
-  const footprint = Math.max(width, depth, height * 0.45, 0.001);
+  const footprint = Math.max(width, depth, height * TABLETOP_MODEL_HEIGHT_FOOTPRINT, 0.001);
   const target = Math.max(8, Math.sqrt(Math.max(8, entity.width) * Math.max(8, entity.height)));
   const authoredScale = clamp(finite(properties.model_scale, 1), 0.05, 20);
   const scale = (target / footprint) * authoredScale;
@@ -447,9 +447,10 @@ export class TabletopNativeModelRenderer {
   private readonly maxJoints: number;
   private readonly models = new Map<string, ModelRecord>();
   private readonly abort = new AbortController();
+  private assetRevision = 0;
   private previousHostPosition = "";
 
-  constructor(private readonly host: HTMLElement) {
+  constructor(private readonly host: HTMLElement, private readonly onReady: () => void = () => {}) {
     this.canvas = document.createElement("canvas");
     this.canvas.className = "tadeon-tabletop-native-model-layer";
     this.canvas.setAttribute("aria-hidden", "true");
@@ -545,11 +546,15 @@ export class TabletopNativeModelRenderer {
         current.cpu = cpu;
         current.gpu = gpu;
         current.pending = undefined;
+        this.assetRevision += 1;
+        if (!this.abort.signal.aborted) this.onReady();
       } catch {
         const current = this.models.get(key);
         if (current?.url === url) {
           current.failed = true;
           current.pending = undefined;
+          this.assetRevision += 1;
+          if (!this.abort.signal.aborted) this.onReady();
         }
       }
     })();
@@ -559,6 +564,25 @@ export class TabletopNativeModelRenderer {
     for (const entity of snapshot.scene.entities) {
       if (isModelEntity(entity)) this.requestModel(entity);
     }
+  }
+
+  hasAnimatedModels(snapshot: TabletopSnapshot) {
+    return snapshot.scene.entities.some(entity => {
+      if (!isModelEntity(entity) || (snapshot.activeLevelId && entity.levelId && entity.levelId !== snapshot.activeLevelId)) return false;
+      const properties = objectValue(entity.properties);
+      const model = this.models.get(modelKey(entity))?.gpu?.source;
+      return properties.model_animation_paused !== true && !!model && this.animationIndex(entity, model) >= 0;
+    });
+  }
+
+  /** Persistence/status notifications may emit a view event without changing any pixels. */
+  frameSignature(runtime: TabletopBrowserRuntime, snapshot: TabletopSnapshot) {
+    const models = snapshot.scene.entities.filter(entity => isModelEntity(entity) &&
+      (!snapshot.activeLevelId || !entity.levelId || entity.levelId === snapshot.activeLevelId));
+    const ids = new Set(models.map(entity => entity.id));
+    return JSON.stringify([this.assetRevision, this.host.clientWidth, this.host.clientHeight,
+      window.devicePixelRatio, this.host.style.getPropertyValue("--tadeon-tabletop-quality-resolution"),
+      this.cameraUniforms(runtime, snapshot), models, snapshot.selectedIds.filter(id => ids.has(id)).sort()]);
   }
 
   private cameraUniforms(runtime: TabletopBrowserRuntime, snapshot: TabletopSnapshot) {
@@ -616,11 +640,7 @@ export class TabletopNativeModelRenderer {
   }
 
   private animationTime(entity: TabletopEntity, seconds: number) {
-    const properties = objectValue(entity.properties);
-    if (properties.model_animation_paused === true)
-      return Math.max(0, finite(properties.model_animation_time, 0));
-    const speed = clamp(finite(properties.model_animation_speed, 1), 0.05, 4);
-    return Math.max(0, seconds * speed + finite(properties.model_animation_offset, 0));
+    return tabletopModelAnimationTime(objectValue(entity.properties), seconds);
   }
 
   private drawPrimitive(

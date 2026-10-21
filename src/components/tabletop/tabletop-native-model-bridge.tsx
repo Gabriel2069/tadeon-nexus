@@ -1,5 +1,4 @@
 import { useEffect } from "react";
-import { tabletopMediaKind } from "@/lib/tabletop/tabletop-media";
 import { TabletopNativeModelRenderer } from "@/lib/tabletop/tabletop-native-model-renderer";
 import {
   applyTabletopNativeVisibilityMask,
@@ -12,26 +11,6 @@ import {
 } from "@/lib/tabletop/tabletop-spatial-streaming";
 import type { TabletopVisibilityState } from "@/lib/tabletop/tabletop-visibility-service";
 import type { TabletopSnapshot } from "@/lib/tabletop/types";
-
-function objectValue(value: unknown): Record<string, unknown> {
-  return value && typeof value === "object" && !Array.isArray(value)
-    ? (value as Record<string, unknown>)
-    : {};
-}
-
-function hasNativeModels(snapshot: TabletopSnapshot | null) {
-  return Boolean(
-    snapshot?.scene.entities.some((entity) => {
-      const properties = objectValue(entity.properties);
-      return (
-        !entity.hidden &&
-        properties.model_visible !== false &&
-        typeof entity.assetUrl === "string" &&
-        tabletopMediaKind(properties.mime_type, entity.assetUrl) === "model"
-      );
-    }),
-  );
-}
 
 type VisibilityInternals = {
   visibilityState?: TabletopVisibilityState;
@@ -111,15 +90,19 @@ export function TabletopNativeModelBridge({
   useEffect(() => {
     let renderer: TabletopNativeModelRenderer | null = null;
     let snapshot: TabletopSnapshot | null = null;
-    let streamingPlan: TabletopStreamingPlan | null =
-      window.__tadeonTabletopStreamingPlan ?? null;
+    let streamingPlan: TabletopStreamingPlan | null = window.__tadeonTabletopStreamingPlan ?? null;
     let frame = 0;
     let bootstrapFrame = 0;
     let stopped = false;
     let maskFingerprint = "";
+    let resizeObserver: ResizeObserver | null = null;
+    let unavailableHost: HTMLElement | null = null;
+    let animationInterval = 1000 / 60;
+    let lastDraw = -Infinity;
+    let forceDraw = true;
+    let lastFrameSignature: string | null = null;
 
-    const activeSnapshot = () =>
-      snapshot ? streamedSnapshot(snapshot, streamingPlan) : null;
+    const activeSnapshot = () => (snapshot ? streamedSnapshot(snapshot, streamingPlan) : null);
 
     const syncVisibilityMask = () => {
       const runtime = currentTabletopRuntime();
@@ -154,22 +137,25 @@ export function TabletopNativeModelBridge({
       frame = 0;
       const runtime = currentTabletopRuntime();
       const renderSnapshot = activeSnapshot();
-      if (
-        stopped ||
-        !renderer ||
-        !runtime ||
-        !renderSnapshot ||
-        !hasNativeModels(renderSnapshot)
-      )
+      if (stopped || !renderer || !runtime || !renderSnapshot || document.hidden) return;
+      const animated = renderer.hasAnimatedModels(renderSnapshot);
+      if (animated && !forceDraw && time - lastDraw + 0.75 < animationInterval) {
+        frame = window.requestAnimationFrame(draw);
         return;
+      }
+      forceDraw = false;
+      lastDraw = time;
       syncVisibilityMask();
+      const signature = animated ? null : renderer.frameSignature(runtime, renderSnapshot);
+      if (!animated && signature === lastFrameSignature) return;
       renderer.render(runtime, renderSnapshot, time);
-      frame = window.requestAnimationFrame(draw);
+      lastFrameSignature = signature;
+      if (renderer.hasAnimatedModels(renderSnapshot)) frame = window.requestAnimationFrame(draw);
     };
 
     const start = () => {
-      const renderSnapshot = activeSnapshot();
-      if (!frame && renderer && renderSnapshot && hasNativeModels(renderSnapshot))
+      forceDraw = true;
+      if (!stopped && !document.hidden && !frame && renderer && activeSnapshot())
         frame = window.requestAnimationFrame(draw);
     };
 
@@ -177,11 +163,6 @@ export function TabletopNativeModelBridge({
       const renderSnapshot = activeSnapshot();
       if (!renderer || !renderSnapshot) return;
       renderer.preload(renderSnapshot);
-      syncVisibilityMask();
-      if (!hasNativeModels(renderSnapshot)) {
-        const runtime = currentTabletopRuntime();
-        if (runtime) renderer.render(runtime, renderSnapshot, performance.now());
-      }
       start();
     };
 
@@ -193,13 +174,24 @@ export function TabletopNativeModelBridge({
         bootstrapFrame = window.requestAnimationFrame(install);
         return;
       }
+      if (unavailableHost === runtime.host) return;
       try {
-        renderer = new TabletopNativeModelRenderer(runtime.host);
+        renderer = new TabletopNativeModelRenderer(runtime.host, start);
+        resizeObserver = new ResizeObserver(start);
+        resizeObserver.observe(runtime.host);
         snapshot = runtime.snapshot();
         syncRenderer();
       } catch {
         // WebGL2 can be unavailable on restricted WebViews or after context loss.
         // The normal tabletop token shell remains visible as a safe fallback.
+        unavailableHost = runtime.host;
+        renderer?.destroy();
+        renderer = null;
+        resizeObserver?.disconnect();
+        resizeObserver = null;
+        const failed = nativeCanvas(runtime.host);
+        failed?.getContext("webgl2")?.getExtension("WEBGL_lose_context")?.loseContext();
+        failed?.remove();
       }
     };
 
@@ -207,7 +199,8 @@ export function TabletopNativeModelBridge({
       const detail = (event as CustomEvent<TabletopSnapshot>).detail;
       snapshot = detail ?? currentTabletopRuntime()?.snapshot() ?? null;
       maskFingerprint = "";
-      syncRenderer();
+      if (!renderer) install();
+      else syncRenderer();
     };
 
     const onStreaming = (event: Event) => {
@@ -221,14 +214,49 @@ export function TabletopNativeModelBridge({
     const onDestroyed = () => {
       if (frame) window.cancelAnimationFrame(frame);
       frame = 0;
+      resizeObserver?.disconnect();
+      resizeObserver = null;
       renderer?.destroy();
       renderer = null;
       snapshot = null;
+      unavailableHost = null;
+      lastFrameSignature = null;
       maskFingerprint = "";
     };
 
     install();
+    const onQuality = (event: Event) => {
+      const detail = (event as CustomEvent<{ nativeAnimationFps?: number; resolution?: number }>)
+        .detail;
+      const fps = Number(detail?.nativeAnimationFps);
+      animationInterval =
+        1000 / (Number.isFinite(fps) && fps > 0 ? Math.max(10, Math.min(60, fps)) : 60);
+      const runtime = currentTabletopRuntime();
+      const canvas = runtime && nativeCanvas(runtime.host);
+      const resolution = Math.min(window.devicePixelRatio || 1, Number(detail?.resolution));
+      if (
+        runtime &&
+        canvas &&
+        Number.isFinite(resolution) &&
+        resolution > 0 &&
+        (canvas.width !== Math.round(Math.max(1, runtime.host.clientWidth) * resolution) ||
+          canvas.height !== Math.round(Math.max(1, runtime.host.clientHeight) * resolution))
+      )
+        start();
+    };
+    const onVisibility = () => {
+      if (document.hidden) {
+        if (frame) window.cancelAnimationFrame(frame);
+        frame = 0;
+      } else {
+        lastFrameSignature = null;
+        start();
+      }
+    };
     window.addEventListener("tadeon-tabletop-render", onRender);
+    window.addEventListener("tadeon-tabletop-view", start);
+    window.addEventListener("tadeon-tabletop-quality", onQuality);
+    document.addEventListener("visibilitychange", onVisibility);
     window.addEventListener("tadeon-tabletop-streaming-plan", onStreaming);
     window.addEventListener("tadeon-tabletop-runtime-destroyed", onDestroyed);
     return () => {
@@ -236,9 +264,13 @@ export function TabletopNativeModelBridge({
       if (frame) window.cancelAnimationFrame(frame);
       if (bootstrapFrame) window.cancelAnimationFrame(bootstrapFrame);
       window.removeEventListener("tadeon-tabletop-render", onRender);
+      window.removeEventListener("tadeon-tabletop-view", start);
+      window.removeEventListener("tadeon-tabletop-quality", onQuality);
+      document.removeEventListener("visibilitychange", onVisibility);
       window.removeEventListener("tadeon-tabletop-streaming-plan", onStreaming);
       window.removeEventListener("tadeon-tabletop-runtime-destroyed", onDestroyed);
       renderer?.destroy();
+      resizeObserver?.disconnect();
     };
   }, [secureVisibility]);
 
