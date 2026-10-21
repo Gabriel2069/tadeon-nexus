@@ -2227,7 +2227,4756 @@
             {
               "slot": "button",
               "background": "rgba(255, 255, 255, 0.027)",
-              "shadow": "rgba(255, 249, 232, 0.22) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.22) 0px -2px 2px 0px inset, rgba(0, 0, 0…41027 tokens truncated…           "materials": 12,
+              "shadow": "rgba(255, 249, 232, 0.22) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.22) 0px -2px 2px 0px inset, rgba(0, 0, 0, 0.2) 0px 2px 3px 0px, rgba(0, 0, 0, 0.8) 0px 8px 18px -12px",
+              "radius": "13.6px",
+              "transform": "none",
+              "translate": "none"
+            },
+            {
+              "slot": "button",
+              "background": "rgb(32, 38, 46)",
+              "shadow": "rgba(255, 249, 232, 0.22) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.22) 0px -2px 2px 0px inset, rgba(0, 0, 0, 0.2) 0px 2px 3px 0px, rgba(0, 0, 0, 0.8) 0px 8px 18px -12px",
+              "radius": "13.6px",
+              "transform": "none",
+              "translate": "none"
+            }
+          ],
+          "hosts": [
+            {
+              "className": "tadeon-focus-section-mark-host",
+              "rect": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "color": "rgb(84, 123, 148)",
+              "display": "grid"
+            },
+            {
+              "className": "tadeon-focus-section-mark-host",
+              "rect": [
+                129.53125,
+                10.5,
+                32,
+                32
+              ],
+              "color": "rgb(84, 123, 148)",
+              "display": "grid"
+            },
+            {
+              "className": "tadeon-tabletop-brand-mark-host",
+              "rect": [
+                10.390625,
+                82,
+                40,
+                40
+              ],
+              "color": "rgb(84, 123, 148)",
+              "display": "grid"
+            }
+          ],
+          "landmarks": [
+            {
+              "className": "tadeon-desktop-toolbar hidden md:flex",
+              "text": null,
+              "rect": [
+                0,
+                0,
+                0,
+                0
+              ]
+            },
+            {
+              "className": "tadeon-mobile-header__identity flex min-w-0 items-center justify-center gap-2.5",
+              "text": null,
+              "rect": [
+                106.390625,
+                10.5,
+                168.21875,
+                42
+              ]
+            },
+            {
+              "className": "truncate font-cinzel text-lg font-semibold",
+              "text": "Mesa Nexus",
+              "rect": [
+                60.78125,
+                97.5625,
+                72.953125,
+                24.875
+              ]
+            }
+          ],
+          "focusStyle": [
+            "block",
+            "none",
+            "normal"
+          ]
+        },
+        {
+          "route": "/",
+          "width": 820,
+          "errors": [],
+          "interactions": [],
+          "overflow": false,
+          "mainCount": 1,
+          "titleColor": "rgb(233, 227, 213)",
+          "material": [
+            {
+              "slot": "button",
+              "background": "rgba(255, 255, 255, 0.02)",
+              "shadow": "rgba(255, 249, 232, 0.22) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.22) 0px -2px 2px 0px inset, rgba(0, 0, 0, 0.2) 0px 2px 3px 0px, rgba(0, 0, 0, 0.8) 0px 8px 18px -12px",
+              "radius": "13.6px",
+              "transform": "none",
+              "translate": "none"
+            },
+            {
+              "slot": "button",
+              "background": "rgba(0, 0, 0, 0)",
+              "shadow": "rgba(255, 249, 232, 0.22) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.22) 0px -2px 2px 0px inset, rgba(0, 0, 0, 0.2) 0px 2px 3px 0px, rgba(0, 0, 0, 0.8) 0px 8px 18px -12px",
+              "radius": "13.6px",
+              "transform": "none",
+              "translate": "none"
+            },
+            {
+              "slot": "button",
+              "background": "rgba(0, 0, 0, 0)",
+              "shadow": "rgba(255, 249, 232, 0.22) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.22) 0px -2px 2px 0px inset, rgba(0, 0, 0, 0.2) 0px 2px 3px 0px, rgba(0, 0, 0, 0.8) 0px 8px 18px -12px",
+              "radius": "13.6px",
+              "transform": "none",
+              "translate": "none"
+            },
+            {
+              "slot": "button",
+              "background": "rgba(0, 0, 0, 0)",
+              "shadow": "rgba(255, 249, 232, 0.22) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.22) 0px -2px 2px 0px inset, rgba(0, 0, 0, 0.2) 0px 2px 3px 0px, rgba(0, 0, 0, 0.8) 0px 8px 18px -12px",
+              "radius": "13.6px",
+              "transform": "none",
+              "translate": "none"
+            },
+            {
+              "slot": "button",
+              "background": "rgb(32, 38, 46)",
+              "shadow": "rgba(255, 249, 232, 0.22) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.22) 0px -2px 2px 0px inset, rgba(0, 0, 0, 0.2) 0px 2px 3px 0px, rgba(0, 0, 0, 0.8) 0px 8px 18px -12px",
+              "radius": "13.6px",
+              "transform": "none",
+              "translate": "none"
+            },
+            {
+              "slot": "button",
+              "background": "rgba(0, 0, 0, 0)",
+              "shadow": "rgba(255, 249, 232, 0.22) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.22) 0px -2px 2px 0px inset, rgba(0, 0, 0, 0.2) 0px 2px 3px 0px, rgba(0, 0, 0, 0.8) 0px 8px 18px -12px",
+              "radius": "13.6px",
+              "transform": "none",
+              "translate": "none"
+            },
+            {
+              "slot": "button",
+              "background": "rgb(32, 38, 46)",
+              "shadow": "rgba(255, 249, 232, 0.22) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.22) 0px -2px 2px 0px inset, rgba(0, 0, 0, 0.2) 0px 2px 3px 0px, rgba(0, 0, 0, 0.8) 0px 8px 18px -12px",
+              "radius": "13.6px",
+              "transform": "none",
+              "translate": "none"
+            },
+            {
+              "slot": "button",
+              "background": "rgba(0, 0, 0, 0)",
+              "shadow": "rgba(255, 249, 232, 0.22) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.22) 0px -2px 2px 0px inset, rgba(0, 0, 0, 0.2) 0px 2px 3px 0px, rgba(0, 0, 0, 0.8) 0px 8px 18px -12px",
+              "radius": "13.6px",
+              "transform": "none",
+              "translate": "none"
+            }
+          ],
+          "hosts": [
+            {
+              "className": "tadeon-focus-section-mark-host",
+              "rect": [
+                245.59375,
+                18.6875,
+                36,
+                36
+              ],
+              "color": "rgb(217, 215, 164)",
+              "display": "grid"
+            },
+            {
+              "className": "tadeon-focus-section-mark-host",
+              "rect": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "color": "rgb(217, 215, 164)",
+              "display": "grid"
+            }
+          ],
+          "landmarks": [
+            {
+              "className": "tadeon-desktop-toolbar hidden md:flex",
+              "text": null,
+              "rect": [
+                220,
+                0,
+                591,
+                74.390625
+              ]
+            },
+            {
+              "className": "tadeon-mobile-header__identity flex min-w-0 items-center justify-center gap-2.5",
+              "text": null,
+              "rect": [
+                0,
+                0,
+                0,
+                0
+              ]
+            },
+            {
+              "className": "font-cinzel",
+              "text": "Os fios da suajornada.",
+              "rect": [
+                271.32379150390625,
+                169.21969604492188,
+                295.55853271484375,
+                95.19314575195312
+              ]
+            }
+          ],
+          "focusStyle": [
+            "grid",
+            "39.1875px 429.031px",
+            "13.6px"
+          ]
+        },
+        {
+          "route": "/nexus",
+          "width": 820,
+          "errors": [],
+          "interactions": [],
+          "overflow": false,
+          "mainCount": 1,
+          "titleColor": "rgb(233, 227, 213)",
+          "material": [
+            {
+              "slot": "button",
+              "background": "rgba(255, 255, 255, 0.02)",
+              "shadow": "rgba(255, 249, 232, 0.22) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.22) 0px -2px 2px 0px inset, rgba(0, 0, 0, 0.2) 0px 2px 3px 0px, rgba(0, 0, 0, 0.8) 0px 8px 18px -12px",
+              "radius": "13.6px",
+              "transform": "none",
+              "translate": "none"
+            },
+            {
+              "slot": "button",
+              "background": "rgba(0, 0, 0, 0)",
+              "shadow": "rgba(255, 249, 232, 0.22) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.22) 0px -2px 2px 0px inset, rgba(0, 0, 0, 0.2) 0px 2px 3px 0px, rgba(0, 0, 0, 0.8) 0px 8px 18px -12px",
+              "radius": "13.6px",
+              "transform": "none",
+              "translate": "none"
+            },
+            {
+              "slot": "button",
+              "background": "rgba(0, 0, 0, 0)",
+              "shadow": "rgba(255, 249, 232, 0.22) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.22) 0px -2px 2px 0px inset, rgba(0, 0, 0, 0.2) 0px 2px 3px 0px, rgba(0, 0, 0, 0.8) 0px 8px 18px -12px",
+              "radius": "13.6px",
+              "transform": "none",
+              "translate": "none"
+            },
+            {
+              "slot": "button",
+              "background": "rgba(0, 0, 0, 0)",
+              "shadow": "rgba(255, 249, 232, 0.22) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.22) 0px -2px 2px 0px inset, rgba(0, 0, 0, 0.2) 0px 2px 3px 0px, rgba(0, 0, 0, 0.8) 0px 8px 18px -12px",
+              "radius": "13.6px",
+              "transform": "none",
+              "translate": "none"
+            },
+            {
+              "slot": "button",
+              "background": "rgba(0, 0, 0, 0)",
+              "shadow": "rgba(255, 249, 232, 0.22) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.22) 0px -2px 2px 0px inset, rgba(0, 0, 0, 0.2) 0px 2px 3px 0px, rgba(0, 0, 0, 0.8) 0px 8px 18px -12px",
+              "radius": "13.6px",
+              "transform": "none",
+              "translate": "none"
+            },
+            {
+              "slot": "button",
+              "background": "rgb(32, 38, 46)",
+              "shadow": "rgba(255, 249, 232, 0.22) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.22) 0px -2px 2px 0px inset, rgba(0, 0, 0, 0.2) 0px 2px 3px 0px, rgba(0, 0, 0, 0.8) 0px 8px 18px -12px",
+              "radius": "13.6px",
+              "transform": "none",
+              "translate": "none"
+            },
+            {
+              "slot": "button",
+              "background": "rgba(0, 0, 0, 0)",
+              "shadow": "rgba(255, 249, 232, 0.22) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.22) 0px -2px 2px 0px inset, rgba(0, 0, 0, 0.2) 0px 2px 3px 0px, rgba(0, 0, 0, 0.8) 0px 8px 18px -12px",
+              "radius": "13.6px",
+              "transform": "none",
+              "translate": "none"
+            },
+            {
+              "slot": "card",
+              "background": "rgb(19, 23, 29)",
+              "shadow": "rgba(255, 249, 232, 0.14) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.55) 0px -1px 0px 0px inset, rgba(0, 0, 0, 0.22) 0px 2px 3px 0px, rgba(0, 0, 0, 0.8) 0px 20px 44px -28px",
+              "radius": "21.6px",
+              "transform": "none",
+              "translate": "none"
+            }
+          ],
+          "hosts": [
+            {
+              "className": "tadeon-focus-section-mark-host",
+              "rect": [
+                245.59375,
+                18.6875,
+                36,
+                36
+              ],
+              "color": "rgb(79, 110, 93)",
+              "display": "grid"
+            },
+            {
+              "className": "tadeon-focus-section-mark-host",
+              "rect": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "color": "rgb(79, 110, 93)",
+              "display": "grid"
+            }
+          ],
+          "landmarks": [
+            {
+              "className": "tadeon-desktop-toolbar hidden md:flex",
+              "text": null,
+              "rect": [
+                220,
+                0,
+                591,
+                74.390625
+              ]
+            },
+            {
+              "className": "tadeon-mobile-header__identity flex min-w-0 items-center justify-center gap-2.5",
+              "text": null,
+              "rect": [
+                0,
+                0,
+                0,
+                0
+              ]
+            },
+            {
+              "className": "mt-4 font-cinzel text-2xl font-semibold",
+              "text": "Nenhum workspace acessível",
+              "rect": [
+                280.41796875,
+                189.36886596679688,
+                470.1640625,
+                32.72039794921875
+              ]
+            }
+          ],
+          "focusStyle": [
+            "grid",
+            "39.1875px 305.469px",
+            "13.6px"
+          ],
+          "cardResponse": {
+            "lightX": "5.4%",
+            "transform": "none"
+          }
+        },
+        {
+          "route": "/master-panel",
+          "width": 820,
+          "errors": [],
+          "interactions": [],
+          "overflow": false,
+          "mainCount": 1,
+          "titleColor": "rgb(233, 227, 213)",
+          "material": [
+            {
+              "slot": "button",
+              "background": "rgba(255, 255, 255, 0.02)",
+              "shadow": "rgba(255, 249, 232, 0.22) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.22) 0px -2px 2px 0px inset, rgba(0, 0, 0, 0.2) 0px 2px 3px 0px, rgba(0, 0, 0, 0.8) 0px 8px 18px -12px",
+              "radius": "13.6px",
+              "transform": "none",
+              "translate": "none"
+            },
+            {
+              "slot": "button",
+              "background": "rgba(0, 0, 0, 0)",
+              "shadow": "rgba(255, 249, 232, 0.22) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.22) 0px -2px 2px 0px inset, rgba(0, 0, 0, 0.2) 0px 2px 3px 0px, rgba(0, 0, 0, 0.8) 0px 8px 18px -12px",
+              "radius": "13.6px",
+              "transform": "none",
+              "translate": "none"
+            },
+            {
+              "slot": "button",
+              "background": "rgba(0, 0, 0, 0)",
+              "shadow": "rgba(255, 249, 232, 0.22) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.22) 0px -2px 2px 0px inset, rgba(0, 0, 0, 0.2) 0px 2px 3px 0px, rgba(0, 0, 0, 0.8) 0px 8px 18px -12px",
+              "radius": "13.6px",
+              "transform": "none",
+              "translate": "none"
+            },
+            {
+              "slot": "button",
+              "background": "rgba(0, 0, 0, 0)",
+              "shadow": "rgba(255, 249, 232, 0.22) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.22) 0px -2px 2px 0px inset, rgba(0, 0, 0, 0.2) 0px 2px 3px 0px, rgba(0, 0, 0, 0.8) 0px 8px 18px -12px",
+              "radius": "13.6px",
+              "transform": "none",
+              "translate": "none"
+            },
+            {
+              "slot": "button",
+              "background": "rgba(0, 0, 0, 0)",
+              "shadow": "rgba(255, 249, 232, 0.22) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.22) 0px -2px 2px 0px inset, rgba(0, 0, 0, 0.2) 0px 2px 3px 0px, rgba(0, 0, 0, 0.8) 0px 8px 18px -12px",
+              "radius": "13.6px",
+              "transform": "none",
+              "translate": "none"
+            },
+            {
+              "slot": "button",
+              "background": "rgb(32, 38, 46)",
+              "shadow": "rgba(255, 249, 232, 0.22) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.22) 0px -2px 2px 0px inset, rgba(0, 0, 0, 0.2) 0px 2px 3px 0px, rgba(0, 0, 0, 0.8) 0px 8px 18px -12px",
+              "radius": "13.6px",
+              "transform": "none",
+              "translate": "none"
+            },
+            {
+              "slot": "button",
+              "background": "rgba(0, 0, 0, 0)",
+              "shadow": "rgba(255, 249, 232, 0.22) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.22) 0px -2px 2px 0px inset, rgba(0, 0, 0, 0.2) 0px 2px 3px 0px, rgba(0, 0, 0, 0.8) 0px 8px 18px -12px",
+              "radius": "13.6px",
+              "transform": "none",
+              "translate": "none"
+            },
+            {
+              "slot": "button",
+              "background": "rgb(32, 38, 46)",
+              "shadow": "rgba(255, 249, 232, 0.22) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.22) 0px -2px 2px 0px inset, rgba(0, 0, 0, 0.2) 0px 2px 3px 0px, rgba(0, 0, 0, 0.8) 0px 8px 18px -12px",
+              "radius": "13.6px",
+              "transform": "none",
+              "translate": "none"
+            }
+          ],
+          "hosts": [
+            {
+              "className": "tadeon-focus-section-mark-host",
+              "rect": [
+                245.59375,
+                18.6875,
+                36,
+                36
+              ],
+              "color": "rgb(116, 36, 45)",
+              "display": "grid"
+            },
+            {
+              "className": "tadeon-focus-section-mark-host",
+              "rect": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "color": "rgb(116, 36, 45)",
+              "display": "grid"
+            }
+          ],
+          "landmarks": [
+            {
+              "className": "tadeon-desktop-toolbar hidden md:flex",
+              "text": null,
+              "rect": [
+                220,
+                0,
+                591,
+                74.390625
+              ]
+            },
+            {
+              "className": "tadeon-mobile-header__identity flex min-w-0 items-center justify-center gap-2.5",
+              "text": null,
+              "rect": [
+                0,
+                0,
+                0,
+                0
+              ]
+            },
+            {
+              "className": "font-cinzel text-xl font-bold",
+              "text": "Painel indisponível",
+              "rect": [
+                283.5816650390625,
+                152.86965942382812,
+                463.836669921875,
+                28.111328125
+              ]
+            }
+          ],
+          "focusStyle": [
+            "grid",
+            "39.1875px 305.469px",
+            "13.6px"
+          ],
+          "cardResponse": {
+            "lightX": "5.7%",
+            "transform": "none"
+          }
+        },
+        {
+          "route": "/offline",
+          "width": 820,
+          "errors": [],
+          "interactions": [
+            {
+              "label": "Abrir busca global",
+              "rect": {
+                "x": 228,
+                "y": 12,
+                "width": 575,
+                "height": 576
+              },
+              "contained": true,
+              "focusInside": true,
+              "tabInside": true,
+              "returned": true,
+              "keyboardFixture": {
+                "keyboardRect": {
+                  "x": 228,
+                  "y": 11.734375,
+                  "width": 575,
+                  "height": 576.515625
+                },
+                "contract": {
+                  "open": "true",
+                  "rootHeight": "600px",
+                  "searchHeight": "600px"
+                },
+                "contained": true
+              },
+              "material": {
+                "animation": "tadeon-popup-contained-in",
+                "duration": "0.26s",
+                "scale": "none",
+                "origin": "287.5px 288px",
+                "shadow": "rgba(255, 249, 232, 0.24) 0px 1px 0px 0px inset, rgba(255, 255, 255, 0.04) 0px -1px 0px 0px inset, rgba(0, 0, 0, 0.35) 0px 1px 3px 0px, rgba(0, 0, 0, 0.85) 0px 24px 70px -22px",
+                "radius": "21.6px",
+                "tone": "176 166 190"
+              }
+            },
+            {
+              "label": "Abrir configurações da conta",
+              "rect": {
+                "x": 236,
+                "y": 72.5,
+                "width": 559,
+                "height": 855
+              },
+              "contained": true,
+              "focusInside": true,
+              "tabInside": true,
+              "returned": true,
+              "keyboardFixture": null,
+              "material": {
+                "animation": "tadeon-popup-contained-in",
+                "duration": "0.26s",
+                "scale": "none",
+                "origin": "279.5px 427.5px",
+                "shadow": "rgba(255, 249, 232, 0.24) 0px 1px 0px 0px inset, rgba(255, 255, 255, 0.04) 0px -1px 0px 0px inset, rgba(0, 0, 0, 0.35) 0px 1px 3px 0px, rgba(0, 0, 0, 0.85) 0px 24px 70px -22px",
+                "radius": "21.6px",
+                "tone": "176 166 190"
+              }
+            }
+          ],
+          "overflow": false,
+          "mainCount": 1,
+          "titleColor": "rgb(233, 227, 213)",
+          "material": [
+            {
+              "slot": "button",
+              "background": "rgba(255, 255, 255, 0.02)",
+              "shadow": "rgba(255, 249, 232, 0.22) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.22) 0px -2px 2px 0px inset, rgba(0, 0, 0, 0.2) 0px 2px 3px 0px, rgba(0, 0, 0, 0.8) 0px 8px 18px -12px",
+              "radius": "13.6px",
+              "transform": "none",
+              "translate": "none"
+            },
+            {
+              "slot": "button",
+              "background": "rgba(0, 0, 0, 0)",
+              "shadow": "rgba(255, 249, 232, 0.22) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.22) 0px -2px 2px 0px inset, rgba(0, 0, 0, 0.2) 0px 2px 3px 0px, rgba(0, 0, 0, 0.8) 0px 8px 18px -12px",
+              "radius": "13.6px",
+              "transform": "none",
+              "translate": "none"
+            },
+            {
+              "slot": "button",
+              "background": "rgba(0, 0, 0, 0)",
+              "shadow": "rgba(255, 249, 232, 0.22) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.22) 0px -2px 2px 0px inset, rgba(0, 0, 0, 0.2) 0px 2px 3px 0px, rgba(0, 0, 0, 0.8) 0px 8px 18px -12px",
+              "radius": "13.6px",
+              "transform": "none",
+              "translate": "none"
+            },
+            {
+              "slot": "button",
+              "background": "rgba(0, 0, 0, 0)",
+              "shadow": "rgba(255, 249, 232, 0.22) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.22) 0px -2px 2px 0px inset, rgba(0, 0, 0, 0.2) 0px 2px 3px 0px, rgba(0, 0, 0, 0.8) 0px 8px 18px -12px",
+              "radius": "13.6px",
+              "transform": "none",
+              "translate": "none"
+            },
+            {
+              "slot": "button",
+              "background": "rgb(32, 38, 46)",
+              "shadow": "rgba(255, 249, 232, 0.22) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.22) 0px -2px 2px 0px inset, rgba(0, 0, 0, 0.2) 0px 2px 3px 0px, rgba(0, 0, 0, 0.8) 0px 8px 18px -12px",
+              "radius": "13.6px",
+              "transform": "none",
+              "translate": "none"
+            },
+            {
+              "slot": "button",
+              "background": "rgba(0, 0, 0, 0)",
+              "shadow": "rgba(255, 249, 232, 0.22) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.22) 0px -2px 2px 0px inset, rgba(0, 0, 0, 0.2) 0px 2px 3px 0px, rgba(0, 0, 0, 0.8) 0px 8px 18px -12px",
+              "radius": "13.6px",
+              "transform": "none",
+              "translate": "none"
+            },
+            {
+              "slot": "button",
+              "background": "color(srgb 0.443137 0.419608 0.482353 / 0.09)",
+              "shadow": "rgba(255, 249, 232, 0.22) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.22) 0px -2px 2px 0px inset, rgba(0, 0, 0, 0.2) 0px 2px 3px 0px, rgba(0, 0, 0, 0.8) 0px 8px 18px -12px",
+              "radius": "13.6px",
+              "transform": "none",
+              "translate": "none"
+            },
+            {
+              "slot": "card",
+              "background": "rgb(19, 23, 29)",
+              "shadow": "rgba(255, 249, 232, 0.14) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.55) 0px -1px 0px 0px inset, rgba(0, 0, 0, 0.22) 0px 2px 3px 0px, rgba(0, 0, 0, 0.8) 0px 20px 44px -28px",
+              "radius": "21.6px",
+              "transform": "none",
+              "translate": "none"
+            }
+          ],
+          "hosts": [
+            {
+              "className": "tadeon-focus-section-mark-host",
+              "rect": [
+                245.59375,
+                18.6875,
+                36,
+                36
+              ],
+              "color": "rgb(113, 107, 123)",
+              "display": "grid"
+            },
+            {
+              "className": "tadeon-focus-section-mark-host",
+              "rect": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "color": "rgb(113, 107, 123)",
+              "display": "grid"
+            },
+            {
+              "className": "tadeon-page-hero-mark-host",
+              "rect": [
+                264.6120300292969,
+                126.22144317626953,
+                48.188568115234375,
+                48.188560485839844
+              ],
+              "color": "rgb(113, 107, 123)",
+              "display": "grid"
+            }
+          ],
+          "landmarks": [
+            {
+              "className": "tadeon-desktop-toolbar hidden md:flex",
+              "text": null,
+              "rect": [
+                220,
+                0,
+                591,
+                74.390625
+              ]
+            },
+            {
+              "className": "tadeon-mobile-header__identity flex min-w-0 items-center justify-center gap-2.5",
+              "text": null,
+              "rect": [
+                0,
+                0,
+                0,
+                0
+              ]
+            },
+            {
+              "className": "tadeon-page-hero tadeon-surface rounded-2xl px-5 py-6 md:px-8 md:py-8",
+              "text": null,
+              "rect": [
+                243.529541015625,
+                99.52322387695312,
+                543.94091796875,
+                272.7547912597656
+              ]
+            },
+            {
+              "className": "font-cinzel text-3xl font-semibold md:text-4xl",
+              "text": "Consulta offline",
+              "rect": [
+                329.0042419433594,
+                132.39132690429688,
+                441.2585754394531,
+                42.85490417480469
+              ]
+            }
+          ],
+          "focusStyle": [
+            "grid",
+            "39.1875px 429.031px",
+            "13.6px"
+          ],
+          "cardResponse": {
+            "lightX": "5.4%",
+            "transform": "none"
+          },
+          "preferences": {
+            "motion": true,
+            "transparency": true,
+            "contrast": true,
+            "filter": "none",
+            "popup": {
+              "animation": "none",
+              "border": "rgb(122, 129, 135)"
+            }
+          }
+        },
+        {
+          "route": "/nexus-tools",
+          "width": 820,
+          "errors": [],
+          "interactions": [],
+          "overflow": false,
+          "mainCount": 1,
+          "titleColor": "rgb(233, 227, 213)",
+          "material": [
+            {
+              "slot": "button",
+              "background": "rgba(255, 255, 255, 0.02)",
+              "shadow": "rgba(255, 249, 232, 0.22) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.22) 0px -2px 2px 0px inset, rgba(0, 0, 0, 0.2) 0px 2px 3px 0px, rgba(0, 0, 0, 0.8) 0px 8px 18px -12px",
+              "radius": "13.6px",
+              "transform": "none",
+              "translate": "none"
+            },
+            {
+              "slot": "button",
+              "background": "rgba(0, 0, 0, 0)",
+              "shadow": "rgba(255, 249, 232, 0.22) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.22) 0px -2px 2px 0px inset, rgba(0, 0, 0, 0.2) 0px 2px 3px 0px, rgba(0, 0, 0, 0.8) 0px 8px 18px -12px",
+              "radius": "13.6px",
+              "transform": "none",
+              "translate": "none"
+            },
+            {
+              "slot": "button",
+              "background": "rgba(0, 0, 0, 0)",
+              "shadow": "rgba(255, 249, 232, 0.22) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.22) 0px -2px 2px 0px inset, rgba(0, 0, 0, 0.2) 0px 2px 3px 0px, rgba(0, 0, 0, 0.8) 0px 8px 18px -12px",
+              "radius": "13.6px",
+              "transform": "none",
+              "translate": "none"
+            },
+            {
+              "slot": "button",
+              "background": "rgba(0, 0, 0, 0)",
+              "shadow": "rgba(255, 249, 232, 0.22) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.22) 0px -2px 2px 0px inset, rgba(0, 0, 0, 0.2) 0px 2px 3px 0px, rgba(0, 0, 0, 0.8) 0px 8px 18px -12px",
+              "radius": "13.6px",
+              "transform": "none",
+              "translate": "none"
+            },
+            {
+              "slot": "button",
+              "background": "rgb(32, 38, 46)",
+              "shadow": "rgba(255, 249, 232, 0.22) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.22) 0px -2px 2px 0px inset, rgba(0, 0, 0, 0.2) 0px 2px 3px 0px, rgba(0, 0, 0, 0.8) 0px 8px 18px -12px",
+              "radius": "13.6px",
+              "transform": "none",
+              "translate": "none"
+            },
+            {
+              "slot": "button",
+              "background": "rgba(0, 0, 0, 0)",
+              "shadow": "rgba(255, 249, 232, 0.22) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.22) 0px -2px 2px 0px inset, rgba(0, 0, 0, 0.2) 0px 2px 3px 0px, rgba(0, 0, 0, 0.8) 0px 8px 18px -12px",
+              "radius": "13.6px",
+              "transform": "none",
+              "translate": "none"
+            },
+            {
+              "slot": "card",
+              "background": "rgb(19, 23, 29)",
+              "shadow": "rgba(255, 249, 232, 0.14) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.55) 0px -1px 0px 0px inset, rgba(0, 0, 0, 0.22) 0px 2px 3px 0px, rgba(0, 0, 0, 0.8) 0px 20px 44px -28px",
+              "radius": "21.6px",
+              "transform": "none",
+              "translate": "none"
+            },
+            {
+              "slot": "button",
+              "background": "rgb(32, 38, 46)",
+              "shadow": "rgba(255, 249, 232, 0.22) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.22) 0px -2px 2px 0px inset, rgba(0, 0, 0, 0.2) 0px 2px 3px 0px, rgba(0, 0, 0, 0.8) 0px 8px 18px -12px",
+              "radius": "13.6px",
+              "transform": "none",
+              "translate": "none"
+            }
+          ],
+          "hosts": [
+            {
+              "className": "tadeon-focus-section-mark-host",
+              "rect": [
+                245.59375,
+                18.6875,
+                36,
+                36
+              ],
+              "color": "rgb(217, 215, 164)",
+              "display": "grid"
+            },
+            {
+              "className": "tadeon-focus-section-mark-host",
+              "rect": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "color": "rgb(217, 215, 164)",
+              "display": "grid"
+            },
+            {
+              "className": "tadeon-page-hero-mark-host",
+              "rect": [
+                264.595458984375,
+                126.11524200439453,
+                48.191741943359375,
+                48.191734313964844
+              ],
+              "color": "rgb(122, 129, 135)",
+              "display": "grid"
+            }
+          ],
+          "landmarks": [
+            {
+              "className": "tadeon-desktop-toolbar hidden md:flex",
+              "text": null,
+              "rect": [
+                220,
+                0,
+                591,
+                74.390625
+              ]
+            },
+            {
+              "className": "tadeon-mobile-header__identity flex min-w-0 items-center justify-center gap-2.5",
+              "text": null,
+              "rect": [
+                0,
+                0,
+                0,
+                0
+              ]
+            },
+            {
+              "className": "tadeon-page-hero tadeon-surface rounded-2xl px-5 py-6 md:px-8 md:py-8",
+              "text": null,
+              "rect": [
+                243.51158142089844,
+                99.41525268554688,
+                543.9768676757812,
+                202.49319458007812
+              ]
+            },
+            {
+              "className": "font-cinzel text-3xl font-semibold md:text-4xl",
+              "text": "Backup e diagnóstico",
+              "rect": [
+                329.55987548828125,
+                131.23190307617188,
+                440.15191650390625,
+                42.74742126464844
+              ]
+            }
+          ],
+          "focusStyle": [
+            "grid",
+            "39.1875px 429.031px",
+            "13.6px"
+          ],
+          "cardResponse": {
+            "lightX": "5.4%",
+            "transform": "none"
+          }
+        },
+        {
+          "route": "/manage-users",
+          "width": 820,
+          "errors": [],
+          "interactions": [],
+          "overflow": false,
+          "mainCount": 1,
+          "titleColor": "rgb(233, 227, 213)",
+          "material": [
+            {
+              "slot": "button",
+              "background": "rgba(255, 255, 255, 0.02)",
+              "shadow": "rgba(255, 249, 232, 0.22) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.22) 0px -2px 2px 0px inset, rgba(0, 0, 0, 0.2) 0px 2px 3px 0px, rgba(0, 0, 0, 0.8) 0px 8px 18px -12px",
+              "radius": "13.6px",
+              "transform": "none",
+              "translate": "none"
+            },
+            {
+              "slot": "button",
+              "background": "rgba(0, 0, 0, 0)",
+              "shadow": "rgba(255, 249, 232, 0.22) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.22) 0px -2px 2px 0px inset, rgba(0, 0, 0, 0.2) 0px 2px 3px 0px, rgba(0, 0, 0, 0.8) 0px 8px 18px -12px",
+              "radius": "13.6px",
+              "transform": "none",
+              "translate": "none"
+            },
+            {
+              "slot": "button",
+              "background": "rgba(0, 0, 0, 0)",
+              "shadow": "rgba(255, 249, 232, 0.22) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.22) 0px -2px 2px 0px inset, rgba(0, 0, 0, 0.2) 0px 2px 3px 0px, rgba(0, 0, 0, 0.8) 0px 8px 18px -12px",
+              "radius": "13.6px",
+              "transform": "none",
+              "translate": "none"
+            },
+            {
+              "slot": "button",
+              "background": "rgba(0, 0, 0, 0)",
+              "shadow": "rgba(255, 249, 232, 0.22) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.22) 0px -2px 2px 0px inset, rgba(0, 0, 0, 0.2) 0px 2px 3px 0px, rgba(0, 0, 0, 0.8) 0px 8px 18px -12px",
+              "radius": "13.6px",
+              "transform": "none",
+              "translate": "none"
+            },
+            {
+              "slot": "button",
+              "background": "rgb(32, 38, 46)",
+              "shadow": "rgba(255, 249, 232, 0.22) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.22) 0px -2px 2px 0px inset, rgba(0, 0, 0, 0.2) 0px 2px 3px 0px, rgba(0, 0, 0, 0.8) 0px 8px 18px -12px",
+              "radius": "13.6px",
+              "transform": "none",
+              "translate": "none"
+            },
+            {
+              "slot": "button",
+              "background": "rgba(0, 0, 0, 0)",
+              "shadow": "rgba(255, 249, 232, 0.22) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.22) 0px -2px 2px 0px inset, rgba(0, 0, 0, 0.2) 0px 2px 3px 0px, rgba(0, 0, 0, 0.8) 0px 8px 18px -12px",
+              "radius": "13.6px",
+              "transform": "none",
+              "translate": "none"
+            },
+            {
+              "slot": "button",
+              "background": "rgb(32, 38, 46)",
+              "shadow": "rgba(255, 249, 232, 0.22) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.22) 0px -2px 2px 0px inset, rgba(0, 0, 0, 0.2) 0px 2px 3px 0px, rgba(0, 0, 0, 0.8) 0px 8px 18px -12px",
+              "radius": "13.6px",
+              "transform": "none",
+              "translate": "none"
+            },
+            {
+              "slot": "card",
+              "background": "rgb(19, 23, 29)",
+              "shadow": "rgba(255, 249, 232, 0.14) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.55) 0px -1px 0px 0px inset, rgba(0, 0, 0, 0.22) 0px 2px 3px 0px, rgba(0, 0, 0, 0.8) 0px 20px 44px -28px",
+              "radius": "21.6px",
+              "transform": "none",
+              "translate": "none"
+            }
+          ],
+          "hosts": [
+            {
+              "className": "tadeon-focus-section-mark-host",
+              "rect": [
+                245.59375,
+                18.6875,
+                36,
+                36
+              ],
+              "color": "rgb(183, 129, 77)",
+              "display": "grid"
+            },
+            {
+              "className": "tadeon-focus-section-mark-host",
+              "rect": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "color": "rgb(183, 129, 77)",
+              "display": "grid"
+            },
+            {
+              "className": "tadeon-page-hero-mark-host",
+              "rect": [
+                264.59722900390625,
+                126.12652587890625,
+                48.19140625,
+                48.19140625
+              ],
+              "color": "rgb(183, 129, 77)",
+              "display": "grid"
+            }
+          ],
+          "landmarks": [
+            {
+              "className": "tadeon-desktop-toolbar hidden md:flex",
+              "text": null,
+              "rect": [
+                220,
+                0,
+                591,
+                74.390625
+              ]
+            },
+            {
+              "className": "tadeon-mobile-header__identity flex min-w-0 items-center justify-center gap-2.5",
+              "text": null,
+              "rect": [
+                0,
+                0,
+                0,
+                0
+              ]
+            },
+            {
+              "className": "tadeon-page-hero tadeon-surface rounded-2xl p-6 md:p-8",
+              "text": null,
+              "rect": [
+                243.5134735107422,
+                99.4267349243164,
+                543.9730834960938,
+                162.67739868164062
+              ]
+            },
+            {
+              "className": "mt-1 font-cinzel text-3xl font-semibold md:text-4xl",
+              "text": "Usuários",
+              "rect": [
+                394.32647705078125,
+                130.80284118652344,
+                354.793701171875,
+                42.779266357421875
+              ]
+            }
+          ],
+          "focusStyle": [
+            "grid",
+            "39.1875px 429.031px",
+            "13.6px"
+          ],
+          "cardResponse": {
+            "lightX": "5.4%",
+            "transform": "none"
+          }
+        },
+        {
+          "route": "/tabletop",
+          "width": 820,
+          "errors": [],
+          "interactions": [],
+          "overflow": false,
+          "mainCount": 1,
+          "titleColor": "rgb(233, 227, 213)",
+          "material": [
+            {
+              "slot": "button",
+              "background": "rgba(255, 255, 255, 0.02)",
+              "shadow": "rgba(255, 249, 232, 0.22) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.22) 0px -2px 2px 0px inset, rgba(0, 0, 0, 0.2) 0px 2px 3px 0px, rgba(0, 0, 0, 0.8) 0px 8px 18px -12px",
+              "radius": "13.6px",
+              "transform": "none",
+              "translate": "none"
+            },
+            {
+              "slot": "button",
+              "background": "rgba(0, 0, 0, 0)",
+              "shadow": "rgba(255, 249, 232, 0.22) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.22) 0px -2px 2px 0px inset, rgba(0, 0, 0, 0.2) 0px 2px 3px 0px, rgba(0, 0, 0, 0.8) 0px 8px 18px -12px",
+              "radius": "13.6px",
+              "transform": "none",
+              "translate": "none"
+            },
+            {
+              "slot": "button",
+              "background": "rgba(0, 0, 0, 0)",
+              "shadow": "rgba(255, 249, 232, 0.22) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.22) 0px -2px 2px 0px inset, rgba(0, 0, 0, 0.2) 0px 2px 3px 0px, rgba(0, 0, 0, 0.8) 0px 8px 18px -12px",
+              "radius": "13.6px",
+              "transform": "none",
+              "translate": "none"
+            },
+            {
+              "slot": "button",
+              "background": "rgba(0, 0, 0, 0)",
+              "shadow": "rgba(255, 249, 232, 0.22) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.22) 0px -2px 2px 0px inset, rgba(0, 0, 0, 0.2) 0px 2px 3px 0px, rgba(0, 0, 0, 0.8) 0px 8px 18px -12px",
+              "radius": "13.6px",
+              "transform": "none",
+              "translate": "none"
+            },
+            {
+              "slot": "button",
+              "background": "rgba(0, 0, 0, 0)",
+              "shadow": "rgba(255, 249, 232, 0.22) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.22) 0px -2px 2px 0px inset, rgba(0, 0, 0, 0.2) 0px 2px 3px 0px, rgba(0, 0, 0, 0.8) 0px 8px 18px -12px",
+              "radius": "13.6px",
+              "transform": "none",
+              "translate": "none"
+            },
+            {
+              "slot": "button",
+              "background": "rgb(32, 38, 46)",
+              "shadow": "rgba(255, 249, 232, 0.22) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.22) 0px -2px 2px 0px inset, rgba(0, 0, 0, 0.2) 0px 2px 3px 0px, rgba(0, 0, 0, 0.8) 0px 8px 18px -12px",
+              "radius": "13.6px",
+              "transform": "none",
+              "translate": "none"
+            },
+            {
+              "slot": "button",
+              "background": "rgba(0, 0, 0, 0)",
+              "shadow": "rgba(255, 249, 232, 0.22) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.22) 0px -2px 2px 0px inset, rgba(0, 0, 0, 0.2) 0px 2px 3px 0px, rgba(0, 0, 0, 0.8) 0px 8px 18px -12px",
+              "radius": "13.6px",
+              "transform": "none",
+              "translate": "none"
+            },
+            {
+              "slot": "button",
+              "background": "rgb(32, 38, 46)",
+              "shadow": "rgba(255, 249, 232, 0.22) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.22) 0px -2px 2px 0px inset, rgba(0, 0, 0, 0.2) 0px 2px 3px 0px, rgba(0, 0, 0, 0.8) 0px 8px 18px -12px",
+              "radius": "13.6px",
+              "transform": "none",
+              "translate": "none"
+            }
+          ],
+          "hosts": [
+            {
+              "className": "tadeon-focus-section-mark-host",
+              "rect": [
+                245.59375,
+                18.6875,
+                36,
+                36
+              ],
+              "color": "rgb(84, 123, 148)",
+              "display": "grid"
+            },
+            {
+              "className": "tadeon-focus-section-mark-host",
+              "rect": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "color": "rgb(84, 123, 148)",
+              "display": "grid"
+            },
+            {
+              "className": "tadeon-tabletop-brand-mark-host",
+              "rect": [
+                236,
+                91.890625,
+                40,
+                40
+              ],
+              "color": "rgb(84, 123, 148)",
+              "display": "grid"
+            }
+          ],
+          "landmarks": [
+            {
+              "className": "tadeon-desktop-toolbar hidden md:flex",
+              "text": null,
+              "rect": [
+                220,
+                0,
+                591,
+                74.390625
+              ]
+            },
+            {
+              "className": "tadeon-mobile-header__identity flex min-w-0 items-center justify-center gap-2.5",
+              "text": null,
+              "rect": [
+                0,
+                0,
+                0,
+                0
+              ]
+            },
+            {
+              "className": "truncate font-cinzel text-lg font-semibold",
+              "text": "Mesa Nexus",
+              "rect": [
+                286.390625,
+                105.890625,
+                66.765625,
+                28
+              ]
+            }
+          ],
+          "focusStyle": [
+            "grid",
+            "39.1875px 379.031px",
+            "13.6px"
+          ]
+        },
+        {
+          "route": "/",
+          "width": 1440,
+          "errors": [],
+          "interactions": [],
+          "overflow": false,
+          "mainCount": 1,
+          "titleColor": "rgb(233, 227, 213)",
+          "material": [
+            {
+              "slot": "button",
+              "background": "rgba(255, 255, 255, 0.02)",
+              "shadow": "rgba(255, 249, 232, 0.22) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.22) 0px -2px 2px 0px inset, rgba(0, 0, 0, 0.2) 0px 2px 3px 0px, rgba(0, 0, 0, 0.8) 0px 8px 18px -12px",
+              "radius": "13.6px",
+              "transform": "none",
+              "translate": "none"
+            },
+            {
+              "slot": "button",
+              "background": "rgba(0, 0, 0, 0)",
+              "shadow": "rgba(255, 249, 232, 0.22) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.22) 0px -2px 2px 0px inset, rgba(0, 0, 0, 0.2) 0px 2px 3px 0px, rgba(0, 0, 0, 0.8) 0px 8px 18px -12px",
+              "radius": "13.6px",
+              "transform": "none",
+              "translate": "none"
+            },
+            {
+              "slot": "button",
+              "background": "rgba(0, 0, 0, 0)",
+              "shadow": "rgba(255, 249, 232, 0.22) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.22) 0px -2px 2px 0px inset, rgba(0, 0, 0, 0.2) 0px 2px 3px 0px, rgba(0, 0, 0, 0.8) 0px 8px 18px -12px",
+              "radius": "13.6px",
+              "transform": "none",
+              "translate": "none"
+            },
+            {
+              "slot": "button",
+              "background": "rgba(0, 0, 0, 0)",
+              "shadow": "rgba(255, 249, 232, 0.22) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.22) 0px -2px 2px 0px inset, rgba(0, 0, 0, 0.2) 0px 2px 3px 0px, rgba(0, 0, 0, 0.8) 0px 8px 18px -12px",
+              "radius": "13.6px",
+              "transform": "none",
+              "translate": "none"
+            },
+            {
+              "slot": "button",
+              "background": "rgb(32, 38, 46)",
+              "shadow": "rgba(255, 249, 232, 0.22) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.22) 0px -2px 2px 0px inset, rgba(0, 0, 0, 0.2) 0px 2px 3px 0px, rgba(0, 0, 0, 0.8) 0px 8px 18px -12px",
+              "radius": "13.6px",
+              "transform": "none",
+              "translate": "none"
+            },
+            {
+              "slot": "button",
+              "background": "rgba(0, 0, 0, 0)",
+              "shadow": "rgba(255, 249, 232, 0.22) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.22) 0px -2px 2px 0px inset, rgba(0, 0, 0, 0.2) 0px 2px 3px 0px, rgba(0, 0, 0, 0.8) 0px 8px 18px -12px",
+              "radius": "13.6px",
+              "transform": "none",
+              "translate": "none"
+            },
+            {
+              "slot": "button",
+              "background": "rgb(32, 38, 46)",
+              "shadow": "rgba(255, 249, 232, 0.22) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.22) 0px -2px 2px 0px inset, rgba(0, 0, 0, 0.2) 0px 2px 3px 0px, rgba(0, 0, 0, 0.8) 0px 8px 18px -12px",
+              "radius": "13.6px",
+              "transform": "none",
+              "translate": "none"
+            },
+            {
+              "slot": "button",
+              "background": "rgba(0, 0, 0, 0)",
+              "shadow": "rgba(255, 249, 232, 0.22) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.22) 0px -2px 2px 0px inset, rgba(0, 0, 0, 0.2) 0px 2px 3px 0px, rgba(0, 0, 0, 0.8) 0px 8px 18px -12px",
+              "radius": "13.6px",
+              "transform": "none",
+              "translate": "none"
+            }
+          ],
+          "hosts": [
+            {
+              "className": "tadeon-focus-section-mark-host",
+              "rect": [
+                295.03125,
+                18.6875,
+                36,
+                36
+              ],
+              "color": "rgb(217, 215, 164)",
+              "display": "grid"
+            },
+            {
+              "className": "tadeon-focus-section-mark-host",
+              "rect": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "color": "rgb(217, 215, 164)",
+              "display": "grid"
+            }
+          ],
+          "landmarks": [
+            {
+              "className": "tadeon-desktop-toolbar hidden md:flex",
+              "text": null,
+              "rect": [
+                256,
+                0,
+                1175,
+                74.390625
+              ]
+            },
+            {
+              "className": "tadeon-mobile-header__identity flex min-w-0 items-center justify-center gap-2.5",
+              "text": null,
+              "rect": [
+                0,
+                0,
+                0,
+                0
+              ]
+            },
+            {
+              "className": "font-cinzel",
+              "text": "Os fios da suajornada.",
+              "rect": [
+                357.3005676269531,
+                204.5441436767578,
+                483.8374938964844,
+                140.08250427246094
+              ]
+            }
+          ],
+          "focusStyle": [
+            "grid",
+            "39.1875px 654.953px",
+            "13.6px"
+          ]
+        },
+        {
+          "route": "/nexus",
+          "width": 1440,
+          "errors": [],
+          "interactions": [],
+          "overflow": false,
+          "mainCount": 1,
+          "titleColor": "rgb(233, 227, 213)",
+          "material": [
+            {
+              "slot": "button",
+              "background": "rgba(255, 255, 255, 0.02)",
+              "shadow": "rgba(255, 249, 232, 0.22) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.22) 0px -2px 2px 0px inset, rgba(0, 0, 0, 0.2) 0px 2px 3px 0px, rgba(0, 0, 0, 0.8) 0px 8px 18px -12px",
+              "radius": "13.6px",
+              "transform": "none",
+              "translate": "none"
+            },
+            {
+              "slot": "button",
+              "background": "rgba(0, 0, 0, 0)",
+              "shadow": "rgba(255, 249, 232, 0.22) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.22) 0px -2px 2px 0px inset, rgba(0, 0, 0, 0.2) 0px 2px 3px 0px, rgba(0, 0, 0, 0.8) 0px 8px 18px -12px",
+              "radius": "13.6px",
+              "transform": "none",
+              "translate": "none"
+            },
+            {
+              "slot": "button",
+              "background": "rgba(0, 0, 0, 0)",
+              "shadow": "rgba(255, 249, 232, 0.22) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.22) 0px -2px 2px 0px inset, rgba(0, 0, 0, 0.2) 0px 2px 3px 0px, rgba(0, 0, 0, 0.8) 0px 8px 18px -12px",
+              "radius": "13.6px",
+              "transform": "none",
+              "translate": "none"
+            },
+            {
+              "slot": "button",
+              "background": "rgba(0, 0, 0, 0)",
+              "shadow": "rgba(255, 249, 232, 0.22) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.22) 0px -2px 2px 0px inset, rgba(0, 0, 0, 0.2) 0px 2px 3px 0px, rgba(0, 0, 0, 0.8) 0px 8px 18px -12px",
+              "radius": "13.6px",
+              "transform": "none",
+              "translate": "none"
+            },
+            {
+              "slot": "button",
+              "background": "rgba(0, 0, 0, 0)",
+              "shadow": "rgba(255, 249, 232, 0.22) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.22) 0px -2px 2px 0px inset, rgba(0, 0, 0, 0.2) 0px 2px 3px 0px, rgba(0, 0, 0, 0.8) 0px 8px 18px -12px",
+              "radius": "13.6px",
+              "transform": "none",
+              "translate": "none"
+            },
+            {
+              "slot": "button",
+              "background": "rgb(32, 38, 46)",
+              "shadow": "rgba(255, 249, 232, 0.22) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.22) 0px -2px 2px 0px inset, rgba(0, 0, 0, 0.2) 0px 2px 3px 0px, rgba(0, 0, 0, 0.8) 0px 8px 18px -12px",
+              "radius": "13.6px",
+              "transform": "none",
+              "translate": "none"
+            },
+            {
+              "slot": "button",
+              "background": "rgba(0, 0, 0, 0)",
+              "shadow": "rgba(255, 249, 232, 0.22) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.22) 0px -2px 2px 0px inset, rgba(0, 0, 0, 0.2) 0px 2px 3px 0px, rgba(0, 0, 0, 0.8) 0px 8px 18px -12px",
+              "radius": "13.6px",
+              "transform": "none",
+              "translate": "none"
+            },
+            {
+              "slot": "card",
+              "background": "rgb(19, 23, 29)",
+              "shadow": "rgba(255, 249, 232, 0.14) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.55) 0px -1px 0px 0px inset, rgba(0, 0, 0, 0.22) 0px 2px 3px 0px, rgba(0, 0, 0, 0.8) 0px 20px 44px -28px",
+              "radius": "21.6px",
+              "transform": "none",
+              "translate": "none"
+            }
+          ],
+          "hosts": [
+            {
+              "className": "tadeon-focus-section-mark-host",
+              "rect": [
+                295.03125,
+                18.6875,
+                36,
+                36
+              ],
+              "color": "rgb(79, 110, 93)",
+              "display": "grid"
+            },
+            {
+              "className": "tadeon-focus-section-mark-host",
+              "rect": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "color": "rgb(79, 110, 93)",
+              "display": "grid"
+            }
+          ],
+          "landmarks": [
+            {
+              "className": "tadeon-desktop-toolbar hidden md:flex",
+              "text": null,
+              "rect": [
+                256,
+                0,
+                1175,
+                74.390625
+              ]
+            },
+            {
+              "className": "tadeon-mobile-header__identity flex min-w-0 items-center justify-center gap-2.5",
+              "text": null,
+              "rect": [
+                0,
+                0,
+                0,
+                0
+              ]
+            },
+            {
+              "className": "mt-4 font-cinzel text-2xl font-semibold",
+              "text": "Nenhum workspace acessível",
+              "rect": [
+                348.092041015625,
+                210.70556640625,
+                990.81591796875,
+                32.42555236816406
+              ]
+            }
+          ],
+          "focusStyle": [
+            "grid",
+            "39.1875px 531.391px",
+            "13.6px"
+          ],
+          "cardResponse": {
+            "lightX": "2.7%",
+            "transform": "none"
+          }
+        },
+        {
+          "route": "/master-panel",
+          "width": 1440,
+          "errors": [],
+          "interactions": [],
+          "overflow": false,
+          "mainCount": 1,
+          "titleColor": "rgb(233, 227, 213)",
+          "material": [
+            {
+              "slot": "button",
+              "background": "rgba(255, 255, 255, 0.02)",
+              "shadow": "rgba(255, 249, 232, 0.22) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.22) 0px -2px 2px 0px inset, rgba(0, 0, 0, 0.2) 0px 2px 3px 0px, rgba(0, 0, 0, 0.8) 0px 8px 18px -12px",
+              "radius": "13.6px",
+              "transform": "none",
+              "translate": "none"
+            },
+            {
+              "slot": "button",
+              "background": "rgba(0, 0, 0, 0)",
+              "shadow": "rgba(255, 249, 232, 0.22) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.22) 0px -2px 2px 0px inset, rgba(0, 0, 0, 0.2) 0px 2px 3px 0px, rgba(0, 0, 0, 0.8) 0px 8px 18px -12px",
+              "radius": "13.6px",
+              "transform": "none",
+              "translate": "none"
+            },
+            {
+              "slot": "button",
+              "background": "rgba(0, 0, 0, 0)",
+              "shadow": "rgba(255, 249, 232, 0.22) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.22) 0px -2px 2px 0px inset, rgba(0, 0, 0, 0.2) 0px 2px 3px 0px, rgba(0, 0, 0, 0.8) 0px 8px 18px -12px",
+              "radius": "13.6px",
+              "transform": "none",
+              "translate": "none"
+            },
+            {
+              "slot": "button",
+              "background": "rgba(0, 0, 0, 0)",
+              "shadow": "rgba(255, 249, 232, 0.22) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.22) 0px -2px 2px 0px inset, rgba(0, 0, 0, 0.2) 0px 2px 3px 0px, rgba(0, 0, 0, 0.8) 0px 8px 18px -12px",
+              "radius": "13.6px",
+              "transform": "none",
+              "translate": "none"
+            },
+            {
+              "slot": "button",
+              "background": "rgba(0, 0, 0, 0)",
+              "shadow": "rgba(255, 249, 232, 0.22) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.22) 0px -2px 2px 0px inset, rgba(0, 0, 0, 0.2) 0px 2px 3px 0px, rgba(0, 0, 0, 0.8) 0px 8px 18px -12px",
+              "radius": "13.6px",
+              "transform": "none",
+              "translate": "none"
+            },
+            {
+              "slot": "button",
+              "background": "rgb(32, 38, 46)",
+              "shadow": "rgba(255, 249, 232, 0.22) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.22) 0px -2px 2px 0px inset, rgba(0, 0, 0, 0.2) 0px 2px 3px 0px, rgba(0, 0, 0, 0.8) 0px 8px 18px -12px",
+              "radius": "13.6px",
+              "transform": "none",
+              "translate": "none"
+            },
+            {
+              "slot": "button",
+              "background": "rgba(0, 0, 0, 0)",
+              "shadow": "rgba(255, 249, 232, 0.22) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.22) 0px -2px 2px 0px inset, rgba(0, 0, 0, 0.2) 0px 2px 3px 0px, rgba(0, 0, 0, 0.8) 0px 8px 18px -12px",
+              "radius": "13.6px",
+              "transform": "none",
+              "translate": "none"
+            },
+            {
+              "slot": "button",
+              "background": "rgb(32, 38, 46)",
+              "shadow": "rgba(255, 249, 232, 0.22) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.22) 0px -2px 2px 0px inset, rgba(0, 0, 0, 0.2) 0px 2px 3px 0px, rgba(0, 0, 0, 0.8) 0px 8px 18px -12px",
+              "radius": "13.6px",
+              "transform": "none",
+              "translate": "none"
+            }
+          ],
+          "hosts": [
+            {
+              "className": "tadeon-focus-section-mark-host",
+              "rect": [
+                295.03125,
+                18.6875,
+                36,
+                36
+              ],
+              "color": "rgb(116, 36, 45)",
+              "display": "grid"
+            },
+            {
+              "className": "tadeon-focus-section-mark-host",
+              "rect": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "color": "rgb(116, 36, 45)",
+              "display": "grid"
+            }
+          ],
+          "landmarks": [
+            {
+              "className": "tadeon-desktop-toolbar hidden md:flex",
+              "text": null,
+              "rect": [
+                256,
+                0,
+                1175,
+                74.390625
+              ]
+            },
+            {
+              "className": "tadeon-mobile-header__identity flex min-w-0 items-center justify-center gap-2.5",
+              "text": null,
+              "rect": [
+                0,
+                0,
+                0,
+                0
+              ]
+            },
+            {
+              "className": "font-cinzel text-xl font-bold",
+              "text": "Painel indisponível",
+              "rect": [
+                611.5860595703125,
+                152.8995819091797,
+                463.8280029296875,
+                28.110794067382812
+              ]
+            }
+          ],
+          "focusStyle": [
+            "grid",
+            "39.1875px 531.391px",
+            "13.6px"
+          ],
+          "cardResponse": {
+            "lightX": "5.7%",
+            "transform": "none"
+          }
+        },
+        {
+          "route": "/offline",
+          "width": 1440,
+          "errors": [],
+          "interactions": [
+            {
+              "label": "Abrir busca global",
+              "rect": {
+                "x": 507.484375,
+                "y": 196,
+                "width": 672,
+                "height": 608
+              },
+              "contained": true,
+              "focusInside": true,
+              "tabInside": true,
+              "returned": true,
+              "keyboardFixture": null,
+              "material": {
+                "animation": "tadeon-popup-contained-in",
+                "duration": "0.26s",
+                "scale": "none",
+                "origin": "336px 304px",
+                "shadow": "rgba(255, 249, 232, 0.24) 0px 1px 0px 0px inset, rgba(255, 255, 255, 0.04) 0px -1px 0px 0px inset, rgba(0, 0, 0, 0.35) 0px 1px 3px 0px, rgba(0, 0, 0, 0.85) 0px 24px 70px -22px",
+                "radius": "21.6px",
+                "tone": "176 166 190"
+              }
+            },
+            {
+              "label": "Abrir configurações da conta",
+              "rect": {
+                "x": 331.5,
+                "y": 72.5,
+                "width": 1024,
+                "height": 855
+              },
+              "contained": true,
+              "focusInside": true,
+              "tabInside": true,
+              "returned": true,
+              "keyboardFixture": null,
+              "material": {
+                "animation": "tadeon-popup-contained-in",
+                "duration": "0.26s",
+                "scale": "none",
+                "origin": "512px 427.5px",
+                "shadow": "rgba(255, 249, 232, 0.24) 0px 1px 0px 0px inset, rgba(255, 255, 255, 0.04) 0px -1px 0px 0px inset, rgba(0, 0, 0, 0.35) 0px 1px 3px 0px, rgba(0, 0, 0, 0.85) 0px 24px 70px -22px",
+                "radius": "21.6px",
+                "tone": "176 166 190"
+              }
+            }
+          ],
+          "overflow": false,
+          "mainCount": 1,
+          "titleColor": "rgb(233, 227, 213)",
+          "material": [
+            {
+              "slot": "button",
+              "background": "rgba(255, 255, 255, 0.02)",
+              "shadow": "rgba(255, 249, 232, 0.22) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.22) 0px -2px 2px 0px inset, rgba(0, 0, 0, 0.2) 0px 2px 3px 0px, rgba(0, 0, 0, 0.8) 0px 8px 18px -12px",
+              "radius": "13.6px",
+              "transform": "none",
+              "translate": "none"
+            },
+            {
+              "slot": "button",
+              "background": "rgba(0, 0, 0, 0)",
+              "shadow": "rgba(255, 249, 232, 0.22) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.22) 0px -2px 2px 0px inset, rgba(0, 0, 0, 0.2) 0px 2px 3px 0px, rgba(0, 0, 0, 0.8) 0px 8px 18px -12px",
+              "radius": "13.6px",
+              "transform": "none",
+              "translate": "none"
+            },
+            {
+              "slot": "button",
+              "background": "rgba(0, 0, 0, 0)",
+              "shadow": "rgba(255, 249, 232, 0.22) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.22) 0px -2px 2px 0px inset, rgba(0, 0, 0, 0.2) 0px 2px 3px 0px, rgba(0, 0, 0, 0.8) 0px 8px 18px -12px",
+              "radius": "13.6px",
+              "transform": "none",
+              "translate": "none"
+            },
+            {
+              "slot": "button",
+              "background": "rgba(0, 0, 0, 0)",
+              "shadow": "rgba(255, 249, 232, 0.22) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.22) 0px -2px 2px 0px inset, rgba(0, 0, 0, 0.2) 0px 2px 3px 0px, rgba(0, 0, 0, 0.8) 0px 8px 18px -12px",
+              "radius": "13.6px",
+              "transform": "none",
+              "translate": "none"
+            },
+            {
+              "slot": "button",
+              "background": "rgb(32, 38, 46)",
+              "shadow": "rgba(255, 249, 232, 0.22) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.22) 0px -2px 2px 0px inset, rgba(0, 0, 0, 0.2) 0px 2px 3px 0px, rgba(0, 0, 0, 0.8) 0px 8px 18px -12px",
+              "radius": "13.6px",
+              "transform": "none",
+              "translate": "none"
+            },
+            {
+              "slot": "button",
+              "background": "rgba(0, 0, 0, 0)",
+              "shadow": "rgba(255, 249, 232, 0.22) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.22) 0px -2px 2px 0px inset, rgba(0, 0, 0, 0.2) 0px 2px 3px 0px, rgba(0, 0, 0, 0.8) 0px 8px 18px -12px",
+              "radius": "13.6px",
+              "transform": "none",
+              "translate": "none"
+            },
+            {
+              "slot": "button",
+              "background": "color(srgb 0.443137 0.419608 0.482353 / 0.09)",
+              "shadow": "rgba(255, 249, 232, 0.22) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.22) 0px -2px 2px 0px inset, rgba(0, 0, 0, 0.2) 0px 2px 3px 0px, rgba(0, 0, 0, 0.8) 0px 8px 18px -12px",
+              "radius": "13.6px",
+              "transform": "none",
+              "translate": "none"
+            },
+            {
+              "slot": "card",
+              "background": "rgb(19, 23, 29)",
+              "shadow": "rgba(255, 249, 232, 0.14) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.55) 0px -1px 0px 0px inset, rgba(0, 0, 0, 0.22) 0px 2px 3px 0px, rgba(0, 0, 0, 0.8) 0px 20px 44px -28px",
+              "radius": "21.6px",
+              "transform": "none",
+              "translate": "none"
+            }
+          ],
+          "hosts": [
+            {
+              "className": "tadeon-focus-section-mark-host",
+              "rect": [
+                295.03125,
+                18.6875,
+                36,
+                36
+              ],
+              "color": "rgb(113, 107, 123)",
+              "display": "grid"
+            },
+            {
+              "className": "tadeon-focus-section-mark-host",
+              "rect": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "color": "rgb(113, 107, 123)",
+              "display": "grid"
+            },
+            {
+              "className": "tadeon-page-hero-mark-host",
+              "rect": [
+                332.5945739746094,
+                141.46856689453125,
+                48.188568115234375,
+                48.188568115234375
+              ],
+              "color": "rgb(113, 107, 123)",
+              "display": "grid"
+            }
+          ],
+          "landmarks": [
+            {
+              "className": "tadeon-desktop-toolbar hidden md:flex",
+              "text": null,
+              "rect": [
+                256,
+                0,
+                1175,
+                74.390625
+              ]
+            },
+            {
+              "className": "tadeon-mobile-header__identity flex min-w-0 items-center justify-center gap-2.5",
+              "text": null,
+              "rect": [
+                0,
+                0,
+                0,
+                0
+              ]
+            },
+            {
+              "className": "tadeon-page-hero tadeon-surface rounded-2xl px-5 py-6 md:px-8 md:py-8",
+              "text": null,
+              "rect": [
+                311.5120849609375,
+                114.77035522460938,
+                1063.9759521484375,
+                167.60897827148438
+              ]
+            },
+            {
+              "className": "font-cinzel text-3xl font-semibold md:text-4xl",
+              "text": "Consulta offline",
+              "rect": [
+                398.14013671875,
+                147.54173278808594,
+                309.9315185546875,
+                53.91986083984375
+              ]
+            }
+          ],
+          "focusStyle": [
+            "grid",
+            "39.1875px 654.953px",
+            "13.6px"
+          ],
+          "cardResponse": {
+            "lightX": "2.7%",
+            "transform": "none"
+          },
+          "preferences": {
+            "motion": true,
+            "transparency": true,
+            "contrast": true,
+            "filter": "none",
+            "popup": {
+              "animation": "none",
+              "border": "rgb(122, 129, 135)"
+            }
+          }
+        },
+        {
+          "route": "/nexus-tools",
+          "width": 1440,
+          "errors": [],
+          "interactions": [],
+          "overflow": false,
+          "mainCount": 1,
+          "titleColor": "rgb(233, 227, 213)",
+          "material": [
+            {
+              "slot": "button",
+              "background": "rgba(255, 255, 255, 0.02)",
+              "shadow": "rgba(255, 249, 232, 0.22) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.22) 0px -2px 2px 0px inset, rgba(0, 0, 0, 0.2) 0px 2px 3px 0px, rgba(0, 0, 0, 0.8) 0px 8px 18px -12px",
+              "radius": "13.6px",
+              "transform": "none",
+              "translate": "none"
+            },
+            {
+              "slot": "button",
+              "background": "rgba(0, 0, 0, 0)",
+              "shadow": "rgba(255, 249, 232, 0.22) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.22) 0px -2px 2px 0px inset, rgba(0, 0, 0, 0.2) 0px 2px 3px 0px, rgba(0, 0, 0, 0.8) 0px 8px 18px -12px",
+              "radius": "13.6px",
+              "transform": "none",
+              "translate": "none"
+            },
+            {
+              "slot": "button",
+              "background": "rgba(0, 0, 0, 0)",
+              "shadow": "rgba(255, 249, 232, 0.22) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.22) 0px -2px 2px 0px inset, rgba(0, 0, 0, 0.2) 0px 2px 3px 0px, rgba(0, 0, 0, 0.8) 0px 8px 18px -12px",
+              "radius": "13.6px",
+              "transform": "none",
+              "translate": "none"
+            },
+            {
+              "slot": "button",
+              "background": "rgba(0, 0, 0, 0)",
+              "shadow": "rgba(255, 249, 232, 0.22) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.22) 0px -2px 2px 0px inset, rgba(0, 0, 0, 0.2) 0px 2px 3px 0px, rgba(0, 0, 0, 0.8) 0px 8px 18px -12px",
+              "radius": "13.6px",
+              "transform": "none",
+              "translate": "none"
+            },
+            {
+              "slot": "button",
+              "background": "rgb(32, 38, 46)",
+              "shadow": "rgba(255, 249, 232, 0.22) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.22) 0px -2px 2px 0px inset, rgba(0, 0, 0, 0.2) 0px 2px 3px 0px, rgba(0, 0, 0, 0.8) 0px 8px 18px -12px",
+              "radius": "13.6px",
+              "transform": "none",
+              "translate": "none"
+            },
+            {
+              "slot": "button",
+              "background": "rgba(0, 0, 0, 0)",
+              "shadow": "rgba(255, 249, 232, 0.22) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.22) 0px -2px 2px 0px inset, rgba(0, 0, 0, 0.2) 0px 2px 3px 0px, rgba(0, 0, 0, 0.8) 0px 8px 18px -12px",
+              "radius": "13.6px",
+              "transform": "none",
+              "translate": "none"
+            },
+            {
+              "slot": "card",
+              "background": "rgb(19, 23, 29)",
+              "shadow": "rgba(255, 249, 232, 0.14) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.55) 0px -1px 0px 0px inset, rgba(0, 0, 0, 0.22) 0px 2px 3px 0px, rgba(0, 0, 0, 0.8) 0px 20px 44px -28px",
+              "radius": "21.6px",
+              "transform": "none",
+              "translate": "none"
+            },
+            {
+              "slot": "button",
+              "background": "rgb(32, 38, 46)",
+              "shadow": "rgba(255, 249, 232, 0.22) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.22) 0px -2px 2px 0px inset, rgba(0, 0, 0, 0.2) 0px 2px 3px 0px, rgba(0, 0, 0, 0.8) 0px 8px 18px -12px",
+              "radius": "13.6px",
+              "transform": "none",
+              "translate": "none"
+            }
+          ],
+          "hosts": [
+            {
+              "className": "tadeon-focus-section-mark-host",
+              "rect": [
+                295.03125,
+                18.6875,
+                36,
+                36
+              ],
+              "color": "rgb(217, 215, 164)",
+              "display": "grid"
+            },
+            {
+              "className": "tadeon-focus-section-mark-host",
+              "rect": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "color": "rgb(217, 215, 164)",
+              "display": "grid"
+            },
+            {
+              "className": "tadeon-page-hero-mark-host",
+              "rect": [
+                332.56085205078125,
+                141.3634033203125,
+                48.191741943359375,
+                48.191741943359375
+              ],
+              "color": "rgb(122, 129, 135)",
+              "display": "grid"
+            }
+          ],
+          "landmarks": [
+            {
+              "className": "tadeon-desktop-toolbar hidden md:flex",
+              "text": null,
+              "rect": [
+                256,
+                0,
+                1175,
+                74.390625
+              ]
+            },
+            {
+              "className": "tadeon-mobile-header__identity flex min-w-0 items-center justify-center gap-2.5",
+              "text": null,
+              "rect": [
+                0,
+                0,
+                0,
+                0
+              ]
+            },
+            {
+              "className": "tadeon-page-hero tadeon-surface rounded-2xl px-5 py-6 md:px-8 md:py-8",
+              "text": null,
+              "rect": [
+                311.4769592285156,
+                114.66342163085938,
+                1064.0462646484375,
+                209.44271850585938
+              ]
+            },
+            {
+              "className": "font-cinzel text-3xl font-semibold md:text-4xl",
+              "text": "Backup e diagnóstico",
+              "rect": [
+                398.5097961425781,
+                146.06045532226562,
+                309.1538391113281,
+                98.72982788085938
+              ]
+            }
+          ],
+          "focusStyle": [
+            "grid",
+            "39.1875px 654.953px",
+            "13.6px"
+          ],
+          "cardResponse": {
+            "lightX": "2.7%",
+            "transform": "none"
+          }
+        },
+        {
+          "route": "/manage-users",
+          "width": 1440,
+          "errors": [],
+          "interactions": [],
+          "overflow": false,
+          "mainCount": 1,
+          "titleColor": "rgb(233, 227, 213)",
+          "material": [
+            {
+              "slot": "button",
+              "background": "rgba(255, 255, 255, 0.02)",
+              "shadow": "rgba(255, 249, 232, 0.22) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.22) 0px -2px 2px 0px inset, rgba(0, 0, 0, 0.2) 0px 2px 3px 0px, rgba(0, 0, 0, 0.8) 0px 8px 18px -12px",
+              "radius": "13.6px",
+              "transform": "none",
+              "translate": "none"
+            },
+            {
+              "slot": "button",
+              "background": "rgba(0, 0, 0, 0)",
+              "shadow": "rgba(255, 249, 232, 0.22) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.22) 0px -2px 2px 0px inset, rgba(0, 0, 0, 0.2) 0px 2px 3px 0px, rgba(0, 0, 0, 0.8) 0px 8px 18px -12px",
+              "radius": "13.6px",
+              "transform": "none",
+              "translate": "none"
+            },
+            {
+              "slot": "button",
+              "background": "rgba(0, 0, 0, 0)",
+              "shadow": "rgba(255, 249, 232, 0.22) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.22) 0px -2px 2px 0px inset, rgba(0, 0, 0, 0.2) 0px 2px 3px 0px, rgba(0, 0, 0, 0.8) 0px 8px 18px -12px",
+              "radius": "13.6px",
+              "transform": "none",
+              "translate": "none"
+            },
+            {
+              "slot": "button",
+              "background": "rgba(0, 0, 0, 0)",
+              "shadow": "rgba(255, 249, 232, 0.22) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.22) 0px -2px 2px 0px inset, rgba(0, 0, 0, 0.2) 0px 2px 3px 0px, rgba(0, 0, 0, 0.8) 0px 8px 18px -12px",
+              "radius": "13.6px",
+              "transform": "none",
+              "translate": "none"
+            },
+            {
+              "slot": "button",
+              "background": "rgb(32, 38, 46)",
+              "shadow": "rgba(255, 249, 232, 0.22) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.22) 0px -2px 2px 0px inset, rgba(0, 0, 0, 0.2) 0px 2px 3px 0px, rgba(0, 0, 0, 0.8) 0px 8px 18px -12px",
+              "radius": "13.6px",
+              "transform": "none",
+              "translate": "none"
+            },
+            {
+              "slot": "button",
+              "background": "rgba(0, 0, 0, 0)",
+              "shadow": "rgba(255, 249, 232, 0.22) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.22) 0px -2px 2px 0px inset, rgba(0, 0, 0, 0.2) 0px 2px 3px 0px, rgba(0, 0, 0, 0.8) 0px 8px 18px -12px",
+              "radius": "13.6px",
+              "transform": "none",
+              "translate": "none"
+            },
+            {
+              "slot": "button",
+              "background": "rgb(32, 38, 46)",
+              "shadow": "rgba(255, 249, 232, 0.22) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.22) 0px -2px 2px 0px inset, rgba(0, 0, 0, 0.2) 0px 2px 3px 0px, rgba(0, 0, 0, 0.8) 0px 8px 18px -12px",
+              "radius": "13.6px",
+              "transform": "none",
+              "translate": "none"
+            },
+            {
+              "slot": "card",
+              "background": "rgb(19, 23, 29)",
+              "shadow": "rgba(255, 249, 232, 0.14) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.55) 0px -1px 0px 0px inset, rgba(0, 0, 0, 0.22) 0px 2px 3px 0px, rgba(0, 0, 0, 0.8) 0px 20px 44px -28px",
+              "radius": "21.6px",
+              "transform": "none",
+              "translate": "none"
+            }
+          ],
+          "hosts": [
+            {
+              "className": "tadeon-focus-section-mark-host",
+              "rect": [
+                295.03125,
+                18.6875,
+                36,
+                36
+              ],
+              "color": "rgb(183, 129, 77)",
+              "display": "grid"
+            },
+            {
+              "className": "tadeon-focus-section-mark-host",
+              "rect": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "color": "rgb(183, 129, 77)",
+              "display": "grid"
+            },
+            {
+              "className": "tadeon-page-hero-mark-host",
+              "rect": [
+                332.5705261230469,
+                141.39373779296875,
+                48.190826416015625,
+                48.190826416015625
+              ],
+              "color": "rgb(183, 129, 77)",
+              "display": "grid"
+            }
+          ],
+          "landmarks": [
+            {
+              "className": "tadeon-desktop-toolbar hidden md:flex",
+              "text": null,
+              "rect": [
+                256,
+                0,
+                1175,
+                74.390625
+              ]
+            },
+            {
+              "className": "tadeon-mobile-header__identity flex min-w-0 items-center justify-center gap-2.5",
+              "text": null,
+              "rect": [
+                0,
+                0,
+                0,
+                0
+              ]
+            },
+            {
+              "className": "tadeon-page-hero tadeon-surface rounded-2xl p-6 md:p-8",
+              "text": null,
+              "rect": [
+                311.4870300292969,
+                114.69424438476562,
+                1064.02587890625,
+                159.02035522460938
+              ]
+            },
+            {
+              "className": "mt-1 font-cinzel text-3xl font-semibold md:text-4xl",
+              "text": "Usuários",
+              "rect": [
+                482.62933349609375,
+                148.54241943359375,
+                309.5936279296875,
+                53.861083984375
+              ]
+            }
+          ],
+          "focusStyle": [
+            "grid",
+            "39.1875px 654.953px",
+            "13.6px"
+          ],
+          "cardResponse": {
+            "lightX": "2.7%",
+            "transform": "none"
+          }
+        },
+        {
+          "route": "/tabletop",
+          "width": 1440,
+          "errors": [],
+          "interactions": [],
+          "overflow": false,
+          "mainCount": 1,
+          "titleColor": "rgb(233, 227, 213)",
+          "material": [
+            {
+              "slot": "button",
+              "background": "rgba(255, 255, 255, 0.02)",
+              "shadow": "rgba(255, 249, 232, 0.22) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.22) 0px -2px 2px 0px inset, rgba(0, 0, 0, 0.2) 0px 2px 3px 0px, rgba(0, 0, 0, 0.8) 0px 8px 18px -12px",
+              "radius": "13.6px",
+              "transform": "none",
+              "translate": "none"
+            },
+            {
+              "slot": "button",
+              "background": "rgba(0, 0, 0, 0)",
+              "shadow": "rgba(255, 249, 232, 0.22) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.22) 0px -2px 2px 0px inset, rgba(0, 0, 0, 0.2) 0px 2px 3px 0px, rgba(0, 0, 0, 0.8) 0px 8px 18px -12px",
+              "radius": "13.6px",
+              "transform": "none",
+              "translate": "none"
+            },
+            {
+              "slot": "button",
+              "background": "rgba(0, 0, 0, 0)",
+              "shadow": "rgba(255, 249, 232, 0.22) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.22) 0px -2px 2px 0px inset, rgba(0, 0, 0, 0.2) 0px 2px 3px 0px, rgba(0, 0, 0, 0.8) 0px 8px 18px -12px",
+              "radius": "13.6px",
+              "transform": "none",
+              "translate": "none"
+            },
+            {
+              "slot": "button",
+              "background": "rgba(0, 0, 0, 0)",
+              "shadow": "rgba(255, 249, 232, 0.22) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.22) 0px -2px 2px 0px inset, rgba(0, 0, 0, 0.2) 0px 2px 3px 0px, rgba(0, 0, 0, 0.8) 0px 8px 18px -12px",
+              "radius": "13.6px",
+              "transform": "none",
+              "translate": "none"
+            },
+            {
+              "slot": "button",
+              "background": "rgba(0, 0, 0, 0)",
+              "shadow": "rgba(255, 249, 232, 0.22) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.22) 0px -2px 2px 0px inset, rgba(0, 0, 0, 0.2) 0px 2px 3px 0px, rgba(0, 0, 0, 0.8) 0px 8px 18px -12px",
+              "radius": "13.6px",
+              "transform": "none",
+              "translate": "none"
+            },
+            {
+              "slot": "button",
+              "background": "rgb(32, 38, 46)",
+              "shadow": "rgba(255, 249, 232, 0.22) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.22) 0px -2px 2px 0px inset, rgba(0, 0, 0, 0.2) 0px 2px 3px 0px, rgba(0, 0, 0, 0.8) 0px 8px 18px -12px",
+              "radius": "13.6px",
+              "transform": "none",
+              "translate": "none"
+            },
+            {
+              "slot": "button",
+              "background": "rgba(0, 0, 0, 0)",
+              "shadow": "rgba(255, 249, 232, 0.22) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.22) 0px -2px 2px 0px inset, rgba(0, 0, 0, 0.2) 0px 2px 3px 0px, rgba(0, 0, 0, 0.8) 0px 8px 18px -12px",
+              "radius": "13.6px",
+              "transform": "none",
+              "translate": "none"
+            },
+            {
+              "slot": "button",
+              "background": "rgb(32, 38, 46)",
+              "shadow": "rgba(255, 249, 232, 0.22) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.22) 0px -2px 2px 0px inset, rgba(0, 0, 0, 0.2) 0px 2px 3px 0px, rgba(0, 0, 0, 0.8) 0px 8px 18px -12px",
+              "radius": "13.6px",
+              "transform": "none",
+              "translate": "none"
+            }
+          ],
+          "hosts": [
+            {
+              "className": "tadeon-focus-section-mark-host",
+              "rect": [
+                295.03125,
+                18.6875,
+                36,
+                36
+              ],
+              "color": "rgb(84, 123, 148)",
+              "display": "grid"
+            },
+            {
+              "className": "tadeon-focus-section-mark-host",
+              "rect": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "color": "rgb(84, 123, 148)",
+              "display": "grid"
+            },
+            {
+              "className": "tadeon-tabletop-brand-mark-host",
+              "rect": [
+                272,
+                88.390625,
+                40,
+                40
+              ],
+              "color": "rgb(84, 123, 148)",
+              "display": "grid"
+            }
+          ],
+          "landmarks": [
+            {
+              "className": "tadeon-desktop-toolbar hidden md:flex",
+              "text": null,
+              "rect": [
+                256,
+                0,
+                1175,
+                74.390625
+              ]
+            },
+            {
+              "className": "tadeon-mobile-header__identity flex min-w-0 items-center justify-center gap-2.5",
+              "text": null,
+              "rect": [
+                0,
+                0,
+                0,
+                0
+              ]
+            },
+            {
+              "className": "truncate font-cinzel text-lg font-semibold",
+              "text": "Mesa Nexus",
+              "rect": [
+                322.390625,
+                102.390625,
+                82.0625,
+                28
+              ]
+            }
+          ],
+          "focusStyle": [
+            "grid",
+            "39.1875px 531.391px",
+            "13.6px"
+          ]
+        }
+      ],
+      "note": "Repetição após retirar a escrita de material pela classe genérica tadeon-surface em Card. A correção posterior da legenda ativa da navegação tem prova própria."
+    },
+    "sourceQuality": {
+      "status": "passed",
+      "head": "4f485074011e4a1ea451150a7611a08a2245b038",
+      "run": "https://github.com/Gabriel2069/tadeon-nexus/actions/runs/38883830326"
+    },
+    "tabletop": {
+      "status": "passed",
+      "script": "scripts/verify-tabletop-workspace.mjs",
+      "scope": "color",
+      "widths": [
+        320,
+        390,
+        820,
+        1440
+      ],
+      "states": 32,
+      "errors": 0,
+      "unexpectedWrites": 0,
+      "observations": [
+        "Escolha pelo input de cor real, gravação com chaves jsonb reordenadas, estado Salvo, recarga pelo menu Cena e cor 0x123456 no motor recarregado.",
+        "Recursos: áudio, Escape e retorno de foco; cinco áreas do editor nas quatro larguras.",
+        "A ativação nativa do controle de gravação pode ser superada pelo autosave; a prova exige persistência/recarga, sem atribuir um toast a uma gravação silenciosa.",
+        "A seleção inicial usa o motor da fixture; a cor é alterada pelo input real."
+      ],
+      "receipts": [
+        {
+          "width": 320,
+          "state": "color-round-trip",
+          "viewportWidth": 320,
+          "viewportHeight": 1000,
+          "overflow": false,
+          "stage": {
+            "x": 20.796875,
+            "y": 401.25,
+            "width": 278.40625,
+            "height": 580
+          },
+          "buttons": [
+            {
+              "label": "Salvo",
+              "disabled": true
+            },
+            {
+              "label": "Ferramentas",
+              "disabled": false
+            },
+            {
+              "label": "Abrir painel",
+              "disabled": false
+            },
+            {
+              "label": "Cena",
+              "disabled": false
+            },
+            {
+              "label": "Editar",
+              "disabled": false
+            },
+            {
+              "label": "Visão",
+              "disabled": false
+            },
+            {
+              "label": "Grade",
+              "disabled": false
+            },
+            {
+              "label": "Mesa sincronizadaSala ao vivo em canário",
+              "disabled": false
+            },
+            {
+              "label": "Selecionar",
+              "disabled": false
+            },
+            {
+              "label": "Mover câmera",
+              "disabled": false
+            },
+            {
+              "label": "Medir",
+              "disabled": false
+            },
+            {
+              "label": "Jogar",
+              "disabled": false
+            },
+            {
+              "label": "Montar",
+              "disabled": false
+            },
+            {
+              "label": "Dirigir",
+              "disabled": false
+            },
+            {
+              "label": "Editar Mesa",
+              "disabled": false
+            },
+            {
+              "label": "Abrir biblioteca criativa",
+              "disabled": false
+            },
+            {
+              "label": "Abrir comandos",
+              "disabled": false
+            },
+            {
+              "label": "Abrir Setup da Mesa",
+              "disabled": false
+            },
+            {
+              "label": "Fechar setup",
+              "disabled": false
+            },
+            {
+              "label": "2D tático",
+              "disabled": false
+            },
+            {
+              "label": "3D espacial",
+              "disabled": false
+            },
+            {
+              "label": "Noroeste",
+              "disabled": false
+            },
+            {
+              "label": "Nordeste",
+              "disabled": false
+            },
+            {
+              "label": "Sudeste",
+              "disabled": false
+            },
+            {
+              "label": "Sudoeste",
+              "disabled": false
+            },
+            {
+              "label": "Girar visão 45 graus para a esquerda",
+              "disabled": false
+            },
+            {
+              "label": "Girar visão 45 graus para a direita",
+              "disabled": false
+            },
+            {
+              "label": "Recursos da cena",
+              "disabled": false
+            },
+            {
+              "label": "3",
+              "disabled": false
+            },
+            {
+              "label": "Renomear",
+              "disabled": false
+            },
+            {
+              "label": "Fechar inspetor",
+              "disabled": false
+            },
+            {
+              "label": "Tudo",
+              "disabled": false
+            },
+            {
+              "label": "Entidades 3",
+              "disabled": false
+            },
+            {
+              "label": "Arquitetura 0",
+              "disabled": false
+            },
+            {
+              "label": "Luzes 0",
+              "disabled": false
+            },
+            {
+              "label": "Névoa 0",
+              "disabled": false
+            },
+            {
+              "label": "PedestalObjeto · Térreo",
+              "disabled": false
+            },
+            {
+              "label": "Porta ocultaObjeto · Térreo",
+              "disabled": false
+            },
+            {
+              "label": "AriadneToken · Térreo",
+              "disabled": false
+            },
+            {
+              "label": "Agora",
+              "disabled": false
+            },
+            {
+              "label": "Desenho livre persistente (D)",
+              "disabled": false
+            },
+            {
+              "label": "Construir paredes e aberturas (B)",
+              "disabled": false
+            },
+            {
+              "label": "Posicionar luz e arrastar o alcance (L)",
+              "disabled": false
+            },
+            {
+              "label": "Pincel para revelar névoa (F)",
+              "disabled": false
+            },
+            {
+              "label": "Pincel para cobrir novamente com névoa",
+              "disabled": false
+            },
+            {
+              "label": "Selecionar todas as entidades editáveis",
+              "disabled": false
+            },
+            {
+              "label": "Adicionar token",
+              "disabled": false
+            },
+            {
+              "label": "Adicionar objeto",
+              "disabled": false
+            },
+            {
+              "label": "Abrir biblioteca",
+              "disabled": false
+            },
+            {
+              "label": "Ajustar à tela",
+              "disabled": false
+            },
+            {
+              "label": "Abrir visão espacial 3D",
+              "disabled": false
+            },
+            {
+              "label": "Abrir controles de espaço, luz e névoa",
+              "disabled": false
+            },
+            {
+              "label": "Enquadrar seleção",
+              "disabled": true
+            },
+            {
+              "label": "Reduzir zoom",
+              "disabled": false
+            },
+            {
+              "label": "Ampliar zoom",
+              "disabled": false
+            }
+          ],
+          "pixelMetrics": {
+            "cssWidth": 260.03125,
+            "cssHeight": 494.421875,
+            "logicalWidth": 260,
+            "logicalHeight": 494,
+            "dpr": 1
+          },
+          "errors": [],
+          "writes": [],
+          "operations": [
+            {
+              "kind": "scene-save",
+              "version": 1,
+              "entities": [
+                {
+                  "id": "00000000-0000-4000-8000-000000000150",
+                  "layer_id": "00000000-0000-4000-8000-000000000132",
+                  "entity_type": "token",
+                  "name": "Ariadne",
+                  "linked_sheet_id": null,
+                  "linked_knowledge_node_id": null,
+                  "asset_id": null,
+                  "x": 640,
+                  "y": 600,
+                  "width": 80,
+                  "height": 80,
+                  "rotation": 0,
+                  "elevation": 0,
+                  "level_id": "00000000-0000-4000-8000-000000000140",
+                  "z_index": 0,
+                  "hidden": false,
+                  "locked": false,
+                  "owner_user_id": "00000000-0000-4000-8000-000000000001",
+                  "properties": {
+                    "color": 9253202,
+                    "base_color": 1193046
+                  },
+                  "version": 1
+                },
+                {
+                  "id": "00000000-0000-4000-8000-000000000151",
+                  "layer_id": "00000000-0000-4000-8000-000000000131",
+                  "entity_type": "object",
+                  "name": "Pedestal",
+                  "linked_sheet_id": null,
+                  "linked_knowledge_node_id": null,
+                  "asset_id": null,
+                  "x": 850,
+                  "y": 600,
+                  "width": 80,
+                  "height": 80,
+                  "rotation": 0,
+                  "elevation": 0,
+                  "level_id": "00000000-0000-4000-8000-000000000140",
+                  "z_index": 1,
+                  "hidden": false,
+                  "locked": false,
+                  "owner_user_id": "00000000-0000-4000-8000-000000000001",
+                  "properties": {
+                    "color": 5536660,
+                    "base_color": 3431791
+                  },
+                  "version": 1
+                },
+                {
+                  "id": "00000000-0000-4000-8000-000000000152",
+                  "layer_id": "00000000-0000-4000-8000-000000000131",
+                  "entity_type": "object",
+                  "name": "Porta oculta",
+                  "linked_sheet_id": null,
+                  "linked_knowledge_node_id": null,
+                  "asset_id": null,
+                  "x": 1060,
+                  "y": 600,
+                  "width": 80,
+                  "height": 80,
+                  "rotation": 0,
+                  "elevation": 0,
+                  "level_id": "00000000-0000-4000-8000-000000000140",
+                  "z_index": 2,
+                  "hidden": true,
+                  "locked": false,
+                  "owner_user_id": "00000000-0000-4000-8000-000000000001",
+                  "properties": {
+                    "color": 5536660,
+                    "base_color": 3431791
+                  },
+                  "version": 1
+                }
+              ]
+            },
+            {
+              "kind": "save-control-activation",
+              "activated": false,
+              "label": "Salvando"
+            }
+          ]
+        },
+        {
+          "width": 390,
+          "state": "color-round-trip",
+          "viewportWidth": 390,
+          "viewportHeight": 1000,
+          "overflow": false,
+          "stage": {
+            "x": 20.796875,
+            "y": 401.25,
+            "width": 339.40625,
+            "height": 580
+          },
+          "buttons": [
+            {
+              "label": "Salvo",
+              "disabled": true
+            },
+            {
+              "label": "Ferramentas",
+              "disabled": false
+            },
+            {
+              "label": "Abrir painel",
+              "disabled": false
+            },
+            {
+              "label": "Cena",
+              "disabled": false
+            },
+            {
+              "label": "Editar",
+              "disabled": false
+            },
+            {
+              "label": "Visão",
+              "disabled": false
+            },
+            {
+              "label": "Grade",
+              "disabled": false
+            },
+            {
+              "label": "Mesa sincronizadaSala ao vivo em canário",
+              "disabled": false
+            },
+            {
+              "label": "Selecionar",
+              "disabled": false
+            },
+            {
+              "label": "Mover câmera",
+              "disabled": false
+            },
+            {
+              "label": "Medir",
+              "disabled": false
+            },
+            {
+              "label": "Jogar",
+              "disabled": false
+            },
+            {
+              "label": "Montar",
+              "disabled": false
+            },
+            {
+              "label": "Dirigir",
+              "disabled": false
+            },
+            {
+              "label": "Editar Mesa",
+              "disabled": false
+            },
+            {
+              "label": "Abrir biblioteca criativa",
+              "disabled": false
+            },
+            {
+              "label": "Abrir comandos",
+              "disabled": false
+            },
+            {
+              "label": "Abrir Setup da Mesa",
+              "disabled": false
+            },
+            {
+              "label": "Fechar setup",
+              "disabled": false
+            },
+            {
+              "label": "2D tático",
+              "disabled": false
+            },
+            {
+              "label": "3D espacial",
+              "disabled": false
+            },
+            {
+              "label": "Noroeste",
+              "disabled": false
+            },
+            {
+              "label": "Nordeste",
+              "disabled": false
+            },
+            {
+              "label": "Sudeste",
+              "disabled": false
+            },
+            {
+              "label": "Sudoeste",
+              "disabled": false
+            },
+            {
+              "label": "Girar visão 45 graus para a esquerda",
+              "disabled": false
+            },
+            {
+              "label": "Girar visão 45 graus para a direita",
+              "disabled": false
+            },
+            {
+              "label": "Recursos da cena",
+              "disabled": false
+            },
+            {
+              "label": "3",
+              "disabled": false
+            },
+            {
+              "label": "Renomear",
+              "disabled": false
+            },
+            {
+              "label": "Fechar inspetor",
+              "disabled": false
+            },
+            {
+              "label": "Tudo",
+              "disabled": false
+            },
+            {
+              "label": "Entidades 3",
+              "disabled": false
+            },
+            {
+              "label": "Arquitetura 0",
+              "disabled": false
+            },
+            {
+              "label": "Luzes 0",
+              "disabled": false
+            },
+            {
+              "label": "Névoa 0",
+              "disabled": false
+            },
+            {
+              "label": "PedestalObjeto · Térreo",
+              "disabled": false
+            },
+            {
+              "label": "Porta ocultaObjeto · Térreo",
+              "disabled": false
+            },
+            {
+              "label": "AriadneToken · Térreo",
+              "disabled": false
+            },
+            {
+              "label": "Agora",
+              "disabled": false
+            },
+            {
+              "label": "Desenho livre persistente (D)",
+              "disabled": false
+            },
+            {
+              "label": "Construir paredes e aberturas (B)",
+              "disabled": false
+            },
+            {
+              "label": "Posicionar luz e arrastar o alcance (L)",
+              "disabled": false
+            },
+            {
+              "label": "Pincel para revelar névoa (F)",
+              "disabled": false
+            },
+            {
+              "label": "Pincel para cobrir novamente com névoa",
+              "disabled": false
+            },
+            {
+              "label": "Selecionar todas as entidades editáveis",
+              "disabled": false
+            },
+            {
+              "label": "Adicionar token",
+              "disabled": false
+            },
+            {
+              "label": "Adicionar objeto",
+              "disabled": false
+            },
+            {
+              "label": "Abrir biblioteca",
+              "disabled": false
+            },
+            {
+              "label": "Ajustar à tela",
+              "disabled": false
+            },
+            {
+              "label": "Abrir visão espacial 3D",
+              "disabled": false
+            },
+            {
+              "label": "Abrir controles de espaço, luz e névoa",
+              "disabled": false
+            },
+            {
+              "label": "Enquadrar seleção",
+              "disabled": true
+            },
+            {
+              "label": "Reduzir zoom",
+              "disabled": false
+            },
+            {
+              "label": "Ampliar zoom",
+              "disabled": false
+            }
+          ],
+          "pixelMetrics": {
+            "cssWidth": 321.03125,
+            "cssHeight": 494.421875,
+            "logicalWidth": 321,
+            "logicalHeight": 494,
+            "dpr": 1
+          },
+          "errors": [],
+          "writes": [],
+          "operations": [
+            {
+              "kind": "scene-save",
+              "version": 1,
+              "entities": [
+                {
+                  "id": "00000000-0000-4000-8000-000000000150",
+                  "layer_id": "00000000-0000-4000-8000-000000000132",
+                  "entity_type": "token",
+                  "name": "Ariadne",
+                  "linked_sheet_id": null,
+                  "linked_knowledge_node_id": null,
+                  "asset_id": null,
+                  "x": 640,
+                  "y": 600,
+                  "width": 80,
+                  "height": 80,
+                  "rotation": 0,
+                  "elevation": 0,
+                  "level_id": "00000000-0000-4000-8000-000000000140",
+                  "z_index": 0,
+                  "hidden": false,
+                  "locked": false,
+                  "owner_user_id": "00000000-0000-4000-8000-000000000001",
+                  "properties": {
+                    "color": 9253202,
+                    "base_color": 1193046
+                  },
+                  "version": 1
+                },
+                {
+                  "id": "00000000-0000-4000-8000-000000000151",
+                  "layer_id": "00000000-0000-4000-8000-000000000131",
+                  "entity_type": "object",
+                  "name": "Pedestal",
+                  "linked_sheet_id": null,
+                  "linked_knowledge_node_id": null,
+                  "asset_id": null,
+                  "x": 850,
+                  "y": 600,
+                  "width": 80,
+                  "height": 80,
+                  "rotation": 0,
+                  "elevation": 0,
+                  "level_id": "00000000-0000-4000-8000-000000000140",
+                  "z_index": 1,
+                  "hidden": false,
+                  "locked": false,
+                  "owner_user_id": "00000000-0000-4000-8000-000000000001",
+                  "properties": {
+                    "color": 5536660,
+                    "base_color": 3431791
+                  },
+                  "version": 1
+                },
+                {
+                  "id": "00000000-0000-4000-8000-000000000152",
+                  "layer_id": "00000000-0000-4000-8000-000000000131",
+                  "entity_type": "object",
+                  "name": "Porta oculta",
+                  "linked_sheet_id": null,
+                  "linked_knowledge_node_id": null,
+                  "asset_id": null,
+                  "x": 1060,
+                  "y": 600,
+                  "width": 80,
+                  "height": 80,
+                  "rotation": 0,
+                  "elevation": 0,
+                  "level_id": "00000000-0000-4000-8000-000000000140",
+                  "z_index": 2,
+                  "hidden": true,
+                  "locked": false,
+                  "owner_user_id": "00000000-0000-4000-8000-000000000001",
+                  "properties": {
+                    "color": 5536660,
+                    "base_color": 3431791
+                  },
+                  "version": 1
+                }
+              ]
+            },
+            {
+              "kind": "save-control-activation",
+              "activated": false,
+              "label": "Salvo"
+            }
+          ]
+        },
+        {
+          "width": 820,
+          "state": "color-round-trip",
+          "viewportWidth": 820,
+          "viewportHeight": 1000,
+          "overflow": false,
+          "stage": {
+            "x": 240.796875,
+            "y": 319.640625,
+            "width": 549.40625,
+            "height": 720
+          },
+          "buttons": [
+            {
+              "label": "Salvo",
+              "disabled": true
+            },
+            {
+              "label": "Abrir painel",
+              "disabled": false
+            },
+            {
+              "label": "Cena",
+              "disabled": false
+            },
+            {
+              "label": "Editar",
+              "disabled": false
+            },
+            {
+              "label": "Visão",
+              "disabled": false
+            },
+            {
+              "label": "Grade",
+              "disabled": false
+            },
+            {
+              "label": "Mesa sincronizadaSala ao vivo em canário",
+              "disabled": false
+            },
+            {
+              "label": "Selecionar",
+              "disabled": false
+            },
+            {
+              "label": "Mover câmera",
+              "disabled": false
+            },
+            {
+              "label": "Medir",
+              "disabled": false
+            },
+            {
+              "label": "Jogar",
+              "disabled": false
+            },
+            {
+              "label": "Montar",
+              "disabled": false
+            },
+            {
+              "label": "Dirigir",
+              "disabled": false
+            },
+            {
+              "label": "Editar Mesa",
+              "disabled": false
+            },
+            {
+              "label": "Abrir biblioteca criativa",
+              "disabled": false
+            },
+            {
+              "label": "Abrir comandos",
+              "disabled": false
+            },
+            {
+              "label": "Minimizar status de autosave, áudio e editor",
+              "disabled": false
+            },
+            {
+              "label": "Abrir Setup da Mesa",
+              "disabled": false
+            },
+            {
+              "label": "Fechar setup",
+              "disabled": false
+            },
+            {
+              "label": "2D tático",
+              "disabled": false
+            },
+            {
+              "label": "3D espacial",
+              "disabled": false
+            },
+            {
+              "label": "Noroeste",
+              "disabled": false
+            },
+            {
+              "label": "Nordeste",
+              "disabled": false
+            },
+            {
+              "label": "Sudeste",
+              "disabled": false
+            },
+            {
+              "label": "Sudoeste",
+              "disabled": false
+            },
+            {
+              "label": "Girar visão 45 graus para a esquerda",
+              "disabled": false
+            },
+            {
+              "label": "Girar visão 45 graus para a direita",
+              "disabled": false
+            },
+            {
+              "label": "Recursos da cena",
+              "disabled": false
+            },
+            {
+              "label": "3",
+              "disabled": false
+            },
+            {
+              "label": "Renomear",
+              "disabled": false
+            },
+            {
+              "label": "Fechar inspetor",
+              "disabled": false
+            },
+            {
+              "label": "Tudo",
+              "disabled": false
+            },
+            {
+              "label": "Entidades 3",
+              "disabled": false
+            },
+            {
+              "label": "Arquitetura 0",
+              "disabled": false
+            },
+            {
+              "label": "Luzes 0",
+              "disabled": false
+            },
+            {
+              "label": "Névoa 0",
+              "disabled": false
+            },
+            {
+              "label": "PedestalObjeto · Térreo",
+              "disabled": false
+            },
+            {
+              "label": "Porta ocultaObjeto · Térreo",
+              "disabled": false
+            },
+            {
+              "label": "AriadneToken · Térreo",
+              "disabled": false
+            },
+            {
+              "label": "Agora",
+              "disabled": false
+            },
+            {
+              "label": "Desenho livre persistente (D)",
+              "disabled": false
+            },
+            {
+              "label": "Construir paredes e aberturas (B)",
+              "disabled": false
+            },
+            {
+              "label": "Posicionar luz e arrastar o alcance (L)",
+              "disabled": false
+            },
+            {
+              "label": "Pincel para revelar névoa (F)",
+              "disabled": false
+            },
+            {
+              "label": "Pincel para cobrir novamente com névoa",
+              "disabled": false
+            },
+            {
+              "label": "Selecionar todas as entidades editáveis",
+              "disabled": false
+            },
+            {
+              "label": "Adicionar token",
+              "disabled": false
+            },
+            {
+              "label": "Adicionar objeto",
+              "disabled": false
+            },
+            {
+              "label": "Abrir biblioteca",
+              "disabled": false
+            },
+            {
+              "label": "Ajustar à tela",
+              "disabled": false
+            },
+            {
+              "label": "Abrir visão espacial 3D",
+              "disabled": false
+            },
+            {
+              "label": "Abrir controles de espaço, luz e névoa",
+              "disabled": false
+            },
+            {
+              "label": "Enquadrar seleção",
+              "disabled": true
+            },
+            {
+              "label": "Reduzir zoom",
+              "disabled": false
+            },
+            {
+              "label": "Ampliar zoom",
+              "disabled": false
+            }
+          ],
+          "pixelMetrics": {
+            "cssWidth": 531.03125,
+            "cssHeight": 634.421875,
+            "logicalWidth": 531,
+            "logicalHeight": 634,
+            "dpr": 1
+          },
+          "errors": [],
+          "writes": [],
+          "operations": [
+            {
+              "kind": "scene-save",
+              "version": 1,
+              "entities": [
+                {
+                  "id": "00000000-0000-4000-8000-000000000150",
+                  "layer_id": "00000000-0000-4000-8000-000000000132",
+                  "entity_type": "token",
+                  "name": "Ariadne",
+                  "linked_sheet_id": null,
+                  "linked_knowledge_node_id": null,
+                  "asset_id": null,
+                  "x": 640,
+                  "y": 600,
+                  "width": 80,
+                  "height": 80,
+                  "rotation": 0,
+                  "elevation": 0,
+                  "level_id": "00000000-0000-4000-8000-000000000140",
+                  "z_index": 0,
+                  "hidden": false,
+                  "locked": false,
+                  "owner_user_id": "00000000-0000-4000-8000-000000000001",
+                  "properties": {
+                    "color": 9253202,
+                    "base_color": 1193046
+                  },
+                  "version": 1
+                },
+                {
+                  "id": "00000000-0000-4000-8000-000000000151",
+                  "layer_id": "00000000-0000-4000-8000-000000000131",
+                  "entity_type": "object",
+                  "name": "Pedestal",
+                  "linked_sheet_id": null,
+                  "linked_knowledge_node_id": null,
+                  "asset_id": null,
+                  "x": 850,
+                  "y": 600,
+                  "width": 80,
+                  "height": 80,
+                  "rotation": 0,
+                  "elevation": 0,
+                  "level_id": "00000000-0000-4000-8000-000000000140",
+                  "z_index": 1,
+                  "hidden": false,
+                  "locked": false,
+                  "owner_user_id": "00000000-0000-4000-8000-000000000001",
+                  "properties": {
+                    "color": 5536660,
+                    "base_color": 3431791
+                  },
+                  "version": 1
+                },
+                {
+                  "id": "00000000-0000-4000-8000-000000000152",
+                  "layer_id": "00000000-0000-4000-8000-000000000131",
+                  "entity_type": "object",
+                  "name": "Porta oculta",
+                  "linked_sheet_id": null,
+                  "linked_knowledge_node_id": null,
+                  "asset_id": null,
+                  "x": 1060,
+                  "y": 600,
+                  "width": 80,
+                  "height": 80,
+                  "rotation": 0,
+                  "elevation": 0,
+                  "level_id": "00000000-0000-4000-8000-000000000140",
+                  "z_index": 2,
+                  "hidden": true,
+                  "locked": false,
+                  "owner_user_id": "00000000-0000-4000-8000-000000000001",
+                  "properties": {
+                    "color": 5536660,
+                    "base_color": 3431791
+                  },
+                  "version": 1
+                }
+              ]
+            },
+            {
+              "kind": "save-control-activation",
+              "activated": false,
+              "label": "Salvando"
+            }
+          ]
+        },
+        {
+          "width": 1440,
+          "state": "color-round-trip",
+          "viewportWidth": 1440,
+          "viewportHeight": 1000,
+          "overflow": false,
+          "stage": {
+            "x": 276.796875,
+            "y": 316.828125,
+            "width": 753.40625,
+            "height": 720
+          },
+          "buttons": [
+            {
+              "label": "Montar",
+              "disabled": false
+            },
+            {
+              "label": "Ambiente",
+              "disabled": false
+            },
+            {
+              "label": "Dirigir",
+              "disabled": false
+            },
+            {
+              "label": "Cena",
+              "disabled": false
+            },
+            {
+              "label": "Salvo",
+              "disabled": true
+            },
+            {
+              "label": "Cena",
+              "disabled": false
+            },
+            {
+              "label": "Editar",
+              "disabled": false
+            },
+            {
+              "label": "Visão",
+              "disabled": false
+            },
+            {
+              "label": "Grade",
+              "disabled": false
+            },
+            {
+              "label": "Mesa sincronizadaSala ao vivo em canário",
+              "disabled": false
+            },
+            {
+              "label": "Selecionar",
+              "disabled": false
+            },
+            {
+              "label": "Mover câmera",
+              "disabled": false
+            },
+            {
+              "label": "Medir",
+              "disabled": false
+            },
+            {
+              "label": "Jogar",
+              "disabled": false
+            },
+            {
+              "label": "Montar",
+              "disabled": false
+            },
+            {
+              "label": "Dirigir",
+              "disabled": false
+            },
+            {
+              "label": "Editar Mesa",
+              "disabled": false
+            },
+            {
+              "label": "Abrir biblioteca criativa",
+              "disabled": false
+            },
+            {
+              "label": "Abrir comandos",
+              "disabled": false
+            },
+            {
+              "label": "Minimizar status de autosave, áudio e editor",
+              "disabled": false
+            },
+            {
+              "label": "Abrir Setup da Mesa",
+              "disabled": false
+            },
+            {
+              "label": "Fechar setup",
+              "disabled": false
+            },
+            {
+              "label": "2D tático",
+              "disabled": false
+            },
+            {
+              "label": "3D espacial",
+              "disabled": false
+            },
+            {
+              "label": "Noroeste",
+              "disabled": false
+            },
+            {
+              "label": "Nordeste",
+              "disabled": false
+            },
+            {
+              "label": "Sudeste",
+              "disabled": false
+            },
+            {
+              "label": "Sudoeste",
+              "disabled": false
+            },
+            {
+              "label": "Girar visão 45 graus para a esquerda",
+              "disabled": false
+            },
+            {
+              "label": "Girar visão 45 graus para a direita",
+              "disabled": false
+            },
+            {
+              "label": "Recursos da cena",
+              "disabled": false
+            },
+            {
+              "label": "3",
+              "disabled": false
+            },
+            {
+              "label": "Renomear",
+              "disabled": false
+            },
+            {
+              "label": "Fechar inspetor",
+              "disabled": false
+            },
+            {
+              "label": "Tudo",
+              "disabled": false
+            },
+            {
+              "label": "Entidades 3",
+              "disabled": false
+            },
+            {
+              "label": "Arquitetura 0",
+              "disabled": false
+            },
+            {
+              "label": "Luzes 0",
+              "disabled": false
+            },
+            {
+              "label": "Névoa 0",
+              "disabled": false
+            },
+            {
+              "label": "PedestalObjeto · Térreo",
+              "disabled": false
+            },
+            {
+              "label": "Porta ocultaObjeto · Térreo",
+              "disabled": false
+            },
+            {
+              "label": "AriadneToken · Térreo",
+              "disabled": false
+            },
+            {
+              "label": "Agora",
+              "disabled": false
+            },
+            {
+              "label": "Desenho livre persistente (D)",
+              "disabled": false
+            },
+            {
+              "label": "Construir paredes e aberturas (B)",
+              "disabled": false
+            },
+            {
+              "label": "Posicionar luz e arrastar o alcance (L)",
+              "disabled": false
+            },
+            {
+              "label": "Pincel para revelar névoa (F)",
+              "disabled": false
+            },
+            {
+              "label": "Pincel para cobrir novamente com névoa",
+              "disabled": false
+            },
+            {
+              "label": "Selecionar todas as entidades editáveis",
+              "disabled": false
+            },
+            {
+              "label": "Adicionar token",
+              "disabled": false
+            },
+            {
+              "label": "Adicionar objeto",
+              "disabled": false
+            },
+            {
+              "label": "Abrir biblioteca",
+              "disabled": false
+            },
+            {
+              "label": "Ajustar à tela",
+              "disabled": false
+            },
+            {
+              "label": "Abrir visão espacial 3D",
+              "disabled": false
+            },
+            {
+              "label": "Abrir controles de espaço, luz e névoa",
+              "disabled": false
+            },
+            {
+              "label": "Enquadrar seleção",
+              "disabled": true
+            },
+            {
+              "label": "Reduzir zoom",
+              "disabled": false
+            },
+            {
+              "label": "Ampliar zoom",
+              "disabled": false
+            },
+            {
+              "label": "Recolher painel contextual",
+              "disabled": false
+            },
+            {
+              "label": "Biblioteca e montagem",
+              "disabled": false
+            },
+            {
+              "label": "Ambiente",
+              "disabled": false
+            },
+            {
+              "label": "Mestre ~ 1 itens reservados",
+              "disabled": false
+            },
+            {
+              "label": "Configuração da cena",
+              "disabled": false
+            },
+            {
+              "label": "Editar ~ 0 itens selecionados",
+              "disabled": false
+            },
+            {
+              "label": "Selecionar tudo",
+              "disabled": false
+            }
+          ],
+          "pixelMetrics": {
+            "cssWidth": 1107.8125,
+            "cssHeight": 630.8125,
+            "logicalWidth": 1108,
+            "logicalHeight": 631,
+            "dpr": 1
+          },
+          "errors": [],
+          "writes": [],
+          "operations": [
+            {
+              "kind": "save-control-activation",
+              "activated": true
+            },
+            {
+              "kind": "scene-save",
+              "version": 1,
+              "entities": [
+                {
+                  "id": "00000000-0000-4000-8000-000000000150",
+                  "layer_id": "00000000-0000-4000-8000-000000000132",
+                  "entity_type": "token",
+                  "name": "Ariadne",
+                  "linked_sheet_id": null,
+                  "linked_knowledge_node_id": null,
+                  "asset_id": null,
+                  "x": 640,
+                  "y": 600,
+                  "width": 80,
+                  "height": 80,
+                  "rotation": 0,
+                  "elevation": 0,
+                  "level_id": "00000000-0000-4000-8000-000000000140",
+                  "z_index": 0,
+                  "hidden": false,
+                  "locked": false,
+                  "owner_user_id": "00000000-0000-4000-8000-000000000001",
+                  "properties": {
+                    "color": 9253202,
+                    "base_color": 1193046
+                  },
+                  "version": 1
+                },
+                {
+                  "id": "00000000-0000-4000-8000-000000000151",
+                  "layer_id": "00000000-0000-4000-8000-000000000131",
+                  "entity_type": "object",
+                  "name": "Pedestal",
+                  "linked_sheet_id": null,
+                  "linked_knowledge_node_id": null,
+                  "asset_id": null,
+                  "x": 850,
+                  "y": 600,
+                  "width": 80,
+                  "height": 80,
+                  "rotation": 0,
+                  "elevation": 0,
+                  "level_id": "00000000-0000-4000-8000-000000000140",
+                  "z_index": 1,
+                  "hidden": false,
+                  "locked": false,
+                  "owner_user_id": "00000000-0000-4000-8000-000000000001",
+                  "properties": {
+                    "color": 5536660,
+                    "base_color": 3431791
+                  },
+                  "version": 1
+                },
+                {
+                  "id": "00000000-0000-4000-8000-000000000152",
+                  "layer_id": "00000000-0000-4000-8000-000000000131",
+                  "entity_type": "object",
+                  "name": "Porta oculta",
+                  "linked_sheet_id": null,
+                  "linked_knowledge_node_id": null,
+                  "asset_id": null,
+                  "x": 1060,
+                  "y": 600,
+                  "width": 80,
+                  "height": 80,
+                  "rotation": 0,
+                  "elevation": 0,
+                  "level_id": "00000000-0000-4000-8000-000000000140",
+                  "z_index": 2,
+                  "hidden": true,
+                  "locked": false,
+                  "owner_user_id": "00000000-0000-4000-8000-000000000001",
+                  "properties": {
+                    "color": 5536660,
+                    "base_color": 3431791
+                  },
+                  "version": 1
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "sourceCommit": "22db0692ffef80c65118f934f09637c178cd5163"
+    },
+    "styles": {
+      "modules": 57,
+      "globalLinks": 12,
+      "importantBefore": 4480,
+      "importantAfter": 4470,
+      "newDependencies": 0,
+      "newGlobalObservers": 0,
+      "newStyleModules": 0
+    },
+    "sheet": {
+      "status": "passed",
+      "sourceCommit": "22db0692ffef80c65118f934f09637c178cd5163",
+      "script": "scripts/verify-sheet-design.mjs",
+      "widths": [
+        320,
+        390,
+        820,
+        1440
+      ],
+      "states": [
+        "editable",
+        "readonly"
+      ],
+      "cases": [
+        {
+          "width": 320,
+          "state": "editable",
+          "metrics": {
+            "overflow": false,
+            "sections": 12,
+            "materials": 12,
+            "metricFont": "Inter, system-ui, sans-serif",
+            "metricFigures": "lining-nums tabular-nums",
+            "headingFont": "\"Cormorant Garamond\", Georgia, serif",
+            "sectionTransform": "none",
+            "attributeControls": [
+              {
+                "fits": true,
+                "targets": [
+                  {
+                    "w": 44,
+                    "h": 44,
+                    "fits": true
+                  },
+                  {
+                    "w": 44,
+                    "h": 44,
+                    "fits": true
+                  }
+                ]
+              },
+              {
+                "fits": true,
+                "targets": [
+                  {
+                    "w": 44,
+                    "h": 44,
+                    "fits": true
+                  },
+                  {
+                    "w": 44,
+                    "h": 44,
+                    "fits": true
+                  }
+                ]
+              },
+              {
+                "fits": true,
+                "targets": [
+                  {
+                    "w": 44,
+                    "h": 44,
+                    "fits": true
+                  },
+                  {
+                    "w": 44,
+                    "h": 44,
+                    "fits": true
+                  }
+                ]
+              },
+              {
+                "fits": true,
+                "targets": [
+                  {
+                    "w": 44,
+                    "h": 44,
+                    "fits": true
+                  },
+                  {
+                    "w": 44,
+                    "h": 44,
+                    "fits": true
+                  }
+                ]
+              },
+              {
+                "fits": true,
+                "targets": [
+                  {
+                    "w": 44,
+                    "h": 44,
+                    "fits": true
+                  },
+                  {
+                    "w": 44,
+                    "h": 44,
+                    "fits": true
+                  }
+                ]
+              }
+            ],
+            "targets": [
+              {
+                "w": 44,
+                "h": 44
+              },
+              {
+                "w": 44,
+                "h": 44
+              },
+              {
+                "w": 44,
+                "h": 44
+              },
+              {
+                "w": 44,
+                "h": 44
+              },
+              {
+                "w": 44,
+                "h": 44
+              },
+              {
+                "w": 44,
+                "h": 44
+              },
+              {
+                "w": 44,
+                "h": 44
+              },
+              {
+                "w": 44,
+                "h": 44
+              },
+              {
+                "w": 44,
+                "h": 44
+              },
+              {
+                "w": 44,
+                "h": 44
+              },
+              {
+                "w": 44,
+                "h": 44
+              },
+              {
+                "w": 44,
+                "h": 44
+              }
+            ]
+          },
+          "writes": 4,
+          "historyFocus": true,
+          "inventoryFocus": true,
+          "retry": true,
+          "errors": []
+        },
+        {
+          "width": 320,
+          "state": "readonly",
+          "metrics": {
+            "overflow": false,
+            "sections": 12,
+            "materials": 12,
+            "metricFont": "Inter, system-ui, sans-serif",
+            "metricFigures": "lining-nums tabular-nums",
+            "headingFont": "\"Cormorant Garamond\", Georgia, serif",
+            "sectionTransform": "none",
+            "attributeControls": [
+              {
+                "fits": true,
+                "targets": [
+                  {
+                    "w": 44,
+                    "h": 44,
+                    "fits": true
+                  },
+                  {
+                    "w": 44,
+                    "h": 44,
+                    "fits": true
+                  }
+                ]
+              },
+              {
+                "fits": true,
+                "targets": [
+                  {
+                    "w": 44,
+                    "h": 44,
+                    "fits": true
+                  },
+                  {
+                    "w": 44,
+                    "h": 44,
+                    "fits": true
+                  }
+                ]
+              },
+              {
+                "fits": true,
+                "targets": [
+                  {
+                    "w": 44,
+                    "h": 44,
+                    "fits": true
+                  },
+                  {
+                    "w": 44,
+                    "h": 44,
+                    "fits": true
+                  }
+                ]
+              },
+              {
+                "fits": true,
+                "targets": [
+                  {
+                    "w": 44,
+                    "h": 44,
+                    "fits": true
+                  },
+                  {
+                    "w": 44,
+                    "h": 44,
+                    "fits": true
+                  }
+                ]
+              },
+              {
+                "fits": true,
+                "targets": [
+                  {
+                    "w": 44,
+                    "h": 44,
+                    "fits": true
+                  },
+                  {
+                    "w": 44,
+                    "h": 44,
+                    "fits": true
+                  }
+                ]
+              }
+            ],
+            "targets": [
+              {
+                "w": 44,
+                "h": 44
+              },
+              {
+                "w": 44,
+                "h": 44
+              },
+              {
+                "w": 44,
+                "h": 44
+              },
+              {
+                "w": 44,
+                "h": 44
+              },
+              {
+                "w": 44,
+                "h": 44
+              },
+              {
+                "w": 44,
+                "h": 44
+              },
+              {
+                "w": 44,
+                "h": 44
+              },
+              {
+                "w": 44,
+                "h": 44
+              },
+              {
+                "w": 44,
+                "h": 44
+              },
+              {
+                "w": 44,
+                "h": 44
+              },
+              {
+                "w": 44,
+                "h": 44
+              },
+              {
+                "w": 44,
+                "h": 44
+              }
+            ]
+          },
+          "writes": 0,
+          "historyFocus": true,
+          "inventoryFocus": true,
+          "retry": false,
+          "errors": []
+        },
+        {
+          "width": 390,
+          "state": "editable",
+          "metrics": {
+            "overflow": false,
+            "sections": 12,
+            "materials": 12,
+            "metricFont": "Inter, system-ui, sans-serif",
+            "metricFigures": "lining-nums tabular-nums",
+            "headingFont": "\"Cormorant Garamond\", Georgia, serif",
+            "sectionTransform": "none",
+            "attributeControls": [
+              {
+                "fits": true,
+                "targets": [
+                  {
+                    "w": 44,
+                    "h": 44,
+                    "fits": true
+                  },
+                  {
+                    "w": 44,
+                    "h": 44,
+                    "fits": true
+                  }
+                ]
+              },
+              {
+                "fits": true,
+                "targets": [
+                  {
+                    "w": 44,
+                    "h": 44,
+                    "fits": true
+                  },
+                  {
+                    "w": 44,
+                    "h": 44,
+                    "fits": true
+                  }
+                ]
+              },
+              {
+                "fits": true,
+                "targets": [
+                  {
+                    "w": 44,
+                    "h": 44,
+                    "fits": true
+                  },
+                  {
+                    "w": 44,
+                    "h": 44,
+                    "fits": true
+                  }
+                ]
+              },
+              {
+                "fits": true,
+                "targets": [
+                  {
+                    "w": 44,
+                    "h": 44,
+                    "fits": true
+                  },
+                  {
+                    "w": 44,
+                    "h": 44,
+                    "fits": true
+                  }
+                ]
+              },
+              {
+                "fits": true,
+                "targets": [
+                  {
+                    "w": 44,
+                    "h": 44,
+                    "fits": true
+                  },
+                  {
+                    "w": 44,
+                    "h": 44,
+                    "fits": true
+                  }
+                ]
+              }
+            ],
+            "targets": [
+              {
+                "w": 44,
+                "h": 44
+              },
+              {
+                "w": 44,
+                "h": 44
+              },
+              {
+                "w": 44,
+                "h": 44
+              },
+              {
+                "w": 44,
+                "h": 44
+              },
+              {
+                "w": 44,
+                "h": 44
+              },
+              {
+                "w": 44,
+                "h": 44
+              },
+              {
+                "w": 44,
+                "h": 44
+              },
+              {
+                "w": 44,
+                "h": 44
+              },
+              {
+                "w": 44,
+                "h": 44
+              },
+              {
+                "w": 44,
+                "h": 44
+              },
+              {
+                "w": 44,
+                "h": 44
+              },
+              {
+                "w": 44,
+                "h": 44
+              }
+            ]
+          },
+          "writes": 4,
+          "historyFocus": true,
+          "inventoryFocus": true,
+          "retry": true,
+          "errors": []
+        },
+        {
+          "width": 390,
+          "state": "readonly",
+          "metrics": {
+            "overflow": false,
+            "sections": 12,
+            "materials": 12,
+            "metricFont": "Inter, system-ui, sans-serif",
+            "metricFigures": "lining-nums tabular-nums",
+            "headingFont": "\"Cormorant Garamond\", Georgia, serif",
+            "sectionTransform": "none",
+            "attributeControls": [
+              {
+                "fits": true,
+                "targets": [
+                  {
+                    "w": 44,
+                    "h": 44,
+                    "fits": true
+                  },
+                  {
+                    "w": 44,
+                    "h": 44,
+                    "fits": true
+                  }
+                ]
+              },
+              {
+                "fits": true,
+                "targets": [
+                  {
+                    "w": 44,
+                    "h": 44,
+                    "fits": true
+                  },
+                  {
+                    "w": 44,
+                    "h": 44,
+                    "fits": true
+                  }
+                ]
+              },
+              {
+                "fits": true,
+                "targets": [
+                  {
+                    "w": 44,
+                    "h": 44,
+                    "fits": true
+                  },
+                  {
+                    "w": 44,
+                    "h": 44,
+                    "fits": true
+                  }
+                ]
+              },
+              {
+                "fits": true,
+                "targets": [
+                  {
+                    "w": 44,
+                    "h": 44,
+                    "fits": true
+                  },
+                  {
+                    "w": 44,
+                    "h": 44,
+                    "fits": true
+                  }
+                ]
+              },
+              {
+                "fits": true,
+                "targets": [
+                  {
+                    "w": 44,
+                    "h": 44,
+                    "fits": true
+                  },
+                  {
+                    "w": 44,
+                    "h": 44,
+                    "fits": true
+                  }
+                ]
+              }
+            ],
+            "targets": [
+              {
+                "w": 44,
+                "h": 44
+              },
+              {
+                "w": 44,
+                "h": 44
+              },
+              {
+                "w": 44,
+                "h": 44
+              },
+              {
+                "w": 44,
+                "h": 44
+              },
+              {
+                "w": 44,
+                "h": 44
+              },
+              {
+                "w": 44,
+                "h": 44
+              },
+              {
+                "w": 44,
+                "h": 44
+              },
+              {
+                "w": 44,
+                "h": 44
+              },
+              {
+                "w": 44,
+                "h": 44
+              },
+              {
+                "w": 44,
+                "h": 44
+              },
+              {
+                "w": 44,
+                "h": 44
+              },
+              {
+                "w": 44,
+                "h": 44
+              }
+            ]
+          },
+          "writes": 0,
+          "historyFocus": true,
+          "inventoryFocus": true,
+          "retry": false,
+          "errors": []
+        },
+        {
+          "width": 820,
+          "state": "editable",
+          "metrics": {
+            "overflow": false,
+            "sections": 12,
+            "materials": 12,
+            "metricFont": "Inter, system-ui, sans-serif",
+            "metricFigures": "lining-nums tabular-nums",
+            "headingFont": "\"Cormorant Garamond\", Georgia, serif",
+            "sectionTransform": "none",
+            "attributeControls": [
+              {
+                "fits": true,
+                "targets": [
+                  {
+                    "w": 44,
+                    "h": 44,
+                    "fits": true
+                  },
+                  {
+                    "w": 44,
+                    "h": 44,
+                    "fits": true
+                  }
+                ]
+              },
+              {
+                "fits": true,
+                "targets": [
+                  {
+                    "w": 44,
+                    "h": 44,
+                    "fits": true
+                  },
+                  {
+                    "w": 44,
+                    "h": 44,
+                    "fits": true
+                  }
+                ]
+              },
+              {
+                "fits": true,
+                "targets": [
+                  {
+                    "w": 44,
+                    "h": 44,
+                    "fits": true
+                  },
+                  {
+                    "w": 44,
+                    "h": 44,
+                    "fits": true
+                  }
+                ]
+              },
+              {
+                "fits": true,
+                "targets": [
+                  {
+                    "w": 44,
+                    "h": 44,
+                    "fits": true
+                  },
+                  {
+                    "w": 44,
+                    "h": 44,
+                    "fits": true
+                  }
+                ]
+              },
+              {
+                "fits": true,
+                "targets": [
+                  {
+                    "w": 44,
+                    "h": 44,
+                    "fits": true
+                  },
+                  {
+                    "w": 44,
+                    "h": 44,
+                    "fits": true
+                  }
+                ]
+              }
+            ],
+            "targets": [
+              {
+                "w": 44,
+                "h": 44
+              },
+              {
+                "w": 44,
+                "h": 44
+              },
+              {
+                "w": 44,
+                "h": 44
+              },
+              {
+                "w": 44,
+                "h": 44
+              },
+              {
+                "w": 44,
+                "h": 44
+              },
+              {
+                "w": 44,
+                "h": 44
+              },
+              {
+                "w": 44,
+                "h": 44
+              },
+              {
+                "w": 44,
+                "h": 44
+              },
+              {
+                "w": 44,
+                "h": 44
+              },
+              {
+                "w": 44,
+                "h": 44
+              },
+              {
+                "w": 44,
+                "h": 44
+              },
+              {
+                "w": 44,
+                "h": 44
+              }
+            ]
+          },
+          "writes": 4,
+          "historyFocus": true,
+          "inventoryFocus": true,
+          "retry": true,
+          "errors": []
+        },
+        {
+          "width": 820,
+          "state": "readonly",
+          "metrics": {
+            "overflow": false,
+            "sections": 12,
+            "materials": 12,
+            "metricFont": "Inter, system-ui, sans-serif",
+            "metricFigures": "lining-nums tabular-nums",
+            "headingFont": "\"Cormorant Garamond\", Georgia, serif",
+            "sectionTransform": "none",
+            "attributeControls": [
+              {
+                "fits": true,
+                "targets": [
+                  {
+                    "w": 44,
+                    "h": 44,
+                    "fits": true
+                  },
+                  {
+                    "w": 44,
+                    "h": 44,
+                    "fits": true
+                  }
+                ]
+              },
+              {
+                "fits": true,
+                "targets": [
+                  {
+                    "w": 44,
+                    "h": 44,
+                    "fits": true
+                  },
+                  {
+                    "w": 44,
+                    "h": 44,
+                    "fits": true
+                  }
+                ]
+              },
+              {
+                "fits": true,
+                "targets": [
+                  {
+                    "w": 44,
+                    "h": 44,
+                    "fits": true
+                  },
+                  {
+                    "w": 44,
+                    "h": 44,
+                    "fits": true
+                  }
+                ]
+              },
+              {
+                "fits": true,
+                "targets": [
+                  {
+                    "w": 44,
+                    "h": 44,
+                    "fits": true
+                  },
+                  {
+                    "w": 44,
+                    "h": 44,
+                    "fits": true
+                  }
+                ]
+              },
+              {
+                "fits": true,
+                "targets": [
+                  {
+                    "w": 44,
+                    "h": 44,
+                    "fits": true
+                  },
+                  {
+                    "w": 44,
+                    "h": 44,
+                    "fits": true
+                  }
+                ]
+              }
+            ],
+            "targets": [
+              {
+                "w": 44,
+                "h": 44
+              },
+              {
+                "w": 44,
+                "h": 44
+              },
+              {
+                "w": 44,
+                "h": 44
+              },
+              {
+                "w": 44,
+                "h": 44
+              },
+              {
+                "w": 44,
+                "h": 44
+              },
+              {
+                "w": 44,
+                "h": 44
+              },
+              {
+                "w": 44,
+                "h": 44
+              },
+              {
+                "w": 44,
+                "h": 44
+              },
+              {
+                "w": 44,
+                "h": 44
+              },
+              {
+                "w": 44,
+                "h": 44
+              },
+              {
+                "w": 44,
+                "h": 44
+              },
+              {
+                "w": 44,
+                "h": 44
+              }
+            ]
+          },
+          "writes": 0,
+          "historyFocus": true,
+          "inventoryFocus": true,
+          "retry": false,
+          "errors": []
+        },
+        {
+          "width": 1440,
+          "state": "editable",
+          "metrics": {
+            "overflow": false,
+            "sections": 12,
+            "materials": 12,
+            "metricFont": "Inter, system-ui, sans-serif",
+            "metricFigures": "lining-nums tabular-nums",
+            "headingFont": "\"Cormorant Garamond\", Georgia, serif",
+            "sectionTransform": "none",
+            "attributeControls": [
+              {
+                "fits": true,
+                "targets": [
+                  {
+                    "w": 44,
+                    "h": 44,
+                    "fits": true
+                  },
+                  {
+                    "w": 44,
+                    "h": 44,
+                    "fits": true
+                  }
+                ]
+              },
+              {
+                "fits": true,
+                "targets": [
+                  {
+                    "w": 44,
+                    "h": 44,
+                    "fits": true
+                  },
+                  {
+                    "w": 44,
+                    "h": 44,
+                    "fits": true
+                  }
+                ]
+              },
+              {
+                "fits": true,
+                "targets": [
+                  {
+                    "w": 44,
+                    "h": 44,
+                    "fits": true
+                  },
+                  {
+                    "w": 44,
+                    "h": 44,
+                    "fits": true
+                  }
+                ]
+              },
+              {
+                "fits": true,
+                "targets": [
+                  {
+                    "w": 44,
+                    "h": 44,
+                    "fits": true
+                  },
+                  {
+                    "w": 44,
+                    "h": 44,
+                    "fits": true
+                  }
+                ]
+              },
+              {
+                "fits": true,
+                "targets": [
+                  {
+                    "w": 44,
+                    "h": 44,
+                    "fits": true
+                  },
+                  {
+                    "w": 44,
+                    "h": 44,
+                    "fits": true
+                  }
+                ]
+              }
+            ],
+            "targets": [
+              {
+                "w": 44,
+                "h": 44
+              },
+              {
+                "w": 44,
+                "h": 44
+              },
+              {
+                "w": 44,
+                "h": 44
+              },
+              {
+                "w": 44,
+                "h": 44
+              },
+              {
+                "w": 44,
+                "h": 44
+              },
+              {
+                "w": 44,
+                "h": 44
+              },
+              {
+                "w": 44,
+                "h": 44
+              },
+              {
+                "w": 44,
+                "h": 44
+              },
+              {
+                "w": 44,
+                "h": 44
+              },
+              {
+                "w": 44,
+                "h": 44
+              },
+              {
+                "w": 44,
+                "h": 44
+              },
+              {
+                "w": 44,
+                "h": 44
+              }
+            ]
+          },
+          "writes": 7,
+          "historyFocus": true,
+          "inventoryFocus": true,
+          "retry": true,
+          "errors": []
+        },
+        {
+          "width": 1440,
+          "state": "readonly",
+          "metrics": {
+            "overflow": false,
+            "sections": 12,
+            "materials": 12,
             "metricFont": "Inter, system-ui, sans-serif",
             "metricFigures": "lining-nums tabular-nums",
             "headingFont": "\"Cormorant Garamond\", Georgia, serif",
