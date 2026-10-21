@@ -221,10 +221,17 @@ try {
       if (route === "/tabletop" && process.env.NEXUS_RADIAL_AUDIT === "1") {
         await page.waitForFunction(() => !!window.__tadeonTabletopRuntime);
         await page.evaluate(() => {
+          // The empty server fixture has no persisted scene and is intentionally read-only.
+          // Enable only this isolated local engine to exercise its real object commands.
+          window.__tadeonTabletopRuntime.engine.setReadOnly(false);
           window.__tadeonTabletopRuntime.engine.addEntityToViewport({ type: "token", label: "Sentinela de teste" });
         });
         const launcher = page.getByRole("button", { name: "Abrir ações rápidas de Sentinela de teste" });
-        await launcher.waitFor({ state: "visible", timeout: 15000 });
+        await launcher.waitFor({ state: "visible", timeout: 15000 }).catch(async error => {
+          await page.screenshot({ path: `${root}/${phase}-radial-failure-${width}.png` });
+          console.log("Radial setup", await page.evaluate(() => ({ snapshot: window.__tadeonTabletopRuntime?.snapshot(), triggers: [...document.querySelectorAll(".tadeon-radial-trigger")].map(e=>({style:e.getAttribute("style"),visibility:getComputedStyle(e).visibility})), clean: document.documentElement.dataset.tadeonTabletopClean })));
+          throw error;
+        });
         await launcher.click();
         const menu = page.getByRole("menu", { name: "Ações rápidas de Sentinela de teste" });
         await menu.waitFor();
@@ -238,6 +245,13 @@ try {
         });
         if (!radialAudit.portal || !radialAudit.inside || !radialAudit.focus || radialAudit.targets.some(r => r[0] < 44 || r[1] < 44)) errors.push("Radial geometry/focus failed: " + JSON.stringify(radialAudit));
         await page.screenshot({ path: `${root}/${phase}-radial-${width}.png` });
+        await menu.getByRole("menuitem", { name: "Memória", exact: true }).click();
+        radialAudit.memoryTargets = await menu.locator(".is-memory button").evaluateAll(buttons => buttons.map(b => { const r=b.getBoundingClientRect(); return [r.width,r.height]; }));
+        if (radialAudit.memoryTargets.length !== 4 || radialAudit.memoryTargets.some(r=>r[0]<44 || r[1]<44)) errors.push("Radial memory targets failed");
+        await page.keyboard.press("Escape");
+        await page.emulateMedia({ reducedMotion: "reduce" });
+        radialAudit.reducedTransition = await menu.evaluate(e => getComputedStyle(e).transitionDuration);
+        if (radialAudit.reducedTransition.split(",").some(v=>parseFloat(v)>0.001)) errors.push("Radial reduced motion failed");
         await page.keyboard.press("Escape");
         await launcher.waitFor({state:"visible"});
         if (!await launcher.evaluate(e=>e===document.activeElement)) errors.push("Radial return focus failed");
